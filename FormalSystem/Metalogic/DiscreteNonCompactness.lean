@@ -31,9 +31,9 @@ constructor is **guard-first**: `next φ` is `untl (guard := ⊥) (event := φ)`
   `IsSuccArchimedean` does its work — so `Xⁿ⁺¹ p` holds at `t` for that `n`, contradicting the
   corresponding `¬Xⁿ⁺¹ p`.
 
-Together these refute `CompactDiscrete` (`discrete_consequence_not_compact`) and, by way of
+Together these refute `CompactDiscrete` (`notCompactDiscrete`) and, by way of
 `soundness_discrete`, `StrongCompletenessDiscrete` itself
-(`strongCompletenessDiscrete_refuted`). Both statements are declared in
+(`notStrongCompletenessDiscrete`). Both statements are declared in
 `Metalogic/SetConsequence.lean`.
 
 ## Note on `truthAt_next_iff` / `truthAt_next_iterate`
@@ -265,7 +265,7 @@ The argument the skeleton runs — `archWitness p ⊨ ⊥` holds vacuously, comp
 finite `L` with `L.foldr imp ⊥` Discrete-valid, and `truthAt_foldr_imp` contradicts that against
 a Discrete model of the same `L` — used to be written out here in full, and again in
 `Metalogic/DedekindNonCompactness.lean` with a different witness. It is now written once. -/
-theorem discrete_consequence_not_compact : ¬ CompactDiscrete :=
+theorem notCompactDiscrete : ¬ CompactDiscrete :=
   not_compact_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
     (archWitness_not_satisfiable ⟨"p", none⟩)
 
@@ -284,7 +284,7 @@ need, since it no longer destructures a `SatisfiableDiscreteSet` witness itself 
 
 This is the theorem behind the module docstring claim in `Metalogic/StrongCompleteness.lean`
 that only weak completeness is available for this class. -/
-theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete :=
+theorem notStrongCompletenessDiscrete : ¬ StrongCompletenessDiscrete :=
   not_strongCompleteness_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
     (archWitness_not_satisfiable ⟨"p", none⟩)
 
@@ -292,8 +292,8 @@ theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete :=
 #print axioms truthAt_next_iterate
 #print axioms archWitness_finitely_satisfiable
 #print axioms archWitness_not_satisfiable
-#print axioms discrete_consequence_not_compact
-#print axioms strongCompletenessDiscrete_refuted
+#print axioms notCompactDiscrete
+#print axioms notStrongCompletenessDiscrete
 
 /-! ## Axiom Audit
 
@@ -306,9 +306,9 @@ theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete :=
 -- depends on: [propext, Classical.choice, Quot.sound]
 #print axioms archWitness_not_satisfiable
 -- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms discrete_consequence_not_compact
+#print axioms notCompactDiscrete
 -- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms strongCompletenessDiscrete_refuted
+#print axioms notStrongCompletenessDiscrete
 -- depends on: [propext, Classical.choice, Quot.sound]
 ```
 

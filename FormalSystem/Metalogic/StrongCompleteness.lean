@@ -47,15 +47,17 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
 
 ## The per-class programme
 
-* **`FrameClass.Base` and `FrameClass.Dense`**: genuine strong completeness is the intended
-  eventual terminus. Neither class's binder list imposes Archimedean-ness, so the standard
-  non-compactness counterexamples do not apply; whether the full task-frame consequence
-  relation (S5 box over shift-closed history sets, ordered-abelian-group time) is in fact
-  compact is an open research question for this development. The set-based MCS layer
-  (`SetConsistent` — correctly finitary, `SetMaximalConsistent`, `set_lindenbaum` in
-  `Metalogic/Core/MaximalConsistent.lean`) is already in place; the missing substantive piece
-  is a model-existence theorem — every `SetConsistent` set is satisfiable in a frame of the
-  class — which does *not* follow from the single-formula countermodel engines.
+* **`FrameClass.Base` and `FrameClass.Dense`**: genuine strong completeness is **proved**, not
+  pending. Neither class's binder list imposes Archimedean-ness, so the standard non-compactness
+  counterexamples do not apply, and the compactness question this section once called "an open
+  research question" is settled affirmatively: `compactBase` and `compactDense`
+  (`Metalogic/Compactness.lean`) discharge it by an ultraproduct construction, and
+  `strongCompletenessBase` / `strongCompletenessDense` in that same module collect the results.
+  The substantive missing piece named here — a model-existence theorem, which does *not* follow
+  from the single-formula countermodel engines — is `modelExistenceBase` / `modelExistenceDense`,
+  both instantiations of the one generic `modelExistence_of_satPreserved`. The set-based MCS
+  layer (`SetConsistent` — correctly finitary, `SetMaximalConsistent`, `set_lindenbaum` in
+  `Metalogic/Core/MaximalConsistent.lean`) remains in place but is not the route that closed it.
 * **`FrameClass.Discrete`**: strong completeness is provably FALSE — the consequence relation
   is not compact. `ValidDiscrete` requires `IsSuccArchimedean`/`IsPredArchimedean`, and
   `Formula.next φ = Formula.untl Formula.bot φ` is a genuine next-step operator on discrete
@@ -67,8 +69,8 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
   This argument is **no longer informal**. It is machine-checked in
   `FormalSystem/Metalogic/DiscreteNonCompactness.lean`: the witness set is `archWitness`, its
   two halves are `archWitness_finitely_satisfiable` and `archWitness_not_satisfiable`, and the
-  conclusions are `discrete_consequence_not_compact` (refuting `CompactDiscrete`) and
-  `strongCompletenessDiscrete_refuted` (refuting `StrongCompletenessDiscrete`). All are
+  conclusions are `notCompactDiscrete` (refuting `CompactDiscrete`) and
+  `notStrongCompletenessDiscrete` (refuting `StrongCompletenessDiscrete`). All are
   sorry-free at exactly `[propext, Classical.choice, Quot.sound]`.
 * **`FrameClass.Dedekind`**: strong completeness is **refuted**, on the same footing as
   Discrete. Reynolds 1992 (Theorem 7, §9, printed p.189) is *weak* completeness for the
@@ -81,8 +83,8 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
 
   This argument is machine-checked in `FormalSystem/Metalogic/DedekindNonCompactness.lean`: the
   witness set is `dedWitness`, its two halves are `dedWitness_finitely_satisfiable` and
-  `dedWitness_not_satisfiable`, and the conclusions are `dedekind_consequence_not_compact`
-  (refuting `CompactDedekind`) and `strongCompletenessDedekind_refuted` (refuting
+  `dedWitness_not_satisfiable`, and the conclusions are `notCompactDedekind`
+  (refuting `CompactDedekind`) and `notStrongCompletenessDedekind` (refuting
   `StrongCompletenessDedekind`). All are sorry-free at exactly
   `[propext, Classical.choice, Quot.sound]`.
 
@@ -97,9 +99,9 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
 **Two distinct statuses, which must not be collapsed.** Base and Dense are **proved**
 (`compactBase`/`compactDense` and `strongCompletenessBase`/`strongCompletenessDense`, in
 `Metalogic/Compactness.lean`). Discrete and Dedekind are both **machine-refuted** —
-`discrete_consequence_not_compact` / `strongCompletenessDiscrete_refuted` in
-`Metalogic/DiscreteNonCompactness.lean`, and `dedekind_consequence_not_compact` /
-`strongCompletenessDedekind_refuted` in `Metalogic/DedekindNonCompactness.lean` — by two
+`notCompactDiscrete` / `notStrongCompletenessDiscrete` in
+`Metalogic/DiscreteNonCompactness.lean`, and `notCompactDedekind` /
+`notStrongCompletenessDedekind` in `Metalogic/DedekindNonCompactness.lean` — by two
 *different* witnesses, for the reason given above. `SetConsequence.lean` models this discipline
 across all four rows of the `FrameClass` family; reading a proved class as sharing the refuted
 classes' status, or the reverse, would misstate the evidence.
@@ -107,7 +109,7 @@ classes' status, or the reverse, would misstate the evidence.
 The third status this section used to record — "unavailable on the primary source's own terms",
 unproved but unrefuted — no longer applies to any class in the table. It was the honest reading
 while the Dedekind witness was missing; it is superseded, not softened, by
-`dedekind_consequence_not_compact`.
+`notCompactDedekind`.
 
 ## Axiomatisability of the real-line temporal logic
 
@@ -655,12 +657,12 @@ completeness — `Γ ⊨ φ → Γ ⊢ φ` for an arbitrary, possibly infinite `
    evidence for the two classes differs sharply, and the difference matters:
 
    * At `FrameClass.Discrete` the infinitary statement is **machine-refuted**:
-     `discrete_consequence_not_compact` refutes `CompactDiscrete` and
-     `strongCompletenessDiscrete_refuted` refutes `StrongCompletenessDiscrete`, both in
+     `notCompactDiscrete` refutes `CompactDiscrete` and
+     `notStrongCompletenessDiscrete` refutes `StrongCompletenessDiscrete`, both in
      `Metalogic/DiscreteNonCompactness.lean`, both sorry-free.
    * At `FrameClass.Dedekind` the infinitary statement is **machine-refuted** as well:
-     `dedekind_consequence_not_compact` refutes `CompactDedekind` and
-     `strongCompletenessDedekind_refuted` refutes `StrongCompletenessDedekind`, both in
+     `notCompactDedekind` refutes `CompactDedekind` and
+     `notStrongCompletenessDedekind` refutes `StrongCompletenessDedekind`, both in
      `Metalogic/DedekindNonCompactness.lean`, both sorry-free. The two refutations use
      *different* witnesses — `archWitness` is built from `Formula.next`, which is vacuously
      false on a densely ordered carrier — so the parallel is one of status, not of proof.
@@ -711,7 +713,7 @@ of the consequence form.**
 
 Weak completeness is the strongest completeness statement available for `FrameClass.Dedekind`:
 the genuine strong (infinite-premise) form is **refuted**, by
-`strongCompletenessDedekind_refuted` in `Metalogic/DedekindNonCompactness.lean` — the same
+`notStrongCompletenessDedekind` in `Metalogic/DedekindNonCompactness.lean` — the same
 status as at `FrameClass.Discrete`, reached by a different witness (see the module docstring).
 Recorded here so that the weak form has exactly
 one proof in the tree, and that proof is a corollary rather than a parallel construction —
@@ -739,7 +741,7 @@ neither carries a proof of its own beyond naming the engine. -/
 p.189. The engine hypothesis is discharged; everything the docstring of the `_of_engine` form
 says about what this statement is and is not carries over verbatim, including the three facts
 held apart there. In particular this is **not** strong completeness: the infinitary statement is
-*machine-refuted* for this class, by `strongCompletenessDedekind_refuted`
+*machine-refuted* for this class, by `notStrongCompletenessDedekind`
 (`Metalogic/DedekindNonCompactness.lean`) — the same status `FrameClass.Discrete` has, though
 reached by a different witness — and `Context := List Formula` cannot express it in any case.
 -/
@@ -903,7 +905,7 @@ the hypothesis-and-conclusion shape of `soundness_dense` (`Metalogic/Soundness.l
 packaged as a definition so that the completeness converse can be stated against the same
 relation.
 
-This is `SetSemanticConsequenceDense` (`SetConsequence.lean`) with `Γ : Set Formula` changed to
+This is `SetSemanticConsequenceOn .Dense` (`SetConsequence.lean`) with `Γ : Set Formula` changed to
 `Γ : Context` and nothing else. The two are deliberately distinct types: the set form is the
 vocabulary of the (open) strong completeness statement, this one is the finite-context relation
 that the theorems below actually discharge.
@@ -994,8 +996,8 @@ Base and Dense sections above, against the `ValidDiscrete` binder list.
 **Only the finite-context layer exists here, and that is a permanent fact rather than a gap.**
 Everything below takes `Γ : Context = List Formula`, so it is consequence completeness, not
 strong completeness. For this class the infinitary statement is not merely unproved but
-**machine-refuted**: `discrete_consequence_not_compact` refutes `CompactDiscrete` and
-`strongCompletenessDiscrete_refuted` refutes `StrongCompletenessDiscrete` outright, both in
+**machine-refuted**: `notCompactDiscrete` refutes `CompactDiscrete` and
+`notStrongCompletenessDiscrete` refutes `StrongCompletenessDiscrete` outright, both in
 `FormalSystem/Metalogic/DiscreteNonCompactness.lean` and both sorry-free at exactly
 `[propext, Classical.choice, Quot.sound]`. The witness is the premise set
 `{F p} ∪ {(¬Xⁿ p) : n ∈ ℕ}` — expressible because `Formula.next φ = Formula.untl Formula.bot φ`
@@ -1006,7 +1008,7 @@ unsatisfiable over every Archimedean discrete carrier, since `ValidDiscrete` req
 Discrete is no longer the only class where "machine-refuted" is the earned phrasing: Base and
 Dense are **proved** (`Metalogic/Compactness.lean`), while Dedekind is refuted too, by a
 different witness, in `Metalogic/DedekindNonCompactness.lean`
-(`dedekind_consequence_not_compact`, `strongCompletenessDedekind_refuted`). Reynolds 1992
+(`notCompactDedekind`, `notStrongCompletenessDedekind`). Reynolds 1992
 Theorem 7 remains correctly cited as the *weak* completeness result for that class. The two
 remaining statuses — proved, refuted — must not be collapsed into one. -/
 
@@ -1054,7 +1056,7 @@ single-formula engine for `ValidDiscrete`, so there is no `_of_engine` layer her
 
 **This is not strong completeness, and for this class it cannot be strengthened into one.**
 `Context := List Formula`, so every `Γ` here is finite. The infinitary statement
-`StrongCompletenessDiscrete` is refuted by `strongCompletenessDiscrete_refuted`; this theorem is
+`StrongCompletenessDiscrete` is refuted by `notStrongCompletenessDiscrete`; this theorem is
 the strongest consequence-shaped result the class admits.
 -/
 theorem consequence_completeness_discrete (Γ : Context) (φ : Formula)
@@ -1081,7 +1083,7 @@ theorem soundness_discrete_consequence (Γ : Context) (φ : Formula)
 form.**
 
 Weak completeness is the strongest completeness statement available for this class: the class
-consequence relation is provably not compact (`discrete_consequence_not_compact`), so the
+consequence relation is provably not compact (`notCompactDiscrete`), so the
 genuine strong form is refuted rather than open. Definitionally
 `BXCanonical.completeness_discrete` routed through the deduction theorem in both directions; the
 vacuous `∀ ψ ∈ [], _` premise binder is discharged by `simpa`.

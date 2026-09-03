@@ -767,8 +767,8 @@ strong completeness for `FrameClass.Discrete` is false rather than merely unprov
 | `archWitness` | 102 | The witness set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` |
 | `archWitness_finitely_satisfiable` | 194 | Every finite subset is satisfiable over `ℤ` |
 | `archWitness_not_satisfiable` | 229 | The whole set is satisfiable over no Archimedean discrete carrier |
-| `discrete_consequence_not_compact` | 250 | Refutes `CompactDiscrete` |
-| `strongCompletenessDiscrete_refuted` | 280 | Refutes `StrongCompletenessDiscrete` |
+| `notCompactDiscrete` | 250 | Refutes `CompactDiscrete` |
+| `notStrongCompletenessDiscrete` | 280 | Refutes `StrongCompletenessDiscrete` |
 
 ---
 

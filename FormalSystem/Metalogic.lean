@@ -102,8 +102,8 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   relation. The infinitary statement has **three distinct statuses** across the four classes,
   which must not be collapsed into one:
 
-  * `FrameClass.Discrete` — **machine-refuted**. `discrete_consequence_not_compact` and
-    `strongCompletenessDiscrete_refuted` (entry below) settle it negatively.
+  * `FrameClass.Discrete` — **machine-refuted**. `notCompactDiscrete` and
+    `notStrongCompletenessDiscrete` (entry below) settle it negatively.
   * `FrameClass.Base` and `FrameClass.Dense` — **proved**. `strongCompletenessBase` and
     `strongCompletenessDense` (`Metalogic/Compactness.lean`) inhabit the
     `StrongCompletenessBase`/`StrongCompletenessDense` statements of
@@ -115,13 +115,13 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   * `FrameClass.Dedekind` — **refuted**, like Discrete. Reynolds 1992 Theorem 7 is weak-only,
     and this tree now explains why: `CompactDedekind` and `StrongCompletenessDedekind` are
     stated in `Metalogic/SetConsequence.lean` and refuted in
-    `Metalogic/DedekindNonCompactness.lean` by `dedekind_consequence_not_compact` and
-    `strongCompletenessDedekind_refuted`.
-- **Non-compactness (discrete)** (`discrete_consequence_not_compact`): SORRY-FREE (sorryAx-free;
+    `Metalogic/DedekindNonCompactness.lean` by `notCompactDedekind` and
+    `notStrongCompletenessDedekind`.
+- **Non-compactness (discrete)** (`notCompactDiscrete`): SORRY-FREE (sorryAx-free;
   axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). The `FrameClass.Discrete`
   set-based consequence relation is **not** compact: the premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}`
   is finitely satisfiable over `ℤ` yet has no model on any Archimedean discrete carrier. The
-  companion `strongCompletenessDiscrete_refuted` (same axiom set) converts this into an outright
+  companion `notStrongCompletenessDiscrete` (same axiom set) converts this into an outright
   refutation of strong completeness for the class, which is why only the weak form
   (`completeness_discrete`) appears above.
 - **Decidability** (`decide`): SORRY-FREE
@@ -198,13 +198,13 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
   the refuted Discrete and Dedekind ones
 - **DiscreteNonCompactness.lean**: the machine-checked discharge of one of those obstructions —
   the `{F p} ∪ {¬Xⁿ p}` witness, the first semantic characterisation of `Formula.next`
-  (`truthAt_next_iff`), and the two refutations `discrete_consequence_not_compact` and
-  `strongCompletenessDiscrete_refuted`
+  (`truthAt_next_iff`), and the two refutations `notCompactDiscrete` and
+  `notStrongCompletenessDiscrete`
 - **DedekindNonCompactness.lean**: its Dedekind sibling, and the discharge of the last remaining
   obstruction — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤ : n ∈ ℕ}` witness (`dedWitness`, with
   `Xq φ = untl ¬q (q ∧ φ)`), finitely satisfiable over `ℝ` and unsatisfiable over every
-  Dedekind-complete carrier, and the two refutations `dedekind_consequence_not_compact` and
-  `strongCompletenessDedekind_refuted`. `archWitness` does not port: `Formula.next` is vacuously
+  Dedekind-complete carrier, and the two refutations `notCompactDedekind` and
+  `notStrongCompletenessDedekind`. `archWitness` does not port: `Formula.next` is vacuously
   false on a densely ordered carrier, so the witness is genuinely new
 - **Bundle/**: BFMCS infrastructure (shared by all paths)
 

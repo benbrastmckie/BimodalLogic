@@ -519,26 +519,34 @@ counts in the commit message. The pre-move count is the hypothesis; the post-mov
 
 ---
 
-### Phase 9: Dead-declaration deletion and the `Core.MaximalConsistent` import drop [NOT STARTED]
+### Phase 9: Dead-declaration deletion and the `Core.MaximalConsistent` import drop [COMPLETED]
 
 **Goal**: Land item 7's deletion half — remove the 13 unconsumed `SetConsequence` declarations and
 the import that only they kept alive.
 
 **Tasks**:
-- [ ] Delete these 13 (all in `SetConsequence.lean`): `SetSemanticConsequenceBase` (`:112`),
+- [x] Delete these 13 (all in `SetConsequence.lean`): `SetSemanticConsequenceBase` (`:112`),
       `SetSemanticConsequenceDense` (`:116`), `setDerivable_mono` (`:269`),
       `setSemanticConsequenceOn_mono_fc` (`:285`), `setSemanticConsequence{Base,Dense,Discrete,Dedekind}_mono`
       (`:291`, `:296`, `:301`, `:307`), `setDerivable_of_derivable` (`:321`),
       `derivable_of_setDerivable_contextToSet` (`:331`), `setDerivable_of_mem` (`:339`),
-      `not_setConsistent_of_setDerivable_bot` (`:349`).
-- [ ] **Keep** `SetSemanticConsequenceOn.apply_total` (`:237`) — it has no consumer today, but
+      `not_setConsistent_of_setDerivable_bot` (`:349`). *(deviation: altered — the plan says 13
+      and lists 12; the list is right and the count was a slip. All 12 were re-measured as having
+      zero external consumers and all 12 were deleted. Eight docstrings citing the two deleted
+      `SetSemanticConsequence{Base,Dense}` names were repointed to `SetSemanticConsequenceOn .Base`
+      / `.Dense`, which is what those definitions were.)*
+- [x] **Keep** `SetSemanticConsequenceOn.apply_total` (`:237`) — it has no consumer today, but
       Phase 4's `not_compact_of_witness` makes it live.
-- [ ] **Keep** `SetSemanticConsequence{Discrete,Dedekind}` (consumed by the two refutation
-      modules), `setConsequenceOnFrames_mono` (`:277`), `setDerivable_iff_exists_finite` (`:316`)
+- [x] **Keep** `SetSemanticConsequence{Discrete,Dedekind}` (consumed by the two refutation
+      modules) *(note: as of Phase 5 they are no longer consumed — the refutations now route
+      through the generic skeleton and name no per-class consequence relation. Kept anyway, per
+      this instruction and because they complete the four-row vocabulary the module docstring
+      advertises. Recorded rather than acted on.)*, `setConsequenceOnFrames_mono` (`:277`),
+      `setDerivable_iff_exists_finite` (`:316`)
       (both consumed by `soundness_setConsequence`), and `soundness_setConsequence` itself
       (`StrongCompleteness.lean:949`) — B-02 makes it the `Set Formula` half of the
       `soundness_consequence` pair.
-- [ ] Drop the `Core.MaximalConsistent` import at `SetConsequence.lean:11`. Its only two live uses
+- [x] Drop the `Core.MaximalConsistent` import at `SetConsequence.lean:11`. Its only two live uses
       (`Core.contextToSet` at `:322`/`:332`, `Core.SetConsistent` at `:350`) sit inside three of
       the deleted declarations. Reword the prose reference at `:46`; do not delete it.
 
@@ -563,28 +571,39 @@ declaration with a live consumer is kept and the discrepancy recorded rather tha
 
 ---
 
-### Phase 10: Naming scheme and the stale-prose sweep [NOT STARTED]
+### Phase 10: Naming scheme and the stale-prose sweep [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Land item 7's naming half (B-18) and retire the documentation this task's work has made
 untrue.
 
 **Tasks**:
-- [ ] Adopt `not<PropName>`: rename `discrete_consequence_not_compact` → `notCompactDiscrete`,
+- [x] Adopt `not<PropName>`: rename `discrete_consequence_not_compact` → `notCompactDiscrete`,
       `dedekind_consequence_not_compact` → `notCompactDedekind`,
       `strongCompletenessDiscrete_refuted` → `notStrongCompletenessDiscrete`,
       `strongCompletenessDedekind_refuted` → `notStrongCompletenessDedekind`. This mirrors the
       positive form already in use (`compactBase : CompactBase`) and keeps the `Prop` name first.
       No deprecated aliases.
-- [ ] Sweep the rename through `scripts/check-module-invariants.sh` (the two old names appear in
+- [x] Sweep the rename through `scripts/check-module-invariants.sh` (the two old names appear in
       its C2 baseline candidates), `FormalSystem/Metalogic/README.md`, and `Metalogic.lean` prose
-      — **in this same commit**, or C5/C12/C14 trip.
-- [ ] Fix the stale prose the task does not list but this work invalidates:
+      — **in this same commit**, or C5/C12/C14 trip. *(deviation: altered — neither old name
+      occurs anywhere in `scripts/check-module-invariants.sh`; `grep` returns zero, so no script
+      edit was needed or made. `FormalSystem/Metalogic/README.md` does not exist. `Metalogic.lean`
+      carried 10 occurrences and was swept. `docs/`, `README.md` and the five Metalogic modules
+      were swept in the same commit: 75 occurrences across 9 files.)*
+- [x] Fix the stale prose the task does not list but this work invalidates:
       `StrongCompleteness.lean:48-58` still calls Base/Dense strong completeness "the intended
       eventual terminus" and "an open research question", though `strongCompletenessBase` /
       `strongCompletenessDense` are proved at `Compactness.lean:157,164`.
-- [ ] Confirm the two prose items already handled upstream stayed handled: the
+- [x] Confirm the two prose items already handled upstream stayed handled: the
       `TaskFrame.IsDense` "plain `def`" explanation (`Compactness.lean:110-121`, deleted in Phase 3)
       and the `haveI` notes (`DedekindNonCompactness.lean:415-421,447-449`, deleted in Phase 5).
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The one occurrence of `discrete_consequence_not_compact` in `FormalSystem/Semantics/Ultraproduct/Carrier.lean` (docstring prose) | `FormalSystem/Semantics/` is task 525's territory. This plan's Non-Goals forbid writing there, and its Risks table instructs "If a phase finds it needs to, stop and report rather than editing." | `grep -rn` for the four old names over the repo excluding `Boneyard/` and `specs/**` returns exactly one hit, `FormalSystem/Semantics/Ultraproduct/Carrier.lean`. Every other non-`specs` occurrence was renamed. No invariant covers it: it is Lean docstring prose, and C5/C12/C13 check markdown only, so `check-module-invariants.sh` still reports ALL CHECKS PASSED. |
+| The 36 `specs/**` files carrying the old names | Historical task-management records; rewriting them would falsify the record of completed tasks. Same rationale as Phase 8's sweep scope. | C5 excludes `specs` from its walk by construction; C12/C13 cover only `docs/` + `README.md`. |
 
 **Timing**: 1.5 hours
 

@@ -76,9 +76,9 @@ that general fact at `SatisfiableDedekindSet`, where the compactness refutation 
 Density is needed only for the *finite*-satisfiability half, and only because
 `FrameClass.Dedekind` requires it of the witnessing frame.
 
-Together these refute `CompactDedekind` (`dedekind_consequence_not_compact`) and, by way of
+Together these refute `CompactDedekind` (`notCompactDedekind`) and, by way of
 `soundness_dedekind`, `StrongCompletenessDedekind` itself
-(`strongCompletenessDedekind_refuted`).
+(`notStrongCompletenessDedekind`).
 
 **No conflict with `compactDense`.** `Metalogic/Compactness.lean` proves compactness for
 `FrameClass.Dense`, which forces `dedWitness q` to be satisfiable over *some* dense frame. That
@@ -453,7 +453,7 @@ supported. It existed to feed an instance binder further down the old hand-writt
 skeleton destructures no satisfiability witness here, so there is no `hd` to reinstall.
 
 Sorry-free at exactly `[propext, Classical.choice, Quot.sound]`; see the axiom audit below. -/
-theorem dedekind_consequence_not_compact : ¬ CompactDedekind :=
+theorem notCompactDedekind : ¬ CompactDedekind :=
   not_compact_of_witness (dedWitness_finitely_satisfiable ⟨"q", none⟩)
     (dedWitness_not_satisfiable ⟨"q", none⟩)
 
@@ -470,7 +470,7 @@ scope.
 step is the class-generic `soundness_validIn`, inside `compact_of_strongCompleteness`.
 
 Sorry-free at exactly `[propext, Classical.choice, Quot.sound]`; see the axiom audit below. -/
-theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind :=
+theorem notStrongCompletenessDedekind : ¬ StrongCompletenessDedekind :=
   not_strongCompleteness_of_witness (dedWitness_finitely_satisfiable ⟨"q", none⟩)
     (dedWitness_not_satisfiable ⟨"q", none⟩)
 
@@ -480,22 +480,22 @@ theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind :=
 The corollary that `Metalogic/SetConsequence.lean` used to describe as "simply not drawn here":
 `compact_of_modelExistence` (`Metalogic/StrongCompleteness.lean`) turns model existence into
 compactness, and compactness at this class is refuted directly above. Equivalently, it is the
-`mpr` of `compact_iff_modelExistence` composed with `dedekind_consequence_not_compact`.
+`mpr` of `compact_iff_modelExistence` composed with `notCompactDedekind`.
 
 **It is stated in this module, not beside `ModelExistenceDedekind` in
 `Metalogic/SetConsequence.lean`, for the usual import reason**: it consumes
-`dedekind_consequence_not_compact` directly above, and this module imports `SetConsequence.lean`
+`notCompactDedekind` directly above, and this module imports `SetConsequence.lean`
 rather than the other way round. That module keeps the definition and now points here for the
 refutation. -/
 theorem modelExistenceDedekind_refuted : ¬ ModelExistenceDedekind :=
-  fun h => dedekind_consequence_not_compact (compact_of_modelExistence h)
+  fun h => notCompactDedekind (compact_of_modelExistence h)
 
 #print axioms qDepth_qAlpha
 #print axioms dedWitness_core
 #print axioms dedWitness_not_satisfiable
 #print axioms dedWitness_finitely_satisfiable
-#print axioms dedekind_consequence_not_compact
-#print axioms strongCompletenessDedekind_refuted
+#print axioms notCompactDedekind
+#print axioms notStrongCompletenessDedekind
 #print axioms modelExistenceDedekind_refuted
 
 /-! ## Axiom Audit
@@ -511,14 +511,14 @@ The verbatim output of the six `#print axioms` commands above:
 -- depends on: [propext, Classical.choice, Quot.sound]
 #print axioms dedWitness_finitely_satisfiable
 -- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms dedekind_consequence_not_compact
+#print axioms notCompactDedekind
 -- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms strongCompletenessDedekind_refuted
+#print axioms notStrongCompletenessDedekind
 -- depends on: [propext, Classical.choice, Quot.sound]
 ```
 
 **`sorryAx`-free throughout.** All four headline results carry exactly the three standard
-classical axioms — the identical set already carried by `discrete_consequence_not_compact` and by
+classical axioms — the identical set already carried by `notCompactDiscrete` and by
 `completeness_dedekind` itself. No new axiom is introduced and no obligation is deferred.
 
 `qDepth_qAlpha` carries a strict *subset*, `[propext, Quot.sound]`: it is a purely structural

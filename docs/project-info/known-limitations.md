@@ -33,7 +33,7 @@ The infinitary statement has **three distinct statuses** across the four frame c
 
 | Frame class | Status of strong completeness | Anchor |
 |-------------|-------------------------------|--------|
-| `FrameClass.Discrete` | **Machine-refuted** | `DiscreteNonCompactness.lean:250` `discrete_consequence_not_compact`, `:280` `strongCompletenessDiscrete_refuted` |
+| `FrameClass.Discrete` | **Machine-refuted** | `DiscreteNonCompactness.lean:250` `notCompactDiscrete`, `:280` `notStrongCompletenessDiscrete` |
 | `FrameClass.Base`, `FrameClass.Dense` | **Proved** | `Compactness.lean` `strongCompletenessBase`, `strongCompletenessDense`, `compactBase`, `compactDense`; statements at `SetConsequence.lean:446` `StrongCompletenessBase`, `:453` `CompactBase`, `:494` `StrongCompletenessDense`, `:499` `CompactDense` |
 | `FrameClass.Dedekind` | **Unavailable on the primary source's own terms** -- unproved *and* unrefuted | `StrongCompleteness.lean:74-89` |
 
@@ -241,8 +241,8 @@ orders, so the set is finitely satisfiable over `ℤ` -- place `p` far enough ou
 discrete carrier, since the `F p` witness would have to lie at some finite successor distance
 (`archWitness_not_satisfiable`, `:229`).
 
-The two conclusions are `discrete_consequence_not_compact` (`:250`), refuting `CompactDiscrete`,
-and `strongCompletenessDiscrete_refuted` (`:280`), refuting `StrongCompletenessDiscrete`. All
+The two conclusions are `notCompactDiscrete` (`:250`), refuting `CompactDiscrete`,
+and `notStrongCompletenessDiscrete` (`:280`), refuting `StrongCompletenessDiscrete`. All
 are sorry-free at exactly `[propext, Classical.choice, Quot.sound]`.
 
 ### Impact
