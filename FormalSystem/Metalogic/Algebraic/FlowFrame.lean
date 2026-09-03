@@ -660,13 +660,12 @@ bundle family's MCS at absolute time `w₀ + t` coincides with truth of `φ` at 
 `t` along the flow line through that family at offset `w₀`.
 -/
 theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
-    (_h_rtc : B.RestrictedTemporallyCoherent root)
-    (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
-    (h_fuc : B.RestrictedForwardUntilSinceCoherent root) (φ : Formula)
+    (h_coh : B.CanonicalCoherence root) (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D) :
     φ ∈ fam.val.mcs (w₀ + t) ↔
     TruthAt (bundleFlowModel B) (bundleFlowHistory fam w₀) t φ := by
+  obtain ⟨_, h_fuc, h_buc⟩ := h_coh
   induction φ generalizing fam w₀ t with
   | atom p =>
     simp only [TruthAt, bundleFlowModel, bundleFlowHistory, multiFamHistoryGen]
@@ -780,16 +779,14 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
 `fully_restricted_parametric_completeness_from_neg_membership`.
 -/
 theorem bundleFlow_completeness_from_neg_membership (B : BFMCS (fc := fc) D) (root : Formula)
-    (h_rtc : B.RestrictedTemporallyCoherent root)
-    (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
-    (h_fuc : B.RestrictedForwardUntilSinceCoherent root)
+    (h_coh : B.CanonicalCoherence root)
     (φ : Formula) (h_sub : φ ∈ subformulaClosure root)
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ t : D)
     (h_neg_in : φ.neg ∈ fam.val.mcs (w₀ + t)) :
     ¬TruthAt (bundleFlowModel B) (bundleFlowHistory fam w₀) t φ := by
   intro h_phi_true
   have h_phi_in :=
-    (bundleFlow_truth_lemma B root h_rtc h_buc h_fuc φ h_sub fam w₀ t).mpr h_phi_true
+    (bundleFlow_truth_lemma B root h_coh φ h_sub fam w₀ t).mpr h_phi_true
   exact set_consistent_not_both (fam.val.is_mcs (w₀ + t)).1 φ h_phi_in h_neg_in
 
 end BundleFlow

@@ -149,10 +149,10 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
     rw [zero_add, Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
   exact bundleFlow_completeness_from_neg_membership
     bfmcs φ
-    (Chronicle.cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
-      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (Chronicle.cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ)
-    (Chronicle.cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ)
+    ⟨Chronicle.cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
+      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)),
+     Chronicle.cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ,
+     Chronicle.cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ⟩
     φ (self_mem_subformulaClosure φ)
     ⟨fam₀, hfam₀⟩ 0 0 h_neg_fam
 

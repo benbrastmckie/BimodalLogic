@@ -1,7 +1,7 @@
 # Implementation Plan: Bundle Temporal Duality Discipline
 
 - **Task**: 527 - WAVE 4 (canonical-model infrastructure): replace textual future/past mirroring in `Metalogic/Bundle/` with derived duals, bundle the truth lemma's coherence hypotheses, and put the limit-MCS construction on Mathlib's `Filter` API
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours
 - **Dependencies**: 520 (COMPLETED), 526 (COMPLETED)
 - **Research Inputs**: `specs/527_bundle_temporal_duality_discipline/reports/01_bundle-temporal-duality-discipline.md`
@@ -217,7 +217,7 @@ effectively sequential.
 
 ---
 
-### Phase 1: `BFMCS.CanonicalCoherence` and truth-lemma retype [NOT STARTED]
+### Phase 1: `BFMCS.CanonicalCoherence` and truth-lemma retype [COMPLETED]
 
 **Goal**: The truth lemma takes one bundled coherence argument and binds no unused hypothesis.
 

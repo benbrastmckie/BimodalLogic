@@ -608,4 +608,22 @@ theorem BFMCS.until_since_coherent_forward (B : BFMCS (fc := fc) D)
   obtain ⟨h_fwd_U, _, h_fwd_S, _⟩ := h_uc fam hfam
   exact ⟨h_fwd_U, h_fwd_S⟩
 
+/-!
+## Canonical Coherence Bundle
+
+Bundles the three restricted coherence predicates the re-hosted truth lemma
+(`bundleFlow_truth_lemma`, `Algebraic/FlowFrame.lean`) actually consumes into a single
+hypothesis, so the truth lemma binds no unused argument.
+-/
+
+/--
+The three restricted coherence hypotheses the bundle-flow truth lemma needs, bundled into
+one `Prop`-valued structure: restricted temporal coherence (forward_F / backward_P), and
+restricted forward/backward Until-Since coherence.
+-/
+structure BFMCS.CanonicalCoherence (B : BFMCS (fc := fc) D) (root : Formula) : Prop where
+  temporal : B.RestrictedTemporallyCoherent root
+  untilSince_fwd : B.RestrictedForwardUntilSinceCoherent root
+  untilSince_bwd : B.RestrictedBackwardUntilSinceCoherent root
+
 end FormalSystem.Metalogic.Bundle

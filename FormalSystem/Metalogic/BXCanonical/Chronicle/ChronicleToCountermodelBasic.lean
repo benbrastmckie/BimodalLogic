@@ -601,7 +601,8 @@ noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
 /-! ## Dense Restricted Coherence
 
 Restricted temporal and Until/Since coherence for `cantorBfmcsDense`.
-These are the three conditions needed by the flow-frame completeness engine (`bundleFlow_completeness_from_neg_membership`).
+These are the three conditions bundled into `BFMCS.CanonicalCoherence` and needed by the
+flow-frame completeness engine (`bundleFlow_completeness_from_neg_membership`).
 -/
 
 /--
@@ -834,10 +835,10 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     rw [zero_add, rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
   exact Algebraic.bundleFlow_completeness_from_neg_membership
     (cantorBfmcsDense fc A h_mcs h_box_dense) φ
-    (cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
-      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ)
-    (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ)
+    ⟨cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
+      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)),
+     cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ,
+     cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ⟩
     φ (self_mem_subformulaClosure φ)
     ⟨rootedCantorFmcsDense fc A h_mcs h_box_dense 0, hfam₀⟩ 0 0 h_neg_fam
 

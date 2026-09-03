@@ -435,11 +435,12 @@ with a dead antecedent. The three statuses must not be collapsed into one.
 That the route runs through an ultraproduct rather than through this file's own machinery is
 forced, not incidental. The `BXCanonical` chronicle machinery **structurally cannot** be
 extended to reach `CompactBase`, because every countermodel there routes through
-`bundleFlow_completeness_from_neg_membership` (`Metalogic/Algebraic/FlowFrame.lean:791`), whose
-three coherence hypotheses — `BFMCS.RestrictedTemporallyCoherent`,
-`…RestrictedBackwardUntilSinceCoherent`, `…RestrictedForwardUntilSinceCoherent` — are all
-relative to a single `root : Formula` and quantify over `deferralClosure root`, while the engine
-additionally demands `φ ∈ subformulaClosure root`. Both closures are `Finset Formula`-valued. An
+`bundleFlow_completeness_from_neg_membership` (`Metalogic/Algebraic/FlowFrame.lean:781`), whose
+single bundled coherence hypothesis `BFMCS.CanonicalCoherence` — combining
+`BFMCS.RestrictedTemporallyCoherent`, `…RestrictedForwardUntilSinceCoherent`, and
+`…RestrictedBackwardUntilSinceCoherent` — is relative to a single `root : Formula` and quantifies
+over `deferralClosure root`, while the engine additionally demands `φ ∈ subformulaClosure root`.
+Both closures are `Finset Formula`-valued. An
 infinite `Γ` needs coherence over `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which is not a `Finset` and
 has no single `root` to be relative to. That is why the ultraproduct route abandons the
 chronicle rather than extending it.

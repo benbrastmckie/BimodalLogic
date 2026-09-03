@@ -101,7 +101,7 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) (root : Formula)
     (fam : FMCS (fc := fc) ℝ) (hfam : fam ∈ B.families)
     (w₀ t : ℝ) (h_neg_in : φ.neg ∈ fam.mcs (w₀ + t)) :
     ¬TruthAt (bundleFlowModel B) (bundleFlowHistory ⟨fam, hfam⟩ w₀) t φ :=
-  bundleFlow_completeness_from_neg_membership B root h_rtc h_buc h_fuc φ h_sub
+  bundleFlow_completeness_from_neg_membership B root ⟨h_rtc, h_fuc, h_buc⟩ φ h_sub
     ⟨fam, hfam⟩ w₀ t h_neg_in
 
 end CarrierProbe
