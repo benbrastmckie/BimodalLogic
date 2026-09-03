@@ -587,13 +587,13 @@ def SatisfiableDedekindSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClas
 
 /-- The model-existence form at `FrameClass.Dedekind` — `ModelExistence` at that tag.
 
-    **Vocabulary only: nothing is proved or refuted about this statement anywhere in the tree.**
-    It is stated so that the Dedekind row of the family is complete and symmetric with the other
-    three. Note that it is *not* an open question of the same kind as the Base/Dense model
-    existence results were: `ModelExistence fc → Compact fc` is `compact_of_modelExistence`
-    (`Metalogic/StrongCompleteness.lean`), and `CompactDedekind` is refuted, so
-    `ModelExistenceDedekind` is refutable as an immediate corollary. That corollary is simply
-    not drawn here. -/
+    **This statement is false.** See `modelExistenceDedekind_refuted` in
+    `Metalogic/DedekindNonCompactness.lean`, which draws it as the immediate corollary it always
+    was: `ModelExistence fc → Compact fc` is `compact_of_modelExistence`
+    (`Metalogic/StrongCompleteness.lean`), and `CompactDedekind` is refuted, so a model-existence
+    proof at this class would yield the very compactness `dedekind_consequence_not_compact`
+    denies. The refutation lives in that module rather than beside this definition because it
+    consumes `dedekind_consequence_not_compact`, and that module imports this one. -/
 def ModelExistenceDedekind : Prop := ModelExistence FrameClass.Dedekind
 
 end FormalSystem.Metalogic

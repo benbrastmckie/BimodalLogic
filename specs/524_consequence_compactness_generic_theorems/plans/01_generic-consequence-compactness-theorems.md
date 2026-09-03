@@ -269,7 +269,7 @@ hypothesis on `fc.Sat`, with the two existing near-identical proofs as instantia
 
 ---
 
-### Phase 4: The shared refutation skeleton and `strongCompleteness_iff_compact` [IN PROGRESS]
+### Phase 4: The shared refutation skeleton and `strongCompleteness_iff_compact` [COMPLETED]
 
 **Goal**: Land the interleaved half of items 2 and 3 — the three generic lemmas that the four
 refutations and the two iffs both depend on. This is the phase boundary the dependency edges force:
@@ -277,16 +277,16 @@ refutations and the two iffs both depend on. This is the phase boundary the depe
 they must share a phase.
 
 **Tasks**:
-- [ ] Add `setConsequence_of_not_satisfiable {fc} {Γ} {φ} (h : ¬ SatisfiableSet fc Γ) : SetSemanticConsequenceOn fc Γ φ`.
-- [ ] Add `compact_of_strongCompleteness {fc} (h : StrongCompleteness fc) : Compact fc`. **Use
+- [x] Add `setConsequence_of_not_satisfiable {fc} {Γ} {φ} (h : ¬ SatisfiableSet fc Γ) : SetSemanticConsequenceOn fc Γ φ`.
+- [x] Add `compact_of_strongCompleteness {fc} (h : StrongCompleteness fc) : Compact fc`. **Use
       `soundness_validIn`** (`Soundness.lean:1319`, the empty-context form uniform in `fc`), not the
       review's `soundness_in [] _ d … (by simp)` — it removes the `ValidIn.of_forall_total` wrapper
       and the vacuous-context `simp` entirely.
-- [ ] Add `strongCompleteness_iff_compact {fc} (engine : WeakCompleteness fc) : StrongCompleteness fc ↔ Compact fc`,
+- [x] Add `strongCompleteness_iff_compact {fc} (engine : WeakCompleteness fc) : StrongCompleteness fc ↔ Compact fc`,
       as `⟨compact_of_strongCompleteness, fun hc => strongCompleteness_of_compact hc engine⟩`.
-- [ ] Add `not_compact_of_witness {fc} {W} (hfin) (hunsat) : ¬ Compact fc`.
-- [ ] Add `not_strongCompleteness_of_witness`, routing through `compact_of_strongCompleteness`.
-- [ ] Note in the skeleton's docstring that this routing means the `*_refuted` theorems will no
+- [x] Add `not_compact_of_witness {fc} {W} (hfin) (hunsat) : ¬ Compact fc`.
+- [x] Add `not_strongCompleteness_of_witness`, routing through `compact_of_strongCompleteness`.
+- [x] Note in the skeleton's docstring that this routing means the `*_refuted` theorems will no
       longer mention `soundness_discrete` / `soundness_dedekind` at all — B-21's case (c)
       disappears outright rather than being helped. (The `haveI` lines it retires are deleted in
       Phase 5, where the refutation bodies are rewritten.)
@@ -307,25 +307,25 @@ they must share a phase.
 
 ---
 
-### Phase 5: The compactness triangle and the four one-line refutations [NOT STARTED]
+### Phase 5: The compactness triangle and the four one-line refutations [COMPLETED]
 
 **Goal**: Close item 2 (`modelExistence_of_compact`, `compact_iff_modelExistence`,
 `¬ ModelExistenceDedekind`) and item 3's payoff (the four refutations become one-liners).
 
 **Tasks**:
-- [ ] Add `modelExistence_of_compact {fc} (hc : Compact fc) : ModelExistence fc` — literally the
+- [x] Add `modelExistence_of_compact {fc} (hc : Compact fc) : ModelExistence fc` — literally the
       contrapositive of Phase 4's `not_compact_of_witness`, via `by_contra`.
-- [ ] Add `compact_iff_modelExistence {fc} : Compact fc ↔ ModelExistence fc :=
+- [x] Add `compact_iff_modelExistence {fc} : Compact fc ↔ ModelExistence fc :=
       ⟨modelExistence_of_compact, compact_of_modelExistence⟩`.
-- [ ] Draw `modelExistenceDedekind_refuted : ¬ ModelExistenceDedekind :=
+- [x] Draw `modelExistenceDedekind_refuted : ¬ ModelExistenceDedekind :=
       fun h => dedekind_consequence_not_compact (compact_of_modelExistence h)`, and delete the
       `SetConsequence.lean:565-570` docstring claim that it is "simply not drawn here".
-- [ ] Rewrite `discrete_consequence_not_compact` (`DiscreteNonCompactness.lean:250`) and
+- [x] Rewrite `discrete_consequence_not_compact` (`DiscreteNonCompactness.lean:250`) and
       `strongCompletenessDiscrete_refuted` (`:279`) as `not_compact_of_witness` /
       `not_strongCompleteness_of_witness` applications at `archWitness ⟨"p", none⟩`.
-- [ ] Rewrite `dedekind_consequence_not_compact` (`DedekindNonCompactness.lean:423`) and
+- [x] Rewrite `dedekind_consequence_not_compact` (`DedekindNonCompactness.lean:423`) and
       `strongCompletenessDedekind_refuted` (`:451`) likewise at `dedWitness ⟨"q", none⟩`.
-- [ ] Delete the two now-dead `haveI : DenselyOrdered F.Duration := hd` lines
+- [x] Delete the two now-dead `haveI : DenselyOrdered F.Duration := hd` lines
       (`DedekindNonCompactness.lean:441`, `:462`) and their explanatory prose at `:415-421`,
       `:447-449`; delete the bare-instance-binder `rintro ⟨F, ⟨_,_,_,_⟩, M, τ, hτ, t, hsat⟩`
       discipline at `DiscreteNonCompactness.lean:288`.

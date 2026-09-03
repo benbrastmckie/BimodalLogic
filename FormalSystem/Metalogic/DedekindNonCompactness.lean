@@ -444,61 +444,51 @@ theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
 /-- **The `FrameClass.Dedekind` set-based consequence relation is not compact.** Refutes
 `CompactDedekind` (`Metalogic/SetConsequence.lean`).
 
-`dedWitness q ⊨ ⊥` holds vacuously — the witness has no Dedekind model at all
-(`dedWitness_not_satisfiable`) — so compactness would return a *finite* sublist `L` with
-`L.foldr imp ⊥` Dedekind-valid. But `dedWitness_finitely_satisfiable` makes that same `L` true
-at a point of the `ℝ` model, and `truthAt_foldr_imp` turns the two into `False`.
+`not_compact_of_witness` (`Metalogic/StrongCompleteness.lean`) at `dedWitness ⟨"q", none⟩`, on
+the two acceptance theorems above: the witness is finitely satisfiable over `ℝ` and satisfiable
+over no Dedekind-complete carrier.
 
-The `haveI : DenselyOrdered F.Duration := hd` is no longer required: `TaskFrame.IsDense` is an
-`abbrev` and `FrameClass.Sat` is `@[reducible]`, so the destructured `hd` is visible to instance
-search on its own, and `ValidIn.apply_total` takes the frame condition as the single packed
-`⟨hd, hlub⟩` argument rather than as an instance binder. It is retained only because
-`soundness_dedekind`, further down, still states its density hypothesis as an instance binder;
-it is safe here, as it always was, because no `DenselyOrdered` instance is baked into `F`'s or
-`M`'s type, so there is no definitional equality to break.
+The `haveI : DenselyOrdered F.Duration := hd` this proof used to carry is gone with the body it
+supported. It existed to feed an instance binder further down the old hand-written argument; the
+skeleton destructures no satisfiability witness here, so there is no `hd` to reinstall.
 
 Sorry-free at exactly `[propext, Classical.choice, Quot.sound]`; see the axiom audit below. -/
-theorem dedekind_consequence_not_compact : ¬ CompactDedekind := by
-  intro hc
-  classical
-  set q : Atom := ⟨"q", none⟩ with hq
-  have hcons : SetSemanticConsequenceDedekind (dedWitness q) Formula.bot := by
-    refine SetSemanticConsequenceOn.of_forall_total ?_
-    intro F hF M τ hτ t hall
-    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
-      (dedWitness_not_satisfiable q)
-  obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
-  obtain ⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, hsat⟩ := dedWitness_finitely_satisfiable q L hL
-  haveI : DenselyOrdered F.Duration := hd
-  have hv := ValidIn.apply_total hvalid F ⟨hd, hlub⟩ M τ hτ t
-  exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
+theorem dedekind_consequence_not_compact : ¬ CompactDedekind :=
+  not_compact_of_witness (dedWitness_finitely_satisfiable ⟨"q", none⟩)
+    (dedWitness_not_satisfiable ⟨"q", none⟩)
 
 /-- **Strong completeness fails for `FrameClass.Dedekind`.** Refutes
 `StrongCompletenessDedekind` (`Metalogic/SetConsequence.lean`).
 
-The same witness, one step further: strong completeness would turn `dedWitness q ⊨ ⊥` into a
-derivation from a finite sublist `L`, and `soundness_dedekind` then makes `⊥` true at the point
-of the `ℝ` model where all of `L` holds. This is the outright refutation that explains why only
-*weak* completeness (`completeness_dedekind`, Reynolds 1992 §9 Theorem 7) is available for this
-class — the refutation does not contradict that theorem, it accounts for its scope.
+`not_strongCompleteness_of_witness` at the same witness. This is the outright refutation that
+explains why only *weak* completeness (`completeness_dedekind`, Reynolds 1992 §9 Theorem 7) is
+available for this class — the refutation does not contradict that theorem, it accounts for its
+scope.
 
-The same `haveI : DenselyOrdered F.Duration := hd` is required, here for `soundness_dedekind`'s
-instance binder.
+**This proof no longer mentions `soundness_dedekind`**, and so no longer needs the
+`haveI : DenselyOrdered F.Duration := hd` that fed its instance binder: the skeleton's soundness
+step is the class-generic `soundness_validIn`, inside `compact_of_strongCompleteness`.
 
 Sorry-free at exactly `[propext, Classical.choice, Quot.sound]`; see the axiom audit below. -/
-theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind := by
-  intro hsc
-  classical
-  set q : Atom := ⟨"q", none⟩ with hq
-  have hcons : SetSemanticConsequenceDedekind (dedWitness q) Formula.bot := by
-    refine SetSemanticConsequenceOn.of_forall_total ?_
-    intro F hF M τ hτ t hall
-    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
-      (dedWitness_not_satisfiable q)
-  obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
-  obtain ⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, hsat⟩ := dedWitness_finitely_satisfiable q L hL
-  haveI : DenselyOrdered F.Duration := hd
-  exact soundness_dedekind L Formula.bot d F hlub M τ hτ t (fun ψ hψ => hsat ψ hψ)
+theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind :=
+  not_strongCompleteness_of_witness (dedWitness_finitely_satisfiable ⟨"q", none⟩)
+    (dedWitness_not_satisfiable ⟨"q", none⟩)
+
+/-- **Model existence fails for `FrameClass.Dedekind`.** Refutes `ModelExistenceDedekind`
+(`Metalogic/SetConsequence.lean`).
+
+The corollary that `Metalogic/SetConsequence.lean` used to describe as "simply not drawn here":
+`compact_of_modelExistence` (`Metalogic/StrongCompleteness.lean`) turns model existence into
+compactness, and compactness at this class is refuted directly above. Equivalently, it is the
+`mpr` of `compact_iff_modelExistence` composed with `dedekind_consequence_not_compact`.
+
+**It is stated in this module, not beside `ModelExistenceDedekind` in
+`Metalogic/SetConsequence.lean`, for the usual import reason**: it consumes
+`dedekind_consequence_not_compact` directly above, and this module imports `SetConsequence.lean`
+rather than the other way round. That module keeps the definition and now points here for the
+refutation. -/
+theorem modelExistenceDedekind_refuted : ¬ ModelExistenceDedekind :=
+  fun h => dedekind_consequence_not_compact (compact_of_modelExistence h)
 
 #print axioms qDepth_qAlpha
 #print axioms dedWitness_core
@@ -506,6 +496,7 @@ theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind := by
 #print axioms dedWitness_finitely_satisfiable
 #print axioms dedekind_consequence_not_compact
 #print axioms strongCompletenessDedekind_refuted
+#print axioms modelExistenceDedekind_refuted
 
 /-! ## Axiom Audit
 

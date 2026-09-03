@@ -257,52 +257,36 @@ theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableDiscreteSet (arch
 
 /-- **The `FrameClass.Discrete` consequence relation is not compact.**
 
-    `archWitness p ⊨ ⊥` holds vacuously, since the set has no model at all. Compactness would
-    hand back a finite `L ⊆ archWitness p` with `ValidDiscrete (L.foldr Formula.imp ⊥)`; but
-    `archWitness_finitely_satisfiable` supplies a Discrete model of exactly that `L`, and
-    `truthAt_foldr_imp` turns the validity into `TruthAt … ⊥`. -/
-theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
-  intro hc
-  classical
-  set p : Atom := ⟨"p", none⟩ with hp
-  have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
-    refine SetSemanticConsequenceOn.of_forall_total ?_
-    intro F hF M τ hτ t hall
-    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
-      (archWitness_not_satisfiable p)
-  obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
-  obtain ⟨F, hF, M, τ, hτ, t, hsat⟩ :=
-    archWitness_finitely_satisfiable p L hL
-  have hv := ValidIn.apply_total hvalid F hF M τ hτ t
-  exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
+`not_compact_of_witness` (`Metalogic/StrongCompleteness.lean`) at `archWitness ⟨"p", none⟩`. The
+two halves it consumes are the two acceptance theorems directly above: `archWitness` is finitely
+satisfiable over `ℤ`, and satisfiable over no Archimedean discrete carrier at all.
+
+The argument the skeleton runs — `archWitness p ⊨ ⊥` holds vacuously, compactness hands back a
+finite `L` with `L.foldr imp ⊥` Discrete-valid, and `truthAt_foldr_imp` contradicts that against
+a Discrete model of the same `L` — used to be written out here in full, and again in
+`Metalogic/DedekindNonCompactness.lean` with a different witness. It is now written once. -/
+theorem discrete_consequence_not_compact : ¬ CompactDiscrete :=
+  not_compact_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
+    (archWitness_not_satisfiable ⟨"p", none⟩)
 
 /-! ## Strong completeness for `FrameClass.Discrete` is refuted -/
 
 /-- **Strong completeness fails for `FrameClass.Discrete`.**
 
-    `archWitness p ⊨ ⊥` holds vacuously (`archWitness_not_satisfiable`). Strong completeness
-    would hand back a *finite* `L ⊆ archWitness p` with a derivation of `⊥` from `L` — a
-    derivation is a finite object, so it can cite only finitely many premises. But
-    `archWitness_finitely_satisfiable` supplies a Discrete model of exactly that `L`, and
-    `soundness_discrete` (`Metalogic/Soundness.lean`) — whose binder list is precisely what
-    `SatisfiableDiscreteSet` unpacks to — transports the derivation into `TruthAt … ⊥`, i.e.
-    `False`.
+`not_strongCompleteness_of_witness` at the same witness, on the same two acceptance theorems.
 
-    This is the theorem behind the module docstring claim in `Metalogic/StrongCompleteness.lean`
-    that only weak completeness is available for this class. -/
-theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete := by
-  intro hsc
-  classical
-  set p : Atom := ⟨"p", none⟩ with hp
-  have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
-    refine SetSemanticConsequenceOn.of_forall_total ?_
-    intro F hF M τ hτ t hall
-    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
-      (archWitness_not_satisfiable p)
-  obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
-  obtain ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, hsat⟩ :=
-    archWitness_finitely_satisfiable p L hL
-  exact soundness_discrete L Formula.bot d F M τ hτ t (fun ψ hψ => hsat ψ hψ)
+**This proof no longer mentions `soundness_discrete`.** The skeleton routes through
+`compact_of_strongCompleteness`, whose soundness step is the class-generic `soundness_validIn`;
+the per-class soundness corollary is no longer on the refutation path. With it went the
+bare-instance-binder `rintro ⟨F, ⟨_,_,_,_⟩, M, τ, hτ, t, hsat⟩` discipline this proof used to
+need, since it no longer destructures a `SatisfiableDiscreteSet` witness itself —
+`archWitness_not_satisfiable` above still does, and still documents the discipline.
+
+This is the theorem behind the module docstring claim in `Metalogic/StrongCompleteness.lean`
+that only weak completeness is available for this class. -/
+theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete :=
+  not_strongCompleteness_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
+    (archWitness_not_satisfiable ⟨"p", none⟩)
 
 #print axioms truthAt_next_iff
 #print axioms truthAt_next_iterate
