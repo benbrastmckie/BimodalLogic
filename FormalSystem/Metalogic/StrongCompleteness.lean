@@ -449,6 +449,95 @@ theorem strongCompleteness_of_compact {fc : FrameClass} (hc : Compact fc)
   obtain ⟨L, hL, hvalid⟩ := hc Γ φ h
   exact ⟨L, hL, (derivable_foldr_imp_iff L φ).mpr (engine _ hvalid)⟩
 
+/-! ### The compactness triangle and the shared refutation skeleton
+
+Three generic facts that the two named iffs and the four per-class refutations all run on. They
+sit together because the dependency edges interleave: `compact_of_strongCompleteness` is one half
+of `strongCompleteness_iff_compact` *and* the routing step of
+`not_strongCompleteness_of_witness`, so the compactness half of the triangle and the refutation
+skeleton cannot be separated into independent layers. -/
+
+/-- **An unsatisfiable premise set entails everything.** The `ex falso` step of every
+non-compactness argument in the tree, named once.
+
+`SetSemanticConsequenceOn fc Γ φ` quantifies over configurations at which every member of `Γ`
+holds; if there are none, the quantification is vacuous and any `φ` follows. Each of the four
+refutations used to open with a four-line `have hcons : … := by refine …of_forall_total …` block
+that was exactly this proof, with `φ := ⊥` and its own witness set substituted in. -/
+theorem setConsequence_of_not_satisfiable {fc : FrameClass} {Γ : Set Formula} {φ : Formula}
+    (h : ¬ SatisfiableSet fc Γ) : SetSemanticConsequenceOn fc Γ φ := by
+  refine SetSemanticConsequenceOn.of_forall_total ?_
+  intro F hF M τ hτ t hall
+  exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall) h
+
+/-- **Strong completeness implies compactness**, at any frame class — the converse of
+`strongCompleteness_of_compact` above, and the direction that needs no engine.
+
+A set-consequence is turned into a set-derivation by the hypothesis; a set-derivation cites a
+*finite* premise list `L`; and `derivable_foldr_imp_iff` re-reads that finite derivation as an
+empty-context derivation of `L.foldr imp φ`, which `soundness_validIn`
+(`Metalogic/Soundness.lean`) makes `fc`-valid. That is the shape `Compact fc` asks for.
+
+`soundness_validIn` is the right tool here rather than `soundness_in` at the empty context: it is
+already the empty-context form, already uniform in `fc`, and using it avoids both a
+`ValidIn.of_forall_total` wrapper and a vacuous `(by simp)` discharge of the empty premise
+binder. -/
+theorem compact_of_strongCompleteness {fc : FrameClass} (h : StrongCompleteness fc) :
+    Compact fc := by
+  intro Γ φ hcons
+  obtain ⟨L, hL, hd⟩ := h Γ φ hcons
+  exact ⟨L, hL, ((derivable_foldr_imp_iff L φ).mp hd).elim soundness_validIn⟩
+
+/-- **Strong completeness and compactness are equivalent, given a weak-completeness engine.**
+
+The first of the two named iffs this layer was missing. The `mpr` direction is
+`strongCompleteness_of_compact` and needs the engine; the `mp` direction is
+`compact_of_strongCompleteness` and does not. Stated at an arbitrary `fc`, so it applies at all
+four tags — positively at `.Base` and `.Dense`, where both sides hold, and contrapositively at
+`.Discrete` and `.Dedekind`, where the refutation of either side refutes the other.
+
+The engine is a hypothesis rather than a side condition discharged here because it is genuinely
+independent: `WeakCompleteness fc` is inhabited at all four tags (`completeness_base`,
+`completeness_dense`, `completeness_discrete`, `completeness_dedekind` below), while compactness
+is not. -/
+theorem strongCompleteness_iff_compact {fc : FrameClass} (engine : WeakCompleteness fc) :
+    StrongCompleteness fc ↔ Compact fc :=
+  ⟨compact_of_strongCompleteness, fun hc => strongCompleteness_of_compact hc engine⟩
+
+/-- **The shared non-compactness skeleton.** A finitely satisfiable but unsatisfiable set refutes
+compactness, at any frame class.
+
+Compactness applied to `W ⊨ ⊥` — which holds vacuously by `setConsequence_of_not_satisfiable` —
+returns a finite `L ⊆ W` with `L.foldr imp ⊥` valid; `hfin` supplies a configuration satisfying
+that same `L`; and `truthAt_foldr_imp` turns the two into `False`.
+
+Both `notCompactDiscrete` (`Metalogic/DiscreteNonCompactness.lean`) and `notCompactDedekind`
+(`Metalogic/DedekindNonCompactness.lean`) are one-line applications of this, at `archWitness` and
+`dedWitness` respectively. The two arguments were previously written out in full in both modules,
+differing only in the witness set and the class tag. -/
+theorem not_compact_of_witness {fc : FrameClass} {W : Set Formula}
+    (hfin : ∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ W) → SatisfiableSet fc {ψ | ψ ∈ L})
+    (hunsat : ¬ SatisfiableSet fc W) : ¬ Compact fc := by
+  intro hc
+  obtain ⟨L, hL, hvalid⟩ := hc W Formula.bot (setConsequence_of_not_satisfiable hunsat)
+  obtain ⟨F, hF, M, τ, hτ, t, hsat⟩ := hfin L hL
+  exact (truthAt_foldr_imp M τ t L Formula.bot).mp
+    (ValidIn.apply_total hvalid F hF M τ hτ t) (fun ψ hψ => hsat ψ hψ)
+
+/-- **The shared strong-completeness refutation.** The same witness data refutes strong
+completeness, by routing through `compact_of_strongCompleteness`.
+
+**This routing changes what the per-class refutations depend on.** They no longer mention
+`soundness_discrete` or `soundness_dedekind` at all: the soundness step now happens once, inside
+`compact_of_strongCompleteness`, in its class-generic `soundness_validIn` form. The per-class
+soundness corollaries remain in the tree as the guards described further down, but they are no
+longer on the refutation path — and with them go the `haveI : DenselyOrdered F.Duration := hd`
+lines that existed only to feed `soundness_dedekind`'s instance binder. -/
+theorem not_strongCompleteness_of_witness {fc : FrameClass} {W : Set Formula}
+    (hfin : ∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ W) → SatisfiableSet fc {ψ | ψ ∈ L})
+    (hunsat : ¬ SatisfiableSet fc W) : ¬ StrongCompleteness fc :=
+  fun h => not_compact_of_witness hfin hunsat (compact_of_strongCompleteness h)
+
 /-! ### Model existence implies compactness -/
 
 /--
@@ -517,6 +606,29 @@ theorem compact_of_modelExistence {fc : FrameClass} (h : ModelExistence fc) : Co
   obtain ⟨F, hF, M, τ, hτ, t, hsat⟩ := h _ hfin
   exact hsat φ.neg (Set.mem_insert _ _)
     (hcons F hF M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+
+/-! ### The compactness / model-existence equivalence -/
+
+/-- **Compactness implies model existence**, at any frame class — the converse of
+`compact_of_modelExistence` above, and literally the contrapositive of `not_compact_of_witness`.
+
+A finitely satisfiable `Γ` that were *not* satisfiable would be exactly the witness data
+`not_compact_of_witness` consumes, and would therefore refute the compactness hypothesis in
+hand. So `by_contra` closes the goal in one step; no second construction is needed. -/
+theorem modelExistence_of_compact {fc : FrameClass} (hc : Compact fc) : ModelExistence fc := by
+  intro Γ hfin
+  by_contra hns
+  exact not_compact_of_witness hfin hns hc
+
+/-- **Compactness and model existence are equivalent**, at any frame class.
+
+The second of the two named iffs this layer was missing, and unlike
+`strongCompleteness_iff_compact` it is unconditional — no engine, no side hypothesis. Both
+directions were already available as separate theorems; naming the equivalence is what lets a
+refutation of either side be read off from a refutation of the other, which is how
+`modelExistenceDedekind_refuted` (`Metalogic/DedekindNonCompactness.lean`) is drawn. -/
+theorem compact_iff_modelExistence {fc : FrameClass} : Compact fc ↔ ModelExistence fc :=
+  ⟨modelExistence_of_compact, compact_of_modelExistence⟩
 
 /-! ## Consequence completeness for `FrameClass.Dedekind` -/
 
@@ -1010,7 +1122,14 @@ reduce to are audited where they are proved, in `Metalogic/Compactness.lean`. -/
 #print axioms soundness_setConsequence
 
 #print axioms strongCompleteness_of_compact
+#print axioms setConsequence_of_not_satisfiable
+#print axioms compact_of_strongCompleteness
+#print axioms strongCompleteness_iff_compact
+#print axioms not_compact_of_witness
+#print axioms not_strongCompleteness_of_witness
 #print axioms compact_of_modelExistence
+#print axioms modelExistence_of_compact
+#print axioms compact_iff_modelExistence
 #print axioms consequence_completeness_base
 #print axioms completeness_base
 #print axioms soundness_base_consequence
