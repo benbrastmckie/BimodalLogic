@@ -336,7 +336,7 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 4: Rewrite the three (T1) proofs; delete `corrAtom` [NOT STARTED]
+### Phase 4: Rewrite the three (T1) proofs; delete `corrAtom` [IN PROGRESS]
 
 - **Goal:** The three (T1) proofs open with the realisation lemmas and read as visibly parallel
   arguments; the private `corrAtom` is gone and the atom idiom is `Atom.mkBase "p"` throughout.
