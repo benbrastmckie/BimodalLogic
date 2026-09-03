@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.BaseLanguageSoundness
 import FormalSystem.Metalogic.BXCanonical
+import FormalSystem.Metalogic.StrongCompleteness
 
 /-!
 # The TM-completeness / forward-conservativity reduction
@@ -44,16 +45,22 @@ routing `⊢[Base] tr φ` through TM⁺'s own soundness to `Valid (tr φ)`, then
 
 ## Main Definitions
 
-- `TMCompleteBase`, `TMCompleteDiscrete` — "TM (resp. TM_f) is complete over task frames
-  (resp. over `FrameClass.Discrete` frames)": every BL-valid formula is TM-derivable. Unasserted.
-- `ForwardBase`, `ForwardDiscrete` — the forward-conservativity statement at `.Base`
-  (resp. `.Discrete`), literally `Conservativity.lean`'s forbidden `forward` theorem restricted
-  to one frame class. Unasserted.
+- `TMComplete fc` — "TM is complete over the frames of `fc`": every `fc`-BL-valid formula is
+  TM-derivable at `fc`. Unasserted, at every tag.
+- `Forward fc` — the forward-conservativity statement at `fc`, literally `Conservativity.lean`'s
+  forbidden `forward` theorem restricted to one frame class. Unasserted, at every tag.
+- `TMCompleteBase`, `TMCompleteDiscrete`, `ForwardBase`, `ForwardDiscrete` — the two tags this
+  module named before the generalization, retained as instantiations with their statements
+  unchanged.
 
 ## Main Results
 
-- `tmCompleteBase_iff_forwardBase` — the two `.Base` propositions are equivalent
-- `tmCompleteDiscrete_iff_forwardDiscrete` — the `.Discrete` mirror
+- `tmComplete_iff_forward` — the two propositions are equivalent at any `fc` supplying a
+  `WeakCompleteness fc` engine
+- `tmCompleteBase_iff_forwardBase`, `tmCompleteDiscrete_iff_forwardDiscrete` — its two
+  pre-existing instantiations
+- `tmCompleteDense_iff_forwardDense`, `tmCompleteDedekind_iff_forwardDedekind` — two further
+  rows the generalization yields for free
 
 ## References
 
@@ -72,84 +79,119 @@ open FormalSystem.BaseLanguage
 open FormalSystem.Semantics
 open FormalSystem.Metalogic.Conservativity
 
+/-! ## The reduction, at any frame class
+
+Both propositions and the equivalence between them, stated once and indexed by the `FrameClass`
+tag. The four per-tag rows below are instantiations; before this collapse the `.Base` and
+`.Discrete` rows were two hand-written copies of the same two-line composition, and the `.Dense`
+and `.Dedekind` rows did not exist. -/
+
+/--
+**"TM is complete over the frames of `fc`."** Every `fc`-BL-valid formula is derivable in TM at
+`fc`. **Unasserted** — this `def` states the proposition so it can be named and related to
+`Forward` below; it is never the conclusion of a `theorem` in this tree, at any tag.
+-/
+def TMComplete (fc : FrameClass) : Prop :=
+  ∀ φ : BLFormula, BLValidIn fc φ → BaseLanguage.Derivable fc [] φ
+
+/--
+**"Forward conservativity holds at `fc`."** Literally the `forward` theorem
+`Conservativity.lean`'s module docstring shows must never be stated or `sorry`-ed, restricted to
+one tag. **Unasserted**, for the same reason.
+-/
+def Forward (fc : FrameClass) : Prop :=
+  ∀ φ : BLFormula, ProofSystem.Derivable fc [] (tr φ) → BaseLanguage.Derivable fc [] φ
+
+/--
+**The reduction, generically.** `TMComplete fc` and `Forward fc` are the same proposition, given
+a weak-completeness engine at `fc`.
+
+Forward (`TMComplete fc → Forward fc`): given `⊢[fc] tr φ`, `soundness_validIn`
+(`Metalogic/Soundness.lean`) gives `ValidIn fc (tr φ)`, and `blValidIn_iff_validIn_tr`
+(`Metalogic/BaseLanguageSoundness.lean`) crosses to `BLValidIn fc φ`; apply the hypothesis. This
+direction does not use the engine.
+
+Backward (`Forward fc → TMComplete fc`): given `BLValidIn fc φ`, `blValidIn_iff_validIn_tr` gives
+`ValidIn fc (tr φ)`, and the **engine** turns that into `⊢[fc] tr φ`; apply the hypothesis. This
+is where TM⁺'s completeness does the actual work, and it is the whole of the class-dependence —
+the reason `WeakCompleteness fc` is the hypothesis rather than anything stronger.
+
+**The module's prohibition discipline is preserved, not weakened.** The conclusion here is an
+`Iff`, not either side of it: nothing below asserts `TMComplete fc` and nothing asserts
+`Forward fc`. What the generalization adds is that the equivalence now holds at all four tags
+rather than two, so a future dispatch attempting either side at *any* class is thereby
+attempting the other, and is covered by the same prohibition.
+-/
+theorem tmComplete_iff_forward {fc : FrameClass} (engine : WeakCompleteness fc) :
+    TMComplete fc ↔ Forward fc := by
+  constructor
+  · intro hcomplete φ h
+    exact hcomplete φ ((blValidIn_iff_validIn_tr fc φ).mpr (h.elim soundness_validIn))
+  · intro hforward φ hvalid
+    exact hforward φ (engine (tr φ) ((blValidIn_iff_validIn_tr fc φ).mp hvalid))
+
 /-! ## `FrameClass.Base` -/
 
 /--
-**"TM is complete over task frames."** Every BL-valid formula is derivable in TM at
-`FrameClass.Base`. **Unasserted** — this `def` states the proposition so it can be named and
-related to `ForwardBase` below; it is never the conclusion of a `theorem` in this tree.
+**"TM is complete over task frames."** `TMComplete` at `.Base`. `BLValid` is `BLValidIn .Base`
+definitionally (`Semantics/BLValidity.lean`), so the statement is unchanged by the
+generalization. **Unasserted.**
 -/
-def TMCompleteBase : Prop := ∀ φ : BLFormula, BLValid φ → BaseLanguage.Derivable FrameClass.Base [] φ
+def TMCompleteBase : Prop := TMComplete FrameClass.Base
 
 /--
-**"Forward conservativity holds at `FrameClass.Base`."** Literally the `forward` theorem
-`Conservativity.lean`'s module docstring shows must never be stated or `sorry`-ed, restricted to
-`fc := .Base`. **Unasserted**, for the same reason.
+**"Forward conservativity holds at `FrameClass.Base`."** `Forward` at `.Base`. **Unasserted**,
+for the same reason.
 -/
-def ForwardBase : Prop :=
-  ∀ φ : BLFormula, ProofSystem.Derivable FrameClass.Base [] (tr φ) → BaseLanguage.Derivable FrameClass.Base [] φ
+def ForwardBase : Prop := Forward FrameClass.Base
 
-/--
-**The reduction.** `TMCompleteBase` and `ForwardBase` are the same proposition.
-
-Forward (`TMCompleteBase → ForwardBase`): given `⊢[Base] tr φ`, TM⁺'s own `soundness` gives
-`Valid (tr φ)`, and `blValid_iff_valid_tr` crosses to `BLValid φ`; apply `TMCompleteBase` to get
-`⊢ᴮᴸ[Base] φ`.
-
-Backward (`ForwardBase → TMCompleteBase`): given `BLValid φ`, `blValid_iff_valid_tr` gives
-`Valid (tr φ)`, and `BXCanonical.completeness` — TM⁺'s completeness over *all* task frames —
-gives `⊢[Base] tr φ`; apply `ForwardBase` to get `⊢ᴮᴸ[Base] φ`. This direction is where
-TM⁺'s completeness does the actual work; see the module docstring.
--/
-theorem tmCompleteBase_iff_forwardBase : TMCompleteBase ↔ ForwardBase := by
-  constructor
-  · intro hcomplete φ h
-    apply hcomplete φ
-    rw [blValid_iff_valid_tr]
-    obtain ⟨d⟩ := h
-    exact Valid.of_forall_total fun F M τ hτ t =>
-      soundness [] (tr φ) d F M τ hτ t (by simp)
-  · intro hforward φ hvalid
-    apply hforward φ
-    exact BXCanonical.completeness (tr φ) ((blValid_iff_valid_tr φ).mp hvalid)
+/-- **The reduction at `.Base`.** `tmComplete_iff_forward` with `completeness_base`
+(`Metalogic/StrongCompleteness.lean`) as the engine — that theorem is stated as a
+`WeakCompleteness FrameClass.Base` witness, so it inhabits the hypothesis on the nose. -/
+theorem tmCompleteBase_iff_forwardBase : TMCompleteBase ↔ ForwardBase :=
+  tmComplete_iff_forward completeness_base
 
 /-! ## `FrameClass.Discrete` -/
 
 /--
-**"TM_f is complete over `FrameClass.Discrete` task frames."** Every `BLValidDiscrete` formula is
-derivable in TM_f. **Unasserted**, exactly as `TMCompleteBase`.
+**"TM_f is complete over `FrameClass.Discrete` task frames."** `TMComplete` at `.Discrete`;
+`BLValidDiscrete` is `BLValidIn .Discrete` definitionally. **Unasserted**, exactly as
+`TMCompleteBase`.
 -/
-def TMCompleteDiscrete : Prop :=
-  ∀ φ : BLFormula, BLValidDiscrete φ → BaseLanguage.Derivable FrameClass.Discrete [] φ
+def TMCompleteDiscrete : Prop := TMComplete FrameClass.Discrete
 
 /--
-**"Forward conservativity holds at `FrameClass.Discrete`."** The `.Discrete` instance of the
-forbidden `forward` theorem. **Unasserted**, exactly as `ForwardBase`.
+**"Forward conservativity holds at `FrameClass.Discrete`."** `Forward` at `.Discrete`.
+**Unasserted**, exactly as `ForwardBase`.
 -/
-def ForwardDiscrete : Prop :=
-  ∀ φ : BLFormula, ProofSystem.Derivable FrameClass.Discrete [] (tr φ) →
-    BaseLanguage.Derivable FrameClass.Discrete [] φ
+def ForwardDiscrete : Prop := Forward FrameClass.Discrete
 
-/--
-**The `.Discrete` mirror of `tmCompleteBase_iff_forwardBase`.**
+/-- **The `.Discrete` mirror**, with `completeness_discrete` as the engine. -/
+theorem tmCompleteDiscrete_iff_forwardDiscrete : TMCompleteDiscrete ↔ ForwardDiscrete :=
+  tmComplete_iff_forward completeness_discrete
 
-Forward: `⊢[Discrete] tr φ` gives `ValidDiscrete (tr φ)` via `soundness_discrete_valid`, and
-`blValidDiscrete_iff_validDiscrete_tr` crosses to `BLValidDiscrete φ`.
+/-! ## The two rows the generalization yields
 
-Backward: `BLValidDiscrete φ` gives `ValidDiscrete (tr φ)` via
-`blValidDiscrete_iff_validDiscrete_tr`, and `BXCanonical.completeness_discrete` gives
-`⊢[Discrete] tr φ`.
--/
-theorem tmCompleteDiscrete_iff_forwardDiscrete : TMCompleteDiscrete ↔ ForwardDiscrete := by
-  constructor
-  · intro hcomplete φ h
-    apply hcomplete φ
-    rw [blValidDiscrete_iff_validDiscrete_tr]
-    obtain ⟨d⟩ := h
-    exact soundness_discrete_valid d
-  · intro hforward φ hvalid
-    apply hforward φ
-    exact BXCanonical.completeness_discrete (tr φ)
-      ((blValidDiscrete_iff_validDiscrete_tr φ).mp hvalid)
+`FrameClass.Dense` and `FrameClass.Dedekind` carry weak-completeness engines of their own
+(`completeness_dense` and `completeness_dedekind`, the latter being Reynolds 1992 §9 Theorem 7 as
+formalized in this tree), so the same equivalence holds at those tags. Neither row existed before
+the collapse, and neither costs anything beyond naming it. Both sides remain **unasserted** at
+both tags, exactly as at `.Base` and `.Discrete`. -/
+
+/-- **The `.Dense` row.** `tmComplete_iff_forward completeness_dense`. -/
+theorem tmCompleteDense_iff_forwardDense :
+    TMComplete FrameClass.Dense ↔ Forward FrameClass.Dense :=
+  tmComplete_iff_forward completeness_dense
+
+/-- **The `.Dedekind` row.** `tmComplete_iff_forward completeness_dedekind`. -/
+theorem tmCompleteDedekind_iff_forwardDedekind :
+    TMComplete FrameClass.Dedekind ↔ Forward FrameClass.Dedekind :=
+  tmComplete_iff_forward completeness_dedekind
+
+#print axioms tmComplete_iff_forward
+#print axioms tmCompleteBase_iff_forwardBase
+#print axioms tmCompleteDiscrete_iff_forwardDiscrete
+#print axioms tmCompleteDense_iff_forwardDense
+#print axioms tmCompleteDedekind_iff_forwardDedekind
 
 end FormalSystem.Metalogic
