@@ -1284,6 +1284,11 @@
           "path": "specs/507_parameterize_validity_by_frameclass/summaries/01_frame-level-validity-indexing-summary.md",
           "type": "summary",
           "summary": "Implementation summary: four deliverables verified by content, full acceptance-gate output."
+        },
+        {
+          "path": "specs/507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md",
+          "type": "plan",
+          "summary": "frameclass indexed validity (backfilled by --sync)"
         }
       ],
       "file_scope": [
@@ -1332,6 +1337,11 @@
           "path": "specs/508_parameterize_soundness_over_indexed_validity/summaries/01_soundness-in-parameterized-collapse-summary.md",
           "type": "summary",
           "summary": "23 soundness theorems collapsed to one parameterized soundness_in plus corollaries; BL and consequence layers collapsed."
+        },
+        {
+          "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/02_anchor-and-callsite-inventory.md",
+          "type": "report",
+          "summary": "anchor and callsite inventory (backfilled by --sync)"
         }
       ]
     },
@@ -1604,6 +1614,11 @@
           "path": "specs/520_bundle_retirement_and_cycle_breaking/summaries/00_baseline.md",
           "type": "summary",
           "summary": ""
+        },
+        {
+          "path": "specs/520_bundle_retirement_and_cycle_breaking/summaries/01_bundle-retirement-cycle-breaking-summary.md",
+          "type": "summary",
+          "summary": "bundle retirement cycle breaking summary (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1788332773_c2fa9f_520"
