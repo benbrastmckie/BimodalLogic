@@ -1272,17 +1272,14 @@ theorem derivable_valid_and_swap_validIn {fc : FrameClass} {φ : Formula}
     rw [Formula.swap_temporal_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub =>
-    have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
-    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
-      simp only [h_height_eq, DerivationTree.height]
-      omega
-    exact derivable_valid_and_swap_validIn (h_eq ▸ d')
+    have h_term := DerivationTree.height_ofWeakeningNil_lt d' h_sub
+    exact derivable_valid_and_swap_validIn (d'.ofWeakeningNil h_sub)
 termination_by d.height
 decreasing_by
   all_goals first
     | exact DerivationTree.mp_height_gt_left _ _
     | exact DerivationTree.mp_height_gt_right _ _
+    | omega
     | simp only [DerivationTree.height]; omega
 
 /-- **The single parameterized soundness theorem.** -/

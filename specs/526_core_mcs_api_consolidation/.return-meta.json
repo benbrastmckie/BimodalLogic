@@ -1,29 +1,18 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/526_core_mcs_api_consolidation/plans/01_core-mcs-api-consolidation.md",
-      "summary": "Eleven-phase plan consolidating the Core MCS API: one Zorn lemma, one bot_not_mem, temporal mono helpers, ofWeakeningNil plus BL twin, a four-phase mp_of_theorem sweep, boundedness retirement, and the mcs_auto rejection record."
-    }
-  ],
-  "next_steps": "Run /implement 526 to execute the plan",
-  "memory_candidates": [
-    {
-      "content": "When planning a refactor that adds helper lemmas to an import-graph-root module and then sweeps call sites across many downstream files, hoist ALL additions to the root module into a single first phase, then make every sweep phase depend on it. Two payoffs: the tree pays only one near-full rebuild for the additions instead of one per work group, and the sweep phases stop colliding on the root file, so they become genuinely parallel-safe territory. Residual collisions (a sweep file also touched by an unrelated phase) are then resolved purely through per-phase Depends-on serialization rather than by re-partitioning file ownership.",
-      "category": "PATTERN",
-      "source_artifact": "specs/526_core_mcs_api_consolidation/plans/01_core-mcs-api-consolidation.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["phase-decomposition", "import-graph-root", "call-site-sweep", "territory-collision", "lean-rebuild-cost"]
-    }
-  ],
+  "status": "in_progress",
+  "started_at": "2026-09-03T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_6_verifying",
+    "details": "Resume dispatch 5. Phases 1, 2, 5 committed. Phase 6 edits present in working tree; running full guarded build + invariants gate before commit.",
+    "phases_completed": 3,
+    "phases_total": 11
+  },
   "metadata": {
-    "session_id": "sess_1788416566_823cec_526",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1788416566_823cec",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 11,
-    "estimated_hours": 14,
-    "dependency_waves": [[1, 2, 5, 6], [3, 4, 7, 8, 9], [10], [11]]
+    "dispatch_seq": 5,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }

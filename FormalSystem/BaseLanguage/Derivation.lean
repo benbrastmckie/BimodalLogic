@@ -120,6 +120,32 @@ def height {fc : FrameClass} {Γ : Context} {φ : BLFormula} : DerivationTree fc
   | .temporal_duality _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
+/--
+Re-target a derivation whose context is a subset of the empty context.
+
+Mirror of `ProofSystem.DerivationTree.ofWeakeningNil`. `BaseLanguage.DerivationTree`
+is a distinct inductive type, so the twin is required rather than optional.
+-/
+def ofWeakeningNil {fc : FrameClass} {Γ' : Context} {φ : BLFormula}
+    (d : DerivationTree fc Γ' φ) (h_sub : Γ' ⊆ ([] : Context)) : DerivationTree fc [] φ :=
+  (List.eq_nil_of_subset_nil h_sub) ▸ d
+
+/-- `ofWeakeningNil` preserves height exactly. -/
+@[simp] theorem height_ofWeakeningNil {fc : FrameClass} {Γ' : Context} {φ : BLFormula}
+    (d : DerivationTree fc Γ' φ) (h_sub : Γ' ⊆ ([] : Context)) :
+    (d.ofWeakeningNil h_sub).height = d.height := by
+  have h_eq : Γ' = [] := List.eq_nil_of_subset_nil h_sub
+  subst h_eq
+  rfl
+
+/-- Transporting to the empty context is strictly cheaper than the `weakening` node. -/
+theorem height_ofWeakeningNil_lt {fc : FrameClass} {Γ' : Context} {φ : BLFormula}
+    (d : DerivationTree fc Γ' φ) (h_sub : Γ' ⊆ ([] : Context)) :
+    (d.ofWeakeningNil h_sub).height <
+      (DerivationTree.weakening Γ' ([] : Context) φ d h_sub).height := by
+  simp only [DerivationTree.height_ofWeakeningNil, DerivationTree.height]
+  omega
+
 end DerivationTree
 
 /-- Prop-valued derivability, mirroring `ProofSystem.Derivable`. -/

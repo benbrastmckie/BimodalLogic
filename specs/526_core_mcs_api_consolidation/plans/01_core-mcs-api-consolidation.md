@@ -386,7 +386,7 @@ the after-count in `Bundle/` must be 0.
 
 ---
 
-### Phase 6: DerivationTree.ofWeakeningNil and its BaseLanguage twin [NOT STARTED]
+### Phase 6: DerivationTree.ofWeakeningNil and its BaseLanguage twin [COMPLETED]
 
 **Goal**: Replace the duplicated, `omega`-dependent weakening/termination scaffold in the two
 soundness inductions with a named helper plus height lemmas.

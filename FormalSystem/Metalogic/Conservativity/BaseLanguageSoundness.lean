@@ -408,17 +408,13 @@ private theorem bl_derivable_valid_and_swap_valid_discreteSucc {φ : BLFormula}
     obtain ⟨h_valid, h_swap⟩ := bl_derivable_valid_and_swap_valid_discreteSucc d'
     exact ⟨h_swap, by rw [BLFormula.swapBL_involution]; exact h_valid⟩
   | .weakening Γ' _ _ d' h_sub =>
-    have h_eq : Γ' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
-    have h_term :
-        (h_eq ▸ d').height <
-          (BaseLanguage.DerivationTree.weakening Γ' [] _ d' h_sub).height := by
-      simp only [h_height_eq, BaseLanguage.DerivationTree.height]
-      omega
-    exact bl_derivable_valid_and_swap_valid_discreteSucc (h_eq ▸ d')
+    have h_term := BaseLanguage.DerivationTree.height_ofWeakeningNil_lt d' h_sub
+    exact bl_derivable_valid_and_swap_valid_discreteSucc (d'.ofWeakeningNil h_sub)
 termination_by d.height
 decreasing_by
-  all_goals (simp only [BaseLanguage.DerivationTree.height]; omega)
+  all_goals first
+    | omega
+    | (simp only [BaseLanguage.DerivationTree.height]; omega)
 
 /--
 **Soundness of BL at `FrameClass.Discrete`, binder-weakened.** A BL derivation of `φ` from `Γ`

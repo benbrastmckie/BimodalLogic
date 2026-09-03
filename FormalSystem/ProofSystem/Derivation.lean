@@ -252,6 +252,37 @@ theorem subderiv_height_lt {fc : FrameClass} {Γ' Δ : Context} {φ : Formula}
   simp [height]
 
 /--
+Re-target a derivation whose context is a subset of the empty context.
+
+`Γ' ⊆ []` forces `Γ' = []`, so this transports `d` along that equality rather
+than applying a `weakening` step. Unlike `weakening`, it does not grow the
+derivation's height, which is what lets the two soundness inductions recurse
+into an empty-context sibling without a bespoke `omega` scaffold.
+-/
+def ofWeakeningNil {fc : FrameClass} {Γ' : Context} {φ : Formula}
+    (d : DerivationTree fc Γ' φ) (h_sub : Γ' ⊆ ([] : Context)) : DerivationTree fc [] φ :=
+  (List.eq_nil_of_subset_nil h_sub) ▸ d
+
+/-- `ofWeakeningNil` preserves height exactly. -/
+@[simp] theorem height_ofWeakeningNil {fc : FrameClass} {Γ' : Context} {φ : Formula}
+    (d : DerivationTree fc Γ' φ) (h_sub : Γ' ⊆ ([] : Context)) :
+    (d.ofWeakeningNil h_sub).height = d.height := by
+  have h_eq : Γ' = [] := List.eq_nil_of_subset_nil h_sub
+  subst h_eq
+  rfl
+
+/--
+The termination fact the soundness recursions need: transporting to the empty
+context is strictly cheaper than the `weakening` node it replaces.
+-/
+theorem height_ofWeakeningNil_lt {fc : FrameClass} {Γ' : Context} {φ : Formula}
+    (d : DerivationTree fc Γ' φ) (h_sub : Γ' ⊆ ([] : Context)) :
+    (d.ofWeakeningNil h_sub).height <
+      (DerivationTree.weakening Γ' ([] : Context) φ d h_sub).height := by
+  simp only [DerivationTree.height_ofWeakeningNil, DerivationTree.height]
+  omega
+
+/--
 Modus ponens height is strictly greater than the left subderivation.
 -/
 theorem mp_height_gt_left {fc : FrameClass} {Γ : Context} {φ ψ : Formula}
