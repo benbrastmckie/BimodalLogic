@@ -63,7 +63,9 @@ have no "gaps" in time.
 
 - Type parameter `D` represents temporal durations with ordered additive group structure
 - Domain is represented as a predicate `D → Prop`
-- Convexity is now formally enforced (matching paper definition exactly)
+- Convexity is formally enforced. `def:world-history` states it strictly (`x < y < z`); the
+  `convex` field uses `x ≤ y ≤ z`, which is **equivalent** — the endpoints are already in the
+  domain by hypothesis — rather than identical to the paper's wording
 - History must respect the task relation (compositionality)
 
 ## References
@@ -107,7 +109,8 @@ structure WorldHistory (F :
 
   **Paper Reference**: `def:world-history` (verbatim: "A \textit{world history} is any
   partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever
-  $x, z \in X$ and $x < y < z$.").
+  $x, z \in X$ and $x < y < z$."). The field reads `≤` on both sides where the paper has
+  `<`; the two are equivalent, since the endpoints `x`, `z` are in the domain by hypothesis.
   -/
   convex : ∀ (x z : F.Duration), domain x → domain z → ∀ (y : F.Duration), x ≤ y → y ≤ z → domain y
 
@@ -277,7 +280,12 @@ Given history `σ` and shift offset `Δ = y - x`, construct history `τ` where:
 
 This allows us to relate truth at (σ, y) to truth at (τ, x).
 
-**Paper Reference**: app:auto_existence (line ~2330) defines time-shift automorphisms.
+**Paper Reference**: `def:time-shift-histories` defines the relation `τ ≈ σ` between possible
+worlds (`τ(z) = σ(z + y - x)` for all `z`), and `app:auto_existence` asserts that the shifted
+possible world exists. This construction is the Lean witness for that existence, stated on
+**arbitrary** histories (Lean-stronger and harmless: nothing about the shift needs totality);
+`isTotal_timeShift` below is the paper's "total since 𝔇 is a group". The relation itself, read
+on arbitrary histories, is `TimeShift.ShiftRel` in `Truth.lean`.
 
 **Key Property**: If σ respects the task relation and has convex domain,
 so does the shifted history, because:
@@ -336,7 +344,7 @@ theorem timeShift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : F.Duration) (h : Δ
 /-! ## Totality and `H_F`
 
 `def:world-history`, verbatim: "A world history is \textit{total}--- equivalently, a
-\textit{possible world}--- just in case $X = D$. … The set of all total world histories over
+\textit{possible world}--- just in case $X = D$. … The set of all possible worlds over
 $\F$ is denoted $H_{\F}$."
 
 Totality is inherited from `PartialHistory.IsTotal`; `WorldHistory.IsTotal` below is the
@@ -388,7 +396,7 @@ end WorldHistory
 /--
 `H_F` — the set of all total world histories over a frame, bundled as a type.
 
-**Paper Reference**: `def:world-history` (verbatim: "The set of all total world histories over
+**Paper Reference**: `def:world-history` (verbatim: "The set of all possible worlds over
 $\F$ is denoted $H_{\F}$.").
 
 **Encoding note** (Decision A of `specs/decisions/total-history-validity-decisions.md`): this

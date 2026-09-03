@@ -35,7 +35,7 @@ this repository cites — never the paper file directly, and never by line numbe
 > `A partial history $\sigma$ \textit{extends} $\tau$ just in case
 > $\dom{\tau} \subseteq \dom{\sigma}$ and $\tau(x) = \sigma(x)$ for all $x \in \dom{\tau}$.`
 >
-> `The set of all total world histories over $\F$ is denoted $H_{\F}$.`
+> `The set of all possible worlds over $\F$ is denoted $H_{\F}$.`
 
 ## Two transcription decisions, both settled and recorded
 

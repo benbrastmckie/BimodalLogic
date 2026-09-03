@@ -370,7 +370,7 @@ the count differs, absorb the actual set and record the delta in the narrative.
 
 ---
 
-### Phase 5: Lean docstring hygiene — citations by `\label`, convex wording, `H_F` quotes [IN PROGRESS]
+### Phase 5: Lean docstring hygiene — citations by `\label`, convex wording, `H_F` quotes [COMPLETED]
 
 **Goal**: No raw paper line numbers remain in `Truth.lean` or `WorldHistory.lean`; the convex
 docstring says "equivalent to" rather than "exactly"; every verbatim `def:world-history` quote in
@@ -378,7 +378,7 @@ the tree matches the re-pinned record; `FwdRecPeriodicity`'s "not an instance" n
 `TruthCorr`.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/Truth.lean` module docstring: replace "def:BL-semantics, lines
+- [x] `FormalSystem/Semantics/Truth.lean` module docstring: replace "def:BL-semantics, lines
       1857-1872" (two occurrences, ~l.28 and ~l.141), "line 892" (~l.35 and ~l.51), "lines
       899-919" (~l.42), and "JPL Paper lines 892-919" (~l.142) with citations by `\label`
       (`def:BL-semantics`, `app:TaskSemantics`) and no line numbers. While there, correct the
@@ -387,31 +387,33 @@ the tree matches the re-pinned record; `FwdRecPeriodicity`'s "not an instance" n
       conjunct is this tree's Decision A encoding (`specs/decisions/total-history-validity-decisions.md`)
       forced by evaluating on arbitrary `WorldHistory`s. Do not fabricate a paper claim about
       "atoms outside the domain"; state it as the Lean-side generalisation the audit records.
-- [ ] `FormalSystem/Semantics/WorldHistory.lean` `timeShift` docstring (~l.280): replace
+- [x] `FormalSystem/Semantics/WorldHistory.lean` `timeShift` docstring (~l.280): replace
       "app:auto_existence (line ~2330) defines time-shift automorphisms" with a by-label
       citation: `def:time-shift-histories` defines the relation, `app:auto_existence` asserts
       existence of the shifted possible world; note the Lean definition is on arbitrary histories
       (Lean-stronger, harmless; `isTotal_timeShift` is the paper's "total since 𝔇 is a group").
-- [ ] `WorldHistory.lean` module docstring (~l.66) "Convexity is now formally enforced (matching
+- [x] `WorldHistory.lean` module docstring (~l.66) "Convexity is now formally enforced (matching
       paper definition exactly)" → state the paper's strict `x < y < z` formulation and Lean's
       `x ≤ y ≤ z` are equivalent (endpoints are already in `X`), not identical. Check the
       `convex` field docstring (~l.108) — it quotes the paper verbatim and is fine; add one
       sentence noting the `≤` reading is equivalent if absent.
-- [ ] Update the stale verbatim quote "The set of all total world histories over $\F$ is denoted
+- [x] Update the stale verbatim quote "The set of all total world histories over $\F$ is denoted
       $H_{\F}$" to the live wording from the re-pinned record ("The set of all possible worlds
       over $\F$ is denoted $H_{\F}$") at: `WorldHistory.lean` ~l.339 and ~l.391,
       `PartialHistory.lean` ~l.38, `Metalogic/Algebraic/FlowFrame.lean` ~l.51. Keep the
       surrounding Lean prose ("`H_F` — the set of all total world histories over a frame,
       bundled as a type") since that is the tree's own description, not a quote.
-- [ ] `FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean` (~l.377-390): update the
+- [x] `FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean` (~l.377-390): update the
       "not a `Semantics.TruthIso` instance" paragraph to say it is not a `TruthCorr` instance
       either, for the same reason (`TruthCorr.atom` is quantified over every related pair
       because the `□` case applies the IH at a pair the caller did not choose; `hper` is about
       one history).
-- [ ] Grep-sweep: `grep -rn "line ~\|lines [0-9]\+-[0-9]\+\|line [0-9]\{3,4\}" FormalSystem/Semantics/Truth.lean FormalSystem/Semantics/WorldHistory.lean`
+- [x] *(deviation: altered — the plan's second grep pattern `over \$` is shell-escaped into an end-of-line anchor and matches nothing even before the edit; the sweep was run as the plain phrase `total world histories over` instead, 4 hits before, 0 after)* Grep-sweep: `grep -rn "line ~\|lines [0-9]\+-[0-9]\+\|line [0-9]\{3,4\}" FormalSystem/Semantics/Truth.lean FormalSystem/Semantics/WorldHistory.lean`
       returns zero hits; `grep -rn "total world histories over \$" FormalSystem --include=*.lean`
       returns zero hits.
-- [ ] `lake build` (doc comments are parsed) and `bash scripts/check-module-invariants.sh`.
+- [x] `lake build` (doc comments are parsed) and `bash scripts/check-module-invariants.sh`.
+
+**Phase record**: measured sites = 6 line-number citations in `Truth.lean` + 1 in `WorldHistory.lean` (all removed), 1 "exactly" overclaim, 4 stale `H_F` quotes, 1 `FwdRecPeriodicity` paragraph — matching the hypothesis. Full `lake build` 2520 jobs exit 0; invariants ALL CHECKS PASSED (C15 48 anchors).
 
 **Timing**: 1 hour
 
@@ -439,7 +441,7 @@ hypothesis, the grep output is the fact.
 
 ---
 
-### Phase 6: Closure — full gate set, `induction φ` ledger, cross-record updates [NOT STARTED]
+### Phase 6: Closure — full gate set, `induction φ` ledger, cross-record updates [IN PROGRESS]
 
 **Goal**: The whole task is verified against the complete gate set, the transport-induction
 ledger is measured and recorded, and the paused prior plan's blocker record points at the

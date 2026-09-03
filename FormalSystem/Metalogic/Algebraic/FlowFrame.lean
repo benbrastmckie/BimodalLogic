@@ -48,7 +48,7 @@ are consumed from `Semantics/TaskFrame.lean` (`TaskFrame.Fib`, `TaskFrame.Seg`,
 `TaskFrame.DirectedFamily`, `TaskFrame.IsFiber`, `TaskFrame.IsSegment`).
 
 **Totality (`def:world-history`)**: "A world history is *total* — equivalently, a *possible
-world* — just in case X = D. ... The set of all total world histories over F is denoted
+world* — just in case X = D. ... The set of all possible worlds over F is denoted
 H_F." `multiFamGen_total_eq` characterizes the total histories of the flow frame: every
 history with full domain IS a flow line `multiFamHistoryGen f w₀`. Since the flow lines are
 total by construction, the frame's total-history set H_F coincides exactly with the flow-line

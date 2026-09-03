@@ -25,30 +25,38 @@ axioms (⊤ → F(⊤), ⊤ → P(⊤)) replace the T-axioms (BX1/BX1').
 
 ## Paper Specification Reference
 
-**Bimodal Logic Semantics (app:TaskSemantics, def:BL-semantics, lines 1857-1872)**:
+**Bimodal Logic Semantics (`app:TaskSemantics`, `def:BL-semantics`)**:
 The JPL paper defines truth evaluation for TM formulas, and this module transcribes it. The
 temporal clauses are **strict** on both sides: the pinned anchor `def:BL-semantics` quantifies H
 over `y < x` and G over `x < y` on the nose, so this tree matches the paper exactly rather than
 refining it. (Earlier revisions of this docstring described the paper's convention as reflexive
 and this tree's reading as a refinement of it; both descriptions were stale and have been
 corrected against the anchor of record.)
-- `M,τ,x ⊨ p` iff `x ∈ dom(τ)` AND `τ(x) ∈ V(p)` (atom satisfaction, line 892)
+- `M,τ,x ⊨ p` iff `τ(x) ∈ |p|` (atom satisfaction — at a possible world `τ ∈ H_F`, which is the
+  only place the paper evaluates truth; there is no domain conjunct in the paper's clause)
 - `M,τ,x ⊨ ⊥` is false (bottom)
 - `M,τ,x ⊨ φ → ψ` iff `M,τ,x ⊨ φ` implies `M,τ,x ⊨ ψ` (implication)
 - `M,τ,x ⊨ □φ` iff `M,σ,x ⊨ φ` for all σ ∈ H_F, the total histories (box: necessity)
 - `M,τ,x ⊨ Past φ` iff `M,τ,y ⊨ φ` for all y ∈ D where y < x (past, strict)
 - `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x < y (future, strict)
 
-**Critical Semantic Design (lines 899-919)**:
-The paper explicitly quantifies temporal operators over ALL times `y ∈ D` (the entire
-temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice:
-- Atoms at times outside domain are FALSE (not undefined)
-- Temporal operators see "beyond" the history's domain
-- This matters for finite histories (e.g., chess game ending at move 31)
+**Critical Semantic Design (this tree's encoding; Decision A of
+`specs/decisions/total-history-validity-decisions.md`)**:
+`def:BL-semantics` defines truth only at possible worlds `τ ∈ H_F`, whose domain is all of `D`,
+and quantifies the temporal clauses over all `y ∈ D`. This tree evaluates `TruthAt` on
+**arbitrary** `WorldHistory`s and reads the paper's clauses unchanged on them; the one place that
+forces a choice is the atom clause, and the choice is:
+- Atoms at times outside the domain are FALSE (not undefined). The domain conjunct is this
+  tree's generalisation, not a paper clause; at a possible world it is trivially satisfied.
+- Temporal operators still quantify over all of `D`, "beyond" the history's domain
+- Validity (`Validity.lean`) quantifies only over total histories, so the paper's statements are
+  unaffected; the generalisation matters only for finite histories used as intermediate objects
+  (e.g., a chess game ending at move 31)
 
 **ProofChecker Implementation Alignment**:
 ✓ Atom: `∃ (ht : τ.domain t), M.valuation (τ.states t ht) p`
-  matches paper's domain check at line 892 (atoms false outside domain)
+  is the paper's `τ(x) ∈ |p|` plus the domain conjunct described above (atoms false outside
+  the domain; trivially satisfied at a possible world)
 ✓ Bot: `False` matches paper's definition
 ✓ Imp: Standard material conditional matches paper
 ✓ Box: `∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ`
@@ -138,8 +146,10 @@ See SoundnessLemmas.lean for details on the module hierarchy restructuring.
   specification
 * [Formula.lean](../Syntax/Formula.lean) - Formula syntax
 * [TaskModel.lean](TaskModel.lean) - Task model structure
-* JPL Paper app:TaskSemantics (def:BL-semantics, lines 1857-1872) - Formal truth definition
-* JPL Paper lines 892-919 - Semantic design rationale
+* JPL Paper `app:TaskSemantics`, `def:BL-semantics` — formal truth definition, cited by
+  `\label` (pinned verbatim in `specs/paper-definitions-of-record.md`)
+* `specs/decisions/total-history-validity-decisions.md` — Decision A, the arbitrary-history
+  encoding of the atom clause
 -/
 
 namespace FormalSystem.Semantics
