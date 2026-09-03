@@ -61,11 +61,22 @@ A set is **SetConsistent** if every finite subset is consistent (cannot derive �
 A set is **SetMaximalConsistent** if it is consistent and any extension is inconsistent.
 
 **Key Theorems**:
-- `set_lindenbaum`: Lindenbaum's lemma (extend consistent to MCS via Zorn's lemma)
+- `exists_maximal_of_chainClosed`: the directory's **single** Zorn argument — for any predicate
+  `P : Set Formula → Prop` closed under unions of chains, every `P`-set extends to a `P`-maximal
+  one. Both Lindenbaum variants are thin instantiations of it and neither runs Zorn itself.
+- `set_lindenbaum`: Lindenbaum's lemma (extend consistent to MCS), an instantiation of
+  `exists_maximal_of_chainClosed` at `SetConsistent`
+- `restricted_lindenbaum` (`RestrictedMCS/Basic.lean`): the closure-restricted instantiation,
+  carrying a short bridge between `¬RestrictedConsistent phi (insert psi S) fc` and
+  `RestrictedMCS`'s `¬SetConsistent (insert psi S)` maximality field
 - `mcs_contains_or_neg`: Either φ or ¬φ in MCS (negation completeness)
 - `theorem_in_mcs`: All theorems are in every MCS
 - `SetMaximalConsistent.modus_ponens`: Modus ponens reflected in membership
 - `inconsistent_derives_bot`: Inconsistent contexts derive ⊥
+
+The four hand-rolled superset scaffolds the two Lindenbaum proofs used to carry
+(`ConsistentSupersets`, `self_mem_consistent_supersets`, `RestrictedConsistentSupersets`,
+`self_mem_restricted_consistent_supersets`) were their only consumers and have been deleted.
 
 ### Deduction Theorem (`DeductionTheorem.lean`)
 
@@ -102,10 +113,34 @@ lemma SetMaximalConsistent.negation_complete {S : Set Formula} {phi : Formula}
     phi ∈ S ∨ phi.neg ∈ S
 ```
 
+```lean
+theorem SetConsistent.bot_not_mem {S : Set Formula}
+    (h : SetConsistent S) : Formula.bot ∉ S
+
+theorem SetMaximalConsistent.bot_not_mem {S : Set Formula}
+    (h : SetMaximalConsistent S) : Formula.bot ∉ S
+
+theorem SetMaximalConsistent.mp_of_theorem {S : Set Formula} {φ ψ : Formula}
+    (h : SetMaximalConsistent S) (d : DerivationTree fc [] (φ.imp ψ))
+    (hφ : φ ∈ S) : ψ ∈ S
+```
+
 Essential lemmas for canonical model construction:
 - Derivable formulas are in MCS
 - Modus ponens reflected in membership
 - Negation completeness
+- `⊥` is never a member. The lemma is stated on `SetConsistent`, not on
+  `SetMaximalConsistent`, because one of its consumers reaches consistency through
+  `closure_mcs_consistent` on a `ClosureMCSBundle` rather than holding an MCS;
+  `SetMaximalConsistent.bot_not_mem` is the one-line specialization. This pair replaced four
+  independent copies scattered across `BXCanonical/`, `WeakCanonical/`, `Algebraic/` and
+  `Decidability/`, one of which was the sole reason `WeakCanonical/Transfer.lean` reached into
+  `BXCanonical` for a one-liner.
+- `mp_of_theorem` collapses the composite idiom
+  `implication_property h (theorem_in_mcs h d) hφ` — modus ponens through an MCS against a
+  *theorem* of the system — into one application. It was swept through 196 call sites in 25
+  files, the single largest consolidation in this directory's API. Note that
+  `mp_of_theorem`'s own body is that composite: it is the definition, not a missed site.
 
 **Temporal Properties**:
 ```lean
@@ -119,6 +154,43 @@ lemma SetMaximalConsistent.all_past_all_past {S : Set Formula}
 ```
 
 These use the derived 4-axiom for temporal operators.
+
+## Decision Record
+
+### MCS Aesop rule set (`mcs_auto`) — evaluated and rejected (2026-09-03)
+
+A named `MCS` Aesop rule set (`safe forward`: `implication_property`, `neg_excludes`;
+`unsafe 50%`: `negation_complete`; `norm simp`: `Set.mem_insert_iff`, `Set.mem_singleton_iff`,
+`List.mem_cons`) was built and measured. It closes synthetic forward chains of implication
+memberships in ~45 ms, where plain `aesop` cannot. It closes **no** real proof in this tree.
+
+The blocker is structural. `negation_complete` is the only rule that helps a goal whose
+hypotheses are not already implication memberships, and Aesop cannot instantiate its `φ` — the
+real sites need it at a formula (e.g. `φ.imp ψ.neg`) that appears in neither the goal nor the
+context. `theorem_in_mcs` and `closed_under_derivation` are inert as forward rules because their
+`DerivationTree` argument is constructed inline at every real call site rather than being a
+hypothesis available to forward reasoning.
+
+Two mechanical notes, should this ever be revisited: a rule set must be *declared in a separate
+imported module* from the one that attributes to it, so a single self-contained `MCSAesop.lean`
+is not implementable; and a named set does not pollute Aesop's default set.
+
+**The productive consolidation at these sites is `SetMaximalConsistent.mp_of_theorem` (above),
+not automation.** No `MCSAesop.lean`, no `declare_aesop_rule_sets`, no `mcs_auto` macro and no
+Aesop attributes exist anywhere in the tree, and that is deliberate.
+
+### Retirements
+
+- The four `RestrictedMCS` boundedness lemmas (`restricted_mcs_iter_F_bound`,
+  `restricted_mcs_F_bounded`, `restricted_mcs_iter_P_bound`, `restricted_mcs_P_bounded`) have
+  been retired to
+  [`Boneyard/RestrictedMCSBoundedness/`](../../Boneyard/RestrictedMCSBoundedness/README.md). They
+  had zero references outside their own declaration site, and the consumer they were written for
+  is itself archived. That directory's README records the validated `Nat.find` rewrite as the
+  alternative to a verbatim resurrection.
+- `CanonicalTask_backward` and its family were retired by earlier work to
+  `FormalSystem/Boneyard/BundleDeadHalf/CanonicalTaskRelation.lean`. They are intentionally out
+  of scope for the Core consolidation and should not be re-opened here.
 
 ## Design Notes
 
@@ -150,6 +222,7 @@ The Core modules are prerequisites for:
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BFMCS completeness (uses Core)
 - [Algebraic README](../Algebraic/README.md) - Algebraic approach (uses Core)
+- [Boneyard/RestrictedMCSBoundedness](../../Boneyard/RestrictedMCSBoundedness/README.md) - the retired boundedness lemmas
 
 ## References
 
@@ -159,4 +232,4 @@ The Core modules are prerequisites for:
 
 ---
 
-*Last verified: 2026-05-29*
+*Last verified: 2026-09-03*

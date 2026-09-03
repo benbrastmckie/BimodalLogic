@@ -1,7 +1,7 @@
 # Implementation Plan: Core MCS API Consolidation
 
 - **Task**: 526 - Consolidate the maximal-consistent-set API in `FormalSystem/Metalogic/Core/` so the three completeness routes consume one set of lemmas; resolve the MCS-automation question
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14 hours
 - **Dependencies**: 524 (serialized `BaseLanguageSoundness.lean` access; landed)
 - **Research Inputs**: `specs/526_core_mcs_api_consolidation/reports/01_core-mcs-api-consolidation.md`
@@ -626,7 +626,7 @@ at 2 remaining occurrences, both in that one declaration, not at 0.
 
 ---
 
-### Phase 11: Core/README.md refresh, mcs_auto decision record, and final gate [NOT STARTED]
+### Phase 11: Core/README.md refresh, mcs_auto decision record, and final gate [COMPLETED]
 
 **Goal**: Bring `Core/README.md` up to date with the post-consolidation directory and record the
 `mcs_auto` rejection permanently, then run the full acceptance gate.
@@ -680,26 +680,26 @@ the README.
 
 Acceptance criteria, mapped to the phases that deliver them:
 
-- [ ] **One Zorn lemma**: `exists_maximal_of_chainClosed` is the only Zorn argument in `Core/`;
+- [x] **One Zorn lemma**: `exists_maximal_of_chainClosed` is the only Zorn argument in `Core/`;
       `set_lindenbaum` and `restricted_lindenbaum` are instantiations (Phase 2)
-- [ ] **One boundedness story**: the four dead lemmas are retired, or (fallback) collapsed onto
+- [x] **One boundedness story**: the four dead lemmas are retired, or (fallback) collapsed onto
       `exists_boundary_of_one` (Phase 3)
-- [ ] **One `bot_not_mem` in the live tree**:
+- [x] **One `bot_not_mem` in the live tree**:
       `grep -rn "bot_not_in_mcs" FormalSystem --include=*.lean | grep -v Boneyard` returns nothing
       (Phase 4)
-- [ ] **Zero inline `right_mono_until`-with-top idioms in `Bundle/`** (Phase 5)
-- [ ] **`Transfer.lean` no longer imports BXCanonical for a one-liner** — inspect its import block
+- [x] **Zero inline `right_mono_until`-with-top idioms in `Bundle/`** (Phase 5)
+- [x] **`Transfer.lean` no longer imports BXCanonical for a one-liner** — inspect its import block
       (Phase 4)
-- [ ] **Zero remaining composite `implication_property … theorem_in_mcs …` idioms** in live scope
+- [x] **Zero remaining composite `implication_property … theorem_in_mcs …` idioms** in live scope
       (Phases 7-10)
-- [ ] **`mcs_auto` decision recorded** in `Core/README.md`, decision = reject, with the structural
+- [x] **`mcs_auto` decision recorded** in `Core/README.md`, decision = reject, with the structural
       blockers named (Phase 11)
-- [ ] **`lake build` green** — detached and guarded per
+- [x] **`lake build` green** — detached and guarded per
       `context/project/lean4/operations/long-builds.md` (every phase)
-- [ ] **C2 axiom baseline unchanged** — `bash scripts/check-module-invariants.sh`; divergence is a
+- [x] **C2 axiom baseline unchanged** — `bash scripts/check-module-invariants.sh`; divergence is a
       hard stop, never a re-baselining (every phase; explicitly after Phase 6)
-- [ ] **Zero structural `sorry`, zero new axioms** (every phase)
-- [ ] **No `Core/MCSAesop.lean`, no Aesop rule set, no `mcs_auto` macro anywhere in the tree**
+- [x] **Zero structural `sorry`, zero new axioms** (every phase)
+- [x] **No `Core/MCSAesop.lean`, no Aesop rule set, no `mcs_auto` macro anywhere in the tree**
       (negative check, Phase 11)
 
 ## Artifacts & Outputs

@@ -1,11 +1,36 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-09-03T00:00:00Z",
-  "artifacts": [],
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "invariants_gate": "ALL CHECKS PASSED",
+    "c2_axiom_baseline": "unchanged (all four flagship axiom sets match baseline)",
+    "c3_structural_sorries": "ZERO across FormalSystem/ (Boneyard/ excluded)"
+  },
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/526_core_mcs_api_consolidation/plans/01_core-mcs-api-consolidation.md",
+      "summary": "Plan file; all 11 phases marked [COMPLETED], acceptance checklist ticked, deviations annotated inline."
+    },
+    {
+      "type": "summary",
+      "path": "specs/526_core_mcs_api_consolidation/summaries/01_core-mcs-api-consolidation-summary.md",
+      "summary": "Implementation summary: per-phase outcomes with commits, acceptance-criteria evidence table, scope findings, and plan deviations."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Consolidated the MCS API in FormalSystem/Metalogic/Core/ so all three completeness routes share one set of lemmas: a single generic Zorn lemma with both Lindenbaum variants as instantiations, one bot_not_mem replacing four copies, two temporal monotonicity helpers, a DerivationTree.ofWeakeningNil helper plus a BaseLanguage twin removing the duplicated omega termination scaffold, and a new mp_of_theorem swept through 196 call sites in 25 files. Four dead boundedness lemmas were retired to the Boneyard and the mcs_auto automation question was closed with a recorded rejection in Core/README.md. Full guarded lake build green (2522 jobs) and check-module-invariants ALL CHECKS PASSED with the C2 axiom baseline unchanged and zero structural sorries.",
+    "roadmap_items": []
+  },
   "partial_progress": {
-    "stage": "phase_10_complete",
-    "details": "Phases 1-10 committed and green. Remaining: 11 (Core/README.md refresh + mcs_auto decision record + final gate).",
-    "phases_completed": 10,
+    "stage": "complete",
+    "details": "All 11 phases completed, verified and committed.",
+    "phases_completed": 11,
     "phases_total": 11
   },
   "metadata": {
@@ -13,10 +38,7 @@
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "dispatch_seq": 5,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ]
+    "compliance_check": "passed",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }
