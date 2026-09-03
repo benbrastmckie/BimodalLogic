@@ -48,6 +48,32 @@
             "dependent-structure",
             "truth-transport"
           ]
+        },
+        {
+          "content": "When a Lean truth-transport lemma must hold on arbitrary (partial) histories but the paper's proof only uses existence of related total histories in both directions, package the transport as a Prop-valued relation structure (relation on arbitrary histories + atomic agreement on related pairs + totality-existence fwd/bwd) rather than an Equiv on the history type: the box case only needs existence, and an Equiv on a structure with a dependent states field forces HEq. TruthCorr in FormalSystem/Semantics/Truth.lean is the worked instance; TruthIso, time shift, and IntTransfer's Aligned are all instances.",
+          "category": "PATTERN",
+          "source_artifact": "specs/532_worldhistory_extension_faithfulness_audit/summaries/01_truthcorr-relational-transport-summary.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "lean4",
+            "truth transport",
+            "relational",
+            "HEq",
+            "TruthCorr",
+            "induction φ"
+          ]
+        },
+        {
+          "content": "Do not run a lake env lean axiom check concurrently with a full lake build in the same .lake tree: it produced a spurious 'no such file or directory' .olean write failure mid-build. Serialize them; re-running the build recovers. Also: the lake-build-guard wrapper needs the lake subcommand repeated after '--' (guard build --timeout N -- build Module.Name).",
+          "category": "WORKFLOW",
+          "source_artifact": "specs/532_worldhistory_extension_faithfulness_audit/summaries/01_truthcorr-relational-transport-summary.md",
+          "confidence": 0.7,
+          "suggested_keywords": [
+            "lake build",
+            "olean",
+            "concurrency",
+            "lake-build-guard"
+          ]
         }
       ],
       "completion_summary": "Landed the paper's relational truth transport TruthCorr with a single six-case induction truthAt_of_truthCorr, and derived TimeShift.timeShift_preserves_truth, IntTransfer.truthAt_map, and truthAt_of_truthIso from it with byte-identical statements, deleting their hand-written inductions (truth-transport inductions 5 -> 3, no HEq, no Equiv on WorldHistory, no sorry, axioms unchanged). Re-pinned specs/paper-definitions-of-record.md so check-paper-definitions.sh exits 0, replaced raw-line-number paper citations with \\label citations, corrected the atom-clause and convex docstrings, and updated the stale H_F quotes."
