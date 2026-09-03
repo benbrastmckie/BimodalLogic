@@ -1,0 +1,29 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/527_bundle_temporal_duality_discipline/plans/01_bundle-temporal-duality-discipline.md",
+      "summary": "Ten-phase plan grouped A/B/C for bundling truth-lemma coherence, applying the swapTemporal duality discipline, and putting limit-MCS on Mathlib's Filter API with a TemporalSide parameter."
+    }
+  ],
+  "next_steps": "Run /implement 527 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "When a plan parameterizes or restructures a widely-consumed definition family (e.g. replacing limitSetBelow/limitSetAbove with a side-parameterized limitSet), count external references BEFORE choosing between renaming and specialization. In this repo the Below/Above limit-MCS names had ~57 references across seven files, five outside the task's declared file_scope. Keeping the old names as thin definitional specializations of the new parameterized family preserves the 'every consumer theorem unchanged in statement' criterion at zero cost, whereas renaming would have converted a contained refactor into a cross-subsystem sweep. The same check applies to structure-parameter reorders: Lean 4 resolves named arguments ahead of positional ones, so `FMCS (fc := fc) D` frequently still elaborates after moving `fc` behind `D`, making such a reorder near-zero line delta and ergonomic rather than structural.",
+      "category": "PATTERN",
+      "source_artifact": "specs/527_bundle_temporal_duality_discipline/plans/01_bundle-temporal-duality-discipline.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean4", "refactor-scope", "definitional-specialization", "external-references", "named-arguments", "file-scope"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788452026_624704_527",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 16,
+    "dependency_waves": [[1, 2, 4], [3], [5], [6], [7], [8], [9], [10]]
+  }
+}
