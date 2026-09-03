@@ -58,7 +58,7 @@ since BL has no `untl`. Do not "simplify" the target.
 
 * JPL paper `\S sub:Logic` — `def:BL-semantics`, `def:logical-consequence`
 * `FormalSystem/Semantics/Validity.lean` — the BL⁺ predicates these mirror
-* `FormalSystem/Metalogic/BaseLanguageSoundness.lean` — the soundness theorems targeting these
+* `FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean` — the soundness theorems targeting these
 -/
 
 namespace FormalSystem.Semantics
@@ -225,10 +225,10 @@ this is stated directly in the pre-abbreviation shape rather than as an abbrevia
 (`TaskFrame.IsSuccArchDiscrete` bundles all four), so no `.of_forall`/`.apply` pair is needed —
 a value of this type already **is** the binder-shape statement.
 
-**Why this exists.** `Metalogic/BaseLanguageSoundness.lean`'s `bl_soundness_discrete_succ` is the
+**Why this exists.** `Metalogic/Conservativity/BaseLanguageSoundness.lean`'s `bl_soundness_discrete_succ` is the
 single prerequisite CEF was missing (report §6.1): a discrete BL soundness theorem that does not
 assume Archimedean structure, so it applies to the non-Archimedean carrier `ℚ ×ₗ ℤ`
-(`Semantics/LexCarrier.lean`) that `Metalogic/Z1Countermodel.lean`'s countermodel is built over.
+(`Semantics/LexCarrier.lean`) that `Metalogic/Conservativity/Z1Countermodel.lean`'s countermodel is built over.
 -/
 def BLValidDiscreteSucc (φ : BLFormula) : Prop :=
   ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
@@ -238,7 +238,7 @@ def BLValidDiscreteSucc (φ : BLFormula) : Prop :=
 and its dense/Dedekind siblings.
 
 **Documented exception to the transfer-theorem collapse.** Its three siblings are corollaries of
-`BLValidIn.mono`, and every BL/BL⁺ equivalence in `Metalogic/BaseLanguageSoundness.lean` is a
+`BLValidIn.mono`, and every BL/BL⁺ equivalence in `Metalogic/Conservativity/BaseLanguageSoundness.lean` is a
 corollary of `blValidIn_iff_validIn_tr`. This one is neither, and cannot be made either:
 `BLValidDiscreteSucc` is **not** any `BLValidIn fc` — no `FrameClass.Sat` variant bundles just
 `SuccOrder` + `PredOrder` without the two Archimedean conditions, which is exactly the weakening
@@ -305,7 +305,7 @@ theorem blValid_implies_blValidDedekind {φ : BLFormula} (h : BLValid φ) :
 orthogonal `Prop` shape, not a `BLValidIn` at any tag: it takes the history `τ` unbundled, carries
 no `FrameClass` index, and mentions no `tr`. So neither
 `blValidOnFrames_iff_validOnFrames_tr` nor `blValidIn_iff_validIn_tr`
-(`Metalogic/BaseLanguageSoundness.lean`) can prove it, and this two-branch script stays. -/
+(`Metalogic/Conservativity/BaseLanguageSoundness.lean`) can prove it, and this two-branch script stays. -/
 theorem blValid_iff_empty_consequence (φ : BLFormula) :
     BLValid φ ↔ BLSemanticConsequence [] φ := by
   constructor

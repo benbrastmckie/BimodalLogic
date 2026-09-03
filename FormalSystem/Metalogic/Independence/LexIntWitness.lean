@@ -73,7 +73,7 @@ open FormalSystem.ProofSystem
 `Semantics/LexCarrier.lean` carries the whole `α ×ₗ ℤ` apparatus at an **arbitrary** ordered
 abelian group in the first coordinate: the four ambient instances, the `SuccOrder`/`PredOrder`
 pair, `LexInt.isLeast_pos`, and the three non-Archimedean theorems. This module is one of its two
-instantiations — the other is `ℚ ×ₗ ℤ` in `Metalogic/Z1Countermodel.lean` — and re-derives none
+instantiations — the other is `ℚ ×ₗ ℤ` in `Metalogic/Conservativity/Z1Countermodel.lean` — and re-derives none
 of it. In particular the four-`example` instance-pinning ritual that used to sit here is gone;
 `LexCarrier.lean` carries the single surviving copy.
 

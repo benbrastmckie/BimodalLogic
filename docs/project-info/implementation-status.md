@@ -69,8 +69,9 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Metalogic/DiscreteNonCompactness.lean` | ✅ | Machine-refutes Discrete strong completeness |
 | `Metalogic/SetConsequence.lean` | ✅ | Set-based consequence layer; states `CompactBase`/`CompactDense` and their strong-completeness and model-existence siblings |
 | `Metalogic/Compactness.lean` | ✅ | Discharges all six: `modelExistenceBase`/`modelExistenceDense` by ultraproduct, `compactBase`/`compactDense`, `strongCompletenessBase`/`strongCompletenessDense` -- all sorryAx-free |
-| `Metalogic/Conservativity.lean` | ✅ | TM/TM+ backward bridge |
-| `Metalogic/BaseLanguageSoundness.lean` | ✅ | BL soundness at Base/Dense/Discrete/Dedekind by composition; `truthAt_tr`, the validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
+| `Metalogic/Conservativity.lean` | ✅ | Aggregator: the forward-conservativity prohibition and the CEB/CEF status record; re-exports the five modules below |
+| `Metalogic/Conservativity/Backward.lean` | ✅ | TM/TM+ backward bridge |
+| `Metalogic/Conservativity/BaseLanguageSoundness.lean` | ✅ | BL soundness at Base/Dense/Discrete/Dedekind by composition; `truthAt_tr`, the validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
 | `Metalogic/Independence/` | ✅ | Three independence results, including `sat_dedekind_ssubset_mod_axiomSet` (`Sat .Dedekind` not Galois-closed -- definability of the model class, distinct from the open Dedekind strong-completeness question above) and `sat_discrete_ssubset_mod_axiomSet` (`Sat .Discrete` not Galois-closed) |
 | `Metalogic/WeakCanonical/Kamp/` | ✅ | `kampPriorExpressiveCompleteness` -- `{U, S}` expressively complete relative to monadic first-order logic **for Prior structures**, sorry-free (`propext`, `Classical.choice`, `Quot.sound`); load-bearing via `uSExpressivelyCompleteOverPrior` |
 
@@ -79,7 +80,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
   constructors (Base 37 / Dense 2 / Discrete 3 / Dedekind 3, per `Axiom.minFrameClass` in
   `FormalSystem/ProofSystem/Axioms.lean`)
 - Base-language soundness (`bl_soundness` and its dense / discrete / Dedekind siblings,
-  `FormalSystem/Metalogic/BaseLanguageSoundness.lean`), stated against the native `BLTruthAt` of
+  `FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean`), stated against the native `BLTruthAt` of
   `FormalSystem/Semantics/BLTruth.lean` and obtained by composing
   `Conservativity.translate` with the four theorems above across the truth-transfer bridge
   `truthAt_tr`

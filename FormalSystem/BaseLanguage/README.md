@@ -11,7 +11,7 @@ primitive and derives `H`/`G`, the base language `BL` takes `H` (`allPast`) and 
 ```
 
 The two languages are related by the translation `tr` (`Translation.lean`), which is what the
-conservativity result in `FormalSystem/Metalogic/Conservativity.lean` transports along. `BL` is
+conservativity result in `FormalSystem/Metalogic/Conservativity/Backward.lean` transports along. `BL` is
 the language in which the source paper states TM; the primary language is the one this
 repository's metalogic is proved in.
 
@@ -37,7 +37,7 @@ permitted edge:
 |------|-----------------|
 | `FormalSystem/Semantics/BLTruth.lean` | `BLTruthAt`, a native six-clause recursion on `BLFormula` per `def:BL-semantics` — **not** `TruthAt ∘ tr` |
 | `FormalSystem/Semantics/BLValidity.lean` | `BLValid`, `BLSemanticConsequence`, and the Dense / Discrete / Dedekind-dense validity predicates |
-| `FormalSystem/Metalogic/BaseLanguageSoundness.lean` | the truth-transfer bridge `truthAt_tr`, and BL soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
+| `FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean` | the truth-transfer bridge `truthAt_tr`, and BL soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
 
 `Semantics/BLTruth.lean` imports `Formula.lean` only — a leaf whose own sole import is
 `FormalSystem.Syntax.Atom` — so the edge introduces no cycle.

@@ -122,9 +122,9 @@ comes from `SoundnessLemmas`' well-founded descent on succ/pred chains, reached 
 
 The four theorems here are stated over `FormalSystem.Syntax.Formula`, the `untl`/`snce`-primitive
 language BL⁺. Their counterparts for the tense-primitive base language BL live in
-`FormalSystem/Metalogic/BaseLanguageSoundness.lean`: `bl_soundness`, `bl_soundness_dense`,
+`FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean`: `bl_soundness`, `bl_soundness_dense`,
 `bl_soundness_discrete` and `bl_soundness_dedekind`, each obtained by composing
-`Metalogic/Conservativity.lean`'s `translate` with the theorem of the same frame class below,
+`Metalogic/Conservativity/Backward.lean`'s `translate` with the theorem of the same frame class below,
 then crossing the truth-transfer bridge `truthAt_tr` into the native BL semantics of
 `Semantics/BLTruth.lean`. That module also carries the BL consistency corollaries
 `bl_not_derivable_nil_bot` and `bl_not_derivable_nil_bot_discrete`, which mirror

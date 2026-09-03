@@ -774,7 +774,8 @@ strong completeness for `FrameClass.Discrete` is false rather than merely unprov
 
 ### Conservativity (`FormalSystem.Metalogic.Conservativity`)
 
-**Module**: `FormalSystem/Metalogic/Conservativity.lean`
+**Module**: `FormalSystem/Metalogic/Conservativity/Backward.lean` (under the
+`FormalSystem/Metalogic/Conservativity.lean` aggregator, which carries the narrative)
 
 The TM/TM⁺ bridge: `TM ⊢ φ ⟹ TM⁺ ⊢ tr φ`, by structural recursion over TM derivations,
 parameterized by frame class so that the paper's four rows are four instantiations of one
@@ -824,7 +825,7 @@ directional; the converse edge is permitted and is what these three modules use:
 |------|-----------------|
 | `Semantics/BLTruth.lean` | `BLTruthAt`, a native six-clause recursion on `BLFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `BLTruth.*` characterization lemmas |
 | `Semantics/BLValidity.lean` | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDedekind`; no density-free `BLValidComplete`, which would be refutable |
-| `Metalogic/BaseLanguageSoundness.lean` | `truthAt_tr` (the bridge, proved by induction), `bl_soundness{,_dense,_discrete,_dedekind}` and their validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
+| `Metalogic/Conservativity/BaseLanguageSoundness.lean` | `truthAt_tr` (the bridge, proved by induction), `bl_soundness{,_dense,_discrete,_dedekind}` and their validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
 
 | Result | What it says |
 |--------|--------------|

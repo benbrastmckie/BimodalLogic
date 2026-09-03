@@ -291,7 +291,7 @@ invariant check allowlists it by name (check C8).
 - **Validity**: `Semantics/Validity.lean` - Semantic consequence
 - **BL validity**: `Semantics/BLValidity.lean` - Base-language validity predicates
 - **Soundness**: `Metalogic/Soundness.lean` - Soundness theorem
-- **BL soundness**: `Metalogic/BaseLanguageSoundness.lean` - Soundness for BL, by composition
+- **BL soundness**: `Metalogic/Conservativity/BaseLanguageSoundness.lean` - Soundness for BL, by composition
 - **Completeness**: `Metalogic/BXCanonical/Completeness.lean` - Canonical model
 - **Perpetuity**: `Theorems/Perpetuity.lean` - P1-P6 principles
 - **Tactics**: `Automation/Tactics/Commands.lean` - Custom tactics

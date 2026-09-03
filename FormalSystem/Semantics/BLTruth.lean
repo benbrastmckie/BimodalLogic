@@ -20,7 +20,7 @@ language BL of `def:BL-language`, whose `H`/`G` are *primitive* — directly by 
 terms: the `allPast`/`allFuture` clauses state the paper's universal quantification over times
 directly rather than routing through BL⁺'s `untl`/`snce` abbreviations, and no clause mentions
 the translation. That is what makes the truth-transfer bridge
-(`FormalSystem/Metalogic/BaseLanguageSoundness.lean`'s `truthAt_tr`) a *theorem* with content in
+(`FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean`'s `truthAt_tr`) a *theorem* with content in
 its temporal cases, rather than a definitional unfolding — and it is what makes a BL soundness
 theorem stated against `BLTruthAt` a claim about BL rather than a restatement of the BL⁺ one.
 

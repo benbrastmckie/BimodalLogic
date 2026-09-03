@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.BaseLanguageSoundness
-import FormalSystem.Metalogic.TMCompletenessReduction
+import FormalSystem.Metalogic.Conservativity.BaseLanguageSoundness
+import FormalSystem.Metalogic.Conservativity.TMCompletenessReduction
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Metalogic.Algebraic.FlowFrame
@@ -43,8 +43,8 @@ than a weaker claim.
 ## References
 
 * `specs/495_determine_tm_completeness_status_over_task_frames/reports/01_tm-completeness-status.md` §6.1
-* `FormalSystem/Metalogic/Conservativity.lean` — `Z1`, `z1_translate` (the TM⁺_f half)
-* `FormalSystem/Metalogic/TMCompletenessReduction.lean` — `TMCompleteDiscrete`
+* `FormalSystem/Metalogic/Conservativity/Backward.lean` — `Z1`, `z1_translate` (the TM⁺_f half)
+* `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — `TMCompleteDiscrete`
 -/
 
 namespace FormalSystem.Metalogic

@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Soundness
-import FormalSystem.Metalogic.Conservativity
+import FormalSystem.Metalogic.Conservativity.Backward
 import FormalSystem.Semantics.BLValidity
 import FormalSystem.Semantics.BLSchemaValidity
 
@@ -65,7 +65,7 @@ consistency lemma in the tree yet"), and the BL side inherits it exactly.
 - `truthAt_tr` — the bridge: `TruthAt M τ t (tr φ) ↔ BLTruthAt M τ t φ`
 - `truthAt_trCtx`, `blValid_iff_valid_tr` — its context-level and validity-level corollaries
 - `blValidDiscrete_iff_validDiscrete_tr` — the `.Discrete` mirror of `blValid_iff_valid_tr`,
-  consumed by `Metalogic/TMCompletenessReduction.lean`
+  consumed by `Metalogic/Conservativity/TMCompletenessReduction.lean`
 - `bl_soundness`, `bl_soundness_dense`, `bl_soundness_discrete`, `bl_soundness_dedekind` — the
   four soundness theorems
 - `bl_soundness_valid`, `bl_soundness_dense_valid`, `bl_soundness_discrete_valid`,
@@ -81,7 +81,7 @@ consistency lemma in the tree yet"), and the BL side inherits it exactly.
 
 * JPL paper `\S sub:Logic` — `thm:TM-soundness`, `def:BL-semantics`
 * `FormalSystem/Metalogic/Soundness.lean` — the four BL⁺ soundness theorems composed with here
-* `FormalSystem/Metalogic/Conservativity.lean` — `translate`, the proof-theoretic half
+* `FormalSystem/Metalogic/Conservativity/Backward.lean` — `translate`, the proof-theoretic half
 * `FormalSystem/Semantics/BLTruth.lean`, `FormalSystem/Semantics/BLValidity.lean` — the BL
   semantics this is stated against
 -/
@@ -198,7 +198,7 @@ is `TruthAt`-equivalent to `ValidDiscrete` of the translation, with the four
 the single packed `Sat .Discrete F` hypothesis, so neither direction has to open it. Like
 `blValid_iff_valid_tr`, a one-line corollary of `blValidIn_iff_validIn_tr`.
 
-Consumed by `Metalogic/TMCompletenessReduction.lean`'s `tmCompleteDiscrete_iff_forwardDiscrete`.
+Consumed by `Metalogic/Conservativity/TMCompletenessReduction.lean`'s `tmCompleteDiscrete_iff_forwardDiscrete`.
 -/
 theorem blValidDiscrete_iff_validDiscrete_tr (φ : BLFormula) :
     BLValidDiscrete φ ↔ ValidDiscrete (tr φ) :=

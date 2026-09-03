@@ -381,7 +381,7 @@ needed is `WeakCompleteness fc`.
 **Verification Tier**: interface
 
 **Files to modify**:
-- `FormalSystem/Metalogic/TMCompletenessReduction.lean` — two generic `def`s, one generic iff, four
+- `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — two generic `def`s, one generic iff, four
   instantiations, two new rows
 
 **Verification**:
@@ -456,28 +456,33 @@ record them. Do not pre-emptively rewrite call sites.
 
 ---
 
-### Phase 8: `Metalogic/Conservativity/` directory and the ~60-citation sweep [NOT STARTED]
+### Phase 8: `Metalogic/Conservativity/` directory and the ~60-citation sweep [COMPLETED]
 
 **Goal**: Land item 8 — the five BL-vs-TM modules move under a `Conservativity/` subdirectory with
 a sibling aggregator, every path citation is swept in the same commit, and the wrong-carrier /
 denied-result passages are corrected.
 
 **Tasks**:
-- [ ] Create the target layout: `Metalogic/Conservativity.lean` (aggregator, carrying today's 231
+- [x] Create the target layout: `Metalogic/Conservativity.lean` (aggregator, carrying today's 231
       lines of narrative) plus `Conservativity/{Backward,BaseLanguageSoundness,TMCompletenessReduction,SpWitness,Z1Countermodel}.lean`.
       C8 (`check-module-invariants.sh:418-448`) requires exactly this shape: a sibling `X.lean` for
       every Lean-bearing subdirectory of `FormalSystem` and `FormalSystem/Metalogic`, and no
       self-named `X/X.lean`.
-- [ ] **Import discipline**: the children must import
+- [x] **Import discipline**: the children must import
       `FormalSystem.Metalogic.Conservativity.Backward`, **never** the aggregator
       `FormalSystem.Metalogic.Conservativity`, or the build cycles. Preserve today's chain
       (`Conservativity ← BaseLanguageSoundness ← TMCompletenessReduction ← Z1Countermodel`, and
       `SpWitness ← BaseLanguageSoundness`) rewritten against `Backward`.
-- [ ] Collapse `Metalogic.lean:17,18,20,21` to a single import of the aggregator.
-- [ ] Sweep the path citations. Namespaces need no change — today's body is already
+- [x] Collapse `Metalogic.lean:17,18,20,21` to a single import of the aggregator.
+- [x] Sweep the path citations. Namespaces need no change — today's body is already
       `namespace FormalSystem.Metalogic.Conservativity`, so declarations keep their fully-qualified
-      names when the file becomes `Backward.lean`.
-- [ ] Fix B-17: rewrite `Conservativity.lean:345-349` ("says nothing about `TM_f ⊢ Z1`") and
+      names when the file becomes `Backward.lean`. *(deviation: altered — the sweep was scoped to
+      **non-`specs/**`** files. `specs/**` artifacts are historical records of completed tasks and
+      rewriting them would falsify that history; C5 excludes `specs` from its walk by construction
+      (`check-module-invariants.sh`'s `dirs[:]` filter), and C12/C13 cover only `docs/` +
+      `README.md`, so nothing checks or needs them. 36 `specs/**` files carrying old paths were
+      deliberately left alone.)*
+- [x] Fix B-17: rewrite `Conservativity.lean:345-349` ("says nothing about `TM_f ⊢ Z1`") and
       `:354-357` ("over `ℤ ×_lex ℤ` — an argument this repository cannot yet formalize"). Both are
       contradicted by the same file at `:70-79` (the carrier is `ℚ ×_lex ℤ`) and `:159-166` ("Both
       are now landed"). Point the corrected passages at `Z1Countermodel.not_bl_derivable_z1`

@@ -19,7 +19,7 @@ import FormalSystem.Semantics.TemporalOrder
 
 Supplies the `SuccOrder` and `PredOrder` instances the pinned Mathlib lacks for `Prod.Lex`, so
 that a lexicographic product over `ℤ` can serve as a duration carrier — at `ℚ ×ₗ ℤ` for
-`Metalogic/Z1Countermodel.lean`'s CEF-closing countermodel (discharging
+`Metalogic/Conservativity/Z1Countermodel.lean`'s CEF-closing countermodel (discharging
 `bl_soundness_discrete_succ`'s `[SuccOrder] [PredOrder]` binders, report §6.1), and at `ℤ ×ₗ ℤ`
 for `Metalogic/Independence/LexIntWitness.lean`'s `Sat .Discrete` separation.
 

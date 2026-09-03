@@ -4,7 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.BaseLanguage
+import FormalSystem.Metalogic.Conservativity.Backward
+import FormalSystem.Metalogic.Conservativity.BaseLanguageSoundness
+import FormalSystem.Metalogic.Conservativity.TMCompletenessReduction
+import FormalSystem.Metalogic.Conservativity.SpWitness
+import FormalSystem.Metalogic.Conservativity.Z1Countermodel
 
 /-!
 # The TM/TM⁺ conservativity bridge — backward direction
@@ -47,7 +51,7 @@ false** at `fc := .Base` and `fc := .Discrete`. That is an unsound placeholder, 
 debt, and the repository's zero-debt policy forbids it. Do not state the theorem; do not state
 an approximation of it.
 
-**Cross-reference**: `Metalogic/TMCompletenessReduction.lean` pins "TM (resp. TM_f) is complete
+**Cross-reference**: `Metalogic/Conservativity/TMCompletenessReduction.lean` pins "TM (resp. TM_f) is complete
 over task frames" as *the same proposition* as `forward` above, restricted to `fc := .Base`
 (resp. `.Discrete`) — its `tmCompleteBase_iff_forwardBase` / `tmCompleteDiscrete_iff_forwardDiscrete`
 are equivalences between two unasserted `Prop`s, proving neither side. A future dispatch
@@ -69,8 +73,8 @@ the TM⁺_f half.
 
 The other half — `TM_f ⊢ Z1 φ` fails, because `TM_f = TM + DF` is sound over *every* discrete
 frame while `Z1` is unsound over non-Archimedean discrete orders — is now **also** a theorem:
-`Metalogic/Z1Countermodel.lean`'s `not_bl_derivable_z1`, via `bl_soundness_discrete_succ`
-(`Metalogic/BaseLanguageSoundness.lean`, the binder-weakened discrete BL soundness theorem
+`Metalogic/Conservativity/Z1Countermodel.lean`'s `not_bl_derivable_z1`, via `bl_soundness_discrete_succ`
+(`Metalogic/Conservativity/BaseLanguageSoundness.lean`, the binder-weakened discrete BL soundness theorem
 dropping the Archimedean instances) applied to a countermodel over `ℚ ×_lex ℤ`
 (`Semantics/LexCarrier.lean`), **not** `ℤ ×_lex ℤ` as an earlier draft of this section and the
 research report both suggested — `ℚ ×_lex ℤ` is the carrier `BXCanonical/DiscreteCarrierProbe.lean`
@@ -92,7 +96,7 @@ and M5, and **both are available at `FrameClass.Base` in this repository**:
 `ProofSystem.Axiom.minFrameClass`'s non-`Base` list, so both fall through its catch-all to
 `.Base`. The source's `(Sp)` derivation is thus available verbatim in `⊢[FrameClass.Base]`,
 given the repository's own `completeness_*` results for the two BL⁺-valid conditionals — but
-this repository does not reconstruct that TMP-NB/M5 derivation; instead `Metalogic/SpWitness.lean`
+this repository does not reconstruct that TMP-NB/M5 derivation; instead `Metalogic/Conservativity/SpWitness.lean`
 reaches the same TM⁺ half by a different, and independently informative, route: `(Sp)` (its own
 reconstruction of the witness, since the source formula's own `\label` was deleted from the
 paper — see Provenance below) is BL-**valid** on every task frame for a purely order-theoretic
@@ -103,7 +107,7 @@ reason (`SpWitness.blValid_sp`, from `Semantics/DurationClassification.lean`'s
 Unlike CEF, the failing half — no instance of `(Sp)` is a TM-theorem, by soundness on a
 disjoint two-fibre structure (a `ℤ`-fibre and an `ℝ`-fibre with `□` read globally over both) —
 is **not** merely unbuilt but **unavailable in principle** with the tree's current semantics
-layer: `BLTruthAt`/`bl_soundness` are `TaskFrame`-bound, and `Metalogic/SpWitness.lean`'s own
+layer: `BLTruthAt`/`bl_soundness` are `TaskFrame`-bound, and `Metalogic/Conservativity/SpWitness.lean`'s own
 un-boxed sharpening (report §4.2) shows why a `TaskFrame`-level argument cannot reach the
 two-fibre case — `(Sp)`'s un-boxed dichotomy is valid on *every* strict linear order, so what a
 CEB countermodel needs is a structure where `□` sees *different* histories with
@@ -152,26 +156,26 @@ merely unattempted here.
 
 A BL-side semantics and a BL-side soundness theorem now exist tree-wide
 (`FormalSystem/Semantics/BLTruth.lean`'s `BLTruthAt`, and
-`FormalSystem/Metalogic/BaseLanguageSoundness.lean`'s `bl_soundness` family), but what each row
+`FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean`'s `bl_soundness` family), but what each row
 still needs beyond that differs, and reading it as one shared "countermodels alone" gap is no
 longer accurate for either row:
 
 - **CEF (`FrameClass.Discrete`) — done, both halves machine-checked.** The missing prerequisite
   was a *binder-weakened* BL soundness theorem — `bl_soundness_discrete_succ`
-  (`Metalogic/BaseLanguageSoundness.lean`), dropping `IsSuccArchimedean`/`IsPredArchimedean` so
+  (`Metalogic/Conservativity/BaseLanguageSoundness.lean`), dropping `IsSuccArchimedean`/`IsPredArchimedean` so
   it applies to a non-Archimedean carrier — plus the countermodel itself, assembled over
   `multiFamTaskFrameGen` at the non-Archimedean discrete carrier `ℚ ×_lex ℤ`
-  (`Semantics/LexCarrier.lean`, `Metalogic/Z1Countermodel.lean`). **Both are now landed**: `z1_translate`
+  (`Semantics/LexCarrier.lean`, `Metalogic/Conservativity/Z1Countermodel.lean`). **Both are now landed**: `z1_translate`
   below is the TM⁺_f half, and `Z1Countermodel.not_bl_derivable_z1` is the TM_f half — the
   refutation is machine-checked, not merely documented.
 - **CEB (`FrameClass.Base`) — still not machine-checkable in this tree, and not close.** The
   missing prerequisite is a **frame notion outside `TaskFrame`** plus a **native** (non-composed)
   BL soundness theorem over it. `BLTruthAt`/`bl_soundness` are `TaskFrame`-bound and cannot
-  supply this: `(Sp) := □(DF φ) ∨ □(DN ψ)` — the reconstructed witness, `Metalogic/SpWitness.lean`'s
+  supply this: `(Sp) := □(DF φ) ∨ □(DN ψ)` — the reconstructed witness, `Metalogic/Conservativity/SpWitness.lean`'s
   `blValid_sp`/`sp_translate` — is BL-valid on *every* task frame (a theorem now, not a
   conjecture), and TM⁺ is *unsound* on the two-fibre class the source's refutation needs, so the
   `translate`-then-`soundness` composition this module supplies is unavailable **in principle**,
-  not merely unbuilt. See `Metalogic/SpWitness.lean`'s module docstring for the un-boxed
+  not merely unbuilt. See `Metalogic/Conservativity/SpWitness.lean`'s module docstring for the un-boxed
   sharpening (report §4.2) that makes this precise: `□` is what turns the dichotomy into a
   frame-uniform fact, and a CEB refutation needs a structure where different histories see
   differently-shaped time.
@@ -180,7 +184,7 @@ The **forward direction remains refuted** at both rows and must still not be sta
 `sorry`-ed here — nothing about the CEF closure changes that; it closes CEF's specific
 row-refutation with a machine-checked witness, while leaving the general prohibition (this
 module's own `forward` schema, for every frame class) exactly as forbidden as before. See also
-`Metalogic/TMCompletenessReduction.lean`, whose `tmCompleteBase_iff_forwardBase` /
+`Metalogic/Conservativity/TMCompletenessReduction.lean`, whose `tmCompleteBase_iff_forwardBase` /
 `tmCompleteDiscrete_iff_forwardDiscrete` pin "TM (resp. TM_f) complete over task frames" as the
 *same proposition* as this module's forward-conservativity prohibition, at `.Base` and
 `.Discrete` respectively — so a future dispatch attempting TM-completeness directly is thereby
@@ -224,159 +228,34 @@ BL-validity over C  ⟸[bl_soundness…]  ⊢ᴮᴸ[fc] φ  ⟶[translate]  ⊢[
 ```
 
 and this module is the middle arrow only. The left arrow is now built, in
-`FormalSystem/Metalogic/BaseLanguageSoundness.lean`, which is where the `FormalSystem.Semantics`
+`FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean`, which is where the `FormalSystem.Semantics`
 import lives; it composes `translate` with `Metalogic/Soundness.lean`'s four theorems across the
 truth-transfer bridge `truthAt_tr`. This module and everything under
 `FormalSystem/BaseLanguage/` remain semantics-free.
 -/
 
-namespace FormalSystem.Metalogic.Conservativity
+/-!
+## What this module is
 
-open FormalSystem.Syntax
-open FormalSystem.ProofSystem
-open FormalSystem.BaseLanguage
+**This file is the aggregator, and it holds no declarations.** It carries the narrative above —
+the forward-conservativity prohibition, the paper-anchor record, and the per-row status of CEB
+and CEF — and re-exports the five modules that make up the BL-vs-TM story:
 
-/--
-**The backward conservativity bridge.**
+| Module | Contents |
+|--------|----------|
+| `Conservativity/Backward.lean` | `translate`, `derivable_translate`, the four `*_backward` rows, `Z1`, `z1_translate` |
+| `Conservativity/BaseLanguageSoundness.lean` | the `bl_soundness` family and the `truthAt_tr` transfer bridge |
+| `Conservativity/TMCompletenessReduction.lean` | `TMComplete` / `Forward` and their equivalence |
+| `Conservativity/SpWitness.lean` | the reconstructed `(Sp)` witness for the CEB row |
+| `Conservativity/Z1Countermodel.lean` | `not_bl_derivable_z1` and `tmCompleteDiscrete_refuted` |
 
-Every TM derivation over the base language BL becomes a TM⁺ derivation of its translation, at
-the same frame class and over the translated context.
+**The children must never import this file.** Each imports
+`FormalSystem.Metalogic.Conservativity.Backward` directly; importing the aggregator from a child
+is an import cycle, because the aggregator imports every child. The chain the children preserve
+is `Backward ← BaseLanguageSoundness ← TMCompletenessReduction ← Z1Countermodel`, with
+`SpWitness` hanging off `BaseLanguageSoundness`.
 
-Seven cases, one per BL rule:
-
-- `axiom` — `BaseLanguage.dischargeAxiom`, the lookup table of
-  `BaseLanguage/AxiomDischarge.lean`, weakened from the empty context.
-- `assumption` — membership transported through `tr` by `BaseLanguage.mem_trCtx`.
-- `modus_ponens`, `weakening` — structural.
-- `necessitation`, `temporal_necessitation` — structural; both rules are empty-context on both
-  sides and `trCtx [] = []` definitionally.
-- `temporal_duality` — the load-bearing case. TM's **TD** concludes `⊢ swapBL φ` while BL⁺'s
-  rule concludes `⊢ swapTemporal (tr φ)`; `BaseLanguage.tr_swapBL` is exactly the equation that
-  makes those the same formula, and without it this case does not typecheck.
+The namespace is unchanged by the reorganization: `Backward.lean` still opens
+`namespace FormalSystem.Metalogic.Conservativity`, so every declaration keeps its
+fully-qualified name and no call site outside these files moved.
 -/
-noncomputable def translate {fc : FrameClass} {Γ : BaseLanguage.Context} {φ : BLFormula} :
-    BaseLanguage.DerivationTree fc Γ φ → ProofSystem.DerivationTree fc (trCtx Γ) (tr φ)
-  | .axiom Γ _ h h_fc =>
-      ProofSystem.DerivationTree.weakening [] (trCtx Γ) _
-        (BaseLanguage.dischargeAxiom h h_fc) (List.nil_subset _)
-  | .assumption _ _ h => .assumption _ _ (BaseLanguage.mem_trCtx h)
-  | .modus_ponens _ φ ψ d1 d2 =>
-      .modus_ponens _ (tr φ) (tr ψ) (translate d1) (translate d2)
-  | .necessitation φ d => .necessitation (tr φ) (translate d)
-  | .temporal_necessitation φ d => .temporal_necessitation (tr φ) (translate d)
-  | .temporal_duality φ d =>
-      (BaseLanguage.tr_swapBL φ).symm ▸
-        ProofSystem.DerivationTree.temporal_duality (tr φ) (translate d)
-  | .weakening _ _ _ d h =>
-      .weakening _ _ _ (translate d)
-        (by
-          intro x hx
-          obtain ⟨y, hy, rfl⟩ := List.mem_map.mp hx
-          exact List.mem_map_of_mem (h hy))
-
-/--
-The `Prop`-level backward bridge: TM-derivability implies TM⁺-derivability of the translation,
-at the same frame class.
--/
-theorem derivable_translate {fc : FrameClass} {Γ : BaseLanguage.Context} {φ : BLFormula}
-    (h : BaseLanguage.Derivable fc Γ φ) :
-    ProofSystem.Derivable fc (trCtx Γ) (tr φ) :=
-  h.elim fun d => ⟨translate d⟩
-
-/-! ## The four paper rows
-
-Each row is `translate` at one frame class and the empty context — the paper's rows are
-theoremhood claims, not consequence claims. `trCtx [] = []` definitionally, so no context
-bookkeeping appears in the statements. -/
-
-/--
-**CEB**: `TM ⊢ φ ⟹ TM⁺ ⊢ tr φ`, at `FrameClass.Base`.
-
-The base row: no extension axiom is available on either side.
--/
-theorem ceb_backward {φ : BLFormula}
-    (h : BaseLanguage.Derivable FrameClass.Base [] φ) :
-    ProofSystem.Derivable FrameClass.Base [] (tr φ) :=
-  derivable_translate h
-
-/--
-**CEF**: `TM_f ⊢ φ ⟹ TM⁺_f ⊢ tr φ`, at `FrameClass.Discrete`.
-
-`TM_f` is TM + **DF**; its translation is discharged by
-`FormalSystem.Theorems.DiscreteUnfolding.dfSchema`, derived syntactically (Route A) with no
-appeal to the completeness machinery.
--/
-theorem cef_backward {φ : BLFormula}
-    (h : BaseLanguage.Derivable FrameClass.Discrete [] φ) :
-    ProofSystem.Derivable FrameClass.Discrete [] (tr φ) :=
-  derivable_translate h
-
-/--
-**CED**: `TM_d ⊢ φ ⟹ TM⁺_d ⊢ tr φ`, at `FrameClass.Dense`.
-
-`TM_d` is TM + **DN** (`GGφ → Gφ`), whose translation is literally `Axiom.density`.
--/
-theorem ced_backward {φ : BLFormula}
-    (h : BaseLanguage.Derivable FrameClass.Dense [] φ) :
-    ProofSystem.Derivable FrameClass.Dense [] (tr φ) :=
-  derivable_translate h
-
-/--
-**CEC**: `TM_dc ⊢ φ ⟹ TM⁺_dc ⊢ tr φ`, at `FrameClass.Dedekind`.
-
-**Fidelity caveat — this row is TM_dc, not the paper's TM_c.** This repository's
-`FrameClass.Dedekind` sits strictly *above* `FrameClass.Dense` (`Dense ≤ Dedekind`, see
-`ProofSystem/Axioms.lean`), so a `.Dedekind` derivation may use `Axiom.density` and
-`Axiom.dense_indicator` as well as the Reynolds gap axioms. The row therefore reads
-`TM_dc ⟶ TM⁺_dc` — the dense complete / real-flow system — and **not** the paper's TM_c,
-which is completeness *simpliciter* with no density binder. There is no repository frame class
-for "complete but not dense"; `ProofSystem/Axioms.lean`'s `FrameClass` docstring explains why
-that is a genuine gap rather than an omission. Do not read `cec_backward` as establishing the
-TM_c row.
-
-The BL-side CO axiom's translation is discharged by
-`FormalSystem.Theorems.DedekindDerived.co_derived`, itself sorry-free over the Reynolds triple.
--/
-theorem cec_backward {φ : BLFormula}
-    (h : BaseLanguage.Derivable FrameClass.Dedekind [] φ) :
-    ProofSystem.Derivable FrameClass.Dedekind [] (tr φ) :=
-  derivable_translate h
-
-/-! ## The CEF forward-direction witness
-
-Not part of the bridge: this is the machine-checked half of the Deliverable B refutation
-record above. It says nothing about `TM_f ⊢ Z1`, which is the half that fails and which needs
-a BL-side soundness theorem to establish. -/
-
-/--
-The BL-side **Z1** schema, `G(Gφ → φ) → (F(Gφ) → Gφ)`, with BL's *derived* `F`.
-
-This is the paper's TMP-Z1 written in the base language. It is the CEF forward-direction
-witness: its translation is a `TM⁺_f` theorem (`z1_translate`) while it is not a `TM_f`
-theorem, the latter by soundness over `ℤ ×_lex ℤ` — an argument this repository cannot yet
-formalize (see the module docstring).
--/
-def Z1 (φ : BLFormula) : BLFormula :=
-  (φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)
-
-/--
-`⊢[Discrete] tr (Z1 φ)` — the translation of the BL-side Z1 schema is a `TM⁺_f` theorem.
-
-Two steps: `ProofSystem.Axiom.z1` at `FrameClass.Discrete`, then
-`BaseLanguage.notGNot_imp_F` pushed into the antecedent of the consequent by
-`BaseLanguage.impMono`, converting the axiom's `F(Gφ)` into the `¬G¬(Gφ)` shape `tr` produces.
-
-**This is not the forward direction and does not approach it.** It is one half of the CEF
-witness, and it is the half that *succeeds*. See the module docstring for why the other half
-is out of scope, and for why no `sorry`-ed `forward` theorem may be written.
--/
-theorem z1_translate (φ : BLFormula) :
-    ProofSystem.Derivable FrameClass.Discrete [] (tr (Z1 φ)) :=
-  ⟨FormalSystem.Theorems.Combinators.impTrans
-    (ProofSystem.DerivationTree.axiom [] _ (ProofSystem.Axiom.z1 (tr φ))
-      (show FrameClass.Discrete ≤ FrameClass.Discrete from le_refl _))
-    (BaseLanguage.impMono
-      (BaseLanguage.notGNot_imp_F (tr φ).allFuture)
-      (FormalSystem.Theorems.Combinators.identity (tr φ).allFuture))⟩
-
-end FormalSystem.Metalogic.Conservativity

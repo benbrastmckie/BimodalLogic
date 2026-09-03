@@ -19,7 +19,7 @@ Task frame semantics for TM bimodal logic.
 | ShiftSet.lean | Shift-set representation theorem: task models ↔ shift sets, both directions with truth correspondence |
 | Validity.lean | Validity and semantic consequence |
 | BLValidity.lean | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDiscreteSucc`, `BLValidDedekind` — binder-for-binder base-language mirrors of Validity.lean |
-| BLSchemaValidity.lean | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/SpWitness.lean` and `bl_soundness_discrete_succ` |
+| BLSchemaValidity.lean | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/Conservativity/SpWitness.lean` and `bl_soundness_discrete_succ` |
 | DurationClassification.lean | Classification of Dedekind-complete duration groups: discrete (`≃+o ℤ`) or densely ordered; also `duration_dense_or_least_pos`, the Archimedean-free order dichotomy |
 | LexCarrier.lean | `LexInt`: `SuccOrder`/`PredOrder` instances, `isLeast_pos`, and the three non-Archimedean theorems for `α ×ₗ ℤ` at an arbitrary ordered abelian group `α` — instantiated at `ℚ` for the CEF countermodel and at `ℤ` for the `Sat .Discrete` separation |
 | FrameAxioms.lean | The frame axioms (nullity, compositionality, reflection) as standalone statements |

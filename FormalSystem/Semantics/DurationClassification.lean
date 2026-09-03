@@ -328,7 +328,7 @@ Every nontrivial totally ordered abelian group is either densely ordered, or has
 strictly positive element. No least-upper-bound hypothesis, no Archimedean hypothesis — this is
 deliberately weaker in its assumptions than `complete_duration_discrete_or_dense` and
 `isLeast_pos_succ_zero` above, and is what lets the (Sp) validity argument
-(`Metalogic/SpWitness.lean`) apply to an arbitrary `TaskFrame.Duration` rather than only to a
+(`Metalogic/Conservativity/SpWitness.lean`) apply to an arbitrary `TaskFrame.Duration` rather than only to a
 Dedekind-complete or successor-structured one.
 
 **Proof idea**: if `D` is not densely ordered, some `a < b` has nothing strictly between them;

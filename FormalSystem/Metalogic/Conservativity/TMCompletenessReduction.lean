@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.BaseLanguageSoundness
+import FormalSystem.Metalogic.Conservativity.BaseLanguageSoundness
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.StrongCompleteness
 
@@ -67,7 +67,7 @@ routing `⊢[Base] tr φ` through TM⁺'s own soundness to `Valid (tr φ)`, then
 * `FormalSystem/Metalogic/Conservativity.lean` — the forward-conservativity prohibition this
   module strengthens
 * `FormalSystem/Metalogic/BXCanonical/Completeness.lean` — `completeness`, `completeness_discrete`
-* `FormalSystem/Metalogic/BaseLanguageSoundness.lean` — `blValid_iff_valid_tr`,
+* `FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean` — `blValid_iff_valid_tr`,
   `blValidDiscrete_iff_validDiscrete_tr`
 -/
 
@@ -108,7 +108,7 @@ a weak-completeness engine at `fc`.
 
 Forward (`TMComplete fc → Forward fc`): given `⊢[fc] tr φ`, `soundness_validIn`
 (`Metalogic/Soundness.lean`) gives `ValidIn fc (tr φ)`, and `blValidIn_iff_validIn_tr`
-(`Metalogic/BaseLanguageSoundness.lean`) crosses to `BLValidIn fc φ`; apply the hypothesis. This
+(`Metalogic/Conservativity/BaseLanguageSoundness.lean`) crosses to `BLValidIn fc φ`; apply the hypothesis. This
 direction does not use the engine.
 
 Backward (`Forward fc → TMComplete fc`): given `BLValidIn fc φ`, `blValidIn_iff_validIn_tr` gives

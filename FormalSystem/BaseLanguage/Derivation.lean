@@ -98,7 +98,7 @@ Lift a derivation from `fc₁` to `fc₂` when `fc₁ ≤ fc₂`.
 
 Mirrors `ProofSystem.DerivationTree.lift`: the only interesting case is `axiom`, where
 transitivity composes the two `≤` proofs. Used by the row corollaries in
-`Metalogic/Conservativity.lean` to move a TM theorem into `TM_f` / `TM_d` / `TM_dc`.
+`Metalogic/Conservativity/Backward.lean` to move a TM theorem into `TM_f` / `TM_d` / `TM_dc`.
 -/
 def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
     {Γ : Context} {φ : BLFormula} : DerivationTree fc₁ Γ φ → DerivationTree fc₂ Γ φ

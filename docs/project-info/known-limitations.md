@@ -274,7 +274,7 @@ proved in the **backward** direction only:
 TM ⊢ φ   ⟹   TM⁺ ⊢ tr φ
 ```
 
-`FormalSystem/Metalogic/Conservativity.lean` proves this by structural recursion over TM
+`FormalSystem/Metalogic/Conservativity/Backward.lean` proves this by structural recursion over TM
 derivations, parameterized by frame class so that the paper's four rows are four instantiations
 of one theorem: `translate` (`:170`), `derivable_translate` (`:194`), and the four row
 corollaries `ceb_backward` (`:210`), `cef_backward` (`:222`), `ced_backward` (`:232`),
@@ -294,7 +294,7 @@ semantics)" section of `FormalSystem/Metalogic.lean`.
   no longer have to be routed through `tr` to be given meaning:
   `FormalSystem/Semantics/BLTruth.lean` defines `BLTruthAt` natively on `BLFormula`,
   `FormalSystem/Semantics/BLValidity.lean` carries the four BL validity predicates, and
-  `FormalSystem/Metalogic/BaseLanguageSoundness.lean` proves BL soundness at `FrameClass.Base`
+  `FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean` proves BL soundness at `FrameClass.Base`
   and its three extensions. **This does not change the limitation**: it is a fact about the
   proof systems, and the forward direction stays refuted.
 

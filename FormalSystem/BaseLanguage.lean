@@ -16,7 +16,7 @@ import FormalSystem.BaseLanguage.AxiomDischarge
 This component is a self-contained mirror of `Syntax` + `ProofSystem` for the paper's *base
 language* BL (`def:BL-language`), in which `H` and `G` are primitive rather than derived from
 `until`/`since`. It exists to support the **backward** conservativity bridge
-`TM ⊢ φ ⟹ TM⁺ ⊢ tr φ`, proved in `FormalSystem/Metalogic/Conservativity.lean`.
+`TM ⊢ φ ⟹ TM⁺ ⊢ tr φ`, proved in `FormalSystem/Metalogic/Conservativity/Backward.lean`.
 
 ## Modules
 
@@ -38,7 +38,7 @@ is a mistake. It forbids the edge `BaseLanguage/ → Semantics/`. It says nothin
 converse edge, which is permitted and is exactly how the base language's semantics is sited:
 `FormalSystem/Semantics/BLTruth.lean` imports `FormalSystem.BaseLanguage.Formula` in order to
 define `BLTruthAt` natively on `BLFormula`, `FormalSystem/Semantics/BLValidity.lean` builds the
-BL validity predicates on top of it, and `FormalSystem/Metalogic/BaseLanguageSoundness.lean`
-composes those with `Metalogic/Conservativity.lean`'s `translate` to give BL soundness. Meeting
+BL validity predicates on top of it, and `FormalSystem/Metalogic/Conservativity/BaseLanguageSoundness.lean`
+composes those with `Metalogic/Conservativity/Backward.lean`'s `translate` to give BL soundness. Meeting
 those modules is not evidence that this invariant has been violated.
 -/

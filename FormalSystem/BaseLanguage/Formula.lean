@@ -20,7 +20,7 @@ This is deliberately *not* `FormalSystem.Syntax.Formula`, whose primitives are `
 and whose `allPast`/`allFuture` are derived abbreviations. The two languages are related by the
 translation `FormalSystem.BaseLanguage.tr` (`BaseLanguage/Translation.lean`), which is the
 substance of the backward conservativity bridge in
-`FormalSystem/Metalogic/Conservativity.lean`.
+`FormalSystem/Metalogic/Conservativity/Backward.lean`.
 
 ## Main Definitions
 

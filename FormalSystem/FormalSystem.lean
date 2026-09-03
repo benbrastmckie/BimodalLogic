@@ -30,7 +30,7 @@ with linear temporal logic.
 and 7 inference rules
 - `FormalSystem.BaseLanguage`: The tense-primitive base language BL (`H`/`G` primitive) with
   TM's Hilbert system and the translation `tr : BLFormula → Formula` into BL⁺, supporting the
-  backward conservativity bridge in `Metalogic/Conservativity.lean`. Imports nothing from
+  backward conservativity bridge in `Metalogic/Conservativity/Backward.lean`. Imports nothing from
   `Semantics/`
 - `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and
 validity

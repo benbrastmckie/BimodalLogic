@@ -220,7 +220,7 @@ derivable from the empty context at `fc`.
 
 This is the third member of the family, sitting below `StrongCompleteness` above and beside
 `Compact`, and it is the name the rest of the tree was missing. Every theorem in
-`Metalogic/StrongCompleteness.lean` and `Metalogic/TMCompletenessReduction.lean` that used to
+`Metalogic/StrongCompleteness.lean` and `Metalogic/Conservativity/TMCompletenessReduction.lean` that used to
 carry a longhand `engine : ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ` hypothesis now
 quotes this one name instead; the four hypotheses were the same predicate written out four
 times.

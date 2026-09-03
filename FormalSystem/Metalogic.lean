@@ -15,10 +15,7 @@ import FormalSystem.Metalogic.Independence
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.WeakCanonical
 import FormalSystem.Metalogic.Conservativity
-import FormalSystem.Metalogic.BaseLanguageSoundness
 import FormalSystem.Metalogic.Algebraic
-import FormalSystem.Metalogic.Z1Countermodel
-import FormalSystem.Metalogic.SpWitness
 
 /-!
 # Bimodal Metalogic
@@ -46,7 +43,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   `Metalogic/Conservativity.lean`'s module docstring is the standing record of why it must not
   be attempted or `sorry`-ed. That record's list of prerequisites a machine-checked refutation
   would need has narrowed: the BL-side semantics and soundness theorem now exist
-  (`Metalogic/BaseLanguageSoundness.lean`), and the two countermodels remain outstanding.
+  (`Metalogic/Conservativity/BaseLanguageSoundness.lean`), and the two countermodels remain outstanding.
 
 ## Publication-Ready Results
 
@@ -60,7 +57,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   **native** BL semantics `BLTruthAt` of `Semantics/BLTruth.lean` — a six-clause recursion on
   `BLFormula`, not `TruthAt ∘ tr` — and obtained by composing `Conservativity.translate` with the
   four theorems above across the truth-transfer bridge `Semantics.truthAt_tr`, which is proved by
-  induction in `Metalogic/BaseLanguageSoundness.lean`. `bl_soundness_dedekind` carries
+  induction in `Metalogic/Conservativity/BaseLanguageSoundness.lean`. `bl_soundness_dedekind` carries
   `ValidDedekind`'s binder set and its validity form concludes at `BLValidDedekind`,
   inheriting `soundness_dedekind`'s target; a density-free `BLValidComplete` is deliberately not
   defined because it would be refutable

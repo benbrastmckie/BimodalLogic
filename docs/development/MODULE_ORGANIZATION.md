@@ -127,7 +127,7 @@ in `FormalSystem/BaseLanguage.lean`.
 
 The invariant is **directional**, and the converse edge is both permitted and used:
 `Semantics/BLTruth.lean` imports `BaseLanguage.Formula` to define `BLTruthAt` natively on
-`BLFormula`, and `Metalogic/BaseLanguageSoundness.lean` composes that with `Translation` and
+`BLFormula`, and `Metalogic/Conservativity/BaseLanguageSoundness.lean` composes that with `Translation` and
 `Conservativity`. So the one `Semantics → BaseLanguage` edge in the tree runs into a
 `Syntax.Atom`-only leaf and introduces no cycle.
 
@@ -263,7 +263,7 @@ translation. It is the language in which the source paper states TM.
 The base language's **semantics** deliberately does not live here, so that the directory's
 `BaseLanguage/ → Semantics/` invariant stays literally true: see
 `FormalSystem.Semantics.BLTruth`, `FormalSystem.Semantics.BLValidity` and
-`FormalSystem.Metalogic.BaseLanguageSoundness` below.
+`FormalSystem.Metalogic.Conservativity.BaseLanguageSoundness` below.
 
 ### Semantics
 * `FormalSystem.Semantics.TaskFrame`
@@ -278,7 +278,7 @@ The base language's **semantics** deliberately does not live here, so that the d
 
 ### Metalogic
 * `FormalSystem.Metalogic.Soundness`
-* `FormalSystem.Metalogic.BaseLanguageSoundness` -- BL soundness at Base/Dense/Discrete/Dedekind,
+* `FormalSystem.Metalogic.Conservativity.BaseLanguageSoundness` -- BL soundness at Base/Dense/Discrete/Dedekind,
   by composition, plus the truth-transfer bridge `truthAt_tr`
 * `FormalSystem.Metalogic.SoundnessLemmas`
 * `FormalSystem.Metalogic.Core.DeductionTheorem`

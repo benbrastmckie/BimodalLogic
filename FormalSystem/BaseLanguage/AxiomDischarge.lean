@@ -116,7 +116,7 @@ private def andMono {fc : FrameClass} {A A' B B' : Formula}
 
 /-- Implication is antitone in its antecedent and monotone in its consequent.
 
-Public (unlike its neighbours) because `Metalogic/Conservativity.lean`'s `z1_translate` needs
+Public (unlike its neighbours) because `Metalogic/Conservativity/Backward.lean`'s `z1_translate` needs
 it to push the `F`-bridge into the antecedent of `Axiom.z1`'s consequent. -/
 def impMono {fc : FrameClass} {A A' B B' : Formula}
     (hA : ⊢[fc] A'.imp A) (hB : ⊢[fc] B.imp B') : ⊢[fc] (A.imp B).imp (A'.imp B') := by
@@ -324,7 +324,7 @@ BL's CO differs from it only in the inner `F(HA)`, which the bridge repairs — 
 by `impMono` and then under `△` by `alwaysMono`.
 
 Because this repository's `Dedekind` admits the dense axioms, the row lands at the paper's
-**TM_dc**, not TM_c; see `Metalogic/Conservativity.lean`'s `cec_backward`. -/
+**TM_dc**, not TM_c; see `Metalogic/Conservativity/Backward.lean`'s `cec_backward`. -/
 def discharge_co {fc : FrameClass} (h_fc : FrameClass.Dedekind ≤ fc) (a : BLFormula) :
     ⊢[fc] tr ((a.allPast.imp a.allPast.someFuture).always.imp (a.allPast.imp a.allFuture)) :=
   impTrans

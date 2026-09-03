@@ -34,7 +34,7 @@ developments. Only `FrameClass`, its order, and `FrameClass.base_le` are used fr
 **CEC fidelity caveat.** This repository's `Dedekind` class satisfies `Dense ≤ Dedekind`, so a
 `.Dedekind` derivation admits the dense axioms too. `Axiom.co ↦ .Dedekind` therefore lands the
 CO row at the paper's **TM_dc**, not at TM_c; there is no repository frame class for "complete
-but not dense". See `FormalSystem/Metalogic/Conservativity.lean`'s `cec_backward`.
+but not dense". See `FormalSystem/Metalogic/Conservativity/Backward.lean`'s `cec_backward`.
 
 ## `Type` rather than `Prop`
 

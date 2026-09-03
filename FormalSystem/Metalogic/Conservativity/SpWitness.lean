@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.BLSchemaValidity
-import FormalSystem.Metalogic.BaseLanguageSoundness
+import FormalSystem.Metalogic.Conservativity.BaseLanguageSoundness
 import FormalSystem.Metalogic.BXCanonical
 
 /-!
