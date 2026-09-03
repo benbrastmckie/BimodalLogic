@@ -168,14 +168,8 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
     rw [h_af_eq] at h_af_in
     -- h_sf_in : someFuture phi ∈ M, h_af_in : (someFuture (phi.neg.neg)).neg ∈ M
     -- Derive ⊢ someFuture phi → someFuture (phi.neg.neg) via DNI + BX3
-    have h_dni : [] ⊢ phi.imp phi.neg.neg := Combinators.notNotIntro phi
-    have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).allFuture :=
-      DerivationTree.temporal_necessitation _ h_dni
-    have h_bx3 : [] ⊢ (phi.imp phi.neg.neg).allFuture.imp
-        ((Formula.untl Formula.top phi).imp (Formula.untl Formula.top phi.neg.neg)) :=
-      DerivationTree.axiom [] _ (Axiom.right_mono_until phi phi.neg.neg Formula.top) trivial
     have h_sf_impl : [] ⊢ (Formula.someFuture phi).imp (Formula.someFuture phi.neg.neg) :=
-      DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
+      FormalSystem.Theorems.TemporalDerived.someFuture_mono (Combinators.notNotIntro phi)
     have h_sf_nn_in : Formula.someFuture phi.neg.neg ∈ M :=
       SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_sf_impl) h_sf_in
@@ -187,14 +181,8 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
     cases SetMaximalConsistent.negation_complete h_mcs (Formula.someFuture phi.neg.neg) with
     | inl h_in =>
       -- Derive ⊢ someFuture (phi.neg.neg) → someFuture phi via DNE + BX3
-      have h_dne : [] ⊢ phi.neg.neg.imp phi := Propositional.doubleNegation phi
-      have h_G_dne : [] ⊢ (phi.neg.neg.imp phi).allFuture :=
-        DerivationTree.temporal_necessitation _ h_dne
-      have h_bx3 : [] ⊢ (phi.neg.neg.imp phi).allFuture.imp
-          ((Formula.untl Formula.top phi.neg.neg).imp (Formula.untl Formula.top phi)) :=
-        DerivationTree.axiom [] _ (Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
       have h_sf_impl : [] ⊢ (Formula.someFuture phi.neg.neg).imp (Formula.someFuture phi) :=
-        DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dne
+        FormalSystem.Theorems.TemporalDerived.someFuture_mono (Propositional.doubleNegation phi)
       exact SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_sf_impl) h_in
     | inr h_neg_in => exact absurd h_neg_in h_af_not_in
@@ -220,15 +208,9 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
   constructor
   · intro h_sp_in h_ap_in
     rw [h_ap_eq] at h_ap_in
-    -- Derive ⊢ somePast phi → somePast (phi.neg.neg) via DNI + BX3' (right_mono_since)
-    have h_dni : [] ⊢ phi.imp phi.neg.neg := Combinators.notNotIntro phi
-    have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).allPast :=
-      FormalSystem.Theorems.pastNecessitation _ h_dni
-    have h_bx3p : [] ⊢ (phi.imp phi.neg.neg).allPast.imp
-        ((Formula.snce Formula.top phi).imp (Formula.snce Formula.top phi.neg.neg)) :=
-      DerivationTree.axiom [] _ (Axiom.right_mono_since phi phi.neg.neg Formula.top) trivial
+    -- Derive ⊢ somePast phi → somePast (phi.neg.neg) via DNI + somePast_mono
     have h_sp_impl : [] ⊢ (Formula.somePast phi).imp (Formula.somePast phi.neg.neg) :=
-      DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dni
+      FormalSystem.Theorems.TemporalDerived.somePast_mono (Combinators.notNotIntro phi)
     have h_sp_nn_in : Formula.somePast phi.neg.neg ∈ M :=
       SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_sp_impl) h_sp_in
@@ -238,14 +220,8 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
     cases SetMaximalConsistent.negation_complete h_mcs (Formula.somePast phi.neg.neg) with
     | inl h_in =>
       -- Derive ⊢ somePast (phi.neg.neg) → somePast phi via DNE + BX3'
-      have h_dne : [] ⊢ phi.neg.neg.imp phi := Propositional.doubleNegation phi
-      have h_H_dne : [] ⊢ (phi.neg.neg.imp phi).allPast :=
-        FormalSystem.Theorems.pastNecessitation _ h_dne
-      have h_bx3p : [] ⊢ (phi.neg.neg.imp phi).allPast.imp
-          ((Formula.snce Formula.top phi.neg.neg).imp (Formula.snce Formula.top phi)) :=
-        DerivationTree.axiom [] _ (Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
       have h_sp_impl : [] ⊢ (Formula.somePast phi.neg.neg).imp (Formula.somePast phi) :=
-        DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dne
+        FormalSystem.Theorems.TemporalDerived.somePast_mono (Propositional.doubleNegation phi)
       exact SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_sp_impl) h_in
     | inr h_neg_in => exact absurd h_neg_in h_ap_not_in

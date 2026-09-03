@@ -409,6 +409,18 @@ def fMono {fc : FrameClass} (φ ψ : Formula) :
   DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ Formula.top) (FrameClass.base_le fc)
 
 /--
+`⊢ φ → ψ` yields `⊢ F(φ) → F(ψ)`: F is monotone under a theorem.
+
+Temporal necessitation of `h`, then `fMono`. This is a `def`, not a `theorem`:
+`⊢[fc] φ` is `DerivationTree`, which lives in `Type`. It is `{fc}`-generic via
+`fMono`'s own `FrameClass.base_le fc`, so no `DerivationTree.lift` is needed at
+call sites that were previously built at `.Base` and lifted.
+-/
+def someFuture_mono {fc : FrameClass} {φ ψ : Formula} (h : ⊢[fc] φ.imp ψ) :
+    ⊢[fc] φ.someFuture.imp ψ.someFuture :=
+  DerivationTree.modus_ponens [] _ _ (fMono φ ψ) (DerivationTree.temporal_necessitation _ h)
+
+/--
 `⊢ H(φ → ψ) → (P(φ) → P(ψ))`: P is monotone under H-guarded implication.
 
 Direct from BX3' (right_mono_since) with χ := ⊤:
@@ -417,6 +429,17 @@ Direct from BX3' (right_mono_since) with χ := ⊤:
 def pMono {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (φ.imp ψ).allPast.imp (φ.somePast.imp ψ.somePast) :=
   DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ Formula.top) (FrameClass.base_le fc)
+
+/--
+`⊢ φ → ψ` yields `⊢ P(φ) → P(ψ)`: P is monotone under a theorem.
+
+Past-necessitation of `h`, then `pMono`. Past dual of `someFuture_mono`, but
+`noncomputable` because `FormalSystem.Theorems.pastNecessitation` is; this
+asymmetry is why only `someFuture_mono` is suitable for `ProofStepExport`.
+-/
+noncomputable def somePast_mono {fc : FrameClass} {φ ψ : Formula} (h : ⊢[fc] φ.imp ψ) :
+    ⊢[fc] φ.somePast.imp ψ.somePast :=
+  DerivationTree.modus_ponens [] _ _ (pMono φ ψ) (FormalSystem.Theorems.pastNecessitation _ h)
 
 /--
 `⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G is monotone (alias for gDistribution).

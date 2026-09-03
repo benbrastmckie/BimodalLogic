@@ -330,7 +330,7 @@ after-count must be 0. Do not confuse with `bot_not_mem_predFormulas` (`Transfer
 
 ---
 
-### Phase 5: someFuture_mono / somePast_mono and the 13-site sweep [NOT STARTED]
+### Phase 5: someFuture_mono / somePast_mono and the 13-site sweep [COMPLETED]
 
 **Goal**: Introduce the two temporal monotonicity helpers and eliminate every inline
 `right_mono_until`-with-top idiom, including all 8 in `Bundle/`.
@@ -341,9 +341,13 @@ after-count must be 0. Do not confuse with `bot_not_mem_predFormulas` (`Transfer
       verbatim from report §3.4. `theorem` is rejected outright — `⊢[fc] φ` is `DerivationTree`,
       which is `Type`, not `Prop`. `somePast_mono` must be `noncomputable` because
       `FormalSystem.Theorems.pastNecessitation` is.
-- [ ] Confirm `Automation/ProofStepExport.lean:60`'s "computable, suitable for ProofStepExport"
+- [x] Confirm `Automation/ProofStepExport.lean:60`'s "computable, suitable for ProofStepExport"
       list is still accurate: `someFuture_mono` qualifies, `somePast_mono` does not. Update the
-      list only if it enumerates names.
+      list only if it enumerates names. *(deviation: altered — the `:60` list documents the 334
+      entries the file's own `mkEntry` table actually exports, not every computable theorem.
+      No `mkEntry` for `someFuture_mono` was added, so the list stays accurate as written and
+      needs no edit; adding one would have changed the documented entry counts and the
+      2026-06-01 validation record, which is outside this phase.)*
 - [ ] Replace all 13 live inline blocks: `Bundle/TemporalContent.lean:176,195,229,246`,
       `Bundle/WitnessSeed.lean:72,91,118,138`, `BXCanonical/Chronicle/RRelation.lean:1263,1286,1304,1346`,
       `WeakCanonical/ReflexiveCanonical.lean:212`.

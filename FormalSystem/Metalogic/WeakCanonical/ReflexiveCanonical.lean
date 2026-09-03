@@ -198,22 +198,6 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
   exact Bundle.some_future_all_future_neg_absurd h_mcs_y (Formula.neg ψ) h_F_neg_ψ_y h_Gnn_y
 
 /--
-Helper: From `⊢ A → B`, derive `⊢ F(A) → F(B)` (F-monotonicity).
-Uses BX3 (right_mono_until): G(A → B) → (U(A, ⊤) → U(B, ⊤)), i.e., G(A → B) → (F(A) → F(B)).
--/
-noncomputable def someFutureMono {A B : Formula}
-    (h : [] ⊢ A.imp B) : [] ⊢ (Formula.someFuture A).imp (Formula.someFuture B) := by
-  -- G(A → B) via temporal necessitation
-  have h_G : [] ⊢ Formula.allFuture (A.imp B) :=
-    DerivationTree.temporal_necessitation _ h
-  -- BX3: G(A → B) → (U(A, ⊤) → U(B, ⊤)) = G(A → B) → (F(A) → F(B))
-  have h_bx3 : [] ⊢ (A.imp B).allFuture.imp
-      ((Formula.untl Formula.top A).imp (Formula.untl Formula.top B)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_until A B Formula.top) trivial
-  -- F(A) → F(B) by MP
-  exact DerivationTree.modus_ponens [] _ _ h_bx3 h_G
-
-/--
 Forward linearity of the canonical temporal cone (Burgess 1984, Section 2.2).
 
 If `TempRFwd x y` and `TempRFwd x z`, then either `TempRFwd y z`, `y = z`,
@@ -315,7 +299,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_γ_to_γ₀ : [] ⊢ γ.imp γ₀ :=
         Combinators.impTrans (lceImp _ δ.neg) (lceImp γ₀ _)
       have h_Fγ_to_Fγ₀ : [] ⊢ (Formula.someFuture γ).imp (Formula.someFuture γ₀) :=
-        someFutureMono h_γ_to_γ₀
+        FormalSystem.Theorems.TemporalDerived.someFuture_mono h_γ_to_γ₀
       have h_β_to_nFγ₀ : [] ⊢ β.imp (Formula.someFuture γ₀).neg :=
         Combinators.impTrans (lceImp _ δ) (rceImp β₀ _)
       have h_l : [] ⊢ (Formula.and β (Formula.someFuture γ)).imp (Formula.someFuture γ₀).neg :=
@@ -334,7 +318,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_β_to_β₀ : [] ⊢ β.imp β₀ :=
         Combinators.impTrans (lceImp _ δ) (lceImp β₀ _)
       have h_Fβ_to_Fβ₀ : [] ⊢ (Formula.someFuture β).imp (Formula.someFuture β₀) :=
-        someFutureMono h_β_to_β₀
+        FormalSystem.Theorems.TemporalDerived.someFuture_mono h_β_to_β₀
       have h_γ_to_nFβ₀ : [] ⊢ γ.imp (Formula.someFuture β₀).neg :=
         Combinators.impTrans (lceImp _ δ.neg) (rceImp γ₀ _)
       have h_l : [] ⊢ (Formula.and (Formula.someFuture β) γ).imp (Formula.someFuture β₀) :=
@@ -401,7 +385,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
     · -- F(β∧Fγ): Fγ→Fγ₀, β→¬Fγ₀ → inconsistent
       have h_γ_to_γ₀ : [] ⊢ γ.imp γ₀ :=
         Combinators.impTrans (lceImp _ δ) (lceImp γ₀ _)
-      have h_Fγ_to_Fγ₀ := someFutureMono h_γ_to_γ₀
+      have h_Fγ_to_Fγ₀ := FormalSystem.Theorems.TemporalDerived.someFuture_mono h_γ_to_γ₀
       have h_β_to_nFγ₀ : [] ⊢ β.imp (Formula.someFuture γ₀).neg :=
         Combinators.impTrans (lceImp _ δ.neg) (rceImp β₀ _)
       have h_l : [] ⊢ (Formula.and β (Formula.someFuture γ)).imp (Formula.someFuture γ₀).neg :=
@@ -419,7 +403,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
     · -- F(Fβ∧γ): Fβ→Fβ₀, γ→¬Fβ₀ → inconsistent
       have h_β_to_β₀ : [] ⊢ β.imp β₀ :=
         Combinators.impTrans (lceImp _ δ.neg) (lceImp β₀ _)
-      have h_Fβ_to_Fβ₀ := someFutureMono h_β_to_β₀
+      have h_Fβ_to_Fβ₀ := FormalSystem.Theorems.TemporalDerived.someFuture_mono h_β_to_β₀
       have h_γ_to_nFβ₀ : [] ⊢ γ.imp (Formula.someFuture β₀).neg :=
         Combinators.impTrans (lceImp _ δ) (rceImp γ₀ _)
       have h_l : [] ⊢ (Formula.and (Formula.someFuture β) γ).imp (Formula.someFuture β₀) :=

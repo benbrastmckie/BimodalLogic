@@ -64,17 +64,9 @@ lemma some_future_all_future_neg_absurd {fc : FrameClass} {M : Set Formula}
   -- allFuture (neg psi) = (someFuture psi.neg.neg).neg
   -- From h_F and BX3 + DNI: someFuture psi.neg.neg ∈ M
   -- Contradiction with (someFuture psi.neg.neg).neg = allFuture (neg psi) ∈ M
-  have h_dni : [] ⊢ psi.imp psi.neg.neg := Combinators.notNotIntro psi
-  have h_G_dni : [] ⊢ (psi.imp psi.neg.neg).allFuture :=
-    DerivationTree.temporal_necessitation _ h_dni
-  have h_bx3 : [] ⊢ (psi.imp psi.neg.neg).allFuture.imp
-      ((Formula.untl Formula.top psi).imp (Formula.untl Formula.top psi.neg.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_until psi psi.neg.neg Formula.top) trivial
-  have h_impl : [] ⊢ (Formula.someFuture psi).imp (Formula.someFuture psi.neg.neg) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
   have h_sf_nn : Formula.someFuture psi.neg.neg ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_impl)) h_F
+      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.someFuture_mono (Combinators.notNotIntro psi))) h_F
   exact set_consistent_not_both h_mcs.1 (Formula.someFuture psi.neg.neg) h_sf_nn h_G_neg
 
 open FormalSystem.ProofSystem FormalSystem.Theorems in
@@ -83,17 +75,9 @@ lemma some_past_all_past_neg_absurd {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (psi : Formula)
     (h_P : Formula.somePast psi ∈ M)
     (h_H_neg : Formula.allPast (Formula.neg psi) ∈ M) : False := by
-  have h_dni : [] ⊢ psi.imp psi.neg.neg := Combinators.notNotIntro psi
-  have h_H_dni : [] ⊢ (psi.imp psi.neg.neg).allPast :=
-    pastNecessitation _ h_dni
-  have h_bx3 : [] ⊢ (psi.imp psi.neg.neg).allPast.imp
-      ((Formula.snce Formula.top psi).imp (Formula.snce Formula.top psi.neg.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_since psi psi.neg.neg Formula.top) trivial
-  have h_impl : [] ⊢ (Formula.somePast psi).imp (Formula.somePast psi.neg.neg) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3 h_H_dni
   have h_sp_nn : Formula.somePast psi.neg.neg ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_impl)) h_P
+      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.somePast_mono (Combinators.notNotIntro psi))) h_P
   exact set_consistent_not_both h_mcs.1 (Formula.somePast psi.neg.neg) h_sp_nn h_H_neg
 
 /-! ## Duality Conversions
@@ -110,14 +94,8 @@ lemma neg_some_future_to_all_future_neg {fc : FrameClass} {M : Set Formula}
     (h_neg_F : Formula.neg (Formula.someFuture phi) ∈ M) :
     Formula.allFuture (Formula.neg phi) ∈ M := by
   -- Build derivation chain at Base level, then lift to fc
-  have h_dne : [] ⊢ phi.neg.neg.imp phi := Propositional.doubleNegation _
-  have h_nec : [] ⊢ (phi.neg.neg.imp phi).allFuture :=
-    DerivationTree.temporal_necessitation _ h_dne
-  have h_bx3 : [] ⊢ (phi.neg.neg.imp phi).allFuture.imp
-      ((Formula.untl Formula.top phi.neg.neg).imp (Formula.untl Formula.top phi)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
   have h_F_mono : [] ⊢ (Formula.someFuture phi.neg.neg).imp (Formula.someFuture phi) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3 h_nec
+    FormalSystem.Theorems.TemporalDerived.someFuture_mono (Propositional.doubleNegation _)
   have h_contra : [] ⊢ (Formula.someFuture phi).neg.imp (Formula.someFuture phi.neg.neg).neg :=
     Propositional.contraposition h_F_mono
   exact SetMaximalConsistent.implication_property h_mcs
@@ -130,14 +108,8 @@ lemma neg_some_past_to_all_past_neg {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (phi : Formula)
     (h_neg_P : Formula.neg (Formula.somePast phi) ∈ M) :
     Formula.allPast (Formula.neg phi) ∈ M := by
-  have h_dne : [] ⊢ phi.neg.neg.imp phi := Propositional.doubleNegation _
-  have h_nec : [] ⊢ (phi.neg.neg.imp phi).allPast :=
-    pastNecessitation _ h_dne
-  have h_bx3 : [] ⊢ (phi.neg.neg.imp phi).allPast.imp
-      ((Formula.snce Formula.top phi.neg.neg).imp (Formula.snce Formula.top phi)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
   have h_P_mono : [] ⊢ (Formula.somePast phi.neg.neg).imp (Formula.somePast phi) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3 h_nec
+    FormalSystem.Theorems.TemporalDerived.somePast_mono (Propositional.doubleNegation _)
   have h_contra : [] ⊢ (Formula.somePast phi).neg.imp (Formula.somePast phi.neg.neg).neg :=
     Propositional.contraposition h_P_mono
   exact SetMaximalConsistent.implication_property h_mcs

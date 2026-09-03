@@ -1255,14 +1255,8 @@ private theorem neg_all_past_neg_to_some_past (fc : FrameClass) {M : Set Formula
       (theorem_in_mcs h_mcs h_dne) h
   -- BX3' (right_mono_since): ⊢ H(¬¬α → α) → (P(¬¬α) → P(α))
   -- Build chain at Base level, then lift
-  have h_dne_ax : [] ⊢ α.neg.neg.imp α := FormalSystem.Theorems.Propositional.doubleNegation α
-  have h_H_dne : [] ⊢ (α.neg.neg.imp α).allPast :=
-    FormalSystem.Theorems.pastNecessitation _ h_dne_ax
-  have h_bx3' : [] ⊢ (α.neg.neg.imp α).allPast.imp
-      ((Formula.snce Formula.top α.neg.neg).imp (Formula.snce Formula.top α)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_since α.neg.neg α Formula.top) trivial
   have h_P_mono : [] ⊢ (Formula.somePast α.neg.neg).imp (Formula.somePast α) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3' h_H_dne
+    FormalSystem.Theorems.TemporalDerived.somePast_mono (FormalSystem.Theorems.Propositional.doubleNegation α)
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (liftBase fc h_P_mono)) h_dne_P
 
@@ -1278,14 +1272,8 @@ private theorem neg_all_future_neg_to_some_future (fc : FrameClass) {M : Set For
       FormalSystem.Theorems.Propositional.doubleNegation (Formula.someFuture γ.neg.neg)
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_dne) h
-  have h_dne_ax : [] ⊢ γ.neg.neg.imp γ := FormalSystem.Theorems.Propositional.doubleNegation γ
-  have h_G_dne : [] ⊢ (γ.neg.neg.imp γ).allFuture :=
-    DerivationTree.temporal_necessitation _ h_dne_ax
-  have h_bx3 : [] ⊢ (γ.neg.neg.imp γ).allFuture.imp
-      ((Formula.untl Formula.top γ.neg.neg).imp (Formula.untl Formula.top γ)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_until γ.neg.neg γ Formula.top) trivial
   have h_F_mono : [] ⊢ (Formula.someFuture γ.neg.neg).imp (Formula.someFuture γ) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dne
+    FormalSystem.Theorems.TemporalDerived.someFuture_mono (FormalSystem.Theorems.Propositional.doubleNegation γ)
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (liftBase fc h_F_mono)) h_dne_F
 
@@ -1296,14 +1284,8 @@ private theorem some_future_H_neg_G_P_absurd (fc : FrameClass) {M : Set Formula}
     (h_F : Formula.someFuture (Formula.allPast (Formula.neg α)) ∈ M)
     (h_GP : Formula.allFuture (Formula.somePast α) ∈ M) : False := by
   -- ⊢ P(α) → ¬H(¬α): from P(α) → P(¬¬α) and DNI
-  have h_dni_ax : [] ⊢ α.imp α.neg.neg := FormalSystem.Theorems.Combinators.notNotIntro α
-  have h_H_dni : [] ⊢ (α.imp α.neg.neg).allPast :=
-    FormalSystem.Theorems.pastNecessitation _ h_dni_ax
-  have h_bx3' : [] ⊢ (α.imp α.neg.neg).allPast.imp
-      ((Formula.snce Formula.top α).imp (Formula.snce Formula.top α.neg.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_since α α.neg.neg Formula.top) trivial
   have h_P_to_Pnn : [] ⊢ (Formula.somePast α).imp (Formula.somePast α.neg.neg) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3' h_H_dni
+    FormalSystem.Theorems.TemporalDerived.somePast_mono (FormalSystem.Theorems.Combinators.notNotIntro α)
   -- P(¬¬α) → P(¬¬α).neg.neg = ¬H(¬α) by DNI
   have h_dni_P : [] ⊢ (Formula.somePast α.neg.neg).imp (Formula.somePast α.neg.neg).neg.neg :=
     FormalSystem.Theorems.Combinators.notNotIntro (Formula.somePast α.neg.neg)
@@ -1338,14 +1320,8 @@ private theorem some_past_G_neg_H_F_absurd (fc : FrameClass) {M : Set Formula}
     (h_P : Formula.somePast (Formula.allFuture (Formula.neg γ)) ∈ M)
     (h_HF : Formula.allPast (Formula.someFuture γ) ∈ M) : False := by
   -- ⊢ F(γ) → ¬G(¬γ): from F(γ) → F(¬¬γ) and DNI
-  have h_dni_ax : [] ⊢ γ.imp γ.neg.neg := FormalSystem.Theorems.Combinators.notNotIntro γ
-  have h_G_dni : [] ⊢ (γ.imp γ.neg.neg).allFuture :=
-    DerivationTree.temporal_necessitation _ h_dni_ax
-  have h_bx3 : [] ⊢ (γ.imp γ.neg.neg).allFuture.imp
-      ((Formula.untl Formula.top γ).imp (Formula.untl Formula.top γ.neg.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.right_mono_until γ γ.neg.neg Formula.top) trivial
   have h_F_to_Fnn : [] ⊢ (Formula.someFuture γ).imp (Formula.someFuture γ.neg.neg) :=
-    DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
+    FormalSystem.Theorems.TemporalDerived.someFuture_mono (FormalSystem.Theorems.Combinators.notNotIntro γ)
   have h_dni_F : [] ⊢ (Formula.someFuture γ.neg.neg).imp (Formula.someFuture γ.neg.neg).neg.neg :=
     FormalSystem.Theorems.Combinators.notNotIntro (Formula.someFuture γ.neg.neg)
   have h_F_to_neg_G : [] ⊢ (Formula.someFuture γ).imp
