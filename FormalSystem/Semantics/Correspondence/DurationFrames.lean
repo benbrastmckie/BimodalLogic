@@ -325,33 +325,31 @@ theorem validOn_df_iff_isDiscrete (D : TemporalOrder) :
       ↔ ∀ x : ↑D, (∃ y, x < y) → ∃ y', IsLeast {z : ↑D | x < z} y' := by
   constructor
   · intro h x hex
+    -- The realising data: the closed down-set of `x`.
     set A : Set ↑D := {r : ↑D | r ≤ x} with hA
-    set τ : (translationFrame D).toTaskFrame.HF :=
-      ⟨translationHist D, translationHist_isTotal D⟩ with hτ
-    have hant : TruthAt (translationModel D A) τ.val x
-        (((Formula.atom corrAtom).allPast.and (Formula.atom corrAtom)).and
+    -- Realisation: `Hp` at `u` says every time strictly below `u` is `≤ x`.
+    have hHiff : ∀ u : ↑D,
+        TruthAt (translationModel D A) (translationHF D).val u
+            (Formula.atom (Atom.mkBase "p")).allPast ↔ ∀ r < u, r ≤ x :=
+      translation_realizes_allPast D A (Atom.mkBase "p")
+    -- The antecedent `(Hp ∧ p) ∧ F⊤`, built through that realisation.
+    have hant : TruthAt (translationModel D A) (translationHF D).val x
+        (((Formula.atom (Atom.mkBase "p")).allPast.and (Formula.atom (Atom.mkBase "p"))).and
           Formula.top.someFuture) := by
       rw [Truth.and_iff, Truth.and_iff]
-      refine ⟨⟨?_, ?_⟩, ?_⟩
-      · rw [Truth.past_iff]
-        intro s hs
-        simp only [hτ, translationModel_atom]
-        exact le_of_lt hs
-      · simp only [hτ, translationModel_atom]
-        exact le_refl x
-      · rw [Truth.some_future_iff]
-        obtain ⟨y, hy⟩ := hex
-        exact ⟨y, hy, fun hb => hb⟩
-    have hcons := h (translationFrame D) (Formula.atom corrAtom) (translationModel D A) τ x hant
+      refine ⟨⟨(hHiff x).mpr fun r hr => le_of_lt hr,
+        (translation_realizes D A (Atom.mkBase "p") x).mpr (le_refl x)⟩, ?_⟩
+      rw [Truth.some_future_iff]
+      obtain ⟨y, hy⟩ := hex
+      exact ⟨y, hy, fun hb => hb⟩
+    -- Instantiate the schema at the witness frame, then read the consequent back.
+    have hcons := h (translationFrame D) (Formula.atom (Atom.mkBase "p"))
+      (translationModel D A) (translationHF D) x hant
     rw [Truth.some_future_iff] at hcons
     obtain ⟨v, hxv, hHv⟩ := hcons
-    rw [Truth.past_iff] at hHv
     refine ⟨v, hxv, fun z hz => ?_⟩
     by_contra hlt
-    have hzv : z < v := not_le.mp hlt
-    have := hHv z hzv
-    simp only [hτ, translationModel_atom] at this
-    exact absurd (hz : x < z) (not_lt.mpr this)
+    exact absurd (hz : x < z) (not_lt.mpr ((hHiff v).mp hHv z (not_le.mp hlt)))
   · intro hdisc F φ M τ t hant
     rw [Truth.and_iff, Truth.and_iff] at hant
     obtain ⟨⟨hH, hnow⟩, hFtop⟩ := hant
