@@ -473,7 +473,27 @@ definitionally equal. Confirm by building all five files:
 
 ---
 
-### Phase 5: Apply the duality discipline to the remaining live mirror pairs [NOT STARTED]
+### Phase 5: Apply the duality discipline to the remaining live mirror pairs [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `p_content_iff_not_neg_in_h_content` (`TemporalContent.lean`) | Statement is relative to a fixed, arbitrary MCS `M` shared by both directions (not a closed `⊢[fc] φ` theorem), so it is not `swapTemporal`-derivable from `f_content_iff_not_neg_in_g_content` without first transporting `M` itself via `swapTemporal ''`. Both directions already call their own pre-existing, independently-defined `someFuture_mono`/`somePast_mono` (`TemporalDerived.lean`, out of `file_scope`) with no isolable direction-specific syntactic sub-step comparable to Phase 3's `allFuture_bot_imp_neg_deriv` (which mixed a primitive necessitation/K-dist derivation on one side against a pre-existing lemma pair on the other -- the asymmetry that made extraction profitable). Genuine duality here requires a general "`SetMaximalConsistent` transports under `swapTemporal`-image" lemma (context-level derivability duality + `insert`/image set algebra), which is new, unscoped infrastructure disproportionate to a single ~30-line pair. | Read both proof bodies in full: each is a direct, symmetric application of its own mono lemma; no shared closed-term derivation exists to extract. |
+| `restricted_temporal_backward_H` / `restricted_temporal_backward_H_strict` (`TemporalCoherence.lean`) | Same obstacle: both are relative to a fixed `fam`/`t` (not closed theorems), and both already call pre-existing, independently-defined `neg_all_future_to_some_future_neg` / `neg_all_past_to_some_past_neg`, themselves built on the temporal-operator-agnostic `dneTheorem` -- there is no direction-specific syntactic step to dualize; `h_forward_F`/`h_backward_P` are caller-supplied hypotheses, not internally derived facts. | Read all four proof bodies (`restricted_temporal_backward_{G,H}[_strict]`); each follows the identical contraposition shape calling its own pre-existing helper, with the forward/backward coherence hypothesis supplied externally in both cases. |
+| `some_future_all_future_neg_absurd` / `some_past_all_past_neg_absurd` and `neg_some_future_to_all_future_neg` / `neg_some_past_to_all_past_neg` (`WitnessSeed.lean`) | Explicitly optional per this phase's own task list ("if the duality route is shorter... leave them and record a Reasoned Exclusions row if it is not"). Same M-relative obstacle as above; both directions of both pairs call their own pre-existing `someFuture_mono`/`somePast_mono`. | Read all four proof bodies (already quoted in full during phase execution); confirmed no isolable syntactic core. |
+
+**Consistent pattern across all four items**: the direction-specific primitives these Bundle-layer
+proofs consume (`someFuture_mono`/`somePast_mono`, `pastNecessitation`/`pastKDist`,
+`generalizedTemporalK`/`generalizedPastK`) are *already* independently available, symmetric pairs
+from outside `file_scope` (`Theorems/TemporalDerived.lean`, `Theorems/GeneralizedNecessitation.lean`)
+-- the duality discipline has already been applied one layer down, at the primitive level. What
+remains in the named `Bundle/` files is semantic orchestration relative to a fixed `M`/`fam`, which
+is not `swapTemporal`-derivable without a new general MCS/FMCS-image-transport lemma. Phase 3
+demonstrated the technique profitably where a genuine primitive-level asymmetry existed
+(`allFuture_bot_imp_neg_deriv`/`allPast_bot_imp_neg_deriv`); no comparable asymmetry exists in any
+of the four items above. No `.lean` files are modified in this phase; `git diff` for Phase 5 is
+empty by design.
 
 **Goal**: Every remaining live future/past mirror pair in the named files is a derived dual, not a
 second hand proof.
