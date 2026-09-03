@@ -171,8 +171,7 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
     have h_sf_impl : [] ⊢ (Formula.someFuture phi).imp (Formula.someFuture phi.neg.neg) :=
       FormalSystem.Theorems.TemporalDerived.someFuture_mono (Combinators.notNotIntro phi)
     have h_sf_nn_in : Formula.someFuture phi.neg.neg ∈ M :=
-      SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_sf_impl) h_sf_in
+      SetMaximalConsistent.mp_of_theorem h_mcs h_sf_impl h_sf_in
     exact set_consistent_not_both h_mcs.1 (Formula.someFuture phi.neg.neg) h_sf_nn_in h_af_in
   · intro h_af_not_in
     rw [h_af_eq] at h_af_not_in
@@ -183,8 +182,7 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
       -- Derive ⊢ someFuture (phi.neg.neg) → someFuture phi via DNE + BX3
       have h_sf_impl : [] ⊢ (Formula.someFuture phi.neg.neg).imp (Formula.someFuture phi) :=
         FormalSystem.Theorems.TemporalDerived.someFuture_mono (Propositional.doubleNegation phi)
-      exact SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_sf_impl) h_in
+      exact SetMaximalConsistent.mp_of_theorem h_mcs h_sf_impl h_in
     | inr h_neg_in => exact absurd h_neg_in h_af_not_in
 
 open FormalSystem.Metalogic.Core FormalSystem.ProofSystem FormalSystem.Theorems in
@@ -212,8 +210,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
     have h_sp_impl : [] ⊢ (Formula.somePast phi).imp (Formula.somePast phi.neg.neg) :=
       FormalSystem.Theorems.TemporalDerived.somePast_mono (Combinators.notNotIntro phi)
     have h_sp_nn_in : Formula.somePast phi.neg.neg ∈ M :=
-      SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_sp_impl) h_sp_in
+      SetMaximalConsistent.mp_of_theorem h_mcs h_sp_impl h_sp_in
     exact set_consistent_not_both h_mcs.1 (Formula.somePast phi.neg.neg) h_sp_nn_in h_ap_in
   · intro h_ap_not_in
     rw [h_ap_eq] at h_ap_not_in
@@ -222,8 +219,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
       -- Derive ⊢ somePast (phi.neg.neg) → somePast phi via DNE + BX3'
       have h_sp_impl : [] ⊢ (Formula.somePast phi.neg.neg).imp (Formula.somePast phi) :=
         FormalSystem.Theorems.TemporalDerived.somePast_mono (Propositional.doubleNegation phi)
-      exact SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_sp_impl) h_in
+      exact SetMaximalConsistent.mp_of_theorem h_mcs h_sp_impl h_in
     | inr h_neg_in => exact absurd h_neg_in h_ap_not_in
 
 end FormalSystem.Metalogic.Bundle

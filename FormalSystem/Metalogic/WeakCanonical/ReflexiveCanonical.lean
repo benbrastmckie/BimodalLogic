@@ -193,7 +193,7 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
     Combinators.mp h_G_dni h_kd
   -- G(¬¬ψ) ∈ y.val
   have h_Gnn_y : ψ.neg.neg.allFuture ∈ y.val :=
-    h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_Gψ_imp_Gnn) h_Gψ_y
+    h_mcs_y.mp_of_theorem h_Gψ_imp_Gnn h_Gψ_y
   -- F(¬ψ) and G(¬¬ψ) = G(¬(¬ψ).neg) are contradictory in MCS y
   exact Bundle.some_future_all_future_neg_absurd h_mcs_y (Formula.neg ψ) h_F_neg_ψ_y h_Gnn_y
 
@@ -259,22 +259,22 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_p1 : DerivationTree FrameClass.Base [] _ := pairing β₀ (Formula.someFuture γ₀).neg
       have h_inner : Formula.and β₀ (Formula.someFuture γ₀).neg ∈ y.val :=
         h_mcs_y.implication_property
-          (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
+          (h_mcs_y.mp_of_theorem h_p1 h_β₀_y) h_nFγ₀_y
       have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
           (Formula.and β₀ (Formula.someFuture γ₀).neg) δ
       exact h_mcs_y.implication_property
-        (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_δ_y
+        (h_mcs_y.mp_of_theorem h_p2 h_inner) h_δ_y
     -- γ = (γ₀ ∧ ¬Fβ₀) ∧ ¬δ ∈ z.val
     let γ := Formula.and (Formula.and γ₀ (Formula.someFuture β₀).neg) δ.neg
     have h_γ_z : γ ∈ z.val := by
       have h_p1 : DerivationTree FrameClass.Base [] _ := pairing γ₀ (Formula.someFuture β₀).neg
       have h_inner : Formula.and γ₀ (Formula.someFuture β₀).neg ∈ z.val :=
         h_mcs_z.implication_property
-          (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
+          (h_mcs_z.mp_of_theorem h_p1 h_γ₀_z) h_nFβ₀_z
       have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
           (Formula.and γ₀ (Formula.someFuture β₀).neg) δ.neg
       exact h_mcs_z.implication_property
-        (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_nδ_z
+        (h_mcs_z.mp_of_theorem h_p2 h_inner) h_nδ_z
     -- F(β) ∈ x.val and F(γ) ∈ x.val (by Lemma 1.6(b))
     have h_Fβ_x : Formula.someFuture β ∈ x.val :=
       tempR_fwd_mem_some_future h_xy β h_β_y
@@ -347,22 +347,22 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_p1 : DerivationTree FrameClass.Base [] _ := pairing β₀ (Formula.someFuture γ₀).neg
       have h_inner : Formula.and β₀ (Formula.someFuture γ₀).neg ∈ y.val :=
         h_mcs_y.implication_property
-          (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
+          (h_mcs_y.mp_of_theorem h_p1 h_β₀_y) h_nFγ₀_y
       have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
           (Formula.and β₀ (Formula.someFuture γ₀).neg) δ.neg
       exact h_mcs_y.implication_property
-        (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_nδ_y
+        (h_mcs_y.mp_of_theorem h_p2 h_inner) h_nδ_y
     -- γ = (γ₀ ∧ ¬Fβ₀) ∧ δ ∈ z.val
     let γ := Formula.and (Formula.and γ₀ (Formula.someFuture β₀).neg) δ
     have h_γ_z : γ ∈ z.val := by
       have h_p1 : DerivationTree FrameClass.Base [] _ := pairing γ₀ (Formula.someFuture β₀).neg
       have h_inner : Formula.and γ₀ (Formula.someFuture β₀).neg ∈ z.val :=
         h_mcs_z.implication_property
-          (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
+          (h_mcs_z.mp_of_theorem h_p1 h_γ₀_z) h_nFβ₀_z
       have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
           (Formula.and γ₀ (Formula.someFuture β₀).neg) δ
       exact h_mcs_z.implication_property
-        (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_δ_z
+        (h_mcs_z.mp_of_theorem h_p2 h_inner) h_δ_z
     have h_Fβ_x : Formula.someFuture β ∈ x.val :=
       tempR_fwd_mem_some_future h_xy β h_β_y
     have h_Fγ_x : Formula.someFuture γ ∈ x.val :=
@@ -713,7 +713,7 @@ theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
   have h_mb : [] ⊢ (Formula.neg φ).imp (Formula.box (Formula.neg φ).diamond) :=
     DerivationTree.axiom [] _ (Axiom.modal_b (Formula.neg φ)) trivial
   have h_box_dia : Formula.box (Formula.neg φ).diamond ∈ x.val :=
-    h_mcs_x.implication_property (theorem_in_mcs h_mcs_x h_mb) h_neg_phi
+    h_mcs_x.mp_of_theorem h_mb h_neg_phi
   -- canS5R x y: ◇(¬φ) ∈ y.val
   have h_dia_y : (Formula.neg φ).diamond ∈ y.val := h (Formula.neg φ).diamond h_box_dia
   -- ◇(¬φ) = ¬□(¬¬φ), so ¬□(¬¬φ) ∈ y.val
@@ -732,7 +732,7 @@ theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
     theorem_in_mcs h_mcs_y h_box_dni
   -- □φ → □(¬¬φ) ∈ y.val
   have h_imp_y : φ.box.imp φ.neg.neg.box ∈ y.val :=
-    h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_kd) h_box_dni_y
+    h_mcs_y.mp_of_theorem h_kd h_box_dni_y
   -- □(¬¬φ) ∈ y.val
   have h_box_negneg : φ.neg.neg.box ∈ y.val :=
     h_mcs_y.implication_property h_imp_y h_box_y

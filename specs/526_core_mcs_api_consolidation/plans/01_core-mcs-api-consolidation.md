@@ -530,7 +530,7 @@ confirmed count as authoritative.
 
 ---
 
-### Phase 9: mp_of_theorem sweep C — Bundle, Frame, ReflexiveCanonical [NOT STARTED]
+### Phase 9: mp_of_theorem sweep C — Bundle, Frame, ReflexiveCanonical [COMPLETED]
 
 **Goal**: Same collapse across the files that Phase 5 also touched, plus `BXCanonical/Frame.lean`.
 
@@ -550,7 +550,11 @@ confirmed count as authoritative.
 **Verification Tier**: local
 
 **Scope Hypothesis**: ~35 sites — report §5 gives 14 + 9 + 11 = 34 for the first three; the
-planning re-scan gives 14 + 9 + 8 + 4 (`TemporalContent.lean`) = 35. Confirm per file with the
+planning re-scan gives 14 + 9 + 8 + 4 (`TemporalContent.lean`) = 35. **Confirmed at
+implementation: 38** (WitnessSeed 14, Frame 9, ReflexiveCanonical 11, TemporalContent 4) — the
+report's 11 for `ReflexiveCanonical.lean` is right and the re-scan's 8 is the undercount, because
+every one of that file's sites uses the dot-notation surface form
+`h_mcs.implication_property (theorem_in_mcs h_mcs d) x`, which the re-scan's regex cannot see. Confirm per file with the
 same multi-line scan as Phase 7.
 
 **Files to modify**:

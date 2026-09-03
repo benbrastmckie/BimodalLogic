@@ -472,8 +472,7 @@ theorem bx_modal_witness (w : BXPoint) (ψ : Formula)
       -- □⊥ → ⊥ by modal_t
       have h_ax : DerivationTree FrameClass.Base [] (Formula.box Formula.bot |>.imp Formula.bot) :=
         DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
-      have h_bot := SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_ax) h_box_bot_in
+      have h_bot := SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_box_bot_in
       exact w.is_mcs.1 [Formula.bot] (fun χ hχ => by simp only
           [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact h_bot)
         ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
@@ -507,8 +506,7 @@ theorem bx_modal_witness (w : BXPoint) (ψ : Formula)
       have h_m4 : DerivationTree FrameClass.Base []
           ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
         DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
-      have h_box_box := SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_m4) h_box
+      have h_box_box := SetMaximalConsistent.mp_of_theorem w.is_mcs h_m4 h_box
       -- □□χ ∈ w means □χ ∈ bc (since bc = {ψ | □ψ ∈ w})
       have h_in_bc : Formula.box χ ∈ bc := h_box_box
       exact h_bc_sub h_in_bc
@@ -551,8 +549,7 @@ theorem bx_modal_witness (w : BXPoint) (ψ : Formula)
           ((Formula.box χ).neg.imp (Formula.box χ).neg.box) :=
         Combinators.impTrans h_contra h_dne
       -- ¬□χ ∈ w → □(¬□χ) ∈ w
-      have h_box_neg_box := SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_neg_intro) h_neg_box
+      have h_box_neg_box := SetMaximalConsistent.mp_of_theorem w.is_mcs h_neg_intro h_neg_box
       -- □(¬□χ) ∈ w → (¬□χ) ∈ bc → (¬□χ) ∈ M
       have h_in_bc : (Formula.box χ).neg ∈ bc := h_box_neg_box
       have h_neg_in_M := h_bc_sub h_in_bc
@@ -609,8 +606,7 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : BxLe w v) (φ : Formul
     have h_tf : DerivationTree FrameClass.Base []
         ((Formula.box φ).imp (Formula.allFuture (Formula.box φ))) :=
       Combinators.temporalFutureDerived φ
-    have h_G_box := SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_tf) h_box
+    have h_G_box := SetMaximalConsistent.mp_of_theorem w.is_mcs h_tf h_box
     -- G(□φ) ∈ w and w ≤ v gives □φ ∈ v
     exact bx_G_forward h_le h_G_box
   · -- Backward: □φ ∈ v → □φ ∈ w (contrapositive)
@@ -622,22 +618,19 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : BxLe w v) (φ : Formul
       | inl h => exact absurd h h_not_box
       | inr h => exact h
     -- ¬□φ → □(¬□φ) by S5 negative introspection
-    have h_box_neg := SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs (negBoxToBoxNegBox φ)) h_neg_box
+    have h_box_neg := SetMaximalConsistent.mp_of_theorem w.is_mcs (negBoxToBoxNegBox φ) h_neg_box
     -- □(¬□φ) → G(□(¬□φ)) by temporalFutureDerived
     have h_tf2 : DerivationTree FrameClass.Base [] ((Formula.box (Formula.box φ).neg).imp
         (Formula.allFuture (Formula.box (Formula.box φ).neg))) :=
       Combinators.temporalFutureDerived (Formula.box φ).neg
-    have h_G_box_neg := SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_tf2) h_box_neg
+    have h_G_box_neg := SetMaximalConsistent.mp_of_theorem w.is_mcs h_tf2 h_box_neg
     -- G(□(¬□φ)) ∈ w and w ≤ v gives □(¬□φ) ∈ v
     have h_box_neg_v := bx_G_forward h_le h_G_box_neg
     -- □(¬□φ) ∈ v → ¬□φ ∈ v by modal_t
     have h_mt : DerivationTree FrameClass.Base []
         ((Formula.box (Formula.box φ).neg).imp (Formula.box φ).neg) :=
       DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial
-    have h_neg_v := SetMaximalConsistent.implication_property v.is_mcs
-      (theorem_in_mcs v.is_mcs h_mt) h_box_neg_v
+    have h_neg_v := SetMaximalConsistent.mp_of_theorem v.is_mcs h_mt h_box_neg_v
     -- ¬□φ ∈ v and □φ ∈ v: contradiction
     exact set_consistent_not_both v.is_mcs.1 (Formula.box φ) h_box_v h_neg_v
 
@@ -699,8 +692,7 @@ theorem bx_until_eventuality_resolution
   have h_F_psi : Formula.someFuture ψ ∈ w.formulas := by
     have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
         (Axiom.until_F φ ψ) trivial
-    exact SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h_until
+    exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_until
   -- By bx_forward_witness: get v with BxLe w v and ψ ∈ v
   exact bx_forward_witness w ψ h_F_psi
 
@@ -719,8 +711,7 @@ theorem bx_since_eventuality_resolution
   have h_P_psi : Formula.somePast ψ ∈ w.formulas := by
     have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
         (Axiom.since_P φ ψ) trivial
-    exact SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h_since
+    exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_since
   -- By bx_backward_witness: get v with BxLe v w and ψ ∈ v
   exact bx_backward_witness w ψ h_P_psi
 

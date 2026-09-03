@@ -65,8 +65,8 @@ lemma some_future_all_future_neg_absurd {fc : FrameClass} {M : Set Formula}
   -- From h_F and BX3 + DNI: someFuture psi.neg.neg ∈ M
   -- Contradiction with (someFuture psi.neg.neg).neg = allFuture (neg psi) ∈ M
   have h_sf_nn : Formula.someFuture psi.neg.neg ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.someFuture_mono (Combinators.notNotIntro psi))) h_F
+    SetMaximalConsistent.mp_of_theorem h_mcs
+      (FormalSystem.Theorems.TemporalDerived.someFuture_mono (Combinators.notNotIntro psi)) h_F
   exact set_consistent_not_both h_mcs.1 (Formula.someFuture psi.neg.neg) h_sf_nn h_G_neg
 
 open FormalSystem.ProofSystem FormalSystem.Theorems in
@@ -76,8 +76,8 @@ lemma some_past_all_past_neg_absurd {fc : FrameClass} {M : Set Formula}
     (h_P : Formula.somePast psi ∈ M)
     (h_H_neg : Formula.allPast (Formula.neg psi) ∈ M) : False := by
   have h_sp_nn : Formula.somePast psi.neg.neg ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.somePast_mono (Combinators.notNotIntro psi))) h_P
+    SetMaximalConsistent.mp_of_theorem h_mcs
+      (FormalSystem.Theorems.TemporalDerived.somePast_mono (Combinators.notNotIntro psi)) h_P
   exact set_consistent_not_both h_mcs.1 (Formula.somePast psi.neg.neg) h_sp_nn h_H_neg
 
 /-! ## Duality Conversions
@@ -98,8 +98,8 @@ lemma neg_some_future_to_all_future_neg {fc : FrameClass} {M : Set Formula}
     FormalSystem.Theorems.TemporalDerived.someFuture_mono (Propositional.doubleNegation _)
   have h_contra : [] ⊢ (Formula.someFuture phi).neg.imp (Formula.someFuture phi.neg.neg).neg :=
     Propositional.contraposition h_F_mono
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_contra)) h_neg_F
+  exact SetMaximalConsistent.mp_of_theorem h_mcs
+    (DerivationTree.lift (fc₁ := .Base) trivial h_contra) h_neg_F
 
 open FormalSystem.ProofSystem FormalSystem.Theorems in
 /-- In an MCS, `¬P(φ) ∈ M` implies `H(¬φ) ∈ M`.
@@ -112,8 +112,8 @@ lemma neg_some_past_to_all_past_neg {fc : FrameClass} {M : Set Formula}
     FormalSystem.Theorems.TemporalDerived.somePast_mono (Propositional.doubleNegation _)
   have h_contra : [] ⊢ (Formula.somePast phi).neg.imp (Formula.somePast phi.neg.neg).neg :=
     Propositional.contraposition h_P_mono
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (DerivationTree.lift (fc₁ := .Base) trivial h_contra)) h_neg_P
+  exact SetMaximalConsistent.mp_of_theorem h_mcs
+    (DerivationTree.lift (fc₁ := .Base) trivial h_contra) h_neg_P
 
 /-!
 ## Forward Temporal Witness Seed
@@ -232,7 +232,7 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
         (Formula.allFuture (Formula.neg psi)) :=
       DerivationTree.modus_ponens [] _ _ h_K h_G_ef
     have h_G_neg_psi : Formula.allFuture (Formula.neg psi) ∈ M :=
-      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_imp) h_G_bot_in_M
+      SetMaximalConsistent.mp_of_theorem h_mcs h_G_imp h_G_bot_in_M
     -- Contradiction: F(psi) and G(neg psi) cannot both be in MCS
     exact some_future_all_future_neg_absurd h_mcs psi h_F h_G_neg_psi
 
@@ -336,7 +336,7 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
     have h_H_imp : ⊢[fc] (Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg psi)) :=
       DerivationTree.modus_ponens [] _ _ h_K h_H_ef
     have h_H_neg_psi : Formula.allPast (Formula.neg psi) ∈ M :=
-      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H_imp) h_H_bot_in_M
+      SetMaximalConsistent.mp_of_theorem h_mcs h_H_imp h_H_bot_in_M
     -- Contradiction: P(psi) and H(neg psi) cannot both be in MCS
     exact some_past_all_past_neg_absurd h_mcs psi h_P h_H_neg_psi
 
@@ -444,12 +444,11 @@ theorem until_witness_seed_consistent (M : Set Formula)
       have h_G_imp : [] ⊢ (Formula.allFuture Formula.bot).imp
           (Formula.allFuture (Formula.neg ψ)) :=
         DerivationTree.modus_ponens [] _ _ h_K h_G_ef
-      exact SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_G_imp) h_G_bot_in_M
+      exact SetMaximalConsistent.mp_of_theorem h_mcs h_G_imp h_G_bot_in_M
   -- BX10 contradiction: (φ U ψ) → F(ψ) by BX10, and F(ψ) = ¬G(¬ψ), contradicting G(¬ψ) ∈ M
   have h_F_psi : ψ.someFuture ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.untilImpF φ ψ)) h_U
+    SetMaximalConsistent.mp_of_theorem h_mcs
+      (FormalSystem.Theorems.TemporalDerived.untilImpF φ ψ) h_U
   exact some_future_all_future_neg_absurd h_mcs ψ h_F_psi h_G_neg_psi
 
 /--
@@ -519,12 +518,11 @@ theorem since_witness_seed_consistent (M : Set Formula)
         FormalSystem.Theorems.pastKDist Formula.bot (Formula.neg ψ)
       have h_H_imp : [] ⊢ (Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg ψ)) :=
         DerivationTree.modus_ponens [] _ _ h_K h_H_ef
-      exact SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_H_imp) h_H_bot_in_M
+      exact SetMaximalConsistent.mp_of_theorem h_mcs h_H_imp h_H_bot_in_M
   -- BX10' contradiction: (φ S ψ) → P(ψ) by BX10', and P(ψ) = ¬H(¬ψ), contradicting H(¬ψ) ∈ M
   have h_P_psi : ψ.somePast ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (FormalSystem.Theorems.TemporalDerived.sinceImpP φ ψ)) h_S
+    SetMaximalConsistent.mp_of_theorem h_mcs
+      (FormalSystem.Theorems.TemporalDerived.sinceImpP φ ψ) h_S
   exact some_past_all_past_neg_absurd h_mcs ψ h_P_psi h_H_neg_psi
 
 /-!
@@ -551,7 +549,7 @@ theorem g_content_subset_implies_h_content_reverse
   have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.allFuture (Formula.neg phi).somePast) :=
     DerivationTree.axiom [] _ (Axiom.connect_future (Formula.neg phi)) trivial
   have h_G_P_neg : Formula.allFuture (Formula.neg phi).somePast ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
+    SetMaximalConsistent.mp_of_theorem h_mcs h_ta h_neg_phi
   have h_P_neg_M' : (Formula.neg phi).somePast ∈ M' := h_GC h_G_P_neg
   have h_dni : [] ⊢ phi.imp phi.neg.neg := FormalSystem.Theorems.Combinators.notNotIntro phi
   have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).allPast :=
@@ -561,7 +559,7 @@ theorem g_content_subset_implies_h_content_reverse
   have h_H_imp : [] ⊢ phi.allPast.imp phi.neg.neg.allPast :=
     DerivationTree.modus_ponens [] _ _ h_pk h_H_dni
   have h_H_nn : phi.neg.neg.allPast ∈ M' :=
-    SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_H_imp) h_H_phi_in_M'
+    SetMaximalConsistent.mp_of_theorem h_mcs' h_H_imp h_H_phi_in_M'
   exact some_past_all_past_neg_absurd h_mcs' (Formula.neg phi) h_P_neg_M' h_H_nn
 
 /-- If HContent(M) ⊆ M', then GContent(M') ⊆ M.
@@ -581,7 +579,7 @@ theorem h_content_subset_implies_g_content_reverse
   have h_pta : [] ⊢ (Formula.neg phi).imp (Formula.neg phi).someFuture.allPast :=
     FormalSystem.Theorems.ModalDerived.pastTempA (Formula.neg phi)
   have h_H_F_neg : (Formula.neg phi).someFuture.allPast ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_pta) h_neg_phi
+    SetMaximalConsistent.mp_of_theorem h_mcs h_pta h_neg_phi
   have h_F_neg_M' : (Formula.neg phi).someFuture ∈ M' := h_HC h_H_F_neg
   have h_dni : [] ⊢ phi.imp phi.neg.neg := FormalSystem.Theorems.Combinators.notNotIntro phi
   have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).allFuture :=
@@ -592,7 +590,7 @@ theorem h_content_subset_implies_g_content_reverse
   have h_G_imp : [] ⊢ phi.allFuture.imp phi.neg.neg.allFuture :=
     DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
   have h_G_nn : phi.neg.neg.allFuture ∈ M' :=
-    SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_G_imp) h_G_phi
+    SetMaximalConsistent.mp_of_theorem h_mcs' h_G_imp h_G_phi
   exact some_future_all_future_neg_absurd h_mcs' (Formula.neg phi) h_F_neg_M' h_G_nn
 
 end FormalSystem.Metalogic.Bundle
