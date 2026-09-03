@@ -179,26 +179,26 @@ file: Phase 1 owns `StrongCompleteness.lean` + `SetConsequence.lean`, Phase 2 ow
 
 ---
 
-### Phase 2: `dedWitness_core` split and the `@[simp]` membership lemmas [NOT STARTED]
+### Phase 2: `dedWitness_core` split and the `@[simp]` membership lemmas [COMPLETED]
 
 **Goal**: Land B-20 and B-21 — extract the two chain lemmas out of `dedWitness_core` and add the
 two membership simp lemmas — independently of the compactness work, so Phase 5's refutation
 collapse lands on already-tidied witness modules.
 
 **Tasks**:
-- [ ] Extract `qAlpha_step (q M τ a) (ha : ∀ n, TruthAt M τ a (qAlpha q n)) : ∃ s, a < s ∧ TruthAt M τ s (Formula.atom q) ∧ ∀ n, TruthAt M τ s (qAlpha q n)`
+- [x] Extract `qAlpha_step (q M τ a) (ha : ∀ n, TruthAt M τ a (qAlpha q n)) : ∃ s, a < s ∧ TruthAt M τ s (Formula.atom q) ∧ ∀ n, TruthAt M τ s (qAlpha q n)`
       from `DedekindNonCompactness.lean:205-257`.
-- [ ] Extract `exists_strictMono_qPoints (q M τ t) (ht : ∀ n, TruthAt M τ t (qAlpha q n)) : ∃ ch : ℕ → F.Duration, StrictMono ch ∧ t < ch 0 ∧ ∀ n, TruthAt M τ (ch n) (Formula.atom q)`.
+- [x] Extract `exists_strictMono_qPoints (q M τ t) (ht : ∀ n, TruthAt M τ t (qAlpha q n)) : ∃ ch : ℕ → F.Duration, StrictMono ch ∧ t < ch 0 ∧ ∀ n, TruthAt M τ (ch n) (Formula.atom q)`.
       **The `t < ch 0` conjunct is mandatory** — `dedWitness_core`'s `htz` step at `:250` is
       `lt_of_lt_of_le (hc 0).1 (hz.1 ⟨0, rfl⟩)` and consumes exactly it. The review's proposed
       signature omits it and is wrong.
-- [ ] Rebuild `dedWitness_core` on top of the two lemmas (research measured 51 lines → 15).
-- [ ] Add `@[simp] mem_archWitness_iff` to `DiscreteNonCompactness.lean` and
+- [x] Rebuild `dedWitness_core` on top of the two lemmas (research measured 51 lines → 15).
+- [x] Add `@[simp] mem_archWitness_iff` to `DiscreteNonCompactness.lean` and
       `@[simp] mem_dedWitness_iff` to `DedekindNonCompactness.lean`.
-- [ ] Replace the three witness-extraction sites inside `dedWitness_core` with `h _ (by simp)`, and
+- [x] Replace the three witness-extraction sites inside `dedWitness_core` with `h _ (by simp)`, and
       reduce the `simp only [<witness>, Set.mem_union, Set.mem_singleton_iff, Set.mem_setOf_eq]`
       incantations at `DiscreteNonCompactness.lean:203` and `DedekindNonCompactness.lean:393-394`
-      to plain `simp`.
+      to plain `simp`. *(deviation: altered — the `¬Xⁿ⁺¹ p` extraction site in `archWitness_not_satisfiable` keeps an explicit witness, `mem_archWitness_iff.mpr (Or.inr ⟨n + 1, rfl⟩)`, because `simp` rewrites `next^[n+1] φ` to `next^[n] φ.next` in the goal but not under the existential binder, leaving the two sides unmatched. The other four sites did collapse to plain `simp`, and both `simp only [<witness>, ...]` incantations are gone.)*
 
 **Timing**: 1.5 hours
 

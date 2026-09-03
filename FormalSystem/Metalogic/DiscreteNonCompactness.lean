@@ -102,6 +102,17 @@ theorem truthAt_next_iterate [SuccOrder F.Duration] [NoMaxOrder F.Duration]
 def archWitness (p : Atom) : Set Formula :=
   {(Formula.atom p).someFuture} ∪ {ψ | ∃ n : ℕ, ψ = (Formula.next^[n] (Formula.atom p)).neg}
 
+/-- **Membership in `archWitness`, unfolded once and for all.** The set is a singleton unioned
+with a `setOf`, so every membership goal against it used to be discharged by the same
+`simp only [archWitness, Set.mem_union, Set.mem_singleton_iff, Set.mem_setOf_eq]` incantation,
+written out at each site. Tagging the unfolding `@[simp]` retires the incantation: a plain
+`simp` now both introduces and eliminates membership. The Dedekind module carries the
+corresponding `mem_dedWitness_iff`. -/
+@[simp] theorem mem_archWitness_iff {p : Atom} {ψ : Formula} :
+    ψ ∈ archWitness p ↔ ψ = (Formula.atom p).someFuture ∨
+      ∃ n : ℕ, ψ = (Formula.next^[n] (Formula.atom p)).neg := by
+  simp only [archWitness, Set.mem_union, Set.mem_singleton_iff, Set.mem_setOf_eq]
+
 /-- Number of leading `Formula.next` layers of a formula.
 
     The first equation matches `Formula.untl Formula.bot φ` — **guard-first**, matching
@@ -200,7 +211,7 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
   set N : ℕ := (L.map witIdx).sum with hNdef
   intro ψ hψ
   have hmem := hL ψ hψ
-  simp only [archWitness, Set.mem_union, Set.mem_singleton_iff, Set.mem_setOf_eq] at hmem
+  simp only [mem_archWitness_iff] at hmem
   rcases hmem with rfl | ⟨n, rfl⟩
   · -- `F p` : place the witness at `N + 1`
     refine ⟨(N : ℤ) + 1, by positivity, ?_, fun r _ _ => id⟩
@@ -230,7 +241,7 @@ theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableDiscreteSet (arch
   rintro ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩
   haveI : NoMaxOrder F.Duration := inferInstance
   have hF : TruthAt M τ t ((Formula.atom p).someFuture) := by
-    apply h; simp [archWitness]
+    apply h; simp
   obtain ⟨s, hts, hs, -⟩ := hF
   obtain ⟨n, hn⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
   have hs' : TruthAt M τ (Order.succ^[n + 1] t) (Formula.atom p) := by
@@ -238,7 +249,10 @@ theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableDiscreteSet (arch
   have hX : TruthAt M τ t (Formula.next^[n + 1] (Formula.atom p)) :=
     (truthAt_next_iterate M τ (n + 1) t _).mpr hs'
   have hneg : TruthAt M τ t ((Formula.next^[n+1] (Formula.atom p)).neg) := by
-    apply h; right; exact ⟨n + 1, rfl⟩
+    -- Not `simp`: it rewrites `next^[n+1] φ` to `next^[n] φ.next` inside the goal *and* under
+    -- the existential binder in a way that leaves the two sides unmatched, so the witness must
+    -- be supplied by hand here. `mem_archWitness_iff` still supplies the unfolding.
+    exact h _ (mem_archWitness_iff.mpr (Or.inr ⟨n + 1, rfl⟩))
   exact hneg hX
 
 /-- **The `FrameClass.Discrete` consequence relation is not compact.**

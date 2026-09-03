@@ -128,6 +128,18 @@ def qBound (q : Atom) : Formula := ((Formula.atom q).neg.allFuture).someFuture
 def dedWitness (q : Atom) : Set Formula :=
   {qGap q, qBound q} ∪ {ψ | ∃ n : ℕ, ψ = qAlpha q n}
 
+/-- **Membership in `dedWitness`, unfolded once and for all.** The set is a two-element `insert`
+chain unioned with a `setOf`, so every membership goal against it used to be discharged by the
+same four-lemma `simp only [dedWitness, Set.mem_union, Set.mem_insert_iff,
+Set.mem_singleton_iff, Set.mem_setOf_eq]` incantation, written out at each site. Tagging the
+unfolding `@[simp]` retires the incantation: a plain `simp` now both introduces and eliminates
+membership. The right-hand side is stated right-associated, which is the shape the `rcases`
+patterns downstream consume. -/
+@[simp] theorem mem_dedWitness_iff {q : Atom} {ψ : Formula} :
+    ψ ∈ dedWitness q ↔ ψ = qGap q ∨ ψ = qBound q ∨ ∃ n : ℕ, ψ = qAlpha q n := by
+  simp only [dedWitness, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff,
+    Set.mem_setOf_eq, or_assoc]
+
 /-- Structural depth of nested `qNext` applications, used to bound the indices appearing in a
 finite sublist of `dedWitness`. The pattern is the `imp`-normal form of
 `untl _ (q ∧ φ)` — `Formula.and A B` unfolds to `imp (imp A (imp B bot)) bot` — which is why the
@@ -189,62 +201,89 @@ hypothesis; the `example` records that. -/
 private example (F : TaskFrame) :
     F.IsComplete = (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) := rfl
 
+/-- **One step of the `q`-point chain.** From a point `a` satisfying every `αₙ`, the `α₁`
+clause supplies *the* next `q`-point `s > a`, and `s` again satisfies every `αₙ`.
+
+The invariant propagates because `qNext` carries a gap clause: unfolding `α₁` and `αₙ₊₁` at `a`
+each yields a `q`-point with no `q`-point strictly between, and the trichotomy step `hss` plays
+the two gap clauses against each other to conclude that the two points coincide. That is the
+whole of the induction step; `exists_strictMono_qPoints` below iterates it.
+
+Extracted from `dedWitness_core`, which used to carry it as a `have step : …` occupying half the
+proof. -/
+theorem qAlpha_step (q : Atom) (M : TaskModel F) (τ : WorldHistory F) (a : F.Duration)
+    (ha : ∀ n, TruthAt M τ a (qAlpha q n)) :
+    ∃ s, a < s ∧ TruthAt M τ s (Formula.atom q) ∧ ∀ n, TruthAt M τ s (qAlpha q n) := by
+  have h1 : TruthAt M τ a (qNext q (qAlpha q 0)) := by
+    have := ha 1; rwa [qAlpha, Function.iterate_succ_apply'] at this
+  obtain ⟨s, hs1, hs2, -, hs4⟩ := (truthAt_qNext_iff M τ a q _).mp h1
+  refine ⟨s, hs1, hs2, ?_⟩
+  intro n
+  have hn : TruthAt M τ a (qNext q (qAlpha q n)) := by
+    have := ha (n+1); rwa [qAlpha, Function.iterate_succ_apply'] at this
+  obtain ⟨s', hs1', hs2', hs3', hs4'⟩ := (truthAt_qNext_iff M τ a q _).mp hn
+  have hss : s' = s := by
+    rcases lt_trichotomy s' s with hlt | heq | hgt
+    · exact absurd hs2' (hs4 s' hs1' hlt)
+    · exact heq
+    · exact absurd hs2 (hs4' s hs1 hgt)
+  exact hss ▸ hs3'
+
+/-- **The strictly increasing chain of `q`-points above `t`.** `qAlpha_step` iterated, on the
+subtype of points satisfying every `αₙ` so that the invariant travels with the point.
+
+**The `t < ch 0` conjunct is not decoration.** `dedWitness_core` needs `t < z` for the least
+upper bound `z` in order to instantiate the `qGap` clause there, and it gets it as
+`lt_of_lt_of_le (t < ch 0) (ch 0 ≤ z)`; without this conjunct the caller has no route to `t < z`
+at all, because every other fact the chain supplies relates two of its own points. The chain is
+indexed off by one for exactly this reason: `ch n := (c (n+1)).1`, so `ch 0` is already one
+`qAlpha_step` above `t` rather than being `t` itself.
+
+Extracted from `dedWitness_core`. -/
+theorem exists_strictMono_qPoints (q : Atom) (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (ht : ∀ n, TruthAt M τ t (qAlpha q n)) :
+    ∃ ch : ℕ → F.Duration, StrictMono ch ∧ t < ch 0 ∧
+      ∀ n, TruthAt M τ (ch n) (Formula.atom q) := by
+  classical
+  set Inv : F.Duration → Prop := fun a => ∀ n, TruthAt M τ a (qAlpha q n) with hInv
+  let f : {a : F.Duration // Inv a} → {a : F.Duration // Inv a} := fun a =>
+    ⟨(qAlpha_step q M τ a.1 a.2).choose, (qAlpha_step q M τ a.1 a.2).choose_spec.2.2⟩
+  let c : ℕ → {a : F.Duration // Inv a} := fun n => f^[n] ⟨t, ht⟩
+  have hc : ∀ n, (c n).1 < (c (n+1)).1 ∧ TruthAt M τ (c (n+1)).1 (Formula.atom q) := by
+    intro n
+    have hcc : c (n+1) = f (c n) := by simp only [c, Function.iterate_succ_apply']
+    rw [hcc]
+    exact ⟨(qAlpha_step q M τ (c n).1 (c n).2).choose_spec.1,
+      (qAlpha_step q M τ (c n).1 (c n).2).choose_spec.2.1⟩
+  exact ⟨fun n => (c (n+1)).1, strictMono_nat_of_lt_succ (fun n => (hc (n+1)).1),
+    (hc 0).1, fun n => (hc n).2⟩
+
 /-- **The witness has no model over any Dedekind-complete frame.** Stated at
 `TaskFrame.IsComplete` with **no density binder**: density is never invoked, so this covers `ℤ`
 as well as `ℝ`-like carriers, and `FrameClass.Dedekind`'s density requirement plays no part
 here.
 
-The argument. `qAlpha q (n+1)` at `a` supplies *the* next `q`-point `s > a`, and — by the
-trichotomy step `hss`, which uses the gap clauses of two `qNext` unfoldings against each other —
-that same `s` satisfies every `qAlpha q n`. So the invariant "satisfies every `αₙ`" propagates
-along a chain `ch : ℕ → F.Duration` of strictly increasing `q`-points. `qBound` bounds that
-chain, completeness supplies a least upper bound `z`, and `qGap` at `z` demands a `¬q` interval
-`(u, z)`; but `z` is a *least* upper bound, so some `ch n` lies in `(u, z]`, and `ch n ≠ z`
-because `ch (n+1) ≤ z` is strictly above it. That `ch n` is a `q`-point in the interval the gap
-clause forbids. -/
+The argument, now that the chain construction lives in `exists_strictMono_qPoints` above. The
+`{αₙ}` family at `t` supplies a strictly increasing chain `ch` of `q`-points starting strictly
+above `t`; `qBound` bounds that chain, completeness supplies a least upper bound `z`, and `qGap`
+at `z` demands a `¬q` interval `(u, z)`. But `z` is a *least* upper bound, so some `ch n` lies in
+`(u, z]`, and `ch n ≠ z` because `ch (n+1) ≤ z` is strictly above it. That `ch n` is a `q`-point
+in the interval the gap clause forbids. -/
 theorem dedWitness_core (q : Atom) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (hlub : F.IsComplete)
     (h : ∀ ψ ∈ dedWitness q, TruthAt M τ t ψ) : False := by
   classical
-  have hgap := truthAt_qGap M τ t q (h _ (by simp [dedWitness]))
-  obtain ⟨x, htx, hx⟩ := truthAt_qBound M τ t q (h _ (by simp [dedWitness]))
-  have halpha : ∀ n, TruthAt M τ t (qAlpha q n) := fun n => h _ (by right; exact ⟨n, rfl⟩)
-  have step : ∀ a : F.Duration, (∀ n, TruthAt M τ a (qAlpha q n)) →
-      ∃ s, a < s ∧ TruthAt M τ s (Formula.atom q) ∧ (∀ n, TruthAt M τ s (qAlpha q n)) := by
-    intro a ha
-    have h1 : TruthAt M τ a (qNext q (qAlpha q 0)) := by
-      have := ha 1; rwa [qAlpha, Function.iterate_succ_apply'] at this
-    obtain ⟨s, hs1, hs2, -, hs4⟩ := (truthAt_qNext_iff M τ a q _).mp h1
-    refine ⟨s, hs1, hs2, ?_⟩
-    intro n
-    have hn : TruthAt M τ a (qNext q (qAlpha q n)) := by
-      have := ha (n+1); rwa [qAlpha, Function.iterate_succ_apply'] at this
-    obtain ⟨s', hs1', hs2', hs3', hs4'⟩ := (truthAt_qNext_iff M τ a q _).mp hn
-    have hss : s' = s := by
-      rcases lt_trichotomy s' s with hlt | heq | hgt
-      · exact absurd hs2' (hs4 s' hs1' hlt)
-      · exact heq
-      · exact absurd hs2 (hs4' s hs1 hgt)
-    exact hss ▸ hs3'
-  set Inv : F.Duration → Prop := fun a => ∀ n, TruthAt M τ a (qAlpha q n) with hInv
-  let f : {a : F.Duration // Inv a} → {a : F.Duration // Inv a} := fun a =>
-    ⟨(step a.1 a.2).choose, (step a.1 a.2).choose_spec.2.2⟩
-  let c : ℕ → {a : F.Duration // Inv a} := fun n => f^[n] ⟨t, halpha⟩
-  have hc : ∀ n, (c n).1 < (c (n+1)).1 ∧ TruthAt M τ (c (n+1)).1 (Formula.atom q) := by
-    intro n
-    have hcc : c (n+1) = f (c n) := by simp only [c, Function.iterate_succ_apply']
-    rw [hcc]
-    exact ⟨(step (c n).1 (c n).2).choose_spec.1, (step (c n).1 (c n).2).choose_spec.2.1⟩
-  set ch : ℕ → F.Duration := fun n => (c (n+1)).1 with hch
-  have hmono : StrictMono ch := strictMono_nat_of_lt_succ (fun n => (hc (n+1)).1)
-  have hQ : ∀ n, TruthAt M τ (ch n) (Formula.atom q) := fun n => (hc n).2
+  have hgap := truthAt_qGap M τ t q (h _ (by simp))
+  obtain ⟨x, htx, hx⟩ := truthAt_qBound M τ t q (h _ (by simp))
+  have halpha : ∀ n, TruthAt M τ t (qAlpha q n) := fun n => h _ (by simp)
+  obtain ⟨ch, hmono, htch, hQ⟩ := exists_strictMono_qPoints q M τ t halpha
   have hbdd : BddAbove (Set.range ch) := by
     refine ⟨x, ?_⟩
     rintro y ⟨n, rfl⟩
     by_contra hlt
     exact hx (ch n) (lt_of_not_ge hlt) (hQ n)
   obtain ⟨z, hz⟩ := hlub (Set.range ch) ⟨ch 0, ⟨0, rfl⟩⟩ hbdd
-  have htz : t < z := lt_of_lt_of_le (hc 0).1 (hz.1 ⟨0, rfl⟩)
+  have htz : t < z := lt_of_lt_of_le htch (hz.1 ⟨0, rfl⟩)
   obtain ⟨u, huz, hu⟩ := hgap z htz
   obtain ⟨y, ⟨n, rfl⟩, huy, hyz⟩ := hz.exists_between huz
   have hne : ch n ≠ z := by
@@ -389,9 +428,8 @@ theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
     (ShiftSet.hist_isTotal _ _) 0 ?_
   intro ψ hψ
   have hmem := hL ψ hψ
-  simp only [dedWitness, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff,
-    Set.mem_setOf_eq] at hmem
-  rcases hmem with (rfl | rfl) | ⟨n, rfl⟩
+  simp only [mem_dedWitness_iff] at hmem
+  rcases hmem with rfl | rfl | ⟨n, rfl⟩
   · exact rTruth_gap q N
   · exact rTruth_bound q N
   · have hn_le : n ≤ N := by
