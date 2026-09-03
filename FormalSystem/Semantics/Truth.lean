@@ -675,16 +675,15 @@ end Truth
 
 /-! ## Time-Shift Preservation
 
-These lemmas establish that truth is preserved under time-shift transformations.
-This is fundamental to proving the MF and TF axioms valid.
+Truth is preserved under time shift: for a formula `φ`,
+`TruthAt M σ y φ ↔ TruthAt M (timeShift σ (y - x)) x φ`. This is the semantic engine behind the
+MF and TF axioms' validity.
 
-The key insight is that for a formula φ:
-  `TruthAt M σ y φ ↔ TruthAt M (timeShift σ (y - x)) x φ`
-
-This relates truth at (σ, y) to truth at (shifted_σ, x).
-
-Note: With the new semantics where temporal operators quantify over ALL times (not just
-domain times), these proofs become simpler since we don't need to thread domain proofs.
+The theorem is `Truth.truthAt_of_truthCorr` at the instance `shiftCorr`: `ShiftRel Δ` is the
+relation of `def:time-shift-histories` read on arbitrary histories, and `shiftCorr`'s
+`total_fwd`/`total_bwd` are `app:auto_existence` ("total since 𝔇 is a group", i.e.
+`WorldHistory.isTotal_timeShift`). No six-case induction lives in this section; the one that
+used to is the relational transport's, run once.
 -/
 
 namespace TimeShift
@@ -702,19 +701,73 @@ theorem truth_history_eq (M : TaskModel F)
   rfl
 
 /--
+`ρ` is the `Δ`-shift of `ρ'`, pointwise: domains agree at `z` versus `z + Δ`, and so do the
+states. This is the relation of `def:time-shift-histories` (`τ ≈ σ` with `τ(z) = σ(z + Δ)`), read
+on **arbitrary** histories rather than only on possible worlds — which is what lets
+`timeShift_preserves_truth` keep its arbitrary-`σ` statement.
+-/
+def ShiftRel (Δ : F.Duration) (ρ ρ' : WorldHistory F) : Prop :=
+  (∀ z, ρ.domain z ↔ ρ'.domain (z + Δ)) ∧
+  ∀ z (h : ρ.domain z) (h' : ρ'.domain (z + Δ)), ρ.states z h = ρ'.states (z + Δ) h'
+
+/-- `σ.timeShift Δ` is the `Δ`-shift of `σ`, definitionally. -/
+theorem shiftRel_timeShift (Δ : F.Duration) (σ : WorldHistory F) :
+    ShiftRel Δ (σ.timeShift Δ) σ :=
+  ⟨fun _ => Iff.rfl, fun _ _ _ => rfl⟩
+
+/--
+`ρ` is the `Δ`-shift of `ρ.timeShift (-Δ)`. Not definitional: the right-hand side sits at
+`z + Δ + -Δ`, so the domain half is a rewrite and the state half is the tree's existing
+`WorldHistory.states_eq_of_time_eq` — no `HEq`, no structure equality.
+-/
+theorem shiftRel_timeShift_neg (Δ : F.Duration) (ρ : WorldHistory F) :
+    ShiftRel Δ ρ (ρ.timeShift (-Δ)) := by
+  refine ⟨fun z => ?_, fun z h h' => ?_⟩
+  · show ρ.domain z ↔ ρ.domain (z + Δ + -Δ)
+    rw [add_neg_cancel_right]
+  · exact WorldHistory.states_eq_of_time_eq ρ z (z + Δ + -Δ) (add_neg_cancel_right z Δ).symm h h'
+
+/--
+**Time shift is a truth correspondence** of `M` with itself: times reindex by `· + Δ`, histories
+by `ShiftRel Δ`. `total_fwd` and `total_bwd` are `app:auto_existence` — every possible world has
+a shifted possible world in each direction, `WorldHistory.isTotal_timeShift` supplying totality
+— and `atom` is the pointwise domain/state agreement unfolded at one time.
+
+`dur` must be `OrderIso.addRight Δ` itself. A hand-built `{ toEquiv := Equiv.addRight Δ, … }`
+elaborates, but leaves an unreduced `let` in `dur t` that blocks `rw` on `states` at every use
+site of the transport.
+-/
+def shiftCorr (M : TaskModel F) (Δ : F.Duration) : TruthCorr M M where
+  dur := OrderIso.addRight Δ
+  Rel := ShiftRel Δ
+  atom := by
+    rintro ρ ρ' ⟨hd, hs⟩ t p
+    show (∃ h : ρ.domain t, M.valuation (ρ.states t h) p) ↔
+      ∃ h' : ρ'.domain (t + Δ), M.valuation (ρ'.states (t + Δ) h') p
+    constructor
+    · rintro ⟨h, hv⟩
+      exact ⟨(hd t).mp h, by rw [← hs t h ((hd t).mp h)]; exact hv⟩
+    · rintro ⟨h', hv⟩
+      exact ⟨(hd t).mpr h', by rw [hs t ((hd t).mpr h') h']; exact hv⟩
+  total_fwd := fun ρ hρ =>
+    ⟨ρ.timeShift (-Δ), WorldHistory.isTotal_timeShift hρ (-Δ), shiftRel_timeShift_neg Δ ρ⟩
+  total_bwd := fun ρ' hρ' =>
+    ⟨ρ'.timeShift Δ, WorldHistory.isTotal_timeShift hρ' Δ, shiftRel_timeShift Δ ρ'⟩
+
+/--
 Time-shift preserves truth of formulas.
 
 If σ is a history and Δ = y - x, then truth at (σ, y) equals truth at (timeShift σ Δ, x).
 
-**Paper Reference**: lem:history-time-shift-preservation establishes this property.
+**Paper Reference**: `lem:history-time-shift-preservation`. The paper states the lemma for
+possible worlds `τ, σ ∈ H_F`; this theorem is Lean-stronger, holding for an arbitrary `σ`, and
+the extra generality is free because `ShiftRel` is pointwise and never needs totality of the
+history being shifted. Every live consumer passes a total history; the `H_F` form is
+`timeShift_preserves_truth_total` below.
 
-The proof proceeds by structural induction on formulas:
-- **Atom**: States match because (timeShift σ Δ).states x = σ.states (x + Δ) = σ.states y
-- **Bot**: Both sides are False
-- **Imp**: By induction hypothesis on subformulas
-- **Box**: Both sides quantify over the total histories; `WorldHistory.isTotal_timeShift`
-  supplies the shifted history's totality, enabling the bijection argument
-- **Past/Future**: Times shift together with the history
+**Proof**: `Truth.truthAt_of_truthCorr` at `shiftCorr M (y - x)` on the related pair
+`(σ.timeShift (y - x), σ)`, then `x + (y - x) = y`. The final step is a `change` followed by
+`rw [add_sub_cancel]`: `simpa` does not normalise `(OrderIso.addRight Δ) x` to `x + Δ`.
 
 **Key Insight**: **no shift-closure hypothesis is required.** Under the totality box clause the
 shifted history's membership in the quantifier's range is `WorldHistory.isTotal_timeShift`,
@@ -725,230 +778,21 @@ theorem timeShift_preserves_truth (M : TaskModel F)
     (σ : WorldHistory F) (x y : F.Duration)
     (φ : Formula) :
     TruthAt M (WorldHistory.timeShift σ (y - x)) x φ ↔ TruthAt M σ y φ := by
-  -- Proof by structural induction on φ
-  induction φ generalizing x y σ with
-  | atom p =>
-    -- For atoms, we need to check domain membership in both cases
-    -- (timeShift σ Δ).domain x iff σ.domain (x + Δ) = σ.domain y
-    simp only [TruthAt, WorldHistory.timeShift]
-    have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
-    -- Domain at x in shifted history iff domain at y in original
-    constructor
-    · intro ⟨hx, h⟩
-      have hy : σ.domain y := by rw [← h_eq]; exact hx
-      -- States match: use states_eq_of_time_eq
-      have h_states := WorldHistory.states_eq_of_time_eq σ (x + (y - x)) y h_eq hx hy
-      exact ⟨hy, by rw [← h_states]; exact h⟩
-    · intro ⟨hy, h⟩
-      have hx : σ.domain (x + (y - x)) := by rw [h_eq]; exact hy
-      have h_states := WorldHistory.states_eq_of_time_eq σ (x + (y - x)) y h_eq hx hy
-      exact ⟨hx, by rw [h_states]; exact h⟩
-  | bot =>
-    -- Both sides are False
-    simp only [TruthAt]
-  | imp ψ χ ih_ψ ih_χ =>
-    -- By IH on both subformulas
-    simp only [TruthAt]
-    constructor
-    · intro h h_psi
-      have h_psi' := (ih_ψ σ x y).mpr h_psi
-      exact (ih_χ σ x y).mp (h h_psi')
-    · intro h h_psi'
-      have h_psi := (ih_ψ σ x y).mp h_psi'
-      exact (ih_χ σ x y).mpr (h h_psi)
-  | box ψ ih =>
-    -- For box, both sides quantify over the total histories at their respective times.
-    -- Totality of the shifted history is `isTotal_timeShift`, definitionally `fun t => hρ (t + Δ)`.
-    simp only [TruthAt]
-    constructor
-    · intro h_box_x ρ h_rho_tot
-      -- ρ is total, need to show truth at (ρ, y)
-      -- timeShift ρ (y - x) is total by isTotal_timeShift
-      have h_shifted_tot : (WorldHistory.timeShift ρ (y - x)).IsTotal :=
-        WorldHistory.isTotal_timeShift h_rho_tot (y - x)
-      have h1 := h_box_x (WorldHistory.timeShift ρ (y - x)) h_shifted_tot
-      -- Apply IH with ρ instead of σ
-      exact (ih ρ x y).mp h1
-    · intro h_box_y ρ h_rho_tot
-      -- ρ is total, need to show truth at (ρ, x)
-      -- timeShift ρ (x - y) is total by isTotal_timeShift
-      have h_shifted_tot : (WorldHistory.timeShift ρ (x - y)).IsTotal :=
-        WorldHistory.isTotal_timeShift h_rho_tot (x - y)
-      have h1 := h_box_y (WorldHistory.timeShift ρ (x - y)) h_shifted_tot
-      -- The induction hypothesis is generalized over `σ`, `x` and `y`, so instantiating it at
-      -- `(ρ, y, x)` -- times SWAPPED -- reads
-      -- `TruthAt M (timeShift ρ (x - y)) y ψ ↔ TruthAt M ρ x ψ`,
-      -- which is exactly this direction. No double-shift round trip is needed: the older proof
-      -- instantiated at `(timeShift ρ (x - y), x, y)` instead and then had to cancel the
-      -- resulting double shift, which is the sole reason `truth_double_shift_cancel` and the two
-      -- `timeShift_timeShift_neg_*` lemmas existed (both now deleted).
-      exact (ih ρ y x).mp h1
-  | untl ψ φ ih_ψ ih_φ =>
-    -- Until (guard-first): untl(guard=ψ, event=φ)
-    -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)
-    -- Direction (→): shifted history at x → original history at y
-    --   Witness s in shifted maps to s+(y-x) in original.
-    -- Direction (←): original at y → shifted at x
-    --   Witness s in original maps to s-(y-x) in shifted.
-    simp only [TruthAt]
-    constructor
-    · -- (→) shifted at x → original at y
-      intro ⟨s, h_x_lt_s, h_event_s, h_guard⟩
-      -- Witness in original: s + (y - x)
-      refine ⟨s + (y - x), ?_, ?_, ?_⟩
-      · -- y < s + (y - x)
-        have h := add_lt_add_right h_x_lt_s (y - x)
-        have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
-        calc y = x + (y - x) := h_eq.symm
-          _ = (y - x) + x := add_comm x (y - x)
-          _ < (y - x) + s := h
-          _ = s + (y - x) := add_comm (y - x) s
-      · -- φ (event) at (σ, s + (y - x))
-        have h_shift_eq2 : (s + (y - x)) - s = y - x :=
-          add_sub_cancel_left s (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ ((s + (y - x)) - s) =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ ((s + (y - x)) - s) (y - x) h_shift_eq2
-        have h_conv := (truth_history_eq M _ _ s h_hist_eq.symm φ).mp h_event_s
-        exact (ih_φ σ s (s + (y - x))).mp h_conv
-      · -- guard: ∀ r, y < r → r < s + (y - x) → ψ(σ, r)
-        intro r h_y_lt_r h_r_lt_s'
-        have h_x_lt_r' : x < r - (y - x) := by
-          have h := sub_lt_sub_right h_y_lt_r (y - x)
-          simp only [sub_sub_cancel] at h
-          exact h
-        have h_r'_lt_s : r - (y - x) < s := by
-          have h := sub_lt_sub_right h_r_lt_s' (y - x)
-          simp only [add_sub_cancel_right] at h
-          exact h
-        have h_grd := h_guard (r - (y - x)) h_x_lt_r' h_r'_lt_s
-        have h_shift_eq : r - (r - (y - x)) = y - x := sub_sub_cancel r (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ (r - (r - (y - x))) =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
-        exact (ih_ψ σ (r - (y - x)) r).mp h_conv
-    · -- (←) original at y → shifted at x
-      intro ⟨s, h_y_lt_s, h_event_s, h_guard⟩
-      -- Witness in shifted: s - (y - x)
-      refine ⟨s - (y - x), ?_, ?_, ?_⟩
-      · -- x < s - (y - x)
-        have h := sub_lt_sub_right h_y_lt_s (y - x)
-        simp only [sub_sub_cancel] at h
-        exact h
-      · -- φ (event) at (shifted σ, s - (y - x))
-        have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ (s - (s - (y - x))) =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
-        have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
-        exact (truth_history_eq M _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
-      · -- guard: ∀ r', x < r' → r' < s - (y - x) → ψ(shifted σ, r')
-        intro r' h_x_lt_r' h_r'_lt_s'
-        have h_y_lt_r : y < r' + (y - x) := by
-          have h := add_lt_add_right h_x_lt_r' (y - x)
-          have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
-          calc y = x + (y - x) := h_eq.symm
-            _ = (y - x) + x := add_comm x (y - x)
-            _ < (y - x) + r' := h
-            _ = r' + (y - x) := add_comm (y - x) r'
-        have h_r_lt_s : r' + (y - x) < s := by
-          have h_eq : s - (y - x) + (y - x) = s := sub_add_cancel s (y - x)
-          calc r' + (y - x) < s - (y - x) + (y - x) :=
-                add_lt_add_left h_r'_lt_s' (y - x)
-            _ = s := h_eq
-        have h_grd := h_guard (r' + (y - x)) h_y_lt_r h_r_lt_s
-        have h_shift_eq : (r' + (y - x)) - r' = y - x :=
-          add_sub_cancel_left r' (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ ((r' + (y - x)) - r') =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ ((r' + (y - x)) - r')
-            (y - x) h_shift_eq
-        have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
-        exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
-  | snce ψ φ ih_ψ ih_φ =>
-    -- Since (guard-first): snce(guard=ψ, event=φ)
-    -- ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r)
-    -- Mirror of Until with reversed inequalities.
-    simp only [TruthAt]
-    constructor
-    · -- (→) shifted at x → original at y
-      intro ⟨s, h_s_lt_x, h_event_s, h_guard⟩
-      -- Witness in original: s + (y - x)
-      refine ⟨s + (y - x), ?_, ?_, ?_⟩
-      · -- s + (y - x) < y
-        have h := add_lt_add_right h_s_lt_x (y - x)
-        calc s + (y - x) = (y - x) + s := add_comm s (y - x)
-          _ < (y - x) + x := h
-          _ = x + (y - x) := add_comm (y - x) x
-          _ = y := by rw [add_sub, add_sub_cancel_left]
-      · -- φ (event) at (σ, s + (y - x))
-        have h_shift_eq : (s + (y - x)) - s = y - x :=
-          add_sub_cancel_left s (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ ((s + (y - x)) - s) =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ ((s + (y - x)) - s)
-            (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M _ _ s h_hist_eq.symm φ).mp h_event_s
-        exact (ih_φ σ s (s + (y - x))).mp h_conv
-      · -- guard: ∀ r, s + (y - x) < r → r < y → ψ(σ, r)
-        intro r h_s'_lt_r h_r_lt_y
-        have h_s_lt_r' : s < r - (y - x) := by
-          have h := sub_lt_sub_right h_s'_lt_r (y - x)
-          simp only [add_sub_cancel_right] at h
-          exact h
-        have h_r'_lt_x : r - (y - x) < x := by
-          have h := sub_lt_sub_right h_r_lt_y (y - x)
-          simp only [sub_sub_cancel] at h
-          exact h
-        have h_grd := h_guard (r - (y - x)) h_s_lt_r' h_r'_lt_x
-        have h_shift_eq : r - (r - (y - x)) = y - x := sub_sub_cancel r (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ (r - (r - (y - x))) =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
-        exact (ih_ψ σ (r - (y - x)) r).mp h_conv
-    · -- (←) original at y → shifted at x
-      intro ⟨s, h_s_lt_y, h_event_s, h_guard⟩
-      -- Witness in shifted: s - (y - x)
-      refine ⟨s - (y - x), ?_, ?_, ?_⟩
-      · -- s - (y - x) < x
-        have h := sub_lt_sub_right h_s_lt_y (y - x)
-        simp only [sub_sub_cancel] at h
-        exact h
-      · -- φ (event) at (shifted σ, s - (y - x))
-        have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ (s - (s - (y - x))) =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
-        have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
-        exact (truth_history_eq M _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
-      · -- guard: ∀ r', s - (y - x) < r' → r' < x → ψ(shifted σ, r')
-        intro r' h_s'_lt_r' h_r'_lt_x
-        have h_s_lt_r : s < r' + (y - x) := by
-          calc s = s - (y - x) + (y - x) := (sub_add_cancel s (y - x)).symm
-            _ < r' + (y - x) := add_lt_add_left h_s'_lt_r' (y - x)
-        have h_r_lt_y : r' + (y - x) < y := by
-          have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
-          calc r' + (y - x) < x + (y - x) := add_lt_add_left h_r'_lt_x (y - x)
-            _ = y := h_eq
-        have h_grd := h_guard (r' + (y - x)) h_s_lt_r h_r_lt_y
-        have h_shift_eq : (r' + (y - x)) - r' = y - x :=
-          add_sub_cancel_left r' (y - x)
-        have h_hist_eq :
-          WorldHistory.timeShift σ ((r' + (y - x)) - r') =
-          WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.timeShift_congr σ ((r' + (y - x)) - r')
-            (y - x) h_shift_eq
-        have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
-        exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
+  have h := Truth.truthAt_of_truthCorr (shiftCorr M (y - x)) φ (σ.timeShift (y - x)) σ
+    (shiftRel_timeShift (y - x) σ) x
+  change TruthAt M (σ.timeShift (y - x)) x φ ↔ TruthAt M σ (x + (y - x)) φ at h
+  rw [add_sub_cancel] at h
+  exact h
+
+/--
+The paper-faithful form of `timeShift_preserves_truth`: `lem:history-time-shift-preservation`
+as stated, for a possible world `τ : F.HF`. Documentation alignment only — it is the general
+theorem specialised, and no consumer needs it.
+-/
+theorem timeShift_preserves_truth_total (M : TaskModel F) (τ : F.HF) (x y : F.Duration)
+    (φ : Formula) :
+    TruthAt M (WorldHistory.timeShift τ.val (y - x)) x φ ↔ TruthAt M τ.val y φ :=
+  timeShift_preserves_truth M τ.val x y φ
 
 /--
 Corollary: For any history σ at time y, there exists a history at time x

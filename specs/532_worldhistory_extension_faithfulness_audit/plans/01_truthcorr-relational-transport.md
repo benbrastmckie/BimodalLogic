@@ -196,40 +196,42 @@ statement is byte-identical by diffing the declaration header against `git show 
 
 ---
 
-### Phase 2: Derive `timeShift_preserves_truth` from `shiftCorr`; delete the 230-line induction [NOT STARTED]
+### Phase 2: Derive `timeShift_preserves_truth` from `shiftCorr`; delete the 230-line induction [COMPLETED]
 
 **Goal**: `TimeShift.timeShift_preserves_truth` keeps its exact statement (arbitrary `σ`) and
 name but is a ~12-line consequence of `truthAt_of_truthCorr` at the `shiftCorr` instance; the
 hand-written six-case induction is gone.
 
 **Tasks**:
-- [ ] In `FormalSystem/Semantics/Truth.lean`, inside `namespace TimeShift` (before
+- [x] In `FormalSystem/Semantics/Truth.lean`, inside `namespace TimeShift` (before
       `timeShift_preserves_truth`), port from the experiment: `ShiftRel Δ ρ ρ'`
       (pointwise domain/state agreement at `z` vs `z + Δ`), `shiftRel_timeShift`,
       `shiftRel_timeShift_neg`, and `def shiftCorr (M) (Δ) : TruthCorr M M` with
       `dur := OrderIso.addRight Δ` (**not** a hand-built `OrderIso`; recorded trap),
       `Rel := ShiftRel Δ`, `total_fwd` via `ρ.timeShift (-Δ)` and
       `WorldHistory.isTotal_timeShift`, `total_bwd` via `ρ'.timeShift Δ`.
-- [ ] Docstring `ShiftRel` as `def:time-shift-histories`'s `τ ≈ σ` read on arbitrary histories,
+- [x] Docstring `ShiftRel` as `def:time-shift-histories`'s `τ ≈ σ` read on arbitrary histories,
       and `shiftCorr.total_fwd`/`total_bwd` as `app:auto_existence` ("total since 𝔇 is a group",
       i.e. `isTotal_timeShift`). Cite by name only.
-- [ ] Replace the body of `timeShift_preserves_truth` with the experiment's derivation
+- [x] Replace the body of `timeShift_preserves_truth` with the experiment's derivation
       (`have h := truthAt_of_truthCorr (shiftCorr M (y - x)) φ (σ.timeShift (y - x)) σ
       (shiftRel_timeShift _ σ) x`, then `change … at h; rw [add_sub_cancel] at h; exact h`).
       Statement, name, namespace, and argument order unchanged.
-- [ ] Rewrite `timeShift_preserves_truth`'s docstring and the `## Time-Shift Preservation`
+- [x] Rewrite `timeShift_preserves_truth`'s docstring and the `## Time-Shift Preservation`
       section docstring: drop the six-bullet proof sketch of the deleted induction; state that
       the theorem is Lean-stronger than `lem:history-time-shift-preservation` (the paper states it
       for `τ, σ ∈ H_F`; the general form is free because `ShiftRel` is pointwise) and that every
       live consumer passes a total history; keep the "no shift-closure hypothesis" paragraph.
       Remove the stale "With the new semantics ... these proofs become simpler" note.
-- [ ] Add the paper-faithful corollary
+- [x] Add the paper-faithful corollary
       `theorem timeShift_preserves_truth_total (M) (σ : WorldHistory F) (hσ : σ.IsTotal) (x y) (φ) : …`
       (or the `F.HF` form — implementer's choice) as a one-liner from the general theorem, with
       a docstring naming it as the `lem:history-time-shift-preservation` counterpart. Do **not**
       make any consumer use it; this is documentation alignment only.
-- [ ] `lake build`; run `#print axioms` on `TimeShift.timeShift_preserves_truth` (expected
+- [x] `lake build`; run `#print axioms` on `TimeShift.timeShift_preserves_truth` (expected
       `propext`, `Quot.sound` — unchanged from before).
+
+**Phase record**: `Truth.lean` `induction φ` code sites 4 → 3 (`truthAt_of_truthCorr`, `truthAt_atomFree_history_indep`, `truthAt_of_truthAntiIso`). Consumer-site lines outside `Truth.lean`: 23 before, 23 after. Axioms `timeShift_preserves_truth` / `_total` / `shiftCorr`: `[propext, Quot.sound]`. Full `lake build` 2520 jobs exit 0; invariants ALL CHECKS PASSED. Corollary landed in the `F.HF` form. `truth_history_eq` kept (public, harmless, zero external references).
 
 **Timing**: 1.5 hours
 
