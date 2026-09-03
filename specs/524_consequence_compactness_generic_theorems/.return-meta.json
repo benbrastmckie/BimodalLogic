@@ -1,16 +1,33 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/524_consequence_compactness_generic_theorems/reports/01_consequence-compactness-generic-theorems.md",
-      "summary": "FrameClass collapse at the theorem layer: all eight work items verified constructible, with the mathematically load-bearing declarations for items 1-6 elaborated clean against the built library; four corrections to the task's measured state."
+      "type": "plan",
+      "path": "specs/524_consequence_compactness_generic_theorems/plans/01_generic-consequence-compactness-theorems.md",
+      "summary": "11-phase plan collapsing the consequence/compactness/strong-completeness theorem layer onto generic FrameClass declarations, with the Conservativity/ reorganization and C2/C14 manifest extension."
     }
   ],
+  "next_steps": "Run /implement 524 to execute the plan",
   "metadata": {
     "session_id": "sess_1788407456_70233f_524",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
+    "task_number": 524,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 11,
+    "estimated_hours": 15,
+    "dependency_waves": [[1, 2, 3], [4, 6], [5, 8], [7], [9], [10], [11]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a Lean repo's per-class theorem copies are collapsed onto generic FrameClass declarations, the phase boundaries must be cut along the actual dependency edges rather than along the work-item numbering. In BimodalLogic task 524 the compactness triangle (item 2) and the shared refutation skeleton (item 3) interleave in both directions: compact_of_strongCompleteness feeds not_strongCompleteness_of_witness, while not_compact_of_witness feeds modelExistence_of_compact. Treating the items as two sequential phases would deadlock. The general pattern: when two work items each supply a lemma the other consumes, split by lemma (all mutually-independent generics in one phase, all the theorems that consume both in the next) instead of by item.",
+      "category": "PATTERN",
+      "source_artifact": "specs/524_consequence_compactness_generic_theorems/plans/01_generic-consequence-compactness-theorems.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["phase-decomposition", "dependency-edges", "lean4", "generic-collapse", "interleaved-items"]
+    }
+  ],
+  "modified_files": [
+    "specs/524_consequence_compactness_generic_theorems/plans/01_generic-consequence-compactness-theorems.md"
+  ]
 }

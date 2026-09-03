@@ -84,10 +84,10 @@ next_project_number: 533
 
 ### Metalogic
 
-524 [RESEARCHED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
+524 [PLANNED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
   └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
     └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-525 [RESEARCHED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
+525 [PLANNING] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
   └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
   └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
@@ -174,7 +174,7 @@ next_project_number: 533
 ---
 
 ### 525. Galois over mathlib correspondence tidy
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 523
@@ -185,11 +185,12 @@ next_project_number: 533
 ---
 
 ### 524. Consequence compactness generic theorems
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 521, Task 522
 - **Research**: [524_consequence_compactness_generic_theorems/reports/01_consequence-compactness-generic-theorems.md]
+- **Plan**: [524_consequence_compactness_generic_theorems/plans/01_generic-consequence-compactness-theorems.md]
 
 **Description**: WAVE 3 (theorem layer). Finish the FrameClass collapse at the THEOREM layer of the consequence/compactness/strong-completeness stack: the definitions are generic (SemanticConsequenceIn, SetSemanticConsequenceOn, SatisfiableSet/ModelExistence/Compact/StrongCompleteness) but almost every proof is still four per-class copies, because three textbook facts are missing as declarations. Findings B-01..B-07, B-09, B-10, B-18..B-23, A-05, G-01, G-02, G-03 in specs/reviews/2026-09-01-lean-engineering/{B-completeness,A-soundness,G-ecosystem}.md; High H4 and utilities U4/U5 in the review. MEASURED STATE: semantic_deduction_{dedekind_dense,base,dense,discrete} at StrongCompleteness.lean:256,632,762,907 are the same 10-line script; soundness_{dedekind,base,dense,discrete}_consequence at :525,675,805,948 have byte-identical bodies (`intro F hF M τ hτ t h_ctx; exact h.elim fun d => soundness_in ...`); consequence_completeness_* and completeness_* (:504-966) are eight instances of two theorems, with only the Dedekind section using the `_of_engine` shape; the engine shape `∀ ψ, ValidIn fc ψ → Derivable fc [] ψ` is written longhand at three hypothesis sites and never named; modelExistenceBase and modelExistenceDense (Compactness.lean:84,121) differ only by a haveI whose content is already an instance at Ultraproduct/Carrier.lean:182; the four refutations (DiscreteNonCompactness.lean:249,278; DedekindNonCompactness.lean:431,459) execute the identical five-step skeleton because `StrongCompleteness fc → Compact fc` is not stated; `Compact fc ↔ ModelExistence fc` is half-present (only compact_of_modelExistence :423), so ModelExistenceDedekind's refutation is 'simply not drawn here' in prose (:627-636); ~110 lines of SetConsequence.lean have no consumer (fifteen declarations, two of which are the only reason it imports Core.MaximalConsistent); naming spans three schemes (compactBase / discrete_consequence_not_compact / strongCompletenessDiscrete_refuted); 45 in-file #print axioms with hand-transcribed output blocks duplicate C2. The five BL-vs-TM files (Conservativity, TMCompletenessReduction, SpWitness, Z1Countermodel, BaseLanguageSoundness) have a documented reading order but no directory or aggregator, against the sibling-aggregator convention (B-19) -- which is how they fell out of the build (fixed provisionally by 518). Mathlib's ModelTheory shape (Satisfiability.lean:65,69,100; Bundled.lean:73): one IsSatisfiable := Nonempty (ModelType T), compactness as isSatisfiable_iff_isFinitelySatisfiable. WORK, each generic in fc: (1) semantic_deduction_in; soundness_consequence; `def WeakCompleteness (fc) : Prop`; consequence_completeness_of_engine; retype the three engine hypotheses and state the four BXCanonical engines' corollaries as WeakCompleteness .X. (2) compact_of_strongCompleteness and `strongCompleteness_iff_compact (engine : WeakCompleteness fc)` -- the headline 'strong completeness = weak completeness + compactness' as one iff; modelExistence_of_compact and compact_iff_modelExistence; draw ¬ModelExistenceDedekind. (3) setConsequence_of_not_satisfiable, not_compact_of_witness, not_strongCompleteness_of_witness; the four refutations become one-liners; extract qAlpha_step / exists_strictMono_qPoints from dedWitness_core (B-20); @[simp] mem_archWitness_iff / mem_dedWitness_iff (B-21). (4) modelExistence_of_satPreserved with an ultraproduct-closure hypothesis on fc.Sat, with the docstring that explains why Base/Dense succeed and Discrete/Dedekind fail; modelExistenceBase/Dense as instantiations. (5) `structure PointedModel fc Γ` (frame, class membership, model, total history, time, truth condition), SatisfiableSet fc Γ := Nonempty (PointedModel fc Γ), FinitelySatisfiableSet, SatisfiableSet.mono, compactness restated as SatisfiableSet ↔ FinitelySatisfiableSet given Compact fc, and `SetSemanticConsequenceOn fc Γ φ ↔ ¬ SatisfiableSet fc (Γ ∪ {φ.neg})`; the four *_of_forall constructors become PointedModel.of (G-01/G-03). (6) TMComplete/Forward generic in fc with the four names as instantiations (B-22). (7) Delete the fifteen dead SetConsequence declarations and the Core.MaximalConsistent import (B-07); adopt one naming scheme for the family (B-18); move the in-file #print axioms into C2's manifest keeping only the termini (B-23). (8) Create Metalogic/Conservativity/ with a sibling aggregator carrying the prohibition narrative, holding Backward.lean (today's body), TMCompletenessReduction, SpWitness, Z1Countermodel, BaseLanguageSoundness (B-19); fix Conservativity.lean:347-357's wrong carrier / denied result (B-17). ACCEPTANCE: strongCompleteness_iff_compact and compact_iff_modelExistence exist; zero per-class copies of the deduction theorem, soundness guard, model-existence proof or refutation skeleton; ~230 lines of per-class instantiation removed; C2 manifest extended to every declaration this task touches; lake build green; check-module-invariants.sh ALL PASS.
 
