@@ -415,26 +415,26 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 5: Delete the private Archimedean copy and repair its three docstrings [IN PROGRESS]
+### Phase 5: Delete the private Archimedean copy and repair its three docstrings [COMPLETED]
 
 - **Goal:** Zero private Archimedean copies in the tree; the new import edge is in place and measured;
   and the three docstrings the deletion falsifies are corrected in the same change.
 
 - **Tasks:**
-  - [ ] **Territory check first:** run `git status --short` and confirm
+  - [x] **Territory check first:** run `git status --short` and confirm
         `Metalogic/SoundnessLemmas/Separability.lean` and `Metalogic/Decidability/Verified/Decidable.lean`
         carry no foreign modification (task 524 is concurrently active in `Metalogic/`). If either is
         foreign-modified, stop and report rather than editing.
-  - [ ] Add `import FormalSystem.Semantics.DurationClassification` to `Separability.lean` (currently
+  - [x] Add `import FormalSystem.Semantics.DurationClassification` to `Separability.lean` (currently
         imports only `Mathlib.Algebra.Order.Archimedean.Basic` and `Mathlib.Data.Set.Countable`).
-  - [ ] Retarget the single call site — inside `exists_countable_order_dense` — from `arch_of_lub` to
+  - [x] Retarget the single call site — inside `exists_countable_order_dense` — from `arch_of_lub` to
         `Semantics.archimedean_of_lub`. The call site has `[Nontrivial D]` in scope; the public lemma
         simply does not need it, so the extra binder on the private copy is discharged by being
         unnecessary. The public lemma is otherwise a character-level match and strictly more general.
-  - [ ] Delete `private theorem arch_of_lub` together with its docstring paragraph ("Deliberate
+  - [x] Delete `private theorem arch_of_lub` together with its docstring paragraph ("Deliberate
         duplicate of `FormalSystem.Semantics.archimedean_of_lub` … This copy stays `private` and stays
         here"), which goes with the theorem.
-  - [ ] Repair `Metalogic/Decidability/Verified/Decidable.lean`'s "**On the import.**" paragraph, which
+  - [x] Repair `Metalogic/Decidability/Verified/Decidable.lean`'s "**On the import.**" paragraph, which
         asserts `SoundnessLemmas/Separability.lean` imports **only** Mathlib and "mentions neither
         formulas nor truth". Rewrite it to state the new transitive closure — exactly three
         `Semantics` modules (`DurationClassification`, `TaskFrame`, `TemporalOrder`) and **no**
@@ -442,11 +442,19 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
         measured rather than asserted. **The adjacent sentence refusing the edge to
         `Metalogic/Soundness.lean` is unaffected and must stay verbatim** — it is the same sentence
         item (4) relies on.
-  - [ ] Delete or rewrite `Semantics/DurationClassification.lean`'s "## Relation to
+  - [x] Delete or rewrite `Semantics/DurationClassification.lean`'s "## Relation to
         `Metalogic/SoundnessLemmas/Separability.lean`" header section. It says the duplication "is
         deliberate and is noted in both places rather than resolved by moving the helper, which would
         drag `Metalogic` proofs into a rebase" — the duplication is now resolved, and the measured
         3-module closure refutes the stated reason for keeping it.
+  - [x] **Scope-hypothesis correction (in-phase, as this phase's own text directs).** The plan
+        asserted *three* falsified docstrings; the re-enumeration grep found a **fourth**, at
+        `Decidable.lean:2562-2563`, which independently asserts that `Separability.lean` "imports
+        only Mathlib and mentions neither formulas nor truth". Repaired in the same change. A
+        fifth consequence — `SoundnessLemmas/README.md`'s Lines cell for `Separability.lean`, stale
+        at 354 against the post-deletion 334 — was also repaired here rather than deferred, since it
+        is a documentation defect caused by this deletion and Phase 6 covers only the Correspondence
+        and Independence READMEs.
 
 - **Timing:** 0.75 hours
 
@@ -464,16 +472,24 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 - **Files to modify:**
   - `FormalSystem/Metalogic/SoundnessLemmas/Separability.lean` — new import, retargeted call site,
-    deleted private theorem and its docstring.
-  - `FormalSystem/Semantics/DurationClassification.lean` — deleted/rewritten header section.
-  - `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean` — rewritten "On the import."
-    paragraph, refusal sentence preserved.
+    deleted private theorem and its docstring; header now states the one non-Mathlib edge.
+  - `FormalSystem/Semantics/DurationClassification.lean` — rewritten header section.
+  - `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean` — **two** rewritten paragraphs
+    (`:2562` as well as `:2755`), refusal sentence preserved byte-identical.
+  - *(added during implementation)* `FormalSystem/Metalogic/SoundnessLemmas/README.md` — Lines cell
+    354 -> 334.
 
 - **Verification:**
-  - `lake build` green for `Separability.lean` and its dependents.
-  - `scripts/check-metalogic-cycles.sh` passes (no cycle introduced by the new edge).
-  - `grep -rn 'arch_of_lub' FormalSystem/` returns nothing.
+  - `lake build` green for `Separability.lean` and its dependents. *(Full tree, 2521 jobs, green.)*
+  - `scripts/check-metalogic-cycles.sh` passes (no cycle introduced by the new edge). *(PASS —
+    exactly 1 directory-level cycle, the pre-existing `WeakCanonical` <-> `BXCanonical` one.)*
+  - `grep -rn 'arch_of_lub' FormalSystem/` returns nothing. *(Confirmed.)*
   - The `Metalogic/Soundness.lean` refusal sentence in `Decidable.lean` is byte-identical to before.
+    *(Confirmed — the diff shows it as unchanged context, not as a `+`/`-` line.)*
+  - The "exactly three modules" closure claim written into both repaired docstrings was **measured**,
+    not transcribed: the transitive `FormalSystem` import closure of
+    `Semantics.DurationClassification` is `{DurationClassification, TaskFrame, TemporalOrder}`,
+    count 3, containing no `FormalSystem.Metalogic` module.
 
 ---
 
