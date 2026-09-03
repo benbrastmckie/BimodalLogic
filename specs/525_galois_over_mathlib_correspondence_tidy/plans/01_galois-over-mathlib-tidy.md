@@ -336,35 +336,45 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 4: Rewrite the three (T1) proofs; delete `corrAtom` [IN PROGRESS]
+### Phase 4: Rewrite the three (T1) proofs; delete `corrAtom` [COMPLETED]
 
 - **Goal:** The three (T1) proofs open with the realisation lemmas and read as visibly parallel
   arguments; the private `corrAtom` is gone and the atom idiom is `Atom.mkBase "p"` throughout.
 
 - **Tasks:**
-  - [ ] Rewrite `validOn_co_iff_isComplete`'s (⇒) branch first — it has the largest, most mechanical
+  - [x] Rewrite `validOn_co_iff_isComplete`'s (⇒) branch first — it has the largest, most mechanical
         win: replace the 11-line inline `hHiff` block with `translation_realizes_allPast`, and the
         `set τ := ⟨translationHist D, translationHist_isTotal D⟩ with hτ` block with `translationHF D`.
         Drop the now-dead `simp only [hτ, hM, translationModel_atom]` incantations.
-  - [ ] Rewrite `validOn_df_iff_isDiscrete`'s (⇒) branch: replace the `set τ` block with
+  - [x] Rewrite `validOn_df_iff_isDiscrete`'s (⇒) branch: replace the `set τ` block with
         `translationHF D` and the two ad hoc realisation steps (the `Hφ` antecedent and the
         consequent readback) with `translation_realizes_allPast` / `translation_realizes`.
-  - [ ] Rewrite `validOn_dn_iff_denselyOrdered`'s (⇒) branch using the permissive twin: replace the
+  - [x] Rewrite `validOn_dn_iff_denselyOrdered`'s (⇒) branch using the permissive twin: replace the
         `set τ := ⟨permissiveHist D so nm f, permissiveHist_isTotal D so nm f⟩ with hτ` block with
         `permissiveHF D so nm f` and the `simp only [hτ, permissiveModel_atom]` steps with
         `permissive_realizes`.
-  - [ ] Delete `private def corrAtom : Atom := ⟨"p", none⟩` and its preceding comment. Replace every
+  - [x] Delete `private def corrAtom : Atom := ⟨"p", none⟩` and its preceding comment. Replace every
         `Formula.atom corrAtom` with `Formula.atom (Atom.mkBase "p")` — `Atom.mkBase`
         (`Syntax/Atom.lean:117`) already exists and is the idiomatic spelling of `⟨"p", none⟩`.
         Rationale for parameterising rather than promoting (C-25): the file's own comment already says
         "any atom would do"; `CoNotPriorU.lean` and `DiscreteNonCompactness.lean` already take
         `(a : Atom)` parameters, so this is the established repo idiom; and a promoted public
         `Semantics.corrAtom` would be a new public name with no mathematical content.
-  - [ ] Replace `FwdRec.lean`'s two `Atom.mk "p" none` inlines (at `:88` and `:97`, inside the (⇒)
+  - [x] Replace `FwdRec.lean`'s two `Atom.mk "p" none` inlines (at `:88` and `:97`, inside the (⇒)
         branch of `validOn_atomic_density_iff_fwdRec`, where the theorem's own `∀ p : Atom` binder at
         `:81` is not in scope) with `Atom.mkBase "p"`.
-  - [ ] Read the three (⇒) openings side by side and confirm they are visibly parallel. If they are
-        not, the phase is not done — adjust until they are.
+  - [x] Read the three (⇒) openings side by side and confirm they are visibly parallel. If they are
+        not, the phase is not done — adjust until they are. *(Confirmed. All three now run the same
+        five marked steps: (i) `set` the realising data; (ii) `have` the realisation lemma
+        (`permissive_realizes` / `translation_realizes_allPast`); (iii) build the schema's antecedent
+        through it with `.mpr`; (iv) instantiate `h` at
+        `(witnessFrame …) (Formula.atom (Atom.mkBase "p")) (witnessModel …) (witnessHF …)`;
+        (v) read the consequent back with `.mp`. Steps (i), (ii), (iv) carry identical marker
+        comments in all three proofs.)*
+  - Measured outcome: 207 -> **165** lines (52 / 46 / 67), against the plan's ~150-160
+    *expectation*. The stated acceptance criterion — parallelism — is met; the residual 5 lines over
+    the expectation are the CO proof's `halways` block, which is genuine mathematical content
+    (the least-upper-bound contradiction), not plumbing, and has no counterpart in the other two.
 
 - **Timing:** 1.5 hours
 
@@ -373,7 +383,8 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 - **Verification Tier:** local
 
 - **Commit Mode:** per-substep — each of the three proof rewrites is an independently green sub-step
-  and is committed as it lands.
+  and is committed as it lands. *(Executed as phase 4.1 = CO, 4.2 = DF, 4.3 = DN + `corrAtom`
+  deletion + `FwdRec.lean`, each with its own green build before commit.)*
 
 - **Scope Hypothesis:** This phase asserts three (T1) proofs totalling 207 lines (64 / 65 / 78) at
   declarations `validOn_dn_iff_denselyOrdered`, `validOn_df_iff_isDiscrete`,

@@ -231,10 +231,15 @@ theorem permissive_realizes (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMa
 
 /-! ## The three (T1) correspondence theorems
 
-The atom used by the (⇒) witnesses; any atom would do, since the refuting valuations are built
-by hand rather than read off a fixed one. -/
+All three (⇒) directions run the same argument, and the realisation lemmas above are what make
+that visible: choose the realising data (a set `A ⊆ ↑D`, or an assignment `f : ↑D → Bool`), name
+its realisation as an atom's truth set (`translation_realizes` / `permissive_realizes` and their
+`H`/`G` forms), build the schema's antecedent through that realisation, instantiate the
+hypothesis at the witness frame, and read the consequent back through the same realisation.
 
-private def corrAtom : Atom := ⟨"p", none⟩
+The atom is `Atom.mkBase "p"` throughout. Any atom would do — the refuting valuations are built
+from the chosen data rather than read off a fixed one — which is why the realisation lemmas carry
+a `(p : Atom)` binder instead of this module fixing one. -/
 
 /--
 **`app:dense` at (T1).** Every frame over `D` validates the density schema `GGφ → Gφ` exactly
@@ -275,25 +280,26 @@ theorem validOn_dn_iff_denselyOrdered (D : TemporalOrder) :
       have hap : a < a + p := lt_add_of_pos_right a hp.1
       letI so := succOrder_of_isLeast_pos hp
       letI nm := noMaxOrder_of_duration D
+      -- The realising data: the "blip" assignment, false exactly at `a + p`.
       set f : ↑D → Bool := fun t => decide (t ≠ a + p) with hf
-      set τ : (permissiveFrame D so nm).toTaskFrame.HF :=
-        ⟨permissiveHist D so nm f, permissiveHist_isTotal D so nm f⟩ with hτ
-      have hgg : TruthAt (permissiveModel D so nm) τ.val a
-          (Formula.atom corrAtom).allFuture.allFuture := by
+      -- Realisation: `p` is true at `t` exactly when `f t = true`.
+      have hreal := permissive_realizes D so nm f (Atom.mkBase "p")
+      -- The antecedent `GGp`, built through that realisation.
+      have hgg : TruthAt (permissiveModel D so nm) (permissiveHF D so nm f).val a
+          (Formula.atom (Atom.mkBase "p")).allFuture.allFuture := by
         rw [Truth.future_iff]
         intro s has
         rw [Truth.future_iff]
         intro r hsr
-        simp only [hτ, permissiveModel_atom]
-        have hsp : ¬ (s < a + p) := hcov s has
-        have : a + p < r := lt_of_le_of_lt (not_lt.mp hsp) hsr
+        refine (hreal r).mpr ?_
+        have : a + p < r := lt_of_le_of_lt (not_lt.mp (hcov s has)) hsr
         simp only [hf, decide_eq_true_eq]
         exact ne_of_gt this
-      have hg := h (permissiveFrame D so nm) (Formula.atom corrAtom)
-        (permissiveModel D so nm) τ a hgg
+      -- Instantiate the schema at the witness frame, then read the consequent back.
+      have hg := h (permissiveFrame D so nm) (Formula.atom (Atom.mkBase "p"))
+        (permissiveModel D so nm) (permissiveHF D so nm f) a hgg
       rw [Truth.future_iff] at hg
-      have hbad := hg (a + p) hap
-      simp only [hτ, permissiveModel_atom] at hbad
+      have hbad := (hreal (a + p)).mp (hg (a + p) hap)
       simp only [hf, decide_eq_true_eq] at hbad
       exact hbad rfl
   · intro hd F φ M τ t hgg

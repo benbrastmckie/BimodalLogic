@@ -85,7 +85,7 @@ theorem validOn_atomic_density_iff_fwdRec (F : TaskFrame) :
   constructor
   · intro h τ t s hts hcov A hA
     let M : TaskModel F := ⟨fun w _ => A w⟩
-    have hgg : TruthAt M τ.val t (Formula.atom (Atom.mk "p" none)).allFuture.allFuture := by
+    have hgg : TruthAt M τ.val t (Formula.atom (Atom.mkBase "p")).allFuture.allFuture := by
       rw [Truth.future_iff]
       intro u hu
       rw [Truth.future_iff]
@@ -94,7 +94,7 @@ theorem validOn_atomic_density_iff_fwdRec (F : TaskFrame) :
         by_contra hlt
         exact hcov u hu (lt_of_not_ge hlt)
       exact ⟨τ.property r, hA r (lt_of_le_of_lt hsu hr)⟩
-    have hg := h (Atom.mk "p" none) M τ.val τ.property t hgg
+    have hg := h (Atom.mkBase "p") M τ.val τ.property t hgg
     rw [Truth.future_iff] at hg
     obtain ⟨_, hv⟩ := hg s hts
     exact hv
