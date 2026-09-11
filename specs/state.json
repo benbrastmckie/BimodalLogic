@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 578,
+  "next_project_number": 579,
   "active_projects": [
+    {
+      "project_number": 578,
+      "project_name": "fix_api_documentation_ci_integration",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.",
+      "topic": "documentation",
+      "created": "2026-09-11T20:05:59Z",
+      "last_updated": "2026-09-11T20:05:59Z"
+    },
     {
       "project_number": 577,
       "project_name": "abstract_validity_layer_over_truth_class",

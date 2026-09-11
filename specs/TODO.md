@@ -1,17 +1,17 @@
 ---
-next_project_number: 578
+next_project_number: 579
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-09-09. Generated from state.json dependency graph.*
+*Updated 2026-09-11. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570 | 298,464,502,559,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566 | 231,465,497,565 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -68,6 +68,7 @@ next_project_number: 578
 ### Documentation
 
 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
+578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
 
 ### Formula Refactor
 
@@ -108,6 +109,16 @@ next_project_number: 578
 542 [NOT STARTED] — Triage the dead-declaration census that C17 produces,...
 
 ## Tasks
+
+### 578. Fix api documentation ci integration
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.
+
+---
 
 ### 577. Abstract validity layer over truth class
 - **Status**: [COMPLETED]
