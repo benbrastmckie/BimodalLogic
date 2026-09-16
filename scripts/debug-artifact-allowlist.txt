@@ -39,9 +39,6 @@ FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean 4
 FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean 4
 
 # pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Saturation.lean 59
-
-# pending relocation to Tests/BimodalTest
 FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean 7
 
 # pending relocation to Tests/BimodalTest

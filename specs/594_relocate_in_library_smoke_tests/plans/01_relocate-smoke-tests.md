@@ -202,16 +202,16 @@ executor running serially should simply take phases in numeric order.
 
 ---
 
-### Phase 4: Relocate Saturation probes [NOT STARTED]
+### Phase 4: Relocate Saturation probes [COMPLETED]
 
 **Goal**: Move Saturation.lean's 48 bare PASS/FAIL evals and 11 guarded probes into a new test module.
 
 **Tasks**:
-- [ ] Capture `lake env lean FormalSystem/Metalogic/Decidability/Saturation.lean` output (47 PASS + 1 INFO E5).
-- [ ] Create `Tests/BimodalTest/Metalogic/Decidability/SaturationTest.lean`. Convert each `#eval do ... return "PASS/FAIL ..."` into a `#guard` over its underlying Bool condition. The E5 INFO row becomes a `#guard` pinning the invalidity result. Move the 11 `#guard_msgs` rows (ArmSettlingProbes, BudgetedTableauProbes) verbatim with their fixtures (`probeFGp`, `probeNGFp`, `probeUpq`, `armProbe`, `armDisagreement`), one namespace per source section.
-- [ ] Delete the source rows and fixtures. Rewrite the probe prose to point at the test module. Wire the import. Delete the allowlist entry.
-- [ ] Run the harness `--no-build` and repair any C20 break from the 5 inbound Saturation citations (for example `Saturation.lean:360-364` in Fuel.lean) by repointing to declaration names.
-- [ ] Build the library module and the test module through the guard.
+- [x] Capture `lake env lean FormalSystem/Metalogic/Decidability/Saturation.lean` output (47 PASS + 1 INFO E5).
+- [x] Create `Tests/BimodalTest/Metalogic/Decidability/SaturationTest.lean`. Convert each `#eval do ... return "PASS/FAIL ..."` into a `#guard` over its underlying Bool condition. *(deviation: altered — each row became `#guard (Id.run do ...) == "<captured verdict>"`, pinning the exact verdict string rather than a bare Bool, so a row switching between two PASS arms, or from PASS to an INFO arm, also fails; the 11 `#guard_msgs` rows and their fixtures moved verbatim)* The E5 INFO row becomes a `#guard` pinning the invalidity result. Move the 11 `#guard_msgs` rows (ArmSettlingProbes, BudgetedTableauProbes) verbatim with their fixtures (`probeFGp`, `probeNGFp`, `probeUpq`, `armProbe`, `armDisagreement`), one namespace per source section.
+- [x] Delete the source rows and fixtures. Rewrite the probe prose to point at the test module. Wire the import. Delete the allowlist entry.
+- [x] Run the harness `--no-build` and repair any C20 break from the 5 inbound Saturation citations (for example `Saturation.lean:360-364` in Fuel.lean) by repointing to declaration names. *(no break: C20 tier 1 passes; the one in-file prose pointer at the resolveOpenArm docstring was rewritten on the same line so the `Saturation.lean:661-664` citation in Fuel.lean still lands)*
+- [x] Build the library module and the test module through the guard.
 
 **Timing**: 1.5 hours
 

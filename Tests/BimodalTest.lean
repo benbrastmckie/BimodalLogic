@@ -21,6 +21,7 @@ import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test
 import BimodalTest.Theorems.PerpetuityTest
 import BimodalTest.Metalogic.PropDecideTest
+import BimodalTest.Metalogic.Decidability.SaturationTest
 import BimodalTest.TableauConformance
 import BimodalTest.BoxSpreadProbe
 import BimodalTest.RegionGateProbe
@@ -82,7 +83,7 @@ deliberately excluded, for two different reasons:
   print that table on every `lake test`.
 - `Automation/FormulaMutatorTest.lean`, `Automation/ProofFirstTests.lean` —
   compile in isolation but cannot be imported here. Each pulls in an executable
-  root (`Automation/FormulaMutator.lean`, `Automation/ProofFirstGeneratorMain.lean`)
+  root (`Automation/ContrastiveGeneratorMain.lean`, `Automation/ProofFirstGeneratorMain.lean`)
   that defines `main`, and this environment already has `main` from
   `Automation/DatasetValidatorMain.lean`. Importing either yields
   "environment already contains 'main'". Fixing this means restructuring where
