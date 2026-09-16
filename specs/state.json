@@ -309,7 +309,7 @@
     {
       "project_number": 587,
       "project_name": "repair_or_retire_broken_benchmark_modules",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Clear the two `broken:` entries in `scripts/module-invariants-manifest.txt`: `BimodalTest.ProofSystem.DerivationBenchmark` (374 lines) and `BimodalTest.Semantics.SemanticBenchmark` (358 lines). Both pass `String` where `Atom` is now expected -- they predate the Atom type change and were never updated because nothing builds them. C6 does not compile-check `broken:` entries, so these are the only two live .lean files in the repository with no guarantee of any kind.\n\nRecording them was right; leaving them parked is not. Get the real error count first (`lake env lean` on each, minutes). If small: repair AND pair it with re-manifesting them as plain compile-checked unreachable modules, so C6 guards them every run -- a repaired module that stays unimported rots again immediately. Wiring them into `Tests/BimodalTest.lean` is the other pairing but would slow every `lake test`. Note `DerivationBenchmark.lean` imports `BimodalTest.Automation.ProofSearchBenchmark`; check its status first.\n\nIf large: archive both to `FormalSystem/Boneyard/` with a README recording what they measured, following the `RetiredTactics/` precedent -- but first apply the same measurement that retired those (zero real invocations anywhere live or in Tests/). These are benchmark harnesses, not correctness tests, and their docstrings suggest hand-invocation via `#eval`.\n\nVerify: `check-module-invariants.sh` passes with ZERO `broken:` entries remaining -- that is the success criterion either way. If archived, B0 still reports exactly 1 Boneyard directory and C11 resolves every archived import.\n\nSee specs/reviews/review-2026-09-16.md, Finding M2.",
       "topic": "codebase-cleanup",
@@ -317,7 +317,7 @@
       "effort": "small",
       "dependencies": [],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T16:09:10Z",
+      "last_updated": "2026-09-16T16:28:17Z",
       "artifacts": [
         {
           "path": "specs/587_repair_or_retire_broken_benchmark_modules/reports/02_benchmark-repair-measurement.md",
@@ -328,6 +328,11 @@
           "path": "specs/587_repair_or_retire_broken_benchmark_modules/plans/02_repair-and-retire-benchmarks.md",
           "type": "plan",
           "summary": "4-phase plan: repair and re-manifest DerivationBenchmark, archive SemanticBenchmark to the Boneyard, fix stale prose, full gate verification."
+        },
+        {
+          "path": "specs/587_repair_or_retire_broken_benchmark_modules/summaries/02_repair-and-retire-benchmarks-summary.md",
+          "type": "summary",
+          "summary": "Repaired DerivationBenchmark and re-manifested it as a compile-checked module; retired SemanticBenchmark (never called TruthAt) to the Boneyard; zero broken: manifest entries; full gate, lake build, lake test green."
         }
       ],
       "next_artifact_number": 3,
@@ -336,7 +341,8 @@
         "Tests/BimodalTest/Semantics/SemanticBenchmark.lean",
         "scripts/module-invariants-manifest.txt"
       ],
-      "session_id": "sess_1789573870_865f5c"
+      "session_id": "sess_1789573870_865f5c",
+      "completion_summary": "Repaired DerivationBenchmark and re-manifested it as a compile-checked module; retired SemanticBenchmark (never called TruthAt) to the Boneyard; zero broken: manifest entries; full gate, lake build, lake test green."
     },
     {
       "project_number": 588,

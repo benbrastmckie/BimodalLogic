@@ -11,7 +11,7 @@ next_project_number: 598
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,584,586,590 | 298,464,502,559,563,568,591,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,506,566,569,585 | 231,465,497,565,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,588,597 | 428,498,499,500,569,585,594 | algebraic-representation, decidability, metalogic, ... |
@@ -98,7 +98,6 @@ next_project_number: 598
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-587 [IMPLEMENTING] — Clear the two broken: entries in...
 591 [NOT STARTED] — Adopt a naming convention that distinguishes leanexe roots...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
@@ -334,12 +333,13 @@ DISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on 
 
 ### 587. Repair or retire broken benchmark modules
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [587_repair_or_retire_broken_benchmark_modules/reports/02_benchmark-repair-measurement.md]
 - **Plan**: [587_repair_or_retire_broken_benchmark_modules/plans/02_repair-and-retire-benchmarks.md]
+- **Summary**: [587_repair_or_retire_broken_benchmark_modules/summaries/02_repair-and-retire-benchmarks-summary.md]
 
 **Description**: Clear the two `broken:` entries in `scripts/module-invariants-manifest.txt`: `BimodalTest.ProofSystem.DerivationBenchmark` (374 lines) and `BimodalTest.Semantics.SemanticBenchmark` (358 lines). Both pass `String` where `Atom` is now expected -- they predate the Atom type change and were never updated because nothing builds them. C6 does not compile-check `broken:` entries, so these are the only two live .lean files in the repository with no guarantee of any kind.
 
