@@ -12,7 +12,7 @@ a reader looks for one before writing another.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Frames -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `Standard.lean` | 142 | <!-- TODO: add description --> |
+| `Standard.lean` | 133 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
 ## Key Definitions

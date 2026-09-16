@@ -249,7 +249,7 @@ invariant check allowlists it by name (check C8).
 | `MainResults.lean` | 254 | <!-- TODO: add description --> |
 | `Metalogic.lean` | 258 | Re-export for Metalogic submodule |
 | `ProofSystem.lean` | 90 | Re-export for ProofSystem submodule |
-| `Semantics.lean` | 283 | Re-export for Semantics submodule |
+| `Semantics.lean` | 281 | Re-export for Semantics submodule |
 | `Syntax.lean` | 91 | Re-export for Syntax submodule |
 | `Theorems.lean` | 90 | Re-export for Theorems submodule |
 <!-- END GENERATED -->

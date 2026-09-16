@@ -1,7 +1,7 @@
 # Implementation Plan: Task #601
 
 - **Task**: 601 - Align task-frame definition with the paper's reflection convention
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: 599 (completed), 598 (completed). Coordinate with 602 (planning; also edits `Semantics/PartialHistory.lean`)
 - **Research Inputs**: specs/601_align_task_frame_reflection_convention/reports/01_reflection-convention-encoding.md
@@ -386,21 +386,21 @@ FormalFoundations.typ, bimodal-notation.typ, 02-Semantics.tex). Confirm with
 
 ---
 
-### Phase 7: Final gates and converse audit [NOT STARTED]
+### Phase 7: Final gates and converse audit [COMPLETED]
 
 **Goal**: Run the complete gate set and audit the remaining uses of "converse".
 
 **Tasks**:
-- [ ] Full `lake build` and `lake test` (BimodalTest), both green.
-- [ ] `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh`, both clean.
-- [ ] Sorry/axiom check: compare `grep -rn "sorry\|^axiom" FormalSystem --include=*.lean | grep -v Boneyard`
+- [x] Full `lake build` and `lake test` (BimodalTest), both green.
+- [x] `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh`, both clean. *(deviation: altered — to get clean: dropped `@[simp]` from `ofReflective_taskRel` (simpNF recursion), regenerated inventory blocks, and cleared pre-existing C11/C12 `ConvexHistory` references)*
+- [x] Sorry/axiom check: compare `grep -rn "sorry\|^axiom" FormalSystem --include=*.lean | grep -v Boneyard`
       counts against the pre-task baseline (`git show <base>`). They must not increase.
       `lean_verify` on `FrameOver.reflection`, `TaskFrame.reflection`, `reflect_eq_of_reflective`,
       `ofReflective_taskRel`.
-- [ ] Converse audit: `grep -rn -i "converse" FormalSystem Tests docs typst latex README.md | grep -v Boneyard`.
+- [x] Converse audit: `grep -rn -i "converse" FormalSystem Tests docs typst latex README.md | grep -v Boneyard`.
       Classify each remaining hit as a genuine converse (logical, relational, order dual) and
       confirm none refers to the D⁺ extension stipulation.
-- [ ] Record in the summary: the Option A/B outcome, the paper note about "x ≥ 0" overlapping at
+- [x] Record in the summary: the Option A/B outcome, the paper note about "x ≥ 0" overlapping at
       0 (author's call), and the out-of-scope anchor drift.
 
 **Timing**: 1.25 hours

@@ -50,3 +50,8 @@ FormalSystem.Metalogic.Completeness
 # an explicit non-goal. No file of this name exists anywhere on disk, so there
 # is no unique target to repoint the import at.
 FormalSystem.FrameConditions.Compatibility
+
+# Deleted in commit 0688a7a3c ("Re-base history layer on PartialHistory, delete ConvexHistory"):
+# its content was folded into FormalSystem/Semantics/PartialHistory.lean, which has a different
+# API, so no unique import target exists for the archived SuccChainWorldHistory.lean.
+FormalSystem.Semantics.ConvexHistory

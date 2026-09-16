@@ -143,16 +143,16 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=subdirs cols=files-lines link=yes -->
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Algebraic/`](Algebraic/README.md) | 5 | 2,448 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
+| [`Algebraic/`](Algebraic/README.md) | 5 | 2,451 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,156 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,856 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 21 | 5,976 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 4 | 1,838 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 80 | 52,274 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 80 | 52,263 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,609 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Independence/`](Independence/README.md) | 18 | 5,086 | Axiom-independence models |
+| [`Independence/`](Independence/README.md) | 18 | 5,073 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,456 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,163 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,168 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -200,7 +200,7 @@ dominates everything else in the repository:
 | `Expressiveness/` | 5 | 9,501 |
 | `DenseModelSurgery/` | 9 | 7,571 |
 | `RealModel/` | 7 | 6,650 |
-| `IntegerModel/` | 6 | 5,682 |
+| `IntegerModel/` | 6 | 5,687 |
 | `GroupModel/` | 6 | 3,365 |
 | `Separation/` | 3 | 926 |
 <!-- END GENERATED -->

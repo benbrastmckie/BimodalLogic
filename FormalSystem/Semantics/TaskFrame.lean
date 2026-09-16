@@ -654,8 +654,8 @@ theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
 A two-sided relation `R` satisfying the reflection law is the extension of its own restriction
 to `D⁺` (`reflect_eq_of_reflective`). The lemmas below transport that fact to the relation itself
 and to each `def:frame` axiom, so that a frame whose relation is most naturally written on all of
-`D` can supply its primitive as that restriction, `fun w x u => R w ↑x u`, and discharge each
-axiom field against `R` directly. `FrameOver.ofReflective` packages all five; a frame that must
+`D` can supply its primitive as that restriction, `fun w x u => R w ↑x u`, and discharge
+every axiom field against `R` directly. `FrameOver.ofReflective` packages all five; a frame that must
 stay a literal structure (for instance so that its world-state type reduces at reducible
 transparency) cites them field by field.
 
@@ -1041,8 +1041,15 @@ def ofReflective (W : Type) [Nonempty W] (R : W → ↑D → W → Prop)
   limit := TaskFrame.limit_reflect_of_reflective hR hlim
   saturation := TaskFrame.saturation_reflect_of_reflective hR hsat
 
-/-- The task relation of a frame built by `ofReflective` is the presenting relation. -/
-@[simp]
+/--
+The task relation of a frame built by `ofReflective` is the presenting relation.
+
+Not `@[simp]`: its left-hand side is well typed only up to unfolding `ofReflective` (the bound
+states have type `W`, not `(ofReflective W …).WorldState`, at reducible transparency), which
+`simp` cannot see through. Each frame built this way states its own `@[simp]` bridge instead
+(`trivialFrame_taskRel`, `Frames/Standard.lean`'s `translationFrame_taskRel`, and so on), proved
+by this lemma.
+-/
 theorem ofReflective_taskRel {W : Type} [Nonempty W] {R : W → ↑D → W → Prop}
     {hR : ∀ w d u, R w d u ↔ R u (-d) w} {hcomp : TaskFrame.Compositional R}
     {hser : TaskFrame.Serial R}

@@ -173,7 +173,7 @@ All four axiom fields are stated over the extended relation `TaskFrame.reflect P
 `FrameOver.reflection : F.TaskRel w d u ↔ F.TaskRel u (-d) w` (re-exported as
 `TaskFrame.reflection`) is a theorem. A frame presented by a two-sided relation `R` satisfying the
 reflection law is built with `FrameOver.ofReflective W R hR hcomp hser hlim hsat`, whose bridge is
-the simp lemma `ofReflective_taskRel`.
+the lemma `ofReflective_taskRel`, from which each such frame states its own `@[simp]` bridge.
 
 **Derived, not fields**: `FrameOver.nullity` (`TaskRel w 0 w`, the paper's `lem:nullity`, from
 `serial` and `limit`), `FrameOver.eq_of_taskRel_zero` (injectivity at zero, from `limit` alone),

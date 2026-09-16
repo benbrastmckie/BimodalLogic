@@ -104,7 +104,7 @@ Three sub-decisions, each with its reason:
    This is the form `lem:fibers` and `lem:admissible` consume, both of which are stated with no
    sign proviso. The existing guarded form is *derived* as `respects_task_le`, and a smart
    constructor `PartialHistory.ofLe` lets an existing site keep its guarded proof, discharging the
-   unconditional field via `TaskFrame.converse`. **`ofLe` is a proof-convenience constructor, not a
+   unconditional field via `TaskFrame.reflection` (then the field `TaskFrame.converse`). **`ofLe` is a proof-convenience constructor, not a
    compatibility shim**: it introduces no second history type, no second validity notion, and no
    alias of any API surface — it is one lemma-shaped constructor over the single structure.
 3. **`extends`, not a standalone structure and not an `IsConvex` mixin.** Lean 4's flat field

@@ -288,8 +288,8 @@ pinned text it replaces: `WorldHistory.timeShift` was already the pointwise `σ(
 of `def:time-shift-histories`, `H_F` (`TaskFrame.HF`) already denotes exactly the total
 histories, and the emphasis/rename changes carry no content. The two in-tree verbatim quotations
 that this correction does move — the `def:world-history` closing sentence, quoted in
-`FormalSystem/Semantics/ConvexHistory.lean` (the renamed successor to the former
-`WorldHistory.lean`, since deleted and folded into `PartialHistory.lean`), `PartialHistory.lean`, and
+the former `ConvexHistory` module (the renamed successor to the former
+`WorldHistory.lean`; both since deleted and folded into `PartialHistory.lean`), `PartialHistory.lean`, and
 `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — are updated to the live wording in the same
 change set.
 
