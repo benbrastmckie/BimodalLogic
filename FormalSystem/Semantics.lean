@@ -74,7 +74,7 @@ through their sibling aggregators `Semantics/Extension.lean` and so on.
 - `PartialHistory`: The paper's partial-history layer (`def:world-history`) — task-respecting
   state assignments on a *nonempty* time set; carries the totality predicate `IsTotal`, the
   convexity predicate `IsConvex`, the extension relation `Extends`, time shift, and
-  `TaskFrame.HF`, the *world histories* (the paper's possible worlds), i.e. the total ones
+  `WorldHistory`, the *world histories* (the paper's possible worlds), i.e. the total ones
 - `FrameAxioms`: *Saturation*, *Seriality*, and the interpolation half of *Compositionality* as
   hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
   and `def:constraints` — the constraints a partial history imposes on a new duration
@@ -216,7 +216,7 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 | Limit | `⋂_{x > 0} (w)_x = {w}` | `limit` field |
 | Saturation | `⋂ S ≠ ∅` for a `⊇`-directed family of nonempty fibers and segments | `saturation` field |
 | Partial History | `τ : X → W`, `X ⊆ D` nonempty (`def:world-history`) | `PartialHistory F` |
-| World History | partial history with `X = D` (sec:Construction) | `TaskFrame.HF`; predicate form `PartialHistory.IsTotal` |
+| World History | partial history with `X = D` (sec:Construction) | `WorldHistory`; predicate form `PartialHistory.IsTotal` |
 | Truth | `M,τ,x ⊨ φ` | `TruthAt M τ t φ` |
 | Validity | True in all models, at every total history | `Valid φ` |
 
@@ -274,7 +274,7 @@ variable {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Durati
 ## References
 
 * [TaskFrame.lean](Semantics/TaskFrame.lean) - Task frame structure
-* [PartialHistory.lean](Semantics/PartialHistory.lean) - Partial and world histories, and `TaskFrame.HF`
+* [PartialHistory.lean](Semantics/PartialHistory.lean) - Partial and world histories, and `WorldHistory`
 * [TaskModel.lean](Semantics/TaskModel.lean) - Task model with valuation
 * [Truth.lean](Semantics/Truth.lean) - Truth evaluation
 * [Validity.lean](Semantics/Validity.lean) - Validity and semantic consequence

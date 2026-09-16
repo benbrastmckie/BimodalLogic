@@ -74,7 +74,7 @@ lets `TimeShift.timeShift_preserves_truth` and `IntTransfer.truthAt_map` keep th
 arbitrary-history statements while being derived from a single induction.
 
 `TruthIso` (below, after the time-shift section) is the total-only, bijective special case:
-`TruthIso.toCorr` reads an equivalence `F.HF ≃ F'.HF` as the relation "`hist` sends the one to
+`TruthIso.toCorr` reads an equivalence `WorldHistory F ≃ WorldHistory F'` as the relation "`hist` sends the one to
 the other", and `truthAt_of_truthIso` is `truthAt_of_truthCorr` at that instance.
 -/
 
@@ -289,10 +289,10 @@ theorem timeShift_preserves_truth (M : TaskModel F)
 
 /--
 The paper-faithful form of `timeShift_preserves_truth`: `lem:history-time-shift-preservation`
-as stated, for a possible world `τ : F.HF`. Documentation alignment only — it is the general
+as stated, for a possible world `τ : WorldHistory F`. Documentation alignment only — it is the general
 theorem specialised, and no consumer needs it.
 -/
-theorem timeShift_preserves_truth_total (M : TaskModel F) (τ : F.HF) (x y : F.Duration)
+theorem timeShift_preserves_truth_total (M : TaskModel F) (τ : WorldHistory F) (x y : F.Duration)
     (φ : Formula) :
     TruthAt M (PartialHistory.timeShift τ.val (y - x)) x φ ↔ TruthAt M τ.val y φ :=
   timeShift_preserves_truth M τ.val x y φ
@@ -369,7 +369,7 @@ end Truth
 /-! ## Truth isomorphisms — the bijective special case
 
 `TruthIso` is the total-only, bijective special case of `TruthCorr`: times reindex by an order
-isomorphism and **total** histories reindex by an equivalence `F.HF ≃ F'.HF`. It is the packaging
+isomorphism and **total** histories reindex by an equivalence `WorldHistory F ≃ WorldHistory F'`. It is the packaging
 `Independence/LoopingDuration.lean`'s duration reindexings naturally come in, and it is kept as a
 structure in its own right for them. It is not a second induction: `TruthIso.toCorr` reads
 `hist` as the relation "`hist` sends the one to the other", and `truthAt_of_truthIso` is
@@ -386,7 +386,7 @@ primitive and this structure the special case.
 
 ### Why `atom` is quantified over all histories
 
-The `atom` field has to hold at every `τ : F.HF`, not at one distinguished history, because the
+The `atom` field has to hold at every `τ : WorldHistory F`, not at one distinguished history, because the
 `box` case applies the induction hypothesis at a history the caller did not choose. A per-history
 atom hypothesis would not survive the box case — which is precisely why
 `Correspondence/FwdRecPeriodicity.truthAt_add_hist_period` is **not** an instance of this
@@ -406,9 +406,9 @@ structure TruthIso {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') wher
   /-- Times reindex by an order isomorphism — order preservation is what `untl`/`snce` need. -/
   dur : F.Duration ≃o F'.Duration
   /-- Total histories reindex by an **equivalence**; see the section note on why not a map. -/
-  hist : F.HF ≃ F'.HF
+  hist : WorldHistory F ≃ WorldHistory F'
   /-- Atomic truth agrees under the reindexing, at **every** total history. -/
-  atom : ∀ (τ : F.HF) (t : F.Duration) (p : Atom),
+  atom : ∀ (τ : WorldHistory F) (t : F.Duration) (p : Atom),
     M.valuation (τ.val.states t (τ.property t)) p ↔
       M'.valuation ((hist τ).val.states (dur t) ((hist τ).property (dur t))) p
 
@@ -445,7 +445,7 @@ namespace Truth
 own induction, so every consumer (`Independence/LoopingDuration.lean`) is untouched.
 -/
 theorem truthAt_of_truthIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
-    (I : TruthIso M M') (φ : Formula) (τ : F.HF) (t : F.Duration) :
+    (I : TruthIso M M') (φ : Formula) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ.val t φ ↔ TruthAt M' (I.hist τ).val (I.dur t) φ :=
   truthAt_of_truthCorr (TruthIso.toCorr I) φ τ.val (I.hist τ).val
     ⟨τ.property, (I.hist τ).property, rfl⟩ t
@@ -483,9 +483,9 @@ structure TruthAntiIso {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') 
   /-- ...which **reverses** the order. This is the whole difference from `TruthIso`. -/
   dur_rev : ∀ s t : F.Duration, dur s < dur t ↔ t < s
   /-- Total histories reindex by an equivalence, exactly as in `TruthIso`. -/
-  hist : F.HF ≃ F'.HF
+  hist : WorldHistory F ≃ WorldHistory F'
   /-- Atomic truth agrees under the reindexing, at every total history. -/
-  atom : ∀ (τ : F.HF) (t : F.Duration) (p : Atom),
+  atom : ∀ (τ : WorldHistory F) (t : F.Duration) (p : Atom),
     M.valuation (τ.val.states t (τ.property t)) p ↔
       M'.valuation ((hist τ).val.states (dur t) ((hist τ).property (dur t))) p
 
@@ -509,7 +509,7 @@ call site. `simp only [Formula.swapTemporal, …]` is therefore what the base ca
 remains the right tool for a caller reasoning about a derived operator.
 -/
 theorem truthAt_of_truthAntiIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
-    (I : TruthAntiIso M M') (φ : Formula) (τ : F.HF) (t : F.Duration) :
+    (I : TruthAntiIso M M') (φ : Formula) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ.val t φ ↔ TruthAt M' (I.hist τ).val (I.dur t) φ.swapTemporal := by
   induction φ generalizing τ t with
   | atom p =>

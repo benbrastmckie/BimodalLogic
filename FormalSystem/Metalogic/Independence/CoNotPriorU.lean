@@ -396,7 +396,7 @@ theorem reflect_isTotal (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) :
 /-- Reflecting twice is the identity on total histories: `-(-t) = t` in the times and
 `cneg (cneg w) = w` in the states. This is what makes `reflect` an **equivalence** on `H_F`
 rather than merely a map, which is what `TruthAntiIso.hist` requires. -/
-private theorem reflect_reflect (τ : clockFrame.HF) :
+private theorem reflect_reflect (τ : WorldHistory clockFrame) :
     reflect (reflect τ.val τ.property) (reflect_isTotal _ _) = τ.val := by
   refine ShiftSet.wh_ext
     (funext fun z => propext ⟨fun _ => τ.property z, fun _ => trivial⟩) ?_
@@ -406,7 +406,7 @@ private theorem reflect_reflect (τ : clockFrame.HF) :
     (PartialHistory.states_eq_of_time_eq τ.val (-(-r)) r (neg_neg r) _ h')
 
 /-- Time reversal as an involutive equivalence of `H_clockFrame`. -/
-noncomputable def clockReflectEquiv : clockFrame.HF ≃ clockFrame.HF where
+noncomputable def clockReflectEquiv : WorldHistory clockFrame ≃ WorldHistory clockFrame where
   toFun := fun τ => ⟨reflect τ.val τ.property, reflect_isTotal _ _⟩
   invFun := fun τ => ⟨reflect τ.val τ.property, reflect_isTotal _ _⟩
   left_inv := fun τ => Subtype.ext (reflect_reflect τ)

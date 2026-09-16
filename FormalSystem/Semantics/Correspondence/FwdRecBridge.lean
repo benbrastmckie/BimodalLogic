@@ -15,10 +15,10 @@ correspondence at an arbitrary duration group, and `FwdRecPeriodicity.lean` supp
 `Walk`/`MinCyc` apparatus. This module joins them at `D = ℤ`, where the frame *is* a digraph:
 
 * `FrameOver.step F w u := F.TaskRel w 1 u` is the one-step relation;
-* every bi-infinite walk in `F.step` is a total history (`FrameOver.HFofStepPath`), because
+* every bi-infinite walk in `F.step` is a total history (`FrameOver.worldHistoryOfStepPath`), because
   *Compositionality* plus the reflection law plus *Nullity* give `Rₙ = R₁ⁿ`
   (`FrameOver.respects_of_isStepPath`);
-* every total history is a bi-infinite walk (`TaskFrame.HF.isStepPath`).
+* every total history is a bi-infinite walk (`WorldHistory.isStepPath`).
 
 **The dictionary itself is not redefined here.** `Semantics/IntNormalForm.lean` already carries
 it, in the `IsStepPath` spelling, and this module imports it: `Walk.IsWalk F.step` and
@@ -93,14 +93,14 @@ private theorem int_covers (n : ℤ) : n - 1 < n ∧ ∀ r : ℤ, n - 1 < r → 
 theorem allRec_of_fwdRec (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec) :
     Walk.AllRec F.step := by
   intro σ hσ n
-  exact hF (FrameOver.HFofStepPath F σ hσ) (n - 1) n (int_covers n).1 (int_covers n).2
+  exact hF (FrameOver.worldHistoryOfStepPath F σ hσ) (n - 1) n (int_covers n).1 (int_covers n).2
     (fun w => ∃ m : ℤ, n < m ∧ σ m = w) (fun r hr => ⟨r, hr, rfl⟩)
 
 /-- **Over `ℤ`, `FwdRec F` forces every total history to be periodic.** -/
 theorem hist_periodic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
     (τ : PartialHistory F.toTaskFrame) (hτ : τ.IsTotal) :
     ∃ π : ℤ, 0 < π ∧ ∀ n : ℤ, τ.states (n + π) (hτ (n + π)) = τ.states n (hτ n) :=
-  Walk.periodic (allRec_of_fwdRec F hF) (TaskFrame.HF.isStepPath ⟨τ, hτ⟩)
+  Walk.periodic (allRec_of_fwdRec F hF) (WorldHistory.isStepPath ⟨τ, hτ⟩)
 
 /--
 **The structural shape of a `FwdRec` frame over `ℤ`**: the one-step relation is *deterministic*
@@ -110,8 +110,8 @@ theorem hist_deterministic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
     (τ ρ : PartialHistory F.toTaskFrame) (hτ : τ.IsTotal) (hρ : ρ.IsTotal) (t : ℤ)
     (h : τ.states t (hτ t) = ρ.states t (hρ t)) :
     τ.states (t + 1) (hτ (t + 1)) = ρ.states (t + 1) (hρ (t + 1)) :=
-  Walk.succ_unique' (allRec_of_fwdRec F hF) (TaskFrame.HF.isStepPath ⟨τ, hτ⟩)
-    (TaskFrame.HF.isStepPath ⟨ρ, hρ⟩) h
+  Walk.succ_unique' (allRec_of_fwdRec F hF) (WorldHistory.isStepPath ⟨τ, hτ⟩)
+    (WorldHistory.isStepPath ⟨ρ, hρ⟩) h
 
 /--
 **Full-schema exactness over `ℤ`.**

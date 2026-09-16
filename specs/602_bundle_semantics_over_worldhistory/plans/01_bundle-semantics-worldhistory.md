@@ -1,7 +1,7 @@
 # Implementation Plan: Task #602
 
 - **Task**: 602 - Bundle semantics over WorldHistory
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20 hours
 - **Dependencies**: None (coordinate with task 601: whichever lands second rebases)
 - **Research Inputs**: specs/602_bundle_semantics_over_worldhistory/reports/01_bundle-semantics-worldhistory.md
@@ -94,17 +94,17 @@ No roadmap consultation requested for this dispatch.
 Phases within the same wave can execute in parallel. The chain is fully sequential: Phases 2-9
 share one red working tree and one build, so they are not parallel-safe.
 
-### Phase 1: WorldHistory type, API, and HF rename [NOT STARTED]
+### Phase 1: WorldHistory type, API, and HF rename [COMPLETED]
 
 **Goal**: Introduce `WorldHistory` and its API in place of `TaskFrame.HF`, migrate every `HF` user, keep the tree green, commit.
 
 **Tasks**:
-- [ ] Record pre-change baselines: `#print axioms` output for C2 flagships and C14 subjects (run `scripts/check-module-invariants.sh` once, save output under the task dir scratch area), and `check-paper-definitions.sh` output
-- [ ] Create task branch `task-602-worldhistory` from main
-- [ ] In `FormalSystem/Semantics/PartialHistory.lean`: replace `def TaskFrame.HF` with `def WorldHistory (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}`; namespace `WorldHistory` with `CoeOut` to `PartialHistory F`, `state`, `@[simp] states_eq_state`, `@[ext] ext`, `ofTotal`, `@[simp] ofTotal_state`, `ofTotal_val` (keep only if used), `timeShift`, `@[simp] timeShift_state`, `timeShift_val` (keep only if used), `state_congr`
-- [ ] Delete `FrameOver.HF` and its `example`
-- [ ] Migrate all `HF` users (`F.HF` -> `WorldHistory F`, `TaskFrame.HF.ofTotal` -> `WorldHistory.ofTotal`, `toHF` -> `toWorldHistory`, `HFofStepPath` renamed to a `WorldHistory`-based name) without yet changing any truth relation's parameter type
-- [ ] `lake build` (detached, guarded) green; commit `task 602 phase 1: introduce WorldHistory and retire TaskFrame.HF`
+- [x] Record pre-change baselines: `#print axioms` output for C2 flagships and C14 subjects (run `scripts/check-module-invariants.sh` once, save output under the task dir scratch area), and `check-paper-definitions.sh` output
+- [ ] Create task branch `task-602-worldhistory` from main *(deviation: skipped — no concurrent work in the tree; the batch stays uncommitted on main with `--no-revert` snapshots and lands as one green commit)*
+- [x] In `FormalSystem/Semantics/PartialHistory.lean`: replace `def TaskFrame.HF` with `def WorldHistory (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}`; namespace `WorldHistory` with `CoeOut` to `PartialHistory F`, `state`, `@[simp] states_eq_state`, `@[ext] ext`, `ofTotal`, `@[simp] ofTotal_state`, `ofTotal_val` (keep only if used), `timeShift`, `@[simp] timeShift_state`, `timeShift_val` (keep only if used), `state_congr`
+- [x] Delete `FrameOver.HF` and its `example`
+- [x] Migrate all `HF` users (`F.HF` -> `WorldHistory F`, `TaskFrame.HF.ofTotal` -> `WorldHistory.ofTotal`, `toHF` -> `toWorldHistory`, `HFofStepPath` renamed to a `WorldHistory`-based name) without yet changing any truth relation's parameter type
+- [x] `lake build` (detached, guarded) green; commit `task 602 phase 1: introduce WorldHistory and retire TaskFrame.HF`
 
 **Timing**: 2 hours
 

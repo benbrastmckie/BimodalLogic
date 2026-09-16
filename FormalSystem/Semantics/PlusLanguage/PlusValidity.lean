@@ -68,7 +68,7 @@ instance : PointTruth PlusFormula where
 over `F`, every possible world `τ ∈ H_F`, and every time. The L⁺ mirror of
 `TaskFrame.ValidOn`. -/
 def TaskFrame.PlusValidOn (F : TaskFrame) (φ : PlusFormula) : Prop :=
-  ∀ (M : TaskModel F) (τ : TaskFrame.HF F) (x : F.Duration), PlusTruthAt M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PlusTruthAt M τ.val x φ
 
 /-- `φ` is valid on every frame satisfying `P`. **The primitive**: the L⁺ mirror of
 `ValidOnFrames`, indexed by a bare frame predicate rather than a `FrameClass` tag so that one
@@ -111,7 +111,7 @@ theorem PlusValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : PlusFormul
 
 /-! ### Binder-shape adapters
 
-`PlusValidOnFrames` is stated over the bundled `(τ : TaskFrame.HF F)`; every proof that consumes
+`PlusValidOnFrames` is stated over the bundled `(τ : WorldHistory F)`; every proof that consumes
 or produces it works with the unbundled pair `(τ : PartialHistory F) (hτ : τ.IsTotal)`. These four
 are the adapters, exactly as on the L and L⁻ sides. -/
 

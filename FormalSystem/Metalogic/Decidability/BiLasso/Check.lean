@@ -243,7 +243,8 @@ theorem check_bot_false (P : IntPresentation) (w : Fin P.card) :
 `flipPresentation`, whose origin is state `0`, and `check` says so. -/
 theorem check_top_true :
     check flipPresentation 0 (Formula.imp Formula.bot Formula.bot) = true := by
-  refine (check_correct _ _ _).mpr ⟨flipBiLasso.toHF.val, flipBiLasso.toHF.property, 0, ?_, ?_⟩
+  refine (check_correct _ _ _).mpr
+    ⟨flipBiLasso.toWorldHistory.val, flipBiLasso.toWorldHistory.property, 0, ?_, ?_⟩
   · show flipBiLasso.unroll 0 = 0
     decide
   · rw [Truth.imp_iff]

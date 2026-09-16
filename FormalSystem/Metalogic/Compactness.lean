@@ -85,7 +85,7 @@ namespace FormalSystem.Metalogic
 /-- **The frame condition survives `ShiftSet.ofModel`.**
 
 `ShiftSet.ofModel F M` is a shift set on `F.Duration`, but `(ShiftSet.ofModel F M).frame` is
-**not** `F`: its carrier is `F.HF`, the total histories of `F`, so a `fc.Sat F` hypothesis does
+**not** `F`: its carrier is `WorldHistory F`, the total histories of `F`, so a `fc.Sat F` hypothesis does
 not land on it by `rfl` and the two frames are genuinely different objects. It does transport,
 because every `FrameClass.Sat` clause constrains the *duration* order alone and `ofModel` leaves
 that order untouched — so case analysis on the tag closes all four branches with the hypothesis
@@ -145,7 +145,7 @@ theorem modelExistence_of_satPreserved {fc : ProofSystem.FrameClass}
       (fun i => sat_ofModel_frame (P i).Model (P i).inClass))
     (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).model
     ((uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).hist
-      (omk (fun i => (⟨(P i).hist, (P i).htotal⟩ : (P i).Frame.HF))))
+      (omk (fun i => (⟨(P i).hist, (P i).htotal⟩ : WorldHistory (P i).Frame))))
     (ShiftSet.hist_isTotal _ _) (Ultraproduct.mk (fun i => (P i).time)) ?_
   intro ψ hψ
   refine (los_truthAt (fun i => ShiftSet.ofModel (P i).Frame (P i).Model) _ _ ψ).mpr ?_

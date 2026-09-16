@@ -11,9 +11,9 @@ import FormalSystem.Semantics.TaskFrame
 
 This module defines the one history structure the semantics uses. A *partial history* is a
 task-respecting function on a **nonempty** set of durations; a *world history* is a partial
-history whose domain is **total**; and `TaskFrame.HF` is the set of world histories. Truth,
+history whose domain is **total**; and `WorldHistory` is the set of world histories. Truth,
 validity and every consumer range over `PartialHistory F`, cut down to `H_F` either by an
-`IsTotal` hypothesis or by the `TaskFrame.HF` subtype. Convexity is a predicate
+`IsTotal` hypothesis or by the `WorldHistory` subtype. Convexity is a predicate
 (`PartialHistory.IsConvex`), not a separate structure.
 
 ## Paper Specification Reference
@@ -50,11 +50,11 @@ with total domain" pick out exactly the same histories. The Lean definition foll
 |-------|------|
 | partial history | `PartialHistory F` |
 | convex history | `τ : PartialHistory F` with `τ.IsConvex` |
-| world history (possible world) | `τ : PartialHistory F` with `τ.IsTotal`; bundled as `TaskFrame.HF` |
-| `H_F` | `TaskFrame.HF` |
+| world history (possible world) | `τ : PartialHistory F` with `τ.IsTotal`; bundled as `WorldHistory` |
+| `H_F` | `WorldHistory` |
 
 There is deliberately no `ConvexHistory` structure and no `abbrev WorldHistory`: no proof consumes
-convexity as a hypothesis, and `HF` is already the name of the top tier. The layering decision is
+convexity as a hypothesis, and `WorldHistory` is already the name of the top tier. The layering decision is
 recorded in `docs/architecture/total-history-validity-decisions.md`, Decision B'.
 
 ## Two transcription decisions, both settled and recorded
@@ -89,7 +89,7 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 - `PartialHistory.ofLe` — smart constructor from a guarded task-respect proof
 - `PartialHistory.timeShift` — time shift on partial histories
 - `PartialHistory.ofTotal` — the total history of a bare state function
-- `TaskFrame.HF` — the paper's `H_F`, the world histories bundled as a subtype
+- `WorldHistory` — the paper's `H_F`, the world histories bundled as a subtype
 
 ## Main Results
 
@@ -385,66 +385,88 @@ end PartialHistory
 /-! ## `H_F`: the world histories of a frame -/
 
 /--
-`H_F` — the paper's set of all **world histories** over a frame, bundled as a type: the partial
-histories whose domain is total.
+`WorldHistory F` — the paper's set `H_F` of all **world histories** (possible worlds) over a
+frame, bundled as a type: the partial histories whose domain is total.
 
 **Paper Reference**: sec:Construction defines a world history as a partial history whose domain
 is total, `X = D`, and writes `H_F` for the set of them (the appendix `def:world-history` phrases
 the same set as the *convex* histories with total domain; a total domain is trivially convex, so
 the two readings denote the same set — see `PartialHistory.IsTotal.isConvex`).
 
-**Encoding note** (Decision A of `docs/architecture/total-history-validity-decisions.md`): this
-subtype is used **only** where `H_F` appears as an object in its own right — the Extension
-Theorem's conclusion, the Occurrence Corollary, and the optional frame-relative validity. Where
-totality is a *hypothesis* (truth, validity, semantic consequence, satisfiability), the predicate
-form `(τ : PartialHistory F) (hτ : τ.IsTotal)` is used instead.
-
-This is **not** a parallel validity notion or an alias: there is exactly one validity predicate,
-and `HF` is a bundled name for the same `IsTotal` predicate, bridged only by `.val` / `.property`.
+`PartialHistory.IsTotal` stays the one defining predicate: this is its subtype, not a second
+history structure, and `.val` / `.property` are the projections back to it. It is a `def` rather
+than an `abbrev` so that `Subtype` instances and simp lemmas do not leak onto it; `state` below is
+the non-dependent accessor that truth reads.
 -/
-def TaskFrame.HF (F : TaskFrame) : Type _ :=
+def WorldHistory (F : TaskFrame) : Type _ :=
   {τ : PartialHistory F // τ.IsTotal}
 
-namespace TaskFrame.HF
+namespace WorldHistory
 
 variable {F : TaskFrame}
 
-/--
-**The bundled form of `PartialHistory.ofTotal`.**
+/-- A world history *is* a partial history: forget the totality proof. -/
+instance : CoeOut (WorldHistory F) (PartialHistory F) := ⟨Subtype.val⟩
 
-`H_F`'s elements are exactly the total histories, and `ofTotal` builds nothing else, so a
-construction that needs an `H_F` value need never assemble the subtype pair by hand.
+/--
+The state of a world history at a time — the paper's `τ(x)`, read with no domain proof.
+
+Totality supplies the domain witness, so the dependent `PartialHistory.states` collapses to a plain
+function of the time. This is the simp normal form: `states_eq_state` rewrites every dependent
+projection toward it.
+-/
+def state (τ : WorldHistory F) (t : F.Duration) : F.WorldState :=
+  τ.val.states t (τ.property t)
+
+/-- **Proof irrelevance of the domain witness**: the dependent projection at *any* witness is the
+bundled `state`. -/
+@[simp]
+theorem states_eq_state (τ : WorldHistory F) (t : F.Duration) (h : τ.val.domain t) :
+    τ.val.states t h = τ.state t := rfl
+
+/-- Two world histories are equal when their underlying partial histories are. -/
+@[ext]
+theorem ext {τ σ : WorldHistory F} (h : τ.val = σ.val) : τ = σ :=
+  Subtype.ext h
+
+/-- The state of a world history at provably equal times. -/
+theorem state_congr (τ : WorldHistory F) {s t : F.Duration} (h : s = t) :
+    τ.state s = τ.state t := by
+  subst h; rfl
+
+/--
+**The bundled form of `PartialHistory.ofTotal`**: the world history determined by a bare state
+function.
+
+`WorldHistory F`'s elements are exactly the total histories, and `ofTotal` builds nothing else, so
+a construction that needs a world history need never assemble the subtype pair by hand.
 -/
 def ofTotal (F : TaskFrame) (f : F.Duration → F.WorldState)
-    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : F.HF :=
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : WorldHistory F :=
   ⟨PartialHistory.ofTotal F f h, PartialHistory.ofTotal_isTotal F f h⟩
+
+@[simp]
+theorem ofTotal_state (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) (t : F.Duration) :
+    (ofTotal F f h).state t = f t := rfl
 
 @[simp]
 theorem ofTotal_val (F : TaskFrame) (f : F.Duration → F.WorldState)
     (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) :
     (ofTotal F f h).val = PartialHistory.ofTotal F f h := rfl
 
-/-- Time shift lifted to `H_F`, through `PartialHistory.isTotal_timeShift`. -/
-def timeShift (τ : F.HF) (Δ : F.Duration) : F.HF :=
+/-- Time shift lifted to world histories, through `PartialHistory.isTotal_timeShift`. -/
+def timeShift (τ : WorldHistory F) (Δ : F.Duration) : WorldHistory F :=
   ⟨τ.val.timeShift Δ, PartialHistory.isTotal_timeShift τ.property Δ⟩
 
 @[simp]
-theorem timeShift_val (τ : F.HF) (Δ : F.Duration) : (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
+theorem timeShift_state (τ : WorldHistory F) (Δ t : F.Duration) :
+    (τ.timeShift Δ).state t = τ.state (t + Δ) := rfl
 
-end TaskFrame.HF
+@[simp]
+theorem timeShift_val (τ : WorldHistory F) (Δ : F.Duration) :
+    (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
 
-/--
-`H_F` at the **fibre**, so that `F.HF` resolves for a fibre-typed frame as well as for a
-total-space one.
-
-Generalized field notation resolves by the head constant of `F`'s type and never consults a
-coercion, so both spellings have to exist wherever both are used. `PartialHistory` is declared
-over the total space, so `TaskFrame.HF` is the primitive and this is the delegating spelling.
--/
-@[reducible] def FrameOver.HF {D : TemporalOrder} (F : FrameOver D) : Type _ :=
-  F.toTaskFrame.HF
-
-/-- The two spellings are the same type, definitionally. -/
-example {D : TemporalOrder} (F : FrameOver D) : F.HF = F.toTaskFrame.HF := rfl
+end WorldHistory
 
 end FormalSystem.Semantics

@@ -65,10 +65,10 @@ variable {P : IntPresentation} {φ : Formula} {bx : Formula → Bool}
 namespace Annot
 
 /-- The decoded history of an annotated bi-lasso, as the `PartialHistory` that `TruthAt` consumes. -/
-abbrev hist (A : Annot P φ) : PartialHistory P.toTaskFrame := A.lasso.toHF.val
+abbrev hist (A : Annot P φ) : PartialHistory P.toTaskFrame := A.lasso.toWorldHistory.val
 
-/-- The decoded history is total: `toHF` is built from a bi-infinite step path. -/
-theorem hist_isTotal (A : Annot P φ) : A.hist.IsTotal := A.lasso.toHF.property
+/-- The decoded history is total: `toWorldHistory` is built from a bi-infinite step path. -/
+theorem hist_isTotal (A : Annot P φ) : A.hist.IsTotal := A.lasso.toWorldHistory.property
 
 /-- The decoded history's state at a time is the lasso's decoded state. -/
 theorem hist_states (A : Annot P φ) (t : ℤ) (ht : A.hist.domain t) :
@@ -221,12 +221,12 @@ theorem truth_along_annot (hbx : BoxOracleSound P bx) (A : Annot P φ)
 `truth_along_annot` itself must bind `ψ` outermost and `t` innermost, because the induction on
 `ψ` needs its hypotheses at *every* time — the inner distance induction recurses at `t + 1`.
 This restatement is the same proposition in the argument order call sites want, and
-`A.lasso.toHF.val` is written out rather than abbreviated as `A.hist`.
+`A.lasso.toWorldHistory.val` is written out rather than abbreviated as `A.hist`.
 -/
 theorem truth_along_annot_at (hbx : BoxOracleSound P bx) (A : Annot P φ)
     (hloc : LocalCoherent P φ bx A) (hful : Fulfilling P φ A)
     (t : ℤ) (ψ : Formula) (hψ : ψ ∈ subformulaClosure φ) :
-    TruthAt P.toModel A.lasso.toHF.val t ψ ↔ ψ ∈ A.label t :=
+    TruthAt P.toModel A.lasso.toWorldHistory.val t ψ ↔ ψ ∈ A.label t :=
   truth_along_annot hbx A hloc hful ψ hψ t
 
 end FormalSystem.Metalogic.Decidability

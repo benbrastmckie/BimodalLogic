@@ -64,7 +64,7 @@ This is a condition on `F`'s own structure — on which total histories `F.TaskR
 refutation recorded in `Semantics/Correspondence/DurationFrames.lean`.
 -/
 def TaskFrame.FwdRec (F : TaskFrame) : Prop :=
-  ∀ (τ : F.HF) (t s : F.Duration), t < s → (∀ r, t < r → r < s → False) →
+  ∀ (τ : WorldHistory F) (t s : F.Duration), t < s → (∀ r, t < r → r < s → False) →
     ∀ A : F.WorldState → Prop,
       (∀ r, s < r → A (τ.val.states r (τ.property r))) → A (τ.val.states s (τ.property s))
 

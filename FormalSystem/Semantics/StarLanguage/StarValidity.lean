@@ -85,7 +85,7 @@ instance : PointTruth StarFormula where
 over `F`, every possible world `τ ∈ H_F`, every time, and **every stored-time vector**. The L⋆
 mirror of `TaskFrame.PlusValidOn`. -/
 def TaskFrame.StarValidOn (F : TaskFrame) (φ : StarFormula) : Prop :=
-  ∀ (M : TaskModel F) (τ : TaskFrame.HF F) (x : F.Duration) (v : ℕ → F.Duration),
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration) (v : ℕ → F.Duration),
     StarTruthAt M τ.val x v φ
 
 /-- `φ` is valid on every frame satisfying `P`. **The primitive**, indexed by a bare frame
@@ -117,7 +117,7 @@ theorem StarValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : StarFormul
 
 /-! ### Binder-shape adapters
 
-The bundled `(τ : TaskFrame.HF F)` of the definitions above versus the unbundled pair
+The bundled `(τ : WorldHistory F)` of the definitions above versus the unbundled pair
 `(τ : PartialHistory F) (hτ : τ.IsTotal)` every proof works with, exactly as on the L⁺ side. -/
 
 /-- Introduce `TaskFrame.StarValidOn` from the unbundled shape. -/

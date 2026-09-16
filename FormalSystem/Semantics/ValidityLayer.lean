@@ -178,10 +178,10 @@ variable {L : Type} [PointTruth L]
 /-- `def:frame-validity`, stated once: `φ` is valid over the frame `F` iff it is true at every
 model over `F`, every possible world `τ ∈ H_F`, and every time `x`.
 
-The history quantifier is the bundled subtype `TaskFrame.HF F`, exactly as every per-language
+The history quantifier is the bundled subtype `WorldHistory F`, exactly as every per-language
 `ValidOn` in the tree writes it; `genericValidOn_iff_total` is the bridge to the unbundled pair. -/
 def TaskFrame.GenericValidOn (F : TaskFrame) (φ : L) : Prop :=
-  ∀ (M : TaskModel F) (τ : TaskFrame.HF F) (x : F.Duration), PointTruth.sat M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PointTruth.sat M τ.val x φ
 
 /-- `φ` is valid on every frame satisfying the predicate `P`. The frame-predicate-indexed
 primitive that every class-restricted validity notion is an instance of. -/
@@ -201,9 +201,9 @@ def GenericValid (φ : L) : Prop :=
 /-! ### The bundled/unbundled history bridge -/
 
 /-- **The bridge between the two validity shapes.** `GenericValidOn` quantifies over the bundled
-subtype `F.HF`; the adapters below and every hand-written correspondence argument use the
+subtype `WorldHistory F`; the adapters below and every hand-written correspondence argument use the
 unbundled pair `(τ : PartialHistory F) (_ : τ.IsTotal)`. One term in each direction, because
-`TaskFrame.HF` is a subtype and `.val`/`.property` are its projections. -/
+`WorldHistory` is a subtype and `.val`/`.property` are its projections. -/
 theorem genericValidOn_iff_total (F : TaskFrame) (φ : L) :
     TaskFrame.GenericValidOn F φ ↔
       ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →

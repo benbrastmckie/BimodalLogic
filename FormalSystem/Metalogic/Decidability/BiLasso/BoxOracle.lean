@@ -243,14 +243,14 @@ theorem boxOracle_sound (P : IntPresentation) : BoxOracleSound P (boxOracle P) :
       rintro hall ⟨A, hA, i, hi, hlab⟩
       obtain ⟨hloc, hful, -, -, -⟩ :=
         boundedAnnots_sound (mem_boundedAnnots_congr_oracle hagree hA)
-      have htr : TruthAt P.toModel A.lasso.toHF.val i (Formula.neg χ) :=
+      have htr : TruthAt P.toModel A.lasso.toWorldHistory.val i (Formula.neg χ) :=
         (truth_along_annot_at hbxs A hloc hful i (Formula.neg χ)
           (self_mem_subformulaClosure _)).mpr hlab
-      have hshift := (TimeShift.timeShift_preserves_truth P.toModel A.lasso.toHF.val 0 i
+      have hshift := (TimeShift.timeShift_preserves_truth P.toModel A.lasso.toWorldHistory.val 0 i
         (Formula.neg χ))
       rw [sub_zero] at hshift
-      have hgood := hall (PartialHistory.timeShift A.lasso.toHF.val i)
-        (PartialHistory.isTotal_timeShift A.lasso.toHF.property i)
+      have hgood := hall (PartialHistory.timeShift A.lasso.toWorldHistory.val i)
+        (PartialHistory.isTotal_timeShift A.lasso.toWorldHistory.property i)
       exact (truth_neg_iff P.toModel _ 0 χ).mp (hshift.mpr htr) hgood
   -- induct on a bound for the modal depth
   have key : ∀ (k : ℕ) (χ : Formula), Formula.modalDepth χ ≤ k →

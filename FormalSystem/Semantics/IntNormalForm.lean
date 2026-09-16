@@ -38,8 +38,8 @@ synthesis from a bare bi-serial relation, and computable model checking — rest
   `iter R (n+1) w u = ∃ v, iter R n w v ∧ R v u`
 - `FrameOver.step` — the one-step relation of a `FrameOver intOrder`
 - `IsStepPath` — a bi-infinite walk `f : ℤ → WorldState` stepping between consecutive times
-- `TaskFrame.HF.path` — the bare path underlying a possible world
-- `FrameOver.HFofStepPath` — the possible world determined by a bi-infinite step-path
+- `WorldHistory.path` — the bare path underlying a possible world
+- `FrameOver.worldHistoryOfStepPath` — the possible world determined by a bi-infinite step-path
 
 ## Main Results
 
@@ -277,8 +277,8 @@ open TaskFrame
 
 /-- The bare path underlying a possible world: totality makes the domain proof uniform, so
 the dependent `states` field collapses to a plain function `ℤ → WorldState`. -/
-def _root_.FormalSystem.Semantics.TaskFrame.HF.path {F : FrameOver intOrder}
-    (τ : TaskFrame.HF F) : ℤ → F.WorldState :=
+def _root_.FormalSystem.Semantics.WorldHistory.path {F : FrameOver intOrder}
+    (τ : WorldHistory F) : ℤ → F.WorldState :=
   fun t => τ.val.states t (τ.property t)
 
 /--
@@ -313,17 +313,17 @@ The possible world determined by a bi-infinite step-path. Every field is dischar
 adjacency: the domain is all of ℤ (so `nonempty_domain` and `convex` are trivial), and
 `respects_task` is `respects_of_isStepPath`.
 -/
-def HFofStepPath (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
-    TaskFrame.HF F :=
-  TaskFrame.HF.ofTotal F.toTaskFrame f (respects_of_isStepPath h)
+def worldHistoryOfStepPath (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+    WorldHistory F :=
+  WorldHistory.ofTotal F.toTaskFrame f (respects_of_isStepPath h)
 
 @[simp]
-theorem HFofStepPath.path (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
-    (HFofStepPath F f h).path = f := rfl
+theorem worldHistoryOfStepPath.path (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+    (worldHistoryOfStepPath F f h).path = f := rfl
 
 /-- Every possible world over ℤ is a bi-infinite step-path. -/
-theorem _root_.FormalSystem.Semantics.TaskFrame.HF.isStepPath {F : FrameOver intOrder}
-    (τ : TaskFrame.HF F) : IsStepPath F τ.path := by
+theorem _root_.FormalSystem.Semantics.WorldHistory.isStepPath {F : FrameOver intOrder}
+    (τ : WorldHistory F) : IsStepPath F τ.path := by
   intro n
   have := τ.val.respects_task n (n + 1) (τ.property n) (τ.property (n + 1))
   rwa [show n + 1 - n = (1 : ℤ) by omega] at this
@@ -337,10 +337,10 @@ all-pairs task-respect at consecutive times; the converse rebuilds the all-pairs
 adjacency alone, by `taskRel_eq_iter` and induction on the gap.
 -/
 theorem mem_HF_iff_adjacent (F : FrameOver intOrder) (f : ℤ → F.WorldState) :
-    (∃ τ : TaskFrame.HF F, τ.path = f) ↔ IsStepPath F f := by
+    (∃ τ : WorldHistory F, τ.path = f) ↔ IsStepPath F f := by
   constructor
   · rintro ⟨τ, rfl⟩; exact τ.isStepPath
-  · intro h; exact ⟨HFofStepPath F f h, rfl⟩
+  · intro h; exact ⟨worldHistoryOfStepPath F f h, rfl⟩
 
 /--
 The predicate-on-histories form of `mem_HF_iff_adjacent`: for a convex history already known to be
@@ -524,7 +524,7 @@ example (w u : Bool) :
 
 /-- …and the characterization then produces an actual member of `H_F` over that frame. -/
 example (W : Type) [Nonempty W] (w : W) :
-    ∃ τ : TaskFrame.HF (FrameOver.staticFrame W (D := ℤ)), τ.path = fun _ => w :=
+    ∃ τ : WorldHistory (FrameOver.staticFrame W (D := ℤ)), τ.path = fun _ => w :=
   (FrameOver.mem_HF_iff_adjacent (FrameOver.staticFrame W (D := ℤ)) (fun _ => w)).mpr
     (fun _ => (FrameOver.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl)
 

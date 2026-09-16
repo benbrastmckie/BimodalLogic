@@ -32,7 +32,7 @@ subtraction and makes shift-invariance a three-line lemma.
 
 - `PlacedBiLasso` — a `BiLasso` together with the absolute time of its lasso-time origin
 - `PlacedBiLasso.unroll` — the decoding, re-based at `origin`
-- `PlacedBiLasso.toHF` — the decoded path as an element of `H_F`
+- `PlacedBiLasso.toWorldHistory` — the decoded path as an element of `H_F`
 
 ## Main Results
 
@@ -82,11 +82,11 @@ theorem unroll_isStepPath (L : PlacedBiLasso P) : IsStepPath P.toFibre L.unroll 
   isStepPath_shift L.lasso.unroll_isStepPath L.origin
 
 /-- The decoded path as an element of `H_F` — the form `TruthAt` consumes. -/
-def toHF (L : PlacedBiLasso P) : TaskFrame.HF P.toTaskFrame :=
-  FrameOver.HFofStepPath P.toFibre L.unroll L.unroll_isStepPath
+def toWorldHistory (L : PlacedBiLasso P) : WorldHistory P.toTaskFrame :=
+  FrameOver.worldHistoryOfStepPath P.toFibre L.unroll L.unroll_isStepPath
 
 @[simp]
-theorem toHF_path (L : PlacedBiLasso P) : L.toHF.path = L.unroll := rfl
+theorem toWorldHistory_path (L : PlacedBiLasso P) : L.toWorldHistory.path = L.unroll := rfl
 
 /-- **Leftward periodicity, at the offset.** Strictly left of the origin the re-based decoding has
 period `|back|`. -/

@@ -140,7 +140,7 @@ theorem deterministic_of_singletonClasses (h : F.SingletonClasses) : F.Determini
   -- extended to a possible world by `thm:extension`. Its domain `{0, x}` is not convex, which is
   -- why the construction happens at the `PartialHistory` layer.
   have key : ∀ z : F.WorldState, F.TaskRel w x z →
-      ∃ σ : F.HF, σ.val.states 0 (σ.property 0) = w ∧ σ.val.states x (σ.property x) = z := by
+      ∃ σ : WorldHistory F, σ.val.states 0 (σ.property 0) = w ∧ σ.val.states x (σ.property x) = z := by
     intro z hz
     have h0x : (if (0 : F.Duration) = x then z else w) = w := if_neg hne0
     have hxx : (if x = x then z else w) = z := if_pos rfl

@@ -52,7 +52,7 @@ so that `coherent` is decidable by `Fintype.decidableForallFintype` alone.
 - `BiLasso.windowTime` — the window index-to-time map
 - `BiLasso` — the structure: `back`, `mid`, `fwd`, `back_ne`, `fwd_ne`, `coherent`
 - `BiLasso.unroll` — `unrollOf` at the structure's own fields
-- `BiLasso.toHF` — the decoded path as an element of `H_F`
+- `BiLasso.toWorldHistory` — the decoded path as an element of `H_F`
 
 ## Main Results
 
@@ -269,11 +269,11 @@ theorem unroll_isStepPath (L : BiLasso P) : IsStepPath P.toFibre L.unroll := by
     exact hcoh
 
 /-- The decoded path as an element of `H_F` — the form `TruthAt` consumes. -/
-def toHF (L : BiLasso P) : TaskFrame.HF P.toTaskFrame :=
-  FrameOver.HFofStepPath P.toFibre L.unroll L.unroll_isStepPath
+def toWorldHistory (L : BiLasso P) : WorldHistory P.toTaskFrame :=
+  FrameOver.worldHistoryOfStepPath P.toFibre L.unroll L.unroll_isStepPath
 
 @[simp]
-theorem toHF_path (L : BiLasso P) : L.toHF.path = L.unroll := rfl
+theorem toWorldHistory_path (L : BiLasso P) : L.toWorldHistory.path = L.unroll := rfl
 
 end BiLasso
 

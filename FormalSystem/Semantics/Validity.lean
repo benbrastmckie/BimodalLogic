@@ -127,7 +127,7 @@ notation:50 Γ:50 " ⊨ " φ:50 => SemanticConsequence Γ φ
 
 The explicit binder shapes. `ConsequenceOnFrames` already quantifies over the
 unbundled `(τ : PartialHistory F) (_ : τ.IsTotal)` pair, so — unlike `ValidOnFrames`, which bundles
-the history into `TaskFrame.HF` — no history-shape adapter is needed at the generic layer. What
+the history into `WorldHistory` — no history-shape adapter is needed at the generic layer. What
 each `of_forall` restores is the *frame condition*, putting it back into the local context in the
 form typeclass resolution can see: `Sat .Dense F` is `TaskFrame.IsDense F`, whose head symbol is
 not `DenselyOrdered`, so a bare hypothesis of that type is invisible to instance search. The three
@@ -251,7 +251,7 @@ used instead, and dot-notation (`F.ValidOn φ`) reads as the paper's `⊨_F φ` 
 
 **This is not a parallel validity notion.** `valid_iff_forall_validOn` below proves the two are
 related by quantification over frames, so `ValidOn` is a specialization of the one validity
-predicate rather than a competitor to it — the same discipline `TaskFrame.HF` follows with
+predicate rather than a competitor to it — the same discipline `WorldHistory` follows with
 respect to `PartialHistory.IsTotal`.
 -/
 
@@ -270,7 +270,7 @@ Each of the three quantifiers is rendered on the nose:
 * "every model `M = ⟨W, D, ⇒, |·|⟩` where `F = ⟨W, D, ⇒⟩`" is `∀ M : TaskModel F` — the frame is
   a *parameter* of `TaskModel`, so the side condition that `M`'s frame reduct is `F` is carried
   by the type rather than by a hypothesis.
-* "possible world `τ ∈ H_F`" is `∀ τ : F.HF`, the bundled subtype. Per `TaskFrame.HF`'s
+* "possible world `τ ∈ H_F`" is `∀ τ : WorldHistory F`, the bundled subtype. Per `WorldHistory`'s
   encoding note, the bundled form is used exactly where `H_F` appears as an object in its own
   right, which is how the recorded text reads here.
 * "time `x ∈ D`" is `∀ x : D` — all of the temporal order, not merely `dom(τ)`; for a total `τ`
@@ -280,16 +280,16 @@ Unlike `Valid`, this carries no `[Nontrivial D]` binder: `Valid` needs it to sta
 quantification over temporal types, whereas here `D` and `F` are both already given.
 -/
 def TaskFrame.ValidOn (F : TaskFrame) (φ : Formula) : Prop :=
-  ∀ (M : TaskModel F) (τ : TaskFrame.HF F) (x : F.Duration), TruthAt M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), TruthAt M τ.val x φ
 
 namespace TaskFrame
 
 /--
 **The bridge between the two validity shapes.**
 
-`TaskFrame.ValidOn` quantifies over the bundled subtype `F.HF`; correspondence arguments are
+`TaskFrame.ValidOn` quantifies over the bundled subtype `WorldHistory F`; correspondence arguments are
 naturally written with the history and its totality proof unbundled. One term in each direction,
-because `TaskFrame.HF` is a subtype and `.val`/`.property` are its projections.
+because `WorldHistory` is a subtype and `.val`/`.property` are its projections.
 
 Stated here, beside `TaskFrame.ValidOn` itself, rather than in the one correspondence module that
 first needed it: the unbundling is a fact about the definition, not about any particular
@@ -323,13 +323,13 @@ theorem not_validOn_bot (F : TaskFrame) : ¬ F.ValidOn Formula.bot := by
 
 /--
 `cor:occurrence`'s closing clause restated in the shape this section consumes it: `H_F` has an
-inhabitant, so the `∀ τ : F.HF` in `ValidOn` is a non-vacuous quantifier. Everything it rests
+inhabitant, so the `∀ τ : WorldHistory F` in `ValidOn` is a non-vacuous quantifier. Everything it rests
 on — the four axioms and the carrier's nonemptiness — is a field of the frame.
 
 This is a thin restatement of `PartialHistory.hF_nonempty`, kept here so the reason
 `not_validOn_bot` holds is legible next to the statement itself.
 -/
-theorem hF_nonempty_of_frameAxioms (F : TaskFrame) : Nonempty (TaskFrame.HF F) :=
+theorem hF_nonempty_of_frameAxioms (F : TaskFrame) : Nonempty (WorldHistory F) :=
   PartialHistory.hF_nonempty F F.worldNonempty.some
 
 end TaskFrame
@@ -459,7 +459,7 @@ temporal type and the frame, `ValidOn` leaves both fixed. Stated as a theorem ra
 introduced as an abbreviation, exactly so that the equivalence is a proof obligation the build
 checks and not a definitional identity asserted by fiat.
 
-Both directions are the `.val`/`.property` bridge between `F.HF` and the predicate form
+Both directions are the `.val`/`.property` bridge between `WorldHistory F` and the predicate form
 `(τ : PartialHistory F) (hτ : τ.IsTotal)` that `Valid` uses — the two spellings of one and the same
 `IsTotal` predicate, per `PartialHistory.lean`'s encoding note. No mathematical content is added in
 either direction; that is the point of the statement.
@@ -509,7 +509,7 @@ theorem ValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : Formula} (h : 
 /-! ### The migration lever
 
 `ValidOnFrames` is defined through `TaskFrame.ValidOn`, whose history quantifier is the bundled
-`(τ : TaskFrame.HF F)`; every predicate this module states by hand instead uses the unbundled pair
+`(τ : WorldHistory F)`; every predicate this module states by hand instead uses the unbundled pair
 `(τ : PartialHistory F) (_ : τ.IsTotal)`. `valid_iff_forall_validOn` already proves the two spellings
 agree, but they are not *definitionally* equal, so a proof written against one shape does not
 elaborate against the other. The lemmas below are the shape adapters: a goal site becomes

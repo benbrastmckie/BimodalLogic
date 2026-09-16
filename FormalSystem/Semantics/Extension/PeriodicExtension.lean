@@ -146,7 +146,7 @@ The construction is the one the informal argument describes. Seriality — taken
 `FrameOver.serial` at duration `1`, through `exists_iter_fwd` and `exists_iter_bwd` — supplies a
 successor and a predecessor at every state. Iterating them out of the two ends of the window gives
 two orbits; finiteness forces each to revisit a state (`exists_repeat_of_card_le`), which makes it
-periodic from that visit onward; and `FrameOver.HFofStepPath` turns the resulting bi-infinite walk
+periodic from that visit onward; and `FrameOver.worldHistoryOfStepPath` turns the resulting bi-infinite walk
 into a genuine element of `H_F`, discharging the all-pairs task-respect obligation from adjacency
 alone.
 
@@ -156,7 +156,7 @@ counterpart is a separate theorem rather than a corollary.
 theorem extend_periodic {F : FrameOver intOrder} [Finite F.WorldState]
     (τ : PartialHistory F.toTaskFrame) (a b : ℤ) (hab : a ≤ b)
     (hdom : ∀ t : ℤ, τ.domain t ↔ a ≤ t ∧ t ≤ b) :
-    ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val τ ∧
+    ∃ σ : WorldHistory F, PartialHistory.Extends σ.val τ ∧
       ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧
         p₀ ≤ (Nat.card F.WorldState : ℤ) ∧ p₁ ≤ (Nat.card F.WorldState : ℤ) ∧
         (∀ x : ℤ, n₁ ≤ x → σ.path (x + p₁) = σ.path x) ∧
@@ -238,7 +238,7 @@ theorem extend_periodic {F : FrameOver intOrder} [Finite F.WorldState]
         show (t + 1 - b).toNat = (t - b).toNat + 1 by omega,
         Function.iterate_succ_apply']
       exact hsc _
-  refine ⟨FrameOver.HFofStepPath F f hstep, ⟨fun _ _ => trivial, ?_⟩, ?_⟩
+  refine ⟨FrameOver.worldHistoryOfStepPath F f hstep, ⟨fun _ _ => trivial, ?_⟩, ?_⟩
   · -- Agreement on the window is extension.
     intro t ht
     obtain ⟨h1, h2⟩ := (hdom t).mp ht
@@ -400,7 +400,7 @@ both directions with both periods bounded by the number of world states.
 -/
 theorem extend_periodic_of_finite_domain {F : FrameOver intOrder} [Finite F.WorldState]
     (τ : PartialHistory F.toTaskFrame) (hfin : {t : ℤ | τ.domain t}.Finite) :
-    ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val τ ∧
+    ∃ σ : WorldHistory F, PartialHistory.Extends σ.val τ ∧
       ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧
         p₀ ≤ (Nat.card F.WorldState : ℤ) ∧ p₁ ≤ (Nat.card F.WorldState : ℤ) ∧
         (∀ x : ℤ, n₁ ≤ x → σ.path (x + p₁) = σ.path x) ∧

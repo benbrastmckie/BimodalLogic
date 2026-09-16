@@ -56,7 +56,7 @@ passes along is the frame `F`, never the axioms.
 The maximal-to-total direction is isolated as `isTotal_of_isMax`, the converse companion to
 `PartialHistoryOrder`'s `isMax_of_total`. That companion is exactly where `lem:step` is spent:
 maximality plus the ability to extend by one arbitrary duration forces the domain to be all of
-`D`. A total partial history *is* a world history, so the maximal partial history is an `F.HF`
+`D`. A total partial history *is* a world history, so the maximal partial history is a `WorldHistory F`
 element as it stands: the subtype pair `⟨μ, htot⟩`, with no promotion step and no convexity
 argument.
 
@@ -102,7 +102,7 @@ time-shifting a history witnessed at one time — is **gone from this chain and 
 reintroduced**. The anchors that carried it (`thm:occurrence`, `app:nonempty`) no longer exist;
 the paper merged them into the single, strictly stronger `cor:occurrence`, in which the time `x`
 is universally given rather than existentially witnessed. Time-shift machinery survives
-separately (`PartialHistory.timeShift`, `TaskFrame.HF.timeShift`) but
+separately (`PartialHistory.timeShift`, `WorldHistory.timeShift`) but
 plays no role here.
 
 ## Main Definitions
@@ -169,7 +169,7 @@ here: a total domain is trivially convex, `PartialHistory.IsTotal.isConvex`.)
 its sole application site, reads it off the frame as `F.saturation`.
 -/
 theorem extension (F : TaskFrame) (τ : PartialHistory F) :
-    ∃ σ : F.HF, Extends σ.val τ := by
+    ∃ σ : WorldHistory F, Extends σ.val τ := by
   obtain ⟨μ, hle, hmax⟩ := exists_maximal_extension τ
   have htot : μ.IsTotal := isTotal_of_isMax F hmax
   exact ⟨⟨μ, htot⟩, le_def.mp hle⟩
@@ -216,7 +216,7 @@ how the recorded source literally reads; the axioms reach `step` as the frame's 
 this module's docstring.
 -/
 theorem occurrence (F : TaskFrame) (w : F.WorldState) (x : F.Duration) :
-    ∃ τ : F.HF, τ.val.states x (τ.property x) = w := by
+    ∃ τ : WorldHistory F, τ.val.states x (τ.property x) = w := by
   obtain ⟨τ, hext⟩ := extension F (point F w x)
   exact ⟨τ, hext.agree x rfl⟩
 
@@ -231,7 +231,7 @@ holding a state passes it, and a caller holding none passes `F.worldNonempty.som
 `Semantics/Validity.lean`'s `hF_nonempty_of_frameAxioms` is the second case, and reads literally
 `PartialHistory.hF_nonempty F F.worldNonempty.some`.
 -/
-theorem hF_nonempty (F : TaskFrame) (w : F.WorldState) : Nonempty F.HF :=
+theorem hF_nonempty (F : TaskFrame) (w : F.WorldState) : Nonempty (WorldHistory F) :=
   let ⟨τ, _⟩ := occurrence F w 0
   ⟨τ⟩
 

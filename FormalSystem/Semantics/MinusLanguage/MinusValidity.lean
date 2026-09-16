@@ -102,10 +102,10 @@ every model over `F`, every possible world `τ ∈ H_F`, and every time `x ∈ D
 
 The L⁻ mirror of `TaskFrame.ValidOn`, and in fact the more literal reading of the anchor, whose
 text is stated for "a well-formed sentence `φ` of `L⁻`". `TaskFrame.ValidOn` is the same clause
-applied to the full language's `Formula`. Both render the bundled `H_F` as `TaskFrame.HF`.
+applied to the full language's `Formula`. Both render the bundled `H_F` as `WorldHistory`.
 -/
 def TaskFrame.MinusValidOn (F : TaskFrame) (φ : MinusFormula) : Prop :=
-  ∀ (M : TaskModel F) (τ : TaskFrame.HF F) (x : F.Duration), MinusTruthAt M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), MinusTruthAt M τ.val x φ
 
 /-- `φ` is valid on every frame satisfying `P`. The L⁻ mirror of `Semantics.ValidOnFrames`, and
 for the same reason: indexing the primitive by a bare frame predicate rather than by a
@@ -162,7 +162,7 @@ theorem MinusValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : MinusForm
 /-! ### Binder-shape adapters for the generic layer
 
 The L⁻ mirrors of `Semantics.ValidOnFrames.of_forall_total` / `.apply_total` and their
-`FrameClass`-tagged forms. `MinusValidOnFrames` is stated over the bundled `(τ : TaskFrame.HF F)`;
+`FrameClass`-tagged forms. `MinusValidOnFrames` is stated over the bundled `(τ : WorldHistory F)`;
 every proof that consumes or produces it works with the unbundled pair
 `(τ : PartialHistory F) (hτ : τ.IsTotal)`. The two spellings are not definitionally equal, so these
 four are the shape adapters, exactly as on the full-language side: a goal site becomes
