@@ -146,19 +146,19 @@ wiring it.
 
 ---
 
-### Phase 3: Wire the guard into CI as a gating step [NOT STARTED]
+### Phase 3: Wire the guard into CI as a gating step [COMPLETED]
 
 **Goal**: Run `check-evidence-probes.sh` in CI after the Lake cache is warm, failing the build when
 any wired probe rots.
 
 **Tasks**:
-- [ ] Re-read `.github/workflows/ci.yml`; check whether 583 has landed new steps or a wiring-pattern document (e.g. under `docs/development/` or `CI_CD_PROCESS.md`). If so, follow its step-naming convention; otherwise name the step after the script
-- [ ] Insert a step after "Compile lean_exe roots (outside the library closures)" (and after any 583-added steps in that region), before "Report results", following report 02's suggested shape: `set -euo pipefail`, `::group::`/`::endgroup::`, `bash scripts/check-evidence-probes.sh`, no `continue-on-error`
-- [ ] Precede the step with a comment recording: probes live under `specs/` outside every Lake root, so the build never elaborates them; they rotted undetected once; the decision is that a rotted probe FAILS CI, because a probe that no longer compiles no longer protects the decision it records; the step reuses the lean-action cache (all probe imports are in the `FormalSystem` import closure). No task-number references
-- [ ] YAML-parse the workflow: `python3 -c 'import yaml; yaml.safe_load(open(".github/workflows/ci.yml"))'`
-- [ ] Broken-probe test: introduce a single-token type error into one wired probe, run the step's exact command sequence locally under `bash -c 'set -euo pipefail; …'`, confirm nonzero exit and a FAIL line naming the probe; revert the token with Edit; confirm `git diff --quiet` on that probe and guard exit 0
-- [ ] Final gate: `bash scripts/check-evidence-probes.sh` exits 0 with 4 PASS, 1 SKIP; `lake build` is not required (no Lean library file touched), but re-run it if any file under `FormalSystem/` changed on the branch during implementation
-- [ ] Note in the summary that the remote red run on a deliberately broken probe is a user-side check (agents may not push)
+- [x] Re-read `.github/workflows/ci.yml`; check whether 583 has landed new steps or a wiring-pattern document (e.g. under `docs/development/` or `CI_CD_PROCESS.md`). If so, follow its step-naming convention; otherwise name the step after the script
+- [x] Insert a step after "Compile lean_exe roots (outside the library closures)" (and after any 583-added steps in that region), before "Report results", following report 02's suggested shape: `set -euo pipefail`, `::group::`/`::endgroup::`, `bash scripts/check-evidence-probes.sh`, no `continue-on-error`
+- [x] Precede the step with a comment recording: probes live under `specs/` outside every Lake root, so the build never elaborates them; they rotted undetected once; the decision is that a rotted probe FAILS CI, because a probe that no longer compiles no longer protects the decision it records; the step reuses the lean-action cache (all probe imports are in the `FormalSystem` import closure). No task-number references
+- [x] YAML-parse the workflow: `python3 -c 'import yaml; yaml.safe_load(open(".github/workflows/ci.yml"))'`
+- [x] Broken-probe test: introduce a single-token type error into one wired probe, run the step's exact command sequence locally under `bash -c 'set -euo pipefail; …'`, confirm nonzero exit and a FAIL line naming the probe; *(deviation: altered — the `run` block was extracted verbatim from the parsed YAML and executed with `bash -e`; break was `rfl` -> `trivial` in phase12 `hist_path`)* revert the token with Edit; confirm `git diff --quiet` on that probe and guard exit 0
+- [x] Final gate: `bash scripts/check-evidence-probes.sh` exits 0 with 4 PASS, 1 SKIP; `lake build` is not required (no Lean library file touched), but re-run it if any file under `FormalSystem/` changed on the branch during implementation *(deviation: skipped — no `FormalSystem/` commit landed during implementation; the only `FormalSystem/` changes are other concurrent agents' uncommitted working-tree edits, which the guard already compiled against)*
+- [x] Note in the summary that the remote red run on a deliberately broken probe is a user-side check (agents may not push)
 
 **Timing**: 30 minutes
 

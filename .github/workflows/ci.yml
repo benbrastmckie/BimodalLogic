@@ -57,6 +57,20 @@ jobs:
             echo "::endgroup::"
           done
 
+      # The bi-lasso evidence probes under specs/evidence/ are machine-checked records of design
+      # obstructions. They live outside every Lake root, so neither step above ever elaborates
+      # them, and they have already rotted undetected once: an API refactor broke all four with
+      # nothing announcing it. DECISION: a rotted probe FAILS CI rather than merely reporting,
+      # because a probe that no longer compiles no longer protects the design decision it records
+      # (see the header of scripts/check-evidence-probes.sh). Every probe import is inside the
+      # FormalSystem import closure, so this reuses the cache the lean-action step populated.
+      - name: check-evidence-probes.sh
+        run: |
+          set -euo pipefail
+          echo "::group::bash scripts/check-evidence-probes.sh"
+          bash scripts/check-evidence-probes.sh
+          echo "::endgroup::"
+
       - name: Report results
         if: always()
         run: |
