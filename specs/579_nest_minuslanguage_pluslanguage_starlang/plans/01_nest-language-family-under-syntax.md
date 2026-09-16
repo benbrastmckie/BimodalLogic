@@ -282,18 +282,18 @@ READMEs' relative links. It must not be widened at implementation time.
 
 ---
 
-### Phase 3: Extend C8 to FormalSystem/Syntax [NOT STARTED]
+### Phase 3: Extend C8 to FormalSystem/Syntax [COMPLETED]
 
 **Goal**: Make the aggregator convention machine-enforced on the newly nested directories.
 
 **Tasks**:
-- [ ] Add `"FormalSystem/Syntax"` to the `parent` tuple at
+- [x] Add `"FormalSystem/Syntax"` to the `parent` tuple at
       `scripts/check-module-invariants.sh:947` (`for parent in ("FormalSystem",
       "FormalSystem/Metalogic"):`).
-- [ ] Update C8's `pas()` message, which currently reads "every FormalSystem/ and Metalogic/
+- [x] Update C8's `pas()` message, which currently reads "every FormalSystem/ and Metalogic/
       subdirectory has exactly one sibling aggregator", so the reported scope matches what is
       actually walked.
-- [ ] Update the C8 explanatory comment block above the loop if it enumerates the parents.
+- [x] Update the C8 explanatory comment block above the loop if it enumerates the parents.
 
 **Timing**: 0.25 hours
 
@@ -316,7 +316,12 @@ Phase 2) and `SubformulaClosure/` (aggregator created in Phase 1). Confirm with
 - `ENFORCE_C8=1 bash scripts/check-module-invariants.sh --no-build` reports `PASS C8` and no new
   `TODO C8` lines.
 - The only remaining failure is the pre-existing `FAIL C13` (repaired in Phase 4), matching the
-  recorded baseline.
+  recorded baseline. *(deviation: altered — this expectation assumed Phase 4 had already run, as
+  the wave table places 3 and 4 in the same wave. Executing depth-first per the phase-closure
+  contract, Phase 3 closed before Phase 4, so `FAIL C5` (11), `FAIL C12` (16) and `FAIL INV`
+  were also open at this point — the expected post-move documentation debt that Phases 4 and 6
+  own, not a regression. `PASS C8` with zero `TODO C8` lines, this phase's actual subject, was
+  met. Note `C6` now PASSES: task 580 manifested its `TruthTransport` module.)*
 
 ---
 

@@ -14,6 +14,7 @@
 #   C6  Known-unreachable live modules still compile (rot guard)
 #   C7  Live inventory (informational, never asserted)
 #   C8  Aggregator convention: sibling `X.lean` beside `X/`, no `X/X.lean`
+#       Walked parents: FormalSystem/, FormalSystem/Metalogic/, FormalSystem/Syntax/
 #   C9  Zero task-number citations under FormalSystem/, lakefile.lean, README.md,
 #       and scripts/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
@@ -938,13 +939,18 @@ for k in sorted(counts):
 
 # --- C8: aggregator convention ----------------------------------------------
 # Convention: a directory `X/` has exactly one sibling aggregator `X.lean`.
+# Walked parents: `FormalSystem/`, `FormalSystem/Metalogic/` and `FormalSystem/Syntax/`.
+# `FormalSystem/Syntax` joined the tuple when the L-minus/L-plus/L-star language family was
+# nested under it; that move brought `Syntax/MinusLanguage/`, `Syntax/PlusLanguage/` and
+# `Syntax/StarLanguage/` (each arriving with its own sibling aggregator) plus the
+# pre-existing `Syntax/SubformulaClosure/` into C8's scope.
 # Allowlisted exception: `FormalSystem.lean` + `FormalSystem/FormalSystem.lean`.
 # That pair is the Lake `lean_lib FormalSystem` root (`srcDir := "."`,
 # `roots := #[`FormalSystem]`), so the self-named indirection is load-bearing, not a
 # convention violation.
 C8_ALLOW_SELFNAMED = {"FormalSystem/FormalSystem.lean"}
 c8_problems = []
-for parent in ("FormalSystem", "FormalSystem/Metalogic"):
+for parent in ("FormalSystem", "FormalSystem/Metalogic", "FormalSystem/Syntax"):
     for d in sorted(os.listdir(parent)):
         full = os.path.join(parent, d)
         if not os.path.isdir(full) or d == "Boneyard":
@@ -967,7 +973,7 @@ if c8_problems:
     for m in c8_problems:
         note(m)
 else:
-    pas("C8", "every FormalSystem/ and Metalogic/ subdirectory has exactly one sibling aggregator")
+    pas("C8", "every FormalSystem/, Metalogic/ and Syntax/ subdirectory has exactly one sibling aggregator")
 
 # --- C11: archive import resolution ----------------------------------------
 # The Boneyard is uncompiled, so `lake build` cannot notice when an archived
