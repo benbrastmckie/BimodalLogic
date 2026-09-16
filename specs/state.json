@@ -71,12 +71,12 @@
     {
       "project_number": 593,
       "project_name": "revise_task_organization_codebase_cleanup",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "I recently created tasks 581-592. I already have many other tasks I've created. I want to know if these tasks can be better organized into topics, combined, replaced, removed, or have new tasks added. I'd like to focus on improving the codebase first, including everything that doesn't involve writing new proofs, but rather changing conventions, removing cruft, improving comments, or otherwise refactoring, where these tasks should all be gathered together under one topic with clear dependencies. Thus the aim of this task is to revise the other tasks as most appropriate. It may be worth researching /home/benjamin/Projects/cslib/ which aimed to provide a high quality of lean engineering for related topics. Though the subject matter there differs, the standards are good to aim for",
       "topic": "code-quality",
       "created": "2026-09-16T15:23:39Z",
-      "last_updated": "2026-09-16T15:35:40Z",
+      "last_updated": "2026-09-16T15:40:09Z",
       "session_id": "sess_1789572316_3a825c",
       "artifacts": [
         {
@@ -88,9 +88,15 @@
           "path": "specs/593_revise_task_organization_codebase_cleanup/plans/01_cleanup-topic-reorganization.md",
           "type": "plan",
           "summary": "5-phase state-only plan: create codebase-cleanup topic (19 members), abandon 542 into 588, rescope/widen descriptions, create N1-N4, prune stale deps, wire 6-wave DAG."
+        },
+        {
+          "path": "specs/593_revise_task_organization_codebase_cleanup/summaries/01_cleanup-topic-reorganization-summary.md",
+          "type": "summary",
+          "summary": "Gathered 19 codebase-cleanup tasks under one topic with a 6-wave acyclic DAG; abandoned 542 into 588; created 594-597; rescoped 583; pruned 56 stale dependencies."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Created the codebase-cleanup topic with 19 members (15 re-topicked plus new tasks 594-597) wired into an acyclic six-wave dependency DAG, merged 542 into 588, rescoped 583 to wire the checks that pass today and gave each repair task its own CI-wiring phase, and pruned 56 stale dependency references across the backlog."
     },
     {
       "project_number": 581,

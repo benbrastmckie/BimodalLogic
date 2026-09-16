@@ -11,7 +11,7 @@ next_project_number: 598
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,581,582,583,587,591,592,593,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,581,582,583,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,584,586,590 | 298,464,502,559,563,568,582,591,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,506,566,569,585 | 231,465,497,565,583,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,588,597 | 428,498,499,500,569,585,594 | algebraic-representation, decidability, metalogic, ... |
@@ -45,10 +45,6 @@ next_project_number: 598
   └─ 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
     └─ 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
   └─ 567 [NOT STARTED] — Prove app:presheaf-dictionary's Determinism clause -- F...
-
-### Code Quality
-
-593 [IMPLEMENTING] — I recently created tasks 581-592. I already have many other...
 
 ### Dataset Enhancement
 
@@ -199,12 +195,13 @@ ACCEPTANCE: `lake build` green; test suite green; new invariant check passes and
 ---
 
 ### 593. Revise task organization codebase cleanup
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md]
 - **Plan**: [593_revise_task_organization_codebase_cleanup/plans/01_cleanup-topic-reorganization.md]
+- **Summary**: [593_revise_task_organization_codebase_cleanup/summaries/01_cleanup-topic-reorganization-summary.md]
 
 **Description**: I recently created tasks 581-592. I already have many other tasks I've created. I want to know if these tasks can be better organized into topics, combined, replaced, removed, or have new tasks added. I'd like to focus on improving the codebase first, including everything that doesn't involve writing new proofs, but rather changing conventions, removing cruft, improving comments, or otherwise refactoring, where these tasks should all be gathered together under one topic with clear dependencies. Thus the aim of this task is to revise the other tasks as most appropriate. It may be worth researching /home/benjamin/Projects/cslib/ which aimed to provide a high quality of lean engineering for related topics. Though the subject matter there differs, the standards are good to aim for
 
