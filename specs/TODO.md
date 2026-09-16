@@ -111,7 +111,7 @@ next_project_number: 598
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 583 [PLANNED] — Wire the check scripts that are GREEN TODAY into...
   └─ 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,... (see above)
-587 [PLANNING] — Clear the two broken: entries in...
+587 [PLANNED] — Clear the two broken: entries in...
 591 [NOT STARTED] — Adopt a naming convention that distinguishes leanexe roots...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
@@ -339,11 +339,12 @@ DISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on 
 
 ### 587. Repair or retire broken benchmark modules
 - **Effort**: small
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [587_repair_or_retire_broken_benchmark_modules/reports/02_benchmark-repair-measurement.md]
+- **Plan**: [587_repair_or_retire_broken_benchmark_modules/plans/02_repair-and-retire-benchmarks.md]
 
 **Description**: Clear the two `broken:` entries in `scripts/module-invariants-manifest.txt`: `BimodalTest.ProofSystem.DerivationBenchmark` (374 lines) and `BimodalTest.Semantics.SemanticBenchmark` (358 lines). Both pass `String` where `Atom` is now expected -- they predate the Atom type change and were never updated because nothing builds them. C6 does not compile-check `broken:` entries, so these are the only two live .lean files in the repository with no guarantee of any kind.
 
