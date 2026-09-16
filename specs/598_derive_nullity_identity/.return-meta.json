@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/598_derive_nullity_identity/reports/01_derive-nullity-identity.md",
+      "summary": "Verified sorry-free derivation of nullity_identity from serial+limit; import-order fix (move nullity_of_serial_limit into TaskFrame.lean); 17 construction sites, consumers, and prose to update."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789584086_2b6633_598",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
