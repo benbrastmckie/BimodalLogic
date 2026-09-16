@@ -153,15 +153,12 @@ theorem cutIndex_eq_length {b : Branch} {c : Set (BranchTime b) × Set (BranchTi
 /-! ## Sanity checks
 
 The contiguity claim is exercised on a concrete `Fin 4`, so a Mathlib change to `monoEquivOfFin`
-that broke the `Nat`-cast reading would fail here rather than inside the induction.
+that broke the `Nat`-cast reading would fail here rather than inside the induction. The computed
+placement `0, 1, 2, 3` itself is pinned in
+`Tests/BimodalTest/Metalogic/Decidability/Verified/BridgeProbes.lean`.
 -/
 
 section Checks
-
--- The `ℤ` placement of `Fin 4` is `0, 1, 2, 3`: contiguous, hence no interior gaps.
-/-- info: [0, 1, 2, 3] -/
-#guard_msgs in
-#eval (List.finRange 4).map (finOrderEmbInt 4)
 
 example (t : Fin 4) : 0 ≤ finiteOrderEmbInt (Fin 4) t := finiteOrderEmbInt_nonneg _ t
 

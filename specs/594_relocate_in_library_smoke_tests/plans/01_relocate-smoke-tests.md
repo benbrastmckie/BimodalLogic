@@ -233,18 +233,18 @@ executor running serially should simply take phases in numeric order.
 
 ---
 
-### Phase 5: Relocate Verified Termination/Bridge and BiLasso probes [NOT STARTED]
+### Phase 5: Relocate Verified Termination/Bridge and BiLasso probes [COMPLETED]
 
 **Goal**: Move the remaining class-C probe blocks and the BiLasso evals into test modules.
 
 **Tasks**:
-- [ ] Create `Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean`. Move the `#guard_msgs in #eval` rows verbatim from `Termination/TimeTypeBound.lean` (12), `Termination/Fuel.lean` (11) and `Termination/MintBound/PostBlocking.lean` (7) with their private fixtures (`stabilisesAt`, `probeAtom`, `probeGapBody`, `dualCheck`, `postBlockingRunProbe`), one namespace per source.
-- [ ] `MintBound/Measure.lean` (2): delete the `branchingWitnessArity` `#eval` (it is subsumed by `theorem branchingWitness_splits ... := by decide`, and `branchingWitnessArity` stays in the library). Move the `expandBranchWithFuel branchingWitness 500` row to TerminationProbes.
-- [ ] Create `Tests/BimodalTest/Metalogic/Decidability/Verified/BridgeProbes.lean`. Move `Bridge/BranchOrder.lean` (7) verbatim, and merge the duplicate `finOrderEmbInt 4` row from `Embed.lean` and `IntGaps.lean` into one row.
-- [ ] Create `Tests/BimodalTest/Metalogic/Decidability/BiLassoTest.lean`. Move the `BiLasso/Successor.lean` rows (4) verbatim. Convert the `BiLasso/Examples.lean` counts (4) to `#guard ... .length == 6 / 2 / 36 / 1872` from captured output.
-- [ ] Update the cross-references: `Verified/Termination/MintBound/Register.lean:815` and `:828` (cite the test module and declaration names), and the probe-section prose that promises "fails the build" in BranchOrder/Embed/IntGaps/Fuel/TimeTypeBound.
-- [ ] Wire the three imports and delete the nine allowlist entries. Run the harness `--no-build` and repair C20 breaks (BranchOrder has 2 inbound citations).
-- [ ] Build the affected library modules and the three test modules through the guard.
+- [x] Create `Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean`. Move the `#guard_msgs in #eval` rows verbatim from `Termination/TimeTypeBound.lean` (12), `Termination/Fuel.lean` (11) and `Termination/MintBound/PostBlocking.lean` (7) with their private fixtures (`stabilisesAt`, `probeAtom`, `probeGapBody`, `dualCheck`, `postBlockingRunProbe`), one namespace per source.
+- [x] `MintBound/Measure.lean` (2): delete the `branchingWitnessArity` `#eval` (it is subsumed by `theorem branchingWitness_splits ... := by decide`, and `branchingWitnessArity` stays in the library). Move the `expandBranchWithFuel branchingWitness 500` row to TerminationProbes. *(the `WorldProbes` section keeps its theorem `worldWitness_self` in the library; only its 3 `#guard_msgs` rows moved)*
+- [x] Create `Tests/BimodalTest/Metalogic/Decidability/Verified/BridgeProbes.lean`. Move `Bridge/BranchOrder.lean` (7) verbatim, and merge the duplicate `finOrderEmbInt 4` row from `Embed.lean` and `IntGaps.lean` into one row.
+- [x] Create `Tests/BimodalTest/Metalogic/Decidability/BiLassoTest.lean`. Move the `BiLasso/Successor.lean` rows (4) verbatim. *(deviation: altered — `Successor` is listed as unreachable in `scripts/module-invariants-manifest.txt`, so importing it from an aggregator-wired module would pull the effective-periodic-extension cluster into the build graph and trip C6; its 4 rows went to a separate `BiLassoSuccessorTest.lean`, kept out of the aggregator and listed in the manifest so C6 compile-checks it)* Convert the `BiLasso/Examples.lean` counts (4) to `#guard ... .length == 6 / 2 / 36 / 1872` from captured output.
+- [x] Update the cross-references: `Verified/Termination/MintBound/Register.lean:815` and `:828` (cite the test module and declaration names), and the probe-section prose that promises "fails the build" in BranchOrder/Embed/IntGaps/Fuel/TimeTypeBound.
+- [x] Wire the three imports and delete the nine allowlist entries. Run the harness `--no-build` and repair C20 breaks (BranchOrder has 2 inbound citations).
+- [x] Build the affected library modules and the three test modules through the guard.
 
 **Timing**: 2 hours
 

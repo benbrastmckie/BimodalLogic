@@ -817,9 +817,10 @@ This half is a **checked measurement, not a kernel proof**, and the reason is wo
 reader does not mistake one for the other: `expandBranchWithFuel` is compiled by well-founded
 recursion and does not reduce definitionally, so a proof of the first equation would require
 transcribing its eleven-formula open exit and unfolding the equation lemma once per engine step.
-`#guard_msgs` makes the measurement a build-time obligation — the probe's value is checked by
-`lake build` — which is the same standing `branchingWitness`'s non-vacuity `#eval` has in section
-C7 above, and it is recorded with the same honesty about what it is.
+`#guard_msgs` makes the measurement a build-time obligation — the probe (`postBlockingRunProbe`, in
+`Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean`) is checked by
+`lake build BimodalTest` — which is the same standing `branchingWitness`'s non-vacuity probe has,
+and it is recorded with the same honesty about what it is.
 
 **What the probe did not find.** Across fourteen formula shapes, four frame classes and three fuel
 figures, no run made the settlement test fail — so no counterexample to the narrowed residual was
@@ -1286,62 +1287,6 @@ theorem buildTableauAt_isSome_of_budget_fixed_seedRun
   exact expandBranchWithFuel_isSome_of_budget_fixed hβ hUcl hD hmint harm
     (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
     hseed (runInvariant_initial _) hmb hT (by omega)
-
-section PostBlockingRunProbe
-
-/-- The terminus's own two calls, run in sequence and reported as three booleans: the seed run
-reached an open exit; the post-blocking pass strictly extended that exit; the blocking-aware
-saturation test closed on the pass's output. -/
-private def postBlockingRunProbe (phi : Formula) (fuel : Nat)
-    (fc : FormalSystem.ProofSystem.FrameClass) : Bool × Bool × Bool :=
-  match expandBranchWithFuel (seedBranch phi) fuel TimeOrdering.empty fc
-      (maxBranches := 50000) with
-  | some (.inr (ob, oOrd, _)) =>
-      match saturateBlocked ob fuel oOrd fc with
-      | some (.inr (satBr, satOrd)) =>
-          (true, ob.length < satBr.length,
-            (findUnexpandedUnblockedWith satBr satOrd fc
-              (blockedTimes satBr satOrd fc (armTracker satBr))).isNone)
-      | _ => (true, false, false)
-  | _ => (false, false, false)
-
--- The propositional seed `p → q`, at every frame class. Frame classes are written out rather
--- than abbreviated: inside this namespace the `.Dense` shorthand resolves elsewhere, and the
--- probe silently reported an unexpanded run until the names were qualified.
-/-- info: (true, true, true) -/
-#guard_msgs in
-#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.Base
-
-/-- info: (true, true, true) -/
-#guard_msgs in
-#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.Dense
-
-/-- info: (true, true, true) -/
-#guard_msgs in
-#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.ZTime
-
-/-- info: (true, true, true) -/
-#guard_msgs in
-#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.RTime
-
--- The temporal seed `F p = ⊤ U p`, so the witness set is not purely propositional.
-/-- info: (true, true, true) -/
-#guard_msgs in
-#eval postBlockingRunProbe (Formula.untl (Formula.imp .bot .bot) mfp) 40
-  FormalSystem.ProofSystem.FrameClass.Base
-
-/-- info: (true, true, true) -/
-#guard_msgs in
-#eval postBlockingRunProbe (Formula.untl (Formula.imp .bot .bot) mfp) 40
-  FormalSystem.ProofSystem.FrameClass.RTime
-
--- `□p`, whose expansion mints a fresh world — the shape whose *unrestricted* counterexample
--- `freshWorldBranch` is. The engine never hands that branch to the pass, and the run settles.
-/-- info: (true, true, true) -/
-#guard_msgs in
-#eval postBlockingRunProbe (Formula.box mfp) 40 FormalSystem.ProofSystem.FrameClass.Base
-
-end PostBlockingRunProbe
 
 end PostBlockingSettlesRefutation
 

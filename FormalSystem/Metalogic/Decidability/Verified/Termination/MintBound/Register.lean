@@ -825,7 +825,7 @@ already been here.
     checked **measurements**, not kernel proofs: `expandBranchWithFuel` is compiled by well-founded
     recursion and does not reduce definitionally, so proving its half of the antecedent would mean
     transcribing an eleven-formula open exit and unfolding the equation lemma once per engine step.
-    They have the same standing as `branchingWitness`'s non-vacuity `#eval` in section C7, and are
+    They have the same standing as `branchingWitness`'s non-vacuity probe, and are
     recorded with the same honesty about what they are. Across fourteen formula shapes, four frame
     classes and three fuel figures no probed run made the settlement test fail — evidence, not a
     proof. The same sweep found `buildTableauAt`'s own guard never firing on those shapes: the

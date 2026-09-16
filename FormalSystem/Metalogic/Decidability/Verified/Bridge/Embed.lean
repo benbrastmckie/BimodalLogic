@@ -98,16 +98,12 @@ theorem embed_finite_to_int (T : Type) [LinearOrder T] [Finite T] : Nonempty (T 
 
 /-! ## Sanity checks
 
-Enough of each construction is exercised here that a silent Mathlib change in either route
-fails the build rather than being absorbed downstream.
+Enough of each construction is exercised here that a silent Mathlib change in either route fails the
+build rather than being absorbed downstream. The computed values of `finOrderEmbInt` are pinned
+separately in `Tests/BimodalTest/Metalogic/Decidability/Verified/BridgeProbes.lean`.
 -/
 
 section Checks
-
--- The `ℤ` embedding of `Fin 4` is the identity cast, in order.
-/-- info: [0, 1, 2, 3] -/
-#guard_msgs in
-#eval (List.finRange 4).map (finOrderEmbInt 4)
 
 example : Nonempty (Fin 3 ↪o ℚ) := embed_finite_to_dense (Fin 3) ℚ
 example : Nonempty (Fin 3 ↪o ℝ) := embed_finite_to_dense (Fin 3) ℝ

@@ -1312,9 +1312,10 @@ theorem chain_le_worlds_bounded {C : Finset Formula} {S : Finset WorldIndex}
 /-! ### World-discipline probes
 
 `WorldWitness` is an invariant rather than a theorem, so it ships with executable rows, on the
-same principle as the duality probes: an unevaluated hypothesis is not evidence. The rows below
-run the engine's *actual* guard, `witnessPresent`, and check the one property the whole world
-bound rests on — that its modal arms ignore the world they are asked about.
+same principle as the duality probes: an unevaluated hypothesis is not evidence. Rows in
+`Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean` run the engine's *actual* guard,
+`witnessPresent`, and check the one property the whole world bound rests on — that its modal arms
+ignore the world they are asked about.
 -/
 
 section WorldProbes
@@ -1328,78 +1329,14 @@ theorem worldWitness_self (C : Finset Formula) (b : Branch) : WorldWitness C b.w
   · intro w hw hns; exact absurd hw hns
   · intro w₁ hw₁ hns₁ _ _ _ _; exact absurd hw₁ hns₁
 
--- A witness at world `7` suppresses `boxNeg` asked at world `3`: the guard is
--- world-indifferent, which is the S5 fact the world bound is built on.
-/-- info: true -/
-#guard_msgs in
-#eval witnessPresent .boxNeg
-  (SignedFormula.neg (.box .bot) { world := 3, time := 0 })
-  [SignedFormula.neg .bot { world := 7, time := 0 }]
-  TimeOrdering.empty
-
--- Same shape, witness at a different *time*: not suppressed. Time is the dimension the modal
--- guard does read, which is why the world bound is proportional to the time count.
-/-- info: false -/
-#guard_msgs in
-#eval witnessPresent .boxNeg
-  (SignedFormula.neg (.box .bot) { world := 3, time := 0 })
-  [SignedFormula.neg .bot { world := 7, time := 1 }]
-  TimeOrdering.empty
-
--- The temporal mirror, for contrast: `allFutureNeg`'s guard holds the world fixed, so a witness
--- at another world does *not* suppress it. This is exactly why times need
--- `blocking_fires_of_card_lt` and worlds do not.
-/-- info: false -/
-#guard_msgs in
-#eval witnessPresent .allFutureNeg
-  (SignedFormula.neg (.allFuture .bot) { world := 3, time := 0 })
-  [SignedFormula.neg .bot { world := 7, time := 1 }]
-  ⟨[(0, 1)]⟩
-
 end WorldProbes
 
 /-! ### Duality probes
 
-`OrderDual` is now discharged by `orderDual_holds`, but the rows are kept: they are what caught
-the condition being true before the proof existed, and they remain the cheapest check that the
-*statement* still says what it should on the shapes the engine actually builds: a chain
-(`addFuture` repeated), a fork, a diamond, and a chain put through `identifyTime` — the one
-operation that rewrites constraints rather than adding them, and hence the one most likely to
-break a duality.
+`OrderDual` is discharged by `orderDual_holds`; the executable duality rows that caught the
+condition before the proof existed are kept in
+`Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean`.
 -/
-
-section DualityProbes
-
-/-- The `OrderDual` condition, as a decidable check over a finite set of times. -/
-private def dualCheck (ord : TimeOrdering) (ts : List TimeIndex) : Bool :=
-  ts.all fun t₁ => (ord.futureOf t₁).all fun t₂ => (ord.pastOf t₂).contains t₁
-
--- A chain `0 < 1 < 2 < 3`.
-/-- info: true -/
-#guard_msgs in
-#eval dualCheck ⟨[(0, 1), (1, 2), (2, 3)]⟩ [0, 1, 2, 3]
-
--- A fork: `0 < 1`, `0 < 2`, `2 < 3`.
-/-- info: true -/
-#guard_msgs in
-#eval dualCheck ⟨[(0, 1), (0, 2), (2, 3)]⟩ [0, 1, 2, 3]
-
--- A diamond: two incomparable middles rejoining.
-/-- info: true -/
-#guard_msgs in
-#eval dualCheck ⟨[(0, 1), (0, 2), (1, 3), (2, 3)]⟩ [0, 1, 2, 3]
-
--- The chain after `identifyTime 2 1` — the arm of `timeLinearity` that rewrites constraints.
-/-- info: true -/
-#guard_msgs in
-#eval dualCheck ((⟨[(0, 1), (1, 2), (2, 3)]⟩ : TimeOrdering).identifyTime 2 1) [0, 1, 3]
-
--- A long chain, well past the ordering depths the corpus produces.
-/-- info: true -/
-#guard_msgs in
-#eval dualCheck ⟨(List.range 30).map fun i => (i, i + 1)⟩ (List.range 31)
-
-end DualityProbes
 
 /--
 **The fuel figure is justified in the dimension proved.**
@@ -2242,28 +2179,9 @@ theorem totalDifficulty_le (branches : List Branch) (D : Nat)
 /-! ### Arm-fuel probes
 
 The shortfall above is a claim about a `#eval`-able function, so it is checked by running it
-rather than by reading it — the same discipline as the duality and world-discipline rows.
+rather than by reading it, in
+`Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean`.
 -/
-
-section SplitFuelProbes
-
--- Three arms, a thousand units at the parent: each arm receives a *third*, not the whole.
--- This is the shortfall, at the smallest branching factor the rule set produces.
-/-- info: [333, 333, 333] -/
-#guard_msgs in
-#eval allocateFuelProportionally 1000 [([] : Branch), [], []]
-
--- The floor is real: two units at the parent leave one per arm, never zero.
-/-- info: [1, 1] -/
-#guard_msgs in
-#eval allocateFuelProportionally 2 [([] : Branch), []]
-
--- And the shortfall compounds: a second split inside an arm leaves a ninth of the original.
-/-- info: [111, 111, 111] -/
-#guard_msgs in
-#eval allocateFuelProportionally 333 [([] : Branch), [], []]
-
-end SplitFuelProbes
 
 /-! ### 4.3d(iii) — the split folds preserve `isSome`
 

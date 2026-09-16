@@ -129,29 +129,9 @@ end IntPresentation
 /-!
 ## Computability, exhibited
 
-`succOf` and `predOf` are not merely choice-free as proofs; they run. The two-state cycle
-`flipPresentation` (`Decidability/IntPresentation.lean`) steps `0 ⇄ 1`, so the first match in
-`List.finRange 2` from state `0` is state `1`, and conversely.
+`succOf` and `predOf` are not merely choice-free as proofs; they run. Their values on the
+two-state cycle `flipPresentation` are pinned by `#guard_msgs` rows in
+`Tests/BimodalTest/Metalogic/Decidability/BiLassoSuccessorTest.lean`.
 -/
-
-section Computation
-
-/-- info: 1 -/
-#guard_msgs in
-#eval flipPresentation.succOf 0
-
-/-- info: 0 -/
-#guard_msgs in
-#eval flipPresentation.succOf 1
-
-/-- info: 1 -/
-#guard_msgs in
-#eval flipPresentation.predOf 0
-
-/-- info: 0 -/
-#guard_msgs in
-#eval flipPresentation.iterSucc 0 2
-
-end Computation
 
 end FormalSystem.Metalogic.Decidability

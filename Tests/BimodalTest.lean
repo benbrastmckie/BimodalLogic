@@ -22,6 +22,9 @@ import BimodalTest.Theorems.ModalS5Test
 import BimodalTest.Theorems.PerpetuityTest
 import BimodalTest.Metalogic.PropDecideTest
 import BimodalTest.Metalogic.Decidability.SaturationTest
+import BimodalTest.Metalogic.Decidability.BiLassoTest
+import BimodalTest.Metalogic.Decidability.Verified.TerminationProbes
+import BimodalTest.Metalogic.Decidability.Verified.BridgeProbes
 import BimodalTest.TableauConformance
 import BimodalTest.BoxSpreadProbe
 import BimodalTest.RegionGateProbe

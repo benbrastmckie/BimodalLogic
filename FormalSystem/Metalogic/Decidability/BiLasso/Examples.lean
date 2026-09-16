@@ -414,15 +414,10 @@ two-state flip presentation every step must alternate, so the whole path is fixe
 the origin (2 choices), each cycle is forced to the alternating two-element list, and the only
 remaining freedom is the window length `|mid| ∈ {0, 1, 2}` (3 choices). `2 · 3 = 6`.
 
-The `n = 2` annotated count is included because the plan asks for it; note that it takes on the
-order of ten seconds to evaluate, which is itself the honest measurement of how impractical the
-enumeration is at even the smallest interesting size.
+These counts, and the `n = 2` annotated count (which takes on the order of ten seconds to evaluate,
+itself the honest measurement of how impractical the enumeration is at even the smallest interesting
+size), are pinned by `#guard` rows in `Tests/BimodalTest/Metalogic/Decidability/BiLassoTest.lean`.
 -/
-
-#eval (boundedBiLassos flipPresentation 2).length
-#eval (boundedBiLassos loopPresentation 1).length
-#eval (boundedAnnots loopPresentation φPos (fun _ => false) 1).length
-#eval (boundedAnnots loopPresentation φPos (fun _ => false) 2).length
 
 /--
 **The positive witness is in the enumeration.**

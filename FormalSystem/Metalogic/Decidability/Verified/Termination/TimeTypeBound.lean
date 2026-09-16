@@ -210,8 +210,8 @@ The split is deliberate. `TableauClosed` is a seven-field predicate whose fields
 formulas; `closureStep C ⊆ C` is a computation on a `Finset`. Reducing the former to the latter
 means a caller never has to reprove the seven fields — it exhibits a `C` and runs the check. It
 also makes the remaining termination obligation precise and isolated: *is there an `n` with
-`closureStep (closureIter n seed) ⊆ closureIter n seed`?* The `#eval` probes at the end of this
-section answer "yes, in one or two rounds" for concrete inputs, which is what keeps the
+`closureStep (closureIter n seed) ⊆ closureIter n seed`?* The stabilisation probes in the test
+suite answer "yes, in one or two rounds" for concrete inputs, which is what keeps the
 development from resting on an operator nobody has ever seen halt.
 -/
 
@@ -325,120 +325,10 @@ theorem tableauClosed_closureIter {C : Finset Formula} {n : Nat}
 
 /-! ### Stabilisation probes
 
-A closure operator nobody has watched halt is not evidence of anything, so the reduction above is
-committed together with executable rows that run it. Each row reports the round at which
-`closureStep` stops adding formulas, starting from the subformula closure of `φ`, together with the
-resulting `|C|` — which is the exponent in the `2 ^ (2 * |C|)` bound.
-
-These are probes, not proofs: they witness that the operator halts on concrete inputs and that
-`tableauClosed_of_closureStep_subset` is therefore not vacuously stated. The general
-termination theorem is the remaining T2 obligation, tracked in the plan.
+The reduction above is exercised by executable rows that run `closureStep` to its fixed point on
+concrete seeds, including adversarial cascade seeds whose triggers appear only after a round of
+closure. They live in `Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean`.
 -/
-
-section Probes
-
-private def probeAtom (s : String) : Formula := Formula.atom (Atom.mkBase s)
-
-/-- First round at which `closureStep` adds nothing, searching up to `fuel` rounds. -/
-private def stabilisesAt (φ : Formula) (fuel : Nat) : Option (Nat × Nat) :=
-  let rec go : Nat → Nat → Finset Formula → Option (Nat × Nat)
-    | 0, _, _ => none
-    | k + 1, n, C => if closureStep C ⊆ C then some (n, C.card) else go k (n + 1) (closureStep C)
-  go fuel 0 (subformulasFinset φ)
-
--- `p`
-/-- info: some (3, 8) -/
-#guard_msgs in
-#eval stabilisesAt (probeAtom "p") 8
-
--- `□p` — exercises `boxTemp`.
-/-- info: some (4, 17) -/
-#guard_msgs in
-#eval stabilisesAt (Formula.box (probeAtom "p")) 8
-
--- `F p` — exercises `priorU`.
-/-- info: some (3, 11) -/
-#guard_msgs in
-#eval stabilisesAt (Formula.someFuture (probeAtom "p")) 8
-
--- `G p` — `G` carries `F(¬p)` as a subformula, so this exercises `priorU` one level down.
-/-- info: some (3, 13) -/
-#guard_msgs in
-#eval stabilisesAt (Formula.allFuture (probeAtom "p")) 8
-
--- `U(⊤, p) ∧ F(¬p)` — the real `priorUGap` trigger.
-/-- info: some (3, 20) -/
-#guard_msgs in
-#eval stabilisesAt
-  (Formula.and (Formula.untl (probeAtom "p") Formula.top)
-    (Formula.someFuture (probeAtom "p").neg)) 8
-
--- `K⁺p ∧ ¬K⁺(p ∧ U(p, ¬p))` — the real `sepRule` trigger.
-/-- info: some (3, 30) -/
-#guard_msgs in
-#eval stabilisesAt
-  (Formula.and (Formula.kPlus (probeAtom "p"))
-    (Formula.neg (Formula.kPlus
-      (Formula.and (probeAtom "p") (Formula.untl (probeAtom "p").neg (probeAtom "p")))))) 8
-
-/-! #### Cascade rows
-
-The rows above start from formulas whose emission triggers are all visible in the seed. The rows
-below are the adversarial ones: they are *built* so that a trigger only appears **after** a round
-of closure, which is the shape that could in principle make the operator run away.
-
-`probeGapBody g` is the raw implication whose negation is exactly the `priorUGap` trigger
-`U(⊤, g) ∧ F(¬g)`. So `F (probeGapBody g)` carries no trigger at all in its subformulas, but
-`priorUZ` emits `U(probeGapBody g, ¬probeGapBody g)`, and that emission's second component *is*
-the trigger — one round late. Nesting `probeGapBody` inside itself stacks the construction, and
-putting a `□` on top routes it through `allFuture` (whose `U(_, ⊤)` subformula is itself a
-`priorUZ` trigger) as well.
-
-The measured answer is the reason the confinement route below is worth pursuing: **the round count
-stays at 4 no matter how deep the nesting goes**, while only `|C|` grows. Delaying a trigger does
-not compound, because the delayed trigger's own emission introduces no further trigger.
--/
-
-/-- The raw implication whose negation is the `priorUGap` trigger `U(⊤, g) ∧ F(¬g)`. -/
-private def probeGapBody (g : Formula) : Formula :=
-  Formula.imp (Formula.untl g Formula.top) (Formula.neg (Formula.someFuture g.neg))
-
--- `F(U(⊤,p) → ¬F(¬p))` — the trigger appears only after `priorUZ` fires.
-/-- info: some (4, 22) -/
-#guard_msgs in
-#eval stabilisesAt (Formula.untl Formula.top (probeGapBody (probeAtom "p"))) 8
-
--- The same construction nested twice: still round 4.
-/-- info: some (4, 33) -/
-#guard_msgs in
-#eval stabilisesAt
-  (Formula.untl Formula.top (probeGapBody (probeGapBody (probeAtom "p")))) 8
-
--- Nested three deep: still round 4. Depth of delay does not compound.
-/-- info: some (4, 44) -/
-#guard_msgs in
-#eval stabilisesAt
-  (Formula.untl Formula.top (probeGapBody (probeGapBody (probeGapBody (probeAtom "p"))))) 8
-
--- `□` routes the same delayed trigger through `allFuture`.
-/-- info: some (4, 28) -/
-#guard_msgs in
-#eval stabilisesAt (Formula.box (probeGapBody (probeAtom "p"))) 8
-
--- `□` on top of the doubly-nested delay.
-/-- info: some (4, 42) -/
-#guard_msgs in
-#eval stabilisesAt
-  (Formula.box (Formula.untl Formula.top (probeGapBody (probeGapBody (probeAtom "p"))))) 8
-
--- The degenerate `g = ⊤` gap, where the emission `U(X, ⊤)` is itself a `priorUZ` trigger.
-/-- info: some (3, 19) -/
-#guard_msgs in
-#eval stabilisesAt
-  (Formula.and (Formula.untl Formula.top Formula.top)
-    (Formula.someFuture Formula.top.neg)) 8
-
-end Probes
 
 /-! ## 4.2d — the closure operator terminates
 
@@ -477,7 +367,7 @@ by exhibiting a finite batch and checking that batch's own emissions. The gap ar
 content: each conclusion drags in six to ten formulas, and each of those turns out to emit
 nothing new, for reasons that are decided at the outermost differing constructor.
 
-The `#guard_msgs` cascade rows above are the same statement, measured: a trigger delayed by one
+The cascade probe rows in the test suite are the same statement, measured: a trigger delayed by one
 round of closure still stabilises at round 4, however deeply the delay is nested.
 -/
 
@@ -571,7 +461,7 @@ it, in three moves.
 3. **Confinement is computable for any concrete seed.** `stableAt` searches for the first stable
    iterate and `exists_confining_of_stableAt` converts a successful search into the confining
    stock. So no consumer with a concrete input is blocked: the hypothesis discharges by
-   computation, and the `#guard_msgs` rows above are exactly that computation being run.
+   computation, and the stabilisation probes in the test suite are exactly that computation run.
 
 What is still open is the *uniform* statement `∀ φ, ConfinesFormula φ`. The probe rows say the
 round count is 4 regardless of nesting depth, and the reason is structural: a delayed trigger's
@@ -1228,7 +1118,7 @@ Two syntactic facts do the work, both checked by `rfl` below. First, `¬(¬g ∨
 conjunction — `asAnd?` reads it as `¬¬g ∧ U(⊤, ¬¬g)` — but no Dedekind arm fires on it, because
 the left conjunct is an implication rather than a `U`, an `S`, or a raw `K⁺`. Second,
 `¬¬g ≠ ⊤`, so `U(⊤, ¬¬g)` is not a `priorUZ` trigger. Together: the conclusion emits nothing new,
-which is exactly what the `#guard_msgs` cascade rows measure.
+which is exactly what the cascade probe rows in the test suite measure.
 -/
 theorem exists_confining_gapU {g : Formula} {B : Finset Formula} (hB : Confining B)
     (hcg : Carries B g) (hcgn : Carries B g.neg) :
@@ -1377,7 +1267,7 @@ Two syntactic facts do the work, both checked by `rfl` below. First, `¬(¬g ∨
 conjunction — `asAnd?` reads it as `¬¬g ∧ S(⊤, ¬¬g)` — but no Dedekind arm fires on it, because
 the left conjunct is an implication rather than a `U`, an `S`, or a raw `K⁻`. Second,
 `¬¬g ≠ ⊤`, so `S(⊤, ¬¬g)` is not a `priorSZ` trigger. Together: the conclusion emits nothing new,
-which is exactly what the `#guard_msgs` cascade rows measure.
+which is exactly what the cascade probe rows in the test suite measure.
 -/
 theorem exists_confining_gapS {g : Formula} {B : Finset Formula} (hB : Confining B)
     (hcg : Carries B g) (hcgn : Carries B g.neg) :

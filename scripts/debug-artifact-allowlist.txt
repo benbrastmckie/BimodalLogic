@@ -32,33 +32,6 @@ FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean 4
 # `#print axioms` beside the theorem; pending migration to the C14 baseline pair
 FormalSystem/Metalogic/Compactness.lean 2
 
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean 4
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean 4
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean 7
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Verified/Bridge/Embed.lean 1
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Verified/Bridge/IntGaps.lean 1
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean 11
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/Measure.lean 2
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/PostBlocking.lean 7
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean 12
-
 # `#print axioms` beside the theorem; pending migration to the C14 baseline pair
 FormalSystem/Metalogic/DedekindNonCompactness.lean 1
 

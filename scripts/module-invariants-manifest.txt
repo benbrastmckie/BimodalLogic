@@ -119,3 +119,9 @@ BimodalTest.Automation.ProofFirstTests
 # stays. Compile-checked here in isolation instead. DELETE this line when `Orbit` becomes
 # reachable and this module is imported by Tests/BimodalTest.lean.
 BimodalTest.Metalogic.PeriodicExtensionAxiomTest
+
+# Computability rows for `BiLasso/Successor.lean`. `Successor` is in the unreachable
+# effective-periodic-extension cluster above, so importing this module from
+# Tests/BimodalTest.lean would make that cluster reachable. Compile-checked here in isolation.
+# DELETE this line when `Successor` becomes reachable and the module is imported by the aggregator.
+BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest

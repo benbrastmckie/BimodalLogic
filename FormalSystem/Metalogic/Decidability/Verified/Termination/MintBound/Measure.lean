@@ -1223,7 +1223,8 @@ the branching shapes — that is precisely what the unbranching restriction did,
 name while keeping
 the exclusion would be removing it in name only. The witness below is the mechanical check: at a
 branch carrying `T(p → q)` the engine's step is a genuine `.split` with two arms, and the expansion
-still terminates. The check is by evaluation and by `decide`, not by inspection. -/
+still terminates. The split is checked by `decide` below and termination by a probe in
+`Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean`, not by inspection. -/
 
 section BranchingNonVacuity
 
@@ -1239,19 +1240,10 @@ private def branchingWitnessArity : Nat :=
   | .split bs => bs.length
   | _ => 0
 
-/-- info: 2 -/
-#guard_msgs in
-#eval branchingWitnessArity
-
 /-- **The witness branches**, decided rather than asserted: the engine's step is `.split` with two
 arms, so neither the `.split` clause of `StepDecreases` nor the `.split` arm of the induction is
 vacuous. -/
 theorem branchingWitness_splits : branchingWitnessArity = 2 := by decide
-
--- …and the expansion at that branch still terminates.
-/-- info: true -/
-#guard_msgs in
-#eval (expandBranchWithFuel branchingWitness 500).isSome
 
 end BranchingNonVacuity
 
