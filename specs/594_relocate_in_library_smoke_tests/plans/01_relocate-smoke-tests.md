@@ -1,7 +1,7 @@
 # Implementation Plan: Task #594
 
 - **Task**: 594 - Relocate in-library smoke tests
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: None upstream. Downstream: the zero-occurrence declaration triage (C17 census) must run after this task lands
 - **Research Inputs**: specs/594_relocate_in_library_smoke_tests/reports/01_relocate-smoke-tests.md
@@ -112,17 +112,17 @@ Their shared edits are distinct lines in `Tests/BimodalTest.lean` and
 `scripts/debug-artifact-allowlist.txt`. Their builds serialize through the build guard. An
 executor running serially should simply take phases in numeric order.
 
-### Phase 1: C27 debug-artifact invariant with seeded allowlist [NOT STARTED]
+### Phase 1: C27 debug-artifact invariant with seeded allowlist [COMPLETED]
 
 **Goal**: Land an enforced, comment-aware C27 whose allowlist records the current live count of every affected file, so later phases ratchet it down.
 
 **Tasks**:
-- [ ] Write `scripts/debug-artifact-allowlist.txt`: an admission-bar preamble in the style of `scripts/nolint-attribute-allowlist.txt`, the format `<path> <exact live count>`, and a `#` reason line before each entry. Seed one entry per file with live directives: MainResults with the reason "intentional axiom-audit page; C21 asserts every name is pinned by C2/C14", and every other file with the reason "pending relocation to Tests/BimodalTest".
-- [ ] Implement C27 in `scripts/check-module-invariants.sh`, after C26, reusing C26's Boneyard-pruning walk and running under `--no-build`. It masks nested block comments, docstrings, line comments, string literals and char literals, then matches `^\s*(#check|#eval|#print|#reduce)\b`, `#guard_msgs in #eval` on the same line, and `\bdbg_trace\b|\bdbgTrace\b`. It fails on an unlisted file, fails on a count mismatch in either direction, and fails on a stale entry (a listed file with count 0 or no longer present).
-- [ ] Add a masker fixture self-test (like B0's filter self-test) covering strings holding `/-` and `--`, `'"'`, nested comments, and a docstring whose code block starts with `#check`.
-- [ ] Add `ENFORCE_C27=${ENFORCE_C27:-1}` and the C27 header block. Add the **missing C26 header line** and a companion-file mention of the allowlist. Note in the header that cslib's `pre-pr-check.sh` grep is not comment-aware.
-- [ ] Add a C27 row to `docs/development/MODULE_INVARIANTS.md`'s check table.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C27 passes on the seeded allowlist. Temporarily add a stray `#eval` to a scratch copy to confirm it fails, then revert.
+- [x] Write `scripts/debug-artifact-allowlist.txt`: an admission-bar preamble in the style of `scripts/nolint-attribute-allowlist.txt`, the format `<path> <exact live count>`, and a `#` reason line before each entry. Seed one entry per file with live directives: MainResults with the reason "intentional axiom-audit page; C21 asserts every name is pinned by C2/C14", and every other file with the reason "pending relocation to Tests/BimodalTest".
+- [x] Implement C27 in `scripts/check-module-invariants.sh` *(deviation: altered — the masker and its fixtures live in the new shared helper `scripts/lib/lean_debug_artifacts.py`, imported by C27, rather than inline; the allowlist parser also fails an entry with no reason line)*, after C26, reusing C26's Boneyard-pruning walk and running under `--no-build`. It masks nested block comments, docstrings, line comments, string literals and char literals, then matches `^\s*(#check|#eval|#print|#reduce)\b`, `#guard_msgs in #eval` on the same line, and `\bdbg_trace\b|\bdbgTrace\b`. It fails on an unlisted file, fails on a count mismatch in either direction, and fails on a stale entry (a listed file with count 0 or no longer present).
+- [x] Add a masker fixture self-test (like B0's filter self-test) covering strings holding `/-` and `--`, `'"'`, nested comments, and a docstring whose code block starts with `#check`.
+- [x] Add `ENFORCE_C27=${ENFORCE_C27:-1}` and the C27 header block. Add the **missing C26 header line** and a companion-file mention of the allowlist. Note in the header that cslib's `pre-pr-check.sh` grep is not comment-aware.
+- [x] Add a C27 row to `docs/development/MODULE_INVARIANTS.md`'s check table.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C27 passes on the seeded allowlist. Temporarily add a stray `#eval` to a scratch copy to confirm it fails, then revert. *(completed on a scratch copy of the tree: unlisted file, count mismatch, stale entry and missing reason line all FAIL with exit 1; first-run census 365 lines / 22 files matches research exactly, 404 raw - 39 masked)*
 
 **Timing**: 2 hours
 

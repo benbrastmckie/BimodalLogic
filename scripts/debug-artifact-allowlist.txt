@@ -1,0 +1,88 @@
+# Live debug directives that C27 must not treat as unreviewed debug output.
+#
+# A `#check`, `#eval`, `#print`, `#reduce`, `dbg_trace` or `dbgTrace` in library code prints
+# at every build and asserts nothing: a changed value scrolls past in the log with the build
+# still green. Executable probes belong in `Tests/BimodalTest/`, where a `#guard`, a
+# `#guard_msgs` or a throwing `IO` test turns the same observation into an assertion. cslib's
+# `scripts/pre-pr-check.sh` rejects these directives in library code outright.
+#
+# ADMISSION BAR. An entry here is a documented exemption with its reason written on the `#`
+# line directly above it. A page whose whole purpose is to print -- an axiom-audit page read by
+# humans -- is admissible. "It is a quick smoke test" is not; move it to the test suite. A
+# temporary entry must say what it is pending, so the ratchet toward the permanent set is
+# visible at every gate.
+#
+# FORMAT: one entry per file, `<repo-relative path> <exact live line count>`, immediately
+# preceded by a `#` reason line. The count is of LIVE lines only: C27 masks comments,
+# docstrings, strings and character literals before matching, so a usage example inside a
+# docstring code block needs no entry. C27 fails on a live directive in an unlisted file, on a
+# count that differs from the tree in EITHER direction (so a removal must lower the entry in
+# the same change), on an entry with no reason line, and on a stale entry whose file is gone
+# or has no live directives left -- so this file cannot quietly rot into a dumping ground.
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Automation/DatasetGenerator.lean 116
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Automation/FormulaEnumerator.lean 6
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Automation/Normalization.lean 42
+
+# intentional axiom-audit page; C21 asserts every name is pinned by C2/C14
+FormalSystem/MainResults.lean 54
+
+# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
+FormalSystem/Metalogic/BXCanonical/Completeness.lean 5
+
+# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
+FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean 4
+
+# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
+FormalSystem/Metalogic/Compactness.lean 2
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean 4
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean 4
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Saturation.lean 59
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean 7
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Verified/Bridge/Embed.lean 1
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Verified/Bridge/IntGaps.lean 1
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean 11
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/Measure.lean 2
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/PostBlocking.lean 7
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean 12
+
+# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
+FormalSystem/Metalogic/DedekindNonCompactness.lean 1
+
+# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
+FormalSystem/Metalogic/Deterministic/Completeness.lean 5
+
+# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
+FormalSystem/Metalogic/DiscreteNonCompactness.lean 1
+
+# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
+FormalSystem/Metalogic/StrongCompleteness.lean 1
+
+# pending relocation to Tests/BimodalTest
+FormalSystem/Syntax/Formula.lean 20
+
