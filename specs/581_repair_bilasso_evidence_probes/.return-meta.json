@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/581_repair_bilasso_evidence_probes/reports/02_probe-repair-verified-diffs.md",
+      "summary": "Machine-verified repair diffs for all four bi-lasso evidence probes (API-tracking only, sorry-free, obstructions intact) plus CI gating-step design; flags stale DEFERRED-probe comment."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789573870_865f5c_581",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
