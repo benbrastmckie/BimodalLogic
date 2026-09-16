@@ -11,7 +11,7 @@ next_project_number: 604
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,601,602,603 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,602,603 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,506,560,564,565,567,569,570,585,600 | 298,464,502,559,563,568,584,586,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,588,597 | 231,465,497,565,569,585 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,540,543 | 428,498,499,500,588,597 | algebraic-representation, decidability, metalogic, ... |
@@ -99,8 +99,7 @@ next_project_number: 604
 
 ### Semantics
 
-601 [PLANNED] — Align the Lean task-frame definition with the paper's...
-602 [PLANNED] — Introduce WorldHistory F as the named type of world histories...
+602 [IMPLEMENTING] — Introduce WorldHistory F as the named type of world histories...
 
 ### Codebase Cleanup
 
@@ -131,7 +130,7 @@ next_project_number: 604
 ---
 
 ### 602. Bundle semantics over worldhistory
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -143,12 +142,13 @@ next_project_number: 604
 ---
 
 ### 601. Align task frame reflection convention
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 599
 - **Research**: [601_align_task_frame_reflection_convention/reports/01_reflection-convention-encoding.md]
 - **Plan**: [601_align_task_frame_reflection_convention/plans/01_reflection-convention-frame.md]
+- **Summary**: [601_align_task_frame_reflection_convention/summaries/01_reflection-convention-frame-summary.md]
 
 **Description**: Align the Lean task-frame definition with the paper's reflection convention. The paper (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, def:task-relation ~L2803 and def:frame ~L2812-2826; also L964 and L2887/2948/2998/3518) now calls the stipulation w =>_{-x} u := u =>_x w (x >= 0) the 'reflection convention' (formerly 'converse convention'), and it is pure notation: a task relation is primitive on D+ only, and def:frame's four axioms (Compositionality, Seriality, Limit, Saturation) do NOT include it. In Lean, FrameOver (FormalSystem/Semantics/TaskFrame.lean) instead carries it as a structure field `converse : ∀ w d u, TaskRel w d u ↔ TaskRel u (-d) w` over a two-sided TaskRel, which every frame construction must prove (~46 field/projection sites; 'converse' appears ~295 times in ~121 Lean files plus ~18 docs/typst files). Goal: make the Lean structure match the paper systematically and at publication quality — (1) research the cleanest encoding in which the reflection convention is a definition rather than a field (e.g. a primitive relation on the positive cone with the two-sided relation defined from it so the reflection law is a theorem, versus alternatives), weighing proof burden on existing consumers, faithfulness to def:task-relation/def:frame, and Mathlib idiom; (2) implement it so FrameOver's fields are exactly nonempty W plus the paper's four axioms, with the reflection law derived; (3) rename 'converse convention' -> 'reflection convention' throughout Lean identifiers (with deprecated aliases only if warranted), docstrings, docs/, typst/, README/NOTATION, and paper-definitions-of-record, distinguishing genuine uses of 'converse' (e.g. converse frames, logical converses) that must NOT be renamed; (4) full lake build, BimodalTest, check-module-invariants.sh, readme-lint.sh, no new sorry/axioms. Sequence after task 599 (history unification) completes, since both touch Semantics core files; task 598 (derived nullity_identity) is already implemented and fixes the field set this builds on
 
