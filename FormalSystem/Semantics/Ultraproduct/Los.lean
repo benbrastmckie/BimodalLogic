@@ -19,11 +19,11 @@ import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
 ## Routing: why `ShiftTruth` first, and not `TruthAt` directly
 
 `ShiftTruth`'s `box` clause quantifies over the carrier `S.Carrier`
-(`Semantics/ShiftSet.lean:261-265`), which is exactly the sort the ultraproduct construction
+(`Semantics/ShiftSet.lean`), which is exactly the sort the ultraproduct construction
 quotients. `TruthAt`'s `box` clause quantifies over all *possible worlds* of the frame, a
 sort with no direct ultraproduct presentation; attacking it head-on would require a fresh
 choice-function argument over total histories. That argument already exists, once, inside
-`ShiftSet.forward_repr` (`Semantics/ShiftSet.lean:278`ff), whose own `box` case reconciles the two
+`ShiftSet.forward_repr` (`Semantics/ShiftSet.lean`), whose own `box` case reconciles the two
 quantifiers via `hist_isTotal` and `total_eq_orbit`. So `los_truthAt` is
 obtained by *reuse*: conjugate `los` with `forward_repr` on both sides. No new choice argument
 over histories is introduced anywhere in this file.
@@ -31,7 +31,7 @@ over histories is introduced anywhere in this file.
 ## Three cases need choice, not one
 
 The `box` case is not the only case with real content. `untl` and `snce` each carry both an
-`∃ s : D` and a bounded `∀ r : D` (`Semantics/ShiftSet.lean:266-269`), so each needs a
+`∃ s : D` and a bounded `∀ r : D` (the `untl` and `snce` clauses of `ShiftTruth`), so each needs a
 witness-section extraction in one direction and a counterexample-section extraction in the other
 — two `exists_section` calls per case. They are the two longest cases below. Only `atom`, `bot`
 and `imp` are mechanical, and even `bot` is not `Iff.rfl` (it needs `φ.NeBot`, via
@@ -149,7 +149,7 @@ theorem los (S : ∀ i, ShiftSet (T i)) (χ : Formula) :
 This is the statement the task asked for. It is obtained WITHOUT any choice-function argument
 over possible worlds: `forward_repr`'s own `box` case already reconciles `TruthAt`'s
 quantifier over all total histories with `ShiftTruth`'s quantifier over the carrier, via
-`hist_isTotal` (`Semantics/ShiftSet.lean:226`) and `total_eq_orbit`. Attacking `TruthAt`
+`hist_isTotal` (`Semantics/ShiftSet.lean`) and `total_eq_orbit`. Attacking `TruthAt`
 directly would re-open that argument on the ultraproduct; conjugating discharges it by reuse. -/
 theorem los_truthAt (S : ∀ i, ShiftSet (T i)) (f : ∀ i, (S i).Carrier) (x : ∀ i, ↑(T i))
     (χ : Formula) :

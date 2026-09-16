@@ -15,7 +15,7 @@ and `UOmega φ Ω` on the history-carrier family — together with the lifted sh
 its `sh_zero`/`sh_add` laws. This module assembles them into a `ShiftSet`:
 
 * `UT φ T` — the **ultraproduct temporal order**, `TemporalOrder.of (UD φ (fun i => ↑(T i)))`;
-* `uSep` — the `sep` field of `ShiftSet` (`Semantics/ShiftSet.lean:110`) discharged on the
+* `uSep` — the `sep` field of `ShiftSet` (`ShiftSet.sep`) discharged on the
   ultraproduct, by contraposition plus a global section chosen with `exists_section`;
 * `uShiftSet φ S` — the ultraproduct shift set itself.
 
@@ -82,7 +82,7 @@ Measured: a plain `noncomputable def` breaks `uSep`'s `rw [← mk_zero]` and `rw
 
 Contrapositive plus `exists_section`. If `u ≠ w` then, `φ` being an ultrafilter,
 `g i ≠ f i` holds eventually; the per-index contrapositive of `(S i).sep`
-(`Semantics/ShiftSet.lean:110`) then supplies, eventually, a positive radius `x` beyond which
+(`ShiftSet.sep`) then supplies, eventually, a positive radius `x` beyond which
 no shift of `f i` reaches `g i`. `exists_section` turns that eventual existential into a global
 section `ξ`, whose class `mk ξ` is a positive radius in the ultraproduct — and the witness the
 hypothesis returns for it contradicts the radius at any index in the (nonempty, because `φ` is
