@@ -42,7 +42,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | Module | Status | Notes |
 |--------|--------|-------|
 | `TaskFrame.lean` | ✅ | Frame structure |
-| `ConvexHistory.lean` | ✅ | Temporal traces |
+| `PartialHistory.lean` | ✅ | Temporal traces |
 | `TaskModel.lean` | ✅ | Models with valuation |
 | `Truth.lean` | ✅ | Truth evaluation |
 | `MinusTruth.lean` | ✅ | `MinusTruthAt`, native truth evaluation for the tense-primitive base language |

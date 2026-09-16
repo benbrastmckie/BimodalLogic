@@ -1670,8 +1670,8 @@ Polymorphic over temporal type `D`.
 
 The `[SuccOrder D] [NoMaxOrder D]` binders are carried because `natFrame_limit` requires them:
 over a dense `D` the permissive relation puts every state in every cone of every other state and
-*Limit* (`def:frame#Limit`) fails outright. Every reference to this frame outside
-`PartialHistory.universalNatFrame` elaborates at `Int`, which supplies both instances.
+*Limit* (`def:frame#Limit`) fails outright. Every reference to this frame elaborates at `Int`,
+which supplies both instances.
 -/
 def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [SuccOrder D] [NoMaxOrder D] :
@@ -1714,10 +1714,8 @@ in the literal transcribed shape — **over a discrete duration type only**.
 `[SuccOrder D] [NoMaxOrder D]` is carried by this lemma rather than by `natFrame` itself, and the
 restriction is not an artifact: over a dense `D` the permissive relation puts every state in
 every cone of every other state, and *Limit* fails outright. `natFrame` itself now carries these
-two instances, so that this lemma discharges the frame's *Limit* field; the only declaration that
-propagation reached is `PartialHistory.universalNatFrame`, which is itself polymorphic in `D` and
-has no consumers of its own. Every other reference to `natFrame` in the library and test suite
-elaborates at `Int`, which carries both instances.
+two instances, so that this lemma discharges the frame's *Limit* field. Every reference to
+`natFrame` in the library and test suite elaborates at `Int`, which carries both instances.
 -/
 theorem natFrame_limit [SuccOrder D] [NoMaxOrder D] :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (natFrame (D := D)).TaskRel w y u) → u = w :=

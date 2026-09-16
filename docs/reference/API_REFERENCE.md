@@ -188,25 +188,35 @@ structure TaskModel (F : TaskFrame) where
 
 ---
 
-### ConvexHistory (`FormalSystem.Semantics.ConvexHistory`)
+### PartialHistory (`FormalSystem.Semantics.PartialHistory`)
 
-**Module**: `FormalSystem/Semantics/ConvexHistory.lean`
+**Module**: `FormalSystem/Semantics/PartialHistory.lean`
 
-Convex histories representing functions from convex time intervals to world states; the total ones are the possible worlds, collected as `TaskFrame.HF`.
+Partial histories: task-respecting functions from a nonempty set of times to world states. The total ones are the world histories (the paper's possible worlds), collected as `TaskFrame.HF`.
 
 #### Structure Definition
 
 ```lean
-structure ConvexHistory (F : TaskFrame) where
-  domain : F.Duration → Prop
-  states : (t : F.Duration) → domain t → F.WorldState
-  task_coherence : ∀ t s ∈ domain, F.TaskRel (history t) (s - t) (history s)
+structure PartialHistory (F : TaskFrame) where
+  domain : F.Duration → Prop                                   -- X ⊆ D
+  nonempty_domain : ∃ t, domain t                              -- X is nonempty
+  states : (t : F.Duration) → domain t → F.WorldState          -- τ : X → W
+  respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
+    F.TaskRel (states s hs) (t - s) (states t ht)              -- τ(s) ⇒_{t-s} τ(t)
+
+-- A world history is a partial history with total domain; H_F is the set of them
+def PartialHistory.IsTotal (τ : PartialHistory F) : Prop := ∀ t, τ.domain t
+def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
 ```
 
 **Fields**:
-- `domain`: Convex set of times (interval)
-- `history t`: World state at time `t`
-- `task_coherence`: History respects task relation
+- `domain`: the set of times `X ⊆ D`
+- `nonempty_domain`: `X` is nonempty
+- `states t ht`: world state at time `t`
+- `respects_task`: the history respects the task relation (unconditionally; negative durations by the converse convention)
+
+**Predicates and constructions**: `IsTotal` (world history), `IsConvex` (convex domain;
+`IsTotal.isConvex`), `Extends`, `timeShift` (with `isTotal_timeShift`), `ofTotal`.
 
 ---
 
@@ -214,7 +224,7 @@ structure ConvexHistory (F : TaskFrame) where
 
 **Module**: `FormalSystem/Semantics/Truth.lean`
 
-Truth definition for formulas at convex histories and times.
+Truth definition for formulas at world histories and times.
 
 **Note**: Currently has build errors (type mismatch with `swap_past_future`).
 

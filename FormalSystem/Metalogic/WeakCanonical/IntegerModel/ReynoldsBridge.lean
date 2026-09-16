@@ -525,7 +525,7 @@ Helper D applied to `zShiftRel_fib_subsingleton`. -/
 theorem zTaskFrameV2_saturation : TaskFrame.Saturation zTaskFrameV2.TaskRel :=
   zTaskFrameV2.saturation
 
-/-- Convex history with offset w₀: domain = all of ℤ (hence total, a possible world),
+/-- World history with offset w₀: domain = all of ℤ (hence total),
 states t _ = w₀ + t. -/
 noncomputable def zHistoryV2 (w₀ : ℤ) : PartialHistory zTaskFrameV2 where
   domain := fun _ => True
@@ -818,7 +818,7 @@ theorem multiFamTaskFrame_deterministic (FamIdx : Type) [Nonempty FamIdx] :
     (multiFamTaskFrame FamIdx).toTaskFrame.Deterministic :=
   Algebraic.multiFamTaskFrameGen_deterministic
 
-/-- Convex history for the multi-family frame, parameterized by a family index
+/-- World history for the multi-family frame, parameterized by a family index
 and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -/
 noncomputable def multiFamHistory {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
     PartialHistory (multiFamTaskFrame FamIdx) where

@@ -33,7 +33,7 @@ import FormalSystem.Semantics.Correspondence
 # FormalSystem.Semantics - Task Frame Semantics
 
 Aggregates all semantic components for bimodal logic TM (Tense and Modality). Provides
-task frame semantics with convex histories, truth evaluation, and validity definitions
+task frame semantics with world histories, truth evaluation, and validity definitions
 polymorphic over temporal types.
 
 ## Submodules
@@ -72,8 +72,9 @@ through their sibling aggregators `Semantics/Extension.lean` and so on.
   `taskRel_eq_iter` as the decomposition theorem; also records the binder-fit finding for the two
   Mathlib succ-Archimedean-to-ℤ transfer routes
 - `PartialHistory`: The paper's partial-history layer (`def:world-history`) — task-respecting
-  state assignments on a *nonempty* time set, with no convexity requirement; carries the
-  totality predicate `IsTotal` and the extension relation `Extends`
+  state assignments on a *nonempty* time set; carries the totality predicate `IsTotal`, the
+  convexity predicate `IsConvex`, the extension relation `Extends`, time shift, and
+  `TaskFrame.HF`, the *world histories* (the paper's possible worlds), i.e. the total ones
 - `FrameAxioms`: *Saturation*, *Seriality*, and the interpolation half of *Compositionality* as
   hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
   and `def:constraints` — the constraints a partial history imposes on a new duration
@@ -98,9 +99,6 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   possible world, by extending the one-point partial history `{⟨x, w⟩}`. The frame-intrinsic
   form of `cor:occurrence` is deliberately not provided; it is gated on the frame-axiom-field
   refactor described in `Extension.Step`
-- `PartialHistory`: Convex histories `τ: X → W` as functions from convex time domains to
-  world states, respecting the task relation; `TaskFrame.HF` cuts out the *possible worlds*,
-  the total ones
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
 - `ValidityLayer`: `PointTruth` — the class abstracting "truth at a point `(M, τ, x)`" — and the
   validity layer written **once** against it: `TaskFrame.GenericValidOn`, `GenericValidOnFrames`,
@@ -217,8 +215,8 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 | Seriality | `w ⇒_x u` and `v ⇒_x w` for some `u, v` | `serial` field |
 | Limit | `⋂_{x > 0} (w)_x = {w}` | `limit` field |
 | Saturation | `⋂ S ≠ ∅` for a `⊇`-directed family of nonempty fibers and segments | `saturation` field |
-| Convex History | `τ : X → W` convex (`def:world-history`) | `PartialHistory F` with `convex` proof |
-| Possible World | convex history with `X = D` (`def:world-history`) | `TaskFrame.HF`; predicate form `PartialHistory.IsTotal` |
+| Partial History | `τ : X → W`, `X ⊆ D` nonempty (`def:world-history`) | `PartialHistory F` |
+| World History | partial history with `X = D` (sec:Construction) | `TaskFrame.HF`; predicate form `PartialHistory.IsTotal` |
 | Truth | `M,τ,x ⊨ φ` | `TruthAt M τ t φ` |
 | Validity | True in all models, at every total history | `Valid φ` |
 
@@ -276,7 +274,7 @@ variable {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Durati
 ## References
 
 * [TaskFrame.lean](Semantics/TaskFrame.lean) - Task frame structure
-* [PartialHistory.lean](Semantics/PartialHistory.lean) - Convex history definition and `TaskFrame.HF`
+* [PartialHistory.lean](Semantics/PartialHistory.lean) - Partial and world histories, and `TaskFrame.HF`
 * [TaskModel.lean](Semantics/TaskModel.lean) - Task model with valuation
 * [Truth.lean](Semantics/Truth.lean) - Truth evaluation
 * [Validity.lean](Semantics/Validity.lean) - Validity and semantic consequence

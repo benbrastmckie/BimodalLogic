@@ -348,7 +348,7 @@ The base language's **semantics** deliberately does not live here, so that the d
 
 ### Semantics
 * `FormalSystem.Semantics.TaskFrame`
-* `FormalSystem.Semantics.ConvexHistory`
+* `FormalSystem.Semantics.PartialHistory`
 * `FormalSystem.Semantics.TaskModel`
 * `FormalSystem.Semantics.Truth`
 * `FormalSystem.Semantics.MinusLanguage.MinusTruth` -- `MinusTruthAt`, the native base-language truth recursion

@@ -271,8 +271,8 @@ end FrameOver
 ## The gapped case
 
 `PartialHistory.domain` is an arbitrary predicate, so `{0, 5}` is a legal domain with a four-time
-hole. The paper's own hypothesis is a *bounded convex history*, which carries a `convex` field and
-so has no holes; the statement below drops convexity and asks only that the domain be finite.
+hole. The paper's own hypothesis is a *bounded convex history* (`IsConvex`), which has no holes;
+the statement below drops convexity and asks only that the domain be finite.
 
 The extra work is entirely bookkeeping: order the domain, and between each consecutive pair fill
 the gap with an explicit path of exactly the right length, which `respects_task` plus

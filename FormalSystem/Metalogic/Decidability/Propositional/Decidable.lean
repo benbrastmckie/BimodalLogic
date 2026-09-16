@@ -163,8 +163,8 @@ theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
   induction q with
   | atom a =>
       intro _
-      -- `PartialHistory.trivialFrameHistory` is now `PartialHistory.ofTotal`, so the unfolding chain needs the
-      -- constructor as well before the total domain becomes visible.
+      -- `PartialHistory.trivialFrameHistory` is built with `PartialHistory.ofTotal`, so the unfolding
+      -- chain needs the constructor as well before the total domain becomes visible.
       simp [FormalSystem.Semantics.TruthAt, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
         trivialModel, reifyWith]
   | bot =>

@@ -65,7 +65,7 @@ is proved with it.
 
 ## Tags
 
-convex-history · partial-history · order
+partial-history · order
 -/
 
 namespace FormalSystem.Semantics

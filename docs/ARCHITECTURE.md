@@ -35,7 +35,7 @@ because a diagram that hides them misdescribes the build.
                                          │ imports
                          ┌───────────────▼──────────────────┐
   Layer 1  Semantics     │  Semantics/                      │
-                         │  TaskFrame, ConvexHistory,        │
+                         │  TaskFrame, PartialHistory,       │
                          │  TaskModel, TruthAt, validity    │
                          │                                  │
                          │  FrameClassValidity.lean ────────────UPWARD ────┐

@@ -253,7 +253,6 @@ below: two of the three results in @sec:histories are theorems of ZFC.
   ]
 ]
 #leansrc("Semantics", "PartialHistory")
-#leansrc("Semantics", "ConvexHistory")
 
 #definition("Constraints")[
   For a partial history $tau : X arrow.r #worldstate$ over a frame

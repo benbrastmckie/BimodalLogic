@@ -44,14 +44,14 @@ includes:
 ## Main Definitions
 
 - `intTimeFrame`: Example task frame using `Int` as temporal type
-- `intTimeHistory`: Example convex history using `Int`
+- `intTimeHistory`: Example world history using `Int`
 - `genericTimeFrame`: Polymorphic task frame (works with any `D`)
-- `genericTimeHistory`: Polymorphic convex history (works with any `D`)
+- `genericTimeHistory`: Polymorphic world history (works with any `D`)
 
 ## Implementation Notes
 
 - All examples use `trivial` task relations for simplicity
-- Convexity proofs use the full domain (`fun _ => True`) for simplicity
+- Histories use the full domain (`fun _ => True`), so they are total, i.e. world histories
 - These examples are for demonstration and testing purposes
 
 ## References
@@ -288,7 +288,7 @@ theorem intBoolFrame_saturation : TaskFrame.Saturation intBoolFrame.TaskRel :=
   TaskFrame.saturation_of_permissive intBoolFrame_rel_iff
 
 /--
-Integer time convex history with universal domain (total, hence a possible world).
+Integer time world history: universal domain, hence total.
 
 All integer times are in the domain. This is the simplest possible history.
 -/
@@ -405,7 +405,7 @@ theorem genericNatFrame_saturation [SuccOrder D] [NoMaxOrder D] :
   TaskFrame.saturation_of_permissive (genericNatFrame_rel_iff D)
 
 /--
-Generic polymorphic convex history with universal domain (total, hence a possible world).
+Generic polymorphic world history: universal domain, hence total.
 
 Works with the genericTimeFrame, demonstrating polymorphism over the temporal type.
 -/

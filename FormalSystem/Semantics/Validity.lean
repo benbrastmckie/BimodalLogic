@@ -270,7 +270,7 @@ Each of the three quantifiers is rendered on the nose:
 * "every model `M = ⟨W, D, ⇒, |·|⟩` where `F = ⟨W, D, ⇒⟩`" is `∀ M : TaskModel F` — the frame is
   a *parameter* of `TaskModel`, so the side condition that `M`'s frame reduct is `F` is carried
   by the type rather than by a hypothesis.
-* "possible world `τ ∈ H_F`" is `∀ τ : F.HF`, the bundled subtype. Per `PartialHistory.lean`'s
+* "possible world `τ ∈ H_F`" is `∀ τ : F.HF`, the bundled subtype. Per `TaskFrame.HF`'s
   encoding note, the bundled form is used exactly where `H_F` appears as an object in its own
   right, which is how the recorded text reads here.
 * "time `x ∈ D`" is `∀ x : D` — all of the temporal order, not merely `dom(τ)`; for a total `τ`

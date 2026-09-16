@@ -289,7 +289,7 @@ of `def:time-shift-histories`, `H_F` (`TaskFrame.HF`) already denotes exactly th
 histories, and the emphasis/rename changes carry no content. The two in-tree verbatim quotations
 that this correction does move — the `def:world-history` closing sentence, quoted in
 `FormalSystem/Semantics/ConvexHistory.lean` (the renamed successor to the former
-`WorldHistory.lean`), `PartialHistory.lean`, and
+`WorldHistory.lean`, since deleted and folded into `PartialHistory.lean`), `PartialHistory.lean`, and
 `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — are updated to the live wording in the same
 change set.
 
@@ -801,6 +801,17 @@ requirement) → **convex history** (convex domain) → **possible world** (`X =
 vocabulary "task-constrained function" is retired paper-wide and must not be reintroduced as
 current terminology (see the paper-refactor cluster's task descriptions, which record the same
 point). `H_F` denotes the *possible worlds*, not the convex histories.
+
+**Body/appendix wording note (prose only, no re-pin).** The body of the paper's
+sec:Construction states the top tier without the middle one: "A \textit{world history} is any
+partial history $\tau : X \to W$ whose domain is \textit{total}, so that $X = D$", writing $H_{\F}$
+for the set of all world histories and then calling them the possible worlds. The appendix
+`def:world-history` pinned above routes the same tier through convex histories ("any convex
+history whose domain is total"). The two phrasings denote the **same set**, because a total
+domain is trivially convex. The Lean definition follows the body: `TaskFrame.HF` is
+`{τ : PartialHistory F // τ.IsTotal}`, convexity is the predicate `PartialHistory.IsConvex`, and
+`PartialHistory.IsTotal.isConvex` records the inclusion. The paper text is not edited, and this
+note adds no anchor, `verbatim:` block, `sha256:` line or manifest row.
 
 ### `thm:extension` — every partial history extends to a possible world
 

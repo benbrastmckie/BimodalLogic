@@ -31,9 +31,9 @@ the mapping.
 | Paper term | Lean identifier | Notes |
 |------------|-----------------|-------|
 | task frame | `FormalSystem.Semantics.TaskFrame` | `def:frame`; four axioms — Compositionality, Seriality, Limit, Saturation. Nullity is *derived*, not an axiom |
-| partial history | `FormalSystem.Semantics.PartialHistory` | `def:world-history`; nonempty domain, no convexity requirement |
-| convex history | `FormalSystem.Semantics.ConvexHistory` | `def:world-history`; a partial history whose domain is convex. **Not** a possible world: a bounded convex history is a member of neither `HF` nor the paper's top tier |
-| possible world | `TaskFrame.HF` (predicate form: `ConvexHistory.IsTotal`) | `def:world-history`; a convex history whose domain is total, so `X = D`. `HF` is the paper's `H_F` |
+| partial history | `FormalSystem.Semantics.PartialHistory` | `def:world-history`; nonempty domain, no convexity requirement. The one history structure: truth and validity range over it |
+| convex history | `PartialHistory.IsConvex` (a predicate, not a structure) | `def:world-history`; a partial history whose domain is convex. A bounded convex history is not in `HF` |
+| world history / possible world | `TaskFrame.HF` (predicate form: `PartialHistory.IsTotal`) | sec:Construction; a partial history whose domain is total, so `X = D` (the appendix's "convex history with total domain" is the same set, `IsTotal.isConvex`). `HF` is the paper's `H_F` |
 | task relation `w ⇒ₓ v` | `TaskFrame.TaskRel` | `def:task-relation` |
 | duration group `D` | `FormalSystem.Semantics.TemporalOrder` | `def:temporal-order`; a nontrivial totally ordered abelian group |
 | TM | `FormalSystem.ProofSystem` over `FrameClass.Base` | `def:TMplus`. The anchor id still reads `TMplus` for historical reasons; its text defines the paper's **TM** over the language **𝓛**, which is this tree's **L**. The two names now coincide — see `Metalogic/Conservativity.lean` |

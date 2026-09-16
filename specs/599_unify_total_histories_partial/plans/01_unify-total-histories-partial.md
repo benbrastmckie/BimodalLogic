@@ -352,27 +352,27 @@ Algebraic = 30 files. Confirm with `grep -rl ConvexHistory FormalSystem/Metalogi
 
 ---
 
-### Phase 7: Docstrings, docs, and decision record [NOT STARTED]
+### Phase 7: Docstrings, docs, and decision record [COMPLETED]
 
 **Goal**: Make all prose describe the new layer.
 
 **Tasks**:
-- [ ] Module docstrings: rewrite the `PartialHistory.lean` module docstring for the tiers
+- [x ] Module docstrings: rewrite the `PartialHistory.lean` module docstring for the tiers
   (partial history, convex as a predicate, world history = total partial history, H_F). Also
   update `PartialHistoryOrder.lean`, `Extension.lean` (the `extension` proof recipe no longer has
   a convexity step), and the `TaskFrame.lean` and `DiscreteNonCompactness.lean` docstrings that
   cite `universalNatFrame`. Fix every remaining Lean docstring mention of `ConvexHistory`.
-- [ ] `docs/**` (14 files mention `ConvexHistory`, among them `ARCHITECTURE.md`,
+- [x ] `docs/**` (14 files mention `ConvexHistory`, among them `ARCHITECTURE.md`,
   `reference/API_REFERENCE.md`, `theorem-index.md`, and `user-guide/*`): update names and the
   layer description.
-- [ ] `docs/architecture/total-history-validity-decisions.md`: add Decision B', which supersedes
+- [x ] `docs/architecture/total-history-validity-decisions.md`: add Decision B', which supersedes
   Decision B's `extends` layering. Convexity is a predicate, H_F is a subtype of `PartialHistory`,
   and the rationale is that no proof uses convexity. Note that Decision A is retained, and name
   full bundling as the deferred alternative.
-- [ ] `docs/reference/paper-definitions-of-record.md`: add a note that the body of
+- [x ] `docs/reference/paper-definitions-of-record.md`: add a note that the body of
   sec:Construction ("partial history … total") and the appendix `def:world-history` ("convex
   history … total") denote the same set, and that the Lean definition follows the body.
-- [ ] Do not cite task numbers in any of these files.
+- [x ] Do not cite task numbers in any of these files.
 
 **Timing**: 1.5 hours
 

@@ -28,7 +28,7 @@ shape of everything below.
 
 ### Consequence 1: totality is the whole of the demand, and it is met exactly
 
-An arbitrary convex history is no use here: a history whose domain omits the evaluation point
+An arbitrary partial history is no use here: a history whose domain omits the evaluation point
 carries no state there. `TruthAt … (box φ)` is a universal over the total histories at a fixed
 time, so admitting partial histories would let a single one falsify `□p` outright and no branch
 carrying `T(□p)` could ever be satisfied. Totality is precisely the cut that excludes them, and
@@ -129,7 +129,7 @@ the `regionHistory` family.
 -/
 
 /-- Two histories with the same domain and the same states are equal. -/
-theorem convexHistory_ext {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+theorem partialHistory_ext {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     {F : FrameOver (TemporalOrder.of D)} {σ τ : PartialHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
@@ -328,7 +328,7 @@ theorem regionHistory_states (f : ι → D) (w : W) (Δ : D) (r : D) (h : (regio
 /-- Time-shifting a region history is again a region history, with the offsets added. -/
 theorem timeShift_regionHistory (f : ι → D) (w : W) (Δ Δ' : D) :
     PartialHistory.timeShift (regionHistory f w Δ) Δ' = regionHistory f w (Δ' + Δ) := by
-  refine convexHistory_ext rfl ?_
+  refine partialHistory_ext rfl ?_
   intro r _ _
   show ((w, r + Δ' + Δ) : W × D) = (w, r + (Δ' + Δ))
   rw [add_assoc]
@@ -367,7 +367,7 @@ theorem regionFrame_total_eq (f : ι → D) (σ : PartialHistory (regionFrame W 
     rw [h₂]
     abel_nf
   refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
-  refine convexHistory_ext (funext fun r => propext ⟨fun _ => trivial, fun _ => htot r⟩) ?_
+  refine partialHistory_ext (funext fun r => propext ⟨fun _ => trivial, fun _ => htot r⟩) ?_
   intro r hr _
   exact key r hr
 

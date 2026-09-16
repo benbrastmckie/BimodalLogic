@@ -7,16 +7,25 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.TaskFrame
 
 /-!
-# PartialHistory — the paper's partial-history layer
+# PartialHistory — the history layer of task semantics
 
-This module lands the layer the JPL paper puts *below* convex histories: a partial history is a
-task-respecting function on a **nonempty** subset of the duration type, with **no** convexity
-requirement. `PartialHistory` is the convex special case (see `FormalSystem/Semantics/PartialHistory.lean`).
+This module defines the one history structure the semantics uses. A *partial history* is a
+task-respecting function on a **nonempty** set of durations; a *world history* is a partial
+history whose domain is **total**; and `TaskFrame.HF` is the set of world histories. Truth,
+validity and every consumer range over `PartialHistory F`, cut down to `H_F` either by an
+`IsTotal` hypothesis or by the `TaskFrame.HF` subtype. Convexity is a predicate
+(`PartialHistory.IsConvex`), not a separate structure.
 
 ## Paper Specification Reference
 
-**`def:world-history`**, quoted verbatim from `docs/reference/paper-definitions-of-record.md` (which is what
-this repository cites — never the paper file directly, and never by line number):
+The paper's body (sec:Construction) defines the tiers this module follows: "A \textit{world
+history} is any partial history $\tau : X \to W$ whose domain is \textit{total}, so that $X = D$",
+and writes $H_{\F}$ for "the set of all world histories defined over the task frame $\F$",
+adding that "I will also refer to $H_{\F}$ as the set of \textit{possible worlds}."
+
+**`def:world-history`** (the appendix definition), quoted verbatim from
+`docs/reference/paper-definitions-of-record.md` (which is what this repository cites — never the
+paper file directly, and never by line number):
 
 > `A \textit{partial history} over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function
 > $\tau : X \to W$ on a nonempty set $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for
@@ -32,12 +41,21 @@ this repository cites — never the paper file directly, and never by line numbe
 >
 > `The set of all possible worlds over $\F$ is denoted $H_{\F}$.`
 
-The paper's three tiers are therefore *partial history* -> *convex history* -> *possible world*,
-and "history" is the generic term for all three wherever the distinction is immaterial. The tier
-this module defines is the first; the middle tier is `PartialHistory` and the top tier is
-`TaskFrame.HF`. The name this repository previously gave the middle tier was one tier too high,
-which is exactly what the `PartialHistory` rename corrects. The `def:world-history` label id
-survives only for cross-reference stability across the paper's own `\ref` sites.
+**The appendix and the body denote the same set.** The appendix routes the top tier through
+convex histories, the body does not; a total domain is trivially convex
+(`PartialHistory.IsTotal.isConvex`), so "convex history with total domain" and "partial history
+with total domain" pick out exactly the same histories. The Lean definition follows the body:
+
+| Paper | Lean |
+|-------|------|
+| partial history | `PartialHistory F` |
+| convex history | `τ : PartialHistory F` with `τ.IsConvex` |
+| world history (possible world) | `τ : PartialHistory F` with `τ.IsTotal`; bundled as `TaskFrame.HF` |
+| `H_F` | `TaskFrame.HF` |
+
+There is deliberately no `ConvexHistory` structure and no `abbrev WorldHistory`: no proof consumes
+convexity as a hypothesis, and `HF` is already the name of the top tier. The layering decision is
+recorded in `docs/architecture/total-history-validity-decisions.md`, Decision B'.
 
 ## Two transcription decisions, both settled and recorded
 
@@ -66,24 +84,23 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 
 - `PartialHistory F` — the structure: `domain`, `nonempty_domain`, `states`, `respects_task`
 - `PartialHistory.IsTotal` — the paper's totality predicate, `∀ t : D, τ.domain t`
+- `PartialHistory.IsConvex` — the paper's convexity predicate on the domain
 - `PartialHistory.Extends` — the paper's extension relation (domain inclusion + state agreement)
 - `PartialHistory.ofLe` — smart constructor from a guarded task-respect proof
+- `PartialHistory.timeShift` — time shift on partial histories
+- `PartialHistory.ofTotal` — the total history of a bare state function
+- `TaskFrame.HF` — the paper's `H_F`, the world histories bundled as a subtype
 
 ## Main Results
 
 - `PartialHistory.respects_task_le` — the guarded form, derived from the unconditional field
 - `PartialHistory.total_nonempty` — totality implies the nonemptiness field is derivable
-
-## Implementation Notes
-
-- Nothing imports this module yet; it is self-contained new material. `PartialHistory` is re-based
-  onto it in a subsequent step.
-- The type-parameter discipline (`D` with `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`)
-  matches `PartialHistory` exactly, so the re-basing is a structural change only.
+- `PartialHistory.IsTotal.isConvex` — a world history is convex
+- `PartialHistory.isTotal_timeShift` / `isConvex_timeShift` — both predicates survive time shift
 
 ## Tags
 
-partial-history · convex-history · convexity
+partial-history · world-history · totality · convexity · def:world-history
 -/
 
 namespace FormalSystem.Semantics
@@ -96,8 +113,8 @@ set of times, with **no** convexity requirement.
 $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set
 $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$.").
 
-The paper's `\textit{convex history}` is the **convex** special case of this structure; see
-`FormalSystem.Semantics.PartialHistory`.
+The paper's *convex history* is a partial history satisfying `IsConvex`, and its *world history*
+is one satisfying `IsTotal`; neither is a separate structure.
 -/
 structure PartialHistory (F : TaskFrame) where
   /-- Domain predicate: which times are in the history, i.e. the paper's `X ⊆ D`. -/
@@ -173,10 +190,12 @@ def ofLe (domain : F.Duration → Prop) (nonempty_domain : ∃ t, domain t)
       rwa [neg_sub] at hc
 
 /--
-The paper's **totality** predicate.
+The paper's **totality** predicate: `τ.IsTotal` says that `τ` is a *world history*.
 
-**Paper Reference**: `def:world-history` (verbatim: "A \textit{possible world} is any convex
-history whose domain is total, so that $X = D$.").
+**Paper Reference**: sec:Construction (verbatim: "A \textit{world history} is any partial history
+$\tau : X \to W$ whose domain is \textit{total}, so that $X = D$."); the appendix
+`def:world-history` phrases the same set as convex histories with total domain, which coincide
+since a total domain is convex (`IsTotal.isConvex`).
 
 Note that this is `∀ t, τ.domain t` — the domain *is* all of `D` — and is deliberately **not**
 Mathlib's `IsMax` or any order-theoretic maximality predicate. Maximality under the extension

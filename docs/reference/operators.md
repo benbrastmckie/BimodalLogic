@@ -266,7 +266,7 @@ Semantic consequence relation - expresses validity in task frame models.
 
 **Formal Definition**: `Γ ⊨ φ` means φ is true in all task models where all formulas in Γ are true
 **LEAN Code**: `valid Γ φ` (semantic validity definition)
-**Semantics**: Based on task frame structures with convex histories and time domains
+**Semantics**: Based on task frame structures with world histories and time domains
 **See also**: [⊢ (provability)](#-turnstile--provability)
 **Completeness**: available in the **finite-context** form only. `Context` is `List Formula`,
 so `consequence_completeness` (`FormalSystem/Metalogic/StrongCompleteness.lean`) is
@@ -303,7 +303,7 @@ Set membership relation.
 **LEAN Code**: LEAN's `∈` for sets and types
 **Usage Context**: Time domains, world state sets, formula contexts
 **See also**: [⊆ (subset)](#-subset-relation)
-**Examples**: `t ∈ domain(h)` (time in convex history domain)
+**Examples**: `t ∈ domain(h)` (time in history domain)
 
 ### ⊆ (subset relation)
 Subset relation between sets.
@@ -405,10 +405,10 @@ ProofChecker follows consistent naming conventions for variables across document
 **Examples**: `τ < σ`, `τ ∈ domain(h)`
 
 ### Histories
-- **h** - Primary convex history variable
-- **h'** - Alternative convex history
+- **h** - Primary history variable
+- **h'** - Alternative history
 
-**LEAN Usage**: `(h : ConvexHistory)`
+**LEAN Usage**: `(h : PartialHistory F)`
 **Examples**: `M,h,τ ⊨ φ`
 
 ### Models

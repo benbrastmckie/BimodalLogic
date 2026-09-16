@@ -57,7 +57,7 @@ Coverage is measured by checking whether each public definition in `FormalSystem
 | Theorems.Perpetuity.Bridge | 5 | 25 | 20% | Low - internal helpers |
 | Automation.Tactics | 5 | 26 | 19% | Medium |
 | Semantics.Truth | 2 | 12 | 16% | High - needs tests |
-| Semantics.ConvexHistory | 3 | 19 | 15% | Low - internal |
+| Semantics.PartialHistory | 3 | 19 | 15% | Low - internal |
 | Automation.SuccessPatterns | 3 | 22 | 13% | Low - internal patterns |
 | Metalogic.DeductionTheorem | 0 | 4 | 0% | Medium |
 | Metalogic.SoundnessLemmas | 0 | 18 | 0% | Low - helper lemmas |

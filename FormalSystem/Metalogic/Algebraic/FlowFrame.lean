@@ -168,8 +168,8 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
       (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
   saturation := TaskFrame.saturation_of_fib_subsingleton (flowRel_fib_subsingleton D FamIdx)
 
-/-- Convex history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`; total by
-construction, hence a possible world.
+/-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`; total by
+construction.
 Generic form of `multiFamHistory` (`ReynoldsBridge.lean`). -/
 noncomputable def multiFamHistoryGen {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ↑D) :
     PartialHistory (multiFamTaskFrameGen D FamIdx) where

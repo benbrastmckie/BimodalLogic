@@ -46,7 +46,7 @@ and 7 inference rules
   operators (`def:BLstar-semantics`), as a separate inductive `StarFormula` with the embedding
   `ofPlus : PlusFormula → StarFormula`. Semantic-only: `StarAxiom`/`StarDerivationTree`/`TM⋆` are
   reserved and unbuilt. Imports nothing from `Semantics/`
-- `FormalSystem.Semantics`: Task frame semantics with convex histories, truth evaluation, and
+- `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and
 validity
 - `FormalSystem.Metalogic`: Soundness, three completeness routes, and the tableau decision
   procedure. By far the largest component; see `Metalogic/README.md` for the architecture map.

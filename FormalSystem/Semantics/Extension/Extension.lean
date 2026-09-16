@@ -56,8 +56,9 @@ passes along is the frame `F`, never the axioms.
 The maximal-to-total direction is isolated as `isTotal_of_isMax`, the converse companion to
 `PartialHistoryOrder`'s `isMax_of_total`. That companion is exactly where `lem:step` is spent:
 maximality plus the ability to extend by one arbitrary duration forces the domain to be all of
-`D`. Totality then yields convexity for free (`total_isConvex`), so the promotion of the maximal
-partial history to a `PartialHistory`, and thence to an `F.HF` element, is immediate.
+`D`. A total partial history *is* a world history, so the maximal partial history is an `F.HF`
+element as it stands: the subtype pair `⟨μ, htot⟩`, with no promotion step and no convexity
+argument.
 
 ## What the finite-carrier *Saturation* discharge costs, by contrast
 
@@ -101,17 +102,15 @@ time-shifting a history witnessed at one time — is **gone from this chain and 
 reintroduced**. The anchors that carried it (`thm:occurrence`, `app:nonempty`) no longer exist;
 the paper merged them into the single, strictly stronger `cor:occurrence`, in which the time `x`
 is universally given rather than existentially witnessed. Time-shift machinery survives
-separately (`PartialHistory.timeShift`, `PartialHistory.timeShift`, `TaskFrame.HF.timeShift`) but
+separately (`PartialHistory.timeShift`, `TaskFrame.HF.timeShift`) but
 plays no role here.
 
 ## Main Definitions
 
-- `PartialHistory.toPartialHistory` — promotion of a total partial history to a `PartialHistory`
 - `PartialHistory.point` — the one-point partial history `{⟨x, w⟩}`
 
 ## Main Results
 
-- `PartialHistory.total_isConvex` — a total domain is convex
 - `PartialHistory.isTotal_of_isMax` — maximal implies total (the converse of `isMax_of_total`)
 - `PartialHistory.extension` — `thm:extension`
 - `PartialHistory.occurrence` — `cor:occurrence`, frame-intrinsic form
@@ -162,9 +161,9 @@ loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} fo
 
 **Proof recipe, exactly as recorded**: Zorn's lemma over the extension order
 (`exists_maximal_extension`) produces a maximal extension; `lem:step` forces that maximal partial
-history to be total (`isTotal_of_isMax`); totality yields convexity (`total_isConvex`), so the
-result is a convex history, and totality is exactly its `H_F` membership, i.e. its being a
-possible world.
+history to be total (`isTotal_of_isMax`); a total partial history is a world history, so totality
+is exactly its `H_F` membership. (The appendix's route through convex histories needs no step
+here: a total domain is trivially convex, `PartialHistory.IsTotal.isConvex`.)
 
 **These two are the whole proof.** *Saturation* is not threaded in directly — `step`, which remains
 its sole application site, reads it off the frame as `F.saturation`.

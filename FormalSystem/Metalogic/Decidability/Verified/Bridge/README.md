@@ -28,7 +28,7 @@ level up; the three modules here named `*Saturation.lean` supply the facts it do
 | `IntTruth.lean` | 1088 | The signed truth correspondence at `ℤ`: `stateLabel` assigns every carrier point a branch label, and the truth-lemma induction runs against it. |
 | `Interpolate.lean` | 720 | Fills the carrier between the placed branch times, so that `TruthAt`'s `untl`/`snce` clauses — which quantify over **all** of `D` — have something to range over. |
 | `PropSaturation.lean` | 108 | The branching propositional rule `impPos` on a saturated branch. `imp` is the only primitive propositional connective besides `bot`, so the truth lemma's `imp` case cannot run without it. |
-| `RegionFrame.lean` | 580 | The countermodel's `TaskFrame` and its family of `ConvexHistory`s, including the *total* ones that `valid` quantifies over. |
+| `RegionFrame.lean` | 580 | The countermodel's `TaskFrame` and its family of `PartialHistory`s, including the *total* ones that `valid` quantifies over. |
 | `RegionLabel.lean` | 490 | The region labelling and its decidable gate. The non-placed points fall into `n + 1` regions (lower ray, interior gaps, upper ray); each is assigned a state, carried as a checked hypothesis rather than synthesised. |
 | `TemporalGate.lean` | 724 | A fourth decidable branch gate, alongside `timeOrderTotal`, `boxAnchoredCheck` and `regionLabelCheck`: what a branch owes the `untl`/`snce` cases beyond `regionLabelCheck`. |
 | `TemporalSaturation.lean` | 257 | The positive temporal witnesses, with their position kept — the form the `untl`/`snce` cases need. |

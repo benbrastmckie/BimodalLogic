@@ -303,16 +303,22 @@ structure TaskFrame where
   TaskRel : WorldState → Time → WorldState → Prop  -- Task relation
 ```
 
-### Convex Histories
+### Partial and World Histories
 
-A convex history is a function from times to world states (a **possible world** is one whose domain is all of `D`):
+A partial history is a task-respecting function from a nonempty set of times to world states. A
+**world history** (the paper's possible world) is a partial history whose domain is all of `D`:
 
 ```lean
--- Convex history maps convex time interval to world states
-structure ConvexHistory (F : TaskFrame) where
-  domain : Set F.Time
-  convex : IsConvex F domain
-  states : (t : F.Time) → t ∈ domain → F.WorldState
+structure PartialHistory (F : TaskFrame) where
+  domain : F.Duration → Prop                                   -- X ⊆ D
+  nonempty_domain : ∃ t, domain t                              -- X is nonempty
+  states : (t : F.Duration) → domain t → F.WorldState          -- τ : X → W
+  respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
+    F.TaskRel (states s hs) (t - s) (states t ht)              -- τ(s) ⇒_{t-s} τ(t)
+
+-- A world history is a partial history with total domain; H_F is the set of them
+def PartialHistory.IsTotal (τ : PartialHistory F) : Prop := ∀ t, τ.domain t
+def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
 ```
 
 ### Task Models
@@ -331,12 +337,12 @@ Truth at a model-history-time triple:
 
 ```lean
 -- Evaluate formula truth
-def TruthAt (M : TaskModel F) (τ : ConvexHistory F) (t : F.Time) :
+def TruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Time) :
   Formula → Prop
   | Formula.atom p => t ∈ τ.domain ∧ τ(t) ∈ M.valuation p
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
-  | Formula.box φ => ∀ σ : ConvexHistory F, TruthAt M σ t φ
+  | Formula.box φ => ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ t φ
   | Formula.allPast φ => ∀ s < t, TruthAt M τ s φ
   | Formula.allFuture φ => ∀ s > t, TruthAt M τ s φ
 ```
@@ -346,12 +352,12 @@ def TruthAt (M : TaskModel F) (τ : ConvexHistory F) (t : F.Time) :
 ```lean
 -- Global validity
 def valid (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F) (t : F.Time),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Time),
     M, τ, t ⊨ φ
 
 -- Semantic consequence
 def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F) (t : F.Time),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Time),
     (∀ ψ ∈ Γ, M, τ, t ⊨ ψ) → M, τ, t ⊨ φ
 ```
 

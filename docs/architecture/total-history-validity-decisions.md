@@ -69,6 +69,10 @@ from a quoted anchor) is what this record exists to prevent.
 
 ## Decision B — `PartialHistory` layering
 
+> **Partly superseded by Decision B'** below: the separate convex-history structure this decision
+> introduced via `extends` has been deleted, and convexity is now a predicate. Sub-decisions 1 and 2
+> stand.
+
 **Decision.** `WorldHistory extends PartialHistory`, with `PartialHistory` carrying the
 **unconditional** task-respect condition:
 
@@ -112,6 +116,54 @@ Three sub-decisions, each with its reason:
 **internal lemma en route to `thm:extension`** — demoted from an earlier round's framing of it as
 the target existence theorem. `isMax_of_total` is the load-bearing direction. Neither is the
 validity predicate; see Decision A's standing constraint.
+
+---
+
+## Decision B' — convexity as a predicate; `H_F` over `PartialHistory` (supersedes Decision B's `extends` layering)
+
+**Decision.** There is one history structure, `PartialHistory F`, with the fields recorded in
+Decision B (`domain`, `nonempty_domain`, `states`, unconditional `respects_task`). The separate
+convex-history structure that extended it is **deleted**. Convexity survives only as a
+Prop-valued predicate, and `H_F` is a subtype of `PartialHistory` directly:
+
+```lean
+def PartialHistory.IsConvex (τ : PartialHistory F) : Prop :=
+  ∀ (x z : F.Duration), τ.domain x → τ.domain z → ∀ (y : F.Duration), x ≤ y → y ≤ z → τ.domain y
+
+def PartialHistory.IsTotal (τ : PartialHistory F) : Prop := ∀ t : F.Duration, τ.domain t
+
+def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
+```
+
+`TruthAt`, the Plus/Minus/Star truth relations, truth transport, the ℤ transfer, and every
+validity predicate range over `PartialHistory F`; the box clause reads
+`∀ σ : PartialHistory F, σ.IsTotal → …`.
+
+**Anchor.** The body of sec:Construction: "A \textit{world history} is any partial history
+$\tau : X \to W$ whose domain is \textit{total}, so that $X = D$." The appendix `def:world-history`
+(pinned in `docs/reference/paper-definitions-of-record.md`) phrases the same tier as convex
+histories with total domain; the two denote the same set because a total domain is trivially
+convex (`PartialHistory.IsTotal.isConvex`). See that record's body/appendix wording note.
+
+**Rationale.** No proof in the library ever consumed convexity as a hypothesis: every
+`convex :=` obligation was re-established from totality or discharged by `trivial`, and every
+history that truth and validity range over is total. The structure therefore carried a proof
+obligation with no consumer, a duplicated `IsTotal` wrapper, duplicated `timeShift` /
+`states_eq_of_time_eq` / `total_nonempty` copies, and promotion glue in the Extension Theorem
+(`toConvexHistory` and its lemmas). With the predicate encoding, `thm:extension` closes by the
+subtype pair `⟨μ, htot⟩` with no promotion step.
+
+Decision B's sub-decisions 1 (nonemptiness is a field) and 2 (unconditional `respects_task`)
+stand unchanged. Sub-decision 3 (`extends`, not an `IsConvex` mixin) is what this decision
+supersedes.
+
+**Decision A is retained.** Truth and validity keep the unbundled predicate-hypothesis form
+`(τ : PartialHistory F) (hτ : τ.IsTotal)`, the atom clause keeps its domain conjunct, and the
+subtype form is still used only where `H_F` is an object in its own right. Keeping Decision A
+was the research recommendation, adopted by default at plan time rather than as an explicit owner
+answer. **Deferred alternative:** fully bundling truth and validity over `F.HF` (which would also
+let the atom clause drop its `∃ (ht : τ.domain t)` conjunct) is out of scope and remains open as a
+possible follow-up.
 
 ---
 

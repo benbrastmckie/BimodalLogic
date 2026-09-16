@@ -36,7 +36,7 @@ over a finite carrier both must eventually repeat.
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Semantics.TaskFrame`,
-  `FormalSystem.Semantics.ConvexHistory`, `FormalSystem.Semantics.PartialHistory`,
+  `FormalSystem.Semantics.PartialHistory`, `FormalSystem.Semantics.PartialHistoryOrder`,
   Mathlib's Zorn's lemma
 - **Imported by**: `FormalSystem.Semantics` aggregators and the metalogic countermodel
   constructions, which need total histories to evaluate `valid` against

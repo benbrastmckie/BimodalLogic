@@ -155,9 +155,9 @@ theorem witIdx_neg_next_iterate (p : Atom) (n : ℕ) :
 
 `FrameOver.natFrame` (`Semantics/TaskFrame.lean`) is the right frame off the shelf: its relation
 `TaskRel w d u := d ≠ 0 ∨ w = u` is permissive, so an **arbitrary** state function respects it —
-which is exactly what the non-constant history below needs. `PartialHistory.universalNatFrame` is
-constant-state and so cannot separate the times; `staticFrame` is worse still, its relation
-forcing constant histories outright.
+which is exactly what the non-constant history below needs. A constant-state history cannot
+separate the times; `staticFrame` is worse still, its relation forcing constant histories
+outright.
 -/
 
 /-- The history over `ℤ` whose world-state flips from `0` to `1` strictly after `N`. -/

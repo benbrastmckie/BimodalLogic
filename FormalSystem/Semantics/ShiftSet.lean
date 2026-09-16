@@ -129,9 +129,9 @@ theorem sh_neg' (S : ShiftSet D) (w : S.Carrier) (d : ↑D) : S.sh (S.sh w (-d))
   rw [S.sh_add, neg_add_cancel, S.sh_zero]
 
 /--
-Extensionality for convex histories: equal domains and pointwise-equal states force equality.
+Extensionality for partial histories: equal domains and pointwise-equal states force equality.
 
-**This is a local copy** of `convexHistory_ext`
+**This is a local copy** of `partialHistory_ext`
 (`FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean`). The copy is
 deliberate: importing anything under `Metalogic/` from `Semantics/` would invert the layering
 this library is built on. Consolidating the two into `Semantics/PartialHistory.lean` and

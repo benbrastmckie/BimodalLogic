@@ -83,14 +83,14 @@ A **task frame** `F = (W, D, R)` consists of a **nonempty** set `W` of world-sta
 
 Nullity (`w ⇒_0 w`) is **not** an axiom: it is derived, choice-free, from *Seriality* at `x = 0` together with *Limit*. In Lean, `structure FrameOver` (`FormalSystem/Semantics/TaskFrame.lean`) — the fibre over a temporal order, of which `TaskFrame` is the total space — additionally carries `converse` as a field. It adds no content — it packages the converse convention, which a two-sided Lean relation cannot express in its type — so the Lean frame class is exactly the paper's. The zero-duration law `nullity_identity` (`TaskRel w 0 u ↔ w = u`) is a theorem, derived from `serial` and `limit`, not a field.
 
-A **convex history** `τ` in a task frame `F` is a function `τ : X → W` from a convex subset `X ⊆ D` to world states that respects the task relation: for all times `x, y ∈ X` with `x ≤ y`, we have `τ(x) ⇒_{y-x} τ(y)`. A convex history whose domain is all of `D` is a **possible world**; the paper writes `H_F` for the set of those.
+A **partial history** `τ` in a task frame `F` is a function `τ : X → W` from a nonempty subset `X ⊆ D` to world states that respects the task relation: for all times `x, y ∈ X`, we have `τ(x) ⇒_{y-x} τ(y)`. A partial history whose domain is all of `D` is a **world history** (a **possible world**); the paper writes `H_F` for the set of those. In Lean, `PartialHistory F` is the one history structure and `TaskFrame.HF` is `{τ : PartialHistory F // τ.IsTotal}`.
 
-A **task model** `M = (F, I)` extends a task frame `F` with an interpretation function `I : W → Atom → Prop` that assigns truth values to sentence letters `Atom := {p_i : i ∈ ℕ}` at each world state. Truth is evaluated relative to a model `M`, a convex history `τ`, and a time `x`:
+A **task model** `M = (F, I)` extends a task frame `F` with an interpretation function `I : W → Atom → Prop` that assigns truth values to sentence letters `Atom := {p_i : i ∈ ℕ}` at each world state. Truth is evaluated relative to a model `M`, a history `τ`, and a time `x`:
 
 - `M, τ, x ⊨ p_i` iff `x ∈ dom(τ)` and `I(τ(x), p_i)`
 - `M, τ, x ⊨ ⊥` never
 - `M, τ, x ⊨ φ → ψ` iff `M, τ, x ⊭ φ` or `M, τ, x ⊨ ψ`
-- `M, τ, x ⊨ □φ` iff `M, σ, x ⊨ φ` for all **possible worlds** `σ` (the convex histories with `dom(σ) = D`; the paper's `H_F`)
+- `M, τ, x ⊨ □φ` iff `M, σ, x ⊨ φ` for all **possible worlds** `σ` (the partial histories with `dom(σ) = D`; the paper's `H_F`)
 - `M, τ, x ⊨ U(φ,ψ)` iff there exists `y > x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `x < z < y`
 - `M, τ, x ⊨ S(φ,ψ)` iff there exists `y < x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `y < z < x`
 
@@ -112,7 +112,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── PlusLanguage/             # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
 │   ├── Syntax/                   # Formula types, atoms, contexts
 │   ├── ProofSystem/              # Axioms (45 constructors, nine layers), derivation trees
-│   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, ConvexHistory, TaskModel, validity
+│   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, PartialHistory, TaskModel, validity
 │   ├── Metalogic/                # Soundness, completeness, decidability
 │   │   ├── Core/                 # MCS theory, deduction theorem
 │   │   ├── Bundle/               # BFMCS construction

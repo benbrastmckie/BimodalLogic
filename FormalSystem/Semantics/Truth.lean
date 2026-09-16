@@ -175,7 +175,7 @@ Truth of a formula at a model-history-time triple.
 
 Given:
 - `M`: A task model (frame + valuation)
-- `τ`: A convex history (function from times to states)
+- `τ`: A partial history (function from times to states); callers supply `τ.IsTotal`
 - `t`: A time point
 - `φ`: A formula
 

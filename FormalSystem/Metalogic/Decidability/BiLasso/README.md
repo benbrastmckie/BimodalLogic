@@ -13,7 +13,7 @@ theorem is machine-checked at present. What is decided here is truth on a *prese
 procedure searches the finitely presented paths of that specific frame.
 
 **And it performs no part of the finite-model step.** Its input is *already* a presentation:
-`exists_annot_of_truth` (`Extraction.lean`) takes a `ConvexHistory P.toTaskFrame` and compresses it,
+`exists_annot_of_truth` (`Extraction.lean`) takes a `PartialHistory P.toTaskFrame` and compresses it,
 so the layer compresses histories *within* a presentation rather than producing one from an
 arbitrary countermodel. That production is a separate theorem living nowhere in this tree — and in
 particular not under `Metalogic/Decidability/FMP/`, whose results are about MCS membership and

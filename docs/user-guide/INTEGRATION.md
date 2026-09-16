@@ -265,7 +265,7 @@ Extend task semantics for new operators:
 /-- Extended task model with selection functions -/
 structure ExtendedTaskModel (F : TaskFrame) extends TaskModel F where
   -- Counterfactual selection function
-  selection : F.WorldState → Formula → Set (ConvexHistory F)
+  selection : F.WorldState → Formula → Set (PartialHistory F)
 
   -- Selection function constraints
   centering : ∀ w φ, (canonical_history w) ∈ selection w φ

@@ -24,7 +24,7 @@ theorem soundness (a : Context) (b : Formula) : ...       -- non-descriptive
 ```
 
 ### Types and Structures
-- **Types**: PascalCase (`Formula`, `TaskFrame`, `ConvexHistory`)
+- **Types**: PascalCase (`Formula`, `TaskFrame`, `PartialHistory`)
 - **Structures**: PascalCase (`TaskModel`, `ProofBuilder`)
 - **Inductives**: PascalCase (`Axiom`, `Derivable`)
 - **Classes**: PascalCase with descriptive name (`DecidableEq`, `Inhabited`)
@@ -63,7 +63,7 @@ command declares it:
 ```lean
 -- Good
 def swapTemporal : Formula → Formula := ...                    -- data: lowerCamelCase
-def TruthAt (M : TaskModel F) (τ : ConvexHistory F)
+def TruthAt (M : TaskModel F) (τ : PartialHistory F)
     (t : F.Time) : Formula → Prop := ...                       -- predicate: UpperCamelCase
 theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := ...
 lemma modal_t_valid (φ : Formula) : valid (φ.box.imp φ) := ...
@@ -128,12 +128,12 @@ theorem strong_completeness (Γ : Context) (φ : Formula) : Γ ⊨ φ → Γ ⊢
 
 ```lean
 -- Good
-def TruthAt (M : TaskModel F) (τ : ConvexHistory F) (t : F.Time) :
+def TruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Time) :
   Formula → Prop
   | Formula.atom p => t ∈ τ.domain ∧ τ(t) ∈ M.valuation p
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
-  | Formula.box φ => ∀ σ : ConvexHistory F, TruthAt M σ t φ
+  | Formula.box φ => ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ t φ
   | Formula.allPast φ => ∀ s < t, TruthAt M τ s φ
   | Formula.allFuture φ => ∀ s > t, TruthAt M τ s φ
 
@@ -328,12 +328,12 @@ Every file must begin with a module docstring describing its purpose:
 /-!
 # Task Frame Semantics
 
-This module defines task frames and convex histories for the bimodal logic TM.
+This module defines task frames and world histories for the bimodal logic TM.
 
 ## Main Definitions
 
 * `TaskFrame` - A task frame consisting of world states, times, and task relation
-* `ConvexHistory` - A function from a convex set of times to world states (a *possible world* when the domain is total)
+* `PartialHistory` - A task-respecting function from a nonempty set of times to world states (a *world history*, i.e. a possible world, when the domain is total)
 * `TaskModel` - A task frame with valuation function
 
 ## Main Theorems

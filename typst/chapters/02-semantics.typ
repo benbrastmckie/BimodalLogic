@@ -256,7 +256,7 @@ Not every partial history is total, and it is not obvious that a frame has *any*
   It does *not* discharge *Saturation* for infinite-$W$ frames: those still need the axiom in full.
 ]
 
-The Lean formalization runs this exact chain. `PartialHistory` and `ConvexHistory` (`Semantics/PartialHistory.lean`, `Semantics/ConvexHistory.lean`) implement the first two tiers, with `ConvexHistory` extending `PartialHistory` by a single `convex` field, and `ConvexHistory.IsTotal` as the totality predicate identifying membership in $H_(cal(F))$ --- the third tier, the possible worlds, has no separate structure of its own and is exactly the subtype `TaskFrame.HF`.
+The Lean formalization runs this exact chain. `PartialHistory` (`Semantics/PartialHistory.lean`) is the one history structure: convexity is the predicate `PartialHistory.IsConvex`, and `PartialHistory.IsTotal` is the totality predicate identifying membership in $H_(cal(F))$ --- the possible worlds have no separate structure of their own and are exactly the subtype `TaskFrame.HF`. Since a total domain is trivially convex, a partial history with total domain is the same thing as a convex history with total domain.
 `Semantics/Extension/Constraint.lean`, `Admissible.lean`, `Step.lean`, and `Extension.lean` carry the whole existence chain --- constraints, the Constraint Lemma, admissibility, the Step Lemma, the Extension Theorem, and Occurrence --- as a machine-checked sequence of lemmas rather than restating it inline.
 
 == Task Models
@@ -279,7 +279,7 @@ Whereas the model fixes the interpretation of the language, the contextual param
 // CONFIRM(paper): def:BL-semantics's box clause ranges over all sigma in H_F with no admissible-history or
 //   shift-closure parameter, and def:BL-semantics states the guard-first since/until clauses transcribed below.
 #definition("Truth")[
-  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. The box clause quantifies over all possible worlds (`ConvexHistory.IsTotal`), with no admissible-history or shift-closure parameter.]
+  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. The box clause quantifies over all possible worlds (`PartialHistory.IsTotal`), with no admissible-history or shift-closure parameter.]
   $
     cal(M), tau, x tack.r.double p &#Iff x in "dom"(tau) "and" I(tau(x), p) \
     cal(M), tau, x tack.r.double.not bot \
@@ -335,7 +335,7 @@ It is natural to assume that whatever is necessary is always the case, or equiva
 Time-shift enables the validity proof of the bimodal interaction axiom MF ($square.stroked phi.alt arrow.r square.stroked G phi.alt$); together with the derived theorem TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) it yields the perpetuity principles.
 
 #definition("Time-Shift")[
-  For $tau, sigma in H_(cal(F))$ and $x, y : D$, the possible worlds $tau$ and $sigma$ are *time-shifted from $x$ to $y$*, written $tau #timeshift($x$, $y$) sigma$, if and only if there exists a *translation* $overline(a) : D arrow.r D$, $overline(a)(z) = z + d$ for some $d in D$, where $y = overline(a)(x)$ and $tau(z) = sigma(overline(a)(z))$ for all $z in D$.#footnote[The Lean formalization (`timeShift` in `Semantics/ConvexHistory.lean`) is stated in a deliberately more general form as a design fact of the mechanization: the shift map is an arbitrary order automorphism $overline(a) : D arrow.r D$ rather than a translation, and the definition applies to *partial* histories via the domain clause $"dom"_sigma = overline(a)^(-1)("dom"_tau)$, with $sigma(z) = tau(overline(a)(z))$ on that domain. Restricted to total histories and translations, the two definitions coincide.]
+  For $tau, sigma in H_(cal(F))$ and $x, y : D$, the possible worlds $tau$ and $sigma$ are *time-shifted from $x$ to $y$*, written $tau #timeshift($x$, $y$) sigma$, if and only if there exists a *translation* $overline(a) : D arrow.r D$, $overline(a)(z) = z + d$ for some $d in D$, where $y = overline(a)(x)$ and $tau(z) = sigma(overline(a)(z))$ for all $z in D$.#footnote[The Lean formalization (`timeShift` in `Semantics/PartialHistory.lean`) is stated in a deliberately more general form as a design fact of the mechanization: the shift map is an arbitrary order automorphism $overline(a) : D arrow.r D$ rather than a translation, and the definition applies to *partial* histories via the domain clause $"dom"_sigma = overline(a)^(-1)("dom"_tau)$, with $sigma(z) = tau(overline(a)(z))$ on that domain. Restricted to total histories and translations, the two definitions coincide.]
 ]
 
 Time-shifting preserves the essential structure of histories:
