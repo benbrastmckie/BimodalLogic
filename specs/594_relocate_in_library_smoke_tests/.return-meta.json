@@ -1,16 +1,25 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/594_relocate_in_library_smoke_tests/reports/01_relocate-smoke-tests.md",
-      "summary": "Re-measured census (365 live debug directives in 22 files + 39 in docstrings), 4-class classification with per-file relocation targets and #guard conversions (all #eval outputs captured by running), class-B #print axioms folded into C14, C27 debug-artifact invariant spec with exact-count allowlist, scoped example relocation."
+      "type": "plan",
+      "path": "specs/594_relocate_in_library_smoke_tests/plans/01_relocate-smoke-tests.md",
+      "summary": "8-phase plan: seed an enforced comment-aware C27 debug-artifact gate first, then ratchet it down by relocating class C/D probes to Tests as asserting guards, migrating class-B axiom prints to C14, moving test-labelled examples, and closing on the full gate."
     }
   ],
+  "next_steps": "Run /implement 594 to execute the plan",
   "metadata": {
     "session_id": "sess_1789577011_0f6aae_594",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 11,
+    "dependency_waves": [[1], [2, 3, 4, 5], [6, 7], [8]]
+  },
+  "phase_count": 8,
+  "estimated_hours": 11,
+  "dependency_waves": [[1], [2, 3, 4, 5], [6, 7], [8]],
+  "memory_candidates": [],
+  "dispatch_seq": 6
 }

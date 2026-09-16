@@ -110,7 +110,7 @@ next_project_number: 598
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
   └─ 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
     └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-594 [PLANNING] — Relocate test-shaped smoke tests out of the live library....
+594 [PLANNED] — Relocate test-shaped smoke tests out of the live library....
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
 595 [PLANNING] — Decide where durable project records live and move them there...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
@@ -175,11 +175,12 @@ ACCEPTANCE: decision recorded; if moved, zero remaining citations of the old pat
 
 ### 594. Relocate in library smoke tests
 - **Effort**: medium
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [594_relocate_in_library_smoke_tests/reports/01_relocate-smoke-tests.md]
+- **Plan**: [594_relocate_in_library_smoke_tests/plans/01_relocate-smoke-tests.md]
 
 **Description**: Relocate test-shaped smoke tests out of the live library. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): 404 `#check`/`#eval`/`#print` lines across 29 live (non-Boneyard) library files (largest: DatasetGenerator 116, Saturation 59, MainResults 54, Normalization 42, Syntax/Formula 20) plus 389 top-level `example`s outside `FormalSystem/Examples/`. cslib (`scripts/pre-pr-check.sh`) treats `#check`/`#eval`/`dbg_trace` in library code as debug artifacts.
 
