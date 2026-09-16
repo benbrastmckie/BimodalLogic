@@ -1,0 +1,33 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1789577011_0f6aae_595",
+  "task_number": 595,
+  "dispatch_seq": 3,
+  "findings_count": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/595_establish_durable_records_home/reports/01_durable-records-home.md",
+      "summary": "Recommends moving specs/paper-definitions-of-record.md to docs/reference/ and specs/decisions/*.md to docs/architecture/ (folded into its existing non-ADR Specification Documents table), since docs/architecture/README.md already forbids a second docs/decisions/ location; enumerates every script, Lean docstring, and markdown consumer that needs repointing."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In this repo, docs/architecture/README.md explicitly states there is exactly one ADR/decision-record convention (docs/architecture/) and that a docs/decisions/ directory must not be created as a duplicate. When relocating decision-record-shaped files out of specs/, fold them into docs/architecture/'s existing 'Specification Documents' table (non-ADR-numbered) rather than creating a new decisions directory.",
+      "category": "PATTERN",
+      "source_artifact": "specs/595_establish_durable_records_home/reports/01_durable-records-home.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["ADR", "docs/architecture", "decision-record", "specs-vs-docs", "documentation-placement"]
+    },
+    {
+      "content": "scripts/check-module-invariants.sh's C15 check hardcodes the paper-definitions-of-record path as a shell variable (C15_RECORD, not a markdown citation), and scripts/check-paper-definitions.sh hardcodes it as RECORD_DEFAULT. Both are easy to miss when grepping only for markdown-style citations because they are ordinary shell assignments, not prose references.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/595_establish_durable_records_home/reports/01_durable-records-home.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["check-module-invariants", "C15", "hardcoded-path", "check-paper-definitions", "invariant-harness"]
+    }
+  ],
+  "next_steps": "Run /plan 595 to create implementation plan"
+}
