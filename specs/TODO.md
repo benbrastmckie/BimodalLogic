@@ -11,7 +11,7 @@ next_project_number: 581
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578,579,580 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578,580 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570 | 298,464,502,559,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566 | 231,465,497,565 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -104,13 +104,9 @@ next_project_number: 581
 
 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
 
-### Repo Hygiene
-
-579 [PLANNED] — Review issue from FormalSystem/ directory-organization review...
-
 ### Semantics
 
-580 [PLANNED] — Review issue from FormalSystem/ directory-organization review...
+580 [IMPLEMENTING] — Review issue from FormalSystem/ directory-organization review...
 
 ### Infrastructure
 
@@ -119,7 +115,7 @@ next_project_number: 581
 ## Tasks
 
 ### 580. Split semantics truth lean s corresponde
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -140,12 +136,13 @@ See specs/reviews/review-2026-09-15.md, Finding H2, for full detail.
 ---
 
 ### 579. Nest minuslanguage pluslanguage starlang
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [579_nest_minuslanguage_pluslanguage_starlang/reports/01_nest-language-family-under-syntax.md]
 - **Plan**: [579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md]
+- **Summary**: [579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md]
 
 **Description**: Review issue from FormalSystem/ directory-organization review on 2026-09-15:
 
