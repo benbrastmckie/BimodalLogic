@@ -150,12 +150,6 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
   WorldState := FamIdx × ↑D
   worldNonempty := inferInstance
   TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
-  nullity_identity := fun p q => by
-    constructor
-    · rintro ⟨h1, h2⟩
-      refine Prod.ext h1 ?_
-      rw [h2, add_zero]
-    · rintro rfl; exact ⟨rfl, (add_zero _).symm⟩
   comp := TaskFrame.comp_of
     (fun w v x y _ _ h => by
       obtain ⟨h₁, h₂⟩ := h

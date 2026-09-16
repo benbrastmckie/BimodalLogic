@@ -464,7 +464,6 @@ noncomputable def zTaskFrameV2 : FrameOver intOrder where
   WorldState := ℤ
   worldNonempty := inferInstanceAs (Nonempty ℤ)
   TaskRel w d u := u = w + d
-  nullity_identity w u := by constructor <;> intro h <;> omega
   comp := TaskFrame.comp_of
     (fun w v x y _ _ h => ⟨w + x, rfl, by omega⟩)
     (fun w u v x y _ _ h1 h2 => by rw [h2, h1, add_assoc])

@@ -170,11 +170,6 @@ def clockFrame : FrameOver (TemporalOrder.of ℚ) where
   WorldState := ClockState
   worldNonempty := ⟨0⟩
   TaskRel := clockRel
-  nullity_identity := by
-    intro w u
-    constructor
-    · rintro (rfl : u = _); simp [cmk_zero]
-    · rintro rfl; show w = w + cmk 0; simp
   comp := TaskFrame.comp_of
     (by
       rintro w v x y _ _ (hv : v = w + cmk (x + y))

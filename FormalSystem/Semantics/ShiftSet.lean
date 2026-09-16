@@ -163,7 +163,6 @@ other four. The one field that is genuinely *not* free is `limit`; it is exactly
   WorldState := S.Carrier
   worldNonempty := S.carrier_nonempty
   TaskRel := fun w d u => u = S.sh w d
-  nullity_identity := by intro w u; rw [S.sh_zero]; exact eq_comm
   comp := by
     intro w v x y _ _
     constructor

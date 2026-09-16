@@ -630,58 +630,6 @@ structure FrameOver (D : TemporalOrder) where
   /-- Task relation: `TaskRel w x u` means u is reachable from w by task of duration x -/
   TaskRel : WorldState → D → WorldState → Prop
   /--
-  Nullity identity constraint: zero-duration task relates exactly identical states.
-
-  For any world states `w` and `u`, `TaskRel w 0 u` holds iff `w = u`.
-  This is stronger than just reflexivity: it says zero duration means no change.
-
-  **Not a strengthening — this field is DERIVABLE, and the frame class is extensionally
-  exactly the paper's.** An earlier revision of this docstring called the field "strictly
-  stronger than the paper" and left the keep-or-demote choice open as a design question. That
-  was wrong on the mathematics. Both halves of the `↔` follow from the other fields:
-
-  * **Reflexivity** (`w = u → TaskRel w 0 u`) is `lem:nullity`, derived choice-free from
-    *Seriality* at `x = 0` plus *Limit*. It is already proved in this tree as
-    `TaskFrame.nullity_of_serial_limit` (`Semantics/FrameAxioms.lean`).
-  * **Injectivity-at-zero** (`TaskRel w 0 u → w = u`) follows from the `limit` field **alone**,
-    by instantiating its cone witness at `y := 0`: for every `x > 0` we have `|0| < x` and
-    `TaskRel w 0 u`, so `limit` forces `u = w`. *Seriality* is not needed for this half.
-
-  Verbatim, `lem:nullity` reads: "$w \Rightarrow_0 w$ for every world state $w \in W$ in every
-  task frame $\F = \tuple{W, \D, \Rightarrow}$." It asserts reflexivity only, which is why
-  the second bullet is the part that had to be checked separately.
-
-  Both derivations typecheck against this module's own predicates:
-
-  ```lean
-  theorem inj_at_zero_of_limit {W : Type} {R : W → D → W → Prop}
-      (hLim : ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
-      (w u : W) (h : R w 0 u) : u = w :=
-    hLim w u fun x hx => ⟨0, by simpa using hx, h⟩
-
-  theorem nullity_iff_of_serial_limit {W : Type} {R : W → D → W → Prop}
-      (hSer : TaskFrame.Serial R)
-      (hLim : ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
-      (w u : W) : R w 0 u ↔ w = u :=
-    ⟨fun h => (inj_at_zero_of_limit hLim w u h).symm,
-     fun h => h ▸ TaskFrame.nullity_of_serial_limit hSer hLim w⟩
-  ```
-
-  **Consequences.** The Lean frame class
-  `{nullity_identity, comp, converse, serial, limit, saturation}` and the paper's four `def:frame`
-  axioms plus nonempty `W` plus the converse convention are **inter-derivable**: the Lean class
-  adds no content the paper lacks, and imposes no constraint the paper does not. In particular
-  the `⊇` half of *Limit*'s `⋂_{x>0}(w)_x = {w}` — that `w` itself lies in every positive cone —
-  is exactly reflexivity-at-zero, so it is supplied by the first bullet rather than assumed.
-
-  **The field is kept.** With derivability settled, deleting it versus retaining it is an
-  *ergonomic* call, not a mathematical one — deletion would break every construction site that
-  currently discharges it directly. It is retained here as documented redundancy for construction
-  ergonomics. The deletion question is an owner decision and is recorded as such in this task's
-  author memo; it is not settled by this module either way.
-  -/
-  nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u
-  /--
   **The paper's *Compositionality* axiom, in full** (`def:frame#Compositionality`, verbatim:
   "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
   $u \in W$").
@@ -787,6 +735,16 @@ not needed for this half.
 theorem eq_of_taskRel_zero (F : FrameOver D) {w u : F.WorldState}
     (h : F.TaskRel w 0 u) : w = u :=
   (F.limit w u fun _ hx => ⟨0, by simpa using hx, h⟩).symm
+
+/--
+**Zero duration iff identity: a zero-duration task relates exactly the identical states.**
+
+The conjunction of `nullity` (reflexivity, from *Seriality* plus *Limit*) and
+`eq_of_taskRel_zero` (injectivity, from *Limit* alone). It is a theorem, not a structure field:
+the frame class is exactly the paper's four `def:frame` axioms plus the converse convention.
+-/
+theorem nullity_identity (F : FrameOver D) : ∀ w u, F.TaskRel w 0 u ↔ w = u :=
+  fun _ _ => ⟨F.eq_of_taskRel_zero, fun h => h ▸ F.nullity _⟩
 
 /--
 **Composition on the positive cone — the `←` projection of the `comp` field.**
@@ -1243,17 +1201,6 @@ theorem interpolates_of_permissive {W : Type} {R : W → D → W → Prop}
 
 omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
 /--
-*Nullity* for a permissive relation: `R w 0 u ↔ w = u`. The `d ≠ 0` disjunct is unavailable at
-`d = 0`, so only `w = u` survives.
--/
-theorem nullity_identity_of_permissive {W : Type} {R : W → D → W → Prop}
-    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : ∀ w u, R w 0 u ↔ w = u := by
-  intro w u
-  rw [hR]
-  simp
-
-omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
-/--
 *Converse* for a permissive relation: the defining condition `d ≠ 0 ∨ w = u` is symmetric under
 `d ↦ -d` together with `w ↔ u`, since `-d = 0 ↔ d = 0`.
 -/
@@ -1598,7 +1545,6 @@ def trivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid
   WorldState := Unit
   worldNonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
-  nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   comp := comp_of (interpolates_of_total fun _ _ _ => trivial) fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
   serial := serial_of_total fun _ _ _ => trivial
@@ -1661,7 +1607,6 @@ def staticFrame (W : Type) [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder
   WorldState := W
   worldNonempty := inferInstance
   TaskRel := fun w _ u => w = u
-  nullity_identity := fun _ _ => Iff.rfl
   comp := comp_of (interpolates_of_eq fun _ _ _ => Iff.rfl) fun _ _ _ _ _ _ _ h1 h2 => h1.trans h2
   converse := fun _ _ _ => ⟨Eq.symm, Eq.symm⟩
   serial := serial_of_eq fun _ _ _ => Iff.rfl
@@ -1732,7 +1677,6 @@ def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
   worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   -- All six axiom fields are one-line citations of Helper B (`*_of_permissive`).
-  nullity_identity := nullity_identity_of_permissive fun _ _ _ => Iff.rfl
   comp := comp_of_permissive fun _ _ _ => Iff.rfl
   serial := serial_of_permissive fun _ _ _ => Iff.rfl
   limit := limit_of_permissive fun _ _ _ => Iff.rfl

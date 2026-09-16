@@ -74,11 +74,6 @@ def translationFrame (D : TemporalOrder) : FrameOver D where
   WorldState := ↑D
   worldNonempty := ⟨0⟩
   TaskRel := fun w x u => u = w + x
-  nullity_identity := by
-    intro w u
-    constructor
-    · intro h; rw [h, add_zero]
-    · intro h; rw [← h, add_zero]
   comp := TaskFrame.comp_of
     (by
       intro w v x y _ _ h
@@ -128,7 +123,6 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
     worldNonempty := inferInstance
     TaskRel := fun w d u => d ≠ 0 ∨ w = u
     -- All six axiom fields are one-line citations of Helper B (`*_of_permissive`).
-    nullity_identity := TaskFrame.nullity_identity_of_permissive fun _ _ _ => Iff.rfl
     comp := TaskFrame.comp_of_permissive fun _ _ _ => Iff.rfl
     converse := TaskFrame.converse_of_permissive fun _ _ _ => Iff.rfl
     serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl

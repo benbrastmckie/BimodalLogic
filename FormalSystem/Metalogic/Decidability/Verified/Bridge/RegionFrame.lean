@@ -194,14 +194,6 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
   WorldState := W × D
   worldNonempty := inferInstance
   TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d
-  nullity_identity := by
-    intro s s'
-    constructor
-    · rintro ⟨h₁, h₂⟩
-      refine Prod.ext h₁ ?_
-      rw [h₂, add_zero]
-    · rintro rfl
-      exact ⟨rfl, (add_zero _).symm⟩
   comp := TaskFrame.comp_of
     (by
       rintro s v x y _ _ ⟨h₁, h₂⟩

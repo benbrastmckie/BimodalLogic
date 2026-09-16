@@ -300,15 +300,6 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder ↑D] [NoMaxOrder ↑D]
   WorldState := FilteredWorld phi
   worldNonempty := filteredWorld_nonempty phi
   TaskRel := refinedFilteredTaskRel D phi
-  nullity_identity := by
-    intro w u
-    simp only [refinedFilteredTaskRel]
-    constructor
-    · intro h
-      simp only [↓reduceIte] at h
-      exact h
-    · intro h
-      simp [h]
   comp := TaskFrame.comp_of
     (TaskFrame.interpolates_of_permissive fun w d u => by
       by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])

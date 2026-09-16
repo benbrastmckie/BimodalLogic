@@ -132,18 +132,18 @@ so Phase 2 is a pure deletion batch.
 
 ---
 
-### Phase 2: Remove the field and delete redundant discharges [NOT STARTED]
+### Phase 2: Remove the field and delete redundant discharges [COMPLETED]
 
 **Goal**: Delete the `nullity_identity` field, add the same-named theorem, and remove every
 construction-site proof and dead helper in one atomic batch.
 
 **Tasks**:
-- [ ] In `TaskFrame.lean`: delete the field `nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u` (~651) and its long docstring (~600-650, including the embedded `nullity_iff_of_serial_limit` snippet); add `theorem nullity_identity (F : FrameOver D) : ∀ w u, F.TaskRel w 0 u ↔ w = u := fun _ _ => ⟨F.eq_of_taskRel_zero, fun h => h ▸ F.nullity _⟩` directly after `eq_of_taskRel_zero`/`nullity`.
-- [ ] In `TaskFrame.lean`: delete the field lines in `trivialFrame` (~1556), `staticFrame` (~1619), `natFrame` (~1690); delete `nullity_identity_of_permissive` (~1204) after confirming no remaining users.
-- [ ] Delete the field line at: `Semantics/Frames/Standard.lean` (`translationFrame` ~77, `permissiveFrame` ~131), `Semantics/IntNormalForm.lean` (`ofStep` ~449), `Semantics/IntTransfer.lean` (`FrameOver.map` ~142), `Semantics/ShiftSet.lean` (`fibre` ~166), `Examples/TemporalStructures.lean` (~82, ~127, ~229), `Metalogic/Independence/ClockFrame.lean` (~173), `Metalogic/Independence/DriftFrame.lean` (~228), `Metalogic/Independence/ForwardDeterministicFrame.lean` (~221), `Metalogic/Algebraic/FlowFrame.lean` (~153), `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` (~467), `Metalogic/Decidability/Verified/Bridge/RegionFrame.lean` (~197), `Metalogic/Decidability/FMP/Filtration.lean` (~303).
-- [ ] Delete `fzero_nullity` (DriftFrame.lean ~148) and its listing (~36); in ForwardDeterministicFrame, ensure only the injectivity lemma consumed by `fn_limit` remains (remove any now-unused iff version).
-- [ ] Delete any local helper lemmas that become unused (check each touched file for private lemmas only used by the deleted field proof).
-- [ ] Build detached: full `lake build`; then `grep -rn "nullity_identity :=" --include=*.lean FormalSystem Tests | grep -v Boneyard` returns nothing. Commit once green (atomic batch: do not commit intermediate red states).
+- [x] In `TaskFrame.lean`: delete the field `nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u` (~651) and its long docstring (~600-650, including the embedded `nullity_iff_of_serial_limit` snippet); add `theorem nullity_identity (F : FrameOver D) : ∀ w u, F.TaskRel w 0 u ↔ w = u := fun _ _ => ⟨F.eq_of_taskRel_zero, fun h => h ▸ F.nullity _⟩` directly after `eq_of_taskRel_zero`/`nullity`.
+- [x] In `TaskFrame.lean`: delete the field lines in `trivialFrame` (~1556), `staticFrame` (~1619), `natFrame` (~1690); delete `nullity_identity_of_permissive` (~1204) after confirming no remaining users.
+- [x] Delete the field line at: `Semantics/Frames/Standard.lean` (`translationFrame` ~77, `permissiveFrame` ~131), `Semantics/IntNormalForm.lean` (`ofStep` ~449), `Semantics/IntTransfer.lean` (`FrameOver.map` ~142), `Semantics/ShiftSet.lean` (`fibre` ~166), `Examples/TemporalStructures.lean` (~82, ~127, ~229), `Metalogic/Independence/ClockFrame.lean` (~173), `Metalogic/Independence/DriftFrame.lean` (~228), `Metalogic/Independence/ForwardDeterministicFrame.lean` (~221), `Metalogic/Algebraic/FlowFrame.lean` (~153), `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` (~467), `Metalogic/Decidability/Verified/Bridge/RegionFrame.lean` (~197), `Metalogic/Decidability/FMP/Filtration.lean` (~303).
+- [x] Delete `fzero_nullity` (DriftFrame.lean ~148) and its listing (~36); in ForwardDeterministicFrame, ensure only the injectivity lemma consumed by `fn_limit` remains (remove any now-unused iff version). *(deviation: altered — `fn_nullity` replaced by the one-directional `fn_eq_of_zero`)*
+- [x] Delete any local helper lemmas that become unused (check each touched file for private lemmas only used by the deleted field proof).
+- [x] Build detached: full `lake build`; then `grep -rn "nullity_identity :=" --include=*.lean FormalSystem Tests | grep -v Boneyard` returns nothing. Commit once green (atomic batch: do not commit intermediate red states). *(deviation: altered — 18 field lines removed (3 in TaskFrame.lean, 15 elsewhere), not 17; committed as HEAD-derived hunks only, since the concurrent history-migration task edits several of the same files)*
 
 **Timing**: 1.5 hours
 

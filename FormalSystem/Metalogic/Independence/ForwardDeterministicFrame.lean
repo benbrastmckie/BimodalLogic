@@ -126,16 +126,12 @@ theorem fn_rel_iff_of_nonpos {w : ℕ} {d : ℤ} {u : ℕ} (hd : d ≤ 0) :
 
 /-! ## The six `FrameOver` obligations -/
 
-/-- `⇒_0` is the identity: both disjuncts collapse to `w = u`. -/
-theorem fn_nullity (w u : ℕ) : fnRel w 0 u ↔ w = u := by
-  constructor
-  · rintro (h | h) <;>
-    · have hw : (0 : ℤ) ≤ (w : ℤ) := Int.natCast_nonneg w
-      have hu : (0 : ℤ) ≤ (u : ℤ) := Int.natCast_nonneg u
-      omega
-  · rintro rfl
-    refine Or.inl ?_
-    have hw : (0 : ℤ) ≤ (w : ℤ) := Int.natCast_nonneg w
+/-- A zero-duration step changes nothing: both disjuncts collapse to `u = w`. This is the
+hypothesis `fn_limit` hands to `TaskFrame.limit_of_succOrder`. -/
+theorem fn_eq_of_zero (w u : ℕ) (h : fnRel w 0 u) : u = w := by
+  rcases h with h | h <;>
+  · have hw : (0 : ℤ) ≤ (w : ℤ) := Int.natCast_nonneg w
+    have hu : (0 : ℤ) ≤ (u : ℤ) := Int.natCast_nonneg u
     omega
 
 /-- The converse convention, by `Or.comm` on the two reflected disjuncts. -/
@@ -183,10 +179,10 @@ theorem fn_comp : TaskFrame.Compositional (D := TemporalOrder.of ℤ) fnRel := b
     omega
 
 /-- *Limit*, from `TaskFrame.limit_of_succOrder`: `ℤ` is a `SuccOrder` with `NoMaxOrder`, and
-`fn_nullity` supplies the hypothesis. -/
+`fn_eq_of_zero` supplies the hypothesis. -/
 theorem fn_limit :
     ∀ w u, (∀ x : ℤ, 0 < x → ∃ y, |y| < x ∧ fnRel w y u) → u = w :=
-  TaskFrame.limit_of_succOrder (D := ℤ) fun w u h => ((fn_nullity w u).mp h).symm
+  TaskFrame.limit_of_succOrder (D := ℤ) fn_eq_of_zero
 
 /-- Every fibre is bounded above by `w + |d|`. Both disjuncts of `fnRel` force it: the first
 gives `u ≤ max 0 (w - d) ≤ w + |d|` outright, and the second gives either `u = w - d ≤ w + |d|`
@@ -218,7 +214,6 @@ reason `fzeroFrame` carries it — without it `FN.WorldState` does not reduce to
 @[reducible] def fnFrameOver : FrameOver (TemporalOrder.of ℤ) where
   WorldState := ℕ
   TaskRel := fnRel
-  nullity_identity := fn_nullity
   comp := fn_comp
   converse := fn_converse
   serial := fn_serial

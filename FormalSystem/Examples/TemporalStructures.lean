@@ -79,7 +79,6 @@ def intTimeFrame : FrameOver intOrder where
   WorldState := Unit
   worldNonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
-  nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
   comp := TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
     fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
@@ -124,14 +123,6 @@ def intNatFrame : FrameOver intOrder where
   WorldState := Nat
   worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  nullity_identity := fun w u => by
-    constructor
-    · intro h
-      cases h with
-      | inl h => exact absurd rfl h
-      | inr h => exact h
-    · intro h
-      right; exact h
   comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
     fun w u v x y hx hy h1 h2 => by
       cases h1 with
@@ -226,14 +217,6 @@ def intBoolFrame : FrameOver intOrder where
   WorldState := Bool
   worldNonempty := inferInstanceAs (Nonempty Bool)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  nullity_identity := fun w u => by
-    constructor
-    · intro h
-      cases h with
-      | inl h => exact absurd rfl h
-      | inr h => exact h
-    · intro h
-      right; exact h
   comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
     fun w u v x y hx hy h1 h2 => by
       cases h1 with

@@ -33,8 +33,8 @@ functional, so `F°` is **not** deterministic (`fzero_not_deterministic`) — an
 
 - `fib_eq_Icc` / `fib_eq_Icc'`, `isCompact_fib`, `isClosed_fib` — the fibres are closed bounded
   intervals, which is what makes *Saturation* a compactness argument
-- `fzero_nullity`, `fzero_converse`, `fzero_serial`, `fzero_comp`, `fzero_limit`,
-  `fzero_saturation` — the six `FrameOver` obligations
+- `fzero_converse`, `fzero_serial`, `fzero_comp`, `fzero_limit`, `fzero_saturation` — the
+  five `FrameOver` obligations (the zero-duration law is the derived `FrameOver.nullity_identity`)
 - `fzero_not_deterministic` — `0 ⇒_1 1` and `0 ⇒_1 2`, so `F°` fails `def:deterministic`
 
 ## The `uIcc` encoding
@@ -142,13 +142,7 @@ theorem isClosed_fib (w d : ℝ) : IsClosed (TaskFrame.Fib (D := realTemporalOrd
   · rw [fib_eq_Icc w d h]; exact isClosed_Icc
   · rw [fib_eq_Icc' w d h]; exact isClosed_Icc
 
-/-! ### The six `FrameOver` obligations -/
-
-/-- *Nullity*: the zero-duration band is `{w}`. -/
-theorem fzero_nullity (w u : ℝ) : fzeroRel w 0 u ↔ w = u := by
-  rw [fzeroRel_iff]; constructor
-  · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩) <;> linarith
-  · rintro rfl; left; constructor <;> linarith
+/-! ### The five `FrameOver` obligations -/
 
 /-- *Converse*: the `uIcc` encoding makes this hold on the nose. -/
 theorem fzero_converse (w d u : ℝ) : fzeroRel w d u ↔ fzeroRel u (-d) w := by
@@ -225,7 +219,6 @@ the order instances nor the state-set recursion can be stated. -/
 @[reducible] noncomputable def fzeroFrame : FrameOver realTemporalOrder where
   WorldState := ℝ
   TaskRel := fzeroRel
-  nullity_identity := fzero_nullity
   comp := fzero_comp
   converse := fzero_converse
   serial := fzero_serial

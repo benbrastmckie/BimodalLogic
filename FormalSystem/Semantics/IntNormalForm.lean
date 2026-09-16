@@ -446,9 +446,6 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
   WorldState := W
   worldNonempty := inferInstance
   TaskRel := ofStepRel R₁
-  nullity_identity := fun w u => by
-    rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))]
-    simp
   comp := fun w v x y hx hy => by
     -- `hx`/`hy` arrive with their `≤` routed through the temporal order's projection instance,
     -- which `omega` does not recognize as an `Int` ordering. `change` (not an ascription, which

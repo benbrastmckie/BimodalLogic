@@ -139,9 +139,6 @@ def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E where
   WorldState := F.WorldState
   worldNonempty := F.worldNonempty
   TaskRel := fun w d u => F.TaskRel w (e.symm d) u
-  nullity_identity := by
-    intro w u
-    simpa using F.nullity_identity w u
   comp := by
     intro w v x y hx hy
     have hx' : (0 : ↑D) ≤ e.symm x := by
