@@ -279,4 +279,44 @@ example : (Formula.strongRelease p q).temporalDepth = 1 := rfl
 -- Test: strongTrigger temporal depth
 example : (Formula.strongTrigger p q).temporalDepth = 1 := rfl
 
+/-!
+## Complexity of derived operators
+
+Each derived operator counts as a single node over its arguments, not as the size of its
+primitive expansion. The expected values were captured from the library's own evaluation.
+-/
+
+section ComplexityPins
+
+private def pCmplx : Formula := .atom (Atom.mkBase "p")
+private def qCmplx : Formula := .atom (Atom.mkBase "q")
+
+-- Unary temporal operators (the primitive expansions would give 5 and 9).
+#guard pCmplx.someFuture.complexity == 2
+#guard pCmplx.somePast.complexity == 2
+#guard pCmplx.allFuture.complexity == 2
+#guard pCmplx.allPast.complexity == 2
+#guard pCmplx.allFuture.box.complexity == 3
+#guard (Formula.untl qCmplx pCmplx).complexity == 3
+#guard (Formula.snce qCmplx pCmplx).complexity == 3
+
+-- Binary derived operators.
+#guard (Formula.release pCmplx qCmplx).complexity == 3
+#guard (Formula.trigger pCmplx qCmplx).complexity == 3
+#guard (Formula.weakUntil pCmplx qCmplx).complexity == 3
+#guard (Formula.weakSince pCmplx qCmplx).complexity == 3
+#guard (Formula.strongRelease pCmplx qCmplx).complexity == 4
+#guard (Formula.strongTrigger pCmplx qCmplx).complexity == 4
+
+-- Modal and compound temporal operators.
+#guard pCmplx.diamond.complexity == 2
+#guard pCmplx.always.complexity == 2
+#guard pCmplx.sometimes.complexity == 2
+#guard pCmplx.next.complexity == 2
+#guard pCmplx.prev.complexity == 2
+#guard pCmplx.weakFuture.complexity == 2
+#guard pCmplx.weakPast.complexity == 2
+
+end ComplexityPins
+
 end BimodalTest.Syntax

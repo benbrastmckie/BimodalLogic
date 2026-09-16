@@ -2099,41 +2099,8 @@ def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
 
 -- #eval (generateBimodalSlice defaultAtoms 2 2 [1, 2, 3, 4, 5]).1.length
 
-/-! ### Formula count validation
-
-Verify that the new derived operators are generated and that formula count
-increases at c4 and c5 relative to the pre-derived-operator baseline. -/
-
--- Formula count at c4 with 3 atoms, modal 2, temporal 2
--- Pre-derived-operator baseline: 960
--- With 7 new operators, expect modest increase (~2-3x)
-#eval (enumExactHelper defaultAtoms 2 2 4 {}).1.size
-
--- Formula count at c5 with 3 atoms, modal 2, temporal 2
-#eval (enumExactHelper defaultAtoms 2 2 5 {}).1.size
-
--- Bimodal slice at c5: should include formulas with new operators
-#eval (generateBimodalSlice defaultAtoms 2 2 [5]).1.length
-
--- Verify diamond(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any
-    (· == Formula.diamond (.atom (Atom.mkBase "p")))
-
--- Verify next(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any
-    (· == Formula.next (.atom (Atom.mkBase "p")))
-
--- Verify prev(p) appears in c2 enumeration
-#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any
-    (· == Formula.prev (.atom (Atom.mkBase "p")))
-
--- Verify release(p,q) appears in c3 enumeration (re-added binary derived)
-#guard (enumExactHelper defaultAtoms 2 2 3 {}).1.toList.any
-  (· == Formula.release (.atom (Atom.mkBase "p")) (.atom (Atom.mkBase "q")))
-
--- Verify weakUntil(p,q) appears in c3 enumeration (re-added binary derived)
-#guard (enumExactHelper defaultAtoms 2 2 3 {}).1.toList.any
-  (· == Formula.weakUntil (.atom (Atom.mkBase "p")) (.atom (Atom.mkBase "q")))
+/-! Formula counts at complexity 4 and 5, and the presence of each derived operator in the
+enumeration, are pinned by `#guard` rows in `Tests/BimodalTest/Automation/NormalizationTest.lean`. -/
 
 /-!
 ## Two-Phase Parallel Enumeration and Pipeline Overlap

@@ -23,12 +23,6 @@
 # pending relocation to Tests/BimodalTest
 FormalSystem/Automation/DatasetGenerator.lean 116
 
-# pending relocation to Tests/BimodalTest
-FormalSystem/Automation/FormulaEnumerator.lean 6
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Automation/Normalization.lean 42
-
 # intentional axiom-audit page; C21 asserts every name is pinned by C2/C14
 FormalSystem/MainResults.lean 54
 
@@ -82,7 +76,4 @@ FormalSystem/Metalogic/DiscreteNonCompactness.lean 1
 
 # `#print axioms` beside the theorem; pending migration to the C14 baseline pair
 FormalSystem/Metalogic/StrongCompleteness.lean 1
-
-# pending relocation to Tests/BimodalTest
-FormalSystem/Syntax/Formula.lean 20
 

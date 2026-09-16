@@ -142,17 +142,17 @@ executor running serially should simply take phases in numeric order.
 
 ---
 
-### Phase 2: Relocate Syntax/Formula, Normalization, FormulaEnumerator probes [NOT STARTED]
+### Phase 2: Relocate Syntax/Formula, Normalization, FormulaEnumerator probes [COMPLETED]
 
 **Goal**: Move the Syntax and Normalization-area class-D directives (plus Normalization's `#check @*_unfold` block) into Tests as asserting guards.
 
 **Tasks**:
-- [ ] Capture baseline output: run `lake env lean` on `FormalSystem/Syntax/Formula.lean`, `FormalSystem/Automation/Normalization.lean` and `FormalSystem/Automation/FormulaEnumerator.lean`, saving the output to the scratchpad.
-- [ ] Syntax/Formula.lean (20): append `#guard (...).complexity == N` rows to `Tests/BimodalTest/Syntax/FormulaTest.lean`, recreating the `private` `pCmplx*` fixtures in a test namespace. Delete the source rows and their fixtures (after confirming no other library use).
-- [ ] Normalization.lean (17 `#check @x_unfold`, 25 `#eval`): move the `#check`s verbatim into `Tests/BimodalTest/Automation/NormalizationTest.lean`. Convert the fold rows to `#guard ... == EnrichedFormula...`, pinning the **observed** `or` output, and turn the JSON/SExpr/pretty rows into `#guard ... == "..."`. Turn the round-trip census into a `#guard` over its Bool result.
-- [ ] FormulaEnumerator.lean (6 `#eval`, plus the 2 in-library `#guard`s, optional): add them to `NormalizationTest.lean`, which already imports FormulaEnumerator, as `#guard (enumExactHelper defaultAtoms 2 2 4 {}).1.size == 7852` and similar for 75914, 45111 and the three `true`s.
-- [ ] Update each source's section docstring to a one-line pointer to the test module. Ratchet the three allowlist entries to 0 by deleting them.
-- [ ] Build the library modules and the test modules through the guard, then run the harness `--no-build` (C20, C27).
+- [x] Capture baseline output: run `lake env lean` on `FormalSystem/Syntax/Formula.lean`, `FormalSystem/Automation/Normalization.lean` and `FormalSystem/Automation/FormulaEnumerator.lean`, saving the output to the scratchpad.
+- [x] Syntax/Formula.lean (20): append `#guard (...).complexity == N` rows to `Tests/BimodalTest/Syntax/FormulaTest.lean`, recreating the `private` `pCmplx*` fixtures in a test namespace. Delete the source rows and their fixtures (after confirming no other library use).
+- [x] Normalization.lean (17 `#check @x_unfold`, 25 `#eval`): move the `#check`s verbatim into `Tests/BimodalTest/Automation/NormalizationTest.lean`. Convert the fold rows to `#guard ... == EnrichedFormula...`, pinning the **observed** `or` output, and turn the JSON/SExpr/pretty rows into `#guard ... == "..."`. Turn the round-trip census into a `#guard` over its Bool result. *(deviation: altered — the whole UnfoldTests, FoldTests (including its 9 existing `#guard`s), RoundTripTests and SerializationTests sections moved as units, so Phase 7's Normalization example move was done here; the 17 `#check`s and unfold-lemma references are fully qualified in the test because `FormalSystem.Syntax` exports same-named `*_unfold` lemmas)*
+- [x] FormulaEnumerator.lean (6 `#eval`, plus the 2 in-library `#guard`s, optional): add them to `NormalizationTest.lean`, which already imports FormulaEnumerator, as `#guard (enumExactHelper defaultAtoms 2 2 4 {}).1.size == 7852` and similar for 75914, 45111 and the three `true`s.
+- [x] Update each source's section docstring to a one-line pointer to the test module. Ratchet the three allowlist entries to 0 by deleting them.
+- [x] Build the library modules and the test modules through the guard, then run the harness `--no-build` (C20, C27).
 
 **Timing**: 1.5 hours
 
@@ -301,7 +301,7 @@ executor running serially should simply take phases in numeric order.
 
 **Tasks**:
 - [ ] `Automation/Tactics/Commands.lean`: move the 72 live `modal_search` "Test N" examples to `Tests/BimodalTest/Automation/TacticsTest.lean`, and delete its three `example : True := trivial` placeholders.
-- [ ] `Automation/Normalization.lean`: move the UnfoldTests and RoundTripTests (26) to `NormalizationTest.lean`.
+- [x] `Automation/Normalization.lean`: move the UnfoldTests and RoundTripTests (26) to `NormalizationTest.lean`. *(completed early in Phase 2)*
 - [ ] `ProofSystem/Derivable.lean`: move "Aesop and Simp Test Examples" (5) to `Tests/BimodalTest/ProofSystem/DerivationTest.lean`.
 - [ ] `Syntax/{Star,Minus,Plus}Language/Derivation.lean`: move the "Smoke tests" blocks (9) to a new `Tests/BimodalTest/Syntax/LanguageDerivationTest.lean`, wired into the aggregator.
 - [ ] Propositional `PropForm.lean`/`Decidable.lean`: move the "Smoke Tests" (5) to `Tests/BimodalTest/Metalogic/PropDecideTest.lean`.
