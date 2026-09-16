@@ -474,9 +474,9 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
       exact ⟨u, (ofStepRel_of_nonneg hx w u).mpr hu⟩
     · obtain ⟨v, hv⟩ := exists_iter_bwd bwd x.natAbs w
       exact ⟨v, (ofStepRel_of_nonneg hx v w).mpr hv⟩
-  limit := TaskFrame.limit_of_succOrder (fun w u => by
-    rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))]
-    simp)
+  limit := TaskFrame.limit_of_succOrder fun w u h => by
+    rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))] at h
+    simpa [eq_comm] using h
   saturation := TaskFrame.saturation_of_finite (ofStepRel R₁)
 
 @[simp]

@@ -278,9 +278,7 @@ supplied by `D`'s own field — `def:temporal-order` mandates it. -/
 theorem multiFamGen_limit {FamIdx : Type} [Nonempty FamIdx] :
     ∀ w u : FamIdx × ↑D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrameGen D FamIdx).TaskRel w y u) → u = w :=
-  TaskFrame.limit_of_shift Prod.snd
-    (fun _ _ _ h => h.2)
-    (fun w u h => (((multiFamTaskFrameGen D FamIdx).nullity_identity w u).mp h).symm)
+  (multiFamTaskFrameGen D FamIdx).limit
 
 /-- Every fiber (`def:task-relation`, *Fiber* clause) of the generic flow frame is a
 subsingleton: the clock is deterministic, so `Fib R w x ⊆ {(w.1, w.2 + x)}`. -/

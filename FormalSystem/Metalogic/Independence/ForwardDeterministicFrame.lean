@@ -186,7 +186,7 @@ theorem fn_comp : TaskFrame.Compositional (D := TemporalOrder.of ℤ) fnRel := b
 `fn_nullity` supplies the hypothesis. -/
 theorem fn_limit :
     ∀ w u, (∀ x : ℤ, 0 < x → ∃ y, |y| < x ∧ fnRel w y u) → u = w :=
-  TaskFrame.limit_of_succOrder (D := ℤ) fn_nullity
+  TaskFrame.limit_of_succOrder (D := ℤ) fun w u h => ((fn_nullity w u).mp h).symm
 
 /-- Every fibre is bounded above by `w + |d|`. Both disjuncts of `fnRel` force it: the first
 gives `u ≤ max 0 (w - d) ≤ w + |d|` outright, and the second gives either `u = w - d ≤ w + |d|`

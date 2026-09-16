@@ -281,8 +281,7 @@ theorem regionFrame_limit (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearO
     [IsOrderedAddMonoid D] [Nontrivial D] :
     ∀ s u : W × D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (regionFrame W ι D).TaskRel s y u) → u = s :=
-  TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
-    (fun s u h => (((regionFrame W ι D).nullity_identity s u).mp h).symm)
+  (regionFrame W ι D).limit
 
 /-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`,

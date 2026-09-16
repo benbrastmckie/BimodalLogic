@@ -521,6 +521,38 @@ theorem interpolates_of_comp {W : Type} {R : W → D → W → Prop} (h : Compos
     Interpolates R :=
   fun w v x y hx hy hR => (h w v x y hx hy).mp hR
 
+omit [Nontrivial D] in
+/--
+`lem:nullity`: every world state loops at duration zero.
+
+Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$
+in every task frame $\F = \tuple{W, \D, \Rightarrow}$."
+
+**Nullity is DERIVED, not an axiom.** `def:frame` has exactly four axioms — *Compositionality*,
+*Seriality*, *Limit*, *Saturation* — and Nullity is not among them. This theorem is the
+derivation, from *Seriality* at `x = 0` plus *Limit*, and it is **choice-free**, in contrast with
+the Extension Theorem's appeal to Zorn's lemma.
+
+The argument is the paper's: *Seriality* at `x = 0` supplies some `u` with `w ⇒₀ u`; since
+`|0| < x` for every `x > 0`, that `u` lies in the cone `(w)_x` at every positive radius, so
+*Limit* forces `u = w`.
+
+The *Limit* hypothesis is taken in the literal transcribed shape
+`∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is exactly what
+`TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift` conclude, so either may be passed
+directly.
+
+It is stated over a bare relation and placed ahead of the `FrameOver` structure so that the
+fibre-level `FrameOver.nullity` can be read off the `serial` and `limit` fields directly.
+-/
+theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
+    (hSer : Serial R)
+    (hLim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+    (w : W) : R w 0 w := by
+  obtain ⟨u, hu⟩ := (hSer w 0 le_rfl).1
+  have huw : u = w := hLim w u fun x hx => ⟨0, by simpa using hx, hu⟩
+  exact huw ▸ hu
+
 end TaskFrame
 
 /--
@@ -737,6 +769,26 @@ open TaskFrame
 variable {D : TemporalOrder}
 
 /--
+**`lem:nullity`, at the fibre: every world state loops at duration zero.**
+
+Derived, not postulated: *Seriality* at `x = 0` plus *Limit*, via
+`TaskFrame.nullity_of_serial_limit`. Choice-free.
+-/
+theorem nullity (F : FrameOver D) (w : F.WorldState) : F.TaskRel w 0 w :=
+  TaskFrame.nullity_of_serial_limit F.serial F.limit w
+
+/--
+**Injectivity at zero: a zero-duration task changes nothing.**
+
+Derived from the `limit` field **alone**, by instantiating its cone witness at `y := 0`: for
+every `x > 0` we have `|0| < x` and `TaskRel w 0 u`, so *Limit* forces `u = w`. *Seriality* is
+not needed for this half.
+-/
+theorem eq_of_taskRel_zero (F : FrameOver D) {w u : F.WorldState}
+    (h : F.TaskRel w 0 u) : w = u :=
+  (F.limit w u fun _ hx => ⟨0, by simpa using hx, h⟩).symm
+
+/--
 **Composition on the positive cone — the `←` projection of the `comp` field.**
 
 If a task of duration `x ≥ 0` takes `w` to `u`, and a task of duration `y ≥ 0` takes `u` to `v`,
@@ -761,14 +813,6 @@ F.interpolates` elaborates. This is the form the Step Lemma chain consumes.
 -/
 theorem interpolates (F : FrameOver D) : Interpolates F.TaskRel :=
   interpolates_of_comp F.comp
-
-/--
-Derived nullity: zero-duration task is reflexive.
-
-This follows from `nullity_identity`: `TaskRel w 0 w` iff `w = w`, and `w = w` is trivial.
--/
-theorem nullity (F : FrameOver D) (w : F.WorldState) : F.TaskRel w 0 w :=
-  F.nullity_identity w w |>.mpr rfl
 
 /--
 Derived backward compositionality: tasks compose in the backward direction.
@@ -831,7 +875,8 @@ simply *Limit*, and the helpers are named accordingly.)
 
 Over a `SuccOrder`, `Order.succ 0` is a positive duration with nothing strictly between it and
 `0` in absolute value, so the hypothesis at `x = Order.succ 0` already forces the witness
-duration to be `0`, and iff-Nullity closes the goal. This discharges every frame whose duration
+duration to be `0`, and the zero-duration hypothesis `hzero` (a zero-duration task changes
+nothing) closes the goal. This discharges every frame whose duration
 type is discrete (`Int` in particular).
 
 `NoMaxOrder D` is what makes `0 < Order.succ 0` available; it is *not* an extra burden in
@@ -843,14 +888,14 @@ frame carrying that bundle needs any new hypothesis to apply this lemma. `IsSucc
 not used.
 -/
 theorem limit_of_succOrder [SuccOrder D] [NoMaxOrder D]
-    {W : Type} {R : W → D → W → Prop} (hnull : ∀ w u, R w 0 u ↔ w = u) :
+    {W : Type} {R : W → D → W → Prop} (hzero : ∀ w u, R w 0 u → u = w) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w := by
   intro w u h
   obtain ⟨y, hy, hR⟩ := h (Order.succ 0) (Order.lt_succ 0)
   have h1 : |y| ≤ 0 := Order.lt_succ_iff.mp hy
   have h2 : y = 0 := abs_eq_zero.mp (le_antisymm h1 (abs_nonneg y))
   subst h2
-  exact ((hnull w u).mp hR).symm
+  exact hzero w u hR
 
 /--
 *Limit* holds for any deterministic-shift frame, over *any* duration type — dense included.
@@ -1256,7 +1301,7 @@ theorem comp_of_permissive {W : Type} {R : W → D → W → Prop}
 /--
 *Limit* for a permissive relation over a discrete duration type.
 
-A permissive relation satisfies iff-Nullity (`R w 0 u ↔ w = u`), so `limit_of_succOrder`
+At duration `0` a permissive relation relates only equal states, so `limit_of_succOrder`
 applies verbatim. The `[SuccOrder D] [NoMaxOrder D]` restriction is not removable: over a dense
 `D` every state lies in every cone of every other state (pick any `y ≠ 0` with `|y| < x`), and
 *Limit* fails outright.
@@ -1264,7 +1309,7 @@ applies verbatim. The `[SuccOrder D] [NoMaxOrder D]` restriction is not removabl
 theorem limit_of_permissive [SuccOrder D] [NoMaxOrder D] {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w :=
-  limit_of_succOrder (fun w u => by rw [hR]; simp)
+  limit_of_succOrder fun w u h => by rw [hR] at h; simpa [eq_comm] using h
 
 omit [IsOrderedAddMonoid D] in
 /--

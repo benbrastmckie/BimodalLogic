@@ -135,41 +135,6 @@ mention declarations that precede it. A predicate declared in a module that impo
 makes the fields statable without restating anything.
 -/
 
-/--
-`lem:nullity`: every world state loops at duration zero.
-
-Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$
-in every task frame $\F = \tuple{W, \D, \Rightarrow}$."
-
-**Nullity is DERIVED, not an axiom.** `def:frame` has exactly four axioms — *Compositionality*,
-*Seriality*, *Limit*, *Saturation* — and Nullity is not among them. This theorem is the
-derivation, from *Seriality* at `x = 0` plus *Limit*, and it is **choice-free**, in contrast with
-the Extension Theorem's appeal to Zorn's lemma.
-
-The argument is the paper's: *Seriality* at `x = 0` supplies some `u` with `w ⇒₀ u`; since
-`|0| < x` for every `x > 0`, that `u` lies in the cone `(w)_x` at every positive radius, so
-*Limit* forces `u = w`.
-
-The *Limit* hypothesis is taken in the literal transcribed shape
-`∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is exactly what
-`TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift` conclude, so either may be passed
-directly.
-
-Note this asserts **reflexivity only**, which is all `lem:nullity` asserts. The
-`FrameOver.nullity_identity` field is an iff, and its other half — injectivity-at-zero,
-`R w 0 u → u = w` — follows from the `limit` hypothesis **alone**, by instantiating the cone
-witness at `y := 0`. So the field is derivable from `serial` + `limit` together and is *not* a
-strengthening of the paper; see that field's own docstring in `TaskFrame.lean` for both
-derivations. Nothing here strengthens or weakens the field, and nothing here depends on it.
--/
-theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
-    (hSer : Serial R)
-    (hLim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
-    (w : W) : R w 0 w := by
-  obtain ⟨u, hu⟩ := (hSer w 0 le_rfl).1
-  have huw : u = w := hLim w u fun x hx => ⟨0, by simpa using hx, hu⟩
-  exact huw ▸ hu
-
 end TaskFrame
 
 namespace PartialHistory

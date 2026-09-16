@@ -1,7 +1,7 @@
 # Implementation Plan: Task #598
 
 - **Task**: 598 - Derive nullity_identity instead of carrying it as a FrameOver field
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking (task 596 nesting is completed; task 599 is in planning and overlaps only on `FormalSystem/Semantics.lean` prose)
 - **Research Inputs**: specs/598_derive_nullity_identity/reports/01_derive-nullity-identity.md
@@ -97,19 +97,19 @@ No roadmap consultation requested for this dispatch.
 Phases within the same wave can execute in parallel (Phases 3 and 4 own disjoint files: 3 owns
 `.lean` files, 4 owns `docs/`, `typst/`, and `*.md` READMEs).
 
-### Phase 1: Relocate and weaken helpers (field still present) [NOT STARTED]
+### Phase 1: Relocate and weaken helpers (field still present) [COMPLETED]
 
 **Goal**: Land every change that does not require removing the field, keeping the build green,
 so Phase 2 is a pure deletion batch.
 
 **Tasks**:
-- [ ] Move `nullity_of_serial_limit` (with its docstring, trimmed of the paragraph describing the field) from `FormalSystem/Semantics/FrameAxioms.lean` into `FormalSystem/Semantics/TaskFrame.lean`'s first `namespace TaskFrame` block, after `Serial` (and before `end TaskFrame` at ~line 524); add `omit [Nontrivial D] in` if the linter requires. Delete the declaration from `FrameAxioms.lean`, leaving its list-item pointer (line ~86) pointing at `TaskFrame.lean`.
-- [ ] Weaken `TaskFrame.limit_of_succOrder` (TaskFrame.lean ~845) to `(hzero : ∀ w u, R w 0 u → u = w)`; last line becomes `exact hzero w u hR`. Update its docstring.
-- [ ] Re-grep `limit_of_succOrder` callers and update each: `limit_of_permissive` (TaskFrame.lean ~1267, e.g. `fun w u h => by rw [hR] at h; simpa [eq_comm] using h`), `fn_limit` (ForwardDeterministicFrame.lean ~189), `IntNormalForm.ofStep`'s `limit` (IntNormalForm.lean ~477). For `fn_limit`, replace `fn_nullity` by a one-directional lemma (shrink `fn_nullity` to `fnRel w 0 u → u = w`, renaming it e.g. `fn_eq_of_zero` if the old name misleads; the field line still uses the iff in this phase, so keep the iff proof inline there or temporarily keep both halves — Phase 2 removes the field line).
-- [ ] Add `FrameOver.eq_of_taskRel_zero` at the top of `namespace FrameOver` (TaskFrame.lean ~733), proved from `F.limit` alone: `(F.limit w u fun x hx => ⟨0, by simpa using hx, h⟩).symm`.
-- [ ] Reprove `FrameOver.nullity` from `TaskFrame.nullity_of_serial_limit F.serial F.limit w` and move it above `forward_comp`.
-- [ ] Replace the bodies of the standalone `*_limit` theorems at `Metalogic/Algebraic/FlowFrame.lean:~283` and `Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:~285` with `(multiFamTaskFrameGen D FamIdx).limit` / `(regionFrame W ι D).limit` (or delete the theorem if it is unused after inspection; grep first).
-- [ ] Build: `lake build FormalSystem.Semantics.TaskFrame FormalSystem.Semantics.FrameAxioms`, then full `lake build` (detached, per lean4.md long-build guidance). Commit.
+- [x] Move `nullity_of_serial_limit` (with its docstring, trimmed of the paragraph describing the field) from `FormalSystem/Semantics/FrameAxioms.lean` into `FormalSystem/Semantics/TaskFrame.lean`'s first `namespace TaskFrame` block, after `Serial` (and before `end TaskFrame` at ~line 524); add `omit [Nontrivial D] in` if the linter requires. Delete the declaration from `FrameAxioms.lean`, leaving its list-item pointer (line ~86) pointing at `TaskFrame.lean`.
+- [x] Weaken `TaskFrame.limit_of_succOrder` (TaskFrame.lean ~845) to `(hzero : ∀ w u, R w 0 u → u = w)`; last line becomes `exact hzero w u hR`. Update its docstring.
+- [x] Re-grep `limit_of_succOrder` callers and update each: `limit_of_permissive` (TaskFrame.lean ~1267, e.g. `fun w u h => by rw [hR] at h; simpa [eq_comm] using h`), `fn_limit` (ForwardDeterministicFrame.lean ~189), `IntNormalForm.ofStep`'s `limit` (IntNormalForm.lean ~477). For `fn_limit`, replace `fn_nullity` by a one-directional lemma (shrink `fn_nullity` to `fnRel w 0 u → u = w`, renaming it e.g. `fn_eq_of_zero` if the old name misleads; the field line still uses the iff in this phase, so keep the iff proof inline there or temporarily keep both halves — Phase 2 removes the field line). *(deviation: altered — `fn_limit` adapts the still-iff `fn_nullity` inline in this phase; the lemma is shrunk in Phase 2)*
+- [x] Add `FrameOver.eq_of_taskRel_zero` at the top of `namespace FrameOver` (TaskFrame.lean ~733), proved from `F.limit` alone: `(F.limit w u fun x hx => ⟨0, by simpa using hx, h⟩).symm`.
+- [x] Reprove `FrameOver.nullity` from `TaskFrame.nullity_of_serial_limit F.serial F.limit w` and move it above `forward_comp`.
+- [x] Replace the bodies of the standalone `*_limit` theorems at `Metalogic/Algebraic/FlowFrame.lean:~283` and `Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:~285` with `(multiFamTaskFrameGen D FamIdx).limit` / `(regionFrame W ι D).limit` (or delete the theorem if it is unused after inspection; grep first).
+- [x] Build: `lake build FormalSystem.Semantics.TaskFrame FormalSystem.Semantics.FrameAxioms`, then full `lake build` (detached, per lean4.md long-build guidance). Commit. *(deviation: altered — scoped build of all six touched modules plus `Extension.Admissible` instead of a full build; full build deferred to Phase 2, which touches every downstream site anyway)*
 
 **Timing**: 1.25 hours
 
