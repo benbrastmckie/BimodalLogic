@@ -1,0 +1,25 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md",
+      "summary": "Inventory of all 60 active tasks with a proposed single codebase-cleanup topic (15 existing members, 542 merged into 588, 4 new tasks), rescoped 583, widened 586/590, a 6-wave dependency DAG, and a cslib conventions comparison."
+    }
+  ],
+  "user_decision": {
+    "question": "Should the semantics retarget refactor (task 569, ~600 touch points, no new theorems) join the codebase-cleanup topic, which makes the C17 triage, docstring coverage and citation tasks wait on it?",
+    "options": [
+      "Include 569 in codebase-cleanup, ordered after 584 and before 588/540/589",
+      "Keep 569 in paper-refactor, ordered after 584, with no edges into the cleanup tail"
+    ],
+    "recommended": "Include 569 in codebase-cleanup, ordered after 584 and before 588/540/589",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1789572316_3a825c_593",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

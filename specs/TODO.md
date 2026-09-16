@@ -53,7 +53,7 @@ next_project_number: 594
 ### Code Quality
 
 587 [NOT STARTED] — Clear the two broken: entries in...
-593 [NOT STARTED] — I recently created tasks 581-592. I already have many other...
+593 [RESEARCHED] — I recently created tasks 581-592. I already have many other...
 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
   └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
@@ -139,10 +139,11 @@ next_project_number: 594
 ## Tasks
 
 ### 593. Revise task organization codebase cleanup
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
+- **Research**: [593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md]
 
 **Description**: I recently created tasks 581-592. I already have many other tasks I've created. I want to know if these tasks can be better organized into topics, combined, replaced, removed, or have new tasks added. I'd like to focus on improving the codebase first, including everything that doesn't involve writing new proofs, but rather changing conventions, removing cruft, improving comments, or otherwise refactoring, where these tasks should all be gathered together under one topic with clear dependencies. Thus the aim of this task is to revise the other tasks as most appropriate. It may be worth researching /home/benjamin/Projects/cslib/ which aimed to provide a high quality of lean engineering for related topics. Though the subject matter there differs, the standards are good to aim for
 
