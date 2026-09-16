@@ -20,13 +20,21 @@
     {
       "project_number": 599,
       "project_name": "unify_total_histories_partial",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide \"Semantics in Lean II: Histories and Models\" quotes these definitions and must be updated to match",
       "topic": "semantics",
       "created": "2026-09-16T18:26:24Z",
-      "last_updated": "2026-09-16T18:41:44Z",
-      "session_id": "sess_1789584086_2b6633_599"
+      "last_updated": "2026-09-16T18:47:27Z",
+      "session_id": "sess_1789584086_2b6633",
+      "artifacts": [
+        {
+          "path": "specs/599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md",
+          "type": "report",
+          "summary": "Audit of the Semantics history layer: convexity is never used, all ConvexHistory values are total; recommends deleting the ConvexHistory structure, retargeting TruthAt/validity/HF to total PartialHistory, keeping IsConvex as a predicate, with a probe-verified core API, migration phases, and slide update."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 598,

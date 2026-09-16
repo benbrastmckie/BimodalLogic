@@ -99,7 +99,7 @@ next_project_number: 601
 ### Semantics
 
 598 [RESEARCHED] — Remove the nullityidentity field from FrameOver in...
-599 [RESEARCHING] — Simplify the history definitions to match the paper...
+599 [RESEARCHED] — Simplify the history definitions to match the paper...
 
 ### Codebase Cleanup
 
@@ -130,10 +130,11 @@ next_project_number: 601
 ---
 
 ### 599. Unify total histories partial
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md]
 
 **Description**: Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide "Semantics in Lean II: Histories and Models" quotes these definitions and must be updated to match
 

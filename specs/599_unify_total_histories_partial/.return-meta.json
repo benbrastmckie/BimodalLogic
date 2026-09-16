@@ -1,0 +1,25 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md",
+      "summary": "Audit of the Semantics history layer: convexity is never used, all ConvexHistory values are total; recommends deleting the ConvexHistory structure, retargeting TruthAt/validity/HF to total PartialHistory, keeping IsConvex as a predicate, with a probe-verified core API, migration phases, and slide update."
+    }
+  ],
+  "user_decision": {
+    "question": "Should this task also collapse the hybrid predicate/subtype encoding (settled Decision A) so TruthAt, the box clause and all validity predicates quantify over the bundled F.HF, removing the unbundled (tau)(h : tau.IsTotal) pairs and the atom-clause domain conjunct?",
+    "options": [
+      "Keep hybrid encoding; only re-base it onto PartialHistory (~91 files, mostly mechanical)",
+      "Fully bundle over F.HF now (overturns Decision A; reworks ~1330 TruthAt lines in 123 files)"
+    ],
+    "recommended": "Keep hybrid encoding; only re-base it onto PartialHistory (~91 files, mostly mechanical)",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1789584086_2b6633_599",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
