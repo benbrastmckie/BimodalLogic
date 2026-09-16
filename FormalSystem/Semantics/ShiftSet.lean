@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.TruthTransport
 import FormalSystem.Semantics.Extension.Extension
 import Mathlib.GroupTheory.QuotientGroup.Basic
 import Mathlib.Algebra.Order.Archimedean.Basic

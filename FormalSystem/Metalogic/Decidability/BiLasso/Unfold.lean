@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.TruthTransport
 import Mathlib.Algebra.Order.Group.Int
 
 /-!

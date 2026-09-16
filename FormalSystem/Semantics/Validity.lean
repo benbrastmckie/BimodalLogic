@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.TruthTransport
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Syntax.Context

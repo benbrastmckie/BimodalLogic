@@ -23,6 +23,7 @@ import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.TruthClauses
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.TruthTransport
 import FormalSystem.Semantics.MinusTruth
 import FormalSystem.Semantics.MinusFrame
 import FormalSystem.Semantics.ShiftSet

@@ -1,7 +1,7 @@
 # Implementation Plan: Split Semantics/Truth.lean's truth-transport machinery
 
 - **Task**: 580 - Split Semantics/Truth.lean's correspondence machinery out of Truth.lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/580_split_semantics_truth_lean_s_corresponde/reports/01_split-truth-correspondence-machinery.md
@@ -108,20 +108,20 @@ No `roadmap_path` supplied for this dispatch; ROADMAP.md was not consulted.
 
 Phases within the same wave can execute in parallel. This plan is fully sequential.
 
-### Phase 1: Relocate the transport layer and repair imports [NOT STARTED]
+### Phase 1: Relocate the transport layer and repair imports [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `TruthTransport.lean` exists with the transport layer verbatim, `Truth.lean` is cut down
 to the `TruthAt` subject, and `lake build` is green again.
 
 **Tasks**:
-- [ ] Re-confirm the block boundaries against the current file before cutting (they were read at
+- [x] Re-confirm the block boundaries against the current file before cutting (they were read at
       research time and are load-bearing): `end Truth` at 577; transport block A = 579-891
       (`TruthCorr` + `truthAt_of_truthCorr`, `namespace TimeShift` … `end TimeShift`,
       `namespace Truth` opened at 841 with `box_const`/`box_time_const`); keep-block = 893-996;
       `end Truth` at 998; transport block B = 1000-1191 (`TruthIso`, `TruthIso.toCorr`,
       `truthAt_of_truthIso`, `TruthAntiIso`, `truthAt_of_truthAntiIso`); `end FormalSystem.Semantics`
       at 1193.
-- [ ] Create `FormalSystem/Semantics/TruthTransport.lean` with this preamble, in order:
+- [x] Create `FormalSystem/Semantics/TruthTransport.lean` with this preamble, in order:
       the 5-line Apache copyright header (matching `Truth.lean` lines 1-5);
       `import FormalSystem.Semantics.Truth` (sufficient alone — it transitively supplies `TaskModel`,
       `ConvexHistory`, `Syntax.Formula` and the Mathlib order lemmas the moved bodies use);
@@ -130,20 +130,31 @@ to the `TruthAt` subject, and `lake build` is green again.
       FormalSystem.ProofSystem.FrameClass` with its explanatory comment;
       a module docstring (declaration-name citations only, no `file.lean:NNN`);
       `namespace FormalSystem.Semantics`; `open FormalSystem.Syntax`; `variable {F : TaskFrame}`.
-- [ ] Append block A verbatim (579-891), closing the `namespace Truth` it opens at 841 with
+- [x] Append block A verbatim (579-891), closing the `namespace Truth` it opens at 841 with
       `end Truth`, then block B verbatim (1000-1191), then `end FormalSystem.Semantics`.
-- [ ] Delete 1000-1191 and 579-891 from `Truth.lean` (delete the higher range first so the lower
+- [x] Delete 1000-1191 and 579-891 from `Truth.lean` (delete the higher range first so the lower
       line numbers stay valid).
-- [ ] Move the keep-block (893-996, including its `/-! ## A-17: history-independence and the gap
+- [x] Move the keep-block (893-996, including its `/-! ## A-17: history-independence and the gap
       formula` section comment) upward so it sits immediately before the `end Truth` at 577;
       drop the now-orphaned `namespace Truth` (841) and its matching `end Truth` (998).
-- [ ] Add `import FormalSystem.Semantics.TruthTransport` to `FormalSystem/Semantics.lean`,
+- [x] Add `import FormalSystem.Semantics.TruthTransport` to `FormalSystem/Semantics.lean`,
       immediately after the `FormalSystem.Semantics.Truth` line (currently line 25).
-- [ ] Add `import FormalSystem.Semantics.TruthTransport` to exactly four consumer gateways:
+- [x] Add `import FormalSystem.Semantics.TruthTransport` to exactly four consumer gateways:
       `FormalSystem/Semantics/Validity.lean`, `FormalSystem/Semantics/ShiftSet.lean`,
       `FormalSystem/Semantics/PlusTruth.lean`,
-      `FormalSystem/Metalogic/Decidability/BiLasso/Unfold.lean`.
-- [ ] Run the detached guarded build and drive it to exit 0.
+      `FormalSystem/Metalogic/Decidability/BiLasso/Unfold.lean`. *(deviation: altered — three of
+      the four applied; `PlusTruth.lean` excluded on pre-edit-probe evidence, see Reasoned
+      Exclusions below)*
+- [x] Run the detached guarded build and drive it to exit 0.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `FormalSystem/Semantics/PlusTruth.lean` — add `import FormalSystem.Semantics.TruthTransport` | The plan's gateway hypothesis listed this file as one of four needed import sites. The probe contradicts it: `PlusTruth.lean` reaches no moved declaration in elaborated code, and it gateways no consumer that needs one, so the import would be dead weight widening the module's import surface for nothing. Decided, not deferred — there is nothing for a later dispatch to revisit. | (1) Definition lookup: the file's only two matches for any of the seventeen moved names are docstring prose — `PlusTruth.lean:43` and `PlusTruth.lean:338`, both reading "`timeShift_preserves_truth`, proved directly because `TruthCorr` is `Formula`-only". Zero matches in elaborated code. (2) Reference count / gateway-minimality probe over the whole `FormalSystem` import graph, dropping one gateway at a time: `without FormalSystem.Semantics.PlusTruth -> missing: []`, against `without …Validity -> missing: [6 modules]`, `without …ShiftSet -> missing: [ShiftSet]`, `without …BiLasso.Unfold -> missing: [BoxOracle, SmallModel, TruthLemma]`. (3) `lake build` green at 2653/2653 jobs with the import absent. |
+
+The remaining three gateways plus the `FormalSystem/Semantics.lean` aggregator line were applied
+and are load-bearing, as the same probe's other three rows show.
 
 **Timing**: 2 hours
 
