@@ -112,7 +112,7 @@ next_project_number: 598
     └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
 594 [PLANNED] — Relocate test-shaped smoke tests out of the live library....
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
-595 [PLANNING] — Decide where durable project records live and move them there...
+595 [PLANNED] — Decide where durable project records live and move them there...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
 596 [PLANNING] — Nest the flat Semantics/ language-family files into...
@@ -157,11 +157,12 @@ ACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15
 
 ### 595. Establish durable records home
 - **Effort**: small
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [595_establish_durable_records_home/reports/01_durable-records-home.md]
+- **Plan**: [595_establish_durable_records_home/plans/01_durable-records-home.md]
 
 **Description**: Decide where durable project records live and move them there if the decision is to move. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `specs/paper-definitions-of-record.md` and `specs/decisions/*.md` (currently `total-history-validity-decisions.md`, `untl-snce-argument-order.md`) are cited 43 times from live Lean (25 paper-definitions-of-record, 18 decisions) and `specs/paper-definitions-of-record.md` is read by `scripts/check-paper-definitions.sh`. `specs/` is the task-management tree (and `specs/archive/` is gitignored), so durable records there are one cleanup away from breaking.
 
