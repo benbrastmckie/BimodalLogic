@@ -1,7 +1,7 @@
 # Implementation Plan: Task #582
 
 - **Task**: 582 - Break or re-baseline the Conservativity <-> Deterministic directory cycle in `Metalogic/`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 583 (soft: records the CI wiring pattern Phase 4 follows; not a hard blocker)
 - **Research Inputs**: specs/582_break_or_rebaseline_metalogic_cycle/reports/02_cycle-break-costing.md (primary), specs/582_break_or_rebaseline_metalogic_cycle/reports/01_conservativity-deterministic-cycle.md (evidence), specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md (CI wiring pattern)

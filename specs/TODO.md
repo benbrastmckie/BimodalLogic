@@ -11,8 +11,8 @@ next_project_number: 598
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,582,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,560,564,565,567,570,584,586,590 | 298,464,502,559,563,568,582,591,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,560,564,565,567,570,584,586,590 | 298,464,502,559,563,568,591,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,506,566,569,585 | 231,465,497,565,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,588,597 | 428,498,499,500,569,585,594 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501,540 | 125,429,588,597 | algebraic-representation, decidability, codebase-cleanup |
@@ -98,7 +98,8 @@ next_project_number: 598
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-582 [IMPLEMENTING] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
+587 [IMPLEMENTING] — Clear the two broken: entries in...
+591 [NOT STARTED] — Adopt a naming convention that distinguishes leanexe roots...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
@@ -108,9 +109,6 @@ next_project_number: 598
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
       └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-587 [IMPLEMENTING] — Clear the two broken: entries in...
-591 [NOT STARTED] — Adopt a naming convention that distinguishes leanexe roots...
-  └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
     └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
 594 [NOT STARTED] — Relocate test-shaped smoke tests out of the live library....
@@ -467,12 +465,13 @@ See specs/reviews/review-2026-09-16.md, Finding H3; specs/593_revise_task_organi
 
 ### 582. Break or rebaseline metalogic cycle
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [582_break_or_rebaseline_metalogic_cycle/reports/02_cycle-break-costing.md]
 - **Plan**: [582_break_or_rebaseline_metalogic_cycle/plans/02_cycle-break-plan.md]
+- **Summary**: [582_break_or_rebaseline_metalogic_cycle/summaries/02_cycle-break-plan-summary.md]
 
 **Description**: `bash scripts/check-metalogic-cycles.sh` exits 1: it asserts exactly one directory-level import cycle in `FormalSystem/Metalogic/` and finds two. The new one is `Conservativity <-> Deterministic`, whose entire surface is two import lines:
   - `Conservativity/Plus/Corollaries.lean:8` -> `FormalSystem.Metalogic.Deterministic.Completeness`
