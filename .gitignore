@@ -37,6 +37,13 @@ _site/
 test-results/
 coverage/
 
+# LaTeX/Typst build logs. `latex/*.log` and `latex/subfiles/*.log` were tracked for months --
+# `indent.log` below was the only log rule, and it matches one filename, not the pattern. Scoped
+# to the document trees rather than made repo-wide: `specs/**/logs/*.log` are task provenance
+# records, deliberately tracked.
+latex/**/*.log
+typst/**/*.log
+
 # Backup files and directories
 *.backup
 *.bak

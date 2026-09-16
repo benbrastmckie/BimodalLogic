@@ -10,7 +10,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems ([slides](https://benbrastmckie.com/publications/pw_slides.pdf))
 
-**Bimodal Reference Manual**: [BimodalReference.pdf](latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
+**Bimodal Reference Manual**: [`typst/BimodalReference.typ`](typst/README.md) — the maintained two-part reference (formal *TM*, its Lean formalization, and the automated-reasoning tooling). Built on demand — `typst compile BimodalReference.typ build/BimodalReference.pdf` — rather than committed; `typst/SYNC-MAP.md` and `scripts/typst-sync-check.sh` keep its claims pinned to live source. A superseded LaTeX edition is retained at [`latex/BimodalReference.pdf`](latex/BimodalReference.pdf) and is **not** kept in sync.
 
 **Demo**: [BimodalProofs.lean](FormalSystem/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
@@ -19,7 +19,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 |--------|-------|
 | Live `.lean` files | 520 |
 | Live lines of code | 165,533 |
-| Live comment lines | 98,060 |
+| Live comment lines | 98,065 |
 | Archived `.lean` files | 168 |
 | Archived lines | 91,618 |
 <!-- END GENERATED -->

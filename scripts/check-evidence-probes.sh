@@ -14,6 +14,15 @@
 # guard in `check-module-invariants.sh`, and uses the same mechanism (`lake env lean` on a file
 # outside the build graph).
 #
+# WHY THE PROBES DO NOT LIVE IN A TASK DIRECTORY.  They used to, under
+# `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/`.  When `/todo` archived that task the
+# whole directory moved to `specs/archive/`, which `.gitignore` excludes -- so the four probes left
+# version control entirely (absent from a fresh clone) and this guard failed on every run against a
+# path that no longer existed.  Nothing announced either fact, because this script is not wired into
+# CI.  A probe outlives the task that produced it by construction: it records a design obstruction,
+# not a unit of work.  It therefore lives in `specs/evidence/`, which is task-independent and
+# tracked, exactly as `specs/reviews/` is.  Do not move a probe back under a task directory.
+#
 # WHAT EACH PROBE HOLDS IN PLACE.  See the table in the WIRED list below.
 #
 # Usage:
@@ -25,7 +34,7 @@ set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 1
 
-EVIDENCE="specs/417_semantic_fmp_finite_worldstate_over_z/evidence"
+EVIDENCE="specs/evidence/bi-lasso-decision-layer"
 
 # --- WIRED --------------------------------------------------------------------------------
 # probe                                    | the decision it holds in place

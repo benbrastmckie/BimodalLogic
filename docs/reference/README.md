@@ -20,6 +20,18 @@ Most reference materials are theory-specific. See:
 |----------|-------------|
 | [API_REFERENCE.md](API_REFERENCE.md) | Project-wide API documentation (key types, functions, and modules) |
 
+## Authoring Standards
+
+These three define how the `FormalSystem/` tree is written, and are the specifications the
+`readme-lint.sh` and docstring-coverage checks implement. They sat unindexed here and
+unreferenced from anywhere in the repository until this row was added.
+
+| Document | Description |
+|----------|-------------|
+| [readme-standard.md](readme-standard.md) | Template and required sections for every `FormalSystem/` README; the spec `scripts/readme-lint.sh` enforces |
+| [docstring-standard.md](docstring-standard.md) | Four-tier module-docstring quality standard; the target the C19 coverage floor measures against |
+| [comment-convention.md](comment-convention.md) | Inline comments, tag-prefixed annotations, and `#check` usage |
+
 ## Quick Lookup
 
 ### Looking for a Symbol?

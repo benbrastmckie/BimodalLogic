@@ -152,7 +152,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,599 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 18 | 5,086 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,456 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,157 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,163 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -199,7 +199,7 @@ dominates everything else in the repository:
 | `EFGames/` | 8 | 11,872 |
 | `Expressiveness/` | 5 | 9,501 |
 | `DenseModelSurgery/` | 9 | 7,571 |
-| `RealModel/` | 7 | 6,644 |
+| `RealModel/` | 7 | 6,650 |
 | `IntegerModel/` | 6 | 5,682 |
 | `GroupModel/` | 6 | 3,365 |
 | `Separation/` | 3 | 926 |
