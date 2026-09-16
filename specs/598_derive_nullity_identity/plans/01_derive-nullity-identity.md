@@ -223,15 +223,15 @@ and the zero law as derived.
 
 ---
 
-### Phase 5: Final gate [NOT STARTED]
+### Phase 5: Final gate [COMPLETED]
 
 **Goal**: Confirm the whole repository is green and the task-level acceptance bar holds.
 
 **Tasks**:
-- [ ] Full `lake build` (detached), FormalSystem and BimodalTest.
-- [ ] `lean_verify` on `FormalSystem.Semantics.FrameOver.nullity`, `.eq_of_taskRel_zero`, `.nullity_identity`, `FormalSystem.Semantics.TaskFrame.nullity_of_serial_limit`, `FormalSystem.Semantics.TaskFrame.limit_of_succOrder`: no `sorryAx`, no new axioms.
-- [ ] `grep -rn "sorry" ` diff check: no new `sorry` introduced (`git diff main -- '*.lean' | grep '^+.*sorry'` empty).
-- [ ] Run module invariant/README lint scripts if present (`check-module-invariants.sh`, `readme-lint.sh`).
+- [x] Full `lake build` (detached), FormalSystem and BimodalTest.
+- [x] `lean_verify` on `FormalSystem.Semantics.FrameOver.nullity`, `.eq_of_taskRel_zero`, `.nullity_identity`, `FormalSystem.Semantics.TaskFrame.nullity_of_serial_limit`, `FormalSystem.Semantics.TaskFrame.limit_of_succOrder`: no `sorryAx`, no new axioms.
+- [x] `grep -rn "sorry" ` diff check: no new `sorry` introduced (`git diff main -- '*.lean' | grep '^+.*sorry'` empty).
+- [x] Run module invariant/README lint scripts if present (`check-module-invariants.sh`, `readme-lint.sh`). *(deviation: skipped — neither script exists in `.claude/scripts/`)*
 
 **Timing**: 0.75 hours
 
@@ -289,11 +289,11 @@ end FormalSystem.Semantics.NullityChallenge
 
 ## Testing & Validation
 
-- [ ] Full `lake build` green after Phases 1, 2, and 5.
-- [ ] No `nullity_identity :=` field lines remain outside `FormalSystem/Boneyard/`.
-- [ ] `FrameOver` structure declares exactly `WorldState`, `TaskRel`, nonemptiness, `comp`, `converse`, `serial`, `limit`, `saturation` (confirm by reading the structure).
-- [ ] Axiom checks on the five pinned declarations show no `sorryAx`.
-- [ ] Prose grep sweeps (Phases 3-4) clean.
+- [x] Full `lake build` green after Phases 1, 2, and 5.
+- [x] No `nullity_identity :=` field lines remain outside `FormalSystem/Boneyard/`.
+- [x] `FrameOver` structure declares exactly `WorldState`, `TaskRel`, nonemptiness, `comp`, `converse`, `serial`, `limit`, `saturation` (confirm by reading the structure).
+- [x] Axiom checks on the five pinned declarations show no `sorryAx`.
+- [x] Prose grep sweeps (Phases 3-4) clean.
 
 ## Artifacts & Outputs
 
