@@ -63,7 +63,7 @@
     {
       "project_number": 596,
       "project_name": "nest_semantics_language_family_files",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "medium",
@@ -71,18 +71,23 @@
       "dependencies": [],
       "description": "Nest the flat `Semantics/` language-family files into per-language subdirectories, and add the one missing directory README. MEASURED AT REORGANIZATION TIME (2026-09-16): `FormalSystem/Semantics/` holds 15 flat files -- `Minus{Frame,SchemaValidity,Truth,Validity}.lean` (4), `Plus{Determinism,NonValidities,Pasting,StateLocal,Truth,Validity}.lean` (6), `Star{Determinism,NonValidities,StateLocal,Truth,Validity}.lean` (5) -- while `Syntax/` already uses `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` subdirectories with aggregator modules. `FormalSystem/ForMathlib/` is the only non-Boneyard directory without a README. Source: review `specs/reviews/review-2026-09-15.md` findings M1 and the ForMathlib half of M2.\n\nWORK: (1) move the 15 files into `Semantics/` subdirectories mirroring the `Syntax/*Language/` layout (choose names consistent with it, and add aggregators if the Syntax side has them); (2) update every import, the root aggregator, and the C8 parent tuple in `scripts/check-module-invariants.sh`; (3) repoint path citations in docstrings, READMEs and typst; (4) write `FormalSystem/ForMathlib/README.md` (purpose: Mathlib-shaped extensions intended for upstreaming; must import nothing from `FormalSystem.*`). Module-path-only change: no declaration is renamed or restated.\n\nORDERING NOTE: a structural move in the first wave of this topic; precedes paper-vocabulary reconciliation and basename-citation disambiguation.\n\nACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15 citations); `readme-lint.sh` exit 0.",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T16:53:32Z",
+      "last_updated": "2026-09-16T16:57:50Z",
       "file_scope": [
         "FormalSystem/Semantics",
         "FormalSystem/ForMathlib/README.md",
         "scripts/check-module-invariants.sh"
       ],
-      "session_id": "sess_1789577011_0f6aae_596",
+      "session_id": "sess_1789577011_0f6aae",
       "artifacts": [
         {
           "path": "specs/596_nest_semantics_language_family_files/reports/01_nest-semantics-language-family.md",
           "type": "report",
           "summary": "Blast-radius inventory (55 import lines/29 files, ~50 citation files, zero typst hits), recommended Semantics/{Minus,Plus,Star}Language/ layout with prefixed basenames kept, C8 tuple change exposing 5 pre-existing violations, namespace-vs-module sed hazard, ForMathlib README content, phased plan."
+        },
+        {
+          "path": "specs/596_nest_semantics_language_family_files/plans/01_nest-semantics-language-family.md",
+          "type": "plan",
+          "summary": "6-phase plan: ForMathlib README; atomic git-mv of 15 Semantics files into {Minus,Plus,Star}Language/ with aggregators and import rewrite; C8 extension to Semantics (4 aggregators + Extension allowlist); in-tree and top-level citation repointing; inventory refresh and full gate."
         }
       ],
       "next_artifact_number": 2
