@@ -98,7 +98,7 @@ next_project_number: 598
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-591 [RESEARCHED] — Adopt a naming convention that distinguishes leanexe roots...
+591 [PLANNED] — Adopt a naming convention that distinguishes leanexe roots...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
@@ -110,12 +110,12 @@ next_project_number: 598
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
   └─ 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
     └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-594 [RESEARCHED] — Relocate test-shaped smoke tests out of the live library....
+594 [PLANNING] — Relocate test-shaped smoke tests out of the live library....
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
-595 [RESEARCHED] — Decide where durable project records live and move them there...
+595 [PLANNING] — Decide where durable project records live and move them there...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
-596 [RESEARCHED] — Nest the flat Semantics/ language-family files into...
+596 [PLANNING] — Nest the flat Semantics/ language-family files into...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
 
 ## Tasks
@@ -139,7 +139,7 @@ ACCEPTANCE: linter set enabled; `lake build` green; warning count within the rec
 
 ### 596. Nest semantics language family files
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -157,7 +157,7 @@ ACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15
 
 ### 595. Establish durable records home
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -175,7 +175,7 @@ ACCEPTANCE: decision recorded; if moved, zero remaining citations of the old pat
 
 ### 594. Relocate in library smoke tests
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -228,11 +228,12 @@ See specs/reviews/review-2026-09-16.md, Finding L3.
 
 ### 591. Consolidate automation export names
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md]
+- **Plan**: [591_consolidate_automation_export_names/plans/02_exe-root-rename-plan.md]
 
 **Description**: Adopt a naming convention that distinguishes `lean_exe` roots from library modules in `FormalSystem/Automation/`, and apply it to the five confusable modules.
 

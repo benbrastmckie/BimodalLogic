@@ -1,16 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md",
-      "summary": "Proposes one convention for all 13 lean_exe roots (root of `lake exe foo_bar` is `FooBarMain`, Main reserved), renames DatasetExporter->DatasetAssembly, keeps DataExport/ProofStepExtractor, keeps exe targets and emitted generator strings, and enumerates the full edit surface including functional script edits."
+      "type": "plan",
+      "path": "specs/591_consolidate_automation_export_names/plans/02_exe-root-rename-plan.md",
+      "summary": "5-phase plan: adopt target-derived *Main exe-root convention across all 13 lean_exe roots (plus DatasetExporter -> DatasetAssembly), in dataset/proof-step/remaining families, then convention doc + C25 guard, then full gate."
     }
   ],
+  "next_steps": "Run /implement 591 to execute the plan",
   "metadata": {
     "session_id": "sess_1789577011_0f6aae_591",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5,
+    "dependency_waves": 5
+  },
+  "memory_candidates": [],
+  "dispatch_seq": 5
 }
