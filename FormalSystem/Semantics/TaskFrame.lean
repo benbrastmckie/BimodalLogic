@@ -652,12 +652,13 @@ space `TaskFrame` below is `Σ (D : TemporalOrder), FrameOver D` — it *has* a 
 than restating one — so every axiom exists exactly once and the inclusion of a fibre into the
 total space is the constructor `⟨D, F⟩`, not a transport.
 
-A frame over `D` consists of:
-- a type of world states,
-- a task relation connecting world states via timed tasks of duration `x : ↑D`,
-- compositionality: tasks compose, and interpolate, on the positive cone,
-- the converse convention, `TaskRel w d u ↔ TaskRel u (-d) w`,
-- seriality, limit and saturation.
+A frame over `D` consists of exactly what `def:frame` names:
+- a nonempty type of world states,
+- a primitive task relation `PosRel` on the positive cone `D⁺` (`def:task-relation`),
+- *Compositionality*, *Seriality*, *Limit* and *Saturation*,
+
+where the four axioms are stated over the task relation extended to all of `D` by the reflection
+convention, `FrameOver.TaskRel := TaskFrame.reflect PosRel`.
 
 The task relation `TaskRel w x u` means: starting from world state `w`, executing a task of
 duration `x` can result in world state `u`.
@@ -670,20 +671,20 @@ duration as an opaque field: `(F : TaskFrame) (h : F.Duration = ℤ)` cannot sup
 
 **Paper Alignment**: The paper's `def:frame` carries exactly FOUR axioms — *Compositionality*
 (a biconditional), *Seriality*, *Limit*, *Saturation* — and no Nullity axiom (`lem:nullity` is
-derived, reflexivity only). This structure carries **all four**, as `comp`, `serial`, `limit`,
-and `saturation`, each by citation of a bare-relation predicate rather than by inline
-restatement. It additionally carries only the converse convention (`converse`). The zero-duration
-law is derived, not carried: `nullity` (reflexivity, the paper's `lem:nullity`),
-`eq_of_taskRel_zero` (injectivity), and their conjunction `nullity_identity` are theorems below.
-What remains absent is structural rather than axiomatic — see the module
-docstring's "Known gaps" list.
+derived, reflexivity only). This structure's fields are exactly `W` (with its nonemptiness), the
+primitive relation, and those four axioms, each stated by citation of a bare-relation predicate
+rather than by inline restatement. The zero-duration law is derived, not carried: `nullity`
+(reflexivity, the paper's `lem:nullity`), `eq_of_taskRel_zero` (injectivity), and their
+conjunction `nullity_identity` are theorems below.
 
-**Axiomatization Notes**:
-The paper's own presentation (`def:task-relation`) takes the primitive task relation to live on
-the positive cone `D⁺ = {x : 0 ≤ x}` and extends it to negative durations by the converse
-convention. This structure is that presentation: the two-sided `TaskRel` is the *extended*
-relation, `converse` is the convention that defines it from the primitive one, and
-`forward_comp`'s `0 ≤ x`, `0 ≤ y` hypotheses confine composition to the primitive domain.
+**The reflection convention is a definition, not a field.** `def:task-relation` takes the
+primitive relation on `D⁺` only and extends it to negative durations by the reflection convention
+(`w ⇒_{-x} u ≔ u ⇒_x w`), which is notation rather than an axiom. Accordingly the primitive field
+`PosRel` is typed over `D.PositiveCone`, the two-sided `TaskRel` is *defined* from it, and the
+reflection law `TaskRel w d u ↔ TaskRel u (-d) w` is the theorem `FrameOver.reflection`:
+definitional off zero, and derived at zero from *Seriality* and *Limit*. A frame presented by a
+two-sided relation that already satisfies the reflection law is built with
+`FrameOver.ofReflective`.
 
 The paper's *Compositionality* (`def:frame#Compositionality`, verbatim: "$w \Rightarrow_{x + y}
 v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$") is a
@@ -691,10 +692,9 @@ BICONDITIONAL, and the `comp` field carries it whole: its right-to-left (composi
 is projected out as `forward_comp` and its left-to-right (interpolation) direction as
 `interpolates`.
 
-*Reflection* and backward composition are derived rather than postulated here (`nullity`,
-`backward_comp`), matching `lem:nullity`'s derived status in the paper, and mixed-sign
-composition is not prohibited but inexpressible at the primitive level, since primitive
-durations are nonnegative.
+Backward composition is derived rather than postulated here (`backward_comp`, from `reflection`),
+matching `lem:nullity`'s derived status in the paper, and mixed-sign composition is not
+prohibited but inexpressible at the primitive level, since primitive durations are nonnegative.
 -/
 structure FrameOver (D : TemporalOrder) where
   /-- Type of world states -/
@@ -716,76 +716,69 @@ structure FrameOver (D : TemporalOrder) where
   also available to synthesis.
   -/
   [worldNonempty : Nonempty WorldState]
-  /-- Task relation: `TaskRel w x u` means u is reachable from w by task of duration x -/
-  TaskRel : WorldState → D → WorldState → Prop
+  /--
+  **The primitive task relation**, on the positive cone (`def:task-relation`, verbatim: "any
+  parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$").
+
+  `PosRel w x u` means `u` is reachable from `w` by a task of nonnegative duration `x`. The
+  two-sided relation the axioms and every consumer speak about is its extension by the
+  reflection convention, `FrameOver.TaskRel := TaskFrame.reflect PosRel`.
+  -/
+  PosRel : WorldState → D.PositiveCone → WorldState → Prop
   /--
   **The paper's *Compositionality* axiom, in full** (`def:frame#Compositionality`, verbatim:
   "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
   $u \in W$").
 
-  Stated by citation as `TaskFrame.Compositional TaskRel`, never restated inline. Unfolded it is
+  Stated by citation as `TaskFrame.Compositional` of the extended relation, never restated
+  inline. Unfolded it is
 
   ```
   ∀ w v x y, 0 ≤ x → 0 ≤ y → (TaskRel w (x + y) v ↔ ∃ u, TaskRel w x u ∧ TaskRel u y v)
   ```
 
   Both directions are load bearing. Its `←` (composition) half is projected back out as the
-  derived `FrameOver.forward_comp`, which keeps its former statement verbatim, so every consumer
-  of the old field is untouched; its `→` (interpolation) half is projected out as
-  `FrameOver.interpolates`, definitionally `TaskFrame.Interpolates TaskRel`.
+  derived `FrameOver.forward_comp`, and its `→` (interpolation) half as `FrameOver.interpolates`,
+  definitionally `TaskFrame.Interpolates TaskRel`.
 
-  The `0 ≤ x`, `0 ≤ y` hypotheses are how the paper's positive-cone domain restriction is
-  expressed against the two-sided extended relation. Composition over negative durations is
+  The `0 ≤ x`, `0 ≤ y` hypotheses are `def:frame`'s blanket proviso; at such durations the
+  extended relation is the primitive one (`TaskFrame.reflect_of_nonneg`), so the field says
+  exactly what the paper's axiom says of `PosRel`. Composition over negative durations is
   derived (`backward_comp`); mixed-sign composition is inexpressible at the primitive level
   rather than prohibited.
   -/
-  comp : TaskFrame.Compositional TaskRel
-  /--
-  The paper's **definitional converse convention**, packaged as structure data.
-
-  `TaskRel w d u` holds iff `TaskRel u (-d) w` holds.
-
-  This is *not* a substantive temporal-symmetry axiom. The paper's primitive task relation
-  lives on the positive cone `D⁺ = {x : 0 ≤ x}` and is extended to negative durations by the
-  converse convention (`def:task-relation`, verbatim: "extended to negative durations by the
-  \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for
-  $x \geq 0$"). A two-sided
-  Lean relation cannot carry that stipulation in its type, so it is carried as this field: the
-  pair (two-sided `TaskRel`, `converse`) is precisely the paper's *extended* relation over a
-  primitive relation on `D⁺`, and it constrains the negative half of `TaskRel` to be exactly
-  the reflection of the positive half rather than adding independent content.
-  -/
-  converse : ∀ w d u, TaskRel w d u ↔ TaskRel u (-d) w
+  comp : TaskFrame.Compositional (TaskFrame.reflect PosRel)
   /--
   **The paper's *Seriality* axiom** (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and
-  $v \Rightarrow_x w$ for some $u, v \in W$"), stated by citation as
-  `TaskFrame.Serial TaskRel` — the bare-relation predicate of record, never restated inline.
+  $v \Rightarrow_x w$ for some $u, v \in W$"), stated by citation as `TaskFrame.Serial` of the
+  extended relation — the bare-relation predicate of record, never restated inline.
   Every state has an `x`-successor and an `x`-predecessor at every `x ≥ 0`.
   -/
-  serial : TaskFrame.Serial TaskRel
+  serial : TaskFrame.Serial (TaskFrame.reflect PosRel)
   /--
   **The paper's *Limit* axiom** (`def:frame#Limit`, verbatim:
   "$\bigcap\limits_{x > 0} (w)_x = \set{w}$"), in the literal transcribed shape: if `u` lies in
-  every positive cone of `w`, then `u` is `w`.
+  every positive cone of `w`, then `u` is `w`. Cones range over durations of either sign, so the
+  axiom is stated over the extended relation.
 
   This is exactly what `TaskFrame.limit_of_succOrder`, `TaskFrame.limit_of_shift`, and the
   class helpers conclude, and exactly what `TaskFrame.nullity_of_serial_limit` consumes to
   derive `lem:nullity`. Instantiating its cone witness at `y := 0` also yields injectivity at
   zero (`FrameOver.eq_of_taskRel_zero`).
   -/
-  limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w
+  limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskFrame.reflect PosRel w y u) → u = w
   /--
   **The paper's *Saturation* axiom** (`def:frame#Saturation`, verbatim:
   "$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of
   nonempty fibers
-  and segments"), stated by citation as `TaskFrame.Saturation TaskRel` — the bare-relation
-  predicate of record, never restated inline.
+  and segments"), stated by citation as `TaskFrame.Saturation` of the extended relation — the
+  bare-relation predicate of record, never restated inline.
 
   This field is the one the Step Lemma consumes (`Semantics/Extension/Step.lean`), which is why
   it must be *literally* `TaskFrame.Saturation`: a restatement, however equivalent, would make
   that consumption fail to typecheck. Fibers and segments stay two separate classes.
   -/
-  saturation : TaskFrame.Saturation TaskRel
+  saturation : TaskFrame.Saturation (TaskFrame.reflect PosRel)
 
 attribute [instance] FrameOver.worldNonempty
 
@@ -805,6 +798,41 @@ namespace FrameOver
 open TaskFrame
 
 variable {D : TemporalOrder}
+
+/--
+**The task relation of a frame**: the primitive relation `PosRel`, extended to all durations by
+the reflection convention (`def:task-relation`).
+
+A plain (non-`@[reducible]`) definition, so `simp` does not unfold it into the `dite` of
+`TaskFrame.reflect` at an abstract frame. The axiom fields are stated over
+`TaskFrame.reflect F.PosRel`, so `F.serial : Serial F.TaskRel` and its siblings still hold by
+citation (see the definitional-content checks at the end of this module). Reason about it with
+`reflection`, `taskRel_of_nonneg`, `taskRel_of_neg`, `taskRel_coe`, and at a frame built by
+`ofReflective`, `ofReflective_taskRel`.
+-/
+def TaskRel (F : FrameOver D) : F.WorldState → ↑D → F.WorldState → Prop :=
+  TaskFrame.reflect F.PosRel
+
+/-- On the positive cone the task relation is the primitive relation. -/
+theorem taskRel_of_nonneg (F : FrameOver D) {w u : F.WorldState} {d : ↑D} (h : 0 ≤ d) :
+    F.TaskRel w d u ↔ F.PosRel w ⟨d, h⟩ u :=
+  TaskFrame.reflect_of_nonneg h
+
+/-- At a negative duration the task relation is the primitive relation, reflected. -/
+theorem taskRel_of_neg (F : FrameOver D) {w u : F.WorldState} {d : ↑D} (h : d < 0) :
+    F.TaskRel w d u ↔ F.PosRel u ⟨-d, neg_nonneg.mpr h.le⟩ w :=
+  TaskFrame.reflect_of_neg h
+
+/-- At a duration drawn from the positive cone the task relation is the primitive relation. -/
+@[simp]
+theorem taskRel_coe (F : FrameOver D) {w u : F.WorldState} (x : D.PositiveCone) :
+    F.TaskRel w (x : ↑D) u ↔ F.PosRel w x u :=
+  TaskFrame.reflect_coe x
+
+-- The axiom fields cite the bare-relation predicates at `F.TaskRel` definitionally, although
+-- `TaskRel` is not reducible: the Step Lemma's consumption of `F.saturation` depends on it.
+example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial
+example (F : FrameOver D) : TaskFrame.Saturation F.TaskRel := F.saturation
 
 /--
 **`lem:nullity`, at the fibre: every world state loops at duration zero.**
@@ -831,7 +859,7 @@ theorem eq_of_taskRel_zero (F : FrameOver D) {w u : F.WorldState}
 
 The conjunction of `nullity` (reflexivity, from *Seriality* plus *Limit*) and
 `eq_of_taskRel_zero` (injectivity, from *Limit* alone). It is a theorem, not a structure field:
-the frame class is exactly the paper's four `def:frame` axioms plus the converse convention.
+the frame class is exactly the paper's four `def:frame` axioms over a primitive relation on `D⁺`.
 -/
 theorem nullity_identity (F : FrameOver D) : ∀ w u, F.TaskRel w 0 u ↔ w = u :=
   fun _ _ => ⟨F.eq_of_taskRel_zero, fun h => h ▸ F.nullity _⟩
@@ -863,9 +891,33 @@ theorem interpolates (F : FrameOver D) : Interpolates F.TaskRel :=
   interpolates_of_comp F.comp
 
 /--
+**The reflection law**: `w ⇒_d u ↔ u ⇒_{-d} w` at every duration.
+
+This is the paper's reflection convention (`def:task-relation`, verbatim: "extended to negative
+durations by the \textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$
+for $x \geq 0$") read back as a law of the extended relation. It is a **theorem**, not a field:
+off zero it is definitional content of `TaskFrame.reflect` (`reflect_reflection_of_ne`), and at
+zero it follows from the derived zero-duration law — `eq_of_taskRel_zero` (*Limit*) turns
+`w ⇒_0 u` into `w = u`, and `nullity` (*Seriality* plus *Limit*) supplies the reflected
+instance.
+-/
+theorem reflection (F : FrameOver D) (w : F.WorldState) (d : ↑D) (u : F.WorldState) :
+    F.TaskRel w d u ↔ F.TaskRel u (-d) w := by
+  rcases eq_or_ne d 0 with rfl | hd
+  · rw [neg_zero]
+    constructor
+    · intro h
+      obtain rfl := F.eq_of_taskRel_zero h
+      exact h
+    · intro h
+      obtain rfl := F.eq_of_taskRel_zero h
+      exact h
+  · exact TaskFrame.reflect_reflection_of_ne hd
+
+/--
 Derived backward compositionality: tasks compose in the backward direction.
 
-From `forward_comp` and `converse`, we can derive compositionality for non-positive durations.
+From `forward_comp` and `reflection`, we can derive compositionality for non-positive durations.
 If `TaskRel w x u` with `x ≤ 0` and `TaskRel u y v` with `y ≤ 0`,
 then `TaskRel w (x + y) v`.
 -/
@@ -873,19 +925,66 @@ theorem backward_comp (F : FrameOver D) (w u v : F.WorldState) (x y : ↑D)
     (hx : x ≤ 0) (hy : y ≤ 0)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v := by
-  -- Use converse to flip directions, then forward_comp, then converse back
+  -- Use reflection to flip directions, then forward_comp, then reflection back
   -- TaskRel w x u <-> TaskRel u (-x) w, where -x >= 0
   -- TaskRel u y v <-> TaskRel v (-y) u, where -y >= 0
-  have h1' : F.TaskRel u (-x) w := F.converse w x u |>.mp h1
-  have h2' : F.TaskRel v (-y) u := F.converse u y v |>.mp h2
+  have h1' : F.TaskRel u (-x) w := F.reflection w x u |>.mp h1
+  have h2' : F.TaskRel v (-y) u := F.reflection u y v |>.mp h2
   have hx' : 0 ≤ -x := neg_nonneg.mpr hx
   have hy' : 0 ≤ -y := neg_nonneg.mpr hy
   -- forward_comp v u w (-y) (-x): TaskRel v (-y) u -> TaskRel u (-x) w -> TaskRel v (-y + -x) w
   have h3 : F.TaskRel v ((-y) + (-x)) w := F.forward_comp v u w (-y) (-x) hy' hx' h2' h1'
-  -- Now use converse: TaskRel v (-(x+y)) w <-> TaskRel w (x+y) v
+  -- Now use reflection: TaskRel v (-(x+y)) w <-> TaskRel w (x+y) v
   have h4 : -y + -x = -(x + y) := by simp [neg_add_rev, add_comm]
   rw [h4] at h3
-  exact F.converse w (x + y) v |>.mpr h3
+  exact F.reflection w (x + y) v |>.mpr h3
+
+/--
+**A frame presented by a two-sided relation** that already obeys the reflection law.
+
+Many frames are most naturally written as a relation `R` on all of `D` (a translation, a clock, a
+permissive relation). Such an `R` determines a frame exactly when it satisfies the reflection
+law `hR` and the four `def:frame` axioms: its primitive relation is the restriction of `R` to
+`D⁺`, and `TaskFrame.reflect_eq_of_reflective` shows that the extension of that restriction is
+`R` again, which transports each axiom proof to the field (by `rw`, since an `▸` cast picks up
+the nested `reflect` in its motive). `ofReflective_taskRel` is the resulting bridge
+`TaskRel w d u ↔ R w d u`.
+
+The `hR` obligation is honest rather than ceremonial: a two-sided presentation must show it is
+the reflection of its positive half.
+-/
+def ofReflective (W : Type) [Nonempty W] (R : W → ↑D → W → Prop)
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hcomp : TaskFrame.Compositional R)
+    (hser : TaskFrame.Serial R)
+    (hlim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+    (hsat : TaskFrame.Saturation R) : FrameOver D where
+  WorldState := W
+  PosRel w x u := R w (x : ↑D) u
+  comp := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hcomp
+  serial := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hser
+  limit := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hlim
+  saturation := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hsat
+
+/-- The task relation of a frame built by `ofReflective` is the presenting relation. -/
+@[simp]
+theorem ofReflective_taskRel {W : Type} [Nonempty W] {R : W → ↑D → W → Prop}
+    {hR : ∀ w d u, R w d u ↔ R u (-d) w} {hcomp : TaskFrame.Compositional R}
+    {hser : TaskFrame.Serial R}
+    {hlim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w}
+    {hsat : TaskFrame.Saturation R} {w u : W} {d : ↑D} :
+    (ofReflective W R hR hcomp hser hlim hsat).TaskRel w d u ↔ R w d u := by
+  show TaskFrame.reflect (fun w (x : {x : ↑D // 0 ≤ x}) u => R w (x : ↑D) u) w d u ↔ R w d u
+  rw [TaskFrame.reflect_eq_of_reflective R hR]
+
+/-- The task relation of a frame built by `ofReflective` is the presenting relation, as an
+equation of relations. -/
+theorem ofReflective_taskRel_eq {W : Type} [Nonempty W] {R : W → ↑D → W → Prop}
+    {hR : ∀ w d u, R w d u ↔ R u (-d) w} {hcomp : TaskFrame.Compositional R}
+    {hser : TaskFrame.Serial R}
+    {hlim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w}
+    {hsat : TaskFrame.Saturation R} :
+    (ofReflective W R hR hcomp hser hlim hsat).TaskRel = R :=
+  TaskFrame.reflect_eq_of_reflective R hR
 
 end FrameOver
 
@@ -1291,18 +1390,6 @@ theorem interpolates_of_permissive {W : Type} {R : W → D → W → Prop}
 
 omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
 /--
-*Converse* for a permissive relation: the defining condition `d ≠ 0 ∨ w = u` is symmetric under
-`d ↦ -d` together with `w ↔ u`, since `-d = 0 ↔ d = 0`.
--/
-theorem converse_of_permissive {W : Type} {R : W → D → W → Prop}
-    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : ∀ w d u, R w d u ↔ R u (-d) w := by
-  intro w d u
-  rw [hR, hR]
-  simp only [ne_eq, neg_eq_zero]
-  exact ⟨fun h => h.imp id Eq.symm, fun h => h.imp id Eq.symm⟩
-
-omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
-/--
 The reflection law for a permissive relation: the defining condition `d ≠ 0 ∨ w = u` is
 invariant under `d ↦ -d` together with `w ↔ u`, since `-d = 0 ↔ d = 0`. This is the `hR`
 argument of `FrameOver.ofReflective` at a permissive frame.
@@ -1644,28 +1731,32 @@ This is the simplest possible task frame, polymorphic over temporal type `D`.
 -/
 def trivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] :
-    FrameOver (TemporalOrder.of D) where
-  WorldState := Unit
-  worldNonempty := inferInstanceAs (Nonempty Unit)
-  TaskRel := fun _ _ _ => True
-  comp := comp_of (interpolates_of_total fun _ _ _ => trivial) fun _ _ _ _ _ _ _ _ _ => trivial
-  converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
-  serial := serial_of_total fun _ _ _ => trivial
-  limit := limit_of_subsingleton
-  saturation := saturation_of_subsingleton
+    FrameOver (TemporalOrder.of D) :=
+  ofReflective Unit (fun _ _ _ => True)
+    (fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩)
+    (comp_of (interpolates_of_total fun _ _ _ => trivial) fun _ _ _ _ _ _ _ _ _ => trivial)
+    (serial_of_total fun _ _ _ => trivial)
+    limit_of_subsingleton
+    saturation_of_subsingleton
+
+/-- The trivial frame's task relation is total. -/
+@[simp]
+theorem trivialFrame_taskRel {w u : (trivialFrame (D := D)).WorldState} {d : D} :
+    (trivialFrame (D := D)).TaskRel w d u ↔ True :=
+  ofReflective_taskRel
 
 /-! #### `trivialFrame` discharges `def:frame`'s four axioms (total class, Helper A) -/
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `trivialFrame`: its relation is total. -/
 theorem trivialFrame_serial : Serial (trivialFrame (D := D)).TaskRel :=
-  serial_of_total fun _ _ _ => trivial
+  serial_of_total fun _ _ _ => trivialFrame_taskRel.mpr trivial
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `trivialFrame`: its relation is total. -/
 theorem trivialFrame_interpolates : Interpolates (trivialFrame (D := D)).TaskRel :=
-  interpolates_of_total fun _ _ _ => trivial
+  interpolates_of_total fun _ _ _ => trivialFrame_taskRel.mpr trivial
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `trivialFrame`, in the literal transcribed shape: its carrier is `Unit`. -/
@@ -1706,15 +1797,13 @@ instance.
 -/
 def staticFrame (W : Type) [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    FrameOver (TemporalOrder.of D) where
-  WorldState := W
-  worldNonempty := inferInstance
-  TaskRel := fun w _ u => w = u
-  comp := comp_of (interpolates_of_eq fun _ _ _ => Iff.rfl) fun _ _ _ _ _ _ _ h1 h2 => h1.trans h2
-  converse := fun _ _ _ => ⟨Eq.symm, Eq.symm⟩
-  serial := serial_of_eq fun _ _ _ => Iff.rfl
-  limit := limit_of_eq fun _ _ _ => Iff.rfl
-  saturation := saturation_of_eq fun _ _ _ => Iff.rfl
+    FrameOver (TemporalOrder.of D) :=
+  ofReflective W (fun w _ u => w = u)
+    (fun _ _ _ => ⟨Eq.symm, Eq.symm⟩)
+    (comp_of (interpolates_of_eq fun _ _ _ => Iff.rfl) fun _ _ _ _ _ _ _ h1 h2 => h1.trans h2)
+    (serial_of_eq fun _ _ _ => Iff.rfl)
+    (limit_of_eq fun _ _ _ => Iff.rfl)
+    (saturation_of_eq fun _ _ _ => Iff.rfl)
 
 /-! #### `staticFrame` discharges `def:frame`'s four axioms (equality class, Helper C) -/
 
@@ -1723,7 +1812,7 @@ The static frame's relation is the equality class: `TaskRel w x u` holds exactly
 at every duration. This is the class-membership witness Helper C's lemmas consume.
 -/
 theorem staticFrame_rel_iff (W : Type) [Nonempty W] :
-    ∀ w d u, (staticFrame W (D := D)).TaskRel w d u ↔ w = u := fun _ _ _ => Iff.rfl
+    ∀ w d u, (staticFrame W (D := D)).TaskRel w d u ↔ w = u := fun _ _ _ => ofReflective_taskRel
 
 /--
 The static frame satisfies the paper's *Seriality* axiom (`def:frame#Seriality`, verbatim:
@@ -1775,16 +1864,14 @@ which supplies both instances.
 -/
 def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [SuccOrder D] [NoMaxOrder D] :
-    FrameOver (TemporalOrder.of D) where
-  WorldState := Nat
-  worldNonempty := inferInstanceAs (Nonempty Nat)
-  TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  -- Every axiom field is a one-line citation of Helper B (`*_of_permissive`).
-  comp := comp_of_permissive fun _ _ _ => Iff.rfl
-  serial := serial_of_permissive fun _ _ _ => Iff.rfl
-  limit := limit_of_permissive fun _ _ _ => Iff.rfl
-  saturation := saturation_of_permissive fun _ _ _ => Iff.rfl
-  converse := converse_of_permissive fun _ _ _ => Iff.rfl
+    FrameOver (TemporalOrder.of D) :=
+  -- Every obligation is a one-line citation of Helper B (`*_of_permissive`).
+  ofReflective Nat (fun w d u => d ≠ 0 ∨ w = u)
+    (reflection_of_permissive fun _ _ _ => Iff.rfl)
+    (comp_of_permissive fun _ _ _ => Iff.rfl)
+    (serial_of_permissive fun _ _ _ => Iff.rfl)
+    (limit_of_permissive fun _ _ _ => Iff.rfl)
+    (saturation_of_permissive fun _ _ _ => Iff.rfl)
 
 /-! #### `natFrame` discharges `def:frame`'s four axioms (permissive class, Helper B) -/
 
@@ -1793,7 +1880,8 @@ The natural-number frame's relation is the permissive class: `TaskRel w d u` hol
 `d ≠ 0` or `w = u`. This is the class-membership witness Helper B's lemmas consume.
 -/
 theorem natFrame_rel_iff [SuccOrder D] [NoMaxOrder D] :
-    ∀ w d u, (natFrame (D := D)).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+    ∀ w d u, (natFrame (D := D)).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
+  fun _ _ _ => ofReflective_taskRel
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `natFrame`, via the `w = u` disjunct. -/
@@ -1977,9 +2065,11 @@ theorem nullity_identity (F : TaskFrame) : ∀ w u, F.TaskRel w 0 u ↔ w = u :=
 /-- *Compositionality* (`def:frame#Compositionality`), whole, by citation. -/
 theorem comp (F : TaskFrame) : TaskFrame.Compositional F.TaskRel := F.toFibre.comp
 
-/-- The definitional converse convention (`def:task-relation`). -/
-theorem converse (F : TaskFrame) : ∀ w d u, F.TaskRel w d u ↔ F.TaskRel u (-d) w :=
-  F.toFibre.converse
+/-- The reflection law (`def:task-relation`'s reflection convention), derived at the fibre as
+`FrameOver.reflection`. -/
+theorem reflection (F : TaskFrame) (w : F.WorldState) (d : F.Duration) (u : F.WorldState) :
+    F.TaskRel w d u ↔ F.TaskRel u (-d) w :=
+  F.toFibre.reflection w d u
 
 /-- *Seriality* (`def:frame#Seriality`), by citation. -/
 theorem serial (F : TaskFrame) : TaskFrame.Serial F.TaskRel := F.toFibre.serial
@@ -2037,19 +2127,19 @@ theorem interpolates (F : TaskFrame) : TaskFrame.Interpolates F.TaskRel :=
 theorem nullity (F : TaskFrame) (w : F.WorldState) : F.TaskRel w 0 w :=
   F.nullity_identity w w |>.mpr rfl
 
-/-- Derived backward compositionality, from `forward_comp` and `converse`. -/
+/-- Derived backward compositionality, from `forward_comp` and `reflection`. -/
 theorem backward_comp (F : TaskFrame) (w u v : F.WorldState) (x y : F.Duration)
     (hx : x ≤ 0) (hy : y ≤ 0)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v := by
-  have h1' : F.TaskRel u (-x) w := F.converse w x u |>.mp h1
-  have h2' : F.TaskRel v (-y) u := F.converse u y v |>.mp h2
+  have h1' : F.TaskRel u (-x) w := F.reflection w x u |>.mp h1
+  have h2' : F.TaskRel v (-y) u := F.reflection u y v |>.mp h2
   have hx' : 0 ≤ -x := neg_nonneg.mpr hx
   have hy' : 0 ≤ -y := neg_nonneg.mpr hy
   have h3 : F.TaskRel v ((-y) + (-x)) w := F.forward_comp v u w (-y) (-x) hy' hx' h2' h1'
   have h4 : -y + -x = -(x + y) := by simp [neg_add_rev, add_comm]
   rw [h4] at h3
-  exact F.converse w (x + y) v |>.mpr h3
+  exact F.reflection w (x + y) v |>.mpr h3
 
 end TaskFrame
 

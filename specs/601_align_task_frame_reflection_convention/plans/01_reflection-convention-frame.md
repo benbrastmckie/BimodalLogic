@@ -156,35 +156,35 @@ the tree stays green.
 
 ---
 
-### Phase 2: Restructure FrameOver and derive reflection [NOT STARTED]
+### Phase 2: Restructure FrameOver and derive reflection [COMPLETED]
 
 **Goal**: Swap the structure to `PosRel` + four axioms. Derive `reflection`, add `ofReflective`,
 and migrate every use inside `TaskFrame.lean`.
 
 **Tasks**:
-- [ ] Replace the `TaskRel`/`converse` fields with `PosRel : WorldState → D.PositiveCone → WorldState → Prop`.
+- [x] Replace the `TaskRel`/`converse` fields with `PosRel : WorldState → D.PositiveCone → WorldState → Prop`.
       Restate `comp`, `serial`, `limit`, `saturation` over `TaskFrame.reflect PosRel`, keeping
       their citation form (`TaskFrame.Serial (TaskFrame.reflect PosRel)` etc.). Rewrite the
       structure docstring and the per-field docstrings (the `comp` doc's "0 ≤ x hypotheses"
       paragraph, and remove the converse-field doc).
-- [ ] Add `def FrameOver.TaskRel (F) := TaskFrame.reflect F.PosRel` (non-reducible). Add
+- [x] Add `def FrameOver.TaskRel (F) := TaskFrame.reflect F.PosRel` (non-reducible). Add
       `taskRel_of_nonneg`, `taskRel_of_neg`, and a `TaskRel`-level `taskRel_coe`.
-- [ ] Add `example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial` and the matching
+- [x] Add `example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial` and the matching
       Saturation example. These guard the Step Lemma's definitional-citation invariant.
-- [ ] Prove `FrameOver.reflection` (trichotomy; `dif` off zero; at zero,
+- [x] Prove `FrameOver.reflection` (trichotomy; `dif` off zero; at zero,
       `eq_of_taskRel_zero ▸ nullity`). Check that `nullity`, `eq_of_taskRel_zero`,
       `nullity_identity`, `forward_comp`, `interpolates` still compile unchanged. Switch
       `backward_comp` to `reflection`.
-- [ ] Add `FrameOver.ofReflective (W) [Nonempty W] (R) (hR) (hcomp) (hser) (hlim) (hsat)`
+- [x] Add `FrameOver.ofReflective (W) [Nonempty W] (R) (hR) (hcomp) (hser) (hlim) (hsat)`
       (field transport by `rw [reflect_eq_of_reflective hR]`, never `▸`) and
-      `@[simp] ofReflective_taskRel`.
-- [ ] Migrate the in-file frames `trivialFrame`, `staticFrame`, `natFrame` to `ofReflective`. Fix
+      `@[simp] ofReflective_taskRel`. *(deviation: altered — also added the equation form `ofReflective_taskRel_eq`, and `@[simp] trivialFrame_taskRel` for the total frame)*
+- [x] Migrate the in-file frames `trivialFrame`, `staticFrame`, `natFrame` to `ofReflective`. Fix
       their `*_rel_iff` bridges and the 8 in-file `.converse` projections (-> `.reflection`).
-- [ ] `FiniteFrameOver` and the total-space `TaskFrame` accessors: replace the `converse`
+- [x] `FiniteFrameOver` and the total-space `TaskFrame` accessors: replace the `converse`
       re-export with `theorem TaskFrame.reflection`. `TaskFrame.TaskRel` stays a `@[reducible]`
       delegate to `F.toFibre.TaskRel`. Fix `RoundTripIdentity`/`DefinitionalContent` sections if
       they mention the fields.
-- [ ] Delete `converse_of_permissive` if nothing in this file uses it any more. Otherwise delete
+- [x] Delete `converse_of_permissive` if nothing in this file uses it any more. *(deviation: altered — deleted in Phase 2; its one external user, `Frames/Standard.lean`, is migrated in Phase 3)* Otherwise delete
       it in Phase 3 after its external uses move.
 
 **Timing**: 2 hours
