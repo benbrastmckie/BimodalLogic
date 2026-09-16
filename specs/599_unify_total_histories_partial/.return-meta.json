@@ -1,22 +1,38 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 8,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/599_unify_total_histories_partial/plans/01_unify-total-histories-partial.md",
-      "summary": "8-phase plan: additive PartialHistory API, core flip behind a deprecated ConvexHistory shim, directory-by-directory rename (Semantics, Metalogic x2, Examples/Tests + shim deletion), docs/decision record, talk slide; hybrid Decision A encoding retained."
+      "type": "summary",
+      "path": "specs/599_unify_total_histories_partial/summaries/01_unify-total-histories-partial-summary.md",
+      "summary": "ConvexHistory deleted; H_F, truth and validity re-based on PartialHistory with IsTotal/IsConvex predicates; docs, Decision B' and talk slide updated."
     }
   ],
-  "next_steps": "Run /implement 599 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1789584086_2b6633_599",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 11,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7, 8]]
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
   },
-  "memory_candidates": [],
-  "dispatch_seq": 5
+  "completion_data": {
+    "completion_summary": "Deleted the ConvexHistory structure and re-based the history layer on PartialHistory: IsTotal and IsConvex are predicates, TaskFrame.HF is {τ : PartialHistory F // τ.IsTotal}, and truth, transport and validity range over PartialHistory F. Docs, the decision record (Decision B') and the PossibleWorlds history slide were updated to match; full build and tests are green.",
+    "roadmap_items": []
+  },
+  "reflection": {
+    "what_worked": "Probing the planned abbrev shim with lean_run_code before editing exposed that aliases break field notation and wrapper defs break simp, so the atomic-batch sweep was chosen early and went green after two small fix rounds.",
+    "what_was_hard": "Concurrent tasks edited the same files and the slide file carried another session's uncommitted edits, requiring hunk-scoped staging via an index blob.",
+    "what_was_missed": "The blind rename also rewrote prose, producing nonsense like PartialHistory.toPartialHistory and stale universalNatFrame mentions that needed a dedicated prose pass.",
+    "successes": "Roughly 95 Lean files migrated with only four kinds of residual fixes, no new sorry or axiom, and unchanged axiom profiles for extension and soundness."
+  },
+  "next_steps": "Commit the slides.md .stab binder fix together with the owner's pending slide edits in the PossibleWorlds repo.",
+  "metadata": {
+    "session_id": "sess_1789584086_2b6633",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "orchestrate", "lean-implementation-agent"],
+    "phases_completed": 8,
+    "phases_total": 8,
+    "compliance_check": "passed"
+  }
 }

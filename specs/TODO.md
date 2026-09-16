@@ -11,8 +11,8 @@ next_project_number: 602
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,599,600 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,506,560,564,565,567,569,570,585,601 | 298,464,502,559,563,568,584,586,599 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,600,601 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,506,560,564,565,567,569,570,585 | 298,464,502,559,563,568,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,588,597 | 231,465,497,565,569,585 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,540,543 | 428,498,499,500,588,597 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501,589 | 125,429,540 | algebraic-representation, decidability, codebase-cleanup |
@@ -98,8 +98,7 @@ next_project_number: 602
 
 ### Semantics
 
-599 [IMPLEMENTING] — Simplify the history definitions to match the paper...
-  └─ 601 [NOT STARTED] — Align the Lean task-frame definition with the paper's...
+601 [NOT STARTED] — Align the Lean task-frame definition with the paper's...
 
 ### Codebase Cleanup
 
@@ -142,12 +141,13 @@ next_project_number: 602
 ---
 
 ### 599. Unify total histories partial
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md]
 - **Plan**: [599_unify_total_histories_partial/plans/01_unify-total-histories-partial.md]
+- **Summary**: [599_unify_total_histories_partial/summaries/01_unify-total-histories-partial-summary.md]
 
 **Description**: Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide "Semantics in Lean II: Histories and Models" quotes these definitions and must be updated to match
 

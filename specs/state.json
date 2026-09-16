@@ -46,12 +46,12 @@
     {
       "project_number": 599,
       "project_name": "unify_total_histories_partial",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide \"Semantics in Lean II: Histories and Models\" quotes these definitions and must be updated to match",
       "topic": "semantics",
       "created": "2026-09-16T18:26:24Z",
-      "last_updated": "2026-09-16T18:54:05Z",
+      "last_updated": "2026-09-16T20:02:57Z",
       "session_id": "sess_1789584086_2b6633",
       "artifacts": [
         {
@@ -63,9 +63,15 @@
           "path": "specs/599_unify_total_histories_partial/plans/01_unify-total-histories-partial.md",
           "type": "plan",
           "summary": "8-phase plan: additive PartialHistory API, core flip behind a deprecated ConvexHistory shim, directory-by-directory rename (Semantics, Metalogic x2, Examples/Tests + shim deletion), docs/decision record, talk slide; hybrid Decision A encoding retained."
+        },
+        {
+          "path": "specs/599_unify_total_histories_partial/summaries/01_unify-total-histories-partial-summary.md",
+          "type": "summary",
+          "summary": "ConvexHistory deleted; H_F, truth and validity re-based on PartialHistory with IsTotal/IsConvex predicates; docs, Decision B' and talk slide updated."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Deleted the ConvexHistory structure and re-based the history layer on PartialHistory: IsTotal and IsConvex are predicates, TaskFrame.HF is {τ : PartialHistory F // τ.IsTotal}, and truth, transport and validity range over PartialHistory F. Docs, the decision record (Decision B') and the PossibleWorlds history slide were updated to match; full build and tests are green."
     },
     {
       "project_number": 598,

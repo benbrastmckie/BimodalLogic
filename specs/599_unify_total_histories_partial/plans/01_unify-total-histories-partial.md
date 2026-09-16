@@ -1,7 +1,7 @@
 # Implementation Plan: Task #599
 
 - **Task**: 599 - Unify total histories on PartialHistory (drop ConvexHistory as a structure)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md
