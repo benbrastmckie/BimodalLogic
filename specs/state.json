@@ -4,12 +4,42 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 598,
+  "next_project_number": 601,
   "active_projects": [
+    {
+      "project_number": 600,
+      "project_name": "rename_dense_extension_qtime",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Investigate why the dense frame-class extension is named Dense (FrameClass constructors Base | Dense | ZTime | RTime in FormalSystem/ProofSystem/Axioms.lean, and derived names such as detCompletenessDense, derivable_of_validDetDense, cantorBfmcsDense) instead of QTime, which would match ZTime and RTime. Research first: check whether the class is really the theory of Q (e.g. canonical/completeness constructions over ℚ, and whether every dense temporal order validates exactly the same formulas so QTime is accurate) or deliberately named for the density axiom over arbitrary dense orders, and check how the paper (PossibleWorlds JPL/possible_worlds.tex) and docs name it. If there is good reason, rename Dense to QTime systematically (constructor, IsDense-style predicates, theorem/def names, file and module names, docstrings, tests, docs), keeping the naming scheme uniform and elegant; otherwise record the rationale in the relevant docstring and close without renaming. Coordinate with other in-flight renaming/nesting tasks",
+      "topic": "frame-extensions",
+      "created": "2026-09-16T18:32:40Z",
+      "last_updated": "2026-09-16T18:32:40Z"
+    },
+    {
+      "project_number": 599,
+      "project_name": "unify_total_histories_partial",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide \"Semantics in Lean II: Histories and Models\" quotes these definitions and must be updated to match",
+      "topic": "semantics",
+      "created": "2026-09-16T18:26:24Z",
+      "last_updated": "2026-09-16T18:26:24Z"
+    },
+    {
+      "project_number": 598,
+      "project_name": "derive_nullity_identity",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Remove the nullity_identity field from FrameOver in FormalSystem/Semantics/TaskFrame.lean and derive it instead: reflexivity from serial + limit (TaskFrame.nullity_of_serial_limit) and injectivity-at-zero from limit alone, exposing the result as a theorem (e.g. FrameOver.nullity_identity) so downstream uses keep working. Update every frame construction that currently supplies the field (Independence frames, FlowFrame, IntegerModel/ReynoldsBridge, FMP/Filtration, test generators, etc.), deleting the now-redundant proofs, and revise docstrings and Semantics.lean prose that describe the field as kept for construction ergonomics. Aim for the most elegant, minimal frame definition matching the paper (the four constraints plus converse), avoiding cruft; coordinate with the in-flight semantics file nesting task",
+      "topic": "semantics",
+      "created": "2026-09-16T18:26:24Z",
+      "last_updated": "2026-09-16T18:26:24Z"
+    },
     {
       "project_number": 594,
       "project_name": "relocate_in_library_smoke_tests",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "medium",
@@ -17,7 +47,7 @@
       "dependencies": [],
       "description": "Relocate test-shaped smoke tests out of the live library. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): 404 `#check`/`#eval`/`#print` lines across 29 live (non-Boneyard) library files (largest: DatasetGenerator 116, Saturation 59, MainResults 54, Normalization 42, Syntax/Formula 20) plus 389 top-level `example`s outside `FormalSystem/Examples/`. cslib (`scripts/pre-pr-check.sh`) treats `#check`/`#eval`/`dbg_trace` in library code as debug artifacts.\n\nWORK: (1) classify every occurrence as test-shaped (asserts behaviour, belongs in `Tests/BimodalTest/` as `#guard`/`example`) or documentation-shaped (illustrates an API next to its definition; may stay). (2) Move the test-shaped ones into the matching `Tests/BimodalTest/` module. (3) Keep `FormalSystem/MainResults.lean` as-is: its `#print axioms` block is an intentional axiom-audit page. (4) Add a debug-artifact invariant check to `scripts/check-module-invariants.sh` with a recorded allowlist (MainResults plus any documentation-shaped survivors), so new debug output cannot land silently.\n\nORDERING NOTE: C17 counts `#check @foo` as an occurrence (e.g. Normalization's `#check @neg_unfold` block), so this relocation changes C17's zero-occurrence census; it therefore precedes the zero-occurrence declaration triage in this topic.\n\nACCEPTANCE: `lake build` green; test suite green; new invariant check passes and is documented in the harness header; remaining in-library `#check`/`#eval`/`#print` lines are all allowlisted with a reason.",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T16:57:13Z",
+      "last_updated": "2026-09-16T16:58:22Z",
       "session_id": "sess_1789577011_0f6aae",
       "artifacts": [
         {
@@ -36,7 +66,7 @@
     {
       "project_number": 595,
       "project_name": "establish_durable_records_home",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "markdown",
       "topic": "codebase-cleanup",
       "priority": "high",
@@ -44,7 +74,7 @@
       "dependencies": [],
       "description": "Decide where durable project records live and move them there if the decision is to move. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `specs/paper-definitions-of-record.md` and `specs/decisions/*.md` (currently `total-history-validity-decisions.md`, `untl-snce-argument-order.md`) are cited 43 times from live Lean (25 paper-definitions-of-record, 18 decisions) and `specs/paper-definitions-of-record.md` is read by `scripts/check-paper-definitions.sh`. `specs/` is the task-management tree (and `specs/archive/` is gitignored), so durable records there are one cleanup away from breaking.\n\nWORK: (1) decide, with a short recorded rationale, whether these records belong under `docs/` (e.g. `docs/records/`, `docs/decisions/`) or stay in `specs/`; (2) if moving, `git mv` them, repoint all Lean docstring citations, `check-paper-definitions.sh`, and any doc/README links; (3) record the chosen home in the relevant README so future records land there.\n\nORDERING NOTE: precedes the paper-vocabulary reconciliation (which re-pins the definitions record) and the `docs/` staleness audit in this topic.\n\nACCEPTANCE: decision recorded; if moved, zero remaining citations of the old paths (grep), `check-paper-definitions.sh` passes (or stays skip-neutral when the paper is absent), invariant harness passes (C13/C15 catch missed referrers).",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T16:57:32Z",
+      "last_updated": "2026-09-16T16:58:30Z",
       "session_id": "sess_1789577011_0f6aae",
       "artifacts": [
         {
@@ -63,7 +93,7 @@
     {
       "project_number": 596,
       "project_name": "nest_semantics_language_family_files",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "medium",
@@ -71,7 +101,7 @@
       "dependencies": [],
       "description": "Nest the flat `Semantics/` language-family files into per-language subdirectories, and add the one missing directory README. MEASURED AT REORGANIZATION TIME (2026-09-16): `FormalSystem/Semantics/` holds 15 flat files -- `Minus{Frame,SchemaValidity,Truth,Validity}.lean` (4), `Plus{Determinism,NonValidities,Pasting,StateLocal,Truth,Validity}.lean` (6), `Star{Determinism,NonValidities,StateLocal,Truth,Validity}.lean` (5) -- while `Syntax/` already uses `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` subdirectories with aggregator modules. `FormalSystem/ForMathlib/` is the only non-Boneyard directory without a README. Source: review `specs/reviews/review-2026-09-15.md` findings M1 and the ForMathlib half of M2.\n\nWORK: (1) move the 15 files into `Semantics/` subdirectories mirroring the `Syntax/*Language/` layout (choose names consistent with it, and add aggregators if the Syntax side has them); (2) update every import, the root aggregator, and the C8 parent tuple in `scripts/check-module-invariants.sh`; (3) repoint path citations in docstrings, READMEs and typst; (4) write `FormalSystem/ForMathlib/README.md` (purpose: Mathlib-shaped extensions intended for upstreaming; must import nothing from `FormalSystem.*`). Module-path-only change: no declaration is renamed or restated.\n\nORDERING NOTE: a structural move in the first wave of this topic; precedes paper-vocabulary reconciliation and basename-citation disambiguation.\n\nACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15 citations); `readme-lint.sh` exit 0.",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T16:57:50Z",
+      "last_updated": "2026-09-16T16:58:40Z",
       "file_scope": [
         "FormalSystem/Semantics",
         "FormalSystem/ForMathlib/README.md",
@@ -482,7 +512,7 @@
     {
       "project_number": 591,
       "project_name": "consolidate_automation_export_names",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Adopt a naming convention that distinguishes `lean_exe` roots from library modules in `FormalSystem/Automation/`, and apply it to the five confusable modules.\n\n`DataExport.lean` (395, a toJson/prettyPrint library), `DatasetExport.lean` (1,354, the `dataset_generator` exe), `DatasetExporter.lean` (348, a dataset-assembly library), `ProofStepExport.lean` (1,692, the `proof_extractor` exe), `ProofStepExtractor.lean` (361, a library). `Export` means 'is the executable' in two of five cases and 'is a library' in the others; `DataExport` and `DatasetExport` differ by three characters and are functionally unrelated; and `DatasetExporter` -- the name that most suggests 'the thing that exports' -- is a library. A dispatch asked to fix 'the dataset exporter' has three plausible files and will pick by name.\n\nEach module is individually well-documented and coherent, so this is a rename, not a restructure. Propose ONE convention and check it against all thirteen `lean_exe` roots in `lakefile.lean` -- several have the same shape (`BenchmarkOracle`, `TraceExporter`, `MachineAppendixExport`, `TableauProofStepPipeline`). A convention that fixes five and leaves eight inconsistent is worth less.\n\nKeep `lake exe` TARGET names stable unless there is a reason to move them -- they appear in external documentation and the Hugging Face dataset card. Constraints: C25 scrapes `root :=` at run time (so `root`/`srcDir` must stay consistent); CI's exe-root step greps the same pattern; C8 requires a sibling aggregator if a subdirectory is introduced; C4/C5/C12/C24 all move with a rename; and `docs/training/PIPELINE.md`, `typst/chapters/p4-dataset-pipeline.typ`, `FormalSystem/Automation.lean` and `FormalSystem/README.md` all name these modules.\n\nVerify: `lake build` exits 0; both executables still run; full `check-module-invariants.sh` passes (C4/C5/C8/C12/C24/C25); `typst-sync-check.sh` still resolves every backticked module name; `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` still work.\n\nSee specs/reviews/review-2026-09-16.md, Finding M5.",
       "topic": "codebase-cleanup",
@@ -490,7 +520,7 @@
       "effort": "medium",
       "dependencies": [],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T16:56:55Z",
+      "last_updated": "2026-09-16T18:39:01Z",
       "artifacts": [
         {
           "path": "specs/591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md",
@@ -501,6 +531,11 @@
           "path": "specs/591_consolidate_automation_export_names/plans/02_exe-root-rename-plan.md",
           "type": "plan",
           "summary": "5-phase plan: adopt target-derived *Main exe-root convention across all 13 lean_exe roots (plus DatasetExporter -> DatasetAssembly), in dataset/proof-step/remaining families, then convention doc + C25 guard, then full gate."
+        },
+        {
+          "path": "specs/591_consolidate_automation_export_names/summaries/02_exe-root-rename-summary.md",
+          "type": "summary",
+          "summary": "Renamed all 13 lean_exe roots to PascalCase(target)Main, renamed DatasetExporter to DatasetAssembly, documented the convention, and added the C25N guard."
         }
       ],
       "next_artifact_number": 3,
@@ -512,7 +547,8 @@
         "FormalSystem/Automation/ProofStepExtractor.lean",
         "lakefile.lean"
       ],
-      "session_id": "sess_1789577011_0f6aae"
+      "session_id": "sess_1789577011_0f6aae",
+      "completion_summary": "Every lean_exe root is now named PascalCase(target)Main (for example DatasetGeneratorMain and ProofExtractorMain), and the DatasetExporter library is now DatasetAssembly. lake exe targets and emitted provenance strings did not change. The convention is documented in FormalSystem/Automation/README.md and enforced by the new C25N invariant check. The full lake build and the full check-module-invariants.sh both pass."
     },
     {
       "project_number": 592,

@@ -1,22 +1,37 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "",
+  "completed_at": "2026-09-16T11:38:43-07:00",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 9,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/591_consolidate_automation_export_names/plans/02_exe-root-rename-plan.md",
-      "summary": "5-phase plan: adopt target-derived *Main exe-root convention across all 13 lean_exe roots (plus DatasetExporter -> DatasetAssembly), in dataset/proof-step/remaining families, then convention doc + C25 guard, then full gate."
+      "type": "summary",
+      "path": "specs/591_consolidate_automation_export_names/summaries/02_exe-root-rename-summary.md",
+      "summary": "Renamed all 13 lean_exe roots to PascalCase(target)Main, renamed DatasetExporter to DatasetAssembly, documented the convention, and added the C25N guard."
     }
   ],
-  "next_steps": "Run /implement 591 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1789577011_0f6aae_591",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5,
-    "dependency_waves": 5
+  "completion_data": {
+    "completion_summary": "Every lean_exe root is now named PascalCase(target)Main (for example DatasetGeneratorMain and ProofExtractorMain), and the DatasetExporter library is now DatasetAssembly. lake exe targets and emitted provenance strings did not change. The convention is documented in FormalSystem/Automation/README.md and enforced by the new C25N invariant check. The full lake build and the full check-module-invariants.sh both pass.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "dispatch_seq": 5
+  "partial_progress": {
+    "stage": "completed",
+    "details": "All 5 phases completed and committed",
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "metadata": {
+    "session_id": "sess_1789577011_0f6aae",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "notes": "typst-sync-check.sh still exits FAIL on 4 violations in typst/chapters/p4-proof-automation.typ that predate this task and are unrelated to it; every renamed module name resolves."
+  }
 }

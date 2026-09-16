@@ -1,7 +1,7 @@
 # Implementation Plan: Task #591
 
 - **Task**: 591 - Consolidate the confusable `Automation/` export module names
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking (coordinate with 586 on `typst/chapters/p4-*`; 589 is ordered after this task)
 - **Research Inputs**: specs/591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md (primary), specs/591_consolidate_automation_export_names/reports/01_confusable-export-module-names.md

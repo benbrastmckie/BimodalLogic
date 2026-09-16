@@ -1,5 +1,5 @@
 ---
-next_project_number: 598
+next_project_number: 601
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 598
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,560,564,565,567,570,584,586,590 | 298,464,502,559,563,568,591,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,506,566,569,585 | 231,465,497,565,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,586,592,594,595,596,598,599,600 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,506,560,564,565,567,570,584,590 | 298,464,502,559,563,568,586,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,569,585 | 231,465,497,565,584 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,588,597 | 428,498,499,500,569,585,594 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501,540 | 125,429,588,597 | algebraic-representation, decidability, codebase-cleanup |
 | 6 | 411,589 | 410,540 | decidability, codebase-cleanup |
@@ -78,6 +78,7 @@ next_project_number: 598
 
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
+600 [NOT STARTED] — Investigate why the dense frame-class extension is named...
 
 ### Incompleteness
 
@@ -95,30 +96,63 @@ next_project_number: 598
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
+### Semantics
+
+598 [NOT STARTED] — Remove the nullityidentity field from FrameOver in...
+599 [NOT STARTED] — Simplify the history definitions to match the paper...
+
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-591 [PLANNED] — Adopt a naming convention that distinguishes leanexe roots...
+586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
+  └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
+594 [IMPLEMENTING] — Relocate test-shaped smoke tests out of the live library....
+  └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
+    └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
+      └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
+595 [IMPLEMENTING] — Decide where durable project records live and move them there...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
-      └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
-        └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
-          └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
+      └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
     └─ 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
       └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-  └─ 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
-    └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-594 [PLANNED] — Relocate test-shaped smoke tests out of the live library....
-  └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
-595 [PLANNED] — Decide where durable project records live and move them there...
-  └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
-596 [PLANNED] — Nest the flat Semantics/ language-family files into...
+596 [IMPLEMENTING] — Nest the flat Semantics/ language-family files into...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
 
 ## Tasks
+
+### 600. Rename dense extension qtime
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: frame-extensions
+- **Dependencies**: None
+
+**Description**: Investigate why the dense frame-class extension is named Dense (FrameClass constructors Base | Dense | ZTime | RTime in FormalSystem/ProofSystem/Axioms.lean, and derived names such as detCompletenessDense, derivable_of_validDetDense, cantorBfmcsDense) instead of QTime, which would match ZTime and RTime. Research first: check whether the class is really the theory of Q (e.g. canonical/completeness constructions over ℚ, and whether every dense temporal order validates exactly the same formulas so QTime is accurate) or deliberately named for the density axiom over arbitrary dense orders, and check how the paper (PossibleWorlds JPL/possible_worlds.tex) and docs name it. If there is good reason, rename Dense to QTime systematically (constructor, IsDense-style predicates, theorem/def names, file and module names, docstrings, tests, docs), keeping the naming scheme uniform and elegant; otherwise record the rationale in the relevant docstring and close without renaming. Coordinate with other in-flight renaming/nesting tasks
+
+---
+
+### 599. Unify total histories partial
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide "Semantics in Lean II: Histories and Models" quotes these definitions and must be updated to match
+
+---
+
+### 598. Derive nullity identity
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Remove the nullity_identity field from FrameOver in FormalSystem/Semantics/TaskFrame.lean and derive it instead: reflexivity from serial + limit (TaskFrame.nullity_of_serial_limit) and injectivity-at-zero from limit alone, exposing the result as a theorem (e.g. FrameOver.nullity_identity) so downstream uses keep working. Update every frame construction that currently supplies the field (Independence frames, FlowFrame, IntegerModel/ReynoldsBridge, FMP/Filtration, test generators, etc.), deleting the now-redundant proofs, and revise docstrings and Semantics.lean prose that describe the field as kept for construction ergonomics. Aim for the most elegant, minimal frame definition matching the paper (the four constraints plus converse), avoiding cruft; coordinate with the in-flight semantics file nesting task
+
+---
 
 ### 597. Adopt mathlib standard linter set
 - **Effort**: large
@@ -139,7 +173,7 @@ ACCEPTANCE: linter set enabled; `lake build` green; warning count within the rec
 
 ### 596. Nest semantics language family files
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -158,7 +192,7 @@ ACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15
 
 ### 595. Establish durable records home
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -177,7 +211,7 @@ ACCEPTANCE: decision recorded; if moved, zero remaining citations of the old pat
 
 ### 594. Relocate in library smoke tests
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -231,12 +265,13 @@ See specs/reviews/review-2026-09-16.md, Finding L3.
 
 ### 591. Consolidate automation export names
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md]
 - **Plan**: [591_consolidate_automation_export_names/plans/02_exe-root-rename-plan.md]
+- **Summary**: [591_consolidate_automation_export_names/summaries/02_exe-root-rename-summary.md]
 
 **Description**: Adopt a naming convention that distinguishes `lean_exe` roots from library modules in `FormalSystem/Automation/`, and apply it to the five confusable modules.
 
