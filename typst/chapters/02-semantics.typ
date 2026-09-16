@@ -147,11 +147,8 @@ The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get so
 ]
 
 The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanConverse packages the *converse convention* as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSaturation is *Saturation* verbatim, stated by citation as `TaskFrame.Saturation TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:convex-histories consumes.
-#leanNullityDerived (`TaskRel w 0 w`) is *derived* from these fields via #leanNullityIdentity, matching Nullity's derived status above.
-
-A design fact of the mechanization worth recording: #leanNullityIdentity is stated as an *iff* ($w arrow.r.double.long_0 u arrow.l.r.double w = u$), which is strictly stronger than Nullity's reflexivity-only conclusion --- it additionally asserts injectivity at zero duration.
-// CONFIRM(lean): the intended strength of nullity_identity (iff vs reflexivity-only) is settled and documented in
-//   Semantics/TaskFrame.lean, consistently with the Nullity lemma this chapter states.
+There is no zero-duration field: #leanNullityDerived (`TaskRel w 0 w`) is a *theorem*, derived from #leanSerial and #leanLimit exactly as in the proof above, matching Nullity's derived status.
+The biconditional #leanNullityIdentity ($w arrow.r.double.long_0 u arrow.l.r.double w = u$) is derived too: its injectivity half follows from #leanLimit alone, since $w arrow.r.double.long_0 u$ puts $u$ in every cone around $w$, so it adds nothing beyond the four frame axioms.
 
 == Convex Histories <sec:convex-histories>
 

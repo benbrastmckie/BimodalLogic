@@ -195,17 +195,17 @@ and the zero law as derived.
 
 ---
 
-### Phase 4: External docs and typst prose [NOT STARTED]
+### Phase 4: External docs and typst prose [COMPLETED]
 
 **Goal**: Update non-Lean documentation to the derived-theorem account.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/README.md` (~66, ~69 "all seven fields ... Six are free"): zero case is the derived `nullity_identity` theorem; fix field count.
-- [ ] `docs/reference/API_REFERENCE.md` (~144, ~160) and `docs/user-guide/architecture.md` (~479): drop `nullity_identity` from the field list; add a line naming it as a derived theorem.
-- [ ] `typst/chapters/02-semantics.typ` (~150-154): state `nullity` and the iff `nullity_identity` are derived theorems (reflexivity from Seriality + Limit, injectivity from Limit); delete the "strictly stronger" design-fact paragraph and the `CONFIRM(lean)` comment.
-- [ ] `typst/chapters/06-notes.typ` (~28): replace "strengthened to the Lean field `nullity_identity`" with the derived-theorem account.
-- [ ] Keep `typst/notation/bimodal-notation.typ`'s `leanNullityIdentity` macro (name still valid). Leave `typst/SYNC-MAP.md` audit rows untouched (historical record).
-- [ ] `typst compile` the main document if a build entry exists (e.g. `typst compile typst/<main>.typ` into the scratchpad) to confirm no broken references; commit.
+- [x] `FormalSystem/Semantics/README.md` (~66, ~69 "all seven fields ... Six are free"): zero case is the derived `nullity_identity` theorem; fix field count.
+- [x] `docs/reference/API_REFERENCE.md` (~144, ~160) and `docs/user-guide/architecture.md` (~479) *(deviation: altered — also rewrote the top-level `README.md` frame paragraph, which described the field as retained for construction ergonomics)*: drop `nullity_identity` from the field list; add a line naming it as a derived theorem.
+- [x] `typst/chapters/02-semantics.typ` (~150-154): state `nullity` and the iff `nullity_identity` are derived theorems (reflexivity from Seriality + Limit, injectivity from Limit); delete the "strictly stronger" design-fact paragraph and the `CONFIRM(lean)` comment.
+- [x] `typst/chapters/06-notes.typ` (~28): replace "strengthened to the Lean field `nullity_identity`" with the derived-theorem account.
+- [x] Keep `typst/notation/bimodal-notation.typ`'s `leanNullityIdentity` macro (name still valid). Leave `typst/SYNC-MAP.md` audit rows untouched (historical record).
+- [x] `typst compile` the main document if a build entry exists (e.g. `typst compile typst/<main>.typ` into the scratchpad) to confirm no broken references; commit.
 
 **Timing**: 0.5 hours
 

@@ -476,7 +476,8 @@ structure TemporalOrder where
 structure FrameOver (D : TemporalOrder) where
   WorldState : Type                                  -- Set of world states (W)
   TaskRel : WorldState → D → WorldState → Prop      -- Task relation (⇒)
-  nullity_identity, comp, converse, serial, limit, saturation : ...
+  comp, converse, serial, limit, saturation : ...
+  -- `nullity_identity` (TaskRel w 0 u ↔ w = u) is a derived theorem, not a field
 
 -- The total space: the temporal order is the field `Duration`
 structure TaskFrame where

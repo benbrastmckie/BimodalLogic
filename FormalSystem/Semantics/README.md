@@ -63,10 +63,12 @@ live file and subdirectory here, and no row for anything else.
 relation `step w u := TaskRel w 1 u`, in both directions:
 
 - **Decomposition** — `taskRel_eq_iter`: `TaskRel w d u` is an `|d|`-fold iterate of `step`,
-  forwards for `d ≥ 0` and backwards for `d ≤ 0`. The zero case is `nullity_identity`, the positive
+  forwards for `d ≥ 0` and backwards for `d ≤ 0`. The zero case is the derived theorem
+  `FrameOver.nullity_identity` (from *Seriality* and *Limit*), the positive
   case is *Compositionality* at `y = 1`, and the negative case is the converse convention.
 - **Synthesis** — `TaskFrame.ofStep`: a bi-serial relation on a finite nonempty carrier generates a
-  `TaskFrame ℤ` with all seven fields discharged. Six are free from the normal form; *Seriality* is
+  `TaskFrame ℤ` with every field discharged (`comp`, `converse`, `serial`, `limit`, `saturation`,
+  plus the nonempty carrier). All but one are free from the normal form; *Seriality* is
   the one genuine obligation, and the module records the `Unit`-carrier counterexample showing that
   neither finiteness nor discreteness supplies it.
 - **History space** — `mem_HF_iff_adjacent`: `H_F` over ℤ is exactly the set of bi-infinite
