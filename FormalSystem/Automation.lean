@@ -15,12 +15,12 @@ import FormalSystem.Automation.FormulaEnumerator
 import FormalSystem.Automation.DatasetGenerator
 import FormalSystem.Automation.DataExport
 import FormalSystem.Automation.EnrichedCountermodel
-import FormalSystem.Automation.DatasetExporter
+import FormalSystem.Automation.DatasetAssembly
 import FormalSystem.Automation.ProofStepExtractor
 import FormalSystem.Automation.Normalization
 import FormalSystem.Automation.InterestingnessMetrics
 import FormalSystem.Automation.PrefilterSoundness
--- DatasetExport, DatasetValidator, and ProofStepExport define `main` (lean_exe targets)
+-- DatasetGeneratorMain, DatasetValidatorMain, and ProofStepExport define `main` (lean_exe targets)
 -- and must not be imported through the umbrella; use them only via `lake exe` commands.
 
 /-!

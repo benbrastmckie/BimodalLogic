@@ -6,7 +6,7 @@ Usage:
     python scripts/generate_dataset.py data/training_dataset.json data/training.pt
     python scripts/generate_dataset.py data/eval_dataset.json data/eval.pt
 
-Reads the structured JSON dataset produced by DatasetExporter.lean and converts
+Reads the structured JSON dataset produced by DatasetAssembly.lean and converts
 PatternKey features to numpy arrays, encodes decisions as integer labels, and
 exports to PyTorch .pt format.
 

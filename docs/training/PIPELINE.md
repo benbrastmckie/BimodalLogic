@@ -31,7 +31,7 @@ DatasetGenerator.lean
                 |
       .---------+----------.
       v                    v
-DatasetExport.lean         DatasetExporter.lean
+DatasetGeneratorMain.lean  DatasetAssembly.lean
 (JSONL, lake exe)          (JSON, Python pipeline)
   writeDatasetJSONL          exportDatasetJson
   writeMetadata              splitDataset (80/20 stratified)
@@ -227,14 +227,14 @@ For each formula, `labelFormula`:
 
 `SimpleCountermodel` discards the saturated branch after extracting atom truth values. `EnrichedCountermodel` retains the full branch so the value network can learn *why* a formula is invalid — specifically, which modal subformulas (box patterns) and temporal subformulas (untl/snce patterns) were the obstruction. This richer corrective signal is expected to produce better-calibrated value estimates in Tier 2.
 
-**Current status**: Implemented, tested, and producing correct JSON output. Not yet wired into the main export path (DatasetExport.lean or DatasetExporter.lean). Targeted for Tier 2 integration.
+**Current status**: Implemented, tested, and producing correct JSON output. Not yet wired into the main export path (DatasetGeneratorMain.lean or DatasetAssembly.lean). Targeted for Tier 2 integration.
 
 ---
 
-### `DatasetExporter.lean`
+### `DatasetAssembly.lean`
 
-**Path**: `FormalSystem/Automation/DatasetExporter.lean`
-**Namespace**: `FormalSystem.Automation.DatasetExporter`
+**Path**: `FormalSystem/Automation/DatasetAssembly.lean`
+**Namespace**: `FormalSystem.Automation.DatasetAssembly`
 **Role**: Assembles labeled formulas into a structured JSON dataset file with metadata, statistics, and a deterministic stratified train/eval split. This is the Python pipeline's primary input format.
 
 #### Key API
@@ -294,13 +294,11 @@ For each formula, `labelFormula`:
 
 ---
 
-### `DatasetExport.lean`
+### `DatasetGeneratorMain.lean`
 
-**Path**: `FormalSystem/Automation/DatasetExport.lean`
-**Namespace**: `FormalSystem.Automation.DatasetExport`
+**Path**: `FormalSystem/Automation/DatasetGeneratorMain.lean`
+**Namespace**: `FormalSystem.Automation.DatasetGeneratorMain`
 **Role**: JSONL streaming output, CLI argument parsing, and the `main` function for the `lake exe dataset_generator` executable. This is the BimodalHarness-facing export path.
-
-**Note**: This module is distinct from `DataExport.lean` (the JSON serialization primitives). Despite the similar name, `DatasetExport.lean` is the CLI executable entry point, while `DataExport.lean` provides the underlying serialization library.
 
 #### Key API
 
@@ -345,14 +343,14 @@ Each line of the output file is one JSON object:
 }
 ```
 
-Split assignment (`assignSplit`) uses hash bucketing for deterministic 80/10/10 train/val/test allocation, unlike the `DatasetExporter.lean` 80/20 train/eval split.
+Split assignment (`assignSplit`) uses hash bucketing for deterministic 80/10/10 train/val/test allocation, unlike the `DatasetAssembly.lean` 80/20 train/eval split.
 
 ---
 
-### `DatasetValidator.lean`
+### `DatasetValidatorMain.lean`
 
-**Path**: `FormalSystem/Automation/DatasetValidator.lean`
-**Namespace**: `FormalSystem.Automation.DatasetValidator`
+**Path**: `FormalSystem/Automation/DatasetValidatorMain.lean`
+**Namespace**: `FormalSystem.Automation.DatasetValidatorMain`
 **Role**: Quality assurance for the pipeline. Validates correctness via conformance tests (known valid/invalid formulas) and evaluates dataset readiness for training via a feasibility gate. Provides the `main` entry point for `lake exe dataset_validator`.
 
 #### Key API
@@ -394,19 +392,19 @@ Two `lake exe` targets are registered in `lakefile.lean`:
 
 ```lean
 lean_exe dataset_generator where
-  root := `FormalSystem.Automation.DatasetExport
+  root := `FormalSystem.Automation.DatasetGeneratorMain
   srcDir := "FormalSystem"
   supportInterpreter := true
 
 lean_exe dataset_validator where
-  root := `FormalSystem.Automation.DatasetValidator
+  root := `FormalSystem.Automation.DatasetValidatorMain
   srcDir := "FormalSystem"
   supportInterpreter := true
 ```
 
 ### `lake exe dataset_generator`
 
-Generates a JSONL dataset via the `DatasetExport.lean` CLI.
+Generates a JSONL dataset via the `DatasetGeneratorMain.lean` CLI.
 
 ```
 lake exe dataset_generator -- [OPTIONS]
@@ -442,7 +440,7 @@ lake exe dataset_generator -- \
 
 ### `lake exe dataset_validator`
 
-Runs conformance tests and the feasibility gate via `DatasetValidator.lean`.
+Runs conformance tests and the feasibility gate via `DatasetValidatorMain.lean`.
 
 ```bash
 lake exe dataset_validator
@@ -455,10 +453,10 @@ lake exe dataset_validator
 ## Python Tensor Converter
 
 **Path**: `scripts/generate_dataset.py`
-**Input**: Structured JSON file from `DatasetExporter.lean` (single `{"metadata": ..., "formulas": [...]}` object)
+**Input**: Structured JSON file from `DatasetAssembly.lean` (single `{"metadata": ..., "formulas": [...]}` object)
 **Output**: PyTorch `.pt` tensor dict (or NumPy `.npz` fallback if PyTorch is unavailable)
 
-**Note**: This script reads the **JSON format** from `DatasetExporter.lean`, not the JSONL format from `DatasetExport.lean`. The two export paths are complementary: JSONL for BimodalHarness streaming, JSON for Python tensor conversion.
+**Note**: This script reads the **JSON format** from `DatasetAssembly.lean`, not the JSONL format from `DatasetGeneratorMain.lean`. The two export paths are complementary: JSONL for BimodalHarness streaming, JSON for Python tensor conversion.
 
 ### Feature Vector (5 dimensions from `PatternKey`)
 
@@ -519,7 +517,7 @@ python scripts/generate_dataset.py data/eval_dataset.json data/eval.pt
 
 ## Dataset Schemas
 
-### JSONL Record Schema (DatasetExport.lean)
+### JSONL Record Schema (DatasetGeneratorMain.lean)
 
 Used by `lake exe dataset_generator` and consumed directly by BimodalHarness. Each line is one complete JSON object.
 
@@ -537,7 +535,7 @@ Used by `lake exe dataset_generator` and consumed directly by BimodalHarness. Ea
 | `metrics` | object | `{"complexity": N, "modalDepth": N, "temporalDepth": N, "impCount": N, "atomCount": N, "decisionTimeMs": N, "difficultyTier": "..."}` |
 | `augmentation` | object or null | `{"source": "...", "originalFormulaStr": "..."}` for temporal duals; null otherwise |
 
-### Structured JSON Schema (DatasetExporter.lean)
+### Structured JSON Schema (DatasetAssembly.lean)
 
 Used by the Python tensor converter. Single JSON object with metadata and formula array.
 

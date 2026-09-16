@@ -404,7 +404,7 @@ One scheme, three casings, applied by grammatical position:
 | lowerCamel (segment naming a PascalCase def) | `discrete` / `dedekind` | `zTime` / `rTime` | `discreteRules` -> `zTimeRules` |
 | snake_case (lemma-name segment) | `discrete` / `dedekind` | `ztime` / `rtime` | `soundness_dedekind` -> `soundness_rtime` |
 | String literal emitted for a class | `"Discrete"` / `"Dedekind"` | `"ZTime"` / `"RTime"` | `Automation/MachineAppendixExport.lean` |
-| String literal parsed as CLI input | `"discrete"` / `"dedekind"` | `"ztime"` / `"rtime"`, legacy spellings still accepted | `Automation/DatasetExport.lean` |
+| String literal parsed as CLI input | `"discrete"` / `"dedekind"` | `"ztime"` / `"rtime"`, legacy spellings still accepted | `Automation/DatasetGeneratorMain.lean` |
 
 `ZTime` and `RTime` name what the classes *are* — ℤ-time and R-time, which by
 `Semantics.complete_duration_discrete_or_dense` and Hölder are, up to order-and-group

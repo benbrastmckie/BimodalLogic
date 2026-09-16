@@ -27,14 +27,14 @@ lean_lib BimodalTest where
 /-- Dataset generator executable for ML training data.
     Run with: lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic.jsonl -/
 lean_exe dataset_generator where
-  root := `FormalSystem.Automation.DatasetExport
+  root := `FormalSystem.Automation.DatasetGeneratorMain
   srcDir := "."
   supportInterpreter := true
 
 /-- Dataset validator executable for conformance testing and feasibility gate.
     Run with: lake exe dataset_validator -/
 lean_exe dataset_validator where
-  root := `FormalSystem.Automation.DatasetValidator
+  root := `FormalSystem.Automation.DatasetValidatorMain
   srcDir := "."
   supportInterpreter := true
 

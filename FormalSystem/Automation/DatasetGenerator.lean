@@ -2010,7 +2010,7 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
 - 1/8 timeout (genuinely hard: `U(p, q) → U(r, q)`)
 - 0 label regressions (exhaustive and hybrid modes agree on all labels)
 
-**CLI flags** (in DatasetExport.lean):
+**CLI flags** (in DatasetGeneratorMain.lean):
 - `--generation-mode exhaustive|proofFirst|hybrid` (default: exhaustive)
 - `--pool-depth N` (default: 2)
 - `--pool-seeds N` (default: 10000)

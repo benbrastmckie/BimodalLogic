@@ -31,13 +31,13 @@ For each enumerated formula, the decision procedure (`decide`, @sec:decidability
 
 == Pipeline Flow and Module Map
 
-`FormulaEnumerator.lean` enumerates formulas up to a depth/size bound; `DatasetGenerator.lean` labels each via `decide`, extracting a proof trace or countermodel; `DatasetExport.lean` (JSONL, feeding the `dataset_generator` executable) and `DatasetExporter.lean` (structured JSON, feeding a Python tensor-conversion script) export the labeled dataset.
-The pipeline comprises seven Lean modules -- `DataExport.lean`, `FormulaEnumerator.lean`, `DatasetGenerator.lean`, `EnrichedCountermodel.lean`, `DatasetExporter.lean`, `DatasetExport.lean`, and `DatasetValidator.lean` -- with `DataExport.lean` serving as a shared dependency of the other six rather than a pipeline stage in its own right.#footnote[`docs/training/PIPELINE.md`, Module Reference section.]
+`FormulaEnumerator.lean` enumerates formulas up to a depth/size bound; `DatasetGenerator.lean` labels each via `decide`, extracting a proof trace or countermodel; `DatasetGeneratorMain.lean` (JSONL, feeding the `dataset_generator` executable) and `DatasetAssembly.lean` (structured JSON, feeding a Python tensor-conversion script) export the labeled dataset.
+The pipeline comprises seven Lean modules -- `DataExport.lean`, `FormulaEnumerator.lean`, `DatasetGenerator.lean`, `EnrichedCountermodel.lean`, `DatasetAssembly.lean`, `DatasetGeneratorMain.lean`, and `DatasetValidatorMain.lean` -- with `DataExport.lean` serving as a shared dependency of the other six rather than a pipeline stage in its own right.#footnote[`docs/training/PIPELINE.md`, Module Reference section.]
 
 === Anatomy of a Dataset Record
 
-Each exported JSONL line is a `DatasetRecord` (`Automation/DatasetExport.lean`), carrying the formula in several parallel encodings alongside its label and exactly one supervisory payload.
-A representative valid-formula record, abridged from the schema documented at the head of `DatasetExport.lean`:
+Each exported JSONL line is a `DatasetRecord` (`Automation/DatasetGeneratorMain.lean`), carrying the formula in several parallel encodings alongside its label and exactly one supervisory payload.
+A representative valid-formula record, abridged from the schema documented at the head of `DatasetGeneratorMain.lean`:
 
 ```json
 {
@@ -61,8 +61,8 @@ The redundant formula encodings serve different consumers: `formula_str` for hum
 Two `lake exe` executables compile from this pipeline:#footnote[`docs/training/PIPELINE.md:428-437`, quoting the `lakefile.lean` executable declarations.]
 
 #items[
-  #item[`dataset_generator` (root `FormalSystem.Automation.DatasetExport`) -- the main JSONL export executable.]
-  #item[`dataset_validator` (root `FormalSystem.Automation.DatasetValidator`) -- validates exported datasets against the schema contract.]
+  #item[`dataset_generator` (root `FormalSystem.Automation.DatasetGeneratorMain`) -- the main JSONL export executable.]
+  #item[`dataset_validator` (root `FormalSystem.Automation.DatasetValidatorMain`) -- validates exported datasets against the schema contract.]
 ]
 
 == BimodalHarness Integration: Artifact-Only

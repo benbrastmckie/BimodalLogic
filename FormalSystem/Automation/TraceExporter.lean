@@ -81,7 +81,7 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter -- --fuel 200 --frame-c
 
 - `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
 - `FormalSystem.Metalogic.Decidability.TraceExport.proofCertificateToJsonString` — JSON serializer.
-- `FormalSystem.Automation.DatasetExport.parseFormulaSExpr` — S-expression formula parser.
+- `FormalSystem.Automation.DatasetGeneratorMain.parseFormulaSExpr` — S-expression formula parser.
 -/
 
 set_option autoImplicit false

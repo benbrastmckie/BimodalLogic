@@ -394,7 +394,7 @@ def generate_mutations(
 
 def get_known_invalid_anchors() -> list[dict]:
     """
-    Return the 20 known invalid formulas from DatasetValidator.lean
+    Return the 20 known invalid formulas from DatasetValidatorMain.lean
     as benchmark records.
     """
     p = {"tag": "atom", "name": "p"}

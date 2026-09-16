@@ -33,10 +33,10 @@ There is no Aesop rule set. One existed and was retired for having zero consumer
 | `BenchmarkAnchors.lean` | 593 | Benchmark anchor formulas: ground-truth valid/invalid formula pairs |
 | `BenchmarkOracle.lean` | 370 | Batch oracle: reads formula JSON, runs decision procedure, outputs JSONL labels |
 | `DataExport.lean` | 395 | Core data export: JSONL serialization for formula-label pairs |
-| `DatasetExport.lean` | 1,354 | Dataset export pipeline: formatting, splitting, output orchestration |
-| `DatasetExporter.lean` | 348 | Dataset exporter: configurable export with format options |
+| `DatasetAssembly.lean` | 350 | Dataset assembly: structured JSON dataset with metadata and train/eval split |
 | `DatasetGenerator.lean` | 2,296 | Dataset generator: runs `decide` on enumerated formulas, extracts proof traces |
-| `DatasetValidator.lean` | 604 | Dataset validator: conformance tests, diversity metrics, feasibility gate |
+| `DatasetGeneratorMain.lean` | 1,354 | Dataset export pipeline: formatting, splitting, output orchestration |
+| `DatasetValidatorMain.lean` | 604 | Dataset validator: conformance tests, diversity metrics, feasibility gate |
 | `EnrichedCountermodel.lean` | 223 | Enriched countermodel extraction for dataset negative examples |
 | `EnumBenchmark.lean` | 227 | Enumeration benchmark: performance testing for formula enumeration |
 | `FormulaEnumerator.lean` | 2,374 | Formula enumerator: depth-bounded enumeration of all TM formulas |
@@ -79,7 +79,7 @@ namespace agree.
 The pipeline flows left-to-right:
 
 ```
-FormulaEnumerator → DatasetGenerator → DatasetValidator → DatasetExport/DatasetExporter
+FormulaEnumerator → DatasetGenerator → DatasetValidatorMain → DatasetGeneratorMain/DatasetAssembly
        |                  |                                        |
 FormulaMutator      ProofStepExtractor                     DataExport (JSONL)
                     EnrichedCountermodel                   BenchmarkOracle
@@ -95,12 +95,12 @@ FormulaMutator      ProofStepExtractor                     DataExport (JSONL)
 | `ProofStepExport.lean` | Step 2c: serialize proof steps to JSONL |
 | `EnrichedCountermodel.lean` | Step 2d: enrich negative examples with countermodel info |
 | `BenchmarkAnchors.lean` | Step 2e: inject ground-truth anchor pairs |
-| `DatasetValidator.lean` | Step 3: validate quality and diversity metrics |
+| `DatasetValidatorMain.lean` | Step 3: validate quality and diversity metrics |
 | `BenchmarkOracle.lean` | Step 4: batch re-labeling oracle for benchmarking |
 | `EnumBenchmark.lean` | Performance testing for enumeration |
 | `DataExport.lean` | Core JSONL serialization utilities |
-| `DatasetExport.lean` | Full export pipeline orchestration |
-| `DatasetExporter.lean` | Configurable exporter (format options, splitting) |
+| `DatasetGeneratorMain.lean` | Full export pipeline orchestration |
+| `DatasetAssembly.lean` | Configurable exporter (format options, splitting) |
 
 ## Usage Examples
 
@@ -116,10 +116,10 @@ example : ⊢ (□p → p) := by
 
 ```bash
 # ML pipeline: Generate dataset
-lake run FormalSystem.Automation.DatasetExporter -- output.jsonl
+lake exe dataset_generator -- --output data/bmlogic.jsonl
 
 # Run benchmark oracle on formulas
-lake run FormalSystem.Automation.BenchmarkOracle -- formulas.jsonl results.jsonl
+lake exe benchmark_oracle -- --input formulas.jsonl --output results.jsonl
 ```
 
 ## Related Documentation

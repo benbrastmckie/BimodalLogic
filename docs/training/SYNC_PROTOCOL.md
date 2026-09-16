@@ -118,7 +118,7 @@ Do **not** bump `SCHEMA_VERSION` when:
 - A new tier is added (e.g., c9, c11)
 
 When bumping, update in both repositories:
-1. Update `ProofStepExtractor.lean` or `DatasetExport.lean` (BimodalLogic)
+1. Update `ProofStepExtractor.lean` or `DatasetGeneratorMain.lean` (BimodalLogic)
 2. Update `data/VERSION` (written automatically by `export-training-data.sh`)
 3. Update the Python adapter in BimodalHarness `ingestion.py`
 4. Update BimodalHarness `data/VERSION` `SCHEMA_VERSION` field

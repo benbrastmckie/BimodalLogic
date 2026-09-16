@@ -107,7 +107,7 @@ BimodalTest.ProofSystem.DerivationBenchmark
 
 # These two compile in isolation but cannot be imported by Tests/BimodalTest.lean:
 # each pulls in an executable root that defines `main`, colliding with the `main`
-# from FormalSystem.Automation.DatasetValidator already in that environment. They stay
+# from FormalSystem.Automation.DatasetValidatorMain already in that environment. They stay
 # unwired and compile-checked here.
 BimodalTest.Automation.FormulaMutatorTest
 BimodalTest.Automation.ProofFirstTests

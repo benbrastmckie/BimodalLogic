@@ -83,7 +83,7 @@ deliberately excluded, for two different reasons:
   compile in isolation but cannot be imported here. Each pulls in an executable
   root (`Automation/FormulaMutator.lean`, `Automation/ProofFirstExporter.lean`)
   that defines `main`, and this environment already has `main` from
-  `Automation/DatasetValidator.lean`. Importing either yields
+  `Automation/DatasetValidatorMain.lean`. Importing either yields
   "environment already contains 'main'". Fixing this means restructuring where
   `main` lives in the executable roots, not editing the tests.
 

@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Automation.DatasetGenerator
-import FormalSystem.Automation.DatasetValidator
+import FormalSystem.Automation.DatasetValidatorMain
 
 /-!
 # C5 Smoke Test: Decision Procedure at Complexity 5
@@ -19,7 +19,7 @@ Covers:
 - Known valid formulas (axiom instances, tautologies)
 - Known invalid formulas (bare atoms, contradictions)
 - Edge cases at complexity 5 (nested temporal operators)
-- Conformance test suite from DatasetValidator
+- Conformance test suite from DatasetValidatorMain
 
 ## References
 
@@ -31,9 +31,9 @@ namespace BimodalTest.Automation.C5Smoke
 
 open FormalSystem.Syntax
 open FormalSystem.Automation
-open FormalSystem.Automation.DatasetValidator
+open FormalSystem.Automation.DatasetValidatorMain
 
--- Convenience abbreviations (using atomS for compatibility with DatasetValidator patterns)
+-- Convenience abbreviations (using atomS for compatibility with DatasetValidatorMain patterns)
 private abbrev p : Formula := .atomS "p"
 private abbrev q : Formula := .atomS "q"
 private abbrev r : Formula := .atomS "r"
@@ -221,14 +221,14 @@ Verify that labeled formulas have non-null metrics fields.
 /-!
 ## Section 6: Conformance Test Suite
 
-Run the existing conformance tests from DatasetValidator.
+Run the existing conformance tests from DatasetValidatorMain.
 -/
 
 #eval do
-  IO.println "=== DatasetValidator Conformance Tests ==="
+  IO.println "=== DatasetValidatorMain Conformance Tests ==="
   let allPassed ← runConformanceTests
   if !allPassed then
-    throw (IO.userError "DatasetValidator conformance tests failed")
+    throw (IO.userError "DatasetValidatorMain conformance tests failed")
   IO.println "Conformance tests: ALL PASSED"
 
 /-!
@@ -240,7 +240,7 @@ All sections must pass for the smoke test to succeed:
 3. Known invalid formulas are labeled invalid with countermodels
 4. Complexity 5 edge cases produce expected labels
 5. Metrics fields are fully populated
-6. DatasetValidator conformance tests pass
+6. DatasetValidatorMain conformance tests pass
 -/
 
 end BimodalTest.Automation.C5Smoke

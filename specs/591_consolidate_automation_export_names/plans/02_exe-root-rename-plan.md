@@ -1,7 +1,7 @@
 # Implementation Plan: Task #591
 
 - **Task**: 591 - Consolidate the confusable `Automation/` export module names
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking (coordinate with 586 on `typst/chapters/p4-*`; 589 is ordered after this task)
 - **Research Inputs**: specs/591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md (primary), specs/591_consolidate_automation_export_names/reports/01_confusable-export-module-names.md
@@ -100,31 +100,32 @@ No roadmap consultation requested for this dispatch.
 Phases run strictly in sequence. They share `lakefile.lean`, `check-module-invariants.sh`, and
 `docs/training/PIPELINE.md`, so parallel runs would conflict.
 
-### Phase 1: Dataset family rename [NOT STARTED]
+### Phase 1: Dataset family rename [COMPLETED]
 
 **Goal**: Rename `DatasetExport` -> `DatasetGeneratorMain`, `DatasetValidator` ->
 `DatasetValidatorMain`, and `DatasetExporter` -> `DatasetAssembly`, with every reference updated and the
 build green.
 
 **Tasks**:
-- [ ] Record a baseline: `grep -rn '"generator": "BimodalLogic/DatasetExporter"'` count, and run
+- [x] Record a baseline: `grep -rn '"generator": "BimodalLogic/DatasetExporter"'` count, and run
       `scripts/check-module-invariants.sh --no-build` (note any pre-existing failures so they are not attributed to this task)
-- [ ] `git mv` the three files under `FormalSystem/Automation/`
-- [ ] Update the `lakefile.lean` `root :=` lines for `dataset_generator` and `dataset_validator` (leave `srcDir` unchanged)
-- [ ] Rename the per-module namespaces (`...Automation.DatasetExport` -> `...DatasetGeneratorMain`, and so on) and fix
+- [x] `git mv` the three files under `FormalSystem/Automation/`
+- [x] Update the `lakefile.lean` `root :=` lines for `dataset_generator` and `dataset_validator` (leave `srcDir` unchanged)
+- [x] Rename the per-module namespaces (`...Automation.DatasetExport` -> `...DatasetGeneratorMain`, and so on) and fix
       the external qualified references (DatasetExport 1, DatasetValidator 1)
-- [ ] Update the importers: `FormalSystem/Automation.lean` (the `DatasetExporter` import and the exe-root comment at lines ~23-24),
+- [x] Update the importers: `FormalSystem/Automation.lean` (the `DatasetExporter` import and the exe-root comment at lines ~23-24),
       `Tests/BimodalTest/Automation/C5SmokeTest.lean`, and `Tests/BimodalTest.lean` lines ~84-86
-- [ ] Keep `"generator": "BimodalLogic/DatasetExporter"` byte-identical at both sites, and add a stable-provenance-ID comment
-- [ ] Keep a backticked `lake exe dataset_generator` mention in the `DatasetGeneratorMain.lean` docstring,
+- [x] Keep `"generator": "BimodalLogic/DatasetExporter"` byte-identical at both sites, and add a stable-provenance-ID comment
+- [x] Keep a backticked `lake exe dataset_generator` mention in the `DatasetGeneratorMain.lean` docstring,
       and update the comment in `typst/sync-check-whitelist.txt` line ~112 to name the new file
-- [ ] Update the docstring and doc cross-references: `DatasetGenerator.lean`, `Normalization.lean`, `AxiomNames.lean`,
+- [x] *(deviation: altered — AxiomNames.lean, Normalization.lean, Init.lean, TemporalDerived.lean had no dataset-family names; their mentions belong to phase 2/3 names)* Update the docstring and doc cross-references: `DatasetGenerator.lean`, `Normalization.lean`, `AxiomNames.lean`,
       `FormalSystem/Init.lean`, `FormalSystem/Theorems/TemporalDerived.lean`, `scripts/generate_dataset.py`,
       `docs/training/PIPELINE.md` (including the `root :=` excerpt at ~397; delete the "Despite the similar name" note at ~303),
       `docs/training/SYNC_PROTOCOL.md`, `docs/ARCHITECTURE.md`, and `typst/chapters/p4-dataset-pipeline.typ` (lines ~34, 35, 39, 40, 64)
-- [ ] Update the C16 measurement table comment in `check-module-invariants.sh` (~2053-2059) for these names
-- [ ] Run `lake build FormalSystem.Automation.DatasetGeneratorMain FormalSystem.Automation.DatasetValidatorMain FormalSystem.Automation.DatasetAssembly BimodalTest`
-- [ ] Commit: `task 591: phase 1: dataset family rename`
+- [x] Update the C16 measurement table comment in `check-module-invariants.sh` (~2053-2059) for these names
+- [x] Run `lake build FormalSystem.Automation.DatasetGeneratorMain FormalSystem.Automation.DatasetValidatorMain FormalSystem.Automation.DatasetAssembly BimodalTest`
+- [x] Commit: `task 591: phase 1: dataset family rename`
+- [x] Regenerated the Automation README inventory block early *(deviation: altered — done in phase 1 because INV flagged the renamed rows; rows for concurrently-edited FormulaEnumerator/Normalization kept at HEAD counts)*
 
 **Timing**: 1.5 hours
 

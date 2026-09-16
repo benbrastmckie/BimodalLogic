@@ -403,7 +403,7 @@ structure Config where
 
 /--
 Parse CLI arguments: `--output PATH`, `--stamp-commit SHA`, `--stamp-date DATE`
-(following the `DatasetExport.parseCLIArgs` precedent).
+(following the `DatasetGeneratorMain.parseCLIArgs` precedent).
 -/
 def parseArgs (args : List String) : Config :=
   go args {}
@@ -416,7 +416,7 @@ where
   | _ :: rest, acc => go rest acc
 
 /-- Metadata envelope line (first JSONL line), following the
-`DatasetExporter.DatasetMetadata` precedent. -/
+`DatasetAssembly.DatasetMetadata` precedent. -/
 def metadataLine (cfg : Config) (axCount ruleCount opCount : Nat) : String :=
   "{\"kind\": \"metadata\""
   ++ ", \"generator\": \"BimodalLogic/MachineAppendixExport\""
