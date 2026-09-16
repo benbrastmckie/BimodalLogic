@@ -13,7 +13,7 @@ The one structural fact about `⟨τ⟩_x` that the S5 axioms of `⊡` miss: the
 through a world state are the **product of its possible pasts and its possible futures**. If two
 total histories `ρ` and `σ` share a state at `t`, then `ρ|(-∞,t] ⌢ σ|(t,∞)` is again a total
 history (`paste`), using only *Compositionality* (`TaskFrame.comp`) across `t` and the converse
-convention (`TaskFrame.converse`) for the reverse orientation — no *Saturation*, no extension
+convention (`TaskFrame.reflection`) for the reverse orientation — no *Saturation*, no extension
 theorem, no frame-class assumption.
 
 Pure-future formulas (`IsPureFuture`, `PlusLanguage/Formula.lean`) see only the history from
@@ -102,7 +102,7 @@ theorem paste_rel (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTota
   by_cases hs : s ≤ t <;> by_cases hs' : s' ≤ t
   · rw [if_pos hs, if_pos hs']; exact ρ.respects_task s s' _ _
   · rw [if_pos hs, if_neg hs']; exact paste_rel_le_lt ρ σ hρ hσ t hsame hs hs'
-  · rw [if_neg hs, if_pos hs', F.converse, neg_sub]; exact paste_rel_le_lt ρ σ hρ hσ t hsame hs' hs
+  · rw [if_neg hs, if_pos hs', F.reflection, neg_sub]; exact paste_rel_le_lt ρ σ hρ hσ t hsame hs' hs
   · rw [if_neg hs, if_neg hs']; exact σ.respects_task s s' _ _
 
 /-- **Pasting.** If `ρ(t) = σ(t)` then `ρ|(-∞,t] ⌢ σ|(t,∞)` is a total history. -/

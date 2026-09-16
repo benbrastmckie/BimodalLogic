@@ -164,7 +164,7 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   verbatim that of the former field of the same name
 - `FrameOver.interpolates`: the `→` (interpolation) half of `comp`, derived, definitionally
   `TaskFrame.Interpolates TaskRel`
-- `FrameOver.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
+- `FrameOver.reflection`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
 - `FrameOver.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
 - `FrameOver.eq_of_taskRel_zero`, `FrameOver.nullity_identity`: derived injectivity at zero and
   the resulting zero-duration law `TaskRel w 0 u ↔ w = u`
@@ -642,6 +642,58 @@ theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
   have huw : u = w := hLim w u fun x hx => ⟨0, by simpa using hx, hu⟩
   exact huw ▸ hu
 
+/-!
+### Presenting a task relation by a reflective two-sided relation
+
+A two-sided relation `R` satisfying the reflection law is the extension of its own restriction
+to `D⁺` (`reflect_eq_of_reflective`). The lemmas below transport that fact to the relation itself
+and to each `def:frame` axiom, so that a frame whose relation is most naturally written on all of
+`D` can supply its primitive as that restriction, `fun w x u => R w ↑x u`, and discharge each
+axiom field against `R` directly. `FrameOver.ofReflective` packages all five; a frame that must
+stay a literal structure (for instance so that its world-state type reduces at reducible
+transparency) cites them field by field.
+
+Each transport is a `rw` along `reflect_eq_of_reflective`, never an `▸` cast, whose motive would
+pick up the nested `reflect`.
+-/
+
+omit [Nontrivial D] in
+/-- The extension of a reflective relation's restriction to `D⁺` is the relation, pointwise. -/
+theorem reflect_restrict_iff {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) {w u : W} {d : D} :
+    reflect (fun w (x : {x : D // 0 ≤ x}) u => R w (x : D) u) w d u ↔ R w d u := by
+  rw [reflect_eq_of_reflective R hR]
+
+omit [Nontrivial D] in
+/-- *Compositionality*, transported from a reflective relation to its restriction's extension. -/
+theorem compositional_reflect_of_reflective {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (h : Compositional R) :
+    Compositional (reflect fun w (x : {x : D // 0 ≤ x}) u => R w (x : D) u) := by
+  rw [reflect_eq_of_reflective R hR]; exact h
+
+omit [Nontrivial D] in
+/-- *Seriality*, transported from a reflective relation to its restriction's extension. -/
+theorem serial_reflect_of_reflective {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (h : Serial R) :
+    Serial (reflect fun w (x : {x : D // 0 ≤ x}) u => R w (x : D) u) := by
+  rw [reflect_eq_of_reflective R hR]; exact h
+
+omit [Nontrivial D] in
+/-- *Limit*, transported from a reflective relation to its restriction's extension. -/
+theorem limit_reflect_of_reflective {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w)
+    (h : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧
+      reflect (fun w (x : {x : D // 0 ≤ x}) u => R w (x : D) u) w y u) → u = w := by
+  rw [reflect_eq_of_reflective R hR]; exact h
+
+omit [Nontrivial D] in
+/-- *Saturation*, transported from a reflective relation to its restriction's extension. -/
+theorem saturation_reflect_of_reflective {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (h : Saturation R) :
+    Saturation (reflect fun w (x : {x : D // 0 ≤ x}) u => R w (x : D) u) := by
+  rw [reflect_eq_of_reflective R hR]; exact h
+
 end TaskFrame
 
 /--
@@ -829,6 +881,17 @@ theorem taskRel_coe (F : FrameOver D) {w u : F.WorldState} (x : D.PositiveCone) 
     F.TaskRel w (x : ↑D) u ↔ F.PosRel w x u :=
   TaskFrame.reflect_coe x
 
+/--
+The extended primitive relation *is* the task relation, by definition.
+
+A `@[simp]` fold, not an unfold: the axiom fields' declared types mention
+`TaskFrame.reflect F.PosRel`, and this lemma restates a field instance (`F.comp w v x y hx hy`,
+say) in terms of `F.TaskRel`, so it rewrites against goals phrased over `F.TaskRel`.
+-/
+@[simp]
+theorem reflect_posRel (F : FrameOver D) (w : F.WorldState) (d : ↑D) (u : F.WorldState) :
+    TaskFrame.reflect F.PosRel w d u ↔ F.TaskRel w d u := Iff.rfl
+
 -- The axiom fields cite the bare-relation predicates at `F.TaskRel` definitionally, although
 -- `TaskRel` is not reducible: the Step Lemma's consumption of `F.saturation` depends on it.
 example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial
@@ -952,6 +1015,13 @@ the nested `reflect` in its motive). `ofReflective_taskRel` is the resulting bri
 
 The `hR` obligation is honest rather than ceremonial: a two-sided presentation must show it is
 the reflection of its positive half.
+
+`ofReflective` is a plain definition, so a frame built by it has a world-state type that reduces
+only at default transparency. A frame that needs its carrier to reduce at reducible transparency
+(for instance under instance synthesis on `τ.states t _`) is written as a literal structure
+instead, with `PosRel w x u := R w ↑x u` and each field cited from the transport lemmas
+`TaskFrame.compositional_reflect_of_reflective` and siblings; `TaskFrame.reflect_restrict_iff` is
+then its bridge.
 -/
 def ofReflective (W : Type) [Nonempty W] (R : W → ↑D → W → Prop)
     (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hcomp : TaskFrame.Compositional R)
@@ -960,10 +1030,10 @@ def ofReflective (W : Type) [Nonempty W] (R : W → ↑D → W → Prop)
     (hsat : TaskFrame.Saturation R) : FrameOver D where
   WorldState := W
   PosRel w x u := R w (x : ↑D) u
-  comp := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hcomp
-  serial := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hser
-  limit := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hlim
-  saturation := by rw [TaskFrame.reflect_eq_of_reflective R hR]; exact hsat
+  comp := TaskFrame.compositional_reflect_of_reflective hR hcomp
+  serial := TaskFrame.serial_reflect_of_reflective hR hser
+  limit := TaskFrame.limit_reflect_of_reflective hR hlim
+  saturation := TaskFrame.saturation_reflect_of_reflective hR hsat
 
 /-- The task relation of a frame built by `ofReflective` is the presenting relation. -/
 @[simp]
@@ -972,9 +1042,8 @@ theorem ofReflective_taskRel {W : Type} [Nonempty W] {R : W → ↑D → W → P
     {hser : TaskFrame.Serial R}
     {hlim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w}
     {hsat : TaskFrame.Saturation R} {w u : W} {d : ↑D} :
-    (ofReflective W R hR hcomp hser hlim hsat).TaskRel w d u ↔ R w d u := by
-  show TaskFrame.reflect (fun w (x : {x : ↑D // 0 ≤ x}) u => R w (x : ↑D) u) w d u ↔ R w d u
-  rw [TaskFrame.reflect_eq_of_reflective R hR]
+    (ofReflective W R hR hcomp hser hlim hsat).TaskRel w d u ↔ R w d u :=
+  TaskFrame.reflect_restrict_iff hR
 
 /-- The task relation of a frame built by `ofReflective` is the presenting relation, as an
 equation of relations. -/

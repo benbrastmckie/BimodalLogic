@@ -67,6 +67,7 @@ abbrev NF : TaskFrame := FrameOver.natFrame (D := ℤ)
 /-- Any function `ℤ → ℕ` as a total history of `NF`. -/
 def natHist (f : ℤ → ℕ) : PartialHistory NF :=
   PartialHistory.ofTotal NF f (fun s t => by
+    refine (FrameOver.natFrame_rel_iff _ _ _).mpr ?_
     by_cases h : t - s = 0
     · right
       have : t = s := sub_eq_zero.mp h

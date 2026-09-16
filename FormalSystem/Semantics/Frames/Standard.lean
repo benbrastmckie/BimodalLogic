@@ -64,44 +64,43 @@ theorem translationRel_fib_subsingleton {D : TemporalOrder} (w x : ↑D) :
 **The translation frame over `D`**: world states are durations, and `w ⇒_x u` exactly when
 `u = w + x`.
 
-The `FrameOver` obligations: *Converse* is group arithmetic;
+The `FrameOver.ofReflective` obligations: the reflection law is group arithmetic;
 *Compositionality* interpolates through `w + x`; *Seriality* has `w + x` and `w - x` as the two
 witnesses; *Limit* is `TaskFrame.limit_of_shift` at the identity position function; and
 *Saturation* is Helper D (`TaskFrame.saturation_of_fib_subsingleton`) applied to
 `translationRel_fib_subsingleton`, the translation relation being deterministic.
 -/
-def translationFrame (D : TemporalOrder) : FrameOver D where
-  WorldState := ↑D
-  worldNonempty := ⟨0⟩
-  TaskRel := fun w x u => u = w + x
-  comp := TaskFrame.comp_of
+def translationFrame (D : TemporalOrder) : FrameOver D :=
+  haveI : Nonempty ↑D := ⟨0⟩
+  FrameOver.ofReflective ↑D (fun w x u => u = w + x)
     (by
-      intro w v x y _ _ h
-      refine ⟨w + x, rfl, ?_⟩
-      show v = w + x + y
-      rw [show v = w + (x + y) from h]
-      abel)
+      intro w d u
+      constructor
+      · intro h; show w = u + -d; rw [show u = w + d from h]; abel
+      · intro h; show u = w + d; rw [show w = u + -d from h]; abel)
+    (TaskFrame.comp_of
+      (by
+        intro w v x y _ _ h
+        refine ⟨w + x, rfl, ?_⟩
+        show v = w + x + y
+        rw [show v = w + (x + y) from h]
+        abel)
+      (by
+        intro w u v x y _ _ h1 h2
+        show v = w + (x + y)
+        rw [show v = u + y from h2, show u = w + x from h1]
+        abel))
     (by
-      intro w u v x y _ _ h1 h2
-      show v = w + (x + y)
-      rw [show v = u + y from h2, show u = w + x from h1]
+      intro w x _
+      refine ⟨⟨w + x, rfl⟩, ⟨w - x, ?_⟩⟩
+      show w = w - x + x
       abel)
-  converse := by
-    intro w d u
-    constructor
-    · intro h; show w = u + -d; rw [show u = w + d from h]; abel
-    · intro h; show u = w + d; rw [show w = u + -d from h]; abel
-  serial := by
-    intro w x _
-    refine ⟨⟨w + x, rfl⟩, ⟨w - x, ?_⟩⟩
-    show w = w - x + x
-    abel
-  limit := TaskFrame.limit_of_shift (D := ↑D) (fun w => w) (fun _ _ _ h => h)
-    (by intro w u h; rw [show u = w + 0 from h, add_zero])
-  saturation := TaskFrame.saturation_of_fib_subsingleton translationRel_fib_subsingleton
+    (TaskFrame.limit_of_shift (D := ↑D) (fun w => w) (fun _ _ _ h => h)
+      (by intro w u h; rw [show u = w + 0 from h, add_zero]))
+    (TaskFrame.saturation_of_fib_subsingleton translationRel_fib_subsingleton)
 
 @[simp] theorem translationFrame_taskRel {D : TemporalOrder} (w x u : ↑D) :
-    (translationFrame D).TaskRel w x u ↔ u = w + x := Iff.rfl
+    (translationFrame D).TaskRel w x u ↔ u = w + x := FrameOver.ofReflective_taskRel
 
 /-! ## The permissive frame -/
 
@@ -119,18 +118,16 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
     FrameOver D :=
   letI := so
   letI := nm
-  { WorldState := Bool
-    worldNonempty := inferInstance
-    TaskRel := fun w d u => d ≠ 0 ∨ w = u
-    -- Every axiom field is a one-line citation of Helper B (`*_of_permissive`).
-    comp := TaskFrame.comp_of_permissive fun _ _ _ => Iff.rfl
-    converse := TaskFrame.converse_of_permissive fun _ _ _ => Iff.rfl
-    serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
-    limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-    saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl }
+  -- Every obligation is a one-line citation of Helper B (`*_of_permissive`).
+  FrameOver.ofReflective Bool (fun w d u => d ≠ 0 ∨ w = u)
+    (TaskFrame.reflection_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.comp_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl)
 
 @[simp] theorem permissiveFrame_taskRel {D : TemporalOrder} (so : SuccOrder ↑D)
     (nm : NoMaxOrder ↑D) (w : Bool) (d : ↑D) (u : Bool) :
-    (permissiveFrame D so nm).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := Iff.rfl
+    (permissiveFrame D so nm).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := FrameOver.ofReflective_taskRel
 
 end FormalSystem.Semantics

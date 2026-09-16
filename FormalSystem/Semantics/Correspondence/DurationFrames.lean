@@ -121,6 +121,7 @@ def translationHist (D : TemporalOrder) : PartialHistory (translationFrame D).to
   states := fun t _ => t
   respects_task := by
     intro s t _ _
+    refine (translationFrame_taskRel _ _ _).mpr ?_
     show t = s + (t - s)
     abel
 theorem translationHist_isTotal (D : TemporalOrder) : (translationHist D).IsTotal :=
@@ -188,6 +189,7 @@ def permissiveHist (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
   states := fun t _ => f t
   respects_task := by
     intro s t _ _
+    refine (permissiveFrame_taskRel (D := D) so nm _ _ _).mpr ?_
     by_cases h : t - s = 0
     · refine Or.inr ?_
       have : t = s := by

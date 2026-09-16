@@ -71,7 +71,7 @@ they are not re-litigated here or in the four-axiom frame alignment work.
    `def:task-relation` extends the task relation to negative durations by
    `$w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$`, so the
    negative-difference instances of `$\tau(x) \Rightarrow_{y-x} \tau(y)$` are *covered by the
-   converse convention*, i.e. by `FrameOver.converse`, and the unconditional statement is not a
+   converse convention*, i.e. by `FrameOver.reflection`, and the unconditional statement is not a
    strengthening of the paper's requirement — it is the paper's requirement, read as written.
    (`def:world-history` formerly carried an inline `%` gloss saying exactly this, which this
    docstring used to block-quote; the paper has since deleted that gloss, and the convention it
@@ -163,7 +163,7 @@ theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.dom
 Smart constructor: build a `PartialHistory` from a **guarded** task-respect proof.
 
 The unconditional `respects_task` field is discharged from the guarded proof plus
-`FrameOver.converse`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
+`FrameOver.reflection`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
 and the converse convention turns that into `TaskRel (states s) (-(s - t)) (states t)`, which is
 `TaskRel (states s) (t - s) (states t)` by `neg_sub`.
 
@@ -186,7 +186,7 @@ def ofLe (domain : F.Duration → Prop) (nonempty_domain : ∃ t, domain t)
     rcases le_total s t with hst | hts
     · exact respects_le s t hs ht hst
     · have h := respects_le t s ht hs hts
-      have hc := (F.converse (states t ht) (s - t) (states s hs)).mp h
+      have hc := (F.reflection (states t ht) (s - t) (states s hs)).mp h
       rwa [neg_sub] at hc
 
 /--
@@ -377,7 +377,8 @@ inside `namespace PartialHistory`.
 -/
 def trivialFrameHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] : PartialHistory (FrameOver.trivialFrame (D := D)) :=
-  ofTotal (FrameOver.trivialFrame (D := D)).toTaskFrame (fun _ => ()) fun _ _ => True.intro
+  ofTotal (FrameOver.trivialFrame (D := D)).toTaskFrame (fun _ => ())
+    fun _ _ => FrameOver.trivialFrame_taskRel.mpr True.intro
 
 end PartialHistory
 

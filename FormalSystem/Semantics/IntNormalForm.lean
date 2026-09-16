@@ -198,7 +198,8 @@ theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) (n : ℕ) (w u : F.Wor
   | succ n ih =>
     have hcast : ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 := by push_cast; rfl
     rw [hcast, iter_succ]
-    have hcomp := F.comp w u (n : ℤ) 1 (Int.natCast_nonneg n) zero_le_one
+    have hcomp : F.TaskRel w ((n : ℤ) + 1) u ↔ ∃ v, F.TaskRel w (n : ℤ) v ∧ F.TaskRel v 1 u :=
+      F.comp w u (n : ℤ) 1 (Int.natCast_nonneg n) zero_le_one
     rw [hcomp]
     exact ⟨fun ⟨v, h1, h2⟩ => ⟨v, (ih v).mp h1, h2⟩,
            fun ⟨v, h1, h2⟩ => ⟨v, (ih v).mpr h1, h2⟩⟩
@@ -224,7 +225,7 @@ theorem taskRel_eq_iter (F : FrameOver intOrder) (w u : F.WorldState) (d : ℤ) 
     refine ⟨fun hd => ?_, fun hd => ?_⟩
     · have : ((d.natAbs : ℤ)) = d := Int.natAbs_of_nonneg hd
       exact (F.taskRel_natCast_iff_iter d.natAbs w u).mp (by rwa [this])
-    · have hconv : F.TaskRel u (-d) w := (F.converse w d u).mp h
+    · have hconv : F.TaskRel u (-d) w := (F.reflection w d u).mp h
       have hnat : (((-d).natAbs : ℤ)) = -d := Int.natAbs_of_nonneg (by omega)
       have := (F.taskRel_natCast_iff_iter (-d).natAbs u w).mp (by rwa [hnat])
       rwa [Int.natAbs_neg] at this
@@ -238,7 +239,7 @@ theorem taskRel_eq_iter (F : FrameOver intOrder) (w u : F.WorldState) (d : ℤ) 
         rw [Int.natAbs_neg]; exact hneg hd'
       have : F.TaskRel u (-d) w :=
         hnat ▸ (F.taskRel_natCast_iff_iter (-d).natAbs u w).mpr hiter
-      exact (F.converse w d u).mpr this
+      exact (F.reflection w d u).mpr this
 
 /-- The one-step relation is `taskRel_eq_iter` at `d = 1`: a sanity check that `step` really is
 the `d = 1` slice, stated so a reader can see the two presentations agree. -/
@@ -430,7 +431,7 @@ The field discharges, and where each comes from:
 |-------|--------|
 | `nonempty` | the `[Nonempty W]` instance |
 | `comp` | free — `iter_add`, which is the paper's biconditional *Compositionality* whole |
-| `converse` | free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by construction |
+| reflection (`hR`) | free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by construction |
 | `serial` | **the one genuine obligation**: exactly `fwd` and `bwd` (see the section note above) |
 | `limit` | `TaskFrame.limit_of_succOrder` — ℤ is a `SuccOrder`, so *Limit* is automatic |
 | `saturation` | `TaskFrame.saturation_of_finite` — the carrier is finite |
@@ -441,51 +442,49 @@ that cost is accepted for `ofStep` specifically. It is **not** a licence to re-r
 relation *does* fit a choice-free class helper — see `saturation_of_finite`'s own docstring.
 -/
 def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
-    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : FrameOver intOrder where
-  WorldState := W
-  worldNonempty := inferInstance
-  TaskRel := ofStepRel R₁
-  comp := fun w v x y hx hy => by
-    -- `hx`/`hy` arrive with their `≤` routed through the temporal order's projection instance,
-    -- which `omega` does not recognize as an `Int` ordering. `change` (not an ascription, which
-    -- is a no-op here) restates them at `ℤ` and restores `omega`.
-    change (0 : ℤ) ≤ x at hx
-    change (0 : ℤ) ≤ y at hy
-    rw [ofStepRel_of_nonneg (add_nonneg hx hy)]
-    have hnat : (x + y).natAbs = x.natAbs + y.natAbs := by omega
-    rw [hnat, iter_add]
-    exact exists_congr fun u => by
-      rw [ofStepRel_of_nonneg hx, ofStepRel_of_nonneg hy]
-  converse := fun w d u => by
-    constructor
-    · rintro ⟨h1, h2⟩
-      exact ⟨fun hd => by simpa [Int.natAbs_neg] using h2 (by omega),
-             fun hd => by simpa [Int.natAbs_neg] using h1 (by omega)⟩
-    · rintro ⟨h1, h2⟩
-      exact ⟨fun hd => by simpa [Int.natAbs_neg] using h2 (by omega),
-             fun hd => by simpa [Int.natAbs_neg] using h1 (by omega)⟩
-  serial := fun w x hx => by
-    constructor
-    · obtain ⟨u, hu⟩ := exists_iter_fwd fwd x.natAbs w
-      exact ⟨u, (ofStepRel_of_nonneg hx w u).mpr hu⟩
-    · obtain ⟨v, hv⟩ := exists_iter_bwd bwd x.natAbs w
-      exact ⟨v, (ofStepRel_of_nonneg hx v w).mpr hv⟩
-  limit := TaskFrame.limit_of_succOrder fun w u h => by
-    rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))] at h
-    simpa [eq_comm] using h
-  saturation := TaskFrame.saturation_of_finite (ofStepRel R₁)
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : FrameOver intOrder :=
+  FrameOver.ofReflective W (ofStepRel R₁)
+    (fun w d u => by
+      constructor
+      · rintro ⟨h1, h2⟩
+        exact ⟨fun hd => by simpa [Int.natAbs_neg] using h2 (by omega),
+               fun hd => by simpa [Int.natAbs_neg] using h1 (by omega)⟩
+      · rintro ⟨h1, h2⟩
+        exact ⟨fun hd => by simpa [Int.natAbs_neg] using h2 (by omega),
+               fun hd => by simpa [Int.natAbs_neg] using h1 (by omega)⟩)
+    (fun w v x y hx hy => by
+      -- `hx`/`hy` arrive with their `≤` routed through the temporal order's projection instance,
+      -- which `omega` does not recognize as an `Int` ordering. `change` (not an ascription, which
+      -- is a no-op here) restates them at `ℤ` and restores `omega`.
+      change (0 : ℤ) ≤ x at hx
+      change (0 : ℤ) ≤ y at hy
+      rw [ofStepRel_of_nonneg (add_nonneg hx hy)]
+      have hnat : (x + y).natAbs = x.natAbs + y.natAbs := by omega
+      rw [hnat, iter_add]
+      exact exists_congr fun u => by
+        rw [ofStepRel_of_nonneg hx, ofStepRel_of_nonneg hy])
+    (fun w x hx => by
+      constructor
+      · obtain ⟨u, hu⟩ := exists_iter_fwd fwd x.natAbs w
+        exact ⟨u, (ofStepRel_of_nonneg hx w u).mpr hu⟩
+      · obtain ⟨v, hv⟩ := exists_iter_bwd bwd x.natAbs w
+        exact ⟨v, (ofStepRel_of_nonneg hx v w).mpr hv⟩)
+    (TaskFrame.limit_of_succOrder fun w u h => by
+      rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))] at h
+      simpa [eq_comm] using h)
+    (TaskFrame.saturation_of_finite (ofStepRel R₁))
 
 @[simp]
 theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) :
-    (ofStep R₁ fwd bwd).TaskRel = ofStepRel R₁ := rfl
+    (ofStep R₁ fwd bwd).TaskRel = ofStepRel R₁ := FrameOver.ofReflective_taskRel_eq
 
 /-- The one-step relation of a synthesized frame is the relation it was synthesized from. -/
 theorem ofStep_step {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) (w u : W) :
     (ofStep R₁ fwd bwd).step w u ↔ R₁ w u := by
-  show ofStepRel R₁ w 1 u ↔ _
-  rw [ofStepRel_of_nonneg (zero_le_one : (0 : ℤ) ≤ 1)]
+  show (ofStep R₁ fwd bwd).TaskRel w 1 u ↔ _
+  rw [ofStep_taskRel, ofStepRel_of_nonneg (zero_le_one : (0 : ℤ) ≤ 1)]
   exact iter_one R₁ w u
 
 end FrameOver

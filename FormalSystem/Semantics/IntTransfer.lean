@@ -135,50 +135,54 @@ under an ordered-group isomorphism the fiber and segment predicates (`TaskFrame.
 `TaskFrame.Seg`) pick out the *identical* subsets of `WorldState`, so `F.saturation` is handed
 back the **same** directed family. No directedness argument is reconstructed.
 -/
-def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E where
-  WorldState := F.WorldState
-  worldNonempty := F.worldNonempty
-  TaskRel := fun w d u => F.TaskRel w (e.symm d) u
-  comp := by
-    intro w v x y hx hy
-    have hx' : (0 : ↑D) ≤ e.symm x := by
-      simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
-    have hy' : (0 : ↑D) ≤ e.symm y := by
-      simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
-    have := F.comp w v (e.symm x) (e.symm y) hx' hy'
-    simpa [map_add] using this
-  converse := by
-    intro w d u
-    simpa [map_neg] using F.converse w (e.symm d) u
-  serial := by
-    intro w x hx
-    have hx' : (0 : ↑D) ≤ e.symm x := by
-      simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
-    exact F.serial w (e.symm x) hx'
-  limit := by
-    intro w u h
-    refine F.limit w u ?_
-    intro x hx
-    obtain ⟨n, hn, hR⟩ := h (e x) (by simpa using (map_lt_map_iff e (a := 0) (b := x)).mpr hx)
-    refine ⟨e.symm n, ?_, hR⟩
-    have : |e.symm n| = e.symm |n| := (map_abs e.symm n).symm
-    rw [this]
-    have := (map_lt_map_iff e.symm (a := |n|) (b := e x)).mpr hn
-    simpa using this
-  saturation := by
-    -- `F.saturation` is handed the *identical* directed family: `Seg`/`Fib` under `e` pick out
-    -- the same subsets of `F.WorldState`, so only the duration witnesses need translating.
-    intro S hS hmem
-    refine F.saturation S hS ?_
-    intro s hs
-    obtain ⟨hfs, hne⟩ := hmem s hs
-    refine ⟨?_, hne⟩
-    rcases hfs with ⟨w, x, rfl⟩ | ⟨w, v, x, y, hx, hy, rfl⟩
-    · exact Or.inl ⟨w, e.symm x, rfl⟩
-    · refine Or.inr ⟨w, v, e.symm x, e.symm y, ?_, ?_, ?_⟩
-      · simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
-      · simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
-      · simp [TaskFrame.Seg, TaskFrame.Fib, map_neg]
+def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E :=
+  FrameOver.ofReflective F.WorldState (fun w d u => F.TaskRel w (e.symm d) u)
+    (by
+      intro w d u
+      simpa [map_neg] using F.reflection w (e.symm d) u)
+    (by
+      intro w v x y hx hy
+      have hx' : (0 : ↑D) ≤ e.symm x := by
+        simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
+      have hy' : (0 : ↑D) ≤ e.symm y := by
+        simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
+      have := F.comp w v (e.symm x) (e.symm y) hx' hy'
+      simpa [map_add] using this)
+    (by
+      intro w x hx
+      have hx' : (0 : ↑D) ≤ e.symm x := by
+        simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
+      exact F.serial w (e.symm x) hx')
+    (by
+      intro w u h
+      refine F.limit w u ?_
+      intro x hx
+      obtain ⟨n, hn, hR⟩ := h (e x) (by simpa using (map_lt_map_iff e (a := 0) (b := x)).mpr hx)
+      refine ⟨e.symm n, ?_, hR⟩
+      have : |e.symm n| = e.symm |n| := (map_abs e.symm n).symm
+      rw [this]
+      have := (map_lt_map_iff e.symm (a := |n|) (b := e x)).mpr hn
+      simpa using this)
+    (by
+      -- `F.saturation` is handed the *identical* directed family: `Seg`/`Fib` under `e` pick out
+      -- the same subsets of `F.WorldState`, so only the duration witnesses need translating.
+      intro S hS hmem
+      refine F.saturation S hS ?_
+      intro s hs
+      obtain ⟨hfs, hne⟩ := hmem s hs
+      refine ⟨?_, hne⟩
+      rcases hfs with ⟨w, x, rfl⟩ | ⟨w, v, x, y, hx, hy, rfl⟩
+      · exact Or.inl ⟨w, e.symm x, rfl⟩
+      · refine Or.inr ⟨w, v, e.symm x, e.symm y, ?_, ?_, ?_⟩
+        · simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
+        · simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
+        · simp [TaskFrame.Seg, TaskFrame.Fib, map_neg])
+
+/-- The transported frame's task relation is the original one, reindexed by `e.symm`. -/
+@[simp]
+theorem FrameOver.map_taskRel (F : FrameOver D) (e : ↑D ≃+o ↑E) (w : F.WorldState) (d : ↑E)
+    (u : F.WorldState) : (FrameOver.map F e).TaskRel w d u ↔ F.TaskRel w (e.symm d) u :=
+  FrameOver.ofReflective_taskRel
 
 /--
 Transport a task model along `e`. The valuation is carried over verbatim: `FrameOver.map` leaves
@@ -201,6 +205,7 @@ def PartialHistory.map {F : FrameOver D} (τ : PartialHistory F.toTaskFrame) (e 
   respects_task := by
     intro s t hs ht
     have := τ.respects_task (e.symm s) (e.symm t) hs ht
+    refine (FrameOver.map_taskRel F e _ _ _).mpr ?_
     show F.TaskRel _ (e.symm (t - s)) _
     simpa [map_sub] using this
 
@@ -257,7 +262,9 @@ def PartialHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
       this
     show F.TaskRel _ (t - s) _
     have : e.symm (e t - e s) = t - s := by simp [map_sub]
-    simpa [FrameOver.map, this] using h2
+    have h3 := (FrameOver.map_taskRel F e _ _ _).mp h2
+    rw [this] at h3
+    exact h3
 
 /--
 A pulled-back history is aligned with the one it came from.

@@ -151,20 +151,20 @@ Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤
 
 The mirror image of `fib_subset_fib_of_le_of_le`. Both fiber durations are now nonpositive, so
 the composition is performed on the reflected pair — `u ⇒_{b-z} τ(b)` and `τ(b) ⇒_{a-b} τ(a)` —
-and the converse convention (`FrameOver.converse`) carries the result back.
+and the converse convention (`FrameOver.reflection`) carries the result back.
 -/
 theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
     Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
   intro u hu
   have hu' : F.TaskRel u (b - z) (τ.states b hb) := by
-    have h := (F.converse (τ.states b hb) (z - b) u).mp (TaskFrame.mem_Fib.mp hu)
+    have h := (F.reflection (τ.states b hb) (z - b) u).mp (TaskFrame.mem_Fib.mp hu)
     rwa [neg_sub] at h
   have hcomp := F.forward_comp u (τ.states b hb) (τ.states a ha) (b - z) (a - b)
     (sub_nonneg.mpr hzb) (sub_nonneg.mpr hba) hu' (τ.respects_task b a hb ha)
   have heq : b - z + (a - b) = a - z := by abel
   rw [heq] at hcomp
-  have h := (F.converse u (a - z) (τ.states a ha)).mp hcomp
+  have h := (F.reflection u (a - z) (τ.states a ha)).mp hcomp
   rw [neg_sub] at h
   exact TaskFrame.mem_Fib.mpr h
 
@@ -224,7 +224,7 @@ theorem nonempty_fib_of_serial {τ : PartialHistory F} {z t : F.Duration}
     exact ⟨u, TaskFrame.mem_Fib.mpr hu⟩
   · obtain ⟨v, hv⟩ := (F.serial (τ.states t ht) (t - z) (sub_nonneg.mpr h)).2
     refine ⟨v, TaskFrame.mem_Fib.mpr ?_⟩
-    have h' := (F.converse v (t - z) (τ.states t ht)).mp hv
+    have h' := (F.reflection v (t - z) (τ.states t ht)).mp hv
     rwa [neg_sub] at h'
 
 /--
@@ -244,7 +244,7 @@ theorem nonempty_seg_of_interpolates {τ : PartialHistory F} {z t s : F.Duration
     exact h
   obtain ⟨u, hu1, hu2⟩ := F.interpolates (τ.states t ht) (τ.states s hs) (z - t) (s - z)
     (le_of_lt (sub_pos.mpr htz)) (le_of_lt (sub_pos.mpr hzs)) hrel
-  exact ⟨u, hu1, (F.converse u (s - z) (τ.states s hs)).mp hu2⟩
+  exact ⟨u, hu1, (F.reflection u (s - z) (τ.states s hs)).mp hu2⟩
 
 /-- Every constraint on `z` is nonempty: the two cases of `def:constraints`, discharged by
 *Seriality* and by the interpolation half of *Compositionality* respectively. -/

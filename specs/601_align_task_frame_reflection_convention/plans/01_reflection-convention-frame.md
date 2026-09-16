@@ -211,26 +211,26 @@ Zero identifier hits should remain (prose is handled in Phase 5).
 
 ---
 
-### Phase 3: Migrate Semantics-layer consumers [NOT STARTED]
+### Phase 3: Migrate Semantics-layer consumers [COMPLETED]
 
 **Goal**: Rebuild `FormalSystem/Semantics/**` green on the new structure.
 
 **Tasks**:
-- [ ] Check first whether 602 has committed changes to `PartialHistory.lean`
+- [x] Check first whether 602 has committed changes to `PartialHistory.lean`
       (`git log --oneline -5 -- FormalSystem/Semantics/PartialHistory.lean`). If so, work on top of them.
-- [ ] Construction sites to `ofReflective`, or to direct `PosRel` where the relation is naturally
-      one-sided (translation/shift, per the prototype): `Frames/Standard.lean`
+- [x] Construction sites to `ofReflective`, or to direct `PosRel` where the relation is naturally
+      one-sided (translation/shift, per the prototype): *(deviation: altered — `ShiftSet.fibre` stays a `@[reducible]` literal with `PosRel` and fields cited from new transport lemmas `TaskFrame.{compositional,serial,limit,saturation}_reflect_of_reflective` / `reflect_restrict_iff`, because `RealTranslationFrame` needs its carrier reducible; all other sites use `ofReflective`)* `Frames/Standard.lean`
       (translationFrame, permissiveFrame, plus their `Iff.rfl` `*_taskRel` simp lemmas),
       `ShiftSet.lean`, `IntTransfer.lean` (`FrameOver.map`), `IntNormalForm.lean` (`ofStepRel`).
-- [ ] `.converse` -> `.reflection` in `Extension/Constraint.lean`, `PartialHistory.lean`,
+- [x] `.converse` -> `.reflection` in `Extension/Constraint.lean`, `PartialHistory.lean`,
       `PlusLanguage/PlusPasting.lean`, `IntNormalForm.lean`, `Extension/Admissible.lean`,
       `IntTransfer.lean`, `FrameProperty.lean` and `DeterministicBridge.lean` (paths confirmed by grep).
-- [ ] Fix `respects_task` histories at concrete frames (IntTransfer, DurationFrames,
+- [x] Fix `respects_task` histories at concrete frames (IntTransfer, DurationFrames,
       PartialHistory, PartialHistoryOrder, Extension, Admissible, DeterministicBridge, CoNotPriorU,
       DiscreteNonCompactness) with `ofReflective_taskRel` or the site's bridge lemma. Sites over
       an abstract `F` should need no change.
-- [ ] Remove `converse_of_permissive` once it has no users.
-- [ ] Build `lake build FormalSystem.Semantics` (or the individual modules), dependents in import order.
+- [x] Remove `converse_of_permissive` once it has no users.
+- [x] Build `lake build FormalSystem.Semantics` (or the individual modules), dependents in import order.
 
 **Timing**: 2 hours
 

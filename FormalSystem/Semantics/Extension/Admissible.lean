@@ -273,7 +273,7 @@ every member of the constraints imposed on $z$."
 
 - both times in `X`: `τ`'s own `respects_task`, no axiom needed;
 - old time then `z`: the fiber condition at that time, i.e. `fibers`;
-- `z` then old time: the same fiber condition through the converse convention (`FrameOver.converse`
+- `z` then old time: the same fiber condition through the converse convention (`FrameOver.reflection`
   plus `neg_sub`), which is precisely the negative-difference instance `def:world-history`'s `%`
   comment covers;
 - `z` twice: `u ⇒₀ u`, which is `lem:nullity` — taken here from
@@ -304,7 +304,7 @@ theorem admissible (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z
     · -- the new time then an old one: the same fiber condition, via the converse convention
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm
       rw [adjoinFun_of_not_domain τ u hsd, adjoinFun_of_domain τ u htd]
-      have hconv := (F.converse (τ.states t htd) (z - t) u).mp (h t htd)
+      have hconv := (F.reflection (τ.states t htd) (z - t) u).mp (h t htd)
       rwa [neg_sub] at hconv
     · -- the new time twice: `lem:nullity`, the zero loop at `z` itself
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm

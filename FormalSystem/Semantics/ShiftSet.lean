@@ -149,48 +149,80 @@ theorem wh_ext {F : TaskFrame} {σ τ : PartialHistory F} (hd : σ.domain = τ.d
   subst this
   rfl
 
+/-! ### The frame obligations of the functional shift relation
+
+The induced frame's task relation is the **functional** shift relation `u = sh w d` on all of
+`D`. Its primitive relation on `D⁺` is the restriction, and each obligation below is stated
+against the two-sided relation; `fibre` transports them to its fields
+(`TaskFrame.compositional_reflect_of_reflective` and siblings).
+-/
+
+/-- The reflection law: `sh` is a group action, so a shift by `-d` undoes a shift by `d`. -/
+theorem shRel_reflection (S : ShiftSet D) :
+    ∀ w d u, (u = S.sh w d) ↔ (w = S.sh u (-d)) := by
+  intro w d u
+  constructor
+  · rintro rfl; rw [S.sh_neg]
+  · rintro rfl; rw [S.sh_neg']
+
+/-- *Compositionality*, in both directions: the interpolant is `sh w x`, and it is unique. -/
+theorem shRel_comp (S : ShiftSet D) :
+    TaskFrame.Compositional (fun w d u => u = S.sh w d) := by
+  intro w v x y _ _
+  constructor
+  · -- interpolation: the witness is `sh w x`, and it is the unique one
+    intro h
+    refine ⟨S.sh w x, rfl, ?_⟩
+    show v = S.sh (S.sh w x) y
+    rw [S.sh_add]; exact h
+  · -- composition
+    rintro ⟨u, rfl, rfl⟩
+    show S.sh (S.sh w x) y = S.sh w (x + y)
+    rw [S.sh_add]
+
+/-- *Seriality*: successor `sh w x`, predecessor `sh w (-x)`. -/
+theorem shRel_serial (S : ShiftSet D) : TaskFrame.Serial (fun w d u => u = S.sh w d) := by
+  intro w x _
+  refine ⟨⟨S.sh w x, rfl⟩, ⟨S.sh w (-x), ?_⟩⟩
+  show w = S.sh (S.sh w (-x)) x
+  rw [S.sh_neg']
+
+/-- *Saturation*: the relation is functional, so Helper D applies verbatim — every fibre is a
+subsingleton, and `Seg` is a subset of a fibre. No frame machinery, no Zorn. -/
+theorem shRel_saturation (S : ShiftSet D) : TaskFrame.Saturation (fun w d u => u = S.sh w d) :=
+  TaskFrame.saturation_of_fib_subsingleton
+    (TaskFrame.fib_subsingleton_of_functional (f := S.sh) (fun _ _ _ => Iff.rfl))
+
 /--
 The task frame induced by a shift set, under the **functional** task relation
-`TaskRel w d u := (u = sh w d)`.
+`TaskRel w d u ↔ (u = sh w d)`, whose primitive on `D⁺` is `PosRel w x u := (u = sh w x)`.
 
-All **six** live `FrameOver` fields are discharged here. Three come for free from
-functionality plus the group action and require no shift-set axiom of their own — `serial`, the
-*interpolation* half of the biconditional `comp`, and `saturation` — correcting the design
-document's list, which was written against an earlier five-field frame structure and named only the
-other four (one of which, the zero-duration law, is now a derived theorem rather than a field). The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
+Every `FrameOver` field is discharged here. Three come for free from functionality plus the
+group action and require no shift-set axiom of their own — `serial`, the *interpolation* half of
+the biconditional `comp`, and `saturation` — correcting the design document's list, which was
+written against an earlier five-field frame structure and named only the other four (one of
+which, the zero-duration law, is now a derived theorem rather than a field). The one field that
+is genuinely *not* free is `limit`; it is exactly `S.sep`. The reflection law the transport needs
+(`shRel_reflection`) is also free.
+
+Written as a literal structure rather than through `FrameOver.ofReflective`, and `@[reducible]`,
+so that `S.fibre.WorldState` reduces to `S.Carrier` at reducible transparency; downstream
+frames built on a shift set (`Metalogic/Independence/RealTranslationFrame.lean`) depend on that.
 -/
 @[reducible] def fibre (S : ShiftSet D) : FrameOver D where
   WorldState := S.Carrier
   worldNonempty := S.carrier_nonempty
-  TaskRel := fun w d u => u = S.sh w d
-  comp := by
-    intro w v x y _ _
-    constructor
-    · -- interpolation: the witness is `sh w x`, and it is the unique one
-      intro h
-      refine ⟨S.sh w x, rfl, ?_⟩
-      show v = S.sh (S.sh w x) y
-      rw [S.sh_add]; exact h
-    · -- composition
-      rintro ⟨u, rfl, rfl⟩
-      show S.sh (S.sh w x) y = S.sh w (x + y)
-      rw [S.sh_add]
-  converse := by
-    intro w d u
-    constructor
-    · rintro rfl; show w = S.sh (S.sh w d) (-d); rw [S.sh_neg]
-    · rintro rfl; show u = S.sh (S.sh u (-d)) d; rw [S.sh_neg']
-  serial := by
-    -- successor `sh w x`, predecessor `sh w (-x)`
-    intro w x _
-    refine ⟨⟨S.sh w x, rfl⟩, ⟨S.sh w (-x), ?_⟩⟩
-    show w = S.sh (S.sh w (-x)) x
-    rw [S.sh_neg']
-  limit := S.sep
-  -- The task relation is *functional* (`u = sh w d`), so Helper D applies verbatim: every
-  -- fibre is a subsingleton, and `Seg` is a subset of a fibre. No frame machinery, no Zorn.
-  saturation := TaskFrame.saturation_of_fib_subsingleton
-    (TaskFrame.fib_subsingleton_of_functional (f := S.sh) (fun _ _ _ => Iff.rfl))
+  PosRel w x u := u = S.sh w x
+  comp := TaskFrame.compositional_reflect_of_reflective S.shRel_reflection S.shRel_comp
+  serial := TaskFrame.serial_reflect_of_reflective S.shRel_reflection S.shRel_serial
+  limit := TaskFrame.limit_reflect_of_reflective S.shRel_reflection S.sep
+  saturation := TaskFrame.saturation_reflect_of_reflective S.shRel_reflection S.shRel_saturation
+
+/-- The induced frame's task relation is the functional shift relation. -/
+@[simp]
+theorem fibre_taskRel (S : ShiftSet D) (w : S.Carrier) (d : ↑D) (u : S.Carrier) :
+    S.fibre.TaskRel w d u ↔ u = S.sh w d :=
+  TaskFrame.reflect_restrict_iff (R := fun w d u => u = S.sh w d) S.shRel_reflection
 
 /--
 The task frame induced by a shift set: its fibre, included into the total space.
@@ -206,6 +238,7 @@ under `S.frame.Duration`.
 def hist (S : ShiftSet D) (w : S.Carrier) : PartialHistory S.frame :=
   PartialHistory.ofTotal S.frame (fun t => S.sh w t) <| by
     intro s t
+    refine (S.fibre_taskRel _ _ _).mpr ?_
     show S.sh w t = S.sh (S.sh w s) (t - s)
     rw [S.sh_add, add_sub_cancel]
 
@@ -233,7 +266,7 @@ theorem total_eq_orbit (S : ShiftSet D) (σ : PartialHistory S.frame) (hσ : σ.
     σ = S.hist (σ.states 0 (hσ 0)) := by
   refine wh_ext (funext fun z => propext ⟨fun _ => trivial, fun _ => hσ z⟩) ?_
   intro r h h'
-  have := σ.respects_task 0 r (hσ 0) h
+  have := (S.fibre_taskRel _ _ _).mp (σ.respects_task 0 r (hσ 0) h)
   rw [sub_zero] at this
   exact this
 

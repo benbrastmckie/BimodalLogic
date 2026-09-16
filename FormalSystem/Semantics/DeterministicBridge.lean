@@ -150,7 +150,7 @@ theorem deterministic_of_singletonClasses (h : F.SingletonClasses) : F.Determini
       rcases hs with hs | hs <;> rcases ht with ht | ht <;> rw [hs, ht]
       · rw [h0x, sub_zero]; exact (F.nullity_identity w w).mpr rfl
       · rw [h0x, hxx, sub_zero]; exact hz
-      · rw [h0x, hxx, zero_sub]; exact (F.converse w x z).mp hz
+      · rw [h0x, hxx, zero_sub]; exact (F.reflection w x z).mp hz
       · rw [hxx, sub_self]; exact (F.nullity_identity z z).mpr rfl
     obtain ⟨σ, hext⟩ := PartialHistory.extension F
       { domain := fun t => t = 0 ∨ t = x
