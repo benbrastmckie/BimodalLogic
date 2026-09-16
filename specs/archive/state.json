@@ -1923,6 +1923,29 @@
   ],
   "completed_projects": [
     {
+      "project_number": 542,
+      "project_name": "dead_declaration_triage_c17_findings",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "topic": "infrastructure",
+      "priority": "high",
+      "description": "Triage the dead-declaration census that C17 produces, separating genuine dead code from the scan's known blind spot. MEASURED STATE: C17 in scripts/check-module-invariants.sh is a reporting-only token census: for each declared name it takes the last dot-segment as a base identifier and counts occurrences across FormalSystem/**/*.lean, Tests/**/*.lean, and repo-wide *.md. It currently flags 989 of 10346 declarations as having zero occurrences outside their own declaration site, in roughly 2 seconds. The census has a documented structural blind spot: it cannot see indirect usage through attributes. A spot-check of one flagged declaration, `release_unfold`, confirmed it has genuinely zero textual references yet is live via the `@[formula_unfold]` attribute and its simp-set mechanism -- exactly the pattern the scan cannot detect. So 989 is an upper bound on dead code, not a count of it, and the false-positive rate is unknown. WORK: (1) quantify the blind spot first -- enumerate the attribute and simp-set mechanisms in use (`@[formula_unfold]`, `@[simp]` sets, aesop rule sets, instance registration) and determine how many of the 989 are reachable only through one of them. This is the step that makes the rest of the triage meaningful; skipping it risks deleting live code. (2) Of the genuine remainder, delete what is dead or move it to Boneyard/ per the repository's existing convention. (3) Where a declaration is intentionally part of a public surface but currently unused internally, note that rather than deleting it. (4) If the attribute-reachability analysis is mechanizable, fold it into C17 so the reported number means something closer to actual dead code. ACCEPTANCE: C17's flagged count is materially reduced with every removal justified; no declaration removed that is reachable via an attribute or simp-set mechanism; `lake build` green and the test suite passing after removals; if C17 gained an attribute-awareness refinement, its new counting rule is documented in the script header the way the existing blind spot already is.",
+      "dependencies": [
+        529
+      ],
+      "file_scope": [
+        "FormalSystem/",
+        "FormalSystem/Boneyard/",
+        "scripts/check-module-invariants.sh"
+      ],
+      "created": "2026-09-04T08:00:00Z",
+      "last_updated": "2026-09-04T08:00:00Z",
+      "artifacts": [],
+      "session_id": "sess_1788503051_6873ef",
+      "abandoned": "2026-09-16T15:36:40Z",
+      "abandoned_reason": "merged into 588"
+    },
+    {
       "project_number": 577,
       "project_name": "abstract_validity_layer_over_truth_class",
       "status": "completed",
