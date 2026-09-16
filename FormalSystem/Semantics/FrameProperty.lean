@@ -107,6 +107,16 @@ where `x < y`, there exists `z ∈ D` where `x < z < y`".
 That is Mathlib's `DenselyOrdered` on the frame's duration carrier on the nose, so the clause is
 recorded by naming that class rather than by restating its body — `DenselyOrdered.dense` is the
 recorded sentence.
+
+## Why this class is not named `IsQTime`
+
+Unlike `IsZTime` and `IsRTime`, this is a bare paper clause that is *not* narrowed: it holds of
+`ℚ`, `ℝ`, `ℚ ×ₗ ℚ` and many other duration groups, and it must contain the `ℝ`-frames because
+`isDense_of_isRTime` backs `FrameClass.Sat.anti` at `Dense ≤ RTime`. Following the module's
+convention above (only the narrowed, categorical classes are named for their carrier), it keeps
+the paper's name. That its logic coincides with the `ℚ`-time logic is a completeness theorem, not
+its definition; the full argument lives on the `FrameClass` docstring in
+`ProofSystem/Axioms.lean`.
 -/
 abbrev TaskFrame.IsDense (F : TaskFrame) : Prop := DenselyOrdered F.Duration
 

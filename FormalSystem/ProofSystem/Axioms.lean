@@ -515,6 +515,34 @@ the tree's density axiom, and an `RTime` derivation must be allowed to use it. M
 `RTime` a fresh incomparable leaf would render `density` and `dense_indicator`
 inadmissible in `DerivationTree .RTime` and so could not host Reynolds' system at all.
 
+**Why this class is named `Dense` and not `QTime`.** The `ZTime` / `RTime` pattern invites a
+`QTime` for this tag, and the name is withheld deliberately.
+- *Carrier names are reserved for categorical classes.* `ZTime` and `RTime` are named for their
+  carrier because their semantic classes (`TaskFrame.IsZTime`, `TaskFrame.IsRTime`) contain, up to
+  order-and-group isomorphism, exactly one duration group each: `ℤ` and `ℝ` respectively (see
+  `Semantics.complete_duration_discrete_or_dense` for the latter).
+- *The dense class is not categorical.* `FrameClass.Sat .Dense` is `TaskFrame.IsDense`, i.e.
+  `DenselyOrdered F.Duration`, which holds of `ℚ`, of `ℝ`, of `ℚ ×ₗ ℚ`, and of many more
+  duration groups. Calling it `QTime` would misdescribe the class it denotes.
+- *The order forbids narrowing it to `ℚ`.* `Dense ≤ RTime` is required (see the paragraph above),
+  and `FrameClass.Sat.anti` turns that into `Sat .RTime ⊆ Sat .Dense`, discharged by
+  `TaskFrame.isDense_of_isRTime`. So `ℝ`-frames must belong to the dense class; a class that is
+  "exactly `ℚ`" would break the monotonicity every lift between frame classes depends on.
+- *Its logic does coincide with the `ℚ`-time logic, but as a theorem, not a definition.*
+  `soundness_dense` holds over every densely ordered frame, while the completeness engine
+  `derivable_of_validDense` closes through `countermodel_dense_enriched`, whose countermodel lives
+  on a frame over `TemporalOrder.of Rat`. Together they give that a formula derivable at `.Dense`
+  is valid over all dense frames and that one not derivable already fails over a `ℚ`-time frame.
+  That is a fact about the class, and it would equally license naming it after any countable
+  dense witness; it does not change what the class is.
+- *The name follows the paper.* `def:frame-properties` states the Dense clause, `def:BX-d` names
+  the system BX_d, and `def:TMplus` / `cor:tm-completeness` target TM_d at "the dense task
+  frames", beside TM_z over `ℤ`-time and TM_r over `ℝ`-time. The triple `Dense` / `ZTime` /
+  `RTime` thus tracks the paper's d / z / r subscripts one-for-one. The paper itself reserves
+  "`ℚ`-time" for where `ℚ` genuinely differs from other dense flows: Kamp's expressive
+  completeness of since/until holds over `ℝ`-time but not over `ℚ`-time, so dense-flow
+  statements elsewhere in this tree must not be read as `ℚ`-specific either.
+
 **Soundness caveat.** The soundness theorem for this class must target `ValidRTime`, not the
 density-free `ValidComplete`. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
 
