@@ -1,25 +1,36 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-16T09:59:05-07:00",
+  "completed_at": "2026-09-16T11:38:00-07:00",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/594_relocate_in_library_smoke_tests/plans/01_relocate-smoke-tests.md",
-      "summary": "8-phase plan: seed an enforced comment-aware C27 debug-artifact gate first, then ratchet it down by relocating class C/D probes to Tests as asserting guards, migrating class-B axiom prints to C14, moving test-labelled examples, and closing on the full gate."
+      "type": "summary",
+      "path": "specs/594_relocate_in_library_smoke_tests/summaries/01_relocate-smoke-tests-summary.md",
+      "summary": "Relocated 311 live in-library debug directives and ~115 test-labelled examples to Tests/BimodalTest as asserting guards, migrated 19 #print axioms to the C14 baseline, and added the comment-aware C27 debug-artifact invariant (allowlist: MainResults 54)."
     }
   ],
-  "next_steps": "Run /implement 594 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1789577011_0f6aae_594",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 11,
-    "dependency_waves": [[1], [2, 3, 4, 5], [6, 7], [8]]
+  "completion_data": {
+    "completion_summary": "All test-shaped #check/#eval/#print probes and test-labelled example sections moved from FormalSystem/ into Tests/BimodalTest, with bare #evals converted to #guards pinning captured values; class-B #print axioms were migrated into the C14 baseline. New harness check C27 (comment-aware, exact-count allowlist) passes with only MainResults.lean allowlisted, and lake build, lake build BimodalTest and the full harness are green.",
+    "roadmap_items": []
   },
-  "phase_count": 8,
-  "estimated_hours": 11,
-  "dependency_waves": [[1], [2, 3, 4, 5], [6, 7], [8]],
-  "memory_candidates": [],
-  "dispatch_seq": 6
+  "metadata": {
+    "session_id": "sess_1789577011_0f6aae",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "phases_completed": 8,
+    "phases_total": 8
+  }
 }
