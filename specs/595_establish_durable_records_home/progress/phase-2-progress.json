@@ -1,0 +1,21 @@
+{
+  "phase": 2,
+  "phase_name": "Repoint all live referrers",
+  "started_at": "2026-09-16T17:30:00Z",
+  "last_updated": "2026-09-16T17:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "docs/theorem-index.md: rewrite relative markdown links", "status": "done", "files_touched": ["docs/theorem-index.md"]},
+    {"id": 2, "description": "docs/development/MODULE_INVARIANTS.md: repoint prose and heading", "status": "done", "files_touched": ["docs/development/MODULE_INVARIANTS.md"], "note": "edit was made but landed in a concurrent task's own commit (142dae58b, task 594 phase 1) before I could commit it myself -- content is correct, attribution is to another task's commit"},
+    {"id": 3, "description": "Lean docstrings under FormalSystem/ and Tests/: string substitution", "status": "done", "files_touched": []},
+    {"id": 4, "description": "In-library READMEs (4 files)", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Typst and bibliography files", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Check for line-wrap artifacts / bare filename hits", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Re-run Phase 1 referrer grep, confirm empty", "status": "done", "files_touched": []},
+    {"id": 8, "description": "Commit phase 2", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [
+    {"approach": "Isolate my one-line change in files shared with concurrent tasks (FormalSystem/Metalogic/Conservativity.lean, FormalSystem/Semantics.lean, docs/theorem-index.md, typst/sync-check-whitelist.txt) via git apply --cached of a filtered per-hunk patch, so only my hunk was staged and the concurrent task's hunks stayed unstaged", "result": "partially failed", "reason": "worked for Conservativity.lean, docs/theorem-index.md, typst/sync-check-whitelist.txt (verified clean in the final commit), but FormalSystem/Semantics.lean and FormalSystem/Syntax/Formula.lean were re-staged in full by a concurrent task's own git add between my isolation step and my commit, so the final 'task 595 phase 2' commit (a8edbfc58) unintentionally swept in task 596's import-reorganization and task 594's #eval-removal changes to those two files. Content is correct; attribution is mixed. Documented as an Observation Duty finding rather than rewriting history."}
+  ],
+  "handoff_count": 0
+}

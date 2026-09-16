@@ -130,19 +130,19 @@ references among the three moved files.
 
 ---
 
-### Phase 2: Repoint all live referrers [IN PROGRESS]
+### Phase 2: Repoint all live referrers [COMPLETED]
 
 **Goal**: Rewrite every non-`specs/` citation of the old paths.
 
 **Tasks**:
-- [ ] `docs/theorem-index.md`: rewrite both markdown links `(../specs/paper-definitions-of-record.md)` to `(reference/paper-definitions-of-record.md)` and the link text to `docs/reference/paper-definitions-of-record.md`
-- [ ] `docs/development/MODULE_INVARIANTS.md` (lines ~34, ~97): repoint prose and the section heading
-- [ ] Lean docstrings under `FormalSystem/` and `Tests/` (non-Boneyard and Boneyard READMEs alike): replace the literal `specs/paper-definitions-of-record.md` -> `docs/reference/paper-definitions-of-record.md` and `specs/decisions/` -> `docs/architecture/`. These are plain string substitutions in comments and docstrings, never imports.
-- [ ] In-library READMEs: `FormalSystem/Metalogic/Decidability/BiLasso/README.md`, `FormalSystem/Semantics/Correspondence/README.md`, `FormalSystem/Boneyard/README.md`, `FormalSystem/Boneyard/Kamp/KampWeakCanonical/README.md`
-- [ ] Typst and bibliography: `typst/chapters/02-semantics.typ`, `typst/chapters/p2-frame-classes.typ`, `typst/FormalFoundations.typ`, `typst/SYNC-MAP.md`, `typst/sync-check-whitelist.txt` (comment lines only), `references.bib` (note field)
-- [ ] Watch for line-wrap artifacts: a path split across a comment line break escapes grep. Also grep the bare filenames `paper-definitions-of-record` and `untl-snce-argument-order`/`total-history-validity-decisions`, and inspect any hit not preceded by the new directory.
-- [ ] Re-run the Phase 1 referrer grep and confirm it is empty
-- [ ] Commit: `task 595 phase 2: repoint record citations`
+- [x] `docs/theorem-index.md`: rewrite both markdown links `(../specs/paper-definitions-of-record.md)` to `(reference/paper-definitions-of-record.md)` and the link text to `docs/reference/paper-definitions-of-record.md` *(completed)*
+- [x] `docs/development/MODULE_INVARIANTS.md` (lines ~34, ~97): repoint prose and the section heading *(completed: deviation — landed in a concurrent task's own commit (142dae58b) before this task's phase-2 commit could include it; content correct, attribution shared)*
+- [x] Lean docstrings under `FormalSystem/` and `Tests/` (non-Boneyard and Boneyard READMEs alike): replace the literal `specs/paper-definitions-of-record.md` -> `docs/reference/paper-definitions-of-record.md` and `specs/decisions/` -> `docs/architecture/`. These are plain string substitutions in comments and docstrings, never imports. *(completed)*
+- [x] In-library READMEs: `FormalSystem/Metalogic/Decidability/BiLasso/README.md`, `FormalSystem/Semantics/Correspondence/README.md`, `FormalSystem/Boneyard/README.md`, `FormalSystem/Boneyard/Kamp/KampWeakCanonical/README.md` *(completed)*
+- [x] Typst and bibliography: `typst/chapters/02-semantics.typ`, `typst/chapters/p2-frame-classes.typ`, `typst/FormalFoundations.typ`, `typst/SYNC-MAP.md`, `typst/sync-check-whitelist.txt` (comment lines only), `references.bib` (note field) *(completed)*
+- [x] Watch for line-wrap artifacts: a path split across a comment line break escapes grep. Also grep the bare filenames `paper-definitions-of-record` and `untl-snce-argument-order`/`total-history-validity-decisions`, and inspect any hit not preceded by the new directory. *(completed: none found)*
+- [x] Re-run the Phase 1 referrer grep and confirm it is empty *(completed: empty)*
+- [x] Commit: `task 595 phase 2: repoint record citations` *(completed: deviation — the commit (a8edbfc58) also swept in unrelated concurrent-task changes to FormalSystem/Semantics.lean and FormalSystem/Syntax/Formula.lean (task 596's import reorganization and task 594's #eval-removal), because those files were re-staged by another process between this agent's careful hunk-isolation step and the commit. Content is correct; commit attribution is shared with those concurrent tasks. No history rewrite was attempted, per git-safety rules.)*
 
 **Timing**: 45 minutes
 
