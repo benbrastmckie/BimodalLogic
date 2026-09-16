@@ -63,7 +63,7 @@ considered and rejected on cost, are in
 ### Upward edge (2): `Decidability → Automation`
 
 The ML dataset pipeline in `Automation/` consumes the tableau decision procedure from
-`Metalogic/Decidability/`: `DataExport.lean`, `TraceExporter.lean` and
+`Metalogic/Decidability/`: `DataExport.lean`, `TraceExporterMain.lean` and
 `TableauProofStepsMain.lean` all import `Decidability` modules directly. A Layer-4 module
 therefore depends on a Layer-2 one — which is downward and unremarkable — but the *pipeline* runs
 in the other direction: the decision procedure is the producer and the pipeline the consumer, so

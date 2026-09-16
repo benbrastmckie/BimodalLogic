@@ -1527,7 +1527,7 @@ plus functions to compute and print coverage after extraction.
 
 **DUPLICATION WARNING**: this list is a second, independent copy of the canonical list in
 `FormalSystem/Automation/AxiomNames.lean`. This module is a `lean_exe` root and declares its
-own `main`, so it cannot import `BenchmarkAnchors.lean`; the copy exists for that reason but
+own `main`, so it cannot import `BenchmarkAnchorsMain.lean`; the copy exists for that reason but
 does not import `AxiomNames.lean` either. When a constructor is added to `inductive Axiom`,
 BOTH lists must be updated in the same change. -/
 def allAxiomNames : List String :=

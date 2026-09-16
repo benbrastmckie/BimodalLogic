@@ -816,7 +816,7 @@ census over folded tags returned zero for the binary derived operators purely be
 representation layer lacked their constructors — regardless of dataset content. Phase 2 fixed
 the fold layer, so `foldFormulaFull`-based tags are now real. This section adds an *independent*
 value-level census that matches the derived operators directly against their primitive
-`Formula` encodings (precedent: `FormulaMutator.lean` primitive-pattern matchers), and
+`Formula` encodings (precedent: `ContrastiveGeneratorMain.lean` primitive-pattern matchers), and
 cross-checks it against the now-correct folded tags.
 
 The value-level matcher inspects the *top node* of a formula and returns the derived-operator

@@ -14,7 +14,7 @@ import FormalSystem.Automation.EnrichedCountermodel
 
 This module implements a persistent REPL process with a JSONL stdin/stdout
 protocol. It composes existing infrastructure -- `pFormula` parser from
-BenchmarkOracle, `decideAuto` from DecisionProcedure, `extractStepSequence`
+BenchmarkOracleMain, `decideAuto` from DecisionProcedure, `extractStepSequence`
 from ProofStepExtractor, and countermodel extraction -- into command handlers.
 
 ## Commands
@@ -51,7 +51,7 @@ Then send JSON requests on stdin, one per line. Responses appear on stdout.
 
 ## References
 
-- `BenchmarkOracle.lean`: `pFormula` JSON parser
+- `BenchmarkOracleMain.lean`: `pFormula` JSON parser
 - `DecisionProcedure.lean`: `decideAuto`
 - `ProofStepExtractor.lean`: `extractStepSequence`, `ProofStep.toJson`
 - `CountermodelExtraction.lean`: `SimpleCountermodel.toJson`
@@ -61,7 +61,7 @@ Then send JSON requests on stdin, one per line. Responses appear on stdout.
 
 set_option autoImplicit false
 
-namespace FormalSystem.Automation.TableauBridge
+namespace FormalSystem.Automation.TableauBridgeMain
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -75,7 +75,7 @@ open FormalSystem.Automation.Enriched
 ## JSON Parser Infrastructure
 
 Hand-rolled recursive-descent JSON parser for the request envelope and formula AST.
-Replicates the parser from BenchmarkOracle to avoid importing that module's root-level
+Replicates the parser from BenchmarkOracleMain to avoid importing that module's root-level
 `main` function (which would conflict with our own `main` entry point).
 -/
 
@@ -634,7 +634,7 @@ partial def replLoop : IO Unit := do
           loop
   loop
 
-end FormalSystem.Automation.TableauBridge
+end FormalSystem.Automation.TableauBridgeMain
 
 /-!
 ## Main Entry Point
@@ -645,4 +645,4 @@ Entry point for the `tableau_bridge` executable.
 Ignores command-line arguments and enters the REPL loop.
 -/
 def main (_args : List String) : IO Unit :=
-  FormalSystem.Automation.TableauBridge.replLoop
+  FormalSystem.Automation.TableauBridgeMain.replLoop

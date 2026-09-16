@@ -86,7 +86,7 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter -- --fuel 200 --frame-c
 
 set_option autoImplicit false
 
-namespace FormalSystem.Automation.TraceExporter
+namespace FormalSystem.Automation.TraceExporterMain
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -250,7 +250,7 @@ partial def mainLoop (cfg : Config) : IO Unit := do
     loop
   loop
 
-end FormalSystem.Automation.TraceExporter
+end FormalSystem.Automation.TraceExporterMain
 
 /--
 Entry point for the `trace_exporter` executable.
@@ -261,5 +261,5 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter
 ```
 -/
 def main (args : List String) : IO Unit := do
-  let cfg := FormalSystem.Automation.TraceExporter.parseArgs args
-  FormalSystem.Automation.TraceExporter.mainLoop cfg
+  let cfg := FormalSystem.Automation.TraceExporterMain.parseArgs args
+  FormalSystem.Automation.TraceExporterMain.mainLoop cfg

@@ -48,28 +48,28 @@ lean_exe proof_extractor where
 /-- Enumerator benchmark: validates complexity 5-7 feasibility gates.
     Run with: lake exe enum_benchmark -/
 lean_exe enum_benchmark where
-  root := `FormalSystem.Automation.EnumBenchmark
+  root := `FormalSystem.Automation.EnumBenchmarkMain
   srcDir := "."
   supportInterpreter := true
 
 /-- Benchmark anchor generator: produces axiom instances for BMLogic-Bench.
     Run with: lake exe benchmark_anchors -- --output data/axiom-instances.jsonl -/
 lean_exe benchmark_anchors where
-  root := `FormalSystem.Automation.BenchmarkAnchors
+  root := `FormalSystem.Automation.BenchmarkAnchorsMain
   srcDir := "."
   supportInterpreter := true
 
 /-- Benchmark oracle: validates formula labels via decision procedure.
     Run with: lake exe benchmark_oracle -- --input data/bmlogic-bench-candidates.jsonl --output data/bmlogic-bench-validated.jsonl -/
 lean_exe benchmark_oracle where
-  root := `FormalSystem.Automation.BenchmarkOracle
+  root := `FormalSystem.Automation.BenchmarkOracleMain
   srcDir := "."
   supportInterpreter := true
 
 /-- Contrastive pair generator for dual-verification training signal.
     Run with: lake exe contrastive_generator -- --max-complexity 5 --output data/contrastive_pairs.jsonl -/
 lean_exe contrastive_generator where
-  root := `FormalSystem.Automation.FormulaMutator
+  root := `FormalSystem.Automation.ContrastiveGeneratorMain
   srcDir := "."
   supportInterpreter := true
 
@@ -77,7 +77,7 @@ lean_exe contrastive_generator where
     Run with: lake exe tableau_bridge
     Then send JSONL requests on stdin, one per line. -/
 lean_exe tableau_bridge where
-  root := `FormalSystem.Automation.TableauBridge
+  root := `FormalSystem.Automation.TableauBridgeMain
   srcDir := "."
   supportInterpreter := true
 
@@ -91,7 +91,7 @@ lean_exe tableau_proof_steps where
 /-- Trace certificate exporter: emits JSONL proof certificates.
     Run with: echo '{"command":"trace_decide","formula":{"tag":"atom","name":"p"}}' | lake exe trace_exporter -/
 lean_exe trace_exporter where
-  root := `FormalSystem.Automation.TraceExporter
+  root := `FormalSystem.Automation.TraceExporterMain
   srcDir := "."
   supportInterpreter := true
 
@@ -106,13 +106,13 @@ lean_exe proof_first_generator where
     Run with: lake exe machine_appendix -- --output typst/generated/machine-appendix.jsonl --stamp-commit SHA --stamp-date DATE
     Normally invoked via scripts/typst-machine-appendix.sh (injects git stamps). -/
 lean_exe machine_appendix where
-  root := `FormalSystem.Automation.MachineAppendixExport
+  root := `FormalSystem.Automation.MachineAppendixMain
   srcDir := "."
   supportInterpreter := true
 
 /-- Reports FormalSystem modules that do not (transitively) import FormalSystem.Init.
     Run with: lake exe checkInitImports -/
 lean_exe checkInitImports where
-  root := `CheckInitImports
+  root := `CheckInitImportsMain
   srcDir := "scripts"
   supportInterpreter := true

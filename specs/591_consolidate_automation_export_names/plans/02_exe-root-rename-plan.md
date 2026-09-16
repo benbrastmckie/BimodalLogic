@@ -189,28 +189,28 @@ build green.
 
 ---
 
-### Phase 3: Remaining roots rename [NOT STARTED]
+### Phase 3: Remaining roots rename [COMPLETED]
 
 **Goal**: Rename `EnumBenchmark`, `BenchmarkAnchors`, `BenchmarkOracle`, `FormulaMutator`,
 `TableauBridge`, `TraceExporter`, `MachineAppendixExport`, and `scripts/CheckInitImports` to their
 `*Main` names, including the functional `typst-machine-appendix.sh` edits.
 
 **Tasks**:
-- [ ] `git mv` the eight files (the `CheckInitImports` file stays under `scripts/`) and update the eight `root :=` lines
-- [ ] Rename the namespaces for `BenchmarkAnchors`, `BenchmarkOracle`, `FormulaMutator`, `TableauBridge`, `TraceExporter`,
+- [x] `git mv` the eight files (the `CheckInitImports` file stays under `scripts/`) and update the eight `root :=` lines
+- [x] Rename the namespaces for `BenchmarkAnchors`, `BenchmarkOracle`, `FormulaMutator`, `TableauBridge`, `TraceExporter`,
       and `MachineAppendixExport`. Fix the external qualified references (TableauBridge 1, TraceExporter 2, MachineAppendixExport 1)
-- [ ] Update `Tests/BimodalTest/Automation/FormulaMutatorTest.lean` (import and qualified names). Do not rename the test file itself
-- [ ] Keep the module docstring heading "Formula mutator ..." in `ContrastiveGeneratorMain.lean`
-- [ ] Keep `"generator": "BimodalLogic/MachineAppendixExport"` byte-identical at both sites (~45, ~422), and add a
+- [x] Update `Tests/BimodalTest/Automation/FormulaMutatorTest.lean` (import and qualified names). Do not rename the test file itself
+- [x] Keep the module docstring heading "Formula mutator ..." in `ContrastiveGeneratorMain.lean`
+- [x] Keep `"generator": "BimodalLogic/MachineAppendixExport"` byte-identical at both sites (~45, ~422), and add a
       stable-provenance-ID comment
-- [ ] **Functional**: `scripts/typst-machine-appendix.sh` lines ~15 (comment), ~192 (`lake build ...MachineAppendixMain`),
+- [x] **Functional**: `scripts/typst-machine-appendix.sh` lines ~15 (comment), ~192 (`lake build ...MachineAppendixMain`),
       and ~196 (`lake env lean --run FormalSystem/Automation/MachineAppendixMain.lean`)
-- [ ] Update the doc cross-references: `FormalSystem/Metalogic/Decidability/README.md`, `docs/training/PIPELINE.md`,
+- [x] Update the doc cross-references: `FormalSystem/Metalogic/Decidability/README.md`, `docs/training/PIPELINE.md`,
       the `.lean` docstrings in the renamed siblings, and the C16 table comment rows
-- [ ] Check whether any script or CI step invokes `checkInitImports` by module path (`grep -rn CheckInitImports`) and update it
-- [ ] Run `lake build` on the eight renamed modules plus `BimodalTest`
-- [ ] Run `scripts/typst-machine-appendix.sh`, then `git diff --exit-code typst/generated/machine-appendix.jsonl`, to confirm the output is unchanged
-- [ ] Commit: `task 591: phase 3: rename remaining exe roots`
+- [x] Check whether any script or CI step invokes `checkInitImports` by module path (`grep -rn CheckInitImports`) and update it
+- [x] *(deviation: altered — all 8 modules, 8 exes and FormulaMutatorTest built green; the aggregate BimodalTest target failed only on a concurrent session's uncommitted test relocation (missing BiLassoTest.olean), unrelated to this rename)* Run `lake build` on the eight renamed modules plus `BimodalTest`
+- [x] *(deviation: altered — ran the script's functional `lake env lean --run FormalSystem/Automation/MachineAppendixMain.lean` line into a scratch file with the committed stamps (79bd1794f / 2026-09-07); `cmp` against the committed JSONL was byte-identical. The full script re-stamps with HEAD/today, which would dirty the committed artifact)* Run `scripts/typst-machine-appendix.sh`, then `git diff --exit-code typst/generated/machine-appendix.jsonl`, to confirm the output is unchanged
+- [x] Commit: `task 591: phase 3: rename remaining exe roots`
 
 **Timing**: 1.5 hours
 

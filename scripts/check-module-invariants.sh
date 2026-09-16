@@ -555,7 +555,7 @@ ENFORCE_C23=${ENFORCE_C23:-1} # naming regressions (enforced)
 # it is green from its first run and ships enforced with no soft period -- a soft window here
 # would only be a window in which the invariant could regress unnoticed. Never flip it to 0 to
 # quiet a failure; add the import at the offending module's own minimal element, or record a
-# genuinely-cannot-import module in `exceptions` in scripts/CheckInitImports.lean.
+# genuinely-cannot-import module in `exceptions` in scripts/CheckInitImportsMain.lean.
 ENFORCE_C24=${ENFORCE_C24:-1} # every module transitively imports FormalSystem.Init (enforced)
 # C25 compile-checks every `lean_exe` root declared in lakefile.lean. Those roots sit outside
 # both library root closures, so `lake build` never elaborates them and C24's closure walk never
@@ -2094,9 +2094,9 @@ PYEOF
 # or exe root alike. Sweeping all fifteen roots with the tree already built by C1 -- which is
 # the position this check runs in -- costs 44s wall clock and reports:
 #
-#     FormalSystem 0   ProofExtractorMain 0   BenchmarkAnchors 0   TableauProofStepsMain 0
-#     ProofFirstGeneratorMain 0   DatasetValidatorMain 1   CheckInitImports 1   EnumBenchmark 4
-#     TraceExporter 5   BenchmarkOracle 9   TableauBridge 12   MachineAppendixExport 16
+#     FormalSystem 0   ProofExtractorMain 0   BenchmarkAnchorsMain 0   TableauProofStepsMain 0
+#     ProofFirstGeneratorMain 0   DatasetValidatorMain 1   CheckInitImportsMain 1   EnumBenchmarkMain 4
+#     TraceExporterMain 5   BenchmarkOracleMain 9   TableauBridgeMain 12   MachineAppendixMain 16
 #     DatasetGeneratorMain 32   BimodalTest 85
 #
 # -- 179 findings outside the `FormalSystem` root, of which 56 are `defsWithUnderscore`
@@ -2916,7 +2916,7 @@ echo
 # missing import at the offending module's own minimal element instead, or, if the
 # module genuinely cannot depend on `FormalSystem.*` (the `ForMathlib` upstreaming
 # rule is the one live instance), record it in `exceptions` in
-# scripts/CheckInitImports.lean with its reason written beside it.
+# scripts/CheckInitImportsMain.lean with its reason written beside it.
 #
 # Inside the RUN_BUILD guard because `CoreM.withImportModules` loads `.olean`s: the
 # check cannot run at all without a built tree, so under --no-build it reports
@@ -2926,7 +2926,7 @@ echo
 # mandate: the import line was removed from one low-fan-out leaf, this block was
 # observed to report FAIL C24 with a non-zero script exit, and the line was
 # restored and the PASS re-observed. Re-run that test after any change to this
-# check's scope or to CheckInitImports.lean's exit path -- the executable
+# check's scope or to CheckInitImportsMain.lean's exit path -- the executable
 # previously returned `diff.length.toUInt32`, which an 8-bit exit status truncates,
 # so it would have reported failure while handing the shell a 0 at any count that
 # happened to be a multiple of 256.
@@ -2988,7 +2988,7 @@ echo
 #
 # Negative-tested per docs/development/MODULE_INVARIANTS.md's "Adding a Check"
 # mandate: a one-character break was introduced in
-# FormalSystem/Automation/TraceExporter.lean -- deliberately NOT ProofExtractorMain,
+# FormalSystem/Automation/TraceExporterMain.lean -- deliberately NOT ProofExtractorMain,
 # the module the same change repairs, since a failure there would prove nothing
 # about the gate -- `FAIL C25` was observed together with a non-zero script exit
 # (both, not just the printed line: `FAIL C25  1 of 13 lean_exe root module(s) do

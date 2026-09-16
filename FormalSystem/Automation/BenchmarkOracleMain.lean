@@ -31,7 +31,7 @@ Where `formulas.txt` contains one JSON AST per line.
 
 set_option autoImplicit false
 
-namespace FormalSystem.Automation.BenchmarkOracle
+namespace FormalSystem.Automation.BenchmarkOracleMain
 
 open FormalSystem.Syntax
 open FormalSystem.Automation
@@ -252,14 +252,14 @@ def parseFormulaFromRecord (line : String) : Except String Formula := do
 def strContains (s : String) (sub : String) : Bool :=
   (s.splitOn sub).length > 1
 
-end FormalSystem.Automation.BenchmarkOracle
+end FormalSystem.Automation.BenchmarkOracleMain
 
 /-!
 ## Main Entry Point
 -/
 
 open FormalSystem.Automation
-open FormalSystem.Automation.BenchmarkOracle
+open FormalSystem.Automation.BenchmarkOracleMain
 open FormalSystem.Automation.DataExport
 
 def main (args : List String) : IO Unit := do

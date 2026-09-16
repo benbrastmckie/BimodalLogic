@@ -403,7 +403,7 @@ One scheme, three casings, applied by grammatical position:
 | PascalCase (types, constructors, `Prop`-valued defs) | `Discrete` / `Dedekind` | `ZTime` / `RTime` | `ValidDedekind` -> `ValidRTime` |
 | lowerCamel (segment naming a PascalCase def) | `discrete` / `dedekind` | `zTime` / `rTime` | `discreteRules` -> `zTimeRules` |
 | snake_case (lemma-name segment) | `discrete` / `dedekind` | `ztime` / `rtime` | `soundness_dedekind` -> `soundness_rtime` |
-| String literal emitted for a class | `"Discrete"` / `"Dedekind"` | `"ZTime"` / `"RTime"` | `Automation/MachineAppendixExport.lean` |
+| String literal emitted for a class | `"Discrete"` / `"Dedekind"` | `"ZTime"` / `"RTime"` | `Automation/MachineAppendixMain.lean` |
 | String literal parsed as CLI input | `"discrete"` / `"dedekind"` | `"ztime"` / `"rtime"`, legacy spellings still accepted | `Automation/DatasetGeneratorMain.lean` |
 
 `ZTime` and `RTime` name what the classes *are* — ℤ-time and R-time, which by
@@ -450,7 +450,7 @@ scope for a rename.
 
 ### Also kept
 
-`layerReynoldsDedekind` (`Automation/MachineAppendixExport.lean`) labels the Reynolds axiom
+`layerReynoldsDedekind` (`Automation/MachineAppendixMain.lean`) labels the Reynolds axiom
 family, which genuinely encodes definable Dedekind completeness rather than the frame class. The
 five `Axiom.discrete_*` constructors (`discrete_symm_fwd`, `discrete_symm_bwd`,
 `discrete_propagate_fwd`, `discrete_propagate_bwd`, `discrete_box_necessity`) are Base-valid

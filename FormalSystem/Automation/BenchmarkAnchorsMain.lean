@@ -47,7 +47,7 @@ axioms are excluded since the benchmark uses FrameClass.Base throughout.
 
 set_option autoImplicit false
 
-namespace FormalSystem.Automation.BenchmarkAnchors
+namespace FormalSystem.Automation.BenchmarkAnchorsMain
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -311,7 +311,7 @@ def generateAllInstances : List TaggedFormula :=
 -/
 
 -- NOTE: `allAxiomNames` (the canonical 45-name list) moved to
--- `FormalSystem.Automation.AxiomNames` so that `MachineAppendixExport.lean` can
+-- `FormalSystem.Automation.AxiomNames` so that `MachineAppendixMain.lean` can
 -- share it (this module declares a root-level `main` and cannot be imported
 -- by another executable). Resolved here via the parent namespace.
 
@@ -455,14 +455,14 @@ def taggedToJsonl (idx : Nat) (tf : TaggedFormula) (lf : LabeledFormula)
   ++ ", \"axiom_name\": \"" ++ escapeJsonString tf.axiomName ++ "\""
   ++ "}"
 
-end FormalSystem.Automation.BenchmarkAnchors
+end FormalSystem.Automation.BenchmarkAnchorsMain
 
 /-!
 ## Main Entry Point
 -/
 
 open FormalSystem.Automation
-open FormalSystem.Automation.BenchmarkAnchors
+open FormalSystem.Automation.BenchmarkAnchorsMain
 open FormalSystem.Automation.DataExport
 
 /--

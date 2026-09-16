@@ -250,7 +250,7 @@ identified and deferred rather than folded in:
 - **`toJson` key-order flip (D1)** — the emitted key order stays `"event"` then `"guard"`. This is
   what made the oracle byte-identical and therefore auditable; flipping it to guard-first
   positional is a dataset-format version bump with real downstream consumers
-  (`DatasetExport.lean`'s S-expression parser, the training-data pipeline,
+  (`DatasetGeneratorMain.lean`'s S-expression parser, the training-data pipeline,
   `typst/chapters/ax-machine-appendix.typ`'s shape table) and is orthogonal to argument order.
 - **Boneyard exclusion (D3)** — both archive trees, `FormalSystem/Boneyard/` and the former
   `Metalogic/WeakCanonical/Kamp/Boneyard/` (consolidated into

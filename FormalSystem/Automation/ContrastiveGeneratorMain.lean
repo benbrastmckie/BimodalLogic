@@ -51,7 +51,7 @@ encoding in terms of `imp`, `bot`, `untl`, `snce`.
 
 set_option autoImplicit false
 
-namespace FormalSystem.Automation.FormulaMutator
+namespace FormalSystem.Automation.ContrastiveGeneratorMain
 
 open FormalSystem.Syntax
 open FormalSystem.Automation
@@ -1080,7 +1080,7 @@ def runBatchContrastive (labeledFormulas : List LabeledFormula)
   IO.println s!"Output written to: {outputPath}"
   IO.println s!"Summary written to: {summaryPath}"
 
-end FormalSystem.Automation.FormulaMutator
+end FormalSystem.Automation.ContrastiveGeneratorMain
 
 /-!
 ## Standalone Executable Entry Point
@@ -1088,7 +1088,7 @@ end FormalSystem.Automation.FormulaMutator
 
 open FormalSystem.Syntax
 open FormalSystem.Automation
-open FormalSystem.Automation.FormulaMutator
+open FormalSystem.Automation.ContrastiveGeneratorMain
 
 /--
 Configuration for the contrastive pair generator.

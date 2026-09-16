@@ -224,13 +224,13 @@ C24 ships enforced for the same reason, and was accepted only after the same **d
 negative test** C15 was: the `import FormalSystem.Init` line was removed from one low-fan-out
 leaf, `FAIL C24` and a non-zero script exit were observed, and the line was restored and the
 `PASS` re-observed. Re-run that test after any change to C24's scope or to
-`scripts/CheckInitImports.lean`'s exit path — the executable originally returned
+`scripts/CheckInitImportsMain.lean`'s exit path — the executable originally returned
 `diff.length.toUInt32`, and an 8-bit exit status truncates that, so it would have printed a
 failure while handing the shell a `0` at any count that happened to be a multiple of 256.
 
 C25 ships enforced on the same precedent and was accepted only after the same negative test, run
 deliberately on a module *other* than the one the same change repaired: a one-character break was
-introduced in `FormalSystem/Automation/TraceExporter.lean` — not `ProofExtractorMain.lean`, since a
+introduced in `FormalSystem/Automation/TraceExporterMain.lean` — not `ProofExtractorMain.lean`, since a
 failure in the module under repair would prove nothing about the gate — `FAIL C25  1 of 13 lean_exe root module(s) do not compile` was observed
 **together with a script exit of 1**, and the file was restored and the `PASS` and exit 0
 re-observed. The sharpest part of that observation is what did *not* fail: C1 reported

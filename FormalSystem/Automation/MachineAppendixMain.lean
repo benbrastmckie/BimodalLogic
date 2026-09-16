@@ -36,11 +36,11 @@ and the rule *count* is cross-checked against the live source by
 
 `main` fails with a nonzero exit unless:
 - exactly 45 axiom entries are present, with name multiset equal to
-  `FormalSystem.Automation.allAxiomNames` (shared with `BenchmarkAnchors.lean` via
+  `FormalSystem.Automation.allAxiomNames` (shared with `BenchmarkAnchorsMain.lean` via
   `Automation/AxiomNames.lean`; no missing, no extra, no duplicates);
 - exactly 7 inference-rule entries are present.
 
-## Output Schema (JSONL, one object per line)
+## Output Schema (JSONL, one object per line; the `"generator"` value is a stable provenance ID)
 
 - line 1: `{"kind": "metadata", "generator": "BimodalLogic/MachineAppendixExport",
   "version": "1.0", "stamp_commit": …, "stamp_date": …, counts…}`
@@ -72,7 +72,7 @@ Invoked by `scripts/typst-machine-appendix.sh`, which injects the git stamps
 - `FormalSystem.Automation.AxiomNames` — `allAxiomNames` (canonical 45-name list)
 -/
 
-namespace FormalSystem.Automation.MachineAppendixExport
+namespace FormalSystem.Automation.MachineAppendixMain
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -181,7 +181,7 @@ def layerReynoldsDedekind : String := "Reynolds Dedekind"
 
 /--
 All 45 axiom entries, in `Axioms.lean` source order (the same order as
-`BenchmarkAnchors.allAxiomNames`). Each entry applies the real constructor to
+`BenchmarkAnchorsMain.allAxiomNames`). Each entry applies the real constructor to
 schematic atoms; the schema formula and frame class are extracted from the
 resulting `Axiom φ` witness, never transcribed.
 -/
@@ -416,7 +416,9 @@ where
   | _ :: rest, acc => go rest acc
 
 /-- Metadata envelope line (first JSONL line), following the
-`DatasetAssembly.DatasetMetadata` precedent. -/
+`DatasetAssembly.DatasetMetadata` precedent. The `"generator"` value is a stable provenance
+ID baked into the committed `typst/generated/machine-appendix.jsonl`, not a module path: it
+keeps its historical spelling so a module rename does not change the emitted bytes. -/
 def metadataLine (cfg : Config) (axCount ruleCount opCount : Nat) : String :=
   "{\"kind\": \"metadata\""
   ++ ", \"generator\": \"BimodalLogic/MachineAppendixExport\""
@@ -430,7 +432,7 @@ def metadataLine (cfg : Config) (axCount ruleCount opCount : Nat) : String :=
   ++ "}"
 
 /--
-Coverage check mirroring `BenchmarkAnchors.checkCoverage`: the axiom entry
+Coverage check mirroring `BenchmarkAnchorsMain.checkCoverage`: the axiom entry
 names must be exactly the 45 names in `allAxiomNames` (no missing, no extra,
 no duplicates), and there must be exactly 7 rule entries. Returns diagnostics
 (empty list = pass).
@@ -460,7 +462,7 @@ Exits nonzero with diagnostics on any coverage mismatch.
 def main (args : List String) : IO UInt32 := do
   let cfg := parseArgs args
 
-  -- Coverage assertions (mirroring BenchmarkAnchors.checkCoverage)
+  -- Coverage assertions (mirroring BenchmarkAnchorsMain.checkCoverage)
   let diags := coverageDiagnostics
   if !diags.isEmpty then
     IO.eprintln "machine_appendix: coverage assertion FAILED:"
@@ -491,8 +493,8 @@ def main (args : List String) : IO UInt32 := do
     stamp {cfg.stampCommit} {cfg.stampDate})"
   return 0
 
-end FormalSystem.Automation.MachineAppendixExport
+end FormalSystem.Automation.MachineAppendixMain
 
 /-- Executable entry point for `lake exe machine_appendix`. -/
 def main (args : List String) : IO UInt32 :=
-  FormalSystem.Automation.MachineAppendixExport.main args
+  FormalSystem.Automation.MachineAppendixMain.main args

@@ -12,7 +12,7 @@
 # link with `supportInterpreter := true` recompiles Formula.c.o.export
 # under LEAN_EXPORTING at -O3, which exhausts memory on constrained
 # machines (clang OOM, exit 137). The interpreter consumes the ordinary
-# .oleans (built by `lake build FormalSystem.Automation.MachineAppendixExport`)
+# .oleans (built by `lake build FormalSystem.Automation.MachineAppendixMain`)
 # and produces byte-identical JSONL in seconds. The `lean_exe
 # machine_appendix` stanza remains in lakefile.lean for machines that can
 # afford the native build, but this script's default path is the
@@ -189,11 +189,11 @@ cd "${REPO_ROOT}"
 # Ensure the exporter's .olean (and its dependency closure) is fresh.
 # This is ordinary elaboration -- it does NOT trigger the native
 # LEAN_EXPORTING/clang link that OOMs on constrained machines.
-lake build FormalSystem.Automation.MachineAppendixExport
+lake build FormalSystem.Automation.MachineAppendixMain
 
 # Run the exporter through the Lean interpreter (uses the .oleans;
 # no native code generation). See header comment for rationale.
-lake env lean --run FormalSystem/Automation/MachineAppendixExport.lean -- \
+lake env lean --run FormalSystem/Automation/MachineAppendixMain.lean -- \
   --output "${JSONL}" \
   --stamp-commit "${STAMP_COMMIT}" \
   --stamp-date "${STAMP_DATE}"

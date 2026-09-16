@@ -10,11 +10,11 @@ Authors: Benjamin Brast-McKie
 The canonical list of all `FormalSystem.ProofSystem.Axiom` constructor names, in
 `Axioms.lean` source order.
 
-Extracted from `BenchmarkAnchors.lean` into a leaf module so that
-multiple executables can share it: `BenchmarkAnchors.lean` declares a
+Extracted from `BenchmarkAnchorsMain.lean` into a leaf module so that
+multiple executables can share it: `BenchmarkAnchorsMain.lean` declares a
 root-level `main` (it is a `lean_exe` root), so importing it from another
-executable module would clash on `main`. Both `BenchmarkAnchors.lean` and
-`MachineAppendixExport.lean` import this module and check their coverage
+executable module would clash on `main`. Both `BenchmarkAnchorsMain.lean` and
+`MachineAppendixMain.lean` import this module and check their coverage
 against `allAxiomNames`.
 
 ## Maintenance
