@@ -1,7 +1,7 @@
 # Implementation Plan: Task #587
 
 - **Task**: 587 - Repair or retire the two broken `BimodalTest` benchmark modules
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/587_repair_or_retire_broken_benchmark_modules/reports/02_benchmark-repair-measurement.md
@@ -103,28 +103,28 @@ No roadmap consultation requested for this dispatch.
 Phases are serialized: phases 1 and 2 both edit the `# --- Tests ---` block of
 `scripts/module-invariants-manifest.txt`, and phase 3 rewrites prose describing both outcomes.
 
-### Phase 1: Repair and re-manifest DerivationBenchmark [NOT STARTED]
+### Phase 1: Repair and re-manifest DerivationBenchmark [COMPLETED]
 
 **Goal**: `DerivationBenchmark.lean` compiles with 0 errors, its `#eval` runs, and C6
 compile-checks it.
 
 **Tasks**:
-- [ ] Apply the 8 root-cause fixes from the research report to
+- [x] Apply the 8 root-cause fixes from the research report to
       `Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean`: `.atomS`; add the `FrameClass`
       index (use `.Base`) to every `DerivationTree`; add `h_fc` (`by decide`) to each
       `DerivationTree.axiom`; `allFuture`; `swapTemporal`; `[i]!`; `simp at hx`.
-- [ ] Replace the removed `Axiom.temp_4` in `mkTemp4` with `Axiom.modal_future p`
+- [x] Replace the removed `Axiom.temp_4` in `mkTemp4` with `Axiom.modal_future p`
       (`□p → □Gp`); keep `mkTemporalDuality` applying `temporal_duality` to it; rename the
       affected benchmark labels (e.g. "Axiom (Modal-Future)") and any function names that say
-      `Temp4`.
-- [ ] Keep the trailing top-level `#eval ...runAllDerivationBenchmarks`.
-- [ ] Run `lake env lean Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean` until exit 0 and
+      `Temp4`. *(completed: `mkTemp4` -> `mkModalFuture`)*
+- [x] Keep the trailing top-level `#eval ...runAllDerivationBenchmarks`.
+- [x] Run `lake env lean Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean` until exit 0 and
       15 benchmarks print.
-- [ ] In `scripts/module-invariants-manifest.txt`, change
+- [x] In `scripts/module-invariants-manifest.txt`, change
       `broken: BimodalTest.ProofSystem.DerivationBenchmark` to the plain line, and give it its own
       comment: a benchmark kept out of `Tests/BimodalTest.lean` because its top-level `#eval`
       would run on every `lake test`; C6 compiles (and so runs) it in isolation.
-- [ ] `lake build BimodalTest.ProofSystem.DerivationBenchmark` exits 0.
+- [x] `lake build BimodalTest.ProofSystem.DerivationBenchmark` exits 0.
 
 **Timing**: 45 minutes
 

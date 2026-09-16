@@ -38,9 +38,9 @@ open FormalSystem.Syntax FormalSystem.ProofSystem
 open BimodalTest.Automation.Benchmark (timed formatNanos)
 
 -- Convenience abbreviations (matching ProofSearchBenchmark)
-abbrev p : Formula := .atom "p"
-abbrev q : Formula := .atom "q"
-abbrev r : Formula := .atom "r"
+abbrev p : Formula := .atomS "p"
+abbrev q : Formula := .atomS "q"
+abbrev r : Formula := .atomS "r"
 
 /-- Derivation benchmark result with correctness validation. -/
 structure DerivationBenchmarkResult where
@@ -66,16 +66,16 @@ def printResult (r : DerivationBenchmarkResult) : IO Unit :=
     Takes a function that constructs a derivation, runs it multiple times,
     and returns median timing along with tree height. -/
 def runBenchmark {Γ : Context} {φ : Formula}
-    (name : String) (mkDeriv : Unit → DerivationTree Γ φ)
+    (name : String) (mkDeriv : Unit → DerivationTree .Base Γ φ)
     (iterations : Nat := 100) : IO DerivationBenchmarkResult := do
   let mut times : Array Nat := #[]
-  let mut tree : Option (DerivationTree Γ φ) := none
+  let mut tree : Option (DerivationTree .Base Γ φ) := none
   for _ in [:iterations] do
     let (result, timeNs) ← timed (pure (mkDeriv ()))
     times := times.push timeNs
     tree := some result
   let sortedTimes := times.toList.mergeSort (· ≤ ·)
-  let medianTime := sortedTimes.get! (sortedTimes.length / 2)
+  let medianTime := sortedTimes[sortedTimes.length / 2]!
   let height := match tree with
     | some t => t.height
     | none => 0
@@ -89,29 +89,28 @@ These establish the baseline overhead for derivation construction.
 -/
 
 /-- Simple axiom derivation: Modal T -/
-def mkModalT : DerivationTree [] ((Formula.box p).imp p) :=
-  DerivationTree.axiom [] _ (Axiom.modal_t p)
+def mkModalT : DerivationTree .Base [] ((Formula.box p).imp p) :=
+  DerivationTree.axiom [] _ (Axiom.modal_t p) (by decide)
 
 /-- Simple axiom derivation: Modal 4 -/
-def mkModal4 : DerivationTree [] ((Formula.box p).imp (Formula.box (Formula.box p))) :=
-  DerivationTree.axiom [] _ (Axiom.modal_4 p)
+def mkModal4 : DerivationTree .Base [] ((Formula.box p).imp (Formula.box (Formula.box p))) :=
+  DerivationTree.axiom [] _ (Axiom.modal_4 p) (by decide)
 
 /-- Simple axiom derivation: Modal B -/
-def mkModalB : DerivationTree [] (p.imp (Formula.box p.diamond)) :=
-  DerivationTree.axiom [] _ (Axiom.modal_b p)
+def mkModalB : DerivationTree .Base [] (p.imp (Formula.box p.diamond)) :=
+  DerivationTree.axiom [] _ (Axiom.modal_b p) (by decide)
 
-/-- Simple axiom derivation: Temporal 4 -/
-def mkTemp4 :
-    DerivationTree [] ((Formula.all_future p).imp
-      (Formula.all_future (Formula.all_future p))) :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 p)
+/-- Simple axiom derivation: Modal-Future (`□p → □Gp`) -/
+def mkModalFuture :
+    DerivationTree .Base [] ((Formula.box p).imp (Formula.box (Formula.allFuture p))) :=
+  DerivationTree.axiom [] _ (Axiom.modal_future p) (by decide)
 
 /-- Simple assumption derivation: Single assumption -/
-def mkAssumption : DerivationTree [p] p :=
+def mkAssumption : DerivationTree .Base [p] p :=
   DerivationTree.assumption [p] p (by simp)
 
 /-- Simple assumption derivation: First of multiple -/
-def mkAssumption2 : DerivationTree [p, q] p :=
+def mkAssumption2 : DerivationTree .Base [p, q] p :=
   DerivationTree.assumption [p, q] p (by simp)
 
 def runSimpleBenchmarks : IO (List DerivationBenchmarkResult) := do
@@ -130,7 +129,7 @@ def runSimpleBenchmarks : IO (List DerivationBenchmarkResult) := do
   printResult r3
   results := results ++ [r3]
 
-  let r4 ← runBenchmark "Axiom (Temporal 4)" (fun _ => mkTemp4)
+  let r4 ← runBenchmark "Axiom (Modal-Future)" (fun _ => mkModalFuture)
   printResult r4
   results := results ++ [r4]
 
@@ -152,7 +151,7 @@ Tests how derivation construction scales with proof depth.
 -/
 
 /-- Basic modus ponens from assumptions: p→q, p ⊢ q -/
-def mkMP1 : DerivationTree [p.imp q, p] q :=
+def mkMP1 : DerivationTree .Base [p.imp q, p] q :=
   DerivationTree.modus_ponens [p.imp q, p] p q
     (DerivationTree.assumption _ _ (by simp))
     (DerivationTree.assumption _ _ (by simp))
@@ -160,14 +159,14 @@ def mkMP1 : DerivationTree [p.imp q, p] q :=
 /-- MP chain depth 2: p→q, q→r, p ⊢ r -/
 abbrev ctxMP2 : Context := [p.imp q, q.imp r, p]
 
-def mkMP2 : DerivationTree ctxMP2 r :=
-  let d_p : DerivationTree ctxMP2 p :=
+def mkMP2 : DerivationTree .Base ctxMP2 r :=
+  let d_p : DerivationTree .Base ctxMP2 p :=
     DerivationTree.assumption _ _ (by simp [ctxMP2])
-  let d_pq : DerivationTree ctxMP2 (p.imp q) :=
+  let d_pq : DerivationTree .Base ctxMP2 (p.imp q) :=
     DerivationTree.assumption _ _ (by simp [ctxMP2])
-  let d_qr : DerivationTree ctxMP2 (q.imp r) :=
+  let d_qr : DerivationTree .Base ctxMP2 (q.imp r) :=
     DerivationTree.assumption _ _ (by simp [ctxMP2])
-  let d_q : DerivationTree ctxMP2 q :=
+  let d_q : DerivationTree .Base ctxMP2 q :=
     DerivationTree.modus_ponens _ p q d_pq d_p
   DerivationTree.modus_ponens _ q r d_qr d_q
 
@@ -193,21 +192,22 @@ These measure the overhead of modal and temporal inference.
 -/
 
 /-- Modal necessitation: □(Modal T) -/
-def mkNecessitation : DerivationTree [] (Formula.box ((Formula.box p).imp p)) :=
+def mkNecessitation : DerivationTree .Base [] (Formula.box ((Formula.box p).imp p)) :=
   DerivationTree.necessitation _ mkModalT
 
 /-- Temporal necessitation: G(Modal T) -/
-def mkTemporalNecessitation : DerivationTree [] (Formula.all_future ((Formula.box p).imp p)) :=
+def mkTemporalNecessitation : DerivationTree .Base [] (Formula.allFuture ((Formula.box p).imp p)) :=
   DerivationTree.temporal_necessitation _ mkModalT
 
-/-- Temporal duality on Temporal 4 -/
+/-- Temporal duality on Modal-Future -/
 def mkTemporalDuality :
-    DerivationTree [] ((Formula.all_future p).imp
-      (Formula.all_future (Formula.all_future p))).swap_temporal :=
-  DerivationTree.temporal_duality _ mkTemp4
+    DerivationTree .Base []
+      ((Formula.box p).imp (Formula.box (Formula.allFuture p))).swapTemporal :=
+  DerivationTree.temporal_duality _ mkModalFuture
 
 /-- Double necessitation: □□(Modal T) -/
-def mkDoubleNecessitation : DerivationTree [] (Formula.box (Formula.box ((Formula.box p).imp p))) :=
+def mkDoubleNecessitation :
+    DerivationTree .Base [] (Formula.box (Formula.box ((Formula.box p).imp p))) :=
   DerivationTree.necessitation _ mkNecessitation
 
 def runModalRuleBenchmarks : IO (List DerivationBenchmarkResult) := do
@@ -239,13 +239,13 @@ Benchmarks for context weakening with varying context sizes.
 -/
 
 /-- Weakening: add 1 formula to context -/
-def mkWeak1 : DerivationTree [q, p] p :=
+def mkWeak1 : DerivationTree .Base [q, p] p :=
   DerivationTree.weakening [p] [q, p] p
     (DerivationTree.assumption [p] p (by simp))
     (by intro x hx; simp at hx; simp [hx])
 
 /-- Weakening: add 2 formulas to context -/
-def mkWeak2 : DerivationTree [q, r, p] p :=
+def mkWeak2 : DerivationTree .Base [q, r, p] p :=
   DerivationTree.weakening [p] [q, r, p] p
     (DerivationTree.assumption [p] p (by simp))
     (by intro x hx; simp at hx; simp [hx])
@@ -271,10 +271,10 @@ Benchmarks for more complex derivations combining multiple rules.
 -/
 
 /-- Combined: MP with axiom as major premise (□p ⊢ p via Modal T) -/
-def mkCombined1 : DerivationTree [(Formula.box p)] p :=
+def mkCombined1 : DerivationTree .Base [(Formula.box p)] p :=
   DerivationTree.modus_ponens [(Formula.box p)] (Formula.box p) p
     (DerivationTree.weakening [] [(Formula.box p)] _ mkModalT
-      (by intro x hx; exact False.elim (List.not_mem_nil x hx)))
+      (by intro x hx; simp at hx))
     (DerivationTree.assumption _ _ (by simp))
 
 def runCombinedBenchmarks : IO (List DerivationBenchmarkResult) := do
