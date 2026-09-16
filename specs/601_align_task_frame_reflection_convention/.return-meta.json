@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/601_align_task_frame_reflection_convention/reports/01_reflection-convention-encoding.md",
+      "summary": "Recommends a D+-typed primitive PosRel field with TaskRel := reflect PosRel as a definition and a derived reflection theorem (prototyped sorry-free), plus an ofReflective smart constructor; maps 18 construction sites, 28 projections, and the converse->reflection rename surface with genuine-converse exclusions."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789592641_69db81_601",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
