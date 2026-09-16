@@ -1,7 +1,7 @@
 # Implementation Plan: Task #581
 
 - **Task**: 581 - Repair the four wired bi-lasso evidence probes so `check-evidence-probes.sh` exits 0, then wire it into CI
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None (583 is concurrently planning the CI wiring pattern; see Risks)
 - **Research Inputs**: specs/581_repair_bilasso_evidence_probes/reports/02_probe-repair-verified-diffs.md (primary), specs/581_repair_bilasso_evidence_probes/reports/01_bilasso-probe-frameclass-drift.md (sweep evidence)
@@ -184,13 +184,13 @@ under **Goals** is correspondingly empty.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 with 4 PASS, 1 SKIP
-- [ ] No repaired probe's `#print axioms` (scratch audit) contains `sorryAx`; each is within `[propext, Classical.choice, Quot.sound]`
-- [ ] Every changed theorem statement is justified as API-tracking in the summary (phase7, phase12, phase3, phase10)
-- [ ] `spike-untl-unfolding-and-fwd-obstruction` remains in `DEFERRED` and unwired
-- [ ] `.github/workflows/ci.yml` parses and contains the gating step in the specified position
-- [ ] Deliberately broken probe makes the step's command exit nonzero locally; restored probe is byte-identical to the committed repair
-- [ ] No task-number references in `scripts/check-evidence-probes.sh`, `ci.yml`, or the probe files
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 with 4 PASS, 1 SKIP
+- [x] No repaired probe's `#print axioms` (scratch audit) contains `sorryAx`; each is within `[propext, Classical.choice, Quot.sound]`
+- [x] Every changed theorem statement is justified as API-tracking in the summary (phase7, phase12, phase3, phase10)
+- [x] `spike-untl-unfolding-and-fwd-obstruction` remains in `DEFERRED` and unwired
+- [x] `.github/workflows/ci.yml` parses and contains the gating step in the specified position
+- [x] Deliberately broken probe makes the step's command exit nonzero locally; restored probe is byte-identical to the committed repair
+- [x] No task-number references in `scripts/check-evidence-probes.sh`, `ci.yml`, or the probe files
 
 ## Artifacts & Outputs
 
