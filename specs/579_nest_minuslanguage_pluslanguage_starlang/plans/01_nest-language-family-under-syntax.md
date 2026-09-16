@@ -325,32 +325,32 @@ Phase 2) and `SubformulaClosure/` (aggregator created in Phase 1). Confirm with
 
 ---
 
-### Phase 4: Documentation and path sweep [NOT STARTED]
+### Phase 4: Documentation and path sweep [COMPLETED]
 
 **Goal**: Bring every gated documentation reference in line with the new layout, and repair the
 pre-existing C13 failure so the dispatch's verify criterion is reachable.
 
 **Tasks**:
-- [ ] Rewrite the five module-shaped C5 tokens at `docs/development/MODULE_ORGANIZATION.md:301-305`
+- [x] Rewrite the five module-shaped C5 tokens at `docs/development/MODULE_ORGANIZATION.md:301-305`
       (`FormalSystem.MinusLanguage.{Formula,Axioms,Derivation,Translation,AxiomDischarge}`) to
       `FormalSystem.Syntax.MinusLanguage.*`.
-- [ ] Rewrite the bare module-reading tokens (`docs/reference/API_REFERENCE.md:791`, read as a
+- [x] Rewrite the bare module-reading tokens (`docs/reference/API_REFERENCE.md:791`, read as a
       module heading) to the new path.
-- [ ] Add the namespace-reading tokens (`NOTATION.md:49`, `docs/theorem-index.md:43-45`,
+- [x] Add the namespace-reading tokens (`NOTATION.md:49`, `docs/theorem-index.md:43-45`,
       `docs/development/NAMING_CONVENTION_DEVIATION.md:291`) to
       `scripts/module-invariants-allowlist.txt`, following that file's existing
       one-comment-per-entry convention (it already carries `FormalSystem.StarLanguage.StarAxiom`
       and `.StarDerivationTree` for exactly this reason).
-- [ ] Fix `FormalSystem/README.md`'s Submodule Navigation table: repath
+- [x] Fix `FormalSystem/README.md`'s Submodule Navigation table: repath
       `[PlusLanguage/](PlusLanguage/README.md)` to `Syntax/PlusLanguage/README.md`, replace the
       stale `| MinusLanguage/ | No | ... (no README yet) |` row with a linked
       `Syntax/MinusLanguage/README.md` row, and add the missing `StarLanguage/` row. Leave the
       `ForMathlib/ | No` row as-is (verified accurate).
-- [ ] Fix the Layer 0 table (`FormalSystem/README.md:251-256, 265-267`), which lists
+- [x] Fix the Layer 0 table (`FormalSystem/README.md:251-256, 265-267`), which lists
       `PlusLanguage` as a root-level module.
-- [ ] Sweep the remaining slash-shaped `FormalSystem/{Minus,Plus,Star}Language` path references in
+- [x] Sweep the remaining slash-shaped `FormalSystem/{Minus,Plus,Star}Language` path references in
       `docs/` and root `README.md` that C12/C13 and readme-lint Check 3 gate.
-- [ ] **Separate commit, labelled as a pre-existing defect**: repair `README.md:336` and
+- [x] **Separate commit, labelled as a pre-existing defect**: repair `README.md:336` and
       `docs/README.md:308` to point at `.github/workflows/docs.yml.disabled` (or drop the link and
       state that the workflow is disabled).
 
@@ -379,6 +379,30 @@ then let the gate output — not the estimate — decide when the sweep is compl
 - `FormalSystem/README.md` - Submodule Navigation table, Layer 0 table
 - `README.md`, `docs/README.md` - C13 workflow-link repair (separate commit)
 - Remaining `docs/` files surfaced by the C12/C13/readme-lint runs
+
+**Scope-hypothesis variances found at implementation time** (all resolved; gate output, not the
+estimate, decided completeness):
+- The hypothesis said 9 C5 tokens (5 module-shaped + 4 bare). Actual: **11** — the 5 module-shaped
+  at `MODULE_ORGANIZATION.md:301-305`, 1 module-reading at `API_REFERENCE.md:791`, and **5**
+  namespace-reading (`NOTATION.md:49`, `NAMING_CONVENTION_DEVIATION.md:291`,
+  `theorem-index.md:43`, `:44`, `:45` — the hypothesis undercounted the three theorem-index rows).
+- The hypothesis said 106 slash-shaped references across 57 non-`specs/` files; the gated C12 set
+  was **16**, and the full non-`specs/` sweep touched **35** across 14 files.
+- **False positive caught**: a dotted-path rewrite initially also matched
+  `FormalSystem.StarLanguage.StarAxiom` (×2) and `.StarDerivationTree` (×1) in
+  `theorem-index.md`. These are DECLARATION names in the deliberately flat namespace, already
+  allowlisted for exactly that reading — repathing them would have broken C5 and stranded two
+  allowlist entries. Reverted. This is the pre-edit gate's "syntactic match, different concept"
+  failure mode.
+- **Two items the hypothesis missed entirely**: relative links carrying no `FormalSystem/` prefix
+  (`../../../PlusLanguage/README.md` in `Metalogic/Conservativity/Plus/README.md` and its Star
+  counterpart) were invisible to a path-prefixed sweep and surfaced only via `readme-lint`
+  Check 3, which went PASS -> FAIL(2 broken) before being repaired back to PASS.
+- **Scope addition**: two stale paths in `specs/paper-definitions-of-record.md` (a durable
+  repo-level record, not a task artifact) were left dangling by the move. No gate covers them;
+  repaired anyway rather than knowingly leaving them stale.
+- The C13 repair also corrected two false prose claims that the docs workflow "runs on every push
+  to `main`", which repathing the link alone would have preserved.
 
 **Verification**:
 - `bash scripts/check-module-invariants.sh --no-build` reports `PASS C5`, `PASS C12`, `PASS C13`.
