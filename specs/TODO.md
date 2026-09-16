@@ -115,7 +115,7 @@ next_project_number: 598
 595 [RESEARCHED] — Decide where durable project records live and move them there...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
-596 [RESEARCHING] — Nest the flat Semantics/ language-family files into...
+596 [RESEARCHED] — Nest the flat Semantics/ language-family files into...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
 
 ## Tasks
@@ -139,10 +139,11 @@ ACCEPTANCE: linter set enabled; `lake build` green; warning count within the rec
 
 ### 596. Nest semantics language family files
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
+- **Research**: [596_nest_semantics_language_family_files/reports/01_nest-semantics-language-family.md]
 
 **Description**: Nest the flat `Semantics/` language-family files into per-language subdirectories, and add the one missing directory README. MEASURED AT REORGANIZATION TIME (2026-09-16): `FormalSystem/Semantics/` holds 15 flat files -- `Minus{Frame,SchemaValidity,Truth,Validity}.lean` (4), `Plus{Determinism,NonValidities,Pasting,StateLocal,Truth,Validity}.lean` (6), `Star{Determinism,NonValidities,StateLocal,Truth,Validity}.lean` (5) -- while `Syntax/` already uses `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` subdirectories with aggregator modules. `FormalSystem/ForMathlib/` is the only non-Boneyard directory without a README. Source: review `specs/reviews/review-2026-09-15.md` findings M1 and the ForMathlib half of M2.
 
