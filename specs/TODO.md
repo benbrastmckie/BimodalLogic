@@ -11,8 +11,8 @@ next_project_number: 601
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,586,592,595,596,598,599,600 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,506,560,564,565,567,570,584,590 | 298,464,502,559,563,568,586,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,586,590,592,596,598,599,600 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,506,560,564,565,567,570,584 | 298,464,502,559,563,568,586,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,569,585 | 231,465,497,565,584 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,588,597 | 428,498,499,500,569,585 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501,540 | 125,429,588,597 | algebraic-representation, decidability, codebase-cleanup |
@@ -106,7 +106,8 @@ next_project_number: 601
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
   └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-595 [IMPLEMENTING] — Decide where durable project records live and move them there...
+590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
+596 [IMPLEMENTING] — Nest the flat Semantics/ language-family files into...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
@@ -116,9 +117,6 @@ next_project_number: 601
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
       └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-  └─ 590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
-596 [IMPLEMENTING] — Nest the flat Semantics/ language-family files into...
-  └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
 
 ## Tasks
 
@@ -190,12 +188,13 @@ ACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15
 
 ### 595. Establish durable records home
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [595_establish_durable_records_home/reports/01_durable-records-home.md]
 - **Plan**: [595_establish_durable_records_home/plans/01_durable-records-home.md]
+- **Summary**: [595_establish_durable_records_home/summaries/01_durable-records-home-summary.md]
 
 **Description**: Decide where durable project records live and move them there if the decision is to move. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `specs/paper-definitions-of-record.md` and `specs/decisions/*.md` (currently `total-history-validity-decisions.md`, `untl-snce-argument-order.md`) are cited 43 times from live Lean (25 paper-definitions-of-record, 18 decisions) and `specs/paper-definitions-of-record.md` is read by `scripts/check-paper-definitions.sh`. `specs/` is the task-management tree (and `specs/archive/` is gitignored), so durable records there are one cleanup away from breaking.
 

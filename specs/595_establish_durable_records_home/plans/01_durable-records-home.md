@@ -1,7 +1,7 @@
 # Implementation Plan: Task #595
 
 - **Task**: 595 - Establish durable records home
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None (downstream: the paper-vocabulary reconciliation and the `docs/` staleness audit both wait on this)
 - **Research Inputs**: specs/595_establish_durable_records_home/reports/01_durable-records-home.md

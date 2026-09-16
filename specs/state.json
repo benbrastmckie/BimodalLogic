@@ -72,7 +72,7 @@
     {
       "project_number": 595,
       "project_name": "establish_durable_records_home",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "markdown",
       "topic": "codebase-cleanup",
       "priority": "high",
@@ -80,7 +80,7 @@
       "dependencies": [],
       "description": "Decide where durable project records live and move them there if the decision is to move. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `specs/paper-definitions-of-record.md` and `specs/decisions/*.md` (currently `total-history-validity-decisions.md`, `untl-snce-argument-order.md`) are cited 43 times from live Lean (25 paper-definitions-of-record, 18 decisions) and `specs/paper-definitions-of-record.md` is read by `scripts/check-paper-definitions.sh`. `specs/` is the task-management tree (and `specs/archive/` is gitignored), so durable records there are one cleanup away from breaking.\n\nWORK: (1) decide, with a short recorded rationale, whether these records belong under `docs/` (e.g. `docs/records/`, `docs/decisions/`) or stay in `specs/`; (2) if moving, `git mv` them, repoint all Lean docstring citations, `check-paper-definitions.sh`, and any doc/README links; (3) record the chosen home in the relevant README so future records land there.\n\nORDERING NOTE: precedes the paper-vocabulary reconciliation (which re-pins the definitions record) and the `docs/` staleness audit in this topic.\n\nACCEPTANCE: decision recorded; if moved, zero remaining citations of the old paths (grep), `check-paper-definitions.sh` passes (or stays skip-neutral when the paper is absent), invariant harness passes (C13/C15 catch missed referrers).",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T16:58:30Z",
+      "last_updated": "2026-09-16T18:39:39Z",
       "session_id": "sess_1789577011_0f6aae",
       "artifacts": [
         {
@@ -92,9 +92,15 @@
           "path": "specs/595_establish_durable_records_home/plans/01_durable-records-home.md",
           "type": "plan",
           "summary": "4-phase plan: baseline+git mv records to docs/reference and docs/architecture, repoint all live referrers, clear measured new docs/ gate exposure (C12/C15/C20/C9D), record placement rule and final gate."
+        },
+        {
+          "path": "specs/595_establish_durable_records_home/summaries/01_durable-records-home-summary.md",
+          "type": "summary",
+          "summary": "Moved paper-definitions-of-record.md and the two decision records from specs/ to docs/reference/ and docs/architecture/, repointed all live citations, cleared the new gate exposure, and documented the placement rule."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Moved paper-definitions-of-record.md and the two decision records (total-history-validity-decisions.md, untl-snce-argument-order.md) from the ephemeral specs/ tree to docs/reference/ and docs/architecture/ respectively (git history preserved), repointed all ~74 live citations across Lean docstrings, two scripts, docs, typst comments, references.bib, and in-library READMEs, cleared the C12/C15/C20 tier 2/C9D gate exposure the move introduced in check-module-invariants.sh, and recorded the placement rule and rationale in docs/README.md, docs/reference/README.md, and docs/architecture/README.md."
     },
     {
       "project_number": 596,
