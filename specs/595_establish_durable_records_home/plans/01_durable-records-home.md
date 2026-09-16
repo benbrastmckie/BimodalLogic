@@ -1,7 +1,7 @@
 # Implementation Plan: Task #595
 
 - **Task**: 595 - Establish durable records home
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None (downstream: the paper-vocabulary reconciliation and the `docs/` staleness audit both wait on this)
 - **Research Inputs**: specs/595_establish_durable_records_home/reports/01_durable-records-home.md
@@ -93,20 +93,20 @@ move and path substitution:
 
 Phases are sequential. Each phase changes the paths or content the next one measures.
 
-### Phase 1: Baseline and move [NOT STARTED]
+### Phase 1: Baseline and move [COMPLETED]
 
 **Goal**: Capture pre-move gate baselines, then `git mv` both record families and fix the
 references among the three moved files.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` on the clean pre-move tree and save the FAIL/PASS/TODO lines to the task dir (e.g. `specs/595_establish_durable_records_home/.baseline-invariants.txt`)
-- [ ] Run `bash scripts/check-paper-definitions.sh` and save its exit code and tail output as a baseline
-- [ ] Re-measure referrers: `grep -rnE "specs/paper-definitions-of-record\.md|specs/decisions/" --exclude-dir=.git --exclude-dir=.lake --exclude-dir=archive . | grep -v '^\./specs/'`, and save the file list
-- [ ] `git mv specs/paper-definitions-of-record.md docs/reference/paper-definitions-of-record.md`
-- [ ] `git mv specs/decisions/total-history-validity-decisions.md specs/decisions/untl-snce-argument-order.md docs/architecture/`. Then remove the empty `specs/decisions/` directory if nothing else is in it.
-- [ ] In the three moved files, rewrite `specs/paper-definitions-of-record.md` -> `docs/reference/paper-definitions-of-record.md` and `specs/decisions/` -> `docs/architecture/` (backtick prose, not links)
-- [ ] Repoint the two scripts' functional paths: `check-paper-definitions.sh` `RECORD_DEFAULT` (line ~39) and `check-module-invariants.sh` `C15_RECORD` (line ~1643). Also repoint their comment mentions (lines 3, 9, 145, and 85, 1622).
-- [ ] Commit: `task 595 phase 1: move durable records to docs/`
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` on the clean pre-move tree and save the FAIL/PASS/TODO lines to the task dir (e.g. `specs/595_establish_durable_records_home/.baseline-invariants.txt`) *(completed: baseline is 0 FAIL, ALL CHECKS PASSED — plan's assumed 9 pre-existing C13 fails were not present at measurement time)*
+- [x] Run `bash scripts/check-paper-definitions.sh` and save its exit code and tail output as a baseline *(completed: exit 1, drift detected, 1 dangling anchor thm:M5-valid — matches plan's note)*
+- [x] Re-measure referrers: `grep -rnE "specs/paper-definitions-of-record\.md|specs/decisions/" --exclude-dir=.git --exclude-dir=.lake --exclude-dir=archive . | grep -v '^\./specs/'`, and save the file list *(deviation: altered — grep on `.` does not prefix `./` on this system, so used `grep -v '^specs/'` to achieve the intended exclusion; 74 lines across 33 non-specs/ files)*
+- [x] `git mv specs/paper-definitions-of-record.md docs/reference/paper-definitions-of-record.md` *(completed)*
+- [x] `git mv specs/decisions/total-history-validity-decisions.md specs/decisions/untl-snce-argument-order.md docs/architecture/`. Then remove the empty `specs/decisions/` directory if nothing else is in it. *(completed)*
+- [x] In the three moved files, rewrite `specs/paper-definitions-of-record.md` -> `docs/reference/paper-definitions-of-record.md` and `specs/decisions/` -> `docs/architecture/` (backtick prose, not links) *(completed)*
+- [x] Repoint the two scripts' functional paths: `check-paper-definitions.sh` `RECORD_DEFAULT` (line ~39) and `check-module-invariants.sh` `C15_RECORD` (line ~1643). Also repoint their comment mentions (lines 3, 9, 145, and 85, 1622). *(completed)*
+- [x] Commit: `task 595 phase 1: move durable records to docs/` *(completed)*
 
 **Timing**: 45 minutes
 

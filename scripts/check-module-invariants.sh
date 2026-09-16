@@ -14,7 +14,8 @@
 #   C6  Known-unreachable live modules still compile (rot guard)
 #   C7  Live inventory (informational, never asserted)
 #   C8  Aggregator convention: sibling `X.lean` beside `X/`, no `X/X.lean`
-#       Walked parents: FormalSystem/, FormalSystem/Metalogic/, FormalSystem/Syntax/
+#       Walked parents: FormalSystem/, FormalSystem/Metalogic/, FormalSystem/Syntax/,
+#       FormalSystem/Semantics/
 #   C9  Zero task-number citations under FormalSystem/, lakefile.lean, README.md,
 #       and scripts/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
@@ -58,6 +59,13 @@
 #   C25 Every `lean_exe` root declared in lakefile.lean compiles -- the root list
 #       is scraped at run time, so a newly declared executable is covered the day
 #       it is added and there is no list to forget
+#   C26 No live `def`/`abbrev` name carries a non-trailing underscore, and every
+#       in-source `nolint` attribute is on scripts/nolint-attribute-allowlist.txt --
+#       both read from the SOURCE TEXT, never an imported environment
+#   C27 Every live `#check`/`#eval`/`#print`/`#reduce`/`dbg_trace` line in
+#       FormalSystem/ is on scripts/debug-artifact-allowlist.txt with an exact
+#       per-file count and a reason; comment-aware (docstring usage blocks are
+#       documentation), unlike cslib's plain pre-pr-check.sh grep
 #   C9D Task-number citations under docs/ (computed always, soft by default)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -82,8 +90,10 @@
 #   scripts/boneyard-import-waivers.txt    unrepairable archived imports (C11)
 #   scripts/markdown-slash-path-allowlist.txt  hypothetical slash paths (C12)
 #   scripts/markdown-link-allowlist.txt        link-syntax-illustration files (C13)
-#   specs/paper-definitions-of-record.md       pinned paper anchors + known-anchor rows (C15)
+#   docs/reference/paper-definitions-of-record.md       pinned paper anchors + known-anchor rows (C15)
 #   scripts/nolints.json                       grandfathered env_linter findings (C16)
+#   scripts/nolint-attribute-allowlist.txt     reviewed in-source nolint attributes (C26)
+#   scripts/debug-artifact-allowlist.txt       allow-listed live debug directives (C27)
 
 set -uo pipefail
 
@@ -585,6 +595,13 @@ ENFORCE_C25=${ENFORCE_C25:-1} # every lean_exe root module compiles (enforced)
 # failure: rename the declaration, or -- for an attribute -- add a reasoned entry to
 # scripts/nolint-attribute-allowlist.txt, where the reason is read alongside the name it exempts.
 ENFORCE_C26=${ENFORCE_C26:-1} # no snake_case def/abbrev, no unlisted nolint attribute (enforced)
+# C27 asserts that every live debug directive in library code is on
+# scripts/debug-artifact-allowlist.txt with an exact per-file count and a reason. The allow-list
+# is seeded with the tree's own counts the day the check lands, so it ships enforced with no soft
+# window, on the C24/C25/C26 precedent; relocating a file's probes to Tests/ lowers or deletes its
+# entry in the same change. Never flip it to 0 to quiet a failure: move the probe to the test
+# suite, or add a reasoned entry.
+ENFORCE_C27=${ENFORCE_C27:-1} # live debug directives all allow-listed with exact counts (enforced)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.lean -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
@@ -939,18 +956,35 @@ for k in sorted(counts):
 
 # --- C8: aggregator convention ----------------------------------------------
 # Convention: a directory `X/` has exactly one sibling aggregator `X.lean`.
-# Walked parents: `FormalSystem/`, `FormalSystem/Metalogic/` and `FormalSystem/Syntax/`.
+# Walked parents: `FormalSystem/`, `FormalSystem/Metalogic/`, `FormalSystem/Syntax/` and
+# `FormalSystem/Semantics/`.
 # `FormalSystem/Syntax` joined the tuple when the L-minus/L-plus/L-star language family was
 # nested under it; that move brought `Syntax/MinusLanguage/`, `Syntax/PlusLanguage/` and
 # `Syntax/StarLanguage/` (each arriving with its own sibling aggregator) plus the
 # pre-existing `Syntax/SubformulaClosure/` into C8's scope.
+# `FormalSystem/Semantics` joined the same way when the language family's semantic modules
+# were nested into `Semantics/MinusLanguage/`, `Semantics/PlusLanguage/` and
+# `Semantics/StarLanguage/`. Adding a parent re-scopes EVERY existing Lean-bearing
+# subdirectory beneath it, not only the newly nested ones: the join also required sibling
+# aggregators for the pre-existing `Semantics/Correspondence/`, `Semantics/Extension/`,
+# `Semantics/Frames/` and `Semantics/Ultraproduct/`, and surfaced the self-named
+# `Semantics/Extension/Extension.lean` allowlisted below.
 # Allowlisted exception: `FormalSystem.lean` + `FormalSystem/FormalSystem.lean`.
 # That pair is the Lake `lean_lib FormalSystem` root (`srcDir := "."`,
 # `roots := #[`FormalSystem]`), so the self-named indirection is load-bearing, not a
 # convention violation.
-C8_ALLOW_SELFNAMED = {"FormalSystem/FormalSystem.lean"}
+# Allowlisted exception: `Semantics/Extension/Extension.lean`. It is not an aggregator but
+# the content module of `thm:extension` (Zorn over the extension order), which happens to
+# share its directory's name; the directory's aggregator is the sibling
+# `Semantics/Extension.lean`. Renaming it would widen module-path churn for no
+# organizational gain.
+C8_ALLOW_SELFNAMED = {
+    "FormalSystem/FormalSystem.lean",
+    "FormalSystem/Semantics/Extension/Extension.lean",
+}
 c8_problems = []
-for parent in ("FormalSystem", "FormalSystem/Metalogic", "FormalSystem/Syntax"):
+for parent in ("FormalSystem", "FormalSystem/Metalogic", "FormalSystem/Syntax",
+               "FormalSystem/Semantics"):
     for d in sorted(os.listdir(parent)):
         full = os.path.join(parent, d)
         if not os.path.isdir(full) or d == "Boneyard":
@@ -973,7 +1007,7 @@ if c8_problems:
     for m in c8_problems:
         note(m)
 else:
-    pas("C8", "every FormalSystem/, Metalogic/ and Syntax/ subdirectory has exactly one sibling aggregator")
+    pas("C8", "every FormalSystem/, Metalogic/, Syntax/ and Semantics/ subdirectory has exactly one sibling aggregator")
 
 # --- C11: archive import resolution ----------------------------------------
 # The Boneyard is uncompiled, so `lake build` cannot notice when an archived
@@ -1619,7 +1653,7 @@ echo
 # Nothing in this script asserted that a `def:`/`thm:`/`lem:`/`cor:`/`app:`/`rmk:`
 # citation names an anchor that actually exists.
 #
-# RESOLUTION SOURCE IS THE RECORD, NOT THE PAPER. specs/paper-definitions-of-record.md
+# RESOLUTION SOURCE IS THE RECORD, NOT THE PAPER. docs/reference/paper-definitions-of-record.md
 # is this repository's citation source of record (that is the record's own charter),
 # and the paper lives in a different repository this one cannot see from CI. Resolving
 # against the live .tex would make this check go red whenever the author edits the
@@ -1640,7 +1674,7 @@ echo
 # live, load-bearing scope: FormalSystem/ (non-Boneyard), Tests/, typst/, docs/,
 # and README.md.
 # ---------------------------------------------------------------------------
-C15_RECORD="specs/paper-definitions-of-record.md"
+C15_RECORD="docs/reference/paper-definitions-of-record.md"
 if [ ! -f "$C15_RECORD" ]; then
   fail C15 "record not found: $C15_RECORD (C15 cannot resolve any anchor without it)"
 else
@@ -2051,12 +2085,12 @@ PYEOF
 # the position this check runs in -- costs 44s wall clock and reports:
 #
 #     FormalSystem 0   ProofStepExport 0   BenchmarkAnchors 0   TableauProofStepPipeline 0
-#     ProofFirstExporter 0   DatasetValidator 1   CheckInitImports 1   EnumBenchmark 4
+#     ProofFirstExporter 0   DatasetValidatorMain 1   CheckInitImports 1   EnumBenchmark 4
 #     TraceExporter 5   BenchmarkOracle 9   TableauBridge 12   MachineAppendixExport 16
-#     DatasetExport 32   BimodalTest 85
+#     DatasetGeneratorMain 32   BimodalTest 85
 #
 # -- 179 findings outside the `FormalSystem` root, of which 56 are `defsWithUnderscore`
-# (DatasetExport 20, BimodalTest 36) and the rest are docBlame/unusedArguments-class.
+# (DatasetGeneratorMain 20, BimodalTest 36) and the rest are docBlame/unusedArguments-class.
 #
 # THE DECISION: widen, but REPORTING-ONLY, behind ENFORCE_C16_ROOTS, which defaults to 0. The
 # scope is not clean, so enforcing it would hold the gate hostage to a burndown this change does
@@ -3257,6 +3291,134 @@ if failed:
 PYEOF
 C26_STATUS=$?
 if [ "$C26_STATUS" -ne 0 ] && [ "$ENFORCE_C26" -eq 1 ]; then
+  FAILURES=$((FAILURES + 1))
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C27: live debug directives in library code, against an exact-count allow-list
+#
+# A `#check`/`#eval`/`#print`/`#reduce`/`dbg_trace`/`dbgTrace` in a library module prints at
+# every build and asserts nothing: a changed value scrolls past with the build still green.
+# Executable probes belong in Tests/BimodalTest/, where `#guard`, `#guard_msgs` or a throwing
+# `IO` test makes the same observation an assertion. The allow-list records the few files where
+# printing IS the purpose -- the axiom-audit page -- with a reason line beside each entry.
+#
+# SCOPE: every live `*.lean` file under FormalSystem/, via the shared Boneyard-pruning walk.
+# Tests/ is out of scope by design: that is where probes are supposed to live.
+#
+# COMMENT-AWARE, and that is the whole difficulty. scripts/lib/lean_debug_artifacts.py masks
+# nested block comments, docstrings, line comments, string literals and character literals
+# before matching, so a usage example in a docstring code block is documentation and needs no
+# entry. A masker that loses string or char-literal state opens a phantom comment at a `"/-"`
+# and silently hides every directive after it, so its fixture self-test runs FIRST and a failure
+# there fails C27 outright rather than trusting a count it cannot vouch for.
+#
+# MATCH (one count per line): `#check`, `#eval`, `#print` or `#reduce` at the start of a masked
+# line or directly after an `in` combinator (`#guard_msgs in #eval ...`), and `dbg_trace` or
+# `dbgTrace` anywhere in masked text. `#check_failure` is a different command and is not matched.
+#
+# EXACT COUNTS, both directions. An entry records the file's live line count, so adding a
+# directive to an allow-listed file fails exactly as adding one to an unlisted file does, and
+# removing one fails until the entry is lowered in the same change. A listed file with no live
+# directives left, or no longer present, is a stale entry and also fails.
+#
+# NOT cslib-equivalent: cslib's `scripts/pre-pr-check.sh` greps `^\s*(#check|#eval|dbg_trace)`
+# with no comment masking. Code ported there with a docstring usage block that starts a line
+# with `#check` still trips cslib's grep although C27 is green here.
+#
+# Runs regardless of --no-build: it reads source text and needs no oleans.
+# ---------------------------------------------------------------------------
+python3 - <<'PYEOF'
+import os, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+from live_walk import live_files  # noqa: E402
+from lean_debug_artifacts import count_lines, self_test  # noqa: E402
+
+ALLOWLIST = os.path.join("scripts", "debug-artifact-allowlist.txt")
+failed = False
+
+st = self_test()
+if st:
+    print(f"FAIL  C27  comment-masker fixture self-test: {len(st)} fixture(s) miscounted")
+    for k, want, got in st:
+        print(f"            fixture {k}: expected {want}, got {got}")
+    print("            no count from this masker can be trusted until it is repaired")
+    sys.exit(1)
+
+allowed, unreasoned, malformed = {}, [], []
+try:
+    prev_reason = False
+    for n, raw in enumerate(open(ALLOWLIST, encoding="utf-8"), 1):
+        line = raw.strip()
+        if not line:
+            prev_reason = False
+            continue
+        if line.startswith("#"):
+            prev_reason = True
+            continue
+        parts = line.split()
+        if len(parts) != 2 or not parts[1].isdigit():
+            malformed.append((n, line))
+        else:
+            allowed[parts[0]] = int(parts[1])
+            if not prev_reason:
+                unreasoned.append(parts[0])
+        prev_reason = False
+except OSError:
+    print(f"FAIL  C27  companion file {ALLOWLIST} is missing or unreadable")
+    sys.exit(1)
+
+tree = {}
+for path in live_files("FormalSystem", ".lean"):
+    try:
+        text = open(path, encoding="utf-8", errors="replace").read()
+    except OSError:
+        continue
+    c, hits = count_lines(text)
+    if c:
+        tree[path] = (c, hits)
+
+unlisted = sorted(p for p in tree if p not in allowed)
+mismatch = sorted((p, allowed[p], tree[p][0]) for p in tree if p in allowed and allowed[p] != tree[p][0])
+stale = sorted(p for p in allowed if p not in tree)
+
+for n, line in malformed:
+    print(f"FAIL  C27  {ALLOWLIST}:{n}: malformed entry `{line}` (want `<path> <count>`)")
+    failed = True
+for p in unreasoned:
+    print(f"FAIL  C27  {ALLOWLIST}: entry {p} has no `#` reason line directly above it")
+    failed = True
+if unlisted:
+    failed = True
+    print(f"FAIL  C27  {len(unlisted)} file(s) carry live debug directives but are not on {ALLOWLIST}")
+    for p in unlisted[:10]:
+        c, hits = tree[p]
+        shown = ", ".join(str(h) for h in hits[:6]) + (", ..." if len(hits) > 6 else "")
+        print(f"            {p}: {c} line(s) at {shown}")
+    print("            move executable probes to Tests/BimodalTest/ as #guard / #guard_msgs;")
+    print("            a directive whose purpose is to print needs a reasoned allow-list entry")
+if mismatch:
+    failed = True
+    print(f"FAIL  C27  {len(mismatch)} allow-list count(s) disagree with the tree")
+    for p, want, got in mismatch:
+        print(f"            {p}: allow-list {want}, tree {got}")
+    print("            update the count in the same change that adds or removes a directive")
+if stale:
+    failed = True
+    print(f"FAIL  C27  {len(stale)} stale allow-list entr(y/ies): no live directive left")
+    for p in stale:
+        print(f"            {p}")
+    print(f"            delete them from {ALLOWLIST}")
+
+if not failed:
+    total = sum(c for c, _ in tree.values())
+    print(f"PASS  C27  {total} live debug directive line(s) in {len(tree)} file(s), every one allow-listed\n"
+          f"            with an exact count and a reason ({len(st)} masker fixture failures)")
+sys.exit(1 if failed else 0)
+PYEOF
+C27_STATUS=$?
+if [ "$C27_STATUS" -ne 0 ] && [ "$ENFORCE_C27" -eq 1 ]; then
   FAILURES=$((FAILURES + 1))
 fi
 echo

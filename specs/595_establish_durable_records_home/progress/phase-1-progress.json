@@ -1,0 +1,19 @@
+{
+  "phase": 1,
+  "phase_name": "Baseline and move",
+  "started_at": "2026-09-16T16:59:12Z",
+  "last_updated": "2026-09-16T17:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Run check-module-invariants.sh --no-build baseline and save", "status": "done", "files_touched": ["specs/595_establish_durable_records_home/.baseline-invariants.txt"]},
+    {"id": 2, "description": "Run check-paper-definitions.sh baseline and save", "status": "done", "files_touched": ["specs/595_establish_durable_records_home/.baseline-paper-definitions.txt"]},
+    {"id": 3, "description": "Re-measure referrers grep and save file list", "status": "done", "files_touched": ["specs/595_establish_durable_records_home/.baseline-referrers.txt"], "note": "grep on '.' does not prefix './' on this system; used 'grep -v ^specs/' instead of the plan's literal '^\\./specs/' filter to achieve the same exclusion"},
+    {"id": 4, "description": "git mv paper-definitions-of-record.md to docs/reference/", "status": "done", "files_touched": ["docs/reference/paper-definitions-of-record.md"]},
+    {"id": 5, "description": "git mv decisions/*.md to docs/architecture/, remove empty specs/decisions/", "status": "done", "files_touched": ["docs/architecture/total-history-validity-decisions.md", "docs/architecture/untl-snce-argument-order.md"]},
+    {"id": 6, "description": "Rewrite internal cross-refs in the three moved files", "status": "done", "files_touched": ["docs/reference/paper-definitions-of-record.md", "docs/architecture/total-history-validity-decisions.md", "docs/architecture/untl-snce-argument-order.md"]},
+    {"id": 7, "description": "Repoint scripts (RECORD_DEFAULT, C15_RECORD, comment mentions)", "status": "done", "files_touched": ["scripts/check-paper-definitions.sh", "scripts/check-module-invariants.sh"]},
+    {"id": 8, "description": "Commit phase 1", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

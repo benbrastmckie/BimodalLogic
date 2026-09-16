@@ -1,0 +1,1877 @@
+# Paper Definitions of Record
+
+This file is the pinned, verbatim record of the semantic definitions that this repository
+depends on from the JPL paper (`/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`).
+The paper is **read-only input** to this repository: it is never edited from here, and this file
+never restates, re-derives, or "improves" any definition it records — it only quotes what the
+paper currently says and detects when that text moves.
+
+**Specs and task descriptions in this repository should cite this file, not the paper directly.**
+Citing the paper by bare line number has repeatedly gone stale (the paper moved through five
+definitional waves between 2026-08-08 and 2026-08-10, and a sixth wave landed on disk, uncommitted,
+while this very file was being authored — see "Recording provenance" below). Anchors here are
+resolved by `\label{}` name or `\aitem{}` key, never by line number, and `scripts/check-paper-definitions.sh`
+re-derives every hash below directly from the live paper file on every run.
+
+## Recording provenance
+
+| Field | Value |
+|---|---|
+| Paper file | `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` |
+| Paper git repo root | `/home/benjamin/Philosophy/Papers/PossibleWorlds` |
+| File path relative to repo root | `JPL/possible_worlds.tex` |
+| Base commit (`git HEAD` at recording time) | `eb5be99ea3f19a86c9891d7798e619890e36cd43` |
+| **File checksum at recording time (sha256, authoritative pin)** | `efe6fc74688aa5ee89b91957b3681771cdcbdfaacb6077040024c395c568cbbd` |
+| Line count at recording time | 3988 |
+| Recorded (UTC) | 2026-08-10T23:56:47Z |
+| File checksum, re-pinned after drift correction (sha256) | `485aa76449488f4c5ee75b001da68796a5d51ecd6ea448fd8e8e6587e1211a95` |
+| Line count, re-pinned after drift correction | 3999 |
+| Re-pinned (UTC) | 2026-08-11T00:25:00Z |
+| File checksum, re-pinned at coverage extension (sha256) | `1256e21837ff81139fda69e9faa14ac756b1f795df32c78b82d885af5055374f` |
+| Line count at coverage extension | 3949 |
+| Coverage extension re-pin (UTC) | 2026-08-11T01:16:05Z (checksum re-taken at 01:25Z after two further live case-(b) waves during the extension itself) |
+| Base commit at `BL^+` coverage extension (paper repo `git HEAD`; file dirty against it) | `cf0da976bd7947e6fae2aa9212953d094faab2c1` |
+| File checksum, re-pinned at `BL^+` coverage extension (sha256) | `f07441ebb9751d1e955d5af135bebc107ef7163dea49ccfb29b763aae67d1b27` |
+| Line count at `BL^+` coverage extension | 4098 |
+| `BL^+` coverage extension re-pin (UTC) | 2026-08-10 (three `def:BLplus-*` anchors added; the run immediately before the re-pin reported case (b) — paper moved, all 23 previously-recorded definitions unchanged) |
+| Base commit at three-anchor drift correction (paper repo `git HEAD`; file dirty against it) | `f56cdea0237d102edbb9c64dcef7617d8d2cbc3e` |
+| **File checksum, re-pinned at three-anchor drift correction (sha256, current authoritative pin)** | `76406e77cb3936c38b306bf7c4b9272f2c96bb164e7d04dc263650239746276e` |
+| Line count at three-anchor drift correction | 4290 |
+| Three-anchor drift correction re-pin (UTC) | 2026-08-12T22:55Z (`thm:extension`, `def:constraints`, `def:BLplus-semantics` re-quoted and re-hashed together in one correction; see "Drift correction (2026-08-12)" below) |
+| Coverage extension for `typst/FormalFoundations.typ` (22 new anchors: `def:S5`, `def:BX`, `def:TMplus`, `def:TMplus-f`, `def:TMplus-d`, `def:TMplus-c`, `thm:M5-valid`, `thm:TM-soundness`, `app:discrete`, `app:dense`, `app:complete`, `def:frame-properties`, `cor:spherical-finite`, `cor:tm-completeness`, `cor:tm-decidability`, `def:id`, `def:strongest`, `thm:exist`, `lem:uniq`, `thm:s4`, `thm:sym`, plus the already-tracked `CO`/`TMP-CO` pair) | `bash scripts/check-paper-definitions.sh` reported case (b) before this extension (paper checksum moved again since the 2026-08-12 three-anchor correction, but all 26 previously-tracked definitions unchanged) and case (b) again after (checksum `0584125456bdd3728eeaf671280ac8c6f6f2afeabf55761378e0c08a5706c9d9`, all 47 recorded definitions unchanged) — no drift on any newly- or previously-tracked anchor. The whole-file checksum sentinels above are deliberately **not** re-pinned to this new checksum: per the dirty-pin convention this file already documents, a re-pin is warranted only when a drift *correction* is absorbed, not on every case-(b) coverage extension: bumping the pin on every append would make the sentinel a diary of touch-events rather than a record of drift corrections. Re-run (UTC) 2026-08-13. |
+| Base commit at the ten-anchor drift correction (paper repo `git HEAD`; file dirty against it) | `fa0dbf7c053e6ecd22e9815180dd91beb2604e61` |
+| **File checksum, re-pinned at the ten-anchor drift correction (sha256, current authoritative pin)** | `7303bc9e8529b84f881b17b6f0ef3027f104a6c9ab91315c573a15e00bac0143` |
+| Line count at the ten-anchor drift correction | 4867 |
+| Ten-anchor drift correction re-pin (UTC) | 2026-09-02T23:08Z (see "Drift correction (2026-09-02): ten-anchor re-pin" below) |
+| Base commit at the z/d/r rename-absorption re-pin (paper repo `git HEAD`; file dirty against it, and the last commit to touch the file is `acfa75fdd270dd69145c76b788144b1ce0aee98c`) | `f61bbd75d3aa0c777fdeb91804868145f7169684` |
+| File checksum, first re-pin during the z/d/r rename-absorption (sha256, superseded within the hour) | `c3846c1ef93991228f2e309c7d9831df732b5dec657157425cf593a0256d278e` (line count 4483) |
+| **File checksum, re-pinned after the in-flight `def:BX-z` follow-on drift (sha256, current authoritative pin)** | `1b3c33a2b6a445b14e13e2f59b10c02b5140bb00280a3191ef27448e63460aa5` |
+| Line count at that re-pin | 4452 |
+| z/d/r rename-absorption re-pin (UTC) | 2026-09-08T01:30Z (15 entries re-hashed, 9 anchors retired, 3 renamed anchors newly pinned; see "Drift correction and rename absorption (2026-09-07)" below) |
+
+<!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
+<!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
+<!-- PINNED_COMMIT: f61bbd75d3aa0c777fdeb91804868145f7169684 -->
+<!-- FILE_CHECKSUM: 1b3c33a2b6a445b14e13e2f59b10c02b5140bb00280a3191ef27448e63460aa5 -->
+<!-- LINE_COUNT: 4452 -->
+
+### Language correspondence (2026-09-08): permanent, prose only, no re-pin
+
+The repository renamed its object languages so that its names mean what the paper's mean. This
+section records the resulting correspondence as a **permanent** fact about the two documents, not
+as a pending alignment to be resolved later.
+
+**The manuscript has exactly two languages.** They are 𝓛 and 𝓛⋆, where 𝓛⋆ bundles the stability
+modal ⊡ with **both** register families — time store/recall and world store/recall. The
+line-independent anchor for that is the sentence defining `\BL^\star` in `\S sub:Extension`;
+`sub:` is a sectioning prefix, which C15's citation pattern does not match, so it needs no
+`KNOWN-ANCHORS` row. `def:BLstar-semantics` interprets ⊡, `timeStore` and `timeRecall`, and
+suppresses the world registers.
+
+**`def:BLplus-language` and `def:TMplus` keep their anchor labels.** Their *labels* still read
+`BLplus`/`TMplus` for historical reasons, but their *content* has defined 𝓛 and TM since the
+paper collapsed `BL^+` into `BL`. After this rename they correspond to this repository's **L**
+and **TM** on the nose — the repository's earlier `L⁺`/`TM⁺` names for them are gone. No text
+moved on either side, so neither anchor's hash changes.
+
+**The correspondence, stated permanently:**
+
+| Repository | Manuscript |
+|---|---|
+| **L**, **TM** (with TM_z, TM_d, TM_r) | 𝓛 (`def:BLplus-language`), TM (`def:TMplus`, `cor:tm-completeness`) — the same systems under the same names |
+| **L⁻**, **TM⁻** | **no counterpart.** The H/G fragment was withdrawn from the paper; the passage that named a Past/Future system is commented out in the live source. L⁻ is this repository's own language, and its `z`/`d`/`r` subscripts are Lean-only labels |
+| **L⁺**, **TM⁺** | L⁺ is the **⊡-only fragment** of the manuscript's 𝓛⋆. The manuscript supplies no logic for 𝓛⋆ (it places one outside its scope), so TM⁺ answers to no paper system |
+| **L⋆** | the **time-register fragment** of the manuscript's 𝓛⋆ — ⊡ plus `timeStore`/`timeRecall`, which is what `app:deterministic-future` uses. The world registers are not formalized |
+
+Every docstring and README that relates a repository language to the paper must say this in those
+words. In particular, a repository result about L⁺ or L⋆ is a result about a **fragment of 𝓛⋆**,
+and must never be described by a paper name it does not have. The one paper name that now
+transfers without qualification is TM, and it transfers because the two are the same system.
+
+**No pin moved.** Per "How to extend this record", this is a prose-and-classification change: no
+anchor was added, no anchor drifted as a result of it, and therefore **no `verbatim:` block, no
+`sha256:` line, no manifest row, and neither the `PINNED_COMMIT` nor the `FILE_CHECKSUM` sentinel
+was touched**. This follows the precedent of "Vocabulary alignment (2026-09-07): prose only, no
+re-pin" above.
+
+`scripts/check-paper-definitions.sh` was re-run after the edit. Its verdict is unchanged by this
+work: **case (b)**, drift detected, with the same six anchors the separate re-pin work already
+owns — `def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`, `def:TMplus` — every one of them a
+`smallest extension of X closed under Y` → `extends X to include Y` rewording plus, for `def:BX`
+and `def:BX-r`, footnote/comment churn. No anchor entered or left that set because of this rename.
+
+**Citation sites that moved.** The `app:ObjectiveModality` row of "Anchor classification
+(2026-09-07)" above names `FormalSystem/BaseLanguage/Axioms.lean` as its citing file; that module
+is now `FormalSystem/Syntax/MinusLanguage/Axioms.lean`. The anchor, its classification and its reason are
+unchanged.
+
+### Drift correction and rename absorption (2026-09-07): the z/d/r wave
+
+The paper's z/d/r wave is the largest single wave this record has absorbed: **15 pinned entries
+drifted, 9 pinned anchors went dangling, and 3 renamed anchors were newly pinned**, all in one
+correction. The checker was red (exit 1) before it and gives the quiet case-(a) pass after it.
+
+**What the paper did.** Three structural moves, each with record-side consequences:
+
+1. **`BL^+` collapsed into `BL`.** The paper stopped maintaining a separate since/until language:
+   `def:BLplus-language` now defines `BL` itself and absorbs the eight defined operators that
+   `def:BLplus-defined` used to carry; `def:BL-semantics` absorbs the `\since`/`\until` truth
+   clauses that `def:BLplus-semantics` used to carry (and drops the `\Past`/`\Future` clauses,
+   which are now defined rather than primitive); and the `TM`$^+$ family lost its superscript
+   throughout — `def:TMplus` now names **TM**, for **BL**, with extensions **TM**$_z$ / **TM**$_d$
+   / **TM**$_r$. The anchor id `def:TMplus` is unchanged; only its content moved.
+2. **The `f`/`d`/`c` subscripts became `z`/`d`/`r`, under new labels.** `def:TMplus-f` →
+   `def:BX-z`, `def:TMplus-d` → `def:BX-d`, `def:TMplus-c` → `def:BX-r`. These are renames with
+   content changes, not pure re-labellings: all three now cite `\S`Extensions for their axioms
+   instead of displaying them, `def:BX-z` defers the Hölder step and cites `prop:archimedean`,
+   and `def:BX-r` is re-titled *Dense and Complete* and presented as an extension of **BX**$_d$.
+3. **The correspondence theorems moved from frames to temporal orders.** `app:discrete`,
+   `app:dense`, `app:complete` are now stated as `$\vDash_{\D}$ … iff `$\D$` is …` over a
+   temporal order rather than `$\F \vDash$ … iff `$\F$` is a … task frame`, and
+   `def:frame-properties` defines Discrete/Dense/Complete on the temporal order first, deriving
+   the frame-level predicates from it. `app:discrete` also gained a long footnote explaining why
+   these cannot be sharpened to single task frames (the static frame is the counterexample) and
+   citing this repository for the fibre-level formulation.
+
+**Retired (manifest row removed, prose entry retained and marked `DANGLING`, `KNOWN-ANCHORS` row
+added):** `def:directed` (folded inline into `def:frame`'s opening clause), `def:BLplus-semantics`
+and `def:BLplus-defined` (absorbed as above), `thm:BLplus-PastFuture` and
+`thm:BLplus-NextPrevious` (removed with the `BL^+` cluster), `TMP-CO` (the `BL^+` restatement of
+`CO`; the plain `CO` anchor is still live and still pinned), and `def:TMplus-f` / `def:TMplus-d` /
+`def:TMplus-c` (renamed as above).
+
+**Newly pinned:** `def:BX-z` (`385f73e8…`), `def:BX-d` (`555db844…`), `def:BX-r` (`b35751c7…`).
+
+**Re-hashed:** `def:frame`, `def:world-history`, `thm:extension`, `cor:occurrence`,
+`def:BL-semantics`, `def:BLplus-language`, `def:S5`, `def:BX`, `def:TMplus`, `app:discrete`,
+`app:dense`, `app:complete`, `def:frame-properties`, `cor:saturation-finite`,
+`cor:tm-completeness`. Two of these are not mere re-quotes and carry their own notes at their
+entries: `cor:saturation-finite` changed **environment** (`Cthm` → `Lthm`) with its statement
+word-for-word unchanged, and `def:frame` both absorbed `def:directed` and **softened its
+ball-space footnote from "strictly stronger" to "at least as strong as"**, withdrawing the
+strictness claim.
+
+`cor:tm-completeness`'s list now reads: **TM** strongly complete over all task frames,
+**TM**$_d$ strongly complete over the dense task frames, **TM**$_z$ weakly complete over
+ℤ-time, **TM**$_r$ weakly complete over ℝ-time (previously "the dense-and-complete class").
+
+**Four corrections recorded so the next reader does not re-derive them:**
+
+- **The Z1 / Past–Future-fragment footnote is commented out, not live.** The paper's Logic
+  subsection carries the fragment claim and its footnote entirely behind `%` (paper lines
+  ~1332–1340), with an author note giving the reason: "footnote commented out until the
+  BimodalLogic repository establishes that the Past/Future language admits no complete
+  axiomatization; the repository currently shows only that one particular system in that language
+  is incomplete over ℤ-time." Nothing here is pinned as live, and no `KNOWN-ANCHORS` row is added
+  for it. This repository's `not_bl_derivable_z1`
+  (`FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean`) is what the commented-out footnote
+  *would* cite; the accompanying Kripke countermodel for the base class is a pen-and-paper claim
+  this repository does **not** check.
+- **`thm:TM-soundness` needed no re-hash.** It is not in the drifted list above, and that is
+  correct rather than an omission: everything the paper changed about it — the extension to
+  **TM** and its extensions, the new sentence that the since/until/next/previous schemata are
+  valid by their clauses as verified in this repository, and the footnote's re-aimed citation —
+  lives in the `\begin{proof}` block *after* `\end{Tthm}`, which `resolve_env` does not capture.
+  A future task that wants that text pinned must pin the proof block, which the current resolver
+  cannot do.
+- **`def:BX-r`'s second Reynolds axiom is `SEP`, not `SP`.** The displayed key is `Sep` and the
+  `\aitem` label is `SEP`.
+- **`prop:fragment` and `rmk:fragment` are gone and require no action.** An exhaustive grep of the
+  live paper finds no such labels, no manifest row pinned either, and no file in live tree scope
+  cites either name. No `DANGLING` row is added: the record's rule is that a row is a decision,
+  and there is no citation to make honest.
+
+**No repository-side consequence:** `lem:temporal-duality` (paper line 4061) and `thm:TD-valid`
+(line 4133) were restated for the since/until interchange with new inductive `U`/`S` cases, but
+neither has a manifest row and neither is cited anywhere in live tree scope, so this wave leaves
+them alone. `prop:archimedean` (line 3265) is a live `Pthm` that `def:BX-z` now cites for the
+failure of `UZ`/`Z1` over non-Archimedean discrete orders; it is a pen-and-paper result this
+repository does not check, and it is recorded as `LIVE-UNPINNED` (not pinned as verified) if and
+when tree prose cites it.
+
+**Moving target during absorption.** The paper file changed on disk *four times while this
+correction was being written*: `f3acc3ad…` → `c3846c1e…` between the re-hash and the first
+sentinel re-pin, then `c485a615…`, then `1b3c33a2…`. The first three were case (b) — no recorded
+definition drifted — but the fourth genuinely drifted `def:BX-z`: the author deleted the two
+`%% NEW CHANGE […]` editorial comment lines and the three commented-out sentences from inside the
+`Ddef` environment, leaving the live prose word-for-word identical. Because `resolve_env` hashes
+the whole environment, comment-only deletions are hash-visible; `def:BX-z` was therefore
+re-quoted and re-hashed (`385f73e8…` → `3e2af812…`) and the sentinels re-pinned a second time.
+Every anchor was re-derived against the then-current file before each pin, and the checker was
+re-run afterwards. Hashes were derived only via `check-paper-definitions.sh --resolve`; none was
+hand-written. A reader should expect this file's pin to be behind the live paper again by the
+time they read it — that is the condition this infrastructure exists to detect, not a defect in
+the pin.
+
+### Anchor classification (2026-09-07): four `LIVE-UNPINNED` rows for the C15 gate
+
+`scripts/check-module-invariants.sh`'s **C15** was the sole failing check group, reporting four
+paper-anchor citations resolving to nothing here. All four were re-measured against the live
+`.tex` and against the paper repository's `HEAD`, and all four resolve to live, non-commented
+`\label{}` targets in both — so all four are recorded `LIVE-UNPINNED`, none `DANGLING`, and no
+citation site needed correcting:
+
+| Anchor | Paper environment | Cited by | Why unpinned |
+|---|---|---|---|
+| `app:ObjectiveModality` | `\subsection{Objective Modality}%` with the label on the following line | `FormalSystem/BaseLanguage/Axioms.lean` | **Structurally unpinnable.** `resolve_env` reads the environment name off the same line as the `\label{}`, so a sectioning label on its own line can never resolve. Same shape as the already-recorded `app:TaskSemantics`. |
+| `app:drift` | `Tthm` | `Independence/DriftFrame.lean`, `Independence/RealTranslationFrame.lean` | Pinnable in principle, useless in practice: the `Tthm` block carries only the statement, while the text `DriftFrame.lean` actually engages with — the `λ ≔ (v − w)/(x + y)` interpolation and the compactness/finite-intersection *Saturation* argument — sits in the `\begin{proof}` block *after* `\end{Tthm}`, which `resolve_env` does not capture. A pin would hash text the tree never quotes. |
+| `cor:no-characterization` | `Cthm` | `Independence/README.md`, `Independence/DriftFrame.lean`, `Independence/StateSetTruth.lean`, `Independence/RealTranslationFrame.lean` | Cited by name only. |
+| `lem:deterministic-singleton` | `Lthm` | `Independence/RealTranslationFrame.lean`, `Independence/StateSetTruth.lean` | Cited by name only; `StateSetTruth.lean` names its choice-free (⇒) direction but quotes no text. |
+
+`app:ObjectiveModality` entered the cited set with the `Axioms.lean` paper-name correspondence
+table; the other three entered with the `Metalogic/Independence/` frames. No manifest row, no
+`FILE_CHECKSUM` sentinel, and no `PINNED_COMMIT` sentinel is touched by this wave — nothing
+drifted, so there is nothing to re-pin.
+
+### Rename absorption (2026-09-02): `Spherical` → `Saturation`
+
+The paper renamed its fourth task-frame axiom from *Spherical* to *Saturation*, moving both
+anchors that named it. Two MANIFEST rows were re-keyed to follow:
+
+| Old anchor | New anchor | New checksum |
+|---|---|---|
+| `def:frame#Spherical` | `def:frame#Saturation` | `c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60` |
+| `cor:spherical-finite` | `cor:saturation-finite` | `6456eb11cb2adf8b06c929c3f6b5d19dc581f9ba7a33af8a28e61ec675567d74` |
+
+Both checksums were resolved against the live paper via `check-paper-definitions.sh --resolve`
+before the rows were written, and independently a second time during implementation; the two
+derivations agree. The repository's 441 corresponding occurrences were renamed in the same wave.
+
+**This is a rename absorption, not a drift correction, and the distinction is load-bearing here.**
+The anchors did not merely change text — their *keys* moved, which is why they showed up as
+`could not be resolved` rather than as drift. Re-keying the rows takes
+`check-paper-definitions.sh` from **2 unresolvable to 0**. It does *not* touch the 10 drifted
+anchors (`def:task-relation`, `def:directed`, `def:frame`, `def:frame#Compositionality`,
+`def:frame#Seriality`, `def:frame#Limit`, `def:world-history`, `thm:extension`,
+`def:BLplus-defined`, `def:time-shift-histories`), whose drifted set is byte-identical before and
+after this absorption. At least two of those are substantive rather than cosmetic
+(`def:time-shift-histories` dropped its explicit translation function; `def:BLplus-defined`
+changed item emphasis) and warrant a paper-reconciliation pass of their own.
+
+Per the dirty-pin convention above, the whole-file checksum sentinels are **not** re-pinned: no
+drift correction was absorbed here, only a key migration.
+
+**Deliberately left alone.** The prose of this file is a historical record of what the paper said
+at the time, so rewriting it would falsify the record. The drift table at
+`def:frame#Spherical`, the footnote quoted under `thm:extension`, the resolved-text block under
+`cor:spherical-finite`, and the earlier coverage-extension narratives all keep the old name and
+should. One item is a judgment call rather than quoted text: the entry heading ``def:directed``
+— directed family (used by Spherical)`` is this record's own navigation, not paper text, and
+still says *Spherical*. It was left unchanged because it falls outside this absorption's declared
+scope, and is flagged here so a later pass can decide it deliberately.
+
+### Drift correction (2026-09-02): ten-anchor re-pin
+
+The ten anchors the rename absorption above left drifted are re-quoted and re-hashed here, and the
+sentinels are re-pinned, because a drift *correction* is now being absorbed (the dirty-pin
+convention). Before this correction `check-paper-definitions.sh` reported **10 drifted, 0
+unresolvable**; after it, the quiet case-(a) pass. Paper file sha256 `7303bc9e…`, 4867 lines,
+paper repo `git HEAD` `fa0dbf7c053e6ecd22e9815180dd91beb2604e61` with the file dirty against it
+(`M JPL/possible_worlds.tex`) — the dirty-pin caveat below applies unchanged, so the checksum is
+the authoritative pin and the SHA is provenance only.
+
+Classification, anchor by anchor:
+
+| Anchor | Change | Class |
+|---|---|---|
+| `def:time-shift-histories` | The explicit translation function `\bar{a}(z) = z + d` with `y = \bar{a}(x)` is gone; the relation is now stated pointwise as `\tau(z) = \sigma(z + y - x)` for all `z \in D`. | **Substantive** (same relation, since `d = y - x` is forced; but the definiens changed shape) |
+| `def:world-history` | Last sentence: "The set of all total world histories over $\F$ is denoted $H_{\F}$" → "The set of all possible worlds over $\F$ is denoted $H_{\F}$". | Terminological — equivalent by the definition's own "total--- equivalently, a possible world" |
+| `def:frame` | `\item[\bf …]` → `\item[\it …]` on all four axioms; the fourth axiom's name *Spherical* → *Saturation* (the rename already absorbed at the key level above); the footnote moved `~\cite{Cmiel2021}` from the second sentence to the first and renamed *Spherical* → *Saturation* in its text. | Cosmetic + rename; no mathematical change |
+| `def:frame#Compositionality`, `def:frame#Seriality`, `def:frame#Limit` | `\bf` → `\it` item emphasis only. | Cosmetic |
+| `thm:extension` | Footnote wording only: *Spherical* → *Saturation* twice, and the cross-reference `cor:spherical-finite` → `cor:saturation-finite`. Statement unchanged. | Rename follow-through; cosmetic |
+| `def:task-relation` | `\bf` → `\it` on the Fiber/Cone/Segment items (reversing the 2026-08-25 `\it` → `\bf` change). | Cosmetic |
+| `def:directed` | `\item[\bf $\mathbf{\supseteq}$-Directed:]` → `\item[\it $\supseteq$-Directed:]` (and the `\subseteq` twin). | Cosmetic |
+| `def:BLplus-defined` | `\bf` → `\it` on all eight defined-operator items. | Cosmetic |
+
+**The repository's Lean statements are unaffected.** Every change above is equivalent to the
+pinned text it replaces: `WorldHistory.timeShift` was already the pointwise `σ(z + Δ)` reading
+of `def:time-shift-histories`, `H_F` (`TaskFrame.HF`) already denotes exactly the total
+histories, and the emphasis/rename changes carry no content. The two in-tree verbatim quotations
+that this correction does move — the `def:world-history` closing sentence, quoted in
+`FormalSystem/Semantics/WorldHistory.lean`, `PartialHistory.lean`, and
+`FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — are updated to the live wording in the same
+change set.
+
+**Two navigation headings updated.** ``def:directed — directed family (used by Spherical)`` now
+reads *(used by Saturation)*, resolving the judgment call the rename absorption above flagged;
+and ``def:time-shift-histories — …, translation form`` now reads *…, pointwise form*, following
+the substantive change. Both headings are this record's own navigation, not quoted paper text, so
+updating them does not falsify the record. For the same reason the `def:frame` sub-anchor table's
+fourth row is re-keyed from `def:frame#Spherical` to `def:frame#Saturation` with the live text
+and hash the rename absorption already placed in the manifest — the table is the record's
+per-axiom index of the *current* pins, and it now agrees with the manifest again.
+
+**Deliberately left alone.** Every earlier narrative section keeps its historical wording
+(*Spherical*, "translation form", the 2026-08-25 note that `def:task-relation`'s items went
+`\it` → `\bf`) — those describe what the paper said at the time. `app:auto_existence` and
+`lem:history-time-shift-preservation` remain `LIVE-UNPINNED`: the Lean docstrings that cite them
+do so by name only and quote no text.
+
+### Drift correction and coverage extension (2026-08-17): the target-state-revision re-pin
+
+Absorbed as one re-pin during the reference-manual target-state revision:
+
+- **22 drifted anchors re-quoted and re-hashed**: `thm:s4`, `thm:sym` (macro rename
+  `\mathrm{Str}` → `\Str`; `thm:sym` also gained a Williamson/Bacon–Zeng footnote),
+  `def:task-relation`, `thm:extension`, `def:constraints`, `lem:nesting`, `def:BL-semantics`,
+  `def:BLplus-semantics`, `def:frame-validity`, `def:logical-consequence`, `def:BX`,
+  `def:TMplus-f`, `def:TMplus-c`, `def:TMplus`, `app:discrete`, `app:dense`, `app:complete`,
+  `cor:tm-completeness`, `def:id`, `def:strongest`, `thm:exist`, `lem:uniq`.
+- **2 dangling anchors retired from the manifest** (entries retained, marked DANGLING above):
+  `def:BL-model`, `cor:tm-decidability`.
+- **3 anchors added** (newly load-bearing for the manual's target-state revision):
+  `thm:BLplus-PastFuture`, `thm:BLplus-NextPrevious`, `def:time-shift-histories`.
+- Sentinels re-pinned: checksum `9fa1c5fc829ecab11fbf5685be622fc90bf4f9198119db48f35ad8a81ce0a2bf`,
+  paper repo `git HEAD` `831c599d3f76fc9ebb7fb297ef80442c4624a035` (file dirty against it, per
+  the dirty-pin caveat below), 4228 lines, 2026-08-17T17:31Z. Post-edit verification run
+  reported all 50 recorded definitions unchanged — pass.
+
+### Drift correction (2026-08-17, second wave): lem:fibers retired
+
+A later editing wave the same day removed `\label{lem:fibers}` from the live paper; every other
+recorded anchor verified unchanged. The `lem:fibers` entry is retained above, marked DANGLING and
+removed from the manifest. Sentinels re-pinned: checksum
+`f134fd7d460c08aaf94c5b1c09571ab2663c509d1ee32f2d31b89ee640281381`, paper repo `git HEAD`
+`d1a26f75bcd3e0623d1593263471c5fc63126894` (dirty-pin caveat applies), 4213 lines.
+
+### Drift correction (2026-08-25), part 1: dangling anchors and substantive drift
+
+The paper moved again (4213 -> 4856 lines). `check-paper-definitions.sh` reported **32 drifted
+anchors and 6 unresolvable anchors** before this correction. Part 1 resolves every unresolvable
+anchor and re-quotes the anchors whose *mathematics or claim* actually changed; part 2 (below)
+absorbs the residual terminological and cosmetic drift and re-pins the sentinels.
+
+**6 unresolvable anchors, resolved (4) or retired (2):**
+
+| Anchor | Cause | Resolution |
+|---|---|---|
+| `def:frame#Compositionality` | paper re-spelled `\item[\it X:]` as `\item[\bf X:]` | resolver made markup-agnostic; re-quoted, re-hashed |
+| `def:frame#Seriality` | same | same |
+| `def:frame#Limit` | same | same |
+| `def:frame#Spherical` | same, plus a genuine change (see below) | same |
+| `thm:s4` | label removed from the paper | retired DANGLING; succeeded by `thm:s5` |
+| `thm:sym` | label removed from the paper | retired DANGLING; succeeded by `thm:s5` |
+
+The four `def:frame#*` anchors did **not** go dangling because the paper dropped an axiom — all
+four axioms are still there. They went dangling because `resolve_text`'s `item` case searched for
+the literal `\item[\it NAME:]` and the paper re-spelled the emphasis command. That brittleness is
+now fixed in the script itself rather than by re-keying the manifest on `\bf` (which would fail
+again on the next markup wave); see "Hashing method" above.
+
+`thm:s4` and `thm:sym` were merged by the paper into a single `thm:s5` (live line 2158), which
+states S4, B, **and** T as three conjuncts of one theorem. `thm:s5` is added to the manifest here.
+
+**7 substantive anchors re-quoted and re-hashed** (what changed, and whether it reaches Lean):
+
+| Anchor | What changed | Lean impact |
+|---|---|---|
+| `def:directed` | split into two clauses, `$\supseteq$-Directed` and `$\subseteq$-Directed`; the old bare "directed" is now the `$\supseteq$` half | **Yes.** Every in-tree quotation of "directed family" is now under-qualified and must read `⊇`-directed. `Spherical` consumes the `⊇` half. |
+| `def:frame` | `frame` -> `task frame`; `Spherical` now reads "$\supseteq$-directed family"; a new footnote places Spherical as $\mathbf{S}_1^d$ in the Ćmiel-Kuhlmann-Kuhlmann ball-space hierarchy, **strictly stronger** than "spherically complete" ($\mathbf{S}_1$) | **Yes.** `TaskFrame.lean`'s `Spherical` docstring must carry the `⊇` qualifier and the $\mathbf{S}_1^d$ characterization. Still four axioms; nullity is still not one. |
+| `def:frame-properties` | the `Deterministic` clause was **removed**; only Discrete/Dense/Complete remain. Deterministic is now standalone `def:deterministic` (live line 2868) | **Yes.** Any citation of `def:frame-properties` for determinism must repoint to `def:deterministic`. |
+| `cor:tm-completeness` | restructured; now states four systems explicitly (TM$^+$ strongly complete over **all** task frames; TM$^+_\textsc{d}$ strongly complete over the dense; TM$^+_\textsc{f}$ weakly complete over $\Z$-time; TM$^+_\textsc{c}$ **weakly** complete over the dense-and-complete class), and adds a footnote attributing these results *and the corresponding soundness results* to this Lean repository | **Yes — one live item.** (i) **Live.** TM$^+_\textsc{c}$ is now weak completeness over the dense-and-complete class, which is what `FrameClass.Dedekind` is — the in-tree "completeness *simpliciter*" / "no `FrameClass` member picks it out" passages are stale. (ii) **Resolved 2026-09-01.** The new footnote attributes strong completeness for TM$^+$ / TM$^+_\textsc{d}$ to this repository. That attribution was, when this row was written, conditional on the then-unproved `CompactBase` / `CompactDense`. Both are now proved — `compactBase` and `compactDense` in `FormalSystem/Metalogic/Compactness.lean`, by an ultraproduct model-existence construction — and the strong-completeness results themselves are inhabited unconditionally by `strongCompletenessBase` and `strongCompletenessDense` in that module, sorry-free at exactly `[propext, Classical.choice, Quot.sound]`. The paper's attribution is accurate as it stands; no paper-side correction is needed for (ii). |
+| `def:strongest` | "strongest objective **normal** modal operator" -> "strongest objective modal operator"; "iff" -> "if and only if"; the normality-redundancy comment removed | No Lean counterpart in the tree (objective-modality appendix is unformalized). |
+| `thm:exist` | same "normal" drop | As above. |
+| `def:id` | substantially expanded: propositional *variables* rather than sentence letters, an explicit $\chi_{(\psi/\varphi)}$ substitution convention, and a long free-for/operator-scope footnote making $\equiv$ a congruence for the logical vocabulary but not for operator terms | No Lean counterpart (identity extension is unformalized). |
+| `thm:extension` | footnote restructured; it **no longer says** the Zorn appeal is "and hence to the axiom of choice", now saying the derivation of *Occurrence* is "a theorem of ZFC" and contrasting it with the choice-free `lem:nullity` and `cor:spherical-finite` | **Yes.** Three in-tree sites quote the retired "and hence to the axiom of choice" wording verbatim. |
+
+(That is eight rows for "7 substantive anchors": `def:strongest` and `thm:exist` carry one and the
+same change — the `normal` drop — and the plan counted them as one item. The row count, not the
+item count, is what the manifest tracks.)
+
+### Drift correction (2026-08-25), part 2: terminological drift, `def:deterministic`, re-pin
+
+Part 2 absorbs the residual drift left by part 1 and re-pins the sentinels. After part 1 the
+checker reported **24 drifted anchors and 0 unresolvable anchors**; all 24 are re-quoted and
+re-hashed here, and the checker now returns the quiet case-(a) pass.
+
+**The global `frame` -> `task frame` rename** accounts for most of it. The paper renamed its
+central object, so 17 anchors changed by exactly that substitution and nothing else:
+`lem:nullity`, `def:world-history`, `cor:occurrence`, `lem:nesting`, `lem:nonempty`,
+`lem:admissible`, `lem:step`, `def:BL-semantics`, `def:time-shift-histories`,
+`def:frame-validity`, `app:discrete`, `app:dense`, `app:complete`, `cor:spherical-finite`,
+`thm:BLplus-NextPrevious`, `def:constraints`, `lem:constraint`. This is terminological, not
+mathematical — but it is **not** cosmetic for this repository, because the tree quotes several of
+these blocks verbatim in docstrings. Those quotations are corrected against this record.
+
+**Three of the 24 carry a second, non-terminological change** and must not be filed as pure
+rename:
+
+| Anchor | Second change | Lean impact |
+|---|---|---|
+| `lem:constraint` | "form a directed family" -> "form a **$\supseteq$-directed** family", following `def:directed`'s split in part 1 | **Yes.** Every in-tree "directed family" quotation is under-qualified. |
+| `def:constraints` | the $\F = \tuple{W, \D, \Rightarrow}$ expansion contracted to a bare $\F$ | No. |
+| `thm:BLplus-NextPrevious` | the statement was **split into three sentences**: the `\Next` biconditional, then the no-successor `\leftrightarrow \bot` case as a separate "Additionally" clause, then the past dual. Same content, restructured. | No. |
+
+**Seven anchors changed cosmetically only** — `\vspace` retuning (`def:task-relation`,
+`def:BL-semantics`, `def:BLplus-semantics`, `def:S5`), `\item[\it ...]` -> `\item[\bf ...]`
+(`def:task-relation`'s Fiber/Cone/Segment items), a `\mathrm{Th}` -> `\Th` macro swap inside an
+already-commented-out block (`def:TMplus-c`), prose rewording that changes no claim (`def:BX`'s
+"swapping occurrences" -> "interchanging all occurrences", `def:TMplus-f`'s Hölder sentence), and
+`def:TMplus`'s deletion of a large commented-out conservativity footnote plus its `% TODO`.
+
+**One anchor added**: `def:deterministic` (live line 2868). The paper removed `Deterministic` from
+`def:frame-properties` and gave it its own definition. It is load-bearing —
+`FormalSystem/Examples/TemporalStructures.lean` cites it — so it is pinned here rather than left
+untracked.
+
+**Twelve new appendix anchors deliberately NOT pinned** (decision recorded, not an oversight).
+The paper grew a topology / presheaf / Conduché appendix block carrying
+`def:task-topology` (2872), `app:topology-t1` (2904), `app:topology-r0` (2923), `app:gluing`
+(2976), `def:interval-site` (3208), `def:behavior-presheaf` (3233), `lem:factorization-linear`
+(3247), `lem:interval-twisted-arrow` (3278), `app:presheaf-dictionary` (3313), `def:path-category`
+(3386), `def:conduche` (3406), `cor:path-fibration` (3510). **None of them is cited anywhere in
+this repository and none has a Lean counterpart.** Pinning them would widen this file's
+maintenance surface to a region the tree does not depend on, which is exactly what the
+"Deliberately not covered" scope boundary below exists to prevent. If any of them becomes
+load-bearing, add it then, via
+`check-paper-definitions.sh --resolve "ANCHOR|env|-|-"`.
+
+**Sentinels re-pinned**: checksum
+`5d700a2f05999bb697ab55e16f5a26732cbf7453dbb7d909d21fb67c70da7644`, paper repo `git HEAD`
+`94f850f69f345fd8e4be2516eb3d74f944e66445` (file dirty against it — the dirty-pin caveat below
+applies unchanged), 4856 lines (up from 4213). Post-edit verification run returned the quiet
+case-(a) pass: `bash scripts/check-paper-definitions.sh` exits 0.
+
+### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
+
+At the moment this file was authored, the paper's working tree was **dirty relative to its own
+git HEAD**: `git status --porcelain` reported `M possible_worlds.tex` against base commit
+`eb5be99e` (`git diff --stat HEAD` showed 32 insertions / 12 deletions, net +12 lines). This is a
+live instance of the exact failure mode this file exists to guard against — a sixth definitional
+wave landing while this task was in flight — and it is recorded here rather than papered over.
+
+The dirty edit was independently confirmed, by re-deriving every hash below **both** before and
+after the edit landed, to be **entirely confined to the `def:constraints` / `lem:constraint` /
+`lem:admissible` proof-machinery neighborhood** (it restructured that proof and split out a new
+`lem:fibers` lemma) — a region deliberately **not** in this file's coverage (see "Deliberately
+not covered" below). Every anchor tracked in the manifest hashed identically before and after.
+This is exactly **case (b)** from `check-paper-definitions.sh`'s three-outcome contract: the paper
+changed, but no recorded definition drifted.
+
+Because the working tree was dirty and no clean commit captured the exact content this file
+quotes, the **file checksum** above (not the commit SHA) is the authoritative pin. The commit SHA
+is recorded as the best-available provenance anchor (the base the dirty edit was made against),
+not as a claim that the quoted content is byte-identical to that commit's committed blob — it is
+not (see the caveat's own diff above). Anyone citing this record should treat the checksum as
+ground truth and the commit SHA as "approximately where in history this sits."
+
+**Still dirty at the 2026-09-07 z/d/r rename-absorption re-pin.** `git status --porcelain`
+reported `M JPL/possible_worlds.tex` against `HEAD` = `f61bbd75`, and the last commit actually to
+touch the file is `acfa75fd`, an ancestor of neither the pinned content nor of `HEAD`'s tree for
+this path. The `PINNED_COMMIT` sentinel therefore again does **not** reproduce `FILE_CHECKSUM`,
+and that is expected rather than a defect. Stronger than in the earlier waves: the file changed on
+disk *during* the absorption itself (see the moving-target note in the 2026-09-07 narrative
+above), so the pin is a snapshot of a file under active edit. Use `--resolve` against the live
+file, never `--against <commit>`, when re-deriving anything from this wave.
+
+### Drift correction (2026-08-11, found during independent verification)
+
+The paper's dirty working tree moved **again** while this record was being independently
+verified — a live wave, on top of the wave described in the caveat above, occurring in real time
+during the verification pass rather than between authoring and verification. Two successive
+checksum changes were observed during verification (`efe6fc74...` recording-time →
+`645018ae...` mid-verification → `485aa764...`, the final, since-stable state this record is now
+re-pinned to). This is exactly the phenomenon this infrastructure exists to catch, and it is
+recorded here rather than silently re-pinned without explanation.
+
+Unlike the caveat's original dirty edit (confined to the excluded `def:constraints` neighborhood,
+case (b), no tracked anchor affected), **this wave genuinely drifted a tracked anchor**: the paper
+renamed `\label{thm:occurrence}` to `\label{cor:occurrence}` and merged its statement with a
+separate corollary formerly labelled `app:nonempty` (per the paper's own `%% CHANGE
+(occurrence-nonempty-merged)` editorial comment at the site), producing a strictly stronger
+statement — the evaluation time `x` is now universally given rather than merely existentially
+witnessed. `thm:extension`'s footnote, which cross-references the anchor by name, changed
+correspondingly (`\ref{thm:occurrence}` → `\ref{cor:occurrence}`), so both anchors' recorded text
+and hash were updated. This is case (c) — genuine drift — correctly caught by
+`check-paper-definitions.sh` against the live paper, not a false positive.
+
+**Correction applied**: the `thm:occurrence` entry above is renamed to `cor:occurrence` with its
+current verbatim text and freshly-derived hash; `thm:extension`'s entry is re-hashed to match its
+updated footnote; the manifest below reflects both changes; the file checksum and line count in
+the provenance table above are re-pinned to the post-correction live state. No other tracked
+anchor was affected by this wave (confirmed by re-running the full lint after this correction —
+see the implementation summary for the verbatim re-run output).
+
+**Known consequence of this correction**: `check-paper-definitions.sh --against eb5be99e...`
+(the recorded base commit) will now report `thm:extension`/`cor:occurrence` as drifted/dangling,
+because the rename is an uncommitted edit in the paper's working tree that postdates the base
+commit — the base commit still has the pre-rename `thm:occurrence` text. This is expected, not a
+lint defect: the checksum (re-pinned above), not the base commit, is this record's authoritative
+pin, exactly per the dirty-pin caveat's own logic. The no-argument invocation against the live
+paper — the check this lint exists to run day to day — passes cleanly (case a) as of this
+correction.
+
+### Drift correction (2026-08-12): the three-anchor wave, absorbed as one re-pin
+
+A further live wave drifted **three** tracked anchors at once — `def:BLplus-semantics`,
+`thm:extension`, and `def:constraints` — and the gate reported case (c) against all three. All
+three are corrected here **together, in a single coherent correction with one whole-file
+re-pin**. This is deliberate and is the lesson of the two earlier corrections above: because the
+authoritative pin is a **whole-file** checksum, correcting one drifted anchor while leaving the
+others uncorrected re-pins the file to a state the record does not fully quote, which is
+incoherent — the checksum would then assert "the record matches this file" while two entries
+still quoted superseded text. A drift wave is absorbed as a unit or not at all.
+
+What moved, per anchor (each re-quoted verbatim above, each hash re-derived from the live paper
+by the same extraction the lint performs, and each re-derivation confirmed against the hash the
+lint itself reported for the live text):
+
+- **`def:BLplus-semantics`** (`3f56a996…` → `f40f514e…`): the argument-order footnote was
+  **repaired by the paper**, per its own `%% CHANGE (halden-defect-repair,
+  untl-snce-convention)` comment at the site. The footnote previously attributed a guard-first
+  Pnueli convention to this repository's `snce`/`untl` constructors; it now states the mismatch
+  in the direction that actually holds (paper surface notation guard-first, repository
+  constructors event-first/Burgess), and adds that the truth conditions agree once the argument
+  order is swapped. **The two `($\since$)` / `($\until$)` truth clauses themselves are unchanged
+  byte-for-byte** — no semantic claim moved. This resolves, in the paper, the divergence this
+  record escalated in `docs/architecture/untl-snce-argument-order.md`; the caveat under that entry
+  is rewritten below to describe the repaired footnote rather than the old defective one.
+  **Superseded 2026-08-17**: the paper has since removed the footnote outright — the live anchor
+  `edde7517…` is footnote-free — and the Lean tree has been migrated to guard-first, so there is
+  no longer a convention to describe on either side. The bullet above is retained as the record of
+  the 2026-08-12 wave; the caveat under the entry itself has been rewritten again accordingly.
+- **`thm:extension`** (`af9b23bf…` → `e63eac74…`): statement unchanged; the footnote's existing
+  choice-contrast clause was extended to also name the finite-`W` case discharged choice-free by
+  a new corollary (paper comment `%% CHANGE (finite-spherical-corollary)`). See the residual gap
+  below.
+- **`def:constraints`** (`d763818…` → `3678ab02…`): two changes, both narrowing/wording rather
+  than restructuring. The defined term is now "the *constraints on `z`*" (formerly "the
+  *constraints imposed on `z`*"), and the segment case gained an explicit "when both `t,s ∈ X`"
+  guard on the `t < z < s` condition. The constraint family itself — segments between bracketing
+  times, fibers otherwise — is the same family.
+
+**Known residual gap — DISCHARGED (see "Coverage extension (2026-08-17)" below).** The same wave
+added three anchors this record did **not** track at all: `cor:spherical-finite` (finite `W`
+satisfies *Spherical*, choice-free), `lem:nesting` (imposed fibers and segments nest along the time
+order), and `lem:nonempty` (every imposed constraint is nonempty). The gap they left was concrete:
+**`thm:extension`'s re-quoted footnote cites `\ref{cor:spherical-finite}`**, so while that anchor
+was untracked a tracked entry referenced an untracked one, and a future rename or restatement of
+`cor:spherical-finite` would have silently invalidated the cross-reference inside `thm:extension`'s
+recorded text without the lint saying anything. All three are now tracked and the gap is closed;
+the paragraph is retained rather than deleted so the reasoning that closed it stays legible.
+
+### Coverage extension (2026-08-17): the three constraint-neighborhood anchors
+
+`cor:spherical-finite`, `lem:nesting`, and `lem:nonempty` are now tracked, discharging the residual
+gap recorded above. The semantic-FMP-over-ℤ work transcribes `cor:spherical-finite` verbatim as the
+source for `TaskFrame.spherical_of_finite`, so leaving its central citation unprotected by the lint
+was the immediate motivation; `lem:nesting` and `lem:nonempty` were added with it because they are
+the other two members of the same untracked gap and sit in the same `def:constraints` →
+`lem:constraint` → `lem:step` chain. `cor:spherical-finite` was resolved and added first, in
+isolation, by the finite-frame discharge work; the two constraint lemmas followed. The record moves
+from 47 to **49** tracked definitions.
+
+**Lint state at this extension**: the paper has drifted again since the previous coverage
+extension, and `scripts/check-paper-definitions.sh` reports **case (c)** — 19 recorded blocks
+changed, and two recorded anchors (`def:BL-model`, `cor:tm-decidability`) no longer resolve at all.
+That drift is *not* corrected here, and is recorded rather than absorbed: it predates this
+extension, it spans anchors this extension does not touch, and re-quoting 19 blocks plus repairing
+two dangling anchors is a paper-reconciliation pass in its own right rather than a side effect of
+adding three rows. None of the three anchors added here is among the drifted set, and neither are
+`def:frame`, `def:frame#Spherical`, `def:directed`, `def:task-relation`, `cor:occurrence`, or
+`def:frame-properties`. The whole-file checksum sentinels are therefore **not** re-pinned, per the
+dirty-pin convention above: no drift correction was absorbed.
+
+### Coverage extension (2026-08-11): the extension-machinery anchors
+
+The paper-refactor cluster's task descriptions quote the extension machinery (`lem:constraint`,
+`lem:step`) directly, and two cluster tasks commit to mirroring the paper's proof decomposition
+lemma-for-lemma. Per this file's own extension protocol, those anchors are now **tracked**, not
+excluded: `def:constraints`, `lem:constraint`, `lem:fibers`, `lem:admissible`, and `lem:step`
+(five entries, added below with hashes derived from the live paper). Note that a paper wave
+restructured this neighborhood after the original recording: the admissibility characterization
+was **split out** of the old Constraint Lemma into its own `lem:admissible`, warranted by the new
+`lem:fibers`, and the lead-in prose was promoted to the numbered `def:constraints`. The current
+chain is `def:constraints` → `lem:constraint` (directedness + nonemptiness only) → `lem:fibers`
+→ `lem:admissible` → `lem:step` (sole *Spherical* application site) → `thm:extension` (Zorn) →
+`cor:occurrence`. The file checksum in the provenance table above is re-pinned to the live state
+these hashes were derived from; all 18 previously-recorded anchors were re-verified unchanged at
+this re-pin (case (b) — the intervening edits were comment cleanup and proof-prose restructuring
+outside every previously-tracked block).
+
+### Coverage extension (2026-08-10): the `BL^+` anchors
+
+`def:BLplus-semantics` was cited by the total-history-validity refactor's plan while being
+**untracked** — `grep -c BLplus` over this file returned 0 — so any spec quoting it was ungrounded
+and unprotected by the lint. Three anchors are now tracked: `def:BLplus-language` (the `BL^+`
+language and its `\since`/`\until` constructors), `def:BLplus-semantics` (the two extra truth
+clauses, plus the constructor-argument-order footnote), and `def:BLplus-defined` (the derived
+temporal operators). All three resolved cleanly, so none is recorded as a gap. The record moves
+from 23 to **26** tracked definitions.
+
+The `def:BLplus-semantics` entry carried an argument-order caveat: at the time of this coverage
+extension the paper's footnote described this repository's `snce`/`untl` constructors as
+guard-first/event-second, while the Lean tree is event-first/guard-second. That divergence was
+quoted here (never silently corrected — this file records what the paper says) and escalated in
+`docs/architecture/untl-snce-argument-order.md`. **Superseded 2026-08-12**: the paper has since
+repaired the footnote in the direction that actually holds; see "Drift correction (2026-08-12)"
+above and the rewritten caveat under the entry itself. **Superseded again 2026-08-17**: the
+footnote has since been removed from the paper entirely, and the Lean tree has been migrated to
+guard-first, discharging the caveat rather than restating it. The decision record is closed as
+DECIDED.
+
+### Vocabulary alignment (2026-09-07): prose only, no re-pin
+
+The repository's own commentary around `def:world-history`, `thm:extension` and `cor:occurrence`
+still described the paper's middle tier as a *world history* and its top tier as a *total* world
+history. Those are the superseded terms: the pinned text of `def:world-history` above already
+layers **partial history** -> **convex history** -> **possible world**, and reserves `H_F` for the
+possible worlds. The surrounding headings and commentary have been brought onto that vocabulary.
+
+This was a prose-only correction. Per "How to extend this record", no anchor was added and no
+anchor drifted, so **no `verbatim:` block, no `sha256:` line, no manifest row, and neither the
+`PINNED_COMMIT` nor the `FILE_CHECKSUM` sentinel was touched**. `scripts/check-paper-definitions.sh`
+was re-run after the edit and its drifted-anchor set was unchanged (the six `def:S5`, `def:BX`,
+`def:BX-z`, `def:BX-d`, `def:BX-r`, `def:TMplus` anchors owned by the separate re-pin work);
+`def:world-history`, `thm:extension` and `cor:occurrence` do not appear in it.
+
+One occurrence of the superseded wording survives below and is deliberate: the drift-log row
+under "Drift correction and rename absorption (2026-09-07)" quotes it as archival evidence of what
+the paper used to say. The `>`-quoted footnote under "Untracked sources" was found to be quoting
+the *superseded* text of a footnote the paper has since revised, and was re-quoted from the live
+paper in the same change; see the note recorded there.
+
+## How to read this file
+
+Each entry below has:
+- **Anchor**: the `\label{}` name, or (for axioms introduced via the paper's `\aitem` macro) the
+  `\aitem` key together with its enclosing section.
+- **Verbatim text**: the exact LaTeX source of the defining block, quoted character-for-character
+  (including the block's own `%%` editorial-history comments where present — those are literal
+  source text and are quoted, not stripped, so the record and the hash always agree).
+- **Content hash**: `sha256` of exactly the quoted text (see "Hashing method" below).
+
+Anchors marked **DERIVED** are theorems/lemmas proved from the primitive definitions, not
+definitions themselves — recorded here because downstream tasks cite their exact statements as
+settled inputs, same as a definition.
+
+### Hashing method (must match `check-paper-definitions.sh` exactly)
+
+- **`env` anchors** (a `\label{X}` on the same line as `\begin{ENV}`, e.g. `\begin{Ddef} \label{def:frame}`):
+  the hash covers every line from that `\begin{ENV}` line (inclusive) through the next line
+  containing the literal string `\end{ENV}` (inclusive) — i.e. the whole definition/theorem
+  environment, including any editorial `%%` comment lines inside it.
+- **`item` anchors** (one of `def:frame`'s four axioms, which are `\item[MARKUP NAME:]` entries
+  with no `\label` of their own): the enclosing environment is resolved first as above, then the
+  hash covers exactly the single line inside that block whose item label is `NAME:`. Resolution is
+  **markup-agnostic**: the emphasis command is tried in the order `\it`, `\bf`, `\em`,
+  `\itshape`, `\bfseries`, bare, and the first match wins. This is deliberate — the paper
+  re-spelled all four `def:frame` items from `\item[\it NAME:]` to `\item[\bf NAME:]` in a
+  2026-08 editing wave, and a resolver keyed on one spelling reported four live anchors as
+  DANGLING on a purely cosmetic change. The hash still covers the resolved line **verbatim**, so
+  the markup change itself is still reported as drift; only the *resolution* is markup-agnostic.
+- **`aitem` anchors** (an axiom introduced via the paper's `\newcommand{\aitem}[2][]{...\label{#2}}`
+  macro, e.g. `\aitem{CO}` or `\aitem[CO]{TMP-CO}`): the hash covers exactly the single line
+  matching `\aitem` (optionally `[KEY]`) `{LABEL}`.
+
+This assumes none of the tracked environments nest another instance of the same environment name
+inside itself (true for every entry below, verified at recording time) — the extraction takes the
+*first* matching `\end{ENV}` after the label line.
+
+---
+
+## Entries
+
+### `def:temporal-order` — temporal order, positive cone, nontrivial `D`
+
+```latex
+\begin{Ddef} \label{def:temporal-order}
+	A \textit{temporal order} is a nontrivial totally ordered abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.
+\end{Ddef}
+```
+sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
+
+### `def:task-relation` — task relation, nonempty `W`, converse convention, fiber, cone, segment
+
+```latex
+\begin{Ddef} \label{def:task-relation}
+	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[\it Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
+		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
+		\item[\it Segment:] $[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}$ where $x, y \geq 0$.
+	\end{enumerate}
+  \vspace{-.1in}
+\end{Ddef}
+```
+sha256: `f076d52a3b75a5cdacdc86ed815c006b6bcbf78483aebd36152d1c5b04ed5b33`
+
+### `def:directed` — directed family (used by Saturation) — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{def:directed}`. The `⊇`-directed condition was
+folded inline into `def:frame`'s opening clause ("Letting a nonempty family of sets
+$\mathcal{S}$ be *$\supseteq$-directed* just in case …"), and the `⊆`-directed half was
+dropped. The quoted text below is retained as the last-resolved historical record. If the paper
+restores the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "def:directed|env|-|-"`.
+
+```latex
+\begin{Ddef} \label{def:directed}
+	A nonempty family of sets $\mathcal{S}$ is:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[\it $\supseteq$-Directed:] just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+		\item[\it $\subseteq$-Directed:] just in case $S_1, S_2 \subseteq S$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+	\end{enumerate}
+\end{Ddef}
+```
+sha256: `5164210f644bb467aadc3bd279a5774cc14b67e88bdee6b8373a2025a22031f1`
+
+### `def:frame` — the frame definition (whole block, all four axioms)
+
+```latex
+\begin{Ddef} \label{def:frame}
+	Letting a nonempty family of sets $\mathcal{S}$ be \textit{$\supseteq$-directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$, a \textit{task frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following for all positive durations $x, y \geq 0$:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.
+		\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.
+		\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.
+		\item[\it Saturation:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%
+    \footnote{
+      The nonempty fibers and segments form a \textit{ball space} on $W$ in the sense of \'{C}miel, Kuhlmann, and Kuhlmann~\cite{Cmiel2021}.
+      \textit{Saturation} is the downward-directed-intersection condition $\mathbf{S}_1^d$ of the ball-space hierarchy--- the nest condition $\mathbf{S}_1$ with a $\supseteq$-directed system of balls in place of a nest--- and so is at least as strong as the standard \textit{spherically complete} condition, which is $\mathbf{S}_1$ itself.
+    }
+	\end{enumerate}
+  \vspace{-.1in}
+\end{Ddef}
+```
+sha256: `b5d3bf93cf07486d239afcbc9379883fdbea1194e97d560b391ccbdc128b9d99`
+
+Four axioms, not more, not fewer — **Nullity is NOT an axiom**, it is `lem:nullity` below, DERIVED
+from Seriality and Limit. Each axiom is also tracked individually (sub-anchors of `def:frame`, no
+`\label` of their own — resolved as the enclosing block's `\item[MARKUP NAME:]` line, markup-agnostically), so that a
+future paper edit which reorders or drops exactly one axiom is named precisely rather than only
+flagging "`def:frame` changed":
+
+| Sub-anchor | Verbatim text | sha256 |
+|---|---|---|
+| `def:frame#Compositionality` | `\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.` | `4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa` |
+| `def:frame#Seriality` | `\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.` | `ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad` |
+| `def:frame#Limit` | `\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.` | `3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f` |
+| `def:frame#Saturation` | `\item[\it Saturation:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%` | `c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60` |
+
+Note: **Compositionality is a biconditional**, not a one-directional implication — this is load
+bearing (the right-to-left direction is used directly in, e.g., the constraint-family proofs).
+
+**2026-09-07 wave — two changes inside this block, both load bearing:**
+
+1. **`def:directed` was folded in.** The opening clause now defines `$\supseteq$-directed`
+   inline ("Letting a nonempty family of sets $\mathcal{S}$ be *$\supseteq$-directed* just in
+   case …"), and the standalone `def:directed` label is gone (recorded `DANGLING` above). The
+   `$\subseteq$-directed` half was dropped entirely — the paper no longer defines it anywhere, so
+   any in-tree prose describing `def:directed` as "split into a `⊇` and a `⊆` clause" is
+   describing a definition that no longer exists.
+2. **The ball-space footnote was softened from "strictly stronger" to "at least as strong as".**
+   The paper now says *Saturation* ($\mathbf{S}_1^d$) "is at least as strong as the standard
+   *spherically complete* condition, which is $\mathbf{S}_1$ itself". The strictness claim was
+   withdrawn, not merely reworded: `\mathbf{S}_1^d \Rightarrow \mathbf{S}_1` is asserted, and
+   the converse is no longer denied. In-tree prose asserting **strict** strengthening now overstates
+   the paper. (The 2026-08-25 narrative table below records the *old*, strict wording; it is
+   historical and is deliberately left as written.)
+   Also in this block: "for $x, y \geq 0$" became "for all positive durations $x, y \geq 0$" —
+   wording only, no change to the quantifier's range.
+
+### `lem:nullity` — DERIVED: `w ⇒₀ w` (Nullity is not an axiom)
+
+```latex
+\begin{Lthm} \label{lem:nullity}
+	$w \Rightarrow_0 w$ for every world state $w \in W$ in every task frame $\F = \tuple{W, \D, \Rightarrow}$.
+\end{Lthm}
+```
+sha256: `94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973`
+
+Proved (per the paper) from Seriality at `x = 0` plus Limit — choice-free, unlike `thm:extension`
+below which needs Zorn's lemma.
+
+### `def:world-history` — partial history, convex history, possible world, the extension order, `H_F`
+
+```latex
+\begin{Ddef} \label{def:world-history}
+	A \textit{partial history} over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$.
+	A \textit{convex history} is any partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \in X$ and $x < y < z$.
+  A \textit{possible world} is any convex history whose domain is total, so that $X = D$.
+	A partial history $\sigma$ \textit{extends} $\tau$ just in case $\dom{\tau} \subseteq \dom{\sigma}$ and $\tau(x) = \sigma(x)$ for all $x \in \dom{\tau}$.
+	The set of all possible worlds over $\F$ is denoted $H_{\F}$.
+\end{Ddef}
+```
+sha256: `550661d3b388c3ef494ffb81c643ab5a550f996a5a86329afc557f41ed7872e7`
+
+Layering, exactly as the paper states it: **partial history** (nonempty domain, no convexity
+requirement) → **convex history** (convex domain) → **possible world** (`X = D`). The
+vocabulary "task-constrained function" is retired paper-wide and must not be reintroduced as
+current terminology (see the paper-refactor cluster's task descriptions, which record the same
+point). `H_F` denotes the *possible worlds*, not the convex histories.
+
+### `thm:extension` — every partial history extends to a possible world
+
+```latex
+\begin{Tthm} \label{thm:extension}
+	Every partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some possible world $\sigma \in H_{\F}$.%
+	  \footnote{
+	    The proof appeals to Zorn's lemma, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Saturation} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} for finite $W$ in \textbf{\ref{cor:saturation-finite}}, both of which are choice-free.
+	  }
+\end{Tthm}
+```
+sha256: `65811dcff91a3dd840058353b14667d8abfcf5d94c8be9979944f03be5234379`
+
+### `cor:occurrence` — DERIVED: every world state occurs at any prescribed time in some possible world (renamed from `thm:occurrence`; see "Drift correction" below)
+
+```latex
+\begin{Cthm} \label{cor:occurrence}
+	For any task frame $\F = \tuple{W, \D, \Rightarrow}$, world state $w \in W$, and time $x \in D$, there is a possible world $\tau \in H_{\F}$ where $\tau(x) = w$, and so $H_{\F} \neq \emptyset$.
+\end{Cthm}
+```
+sha256: `231c1d3cd0bf70a323775c623ed36761c6e0c4990bf72106c8323a9fe78842ec`
+
+Follows from `thm:extension`, hence is also a ZFC (not choice-free) result. The paper merged the
+former `thm:occurrence` (existential over both the history and the time) with a separate
+`app:nonempty` corollary into this single, strictly stronger statement (time `x` is now given, not
+merely witnessed) under the new label `cor:occurrence` — see "Drift correction" below. Its
+current proof extends the one-point partial history `{⟨x, w⟩}` directly via `thm:extension`; the
+former translation argument is gone from this chain (time-shift machinery survives separately
+under `def:time-shift-histories`, which remains untracked).
+
+### `def:constraints` — the constraints on a new duration (renamed from "constraints *imposed on*"; see "Drift correction (2026-08-12)")
+
+```latex
+\begin{Ddef} \label{def:constraints}
+	For a partial history $\tau : X \to W$ over a task frame $\F$ and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both $t,s \in X$, and the fibers $\fib{\tau(t), z - t}$ for $t \in X$ otherwise.
+\end{Ddef}
+```
+sha256: `50aadae779c7d57c810e94209614b5cdfe2590fa82c1c0793db948e8d0917e28`
+
+Promoted from lead-in prose to a numbered definition so the lemmas below can cite it by name.
+The 2026-08-12 wave shortened the defined term to "the *constraints on `z`*" and added an explicit
+"when both `t,s ∈ X`" guard to the segment case; the family being defined is unchanged. Note that
+surrounding paper text (and `lem:nonempty`, untracked) still says "imposed on", so both phrasings
+appear in the live paper — this record quotes whichever one appears inside the tracked block.
+
+### `lem:nesting` — DERIVED: imposed fibers and segments nest along the time order
+
+```latex
+\begin{Lthm} \label{lem:nesting}
+	For any partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers $\fib{\tau(t'), z - t'} \subseteq \fib{\tau(t), z - t}$ nest for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while the segments $[\tau(t'), \tau(s')]_{z - t'}^{s' - z} \subseteq [\tau(t), \tau(s)]_{z - t}^{s - z}$ nest for all times $t \leq t' < z < s' \leq s$ in $X$.
+\end{Lthm}
+```
+sha256: `ed036f28b70b99d4294515c0f1da64a62e471aa4795394cda4d9010b1f1971a7`
+
+The block carries an in-source `% FIX:` authorial note about the `\Fib` macro's italics. That line
+is literal paper source and is inside the hashed region, so it is quoted here verbatim like any
+other in-block comment; it is the paper author's note to themselves, not an instruction to this
+repository. Paper order places this lemma immediately after `def:constraints` and before
+`lem:nonempty`, which is why both sit here rather than beside `lem:constraint`.
+
+### `lem:nonempty` — DERIVED: every imposed constraint is nonempty
+
+```latex
+\begin{Lthm} \label{lem:nonempty}
+	For any partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, every constraint imposed on $z$ is nonempty.
+\end{Lthm}
+```
+sha256: `8067bf45a360f04db7a94280bde1b359dac58e8311f2fba1d58db15bf2336598`
+
+Note the phrasing divergence already recorded under `def:constraints`: that definition was renamed
+to "the constraints *on* `z`", while this lemma (and `lem:nesting`, `lem:constraint`, `lem:fibers`,
+`lem:admissible` above and below) still says "imposed on". Both phrasings are live in the paper and
+both are quoted as they stand; neither is silently normalized here.
+
+### `lem:constraint` — DERIVED: the constraint family is directed and nonempty
+
+```latex
+\begin{Lthm} \label{lem:constraint}
+	For any partial history $\tau : X \to W$ over a task frame $\F$ and duration $z \in D \setminus X$, the constraints imposed on $z$ form a $\supseteq$-directed family of nonempty sets.
+\end{Lthm}
+```
+sha256: `ca6719adfaad9f6dc3d1b6a57de013598dd80847014d9c2fb60ed626b895370f`
+
+This lemma now states **only** directedness + nonemptiness. The admissibility characterization
+that an earlier paper wave carried inside this lemma was split out into `lem:admissible` below —
+task specs quoting the old merged statement are stale. Its proof consumes Compositionality in
+BOTH directions plus Seriality.
+
+### `lem:fibers` — DERIVED: membership in all constraints ⟺ fiber condition at every time — **DANGLING as of the 2026-08-17 second re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{lem:fibers}` (the lemma was removed or absorbed in
+a later editing wave the same day as the first re-pin). The quoted text below is retained as
+the last-resolved historical record. If the paper restores the anchor, re-add a manifest row
+via `check-paper-definitions.sh --resolve "lem:fibers|env|-|-"`.
+
+```latex
+\begin{Lthm} \label{lem:fibers}
+	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, a world state $u \in W$ belongs to every member of the constraints imposed on $z$ just in case $\tau(t) \Rightarrow_{z-t} u$ for every $t \in X$.
+\end{Lthm}
+```
+sha256: `42ec404f8082ceeff30b1da5a28c076c9880704c92d500cb5068ce8b0a1ba7e2`
+
+New lemma (introduced by the same wave that split `lem:admissible` out of `lem:constraint`).
+
+### `lem:admissible` — DERIVED: one-point extension is a partial history ⟺ membership in all constraints
+
+```latex
+\begin{Lthm} \label{lem:admissible}
+	For any partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the function $\tau \cup \set{\tuple{z, u}}$ is a partial history on $X \cup \set{z}$ just in case $u$ belongs to every member of the constraints imposed on $z$.
+\end{Lthm}
+```
+sha256: `9606ef1f1264887ed51358744df7e5fc290250dd8209f445fd138700da56de8e`
+
+Proof consumes `lem:nullity` (the zero loop at `z` itself) plus `lem:fibers`.
+
+### `lem:step` — DERIVED: the Step Lemma (sole *Spherical* application site)
+
+```latex
+\begin{Lthm} \label{lem:step}
+	Every partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ extends to a partial history on $X \cup \set{z}$ for any duration $z \in D$.
+\end{Lthm}
+```
+sha256: `b1f65f70cc243de5b32d4e2a46c35c986dd0322cf3ca0524fb76701af3e3be4b`
+
+Proof: `lem:constraint` gives the directed family, *Spherical* provides a common member, and
+`lem:admissible` certifies the extension. Closing remark (verbatim, load-bearing for the discrete
+case): "When the family has a $\subseteq$-least member, that member already contains a candidate
+and \textit{Spherical} is not needed."
+
+### `def:BL-model` — model of `BL` — **DANGLING as of the 2026-08-17 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{def:BL-model}` — an exhaustive grep over the current
+text finds no such label. The model definition survives in the paper without this anchor name.
+The quoted text below is retained as the last-resolved historical record; the anchor is removed
+from the machine manifest so the checker no longer reports it as unresolvable. If the paper
+restores or renames the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "def:BL-model|env|-|-"`.
+
+```latex
+\begin{Ddef} \label{def:BL-model}
+	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
+\end{Ddef}
+```
+sha256: `239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f`
+
+### `def:BL-semantics` — the truth clauses (TruthAt), including the box clause's quantifier domain
+
+```latex
+\begin{Ddef} \label{def:BL-semantics}
+	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a task frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
+	Relative to a model $\M$, possible world $\tau \in H_{\F}$, and time $x \in D$, \textit{truth} is defined recursively as follows:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $\tau(x) \in |p_i|$.
+		\item[($\bot$)] $\M,\tau,x \nvDash \bot$.
+		\item[($\shortrightarrow$)] $\M,\tau,x \vDash \varphi \rightarrow \psi$ \textit{iff} $\M,\tau,x \nvDash \varphi$ or $\M,\tau,x \vDash \psi$.
+		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$.
+		\item[($\since$)] $\M,\tau,x \vDash \varphi\since\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z < x$ where $\M,\tau,y \vDash \varphi$\\
+      \strut\hspace{1.55in}for all $y \in D$ with $z < y < x$.
+		\item[($\until$)] $\M,\tau,x \vDash \varphi\until\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z > x$ where $\M,\tau,y \vDash \varphi$\\ 
+      \strut\hspace{1.55in}for all $y \in D$ with $x < y < z$.
+	\end{enumerate}
+  \vspace{-.1in}
+\end{Ddef}
+```
+sha256: `b64b782a61c9a9613b68f37ec2d12229e7df8498043faeb1cf1c2686b8dd5a75`
+
+**The box clause's quantifier domain is `H_F`** — the set of *possible worlds*, not a
+maximal-history set `H^max_F` (that vocabulary is retired; the block's own `%%` comment history
+above shows it was explicitly eliminated) and not an externally-supplied `Omega` subset. This is
+the single most consequential clause for the current `paper-refactor` cluster: the Lean tree's
+`TruthAt` (`FormalSystem/Semantics/Truth.lean:128`) still takes an explicit
+`Omega : Set (WorldHistory F)` parameter and quantifies `Box` over `Omega`, not over the full
+total-history set directly — that is precisely the gap the cluster's total-history refactor
+closes. See "Downstream consumers" below.
+
+### `def:BLplus-language` — the language of `BL^+` (since/until constructors)
+
+```latex
+\begin{Ddef} \label{def:BLplus-language}
+	The language $\BL \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i: i\in \N}$ is a countable set of sentence letters and the remaining symbols denote falsity, material implication, the metaphysical necessity operator, the since operator, and the until operator, respectively.
+	Well-formed sentences of $\BL$ are defined by:
+	\[
+		\varphi, \psi \Coloneq p_i \mid \bot \mid \varphi \rightarrow \psi \mid \Box\varphi \mid \varphi\since\psi \mid \varphi\until\psi.
+	\]
+	The following operators are defined in $\BL$:
+  \vspace{-.125in}
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\begin{multicols}{2}
+			\item[\it Past:] $\past\varphi \coloneq \top\since\varphi$.
+			\item[\it Future:] $\future\varphi \coloneq \top\until\varphi$.
+			\item[\it Historical:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
+			\item[\it Henceforth:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
+			\item[\it Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
+			\item[\it Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
+			\item[\it Next:] $\Next\varphi \coloneq \bot\until\varphi$.
+			\item[\it Previous:] $\Previous\varphi \coloneq \bot\since\varphi$.
+		\end{multicols}
+	\end{enumerate}
+  \vspace{-.25in}
+\end{Ddef}
+```
+sha256: `574bc1ad10ca0957a5b76c0d74f7ff5b2ea6a09fa180475c9c22eb6ea5b3e8e2`
+
+### `def:BLplus-semantics` — the `\since` / `\until` truth clauses (and the argument-order footnote) — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{def:BLplus-semantics}`. When the paper collapsed
+`BL^+` into `BL`, the `\since` / `\until` clauses became clauses of `def:BL-semantics` itself
+(which is pinned, and whose 2026-09-07 re-hash records exactly this change). The quoted text
+below is retained as the last-resolved historical record.
+
+```latex
+\begin{Ddef} \label{def:BLplus-semantics}
+  The \textit{models} of $\BL^+$ are defined as in \textbf{\ref{def:BL-semantics}}, where \textit{truth in a model} $\M$ at $\tau \in H_{\F}$ and $x \in D$ extends the semantics \textbf{\ref{def:BL-semantics}} with the following clauses:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[($\since$)] $\M,\tau,x \vDash \varphi\since\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z < x$ where $\M,\tau,y \vDash \varphi$\\
+      \strut\hspace{1.55in}for all $y \in D$ with $z < y < x$.
+		\item[($\until$)] $\M,\tau,x \vDash \varphi\until\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z > x$ where $\M,\tau,y \vDash \varphi$\\ 
+      \strut\hspace{1.55in}for all $y \in D$ with $x < y < z$.
+	\end{enumerate}
+  \vspace{-.1in}
+\end{Ddef}
+```
+sha256: `735c614181b042a498ec68826b234d30c9035464d9887b6fe717bab90e0705eb`
+
+**Argument-order caveat — DISCHARGED 2026-08-17. There is no longer a divergence, and there is no
+longer a footnote.**
+
+Two things changed, in this order:
+
+1. **The paper removed the footnote.** The anchor re-quoted above (`edde7517…`) is
+   **footnote-free**: it carries the two `($\since$)` / `($\until$)` clauses and nothing else. Its
+   two predecessors did carry an argument-order `\footnote` — first attributing a guard-first
+   Pnueli convention to this repository's constructors (`3f56a996…`), then, after the paper's own
+   `%% CHANGE (halden-defect-repair, untl-snce-convention)` repair, asserting the reverse
+   (`f40f514e…`). Both are superseded. Neither sentence exists in the live paper, and neither
+   should be quoted as current paper text; the historical quotations are retained in
+   `docs/architecture/untl-snce-argument-order.md`.
+
+2. **The Lean tree was aligned to the paper.** `Formula.untl` and `Formula.snce`
+   (`FormalSystem/Syntax/Formula.lean:85-106`) now take the **guard first and the event second**,
+   and `TruthAt`'s clauses (`FormalSystem/Semantics/Truth.lean:165-168`) read
+   `| Formula.untl ψ φ => ∃ s, t < s ∧ TruthAt … s φ ∧ ∀ r, t < r → r < s → TruthAt … r ψ` — the
+   existential witness second, the open-interval condition first, exactly as the `(until)` clause
+   above states it. The migration was a uniform argument swap of the two constructors and every
+   call site, carried out under
+   `specs/448_migrate_snce_untl_to_guard_first_order/plans/01_guard-first-migration.md`. It is
+   meaning-preserving by construction: `lake build` green at the same job count, per-file `sorry`
+   census byte-identical to baseline, axiom count unchanged, and the role-keyed `toJson` oracle
+   regenerating byte-identically.
+
+Corroborated independently by `def:BLplus-defined` below, which the Lean derived operators now
+match character for character: `$\past\varphi \coloneq \top\since\varphi$` →
+`somePast φ = Formula.snce Formula.top φ` (`Formula.lean:157`);
+`$\future\varphi \coloneq \top\until\varphi$` → `someFuture φ = Formula.untl Formula.top φ`
+(`:147`); `$\Next\varphi \coloneq \bot\until\varphi$` → `next φ = Formula.untl Formula.bot φ`
+(`:511`); `$\Previous\varphi \coloneq \bot\since\varphi$` → `prev φ = Formula.snce Formula.bot φ`
+(`:516`).
+
+**This is a prose repair, not a re-pin — no anchor hash moved.** The verbatim block and its
+`edde7517…` checksum above are the live paper text; only this caveat, which described a footnote
+that no longer exists and a Lean convention that no longer holds, was rewritten.
+
+One residual asymmetry, deliberate and not a defect: the codebase's **prefix** rendering
+`U(event, guard)` (`Formula.prettyPrint`, the machine appendix's `schema_string`, and
+`asUntil?`/`asSince?`'s returned pair) remains **event-first**, unlike the constructor and unlike
+the paper's infix. Each such site now says so explicitly. Flipping it is deferred; see the
+"Deferred consequences" section of the decision record.
+
+### `def:BLplus-defined` — the defined temporal operators of `BL^+` — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{def:BLplus-defined}`. The eight defined operators
+(Past/Future/Historical/Henceforth/Always/Sometimes/Next/Previous) now sit inside
+`def:BLplus-language`'s own block, which is pinned. The quoted text below is retained as the
+last-resolved historical record.
+
+```latex
+\begin{Ddef} \label{def:BLplus-defined}
+	The following operators are defined in $\BL^+$:
+  \vspace{-.125in}
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\begin{multicols}{2}
+			\item[\it Past:] $\past\varphi \coloneq \top\since\varphi$.
+			\item[\it Future:] $\future\varphi \coloneq \top\until\varphi$.
+			\item[\it Historical:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
+			\item[\it Henceforth:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
+			\item[\it Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
+			\item[\it Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
+			\item[\it Next:] $\Next\varphi \coloneq \bot\until\varphi$.
+			\item[\it Previous:] $\Previous\varphi \coloneq \bot\since\varphi$.
+		\end{multicols}
+	\end{enumerate}
+  \vspace{-.25in}
+\end{Ddef}    
+```
+sha256: `fcad976996f1346178180d69dd93196df651818705c00fe546db8bea56f3c8f5`
+
+### `thm:BLplus-PastFuture` — DERIVED: the H/G truth conditions of the defined tense operators (the unconditional language embedding) — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{thm:BLplus-PastFuture}`; it went away with the
+`BL^+` fragment cluster. The quoted text below is retained as the last-resolved historical
+record. The repository's own `TruthAt` H/G characterizations are unaffected — they are proved
+in-tree, not imported from this anchor.
+
+```latex
+\begin{Tthm} \label{thm:BLplus-PastFuture}
+	$\M,\tau,x \vDash \Past\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y \in D$ with $y < x$; and $\M,\tau,x \vDash \Future\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y \in D$ with $x < y$.
+\end{Tthm}
+```
+sha256: `cf9d2e2bb1bcb17e3f27d9ac76f89c340f2cce5992586c617f4202051ac8256d`
+
+### `thm:BLplus-NextPrevious` — DERIVED: Next/Previous truth conditions over Discrete frames — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{thm:BLplus-NextPrevious}`; it went away with the
+`BL^+` fragment cluster. The quoted text below is retained as the last-resolved historical
+record.
+
+```latex
+\begin{Tthm} \label{thm:BLplus-NextPrevious}
+	Over \textsc{Discrete} task frames, $\M,\tau,x \vDash \Next\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for the immediate successor $y$ of $x$.
+  Additionally, $\M,\tau,x \vDash \Next\varphi \leftrightarrow \bot$ when $x$ has no immediate successor.
+	The past dual holds for $\Previous\varphi$ in an analogous manner.
+\end{Tthm}
+```
+sha256: `5d9a6febeae6e2dd4c78e1912616e75e6ae7896c929e75345b2ba6403c0693c9`
+
+### `def:time-shift-histories` — time-shift between possible worlds, pointwise form
+
+```latex
+\begin{Ddef} \label{def:time-shift-histories}
+	For a task frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- \textit{iff} $\tau(z) = \sigma(z + y - x)$ for all $z \in D$.
+\end{Ddef}
+```
+sha256: `0b5c05e8f579807c7701cd3d28cb8f7d00a2ec42d85eec2515c48edab355b88d`
+
+### `def:frame-validity` — validity over a frame
+
+```latex
+\begin{Ddef} \label{def:frame-validity}
+	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a task frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$.%
+    \footnote{
+      Since $H_{\F} \neq \emptyset$ for every task frame by \textbf{\ref{cor:occurrence}}, frame validity is never vacuous: every task frame contributes evaluation points, and so $\nvDash_{\F} \bot$ for every task frame $\F$.
+    }
+\end{Ddef}
+```
+sha256: `86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259`
+
+### `def:logical-consequence` — logical consequence and (global) validity
+
+```latex
+\begin{Ddef} \label{def:logical-consequence}
+	A conclusion $\varphi$ is a \textit{logical consequence} of a set of premises $\Gamma$--- written $\Gamma \vDash \varphi$--- just in case for all models $\M$, possible worlds $\tau \in H_{\F}$, and times $x \in D$, if $\M,\tau,x \vDash \gamma$ for all premises $\gamma \in \Gamma$, then $\M,\tau,x \vDash \varphi$.
+	A sentence $\varphi$ is \textit{valid} just in case $\vDash \varphi$.
+\end{Ddef}
+```
+sha256: `3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486`
+
+This block covers **both** logical consequence (`Γ ⊨ φ`) **and** global validity (`⊨ φ`, "valid
+just in case ⊨φ") — the paper defines them in the same `Ddef`. `def:frame-validity` above is the
+separate, frame-relative validity notion (`⊨_F φ`); the two are distinct anchors and both are
+tracked.
+
+### `CO` / `TMP-CO` — worked example of the `\aitem`-key anchor kind — **`TMP-CO` DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest; `CO` remains pinned)**
+
+The paper introduces some axioms via a custom `\aitem[KEY]{LABEL}` macro
+(`\newcommand{\aitem}[2][]{\item[{\bf ...}] \refstepcounter{acount}\label{#2}%`), which sets the
+**bold displayed key** to its optional first argument (or, if omitted, to the second argument) and
+sets the **`\label`** (hence the `\aref`-resolvable anchor) to the second argument. This means a
+single displayed key like "CO" can correspond to *two different* `\label` anchors in different
+parts of the paper — exactly the case recorded here, per this task's explicit instruction to
+demonstrate the mechanism handles both anchor kinds:
+
+| Anchor (`\label`) | Displayed key | Verbatim text | sha256 |
+|---|---|---|---|
+| `CO` | CO | `\aitem{CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.` | `5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41` |
+| `TMP-CO` | CO (same displayed key, `BL^+` restatement) | `\aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.` | `2205e7115342b037faeb67a24cb7679e393af582cedf6752c0c07d9a28b8f1be` |
+
+**2026-09-07 update.** The live paper no longer carries an `\aitem{...}{TMP-CO}`: the `BL^+`
+restatement of the completeness axiom disappeared with `def:TMplus-c` (now `def:BX-r`), which
+*derives* `CO` from `PU` rather than restating it under a second label. `TMP-CO` is therefore
+removed from the machine manifest and recorded `DANGLING`; the table row above is retained as the
+last-resolved historical record. `CO` itself still resolves and stays pinned, so the worked
+example of the two-anchor `\aitem` mechanism survives in half-form — a second live example is
+`def:S5`'s `TMP-MK`/`MK` family should one ever be needed.
+
+`CO` and `TMP-CO` are **not** part of `def:frame`'s four axioms (an unrelated coincidence of
+abbreviation — `CO` here names a temporal continuity/completeness axiom, unrelated to `def:frame`'s
+"Compositionality"). They are included to keep the extraction mechanism exercised against both
+anchor kinds the paper actually uses, per this task's instruction; they are not otherwise consumed
+by a live task at recording time.
+
+### `def:S5` — the S5 modal logic (rule/axiom schemata)
+
+```latex
+\begin{Ddef} \label{def:S5}
+  The \textbf{S5} \textit{Modal Logic} is the smallest extension of \textit{Classical Propositional Logic} \textbf{CPL} closed under all instances of the axiom schemata \textbf{\aref{MK}}, \textbf{\aref{MT}}, and \textbf{\aref{M5}}, the rule \textbf{\aref{MP}}, and the metarule \textbf{\aref{MN}} presented in \textbf{\S\ref{sub:Logic}}.
+\end{Ddef}
+```
+sha256: `82ec82d7ef3c0e24732fe6216b3326998412c594984ce02639ea4030ceabdb38`
+
+### `def:BX` — the Base Burgess–Xu tense logic
+
+```latex
+\begin{Ddef} \label{def:BX}
+  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} is the smallest extension of \textbf{CPL} closed under the metarules \textbf{\aref{TN}} and \textbf{\aref{TD}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.
+\end{Ddef}
+```
+sha256: `e1617a218b03206e11ebb9886b9a6a2add44591ce47f719445664e608f39e13e`
+
+### `def:TMplus-f` — the discrete Burgess–Xu tense logic BX_f, and its Z-time footnote — **DANGLING as of the 2026-09-07 rename-absorption re-pin: RENAMED to `def:BX-z` (removed from manifest)**
+
+The paper renamed this anchor to `def:BX-z`, which is pinned below. The quoted text is retained
+as the last-resolved historical record, and it is the *old* text that in-tree docstrings used to
+quote: the closing sentence now attributes the ℤ-time narrowing to `prop:archimedean` plus the
+§Extensions Hölder footnote rather than deriving it inline, and the systems are named
+**BX**$_z$ / **TM**$_z$ rather than **BX**$_f$ / **TM**$^+_f$. Any docstring still quoting the
+text below is quoting a version of the paper that no longer exists.
+
+```latex
+\begin{Ddef} \label{def:TMplus-f}
+  The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_f$ is the smallest extension of the base logic \textbf{BX} to include all instances of the following axioms:
+  \vspace{-.125in}
+  \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+    \begin{multicols}{2}
+    \aitem[UZ]{TMP-UZ} $\future\varphi \rightarrow (\neg\varphi\until\varphi)$.
+    \aitem[Z1]{TMP-Z1} $\Future(\Future\varphi \rightarrow \varphi) \rightarrow (\future\Future\varphi \rightarrow \Future\varphi)$.
+    \end{multicols}
+  \end{enumerate}
+  \vspace{-.175in}
+  Whereas \textbf{\aref{TMP-UZ}} asserts that if $\varphi$ in the future, then there is a \textit{nearest} future $\varphi$-time where $\neg\varphi$ throughout the intervening interval, \textbf{\aref{TMP-Z1}} is a backward induction principle that is characteristic of successor-Archimedean task frames.
+  It follows by H\"{o}lder's theorem that a nontrivial discrete Archimedean totally ordered abelian group is isomorphic to $\Z$, and so the successor-Archimedean discrete class to which \textbf{BX}$_f$ and \textbf{TM}$^+_\textsc{f}$ are sound and complete is exactly $\Z$-time.
+  % \textbf{TM}$_\textsc{f}$, by contrast, is sound over the full class of discrete frames, since \textbf{\aref{DF}} is valid on every discrete order and not only on $\Z$-time; whether \textbf{TM}$_\textsc{f}$ is complete over that broader class remains open, as discussed at \textbf{\ref{cor:tm-completeness}}.
+  % \textbf{\aref{TMP-UZ}} and \textbf{\aref{TMP-Z1}} are not sound over non-Archimedean discrete orders: over $\Z \times_{\mathrm{lex}} \Z$, an atom true only in the second galaxy leaves \textbf{\aref{TMP-UZ}} without a first witness.
+\end{Ddef}
+```
+sha256: `748db67fde66dfae930e60f5e332c608585b3ac2f3f35628704536b7884bde54`
+
+### `def:TMplus-d` — the dense Burgess–Xu tense logic BX_d — **DANGLING as of the 2026-09-07 rename-absorption re-pin: RENAMED to `def:BX-d` (removed from manifest)**
+
+The paper renamed this anchor to `def:BX-d`, which is pinned below. The quoted text is retained
+as the last-resolved historical record; the live definition no longer inlines the `DN`/`NN`
+axiom statements, citing `\S`Extensions for them instead.
+
+```latex
+\begin{Ddef} \label{def:TMplus-d}
+  The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_d$ is the smallest extension of the base logic \textbf{BX} to include all instances of the following axioms:
+  \vspace{-.125in}
+  \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+    \begin{multicols}{2}
+      \aitem[DN]{TMP-DN} $\Future\Future\varphi \rightarrow \Future\varphi$.
+      \aitem[NN]{TMP-NN} $\neg\Next\top$.
+    \end{multicols}
+  \end{enumerate}
+  \vspace{-.175in}
+  Whereas \textbf{\aref{TMP-DN}} coincides with \textbf{\aref{DN}} of \textbf{TM}, the axiom \textbf{\aref{TMP-NN}} is specific to \textbf{TM}$^+$ and asserts that there is no immediate successor.
+\end{Ddef}
+```
+sha256: `aa6542e6eee06e5c94dddc4b4581715d8b4310bba53615e0c0f80188016f10cf`
+
+### `def:TMplus-c` — the complete Burgess–Xu tense logic BX_c, Reynolds-triple basis, CO derived — **DANGLING as of the 2026-09-07 rename-absorption re-pin: RENAMED to `def:BX-r` (removed from manifest)**
+
+The paper renamed this anchor to `def:BX-r`, which is pinned below, and re-titled the system
+*Dense and Complete* rather than *Complete*. The quoted text is retained as the last-resolved
+historical record. Note that the live definition's second Reynolds axiom is displayed and
+labelled `SEP`, not `SP`; and the `TMP-CO` restatement quoted below no longer exists.
+
+```latex
+\begin{Ddef} \label{def:TMplus-c}
+  Letting $K^+\varphi \coloneq \neg(\neg\varphi\until\top)$ and $K^-\varphi \coloneq \neg(\neg\varphi\since\top)$ abbreviate Reynolds' (1992) operators--- $K^+\varphi$ says that $\varphi$ recurs arbitrarily soon in the future, and $K^-\varphi$ that $\varphi$ recurred arbitrarily recently in the past--- the \textit{Complete Burgess--Xu Tense Logic} \textbf{BX}$_c$ is the smallest extension of the base logic \textbf{BX} to include all instances of the following axioms, due to Reynolds (1992), where only the future/until direction of \textbf{\aref{TMP-PU}} is stated, its past/since direction following by \textbf{\aref{TMP-TD}}:
+  \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+    \aitem[Prior-U]{TMP-PU} $(\varphi\until\top) \wedge \future\neg\varphi \rightarrow \varphi\until(\neg\varphi \vee K^+\neg\varphi)$.
+    \aitem[Sep]{TMP-SEP} $K^+\varphi \wedge \neg K^+(\varphi \wedge (\neg\varphi\until\varphi)) \rightarrow K^+(K^+\varphi \wedge K^-\varphi)$.
+  \end{enumerate}
+  The following axiom restates \textbf{\aref{CO}} from \textbf{TM}, and is a \textit{derived theorem} of \textbf{BX}$_c$ rather than a further axiom, using only \textbf{\aref{TMP-PU}} and the base axioms of \textbf{BX}:
+  \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+    \aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.
+  \end{enumerate}
+  As a result, \textbf{\aref{TMP-CO}} may be omitted from \textbf{BX}$_c$.
+  % This derivation is machine-checked in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so will not be provided here.
+  % Whether \textbf{\aref{TMP-CO}} alone axiomatizes the same logic as the full triple is open: the converse derivation--- deriving \textbf{\aref{TMP-PU}} and \textbf{\aref{TMP-SEP}} from \textbf{\aref{TMP-CO}} alone--- is conjectured to fail, via an unformalized pen-and-paper sketch involving a $\Q$-flow with isolated $\neg\varphi$ points accumulating at an irrational from above; this independence is not asserted as established.\footnote{%
+  %   A nontrivial Dedekind-complete totally ordered abelian group is Archimedean, hence by H\"{o}lder's theorem isomorphic to $\Z$ or $\R$.
+  %   The complete class is therefore exactly $\set{\Z, \R}$ up to isomorphism, so the Dedekind-complete theory of time is $\Th{\Z} \cap \Th{\R}$ and the dense-and-complete class is exactly $\R$.
+  %   In particular, no non-Archimedean order is complete.
+    % }
+\end{Ddef}
+```
+sha256: `116725ac133c7ce7660d6c32e3654c2e8456c03dcd1cf97cd3b254238c2d4c03`
+
+### `def:BX-z` — the discrete Burgess–Xu tense logic BX_z (RENAMED from `def:TMplus-f`), and its ℤ-time narrowing
+
+**Re-hashed twice on 2026-09-07**: the second time for a comment-only deletion inside the
+environment (the `%% NEW CHANGE` editorial lines and three commented-out sentences), which changes
+the hash without changing a word of the live prose. The text below is the post-deletion state.
+
+**Renamed** from `def:TMplus-f` by the paper's 2026-09 z/d/r wave. Two substantive changes came
+with the rename, and in-tree prose that predates them is stale rather than merely mis-labelled:
+the axiom statements are no longer inlined (the definition cites `\S`Extensions for `UZ` and
+`Z1`), and the ℤ-time narrowing is no longer derived here from Hölder's theorem — the definition
+now cites `prop:archimedean` for the failure of `UZ`/`Z1` over non-Archimedean discrete orders and
+`\S`Extensions for the Hölder step, concluding that the discrete task frames over which
+**BX**$_z$ and **TM**$_z$ are sound and complete are exactly those over ℤ-time.
+
+```latex
+\begin{Ddef} \label{def:BX-z}
+  The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ is the smallest extension of the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} and \textbf{\aref{Z1}} presented in \textbf{\S\ref{sub:Extension}}.
+  Since \textbf{\aref{UZ}} and \textbf{\aref{Z1}} fail over every discrete temporal order that is not Archimedean (\textbf{\ref{prop:archimedean}}), and the Archimedean discrete orders are exactly $\Z$-time (\textbf{\S\ref{sub:Extension}}), the discrete task frames over which \textbf{BX}$_\textsc{z}$ and \textbf{TM}$_\textsc{z}$ are sound and complete are exactly those over $\Z$-time.
+\end{Ddef}
+```
+sha256: `3e2af812eaf4319b349ed734d9b63ffa04f6c72545a9363504b2b9b89694248f`
+
+### `def:BX-d` — the dense Burgess–Xu tense logic BX_d (RENAMED from `def:TMplus-d`)
+
+**Renamed** from `def:TMplus-d`. The axioms `DN` and `NN` are no longer displayed here; the
+definition cites `\S`Extensions for them.
+
+```latex
+\begin{Ddef} \label{def:BX-d}
+  The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ is the smallest extension of the base logic \textbf{BX} to include all instances of \textbf{\aref{DN}} and \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
+\end{Ddef}
+```
+sha256: `555db844b3c15ca4f878406540d88c457f372a774bbb59776e3f1b0d0fb76394`
+
+### `def:BX-r` — the dense-and-complete Burgess–Xu tense logic BX_r (RENAMED from `def:TMplus-c`), CO derived
+
+**Renamed** from `def:TMplus-c`, and re-titled *Dense and Complete Burgess--Xu Tense Logic*: it
+is now presented as the extension of **BX**$_d$ (not of **BX**) by `PU` and `SEP`. The second
+Reynolds axiom is labelled **`SEP`**, not `SP`. `CO` remains a *derived theorem* rather than an
+axiom, now derived from `PU` together with the axioms of **BX**; the `TMP-CO` restatement that the
+old definition carried no longer exists (see the `CO` / `TMP-CO` entry above).
+
+```latex
+\begin{Ddef} \label{def:BX-r}
+  The \textit{Dense and Complete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{r}$ is the smallest extension of the dense logic \textbf{BX}$_\textsc{d}$ to include all instances of \textbf{\aref{PU}} and \textbf{\aref{SEP}} presented in \textbf{\S\ref{sub:Extension}}.
+  % NEW CHANGE [fragment leftovers]: reference to the deleted fragment system TM^- replaced by a section reference.
+  The completeness axiom \textbf{\aref{CO}} of \textbf{\S\ref{sub:Extension}} is a \textit{derived theorem} of \textbf{BX}$_\textsc{r}$ rather than a further axiom, using only \textbf{\aref{PU}} and the axioms of \textbf{BX}, and so is not included among the axioms of \textbf{BX}$_\textsc{r}$.
+  % This derivation is machine-checked in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so will not be provided here.
+  % Whether \textbf{\aref{CO}} alone axiomatizes the same logic as the full triple is open: the converse derivation--- deriving \textbf{\aref{PU}} and \textbf{\aref{SEP}} from \textbf{\aref{CO}} alone--- is conjectured to fail, via an unformalized pen-and-paper sketch involving a $\Q$-flow with isolated $\neg\varphi$ points accumulating at an irrational from above; this independence is not asserted as established.
+  % NEW CHANGE [Hölder consolidation]: a commented-out footnote duplicating the Hölder footnote of \S\ref{sub:Extension} was deleted here.
+\end{Ddef}
+```
+sha256: `b35751c79a502988f9f77880354c9ed5200e9751361f2f6c209fcc3247721284`
+
+### `def:TMplus` — TM+ base logic for BL+, and the four-part conservativity footnote
+
+```latex
+\begin{Ddef} \label{def:TMplus}
+  The \textit{Base Logic of Tense and Modality} \textbf{TM} for $\BL$ is the smallest extension of \textbf{S5} and the base logic \textbf{BX} that includes all instances of the \textit{bimodal interaction} axiom \textbf{\aref{MF}} presented in \textbf{\S\ref{sub:Logic}}.
+  Similarly, the discrete \textbf{TM}$_\textsc{z}$, dense \textbf{TM}$_\textsc{d}$, and dense and complete \textbf{TM}$_\textsc{r}$ extensions of \textbf{TM} include the additional axioms that distinguish \textbf{BX}$_\textsc{z}$, \textbf{BX}$_\textsc{d}$, and \textbf{BX}$_\textsc{r}$, respectively.
+\end{Ddef}
+```
+sha256: `c14cad798aac2c73319de9ccc0a34ce6ca07971dbb6427e5107a08f23cc4cea8`
+
+### `thm:M5-valid` — the M5 axiom is valid
+
+```latex
+\begin{Tthm} \label{thm:M5-valid}
+	$\vDash \Diamond\Box\varphi \rightarrow \Box\varphi$.
+\end{Tthm}
+```
+sha256: `bce3cc3be256f7b4c10e34a397e4b3b14abe4e8ed6728e8e91768e9a2ad8b2af`
+
+### `thm:TM-soundness` — the Soundness theorem
+
+```latex
+\begin{Tthm}[Soundness] \label{thm:TM-soundness}
+	If $\vdash \varphi$, then $\vDash \varphi$.
+\end{Tthm}
+```
+sha256: `23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529`
+
+### `app:discrete` — the Discrete correspondence theorem (DF)
+
+```latex
+\begin{Tthm} \label{app:discrete}
+	For any temporal order $\D$, $\vDash_{\D} (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\D$ is \textsc{Discrete}.%
+	  \footnote{
+	    The theorems of this kind cannot be sharpened to single task frames.
+	    The \textit{static} task frame over $\D$, in which $w \Rightarrow_x u$ just in case $w = u$, satisfies every clause of \textbf{\ref{def:frame}}--- each cone and each nonempty fiber and segment being a singleton--- yet its possible worlds are constant, so that every sentence of $\BL$ has the same truth value at every time along a possible world and \textbf{\aref{DF}}, \textbf{\aref{DN}}, and \textbf{\aref{CO}} are all valid over it whatever $\D$ may be.
+	    Since the tense operators see $\D$ only through the convex histories that $\Rightarrow$ admits, correspondence holds over the fibre $\Tcls{\D}$ rather than frame by frame, as the Lean 4 repository for this paper records.
+	  }
+\end{Tthm}
+```
+sha256: `23a54c163da3ed991258ccd9647ae153bb2704cd0f86c138c7e5381ac6190e0e`
+
+### `app:dense` — the Dense correspondence theorem (DN)
+
+```latex
+\begin{Tthm} \label{app:dense}
+	For any temporal order $\D$, $\vDash_{\D} \Future\Future\varphi \rightarrow \Future\varphi$ iff $\D$ is \textsc{Dense}.
+\end{Tthm}
+```
+sha256: `751ad28ba753b718dad05beca27b6403a274977ff6e42a53e791d1770041b7d5`
+
+### `app:complete` — the Complete correspondence theorem (CO)
+
+```latex
+\begin{Tthm} \label{app:complete}
+	For any temporal order $\D$, $\vDash_{\D} \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\D$ is \textsc{Complete}.
+\end{Tthm}
+```
+sha256: `9d962cf8efb3530cad11939c690d0a704154f4ddaaa7904f21ea9b8226a1f2fe`
+
+#### Reading note (of record) on `app:discrete` / `app:dense` / `app:complete`
+
+The three statements above read as per-frame biconditionals — call this reading (T0):
+"$\F \vDash ax$ iff $\F$ is a Discrete/Dense/Complete task frame." The (⇒) direction of
+(T0) is **false** as stated: degenerate frames refute it (the tree's `staticFrame`, on which
+every history is constant, validates each axiom over orders that are not Discrete/Dense/
+Complete respectively). What the paper's appendix proofs actually prove — and what their
+closing sentences state — is the temporal-order-level biconditional (T1):
+
+> (∀ task frame $\F$ with temporal order $\D$, $\F \vDash ax$) iff $\D$ is
+> Discrete/Dense/Complete.
+
+**(T1) is the reading of record for this repository**: it is what the Lean tree formalizes.
+The (⇐) directions of (T0) are genuinely per-frame and are the per-class soundness facts the
+tree already carries. No non-degeneracy hypothesis is to be bolted onto (T0); class-level
+exactness is recovered by the indicator-axiom mechanism, not by patching these statements.
+Adjudication of record:
+`specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md`
+§2.4.
+
+
+### `def:frame-properties` — Discrete/Dense/Complete/Deterministic frame-class predicates
+
+```latex
+\begin{Ddef} \label{def:frame-properties}
+	A temporal order $\D = \tuple{D, +, 0, \leq}$ is:
+	\begin{enumerate}[wide=0pt, labelsep=.05in, itemsep=.075in]
+		\item[\sc Discrete] if for any $x \in D$, whenever there exists $y > x$, there is a least such $y' > x$ satisfying $z \geq y'$ for all $z > x$.
+		\item[\sc Dense] if for any $x, y \in D$ where $x < y$, there exists $z \in D$ where $x < z < y$.
+		\item[\sc Complete] if every nonempty $S \subseteq D$ bounded above has a least upper bound in $D$.
+	\end{enumerate}
+	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Discrete}, \textsc{Dense}, or \textsc{Complete} just in case its temporal order $\D$ is.
+\end{Ddef}
+```
+sha256: `709cefc5c849b2fe6bb950cbde6b1a738181c48eeff25e89df0bb5a457e2f268`
+
+Note: promoted into coverage by this task (previously listed under "Deliberately not covered"
+below, which is updated accordingly).
+
+### `def:deterministic` — the Deterministic frame-class predicate (standalone since the 2026-08 wave)
+
+Split out of `def:frame-properties` by the paper: Deterministic used to be a fourth clause inside
+that definition and is now a definition of its own at live paper line 2868. Added to the manifest
+at the 2026-08-25 re-pin because `FormalSystem/Examples/TemporalStructures.lean` cites it, and
+citing `def:frame-properties` for determinism is now wrong.
+
+```latex
+\begin{Ddef} \label{def:deterministic}
+	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Deterministic} just in case $u = v$ whenever $w \Rightarrow_x u$ and $w \Rightarrow_x v$ for $w, u, v \in W$ and $x \in D$, holding in both temporal directions since \textbf{\ref{def:task-relation}}'s converse convention already extends $x$ over all of $D$.
+\end{Ddef}
+```
+sha256: `3baae0ee62cee6a0bd81b18951efb3cd5d1097a017f9c60ccd2d8b87e4a3e175`
+
+### `cor:saturation-finite` — every task frame with finite W satisfies Saturation, choice-free (renamed from `cor:spherical-finite`; **environment changed `Cthm` → `Lthm`** in the 2026-09-07 wave)
+
+The manifest row was re-keyed from `cor:spherical-finite` to `cor:saturation-finite` at the
+2026-09-02 rename absorption, but the prose entry below still quoted the pre-rename *Spherical*
+text; it is refreshed here. The 2026-09-07 wave additionally moved the result from a `Cthm`
+(corollary) to an `Lthm` (lemma) environment while leaving the statement itself word-for-word
+unchanged. That is a hash-visible change even though nothing mathematical moved, because
+`resolve_env` hashes the whole `\begin{…}`/`\end{…}` block. The manifest row's `kind` stays
+`env` — the resolver reads the environment name off the `\label{}` line rather than being told it
+— so no column but the sha256 needed re-checking. The anchor id is still `cor:` prefixed while the
+environment is now a lemma; that mismatch is the paper's, and this record follows the paper.
+
+```latex
+\begin{Lthm} \label{cor:saturation-finite}
+	Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation}, choice-free.
+\end{Lthm}
+```
+sha256: `ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3`
+
+### `cor:tm-completeness` — the Completeness corollary (TM sound but not complete; completeness carried by BL+)
+
+```latex
+\begin{Cthm}[Completeness] \label{cor:tm-completeness}
+  A proof system $\mathbf{S}$ is \textit{strongly complete} over a class $\mathsf{C}$ of task frames just in case $\Gamma \vDash_{\mathsf{C}} \varphi$ (\textbf{\ref{def:class-validity}}) implies $\Gamma \vdash_{\mathbf{S}} \varphi$ for every set of sentences $\Gamma$, and \textit{weakly complete} over $\mathsf{C}$ just in case $\vDash_{\mathsf{C}} \varphi$ implies $\vdash_{\mathbf{S}} \varphi$.
+  Completeness is then carried by the following $\BL$ systems:
+  \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+    \item[\bf TM] Strongly complete over all task frames.
+    \item[\bf TM$_\textsc{d}$] Strongly complete over the dense task frames.
+    \item[\bf TM$_\textsc{z}$] Weakly complete over $\Z$-time.
+    \item[\bf TM$_\textsc{r}$] Weakly complete over $\R$-time.
+  \end{enumerate}
+  Strong completeness provably fails for $\Z$-time as well as $\R$-time where compactness fails, and so weak completeness is the appropriate target.%
+    \footnote{
+      These results, together with the soundness of the corresponding systems, have been established in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so their proofs are not reproduced here.
+    }
+\end{Cthm}
+```
+sha256: `a374007e4006c6ae8388e9e0077e5579fc54d0b032b0369b546be1dfd0271643`
+
+### `cor:tm-decidability` — the Decidability corollary (open) — **DANGLING as of the 2026-08-17 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{cor:tm-decidability}` (the corollary is commented
+out / removed), even though the paper's Conclusion still asserts decidability — an internal
+inconsistency surfaced to the user separately. The quoted text below is retained as the
+last-resolved historical record; the anchor is removed from the machine manifest so the checker
+no longer reports it as unresolvable. The obligation that the finished paper restore or restate
+this corollary is carried by `// CONFIRM(paper):` comments in `typst/` chapters. If the paper
+restores the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "cor:tm-decidability|env|-|-"`.
+
+```latex
+\begin{Cthm}[Decidability] \label{cor:tm-decidability}
+%% CHANGE (halden-defect-repair, decidability-rewrite): deleted the false blanket finite-W-over-Z premise (Section proof gives two witnesses: DF for four of the five systems, CO for TM_f) and restated decidability as open, with the intersection reduction given as the target strategy rather than an established result.
+%% OLD:   $\textbf{TM}$, $\textbf{TM}_\textsc{f}$, $\textbf{TM}_\textsc{d}$, $\textbf{TM}_\textsc{c}$, and $\textbf{TM}_\textsc{dc}$ are all decidable.
+  Whether \textbf{TM}, \textbf{TM}$_\textsc{f}$, \textbf{TM}$_\textsc{d}$, \textbf{TM}$_\textsc{c}$, and \textbf{TM}$_\textsc{dc}$ are decidable is open.
+%% CHANGE (completeness-relocation, decidability-tm-star-drop): dropped the retired \textbf{TM}$^*$ label, which is no longer carried through the paper; the intersection-reduction target and the $\mathrm{Th}(\Z)$/$\mathrm{Th}(\R)$ clause are otherwise unchanged.
+%% OLD:   Decidability of $\mathrm{Log}(\text{all task frames}) = \mathrm{Log}(\textsc{Discrete}) \cap \mathrm{Log}(\textsc{Dense})$, and of \textbf{TM}$^*$, would follow from decidability of the two factor logics; likewise decidability of $\mathrm{Log}(\text{complete frames}) = \mathrm{Th}(\Z) \cap \mathrm{Th}(\R)$ would follow from decidability of $\mathrm{Th}(\Z)$ and $\mathrm{Th}(\R)$ separately.
+  Decidability of $\mathrm{Log}(\text{all task frames}) = \mathrm{Log}(\textsc{Discrete}) \cap \mathrm{Log}(\textsc{Dense})$ would follow from decidability of the two factor logics; likewise decidability of $\mathrm{Log}(\text{complete frames}) = \mathrm{Th}(\Z) \cap \mathrm{Th}(\R)$ would follow from decidability of $\mathrm{Th}(\Z)$ and $\mathrm{Th}(\R)$ separately.
+\end{Cthm}
+```
+sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
+
+### `def:id` — identity extension of BL (Ref/Imp/LL)
+
+```latex
+\begin{Ddef} \label{def:id}
+  Letting $\BL^{\Box}$ be the purely modal fragment of $\BL$, each $p_i \in \SL$ will be understood to be a \textit{propositional variable} rather than sentence letter.
+  The \textit{identity extension} of $\BL^{\Box}$ is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
+	\vspace{-.125in}
+	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+		\begin{multicols}{2}
+			\aitem{Ref} $\vdash \varphi \equiv \varphi$.
+			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
+			\aitem[LL$^{-}$]{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$
+        where $\psi$ is free for $\varphi$ in $\chi$ and no replaced $\varphi$ lies in the scope of an operator.%
+        \footnote{
+          A formula $\psi$ is \textit{free for} $\varphi$ in $\chi$ just in case no replaced occurrence of $\varphi$ lies within the scope of a quantifier binding a variable free in $\varphi$ or $\psi$.
+          The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers.
+          The operator-scope proviso makes $\equiv$ a congruence for the logical vocabulary--- identicals may be substituted for one another within $\rightarrow$, $\bot$, $\equiv$, and the quantifiers added below--- but not for operator terms. % as in \textbf{\S\ref{sec:Introduction}}. %: the logical constants are objective, whereas an operator may be opaque.
+        }
+		\end{multicols}
+	\end{enumerate}
+	\vspace{-.175in}
+  The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021}.}
+  Symmetry and transitivity of $\equiv$ are nevertheless derivable, and since each replaces an occurrence lying outside any operator term, both survive the proviso on \textbf{\aref{LL}}.
+  % Given $\varphi \equiv \psi$, instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches by permuting antecedents and applying modus ponens to give $\psi \equiv \varphi$, i.e., symmetry.
+  % Given also $\psi \equiv \theta$, a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
+\end{Ddef}
+```
+sha256: `1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238`
+
+### `def:strongest` — strongest objective normal modal operator, Str^O_L(Q)
+
+```latex
+\begin{Ddef} \label{def:strongest}
+	$\Q$ is a \textit{strongest objective modal operator in $L$}--- $\Str^{\OO}_{L}(\Q)$--- if and only if:
+	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+    \item $\vdash \OO(\Q)$; and
+		\item $\vdash \forall\P[\OO(\P) \rightarrow (\Q \preceq \P)]$.
+	\end{enumerate}
+  \vspace{-.1in}
+\end{Ddef}
+```
+sha256: `57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369`
+
+### `thm:exist` — L has a strongest objective normal modal operator (Bm witnesses)
+
+```latex
+\begin{Tthm} \label{thm:exist}
+	$\Str^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective modal operator.
+\end{Tthm}
+```
+sha256: `fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9`
+
+### `lem:uniq` — uniqueness of the strongest objective normal modal operator
+
+```latex
+\begin{Lthm} \label{lem:uniq}
+	If $\Str^{\OO}_{L}(\Q)$ and $\Str^{\OO}_{L}(\P)$, then $\vdash \forall p(\Q p \leftrightarrow \P p)$.
+\end{Lthm}
+```
+sha256: `ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf`
+
+### `thm:s4` — the strongest objective operator obeys S4 — **DANGLING as of the 2026-08-25 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{thm:s4}`. The paper folded the S4, B/Symmetry, and T
+results for the strongest objective operator into a **single** theorem, `thm:s5` (live paper line
+2158), which states all three conjuncts at once. The quoted text below is retained as the
+last-resolved historical record; the anchor is removed from the machine manifest so the checker no
+longer reports it as unresolvable. Its successor is tracked as `thm:s5` below. If the paper
+restores the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "thm:s4|env|-|-"`.
+
+```latex
+\begin{Tthm} \label{thm:s4}
+	If $\Str^{\OO}_{L}(\Q)$, then $\vdash \forall p(\Q p \rightarrow \Q\Q p)$.
+\end{Tthm}
+```
+sha256: `09599de2c925eba38b8ac8e9e6007118e9c6539100a777d98ada030d3d5fcd95`
+
+### `thm:sym` — the strongest objective operator obeys B/Symmetry — **DANGLING as of the 2026-08-25 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{thm:sym}`. The paper folded the S4, B/Symmetry, and T
+results for the strongest objective operator into a **single** theorem, `thm:s5` (live paper line
+2158), which states all three conjuncts at once. The quoted text below is retained as the
+last-resolved historical record; the anchor is removed from the machine manifest so the checker no
+longer reports it as unresolvable. Its successor is tracked as `thm:s5` below. If the paper
+restores the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "thm:sym|env|-|-"`.
+
+```latex
+\begin{Tthm} \label{thm:sym}
+	If $\Str^{\OO}_{L}(\Q)$, then $\vdash \forall p(p \rightarrow \Q\Dual{\Q}p)$.%
+  \footnote{
+    \textbf{\aref{O-Conv}} is a term-level form of the principle, due to Williamson \citep[p.~457]{Williamson2016}, that every necessity has a reversal, where Bacon and Zeng \citep[Prop.~4.1]{Bacon2022} prove that principle equivalent to the \textbf{B} axiom for the broadest necessity.
+    Here \textbf{\aref{I9}} makes $\Cnv{\Q}$ a reversal of $\Q$ and \textbf{\aref{O-Conv}} keeps it in the class, so \textbf{\ref{thm:sym}} derives one direction of that equivalence with a canonical converse in place of an existential.
+  }
+\end{Tthm}
+```
+sha256: `64e88f37ad07f9dcd339ebd0789e5a84cc6a0098f597cbcef2513a801332e582`
+
+### `thm:s5` — the strongest objective operator obeys S5 (S4 + B + T, in one theorem)
+
+Successor to the retired `thm:s4` and `thm:sym` above: the paper merged both, and added the T
+conjunct, into a single theorem in the 2026-08 wave. Added to the manifest at the 2026-08-25
+re-pin because the pair it replaces was load-bearing and would otherwise have gone untracked.
+
+```latex
+\begin{Tthm} \label{thm:s5}
+	If $\Str^{\OO}_{L}(\Q)$, then  $\vdash \forall p(\Q p \rightarrow \Q\Q p)$, $\vdash \forall p(p \rightarrow \Q\Dual{\Q}p)$, and $\vdash \forall p(\Q p \rightarrow p)$.
+\end{Tthm}
+```
+sha256: `14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7`
+
+### Satisfiability — **no paper-native definition exists** (recorded as a gap, not fabricated)
+
+The paper does not define "satisfiable" or "satisfiability" anywhere as a `\label`led `Ddef`,
+`\aitem`, or otherwise-named clause. This was confirmed by an exhaustive `satisfiab` grep over the
+current paper text: every occurrence is informal prose ("this is easy to satisfy", "satisfiability
+in HyperLTL is undecidable" in a related-work discussion), never a definition. This is independently
+corroborated by task 417's own governing description, which states the same finding in its own
+words ("Satisfiability has no labeled paper definition").
+
+**This file therefore does not, and must not, invent a satisfiability definition on the paper's
+behalf** — doing so would violate this file's own charter of recording only what the paper says.
+The Lean tree's `satisfiable` / `SatisfiableAbs` / `FormulaSatisfiable` (`FormalSystem/Semantics/Validity.lean:129,138,154`)
+are **repository-native vocabulary**, built from `def:logical-consequence`'s consequence relation
+(existential witness against `⊭ ⊥`-style unsatisfiability) but not themselves quoted from, or
+citable against, any paper anchor. Any future task that wants to claim "satisfiability" as a
+paper-sourced notion should be corrected to cite `def:logical-consequence` (consequence) instead,
+or should first get an actual `Ddef`/`\aitem` added to the paper before this file can track it.
+
+---
+
+## Deliberately not covered (scope boundary, not an oversight)
+
+The following paper machinery is adjacent to the entries above but was **not** included in this
+round's manifest, because it was not requested and adding it would widen this file's maintenance
+surface without a consuming task yet:
+
+- ~~`def:constraints`, `lem:constraint`, `lem:fibers`, `lem:admissible`, `lem:step`~~ — **no
+  longer excluded**: promoted into coverage on 2026-08-11 (see "Coverage extension" above),
+  because the paper-refactor cluster's descriptions quote them and commit to lemma-for-lemma
+  mirroring.
+- `def:task-topology` and its topology properties (`T1`, `R0`, `Discrete`) — topology is not named
+  in this task's "cover at minimum" list.
+- `def:derivability`, `def:soundness` — proof-theoretic, not semantic, definitions; not named in
+  this task's "cover at minimum" list. **Justification refreshed 2026-09-07**: the z/d/r wave
+  restated both for **TM** and the full language **BL** rather than for the retired Past/Future
+  fragment system (paper lines 4031 and 4035). The restatement makes them *more* relevant to this
+  repository, not less, but the exclusion stands on its original ground — they are proof-theoretic
+  — and no in-tree site quotes either. Promote them the moment one does.
+- `def:time-shift-histories` and the time-shift preservation lemmas.
+
+If a future task needs to cite paper text for any of the above, add it here first (see "How to
+extend this record" below), rather than quoting the paper directly in a task spec.
+
+## Downstream consumers (informational, not authoritative — the tasks own their own scoping)
+
+At recording time, the following live tasks quote paper anchors tracked in this file directly in
+their `state.json` descriptions and should be re-checked against this file (not the paper) on any
+future revision: the `paper-refactor` cluster (tasks whose `topic` field is `paper-refactor` in
+`specs/state.json` — quote `def:frame`, `def:world-history`, `def:logical-consequence`,
+`def:BL-semantics`'s box clause, and `def:temporal-order`/`def:task-relation`/`def:directed`
+verbatim in their re-issued descriptions). See this task's own research report for the audit of
+task 424's exposure to the `def:BL-semantics` box-clause / `TruthAt` architecture.
+
+## How to extend this record
+
+1. Identify the anchor's `\label{}` name (environment case) or `\aitem` key + enclosing label
+   (item case) or `\aitem` label (aitem case) in the live paper — never a line number.
+2. Run `scripts/check-paper-definitions.sh --resolve "ANCHOR|KIND|ENCLOSING|LOCATOR"` (see that
+   script's `--help`) to print the currently-resolved text and its sha256.
+3. Add a new `### \`ANCHOR\`` entry above quoting that text verbatim, and add a row to the
+   machine-readable manifest below with the printed hash.
+4. Re-run `scripts/check-paper-definitions.sh` with no arguments and confirm it reports the quiet
+   case-(a) pass.
+
+## Machine-readable manifest
+
+`scripts/check-paper-definitions.sh` parses the fenced block below directly — it is the single
+source of truth for anchor IDs, kinds, and expected hashes; the prose entries above exist for
+human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing|locator|sha256`.
+`kind` is one of `env`, `item`, `aitem` (see "Hashing method" above). `-` means "not applicable".
+
+<!-- MANIFEST:BEGIN -->
+```
+# anchor_id|kind|enclosing|locator|sha256
+def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
+def:task-relation|env|-|-|f076d52a3b75a5cdacdc86ed815c006b6bcbf78483aebd36152d1c5b04ed5b33
+def:frame|env|-|-|b5d3bf93cf07486d239afcbc9379883fdbea1194e97d560b391ccbdc128b9d99
+def:frame#Compositionality|item|def:frame|Compositionality|4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa
+def:frame#Seriality|item|def:frame|Seriality|ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad
+def:frame#Limit|item|def:frame|Limit|3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f
+def:frame#Saturation|item|def:frame|Saturation|c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60
+lem:nullity|env|-|-|94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973
+def:world-history|env|-|-|550661d3b388c3ef494ffb81c643ab5a550f996a5a86329afc557f41ed7872e7
+thm:extension|env|-|-|65811dcff91a3dd840058353b14667d8abfcf5d94c8be9979944f03be5234379
+cor:occurrence|env|-|-|231c1d3cd0bf70a323775c623ed36761c6e0c4990bf72106c8323a9fe78842ec
+def:constraints|env|-|-|50aadae779c7d57c810e94209614b5cdfe2590fa82c1c0793db948e8d0917e28
+lem:nesting|env|-|-|ed036f28b70b99d4294515c0f1da64a62e471aa4795394cda4d9010b1f1971a7
+lem:nonempty|env|-|-|8067bf45a360f04db7a94280bde1b359dac58e8311f2fba1d58db15bf2336598
+lem:constraint|env|-|-|ca6719adfaad9f6dc3d1b6a57de013598dd80847014d9c2fb60ed626b895370f
+lem:admissible|env|-|-|9606ef1f1264887ed51358744df7e5fc290250dd8209f445fd138700da56de8e
+lem:step|env|-|-|b1f65f70cc243de5b32d4e2a46c35c986dd0322cf3ca0524fb76701af3e3be4b
+def:BL-semantics|env|-|-|b64b782a61c9a9613b68f37ec2d12229e7df8498043faeb1cf1c2686b8dd5a75
+def:BLplus-language|env|-|-|574bc1ad10ca0957a5b76c0d74f7ff5b2ea6a09fa180475c9c22eb6ea5b3e8e2
+def:time-shift-histories|env|-|-|0b5c05e8f579807c7701cd3d28cb8f7d00a2ec42d85eec2515c48edab355b88d
+def:frame-validity|env|-|-|86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259
+def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
+CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
+def:S5|env|-|-|82ec82d7ef3c0e24732fe6216b3326998412c594984ce02639ea4030ceabdb38
+def:BX|env|-|-|e1617a218b03206e11ebb9886b9a6a2add44591ce47f719445664e608f39e13e
+def:BX-z|env|-|-|3e2af812eaf4319b349ed734d9b63ffa04f6c72545a9363504b2b9b89694248f
+def:BX-d|env|-|-|555db844b3c15ca4f878406540d88c457f372a774bbb59776e3f1b0d0fb76394
+def:BX-r|env|-|-|b35751c79a502988f9f77880354c9ed5200e9751361f2f6c209fcc3247721284
+def:TMplus|env|-|-|c14cad798aac2c73319de9ccc0a34ce6ca07971dbb6427e5107a08f23cc4cea8
+thm:M5-valid|env|-|-|bce3cc3be256f7b4c10e34a397e4b3b14abe4e8ed6728e8e91768e9a2ad8b2af
+thm:TM-soundness|env|-|-|23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529
+app:discrete|env|-|-|23a54c163da3ed991258ccd9647ae153bb2704cd0f86c138c7e5381ac6190e0e
+app:dense|env|-|-|751ad28ba753b718dad05beca27b6403a274977ff6e42a53e791d1770041b7d5
+app:complete|env|-|-|9d962cf8efb3530cad11939c690d0a704154f4ddaaa7904f21ea9b8226a1f2fe
+def:frame-properties|env|-|-|709cefc5c849b2fe6bb950cbde6b1a738181c48eeff25e89df0bb5a457e2f268
+def:deterministic|env|-|-|3baae0ee62cee6a0bd81b18951efb3cd5d1097a017f9c60ccd2d8b87e4a3e175
+cor:saturation-finite|env|-|-|ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3
+cor:tm-completeness|env|-|-|a374007e4006c6ae8388e9e0077e5579fc54d0b032b0369b546be1dfd0271643
+def:id|env|-|-|1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238
+def:strongest|env|-|-|57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369
+thm:exist|env|-|-|fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9
+lem:uniq|env|-|-|ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf
+thm:s5|env|-|-|14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7
+```
+<!-- MANIFEST:END -->
+
+## Known anchors outside the manifest (machine-readable)
+
+`scripts/check-module-invariants.sh`'s **C15** check asserts that every `def:`/`thm:`/`lem:`/
+`cor:`/`app:`/`rmk:` citation in live, non-`specs/`, non-`Boneyard/` scope resolves *here* — never
+against the live `.tex`, so C15 does not go red merely because the author edited the paper. The
+manifest above covers every **pinned** anchor. This block covers the rest: anchors the tree cites
+that the manifest deliberately does not pin, each with an explicit status, so that every citation
+in the tree is a recorded decision rather than an accident.
+
+Two statuses:
+
+- **`LIVE-UNPINNED`** — the anchor resolves to a live, non-commented `\label{}` in the paper, but
+  is deliberately not pinned. Pinning costs a re-quote-and-re-hash on every paper wave, and is
+  warranted only where the tree quotes the anchor's *text*. These are cited by **name only** (as a
+  pointer, e.g. "see `app:deterministic`"), so a pin would buy nothing. If a docstring starts
+  quoting one verbatim, promote it to the manifest at that point.
+- **`DANGLING`** — the anchor does **not** resolve to a live `\label{}`: it was retired, it was
+  commented out, or it never existed. Every in-tree citation of one of these must say so at the
+  citation site; C15 only asserts that the anchor is *recorded* here, not that the prose is honest.
+
+<!-- KNOWN-ANCHORS:BEGIN -->
+```
+# anchor_id|status|note
+app:ObjectiveModality|LIVE-UNPINNED|section label for the objective-modality appendix; cited as a pointer. STRUCTURALLY UNPINNABLE: resolve_env reads the environment name off the same line as the \label{}, and this label sits on its own line under a \subsection{...}% — the app:TaskSemantics precedent
+app:TaskSemantics|LIVE-UNPINNED|section label for the task-semantics appendix; cited as a pointer
+app:auto_existence|LIVE-UNPINNED|automorphism existence; cited as a pointer, text never quoted
+app:deterministic|LIVE-UNPINNED|determinism CORRESPONDENCE theorem, not the definition; the definition is def:deterministic, which IS pinned
+app:deterministic-future|LIVE-UNPINNED|the deterministic-future appendix, whose sentence sent:det uses the time store/recall operators; cited as a pointer by README.md's four-language table, which records that this repository's L⋆ is the time-register fragment the appendix actually uses. BOTH HALVES ARE NOW FORMALIZED: the positive half is sentDet_of_deterministic (Semantics/StarDeterminism.lean) and the negative half is refute_sentDet (Semantics/StarNonValidities.lean), with the (*) chain as sentDet_unfold (Semantics/StarValidity.lean). Not pinned: no docstring quotes its text -- the transcription is of the displayed sentence and the (*) chain, both cited by \label
+app:drift|LIVE-UNPINNED|the non-deterministic drift frame theorem (Tthm); DriftFrame.lean discusses its PROOF (the interpolation and the compactness/finite-intersection Saturation argument), which lives in the \begin{proof} block outside the Tthm and so is not what a pin would hash; the statement itself is cited as a pointer
+app:topology-r0|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
+app:topology-t1|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
+cor:no-characterization|LIVE-UNPINNED|the no-characterization corollary (Cthm); cited as a pointer, text never quoted
+cor:perpetuity-valid|LIVE-UNPINNED|perpetuity principles valid; the live anchor that replaced the never-existent app:valid
+def:BL-language|LIVE-UNPINNED|the BL language; cited as a pointer alongside the pinned def:BLplus-language
+def:BLstar-semantics|LIVE-UNPINNED|the truth definition for the manuscript's \BL^\star, whose ($\Stability$) clause is the semantics of this repository's L⁺; cited as a pointer wherever a docstring names the ⊡ clause. Not pinned: the clause is quoted in this repository only in paraphrase. The anchor's block also covers the store/recall clauses; ITS TIME-REGISTER HALF IS NOW IMPLEMENTED as StarTruthAt over points (tau, x, v-vector) (Semantics/StarTruth.lean), with the world registers up_M/down_M deliberately still unimplemented -- recorded as an explicit exclusion in FormalSystem/Syntax/StarLanguage/README.md's correspondence table
+def:task-topology|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
+lem:deterministic-singleton|LIVE-UNPINNED|deterministic-frame singleton fibers (Lthm); cited as a pointer (StateSetTruth.lean names its choice-free direction but quotes no text)
+lem:history-time-shift-preservation|LIVE-UNPINNED|time-shift preservation; cited as a pointer
+prop:archimedean|LIVE-UNPINNED|the Pthm asserting that UZ and Z1 both fail over every non-Archimedean Discrete temporal order; def:BX-z cites it for the ZTime narrowing, and the tree now cites it by name at the IsZTime sites (FrameProperty.lean, FrameClassValidity.lean, Validity.lean, BLValidity.lean, Indicator.lean, LexIntWitness.lean, Semantics.lean, Correspondence/README.md, FormalFoundations.typ). Cited as a pointer; this repository does NOT check it -- it is a pen-and-paper result, and pinning would assert a verification the tree does not have. Promote to the manifest only if a docstring starts quoting its text
+sent:det|LIVE-UNPINNED|the displayed sentence of app:deterministic-future, up^1 Future up^2 down^1 (Stability down^2 not-phi or Stability down^2 phi); transcribed as sentDet (Semantics/StarValidity.lean) and cited by name in StarValidity.lean, StarDeterminism.lean, StarNonValidities.lean, StarDiscrimination.lean and ForwardDeterministicFrame.lean. Cited by name only; not pinned, since the transcription is of the operator structure rather than of quoted prose. Note that \Future here is the manuscript preamble's BOXED F (universal future), not the diamond f -- checked against the display and against the (*) chain's "for all y > x" step
+TMP-CO|DANGLING|the BL^+ restatement of CO; it went away with def:TMplus-c (now def:BX-r), which derives CO from PU rather than restating it under a second label. The plain CO anchor is still live and still pinned
+app:nonempty|DANGLING|merged by the paper into cor:occurrence; cited only where the tree records the merge
+app:valid|DANGLING|NEVER EXISTED; earlier revisions cited it at a bogus line number, corrected to cor:perpetuity-valid
+cor:tm-decidability|DANGLING|fully COMMENTED OUT in the paper; retained above as a DANGLING entry
+def:BL-model|DANGLING|label removed by the paper; retained above as a DANGLING entry
+def:BLplus-defined|DANGLING|label removed when the paper collapsed BL^+ into BL; the defined temporal operators now sit inside def:BLplus-language's block. Retained above as a DANGLING entry
+def:BLplus-semantics|DANGLING|label removed when the paper collapsed BL^+ into BL; the since/until truth clauses are now clauses of def:BL-semantics. Retained above as a DANGLING entry
+def:TMplus-c|DANGLING|renamed by the paper to def:BX-r, which IS pinned; cited only where the tree records the rename
+def:TMplus-d|DANGLING|renamed by the paper to def:BX-d, which IS pinned; cited only where the tree records the rename
+def:TMplus-f|DANGLING|renamed by the paper to def:BX-z, which IS pinned; cited only where the tree records the rename
+def:directed|DANGLING|label removed; the supseteq-directed definition was folded inline into def:frame's opening clause. Retained above as a DANGLING entry
+lem:fibers|DANGLING|label removed 2026-08-17; content absorbed into lem:admissible's proof; retained above
+thm:BLplus-NextPrevious|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry
+thm:BLplus-PastFuture|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry
+thm:ConservativeExtension|DANGLING|NEVER a paper label; cited only where the tree records that it is not one
+thm:occurrence|DANGLING|renamed by the paper to cor:occurrence; cited only where the tree records the rename
+thm:s4|DANGLING|folded by the paper into thm:s5; retained above as a DANGLING entry
+thm:sym|DANGLING|folded by the paper into thm:s5; retained above as a DANGLING entry
+```
+<!-- KNOWN-ANCHORS:END -->
+
+**Adding a row here is a decision, not a formality.** Before adding a `LIVE-UNPINNED` row, confirm
+the anchor really does resolve to a non-commented `\label{}` in the live paper. Before adding a
+`DANGLING` row, confirm it really does not, and fix the citation site to say so. If neither is
+true, the citation is a typo and the fix is to correct the citation, not to add a row.
+
+## Untracked sources
+
+Not every passage of the paper this repository relies on is anchorable. `resolve_text` in
+`scripts/check-paper-definitions.sh` supports exactly two anchor kinds — `env`, resolved by
+grepping for `\label{...}`, and `aitem`, resolved by `\aitem{...}` — and errors on anything else.
+A passage carrying neither marker therefore cannot be given a manifest row: the row would be a
+dangling anchor and the check would fail on it. The paper is read-only input to this repository,
+edited elsewhere, so adding a `\label` is not an option either.
+
+Such passages are recorded here in prose instead, so that the reliance is visible even though it
+is unverifiable by the lint. **Do not promote any entry in this section to a manifest row** unless
+the passage has acquired a resolvable anchor upstream first.
+
+### The finite-case effectiveness footnote
+
+- **Location**: `JPL/possible_worlds.tex`, in the footnote attached to the discussion of the
+  finite case (at the time of recording, line 1648). No `\label`, no `\aitem`.
+- **Relied on by**: `FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean`, which quotes it
+  verbatim in its module docstring, and the two `extend_periodic` theorems it introduces —
+  `FormalSystem.Metalogic.Decidability.IntPresentation.extend_periodic` (effective, presented
+  frames) and `FormalSystem.Semantics.TaskFrame.extend_periodic` (general finite carrier).
+- **Text**:
+
+  > In this case, the conclusion of \textbf{\ref{thm:extension}} becomes effective without appeal
+  > to Zorn's lemma: since $W$ is finite, the forward and backward orbits extending a bounded
+  > convex history must each revisit a world state, so every bounded convex history extends to a
+  > possible world that is eventually periodic in both directions--- a finite prefix plus a finite
+  > cycle each way--- and is therefore finitely representable, licensing a finite certificate that
+  > a given bounded history is a fragment of a possible world.
+
+  Re-quoted 2026-09-07 from the live paper alongside the `def:world-history` vocabulary
+  alignment: the footnote formerly read "bounded world history" in both places and now reads
+  "bounded convex history", and it gained a comma after "In this case". This source is
+  **untracked** — it carries no `sha256:` line and no manifest row, and is not read by
+  `scripts/check-paper-definitions.sh` — so re-quoting it moves no pin and re-runs no checker.
+  `FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean`, which block-quotes the same
+  footnote in its module docstring, was re-quoted in the same change.
+
+- **What the formalisation preserves**: the doubly ultimately-periodic extension and the finite
+  certificate, both in full. "Without appeal to Zorn's lemma" is preserved as *no Zorn* — an
+  import-graph fact — and **not** as choice-freedom in Lean's sense, which is a claim about a
+  different axiom. The measured accounting lives in `extend_periodic`'s own docstring.
+
+## Invocation from skills or hooks — decision (recorded, not implemented)
+
+CI cannot enforce this lint: `.github/workflows/ci.yml` has no visibility into
+`/home/benjamin/Philosophy/Papers/` (a different repository entirely), so wiring it into CI would
+require vendoring or submoduling the paper, which is explicitly out of scope for this task.
+
+**Decision**: `scripts/check-paper-definitions.sh` should be invoked manually for now, in the same
+family as its siblings (`check-copyright-headers.sh`, `check-module-invariants.sh`,
+`readme-lint.sh`, `typst-sync-check.sh`), none of which are CI- or hook-wired either. The strongest
+candidate for automatic invocation, if this is revisited, is a **skill preflight hook** for the
+`paper-refactor` topic specifically (e.g. `/research`, `/plan`, `/implement` preflight for a task
+whose `topic` is `paper-refactor`) — that is the exact population of tasks that quotes this file's
+anchors and would benefit from an automatic staleness check before dispatch. A git pre-commit hook
+was considered and rejected: this repository's commits do not touch the paper file at all (it
+lives in a separate repository), so a pre-commit hook here would never fire on the event that
+actually causes drift. **Implementing either integration is explicitly out of scope for this task**
+(deliverable 2 is the lint script itself); this section records the recommendation for whoever
+picks up that follow-on work.

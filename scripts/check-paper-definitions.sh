@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # check-paper-definitions.sh -- Detect drift between the JPL paper's semantic definitions and
-# the pinned record at specs/paper-definitions-of-record.md.
+# the pinned record at docs/reference/paper-definitions-of-record.md.
 #
 # WHY THIS EXISTS: the paper at $PAPER_TEX is READ-ONLY input, edited in a separate repository
 # this one cannot see, and it has moved through repeated definitional waves -- twice while a
 # dispatch against it was in flight. Every wave silently invalidates task specs that quote the
 # paper. This script re-reads the paper and reports drift against the pinned record instead of
-# relying on an agent to notice mid-dispatch. See specs/paper-definitions-of-record.md for the
+# relying on an agent to notice mid-dispatch. See docs/reference/paper-definitions-of-record.md for the
 # full rationale, the anchor-extraction method this script implements, and the manifest this
 # script parses.
 #
@@ -36,7 +36,7 @@
 # Exit codes: 0 = case (a) or (b) [or --resolve succeeded]; 1 = case (c); 2 = usage/setup error.
 set -uo pipefail
 
-RECORD_DEFAULT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/specs/paper-definitions-of-record.md"
+RECORD_DEFAULT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/docs/reference/paper-definitions-of-record.md"
 
 PAPER=""
 RECORD="$RECORD_DEFAULT"
@@ -142,7 +142,7 @@ else
   CURRENT_LABEL="live working tree"
 fi
 
-# --- Anchor resolution (must match specs/paper-definitions-of-record.md's "Hashing method") ---
+# --- Anchor resolution (must match docs/reference/paper-definitions-of-record.md's "Hashing method") ---
 #
 # All three resolvers must skip LaTeX comment lines (leading `%`, after optional whitespace) when
 # searching for a match. The paper's own editorial convention leaves a `%% OLD: ...` comment

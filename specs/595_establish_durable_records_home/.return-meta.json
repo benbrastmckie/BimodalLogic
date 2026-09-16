@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/595_establish_durable_records_home/plans/01_durable-records-home.md",
-      "summary": "4-phase plan: baseline+git mv records to docs/reference and docs/architecture, repoint all live referrers, clear measured new docs/ gate exposure (C12/C15/C20/C9D), record placement rule and final gate."
-    }
-  ],
-  "next_steps": "Run /implement 595 to execute the plan",
-  "phase_count": 4,
-  "estimated_hours": 4,
-  "dependency_waves": [[1], [2], [3], [4]],
-  "memory_candidates": [
-    {
-      "content": "Relocating a file from specs/ into docs/ in BimodalLogic is not a pure rename: check-module-invariants.sh scopes several gates to docs/ + README.md and excludes specs/** (C12 slash-path resolution, C13 relative links, C15 paper-anchor citations, C20 tier-2 file.lean:NNN citations with ENFORCE_C20=1 default, C9D task-number citations). Before planning such a move, simulate it in a throwaway git worktree and diff `check-module-invariants.sh --no-build` output against baseline to measure newly exposed failures.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/595_establish_durable_records_home/plans/01_durable-records-home.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["specs-to-docs move", "check-module-invariants", "gate scope", "C15", "C20", "worktree simulation"]
-    }
-  ],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1789577011_0f6aae_595",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1789577011_0f6aae",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "dispatch_seq": 7
+  "dispatch_seq": 11
 }
