@@ -559,7 +559,7 @@ ENFORCE_C23=${ENFORCE_C23:-1} # naming regressions (enforced)
 ENFORCE_C24=${ENFORCE_C24:-1} # every module transitively imports FormalSystem.Init (enforced)
 # C25 compile-checks every `lean_exe` root declared in lakefile.lean. Those roots sit outside
 # both library root closures, so `lake build` never elaborates them and C24's closure walk never
-# reaches them -- ProofStepExport.lean was failing to elaborate with no gate anywhere able to
+# reaches them -- ProofExtractorMain.lean was failing to elaborate with no gate anywhere able to
 # observe it. The repair landed in the same change that added this check, so all thirteen roots
 # are green from its first run and it ships enforced with no soft period. Never flip it to 0 to
 # quiet a failure; repair the root, or delete the `lean_exe` target if it is genuinely dead.
@@ -1673,6 +1673,14 @@ echo
 # FormalSystem/Boneyard/ is excluded (archived modules are frozen). What remains is
 # live, load-bearing scope: FormalSystem/ (non-Boneyard), Tests/, typst/, docs/,
 # and README.md.
+#
+# THE RECORD ITSELF IS THE RESOLUTION SOURCE, NOT A CITER: its own prose walks through
+# anchors from unrelated math (illustrative "what would an unpinned anchor look like"
+# commentary) and changelog shorthand (e.g. `def:BLplus-*`) that name no MANIFEST or
+# KNOWN-ANCHORS row. Those are not citations to resolve, they are the resolution data
+# itself, so the record file is excluded from the C15_CITED walk below. Every other
+# file (the decision records included) stays in scope: a decision record citing a
+# dangling or unknown anchor is still a real defect.
 # ---------------------------------------------------------------------------
 C15_RECORD="docs/reference/paper-definitions-of-record.md"
 if [ ! -f "$C15_RECORD" ]; then
@@ -1692,10 +1700,12 @@ else
 
   C15_CITED=$(mktemp)
   # `--include` restricts the walk to documentation-bearing file types; `--exclude-dir`
-  # drops the archive. Both are needed: `-h -o` discards the path, so a post-hoc path
-  # filter is not available on this pipeline.
+  # drops the archive (and the record itself -- see the SCOPE note above: it is the
+  # resolution source, not a citer). Both are needed: `-h -o` discards the path, so a
+  # post-hoc path filter is not available on this pipeline.
   grep -rhoE '\b(def|thm|lem|cor|app|rmk):[A-Za-z0-9][A-Za-z0-9_-]*' \
     --include='*.lean' --include='*.md' --include='*.typ' --exclude-dir=Boneyard \
+    --exclude="$(basename "$C15_RECORD")" \
     FormalSystem Tests typst docs README.md 2>/dev/null \
     | sort -u > "$C15_CITED" || true
 
@@ -2084,8 +2094,8 @@ PYEOF
 # or exe root alike. Sweeping all fifteen roots with the tree already built by C1 -- which is
 # the position this check runs in -- costs 44s wall clock and reports:
 #
-#     FormalSystem 0   ProofStepExport 0   BenchmarkAnchors 0   TableauProofStepPipeline 0
-#     ProofFirstExporter 0   DatasetValidatorMain 1   CheckInitImports 1   EnumBenchmark 4
+#     FormalSystem 0   ProofExtractorMain 0   BenchmarkAnchors 0   TableauProofStepsMain 0
+#     ProofFirstGeneratorMain 0   DatasetValidatorMain 1   CheckInitImports 1   EnumBenchmark 4
 #     TraceExporter 5   BenchmarkOracle 9   TableauBridge 12   MachineAppendixExport 16
 #     DatasetGeneratorMain 32   BimodalTest 85
 #
@@ -2378,7 +2388,7 @@ for ns, n, priv, p, l in decls2:
 SHADOW_ALLOW = {
     # structure-member namesakes on distinct types: legitimate dot-notation
     "isValid",
-    # a deliberate, documented duplication -- `ProofStepExport.lean` is a `lean_exe` root
+    # a deliberate, documented duplication -- `ProofExtractorMain.lean` is a `lean_exe` root
     # with its own `main` and cannot import the leaf module holding the canonical list.
     # C22 asserts the two lists agree, which is the only thing worth checking about them.
     "allAxiomNames",
@@ -2832,9 +2842,9 @@ echo
 # ---------------------------------------------------------------------------
 # C22: the two `allAxiomNames` lists agree
 #
-# `Automation/AxiomNames.lean` and `Automation/ProofStepExport.lean` both declare a list
+# `Automation/AxiomNames.lean` and `Automation/ProofExtractorMain.lean` both declare a list
 # called `allAxiomNames`, and the duplication is DELIBERATE and documented at the second
-# site: `ProofStepExport.lean` is a `lean_exe` root that declares its own `main`, so it
+# site: `ProofExtractorMain.lean` is a `lean_exe` root that declares its own `main`, so it
 # cannot import the leaf module that owns the canonical list. The names are therefore not
 # renamed apart -- renaming one would hide the fact that they must agree, which is the only
 # thing worth checking about them.
@@ -2849,7 +2859,7 @@ echo
 # ---------------------------------------------------------------------------
 ENFORCE_C22=${ENFORCE_C22:-1} # the two allAxiomNames lists agree (enforced)
 C22_A="FormalSystem/Automation/AxiomNames.lean"
-C22_B="FormalSystem/Automation/ProofStepExport.lean"
+C22_B="FormalSystem/Automation/ProofExtractorMain.lean"
 if [ ! -f "$C22_A" ] || [ ! -f "$C22_B" ]; then
   fail C22 "one of the two allAxiomNames modules is missing"
 else
@@ -2873,7 +2883,7 @@ else
     [ -n "$C22_ONLY_A" ] && printf '%s\n' "$C22_ONLY_A" \
       | while IFS= read -r l; do note "only in AxiomNames.lean: $l"; done
     [ -n "$C22_ONLY_B" ] && printf '%s\n' "$C22_ONLY_B" \
-      | while IFS= read -r l; do note "only in ProofStepExport.lean: $l"; done
+      | while IFS= read -r l; do note "only in ProofExtractorMain.lean: $l"; done
     note "both lists must be updated in the same change; neither file imports the other"
   fi
 fi
@@ -2951,7 +2961,8 @@ echo
 # covering it. That is the wrong mechanism; this check is the right one, and the
 # manifest must not gain an exe-root line.
 #
-# The gap was not hypothetical. FormalSystem/Automation/ProofStepExport.lean -- the
+# The gap was not hypothetical. FormalSystem/Automation/ProofExtractorMain.lean (then
+# ProofStepExport.lean) -- the
 # `proof_extractor` root -- failed to elaborate for an extended period with three
 # `Application type mismatch` errors masking a further 873, and no gate anywhere in
 # the repository was able to observe it. `lake exe proof_extractor` was simply
@@ -2968,7 +2979,7 @@ echo
 # Measured cost with the tree already built by C1, which is the position this check
 # runs in: 10s wall-clock for all thirteen roots.
 #
-# Ships ENFORCED with no soft period, on the C24 precedent: the ProofStepExport
+# Ships ENFORCED with no soft period, on the C24 precedent: the ProofExtractorMain
 # repair landed in the same change, so every root is green from the first run and a
 # soft window would only be a window in which the invariant could regress unnoticed.
 #
@@ -2977,7 +2988,7 @@ echo
 #
 # Negative-tested per docs/development/MODULE_INVARIANTS.md's "Adding a Check"
 # mandate: a one-character break was introduced in
-# FormalSystem/Automation/TraceExporter.lean -- deliberately NOT ProofStepExport,
+# FormalSystem/Automation/TraceExporter.lean -- deliberately NOT ProofExtractorMain,
 # the module the same change repairs, since a failure there would prove nothing
 # about the gate -- `FAIL C25` was observed together with a non-zero script exit
 # (both, not just the printed line: `FAIL C25  1 of 13 lean_exe root module(s) do

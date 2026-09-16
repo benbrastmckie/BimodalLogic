@@ -5,10 +5,9 @@ that neither the total-history-validity refactor nor the four-axiom `TaskFrame` 
 re-litigates it. An implementer who disagrees should raise it with the user, not silently choose
 differently.
 
-**Origin**: `specs/414_refactor_semantics_to_total_history_validity/plans/03_omega-free-totality-refactor.md`,
-section "Decisions made at plan time". Its authoritative research input is
-`specs/414_refactor_semantics_to_total_history_validity/reports/03_total-history-validity-refactor.md`
-(round 3, machine-verified against the live tree).
+**Origin**: the "Omega-free totality refactor" implementation plan's "Decisions made at plan
+time" section. Its authoritative research input is the round-3 "Total-history validity refactor"
+research report (machine-verified against the live tree).
 
 **Paper citations** in this record are by `\label` anchor against
 `docs/reference/paper-definitions-of-record.md` — never against the paper file directly, and never by line
@@ -147,7 +146,7 @@ arbitrary total junk histories. The decidability side needs a real carrier re-ho
 
 **Contingency, with precise ownership.** If the re-host proves materially larger than sized, spawn
 **one** task owning **exactly**:
-`FormalSystem/Metalogic/Decidability/Verified/Bridge/Omega.lean` (the `regionFrame` definition,
+`Bridge/Omega.lean` (a proposed new module for the `regionFrame` definition,
 `regionHistory`, `regionOmega`, and their five declarations) plus consumer repairs in
 `Bridge/Valuation.lean`, `Bridge/IntTruth.lean`, `Bridge/DenseTruth.lean`, `Bridge/TruthLemma.lean`,
 `Bridge/RegionLabel.lean`, and whatever `Decidability/Verified/Decidable.lean` surfaces — **entirely

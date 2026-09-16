@@ -101,7 +101,7 @@ owns — `def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`, `def:TMplus` �
 and `def:BX-r`, footnote/comment churn. No anchor entered or left that set because of this rename.
 
 **Citation sites that moved.** The `app:ObjectiveModality` row of "Anchor classification
-(2026-09-07)" above names `FormalSystem/BaseLanguage/Axioms.lean` as its citing file; that module
+(2026-09-07)" above names the former `BaseLanguage/Axioms.lean` as its citing file; that module
 is now `FormalSystem/Syntax/MinusLanguage/Axioms.lean`. The anchor, its classification and its reason are
 unchanged.
 
@@ -213,7 +213,7 @@ citation site needed correcting:
 
 | Anchor | Paper environment | Cited by | Why unpinned |
 |---|---|---|---|
-| `app:ObjectiveModality` | `\subsection{Objective Modality}%` with the label on the following line | `FormalSystem/BaseLanguage/Axioms.lean` | **Structurally unpinnable.** `resolve_env` reads the environment name off the same line as the `\label{}`, so a sectioning label on its own line can never resolve. Same shape as the already-recorded `app:TaskSemantics`. |
+| `app:ObjectiveModality` | `\subsection{Objective Modality}%` with the label on the following line | `FormalSystem/Syntax/MinusLanguage/Axioms.lean` (cited as the former `BaseLanguage/Axioms.lean` when this row was recorded; see "Citation sites that moved" above) | **Structurally unpinnable.** `resolve_env` reads the environment name off the same line as the `\label{}`, so a sectioning label on its own line can never resolve. Same shape as the already-recorded `app:TaskSemantics`. |
 | `app:drift` | `Tthm` | `Independence/DriftFrame.lean`, `Independence/RealTranslationFrame.lean` | Pinnable in principle, useless in practice: the `Tthm` block carries only the statement, while the text `DriftFrame.lean` actually engages with — the `λ ≔ (v − w)/(x + y)` interpolation and the compactness/finite-intersection *Saturation* argument — sits in the `\begin{proof}` block *after* `\end{Tthm}`, which `resolve_env` does not capture. A pin would hash text the tree never quotes. |
 | `cor:no-characterization` | `Cthm` | `Independence/README.md`, `Independence/DriftFrame.lean`, `Independence/StateSetTruth.lean`, `Independence/RealTranslationFrame.lean` | Cited by name only. |
 | `lem:deterministic-singleton` | `Lthm` | `Independence/RealTranslationFrame.lean`, `Independence/StateSetTruth.lean` | Cited by name only; `StateSetTruth.lean` names its choice-free (⇒) direction but quotes no text. |
@@ -288,7 +288,8 @@ pinned text it replaces: `WorldHistory.timeShift` was already the pointwise `σ(
 of `def:time-shift-histories`, `H_F` (`TaskFrame.HF`) already denotes exactly the total
 histories, and the emphasis/rename changes carry no content. The two in-tree verbatim quotations
 that this correction does move — the `def:world-history` closing sentence, quoted in
-`FormalSystem/Semantics/WorldHistory.lean`, `PartialHistory.lean`, and
+`FormalSystem/Semantics/ConvexHistory.lean` (the renamed successor to the former
+`WorldHistory.lean`), `PartialHistory.lean`, and
 `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — are updated to the live wording in the same
 change set.
 
@@ -970,7 +971,7 @@ sha256: `b64b782a61c9a9613b68f37ec2d12229e7df8498043faeb1cf1c2686b8dd5a75`
 maximal-history set `H^max_F` (that vocabulary is retired; the block's own `%%` comment history
 above shows it was explicitly eliminated) and not an externally-supplied `Omega` subset. This is
 the single most consequential clause for the current `paper-refactor` cluster: the Lean tree's
-`TruthAt` (`FormalSystem/Semantics/Truth.lean:128`) still takes an explicit
+`TruthAt` (`Semantics/Truth.lean`) still takes an explicit
 `Omega : Set (WorldHistory F)` parameter and quantifies `Box` over `Omega`, not over the full
 total-history set directly — that is precisely the gap the cluster's total-history refactor
 closes. See "Downstream consumers" below.
@@ -1039,20 +1040,20 @@ Two things changed, in this order:
    `docs/architecture/untl-snce-argument-order.md`.
 
 2. **The Lean tree was aligned to the paper.** `Formula.untl` and `Formula.snce`
-   (`FormalSystem/Syntax/Formula.lean:85-106`) now take the **guard first and the event second**,
-   and `TruthAt`'s clauses (`FormalSystem/Semantics/Truth.lean:165-168`) read
+   (`Syntax/Formula.lean`) now take the **guard first and the event second**,
+   and `TruthAt`'s clauses (`Semantics/Truth.lean`) read
    `| Formula.untl ψ φ => ∃ s, t < s ∧ TruthAt … s φ ∧ ∀ r, t < r → r < s → TruthAt … r ψ` — the
    existential witness second, the open-interval condition first, exactly as the `(until)` clause
    above states it. The migration was a uniform argument swap of the two constructors and every
-   call site, carried out under
-   `specs/448_migrate_snce_untl_to_guard_first_order/plans/01_guard-first-migration.md`. It is
+   call site, carried out under the guard-first migration recorded in
+   `docs/architecture/untl-snce-argument-order.md`. It is
    meaning-preserving by construction: `lake build` green at the same job count, per-file `sorry`
    census byte-identical to baseline, axiom count unchanged, and the role-keyed `toJson` oracle
    regenerating byte-identically.
 
 Corroborated independently by `def:BLplus-defined` below, which the Lean derived operators now
 match character for character: `$\past\varphi \coloneq \top\since\varphi$` →
-`somePast φ = Formula.snce Formula.top φ` (`Formula.lean:157`);
+`somePast φ = Formula.snce Formula.top φ` (`Syntax/Formula.lean`);
 `$\future\varphi \coloneq \top\until\varphi$` → `someFuture φ = Formula.untl Formula.top φ`
 (`:147`); `$\Next\varphi \coloneq \bot\until\varphi$` → `next φ = Formula.untl Formula.bot φ`
 (`:511`); `$\Previous\varphi \coloneq \bot\since\varphi$` → `prev φ = Formula.snce Formula.bot φ`
@@ -1417,9 +1418,8 @@ closing sentences state — is the temporal-order-level biconditional (T1):
 The (⇐) directions of (T0) are genuinely per-frame and are the per-class soundness facts the
 tree already carries. No non-degeneracy hypothesis is to be bolted onto (T0); class-level
 exactness is recovered by the indicator-axiom mechanism, not by patching these statements.
-Adjudication of record:
-`specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md`
-§2.4.
+Adjudication of record: the "Verdict (the front's definition of record)" finding of the
+definitional-review-and-closure research report (2026, `app:dense` conflict adjudication).
 
 
 ### `def:frame-properties` — Discrete/Dense/Complete/Deterministic frame-class predicates
@@ -1634,12 +1634,12 @@ The paper does not define "satisfiable" or "satisfiability" anywhere as a `\labe
 `\aitem`, or otherwise-named clause. This was confirmed by an exhaustive `satisfiab` grep over the
 current paper text: every occurrence is informal prose ("this is easy to satisfy", "satisfiability
 in HyperLTL is undecidable" in a related-work discussion), never a definition. This is independently
-corroborated by task 417's own governing description, which states the same finding in its own
-words ("Satisfiability has no labeled paper definition").
+corroborated by the "Semantic FMP (finite world-state over ℤ)" task's own governing description,
+which states the same finding in its own words ("Satisfiability has no labeled paper definition").
 
 **This file therefore does not, and must not, invent a satisfiability definition on the paper's
 behalf** — doing so would violate this file's own charter of recording only what the paper says.
-The Lean tree's `satisfiable` / `SatisfiableAbs` / `FormulaSatisfiable` (`FormalSystem/Semantics/Validity.lean:129,138,154`)
+The Lean tree's `satisfiable` / `SatisfiableAbs` / `FormulaSatisfiable` (`Semantics/Validity.lean`)
 are **repository-native vocabulary**, built from `def:logical-consequence`'s consequence relation
 (existential witness against `⊭ ⊥`-style unsatisfiability) but not themselves quoted from, or
 citable against, any paper anchor. Any future task that wants to claim "satisfiability" as a
@@ -1679,7 +1679,8 @@ future revision: the `paper-refactor` cluster (tasks whose `topic` field is `pap
 `specs/state.json` — quote `def:frame`, `def:world-history`, `def:logical-consequence`,
 `def:BL-semantics`'s box clause, and `def:temporal-order`/`def:task-relation`/`def:directed`
 verbatim in their re-issued descriptions). See this task's own research report for the audit of
-task 424's exposure to the `def:BL-semantics` box-clause / `TruthAt` architecture.
+the "shift-set representation theorem / compactness feasibility gate" task's exposure to the
+`def:BL-semantics` box-clause / `TruthAt` architecture.
 
 ## How to extend this record
 
@@ -1775,19 +1776,19 @@ app:ObjectiveModality|LIVE-UNPINNED|section label for the objective-modality app
 app:TaskSemantics|LIVE-UNPINNED|section label for the task-semantics appendix; cited as a pointer
 app:auto_existence|LIVE-UNPINNED|automorphism existence; cited as a pointer, text never quoted
 app:deterministic|LIVE-UNPINNED|determinism CORRESPONDENCE theorem, not the definition; the definition is def:deterministic, which IS pinned
-app:deterministic-future|LIVE-UNPINNED|the deterministic-future appendix, whose sentence sent:det uses the time store/recall operators; cited as a pointer by README.md's four-language table, which records that this repository's L⋆ is the time-register fragment the appendix actually uses. BOTH HALVES ARE NOW FORMALIZED: the positive half is sentDet_of_deterministic (Semantics/StarDeterminism.lean) and the negative half is refute_sentDet (Semantics/StarNonValidities.lean), with the (*) chain as sentDet_unfold (Semantics/StarValidity.lean). Not pinned: no docstring quotes its text -- the transcription is of the displayed sentence and the (*) chain, both cited by \label
+app:deterministic-future|LIVE-UNPINNED|the deterministic-future appendix, whose sentence sent:det uses the time store/recall operators; cited as a pointer by README.md's four-language table, which records that this repository's L⋆ is the time-register fragment the appendix actually uses. BOTH HALVES ARE NOW FORMALIZED: the positive half is sentDet_of_deterministic (Semantics/StarLanguage/StarDeterminism.lean) and the negative half is refute_sentDet (Semantics/StarLanguage/StarNonValidities.lean), with the (*) chain as sentDet_unfold (Semantics/StarLanguage/StarValidity.lean). Not pinned: no docstring quotes its text -- the transcription is of the displayed sentence and the (*) chain, both cited by \label
 app:drift|LIVE-UNPINNED|the non-deterministic drift frame theorem (Tthm); DriftFrame.lean discusses its PROOF (the interpolation and the compactness/finite-intersection Saturation argument), which lives in the \begin{proof} block outside the Tthm and so is not what a pin would hash; the statement itself is cited as a pointer
 app:topology-r0|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
 app:topology-t1|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
 cor:no-characterization|LIVE-UNPINNED|the no-characterization corollary (Cthm); cited as a pointer, text never quoted
 cor:perpetuity-valid|LIVE-UNPINNED|perpetuity principles valid; the live anchor that replaced the never-existent app:valid
 def:BL-language|LIVE-UNPINNED|the BL language; cited as a pointer alongside the pinned def:BLplus-language
-def:BLstar-semantics|LIVE-UNPINNED|the truth definition for the manuscript's \BL^\star, whose ($\Stability$) clause is the semantics of this repository's L⁺; cited as a pointer wherever a docstring names the ⊡ clause. Not pinned: the clause is quoted in this repository only in paraphrase. The anchor's block also covers the store/recall clauses; ITS TIME-REGISTER HALF IS NOW IMPLEMENTED as StarTruthAt over points (tau, x, v-vector) (Semantics/StarTruth.lean), with the world registers up_M/down_M deliberately still unimplemented -- recorded as an explicit exclusion in FormalSystem/Syntax/StarLanguage/README.md's correspondence table
+def:BLstar-semantics|LIVE-UNPINNED|the truth definition for the manuscript's \BL^\star, whose ($\Stability$) clause is the semantics of this repository's L⁺; cited as a pointer wherever a docstring names the ⊡ clause. Not pinned: the clause is quoted in this repository only in paraphrase. The anchor's block also covers the store/recall clauses; ITS TIME-REGISTER HALF IS NOW IMPLEMENTED as StarTruthAt over points (tau, x, v-vector) (Semantics/StarLanguage/StarTruth.lean), with the world registers up_M/down_M deliberately still unimplemented -- recorded as an explicit exclusion in FormalSystem/Syntax/StarLanguage/README.md's correspondence table
 def:task-topology|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
 lem:deterministic-singleton|LIVE-UNPINNED|deterministic-frame singleton fibers (Lthm); cited as a pointer (StateSetTruth.lean names its choice-free direction but quotes no text)
 lem:history-time-shift-preservation|LIVE-UNPINNED|time-shift preservation; cited as a pointer
 prop:archimedean|LIVE-UNPINNED|the Pthm asserting that UZ and Z1 both fail over every non-Archimedean Discrete temporal order; def:BX-z cites it for the ZTime narrowing, and the tree now cites it by name at the IsZTime sites (FrameProperty.lean, FrameClassValidity.lean, Validity.lean, BLValidity.lean, Indicator.lean, LexIntWitness.lean, Semantics.lean, Correspondence/README.md, FormalFoundations.typ). Cited as a pointer; this repository does NOT check it -- it is a pen-and-paper result, and pinning would assert a verification the tree does not have. Promote to the manifest only if a docstring starts quoting its text
-sent:det|LIVE-UNPINNED|the displayed sentence of app:deterministic-future, up^1 Future up^2 down^1 (Stability down^2 not-phi or Stability down^2 phi); transcribed as sentDet (Semantics/StarValidity.lean) and cited by name in StarValidity.lean, StarDeterminism.lean, StarNonValidities.lean, StarDiscrimination.lean and ForwardDeterministicFrame.lean. Cited by name only; not pinned, since the transcription is of the operator structure rather than of quoted prose. Note that \Future here is the manuscript preamble's BOXED F (universal future), not the diamond f -- checked against the display and against the (*) chain's "for all y > x" step
+sent:det|LIVE-UNPINNED|the displayed sentence of app:deterministic-future, up^1 Future up^2 down^1 (Stability down^2 not-phi or Stability down^2 phi); transcribed as sentDet (Semantics/StarLanguage/StarValidity.lean) and cited by name in StarValidity.lean, StarDeterminism.lean, StarNonValidities.lean, StarDiscrimination.lean and ForwardDeterministicFrame.lean. Cited by name only; not pinned, since the transcription is of the operator structure rather than of quoted prose. Note that \Future here is the manuscript preamble's BOXED F (universal future), not the diamond f -- checked against the display and against the (*) chain's "for all y > x" step
 TMP-CO|DANGLING|the BL^+ restatement of CO; it went away with def:TMplus-c (now def:BX-r), which derives CO from PU rather than restating it under a second label. The plain CO anchor is still live and still pinned
 app:nonempty|DANGLING|merged by the paper into cor:occurrence; cited only where the tree records the merge
 app:valid|DANGLING|NEVER EXISTED; earlier revisions cited it at a bogus line number, corrected to cor:perpetuity-valid

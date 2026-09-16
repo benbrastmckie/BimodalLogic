@@ -165,18 +165,18 @@ references among the three moved files.
 
 ---
 
-### Phase 3: Clear the new `docs/` gate exposure [NOT STARTED]
+### Phase 3: Clear the new `docs/` gate exposure [COMPLETED]
 
 **Goal**: Turn C12, C15 and C20 tier 2 green again, and remove the task-number citations that
 the move brought into deliverable scope.
 
 **Tasks**:
-- [ ] **C15**: in `scripts/check-module-invariants.sh`'s C15 cited-anchor grep (and its failure-location grep), exclude the record file itself, e.g. `--exclude=paper-definitions-of-record.md`. Update the C15 SCOPE comment to say the resolution source is not a citer. Leave the decision records in scope.
-- [ ] **C12**: for each of the 5 unresolved slash paths, find where the cited content lives now (e.g. `FormalSystem/BaseLanguage/Axioms.lean` probably maps to `FormalSystem/ProofSystem/Axioms.lean`; confirm by the declaration the surrounding prose names). If it moved, cite the current path. If it was retired (likely `Semantics/WorldHistory.lean`, `WeakCanonical/Kamp/Boneyard`), reword to a declaration or module description, or add an entry with a reason to `scripts/markdown-slash-path-allowlist.txt`.
-- [ ] **C20 tier 2**: convert the 17 `file.lean:NNN` citations (12 in `untl-snce-argument-order.md`, 5 in `paper-definitions-of-record.md`) to declaration names, as the gate itself advises. Resolve each line against the file contents at the record's last commit (`git log`/`git show` on the pre-move path) and confirm the name exists in the current tree. Do not add a C20 scope exclusion.
-- [ ] **Task-number citations**: rewrite the task-number mentions in the three moved files (C9D delta: 8) to durable anchors (a decision record name, a section heading, a dated finding). Confirm the C9D count returns to the 142 baseline.
-- [ ] Do not touch MANIFEST rows or hash values in the record
-- [ ] Commit: `task 595 phase 3: clear docs gate exposure for moved records`
+- [x] **C15**: in `scripts/check-module-invariants.sh`'s C15 cited-anchor grep (and its failure-location grep), exclude the record file itself, e.g. `--exclude=paper-definitions-of-record.md`. Update the C15 SCOPE comment to say the resolution source is not a citer. Leave the decision records in scope. *(completed: anchor count back to 58)*
+- [x] **C12**: for each of the 5 unresolved slash paths, find where the cited content lives now (e.g. `FormalSystem/BaseLanguage/Axioms.lean` probably maps to `FormalSystem/ProofSystem/Axioms.lean`; confirm by the declaration the surrounding prose names). If it moved, cite the current path. If it was retired (likely `Semantics/WorldHistory.lean`, `WeakCanonical/Kamp/Boneyard`), reword to a declaration or module description, or add an entry with a reason to `scripts/markdown-slash-path-allowlist.txt`. *(completed: BaseLanguage/Axioms.lean -> Syntax/MinusLanguage/Axioms.lean (moved, reworded first mention as historical, updated table cell); WorldHistory.lean -> ConvexHistory.lean (renamed, cited as successor); the hypothetical Bridge/Omega.lean and the retired Kamp/Boneyard path both reworded to non-slash prose rather than allowlisted, since neither is a real path to point at)*
+- [x] **C20 tier 2**: convert the 17 `file.lean:NNN` citations (12 in `untl-snce-argument-order.md`, 5 in `paper-definitions-of-record.md`) to declaration names, as the gate itself advises. Resolve each line against the file contents at the record's last commit (`git log`/`git show` on the pre-move path) and confirm the name exists in the current tree. Do not add a C20 scope exclusion. *(completed: tier 2 now zero citations in publication-facing scope; several of the untl-snce quotes were explicitly historical/struck-through prose no longer matching live source, reworded without a line number rather than pointed at a declaration that no longer has that text)*
+- [x] **Task-number citations**: rewrite the task-number mentions in the three moved files (C9D delta: 8) to durable anchors (a decision record name, a section heading, a dated finding). Confirm the C9D count returns to the 142 baseline. *(completed: C9D back to 142)*
+- [x] Do not touch MANIFEST rows or hash values in the record *(completed: check-paper-definitions.sh output unchanged from Phase 1 baseline)*
+- [x] Commit: `task 595 phase 3: clear docs gate exposure for moved records` *(completed)*
 
 **Timing**: 1.5 hours
 

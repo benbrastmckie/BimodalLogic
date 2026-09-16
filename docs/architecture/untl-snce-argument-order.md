@@ -11,13 +11,11 @@ This resolves the divergence in the direction the record below said was "not on 
 reasoning that put it off the table was wrong, and is **explicitly retracted** in its own section
 below rather than deleted, so that a future reader does not rediscover it as live reasoning.
 
-**Raised by**: the total-history-validity refactor
-(`specs/414_refactor_semantics_to_total_history_validity/plans/03_omega-free-totality-refactor.md`,
-Phase 2), which needed to cite `def:BLplus-semantics` and found the footnote describing this
-repository backwards.
+**Raised by**: the "Omega-free totality refactor" implementation plan's Phase 2, which needed to
+cite `def:BLplus-semantics` and found the footnote describing this repository backwards. See
+`docs/architecture/total-history-validity-decisions.md` for that refactor's decision record.
 
-**Resolved by**: the guard-first migration
-(`specs/448_migrate_snce_untl_to_guard_first_order/plans/01_guard-first-migration.md`).
+**Resolved by**: the guard-first migration this record documents.
 
 ---
 
@@ -47,8 +45,8 @@ Gate B is worth recording precisely because the plan predicted otherwise. `prett
 positional (`U(event, guard)` prefix), so the plan expected every `U(a,b)` to become `U(b,a)` and
 budgeted a documented transform before comparison. Measured: the transform is the **identity**,
 because `prettyPrint` was made role-stable rather than left positional
-(`| .untl ψ φ => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"`,
-`Automation/DataExport.lean:138-139`). It still emits the event first — it now reads the event out
+(`| .untl ψ φ => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"`, the `untl` case of
+`FormalSystem.Syntax.Formula.prettyPrint`). It still emits the event first — it now reads the event out
 of the second constructor position. Both oracles therefore reduce to byte-identity.
 
 ## Three renderings now coexist, and each is named where it appears
@@ -118,8 +116,9 @@ docstring "**Argument 1 is the guard, argument 2 is the event**", and `TruthAt`'
 `| Formula.untl ψ φ => ∃ s, t < s ∧ TruthAt … s φ ∧ ∀ r, t < r → r < s → TruthAt … r ψ` —
 guard-first, matching the paper.
 
-`FormalSystem/Syntax/Formula.lean:83-90` — the constructors as they then stood, with their own
-docstrings naming the roles explicitly:
+The `untl`/`snce` constructors of `Formula` (in `Syntax/Formula.lean`) as they then stood, with
+their own docstrings naming the roles explicitly — this quoted text no longer matches the live
+source, per the note above:
 
 ```lean
   /-- Until U(φ, ψ) — Burgess convention: φ = event (eventually true), ψ = guard (holds in between).
@@ -130,7 +129,8 @@ docstrings naming the roles explicitly:
   | snce : Formula → Formula → Formula
 ```
 
-`FormalSystem/Semantics/Truth.lean:134-137` — the truth clauses, which are what actually binds:
+The `TruthAt` clauses for `untl`/`snce` (in `Semantics/Truth.lean`) as they then stood, which are
+what actually binds — this quoted text no longer matches the live source either:
 
 ```lean
   | Formula.untl φ ψ => ∃ s : D, t < s ∧ TruthAt M Omega τ s φ ∧
@@ -190,12 +190,12 @@ way that silently changes meaning rather than failing to compile:~~
 
 | Dependent | Location | Why it depends on event-first |
 |---|---|---|
-| `someFuture` | `Formula.lean:131` — `def someFuture (φ) := Formula.untl φ Formula.top` | Event-first reads this as `∃ s > t, φ(s) ∧ ⊤` = "F φ", which is what the name and docstring claim. Under a guard-first reading it would instead mean "φ holds throughout some initial future interval" — a `K⁺`-shaped formula, not `F`. |
-| `somePast` | `Formula.lean:141` — `def somePast (φ) := Formula.snce φ Formula.top` | Exact past mirror of the above. |
-| `kPlus` (`K⁺`) | `Formula.lean:180` — `def kPlus (φ) := (Formula.untl Formula.top φ.neg).neg` | Transcribes Reynolds' `K⁺A = ¬U(⊤, ¬A)`. Event-first makes this `¬(∃ s > t, ⊤ ∧ ∀ r ∈ (t,s), ¬φ)` = "φ holds arbitrarily soon in the future" — the documented meaning (`Formula.lean:164-169`, sourced to Reynolds 1992 p.168 and GHR 1994 §10.3.1). Guard-first would collapse it to `¬F(¬φ)` = `G φ`. |
-| `Axiom.dense_indicator` | `ProofSystem/Axioms.lean:354-355` — `Axiom (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg`, i.e. `¬U(⊤,⊥)` | The soundness argument at `Semantics/Validity.lean:228-231` turns on `U(⊤,⊥)` being **true on ℤ** "because every point has an immediate successor". That is the event-first reading: `∃ s > t, ⊤ ∧ ∀ r ∈ (t,s), ⊥`, satisfiable exactly when `(t,s)` is empty — a successor gap. Under guard-first, `U(⊤,⊥)` would be `∃ s > t, ⊥ ∧ …`, i.e. outright false everywhere, and the whole Dense-vs-Dedekind separation argument (`Axioms.lean:350-353`'s conservativity note, `Validity.lean:225-274`) would be vacuous. |
+| `someFuture` | `def someFuture (φ) := Formula.untl φ Formula.top` (`Syntax/Formula.lean`) | Event-first reads this as `∃ s > t, φ(s) ∧ ⊤` = "F φ", which is what the name and docstring claim. Under a guard-first reading it would instead mean "φ holds throughout some initial future interval" — a `K⁺`-shaped formula, not `F`. |
+| `somePast` | `def somePast (φ) := Formula.snce φ Formula.top` (`Syntax/Formula.lean`) | Exact past mirror of the above. |
+| `kPlus` (`K⁺`) | `def kPlus (φ) := (Formula.untl Formula.top φ.neg).neg` (`Syntax/Formula.lean`) | Transcribes Reynolds' `K⁺A = ¬U(⊤, ¬A)`. Event-first makes this `¬(∃ s > t, ⊤ ∧ ∀ r ∈ (t,s), ¬φ)` = "φ holds arbitrarily soon in the future" — the documented meaning (`Syntax/Formula.lean`'s docstring for `kPlus`, sourced to Reynolds 1992 p.168 and GHR 1994 §10.3.1). Guard-first would collapse it to `¬F(¬φ)` = `G φ`. |
+| `Axiom.dense_indicator` | `Axiom (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg`, i.e. `¬U(⊤,⊥)` (`ProofSystem/Axioms.lean`) | The soundness argument for `Axiom.dense_indicator` (`Semantics/Validity.lean`) turns on `U(⊤,⊥)` being **true on ℤ** "because every point has an immediate successor". That is the event-first reading: `∃ s > t, ⊤ ∧ ∀ r ∈ (t,s), ⊥`, satisfiable exactly when `(t,s)` is empty — a successor gap. Under guard-first, `U(⊤,⊥)` would be `∃ s > t, ⊥ ∧ …`, i.e. outright false everywhere, and the whole Dense-vs-Dedekind separation argument (`Axioms.lean`'s conservativity note near `Axiom.dense_indicator`, and the surrounding soundness proof in `Validity.lean`) would be vacuous. |
 
-~~`kMinus` (`Formula.lean:193`) is the past dual of `kPlus` and carries the same dependency.~~
+~~`kMinus` (`Syntax/Formula.lean`) is the past dual of `kPlus` and carries the same dependency.~~
 
 ## ~~The decision requested of the user~~ — SUPERSEDED
 
@@ -252,8 +252,9 @@ identified and deferred rather than folded in:
   positional is a dataset-format version bump with real downstream consumers
   (`DatasetExport.lean`'s S-expression parser, the training-data pipeline,
   `typst/chapters/ax-machine-appendix.typ`'s shape table) and is orthogonal to argument order.
-- **Boneyard exclusion (D3)** — both archive trees, `FormalSystem/Boneyard/` and
-  `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/`, were excluded entirely: **1,934
+- **Boneyard exclusion (D3)** — both archive trees, `FormalSystem/Boneyard/` and the former
+  `Metalogic/WeakCanonical/Kamp/Boneyard/` (consolidated into
+  `FormalSystem/Boneyard/Kamp/KampWeakCanonical/` per ADR-005), were excluded entirely: **1,934
   occurrences across 51 files**, none of which any compiler checks (0 of 379 built oleans lie
   under a Boneyard path, and no live module imports one). Rewriting unverifiable code is pure
   added risk, so instead each tree's `README.md` now carries a convention banner recording that
