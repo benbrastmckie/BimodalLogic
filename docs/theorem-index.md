@@ -180,7 +180,7 @@ class — see `deterministic_not_plusDefinable` above.
 
 ### TM⋆ over L⋆ — the store/recall language
 
-TM⋆ is TM⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/StarLanguage/`). Its
+TM⋆ is TM⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/Syntax/StarLanguage/`). Its
 axiom set re-declares the TM⁺ schemata directly over `StarFormula`, with `modal_future` alone
 under a `RecallFree` (`↓ⁱ`-free) side condition because it is refuted at arbitrary `φ` — see the
 refutations section below.
@@ -193,7 +193,7 @@ axiom set of the derivation machinery `StarAxiom` feeds.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
-| — | Derivation trees for TM⋆: the same seven rules as TM⁺ and TM, with `StarAxiom` in the `axiom` rule | `FormalSystem.StarLanguage.StarDerivationTree` | `FormalSystem/StarLanguage/Derivation.lean` | — | `[propext]` pinned:C14 |
+| — | Derivation trees for TM⋆: the same seven rules as TM⁺ and TM, with `StarAxiom` in the `axiom` rule | `FormalSystem.StarLanguage.StarDerivationTree` | `FormalSystem/Syntax/StarLanguage/Derivation.lean` | — | `[propext]` pinned:C14 |
 | — | Soundness of TM⋆ at every frame class | `FormalSystem.Metalogic.Conservativity.star_soundness_validIn` | `FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean` | — | pcq pinned:C14 |
 | — | Proof-theoretic conservativity of TM⋆ over TM, both directions, all four classes | `FormalSystem.Metalogic.Conservativity.starDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Conservativity/Star/Forward.lean` | — | pcq pinned:C14 |
 | — | Conservativity of TM⋆ over TM⁺, **conditional** on general TM⁺ completeness at that class | `FormalSystem.Metalogic.Conservativity.starConservative_of_plusComplete` | `FormalSystem/Metalogic/Conservativity/Star/Forward.lean` | — | pcq pinned:C14 |

@@ -79,7 +79,7 @@ completeness settles it; nothing else will.
 ## Related Documentation
 
 - [Conservativity README](../README.md)
-- [`FormalSystem/PlusLanguage/`](../../../PlusLanguage/README.md) — `PlusFormula`, `PlusAxiom`,
+- [`FormalSystem/Syntax/PlusLanguage/`](../../../Syntax/PlusLanguage/README.md) — `PlusFormula`, `PlusAxiom`,
   `PlusDerivationTree`, `ofFormula`
 - [`Semantics/PlusTruth.lean`](../../../Semantics/PlusTruth.lean) — the L⁺ truth recursion
 - [`Metalogic/Deterministic/`](../../Deterministic.lean) — the deterministic metatheory: the

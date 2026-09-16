@@ -1,7 +1,7 @@
 # StarLanguage — the language L⋆ (L⁺ plus the time store/recall operators)
 
 This directory defines a **fourth object language** for the tree, **L⋆**, obtained from L⁺
-(`FormalSystem/PlusLanguage/`) by adding the manuscript's two hybrid **time registers**:
+(`FormalSystem/Syntax/PlusLanguage/`) by adding the manuscript's two hybrid **time registers**:
 
 ```
 φ, ψ ::= pᵢ | ⊥ | φ → ψ | □φ | φ U ψ | φ S ψ | ⊡φ | ↑ⁱφ | ↓ⁱφ
@@ -37,7 +37,7 @@ the whole point of this language, and it must be broken in a *separate* type.
 | `Derivation.lean` | `StarDerivationTree` (the seven TM⁺ rules, verbatim), the notation `⊢⋆[fc]`, `StarDerivable` with `StarDerivable.mono`, the structural apparatus `lift`/`height`/`ofWeakeningNil`, and the derived, **unrestricted** `stabNecessitation` |
 | `Embedding.lean` | `StarAxiom.ofPlusAxiom` and `StarAxiom.minFrameClass_ofPlusAxiom`, `StarDerivationTree.ofPlusTree`, `starDerivable_of_plusDerivable`, `starDerivable_of_derivable` — every TM⁺ theorem is a TM⋆ theorem at its embedded formula |
 
-The sibling aggregator is `FormalSystem/StarLanguage.lean`.
+The sibling aggregator is `FormalSystem/Syntax/StarLanguage.lean`.
 
 ## The proof system TM⋆: `StarAxiom` is declared
 
@@ -156,8 +156,8 @@ which the middle conjunct certifies lies outside the fragment.
 
 ## Module Invariants
 
-**1. Nothing under `FormalSystem/StarLanguage/` imports anything from `FormalSystem/Semantics/`.**
-Checkable by `grep -rn 'import FormalSystem.Semantics' FormalSystem/StarLanguage/`. The invariant
+**1. Nothing under `FormalSystem/Syntax/StarLanguage/` imports anything from `FormalSystem/Semantics/`.**
+Checkable by `grep -rn 'import FormalSystem.Semantics' FormalSystem/Syntax/StarLanguage/`. The invariant
 is directional, exactly as for `MinusLanguage/` and `PlusLanguage/`; the converse edge is
 permitted and is how L⋆ acquires its semantics.
 
@@ -180,6 +180,6 @@ the invariant list rather than at a failed proof.
 * JPL paper `possible_worlds.tex` — `def:BLstar-semantics`, `sub:Extension`, `sent:det`,
   `app:deterministic-future`, `app:drift`, `cor:no-characterization`,
   `lem:deterministic-singleton`, `thm:extension`
-* `FormalSystem/PlusLanguage/README.md` — L⁺, the language this one extends
+* `FormalSystem/Syntax/PlusLanguage/README.md` — L⁺, the language this one extends
 * The PossibleWorlds `02_determinism-axiom-correspondence.md` report — Theorem C and the
   forward-determinism sharpening, both pending paper integration

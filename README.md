@@ -209,10 +209,10 @@ logic; the other three are this repository's, and the superscripts are Lean-only
 
 | Language | Operators | Logic | Lean home |
 |---|---|---|---|
-| **L⁻** | ⊥, →, □, H, G | **TM⁻** | `FormalSystem/MinusLanguage/`, `MinusFormula`, `⊢⁻[fc]` |
+| **L⁻** | ⊥, →, □, H, G | **TM⁻** | `FormalSystem/Syntax/MinusLanguage/`, `MinusFormula`, `⊢⁻[fc]` |
 | **L** | ⊥, →, □, S, U | **TM** (TM_z, TM_d, TM_r) | `FormalSystem/Syntax/` + `ProofSystem/`, `Formula`, `⊢[fc]` |
-| **L⁺** | L plus the stability modal ⊡ | **TM⁺** | `FormalSystem/PlusLanguage/`, `PlusFormula`, `⊢⁺[fc]` |
-| **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | — (semantic only; no proof system) | `FormalSystem/StarLanguage/`, `StarFormula`, the embedding `ofPlus` |
+| **L⁺** | L plus the stability modal ⊡ | **TM⁺** | `FormalSystem/Syntax/PlusLanguage/`, `PlusFormula`, `⊢⁺[fc]` |
+| **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | — (semantic only; no proof system) | `FormalSystem/Syntax/StarLanguage/`, `StarFormula`, the embedding `ofPlus` |
 
 The manuscript has exactly **two** languages: 𝓛 and 𝓛⋆, where 𝓛⋆ bundles ⊡ with both the
 time-store/recall and the world-store/recall families (the sentence defining `\BL^\star` in
@@ -231,17 +231,17 @@ time-store/recall and the world-store/recall families (the sentence defining `\B
   its semantics interprets the manuscript's points `(τ, x, v⃗)` per `def:BLstar-semantics`. The
   world registers are not formalized here, and L⋆ carries **no proof system**: the manuscript
   supplies none, and every L⋆ result here is semantic. `StarAxiom`, `StarDerivationTree`,
-  `⊢⋆[fc]` and `TM⋆` are reserved, unbuilt names. See `FormalSystem/StarLanguage/README.md` for
+  `⊢⋆[fc]` and `TM⋆` are reserved, unbuilt names. See `FormalSystem/Syntax/StarLanguage/README.md` for
   the paper-label correspondence table.
 
 So results stated below about L⁺ and L⋆ are results about *fragments* of the manuscript's 𝓛⋆,
 and are described that way rather than by a paper name they do not have.
 
 Three of these sit beside L (`Formula`): the tense-primitive **L⁻**
-(`FormalSystem/MinusLanguage/`, `MinusFormula`, related to L by the translation `tr`), the
-**stability extension L⁺** (`FormalSystem/PlusLanguage/`, `PlusFormula` = L plus the stability
+(`FormalSystem/Syntax/MinusLanguage/`, `MinusFormula`, related to L by the translation `tr`), the
+**stability extension L⁺** (`FormalSystem/Syntax/PlusLanguage/`, `PlusFormula` = L plus the stability
 modal `⊡`, related to L by the embedding `ofFormula`), and the **time-register extension L⋆**
-(`FormalSystem/StarLanguage/`, `StarFormula` = L⁺ plus `↑ⁱ`/`↓ⁱ`, related to L⁺ by the embedding
+(`FormalSystem/Syntax/StarLanguage/`, `StarFormula` = L⁺ plus `↑ⁱ`/`↓ⁱ`, related to L⁺ by the embedding
 `ofPlus`). Every result below is sorry-free
 (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`) and holds at all four frame classes
 unless a class is named.

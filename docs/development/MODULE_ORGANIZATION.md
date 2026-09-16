@@ -164,9 +164,9 @@ Layer 0: Syntax (no internal dependencies)
 `Syntax` + `ProofSystem`, not a layer of its own: `MinusLanguage.Formula` imports only
 `Syntax.Atom`, and the rest of `MinusLanguage/` imports only `Syntax` and itself. Nothing under
 `MinusLanguage/` imports `Semantics/` — that is the directory's standing module invariant, stated
-in `FormalSystem/MinusLanguage.lean`.
+in `FormalSystem/Syntax/MinusLanguage.lean`.
 `PlusLanguage/` follows the same pattern and the same directional invariant (stated in
-`FormalSystem/PlusLanguage.lean`): `Semantics/PlusTruth.lean` imports `PlusLanguage.Formula`,
+`FormalSystem/Syntax/PlusLanguage.lean`): `Semantics/PlusTruth.lean` imports `PlusLanguage.Formula`,
 and nothing under `PlusLanguage/` imports `Semantics/`.
 
 The invariant is **directional**, and the converse edge is both permitted and used:
@@ -298,11 +298,11 @@ A **second object language**, tense-primitive (`H`/`G` are constructors rather t
 abbreviations), with its own axioms and proof system, related to the primary language by a
 translation. It is the language in which the source paper states TM.
 
-* `FormalSystem.MinusLanguage.Formula` -- `MinusFormula`
-* `FormalSystem.MinusLanguage.Axioms` -- a second `inductive Axiom`
-* `FormalSystem.MinusLanguage.Derivation` -- the mirror proof system
-* `FormalSystem.MinusLanguage.Translation` -- `tr : MinusFormula → Formula`
-* `FormalSystem.MinusLanguage.AxiomDischarge`
+* `FormalSystem.Syntax.MinusLanguage.Formula` -- `MinusFormula`
+* `FormalSystem.Syntax.MinusLanguage.Axioms` -- a second `inductive Axiom`
+* `FormalSystem.Syntax.MinusLanguage.Derivation` -- the mirror proof system
+* `FormalSystem.Syntax.MinusLanguage.Translation` -- `tr : MinusFormula → Formula`
+* `FormalSystem.Syntax.MinusLanguage.AxiomDischarge`
 
 The base language's **semantics** deliberately does not live here, so that the directory's
 `MinusLanguage/ → Semantics/` invariant stays literally true: see

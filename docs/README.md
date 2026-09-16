@@ -35,9 +35,9 @@ short version:
 | `TM` | `L`, with `S` and `U` primitive (`FormalSystem/ProofSystem/`) | the paper's `TM` — the same system under the same name |
 | `TM_z`, `TM_d`, `TM_r` | the same, plus the discrete / dense / dense-and-complete axioms | the paper's `TM_z`, `TM_d`, `TM_r` |
 | `BX_z`, `BX_d`, `BX_r` | the Burgess–Xu tense cores underneath those | the paper's `BX_z`, `BX_d`, `BX_r` |
-| `TM⁻` | `L⁻`, the Past/Future language with `H` and `G` primitive (`FormalSystem/MinusLanguage/`) | none — the H/G fragment was withdrawn from the paper |
+| `TM⁻` | `L⁻`, the Past/Future language with `H` and `G` primitive (`FormalSystem/Syntax/MinusLanguage/`) | none — the H/G fragment was withdrawn from the paper |
 | `TM⁻_z`, `TM⁻_d`, `TM⁻_r` | the same, plus `DF` / `DN` / `DN` and `CO` | none |
-| `TM⁺` | `L⁺`, `L` plus the stability modal `⊡` (`FormalSystem/PlusLanguage/`) | none — `L⁺` is the ⊡-only fragment of the paper's `𝓛⋆`, for which the paper supplies no logic |
+| `TM⁺` | `L⁺`, `L` plus the stability modal `⊡` (`FormalSystem/Syntax/PlusLanguage/`) | none — `L⁺` is the ⊡-only fragment of the paper's `𝓛⋆`, for which the paper supplies no logic |
 
 The subscripts on the `TM` side name the class each system is complete over: `z` for `ℤ`-time,
 `d` for the dense task frames, `r` for `ℝ`-time — the dense and Dedekind-complete orders. `BX_r`

@@ -262,9 +262,9 @@ invariant check allowlists it by name (check C8).
 | Module | File | Description |
 |--------|------|-------------|
 | ForMathlib | `ForMathlib.lean` | Mathlib-shaped extensions intended for upstreaming (proper/maximal/prime-filter API of `Order.PFilter`, `Order.PrimeFilter`); imports nothing from `FormalSystem.*` |
-| Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure |
+| Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure; also parents the L⁻/L⁺/L⋆ language family (see `Syntax/README.md`) |
 | ProofSystem | `ProofSystem.lean` | 45 axiom constructors, 7 inference rules, derivation trees |
-| PlusLanguage | `PlusLanguage.lean` | `PlusFormula` (L plus `⊡`), `PlusAxiom` (the 45 TM schemata over `PlusFormula` plus the `⊡` schemata), `PlusDerivationTree`, the embedding `ofFormula` and backward conservativity |
+| PlusLanguage | `Syntax/PlusLanguage.lean` | `PlusFormula` (L plus `⊡`), `PlusAxiom` (the 45 TM schemata over `PlusFormula` plus the `⊡` schemata), `PlusDerivationTree`, the embedding `ofFormula` and backward conservativity |
 
 ### Layer 1 — Semantics
 
@@ -300,7 +300,10 @@ invariant check allowlists it by name (check C8).
 
 | Submodule | README | Description |
 |-----------|--------|-------------|
-| [Syntax/](Syntax/README.md) | Yes | Formula types and proof contexts |
+| [Syntax/](Syntax/README.md) | Yes | Formula types, proof contexts, and the L / L⁻ / L⁺ / L⋆ language family |
+| [Syntax/MinusLanguage/](Syntax/MinusLanguage/README.md) | Yes | L⁻ — the tense-primitive variant, `H`/`G` primitive in place of `untl`/`snce` — and its logic TM⁻ |
+| [Syntax/PlusLanguage/](Syntax/PlusLanguage/README.md) | Yes | L⁺ — L plus the stability modal `⊡` (`stab`, "boxdot") — and its logic TM⁺ |
+| [Syntax/StarLanguage/](Syntax/StarLanguage/README.md) | Yes | L⋆ — L⁺ plus the time registers `↑ⁱ`/`↓ⁱ` — and its logic TM⋆ |
 | [ProofSystem/](ProofSystem/README.md) | Yes | Axioms and derivation trees |
 | [Semantics/](Semantics/README.md) | Yes | Task frame semantics |
 | [Metalogic/](Metalogic/README.md) | Yes | Soundness, completeness, decidability |
@@ -308,8 +311,6 @@ invariant check allowlists it by name (check C8).
 | [Automation/](Automation/README.md) | Yes | Proof tactics and ML pipeline |
 | [Examples/](Examples/README.md) | Yes | Pedagogical examples |
 | `ForMathlib/` | No | Mathlib-shaped extensions intended for upstreaming; the dependency rule (`Mathlib → ForMathlib → FormalSystem`) is stated in `ForMathlib.lean` (no README yet) |
-| `MinusLanguage/` | No | Shared base-language definitions (no README yet) |
-| [PlusLanguage/](PlusLanguage/README.md) | Yes | L⁺ — L plus the stability modal `⊡` — and its logic TM⁺ |
 | [Boneyard/](Boneyard/README.md) | Yes | ARCHIVE — retired code, excluded from the live build; no `.olean` is produced under any `Boneyard` path. Its README is the single source for its counts |
 
 ## Quick Reference

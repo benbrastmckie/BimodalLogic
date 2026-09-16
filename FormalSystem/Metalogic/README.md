@@ -261,7 +261,7 @@ unchanged. It is a hard stop, not a new baseline.
 
 ### The TM⁺ metatheory rows — `Conservativity/Plus/`, `Deterministic/`, `Independence/`
 
-TM⁺ is L plus the stability modal `⊡` (`FormalSystem/PlusLanguage/`). Its metatheory splits into
+TM⁺ is L plus the stability modal `⊡` (`FormalSystem/Syntax/PlusLanguage/`). Its metatheory splits into
 what is landed and what is open, and the split is load-bearing enough to record here:
 
 | Row | Status |
@@ -287,7 +287,7 @@ what a paper can use — is that the two classes have the same logic.
 
 ### The TM⋆ metatheory rows — `Conservativity/Star/`
 
-TM⋆ is L⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/StarLanguage/`). Its
+TM⋆ is L⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/Syntax/StarLanguage/`). Its
 axiom set re-declares the TM⁺ schemata directly over `StarFormula` rather than embedding them,
 with `modal_future` alone under a `RecallFree` (`↓ⁱ`-free) side condition — it is *refuted* at
 arbitrary `φ` (`Semantics/StarNonValidities.lean`, `refute_modal_future`).

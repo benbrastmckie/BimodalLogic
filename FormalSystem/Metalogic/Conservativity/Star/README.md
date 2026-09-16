@@ -5,7 +5,7 @@ The register extension L⋆ = L⁺ plus the manuscript's time registers `↑ⁱ`
 
 TM⋆ is formalization-native: the manuscript supplies no proof system for `\BL^\star`, and every
 earlier L⋆ deliverable in this tree was semantic. It is built to the shape of
-`PlusAxiom`/`PlusDerivationTree` (`FormalSystem/StarLanguage/`) precisely so that the two systems
+`PlusAxiom`/`PlusDerivationTree` (`FormalSystem/Syntax/StarLanguage/`) precisely so that the two systems
 are structurally comparable and the L⁺ ⊂ L⋆ questions can be *stated* — which, before it existed,
 they could not be.
 
@@ -115,6 +115,6 @@ open.
 
 - [`../Plus/README.md`](../Plus/README.md) — TM⁺, the system TM⋆ extends, and the open-problem
   record the conditional row points at
-- [`../../../StarLanguage/README.md`](../../../StarLanguage/README.md) — the language L⋆, the
+- [`../../../Syntax/StarLanguage/README.md`](../../../Syntax/StarLanguage/README.md) — the language L⋆, the
   proof system's declarations, and the paper-label correspondence table
 - [`../README.md`](../README.md) — the conservativity directory as a whole

@@ -31,3 +31,19 @@ FormalSystem.StarLanguage.StarAxiom
 # `inductive StarDerivationTree` in namespace FormalSystem.StarLanguage
 # -- StarLanguage/Derivation.lean:82
 FormalSystem.StarLanguage.StarDerivationTree
+
+# `namespace FormalSystem.MinusLanguage` -- Syntax/MinusLanguage/Formula.lean; the namespace
+# deliberately stayed flat when the directory was nested under Syntax/, so prose naming the
+# namespace (as opposed to the module path) is correct as written.
+# Read as a namespace at NOTATION.md:49 ("a file that has opened both ... and
+# FormalSystem.MinusLanguage"), docs/development/NAMING_CONVENTION_DEVIATION.md:291
+# ("20 of them in FormalSystem.MinusLanguage"), and docs/theorem-index.md:43.
+FormalSystem.MinusLanguage
+
+# `namespace FormalSystem.PlusLanguage` -- Syntax/PlusLanguage/Formula.lean; flat namespace,
+# read as a namespace at docs/theorem-index.md:44.
+FormalSystem.PlusLanguage
+
+# `namespace FormalSystem.StarLanguage` -- Syntax/StarLanguage/Formula.lean; flat namespace,
+# read as a namespace at docs/theorem-index.md:45.
+FormalSystem.StarLanguage

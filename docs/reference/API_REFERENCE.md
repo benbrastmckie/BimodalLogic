@@ -784,13 +784,13 @@ theorem.
 and ZTime rows and **open** for the other two. This is a negative result recorded in the
 module docstring, not outstanding work.
 
-The tense-primitive source language is `FormalSystem/MinusLanguage/` -- see the entry below.
+The tense-primitive source language is `FormalSystem/Syntax/MinusLanguage/` -- see the entry below.
 
 ---
 
-### MinusLanguage (`FormalSystem.MinusLanguage`)
+### MinusLanguage (`FormalSystem.Syntax.MinusLanguage`)
 
-**Module**: `FormalSystem/MinusLanguage/`
+**Module**: `FormalSystem/Syntax/MinusLanguage/`
 
 A **second object language**, in which `H` (`allPast`) and `G` (`allFuture`) are primitive
 rather than derived:

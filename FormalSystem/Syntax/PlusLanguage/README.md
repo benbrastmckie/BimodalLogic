@@ -12,10 +12,10 @@ unary operator, the **stability modal** `⊡` (`def:BLstar-semantics`):
 at `x`. L⁺ is therefore the **⊡-only fragment** of the manuscript's `\BL^\star`
 (`sub:Extension`), not a language the manuscript names: `\BL^\star` additionally carries the
 store/recall operators, which are **out of scope** here. Their time-register half is
-**L⋆**, which is built at `FormalSystem/StarLanguage/` — a separate inductive `StarFormula` with
+**L⋆**, which is built at `FormalSystem/Syntax/StarLanguage/` — a separate inductive `StarFormula` with
 its own embedding `ofPlus : PlusFormula → StarFormula`, its semantics over the manuscript's
 points `(τ, x, v⃗)`, and the paper-label correspondence table for the deterministic-frame
-appendix. See `FormalSystem/StarLanguage/README.md`.
+appendix. See `FormalSystem/Syntax/StarLanguage/README.md`.
 
 L⁺ is a **separate inductive** (`PlusFormula`) with a constructor-to-constructor embedding
 `ofFormula : Formula → PlusFormula`, following the landed `MinusLanguage/` pattern
@@ -31,7 +31,7 @@ atomization transfer rely on.
 | `Axioms.lean` | `PlusAxiom`, the **closed** inductive of TM⁺ schemata: the 45 TM schemata re-declared with `PlusFormula` parameters, plus eight `⊡` schemata — SK, ST, S4, S5 (S5 for `⊡`), MS `□φ → ⊡φ`, AS `p → ⊡p` for atoms, and the two pasting schemata PS `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))` and US `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)` with pure-future/pure-past side conditions; `PlusAxiom.minFrameClass` |
 | `Derivation.lean` | `PlusDerivationTree` (the seven rules of TM, constructor for constructor), `PlusDerivable`, `⊢⁺[fc]` notation, the derived `⊡`-necessitation rule `stabNecessitation`, and the backward conservativity bridge `PlusAxiom.ofTM` / `PlusDerivationTree.ofTM` / `plusDerivable_of_derivable`: `TM ⊢[fc] φ ⟹ TM⁺ ⊢[fc] ofFormula φ` |
 
-The sibling aggregator is `FormalSystem/PlusLanguage.lean`.
+The sibling aggregator is `FormalSystem/Syntax/PlusLanguage.lean`.
 
 ## Why the TM schemata are re-declared
 
@@ -55,8 +55,8 @@ side of the permitted import edge:
 
 ## Module Invariant
 
-**Nothing under `FormalSystem/PlusLanguage/` imports anything from `FormalSystem/Semantics/`.**
-Checkable by `grep -rn 'FormalSystem.Semantics' FormalSystem/PlusLanguage/`: only prose matches.
+**Nothing under `FormalSystem/Syntax/PlusLanguage/` imports anything from `FormalSystem/Semantics/`.**
+Checkable by `grep -rn 'FormalSystem.Semantics' FormalSystem/Syntax/PlusLanguage/`: only prose matches.
 The invariant is directional, exactly as for `MinusLanguage/`; the converse edge is permitted and
 is how L⁺ acquires its semantics.
 

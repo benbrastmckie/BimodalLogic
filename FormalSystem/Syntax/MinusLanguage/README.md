@@ -29,7 +29,7 @@ repository's metalogic is proved in.
 ## Where the L⁻ semantics lives
 
 Nothing in this directory defines truth, validity, or a frame — that is the standing module
-invariant recorded in `FormalSystem/MinusLanguage.lean`, and it is **directional**: it forbids the
+invariant recorded in `FormalSystem/Syntax/MinusLanguage.lean`, and it is **directional**: it forbids the
 edge `MinusLanguage/ → Semantics/` and says nothing about the converse, which is permitted and
 used. The base language's semantics is sited outside this directory, on the far side of that
 permitted edge:

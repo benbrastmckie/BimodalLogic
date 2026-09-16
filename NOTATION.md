@@ -38,7 +38,7 @@ forgotten. Use it when only the fact of derivability matters. These four are spe
 precisely so that they cannot be confused at a glance with the `Type`-valued four above — the
 distinction is load-bearing, and a Unicode near-twin would hide it.
 
-### L⁻, the tense-primitive language (`FormalSystem/MinusLanguage/Derivation.lean`)
+### L⁻, the tense-primitive language (`FormalSystem/Syntax/MinusLanguage/Derivation.lean`)
 
 | Notation | Unfolds to |
 |---|---|
@@ -49,7 +49,7 @@ The `⁻` marker exists so these do not collide with TM's `⊢[fc]` in a file th
 `FormalSystem.ProofSystem` and `FormalSystem.MinusLanguage`. The declaration's own docstring says
 so; it is a disambiguator, not decoration.
 
-### L⁺, the stability extension (`FormalSystem/PlusLanguage/Derivation.lean`)
+### L⁺, the stability extension (`FormalSystem/Syntax/PlusLanguage/Derivation.lean`)
 
 | Notation | Unfolds to |
 |---|---|

@@ -102,7 +102,7 @@ and `def:BX-r`, footnote/comment churn. No anchor entered or left that set becau
 
 **Citation sites that moved.** The `app:ObjectiveModality` row of "Anchor classification
 (2026-09-07)" above names `FormalSystem/BaseLanguage/Axioms.lean` as its citing file; that module
-is now `FormalSystem/MinusLanguage/Axioms.lean`. The anchor, its classification and its reason are
+is now `FormalSystem/Syntax/MinusLanguage/Axioms.lean`. The anchor, its classification and its reason are
 unchanged.
 
 ### Drift correction and rename absorption (2026-09-07): the z/d/r wave
@@ -1782,7 +1782,7 @@ app:topology-t1|LIVE-UNPINNED|topology appendix; part of the block this file del
 cor:no-characterization|LIVE-UNPINNED|the no-characterization corollary (Cthm); cited as a pointer, text never quoted
 cor:perpetuity-valid|LIVE-UNPINNED|perpetuity principles valid; the live anchor that replaced the never-existent app:valid
 def:BL-language|LIVE-UNPINNED|the BL language; cited as a pointer alongside the pinned def:BLplus-language
-def:BLstar-semantics|LIVE-UNPINNED|the truth definition for the manuscript's \BL^\star, whose ($\Stability$) clause is the semantics of this repository's L⁺; cited as a pointer wherever a docstring names the ⊡ clause. Not pinned: the clause is quoted in this repository only in paraphrase. The anchor's block also covers the store/recall clauses; ITS TIME-REGISTER HALF IS NOW IMPLEMENTED as StarTruthAt over points (tau, x, v-vector) (Semantics/StarTruth.lean), with the world registers up_M/down_M deliberately still unimplemented -- recorded as an explicit exclusion in FormalSystem/StarLanguage/README.md's correspondence table
+def:BLstar-semantics|LIVE-UNPINNED|the truth definition for the manuscript's \BL^\star, whose ($\Stability$) clause is the semantics of this repository's L⁺; cited as a pointer wherever a docstring names the ⊡ clause. Not pinned: the clause is quoted in this repository only in paraphrase. The anchor's block also covers the store/recall clauses; ITS TIME-REGISTER HALF IS NOW IMPLEMENTED as StarTruthAt over points (tau, x, v-vector) (Semantics/StarTruth.lean), with the world registers up_M/down_M deliberately still unimplemented -- recorded as an explicit exclusion in FormalSystem/Syntax/StarLanguage/README.md's correspondence table
 def:task-topology|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
 lem:deterministic-singleton|LIVE-UNPINNED|deterministic-frame singleton fibers (Lthm); cited as a pointer (StateSetTruth.lean names its choice-free direction but quotes no text)
 lem:history-time-shift-preservation|LIVE-UNPINNED|time-shift preservation; cited as a pointer

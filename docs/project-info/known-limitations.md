@@ -267,7 +267,7 @@ strong-completeness theorem is not misread as outstanding work.
 ### Description
 
 The bridge between TM⁻ (stated over the tense-primitive language L⁻,
-`FormalSystem/MinusLanguage/`) and TM (the until/since-primitive system, which is the paper's
+`FormalSystem/Syntax/MinusLanguage/`) and TM (the until/since-primitive system, which is the paper's
 own TM) is proved in the **backward** direction only:
 
 ```

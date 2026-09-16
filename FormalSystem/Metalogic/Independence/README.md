@@ -40,9 +40,9 @@ quotient of the world states and thereby removes the common state a splice would
 else about the argument is the usual four steps.
 
 Results 6 and 7 leave the language rather than the semantics: they are stated over **L⋆**
-(`FormalSystem/StarLanguage/`), L⁺ plus the manuscript's time store/recall operators. The
+(`FormalSystem/Syntax/StarLanguage/`), L⁺ plus the manuscript's time store/recall operators. The
 paper-label correspondence table for that appendix — every `\label` mapped to a Lean name or to
-an explicit exclusion — lives in `FormalSystem/StarLanguage/README.md`.
+an explicit exclusion — lives in `FormalSystem/Syntax/StarLanguage/README.md`.
 
 Every result here follows the same four steps: build a concrete frame satisfying every
 structural axiom of the semantics; prove a truth-invariance lemma for it (a symmetry or
