@@ -208,16 +208,16 @@ the workflow's comments agree with what it runs.
 
 ---
 
-### Phase 3: Record the per-script wiring pattern in CI_CD_PROCESS.md [NOT STARTED]
+### Phase 3: Record the per-script wiring pattern in CI_CD_PROCESS.md [COMPLETED]
 
 **Goal**: Write the convention every later CI-wiring phase follows, in the doc that already
 holds CI step explanations and the runtime budget.
 
 **Tasks**:
-- [ ] Under "CI Steps Explained", add a subsection for the existing "Compile lean_exe roots"
+- [x] Under "CI Steps Explained", add a subsection for the existing "Compile lean_exe roots"
   step, which is currently undocumented, plus one subsection per new check step. Each subsection
-  gives the step name, the exact command, what it gates, and how to run it locally.
-- [ ] Add a "Wiring a New Check Script" section with four parts:
+  gives the step name, the exact command, what it gates, and how to run it locally. *(completed)*
+- [x] Add a "Wiring a New Check Script" section with four parts:
   1. **Step naming**: the step `name:` contains the script path, and the body uses
      `set -euo pipefail` with `::group::` around the command.
   2. **Skip-and-report-neutral**: when a check's input may be absent in CI (for example an
@@ -230,12 +230,16 @@ holds CI step explanations and the runtime budget.
      step and after the lean_exe step. New steps are appended directly before "Report
      results".
   4. **Runtime budget**: a table of per-step wall-clock times (filled in Phase 4), plus the
-     rule that a task wiring a new step updates the table in the same change.
-- [ ] Document the known gaps: C2, C6, and C24 are not run in CI because of `--no-build`, and
+     rule that a task wiring a new step updates the table in the same change. *(completed:
+     table populated now with Phase 1's local measurements rather than deferred to Phase 4,
+     since those numbers were already in hand; Phase 4 re-derives timings from the extracted
+     step bodies and will reconcile/update this same table rather than adding a second one --
+     deviation noted in the progress file)*
+- [x] Document the known gaps: C2, C6, and C24 are not run in CI because of `--no-build`, and
   the doc gives the one-line upgrade path. Also document that readme-lint Checks 2 and 4 are
-  informational only, and that the shallow clone distorts Check 4's dates.
-- [ ] Update the "Pipeline Summary" and "Running CI Locally" sections to list the three
-  commands.
+  informational only, and that the shallow clone distorts Check 4's dates. *(completed)*
+- [x] Update the "Pipeline Summary" and "Running CI Locally" sections to list the three
+  commands. *(completed)*
 
 **Timing**: 1 hour
 

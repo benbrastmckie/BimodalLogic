@@ -1,0 +1,45 @@
+{
+  "phase": 3,
+  "phase_name": "Record the per-script wiring pattern in CI_CD_PROCESS.md",
+  "started_at": "2026-09-16T00:45:00Z",
+  "last_updated": "2026-09-16T01:05:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Add subsections for Compile lean_exe roots and the three new check steps under CI Steps Explained",
+      "status": "done",
+      "files_touched": ["docs/development/CI_CD_PROCESS.md"]
+    },
+    {
+      "id": 2,
+      "description": "Add Wiring a New Check Script section (step naming, skip-and-report-neutral, cache-warm placement, runtime budget)",
+      "status": "done",
+      "files_touched": ["docs/development/CI_CD_PROCESS.md"],
+      "note": "Runtime budget table populated now using Phase 1's measurements (invariants 23.6s, copyright 10.98s, readme-lint 7.34s, sum ~41.9s), rather than waiting for Phase 4 as the plan phrasing suggested. Phase 4 will re-derive timings from the extracted step bodies and reconcile this same table."
+    },
+    {
+      "id": 3,
+      "description": "Document known gaps (C2/C6/C24 skipped under --no-build, upgrade path) and readme-lint informational checks / shallow-clone date distortion",
+      "status": "done",
+      "files_touched": ["docs/development/CI_CD_PROCESS.md"]
+    },
+    {
+      "id": 4,
+      "description": "Update Pipeline Summary and Running CI Locally sections to list the three commands",
+      "status": "done",
+      "files_touched": ["docs/development/CI_CD_PROCESS.md"]
+    }
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.2",
+      "description": "Runtime budget table (plan says \"filled in Phase 4\")",
+      "type": "altered",
+      "reason": "Local timings from Phase 1 were already available, so the table was populated in Phase 3 rather than left empty until Phase 4. Phase 4 still performs its own extracted-body measurement and reconciles/updates the same table -- no verification step is skipped, only the timing of when the table first gets numbers changed.",
+      "annotation": "*(deviation: altered — table populated in Phase 3 using Phase 1 numbers, to be reconciled by Phase 4)*"
+    }
+  ]
+}
