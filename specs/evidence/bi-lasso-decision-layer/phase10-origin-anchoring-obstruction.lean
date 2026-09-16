@@ -125,21 +125,21 @@ def freePresentation : IntPresentation where
 /-- The path that visits state `1` exactly once, at time `-5`. -/
 def spikePath : ℤ → Fin freePresentation.card := fun u => if u = -5 then 1 else 0
 
-theorem spikePath_isStepPath : IsStepPath freePresentation.toTaskFrame spikePath := by
+theorem spikePath_isStepPath : IsStepPath freePresentation.toFibre spikePath := by
   rw [freePresentation.isStepPath_iff]
   intro t
   rfl
 
 /-- The total history determined by that path. -/
 def spikeHF : freePresentation.toTaskFrame.HF :=
-  TaskFrame.HFofStepPath freePresentation.toTaskFrame spikePath spikePath_isStepPath
+  FrameOver.HFofStepPath freePresentation.toFibre spikePath spikePath_isStepPath
 
 /-- `prev ψ`, in the live guard-first order: guard `⊥`, event `ψ`. -/
 def prev (ψ : Formula) : Formula := Formula.snce Formula.bot ψ
 
 /-- `prev` steps truth back exactly one tick. The guard is `⊥`, so the propagation disjunct of
 the one-step unfolding is dead and only the immediate-event disjunct survives. -/
-theorem truth_prev {τ : WorldHistory freePresentation.toTaskFrame} (t : ℤ) (ψ : Formula) :
+theorem truth_prev {τ : ConvexHistory freePresentation.toTaskFrame} (t : ℤ) (ψ : Formula) :
     TruthAt freePresentation.toModel τ t (prev ψ) ↔
       TruthAt freePresentation.toModel τ (t - 1) ψ := by
   rw [prev, truth_snce_pred]
@@ -233,7 +233,7 @@ claims it.
 
 /-- The Phase 10 deliverable, in the shape that survives the anchoring obstruction. -/
 def Phase10Target (P : IntPresentation) (φ : Formula) (bx : Formula → Bool) (bound : ℕ) : Prop :=
-  ∀ (τ : WorldHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ),
+  ∀ (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ),
     TruthAt P.toModel τ t φ →
       ∃ A ∈ boundedAnnots P φ bx bound, ∃ i : ℤ,
         A.lasso.unroll i = τ.states t (hτ t) ∧ φ ∈ A.label i

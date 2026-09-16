@@ -22,12 +22,12 @@ def Sat (P : IntPresentation) (w : Fin P.card) (φ : Formula) : Prop :=
   ∃ τ : P.toTaskFrame.HF, τ.path 0 = w ∧ TruthAt P.toModel τ.val 0 φ
 
 /-- Every function into `univ2`'s carrier is a step path. -/
-theorem univ2_all (f : ℤ → Fin univ2.card) : IsStepPath univ2.toTaskFrame f := by
+theorem univ2_all (f : ℤ → Fin univ2.card) : IsStepPath univ2.toFibre f := by
   rw [univ2.isStepPath_iff]; intro _; rfl
 
 /-- The `H_F` member a bare function determines. -/
 noncomputable def hist (f : ℤ → Fin univ2.card) : univ2.toTaskFrame.HF :=
-  TaskFrame.HFofStepPath univ2.toTaskFrame f (univ2_all f)
+  FrameOver.HFofStepPath univ2.toFibre f (univ2_all f)
 
 theorem hist_path (f : ℤ → Fin univ2.card) : (hist f).path = f := rfl
 

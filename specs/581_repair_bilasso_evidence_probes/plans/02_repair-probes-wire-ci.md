@@ -1,7 +1,7 @@
 # Implementation Plan: Task #581
 
 - **Task**: 581 - Repair the four wired bi-lasso evidence probes so `check-evidence-probes.sh` exits 0, then wire it into CI
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None (583 is concurrently planning the CI wiring pattern; see Risks)
 - **Research Inputs**: specs/581_repair_bilasso_evidence_probes/reports/02_probe-repair-verified-diffs.md (primary), specs/581_repair_bilasso_evidence_probes/reports/01_bilasso-probe-frameclass-drift.md (sweep evidence)
@@ -80,21 +80,21 @@ bi-lasso decision layer.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Apply verified Lean repairs to the four wired probes [NOT STARTED]
+### Phase 1: Apply verified Lean repairs to the four wired probes [COMPLETED]
 
 **Goal**: Make all four wired probes compile under the current API with statements unchanged in
 content, and confirm axiom hygiene.
 
 **Tasks**:
-- [ ] Confirm the probe files are unchanged since research (`git log --oneline -1 -- specs/evidence/bi-lasso-decision-layer/`)
-- [ ] Apply report 02's phase7 diff (`intOrder` carrier, fibre-level `WorldState`/`TaskRel`, `FrameOver.step` in `simp` sets); `lake env lean` the file, expect exit 0
-- [ ] Apply report 02's phase12 diff (`univ2_all` over `univ2.toFibre`; `hist` via `FrameOver.HFofStepPath`); `lake env lean`, expect exit 0 (one pre-existing linter warning is acceptable)
-- [ ] Apply report 02's phase3 diff (`tau : ConvexHistory`; `ℤ`-ascribed binders and `show … by omega` in `truth_prev`, the `-5 < 0` witness, and the `-1 < k` witness); `lake env lean`, expect exit 0
-- [ ] Apply report 02's phase10 diff (`spikePath_isStepPath` over `toFibre`; `spikeHF` via `FrameOver.HFofStepPath`; `ConvexHistory` in `truth_prev` and `Phase10Target`); `lake env lean`, expect exit 0
-- [ ] Axiom audit from scratch copies in the session scratchpad (never in the tracked files): append `#print axioms` for every named theorem in each probe; for phase7's anonymous `example`s, restate them as named theorems in the scratch copy. Every result must be a subset of `[propext, Classical.choice, Quot.sound]`, with no `sorryAx`
-- [ ] Grep each repaired probe for `sorry` (expect none)
-- [ ] Run `bash scripts/check-evidence-probes.sh`; expect exit 0 with 4 PASS, 1 SKIP
-- [ ] Record, for the summary, the per-probe statement-change justification (report 02's "Does each obstruction still hold?" list, confirmed against the applied diff)
+- [x] Confirm the probe files are unchanged since research (`git log --oneline -1 -- specs/evidence/bi-lasso-decision-layer/`)
+- [x] Apply report 02's phase7 diff (`intOrder` carrier, fibre-level `WorldState`/`TaskRel`, `FrameOver.step` in `simp` sets); `lake env lean` the file, expect exit 0 *(deviation: altered — all four diffs applied in one `git apply` of report 02's diff block, then verified together via the guard rather than per-file `lake env lean`)*
+- [x] Apply report 02's phase12 diff (`univ2_all` over `univ2.toFibre`; `hist` via `FrameOver.HFofStepPath`); `lake env lean`, expect exit 0 (one pre-existing linter warning is acceptable)
+- [x] Apply report 02's phase3 diff (`tau : ConvexHistory`; `ℤ`-ascribed binders and `show … by omega` in `truth_prev`, the `-5 < 0` witness, and the `-1 < k` witness); `lake env lean`, expect exit 0
+- [x] Apply report 02's phase10 diff (`spikePath_isStepPath` over `toFibre`; `spikeHF` via `FrameOver.HFofStepPath`; `ConvexHistory` in `truth_prev` and `Phase10Target`); `lake env lean`, expect exit 0
+- [x] Axiom audit from scratch copies in the session scratchpad (never in the tracked files): append `#print axioms` for every named theorem in each probe; for phase7's anonymous `example`s, restate them as named theorems in the scratch copy. Every result must be a subset of `[propext, Classical.choice, Quot.sound]`, with no `sorryAx`
+- [x] Grep each repaired probe for `sorry` (expect none)
+- [x] Run `bash scripts/check-evidence-probes.sh`; expect exit 0 with 4 PASS, 1 SKIP
+- [x] Record, for the summary, the per-probe statement-change justification (report 02's "Does each obstruction still hold?" list, confirmed against the applied diff)
 
 **Timing**: 45 minutes
 
@@ -119,7 +119,7 @@ content, and confirm axiom hygiene.
 
 ---
 
-### Phase 2: Correct the guard's stale DEFERRED comment [NOT STARTED]
+### Phase 2: Correct the guard's stale DEFERRED comment [IN PROGRESS]
 
 **Goal**: Make the guard's DEFERRED comment factually accurate about the spike probe, without
 wiring it.

@@ -87,7 +87,7 @@ def pAtom : Atom := Atom.mkBase "p"
 abbrev M : TaskModel chainPresentation.toTaskFrame := chainPresentation.toModel
 
 /-- The total world history the bi-lasso decodes to. -/
-abbrev tau : WorldHistory chainPresentation.toTaskFrame := L.toHF.val
+abbrev tau : ConvexHistory chainPresentation.toTaskFrame := L.toHF.val
 
 /-! ## The truth set of `prevⁿ p` along this path is exactly `[n, ∞)` -/
 
@@ -110,14 +110,15 @@ pins the witness to `s - 1`. -/
 theorem truth_prev (s : ℤ) (psi : Formula) :
     TruthAt M tau s (Formula.snce Formula.bot psi) ↔ TruthAt M tau (s - 1) psi := by
   constructor
-  · rintro ⟨z, hzlt, hpsi, hgap⟩
+  · rintro ⟨(z : ℤ), (hzlt : z < s), hpsi, hgap⟩
     have hz : z = s - 1 := by
       by_contra hne
       have hlt : z < s - 1 := by omega
-      exact hgap (s - 1) hlt (by omega)
+      exact hgap (s - 1) hlt (show s - 1 < s by omega)
     rwa [hz] at hpsi
   · intro h
-    exact ⟨s - 1, by omega, h, fun r h1 h2 => absurd h2 (by omega)⟩
+    exact ⟨s - 1, show s - 1 < s by omega, h,
+      fun (r : ℤ) (h1 : s - 1 < r) (h2 : r < s) => absurd h2 (by omega)⟩
 
 /-- `prevⁿ`. -/
 def prevN : ℕ → Formula → Formula
@@ -149,7 +150,7 @@ theorem plan_scan_bound_fails :
       ∀ s : ℤ, -5 < s → s ≤ -5 + (L.mid.length : ℤ) + (L.fwd.length : ℤ) →
         ¬ TruthAt M tau s (Formula.atom pAtom) := by
   constructor
-  · exact ⟨0, by omega, (truth_atom 0).mpr le_rfl, fun r _ _ => truth_top r⟩
+  · exact ⟨0, show (-5 : ℤ) < 0 by omega, (truth_atom 0).mpr le_rfl, fun r _ _ => truth_top r⟩
   · intro s h1 h2 hs
     have : (0 : ℤ) ≤ s := (truth_atom s).mp hs
     simp [L] at h2
@@ -173,7 +174,8 @@ theorem no_formula_independent_scan_bound (N : ℤ) :
   obtain ⟨k, hkN⟩ : ∃ k : ℕ, N < (k : ℤ) := ⟨N.toNat + 1, by omega⟩
   have hk0 : (0 : ℤ) ≤ (k : ℤ) := Int.natCast_nonneg _
   refine ⟨prevN k (Formula.atom pAtom), ?_, ?_⟩
-  · exact ⟨(k : ℤ), by omega, (truth_prevN k (k : ℤ)).mpr le_rfl, fun r _ _ => truth_top r⟩
+  · exact ⟨(k : ℤ), show (-1 : ℤ) < k by omega, (truth_prevN k (k : ℤ)).mpr le_rfl,
+      fun r _ _ => truth_top r⟩
   · intro s _ hsN hs
     have := (truth_prevN k s).mp hs
     omega
