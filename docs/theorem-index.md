@@ -37,7 +37,7 @@ the mapping.
 | task relation `w ⇒ₓ v` | `TaskFrame.TaskRel` | `def:task-relation` |
 | duration group `D` | `FormalSystem.Semantics.TemporalOrder` | `def:temporal-order`; a nontrivial totally ordered abelian group |
 | TM | `FormalSystem.ProofSystem` over `FrameClass.Base` | `def:TMplus`. The anchor id still reads `TMplus` for historical reasons; its text defines the paper's **TM** over the language **𝓛**, which is this tree's **L**. The two names now coincide — see `Metalogic/Conservativity.lean` |
-| TM_d (dense) | `FrameClass.Dense` | `def:BX-d` (the paper's **TM**_d, over **BX**_d). The tree says `Dense`, not `QTime`: the class is every dense order, not only `ℚ` |
+| TM_d (dense) | `FrameClass.Dense` | `def:BX-d` (the paper's **TM**_d, over **BX**_d) |
 | TM_z (ℤ-time) | `FrameClass.ZTime` | `def:BX-z` (the paper's **TM**_z, over **BX**_z). The tree says `ZTime`, not `Discrete` |
 | TM_r (dense and Dedekind-complete) | `FrameClass.RTime` | `def:BX-r` (the paper's **TM**_r, over **BX**_r, *Dense and Complete*). The tree says `RTime`, not `Dedekind` |
 | L⁻ / TM⁻ (tense-primitive, `H`/`G` primitive) | `FormalSystem.MinusLanguage` | its truth relation is `Semantics.MinusTruthAt`, a native six-clause recursion, **not** `TruthAt ∘ tr`. L⁻ answers to **no paper name**: the H/G fragment was withdrawn from the paper, so nothing in the manuscript corresponds to it |

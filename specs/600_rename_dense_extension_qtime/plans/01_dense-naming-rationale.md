@@ -1,7 +1,7 @@
 # Implementation Plan: Task #600
 
 - **Task**: 600 - Rename dense extension to QTime (investigate first)
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md
@@ -76,15 +76,15 @@ No roadmap consultation requested for this dispatch.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Record naming rationale in docstrings [COMPLETED]
+### Phase 1: Record naming rationale in docstrings [NOT STARTED]
 
 **Goal**: Write the canonical "why Dense, not QTime" rationale and its reciprocal pointers.
 
 **Tasks**:
-- [x] Confirm cited declaration names exist and are spelled correctly (`FrameClass.Sat.anti` or the actual monotonicity lemma name, `soundness_dense`, `derivable_of_validDense`, `countermodel_dense_enriched`, `Semantics.complete_duration_discrete_or_dense`, `TaskFrame.isDense_of_isRTime`) via `lean_local_search` / grep.
-- [x] In `FormalSystem/ProofSystem/Axioms.lean`, add to the `FrameClass` docstring (after the "Why `RTime` sits strictly above `Dense`" paragraph) a paragraph "**Why this class is named `Dense` and not `QTime`.**" covering: (a) ZTime/RTime are carrier-named because their classes are categorical; (b) the dense class is not categorical (ℚ, ℝ, ℚ ×ₗ ℚ) and cannot be narrowed to ℚ since `Dense ≤ RTime` requires ℝ-frames in `Sat .Dense`; (c) its logic nevertheless equals ℚ-time's, because soundness holds over every dense frame and the completeness countermodel is built over `Rat` -- a theorem about the class, not its definition; (d) the name tracks the paper's TM_d / BX_d and `def:frame-properties`' Dense clause, so Dense/ZTime/RTime mirrors the paper's d/z/r subscripts; and (e) the paper itself reserves "ℚ-time" for where ℚ differs from the dense class (Kamp's theorem).
-- [x] In `FormalSystem/Semantics/FrameProperty.lean`, append a short "Why this class is not named `IsQTime`" note to `TaskFrame.IsDense`'s docstring: bare paper clause, not narrowed, so it keeps the paper's name per the module's "two narrowed classes" convention; pointer to the `FrameClass` docstring for the full argument.
-- [x] Optionally add one sentence to the `.Dense` bullet in `FormalSystem/Semantics/FrameClassValidity.lean`'s interpretation notes, and "The tree says `Dense`, not `QTime`" to the TM_d row of `docs/theorem-index.md` (parallel to the TM_r row's "The tree says `RTime`, not `Dedekind`").
+- [ ] Confirm cited declaration names exist and are spelled correctly (`FrameClass.Sat.anti` or the actual monotonicity lemma name, `soundness_dense`, `derivable_of_validDense`, `countermodel_dense_enriched`, `Semantics.complete_duration_discrete_or_dense`, `TaskFrame.isDense_of_isRTime`) via `lean_local_search` / grep.
+- [ ] In `FormalSystem/ProofSystem/Axioms.lean`, add to the `FrameClass` docstring (after the "Why `RTime` sits strictly above `Dense`" paragraph) a paragraph "**Why this class is named `Dense` and not `QTime`.**" covering: (a) ZTime/RTime are carrier-named because their classes are categorical; (b) the dense class is not categorical (ℚ, ℝ, ℚ ×ₗ ℚ) and cannot be narrowed to ℚ since `Dense ≤ RTime` requires ℝ-frames in `Sat .Dense`; (c) its logic nevertheless equals ℚ-time's, because soundness holds over every dense frame and the completeness countermodel is built over `Rat` -- a theorem about the class, not its definition; (d) the name tracks the paper's TM_d / BX_d and `def:frame-properties`' Dense clause, so Dense/ZTime/RTime mirrors the paper's d/z/r subscripts; and (e) the paper itself reserves "ℚ-time" for where ℚ differs from the dense class (Kamp's theorem).
+- [ ] In `FormalSystem/Semantics/FrameProperty.lean`, append a short "Why this class is not named `IsQTime`" note to `TaskFrame.IsDense`'s docstring: bare paper clause, not narrowed, so it keeps the paper's name per the module's "two narrowed classes" convention; pointer to the `FrameClass` docstring for the full argument.
+- [ ] Optionally add one sentence to the `.Dense` bullet in `FormalSystem/Semantics/FrameClassValidity.lean`'s interpretation notes, and "The tree says `Dense`, not `QTime`" to the TM_d row of `docs/theorem-index.md` (parallel to the TM_r row's "The tree says `RTime`, not `Dedekind`").
 
 **Timing**: 45 minutes
 
