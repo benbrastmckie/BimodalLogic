@@ -56,6 +56,8 @@ semantics this development uses.
 - `logicDeterministicEqDeterminedValid` — the coincidence, uniformly in the frame class
 - `detCompletenessBetween` — the transfer to every class between the deterministic frames and
   the *Determined*-valid frames
+- `detDerivable_ofFormula_iff` — **TM⁺ + *Determined* is conservative over TM**: the
+  deterministic-completeness transfer back to the L level
 
 ## References
 
@@ -189,6 +191,26 @@ theorem detDerivable_iff_derivable_erasePlus (fc : FrameClass) (φ : PlusFormula
       (validDetIn_erasePlus_of_plusValidDetIn (PlusValidDetIn.of_determined (detSoundness h)))
   · intro h
     exact detDerivable_of_derivable_erasePlus h
+
+/-! ## The transfer back to the L level -/
+
+/--
+**TM⁺ + *Determined* is a conservative extension of TM.** An L formula is a theorem of the
+extended system exactly when it is a TM theorem, at every frame class.
+
+This is the deterministic-completeness result read back at the L level, and it is a genuine
+addition rather than a restatement of `plusDerivable_ofFormula_iff`: the extended system carries
+a schema that TM⁺ does not, so conservativity over TM does not follow from TM⁺'s. It is
+`detDerivable_iff_derivable_erasePlus` at `φ := ofFormula ψ`, where the erasure is the identity
+(`erasePlus_ofFormula`).
+
+Paper: — (formalization-native; TM⁺ + *Determined* is the ⊡-only fragment's extension, for which
+the paper supplies no logic)
+-/
+theorem detDerivable_ofFormula_iff (fc : FrameClass) (φ : Formula) :
+    DetDerivable fc [] (ofFormula φ) ↔ ProofSystem.Derivable fc [] φ := by
+  have h := detDerivable_iff_derivable_erasePlus fc (ofFormula φ)
+  rwa [erasePlus_ofFormula] at h
 
 /-! ## Axiom audit
 

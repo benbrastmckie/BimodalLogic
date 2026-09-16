@@ -174,7 +174,7 @@ class — see `deterministic_not_plusDefinable` above.
 | — | `TM ≤ TMFrag` everywhere | `FormalSystem.Metalogic.Conservativity.tmMinus_le_tmFrag` | `FormalSystem/Metalogic/Conservativity/Fragment.lean` | — | pcq pinned:C14 |
 | — | `TM ⊊ TMFrag` at ℤ-time | `FormalSystem.Metalogic.Conservativity.tmMinus_lt_tmFrag_ztime` | `FormalSystem/Metalogic/Conservativity/Fragment.lean` | ZTime | pcq pinned:C14 |
 | — | Proof-theoretic conservativity of TM⁺ over TM, both directions, all four classes | `FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean` | — | pcq pinned:C14 |
-| — | Proof-theoretic conservativity of TM⁺ + *Determined* over TM, all four classes | `FormalSystem.Metalogic.Conservativity.detDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Conservativity/Plus/Corollaries.lean` | — | pcq |
+| — | Proof-theoretic conservativity of TM⁺ + *Determined* over TM, all four classes | `FormalSystem.Metalogic.Deterministic.detDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Deterministic/Completeness.lean` | — | pcq |
 | — | Soundness of TM⁺ at every frame class | `FormalSystem.Metalogic.Conservativity.plus_soundness_validIn` | `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` | — | pcq pinned:C14 |
 | — | Semantic conservativity of L⁺ over L | `FormalSystem.Semantics.plusValidIn_ofFormula_iff` | `FormalSystem/Semantics/PlusValidity.lean` | — | `[propext]` pinned:C14 |
 

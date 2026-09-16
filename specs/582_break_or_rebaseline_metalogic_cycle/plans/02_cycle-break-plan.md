@@ -1,7 +1,7 @@
 # Implementation Plan: Task #582
 
 - **Task**: 582 - Break or re-baseline the Conservativity <-> Deterministic directory cycle in `Metalogic/`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 583 (soft: records the CI wiring pattern Phase 4 follows; not a hard blocker)
 - **Research Inputs**: specs/582_break_or_rebaseline_metalogic_cycle/reports/02_cycle-break-costing.md (primary), specs/582_break_or_rebaseline_metalogic_cycle/reports/01_conservativity-deterministic-cycle.md (evidence), specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md (CI wiring pattern)
@@ -96,30 +96,30 @@ No roadmap consultation requested for this dispatch.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Relocate `detDerivable_ofFormula_iff` and delete the cycle-forming import [NOT STARTED]
+### Phase 1: Relocate `detDerivable_ofFormula_iff` and delete the cycle-forming import [COMPLETED]
 
 **Goal**: Remove the `Conservativity -> Deterministic` edge with no proof changes.
 
 **Tasks**:
-- [ ] Baseline: run `bash scripts/check-metalogic-cycles.sh` and record the FAIL (2 cycles)
-- [ ] In `FormalSystem/Metalogic/Deterministic/Completeness.lean`, add `detDerivable_ofFormula_iff`
+- [x] Baseline: run `bash scripts/check-metalogic-cycles.sh` and record the FAIL (2 cycles)
+- [x] In `FormalSystem/Metalogic/Deterministic/Completeness.lean`, add `detDerivable_ofFormula_iff`
       immediately after `detDerivable_iff_derivable_erasePlus` (~line 192), inside
       `namespace FormalSystem.Metalogic.Deterministic`: keep the docstring verbatim (including the
       `Paper: —` line), drop the `Deterministic.` qualifiers on `DetDerivable`,
       `detDerivable_iff_derivable_erasePlus`, `erasePlus_ofFormula`; confirm `ofFormula`, `Formula`,
       and `ProofSystem.Derivable` resolve (add `open`/qualifiers only if needed)
-- [ ] Add the theorem to that module docstring's main-results prose
-- [ ] In `FormalSystem/Metalogic/Conservativity/Plus/Corollaries.lean`: delete line 8
+- [x] Add the theorem to that module docstring's main-results prose
+- [x] In `FormalSystem/Metalogic/Conservativity/Plus/Corollaries.lean`: delete line 8
       (`import FormalSystem.Metalogic.Deterministic.Completeness`), the
       "The transfer back to the L level" section header, docstring and theorem (lines ~195-213),
       and replace the module-docstring bullet at line 52 with a one-line pointer to
       `Deterministic/Completeness.lean`
-- [ ] `lean_diagnostic_messages` on both files: zero errors
-- [ ] `lean_verify FormalSystem.Metalogic.Deterministic.detDerivable_ofFormula_iff`: axioms are
+- [x] `lean_diagnostic_messages` on both files: zero errors *(deviation: altered — `lean_diagnostic_messages` is a blocked tool; verified instead by a guarded scoped `lake build` of both modules, exit 0; the Corollaries module-docstring intro prose was also reworded to point at the new location)*
+- [x] `lean_verify FormalSystem.Metalogic.Deterministic.detDerivable_ofFormula_iff`: axioms are
       `propext`, `Classical.choice`, `Quot.sound` only; no `sorry`
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0 with `PASS exactly 1 directory-level import cycle`
+- [x] `bash scripts/check-metalogic-cycles.sh` exits 0 with `PASS exactly 1 directory-level import cycle`
 - [ ] Optional: narrow `Deterministic/Soundness.lean:9` to `Conservativity.Plus.AxiomValidity`
-      only if the file still compiles and Phase 3's build is green; otherwise leave as is
+      only if the file still compiles and Phase 3's build is green; otherwise leave as is *(deviation: skipped — optional hygiene, does not affect the directory edge; kept the change set minimal)*
 
 **Timing**: 45 minutes
 
@@ -143,23 +143,23 @@ alone breaks the build or duplicates the declaration)
 
 ---
 
-### Phase 2: Update documentation anchors for the moved theorem [NOT STARTED]
+### Phase 2: Update documentation anchors for the moved theorem [COMPLETED]
 
 **Goal**: Every reference names the new fully-qualified name and file, so C15 and the READMEs agree.
 
 **Tasks**:
-- [ ] `docs/theorem-index.md:177`: name column -> `FormalSystem.Metalogic.Deterministic.detDerivable_ofFormula_iff`,
+- [x] `docs/theorem-index.md:177`: name column -> `FormalSystem.Metalogic.Deterministic.detDerivable_ofFormula_iff`,
       file column -> `FormalSystem/Metalogic/Deterministic/Completeness.lean`
-- [ ] `FormalSystem/Metalogic/Conservativity/Plus/README.md:36`: remove the theorem from the
+- [x] `FormalSystem/Metalogic/Conservativity/Plus/README.md:36`: remove the theorem from the
       `Corollaries.lean` row and update the line count (measure with `wc -l`)
-- [ ] `FormalSystem/Metalogic/Conservativity/Plus/README.md:49`: remove the theorem from the
+- [x] `FormalSystem/Metalogic/Conservativity/Plus/README.md:49`: remove the theorem from the
       `Corollaries.lean` key-results bullet (or leave a pointer to `Deterministic/Completeness.lean`)
-- [ ] `FormalSystem/Metalogic/Deterministic/README.md:50`: add `detDerivable_ofFormula_iff`
+- [x] `FormalSystem/Metalogic/Deterministic/README.md:50`: add `detDerivable_ofFormula_iff`
       (conservativity of TM+ + *Determined* over TM) to the `Completeness.lean` row, and to that
       README's key-results list if one exists
-- [ ] `grep -rn detDerivable_ofFormula_iff --exclude-dir=.lake --exclude-dir=specs .` shows only the
+- [x] `grep -rn detDerivable_ofFormula_iff --exclude-dir=.lake --exclude-dir=specs .` shows only the
       new declaration and the updated anchors; no remaining `Conservativity.detDerivable_ofFormula_iff`
-- [ ] Re-read `FormalSystem/Metalogic/README.md:73` and confirm "exactly one directory-level cycle"
+- [x] Re-read `FormalSystem/Metalogic/README.md:73` and confirm "exactly one directory-level cycle"
       is now true verbatim (no edit expected)
 
 **Timing**: 20 minutes
@@ -181,19 +181,19 @@ Deterministic/README row). Confirm with the grep above before and after editing.
 
 ---
 
-### Phase 3: Full gate run [NOT STARTED]
+### Phase 3: Full gate run [COMPLETED]
 
 **Goal**: Confirm the relocation is green across the whole build and all module invariants.
 
 **Tasks**:
-- [ ] Full `lake build` via `.claude/scripts/lake-build-guard.sh` (wait for any concurrent build);
+- [x] Full `lake build` via `.claude/scripts/lake-build-guard.sh` (wait for any concurrent build);
       exit 0
-- [ ] `bash scripts/check-module-invariants.sh` in full (not `--no-build`); all invariants pass,
-      specifically C4, C6, C15, C24
-- [ ] `bash scripts/check-metalogic-cycles.sh` exit 0 (re-run after the build)
-- [ ] If the optional Soundness import narrowing was applied and anything fails, revert that one
+- [x] `bash scripts/check-module-invariants.sh` in full (not `--no-build`); all invariants pass,
+      specifically C4, C6, C15, C24 *(deviation: altered — first run failed only INV (stale generated inventory line counts in `Metalogic/README.md` and root `README.md`, caused by the move); regenerated, `--emit-inventory --check` now PASS; every other invariant PASS)*
+- [x] `bash scripts/check-metalogic-cycles.sh` exit 0 (re-run after the build)
+- [x] If the optional Soundness import narrowing was applied and anything fails, revert that one
       line and re-run rather than debugging it
-- [ ] Commit: `task 582: phase 3: break Conservativity <-> Deterministic cycle` (Phases 1-3 changes)
+- [x] Commit: `task 582: phase 3: break Conservativity <-> Deterministic cycle` (Phases 1-3 changes)
 
 **Timing**: 45 minutes (dominated by build time)
 

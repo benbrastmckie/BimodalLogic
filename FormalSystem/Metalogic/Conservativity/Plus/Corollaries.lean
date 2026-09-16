@@ -5,17 +5,17 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Conservativity.Plus.Forward
-import FormalSystem.Metalogic.Deterministic.Completeness
 import FormalSystem.Theorems.TemporalDerived
 
 /-!
 # Conservativity corollaries and the logic of the defined modals
 
 What the stability modal permits beyond the conservativity rows already landed in
-`Conservativity/Plus/Forward.lean`: the composed L⁻/L-fragment rows named at each frame class,
-the derived theorems governing the defined modals `Will`, `will`, `Could`, `could`
-(`PlusLanguage/Formula.lean`, paper lines 1125-1129), and the conservativity of the *extended*
-system TM⁺ + *Determined* over TM.
+`Conservativity/Plus/Forward.lean`: the composed L⁻/L-fragment rows named at each frame class
+and the derived theorems governing the defined modals `Will`, `will`, `Could`, `could`
+(`PlusLanguage/Formula.lean`, paper lines 1125-1129). The conservativity of the *extended* system
+TM⁺ + *Determined* over TM is stated in `Metalogic/Deterministic/Completeness.lean`, so that this
+directory does not import the deterministic subtree (which itself imports TM⁺ soundness from here).
 
 ## What was already landed, and is cited rather than restated
 
@@ -49,8 +49,8 @@ theorem (seriality plus `G`-distribution plus `F`-monotonicity), and
 - `plusStabMono` — `⊡`-monotonicity in TM⁺, the derived rule the modal rows use
 - `willImpAllFuture`, `boxAllFutureImpWill`, `willImpWill`,
   `someFutureCouldImpCouldSomeFuture`
-- `detDerivable_ofFormula_iff` — **TM⁺ + *Determined* is conservative over TM**: the
-  deterministic-completeness transfer back to the L level
+- The conservativity of TM⁺ + *Determined* over TM, `detDerivable_ofFormula_iff`, lives in
+  `Metalogic/Deterministic/Completeness.lean`, beside the erasure row it specializes
 
 ## References
 
@@ -191,25 +191,5 @@ theorem someFutureCouldImpCouldSomeFuture {φ : PlusFormula} (hφ : PlusFormula.
         (PlusFormula.dstab (PlusFormula.someFuture φ))) :=
   plusAx (PlusAxiom.untl_paste PlusFormula.top φ PlusFormula.IsPurePast.top hφ)
     (FrameClass.base_le fc)
-
-/-! ## The transfer back to the L level -/
-
-/--
-**TM⁺ + *Determined* is a conservative extension of TM.** An L formula is a theorem of the
-extended system exactly when it is a TM theorem, at every frame class.
-
-This is the deterministic-completeness result read back at the L level, and it is a genuine
-addition rather than a restatement of `plusDerivable_ofFormula_iff`: the extended system carries
-a schema that TM⁺ does not, so conservativity over TM does not follow from TM⁺'s. It is
-`detDerivable_iff_derivable_erasePlus` at `φ := ofFormula ψ`, where the erasure is the identity
-(`erasePlus_ofFormula`).
-
-Paper: — (formalization-native; TM⁺ + *Determined* is the ⊡-only fragment's extension, for which
-the paper supplies no logic)
--/
-theorem detDerivable_ofFormula_iff (fc : FrameClass) (φ : Formula) :
-    Deterministic.DetDerivable fc [] (ofFormula φ) ↔ ProofSystem.Derivable fc [] φ := by
-  have h := Deterministic.detDerivable_iff_derivable_erasePlus fc (ofFormula φ)
-  rwa [Deterministic.erasePlus_ofFormula] at h
 
 end FormalSystem.Metalogic.Conservativity

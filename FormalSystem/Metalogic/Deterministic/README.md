@@ -47,7 +47,7 @@ remaining work is the two collapses: semantic (`Erasure.lean`) and syntactic
 | `System.lean` | `DetAxiom`, `DetDerivationTree`, `DetDerivable`, and the embeddings of TM and TM⁺ |
 | `Soundness.lean` | `detSoundness` over the *Determined*-valid frames, plus consistency |
 | `Collapse.lean` | the derived-rule layer and the **syntactic** collapse `detDerivable_iff_erasePlus` |
-| `Completeness.lean` | `detCompleteness*`, `logicDeterministicEqDeterminedValid`, the intermediate-class transfers |
+| `Completeness.lean` | `detCompleteness*`, `logicDeterministicEqDeterminedValid`, the intermediate-class transfers, and `detDerivable_ofFormula_iff` (conservativity over TM) |
 
 ## Key Results
 
@@ -56,6 +56,7 @@ remaining work is the two collapses: semantic (`Erasure.lean`) and syntactic
 - `logicDeterministicEqDeterminedValid` — the coincidence corollary
 - `detCompletenessBetween` / `logicBetweenEqDeterministic` — the transfer to every class between
   the two
+- `detDerivable_ofFormula_iff` — TM⁺ + *Determined* is conservative over TM, at every class
 - `determinedValid_not_deterministic` — the inclusion is strict, so the coincidence is a
   statement about logics and not about frames
 

@@ -33,7 +33,7 @@ does not define the deterministic frames, and no L⁺ formula set does
 |------|------:|-------------|
 | `Atomization.lean` | 241 | The `⊡`-as-fresh-atom transfer: `Encoding`, `atomize`, `TaskModel.atomModel`, `plusTruthAt_iff_atomize`, and the two helpers that carry the 45 TM schemata over L⁺. |
 | `AxiomValidity.lean` | 280 | The two dispatch lemmas, one arm per `PlusAxiom` constructor and no wildcard: every schema and every temporal dual is valid at its own minimum frame class. |
-| `Corollaries.lean` | 215 | The composed fragment rows named per class, the derived logic of the defined modals `Will`/`will`/`could`, and `detDerivable_ofFormula_iff` — conservativity of TM⁺ + *Determined* over TM. |
+| `Corollaries.lean` | 195 | The composed fragment rows named per class and the derived logic of the defined modals `Will`/`will`/`could`. |
 | `Forward.lean` | 171 | Forward conservativity of TM⁺ over TM at every class with a completeness engine, the biconditional `plusDerivable_ofFormula_iff`, and the composed L⁻ ⊂ L⁺ rows. |
 | `PlusSoundness.lean` | 193 | Soundness of TM⁺ at every frame class, by the companion recursion carrying validity and swap-validity, plus the per-class rows and consistency at `.Base`. |
 <!-- END GENERATED -->
@@ -46,8 +46,9 @@ does not define the deterministic frames, and no L⁺ formula set does
   directions, at all four classes
 - `Corollaries.lean`: the composed fragment rows `tmFragIffPlus{Base,Dense,ZTime,RTime}`; the
   derived logic of the defined modals (`willImpAllFuture`, `boxAllFutureImpWill`, `willImpWill`,
-  `someFutureCouldImpCouldSomeFuture`); and `detDerivable_ofFormula_iff`, the conservativity of
-  TM⁺ + *Determined* over TM
+  `someFutureCouldImpCouldSomeFuture`). The conservativity of TM⁺ + *Determined* over TM,
+  `detDerivable_ofFormula_iff`, lives in `Metalogic/Deterministic/Completeness.lean` so that this
+  directory does not import the deterministic subtree
 
 ## Metatheory rows
 
