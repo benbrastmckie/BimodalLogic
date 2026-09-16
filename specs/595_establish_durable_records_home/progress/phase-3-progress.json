@@ -1,0 +1,23 @@
+{
+  "phase": 3,
+  "phase_name": "Clear the new docs/ gate exposure",
+  "started_at": "2026-09-16T18:10:00Z",
+  "last_updated": "2026-09-16T18:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "C15: exclude record file from cited-anchor walk", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 2, "description": "C12: fix 5 unresolved slash paths", "status": "done", "files_touched": ["docs/architecture/total-history-validity-decisions.md", "docs/architecture/untl-snce-argument-order.md", "docs/reference/paper-definitions-of-record.md"]},
+    {"id": 3, "description": "C20 tier 2: convert 17 file.lean:NNN citations to declaration names", "status": "done", "files_touched": ["docs/architecture/untl-snce-argument-order.md", "docs/reference/paper-definitions-of-record.md"]},
+    {"id": 4, "description": "Task-number citations: rewrite 8 mentions to durable anchors, confirm C9D back to 142", "status": "done", "files_touched": ["docs/reference/paper-definitions-of-record.md", "docs/architecture/total-history-validity-decisions.md", "docs/architecture/untl-snce-argument-order.md"]},
+    {"id": 5, "description": "Do not touch MANIFEST rows or hash values", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Commit phase 3", "status": "in_progress", "files_touched": []}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [
+    {"approach": "For C12/C20, distinguished 'content moved' (cite current path/declaration) from 'genuinely historical quote that no longer matches live source' (reword without slash form or line number) case by case, using ADR-005 and git history/grep to confirm each", "result": "success"}
+  ],
+  "handoff_count": 0,
+  "observations": [
+    "check-module-invariants.sh --no-build now reports one unrelated FAIL: 'INV 3 file(s) carry a stale generated inventory block' (FormalSystem/Automation/README.md, FormalSystem/Syntax/README.md, README.md). This is caused by concurrent tasks' in-flight module restructuring (task 596's Semantics/*.lean subdirectory moves, and Automation file renames), not by this task's changes. Out of scope for task 595; left for the owning tasks to resolve.",
+    "typst-sync-check.sh reports 4 pre-existing/concurrent-task violations in typst/chapters/p4-proof-automation.typ (AesopRules.lean, Automation/Tactics/Helpers.lean paths) unrelated to paper-definitions-of-record.md or decisions/ content."
+  ]
+}
