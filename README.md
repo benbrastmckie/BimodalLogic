@@ -17,9 +17,9 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 520 |
-| Live lines of code | 165,532 |
-| Live comment lines | 98,068 |
+| Live `.lean` files | 527 |
+| Live lines of code | 164,912 |
+| Live comment lines | 97,968 |
 | Archived `.lean` files | 169 |
 | Archived lines | 91,983 |
 <!-- END GENERATED -->
@@ -259,11 +259,11 @@ ledger. The five rows below are a highlights table, not a second copy of it.
 | Completeness and compactness | of the **H/G-fragment** `TMFrag fc φ := TM ⊢[fc] tr φ` (`tmFrag_iff_minusValidIn`), whose consequence relation is compact at Base and Dense (`minusCompactBase`, `minusCompactDense`); TM⁻ itself is incomplete, and `TM⁻ ⊊ TMFrag` at ZTime (`tmMinus_lt_tmFrag_ztime`) | **open**; compactness not attempted (see below) |
 
 The L⁻ side lives in `Metalogic/Conservativity/{Fragment,FragmentCompactness}.lean`; the L⁺ side
-in `Semantics/Plus*.lean` and `Metalogic/Conservativity/Plus/`. TM⁺'s axioms are the 45 TM
+in `Semantics/PlusLanguage/` and `Metalogic/Conservativity/Plus/`. TM⁺'s axioms are the 45 TM
 schemata re-declared over `PlusFormula` (so that, e.g., `□⊡p → □G⊡p` is an MF instance) plus S5
 for `⊡`, `□φ → ⊡φ`, `p → ⊡p` for atoms, and two **pasting** schemata with pure-future/pure-past
-side conditions (`Semantics/PlusPasting.lean`); the five refutations in
-`Semantics/PlusNonValidities.lean` bound the set from above.
+side conditions (`Semantics/PlusLanguage/PlusPasting.lean`); the five refutations in
+`Semantics/PlusLanguage/PlusNonValidities.lean` bound the set from above.
 
 **Open problems for TM⁺.**
 

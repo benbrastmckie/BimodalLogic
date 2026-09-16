@@ -813,8 +813,8 @@ directional; the converse edge is permitted and is what these three modules use:
 
 | File | What it carries |
 |------|-----------------|
-| `Semantics/MinusTruth.lean` | `MinusTruthAt`, a native six-clause recursion on `MinusFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `MinusTruth.*` characterization lemmas |
-| `Semantics/MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidRTime`; no density-free `MinusValidComplete`, which would be refutable |
+| `Semantics/MinusLanguage/MinusTruth.lean` | `MinusTruthAt`, a native six-clause recursion on `MinusFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `MinusTruth.*` characterization lemmas |
+| `Semantics/MinusLanguage/MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidRTime`; no density-free `MinusValidComplete`, which would be refutable |
 | `Metalogic/Conservativity/MinusLanguageSoundness.lean` | `truthAt_tr` (the bridge, proved by induction), `minus_soundness{,_dense,_discrete,_dedekind}` and their validity forms, and `minus_not_derivable_nil_bot{,_discrete}` |
 
 | Result | What it says |

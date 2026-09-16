@@ -80,7 +80,7 @@ validity predicates and four consequence predicates:
   (`Semantics/Validity.lean`).
 * `SemanticConsequenceIn`, `SemanticConsequence`, and the `Dense`/`ZTime`/`RTime` siblings.
 * `PlusValidOnFrames`, `PlusValidIn`, `PlusValid`, `PlusValidDense`, `PlusValidZTime`,
-  `PlusValidRTime` (`Semantics/PlusValidity.lean`) mirror the first list over `PlusFormula`.
+  `PlusValidRTime` (`Semantics/PlusLanguage/PlusValidity.lean`) mirror the first list over `PlusFormula`.
 
 `ValidComplete` is the one member that is not a `ValidIn` instance: it quantifies over
 `TaskFrame.IsComplete` directly, and `Validity.lean` argues at length why it must not be

@@ -24,6 +24,9 @@ BimodalLogic/
 │   ├── MinusLanguage/           # The tense-primitive second object language
 │   ├── PlusLanguage/           # L⁺: L plus the stability modal ⊡, and its logic TM⁺
 │   ├── Semantics/              # Task frame semantics, truth evaluation, extension
+│   │   ├── MinusLanguage/      # L⁻ truth, frames and validity (aggregator Semantics/MinusLanguage.lean)
+│   │   ├── PlusLanguage/       # L⁺ truth, validity, pasting, non-validities (aggregator Semantics/PlusLanguage.lean)
+│   │   └── StarLanguage/       # L⋆ truth, validity, determinism (aggregator Semantics/StarLanguage.lean)
 │   ├── Metalogic/              # Soundness, completeness, decidability, independence
 │   ├── Theorems/               # Derived theorems (perpetuity, combinators, propositional)
 │   ├── Automation/             # Proof tactics, search, dataset generation
@@ -89,6 +92,14 @@ keeping its flat `FormalSystem.MinusLanguage` / `.PlusLanguage` / `.StarLanguage
 Renaming them to match the new module depth was considered and rejected: it would have touched
 103 call sites and the `#print axioms` baseline in `scripts/check-module-invariants.sh`, for no
 gain.
+
+The language family's **semantic** modules follow the same rule one directory over: they are
+nested under `Semantics/MinusLanguage/`, `Semantics/PlusLanguage/` and `Semantics/StarLanguage/`
+(module `FormalSystem.Semantics.PlusLanguage.PlusTruth`, for instance) while every declaration
+keeps the flat `namespace FormalSystem.Semantics`, including the sub-namespaces `MinusTruth`,
+`MinusValidity`, `PlusTruth` and `StarTruth`. So the dotted name formed from
+`FormalSystem.Semantics` and `PlusTruth` now names only a namespace; the module is
+`FormalSystem.Semantics.PlusLanguage.PlusTruth`.
 
 **Consequence for documentation**: a dotted name like `FormalSystem.MinusLanguage` may be a
 namespace reading (correct as written) or a module-path reading (which must be
@@ -192,11 +203,11 @@ Layer 0: Syntax (no internal dependencies)
 `MinusLanguage/` imports `Semantics/` — that is the directory's standing module invariant, stated
 in `FormalSystem/Syntax/MinusLanguage.lean`.
 `PlusLanguage/` follows the same pattern and the same directional invariant (stated in
-`FormalSystem/Syntax/PlusLanguage.lean`): `Semantics/PlusTruth.lean` imports `PlusLanguage.Formula`,
+`FormalSystem/Syntax/PlusLanguage.lean`): `Semantics/PlusLanguage/PlusTruth.lean` imports `PlusLanguage.Formula`,
 and nothing under `PlusLanguage/` imports `Semantics/`.
 
 The invariant is **directional**, and the converse edge is both permitted and used:
-`Semantics/MinusTruth.lean` imports `MinusLanguage.Formula` to define `MinusTruthAt` natively on
+`Semantics/MinusLanguage/MinusTruth.lean` imports `MinusLanguage.Formula` to define `MinusTruthAt` natively on
 `MinusFormula`, and `Metalogic/Conservativity/MinusLanguageSoundness.lean` composes that with `Translation` and
 `Conservativity`. So the one `Semantics → MinusLanguage` edge in the tree runs into a
 `Syntax.Atom`-only leaf and introduces no cycle.
@@ -332,7 +343,7 @@ translation. It is the language in which the source paper states TM.
 
 The base language's **semantics** deliberately does not live here, so that the directory's
 `MinusLanguage/ → Semantics/` invariant stays literally true: see
-`FormalSystem.Semantics.MinusTruth`, `FormalSystem.Semantics.MinusValidity` and
+`FormalSystem.Semantics.MinusLanguage.MinusTruth`, `FormalSystem.Semantics.MinusLanguage.MinusValidity` and
 `FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness` below.
 
 ### Semantics
@@ -340,9 +351,9 @@ The base language's **semantics** deliberately does not live here, so that the d
 * `FormalSystem.Semantics.ConvexHistory`
 * `FormalSystem.Semantics.TaskModel`
 * `FormalSystem.Semantics.Truth`
-* `FormalSystem.Semantics.MinusTruth` -- `MinusTruthAt`, the native base-language truth recursion
+* `FormalSystem.Semantics.MinusLanguage.MinusTruth` -- `MinusTruthAt`, the native base-language truth recursion
 * `FormalSystem.Semantics.Validity`
-* `FormalSystem.Semantics.MinusValidity` -- the base-language validity predicates
+* `FormalSystem.Semantics.MinusLanguage.MinusValidity` -- the base-language validity predicates
 * `FormalSystem.Semantics.Extension` -- the Extension Theorem: every partial history
   extends to a total one
 

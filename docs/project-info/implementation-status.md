@@ -81,7 +81,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
   `FormalSystem/ProofSystem/Axioms.lean`)
 - Base-language soundness (`minus_soundness` and its dense / ZTime / RTime siblings,
   `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`), stated against the native `MinusTruthAt` of
-  `FormalSystem/Semantics/MinusTruth.lean` and obtained by composing
+  `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` and obtained by composing
   `Conservativity.translate` with the four theorems above across the truth-transfer bridge
   `truthAt_tr`
 

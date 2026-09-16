@@ -292,8 +292,8 @@ semantics)" section of `FormalSystem/Metalogic.lean`.
   alone provable, in the tense-primitive one.
 - The base language now has a **semantics and a soundness theorem of its own**, so BL results
   no longer have to be routed through `tr` to be given meaning:
-  `FormalSystem/Semantics/MinusTruth.lean` defines `MinusTruthAt` natively on `MinusFormula`,
-  `FormalSystem/Semantics/MinusValidity.lean` carries the four BL validity predicates, and
+  `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` defines `MinusTruthAt` natively on `MinusFormula`,
+  `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` carries the four BL validity predicates, and
   `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` proves BL soundness at `FrameClass.Base`
   and its three extensions. **This does not change the limitation**: it is a fact about the
   proof systems, and the forward direction stays refuted.
