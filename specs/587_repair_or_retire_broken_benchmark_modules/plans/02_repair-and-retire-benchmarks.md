@@ -147,17 +147,17 @@ benchmark was silently dropped.
 
 ---
 
-### Phase 2: Archive SemanticBenchmark to the Boneyard [NOT STARTED]
+### Phase 2: Archive SemanticBenchmark to the Boneyard [COMPLETED]
 
 **Goal**: Retire `SemanticBenchmark` following the `RetiredTactics/` precedent, with C6, B0 and
 C11 green in the same commit.
 
 **Tasks**:
-- [ ] `git mv Tests/BimodalTest/Semantics/SemanticBenchmark.lean
+- [x] `git mv Tests/BimodalTest/Semantics/SemanticBenchmark.lean
       FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/SemanticBenchmark.lean`.
-- [ ] Insert `#exit` directly after the import block (compare
+- [x] Insert `#exit` directly after the import block (compare
       `FormalSystem/Boneyard/RetiredTactics/Helpers.lean`).
-- [ ] Write `FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/README.md` recording: the claim
+- [x] Write `FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/README.md` recording: the claim
       ("benchmarks `TruthAt` evaluation") vs. reality (`evalFormula` is a 6-case `Bool` function,
       box always true, `TruthAt` never called; `benchFrame`/`benchModel`/`benchHistory`/
       `domainProof0` unused); the 0 live / 0 `Tests/` invocation measurement; the 20-error
@@ -165,18 +165,18 @@ C11 green in the same commit.
       branches have no correct value; what a real replacement would need (a computable evaluator
       over a finite model); and the guard-first note (no `untl`/`snce` call sites to swap). No
       task numbers.
-- [ ] Delete the `broken: BimodalTest.Semantics.SemanticBenchmark` line from
+- [x] Delete the `broken: BimodalTest.Semantics.SemanticBenchmark` line from
       `scripts/module-invariants-manifest.txt` and replace the "These two do not compile" comment
       so it no longer describes a broken pair.
-- [ ] Update `FormalSystem/Boneyard/README.md` hand-written parts: add a
+- [x] Update `FormalSystem/Boneyard/README.md` hand-written parts: add a
       `### SemanticBenchmarkToyEvaluator` section (alphabetical position), a row in the
       category/status table (Orphaned, Not Refuted -- retired on a measurement; or the category
       that best fits a benchmark that measured nothing real), and, if the section describing
       measurement-based retirements names `RetiredTactics/` alone, mention the new directory too.
-- [ ] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
+- [x] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
       then `--emit-inventory --check` exits 0.
-- [ ] Commit this batch as one commit, then add the dated archive-log row
-      (`| 2026-09-16 | <hash> | SemanticBenchmarkToyEvaluator/ -- ... |`) with the real hash.
+- [x] Commit this batch as one commit, then add the dated archive-log row
+      (`| 2026-09-16 | <hash> | SemanticBenchmarkToyEvaluator/ -- ... |`) with the real hash. *(deviation: altered — the scoped-commit helper silently dropped the `git mv` source-path deletion, so the batch landed as `b9c49b560` (new files, manifest, READMEs) plus a follow-up commit carrying the old-path deletion and the log row; C6 is red only at the intermediate commit, green at the follow-up)*
 
 **Timing**: 50 minutes
 
