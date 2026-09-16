@@ -11,9 +11,9 @@ next_project_number: 598
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,581,582,583,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,581,582,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,584,586,590 | 298,464,502,559,563,568,582,591,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,506,566,569,585 | 231,465,497,565,583,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,506,566,569,585 | 231,465,497,565,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,588,597 | 428,498,499,500,569,585,594 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501,540 | 125,429,588,597 | algebraic-representation, decidability, codebase-cleanup |
 | 6 | 411,589 | 410,540 | decidability, codebase-cleanup |
@@ -98,8 +98,8 @@ next_project_number: 598
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-581 [PLANNED] — Repair the four wired bi-lasso evidence probes so bash...
-582 [PLANNED] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
+581 [IMPLEMENTING] — Repair the four wired bi-lasso evidence probes so bash...
+582 [IMPLEMENTING] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
@@ -109,9 +109,7 @@ next_project_number: 598
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
       └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-583 [PLANNED] — Wire the check scripts that are GREEN TODAY into...
-  └─ 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,... (see above)
-587 [PLANNED] — Clear the two broken: entries in...
+587 [IMPLEMENTING] — Clear the two broken: entries in...
 591 [NOT STARTED] — Adopt a naming convention that distinguishes leanexe roots...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
@@ -339,7 +337,7 @@ DISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on 
 
 ### 587. Repair or retire broken benchmark modules
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -441,12 +439,13 @@ FINAL PHASE: once `check-paper-definitions.sh` exits 0, make it skip-and-report-
 
 ### 583. Wire check scripts into ci
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md]
 - **Plan**: [583_wire_check_scripts_into_ci/plans/02_wire-check-scripts-ci.md]
+- **Summary**: [583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md]
 
 **Description**: Wire the check scripts that are GREEN TODAY into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows. (RESCOPED during the codebase-cleanup reorganization of 2026-09-16: this task no longer waits for the repair tasks. Each repair task wires its own script into CI as its final phase, so each fix is locked in the moment it lands rather than after the slowest one.)
 
@@ -469,7 +468,7 @@ See specs/reviews/review-2026-09-16.md, Finding H3; specs/593_revise_task_organi
 
 ### 582. Break or rebaseline metalogic cycle
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -494,7 +493,7 @@ FINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once
 
 ### 581. Repair bilasso evidence probes
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
