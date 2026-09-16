@@ -23,6 +23,29 @@ between them.
 There is no Aesop rule set. One existed and was retired for having zero consumers; see
 [`Boneyard/RetiredTactics/README.md`](../Boneyard/RetiredTactics/README.md).
 
+## Module naming
+
+Executable roots and libraries are told apart by name alone:
+
+- **Executable roots are `PascalCase(target) ++ "Main"`.** The root module of `lake exe foo_bar`
+  is `FooBarMain`: `dataset_generator` → `DatasetGeneratorMain`, `proof_extractor` →
+  `ProofExtractorMain`, `contrastive_generator` → `ContrastiveGeneratorMain`, and
+  `checkInitImports` (srcDir `scripts`) → `CheckInitImportsMain`. Every root declares a
+  root-namespace `main`, so two of them cannot be imported into one environment.
+- **`Main` is reserved.** No module that is not an executable root ends in `Main`.
+- **A library is named for what it produces.** `XExport` is the JSON serialization layer for X
+  (`DataExport`, `Metalogic/Decidability/TraceExport`); `XAssembly` assembles a structured
+  artifact (`DatasetAssembly`); `XExtractor` extracts (`ProofStepExtractor`); `XGenerator`
+  generates (`DatasetGenerator`, `ForwardProofGenerator`).
+
+`lake exe` target names are the stable external interface (documentation and the dataset card
+cite them); module names follow from them. `ContrastiveGeneratorMain` was historically named
+`FormulaMutator`, after the mutation technique its docstring still describes. Emitted provenance
+strings such as `"BimodalLogic/DatasetExporter"` and `"BimodalLogic/MachineAppendixExport"` are
+stable IDs, not module paths, and keep their historical spelling.
+
+The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
+
 ## Modules
 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Automation -->

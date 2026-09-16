@@ -231,24 +231,24 @@ build green.
 
 ---
 
-### Phase 4: Convention documentation and mechanical guard [NOT STARTED]
+### Phase 4: Convention documentation and mechanical guard [COMPLETED]
 
 **Goal**: Record the convention and add a script check that fails when a root breaks it.
 
 **Tasks**:
-- [ ] Add a "Module naming" subsection to `FormalSystem/Automation/README.md`, outside the generated inventory
+- [x] Add a "Module naming" subsection to `FormalSystem/Automation/README.md`, outside the generated inventory
       block. It states: roots are `PascalCase(target) ++ "Main"`; a library is named for what it produces
       (`XExport` = JSON serialization of X, `XAssembly`, `XExtractor`, `XGenerator`); `Main` is reserved; and it mentions the historical
       `FormulaMutator` name once
-- [ ] Regenerate the README inventory block with `scripts/readme-inventory.sh`, then fix the hand-written rows
-- [ ] Extend `scripts/check-module-invariants.sh` next to the `LAKE_EXE_ROOTS` scrape (~line 1972), as part of C25 (or a
+- [x] *(deviation: altered — inventory already regenerated within phases 1 and 3; no further change needed)* Regenerate the README inventory block with `scripts/readme-inventory.sh`, then fix the hand-written rows
+- [x] *(deviation: altered — implemented as a separately labelled check `C25N`, placed right after C25 and run under --no-build too, with its own row in MODULE_INVARIANTS.md next to C25)* Extend `scripts/check-module-invariants.sh` next to the `LAKE_EXE_ROOTS` scrape (~line 1972), as part of C25 (or a
       clearly labelled C25 sub-check). Parse `lean_exe (\S+) where ... root := \`M`, require the last component of M to equal
       PascalCase(target) + `Main`, and require that no live `.lean` file outside the root list has a basename ending in `Main`
-- [ ] Negative-test the guard. Temporarily change one `root :=` or add a stray `FooMain.lean`, confirm the failure,
+- [x] *(deviation: altered — the bad-root case ran against a scratch mirror of lakefile.lean via an extracted C25N harness so concurrent sessions' builds never saw a broken lakefile; the stray-file case ran against the real tree with the full script, exit 1)* Negative-test the guard. Temporarily change one `root :=` or add a stray `FooMain.lean`, confirm the failure,
       then revert. Do not commit the temporary change
-- [ ] Update the C25 row of `docs/development/MODULE_INVARIANTS.md` to describe the naming assertion
-- [ ] Add a lean4 context-extension note only if it is in scope for the source store (`agent-system/extensions/lean/...`). Otherwise skip it, because it is optional
-- [ ] Commit: `task 591: phase 4: document exe-root naming convention and add guard`
+- [x] *(deviation: altered — added a C25N row directly after the C25 row rather than rewriting C25)* Update the C25 row of `docs/development/MODULE_INVARIANTS.md` to describe the naming assertion
+- [ ] *(deviation: skipped — optional, and it lives in the agent-system source store, outside this task's deliverable scope)* Add a lean4 context-extension note only if it is in scope for the source store (`agent-system/extensions/lean/...`). Otherwise skip it, because it is optional
+- [x] Commit: `task 591: phase 4: document exe-root naming convention and add guard`
 
 **Timing**: 1 hour
 
