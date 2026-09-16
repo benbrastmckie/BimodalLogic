@@ -1,7 +1,7 @@
 # Implementation Plan: Split Semantics/Truth.lean's truth-transport machinery
 
 - **Task**: 580 - Split Semantics/Truth.lean's correspondence machinery out of Truth.lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/580_split_semantics_truth_lean_s_corresponde/reports/01_split-truth-correspondence-machinery.md
@@ -259,20 +259,41 @@ further site found is added here.
 
 ---
 
-### Phase 3: Full gate run [NOT STARTED]
+### Phase 3: Full gate run [COMPLETED]
 
 **Goal**: The task's stated verification bar is met and recorded.
 
 **Tasks**:
-- [ ] Run the detached guarded `lake build` one final time on the tree as committed.
-- [ ] Run `bash scripts/check-module-invariants.sh` and read the result for each check the research
+- [x] Run the detached guarded `lake build` one final time on the tree as committed.
+- [x] Run `bash scripts/check-module-invariants.sh` and read the result for each check the research
       flagged as reachable by a split: C4 (imports resolve), C5/C12/C13 (markdown path resolution),
       C16 (env_linter / `nolints.json` — re-check, none expected), C19 (docstring coverage,
       reported), C20 tier 2 (enforced; `FormalSystem/Semantics/` is publication scope), C24
       (`checkInitImports` — the new module inherits `Init` through `Truth.lean`).
-- [ ] If C16 or C19 report a new finding attributable to the new module, fix it here rather than
+- [x] If C16 or C19 report a new finding attributable to the new module, fix it here rather than
       deferring; any other failure is diagnosed against the research report's gate-impact table
       before any code is changed.
+- [x] Remediation sub-step 3.1 (commit `a16df671f`): the first full run failed exactly one check
+      group, `C20 tier 1` — `Ultraproduct/Los.lean:22` cited `Semantics/ShiftSet.lean:261`, which
+      the Phase 1 import insertion at `ShiftSet.lean:9` had turned into a blank line (baseline
+      line 260). Tier 1 only flags citations landing on a blank or nonexistent line, so it caught
+      one of the six `ShiftSet.lean:NNN` citations my `+1` shift had silently invalidated; all six
+      were replaced with declaration names, per the check's own remediation guidance, across
+      `Ultraproduct/Los.lean` (4) and `Ultraproduct/ShiftSetProduct.lean` (2). Four of the six
+      were already semantically stale before this task — `Los.lean:22`'s target was
+      `forward_repr`'s signature at the baseline, not `ShiftTruth`'s `box` clause.
+- [x] A first version of that fix split an over-long line, which changed `Los.lean`'s line count
+      and produced `FAIL INV  2 file(s) carry a stale generated inventory block`
+      (`Ultraproduct/README.md`, root `README.md`), since generated inventory blocks carry line
+      counts. Rather than `--emit-inventory` — a tree-wide rewrite that risked colliding with a
+      concurrent task's own inventory re-emit — the edit was reworked to be line-count-neutral.
+      Both files returned to their baseline 162 and 136 lines and INV went back to PASS with no
+      re-emit, which also showed the root-README staleness was this task's and not the sibling's.
+- [x] Authoritative post-fix full run: `HARNESS_EXIT=0`, zero `FAIL` lines, `ALL CHECKS PASSED`.
+      Every check the research flagged as reachable came back clean: C4, C5, C12, C13, C16 (no
+      un-nolisted finding), C19 (92.18% refined, 90% floor), C20 both tiers, C24. C2 confirms all
+      four flagship axiom sets still match baseline and C3 confirms a zero structural sorry
+      inventory, as a pure relocation requires.
 
 **Timing**: 0.75 hours
 
@@ -298,13 +319,14 @@ set named under **Goals** is correspondingly empty.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 after Phase 1 and again after Phase 3.
-- [ ] `bash scripts/check-module-invariants.sh` passes.
-- [ ] Every moved declaration and proof is byte-identical to its original — verified by reading the
+- [x] `lake build` exits 0 after Phase 1 and again after Phase 3.
+- [x] `bash scripts/check-module-invariants.sh` passes.
+- [x] Every moved declaration and proof is byte-identical to its original — verified by reading the
       Phase 1 diff, not merely by the build succeeding.
-- [ ] Zero `sorry` and zero new `axiom` in the tree.
-- [ ] No consumer source change anywhere beyond the four added import lines and the aggregator line.
-- [ ] `Truth.lean` contains no reference to `TruthCorr`, `TruthIso`, `TruthAntiIso`, `ShiftRel`,
+- [x] Zero `sorry` and zero new `axiom` in the tree.
+- [x] No consumer source change anywhere beyond the added import lines and the aggregator line.
+      *(deviation: altered — three consumer imports, not four; see Phase 1 Reasoned Exclusions)*
+- [x] `Truth.lean` contains no reference to `TruthCorr`, `TruthIso`, `TruthAntiIso`, `ShiftRel`,
       `shiftCorr`, `TimeShift` or `box_const` in either code or prose.
 
 ## Artifacts & Outputs
