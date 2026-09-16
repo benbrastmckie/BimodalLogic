@@ -37,7 +37,7 @@ not mentions.
 | Entry point | Live invocations | Test invocations | Mentions that are not invocations |
 |---|---:|---:|---|
 | `runAllSemanticBenchmarks` and the five `run*Benchmarks` categories | 0 | 0 | its own trailing `#eval`; its own docstring's usage block |
-| `SemanticBenchmarkResult` | 0 | 0 | a pattern example in `docs/development/BENCHMARKING_GUIDE.md` |
+| `SemanticBenchmarkResult` | 0 | 0 | copied as a pattern example into `docs/development/BENCHMARKING_GUIDE.md` (since renamed there) |
 
 No CI workflow or script ran it. The `scripts/run-benchmarks.sh` that its documentation cited as
 the way to run it does not exist.

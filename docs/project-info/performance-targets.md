@@ -5,7 +5,7 @@ Theory-specific performance baselines and regression thresholds for Bimodal TM l
 > **Methodology**: See [BENCHMARKING_GUIDE.md](../development/BENCHMARKING_GUIDE.md)
 > for project-wide benchmarking standards.
 
-*Last updated: 2026-01-12*
+*Last updated: 2026-09-16*
 *Baseline system: Lean 4 / Mathlib*
 
 ## Proof Search Benchmarks
@@ -27,7 +27,7 @@ Benchmarks for `FormalSystem.Automation.ProofSearch`:
 | Modal-Future (□p → □Gp) | ~250ns | 1 | 2x time OR 50% visits |
 | Future-Modal (□p → G□p) | ~250ns | 1 | 2x time OR 50% visits |
 
-**Benchmark file**: `BimodalTest/Automation/ProofSearchBenchmark.lean`
+**Benchmark file**: `Tests/BimodalTest/Automation/ProofSearchBenchmark.lean`
 
 ## Derivation Construction
 
@@ -35,47 +35,39 @@ Benchmarks for `FormalSystem.ProofSystem.Derivation`:
 
 | Benchmark | Baseline Time | Tree Height | Regression Threshold |
 |-----------|---------------|-------------|----------------------|
-| Axiom (Modal T) | ~100ns | 0 | 2x time |
-| Axiom (Modal 4) | ~80ns | 0 | 2x time |
-| Axiom (Modal B) | ~90ns | 0 | 2x time |
-| Axiom (Temporal 4) | ~90ns | 0 | 2x time |
-| Assumption (single) | ~90ns | 0 | 2x time |
-| Assumption (multiple) | ~90ns | 0 | 2x time |
-| MP depth 1 | ~90ns | 1 | 2x time |
-| MP depth 2 | ~90ns | 2 | 2x time |
-| Necessitation (modal) | ~90ns | 1 | 2x time |
-| Necessitation (temporal) | ~90ns | 1 | 2x time |
-| Temporal duality | ~90ns | 1 | 2x time |
-| Double necessitation | ~90ns | 2 | 2x time |
-| Weakening (+1 formula) | ~90ns | 1 | 2x time |
-| Weakening (+2 formulas) | ~90ns | 1 | 2x time |
-| MP with axiom (□p ⊢ p) | ~90ns | 2 | 2x time |
+| Axiom (Modal T) | ~150ns | 0 | 2x time |
+| Axiom (Modal 4) | ~150ns | 0 | 2x time |
+| Axiom (Modal B) | ~150ns | 0 | 2x time |
+| Axiom (Modal-Future) | ~150ns | 0 | 2x time |
+| Assumption (single) | ~150ns | 0 | 2x time |
+| Assumption (multiple) | ~150ns | 0 | 2x time |
+| MP depth 1 | ~150ns | 1 | 2x time |
+| MP depth 2 | ~150ns | 2 | 2x time |
+| Necessitation (modal) | ~150ns | 1 | 2x time |
+| Necessitation (temporal) | ~150ns | 1 | 2x time |
+| Temporal duality | ~150ns | 1 | 2x time |
+| Double necessitation | ~150ns | 2 | 2x time |
+| Weakening (+1 formula) | ~150ns | 1 | 2x time |
+| Weakening (+2 formulas) | ~150ns | 1 | 2x time |
+| MP with axiom (□p ⊢ p) | ~150ns | 2 | 2x time |
 
-**Benchmark file**: `BimodalTest/ProofSystem/DerivationBenchmark.lean`
+**Benchmark file**: `Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean`
+
+Baselines re-measured 2026-09-16 on the current API and are indicative only: at this scale the
+timer resolution dominates, so every construction reads as roughly the same median. `Axiom
+(Modal-Future)` replaces the former `Axiom (Temporal 4)` row -- `temp_4` is no longer an axiom
+constructor, and its derived replacement is `noncomputable`, so it cannot be run by `#eval`.
+`Temporal duality` is now applied to the Modal-Future axiom. The file is not imported by the
+test root (its trailing `#eval` would run on every `lake test`); the module-invariants gate
+compiles, and so runs, it in isolation.
 
 ## Semantic Evaluation
 
-Benchmarks for `FormalSystem.Semantics.Truth`:
-
-| Benchmark | Baseline Time | Correctness | Regression Threshold |
-|-----------|---------------|-------------|----------------------|
-| Atom p (true) | ~90ns | PASS | 2x time |
-| Atom q (false) | ~90ns | PASS | 2x time |
-| Bot (false) | ~90ns | PASS | 2x time |
-| Box depth 1 (□p) | ~90ns | PASS | 2x time |
-| Box depth 3 (□□□p) | ~100ns | PASS | 2x time |
-| Box depth 5 (□□□□□p) | ~100ns | PASS | 2x time |
-| Gp (all future) | ~90ns | PASS | 2x time |
-| Hp (all past) | ~90ns | PASS | 2x time |
-| p → p (true) | ~90ns | PASS | 2x time |
-| p → q (false) | ~90ns | PASS | 2x time |
-| q → p (true) | ~90ns | PASS | 2x time |
-| p → (q → p) (true) | ~90ns | PASS | 2x time |
-| □p → p (true) | ~90ns | PASS | 2x time |
-| p → □p (true) | ~90ns | PASS | 2x time |
-| K distribution (true) | ~100ns | PASS | 2x time |
-
-**Benchmark file**: `BimodalTest/Semantics/SemanticBenchmark.lean`
+There is currently no semantic-evaluation benchmark. The former suite advertised benchmarks for
+`FormalSystem.Semantics.Truth` but never called `TruthAt`; it timed a hand-written `Bool` toy
+evaluator instead, so its "Correctness: PASS" baselines checked nothing. It has been retired to
+`FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/`, whose README records what a real
+replacement would need.
 
 ## Optimization Recommendations
 
@@ -88,14 +80,12 @@ Based on Bimodal-specific benchmark analysis:
 
 ## Running Benchmarks
 
-```bash
-# Run all Bimodal benchmarks
-./scripts/run-benchmarks.sh
+There is no aggregate runner script. Each suite ends in a top-level `#eval`, so elaborating the
+file runs it:
 
-# Run individual suites
-lake env lean --run BimodalTest/Automation/ProofSearchBenchmark.lean
-lake env lean --run BimodalTest/ProofSystem/DerivationBenchmark.lean
-lake env lean --run BimodalTest/Semantics/SemanticBenchmark.lean
+```bash
+lake env lean Tests/BimodalTest/Automation/ProofSearchBenchmark.lean
+lake env lean Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean
 ```
 
 ## Summary Statistics
@@ -103,11 +93,11 @@ lake env lean --run BimodalTest/Semantics/SemanticBenchmark.lean
 | Category | Benchmarks | Average Time | Success Rate |
 |----------|------------|--------------|--------------|
 | Proof Search | 17 | ~300ns | 100% |
-| Derivation | 15 | ~90ns | 100% |
-| Semantic | 16 | ~91ns | 100% (16/16 correct) |
+| Derivation | 15 | ~150ns | 100% |
 
 ## History
 
 | Date | Change | Impact |
 |------|--------|--------|
 | 2026-01-12 | Initial baseline | First measurements |
+| 2026-09-16 | Derivation suite repaired to the current API; semantic suite retired | Derivation baselines re-measured; `Temporal 4` row became `Modal-Future`; semantic section removed |

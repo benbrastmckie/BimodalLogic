@@ -73,11 +73,12 @@ Tests mirror the Bimodal library structure:
 - `Property/` - Property-based tests with Plausible
 - Loose `Trace*Test.lean` - trace-certificate and trace-export round-trip tests
 
-Every test module that can be imported here is imported above. Four are
+Every test module that can be imported here is imported above. Three are
 deliberately excluded, for two different reasons:
 
-- `ProofSystem/DerivationBenchmark.lean`, `Semantics/SemanticBenchmark.lean` —
-  do not compile at all; they pass `String` where `Atom` is now required.
+- `ProofSystem/DerivationBenchmark.lean` — compiles, but ends in a top-level
+  `#eval` that runs the whole benchmark suite; importing it here would run and
+  print that table on every `lake test`.
 - `Automation/FormulaMutatorTest.lean`, `Automation/ProofFirstTests.lean` —
   compile in isolation but cannot be imported here. Each pulls in an executable
   root (`Automation/FormulaMutator.lean`, `Automation/ProofFirstExporter.lean`)
@@ -86,9 +87,8 @@ deliberately excluded, for two different reasons:
   "environment already contains 'main'". Fixing this means restructuring where
   `main` lives in the executable roots, not editing the tests.
 
-All four are tracked in `scripts/module-invariants-manifest.txt`, which
-compile-checks the importable ones in isolation, so excluded code cannot rot
-unseen. A test module absent from both this file and that manifest is a gap in
+All three are tracked in `scripts/module-invariants-manifest.txt`, which
+compile-checks each one in isolation, so excluded code cannot rot unseen. A test module absent from both this file and that manifest is a gap in
 the gate; the invariant check fails on exactly that condition.
 
 ## Running Tests

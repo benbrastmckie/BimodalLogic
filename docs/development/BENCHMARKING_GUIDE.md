@@ -41,14 +41,16 @@ def timed {α : Type} (action : IO α) : IO (α × Nat) := do
 
 ### Correctness Validation
 
-- Semantic benchmarks **MUST** validate expected results
+- Semantic benchmarks **MUST** validate expected results -- against the library's own semantics,
+  not against a separate evaluator written for the benchmark
 - Compile-time type checking validates derivation benchmarks
 - Report `correct: true/false` in results
 
-Example validation pattern:
+Example validation pattern (illustrative; no semantic benchmark currently exists -- see
+`FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/README.md` for why the last one was retired):
 
 ```lean
-structure SemanticBenchmarkResult where
+structure EvaluationBenchmarkResult where
   name : String
   expectedResult : Bool
   actualResult : Bool
@@ -91,41 +93,39 @@ Each theory maintains its own baseline measurements:
 Benchmark files follow this structure:
 
 ```
-{Theory}Test/
+Tests/{Theory}Test/
 ├── Automation/
 │   └── ProofSearchBenchmark.lean    # Proof search benchmarks
-├── ProofSystem/
-│   └── DerivationBenchmark.lean     # Derivation benchmarks
-└── Semantics/
-    └── SemanticBenchmark.lean       # Semantic benchmarks
+└── ProofSystem/
+    └── DerivationBenchmark.lean     # Derivation benchmarks
 ```
+
+A benchmark whose trailing `#eval` should not run on every `lake test` stays out of the test root
+and is listed in `scripts/module-invariants-manifest.txt`, which compile-checks it in isolation.
 
 ## CI Integration
 
 ### Running Benchmarks
 
-```bash
-# Run all benchmarks for a theory
-./scripts/run-benchmarks.sh
+There is no aggregate runner script and no CI benchmark step. Each suite ends in a top-level
+`#eval`, so elaborating the file runs it:
 
-# Run individual benchmark suites
-lake env lean --run BimodalTest/Automation/ProofSearchBenchmark.lean
-lake env lean --run BimodalTest/ProofSystem/DerivationBenchmark.lean
-lake env lean --run BimodalTest/Semantics/SemanticBenchmark.lean
+```bash
+lake env lean Tests/BimodalTest/Automation/ProofSearchBenchmark.lean
+lake env lean Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean
 ```
 
 ### Regression Detection
 
-See `scripts/check-regression.sh` for automated regression detection.
-
-The script:
-1. Runs current benchmarks
-2. Compares against baseline
-3. Exits with error if regression detected
+Not yet automated: there is no regression-detection script. An automated check would:
+1. Run current benchmarks
+2. Compare against baseline
+3. Exit with error if a regression is detected
 
 ### Baseline Management
 
-- Baselines stored in `benchmarks/baseline.json`
+- Baselines are recorded in the theory's `performance-targets.md` (there is no machine-readable
+  baseline file yet)
 - Update baseline only intentionally (e.g., after optimization)
 - Document baseline changes in commit message
 
@@ -133,7 +133,7 @@ The script:
 
 ### Step 1: Create Benchmark File
 
-Create `{Theory}Test/{Category}/{Name}Benchmark.lean`:
+Create `Tests/{Theory}Test/{Category}/{Name}Benchmark.lean`:
 
 ```lean
 import Theory.Module
@@ -174,9 +174,10 @@ Add baselines to theory's `performance-targets.md`:
 | New Benchmark | {measured} | 2x time |
 ```
 
-### Step 3: Add to CI Runner
+### Step 3: Keep It Compiled
 
-Update `scripts/run-benchmarks.sh` to include new benchmark.
+Either import the file from the test root, or list it in `scripts/module-invariants-manifest.txt`
+so the module-invariants gate compile-checks it. A benchmark that nothing builds rots silently.
 
 ## Best Practices
 

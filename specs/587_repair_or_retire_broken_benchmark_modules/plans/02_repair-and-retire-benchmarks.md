@@ -202,26 +202,26 @@ C11 green in the same commit.
 
 ---
 
-### Phase 3: Fix stale prose [NOT STARTED]
+### Phase 3: Fix stale prose [COMPLETED]
 
 **Goal**: No deliverable describes the old broken state, the retired semantic benchmark as live,
 the nonexistent `run-benchmarks.sh`, or prefix-less test paths.
 
 **Tasks**:
-- [ ] `Tests/BimodalTest.lean` (excluded-modules comment, ~lines 73-85): three excluded modules;
+- [x] `Tests/BimodalTest.lean` (excluded-modules comment, ~lines 73-85): three excluded modules;
       `DerivationBenchmark` excluded because its top-level `#eval` would run on every `lake test`
       (compile-checked by the manifest), not because it fails to compile; drop
       `SemanticBenchmark`; fix "All four".
-- [ ] `Tests/BimodalTest/Semantics/README.md`: remove the `SemanticBenchmark.lean` row.
-- [ ] `docs/project-info/performance-targets.md`: remove the "Semantic Evaluation" section; use
+- [x] `Tests/BimodalTest/Semantics/README.md`: remove the `SemanticBenchmark.lean` row.
+- [x] `docs/project-info/performance-targets.md`: remove the "Semantic Evaluation" section; use
       `Tests/BimodalTest/...` paths; replace `./scripts/run-benchmarks.sh` with the real command
       (`lake env lean Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean`); replace Temporal-4
       rows with the renamed Modal-Future benchmarks; refresh or label baselines as indicative.
-- [ ] `docs/development/BENCHMARKING_GUIDE.md`: remove the `SemanticBenchmark` layout/run lines
+- [x] `docs/development/BENCHMARKING_GUIDE.md`: remove the `SemanticBenchmark` layout/run lines
       and the `run-benchmarks.sh` references (~lines 98-114, 179); fix paths; the example result
       struct may stay as a pattern (rename away from `SemanticBenchmarkResult` if it reads as a
-      live file).
-- [ ] Final `grep -rn "SemanticBenchmark\|run-benchmarks" --exclude-dir=.lake --exclude-dir=specs .`
+      live file). *(deviation: altered — also rewrote the references to the nonexistent `scripts/check-regression.sh` and `benchmarks/baseline.json` in the same guide, and marked the pattern struct illustrative, renamed `EvaluationBenchmarkResult`)*
+- [x] Final `grep -rn "SemanticBenchmark\|run-benchmarks" --exclude-dir=.lake --exclude-dir=specs .`
       returns only the Boneyard directory and its README mentions.
 
 **Timing**: 35 minutes

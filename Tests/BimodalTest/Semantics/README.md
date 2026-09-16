@@ -9,7 +9,6 @@ Tests for task frame semantics.
 | TaskFrameTest.lean | Task frame structure tests |
 | TruthTest.lean | Truth evaluation tests |
 | SemanticPropertyTest.lean | Property-based semantics tests |
-| SemanticBenchmark.lean | Semantics performance benchmarks |
 | SaturationFiniteAxiomTest.lean | Axiom-profile evidence for the finite-carrier *Saturation* discharge |
 | DependentUltraproductProbe.lean | Axiom-profile regression check over the promoted ultraproduct modules |
 | ValidityLayerTest.lean | Definitional-coincidence regressions for the abstract validity layer: each language's validity `def`s and derived operators against the generic `PointTruth`/`TruthClauses` ones, plus a toy fifth-language conformance check |
@@ -19,7 +18,6 @@ Tests for task frame semantics.
 - Task frame construction and accessibility
 - Truth evaluation at convex histories
 - Validity checking
-- Performance benchmarks
 - Axiom profiles of the finite-carrier *Saturation* discharge and the ultraproduct construction
 
 ## Related
