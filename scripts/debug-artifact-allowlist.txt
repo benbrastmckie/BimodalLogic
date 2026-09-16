@@ -20,9 +20,6 @@
 # the same change), on an entry with no reason line, and on a stale entry whose file is gone
 # or has no live directives left -- so this file cannot quietly rot into a dumping ground.
 
-# pending relocation to Tests/BimodalTest
-FormalSystem/Automation/DatasetGenerator.lean 116
-
 # intentional axiom-audit page; C21 asserts every name is pinned by C2/C14
 FormalSystem/MainResults.lean 54
 

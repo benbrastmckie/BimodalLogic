@@ -172,16 +172,16 @@ executor running serially should simply take phases in numeric order.
 
 ---
 
-### Phase 3: Relocate DatasetGenerator probes [NOT STARTED]
+### Phase 3: Relocate DatasetGenerator probes [COMPLETED]
 
 **Goal**: Move the 116 DatasetGenerator directives into a new asserting test module.
 
 **Tasks**:
-- [ ] Capture `lake env lean FormalSystem/Automation/DatasetGenerator.lean` output to the scratchpad.
-- [ ] Create `Tests/BimodalTest/Automation/DatasetGeneratorTest.lean` (module docstring, no task numbers). Convert the 108 pure prefilter rows (lines ~974-1245) to `#guard` using the captured values, for example `#guard structuralPrefilterWithAxiom (...) == some (true, "...")`. `SimpleCountermodel` derives only `Repr`, so compare its projected fields.
-- [ ] Convert the 8 `IO Unit` "[test] PASS/FAIL" smoke tests (lines ~2022-2269) to `#eval show IO Unit from do ... unless ok do throw (IO.userError "...")` in one `section`.
-- [ ] Delete the source rows. Leave a one-line pointer in each source section. Wire the new module into `Tests/BimodalTest.lean`. Delete the allowlist entry.
-- [ ] Build the library module and the new test module through the guard, then run the harness `--no-build`.
+- [x] Capture `lake env lean FormalSystem/Automation/DatasetGenerator.lean` output to the scratchpad.
+- [x] Create `Tests/BimodalTest/Automation/DatasetGeneratorTest.lean` (module docstring, no task numbers). Convert the 108 pure prefilter rows (lines ~974-1245) to `#guard` using the captured values, for example `#guard structuralPrefilterWithAxiom (...) == some (true, "...")`. `SimpleCountermodel` derives only `Repr`, so compare its projected fields. *(completed: 107 single-value rows generated from captured `#eval` output, 8 list/option rows written against the fixtures, 1 `constructTrivialCountermodel` row pinning projected lengths; perturbing one `#guard` and one IO test each failed elaboration)*
+- [x] Convert the 8 `IO Unit` "[test] PASS/FAIL" smoke tests (lines ~2022-2269) to `#eval show IO Unit from do ... unless ok do throw (IO.userError "...")` in one `section`.
+- [x] Delete the source rows. Leave a one-line pointer in each source section. Wire the new module into `Tests/BimodalTest.lean`. Delete the allowlist entry.
+- [x] Build the library module and the new test module through the guard, then run the harness `--no-build`.
 
 **Timing**: 2 hours
 
