@@ -26,14 +26,14 @@ Five results are carried here:
    frame `F^N` (`W = ℕ`, `D = ℤ`, the absorbing predecessor map) is forward-deterministic and
    **not** `Deterministic`, and `sent:det` is valid over it at every sentence letter. Replacing
    `\Future` by `always` closes the gap: `Det-pm` does define the deterministic frames
-   (`Semantics/StarDeterminism.lean`'s `deterministic_starDefinable`).
+   (`Semantics/StarLanguage/StarDeterminism.lean`'s `deterministic_starDefinable`).
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes — which are closed, by
 `Semantics/Correspondence/Indicator.lean`'s `galoisClosed_sat_dense` and `galoisClosed_isDiscrete`.
 
 Result 5 is the one that leaves the standard semantics. PS and US are valid on **every** task
-frame (`Semantics/PlusPasting.lean`), because the splice of two total histories through a common
+frame (`Semantics/PlusLanguage/PlusPasting.lean`), because the splice of two total histories through a common
 state is again a total history; so no ordinary task model can witness their underivability. The
 witness is a *coarsened-state* model (`CoarsenedModels.lean`), which interprets `⊡` over a
 quotient of the world states and thereby removes the common state a splice would need. Everything
@@ -93,7 +93,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
   indistinguishable pair.
 - `determined_valid_on_non_deterministic` (`DeterminismUndefinable.lean`) — `F°` validates
   *Determined* without being deterministic, refuting the converse of `determined_of_deterministic`
-  (`Semantics/PlusDeterminism.lean`).
+  (`Semantics/PlusLanguage/PlusDeterminism.lean`).
 - `plusTruthAt_iff_mem_satSet` (`StateSetTruth.lean`) — the state-set bridge, proved once against
   (H1)+(H2) and instantiated twice; `[propext]` alone.
 - `stabNotDefinable` (`StabUndefinable.lean`) — no `Formula` is equivalent to `⊡Fp` over all task

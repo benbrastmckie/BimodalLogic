@@ -47,10 +47,10 @@ side of the permitted import edge:
 
 | File | What it carries |
 |------|-----------------|
-| `FormalSystem/Semantics/PlusTruth.lean` | `SameStateAt` (the paper's `⟨τ⟩_x`) and `PlusTruthAt`, the seven-clause truth recursion; the S5 validities of `⊡`; `stab_state_only` |
-| `FormalSystem/Semantics/PlusValidity.lean` | `PlusValidOnFrames`, `PlusValidIn`, `PlusValid`; `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff` (semantic conservativity at every class) |
-| `FormalSystem/Semantics/PlusPasting.lean` | the history-pasting lemma and the pasting validities PS/US/FS/GS with their past mirrors |
-| `FormalSystem/Semantics/PlusNonValidities.lean` | the five refutations on `natFrame` over ℤ that bound the axiom set |
+| `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` | `SameStateAt` (the paper's `⟨τ⟩_x`) and `PlusTruthAt`, the seven-clause truth recursion; the S5 validities of `⊡`; `stab_state_only` |
+| `FormalSystem/Semantics/PlusLanguage/PlusValidity.lean` | `PlusValidOnFrames`, `PlusValidIn`, `PlusValid`; `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff` (semantic conservativity at every class) |
+| `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` | the history-pasting lemma and the pasting validities PS/US/FS/GS with their past mirrors |
+| `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` | the five refutations on `natFrame` over ℤ that bound the axiom set |
 | `FormalSystem/Metalogic/Conservativity/Plus.lean` | soundness of TM⁺ at all four classes and conservativity of TM⁺ over TM in both directions |
 
 ## Module Invariant
@@ -83,7 +83,7 @@ instead.
 - [FormalSystem README](../../README.md)
 - [MinusLanguage README](../MinusLanguage/README.md) — the pattern this component follows
 - [Syntax README](../README.md) — the L side being embedded
-- [Semantics README](../../Semantics/README.md) — where the `Plus*.lean` semantics modules live
+- [Semantics/PlusLanguage README](../../Semantics/PlusLanguage/README.md) — where the L⁺ semantics modules live
 - [Metalogic README](../../Metalogic/README.md) — where `Conservativity/Plus/` lives
 
 ---

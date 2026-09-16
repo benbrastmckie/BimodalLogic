@@ -36,11 +36,11 @@ permitted edge:
 
 | File | What it carries |
 |------|-----------------|
-| `FormalSystem/Semantics/MinusTruth.lean` | `MinusTruthAt`, a native six-clause recursion on `MinusFormula` per `def:BL-semantics` — **not** `TruthAt ∘ tr` |
-| `FormalSystem/Semantics/MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, and the Dense / Discrete / Dedekind-dense validity predicates |
+| `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` | `MinusTruthAt`, a native six-clause recursion on `MinusFormula` per `def:BL-semantics` — **not** `TruthAt ∘ tr` |
+| `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, and the Dense / Discrete / Dedekind-dense validity predicates |
 | `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` | the truth-transfer bridge `truthAt_tr`, and L⁻ soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
 
-`Semantics/MinusTruth.lean` imports `Formula.lean` only — a leaf whose own sole import is
+`Semantics/MinusLanguage/MinusTruth.lean` imports `Formula.lean` only — a leaf whose own sole import is
 `FormalSystem.Syntax.Atom` — so the edge introduces no cycle.
 
 ## Key Results
@@ -55,7 +55,7 @@ permitted edge:
 
 - **Imports from**: `FormalSystem.Syntax`, `FormalSystem.ProofSystem`, `FormalSystem.Theorems`
 - **Imported by**: `FormalSystem.Metalogic.Conservativity` (whole directory);
-  `FormalSystem.Semantics.MinusTruth` (`Formula.lean` only, for `MinusFormula`)
+  `FormalSystem.Semantics.MinusLanguage.MinusTruth` (`Formula.lean` only, for `MinusFormula`)
 
 ## Related Documentation
 

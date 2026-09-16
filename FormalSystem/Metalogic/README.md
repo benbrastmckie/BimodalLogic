@@ -290,7 +290,7 @@ what a paper can use — is that the two classes have the same logic.
 TM⋆ is L⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/Syntax/StarLanguage/`). Its
 axiom set re-declares the TM⁺ schemata directly over `StarFormula` rather than embedding them,
 with `modal_future` alone under a `RecallFree` (`↓ⁱ`-free) side condition — it is *refuted* at
-arbitrary `φ` (`Semantics/StarNonValidities.lean`, `refute_modal_future`).
+arbitrary `φ` (`Semantics/StarLanguage/StarNonValidities.lean`, `refute_modal_future`).
 
 | Row | Status |
 |-----|--------|

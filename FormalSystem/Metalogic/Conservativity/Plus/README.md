@@ -9,8 +9,8 @@ plus the truth-transfer bridge `plusValidIn_ofFormula_iff` plus that engine.
 
 TM⁺'s axioms are the 45 TM schemata re-declared over `PlusFormula` (so `□⊡p → □G⊡p` is an MF
 instance), plus S5 for `⊡`, `□φ → ⊡φ`, `p → ⊡p` for atoms, and two pasting schemata with
-pure-future / pure-past side conditions (`Semantics/PlusPasting.lean`). The five refutations in
-`Semantics/PlusNonValidities.lean` bound that set from above.
+pure-future / pure-past side conditions (`Semantics/PlusLanguage/PlusPasting.lean`). The five refutations in
+`Semantics/PlusLanguage/PlusNonValidities.lean` bound that set from above.
 
 **General TM⁺ completeness and TM⁺ decidability are open** and are not asserted anywhere. One
 durable fact bears on any attempt: the countermodels of all four completeness engines are
@@ -82,7 +82,7 @@ completeness settles it; nothing else will.
 - [Conservativity README](../README.md)
 - [`FormalSystem/Syntax/PlusLanguage/`](../../../Syntax/PlusLanguage/README.md) — `PlusFormula`, `PlusAxiom`,
   `PlusDerivationTree`, `ofFormula`
-- [`Semantics/PlusTruth.lean`](../../../Semantics/PlusTruth.lean) — the L⁺ truth recursion
+- [`Semantics/PlusLanguage/PlusTruth.lean`](../../../Semantics/PlusLanguage/PlusTruth.lean) — the L⁺ truth recursion
 - [`Metalogic/Deterministic/`](../../Deterministic.lean) — the deterministic metatheory: the
   narrowed engines, the `⊡`-erasure, TM⁺ + *Determined*, and its completeness
 - [`docs/theorem-index.md`](../../../../docs/theorem-index.md) — per-theorem status

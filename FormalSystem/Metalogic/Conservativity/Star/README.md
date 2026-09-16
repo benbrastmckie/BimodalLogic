@@ -12,7 +12,7 @@ they could not be.
 Its axiom set is the **53 TM⁺ schemata re-declared directly over `StarFormula`**, plus sixteen
 register schemata — 70 constructors. Fifty-two of the 53 are schematic without any new side
 condition. `modal_future` (`□φ → □Gφ`) is the exception: it is *refuted* over `StarFormula`
-(`refute_modal_future`, `Semantics/StarNonValidities.lean`), because it is the only schema in
+(`refute_modal_future`, `Semantics/StarLanguage/StarNonValidities.lean`), because it is the only schema in
 that block whose soundness proof consumes time-shift homogeneity and the L⋆ time-shift lemma
 shifts the stored-time vector along with the history. It is carried alone under a `RecallFree`
 (`↓ⁱ`-free) side condition — a fragment strictly wider than the `ofPlus` image, since `↑¹p` is
@@ -26,7 +26,7 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
 |------|------:|-------------|
 | `Forward.lean` | 228 | Conservativity: `forward_star` and `starDerivable_ofFormula_iff` over TM, unconditional in both directions at all four classes; the conditional pair `starConservative_of_plusComplete` / `plusIncomplete_of_starNonconservative` over TM⁺. |
 | `StarAxiomValidity.lean` | 1,379 | The two dispatch lemmas, one arm per `StarAxiom` constructor and no wildcard, plus the sixteen named register-schema validities they dispatch to. |
-| `StarPasting.lean` | 245 | The two L⋆ purity congruences and PS / US over `StarFormula`, reusing `Semantics/PlusPasting.lean`'s formula-independent construction read-only. |
+| `StarPasting.lean` | 245 | The two L⋆ purity congruences and PS / US over `StarFormula`, reusing `Semantics/PlusLanguage/PlusPasting.lean`'s formula-independent construction read-only. |
 | `StarSoundness.lean` | 186 | Soundness of TM⋆ at every frame class, by the companion recursion carrying validity and swap-validity, plus the four rows and consistency at `.Base`. |
 <!-- END GENERATED -->
 
@@ -71,7 +71,7 @@ it as a conditional pair records that fact; asserting or denying conservativity 
 
 **Both syntactic routes are closed, by machine-checked refutations.** Naive register erasure
 sends the `StarValid` formula `↑¹G↓¹p → p` (`storeG_recall_valid`) to `Gp → p`, refuted over `NF`
-(`refute_erasure`) — both in `Semantics/StarNonValidities.lean`. Register collapse (identifying
+(`refute_erasure`) — both in `Semantics/StarLanguage/StarNonValidities.lean`. Register collapse (identifying
 every register with the time of evaluation) sends the rigidity schema `↓ⁱφ → G↓ⁱφ` to `φ → Gφ`,
 which is not even valid. There is therefore no translation-based route to the L⁺ row.
 
@@ -82,9 +82,9 @@ not a bare "open".
 
 **(a) The engine obstruction.** The countermodels produced by all four TM completeness engines
 are *deterministic*. Every deterministic frame validates `sent:det`
-(`sentDet_of_deterministic`, `Semantics/StarDeterminism.lean`), and `sent:det` is **not**
+(`sentDet_of_deterministic`, `Semantics/StarLanguage/StarDeterminism.lean`), and `sent:det` is **not**
 `StarValid` (`refute_sentDet` / `not_starValid_sentDet`,
-`Semantics/StarNonValidities.lean`). So no existing engine can build a countermodel for
+`Semantics/StarLanguage/StarNonValidities.lean`). So no existing engine can build a countermodel for
 `¬ sentDet p`, and none of them transfers to L⋆ as it stands.
 
 This is *strictly worse* than the L⁺ situation. There, the same fact about the engines is what

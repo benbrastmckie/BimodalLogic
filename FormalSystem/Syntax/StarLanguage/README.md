@@ -22,7 +22,7 @@ commutes with each of them by `rfl`.
 
 The atomization route to TM⁺ soundness
 (`Metalogic/Conservativity/Plus/Atomization.lean`) rests on `stab_state_only`
-(`Semantics/PlusTruth.lean`): `⊡φ`'s truth depends on the world state **alone**, at any time.
+(`Semantics/PlusLanguage/PlusTruth.lean`): `⊡φ`'s truth depends on the world state **alone**, at any time.
 That invariant is **false inside a recall scope** — `⊡↓ⁱφ` reaches back to a time the register
 names, which the present world state does not determine — so adding `timeStore`/`timeRecall` to
 `PlusFormula` would silently invalidate a landed conservativity result. Breaking the invariant is
@@ -53,7 +53,7 @@ metavariables, each proved individually; `paste` and `untl_paste` carry L⋆ cou
 purity conditions their `PlusAxiom` mirrors already carry.
 
 `modal_future` (`□φ → □Gφ`) is the sole exception: it is *refuted* over `StarFormula`
-(`refute_modal_future`, `Semantics/StarNonValidities.lean`). MF is the only schema in the TM
+(`refute_modal_future`, `Semantics/StarLanguage/StarNonValidities.lean`). MF is the only schema in the TM
 block whose soundness proof consumes time-shift homogeneity — audited, and recorded in the
 `Metalogic/Soundness.lean` module docstring's *The time-shift consumer set* section, which is the
 authority: one schema, two declarations (`modal_future_valid` and `mf_swap_valid`, the latter
@@ -91,12 +91,12 @@ of the permitted import edge:
 
 | File | What it carries |
 |------|-----------------|
-| `FormalSystem/Semantics/StarTruth.lean` | `StarTruthAt` over `(τ, x, v⃗)`; the `StarTruth.*` clause lemmas; `starTruthAt_ofPlus`; the transport layer `star_truth_congr_ext`, `update_shift_comm`, `starTruthAt_timeShift` |
-| `FormalSystem/Semantics/StarValidity.lean` | `TaskFrame.StarValidOn`, `StarValidOnFrames`, `StarValidIn`, `StarValid`; `starValidOn_ofPlus`; `settledDisj`, `sentDet`, `sentDet_unfold`, `not_starValidOn_sentDet` |
-| `FormalSystem/Semantics/StarDeterminism.lean` | `star_congr_of_deterministic`, `sentDet_of_deterministic`, `detPM`, `detPM_unfold`, `detPM_of_deterministic`, `deterministic_of_detPM`, `deterministic_starDefinable` |
-| `FormalSystem/Semantics/StarNonValidities.lean` | `refute_sentDet`, `not_starValid_sentDet`; `mfWitness` and `refute_modal_future` (MF is not an L⋆ schema); `storeG_recall_valid` with `refute_erasure` (register erasure is not a conservativity translation) |
+| `FormalSystem/Semantics/StarLanguage/StarTruth.lean` | `StarTruthAt` over `(τ, x, v⃗)`; the `StarTruth.*` clause lemmas; `starTruthAt_ofPlus`; the transport layer `star_truth_congr_ext`, `update_shift_comm`, `starTruthAt_timeShift` |
+| `FormalSystem/Semantics/StarLanguage/StarValidity.lean` | `TaskFrame.StarValidOn`, `StarValidOnFrames`, `StarValidIn`, `StarValid`; `starValidOn_ofPlus`; `settledDisj`, `sentDet`, `sentDet_unfold`, `not_starValidOn_sentDet` |
+| `FormalSystem/Semantics/StarLanguage/StarDeterminism.lean` | `star_congr_of_deterministic`, `sentDet_of_deterministic`, `detPM`, `detPM_unfold`, `detPM_of_deterministic`, `deterministic_of_detPM`, `deterministic_starDefinable` |
+| `FormalSystem/Semantics/StarLanguage/StarNonValidities.lean` | `refute_sentDet`, `not_starValid_sentDet`; `mfWitness` and `refute_modal_future` (MF is not an L⋆ schema); `storeG_recall_valid` with `refute_erasure` (register erasure is not a conservativity translation) |
 | `FormalSystem/Metalogic/Conservativity/Star/` | TM⋆'s metatheory: `starAxiom_validIn_min`, `starAxiom_swap_validIn_min`, `star_soundness_validIn`, `starDerivable_ofFormula_iff`, `starConservative_of_plusComplete`, `plusIncomplete_of_starNonconservative` |
-| `FormalSystem/Semantics/StarStateLocal.lean` | `StarFormula.StateLocal` (syntactic) and `IsStateLocal` (semantic); `isStateLocal_box`, `isStateLocal_stab`, `isStateLocal_of_stateLocal`; `not_isStateLocal_someFuture`, `not_isStateLocal_somePast`, `not_isStateLocal_timeRecall`; `stateLocal_stab_iff`, `stateLocal_starValid_iff_stab` |
+| `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | `StarFormula.StateLocal` (syntactic) and `IsStateLocal` (semantic); `isStateLocal_box`, `isStateLocal_stab`, `isStateLocal_of_stateLocal`; `not_isStateLocal_someFuture`, `not_isStateLocal_somePast`, `not_isStateLocal_timeRecall`; `stateLocal_stab_iff`, `stateLocal_starValid_iff_stab` |
 | `FormalSystem/Metalogic/Independence/StarDiscrimination.lean` | `driftLinear`, `fzero_refutes_sentDet`, `f1_sentDet`, `sentDet_discriminates`, `star_discriminates_where_plus_cannot` |
 | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | `fnRel`, `FN`, `fn_forwardDeterministic`, `fn_not_deterministic`, `states_eq_of_forwardDeterministic`, `fn_sentDet_stateLocal`, `fn_separates`, `fn_refutes_sentDet_somePast`, `fn_sentDet_bounds` |
 
@@ -107,25 +107,25 @@ exclusion. Anchors are cited by `\label` only, never by line number.
 
 | Paper anchor | Claim | Lean |
 |---|---|---|
-| `def:BLstar-semantics` (store/recall clauses) | `M,τ,x,v⃗ ⊨ ↑ⁱφ` iff `M,τ,x,v⃗[x/vᵢ] ⊨ φ`; `M,τ,x,v⃗ ⊨ ↓ⁱφ` iff `M,τ,vᵢ,v⃗ ⊨ φ` | `Semantics/StarTruth.lean` — the `timeStore`/`timeRecall` clauses of `StarTruthAt`, with `StarTruth.timeStore_iff` / `StarTruth.timeRecall_iff` |
+| `def:BLstar-semantics` (store/recall clauses) | `M,τ,x,v⃗ ⊨ ↑ⁱφ` iff `M,τ,x,v⃗[x/vᵢ] ⊨ φ`; `M,τ,x,v⃗ ⊨ ↓ⁱφ` iff `M,τ,vᵢ,v⃗ ⊨ φ` | `Semantics/StarLanguage/StarTruth.lean` — the `timeStore`/`timeRecall` clauses of `StarTruthAt`, with `StarTruth.timeStore_iff` / `StarTruth.timeRecall_iff` |
 | `def:BLstar-semantics` (world registers `↑_M`, `↓_M`) | — | **Excluded**: world registers are suppressed on the main path, exactly as the deterministic-frame appendix suppresses them. A single-world-register `Det-m` was declared optional at plan time and is not built |
-| `lem:deterministic-singleton` (⇒) | Deterministic ⟹ `⟨τ⟩_x = {τ}` | `states_eq_of_deterministic` (`Semantics/PlusDeterminism.lean`), restated at the predicate as `singletonClasses_of_deterministic` (`Semantics/DeterministicBridge.lean`); choice-free |
+| `lem:deterministic-singleton` (⇒) | Deterministic ⟹ `⟨τ⟩_x = {τ}` | `states_eq_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`), restated at the predicate as `singletonClasses_of_deterministic` (`Semantics/DeterministicBridge.lean`); choice-free |
 | `lem:deterministic-singleton` (⇐) | `⟨τ⟩_x = {τ}` ⟹ Deterministic | `deterministic_of_singletonClasses` (`Semantics/DeterministicBridge.lean`); a theorem of **ZFC**, via `thm:extension` |
 | `lem:deterministic-singleton` (biconditional) | the two together | `deterministic_iff_singletonClasses` |
-| `sent:det` | `↑¹\Future↑²↓¹(⊡↓²¬φ ∨ ⊡↓²φ)` | `sentDet` (`Semantics/StarValidity.lean`); `\Future` is the manuscript's **universal** future, so the tree's `allFuture` |
+| `sent:det` | `↑¹\Future↑²↓¹(⊡↓²¬φ ∨ ⊡↓²φ)` | `sentDet` (`Semantics/StarLanguage/StarValidity.lean`); `\Future` is the manuscript's **universal** future, so the tree's `allFuture` |
 | `app:deterministic-future` (`(∗)` chain) | the four-line unfolding | `sentDet_unfold` |
-| `app:deterministic-future` (positive half) | `sent:det` valid over every deterministic frame | `sentDet_of_deterministic` (`Semantics/StarDeterminism.lean`) |
-| `app:deterministic-future` (negative half) | `sent:det` invalid over some non-deterministic frame | `refute_sentDet` (`Semantics/StarNonValidities.lean`), over `NF` — the manuscript's own reused countermodel |
+| `app:deterministic-future` (positive half) | `sent:det` valid over every deterministic frame | `sentDet_of_deterministic` (`Semantics/StarLanguage/StarDeterminism.lean`) |
+| `app:deterministic-future` (negative half) | `sent:det` invalid over some non-deterministic frame | `refute_sentDet` (`Semantics/StarLanguage/StarNonValidities.lean`), over `NF` — the manuscript's own reused countermodel |
 | footnote after `app:deterministic-future` | store/recall discriminate `F°` from `F¹` | `fzero_refutes_sentDet`, `f1_sentDet`, `sentDet_discriminates`, `star_discriminates_where_plus_cannot` (`Metalogic/Independence/StarDiscrimination.lean`) |
 | `app:drift` | `F°` is a non-deterministic frame validating *Determined* | already landed: `Metalogic/Independence/DriftFrame.lean`, `DeterminismUndefinable.lean` |
 | `cor:no-characterization` | no store/recall-free sentence set characterizes the deterministic frames | already landed: `deterministic_not_plusDefinable` (`Metalogic/Independence/DeterminismUndefinable.lean`) |
 | `cor:saturation-finite` (finite-**fibres** variant) | *Saturation* from finite fibres | `TaskFrame.saturation_of_fib_finite` (`Semantics/TaskFrame.lean`) — not a paper result; the paper's corollary is the finite-**carrier** one, which does not reach `FN` |
-| Theorem C, `Det-pm` half (report-level) | `Det-pm` defines the deterministic frames, as a three-way equivalence: `Det-pm`'s validity at bare sentence letters already **forces** determinism, and determinism **delivers** `Det-pm` at every `StarFormula` | `detPM` (schematic), `deterministic_starDefinable` (`Semantics/StarDeterminism.lean`) |
+| Theorem C, `Det-pm` half (report-level) | `Det-pm` defines the deterministic frames, as a three-way equivalence: `Det-pm`'s validity at bare sentence letters already **forces** determinism, and determinism **delivers** `Det-pm` at every `StarFormula` | `detPM` (schematic), `deterministic_starDefinable` (`Semantics/StarLanguage/StarDeterminism.lean`) |
 | Theorem C, `Det-m` half (report-level) | `Det-m` defines the deterministic frames | **Excluded**: needs a world register, declared optional at plan time and not built |
 | `sent:det` defines only *forward* determinism (report-level) | separating frame `F^N`, with the validity widened from sentence letters to the whole **state-locality** fragment and the two-sided bound recorded as one object | `FN`, `fn_forwardDeterministic`, `fn_not_deterministic`, `fn_sentDet_stateLocal`, `fn_separates`, `fn_sentDet_bounds` (`Metalogic/Independence/ForwardDeterministicFrame.lean`) |
-| state-locality of L⋆ (no paper anchor) | a state-local `φ` is already `⊡`-stable: `φ ↔ ⊡φ` is valid on the fragment, and `□`/`⊡` belong to it for an *arbitrary* argument | `StarFormula.StateLocal`, `isStateLocal_of_stateLocal`, `stateLocal_starValid_iff_stab` (`Semantics/StarStateLocal.lean`) — **not a manuscript result**; it is the structural closure of the reason the sentence-letter form gave for itself |
+| state-locality of L⋆ (no paper anchor) | a state-local `φ` is already `⊡`-stable: `φ ↔ ⊡φ` is valid on the fragment, and `□`/`⊡` belong to it for an *arbitrary* argument | `StarFormula.StateLocal`, `isStateLocal_of_stateLocal`, `stateLocal_starValid_iff_stab` (`Semantics/StarLanguage/StarStateLocal.lean`) — **not a manuscript result**; it is the structural closure of the reason the sentence-letter form gave for itself |
 | TM⋆ (a proof system for L⋆) | — | **Formalization-native**, not a manuscript result: the manuscript supplies no proof system for `\BL^\star`. `StarAxiom` (`Axioms.lean`), `StarDerivationTree` and `⊢⋆[fc]` (`Derivation.lean`) present TM⋆, shaped after `PlusAxiom`/`PlusDerivationTree` so the two systems are structurally comparable |
-| MF over L⋆ (formalization-native) | `□φ → □Gφ` is **not** valid over `StarFormula`, and is valid at every `↓ⁱ`-free formula | `refute_modal_future` (`Semantics/StarNonValidities.lean`) — which is why `StarAxiom.modal_future` alone among the 53 mirror constructors carries a `RecallFree` side condition; the fragment is strictly wider than the `ofPlus` image |
+| MF over L⋆ (formalization-native) | `□φ → □Gφ` is **not** valid over `StarFormula`, and is valid at every `↓ⁱ`-free formula | `refute_modal_future` (`Semantics/StarLanguage/StarNonValidities.lean`) — which is why `StarAxiom.modal_future` alone among the 53 mirror constructors carries a `RecallFree` side condition; the fragment is strictly wider than the `ofPlus` image |
 | TM⋆ soundness (formalization-native) | every TM⋆ theorem at `fc` is `StarValidIn fc` | `star_soundness_validIn` (`Metalogic/Conservativity/Star/StarSoundness.lean`), at all four classes, with `star_not_derivable_nil_bot` for consistency at `.Base` |
 | L⁺ ⊂ L⋆, backward (formalization-native) | every TM⁺ theorem is a TM⋆ theorem at its embedding | `starDerivable_of_plusDerivable` (`StarLanguage/Embedding.lean`) |
 | L ⊂ L⋆, conservativity (formalization-native) | TM⋆ is a conservative extension of TM, both directions, all four classes, **unconditionally** | `starDerivable_ofFormula_iff` (`Metalogic/Conservativity/Star/Forward.lean`) |
@@ -149,7 +149,7 @@ still not be assumed.
 
 The restriction is no longer an artifact. The sentence-letter form gave as its reason "an atom's
 truth depends on nothing but the state at the time of evaluation" — a reason about
-state-locality, not about atoms. `StarFormula.StateLocal` (`Semantics/StarStateLocal.lean`) is
+state-locality, not about atoms. `StarFormula.StateLocal` (`Semantics/StarLanguage/StarStateLocal.lean`) is
 that reason cut as a syntactic fragment, and `fn_sentDet_bounds` records the resulting two-sided
 bound as a single machine-checked object: valid at every state-local instance, refuted at `P p`,
 which the middle conjunct certifies lies outside the fragment.

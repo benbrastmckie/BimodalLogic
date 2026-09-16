@@ -10,7 +10,7 @@ Core syntactic definitions for TM bimodal logic formulas.
 | `Atom.lean` | 215 | `Atom`: Propositional atom type with decidable equality |
 | `BigConj.lean` | 55 | `bigConj`: Big conjunction over a list of formulas |
 | `Context.lean` | 210 | `Context`: Type alias for `List Formula` (proof contexts) |
-| `Formula.lean` | 855 | `Formula`: Inductive formula type with modal and temporal operators |
+| `Formula.lean` | 792 | `Formula`: Inductive formula type with modal and temporal operators |
 | `MinusLanguage.lean` | 45 | Sibling aggregator for `MinusLanguage/` (the language L⁻) |
 | `PlusLanguage.lean` | 54 | Sibling aggregator for `PlusLanguage/` (the language L⁺) |
 | `StarLanguage.lean` | 60 | Sibling aggregator for `StarLanguage/` (the language L⋆) |
@@ -35,6 +35,12 @@ notations over a shared `Formula`.
 | [`Syntax/PlusLanguage/`](PlusLanguage/README.md) | L⁺ | `PlusFormula` | L's six **+ `stab`** (7) |
 | [`Syntax/StarLanguage/`](StarLanguage/README.md) | L⋆ | `StarFormula` | L⁺'s seven **+ `timeStore`, `timeRecall`** (9) |
 
+The semantics of the three extensions sits in the parallel directories
+[`Semantics/MinusLanguage/`](../Semantics/MinusLanguage/README.md),
+[`Semantics/PlusLanguage/`](../Semantics/PlusLanguage/README.md) and
+[`Semantics/StarLanguage/`](../Semantics/StarLanguage/README.md); L's own semantics is at the
+`Semantics/` root.
+
 ### The chain, and the one that is not in it
 
 **L ⊂ L⁺ ⊂ L⋆ is the extension chain.** Each adds constructors to the one before, and each
@@ -58,7 +64,7 @@ the present world state" — is implemented in
 [`Syntax/PlusLanguage/`](PlusLanguage/README.md), and it is complete rather than partial:
 `PlusFormula` with `stab`, the eight `⊡` axiom schemata in `PlusLanguage/Axioms.lean`, the
 `PlusDerivationTree` proof system, the embedding `ofFormula`, backward conservativity, and the
-`PlusTruthAt` semantics in `FormalSystem/Semantics/PlusTruth.lean`. It carries no `sorry`.
+`PlusTruthAt` semantics in `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean`. It carries no `sorry`.
 
 `⊡` is also the sole operator L⁺ adds to L, so "L plus boxdot" and "L⁺" name the same language.
 It is carried forward unchanged into L⋆, whose own additions are the two hybrid time registers

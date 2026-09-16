@@ -50,7 +50,7 @@ parameter and no shift-closure side condition.
 
 **Atom clause — a knowingly inherited divergence.** `def:BL-semantics`'s atom clause carries no
 domain check, but the clause here carries the same `∃ (ht : τ.domain t), …` conjunct that
-`TruthAt` does. That is Decision A of `specs/decisions/total-history-validity-decisions.md`: under
+`TruthAt` does. That is Decision A of `docs/architecture/total-history-validity-decisions.md`: under
 totality the conjunct is vacuously satisfiable at every `t`, so the two readings agree on `H_F`,
 and keeping it is exactly what makes the atom case of the bridge `Iff.rfl`. It is inherited on
 purpose; do not "correct" it away.

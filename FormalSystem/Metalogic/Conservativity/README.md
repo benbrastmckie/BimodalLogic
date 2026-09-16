@@ -35,7 +35,7 @@ than deferred debt.
 | `FragmentCompactness.lean` | 150 | <!-- TODO: add description --> |
 | `MinusLanguageSoundness.lean` | 613 | <!-- TODO: add description --> |
 | `Plus.lean` | 66 | <!-- TODO: add description --> |
-| `SpCountermodel.lean` | 390 | CEB's failing half: native L⁻ soundness for TM⁻ against `Semantics/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
+| `SpCountermodel.lean` | 390 | CEB's failing half: native L⁻ soundness for TM⁻ against `Semantics/MinusLanguage/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
 | `SpWitness.lean` | 138 | <!-- TODO: add description --> |
 | `Star.lean` | 50 | Aggregator for the L⋆ metatheory; holds no declarations. |
 | `TMCompletenessReduction.lean` | 309 | <!-- TODO: add description --> |
