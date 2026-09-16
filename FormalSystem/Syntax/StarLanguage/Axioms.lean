@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.StarLanguage.Formula
-import FormalSystem.PlusLanguage.Axioms
+import FormalSystem.Syntax.StarLanguage.Formula
+import FormalSystem.Syntax.PlusLanguage.Axioms
 
 /-!
 # `StarAxiom` — the axiom schemata of TM⋆ over `StarFormula`

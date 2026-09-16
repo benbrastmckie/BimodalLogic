@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.PlusLanguage.Axioms
+import FormalSystem.Syntax.PlusLanguage.Axioms
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.ProofSystem.Derivable
 

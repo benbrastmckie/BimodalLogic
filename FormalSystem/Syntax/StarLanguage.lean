@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.StarLanguage.Formula
-import FormalSystem.StarLanguage.Axioms
-import FormalSystem.StarLanguage.Derivation
-import FormalSystem.StarLanguage.Embedding
+import FormalSystem.Syntax.StarLanguage.Formula
+import FormalSystem.Syntax.StarLanguage.Axioms
+import FormalSystem.Syntax.StarLanguage.Derivation
+import FormalSystem.Syntax.StarLanguage.Embedding
 
 /-!
 # `FormalSystem.StarLanguage` — the language L⋆ = L⁺ + time store/recall

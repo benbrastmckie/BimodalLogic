@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.MinusLanguage.Axioms
+import FormalSystem.Syntax.MinusLanguage.Axioms
 
 /-!
 # `MinusLanguage.DerivationTree` — TM⁻'s proof system over L⁻

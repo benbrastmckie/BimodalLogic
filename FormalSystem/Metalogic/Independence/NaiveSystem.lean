@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.PlusLanguage.Derivation
+import FormalSystem.Syntax.PlusLanguage.Derivation
 
 /-!
 # The naive `⊡`-system: TM⁺ with the two pasting axioms withheld

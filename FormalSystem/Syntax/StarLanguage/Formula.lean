@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.PlusLanguage.Formula
+import FormalSystem.Syntax.PlusLanguage.Formula
 
 /-!
 # `StarFormula` — the language L⋆: L⁺ plus the time store/recall operators

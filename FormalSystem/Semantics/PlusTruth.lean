@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Truth
-import FormalSystem.PlusLanguage.Formula
+import FormalSystem.Syntax.PlusLanguage.Formula
 import FormalSystem.Semantics.TruthClauses
 
 /-!

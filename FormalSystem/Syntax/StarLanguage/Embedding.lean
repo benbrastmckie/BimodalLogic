@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.StarLanguage.Derivation
-import FormalSystem.PlusLanguage.Derivation
+import FormalSystem.Syntax.StarLanguage.Derivation
+import FormalSystem.Syntax.PlusLanguage.Derivation
 
 /-!
 # Every TM⁺ theorem is a TM⋆ theorem at its embedded formula

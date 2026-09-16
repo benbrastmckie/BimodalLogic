@@ -1,23 +1,12 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "started_at": "2026-09-15T21:19:23-07:00",
   "completed_at": "2026-09-15T21:45:00-07:00",
-  "requires_user_review": true,
-  "review_reason": "Phase 2 [BLOCKED] by a territory conflict: 4 of the 41 import lines the move must rewrite live under FormalSystem/Semantics/, which this dispatch's instructions placed off-limits because a concurrent task-580 dispatch owns that directory. Phases 3-7 all depend transitively on Phase 2, so 1 of 7 phases closed. Needs an orchestrator decision, not further implementation work.",
-  "blocked_phase": 2,
-  "user_decision": {
-    "question": "How should task 579's 4 required import-line edits under FormalSystem/Semantics/ be handled, given the concurrent task-580 dispatch owns that directory?",
-    "why_user": "This is a cross-dispatch territory and sequencing call between two concurrently running implementations. The implementer cannot resolve it without either overriding an explicit dispatch instruction or racing a sibling agent's edits; which risk is acceptable is a coordination decision, not an implementation one.",
-    "options": [
-      "Grant a narrow exemption for exactly the 4 import-prefix edits (sed on the single matched line each, in MinusFrame.lean:7, MinusTruth.lean:8, PlusTruth.lean:8, StarTruth.lean:8), then re-dispatch 579 to run Phases 2-7.",
-      "Hand those 4 lines to the task-580 dispatch that owns FormalSystem/Semantics/, then re-dispatch 579.",
-      "Re-dispatch 579 after task 580 completes and releases FormalSystem/Semantics/."
-    ],
-    "blocking": true
-  },
+  "requires_user_review": false,
+  "review_reason": "Superseded: the Phase 2 territory conflict was resolved by the orchestrator granting a narrow exemption for exactly the 4 FormalSystem/Semantics/ import-prefix edits (recorded in .decisions.json). Phase 2 has been executed; no user decision is outstanding.",
   "partial_progress": {
-    "stage": "phase_2_blocked",
-    "details": "Phase 1 closed and committed (53747904e). Phase 2 marked [BLOCKED] with a full blocker record plus the four ready-to-run sed commands in the plan file. Phases 3-7 left [NOT STARTED] per the phase-closure contract's stop-at-a-closed-boundary clause. All remaining Scope Hypotheses were confirmed by read-only probes and are recorded in the summary's Follow-ups, so a re-dispatch need not re-measure.",
+    "stage": "phase_2_executed_awaiting_build",
+    "details": "Phase 1 committed (53747904e). Phase 2 fully applied in the working tree and staged: 19 git mv renames, all 41 import lines rewritten (37 by anchored rewrite across 22 files, plus the 4 authorized Semantics lines by line-scoped sed), FormalSystem.lean repointed, Syntax.lean confirmed free of nested-aggregator imports, 10 README links re-depthed. PASS C4; zero non-import changed lines in all three moved trees; zero namespace/open drift in this task's territory. Awaiting the in-flight guarded full lake build to close Phase 2, then Phases 3-7.",
     "phases_completed": 1,
     "phases_total": 7
   },
@@ -62,28 +51,50 @@
       "category": "WORKFLOW",
       "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["orchestrate", "territory", "concurrent-dispatch", "import-rewrite", "blast-radius"]
+      "suggested_keywords": [
+        "orchestrate",
+        "territory",
+        "concurrent-dispatch",
+        "import-rewrite",
+        "blast-radius"
+      ]
     },
     {
       "content": "A subagent that escalates to its dispatching orchestrator mid-dispatch can deadlock: the orchestrator is typically blocked awaiting that subagent's completion, so it never reaches a tool round to read the message. Escalation to a busy parent must therefore be paired with a self-resolving default (close the current phase, mark the blocked one, return partial) rather than treated as a request that will be answered in-flight.",
       "category": "INSIGHT",
       "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["deadlock", "escalation", "subagent", "SendMessage", "orchestrator"]
+      "suggested_keywords": [
+        "deadlock",
+        "escalation",
+        "subagent",
+        "SendMessage",
+        "orchestrator"
+      ]
     },
     {
       "content": "Adding one sibling aggregator .lean file under a directory that carries a generated inventory block turns INV red in three places at once in BimodalLogic: the directory's own README, FormalSystem/README.md, and the root README.md totals block. Regenerate with `scripts/check-module-invariants.sh --emit-inventory` as part of the same change rather than treating it as a separate defect.",
       "category": "PATTERN",
       "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["check-module-invariants", "INV", "inventory-block", "aggregator", "C8"]
+      "suggested_keywords": [
+        "check-module-invariants",
+        "INV",
+        "inventory-block",
+        "aggregator",
+        "C8"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1789531332_91031c",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "compliance_check": "skipped",
     "dispatch_seq": 5
   }

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.MinusLanguage.Formula
+import FormalSystem.Syntax.MinusLanguage.Formula
 import FormalSystem.Syntax.Formula
 import FormalSystem.Syntax.Context
 

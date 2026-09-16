@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.PlusLanguage.Formula
-import FormalSystem.PlusLanguage.Axioms
-import FormalSystem.PlusLanguage.Derivation
-import FormalSystem.PlusLanguage.Substitution
+import FormalSystem.Syntax.PlusLanguage.Formula
+import FormalSystem.Syntax.PlusLanguage.Axioms
+import FormalSystem.Syntax.PlusLanguage.Derivation
+import FormalSystem.Syntax.PlusLanguage.Substitution
 
 /-!
 # `FormalSystem.PlusLanguage` — the language L⁺ and its logic TM⁺

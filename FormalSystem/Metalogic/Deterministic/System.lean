@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.PlusLanguage.Substitution
+import FormalSystem.Syntax.PlusLanguage.Substitution
 
 /-!
 # TM⁺ + *Determined* — the extended proof system

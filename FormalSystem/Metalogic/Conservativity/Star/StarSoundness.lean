@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Conservativity.Star.StarAxiomValidity
-import FormalSystem.StarLanguage
+import FormalSystem.Syntax.StarLanguage
 
 /-!
 # Soundness of TM⋆ at every frame class

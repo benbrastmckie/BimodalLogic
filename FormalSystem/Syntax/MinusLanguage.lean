@@ -4,11 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.MinusLanguage.Formula
-import FormalSystem.MinusLanguage.Axioms
-import FormalSystem.MinusLanguage.Derivation
-import FormalSystem.MinusLanguage.Translation
-import FormalSystem.MinusLanguage.AxiomDischarge
+import FormalSystem.Syntax.MinusLanguage.Formula
+import FormalSystem.Syntax.MinusLanguage.Axioms
+import FormalSystem.Syntax.MinusLanguage.Derivation
+import FormalSystem.Syntax.MinusLanguage.Translation
+import FormalSystem.Syntax.MinusLanguage.AxiomDischarge
 
 /-!
 # `FormalSystem.MinusLanguage` — the tense-primitive base language L⁻ and its logic TM⁻

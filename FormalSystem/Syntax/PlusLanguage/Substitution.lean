@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.PlusLanguage.Derivation
+import FormalSystem.Syntax.PlusLanguage.Derivation
 
 /-!
 # `substPlus` — carrying TM theorem *schemata* into TM⁺ at arbitrary L⁺ arguments

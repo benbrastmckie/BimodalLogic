@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Conservativity.Plus.Atomization
 import FormalSystem.Semantics.PlusPasting
 import FormalSystem.Semantics.PlusStateLocal
-import FormalSystem.PlusLanguage.Axioms
+import FormalSystem.Syntax.PlusLanguage.Axioms
 
 /-!
 # Validity and swap-validity of every TM⁺ axiom schema

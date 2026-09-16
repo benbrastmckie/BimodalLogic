@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Truth
-import FormalSystem.MinusLanguage.Formula
+import FormalSystem.Syntax.MinusLanguage.Formula
 import FormalSystem.Semantics.TruthClauses
 
 -- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`

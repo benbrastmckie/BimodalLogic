@@ -59,11 +59,11 @@ permitted edge:
 
 ## Related Documentation
 
-- [FormalSystem README](../README.md)
-- [Syntax README](../Syntax/README.md) — the primary, until/since-primitive language
-- [ProofSystem README](../ProofSystem/README.md)
-- [Semantics README](../Semantics/README.md) — where `MinusTruth.lean` and `MinusValidity.lean` live
-- [Metalogic README](../Metalogic/README.md) — where `MinusLanguageSoundness.lean` lives
+- [FormalSystem README](../../README.md)
+- [Syntax README](../README.md) — the primary, until/since-primitive language
+- [ProofSystem README](../../ProofSystem/README.md)
+- [Semantics README](../../Semantics/README.md) — where `MinusTruth.lean` and `MinusValidity.lean` live
+- [Metalogic README](../../Metalogic/README.md) — where `MinusLanguageSoundness.lean` lives
 
 ---
 

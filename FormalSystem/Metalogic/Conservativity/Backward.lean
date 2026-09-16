@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.MinusLanguage
+import FormalSystem.Syntax.MinusLanguage
 
 /-!
 # The backward TM⁻/TM conservativity bridge

@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Conservativity.Plus.AxiomValidity
-import FormalSystem.PlusLanguage
+import FormalSystem.Syntax.PlusLanguage
 
 /-!
 # Soundness of TM⁺ at every frame class

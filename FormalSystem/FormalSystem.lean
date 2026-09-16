@@ -8,9 +8,9 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.ForMathlib
 import FormalSystem.Syntax
 import FormalSystem.ProofSystem
-import FormalSystem.MinusLanguage
-import FormalSystem.PlusLanguage
-import FormalSystem.StarLanguage
+import FormalSystem.Syntax.MinusLanguage
+import FormalSystem.Syntax.PlusLanguage
+import FormalSystem.Syntax.StarLanguage
 import FormalSystem.Semantics
 import FormalSystem.Metalogic
 import FormalSystem.Theorems

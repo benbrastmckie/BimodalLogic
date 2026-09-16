@@ -80,11 +80,11 @@ instead.
 
 ## Related Documentation
 
-- [FormalSystem README](../README.md)
+- [FormalSystem README](../../README.md)
 - [MinusLanguage README](../MinusLanguage/README.md) — the pattern this component follows
-- [Syntax README](../Syntax/README.md) — the L side being embedded
-- [Semantics README](../Semantics/README.md) — where the `Plus*.lean` semantics modules live
-- [Metalogic README](../Metalogic/README.md) — where `Conservativity/Plus/` lives
+- [Syntax README](../README.md) — the L side being embedded
+- [Semantics README](../../Semantics/README.md) — where the `Plus*.lean` semantics modules live
+- [Metalogic README](../../Metalogic/README.md) — where `Conservativity/Plus/` lives
 
 ---
 

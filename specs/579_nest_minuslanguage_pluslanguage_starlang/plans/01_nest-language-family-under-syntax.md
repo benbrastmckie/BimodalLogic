@@ -194,70 +194,45 @@ before writing the file.
 
 ---
 
-### Phase 2: The move [BLOCKED]
+### Phase 2: The move [COMPLETED]
 
-**BLOCKER** (Phase 2):
-- **What failed**: Not a proof or tactic failure — a territory conflict. The implement
-  dispatch message for this task states: "Your territory is FormalSystem/Syntax/,
-  MinusLanguage/, PlusLanguage/, StarLanguage/, FormalSystem/README.md, docs/README.md, and
-  scripts/check-module-invariants.sh. Do not edit files under FormalSystem/Semantics/." Phase 2
-  cannot be completed inside that boundary: 4 of the 41 import lines it must rewrite are under
-  `FormalSystem/Semantics/`.
-- **What was tried**: The blast radius was re-measured before any edit, confirming the plan's
-  Scope Hypothesis exactly —
-  `grep -rn '^import FormalSystem\.\(Minus\|Plus\|Star\)Language' --include='*.lean' .`
-  returns 41 lines across 26 `.lean` files. Four are off-limits:
-  `FormalSystem/Semantics/MinusFrame.lean:7`, `MinusTruth.lean:8`, `PlusTruth.lean:8`,
-  `StarTruth.lean:8` (each `import FormalSystem.{Minus,Plus,Star}Language.Formula`). No
-  alternative was found that avoids them: Lean has no module-alias or re-export mechanism, and
-  leaving shim modules at the old root paths is forbidden by this plan's own Phase 2
-  verification (`ls FormalSystem/*.lean` must show exactly the three aggregators removed).
-- **Why it's stuck**: Without those 4 one-line edits the `git mv` leaves 4 dangling imports,
-  so `lake build` and `C4` both go red and Phase 2's declared verification is unreachable.
-  Phase 2's `Commit Mode: atomic-batch` means it cannot be closed partially either. Phases 3-7
-  all depend transitively on Phase 2, so the whole remainder of the plan is gated on this.
-- **What is needed**: One of (a) a narrow territory exemption for exactly those 4 import-prefix
-  edits (`FormalSystem.` -> `FormalSystem.Syntax.`, applied with `sed` to the single matched
-  line so a concurrent edit to the same file's import block cannot be clobbered); (b) those 4
-  lines made by the task-580 dispatch that owns `FormalSystem/Semantics/`; or (c) re-dispatch of
-  this task after task 580 releases the directory. Two messages requesting this decision were
-  sent to the orchestrator (team-lead) and went unanswered within this dispatch.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
-  Also do NOT (i) leave stale aggregators or shim modules at `FormalSystem/{Minus,Plus,Star}Language.lean`,
-  (ii) rename namespaces to `FormalSystem.Syntax.{Minus,Plus,Star}Language` (rejected by the
-  plan's Research Integration — 103 sites plus the C14 baseline), or (iii) move only the
-  subset of directories whose consumers lie outside `Semantics/` (PlusLanguage/ and
-  StarLanguage/ are each reached from `Semantics/`, so no such subset exists).
+**EXEMPTION GRANTED** (Phase 2, 2026-09-15): this phase was briefly `[BLOCKED]` because 4 of
+its 41 import lines live under `FormalSystem/Semantics/`, which the dispatch note placed
+off-limits to protect a concurrent task-580 dispatch. The orchestrator granted a narrow
+exemption for exactly those 4 import-prefix edits, recording that the "do not edit files under
+FormalSystem/Semantics/" wording was an over-narrow territory guess authored before the 41-line
+blast radius was known, and that lifting it restores this plan's own Phase 2 scope rather than
+widening the task. The grant is recorded durably in
+`specs/579_nest_minuslanguage_pluslanguage_starlang/.decisions.json`. Task 580 separately probed
+and dropped its own planned `PlusTruth.lean` edit as unnecessary, so that line was uncontested.
+Line-scoped `sed` was used regardless, and the diff on all four files shows exactly one prefix
+change each and nothing else.
 
-**Ready-to-run once unblocked** (the 4 edits, verified against the current tree):
+**Authorized and applied, exactly**:
+- `FormalSystem/Semantics/MinusFrame.lean:7`, `MinusTruth.lean:8` — `import FormalSystem.Syntax.MinusLanguage.Formula`
+- `FormalSystem/Semantics/PlusTruth.lean:8` — `import FormalSystem.Syntax.PlusLanguage.Formula`
+- `FormalSystem/Semantics/StarTruth.lean:8` — `import FormalSystem.Syntax.StarLanguage.Formula`
 
-```bash
-sed -i 's|^import FormalSystem\.MinusLanguage\.Formula$|import FormalSystem.Syntax.MinusLanguage.Formula|' \
-  FormalSystem/Semantics/MinusFrame.lean FormalSystem/Semantics/MinusTruth.lean
-sed -i 's|^import FormalSystem\.PlusLanguage\.Formula$|import FormalSystem.Syntax.PlusLanguage.Formula|' \
-  FormalSystem/Semantics/PlusTruth.lean
-sed -i 's|^import FormalSystem\.StarLanguage\.Formula$|import FormalSystem.Syntax.StarLanguage.Formula|' \
-  FormalSystem/Semantics/StarTruth.lean
-```
-
+Task 580's own import insertions (`Semantics.lean:26`, `Validity.lean:8`, `ShiftSet.lean:9`,
+`Metalogic/Decidability/BiLasso/Unfold.lean:8`) were NOT touched by this task.
 
 **Goal**: Relocate the three directories and their three aggregators under
 `FormalSystem/Syntax/`, rewriting every import line, with proof content and namespaces byte-identical.
 
 **Tasks**:
-- [ ] Record the pre-move listing: `ls FormalSystem/*.lean > /tmp/pre-move-aggregators.txt`.
-- [ ] `git mv FormalSystem/MinusLanguage FormalSystem/Syntax/MinusLanguage` (and likewise
+- [x] Record the pre-move listing: `ls FormalSystem/*.lean > /tmp/pre-move-aggregators.txt`.
+- [x] `git mv FormalSystem/MinusLanguage FormalSystem/Syntax/MinusLanguage` (and likewise
       `PlusLanguage`, `StarLanguage`) — `git mv`, never `mv`, so rename detection preserves history.
-- [ ] `git mv FormalSystem/MinusLanguage.lean FormalSystem/Syntax/MinusLanguage.lean` (and
+- [x] `git mv FormalSystem/MinusLanguage.lean FormalSystem/Syntax/MinusLanguage.lean` (and
       likewise the other two aggregators).
-- [ ] Rewrite every `import FormalSystem.{Minus,Plus,Star}Language` line to
+- [x] Rewrite every `import FormalSystem.{Minus,Plus,Star}Language` line to
       `import FormalSystem.Syntax.{Minus,Plus,Star}Language`, restricted to lines beginning with
       `import ` — never a bare token replacement, which would corrupt `open` lines and
       fully-qualified references.
-- [ ] Repoint the three aggregator imports inside `FormalSystem/FormalSystem.lean` to the new
+- [x] Repoint the three aggregator imports inside `FormalSystem/FormalSystem.lean` to the new
       paths. Do **not** add them to `FormalSystem/Syntax.lean`.
-- [ ] Confirm no stale `FormalSystem/{Minus,Plus,Star}Language.lean` remains at the root.
-- [ ] Update the `../`-relative links inside the moved READMEs that gained a directory level
+- [x] Confirm no stale `FormalSystem/{Minus,Plus,Star}Language.lean` remains at the root.
+- [x] Update the `../`-relative links inside the moved READMEs that gained a directory level
       (`FormalSystem/Syntax/MinusLanguage/README.md`, `.../PlusLanguage/README.md`, and
       `.../StarLanguage/README.md` if it carries any).
 
