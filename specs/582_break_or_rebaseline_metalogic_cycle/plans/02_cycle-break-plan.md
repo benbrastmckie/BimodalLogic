@@ -209,15 +209,15 @@ Deterministic/README row). Confirm with the grep above before and after editing.
 
 ---
 
-### Phase 4: Wire the cycle check into CI and prove it fails on a new cycle [NOT STARTED]
+### Phase 4: Wire the cycle check into CI and prove it fails on a new cycle [COMPLETED]
 
 **Goal**: A third directory-level cycle can never land undetected again.
 
 **Tasks**:
-- [ ] Re-read `.github/workflows/ci.yml` and task 583's status/plan/summary: if 583's steps have
+- [x] Re-read `.github/workflows/ci.yml` and task 583's status/plan/summary: if 583's steps have
       landed, place the new step consistently with them; otherwise follow 583's recorded pattern
       directly
-- [ ] Add a step after "Compile lean_exe roots (outside the library closures)" and before
+- [x] Add a step after "Compile lean_exe roots (outside the library closures)" and before
       "Report results", e.g.:
       `name: Check Metalogic directory-level import cycles`, `run:` with `set -euo pipefail`,
       `::group::`/`::endgroup::`, and `bash scripts/check-metalogic-cycles.sh`; add a short comment
@@ -225,15 +225,15 @@ Deterministic/README row). Confirm with the grep above before and after editing.
       (a second cycle previously went undetected); do not cite task numbers in the comment
 - [ ] If `docs/development/CI_CD_PROCESS.md` has a per-step "CI Steps Explained" section (per 583's
       recommendation), add a brief entry for this step; skip if 583 has not created the convention
-      and note it in the summary
-- [ ] Negative test (never committed): in a scratch copy of the repo tree (or a temporary edit
+      and note it in the summary *(deviation: skipped — the 583 "Wiring a New Check Script" section is not yet in `CI_CD_PROCESS.md`; step appended directly before "Report results" after 583's uncommitted steps, named with the script path per 583's plan)*
+- [x] Negative test (never committed): in a scratch copy of the repo tree (or a temporary edit
       reverted immediately), add `import FormalSystem.Metalogic.Deterministic.Completeness` to a
       live `Conservativity/` file, run the step's exact `run:` body locally, confirm non-zero exit
       and a `FAIL ... found 2` line naming the new cycle; restore and re-run to confirm exit 0
-- [ ] Validate workflow YAML syntax (e.g. `python3 -c 'import yaml,sys; yaml.safe_load(open(".github/workflows/ci.yml"))'`
+- [x] Validate workflow YAML syntax (e.g. `python3 -c 'import yaml,sys; yaml.safe_load(open(".github/workflows/ci.yml"))'`
       or `actionlint` if available)
-- [ ] `git status` shows no stray `.lean` changes from the negative test
-- [ ] Commit: `task 582: phase 4: wire metalogic cycle check into CI`
+- [x] `git status` shows no stray `.lean` changes from the negative test
+- [x] Commit: `task 582: phase 4: wire metalogic cycle check into CI`
 
 **Timing**: 40 minutes
 

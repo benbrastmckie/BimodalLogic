@@ -71,6 +71,18 @@ jobs:
           bash scripts/check-evidence-probes.sh
           echo "::endgroup::"
 
+      # Metalogic/ is allowed exactly one directory-level import cycle (BXCanonical <->
+      # WeakCanonical, accepted in docs/architecture/ADR-006-Metalogic-No-Physical-Regroup.md).
+      # The script fails on any other count. It runs here because a second cycle once landed
+      # and went unnoticed for about a hundred commits while the script was only run by hand.
+      # Pure grep over import lines: no lake, no cache dependency.
+      - name: Check Metalogic directory-level import cycles (scripts/check-metalogic-cycles.sh)
+        run: |
+          set -euo pipefail
+          echo "::group::bash scripts/check-metalogic-cycles.sh"
+          bash scripts/check-metalogic-cycles.sh
+          echo "::endgroup::"
+
       - name: Report results
         if: always()
         run: |
