@@ -98,7 +98,7 @@ next_project_number: 598
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-581 [PLANNING] — Repair the four wired bi-lasso evidence probes so bash...
+581 [PLANNED] — Repair the four wired bi-lasso evidence probes so bash...
 582 [PLANNING] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
@@ -492,11 +492,12 @@ FINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once
 
 ### 581. Repair bilasso evidence probes
 - **Effort**: medium
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [581_repair_bilasso_evidence_probes/reports/02_probe-repair-verified-diffs.md]
+- **Plan**: [581_repair_bilasso_evidence_probes/plans/02_repair-probes-wire-ci.md]
 
 **Description**: Repair the four wired bi-lasso evidence probes so `bash scripts/check-evidence-probes.sh` exits 0.
 
