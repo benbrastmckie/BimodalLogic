@@ -1,11 +1,56 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 9,
-  "artifacts": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md",
+      "summary": "Wired check-module-invariants.sh --no-build, check-copyright-headers.sh --strict, and readme-lint.sh into ci.yml, recorded the wiring-pattern convention in CI_CD_PROCESS.md, and proved each step fails on a deliberate violation and passes clean."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Wired three green check scripts (check-module-invariants.sh --no-build, check-copyright-headers.sh --strict, readme-lint.sh) into .github/workflows/ci.yml as named steps before Report results, and recorded the per-script wiring pattern (step naming, skip-and-report-neutral convention, cache-warm placement, measured runtime budget) in docs/development/CI_CD_PROCESS.md. Each wired step was proven to fail under its own name on a deliberate violation and to pass on a clean re-run; a remote-confirmation checklist is left for the user in the implementation summary.",
+    "roadmap_items": ["Wire the check scripts that are green today into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows"]
+  },
+  "modified_files": [
+    ".github/workflows/ci.yml",
+    "docs/development/CI_CD_PROCESS.md",
+    "specs/583_wire_check_scripts_into_ci/plans/02_wire-check-scripts-ci.md",
+    "specs/583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md",
+    "specs/583_wire_check_scripts_into_ci/progress/phase-1-progress.json",
+    "specs/583_wire_check_scripts_into_ci/progress/phase-2-progress.json",
+    "specs/583_wire_check_scripts_into_ci/progress/phase-3-progress.json",
+    "specs/583_wire_check_scripts_into_ci/progress/phase-4-progress.json"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When wiring a new gating step into a shared CI workflow file that multiple concurrent tasks also edit, place the new step(s) directly before the terminal always-run reporting step rather than at a fixed position relative to another named step. Re-read the file immediately before each edit (not just once at the start): if sibling tasks commit their own additions to the same insertion point mid-session, the convention of always appending right before the terminal step keeps every insertion order-independent and merge-safe, since git diff against HEAD only shows your own hunk once the siblings have committed theirs.",
+      "category": "PATTERN",
+      "source_artifact": "specs/583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["ci.yml", "concurrent-edits", "workflow-wiring", "git-staging-scope", "append-before-terminal-step"]
+    },
+    {
+      "content": "To locally approximate a GitHub Actions ubuntu-latest runner's minimal PATH on a NixOS development machine, do not use the literal /usr/bin:/bin template (NixOS does not populate those paths with bash/git/find/etc.) -- instead build PATH from `dirname \"$(command -v <tool>)\"` for each required tool. This preserves the intent (a minimal, explicit tool set) without assuming an FHS directory layout.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["nixos", "minimal-env", "env -i", "ci-approximation", "path-construction"]
+    },
+    {
+      "content": "The write-time validate-no-task-references.sh hook blocks Write/Edit calls that introduce task-number citations even in throwaway/scratch content (e.g. a temporary CI-violation test comment naming the current task number). When a test needs to deliberately trip a task-reference-style check (C9 in check-module-invariants.sh), use a different gated check that produces the same class of failure without naming a task number (e.g. C10's stale FormalSystem/{docs,latex,typst} path check) rather than fighting the hook.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["validate-no-task-references", "C9", "C10", "deliberate-violation-testing", "check-module-invariants"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789573870_865f5c",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
   }
 }
