@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/587_repair_or_retire_broken_benchmark_modules/reports/02_benchmark-repair-measurement.md",
+      "summary": "Measured 38/20 real errors from 8 API drifts; DerivationBenchmark repair verified in scratch (35 lines, 0 errors, runs) -> re-manifest as C6 compile-checked; SemanticBenchmark never calls TruthAt and self-fails 14/16 after repair -> archive to Boneyard with README; gate mechanics for B0/C6/C11 confirmed."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789573870_865f5c_587",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
