@@ -215,21 +215,9 @@ theorem detDerivable_ofFormula_iff (fc : FrameClass) (φ : Formula) :
 /-! ## Axiom audit
 
 All declarations in this subtree are `sorryAx`-free and depend on no axiom beyond the ambient
-three. Re-checkable by uncommenting:
-
-```
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessBase
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessDense
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessZTime
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessRTime
-#print axioms FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid
-```
+three. The five termini `detCompletenessBase`, `detCompletenessDense`, `detCompletenessZTime`,
+`detCompletenessRTime` and `logicDeterministicEqDeterminedValid` are pinned to exactly that set by
+the C14 axiom baseline in `scripts/check-module-invariants.sh`.
 -/
-
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessBase
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessDense
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessZTime
-#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessRTime
-#print axioms FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid
 
 end FormalSystem.Metalogic.Deterministic

@@ -500,12 +500,10 @@ refutation. -/
 theorem modelExistenceRTime_refuted : ¬ ModelExistenceRTime :=
   fun h => notCompactRTime (compact_of_modelExistence h)
 
-#print axioms notCompactRTime
-
 /-! ## Axiom Audit
 
-`#print axioms notCompactRTime` above is the only in-file directive this module keeps: it is
-one of the five termini named in the C2/C14 manifest contract. **The rest of this module's axiom
+This module keeps no in-file `#print axioms` directive. `notCompactRTime` is one of the five
+termini named in the C2/C14 manifest contract, and **this module's whole axiom
 audit lives in `scripts/check-module-invariants.sh`'s C14 heredoc pair**, which pins
 `qDepth_qAlpha`, `dedWitness_core`, `dedWitness_not_satisfiable`,
 `dedWitness_finitely_satisfiable`, `notStrongCompletenessRTime`,

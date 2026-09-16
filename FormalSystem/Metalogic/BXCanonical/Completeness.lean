@@ -395,11 +395,11 @@ theorem derivable_of_validZTime (φ : Formula) :
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.ZTime M hM_mcs
           h_not_box_dense h_not_box_discrete)
 
-#print axioms FormalSystem.Metalogic.BXCanonical.completeness
-#print axioms FormalSystem.Metalogic.BXCanonical.derivable_of_validDense
-#print axioms FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime
-
 /-! ## Axiom Audit
+
+`completeness`, `derivable_of_validDense`, `derivable_of_validZTime` and
+`Chronicle.countermodel_dense` are pinned to their axiom sets by the C2 flagship baseline in
+`scripts/check-module-invariants.sh`; the output blocks below are the recorded reading.
 
 ### completeness
 
@@ -453,10 +453,8 @@ is the only Chronicle symbol used by `derivable_of_validZTime`.
 - no `sorryAx`
 -/
 
-#print axioms FormalSystem.Metalogic.BXCanonical.completeness
 -- dd_countermodel archived to Boneyard/ScheduleBasedBFMCS/ (see its README.md)
 -- Chronicle.countermodel_dense is no longer consumed by `completeness` (its dense branch
--- now uses `countermodel_dense_enriched`); audit retained pending archival.
-#print axioms FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense
+-- now uses `countermodel_dense_enriched`); its C2 pin is retained pending archival.
 
 end FormalSystem.Metalogic.BXCanonical

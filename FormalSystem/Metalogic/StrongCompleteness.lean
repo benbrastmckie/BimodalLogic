@@ -792,9 +792,7 @@ theorem completeness_rtime : WeakCompleteness FrameClass.RTime :=
 
 Reynolds' §9 Theorem 7 is discharged with no `sorryAx` and no new axiom: exactly `propext`,
 `Classical.choice` and `Quot.sound`, the same set carried by `completeness_dense` and
-`completeness_ztime`. -/
-
-#print axioms consequence_completeness_rtime
+`completeness_ztime`. Pinned by the C14 axiom baseline in `scripts/check-module-invariants.sh`. -/
 
 /-! ## Consequence completeness for `FrameClass.Base`
 

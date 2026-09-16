@@ -23,24 +23,3 @@
 # intentional axiom-audit page; C21 asserts every name is pinned by C2/C14
 FormalSystem/MainResults.lean 54
 
-# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
-FormalSystem/Metalogic/BXCanonical/Completeness.lean 5
-
-# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
-FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean 4
-
-# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
-FormalSystem/Metalogic/Compactness.lean 2
-
-# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
-FormalSystem/Metalogic/DedekindNonCompactness.lean 1
-
-# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
-FormalSystem/Metalogic/Deterministic/Completeness.lean 5
-
-# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
-FormalSystem/Metalogic/DiscreteNonCompactness.lean 1
-
-# `#print axioms` beside the theorem; pending migration to the C14 baseline pair
-FormalSystem/Metalogic/StrongCompleteness.lean 1
-

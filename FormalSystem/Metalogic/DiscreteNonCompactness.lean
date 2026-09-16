@@ -298,12 +298,10 @@ theorem notStrongCompletenessZTime : ¬ StrongCompletenessZTime :=
   not_strongCompleteness_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
     (archWitness_not_satisfiable ⟨"p", none⟩)
 
-#print axioms notCompactZTime
-
 /-! ## Axiom Audit
 
-`#print axioms notCompactZTime` above is the only in-file directive this module keeps: it is
-one of the five termini named in the C2/C14 manifest contract. **The rest of this module's
+This module keeps no in-file `#print axioms` directive. `notCompactZTime` is one of the five
+termini named in the C2/C14 manifest contract, and **this module's whole
 axiom audit lives in `scripts/check-module-invariants.sh`'s C14 heredoc pair**, which pins
 `truthAt_next_iff`, `truthAt_next_iterate`, `archWitness_finitely_satisfiable`,
 `archWitness_not_satisfiable` and `notStrongCompletenessZTime` by exact string equality

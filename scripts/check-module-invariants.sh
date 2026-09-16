@@ -59,6 +59,7 @@
 #   C25 Every `lean_exe` root declared in lakefile.lean compiles -- the root list
 #       is scraped at run time, so a newly declared executable is covered the day
 #       it is added and there is no list to forget
+#   C25N Every `lean_exe` root is named PascalCase(target)Main; no other live module ends in Main
 #   C26 No live `def`/`abbrev` name carries a non-trailing underscore, and every
 #       in-source `nolint` attribute is on scripts/nolint-attribute-allowlist.txt --
 #       both read from the SOURCE TEXT, never an imported environment
@@ -1381,9 +1382,14 @@ fi
 # consequence / compactness / strong-completeness stack: every declaration in
 # Metalogic/{StrongCompleteness,Compactness,DiscreteNonCompactness,DedekindNonCompactness}.lean
 # and Metalogic/Conservativity/TMCompletenessReduction.lean that used to carry its own in-file
-# `#print axioms` directive now lives here instead. Exactly five in-file directives remain, on
-# the five termini: strongCompletenessBase, strongCompletenessDense, notCompactZTime,
-# notCompactRTime, consequence_completeness_rtime.
+# `#print axioms` directive now lives here instead. No in-file `#print axioms` directive remains
+# anywhere outside FormalSystem/MainResults.lean (the axiom-audit page, pinned by C21): the last
+# ones -- on the five termini strongCompletenessBase, strongCompletenessDense, notCompactZTime,
+# notCompactRTime and consequence_completeness_rtime, and in Metalogic/{Deterministic/Completeness,
+# BXCanonical/Completeness,BXCanonical/CompletenessDedekind}.lean -- were migrated into this pair
+# or C2, and C27 fails on any new one. The final seven lines pin the declarations those
+# directives covered that neither baseline did: real_lub_of_bddAbove, dedekind_box_dense_mem and
+# the five Deterministic completeness termini.
 #
 # Eight entries carry a STRICT SUBSET of [propext, Classical.choice, Quot.sound], recorded
 # literally rather than rounded up: setConsequence_of_not_satisfiable, satisfiableSet_iff_
@@ -1511,6 +1517,13 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Conservativity.starDerivable_ofFormula_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.starConservative_of_plusComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.plusIncomplete_of_starNonconservative' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.real_lub_of_bddAbove' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.dedekind_box_dense_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.detCompletenessBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.detCompletenessDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.detCompletenessZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.detCompletenessRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1623,6 +1636,13 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Conservativity.starDerivable_ofFormula_iff
 #print axioms FormalSystem.Metalogic.Conservativity.starConservative_of_plusComplete
 #print axioms FormalSystem.Metalogic.Conservativity.plusIncomplete_of_starNonconservative
+#print axioms FormalSystem.Metalogic.BXCanonical.real_lub_of_bddAbove
+#print axioms FormalSystem.Metalogic.BXCanonical.dedekind_box_dense_mem
+#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessBase
+#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessDense
+#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessZTime
+#print axioms FormalSystem.Metalogic.Deterministic.detCompletenessRTime
+#print axioms FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
@@ -3032,6 +3052,77 @@ if [ "$RUN_BUILD" -eq 1 ]; then
   fi
 else
   info C25 "lean_exe root compile check skipped (--no-build)"
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C25N: every `lean_exe` root is named `PascalCase(target) ++ "Main"`, and `Main` is reserved
+#
+# The textual half of C25, run with or without --no-build. An executable's root module is
+# named for its `lake exe` target: `lean_exe dataset_generator` has root `...DatasetGeneratorMain`,
+# `lean_exe checkInitImports` has root `CheckInitImportsMain` (PascalCase capitalizes the first
+# letter of each `_`-separated segment and keeps inner capitals). Conversely, no live `.lean`
+# file that is not an exe root may have a basename ending in `Main`, so the suffix alone tells
+# a reader that a module holds a root-namespace `main` and cannot be imported alongside another
+# root. The rule is recorded in FormalSystem/Automation/README.md ("Module naming") and in the
+# C25 row of docs/development/MODULE_INVARIANTS.md.
+#
+# Before the rule, `Export`/`Exporter`/`Pipeline`/`Bridge` suffixes meant "the executable" on
+# some modules and "a library" on others (`DataExport` vs the `dataset_generator` root, the
+# `DatasetExporter` library, `TraceExport` vs `TraceExporter`), and a new executable would
+# reintroduce that drift silently without this check.
+#
+# Parses each `lean_exe NAME where` block for its `root :=` and `srcDir :=`; the stray-`Main`
+# scan walks FormalSystem/, Tests/ and scripts/ (Boneyard excluded) and compares file paths
+# against the roots resolved through their srcDir.
+#
+# Negative-tested: adding a stray `FormalSystem/Automation/ScratchMain.lean` produced `FAIL C25N`
+# with script exit 1; pointing `trace_exporter`'s `root :=` back at `TraceExporter` (in a scratch
+# mirror of the lakefile, so no concurrent build saw it) produced `FAIL C25N` naming both the
+# bad root and the now-orphaned `TraceExporterMain.lean`, exit 1. Both were reverted and PASS
+# re-observed.
+# ---------------------------------------------------------------------------
+C25N_OUT=$(python3 - <<'PYEOF'
+import os, re
+try:
+    lf = open("lakefile.lean", encoding="utf-8").read()
+except OSError:
+    raise SystemExit(0)
+exes = []
+for m in re.finditer(r"lean_exe\s+(\S+)\s+where(.*?)(?=\n(?:lean_exe|lean_lib|require|package|@\[)|\Z)", lf, re.S):
+    target, body = m.group(1), m.group(2)
+    r = re.search(r"root\s*:=\s*`([A-Za-z0-9_.]+)", body)
+    d = re.search(r'srcDir\s*:=\s*"([^"]*)"', body)
+    if r:
+        exes.append((target, r.group(1), d.group(1) if d else "."))
+print("COUNT %d" % len(exes))
+root_paths = set()
+for target, root, src in exes:
+    expected = "".join(seg[:1].upper() + seg[1:] for seg in target.split("_") if seg) + "Main"
+    last = root.split(".")[-1]
+    if last != expected:
+        print("BADROOT lean_exe %s: root %s ends in %s, expected %s" % (target, root, last, expected))
+    root_paths.add(os.path.normpath(os.path.join(src, *root.split(".")) + ".lean"))
+for top in ("FormalSystem", "Tests", "scripts"):
+    for dirpath, dirs, files in os.walk(top):
+        dirs[:] = [x for x in dirs if x != "Boneyard"]
+        for f in files:
+            if f.endswith("Main.lean"):
+                path = os.path.normpath(os.path.join(dirpath, f))
+                if path not in root_paths:
+                    print("STRAY %s ends in Main but is not a lean_exe root" % path)
+PYEOF
+)
+C25N_COUNT=$(printf '%s\n' "$C25N_OUT" | sed -n 's/^COUNT //p')
+C25N_BAD=$(printf '%s\n' "$C25N_OUT" | grep -E '^(BADROOT|STRAY) ' || true)
+if [ -z "$C25N_COUNT" ] || [ "$C25N_COUNT" -eq 0 ]; then
+  fail C25N "no lean_exe block parsed from lakefile.lean -- the parser regex or the lakefile's shape changed"
+elif [ -z "$C25N_BAD" ]; then
+  pass C25N "all $C25N_COUNT lean_exe root(s) are named PascalCase(target)Main, and no other live module ends in Main"
+else
+  fail C25N "$(printf '%s\n' "$C25N_BAD" | grep -c .) exe-root naming violation(s)"
+  printf '%s\n' "$C25N_BAD" | while IFS= read -r l; do note "${l#* }"; done
+  note "name the root PascalCase(target) ++ Main (FormalSystem/Automation/README.md, Module naming), or drop the Main suffix from a library"
 fi
 echo
 

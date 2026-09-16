@@ -608,12 +608,10 @@ theorem completeness_rtime_engine (ψ : Formula) :
 
 /-! ## Axiom Audit
 
-Mirrors the audit section of the sibling module `Completeness.lean`. All four declarations must
-report exactly `[propext, Classical.choice, Quot.sound]` — no `sorryAx`. -/
-
-#print axioms real_lub_of_bddAbove
-#print axioms dedekind_box_dense_mem
-#print axioms countermodel_dedekind_dense
-#print axioms completeness_rtime_engine
+Mirrors the audit section of the sibling module `Completeness.lean`. All four declarations
+(`real_lub_of_bddAbove`, `dedekind_box_dense_mem`, `countermodel_dedekind_dense`,
+`completeness_rtime_engine`) report exactly `[propext, Classical.choice, Quot.sound]` — no
+`sorryAx` — and are pinned to that set by the C14 axiom baseline in
+`scripts/check-module-invariants.sh`. -/
 
 end FormalSystem.Metalogic.BXCanonical

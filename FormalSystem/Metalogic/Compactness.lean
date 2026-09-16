@@ -223,10 +223,7 @@ theorem strongCompletenessDense : StrongCompletenessDense :=
 declarations of this module are termini, with no hypothesis left undischarged. Each is expected
 to report exactly `propext`, `Classical.choice` and `Quot.sound`,
 the same set carried by the engines and by the ultraproduct layer they consume, with `sorryAx`
-absent throughout. `strongCompletenessBase` and `strongCompletenessDense` are additionally
-pinned by the C14 headline axiom baseline in `scripts/check-module-invariants.sh`. -/
-
-#print axioms strongCompletenessBase
-#print axioms strongCompletenessDense
+absent throughout. `strongCompletenessBase` and `strongCompletenessDense` are pinned to that set
+by the C14 headline axiom baseline in `scripts/check-module-invariants.sh`. -/
 
 end FormalSystem.Metalogic
