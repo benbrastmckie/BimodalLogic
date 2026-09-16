@@ -751,6 +751,7 @@ git log --format='%h %ad' --date=short --reverse -- \
 | 2026-09-03 | `cabe89a9e` | `LimitMCSCoherenceDeadCases/` -- five theorems from the `TemporalSide` parameterization |
 | 2026-09-03 | `4bebf5796` | `RestrictedMCSBoundedness/` -- retired alongside its already-archived consumer |
 | 2026-09-07 | `1ff119610` | `RetiredTactics/` -- fourteen tactic declarations with zero real invocations |
+| 2026-09-16 | `b9c49b560` | `SemanticBenchmarkToyEvaluator/` -- a `TruthAt` benchmark that never called `TruthAt` |
 
 ### A note on task-number citations inside this tree
 
