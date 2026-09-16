@@ -196,27 +196,40 @@ is then added to the batch rather than the batch being declared complete.
 
 ---
 
-### Phase 2: Update the documentation that describes the old layout [NOT STARTED]
+### Phase 2: Update the documentation that describes the old layout [COMPLETED]
 
 **Goal**: No prose in the tree still advertises the transport layer as `Truth.lean` content.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/README.md`: rewrite the `Truth.lean` table row so it describes only
+- [x] `FormalSystem/Semantics/README.md`: rewrite the `Truth.lean` table row so it describes only
       `TruthAt`, its `truth_norm` simp-normal form, the clause lemmas, and the A-17 /
       history-independence corollaries; strip the `TruthCorr` / `truthAt_of_truthCorr` /
       `timeShift_preserves_truth` / `TruthIso` / `TruthAntiIso` claims from it.
-- [ ] `FormalSystem/Semantics/README.md`: add a `TruthTransport.lean` row carrying the stripped
+- [x] `FormalSystem/Semantics/README.md`: add a `TruthTransport.lean` row carrying the stripped
       material, and add the corresponding bullet to the prose module list in the same file.
-- [ ] `FormalSystem/Semantics/Truth.lean`: edit the module docstring — the bullet at the old line 84
+      *(deviation: altered — the row was added; there is no separate prose module list in this
+      README, the `## Contents` table IS the module list, so there was no second site to edit)*
+- [x] `FormalSystem/Semantics/Truth.lean`: edit the module docstring — the bullet at the old line 84
       ("Time-shift preservation theorems for temporal operators") now describes the other file;
       replace it with a pointer to `TruthTransport.lean`.
-- [ ] `FormalSystem/Semantics/ConvexHistory.lean` (~line 323): the comment says
+- [x] `FormalSystem/Semantics/ConvexHistory.lean` (~line 323): the comment says
       `TimeShift.ShiftRel` is "in `Truth.lean`" — change the text to name `TruthTransport.lean`.
       Comment text only: this file sits *below* `Truth.lean` and MUST NOT gain an import.
-- [ ] Drive-by, optional: the docstring of `truthAt_gap_iff_cogap` (old `Truth.lean:972`, now inside
+- [x] Drive-by, optional: the docstring of `truthAt_gap_iff_cogap` (old `Truth.lean:972`, now inside
       the relocated keep-block) refers to a nonexistent `truthAt_cogap_iff_gap`; the theorem it
       means is itself. Pre-existing, affects no gate — correct it or leave it, but do not let it
       expand this phase's scope.
+- [x] Beyond the plan's three sites, the Scope-Hypothesis re-grep found five more stale location
+      claims, all fixed here: `FormalSystem/Semantics/ShiftSet.lean` (~364),
+      `FormalSystem/Metalogic/Soundness.lean` (~84 and ~104),
+      `FormalSystem/Metalogic/Independence/StabUndefinable.lean` (~39), and
+      `FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean` (~30). Each names
+      `Semantics/Truth.lean` as the home of a moved declaration; each edit is one prose line
+      inside a docstring, with zero elaborated code touched.
+- [x] `FormalSystem/Semantics/README.md`: refresh the `*Last verified:*` stamp to 2026-09-15.
+      `scripts/readme-lint.sh` flagged it STALE because this task added a file to the directory;
+      it now reports clean for that README. (The `Correspondence/` and `Ultraproduct/` stale
+      stamps it also reports predate this task and were left alone.)
 
 **Timing**: 0.5 hours
 

@@ -36,7 +36,7 @@ The separating point is `(τ₁, 0)` against `(τ₂, 0)`, where both histories 
 
 ## The invariance notion is the tree's own `TruthCorr`
 
-No new bisimulation machinery is introduced. `TruthCorr` (`Semantics/Truth.lean`) already
+No new bisimulation machinery is introduced. `TruthCorr` (`Semantics/TruthTransport.lean`) already
 packages exactly what an L formula can see — an order isomorphism of times, a relation on
 histories, agreement on atoms at related pairs, and the two `□`-existence conditions — and
 `truthAt_of_truthCorr` transports every `Formula` along it. Here the relation is simply

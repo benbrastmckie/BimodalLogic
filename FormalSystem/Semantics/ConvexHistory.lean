@@ -320,7 +320,7 @@ worlds (`τ(z) = σ(z + y - x)` for all `z`), and `app:auto_existence` asserts t
 possible world exists. This construction is the Lean witness for that existence, stated on
 **arbitrary** histories (Lean-stronger and harmless: nothing about the shift needs totality);
 `isTotal_timeShift` below is the paper's "total since 𝔇 is a group". The relation itself, read
-on arbitrary histories, is `TimeShift.ShiftRel` in `Truth.lean`.
+on arbitrary histories, is `TimeShift.ShiftRel` in `TruthTransport.lean`.
 
 **Key Property**: If σ respects the task relation and has convex domain,
 so does the shifted history, because:

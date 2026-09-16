@@ -23,7 +23,8 @@ live file and subdirectory here, and no row for anything else.
 | ConvexHistory.lean | Convex histories for temporal evaluation, and `TaskFrame.HF` — the paper's possible worlds |
 | TruthClauses.lean | `TruthEnv` — the pointed truth relation with an inert environment parameter — and one class per primitive operator (`BotClause`, `ImpClause`, `BoxClause`, `UntlClause`, `SnceClause`, `StabClause`, `AllFutureClause`, `AllPastClause`) with the capability bundles over them; the derived operators as `abbrev`s and their characterization lemmas proved once, tiered by which primitives a language has. Carries the clause-layer extension contract |
 | ValidityLayer.lean | `PointTruth` — the class abstracting truth at a point `(M, τ, x)` — and the validity layer written once against it: `TaskFrame.GenericValidOn`, `GenericValidOnFrames`, `GenericValidIn`, `GenericValid`, the two monotonicity lemmas, the eight binder-shape adapters and the three countermodel contrapositives; each language instantiates it and delegates. Carries the validity-layer extension contract |
-| Truth.lean | `TruthAt`, the truth relation for formula evaluation, with its `truth_norm` simp-normal form; the relational truth transport `TruthCorr` / `Truth.truthAt_of_truthCorr` (one `induction φ`) from which `timeShift_preserves_truth`, `truthAt_of_truthIso`, and `IntTransfer.truthAt_map` are derived; `TruthIso`/`TruthAntiIso` |
+| Truth.lean | `TruthAt`, the truth relation for formula evaluation, with its `truth_norm` simp-normal form and the clause lemmas that family comprises; the A-17 corollaries `truthAt_atomFree_history_indep`, `truthAt_gap`, `truthAt_cogap`, `truthAt_gap_shift` and `truthAt_gap_iff_cogap` |
+| TruthTransport.lean | The model-to-model truth transport, factored out of `Truth.lean`: the relational `TruthCorr` / `Truth.truthAt_of_truthCorr` (one `induction φ`) from which `TimeShift.timeShift_preserves_truth`, `truthAt_of_truthIso` and `IntTransfer.truthAt_map` are derived; `TimeShift.ShiftRel`/`shiftCorr`; `TruthIso`/`TruthAntiIso`; and `Truth.box_const`/`box_time_const`, which sit here rather than beside the other `Truth` clause lemmas because their proofs consume `timeShift_preserves_truth` |
 | MinusTruth.lean | `MinusTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `MinusFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
 | MinusFrame.lean | `MinusFrame` — a native L⁻ frame notion not bound to `TaskFrame` (points with an unbounded, transitive, irreflexive, forward- and backward-linear strict order, no group structure), its truth recursion `MinusFrameTruth` with `□` as the universal modality, `MinusFrameValid`, the `MinusFrameTruth.*` characterization family, and the order-reversal transfer lemma `truth_swap`; the frame class a countermodel to `(Sp)` lives on |
 | ShiftSet.lean | Shift-set representation theorem: task models ↔ shift sets, both directions with truth correspondence |
@@ -91,4 +92,4 @@ directed graph — the presentation `Metalogic/Decidability/IntPresentation.lean
 
 ---
 
-*Last verified: 2026-09-09*
+*Last verified: 2026-09-15*

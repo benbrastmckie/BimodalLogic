@@ -81,7 +81,7 @@ argument at all.
 ## The time-shift consumer set
 
 **The invariant, stated for the next language extension.** Time-shift homogeneity —
-`TimeShift.timeShift_preserves_truth` (`Semantics/Truth.lean`), which moves truth along
+`TimeShift.timeShift_preserves_truth` (`Semantics/TruthTransport.lean`), which moves truth along
 `ConvexHistory.timeShift` — is consumed by exactly **one schema** of the TM axiom block, and by
 exactly **two declarations** in the whole soundness layer of this tree:
 
@@ -101,7 +101,7 @@ proof: `minusTruthAt_timeShift`
 (`Metalogic/Conservativity/MinusLanguageSoundness.lean`) restates time-shift homogeneity at
 `MinusTruthAt` by rewriting through `truthAt_tr`. It proves no axiom valid and currently has no
 consumer. The remaining uses of the lemma in the tree are outside the soundness layer entirely —
-`Semantics/Truth.lean`'s own derived forms (`timeShift_preserves_truth_total`,
+`Semantics/TruthTransport.lean`'s own derived forms (`timeShift_preserves_truth_total`,
 `exists_shifted_history`, `box_const`), `Semantics/ShiftSet.lean`'s `reverse_repr`, and the
 decidability stack (`Metalogic/Decidability/Verified/Decidable.lean`,
 `Metalogic/Decidability/BiLasso/BoxOracle.lean`,

@@ -81,7 +81,9 @@ forces a choice is the atom clause, and the choice is:
 
 - Basic truth lemmas (e.g., `bot` is always false)
 - Truth evaluation examples
-- Time-shift preservation theorems for temporal operators
+- The A-17 corollaries: history-independence of atom-free formulas, and the gap formula
+
+Truth *transport* between models — `TruthCorr`, the `TimeShift` family, `TruthIso`, `TruthAntiIso`, and `Truth.box_const` — is not here: it lives in `TruthTransport.lean`, which imports this module.
 
 ## Simp-normal form
 
@@ -652,8 +654,7 @@ theorem truthAt_gap_shift (M : TaskModel F) (τ : ConvexHistory F) (t u : F.Dura
   exact hguard (c - (u - t)) h1 h2
 
 /-- **A gap above is a gap below.** The mirror of `truthAt_gap_shift`: reflect the witness through
-`t`. Together with `truthAt_cogap_iff_gap` this is what makes the two `discrete_symm_*` axioms one
-term each. -/
+`t`. Its two directions are what make the two `discrete_symm_*` axioms one term each. -/
 theorem truthAt_gap_iff_cogap (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration) :
     TruthAt M τ t (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) ↔
       TruthAt M τ t (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)) := by
