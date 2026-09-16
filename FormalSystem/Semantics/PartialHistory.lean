@@ -218,6 +218,148 @@ theorem nonempty_of_total {D : Type} [AddCommGroup D] [Nontrivial D] {dom : D �
     (h : ∀ t : D, dom t) : ∃ t : D, dom t :=
   ⟨0, h 0⟩
 
+/-! ## Transport of states along equal times -/
+
+/--
+States are equal when the times are provably equal (dependent transport).
+
+Needed because `states` is dependent on a domain proof, so `rw`-ing a time equality inside a
+`states` application requires an explicit transport lemma.
+-/
+theorem states_eq_of_time_eq (τ : PartialHistory F) (t₁ t₂ : F.Duration) (h : t₁ = t₂)
+    (h₁ : τ.domain t₁) (h₂ : τ.domain t₂) : τ.states t₁ h₁ = τ.states t₂ h₂ := by
+  subst h; rfl
+
+/-! ## Convexity -/
+
+/--
+The paper's **convexity** predicate on a partial history's domain: no temporal gaps.
+
+**Paper Reference**: `def:world-history` (verbatim: "A \textit{convex history} is any partial
+history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \in X$ and
+$x < y < z$."). The predicate reads `≤` on both sides where the paper has `<`; the two are
+equivalent, since the endpoints `x`, `z` are in the domain by hypothesis.
+
+Convexity is kept as a predicate, not as a structure: no proof in the library consumes it as a
+hypothesis, and every history that truth and validity range over is total, hence convex by
+`IsTotal.isConvex`.
+-/
+def IsConvex (τ : PartialHistory F) : Prop :=
+  ∀ (x z : F.Duration), τ.domain x → τ.domain z → ∀ (y : F.Duration), x ≤ y → y ≤ z → τ.domain y
+
+/-- A total partial history is convex: every time is in its domain. -/
+theorem IsTotal.isConvex {τ : PartialHistory F} (h : τ.IsTotal) : τ.IsConvex :=
+  fun _ _ _ _ y _ _ => h y
+
+/-! ## Time shift -/
+
+/--
+Time-shifted partial history: `(τ.timeShift Δ)` is `τ` viewed `Δ` later, i.e. its domain at `z`
+is `τ`'s domain at `z + Δ`, and `(τ.timeShift Δ).states z = τ.states (z + Δ)`.
+
+**Paper Reference**: `def:time-shift-histories` defines the relation `τ ≈ σ` between world
+histories (`τ(z) = σ(z + y - x)` for all `z`), and `app:auto_existence` asserts that the shifted
+world history exists. This construction is the Lean witness for that existence, stated on
+**arbitrary** partial histories (nothing about the shift needs totality); `isTotal_timeShift`
+below is the paper's "total since 𝔇 is a group". The relation itself, read on arbitrary histories,
+is `TimeShift.ShiftRel` in `TruthTransport.lean`.
+
+`nonempty_domain` transports by `t ↦ t - Δ`, and task-respect is preserved because the task
+relation depends only on the duration `t - s`, which translation leaves unchanged.
+-/
+def timeShift (τ : PartialHistory F) (Δ : F.Duration) : PartialHistory F where
+  domain := fun z => τ.domain (z + Δ)
+  nonempty_domain := by
+    obtain ⟨t, ht⟩ := τ.nonempty_domain
+    refine ⟨t - Δ, ?_⟩
+    rwa [sub_add_cancel]
+  states := fun z hz => τ.states (z + Δ) hz
+  respects_task := by
+    intro s t hs ht
+    have h_duration : (t + Δ) - (s + Δ) = t - s := by rw [add_sub_add_right_eq_sub]
+    rw [← h_duration]
+    exact τ.respects_task (s + Δ) (t + Δ) hs ht
+
+@[simp]
+theorem timeShift_domain (τ : PartialHistory F) (Δ z : F.Duration) :
+    (τ.timeShift Δ).domain z ↔ τ.domain (z + Δ) := Iff.rfl
+
+/--
+Totality is preserved by time shift.
+
+The proof is `fun t => h (t + Δ)`: the shifted domain at `t` *is* the original domain at
+`t + Δ`, definitionally, so a total original domain gives a total shifted domain with no
+side condition whatsoever. This is the lemma that carries the box case of time-shift
+preservation of truth.
+-/
+theorem isTotal_timeShift {τ : PartialHistory F} (h : τ.IsTotal) (Δ : F.Duration) :
+    (τ.timeShift Δ).IsTotal :=
+  fun t => h (t + Δ)
+
+/-- Convexity is preserved by time shift: translation is monotone. -/
+theorem isConvex_timeShift {τ : PartialHistory F} (h : τ.IsConvex) (Δ : F.Duration) :
+    (τ.timeShift Δ).IsConvex :=
+  fun x z hx hz y hxy hyz =>
+    h (x + Δ) (z + Δ) hx hz (y + Δ) (add_le_add_left hxy Δ) (add_le_add_left hyz Δ)
+
+/-! ## Total histories from a bare state function -/
+
+/--
+**The total partial history determined by a bare state function.**
+
+A *total* history's domain is all of `D`, so `nonempty_domain` carries no information and the
+dependent `states` field collapses to a plain `f : F.Duration → F.WorldState`. The only genuine
+obligation left is `respects_task`. This is that four-field skeleton, written once.
+
+**Use `ofTotal` in preference to a literal `domain := fun _ => True` record.** Besides the line
+saving, it is what makes `ofTotal_states` available, so `simp` closes the domain bridge that a
+hand-written record forces each call site to open by hand.
+-/
+def ofTotal (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : PartialHistory F where
+  domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
+  states := fun t _ => f t
+  respects_task := fun s t _ _ => h s t
+
+/-- `ofTotal` is total: its domain is all of `F.Duration` by construction. -/
+theorem ofTotal_isTotal (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : (ofTotal F f h).IsTotal :=
+  fun _ => trivial
+
+/--
+**The domain bridge, as a simp lemma.**
+
+`ofTotal`'s domain is all of `F.Duration`, so any domain obligation on it is `True`. Marking this
+`@[simp]` is what lets a downstream `simp` discharge a domain side-goal that a hand-written
+`domain := fun _ => True` record leaves it unable to see through.
+`Decidability/Propositional/Decidable.lean`'s `trivial_truth_iff` is the worked demonstration.
+-/
+@[simp] theorem ofTotal_domain (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) (t : F.Duration) :
+    (ofTotal F f h).domain t ↔ True := Iff.rfl
+
+/--
+**The load-bearing simp lemma of the construction.**
+
+With `domain := fun _ => True` the domain proof carries no information, so reading `ofTotal`'s
+state at *any* domain witness gives `f t` by `rfl`.
+-/
+@[simp] theorem ofTotal_states (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) (t : F.Duration)
+    (ht : (ofTotal F f h).domain t) : (ofTotal F f h).states t ht = f t := rfl
+
+/--
+The constant total history of the trivial frame.
+
+The trivial frame's task relation always holds, so the constant history respects it. Named
+`trivialFrameHistory` rather than `trivial` so that it does not shadow the root `trivial` term
+inside `namespace PartialHistory`.
+-/
+def trivialFrameHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] : PartialHistory (FrameOver.trivialFrame (D := D)) :=
+  ofTotal (FrameOver.trivialFrame (D := D)).toTaskFrame (fun _ => ()) fun _ _ => True.intro
+
 end PartialHistory
 
 end FormalSystem.Semantics

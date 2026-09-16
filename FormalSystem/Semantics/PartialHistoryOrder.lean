@@ -41,7 +41,6 @@ is proved with it.
 ## Main Definitions
 
 - `Preorder (PartialHistory F)` — the extension order
-- `PartialHistory.timeShift` — time shift on partial histories
 - `PartialHistory.chainSup` — the union of a nonempty chain of partial histories
 
 ## Main Results
@@ -101,43 +100,7 @@ theorem domain_mono {τ σ : PartialHistory F} (h : τ ≤ σ) {t : F.Duration} 
     σ.domain t :=
   (le_def.mp h).subset t ht
 
-/-! ## Transport of states along equal times -/
-
-/--
-States are equal when the times are provably equal (dependent transport).
-
-Needed because `states` is dependent on a domain proof, so `rw`-ing a time equality inside a
-`states` application requires an explicit transport lemma.
--/
-theorem states_eq_of_time_eq (τ : PartialHistory F) {t₁ t₂ : F.Duration} (h : t₁ = t₂)
-    (h₁ : τ.domain t₁) (h₂ : τ.domain t₂) : τ.states t₁ h₁ = τ.states t₂ h₂ := by
-  subst h; rfl
-
-/-! ## Time shift -/
-
-/--
-Time-shifted partial history: `(τ.timeShift Δ)` is `τ` viewed `Δ` later, i.e. its domain at `z`
-is `τ`'s domain at `z + Δ`.
-
-Unlike the convex-history case there is no convexity obligation, and `nonempty_domain` transports
-by `t ↦ t - Δ`.
--/
-def timeShift (τ : PartialHistory F) (Δ : F.Duration) : PartialHistory F where
-  domain := fun z => τ.domain (z + Δ)
-  nonempty_domain := by
-    obtain ⟨t, ht⟩ := τ.nonempty_domain
-    refine ⟨t - Δ, ?_⟩
-    rwa [sub_add_cancel]
-  states := fun z hz => τ.states (z + Δ) hz
-  respects_task := by
-    intro s t hs ht
-    have h_duration : (t + Δ) - (s + Δ) = t - s := by rw [add_sub_add_right_eq_sub]
-    rw [← h_duration]
-    exact τ.respects_task (s + Δ) (t + Δ) hs ht
-
-@[simp]
-theorem timeShift_domain (τ : PartialHistory F) (Δ z : F.Duration) :
-    (τ.timeShift Δ).domain z ↔ τ.domain (z + Δ) := Iff.rfl
+/-! ## Time shift and the extension order -/
 
 /-- The extension order is preserved by time shift. -/
 theorem timeShift_mono {τ σ : PartialHistory F} (Δ : F.Duration) (h : τ ≤ σ) :
@@ -155,7 +118,7 @@ theorem timeShift_timeShift_neg_domain_iff (τ : PartialHistory F) (Δ z : F.Dur
 theorem timeShift_timeShift_neg_states (τ : PartialHistory F) (Δ z : F.Duration)
     (h : ((τ.timeShift Δ).timeShift (-Δ)).domain z) (h' : τ.domain z) :
     ((τ.timeShift Δ).timeShift (-Δ)).states z h = τ.states z h' :=
-  states_eq_of_time_eq τ (by rw [add_assoc, neg_add_cancel, add_zero]) h h'
+  states_eq_of_time_eq τ _ _ (by rw [add_assoc, neg_add_cancel, add_zero]) h h'
 
 /-- First half of the shift/unshift pair: the double shift extends the original. -/
 theorem le_timeShift_timeShift_neg (τ : PartialHistory F) (Δ : F.Duration) :

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #599
 
 - **Task**: 599 - Unify total histories on PartialHistory (drop ConvexHistory as a structure)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md
@@ -123,23 +123,23 @@ refactor adjacent to the semantics items, not a roadmap deliverable.
 Phases within the same wave can execute in parallel. Phases 3-5 only need Phase 2's shim, but
 they run sequentially to avoid concurrent `lake build`s in a single tree.
 
-### Phase 1: Additive PartialHistory API [NOT STARTED]
+### Phase 1: Additive PartialHistory API [COMPLETED]
 
 **Goal**: Put the full target non-order API on `PartialHistory` without removing anything, so the
 tree stays green.
 
 **Tasks**:
-- [ ] Record a baseline: current `sorry` count and axiom profile of `FormalSystem`, and
-  `check-paper-definitions.sh` failure count (expected 16).
-- [ ] Move `timeShift`, `timeShift_domain`, and `states_eq_of_time_eq` from
+- [x] Record a baseline: current `sorry` count and axiom profile of `FormalSystem`, and
+  `check-paper-definitions.sh` failure count (expected 16). *(completed: 16 drifted + 1 unresolved anchor `thm:M5-valid`; 0 live `sorry`; 0 real `axiom` decls)*
+- [x] Move `timeShift`, `timeShift_domain`, and `states_eq_of_time_eq` from
   `PartialHistoryOrder.lean` to `PartialHistory.lean`. Switch `states_eq_of_time_eq` to explicit
   times `(τ) (t₁ t₂) (h) (h₁) (h₂)` and fix its one caller in `PartialHistoryOrder.lean`
   (`timeShift_timeShift_neg_states`).
-- [ ] Add to `PartialHistory.lean`: `IsConvex` (convex domain, same shape as the old `convex`
+- [x] Add to `PartialHistory.lean`: `IsConvex` (convex domain, same shape as the old `convex`
   field), `IsTotal.isConvex`, `isConvex_timeShift`, `isTotal_timeShift`, `isTotal_iff` (only if a
-  caller needs it; otherwise skip), `ofTotal` with `@[simp] ofTotal_domain`/`ofTotal_states` and
+  caller needs it; otherwise skip) *(deviation: altered — `isTotal_iff` skipped, no caller)*, `ofTotal` with `@[simp] ofTotal_domain`/`ofTotal_states` and
   `ofTotal_isTotal`, and `trivialFrameHistory`.
-- [ ] Keep one `total_nonempty` (the PartialHistory one), unchanged.
+- [x] Keep one `total_nonempty` (the PartialHistory one), unchanged.
 
 **Timing**: 1.5 hours
 
