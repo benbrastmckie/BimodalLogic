@@ -47,19 +47,23 @@ BimodalLogic/
 
 ### Root Namespace
 
-All library code lives under the `Bimodal` namespace:
+All library code lives under the `FormalSystem` namespace:
 
 ```lean
-namespace Bimodal
+namespace FormalSystem
 
 -- All definitions here
 
-end Bimodal
+end FormalSystem
 ```
+
+There is no `Bimodal` namespace. `Bimodal` is the *repository* name, and an earlier version of
+this section claimed it was the root namespace; `grep -rn '^namespace Bimodal' FormalSystem/`
+returns zero matches, so that claim was false and has been removed.
 
 ### Hierarchical Namespaces
 
-Namespaces mirror directory structure:
+**Top-level components** take the namespace matching their directory:
 
 | Directory | Namespace |
 |-----------|-----------|
@@ -69,6 +73,28 @@ Namespaces mirror directory structure:
 | `FormalSystem/Metalogic/` | `FormalSystem.Metalogic` |
 | `FormalSystem/Theorems/` | `FormalSystem.Theorems` |
 | `FormalSystem/Automation/` | `FormalSystem.Automation` |
+
+**Namespaces do not, however, mirror the directory structure below that level.** The real
+convention is that a nested subdirectory **keeps its component's namespace** rather than adding
+a component of its own. Three pre-existing examples, all verifiable by `grep -n '^namespace'`:
+
+| File | Declares |
+|------|----------|
+| `Syntax/SubformulaClosure/Closure.lean` | `namespace FormalSystem.Syntax` (not `...Syntax.SubformulaClosure`) |
+| `Metalogic/Conservativity/Plus/Forward.lean` | `namespace FormalSystem.Metalogic.Conservativity` (not `...Conservativity.Plus`) |
+| `Syntax/MinusLanguage/Formula.lean` | `namespace FormalSystem.MinusLanguage` (not `...Syntax.MinusLanguage`) |
+
+The third case is the L⁻/L⁺/L⋆ language family, nested under `Syntax/` while deliberately
+keeping its flat `FormalSystem.MinusLanguage` / `.PlusLanguage` / `.StarLanguage` namespaces.
+Renaming them to match the new module depth was considered and rejected: it would have touched
+103 call sites and the `#print axioms` baseline in `scripts/check-module-invariants.sh`, for no
+gain.
+
+**Consequence for documentation**: a dotted name like `FormalSystem.MinusLanguage` may be a
+namespace reading (correct as written) or a module-path reading (which must be
+`FormalSystem.Syntax.MinusLanguage`), and the two are textually indistinguishable. `C5` cannot
+tell them apart either, which is why `scripts/module-invariants-allowlist.txt` exists and why
+each of its entries records which reading it covers.
 
 ### Nested Namespaces
 

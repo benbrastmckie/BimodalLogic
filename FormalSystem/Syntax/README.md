@@ -15,6 +15,62 @@ Core syntactic definitions for TM bimodal logic formulas.
 | `SubformulaClosure/` | — | Subformula closure as `Finset` for BFMCS construction (3 files) |
 <!-- END GENERATED -->
 
+## Language family
+
+`Syntax/` holds four object languages, not one. Each subdirectory below is a *separate
+inductive type* with its own axioms, derivation system and (elsewhere) semantics — they are not
+notations over a shared `Formula`.
+
+| Directory | Language | Type | Constructors |
+|-----------|----------|------|--------------|
+| `Syntax/` (here) | L | `Formula` | `atom`, `bot`, `imp`, `box`, `untl`, `snce` (6) |
+| [`Syntax/MinusLanguage/`](MinusLanguage/README.md) | L⁻ | `MinusFormula` | `atom`, `bot`, `imp`, `box`, `allPast`, `allFuture` (6) |
+| [`Syntax/PlusLanguage/`](PlusLanguage/README.md) | L⁺ | `PlusFormula` | L's six **+ `stab`** (7) |
+| [`Syntax/StarLanguage/`](StarLanguage/README.md) | L⋆ | `StarFormula` | L⁺'s seven **+ `timeStore`, `timeRecall`** (9) |
+
+### The chain, and the one that is not in it
+
+**L ⊂ L⁺ ⊂ L⋆ is the extension chain.** Each adds constructors to the one before, and each
+comes with a constructor-to-constructor embedding (`PlusFormula.ofFormula`,
+`StarFormula.ofPlus`).
+
+**L⁻ is *not* an extension of L.** It is a **sibling variant**: it takes `H`/`G`
+(`allPast`/`allFuture`) as *primitive constructors* in place of L's `untl`/`snce`, so neither
+language's constructor set contains the other's. The two are related by a translation,
+`tr : MinusFormula → Formula`, in
+[`MinusLanguage/Translation.lean`](MinusLanguage/Translation.lean) — not by an embedding. L⁻ is
+the language in which the source paper states TM.
+
+Do not describe these four as "one extension hierarchy": three of them form a chain and the
+fourth does not belong to it.
+
+### Looking for boxdot (`⊡`)?
+
+**It already exists.** The **stability modal** `⊡` — the constructor `stab`, read "settled at
+the present world state" — is implemented in
+[`Syntax/PlusLanguage/`](PlusLanguage/README.md), and it is complete rather than partial:
+`PlusFormula` with `stab`, the eight `⊡` axiom schemata in `PlusLanguage/Axioms.lean`, the
+`PlusDerivationTree` proof system, the embedding `ofFormula`, backward conservativity, and the
+`PlusTruthAt` semantics in `FormalSystem/Semantics/PlusTruth.lean`. It carries no `sorry`.
+
+`⊡` is also the sole operator L⁺ adds to L, so "L plus boxdot" and "L⁺" name the same language.
+It is carried forward unchanged into L⋆, whose own additions are the two hybrid time registers
+`↑ⁱ` (`timeStore`) and `↓ⁱ` (`timeRecall`).
+
+This section exists because `⊡` was previously built, sorry-free, in a directory that sat as a
+flat sibling of `Syntax/` with nothing pointing here — so a reader starting from the base
+language had no way to discover it and was at real risk of rebuilding it.
+
+### Namespaces stay flat
+
+Nesting these directories under `Syntax/` did **not** change their namespaces: the declarations
+in `Syntax/MinusLanguage/` are still in `FormalSystem.MinusLanguage`, not
+`FormalSystem.Syntax.MinusLanguage`. Prose naming those namespaces is therefore correct as
+written even though the *module* paths are now `FormalSystem.Syntax.MinusLanguage.*`.
+
+`FormalSystem/Syntax.lean` also deliberately does not import the three nested aggregators, so a
+bare `import FormalSystem.Syntax` stays as cheap as it was before the move.
+
 ## Key Definitions
 
 - `Formula`: The inductive type for TM bimodal logic formulas:

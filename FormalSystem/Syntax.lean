@@ -18,12 +18,22 @@ plus context types for proof assumptions.
 
 ## Submodules
 
-- `Formula`: Inductive formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
-  plus derived operators (neg, and, or, diamond, always, sometimes) and decidable equality
+- `Formula`: Inductive formula type with 6 primitives (atom, bot, imp, box, untl, snce)
+  plus derived operators (neg, and, or, diamond, somePast, someFuture, allPast, allFuture,
+  always, sometimes) and decidable equality
 - `Context`: Type alias `List Formula` for proof assumptions with map, membership, and subset
 operations
+- `SubformulaClosure`: the subformula closure as a `Finset`, with nesting-depth measures,
+  temporal classification and the iterated temporal operators
+- The L⁻ / L⁺ / L⋆ language family lives in the `MinusLanguage/`, `PlusLanguage/` and
+  `StarLanguage/` subdirectories; see `Syntax/README.md`'s `Language family` section. Those
+  aggregators are deliberately NOT imported here, so a bare `import FormalSystem.Syntax` does
+  not drag in their downstream dependencies.
 
 ## Primitive Operators
+
+The six constructors of `Formula`. `untl`/`snce` are **guard-first** — `untl guard event` — so
+`untl` is Until and `snce` is Since.
 
 | Symbol | Name | Description |
 |--------|------|-------------|
@@ -31,8 +41,12 @@ operations
 | `⊥` | bot | Falsum (bottom) |
 | `→` | imp | Material implication |
 | `□` | box | Metaphysical necessity |
-| `H` | allPast | Universal past ("for all past times") |
-| `G` | allFuture | Universal future ("for all future times") |
+| `U` | untl | Until, `untl guard event` |
+| `S` | snce | Since, `snce guard event` |
+
+`H`/`G`/`P`/`F` are **derived**, not primitive — a point worth stating explicitly, because
+`MinusLanguage/` (the language L⁻) takes `allPast`/`allFuture` as constructors *instead of*
+`untl`/`snce`, and the two must not be conflated.
 
 ## Derived Operators
 
@@ -42,10 +56,12 @@ operations
 | `∧` | and | `¬(φ → ¬ψ)` |
 | `∨` | or | `¬φ → ψ` |
 | `◇` | diamond | `¬□¬φ` |
-| `P` | somePast | `¬H¬φ` |
-| `F` | someFuture | `¬G¬φ` |
-| `△` | always | `Hφ ∧ Gφ` |
-| `▽` | sometimes | `Pφ ∨ Fφ` |
+| `F` | someFuture | `untl ⊤ φ` |
+| `P` | somePast | `snce ⊤ φ` |
+| `G` | allFuture | `¬F¬φ` |
+| `H` | allPast | `¬P¬φ` |
+| `△` | always | `Hφ ∧ (φ ∧ Gφ)` |
+| `▽` | sometimes | `¬△¬φ` |
 
 ## Usage
 
@@ -70,4 +86,6 @@ def assumptions : Context := [Formula.atomS "p", Formula.atomS "q"]
 
 * [Formula.lean](Syntax/Formula.lean) - Formula type and operators
 * [Context.lean](Syntax/Context.lean) - Context type for proof assumptions
+* [README.md](Syntax/README.md) - the `Language family` section, mapping each operator delta
+  (including the stability modal `⊡`/`stab`, "boxdot") to its directory
 -/

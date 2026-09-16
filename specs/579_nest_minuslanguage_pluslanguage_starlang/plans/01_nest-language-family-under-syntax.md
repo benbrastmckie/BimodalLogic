@@ -413,31 +413,31 @@ estimate, decided completeness):
 
 ---
 
-### Phase 5: Language-family discoverability section [NOT STARTED]
+### Phase 5: Language-family discoverability section [COMPLETED]
 
 **Goal**: Write the documentation that actually closes the boxdot gap, and correct the two
 adjacent stale claims that would otherwise contradict it.
 
 **Tasks**:
-- [ ] Add a `## Language family` section to `FormalSystem/Syntax/README.md` with the measured
+- [x] Add a `## Language family` section to `FormalSystem/Syntax/README.md` with the measured
       constructor-delta table: `Syntax/` L `Formula` (`atom`, `bot`, `imp`, `box`, `untl`, `snce`);
       `Syntax/MinusLanguage/` L⁻ `MinusFormula` (`atom`, `bot`, `imp`, `box`, `allPast`,
       `allFuture`); `Syntax/PlusLanguage/` L⁺ `PlusFormula` (L's six + `stab`/`⊡`);
       `Syntax/StarLanguage/` L⋆ `StarFormula` (L⁺'s seven + `timeStore`/`↑ⁱ`,
       `timeRecall`/`↓ⁱ`).
-- [ ] State plainly that **L ⊂ L⁺ ⊂ L⋆ is the extension chain, and L⁻ is not an extension of L** —
+- [x] State plainly that **L ⊂ L⁺ ⊂ L⋆ is the extension chain, and L⁻ is not an extension of L** —
       it is a sibling variant with `H`/`G` primitive in place of `untl`/`snce`, related by
       `tr : MinusFormula → Formula` in `Syntax/MinusLanguage/Translation.lean`. The review's
       "one extension hierarchy" phrasing is false and must not be reproduced in the very section
       written to fix a discoverability problem.
-- [ ] Name `stab` and `⊡` (and the word "boxdot") explicitly, with a pointer to
+- [x] Name `stab` and `⊡` (and the word "boxdot") explicitly, with a pointer to
       `Syntax/PlusLanguage/`, so a future reader searching for boxdot lands on the existing,
       sorry-free implementation instead of rebuilding it.
-- [ ] Correct `FormalSystem/Syntax.lean`'s module docstring, which lists the primitives as
+- [x] Correct `FormalSystem/Syntax.lean`'s module docstring, which lists the primitives as
       `atom, bot, imp, box, allPast, allFuture` — contradicting `Syntax/Formula.lean`
       (`untl`/`snce`) and `FormalSystem/README.md:71`. This is the same operator-delta confusion
       the new section exists to fix.
-- [ ] Update `docs/development/MODULE_ORGANIZATION.md` §2, which asserts "Namespaces mirror
+- [x] Update `docs/development/MODULE_ORGANIZATION.md` §2, which asserts "Namespaces mirror
       directory structure" and names `Bimodal` as the root namespace — both false of the current
       tree. State the real convention (a nested subdirectory keeps its component's namespace) and
       cite the two pre-existing examples, `Syntax/SubformulaClosure/Closure.lean` (declares
@@ -462,8 +462,23 @@ table, since this section is the discoverability fix.
 - `FormalSystem/Syntax.lean` - module docstring primitive list corrected
 - `docs/development/MODULE_ORGANIZATION.md` - §2 namespace convention
 
+**Additional defects found while confirming the hypothesis** (all corrected here; none were in
+the plan, all are false statements about the primary language):
+- `Syntax.lean`'s Derived Operators table gave `always` as `Hφ ∧ Gφ`. `Formula.lean:478` is
+  `φ.allPast.and (φ.and φ.allFuture)` = **Hφ ∧ (φ ∧ Gφ)** — the middle conjunct was missing.
+- The same table gave `sometimes` as `Pφ ∨ Fφ`. `Formula.lean:621` is `φ.neg.always.neg` =
+  **¬△¬φ**.
+- The table also presented `P`/`F` as derived from `H`/`G`, inverting the real dependency:
+  `someFuture = untl ⊤ φ` and `somePast = snce ⊤ φ` are derived from the primitives, and
+  `allFuture`/`allPast` are then derived from *those*.
+- `MODULE_ORGANIZATION.md` §2's "Root Namespace" subsection claimed all library code lives under
+  a `Bimodal` namespace. It does not exist: `^namespace Bimodal$` and `^namespace Bimodal\.` both
+  return zero matches, and the 55 apparent hits from a loose `^namespace Bimodal` prefix-match are
+  all `BimodalTest.*` under the separate `Tests/` root. Claim removed, with the grep recorded.
+
 **Verification**:
-- `lake build` exits 0 (the `Syntax.lean` docstring is a compiled `/-! -/` block).
+- `lake build` exits 0 (the `Syntax.lean` docstring is a compiled `/-! -/` block). *(confirmed:
+  guarded un-piped full build, `GUARD_EXIT=0`, `Build completed successfully (2653 jobs).`)*
 - `bash scripts/readme-lint.sh` exits 0.
 - `grep -in 'boxdot\|stab\|⊡' FormalSystem/Syntax/README.md` returns the new section — the
   discoverability claim is checkable, not assumed.
