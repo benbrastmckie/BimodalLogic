@@ -9,13 +9,13 @@
     {
       "project_number": 600,
       "project_name": "rename_dense_extension_qtime",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Investigate why the dense frame-class extension is named Dense (FrameClass constructors Base | Dense | ZTime | RTime in FormalSystem/ProofSystem/Axioms.lean, and derived names such as detCompletenessDense, derivable_of_validDetDense, cantorBfmcsDense) instead of QTime, which would match ZTime and RTime. Research first: check whether the class is really the theory of Q (e.g. canonical/completeness constructions over ℚ, and whether every dense temporal order validates exactly the same formulas so QTime is accurate) or deliberately named for the density axiom over arbitrary dense orders, and check how the paper (PossibleWorlds JPL/possible_worlds.tex) and docs name it. If there is good reason, rename Dense to QTime systematically (constructor, IsDense-style predicates, theorem/def names, file and module names, docstrings, tests, docs), keeping the naming scheme uniform and elegant; otherwise record the rationale in the relevant docstring and close without renaming. Coordinate with other in-flight renaming/nesting tasks",
       "topic": "frame-extensions",
       "created": "2026-09-16T18:32:40Z",
-      "last_updated": "2026-09-16T18:47:45Z",
-      "session_id": "sess_1789584086_2b6633",
+      "last_updated": "2026-09-16T18:48:30Z",
+      "session_id": "sess_1789584086_2b6633_600",
       "artifacts": [
         {
           "path": "specs/600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md",
@@ -28,13 +28,13 @@
     {
       "project_number": 599,
       "project_name": "unify_total_histories_partial",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide \"Semantics in Lean II: Histories and Models\" quotes these definitions and must be updated to match",
       "topic": "semantics",
       "created": "2026-09-16T18:26:24Z",
-      "last_updated": "2026-09-16T18:47:27Z",
-      "session_id": "sess_1789584086_2b6633",
+      "last_updated": "2026-09-16T18:48:21Z",
+      "session_id": "sess_1789584086_2b6633_599",
       "artifacts": [
         {
           "path": "specs/599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md",
@@ -47,18 +47,23 @@
     {
       "project_number": 598,
       "project_name": "derive_nullity_identity",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Remove the nullity_identity field from FrameOver in FormalSystem/Semantics/TaskFrame.lean and derive it instead: reflexivity from serial + limit (TaskFrame.nullity_of_serial_limit) and injectivity-at-zero from limit alone, exposing the result as a theorem (e.g. FrameOver.nullity_identity) so downstream uses keep working. Update every frame construction that currently supplies the field (Independence frames, FlowFrame, IntegerModel/ReynoldsBridge, FMP/Filtration, test generators, etc.), deleting the now-redundant proofs, and revise docstrings and Semantics.lean prose that describe the field as kept for construction ergonomics. Aim for the most elegant, minimal frame definition matching the paper (the four constraints plus converse), avoiding cruft; coordinate with the in-flight semantics file nesting task",
       "topic": "semantics",
       "created": "2026-09-16T18:26:24Z",
-      "last_updated": "2026-09-16T18:47:09Z",
+      "last_updated": "2026-09-16T18:52:47Z",
       "session_id": "sess_1789584086_2b6633",
       "artifacts": [
         {
           "path": "specs/598_derive_nullity_identity/reports/01_derive-nullity-identity.md",
           "type": "report",
           "summary": "Verified sorry-free derivation of nullity_identity from serial+limit; import-order fix (move nullity_of_serial_limit into TaskFrame.lean); 17 construction sites, consumers, and prose to update."
+        },
+        {
+          "path": "specs/598_derive_nullity_identity/plans/01_derive-nullity-identity.md",
+          "type": "plan",
+          "summary": "5-phase plan: relocate/weaken helpers, atomically remove the FrameOver.nullity_identity field in favor of derived theorems across 17 construction sites, then Lean and external prose updates and a final gate."
         }
       ],
       "next_artifact_number": 2

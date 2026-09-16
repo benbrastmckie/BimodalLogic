@@ -78,7 +78,7 @@ next_project_number: 601
 
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
-600 [RESEARCHED] — Investigate why the dense frame-class extension is named...
+600 [PLANNING] — Investigate why the dense frame-class extension is named...
 
 ### Incompleteness
 
@@ -98,8 +98,8 @@ next_project_number: 601
 
 ### Semantics
 
-598 [RESEARCHED] — Remove the nullityidentity field from FrameOver in...
-599 [RESEARCHED] — Simplify the history definitions to match the paper...
+598 [PLANNED] — Remove the nullityidentity field from FrameOver in...
+599 [PLANNING] — Simplify the history definitions to match the paper...
 
 ### Codebase Cleanup
 
@@ -120,7 +120,7 @@ next_project_number: 601
 ## Tasks
 
 ### 600. Rename dense extension qtime
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: frame-extensions
 - **Dependencies**: None
@@ -131,7 +131,7 @@ next_project_number: 601
 ---
 
 ### 599. Unify total histories partial
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -142,11 +142,12 @@ next_project_number: 601
 ---
 
 ### 598. Derive nullity identity
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [598_derive_nullity_identity/reports/01_derive-nullity-identity.md]
+- **Plan**: [598_derive_nullity_identity/plans/01_derive-nullity-identity.md]
 
 **Description**: Remove the nullity_identity field from FrameOver in FormalSystem/Semantics/TaskFrame.lean and derive it instead: reflexivity from serial + limit (TaskFrame.nullity_of_serial_limit) and injectivity-at-zero from limit alone, exposing the result as a theorem (e.g. FrameOver.nullity_identity) so downstream uses keep working. Update every frame construction that currently supplies the field (Independence frames, FlowFrame, IntegerModel/ReynoldsBridge, FMP/Filtration, test generators, etc.), deleting the now-redundant proofs, and revise docstrings and Semantics.lean prose that describe the field as kept for construction ergonomics. Aim for the most elegant, minimal frame definition matching the paper (the four constraints plus converse), avoiding cruft; coordinate with the in-flight semantics file nesting task
 

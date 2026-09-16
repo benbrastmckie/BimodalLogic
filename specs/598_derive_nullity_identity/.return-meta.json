@@ -1,16 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/598_derive_nullity_identity/reports/01_derive-nullity-identity.md",
-      "summary": "Verified sorry-free derivation of nullity_identity from serial+limit; import-order fix (move nullity_of_serial_limit into TaskFrame.lean); 17 construction sites, consumers, and prose to update."
+      "type": "plan",
+      "path": "specs/598_derive_nullity_identity/plans/01_derive-nullity-identity.md",
+      "summary": "5-phase plan: relocate/weaken helpers, atomically remove the FrameOver.nullity_identity field in favor of derived theorems across 17 construction sites, then Lean and external prose updates and a final gate."
     }
   ],
+  "next_steps": "Run /implement 598 to execute the plan",
+  "phase_count": 5,
+  "estimated_hours": 5,
+  "dependency_waves": [[1], [2], [3, 4], [5]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1789584086_2b6633_598",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 4
 }
