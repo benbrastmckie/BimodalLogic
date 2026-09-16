@@ -221,30 +221,7 @@ noncomputable def instDecidableDerivable (p : Formula) (hp : isPropositional p =
   else
     isFalse (fun hderiv => h (derivable_tautology p hp hderiv))
 
-/-! ## Smoke Tests -/
-
-private def pAtomEx : Formula := Formula.atom (Atom.mkBase "p")
-private def qAtomEx : Formula := Formula.atom (Atom.mkBase "q")
-
-/-- `instDecidableDerivable` decides the concrete tautology `p → p` as derivable. -/
-example : |-! (pAtomEx.imp pAtomEx) := by
-  have hp : isPropositional (pAtomEx.imp pAtomEx) = true := by decide
-  have hd : |-! (pAtomEx.imp pAtomEx) := by
-    have hraw := tautology_derivable (reify (pAtomEx.imp pAtomEx)).1 (by decide)
-      (reify (pAtomEx.imp pAtomEx)).2
-    rwa [reify_denote (pAtomEx.imp pAtomEx) hp] at hraw
-  match instDecidableDerivable (pAtomEx.imp pAtomEx) hp with
-  | isTrue h => exact h
-  | isFalse hnd => exact absurd hd hnd
-
-/-- `instDecidableDerivable` decides the concrete non-tautology `p → q` as underivable
-(`isFalse`). -/
-example : ¬ |-! (pAtomEx.imp qAtomEx) := by
-  have hp : isPropositional (pAtomEx.imp qAtomEx) = true := by decide
-  match instDecidableDerivable (pAtomEx.imp qAtomEx) hp with
-  | isFalse hnd => exact hnd
-  | isTrue hd =>
-      have htaut := derivable_tautology (pAtomEx.imp qAtomEx) hp hd
-      exact absurd htaut (by decide)
+/-! Concrete `instDecidableDerivable` examples live in
+`Tests/BimodalTest/Metalogic/PropDecideTest.lean`. -/
 
 end FormalSystem.Metalogic.Decidability.Propositional

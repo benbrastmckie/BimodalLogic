@@ -187,29 +187,7 @@ def temporalNecessitationDerivable {fc : FrameClass} (φ : MinusFormula)
       (FrameClass.base_le fc)
   .modus_ponens [] _ _ mt boxGφ
 
-/-! ## Smoke tests -/
-
-/-- Identity is a TM⁻ theorem, by the propositional basis alone. -/
-example (φ : MinusFormula) : ⊢⁻[FrameClass.Base] φ.imp φ :=
-  let k : ⊢⁻[FrameClass.Base]
-      ((φ.imp ((φ.imp φ).imp φ)).imp ((φ.imp (φ.imp φ)).imp (φ.imp φ))) :=
-    .axiom [] _ (Axiom.prop_k φ (φ.imp φ) φ) (FrameClass.base_le _)
-  let s1 : ⊢⁻[FrameClass.Base] (φ.imp ((φ.imp φ).imp φ)) :=
-    .axiom [] _ (Axiom.prop_s φ (φ.imp φ)) (FrameClass.base_le _)
-  let s2 : ⊢⁻[FrameClass.Base] (φ.imp (φ.imp φ)) :=
-    .axiom [] _ (Axiom.prop_s φ φ) (FrameClass.base_le _)
-  .modus_ponens [] _ _ (.modus_ponens [] _ _ k s1) s2
-
-/-- `DF` is available at `.ZTime` and its `minFrameClass` side condition discharges by
-`decide` once the frame class is concrete. -/
-example (φ : MinusFormula) :
-    ⊢⁻[FrameClass.ZTime]
-      (((φ.allPast.and φ).and MinusFormula.top.someFuture).imp φ.allPast.someFuture) :=
-  .axiom [] _ (Axiom.df φ) (show FrameClass.ZTime ≤ FrameClass.ZTime by decide)
-
-/-- Lifting a `Base` theorem into `TM⁻_z`. -/
-example (φ : MinusFormula) : ⊢⁻[FrameClass.ZTime] φ.box.imp φ :=
-  DerivationTree.lift (fc₁ := FrameClass.Base) (by decide)
-    (.axiom [] _ (Axiom.modal_t φ) (FrameClass.base_le _))
+/-! Worked derivations in this system live in
+`Tests/BimodalTest/Syntax/LanguageDerivationTest.lean`. -/
 
 end FormalSystem.MinusLanguage

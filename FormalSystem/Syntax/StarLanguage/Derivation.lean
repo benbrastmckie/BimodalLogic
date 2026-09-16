@@ -202,27 +202,7 @@ reach, and the concrete content of the widening. -/
 example (fc : FrameClass) (i : ℕ) (φ : StarFormula) (d : ⊢⋆[fc] StarFormula.timeRecall i φ) :
     ⊢⋆[fc] StarFormula.stab (StarFormula.timeRecall i φ) := stabNecessitation d
 
-/-! ### Smoke tests -/
-
-/-- A register schema is a theorem at every class: `↑ⁱ□φ ↔ □↑ⁱφ`. -/
-example (fc : FrameClass) (i : ℕ) (φ : StarFormula) :
-    ⊢⋆[fc] (StarFormula.timeStore i (.box φ)).iff (StarFormula.box (.timeStore i φ)) :=
-  .axiom [] _ (StarAxiom.store_box i φ) (FrameClass.base_le fc)
-
-/-- MF reaches TM⋆ at every `↓ⁱ`-free formula, not only at embedded ones. The witness is
-`□↑¹p → □G↑¹p`: `↑¹p` is `RecallFree` and, by `ofPlus_ne_timeStore`, is **not** an `ofPlus`
-image, so this instance is outside the reach of any embedding-only route. -/
-example (fc : FrameClass) (p : Atom) :
-    ⊢⋆[fc] (StarFormula.box (StarFormula.timeStore 1 (.atom p))).imp
-      (StarFormula.box (StarFormula.allFuture (StarFormula.timeStore 1 (.atom p)))) :=
-  .axiom [] _ (StarAxiom.modal_future _ (RecallFree.timeStore 1 (RecallFree.atom p)))
-    (FrameClass.base_le fc)
-
-/-- Temporal duality applies to a register formula: the dual of forward rigidity is backward
-rigidity, and it is reached by the rule rather than by a second axiom. -/
-example (fc : FrameClass) (i : ℕ) (φ : StarFormula) :
-    ⊢⋆[fc] ((StarFormula.timeRecall i φ).imp
-      (StarFormula.allFuture (.timeRecall i φ))).swapTemporal :=
-  .temporal_duality _ (.axiom [] _ (StarAxiom.recall_rigid_future i φ) (FrameClass.base_le fc))
+/-! Worked derivations in this system live in
+`Tests/BimodalTest/Syntax/LanguageDerivationTest.lean`. -/
 
 end FormalSystem.StarLanguage

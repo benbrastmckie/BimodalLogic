@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Automation.Tactics.PropDecide
+import FormalSystem.Metalogic.Decidability.Propositional.Decidable
 
 /-!
 # Tests for `propDecide`
@@ -81,5 +82,65 @@ example (fc : FrameClass) (p q : Formula) : |-![fc] p.imp (q.imp p) := by propDe
 noncomputable example : ⊢ (Formula.atom (Atom.mkBase "p")).imp
     ((Formula.atom (Atom.mkBase "q")).imp (Formula.atom (Atom.mkBase "p"))) := by
   propDecide
+
+/-! ## `PropForm` tautologies (from `Propositional/PropForm.lean`)
+
+Kernel-`decide` reducibility on closed `PropForm` terms — no `native_decide`. -/
+
+section PropFormTautologies
+
+open FormalSystem.Metalogic.Decidability.Propositional
+open FormalSystem.Metalogic.Decidability.Propositional.PropForm
+
+/-- Peirce's law: `((p → q) → p) → p`. -/
+private def peirceForm : PropForm := imp (imp (imp (var 0) (var 1)) (var 0)) (var 0)
+
+example : peirceForm.isTaut = true := by decide
+
+/-- K axiom skeleton: `p → (q → p)`. -/
+private def kForm : PropForm := imp (var 0) (imp (var 1) (var 0))
+
+example : kForm.isTaut = true := by decide
+
+/-- A 5-variable tautology (32 assignments): `p0 → (p1 → (p2 → (p3 → (p4 → p0))))`. -/
+private def fiveVarForm : PropForm :=
+  imp (var 0) (imp (var 1) (imp (var 2) (imp (var 3) (imp (var 4) (var 0)))))
+
+example : fiveVarForm.isTaut = true := by decide
+
+end PropFormTautologies
+
+/-! ## Deciding derivability (from `Propositional/Decidable.lean`) -/
+
+section DecidableDerivable
+
+open FormalSystem.Metalogic.Decidability.Propositional
+open FormalSystem.Semantics
+
+private def pAtomEx : Formula := Formula.atom (Atom.mkBase "p")
+private def qAtomEx : Formula := Formula.atom (Atom.mkBase "q")
+
+/-- `instDecidableDerivable` decides the concrete tautology `p → p` as derivable. -/
+example : |-! (pAtomEx.imp pAtomEx) := by
+  have hp : isPropositional (pAtomEx.imp pAtomEx) = true := by decide
+  have hd : |-! (pAtomEx.imp pAtomEx) := by
+    have hraw := tautology_derivable (reify (pAtomEx.imp pAtomEx)).1 (by decide)
+      (reify (pAtomEx.imp pAtomEx)).2
+    rwa [reify_denote (pAtomEx.imp pAtomEx) hp] at hraw
+  match instDecidableDerivable (pAtomEx.imp pAtomEx) hp with
+  | isTrue h => exact h
+  | isFalse hnd => exact absurd hd hnd
+
+/-- `instDecidableDerivable` decides the concrete non-tautology `p → q` as underivable
+(`isFalse`). -/
+example : ¬ |-! (pAtomEx.imp qAtomEx) := by
+  have hp : isPropositional (pAtomEx.imp qAtomEx) = true := by decide
+  match instDecidableDerivable (pAtomEx.imp qAtomEx) hp with
+  | isFalse hnd => exact hnd
+  | isTrue hd =>
+      have htaut := derivable_tautology (pAtomEx.imp qAtomEx) hp hd
+      exact absurd htaut (by decide)
+
+end DecidableDerivable
 
 end BimodalTest.Metalogic.PropDecideTest

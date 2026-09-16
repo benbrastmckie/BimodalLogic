@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ProofSystem.Derivation
+import FormalSystem.ProofSystem.Derivable
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.TemporalDerived
 
@@ -250,5 +251,44 @@ example (p : Formula) : [(Formula.atomS "p").allFuture] ⊢ (Formula.atomS "p").
   exact d_gen
 
 end
+
+/-! ## `Derivable`: aesop and simp examples (from `ProofSystem/Derivable.lean`) -/
+
+section DerivableExamples
+
+/--
+Test: Aesop can derive from assumptions using `Derivable.assume`.
+-/
+example (p q : Formula) : Derivable .Base [p.imp q, p] p := by
+  aesop
+
+/--
+Test: Axiom application via explicit term.
+-/
+example (p : Atom) : Derivable .Base [] ((Formula.box (Formula.atom p)).imp (Formula.atom p)) := by
+  exact Derivable.ax _ _ (Axiom.modal_t _) trivial
+
+/--
+Test: Modus ponens chain -- derive `q` from `p → q` and `p` in context.
+-/
+example (p q : Formula) : Derivable .Base [p.imp q, p] q := by
+  apply Derivable.mp _ p
+  · exact Derivable.assume _ _ (by simp)
+  · exact Derivable.assume _ _ (by simp)
+
+/--
+Test: Weakening preserves derivability.
+-/
+example (p q r : Formula) (h : Derivable .Base [p] q) : Derivable .Base [p, r] q :=
+  Derivable.weaken h (by intro x hx; simp_all)
+
+/--
+Test: Derivable.lift can lift base derivability to dense.
+-/
+example (p : Atom) (h : Derivable .Base [] ((Formula.box (Formula.atom p)).imp (Formula.atom p))) :
+    Derivable .Dense [] ((Formula.box (Formula.atom p)).imp (Formula.atom p)) :=
+  Derivable.lift (fc₁ := .Base) trivial h
+
+end DerivableExamples
 
 end BimodalTest.ProofSystem

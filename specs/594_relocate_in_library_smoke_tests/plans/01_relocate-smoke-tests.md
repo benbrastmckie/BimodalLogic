@@ -295,18 +295,18 @@ executor running serially should simply take phases in numeric order.
 
 ---
 
-### Phase 7: Relocate test-labelled example sections [NOT STARTED]
+### Phase 7: Relocate test-labelled example sections [COMPLETED]
 
 **Goal**: Move explicitly test-labelled `example` blocks out of library modules into their matching test modules.
 
 **Tasks**:
-- [ ] `Automation/Tactics/Commands.lean`: move the 72 live `modal_search` "Test N" examples to `Tests/BimodalTest/Automation/TacticsTest.lean`, and delete its three `example : True := trivial` placeholders.
+- [x] `Automation/Tactics/Commands.lean`: move the 72 live `modal_search` "Test N" examples to `Tests/BimodalTest/Automation/TacticsTest.lean`, and delete its three `example : True := trivial` placeholders. *(the whole tests tail from "Phase 1.1 Tests" moved as one `CommandsTests` section, including its `noncomputable example`s and the commented-out disabled tests, which stay as comments)*
 - [x] `Automation/Normalization.lean`: move the UnfoldTests and RoundTripTests (26) to `NormalizationTest.lean`. *(completed early in Phase 2)*
-- [ ] `ProofSystem/Derivable.lean`: move "Aesop and Simp Test Examples" (5) to `Tests/BimodalTest/ProofSystem/DerivationTest.lean`.
-- [ ] `Syntax/{Star,Minus,Plus}Language/Derivation.lean`: move the "Smoke tests" blocks (9) to a new `Tests/BimodalTest/Syntax/LanguageDerivationTest.lean`, wired into the aggregator.
-- [ ] Propositional `PropForm.lean`/`Decidable.lean`: move the "Smoke Tests" (5) to `Tests/BimodalTest/Metalogic/PropDecideTest.lean`.
-- [ ] Check that each moved example still elaborates with the test module's imports and `open`s (tactic-scoped syntax may need `open ... in`). Leave everything else, which is documentation or design-premise pins.
-- [ ] Build the touched library modules and test modules (guarded), then run the harness `--no-build` (C17 and C20 reported).
+- [x] `ProofSystem/Derivable.lean`: move "Aesop and Simp Test Examples" (5) to `Tests/BimodalTest/ProofSystem/DerivationTest.lean`.
+- [x] `Syntax/{Star,Minus,Plus}Language/Derivation.lean`: move the "Smoke tests" blocks (9) to a new `Tests/BimodalTest/Syntax/LanguageDerivationTest.lean`, wired into the aggregator. *(measured 8, not 9: 3 TM⋆ + 3 TM⁻ + 2 TM⁺)*
+- [x] Propositional `PropForm.lean`/`Decidable.lean`: move the "Smoke Tests" (5) to `Tests/BimodalTest/Metalogic/PropDecideTest.lean`.
+- [x] Check that each moved example still elaborates with the test module's imports and `open`s (tactic-scoped syntax may need `open ... in`). Leave everything else, which is documentation or design-premise pins.
+- [x] Build the touched library modules and test modules (guarded), then run the harness `--no-build` (C17 and C20 reported).
 
 **Timing**: 2 hours
 

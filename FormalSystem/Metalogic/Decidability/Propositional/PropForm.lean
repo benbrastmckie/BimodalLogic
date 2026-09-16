@@ -209,25 +209,8 @@ def denote (env : Nat → Formula) : PropForm → Formula
 @[simp] theorem denote_imp (env : Nat → Formula) (f g : PropForm) :
     denote env (imp f g) = (f.denote env).imp (g.denote env) := rfl
 
-/-! ## Smoke Tests
-
-Kernel-`decide` reducibility on closed `PropForm` terms — no `native_decide`. -/
-
-/-- Peirce's law: `((p → q) → p) → p`. -/
-private def peirceForm : PropForm := imp (imp (imp (var 0) (var 1)) (var 0)) (var 0)
-
-example : peirceForm.isTaut = true := by decide
-
-/-- K axiom skeleton: `p → (q → p)`. -/
-private def kForm : PropForm := imp (var 0) (imp (var 1) (var 0))
-
-example : kForm.isTaut = true := by decide
-
-/-- A 5-variable tautology (32 assignments): `p0 → (p1 → (p2 → (p3 → (p4 → p0))))`. -/
-private def fiveVarForm : PropForm :=
-  imp (var 0) (imp (var 1) (imp (var 2) (imp (var 3) (imp (var 4) (var 0)))))
-
-example : fiveVarForm.isTaut = true := by decide
+/-! Kernel-`decide` checks on closed `PropForm` tautologies live in
+`Tests/BimodalTest/Metalogic/PropDecideTest.lean`. -/
 
 end PropForm
 

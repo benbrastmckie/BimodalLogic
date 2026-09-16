@@ -299,17 +299,7 @@ theorem plus_backward_rtime {φ : Formula}
     PlusDerivable FrameClass.RTime [] (ofFormula φ) :=
   plusDerivable_of_derivable h
 
-/-! ### Smoke tests -/
-
-/-- MF at a `⊡`-formula is an axiom instance of TM⁺ — the instance `ofTM` alone could not
-supply. -/
-example (p : Atom) :
-    ⊢⁺[FrameClass.Base] (PlusFormula.box (PlusFormula.stab (PlusFormula.atom p))).imp
-      (PlusFormula.box (PlusFormula.allFuture (PlusFormula.stab (PlusFormula.atom p)))) :=
-  .axiom [] _ (PlusAxiom.modal_future _) (FrameClass.base_le _)
-
-/-- The `⊡` T-axiom is a theorem at every class. -/
-example (fc : FrameClass) (φ : PlusFormula) : ⊢⁺[fc] (PlusFormula.stab φ).imp φ :=
-  .axiom [] _ (PlusAxiom.stab_t φ) (FrameClass.base_le fc)
+/-! Worked derivations in this system live in
+`Tests/BimodalTest/Syntax/LanguageDerivationTest.lean`. -/
 
 end FormalSystem.PlusLanguage
