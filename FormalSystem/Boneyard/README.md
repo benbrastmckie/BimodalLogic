@@ -102,9 +102,9 @@ links here rather than restating them.**
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Boneyard rows=totals desc=no -->
 | Quantity | Value |
 |----------|------:|
-| Archived `.lean` files | 168 |
-| Archived lines | 91,618 |
-| Top-level subdirectories | 39 |
+| Archived `.lean` files | 169 |
+| Archived lines | 91,983 |
+| Top-level subdirectories | 40 |
 | Archive directories in the repository | 1 |
 <!-- END GENERATED -->
 
@@ -222,6 +222,7 @@ Tombstones at the end of this file.
 | [`BXPipelineDeadCode/`](BXPipelineDeadCode/README.md) | 2 | 574 | From `WeakCanonical/IntegerModel/`. BX pipeline dead code: the deprecated Reynolds model surgery (`no_gaps_faithful`, mathematically false as stated) and four dead `ReynoldsNoGaps` definitions with zero external references |
 | [`SupersededCompleteness/`](SupersededCompleteness/README.md) | 1 | 541 | From `Metalogic/Completeness.lean`. Zero live importers: the only `import FormalSystem.Metalogic.Completeness` in the repository came from another archived file, so it sat outside every Lake target's closure while the docs still described it as live |
 | [`DeadConvergenceProof/`](DeadConvergenceProof/README.md) | 2 | 468 | Relocated from the former root-level `Boneyard/`. The dead convergence proof for `succ_cofinal` and its single-consumer helper. Fails in the constant-MCS case, where no discriminating formula exists and the temporal axioms are trivially satisfied |
+| [`SemanticBenchmarkToyEvaluator/`](SemanticBenchmarkToyEvaluator/README.md) | 1 | 365 | From `Tests/BimodalTest/Semantics/`. A benchmark that advertised `TruthAt` evaluation but timed a hand-written six-case `Bool` function instead, never calling `TruthAt`. Retired on a **measurement** (zero real invocations in the library and in `Tests/`) rather than repaired: a mechanical repair compiled but scored 14/16, because its invented branches have no correct value |
 | [`BXPipelineGapAnalysis/`](BXPipelineGapAnalysis/README.md) | 2 | 303 | From `WeakCanonical/` and `Chronicle/`. Chronicle-level gap elimination via Reynolds Theorem 14, and Henkin discrete-chain analysis. Both blocked by the falsity of `no_gaps_faithful` (a Z+Z counterexample); the correct path is the Reynolds pipeline via `no_gaps_discrete` |
 | [`DenseChronicle/`](DenseChronicle/README.md) | 3 | 287 | From `Chronicle/`. Attempts to adapt the Burgess chronicle construction to dense orders. Hit the density gap: `G(phi)` and `untl(phi.neg, gamma)` are semantically contradictory on dense orders, but BX has no density axiom to derive the contradiction formally |
 | [`RestrictedMCSBoundedness/`](RestrictedMCSBoundedness/README.md) | 1 | 262 | From `Metalogic/Core/RestrictedMCS/`. `iterF`/`iterP` boundedness for `RestrictedMCS`: zero live references, and its advertised consumer `succ_chain_fam` is itself archived under `StrictSemanticsLegacy/` |
@@ -305,6 +306,7 @@ replacement that does not exist.
 | `MergedBracketQuarantine/` | Structural Dead Ends | Refuted | Violates the no-nesting audit and Rabinovich Lemma 5.1's QF point-type |
 | `RestrictedMCSDeferral/` | Orphaned, Not Refuted | Orphaned | A fully developed MCS variant whose only intended consumer was archived first |
 | `RetiredTactics/` | Orphaned, Not Refuted | Orphaned | Retired on a measurement: zero real invocations in the library or in `Tests/`. **Guard-first** |
+| `SemanticBenchmarkToyEvaluator/` | Orphaned, Not Refuted | Orphaned | A `TruthAt` benchmark that never called `TruthAt`; retired on the same zero-invocation measurement as `RetiredTactics/` |
 | `DeadCanonicalModel/` | Structural Dead Ends | Refuted | The enrichment step cannot maintain consistency of the extended seed |
 | `BXPipelineDeadCode/` | Structural Dead Ends | Refuted | `no_gaps_faithful` is mathematically false as stated (Z+Z counterexample) |
 | `DenseChronicle/` | Structural Dead Ends | Refuted | The density gap: BX has no density axiom to derive the needed contradiction |
@@ -557,6 +559,16 @@ A schedule-based BFMCS chain from `BXCanonical/RootScopedChain.lean`. The
 schedule fixes in advance which obligation is discharged at which stage; the Lindenbaum step then
 loses F-obligations, so the schedule cannot be honoured. Bypassed by the Chronicle
 construction.
+
+### SemanticBenchmarkToyEvaluator
+One whole test-tree module, `Tests/BimodalTest/Semantics/SemanticBenchmark.lean`, retired on the
+same **measurement** as `RetiredTactics/` -- zero real invocations in the live library and in
+`Tests/` -- and on a finding about what it measured. It advertised a `TruthAt` evaluation
+benchmark but never called `TruthAt`: it timed a hand-written six-case `Bool` function that
+hard-codes box and the tense operators as true, and its "correctness" column compared that function
+against hand-typed constants. A mechanical repair compiled but scored 14/16, because the invented
+`untl`/`snce` branches have no correct value. No `untl`/`snce` occurrences, so the archive
+banner's argument swap has nothing to act on. Its derivation-tree sibling was repaired instead.
 
 ### SorriedDeclExcisions
 Dead-sorry closure excisions: verified-dead declaration closures (each carrying

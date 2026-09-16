@@ -20,8 +20,8 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 | Live `.lean` files | 520 |
 | Live lines of code | 165,533 |
 | Live comment lines | 98,065 |
-| Archived `.lean` files | 168 |
-| Archived lines | 91,618 |
+| Archived `.lean` files | 169 |
+| Archived lines | 91,983 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`

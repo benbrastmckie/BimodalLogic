@@ -101,11 +101,9 @@ FormalSystem.Metalogic.Decidability.BiLasso.Agreement
 # the whole benchmark table) on every `lake test`. Listed here so C6 compiles it -- and
 # so also runs that `#eval` -- in isolation, which keeps the harness from rotting.
 BimodalTest.ProofSystem.DerivationBenchmark
-
-# This one does not compile: it predates several API changes (the Atom type,
-# the until/since primitives) and was never updated because nothing builds it.
-# Recorded rather than re-discovered on every run.
-broken: BimodalTest.Semantics.SemanticBenchmark
+# Its former sibling, the semantic-evaluation benchmark, was not repaired but retired to
+# FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/: it never called `TruthAt`, so it
+# measured nothing the library defines. That directory's README records the measurement.
 
 # These two compile in isolation but cannot be imported by Tests/BimodalTest.lean:
 # each pulls in an executable root that defines `main`, colliding with the `main`
