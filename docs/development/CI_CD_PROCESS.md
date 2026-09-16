@@ -206,14 +206,18 @@ checks were wired.
 
 ### 4. Runtime Budget
 
-Measured locally on a warm Lake cache (`lake build` already run), 2026-09-16:
+Measured locally on a warm Lake cache (`lake build` already run), 2026-09-16. The two "Local"
+columns are two independent measurements of the same commands: "full env" is a normal shell
+run; "minimal env, extracted body" re-derives the exact `run:` body from the committed YAML
+(never retyped) and runs it under a minimal `env -i` PATH, as a rough local approximation of the
+`ubuntu-latest` runner:
 
-| Step | Local, warm cache | Actions-measured |
-|------|--------------------|-------------------|
-| `Check module invariants (scripts/check-module-invariants.sh --no-build)` | 23.6s | _(fill in from a confirmation run — see the implementation summary's remote-confirmation checklist)_ |
-| `Check copyright headers (scripts/check-copyright-headers.sh --strict)` | 10.98s | _(pending)_ |
-| `Check README health (scripts/readme-lint.sh)` | 7.34s | _(pending)_ |
-| **Sum (added local delta)** | **~41.9s** | _(pending)_ |
+| Step | Local, full env | Local, minimal env (extracted body) | Actions-measured |
+|------|------------------|--------------------------------------|-------------------|
+| `Check module invariants (scripts/check-module-invariants.sh --no-build)` | 23.6s | 20.3s | _(fill in from a confirmation run — see the implementation summary's remote-confirmation checklist)_ |
+| `Check copyright headers (scripts/check-copyright-headers.sh --strict)` | 10.98s | 4.5s | _(pending)_ |
+| `Check README health (scripts/readme-lint.sh)` | 7.34s | 4.7s | _(pending)_ |
+| **Sum (added local delta)** | **~41.9s** | **~29.5s** | _(pending)_ |
 
 A task that wires a new check step updates this table in the same change, adding its own row
 and re-summing.

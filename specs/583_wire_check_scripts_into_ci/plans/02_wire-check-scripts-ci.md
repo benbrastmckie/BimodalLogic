@@ -1,7 +1,7 @@
 # Implementation Plan: Task #583
 
 - **Task**: 583 - Wire the check scripts that are green today into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md (primary); specs/583_wire_check_scripts_into_ci/reports/01_uncalled-check-scripts.md (pre-rescope sweep, background)
@@ -259,37 +259,55 @@ holds CI step explanations and the runtime budget.
 
 ---
 
-### Phase 4: Deliberate-violation verification, runtime measurement, and handoff [NOT STARTED]
+### Phase 4: Deliberate-violation verification, runtime measurement, and handoff [COMPLETED]
 
 **Goal**: Show that each wired step fails on a violation and passes on a clean tree, record the
 measured delta, and give the user an exact remote-confirmation checklist.
 
 **Tasks**:
-- [ ] Extract each new step's `run:` body from the edited `ci.yml` with a YAML parser. Do not
-  retype it. Write the bodies to scratch scripts.
-- [ ] Clean run: execute the three extracted bodies in order on the clean tree under
+- [x] Extract each new step's `run:` body from the edited `ci.yml` with a YAML parser. Do not
+  retype it. Write the bodies to scratch scripts. *(completed: via `python3 -c "import yaml..."`,
+  written to scratch as invariants.sh/copyright.sh/readme.sh)*
+- [x] Clean run: execute the three extracted bodies in order on the clean tree under
   `env -i HOME="$HOME" PATH="$HOME/.elan/bin:/usr/bin:/bin:$(dirname "$(command -v python3)"):$(dirname "$(command -v jq)")"`.
-  Every body must exit 0. Time each one with `/usr/bin/time` or `date +%s.%N` deltas.
-- [ ] Violation runs, one at a time. Revert after each and confirm with
+  Every body must exit 0. Time each one with `/usr/bin/time` or `date +%s.%N` deltas. *(completed
+  with a deviation: this dev machine is NixOS, not the Ubuntu-shaped `/usr/bin:/bin` the
+  template assumes -- `command -v` was used per-tool instead to build the minimal PATH
+  (lake/bash/git/jq/python3 dirs). All three bodies exited 0: invariants 20.3s, copyright 4.5s,
+  readme-lint 4.7s)*
+- [x] Violation runs, one at a time. Revert after each and confirm with
   `git diff --quiet -- <file>`:
   - Invariants: introduce a violation of a `--no-build` structural invariant, such as a
     task-number citation in a `FormalSystem/` comment (C9) or a stale `docs/` path. The
     invariants body must exit nonzero and print that check's failure. The write-time
     `validate-no-task-references.sh` hook may block a C9 violation made with Write or Edit. In
     that case, apply it with a shell `sed` on a scratch edit, or use the C10 stale-path
-    violation instead.
+    violation instead. *(completed: used the C10 stale-path violation, exactly the documented
+    fallback -- added a `FormalSystem/docs/old-path.md` reference to root README.md, confirmed
+    FAIL on C10 (and C12) with exit 1, reverted from backup, confirmed
+    `git diff --quiet -- README.md`)*
   - Copyright: strip the header from one live `FormalSystem/**/*.lean` file (not under
-    Boneyard). The copyright body must exit nonzero.
+    Boneyard). The copyright body must exit nonzero. *(completed: stripped the header from
+    `FormalSystem/Syntax/SubformulaClosure.lean`, confirmed exit 1 (missing: 1), reverted from
+    backup, confirmed `git diff --quiet`)*
   - readme-lint: add a broken relative link to one `FormalSystem/**/README.md` (Check 3). The
-    readme body must exit nonzero.
-- [ ] After all reverts, confirm `git status --short` shows only the intended ci.yml and
-  CI_CD_PROCESS.md changes, then re-run the clean pass once more.
-- [ ] Fill Phase 3's runtime-budget table with local figures labeled "local, warm cache", plus
+    readme body must exit nonzero. *(completed: added a broken link to
+    `FormalSystem/Syntax/README.md`, confirmed Check 3 FAIL with exit 1, reverted from backup,
+    confirmed `git diff --quiet`)*
+- [x] After all reverts, confirm `git status --short` shows only the intended ci.yml and
+  CI_CD_PROCESS.md changes, then re-run the clean pass once more. *(completed: `git status
+  --short` showed none of the three violation files dirty (only concurrent tasks'
+  files and this plan file); re-ran all three extracted bodies once more, all exit 0)*
+- [x] Fill Phase 3's runtime-budget table with local figures labeled "local, warm cache", plus
   their sum as the added delta. Add an empty "Actions-measured" column for the user.
-- [ ] In the implementation summary, give the user a remote-confirmation checklist. For each
+  *(completed: added a second "Local, minimal env (extracted body)" column alongside Phase 3's
+  full-env column rather than replacing it, since both measurements are informative; Actions-
+  measured column left pending for the user)*
+- [x] In the implementation summary, give the user a remote-confirmation checklist. For each
   check, push a branch carrying that check's violation and confirm that the step named after
   the script fails. Push a clean branch and confirm the run is green. Compare the job duration
-  with a recent main run, and fill in the Actions-measured column.
+  with a recent main run, and fill in the Actions-measured column. *(completed: see
+  summaries/02_wire-check-scripts-ci-summary.md's "Follow-ups" section)*
 
 **Timing**: 1.25 hours
 
@@ -317,17 +335,22 @@ instead of weakening the criterion.
 
 ## Testing & Validation
 
-- [ ] `ci.yml` parses as YAML, and the step order is lean-action, then lean_exe, then the three
-  checks, then Report results.
-- [ ] Each new step `name:` contains its script path.
-- [ ] The three extracted step bodies exit 0 on a clean tree in a minimal environment.
-- [ ] Each extracted step body exits nonzero on its deliberate violation, and every violation is
-  reverted.
-- [ ] CI_CD_PROCESS.md documents all four wiring-pattern parts, the C2/C6/C24 gap, readme-lint's
-  informational checks, and the measured runtime delta.
-- [ ] Full gate: `lake build` and the full `scripts/check-module-invariants.sh` are green.
+- [x] `ci.yml` parses as YAML, and the step order is lean-action, then lean_exe, then the three
+  checks, then Report results. *(completed: order is lean-action, lean_exe,
+  check-evidence-probes.sh, the three new checks, check-metalogic-cycles.sh, Report results --
+  the two concurrently-wired steps sit between lean_exe and the three checks / after them, per
+  the append-before-Report-results convention)*
+- [x] Each new step `name:` contains its script path. *(completed)*
+- [x] The three extracted step bodies exit 0 on a clean tree in a minimal environment.
+  *(completed: 20.3s / 4.5s / 4.7s, all exit 0)*
+- [x] Each extracted step body exits nonzero on its deliberate violation, and every violation is
+  reverted. *(completed)*
+- [x] CI_CD_PROCESS.md documents all four wiring-pattern parts, the C2/C6/C24 gap, readme-lint's
+  informational checks, and the measured runtime delta. *(completed)*
+- [x] Full gate: `lake build` and the full `scripts/check-module-invariants.sh` are green.
+  *(completed: lake build 2653 jobs success; full invariants ALL CHECKS PASSED, 2m14s)*
 - [ ] (User, remote) A violation branch fails the named step, a clean branch is green, and the
-  Actions wall-clock delta is recorded.
+  Actions wall-clock delta is recorded. *(deferred to user -- see summary's Follow-ups)*
 
 ## Artifacts & Outputs
 

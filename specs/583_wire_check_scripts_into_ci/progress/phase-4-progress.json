@@ -1,0 +1,26 @@
+{
+  "phase": 4,
+  "phase_name": "Deliberate-violation verification, runtime measurement, and handoff",
+  "started_at": "2026-09-16T01:10:00Z",
+  "last_updated": "2026-09-16T01:55:00Z",
+  "objectives": [
+    {"id": 1, "description": "Extract each new step's run body from ci.yml via YAML parser, write to scratch scripts", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Clean run of the three extracted bodies under minimal env, timed", "status": "done", "files_touched": [], "note": "NixOS dev machine: /usr/bin:/bin does not carry the needed tools, so PATH was built from command -v lookups instead. invariants 20.3s, copyright 4.5s, readme-lint 4.7s, all exit 0."},
+    {"id": 3, "description": "Deliberate-violation runs for each script, reverted after each", "status": "done", "files_touched": ["FormalSystem/Syntax/SubformulaClosure.lean", "FormalSystem/Syntax/README.md", "README.md"], "note": "All three files were edited then restored from scratch backups within this objective; final git diff --quiet confirmed clean for all three. Invariants used the C10 stale-path fallback (not C9, per the plan's own documented fallback for hook-blocked C9 edits)."},
+    {"id": 4, "description": "Confirm git status clean apart from intended deliverables, re-run clean pass once more", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Fill runtime-budget table with local figures and sum", "status": "done", "files_touched": ["docs/development/CI_CD_PROCESS.md"]},
+    {"id": 6, "description": "Write implementation summary with remote-confirmation checklist", "status": "done", "files_touched": ["specs/583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md"]}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "4.2",
+      "description": "Minimal-env PATH template (\"$HOME/.elan/bin:/usr/bin:/bin:...\")",
+      "type": "altered",
+      "reason": "This dev machine is NixOS, not FHS Ubuntu; /usr/bin and /bin do not contain bash/find/awk/git. Built PATH from command -v lookups of each required tool instead, achieving the same intent (a minimal, explicit tool set) without assuming Ubuntu's directory layout.",
+      "annotation": "*(deviation: altered — command -v-derived PATH used instead of the /usr/bin:/bin template, since this dev machine is NixOS)*"
+    }
+  ]
+}
