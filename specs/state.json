@@ -9,18 +9,23 @@
     {
       "project_number": 600,
       "project_name": "rename_dense_extension_qtime",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Investigate why the dense frame-class extension is named Dense (FrameClass constructors Base | Dense | ZTime | RTime in FormalSystem/ProofSystem/Axioms.lean, and derived names such as detCompletenessDense, derivable_of_validDetDense, cantorBfmcsDense) instead of QTime, which would match ZTime and RTime. Research first: check whether the class is really the theory of Q (e.g. canonical/completeness constructions over ℚ, and whether every dense temporal order validates exactly the same formulas so QTime is accurate) or deliberately named for the density axiom over arbitrary dense orders, and check how the paper (PossibleWorlds JPL/possible_worlds.tex) and docs name it. If there is good reason, rename Dense to QTime systematically (constructor, IsDense-style predicates, theorem/def names, file and module names, docstrings, tests, docs), keeping the naming scheme uniform and elegant; otherwise record the rationale in the relevant docstring and close without renaming. Coordinate with other in-flight renaming/nesting tasks",
       "topic": "frame-extensions",
       "created": "2026-09-16T18:32:40Z",
-      "last_updated": "2026-09-16T18:48:30Z",
-      "session_id": "sess_1789584086_2b6633_600",
+      "last_updated": "2026-09-16T18:53:31Z",
+      "session_id": "sess_1789584086_2b6633",
       "artifacts": [
         {
           "path": "specs/600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md",
           "type": "report",
           "summary": "Recommends keeping FrameClass.Dense (non-categorical class, required by Dense <= RTime, matches paper TM_d); record rationale in FrameClass and IsDense docstrings."
+        },
+        {
+          "path": "specs/600_rename_dense_extension_qtime/plans/01_dense-naming-rationale.md",
+          "type": "plan",
+          "summary": "2-phase docstring-only plan: record why FrameClass.Dense is not renamed QTime (canonical paragraph on FrameClass, pointer on IsDense), then full lake build + lints."
         }
       ],
       "next_artifact_number": 2

@@ -1,16 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md",
-      "summary": "Recommends keeping FrameClass.Dense (non-categorical class, required by Dense <= RTime, matches paper TM_d); record rationale in FrameClass and IsDense docstrings."
+      "type": "plan",
+      "path": "specs/600_rename_dense_extension_qtime/plans/01_dense-naming-rationale.md",
+      "summary": "2-phase docstring-only plan: record why FrameClass.Dense is not renamed QTime (canonical paragraph on FrameClass, pointer on IsDense), then full lake build + lints."
     }
   ],
+  "next_steps": "Run /implement 600 to execute the plan",
+  "phase_count": 2,
+  "estimated_hours": 1.5,
+  "dependency_waves": [[1], [2]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1789584086_2b6633_600",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 6
 }
