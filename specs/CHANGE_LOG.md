@@ -1,6 +1,24 @@
 # Change Log
 
 
+## 2026-09-16: Archive 11 completed tasks
+
+**Archived**:
+- **577** (completed, lean4): Landed `ValidityLayer.lean`/`TruthClauses.lean` (the validity/per-operator-clause classes written once) and instantiated both for Formula, MinusFormula, PlusFormula and StarFormula -- 77 per-language theorem bodies became one-line delegations with zero signature changes and zero downstream edits
+- **576** (completed, lean4): Split `StarAxiom.ofBase` into 53 schematic mirror constructors over `StarFormula` (`modal_future` alone under a `RecallFree` side condition), retired the monolith and `stabNecessitationOfPlus` in favor of an unrestricted `stabNecessitation`, and re-verified conservativity against the widened axiom set
+- **575** (completed, lean4): Built the L-plus state-locality fragment natively (`StateLocal`/`IsPlusStateLocal` with seven-case soundness induction), retired `stab_atom_of_atom` in favor of the general `stab_of_stateLocal`, and proved `stateLocal_ofPlus_iff` linking the L-plus and L-star fragments
+- **574** (completed, lean4): Corrected the time-shift consumer enumeration in `Soundness.lean`'s docstring, relocated two `StarValidIn` lemmas to break an import cycle, and added five machine-pinned TM-star rows plus an explicit TM-star-completeness OPEN record to `docs/theorem-index.md`
+- **573** (completed, lean4): Built TM-star (StarAxiom, StarDerivationTree) and its metatheory -- soundness at all four frame classes, embedding of every TM-plus derivation, and conservativity over TM (unconditional) and TM-plus (conditional); TM-star completeness recorded as OPEN under two named obstructions, never stubbed
+- **572** (completed, lean4): Proved `StarStateLocal.lean`'s state-locality fragment of L-star sound with countermodels for the three excluded constructors, landing the headline `phi <-> box-dot phi`; replaced `fn_sentDet_atom` with `fn_sentDet_stateLocal`
+- **571** (completed, lean4): Removed the atom restriction from Det-pm at its source -- `detPM` now schematic over `StarFormula`, with `deterministic_starDefinable` a three-way equivalence hinged on `F.Deterministic`
+- **537** (completed, lean4): Landed the mechanical TM+ metatheory sorry-free at all four frame classes -- deterministic completeness, `stabNotDefinable`, `pasteNotNaiveDerivable`/`untlPasteNotNaiveDerivable` via a new coarsened-state semantics, and the conservativity corollaries; general TM+ completeness recorded as open citing Reynolds 2003 and Zanardo 1991
+- **193** (completed, lean4): Applied the `truth_norm`/`swap_norm` simp-normal form across `Soundness.lean` and `FrameClassVariants.lean`, cutting `simp only [TruthAt` occurrences from 60 to 1 (98.3%) with zero declaration lines touched
+- **562** (completed, lean4): Renamed the repository's object languages to match the paper -- Formula/logic to L/TM, H/G language to L⁻/TM⁻, ⊡-extension to L⁺/TM⁺ -- freeing StarLanguage/ for the genuine store/recall L⋆; 169 declaration tokens, 16 file moves, zero proof-term changes
+- **561** (completed, lean4): Built `FormalSystem/StarLanguage/` (L⋆ = L⁺ + time store/recall) and landed the characterization theorem for the deterministic task frames -- the biconditional bridge lemma, the new formula type and semantics, both halves of `app:deterministic-future`, the discrimination footnote, and Theorem C's `Det-pm` half; the optional `Det-m` world-register phase closed with a reasoned exclusion
+
+**Directories moved**: 11 (specs/ -> specs/archive/)
+**Roadmap updates**: 0 annotations applied -- the 4 eligible matches found were all low-confidence keyword matches; `specs/ROADMAP.md` unchanged
+
 ## 2026-08-25: Archive 4 completed tasks
 
 **Archived**:
