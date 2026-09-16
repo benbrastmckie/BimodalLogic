@@ -169,7 +169,7 @@ theorem worldState_eq : P.toTaskFrame.WorldState = Fin P.card := rfl
 /-- The presented carrier has exactly `card` states, so `FMP/Periodicity.lean`'s
 `Nat.card`-shaped bounds read literally as `card` on a presentation. -/
 theorem card_worldState : Nat.card P.toTaskFrame.WorldState = P.card := by
-  simp [toTaskFrame, toFibre, FrameOver.ofStep, FrameOver.toTaskFrame, TaskFrame.WorldState]
+  rw [worldState_eq]; simp
 
 /-- The presented frame's one-step relation is the presentation's `step`. -/
 theorem step_iff (w u : Fin P.card) : P.toFibre.step w u ↔ P.step w u = true :=

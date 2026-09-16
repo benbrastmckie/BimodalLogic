@@ -33,13 +33,13 @@ functional, so `F°` is **not** deterministic (`fzero_not_deterministic`) — an
 
 - `fib_eq_Icc` / `fib_eq_Icc'`, `isCompact_fib`, `isClosed_fib` — the fibres are closed bounded
   intervals, which is what makes *Saturation* a compactness argument
-- `fzero_converse`, `fzero_serial`, `fzero_comp`, `fzero_limit`, `fzero_saturation` — the
+- `fzero_reflection`, `fzero_serial`, `fzero_comp`, `fzero_limit`, `fzero_saturation` — the
   five `FrameOver` obligations (the zero-duration law is the derived `FrameOver.nullity_identity`)
 - `fzero_not_deterministic` — `0 ⇒_1 1` and `0 ⇒_1 2`, so `F°` fails `def:deterministic`
 
 ## The `uIcc` encoding
 
-`app:drift` states the relation only for `x ≥ 0`. `FrameOver.converse` is a structure field, so
+`app:drift` states the relation only for `x ≥ 0`. `FrameOver.reflection` is a structure field, so
 the relation must be defined at negative durations too, and it must satisfy
 `w ⇒_x u ↔ u ⇒_{-x} w` **on the nose**. The unordered interval `Set.uIcc x (2 * x)` is exactly
 the two-sided extension that makes this hold definitionally: for `x < 0` it is `[2x, x]`, which
@@ -101,7 +101,7 @@ open Set
 
 /-- The drift relation: `u - w` lies in the unordered interval between `d` and `2d`. For `d ≥ 0`
 this is `app:drift`'s `d ≤ u - w ≤ 2d`; for `d < 0` it is the reflection, which is what
-`FrameOver.converse` demands. -/
+`FrameOver.reflection` demands. -/
 def fzeroRel (w : ℝ) (d : ℝ) (u : ℝ) : Prop := u - w ∈ Set.uIcc d (2 * d)
 
 /-- The sign-split form of `fzeroRel`, and the form every proof below consumes. -/
@@ -145,7 +145,7 @@ theorem isClosed_fib (w d : ℝ) : IsClosed (TaskFrame.Fib (D := realTemporalOrd
 /-! ### The five `FrameOver` obligations -/
 
 /-- *Converse*: the `uIcc` encoding makes this hold on the nose. -/
-theorem fzero_converse (w d u : ℝ) : fzeroRel w d u ↔ fzeroRel u (-d) w := by
+theorem fzero_reflection (w d u : ℝ) : fzeroRel w d u ↔ fzeroRel u (-d) w := by
   rw [fzeroRel_iff, fzeroRel_iff]; constructor
   · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩)
     · right; constructor <;> linarith
@@ -218,18 +218,18 @@ reason recorded at `realTemporalOrder` — without it `F0.WorldState` does not r
 the order instances nor the state-set recursion can be stated. -/
 @[reducible] noncomputable def fzeroFrame : FrameOver realTemporalOrder where
   WorldState := ℝ
-  TaskRel := fzeroRel
-  comp := fzero_comp
-  converse := fzero_converse
-  serial := fzero_serial
-  limit := fzero_limit
-  saturation := fzero_saturation
+  PosRel w x u := fzeroRel w x u
+  comp := TaskFrame.compositional_reflect_of_reflective fzero_reflection fzero_comp
+  serial := TaskFrame.serial_reflect_of_reflective fzero_reflection fzero_serial
+  limit := TaskFrame.limit_reflect_of_reflective fzero_reflection fzero_limit
+  saturation := TaskFrame.saturation_reflect_of_reflective fzero_reflection fzero_saturation
 
 /-- `F°` as a `TaskFrame`, the shape validity and truth are stated over. -/
 @[reducible] noncomputable def F0 : TaskFrame := fzeroFrame.toTaskFrame
 
 /-- `F°`'s task relation, definitionally. -/
-theorem f0_taskRel_iff (w x u : ↑realTemporalOrder) : F0.TaskRel w x u ↔ fzeroRel w x u := Iff.rfl
+theorem f0_taskRel_iff (w x u : ↑realTemporalOrder) : F0.TaskRel w x u ↔ fzeroRel w x u :=
+  TaskFrame.reflect_restrict_iff (R := fzeroRel) fzero_reflection
 
 /-! ### F° is not deterministic -/
 
@@ -241,7 +241,7 @@ theorem fzero_not_deterministic : ¬ F0.Deterministic := by
   intro h
   have h1 : fzeroRel 0 1 1 := by rw [fzeroRel_iff]; left; norm_num
   have h2 : fzeroRel 0 1 2 := by rw [fzeroRel_iff]; left; norm_num
-  have := h 0 1 2 1 h1 h2
+  have := h 0 1 2 1 ((f0_taskRel_iff _ _ _).mpr h1) ((f0_taskRel_iff _ _ _).mpr h2)
   norm_num at this
 
 end FormalSystem.Metalogic.Independence

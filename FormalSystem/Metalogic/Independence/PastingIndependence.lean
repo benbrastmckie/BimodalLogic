@@ -155,8 +155,8 @@ theorem pHist_someFuture_someFuture_atom (w₀ t : ℤ) (q : Atom) :
 by `respects_task` at `(0, t)`. -/
 theorem pTotal_states (σ : PartialHistory PF) (hσ : σ.IsTotal) (t : ℤ) (h : σ.domain t) :
     σ.states t h = ((), (σ.states 0 (hσ 0)).2 + t) := by
-  have hr := σ.respects_task 0 t (hσ 0) h
-  obtain ⟨_, h2⟩ := hr
+  obtain ⟨_, h2⟩ := (FormalSystem.Metalogic.Algebraic.multiFamGen_taskRel (D := TemporalOrder.of ℤ) _ _ _).mp
+    (σ.respects_task 0 t (hσ 0) h)
   refine Prod.ext rfl ?_
   show (σ.states t h).2 = (σ.states 0 (hσ 0)).2 + t
   rw [h2]

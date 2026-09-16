@@ -45,7 +45,8 @@ example : (FrameOver.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 0 (3 : Nat) :
 
 -- Test: staticFrame is reflexive at every duration (the Seriality witness), unlike the
 -- former zero-duration-only identity frame it replaces
-example : (FrameOver.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 7 (3 : Nat) := rfl
+example : (FrameOver.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 7 (3 : Nat) :=
+  (FrameOver.staticFrame_rel_iff Nat _ _ _).mpr rfl
 
 /-! ## natFrame Tests (using Int time) -/
 
@@ -54,7 +55,8 @@ example : (FrameOver.natFrame (D := Int)).TaskRel (5 : Nat) 0 (5 : Nat) :=
   (FrameOver.natFrame (D := Int)).nullity (5 : Nat)
 
 -- Test: natFrame with non-zero duration (task relation always true)
-example : (FrameOver.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) := Or.inl (by decide)
+example : (FrameOver.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) :=
+  (FrameOver.natFrame_rel_iff _ _ _).mpr (Or.inl (by decide))
 
 /-! ## Custom Frame Tests -/
 
@@ -66,13 +68,15 @@ def customFrame : FrameOver intOrder := FormalSystem.Examples.TemporalStructures
 
 -- Test: Custom frame satisfies properties
 example : customFrame.TaskRel true 0 true := customFrame.nullity true
-example : customFrame.TaskRel false 5 true := Or.inl (by decide)
+example : customFrame.TaskRel false 5 true :=
+  (FormalSystem.Examples.TemporalStructures.intBoolFrame_rel_iff _ _ _).mpr (Or.inl (by decide))
 
 /-! ### `customFrame` discharges `def:frame`'s four axioms (permissive class) -/
 
 /-- `customFrame`'s relation is the permissive class, the same class as `natFrame`'s. -/
 theorem customFrame_rel_iff :
-    ∀ w d u, customFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+    ∀ w d u, customFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
+  FormalSystem.Examples.TemporalStructures.intBoolFrame_rel_iff
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `customFrame`. -/

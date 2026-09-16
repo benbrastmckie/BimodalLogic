@@ -130,13 +130,14 @@ the point of the route — see the module docstring.
 -/
 @[reducible] noncomputable def F1 : TaskFrame := oneShift.frame
 
-/-- `F¹`'s task relation is translation, definitionally. -/
-theorem f1_taskRel_iff (w x u : ↑realTemporalOrder) : F1.TaskRel w x u ↔ u = w + x := Iff.rfl
+/-- `F¹`'s task relation is translation (`ShiftSet.fibre_taskRel`). -/
+theorem f1_taskRel_iff (w x u : ↑realTemporalOrder) : F1.TaskRel w x u ↔ u = w + x :=
+  oneShift.fibre_taskRel w x u
 
 /-- **F¹ is deterministic** (`def:deterministic`): the relation is functional, so every fibre is
 a subsingleton. -/
 theorem f1_deterministic : F1.Deterministic :=
-  TaskFrame.fib_subsingleton_of_functional (f := fun w d => w + d) (fun _ _ _ => Iff.rfl)
+  TaskFrame.fib_subsingleton_of_functional (f := fun w d => w + d) f1_taskRel_iff
 
 /--
 **The world-set characterization of F¹**, from `ShiftSet.total_eq_orbit`: every total history of
@@ -152,15 +153,14 @@ theorem f1_total_eq_orbit (τ : PartialHistory F1) (hτ : τ.IsTotal) :
 /-- The pointwise form: a total history of `F¹` is `t ↦ τ(0) + t`. -/
 theorem f1_states_eq (τ : PartialHistory F1) (hτ : τ.IsTotal) (r : ↑realTemporalOrder) :
     τ.states r (hτ r) = τ.states 0 (hτ 0) + r := by
-  have h := τ.respects_task 0 r (hτ 0) (hτ r)
+  have h := (f1_taskRel_iff _ _ _).mp (τ.respects_task 0 r (hτ 0) (hτ r))
   rw [sub_zero] at h
   exact h
 
 /-- The two-point form: a total history of `F¹` moves by exactly the elapsed duration. -/
 theorem f1_states_sub (τ : PartialHistory F1) (hτ : τ.IsTotal) (s r : ↑realTemporalOrder) :
     τ.states r (hτ r) = τ.states s (hτ s) + (r - s) := by
-  have h := τ.respects_task s r (hτ s) (hτ r)
-  exact h
+  exact (f1_taskRel_iff _ _ _).mp (τ.respects_task s r (hτ s) (hτ r))
 
 /--
 Two total histories of `F¹` agreeing at one time are **equal** — the `⟨τ⟩_x = {τ}` form of

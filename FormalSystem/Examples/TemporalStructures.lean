@@ -75,29 +75,33 @@ Standard integer time task frame.
 This is the default temporal structure used in most temporal logic applications.
 Discrete time steps with integer arithmetic. WorldState is Unit (trivial).
 -/
-def intTimeFrame : FrameOver intOrder where
-  WorldState := Unit
-  worldNonempty := inferInstanceAs (Nonempty Unit)
-  TaskRel := fun _ _ _ => True
-  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
-    fun _ _ _ _ _ _ _ _ _ => trivial
-  converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
-  serial := TaskFrame.serial_of_total fun _ _ _ => trivial
-  limit := TaskFrame.limit_of_subsingleton
-  saturation := TaskFrame.saturation_of_subsingleton
+def intTimeFrame : FrameOver intOrder :=
+  FrameOver.ofReflective Unit (fun _ _ _ => True)
+    (fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩)
+    (TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
+      fun _ _ _ _ _ _ _ _ _ => trivial)
+    (TaskFrame.serial_of_total fun _ _ _ => trivial)
+    TaskFrame.limit_of_subsingleton
+    TaskFrame.saturation_of_subsingleton
+
+/-- `intTimeFrame`'s task relation is total. -/
+@[simp]
+theorem intTimeFrame_taskRel {w u : intTimeFrame.WorldState} {d : ↑intOrder} :
+    intTimeFrame.TaskRel w d u ↔ True :=
+  FrameOver.ofReflective_taskRel
 
 /-! ### `intTimeFrame` discharges `def:frame`'s four axioms (total class) -/
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intTimeFrame`: its relation is total. -/
 theorem intTimeFrame_serial : TaskFrame.Serial intTimeFrame.TaskRel :=
-  TaskFrame.serial_of_total fun _ _ _ => trivial
+  TaskFrame.serial_of_total fun _ _ _ => intTimeFrame_taskRel.mpr trivial
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `intTimeFrame`: its relation is total. -/
 theorem intTimeFrame_interpolates : TaskFrame.Interpolates intTimeFrame.TaskRel :=
-  TaskFrame.interpolates_of_total fun _ _ _ => trivial
+  TaskFrame.interpolates_of_total fun _ _ _ => intTimeFrame_taskRel.mpr trivial
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `intTimeFrame`, in the literal transcribed shape: its carrier is `Unit`. -/
@@ -119,51 +123,50 @@ Integer time task frame with natural number world states.
 A slightly more complex frame with `Nat` world states. Task relation is `d ≠ 0 ∨ w = u`
 so that duration zero relates only equal states while remaining permissive for non-zero durations.
 -/
-def intNatFrame : FrameOver intOrder where
-  WorldState := Nat
-  worldNonempty := inferInstanceAs (Nonempty Nat)
-  TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
-    fun w u v x y hx hy h1 h2 => by
-      cases h1 with
-      | inl hxne =>
-        left
-        intro heq
-        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-        have h1 : 0 ≤ -x := hy_eq ▸ hy
-        have h2 : x ≤ 0 := neg_nonneg.mp h1
-        have h3 : x = 0 := le_antisymm h2 hx
-        exact hxne h3
-      | inr hw =>
-        cases h2 with
-        | inl hyne =>
+def intNatFrame : FrameOver intOrder :=
+  FrameOver.ofReflective Nat (fun w d u => d ≠ 0 ∨ w = u)
+    (fun w d u => by
+      constructor
+      · intro h
+        cases h with
+        | inl hd => left; simp [hd]
+        | inr heq => right; exact heq.symm
+      · intro h
+        cases h with
+        | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
+        | inr heq => right; exact heq.symm)
+    (TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+      fun w u v x y hx hy h1 h2 => by
+        cases h1 with
+        | inl hxne =>
           left
           intro heq
-          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-          have h1 : 0 ≤ -y := hx_eq ▸ hx
-          have h2 : y ≤ 0 := neg_nonneg.mp h1
-          have h3 : y = 0 := le_antisymm h2 hy
-          exact hyne h3
-        | inr hu => right; exact hw.trans hu
-  serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
-  limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-  saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl
-  converse := fun w d u => by
-    constructor
-    · intro h
-      cases h with
-      | inl hd => left; simp [hd]
-      | inr heq => right; exact heq.symm
-    · intro h
-      cases h with
-      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
-      | inr heq => right; exact heq.symm
+          have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+          have h1 : 0 ≤ -x := hy_eq ▸ hy
+          have h2 : x ≤ 0 := neg_nonneg.mp h1
+          have h3 : x = 0 := le_antisymm h2 hx
+          exact hxne h3
+        | inr hw =>
+          cases h2 with
+          | inl hyne =>
+            left
+            intro heq
+            have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+            have h1 : 0 ≤ -y := hx_eq ▸ hx
+            have h2 : y ≤ 0 := neg_nonneg.mp h1
+            have h3 : y = 0 := le_antisymm h2 hy
+            exact hyne h3
+          | inr hu => right; exact hw.trans hu)
+    (TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl)
 
 /-! ### `intNatFrame` discharges `def:frame`'s four axioms (permissive class) -/
 
 /-- `intNatFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
 theorem intNatFrame_rel_iff :
-    ∀ w d u, intNatFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+    ∀ w d u, intNatFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
+  fun _ _ _ => FrameOver.ofReflective_taskRel
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intNatFrame`, via the `w = u` disjunct. -/
@@ -213,49 +216,48 @@ own since it was split out of `def:frame-properties` — which now carries only 
 and *Complete*. None of the three is an axiom-discharge source: two are correspondence theorems
 and one is a frame-class predicate. `def:frame` is the source of record for all four discharges.
 -/
-def intBoolFrame : FrameOver intOrder where
-  WorldState := Bool
-  worldNonempty := inferInstanceAs (Nonempty Bool)
-  TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
-    fun w u v x y hx hy h1 h2 => by
-      cases h1 with
-      | inl hxne =>
-        left
-        intro heq
-        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-        have h1 : 0 ≤ -x := hy_eq ▸ hy
-        have h2 : x ≤ 0 := neg_nonneg.mp h1
-        exact hxne (le_antisymm h2 hx)
-      | inr hw =>
-        cases h2 with
-        | inl hyne =>
+def intBoolFrame : FrameOver intOrder :=
+  FrameOver.ofReflective Bool (fun w d u => d ≠ 0 ∨ w = u)
+    (fun w d u => by
+      constructor
+      · intro h
+        cases h with
+        | inl hd => left; simp [hd]
+        | inr heq => right; exact heq.symm
+      · intro h
+        cases h with
+        | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
+        | inr heq => right; exact heq.symm)
+    (TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+      fun w u v x y hx hy h1 h2 => by
+        cases h1 with
+        | inl hxne =>
           left
           intro heq
-          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-          have h1 : 0 ≤ -y := hx_eq ▸ hx
-          have h2 : y ≤ 0 := neg_nonneg.mp h1
-          exact hyne (le_antisymm h2 hy)
-        | inr hu => right; exact hw.trans hu
-  serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
-  limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-  saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl
-  converse := fun w d u => by
-    constructor
-    · intro h
-      cases h with
-      | inl hd => left; simp [hd]
-      | inr heq => right; exact heq.symm
-    · intro h
-      cases h with
-      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
-      | inr heq => right; exact heq.symm
+          have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+          have h1 : 0 ≤ -x := hy_eq ▸ hy
+          have h2 : x ≤ 0 := neg_nonneg.mp h1
+          exact hxne (le_antisymm h2 hx)
+        | inr hw =>
+          cases h2 with
+          | inl hyne =>
+            left
+            intro heq
+            have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+            have h1 : 0 ≤ -y := hx_eq ▸ hx
+            have h2 : y ≤ 0 := neg_nonneg.mp h1
+            exact hyne (le_antisymm h2 hy)
+          | inr hu => right; exact hw.trans hu)
+    (TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl)
+    (TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl)
 
 /-! ### `intBoolFrame` discharges `def:frame`'s four axioms (permissive class) -/
 
 /-- `intBoolFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
 theorem intBoolFrame_rel_iff :
-    ∀ w d u, intBoolFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+    ∀ w d u, intBoolFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
+  fun _ _ _ => FrameOver.ofReflective_taskRel
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intBoolFrame`, via the `w = u` disjunct. -/
@@ -296,7 +298,7 @@ def intTimeHistory : PartialHistory intTimeFrame where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun _ _ => ()
-  respects_task := fun _ _ _ _ => trivial
+  respects_task := fun _ _ _ _ => intTimeFrame_taskRel.mpr trivial
 
 /-! ## Polymorphic Examples -/
 
@@ -322,13 +324,13 @@ abbrev genericTimeFrame : FrameOver D := FrameOver.trivialFrame (D := ↑D)
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `genericTimeFrame`: its relation is total, at every `D`. -/
 theorem genericTimeFrame_serial : TaskFrame.Serial (genericTimeFrame D).TaskRel :=
-  TaskFrame.serial_of_total fun _ _ _ => trivial
+  TaskFrame.serial_of_total fun _ _ _ => FrameOver.trivialFrame_taskRel.mpr trivial
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `genericTimeFrame`: its relation is total, at every `D`. -/
 theorem genericTimeFrame_interpolates : TaskFrame.Interpolates (genericTimeFrame D).TaskRel :=
-  TaskFrame.interpolates_of_total fun _ _ _ => trivial
+  TaskFrame.interpolates_of_total fun _ _ _ => FrameOver.trivialFrame_taskRel.mpr trivial
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `genericTimeFrame`, in the literal transcribed shape. Its carrier is `Unit`, so the axiom holds
@@ -367,7 +369,8 @@ abbrev genericNatFrame [SuccOrder ↑D] [NoMaxOrder ↑D] : FrameOver D :=
 
 /-- `genericNatFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
 theorem genericNatFrame_rel_iff [SuccOrder D] [NoMaxOrder D] :
-    ∀ w d u, (genericNatFrame D).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+    ∀ w d u, (genericNatFrame D).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
+  FrameOver.natFrame_rel_iff
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `genericNatFrame`, via the `w = u` disjunct. Holds at every `D`. -/
@@ -413,7 +416,7 @@ def genericTimeHistory : PartialHistory (genericTimeFrame D) where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun _ _ => ()
-  respects_task := fun _ _ _ _ => trivial
+  respects_task := fun _ _ _ _ => FrameOver.trivialFrame_taskRel.mpr trivial
 
 end Polymorphic
 
@@ -466,8 +469,8 @@ theorem generic_compositionality (D : TemporalOrder)
     (x y : ↑D) (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (genericTimeFrame D).TaskRel () (x + y) () :=
   (genericTimeFrame D).forward_comp () () () x y hx hy
-    ((genericTimeFrame D).nullity ())
-    ((genericTimeFrame D).nullity ())
+    (FrameOver.trivialFrame_taskRel.mpr trivial)
+    (FrameOver.trivialFrame_taskRel.mpr trivial)
 
 /-! ## History Domain Examples -/
 

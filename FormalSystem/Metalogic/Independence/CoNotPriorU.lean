@@ -375,7 +375,7 @@ theorem clockRel_neg {a b : ClockState} {d : ℚ} (h : clockRel a d b) :
 theorem reflect_respects (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (s t : ℚ) :
     clockRel (cneg (τ.states (-s) (hτ (-s)))) (t - s) (cneg (τ.states (-t) (hτ (-t)))) := by
   have h2 := clockRel_neg (a := τ.states (-s) (hτ (-s))) (b := τ.states (-t) (hτ (-t)))
-    (d := -t - -s) (τ.respects_task (-s) (-t) (hτ (-s)) (hτ (-t)))
+    (d := -t - -s) ((clockFrame_taskRel _ _ _).mp (τ.respects_task (-s) (-t) (hτ (-s)) (hτ (-t))))
   have he : -(-t - -s) = t - s := by ring
   rwa [he] at h2
 
@@ -389,7 +389,7 @@ def reflect (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) : PartialHistory
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => cneg (τ.states (-t) (hτ (-t)))
-  respects_task := fun s t _ _ => reflect_respects τ hτ s t
+  respects_task := fun s t _ _ => (clockFrame_taskRel _ _ _).mpr (reflect_respects τ hτ s t)
 theorem reflect_isTotal (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) :
     (reflect τ hτ).IsTotal := fun _ => trivial
 

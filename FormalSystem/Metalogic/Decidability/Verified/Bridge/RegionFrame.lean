@@ -190,38 +190,36 @@ binder because the very same `D` is consumed as a bare type by `FrameConditionFo
 -/
 def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    FrameOver (TemporalOrder.of D) where
-  WorldState := W × D
-  worldNonempty := inferInstance
-  TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d
-  comp := TaskFrame.comp_of
+    FrameOver (TemporalOrder.of D) :=
+  FrameOver.ofReflective (W × D) (fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d)
     (by
-      rintro s v x y _ _ ⟨h₁, h₂⟩
-      refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
-      show v.2 = s.2 + x + y
-      rw [h₂]; abel)
-    (by
-      rintro s u v x y _ _ ⟨h₁, h₂⟩ ⟨h₃, h₄⟩
-      exact ⟨h₁.trans h₃, by rw [h₄, h₂, add_assoc]⟩)
-  serial := fun s x _ =>
-    ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
-     ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
-  limit :=
-    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
-      (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
-  saturation := TaskFrame.saturation_of_fib_subsingleton (regionRel_fib_subsingleton W D)
-  converse := by
-    intro s d s'
-    constructor
-    · rintro ⟨h₁, h₂⟩
-      exact ⟨h₁.symm, by rw [h₂]; abel⟩
-    · rintro ⟨h₁, h₂⟩
-      exact ⟨h₁.symm, by rw [h₂]; abel⟩
+      intro s d s'
+      constructor
+      · rintro ⟨h₁, h₂⟩
+        exact ⟨h₁.symm, by rw [h₂]; abel⟩
+      · rintro ⟨h₁, h₂⟩
+        exact ⟨h₁.symm, by rw [h₂]; abel⟩)
+    (TaskFrame.comp_of
+      (by
+        rintro s v x y _ _ ⟨h₁, h₂⟩
+        refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
+        show v.2 = s.2 + x + y
+        rw [h₂]; abel)
+      (by
+        rintro s u v x y _ _ ⟨h₁, h₂⟩ ⟨h₃, h₄⟩
+        exact ⟨h₁.trans h₃, by rw [h₄, h₂, add_assoc]⟩))
+    (fun s x _ =>
+      ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
+       ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩)
+    (TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+      (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero])))
+    (TaskFrame.saturation_of_fib_subsingleton (regionRel_fib_subsingleton W D))
 
 @[simp]
 theorem regionFrame_taskRel (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (d : D) (s' : W × D) :
-    (regionFrame W ι D).TaskRel s d s' ↔ (s.1 = s'.1 ∧ s'.2 = s.2 + d) := Iff.rfl
+    (regionFrame W ι D).TaskRel s d s' ↔ (s.1 = s'.1 ∧ s'.2 = s.2 + d) :=
+  FrameOver.ofReflective_taskRel
 
 /-! ### `regionFrame` discharges `def:frame`'s four axioms
 
@@ -242,17 +240,22 @@ falsification test the flag needed, and it fails to falsify. -/
 clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. -/
 theorem regionFrame_fib_subsingleton (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (x : D) :
-    (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton :=
-  regionRel_fib_subsingleton W D s x
+    (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
+  have h : TaskFrame.Fib (regionFrame W ι D).TaskRel s x =
+      TaskFrame.Fib (fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d) s x :=
+    Set.ext fun _ => regionFrame_taskRel W ι D _ _ _
+  rw [h]
+  exact regionRel_fib_subsingleton W D s x
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `regionFrame`: the clock supplies the successor `(s.1, s.2 + x)` and
 the predecessor `(s.1, s.2 - x)`. -/
 theorem regionFrame_serial (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] : TaskFrame.Serial (regionFrame W ι D).TaskRel :=
-  fun s x _ =>
-    ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
-     ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
+    [IsOrderedAddMonoid D] [Nontrivial D] : TaskFrame.Serial (regionFrame W ι D).TaskRel := by
+  intro s x _
+  exact ⟨⟨(s.1, s.2 + x), (regionFrame_taskRel W ι D _ _ _).mpr ⟨rfl, rfl⟩⟩,
+    ⟨(s.1, s.2 - x), (regionFrame_taskRel W ι D _ _ _).mpr
+      ⟨rfl, by show s.2 = s.2 - x + x; abel⟩⟩⟩
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
@@ -260,8 +263,10 @@ $u \in W$") for `regionFrame`: interpolate at the unique intermediate `(s.1, s.2
 theorem regionFrame_interpolates (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     TaskFrame.Interpolates (regionFrame W ι D).TaskRel := by
-  rintro s v x y _ _ ⟨h₁, h₂⟩
-  refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
+  intro s v x y _ _ h
+  obtain ⟨h₁, h₂⟩ := (regionFrame_taskRel W ι D _ _ _).mp h
+  refine ⟨(s.1, s.2 + x), (regionFrame_taskRel W ι D _ _ _).mpr ⟨rfl, rfl⟩,
+    (regionFrame_taskRel W ι D _ _ _).mpr ⟨h₁, ?_⟩⟩
   show v.2 = s.2 + x + y
   rw [h₂]; abel
 
@@ -313,7 +318,7 @@ def regionHistory (f : ι → D) (w : W) (Δ : D) : PartialHistory (regionFrame 
   states := fun r _ => (w, r + Δ)
   respects_task := by
     intro s t _ _
-    refine ⟨rfl, ?_⟩
+    refine (regionFrame_taskRel W ι D _ _ _).mpr ⟨rfl, ?_⟩
     show t + Δ = s + Δ + (t - s)
     abel
 
@@ -362,7 +367,7 @@ theorem regionFrame_total_eq (f : ι → D) (σ : PartialHistory (regionFrame W 
   have key : ∀ (r : D) (hr : σ.domain r),
       σ.states r hr = ((σ.states 0 (htot 0)).1, r + (σ.states 0 (htot 0)).2) := by
     intro r hr
-    obtain ⟨h₁, h₂⟩ := σ.respects_task 0 r (htot 0) hr
+    obtain ⟨h₁, h₂⟩ := (regionFrame_taskRel W ι D _ _ _).mp (σ.respects_task 0 r (htot 0) hr)
     refine Prod.ext h₁.symm ?_
     rw [h₂]
     abel_nf

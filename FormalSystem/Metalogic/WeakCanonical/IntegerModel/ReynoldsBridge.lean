@@ -460,17 +460,20 @@ theorem zShiftRel_fib_subsingleton (w x : ℤ) :
   exact (hu : u = w + x).trans (hu' : u' = w + x).symm
 
 /-- A `FrameOver intOrder` with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
-noncomputable def zTaskFrameV2 : FrameOver intOrder where
-  WorldState := ℤ
-  worldNonempty := inferInstanceAs (Nonempty ℤ)
-  TaskRel w d u := u = w + d
-  comp := TaskFrame.comp_of
-    (fun w v x y _ _ h => ⟨w + x, rfl, by omega⟩)
-    (fun w u v x y _ _ h1 h2 => by rw [h2, h1, add_assoc])
-  converse w d u := by constructor <;> intro h <;> omega
-  serial := fun w x _ => ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
-  limit := TaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega)
-  saturation := TaskFrame.saturation_of_fib_subsingleton zShiftRel_fib_subsingleton
+noncomputable def zTaskFrameV2 : FrameOver intOrder :=
+  FrameOver.ofReflective ℤ (fun w d u => u = w + d)
+    (fun w d u => by constructor <;> intro h <;> omega)
+    (TaskFrame.comp_of
+      (fun w v x y _ _ h => ⟨w + x, rfl, by omega⟩)
+      (fun w u v x y _ _ h1 h2 => by rw [h2, h1, add_assoc]))
+    (fun w x _ => ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩)
+    (TaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega))
+    (TaskFrame.saturation_of_fib_subsingleton zShiftRel_fib_subsingleton)
+
+/-- `zTaskFrameV2`'s task relation is the shift `u = w + d`. -/
+@[simp]
+theorem zTaskFrameV2_taskRel (w d u : ℤ) : zTaskFrameV2.TaskRel w d u ↔ u = w + d :=
+  FrameOver.ofReflective_taskRel
 
 /-! ### `zTaskFrameV2` discharges `def:frame`'s four axioms (deterministic shift at `ℤ`)
 
@@ -483,8 +486,11 @@ directly rather than derived. -/
 /-- Every fiber (`def:task-relation`, *Fiber* clause) of `zTaskFrameV2` is a subsingleton: the
 shift is deterministic, so `Fib R w x ⊆ {w + x}`. -/
 theorem zTaskFrameV2_fib_subsingleton (w x : ℤ) :
-    (TaskFrame.Fib zTaskFrameV2.TaskRel w x).Subsingleton :=
-  zShiftRel_fib_subsingleton w x
+    (TaskFrame.Fib zTaskFrameV2.TaskRel w x).Subsingleton := by
+  intro u hu u' hu'
+  have h1 : (u : ℤ) = w + x := (zTaskFrameV2_taskRel w x u).mp hu
+  have h2 : (u' : ℤ) = w + x := (zTaskFrameV2_taskRel w x u').mp hu'
+  exact h1.trans h2.symm
 
 /-- **`zTaskFrameV2` is deterministic** (`def:deterministic`): `TaskFrame.Deterministic` *is* the
 fibre-subsingleton predicate, and `F.toTaskFrame.TaskRel = F.TaskRel` by `rfl`, so this is
@@ -495,27 +501,26 @@ theorem zTaskFrameV2_deterministic : zTaskFrameV2.toTaskFrame.Deterministic :=
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `zTaskFrameV2`: the shift supplies both `w + x` and `w - x`. -/
 theorem zTaskFrameV2_serial : TaskFrame.Serial zTaskFrameV2.TaskRel := by
-  show ∀ (w : ℤ) (x : ℤ), 0 ≤ x → (∃ u : ℤ, u = w + x) ∧ (∃ v : ℤ, w = v + x)
-  intro w x _
-  exact ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
+  intro (w : ℤ) (x : ℤ) _
+  exact ⟨⟨w + x, (zTaskFrameV2_taskRel _ _ _).mpr rfl⟩,
+    ⟨w - x, (zTaskFrameV2_taskRel _ _ _).mpr (by omega)⟩⟩
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `zTaskFrameV2`: interpolate at the unique intermediate `w + x`. -/
 theorem zTaskFrameV2_interpolates : TaskFrame.Interpolates zTaskFrameV2.TaskRel := by
-  show ∀ (w v : ℤ) (x y : ℤ), 0 ≤ x → 0 ≤ y → v = w + (x + y) →
-    ∃ u : ℤ, u = w + x ∧ v = u + y
-  intro w v x y _ _ h
-  exact ⟨w + x, rfl, by omega⟩
+  intro (w : ℤ) (v : ℤ) (x : ℤ) (y : ℤ) _ _ h
+  have h' : v = w + (x + y) := (zTaskFrameV2_taskRel _ _ _).mp h
+  exact ⟨w + x, (zTaskFrameV2_taskRel _ _ _).mpr rfl, (zTaskFrameV2_taskRel _ _ _).mpr (by omega)⟩
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `zTaskFrameV2`, in the literal transcribed shape, via `TaskFrame.limit_of_shift` with the
 identity position function. -/
 theorem zTaskFrameV2_limit :
     ∀ w u : ℤ, (∀ x, 0 < x → ∃ y, |y| < x ∧ zTaskFrameV2.TaskRel w y u) → u = w := by
-  refine TaskFrame.limit_of_shift id (fun _ _ _ h => h) ?_
-  show ∀ (w u : ℤ), u = w + 0 → u = w
+  refine TaskFrame.limit_of_shift id (fun _ _ _ h => (zTaskFrameV2_taskRel _ _ _).mp h) ?_
   intro w u h
+  have h' : (u : ℤ) = w + 0 := (zTaskFrameV2_taskRel _ _ _).mp h
   omega
 
 /-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
@@ -531,7 +536,9 @@ noncomputable def zHistoryV2 (w₀ : ℤ) : PartialHistory zTaskFrameV2 where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => w₀ + t
-  respects_task := fun s t _ _ => by change w₀ + t = (w₀ + s) + (t - s); omega
+  respects_task := fun s t _ _ => by
+    refine (zTaskFrameV2_taskRel _ _ _).mpr ?_
+    change w₀ + t = (w₀ + s) + (t - s); omega
 
 /-- Time-shifting zHistoryV2 w₀ by Δ gives zHistoryV2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
@@ -649,7 +656,7 @@ theorem zHistoryV2_total_eq (σ : PartialHistory zTaskFrameV2) (htot : ∀ t, σ
     intro t ht
     have h : (show ℤ from σ.states t ht) =
         (show ℤ from σ.states 0 (htot 0)) + (t - 0) :=
-      σ.respects_task 0 t (htot 0) ht
+      (zTaskFrameV2_taskRel _ _ _).mp (σ.respects_task 0 t (htot 0) ht)
     omega
   refine ⟨σ.states 0 (htot 0), ?_⟩
   obtain ⟨dom, nedom, sts, resp⟩ := σ
@@ -826,6 +833,7 @@ noncomputable def multiFamHistory {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx)
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => (f, w₀ + t)
   respects_task := fun s t _ _ => by
+    refine (Algebraic.multiFamGen_taskRel (D := intOrder) _ _ _).mpr ?_
     change (f, w₀ + s).1 = (f, w₀ + t).1 ∧ (f, w₀ + t).2 = (f, w₀ + s).2 + (t - s)
     exact ⟨rfl, by omega⟩
 
@@ -863,7 +871,7 @@ theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
     intro t ht
     obtain ⟨h₁, h₂⟩ : (σ.states 0 (htot 0)).1 = (σ.states t ht).1 ∧
         (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + (t - 0) :=
-      σ.respects_task 0 t (htot 0) ht
+      (Algebraic.multiFamGen_taskRel (D := intOrder) _ _ _).mp (σ.respects_task 0 t (htot 0) ht)
     refine Prod.ext h₁.symm ?_
     show (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + t
     rw [h₂, sub_zero]

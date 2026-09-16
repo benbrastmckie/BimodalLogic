@@ -73,7 +73,7 @@ relation is `w = u` at every duration, so the second conjunct is `Eq.symm` in bo
 -/
 theorem staticFrame_looping (W : Type) [Nonempty W] {π : D} (hπ : π ≠ 0) :
     LoopingDuration (FrameOver.staticFrame W (D := D)) π :=
-  ⟨hπ, fun _ _ => ⟨Eq.symm, Eq.symm⟩⟩
+  ⟨hπ, fun w u => (FrameOver.staticFrame_rel_iff W w π u).trans eq_comm⟩
 
 /--
 **Truth on a static frame does not depend on the time.**

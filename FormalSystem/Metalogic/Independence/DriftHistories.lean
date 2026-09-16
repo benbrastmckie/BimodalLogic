@@ -131,10 +131,10 @@ end BareFunction
 /-! ## Lifted to `F°`'s total histories -/
 
 /-- A total history of `F°` satisfies the bare hypothesis `hf`: `respects_task`, read at the pair
-`(s, t)`, *is* the drift condition on the state function. -/
+`(s, t)`, *is* the drift condition on the state function (through `f0_taskRel_iff`). -/
 theorem fzero_hist_rel (τ : PartialHistory F0) (hτ : τ.IsTotal) :
     ∀ s t : ℝ, fzeroRel (τ.states s (hτ s)) (t - s) (τ.states t (hτ t)) :=
-  fun s t => τ.respects_task s t (hτ s) (hτ t)
+  fun s t => (f0_taskRel_iff _ _ _).mp (τ.respects_task s t (hτ s) (hτ t))
 
 /-- **(H1) for `F°`**: every total history is an order-isomorphism of `(ℝ, <)` onto `(ℝ, <)`. -/
 theorem fzero_orderFlow : OrderFlow F0 where
@@ -154,6 +154,7 @@ duration is negative). -/
 noncomputable def driftTranslation (c : ℝ) : PartialHistory F0 :=
   PartialHistory.ofTotal F0 (fun t => t + c) <| by
     intro s t
+    refine (f0_taskRel_iff _ _ _).mpr ?_
     show fzeroRel (s + c) (t - s) (t + c)
     rw [fzeroRel_iff]
     rcases le_total 0 (t - s) with h | h

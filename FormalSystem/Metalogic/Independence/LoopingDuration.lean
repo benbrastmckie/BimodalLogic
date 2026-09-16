@@ -56,7 +56,7 @@ def LoopingDuration (F : FrameOver D) (π : ↑D) : Prop :=
 theorem LoopingDuration.neg {F : FrameOver D} {π : ↑D} (h : LoopingDuration F π) :
     LoopingDuration F (-π) := by
   refine ⟨neg_ne_zero.mpr h.1, fun w u => ?_⟩
-  have hconv := F.converse w (-π) u
+  have hconv := F.reflection w (-π) u
   rw [neg_neg] at hconv
   exact hconv.trans ((h.2 u w).trans eq_comm)
 

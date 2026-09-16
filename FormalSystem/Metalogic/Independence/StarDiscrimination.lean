@@ -77,13 +77,14 @@ The affine history `t ↦ a · t` of `F°`, for a drift rate `a` in the band `[1
 
 Its increment over `[s, t]` is `a · (t - s)`, which lies in `[t - s, 2 (t - s)]` exactly because
 `1 ≤ a ≤ 2` — and in the reflected interval when the duration is negative, which is what
-`FrameOver.converse` demands. This is `driftTranslation`'s idiom
+`FrameOver.reflection` demands. This is `driftTranslation`'s idiom
 (`Independence/DriftHistories.lean`) at a general rate; no appeal to `thm:extension` or
 `cor:occurrence`, and hence no Zorn.
 -/
 noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : PartialHistory F0 :=
   PartialHistory.ofTotal F0 (fun t => a * t) <| by
     intro s t
+    refine (f0_taskRel_iff _ _ _).mpr ?_
     show fzeroRel (a * s) (t - s) (a * t)
     rw [fzeroRel_iff]
     rcases le_total 0 (t - s) with h | h

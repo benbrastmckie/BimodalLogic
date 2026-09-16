@@ -146,27 +146,31 @@ trivial duration type `0 < x` is unsatisfiable and *Limit* (`def:frame#Limit`) h
 conclude from. Every consumer elaborates at `intOrder`, or at the temporal order of `ℚ` or `ℝ`,
 each of which supplies it at its construction site rather than at every mention. -/
 noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [Nonempty FamIdx] :
-    FrameOver D where
-  WorldState := FamIdx × ↑D
-  worldNonempty := inferInstance
-  TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
-  comp := TaskFrame.comp_of
-    (fun w v x y _ _ h => by
-      obtain ⟨h₁, h₂⟩ := h
-      refine ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
-      show v.2 = w.2 + x + y
-      rw [h₂]; abel)
-    (fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by rw [h4, h2, add_assoc]⟩)
-  converse := fun _ _ _ => by
-    constructor
-    · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
-    · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
-  serial := fun w x _ =>
-    ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩
-  limit :=
-    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
-      (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
-  saturation := TaskFrame.saturation_of_fib_subsingleton (flowRel_fib_subsingleton D FamIdx)
+    FrameOver D :=
+  FrameOver.ofReflective (FamIdx × ↑D) (fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d)
+    (fun _ _ _ => by
+      constructor
+      · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
+      · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩)
+    (TaskFrame.comp_of
+      (fun w v x y _ _ h => by
+        obtain ⟨h₁, h₂⟩ := h
+        refine ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
+        show v.2 = w.2 + x + y
+        rw [h₂]; abel)
+      (fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by rw [h4, h2, add_assoc]⟩))
+    (fun w x _ =>
+      ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩)
+    (TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+      (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero])))
+    (TaskFrame.saturation_of_fib_subsingleton (flowRel_fib_subsingleton D FamIdx))
+
+/-- The generic flow frame's task relation is the deterministic clock. -/
+@[simp]
+theorem multiFamGen_taskRel {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑D) (d : ↑D)
+    (u : FamIdx × ↑D) :
+    (multiFamTaskFrameGen D FamIdx).TaskRel w d u ↔ (w.1 = u.1 ∧ u.2 = w.2 + d) :=
+  FrameOver.ofReflective_taskRel
 
 /-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`; total by
 construction.
@@ -177,7 +181,7 @@ noncomputable def multiFamHistoryGen {FamIdx : Type} [Nonempty FamIdx] (f : FamI
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => (f, w₀ + t)
   respects_task := fun s t _ _ => by
-    refine ⟨rfl, ?_⟩
+    refine (multiFamGen_taskRel _ _ _).mpr ⟨rfl, ?_⟩
     show w₀ + t = w₀ + s + (t - s)
     abel
 
@@ -204,7 +208,7 @@ theorem multiFamHistoryGen_total {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) 
 /-! ## The derived segment identity
 
 `w ⇒_{x+y} v ↔ [w,v]_x^y ≠ ∅`, derived from the compositionality biconditional
-(`def:frame#Compositionality`), the converse convention (`def:task-relation`), and
+(`def:frame#Compositionality`), the reflection convention (`def:task-relation`), and
 `mem_Seg`. This identity is a Lean derivation, not paper text. -/
 
 /-- The derived segment identity: the composite step `w ⇒_{x+y} v` exists exactly when the
@@ -238,12 +242,16 @@ theorem multiFamGen_comp_iff {FamIdx : Type} [Nonempty FamIdx] (w v : FamIdx × 
     (multiFamTaskFrameGen D FamIdx).TaskRel w (x + y) v ↔
       ∃ u, (multiFamTaskFrameGen D FamIdx).TaskRel w x u ∧
         (multiFamTaskFrameGen D FamIdx).TaskRel u y v := by
+  rw [multiFamGen_taskRel]
   constructor
   · rintro ⟨h₁, h₂⟩
-    refine ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
+    refine ⟨(w.1, w.2 + x), (multiFamGen_taskRel _ _ _).mpr ⟨rfl, rfl⟩,
+      (multiFamGen_taskRel _ _ _).mpr ⟨h₁, ?_⟩⟩
     show v.2 = w.2 + x + y
     rw [h₂]; abel
-  · rintro ⟨u, ⟨h₁, h₂⟩, ⟨h₃, h₄⟩⟩
+  · rintro ⟨u, hu, hv⟩
+    obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp hu
+    obtain ⟨h₃, h₄⟩ := (multiFamGen_taskRel _ _ _).mp hv
     exact ⟨h₁.trans h₃, by rw [h₄, h₂, add_assoc]⟩
 
 /-- The positive-cone projection of `multiFamGen_comp_iff`: `def:frame#Compositionality`
@@ -262,7 +270,9 @@ for all durations, so the paper's `x ≥ 0` proviso is subsumed. -/
 theorem multiFamGen_serial {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑D) (x : ↑D) :
     (∃ u, (multiFamTaskFrameGen D FamIdx).TaskRel w x u) ∧
       (∃ v, (multiFamTaskFrameGen D FamIdx).TaskRel v x w) :=
-  ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩
+  ⟨⟨(w.1, w.2 + x), (multiFamGen_taskRel _ _ _).mpr ⟨rfl, rfl⟩⟩,
+    ⟨(w.1, w.2 - x), (multiFamGen_taskRel _ _ _).mpr
+      ⟨rfl, by show w.2 = w.2 - x + x; abel⟩⟩⟩
 
 /-- *Limit* (`def:frame#Limit`) for the generic flow frame, discharged by
 `TaskFrame.limit_of_shift` with position function `Prod.snd`: the clock relation makes the
@@ -277,7 +287,9 @@ theorem multiFamGen_limit {FamIdx : Type} [Nonempty FamIdx] :
 subsingleton: the clock is deterministic, so `Fib R w x ⊆ {(w.1, w.2 + x)}`. -/
 theorem multiFamGen_fib_subsingleton {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑D) (x : ↑D) :
     (TaskFrame.Fib (multiFamTaskFrameGen D FamIdx).TaskRel w x).Subsingleton := by
-  rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+  intro u hu u' hu'
+  obtain ⟨hu₁, hu₂⟩ := (multiFamGen_taskRel _ _ _).mp hu
+  obtain ⟨hu'₁, hu'₂⟩ := (multiFamGen_taskRel _ _ _).mp hu'
   exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
 
 /-- **The generic flow frame is deterministic** (`def:deterministic`). `TaskFrame.Deterministic`
@@ -370,10 +382,10 @@ theorem multiFamGen_total_eq {FamIdx : Type} [Nonempty FamIdx]
       σ.states t ht = ((σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2 + t) := by
     intro t ht
     rcases le_total 0 t with _h0t | _ht0
-    · obtain ⟨h₁, h₂⟩ := σ.respects_task 0 t (htot 0) ht
+    · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp (σ.respects_task 0 t (htot 0) ht)
       refine Prod.ext h₁.symm ?_
       rw [h₂]; abel_nf
-    · obtain ⟨h₁, h₂⟩ := σ.respects_task t 0 ht (htot 0)
+    · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp (σ.respects_task t 0 ht (htot 0))
       refine Prod.ext h₁ ?_
       rw [h₂]; abel_nf
   refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
@@ -489,7 +501,7 @@ recoverable from the endpoint positions (`Prod.snd`). This is the position-funct
 theorem bundleFlow_pos_shift {B : BFMCS (fc := fc) D}
     {w u : (bundleFlowFrame B).WorldState} {y : D}
     (h : (bundleFlowFrame B).TaskRel w y u) : u.2 = w.2 + y :=
-  h.2
+  ((multiFamGen_taskRel _ _ _).mp h).2
 
 /-- Biconditional *Compositionality* (`def:frame#Compositionality`) at the bundle flow frame,
 by specialization of `multiFamGen_comp_iff`. -/

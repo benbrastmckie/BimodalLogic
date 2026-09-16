@@ -296,60 +296,59 @@ and `filteredFiniteFrame` — is itself polymorphic in `D` and carries the same 
 elaborates at a dense duration type, and nothing outside `FMP/` refers to any of them.
 -/
 noncomputable def RefinedFilteredTaskFrame [SuccOrder ↑D] [NoMaxOrder ↑D]
-    (phi : Formula) : FrameOver D where
-  WorldState := FilteredWorld phi
-  worldNonempty := filteredWorld_nonempty phi
-  TaskRel := refinedFilteredTaskRel D phi
-  comp := TaskFrame.comp_of
-    (TaskFrame.interpolates_of_permissive fun w d u => by
-      by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
+    (phi : Formula) : FrameOver D :=
+  haveI : Nonempty (FilteredWorld phi) := filteredWorld_nonempty phi
+  FrameOver.ofReflective (FilteredWorld phi) (refinedFilteredTaskRel D phi)
     (by
-      intro w u v x y hx hy h_wu h_uv
-      simp only [refinedFilteredTaskRel] at *
-      by_cases hxy : x + y = 0
-      · -- x + y = 0 with x ≥ 0 and y ≥ 0 implies x = 0 and y = 0
-        simp only [hxy, ↓reduceIte]
-        -- In an ordered additive group, if x ≥ 0 and y ≥ 0 and x + y = 0, then x = y = 0
-        have hx0 : x = 0 := by
-          have h_sum := add_nonneg hx hy
-          rw [hxy] at h_sum
-          -- 0 ≤ x, x + y = 0, 0 ≤ y means x = 0
-          have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
-          rw [h1] at hy
-          have h2 : 0 ≤ -x := hy
-          have h3 : x ≤ 0 := neg_nonneg.mp h2
-          exact le_antisymm h3 hx
-        have hy0 : y = 0 := by
-          have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
-          rw [hx0] at h1
-          simp only [neg_zero] at h1
-          exact h1
-        simp [hx0] at h_wu
-        simp only [hy0, ↓reduceIte] at h_uv
-        exact h_wu.trans h_uv
-      · simp [hxy])
-  serial := TaskFrame.serial_of_permissive fun w d u => by
-    by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
-  limit := TaskFrame.limit_of_permissive fun w d u => by
-    by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
-  saturation := TaskFrame.saturation_of_permissive fun w d u => by
-    by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
-  converse := by
-    intro w d u
-    simp only [refinedFilteredTaskRel]
-    constructor
-    · intro h
-      by_cases hd : d = 0
-      · simp only [hd, ↓reduceIte, neg_zero] at h ⊢
-        exact h.symm
-      · have hnd : -d ≠ 0 := by simp [hd]
-        simp only [↓reduceIte, hnd]
-    · intro h
-      by_cases hd : d = 0
-      · simp only [hd, neg_zero, ↓reduceIte] at h ⊢
-        exact h.symm
-      · have hnd : -d ≠ 0 := by simp [hd]
-        simp only [hd, ↓reduceIte, hnd] at h ⊢
+      intro w d u
+      simp only [refinedFilteredTaskRel]
+      constructor
+      · intro h
+        by_cases hd : d = 0
+        · simp only [hd, ↓reduceIte, neg_zero] at h ⊢
+          exact h.symm
+        · have hnd : -d ≠ 0 := by simp [hd]
+          simp only [↓reduceIte, hnd]
+      · intro h
+        by_cases hd : d = 0
+        · simp only [hd, neg_zero, ↓reduceIte] at h ⊢
+          exact h.symm
+        · have hnd : -d ≠ 0 := by simp [hd]
+          simp only [hd, ↓reduceIte, hnd] at h ⊢)
+    (TaskFrame.comp_of
+      (TaskFrame.interpolates_of_permissive fun w d u => by
+        by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
+      (by
+        intro w u v x y hx hy h_wu h_uv
+        simp only [refinedFilteredTaskRel] at *
+        by_cases hxy : x + y = 0
+        · -- x + y = 0 with x ≥ 0 and y ≥ 0 implies x = 0 and y = 0
+          simp only [hxy, ↓reduceIte]
+          -- In an ordered additive group, if x ≥ 0 and y ≥ 0 and x + y = 0, then x = y = 0
+          have hx0 : x = 0 := by
+            have h_sum := add_nonneg hx hy
+            rw [hxy] at h_sum
+            -- 0 ≤ x, x + y = 0, 0 ≤ y means x = 0
+            have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
+            rw [h1] at hy
+            have h2 : 0 ≤ -x := hy
+            have h3 : x ≤ 0 := neg_nonneg.mp h2
+            exact le_antisymm h3 hx
+          have hy0 : y = 0 := by
+            have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
+            rw [hx0] at h1
+            simp only [neg_zero] at h1
+            exact h1
+          simp [hx0] at h_wu
+          simp only [hy0, ↓reduceIte] at h_uv
+          exact h_wu.trans h_uv
+        · simp [hxy]))
+    (TaskFrame.serial_of_permissive fun w d u => by
+      by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
+    (TaskFrame.limit_of_permissive fun w d u => by
+      by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
+    (TaskFrame.saturation_of_permissive fun w d u => by
+      by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
 
 /-! ### `RefinedFilteredTaskFrame` discharges `def:frame`'s four axioms
 
@@ -365,7 +364,11 @@ proposition. -/
 theorem RefinedFilteredTaskFrame.rel_iff [SuccOrder ↑D] [NoMaxOrder ↑D] (phi : Formula) :
     ∀ w d u, (RefinedFilteredTaskFrame D phi).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := by
   intro w d u
-  by_cases hd : d = 0 <;> simp [RefinedFilteredTaskFrame, refinedFilteredTaskRel, hd]
+  refine FrameOver.ofReflective_taskRel.trans ?_
+  by_cases hd : d = 0
+  · simp only [refinedFilteredTaskRel, hd, ↓reduceIte, ne_eq, not_true_eq_false, false_or]
+    exact Iff.rfl
+  · simp [refinedFilteredTaskRel, hd]
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for the refined filtered frame, via the `w = u` disjunct. -/

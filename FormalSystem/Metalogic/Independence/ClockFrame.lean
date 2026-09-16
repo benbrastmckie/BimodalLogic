@@ -166,38 +166,37 @@ The temporal order is written `TemporalOrder.of ℚ` rather than a named `ratOrd
 `BXCanonical`, and that module cannot state `⟨Rat⟩` without a new tree-wide Mathlib import. The
 naming decision is deferred to the phase that deletes the transitional layer.
 -/
-def clockFrame : FrameOver (TemporalOrder.of ℚ) where
-  WorldState := ClockState
-  worldNonempty := ⟨0⟩
-  TaskRel := clockRel
-  comp := TaskFrame.comp_of
+def clockFrame : FrameOver (TemporalOrder.of ℚ) :=
+  haveI : Nonempty ClockState := ⟨0⟩
+  FrameOver.ofReflective ClockState clockRel
     (by
-      rintro w v x y _ _ (hv : v = w + cmk (x + y))
-      refine ⟨w + cmk x, rfl, ?_⟩
-      show v = w + cmk x + cmk y
-      rw [hv, cmk_add, add_assoc])
-    (by
-      rintro w u v x y _ _ (hu : u = w + cmk x) (hv : v = u + cmk y)
-      show v = w + cmk (x + y)
-      rw [hv, hu, cmk_add, add_assoc])
-  converse := by
-    intro w d u
-    constructor
-    · rintro (rfl : u = _)
-      show w = w + cmk d + cmk (-d)
-      rw [cmk_neg]; abel
-    · rintro (hw : w = u + cmk (-d))
-      show u = w + cmk d
-      rw [hw, cmk_neg]; abel
-  serial := fun w x _ =>
-    ⟨⟨w + cmk x, rfl⟩, ⟨w - cmk x, by show w = w - cmk x + cmk x; abel⟩⟩
-  limit := clockRel_limit
-  saturation := clockRel_saturation
+      intro w d u
+      constructor
+      · rintro (rfl : u = _)
+        show w = w + cmk d + cmk (-d)
+        rw [cmk_neg]; abel
+      · rintro (hw : w = u + cmk (-d))
+        show u = w + cmk d
+        rw [hw, cmk_neg]; abel)
+    (TaskFrame.comp_of
+      (by
+        rintro w v x y _ _ (hv : v = w + cmk (x + y))
+        refine ⟨w + cmk x, rfl, ?_⟩
+        show v = w + cmk x + cmk y
+        rw [hv, cmk_add, add_assoc])
+      (by
+        rintro w u v x y _ _ (hu : u = w + cmk x) (hv : v = u + cmk y)
+        show v = w + cmk (x + y)
+        rw [hv, hu, cmk_add, add_assoc]))
+    (fun w x _ =>
+      ⟨⟨w + cmk x, rfl⟩, ⟨w - cmk x, by show w = w - cmk x + cmk x; abel⟩⟩)
+    clockRel_limit
+    clockRel_saturation
 
 @[simp] theorem clockFrame_worldState : clockFrame.WorldState = ClockState := rfl
 
 @[simp] theorem clockFrame_taskRel (w : ClockState) (x : ℚ) (u : ClockState) :
-    clockFrame.TaskRel w x u ↔ u = w + cmk x := Iff.rfl
+    clockFrame.TaskRel w x u ↔ u = w + cmk x := FrameOver.ofReflective_taskRel
 
 /-- The clock frame inhabits the `ℚ` fibre: the sanity check the plan names. -/
 example : Nonempty (FrameOver (TemporalOrder.of ℚ)) := ⟨clockFrame⟩
@@ -216,6 +215,7 @@ def clockHistory : PartialHistory clockFrame where
   states := fun t _ => cmk t
   respects_task := by
     intro s t _ _
+    refine (clockFrame_taskRel _ _ _).mpr ?_
     show cmk t = cmk s + cmk (t - s)
     rw [← cmk_add]
     congr 1

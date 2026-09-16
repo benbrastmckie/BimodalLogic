@@ -135,7 +135,7 @@ theorem fn_eq_of_zero (w u : ℕ) (h : fnRel w 0 u) : u = w := by
     omega
 
 /-- The converse convention, by `Or.comm` on the two reflected disjuncts. -/
-theorem fn_converse (w : ℕ) (d : ℤ) (u : ℕ) : fnRel w d u ↔ fnRel u (-d) w := by
+theorem fn_reflection (w : ℕ) (d : ℤ) (u : ℕ) : fnRel w d u ↔ fnRel u (-d) w := by
   unfold fnRel
   rw [sub_neg_eq_add, ← sub_eq_add_neg]
   exact Or.comm
@@ -213,18 +213,18 @@ theorem fn_saturation : TaskFrame.Saturation (D := TemporalOrder.of ℤ) fnRel :
 reason `fzeroFrame` carries it — without it `FN.WorldState` does not reduce to `ℕ`. -/
 @[reducible] def fnFrameOver : FrameOver (TemporalOrder.of ℤ) where
   WorldState := ℕ
-  TaskRel := fnRel
-  comp := fn_comp
-  converse := fn_converse
-  serial := fn_serial
-  limit := fn_limit
-  saturation := fn_saturation
+  PosRel w x u := fnRel w x u
+  comp := TaskFrame.compositional_reflect_of_reflective fn_reflection fn_comp
+  serial := TaskFrame.serial_reflect_of_reflective fn_reflection fn_serial
+  limit := TaskFrame.limit_reflect_of_reflective fn_reflection fn_limit
+  saturation := TaskFrame.saturation_reflect_of_reflective fn_reflection fn_saturation
 
 /-- `F^N` as a `TaskFrame`. -/
 @[reducible] def FN : TaskFrame := fnFrameOver.toTaskFrame
 
 /-- `F^N`'s task relation, definitionally. -/
-theorem fn_taskRel_iff (w : ℕ) (d : ℤ) (u : ℕ) : FN.TaskRel w d u ↔ fnRel w d u := Iff.rfl
+theorem fn_taskRel_iff (w : ℕ) (d : ℤ) (u : ℕ) : FN.TaskRel w d u ↔ fnRel w d u :=
+  TaskFrame.reflect_restrict_iff (R := fnRel) fn_reflection
 
 /-! ## Forward-deterministic, not deterministic -/
 
@@ -243,7 +243,8 @@ theorem fn_not_deterministic : ¬ FN.Deterministic := by
   intro h
   have h0 : fnRel 0 (-1) 0 := Or.inr (by norm_num)
   have h1 : fnRel 0 (-1) 1 := Or.inl (by norm_num)
-  exact absurd (h 0 0 1 (-1) h0 h1) (by decide)
+  exact absurd (h 0 0 1 (-1) ((fn_taskRel_iff _ _ _).mpr h0) ((fn_taskRel_iff _ _ _).mpr h1))
+    (by decide)
 
 /-- Forward determinism is *strictly* weaker than determinism, witnessed. -/
 theorem forwardDeterministic_not_deterministic :
@@ -366,6 +367,7 @@ with the refutation, so the two-sided bound is one object rather than two paragr
 def fnZeroHist : PartialHistory FN :=
   PartialHistory.ofTotal FN (fun _ => 0) <| by
     intro s t
+    refine (fn_taskRel_iff _ _ _).mpr ?_
     show fnRel 0 (t - s) 0
     unfold fnRel
     rcases le_total s t with h | h
@@ -382,6 +384,7 @@ time — the pair the PossibleWorlds determinism-axiom-correspondence report, §
 def fnRampHist : PartialHistory FN :=
   PartialHistory.ofTotal FN (fun n => (-n).toNat) <| by
     intro s t
+    refine (fn_taskRel_iff _ _ _).mpr ?_
     show fnRel ((-s).toNat) (t - s) ((-t).toNat)
     unfold fnRel
     rcases le_total s t with h | h

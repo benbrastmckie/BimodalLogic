@@ -256,25 +256,25 @@ Semantics files, plus under 10 concrete `respects_task`/`Iff.rfl` bridges. Confi
 
 ---
 
-### Phase 4: Migrate Examples, Metalogic and Tests [NOT STARTED]
+### Phase 4: Migrate Examples, Metalogic and Tests [COMPLETED]
 
 **Goal**: Full `lake build` and BimodalTest green.
 
 **Tasks**:
-- [ ] `Examples/TemporalStructures.lean`: 3 frames plus the generic frames, `*_rel_iff` bridges,
+- [x] `Examples/TemporalStructures.lean`: 3 frames plus the generic frames, `*_rel_iff` bridges,
       the `genericTimeFrame ... = intTimeFrame.TaskRel := rfl` example, 2 histories.
-- [ ] Metalogic construction sites: `Algebraic/FlowFrame.lean`,
+- [x] Metalogic construction sites: `Algebraic/FlowFrame.lean`,
       `Decidability/Verified/Bridge/RegionFrame.lean`, `Decidability/FMP/Filtration.lean`,
       `Independence/{ClockFrame, DriftFrame, ForwardDeterministicFrame}.lean`,
       `WeakCanonical/IntegerModel/ReynoldsBridge.lean`. Rename site-local lemmas
       (`fzero_converse`, `fn_converse` if live) to `*_reflection`.
-- [ ] `.converse` projections: `Independence/DriftFrame.lean`, `Independence/StarDiscrimination.lean`,
+- [x] `.converse` projections: `Independence/DriftFrame.lean`, `Independence/StarDiscrimination.lean`,
       `Independence/LoopingDuration.lean`. Fix concrete histories in ClockFrame, RegionFrame,
       FlowFrame, ReynoldsBridge (and RealTranslationFrame `f1_taskRel_iff`).
-- [ ] Tests: `customFrame_rel_iff` and its `Or.inl` example in the TaskFrame test, and the field-name
+- [x] Tests: `customFrame_rel_iff` and its `Or.inl` example in the TaskFrame test, and the field-name
       prose and any frame builds in `Tests/BimodalTest/Property/Generators.lean`.
-- [ ] Run `lake build` (full) and `lake test` (BimodalTest) in the background with a log. Fix any
-      remaining breakage.
+- [x] Run `lake build` (full) and `lake test` (BimodalTest) in the background with a log. Fix any
+      remaining breakage. *(deviation: altered — verified with `lake build FormalSystem BimodalTest`; `lake test` runs in Phase 7. The migration also touched consumers not named here: IntPresentation, CoNotPriorU, StaticFrame, DriftHistories, StarDiscrimination, PastingIndependence, DiscreteNonCompactness, SemanticPropertyTest. `DriftFrame.fzeroFrame` and `ForwardDeterministicFrame.fnFrameOver` stay `@[reducible]` literals via the transport lemmas; new per-frame bridges `multiFamGen_taskRel`, `zTaskFrameV2_taskRel`, `intTimeFrame_taskRel`)*
 
 **Timing**: 2 hours
 

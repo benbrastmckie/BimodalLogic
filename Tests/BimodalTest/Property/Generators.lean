@@ -29,7 +29,7 @@ This module provides generators for property-based testing of Logos types.
 - Formula generation uses size control to prevent infinite recursion
 - Shrinking reduces formulas to simpler subformulas for better counterexamples
 - Frame generation reuses the library's `natFrame` (satisfies all frame
-  constraints by construction: `comp`, `converse`, `serial`, `limit`, `saturation`)
+  axioms by construction: `comp`, `serial`, `limit`, `saturation`, over the primitive `PosRel`)
 - All generators follow Plausible framework conventions
 
 ## API Drift Notes (Task 365)
@@ -143,7 +143,7 @@ def genSmallNat : Gen Nat := do
 SampleableExt instance for the fibre at the ℤ temporal order.
 
 Reuses the library's `natFrame`, which satisfies all frame constraints
-(`comp`, `converse`, `serial`, `limit`, `saturation`) by construction. This is a
+(`comp`, `serial`, `limit`, `saturation`) by construction. This is a
 simple generator suitable for basic property testing.
 -/
 instance : SampleableExt (FrameOver intOrder) where

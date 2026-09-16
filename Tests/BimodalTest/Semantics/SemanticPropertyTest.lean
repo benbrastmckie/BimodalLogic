@@ -97,7 +97,7 @@ Property: Trivial frame task relation is always true.
 -/
 example (w u : Unit) (x : Int) :
     (FrameOver.trivialFrame (D := Int)).TaskRel w x u := by
-  trivial
+  exact FrameOver.trivialFrame_taskRel.mpr trivial
 
 /-! ## Static Frame Properties -/
 
@@ -106,7 +106,7 @@ Property: Static frame task relation requires w = u, at every duration.
 -/
 example (W : Type) [Nonempty W] (w u : W) (x : Int) :
     (FrameOver.staticFrame W (D := Int)).TaskRel w x u ↔ w = u := by
-  rfl
+  exact FrameOver.staticFrame_rel_iff W w x u
 
 /-! ## Nat Frame Properties -/
 

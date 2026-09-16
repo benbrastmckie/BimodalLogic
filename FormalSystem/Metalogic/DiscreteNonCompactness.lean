@@ -169,6 +169,7 @@ def zHistory (N : ℤ) : PartialHistory (FrameOver.natFrame (D := ℤ)) where
   states := fun t _ => (if N < t then 1 else 0 : Nat)
   respects_task := by
     intro s t _ _
+    refine (FrameOver.natFrame_rel_iff _ _ _).mpr ?_
     rcases eq_or_ne t s with rfl | hne
     · right; rfl
     · left; exact sub_ne_zero.mpr hne
