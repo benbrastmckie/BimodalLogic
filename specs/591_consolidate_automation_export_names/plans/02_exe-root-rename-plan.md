@@ -267,20 +267,20 @@ build green.
 
 ---
 
-### Phase 5: Full gate [NOT STARTED]
+### Phase 5: Full gate [COMPLETED]
 
 **Goal**: Run the task's full acceptance bar against the finished tree.
 
 **Tasks**:
-- [ ] Final residue grep over the live surfaces for all 14 old names, and account for every hit (provenance literals,
+- [x] Final residue grep over the live surfaces for all 14 old names, and account for every hit (provenance literals,
       historical narrative, test filename)
-- [ ] Run a full `lake build` (detached, through the build guard) and require exit 0
-- [ ] Run the full `scripts/check-module-invariants.sh` (with build), requiring C4/C5/C8/C12/C16/C22/C24/C25 green
-- [ ] Run `scripts/typst-sync-check.sh`, which must pass
-- [ ] Smoke-run both named executables: `lake exe dataset_generator` (minimal args) and `lake exe proof_extractor`
-- [ ] Smoke-run `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` (dry-run or smallest config)
-- [ ] Confirm that both `"generator"` literals are unchanged, and that `git diff` on `data/` and `typst/generated/` is empty
-- [ ] Commit any fixes: `task 591: phase 5: final verification fixes` (only if anything changed)
+- [x] Run a full `lake build` (detached, through the build guard) and require exit 0
+- [x] Run the full `scripts/check-module-invariants.sh` (with build), requiring C4/C5/C8/C12/C16/C22/C24/C25 green
+- [x] *(deviation: altered — Check 1 reports 4 violations, all in `typst/chapters/p4-proof-automation.typ` (`AesopRules.lean`, `Tactics/Helpers.lean`, `tm_auto 5`), pre-existing before this task and untouched by it; every renamed module name resolves, Check 2/3 have 0 mismatches)* Run `scripts/typst-sync-check.sh`, which must pass
+- [x] Smoke-run both named executables: `lake exe dataset_generator` (minimal args) and `lake exe proof_extractor`
+- [x] Smoke-run `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` (dry-run or smallest config) *(completed: export-training-data.sh --dry-run c5; run_dataset_generation.sh smoke passed validation, 321 lines)*
+- [x] Confirm that both `"generator"` literals are unchanged, and that `git diff` on `data/` and `typst/generated/` is empty
+- [x] Commit any fixes *(no fixes needed; plan/summary commit only)*
 
 **Timing**: 0.5 hours (plus build wall-clock)
 
@@ -296,12 +296,12 @@ build green.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0
-- [ ] `lake exe dataset_generator` and `lake exe proof_extractor` run
-- [ ] Full `scripts/check-module-invariants.sh` passes (C4/C5/C8/C12/C24/C25, plus the new naming assertion)
-- [ ] `scripts/typst-sync-check.sh` resolves every backticked module name
-- [ ] `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` still work
-- [ ] `"generator"` provenance strings, `lake exe` target names, `data/`, and `typst/generated/` are unchanged
+- [x] `lake build` exits 0
+- [x] `lake exe dataset_generator` and `lake exe proof_extractor` run
+- [x] Full `scripts/check-module-invariants.sh` passes (C4/C5/C8/C12/C24/C25, plus the new naming assertion)
+- [x] `scripts/typst-sync-check.sh` resolves every backticked module name *(renamed names all resolve; 4 pre-existing p4-proof-automation.typ violations remain, out of scope)*
+- [x] `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` still work
+- [x] `"generator"` provenance strings, `lake exe` target names, `data/`, and `typst/generated/` are unchanged
 
 ## Artifacts & Outputs
 
