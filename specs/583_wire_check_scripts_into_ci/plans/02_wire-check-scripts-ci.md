@@ -1,7 +1,7 @@
 # Implementation Plan: Task #583
 
 - **Task**: 583 - Wire the check scripts that are green today into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md (primary); specs/583_wire_check_scripts_into_ci/reports/01_uncalled-check-scripts.md (pre-rescope sweep, background)
@@ -116,21 +116,26 @@ No roadmap consulted (no `roadmap_path` in this dispatch).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-verify green status and runner prerequisites [NOT STARTED]
+### Phase 1: Re-verify green status and runner prerequisites [COMPLETED]
 
 **Goal**: Confirm, on the current tree, that all three scripts exit 0 in their exact CI form,
 and that nothing they need is missing from `ubuntu-latest` plus lean-action.
 
 **Tasks**:
-- [ ] Run `lake build` (warm the cache), then time each exact command:
+- [x] Run `lake build` (warm the cache), then time each exact command:
   `bash scripts/check-module-invariants.sh --no-build`;
   `bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem`;
-  `bash scripts/readme-lint.sh`. Record the exit code and `real` time for each.
-- [ ] Grep the three scripts, and any `scripts/lib/` helper they source or import, for external
+  `bash scripts/readme-lint.sh`. Record the exit code and `real` time for each. *(completed:
+  lake build success; invariants 0/23.6s after a transient first-run FAIL, copyright 0/10.98s,
+  readme-lint 0/7.34s)*
+- [x] Grep the three scripts, and any `scripts/lib/` helper they source or import, for external
   commands and Python imports. Confirm there is no non-stdlib Python and no tool missing from
-  `ubuntu-latest`.
-- [ ] If any script is red, stop wiring that script, record the failure output in the phase
-  notes, and continue with the green ones only.
+  `ubuntu-latest`. *(completed: bash/find/awk/git/jq/python3/lake/lean only; sole sourced
+  helper scripts/lib/live_walk.py imports stdlib `os` only)*
+- [x] If any script is red, stop wiring that script, record the failure output in the phase
+  notes, and continue with the green ones only. *(completed: not triggered -- the one FAIL
+  observed was a transient race with concurrent tasks 581/582/587 editing FormalSystem/Metalogic/**
+  at that instant; a re-run 5s later was clean)*
 
 **Timing**: 0.5 hours
 
