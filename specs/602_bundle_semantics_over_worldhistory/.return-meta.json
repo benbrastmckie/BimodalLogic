@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-16T21:04:41Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/602_bundle_semantics_over_worldhistory/reports/01_bundle-semantics-worldhistory.md",
-      "summary": "Confirms subtype WorldHistory design (matches talk slides), audits all consumers (no truth at partial histories, no obstruction), prototypes TruthAt/TruthCorr/timeShift_preserves_truth over WorldHistory sorry-free at baseline axioms, sizes migration (~87 files) and gives atomic-batch phasing, bridge-lemma deletions, and doc update list."
+      "type": "plan",
+      "path": "specs/602_bundle_semantics_over_worldhistory/plans/01_bundle-semantics-worldhistory.md",
+      "summary": "10-phase plan: green WorldHistory/HF-rename phase, 8-phase atomic batch retargeting all truth/validity relations over WorldHistory with a single green commit, then Decision A' and docs."
     }
   ],
+  "next_steps": "Run /implement 602 to execute the plan",
   "metadata": {
     "session_id": "sess_1789592641_69db81_602",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 20,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]]
+  },
+  "memory_candidates": [],
+  "dispatch_seq": 4
 }
