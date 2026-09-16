@@ -4,70 +4,8 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 598,
+  "next_project_number": 594,
   "active_projects": [
-    {
-      "project_number": 594,
-      "project_name": "relocate_in_library_smoke_tests",
-      "status": "not_started",
-      "task_type": "lean4",
-      "topic": "codebase-cleanup",
-      "priority": "medium",
-      "effort": "medium",
-      "dependencies": [],
-      "description": "Relocate test-shaped smoke tests out of the live library. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): 404 `#check`/`#eval`/`#print` lines across 29 live (non-Boneyard) library files (largest: DatasetGenerator 116, Saturation 59, MainResults 54, Normalization 42, Syntax/Formula 20) plus 389 top-level `example`s outside `FormalSystem/Examples/`. cslib (`scripts/pre-pr-check.sh`) treats `#check`/`#eval`/`dbg_trace` in library code as debug artifacts.\n\nWORK: (1) classify every occurrence as test-shaped (asserts behaviour, belongs in `Tests/BimodalTest/` as `#guard`/`example`) or documentation-shaped (illustrates an API next to its definition; may stay). (2) Move the test-shaped ones into the matching `Tests/BimodalTest/` module. (3) Keep `FormalSystem/MainResults.lean` as-is: its `#print axioms` block is an intentional axiom-audit page. (4) Add a debug-artifact invariant check to `scripts/check-module-invariants.sh` with a recorded allowlist (MainResults plus any documentation-shaped survivors), so new debug output cannot land silently.\n\nORDERING NOTE: C17 counts `#check @foo` as an occurrence (e.g. Normalization's `#check @neg_unfold` block), so this relocation changes C17's zero-occurrence census; it therefore precedes the zero-occurrence declaration triage in this topic.\n\nACCEPTANCE: `lake build` green; test suite green; new invariant check passes and is documented in the harness header; remaining in-library `#check`/`#eval`/`#print` lines are all allowlisted with a reason.",
-      "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T15:37:27Z"
-    },
-    {
-      "project_number": 595,
-      "project_name": "establish_durable_records_home",
-      "status": "not_started",
-      "task_type": "markdown",
-      "topic": "codebase-cleanup",
-      "priority": "high",
-      "effort": "small",
-      "dependencies": [],
-      "description": "Decide where durable project records live and move them there if the decision is to move. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `specs/paper-definitions-of-record.md` and `specs/decisions/*.md` (currently `total-history-validity-decisions.md`, `untl-snce-argument-order.md`) are cited 43 times from live Lean (25 paper-definitions-of-record, 18 decisions) and `specs/paper-definitions-of-record.md` is read by `scripts/check-paper-definitions.sh`. `specs/` is the task-management tree (and `specs/archive/` is gitignored), so durable records there are one cleanup away from breaking.\n\nWORK: (1) decide, with a short recorded rationale, whether these records belong under `docs/` (e.g. `docs/records/`, `docs/decisions/`) or stay in `specs/`; (2) if moving, `git mv` them, repoint all Lean docstring citations, `check-paper-definitions.sh`, and any doc/README links; (3) record the chosen home in the relevant README so future records land there.\n\nORDERING NOTE: precedes the paper-vocabulary reconciliation (which re-pins the definitions record) and the `docs/` staleness audit in this topic.\n\nACCEPTANCE: decision recorded; if moved, zero remaining citations of the old paths (grep), `check-paper-definitions.sh` passes (or stays skip-neutral when the paper is absent), invariant harness passes (C13/C15 catch missed referrers).",
-      "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T15:37:27Z"
-    },
-    {
-      "project_number": 596,
-      "project_name": "nest_semantics_language_family_files",
-      "status": "not_started",
-      "task_type": "lean4",
-      "topic": "codebase-cleanup",
-      "priority": "medium",
-      "effort": "medium",
-      "dependencies": [],
-      "description": "Nest the flat `Semantics/` language-family files into per-language subdirectories, and add the one missing directory README. MEASURED AT REORGANIZATION TIME (2026-09-16): `FormalSystem/Semantics/` holds 15 flat files -- `Minus{Frame,SchemaValidity,Truth,Validity}.lean` (4), `Plus{Determinism,NonValidities,Pasting,StateLocal,Truth,Validity}.lean` (6), `Star{Determinism,NonValidities,StateLocal,Truth,Validity}.lean` (5) -- while `Syntax/` already uses `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` subdirectories with aggregator modules. `FormalSystem/ForMathlib/` is the only non-Boneyard directory without a README. Source: review `specs/reviews/review-2026-09-15.md` findings M1 and the ForMathlib half of M2.\n\nWORK: (1) move the 15 files into `Semantics/` subdirectories mirroring the `Syntax/*Language/` layout (choose names consistent with it, and add aggregators if the Syntax side has them); (2) update every import, the root aggregator, and the C8 parent tuple in `scripts/check-module-invariants.sh`; (3) repoint path citations in docstrings, READMEs and typst; (4) write `FormalSystem/ForMathlib/README.md` (purpose: Mathlib-shaped extensions intended for upstreaming; must import nothing from `FormalSystem.*`). Module-path-only change: no declaration is renamed or restated.\n\nORDERING NOTE: a structural move in the first wave of this topic; precedes paper-vocabulary reconciliation and basename-citation disambiguation.\n\nACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15 citations); `readme-lint.sh` exit 0.",
-      "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T15:37:27Z",
-      "file_scope": [
-        "FormalSystem/Semantics",
-        "FormalSystem/ForMathlib/README.md",
-        "scripts/check-module-invariants.sh"
-      ]
-    },
-    {
-      "project_number": 597,
-      "project_name": "adopt_mathlib_standard_linter_set",
-      "status": "not_started",
-      "task_type": "lean4",
-      "topic": "codebase-cleanup",
-      "priority": "low",
-      "effort": "large",
-      "dependencies": [
-        585
-      ],
-      "description": "Adopt Mathlib's standard linter set, following cslib's precedent. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `lakefile.lean` sets only `autoImplicit false` and `pp.unicode.fun`; cslib enables `weak.linter.mathlibStandardSet = true` in `[leanOptions]`. Against Mathlib defaults this tree has 692 lines over 100 characters in 154 files (`longLine`) and 37 files over 1,500 lines (`longFile`; largest `EFGames/GapDetection.lean` at 5,090). There are 4 file-scoped blanket `set_option linter.* false` suppressions (3 in `Semantics/Ultraproduct/`, 1 in a test) and 7 unscoped `set_option maxHeartbeats` (48 are already `in`-scoped).\n\nWORK: (1) enable `weak.linter.mathlibStandardSet` with documented opt-outs where a linter does not fit this project (cite cslib's `docs/lint-suppression-policy.md` as a model); (2) measure the new warning surface; (3) fix cheap classes, and baseline the rest under the compiler-warning gate from the warning burn-down task in this topic -- never bulk-suppress; `longFile` is baselined, not fixed by splitting, unless a split is independently justified; (4) convert the 4 blanket linter suppressions and 7 unscoped `maxHeartbeats` to `in`-scoped form; (5) add a blanket-suppression ratchet check (only `set_option ... false in` allowed) to the invariant harness or CI.\n\nORDERING NOTE: runs after the warning burn-down/gate task so the new warnings land under an existing gate. Large: the planner should split phases per linter class rather than truncate.\n\nACCEPTANCE: linter set enabled; `lake build` green; warning count within the recorded baseline; zero blanket suppressions and zero unscoped `maxHeartbeats`; ratchet check in place and documented.",
-      "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T15:38:44Z",
-      "file_scope": [
-        "lakefile.lean"
-      ]
-    },
     {
       "project_number": 593,
       "project_name": "revise_task_organization_codebase_cleanup",
@@ -97,13 +35,13 @@
       "project_name": "repair_bilasso_evidence_probes",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Repair the four wired bi-lasso evidence probes so `bash scripts/check-evidence-probes.sh` exits 0.\n\nThe path half is ALREADY FIXED: the probes were moved out of gitignored `specs/archive/` back into version control at `specs/evidence/bi-lasso-decision-layer/`, and the guard was repointed. What remains is Lean repair. With the path resolved, all four probes now load and NONE compiles: the `FrameClass`/`TemporalOrder` refactor changed `FiniteFilteredTaskFrame`'s first argument from a `Type` to a `TemporalOrder`, and `FormalSystem.Semantics.TaskFrame.step` no longer exists. ~30 errors across four files.\n\nHARD CONSTRAINT, from the guard's own header: do NOT delete a probe or weaken its statements to make this pass. Repair the drift, or -- if an obstruction genuinely no longer holds under the new API -- say so explicitly and flag that the decision it was holding in place needs revisiting. That is a legitimate and more valuable outcome than a green run.\n\nLeave `spike-untl-unfolding-and-fwd-obstruction` DEFERRED and unwired.\n\nVerify: `bash scripts/check-evidence-probes.sh` exits 0 (4 PASS, 1 SKIP); no repaired probe shows `sorryAx` in `#print axioms`; every changed theorem statement is justified as API-tracking, not content change.\n\nSee specs/reviews/review-2026-09-16.md, Finding C1.\n\nFINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once `check-evidence-probes.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583 (step named after the script; place it after the lean-action build so the Lake cache is warm; decide and record whether a rotted probe fails or reports -- the script header argues for fails). Verify a deliberately broken probe fails the CI step.",
-      "topic": "codebase-cleanup",
+      "description": "Repair the four wired bi-lasso evidence probes so `bash scripts/check-evidence-probes.sh` exits 0.\n\nThe path half is ALREADY FIXED: the probes were moved out of gitignored `specs/archive/` back into version control at `specs/evidence/bi-lasso-decision-layer/`, and the guard was repointed. What remains is Lean repair. With the path resolved, all four probes now load and NONE compiles: the `FrameClass`/`TemporalOrder` refactor changed `FiniteFilteredTaskFrame`'s first argument from a `Type` to a `TemporalOrder`, and `FormalSystem.Semantics.TaskFrame.step` no longer exists. ~30 errors across four files.\n\nHARD CONSTRAINT, from the guard's own header: do NOT delete a probe or weaken its statements to make this pass. Repair the drift, or -- if an obstruction genuinely no longer holds under the new API -- say so explicitly and flag that the decision it was holding in place needs revisiting. That is a legitimate and more valuable outcome than a green run.\n\nLeave `spike-untl-unfolding-and-fwd-obstruction` DEFERRED and unwired.\n\nVerify: `bash scripts/check-evidence-probes.sh` exits 0 (4 PASS, 1 SKIP); no repaired probe shows `sorryAx` in `#print axioms`; every changed theorem statement is justified as API-tracking, not content change.\n\nSee specs/reviews/review-2026-09-16.md, Finding C1.",
+      "topic": "decidability",
       "priority": "high",
       "effort": "medium",
       "dependencies": [],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:27Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/581_repair_bilasso_evidence_probes/reports/01_bilasso-probe-frameclass-drift.md",
@@ -122,13 +60,13 @@
       "project_name": "break_or_rebaseline_metalogic_cycle",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "`bash scripts/check-metalogic-cycles.sh` exits 1: it asserts exactly one directory-level import cycle in `FormalSystem/Metalogic/` and finds two. The new one is `Conservativity <-> Deterministic`, whose entire surface is two import lines:\n  - `Conservativity/Plus/Corollaries.lean:8` -> `FormalSystem.Metalogic.Deterministic.Completeness`\n  - `Deterministic/Soundness.lean:9` -> `FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness`\n\nBoth landed in commit `5bd08ce1a` (2026-09-08), 99 commits ago, undetected because the script is not in CI. `FormalSystem/Metalogic/README.md:73` still claims 'exactly one directory-level cycle' and cites this script as proof.\n\nDECIDE, do not patch: (A) break the cycle -- research what each side actually consumes and whether the shared dependency lifts into a third directory; or (B) accept it and re-baseline, which requires a recorded decision with the costing ADR-006 applied, a script header naming BOTH accepted cycles so a third still fails, and an ADR. Bumping the expected count from 1 to 2 without (B)'s paperwork is exactly what the script exists to prevent. Cost Option A first and present the choice; do not pick silently.\n\nVerify: `bash scripts/check-metalogic-cycles.sh` exits 0; `lake build` exits 0; `bash scripts/check-module-invariants.sh` passes in full; `Metalogic/README.md`'s cycle claim matches what the script now asserts.\n\nSee specs/reviews/review-2026-09-16.md, Finding H1.\n\nFINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once `check-metalogic-cycles.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583, so a third directory-level cycle can never again land undetected. Verify a deliberately introduced cycle fails the CI step.",
-      "topic": "codebase-cleanup",
+      "description": "`bash scripts/check-metalogic-cycles.sh` exits 1: it asserts exactly one directory-level import cycle in `FormalSystem/Metalogic/` and finds two. The new one is `Conservativity <-> Deterministic`, whose entire surface is two import lines:\n  - `Conservativity/Plus/Corollaries.lean:8` -> `FormalSystem.Metalogic.Deterministic.Completeness`\n  - `Deterministic/Soundness.lean:9` -> `FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness`\n\nBoth landed in commit `5bd08ce1a` (2026-09-08), 99 commits ago, undetected because the script is not in CI. `FormalSystem/Metalogic/README.md:73` still claims 'exactly one directory-level cycle' and cites this script as proof.\n\nDECIDE, do not patch: (A) break the cycle -- research what each side actually consumes and whether the shared dependency lifts into a third directory; or (B) accept it and re-baseline, which requires a recorded decision with the costing ADR-006 applied, a script header naming BOTH accepted cycles so a third still fails, and an ADR. Bumping the expected count from 1 to 2 without (B)'s paperwork is exactly what the script exists to prevent. Cost Option A first and present the choice; do not pick silently.\n\nVerify: `bash scripts/check-metalogic-cycles.sh` exits 0; `lake build` exits 0; `bash scripts/check-module-invariants.sh` passes in full; `Metalogic/README.md`'s cycle claim matches what the script now asserts.\n\nSee specs/reviews/review-2026-09-16.md, Finding H1.",
+      "topic": "metalogic",
       "priority": "high",
       "effort": "small",
       "dependencies": [],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:27Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/582_break_or_rebaseline_metalogic_cycle/reports/01_conservativity-deterministic-cycle.md",
@@ -150,13 +88,18 @@
       "project_name": "wire_check_scripts_into_ci",
       "status": "not_started",
       "task_type": "general",
-      "description": "Wire the check scripts that are GREEN TODAY into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows. (RESCOPED during the codebase-cleanup reorganization of 2026-09-16: this task no longer waits for the repair tasks. Each repair task wires its own script into CI as its final phase, so each fix is locked in the moment it lands rather than after the slowest one.)\n\nWHY: `ci.yml` (65 lines at sweep time) runs `lean-action` (build/test/lint) plus a loop over `lean_exe` roots. It does NOT run `scripts/check-module-invariants.sh` -- the 26-check phase gate every architecture document cites appears in the workflow only inside a comment. `check-copyright-headers.sh`, `check-metalogic-cycles.sh`, `check-evidence-probes.sh`, `check-paper-definitions.sh`, `readme-lint.sh` and `typst-sync-check.sh` are referenced nowhere outside their own files. Runtime is not the obstacle: measured locally, the structural pass (20s) plus copyright (13s), typst (15s), readme-lint (7s) and cycles (<1s) total under a minute.\n\nSCOPE (wire these three, verified green at reorganization time -- re-run each before wiring):\n  - `scripts/check-module-invariants.sh` -- full, or `--no-build` placed after the lean-action build step so it reuses that cache;\n  - `scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem` -- the strict live-set form; the bare form exits 0 unconditionally;\n  - `scripts/readme-lint.sh`.\n\nALSO DELIVER, as a short recorded convention (in the workflow header comment and/or `docs/development/`): the per-script wiring pattern -- step naming (the failing step must name the script), the skip-and-report-neutral convention for checks whose inputs CI cannot see (e.g. an external paper), how a check that needs a warm Lake cache is placed, and the runtime budget with the measured wall-clock delta.\n\nOUT OF SCOPE (owned elsewhere in this topic, each wired by its own task following this pattern): `check-evidence-probes.sh` (581), `check-metalogic-cycles.sh` (582), `check-paper-definitions.sh` (584, skip-neutral when the paper is absent), `typst-sync-check.sh` (586), flipping `ENFORCE_C9_DOCS=1` (590). The compiler-warning gate (585) extends this workflow rather than competing with it.\n\nVerify: a branch with a deliberate violation of each wired check fails CI and the failing step names the script; a clean run is green; the CI wall-clock increase is measured and recorded.\n\nSee specs/reviews/review-2026-09-16.md, Finding H3; specs/593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md, Recommendation 3.",
-      "topic": "codebase-cleanup",
+      "description": "Wire the repository's check scripts into `.github/workflows/ci.yml`. This is the root cause of three other sweep findings.\n\n`ci.yml` is 65 lines: `lean-action` (build/test/lint) plus a loop over `lean_exe` roots. It does NOT run `scripts/check-module-invariants.sh` -- the 26-check, ~3,300-line phase gate every architecture document cites appears in the workflow ONLY inside a comment on line 48. Five further checks are referenced nowhere outside their own files: `check-copyright-headers.sh`, `check-metalogic-cycles.sh`, `check-evidence-probes.sh`, `check-paper-definitions.sh`, `readme-lint.sh`, `typst-sync-check.sh`.\n\nRuntime is not the obstacle: measured locally, the structural pass (20s) plus copyright (13s), typst (15s), readme-lint (7s) and cycles (<1s) total under a minute.\n\nTwo need per-script judgment. `check-paper-definitions.sh` reads a paper in a repository CI cannot see -- make it skip-and-report-neutral on an absent paper rather than fail. `check-evidence-probes.sh` needs a warm Lake cache and a decision on whether a rotted probe fails or reports (its header argues for fails). Also flip `ENFORCE_C9_DOCS=1` once task 590 clears the docs citations.\n\nInvoke `check-copyright-headers.sh` in its strict live-set form (`--strict --exclude '*/Boneyard/*' FormalSystem`); the bare form exits 0 unconditionally.\n\nVerify: a branch with a deliberate violation of each wired check fails CI, and the failing step names the script; a clean run is green; the CI wall-clock increase is measured and recorded.\n\nSee specs/reviews/review-2026-09-16.md, Finding H3.",
+      "topic": "repo-hygiene",
       "priority": "high",
       "effort": "medium",
-      "dependencies": [],
+      "dependencies": [
+        581,
+        582,
+        586,
+        590
+      ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/583_wire_check_scripts_into_ci/reports/01_uncalled-check-scripts.md",
@@ -176,18 +119,15 @@
       "project_name": "reconcile_lean_tree_with_paper_vocabulary",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "`bash scripts/check-paper-definitions.sh` reports case (c) -- FAIL: 16 recorded definitions drifted in the upstream JPL paper, plus one anchor (`thm:M5-valid`) that no longer resolves.\n\nMost are reflow. THREE are substantive renames, and the tree has not followed any of them:\n  - 'converse convention' -> 'reflection convention' (`def:task-relation`). Tree: 35 prose occurrences, `FrameOver.converse` at 9 sites, ZERO occurrences of the new term.\n  - metarule `\\aref{TD}` -> `\\aref{TR}` (`def:BX`). Tree: `swapTemporal` x925, 'temporal duality' x77, `TemporalDuality` x4, bare `TD` across ~14 files.\n  - `\\past`/`\\future` labels 'Past'/'Future' -> 'Some Past'/'Some Future' (`def:BLplus-language`).\n\nTHIS IS A DECISION TASK BEFORE IT IS AN EDITING TASK. For each of the three, the user chooses: adopt the paper's name, or record a deliberate divergence in `specs/paper-definitions-of-record.md`. Put the three separately, with the counts -- the 44-site rename and the 925-site rename are not one decision. Nothing is renamed before the choices are made.\n\nAlso: re-resolve `thm:M5-valid` via the record's `--resolve` mode; check the 'smallest extension closed under' -> 'extends to include' phrasing change against the `DerivationTree` docstrings; and note that `def:BX` acquired a Burgess/Xu axiom-provenance footnote with no counterpart in `ProofSystem/Axioms.lean` (an opportunity, possibly its own task). Re-pin the record per its documented dirty-pin convention.\n\nVerify: `bash scripts/check-paper-definitions.sh` exits 0 (case a or b); C15 still resolves all 58 paper-anchor citations; no site attributes a declined-rename term to the paper anchor; `lake build` exits 0 with no axiom-baseline movement.\n\nSee specs/reviews/review-2026-09-16.md, Finding H2.\n\nALSO ABSORB (codebase-cleanup reorganization, 2026-09-16): the open constructor-by-constructor naming audit noted at `FormalSystem/Syntax/MinusLanguage/Axioms.lean:76` (the paper's `UE`/`UT`/`NP`/... names vs the Lean `BX` layer's 45 until/since constructors). Resolve or explicitly record it alongside the three rename decisions. That docstring also cites a gitignored `specs/archive/` path; the basename-citation task (589) owns the citation fix, this task owns the audit itself.\n\nRECORDS HOME: the durable-records-home task (595) runs first and may move `specs/paper-definitions-of-record.md`; use whatever location it settles on.\n\nFINAL PHASE: once `check-paper-definitions.sh` exits 0, make it skip-and-report-neutral when the upstream paper is absent (CI cannot see it) and wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583.",
-      "topic": "codebase-cleanup",
+      "description": "`bash scripts/check-paper-definitions.sh` reports case (c) -- FAIL: 16 recorded definitions drifted in the upstream JPL paper, plus one anchor (`thm:M5-valid`) that no longer resolves.\n\nMost are reflow. THREE are substantive renames, and the tree has not followed any of them:\n  - 'converse convention' -> 'reflection convention' (`def:task-relation`). Tree: 35 prose occurrences, `FrameOver.converse` at 9 sites, ZERO occurrences of the new term.\n  - metarule `\\aref{TD}` -> `\\aref{TR}` (`def:BX`). Tree: `swapTemporal` x925, 'temporal duality' x77, `TemporalDuality` x4, bare `TD` across ~14 files.\n  - `\\past`/`\\future` labels 'Past'/'Future' -> 'Some Past'/'Some Future' (`def:BLplus-language`).\n\nTHIS IS A DECISION TASK BEFORE IT IS AN EDITING TASK. For each of the three, the user chooses: adopt the paper's name, or record a deliberate divergence in `specs/paper-definitions-of-record.md`. Put the three separately, with the counts -- the 44-site rename and the 925-site rename are not one decision. Nothing is renamed before the choices are made.\n\nAlso: re-resolve `thm:M5-valid` via the record's `--resolve` mode; check the 'smallest extension closed under' -> 'extends to include' phrasing change against the `DerivationTree` docstrings; and note that `def:BX` acquired a Burgess/Xu axiom-provenance footnote with no counterpart in `ProofSystem/Axioms.lean` (an opportunity, possibly its own task). Re-pin the record per its documented dirty-pin convention.\n\nVerify: `bash scripts/check-paper-definitions.sh` exits 0 (case a or b); C15 still resolves all 58 paper-anchor citations; no site attributes a declined-rename term to the paper anchor; `lake build` exits 0 with no axiom-baseline movement.\n\nSee specs/reviews/review-2026-09-16.md, Finding H2.",
+      "topic": "paper-refactor",
       "priority": "high",
       "effort": "large",
       "dependencies": [
-        582,
-        591,
-        596,
-        595
+        582
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/reports/01_paper-vocabulary-drift.md",
@@ -210,8 +150,8 @@
       "project_name": "burn_down_compiler_warnings_and_add_gate",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "`lake build` exits 0 with 316 warnings across 47 live files, and nothing gates them: C16 runs the Batteries `env_linter` (a declaration linter) which does not see Lean compiler warnings. The two sets are disjoint -- this is a real hole, not a redundancy.\n\nBy kind: unused section variable 86, unused simp argument 84, deprecated `push_neg` 71, 'tactic does nothing' 25, unreferenced variable name 25, `Try this: intro` 12, 'never executed' 9, deprecated `IsTrichotomous`/`IsIrrefl` 4.\n\n75 of those are forward-compatibility debt that becomes build errors at the next Mathlib bump. 34 ('does nothing' + 'never executed') are correctness smells -- each marks a tactic whose removal changes nothing, usually a proof that drifted from its intended shape. These deserve reading, not bulk deletion; they cluster with the unused-simp warnings in the termination layer (`SubformulaProperty.lean` 78, `MintPotential.lean` 15, `Fuel.lean` 2), which suggests ONE refactor left several proofs carrying dead tactics. Investigate those three files as one cause.\n\nThen add a gate. Preferred: a CI step that fails when the `warning:` count exceeds a committed baseline (the `nolints.json` pattern applied to compiler warnings), so a PR that adds a warning must edit the baseline and say why. `-DwarningAsError=true` in `lakefile.lean` is the strict alternative but is brittle against Mathlib deprecations. Coordinate the gate with task 583 so CI changes once.\n\nPhase it: (1) push_neg + Mathlib deprecations (75, mechanical); (2) the termination-layer trio (95, needs reading); (3) section variables (86, rebuild per file); (4) names + Try this + remaining simp args (40); (5) the gate. Commit per phase.\n\nVerify: warning count at target; `lake build` exits 0; full `check-module-invariants.sh` passes with C2/C14 axiom baselines unmoved and no `sorry` introduced.\n\nSee specs/reviews/review-2026-09-16.md, Finding H4.\n\nGATE-PHASE NOTE (codebase-cleanup reorganization, 2026-09-16): weigh cslib's approach -- CI builds with `--wfail --iofail` -- against the committed warning-count baseline proposed above, and record the choice. The CI wiring task (583) now lands first and records the wiring pattern; extend its workflow rather than editing CI independently. The Mathlib-standard-linter task (597) runs after this and will baseline its new warnings under whichever gate is chosen here, so the gate should accommodate a per-linter baseline.",
-      "topic": "codebase-cleanup",
+      "description": "`lake build` exits 0 with 316 warnings across 47 live files, and nothing gates them: C16 runs the Batteries `env_linter` (a declaration linter) which does not see Lean compiler warnings. The two sets are disjoint -- this is a real hole, not a redundancy.\n\nBy kind: unused section variable 86, unused simp argument 84, deprecated `push_neg` 71, 'tactic does nothing' 25, unreferenced variable name 25, `Try this: intro` 12, 'never executed' 9, deprecated `IsTrichotomous`/`IsIrrefl` 4.\n\n75 of those are forward-compatibility debt that becomes build errors at the next Mathlib bump. 34 ('does nothing' + 'never executed') are correctness smells -- each marks a tactic whose removal changes nothing, usually a proof that drifted from its intended shape. These deserve reading, not bulk deletion; they cluster with the unused-simp warnings in the termination layer (`SubformulaProperty.lean` 78, `MintPotential.lean` 15, `Fuel.lean` 2), which suggests ONE refactor left several proofs carrying dead tactics. Investigate those three files as one cause.\n\nThen add a gate. Preferred: a CI step that fails when the `warning:` count exceeds a committed baseline (the `nolints.json` pattern applied to compiler warnings), so a PR that adds a warning must edit the baseline and say why. `-DwarningAsError=true` in `lakefile.lean` is the strict alternative but is brittle against Mathlib deprecations. Coordinate the gate with task 583 so CI changes once.\n\nPhase it: (1) push_neg + Mathlib deprecations (75, mechanical); (2) the termination-layer trio (95, needs reading); (3) section variables (86, rebuild per file); (4) names + Try this + remaining simp args (40); (5) the gate. Commit per phase.\n\nVerify: warning count at target; `lake build` exits 0; full `check-module-invariants.sh` passes with C2/C14 axiom baselines unmoved and no `sorry` introduced.\n\nSee specs/reviews/review-2026-09-16.md, Finding H4.",
+      "topic": "code-quality",
       "priority": "medium",
       "effort": "large",
       "dependencies": [
@@ -219,7 +159,7 @@
         584
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:27Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/585_burn_down_compiler_warnings_and_add_gate/reports/01_compiler-warning-inventory.md",
@@ -239,15 +179,15 @@
       "project_name": "rewrite_typst_proof_automation_chapter",
       "status": "not_started",
       "task_type": "typst",
-      "description": "`bash scripts/typst-sync-check.sh` exits 1 with 4 Check-1 violations, all in `typst/chapters/p4-proof-automation.typ`: it cites `AesopRules.lean`, `Automation/Tactics/Helpers.lean` and `Tactics/Helpers.lean` (all archived to `FormalSystem/Boneyard/RetiredTactics/` on 2026-09-07), plus an unmatched `tm_auto 5` span.\n\nThe flagged spans understate it. The `== Tactics` section presents `tm_auto`, `temporal_search` and `propositional_search` as live -- all three were absorbed into `modal_search` and removed. The entire `== Aesop Integration` section describes an archived file's rule registrations in the present tense. And the `== Module Map` table has 3 of 7 rows naming files that are absent or misfiled, with every line count stale: `Tactics/Helpers.lean` (claims 1,032; absent), `AesopRules.lean` (claims 276; absent), `EFGameTactics.lean` (claims 326; actually under `Metalogic/WeakCanonical/`, not `Automation/`), `Tactics/Commands.lean` 710->586, `ProofSearch/Core.lean` 1,195->1,283, `Strategies.lean` 379->401, `SuccessPatterns.lean` 423->429. Five live modules are missing entirely, including `Tactics/UserTactics.lean` (275), which now holds `apply_axiom` and `modal_t`. The caption claims 'live line counts' and the text asserts all listed modules are sorry-free -- impossible for two absent files.\n\nThis is publication-facing. Verify the tactic surface directly from `Automation/Tactics/*.lean` and `FormalSystem/Automation.lean`'s docstring; do not infer it from the chapter. Consider replacing `== Aesop Integration` with a short retirement note citing the measurement in `Boneyard/RetiredTactics/README.md` -- genuinely good content for a proof-automation chapter. Also decide whether the Module Map should become machine-generated (extend `typst-sync-check.sh` Check 2, which already recomputes counts for `generated/status.typ`) and record the decision; a hand-fix will drift again. The whitelist is not the fix.\n\nVerify: `typst-sync-check.sh` exits 0 with Checks 2/3 still passing; `typst compile` succeeds; every module named resolves to a live file with a matching `wc -l`; no archived declaration described in the present tense.\n\nSee specs/reviews/review-2026-09-16.md, Finding M1.\n\nWIDENED (codebase-cleanup reorganization, 2026-09-16): cover ALL retired-tactic prose outside `docs/`, not only this chapter. Verified at reorganization time: `FormalSystem/Automation/README.md:61` (Tactics row lists `tm_auto`) and `:114` (`tm_auto -- Uses Aesop with TMLogic rule set`), `FormalSystem/Automation/ProofSearch/README.md:19` (`Integration point for tm_auto ...`), and `typst/chapters/p4-dual-verification.typ:36` (`attempt tm_auto/modal_search`). Re-grep for `tm_auto`/`temporal_search`/`propositional_search` outside `docs/` and `Boneyard/` before closing; files that already describe them correctly as removed (`Automation.lean`, `Tactics/README.md`, `docs/reference/tactic-reference.md`) stay. The `docs/` occurrences belong to 590.\n\nFINAL PHASE: once `typst-sync-check.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583.",
-      "topic": "codebase-cleanup",
+      "description": "`bash scripts/typst-sync-check.sh` exits 1 with 4 Check-1 violations, all in `typst/chapters/p4-proof-automation.typ`: it cites `AesopRules.lean`, `Automation/Tactics/Helpers.lean` and `Tactics/Helpers.lean` (all archived to `FormalSystem/Boneyard/RetiredTactics/` on 2026-09-07), plus an unmatched `tm_auto 5` span.\n\nThe flagged spans understate it. The `== Tactics` section presents `tm_auto`, `temporal_search` and `propositional_search` as live -- all three were absorbed into `modal_search` and removed. The entire `== Aesop Integration` section describes an archived file's rule registrations in the present tense. And the `== Module Map` table has 3 of 7 rows naming files that are absent or misfiled, with every line count stale: `Tactics/Helpers.lean` (claims 1,032; absent), `AesopRules.lean` (claims 276; absent), `EFGameTactics.lean` (claims 326; actually under `Metalogic/WeakCanonical/`, not `Automation/`), `Tactics/Commands.lean` 710->586, `ProofSearch/Core.lean` 1,195->1,283, `Strategies.lean` 379->401, `SuccessPatterns.lean` 423->429. Five live modules are missing entirely, including `Tactics/UserTactics.lean` (275), which now holds `apply_axiom` and `modal_t`. The caption claims 'live line counts' and the text asserts all listed modules are sorry-free -- impossible for two absent files.\n\nThis is publication-facing. Verify the tactic surface directly from `Automation/Tactics/*.lean` and `FormalSystem/Automation.lean`'s docstring; do not infer it from the chapter. Consider replacing `== Aesop Integration` with a short retirement note citing the measurement in `Boneyard/RetiredTactics/README.md` -- genuinely good content for a proof-automation chapter. Also decide whether the Module Map should become machine-generated (extend `typst-sync-check.sh` Check 2, which already recomputes counts for `generated/status.typ`) and record the decision; a hand-fix will drift again. The whitelist is not the fix.\n\nVerify: `typst-sync-check.sh` exits 0 with Checks 2/3 still passing; `typst compile` succeeds; every module named resolves to a live file with a matching `wc -l`; no archived declaration described in the present tense.\n\nSee specs/reviews/review-2026-09-16.md, Finding M1.",
+      "topic": "reference-book",
       "priority": "medium",
       "effort": "medium",
       "dependencies": [
         591
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:27Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/586_rewrite_typst_proof_automation_chapter/reports/01_retired-tactics-chapter-drift.md",
@@ -267,7 +207,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "description": "Clear the two `broken:` entries in `scripts/module-invariants-manifest.txt`: `BimodalTest.ProofSystem.DerivationBenchmark` (374 lines) and `BimodalTest.Semantics.SemanticBenchmark` (358 lines). Both pass `String` where `Atom` is now expected -- they predate the Atom type change and were never updated because nothing builds them. C6 does not compile-check `broken:` entries, so these are the only two live .lean files in the repository with no guarantee of any kind.\n\nRecording them was right; leaving them parked is not. Get the real error count first (`lake env lean` on each, minutes). If small: repair AND pair it with re-manifesting them as plain compile-checked unreachable modules, so C6 guards them every run -- a repaired module that stays unimported rots again immediately. Wiring them into `Tests/BimodalTest.lean` is the other pairing but would slow every `lake test`. Note `DerivationBenchmark.lean` imports `BimodalTest.Automation.ProofSearchBenchmark`; check its status first.\n\nIf large: archive both to `FormalSystem/Boneyard/` with a README recording what they measured, following the `RetiredTactics/` precedent -- but first apply the same measurement that retired those (zero real invocations anywhere live or in Tests/). These are benchmark harnesses, not correctness tests, and their docstrings suggest hand-invocation via `#eval`.\n\nVerify: `check-module-invariants.sh` passes with ZERO `broken:` entries remaining -- that is the success criterion either way. If archived, B0 still reports exactly 1 Boneyard directory and C11 resolves every archived import.\n\nSee specs/reviews/review-2026-09-16.md, Finding M2.",
-      "topic": "codebase-cleanup",
+      "topic": "code-quality",
       "priority": "low",
       "effort": "small",
       "dependencies": [],
@@ -292,18 +232,16 @@
       "project_name": "triage_zero_occurrence_declarations",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Triage the 1,029 declarations C17 reports as having zero occurrences outside their own declaring line. The scan runs on every invariant run, is explicitly REPORTED-never-gated and explicitly approximate, and has never been triaged -- 1,029 is large enough that the number has stopped being informative.\n\nDELIVERABLE IS A CLASSIFICATION, NOT A DELETION SPREE. The scan is textual, so false positives are guaranteed: `instance` declarations resolved by typeclass search, `@[simp]`/`@[aesop]`-attributed declarations reached by attribute, `lean_exe` `main` entry points, constructors reached by pattern matching, and declarations whose only consumers are in `Boneyard/` (excluded from every walker).\n\nRecommended order: (1) stratify by declaration kind and directory before reading anything; (2) mechanically eliminate the known false-positive classes and report how many that removes -- highest-value first step; (3) re-run with `Boneyard/` as a reference source, since 'only consumer is archived' is a different case from 'no consumer'; (4) triage survivors by CLUSTER, not by line; (5) deliver a disposition per cluster and execute only the unambiguous ones, spawning follow-ups for anything contentious.\n\nStrongest true-positive signal to start from: `Automation/Normalization.lean`'s ten consecutive `*_fold` / `*_unfold` entries (`release_unfold` 146, `weak_until_unfold` 150, `trigger_unfold` 154, `weak_since_unfold` 158, `top_fold` 753, `diamond_fold` 760, `some_future_fold` 764, `some_past_fold` 768, `next_fold` 772, `prev_fold` 776). Ten unreferenced siblings is not the shape of a false positive -- and `Boneyard/RetiredTactics/Normalization.lean` holds seven tactic macros lifted out of that very file, which are plausibly their former consumers.\n\nConsider extending C17's filters permanently so the number it reports is the number that matters -- arguably the most durable deliverable here. Do NOT gate C17.\n\nVerify: `lake build` exits 0 and the full invariant harness passes after every deletion batch (C2/C14 baselines unmoved, C15 anchors unbroken, C21 intact); the drop in C17's count is accounted for line by line.\n\nSee specs/reviews/review-2026-09-16.md, Finding L1.\n\nABSORBS THE FORMER DEAD-DECLARATION TRIAGE TASK (542, `dead_declaration_triage_c17_findings`, abandoned as a duplicate of this task; it measured the same C17 census at 989 flagged of 10,346 declarations). Carry over its step (1) as a required early step: quantify the attribute/simp-set blind spot before deleting anything -- enumerate the attribute and simp-set mechanisms in use (`@[formula_unfold]`, `@[simp]` sets, aesop rule sets, instance registration) and report how many flagged declarations are reachable only through one of them. If that reachability analysis is mechanizable, fold it into C17 and document the new counting rule in the script header.\n\nDISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on `release_unfold`. This description treats the `*_fold`/`*_unfold` run as a true-positive signal; the absorbed task treated `release_unfold` as live via `@[formula_unfold]`. Verified at reorganization time (2026-09-16): `release_unfold` IS registered with `@[formula_unfold]`, but the only consumers of that simp set in live code are the `#check`/`example` block inside `Automation/Normalization.lean` itself and `Tests/BimodalTest/Automation/NormalizationTest.lean`. Whether a simp set consumed only by its own smoke tests and one test file counts as \"live\" is the decision this task must make explicitly. Note also that the in-library smoke-test relocation task in this topic runs first and will change C17 occurrence counts (C17 counts `#check @foo` as an occurrence).",
-      "topic": "codebase-cleanup",
+      "description": "Triage the 1,029 declarations C17 reports as having zero occurrences outside their own declaring line. The scan runs on every invariant run, is explicitly REPORTED-never-gated and explicitly approximate, and has never been triaged -- 1,029 is large enough that the number has stopped being informative.\n\nDELIVERABLE IS A CLASSIFICATION, NOT A DELETION SPREE. The scan is textual, so false positives are guaranteed: `instance` declarations resolved by typeclass search, `@[simp]`/`@[aesop]`-attributed declarations reached by attribute, `lean_exe` `main` entry points, constructors reached by pattern matching, and declarations whose only consumers are in `Boneyard/` (excluded from every walker).\n\nRecommended order: (1) stratify by declaration kind and directory before reading anything; (2) mechanically eliminate the known false-positive classes and report how many that removes -- highest-value first step; (3) re-run with `Boneyard/` as a reference source, since 'only consumer is archived' is a different case from 'no consumer'; (4) triage survivors by CLUSTER, not by line; (5) deliver a disposition per cluster and execute only the unambiguous ones, spawning follow-ups for anything contentious.\n\nStrongest true-positive signal to start from: `Automation/Normalization.lean`'s ten consecutive `*_fold` / `*_unfold` entries (`release_unfold` 146, `weak_until_unfold` 150, `trigger_unfold` 154, `weak_since_unfold` 158, `top_fold` 753, `diamond_fold` 760, `some_future_fold` 764, `some_past_fold` 768, `next_fold` 772, `prev_fold` 776). Ten unreferenced siblings is not the shape of a false positive -- and `Boneyard/RetiredTactics/Normalization.lean` holds seven tactic macros lifted out of that very file, which are plausibly their former consumers.\n\nConsider extending C17's filters permanently so the number it reports is the number that matters -- arguably the most durable deliverable here. Do NOT gate C17.\n\nVerify: `lake build` exits 0 and the full invariant harness passes after every deletion batch (C2/C14 baselines unmoved, C15 anchors unbroken, C21 intact); the drop in C17's count is accounted for line by line.\n\nSee specs/reviews/review-2026-09-16.md, Finding L1.",
+      "topic": "code-quality",
       "priority": "low",
       "effort": "large",
       "dependencies": [
         585,
-        591,
-        594,
-        569
+        591
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/588_triage_zero_occurrence_declarations/reports/01_dead-declaration-triage.md",
@@ -318,20 +256,17 @@
       "project_name": "disambiguate_basename_citations",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "C20 tier 1 verifies 1,012 `file.lean:NNN` citations land on a real, non-blank line. A further 35 are unverifiable and the check reports them and moves on. They are precisely the citations most likely to be silently wrong -- a basename ambiguous to the checker is ambiguous to a reader too, and none has ever had its line number checked.\n\n22 are AMBIGUOUS (basename resolves to 2+ live files): `Axioms.lean` x7, `Defs.lean` x7, `Formula.lean` x6, `Completeness.lean` x1, `Soundness.lean` x1. Fix by qualifying the path -- but note that is only half the job: once the path resolves, tier 1 checks the LINE, and these lines have never been checked. Expect some to be wrong; correct the number, not the prose. Exploitable structure: the 7 `DenseModelSurgery/` citations almost certainly all mean their own sibling `DenseModelSurgery/Defs.lean`, and `Defs.lean:461` recurs three times across three files.\n\n13 are UNRESOLVED and need ONE convention decision, not 13 edits: 11 cite files in `FormalSystem/Boneyard/` (`NegationIndep.lean` x8, `RefutationF2.lean` x2, `ExteriorPinnedProbeK.lean` x1 -- all real archived files, pruned from every C20 walker by name), and 2 cite `Mathlib/Tactic/Linter/Header.lean` from `check-copyright-headers.sh`, which are genuinely external and doing useful work. Options: a marker suffix C20 recognises; extending C20's resolver to check the archive for real; or dropping line numbers from archive citations in favour of declaration names. The third is most consistent with how this repository already thinks about citations -- C15 resolves paper anchors by name 'never by line number, ... which is what lets the lint survive reflowing', and commit `a16df671f` de-line-numbered citations for that reason. Evaluate it first.\n\nThe complete 35-row list is in the report; no re-measurement needed.\n\nVerify: C20's INFO count is 0 or exactly the intentionally-external set; tier 1's verified count rises by the number of newly-resolvable citations with still zero out-of-range or blank-line landings; tier 2 still zero.\n\nSee specs/reviews/review-2026-09-16.md, Finding M4.\n\nALSO ABSORB (codebase-cleanup reorganization, 2026-09-16) three broken `specs/` citations in live Lean docstrings, verified at reorganization time: `FormalSystem/Syntax/BigConj.lean:30` (`specs/098/reports/...` -- no such directory), `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:42` (`specs/305 report 40`), and `FormalSystem/Syntax/MinusLanguage/Axioms.lean:76` (`specs/archive/514_...` -- `specs/archive/` is gitignored). Replace each with a durable anchor (declaration name, ADR, or record under the home 595 settles) or drop it. Apply the same convention decision as the Boneyard citations.\nORDERING NOTE: this is the terminal task of the codebase-cleanup topic because every earlier rename/move/reflow shifts cited lines; re-measure the 35-row list if any predecessor has landed since the report.",
-      "topic": "codebase-cleanup",
+      "description": "C20 tier 1 verifies 1,012 `file.lean:NNN` citations land on a real, non-blank line. A further 35 are unverifiable and the check reports them and moves on. They are precisely the citations most likely to be silently wrong -- a basename ambiguous to the checker is ambiguous to a reader too, and none has ever had its line number checked.\n\n22 are AMBIGUOUS (basename resolves to 2+ live files): `Axioms.lean` x7, `Defs.lean` x7, `Formula.lean` x6, `Completeness.lean` x1, `Soundness.lean` x1. Fix by qualifying the path -- but note that is only half the job: once the path resolves, tier 1 checks the LINE, and these lines have never been checked. Expect some to be wrong; correct the number, not the prose. Exploitable structure: the 7 `DenseModelSurgery/` citations almost certainly all mean their own sibling `DenseModelSurgery/Defs.lean`, and `Defs.lean:461` recurs three times across three files.\n\n13 are UNRESOLVED and need ONE convention decision, not 13 edits: 11 cite files in `FormalSystem/Boneyard/` (`NegationIndep.lean` x8, `RefutationF2.lean` x2, `ExteriorPinnedProbeK.lean` x1 -- all real archived files, pruned from every C20 walker by name), and 2 cite `Mathlib/Tactic/Linter/Header.lean` from `check-copyright-headers.sh`, which are genuinely external and doing useful work. Options: a marker suffix C20 recognises; extending C20's resolver to check the archive for real; or dropping line numbers from archive citations in favour of declaration names. The third is most consistent with how this repository already thinks about citations -- C15 resolves paper anchors by name 'never by line number, ... which is what lets the lint survive reflowing', and commit `a16df671f` de-line-numbered citations for that reason. Evaluate it first.\n\nThe complete 35-row list is in the report; no re-measurement needed.\n\nVerify: C20's INFO count is 0 or exactly the intentionally-external set; tier 1's verified count rises by the number of newly-resolvable citations with still zero out-of-range or blank-line landings; tier 2 still zero.\n\nSee specs/reviews/review-2026-09-16.md, Finding M4.",
+      "topic": "code-quality",
       "priority": "medium",
       "effort": "medium",
       "dependencies": [
-        588,
-        540,
-        597,
         584,
-        591,
-        596
+        585,
+        591
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/589_disambiguate_basename_citations/reports/01_unverifiable-citation-inventory.md",
@@ -354,15 +289,13 @@
       "project_name": "retire_stale_development_documentation",
       "status": "not_started",
       "task_type": "markdown",
-      "description": "Clear the 142 task-number citations under `docs/` and retire the two stale development docs that carry most of them. This unblocks `ENFORCE_C9_DOCS=1`, which the harness notes can be flipped 'once the citations are cleared' -- hand that switch to the CI task.\n\nBreakdown: `docs/development/PHASED_IMPLEMENTATION.md` 100, `docs/training/PIPELINE.md` 11, `docs/research/NONCOMPUTABLE.md` 5, `docs/project-info/MAINTENANCE.md` 5, `docs/architecture/ADR-004-...` 5. The hard-gated sibling C9 (FormalSystem/, lakefile.lean, README.md, scripts/) is already green, so docs/ is the last pocket. This repository has performed a vault operation (`vault_count: 1`), so some of these numbers are not merely opaque but wrong.\n\n`PHASED_IMPLEMENTATION.md` (548 lines) is a roadmap for 'completing Layer 0 (Core TM)' organised around Tasks 1-7 and '93-143 hours' -- soundness, completeness at four frame classes, strong completeness at two, the decision procedure and the automation layer all exist and are axiom-pinned. Recommended disposition: delete, folding forward anything durable. Referenced from `docs/README.md`, `docs/development/README.md` and `docs/development/MODULE_INVARIANTS.md` -- check the last one specifically in case it cites something structural that needs a home.\n\n`LATEX_STANDARDS.md` prescribes a `{Theory}/latex/{assets,subfiles,bib}` layout that does not exist here (`latex/` sits at the repository root). It reads as inherited boilerplate. Decide what `latex/` is now that README points the reference manual at the Typst edition and `latex/` is explicitly not kept in sync; write the doc to match, or archive both.\n\nRead `.claude/context/standards/task-reference-exemptions.md` BEFORE starting: the goal is zero UNMARKED citations, not zero mentions of history -- an ADR may legitimately name the task that produced it via the `task-ref-ok` marker.\n\nVerify: C9D reports 0 (or only marked citations); `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0; C5, C12 and C13 still pass (deleting a referenced file breaks C13 if referrers are missed); `readme-lint.sh` still PASS.\n\nSee specs/reviews/review-2026-09-16.md, Finding M3.\n\nWIDENED (codebase-cleanup reorganization, 2026-09-16) to a staleness audit of `docs/` as a whole, in addition to the citations work above:\n  - retired-tactic prose (`tm_auto`, `temporal_search`, `propositional_search` described as live) in the nine files the reorganization research listed: `docs/user-guide/{tutorial,examples,tactic-development,troubleshooting}.md`, `docs/project-info/{tactic-registry,FEATURE_REGISTRY,test-coverage}.md`, `docs/development/METAPROGRAMMING_GUIDE.md`, `docs/reference/API_REFERENCE.md` (re-grep: at reorganization time two of these showed no match for those three names and may carry other retired names);\n  - the four `docs/research/leansearch-*.md` files (~1,450 lines about the LeanSearch API rather than this logic): keep, move, or retire with a recorded reason;\n  - `docs/project-info/{implementation-status,performance-targets,test-coverage}.md`: refresh against the current tree or retire;\n  - the root `CLAUDE.md` title (\"ProofChecker\") and the naming inconsistency across surfaces (Lake `package Logos`, library `FormalSystem`, test library `BimodalTest`, repository `BimodalLogic`) -- align the prose; the package-name decision itself belongs to 578's toml migration;\n  - flip `ENFORCE_C9_DOCS=1` yourself once C9D reports 0 (previously handed to 583; 583 no longer owns it), and wire it into CI following 583's recorded pattern.\nRECORDS HOME: the durable-records-home task (595) runs first; do not move or delete records it has settled.\nPLANNER NOTE: this is now larger than one agent run. Split into phases (citations; development docs; retired-tactic docs; research/project-info docs; naming; ENFORCE flip) rather than truncating any of them.",
-      "topic": "codebase-cleanup",
+      "description": "Clear the 142 task-number citations under `docs/` and retire the two stale development docs that carry most of them. This unblocks `ENFORCE_C9_DOCS=1`, which the harness notes can be flipped 'once the citations are cleared' -- hand that switch to the CI task.\n\nBreakdown: `docs/development/PHASED_IMPLEMENTATION.md` 100, `docs/training/PIPELINE.md` 11, `docs/research/NONCOMPUTABLE.md` 5, `docs/project-info/MAINTENANCE.md` 5, `docs/architecture/ADR-004-...` 5. The hard-gated sibling C9 (FormalSystem/, lakefile.lean, README.md, scripts/) is already green, so docs/ is the last pocket. This repository has performed a vault operation (`vault_count: 1`), so some of these numbers are not merely opaque but wrong.\n\n`PHASED_IMPLEMENTATION.md` (548 lines) is a roadmap for 'completing Layer 0 (Core TM)' organised around Tasks 1-7 and '93-143 hours' -- soundness, completeness at four frame classes, strong completeness at two, the decision procedure and the automation layer all exist and are axiom-pinned. Recommended disposition: delete, folding forward anything durable. Referenced from `docs/README.md`, `docs/development/README.md` and `docs/development/MODULE_INVARIANTS.md` -- check the last one specifically in case it cites something structural that needs a home.\n\n`LATEX_STANDARDS.md` prescribes a `{Theory}/latex/{assets,subfiles,bib}` layout that does not exist here (`latex/` sits at the repository root). It reads as inherited boilerplate. Decide what `latex/` is now that README points the reference manual at the Typst edition and `latex/` is explicitly not kept in sync; write the doc to match, or archive both.\n\nRead `.claude/context/standards/task-reference-exemptions.md` BEFORE starting: the goal is zero UNMARKED citations, not zero mentions of history -- an ADR may legitimately name the task that produced it via the `task-ref-ok` marker.\n\nVerify: C9D reports 0 (or only marked citations); `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0; C5, C12 and C13 still pass (deleting a referenced file breaks C13 if referrers are missed); `readme-lint.sh` still PASS.\n\nSee specs/reviews/review-2026-09-16.md, Finding M3.",
+      "topic": "documentation",
       "priority": "low",
       "effort": "medium",
-      "dependencies": [
-        595
-      ],
+      "dependencies": [],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-16T07:10:01Z",
       "artifacts": [
         {
           "path": "specs/590_retire_stale_development_documentation/reports/01_stale-docs-and-task-citations.md",
@@ -386,7 +319,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "description": "Adopt a naming convention that distinguishes `lean_exe` roots from library modules in `FormalSystem/Automation/`, and apply it to the five confusable modules.\n\n`DataExport.lean` (395, a toJson/prettyPrint library), `DatasetExport.lean` (1,354, the `dataset_generator` exe), `DatasetExporter.lean` (348, a dataset-assembly library), `ProofStepExport.lean` (1,692, the `proof_extractor` exe), `ProofStepExtractor.lean` (361, a library). `Export` means 'is the executable' in two of five cases and 'is a library' in the others; `DataExport` and `DatasetExport` differ by three characters and are functionally unrelated; and `DatasetExporter` -- the name that most suggests 'the thing that exports' -- is a library. A dispatch asked to fix 'the dataset exporter' has three plausible files and will pick by name.\n\nEach module is individually well-documented and coherent, so this is a rename, not a restructure. Propose ONE convention and check it against all thirteen `lean_exe` roots in `lakefile.lean` -- several have the same shape (`BenchmarkOracle`, `TraceExporter`, `MachineAppendixExport`, `TableauProofStepPipeline`). A convention that fixes five and leaves eight inconsistent is worth less.\n\nKeep `lake exe` TARGET names stable unless there is a reason to move them -- they appear in external documentation and the Hugging Face dataset card. Constraints: C25 scrapes `root :=` at run time (so `root`/`srcDir` must stay consistent); CI's exe-root step greps the same pattern; C8 requires a sibling aggregator if a subdirectory is introduced; C4/C5/C12/C24 all move with a rename; and `docs/training/PIPELINE.md`, `typst/chapters/p4-dataset-pipeline.typ`, `FormalSystem/Automation.lean` and `FormalSystem/README.md` all name these modules.\n\nVerify: `lake build` exits 0; both executables still run; full `check-module-invariants.sh` passes (C4/C5/C8/C12/C24/C25); `typst-sync-check.sh` still resolves every backticked module name; `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` still work.\n\nSee specs/reviews/review-2026-09-16.md, Finding M5.",
-      "topic": "codebase-cleanup",
+      "topic": "automation",
       "priority": "low",
       "effort": "medium",
       "dependencies": [],
@@ -435,11 +368,10 @@
       "project_name": "fix_api_documentation_ci_integration",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.\n\nALSO DECIDE (codebase-cleanup reorganization, 2026-09-16): if migrating to `lakefile.toml`, settle the package name as part of the migration -- the Lake package is `Logos` while the library is `FormalSystem`, the test library `BimodalTest`, and the repository `BimodalLogic`. Record the choice (keep `Logos`, or rename to `FormalSystem`/`BimodalLogic`) and its downstream effect on doc URLs. Precedent: cslib (`/home/benjamin/Projects/cslib`) uses `lakefile.toml` with a working `docgen-action` in `.github/workflows/docs.yml`; read both before choosing the fix path.",
-      "topic": "codebase-cleanup",
+      "description": "Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.",
+      "topic": "documentation",
       "created": "2026-09-11T20:05:59Z",
-      "last_updated": "2026-09-16T15:38:44Z",
-      "dependencies": []
+      "last_updated": "2026-09-11T20:05:59Z"
     },
     {
       "project_number": 534,
@@ -448,9 +380,12 @@
       "task_type": "lean4",
       "description": "Research and, where feasible, establish in Lean whether the H/G-fragment of TM is finitely axiomatizable natively in the tense-only language L⁻ (primitive tense operators H and G) -- Kamp/Burgess territory. THE OBJECT: TMFrag fc φ := TM ⊢_fc tr φ, the H/G-fragment of TM delivered by task 533 (Metalogic/Conservativity/Fragment.lean), which by the fragment completeness theorem is exactly Log_{H,G}(fc), the set of H/G-sentences valid over the frame class fc, for each of Base, Dense, Discrete, Dedekind. KNOWN: TM⁻ ⊊ TMFrag at Discrete (witness Z1, machine-checked: not_minus_derivable_z1, z1_translate) and at Base (witness the splitting schema (DD), formerly (Sp), refuted in source); by tmMinusComplete_iff_forward these gaps are exactly TM's semantic incompleteness. THE QUESTION: for each class fc, is there a FINITE set Σ_fc of H/G-schemas (or at least a recursive set) with TM⁻ + Σ_fc = TMFrag_fc? Candidates: (DD); Z1-type backward-induction schemas; the classical H/G axiomatizations of linear discrete/dense/complete flows of time (Burgess 1982 Axioms for tense logic I and II; Burgess 1984 handbook chapter; Kamp 1968; Gabbay-Hodkinson-Reynolds 1994; Prior), adapted to the bimodal setting where □ ranges over all world histories of a single task frame with the MF interaction axiom and every history shares one temporal order (so Log(all task frames) = Log(Discrete) ∩ Log(Dense) and (DD) is a split validity -- see the Halldén analysis in PossibleWorlds tasks 72 and 82, which record that completeness of TM⁻ + (DD) turns on whether TM⁻_f and TM⁻_d axiomatize their classes, both open). Consult the Literature/ corpus (burgess_1982, burgess_1982_ii, burgess_1982b, burgess_1984, venema_1993_since_until, venema_2001) via --lit and survey online sources. DELIVERABLES: a per-class verdict (finitely axiomatizable / recursively axiomatizable / open with the precise obstruction named), a candidate axiom set Σ_fc, and the machine-checked partial results that are honestly obtainable: soundness of TM⁻ + Σ_fc relative to TMFrag_fc (i.e. TM⁻ + Σ_fc ⊆ TMFrag_fc) and either a completeness proof (canonical model or filtration in the H/G language) or a separating H/G-validity showing TM⁻ + Σ_fc ⊊ TMFrag_fc. A negative or open verdict with evidence is a complete outcome. HARD CONSTRAINT: never state a completeness or conservativity theorem and discharge it with sorry. PAPER DEPENDENCY: the paper (PossibleWorlds, possible_worlds.tex, sub:Logic, the footnote following \"TM⁻ owes its strength to since and until\", currently commented out) waits on this task. The paper wants to assert that the Past/Future language admits no complete finite axiomatization of the fragment, and the footnote stays commented out until a negative verdict is established here. Note the claim must be non-FINITE-axiomatizability: the fragment is r.e. via TM⁻+, so a recursive axiomatization exists trivially. A positive or open verdict must also be reported back so the footnote can be reworded to match.",
       "topic": "incompleteness",
-      "dependencies": [],
+      "dependencies": [
+        533,
+        562
+      ],
       "created": "2026-09-03T19:14:55Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-08T15:59:31Z",
       "priority": "low"
     },
     {
@@ -458,15 +393,12 @@
       "project_name": "fix_typst_display_defects_via_playwright_visual_loop",
       "status": "not_started",
       "task_type": "typst",
-      "description": "Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only\n\nORDERING NOTE (codebase-cleanup reorganization, 2026-09-16): this layout pass follows the proof-automation chapter rewrite (586), which replaces a whole section of `typst/chapters/p4-proof-automation.typ`; screenshot after that lands so layout fixes are not made to text that is about to be rewritten.",
-      "topic": "codebase-cleanup",
+      "description": "Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only",
+      "topic": "publication-quality",
       "created": "2026-08-27T04:46:28Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-01T06:06:56Z",
       "session_id": "sess_1787806065_4e3a93",
-      "priority": "high",
-      "dependencies": [
-        586
-      ]
+      "priority": "high"
     },
     {
       "project_number": 504,
@@ -485,9 +417,12 @@
       "status": "partial",
       "task_type": "lean4",
       "description": "Fix c7 labeling bug at formula ~13750 that causes unbounded memory growth in the decision procedure's timeout handling, then regenerate the full c7 dataset. During task 297 dataset regeneration, all 3 attempts to generate c7 stalled at exactly record 13,749 with RSS growing ~40MB/6s. The labeling function enters an apparent infinite loop or unbounded search for formula #13,750 in the sorted enumeration order. The timeout mechanism either does not fire or cannot interrupt the stuck state. Steps: (1) Identify the specific formula at position ~13,750 in the c7 enumeration. (2) Reproduce the hang in isolation with that formula. (3) Diagnose whether the decision procedure's timeout is failing to fire or the procedure is in an uninterruptible state. (4) Fix the timeout handling so it reliably terminates. (5) Regenerate the full c7 dataset (target: 77,272 records)",
-      "dependencies": [],
+      "dependencies": [
+        297,
+        343
+      ],
       "created": "2026-06-09T05:55:43Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-08-25T04:49:34Z",
       "session_id": "sess_1787618565_717c84_298",
       "researched": "2026-06-09T06:07:43Z",
       "artifacts": [
@@ -527,9 +462,10 @@
       "task_type": "lean4",
       "description": "Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.",
       "created": "2026-06-09T02:40:00Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-07-14T00:00:00Z",
       "topic": "dataset-enhancement",
       "dependencies": [
+        295,
         298
       ],
       "artifacts": [
@@ -561,10 +497,11 @@
       "status": "partial",
       "task_type": "lean4",
       "dependencies": [
+        274,
         298
       ],
       "created": "2026-06-04T07:30:00Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-07-14T09:11:24Z",
       "topic": "dataset-enhancement",
       "artifacts": [
         {
@@ -663,11 +600,15 @@
       "task_type": "formal",
       "description": "CAPSTONE of the algebraic representation front. Prove the Jonsson-Tarski representation theorem for the bimodal logic: the embedding eta(a) = {U | a in U} is an injective STSA homomorphism A -> Cm(Uf(A)).\n\nRE-SCOPED. This task's original four phases are now distributed: Phase 1 (complex algebra Cm(F)) and Phase 2 (ultrafilter frame Uf(A), including the Spherical obligation) are separately tasked and are this task's dependencies; Phase 4 (binary untl/snce operators) is separately tasked and depends on this one. What remains here is Phase 3 -- the embedding itself and its injectivity -- stated at the unary signature (box, G, H, sigma).\n\nPREREQUISITE STATE, RE-VERIFIED 2026-08-26: the STSA class and the R_G/R_H/R_Box ultrafilter frame exist as Boneyard seeds behind #exit and are ported by the dependency tasks. The MCS-to-ultrafilter bijection is live at Algebraic/UltrafilterMCS.lean:782 (ultrafilter_correspondence), though stated existentially rather than as a named Equiv -- converting it to an Equiv may be worth doing here. The BooleanAlgebra LindenbaumAlg instance is at BooleanStructure.lean:421.\n\nTHE PRIOR PREREQUISITE LIST IN THIS DESCRIPTION IS STALE and is superseded: it named 'resolve 6 algebraic sorries in TenseS5Algebra/InteriorOperators/LindenbaumQuotient'. InteriorOperators.lean and LindenbaumQuotient.lean are sorry-free today; the remaining sorries are the 3 in the Boneyard TenseS5Algebra seed, and they are for REMOVED axioms (temp_a, temp_l) that must be restated against the current 45-constructor axiom set rather than proved as-is. That is the STSA port task's business, not this one's.\n\nLITERATURE: Goldblatt 1989 'Varieties of complex algebras' (APAL 44, 173-242, doi 10.1016/0168-0072(89)90032-8) has been acquired. CAVEAT THAT MUST BE HONORED: the acquired PDF is an Acrobat 3.0 Capture scan with a badly degraded OCR text layer -- math-heavy pages yield mangled symbols, dropped and reordered lines. READ THE PAGE IMAGES DIRECTLY (the Read tool's pages parameter); do NOT rely on a pdftotext-derived conversion for any axiom statement or equation. Blackburn/de Rijke/Venema 2002 Chapter 5 (corpus entry blackburn_2002) is the primary reference and is born-digital.\n\nMATHLIB HOOK: Order/Atoms.lean:710 (toSetOfIsAtom : alpha <-> Set {a // IsAtom a} for CompleteAtomicBooleanAlgebra) is the atom-structure half of Stone/Jonsson-Tarski for the complete atomic case and is the single most relevant Mathlib lemma here; supporting lemma eq_setOf_le_sSup_and_isAtom at :695. Mathlib has NO Stone duality for Boolean algebras and no BAO machinery -- the rest is greenfield.\n\nSEE ALSO the reconciliation task on whether this embedding can be factored through ShiftSet.lean's reverse_repr rather than built independently; if it can, that supersedes part of this task's construction and this description should be revised again before implementation starts.\n\n=== DEPENDENCY ADDED 2026-09-01 ===\nTask 528 (Algebraic/ modernisation: propDecide in BooleanStructure.lean, SetMaximalConsistent.ultrafilterEquiv as a named Equiv, the bespoke `Ultrafilter` structure reconciled with Mathlib Order.PFilter/Ideal.IsPrime, Multiset.inf; from specs/reviews/review-2026-09-01-lean-engineering.md findings D-08, F-11, F-12, F-13) must land first so this task builds on the modernised algebra rather than inheriting a shadowed Ultrafilter name and ~430 lines of hand-built Boolean algebra.",
       "dependencies": [
+        420,
+        439,
+        461,
         498,
-        499
+        499,
+        528
       ],
       "created": "2026-05-11T19:35:39Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-02T03:30:31Z",
       "topic": "algebraic-representation",
       "file_scope": null,
       "priority": "low"
@@ -710,12 +651,29 @@
       "priority": "low",
       "description": "Update README.md, docs/, and FormalSystem/ module-level docstrings to their final post-refactor state, once the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. This is the final polish pass, distinct from and run after task 472's already-completed immediate correction pass. Explicitly excludes: every item task 472 already corrected (the Decidability.lean Status block, Verified/README.md, FMP/README.md, DecisionProcedure.lean's decideAuto docstring, Verified/Decidable.lean's Status docstring, WeakCanonical.lean, RealModel/ShuffleReal.lean, Soundness.lean, PriorExpressivenessDense.lean) and the two Kamp files task 473 already swept (Kamp/EANegationClosure.lean, NfMultiAnchorBridge/NavigatedSpine.lean). This task's residual content is: re-auditing all touched documentation for drift accumulated during the decidability chain's landing (472/473 audited a snapshot; the chain's remaining tasks will touch further files after 472/473 ran), and the Axiom Reference update the charter names as part of 177's original scope.\n\nREALIGNMENT NOTE (task 468, 2026-08-25, verdict per specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md §6): DIVIDE, already half-executed exactly as specs/reviews/review-2026-08-24.md amendment 10f states -- tasks 472 (documentation correction pass) and 473 (Kamp vacuity deletion) already ran the ungated half; the description above is the remaining, gated half's text. `file_scope` (README.md, specs/ROADMAP.md, FormalSystem/, docs/) was already repaired by task 470 item (G) and is confirmed resolvable, no duplicate -- left unchanged here.\n\n=== DEPENDENCY ADDED 2026-09-01 ===\nTask 530 (documentation single source of truth + theorem index, from specs/reviews/review-2026-09-01-lean-engineering.md) is the UN-GATED metalogic half of this charter and is now a dependency; this task remains the gated post-decidability-chain pass and its residual shrinks to re-auditing drift the decidability chain introduces plus the Axiom Reference update.",
       "dependencies": [
+        131,
+        193,
+        402,
+        426,
         428,
         429,
-        430
+        430,
+        432,
+        433,
+        434,
+        440,
+        441,
+        448,
+        494,
+        510,
+        513,
+        524,
+        526,
+        530,
+        533
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-03T19:24:26Z",
       "topic": "formula-refactor",
       "file_scope": [
         "README.md",
@@ -731,9 +689,13 @@
       "task_type": "lean4",
       "priority": "high",
       "description": "Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness and completeness on a concrete formula, plus decidability of the propositional fragment (genuinely complete today, per the soundness/completeness metatheory's axiom-clean status). Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.\n\nREALIGNMENT CORRECTION (task 468, 2026-08-25, carried from specs/reviews/review-2026-08-24.md\namendment M-7, independently re-confirmed at realignment time): the struck original acceptance\ncriterion above (\"Complete worked example showing soundness-completeness-decidability on a\nconcrete formula\") is RESCOPED. Decidability of TM (the full bimodal logic) is still open --\nre-confirmed fresh this dispatch: grep -rn \"isValid\" FormalSystem/Metalogic/Decidability/ shows no\ndeclaration takes DecisionProcedure.isValid as its subject, and ruleSound_of_mem_allRulesForFC is\nnot lifted to any allClosed -> valid theorem. `truthAt_of_isValid`\n(Verified/Decidable.lean:2412) is NOT evidence of decidability -- it concerns a different,\nsemantic-side `SoundnessLemmas.IsValid`, not the decision procedure's `DecisionProcedure.isValid`.\nDo not cite it as such. This task's decidability example is therefore rescoped to the\npropositional-fragment case (genuinely decidable today) rather than the full logic; a full-logic\ndecidability example remains gated on the decidability/tableau front (410-465,\n480-482) landing.",
-      "dependencies": [],
+      "dependencies": [
+        131,
+        193,
+        402
+      ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-07-26T00:00:00Z",
       "topic": "formula-refactor",
       "file_scope": [
         "FormalSystem/Examples/",
@@ -808,10 +770,11 @@
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [
+        230,
         298
       ],
       "created": "2026-06-01T20:00:00Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-06-01T20:00:00Z",
       "file_scope": null
     },
     {
@@ -823,10 +786,11 @@
       "effort": "12-18 hours",
       "parent_task": 165,
       "dependencies": [
+        165,
         429
       ],
       "created": "2026-07-28T00:21:55Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-07-30T01:31:18Z",
       "artifacts": [
         {
           "path": "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md",
@@ -852,10 +816,11 @@
       "effort": "15-20 hours",
       "parent_task": 165,
       "dependencies": [
+        165,
         410
       ],
       "created": "2026-07-28T00:21:55Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-07-28T00:21:55Z",
       "artifacts": [],
       "topic": "decidability",
       "priority": "low"
@@ -869,13 +834,14 @@
       "effort": "10-15 hours",
       "parent_task": 165,
       "dependencies": [
+        165,
         410,
         411,
         428,
         430
       ],
       "created": "2026-07-28T00:21:55Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-07-28T00:21:55Z",
       "artifacts": [],
       "topic": "decidability",
       "priority": "low"
@@ -886,6 +852,9 @@
       "status": "blocked",
       "task_type": "lean4",
       "dependencies": [
+        432,
+        433,
+        434,
         465
       ],
       "parent_task": 165,
@@ -960,7 +929,7 @@
       ],
       "title": null,
       "created": "2026-07-29T23:39:38Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-08-06T16:01:52Z",
       "session_id": "sess_1786031793_a8d423",
       "blockers": "Orchestration paused at 4/5 cycles, NOT blocked. Plan v4 (plans/04_ordtimesknown-strengthening-totality.md) is FULLY EXECUTED: all 17 phase headings are [COMPLETED], MintBound.lean is 4512 lines, 0 sorry, 0 axiom, #print axioms on the terminus is exactly [propext, Classical.choice, Quot.sound], and lake build is green repo-wide (2333 jobs, 3m24s wall). Saturation.lean, Tableau.lean and Fuel.lean are byte-identical to task start; MintBound.lean is the only source file changed (+2709 lines, purely additive, no landed declaration deleted or edited). All five named risks R1/R2/R3/R4/R6/R8 are retired BY PROOF, none by narrowing and none by axiom.\n\nSTATUS IS DELIBERATELY partial, NOT completed. The terminus buildTableauAt_isSome_of_budget carries FOUR named residual hypotheses, each a def with an in-source docstring stating what would discharge it: (1) MintPaysForTime -- the open mathematical core; the sigma-hit/time-reuse question, PLUS a new obstruction found in the final cycle: 'not ruleMintsFreshLabel implies no new time' is FALSE, since densityRule and the active arms of untlNeg/snceNeg create times without being witness-guarded. (2) PostBlockingSettles -- subsumes resolveOpenArm's none via armSettlement_of_postBlockingSettles; ArmSettlement alone is provably too weak. (3) UniverseClosed -- closure of U under engine steps AND under an identification's relabelling; the second clause is genuinely new. (4) DifficultyBounded with beta >= 3 -- BLOCKED from being computed in MintBound.lean because temporalCount/modalCount are private to Saturation.lean, which this plan forbids touching. None is the unbranching restriction renamed; all four ExpansionResult shapes stay admissible under every one of them.\n\nTWO PLAN PREMISES DID NOT SURVIVE CONTACT WITH THE SOURCE. (A) BudgetedTotality is FALSE as stated, refuted in-source at beta = 0 by budgetedTotality_beta_zero_false: its beta-linear budget hypothesis degenerates to branchesUsed <= maxBranches while the engine's guard is strict. Its fuel figure is also SHORT. (B) The prior cycle's 'the path figure fits, no divergence needed' is WITHDRAWN -- it compared the wrong quantity (path_le_splitPathBound counts #extensions + #identifications, but fuel is spent by EVERY engine step including the ordered split's arms 1-2). The landed statements are therefore at the derived mintAwareFuel, with splitAwareFuel_le_mintAwareFuel proving it ENLARGES rather than replaces the landed figure, per plan 02's own instruction for orderedRunBound.\n\nNEXT STEP IS A HUMAN SCOPE DECISION, NOT ANOTHER IMPLEMENT DISPATCH: the plan has no phase left to dispatch against. Either /revise 428 to add phases for the residuals, or /spawn 428 to create separate tasks for them. MintPaysForTime is genuine open research; DifficultyBounded needs a decision about Saturation.lean's private definitions. Continuation handoff: handoffs/v4-phase-14-handoff-20260806.md (every other file in that directory is stale).",
       "researched": "2026-08-05T22:51:07Z",
@@ -1022,13 +991,16 @@
       "topic": "decidability",
       "description": "Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.\n\nTHE PROBLEM, stated exactly. `densityRule` mints a fresh time while lying OUTSIDE BOTH `freshLabelRules` AND `selfGuardRules`. Consequently no disjunct of the current measure moves at a `densityRule` step, FOR ANY sigma WHATSOEVER. This has been open since C9 register entry 17 named it, and task 434's Phase 8 records the current state bluntly: `gapPotential` \"remains implemented nowhere and assumed by nothing\". Because `densityRule` is `denseRules`-gated, this blocks a nonempty `MintPaysForTimeFixed` discharge at `.Dense` and `.Dedekind` frame classes specifically; every frame class needs `gapPotential` for a fully general result.\n\nSHAPE SUGGESTED BY PRIOR WORK (a starting point, NOT a specification to follow blindly): task 434 records the expectation that `gapPotential` is indexed by `U x U` and `denseRules`-gated. Validate or refute that shape as part of the research; if a different indexing is correct, say so and justify it.\n\nHARD REQUIREMENT -- PRESERVATION ACROSS THE IDENTIFICATION ARM. Any candidate component must be preserved across `TimeOrdering.identifyTime`, which can LOWER `ord.timeCount`. This is the same maxTime-lowering mechanism that refuted earlier candidates; see `nextTime_reissues_retired_time` and `reuse_driven_through_engine`, and task 436's oriented-arm re-gate (`orientedGate*` family, :8592-8788) for how the analogous obstacle was handled for the self-guard component. A component that pays at `densityRule` steps but is destroyed by the identification arm is not a solution.\n\nREFUTED ROUTES -- C9 register entries 14, 17, 18, 19, 20, 24. Read them ALL in full before designing anything. In particular entry 14 forbids BOTH (1) re-indexing `mintPotential` on `freshTimeRules` instead of `freshLabelRules` -- refuted by `witnessPresent_eq_false_of_not_freshLabel`, whose match has exactly eight arms so the three added columns are permanently false -- and (2) dropping disjunct 1's cardinality conjunct in favour of the ordering-rank conjunct alone -- refuted by `splitOrderedRank_lt_of_knownTimes_lt` plus `mintPaysForTime_rank_repair_false`. Neither may be re-attempted.\n\nLITERATURE. Run with --lit against the sub-index curated for this line of work, drawing specifically on: venema_2001 section 5 (interval-based temporal logic) for the density/gap-guarded component itself; caleiro_2013 sections 6-7 (mosaic-method decidability for combined tense-and-modal logics) as a structural analogue for a combined-logic termination measure; gerth_1995 and baier_katoen_2008 (closure-set LTL tableau termination) as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000 for rule-bounding technique.\n\nDONE MEANS EITHER: (a) `gapPotential` defined, its payment at `densityRule` steps proved, its preservation across `identifyTime` proved, integrated into the measure, and a nonempty `MintPaysForTimeFixed` discharge extended to `.Dense` and `.Dedekind`; OR (b) a machine-checked impossibility result showing no such component exists at the current measure's shape, with the obstruction identified precisely and a C9 entry recording it. Outcome (b) is a genuine and valuable result, NOT a failure -- this repo's practice is that a proved refutation ranks with a proof, and several of this measure's real advances came from refutations.\n\nPROHIBITED: no `sorry`, no vacuous or false predicate, no weakening presented as a repair (a direction lemma is a GATE, not a nicety -- C9 entry 7 exists because that mistake was made once); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); additive only in MintBound.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green.\n\nDependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is what makes a per-rule payment usable at the successor, and `gapPotential`'s payment needs the same threading. 463 is a file_scope SERIALIZATION edge only (both edit MintBound.lean), with no mathematical content.",
       "created": "2026-08-19T01:33:59Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-08-19T01:33:59Z",
       "session_id": "sess_1787103184_075b59",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/"
       ],
-      "dependencies": [],
+      "dependencies": [
+        462,
+        463
+      ],
       "artifacts": [],
       "priority": "low"
     },
@@ -1040,12 +1012,14 @@
       "topic": "decidability",
       "description": "Complete the terminus restatement family at the repaired residuals. Task 433's Phase 6 landed EIGHT of the twenty-two restatements -- the four family roots and their four caller-facing seed forms -- and recorded the remaining FOURTEEN as a Reasoned Exclusion with the recipe written down: each is a `_lengthBudget` / `signedUniverse` substitution, \"a one-line application of its family root\".\n\nThis is deliberately MECHANICAL work with the recipe already recorded. Its value is uniformity: a caller reaching for a `_lengthBudget` or `signedUniverse` form of a repaired terminus should find it landed rather than having to re-derive it, and a half-populated family is a trap for a future reader who assumes an absent member is absent for a reason.\n\nSCOPE: read Phase 6's Reasoned Exclusions section in specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md for the enumerated list and the recipe. The family roots and existing members are the `buildTableauAt_isSome_*` declarations in MintBound.lean (the `_at`, `_selfGuarded`, `_fixed` and `_run` families, roughly :6308-:12240). Land the fourteen missing members following the naming convention the file already uses; do not invent a new convention.\n\nWHY THIS RUNS LAST: it restates termini at the repaired residuals, so it must run after the residuals themselves are settled. If 462, 463 or 464 changes a predicate's shape or sheds a hypothesis, the restatements must reflect the settled form -- doing this work earlier would mean doing it twice. Before starting, RE-DERIVE the list of missing members from the file as it then stands rather than trusting the count of fourteen recorded here: earlier tasks may have landed some, or added new family roots.\n\nPROHIBITED: no `sorry`; additive only; do not alter any previously-landed declaration; do not edit Fuel.lean, Saturation.lean or Tableau.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green. If any of the fourteen turns out NOT to be a one-line application -- i.e. the recipe does not actually apply -- STOP on that member, record why, and do not force it; a member that needs real mathematics belongs in its own task, not smuggled in here.\n\nDependencies: 462, 463, 464 -- all three, so that the restatements are made against a settled set of residuals rather than a moving one.",
       "created": "2026-08-19T01:34:36Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-08-19T01:34:36Z",
       "session_id": "sess_1787103184_075b59",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "dependencies": [
+        462,
+        463,
         464
       ],
       "artifacts": [],
@@ -1060,30 +1034,35 @@
       "priority": "low",
       "effort": "large",
       "description": "THE BOX-FAITHFUL SMALL-MODEL THEOREM.\n\nCLASSIFICATION: OPEN MATHEMATICS. MULTI-MONTH. This is a genuine research problem in the same\ncategory as the audit's R4 \"semantic FMP\" entry. IT MAY NOT BE RE-DESCRIBED AS ENGINEERING, AND IT\nMAY NOT BE MERGED INTO THE BILASSO WIRING TASK OR THE CARRIER-NORMALIZATION TASK. Merging is\nprecisely how a research problem gets hidden behind an engineering description, and this task\nexists partly to prevent that.\n\nDO NOT BEGIN before the BiLasso wiring task and the carrier-normalization task (task 475) are\nlanded. Those two have standalone value; this one does not, and its cost is dominated by a problem\na two-day literature check might refute outright.\n\n=== LITERATURE GATE -- RUN FIRST, AND IT IS EMPOWERED TO STOP THE TASK ===\n\nAcquire Gabbay, Kurucz, Wolter, Zakharyaschev, *Many-Dimensional Modal Logics* (2003) and read its\ntemporal-products chapter. IF the two-dimensional `Until`/`Since` case is recorded there as\nundecidable or as lacking the finite model property, THIS TASK IS REFUTED and must be REPORTED AS\nSUCH rather than attempted. A negative result here is as valuable as a positive one and would\nredirect the whole decidability front.\n\nWhat is already firm from a prior search: products of THREE OR MORE modal logics are undecidable,\nwith no logic between K x K x K and S5 x S5 x S5 decidable, and S5 x S5 x S5 lacks the finite model\nproperty. What is NOT settled: the two-dimensional case with `Until`/`Since`, which is what this\nlogic is closest to. Note that TM is in any case NOT a full product -- its second dimension is the\npath space of a graph, not an arbitrary set of runs -- so a product-logic result would be evidence,\nnot a decision.\n\n=== THE TARGET ===\n\nBuild `cands : Formula -> List IntPresentation` and prove\n\n    not (ValidDiscrete phi) -> exists P in cands phi, exists w, SatAtState P w phi.neg\n\nThis is the SINGLE remaining obligation for decidability of `ValidDiscrete`. Everything else is\nalready compiled: given this hypothesis, `check`-over-`cands` is equivalent to `ValidDiscrete phi`\nand `decidable_of_iff` reads the `Decidable` instance off it. There is no bridge theorem, no\ntransfer lemma, no enumeration over `Atom`, and no `Fin n`-from-`Finite` extraction anywhere in the\nassembly; `check_correct` is the FINAL step.\n\n=== THE CONSTRUCTION (the tractable part) ===\n\nBuild `cands phi` from the CLOSURE-TYPE SPACE: subsets of `subformulaClosure phi` satisfying the\nlocal Hintikka conditions, with `step` given by `LocalCoherent`'s `untl`/`snce` unfolding clauses\n(`BiLasso/Annotation.lean` already states them, and they relate the label at `t` to the label at\n`t` plus-or-minus one only -- i.e. they ARE an adjacency relation), and the valuation read off the\nstate by deciding atom membership. Every ingredient is `Finset`/`Bool` data with `DecidableEq`.\nTwo real obligations, neither research-grade:\n\n  1. `fwd`/`bwd` SERIALITY OF THE TYPE GRAPH. Not free: a Hintikka type may have no locally\n     coherent successor, forcing an ITERATED PRUNING to a maximal serial subgraph. Standard,\n     bounded, fiddly.\n  2. INDEXING. `IntPresentation` demands `Fin card` specifically, so the type `Finset` must be\n     listed and indexed. Mechanical.\n\nEstimate for this part alone: two to four weeks.\n\nDO NOT instead try \"bound `card` by some `presentationBound phi`, then enumerate the presentations\nup to that bound\". That does not typecheck as stated: `IntPresentation.val : Atom -> Fin card ->\nBool` is a function on the `Infinite` type `Atom`, so presentations of a given `card` are not a\nfinite collection. Closing that would need a valuation-restriction lemma that is not in the tree.\nThe formula-indexed candidate list sidesteps the problem rather than solving it.\n\n=== THE CRUX: BOX-FAITHFULNESS (the research part) ===\n\nThe `box` clause of `TruthAt` quantifies universally over ALL total histories. Two landed facts\nmake this a GLOBAL modality rather than a local one:\n\n  - `Truth.box_const` (`Semantics/Truth.lean`): box truth is independent of both the history and\n    the time. Its own docstring: \"a model has one finite set of box facts, computed once.\"\n  - `Extension.occurrence` (`cor:occurrence`): every state occurs at every time in some total\n    history.\n\nThat collapse is why `BoxOracleSound P bx` types `bx` as `Formula -> Bool` -- one `Bool` per\nformula, per model. It is also the obstruction:\n\n  The box facts of the SOURCE model M and of the TARGET presentation P are each global constants\n  of their own model, and they need not agree. P admits every path of its graph. The subgraph of\n  types realized in M still generates paths that M does not realize, and along such a path a\n  `box chi` true in M can fail. When it fails, the type-map image is no longer a `LocalCoherent`\n  annotation, and the transfer breaks.\n\nRestricting `cands phi` to realized-type subgraphs does NOT by itself close this: the subshift\ngenerated by the realized edges properly contains the realized paths. So the residue is a genuine\nBOX-FAITHFUL small-model theorem -- in effect a bounded-model property for LTL(Until, Since) over\nbi-infinite paths of a graph, PLUS a universal path quantifier over the whole structure.\n\nIs it true? Almost certainly -- the shape is the classical automata-theoretic bounded-model\nsetting, and the analogous results (CTL*-style satisfiability, LTL with a universal modality) are\ndecidable with finite/bounded model properties. Is it in reach? Not routinely. Neither Mathlib nor\nthis tree carries omega-automata, Buchi complementation, or any language-inclusion machinery, so a\nLean proof must be hand-rolled.\n\n=== WHAT TO REUSE ===\n\n`BiLasso/GoodCycle.lean`'s good-cycle argument, `cycleBound`, and `exists_annot_of_truth` are\nexactly the fulfilment machinery a hand-rolled proof would reuse. Be clear-eyed that they operate\nINSIDE a presentation, not across the model boundary, which is the whole difficulty.\n\n=== DO NOT PROMISE A CHOICE-FREE RESULT ===\n\n`wlem_of_spherical` (`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`) derives weak\nexcluded middle from `Spherical R` at the finite carrier `Bool` over `D = ZZ`, from\n`[propext, Quot.sound]` alone. So NO finite-carrier frame with an arbitrarily shaped relation can\nbe choice-free, on any route. The cost is already paid by `IntPresentation.toTaskFrame`. Any spec\npromising choice-freedom here is promising something proved impossible. Note the separate\ndistinction: `instDecidableSatAtState` COMPUTES (kernel-evaluated `#guard`s prove it) while\nmeasuring `[propext, Classical.choice, Quot.sound]`. Computability and choice-freedom are different\nproperties.",
-      "dependencies": [],
+      "dependencies": [
+        475
+      ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/TypeModel/",
         "FormalSystem/Metalogic/Decidability/IntPresentation.lean"
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-08-24T00:00:00Z",
       "artifacts": []
     },
     {
       "project_number": 481,
       "project_name": "discharge_or_replace_unorderedsuccessorlabelclosed_residual",
-      "description": "CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.\n\nTARGET: `UnorderedSuccessorLabelClosed` (`FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean:836`) is carried as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` (`ClosureResidual.lean:1139`) and has an in-tree refutation at `ClosureResidual.lean:889` (`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) -- the same shape of problem `DifficultyBounded` presented before `StepLengthBounded` replaced it.\n\nWHAT TO DO -- determine which of three outcomes applies:\n(a) the predicate can be discharged at the frame classes/settings the surviving terminus theorems actually need (distinct from the setting `ClosureResidual.lean:889` refutes it in -- check precisely which); or\n(b) it needs a `StepLengthBounded`-style weaker replacement, analogous to the `DifficultyBounded` -> `StepLengthBounded` repair pattern already in this file; or\n(c) it is unclosable as stated and needs a C9 register entry (the file already has 24 such entries; this would be the 25th) plus an explicit statement of which theorem still carries it and at which frame classes.\n\nA C9 REGISTER ENTRY IS A VALID, COMPLETE DELIVERABLE for this task -- do not treat \"prove it\" as the only acceptable outcome.\n\nSEQUENCING NOTE (direct from `specs/reviews/review-2026-08-24.md` amendment 10e, re-affirmed by task 468's realignment): task 462 targets `MintPaysForTimeFixed` discharge at a NONEMPTY UNIVERSE, which is the same setting `ClosureResidual.lean:889`'s refutation applies in. If this task and 462 are not sequenced, 462 risks either duplicating the discovery of the refutation or, worse, building on an implicit assumption that this residual is harmless. This task should run BEFORE OR ALONGSIDE 462.\n\nDEPENDENCIES: `[434]` (established the residual set this belongs to). Do NOT fold into 465 (the mechanical restatement-family task) -- 465 is explicitly scoped as \"a one-line application of its family root\" for SETTLED residuals; this residual is not settled, so folding it in would either force 465 to do research work outside its charter or produce a restatement of an unsettled predicate, which is exactly the kind of premature-closure risk this whole realignment exists to prevent.\n\nVERIFIED at task-468 realignment time (2026-08-25): none of tasks 462, 463, 464, 465 mentions the symbol `UnorderedSuccessorLabelClosed` in its live description.\n\nACCEPTANCE: one of outcomes (a)/(b)/(c) above is reached and recorded; `lake build` green; no regression to any currently-passing check-module-invariants.sh check.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-3), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10e.\n\nPOINTER REFRESH (2026-09-16 reorganization): `MintBound.lean` was split into the `MintBound/` directory (the monolithic `MintBound.lean` is now a 121-line aggregator). Line references above were re-confirmed against `MintBound/ClosureResidual.lean` (definition :836, in-tree refutation :889, carrying theorem :1139); \"this file\" in the text above now means that directory. The completed dependency numbers 434/483 were pruned from the dependency list; the blocked status and blockers are unchanged.",
+      "description": "CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.\n\nTARGET: `UnorderedSuccessorLabelClosed` (`FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:6199`) is carried as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` (`:6215`) and has an in-tree refutation at `:6238` (`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) -- the same shape of problem `DifficultyBounded` presented before `StepLengthBounded` replaced it.\n\nWHAT TO DO -- determine which of three outcomes applies:\n(a) the predicate can be discharged at the frame classes/settings the surviving terminus theorems actually need (distinct from the setting `:6238` refutes it in -- check precisely which); or\n(b) it needs a `StepLengthBounded`-style weaker replacement, analogous to the `DifficultyBounded` -> `StepLengthBounded` repair pattern already in this file; or\n(c) it is unclosable as stated and needs a C9 register entry (the file already has 24 such entries; this would be the 25th) plus an explicit statement of which theorem still carries it and at which frame classes.\n\nA C9 REGISTER ENTRY IS A VALID, COMPLETE DELIVERABLE for this task -- do not treat \"prove it\" as the only acceptable outcome.\n\nSEQUENCING NOTE (direct from `specs/reviews/review-2026-08-24.md` amendment 10e, re-affirmed by task 468's realignment): task 462 targets `MintPaysForTimeFixed` discharge at a NONEMPTY UNIVERSE, which is the same setting `:6238`'s refutation applies in. If this task and 462 are not sequenced, 462 risks either duplicating the discovery of the refutation or, worse, building on an implicit assumption that this residual is harmless. This task should run BEFORE OR ALONGSIDE 462.\n\nDEPENDENCIES: `[434]` (established the residual set this belongs to). Do NOT fold into 465 (the mechanical restatement-family task) -- 465 is explicitly scoped as \"a one-line application of its family root\" for SETTLED residuals; this residual is not settled, so folding it in would either force 465 to do research work outside its charter or produce a restatement of an unsettled predicate, which is exactly the kind of premature-closure risk this whole realignment exists to prevent.\n\nVERIFIED at task-468 realignment time (2026-08-25): none of tasks 462, 463, 464, 465 mentions the symbol `UnorderedSuccessorLabelClosed` in its live description.\n\nACCEPTANCE: one of outcomes (a)/(b)/(c) above is reached and recorded; `lake build` green; no regression to any currently-passing check-module-invariants.sh check.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-3), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10e.",
       "status": "blocked",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "low",
       "effort": "large",
-      "dependencies": [],
+      "dependencies": [
+        434,
+        483
+      ],
       "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean"
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-25T12:18:56Z",
-      "last_updated": "2026-09-16T15:37:40Z",
+      "last_updated": "2026-08-25T19:25:54Z",
       "artifacts": [
         {
           "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md",
@@ -1141,11 +1120,13 @@
       "topic": "algebraic-representation",
       "effort": "16-24 hours",
       "dependencies": [
-        502
+        496,
+        502,
+        528
       ],
       "description": "Bring the Shift-closed Tense S5 Algebra class into live code and close the G-operator gap. Phase 1 groundwork for the Jonsson-Tarski representation. THE SEED: Boneyard/UltrafilterFrame/TenseS5Algebra.lean (361 lines, behind #exit) already contains the full class STSA extending BooleanAlgebra with fields box, G, H, sigma and axioms box_deflationary, box_monotone, box_idempotent, box_s5, G_monotone, H_monotone, sigma_involution, sigma_neg, sigma_sup, sigma_G, sigma_H, sigma_box, MF, TF, TA, TL. This is the exact algebraic signature the representation needs. IT CARRIES 3 SORRIES, AND THEY MUST NOT BE PROVED AS-IS: they are for temp_a and temp_l, axioms that have since been REMOVED or restructured; restate them against the current 45-constructor ProofSystem.Axiom set (Axioms.lean:115-464) rather than reviving the old shapes. THE G GAP: LindenbaumQuotient.lean supplies boxQuot (:305-ish), hQuot, and sigmaQuot (:346) with its four laws (sigma_quot_involution :353, sigma_quot_neg :362, sigma_quot_sup :373, sigma_quot_box :385) -- but there is NO gQuot. G on the Lindenbaum quotient must be constructed and its congruence proved before LindenbaumAlg can be an STSA instance. Boneyard/SorriedDeclExcisions/AlgebraicGQuotChain.lean is the excised prior attempt and should be consulted, not trusted. DESIGN REFERENCE: specs/archive/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md (538 lines) gives the full axiom-to-equation translation table and the key structural claim that box a <= box(G a) meet G(box a) says the box-fixed points form a G-invariant subalgebra -- the algebraic encoding of Omega being shift-closed. It is stale on file names (references deleted AlgebraicRepresentation.lean and ParametricRepresentation.lean) but sound on the mathematics. ACCEPTANCE: STSA class live and sorry-free, gQuot constructed with congruence, instance STSA LindenbaumAlg, lake build green.\n\n=== DEPENDENCY ADDED 2026-09-01 ===\nTask 528 (Algebraic/ modernisation: propDecide in BooleanStructure.lean, SetMaximalConsistent.ultrafilterEquiv as a named Equiv, the bespoke `Ultrafilter` structure reconciled with Mathlib Order.PFilter/Ideal.IsPrime, Multiset.inf; from specs/reviews/review-2026-09-01-lean-engineering.md findings D-08, F-11, F-12, F-13) must land first so this task builds on the modernised algebra rather than inheriting a shadowed Ultrafilter name and ~430 lines of hand-built Boolean algebra.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-02T03:30:31Z",
       "priority": "low"
     },
     {
@@ -1186,11 +1167,12 @@
       "topic": "algebraic-representation",
       "effort": "10-16 hours",
       "dependencies": [
+        492,
         497
       ],
       "description": "RESEARCH TASK. Prevent two parallel representation theorems from being developed and having to be reconciled after the fact. THE OBSERVATION: FormalSystem/Semantics/ShiftSet.lean -- landed by task 424 for the COMPACTNESS route -- is already a representation theorem. forward_repr (:263) and reverse_repr (:362) represent task models as shift sets, both directions, sorry-free. Separately, the STSA design report (specs/archive/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md) identifies its key structural claim as: box a <= box(G a) meet G(box a) says the box-fixed points form a G-invariant subalgebra, which is the algebraic encoding of OMEGA BEING SHIFT-CLOSED. That is the same shift structure ShiftSet.lean makes explicit. These look like two views of one representation. SCOPE: determine whether they are, and if so, specify the shared infrastructure so the algebraic route consumes ShiftSet rather than duplicating it. Concretely: (a) is Cm(F) expressible as an algebra of shift-invariant subsets of a ShiftSet carrier? (b) does ShiftSet's sep hypothesis correspond to an STSA axiom, and if so which? (c) can the eta embedding be factored through reverse_repr? DELIVERABLE: a report with a verdict and, if affirmative, a concrete refactor specification. A NEGATIVE VERDICT IS A COMPLETE OUTCOME -- if the two representations are genuinely different objects, say so with evidence and record it so the question is not reopened. TIMING: run this after the Los-lemma work and the STSA port have both landed, so both sides are concrete rather than projected.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-08-26T05:15:00Z",
       "priority": "low"
     },
     {
@@ -1215,10 +1197,12 @@
       "task_type": "formal",
       "topic": "algebraic-representation",
       "effort": "12-20 hours",
-      "dependencies": [],
+      "dependencies": [
+        461
+      ],
       "description": "RESEARCH TASK. Ground the algebraic representation front in the literature BEFORE the STSA axiom set is fixed and before Uf(A) is constructed. Gates the STSA port; the complex-algebra and ultrafilter-frame tasks inherit the gate transitively.\n\nWHY THIS RUNS EARLY. Goldblatt 1989 is largely about which varieties of Boolean algebras with operators are complex algebras, and about canonicity. Those are design questions for the STSA axiomatization and for the Uf(A) construction, not questions the eta-embedding capstone can act on. On the pre-existing graph this paper was ingested in wave 1 and not opened until wave 4, by which point three tasks would have committed to designs it should have informed.\n\nPRIMARY SOURCE, WITH A HARD READING CONSTRAINT. Goldblatt, R. \"Varieties of complex algebras\", Annals of Pure and Applied Logic 44 (1989) 173-242, doi 10.1016/0168-0072(89)90032-8. The acquired PDF is an Acrobat 3.0 Capture scan (70 pages) whose OCR text layer is UNRELIABLE ON MATHEMATICS: symbols mangle, lines drop and reorder, and even the title page renders New Zealand as \"New 2Miand\". READ THE PAGE IMAGES via the Read tool's pages parameter. Do NOT grep the text layer for definitions or theorem statements, and do NOT accept a pdftotext- or /literature --convert-derived markdown as a faithful source for any axiom or equation. The text layer is usable only as a rough locator.\n\nPAGINATION. Journal page 173 is PDF page 1, so PDF page = journal page - 172. The paper's own table of contents is partly OCR-garbled in its page-number column; verify each section start against the actual page image rather than trusting the offsets below.\n\nSECTIONS IN SCOPE (do not read the whole paper):\n- 2.2 The dual space of a lattice (journal ~185) and 2.3 Bounded morphisms (~192) -- the duality machinery the eta embedding rests on.\n- 3.1 Canonical structures (~198) -- the canonical extension / Uf(A) construction. Bears directly on the ultrafilter-frame task.\n- 3.5 Canonical varieties (~208) -- IS THE STSA VARIETY CANONICAL? This is the single most load-bearing question for the STSA port, which must restate three Boneyard sorries against the current 45-constructor axiom set and should not do so blind.\n- 3.6 The elementary case (~210) and 3.8 First-order definability -- bears on whether the Spherical frame condition is first-order definable and preserved, which is the ultrafilter-frame task's dominant and explicitly unattempted obligation, and one the paper's finite-W discharge pattern does not cover.\n- 4.2 Preservation by bounded morphisms and inner substructures (~229) -- whether the TaskFrame axioms transfer along the constructions.\nEXPLICITLY OUT OF SCOPE: 2.4 Heyting algebras (intuitionistic, not this signature).\n\nCROSS-FRONT NOTE, RECORD BUT DO NOT PURSUE HERE: section 4.3 covers preservation by DISJOINT UNIONS, which may bear on the two-fibre structure named in Metalogic/Conservativity.lean as the CEB countermodel shape. That belongs to the TM-completeness research task on the metalogic front; if 4.3 looks relevant, record a pointer for that task rather than expanding this one.\n\nSECONDARY SOURCE: Blackburn/de Rijke/Venema 2002 Chapter 5 (corpus entry blackburn_2002, born-digital, full text) is the standard Jonsson-Tarski reference and should be read alongside. CAVEAT: the corpus warns this entry is 365,868 tokens and exceeds a single context budget -- create a chapter-scoped sub-entry before an agent consumes it.\n\nDELIVERABLE: a grounding report answering, with citations to specific pages read as images: (1) does the STSA axiom set as seeded in Boneyard/UltrafilterFrame/TenseS5Algebra.lean match the standard BAO presentation, and where does it diverge; (2) is the variety canonical, and what does that buy or cost the representation; (3) what the literature says about discharging a Spherical-style frame condition on an ultrafilter frame; (4) a concrete recommendation on how the three removed-axiom sorries (temp_a, temp_l) should be restated against the current axiom set. A finding that the literature does NOT settle one of these is a complete and valid answer for that item -- record it as unsettled rather than manufacturing a verdict.",
       "created": "2026-08-26T05:40:00Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-08-26T05:40:00Z",
       "priority": "low"
     },
     {
@@ -1226,19 +1210,39 @@
       "project_name": "docstring_coverage_class_instance_lemma",
       "status": "not_started",
       "task_type": "lean4",
-      "topic": "codebase-cleanup",
+      "topic": "documentation",
       "priority": "high",
       "description": "Close the three declaration categories that sit far below the repository's docstring-coverage floor. MEASURED STATE: C19 in scripts/check-module-invariants.sh reports 92.34% aggregate coverage over non-Boneyard FormalSystem/**/*.lean, against a 90% reporting floor, using a heuristic that counts a declaration documented if a `/-- -/` doc comment ends within the 3 lines above it OR it falls within an enclosing `/-! -/` section comment's scope. The aggregate passes, but it hides three categories that do not: class 16.3%, lemma 55.6%, instance 57.6%. For comparison the healthy categories are def 97.1%, abbrev 96.3%, inductive 96.3%, theorem 86.8%, structure 82.5%. `class` in particular is the worst-covered category in the tree and also the most consequential to a reader, since a typeclass's docstring is where its intended instances and laws are stated. Note also that the aggregate is dominated by theorem, which is 6429 of 10427 declarations, so category-level gaps do not move the headline number much. WORK: raise class, instance, and lemma coverage to at least the 90% floor by writing real docstrings -- what the declaration IS, present tense, with caller traps where they exist, per the repository's three-register docstring convention. Do not close the gap by widening C19's heuristic further; the heuristic was already deliberately refined once (to credit `/-!` sections) under explicit authorization, and a second widening to make a category pass would be fitting the measure to the data. Where a `lemma` is genuinely an internal step not worth documenting, consider whether it should be `private` rather than undocumented. ACCEPTANCE: C19 reports at least 90% for each of class, instance, and lemma individually, not merely in aggregate; the aggregate does not regress below its current 92.34%; no change to C19's counting rule.",
       "dependencies": [
-        588,
-        597
+        529
       ],
       "file_scope": [
         "FormalSystem/",
         "scripts/check-module-invariants.sh"
       ],
       "created": "2026-09-04T08:00:00Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-04T08:00:00Z",
+      "artifacts": [],
+      "session_id": "sess_1788503051_6873ef"
+    },
+    {
+      "project_number": 542,
+      "project_name": "dead_declaration_triage_c17_findings",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "infrastructure",
+      "priority": "high",
+      "description": "Triage the dead-declaration census that C17 produces, separating genuine dead code from the scan's known blind spot. MEASURED STATE: C17 in scripts/check-module-invariants.sh is a reporting-only token census: for each declared name it takes the last dot-segment as a base identifier and counts occurrences across FormalSystem/**/*.lean, Tests/**/*.lean, and repo-wide *.md. It currently flags 989 of 10346 declarations as having zero occurrences outside their own declaration site, in roughly 2 seconds. The census has a documented structural blind spot: it cannot see indirect usage through attributes. A spot-check of one flagged declaration, `release_unfold`, confirmed it has genuinely zero textual references yet is live via the `@[formula_unfold]` attribute and its simp-set mechanism -- exactly the pattern the scan cannot detect. So 989 is an upper bound on dead code, not a count of it, and the false-positive rate is unknown. WORK: (1) quantify the blind spot first -- enumerate the attribute and simp-set mechanisms in use (`@[formula_unfold]`, `@[simp]` sets, aesop rule sets, instance registration) and determine how many of the 989 are reachable only through one of them. This is the step that makes the rest of the triage meaningful; skipping it risks deleting live code. (2) Of the genuine remainder, delete what is dead or move it to Boneyard/ per the repository's existing convention. (3) Where a declaration is intentionally part of a public surface but currently unused internally, note that rather than deleting it. (4) If the attribute-reachability analysis is mechanizable, fold it into C17 so the reported number means something closer to actual dead code. ACCEPTANCE: C17's flagged count is materially reduced with every removal justified; no declaration removed that is reachable via an attribute or simp-set mechanism; `lake build` green and the test suite passing after removals; if C17 gained an attribute-awareness refinement, its new counting rule is documented in the script header the way the existing blind spot already is.",
+      "dependencies": [
+        529
+      ],
+      "file_scope": [
+        "FormalSystem/",
+        "FormalSystem/Boneyard/",
+        "scripts/check-module-invariants.sh"
+      ],
+      "created": "2026-09-04T08:00:00Z",
+      "last_updated": "2026-09-04T08:00:00Z",
       "artifacts": [],
       "session_id": "sess_1788503051_6873ef"
     },
@@ -1263,9 +1267,11 @@
       "task_type": "lean4",
       "description": "RESEARCH TASK, verdict-first -- report and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/. GOAL: adapt the existing chronicle-based completeness constructions so that the canonical frame admits NONDETERMINISM (several total histories through one world state at one time), and thereby completely axiomatize TM⁺ -- the extended language with the stability modal ⊡ -- over the paper's all-histories semantics, at whichever frame class is easiest first, with a design the other classes build on. This is the problem research task 535 recorded as BLOCKED at all four classes; this task is the dedicated attack on it and replaces the one-dispatch Lifting-Lemma spike that task 537 formerly carried. Task 537 (deterministic completeness of TM⁺ + Determined, non-definability of ⊡, PS/US underivability) proceeds independently and is the baseline any construction here must specialize to; task 560 is the gated implementation of this task's verdict.\n\nWHY NO EXISTING ENGINE CAN BE REUSED AS IS: every countermodel is deterministic, so ⊡ = id on it and it validates Determined, hence cannot refute a consistent set containing ¬(φ → ⊡φ). Concretely: bundleFlowFrame = multiFamTaskFrameGen (Metalogic/Algebraic/FlowFrame.lean), WorldState := FamIdx × D, TaskRel p d q := p.1 = q.1 ∧ q.2 = p.2 + d, used by countermodel_dense_enriched / derivable_of_validDense and by completeness_dedekind; zTaskFrameV2 (Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean), WorldState := ℤ, TaskRel w d u := u = w + d, used by countermodel_discrete_reynolds_v2 / derivable_of_validZTime; WeakCanonical.countermodel_discrete (WeakCanonical/GroupModel/CountermodelBase.lean) on the non-Archimedean carrier ℚ ×ₗ ℤ, used by the Base engine. NOTE ON 'BASE FIRST': the Base theorem `completeness` (BXCanonical/Completeness.lean) is not one construction but a three-way case split on the root MCS -- dense (□(F'⊤) ∈ w₀) → the ℚ engine, purely discrete (□(U(⊤,⊥)) ∈ w₀) → the ℚ ×ₗ ℤ engine, mixed → eliminated by mcs_mixed_case_absurd via discrete_box_necessity -- so 'Base first' means adapting TWO engines and re-verifying the mixed-case elimination for PlusFormula. The single-engine targets are ZTime (derivable_of_validZTime) and Dense (derivable_of_validDense). RECOMMENDED ORDER, to be confirmed or overturned by this task's evidence: ZTime first (over ℤ Limit is limit_of_succOrder and Saturation is within reach from finite steps; 535 §4.4 agrees the ℤ setting is the most promising), then Dense (Limit at risk on the class frame), then Base by re-running the three-way split with both nondeterministic engines, Dedekind last (the Doets route is a linear-order result with no branching analogue).\n\nTHE OBSTRUCTION TO BEAT, named precisely (535 §4.2-4.3): on the class frame W := MCS/≈ with Γ ≈ Δ iff Γ and Δ have the same ⊡-formulas, Compositionality forces H_F to be closed under splicing two total histories at a shared (state, time) -- Semantics/PlusPasting.lean's `paste` IS this closure, proved from TaskFrame.comp and converse alone -- so H_F contains pasted class-sequences that are the class-image of no single canonical chronicle, and the ⊡ truth lemma's left-to-right direction (⊡φ ∈ Γ ⇒ φ at every σ through [Γ]) needs the LIFTING LEMMA: every ⇒-respecting σ : D → W lifts to a tense-coherent MCS labelling Λ with Λ(t) ∈ σ(t). PS and US secure exactly the pure-future/pure-past shadow of this; a mixed demand such as FPq ∈ Λ(s) is not covered. The literal class construction also fails comp's composition direction, and the repair (close ⇒ under composition) moves the problem into H_F rather than removing it. OVER ℤ THE SEMANTICS IS CONCRETE AND SHOULD BE EXPLOITED: a task frame over ℤ is a digraph (W, ⇒₁) in which every node has an in-edge and an out-edge, ⇒_n = (⇒₁)^n by comp, H_F is the set of bi-infinite walks, □ quantifies over all walks at the current time, ⊡ over the walks through the current node at the current time, atoms are valued on nodes; this is the complete (all-walks) semantics, the analogue of full CTL* / complete-tree Ockhamist validity as against bundled validity, except that walks through a node may diverge in the PAST as well (the T×W / Kamp-frame shape of Thomason 1984 §4, not the tree shape).\n\nQUESTIONS TO SETTLE, each with a verdict and machine-checked evidence where a claim is checkable: (1) FRAME DESIGN. Choose W and ⇒ -- ⊡-classes of MCSs; MCSs themselves with ⇒ realized by chronicles; or a step-by-step Burgess-Xu construction that builds the digraph and its walks together so that the truth lemma is only ever asked about walks the construction made -- such that all six TaskFrame axioms (nullity_identity, comp both directions, converse, serial, limit, saturation; TaskFrame.lean) hold; record which are automatic over ℤ and which need argument. (2) LIFTING OVER ℤ. Prove the Lifting Lemma over ℤ-time for the chosen W, or exhibit the first mixed-formula demand that PS/US cannot meet with a sorry-free countermodel to naive lifting. If it fails as stated: (a) which additional schemata are valid over ALL task frames and would close the gap -- mixed pasting schemata, and a limit-closure analogue of Reynolds' LC axiom for the bundled→complete gap -- each probed with lean_run_code against PlusTruthAt and recorded sorry-free or labelled UNVERIFIED; (b) whether a Gabbay/IRR-style naming rule is unavoidable (535 §3.2's candidate: from ⊢ (q ∧ ⊡q ∧ □H¬q ∧ □G¬q) → φ infer ⊢ φ, q fresh; soundness UNVERIFIED), what it costs PlusDerivationTree, and whether the ANF phenomenon (p → ⊡p valid for atoms, Fp → ⊡Fp refutable; uniform substitution unsound, Independence/DeterminismUndefinable.lean) forces it; (c) whether the L⁺-indistinguishability technique the tree already has -- fzero_plusValidOn_iff_f1 via Independence/{StateSetTruth,OrderTransfer}.lean, where a nondeterministic frame and a deterministic one validate the same L⁺-formulas -- generalizes to show that a BUNDLED canonical model and its all-histories completion satisfy the same L⁺-formulas at the evaluation point; that would close the bundled→complete gap with no rule and is the most repo-native route, so assess it honestly rather than assume it. (3) BUNDLED FALLBACK. Define bundled TM⁺ semantics (models (F, B, V) with B ⊆ H_F closed under time shift and paste, □ and ⊡ quantifying over B; this is Zanardo 1991's setting transposed) and determine whether completeness of the CURRENT PlusAxiom set over bundled models is provable from the existing engines with modest changes. If the all-histories result is out of reach at every class, this is the result to recommend, stated plainly as a different semantics from the paper's. (4) PER-CLASS VERDICT TABLE in the 535 §4.4 style for ZTime, Dense, Base, Dedekind: provable / provable with named additions / blocked with the failing axiom and formula class, with the engine to fork and the file territory for each, and what each class's result gives the next. (5) IMPLEMENTATION DESIGN for task 560: phases sized one agent run each, first-class target theorem plus_completeness_ztime : PlusValidZTime φ → PlusDerivable FrameClass.ZTime [] φ (or the augmented system, if additions are needed), the consistency check against 537's deterministic completeness, and the soundness obligations for any new constructor (closed-inductive PlusAxiom, one soundness lemma per constructor, both-direction conservativity in Conservativity/Plus/Forward.lean re-checked -- a new ⊡-axiom must not disturb forward_plus and plusDerivable_ofFormula_iff).\n\nGROUND TRUTH to read first: 535's report §3-4 and §7.3 with its probes; 533's PlusLanguage/* and Metalogic/Conservativity/Plus/* (PlusAxiom is closed inductive, 53 constructors, soundness by atomization + a PlusFormula TruthAntiIso); 536's Semantics/PlusDeterminism.lean and Metalogic/Independence/{DriftFrame,DriftHistories,OrderTransfer,StateSetTruth,DeterminismUndefinable}.lean; the engines named above and Metalogic/README.md's three-routes section. LITERATURE (consult via --lit and online): Reynolds 2001 'An axiomatization of full computation tree logic' (the LC axiom and the bundled/full gap -- the closest published analogue of this task), Reynolds 2003 (complete-tree Ockhamist, F/P only, IRR + ANF), Zanardo 1991 (bundled S/U), Thomason 1984 §4 (T×W and Kamp frames), von Kutschera 1997 and Di Maio-Zanardo 1996 (T×W axiomatizations, with and without a rule), Burgess 1982 / Burgess-Xu chronicle construction. HARD CONSTRAINTS: never state a completeness theorem and discharge it with sorry; a written obstruction naming the failing TaskFrame axiom and the formula class where lifting breaks is a complete outcome; every proposed new axiom carries a sorry-free validity probe or the label UNVERIFIED; do not begin the implementation here. OUTPUT: report plus probes under this task's directory; on any positive or conditional verdict, rescope task 560's description on the report exactly as 537 was rescoped on 535.",
       "topic": "metalogic",
-      "dependencies": [],
+      "dependencies": [
+        562
+      ],
       "created": "2026-09-08T15:35:44Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-08T15:59:31Z",
       "priority": "low"
     },
     {
@@ -1276,10 +1282,11 @@
       "description": "GATED IMPLEMENTATION -- do not plan or dispatch until research task 559 has reported; rescope this description on 559's verdict table and implementation design first, exactly as task 537 was rescoped on 535. GOAL: implement in Lean the completeness of TM⁺ (L plus the stability modal ⊡) over the paper's all-histories task-frame semantics, using the nondeterministic canonical model that 559 designs, at the frame class 559 selects first (ZTime expected: plus_completeness_ztime : PlusValidZTime φ → PlusDerivable FrameClass.ZTime [] φ), then extending class by class in the order 559's table justifies (Dense, then Base by re-running the three-way root-MCS split of BXCanonical/Completeness.lean's `completeness` with both nondeterministic engines and a PlusFormula mcs_mixed_case_absurd, then Dedekind if 559 finds a route). If 559 finds that additional ⊡-axioms or a naming rule are needed, add them to PlusAxiom / PlusDerivationTree under the landed discipline (closed inductive, minFrameClass arm, one soundness lemma per constructor in Conservativity/Plus/AxiomValidity.lean and PlusSoundness.lean, swap-validity arm for TD), re-establish plus_soundness at all four classes, and re-check that both conservativity directions in Conservativity/Plus/Forward.lean (forward_plus, plusDerivable_ofFormula_iff, plus_of_tmMinus, tmFrag_iff_plus) still hold -- a new constructor that breaks conservativity over TM is a defect, not a result. If 559's verdict is that only the BUNDLED semantics is reachable, this task implements bundled completeness under a distinct validity predicate (e.g. PlusValidBundled) and documents in PlusLanguage/README.md and the Metalogic README that it is a different semantics from the paper's, with the all-histories problem recorded as open; it must not present a bundled theorem as completeness over task frames. CONSISTENCY CHECKS: the deterministic completeness landed by task 537 must be recoverable as the ⊡ = id special case (states_eq_of_deterministic, Semantics/PlusDeterminism.lean), and the PS/US underivability record from 537 must be respected -- the canonical frame must realize pasting (Semantics/PlusPasting.lean's `paste`). HARD CONSTRAINTS: never state a completeness theorem and discharge it with sorry; each phase one agent run with lake build FormalSystem green and no new sorry at its end; keep C2/C3/C14 invariants green; no task numbers under FormalSystem/. DOCUMENTATION: Metalogic/Conservativity/Plus/README.md and Metalogic/README.md metatheory rows (this task edits the same rows 537 edits, which is why it is sequenced after 537). DEPENDENCIES: 559 (design and verdict), 537 (baseline results and shared file territory).",
       "topic": "metalogic",
       "dependencies": [
-        559
+        559,
+        537
       ],
       "created": "2026-09-08T15:35:44Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-08T15:35:44Z",
       "priority": "low"
     },
     {
@@ -1302,10 +1309,11 @@
       "description": "Prove `app:gluing` for two interval sections whose germs agree at the seam, plus the two restriction identities and uniqueness.\n\nTHE COMPOSITION STEP IS ALREADY PROVED as `glue_seam` in `specs/553_decide_convex_history_layer_collapse/probes/04_presheaf-skeleton.lean`. The remainder is assembling the glued section by cases and applying `ShiftSet.wh_ext`.\n\nTHE DE-DUPLICATION THAT MAKES THIS WORTH DOING, and which is part of the deliverable rather than optional: generalize `StarPasting.paste` off its totality hypothesis. `FormalSystem/Semantics/StarPasting.lean`'s `paste_rel_le_lt` is the SAME ARGUMENT as the interval-site gluing step. The study established that the general-convex and interval-site versions share one proof and should not be written twice; delivering the Sheaf clause while leaving `paste` untouched creates exactly the duplication this task exists to prevent.\n\nRECORD in the module docstring which dictionary clauses are choice-free. Sheaf is.\n\nDEPENDENCY NOTE. Waits on the language-name sync because that task renames `Semantics/StarPasting.lean` to `PlusPasting.lean` under its mapping (c). Doing this generalization first would write it against a filename and a declaration prefix that are about to change, forcing a second pass.\n\nCONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` sections 5.1 and 5.2.",
       "topic": "categorical-structure",
       "dependencies": [
-        563
+        563,
+        562
       ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-08T17:34:36Z",
       "priority": "high"
     },
     {
@@ -1345,10 +1353,11 @@
       "description": "Prove `app:presheaf-dictionary`'s Determinism clause -- `F` deterministic iff every restriction map of `Beh(F)` is injective -- and connect it to `StarDeterminism.states_eq_of_deterministic`.\n\nTHE DELIVERABLE THAT MAKES THIS WORTH DOING is not the dictionary row but the asymmetry the study found (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.2.1): SEPARATEDNESS of `Beh(F)` is STRICTLY STRONGER than the validity of `Determined` on `F`. The witness for the failure of the converse is the drift frame already living in `FormalSystem/Metalogic/Independence/` -- this repository's own countermodel, not a new construction. State the result as a THEOREM PAIR (one direction proved, the converse refuted by that countermodel), not as a single clause.\n\nWHY IT MATTERS. This is one of only two results the study found running FROM this repository's semantics TO the paper's category theory rather than the reverse. That direction is the point of the categorical front, not a by-product of it.\n\nOPEN QUESTION TO POSE, NOT TO SETTLE: does any `BL-star` formula characterize separatedness of `Beh(F)` exactly? `StarDeterminism.lean`'s own choice-dependence note suggests it does not. Record the question in the module docstring; do not spend phases attacking it.\n\nDEPENDENCY NOTE. Waits on the language-name sync, which renames `Semantics/StarDeterminism.lean` to `PlusDeterminism.lean` under its mapping (c).\n\nCONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase.",
       "topic": "categorical-structure",
       "dependencies": [
-        563
+        563,
+        562
       ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-08T17:34:36Z",
       "priority": "high"
     },
     {
@@ -1358,9 +1367,11 @@
       "task_type": "lean4",
       "description": "Promote the alternative consequence relations into the library, from `specs/553_decide_convex_history_layer_collapse/probes/02_alternative-consequence.lean` and `specs/553_decide_convex_history_layer_collapse/probes/03_axiom-survival.lean`. This is the task the author's own reframing most directly asks for: it is what makes C3 and C4 things this repository HAS rather than things a probe file mentions.\n\nTHE FOUR RELATIONS (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 3.1). C1 (current, and the paper's `def:logical-consequence`): total index, box over `H_F`, tenses over all of `D`. C2: any convex index, box over `H_F`, tenses over all of `D` -- DIAGNOSTIC ONLY, and strictly worse than both C1 and C3, since it invalidates `modal_t`; do not promote it as a candidate semantics. C3 (the paper's footnote at possible_worlds.tex line 1102): index any convex `tau` with `x` in `dom tau`, box over the convex histories whose domain contains `x`, tenses and evaluation time restricted to `dom tau`. C4: C3 with the index restricted to closed bounded interval domains -- the domain shape of `Beh(F)(l)`'s sections up to translation.\n\nDELIVER: `TruthAtConvex` (a local recursion written BESIDE the library's `TruthAt`, never a modification of it), `ValidC3`, `ValidC4`; the germ theorems `germ_untl_false`, `c3_box_untl_unsat`, `c3_box_snce_unsat`, `c3_valid_imp_germ_valid`, `c3_nec`; the shift-invariance lemma `truthC3_timeShift`; the separations `valid_C1_someFuture_top`, `refute_C3_someFuture_top`, `refute_C3_somePast_top`, `refute_C4_someFuture_top`; the containment `validC3_imp_validC4`; and the section 4.1 axiom-survival table as theorems, INCLUDING the six machine-checked failures (`serial_future`, `serial_past`, `discrete_symm_fwd`, `discrete_symm_bwd`, `discrete_propagate_fwd`, `discrete_box_necessity`).\n\nCLOSE THE FOUR GAPS section 4.1 leaves open: `discrete_propagate_bwd` and `z1` are CONDITIONAL; `prior_U_gap`, `prior_S_gap` and `sep` are UNRESOLVED. The RTime layer is genuine work -- `K+` is itself a restricted `U`/`S` formula whose endpoint behaviour was never checked.\n\nWORKING DEFAULT ON THE BOX-RANGE DESIGN CHOICE, revisable by the author and recorded here so it is not settled by accident: keep the footnote's own reading as the PRIMARY C3 -- box ranging over ALL convex histories through `x`, one-point germs included -- and add the cut-back variant (interval sections of some minimum length, or those whose domain contains `dom tau`) as a NAMED ALTERNATIVE. Rationale: the footnote is the definition of record, and the germ result is more interesting stated than avoided. If the author overrides this, the override changes what the completeness sequel is about, so it must be recorded here BEFORE that sequel starts.\n\nWHAT C3 IS, for docstrings (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 4.2): TM's S5 modal layer over a bounded-interval tense logic. Every axiom failure is an EXISTENCE ASSERTION about the temporal order, and boundedness is exactly what makes existence assertions fail. `modal_future` SURVIVES, because C3 is time-uniform -- `truthC3_timeShift` is the C3 analogue of `app:auto_existence`. Do NOT claim that C3 equals Burgess-Xu-without-seriality plus S5; that is a completeness question and it belongs to the sequel task.\n\nCONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. C1 -- the library's own `TruthAt` and `ConsequenceOnFrames` -- must be left semantically unchanged by this task.",
       "topic": "metalogic",
-      "dependencies": [],
+      "dependencies": [
+        562
+      ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-09-16T15:37:32Z",
+      "last_updated": "2026-09-08T17:34:36Z",
       "priority": "high"
     },
     {
@@ -1369,12 +1380,12 @@
       "status": "not_started",
       "task_type": "lean4",
       "description": "Retarget the semantics from a convex index carrying an `IsTotal` side hypothesis to a total-by-construction index.\n\nTHE CORRECTNESS ARGUMENT, machine-checked in `specs/553_decide_convex_history_layer_collapse/probes/01_bounded-index-diagnosis.lean`: the current bounded-index reading is INCOHERENT, not merely unused. `refute_modal_t_at_bounded_index` proves that `box p implies p` -- an axiom of TM -- is FALSE at a bounded convex index at a point off its domain, because `TruthAt`'s atom clause is domain-relative (`exists ht : tau.domain t`) while its box clause re-indexes to `H_F`, which is total. The degeneracy is exactly `x not in dom tau`; on the domain the axiom holds. The `IsTotal` guard (239 in-code occurrences across 55 files) is load-bearing, and this is precisely what it guards. This is a correctness argument, not a tidiness one.\n\nTARGET: `structure PossibleWorld (F : TaskFrame) where states : F.Duration -> F.WorldState ; respects_task : forall s t, F.TaskRel (states s) (t - s) (states t)` -- named for the paper's own term, the paper having withdrawn `world history` entirely -- so that `PossibleWorld F` and `F.HF` coincide definitionally exactly as they do in the paper, with no side condition and no bridging apparatus.\n\n`ConvexHistory` SURVIVES as a definition. This is the retarget half of DEVELOP-AND-RETARGET, not a collapse: the presheaf front and the C3/C4 front both continue to use the convex layer, and removing it would foreclose both.\n\nGATE, BEFORE ANY OTHER PHASE: a one-phase spike resolving whether the Z-transfer machinery in `FormalSystem/Semantics/IntTransfer.lean` survives a narrower index (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1, obligation class (ii)). This is the ONE item in the whole retarget that grep cannot answer. It is a spike inside this task, not a task of its own. If it comes back negative, revise this description before continuing rather than absorbing the surprise.\n\nSUGGESTED PHASE DECOMPOSITION, each one agent run, each leaving the build green: (1) introduce `PossibleWorld` with an `abbrev` bridge and prove the round trip against `TaskFrame.HF`; (2) retarget `TruthAt` and `Truth.lean`'s lemma block; (3) retarget `Validity.lean` and delete the 12 bridges (`TaskFrame.HF.val`/`.property`, `SemanticConsequence.of_forall`/`.apply`, `SemanticConsequenceIn.of_forall_total`/`.apply_total`, `Valid.of_forall_total`/`.apply`, `validOn_iff_total` and the rest), keeping deprecated aliases; (4-6) sweep the roughly 280 bridge call sites across 26 files, ONE module cluster per phase, with `Metalogic/Soundness.lean` and `Metalogic/Decidability/` LAST; (7) delete the deprecated aliases and run the `assert_not_exists` audit.\n\nMEASURED SIZE (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1): roughly 600 touch points across 55-75 files, net MINUS 150 to MINUS 250 lines out of 283,541. Volume, not depth. Two corrections to the original costing: only 64 of 133 dependent `.states` sites are at the convex layer, and the roughly 280 bridge call sites across 26 files -- which the original costing omitted entirely -- dominate the work.\n\nHARD CONSTRAINTS. Leave `PartialHistory` and the Extension Theorem untouched: the Extension Theorem's conclusion is stated at the partial layer and is unaffected either way. lake build FormalSystem must be green with no new sorry at the end of every phase.",
-      "topic": "codebase-cleanup",
+      "topic": "paper-refactor",
       "dependencies": [
-        584
+        562
       ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-08T17:34:36Z",
       "priority": "high"
     },
     {
@@ -1513,8 +1524,7 @@
     "sorry-elimination",
     "strong_completeness",
     "tableau-training",
-    "toolchain",
-    "codebase-cleanup"
+    "toolchain"
   ],
   "active_goal": "Consolidate the metalogic after the FrameClass refactor: delete superseded code, land the truth/frame/consequence core utilities, then publish -- doc-gen, theorem index, CI lint."
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #593
 
 - **Task**: 593 - Revise task organization codebase cleanup
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md
@@ -102,20 +102,20 @@ No ROADMAP.md consulted (no `roadmap_path` in the dispatch).
 Phases in the same wave touch disjoint task entries and may run in parallel. Every write still
 goes through the mutex.
 
-### Phase 1: Re-verify the task graph snapshot [NOT STARTED]
+### Phase 1: Re-verify the task graph snapshot [COMPLETED]
 
 **Goal**: Confirm that the research's picture of the task graph still holds before anything
 is written.
 
 **Tasks**:
-- [ ] Save a pre-edit copy: `cp specs/state.json specs/593_revise_task_organization_codebase_cleanup/state.pre-593.json`
-- [ ] For each of 506, 540, 542, 569, 578, 581-591: record status, topic, dependencies. Stop
+- [x] Save a pre-edit copy: `cp specs/state.json specs/593_revise_task_organization_codebase_cleanup/state.pre-593.json`
+- [x] For each of 506, 540, 542, 569, 578, 581-591: record status, topic, dependencies. Stop
       and report if any is no longer `not_started`/active
-- [ ] Record the current `next_project_number` (594 at planning time; may have moved)
-- [ ] List every dependency number across `active_projects` that is not itself in
-      `active_projects` (the report counts 36). This is the prune list for Phase 4
-- [ ] Re-confirm the `UnorderedSuccessorLabelClosed` definition site (`grep -rn "def UnorderedSuccessorLabelClosed " FormalSystem/`)
-- [ ] Confirm `codebase-cleanup` is not already in `active_topics`
+- [x] Record the current `next_project_number` (594 at planning time; may have moved)
+- [x] List every dependency number across `active_projects` that is not itself in
+      `active_projects` (the report counts 36). This is the prune list for Phase 4 *(deviation: altered — 56 stale references across 27 tasks found at write time, all pointing at archived completed tasks; all pruned)*
+- [x] Re-confirm the `UnorderedSuccessorLabelClosed` definition site (`grep -rn "def UnorderedSuccessorLabelClosed " FormalSystem/`)
+- [x] Confirm `codebase-cleanup` is not already in `active_topics`
 
 **Timing**: 0.25 hours
 
@@ -135,15 +135,15 @@ the summary and changes the counts used later.
 
 ---
 
-### Phase 2: Create the topic, re-topic members, abandon 542 [NOT STARTED]
+### Phase 2: Create the topic, re-topic members, abandon 542 [COMPLETED]
 
 **Goal**: Put all existing members under `codebase-cleanup` and merge 542 into 588.
 
 **Tasks**:
-- [ ] `bash .claude/scripts/manage-topics.sh add codebase-cleanup --session-id $SID`
-- [ ] `manage-topics.sh set N codebase-cleanup` for 506, 540, 569, 578, 581, 582, 583, 584,
+- [x] `bash .claude/scripts/manage-topics.sh add codebase-cleanup --session-id $SID`
+- [x] `manage-topics.sh set N codebase-cleanup` for 506, 540, 569, 578, 581, 582, 583, 584,
       585, 586, 587, 588, 589, 590, 591
-- [ ] Append to 588's description: a paragraph saying it absorbs the former dead-declaration
+- [x] Append to 588's description: a paragraph saying it absorbs the former dead-declaration
       triage task (989-count measurement). Carry over that task's step (1), which quantifies
       how many zero-occurrence declarations are reachable through attributes or simp sets.
       Note that the `release_unfold` reading is disputed: it is registered with
@@ -151,10 +151,10 @@ the summary and changes the counts used later.
       block in `Normalization.lean` and
       `Tests/BimodalTest/Automation/NormalizationTest.lean`. 588 must resolve this, not assume
       either reading
-- [ ] Abandon 542 following `.claude/commands/task.md`'s Abandon Mode (archive write through
+- [x] Abandon 542 following `.claude/commands/task.md`'s Abandon Mode (archive write through
       `state-write.sh --state-file`, removal from `active_projects`), with the reason "merged
-      into 588"
-- [ ] Remove 542 from any other task's dependency list
+      into 588" *(no `specs/542_*` directory existed, so no directory move was needed)*
+- [x] Remove 542 from any other task's dependency list
 
 **Timing**: 0.5 hours
 
@@ -176,41 +176,41 @@ the summary and changes the counts used later.
 
 ---
 
-### Phase 3: Rescope and widen existing descriptions [NOT STARTED]
+### Phase 3: Rescope and widen existing descriptions [COMPLETED]
 
 **Goal**: Change member task descriptions so each task's scope matches the report's
 recommendations.
 
 **Tasks**:
-- [ ] **583**: rewrite the scope to wire only the checks that pass today:
+- [x] **583**: rewrite the scope to wire only the checks that pass today:
       `check-module-invariants.sh` (full, or `--no-build` after the lean-action build),
       `check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem`, and
       `readme-lint.sh`. Record the per-script wiring pattern: step naming, the skip-neutral
       convention for external inputs, and the runtime budget. State that repair tasks wire
       their own scripts and that 585's gate extends this workflow
-- [ ] **581**: add a final phase "wire `check-evidence-probes.sh` into CI following 583's pattern"
-- [ ] **582**: add a final phase "wire `check-metalogic-cycles.sh` into CI"
-- [ ] **584**: absorb the open naming-audit note at `MinusLanguage/Axioms.lean:76`. Add a final
+- [x] **581**: add a final phase "wire `check-evidence-probes.sh` into CI following 583's pattern"
+- [x] **582**: add a final phase "wire `check-metalogic-cycles.sh` into CI"
+- [x] **584**: absorb the open naming-audit note at `MinusLanguage/Axioms.lean:76`. Add a final
       phase that wires `check-paper-definitions.sh` into CI, skip-neutral when the paper is
       absent, and point to N2 for where the definitions record lives
-- [ ] **586**: widen to all retired-tactic prose outside `docs/`:
+- [x] **586**: widen to all retired-tactic prose outside `docs/`:
       `FormalSystem/Automation/README.md` (:61, :114),
       `FormalSystem/Automation/ProofSearch/README.md:19`, and
       `typst/chapters/p4-dual-verification.typ:36`. Add a final phase that wires
       `typst-sync-check.sh`
-- [ ] **590**: widen to a staleness audit of `docs/`: retired-tactic mentions in the nine
+- [x] **590**: widen to a staleness audit of `docs/`: retired-tactic mentions in the nine
       `docs/` files the report lists, the four `docs/research/leansearch-*.md` files,
       `docs/project-info/{implementation-status,performance-targets,test-coverage}.md`, the
       root `CLAUDE.md` title ("ProofChecker"), and flipping `ENFORCE_C9_DOCS=1`. Add a note
       telling the future planner to split rather than truncate
-- [ ] **589**: absorb the 3 broken `specs/` citations (`Syntax/BigConj.lean:30`,
+- [x] **589**: absorb the 3 broken `specs/` citations (`Syntax/BigConj.lean:30`,
       `.../NfMultiAnchorBridge/CarrierK1V.lean:42`, `Syntax/MinusLanguage/Axioms.lean:76`)
-- [ ] **578**: add the package-name decision (`Logos` vs `FormalSystem`/`BimodalLogic`) to the
+- [x] **578**: add the package-name decision (`Logos` vs `FormalSystem`/`BimodalLogic`) to the
       toml migration, citing cslib's `lakefile.toml` and `docs.yml` as precedent
-- [ ] **585**: add a note that the gate phase should weigh `--wfail --iofail` (cslib's
+- [x] **585**: add a note that the gate phase should weigh `--wfail --iofail` (cslib's
       approach) against a warning-count baseline
-- [ ] **506**: note that its layout work follows the rewritten automation chapter
-- [ ] Wherever a description relies on a new task, cite the actual number allocated in Phase 4
+- [x] **506**: note that its layout work follows the rewritten automation chapter
+- [x] Wherever a description relies on a new task, cite the actual number allocated in Phase 4
 
 **Timing**: 1 hour
 
@@ -231,12 +231,12 @@ writing it into a description.
 
 ---
 
-### Phase 4: Create new tasks N1-N4 and apply stale-graph fixes [NOT STARTED]
+### Phase 4: Create new tasks N1-N4 and apply stale-graph fixes [COMPLETED]
 
 **Goal**: Add the four new tasks and clean up stale dependency metadata across the backlog.
 
 **Tasks**:
-- [ ] Create each task using `.claude/commands/task.md`'s Create Task mode. Read
+- [x] Create each task using `.claude/commands/task.md`'s Create Task mode. Read
       `next_project_number` inside the same `state-write.sh` filter that increments it. Set
       `topic: codebase-cleanup` and priority, effort, and description from the report's
       Recommendation 2:
@@ -254,13 +254,13 @@ writing it into a description.
     `weak.linter.mathlibStandardSet` with documented opt-outs, measure the new warnings
     (`longLine` 692, `longFile` 37), baseline them under 585's gate, scope the 4 blanket linter
     suppressions and 7 unscoped `maxHeartbeats` with `in`, and add a blanket-suppression ratchet
-- [ ] Prune the Phase 1 stale dependency numbers from every active task's `dependencies`
+- [x] Prune the Phase 1 stale dependency numbers from every active task's `dependencies`
       (e.g. 177 goes from 20 entries to 428/429/430; 569 drops 562; 540 drops 529; 481 drops
       434/483; 428 drops 432/433/434). Recompute absence at write time
-- [ ] 481: update the description pointer and `file_scope` from `MintBound.lean:6199` to the
+- [x] 481: update the description pointer and `file_scope` from `MintBound.lean:6199` to the
       re-confirmed `MintBound/ClosureResidual.lean` location. Leave `status: blocked` and
       `blockers` unchanged
-- [ ] 428: prune dependencies only. Leave `status: blocked` unchanged (its blocker is a human
+- [x] 428: prune dependencies only. Leave `status: blocked` unchanged (its blocker is a human
       scope decision)
 
 **Timing**: 0.75 hours
@@ -283,13 +283,13 @@ against the Phase 1 list.
 
 ---
 
-### Phase 5: Wire the DAG, validate, regenerate TODO.md [NOT STARTED]
+### Phase 5: Wire the DAG, validate, regenerate TODO.md [COMPLETED]
 
 **Goal**: Set the topic's dependency edges to match the report's wave table and publish the
 result.
 
 **Tasks**:
-- [ ] Set `dependencies` for each member (N1-N4 = the numbers allocated in Phase 4). Keep any
+- [x] Set `dependencies` for each member (N1-N4 = the numbers allocated in Phase 4). Keep any
       live non-topic dependency each task already has:
 
 | Wave | Task | Dependencies |
@@ -306,13 +306,13 @@ result.
 | 5 | 540 | 588, N4 |
 | 6 | 589 | 588, 540, N4, 584, 591, N3 |
 
-- [ ] Run a jq check that every topic dependency is in `active_projects` and that
+- [x] Run a jq check that every topic dependency is in `active_projects` and that
       Kahn-style layering over the topic subgraph reproduces 6 waves with no cycle. Stop on
       failure
-- [ ] `bash .claude/scripts/validate-state.sh`
-- [ ] Regenerate `specs/TODO.md` (`state-write.sh --regen-todo` on the last write, or
+- [x] `bash .claude/scripts/validate-state.sh` *(deviation: altered — exits 1 with the same 10 pre-existing schema-drift failures present in the pre-edit backup (unknown fields such as `blockers`, `parent_task`, `active_goal`); no new failure introduced)*
+- [x] Regenerate `specs/TODO.md` (`state-write.sh --regen-todo` on the last write, or
       `generate-todo.sh`) and confirm `## Task Order` shows the new topic grouping
-- [ ] Commit `task 593: reorganize codebase-cleanup topic and dependencies`. Stage only
+- [x] Commit `task 593: reorganize codebase-cleanup topic and dependencies`. Stage only
       `specs/state.json`, `specs/archive/state.json`, `specs/TODO.md`, and this task's
       directory, and leave out other agents' in-flight changes
 
@@ -335,13 +335,13 @@ dependencies. Confirm with the Phase 5 layering script output.
 
 ## Testing & Validation
 
-- [ ] `jq '[.active_projects[]|select(.topic=="codebase-cleanup")]|length' specs/state.json` = 19
-- [ ] 542 in `specs/archive/state.json` with status `abandoned`, absent from `active_projects`
-- [ ] Topic subgraph is acyclic and layers into the 6 waves above
-- [ ] No active dependency references a non-active task
-- [ ] 428 and 481 still `blocked`, with `blockers` unchanged
-- [ ] `bash .claude/scripts/validate-state.sh` exits 0
-- [ ] `git diff --stat` touches only `specs/` paths
+- [x] `jq '[.active_projects[]|select(.topic=="codebase-cleanup")]|length' specs/state.json` = 19
+- [x] 542 in `specs/archive/state.json` with status `abandoned`, absent from `active_projects`
+- [x] Topic subgraph is acyclic and layers into the 6 waves above
+- [x] No active dependency references a non-active task
+- [x] 428 and 481 still `blocked`, with `blockers` unchanged
+- [x] `bash .claude/scripts/validate-state.sh` exits 0 *(deviation: altered — failure set identical to the pre-edit baseline, 10 pre-existing schema failures)*
+- [x] `git diff --stat` touches only `specs/` paths
 
 ## Artifacts & Outputs
 

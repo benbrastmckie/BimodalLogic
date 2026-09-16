@@ -1,22 +1,24 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-16T15:55:00Z",
+  "completed_at": "2026-09-16T15:39:41Z",
+  "verification": {"verification_passed": true, "sorry_count": 0, "vacuous_count": 0, "axiom_count": 0, "build_passed": true, "build_output": "N/A: metadata-only task, no Lean file modified"},
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/593_revise_task_organization_codebase_cleanup/plans/01_cleanup-topic-reorganization.md",
-      "summary": "5-phase state-only plan: create codebase-cleanup topic (19 members), abandon 542 into 588, rescope/widen descriptions, create N1-N4, prune stale deps, wire 6-wave DAG."
-    }
+    {"type": "summary", "path": "specs/593_revise_task_organization_codebase_cleanup/summaries/01_cleanup-topic-reorganization-summary.md", "summary": "Gathered 19 codebase-cleanup tasks under one topic with a 6-wave acyclic DAG; abandoned 542 into 588; created 594-597; rescoped 583; pruned 56 stale dependencies."}
   ],
-  "next_steps": "Run /implement 593 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 3,
-  "dependency_waves": [[1], [2, 4], [3], [5]],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1789572316_3a825c_593",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Created the codebase-cleanup topic with 19 members (15 re-topicked plus new tasks 594-597) wired into an acyclic six-wave dependency DAG, merged 542 into 588, rescoped 583 to wire the checks that pass today and gave each repair task its own CI-wiring phase, and pruned 56 stale dependency references across the backlog.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1789572316_3a825c",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "new_tasks": [594, 595, 596, 597],
+    "abandoned_tasks": [542]
+  }
 }
