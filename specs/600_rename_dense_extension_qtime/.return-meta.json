@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md",
+      "summary": "Recommends keeping FrameClass.Dense (non-categorical class, required by Dense <= RTime, matches paper TM_d); record rationale in FrameClass and IsDense docstrings."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789584086_2b6633_600",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

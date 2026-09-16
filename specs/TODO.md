@@ -78,7 +78,7 @@ next_project_number: 601
 
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
-600 [RESEARCHING] — Investigate why the dense frame-class extension is named...
+600 [RESEARCHED] — Investigate why the dense frame-class extension is named...
 
 ### Incompleteness
 
@@ -120,10 +120,11 @@ next_project_number: 601
 ## Tasks
 
 ### 600. Rename dense extension qtime
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: frame-extensions
 - **Dependencies**: None
+- **Research**: [600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md]
 
 **Description**: Investigate why the dense frame-class extension is named Dense (FrameClass constructors Base | Dense | ZTime | RTime in FormalSystem/ProofSystem/Axioms.lean, and derived names such as detCompletenessDense, derivable_of_validDetDense, cantorBfmcsDense) instead of QTime, which would match ZTime and RTime. Research first: check whether the class is really the theory of Q (e.g. canonical/completeness constructions over ℚ, and whether every dense temporal order validates exactly the same formulas so QTime is accurate) or deliberately named for the density axiom over arbitrary dense orders, and check how the paper (PossibleWorlds JPL/possible_worlds.tex) and docs name it. If there is good reason, rename Dense to QTime systematically (constructor, IsDense-style predicates, theorem/def names, file and module names, docstrings, tests, docs), keeping the naming scheme uniform and elegant; otherwise record the rationale in the relevant docstring and close without renaming. Coordinate with other in-flight renaming/nesting tasks
 
