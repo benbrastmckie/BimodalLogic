@@ -1,7 +1,7 @@
 # Implementation Plan: Task #601
 
 - **Task**: 601 - Align task-frame definition with the paper's reflection convention
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: 599 (completed), 598 (completed). Coordinate with 602 (planning; also edits `Semantics/PartialHistory.lean`)
 - **Research Inputs**: specs/601_align_task_frame_reflection_convention/reports/01_reflection-convention-encoding.md
@@ -120,22 +120,22 @@ Phases 1-4 are strictly sequential: each one's build depends on the previous one
 Phases 5 and 6 touch disjoint files (Lean docstrings vs non-Lean docs) and may run in parallel.
 Do not run two `lake build`s concurrently.
 
-### Phase 1: Additive reflection API [NOT STARTED]
+### Phase 1: Additive reflection API [COMPLETED]
 
 **Goal**: Add the D⁺ name and the bare-relation `reflect` API. Nothing existing changes yet, so
 the tree stays green.
 
 **Tasks**:
-- [ ] `TemporalOrder.lean`: add `abbrev PositiveCone (D : TemporalOrder) := {x : ↑D // 0 ≤ x}` with a
+- [x] `TemporalOrder.lean`: add `abbrev PositiveCone (D : TemporalOrder) := {x : ↑D // 0 ≤ x}` with a
       docstring citing `def:temporal-order`. Rewrite the "## The positive cone" module doc: D⁺
       now types the primitive task relation.
-- [ ] `TaskFrame.lean`, `namespace TaskFrame` (bare `D` variables): add
+- [x] `TaskFrame.lean`, `namespace TaskFrame` (bare `D` variables): add
       `def reflect (P : W → {x : D // 0 ≤ x} → W → Prop) (w : W) (d : D) (u : W) : Prop` with a
       strict `dite` split (`0 ≤ d` primitive, else `P u ⟨-d, _⟩ w`). The docstring cites
       `def:task-relation` verbatim ("reflection convention").
-- [ ] Prove `reflect_of_nonneg`, `reflect_of_neg`, `reflect_coe` (`@[simp]`),
+- [x] Prove `reflect_of_nonneg`, `reflect_of_neg`, `reflect_coe` (`@[simp]`),
       `reflect_reflection_of_ne` (for every P, `d ≠ 0`), and `reflect_eq_of_reflective`.
-- [ ] Add `reflection_of_permissive` next to `converse_of_permissive`. Leave the old lemma in place
+- [x] Add `reflection_of_permissive` next to `converse_of_permissive`. Leave the old lemma in place
       until Phase 3.
 
 **Timing**: 1.25 hours

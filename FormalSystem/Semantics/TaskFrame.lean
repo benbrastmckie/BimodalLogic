@@ -242,6 +242,93 @@ namespace TaskFrame
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-!
+### The reflection convention: the primitive relation on `D⁺` and its extension
+
+Recorded source (`def:task-relation`, verbatim): "A \textit{task relation} on a nonempty set of
+\textit{world states} $W$ over a temporal order $\D$ is any parameterized relation
+$w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the
+\textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for
+$x \geq 0$".
+
+A task relation is primitive on the positive cone only; the reflection convention is notation,
+not an axiom. `reflect P` is that extension of a primitive `P` on `{x : D // 0 ≤ x}` to all of
+`D`. The split is **strict at zero**: the primitive is read at every `d ≥ 0`, and reflected only
+at `d < 0`. (Read literally, the paper's "for $x \geq 0$" also covers `x = 0`, where `-0 = 0`, and
+would then force `⇒_0` to be symmetric. The strict split keeps the convention pure notation; the
+symmetry at zero is recovered as a theorem of every frame, `FrameOver.reflection`, from
+*Seriality* and *Limit*.)
+
+The reflection law off zero holds for every primitive (`reflect_reflection_of_ne`), and a
+two-sided relation that already satisfies the reflection law everywhere is the extension of its
+own restriction to `D⁺` (`reflect_eq_of_reflective`). The latter is what lets a frame be
+presented by a two-sided relation (`FrameOver.ofReflective`).
+-/
+
+omit [Nontrivial D] in
+/--
+**The reflection convention** (`def:task-relation`): the extension of a primitive relation `P`
+on the positive cone `D⁺` to all durations, by `w ⇒_{-x} u ≔ u ⇒_x w`.
+
+At `d ≥ 0` it is the primitive `P w ⟨d, _⟩ u`; at `d < 0` it is the reflected
+`P u ⟨-d, _⟩ w`. Deliberately not `@[simp]`: rewrite with the sign-guarded lemmas
+`reflect_of_nonneg`, `reflect_of_neg` and `reflect_coe` instead of unfolding the `dite`.
+-/
+def reflect {W : Type} (P : W → {x : D // 0 ≤ x} → W → Prop) (w : W) (d : D) (u : W) : Prop :=
+  if h : 0 ≤ d then P w ⟨d, h⟩ u else P u ⟨-d, neg_nonneg.mpr (not_le.mp h).le⟩ w
+
+omit [Nontrivial D] in
+/-- On the positive cone the reflection convention is the primitive relation. -/
+theorem reflect_of_nonneg {W : Type} {P : W → {x : D // 0 ≤ x} → W → Prop} {w u : W} {d : D}
+    (h : 0 ≤ d) : reflect P w d u ↔ P w ⟨d, h⟩ u := by
+  rw [reflect, dif_pos h]
+
+omit [Nontrivial D] in
+/-- At a negative duration the reflection convention is the primitive relation, reflected. -/
+theorem reflect_of_neg {W : Type} {P : W → {x : D // 0 ≤ x} → W → Prop} {w u : W} {d : D}
+    (h : d < 0) : reflect P w d u ↔ P u ⟨-d, neg_nonneg.mpr h.le⟩ w := by
+  rw [reflect, dif_neg (not_le.mpr h)]
+
+omit [Nontrivial D] in
+/-- At a duration drawn from the positive cone the reflection convention is the primitive. -/
+@[simp]
+theorem reflect_coe {W : Type} {P : W → {x : D // 0 ≤ x} → W → Prop} {w u : W}
+    (x : {x : D // 0 ≤ x}) : reflect P w (x : D) u ↔ P w x u :=
+  reflect_of_nonneg x.2
+
+omit [Nontrivial D] in
+/--
+**The reflection law off zero**, for every primitive relation: `w ⇒_d u ↔ u ⇒_{-d} w` whenever
+`d ≠ 0`. This is definitional content of the convention; at `d = 0` the law is a theorem of
+frames (`FrameOver.reflection`), not of arbitrary primitives.
+-/
+theorem reflect_reflection_of_ne {W : Type} {P : W → {x : D // 0 ≤ x} → W → Prop} {w u : W}
+    {d : D} (hd : d ≠ 0) : reflect P w d u ↔ reflect P u (-d) w := by
+  rcases hd.lt_or_gt with h | h
+  · rw [reflect_of_neg h, reflect_of_nonneg (neg_nonneg.mpr h.le)]
+  · rw [reflect_of_nonneg h.le, reflect_of_neg (neg_neg_iff_pos.mpr h)]
+    simp only [neg_neg]
+
+omit [Nontrivial D] in
+/--
+**A reflective two-sided relation is the reflection of its restriction to `D⁺`.**
+
+If `R w d u ↔ R u (-d) w` at every duration, then extending the restriction of `R` to the
+positive cone by the reflection convention gives back `R` itself. This is the bridge between a
+two-sided presentation of a task relation and the paper's primitive-on-`D⁺` one, and it is how
+`FrameOver.ofReflective` transports a construction site's axiom proofs.
+-/
+theorem reflect_eq_of_reflective {W : Type} (R : W → D → W → Prop)
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) :
+    reflect (fun w (x : {x : D // 0 ≤ x}) u => R w (x : D) u) = R := by
+  funext w d u
+  apply propext
+  by_cases h : 0 ≤ d
+  · rw [reflect_of_nonneg h]
+  · rw [reflect_of_neg (not_le.mp h)]
+    exact (hR w d u).symm
+
+
+/-!
 ### Fiber, cone, segment, and directed-family apparatus
 
 The supporting apparatus of the paper's frame definition (`def:frame`), stated — like the Limit
@@ -1208,6 +1295,19 @@ omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
 `d ↦ -d` together with `w ↔ u`, since `-d = 0 ↔ d = 0`.
 -/
 theorem converse_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : ∀ w d u, R w d u ↔ R u (-d) w := by
+  intro w d u
+  rw [hR, hR]
+  simp only [ne_eq, neg_eq_zero]
+  exact ⟨fun h => h.imp id Eq.symm, fun h => h.imp id Eq.symm⟩
+
+omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
+/--
+The reflection law for a permissive relation: the defining condition `d ≠ 0 ∨ w = u` is
+invariant under `d ↦ -d` together with `w ↔ u`, since `-d = 0 ↔ d = 0`. This is the `hR`
+argument of `FrameOver.ofReflective` at a permissive frame.
+-/
+theorem reflection_of_permissive {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : ∀ w d u, R w d u ↔ R u (-d) w := by
   intro w d u
   rw [hR, hR]

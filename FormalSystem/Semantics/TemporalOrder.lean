@@ -41,10 +41,12 @@ projection `TaskFrame → TemporalOrder`, definitionally `Σ (D : TemporalOrder)
 
 ## The positive cone
 
-`def:temporal-order`'s positive cone `D⁺` is not carried as separate data. It is definable from
-the order (`{x : ↑D | 0 ≤ x}`) and is used only as a domain restriction on the primitive task
-relation, which `Semantics/TaskFrame.lean` expresses by the `0 ≤ x` hypotheses on the
-*Compositionality* field. Nothing is lost by leaving it implicit.
+`def:temporal-order`'s positive cone `D⁺` is not carried as separate data: it is definable from
+the order, and is named here as `TemporalOrder.PositiveCone D`, the subtype `{x : ↑D // 0 ≤ x}`.
+It is the domain of the **primitive** task relation. `def:task-relation` takes `w ⇒_x u` for
+`x ∈ D⁺` only and extends it to negative durations by the reflection convention, so
+`Semantics/TaskFrame.lean` types the primitive field `FrameOver.PosRel` over `D.PositiveCone`
+and defines the two-sided relation from it (`TaskFrame.reflect`).
 
 ## Universes
 
@@ -117,6 +119,18 @@ order once in the signature is the better trade.
 -/
 @[reducible] def of (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] : TemporalOrder := ⟨D⟩
+
+/--
+**The positive cone** `D⁺` of a temporal order (`def:temporal-order`, verbatim: "with
+\textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$").
+
+This is the domain of the primitive task relation of `def:task-relation`, whose extension to all
+of `D` is `TaskFrame.reflect`. It is an `abbrev`, so it is reducibly the raw subtype
+`{x : ↑D // 0 ≤ x}` in which the bare-relation API of `Semantics/TaskFrame.lean` is stated.
+Named `PositiveCone` rather than `Cone`, which would collide with the paper's cone clause
+`(w)_x`, transcribed as `TaskFrame.cone`.
+-/
+abbrev PositiveCone (D : TemporalOrder) : Type := {x : ↑D // 0 ≤ x}
 
 end TemporalOrder
 
