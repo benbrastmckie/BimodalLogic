@@ -53,7 +53,7 @@ stability-modal probes recorded with the research on the `⊡` axiomatization; `
 
 ## References
 
-* JPL paper `def:frame` — *Compositionality* and the converse convention
+* JPL paper `def:frame` — *Compositionality* and the reflection convention
   (`Semantics/TaskFrame.lean`)
 * `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `SameStateAt`, `PlusTruthAt`
 
@@ -93,7 +93,7 @@ theorem paste_rel_le_lt (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.
     ⟨_, h1, h2⟩
 
 /-- The pasted state function respects the task relation: composition across `t`
-(`TaskFrame.comp`), the converse convention for the reverse orientation. -/
+(`TaskFrame.comp`), the reflection convention for the reverse orientation. -/
 theorem paste_rel (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
     (hsame : SameStateAt ρ σ t) :
     ∀ s s' : F.Duration, F.TaskRel (pasteFun ρ σ hρ hσ t s) (s' - s) (pasteFun ρ σ hρ hσ t s') := by

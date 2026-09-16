@@ -67,11 +67,11 @@ they are not re-litigated here or in the four-axiom frame alignment work.
    hypothesis a faithful transcription rather than an empty-case argument the paper never makes.
 2. **`respects_task` is stated unconditionally** — "for all times `x, y ∈ X`", with no `s ≤ t`
    guard. This is the form the Fiber and Admissibility lemmas consume, both of which are stated
-   with no sign proviso. The paper's **converse convention** is the justification:
+   with no sign proviso. The paper's **reflection convention** is the justification:
    `def:task-relation` extends the task relation to negative durations by
    `$w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$`, so the
    negative-difference instances of `$\tau(x) \Rightarrow_{y-x} \tau(y)$` are *covered by the
-   converse convention*, i.e. by `FrameOver.reflection`, and the unconditional statement is not a
+   reflection convention*, i.e. by `FrameOver.reflection`, and the unconditional statement is not a
    strengthening of the paper's requirement — it is the paper's requirement, read as written.
    (`def:world-history` formerly carried an inline `%` gloss saying exactly this, which this
    docstring used to block-quote; the paper has since deleted that gloss, and the convention it
@@ -164,14 +164,14 @@ Smart constructor: build a `PartialHistory` from a **guarded** task-respect proo
 
 The unconditional `respects_task` field is discharged from the guarded proof plus
 `FrameOver.reflection`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
-and the converse convention turns that into `TaskRel (states s) (-(s - t)) (states t)`, which is
+and the reflection convention turns that into `TaskRel (states s) (-(s - t)) (states t)`, which is
 `TaskRel (states s) (t - s) (states t)` by `neg_sub`.
 
 **This is a proof-convenience constructor, not a compatibility shim.** It introduces no second
 history type, no second validity notion, and no alias of any API surface — it is one
 lemma-shaped constructor over the single `PartialHistory` structure, and it exists precisely
 because the paper's own `%` comment at `def:world-history` says the negative-difference instances
-are *covered by the converse convention* rather than separately required.
+are *covered by the reflection convention* rather than separately required.
 -/
 def ofLe (domain : F.Duration → Prop) (nonempty_domain : ∃ t, domain t)
     (states : (t : F.Duration) → domain t → F.WorldState)

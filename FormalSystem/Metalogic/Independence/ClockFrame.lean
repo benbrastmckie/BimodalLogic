@@ -40,7 +40,7 @@ not a model of the intended interpretation. Three points make the witness legiti
 
 * `clockFrame` is a genuine value of the `ℚ` fibre, `FrameOver (TemporalOrder.of ℚ)`. Every one of `def:frame`'s four axioms —
   *Compositionality*, *Seriality*, *Limit*, *Saturation* — is discharged below, together with the
-  converse convention and the iff-form zero-duration law the structure additionally carries.
+  reflection law its two-sided presentation (`FrameOver.ofReflective`) additionally requires.
 * Because it is a genuine frame over a densely ordered `ℚ`, every base and density axiom holds in
   every model on it, for free, by `soundness_dense`. Nothing has to be checked by hand.
 * The only *extra* principle it validates beyond the dense base is `CO` itself, which is exactly

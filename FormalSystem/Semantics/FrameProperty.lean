@@ -266,7 +266,7 @@ of it for the translation frames.
 
 **One bidirectional condition, not a forward/backward conjunction.** `d` ranges over *all* of
 `F.Duration`, negative durations included. That is not a strengthening bolted on for convenience:
-`FrameOver.reflection` is a structure field, so `w ⇒_x u ↔ u ⇒_{-x} w` holds in every frame, and
+the reflection law `FrameOver.reflection` holds in every frame (`w ⇒_x u ↔ u ⇒_{-x} w`), so
 the past instances of this predicate are therefore already determined by the future ones being
 asserted about *every* state. Writing it with an unrestricted binder is what makes that visible.
 

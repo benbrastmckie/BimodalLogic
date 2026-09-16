@@ -52,7 +52,7 @@ the `CO`-validity argument uses.
 def LoopingDuration (F : FrameOver D) (π : ↑D) : Prop :=
   π ≠ 0 ∧ ∀ w u, F.TaskRel w π u ↔ u = w
 
-/-- The negation of a looping duration is a looping duration, by the converse convention. -/
+/-- The negation of a looping duration is a looping duration, by the reflection convention. -/
 theorem LoopingDuration.neg {F : FrameOver D} {π : ↑D} (h : LoopingDuration F π) :
     LoopingDuration F (-π) := by
   refine ⟨neg_ne_zero.mpr h.1, fun w u => ?_⟩

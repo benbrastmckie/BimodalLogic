@@ -55,7 +55,7 @@ through their sibling aggregators `Semantics/Extension.lean` and so on.
 - `TaskFrame`: the total space of the frame fibration — a `Duration : TemporalOrder` paired
   with a `FrameOver Duration`, so `def:frame`'s `⟨W, 𝔇, ⇒⟩` unfolds exactly as the paper writes
   it. `FrameOver D` is the fibre over a fixed temporal order and the sole declaration site of
-  the four frame axioms plus the converse convention; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.saturation`)
+  the four frame axioms over a primitive relation on `D⁺`; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.saturation`)
   is preserved by delegating accessors
 - `FrameProperty`: `def:frame-properties` as predicates on a *frame* — `TaskFrame.IsDense`,
   `IsDiscrete`, `IsComplete`, plus the two narrowings the tree's soundness targets actually need
@@ -137,7 +137,7 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   bridge `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, the semantic conservativity of
   L⁺ over L at every frame class
 - `PlusLanguage.PlusPasting`: the history-pasting lemma (`paste`: two total histories sharing a state at `t`
-  paste into a total history, by *Compositionality* and the converse convention alone), the
+  paste into a total history, by *Compositionality* and the reflection convention alone), the
   purity congruences, and the pasting validities PS/US/FS/GS and their past mirrors — the
   `⊡`/tense interaction principles the S5 axioms of `⊡` miss
 - `PlusLanguage.PlusNonValidities`: the five refutations on `natFrame` over `ℤ` (`⊡p → □⊡p`, `G⊡p → ⊡Gp`,

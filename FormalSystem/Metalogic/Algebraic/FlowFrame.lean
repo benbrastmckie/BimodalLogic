@@ -58,7 +58,7 @@ flow-line family — the internalization on which the total-history countermodel
 
 **Derived, not cited**: the segment identity `w ⇒_{x+y} v ↔ [w,v]_x^y ≠ ∅`
 (`taskRel_add_iff_seg_nonempty`) is DERIVED here from the compositionality biconditional, the
-converse convention, and `mem_Seg`. It is not paper text and must not be cited as such.
+reflection convention, and `mem_Seg`. It is not paper text and must not be cited as such.
 
 ## Main Results
 
@@ -213,7 +213,7 @@ theorem multiFamHistoryGen_total {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) 
 
 /-- The derived segment identity: the composite step `w ⇒_{x+y} v` exists exactly when the
 segment `[w, v]_x^y` (`def:task-relation`, bracket form) is nonempty. Derived from the
-compositionality biconditional and the converse convention; never cited to the paper. -/
+compositionality biconditional and the reflection convention; never cited to the paper. -/
 theorem taskRel_add_iff_seg_nonempty {W : Type} {R : W → ↑D → W → Prop}
     (hcomp : ∀ w v x y, R w (x + y) v ↔ ∃ u, R w x u ∧ R u y v)
     (hconv : ∀ w d u, R w d u ↔ R u (-d) w)

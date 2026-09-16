@@ -39,11 +39,14 @@ functional, so `F°` is **not** deterministic (`fzero_not_deterministic`) — an
 
 ## The `uIcc` encoding
 
-`app:drift` states the relation only for `x ≥ 0`. `FrameOver.reflection` is a structure field, so
-the relation must be defined at negative durations too, and it must satisfy
-`w ⇒_x u ↔ u ⇒_{-x} w` **on the nose**. The unordered interval `Set.uIcc x (2 * x)` is exactly
-the two-sided extension that makes this hold definitionally: for `x < 0` it is `[2x, x]`, which
-is the reflected band, so `converse` is a `linarith` case split and nothing more.
+`app:drift` states the relation only for `x ≥ 0`, which is exactly the frame's primitive relation
+`PosRel`. The frame is nevertheless presented by a relation on all durations, so that its axioms
+can be proved against one two-sided relation and transported to the fields
+(`TaskFrame.compositional_reflect_of_reflective` and siblings); that transport needs the relation
+to satisfy the reflection law `w ⇒_x u ↔ u ⇒_{-x} w` **on the nose**. The unordered interval
+`Set.uIcc x (2 * x)` is exactly the two-sided extension that makes this hold: for `x < 0` it is
+`[2x, x]`, which is the reflected band, so `fzero_reflection` is a `linarith` case split and
+nothing more.
 
 ## The `comp` scope note — why F° is a frame at all
 
@@ -100,8 +103,8 @@ open FormalSystem.Semantics
 open Set
 
 /-- The drift relation: `u - w` lies in the unordered interval between `d` and `2d`. For `d ≥ 0`
-this is `app:drift`'s `d ≤ u - w ≤ 2d`; for `d < 0` it is the reflection, which is what
-`FrameOver.reflection` demands. -/
+this is `app:drift`'s `d ≤ u - w ≤ 2d`; for `d < 0` it is the reflection, which is what the
+reflection convention (`FrameOver.reflection`) demands. -/
 def fzeroRel (w : ℝ) (d : ℝ) (u : ℝ) : Prop := u - w ∈ Set.uIcc d (2 * d)
 
 /-- The sign-split form of `fzeroRel`, and the form every proof below consumes. -/
@@ -144,7 +147,7 @@ theorem isClosed_fib (w d : ℝ) : IsClosed (TaskFrame.Fib (D := realTemporalOrd
 
 /-! ### The five `FrameOver` obligations -/
 
-/-- *Converse*: the `uIcc` encoding makes this hold on the nose. -/
+/-- The reflection law: the `uIcc` encoding makes this hold on the nose. -/
 theorem fzero_reflection (w d u : ℝ) : fzeroRel w d u ↔ fzeroRel u (-d) w := by
   rw [fzeroRel_iff, fzeroRel_iff]; constructor
   · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩)

@@ -26,8 +26,8 @@ Three facts about `FrameOver intOrder` collapse the general theory to a graph-th
   cones of `w` is `Fib(w, 0)`, which *Limit* pins to `{w}`.)
 - `⇒ₙ = step^n` for `n ≥ 0`, by induction from the paper's *Compositionality*
   (`def:frame#Compositionality`) at `x = n`, `y = 1`.
-- Negative durations are the converse convention (`def:task-relation`), carried by the `converse`
-  field.
+- Negative durations are the reflection convention (`def:task-relation`), read back through the
+  derived reflection law `FrameOver.reflection`.
 
 Everything downstream — the characterization of `H_F` as the bi-infinite step-paths, frame
 synthesis from a bare bi-serial relation, and computable model checking — rests on this.
@@ -211,8 +211,9 @@ relation, at *every* duration — negative durations included.
 The statement is uniform rather than case-split: the two conjuncts are each guarded by a sign
 condition, so at a positive `d` the second is vacuous, at a negative `d` the first is, and at
 `d = 0` both fire and together say `w = u` (which is exactly `nullity_identity`). The sign split
-survives only inside the proof, where the negative half is discharged by the `converse` field
-(`def:task-relation`'s converse convention) — the same route the paper uses.
+survives only inside the proof, where the negative half is discharged by the reflection law
+(`FrameOver.reflection`, `def:task-relation`'s reflection convention) — the same route the paper
+uses.
 
 `Int.natAbs` is the right index on both sides because `(-d).natAbs = d.natAbs`: a backward task of
 duration `d < 0` is a forward `|d|`-step path traversed in the other direction.
@@ -365,7 +366,7 @@ the normal form; the exception, *Seriality*, is a genuine hypothesis and cannot 
 
 **Seriality is free from *Occurrence*, never from ℤ.** It is tempting to think finiteness or
 discreteness rescues it. They do not: the relation `R w d u := (d = 0)` on `W = Unit` over `D = ℤ`
-is the identity at duration zero and satisfies *Compositionality*, the converse convention, *Limit*, and
+is the identity at duration zero and satisfies *Compositionality*, the reflection law, *Limit*, and
 *Saturation*, and fails *Seriality* — on a one-element carrier. `ofStep` therefore takes forward and
 backward seriality of `R₁` as hypotheses (`fwd`, `bwd`), and they are exactly bi-seriality of the
 one-step relation. Do not attempt to derive them.

@@ -48,7 +48,7 @@ source — is the citation source of record.
 
 1. **`Serial`** (`hSer`) — nonemptiness of every *fiber* member. At a domain time `t ≤ z` this is
    the successor half of *Seriality* at `z - t ≥ 0`; at `t ≥ z` it is the predecessor half at
-   `t - z ≥ 0`, converted by the converse convention.
+   `t - z ≥ 0`, converted by the reflection convention.
 2. **`Interpolates`** (`hInt`) — nonemptiness of every *segment* member. This is the
    left-to-right half of biconditional *Compositionality*: the history's own task-respect gives
    `τ(t) ⇒_{s-t} τ(s)`, and interpolating at `z` splits `s - t = (z - t) + (s - z)` into a point
@@ -151,7 +151,7 @@ Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤
 
 The mirror image of `fib_subset_fib_of_le_of_le`. Both fiber durations are now nonpositive, so
 the composition is performed on the reflected pair — `u ⇒_{b-z} τ(b)` and `τ(b) ⇒_{a-b} τ(a)` —
-and the converse convention (`FrameOver.reflection`) carries the result back.
+and the reflection convention (`FrameOver.reflection`) carries the result back.
 -/
 theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
@@ -232,7 +232,7 @@ Every segment constraint is nonempty, by the interpolation half of *Compositiona
 
 The history's own task-respect gives `τ(t) ⇒_{s-t} τ(s)`, and `s - t = (z - t) + (s - z)` with
 both summands positive because `t < z < s`. Interpolating at that split produces a state `u` with
-`τ(t) ⇒_{z-t} u` and `u ⇒_{s-z} τ(s)`; the converse convention rewrites the second conjunct as
+`τ(t) ⇒_{z-t} u` and `u ⇒_{s-z} τ(s)`; the reflection convention rewrites the second conjunct as
 `τ(s) ⇒_{-(s-z)} u`, which is exactly membership in `[τ(t), τ(s)]_{z-t}^{s-z}`.
 -/
 theorem nonempty_seg_of_interpolates {τ : PartialHistory F} {z t s : F.Duration} (ht : τ.domain t) (hs : τ.domain s) (htz : t < z) (hzs : z < s) :

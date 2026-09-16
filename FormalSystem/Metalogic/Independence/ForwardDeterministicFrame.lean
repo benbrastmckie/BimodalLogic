@@ -17,7 +17,7 @@ The separating frame that shows `sent:det` defines only **forward** determinism:
 ```
 W = ℕ                          D = ⟨ℤ, +, 0, ≤⟩
 f(0) = 0,  f(n) = n − 1        w ⇒_n u  iff  u = fⁿ(w)  for n ≥ 0
-                               (n < 0 by the converse convention)
+                               (n < 0 by the reflection convention)
 ```
 
 `F^N` is Laplacian about the future and indeterminate about the past: the absorbing predecessor
@@ -46,14 +46,14 @@ function — and **not** `Deterministic`, because `fib(0, −1) = {0, 1}`.
 
 ## The relation is defined in a sign-symmetric `max`-form
 
-Writing the relation as a case split on `sign d` makes `converse` a case analysis at every use
-site. Instead:
+Writing the relation as a case split on `sign d` makes the reflection law a case analysis at
+every use site. Instead:
 
 ```
 fnRel w d u  :=  (u : ℤ) = max 0 ((w : ℤ) − d)  ∨  (w : ℤ) = max 0 ((u : ℤ) + d)
 ```
 
-The two disjuncts are each other's reflection, so `converse` is literally `Or.comm`. And the
+The two disjuncts are each other's reflection, so `fn_reflection` is literally `Or.comm`. And the
 disjunction is not a weakening: for `d ≥ 0` the second disjunct is *contained in* the first (from
 `u, d ≥ 0` it gives `w = u + d`, hence `u = w − d ≥ 0`, hence `u = max 0 (w − d)`), and for
 `d ≤ 0` the first is contained in the second. So at each sign the disjunction collapses to the
@@ -134,7 +134,7 @@ theorem fn_eq_of_zero (w u : ℕ) (h : fnRel w 0 u) : u = w := by
     have hu : (0 : ℤ) ≤ (u : ℤ) := Int.natCast_nonneg u
     omega
 
-/-- The converse convention, by `Or.comm` on the two reflected disjuncts. -/
+/-- The reflection law, by `Or.comm` on the two reflected disjuncts. -/
 theorem fn_reflection (w : ℕ) (d : ℤ) (u : ℕ) : fnRel w d u ↔ fnRel u (-d) w := by
   unfold fnRel
   rw [sub_neg_eq_add, ← sub_eq_add_neg]

@@ -57,7 +57,7 @@ pairs, `TaskFrame.nullity_of_serial_limit` for the single `⟨z, z⟩` pair.
 ## Why `lem:fibers` carries no sign proviso, and why `respects_task` is unconditional
 
 `lem:fibers`' conclusion quantifies over *every* `t ∈ X`, with `τ(t) ⇒_{z-t} u` read through the
-paper's converse convention when `z - t` is negative. That is exactly why
+paper's reflection convention when `z - t` is negative. That is exactly why
 `PartialHistory.respects_task` is stated unconditionally rather than under an `s ≤ t` guard
 (`PartialHistory`'s module docstring, decision 2, recorded in
 `docs/architecture/total-history-validity-decisions.md` as Decision B): the unconditional field is
@@ -134,7 +134,7 @@ constraints imposed on $z$ just in case $\tau(t) \Rightarrow_{z-t} u$ for every 
 The anchor is DANGLING; see this module's header for the retirement note.
 
 **The statement carries no sign proviso**: `z - t` may be negative, in which case
-`τ(t) ⇒_{z-t} u` is read through the paper's converse convention, exactly as
+`τ(t) ⇒_{z-t} u` is read through the paper's reflection convention, exactly as
 `def:world-history`'s own `%` comment prescribes. This is why `PartialHistory.respects_task` is
 stated unconditionally — the unconditional form is what this lemma and `lem:admissible` consume.
 
@@ -273,7 +273,7 @@ every member of the constraints imposed on $z$."
 
 - both times in `X`: `τ`'s own `respects_task`, no axiom needed;
 - old time then `z`: the fiber condition at that time, i.e. `fibers`;
-- `z` then old time: the same fiber condition through the converse convention (`FrameOver.reflection`
+- `z` then old time: the same fiber condition through the reflection convention (`FrameOver.reflection`
   plus `neg_sub`), which is precisely the negative-difference instance `def:world-history`'s `%`
   comment covers;
 - `z` twice: `u ⇒₀ u`, which is `lem:nullity` — taken here from
@@ -301,7 +301,7 @@ theorem admissible (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z
       obtain rfl : z = t := (Or.resolve_left ht htd).symm
       rw [adjoinFun_of_domain τ u hsd, adjoinFun_of_not_domain τ u htd]
       exact h s hsd
-    · -- the new time then an old one: the same fiber condition, via the converse convention
+    · -- the new time then an old one: the same fiber condition, via the reflection convention
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm
       rw [adjoinFun_of_not_domain τ u hsd, adjoinFun_of_domain τ u htd]
       have hconv := (F.reflection (τ.states t htd) (z - t) u).mp (h t htd)

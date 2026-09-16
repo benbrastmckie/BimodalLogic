@@ -16,7 +16,7 @@ correspondence at an arbitrary duration group, and `FwdRecPeriodicity.lean` supp
 
 * `FrameOver.step F w u := F.TaskRel w 1 u` is the one-step relation;
 * every bi-infinite walk in `F.step` is a total history (`FrameOver.HFofStepPath`), because
-  *Compositionality* plus *Converse* plus *Nullity* give `Rₙ = R₁ⁿ`
+  *Compositionality* plus the reflection law plus *Nullity* give `Rₙ = R₁ⁿ`
   (`FrameOver.respects_of_isStepPath`);
 * every total history is a bi-infinite walk (`TaskFrame.HF.isStepPath`).
 

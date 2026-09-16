@@ -300,23 +300,23 @@ After this phase, the only identifier hits left should be genuine converses (e.g
 
 ---
 
-### Phase 5: Lean prose rename [NOT STARTED]
+### Phase 5: Lean prose rename [COMPLETED]
 
 **Goal**: Replace "converse convention" with "reflection convention" in every live Lean
 docstring and comment, and rewrite prose that describes the old field packaging.
 
 **Tasks**:
-- [ ] Replace the exact phrase "converse convention" in `TaskFrame.lean`, `PartialHistory.lean`,
+- [x] Replace the exact phrase "converse convention" in `TaskFrame.lean`, `PartialHistory.lean`,
       `Extension/Admissible.lean`, `IntNormalForm.lean`, `Extension/Constraint.lean`,
       `Algebraic/FlowFrame.lean`, `PlusLanguage/PlusPasting.lean`, `Semantics.lean`,
       `Independence/ForwardDeterministicFrame.lean`, `Independence/LoopingDuration.lean`,
       `Independence/ClockFrame.lean`.
-- [ ] Rewrite (not just rename) any prose that says the convention is "packaged as structure
+- [x] Rewrite (not just rename) any prose that says the convention is "packaged as structure
       data" or "a field". It is now a definition (`TaskRel := reflect PosRel`) with the law
       derived (`reflection`).
-- [ ] `FormalSystem/Semantics/README.md` L67-69: update the field list to
+- [x] `FormalSystem/Semantics/README.md` L67-69: update the field list to
       `WorldState, worldNonempty, PosRel, comp, serial, limit, saturation` and the prose.
-- [ ] Check every edited hunk is inside a comment or docstring. Genuine converses stay untouched.
+- [x] Check every edited hunk is inside a comment or docstring. Genuine converses stay untouched.
 
 **Timing**: 1 hour
 
@@ -340,25 +340,25 @@ docstring and comment, and rewrite prose that describes the old field packaging.
 
 ---
 
-### Phase 6: Non-Lean docs, typst, LaTeX, definitions of record [NOT STARTED]
+### Phase 6: Non-Lean docs, typst, LaTeX, definitions of record [COMPLETED]
 
 **Goal**: Make the prose documentation and the paper-definition pins consistent with the paper
 and the new encoding.
 
 **Tasks**:
-- [ ] `README.md`, `docs/reference/API_REFERENCE.md` (L144, L161, L216 region): rename, and update
+- [x] `README.md`, `docs/reference/API_REFERENCE.md` (L144, L161, L216 region): rename, and update
       the `FrameOver` field list and API entries (`reflection`, `ofReflective`, `PosRel`).
-- [ ] `docs/reference/paper-definitions-of-record.md`: re-pin `def:task-relation` (about L685-689)
+- [x] `docs/reference/paper-definitions-of-record.md`: re-pin `def:task-relation` (about L685-689)
       and `def:deterministic` (about L1463) verbatim from `possible_worlds.tex` (L2803 and the
       def:deterministic block near L3518). Rename commentary prose.
-- [ ] `typst/notation/bimodal-notation.typ`: `leanConverse` -> `leanReflection`
+- [x] `typst/notation/bimodal-notation.typ`: `leanConverse` -> `leanReflection`
       (`raw("reflection")`). Update every user (grep `leanConverse` under `typst/`).
-- [ ] `typst/chapters/02-semantics.typ` (L46, L56, L149): rewrite the field-packaging prose. Keep
+- [x] `typst/chapters/02-semantics.typ` (L46, L56, L149): rewrite the field-packaging prose. Keep
       the L57 genuine relational converse. Rephrase "no separate Reflection axiom".
       `typst/chapters/06-notes.typ` L28, `typst/FormalFoundations.typ` L194/L282/L370: rename.
-- [ ] `latex/subfiles/02-Semantics.tex` (L31/L37/L43/L57): rename. At L111, keep "take converses"
+- [x] `latex/subfiles/02-Semantics.tex` (L31/L37/L43/L57): rename. At L111, keep "take converses"
       and add "by the reflection convention" if it reads naturally.
-- [ ] Compile the typst document (`typst compile typst/FormalFoundations.typ` to a scratch output)
+- [x] Compile the typst document (`typst compile typst/FormalFoundations.typ` to a scratch output)
       to confirm the renamed macro resolves.
 
 **Timing**: 1.5 hours

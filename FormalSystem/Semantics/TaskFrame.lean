@@ -34,7 +34,7 @@ other two. This module encodes that as a fibration, in three declarations:
 | Lean | Paper | Role |
 |------|-------|------|
 | `TemporalOrder` (`Semantics/TemporalOrder.lean`) | `def:temporal-order` | the object `𝔇` — "a nontrivial totally ordered abelian group", reified |
-| `FrameOver D` | frames at a fixed `𝔇` | the **fibre**; the sole declaration site of the frame fields (`comp`, `converse`, `serial`, `limit`, `saturation`) |
+| `FrameOver D` | frames at a fixed `𝔇` | the **fibre**; the sole declaration site of the frame fields (`PosRel`, `comp`, `serial`, `limit`, `saturation`) |
 | `TaskFrame` | `𝔉 = ⟨W, 𝔇, ⇒⟩` | the **total space**, `Σ (D : TemporalOrder), FrameOver D` |
 
 `FrameOver.toTaskFrame` is the inclusion of a fibre into the total space, and it is literally the
@@ -84,7 +84,7 @@ Nullity is NOT an axiom. The paper's `lem:nullity` (verbatim: "$w \Rightarrow_0 
 world state $w \in W$ in every task frame $\F = \tuple{W, \D, \Rightarrow}$.") is DERIVED,
 choice-free, from *Seriality* at `x = 0` plus *Limit*, and asserts reflexivity only.
 
-The supporting apparatus — nonempty `W`, the positive-cone primitive relation, the converse
+The supporting apparatus — nonempty `W`, the positive-cone primitive relation, the reflection
 convention, fiber, cone, and segment (`def:task-relation`), and the `⊇`-directed family
 (`def:frame`'s opening clause; formerly the standalone `def:directed`, which the paper's 2026-09
 wave inlined into `def:frame` and deleted — recorded `DANGLING` in
@@ -107,10 +107,11 @@ This allows for various temporal structures:
 - Custom bounded or modular time structures
 
 **Alignment status relative to the four-axiom `def:frame`**:
-- The two-sided `TaskRel` together with the `converse` field **is** the paper's extended
-  relation over a primitive relation living on the positive cone. `converse` packages
-  `def:task-relation`'s definitional converse convention as structure data; it is not an extra
-  temporal-symmetry axiom.
+- The primitive field `PosRel` **is** the paper's task relation on the positive cone `D⁺`
+  (`TemporalOrder.PositiveCone`), and the two-sided `TaskRel` **is** its extension by
+  `def:task-relation`'s reflection convention — a definition (`TaskFrame.reflect`), not a
+  field. The reflection law `TaskRel w d u ↔ TaskRel u (-d) w` is the derived theorem
+  `reflection`, so it is neither an extra temporal-symmetry axiom nor extra structure data.
 - `comp` **is** the paper's biconditional *Compositionality*, carried whole. Its `←`
   (composition) half is projected back out as the derived `forward_comp`, whose statement is
   unchanged from when it was a field; its `→` (interpolation) half is projected out as
@@ -152,7 +153,8 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 ## Main Definitions
 
 - `FrameOver D`: the fibre over a temporal order — world states, task relation, the four
-  `def:frame` axioms, and the converse convention; the sole declaration site of the axioms
+  `def:frame` axioms over the primitive relation `PosRel` on `D⁺`; the sole declaration site of
+  the axioms
 - `TaskFrame`: the total space, `Σ (D : TemporalOrder), FrameOver D`, with `Duration` and
   `toFibre` as its two fields
 - `FrameOver.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
@@ -164,7 +166,10 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   verbatim that of the former field of the same name
 - `FrameOver.interpolates`: the `→` (interpolation) half of `comp`, derived, definitionally
   `TaskFrame.Interpolates TaskRel`
-- `FrameOver.reflection`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
+- `TaskFrame.reflect`, `FrameOver.TaskRel`: the reflection convention, extending a primitive
+  relation on `D⁺` to all durations; `FrameOver.ofReflective` builds a frame from a two-sided
+  relation that satisfies the reflection law
+- `FrameOver.reflection`: the reflection law (`TaskRel w d u ↔ TaskRel u (-d) w`), derived
 - `FrameOver.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
 - `FrameOver.eq_of_taskRel_zero`, `FrameOver.nullity_identity`: derived injectivity at zero and
   the resulting zero-duration law `TaskRel w 0 u ↔ w = u`
@@ -201,7 +206,8 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 - Task relation `TaskRel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
 - Nullity: zero-duration task is identity, a derived theorem (`FrameOver.nullity_identity`),
-  not a field; the structure carries exactly the paper's four axioms plus the converse convention
+  not a field; the structure carries exactly the paper's four axioms over a primitive relation
+  on `D⁺`, and the reflection convention is a definition
 - Compositionality is carried whole, as the paper's biconditional on the positive cone; its two
   halves are the derived `FrameOver.forward_comp` and `FrameOver.interpolates`
 - Genuine side conditions on the carrier — `[SuccOrder ↑D]`, `[DenselyOrdered ↑D]`,
@@ -360,7 +366,7 @@ Recorded source (`def:task-relation`, *Fiber* clause, verbatim):
 "`\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}`."
 
 `Fib R w x` is the set of states reachable from `w` by a task of duration exactly `x`; by the
-converse convention, negative-duration fibers run the relation backwards. The paper defines
+reflection convention, negative-duration fibers run the relation backwards. The paper defines
 fibers for every duration `x ∈ D`, so no sign proviso is carried here.
 -/
 def Fib {W : Type} (R : W → D → W → Prop) (w : W) (x : D) : Set W := {u | R w x u}

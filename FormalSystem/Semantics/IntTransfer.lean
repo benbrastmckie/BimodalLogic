@@ -96,9 +96,9 @@ fibration language names something already here.
 But the construction does **not** generalize to a one-directional morphism, and the obstruction is
 identifiable to a single axiom. Read the field proofs:
 
-| field | what it uses | needs |
+| obligation | what it uses | needs |
 |---|---|---|
-| `converse` | `map_neg` | a group hom |
+| reflection law | `map_neg` | a group hom |
 | `comp`, `serial`, `saturation` | `map_le_map_iff e.symm` in the `.mpr` direction | `e.symm` order-reflecting |
 | **`limit`** | `map_lt_map_iff e` **and** `map_lt_map_iff e.symm` | **both directions** |
 
