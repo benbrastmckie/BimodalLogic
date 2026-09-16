@@ -3,8 +3,8 @@
 - **Task**: 596 - Nest the flat `Semantics/` language-family files into per-language subdirectories; write `FormalSystem/ForMathlib/README.md`
 - **Status**: [COMPLETED]
 - **Started**: 2026-09-16T09:55:00-07:00
-- **Completed**: 2026-09-16T11:40:00-07:00
-- **Effort**: ~1.75 hours (build and harness wall time dominated)
+- **Completed**: 2026-09-16T11:10:00-07:00
+- **Effort**: ~1.25 hours (build and harness wall time dominated)
 - **Dependencies**: None
 - **Artifacts**: plans/01_nest-semantics-language-family.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
