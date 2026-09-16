@@ -117,7 +117,7 @@ theorem intTimeFrame_saturation : TaskFrame.Saturation intTimeFrame.TaskRel := b
 Integer time task frame with natural number world states.
 
 A slightly more complex frame with `Nat` world states. Task relation is `d ≠ 0 ∨ w = u`
-to satisfy nullity_identity while remaining permissive for non-zero durations.
+so that duration zero relates only equal states while remaining permissive for non-zero durations.
 -/
 def intNatFrame : FrameOver intOrder where
   WorldState := Nat
@@ -349,7 +349,7 @@ theorem genericTimeFrame_saturation : TaskFrame.Saturation (genericTimeFrame D).
 /--
 Generic polymorphic task frame with natural number world states.
 
-Task relation is `d ≠ 0 ∨ w = u` to satisfy nullity_identity.
+Task relation is `d ≠ 0 ∨ w = u`, so duration zero relates only equal states.
 
 The `[SuccOrder ↑D] [NoMaxOrder ↑D]` binders are carried because `genericNatFrame_limit` requires
 them: over a dense `D` the permissive relation puts every state in every cone of every other
@@ -434,13 +434,13 @@ example : (genericTimeFrame intOrder).TaskRel = intTimeFrame.TaskRel := rfl
 /-! ## Properties -/
 
 /--
-Integer time satisfies the nullity constraint (derived from nullity_identity).
+Integer time satisfies the nullity constraint (the derived `FrameOver.nullity`).
 -/
 theorem int_nullity_example : intTimeFrame.TaskRel () 0 () :=
   intTimeFrame.nullity ()
 
 /--
-Generic time satisfies the nullity constraint (polymorphic proof, derived from nullity_identity).
+Generic time satisfies the nullity constraint (polymorphic proof, the derived `FrameOver.nullity`).
 -/
 theorem generic_nullity_example (D : TemporalOrder) :
     (genericTimeFrame D).TaskRel () 0 () :=

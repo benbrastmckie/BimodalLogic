@@ -94,7 +94,7 @@ already holding a state passes it rather than discarding it, while a caller hold
 
 `cor:occurrence`'s proof extends the one-point partial history `{⟨x, w⟩}` directly via
 `thm:extension`. That one-point history is `PartialHistory.point` below; its `respects_task`
-obligation reduces to `TaskRel w 0 w`, discharged by `FrameOver.nullity_identity`.
+obligation reduces to `TaskRel w 0 w`, discharged by the derived `FrameOver.nullity_identity`.
 
 The paper's **former** translation argument — which derived occurrence at an arbitrary time by
 time-shifting a history witnessed at one time — is **gone from this chain and must not be

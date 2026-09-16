@@ -81,10 +81,9 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 - `PartialHistory.IsPaired` — the "otherwise" side condition of `def:constraints`
 - `PartialHistory.Constraints` — `def:constraints`, the constraints imposed on a new duration
 
-## Main Results
-
-- `TaskFrame.nullity_of_serial_limit` — `lem:nullity`, DERIVED (not an axiom) from *Seriality* at
-  `x = 0` plus *Limit*, choice-free
+`lem:nullity` itself, DERIVED (not an axiom) from *Seriality* at `x = 0` plus *Limit*, is
+`TaskFrame.nullity_of_serial_limit` in `FormalSystem/Semantics/TaskFrame.lean`, placed ahead of the
+`FrameOver` structure so the fibre-level `FrameOver.nullity` can cite it.
 
 ## Implementation Notes
 
@@ -99,8 +98,8 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
   separate: it was the standalone `def:directed` until the 2026-09 wave inlined it into
   `def:frame`'s opening clause (`def:directed` is recorded `DANGLING`). Keeping it separate here
   is a tree-side choice, not a transcription of the paper's current structure.
-- **`Limit` is deliberately not given a name here.** It is used only as a hypothesis of
-  `nullity_of_serial_limit`, in the literal transcribed shape
+- **`Limit` is deliberately not given a name.** It is used only as a hypothesis of
+  `TaskFrame.nullity_of_serial_limit`, in the literal transcribed shape
   `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is precisely the conclusion of
   `TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift`. Keeping the raw shape lets those
   two existing discharge helpers be passed directly.

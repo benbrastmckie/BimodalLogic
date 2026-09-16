@@ -34,12 +34,12 @@ precisely `TruthAt` transfer that a downstream Łoś lemma must be stated agains
   (`ShiftSet.ofModel`) on the carrier `F.HF` of total histories, whose shift-set truth agrees
   with truth in `M`: `ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ.val t φ`.
 
-## Four axioms in place of seven frame fields
+## Four axioms in place of six frame fields
 
 The `ShiftSet` structure carries exactly four axiom fields — `carrier_nonempty`, `sh_zero`,
 `sh_add`, `sep` — plus the valuation `A`. The live frame
-(`FormalSystem/Semantics/TaskFrame.lean`) has **seven** fields, and `ShiftSet.frame` discharges
-all seven. Three of them are free consequences of the task relation being *functional*
+(`FormalSystem/Semantics/TaskFrame.lean`) has **six** fields, and `ShiftSet.frame` discharges
+all six. Three of them are free consequences of the task relation being *functional*
 (`TaskRel w d u := u = sh w d`) together with the group action:
 
 - `serial` — witnessed by `sh w x` and `sh w (-x)`;
@@ -153,11 +153,11 @@ theorem wh_ext {F : TaskFrame} {σ τ : ConvexHistory F} (hd : σ.domain = τ.do
 The task frame induced by a shift set, under the **functional** task relation
 `TaskRel w d u := (u = sh w d)`.
 
-All **seven** live `FrameOver` fields are discharged here. Three come for free from
+All **six** live `FrameOver` fields are discharged here. Three come for free from
 functionality plus the group action and require no shift-set axiom of their own — `serial`, the
 *interpolation* half of the biconditional `comp`, and `saturation` — correcting the design
 document's list, which was written against an earlier five-field frame structure and named only the
-other four. The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
+other four (one of which, the zero-duration law, is now a derived theorem rather than a field). The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
 -/
 @[reducible] def fibre (S : ShiftSet D) : FrameOver D where
   WorldState := S.Carrier

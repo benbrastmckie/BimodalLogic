@@ -66,8 +66,8 @@ Galois-closed, in contrast with the paper's bare classes.
 * `Independence/RealTranslationFrame.lean` — `realOrder`, and `F¹`, the deterministic
   translation flow over `ℝ`, built through `ShiftSet` so that its world-set characterization
   elaborates.
-* `Independence/DriftFrame.lean` — `F°`, the drift band `x ≤ u - w ≤ 2x` over `ℝ`, with all six
-  `FrameOver` axioms and its failure of `def:deterministic`.
+* `Independence/DriftFrame.lean` — `F°`, the drift band `x ≤ u - w ≤ 2x` over `ℝ`, with all five
+  `FrameOver` axiom fields and its failure of `def:deterministic`.
 * `Independence/DriftHistories.lean` — `F°`'s total histories are strictly increasing
   bi-Lipschitz bijections of `ℝ`; (H1) and (H2) discharged for `F°`.
 * `Independence/OrderTransfer.lean` — the frame-independent layer: hypotheses (H1) `OrderFlow`

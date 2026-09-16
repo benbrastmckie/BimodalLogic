@@ -278,7 +278,7 @@ def refinedFilteredTaskRel (phi : Formula)
   if d = 0 then w = u else True
 
 /--
-The refined filtered task frame with proper nullity_identity.
+The refined filtered task frame: duration zero relates only equal worlds.
 
 **Discrete duration types only.** `[SuccOrder ↑D] [NoMaxOrder ↑D]` is a genuine restriction, not
 bookkeeping: the relation is universal above duration zero, so over a *dense* `D` every filtered
@@ -467,7 +467,7 @@ This module provides:
 1. MCS-based filtration equivalence
 2. Closure MCS bundle type with setoid structure
 3. Filtered world type as quotient
-4. Refined filtered task frame with proper nullity_identity
+4. Refined filtered task frame (identity at duration zero)
 5. Formula membership lifted to filtered worlds
 
 Next phases will prove:

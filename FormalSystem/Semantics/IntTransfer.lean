@@ -62,7 +62,7 @@ Two measured failures, recorded so a future editor does not re-hit them:
 
 ## Main results
 
-- `FrameOver.map`: transport a task frame along `e : D ≃+o E`, all seven fields.
+- `FrameOver.map`: transport a task frame along `e : D ≃+o E`, every field.
 - `TaskModel.map`, `ConvexHistory.map`, `ConvexHistory.comap`: the model and history transports.
 - `Aligned`, `aligned_map`, `aligned_comap`, `isTotal_map`: the `HEq`-free correspondence
   between a history and its transport.
@@ -98,7 +98,7 @@ identifiable to a single axiom. Read the field proofs:
 
 | field | what it uses | needs |
 |---|---|---|
-| `nullity_identity`, `converse` | `map_zero`, `map_neg` | a group hom |
+| `converse` | `map_neg` | a group hom |
 | `comp`, `serial`, `saturation` | `map_le_map_iff e.symm` in the `.mpr` direction | `e.symm` order-reflecting |
 | **`limit`** | `map_lt_map_iff e` **and** `map_lt_map_iff e.symm` | **both directions** |
 
@@ -126,7 +126,7 @@ exactly as they were.
 Transport a task frame along an ordered-group isomorphism of temporal orders.
 
 The world states are carried over unchanged — only the duration index of `TaskRel` moves, by
-pulling back along `e.symm`. Each of the seven fields is then the original field composed with
+pulling back along `e.symm`. Each field is then the original field composed with
 `e.symm`, with `map_add`/`map_neg`/`map_sub` and `map_le_map_iff`/`map_lt_map_iff` supplying the
 compatibility.
 

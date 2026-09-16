@@ -18,8 +18,8 @@ constructive presentation. This module supplies it.
 
 An `IntPresentation` is a finite directed graph on `Fin card` together with a `Bool`-valued
 valuation, and it maps into the semantics through the ℤ-frame normal form: `FrameOver.ofStep`
-(`Semantics/IntNormalForm.lean`) turns the bi-serial step relation into a `FrameOver intOrder` with all
-seven fields discharged, so nothing is re-discharged by hand here.
+(`Semantics/IntNormalForm.lean`) turns the bi-serial step relation into a `FrameOver intOrder` with every
+field discharged, so nothing is re-discharged by hand here.
 
 ## Main Definitions
 
@@ -118,7 +118,7 @@ instance : DecidablePred fun p : Fin P.card × Fin P.card => P.stepRel p.1 p.2 :
 /--
 The `FrameOver intOrder` the presentation presents, built through the normal form's `ofStep`.
 
-All seven `FrameOver` fields come from `ofStep`; none is re-discharged here. In particular
+All `FrameOver` fields come from `ofStep`; none is re-discharged here. In particular
 *Saturation* goes through `TaskFrame.saturation_of_finite`, the only route applicable to a relation
 of arbitrary shape, and *Limit* through `TaskFrame.limit_of_succOrder`.
 

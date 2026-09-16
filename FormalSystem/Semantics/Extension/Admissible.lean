@@ -94,15 +94,11 @@ here:
 
 ## Implementation Notes
 
-- **`nullity_identity` is not consumed, and its open design question is not decided here.** The
-  existing `FrameOver.nullity_identity` field is an *iff* (`TaskRel w 0 u ↔ w = u`), strictly
-  stronger than the paper's derived `lem:nullity`, which asserts reflexivity only. `admissible`
-  consumes only the reflexivity half, and takes it from `TaskFrame.nullity_of_serial_limit`
-  (*Seriality* + *Limit*, choice-free) rather than from the field. Whether the field should be
-  demoted to the reflexivity half, kept as an iff, or have its injectivity-at-zero content dropped
-  is a joint question with the four-axiom frame-alignment work recorded in
-  `docs/architecture/total-history-validity-decisions.md`; nothing here forecloses any of those
-  options, because nothing here depends on the field.
+- **Only the reflexivity half of the zero-duration law is consumed.** `admissible` needs
+  `lem:nullity` alone and takes it from `TaskFrame.nullity_of_serial_limit` (*Seriality* +
+  *Limit*, choice-free), exactly the paper's derivation. The biconditional
+  `FrameOver.nullity_identity` is itself a theorem derived from the same two fields, not a
+  structure field.
 - ***Saturation* is not consumed here either.** It is applied only at `lem:step`, the sole
   application site the paper names. This module supplies that application its *other* input —
   the certificate that a state common to all the constraints yields a genuine extension.
@@ -281,8 +277,7 @@ every member of the constraints imposed on $z$."
   plus `neg_sub`), which is precisely the negative-difference instance `def:world-history`'s `%`
   comment covers;
 - `z` twice: `u ⇒₀ u`, which is `lem:nullity` — taken here from
-  `TaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free), **not**
-  from the strictly stronger `FrameOver.nullity_identity` field, whose design question stays open.
+  `TaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free).
 
 The hypothesis `hz : ¬ τ.domain z` is the paper's `z ∈ D \ X` and is genuinely load bearing in the
 left-to-right direction; see this module's docstring for why, and contrast `lem:constraint`, which

@@ -165,19 +165,19 @@ construction-site proof and dead helper in one atomic batch.
 
 ---
 
-### Phase 3: Lean docstring and module prose [NOT STARTED]
+### Phase 3: Lean docstring and module prose [COMPLETED]
 
 **Goal**: Make every Lean-side docstring describe the frame as the four axioms plus `converse`
 and the zero law as derived.
 
 **Tasks**:
-- [ ] `TaskFrame.lean`: module docstring bullets (~83, ~121-124, ~147-150, ~158-159, ~170, ~202), the pre-`FrameOver` explanatory block (~537-577), and the `limit` field docstring (~702-704): remove "strictly STRONGER"/"open design question" language; state the structure carries `comp`, `converse`, `serial`, `limit`, `saturation` and that `nullity`, `eq_of_taskRel_zero`, `nullity_identity` are derived. Fix `natFrame`'s "All six axiom fields" comment.
-- [ ] `FrameAxioms.lean` (~86, ~103, ~159-163): pointer to the moved theorem; drop the field discussion.
-- [ ] `Semantics.lean` (~226-229): replace "retains it as a `nullity_identity` field for construction ergonomics only" with the derived-theorem statement; correct the table's `compositionality` field name to `comp`. Re-read immediately before editing (concurrent history task).
-- [ ] `Extension/Admissible.lean` (~97-111, ~284-285): the open design question is closed; `nullity_identity` is a derived theorem.
-- [ ] `Extension/Extension.lean` (~97, ~221), `DeterministicBridge.lean` (~67-70, ~126: "is a structure field" -> derived theorem), `IntNormalForm.lean` (~24, ~190, ~212, ~367, ~432 table row), `IntTransfer.lean` (~101 table row), `ShiftSet.lean` ("seven live fields"), `ConvexHistory.lean` (~285), `Frames/Standard.lean` ("seven obligations", *Nullity*), `Examples/TemporalStructures.lean` (~121, ~369, ~454, ~460), `ClockFrame.lean` (~161), `DriftFrame.lean` (~29, ~37, ~145, ~222), `ForwardDeterministicFrame.lean` (~127, ~186, ~216), `Filtration.lean` (~281, ~479), `IntPresentation.lean` (~121), `RealTranslationFrame.lean` (~128), `Metalogic/Independence.lean` (~69), `Tests/BimodalTest/Property/Generators.lean` (~32, ~146).
-- [ ] Sweep: `grep -rn "nullity_identity" --include=*.lean FormalSystem Tests | grep -v Boneyard` and `grep -rniE "(six|seven) (axiom |live )?(fields|obligations)" --include=*.lean FormalSystem Tests | grep -v Boneyard`; every remaining hit must be a genuine use of the theorem or a correct count. Prefer naming fields over counting.
-- [ ] Build touched modules (docstrings elaborate); commit.
+- [x] `TaskFrame.lean`: module docstring bullets (~83, ~121-124, ~147-150, ~158-159, ~170, ~202), the pre-`FrameOver` explanatory block (~537-577), and the `limit` field docstring (~702-704): remove "strictly STRONGER"/"open design question" language; state the structure carries `comp`, `converse`, `serial`, `limit`, `saturation` and that `nullity`, `eq_of_taskRel_zero`, `nullity_identity` are derived. Fix `natFrame`'s "All six axiom fields" comment.
+- [x] `FrameAxioms.lean` (~86, ~103, ~159-163): pointer to the moved theorem; drop the field discussion.
+- [x] `Semantics.lean` (~226-229): replace "retains it as a `nullity_identity` field for construction ergonomics only" with the derived-theorem statement; correct the table's `compositionality` field name to `comp`. Re-read immediately before editing (concurrent history task).
+- [x] `Extension/Admissible.lean` (~97-111, ~284-285): the open design question is closed; `nullity_identity` is a derived theorem.
+- [x] `Extension/Extension.lean` (~97, ~221), `DeterministicBridge.lean` (~67-70, ~126: "is a structure field" -> derived theorem), `IntNormalForm.lean` (~24, ~190, ~212, ~367, ~432 table row), `IntTransfer.lean` (~101 table row), `ShiftSet.lean` ("seven live fields"), `ConvexHistory.lean` (~285) *(deviation: skipped — the file was folded into `PartialHistory.lean` by the concurrent history-migration task and the passage no longer exists)*, `Frames/Standard.lean` ("seven obligations", *Nullity*), `Examples/TemporalStructures.lean` (~121, ~369, ~454, ~460), `ClockFrame.lean` (~161), `DriftFrame.lean` (~29, ~37, ~145, ~222), `ForwardDeterministicFrame.lean` (~127, ~186, ~216), `Filtration.lean` (~281, ~479), `IntPresentation.lean` (~121), `RealTranslationFrame.lean` (~128), `Metalogic/Independence.lean` (~69), `Tests/BimodalTest/Property/Generators.lean` (~32, ~146).
+- [x] Sweep: `grep -rn "nullity_identity" --include=*.lean FormalSystem Tests | grep -v Boneyard` and `grep -rniE "(six|seven) (axiom |live )?(fields|obligations)" --include=*.lean FormalSystem Tests | grep -v Boneyard`; every remaining hit must be a genuine use of the theorem or a correct count. Prefer naming fields over counting.
+- [x] Build touched modules (docstrings elaborate); commit. *(deviation: altered — verified by a full `lake build` of FormalSystem, not per-module; `Tests/` generator docstring is checked in Phase 5)*
 
 **Timing**: 1 hour
 

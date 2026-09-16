@@ -49,7 +49,7 @@ not a model of the intended interpretation. Three points make the witness legiti
 ## Contents
 
 * `ClockState` — the carrier `ℚ ⧸ AddSubgroup.zmultiples (1 : ℚ)`, with the projection `cmk`.
-* `clockFrame` — the `FrameOver (TemporalOrder.of ℚ)` above, with all seven obligations discharged.
+* `clockFrame` — the `FrameOver (TemporalOrder.of ℚ)` above, with all its obligations discharged.
 * `clockHistory` — the reference total history `t ↦ ⟦t⟧`, with `clockHistory_isTotal`.
 -/
 
@@ -158,7 +158,7 @@ theorem clockRel_saturation : TaskFrame.Saturation clockRel :=
 /--
 **The periodic clock frame.**
 
-`D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u :⟺ u = w + ⟦x⟧`. All seven `FrameOver` obligations are discharged;
+`D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u :⟺ u = w + ⟦x⟧`. All `FrameOver` obligations are discharged;
 see this module's docstring for why the quotient (rather than the line) is the right carrier.
 
 The temporal order is written `TemporalOrder.of ℚ` rather than a named `ratOrder`: a single

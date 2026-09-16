@@ -124,7 +124,7 @@ theorem fn_rel_iff_of_nonpos {w : ℕ} {d : ℤ} {u : ℕ} (hd : d ≤ 0) :
     · exact h
   · exact Or.inr
 
-/-! ## The six `FrameOver` obligations -/
+/-! ## The `FrameOver` obligations -/
 
 /-- A zero-duration step changes nothing: both disjuncts collapse to `u = w`. This is the
 hypothesis `fn_limit` hands to `TaskFrame.limit_of_succOrder`. -/
@@ -209,7 +209,7 @@ theorem fn_saturation : TaskFrame.Saturation (D := TemporalOrder.of ℤ) fnRel :
 
 /-! ## The frame -/
 
-/-- **`F^N` is a task frame**: all six `FrameOver` obligations. `@[reducible]` for the same
+/-- **`F^N` is a task frame**: all five `FrameOver` axiom fields. `@[reducible]` for the same
 reason `fzeroFrame` carries it — without it `FN.WorldState` does not reduce to `ℕ`. -/
 @[reducible] def fnFrameOver : FrameOver (TemporalOrder.of ℤ) where
   WorldState := ℕ

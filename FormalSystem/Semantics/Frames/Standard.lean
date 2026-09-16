@@ -64,7 +64,7 @@ theorem translationRel_fib_subsingleton {D : TemporalOrder} (w x : ↑D) :
 **The translation frame over `D`**: world states are durations, and `w ⇒_x u` exactly when
 `u = w + x`.
 
-The seven `FrameOver` obligations: *Nullity* and *Converse* are group arithmetic;
+The `FrameOver` obligations: *Converse* is group arithmetic;
 *Compositionality* interpolates through `w + x`; *Seriality* has `w + x` and `w - x` as the two
 witnesses; *Limit* is `TaskFrame.limit_of_shift` at the identity position function; and
 *Saturation* is Helper D (`TaskFrame.saturation_of_fib_subsingleton`) applied to
@@ -122,7 +122,7 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
   { WorldState := Bool
     worldNonempty := inferInstance
     TaskRel := fun w d u => d ≠ 0 ∨ w = u
-    -- All six axiom fields are one-line citations of Helper B (`*_of_permissive`).
+    -- Every axiom field is a one-line citation of Helper B (`*_of_permissive`).
     comp := TaskFrame.comp_of_permissive fun _ _ _ => Iff.rfl
     converse := TaskFrame.converse_of_permissive fun _ _ _ => Iff.rfl
     serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl

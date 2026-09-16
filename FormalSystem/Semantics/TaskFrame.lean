@@ -34,7 +34,7 @@ other two. This module encodes that as a fibration, in three declarations:
 | Lean | Paper | Role |
 |------|-------|------|
 | `TemporalOrder` (`Semantics/TemporalOrder.lean`) | `def:temporal-order` | the object `𝔇` — "a nontrivial totally ordered abelian group", reified |
-| `FrameOver D` | frames at a fixed `𝔇` | the **fibre**; the sole declaration site of the six frame fields |
+| `FrameOver D` | frames at a fixed `𝔇` | the **fibre**; the sole declaration site of the frame fields (`comp`, `converse`, `serial`, `limit`, `saturation`) |
 | `TaskFrame` | `𝔉 = ⟨W, 𝔇, ⇒⟩` | the **total space**, `Σ (D : TemporalOrder), FrameOver D` |
 
 `FrameOver.toTaskFrame` is the inclusion of a fibre into the total space, and it is literally the
@@ -118,10 +118,10 @@ This allows for various temporal structures:
 - `serial`, `limit`, and `saturation` carry the paper's other three axioms, each stated by
   citation of the corresponding bare-relation predicate (or, for *Limit*, its literal
   transcribed shape) rather than restated inline.
-- `nullity_identity` is an iff, strictly STRONGER than the paper's derived `lem:nullity`
-  (reflexivity only). Its final form is an open design question — see the field's docstring.
-- Reflection (`nullity`) and backward composition (`backward_comp`) are **derived** here,
-  matching `lem:nullity`'s derived status in the paper.
+- There is no zero-duration field. Reflexivity (`nullity`, the paper's `lem:nullity`) is
+  derived from `serial` plus `limit`, injectivity at zero (`eq_of_taskRel_zero`) from `limit`
+  alone, and their conjunction is the theorem `nullity_identity` (`TaskRel w 0 u ↔ w = u`).
+  Backward composition (`backward_comp`) is likewise **derived**.
 - Mixed-sign composition is not so much prohibited as **inexpressible at the primitive level**,
   since primitive durations are nonnegative.
 - The ordered additive group structure provides the required abelian group with total order.
@@ -151,12 +151,10 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 ## Main Definitions
 
-- `FrameOver D`: the fibre over a temporal order — world states, task relation, and the six
-  frame axioms; the sole declaration site of the axioms
+- `FrameOver D`: the fibre over a temporal order — world states, task relation, the four
+  `def:frame` axioms, and the converse convention; the sole declaration site of the axioms
 - `TaskFrame`: the total space, `Σ (D : TemporalOrder), FrameOver D`, with `Duration` and
   `toFibre` as its two fields
-- `FrameOver.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`) —
-  stronger than the paper's derived `lem:nullity`; open design question, see its docstring
 - `FrameOver.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
   `TaskFrame.Compositional TaskRel`
 - `FrameOver.serial`, `FrameOver.limit`, `FrameOver.saturation`: *Seriality*, *Limit*, and
@@ -168,6 +166,8 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   `TaskFrame.Interpolates TaskRel`
 - `FrameOver.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
 - `FrameOver.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
+- `FrameOver.eq_of_taskRel_zero`, `FrameOver.nullity_identity`: derived injectivity at zero and
+  the resulting zero-duration law `TaskRel w 0 u ↔ w = u`
 - `TaskFrame.Fib`, `TaskFrame.cone`, `TaskFrame.Seg`, `TaskFrame.DirectedFamily`,
   `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `⊇`-directed
   apparatus over a bare relation
@@ -179,6 +179,8 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 ## Main Results
 
+- `TaskFrame.nullity_of_serial_limit`: `lem:nullity`, derived choice-free from *Seriality* at
+  `x = 0` plus *Limit*
 - `TaskFrame.limit_of_succOrder`: *Limit* is automatic over a discrete duration
   type (`[SuccOrder D] [NoMaxOrder D]`)
 - `TaskFrame.limit_of_shift`: *Limit* is automatic for deterministic-shift frames
@@ -198,8 +200,8 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   carries them with no ceremony
 - Task relation `TaskRel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
-- Nullity: zero-duration task is identity, stated as an iff (open design question against the
-  paper's reflexivity-only `lem:nullity`)
+- Nullity: zero-duration task is identity, a derived theorem (`FrameOver.nullity_identity`),
+  not a field; the structure carries exactly the paper's four axioms plus the converse convention
 - Compositionality is carried whole, as the paper's biconditional on the positive cone; its two
   halves are the derived `FrameOver.forward_comp` and `FrameOver.interpolates`
 - Genuine side conditions on the carrier — `[SuccOrder ↑D]`, `[DenselyOrdered ↑D]`,
@@ -566,7 +568,6 @@ total space is the constructor `⟨D, F⟩`, not a transport.
 A frame over `D` consists of:
 - a type of world states,
 - a task relation connecting world states via timed tasks of duration `x : ↑D`,
-- nullity identity: a zero-duration task is the identity (`w = u`),
 - compositionality: tasks compose, and interpolate, on the positive cone,
 - the converse convention, `TaskRel w d u ↔ TaskRel u (-d) w`,
 - seriality, limit and saturation.
@@ -584,9 +585,10 @@ duration as an opaque field: `(F : TaskFrame) (h : F.Duration = ℤ)` cannot sup
 (a biconditional), *Seriality*, *Limit*, *Saturation* — and no Nullity axiom (`lem:nullity` is
 derived, reflexivity only). This structure carries **all four**, as `comp`, `serial`, `limit`,
 and `saturation`, each by citation of a bare-relation predicate rather than by inline
-restatement. It additionally carries the converse convention (`converse`) and an iff-form
-zero-duration law (`nullity_identity`) that is strictly stronger than the paper's derived
-`lem:nullity`. What remains absent is structural rather than axiomatic — see the module
+restatement. It additionally carries only the converse convention (`converse`). The zero-duration
+law is derived, not carried: `nullity` (reflexivity, the paper's `lem:nullity`),
+`eq_of_taskRel_zero` (injectivity), and their conjunction `nullity_identity` are theorems below.
+What remains absent is structural rather than axiomatic — see the module
 docstring's "Known gaps" list.
 
 **Axiomatization Notes**:
@@ -680,8 +682,9 @@ structure FrameOver (D : TemporalOrder) where
   every positive cone of `w`, then `u` is `w`.
 
   This is exactly what `TaskFrame.limit_of_succOrder`, `TaskFrame.limit_of_shift`, and the
-  class helpers conclude, and exactly what `TaskFrame.nullity_of_serial_limit`
-  (`Semantics/FrameAxioms.lean`) consumes to derive `lem:nullity`.
+  class helpers conclude, and exactly what `TaskFrame.nullity_of_serial_limit` consumes to
+  derive `lem:nullity`. Instantiating its cone witness at `y := 0` also yields injectivity at
+  zero (`FrameOver.eq_of_taskRel_zero`).
   -/
   limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w
   /--
@@ -1662,7 +1665,7 @@ Natural number based task frame.
 
 World states are natural numbers. Task relation: `TaskRel w d u` holds iff
 either `d ≠ 0` (any transition for non-zero duration) or `w = u` (identity for zero duration).
-This satisfies nullity_identity while remaining permissive.
+At duration zero it relates only equal states, while remaining permissive elsewhere.
 Polymorphic over temporal type `D`.
 
 The `[SuccOrder D] [NoMaxOrder D]` binders are carried because `natFrame_limit` requires them:
@@ -1676,7 +1679,7 @@ def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
   WorldState := Nat
   worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  -- All six axiom fields are one-line citations of Helper B (`*_of_permissive`).
+  -- Every axiom field is a one-line citation of Helper B (`*_of_permissive`).
   comp := comp_of_permissive fun _ _ _ => Iff.rfl
   serial := serial_of_permissive fun _ _ _ => Iff.rfl
   limit := limit_of_permissive fun _ _ _ => Iff.rfl

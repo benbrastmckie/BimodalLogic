@@ -125,7 +125,7 @@ witness `y` is forced to be `u - w`, giving `|u - w| < |u - w|`. The same three 
 /--
 **F¹**: the deterministic translation flow over `ℝ`.
 
-All seven `FrameOver` obligations come from `ShiftSet.fibre`; not one is discharged here. That is
+All `FrameOver` obligations come from `ShiftSet.fibre`; not one is discharged here. That is
 the point of the route — see the module docstring.
 -/
 @[reducible] noncomputable def F1 : TaskFrame := oneShift.frame

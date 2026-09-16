@@ -26,7 +26,7 @@ functional, so `F°` is **not** deterministic (`fzero_not_deterministic`) — an
 ## Main Definitions
 
 - `fzeroRel` — the drift relation
-- `fzeroFrame : FrameOver realTemporalOrder` — `F°` as a fibre, all six axioms discharged
+- `fzeroFrame : FrameOver realTemporalOrder` — `F°` as a fibre, all five axiom fields discharged
 - `F0 : TaskFrame` — its inclusion into the total space
 
 ## Main Results
@@ -213,7 +213,7 @@ theorem fzero_saturation : TaskFrame.Saturation (D := realTemporalOrder) fzeroRe
     · exact isClosed_fib w x
     · exact (isClosed_fib w x).inter (isClosed_fib v (-y))
 
-/-- **F° is a task frame.** All six axioms above; `@[reducible]` is load-bearing for exactly the
+/-- **F° is a task frame.** All five axiom fields above; `@[reducible]` is load-bearing for exactly the
 reason recorded at `realTemporalOrder` — without it `F0.WorldState` does not reduce to `ℝ` and neither
 the order instances nor the state-set recursion can be stated. -/
 @[reducible] noncomputable def fzeroFrame : FrameOver realTemporalOrder where

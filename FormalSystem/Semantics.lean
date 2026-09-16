@@ -56,7 +56,7 @@ through their sibling aggregators `Semantics/Extension.lean` and so on.
 - `TaskFrame`: the total space of the frame fibration — a `Duration : TemporalOrder` paired
   with a `FrameOver Duration`, so `def:frame`'s `⟨W, 𝔇, ⇒⟩` unfolds exactly as the paper writes
   it. `FrameOver D` is the fibre over a fixed temporal order and the sole declaration site of
-  the six frame axioms; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.saturation`)
+  the four frame axioms plus the converse convention; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.saturation`)
   is preserved by delegating accessors
 - `FrameProperty`: `def:frame-properties` as predicates on a *frame* — `TaskFrame.IsDense`,
   `IsDiscrete`, `IsComplete`, plus the two narrowings the tree's soundness targets actually need
@@ -214,7 +214,7 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 | Component | Paper Definition | Implementation |
 |-----------|------------------|----------------|
 | Task Frame | `F = ⟨W, D, ⇒⟩` (`def:frame`) | `TaskFrame` = `Σ D : TemporalOrder, FrameOver D` |
-| Compositionality | `w ⇒_(x+y) v` iff `w ⇒_x u` and `u ⇒_y v` for some `u` | `compositionality` field |
+| Compositionality | `w ⇒_(x+y) v` iff `w ⇒_x u` and `u ⇒_y v` for some `u` | `comp` field |
 | Seriality | `w ⇒_x u` and `v ⇒_x w` for some `u, v` | `serial` field |
 | Limit | `⋂_{x > 0} (w)_x = {w}` | `limit` field |
 | Saturation | `⋂ S ≠ ∅` for a `⊇`-directed family of nonempty fibers and segments | `saturation` field |
@@ -224,9 +224,10 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 | Validity | True in all models, at every total history | `Valid φ` |
 
 The frame carries **four** axioms, the four rows above. *Nullity* (`w ⇒_0 w`) is **derived**,
-choice-free, from Seriality at `x = 0` together with Limit; `FrameOver` retains it as a
-`nullity_identity` field for construction ergonomics only, so the Lean frame class is
-extensionally exactly the paper's.
+choice-free, from Seriality at `x = 0` together with Limit. `FrameOver` has no zero-duration
+field: `FrameOver.nullity` and the biconditional `FrameOver.nullity_identity`
+(`TaskRel w 0 u ↔ w = u`) are theorems proved from the `serial` and `limit` fields, so the Lean
+frame class is exactly the paper's.
 
 ## Temporal Polymorphism
 

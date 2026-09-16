@@ -21,7 +21,7 @@ characterization both consume.
 
 Three facts about `FrameOver intOrder` collapse the general theory to a graph-theoretic one:
 
-- `⇒₀` is the identity — carried directly by the `nullity_identity` field. (In the paper this is
+- `⇒₀` is the identity — the derived theorem `FrameOver.nullity_identity`. (In the paper this is
   the ℤ-instance of *Limit*: `|y| < 1` forces `y = 0` over ℤ, so the intersection of the positive
   cones of `w` is `Fib(w, 0)`, which *Limit* pins to `{w}`.)
 - `⇒ₙ = step^n` for `n ≥ 0`, by induction from the paper's *Compositionality*
@@ -83,7 +83,7 @@ along that isomorphism, yielding `validZTime_iff_validInt : ValidZTime φ ↔ Va
 ## What buying the right to work over ℤ is worth
 
 The transfer above is not bookkeeping for its own sake: it is what makes the frame axioms cheap.
-`FrameOver.ofStep` below discharges **all seven** `FrameOver` fields from a bare bi-serial relation
+`FrameOver.ofStep` below discharges **every** `FrameOver` field from a bare bi-serial relation
 on a finite nonempty carrier, leaving exactly **one** genuine obligation — bi-seriality (`fwd` and
 `bwd`). Its docstring tabulates the source of every field. So for *any* relation over `ℤ` on a
 finite carrier, however non-permissive its shape, the four `def:frame` axioms cost one obligation
@@ -91,7 +91,7 @@ and nothing else. `Decidability/IntPresentation.lean`'s `toTaskFrame` is literal
 `FrameOver.ofStep P.stepRel P.fwd P.bwd`, and pays exactly that.
 
 This pricing is available **only over ℤ**, and the asymmetry is the whole reason the transfer is
-worth doing first. Two of the seven discharges are ℤ-specific: `limit` comes from
+worth doing first. Two of the discharges are ℤ-specific: `limit` comes from
 `TaskFrame.limit_of_succOrder`, which needs the successor structure, and `ofStep` itself is stated
 at `FrameOver intOrder`. A frame left polymorphic in `D` — such as `RefinedFilteredTaskFrame D` under
 `Metalogic/Decidability/FMP/` — has neither, so each axiom must be re-discharged by hand for the
@@ -187,7 +187,7 @@ theorem step_def (F : FrameOver intOrder) (w u : F.WorldState) : F.step w u ↔ 
 **The decomposition theorem, nonnegative core**: over ℤ, a task of natural-number duration `n` is
 exactly an `n`-fold iteration of the one-step relation.
 
-By induction on `n`. The base case is the `nullity_identity` field (`⇒₀` is the identity); the
+By induction on `n`. The base case is the derived `nullity_identity` (`⇒₀` is the identity); the
 step case is the `comp` field — the paper's biconditional *Compositionality*
 (`def:frame#Compositionality`) — instantiated at `x = n`, `y = 1`, both nonnegative.
 -/
@@ -359,12 +359,12 @@ end FrameOver
 /-!
 ## Frame synthesis: from a bi-serial one-step relation to a `FrameOver intOrder`
 
-The converse of the decomposition theorem. Six of the seven `FrameOver` fields come for free from
-the normal form; the seventh, *Seriality*, is a genuine hypothesis and cannot be dropped.
+The converse of the decomposition theorem. Every `FrameOver` field but one comes for free from
+the normal form; the exception, *Seriality*, is a genuine hypothesis and cannot be dropped.
 
 **Seriality is free from *Occurrence*, never from ℤ.** It is tempting to think finiteness or
 discreteness rescues it. They do not: the relation `R w d u := (d = 0)` on `W = Unit` over `D = ℤ`
-satisfies `nullity_identity`, *Compositionality*, the converse convention, *Limit*, and
+is the identity at duration zero and satisfies *Compositionality*, the converse convention, *Limit*, and
 *Saturation*, and fails *Seriality* — on a one-element carrier. `ofStep` therefore takes forward and
 backward seriality of `R₁` as hypotheses (`fwd`, `bwd`), and they are exactly bi-seriality of the
 one-step relation. Do not attempt to derive them.
@@ -424,12 +424,11 @@ open TaskFrame
 **Frame synthesis over ℤ**: a bi-serial relation on a finite nonempty carrier generates a
 `FrameOver intOrder`.
 
-The seven field discharges, and where each comes from:
+The field discharges, and where each comes from:
 
 | field | source |
 |-------|--------|
 | `nonempty` | the `[Nonempty W]` instance |
-| `nullity_identity` | free — `iter R₁ 0` *is* `Eq` |
 | `comp` | free — `iter_add`, which is the paper's biconditional *Compositionality* whole |
 | `converse` | free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by construction |
 | `serial` | **the one genuine obligation**: exactly `fwd` and `bwd` (see the section note above) |

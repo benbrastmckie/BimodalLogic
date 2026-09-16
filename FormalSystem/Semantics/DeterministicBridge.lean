@@ -64,9 +64,9 @@ safe direction, and "validity ⟹ frame condition" manufactures witnesses throug
 ## A step of the paper's proof that Lean does not need
 
 The paper's argument for the (⇐) direction opens by deriving that `⇒_0` is the identity, from
-*Limit* together with `lem:nullity`. In this tree that is the `FrameOver.nullity_identity`
-**structure field** — `∀ w u, TaskRel w 0 u ↔ w = u`, available on every frame by projection —
-so the paper's Step 1 is not transcribed. The `x = 0` branch of
+*Limit* together with `lem:nullity`. In this tree that is the theorem
+`FrameOver.nullity_identity` — `∀ w u, TaskRel w 0 u ↔ w = u`, derived once from the `serial` and
+`limit` fields and available on every frame — so the paper's Step 1 is not transcribed here. The `x = 0` branch of
 `deterministic_of_singletonClasses` closes by `F.nullity_identity` outright.
 
 ## References
@@ -123,7 +123,7 @@ Two transcription notes:
 * The domain `{0, x}` is **not convex**, which is exactly why the argument is run at the
   `PartialHistory` layer and `thm:extension` — not `cor:occurrence` — is the tool.
 * The paper's Step 1, deriving that `⇒_0` is the identity from *Limit* plus `lem:nullity`, has
-  no counterpart here: `F.nullity_identity` is a structure field, and it closes the `x = 0`
+  no counterpart here: it is the general theorem `F.nullity_identity`, which closes the `x = 0`
   branch by itself.
 
 **This is a theorem of ZFC**, via `thm:extension`'s appeal to Zorn's lemma.
