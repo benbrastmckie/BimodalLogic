@@ -1,7 +1,7 @@
 # Implementation Plan: Task #579
 
 - **Task**: 579 - Nest MinusLanguage/, PlusLanguage/, StarLanguage/ under Syntax/
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/579_nest_minuslanguage_pluslanguage_starlang/reports/01_nest-language-family-under-syntax.md
@@ -148,19 +148,19 @@ not a nominal one.
 
 ---
 
-### Phase 1: SubformulaClosure aggregator prerequisite [NOT STARTED]
+### Phase 1: SubformulaClosure aggregator prerequisite [COMPLETED]
 
 **Goal**: Give `FormalSystem/Syntax/SubformulaClosure/` the sibling aggregator C8 will demand
 once `FormalSystem/Syntax` joins its `parent` tuple, before anything moves.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Syntax/SubformulaClosure.lean` importing the four leaf modules
+- [x] Create `FormalSystem/Syntax/SubformulaClosure.lean` importing the four leaf modules
       (`Closure`, `NestingDepth`, `TemporalFormulas`, `IteratedTemporal`), with the standard
       copyright header and a module docstring matching the style of the other aggregators.
-- [ ] Repoint `FormalSystem/Syntax.lean`: replace its four
+- [x] Repoint `FormalSystem/Syntax.lean`: replace its four
       `import FormalSystem.Syntax.SubformulaClosure.*` lines with the single
       `import FormalSystem.Syntax.SubformulaClosure`.
-- [ ] Confirm the new module is reachable (so C6/C7 do not report it as an unreachable module
+- [x] Confirm the new module is reachable (so C6/C7 do not report it as an unreachable module
       needing a manifest entry).
 
 **Timing**: 0.5 hours
