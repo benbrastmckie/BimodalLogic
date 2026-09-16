@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md",
+      "summary": "Proposes one convention for all 13 lean_exe roots (root of `lake exe foo_bar` is `FooBarMain`, Main reserved), renames DatasetExporter->DatasetAssembly, keeps DataExport/ProofStepExtractor, keeps exe targets and emitted generator strings, and enumerates the full edit surface including functional script edits."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789577011_0f6aae_591",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
