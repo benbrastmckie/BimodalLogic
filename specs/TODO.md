@@ -11,7 +11,7 @@ next_project_number: 581
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578,580 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570 | 298,464,502,559,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566 | 231,465,497,565 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -104,10 +104,6 @@ next_project_number: 581
 
 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
 
-### Semantics
-
-580 [IMPLEMENTING] — Review issue from FormalSystem/ directory-organization review...
-
 ### Infrastructure
 
 542 [NOT STARTED] — Triage the dead-declaration census that C17 produces,...
@@ -115,12 +111,13 @@ next_project_number: 581
 ## Tasks
 
 ### 580. Split semantics truth lean s corresponde
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [580_split_semantics_truth_lean_s_corresponde/reports/01_split-truth-correspondence-machinery.md]
 - **Plan**: [580_split_semantics_truth_lean_s_corresponde/plans/01_split-truth-transport-module.md]
+- **Summary**: [580_split_semantics_truth_lean_s_corresponde/summaries/01_split-truth-transport-module-summary.md]
 
 **Description**: Review issue from FormalSystem/ directory-organization review on 2026-09-15:
 
