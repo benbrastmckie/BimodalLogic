@@ -104,12 +104,12 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
 | `Conservativity.lean` | 375 | Conservativity of the extension |
-| `Compactness.lean` | 232 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
-| `DedekindNonCompactness.lean` | 535 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
-| `DiscreteNonCompactness.lean` | 329 | Non-compactness of the discrete frame class |
+| `Compactness.lean` | 229 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
+| `DedekindNonCompactness.lean` | 533 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
+| `DiscreteNonCompactness.lean` | 327 | Non-compactness of the discrete frame class |
 | `SetConsequence.lean` | 615 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.Dedekind` row (`CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`, `ModelExistenceDedekind`) |
 | `Soundness.lean` | 1,656 | The soundness theorem itself |
-| `StrongCompleteness.lean` | 1,147 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
+| `StrongCompleteness.lean` | 1,145 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
 <!-- END GENERATED -->
 
 Plus the directory's own root `Metalogic.lean`, which sits one level up, beside `Metalogic/`;
@@ -144,12 +144,12 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,448 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,160 | Chronicle completeness route; the wired entry point |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,156 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,856 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 21 | 5,976 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 4 | 1,838 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 80 | 53,408 | Tableau decision procedure and countermodel extraction |
-| [`Deterministic/`](Deterministic/README.md) | 7 | 1,621 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
+| [`Decidability/`](Decidability/README.md) | 80 | 52,274 | Tableau decision procedure and countermodel extraction |
+| [`Deterministic/`](Deterministic/README.md) | 7 | 1,609 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 18 | 5,086 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,456 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,163 | Kamp/Reynolds route, including all of `Kamp/` |
@@ -169,8 +169,8 @@ Loose modules:
 |--------|------:|
 | `CanonicalChain.lean` | 115 |
 | `CanonicalModel.lean` | 846 |
-| `Completeness.lean` | 462 |
-| `CompletenessDedekind.lean` | 619 |
+| `Completeness.lean` | 460 |
+| `CompletenessDedekind.lean` | 617 |
 | `DiscreteCarrierProbe.lean` | 96 |
 | `Frame.lean` | 718 |
 | `OrderedSeedConsistency.lean` | 257 |

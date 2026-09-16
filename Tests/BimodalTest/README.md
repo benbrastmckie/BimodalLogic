@@ -14,6 +14,7 @@ Tests are organized by module under test:
   - `FormulaTest.lean` - Formula inductive type tests
   - `FormulaPropertyTest.lean` - Property-based formula tests
   - `ContextTest.lean` - Proof context tests
+  - `LanguageDerivationTest.lean` - Worked derivations in TM⁻, TM⁺ and TM⋆
 
 - **ProofSystem/**: Axiom schema and inference rule validation
   - `AxiomsTest.lean` - TM axiom schemata tests
@@ -29,6 +30,13 @@ Tests are organized by module under test:
   - `SoundnessTest.lean` - Soundness property tests
   - `SoundnessPropertyTest.lean` - Property-based soundness tests
   - `CompletenessTest.lean` - Completeness property tests
+  - `PropDecideTest.lean` - Propositional decision procedure and `PropForm` tautologies
+  - `Decidability/SaturationTest.lean` - Tableau engine probes and integration tests
+  - `Decidability/BiLassoTest.lean` - Bounded bi-lasso enumeration counts
+  - `Decidability/BiLassoSuccessorTest.lean` - Successor computability (manifest-listed, not
+    imported by the aggregator)
+  - `Decidability/Verified/TerminationProbes.lean` - Measured termination probes
+  - `Decidability/Verified/BridgeProbes.lean` - Branch-order gate and `ℤ` placement probes
 
 - **Theorems/**: Tests for perpetuity principles and key theorems
   - `PerpetuityTest.lean` - Perpetuity principles P1-P6 tests

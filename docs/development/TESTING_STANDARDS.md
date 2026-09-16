@@ -139,6 +139,26 @@ example : ⊢ ((Formula.box (Formula.box (Formula.atom "p"))).imp
 end BimodalTest.ProofSystem
 ```
 
+### What May Stay in the Library
+
+Library modules under `FormalSystem/` keep only what documents or guards a definition beside it:
+
+- **May stay**: `example`s and `theorem`s that pin a design premise or a definitional fact next to
+  the declaration it constrains (`rfl` pins, carrier gates, non-vacuity witnesses, worked
+  instances), and usage examples inside docstrings.
+- **Goes to `Tests/BimodalTest/`**: every executable probe — a bare `#eval`, a `#check` used as a
+  smoke test, a `#guard_msgs in #eval` measurement, a `PASS`/`FAIL` string check, and any section
+  labelled as tests or smoke tests. On the way, a bare `#eval` becomes an asserting `#guard`
+  (or an `IO` test that throws on failure), pinning the value it actually produced.
+
+A bare `#eval` asserts nothing: a changed value scrolls past in the build log with the build still
+green. Check C27 of `scripts/check-module-invariants.sh` enforces the split for directives: every
+live `#check`/`#eval`/`#print`/`#reduce`/`dbg_trace` line under `FormalSystem/` must be on
+`scripts/debug-artifact-allowlist.txt` with an exact per-file count and a reason. The only entry
+is the axiom-audit page `FormalSystem/MainResults.lean`. A module outside the Lake build graph
+keeps its probes in a test module listed in `scripts/module-invariants-manifest.txt` rather than
+imported by `Tests/BimodalTest.lean`, so C6 compile-checks it without widening the graph.
+
 ## 3. Test Naming Conventions
 
 ### File Naming

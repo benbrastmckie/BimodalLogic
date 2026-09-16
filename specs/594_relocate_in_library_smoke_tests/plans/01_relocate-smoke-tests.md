@@ -1,7 +1,7 @@
 # Implementation Plan: Task #594
 
 - **Task**: 594 - Relocate in-library smoke tests
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: None upstream. Downstream: the zero-occurrence declaration triage (C17 census) must run after this task lands
 - **Research Inputs**: specs/594_relocate_in_library_smoke_tests/reports/01_relocate-smoke-tests.md
@@ -326,16 +326,16 @@ executor running serially should simply take phases in numeric order.
 
 ---
 
-### Phase 8: Testing standards note and final full gate [NOT STARTED]
+### Phase 8: Testing standards note and final full gate [COMPLETED]
 
 **Goal**: Document the placement policy and confirm every acceptance criterion on the complete gate set.
 
 **Tasks**:
-- [ ] Add a "What may stay in the library" subsection to `docs/development/TESTING_STANDARDS.md`: documentation pins and design-premise regression `example`s may stay, and executable probes go to `Tests/`. Cross-reference C27 and the allowlist.
-- [ ] Update any Tests README listings (`Tests/BimodalTest/Automation/README.md`, `Syntax/README.md`, a Metalogic README if present) for the new modules.
-- [ ] Run a detached, guarded `lake build`, then `lake build BimodalTest`, then the full `bash scripts/check-module-invariants.sh`, all green.
-- [ ] Confirm the final census: C27 reports only the MainResults entry (or the documented Phase 6 fallback set), and a raw grep of live directives minus commented usage blocks equals the allowlist total.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` (or the repo's equivalent) over the new files, and confirm no task-number citations.
+- [x] Add a "What may stay in the library" subsection to `docs/development/TESTING_STANDARDS.md`: documentation pins and design-premise regression `example`s may stay, and executable probes go to `Tests/`. Cross-reference C27 and the allowlist.
+- [x] Update any Tests README listings (`Tests/BimodalTest/Automation/README.md`, `Syntax/README.md`, a Metalogic README if present) for the new modules. *(no Metalogic test README exists; the new Metalogic modules were listed in `Tests/BimodalTest/README.md` instead. `--emit-inventory` also refreshed the three generated line-count blocks the relocations made stale)*
+- [x] Run a detached, guarded `lake build`, then `lake build BimodalTest`, then the full `bash scripts/check-module-invariants.sh`, all green.
+- [x] Confirm the final census: C27 reports only the MainResults entry (or the documented Phase 6 fallback set), and a raw grep of live directives minus commented usage blocks equals the allowlist total. *(raw line-anchored grep 88 = 54 live (allowlist total) + 34 in comments; the 5 stale commented duplicates in Deterministic/Completeness.lean were removed)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` (or the repo's equivalent) over the new files, and confirm no task-number citations. *(the repo-equivalent gate is harness C9, which passed; the `.claude` script scans agent-system trees only and also passed)*
 
 **Timing**: 1 hour
 
@@ -356,12 +356,12 @@ None. This plan introduces no new theorem or definition: it relocates probes, co
 
 ## Testing & Validation
 
-- [ ] `lake build` (detached, guarded) green
-- [ ] `lake build BimodalTest` (detached, guarded) green, including all new and extended test modules
-- [ ] Full `bash scripts/check-module-invariants.sh` green, including C1, C2, C14 (both halves), C17 (reported), C20, C21 and C27
-- [ ] C27 fixture self-test passes, and an injected stray `#eval` in a scratch copy makes C27 fail
-- [ ] Each converted `#guard` fails when its expected value is deliberately perturbed (spot-check one per new module)
-- [ ] `scripts/debug-artifact-allowlist.txt` reduced to MainResults (or the documented fallback), every entry with a reason line
+- [x] `lake build` (detached, guarded) green
+- [x] `lake build BimodalTest` (detached, guarded) green, including all new and extended test modules
+- [x] Full `bash scripts/check-module-invariants.sh` green, including C1, C2, C14 (both halves), C17 (reported), C20, C21 and C27
+- [x] C27 fixture self-test passes, and an injected stray `#eval` in a scratch copy makes C27 fail
+- [x] Each converted `#guard` fails when its expected value is deliberately perturbed (spot-check one per new module)
+- [x] `scripts/debug-artifact-allowlist.txt` reduced to MainResults (or the documented fallback), every entry with a reason line
 
 ## Artifacts & Outputs
 

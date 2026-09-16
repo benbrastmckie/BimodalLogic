@@ -9,6 +9,7 @@ Tests for formula syntax and context operations.
 | FormulaTest.lean | Unit tests for Formula type |
 | FormulaPropertyTest.lean | Property-based formula tests |
 | ContextTest.lean | Context (list of formulas) tests |
+| LanguageDerivationTest.lean | Worked derivations in TM⁻, TM⁺ and TM⋆ |
 
 ## Coverage
 
