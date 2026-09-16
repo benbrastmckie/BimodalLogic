@@ -1,5 +1,5 @@
 ---
-next_project_number: 602
+next_project_number: 603
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 602
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,600,601 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,600,601,602 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,506,560,564,565,567,569,570,585 | 298,464,502,559,563,568,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,588,597 | 231,465,497,565,569,585 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,540,543 | 428,498,499,500,588,597 | algebraic-representation, decidability, metalogic, ... |
@@ -99,6 +99,7 @@ next_project_number: 602
 ### Semantics
 
 601 [NOT STARTED] — Align the Lean task-frame definition with the paper's...
+602 [NOT STARTED] — Introduce WorldHistory F as the named type of world histories...
 
 ### Codebase Cleanup
 
@@ -117,6 +118,16 @@ next_project_number: 602
 590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
 
 ## Tasks
+
+### 602. Introduce worldhistory type quantify semantics
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Introduce `WorldHistory F` as the named type of world histories and quantify over it everywhere the semantics ranges over H_F, so that the box clause reads `∀ σ : WorldHistory F, TruthAt M σ t φ` instead of `∀ (σ : PartialHistory F), σ.IsTotal → TruthAt M σ t φ` (and the stability clause `∀ σ : WorldHistory F, SameStateAt τ σ t → TruthAt M σ t φ`). Motivation: the paper (JPL/possible_worlds.tex, sec:Construction) names the tier 'world history' and quantifies over H_F as an object; the unbundled `(σ : PartialHistory F) → σ.IsTotal → …` pattern (~150 binder sites across ~80 files: Semantics/TruthClauses.lean box/stab/diamond lemmas, Semantics/Validity.lean ValidIn/SemanticConsequenceIn/satisfiability, the Plus/Minus/Star truth and validity layers, Metalogic/Independence, Decidability/BiLasso and Verified/Bridge, Conservativity, BXCanonical, Correspondence, Extension, plus docs/ and typst/) reads awkwardly and is quoted verbatim in the PossibleWorlds talk. Proposed design, to be confirmed or improved at research time: (1) rename `TaskFrame.HF` to `WorldHistory (F : TaskFrame) : Type := {τ : PartialHistory F // τ.IsTotal}` with a `CoeOut` to `PartialHistory F`, keep `PartialHistory.IsTotal` as its defining predicate, and move `HF.ofTotal` and friends to the `WorldHistory` namespace — no `HF` alias left behind (no compatibility shims); (2) keep `TruthAt` and the Plus/Minus/Star truth relations evaluated at `τ : PartialHistory F` (the point of evaluation may be partial, which the Extension Theorem and truth transport use), but make every quantifier over world histories — box, stability, their duals, ValidIn/Valid, SemanticConsequenceIn, satisfiability, frame-relative validity — range over `WorldHistory F`; (3) supply the small simp/ext API the change needs (coe injectivity, `WorldHistory.isTotal`, `∀ σ : WorldHistory F, P ↑σ ↔ ∀ σ, σ.IsTotal → P σ` bridge lemma used only inside the migration, `timeShift` on `WorldHistory`) so that proofs change by `intro`/anonymous-constructor shape rather than by new reasoning; (4) decide explicitly whether bundling the evaluation point too (which would let the atom clause drop its `∃ (ht : τ.domain t)` conjunct — the 'deferred alternative' of Decision B') is in or out of scope, and justify it. This supersedes Decision A of docs/architecture/total-history-validity-decisions.md (predicate-hypothesis form in truth/validity, subtype only where H_F is an object) and the 'no abbrev WorldHistory' note in Semantics/PartialHistory.lean: record the new decision as Decision A' in that file, update the PartialHistory.lean module docstring's paper/Lean table, docs/reference, docs/user-guide, typst chapters and theorem-index rows that quote the old binders. Acceptance: zero `sorry`, axiom baselines unchanged (C2/C14 green), `lake build` and the module-invariant checks pass, no remaining `σ.IsTotal →` / `τ.IsTotal ∧` quantifier pattern over world histories outside the WorldHistory API file itself and Boneyard/. Coordinate with task 601 (reflection convention, touches TaskFrame.lean and many of the same frame-construction files) — whichever lands second rebases. Downstream: the PossibleWorlds talk slides 'Semantics in Lean II: Histories and Models' and 'Syntax and Semantics' quote these definitions and will be updated to the new form
+
+---
 
 ### 601. Align task frame reflection convention
 - **Status**: [NOT STARTED]
