@@ -1,22 +1,46 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-16T09:59:08-07:00",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/596_nest_semantics_language_family_files/plans/01_nest-semantics-language-family.md",
-      "summary": "6-phase plan: ForMathlib README; atomic git-mv of 15 Semantics files into {Minus,Plus,Star}Language/ with aggregators and import rewrite; C8 extension to Semantics (4 aggregators + Extension allowlist); in-tree and top-level citation repointing; inventory refresh and full gate."
+      "type": "summary",
+      "path": "specs/596_nest_semantics_language_family_files/summaries/01_nest-semantics-language-family-summary.md",
+      "summary": "15 language-family semantics modules nested into Semantics/{Minus,Plus,Star}Language/ with aggregators; C8 extended to Semantics/; ForMathlib README written."
     }
   ],
-  "next_steps": "Run /implement 596 to execute the plan",
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1789577011_0f6aae_596",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 5,
-    "dependency_waves": 4
+  "partial_progress": {
+    "stage": "completed",
+    "details": "All 6 phases completed",
+    "phases_completed": 6,
+    "phases_total": 6
   },
-  "dispatch_seq": 8
+  "metadata": {
+    "session_id": "sess_1789577011_0f6aae",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "commits": [
+      "63b550a39",
+      "f62b85608",
+      "24085a02c",
+      "82636c030"
+    ]
+  },
+  "completed_at": "2026-09-16T11:09:31.758490-07:00",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "completion_data": {
+    "completion_summary": "Nested the 15 L-minus/L-plus/L-star semantics modules into Semantics/{MinusLanguage,PlusLanguage,StarLanguage}/ with sibling aggregators, extended invariant C8 to walk Semantics/ (adding four more aggregators and allowlisting Extension/Extension.lean), repointed all imports and path citations, and wrote FormalSystem/ForMathlib/README.md. lake build, the full invariant harness and readme-lint all pass.",
+    "roadmap_items": []
+  }
 }

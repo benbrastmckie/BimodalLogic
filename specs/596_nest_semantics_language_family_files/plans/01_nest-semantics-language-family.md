@@ -1,7 +1,7 @@
 # Implementation Plan: Task #596
 
 - **Task**: 596 - Nest the flat `Semantics/` language-family files into per-language subdirectories; write `FormalSystem/ForMathlib/README.md`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (precedent: `Syntax/*Language/` nesting, commit `2acf1371c`)
 - **Research Inputs**: specs/596_nest_semantics_language_family_files/reports/01_nest-semantics-language-family.md
@@ -114,23 +114,23 @@ and `docs/**`. Phases 4 and 5 are file-disjoint.
 
 ---
 
-### Phase 2: Move files, create language aggregators, rewrite imports [NOT STARTED]
+### Phase 2: Move files, create language aggregators, rewrite imports [COMPLETED]
 
 **Goal**: Relocate the 15 files and make the tree build again, in one atomic batch.
 
 **Tasks**:
-- [ ] Pre-check: `git status --short FormalSystem/Semantics/` shows none of the 15 files dirty from another session; otherwise stop and report.
-- [ ] `mkdir -p FormalSystem/Semantics/{MinusLanguage,PlusLanguage,StarLanguage}`; `git mv` each file, basename unchanged:
+- [x] Pre-check: `git status --short FormalSystem/Semantics/` shows none of the 15 files dirty from another session; otherwise stop and report.
+- [x] `mkdir -p FormalSystem/Semantics/{MinusLanguage,PlusLanguage,StarLanguage}`; `git mv` each file, basename unchanged:
   - `MinusLanguage/`: `MinusFrame`, `MinusSchemaValidity`, `MinusTruth`, `MinusValidity`
   - `PlusLanguage/`: `PlusDeterminism`, `PlusNonValidities`, `PlusPasting`, `PlusStateLocal`, `PlusTruth`, `PlusValidity`
   - `StarLanguage/`: `StarDeterminism`, `StarNonValidities`, `StarStateLocal`, `StarTruth`, `StarValidity`
-- [ ] Rewrite import lines with an anchored sed over `FormalSystem/**/*.lean` and `Tests/**/*.lean` only, three expressions of the form `s/^import FormalSystem\.Semantics\.(Minus[A-Za-z]+)$/import FormalSystem.Semantics.MinusLanguage.\1/` (same for `Plus`, `Star`). Restrict the capture to the 15 basenames if any other `Semantics.Minus*/Plus*/Star*` module could match (research found none).
-- [ ] `FormalSystem/Semantics.lean`: delete the 15 now-rewritten language-family import lines (do not replace them).
-- [ ] Create `FormalSystem/Semantics/{MinusLanguage,PlusLanguage,StarLanguage}.lean`, modeled on `FormalSystem/Syntax/PlusLanguage.lean`: copyright header, imports of every member module, `/-!` docstring with a Modules list. No declarations.
-- [ ] `FormalSystem/FormalSystem.lean`: add `import FormalSystem.Semantics.MinusLanguage`, `...PlusLanguage`, `...StarLanguage` immediately after `import FormalSystem.Semantics`.
-- [ ] Guarded detached `lake build` per `long-builds.md`; restart LSP afterwards.
-- [ ] Fallback if a consumer of `FormalSystem.Semantics` breaks: have `Semantics.lean` import the three new aggregators (closure-preserving) and record the deviation.
-- [ ] Commit once green (single atomic commit including renames, aggregators, imports).
+- [x] Rewrite import lines with an anchored sed over `FormalSystem/**/*.lean` and `Tests/**/*.lean` only, three expressions of the form `s/^import FormalSystem\.Semantics\.(Minus[A-Za-z]+)$/import FormalSystem.Semantics.MinusLanguage.\1/` (same for `Plus`, `Star`). Restrict the capture to the 15 basenames if any other `Semantics.Minus*/Plus*/Star*` module could match (research found none).
+- [x] `FormalSystem/Semantics.lean`: delete the 15 now-rewritten language-family import lines (do not replace them).
+- [x] Create `FormalSystem/Semantics/{MinusLanguage,PlusLanguage,StarLanguage}.lean`, modeled on `FormalSystem/Syntax/PlusLanguage.lean`: copyright header, imports of every member module, `/-!` docstring with a Modules list. No declarations.
+- [x] `FormalSystem/FormalSystem.lean`: add `import FormalSystem.Semantics.MinusLanguage`, `...PlusLanguage`, `...StarLanguage` immediately after `import FormalSystem.Semantics`.
+- [x] Guarded detached `lake build` per `long-builds.md`; restart LSP afterwards. *(deviation: altered — one guarded build verified Phases 2-4's Lean edits together, after a first build was cancelled while queued behind concurrent sessions' builds; LSP not used)*
+- [x] Fallback if a consumer of `FormalSystem.Semantics` breaks: have `Semantics.lean` import the three new aggregators (closure-preserving) and record the deviation. *(deviation: skipped — not needed, build green without it)*
+- [x] Commit once green (single atomic commit including renames, aggregators, imports). *(deviation: altered — the commit also carries Phase 3's four aggregators and Semantics.lean import swap and Phase 4's `.lean` docstring citations; hunks from concurrent sessions in shared files were kept out)*
 
 **Timing**: 1.5 hours (build wall time dominates)
 
@@ -158,17 +158,17 @@ and `docs/**`. Phases 4 and 5 are file-disjoint.
 
 ---
 
-### Phase 3: Extend C8 to `FormalSystem/Semantics` [NOT STARTED]
+### Phase 3: Extend C8 to `FormalSystem/Semantics` [COMPLETED]
 
 **Goal**: Add `Semantics` to C8's walked parents and resolve the 5 violations it surfaces.
 
 **Tasks**:
-- [ ] Re-run C8's logic (or the harness with `Semantics` temporarily added) to confirm the violation list is exactly: no sibling for `Correspondence/`, `Extension/`, `Frames/`, `Ultraproduct/`; self-named `Extension/Extension.lean`. The new `{Minus,Plus,Star}Language/` dirs must already pass.
-- [ ] Create sibling aggregators `FormalSystem/Semantics/{Correspondence,Extension,Frames,Ultraproduct}.lean`, each importing exactly the modules of its subdirectory with a `/-!` Modules docstring.
-- [ ] In `FormalSystem/Semantics.lean`, replace the per-module imports of those four subdirectories with imports of the new aggregators (closure-identical), keeping the aggregators C6-reachable. If `Semantics.lean` imports only a subset of a subdirectory today, import the aggregator only if closure grows harmlessly; otherwise import the aggregator in addition to confirm reachability and note it.
-- [ ] `scripts/check-module-invariants.sh`: add `"FormalSystem/Semantics"` to the C8 parent tuple (line ~953); add `"FormalSystem/Semantics/Extension/Extension.lean"` to `C8_ALLOW_SELFNAMED` with a comment that it is the extension theorem's content module, not an aggregator; update the header comment (~line 17), the C8 PASS message, and the explanatory comment block, including one sentence that adding a parent re-scopes every existing subdirectory beneath it.
-- [ ] Guarded detached `lake build` (new aggregator modules must compile).
-- [ ] Commit.
+- [x] Re-run C8's logic (or the harness with `Semantics` temporarily added) to confirm the violation list is exactly: no sibling for `Correspondence/`, `Extension/`, `Frames/`, `Ultraproduct/`; self-named `Extension/Extension.lean`. The new `{Minus,Plus,Star}Language/` dirs must already pass.
+- [x] Create sibling aggregators `FormalSystem/Semantics/{Correspondence,Extension,Frames,Ultraproduct}.lean`, each importing exactly the modules of its subdirectory with a `/-!` Modules docstring.
+- [x] In `FormalSystem/Semantics.lean`, replace the per-module imports of those four subdirectories with imports of the new aggregators (closure-identical), keeping the aggregators C6-reachable. If `Semantics.lean` imports only a subset of a subdirectory today, import the aggregator only if closure grows harmlessly; otherwise import the aggregator in addition to confirm reachability and note it.
+- [x] `scripts/check-module-invariants.sh`: add `"FormalSystem/Semantics"` to the C8 parent tuple (line ~953); add `"FormalSystem/Semantics/Extension/Extension.lean"` to `C8_ALLOW_SELFNAMED` with a comment that it is the extension theorem's content module, not an aggregator; update the header comment (~line 17), the C8 PASS message, and the explanatory comment block, including one sentence that adding a parent re-scopes every existing subdirectory beneath it.
+- [x] Guarded detached `lake build` (new aggregator modules must compile). *(deviation: altered — covered by the Phase 2 build)*
+- [x] Commit. *(deviation: altered — the script edit was swept into a concurrent session's whole-file commit `a7f1644e1` before this phase committed; the aggregators landed in the Phase 2 commit)*
 
 **Timing**: 1 hour
 
@@ -189,19 +189,19 @@ and `docs/**`. Phases 4 and 5 are file-disjoint.
 
 ---
 
-### Phase 4: In-tree READMEs and Lean docstring citations [NOT STARTED]
+### Phase 4: In-tree READMEs and Lean docstring citations [COMPLETED]
 
 **Goal**: New subdirectory READMEs and every path citation under `FormalSystem/` and `Tests/` repointed.
 
 **Tasks**:
-- [ ] Write `FormalSystem/Semantics/{MinusLanguage,PlusLanguage,StarLanguage}/README.md`, modeled on `FormalSystem/Syntax/PlusLanguage/README.md`: purpose, Modules section with `<!-- BEGIN GENERATED: inventory dir=... -->` block, pointer to the Syntax-side counterpart and back to `../README.md`, `*Last verified: 2026-09-16*`.
-- [ ] `FormalSystem/Semantics/README.md` hand-maintained INV table: remove the 15 file rows; add directory rows `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` (linking their READMEs) and loose-file rows for the 7 new aggregators (`MinusLanguage.lean`, `PlusLanguage.lean`, `StarLanguage.lean`, `Correspondence.lean`, `Extension.lean`, `Frames.lean`, `Ultraproduct.lean`). No phantom rows.
-- [ ] `FormalSystem/Semantics.lean` docstring: update the submodule list; state that language-family modules are aggregated at the root via `Semantics/{X}Language.lean` and that `Semantics.lean` still reaches much of L⁺/L⋆ transitively through `DeterministicBridge`/`StateLocalTransfer`.
-- [ ] Repoint non-import citations (slash form `Semantics/PlusTruth.lean` -> `Semantics/PlusLanguage/PlusTruth.lean`; dotted module form `FormalSystem.Semantics.PlusTruth` -> `FormalSystem.Semantics.PlusLanguage.PlusTruth` only where it denotes a module, never a namespace) in the files enumerated by the research report: the 15 files' self-citations; `Semantics/{FrameProperty,TruthClauses,DeterministicBridge,StateLocalTransfer}.lean`; `Syntax/{Minus,Plus,Star}Language.lean` and their READMEs (StarLanguage README ~16 hits; `Syntax/MinusLanguage/README.md:58` C5 dotted mention; `Syntax/PlusLanguage/README.md:86` glob "`Plus*.lean` semantics modules" -> `Semantics/PlusLanguage/`); `Syntax/{PlusLanguage/Axioms,PlusLanguage/Formula,StarLanguage/Axioms,StarLanguage/Embedding,StarLanguage/Formula,MinusLanguage/Formula}.lean`; `Syntax/README.md`; `Metalogic.lean` (incl. `Semantics/Plus*.lean` glob at ~line 58), `Metalogic/README.md`, `Metalogic/Soundness.lean`; `Metalogic/Conservativity{.lean,/README.md}` and its `ChainBundleTruth`, `MinusLanguageSoundness`, `SpCountermodel`, `SpWitness`, `TMCompletenessReduction`, `Plus{.lean,/README.md,/Atomization,/AxiomValidity,/Corollaries}`, `Star{.lean,/README.md,/Forward,/StarAxiomValidity,/StarPasting,/StarSoundness}`; `Metalogic/Deterministic/{Completeness,Erasure,README.md,Soundness,System,Validity}`; `Metalogic/Independence{.lean,/README.md}` and its `CoarsenedModels`, `DeterminismUndefinable`, `DriftFrame`, `ForwardDeterministicFrame`, `OrderTransfer`, `PastingIndependence`, `RealTranslationFrame`, `StabUndefinable`, `StarDiscrimination`; `FormalSystem/README.md` (not the ForMathlib row).
-- [ ] Relative link fix: `FormalSystem/Metalogic/Conservativity/Plus/README.md:85` `../../../Semantics/PlusTruth.lean` -> `../../../Semantics/PlusLanguage/PlusTruth.lean`.
-- [ ] Add a one-line "Language family" pointer from `Syntax/README.md` to the Semantics-side directories.
-- [ ] Edits in `.lean` files stay inside `/-! -/`, `/-- -/` or `--` comments; no code line changes.
-- [ ] Commit (per logical group is fine; each commit green under `readme-lint.sh`).
+- [x] Write `FormalSystem/Semantics/{MinusLanguage,PlusLanguage,StarLanguage}/README.md`, modeled on `FormalSystem/Syntax/PlusLanguage/README.md`: purpose, Modules section with `<!-- BEGIN GENERATED: inventory dir=... -->` block, pointer to the Syntax-side counterpart and back to `../README.md`, `*Last verified: 2026-09-16*`.
+- [x] `FormalSystem/Semantics/README.md` hand-maintained INV table: remove the 15 file rows; add directory rows `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` (linking their READMEs) and loose-file rows for the 7 new aggregators (`MinusLanguage.lean`, `PlusLanguage.lean`, `StarLanguage.lean`, `Correspondence.lean`, `Extension.lean`, `Frames.lean`, `Ultraproduct.lean`). No phantom rows.
+- [x] `FormalSystem/Semantics.lean` docstring: update the submodule list; state that language-family modules are aggregated at the root via `Semantics/{X}Language.lean` and that `Semantics.lean` still reaches much of L⁺/L⋆ transitively through `DeterministicBridge`/`StateLocalTransfer`.
+- [x] Repoint non-import citations (slash form `Semantics/PlusTruth.lean` -> `Semantics/PlusLanguage/PlusTruth.lean`; dotted module form `FormalSystem.Semantics.PlusTruth` -> `FormalSystem.Semantics.PlusLanguage.PlusTruth` only where it denotes a module, never a namespace) in the files enumerated by the research report: the 15 files' self-citations; `Semantics/{FrameProperty,TruthClauses,DeterministicBridge,StateLocalTransfer}.lean`; `Syntax/{Minus,Plus,Star}Language.lean` and their READMEs (StarLanguage README ~16 hits; `Syntax/MinusLanguage/README.md:58` C5 dotted mention; `Syntax/PlusLanguage/README.md:86` glob "`Plus*.lean` semantics modules" -> `Semantics/PlusLanguage/`); `Syntax/{PlusLanguage/Axioms,PlusLanguage/Formula,StarLanguage/Axioms,StarLanguage/Embedding,StarLanguage/Formula,MinusLanguage/Formula}.lean`; `Syntax/README.md`; `Metalogic.lean` (incl. `Semantics/Plus*.lean` glob at ~line 58), `Metalogic/README.md`, `Metalogic/Soundness.lean`; `Metalogic/Conservativity{.lean,/README.md}` and its `ChainBundleTruth`, `MinusLanguageSoundness`, `SpCountermodel`, `SpWitness`, `TMCompletenessReduction`, `Plus{.lean,/README.md,/Atomization,/AxiomValidity,/Corollaries}`, `Star{.lean,/README.md,/Forward,/StarAxiomValidity,/StarPasting,/StarSoundness}`; `Metalogic/Deterministic/{Completeness,Erasure,README.md,Soundness,System,Validity}`; `Metalogic/Independence{.lean,/README.md}` and its `CoarsenedModels`, `DeterminismUndefinable`, `DriftFrame`, `ForwardDeterministicFrame`, `OrderTransfer`, `PastingIndependence`, `RealTranslationFrame`, `StabUndefinable`, `StarDiscrimination`; `FormalSystem/README.md` (not the ForMathlib row).
+- [x] Relative link fix: `FormalSystem/Metalogic/Conservativity/Plus/README.md:85` `../../../Semantics/PlusTruth.lean` -> `../../../Semantics/PlusLanguage/PlusTruth.lean`.
+- [x] Add a one-line "Language family" pointer from `Syntax/README.md` to the Semantics-side directories.
+- [x] Edits in `.lean` files stay inside `/-! -/`, `/-- -/` or `--` comments; no code line changes.
+- [x] Commit (per logical group is fine; each commit green under `readme-lint.sh`). *(deviation: altered — `.lean` docstring edits committed with Phase 2; READMEs committed here along with one stranded concurrent-session docstring hunk in `MinusTruth.lean`)*
 
 **Timing**: 1.5 hours
 
@@ -223,17 +223,17 @@ and `docs/**`. Phases 4 and 5 are file-disjoint.
 
 ---
 
-### Phase 5: Top-level docs citations [NOT STARTED]
+### Phase 5: Top-level docs citations [COMPLETED]
 
 **Goal**: Repoint citations in `README.md`, `NOTATION.md` and `docs/**`.
 
 **Tasks**:
-- [ ] `README.md` ~lines 262-266 (including the `Semantics/Plus*.lean` glob -> `Semantics/PlusLanguage/`).
-- [ ] `NOTATION.md:83`.
-- [ ] `docs/theorem-index.md`: 5 File cells (~lines 155-158, 179: `StarStateLocal` x2, `PlusStateLocal` x2, `PlusValidity` x1) -> new paths (C15 half 2).
-- [ ] `docs/development/MODULE_ORGANIZATION.md`: lines ~195, 199 (directory tree: add `Semantics/{Minus,Plus,Star}Language/`), ~335, 343, 345 (C5 dotted module names -> `FormalSystem.Semantics.MinusLanguage.MinusTruth` etc.); extend the module-vs-namespace paragraph (~lines 84-95) to cover the Semantics directories and note that `FormalSystem.Semantics.PlusTruth` now names only a namespace.
-- [ ] `docs/reference/API_REFERENCE.md:816-817`, `docs/project-info/implementation-status.md:84`, `docs/project-info/known-limitations.md:295-296`.
-- [ ] Commit.
+- [x] `README.md` ~lines 262-266 (including the `Semantics/Plus*.lean` glob -> `Semantics/PlusLanguage/`).
+- [x] `NOTATION.md:83`.
+- [x] `docs/theorem-index.md`: 5 File cells (~lines 155-158, 179: `StarStateLocal` x2, `PlusStateLocal` x2, `PlusValidity` x1) -> new paths (C15 half 2). *(deviation: altered — edit made, but swept into a concurrent session's commit `a8edbfc58`; and the three extra citations found in `docs/reference/paper-definitions-of-record.md` landed in `3c69d8ea7`)*
+- [x] `docs/development/MODULE_ORGANIZATION.md`: lines ~195, 199 (directory tree: add `Semantics/{Minus,Plus,Star}Language/`), ~335, 343, 345 (C5 dotted module names -> `FormalSystem.Semantics.MinusLanguage.MinusTruth` etc.); extend the module-vs-namespace paragraph (~lines 84-95) to cover the Semantics directories and note that `FormalSystem.Semantics.PlusTruth` now names only a namespace.
+- [x] `docs/reference/API_REFERENCE.md:816-817`, `docs/project-info/implementation-status.md:84`, `docs/project-info/known-limitations.md:295-296`.
+- [x] Commit.
 
 **Timing**: 0.5 hours
 
@@ -252,17 +252,17 @@ and `docs/**`. Phases 4 and 5 are file-disjoint.
 
 ---
 
-### Phase 6: Inventory refresh and final gate [NOT STARTED]
+### Phase 6: Inventory refresh and final gate [COMPLETED]
 
 **Goal**: Regenerate inventory blocks and run the complete acceptance gate.
 
 **Tasks**:
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` (refreshes generated blocks: new READMEs, `FormalSystem/README.md` `Semantics.lean` line count, etc.), then `--emit-inventory --check` clean.
-- [ ] Full `bash scripts/check-module-invariants.sh` (with build) via the guarded detached pattern: every gated check passes, including C1, C2, C4, C5, C6, C8, C12, C13, C14, C15, C20, C24, C25, INV.
-- [ ] `bash scripts/readme-lint.sh` exit 0.
-- [ ] Repo-wide residue grep (research report's command, excluding `.lake,.git,specs,.claude,agent-system`, minus `:import `) returns no old-form paths.
-- [ ] `bash .claude/scripts/check-task-references.sh` clean for new/edited deliverables.
-- [ ] Commit; commit body notes that the 15 files left C20 tier-2 loose-file scope (harmless: zero `file.lean:NNN` citations).
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` (refreshes generated blocks: new READMEs, `FormalSystem/README.md` `Semantics.lean` line count, etc.), then `--emit-inventory --check` clean.
+- [x] Full `bash scripts/check-module-invariants.sh` (with build) via the guarded detached pattern: every gated check passes, including C1, C2, C4, C5, C6, C8, C12, C13, C14, C15, C20, C24, C25, INV.
+- [x] `bash scripts/readme-lint.sh` exit 0.
+- [x] Repo-wide residue grep (research report's command, excluding `.lake,.git,specs,.claude,agent-system`, minus `:import `) returns no old-form paths.
+- [x] `bash .claude/scripts/check-task-references.sh` clean for new/edited deliverables. *(deviation: altered — that script's path scope excludes `FormalSystem/`; harness C9 (zero task-number citations under FormalSystem/, README.md, scripts/) passed instead)*
+- [x] Commit; commit body notes that the 15 files left C20 tier-2 loose-file scope (harmless: zero `file.lean:NNN` citations). *(deviation: altered — no tool-written change remained after Phase 5's commit, so no separate gate commit; the C20 note is in the Phase 2 commit body)*
 
 **Timing**: 0.5 hours (plus build wall time)
 
@@ -278,12 +278,12 @@ and `docs/**`. Phases 4 and 5 are file-disjoint.
 
 ## Testing & Validation
 
-- [ ] `lake build` green (guarded detached build)
-- [ ] `bash scripts/check-module-invariants.sh` passes all gated checks (C8 now walking `FormalSystem/Semantics`; C13/C15 citations)
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` clean
-- [ ] `bash scripts/readme-lint.sh` exit 0
-- [ ] Residue grep for old flat paths returns nothing outside `specs/`
-- [ ] `git diff -M` shows the 15 files as renames; no declaration or namespace line changed (`git diff -M -- FormalSystem/Semantics/*Language/ | grep -E '^[-+](namespace|end|theorem|lemma|def)'` empty)
+- [x] `lake build` green (guarded detached build)
+- [x] `bash scripts/check-module-invariants.sh` passes all gated checks (C8 now walking `FormalSystem/Semantics`; C13/C15 citations)
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` clean
+- [x] `bash scripts/readme-lint.sh` exit 0
+- [x] Residue grep for old flat paths returns nothing outside `specs/`
+- [x] `git diff -M` shows the 15 files as renames; no declaration or namespace line changed (`git diff -M -- FormalSystem/Semantics/*Language/ | grep -E '^[-+](namespace|end|theorem|lemma|def)'` empty)
 
 ## Artifacts & Outputs
 
