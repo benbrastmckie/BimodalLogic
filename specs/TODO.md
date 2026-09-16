@@ -1,5 +1,5 @@
 ---
-next_project_number: 579
+next_project_number: 581
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 579
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578,579,580 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570 | 298,464,502,559,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566 | 231,465,497,565 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -104,11 +104,62 @@ next_project_number: 579
 
 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
 
+### Repo Hygiene
+
+579 [NOT STARTED] — Review issue from FormalSystem/ directory-organization review...
+
+### Semantics
+
+580 [NOT STARTED] — Review issue from FormalSystem/ directory-organization review...
+
 ### Infrastructure
 
 542 [NOT STARTED] — Triage the dead-declaration census that C17 produces,...
 
 ## Tasks
+
+### 580. Split semantics truth lean s corresponde
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Review issue from FormalSystem/ directory-organization review on 2026-09-15:
+
+**File**: FormalSystem/Semantics/Truth.lean (1,193 lines)
+**Severity**: High
+**Description**: Truth.lean defines TruthAt for Formula (the untl/snce/box/boolean primary language) at lines 241-577 -- on-topic and correct -- but from line 623 to the end (~570 lines, 48% of the file) it shifts to a different subject: TruthCorr, TruthIso, TruthAntiIso, ShiftRel, shiftCorr, and a TimeShift namespace, which is correspondence/isomorphism machinery between task models under a time-shift, not truth clauses of Formula itself. Semantics/Correspondence/ already exists as a subdirectory collecting exactly this kind of frame-correspondence material (Galois.lean, FwdRec.lean, FwdRecBridge.lean, FwdRecPeriodicity.lean, Indicator.lean, DurationFrames.lean).
+**Impact**: Reading Truth.lean to understand how truth is defined for the primary language means wading through ~570 lines of unrelated correspondence machinery. This is very plausibly why the file read as "not focused on" the primary language on a first pass -- the language coverage is correct, but the file conflates two concerns.
+**Recommended Fix**: Split Truth.lean at its existing internal seam: TruthAt and its immediate corollaries stay in Truth.lean; ShiftRel, shiftCorr, TruthCorr, TruthIso, TruthAntiIso, and the TimeShift namespace move to a new file (e.g. Semantics/Correspondence/TruthShift.lean), joining the existing Correspondence/ subdirectory. This is a pure file split -- no proof content changes -- update import lines in whatever currently reaches the moved declarations via Semantics.Truth.
+Verify: lake build succeeds; scripts/check-module-invariants.sh passes; every moved declaration and proof is preserved verbatim (only its file location and import lines change).
+
+See specs/reviews/review-2026-09-15.md, Finding H2, for full detail.
+
+---
+
+### 579. Nest minuslanguage pluslanguage starlang
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Review issue from FormalSystem/ directory-organization review on 2026-09-15:
+
+**Files**: FormalSystem/Syntax/, FormalSystem/MinusLanguage/, FormalSystem/PlusLanguage/, FormalSystem/StarLanguage/
+**Severity**: High
+**Description**: Syntax/Formula.lean (L: untl/snce primitive, box, boolean ops), MinusLanguage/Formula.lean (L-minus: H/G primitive, translated to/from L), PlusLanguage/Formula.lean (L-plus = L plus the stability modal boxdot/stab), and StarLanguage/Formula.lean (L-star = L-plus plus the hybrid time-register operators) form one deliberate extension hierarchy, but are filed as four flat siblings under FormalSystem/ with nothing signaling the relationship. The boxdot operator already exists in PlusLanguage/ -- fully built, sorry-free, with axioms, derivation system, embedding, and semantics -- but was not discoverable from Syntax/.
+**Impact**: Real risk of duplicate proof work (boxdot already exists), and the same discoverability gap recurs for the next reader. MinusLanguage/StarLanguage were also checked against Boneyard/README.md's admission criteria (abandoned/refuted approaches, sorry-carrying proofs) and do NOT qualify -- both are live, imported, sorry-free, and back documented results (L-minus soundness, backward conservativity); do not archive them.
+**Recommended Fix**: Physically nest MinusLanguage/, PlusLanguage/, StarLanguage/ under Syntax/ (e.g. Syntax/MinusLanguage/, Syntax/PlusLanguage/, Syntax/StarLanguage/, alongside Syntax/Formula.lean as the base case). Measured blast radius is small and safe to move (unlike the ADR-006-declined Metalogic regroup, which cited 339 import lines across 137 files and a directory-level cycle): imports of FormalSystem.MinusLanguage.*/.PlusLanguage.*/.StarLanguage.* total 7+11+6=24 files, Syntax itself (path unchanged) is imported by 67 files, and there is no cycle -- Minus/Plus/Star each import from Syntax/PlusLanguage, never the reverse. Scope:
+1. Move the three directories under Syntax/, updating the ~24 import lines and the 3 sibling aggregator files (MinusLanguage.lean, PlusLanguage.lean, StarLanguage.lean) to their new paths, preserving every declaration and proof verbatim (module-path rename only, no proof content changes).
+2. Write a new Syntax/README.md "Language family" section mapping each operator delta to its directory (L: untl/snce primitive; L-minus: +H/G primitive instead; L-plus: +boxdot; L-star: +time-store/recall) -- this is what closes the boxdot-discoverability gap for future readers.
+3. Write the two missing per-directory READMEs flagged by FormalSystem/README's own structure table: ForMathlib/README.md is NOT needed here (see M3, out of scope -- ForMathlib stays where it is) but MinusLanguage/README.md is in scope, following the existing PlusLanguage/README.md as a template.
+4. Update scripts/check-module-invariants.sh's C8 aggregator-convention check: add "FormalSystem/Syntax" to the `parent` tuple (currently `("FormalSystem", "FormalSystem/Metalogic")`) so C8 enforces the aggregator convention on the newly nested directories.
+5. Update every README table and doc cross-reference that lists MinusLanguage/, PlusLanguage/, StarLanguage/ as FormalSystem/-root-level directories (FormalSystem/README.md at minimum).
+Verify: lake build succeeds; scripts/check-module-invariants.sh passes (including the updated C8); no proof content changed (only module paths).
+
+See specs/reviews/review-2026-09-15.md, Finding H1, for full detail.
+
+---
 
 ### 578. Fix api documentation ci integration
 - **Status**: [NOT STARTED]
