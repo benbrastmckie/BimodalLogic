@@ -1,5 +1,5 @@
 ---
-next_project_number: 604
+next_project_number: 605
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 604
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,602,603 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,602,603,604 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,506,560,564,565,567,569,570,585,600 | 298,464,502,559,563,568,584,586,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,588,597 | 231,465,497,565,569,585 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,540,543 | 428,498,499,500,588,597 | algebraic-representation, decidability, metalogic, ... |
@@ -54,6 +54,7 @@ next_project_number: 604
     └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline...
   └─ 282 [PARTIAL] — Flip complexity-9 dataset generation from stratified to...
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release,...
+604 [NOT STARTED] — Add zstd-compressed .jsonl dataset support across the data...
 
 ### Decidability
 
@@ -118,6 +119,16 @@ next_project_number: 604
 590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
 
 ## Tasks
+
+### 604. Support zstd compressed jsonl datasets
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: dataset-enhancement
+- **Dependencies**: None
+
+**Description**: Add zstd-compressed .jsonl dataset support across the data pipeline so large datasets can live on disk as .jsonl.zst. data/bmlogic-c7.jsonl was compressed to data/bmlogic-c7.jsonl.zst to reclaim disk space (17G -> 153M; lossless, sha256 of decompressed stream 4079d0a6b4310d417ae91999abcd581e5ebd9dacd4e9f3c33d1d9b3aa55f2704 verified identical; restore with `zstd -d data/bmlogic-c7.jsonl.zst`). Consumers that hardcode data/bmlogic-c7.jsonl are currently broken. Research first: (1) inventory every reader/writer of .jsonl datasets -- Python scripts (validate_benchmark.py, validate_datasets.py, verify_benchmark.py, migrate_schema_v2.py, standardize_metadata.py, curate_benchmark.py, curate_very_hard_plus.py, finalize_benchmark.py, validate_c5_dataset.py), shell scripts (run_dataset_generation.sh, export-training-data.sh, typst-machine-appendix.sh, typst-sync-check.sh), Lean executables under FormalSystem/Automation/*Main.lean, lakefile.lean, Tests/BimodalTest/Automation/ProofFirstTests.lean, data/hf-dataset/ tooling, and path fields in data/*_metadata.json; (2) choose the Python approach, e.g. one shared open_dataset() helper transparently handling .jsonl and .jsonl.zst (zstandard package vs zstd subprocess) and how that dependency is provided; (3) decide how Lean executables handle compressed data given Lean has no native zstd (IO.Process pipe through zstd, or shell-wrapper streaming via stdin/stdout) and whether generators should write .jsonl.zst directly; (4) reconcile with the Hugging Face Hub storage migration (task 257). Then implement, keeping plain .jsonl working, and verify every updated consumer against data/bmlogic-c7.jsonl.zst
+
+---
 
 ### 603. Investigate qtime frame predicate
 - **Status**: [NOT STARTED]

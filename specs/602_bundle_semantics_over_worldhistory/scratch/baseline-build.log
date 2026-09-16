@@ -1,0 +1,2160 @@
+lake-build-guard: memory pressure detected; proceeding anyway (pass --defer-on-pressure to defer instead)
+⚠ [1006/1973] Replayed FormalSystem.Semantics.TaskFrame
+warning: FormalSystem/Semantics/TaskFrame.lean:376:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.mem_Fib`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:398:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.mem_cone`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:404:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.cone_mono`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:424:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.mem_Seg`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:603:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.comp_of`:
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:610:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.forward_of_comp`:
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:615:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_comp`:
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1119:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.limit_of_succOrder`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1374:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.saturation_of_finite`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1389:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.serial_of_total`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1398:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_total`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1407:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.limit_of_subsingleton`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1419:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.saturation_of_subsingleton`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1434:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.Fib.permissive_zero`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1440:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.Fib.permissive_ne`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1450:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.serial_of_permissive`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1462:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_permissive`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1589:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.Fib.eq_singleton`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1595:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.serial_of_eq`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1604:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_eq`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [1029/1973] Replayed FormalSystem.Semantics.PartialHistoryOrder
+warning: FormalSystem/Semantics/PartialHistoryOrder.lean:176:7: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [1235/1973] Replayed FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
+warning: FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean:101:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [1427/1973] Replayed FormalSystem.Semantics.DurationClassification
+warning: FormalSystem/Semantics/DurationClassification.lean:348:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Semantics/DurationClassification.lean:353:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [1429/1973] Replayed FormalSystem.Semantics.LexCarrier
+warning: FormalSystem/Semantics/LexCarrier.lean:104:8: automatically included section variable(s) unused in theorem `_private.FormalSystem.Semantics.LexCarrier.0.FormalSystem.Semantics.LexInt.lexSucc_le_iff`:
+  [AddCommGroup α]
+  [IsOrderedAddMonoid α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [AddCommGroup α] [IsOrderedAddMonoid α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/LexCarrier.lean:116:8: automatically included section variable(s) unused in theorem `_private.FormalSystem.Semantics.LexCarrier.0.FormalSystem.Semantics.LexInt.le_lexPred_iff`:
+  [AddCommGroup α]
+  [IsOrderedAddMonoid α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [AddCommGroup α] [IsOrderedAddMonoid α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/LexCarrier.lean:145:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.LexInt.isLeast_pos`:
+  [IsOrderedAddMonoid α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsOrderedAddMonoid α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [1456/1973] Replayed FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:124:2: Try this: intro F _ M τ _hτ t h_abc h_ab h_a
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:132:2: Try this: intro F _ M τ _hτ t h_a _
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:156:2: Try this: intro F _ M τ _hτ t h_bot
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:183:2: Try this: intro F _ M τ _hτ t h_box_imp h_box_psi σ h_σ_mem
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:617:4: Try this: intro _ h_neg_second
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:624:4: Try this: intro _ _
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:652:4: Try this: intro _ _
+warning: FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:659:4: Try this: intro _ h_neg_second
+⚠ [1457/1973] Replayed FormalSystem.Metalogic.SoundnessLemmas.Separability
+warning: FormalSystem/Metalogic/SoundnessLemmas/Separability.lean:102:12: This simp argument is unused:
+  one_nsmul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hz]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1458/1973] Replayed FormalSystem.Metalogic.Soundness
+warning: FormalSystem/Metalogic/Soundness.lean:429:4: Try this: intro _ _
+warning: FormalSystem/Metalogic/Soundness.lean:437:4: Try this: intro _ h_neg_second
+⚠ [1477/1973] Replayed FormalSystem.Metalogic.BXCanonical.Chronicle.PointInsertion
+warning: FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean:1973:86: This simp argument is unused:
+  true_and
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [h_not_B, ↓reduceDIte, Formula.snce.injEq, ↓existsAndEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1763/1973] Replayed FormalSystem.Metalogic.Algebraic.FlowFrame
+warning: FormalSystem/Metalogic/Algebraic/FlowFrame.lean:645:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Algebraic.fmcs_box_persistent`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [1953/1973] Replayed FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Lemma34
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:231:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:238:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:275:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:272:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.exists_contemp_gt`:
+  [InStructureClass C M]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [InStructureClass C M] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:454:71: This simp argument is unused:
+  c4_three
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [classBeginsAtGapStartFormula, ClassBeginsAtGapStart, eval, eval_imp, eval_epsAt, eval_rhoAt,
+    Fin.cons_zero, c2_one, c3_one, c3_two, c4_one, c4_two, and_imp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:454:81: This simp argument is unused:
+  and_imp
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [classBeginsAtGapStartFormula, ClassBeginsAtGapStart, eval, eval_imp, eval_epsAt, eval_rhoAt,
+    Fin.cons_zero, c2_one, c3_one, c3_two, c4_one, c4_two, c4_three]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:504:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.contemp_not_lt_of_kminus`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:539:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:545:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:568:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:559:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.not_classBeginsAtGapStart`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:630:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:770:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:852:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:858:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:842:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.isFirstClassPoint_congr`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:867:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.not_isFirstClassPoint`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:1046:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean:1051:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [1955/1973] Replayed FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Lemma5
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:327:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.holdsSomewhereInClass_congr`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:419:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:438:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:408:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.false_of_holds_throughout_class_bounded`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:471:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:459:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.exists_bound_notHolds`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:536:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:564:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:585:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean:739:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.classModels_congr`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [1956/1973] Replayed FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.BadIntervals
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:357:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.notLeftEnd_of_le`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:403:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.not_endsInGapOnRight_of_immediatePredecessor`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:457:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.leftEnd_iff_exists_not_notLeftEnd`:
+  [IsDualClosed C]
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:554:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:562:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:573:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:584:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:591:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:527:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.false_of_allClassesHaveLeftEnd`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:644:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:659:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:678:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:690:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.reynolds_lemma6_nonsingleton`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:708:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:704:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.lt_of_classMate`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:717:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:713:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.classMate_lt`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:753:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:773:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:742:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.false_of_holds_throughout_class_from_bounded`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:809:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.afterNotHoldsInClass_of_le`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:931:8: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:966:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:999:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1007:8: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:988:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.endsInGapOnLeft_congr`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1022:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1018:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.exists_contemp_lt`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1050:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1073:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1105:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.beforeNotHoldsInClass_of_le`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1203:8: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1229:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1288:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.reynolds_lemma6_right_endpoint`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1447:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean:1435:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.exists_classInteriorToRInterval`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [1957/1973] Replayed FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.TruthTransfer
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean:290:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean:297:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean:516:10: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean:652:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.temporalTruth_iso`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean:687:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.isBadPoint_dual`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean:696:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.classInteriorToBadInterval_dual`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [1958/1973] Replayed FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.NoGaps
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:448:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.contemp_of_mem_class_interval`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:514:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.endsInGapOnRight_of_mem`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:525:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.endsInGapOnLeft_of_mem`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:566:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.countable_surgeredStructure`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:655:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.mem_of_badStretch`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:711:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:933:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.StepD.badComp_isBadInterval`:
+  [IsDualClosed C]
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:934:5: Variable name `h_surj` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h_surj
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:935:32: Variable name `hε` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hε
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:936:62: Variable name `h_prior_U` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h_prior_U
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean:937:5: Variable name `h_prior_S` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h_prior_S
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [1959/1973] Replayed FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Singletons
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Singletons.lean:253:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.exists_rightEndPoint`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Singletons.lean:276:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.quotientDenselyOrdered_dual`:
+  [IsDualClosed C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Singletons.lean:471:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.isSingletonClass_of_kplus_kminus`:
+  [IsDualClosed C✝]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsDualClosed C✝] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2304/2659] Replayed FormalSystem.Metalogic.WeakCanonical.GroupModel.BlockDecomposition
+warning: FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean:299:9: `IsIrrefl` has been deprecated: Use `Std.Irrefl` instead
+
+Note: The updated constant has a different type:
+  {α : Sort u} → (α → α → Prop) → Prop
+instead of
+  (α : Sort u_1) → (α → α → Prop) → Prop
+warning: FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean:300:9: `IsTrichotomous` has been deprecated: Use `Std.Trichotomous` instead
+
+Note: The updated constant has a different type:
+  {α : Sort u} → (α → α → Prop) → Prop
+instead of
+  (α : Sort u_1) → (α → α → Prop) → Prop
+⚠ [2307/2659] Replayed FormalSystem.Metalogic.WeakCanonical.MixedSum
+warning: FormalSystem/Metalogic/WeakCanonical/MixedSum.lean:396:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [2317/2659] Replayed FormalSystem.Metalogic.WeakCanonical.RealModel.ShuffleReal
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/ShuffleReal.lean:209:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.doets_lemma_1_5`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2318/2659] Replayed FormalSystem.Metalogic.WeakCanonical.RealModel.DoetsTheorem
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:690:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.isConvexEquiv_of_contempEquivDenseCD`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:711:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.IsConvexEquiv.ltPt_congr`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:744:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.IsConvexEquiv.cls_eq_cls_iff`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:783:9: `IsIrrefl` has been deprecated: Use `Std.Irrefl` instead
+
+Note: The updated constant has a different type:
+  {α : Sort u} → (α → α → Prop) → Prop
+instead of
+  (α : Sort u_1) → (α → α → Prop) → Prop
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:784:9: `IsTrichotomous` has been deprecated: Use `Std.Trichotomous` instead
+
+Note: The updated constant has a different type:
+  {α : Sort u} → (α → α → Prop) → Prop
+instead of
+  (α : Sort u_1) → (α → α → Prop) → Prop
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:799:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.IsConvexEquiv.classStrictlyBetween_of_between`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:817:51: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:817:53: Variable name `b` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _b
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:821:8: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.IsConvexEquiv.classStrictlyBetweenQ_cls`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:830:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.IsConvexEquiv.lt_of_classStrictlyBetween`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:835:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.IsConvexEquiv.not_contempEquiv_ends`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:1374:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.nfEvalNf_of_kEquiv`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:1757:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.WeakCanonical.contempClassStructure_congr`:
+  [Fintype sig.preds]
+  [DecidableEq sig.preds]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype sig.preds] [DecidableEq sig.preds] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:1932:5: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:1981:27: Variable name `D1` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _D1
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean:2046:56: Variable name `hc'd'` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hc'd'
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2327/2659] Replayed FormalSystem.Metalogic.Decidability.Tableau
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:466:30: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, reduceIte] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:466:40: This simp argument is unused:
+  reduceIte
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, if_false] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:473:30: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, reduceIte] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:473:40: This simp argument is unused:
+  reduceIte
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, if_false] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2993:52: This simp argument is unused:
+  Bool.not_eq_true
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, decide_eq_true_eq, Bool.not_eq_eq_eq_not, Bool.not_false,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:4: This simp argument is unused:
+  Bool.not_eq_eq_eq_not
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_false,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:27: This simp argument is unused:
+  Bool.not_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:43: This simp argument is unused:
+  Bool.decide_eq_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.not_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:65: This simp argument is unused:
+  Bool.not_eq_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.not_false, Bool.decide_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2332/2659] Replayed FormalSystem.Metalogic.Decidability.Saturation
+warning: FormalSystem/Metalogic/Decidability/Saturation.lean:1165:29: Variable name `appliedSet` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _appliedSet
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2334/2659] Replayed FormalSystem.Metalogic.Decidability.CountermodelExtraction
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:605:46: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asUntil?, hg', applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    Option.isSome_some] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:606:34: This simp argument is unused:
+  Option.isSome_some
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asUntil?, hg', if_false, applyRule, ruleMintsFreshLabel, ruleSelfGuarded,
+    if_true] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:671:46: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asSince?, hg', applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    Option.isSome_some] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:672:34: This simp argument is unused:
+  Option.isSome_some
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asSince?, hg', if_false, applyRule, ruleMintsFreshLabel, ruleSelfGuarded,
+    if_true] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2339/2659] Replayed FormalSystem.Metalogic.Core.RestrictedMCS.Basic
+warning: FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean:354:4: Try this: intro L hL ⟨d⟩
+⚠ [2344/2659] Replayed FormalSystem.Metalogic.Decidability.FMP.FMP
+warning: FormalSystem/Metalogic/Decidability/FMP/FMP.lean:83:4: Try this: intro L hL ⟨d_bot⟩
+⚠ [2352/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:445:63: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [h, if_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:482:109: This simp argument is unused:
+  SignedFormula.neg
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [asAnd?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:484:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:499:4: This simp argument is unused:
+  SignedFormula.pos
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [asAnd?_eq_iff, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_append,
+    List.mem_cons, List.not_mem_nil, or_false, SignedFormula.neg, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:501:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:516:23: This simp argument is unused:
+  SignedFormula.neg
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [asOr?_eq_iff, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_append,
+    List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:518:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:531:89: This simp argument is unused:
+  SignedFormula.pos
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [asOr?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.neg, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:533:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:550:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:565:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:578:90: This simp argument is unused:
+  SignedFormula.pos
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.neg, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:580:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:591:109: This simp argument is unused:
+  SignedFormula.neg
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:593:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:618:61: This simp argument is unused:
+  SignedFormula.neg
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [List.mem_filter, List.mem_cons, List.not_mem_nil, or_false, Bool.not_eq_eq_eq_not,
+    Bool.not_true, SignedFormula.pos, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:621:2: 'all_goals (try subst hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:635:45: This simp argument is unused:
+  SignedFormula.pos
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [List.not_mem_nil, SignedFormula.neg, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:635:64: This simp argument is unused:
+  SignedFormula.neg
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [List.not_mem_nil, SignedFormula.pos, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:685:56: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all only [List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil,
+    List.mem_append, List.not_mem_nil, reduceCtorEq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:687:56: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_append,
+    List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:849:4: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_nil, List.append_nil, List.mem_cons,
+    List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:849:23: This simp argument is unused:
+  List.flatten_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:849:41: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:850:4: This simp argument is unused:
+  List.not_mem_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:850:22: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:864:6: '(obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:864:6: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:878:4: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_nil, List.append_nil, List.mem_cons,
+    List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:878:23: This simp argument is unused:
+  List.flatten_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:878:41: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:879:4: This simp argument is unused:
+  List.not_mem_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:879:22: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.boxPosFormulas, Branch.diamondNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:893:6: '(obtain ⟨s, hs, hsg⟩ := mem_boxDiamondPersistence hg; rw [hsg]; exact hb _ hs)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:893:6: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:907:4: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_nil, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:907:23: This simp argument is unused:
+  List.flatten_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:907:41: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:908:4: This simp argument is unused:
+  List.not_mem_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:908:22: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:936:4: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_nil, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:936:23: This simp argument is unused:
+  List.flatten_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:936:41: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:937:4: This simp argument is unused:
+  List.not_mem_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:937:22: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:965:4: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_nil, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:965:23: This simp argument is unused:
+  List.flatten_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:965:41: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:966:4: This simp argument is unused:
+  List.not_mem_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:966:22: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:994:4: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_nil, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:994:23: This simp argument is unused:
+  List.flatten_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:994:41: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:995:4: This simp argument is unused:
+  List.not_mem_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:995:22: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1031:63: This simp argument is unused:
+  Branch.untlNegFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1039:7: 'simp_all only []' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1039:25: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1039:25: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1063:59: This simp argument is unused:
+  Branch.snceNegFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1071:7: 'simp_all only []' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1071:25: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1071:25: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1095:63: This simp argument is unused:
+  Branch.untlNegFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1103:25: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1127:59: This simp argument is unused:
+  Branch.snceNegFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allPastPosFormulas, Branch.somePastNegFormulas, List.flatten_cons, List.flatten_nil,
+    List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1135:25: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1211:4: This simp argument is unused:
+  Formula.self_mem_subformulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [SignedFormula.pos, Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top, Formula.subformulas]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1264:4: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1264:23: This simp argument is unused:
+  List.flatten_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, List.flatten_cons, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1264:41: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, List.flatten_cons, List.flatten_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1264:73: This simp argument is unused:
+  List.mem_append
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons,
+    List.not_mem_nil, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1265:4: This simp argument is unused:
+  List.not_mem_nil
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons,
+    List.mem_append, or_false] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1265:22: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Branch.allFuturePosFormulas, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons,
+    List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1278:51: This simp argument is unused:
+  SignedFormula.neg
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all [SignedFormula.pos, Formula.subformulas, Formula.self_mem_subformulas]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1269:7: 'simp_all only []' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1269:25: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean:1269:25: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [2354/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean:2028:6: '(try omega)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean:2028:6: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [2357/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.MintPotential
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:195:46: This simp argument is unused:
+  Branch.boxPosFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [RuleResult.emitted, Branch.diamondNegFormulas, Branch.allFuturePosFormulas,
+    Branch.allPastPosFormulas, Branch.someFutureNegFormulas, Branch.somePastNegFormulas, Branch.untlNegFormulas,
+    Branch.snceNegFormulas, List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil,
+    List.mem_cons, List.mem_append, List.not_mem_nil, or_false, List.mem_filter] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:195:69: This simp argument is unused:
+  Branch.diamondNegFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.allFuturePosFormulas, Branch.allPastPosFormulas,
+    Branch.someFutureNegFormulas, Branch.somePastNegFormulas, Branch.untlNegFormulas, Branch.snceNegFormulas,
+    List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false, List.mem_filter] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:198:17: This simp argument is unused:
+  Branch.untlNegFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas, Branch.allFuturePosFormulas,
+    Branch.allPastPosFormulas, Branch.someFutureNegFormulas, Branch.somePastNegFormulas, Branch.snceNegFormulas,
+    List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false, List.mem_filter] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:198:41: This simp argument is unused:
+  Branch.snceNegFormulas
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas, Branch.allFuturePosFormulas,
+    Branch.allPastPosFormulas, Branch.someFutureNegFormulas, Branch.somePastNegFormulas, Branch.untlNegFormulas,
+    List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false, List.mem_filter] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:204:14: '(obtain ⟨hg, -⟩ := hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:204:14: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:227:63: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas, List.mem_cons,
+    List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:251:63: This simp argument is unused:
+  or_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas, List.mem_cons,
+    List.mem_append, List.not_mem_nil] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:237:65: '(try contradiction)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:267:10: '(simp only [RuleResult.emitted, List.not_mem_nil] at hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:267:10: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:280:10: '(simp only [RuleResult.emitted, List.not_mem_nil] at hg)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:280:10: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:542:81: This simp argument is unused:
+  List.mem_append
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, List.mem_cons, List.not_mem_nil,
+    or_false, List.append_nil] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean:548:81: This simp argument is unused:
+  List.mem_append
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, List.mem_cons, List.not_mem_nil,
+    or_false, List.append_nil] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2361/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.TimeCensus
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean:392:15: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean:622:35: This simp argument is unused:
+  ruleMintsFreshTime
+
+Hint: Omit it from the simp argument list.
+  [apply] simp +decide [ruleMintsFreshLabel]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean:622:55: This simp argument is unused:
+  ruleMintsFreshLabel
+
+Hint: Omit it from the simp argument list.
+  [apply] simp +decide [ruleMintsFreshTime]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2364/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.OrientedGate
+warning: FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean:916:6: Variable name `x` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _x
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2377/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Bridge.Interpolate
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:219:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:222:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:310:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:339:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:364:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:370:8: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:372:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:540:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:570:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:608:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean:620:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [2378/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionFrame
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:191:19: Variable name `ι` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ι
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2379/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean:193:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean:223:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean:254:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean:266:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [2380/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Bridge.Valuation
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean:121:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.isPlacedCode_placedCode`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean:132:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.placedCode_injective`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean:172:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.regionValuation_gap`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2387/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:204:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.isPlacedCode_of_eq`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:209:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.exists_eq_of_isPlacedCode`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:220:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.stateTime_placed`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:476:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.isPlacedCode_of_between`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:860:5: Variable name `hSat` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hSat
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:860:55: Variable name `hOpen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hOpen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:861:5: Variable name `hTot` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hTot
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:861:42: Variable name `hBA` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hBA
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:873:5: Variable name `hSat` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hSat
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:873:55: Variable name `hOpen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hOpen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:874:5: Variable name `hTot` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hTot
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:874:42: Variable name `hBA` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hBA
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2388/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Bridge.DenseTruth
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean:169:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.branchRank_lt_cutIndex`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean:194:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.cutIndex_mono`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean:216:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.cutIndex_le_branchRank`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean:558:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.orderFaithful_comp`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean:563:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.Bridge.orderReflecting_comp`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2389/2659] Replayed FormalSystem.Metalogic.Decidability.Verified.Decidable
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:892:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:929:8: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1000:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.lt_of_pathN_directFutureOf`:
+  [AddCommGroup D]
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1019:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.lt_of_pathN_directPastOf`:
+  [AddCommGroup D]
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1153:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.addFuture_nextTime_cycle_unsatisfiable`:
+  [AddCommGroup D]
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1164:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.Verified.addPast_nextTime_cycle_unsatisfiable`:
+  [AddCommGroup D]
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1237:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1246:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [2396/2659] Replayed FormalSystem.Metalogic.Decidability.BiLasso.Enumerate
+warning: FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean:200:15: This simp argument is unused:
+  subformulaClosure
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [List.mem_toFinset, List.mem_filter, decide_eq_true_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2397/2659] Replayed FormalSystem.Metalogic.Decidability.BiLasso.Examples
+warning: FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean:143:38: This simp argument is unused:
+  List.nil_append
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [List.singleton_append, List.mem_cons, List.not_mem_nil, or_false] at hL
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean:277:38: This simp argument is unused:
+  List.nil_append
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [List.singleton_append, List.mem_cons, List.not_mem_nil, or_false] at hL
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2582/2659] Replayed FormalSystem.Metalogic.Conservativity.Plus.Atomization
+warning: FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean:160:30: Variable name `hτ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hτ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2584/2659] Replayed FormalSystem.Metalogic.Independence.CoarsenedModels
+warning: FormalSystem/Metalogic/Independence/CoarsenedModels.lean:356:30: Variable name `hτ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hτ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2596/2659] Replayed FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension
+warning: FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean:986:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [2602/2659] Replayed FormalSystem.Metalogic.Conservativity.Z1Countermodel
+warning: FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean:104:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+warning: FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean:151:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [2603/2659] Replayed FormalSystem.Metalogic.Conservativity.DenseObstructionTransfer
+warning: FormalSystem/Metalogic/Conservativity/DenseObstructionTransfer.lean:228:4: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+⚠ [2643/2659] Replayed FormalSystem.Metalogic.Decidability.CancellableExpansion
+warning: FormalSystem/Metalogic/Decidability/CancellableExpansion.lean:272:29: Variable name `appliedSet` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _appliedSet
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+ℹ [2656/2659] Replayed FormalSystem.MainResults
+info: FormalSystem/MainResults.lean:80:0: FormalSystem.Metalogic.soundness : ∀ (Γ : FormalSystem.Syntax.Context) (φ : FormalSystem.Syntax.Formula)
+  (d : Γ ⊢[FormalSystem.ProofSystem.FrameClass.Base] φ) (F : FormalSystem.Semantics.TaskFrame)
+  (M : FormalSystem.Semantics.TaskModel F) (τ : FormalSystem.Semantics.PartialHistory F),
+  τ.IsTotal →
+    ∀ (t : F.Duration.carrier),
+      (∀ ψ ∈ Γ, FormalSystem.Semantics.TruthAt M τ t ψ) → FormalSystem.Semantics.TruthAt M τ t φ
+info: FormalSystem/MainResults.lean:81:0: FormalSystem.Metalogic.soundness_dense : ∀ (Γ : FormalSystem.Syntax.Context) (φ : FormalSystem.Syntax.Formula)
+  (d : Γ ⊢[FormalSystem.ProofSystem.FrameClass.Dense] φ) (F : FormalSystem.Semantics.TaskFrame)
+  [DenselyOrdered F.Duration.carrier] (M : FormalSystem.Semantics.TaskModel F)
+  (τ : FormalSystem.Semantics.PartialHistory F),
+  τ.IsTotal →
+    ∀ (t : F.Duration.carrier),
+      (∀ ψ ∈ Γ, FormalSystem.Semantics.TruthAt M τ t ψ) → FormalSystem.Semantics.TruthAt M τ t φ
+info: FormalSystem/MainResults.lean:82:0: FormalSystem.Metalogic.soundness_ztime : ∀ (Γ : FormalSystem.Syntax.Context) (φ : FormalSystem.Syntax.Formula)
+  (d : Γ ⊢[FormalSystem.ProofSystem.FrameClass.ZTime] φ) (F : FormalSystem.Semantics.TaskFrame)
+  [inst : SuccOrder F.Duration.carrier] [inst_1 : PredOrder F.Duration.carrier] [IsSuccArchimedean F.Duration.carrier]
+  [IsPredArchimedean F.Duration.carrier] (M : FormalSystem.Semantics.TaskModel F)
+  (τ : FormalSystem.Semantics.PartialHistory F),
+  τ.IsTotal →
+    ∀ (t : F.Duration.carrier),
+      (∀ ψ ∈ Γ, FormalSystem.Semantics.TruthAt M τ t ψ) → FormalSystem.Semantics.TruthAt M τ t φ
+info: FormalSystem/MainResults.lean:83:0: FormalSystem.Metalogic.soundness_rtime : ∀ (Γ : FormalSystem.Syntax.Context) (φ : FormalSystem.Syntax.Formula)
+  (d : Γ ⊢[FormalSystem.ProofSystem.FrameClass.RTime] φ) (F : FormalSystem.Semantics.TaskFrame)
+  [DenselyOrdered F.Duration.carrier],
+  (∀ (s : Set F.Duration.carrier), s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
+    ∀ (M : FormalSystem.Semantics.TaskModel F) (τ : FormalSystem.Semantics.PartialHistory F),
+      τ.IsTotal →
+        ∀ (t : F.Duration.carrier),
+          (∀ ψ ∈ Γ, FormalSystem.Semantics.TruthAt M τ t ψ) → FormalSystem.Semantics.TruthAt M τ t φ
+info: FormalSystem/MainResults.lean:85:0: 'FormalSystem.Metalogic.soundness' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:86:0: 'FormalSystem.Metalogic.soundness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:87:0: 'FormalSystem.Metalogic.soundness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:88:0: 'FormalSystem.Metalogic.soundness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:105:0: FormalSystem.Metalogic.completeness_base : FormalSystem.Metalogic.WeakCompleteness
+  FormalSystem.ProofSystem.FrameClass.Base
+info: FormalSystem/MainResults.lean:106:0: FormalSystem.Metalogic.completeness_dense : FormalSystem.Metalogic.WeakCompleteness
+  FormalSystem.ProofSystem.FrameClass.Dense
+info: FormalSystem/MainResults.lean:107:0: FormalSystem.Metalogic.completeness_ztime : FormalSystem.Metalogic.WeakCompleteness
+  FormalSystem.ProofSystem.FrameClass.ZTime
+info: FormalSystem/MainResults.lean:108:0: FormalSystem.Metalogic.completeness_rtime : FormalSystem.Metalogic.WeakCompleteness
+  FormalSystem.ProofSystem.FrameClass.RTime
+info: FormalSystem/MainResults.lean:110:0: 'FormalSystem.Metalogic.completeness_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:111:0: 'FormalSystem.Metalogic.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:112:0: 'FormalSystem.Metalogic.completeness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:113:0: 'FormalSystem.Metalogic.completeness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:129:0: FormalSystem.Metalogic.consequence_completeness_base : ∀ (Γ : FormalSystem.Syntax.Context)
+  (φ : FormalSystem.Syntax.Formula), Γ ⊨ φ → Γ |-![FormalSystem.ProofSystem.FrameClass.Base] φ
+info: FormalSystem/MainResults.lean:130:0: FormalSystem.Metalogic.consequence_completeness_dense : ∀ (Γ : FormalSystem.Syntax.Context)
+  (φ : FormalSystem.Syntax.Formula),
+  FormalSystem.Metalogic.SemanticConsequenceDense Γ φ → Γ |-![FormalSystem.ProofSystem.FrameClass.Dense] φ
+info: FormalSystem/MainResults.lean:131:0: FormalSystem.Metalogic.consequence_completeness_ztime : ∀ (Γ : FormalSystem.Syntax.Context)
+  (φ : FormalSystem.Syntax.Formula),
+  FormalSystem.Metalogic.SemanticConsequenceZTime Γ φ → Γ |-![FormalSystem.ProofSystem.FrameClass.ZTime] φ
+info: FormalSystem/MainResults.lean:132:0: FormalSystem.Metalogic.consequence_completeness_rtime : ∀ (Γ : FormalSystem.Syntax.Context)
+  (φ : FormalSystem.Syntax.Formula),
+  FormalSystem.Metalogic.SemanticConsequenceRTime Γ φ → Γ |-![FormalSystem.ProofSystem.FrameClass.RTime] φ
+info: FormalSystem/MainResults.lean:134:0: 'FormalSystem.Metalogic.consequence_completeness_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:135:0: 'FormalSystem.Metalogic.consequence_completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:136:0: 'FormalSystem.Metalogic.consequence_completeness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:137:0: 'FormalSystem.Metalogic.consequence_completeness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:154:0: FormalSystem.Metalogic.compactBase : FormalSystem.Metalogic.CompactBase
+info: FormalSystem/MainResults.lean:155:0: FormalSystem.Metalogic.compactDense : FormalSystem.Metalogic.CompactDense
+info: FormalSystem/MainResults.lean:156:0: FormalSystem.Metalogic.strongCompletenessBase : FormalSystem.Metalogic.StrongCompletenessBase
+info: FormalSystem/MainResults.lean:157:0: FormalSystem.Metalogic.strongCompletenessDense : FormalSystem.Metalogic.StrongCompletenessDense
+info: FormalSystem/MainResults.lean:159:0: 'FormalSystem.Metalogic.compactBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:160:0: 'FormalSystem.Metalogic.compactDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:161:0: 'FormalSystem.Metalogic.strongCompletenessBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:162:0: 'FormalSystem.Metalogic.strongCompletenessDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:181:0: FormalSystem.Metalogic.notCompactZTime : ¬FormalSystem.Metalogic.CompactZTime
+info: FormalSystem/MainResults.lean:182:0: FormalSystem.Metalogic.notStrongCompletenessZTime : ¬FormalSystem.Metalogic.StrongCompletenessZTime
+info: FormalSystem/MainResults.lean:183:0: FormalSystem.Metalogic.notCompactRTime : ¬FormalSystem.Metalogic.CompactRTime
+info: FormalSystem/MainResults.lean:184:0: FormalSystem.Metalogic.notStrongCompletenessRTime : ¬FormalSystem.Metalogic.StrongCompletenessRTime
+info: FormalSystem/MainResults.lean:186:0: 'FormalSystem.Metalogic.notCompactZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:187:0: 'FormalSystem.Metalogic.notStrongCompletenessZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:188:0: 'FormalSystem.Metalogic.notCompactRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:189:0: 'FormalSystem.Metalogic.notStrongCompletenessRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:209:0: FormalSystem.Semantics.galoisClosed_mod : ∀ (S : Set FormalSystem.Syntax.Formula),
+  FormalSystem.Semantics.GaloisClosed (FormalSystem.Semantics.Mod S)
+info: FormalSystem/MainResults.lean:210:0: @FormalSystem.Semantics.galoisClosed_of_indicator : ∀ {K : Set FormalSystem.Semantics.TaskFrame},
+  ∀ φ ∈ FormalSystem.Semantics.Th K,
+    (∀ (F : FormalSystem.Semantics.TaskFrame), F.ValidOn φ → F ∈ K) → FormalSystem.Semantics.GaloisClosed K
+info: FormalSystem/MainResults.lean:211:0: FormalSystem.Semantics.galoisClosed_sat_dense : FormalSystem.Semantics.GaloisClosed
+  {F | FormalSystem.ProofSystem.FrameClass.Dense.Sat F}
+info: FormalSystem/MainResults.lean:212:0: FormalSystem.Semantics.galoisClosed_isDiscrete : FormalSystem.Semantics.GaloisClosed {F | F.IsDiscrete}
+info: FormalSystem/MainResults.lean:214:0: 'FormalSystem.Semantics.galoisClosed_mod' depends on axioms: [propext]
+info: FormalSystem/MainResults.lean:215:0: 'FormalSystem.Semantics.galoisClosed_of_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:216:0: 'FormalSystem.Semantics.galoisClosed_sat_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:217:0: 'FormalSystem.Semantics.galoisClosed_isDiscrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: FormalSystem/MainResults.lean:235:0: @FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness : {sig :
+    FormalSystem.Metalogic.WeakCanonical.MonadicSignature} →
+  [Fintype sig.preds] →
+    [DecidableEq sig.preds] →
+      (atomMap : FormalSystem.Syntax.Formula → sig.preds) →
+        (∀ (p : sig.preds), ∃ a, atomMap (FormalSystem.Syntax.Formula.atom a) = p) →
+          (psi : FormalSystem.Metalogic.WeakCanonical.MonadicFormula sig 1) →
+            { A //
+              ∀ (M : FormalSystem.Metalogic.WeakCanonical.OrderedMonadicStructure sig),
+                FormalSystem.Metalogic.WeakCanonical.SemanticPriorUZ M atomMap →
+                  FormalSystem.Metalogic.WeakCanonical.SemanticPriorSZ M atomMap →
+                    ∀ (t : M.carrier),
+                      FormalSystem.Metalogic.WeakCanonical.eval M (fun x ↦ t) psi ↔
+                        FormalSystem.Metalogic.WeakCanonical.TemporalTruth M atomMap t A }
+info: FormalSystem/MainResults.lean:236:0: @FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior : {sig :
+    FormalSystem.Metalogic.WeakCanonical.MonadicSignature} →
+  [Fintype sig.preds] →
+    [DecidableEq sig.preds] →
+      (atomMap : FormalSystem.Syntax.Formula → sig.preds) →
+        (∀ (p : sig.preds), ∃ a, atomMap (FormalSystem.Syntax.Formula.atom a) = p) →
+          (psi : FormalSystem.Metalogic.WeakCanonical.MonadicFormula sig 1) →
+            { A //
+              ∀ (M : FormalSystem.Metalogic.WeakCanonical.OrderedMonadicStructure sig),
+                FormalSystem.Metalogic.WeakCanonical.SemanticPriorUZ M atomMap →
+                  FormalSystem.Metalogic.WeakCanonical.SemanticPriorSZ M atomMap →
+                    ∀ (t : M.carrier),
+                      FormalSystem.Metalogic.WeakCanonical.eval M (fun x ↦ t) psi ↔
+                        FormalSystem.Metalogic.WeakCanonical.TemporalTruth M atomMap t A }
+info: FormalSystem/MainResults.lean:238:0: 'FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: FormalSystem/MainResults.lean:239:0: 'FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: FormalSystem/MainResults.lean:252:0: @FormalSystem.Metalogic.Decidability.sound_of_isValid : ∀ {φ : FormalSystem.Syntax.Formula}
+  (r : FormalSystem.Metalogic.Decidability.DecisionResult φ), r.isValid = true → ⊨ φ
+info: FormalSystem/MainResults.lean:254:0: 'FormalSystem.Metalogic.Decidability.sound_of_isValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (2659 jobs).

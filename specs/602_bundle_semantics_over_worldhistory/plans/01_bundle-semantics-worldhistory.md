@@ -124,17 +124,17 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 2: Atomic batch A1 - truth core [NOT STARTED]
+### Phase 2: Atomic batch A1 - truth core [COMPLETED]
 
 **Goal**: Retarget the abstract clause layers and the base truth relation to `WorldHistory F`, and transport.
 
 **Tasks**:
-- [ ] `TruthClauses.lean`: `TruthEnv.T` over `WorldHistory F`; delete `StabClause.sameState`, state `stab_clause` with `τ.state t = σ.state t`; box/diamond/stab lemmas quantify `∀ σ : WorldHistory F`
-- [ ] `ValidityLayer.lean`: `PointTruth.sat` over `WorldHistory F`; generic validity quantifies over `WorldHistory F`; collapse/delete `of_forall_total`/`apply_total`/`of_not` generics (keep one renamed `apply`/`of_forall` pair only if a later call site benefits)
-- [ ] `Truth.lean`: `TruthAt (M) (τ : WorldHistory F) (t)` with atom `M.valuation (τ.state t) p`, box `∀ σ : WorldHistory F`; `atom_iff_of_domain` -> `atom_iff` (`Iff.rfl`); delete `atom_false_of_not_domain`; `box_iff` over `WorldHistory`; drop `_hτ`/`_hσ` from `box_const`/`box_time_const`
-- [ ] `TruthTransport.lean`: `TruthCorr.Rel` over `WorldHistory`, non-dependent `atom`, `fwd`/`bwd` without `IsTotal`; `ShiftRel Δ ρ ρ' := ∀ z, ρ.state z = ρ'.state (z + Δ)`; `shiftCorr`; `timeShift_preserves_truth (σ : WorldHistory F)`; delete `timeShift_preserves_truth_total` and the domain half of `shiftRel_timeShift_neg`; `TruthIso.hist : WorldHistory F ≃ WorldHistory F'`
-- [ ] Targeted builds in import order: `lake build FormalSystem.Semantics.TruthClauses`, `.ValidityLayer`, `.Truth`, `.TruthTransport`
-- [ ] End of phase: `bash .claude/scripts/git-snapshot.sh 602 --no-revert`; record last green module in progress file
+- [x] `TruthClauses.lean`: `TruthEnv.T` over `WorldHistory F`; delete `StabClause.sameState`, state `stab_clause` with `τ.state t = σ.state t`; box/diamond/stab lemmas quantify `∀ σ : WorldHistory F`
+- [x] `ValidityLayer.lean`: `PointTruth.sat` over `WorldHistory F`; generic validity quantifies over `WorldHistory F`; collapse/delete `of_forall_total`/`apply_total`/`of_not` generics (keep one renamed `apply`/`of_forall` pair only if a later call site benefits) *(deviation: altered — all identity adapters deleted; only the `.Base` `GenericValid.of_forall`/`apply`/`of_not` survive since they discharge `Sat .Base`; `genericValidOn_iff_total` deleted; `TruthCorr.total_fwd/total_bwd` renamed `fwd`/`bwd`; added `WorldHistory.ext_state` and `timeShift_neg_timeShift`)*
+- [x] `Truth.lean`: `TruthAt (M) (τ : WorldHistory F) (t)` with atom `M.valuation (τ.state t) p`, box `∀ σ : WorldHistory F`; `atom_iff_of_domain` -> `atom_iff` (`Iff.rfl`); delete `atom_false_of_not_domain`; `box_iff` over `WorldHistory`; drop `_hτ`/`_hσ` from `box_const`/`box_time_const`
+- [x] `TruthTransport.lean`: `TruthCorr.Rel` over `WorldHistory`, non-dependent `atom`, `fwd`/`bwd` without `IsTotal`; `ShiftRel Δ ρ ρ' := ∀ z, ρ.state z = ρ'.state (z + Δ)`; `shiftCorr`; `timeShift_preserves_truth (σ : WorldHistory F)`; delete `timeShift_preserves_truth_total` and the domain half of `shiftRel_timeShift_neg`; `TruthIso.hist : WorldHistory F ≃ WorldHistory F'`
+- [x] Targeted builds in import order: `lake build FormalSystem.Semantics.TruthClauses`, `.ValidityLayer`, `.Truth`, `.TruthTransport`
+- [x] End of phase: `bash .claude/scripts/git-snapshot.sh 602 --no-revert`; record last green module in progress file
 
 **Timing**: 2 hours
 
@@ -155,16 +155,16 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 3: Atomic batch A2 - validity and frame-level semantics [NOT STARTED]
+### Phase 3: Atomic batch A2 - validity and frame-level semantics [COMPLETED]
 
 **Goal**: Retarget validity predicates and the remaining Semantics-level consumers.
 
 **Tasks**:
-- [ ] `Validity.lean`: `Valid`, `ValidIn`, `ValidOnFrames`, `ConsequenceOnFrames`, `SemanticConsequence(In)`, `satisfiable`, `SatisfiableAbs`, `FormulaSatisfiable`, `TaskFrame.ValidOn`, `GenericValidOn` quantify `∀ τ : WorldHistory F`; collapse `validOn_iff_total`/`valid_iff_forall_validOn`; delete or rename (no `_total` suffix) the `of_forall_total`/`apply_total`/`of_not` adapters per remaining callers
-- [ ] `IntTransfer.lean`: add `WorldHistory.map`/`comap`; `Aligned` as `∀ n, σ'.state n = σ.state (e.symm n)`; `truthAt_map`, `validZTime_iff_validInt`
-- [ ] `IntNormalForm.lean`, `ShiftSet.lean`, `DeterministicBridge.lean` (`SingletonClasses` over `WorldHistory`), `FrameAxioms.lean`, `PartialHistoryOrder.lean` (only if affected), `Extension/{Extension,PeriodicExtension,Admissible,Constraint}.lean` (restate `extension`/`occurrence` conclusions over `WorldHistory`; `Extends` stays on `PartialHistory`), `Correspondence/{DurationFrames,FwdRec,FwdRecBridge,FwdRecPeriodicity}.lean`, `Ultraproduct/*`, frame-class validity module
-- [ ] Targeted builds in import order for each touched module
-- [ ] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
+- [x] `Validity.lean`: `Valid`, `ValidIn`, `ValidOnFrames`, `ConsequenceOnFrames`, `SemanticConsequence(In)`, `satisfiable`, `SatisfiableAbs`, `FormulaSatisfiable`, `TaskFrame.ValidOn`, `GenericValidOn` quantify `∀ τ : WorldHistory F`; collapse `validOn_iff_total`/`valid_iff_forall_validOn`; delete or rename (no `_total` suffix) the `of_forall_total`/`apply_total`/`of_not` adapters per remaining callers
+- [x] `IntTransfer.lean`: add `WorldHistory.map`/`comap`; *(deviation: altered — `isTotal_map` deleted; `Aligned` is a `def`, not a structure)* `Aligned` as `∀ n, σ'.state n = σ.state (e.symm n)`; `truthAt_map`, `validZTime_iff_validInt`
+- [x] `IntNormalForm.lean`, `ShiftSet.lean`, `DeterministicBridge.lean` (`SingletonClasses` over `WorldHistory`), `FrameAxioms.lean`, `PartialHistoryOrder.lean` (only if affected), `Extension/{Extension,PeriodicExtension,Admissible,Constraint}.lean` (restate `extension`/`occurrence` conclusions over `WorldHistory`; `Extends` stays on `PartialHistory`), `Correspondence/{DurationFrames *(deviation: altered — `translationHist`/`permissiveHist` are now the `WorldHistory`s themselves; the Phase 1 `translationWorldHistory`/`permissiveWorldHistory` wrappers were deleted)*,FwdRec,FwdRecBridge,FwdRecPeriodicity}.lean`, `Ultraproduct/*`, frame-class validity module
+- [x] Targeted builds in import order for each touched module
+- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
 
 **Timing**: 2 hours
 
@@ -185,16 +185,16 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 4: Atomic batch B1 - Minus and Plus languages [NOT STARTED]
+### Phase 4: Atomic batch B1 - Minus and Plus languages [COMPLETED]
 
 **Goal**: Retarget `MinusTruthAt`, `PlusTruthAt` and their validity/pasting/state-local layers; delete `SameStateAt`.
 
 **Tasks**:
-- [ ] `MinusLanguage/MinusTruth.lean` (atom conjunct removed), `MinusValidity.lean`, remaining MinusLanguage files; `minusTruthAt_timeShift`
-- [ ] `PlusLanguage/PlusTruth.lean`: stab `∀ σ : WorldHistory F, τ.state t = σ.state t → …`; delete `SameStateAt` and its API (`sameStateAt_iff_of_total`, `.refl/.symm/.trans`, `sameStateAt_timeShift`, `sameStateAt_congr_left`), `timeShift_isTotal'`, `shift_neg_shift_domain`, `shift_neg_shift_states`; `stab_congr_sameState` -> `stab_congr_state`
-- [ ] `PlusPasting.lean`: `WorldHistory.paste (ρ σ : WorldHistory F) (t) (hsame : ρ.state t = σ.state t)`; `PlusValidity`, `PlusStateLocal`, `PlusDeterminism`, `PlusNonValidities`, `Semantics/PlusLanguage.lean` aggregator docstring
-- [ ] Targeted builds in import order
-- [ ] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
+- [x] `MinusLanguage/MinusTruth.lean` (atom conjunct removed), `MinusValidity.lean`, remaining MinusLanguage files; `minusTruthAt_timeShift`
+- [x] `PlusLanguage/PlusTruth.lean`: stab `∀ σ : WorldHistory F, τ.state t = σ.state t → …`; delete `SameStateAt` and its API (`sameStateAt_iff_of_total`, `.refl/.symm/.trans`, `sameStateAt_timeShift`, `sameStateAt_congr_left`), `timeShift_isTotal'`, `shift_neg_shift_domain`, `shift_neg_shift_states`; `stab_congr_state` *(deviation: altered — `truth_congr_ext`/`star_truth_congr_ext` kept, restated with a pointwise `state` hypothesis; `natHist` is a `WorldHistory` and `natHist_isTotal` deleted; `paste_isTotal` deleted; ShiftSet's `wh_ext`/`hist_isTotal` deleted in favour of `WorldHistory.ext_state`)*
+- [x] `PlusPasting.lean`: `WorldHistory.paste (ρ σ : WorldHistory F) (t) (hsame : ρ.state t = σ.state t)`; `PlusValidity`, `PlusStateLocal`, `PlusDeterminism`, `PlusNonValidities`, `Semantics/PlusLanguage.lean` aggregator docstring
+- [x] Targeted builds in import order
+- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
 
 **Timing**: 2 hours
 
@@ -215,12 +215,12 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 5: Atomic batch B2 - Star language and Conservativity [NOT STARTED]
+### Phase 5: Atomic batch B2 - Star language and Conservativity [IN PROGRESS]
 
 **Goal**: Retarget `StarTruthAt` layers and the Conservativity consumers of all three languages.
 
 **Tasks**:
-- [ ] `StarLanguage/{StarTruth,StarValidity,StarStateLocal,StarDeterminism,StarNonValidities}.lean` and remaining Star files
+- [x] `StarLanguage/{StarTruth,StarValidity,StarStateLocal,StarDeterminism,StarNonValidities}.lean` and remaining Star files
 - [ ] `Metalogic/Conservativity/MinusLanguageSoundness.lean` (`truthAt_tr` over `WorldHistory`), `Plus/{Atomization,PlusSoundness}`, `Star/{StarAxiomValidity,StarPasting}`, `ChainBundleTruth`, `DenseObstructionTransfer`, `FragmentCompactness`, `SpWitness`, `Z1Countermodel`, `Conservativity.lean`
 - [ ] Targeted builds in import order
 - [ ] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated

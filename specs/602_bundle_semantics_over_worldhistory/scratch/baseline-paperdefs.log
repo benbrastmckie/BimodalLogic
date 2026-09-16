@@ -1,0 +1,302 @@
+[paper-definitions] FAIL: drift detected against /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md
+  source checked: live working tree (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex)
+
+  14 recorded definition(s) drifted:
+--- anchor: def:BL-semantics ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 b64b782a61c9a9613b68f37ec2d12229e7df8498043faeb1cf1c2686b8dd5a75 -- verified):
+  \begin{Ddef} \label{def:BL-semantics}
+  	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a task frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
+  	Relative to a model $\M$, possible world $\tau \in H_{\F}$, and time $x \in D$, \textit{truth} is defined recursively as follows:
+  	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+  		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $\tau(x) \in |p_i|$.
+  		\item[($\bot$)] $\M,\tau,x \nvDash \bot$.
+  		\item[($\shortrightarrow$)] $\M,\tau,x \vDash \varphi \rightarrow \psi$ \textit{iff} $\M,\tau,x \nvDash \varphi$ or $\M,\tau,x \vDash \psi$.
+  		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$.
+  		\item[($\since$)] $\M,\tau,x \vDash \varphi\since\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z < x$ where $\M,\tau,y \vDash \varphi$\\
+        \strut\hspace{1.55in}for all $y \in D$ with $z < y < x$.
+  		\item[($\until$)] $\M,\tau,x \vDash \varphi\until\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z > x$ where $\M,\tau,y \vDash \varphi$\\ 
+        \strut\hspace{1.55in}for all $y \in D$ with $x < y < z$.
+  	\end{enumerate}
+    \vspace{-.1in}
+  \end{Ddef}
+NEW (live working tree, sha256 aad8ee543a63a394983e02c2c7ec81e02aaf7737768bcb0d492c668c38de3eb2):
+  \begin{Ddef} \label{def:BL-semantics}
+  	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a task frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
+  	Relative to a model $\M$, possible world $\tau \in H_{\F}$, and time $x \in D$, \textit{truth} is defined recursively as follows:
+  	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+  		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $\tau(x) \in |p_i|$.
+  		\item[($\bot$)] $\M,\tau,x \nvDash \bot$.
+  		\item[($\shortrightarrow$)] $\M,\tau,x \vDash \varphi \rightarrow \psi$ \textit{iff} $\M,\tau,x \nvDash \varphi$ or $\M,\tau,x \vDash \psi$.
+  		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$.
+  		\item[($\since$)] $\M,\tau,x \vDash \varphi\since\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z < x$ where $\M,\tau,y \vDash \varphi$\\
+        \strut\hspace{1.55in}for all $y \in D$ with $z < y < x$.
+  		\item[($\until$)] $\M,\tau,x \vDash \varphi\until\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z > x$ where $\M,\tau,y \vDash \varphi$\\ 
+        \strut\hspace{1.55in}for all $y \in D$ with $x < y < z$.
+  	\end{enumerate}
+    \vspace{-.1in}
+  Since the defined operators $\Past$ and $\Future$ satisfy the natural truth clauses, proofs will appeal to them freely without derivation.
+  \end{Ddef}
+--- anchor: def:BLplus-language ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 574bc1ad10ca0957a5b76c0d74f7ff5b2ea6a09fa180475c9c22eb6ea5b3e8e2 -- verified):
+  \begin{Ddef} \label{def:BLplus-language}
+  	The language $\BL \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i: i\in \N}$ is a countable set of sentence letters and the remaining symbols denote falsity, material implication, the metaphysical necessity operator, the since operator, and the until operator, respectively.
+  	Well-formed sentences of $\BL$ are defined by:
+  	\[
+  		\varphi, \psi \Coloneq p_i \mid \bot \mid \varphi \rightarrow \psi \mid \Box\varphi \mid \varphi\since\psi \mid \varphi\until\psi.
+  	\]
+  	The following operators are defined in $\BL$:
+    \vspace{-.125in}
+  	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+  		\begin{multicols}{2}
+  			\item[\it Past:] $\past\varphi \coloneq \top\since\varphi$.
+  			\item[\it Future:] $\future\varphi \coloneq \top\until\varphi$.
+  			\item[\it Historical:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
+  			\item[\it Henceforth:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
+  			\item[\it Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
+  			\item[\it Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
+  			\item[\it Next:] $\Next\varphi \coloneq \bot\until\varphi$.
+  			\item[\it Previous:] $\Previous\varphi \coloneq \bot\since\varphi$.
+  		\end{multicols}
+  	\end{enumerate}
+    \vspace{-.25in}
+  \end{Ddef}
+NEW (live working tree, sha256 67a17cd2e0b0867fdbcfdaa48fe9765b135978dbaf34459ca2055629533729b3):
+  \begin{Ddef} \label{def:BLplus-language}
+  	The language $\BL \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i: i\in \N}$ is a countable set of \textit{sentence letters} with operators for \textit{falsity}, \textit{material implication}, \textit{metaphysical necessity}, \textit{since}, and \textit{until}, respectively.
+  	Well-formed sentences of $\BL$ are defined by:
+  	\[
+  		\varphi, \psi \Coloneq p_i \mid \bot \mid \varphi \rightarrow \psi \mid \Box\varphi \mid \varphi\since\psi \mid \varphi\until\psi.
+  	\]
+  	The following operators are defined in $\BL$:
+    \vspace{-.125in}
+  	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+  		\begin{multicols}{2}
+  			\item[\it Some Past:] $\past\varphi \coloneq \top\since\varphi$.
+  			\item[\it Some Future:] $\future\varphi \coloneq \top\until\varphi$.
+  			\item[\it All Past:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
+  			\item[\it All Future:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
+  			\item[\it Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
+  			\item[\it Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
+  			\item[\it Next:] $\Next\varphi \coloneq \bot\until\varphi$.
+  			\item[\it Previous:] $\Previous\varphi \coloneq \bot\since\varphi$.
+  		\end{multicols}
+  	\end{enumerate}
+    \vspace{-.25in}
+  \end{Ddef}
+--- anchor: def:S5 ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 82ec82d7ef3c0e24732fe6216b3326998412c594984ce02639ea4030ceabdb38 -- verified):
+  \begin{Ddef} \label{def:S5}
+    The \textbf{S5} \textit{Modal Logic} is the smallest extension of \textit{Classical Propositional Logic} \textbf{CPL} closed under all instances of the axiom schemata \textbf{\aref{MK}}, \textbf{\aref{MT}}, and \textbf{\aref{M5}}, the rule \textbf{\aref{MP}}, and the metarule \textbf{\aref{MN}} presented in \textbf{\S\ref{sub:Logic}}.
+  \end{Ddef}
+NEW (live working tree, sha256 dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257):
+  \begin{Ddef} \label{def:S5}
+    The \textbf{S5} \textit{Modal Logic} extends \textit{Classical Propositional Logic} \textbf{CPL} to include all instances of the axiom schemata \textbf{\aref{MK}}, \textbf{\aref{MT}}, and \textbf{\aref{M5}}, the rule \textbf{\aref{MP}}, and the metarule \textbf{\aref{MN}} presented in \textbf{\S\ref{sub:Logic}}.
+  \end{Ddef}
+--- anchor: def:BX ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 e1617a218b03206e11ebb9886b9a6a2add44591ce47f719445664e608f39e13e -- verified):
+  \begin{Ddef} \label{def:BX}
+    The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} is the smallest extension of \textbf{CPL} closed under the metarules \textbf{\aref{TN}} and \textbf{\aref{TD}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.
+  \end{Ddef}
+NEW (live working tree, sha256 8ff38fe7e73cc6978a5b7079542d55686a820dc4d5ceb4614a763b802d2fc87d):
+  \begin{Ddef} \label{def:BX}
+    The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.%
+      \footnote{
+        \textbf{\aref{TN}} is (half of) Burgess's necessitation rule \textsc{TG}~\cite[\S1.3]{Burgess1982}, and \textbf{\aref{TS}} is his \textit{No Last Element} variant~\cite[\S1.6]{Burgess1982}.
+        \textbf{\aref{UC}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{UF}}, and \textbf{\aref{UI}} are his axioms A1a, A2a, A3a, A5a, and A6a respectively~\cite[\S1.3]{Burgess1982}, their past-tense duals following by \textbf{\aref{TR}}, his working mirror-image convention.
+        \textbf{\aref{CN}} is his axiom A7a, independently confirmed by Xu as defining linear frames~\cite[\S3]{Xu1988}.
+        \textbf{\aref{UE}} is not among Burgess's numbered axioms but follows immediately from \textbf{\aref{UC}} taking $\psi = \top$.
+        \textbf{\aref{TC}}, \textbf{\aref{UT}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} are not found in Burgess or Xu and are the present system's own additions.
+        \textbf{\aref{TL}} corresponds in spirit to the local-linearity axioms Xu gives for his frame class $\mathsf{V}_3$~\cite[\S3]{Xu1988}, though the exact correspondence among his formulas is not pinpointed here.
+      }
+  \end{Ddef}
+--- anchor: def:BX-z ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 3e2af812eaf4319b349ed734d9b63ffa04f6c72545a9363504b2b9b89694248f -- verified):
+  \begin{Ddef} \label{def:BX-z}
+    The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ is the smallest extension of the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} and \textbf{\aref{Z1}} presented in \textbf{\S\ref{sub:Extension}}.
+    Since \textbf{\aref{UZ}} and \textbf{\aref{Z1}} fail over every discrete temporal order that is not Archimedean (\textbf{\ref{prop:archimedean}}), and the Archimedean discrete orders are exactly $\Z$-time (\textbf{\S\ref{sub:Extension}}), the discrete task frames over which \textbf{BX}$_\textsc{z}$ and \textbf{TM}$_\textsc{z}$ are sound and complete are exactly those over $\Z$-time.
+  \end{Ddef}
+NEW (live working tree, sha256 21277d0a1046e1bc1dfe7b9a215c24a07fa0008d27a22234886a8e94b884456b):
+  \begin{Ddef} \label{def:BX-z}
+    The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} and \textbf{\aref{Z1}} presented in \textbf{\S\ref{sub:Extension}}.
+    Neither \textbf{\aref{UZ}} nor \textbf{\aref{Z1}} is due to Burgess or Xu; both are the present system's own principles for capturing $\Z$-time.
+    Since \textbf{\aref{UZ}} and \textbf{\aref{Z1}} fail over every discrete temporal order that is not Archimedean (\textbf{\ref{prop:archimedean}}), and the Archimedean discrete orders are exactly $\Z$-time (\textbf{\S\ref{sub:Extension}}), the discrete task frames over which \textbf{BX}$_\textsc{z}$ and \textbf{TM}$_\textsc{z}$ are sound and complete are exactly those over $\Z$-time.
+  \end{Ddef}
+--- anchor: def:BX-d ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 555db844b3c15ca4f878406540d88c457f372a774bbb59776e3f1b0d0fb76394 -- verified):
+  \begin{Ddef} \label{def:BX-d}
+    The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ is the smallest extension of the base logic \textbf{BX} to include all instances of \textbf{\aref{DN}} and \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
+  \end{Ddef}
+NEW (live working tree, sha256 5783d60a441fcb38f44e285b7766ee176c366a1c3948daffa9684855d656dc24):
+  \begin{Ddef} \label{def:BX-d}
+    The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{DN}} and \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
+    Neither \textbf{\aref{DN}} nor \textbf{\aref{NN}} is due to Burgess or Xu; both are the present system's own principles for the dense extension.
+  \end{Ddef}
+--- anchor: def:BX-r ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 b35751c79a502988f9f77880354c9ed5200e9751361f2f6c209fcc3247721284 -- verified):
+  \begin{Ddef} \label{def:BX-r}
+    The \textit{Dense and Complete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{r}$ is the smallest extension of the dense logic \textbf{BX}$_\textsc{d}$ to include all instances of \textbf{\aref{PU}} and \textbf{\aref{SEP}} presented in \textbf{\S\ref{sub:Extension}}.
+    % NEW CHANGE [fragment leftovers]: reference to the deleted fragment system TM^- replaced by a section reference.
+    The completeness axiom \textbf{\aref{CO}} of \textbf{\S\ref{sub:Extension}} is a \textit{derived theorem} of \textbf{BX}$_\textsc{r}$ rather than a further axiom, using only \textbf{\aref{PU}} and the axioms of \textbf{BX}, and so is not included among the axioms of \textbf{BX}$_\textsc{r}$.
+    % This derivation is machine-checked in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so will not be provided here.
+    % Whether \textbf{\aref{CO}} alone axiomatizes the same logic as the full triple is open: the converse derivation--- deriving \textbf{\aref{PU}} and \textbf{\aref{SEP}} from \textbf{\aref{CO}} alone--- is conjectured to fail, via an unformalized pen-and-paper sketch involving a $\Q$-flow with isolated $\neg\varphi$ points accumulating at an irrational from above; this independence is not asserted as established.
+    % NEW CHANGE [Hölder consolidation]: a commented-out footnote duplicating the Hölder footnote of \S\ref{sub:Extension} was deleted here.
+  \end{Ddef}
+NEW (live working tree, sha256 650cb790801150df6a3d04a1356bb8c346b4e24694f381d8c5fbc7458da8f038):
+  \begin{Ddef} \label{def:BX-r}
+    The \textit{Dense and Complete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{r}$ extends the dense logic \textbf{BX}$_\textsc{d}$ to include \textbf{\aref{PU}} and \textbf{\aref{SEP}} presented in \textbf{\S\ref{sub:Extension}}.
+    The completeness axiom \textbf{\aref{CO}} of \textbf{\S\ref{sub:Extension}} is a \textit{derived theorem} of \textbf{BX}$_\textsc{r}$ rather than a further axiom, using only \textbf{\aref{PU}} and the axioms of \textbf{BX}, and so is not included among the axioms of \textbf{BX}$_\textsc{r}$.
+  \end{Ddef}
+--- anchor: def:TMplus ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 c14cad798aac2c73319de9ccc0a34ce6ca07971dbb6427e5107a08f23cc4cea8 -- verified):
+  \begin{Ddef} \label{def:TMplus}
+    The \textit{Base Logic of Tense and Modality} \textbf{TM} for $\BL$ is the smallest extension of \textbf{S5} and the base logic \textbf{BX} that includes all instances of the \textit{bimodal interaction} axiom \textbf{\aref{MF}} presented in \textbf{\S\ref{sub:Logic}}.
+    Similarly, the discrete \textbf{TM}$_\textsc{z}$, dense \textbf{TM}$_\textsc{d}$, and dense and complete \textbf{TM}$_\textsc{r}$ extensions of \textbf{TM} include the additional axioms that distinguish \textbf{BX}$_\textsc{z}$, \textbf{BX}$_\textsc{d}$, and \textbf{BX}$_\textsc{r}$, respectively.
+  \end{Ddef}
+NEW (live working tree, sha256 d71622fc325a3d40ae4a7823c0d5d17f73e4a18bcf2e1c4be59e6693db35e142):
+  \begin{Ddef} \label{def:TMplus}
+    The \textit{Base Logic of Tense and Modality} \textbf{TM} for $\BL$ extends \textbf{S5} and the base logic \textbf{BX} to include all instances of the \textit{bimodal interaction} axiom \textbf{\aref{MF}} presented in \textbf{\S\ref{sub:Logic}}.
+    The discrete \textbf{TM}$_\textsc{z}$, dense \textbf{TM}$_\textsc{d}$, and dense and complete \textbf{TM}$_\textsc{r}$ extensions of \textbf{TM} include the additional axioms that distinguish \textbf{BX}$_\textsc{z}$, \textbf{BX}$_\textsc{d}$, and \textbf{BX}$_\textsc{r}$, respectively.
+    The derivation relation $\vdash_\Lambda$ for the system $\Lambda$ is the smallest relation closed under the axioms and rules for $\Lambda$, omitting subscripts when ambiguity does not threaten.
+  \end{Ddef}
+--- anchor: app:discrete ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 23a54c163da3ed991258ccd9647ae153bb2704cd0f86c138c7e5381ac6190e0e -- verified):
+  \begin{Tthm} \label{app:discrete}
+  	For any temporal order $\D$, $\vDash_{\D} (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\D$ is \textsc{Discrete}.%
+  	  \footnote{
+  	    The theorems of this kind cannot be sharpened to single task frames.
+  	    The \textit{static} task frame over $\D$, in which $w \Rightarrow_x u$ just in case $w = u$, satisfies every clause of \textbf{\ref{def:frame}}--- each cone and each nonempty fiber and segment being a singleton--- yet its possible worlds are constant, so that every sentence of $\BL$ has the same truth value at every time along a possible world and \textbf{\aref{DF}}, \textbf{\aref{DN}}, and \textbf{\aref{CO}} are all valid over it whatever $\D$ may be.
+  	    Since the tense operators see $\D$ only through the convex histories that $\Rightarrow$ admits, correspondence holds over the fibre $\Tcls{\D}$ rather than frame by frame, as the Lean 4 repository for this paper records.
+  	  }
+  \end{Tthm}
+NEW (live working tree, sha256 b23ad82538bf651b879667b90954669ab952d94fee55e47d97b4298df06c56ee):
+  \begin{Tthm} \label{app:discrete}
+  	$\vDash_{\D} (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\D$ is \textsc{Discrete}.%
+  	  \footnote{
+  	    The theorems of this kind cannot be sharpened to single task frames.
+  	    The \textit{static} task frame over $\D$, in which $w \Rightarrow_x u$ just in case $w = u$, satisfies every clause of \textbf{\ref{def:frame}}--- each cone and each nonempty fiber and segment being a singleton--- yet its possible worlds are constant, so that every sentence of $\BL$ has the same truth value at every time along a possible world and \textbf{\aref{DF}}, \textbf{\aref{DN}}, and \textbf{\aref{CO}} are all valid over it whatever $\D$ may be.
+  	    Since the tense operators see $\D$ only through the convex histories that $\Rightarrow$ admits, correspondence holds over the fibre $\Tcls{\D}$ rather than frame by frame, as the Lean 4 repository for this paper records.
+  	  }
+  \end{Tthm}
+--- anchor: app:dense ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 751ad28ba753b718dad05beca27b6403a274977ff6e42a53e791d1770041b7d5 -- verified):
+  \begin{Tthm} \label{app:dense}
+  	For any temporal order $\D$, $\vDash_{\D} \Future\Future\varphi \rightarrow \Future\varphi$ iff $\D$ is \textsc{Dense}.
+  \end{Tthm}
+NEW (live working tree, sha256 2b12df669aeba06156557e0bddf36aaa2461a3e76fb01fe4b85dd0ad893a90c8):
+  \begin{Tthm} \label{app:dense}
+  	$\vDash_{\D} \Future\Future\varphi \rightarrow \Future\varphi$ iff $\D$ is \textsc{Dense}.
+  \end{Tthm}
+--- anchor: app:complete ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 9d962cf8efb3530cad11939c690d0a704154f4ddaaa7904f21ea9b8226a1f2fe -- verified):
+  \begin{Tthm} \label{app:complete}
+  	For any temporal order $\D$, $\vDash_{\D} \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\D$ is \textsc{Complete}.
+  \end{Tthm}
+NEW (live working tree, sha256 aee906f8218c159034fe60d26dfb309ebe55abd27c7257b4ce8b19a03fe0e8f2):
+  \begin{Tthm} \label{app:complete}
+  	$\vDash_{\D} \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\D$ is \textsc{Complete}.
+  \end{Tthm}
+--- anchor: def:frame-properties ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 709cefc5c849b2fe6bb950cbde6b1a738181c48eeff25e89df0bb5a457e2f268 -- verified):
+  \begin{Ddef} \label{def:frame-properties}
+  	A temporal order $\D = \tuple{D, +, 0, \leq}$ is:
+  	\begin{enumerate}[wide=0pt, labelsep=.05in, itemsep=.075in]
+  		\item[\sc Discrete] if for any $x \in D$, whenever there exists $y > x$, there is a least such $y' > x$ satisfying $z \geq y'$ for all $z > x$.
+  		\item[\sc Dense] if for any $x, y \in D$ where $x < y$, there exists $z \in D$ where $x < z < y$.
+  		\item[\sc Complete] if every nonempty $S \subseteq D$ bounded above has a least upper bound in $D$.
+  	\end{enumerate}
+  	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Discrete}, \textsc{Dense}, or \textsc{Complete} just in case its temporal order $\D$ is.
+  \end{Ddef}
+NEW (live working tree, sha256 d47ebef79f2988c0573f44b944ac049ea85ac841e5edab1a6f551183885fb63b):
+  \begin{Ddef} \label{def:frame-properties}
+  	A temporal order $\D = \tuple{D, +, 0, \leq}$ is:
+  	\begin{enumerate}[wide=0pt, labelsep=.05in, itemsep=.075in]
+  		\item[\sc Discrete] if for any $x \in D$, whenever there exists $y > x$, there is a least such $y' > x$ satisfying $z \geq y'$ for all $z > x$.
+  		\item[\sc Dense] if for any $x, y \in D$ where $x < y$, there exists $z \in D$ where $x < z < y$.
+  		\item[\sc Complete] if every nonempty $S \subseteq D$ bounded above has a least upper bound in $D$.
+  	\end{enumerate}
+  	A task frame $\F = \tuple{W, \D, \Rightarrow}$ inherits these properties from $\D$.
+  \end{Ddef}
+--- anchor: cor:tm-completeness ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 a374007e4006c6ae8388e9e0077e5579fc54d0b032b0369b546be1dfd0271643 -- verified):
+  \begin{Cthm}[Completeness] \label{cor:tm-completeness}
+    A proof system $\mathbf{S}$ is \textit{strongly complete} over a class $\mathsf{C}$ of task frames just in case $\Gamma \vDash_{\mathsf{C}} \varphi$ (\textbf{\ref{def:class-validity}}) implies $\Gamma \vdash_{\mathbf{S}} \varphi$ for every set of sentences $\Gamma$, and \textit{weakly complete} over $\mathsf{C}$ just in case $\vDash_{\mathsf{C}} \varphi$ implies $\vdash_{\mathbf{S}} \varphi$.
+    Completeness is then carried by the following $\BL$ systems:
+    \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+      \item[\bf TM] Strongly complete over all task frames.
+      \item[\bf TM$_\textsc{d}$] Strongly complete over the dense task frames.
+      \item[\bf TM$_\textsc{z}$] Weakly complete over $\Z$-time.
+      \item[\bf TM$_\textsc{r}$] Weakly complete over $\R$-time.
+    \end{enumerate}
+    Strong completeness provably fails for $\Z$-time as well as $\R$-time where compactness fails, and so weak completeness is the appropriate target.%
+      \footnote{
+        These results, together with the soundness of the corresponding systems, have been established in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so their proofs are not reproduced here.
+      }
+  \end{Cthm}
+NEW (live working tree, sha256 da75cac2b1c97db4458549c405a279762ea3a68977bd2ea1c3954e3dc4c97664):
+  \begin{Cthm}[Completeness] \label{cor:tm-completeness}
+    A proof system $\mathbf{S}$ is \textit{strongly complete} over a class $\mathsf{C}$ of task frames just in case $\Gamma \vDash_{\mathsf{C}} \varphi$ (\textbf{\ref{def:class-validity}}) implies $\Gamma \vdash_{\mathbf{S}} \varphi$ for every set of sentences $\Gamma$, and \textit{weakly complete} over $\mathsf{C}$ just in case $\vDash_{\mathsf{C}} \varphi$ implies $\vdash_{\mathbf{S}} \varphi$.
+    Completeness is then carried by the following $\BL$ systems:
+    \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+      \item[\bf TM] Strongly complete over all task frames.
+      \item[\bf TM$_\textsc{d}$] Strongly complete over the dense task frames.
+      \item[\bf TM$_\textsc{z}$] Weakly complete over $\Z$-time.
+      \item[\bf TM$_\textsc{r}$] Weakly complete over $\R$-time.
+    \end{enumerate}
+    Strong completeness provably fails for $\Z$-time as well as $\R$-time where compactness fails, and so weak completeness is the appropriate target.%
+      \footnote{
+        These results, together with the soundness of the corresponding systems, are established in the Lean 4 \leanrepo{} for this paper, and so their proofs are not reproduced here.
+        Each system is also extended to include \textit{Determined} and governing axioms in the language with $\Stability$, each sound over the task frames in its class validating \textit{Determined} and weakly complete over the \textsc{Deterministic} task frames in that class.
+      }
+  \end{Cthm}
+--- anchor: def:id ---
+OLD (pinned text from /home/benjamin/Projects/BimodalLogic/docs/reference/paper-definitions-of-record.md, sha256 1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238 -- verified):
+  \begin{Ddef} \label{def:id}
+    Letting $\BL^{\Box}$ be the purely modal fragment of $\BL$, each $p_i \in \SL$ will be understood to be a \textit{propositional variable} rather than sentence letter.
+    The \textit{identity extension} of $\BL^{\Box}$ is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
+  	\vspace{-.125in}
+  	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+  		\begin{multicols}{2}
+  			\aitem{Ref} $\vdash \varphi \equiv \varphi$.
+  			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
+  			\aitem[LL$^{-}$]{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$
+          where $\psi$ is free for $\varphi$ in $\chi$ and no replaced $\varphi$ lies in the scope of an operator.%
+          \footnote{
+            A formula $\psi$ is \textit{free for} $\varphi$ in $\chi$ just in case no replaced occurrence of $\varphi$ lies within the scope of a quantifier binding a variable free in $\varphi$ or $\psi$.
+            The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers.
+            The operator-scope proviso makes $\equiv$ a congruence for the logical vocabulary--- identicals may be substituted for one another within $\rightarrow$, $\bot$, $\equiv$, and the quantifiers added below--- but not for operator terms. % as in \textbf{\S\ref{sec:Introduction}}. %: the logical constants are objective, whereas an operator may be opaque.
+          }
+  		\end{multicols}
+  	\end{enumerate}
+  	\vspace{-.175in}
+    The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021}.}
+    Symmetry and transitivity of $\equiv$ are nevertheless derivable, and since each replaces an occurrence lying outside any operator term, both survive the proviso on \textbf{\aref{LL}}.
+    % Given $\varphi \equiv \psi$, instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches by permuting antecedents and applying modus ponens to give $\psi \equiv \varphi$, i.e., symmetry.
+    % Given also $\psi \equiv \theta$, a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
+  \end{Ddef}
+NEW (live working tree, sha256 78b20a9942c9beaac45336954aee21d57b8c67a755692e17259c5e5a2bd00c3f):
+  \begin{Ddef} \label{def:id}
+    Letting $\BL^{\Box}$ be the purely modal fragment of $\BL$, each $p_i \in \SL$ will be understood to be a \textit{propositional variable} rather than sentence letter.
+    The \textit{identity extension} of $\BL^{\Box}$ is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
+  	\vspace{-.125in}
+  	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
+  		\begin{multicols}{2}
+  			\aitem{Ref} $\vdash \varphi \equiv \varphi$.
+  			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
+  			\aitem[LL$^{-}$]{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$
+          where $\psi$ is free for $\varphi$ in $\chi$ and no replaced $\varphi$ lies in the scope of an operator.%
+          \footnote{
+            A formula $\psi$ is \textit{free for} $\varphi$ in $\chi$ just in case no replaced occurrence of $\varphi$ lies within the scope of a quantifier binding a variable free in $\varphi$ or $\psi$.
+            The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers.
+            % The operator-scope proviso makes $\equiv$ a congruence for the logical vocabulary--- identicals may be substituted for one another within $\rightarrow$, $\bot$, $\equiv$, and the quantifiers added below--- but not for operator terms. % as in \textbf{\S\ref{sec:Introduction}}. %: the logical constants are objective, whereas an operator may be opaque.
+          }
+  		\end{multicols}
+  	\end{enumerate}
+  	\vspace{-.175in}
+    The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021}.}
+    Symmetry and transitivity of $\equiv$ are nevertheless derivable, and since each replaces an occurrence lying outside any operator term, both survive the proviso on \textbf{\aref{LL}}.
+    % Given $\varphi \equiv \psi$, instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches by permuting antecedents and applying modus ponens to give $\psi \equiv \varphi$, i.e., symmetry.
+    % Given also $\psi \equiv \theta$, a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
+  \end{Ddef}
+
+  1 recorded anchor(s) could not be resolved (dangling \label/\aitem, or the environment/item structure changed):
+    - thm:M5-valid
