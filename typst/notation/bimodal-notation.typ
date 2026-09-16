@@ -116,7 +116,8 @@
 #let leanNullityIdentity = raw("nullity_identity")
 #let leanComp = raw("comp")
 #let leanForwardComp = raw("forward_comp")
-#let leanConverse = raw("converse")
+#let leanPosRel = raw("PosRel")
+#let leanReflection = raw("reflection")  // derived theorem, not a field: TaskRel w d u <-> TaskRel u (-d) w
 #let leanSerial = raw("serial")
 #let leanLimit = raw("limit")
 #let leanSaturation = raw("saturation")

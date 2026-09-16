@@ -140,8 +140,13 @@ structure TemporalOrder where
 -- The fibre over a fixed temporal order: the sole declaration site of the frame axioms
 structure FrameOver (D : TemporalOrder) where
   WorldState : Type
-  TaskRel : WorldState → D → WorldState → Prop
-  comp, converse, serial, limit, saturation : ...
+  [worldNonempty : Nonempty WorldState]
+  PosRel : WorldState → D.PositiveCone → WorldState → Prop   -- primitive, on D⁺
+  comp, serial, limit, saturation : ...                      -- over reflect PosRel
+
+-- The task relation, extended from D⁺ by the reflection convention (a definition, not a field)
+def FrameOver.TaskRel (F : FrameOver D) : F.WorldState → D → F.WorldState → Prop :=
+  TaskFrame.reflect F.PosRel
 
 -- The total space of the fibration, `Σ (D : TemporalOrder), FrameOver D`
 structure TaskFrame where
@@ -155,11 +160,20 @@ structure TaskFrame where
 
 **Fields of `FrameOver`** (reachable on a `TaskFrame` through delegating accessors, so
 `F.WorldState`, `F.TaskRel` and `F.saturation` all read as before):
-- `WorldState`: Type of world states
-- `TaskRel w x u`: World state `u` is reachable from `w` by task of duration `x`
+- `WorldState`, `worldNonempty`: the nonempty type of world states
+- `PosRel w x u`: the primitive relation (`def:task-relation`) at a nonnegative duration `x : D⁺`
 - `comp`: biconditional *Compositionality* on the positive cone
-- `converse`, `serial`, `limit`, `saturation`: the converse convention and `def:frame`'s
-  *Seriality*, *Limit* and *Saturation*
+- `serial`, `limit`, `saturation`: `def:frame`'s *Seriality*, *Limit* and *Saturation*
+
+All four axiom fields are stated over the extended relation `TaskFrame.reflect PosRel`, which is
+`F.TaskRel` by definition (`w ⇒_x u` means `u` is reachable from `w` by a task of duration `x`).
+
+**The reflection convention**: `TaskFrame.reflect` extends a primitive relation on `D⁺` to all of
+`D` (`reflect_of_nonneg`, `reflect_of_neg`, `reflect_coe`). The reflection law
+`FrameOver.reflection : F.TaskRel w d u ↔ F.TaskRel u (-d) w` (re-exported as
+`TaskFrame.reflection`) is a theorem. A frame presented by a two-sided relation `R` satisfying the
+reflection law is built with `FrameOver.ofReflective W R hR hcomp hser hlim hsat`, whose bridge is
+the simp lemma `ofReflective_taskRel`.
 
 **Derived, not fields**: `FrameOver.nullity` (`TaskRel w 0 w`, the paper's `lem:nullity`, from
 `serial` and `limit`), `FrameOver.eq_of_taskRel_zero` (injectivity at zero, from `limit` alone),
@@ -213,7 +227,7 @@ def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTota
 - `domain`: the set of times `X ⊆ D`
 - `nonempty_domain`: `X` is nonempty
 - `states t ht`: world state at time `t`
-- `respects_task`: the history respects the task relation (unconditionally; negative durations by the converse convention)
+- `respects_task`: the history respects the task relation (unconditionally; negative durations by the reflection convention)
 
 **Predicates and constructions**: `IsTotal` (world history), `IsConvex` (convex domain;
 `IsTotal.isConvex`), `Extends`, `timeShift` (with `isTotal_timeShift`), `ofTotal`.

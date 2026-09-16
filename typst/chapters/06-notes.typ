@@ -25,7 +25,7 @@ This chapter records the *permanent, intended* design facts of the mechanized pr
 
 - The perpetuity principles are named P1--P6, in prose and in the Lean code alike.
 - The notation $triangle.stroked.t$ and $triangle.stroked.b$ for "always" and "sometimes" corresponds to the Lean derived operators `always` and `sometimes`.
-- There is no *Reflection* axiom: negative durations come from the converse convention of the task-relation definition, packaged as the Lean field `converse` (in biconditional form); *Nullity* is a derived lemma, not an axiom, and the mechanization derives it too: the Lean frame structure has no zero-duration field, and both `nullity` and its biconditional form `nullity_identity` are theorems proved from the `serial` and `limit` fields (the Task Frames section of the Semantics chapter has the full account).
+- The reflection law is not an axiom: negative durations come from the reflection convention of the task-relation definition, and the Lean frame structure mirrors this, with the primitive relation `PosRel` on the positive cone, the two-sided `TaskRel` defined from it, and the law derived as the theorem `reflection`; *Nullity* is a derived lemma, not an axiom, and the mechanization derives it too: the Lean frame structure has no zero-duration field, and both `nullity` and its biconditional form `nullity_identity` are theorems proved from the `serial` and `limit` fields (the Task Frames section of the Semantics chapter has the full account).
 
 === Language Basis
 

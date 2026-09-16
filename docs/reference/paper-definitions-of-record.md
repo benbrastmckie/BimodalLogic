@@ -682,11 +682,17 @@ inside itself (true for every entry below, verified at recording time) — the e
 ```
 sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
 
-### `def:task-relation` — task relation, nonempty `W`, converse convention, fiber, cone, segment
+### `def:task-relation` — task relation, nonempty `W`, reflection convention, fiber, cone, segment
+
+Re-pinned when the paper renamed the *converse convention* to the *reflection convention*
+(wording only; the stipulation `w ⇒_{-x} u ≔ u ⇒_x w` is unchanged). The Lean encoding follows the
+paragraph's shape: the primitive relation `FrameOver.PosRel` lives on `D⁺`, the extended relation
+is the definition `FrameOver.TaskRel := TaskFrame.reflect PosRel`, and the reflection law is the
+theorem `FrameOver.reflection`, not a structure field.
 
 ```latex
 \begin{Ddef} \label{def:task-relation}
-	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
+	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\item[\it Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
 		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
@@ -695,7 +701,7 @@ sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
   \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `f076d52a3b75a5cdacdc86ed815c006b6bcbf78483aebd36152d1c5b04ed5b33`
+sha256: `2179def7a16a79de8df937c7dcb44ce08b8068623db1f755d96e230776f6a737`
 
 ### `def:directed` — directed family (used by Saturation) — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
 
@@ -1460,10 +1466,10 @@ citing `def:frame-properties` for determinism is now wrong.
 
 ```latex
 \begin{Ddef} \label{def:deterministic}
-	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Deterministic} just in case $u = v$ whenever $w \Rightarrow_x u$ and $w \Rightarrow_x v$ for $w, u, v \in W$ and $x \in D$, holding in both temporal directions since \textbf{\ref{def:task-relation}}'s converse convention already extends $x$ over all of $D$.
+	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Deterministic} just in case $u = v$ whenever $w \Rightarrow_x u$ and $w \Rightarrow_x v$ for $w, u, v \in W$ and $x \in D$, holding in both temporal directions since \textbf{\ref{def:task-relation}}'s reflection convention already extends $x$ over all of $D$.
 \end{Ddef}
 ```
-sha256: `3baae0ee62cee6a0bd81b18951efb3cd5d1097a017f9c60ccd2d8b87e4a3e175`
+sha256: `edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab721bdca88110`
 
 ### `cor:saturation-finite` — every task frame with finite W satisfies Saturation, choice-free (renamed from `cor:spherical-finite`; **environment changed `Cthm` → `Lthm`** in the 2026-09-07 wave)
 
@@ -1715,7 +1721,7 @@ human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing
 ```
 # anchor_id|kind|enclosing|locator|sha256
 def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
-def:task-relation|env|-|-|f076d52a3b75a5cdacdc86ed815c006b6bcbf78483aebd36152d1c5b04ed5b33
+def:task-relation|env|-|-|2179def7a16a79de8df937c7dcb44ce08b8068623db1f755d96e230776f6a737
 def:frame|env|-|-|b5d3bf93cf07486d239afcbc9379883fdbea1194e97d560b391ccbdc128b9d99
 def:frame#Compositionality|item|def:frame|Compositionality|4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa
 def:frame#Seriality|item|def:frame|Seriality|ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad
@@ -1749,7 +1755,7 @@ app:discrete|env|-|-|23a54c163da3ed991258ccd9647ae153bb2704cd0f86c138c7e5381ac61
 app:dense|env|-|-|751ad28ba753b718dad05beca27b6403a274977ff6e42a53e791d1770041b7d5
 app:complete|env|-|-|9d962cf8efb3530cad11939c690d0a704154f4ddaaa7904f21ea9b8226a1f2fe
 def:frame-properties|env|-|-|709cefc5c849b2fe6bb950cbde6b1a738181c48eeff25e89df0bb5a457e2f268
-def:deterministic|env|-|-|3baae0ee62cee6a0bd81b18951efb3cd5d1097a017f9c60ccd2d8b87e4a3e175
+def:deterministic|env|-|-|edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab721bdca88110
 cor:saturation-finite|env|-|-|ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3
 cor:tm-completeness|env|-|-|a374007e4006c6ae8388e9e0077e5579fc54d0b032b0369b546be1dfd0271643
 def:id|env|-|-|1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238

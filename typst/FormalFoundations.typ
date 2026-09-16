@@ -191,7 +191,7 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
 #definition("Task Relation")[
   A *task relation* on a nonempty set $#worldstate$ of *world states* over a temporal order $#Dur$
   is a parameterized relation $w arrow.r.double.long_(x) u$ for $w, u in #worldstate$ and
-  $x in D^+$, extended to negative durations by the *converse convention*
+  $x in D^+$, extended to negative durations by the *reflection convention*
   $ w arrow.r.double.long_(-x) u := u arrow.r.double.long_(x) w quad (x gt.eq 0), $
   and determining, for $w, v in #worldstate$ and $x, y in D$:
   #items[
@@ -279,7 +279,7 @@ below: two of the three results in @sec:histories are theorems of ZFC.
   $u in "Fib"(tau(t'), z-t')$ satisfies $tau(t) arrow.r.double.long_(z-t) u$ by *Compositionality*
   applied to $tau(t) arrow.r.double.long_(t'-t) tau(t')$, so
   $"Fib"(tau(t'), z-t') subset.eq "Fib"(tau(t), z-t)$, and symmetrically for $z < t' lt.eq t$ in
-  $X$ using the converse convention. Segments nest factorwise from the same inclusion. Given two
+  $X$ using the reflection convention. Segments nest factorwise from the same inclusion. Given two
   segments $S_(t,s)$ and $S_(t',s')$, the times $t'' := max(t,t')$ and $s'' := min(s,s')$ lie in
   $A$ and $C$ respectively, and $S_(t'',s'') subset.eq S_(t,s) inter S_(t',s')$ by nesting. Given
   two fibers $F_t$ and $F_(t')$, the times $t$ and $t'$ lie on the same side of $z$, so the fiber
@@ -367,7 +367,7 @@ The cones are a basis for a topology on world states, and that topology is separ
   ${u} subset.eq overline({u})$ is immediate. Conversely let $w in overline({u})$. By Nullity
   every basic open $(w)_x$ contains $w$, so $u in (w)_x$ for every $x > 0$.
   Hence for each such $x$ there is $y$ with $|y| < x$ and $w arrow.r.double.long_(y) u$, so $u arrow.r.double.long_(-y) w$
-  by the converse convention and $w in (u)_x$.
+  by the reflection convention and $w in (u)_x$.
   Thus $w in inter.big_(x>0)(u)_x = {u}$ by *Limit*, and so R0 follows.
 ]
 

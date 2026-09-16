@@ -43,7 +43,7 @@ This algebraic choice is not incidental to the rest of the book: the discrete-or
 The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly this: `D` carries `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, and `Nontrivial` instances, matching the definition field for field.
 
 #definition("Task Relation")[
-  A *task relation* on a nonempty set of world states $W$ over a temporal order $D$ is any parameterized relation $w arrow.r.double.long_x u$ for $w, u in W$ and $x in D^+$, extended to negative durations by the *converse convention*
+  A *task relation* on a nonempty set of world states $W$ over a temporal order $D$ is any parameterized relation $w arrow.r.double.long_x u$ for $w, u in W$ and $x in D^+$, extended to negative durations by the *reflection convention*
   $ w arrow.r.double.long_(-x) u := u arrow.r.double.long_x w quad "for" x gt.eq 0, $
   determining, for any world states $w, v in W$ and durations $x, y in D$:
   - *Fiber*: $"Fib"(w, x) := { u in W : w arrow.r.double.long_x u }$.
@@ -53,7 +53,7 @@ The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly thi
 // CONFIRM(paper): def:task-relation states this definition (source text pinned verbatim in
 //   docs/reference/paper-definitions-of-record.md)
 
-There is therefore no separate *Reflection* axiom: the equivalence $w arrow.r.double.long_x u arrow.l.r.double u arrow.r.double.long_(-x) w$ is built into the task relation's definition by the converse convention above, not imposed as a further constraint on frames.
+The reflection law $w arrow.r.double.long_x u arrow.l.r.double u arrow.r.double.long_(-x) w$ is therefore not an axiom: it is the reflection convention above, built into the task relation's definition rather than imposed as a further constraint on frames.
 Any converse operation written explicitly in this book uses a superscript inverse ($arrow.r.double.long^(-1)$), never the relation-algebra breve or smile common in the arrow-logic literature; the convention itself carries no operator symbol, being written only as subscript negation.
 
 #align(center)[
@@ -146,7 +146,7 @@ The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get so
   Stating it as a fifth axiom would therefore not strengthen the theory, only lengthen the definition.
 ]
 
-The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanConverse packages the *converse convention* as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSaturation is *Saturation* verbatim, stated by citation as `TaskFrame.Saturation TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:convex-histories consumes.
+The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive relation #leanPosRel is typed on the positive cone $D^+$, and the two-sided #leanTaskRel is *defined* from it by the *reflection convention*, so the reflection law is the derived theorem #leanReflection rather than a field (definitional off zero, and at zero a consequence of *Seriality* and *Limit*); the four axiom fields are stated over that extended relation. #leanComp is the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSaturation is *Saturation* verbatim, stated by citation as `TaskFrame.Saturation TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:convex-histories consumes.
 There is no zero-duration field: #leanNullityDerived (`TaskRel w 0 w`) is a *theorem*, derived from #leanSerial and #leanLimit exactly as in the proof above, matching Nullity's derived status.
 The biconditional #leanNullityIdentity ($w arrow.r.double.long_0 u arrow.l.r.double w = u$) is derived too: its injectivity half follows from #leanLimit alone, since $w arrow.r.double.long_0 u$ puts $u$ in every cone around $w$, so it adds nothing beyond the four frame axioms.
 

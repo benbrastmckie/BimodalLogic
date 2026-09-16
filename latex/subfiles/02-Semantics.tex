@@ -28,19 +28,19 @@ $\taskseg{w}{v}{x}{y}$ & $\worldstate \to \worldstate \to \poscone \to \poscone 
 \end{center}
 
 \noindent
-The task relation is primitive only on the positive cone; the extended relation is obtained from it by the converse convention stated below, and the fibers, cones, and segments are all defined in terms of the extended relation.
+The task relation is primitive only on the positive cone; the extended relation is obtained from it by the reflection convention stated below, and the fibers, cones, and segments are all defined in terms of the extended relation.
 
 % Restates the JPL paper's \label{def:task-relation}. Verbatim source text (quoted so a
 % renamed anchor stays detectable by text search):
 %   "A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal
 %    order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and
-%    $x \in D^+$, extended to negative durations by the \textit{converse convention}
+%    $x \in D^+$, extended to negative durations by the \textit{reflection convention}
 %    $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$ ..."
 %   "\item[\it Fiber:] $\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}$."
 %   "\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)$ where $x > 0$."
 %   "\item[\it Segment:] $[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)$ where $x, y \geq 0$."
 \begin{definition}[Task Relation]\label{def:task-relation}
-A \textbf{task relation} on a nonempty set of world states $\worldstate$ over a temporal order $\D$ is any parameterised relation $w \taskto{x} u$ for $w, u \in \worldstate$ and $x \in \poscone$, extended to negative durations by the \emph{converse convention}
+A \textbf{task relation} on a nonempty set of world states $\worldstate$ over a temporal order $\D$ is any parameterised relation $w \taskto{x} u$ for $w, u \in \worldstate$ and $x \in \poscone$, extended to negative durations by the \emph{reflection convention}
 \[
   w \taskto{-x} u \quad \define \quad u \taskto{x} w
   \qquad \text{for } x \geq 0,
@@ -54,7 +54,7 @@ determining the following for any world states $w, v \in \worldstate$ and durati
 \end{definition}
 
 \noindent
-The fiber $\Fib(w, x)$ collects the world states reachable from $w$ by a task of duration exactly $x$; by the converse convention, negative-duration fibers run the relation backwards.
+The fiber $\Fib(w, x)$ collects the world states reachable from $w$ by a task of duration exactly $x$; by the reflection convention, negative-duration fibers run the relation backwards.
 The cone $\taskcone{w}{x}$ collects the world states reachable forwards or backwards from $w$ within any duration of magnitude strictly less than $x$.
 The segment $\taskseg{w}{v}{x}{y}$ collects the world states reachable forwards from $w$ in duration $x$ that also reach $v$ forwards in duration $y$: the candidate states lying between the two endpoints.
 Fibers and segments are two separate classes of sets; in particular, a one-sided fiber does not count as a segment.
@@ -108,7 +108,7 @@ $w \taskto{0} w$ for every world state $w \in \worldstate$ in every task frame $
 Nullity is \emph{derived} rather than postulated, and the derivation is choice-free: \emph{Seriality} at $x = 0$ supplies some $u$ with $w \taskto{0} u$; since $|0| < x$ for every $x > 0$, this $u$ lies in every cone around $w$, and \emph{Limit} then forces $u = w$.
 
 \begin{remark}
-Composition over negative durations is likewise derived rather than postulated: take converses, compose on the positive cone via \emph{Compositionality}, and take the converse of the result.
+Composition over negative durations is likewise derived rather than postulated: take converses by the reflection convention, compose on the positive cone via \emph{Compositionality}, and take the converse of the result.
 Mixed-sign composition is not so much prohibited as inexpressible at the primitive level, since primitive durations are nonnegative.
 \end{remark}
 
