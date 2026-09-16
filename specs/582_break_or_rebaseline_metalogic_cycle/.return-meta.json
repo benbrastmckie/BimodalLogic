@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/582_break_or_rebaseline_metalogic_cycle/reports/02_cycle-break-costing.md",
+      "summary": "Costs Options A1/A2/B for the Conservativity<->Deterministic cycle; A1 (relocate detDerivable_ofFormula_iff into Deterministic/Completeness.lean, drop one import) verified by scratch compile and simulated cycle check."
+    }
+  ],
+  "user_decision": {
+    "question": "How should the Conservativity <-> Deterministic directory cycle be resolved?",
+    "options": [
+      "Option A1 — relocate detDerivable_ofFormula_iff into Deterministic/Completeness.lean and delete the Corollaries import (verified to break the cycle)",
+      "Option A2 — lift AxiomValidity/PlusSoundness out of Conservativity into a shared directory",
+      "Option B — accept the cycle: bump the script to 2 with both cycles named, update README/ADR-006/MODULE_INVARIANTS, write a new ADR"
+    ],
+    "recommended": "Option A1 — relocate detDerivable_ofFormula_iff into Deterministic/Completeness.lean and delete the Corollaries import (verified to break the cycle)",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1789573870_865f5c_582",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
