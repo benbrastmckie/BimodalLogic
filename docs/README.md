@@ -305,9 +305,10 @@ For detailed documentation standards, see:
 ### Building Documentation
 
 Generated API documentation is published by
-[`.github/workflows/docs.yml`](../.github/workflows/docs.yml), which runs
-`leanprover-community/docgen-action` on every push to `main` and deploys the result to GitHub
-Pages. The docstrings in the tree are the source; `references.bib` at the repository root
+[`.github/workflows/docs.yml.disabled`](../.github/workflows/docs.yml.disabled), which runs
+`leanprover-community/docgen-action` and deploys the result to GitHub Pages. The workflow is
+**currently disabled** (`docgen-action` requires a `lakefile.toml`), so it does not run on push
+and the published site is not being refreshed. The docstrings in the tree are the source; `references.bib` at the repository root
 supplies the bibliography, so a `[key]` citation in a `## References` block renders as a real
 reference rather than a bare surname and year.
 

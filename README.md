@@ -332,8 +332,10 @@ It is load-bearing for the live completeness chain via `uSExpressivelyCompleteOv
 ## Documentation
 
 **[API documentation](https://benbrastmckie.github.io/BimodalLogic/)** — the generated
-doc-gen4 reference for every declaration in `FormalSystem`, built and deployed by
-[`.github/workflows/docs.yml`](.github/workflows/docs.yml) on every push to `main`.
+doc-gen4 reference for every declaration in `FormalSystem`. The deploying workflow is
+currently **disabled**: it lives at
+[`.github/workflows/docs.yml.disabled`](.github/workflows/docs.yml.disabled) because
+`docgen-action` requires a `lakefile.toml`, so the published site is not rebuilt on push.
 
 ### Start here
 
