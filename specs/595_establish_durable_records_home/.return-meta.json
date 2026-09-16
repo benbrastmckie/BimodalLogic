@@ -1,10 +1,95 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "dispatch_seq": 11,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/595_establish_durable_records_home/summaries/01_durable-records-home-summary.md",
+      "summary": "Moved paper-definitions-of-record.md and the two decision records from specs/ to docs/reference/ and docs/architecture/, repointed all live citations, cleared the new gate exposure, and documented the placement rule."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Moved paper-definitions-of-record.md and the two decision records (total-history-validity-decisions.md, untl-snce-argument-order.md) from the ephemeral specs/ tree to docs/reference/ and docs/architecture/ respectively (git history preserved), repointed all ~74 live citations across Lean docstrings, two scripts, docs, typst comments, references.bib, and in-library READMEs, cleared the C12/C15/C20 tier 2/C9D gate exposure the move introduced in check-module-invariants.sh, and recorded the placement rule and rationale in docs/README.md, docs/reference/README.md, and docs/architecture/README.md."
+  },
+  "modified_files": [
+    "docs/reference/paper-definitions-of-record.md",
+    "docs/architecture/total-history-validity-decisions.md",
+    "docs/architecture/untl-snce-argument-order.md",
+    "specs/paper-definitions-of-record.md",
+    "specs/decisions/total-history-validity-decisions.md",
+    "specs/decisions/untl-snce-argument-order.md",
+    "scripts/check-paper-definitions.sh",
+    "scripts/check-module-invariants.sh",
+    "docs/theorem-index.md",
+    "docs/development/MODULE_INVARIANTS.md",
+    "FormalSystem/Boneyard/Kamp/KampWeakCanonical/README.md",
+    "FormalSystem/Boneyard/README.md",
+    "FormalSystem/Metalogic/Conservativity.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/README.md",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Unfold.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean",
+    "FormalSystem/Semantics/ConvexHistory.lean",
+    "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
+    "FormalSystem/Semantics/Correspondence/README.md",
+    "FormalSystem/Semantics/Extension/Admissible.lean",
+    "FormalSystem/Semantics/Extension/Constraint.lean",
+    "FormalSystem/Semantics/Extension/Extension.lean",
+    "FormalSystem/Semantics/Extension/Step.lean",
+    "FormalSystem/Semantics/FrameAxioms.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/Semantics/MinusLanguage/MinusTruth.lean",
+    "FormalSystem/Semantics/PartialHistory.lean",
+    "FormalSystem/Semantics/PartialHistoryOrder.lean",
+    "FormalSystem/Semantics/TaskFrame.lean",
+    "FormalSystem/Semantics/Truth.lean",
+    "FormalSystem/Syntax/Formula.lean",
+    "FormalSystem/Theorems/Combinators.lean",
+    "FormalSystem/Theorems/DedekindDerived.lean",
+    "FormalSystem/Theorems/DiscreteUnfolding.lean",
+    "references.bib",
+    "Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean",
+    "typst/chapters/02-semantics.typ",
+    "typst/chapters/p2-frame-classes.typ",
+    "typst/FormalFoundations.typ",
+    "typst/sync-check-whitelist.txt",
+    "typst/SYNC-MAP.md",
+    "docs/reference/README.md",
+    "docs/architecture/README.md",
+    "docs/README.md",
+    "specs/595_establish_durable_records_home/plans/01_durable-records-home.md",
+    "specs/595_establish_durable_records_home/summaries/01_durable-records-home-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a script's own resolution-source/manifest file (e.g. check-module-invariants.sh's C15 anchor record) also gets scanned as a CITER in the same gate's citation walk, its own illustrative or changelog prose (e.g. examples of what an unresolved anchor would look like, or a `foo-*` glob shorthand) can be mistaken for real unresolved citations. Fix by excluding the resolution-source file itself from the citer walk (grep --exclude=<basename>), not by adding synthetic rows to the manifest for prose that isn't a real citation. Keep every other file, including sibling records of the same genre, in scope.",
+      "category": "PATTERN",
+      "source_artifact": "specs/595_establish_durable_records_home/summaries/01_durable-records-home-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["gate scripts", "self-referential scan", "resolution source", "citation walk", "check-module-invariants.sh"]
+    },
+    {
+      "content": "Under heavy multi-task concurrency in one working tree (multiple orchestrator dispatches editing shared hot files like a central check-module-invariants.sh or a widely-imported aggregator module), isolating only your own hunks via `git apply --cached` immediately before committing is necessary but not sufficient: a concurrent process can re-stage (git add) the full file again in the window between your isolation step and your own `git commit -- <pathspec>` call, which uses whatever is currently staged for that path rather than what you isolated moments earlier. The resulting commit is content-correct but attribution-mixed with the other task. There is no git-porcelain-level fix for this race; treat it as an expected, reportable hazard on heavily shared files rather than a bug in the isolation technique, and verify with `git show --stat <commit>` right after committing (not just before) to catch it.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/595_establish_durable_records_home/summaries/01_durable-records-home-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["concurrent commits", "git apply --cached", "hunk isolation", "commit attribution race", "multi-task concurrency"]
+    },
+    {
+      "content": "On this environment's grep, `grep -rn <pattern> .` does NOT prefix matched paths with `./`, so a filter written as `grep -v '^\\./specs/'` silently fails to exclude specs/** and lets those lines through. Use `grep -v '^specs/'` instead when excluding a directory from a repo-root-relative recursive grep on this system.",
+      "category": "CONFIG",
+      "source_artifact": "specs/595_establish_durable_records_home/summaries/01_durable-records-home-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["grep", "recursive grep", "path prefix", "exclusion filter"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789577011_0f6aae",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
-  },
-  "dispatch_seq": 11
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  }
 }
