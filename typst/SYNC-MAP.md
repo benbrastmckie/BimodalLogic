@@ -465,7 +465,7 @@ claim guarded by a maintainer-only `CONFIRM` comment rather than status prose. C
 - **Paper citations removed from rendered content** (Decision E2): the manual's single
   acknowledgment of the paper is the front-matter Sources block; LaTeX anchors survive only
   inside non-rendered CONFIRM comments (un-backticked) and in
-  `specs/paper-definitions-of-record.md`. Whitelist entries orphaned by the citation removal
+  `docs/reference/paper-definitions-of-record.md`. Whitelist entries orphaned by the citation removal
   and the incompleteness cut were removed after per-entry citation greps (entries still cited
   by `FormalFoundations.typ`, a standalone report outside this revision's scope, were kept).
 - **Frame-class/naming alignment**: nine axiom layers (Layer 9 = Reynolds Dedekind triple),

@@ -47,7 +47,7 @@ corrected against the anchor of record.)
 - `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x < y (future, strict)
 
 **Critical Semantic Design (this tree's encoding; Decision A of
-`specs/decisions/total-history-validity-decisions.md`)**:
+`docs/architecture/total-history-validity-decisions.md`)**:
 `def:BL-semantics` defines truth only at possible worlds `τ ∈ H_F`, whose domain is all of `D`,
 and quantifies the temporal clauses over all `y ∈ D`. This tree evaluates `TruthAt` on
 **arbitrary** `ConvexHistory`s and reads the paper's clauses unchanged on them; the one place that
@@ -155,8 +155,8 @@ on no proof-system notion.
 * [Formula.lean](../Syntax/Formula.lean) - Formula syntax
 * [TaskModel.lean](TaskModel.lean) - Task model structure
 * JPL Paper `app:TaskSemantics`, `def:BL-semantics` — formal truth definition, cited by
-  `\label` (pinned verbatim in `specs/paper-definitions-of-record.md`)
-* `specs/decisions/total-history-validity-decisions.md` — Decision A, the arbitrary-history
+  `\label` (pinned verbatim in `docs/reference/paper-definitions-of-record.md`)
+* `docs/architecture/total-history-validity-decisions.md` — Decision A, the arbitrary-history
   encoding of the atom clause
 
 ## Tags
@@ -196,7 +196,7 @@ with `@[simp]` characterization theorems (see `future_iff`, `past_iff`, etc.).
 **Paper Reference**: `def:BL-semantics`'s box clause, verbatim: "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ
 for all σ ∈ H_F". The quantifier ranges over `H_F` — the TOTAL histories — with no `Ω` and no
 shift-closure side condition. `ConvexHistory.IsTotal` is the predicate form of `H_F` membership
-(Decision A of `specs/decisions/total-history-validity-decisions.md`); it is deliberately **not**
+(Decision A of `docs/architecture/total-history-validity-decisions.md`); it is deliberately **not**
 Mathlib's `IsMax` or any order-theoretic maximality predicate.
 
 **There is no admissible-history parameter.** `TruthAt` takes the model, the history, the time
@@ -228,7 +228,7 @@ open-interval condition is the **first**. `def:BLplus-language` corroborates ind
 **Anchor provenance.** These clauses used to live under `def:BLplus-semantics`, a separate
 definition for the separate language `BL^+`. The paper's 2026-09 wave collapsed `BL^+` into `BL`
 and made the since/until clauses clauses of `def:BL-semantics` itself, deleting the old label —
-which `specs/paper-definitions-of-record.md` now records `DANGLING`. The clause bodies quoted
+which `docs/reference/paper-definitions-of-record.md` now records `DANGLING`. The clause bodies quoted
 above are word-for-word what the live `def:BL-semantics` carries; only their home moved. The same
 wave moved the defined operators into `def:BLplus-language`'s own block (that anchor id is
 unchanged), retiring `def:BLplus-defined` likewise.
@@ -237,7 +237,7 @@ Earlier revisions of this docstring quoted an argument-order **footnote** of the
 semantics anchor and asserted that the Lean tree was deliberately event-first. Both are
 retired: the tracked anchor carries no footnote, and the tree was aligned
 to the paper by a uniform argument swap of the definition and every call site. See
-`specs/decisions/untl-snce-argument-order.md`. These clauses are τ-local and are untouched by the
+`docs/architecture/untl-snce-argument-order.md`. These clauses are τ-local and are untouched by the
 box retarget.
 -/
 def TruthAt (M : TaskModel F)

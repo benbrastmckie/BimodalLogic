@@ -23,7 +23,7 @@ Two distinctions are load-bearing throughout and are documented at their stateme
   `Metalogic/Independence/LexIntWitness.lean` witnesses.
 - **(T0) versus (T1).** The per-frame reading of the three correspondence theorems is false in
   its (⇒) direction; only the temporal-order-level reading is true. See `DurationFrames.lean`'s
-  header and `specs/paper-definitions-of-record.md`'s reading note.
+  header and `docs/reference/paper-definitions-of-record.md`'s reading note.
 
 ## Modules
 

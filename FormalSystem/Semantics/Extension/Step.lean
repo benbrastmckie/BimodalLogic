@@ -50,7 +50,7 @@ would make this file stop typechecking.
 
 ## Paper Specification Reference
 
-Anchors are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the paper
+Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the paper
 source — is the citation source of record.
 
 - `lem:step` (verbatim): "Every partial history $\tau : X \to W$ over a frame

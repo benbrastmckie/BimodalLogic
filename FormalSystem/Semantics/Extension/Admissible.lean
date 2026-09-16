@@ -20,7 +20,7 @@ partial history by one point", mirroring the paper's decomposition exactly:
 
 ## Paper Specification Reference
 
-Anchors are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the paper
+Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the paper
 source — is the citation source of record.
 
 - `lem:fibers` (verbatim, as last resolved before the paper retired the anchor): "For any
@@ -44,7 +44,7 @@ source — is the citation source of record.
 **`lem:fibers` is a RETIRED paper anchor.** The paper removed `\label{lem:fibers}` in a
 2026-08-17 editing wave; the lemma's content was absorbed into the proof of `lem:admissible`
 rather than restated. Every `lem:fibers` citation in this tree resolves against
-`specs/paper-definitions-of-record.md`'s **DANGLING** entry — which retains the lemma's last
+`docs/reference/paper-definitions-of-record.md`'s **DANGLING** entry — which retains the lemma's last
 resolved text — and not against any live `\label` in the paper. The name is kept because the
 statement is still exactly what `PartialHistory.fibers` proves and because no live anchor covers
 the same content; a reader going to the paper for it will not find it there.
@@ -60,7 +60,7 @@ pairs, `TaskFrame.nullity_of_serial_limit` for the single `⟨z, z⟩` pair.
 paper's converse convention when `z - t` is negative. That is exactly why
 `PartialHistory.respects_task` is stated unconditionally rather than under an `s ≤ t` guard
 (`PartialHistory`'s module docstring, decision 2, recorded in
-`specs/decisions/total-history-validity-decisions.md` as Decision B): the unconditional field is
+`docs/architecture/total-history-validity-decisions.md` as Decision B): the unconditional field is
 the shape this lemma and `lem:admissible` consume, and `adjoin` discharges it directly, with no
 `ofLe` detour and no guarded restatement.
 
@@ -101,7 +101,7 @@ here:
   (*Seriality* + *Limit*, choice-free) rather than from the field. Whether the field should be
   demoted to the reflexivity half, kept as an iff, or have its injectivity-at-zero content dropped
   is a joint question with the four-axiom frame-alignment work recorded in
-  `specs/decisions/total-history-validity-decisions.md`; nothing here forecloses any of those
+  `docs/architecture/total-history-validity-decisions.md`; nothing here forecloses any of those
   options, because nothing here depends on the field.
 - ***Saturation* is not consumed here either.** It is applied only at `lem:step`, the sole
   application site the paper names. This module supplies that application its *other* input —

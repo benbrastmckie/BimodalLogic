@@ -14,7 +14,7 @@ This module is **permanent evidence**, not a conventional test. It exists to ans
 durably, a question that will otherwise be re-opened every time someone reads
 `TaskFrame.saturation_of_finite` and notices that it depends on `Classical.choice` while the
 paper corollary it transcribes (`cor:saturation-finite`, recorded verbatim in
-`specs/paper-definitions-of-record.md`) calls itself *choice-free*.
+`docs/reference/paper-definitions-of-record.md`) calls itself *choice-free*.
 
 The natural reaction to that mismatch is to try to "fix" the Lean proof — to hunt for a
 `Classical.choice`-free route to `Saturation R` on a finite carrier. **That hunt cannot succeed.**

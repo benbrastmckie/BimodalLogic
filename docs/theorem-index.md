@@ -10,7 +10,7 @@ page is right and the other is stale.
 
 | Column | Meaning |
 |--------|---------|
-| Paper label | The `\label{}` in ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf), pinned in [`specs/paper-definitions-of-record.md`](../specs/paper-definitions-of-record.md) and checked by C15. `—` means the result is the formalization's own, with no paper counterpart — compactness, non-compactness and consequence completeness are all in that category. |
+| Paper label | The `\label{}` in ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf), pinned in [`docs/reference/paper-definitions-of-record.md`](reference/paper-definitions-of-record.md) and checked by C15. `—` means the result is the formalization's own, with no paper counterpart — compactness, non-compactness and consequence completeness are all in that category. |
 | Statement | One line. The Lean statement itself is the authority. |
 | Lean name | **Fully qualified, always.** A bare base identifier is not a row key: it can name declarations in more than one namespace, and the File column alone does not disambiguate them. `completeness_dense` and `completeness_ztime` used to do exactly that — the `BXCanonical` engines have since been renamed `derivable_of_validDense` / `derivable_of_validZTime`, but the convention stands for every row. |
 | File | Path only. **No line numbers**: cite declaration names, never `file:line`. |
@@ -152,10 +152,10 @@ class — see `deterministic_not_plusDefinable` above.
 | `app:discrete` | `Sat .ZTime ⊊ Mod (AxiomSet .ZTime)` — the narrowing is not Galois-closed | `FormalSystem.Metalogic.Independence.sat_ztime_ssubset_mod_axiomSet` | `FormalSystem/Metalogic/Independence/LexIntWitness.lean` | ZTime | pcq pinned:C14 |
 | `app:deterministic` | No set of `PlusFormula`s defines `TaskFrame.Deterministic` | `FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable` | `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` | — | pcq pinned:C14 |
 | `def:BLstar-semantics` | No `Formula` of L is equivalent to `⊡Fp` over all task models — the stability modal is not L-definable | `FormalSystem.Metalogic.Independence.stabNotDefinable` | `FormalSystem/Metalogic/Independence/StabUndefinable.lean` | — | pcq |
-| — | Every formula of the syntactic **state-locality** fragment of L⋆ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isStateLocal_of_stateLocal` | `FormalSystem/Semantics/StarStateLocal.lean` | — | `[propext]` |
-| — | `φ ↔ ⊡φ` is valid for every state-local `φ` — the fragment-level strengthening of the atom-level `p → ⊡p` | `FormalSystem.Semantics.stateLocal_starValid_iff_stab` | `FormalSystem/Semantics/StarStateLocal.lean` | Base | pcq |
-| — | Every formula of the syntactic **state-locality** fragment of L⁺ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isPlusStateLocal_of_stateLocal` | `FormalSystem/Semantics/PlusStateLocal.lean` | — | `[propext]` |
-| — | `φ ↔ ⊡φ` is valid for every state-local `φ` of L⁺ — the fragment-level strengthening of the atom-level `p → ⊡p`, and the AS witness of TM⁺ soundness | `FormalSystem.Semantics.plusStateLocal_plusValid_iff_stab` | `FormalSystem/Semantics/PlusStateLocal.lean` | Base | pcq |
+| — | Every formula of the syntactic **state-locality** fragment of L⋆ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isStateLocal_of_stateLocal` | `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | — | `[propext]` |
+| — | `φ ↔ ⊡φ` is valid for every state-local `φ` — the fragment-level strengthening of the atom-level `p → ⊡p` | `FormalSystem.Semantics.stateLocal_starValid_iff_stab` | `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | Base | pcq |
+| — | Every formula of the syntactic **state-locality** fragment of L⁺ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isPlusStateLocal_of_stateLocal` | `FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean` | — | `[propext]` |
+| — | `φ ↔ ⊡φ` is valid for every state-local `φ` of L⁺ — the fragment-level strengthening of the atom-level `p → ⊡p`, and the AS witness of TM⁺ soundness | `FormalSystem.Semantics.plusStateLocal_plusValid_iff_stab` | `FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean` | Base | pcq |
 | — | The two state-locality fragments agree along `ofPlus`, as a biconditional: the L⁺ fragment is exactly the `ofPlus`-preimage of the L⋆ one | `FormalSystem.Semantics.stateLocal_ofPlus_iff` | `FormalSystem/Semantics/StateLocalTransfer.lean` | — | `[]` |
 | — | `sent:det` is valid over the forward-deterministic `F^N` at **every** state-local instance, not only at sentence letters | `FormalSystem.Metalogic.Independence.fn_sentDet_stateLocal` | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | — | pcq |
 | — | The two-sided bound: valid at every state-local instance, refuted at `P p`, which lies outside the fragment | `FormalSystem.Metalogic.Independence.fn_sentDet_bounds` | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | — | pcq |
@@ -176,7 +176,7 @@ class — see `deterministic_not_plusDefinable` above.
 | — | Proof-theoretic conservativity of TM⁺ over TM, both directions, all four classes | `FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean` | — | pcq pinned:C14 |
 | — | Proof-theoretic conservativity of TM⁺ + *Determined* over TM, all four classes | `FormalSystem.Metalogic.Deterministic.detDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Deterministic/Completeness.lean` | — | pcq |
 | — | Soundness of TM⁺ at every frame class | `FormalSystem.Metalogic.Conservativity.plus_soundness_validIn` | `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` | — | pcq pinned:C14 |
-| — | Semantic conservativity of L⁺ over L | `FormalSystem.Semantics.plusValidIn_ofFormula_iff` | `FormalSystem/Semantics/PlusValidity.lean` | — | `[propext]` pinned:C14 |
+| — | Semantic conservativity of L⁺ over L | `FormalSystem.Semantics.plusValidIn_ofFormula_iff` | `FormalSystem/Semantics/PlusLanguage/PlusValidity.lean` | — | `[propext]` pinned:C14 |
 
 ### TM⋆ over L⋆ — the store/recall language
 
@@ -258,7 +258,7 @@ not read as an oversight:
   generated inventory and the three completeness routes
 - [`FormalSystem/Metalogic.lean`](../FormalSystem/Metalogic.lean) — the module docstring, whose
   every SORRY-FREE claim is pinned by C2 or C14
-- [`specs/paper-definitions-of-record.md`](../specs/paper-definitions-of-record.md) — the pinned
+- [`docs/reference/paper-definitions-of-record.md`](reference/paper-definitions-of-record.md) — the pinned
   paper anchors C15 resolves against
 
 ## Tags

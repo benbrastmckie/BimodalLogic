@@ -179,7 +179,7 @@ The characterization is definitional: the unfold lemmas `next_unfold` and `prev_
 The tense-primitive sublanguage --- one-place $H$/$G$ primitive, no Since or Until --- embeds into the book's full language *unconditionally*: the derived-operator definitions of @sec:formulas send every tense-primitive formula to a formula of the full language with the same truth conditions.
 // CONFIRM(paper): thm:BLplus-PastFuture stated the unconditional language embedding this note
 //   asserts. RETIRED: the anchor went away with the BL^+ fragment cluster in the paper's
-//   2026-09 wave and is recorded DANGLING in specs/paper-definitions-of-record.md. The H/G
+//   2026-09 wave and is recorded DANGLING in docs/reference/paper-definitions-of-record.md. The H/G
 //   characterizations the note relies on are proved in-tree, not imported from the paper.
 The subsystem axiomatized over that sublanguage (the twelve-schema presentation recorded in @sec:paper-contrast and the back matter's axiom map) is *deferred*: developing it, and establishing a proof-system conservativity theorem relating it to the full system, is that subsystem's own future result rather than part of this book's system.
 // CONFIRM(paper): a conservative-extension theorem for the tense-primitive subsystem is stated (successor of the

@@ -723,7 +723,7 @@ def necG {fc : FrameClass} (Γ : Context) (A : Formula) (h : ⊢[fc] A) :
 /-- Guard monotonicity (BX2G, `Axiom.left_mono_until_G`) in usable form.
 
 The *helper's* parameter order is `(event, guard, guard')`, while the *terms* it builds are
-guard-first (`Formula.untl g e`, per `specs/decisions/untl-snce-argument-order.md`). Do not
+guard-first (`Formula.untl g e`, per `docs/architecture/untl-snce-argument-order.md`). Do not
 conflate the two. -/
 def guardMono {fc : FrameClass} (Γ : Context) (e g g' : Formula)
     (hg : ⊢[fc] g.imp g') (h : Γ ⊢[fc] Formula.untl g e) : Γ ⊢[fc] Formula.untl g' e :=

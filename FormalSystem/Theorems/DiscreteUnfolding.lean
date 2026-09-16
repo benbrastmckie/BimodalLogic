@@ -62,7 +62,7 @@ the trivial predicate.
 ## Argument order
 
 `Formula.untl` is **guard-first / event-second** (`Syntax/Formula.lean`;
-`specs/decisions/untl-snce-argument-order.md`, DECIDED 2026-08-17): `Formula.untl g e` reads
+`docs/architecture/untl-snce-argument-order.md`, DECIDED 2026-08-17): `Formula.untl g e` reads
 "the guard `g` holds throughout the open interval `(t, s)` and the event `e` is witnessed at
 `s > t`". The pretty-printer's prefix rendering `U(e, g)` is event-first and is what the prose
 above uses. The two renderings legitimately coexist; the constructor order below is the

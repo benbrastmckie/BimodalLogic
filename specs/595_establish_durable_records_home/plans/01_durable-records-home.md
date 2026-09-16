@@ -130,7 +130,7 @@ references among the three moved files.
 
 ---
 
-### Phase 2: Repoint all live referrers [NOT STARTED]
+### Phase 2: Repoint all live referrers [IN PROGRESS]
 
 **Goal**: Rewrite every non-`specs/` citation of the old paths.
 

@@ -88,7 +88,7 @@ The supporting apparatus — nonempty `W`, the positive-cone primitive relation,
 convention, fiber, cone, and segment (`def:task-relation`), and the `⊇`-directed family
 (`def:frame`'s opening clause; formerly the standalone `def:directed`, which the paper's 2026-09
 wave inlined into `def:frame` and deleted — recorded `DANGLING` in
-`specs/paper-definitions-of-record.md`) — is transcribed in this module's "Fiber, cone, segment,
+`docs/reference/paper-definitions-of-record.md`) — is transcribed in this module's "Fiber, cone, segment,
 and directed-family apparatus" section. The temporal order is `def:temporal-order` (verbatim: "A \textit{temporal
 order} is a nontrivial totally ordered abelian group $\D = \tuple{D, +, 0, \leq}$ with
 \textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.").
@@ -343,7 +343,7 @@ and a `$\subseteq$-Directed` clause, of which *Saturation* consumes only the `$\
 then the paper's 2026-09 wave deleted `def:directed` outright, dropped the `$\subseteq$` half
 entirely, and inlined the `$\supseteq$` half into `def:frame`'s opening clause — which is what is
 quoted above. `def:directed` is recorded `DANGLING` in
-`specs/paper-definitions-of-record.md`; do not cite it as a live anchor, and do not reintroduce
+`docs/reference/paper-definitions-of-record.md`; do not cite it as a live anchor, and do not reintroduce
 the unqualified word "directed", which was ambiguous even before the split.
 
 The nonemptiness of the family is part of the definition (it comes from "a nonempty family of
@@ -388,7 +388,7 @@ here**. Discharging a downstream hypothesis is then a mechanical substitution (`
 `F.serial`, `F.interpolates`) with zero restatement. If a field lands whose statement differs,
 the results that consume these predicates stop typechecking — and that compilation failure *is*
 the acceptance test. That invariant is recorded in
-`specs/decisions/total-history-validity-decisions.md` (the four-axiom frame-alignment decision).
+`docs/architecture/total-history-validity-decisions.md` (the four-axiom frame-alignment decision).
 
 *Saturation* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
 sole application site the paper names, never an inert structure field.
@@ -1027,7 +1027,7 @@ theorem sInter_nonempty_of_directed_of_univ_or_singleton {W : Type} {S : Set (Se
 The *Saturation* core argument for a directed family that has a `⊆`-minimal member: **the paper's
 actual mathematical content, in fully constructive form**.
 
-Recorded source (`cor:saturation-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
+Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`, verbatim:
 "Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation},
 choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member to a `⊆`-*least*
 member, and a least member is both nonempty and equal to the intersection.
@@ -1066,7 +1066,7 @@ omit [IsOrderedAddMonoid D] in
 /--
 **Every relation on a finite carrier satisfies *Saturation***.
 
-Recorded source (`cor:saturation-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
+Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`, verbatim:
 "Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation},
 choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a directed family has
 a `⊆`-minimal member; `sInter_nonempty_of_directed_of_minimal` above then closes the goal.

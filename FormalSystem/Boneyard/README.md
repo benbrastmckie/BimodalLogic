@@ -83,7 +83,7 @@ Both files there are **excerpts** rather than whole archived modules — the tac
 lifted out of `Automation/Normalization.lean` and `Automation/Tactics/Helpers.lean`, whose
 surviving halves are still live — plus the two Aesop modules, which were moved whole.
 
-See `specs/decisions/untl-snce-argument-order.md` for the full record.
+See `docs/architecture/untl-snce-argument-order.md` for the full record.
 
 ## One Archive, and the Counts That Describe It
 

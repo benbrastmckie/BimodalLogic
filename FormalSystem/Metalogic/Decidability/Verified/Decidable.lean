@@ -156,7 +156,7 @@ An interpretation satisfying a branch together with its abstract time ordering.
 The three fields are independent obligations and all three are load-bearing:
 
 * `histTotal` — every branch world is interpreted by a *total* history. `□` quantifies over the
-  total histories (`def:BL-semantics`'s box clause, `specs/paper-definitions-of-record.md`), so
+  total histories (`def:BL-semantics`'s box clause, `docs/reference/paper-definitions-of-record.md`), so
   without this a `T(□A)` on the branch would say nothing about the branch's own other worlds.
   This is what carries the whole modal burden now: it replaced the former membership field when
   the box clause was retargeted to totality, and it also replaced the former shift-closure

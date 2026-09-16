@@ -57,7 +57,7 @@ thm:BLplus-NextPrevious
 
 # --- External paper corollary label, not formalized in Lean (paper-side
 # result only -- cor:saturation-finite is outside the 26 anchors tracked by
-# specs/paper-definitions-of-record.md and has no Lean counterpart) ---
+# docs/reference/paper-definitions-of-record.md and has no Lean counterpart) ---
 cor:saturation-finite
 
 # --- External paper language-definition label (def:BLplus-language names
@@ -67,7 +67,7 @@ def:BLplus-language
 
 # --- External paper corollary label, not cited anywhere in Lean source
 # (cor:tm-decidability is outside the 26 anchors tracked by
-# specs/paper-definitions-of-record.md; unlike cor:tm-completeness, which
+# docs/reference/paper-definitions-of-record.md; unlike cor:tm-completeness, which
 # happens to be cited in a ProofSystem/Axioms.lean doc comment and so
 # resolves on its own, this one has no Lean-side citation to grep) ---
 cor:tm-decidability
@@ -75,7 +75,7 @@ cor:tm-decidability
 # --- External paper anchors cited only in typst/FormalFoundations.typ (a
 # standalone report, not a book chapter -- see typst/README.md's "Standalone
 # Reports" entry). These are paper-side \label/\aitem anchors tracked in
-# specs/paper-definitions-of-record.md's coverage extension for this report;
+# docs/reference/paper-definitions-of-record.md's coverage extension for this report;
 # they have no matching Lean identifier to grep, exactly the same category
 # as def:BLplus-language and cor:saturation-finite above. ---
 def:S5
@@ -109,7 +109,7 @@ thm:sym
 
 # --- lake exe target names (declared in the repo-root lakefile.lean, not
 # a Bimodal Lean identifier; dataset_generator already resolves via a live
-# doc-comment reference in DatasetExport.lean) ---
+# doc-comment reference in DatasetGeneratorMain.lean) ---
 dataset_validator
 
 # --- Machine appendix JSONL field illustrations --- the Lean

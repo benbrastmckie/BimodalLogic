@@ -7,7 +7,7 @@ form (`Decidability/IntPresentation.lean`).
 **This directory does not decide the logic.** The paper's `cor:tm-decidability` — which recorded
 decidability of TM as open — is **fully commented out** in the live paper and carries no
 `\label` there; it is retained only as a DANGLING entry in
-`specs/paper-definitions-of-record.md`, and is cited here as an unpublished remark rather than
+`docs/reference/paper-definitions-of-record.md`, and is cited here as an unpublished remark rather than
 as a published corollary. Its commented-out text is consistent with this tree: no decidability
 theorem is machine-checked at present. What is decided here is truth on a *presented* ℤ-frame: the frame is given as data, and the
 procedure searches the finitely presented paths of that specific frame.
@@ -219,7 +219,7 @@ both cycles required non-empty.
 
 Every `untl` / `snce` term in this directory is **guard-first**: in `Formula.untl g e` the guard
 `g` holds throughout the open interval and the event `e` is witnessed strictly later
-(`Syntax/Formula.lean`; `specs/decisions/untl-snce-argument-order.md`). `Formula.prettyPrint`'s
+(`Syntax/Formula.lean`; `docs/architecture/untl-snce-argument-order.md`). `Formula.prettyPrint`'s
 prefix rendering `U(e, g)` is event-first and is a *display* convention only.
 
 ## Dependencies

@@ -56,7 +56,7 @@ degenerate frames: `FrameOver.staticFrame` over `ℤ` has constant histories, so
 `Metalogic/Independence/StaticFrame.lean`, whose `static_untl_iff_disc` makes every `untl` on
 such a frame collapse to its event.) Only (T1) — "(∀ `F` over `D`, `F ⊨ ax`) iff `D` is
 Discrete/Dense/Complete" — is true, and it is what the appendix proofs actually conclude. The
-adjudication of record is `specs/paper-definitions-of-record.md`'s reading note on
+adjudication of record is `docs/reference/paper-definitions-of-record.md`'s reading note on
 `app:discrete`/`app:dense`/`app:complete`, from the definitional review's §2.4.
 
 ## Main results

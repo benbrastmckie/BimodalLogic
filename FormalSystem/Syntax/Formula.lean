@@ -280,29 +280,8 @@ def complexity : Formula → Nat
   | snce _ψ2 (imp (imp ψ (imp φ bot)) bot) => 2 + φ.complexity + ψ.complexity
   | snce ψ φ => 1 + φ.complexity + ψ.complexity
 
-/-! ### Complexity verification: unary temporal operators -/
-
-private def pCmplx : Formula := .atom (Atom.mkBase "p")
-private def qCmplx : Formula := .atom (Atom.mkBase "q")
-
--- F(atom) should be 2 (was 5)
-#eval pCmplx.someFuture.complexity   -- 2
-
--- P(atom) should be 2 (was 5)
-#eval pCmplx.somePast.complexity   -- 2
-
--- G(atom) should be 2 (was 9)
-#eval pCmplx.allFuture.complexity   -- 2
-
--- H(atom) should be 2 (was 9)
-#eval pCmplx.allPast.complexity   -- 2
-
--- box(G(atom)) should be 3 (was 11)
-#eval pCmplx.allFuture.box.complexity   -- 3
-
--- Regular untl/snce still work correctly
-#eval (Formula.untl qCmplx pCmplx).complexity    -- 3
-#eval (Formula.snce qCmplx pCmplx).complexity    -- 3
+/-! The complexity of each unary temporal operator is pinned by `#guard` rows in
+`Tests/BimodalTest/Syntax/FormulaTest.lean`. -/
 
 /-!
 ### BEq Reflexivity
@@ -488,7 +467,7 @@ The paper's **CO** formula (Cauchy/completeness-of-order principle), as a *named
 **Retired anchor**: this used to be quoted from `TMP-CO`, the `BL^+` restatement inside the old
 `def:TMplus-c`; the paper's 2026-09 wave dropped that restatement (`def:BX-r` derives CO from PU
 instead of displaying it again), so `TMP-CO` is recorded `DANGLING` in
-`specs/paper-definitions-of-record.md` and the plain `CO` anchor is the live, pinned one. The
+`docs/reference/paper-definitions-of-record.md` and the plain `CO` anchor is the live, pinned one. The
 formula is unchanged. In `def:BX-r` CO is a *derived theorem* of the dense-and-complete
 extension, not a further axiom.
 
@@ -581,28 +560,8 @@ def strongRelease (φ ψ : Formula) : Formula := Formula.untl ψ (Formula.and ψ
 /-- Strong Trigger operator ST(φ, ψ) — ψ S (ψ ∧ φ). Past dual of strong release. -/
 def strongTrigger (φ ψ : Formula) : Formula := Formula.snce ψ (Formula.and ψ φ)
 
-/-! ### Complexity verification: binary derived operators -/
-
-private def pCmplx2 : Formula := .atom (Atom.mkBase "p")
-private def qCmplx2 : Formula := .atom (Atom.mkBase "q")
-
--- R(atom, atom) should be 3 (was 9)
-#eval (Formula.release pCmplx2 qCmplx2).complexity    -- 3
-
--- T(atom, atom) should be 3 (was 9)
-#eval (Formula.trigger pCmplx2 qCmplx2).complexity    -- 3
-
--- WU(atom, atom) should be 3 (was 8)
-#eval (Formula.weakUntil pCmplx2 qCmplx2).complexity    -- 3
-
--- WS(atom, atom) should be 3 (was 8)
-#eval (Formula.weakSince pCmplx2 qCmplx2).complexity    -- 3
-
--- M(atom, atom) should be 4
-#eval (Formula.strongRelease pCmplx2 qCmplx2).complexity    -- 4
-
--- ST(atom, atom) should be 4
-#eval (Formula.strongTrigger pCmplx2 qCmplx2).complexity    -- 4
+/-! The complexity of each binary derived operator is pinned by `#guard` rows in
+`Tests/BimodalTest/Syntax/FormulaTest.lean`. -/
 
 /--
 Temporal 'sometimes' operator (▽φ, "at some time" - φ holds at some time).
@@ -634,30 +593,8 @@ prefix:80 "△" => Formula.always
 -/
 prefix:80 "▽" => Formula.sometimes
 
-/-! ### Complexity verification: modal and compound temporal operators -/
-
-private def pCmplx3 : Formula := .atom (Atom.mkBase "p")
-
--- diamond(atom) should be 2 (was 6)
-#eval pCmplx3.diamond.complexity   -- 2
-
--- always(atom) should be 2 (was 15)
-#eval pCmplx3.always.complexity   -- 2
-
--- sometimes(atom) should be 2 (was 23)
-#eval pCmplx3.sometimes.complexity   -- 2
-
--- next(atom) should be 2 (was 3)
-#eval pCmplx3.next.complexity   -- 2
-
--- prev(atom) should be 2 (was 3)
-#eval pCmplx3.prev.complexity   -- 2
-
--- weakFuture(atom) should be 2 (was 8)
-#eval pCmplx3.weakFuture.complexity   -- 2
-
--- weakPast(atom) should be 2 (was 8)
-#eval pCmplx3.weakPast.complexity   -- 2
+/-! The complexity of each modal and compound temporal operator is pinned by `#guard` rows in
+`Tests/BimodalTest/Syntax/FormulaTest.lean`. -/
 
 /--
 Swap temporal operators (past ↔ future) in a formula.

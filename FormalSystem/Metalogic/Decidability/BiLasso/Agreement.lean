@@ -66,7 +66,7 @@ footnote attached to the discussion of the finite case. That footnote carries **
 it is not an anchor any tooling can resolve and it is deliberately **not** tracked in the
 definitions-of-record manifest; inventing a synthetic key for it would create a dangling anchor
 and a failing check. It is quoted here verbatim instead, and recorded as an untracked source in
-`specs/paper-definitions-of-record.md`.
+`docs/reference/paper-definitions-of-record.md`.
 
 Verbatim, from the unanchored footnote in `JPL/possible_worlds.tex`, in the discussion of the
 finite case:

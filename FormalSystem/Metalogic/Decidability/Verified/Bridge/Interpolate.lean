@@ -455,7 +455,7 @@ distinguish points of a common region.
 Quantified over all total histories rather than over one history, because `box` is a universal
 over the total histories at a fixed time and its case needs the induction hypothesis at every
 such history simultaneously. No designated admissible set appears; the quantifier tracks the box
-clause, which is totality (`def:BL-semantics`, `specs/paper-definitions-of-record.md`), not
+clause, which is totality (`def:BL-semantics`, `docs/reference/paper-definitions-of-record.md`), not
 membership in a chosen set.
 -/
 def InterpInvariant (f : ι → D) (M : TaskModel F) (χ : Formula) : Prop :=

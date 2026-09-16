@@ -34,7 +34,7 @@ The following primitives are required to define a task frame:
 )
 
 // CONFIRM(paper): def:temporal-order states this definition (source text pinned verbatim in
-//   specs/paper-definitions-of-record.md)
+//   docs/reference/paper-definitions-of-record.md)
 #definition("Temporal Order")[
   A *temporal order* is a nontrivial totally ordered abelian group $D = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := { x in D : x gt.eq 0 }$.
 ]
@@ -51,7 +51,7 @@ The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly thi
   - *Segment*: $[w, v]_x^y := "Fib"(w, x) inter "Fib"(v, -y)$ where $x, y gt.eq 0$.
 ]
 // CONFIRM(paper): def:task-relation states this definition (source text pinned verbatim in
-//   specs/paper-definitions-of-record.md)
+//   docs/reference/paper-definitions-of-record.md)
 
 There is therefore no separate *Reflection* axiom: the equivalence $w arrow.r.double.long_x u arrow.l.r.double u arrow.r.double.long_(-x) w$ is built into the task relation's definition by the converse convention above, not imposed as a further constraint on frames.
 Any converse operation written explicitly in this book uses a superscript inverse ($arrow.r.double.long^(-1)$), never the relation-algebra breve or smile common in the arrow-logic literature; the convention itself carries no operator symbol, being written only as subscript negation.
@@ -106,7 +106,7 @@ Any converse operation written explicitly in this book uses a superscript invers
 ]
 
 // CONFIRM(paper): def:frame's opening clause states this definition (source text pinned
-//   verbatim in specs/paper-definitions-of-record.md). It was a standalone def:directed until
+//   verbatim in docs/reference/paper-definitions-of-record.md). It was a standalone def:directed until
 //   the paper's 2026-09 wave inlined it into def:frame and deleted the label; def:directed is
 //   recorded DANGLING there.
 #definition("Directed Family")[
@@ -114,7 +114,7 @@ Any converse operation written explicitly in this book uses a superscript invers
 ]
 
 // CONFIRM(paper): def:frame states this definition (source text pinned verbatim in
-//   specs/paper-definitions-of-record.md); app:topology-t1 and app:topology-r0 prove the T1 and R0 claims the
+//   docs/reference/paper-definitions-of-record.md); app:topology-t1 and app:topology-r0 prove the T1 and R0 claims the
 //   topology footnote below states.
 #definition("Frame")[
   A *frame* is any $cal(F) = (W, D, arrow.r.double.long)$ where $W$ is a nonempty set of world states, $D$ is a temporal order, and $arrow.r.double.long$ is a task relation satisfying the following for $x, y gt.eq 0$:
@@ -136,7 +136,7 @@ Nullity is conspicuously absent from this list because it is not an axiom:
   $w arrow.r.double.long_0 w$ for every world state $w in W$ in every frame $cal(F) = (W, D, arrow.r.double.long)$.
 ]
 // CONFIRM(paper): lem:nullity states this lemma (source text pinned verbatim in
-//   specs/paper-definitions-of-record.md)
+//   docs/reference/paper-definitions-of-record.md)
 
 The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get some $u in W$ with $w arrow.r.double.long_0 u$; *Limit* at $x arrow.r 0^+$ then forces $u = w$, since $w$ is the unique point in every cone around itself.
 
@@ -162,7 +162,7 @@ Only the total tier is what the semantics of @sec:truth quantifies over.
   A *partial history* over a frame $cal(F) = (W, D, arrow.r.double.long)$ is a dependent function $tau : (x : D) arrow.r "dom"(x) arrow.r W$ where $"dom" : D arrow.r "Prop"$ is a *nonempty* subset of $D$ and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all times $x, y : D$ with $"dom"(x)$ and $"dom"(y)$.
 ]#footnote[Nonemptiness of the domain is required; convexity is *not*.]
 // CONFIRM(paper): def:world-history states the partial-history/world-history/totality tiers this section
-//   transcribes (source text pinned verbatim in specs/paper-definitions-of-record.md)
+//   transcribes (source text pinned verbatim in docs/reference/paper-definitions-of-record.md)
 
 #definition("Convex Domain")[
   A domain $"dom" : D arrow.r "Prop"$ is *convex* if whenever $a, c in "dom"$ with $a lt.eq c$, every time $b$ with $a lt.eq b lt.eq c$ is also in $"dom"$.
@@ -239,7 +239,7 @@ Not every partial history is total, and it is not obvious that a frame has *any*
   Every partial history $tau$ over a frame $cal(F)$ is extended by some possible world $sigma in H_(cal(F))$.
 ]#footnote[Proved by Zorn's lemma over partial histories ordered by extension, closing via the Step Lemma --- a ZFC, not choice-free, result.]
 // CONFIRM(paper): thm:extension states this theorem (source text pinned verbatim in
-//   specs/paper-definitions-of-record.md)
+//   docs/reference/paper-definitions-of-record.md)
 
 #corollary("Occurrence")[
   For any frame $cal(F)$, world state $w in W$, and time $x : D$, there is a possible world $tau in H_(cal(F))$ where $tau(x) = w$; in particular $H_(cal(F))$ is nonempty for every frame.

@@ -6,56 +6,29 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.TemporalOrder
 import FormalSystem.Semantics.TaskFrame
-import FormalSystem.Semantics.Frames.Standard
+import FormalSystem.Semantics.Frames
 import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.FrameClassValidity
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
-import FormalSystem.Semantics.Extension.Constraint
-import FormalSystem.Semantics.Extension.Admissible
-import FormalSystem.Semantics.Extension.Step
-import FormalSystem.Semantics.Extension.Extension
-import FormalSystem.Semantics.Extension.PeriodicExtension
+import FormalSystem.Semantics.Extension
 import FormalSystem.Semantics.ConvexHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.TruthClauses
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.TruthTransport
-import FormalSystem.Semantics.MinusTruth
-import FormalSystem.Semantics.MinusFrame
 import FormalSystem.Semantics.ShiftSet
-import FormalSystem.Semantics.Ultraproduct.Carrier
-import FormalSystem.Semantics.Ultraproduct.IndexFilter
-import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
-import FormalSystem.Semantics.Ultraproduct.Los
+import FormalSystem.Semantics.Ultraproduct
 import FormalSystem.Semantics.Validity
-import FormalSystem.Semantics.MinusValidity
-import FormalSystem.Semantics.MinusSchemaValidity
-import FormalSystem.Semantics.PlusTruth
-import FormalSystem.Semantics.PlusValidity
-import FormalSystem.Semantics.PlusPasting
-import FormalSystem.Semantics.PlusNonValidities
-import FormalSystem.Semantics.PlusDeterminism
-import FormalSystem.Semantics.PlusStateLocal
 import FormalSystem.Semantics.DeterministicBridge
-import FormalSystem.Semantics.StarTruth
-import FormalSystem.Semantics.StarValidity
-import FormalSystem.Semantics.StarDeterminism
-import FormalSystem.Semantics.StarNonValidities
-import FormalSystem.Semantics.StarStateLocal
 import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.DurationClassification
 import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Semantics.IntTransfer
-import FormalSystem.Semantics.Correspondence.Galois
-import FormalSystem.Semantics.Correspondence.Indicator
-import FormalSystem.Semantics.Correspondence.FwdRec
-import FormalSystem.Semantics.Correspondence.DurationFrames
-import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
-import FormalSystem.Semantics.Correspondence.FwdRecBridge
+import FormalSystem.Semantics.Correspondence
 
 /-!
 # FormalSystem.Semantics - Task Frame Semantics
@@ -65,6 +38,16 @@ task frame semantics with convex histories, truth evaluation, and validity defin
 polymorphic over temporal types.
 
 ## Submodules
+
+The L⁻/L⁺/L⋆ language-family modules (the `MinusLanguage.*`, `PlusLanguage.*` and
+`StarLanguage.*` entries below) live in the subdirectories `Semantics/MinusLanguage/`,
+`Semantics/PlusLanguage/` and `Semantics/StarLanguage/`. This file does **not** import them
+directly: they are aggregated by the sibling aggregators `Semantics/MinusLanguage.lean`,
+`Semantics/PlusLanguage.lean` and `Semantics/StarLanguage.lean`, which the root aggregator
+`FormalSystem/FormalSystem.lean` imports, mirroring `Syntax/`. This file still reaches much of
+L⁺ and L⋆ transitively, through `DeterministicBridge` and `StateLocalTransfer`. The
+subdirectories `Extension/`, `Ultraproduct/`, `Correspondence/` and `Frames/` are imported
+through their sibling aggregators `Semantics/Extension.lean` and so on.
 
 - `TemporalOrder`: `def:temporal-order` reified — "a nontrivial totally ordered abelian
   group" as a structure rather than an unnamed four-binder list, with `CoeSort` to its
@@ -104,7 +87,7 @@ polymorphic over temporal types.
   *Seriality* plus *Limit*
 `lem:fibers` above is a **RETIRED paper anchor**: the paper removed `\label{lem:fibers}` in a
 2026-08 editing wave and absorbed its content into `lem:admissible`'s proof. The citation resolves
-against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\label`. See
+against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a live `\label`. See
 `Semantics/Extension/Admissible.lean`'s header for the full note.
 
 - `Extension.Step`: `lem:step` — every partial history extends by one arbitrary duration; the
@@ -133,41 +116,41 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   tiered by which primitives a language has. L⁻ takes the tense-primitive tier, L⁺ and L⋆ the
   stability tier, and L⋆'s environment is its stored-time vector
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
-- `MinusTruth`: the same recursion for the tense-primitive base language — `MinusTruthAt`, defined
+- `MinusLanguage.MinusTruth`: the same recursion for the tense-primitive base language — `MinusTruthAt`, defined
   natively on `MinusFormula`'s six constructors per `def:BL-semantics` (H and G quantify over
   strictly past/future times directly, not via `untl`/`snce`), plus the `MinusTruth.*` clause and
   derived-operator characterization lemmas
-- `MinusFrame`: a native L⁻ frame notion *not* bound to `TaskFrame` — `MinusFrame`, `MinusFrame.swap`,
+- `MinusLanguage.MinusFrame`: a native L⁻ frame notion *not* bound to `TaskFrame` — `MinusFrame`, `MinusFrame.swap`,
   `MinusFrameTruth` (with `□` read as the universal modality over the point set) and
   `MinusFrameValid`, plus the `MinusFrameTruth.*` characterization family and the order-reversal
   transfer lemma `truth_swap`. Dropping the `Duration : TemporalOrder` group structure is what
   frees the class from the dense-or-discrete dichotomy, which is what makes a countermodel to
   `(Sp)` possible; see `Metalogic/Conservativity/SpCountermodel.lean`
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
-- `MinusValidity`: the base-language mirrors — `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`,
+- `MinusLanguage.MinusValidity`: the base-language mirrors — `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`,
   `MinusValidZTime` and `MinusValidRTime`, binder for binder against `MinusTruthAt`; there is
   deliberately no density-free `MinusValidComplete`, which would be refutable
-- `PlusTruth`: the truth recursion for the language L⁺ (L plus the stability modal `⊡`,
+- `PlusLanguage.PlusTruth`: the truth recursion for the language L⁺ (L plus the stability modal `⊡`,
   `FormalSystem/PlusLanguage/Formula.lean`) — `SameStateAt` (the paper's `⟨τ⟩_x`, line 1108) and
   `PlusTruthAt`, whose seventh clause is the paper's `($\Stability$)` clause (`def:BLstar-semantics`); the
   `PlusTruth.*` clause lemmas, the S5 validities of `⊡`, and `stab_state_only` (`⊡φ` depends on
   the world state alone)
-- `PlusValidity`: the L⁺ mirrors of `Validity` — `PlusValidOnFrames` (the frame-predicate
+- `PlusLanguage.PlusValidity`: the L⁺ mirrors of `Validity` — `PlusValidOnFrames` (the frame-predicate
   primitive), `PlusValidIn`, `PlusValid` and the per-class abbreviations — plus the truth-transfer
   bridge `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, the semantic conservativity of
   L⁺ over L at every frame class
-- `PlusPasting`: the history-pasting lemma (`paste`: two total histories sharing a state at `t`
+- `PlusLanguage.PlusPasting`: the history-pasting lemma (`paste`: two total histories sharing a state at `t`
   paste into a total history, by *Compositionality* and the converse convention alone), the
   purity congruences, and the pasting validities PS/US/FS/GS and their past mirrors — the
   `⊡`/tense interaction principles the S5 axioms of `⊡` miss
-- `PlusNonValidities`: the five refutations on `natFrame` over `ℤ` (`⊡p → □⊡p`, `G⊡p → ⊡Gp`,
+- `PlusLanguage.PlusNonValidities`: the five refutations on `natFrame` over `ℤ` (`⊡p → □⊡p`, `G⊡p → ⊡Gp`,
   `⊡GPp → G⊡Pp`, *Determined* `Fp → ⊡Fp` over a non-deterministic frame, `P⊡p → ⊡Pp`), which
   bound the axiom set from above
-- `PlusDeterminism`: `app:deterministic`'s **positive** half — the singleton bridge
+- `PlusLanguage.PlusDeterminism`: `app:deterministic`'s **positive** half — the singleton bridge
   `states_eq_of_deterministic` and the deterministic collapse `⊡φ ↔ φ`
   (`determined_of_deterministic`, `stab_biconditional_plusValidOn_of_deterministic`), valid on
   every frame satisfying `TaskFrame.Deterministic`, and choice-free
-- `PlusStateLocal`: the **state-locality** fragment of L⁺ — `PlusFormula.StateLocal`, the
+- `PlusLanguage.PlusStateLocal`: the **state-locality** fragment of L⁺ — `PlusFormula.StateLocal`, the
   syntactic predicate cut by structural recursion over all seven constructors (`atom`, `bot`,
   `imp` propositionally; `box` and `stab` for an *arbitrary* argument; `untl`, `snce` excluded),
   and `IsPlusStateLocal`, the semantic property it approximates: two possible worlds carrying the
@@ -176,7 +159,7 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   the headline `φ ↔ ⊡φ` (`plusStateLocal_stab_iff`, `plusStateLocal_plusValid_iff_stab`) together
   with its argument-shaped half `stab_of_stateLocal`, which is what discharges the AS arm of TM⁺
   soundness and which strictly generalizes the atom-level `p → ⊡p` this tower used to carry
-- `StarStateLocal`: the **state-locality** fragment of L⋆ — `StarFormula.StateLocal`, the
+- `StarLanguage.StarStateLocal`: the **state-locality** fragment of L⋆ — `StarFormula.StateLocal`, the
   syntactic predicate cut by structural recursion (`atom`, `bot`, `imp`, `timeStore` recursively;
   `box` and `stab` for an *arbitrary* argument; `untl`, `snce`, `timeRecall` excluded), and
   `IsStateLocal`, the semantic property it approximates: two possible worlds carrying the same

@@ -25,7 +25,7 @@ This module consumes them.
 
 `FrameOver` now carries all four of `def:frame`'s axioms: `comp` (the full biconditional
 *Compositionality*, as `TaskFrame.Compositional TaskRel`), `serial`, `limit`, and `saturation`.
-The hard invariant recorded in `specs/decisions/total-history-validity-decisions.md` (the
+The hard invariant recorded in `docs/architecture/total-history-validity-decisions.md` (the
 four-axiom frame-alignment decision) was met: `FrameOver.saturation` is *definitionally*
 `Saturation TaskRel`, `FrameOver.serial` is definitionally `Serial TaskRel`, and the
 interpolation half of biconditional *Compositionality* is available as `FrameOver.interpolates`,
@@ -43,7 +43,7 @@ sole application site the paper names, never an inert structure field.
 
 ## Paper Specification Reference
 
-Anchors below are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the
+Anchors below are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
 paper source — is the citation source of record.
 
 - *Compositionality* (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and
@@ -58,7 +58,7 @@ paper source — is the citation source of record.
   $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$". This is where the family's own
   nonemptiness comes from. **Retired anchor.** This clause used to be the standalone
   `def:directed`, which the paper's 2026-09 wave folded inline into `def:frame` and deleted;
-  `def:directed` is recorded `DANGLING` in `specs/paper-definitions-of-record.md`. The old
+  `def:directed` is recorded `DANGLING` in `docs/reference/paper-definitions-of-record.md`. The old
   definition had a `$\supseteq$-Directed` and a `$\subseteq$-Directed` clause, of which
   *Saturation* — and hence `DirectedFamily` — consumed the `$\supseteq$` half only; the paper now
   defines only that half, so the split no longer exists to choose from.

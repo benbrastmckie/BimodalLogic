@@ -63,7 +63,7 @@ $\W_{\F}$ quotient: the classes play no role, so none is built here.
 `PartialHistory` layer both live in `PartialHistory.lean`, and `ConvexHistory` inherits them. The
 layering decision (why `extends` rather than a standalone structure or an `IsConvex` mixin, and
 why nonemptiness is a field rather than a side hypothesis) is recorded in
-`specs/decisions/total-history-validity-decisions.md`, Decision B.
+`docs/architecture/total-history-validity-decisions.md`, Decision B.
 
 **Convexity Requirement**: A domain is convex if whenever `x, z ∈ domain` with `x ≤ z`,
 then all times `y` with `x ≤ y ≤ z` are also in the domain. This ensures histories
@@ -383,7 +383,7 @@ total, so that $X = D$. … The set of all possible worlds over $\F$ is denoted 
 
 Totality is inherited from `PartialHistory.IsTotal`; `ConvexHistory.IsTotal` below is the
 `ConvexHistory`-level spelling of the same predicate, not a second notion. `TaskFrame.HF` bundles
-it as a type, per Decision A of `specs/decisions/total-history-validity-decisions.md`: the
+it as a type, per Decision A of `docs/architecture/total-history-validity-decisions.md`: the
 predicate form is used wherever totality is a *hypothesis*, and the subtype form only where `H_F`
 is quantified over as an *object* in its own right.
 -/
@@ -438,7 +438,7 @@ its bundled form; there is no third name and no `abbrev PossibleWorld`.
 **Paper Reference**: `def:world-history` (verbatim: "The set of all possible worlds over
 $\F$ is denoted $H_{\F}$.").
 
-**Encoding note** (Decision A of `specs/decisions/total-history-validity-decisions.md`): this
+**Encoding note** (Decision A of `docs/architecture/total-history-validity-decisions.md`): this
 subtype is used **only** where `H_F` appears as an object in its own right — the Extension
 Theorem's conclusion, the Occurrence Corollary, and the optional frame-relative validity. Where
 totality is a *hypothesis* (truth, validity, semantic consequence, satisfiability), the predicate

@@ -16,7 +16,7 @@ and Zorn's lemma over that order.
 
 ## Paper Specification Reference
 
-The order itself is the paper's, quoted verbatim from `specs/paper-definitions-of-record.md`,
+The order itself is the paper's, quoted verbatim from `docs/reference/paper-definitions-of-record.md`,
 anchor `def:world-history`:
 
 > `A partial history $\sigma$ \textit{extends} $\tau$ just in case
@@ -32,7 +32,7 @@ from an earlier round's framing of it as the target existence theorem. The targe
 validity is **totality** (`PartialHistory.IsTotal`, `∀ t, τ.domain t`), never Mathlib's `IsMax`
 or any order-theoretic maximality predicate. Maximality appears here only as the engine that
 Zorn's lemma supplies; the Step Lemma is what converts a maximal partial history into a total
-one. See `specs/decisions/total-history-validity-decisions.md`, Decision A.
+one. See `docs/architecture/total-history-validity-decisions.md`, Decision A.
 
 `isMax_of_total` is the load-bearing direction: *total implies maximal*. Its converse
 (*maximal implies total*) is **not** provable from the order alone — it needs the Step Lemma, and

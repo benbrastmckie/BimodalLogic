@@ -35,7 +35,7 @@ Two families of system name run through this directory, and only one of them is 
   and `TM_r`, each named for the class it is complete over (`cor:tm-completeness`): `ℤ`-time, the
   dense task frames, and `ℝ`-time — the dense and Dedekind-complete orders. They rest on the
   Burgess–Xu cores `BX_z`, `BX_d` and `BX_r` (`def:BX-z`, `def:BX-d`, `def:BX-r`, pinned under
-  those names in `specs/paper-definitions-of-record.md`; the paper's earlier labels for them were
+  those names in `docs/reference/paper-definitions-of-record.md`; the paper's earlier labels for them were
   `def:TMplus-f`, `def:TMplus-d` and `def:TMplus-c`, now recorded `DANGLING`), where `BX_r`
   extends `BX_d` by `PU` and `SEP` with `CO` a *derived* theorem rather than a further axiom —
   which is exactly this tree's own Dedekind-class arrangement (`Theorems/DedekindDerived.lean`).
@@ -158,7 +158,7 @@ countermodel needs a structure where `□` sees differently-shaped time, which n
 `tr`: **TM is unsound on the two-fibre class**, so the `translate`-then-`soundness` route this
 module supplies is unavailable in principle for this half. What closed it instead is exactly what
 this section previously said was missing — a frame notion outside `TaskFrame`
-(`Semantics/MinusFrame.lean`'s `MinusFrame`: a nonempty point set with an unbounded, transitive,
+(`Semantics/MinusLanguage/MinusFrame.lean`'s `MinusFrame`: a nonempty point set with an unbounded, transitive,
 irreflexive, forward- and backward-linear order and **no group structure**, with `□` read as the
 universal modality over the points) plus a *native*, non-composed L⁻ soundness theorem over it
 (`minusFrameValid_of_derivation`, by recursion on `MinusLanguage.DerivationTree`, with
@@ -251,7 +251,7 @@ merely unattempted here.
 ## What a machine-checked refutation would need — now row-dependent, not a single narrowing
 
 An L⁻-side semantics and an L⁻-side soundness theorem now exist tree-wide
-(`FormalSystem/Semantics/MinusTruth.lean`'s `MinusTruthAt`, and
+(`FormalSystem/Semantics/MinusLanguage/MinusTruth.lean`'s `MinusTruthAt`, and
 `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`'s `minus_soundness` family), but what each row
 still needs beyond that differs, and reading it as one shared "countermodels alone" gap is no
 longer accurate for either row:
@@ -266,7 +266,7 @@ longer accurate for either row:
   refutation is machine-checked, not merely documented.
 - **CEB (`FrameClass.Base`) — done, both halves machine-checked.** The missing prerequisite was
   a **frame notion outside `TaskFrame`** plus a **native** (non-composed) L⁻ soundness theorem
-  over it, and both are now landed: `Semantics/MinusFrame.lean` supplies `MinusFrame`/`MinusFrameTruth`/
+  over it, and both are now landed: `Semantics/MinusLanguage/MinusFrame.lean` supplies `MinusFrame`/`MinusFrameTruth`/
   `MinusFrameValid` and the order-reversal transfer lemma `truth_swap`, and
   `Metalogic/Conservativity/SpCountermodel.lean` supplies
   `minusFrameValid_of_derivation` together with the `ℤ ⊕ ℝ` countermodel. The TM
@@ -313,7 +313,7 @@ history:
   own future result rather than part of this book's system".
 
 Do **not** cite `thm:ConservativeExtension` as a live anchor. For any semantic definition this
-module leans on, cite `specs/paper-definitions-of-record.md` rather than the paper directly;
+module leans on, cite `docs/reference/paper-definitions-of-record.md` rather than the paper directly;
 `bash scripts/check-paper-definitions.sh` was run at implementation time and reports the same
 two drifted and six dangling anchors the research report recorded, none of them consumed here.
 
@@ -362,7 +362,7 @@ is an import cycle, because the aggregator imports every child. The chain the ch
 is `Backward ← MinusLanguageSoundness ← TMCompletenessReduction ← Z1Countermodel ← Fragment ←
 FragmentCompactness ← Plus/Forward`, with `SpWitness` hanging off `MinusLanguageSoundness`,
 `SpCountermodel` hanging off `SpWitness` and `TMCompletenessReduction` jointly (it also imports
-`Semantics/MinusFrame.lean`, which is outside this directory and reaches nothing in `ProofSystem/`),
+`Semantics/MinusLanguage/MinusFrame.lean`, which is outside this directory and reaches nothing in `ProofSystem/`),
 and the `Plus/` chain `Atomization ← AxiomValidity ← PlusSoundness ← Forward` hanging off
 `Fragment`. The `Star/` chain `StarAxiomValidity ← StarSoundness ← Forward` hangs off the `Plus/`
 one at two points: `Star/StarAxiomValidity` imports `Plus/AxiomValidity` (for the two TM⁺

@@ -36,7 +36,7 @@ paper's infix `φ U ψ` is guard-first. Note also that `kPlus`/`kMinus` genuinel
 operand in the *guard* position — `kPlus φ = (untl φ.neg ⊤).neg` is correct in the live tree and
 is not a stale event-first expression.
 
-See `specs/decisions/untl-snce-argument-order.md` for the full record.
+See `docs/architecture/untl-snce-argument-order.md` for the full record.
 
 ## There Is One Archive (this section retired the claim that there were two)
 

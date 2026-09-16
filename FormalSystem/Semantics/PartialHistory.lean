@@ -15,7 +15,7 @@ requirement. `ConvexHistory` is the convex special case (see `FormalSystem/Seman
 
 ## Paper Specification Reference
 
-**`def:world-history`**, quoted verbatim from `specs/paper-definitions-of-record.md` (which is what
+**`def:world-history`**, quoted verbatim from `docs/reference/paper-definitions-of-record.md` (which is what
 this repository cites — never the paper file directly, and never by line number):
 
 > `A \textit{partial history} over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function
@@ -41,7 +41,7 @@ survives only for cross-reference stability across the paper's own `\ref` sites.
 
 ## Two transcription decisions, both settled and recorded
 
-Both are recorded in `specs/decisions/total-history-validity-decisions.md` (Decision B) so that
+Both are recorded in `docs/architecture/total-history-validity-decisions.md` (Decision B) so that
 they are not re-litigated here or in the four-axiom frame alignment work.
 
 1. **Nonemptiness is a field, not a side hypothesis.** The paper requires the domain `X` to be
@@ -181,7 +181,7 @@ history whose domain is total, so that $X = D$.").
 Note that this is `∀ t, τ.domain t` — the domain *is* all of `D` — and is deliberately **not**
 Mathlib's `IsMax` or any order-theoretic maximality predicate. Maximality under the extension
 order appears only as an internal step en route to the Extension Theorem; totality is what
-validity quantifies over. See `specs/decisions/total-history-validity-decisions.md`, Decision A.
+validity quantifies over. See `docs/architecture/total-history-validity-decisions.md`, Decision A.
 -/
 def IsTotal (τ : PartialHistory F) : Prop := ∀ t : F.Duration, τ.domain t
 

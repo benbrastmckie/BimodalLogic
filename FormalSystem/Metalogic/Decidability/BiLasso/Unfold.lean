@@ -29,7 +29,7 @@ The live clauses (`Semantics/Truth.lean`) are
 
 so the **first** constructor argument is the guard and the **second** is the event. Everything
 below is written `Formula.untl g e` / `Formula.snce g e` with `g` the guard and `e` the event.
-See `specs/decisions/untl-snce-argument-order.md` for the migration that fixed this order.
+See `docs/architecture/untl-snce-argument-order.md` for the migration that fixed this order.
 
 ## Why this scopes the development to ℤ-time
 

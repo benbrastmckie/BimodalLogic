@@ -23,7 +23,7 @@ The chain, in order, is
 
 ## Paper Specification Reference
 
-Anchors are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the paper
+Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the paper
 source — is the citation source of record.
 
 - `thm:extension` (verbatim): "Every partial history $\tau : X \to W$ over a task frame

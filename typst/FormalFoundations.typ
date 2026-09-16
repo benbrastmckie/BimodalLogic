@@ -516,7 +516,7 @@ constrains is the points of evaluation, not the propositions.
   $#BLplus$. The paper's 2026-09 revision collapsed $#BLplus$ into $#BL$, dropped the $+$
   superscript from the TM family, and renamed the extensions $"BX"_z slash "BX"_d slash "BX"_r$
   under the anchors `def:BX-z`, `def:BX-d` and `def:BX-r` (see
-  `specs/paper-definitions-of-record.md`; the old anchors `def:TMplus-f`, `def:TMplus-d` and
+  `docs/reference/paper-definitions-of-record.md`; the old anchors `def:TMplus-f`, `def:TMplus-d` and
   `def:TMplus-c` are recorded there as `DANGLING`). The subscripts used throughout this section are therefore the
   paper's old ones, read $f arrow.r z$ and $c arrow.r r$; the mathematics is unchanged. Two
   presentational differences also follow from that revision and are *not* transcribed here: the

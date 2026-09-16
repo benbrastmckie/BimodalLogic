@@ -20,7 +20,7 @@ deliberately **not** folded back in here.
 
 ## Paper Specification Reference
 
-Anchors are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the paper
+Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the paper
 source — is the citation source of record.
 
 - `lem:constraint` (verbatim): "For any partial history $\tau : X \to W$ over a frame
@@ -34,7 +34,7 @@ source — is the citation source of record.
   \textit{$\supseteq$-directed} just in case $S \subseteq S_1 \cap S_2$ for some
   $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$". **Retired anchor**: this was the
   standalone `def:directed` until the paper's 2026-09 wave folded it inline into `def:frame` and
-  deleted the label, which `specs/paper-definitions-of-record.md` now records `DANGLING`. The
+  deleted the label, which `docs/reference/paper-definitions-of-record.md` now records `DANGLING`. The
   condition itself is unchanged.
 - *Seriality* (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for
   some $u, v \in W$."
