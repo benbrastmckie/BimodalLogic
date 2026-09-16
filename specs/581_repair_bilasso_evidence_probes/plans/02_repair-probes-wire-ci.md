@@ -119,16 +119,16 @@ content, and confirm axiom hygiene.
 
 ---
 
-### Phase 2: Correct the guard's stale DEFERRED comment [IN PROGRESS]
+### Phase 2: Correct the guard's stale DEFERRED comment [COMPLETED]
 
 **Goal**: Make the guard's DEFERRED comment factually accurate about the spike probe, without
 wiring it.
 
 **Tasks**:
-- [ ] Confirm the spike still fails: `lake env lean specs/evidence/bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction.lean` (expect nonzero exit; report 02 measured 25 errors citing removed `FrameClass.Discrete` and `TaskFrame.trivialFrame`)
-- [ ] Replace "It compiles today, but" in the DEFERRED comment block of `scripts/check-evidence-probes.sh` with an accurate statement: it no longer compiles against the current frame-class API, and when the frame-class uniformity work lands it must be repaired (under the same no-weakening rule) before it is wired
-- [ ] Leave the `DEFERRED=(...)` array and all script logic unchanged
-- [ ] Confirm no task-number reference was introduced (deliverable file outside `specs/`)
+- [x] Confirm the spike still fails: `lake env lean specs/evidence/bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction.lean` (expect nonzero exit; report 02 measured 25 errors citing removed `FrameClass.Discrete` and `TaskFrame.trivialFrame`)
+- [x] Replace "It compiles today, but" in the DEFERRED comment block of `scripts/check-evidence-probes.sh` with an accurate statement: it no longer compiles against the current frame-class API, and when the frame-class uniformity work lands it must be repaired (under the same no-weakening rule) before it is wired
+- [x] Leave the `DEFERRED=(...)` array and all script logic unchanged
+- [x] Confirm no task-number reference was introduced (deliverable file outside `specs/`)
 
 **Timing**: 10 minutes
 

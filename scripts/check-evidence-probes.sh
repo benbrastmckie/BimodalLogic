@@ -61,11 +61,13 @@ WIRED=(
 )
 
 # --- DEFERRED -----------------------------------------------------------------------------
-# `spike-untl-unfolding-and-fwd-obstruction` is deliberately NOT wired.  It compiles today, but
-# its subject is the frame-class mismatch between `FrameClass.Base` and `FrameClass.Discrete`,
-# and it asserts results about a `filteredStep_fwd` that the frame-class uniformity work is
-# expected to change.  Wiring it now would freeze a question that is still open.  Wire it in when
-# that work lands.
+# `spike-untl-unfolding-and-fwd-obstruction` is deliberately NOT wired.  It no longer compiles:
+# it cites `FrameClass.Discrete` and `TaskFrame.trivialFrame`, both gone from the current
+# frame-class API.  Its subject is the frame-class mismatch between `FrameClass.Base` and
+# `FrameClass.Discrete`, and it asserts results about a `filteredStep_fwd` that the frame-class
+# uniformity work is expected to change.  Wiring it now would freeze a question that is still
+# open.  When that work lands, repair it under the same no-weakening rule as the wired probes
+# (track the API; never delete or restate an obstruction to make it pass), then wire it in.
 DEFERRED=("spike-untl-unfolding-and-fwd-obstruction")
 
 failures=0
