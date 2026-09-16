@@ -9,7 +9,7 @@
     {
       "project_number": 594,
       "project_name": "relocate_in_library_smoke_tests",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "medium",
@@ -17,8 +17,16 @@
       "dependencies": [],
       "description": "Relocate test-shaped smoke tests out of the live library. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): 404 `#check`/`#eval`/`#print` lines across 29 live (non-Boneyard) library files (largest: DatasetGenerator 116, Saturation 59, MainResults 54, Normalization 42, Syntax/Formula 20) plus 389 top-level `example`s outside `FormalSystem/Examples/`. cslib (`scripts/pre-pr-check.sh`) treats `#check`/`#eval`/`dbg_trace` in library code as debug artifacts.\n\nWORK: (1) classify every occurrence as test-shaped (asserts behaviour, belongs in `Tests/BimodalTest/` as `#guard`/`example`) or documentation-shaped (illustrates an API next to its definition; may stay). (2) Move the test-shaped ones into the matching `Tests/BimodalTest/` module. (3) Keep `FormalSystem/MainResults.lean` as-is: its `#print axioms` block is an intentional axiom-audit page. (4) Add a debug-artifact invariant check to `scripts/check-module-invariants.sh` with a recorded allowlist (MainResults plus any documentation-shaped survivors), so new debug output cannot land silently.\n\nORDERING NOTE: C17 counts `#check @foo` as an occurrence (e.g. Normalization's `#check @neg_unfold` block), so this relocation changes C17's zero-occurrence census; it therefore precedes the zero-occurrence declaration triage in this topic.\n\nACCEPTANCE: `lake build` green; test suite green; new invariant check passes and is documented in the harness header; remaining in-library `#check`/`#eval`/`#print` lines are all allowlisted with a reason.",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T16:43:48Z",
-      "session_id": "sess_1789577011_0f6aae_594"
+      "last_updated": "2026-09-16T16:52:05Z",
+      "session_id": "sess_1789577011_0f6aae",
+      "artifacts": [
+        {
+          "path": "specs/594_relocate_in_library_smoke_tests/reports/01_relocate-smoke-tests.md",
+          "type": "report",
+          "summary": "Re-measured census (365 live debug directives in 22 files + 39 in docstrings), 4-class classification with per-file relocation targets and #guard conversions (all #eval outputs captured by running), class-B #print axioms folded into C14, C27 debug-artifact invariant spec with exact-count allowlist, scoped example relocation."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 595,
