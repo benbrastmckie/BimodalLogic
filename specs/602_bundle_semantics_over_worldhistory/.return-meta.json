@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-16T21:04:41Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/602_bundle_semantics_over_worldhistory/reports/01_bundle-semantics-worldhistory.md",
+      "summary": "Confirms subtype WorldHistory design (matches talk slides), audits all consumers (no truth at partial histories, no obstruction), prototypes TruthAt/TruthCorr/timeShift_preserves_truth over WorldHistory sorry-free at baseline axioms, sizes migration (~87 files) and gives atomic-batch phasing, bridge-lemma deletions, and doc update list."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789592641_69db81_602",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
