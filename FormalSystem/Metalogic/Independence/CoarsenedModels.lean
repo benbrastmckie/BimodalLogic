@@ -116,21 +116,21 @@ theorem CoarseModel.atom_inv_iff (K : CoarseModel F) {w u : F.WorldState} (h : K
 /-- `σ ∈ ⟨τ⟩^π_t`: the two histories' world states at `t` lie in the same `π`-fibre. The
 coarsened analogue of `Semantics.SameStateAt`, and literally that predicate when `π` is
 injective. -/
-def SameUnder (K : CoarseModel F) (τ σ : ConvexHistory F) (t : F.Duration) : Prop :=
+def SameUnder (K : CoarseModel F) (τ σ : PartialHistory F) (t : F.Duration) : Prop :=
   ∀ (hτ : τ.domain t) (hσ : σ.domain t), K.π (τ.states t hτ) = K.π (σ.states t hσ)
 
-theorem SameUnder.refl (K : CoarseModel F) (τ : ConvexHistory F) (t : F.Duration) :
+theorem SameUnder.refl (K : CoarseModel F) (τ : PartialHistory F) (t : F.Duration) :
     SameUnder K τ τ t := fun _ _ => rfl
 
-theorem SameUnder.symm {K : CoarseModel F} {τ σ : ConvexHistory F} {t : F.Duration}
+theorem SameUnder.symm {K : CoarseModel F} {τ σ : PartialHistory F} {t : F.Duration}
     (h : SameUnder K τ σ t) : SameUnder K σ τ t := fun hσ hτ => (h hτ hσ).symm
 
-theorem SameUnder.trans {K : CoarseModel F} {τ σ ρ : ConvexHistory F} {t : F.Duration}
+theorem SameUnder.trans {K : CoarseModel F} {τ σ ρ : PartialHistory F} {t : F.Duration}
     (hσ : σ.domain t) (h₁ : SameUnder K τ σ t) (h₂ : SameUnder K σ ρ t) : SameUnder K τ ρ t :=
   fun hτ hρ => (h₁ hτ hσ).trans (h₂ hσ hρ)
 
 /-- `⟨·⟩^π` commutes with time shift; `Iff.rfl`, exactly as for `SameStateAt`. -/
-theorem sameUnder_timeShift (K : CoarseModel F) (τ σ : ConvexHistory F) (t Δ : F.Duration) :
+theorem sameUnder_timeShift (K : CoarseModel F) (τ σ : PartialHistory F) (t Δ : F.Duration) :
     SameUnder K (τ.timeShift Δ) (σ.timeShift Δ) t ↔ SameUnder K τ σ (t + Δ) := Iff.rfl
 
 /-! ## The coarsened truth recursion -/
@@ -140,20 +140,20 @@ Truth of an L⁺ formula in a coarsened-state model. The six L clauses are `Plus
 verbatim; the `stab` clause quantifies over the total histories in the current `π`-class rather
 than the current exact-state class.
 -/
-def CTruthAt (K : CoarseModel F) (τ : ConvexHistory F) (t : F.Duration) : PlusFormula → Prop
+def CTruthAt (K : CoarseModel F) (τ : PartialHistory F) (t : F.Duration) : PlusFormula → Prop
   | .atom p => ∃ (ht : τ.domain t), K.toModel.valuation (τ.states t ht) p
   | .bot => False
   | .imp φ ψ => CTruthAt K τ t φ → CTruthAt K τ t ψ
-  | .box φ => ∀ (σ : ConvexHistory F), σ.IsTotal → CTruthAt K σ t φ
+  | .box φ => ∀ (σ : PartialHistory F), σ.IsTotal → CTruthAt K σ t φ
   | .untl ψ φ => ∃ s : F.Duration, t < s ∧ CTruthAt K τ s φ ∧
       ∀ r : F.Duration, t < r → r < s → CTruthAt K τ r ψ
   | .snce ψ φ => ∃ s : F.Duration, s < t ∧ CTruthAt K τ s φ ∧
       ∀ r : F.Duration, s < r → r < t → CTruthAt K τ r ψ
-  | .stab φ => ∀ (σ : ConvexHistory F), σ.IsTotal → SameUnder K τ σ t → CTruthAt K σ t φ
+  | .stab φ => ∀ (σ : PartialHistory F), σ.IsTotal → SameUnder K τ σ t → CTruthAt K σ t φ
 
 namespace CTruth
 
-variable (K : CoarseModel F) (τ : ConvexHistory F) (t : F.Duration)
+variable (K : CoarseModel F) (τ : PartialHistory F) (t : F.Duration)
 
 theorem atom_iff (p : Atom) :
     CTruthAt K τ t (.atom p) ↔ ∃ (ht : τ.domain t), K.toModel.valuation (τ.states t ht) p :=
@@ -165,11 +165,11 @@ theorem imp_iff (φ ψ : PlusFormula) :
     CTruthAt K τ t (.imp φ ψ) ↔ (CTruthAt K τ t φ → CTruthAt K τ t ψ) := Iff.rfl
 
 theorem box_iff (φ : PlusFormula) :
-    CTruthAt K τ t (.box φ) ↔ ∀ σ : ConvexHistory F, σ.IsTotal → CTruthAt K σ t φ := Iff.rfl
+    CTruthAt K τ t (.box φ) ↔ ∀ σ : PartialHistory F, σ.IsTotal → CTruthAt K σ t φ := Iff.rfl
 
 theorem stab_iff (φ : PlusFormula) :
     CTruthAt K τ t (.stab φ) ↔
-      ∀ σ : ConvexHistory F, σ.IsTotal → SameUnder K τ σ t → CTruthAt K σ t φ := Iff.rfl
+      ∀ σ : PartialHistory F, σ.IsTotal → SameUnder K τ σ t → CTruthAt K σ t φ := Iff.rfl
 
 theorem top_true : CTruthAt K τ t top := fun h => h
 
@@ -182,7 +182,7 @@ theorem and_iff (φ ψ : PlusFormula) :
 /-- `⟐φ` in a coarsened model: some total history of the current `π`-class satisfies `φ`. -/
 theorem dstab_iff (φ : PlusFormula) :
     CTruthAt K τ t (dstab φ) ↔
-      ∃ σ : ConvexHistory F, σ.IsTotal ∧ SameUnder K τ σ t ∧ CTruthAt K σ t φ := by
+      ∃ σ : PartialHistory F, σ.IsTotal ∧ SameUnder K τ σ t ∧ CTruthAt K σ t φ := by
   simp [dstab, neg, CTruthAt]
 
 theorem someFuture_iff (φ : PlusFormula) :
@@ -214,7 +214,7 @@ state equations. -/
 /-- Pointwise-equal histories satisfy the same L⁺ formulas in a coarsened model. Port of
 `Semantics.truth_congr_ext`. -/
 theorem c_truth_congr_ext (K : CoarseModel F) (φ : PlusFormula) :
-    ∀ (τ σ : ConvexHistory F) (t : F.Duration),
+    ∀ (τ σ : PartialHistory F) (t : F.Duration),
       (∀ s, τ.domain s ↔ σ.domain s) →
       (∀ s (hτ : τ.domain s) (hσ : σ.domain s), τ.states s hτ = σ.states s hσ) →
       (CTruthAt K τ t φ ↔ CTruthAt K σ t φ) := by
@@ -243,7 +243,7 @@ theorem c_truth_congr_ext (K : CoarseModel F) (φ : PlusFormula) :
 
 /-- Coarsened L⁺ truth commutes with time shift. Port of `Semantics.plusTruthAt_timeShift`. -/
 theorem cTruthAt_timeShift (K : CoarseModel F) (φ : PlusFormula) :
-    ∀ (σ : ConvexHistory F) (t Δ : F.Duration),
+    ∀ (σ : PartialHistory F) (t Δ : F.Duration),
       CTruthAt K (σ.timeShift Δ) t φ ↔ CTruthAt K σ (t + Δ) φ := by
   induction φ with
   | atom p => intros; exact Iff.rfl
@@ -310,7 +310,7 @@ theorem cTruthAt_timeShift (K : CoarseModel F) (φ : PlusFormula) :
 
 /-- The truth of `⊡φ` at `(τ, t)` depends only on the `⟨·⟩^π_t`-class of `τ`. Port of
 `Semantics.stab_congr_sameState`. -/
-theorem c_stab_congr_sameUnder (K : CoarseModel F) (τ σ : ConvexHistory F) (t : F.Duration)
+theorem c_stab_congr_sameUnder (K : CoarseModel F) (τ σ : PartialHistory F) (t : F.Duration)
     (hτ : τ.domain t) (hσ : σ.domain t) (h : SameUnder K τ σ t) (φ : PlusFormula) :
     CTruthAt K τ t (.stab φ) ↔ CTruthAt K σ t (.stab φ) := by
   constructor
@@ -322,7 +322,7 @@ theorem c_stab_congr_sameUnder (K : CoarseModel F) (τ σ : ConvexHistory F) (t 
 /-- **`⊡φ` depends on the world state alone**, in a coarsened model too: this is the lemma the
 atomization transfer needs, and it is stated at *state equality* (which implies `π`-agreement),
 so it has exactly the shape `Atomization.lean` consumes. Port of `Semantics.stab_state_only`. -/
-theorem c_stab_state_only (K : CoarseModel F) (τ σ : ConvexHistory F) (hτ : τ.IsTotal)
+theorem c_stab_state_only (K : CoarseModel F) (τ σ : PartialHistory F) (hτ : τ.IsTotal)
     (hσ : σ.IsTotal) (t s : F.Duration) (h : τ.states t (hτ t) = σ.states s (hσ s))
     (φ : PlusFormula) :
     CTruthAt K τ t (.stab φ) ↔ CTruthAt K σ s (.stab φ) := by
@@ -347,13 +347,13 @@ the **coarsened** `⊡χ`. Well defined as a state property by `c_stab_state_onl
 def CoarseModel.atomModel (K : CoarseModel F) (e : Encoding) : TaskModel F where
   valuation w a :=
     (∃ p, e.ι (.inl p) = a ∧ K.toModel.valuation w p) ∨
-    (∃ χ, e.ι (.inr χ) = a ∧ ∃ (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration),
+    (∃ χ, e.ι (.inr χ) = a ∧ ∃ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
       τ.states t (hτ t) = w ∧ CTruthAt K τ t (.stab χ))
 
 /-- **The transfer lemma for coarsened models.** Port of
 `Conservativity.plusTruthAt_iff_atomize`; the `stab` case is `c_stab_state_only`. -/
 theorem cTruthAt_iff_atomize (K : CoarseModel F) (e : Encoding) (φ : PlusFormula) :
-    ∀ (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration),
+    ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
       CTruthAt K τ t φ ↔ TruthAt (K.atomModel e) τ t (atomize e φ) := by
   induction φ with
   | atom p =>
@@ -399,7 +399,7 @@ theorem cTruthAt_iff_atomize (K : CoarseModel F) (e : Encoding) (φ : PlusFormul
 system is sound for. There is no frame-class parameter — the argument is run at `.Base`, which is
 where the two pasting schemata sit. -/
 def CValid (φ : PlusFormula) : Prop :=
-  ∀ (F : TaskFrame) (K : CoarseModel F) (τ : ConvexHistory F), τ.IsTotal →
+  ∀ (F : TaskFrame) (K : CoarseModel F) (τ : PartialHistory F), τ.IsTotal →
     ∀ t : F.Duration, CTruthAt K τ t φ
 
 /-- **TM schema soundness over coarsened models**: the atomization of `φ` being a `.Base`-admissible
@@ -730,7 +730,7 @@ theorem naive_cValid {φ : PlusFormula} (h : NaiveDerivable FrameClass.Base [] �
 
 /-- The contrapositive, in the shape a refutation consumes. -/
 theorem not_naiveDerivable_of_cRefuted {φ : PlusFormula} (F : TaskFrame) (K : CoarseModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration) (h : ¬ CTruthAt K τ t φ) :
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) (h : ¬ CTruthAt K τ t φ) :
     ¬ NaiveDerivable FrameClass.Base [] φ :=
   fun hd => h (naive_cValid hd F K τ hτ t)
 

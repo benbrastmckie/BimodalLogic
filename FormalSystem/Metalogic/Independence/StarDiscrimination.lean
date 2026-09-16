@@ -81,8 +81,8 @@ Its increment over `[s, t]` is `a · (t - s)`, which lies in `[t - s, 2 (t - s)]
 (`Independence/DriftHistories.lean`) at a general rate; no appeal to `thm:extension` or
 `cor:occurrence`, and hence no Zorn.
 -/
-noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : ConvexHistory F0 :=
-  ConvexHistory.ofTotal F0 (fun t => a * t) <| by
+noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : PartialHistory F0 :=
+  PartialHistory.ofTotal F0 (fun t => a * t) <| by
     intro s t
     show fzeroRel (a * s) (t - s) (a * t)
     rw [fzeroRel_iff]
@@ -94,7 +94,7 @@ noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : ConvexHi
 
 theorem driftLinear_isTotal (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) :
     (driftLinear a h1 h2).IsTotal :=
-  ConvexHistory.ofTotal_isTotal _ _ _
+  PartialHistory.ofTotal_isTotal _ _ _
 
 @[simp] theorem driftLinear_states (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) (t : ↑realTemporalOrder)
     (ht : (driftLinear a h1 h2).domain t) :

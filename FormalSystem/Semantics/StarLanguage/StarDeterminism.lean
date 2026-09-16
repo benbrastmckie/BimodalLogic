@@ -128,7 +128,7 @@ engine both validity results below run on. It consumes the singleton bridge
 vector on both sides.
 -/
 theorem star_congr_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
-    {τ σ : ConvexHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal) {x : F.Duration}
+    {τ σ : PartialHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal) {x : F.Duration}
     (hsame : SameStateAt τ σ x) (y : F.Duration) (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ y v φ ↔ StarTruthAt M σ y v φ :=
   star_truth_congr_ext M φ τ σ y v (fun s => by simp [hτ s, hσ s])
@@ -144,7 +144,7 @@ the positive case the engine carries `φ` to every `σ ∈ ⟨τ⟩_x`, giving t
 in the negative case it carries the failure, giving `⊡↓²¬φ`.
 -/
 theorem settledDisj_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration)
+    {τ : PartialHistory F} (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration)
     (φ : StarFormula) :
     StarTruthAt M τ x v (settledDisj φ) := by
   rw [settledDisj_iff]
@@ -206,7 +206,7 @@ The manuscript's `(∗)` chain transfers verbatim, because no temporal operator 
 stored-time vector; the one new ingredient is `always`'s three-way unfolding into
 `H · ∧ · ∧ G ·`, whose three arms reassemble into the single unrestricted `∀ y` by trichotomy.
 -/
-theorem detPM_unfold (M : TaskModel F) (τ : ConvexHistory F) (x : F.Duration)
+theorem detPM_unfold (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ x v (detPM φ) ↔
       ∀ y : F.Duration, StarTruthAt M τ x (Function.update (Function.update v 1 x) 2 y)

@@ -164,37 +164,37 @@ tree stays green.
 
 ---
 
-### Phase 2: Core flip behind a compatibility shim [NOT STARTED]
+### Phase 2: Core flip behind a compatibility shim [COMPLETED]
 
 **Goal**: Make `PartialHistory` the carrier of H_F, truth, and validity. `ConvexHistory` survives
 only as a deprecated alias layer.
 
 **Tasks**:
-- [ ] Probe the shim first with `lean_run_code`: `abbrev ConvexHistory (F) := PartialHistory F`,
+- [x ] Probe the shim first with `lean_run_code`: `abbrev ConvexHistory (F) := PartialHistory F`,
   plus aliases (`ConvexHistory.ofTotal`, `ofTotal_isTotal`, `timeShift`, `states_eq_of_time_eq`,
   `IsTotal`, `isTotal_timeShift`, `total_nonempty`, `trivial`, `map`, `comap`). Check that
   `τ.IsTotal`, `τ.timeShift Δ`, structure-instance notation, and `simp [ConvexHistory.ofTotal]`
-  behave. If the probe fails wholesale, stop and switch to the fallback in Rollback/Contingency.
-- [ ] Move `TaskFrame.HF`, `HF.ofTotal`/`ofTotal_val`, `HF.timeShift`/`timeShift_val`, and
+  behave. If the probe fails wholesale, stop and switch to the fallback in Rollback/Contingency. *(completed: probe failed on field notation and simp; fallback taken)*
+- [x ] Move `TaskFrame.HF`, `HF.ofTotal`/`ofTotal_val`, `HF.timeShift`/`timeShift_val`, and
   `FrameOver.HF` into `PartialHistory.lean`, re-based as `{τ : PartialHistory F // τ.IsTotal}`
   (with `HF.ofTotal` built on `PartialHistory.ofTotal`).
-- [ ] Rewrite `ConvexHistory.lean` as the deprecated shim, containing nothing but the aliases.
+- [x ] Rewrite `ConvexHistory.lean` as the deprecated shim, containing nothing but the aliases. *(deviation: altered — shim probe failed (alias `ConvexHistory.timeShift` breaks field notation on `τ : ConvexHistory F`; a typed wrapper def breaks `simp [timeShift_domain]`), so per Rollback/Contingency the file was deleted outright and every live site renamed in one scripted sweep)*
   Delete the structure, `universal`, `universalTrivialFrame`, `universalNatFrame`, `stateAt`, and
   `timeShift_congr`.
-- [ ] `Extension.lean`: delete `total_isConvex`, `toConvexHistory`,
+- [x ] `Extension.lean`: delete `total_isConvex`, `toConvexHistory`,
   `toConvexHistory_toPartialHistory`, and `isTotal_toConvexHistory`. Restate `extension` as
   `∃ σ : F.HF, Extends σ.val τ`, proved by `⟨⟨μ, htot⟩, le_def.mp hle⟩`. Drop the
   `ConvexHistory` import.
-- [ ] Remove `.toPartialHistory` projections in `Extension/PeriodicExtension.lean` and
+- [x ] Remove `.toPartialHistory` projections in `Extension/PeriodicExtension.lean` and
   `Metalogic/Decidability/BiLasso/Agreement.lean`.
-- [ ] `IntTransfer.lean`: rename `map`/`comap` into the `PartialHistory` namespace and delete
+- [x ] `IntTransfer.lean`: rename `map`/`comap` into the `PartialHistory` namespace and delete
   their `convex :=` blocks.
-- [ ] Delete every remaining history-related `convex :=` field (DurationFrames x2,
+- [x ] Delete every remaining history-related `convex :=` field (DurationFrames x2,
   TemporalStructures x2, FlowFrame, RegionFrame, DiscreteNonCompactness, ClockFrame, CoNotPriorU,
   ReynoldsBridge x2). Do not touch the `DenseModelSurgery` hits.
-- [ ] Rewrite the 5 `change ConvexHistory.mk (PartialHistory.mk _ _ _ _) _ = …` goals
+- [x ] Rewrite the 5 `change ConvexHistory.mk (PartialHistory.mk _ _ _ _) _ = …` goals
   (FlowFrame x2, ReynoldsBridge x3; 10 lines) to `change PartialHistory.mk _ _ _ _ = …`.
-- [ ] Rename directly (without waiting for Phases 3-6) any other site the shim demonstrably does
+- [x ] Rename directly (without waiting for Phases 3-6) any other site the shim demonstrably does
   not carry.
 
 **Timing**: 2 hours
@@ -225,21 +225,21 @@ The remaining red set after the flip, observed from the first full build, is the
 
 ---
 
-### Phase 3: Rename in Semantics/ [NOT STARTED]
+### Phase 3: Rename in Semantics/ [COMPLETED]
 
 **Goal**: Retarget every `Semantics/` consumer from shim names to `PartialHistory` names.
 
 **Tasks**:
-- [ ] Rename, file by file, in `Truth.lean`, `TruthClauses.lean`, `TruthTransport.lean`,
+- [x ] Rename, file by file, in `Truth.lean`, `TruthClauses.lean`, `TruthTransport.lean`, *(deviation: altered — folded into the Phase 2 atomic-batch sweep; the abbrev shim was not viable)*
   `Validity.lean`, `ValidityLayer.lean`, `TaskModel.lean`, `TaskFrame.lean`, `IntNormalForm.lean`,
   `ShiftSet.lean`, `DeterministicBridge.lean`, `Correspondence/*`, `PlusLanguage/*`,
   `MinusLanguage/*`, `StarLanguage/*`, and the `Semantics.lean` root. The renames are:
   `ConvexHistory F` becomes `PartialHistory F`, `ConvexHistory.<lemma>` becomes
   `PartialHistory.<lemma>` (with `trivial` becoming `trivialFrameHistory`), and
   `import FormalSystem.Semantics.ConvexHistory` becomes `import FormalSystem.Semantics.PartialHistory`.
-- [ ] Hand-review each diff so that prose describing the convex tier is not mangled. Fix
+- [x ] Hand-review each diff so that prose describing the convex tier is not mangled. Fix
   docstrings that name `ConvexHistory` as a type; the deeper prose sweep is Phase 7.
-- [ ] Re-establish the `TruthAt` box clause as `∀ σ : PartialHistory F, σ.IsTotal → …`, and keep
+- [x ] Re-establish the `TruthAt` box clause as `∀ σ : PartialHistory F, σ.IsTotal → …`, and keep
   the atom clause unchanged.
 
 **Timing**: 1.5 hours
@@ -262,17 +262,17 @@ The remaining red set after the flip, observed from the first full build, is the
 
 ---
 
-### Phase 4: Rename in Metalogic (Decidability, Deterministic, soundness layer) and Automation [NOT STARTED]
+### Phase 4: Rename in Metalogic (Decidability, Deterministic, soundness layer) and Automation [COMPLETED]
 
 **Goal**: Retarget the first half of `Metalogic/`, plus `Automation/`.
 
 **Tasks**:
-- [ ] Apply the same renames in `Metalogic/Decidability/**` (BiLasso, Verified/Bridge,
+- [x ] Apply the same renames in `Metalogic/Decidability/**` (BiLasso, Verified/Bridge, *(deviation: altered — folded into the Phase 2 atomic-batch sweep; the abbrev shim was not viable)*
   Propositional, CountermodelExtraction, IntPresentation), `Metalogic/Deterministic/*`,
   `Metalogic/Soundness.lean`, `SoundnessLemmas/FrameClassVariants.lean`, `SetConsequence.lean`,
   `StrongCompleteness.lean`, `DedekindNonCompactness.lean`, `DiscreteNonCompactness.lean`, and
   `Automation/PrefilterSoundness.lean`.
-- [ ] Confirm that `trivial_truth_iff` (`Decidability/Propositional/Decidable.lean`) still closes
+- [x ] Confirm that `trivial_truth_iff` (`Decidability/Propositional/Decidable.lean`) still closes
   by `simp`.
 
 **Timing**: 1.5 hours
@@ -293,12 +293,12 @@ The remaining red set after the flip, observed from the first full build, is the
 
 ---
 
-### Phase 5: Rename in Metalogic (Independence, Conservativity, BXCanonical, WeakCanonical, Algebraic) [NOT STARTED]
+### Phase 5: Rename in Metalogic (Independence, Conservativity, BXCanonical, WeakCanonical, Algebraic) [COMPLETED]
 
 **Goal**: Retarget the rest of `Metalogic/`.
 
 **Tasks**:
-- [ ] Apply the same renames in `Metalogic/Independence/**` (including the `CTruthAt` relation in
+- [x ] Apply the same renames in `Metalogic/Independence/**` (including the `CTruthAt` relation in *(deviation: altered — folded into the Phase 2 atomic-batch sweep; the abbrev shim was not viable)*
   `CoarsenedModels.lean`), `Metalogic/Conservativity/**`, `Metalogic/BXCanonical/**`,
   `Metalogic/WeakCanonical/**`, and `Metalogic/Algebraic/FlowFrame.lean`.
 
@@ -320,17 +320,17 @@ Algebraic = 30 files. Confirm with `grep -rl ConvexHistory FormalSystem/Metalogi
 
 ---
 
-### Phase 6: Examples, Tests, and shim deletion [NOT STARTED]
+### Phase 6: Examples, Tests, and shim deletion [COMPLETED]
 
 **Goal**: Finish the Lean migration and delete `ConvexHistory.lean`.
 
 **Tasks**:
-- [ ] Rename in `FormalSystem/Examples/TemporalStructures.lean`,
+- [x ] Rename in `FormalSystem/Examples/TemporalStructures.lean`, *(deviation: altered — folded into the Phase 2 atomic-batch sweep; the abbrev shim was not viable)*
   `Tests/BimodalTest/Semantics/TruthTest.lean` (`testHistory := PartialHistory.trivialFrameHistory`,
   and the `simp [...]` lists), and `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`.
-- [ ] Delete `FormalSystem/Semantics/ConvexHistory.lean` and its `Semantics.lean` import. Check
+- [x ] Delete `FormalSystem/Semantics/ConvexHistory.lean` and its `Semantics.lean` import. Check
   for any `lakefile`/module-list or `check-module-invariants.sh` entry naming the module.
-- [ ] Run a final sweep: `grep -rn "ConvexHistory" FormalSystem Tests --include=*.lean | grep -v
+- [x ] Run a final sweep: `grep -rn "ConvexHistory" FormalSystem Tests --include=*.lean | grep -v
   Boneyard` should return only prose/docstring mentions, which are handed to Phase 7.
 
 **Timing**: 1 hour

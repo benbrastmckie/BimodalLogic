@@ -36,7 +36,7 @@ This module defines semantic validity and consequence for TM formulas.
   the **total** histories: `τ.IsTotal`, i.e. `∀ t, τ.domain t`. There is no admissible-history
   parameter and no shift-closure side condition; `TruthAt` takes no set argument.
 - The statement needs no shift-closure hypothesis because `timeShift` preserves totality
-  (`ConvexHistory.isTotal_timeShift`), so time-shift invariance carries no side condition.
+  (`PartialHistory.isTotal_timeShift`), so time-shift invariance carries no side condition.
 - Satisfiability existentially quantifies over a total witness history.
 - Caller trap: `Valid` and `SemanticConsequence` are `ValidIn` / `SemanticConsequenceIn` at
   `FrameClass.Base`. Their pre-abbreviation binder shape is reachable through the `.of_forall`
@@ -79,7 +79,7 @@ predicate-indexed primitive, mirroring `ValidOnFrames`. Indexing by a bare frame
 than by a `FrameClass` tag is what lets one definition serve every class. -/
 def ConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Context) (φ : Formula) : Prop :=
   ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
-    (τ : ConvexHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- `cor:tm-completeness`'s class-restricted consequence `Γ ⊨_C φ` at a finite context: the
@@ -126,7 +126,7 @@ notation:50 Γ:50 " ⊨ " φ:50 => SemanticConsequence Γ φ
 /-! ### Binder-shape adapters
 
 The explicit binder shapes. `ConsequenceOnFrames` already quantifies over the
-unbundled `(τ : ConvexHistory F) (_ : τ.IsTotal)` pair, so — unlike `ValidOnFrames`, which bundles
+unbundled `(τ : PartialHistory F) (_ : τ.IsTotal)` pair, so — unlike `ValidOnFrames`, which bundles
 the history into `TaskFrame.HF` — no history-shape adapter is needed at the generic layer. What
 each `of_forall` restores is the *frame condition*, putting it back into the local context in the
 form typeclass resolution can see: `Sat .Dense F` is `TaskFrame.IsDense F`, whose head symbol is
@@ -136,7 +136,7 @@ class-restricted pairs live beside their definitions in `Metalogic/StrongComplet
 /-- Introduce `SemanticConsequence` from its pre-abbreviation binder shape; the `Sat .Base`
 argument (`True`) is discharged here rather than at each call site. -/
 theorem SemanticConsequence.of_forall {Γ : Context} {φ : Formula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
            ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
     SemanticConsequence Γ φ :=
   fun F _ M τ hτ t => h F M τ hτ t
@@ -144,13 +144,13 @@ theorem SemanticConsequence.of_forall {Γ : Context} {φ : Formula}
 /-- Eliminate `SemanticConsequence` into its pre-abbreviation binder shape. -/
 theorem SemanticConsequence.apply {Γ : Context} {φ : Formula}
     (h : SemanticConsequence Γ φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
   h F trivial M τ hτ t hall
 
 /-- Introduce `SemanticConsequenceIn` at an arbitrary tag from the frame-condition-explicit
 binder shape. The body is `h` — `ConsequenceOnFrames` already quantifies over the unbundled
-`(τ : ConvexHistory F) (_ : τ.IsTotal)` pair, so nothing has to be reshaped.
+`(τ : PartialHistory F) (_ : τ.IsTotal)` pair, so nothing has to be reshaped.
 
 **This is why the per-class consequence adapters were boilerplate.** The three pairs that used
 to live in `Metalogic/StrongCompleteness.lean` (`SemanticConsequenceDense`,
@@ -159,7 +159,7 @@ tag with `fc.Sat F` unfolded to that class's frame condition; they are deleted, 
 writes the tag instead of picking a name. -/
 theorem SemanticConsequenceIn.of_forall_total {fc : ProofSystem.FrameClass} {Γ : Context}
     {φ : Formula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
     SemanticConsequenceIn fc Γ φ :=
   h
@@ -168,7 +168,7 @@ theorem SemanticConsequenceIn.of_forall_total {fc : ProofSystem.FrameClass} {Γ 
 binder shape. The replacement for the three deleted class-specific `.apply` adapters. -/
 theorem SemanticConsequenceIn.apply_total {fc : ProofSystem.FrameClass} {Γ : Context}
     {φ : Formula} (h : SemanticConsequenceIn fc Γ φ) (F : TaskFrame) (hF : fc.Sat F)
-    (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (hΓ : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
   h F hF M τ hτ t hΓ
 
@@ -194,7 +194,7 @@ For absolute satisfiability (exists in some type), use `∃ D, satisfiable D Γ`
 -/
 def satisfiable (D : TemporalOrder) (Γ : Context) : Prop :=
   ∃ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
-    (τ : ConvexHistory F.toTaskFrame) (_ : τ.IsTotal) (t : ↑D),
+    (τ : PartialHistory F.toTaskFrame) (_ : τ.IsTotal) (t : ↑D),
     ∀ φ ∈ Γ, TruthAt M τ t φ
 
 /--
@@ -224,7 +224,7 @@ history and the `Nontrivial` binder are inherited from `Valid` as a design decis
 -/
 def FormulaSatisfiable (φ : Formula) : Prop :=
   ∃ (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
     TruthAt M τ t φ
 
 /-- L's instance of the abstract point-truth class of `Semantics/ValidityLayer.lean`: truth at
@@ -252,7 +252,7 @@ used instead, and dot-notation (`F.ValidOn φ`) reads as the paper's `⊨_F φ` 
 **This is not a parallel validity notion.** `valid_iff_forall_validOn` below proves the two are
 related by quantification over frames, so `ValidOn` is a specialization of the one validity
 predicate rather than a competitor to it — the same discipline `TaskFrame.HF` follows with
-respect to `ConvexHistory.IsTotal`.
+respect to `PartialHistory.IsTotal`.
 -/
 
 /--
@@ -270,7 +270,7 @@ Each of the three quantifiers is rendered on the nose:
 * "every model `M = ⟨W, D, ⇒, |·|⟩` where `F = ⟨W, D, ⇒⟩`" is `∀ M : TaskModel F` — the frame is
   a *parameter* of `TaskModel`, so the side condition that `M`'s frame reduct is `F` is carried
   by the type rather than by a hypothesis.
-* "possible world `τ ∈ H_F`" is `∀ τ : F.HF`, the bundled subtype. Per `ConvexHistory.lean`'s
+* "possible world `τ ∈ H_F`" is `∀ τ : F.HF`, the bundled subtype. Per `PartialHistory.lean`'s
   encoding note, the bundled form is used exactly where `H_F` appears as an object in its own
   right, which is how the recorded text reads here.
 * "time `x ∈ D`" is `∀ x : D` — all of the temporal order, not merely `dom(τ)`; for a total `τ`
@@ -296,7 +296,7 @@ first needed it: the unbundling is a fact about the definition, not about any pa
 correspondence argument, and its callers now sit in more than one module.
 -/
 theorem validOn_iff_total (F : TaskFrame) (φ : Formula) :
-    F.ValidOn φ ↔ ∀ (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal → ∀ t, TruthAt M τ t φ :=
+    F.ValidOn φ ↔ ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal → ∀ t, TruthAt M τ t φ :=
   genericValidOn_iff_total (L := Formula) F φ
 
 /--
@@ -396,7 +396,7 @@ Formally: for every temporal type `D`, every task frame `F` over `D`, every mode
 The "possible worlds tau in H_F" of that clause are the frame's **total** histories, which is
 what `τ.IsTotal` says. There is no admissible-history parameter and no shift-closure side
 condition: a shift-closure hypothesis is unnecessary in the statement of validity because
-totality is trivially preserved by `timeShift` (`ConvexHistory.isTotal_timeShift`), so time-shift
+totality is trivially preserved by `timeShift` (`PartialHistory.isTotal_timeShift`), so time-shift
 invariance carries no side condition to quantify over. `TruthAt` takes no set argument.
 
 Validity also quantifies over all `x ∈ D` (all times in the temporal order), not just times in
@@ -409,7 +409,7 @@ Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 `def:logical-consequence`'s closing clause. `Valid` stands to `Derivable .Base` as `ValidIn fc`
 stands to `Derivable fc`, with the class tag in the same place on both sides.
 
-Caller trap: the explicit binder shape `∀ (F) (M) (τ : ConvexHistory F), τ.IsTotal → ∀ t` is
+Caller trap: the explicit binder shape `∀ (F) (M) (τ : PartialHistory F), τ.IsTotal → ∀ t` is
 reachable through `Valid.of_forall_total` and `Valid.apply`, which discharge the `True` argument
 so no call site writes `trivial`.
 -/
@@ -425,7 +425,7 @@ notation:50 "⊨ " φ:50 => Valid φ
 condition, so this is `ValidIn.of_forall_total` with the `Sat .Base` argument (`True`)
 discharged here rather than at each call site. -/
 theorem Valid.of_forall_total {φ : Formula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
     Valid φ :=
   GenericValid.of_forall_total (L := Formula) (φ := φ) h
@@ -433,7 +433,7 @@ theorem Valid.of_forall_total {φ : Formula}
 /-- Eliminate `Valid` into its explicit binder shape; the `Sat .Base` argument is discharged
 here, not at the call site. -/
 theorem Valid.apply {φ : Formula} (h : Valid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
   GenericValid.apply (L := Formula) (φ := φ) h F M τ hτ t
 
 /-- The contrapositive of `Valid.of_forall_total`, in the shape a countermodel extraction
@@ -442,7 +442,7 @@ wants: from a failure of `Valid` it hands back a failure of the explicit ∀-sta
 abbreviation over `ValidIn` and has no binder list to open. The `.Base` instance of
 `ValidIn.of_not`, with the `True` frame condition discharged here. -/
 theorem Valid.of_not {φ : Formula} (h : ¬ Valid φ) :
-    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F),
+    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
         τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
   GenericValid.of_not (L := Formula) (φ := φ) h
 
@@ -460,8 +460,8 @@ introduced as an abbreviation, exactly so that the equivalence is a proof obliga
 checks and not a definitional identity asserted by fiat.
 
 Both directions are the `.val`/`.property` bridge between `F.HF` and the predicate form
-`(τ : ConvexHistory F) (hτ : τ.IsTotal)` that `Valid` uses — the two spellings of one and the same
-`IsTotal` predicate, per `ConvexHistory.lean`'s encoding note. No mathematical content is added in
+`(τ : PartialHistory F) (hτ : τ.IsTotal)` that `Valid` uses — the two spellings of one and the same
+`IsTotal` predicate, per `PartialHistory.lean`'s encoding note. No mathematical content is added in
 either direction; that is the point of the statement.
 -/
 theorem valid_iff_forall_validOn (φ : Formula) :
@@ -510,7 +510,7 @@ theorem ValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : Formula} (h : 
 
 `ValidOnFrames` is defined through `TaskFrame.ValidOn`, whose history quantifier is the bundled
 `(τ : TaskFrame.HF F)`; every predicate this module states by hand instead uses the unbundled pair
-`(τ : ConvexHistory F) (_ : τ.IsTotal)`. `valid_iff_forall_validOn` already proves the two spellings
+`(τ : PartialHistory F) (_ : τ.IsTotal)`. `valid_iff_forall_validOn` already proves the two spellings
 agree, but they are not *definitionally* equal, so a proof written against one shape does not
 elaborate against the other. The lemmas below are the shape adapters: a goal site becomes
 `refine ValidOnFrames.of_forall_total ?_; intro F hF M τ hτ t`, and a hypothesis site becomes
@@ -531,29 +531,29 @@ a different reason, and are not exceptions to the rule above: they discharge `Sa
 so that no `.Base` call site has to bind a vacuous `_`, which is a service the generic pair
 cannot render. -/
 
-/-- Introduce `ValidOnFrames` from the unbundled `(τ : ConvexHistory F) (hτ : τ.IsTotal)` shape. -/
+/-- Introduce `ValidOnFrames` from the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)` shape. -/
 theorem ValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : Formula}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
     ValidOnFrames P φ :=
   GenericValidOnFrames.of_forall_total (L := Formula) (φ := φ) h
 
-/-- Eliminate `ValidOnFrames` into the unbundled `(τ : ConvexHistory F) (hτ : τ.IsTotal)` shape. -/
+/-- Eliminate `ValidOnFrames` into the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)` shape. -/
 theorem ValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : Formula} (h : ValidOnFrames P φ)
-    (F : TaskFrame) (hF : P F) (M : TaskModel F) (τ : ConvexHistory F)
+    (F : TaskFrame) (hF : P F) (M : TaskModel F) (τ : PartialHistory F)
     (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
   GenericValidOnFrames.apply_total (L := Formula) (φ := φ) h F hF M τ hτ t
 
 /-- `ValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
 theorem ValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : Formula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
     ValidIn fc φ :=
   GenericValidIn.of_forall_total (L := Formula) (φ := φ) h
 
 /-- `ValidOnFrames.apply_total` at a `FrameClass` tag. -/
 theorem ValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : Formula} (h : ValidIn fc φ)
-    (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F) (τ : ConvexHistory F)
+    (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F) (τ : PartialHistory F)
     (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
   GenericValidIn.apply_total (L := Formula) (φ := φ) h F hF M τ hτ t
 
@@ -566,7 +566,7 @@ triple. It matters because `ValidComplete` is `ValidOnFrames TaskFrame.IsComplet
 predicate that no `FrameClass` tag denotes — so the `ValidOnFrames` triple *is* that predicate's
 whole adapter family, and no class-specific declaration has to exist for it. -/
 theorem ValidOnFrames.of_not {P : TaskFrame → Prop} {φ : Formula} (h : ¬ ValidOnFrames P φ) :
-    ¬ ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    ¬ ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
         τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
   GenericValidOnFrames.of_not (L := Formula) (φ := φ) h
 
@@ -578,7 +578,7 @@ This is the countermodel-extraction adapter for every tag; there is no per-class
 `Valid.of_not` is the one sibling, and only because it discharges `Sat .Base = True` rather than
 restating a frame condition. -/
 theorem ValidIn.of_not {fc : ProofSystem.FrameClass} {φ : Formula} (h : ¬ ValidIn fc φ) :
-    ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
         τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
   GenericValidIn.of_not (L := Formula) (φ := φ) h
 
@@ -630,7 +630,7 @@ The binder bundle below is instantiated by `ℤ` with **no instance work whatsoe
   `[propext, Classical.choice, Quot.sound]`.
 - **Establishing** `ValidZTime φ` from a statement about `ℤ`-frames alone is the direction that
   needs work, because there the `∀ D` binder must be *discharged for an arbitrary* `D`, which
-  requires normalizing `D` to `ℤ` and transporting the frame, `TaskModel`, `ConvexHistory`, and
+  requires normalizing `D` to `ℤ` and transporting the frame, `TaskModel`, `PartialHistory`, and
   `TruthAt` across the resulting isomorphism.
 
 `Semantics/IntNormalForm.lean`'s module docstring names the exact Mathlib route for that
@@ -896,7 +896,7 @@ This is the type-specific version of explosion.
 theorem unsatisfiable_implies_all_fixed {D : TemporalOrder}
     {Γ : Context} {φ : Formula} :
     ¬satisfiable D Γ → ∀ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
-      (τ : ConvexHistory F.toTaskFrame) (_ : τ.IsTotal)
+      (τ : PartialHistory F.toTaskFrame) (_ : τ.IsTotal)
       (t : ↑D), (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ := by
   intro h_unsat F M τ hτ t h_all
   exfalso

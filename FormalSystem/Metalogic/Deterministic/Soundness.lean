@@ -179,7 +179,7 @@ model over a *Determined*-valid frame of `fc` at which all of `Γ` is true. -/
 theorem detSoundnessIn {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula)
     (d : DetDerivationTree fc Γ φ)
     (F : TaskFrame) (hF : fc.Sat F) (hDV : DeterminedValid F) (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, PlusTruthAt M τ t ψ) :
     PlusTruthAt M τ t φ := by
   induction d generalizing τ t with

@@ -194,7 +194,7 @@ noncomputable def qTM : TaskModel qF where
   valuation := fun w _ => 1 ≤ w.2
 
 /-- The countermodel's history: the flow line through family `()` starting at `0`. -/
-noncomputable abbrev qτ : ConvexHistory qF := multiFamHistoryGen () (0 : (qD : Type))
+noncomputable abbrev qτ : PartialHistory qF := multiFamHistoryGen () (0 : (qD : Type))
 
 /-- `qτ` is total, definitionally (`multiFamHistoryGen` carries `domain := fun _ => True`). -/
 theorem qτ_total : qτ.IsTotal := multiFamHistoryGen_total (D := qD) () 0

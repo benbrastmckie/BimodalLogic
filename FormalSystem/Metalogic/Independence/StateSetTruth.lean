@@ -128,7 +128,7 @@ induction (module docstring). Every constructor has a case: `atom`, `bot`, `imp`
 -/
 theorem plusTruthAt_iff_mem_satSet (h1 : OrderFlow F) (h2 : StateOccurs F)
     (M : TaskModel F) (φ : PlusFormula) :
-    ∀ (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration),
+    ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
       PlusTruthAt M τ t φ ↔ τ.states t (hτ t) ∈ satSet M.valuation φ := by
   induction φ with
   | atom p =>

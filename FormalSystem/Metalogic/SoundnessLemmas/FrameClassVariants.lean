@@ -99,7 +99,7 @@ The swapped form states: if swap φ holds at all total histories at time t, then
 histories σ at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s < t in σ).
 
 **Proof Strategy**: Use `timeShift_preserves_truth` to bridge from time t to time s < t.
-Totality of the shifted history is `ConvexHistory.isTotal_timeShift`; no shift-closure side
+Totality of the shifted history is `PartialHistory.isTotal_timeShift`; no shift-closure side
 condition is required.
 -/
 theorem mf_swap_valid (φ : Formula) :
@@ -111,8 +111,8 @@ theorem mf_swap_valid (φ : Formula) :
   simp only [truth_norm]
   intro h_box_swap σ h_σ_mem s h_s_lt_t
   have h_at_shifted :=
-    h_box_swap (ConvexHistory.timeShift σ (s - t))
-      (ConvexHistory.isTotal_timeShift h_σ_mem (s - t))
+    h_box_swap (PartialHistory.timeShift σ (s - t))
+      (PartialHistory.isTotal_timeShift h_σ_mem (s - t))
   exact (TimeShift.timeShift_preserves_truth M σ t s φ.swapTemporal).mp h_at_shifted
 
 /-- Propositional K swaps to itself at swapped subformulas: swap distributes over `imp`, and

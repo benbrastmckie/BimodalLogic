@@ -14,7 +14,6 @@ import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.Extension
-import FormalSystem.Semantics.ConvexHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.TruthClauses
 import FormalSystem.Semantics.ValidityLayer
@@ -99,7 +98,7 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   possible world, by extending the one-point partial history `{⟨x, w⟩}`. The frame-intrinsic
   form of `cor:occurrence` is deliberately not provided; it is gated on the frame-axiom-field
   refactor described in `Extension.Step`
-- `ConvexHistory`: Convex histories `τ: X → W` as functions from convex time domains to
+- `PartialHistory`: Convex histories `τ: X → W` as functions from convex time domains to
   world states, respecting the task relation; `TaskFrame.HF` cuts out the *possible worlds*,
   the total ones
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
@@ -202,7 +201,7 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   `ShiftTruth`'s `box` clause quantifies over the carrier the ultraproduct quotients, while
   `TruthAt`'s quantifies over possible worlds, and `forward_repr` already reconciles the two
 - `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
-  frames, `TaskModel`, `ConvexHistory`, and `TruthAt` along any ordered-group isomorphism
+  frames, `TaskModel`, `PartialHistory`, and `TruthAt` along any ordered-group isomorphism
   `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed
   with `DurationClassification`'s `intIso` to give `validZTime_iff_validInt`: quantifying over
   every discrete duration carrier is the same as quantifying over `ℤ` alone
@@ -218,8 +217,8 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 | Seriality | `w ⇒_x u` and `v ⇒_x w` for some `u, v` | `serial` field |
 | Limit | `⋂_{x > 0} (w)_x = {w}` | `limit` field |
 | Saturation | `⋂ S ≠ ∅` for a `⊇`-directed family of nonempty fibers and segments | `saturation` field |
-| Convex History | `τ : X → W` convex (`def:world-history`) | `ConvexHistory F` with `convex` proof |
-| Possible World | convex history with `X = D` (`def:world-history`) | `TaskFrame.HF`; predicate form `ConvexHistory.IsTotal` |
+| Convex History | `τ : X → W` convex (`def:world-history`) | `PartialHistory F` with `convex` proof |
+| Possible World | convex history with `X = D` (`def:world-history`) | `TaskFrame.HF`; predicate form `PartialHistory.IsTotal` |
 | Truth | `M,τ,x ⊨ φ` | `TruthAt M τ t φ` |
 | Validity | True in all models, at every total history | `Valid φ` |
 
@@ -269,7 +268,7 @@ open FormalSystem.Syntax
 #check ([Formula.atomS "p"] ⊨ Formula.atomS "p" : Prop)  -- Valid
 
 -- Truth at a specific frame. `TruthAt` takes four arguments, not five.
-variable {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration)
+variable {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
 
 #check TruthAt M τ t (Formula.box (Formula.atomS "p"))
 ```
@@ -277,7 +276,7 @@ variable {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duratio
 ## References
 
 * [TaskFrame.lean](Semantics/TaskFrame.lean) - Task frame structure
-* [ConvexHistory.lean](Semantics/ConvexHistory.lean) - Convex history definition and `TaskFrame.HF`
+* [PartialHistory.lean](Semantics/PartialHistory.lean) - Convex history definition and `TaskFrame.HF`
 * [TaskModel.lean](Semantics/TaskModel.lean) - Task model with valuation
 * [Truth.lean](Semantics/Truth.lean) - Truth evaluation
 * [Validity.lean](Semantics/Validity.lean) - Validity and semantic consequence

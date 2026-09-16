@@ -225,7 +225,7 @@ are kept deliberately, so that this definition and `IsStateLocal` differ in exac
 (the register vector) rather than two.
 -/
 def IsPlusStateLocal (φ : PlusFormula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : ConvexHistory F), τ.IsTotal → σ.IsTotal →
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal →
     ∀ t : F.Duration, SameStateAt τ σ t →
       (PlusTruthAt M τ t φ ↔ PlusTruthAt M σ t φ)
 
@@ -304,13 +304,13 @@ L⁺ has no time registers, so the L⋆ module's third exclusion — `not_isStat
 does not arise here. Two exclusions are all the seven-constructor recursion needs. -/
 
 /-- The constant possible world of `NF` at world state `0`. -/
-private def zeroHist : ConvexHistory NF := natHist (fun _ => 0)
+private def zeroHist : PartialHistory NF := natHist (fun _ => 0)
 
 /-- The possible world of `NF` that sits at state `0` up to time `0` and leaves it afterwards. -/
-private def lateHist : ConvexHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
+private def lateHist : PartialHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
 
 /-- The possible world of `NF` that sits away from state `0` before time `0` and at it after. -/
-private def earlyHist : ConvexHistory NF := natHist (fun s => if s < 0 then 1 else 0)
+private def earlyHist : PartialHistory NF := natHist (fun s => if s < 0 then 1 else 0)
 
 private theorem zero_lateHist_same : SameStateAt zeroHist lateHist (0 : ℤ) := by
   intro _ _
@@ -377,7 +377,7 @@ Paper: — (the formalization's own; the nearest paper-anchored statement is the
 `p → ⊡p` of `def:BLstar-semantics`'s footnote, line 1119, which this strictly extends)
 -/
 theorem plusStateLocal_stab_iff {F : TaskFrame} {φ : PlusFormula} (hφ : φ.StateLocal)
-    (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
     PlusTruthAt M τ t φ ↔ PlusTruthAt M τ t (.stab φ) := by
   constructor
   · intro hh σ hσ hs
@@ -422,7 +422,7 @@ sit inside `PlusValidIn.of_forall_total`, which already binds it.
 Paper: — (the formalization's own; the atom instance is the footnote at line 1119)
 -/
 theorem stab_of_stateLocal {F : TaskFrame} {φ : PlusFormula} (hφ : φ.StateLocal)
-    (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (h : PlusTruthAt M τ t φ) : PlusTruthAt M τ t (.stab φ) :=
   (plusStateLocal_stab_iff hφ M τ hτ t).mp h
 

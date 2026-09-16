@@ -20,7 +20,7 @@ one carrier, `ℤ`, already decides it. The headline result is
   `validZTime_iff_validInt : ValidZTime φ ↔ ValidInt φ`
 
 and the machinery that gets there is a generic transport of the whole semantic stack —
-the frame, `TaskModel`, `ConvexHistory`, `TruthAt` — along an arbitrary ordered-group
+the frame, `TaskModel`, `PartialHistory`, `TruthAt` — along an arbitrary ordered-group
 isomorphism `e : D ≃+o E`. The isomorphism that specializes it to `ℤ` is
 `DurationClassification.lean`'s `intIso`.
 
@@ -32,8 +32,8 @@ in `Semantics/DurationClassification.lean` for the full recorded finding.
 
 ## Design decision: `Aligned`, not `Equiv`
 
-There is no `ConvexHistory F ≃ ConvexHistory (F.map e)` here, and there deliberately is not one.
-Round-tripping `ConvexHistory.map` and `ConvexHistory.comap` forces a *dependent* equality on the
+There is no `PartialHistory F ≃ PartialHistory (F.map e)` here, and there deliberately is not one.
+Round-tripping `PartialHistory.map` and `PartialHistory.comap` forces a *dependent* equality on the
 `states` field — `states` is indexed by a proof of `domain`, so the two round-tripped fields do
 not even have the same type until the domain equation is transported — and the proof degenerates
 into `HEq` wrangling.
@@ -41,7 +41,7 @@ into `HEq` wrangling.
 The `Prop`-valued relation `Aligned` avoids this entirely. `Aligned.st` is a **non-dependent**
 equation between two `F.WorldState` terms, because `(FrameOver.map F e).WorldState` is
 *definitionally* `F.WorldState`. Its one genuine transport is discharged by the tree's existing
-`ConvexHistory.states_eq_of_time_eq`. Do not replace `Aligned` with an `Equiv`.
+`PartialHistory.states_eq_of_time_eq`. Do not replace `Aligned` with an `Equiv`.
 
 `Aligned e` is, verbatim, the `Rel` field of a `Semantics.TruthCorr` (`alignedCorr` below): the
 generic relational transport `Truth.truthAt_of_truthCorr` asks for a relation on histories, atomic
@@ -53,7 +53,7 @@ instance of the generic lemma rather than its own induction.
 
 Two measured failures, recorded so a future editor does not re-hit them:
 
-* `simpa` does **not** close `(ConvexHistory.comap e ρ').domain s` from `ρ'.domain (e s)`. The
+* `simpa` does **not** close `(PartialHistory.comap e ρ').domain s` from `ρ'.domain (e s)`. The
   equality is *definitional* and `simp` normalizes straight past it. Use the bare term
   `fun s => hρ' (e s)` (`alignedCorr.total_bwd`).
 * `linarith` does not fire on the bare `AddCommGroup` + `LinearOrder` bundle these lemmas run
@@ -63,7 +63,7 @@ Two measured failures, recorded so a future editor does not re-hit them:
 ## Main results
 
 - `FrameOver.map`: transport a task frame along `e : D ≃+o E`, every field.
-- `TaskModel.map`, `ConvexHistory.map`, `ConvexHistory.comap`: the model and history transports.
+- `TaskModel.map`, `PartialHistory.map`, `PartialHistory.comap`: the model and history transports.
 - `Aligned`, `aligned_map`, `aligned_comap`, `isTotal_map`: the `HEq`-free correspondence
   between a history and its transport.
 - `alignedCorr`: `Aligned e` packaged as a `TruthCorr M (M.map e)`.
@@ -108,7 +108,7 @@ morphism `g : ↑E → ↑D` with no inverse has nothing to instantiate the hypo
 an artifact of the proof: *Limit* says every positive cone shrinks to a point, and a
 non-surjective reindexing can omit precisely the small durations that witness it.
 
-Everything downstream inherits the restriction. `ConvexHistory.comap`, and through it the `box`
+Everything downstream inherits the restriction. `PartialHistory.comap`, and through it the `box`
 case of `truthAt_map`, consume `e` in the *forward* direction, so the truth-transfer theorem is an
 equivalence of fibres induced by an isomorphism of bases, not a functorial action of a morphism.
 
@@ -191,8 +191,8 @@ def TaskModel.map {F : FrameOver D} (M : TaskModel F.toTaskFrame) (e : ↑D ≃+
 /--
 Push a history forward along `e`: the domain and states are reindexed by `e.symm`.
 -/
-def ConvexHistory.map {F : FrameOver D} (τ : ConvexHistory F.toTaskFrame) (e : ↑D ≃+o ↑E) :
-    ConvexHistory (FrameOver.map F e).toTaskFrame where
+def PartialHistory.map {F : FrameOver D} (τ : PartialHistory F.toTaskFrame) (e : ↑D ≃+o ↑E) :
+    PartialHistory (FrameOver.map F e).toTaskFrame where
   domain := fun n => τ.domain (e.symm n)
   nonempty_domain := by
     obtain ⟨t, ht⟩ := τ.nonempty_domain
@@ -203,27 +203,23 @@ def ConvexHistory.map {F : FrameOver D} (τ : ConvexHistory F.toTaskFrame) (e : 
     have := τ.respects_task (e.symm s) (e.symm t) hs ht
     show F.TaskRel _ (e.symm (t - s)) _
     simpa [map_sub] using this
-  convex := by
-    intro x z hx hz y hxy hyz
-    exact τ.convex (e.symm x) (e.symm z) hx hz (e.symm y)
-      ((map_le_map_iff e.symm).mpr hxy) ((map_le_map_iff e.symm).mpr hyz)
 
 /--
 Two histories over corresponding frames agree pointwise under `e`.
 
 **Why a relation and not an `Equiv`.** The obvious alternative — an equivalence
-`ConvexHistory F ≃ ConvexHistory (FrameOver.map F e).toTaskFrame` — does not survive contact with the `states`
+`PartialHistory F ≃ PartialHistory (FrameOver.map F e).toTaskFrame` — does not survive contact with the `states`
 field, which is *dependent*: it is indexed by a proof of `domain`. Round-tripping `map` and
 `comap` therefore forces a dependent structure equality and degenerates into `HEq` wrangling.
 
 `Aligned` sidesteps this. Because `(FrameOver.map F e).WorldState` is **definitionally**
 `F.WorldState`, the field `st` is an ordinary non-dependent equation between two `F.WorldState`
 terms, and its only genuine transport (in `aligned_comap`) is discharged by the tree's existing
-`ConvexHistory.states_eq_of_time_eq`. No `HEq` appears anywhere in this module; an `HEq` showing
+`PartialHistory.states_eq_of_time_eq`. No `HEq` appears anywhere in this module; an `HEq` showing
 up is the signal that the forbidden `Equiv` route was taken.
 -/
 structure Aligned {F : FrameOver D} (e : ↑D ≃+o ↑E)
-    (σ : ConvexHistory F.toTaskFrame) (σ' : ConvexHistory (FrameOver.map F e).toTaskFrame) : Prop where
+    (σ : PartialHistory F.toTaskFrame) (σ' : PartialHistory (FrameOver.map F e).toTaskFrame) : Prop where
   /-- The two domains correspond under `e.symm`. -/
   dom : ∀ n, σ'.domain n ↔ σ.domain (e.symm n)
   /-- The two state assignments agree at corresponding times. -/
@@ -231,24 +227,24 @@ structure Aligned {F : FrameOver D} (e : ↑D ≃+o ↑E)
         σ'.states n h' = σ.states (e.symm n) h
 
 /-- A history is aligned with its own forward transport, definitionally. -/
-theorem aligned_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (τ : ConvexHistory F.toTaskFrame) :
-    Aligned e τ (ConvexHistory.map τ e) :=
+theorem aligned_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (τ : PartialHistory F.toTaskFrame) :
+    Aligned e τ (PartialHistory.map τ e) :=
   ⟨fun _ => Iff.rfl, fun _ _ _ => rfl⟩
 
 /-- Totality transfers across an alignment. -/
-theorem isTotal_map {F : FrameOver D} (e : ↑D ≃+o ↑E) {σ : ConvexHistory F.toTaskFrame}
-    {σ' : ConvexHistory (FrameOver.map F e).toTaskFrame} (ha : Aligned e σ σ') (h : σ.IsTotal) :
+theorem isTotal_map {F : FrameOver D} (e : ↑D ≃+o ↑E) {σ : PartialHistory F.toTaskFrame}
+    {σ' : PartialHistory (FrameOver.map F e).toTaskFrame} (ha : Aligned e σ σ') (h : σ.IsTotal) :
     σ'.IsTotal := fun n => (ha.dom n).mpr (h _)
 
 /--
 Pull a history back along `e` from the transported frame to the original.
 
 This is the direction `truthAt_map`'s `box` case needs: `□` quantifies over histories of the
-*ambient* frame, so the forward direction is handed a `ConvexHistory (FrameOver.map F e).toTaskFrame` and must
-produce a `ConvexHistory F`.
+*ambient* frame, so the forward direction is handed a `PartialHistory (FrameOver.map F e).toTaskFrame` and must
+produce a `PartialHistory F`.
 -/
-def ConvexHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
-    (σ' : ConvexHistory (FrameOver.map F e).toTaskFrame) : ConvexHistory F.toTaskFrame where
+def PartialHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
+    (σ' : PartialHistory (FrameOver.map F e).toTaskFrame) : PartialHistory F.toTaskFrame where
   domain := fun t => σ'.domain (e t)
   nonempty_domain := by
     obtain ⟨n, hn⟩ := σ'.nonempty_domain
@@ -262,37 +258,33 @@ def ConvexHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
     show F.TaskRel _ (t - s) _
     have : e.symm (e t - e s) = t - s := by simp [map_sub]
     simpa [FrameOver.map, this] using h2
-  convex := by
-    intro x z hx hz y hxy hyz
-    exact σ'.convex (e x) (e z) hx hz (e y)
-      ((map_le_map_iff e).mpr hxy) ((map_le_map_iff e).mpr hyz)
 
 /--
 A pulled-back history is aligned with the one it came from.
 
 Unlike `aligned_map` this is not definitional: the domain and state equations sit at
 `e (e.symm n)` rather than `n`. The `dom` half is `simp`; the `st` half is exactly what the
-tree's existing `ConvexHistory.states_eq_of_time_eq` is for, and no new transport lemma is needed.
+tree's existing `PartialHistory.states_eq_of_time_eq` is for, and no new transport lemma is needed.
 -/
 theorem aligned_comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
-    (σ' : ConvexHistory (FrameOver.map F e).toTaskFrame) : Aligned e (ConvexHistory.comap e σ') σ' := by
+    (σ' : PartialHistory (FrameOver.map F e).toTaskFrame) : Aligned e (PartialHistory.comap e σ') σ' := by
   constructor
   · intro n
     show σ'.domain n ↔ σ'.domain (e (e.symm n))
     simp
   · intro n h' h
     show σ'.states n h' = σ'.states (e (e.symm n)) h
-    exact ConvexHistory.states_eq_of_time_eq σ' n (e (e.symm n)) (by simp) h' h
+    exact PartialHistory.states_eq_of_time_eq σ' n (e (e.symm n)) (by simp) h' h
 
 /--
 **The frame transport is a truth correspondence.** `Aligned e` is the relation, `e` (as an order
-isomorphism) the time reindexing, and the two totality witnesses are `ConvexHistory.map` (forward,
-with `isTotal_map`) and `ConvexHistory.comap` (backward).
+isomorphism) the time reindexing, and the two totality witnesses are `PartialHistory.map` (forward,
+with `isTotal_map`) and `PartialHistory.comap` (backward).
 
 The `atom` field is the only place any real work happens: it is the domain/state agreement of
 `Aligned` unfolded at one time, with `σ.states_eq_of_time_eq` bridging `e.symm (e t)` and `t`.
 
-Trap, recorded: in `total_bwd`, `(ConvexHistory.comap e σ').domain s` follows from
+Trap, recorded: in `total_bwd`, `(PartialHistory.comap e σ').domain s` follows from
 `σ'.domain (e s)` **definitionally**, and `simpa` normalizes past it and fails. The bare term
 `fun s => hσ' (e s)` is the proof.
 -/
@@ -318,10 +310,10 @@ def alignedCorr {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskF
         σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ h] at hv
       exact hv
   total_fwd := fun σ hσ =>
-    ⟨ConvexHistory.map σ e, isTotal_map e (aligned_map e σ) hσ, aligned_map e σ⟩
+    ⟨PartialHistory.map σ e, isTotal_map e (aligned_map e σ) hσ, aligned_map e σ⟩
   total_bwd := fun σ' hσ' =>
     -- TRAP: `simpa` fails here; `(comap e σ').domain s` is *definitionally* `σ'.domain (e s)`.
-    ⟨ConvexHistory.comap e σ', fun s => hσ' (e s), aligned_comap e σ'⟩
+    ⟨PartialHistory.comap e σ', fun s => hσ' (e s), aligned_comap e σ'⟩
 
 /--
 **Truth transfers across the frame transport.** For aligned histories `σ` and `σ'`, `φ` holds at
@@ -332,7 +324,7 @@ lives there, generalised over both histories and the time exactly as this theore
 Statement unchanged (arbitrary aligned pair), so `validZTime_iff_validInt` is untouched.
 -/
 theorem truthAt_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) (φ : Formula) :
-    ∀ (σ : ConvexHistory F.toTaskFrame) (σ' : ConvexHistory (FrameOver.map F e).toTaskFrame), Aligned e σ σ' →
+    ∀ (σ : PartialHistory F.toTaskFrame) (σ' : PartialHistory (FrameOver.map F e).toTaskFrame), Aligned e σ σ' →
       ∀ t : ↑D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) :=
   fun σ σ' ha t => Truth.truthAt_of_truthCorr (alignedCorr e M) φ σ σ' ha t
 
@@ -345,7 +337,7 @@ eight instance binders of `ValidZTime` vanish here: `ℤ` supplies every one of 
 Mathlib with no instance work.
 -/
 def ValidInt (φ : Formula) : Prop :=
-  ∀ (F : FrameOver intOrder) (M : TaskModel F.toTaskFrame) (τ : ConvexHistory F.toTaskFrame) (_ : τ.IsTotal) (t : ℤ),
+  ∀ (F : FrameOver intOrder) (M : TaskModel F.toTaskFrame) (τ : PartialHistory F.toTaskFrame) (_ : τ.IsTotal) (t : ℤ),
     TruthAt M τ t φ
 
 /--
@@ -357,7 +349,7 @@ bundle, so `h ℤ F M τ hτ t` is the proof.
 
 The reverse direction is where the work is. Given an arbitrary discrete carrier `D`,
 `DurationClassification.lean`'s `intIso : D ≃+o ℤ` normalizes it, `FrameOver.map` /
-`TaskModel.map` / `ConvexHistory.map` carry the model across, `isTotal_map` carries totality, and
+`TaskModel.map` / `PartialHistory.map` carry the model across, `isTotal_map` carries totality, and
 `truthAt_map` carries truth back. Note the transfer must be an *additive* order isomorphism:
 durations add, so the order-only `orderIsoIntOfLinearSuccPredArch` could not be used here.
 
@@ -377,10 +369,10 @@ theorem validZTime_iff_validInt (φ : Formula) : ValidZTime φ ↔ ValidInt φ :
     -- and Lean cannot invert `↑E ≟ ℤ` to recover `E := intOrder` on its own.
     let e : ↑F.Duration ≃+o ↑intOrder := intIso
     refine (truthAt_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e M φ τ
-      (ConvexHistory.map τ e) (aligned_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e τ)
+      (PartialHistory.map τ e) (aligned_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e τ)
       t).mpr ?_
     exact h (FrameOver.map F.toFibre e) (TaskModel.map (F := F.toFibre) M e)
-      (ConvexHistory.map τ e)
+      (PartialHistory.map τ e)
       (isTotal_map (D := F.Duration) (E := intOrder) e
         (aligned_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e τ) hτ) (e t)
 

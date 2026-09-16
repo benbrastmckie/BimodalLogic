@@ -73,7 +73,7 @@ noncomputable def z1TM : TaskModel z1F where
 
 /-- The countermodel's history: the flow line through family `()` starting at `0`. Total by
 `multiFamHistoryGen_total`. -/
-noncomputable abbrev z1τ : ConvexHistory z1F := multiFamHistoryGen () (0 : (z1D : Type))
+noncomputable abbrev z1τ : PartialHistory z1F := multiFamHistoryGen () (0 : (z1D : Type))
 
 theorem z1τ_total : z1τ.IsTotal := multiFamHistoryGen_total (D := z1D) () 0
 

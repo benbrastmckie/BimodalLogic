@@ -118,24 +118,24 @@ theorem StarValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : StarFormul
 /-! ### Binder-shape adapters
 
 The bundled `(τ : TaskFrame.HF F)` of the definitions above versus the unbundled pair
-`(τ : ConvexHistory F) (hτ : τ.IsTotal)` every proof works with, exactly as on the L⁺ side. -/
+`(τ : PartialHistory F) (hτ : τ.IsTotal)` every proof works with, exactly as on the L⁺ side. -/
 
 /-- Introduce `TaskFrame.StarValidOn` from the unbundled shape. -/
 theorem TaskFrame.StarValidOn.of_forall_total {F : TaskFrame} {φ : StarFormula}
-    (h : ∀ (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+    (h : ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
            ∀ (x : F.Duration) (v : ℕ → F.Duration), StarTruthAt M τ x v φ) :
     F.StarValidOn φ :=
   TaskFrame.GenericValidOn.of_forall_total (L := StarFormula) (φ := φ) h
 
 /-- Eliminate `TaskFrame.StarValidOn` into the unbundled shape. -/
 theorem TaskFrame.StarValidOn.apply_total {F : TaskFrame} {φ : StarFormula}
-    (h : F.StarValidOn φ) (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
+    (h : F.StarValidOn φ) (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
     (x : F.Duration) (v : ℕ → F.Duration) : StarTruthAt M τ x v φ :=
   TaskFrame.GenericValidOn.apply_total (L := StarFormula) (φ := φ) h M τ hτ x v
 
 /-- Introduce `StarValidOnFrames` from the unbundled shape. -/
 theorem StarValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : StarFormula}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ (x : F.Duration) (v : ℕ → F.Duration), StarTruthAt M τ x v φ) :
     StarValidOnFrames P φ :=
   GenericValidOnFrames.of_forall_total (L := StarFormula) (φ := φ) h
@@ -143,13 +143,13 @@ theorem StarValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : StarFor
 /-- Eliminate `StarValidOnFrames` into the unbundled shape. -/
 theorem StarValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : StarFormula}
     (h : StarValidOnFrames P φ) (F : TaskFrame) (hF : P F) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration) :
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration) :
     StarTruthAt M τ x v φ :=
   GenericValidOnFrames.apply_total (L := StarFormula) (φ := φ) h F hF M τ hτ x v
 
 /-- `StarValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
 theorem StarValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : StarFormula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ (x : F.Duration) (v : ℕ → F.Duration), StarTruthAt M τ x v φ) :
     StarValidIn fc φ :=
   GenericValidIn.of_forall_total (L := StarFormula) (φ := φ) h
@@ -157,21 +157,21 @@ theorem StarValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : StarForm
 /-- `StarValidOnFrames.apply_total` at a `FrameClass` tag. -/
 theorem StarValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : StarFormula}
     (h : StarValidIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration) :
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration) :
     StarTruthAt M τ x v φ :=
   GenericValidIn.apply_total (L := StarFormula) (φ := φ) h F hF M τ hτ x v
 
 /-- Introduce `StarValid` from the unbundled shape; the `Sat .Base` argument (`True`) is
 discharged here. -/
 theorem StarValid.of_forall_total {φ : StarFormula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
            ∀ (x : F.Duration) (v : ℕ → F.Duration), StarTruthAt M τ x v φ) :
     StarValid φ :=
   GenericValid.of_forall_total (L := StarFormula) (φ := φ) h
 
 /-- Eliminate `StarValid` into the unbundled shape. -/
 theorem StarValid.apply {φ : StarFormula} (h : StarValid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration) :
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration) :
     StarTruthAt M τ x v φ :=
   GenericValid.apply (L := StarFormula) (φ := φ) h F M τ hτ x v
 
@@ -234,7 +234,7 @@ in register `2`; recall register `1` to return the point of evaluation to the pr
 remains is `settledDisj φ` at the present time under the twice-updated vector, for every future
 `y`.
 -/
-theorem sentDet_unfold (M : TaskModel F) (τ : ConvexHistory F) (x : F.Duration)
+theorem sentDet_unfold (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ x v (sentDet φ) ↔
       ∀ y : F.Duration, x < y →
@@ -246,11 +246,11 @@ theorem sentDet_unfold (M : TaskModel F) (τ : ConvexHistory F) (x : F.Duration)
 
 /-- `settledDisj φ` unfolded semantically: at the point `(τ, x, v)`, either every possible world
 sharing `τ`'s state at `x` fails `φ` at time `v 2`, or every one of them satisfies it there. -/
-theorem settledDisj_iff (M : TaskModel F) (τ : ConvexHistory F) (x : F.Duration)
+theorem settledDisj_iff (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ x v (settledDisj φ) ↔
-      (∀ σ : ConvexHistory F, σ.IsTotal → SameStateAt τ σ x → ¬ StarTruthAt M σ (v 2) v φ) ∨
-      (∀ σ : ConvexHistory F, σ.IsTotal → SameStateAt τ σ x → StarTruthAt M σ (v 2) v φ) :=
+      (∀ σ : PartialHistory F, σ.IsTotal → SameStateAt τ σ x → ¬ StarTruthAt M σ (v 2) v φ) ∨
+      (∀ σ : PartialHistory F, σ.IsTotal → SameStateAt τ σ x → StarTruthAt M σ (v 2) v φ) :=
   StarTruth.or_iff M τ x v _ _
 
 /--
@@ -269,8 +269,8 @@ argument here, where the frame is abstract, is what keeps the two refutation sit
 for `F°`) down to their genuinely frame-specific content.
 -/
 theorem not_starValidOn_sentDet {φ : StarFormula} (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x y : F.Duration) (hxy : x < y)
-    (σ₁ σ₂ : ConvexHistory F) (h₁ : σ₁.IsTotal) (h₂ : σ₂.IsTotal)
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x y : F.Duration) (hxy : x < y)
+    (σ₁ σ₂ : PartialHistory F) (h₁ : σ₁.IsTotal) (h₂ : σ₂.IsTotal)
     (hs₁ : SameStateAt τ σ₁ x) (hs₂ : SameStateAt τ σ₂ x)
     (hpos : ∀ v : ℕ → F.Duration, StarTruthAt M σ₁ y v φ)
     (hneg : ∀ v : ℕ → F.Duration, ¬ StarTruthAt M σ₂ y v φ) :

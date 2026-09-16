@@ -82,13 +82,13 @@ look like as functions.
 -/
 structure OrderFlow (F : TaskFrame) [LinearOrder F.WorldState] : Prop where
   /-- A total history's state function is strictly monotone. -/
-  strictMono : ∀ (τ : ConvexHistory F) (hτ : τ.IsTotal) {s t : F.Duration}, s < t →
+  strictMono : ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) {s t : F.Duration}, s < t →
     τ.states s (hτ s) < τ.states t (hτ t)
   /-- Every state strictly above the state at `x` is occupied at some strictly later time. -/
-  hits_future : ∀ (τ : ConvexHistory F) (hτ : τ.IsTotal) {x : F.Duration} {v : F.WorldState},
+  hits_future : ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) {x : F.Duration} {v : F.WorldState},
     τ.states x (hτ x) < v → ∃ c, x < c ∧ τ.states c (hτ c) = v
   /-- Every state strictly below the state at `x` is occupied at some strictly earlier time. -/
-  hits_past : ∀ (τ : ConvexHistory F) (hτ : τ.IsTotal) {x : F.Duration} {v : F.WorldState},
+  hits_past : ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) {x : F.Duration} {v : F.WorldState},
     v < τ.states x (hτ x) → ∃ c, c < x ∧ τ.states c (hτ c) = v
 
 namespace OrderFlow
@@ -97,7 +97,7 @@ variable [LinearOrder F.WorldState]
 
 /-- Strict monotonicity **reflects** the order as well as preserving it: on a linear order a
 strictly monotone map is an order embedding. -/
-theorem lt_iff (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal) {s t : F.Duration} :
+theorem lt_iff (h : OrderFlow F) (τ : PartialHistory F) (hτ : τ.IsTotal) {s t : F.Duration} :
     τ.states s (hτ s) < τ.states t (hτ t) ↔ s < t := by
   constructor
   · intro hlt
@@ -108,7 +108,7 @@ theorem lt_iff (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal) {s t 
   · exact h.strictMono τ hτ
 
 /-- The state function of a total history is injective. -/
-theorem states_injective (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
+theorem states_injective (h : OrderFlow F) (τ : PartialHistory F) (hτ : τ.IsTotal)
     {s t : F.Duration} (hst : τ.states s (hτ s) = τ.states t (hτ t)) : s = t := by
   rcases lt_trichotomy s t with hlt | heq | hlt
   · exact absurd hst (ne_of_lt (h.strictMono τ hτ hlt))
@@ -119,7 +119,7 @@ theorem states_injective (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTo
 **The future-image lemma.** The states a total history takes strictly after `x` are exactly the
 states strictly above its state at `x`.
 -/
-theorem future_image (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) :
+theorem future_image (h : OrderFlow F) (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) :
     {v | ∃ y, x < y ∧ τ.states y (hτ y) = v} = {v | τ.states x (hτ x) < v} := by
   ext v
   constructor
@@ -130,7 +130,7 @@ theorem future_image (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
     exact ⟨c, hc, hcv⟩
 
 /-- The past mirror of `future_image`. -/
-theorem past_image (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) :
+theorem past_image (h : OrderFlow F) (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) :
     {v | ∃ y, y < x ∧ τ.states y (hτ y) = v} = {v | v < τ.states x (hτ x)} := by
   ext v
   constructor
@@ -148,7 +148,7 @@ This is the `untl` case's whole content: the recursion's interval condition rang
 between two states, the truth recursion's over times between two times, and this lemma is the
 translation in one direction (the other being `strictMono`).
 -/
-theorem between (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal) {x y : F.Duration}
+theorem between (h : OrderFlow F) (τ : PartialHistory F) (hτ : τ.IsTotal) {x y : F.Duration}
     {u : F.WorldState} (h1 : τ.states x (hτ x) < u) (h2 : u < τ.states y (hτ y)) :
     ∃ c, x < c ∧ c < y ∧ τ.states c (hτ c) = u := by
   obtain ⟨c, hxc, hcu⟩ := h.hits_future τ hτ h1
@@ -157,7 +157,7 @@ theorem between (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal) {x y
   exact h2
 
 /-- **Change of variables, past form.** The `snce` case's mirror of `between`. -/
-theorem between_past (h : OrderFlow F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
+theorem between_past (h : OrderFlow F) (τ : PartialHistory F) (hτ : τ.IsTotal)
     {x y : F.Duration} {u : F.WorldState} (h1 : τ.states y (hτ y) < u)
     (h2 : u < τ.states x (hτ x)) :
     ∃ c, y < c ∧ c < x ∧ τ.states c (hτ c) = u := by
@@ -182,14 +182,14 @@ explicitly. That is what keeps the non-definability result choice-free.
 -/
 def StateOccurs (F : TaskFrame) : Prop :=
   ∀ (w : F.WorldState) (x : F.Duration),
-    ∃ (τ : ConvexHistory F) (hτ : τ.IsTotal), τ.states x (hτ x) = w
+    ∃ (τ : PartialHistory F) (hτ : τ.IsTotal), τ.states x (hτ x) = w
 
 /--
 **The `□` transfer.** Under (H2), the states occupied at a fixed time, as the history ranges over
 all total histories, exhaust `F.WorldState`.
 -/
 theorem StateOccurs.state_image (h : StateOccurs F) (t : F.Duration) :
-    {w | ∃ (σ : ConvexHistory F) (hσ : σ.IsTotal), σ.states t (hσ t) = w} = Set.univ := by
+    {w | ∃ (σ : PartialHistory F) (hσ : σ.IsTotal), σ.states t (hσ t) = w} = Set.univ := by
   ext w
   simp only [Set.mem_setOf_eq, Set.mem_univ, iff_true]
   exact h w t

@@ -210,7 +210,7 @@ The reference history of the clock frame: time `t` sits at circle position `⟦t
 This is the history the `Prior-U` refutation is stated at. It is total, and `respects_task` holds
 by the group law alone: `⟦t⟧ = ⟦s⟧ + ⟦t - s⟧`.
 -/
-def clockHistory : ConvexHistory clockFrame where
+def clockHistory : PartialHistory clockFrame where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => cmk t
@@ -220,8 +220,6 @@ def clockHistory : ConvexHistory clockFrame where
     rw [← cmk_add]
     congr 1
     ring
-  convex := by intro _ _ _ _ _ _ _; trivial
-
 @[simp] theorem clockHistory_states (t : ℚ) (ht : clockHistory.domain t) :
     clockHistory.states t ht = cmk t := rfl
 

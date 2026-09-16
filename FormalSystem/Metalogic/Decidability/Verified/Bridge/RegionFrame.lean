@@ -12,7 +12,7 @@ import FormalSystem.Semantics.Validity
 
 `Bridge/Interpolate.lean` ends with a total valuation on the carrier and the statement that truth
 is constant on each region cut out by the placement. This file supplies the objects that
-statement is about: a frame and a family of `ConvexHistory`s, among them the *total* ones
+statement is about: a frame and a family of `PartialHistory`s, among them the *total* ones
 that `Valid` quantifies over.
 
 ## What `Valid` demands, and the one constraint that is not negotiable
@@ -123,18 +123,18 @@ open FormalSystem.Metalogic.Decidability
 
 /-! ## Extensionality for histories
 
-`ConvexHistory` carries two proof fields, so equality of two histories is decided by the domain
+`PartialHistory` carries two proof fields, so equality of two histories is decided by the domain
 and the state assignment alone. Needed to identify a time-shifted history with another member of
 the `regionHistory` family.
 -/
 
 /-- Two histories with the same domain and the same states are equal. -/
 theorem convexHistory_ext {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : FrameOver (TemporalOrder.of D)} {σ τ : ConvexHistory F} (hd : σ.domain = τ.domain)
+    {F : FrameOver (TemporalOrder.of D)} {σ τ : PartialHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
-  obtain ⟨⟨d₁, n₁, s₁, t₁⟩, c₁⟩ := σ
-  obtain ⟨⟨d₂, n₂, s₂, t₂⟩, c₂⟩ := τ
+  obtain ⟨d₁, n₁, s₁, t₁⟩ := σ
+  obtain ⟨d₂, n₂, s₂, t₂⟩ := τ
   simp only at hd hs
   subst hd
   have : s₁ = s₂ := by
@@ -307,10 +307,9 @@ region code moved out of the frame's state space when the task relation became d
 so that every declaration below keeps its shape. Regions re-enter through the valuation, which
 reads `regionCode f` off the time component.
 -/
-def regionHistory (f : ι → D) (w : W) (Δ : D) : ConvexHistory (regionFrame W ι D) where
+def regionHistory (f : ι → D) (w : W) (Δ : D) : PartialHistory (regionFrame W ι D) where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
-  convex := by intro _ _ _ _ _ _ _; trivial
   states := fun r _ => (w, r + Δ)
   respects_task := by
     intro s t _ _
@@ -328,7 +327,7 @@ theorem regionHistory_states (f : ι → D) (w : W) (Δ : D) (r : D) (h : (regio
 
 /-- Time-shifting a region history is again a region history, with the offsets added. -/
 theorem timeShift_regionHistory (f : ι → D) (w : W) (Δ Δ' : D) :
-    ConvexHistory.timeShift (regionHistory f w Δ) Δ' = regionHistory f w (Δ' + Δ) := by
+    PartialHistory.timeShift (regionHistory f w Δ) Δ' = regionHistory f w (Δ' + Δ) := by
   refine convexHistory_ext rfl ?_
   intro r _ _
   show ((w, r + Δ' + Δ) : W × D) = (w, r + (Δ' + Δ))
@@ -358,7 +357,7 @@ not the junk-history problem, so the region histories were a strict subset of `H
 `multiFamGen_total_eq` (`Metalogic/Algebraic/FlowFrame.lean`): the state at time `0` fixes the
 world and the offset, and `respects_task` propagates the clock to every other time.
 -/
-theorem regionFrame_total_eq (f : ι → D) (σ : ConvexHistory (regionFrame W ι D))
+theorem regionFrame_total_eq (f : ι → D) (σ : PartialHistory (regionFrame W ι D))
     (htot : ∀ r, σ.domain r) : ∃ (w : W) (Δ : D), σ = regionHistory f w Δ := by
   have key : ∀ (r : D) (hr : σ.domain r),
       σ.states r hr = ((σ.states 0 (htot 0)).1, r + (σ.states 0 (htot 0)).2) := by
@@ -377,14 +376,14 @@ theorem regionFrame_total_eq (f : ι → D) (σ : ConvexHistory (regionFrame W �
 fixes `H_F` as the totality-cut of the convex histories: "A \textit{possible world} is any convex
 history whose domain is total, so that $X = D$. ... The set of all possible worlds over $\F$ is
 denoted $H_{\F}$." Here the totality predicate `X = D` is spelled
-`ConvexHistory.IsTotal`, i.e. `∀ r, σ.domain r`.
+`PartialHistory.IsTotal`, i.e. `∀ r, σ.domain r`.
 
 The `←` direction is `regionHistory_isTotal`, definitional. The `→` direction is
 `regionFrame_total_eq`. This is the characterization every downstream proof consumes: the
 `def:BL-semantics` box clause ("for all $\sigma \in H_{\F}$") reduces on this carrier to a
 quantifier over the region histories, with no designated admissible set in the statement.
 -/
-theorem isTotal_iff_regionHistory (f : ι → D) (σ : ConvexHistory (regionFrame W ι D)) :
+theorem isTotal_iff_regionHistory (f : ι → D) (σ : PartialHistory (regionFrame W ι D)) :
     σ.IsTotal ↔ ∃ (w : W) (Δ : D), σ = regionHistory f w Δ := by
   constructor
   · intro htot
@@ -411,32 +410,32 @@ variable {F : FrameOver (TemporalOrder.of D)}
 total history and *every* time.
 
 The forward direction shifts an arbitrary `(σ, y)` back to `x` — legal because totality is
-preserved by `timeShift` (`ConvexHistory.isTotal_timeShift`), with no side condition on the
+preserved by `timeShift` (`PartialHistory.isTotal_timeShift`), with no side condition on the
 carrier — and reads the result off `timeShift_preserves_truth`. Shift-closure is no longer a
 hypothesis anywhere: the box clause quantifies over totality, and totality is shift-stable
 outright.
 -/
 theorem truthAt_box_iff (M : TaskModel F)
-    (τ : ConvexHistory F) (x : D) (φ : Formula) :
+    (τ : PartialHistory F) (x : D) (φ : Formula) :
     TruthAt M τ x φ.box ↔
-      ∀ σ : ConvexHistory F, σ.IsTotal → ∀ y : D, TruthAt M σ y φ := by
+      ∀ σ : PartialHistory F, σ.IsTotal → ∀ y : D, TruthAt M σ y φ := by
   simp only [TruthAt]
   constructor
   · intro h σ hσ y
     exact (TimeShift.timeShift_preserves_truth M σ x y φ).mp
-      (h _ (ConvexHistory.isTotal_timeShift hσ (y - x)))
+      (h _ (PartialHistory.isTotal_timeShift hσ (y - x)))
   · intro h σ hσ
     exact h σ hσ x
 
 /-- Truth of a boxed formula does not depend on the time it is evaluated at. -/
 theorem truthAt_box_congr (M : TaskModel F)
-    (τ : ConvexHistory F) (x y : D) (φ : Formula) :
+    (τ : PartialHistory F) (x y : D) (φ : Formula) :
     TruthAt M τ x φ.box ↔ TruthAt M τ y φ.box := by
   rw [truthAt_box_iff M τ x φ, truthAt_box_iff M τ y φ]
 
 /-- Nor on the history it is evaluated in. -/
 theorem truthAt_box_congr_history (M : TaskModel F)
-    (τ σ : ConvexHistory F) (x y : D) (φ : Formula) :
+    (τ σ : PartialHistory F) (x y : D) (φ : Formula) :
     TruthAt M τ x φ.box ↔ TruthAt M σ y φ.box := by
   rw [truthAt_box_iff M τ x φ, truthAt_box_iff M σ y φ]
 
@@ -456,7 +455,7 @@ variable {W ι D : Type} [Nonempty W] [AddCommGroup D] [LinearOrder D] [IsOrdere
 
 /-- Every region history is a time-shift of the base history of its world. -/
 theorem regionHistory_eq_timeShift (f : ι → D) (w : W) (Δ : D) :
-    regionHistory f w Δ = ConvexHistory.timeShift (regionHistory f w (0 : D)) Δ := by
+    regionHistory f w Δ = PartialHistory.timeShift (regionHistory f w (0 : D)) Δ := by
   rw [timeShift_regionHistory, add_zero]
 
 /-- Truth at an offset history is truth at its base history, read at the offset time. -/
@@ -479,7 +478,7 @@ quantifier is discharged by `sat_box_pos` (the `boxPos` rule propagates to every
 the time quantifier by the `boxTemporal` chain together with region invariance.
 -/
 theorem truthAt_box_iff_base (M : TaskModel (regionFrame W ι D)) (f : ι → D)
-    (τ : ConvexHistory (regionFrame W ι D)) (x : D) (φ : Formula) :
+    (τ : PartialHistory (regionFrame W ι D)) (x : D) (φ : Formula) :
     TruthAt M τ x φ.box ↔
       ∀ (w : W) (y : D), TruthAt M (regionHistory f w (0 : D)) y φ := by
   rw [truthAt_box_iff M τ x φ]

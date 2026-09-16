@@ -17,7 +17,7 @@ history, taken on its own, sees exactly the order structure a translation histor
 
 The content is proved first on a bare state function `f : ℝ → ℝ` satisfying
 `∀ s t, fzeroRel (f s) (t - s) (f t)` — which is what a total history's `states` field collapses
-to, `hf` being exactly `respects_task` — and then lifted to `ConvexHistory F0`, in the shape
+to, `hf` being exactly `respects_task` — and then lifted to `PartialHistory F0`, in the shape
 `Independence/OrderTransfer.lean`'s hypotheses (H1) and (H2) demand.
 
 ## Main Results
@@ -132,7 +132,7 @@ end BareFunction
 
 /-- A total history of `F°` satisfies the bare hypothesis `hf`: `respects_task`, read at the pair
 `(s, t)`, *is* the drift condition on the state function. -/
-theorem fzero_hist_rel (τ : ConvexHistory F0) (hτ : τ.IsTotal) :
+theorem fzero_hist_rel (τ : PartialHistory F0) (hτ : τ.IsTotal) :
     ∀ s t : ℝ, fzeroRel (τ.states s (hτ s)) (t - s) (τ.states t (hτ t)) :=
   fun s t => τ.respects_task s t (hτ s) (hτ t)
 
@@ -151,8 +151,8 @@ theorem fzero_orderFlow : OrderFlow F0 where
 /-- The translation `t ↦ t + c` is a total history of `F°`: its increment over `[s, t]` is
 `t - s`, the left endpoint of the band `[t - s, 2 (t - s)]` (and its right endpoint when the
 duration is negative). -/
-noncomputable def driftTranslation (c : ℝ) : ConvexHistory F0 :=
-  ConvexHistory.ofTotal F0 (fun t => t + c) <| by
+noncomputable def driftTranslation (c : ℝ) : PartialHistory F0 :=
+  PartialHistory.ofTotal F0 (fun t => t + c) <| by
     intro s t
     show fzeroRel (s + c) (t - s) (t + c)
     rw [fzeroRel_iff]
@@ -161,7 +161,7 @@ noncomputable def driftTranslation (c : ℝ) : ConvexHistory F0 :=
     · right; constructor <;> linarith
 
 theorem driftTranslation_isTotal (c : ℝ) : (driftTranslation c).IsTotal :=
-  ConvexHistory.ofTotal_isTotal _ _ _
+  PartialHistory.ofTotal_isTotal _ _ _
 
 /--
 **(H2) for `F°`**, with an explicit witness: given a state `w` and a time `x`, the translation

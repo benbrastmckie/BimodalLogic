@@ -15,7 +15,7 @@ Tests for truth evaluation in task models.
 
 ## Temporal Type Note
 
-After the temporal generalization, the frame and ConvexHistory now take a
+After the temporal generalization, the frame and PartialHistory now take a
 type parameter `T` with `LinearOrderedAddCommGroup` constraint. Tests use
 explicit `Int` annotations.
 -/
@@ -33,7 +33,7 @@ def testModel : TaskModel testFrame where
   valuation := fun _ p => p.base = "p"
 
 -- Helper: trivial possible world (universal domain)
-def testHistory : ConvexHistory testFrame := ConvexHistory.trivial
+def testHistory : PartialHistory testFrame := PartialHistory.trivialFrameHistory
 
 -- Test: Bot is false (using trivial history's domain proof)
 example : ¬(TruthAt testModel testHistory (0 : Int) Formula.bot) := by
@@ -41,12 +41,12 @@ example : ¬(TruthAt testModel testHistory (0 : Int) Formula.bot) := by
 
 -- Test: Atom truth depends on valuation (p is true)
 example : (TruthAt testModel testHistory (0 : Int) (Formula.atomS "p")) := by
-  simp [TruthAt, testModel, testHistory, ConvexHistory.trivial, ConvexHistory.ofTotal,
+  simp [TruthAt, testModel, testHistory, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
     Formula.atomS, Atom.mkBase]
 
 -- Test: Atom truth depends on valuation (q is false)
 example : ¬(TruthAt testModel testHistory (0 : Int) (Formula.atomS "q")) := by
-  simp [TruthAt, testModel, testHistory, ConvexHistory.trivial, ConvexHistory.ofTotal,
+  simp [TruthAt, testModel, testHistory, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
     Formula.atomS, Atom.mkBase]
 
 -- Test: Implication basic behavior
@@ -67,7 +67,7 @@ example : (TruthAt testModel testHistory (0 : Int) Formula.bot.neg) := by
 -- Test: TruthAt works with explicit Int type
 theorem truth_at_int_example :
     TruthAt testModel testHistory (0 : Int) (Formula.atomS "p") := by
-  simp [TruthAt, testModel, testHistory, ConvexHistory.trivial, ConvexHistory.ofTotal,
+  simp [TruthAt, testModel, testHistory, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
     Formula.atomS, Atom.mkBase]
 
 end BimodalTest.Semantics

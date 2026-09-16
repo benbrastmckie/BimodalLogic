@@ -237,7 +237,7 @@ enters, which is why the lemma is stated at the bare `TaskModel` binder set and 
 the Base, Dense and Discrete instances below.
 -/
 theorem truthAt_foldr_imp {F : TaskFrame} (M : TaskModel F)
-    (τ : ConvexHistory F) (t : F.Duration) (Γ : Context) (φ : Formula) :
+    (τ : PartialHistory F) (t : F.Duration) (Γ : Context) (φ : Formula) :
     TruthAt M τ t (Γ.foldr Formula.imp φ) ↔
       ((∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) := by
   induction Γ with

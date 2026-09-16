@@ -98,7 +98,7 @@ theorem allRec_of_fwdRec (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec) :
 
 /-- **Over `ℤ`, `FwdRec F` forces every total history to be periodic.** -/
 theorem hist_periodic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
-    (τ : ConvexHistory F.toTaskFrame) (hτ : τ.IsTotal) :
+    (τ : PartialHistory F.toTaskFrame) (hτ : τ.IsTotal) :
     ∃ π : ℤ, 0 < π ∧ ∀ n : ℤ, τ.states (n + π) (hτ (n + π)) = τ.states n (hτ n) :=
   Walk.periodic (allRec_of_fwdRec F hF) (TaskFrame.HF.isStepPath ⟨τ, hτ⟩)
 
@@ -107,7 +107,7 @@ theorem hist_periodic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
 along histories — two total histories that agree at one time agree one step later.
 -/
 theorem hist_deterministic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
-    (τ ρ : ConvexHistory F.toTaskFrame) (hτ : τ.IsTotal) (hρ : ρ.IsTotal) (t : ℤ)
+    (τ ρ : PartialHistory F.toTaskFrame) (hτ : τ.IsTotal) (hρ : ρ.IsTotal) (t : ℤ)
     (h : τ.states t (hτ t) = ρ.states t (hρ t)) :
     τ.states (t + 1) (hτ (t + 1)) = ρ.states (t + 1) (hρ (t + 1)) :=
   Walk.succ_unique' (allRec_of_fwdRec F hF) (TaskFrame.HF.isStepPath ⟨τ, hτ⟩)

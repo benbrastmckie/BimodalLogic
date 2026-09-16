@@ -134,15 +134,15 @@ Extensionality for convex histories: equal domains and pointwise-equal states fo
 **This is a local copy** of `convexHistory_ext`
 (`FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean`). The copy is
 deliberate: importing anything under `Metalogic/` from `Semantics/` would invert the layering
-this library is built on. Consolidating the two into `Semantics/ConvexHistory.lean` and
+this library is built on. Consolidating the two into `Semantics/PartialHistory.lean` and
 retargeting `RegionFrame.lean` is a clean follow-up, kept out of this module's scope so that the
 scope stays honest.
 -/
-theorem wh_ext {F : TaskFrame} {σ τ : ConvexHistory F} (hd : σ.domain = τ.domain)
+theorem wh_ext {F : TaskFrame} {σ τ : PartialHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : F.Duration) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
-  obtain ⟨⟨d₁, n₁, s₁, t₁⟩, c₁⟩ := σ
-  obtain ⟨⟨d₂, n₂, s₂, t₂⟩, c₂⟩ := τ
+  obtain ⟨d₁, n₁, s₁, t₁⟩ := σ
+  obtain ⟨d₂, n₂, s₂, t₂⟩ := τ
   simp only at hd hs
   subst hd
   have : s₁ = s₂ := by funext r h; exact hs r h h
@@ -203,8 +203,8 @@ under `S.frame.Duration`.
 @[reducible] def frame (S : ShiftSet D) : TaskFrame := S.fibre.toTaskFrame
 
 /-- The induced **total** history through `w`: the shift orbit `t ↦ sh w t`. -/
-def hist (S : ShiftSet D) (w : S.Carrier) : ConvexHistory S.frame :=
-  ConvexHistory.ofTotal S.frame (fun t => S.sh w t) <| by
+def hist (S : ShiftSet D) (w : S.Carrier) : PartialHistory S.frame :=
+  PartialHistory.ofTotal S.frame (fun t => S.sh w t) <| by
     intro s t
     show S.sh w t = S.sh (S.sh w s) (t - s)
     rw [S.sh_add, add_sub_cancel]
@@ -229,7 +229,7 @@ was the substantive work.
 Note the statement is equality of *histories*, not merely of states at each time; that is what
 `wh_ext` is for.
 -/
-theorem total_eq_orbit (S : ShiftSet D) (σ : ConvexHistory S.frame) (hσ : σ.IsTotal) :
+theorem total_eq_orbit (S : ShiftSet D) (σ : PartialHistory S.frame) (hσ : σ.IsTotal) :
     σ = S.hist (σ.states 0 (hσ 0)) := by
   refine wh_ext (funext fun z => propext ⟨fun _ => trivial, fun _ => hσ z⟩) ?_
   intro r h h'
@@ -266,7 +266,7 @@ theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : ↑D) (φ : Formula) 
     TruthAt S.model (S.hist w) t φ ↔ ShiftTruth S w t φ := by
   induction φ generalizing w t with
   -- The atom case's domain-and-states bridge is now closed by `simp` alone: unfolding `hist`
-  -- exposes `ConvexHistory.ofTotal`, and `ofTotal_domain` / `ofTotal_states` do the rest. Before
+  -- exposes `PartialHistory.ofTotal`, and `ofTotal_domain` / `ofTotal_states` do the rest. Before
   -- the `ofTotal` migration this had to be written out as `⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩`.
   | atom p => simp [ShiftSet.hist, ShiftSet.model, ShiftSet.ShiftTruth, TruthAt]
   | bot => exact Iff.rfl
@@ -296,20 +296,20 @@ theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : ↑D) (φ : Formula) 
 /-! ## Reverse direction: the shift set induced by a task model -/
 
 /-- Time-shifting a history by `0` is the identity. -/
-theorem ts_zero {F : TaskFrame} (σ : ConvexHistory F) :
-    ConvexHistory.timeShift σ 0 = σ := by
-  refine wh_ext (funext fun z => by simp [ConvexHistory.timeShift]) ?_
+theorem ts_zero {F : TaskFrame} (σ : PartialHistory F) :
+    PartialHistory.timeShift σ 0 = σ := by
+  refine wh_ext (funext fun z => by simp [PartialHistory.timeShift]) ?_
   intro r h h'
-  exact ConvexHistory.states_eq_of_time_eq σ (r + 0) r (add_zero r) h h'
+  exact PartialHistory.states_eq_of_time_eq σ (r + 0) r (add_zero r) h h'
 
 /-- Time-shifting is additive. -/
-theorem ts_add {F : TaskFrame} (σ : ConvexHistory F) (a b : F.Duration) :
-    ConvexHistory.timeShift (ConvexHistory.timeShift σ a) b = ConvexHistory.timeShift σ (a + b) := by
+theorem ts_add {F : TaskFrame} (σ : PartialHistory F) (a b : F.Duration) :
+    PartialHistory.timeShift (PartialHistory.timeShift σ a) b = PartialHistory.timeShift σ (a + b) := by
   refine wh_ext (funext fun z => ?_) ?_
   · show σ.domain ((z + b) + a) = σ.domain (z + (a + b))
     rw [add_assoc, add_comm b a]
   · intro r h h'
-    exact ConvexHistory.states_eq_of_time_eq σ ((r + b) + a) (r + (a + b))
+    exact PartialHistory.states_eq_of_time_eq σ ((r + b) + a) (r + (a + b))
       (by rw [add_assoc, add_comm b a]) h h'
 
 /--

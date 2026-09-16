@@ -97,16 +97,16 @@ Noncomputable by necessity — `TruthAt`'s box clause quantifies over all total 
 module docstring: this is a proof-only construction and never enters `check`.
 -/
 noncomputable def typeAt (P : IntPresentation) (φ : Formula)
-    (τ : ConvexHistory P.toTaskFrame) (u : ℤ) : Finset Formula :=
+    (τ : PartialHistory P.toTaskFrame) (u : ℤ) : Finset Formula :=
   @Finset.filter Formula (fun ψ => TruthAt P.toModel τ u ψ) (Classical.decPred _)
     (subformulaClosure φ)
 
-theorem mem_typeAt {τ : ConvexHistory P.toTaskFrame} {u : ℤ} {ψ : Formula} :
+theorem mem_typeAt {τ : PartialHistory P.toTaskFrame} {u : ℤ} {ψ : Formula} :
     ψ ∈ typeAt P φ τ u ↔ ψ ∈ subformulaClosure φ ∧ TruthAt P.toModel τ u ψ := by
   simp only [typeAt, Finset.mem_filter]
 
 /-- A type is a set of closure formulas. -/
-theorem typeAt_subset (τ : ConvexHistory P.toTaskFrame) (u : ℤ) :
+theorem typeAt_subset (τ : PartialHistory P.toTaskFrame) (u : ℤ) :
     typeAt P φ τ u ⊆ subformulaClosure φ := fun _ hx => (mem_typeAt.mp hx).1
 
 /--
@@ -117,7 +117,7 @@ Every clause is discharged from the semantics itself. The two temporal clauses a
 the box clause is the oracle's soundness moved off time `0` by `box_const`.
 -/
 theorem typeAt_localCoherentSeq (hbx : BoxOracleSound P bx)
-    (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) :
+    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) :
     LocalCoherentSeq P φ bx (typeAt P φ τ) (fun u => τ.states u (hτ u)) := by
   intro t
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
@@ -189,7 +189,7 @@ witness, so a real model discharges its own eventualities by definition. Fulfilm
 only when a structure has to be built; read off an existing model it is free. This is why the
 truth lemma takes it as a hypothesis instead of establishing it.
 -/
-theorem typeAt_fulfillingSeq (τ : ConvexHistory P.toTaskFrame) :
+theorem typeAt_fulfillingSeq (τ : PartialHistory P.toTaskFrame) :
     FulfillingSeq (typeAt P φ τ) := by
   constructor
   · intro t g e hmem
@@ -223,11 +223,11 @@ its truth set along the path is exactly `[5, ∞)`. Requiring the *type* to repe
 the extracted loop to be long enough for the formula at hand.
 -/
 noncomputable def pigeonDatum (P : IntPresentation) (φ : Formula)
-    (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) : Fin P.card × Finset Formula :=
+    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) : Fin P.card × Finset Formula :=
   (τ.states u (hτ u), typeAt P φ τ u)
 
 /-- The pigeonhole datum ranges over a finite set. -/
-theorem pigeonDatum_mem (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) :
+theorem pigeonDatum_mem (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) :
     pigeonDatum P φ τ hτ u ∈
       (Finset.univ : Finset (Fin P.card)) ×ˢ (subformulaClosure φ).powerset := by
   simp only [pigeonDatum, Finset.mem_product, Finset.mem_powerset]

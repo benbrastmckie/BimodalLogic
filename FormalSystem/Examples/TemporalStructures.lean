@@ -7,14 +7,14 @@ Authors: Benjamin Brast-McKie
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Data.Int.SuccPred
 import FormalSystem.Semantics.TaskFrame
-import FormalSystem.Semantics.ConvexHistory
+import FormalSystem.Semantics.PartialHistory
 
 /-!
 # Temporal Structures - Example Frame Instantiations
 
 This module provides examples demonstrating the use of different temporal types
 with ProofChecker's generalized semantics. The fibre `FrameOver D` and
-`ConvexHistory F` structures can be instantiated with various temporal types.
+`PartialHistory F` structures can be instantiated with various temporal types.
 
 ## Paper Alignment
 
@@ -57,7 +57,7 @@ includes:
 ## References
 
 * [TaskFrame.lean](../ProofChecker/Semantics/TaskFrame.lean) - FrameOver definition
-* [ConvexHistory.lean](../ProofChecker/Semantics/ConvexHistory.lean) - ConvexHistory definition
+* [PartialHistory.lean](../ProofChecker/Semantics/PartialHistory.lean) - PartialHistory definition
 * JPL Paper anchors `def:temporal-order` (temporal structure, quoted verbatim above) and
   `def:frame` (frame definition; see TaskFrame.lean's module docstring for the verbatim
   four-axiom statement) — cited by `\label` anchor, never by raw line number
@@ -292,10 +292,9 @@ Integer time convex history with universal domain (total, hence a possible world
 
 All integer times are in the domain. This is the simplest possible history.
 -/
-def intTimeHistory : ConvexHistory intTimeFrame where
+def intTimeHistory : PartialHistory intTimeFrame where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
-  convex := fun _ _ _ _ _ _ _ => trivial
   states := fun _ _ => ()
   respects_task := fun _ _ _ _ => trivial
 
@@ -410,10 +409,9 @@ Generic polymorphic convex history with universal domain (total, hence a possibl
 
 Works with the genericTimeFrame, demonstrating polymorphism over the temporal type.
 -/
-def genericTimeHistory : ConvexHistory (genericTimeFrame D) where
+def genericTimeHistory : PartialHistory (genericTimeFrame D) where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
-  convex := fun _ _ _ _ _ _ _ => trivial
   states := fun _ _ => ()
   respects_task := fun _ _ _ _ => trivial
 

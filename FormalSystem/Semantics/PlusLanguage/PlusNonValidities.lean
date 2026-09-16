@@ -65,15 +65,15 @@ open PlusTruth
 abbrev NF : TaskFrame := FrameOver.natFrame (D := ℤ)
 
 /-- Any function `ℤ → ℕ` as a total history of `NF`. -/
-def natHist (f : ℤ → ℕ) : ConvexHistory NF :=
-  ConvexHistory.ofTotal NF f (fun s t => by
+def natHist (f : ℤ → ℕ) : PartialHistory NF :=
+  PartialHistory.ofTotal NF f (fun s t => by
     by_cases h : t - s = 0
     · right
       have : t = s := sub_eq_zero.mp h
       subst this; rfl
     · left; exact h)
 
-theorem natHist_isTotal (f : ℤ → ℕ) : (natHist f).IsTotal := ConvexHistory.ofTotal_isTotal _ _ _
+theorem natHist_isTotal (f : ℤ → ℕ) : (natHist f).IsTotal := PartialHistory.ofTotal_isTotal _ _ _
 
 /-- Every atom is true at world state `0` and nowhere else. -/
 def natModel : TaskModel NF where

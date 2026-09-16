@@ -262,7 +262,7 @@ is *not* concluded: nothing about `y < x`, and `F^N`'s own two possible worlds
 `τ ≡ 0` and `σ(n) = max(0, −n)` agree at `0` while differing at every negative time.
 -/
 theorem states_eq_of_forwardDeterministic {F : TaskFrame} (hD : F.ForwardDeterministic)
-    {τ σ : ConvexHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal) {x : F.Duration}
+    {τ σ : PartialHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal) {x : F.Duration}
     (h : SameStateAt τ σ x) {y : F.Duration} (hxy : x ≤ y) :
     τ.states y (hτ y) = σ.states y (hσ y) := by
   have hτr := τ.respects_task x y (hτ x) (hτ y)
@@ -363,8 +363,8 @@ the whole state-local fragment, and `fn_sentDet_bounds` records the widened stat
 with the refutation, so the two-sided bound is one object rather than two paragraphs. -/
 
 /-- The constant possible world `τ ≡ 0` of `F^N` — the absorbing state, held forever. -/
-def fnZeroHist : ConvexHistory FN :=
-  ConvexHistory.ofTotal FN (fun _ => 0) <| by
+def fnZeroHist : PartialHistory FN :=
+  PartialHistory.ofTotal FN (fun _ => 0) <| by
     intro s t
     show fnRel 0 (t - s) 0
     unfold fnRel
@@ -374,13 +374,13 @@ def fnZeroHist : ConvexHistory FN :=
     · have h' : (0 : ℤ) ≤ s - t := sub_nonneg.mpr h
       right; push_cast; omega
 
-theorem fnZeroHist_isTotal : fnZeroHist.IsTotal := ConvexHistory.ofTotal_isTotal _ _ _
+theorem fnZeroHist_isTotal : fnZeroHist.IsTotal := PartialHistory.ofTotal_isTotal _ _ _
 
 /-- The ramp possible world `σ(n) = max(0, −n)` of `F^N`: it descends to the absorbing state by
 time `0` and stays there. It agrees with `fnZeroHist` at `0` and differs at every negative
 time — the pair the PossibleWorlds determinism-axiom-correspondence report, §3.3, exhibits. -/
-def fnRampHist : ConvexHistory FN :=
-  ConvexHistory.ofTotal FN (fun n => (-n).toNat) <| by
+def fnRampHist : PartialHistory FN :=
+  PartialHistory.ofTotal FN (fun n => (-n).toNat) <| by
     intro s t
     show fnRel ((-s).toNat) (t - s) ((-t).toNat)
     unfold fnRel
@@ -390,7 +390,7 @@ def fnRampHist : ConvexHistory FN :=
     · have h' : (0 : ℤ) ≤ s - t := sub_nonneg.mpr h
       right; rw [Int.toNat_eq_max, Int.toNat_eq_max]; omega
 
-theorem fnRampHist_isTotal : fnRampHist.IsTotal := ConvexHistory.ofTotal_isTotal _ _ _
+theorem fnRampHist_isTotal : fnRampHist.IsTotal := PartialHistory.ofTotal_isTotal _ _ _
 
 /-- The two possible worlds agree at time `0`: both are at the absorbing state there. -/
 theorem fn_hists_sameStateAt_zero :

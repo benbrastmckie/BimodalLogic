@@ -112,12 +112,12 @@ theorem PlusValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : PlusFormul
 /-! ### Binder-shape adapters
 
 `PlusValidOnFrames` is stated over the bundled `(τ : TaskFrame.HF F)`; every proof that consumes
-or produces it works with the unbundled pair `(τ : ConvexHistory F) (hτ : τ.IsTotal)`. These four
+or produces it works with the unbundled pair `(τ : PartialHistory F) (hτ : τ.IsTotal)`. These four
 are the adapters, exactly as on the L and L⁻ sides. -/
 
 /-- Introduce `PlusValidOnFrames` from the unbundled shape. -/
 theorem PlusValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : PlusFormula}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
     PlusValidOnFrames P φ :=
   GenericValidOnFrames.of_forall_total (L := PlusFormula) (φ := φ) h
@@ -125,12 +125,12 @@ theorem PlusValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : PlusFor
 /-- Eliminate `PlusValidOnFrames` into the unbundled shape. -/
 theorem PlusValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : PlusFormula}
     (h : PlusValidOnFrames P φ) (F : TaskFrame) (hF : P F) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
   GenericValidOnFrames.apply_total (L := PlusFormula) (φ := φ) h F hF M τ hτ t
 
 /-- `PlusValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
 theorem PlusValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : PlusFormula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
     PlusValidIn fc φ :=
   GenericValidIn.of_forall_total (L := PlusFormula) (φ := φ) h
@@ -138,20 +138,20 @@ theorem PlusValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : PlusForm
 /-- `PlusValidOnFrames.apply_total` at a `FrameClass` tag. -/
 theorem PlusValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : PlusFormula}
     (h : PlusValidIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
   GenericValidIn.apply_total (L := PlusFormula) (φ := φ) h F hF M τ hτ t
 
 /-- Introduce `PlusValid` from the unbundled shape; the `Sat .Base` argument (`True`) is
 discharged here. Mirror of `Valid.of_forall_total`. -/
 theorem PlusValid.of_forall_total {φ : PlusFormula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
     PlusValid φ :=
   GenericValid.of_forall_total (L := PlusFormula) (φ := φ) h
 
 /-- Eliminate `PlusValid` into the unbundled shape. Mirror of `Valid.apply`. -/
 theorem PlusValid.apply {φ : PlusFormula} (h : PlusValid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
   GenericValid.apply (L := PlusFormula) (φ := φ) h F M τ hτ t
 
 /-! ## The truth-transfer bridge along `ofFormula` -/
@@ -168,7 +168,7 @@ six L clauses of `PlusTruthAt` are `TruthAt`'s verbatim and `ofFormula` is
 constructor-to-constructor.
 -/
 theorem plusTruthAt_ofFormula (M : TaskModel F) (φ : Formula) :
-    ∀ (τ : ConvexHistory F) (t : F.Duration),
+    ∀ (τ : PartialHistory F) (t : F.Duration),
       PlusTruthAt M τ t (ofFormula φ) ↔ TruthAt M τ t φ := by
   induction φ with
   | atom p => intro τ t; exact Iff.rfl
@@ -187,7 +187,7 @@ theorem plusTruthAt_ofFormula (M : TaskModel F) (φ : Formula) :
         (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ r)
 
 /-- The context-level form of the bridge. -/
-theorem plusTruthAt_ofCtx (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration)
+theorem plusTruthAt_ofCtx (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
     {Γ : Context} (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     ∀ ψ ∈ ofCtx Γ, PlusTruthAt M τ t ψ := by
   intro ψ hψ

@@ -527,18 +527,17 @@ theorem zTaskFrameV2_saturation : TaskFrame.Saturation zTaskFrameV2.TaskRel :=
 
 /-- Convex history with offset w₀: domain = all of ℤ (hence total, a possible world),
 states t _ = w₀ + t. -/
-noncomputable def zHistoryV2 (w₀ : ℤ) : ConvexHistory zTaskFrameV2 where
+noncomputable def zHistoryV2 (w₀ : ℤ) : PartialHistory zTaskFrameV2 where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
-  convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => w₀ + t
   respects_task := fun s t _ _ => by change w₀ + t = (w₀ + s) + (t - s); omega
 
 /-- Time-shifting zHistoryV2 w₀ by Δ gives zHistoryV2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
-    ConvexHistory.timeShift (zHistoryV2 w₀) Δ = zHistoryV2 (w₀ + Δ) := by
-  change ConvexHistory.mk (PartialHistory.mk _ _ _ _) _ =
-    ConvexHistory.mk (PartialHistory.mk _ _ _ _) _
+    PartialHistory.timeShift (zHistoryV2 w₀) Δ = zHistoryV2 (w₀ + Δ) := by
+  change PartialHistory.mk _ _ _ _ =
+    PartialHistory.mk _ _ _ _
   have h_states : (fun (t : ℤ) (_ : True) => w₀ + (t + Δ)) =
       (fun (t : ℤ) (_ : True) => (w₀ + Δ) + t) := by
     funext t _; omega
@@ -641,7 +640,7 @@ theorem z_interval_carrier_contains_all
 
 `zTaskFrameV2`'s task relation `u = w + d` is deterministic, so the state at time `0` fixes the
 offset and `respects_task` propagates it to every other time. -/
-theorem zHistoryV2_total_eq (σ : ConvexHistory zTaskFrameV2) (htot : ∀ t, σ.domain t) :
+theorem zHistoryV2_total_eq (σ : PartialHistory zTaskFrameV2) (htot : ∀ t, σ.domain t) :
     ∃ w₀, σ = zHistoryV2 w₀ := by
   -- `zTaskFrameV2.WorldState` is `ℤ` but not syntactically so; `show ℤ from` forces the
   -- arithmetic to elaborate in `ℤ` where `omega` can see it.
@@ -653,15 +652,15 @@ theorem zHistoryV2_total_eq (σ : ConvexHistory zTaskFrameV2) (htot : ∀ t, σ.
       σ.respects_task 0 t (htot 0) ht
     omega
   refine ⟨σ.states 0 (htot 0), ?_⟩
-  obtain ⟨⟨dom, nedom, sts, resp⟩, conv⟩ := σ
+  obtain ⟨dom, nedom, sts, resp⟩ := σ
   have hdom : dom = fun _ => True :=
     funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
   subst hdom
   have h_states : sts = fun t (_ : True) => (show ℤ from sts 0 (htot 0)) + t :=
     funext fun t => funext fun ht => key t ht
-  change ConvexHistory.mk (PartialHistory.mk _ _ _ _) _ =
-    ConvexHistory.mk (PartialHistory.mk _ _ _ _) _
-  congr 2
+  change PartialHistory.mk _ _ _ _ =
+    PartialHistory.mk _ _ _ _
+  congr 1
 
 /-- `zTaskFrameV2`'s total-history set `H_F` (`def:world-history`: "The set of all total world
 histories over $\F$ is denoted $H_{\F}$") **is** its set of offset histories.
@@ -669,7 +668,7 @@ histories over $\F$ is denoted $H_{\F}$") **is** its set of offset histories.
 `⊇` is definitional — `zHistoryV2` carries `domain := fun _ => True`; `⊆` is
 `zHistoryV2_total_eq`. -/
 theorem zHistoryV2_total_eq_range :
-    {σ : ConvexHistory zTaskFrameV2 | ∀ t, σ.domain t} = Set.range zHistoryV2 := by
+    {σ : PartialHistory zTaskFrameV2 | ∀ t, σ.domain t} = Set.range zHistoryV2 := by
   ext σ
   constructor
   · intro htot
@@ -822,10 +821,9 @@ theorem multiFamTaskFrame_deterministic (FamIdx : Type) [Nonempty FamIdx] :
 /-- Convex history for the multi-family frame, parameterized by a family index
 and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -/
 noncomputable def multiFamHistory {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
-    ConvexHistory (multiFamTaskFrame FamIdx) where
+    PartialHistory (multiFamTaskFrame FamIdx) where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
-  convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => (f, w₀ + t)
   respects_task := fun s t _ _ => by
     change (f, w₀ + s).1 = (f, w₀ + t).1 ∧ (f, w₀ + t).2 = (f, w₀ + s).2 + (t - s)
@@ -833,10 +831,10 @@ noncomputable def multiFamHistory {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx)
 
 /-- Time-shifting `multiFamHistory f w₀` by `Δ` gives `multiFamHistory f (w₀ + Δ)`. -/
 theorem multiFamHistory_shift_eq {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ Δ : ℤ) :
-    ConvexHistory.timeShift (multiFamHistory f w₀ : ConvexHistory (multiFamTaskFrame FamIdx)) Δ =
+    PartialHistory.timeShift (multiFamHistory f w₀ : PartialHistory (multiFamTaskFrame FamIdx)) Δ =
       multiFamHistory f (w₀ + Δ) := by
-  change ConvexHistory.mk (PartialHistory.mk _ _ _ _) _ =
-    ConvexHistory.mk (PartialHistory.mk _ _ _ _) _
+  change PartialHistory.mk _ _ _ _ =
+    PartialHistory.mk _ _ _ _
   have h_states : (fun (t : ℤ) (_ : True) => (f, w₀ + (t + Δ))) =
       (fun (t : ℤ) (_ : True) => (f, (w₀ + Δ) + t)) := by
     funext t _; congr 1; omega
@@ -847,7 +845,7 @@ Definitional: `multiFamHistory` carries `domain := fun _ => True`. This is the `
 of `bundleFlowHistory_total` (`FlowFrame.lean`), and is what the totality-targeted box clause
 (`def:BL-semantics`, "for all $\sigma \in H_{\F}$") consumes. -/
 theorem multiFamHistory_total {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
-    (multiFamHistory f w₀ : ConvexHistory (multiFamTaskFrame FamIdx)).IsTotal :=
+    (multiFamHistory f w₀ : PartialHistory (multiFamTaskFrame FamIdx)).IsTotal :=
   fun _ => trivial
 
 /-- Every total history of the multi-family frame is a family line. Totality is
@@ -858,7 +856,7 @@ the state at time `0` fixes both the family index and the offset, and `respects_
 them to every other time. This is the `ℤ` specialization of `multiFamGen_total_eq`
 (`FlowFrame.lean`), reproved here because the two frames are separate definitions. -/
 theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
-    (σ : ConvexHistory (multiFamTaskFrame FamIdx)) (htot : ∀ t, σ.domain t) :
+    (σ : PartialHistory (multiFamTaskFrame FamIdx)) (htot : ∀ t, σ.domain t) :
     ∃ f w₀, σ = multiFamHistory f w₀ := by
   have key : ∀ (t : ℤ) (ht : σ.domain t),
       σ.states t ht = ((σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2 + t) := by
@@ -870,16 +868,16 @@ theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
     show (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + t
     rw [h₂, sub_zero]
   refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
-  obtain ⟨⟨dom, nedom, sts, resp⟩, conv⟩ := σ
+  obtain ⟨dom, nedom, sts, resp⟩ := σ
   have hdom : dom = fun _ => True :=
     funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
   subst hdom
   have h_states : sts = fun t (_ : True) =>
       ((sts 0 (htot 0)).1, (sts 0 (htot 0)).2 + t) :=
     funext fun t => funext fun ht => key t ht
-  change ConvexHistory.mk (PartialHistory.mk _ _ _ _) _ =
-    ConvexHistory.mk (PartialHistory.mk _ _ _ _) _
-  congr 2
+  change PartialHistory.mk _ _ _ _ =
+    PartialHistory.mk _ _ _ _
+  congr 1
 
 /-- The multi-family frame's set of possible worlds `H_F` (`def:world-history`: "The set of all
 possible worlds over $\F$ is denoted $H_{\F}$") **is** its set of family lines.
@@ -888,7 +886,7 @@ possible worlds over $\F$ is denoted $H_{\F}$") **is** its set of family lines.
 `multiFam_total_eq`. This is the `ℤ` case of the generic `multiFamGen_total_eq_range`
 (`FlowFrame.lean`). -/
 theorem multiFam_total_eq_range (FamIdx : Type) [Nonempty FamIdx] :
-    {σ : ConvexHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} =
+    {σ : PartialHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} =
       Set.range (fun (p : FamIdx × ℤ) => multiFamHistory p.1 p.2) := by
   ext σ
   constructor
@@ -925,7 +923,7 @@ theorem countermodel_discrete_reynolds_v2
     ∃ (F : TaskFrame) (_ : SuccOrder ↑F.Duration) (_ : PredOrder ↑F.Duration)
       (_ : IsSuccArchimedean ↑F.Duration) (_ : IsPredArchimedean ↑F.Duration)
       (_ : F.Deterministic)
-      (TM : TaskModel F) (τ : ConvexHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
+      (TM : TaskModel F) (τ : PartialHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   -- === Multi-Family Z-Interval Approach (bypasses chronicle_gap_contradiction) ===
   --

@@ -62,7 +62,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
   `axiom_*_valid` names are one-line instances of it
 
 **Key Techniques**:
-- Time-shift invariance (MF, and TF through it): Uses `ConvexHistory.timeShift` and
+- Time-shift invariance (MF, and TF through it): Uses `PartialHistory.timeShift` and
   `TimeShift.timeShift_preserves_truth` to relate truth at different times. TF is not a
   separate `Axiom` constructor — it is reached by temporal duality, so its validity rides on
   `mf_swap_valid`, the swap half of the same schema. See **The time-shift consumer set** below
@@ -74,7 +74,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
 Validity and semantic consequence quantify over the frame's **total** histories
 (`τ.IsTotal`, the predicate form of `H_F` membership), matching `def:logical-consequence`.
 There is no admissible-history parameter and no shift-closure side condition: totality is
-preserved by `timeShift` (`ConvexHistory.isTotal_timeShift`), so time-shift invariance carries
+preserved by `timeShift` (`PartialHistory.isTotal_timeShift`), so time-shift invariance carries
 no hypothesis to quantify over. `TruthAt` takes four arguments — `TruthAt M τ t φ` — and no set
 argument at all.
 
@@ -82,7 +82,7 @@ argument at all.
 
 **The invariant, stated for the next language extension.** Time-shift homogeneity —
 `TimeShift.timeShift_preserves_truth` (`Semantics/TruthTransport.lean`), which moves truth along
-`ConvexHistory.timeShift` — is consumed by exactly **one schema** of the TM axiom block, and by
+`PartialHistory.timeShift` — is consumed by exactly **one schema** of the TM axiom block, and by
 exactly **two declarations** in the whole soundness layer of this tree:
 
 | Declaration | File | What it establishes |
@@ -361,15 +361,15 @@ theorem temp_l_valid (φ : Formula) :
   exact fun h_always _ _ r _ => h_always r
 
 /-- MF axiom validity: `□φ → □(Fφ)` is valid. Time-shift invariance carries no side condition:
-totality of the shifted history is `ConvexHistory.isTotal_timeShift`. -/
+totality of the shifted history is `PartialHistory.isTotal_timeShift`. -/
 theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.allFuture).box)) := by
   refine Valid.of_forall_total ?_
   intro F M τ _hτ t
   simp only [truth_norm]
   intro h_box_phi σ h_σ_mem s hts
   have h_phi_at_shifted :=
-    h_box_phi (ConvexHistory.timeShift σ (s - t))
-      (ConvexHistory.isTotal_timeShift h_σ_mem (s - t))
+    h_box_phi (PartialHistory.timeShift σ (s - t))
+      (PartialHistory.isTotal_timeShift h_σ_mem (s - t))
   exact (TimeShift.timeShift_preserves_truth M σ t s φ).mp h_phi_at_shifted
 
 /-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
@@ -1348,7 +1348,7 @@ decreasing_by
 theorem soundness_in {fc : FrameClass} (Γ : Context) (φ : Formula)
     (d : DerivationTree fc Γ φ)
     (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
   induction d generalizing τ t with
@@ -1440,7 +1440,7 @@ Paper: `thm:TM-soundness`
 theorem soundness (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Base Γ φ)
     (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
   exact soundness_in Γ φ d F trivial M τ h_mem t h_ctx
@@ -1495,7 +1495,7 @@ Paper: `thm:TM-soundness`
 theorem soundness_dense (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Dense Γ φ)
     (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
   exact soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ h_mem t h_ctx
@@ -1535,7 +1535,7 @@ theorem soundness_ztime (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.ZTime Γ φ)
     (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
     [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
   exact soundness_in Γ φ d F
@@ -1583,7 +1583,7 @@ theorem soundness_rtime (Γ : Context) (φ : Formula)
     (F : TaskFrame) [DenselyOrdered F.Duration]
     (h_lub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
   exact soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ h_mem t h_ctx

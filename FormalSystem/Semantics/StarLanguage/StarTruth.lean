@@ -108,17 +108,17 @@ through `box` and `stab`, neither of which disturbs the registers. The two new c
 `def:BLstar-semantics`'s: `↑ⁱφ` evaluates `φ` with the current time written into register `i`,
 and `↓ⁱφ` evaluates `φ` at the time register `i` holds.
 -/
-def StarTruthAt (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration) (v : ℕ → F.Duration) :
+def StarTruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (v : ℕ → F.Duration) :
     StarFormula → Prop
   | .atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
   | .bot => False
   | .imp φ ψ => StarTruthAt M τ t v φ → StarTruthAt M τ t v ψ
-  | .box φ => ∀ (σ : ConvexHistory F), σ.IsTotal → StarTruthAt M σ t v φ
+  | .box φ => ∀ (σ : PartialHistory F), σ.IsTotal → StarTruthAt M σ t v φ
   | .untl ψ φ => ∃ s : F.Duration, t < s ∧ StarTruthAt M τ s v φ ∧
       ∀ r : F.Duration, t < r → r < s → StarTruthAt M τ r v ψ
   | .snce ψ φ => ∃ s : F.Duration, s < t ∧ StarTruthAt M τ s v φ ∧
       ∀ r : F.Duration, s < r → r < t → StarTruthAt M τ r v ψ
-  | .stab φ => ∀ (σ : ConvexHistory F), σ.IsTotal → SameStateAt τ σ t → StarTruthAt M σ t v φ
+  | .stab φ => ∀ (σ : PartialHistory F), σ.IsTotal → SameStateAt τ σ t → StarTruthAt M σ t v φ
   | .timeStore i φ => StarTruthAt M τ t (Function.update v i t) φ
   | .timeRecall i φ => StarTruthAt M τ (v i) v φ
 
@@ -157,7 +157,7 @@ instance : StabClauses StarFormula where
 
 namespace StarTruth
 
-variable (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration) (v : ℕ → F.Duration)
+variable (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (v : ℕ → F.Duration)
 
 theorem atom_iff (p : Atom) :
     StarTruthAt M τ t v (.atom p) ↔ ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p := Iff.rfl
@@ -168,7 +168,7 @@ theorem imp_iff (φ ψ : StarFormula) :
     StarTruthAt M τ t v (.imp φ ψ) ↔ (StarTruthAt M τ t v φ → StarTruthAt M τ t v ψ) := Iff.rfl
 
 theorem box_iff (φ : StarFormula) :
-    StarTruthAt M τ t v (.box φ) ↔ ∀ σ : ConvexHistory F, σ.IsTotal → StarTruthAt M σ t v φ :=
+    StarTruthAt M τ t v (.box φ) ↔ ∀ σ : PartialHistory F, σ.IsTotal → StarTruthAt M σ t v φ :=
   Iff.rfl
 
 theorem untl_iff (ψ φ : StarFormula) :
@@ -181,7 +181,7 @@ theorem snce_iff (ψ φ : StarFormula) :
 
 theorem stab_iff (φ : StarFormula) :
     StarTruthAt M τ t v (.stab φ) ↔
-      ∀ σ : ConvexHistory F, σ.IsTotal → SameStateAt τ σ t → StarTruthAt M σ t v φ := Iff.rfl
+      ∀ σ : PartialHistory F, σ.IsTotal → SameStateAt τ σ t → StarTruthAt M σ t v φ := Iff.rfl
 
 /-- `(↑ⁱ)` of `def:BLstar-semantics`: store the present time in register `i`. -/
 theorem timeStore_iff (i : ℕ) (φ : StarFormula) :
@@ -223,12 +223,12 @@ theorem allPast_iff (φ : StarFormula) :
   TruthClauses.allPast_iff (L := StarFormula) M τ t v φ
 
 theorem diamond_iff (φ : StarFormula) :
-    StarTruthAt M τ t v (diamond φ) ↔ ∃ σ : ConvexHistory F, σ.IsTotal ∧ StarTruthAt M σ t v φ :=
+    StarTruthAt M τ t v (diamond φ) ↔ ∃ σ : PartialHistory F, σ.IsTotal ∧ StarTruthAt M σ t v φ :=
   TruthClauses.diamond_iff (L := StarFormula) M τ t v φ
 
 theorem dstab_iff (φ : StarFormula) :
     StarTruthAt M τ t v (dstab φ) ↔
-      ∃ σ : ConvexHistory F, σ.IsTotal ∧ SameStateAt τ σ t ∧ StarTruthAt M σ t v φ :=
+      ∃ σ : PartialHistory F, σ.IsTotal ∧ SameStateAt τ σ t ∧ StarTruthAt M σ t v φ :=
   TruthClauses.dstab_iff (L := StarFormula) M τ t v φ
 
 /-- `△φ` unfolds three ways, exactly as in L⁺: past, present, and future. -/
@@ -252,7 +252,7 @@ and L⋆ truth is L⁺ truth. -/
 true in L⁺, at the same model, history and time — at *every* stored-time vector, which is
 universally quantified and unused in the conclusion.
 -/
-theorem starTruthAt_ofPlus (M : TaskModel F) (τ : ConvexHistory F) (x : F.Duration)
+theorem starTruthAt_ofPlus (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
     (v : ℕ → F.Duration) (φ : PlusFormula) :
     StarTruthAt M τ x v (ofPlus φ) ↔ PlusTruthAt M τ x φ := by
   induction φ generalizing τ x with
@@ -287,7 +287,7 @@ time `v i` — in both cases the *same* vector on both sides of the biconditiona
 this lemma needs no shift.
 -/
 theorem star_truth_congr_ext (M : TaskModel F) (φ : StarFormula) :
-    ∀ (τ σ : ConvexHistory F) (x : F.Duration) (v : ℕ → F.Duration),
+    ∀ (τ σ : PartialHistory F) (x : F.Duration) (v : ℕ → F.Duration),
       (∀ s, τ.domain s ↔ σ.domain s) →
       (∀ s (hτ : τ.domain s) (hσ : σ.domain s), τ.states s hτ = σ.states s hσ) →
       (StarTruthAt M τ x v φ ↔ StarTruthAt M σ x v φ) := by
@@ -350,7 +350,7 @@ strengthens the lemma rather than weakening it. `plusTruthAt_timeShift`, the lem
 restates, likewise takes no totality hypothesis.
 -/
 theorem starTruthAt_timeShift (M : TaskModel F) (φ : StarFormula) :
-    ∀ (σ : ConvexHistory F) (t Δ : F.Duration) (v : ℕ → F.Duration),
+    ∀ (σ : PartialHistory F) (t Δ : F.Duration) (v : ℕ → F.Duration),
       StarTruthAt M (σ.timeShift Δ) t v φ ↔ StarTruthAt M σ (t + Δ) (fun i => v i + Δ) φ := by
   induction φ with
   | atom p => intros; exact Iff.rfl

@@ -64,8 +64,8 @@ variable {P : IntPresentation} {φ : Formula} {bx : Formula → Bool}
 
 namespace Annot
 
-/-- The decoded history of an annotated bi-lasso, as the `ConvexHistory` that `TruthAt` consumes. -/
-abbrev hist (A : Annot P φ) : ConvexHistory P.toTaskFrame := A.lasso.toHF.val
+/-- The decoded history of an annotated bi-lasso, as the `PartialHistory` that `TruthAt` consumes. -/
+abbrev hist (A : Annot P φ) : PartialHistory P.toTaskFrame := A.lasso.toHF.val
 
 /-- The decoded history is total: `toHF` is built from a bi-infinite step path. -/
 theorem hist_isTotal (A : Annot P φ) : A.hist.IsTotal := A.lasso.toHF.property

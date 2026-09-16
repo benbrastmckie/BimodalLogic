@@ -87,7 +87,7 @@ This is the whole of the static frame's semantic content; everything below is a 
 -/
 theorem static_time_invariant (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D))) (φ : Formula)
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal) (t s : D) :
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal) (t s : D) :
     TruthAt M τ t φ ↔ TruthAt M τ s φ := by
   rcases eq_or_ne (s - t) 0 with h | h
   · rw [sub_eq_zero] at h
@@ -107,7 +107,7 @@ current one so that the universal readings are not vacuous. -/
 /-- `b(Gφ) = b(φ)`. -/
 theorem static_allFuture_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.allFuture ↔ TruthAt M τ t χ := by
   rw [Truth.future_iff]
@@ -118,7 +118,7 @@ theorem static_allFuture_iff (W : Type) [Nonempty W]
 /-- `b(Fφ) = b(φ)`. -/
 theorem static_someFuture_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.someFuture ↔ TruthAt M τ t χ := by
   rw [Truth.some_future_iff]
@@ -129,7 +129,7 @@ theorem static_someFuture_iff (W : Type) [Nonempty W]
 /-- `b(Hφ) = b(φ)`. -/
 theorem static_allPast_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.allPast ↔ TruthAt M τ t χ := by
   rw [Truth.past_iff]
@@ -140,7 +140,7 @@ theorem static_allPast_iff (W : Type) [Nonempty W]
 /-- `b(Pφ) = b(φ)`. -/
 theorem static_somePast_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.somePast ↔ TruthAt M τ t χ := by
   rw [Truth.some_past_iff]
@@ -162,7 +162,7 @@ unavailable on a densely ordered carrier and always available on a discrete one.
 -/
 theorem static_untl_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.untl ψ φ) ↔
       (TruthAt M τ t φ ∧ (TruthAt M τ t ψ ∨ ∃ y, IsLeast {z : D | t < z} y)) := by
@@ -188,7 +188,7 @@ theorem static_untl_iff (W : Type) [Nonempty W]
 `static_untl_iff` is unavailable and `U(ψ, φ)` reduces to the conjunction `b(φ) ∧ b(ψ)`. -/
 theorem static_untl_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.untl ψ φ) ↔ (TruthAt M τ t φ ∧ TruthAt M τ t ψ) := by
   rw [static_untl_iff W M τ hτ ψ φ t]
@@ -204,7 +204,7 @@ is never consulted. -/
 theorem static_untl_iff_disc (hdisc : ∀ x : D, ∃ y, IsLeast {z : D | x < z} y)
     (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.untl ψ φ) ↔ TruthAt M τ t φ := by
   rw [static_untl_iff W M τ hτ ψ φ t]
@@ -219,7 +219,7 @@ otherwise transcribe unchanged. -/
 /-- The `snce` mirror of `static_untl_iff`. -/
 theorem static_snce_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.snce ψ φ) ↔
       (TruthAt M τ t φ ∧ (TruthAt M τ t ψ ∨ ∃ y, IsGreatest {z : D | z < t} y)) := by
@@ -244,7 +244,7 @@ theorem static_snce_iff (W : Type) [Nonempty W]
 /-- The `snce` mirror of `static_untl_iff_dense`. -/
 theorem static_snce_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.snce ψ φ) ↔ (TruthAt M τ t φ ∧ TruthAt M τ t ψ) := by
   rw [static_snce_iff W M τ hτ ψ φ t]
@@ -258,7 +258,7 @@ theorem static_snce_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
 theorem static_snce_iff_disc (hdisc : ∀ x : D, ∃ y, IsGreatest {z : D | z < x} y)
     (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.snce ψ φ) ↔ TruthAt M τ t φ := by
   rw [static_snce_iff W M τ hτ ψ φ t]
@@ -270,7 +270,7 @@ theorem static_snce_iff_disc (hdisc : ∀ x : D, ∃ y, IsGreatest {z : D | z < 
 evaluates the inner `untl` to `⊤ ∧ ¬φ`, so `K⁺φ` is `¬¬φ`. -/
 theorem static_kPlus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (χ : Formula) (t : D) :
     TruthAt M τ t (Formula.kPlus χ) ↔ TruthAt M τ t χ := by
   have hu := static_untl_iff_dense W M τ hτ χ.neg Formula.top t
@@ -285,7 +285,7 @@ theorem static_kPlus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
 /-- `b(K⁻φ) = b(φ)` on a dense carrier; the `snce` mirror of `static_kPlus_iff_dense`. -/
 theorem static_kMinus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (χ : Formula) (t : D) :
     TruthAt M τ t (Formula.kMinus χ) ↔ TruthAt M τ t χ := by
   have hs := static_snce_iff_dense W M τ hτ χ.neg Formula.top t
@@ -311,7 +311,7 @@ Stated at the level of `TruthAt` at an arbitrary total history and time, which i
 -/
 theorem static_validates_z1 (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : ConvexHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
     (φ : Formula) (t : D) :
     TruthAt M τ t ((φ.allFuture.imp φ).allFuture.imp
       (φ.allFuture.someFuture.imp φ.allFuture)) := by

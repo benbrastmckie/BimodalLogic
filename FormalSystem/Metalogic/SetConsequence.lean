@@ -98,7 +98,7 @@ collapsed onto `setConsequenceOnFrames_mono`. -/
 primitive, mirroring `Semantics.ValidOnFrames`. -/
 def SetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set Formula) (φ : Formula) : Prop :=
   ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
-    (τ : ConvexHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- `cor:tm-completeness`'s class-restricted consequence `Γ ⊨_C φ` at a possibly-infinite premise
@@ -153,7 +153,7 @@ structure PointedModel (fc : FrameClass) (Γ : Set Formula) where
   /-- A model over that frame. -/
   Model : TaskModel Frame
   /-- The history at which `Γ` is witnessed. -/
-  hist : ConvexHistory Frame
+  hist : PartialHistory Frame
   /-- That history is total. -/
   htotal : hist.IsTotal
   /-- The time at which `Γ` is witnessed. -/
@@ -264,12 +264,12 @@ because a `Sat .Dense F` hypothesis was once invisible to instance search; `Fram
 
 /-- Introduce `SetSemanticConsequenceOn` at an arbitrary tag from the frame-condition-explicit
 binder shape. The body is `h`: `SetConsequenceOnFrames` already quantifies over the unbundled
-`(τ : ConvexHistory F) (_ : τ.IsTotal)` pair. This replaced the four class-specific
+`(τ : PartialHistory F) (_ : τ.IsTotal)` pair. This replaced the four class-specific
 `SetSemanticConsequence{Base,Dense,Discrete,DedekindDense}.of_forall` adapters, each of which was
 this lemma at a fixed tag. -/
 theorem SetSemanticConsequenceOn.of_forall_total {fc : FrameClass} {Γ : Set Formula}
     {φ : Formula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
     SetSemanticConsequenceOn fc Γ φ :=
   h
@@ -278,7 +278,7 @@ theorem SetSemanticConsequenceOn.of_forall_total {fc : FrameClass} {Γ : Set For
 binder shape. This replaced the four class-specific `.apply` adapters. -/
 theorem SetSemanticConsequenceOn.apply_total {fc : FrameClass} {Γ : Set Formula} {φ : Formula}
     (h : SetSemanticConsequenceOn fc Γ φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (hΓ : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
   h F hF M τ hτ t hΓ
 
@@ -299,7 +299,7 @@ a model/history/time at which every member of `Γ` is true. A `def`, not a `theo
 `PointedModel` lives in `Type`, so a `theorem` here fails with "type of theorem is not a
 proposition". -/
 def PointedModel.of {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
-    (hF : fc.Sat F) (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hF : fc.Sat F) (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : PointedModel fc Γ :=
   ⟨F, hF, M, τ, hτ, t, h⟩
 
@@ -310,7 +310,7 @@ the tree calls it. This replaced the four
 at a fixed tag with `fc.Sat F` unfolded to that class's frame condition, which is the only thing
 that made four copies look necessary. -/
 theorem SatisfiableSet.of_forall {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
-    (hF : fc.Sat F) (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hF : fc.Sat F) (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : SatisfiableSet fc Γ :=
   ⟨PointedModel.of F hF M τ hτ t h⟩
 

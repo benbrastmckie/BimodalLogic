@@ -27,7 +27,7 @@ A branch is a list of signed formulas carrying `Label`s — a `WorldIndex` and a
 pieces of data:
 
 * a model `M` over a `FrameOver (TemporalOrder.of D)` — the fibre at the carrier `D`;
-* an interpretation `hist : WorldIndex → ConvexHistory F` of the branch's world labels, landing
+* an interpretation `hist : WorldIndex → PartialHistory F` of the branch's world labels, landing
   on *total* histories — this is what makes `□` (which quantifies over totality) reach every
   branch world;
 * an interpretation `tv : TimeIndex → D` of the branch's time labels.
@@ -145,7 +145,7 @@ formula and its negation, because a branch is free to leave a formula undecided 
 is only the formulas it actually carries that are constrained.
 -/
 def SatAt (M : TaskModel F)
-    (hist : WorldIndex → ConvexHistory F) (tv : TimeIndex → D) (sf : SignedFormula) : Prop :=
+    (hist : WorldIndex → PartialHistory F) (tv : TimeIndex → D) (sf : SignedFormula) : Prop :=
   match sf.sign with
   | .pos => TruthAt M (hist sf.label.world) (tv sf.label.time) sf.formula
   | .neg => ¬ TruthAt M (hist sf.label.world) (tv sf.label.time) sf.formula
@@ -161,14 +161,14 @@ The three fields are independent obligations and all three are load-bearing:
   This is what carries the whole modal burden now: it replaced the former membership field when
   the box clause was retargeted to totality, and it also replaced the former shift-closure
   field, since totality is preserved by `timeShift` outright
-  (`ConvexHistory.isTotal_timeShift`) and so needs no closure hypothesis to make `□` behave as
+  (`PartialHistory.isTotal_timeShift`) and so needs no closure hypothesis to make `□` behave as
   the universal modality across times as well as histories.
 * `ordResp` — every recorded ordering constraint is a genuine strict inequality in `D`. This is
   what a fresh-time rule has to re-establish for the *extended* ordering it returns.
 * `sat` — every signed formula on the branch is satisfied.
 -/
 structure SatState (M : TaskModel F)
-    (hist : WorldIndex → ConvexHistory F) (tv : TimeIndex → D)
+    (hist : WorldIndex → PartialHistory F) (tv : TimeIndex → D)
     (b : Branch) (ord : TimeOrdering) : Prop where
   /-- Every branch world is interpreted by a total history. -/
   histTotal : ∀ w, (hist w).IsTotal
@@ -180,7 +180,7 @@ structure SatState (M : TaskModel F)
 /-- Satisfiability passes down to sublists: the engine consumes formulas on a `.linear` step, and
 the resulting shorter branch is still satisfied by the same interpretation. -/
 theorem SatState.mono {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b b' : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b b' : Branch} {ord : TimeOrdering}
     (h : SatState M hist tv b ord) (hsub : ∀ sf ∈ b', sf ∈ b) :
     SatState M hist tv b' ord :=
   ⟨h.histTotal, h.ordResp, fun sf hsf => h.sat sf (hsub sf hsf)⟩
@@ -188,7 +188,7 @@ theorem SatState.mono {M : TaskModel F}
 /-- Build a state on `fs ++ b` from a state on `b` plus satisfaction of each added formula. The
 shape every non-branching rule's proof ends in. -/
 theorem SatState.append {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     {fs : List SignedFormula} (h : SatState M hist tv b ord)
     (hfs : ∀ sf ∈ fs, SatAt M hist tv sf) :
     SatState M hist tv (fs ++ b) ord :=
@@ -385,7 +385,7 @@ fresh-*world* rules — never consume it; it is exactly the fresh-*time* produce
 def RuleSound (C : CarrierProp) (r : TableauRule) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D],
     C D → ∀ (F : FrameOver (TemporalOrder.of D)) (M : TaskModel F)
-      (hist : WorldIndex → ConvexHistory F) (tv : TimeIndex → D)
+      (hist : WorldIndex → PartialHistory F) (tv : TimeIndex → D)
       (b : Branch) (sf : SignedFormula) (ord : TimeOrdering),
       sf ∈ b → SatState M hist tv b ord → OrdWithin b ord →
       SatResult M b (applyRule r sf b ord).1 (applyRule r sf b ord).2
@@ -655,7 +655,7 @@ image for `F(◇A)`. Neither mints a label, neither touches the ordering.
 
 `boxTemporal` is the one rule here that moves the evaluation time. `T(□A) → T(GA)` is not a
 modal-logic step at all: it holds because totality is preserved by `timeShift`
-(`ConvexHistory.isTotal_timeShift`), which makes `□` reach across *times* as well as histories —
+(`PartialHistory.isTotal_timeShift`), which makes `□` reach across *times* as well as histories —
 the semantic content of the `modal_future` (MF) axiom the rule declares as its grounding
 (`RuleSpec.ruleAxioms`). Under the former membership-based box clause this was what shift-closure
 of the admissible set paid for; under the totality clause it carries no side condition.
@@ -671,7 +671,7 @@ theorem asDiamond?_eq_some {φ ψ : Formula} (h : asDiamond? φ = some ψ) :
 **Totality carries `□` into `G`.** If `A` holds at time `t` in every *total* history, it
 holds at every *later* time of any one total history.
 
-The witness is the shifted history `τ ⊕ (s - t)`, total by `ConvexHistory.isTotal_timeShift`, at
+The witness is the shifted history `τ ⊕ (s - t)`, total by `PartialHistory.isTotal_timeShift`, at
 which truth at `t` is truth at `s` in `τ` (`TimeShift.timeShift_preserves_truth`). This is the
 point form of `Metalogic.Soundness.modal_future_valid`, which states the same fact as the validity
 of `□A → □(GA)`; it is derived here from the same primitive rather than imported, so that the
@@ -681,25 +681,25 @@ Shift-closure is no longer a hypothesis: the shifted witness's *totality* is wha
 instantiates against, and totality is preserved by `timeShift` unconditionally.
 -/
 theorem truthAt_allFuture_of_box {M : TaskModel F}
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
-    (h : ∀ σ : ConvexHistory F, σ.IsTotal → TruthAt M σ t ψ) :
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
+    (h : ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ t ψ) :
     TruthAt M τ t ψ.allFuture := by
   rw [Truth.future_iff]
   intro s _
   exact (TimeShift.timeShift_preserves_truth M τ t s ψ).mp
-    (h (ConvexHistory.timeShift τ (s - t)) (ConvexHistory.isTotal_timeShift hτ (s - t)))
+    (h (PartialHistory.timeShift τ (s - t)) (PartialHistory.isTotal_timeShift hτ (s - t)))
 
 /-- **Totality carries `□` into `H`.** The past mirror of `truthAt_allFuture_of_box`; the
 shift argument is insensitive to the direction of the inequality, so the two proofs differ only
 in which characterisation lemma they open with. -/
 theorem truthAt_allPast_of_box {M : TaskModel F}
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
-    (h : ∀ σ : ConvexHistory F, σ.IsTotal → TruthAt M σ t ψ) :
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {t : D} {ψ : Formula}
+    (h : ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ t ψ) :
     TruthAt M τ t ψ.allPast := by
   rw [Truth.past_iff]
   intro s _
   exact (TimeShift.timeShift_preserves_truth M τ t s ψ).mp
-    (h (ConvexHistory.timeShift τ (s - t)) (ConvexHistory.isTotal_timeShift hτ (s - t)))
+    (h (PartialHistory.timeShift τ (s - t)) (PartialHistory.isTotal_timeShift hτ (s - t)))
 
 /-- `T(□A) → T(A)` at every known world, same time. Persistent: the source stays. -/
 theorem ruleSound_boxPos : RuleSound carrierBase .boxPos := by
@@ -740,7 +740,7 @@ theorem ruleSound_diamondNeg : RuleSound carrierBase .diamondNeg := by
       have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.neg, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hbox : ∀ σ : ConvexHistory F, σ.IsTotal → TruthAt M σ (tv l.time) ψ → False := by
+      have hbox : ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ (tv l.time) ψ → False := by
         by_contra hc
         exact hsrc hc
       simp only [applyRule, hA]
@@ -813,8 +813,8 @@ it stood before that removal.
 /-- Everything the fresh-world rules propagate out of a `T(□B)` on the branch is satisfied at the
 fresh world, whichever *total* history is filed there. -/
 theorem satAt_of_mem_boxProps {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
-    (hst : SatState M hist tv b ord) {σ : ConvexHistory F} (hσ : σ.IsTotal)
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M hist tv b ord) {σ : PartialHistory F} (hσ : σ.IsTotal)
     {w : WorldIndex} {g : SignedFormula}
     (hg : g ∈ b.boxPosFormulas.filterMap fun bsf =>
       match bsf.formula with
@@ -843,8 +843,8 @@ theorem satAt_of_mem_boxProps {M : TaskModel F}
 /-- The `F(◇B)` mirror of `satAt_of_mem_boxProps`. `F(◇B)` is `T(□¬B)` once `◇` is unfolded, so
 the same totality quantification does the work, with the sign flipped. -/
 theorem satAt_of_mem_diaProps {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
-    (hst : SatState M hist tv b ord) {σ : ConvexHistory F} (hσ : σ.IsTotal)
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    (hst : SatState M hist tv b ord) {σ : PartialHistory F} (hσ : σ.IsTotal)
     {w : WorldIndex} {g : SignedFormula}
     (hg : g ∈ b.diamondNegFormulas.filterMap fun dsf =>
       match dsf.formula with
@@ -868,7 +868,7 @@ theorem satAt_of_mem_diaProps {M : TaskModel F}
       have hsrc : SatAt M hist tv dsf := hst.sat _ hmem
       rw [SatAt, hsign, hbf] at hsrc
       simp only [TruthAt] at hsrc
-      have hbox : ∀ τ : ConvexHistory F, τ.IsTotal →
+      have hbox : ∀ τ : PartialHistory F, τ.IsTotal →
           TruthAt M τ (tv dsf.label.time) inner → False := by
         by_contra hcon
         exact hsrc hcon
@@ -924,7 +924,7 @@ theorem ruleSound_diamondPos : RuleSound carrierBase .diamondPos := by
       have hφ : φ = .imp (.box (.imp ψ .bot)) .bot := asDiamond?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ, TruthAt] at hsrc
-      have hex : ∃ σ : ConvexHistory F, σ.IsTotal ∧ TruthAt M σ (tv l.time) ψ := by
+      have hex : ∃ σ : PartialHistory F, σ.IsTotal ∧ TruthAt M σ (tv l.time) ψ := by
         by_contra hcon
         push_neg at hcon
         exact hsrc fun σ hσ hσt => hcon σ hσ hσt
@@ -1036,7 +1036,7 @@ theorem lt_of_pathN_directPastOf {ord : TimeOrdering} {tv : TimeIndex → D}
 /-- **The bridge, forward.** Everything the engine calls a future time of `t` is interpreted
 strictly later than `t`. This is what the two universal future rules consume. -/
 theorem SatState.lt_of_mem_futureOf {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) {t t' : TimeIndex} (h : t' ∈ ord.futureOf t) :
     tv t < tv t' := by
   rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq] at h
@@ -1050,7 +1050,7 @@ theorem SatState.lt_of_mem_futureOf {M : TaskModel F}
 /-- **The bridge, backward.** Everything the engine calls a past time of `t` is interpreted
 strictly earlier than `t`. -/
 theorem SatState.gt_of_mem_pastOf {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) {t t' : TimeIndex} (h : t' ∈ ord.pastOf t) :
     tv t' < tv t := by
   rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq] at h
@@ -1195,13 +1195,13 @@ folds it back without the proof ever having to name the matrix.
 -/
 
 /-- `T(Gψ) @ t` gives `ψ` at any later time of the same history. -/
-theorem truthAt_of_allFuture {M : TaskModel F} {τ : ConvexHistory F}
+theorem truthAt_of_allFuture {M : TaskModel F} {τ : PartialHistory F}
     {t s : D} {ψ : Formula} (h : TruthAt M τ t ψ.allFuture) (hlt : t < s) :
     TruthAt M τ s ψ :=
   (Truth.future_iff ψ).mp h s hlt
 
 /-- `T(Hψ) @ t` gives `ψ` at any earlier time of the same history. -/
-theorem truthAt_of_allPast {M : TaskModel F} {τ : ConvexHistory F}
+theorem truthAt_of_allPast {M : TaskModel F} {τ : PartialHistory F}
     {t s : D} {ψ : Formula} (h : TruthAt M τ t ψ.allPast) (hlt : s < t) :
     TruthAt M τ s ψ :=
   (Truth.past_iff ψ).mp h s hlt
@@ -1209,13 +1209,13 @@ theorem truthAt_of_allPast {M : TaskModel F} {τ : ConvexHistory F}
 /-- `F(Fψ) @ t` denies `ψ` at every later time: an existential's negation is a universal, which
 is why the `F`/`P` negative rules are propagators and not fresh-time rules. -/
 theorem not_truthAt_of_someFuture {M : TaskModel F}
-    {τ : ConvexHistory F} {t s : D} {ψ : Formula}
+    {τ : PartialHistory F} {t s : D} {ψ : Formula}
     (h : ¬ TruthAt M τ t (Formula.someFuture ψ)) (hlt : t < s) : ¬ TruthAt M τ s ψ :=
   fun hc => h ((Truth.some_future_iff ψ).mpr ⟨s, hlt, hc⟩)
 
 /-- `F(Pψ) @ t` denies `ψ` at every earlier time. -/
 theorem not_truthAt_of_somePast {M : TaskModel F}
-    {τ : ConvexHistory F} {t s : D} {ψ : Formula}
+    {τ : PartialHistory F} {t s : D} {ψ : Formula}
     (h : ¬ TruthAt M τ t (Formula.somePast ψ)) (hlt : s < t) : ¬ TruthAt M τ s ψ :=
   fun hc => h ((Truth.some_past_iff ψ).mpr ⟨s, hlt, hc⟩)
 
@@ -1231,7 +1231,7 @@ lemma's statement — the same reason `truthAt_of_allFuture` exists rather than 
 /-- `F(Gψ) @ t` yields a strictly later time at which `ψ` fails. The witness time of
 `allFutureNeg`. -/
 theorem exists_gt_not_truthAt_of_allFuture {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {ψ : Formula}
+    {τ : PartialHistory F} {t : D} {ψ : Formula}
     (h : ¬ TruthAt M τ t ψ.allFuture) : ∃ s, t < s ∧ ¬ TruthAt M τ s ψ := by
   by_contra hcon
   push_neg at hcon
@@ -1240,7 +1240,7 @@ theorem exists_gt_not_truthAt_of_allFuture {M : TaskModel F}
 /-- `F(Hψ) @ t` yields a strictly earlier time at which `ψ` fails. The witness time of
 `allPastNeg`. -/
 theorem exists_lt_not_truthAt_of_allPast {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {ψ : Formula}
+    {τ : PartialHistory F} {t : D} {ψ : Formula}
     (h : ¬ TruthAt M τ t ψ.allPast) : ∃ s, s < t ∧ ¬ TruthAt M τ s ψ := by
   by_contra hcon
   push_neg at hcon
@@ -1249,14 +1249,14 @@ theorem exists_lt_not_truthAt_of_allPast {M : TaskModel F}
 /-- `T(Fψ) @ t` yields a strictly later time at which `ψ` holds. The witness time of
 `someFuturePos`. -/
 theorem exists_gt_truthAt_of_someFuture {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {ψ : Formula}
+    {τ : PartialHistory F} {t : D} {ψ : Formula}
     (h : TruthAt M τ t (Formula.someFuture ψ)) : ∃ s, t < s ∧ TruthAt M τ s ψ :=
   (Truth.some_future_iff ψ).mp h
 
 /-- `T(Pψ) @ t` yields a strictly earlier time at which `ψ` holds. The witness time of
 `somePastPos`. -/
 theorem exists_lt_truthAt_of_somePast {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {ψ : Formula}
+    {τ : PartialHistory F} {t : D} {ψ : Formula}
     (h : TruthAt M τ t (Formula.somePast ψ)) : ∃ s, s < t ∧ TruthAt M τ s ψ :=
   (Truth.some_past_iff ψ).mp h
 
@@ -1405,7 +1405,7 @@ and consumed by the rule's proof with the plumbing kept separate.
 
 /-- `φ ∧ ψ` holds where both conjuncts do. `Formula.and` is `¬(φ → ¬ψ)`, so this is the
 double-negation step, needed three times below and stated once. -/
-theorem truthAt_and {M : TaskModel F} {τ : ConvexHistory F} {t : D}
+theorem truthAt_and {M : TaskModel F} {τ : PartialHistory F} {t : D}
     {φ ψ : Formula} (hφ : TruthAt M τ t φ) (hψ : TruthAt M τ t ψ) :
     TruthAt M τ t (Formula.and φ ψ) := by
   simp only [Formula.and, Formula.neg, TruthAt]
@@ -1420,7 +1420,7 @@ The three cases are `tv t₁ = tv t₂`, `tv t₁ < tv t₂` and `tv t₂ < tv t
 witness for each disjunct is the earlier of the two times.
 -/
 theorem exists_trichotomy_disjunct {M : TaskModel F}
-    {τ : ConvexHistory F} {c a b : D} {φ ψ : Formula}
+    {τ : PartialHistory F} {c a b : D} {φ ψ : Formula}
     (hca : c < a) (hcb : c < b)
     (hφ : TruthAt M τ a φ) (hψ : TruthAt M τ b ψ) :
     TruthAt M τ c (Formula.someFuture (Formula.and φ ψ))
@@ -1548,14 +1548,14 @@ wrap this fact in `G` and `H` respectively, and each discards the direction info
 wrapper supplies. The fresh-time rules need it raw, because they move a `□` formula to a time
 whose position relative to the source is recorded in the ordering rather than in the formula.
 
-Shift-closure is not a hypothesis: `ConvexHistory.isTotal_timeShift` supplies the shifted
+Shift-closure is not a hypothesis: `PartialHistory.isTotal_timeShift` supplies the shifted
 witness's totality with no side condition. -/
 theorem forall_truthAt_time_invariant {M : TaskModel F}
     {t s : D} {ψ : Formula}
-    (h : ∀ σ : ConvexHistory F, σ.IsTotal → TruthAt M σ t ψ) :
-    ∀ σ : ConvexHistory F, σ.IsTotal → TruthAt M σ s ψ := fun τ hτ =>
+    (h : ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ t ψ) :
+    ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ s ψ := fun τ hτ =>
   (TimeShift.timeShift_preserves_truth M τ t s ψ).mp
-    (h (ConvexHistory.timeShift τ (s - t)) (ConvexHistory.isTotal_timeShift hτ (s - t)))
+    (h (PartialHistory.timeShift τ (s - t)) (PartialHistory.isTotal_timeShift hτ (s - t)))
 
 /-- Everything `boxDiamondPersistence` emits is satisfied at the fresh time by the *same* history
 that satisfies its source at the trigger's time.
@@ -1566,7 +1566,7 @@ Stated against the conclusions of `mem_boxDiamondPersistence_label` and
 interpretation `tv'` is unconstrained: time-invariance means the fresh time's value is
 irrelevant, which is why this lemma survives an arbitrary one-point update. -/
 theorem satAt_of_boxForm_time {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv tv' : TimeIndex → D}
+    {hist : WorldIndex → PartialHistory F} {tv tv' : TimeIndex → D}
     {w : WorldIndex} {t ft : TimeIndex} {s g : SignedFormula}
     (hsrc : SatAt M hist tv s)
     (hslab : s.label = { world := w, time := t })
@@ -1584,7 +1584,7 @@ theorem satAt_of_boxForm_time {M : TaskModel F}
   · have hss : s.sign = .neg := hsign.trans hgs
     have hsf : s.formula = Formula.imp (.box (.imp χ .bot)) .bot := hform.trans hgf
     simp only [SatAt, hss, hsf, hslab] at hsrc
-    have hbox : ∀ σ : ConvexHistory F, σ.IsTotal →
+    have hbox : ∀ σ : PartialHistory F, σ.IsTotal →
         TruthAt M σ (tv t) (Formula.imp χ .bot) := by
       by_contra hcon
       exact hsrc hcon
@@ -1595,7 +1595,7 @@ theorem satAt_of_boxForm_time {M : TaskModel F}
 /-- A branch formula is undisturbed by a one-point update of `tv` at the branch's fresh time: no
 branch formula sits there, by `not_mem_of_time_nextTime`. -/
 theorem satAt_update_nextTime_of_mem {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {d : D}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {d : D}
     {sf : SignedFormula} (hmem : sf ∈ b) (h : SatAt M hist tv sf) :
     SatAt M hist (Function.update tv b.nextTime d) sf := by
   have hne : sf.label.time ≠ b.nextTime := fun hq => (not_mem_of_time_nextTime hq) hmem
@@ -1605,7 +1605,7 @@ theorem satAt_update_nextTime_of_mem {M : TaskModel F}
 share: the minted edge holds by the choice of `d`, and every previously recorded edge survives
 the one-point update because `OrdWithin` puts both its endpoints strictly below `nextTime`. -/
 theorem ordResp_addFuture_update {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) (hord : OrdWithin b ord)
     {t : TimeIndex} (hmemt : t ∈ b.knownTimes) {d : D} (hlt : tv t < d) :
     ∀ p ∈ (ord.addFuture t b.nextTime).constraints,
@@ -1620,7 +1620,7 @@ theorem ordResp_addFuture_update {M : TaskModel F}
 
 /-- The past mirror of `ordResp_addFuture_update`. -/
 theorem ordResp_addPast_update {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) (hord : OrdWithin b ord)
     {t : TimeIndex} (hmemt : t ∈ b.knownTimes) {d : D} (hlt : d < tv t) :
     ∀ p ∈ (ord.addPast t b.nextTime).constraints,
@@ -1639,7 +1639,7 @@ apply as it stands, and the extra input is a second `OrdWithin` witness: `t'` mu
 time, or the one-point update at `b.nextTime` would silently move it. That is what
 `mem_knownTimes_of_mem_futureOf` supplies. -/
 theorem ordResp_addFuture_addFuture_update {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) (hord : OrdWithin b ord)
     {t t' : TimeIndex} (hmemt : t ∈ b.knownTimes) (hmemt' : t' ∈ b.knownTimes)
     {d : D} (hlt : tv t < d) (hlt' : d < tv t') :
@@ -1659,7 +1659,7 @@ theorem ordResp_addFuture_addFuture_update {M : TaskModel F}
 `T(Gφ)` at the trigger's time gives `φ` at every later time, and the minted time is later by the
 choice of `d`. Shared verbatim by `allFutureNeg` and `someFuturePos`. -/
 theorem satAt_of_mem_gProps {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) {t : TimeIndex} {d : D} (hlt : tv t < d)
     {g : SignedFormula}
     (hg : g ∈ b.allFuturePosFormulas.filterMap fun gsf =>
@@ -1697,7 +1697,7 @@ the propagation block to avoid emitting the same signed formula twice; the guard
 does not unify with the original helper. The excluded conjunct is *discarded* information here —
 the proof never needs it — so the two lemmas differ only in the shape they match. -/
 theorem satAt_of_mem_gPropsExcept {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) {t : TimeIndex} {d : D} (hlt : tv t < d)
     {χ : Formula} {g : SignedFormula}
     (hg : g ∈ b.allFuturePosFormulas.filterMap fun gsf =>
@@ -1732,7 +1732,7 @@ theorem satAt_of_mem_gPropsExcept {M : TaskModel F}
 /-- The `F(Fφ)` propagations a fresh-*future*-time rule emits. `F(Fφ)` denies `φ` at every later
 time, and the minted time is later. Shared verbatim by `allFutureNeg` and `someFuturePos`. -/
 theorem satAt_of_mem_fNegProps {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) {t : TimeIndex} {d : D} (hlt : tv t < d)
     {g : SignedFormula}
     (hg : g ∈ b.someFutureNegFormulas.filterMap fun fsf =>
@@ -1766,7 +1766,7 @@ theorem satAt_of_mem_fNegProps {M : TaskModel F}
 /-- The `T(Hφ)` propagations a fresh-*past*-time rule emits. Past mirror of
 `satAt_of_mem_gProps`; shared by `allPastNeg` and `somePastPos`. -/
 theorem satAt_of_mem_hProps {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) {t : TimeIndex} {d : D} (hlt : d < tv t)
     {g : SignedFormula}
     (hg : g ∈ b.allPastPosFormulas.filterMap fun hsf =>
@@ -1800,7 +1800,7 @@ theorem satAt_of_mem_hProps {M : TaskModel F}
 /-- The `F(Pφ)` propagations a fresh-*past*-time rule emits. Past mirror of
 `satAt_of_mem_fNegProps`; shared by `allPastNeg` and `somePastPos`. -/
 theorem satAt_of_mem_pNegProps {M : TaskModel F}
-    {hist : WorldIndex → ConvexHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
+    {hist : WorldIndex → PartialHistory F} {tv : TimeIndex → D} {b : Branch} {ord : TimeOrdering}
     (hst : SatState M hist tv b ord) {t : TimeIndex} {d : D} (hlt : d < tv t)
     {g : SignedFormula}
     (hg : g ∈ b.somePastNegFormulas.filterMap fun psf =>
@@ -2012,7 +2012,7 @@ theorem asSince?_eq_some {φ e g : Formula} (h : asSince? φ = some (e, g)) :
 /-- The witness half of `Until`'s truth condition. The guard half is discarded: branch 1 of
 `untlPos` asserts only the event, and the fresh time is interpreted as the witness. -/
 theorem exists_gt_truthAt_of_untl {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {e g : Formula}
+    {τ : PartialHistory F} {t : D} {e g : Formula}
     (h : TruthAt M τ t (Formula.untl g e)) : ∃ d, t < d ∧ TruthAt M τ d e := by
   simp only [TruthAt] at h
   obtain ⟨s, hts, hs, _⟩ := h
@@ -2020,7 +2020,7 @@ theorem exists_gt_truthAt_of_untl {M : TaskModel F}
 
 /-- The witness half of `Since`'s truth condition, the past mirror. -/
 theorem exists_lt_truthAt_of_snce {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {e g : Formula}
+    {τ : PartialHistory F} {t : D} {e g : Formula}
     (h : TruthAt M τ t (Formula.snce g e)) : ∃ d, d < t ∧ TruthAt M τ d e := by
   simp only [TruthAt] at h
   obtain ⟨s, hst, hs, _⟩ := h
@@ -2160,7 +2160,7 @@ formula. That is the whole difference between the retired PASSIVE arm and the su
 one — the passive arm asserted the split at a time the *branch* named, `t'`, where it is false,
 since the guard failure `¬U(e,g)@t` licenses lies strictly inside `(t,t')`. -/
 theorem exists_gt_not_untl_disj {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {e g : Formula}
+    {τ : PartialHistory F} {t : D} {e g : Formula}
     (h : ¬ TruthAt M τ t (Formula.untl g e)) :
     ∃ d, t < d ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
   by_contra hcon
@@ -2170,7 +2170,7 @@ theorem exists_gt_not_untl_disj {M : TaskModel F}
 
 /-- The past mirror of `exists_gt_not_untl_disj`. -/
 theorem exists_lt_not_snce_disj {M : TaskModel F}
-    {τ : ConvexHistory F} {t : D} {e g : Formula}
+    {τ : PartialHistory F} {t : D} {e g : Formula}
     (h : ¬ TruthAt M τ t (Formula.snce g e)) :
     ∃ d, d < t ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
   by_contra hcon
@@ -2418,7 +2418,7 @@ fixed on `D` with `letI`. -/
 theorem truthAt_of_validZTime {F : FrameOver (TemporalOrder.of D)} {M : TaskModel F}
     {φ : Formula} [so : SuccOrder D] [po : PredOrder D]
     [hsa : IsSuccArchimedean D] [hpa : IsPredArchimedean D] (h : ValidZTime φ)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M τ t φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M τ t φ :=
   h F.toTaskFrame ⟨so, po, hsa, hpa⟩ M ⟨τ, hτ⟩ t
 
 /-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
@@ -2596,7 +2596,7 @@ because a `w > s` refuting `¬g ∨ K⁺(¬g)` at `s` would put `w` itself in `A
 supremum. -/
 private theorem truthAt_priorUGap {M : TaskModel F}
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    {τ : ConvexHistory F} {t : D} {g : Formula}
+    {τ : PartialHistory F} {t : D} {g : Formula}
     (h_ant : TruthAt M τ t (Formula.and (Formula.untl g Formula.top) g.neg.someFuture)) :
     TruthAt M τ t (Formula.untl g (Formula.or g.neg (Formula.kPlus g.neg))) := by
   simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
@@ -2636,7 +2636,7 @@ because the carrier property supplies only upward completeness. The trichotomy b
 the mirror order: the `K⁻` interval lies to the left of `s`, not the right. -/
 private theorem truthAt_priorSGap {M : TaskModel F}
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    {τ : ConvexHistory F} {t : D} {g : Formula}
+    {τ : PartialHistory F} {t : D} {g : Formula}
     (h_ant : TruthAt M τ t (Formula.and (Formula.snce g Formula.top) g.neg.somePast)) :
     TruthAt M τ t (Formula.snce g (Formula.or g.neg (Formula.kMinus g.neg))) := by
   simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
@@ -2773,7 +2773,7 @@ below `u` from `S` above it. `sep_order` turns that into `False`. -/
 private theorem truthAt_sep {M : TaskModel F}
     [DenselyOrdered D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    {τ : ConvexHistory F} {t : D} {ψ : Formula}
+    {τ : PartialHistory F} {t : D} {ψ : Formula}
     (h_ant : TruthAt M τ t (Formula.and (Formula.kPlus ψ)
         (Formula.kPlus (Formula.and ψ (Formula.untl ψ.neg ψ))).neg)) :
     TruthAt M τ t (Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))) := by

@@ -133,7 +133,7 @@ collapse.
 -/
 theorem plusTruthAt_erasePlus_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
     (φ : PlusFormula) :
-    ∀ (τ : ConvexHistory F), τ.IsTotal → ∀ t : F.Duration,
+    ∀ (τ : PartialHistory F), τ.IsTotal → ∀ t : F.Duration,
       PlusTruthAt M τ t φ ↔ TruthAt M τ t (erasePlus φ) := by
   induction φ with
   | atom p => intro τ _ t; exact Iff.rfl

@@ -146,7 +146,7 @@ def _root_.FormalSystem.Semantics.TaskModel.atomModel (M : TaskModel F) (e : Enc
     TaskModel F where
   valuation w a :=
     (∃ p, e.ι (.inl p) = a ∧ M.valuation w p) ∨
-    (∃ χ, e.ι (.inr χ) = a ∧ ∃ (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration),
+    (∃ χ, e.ι (.inr χ) = a ∧ ∃ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
       τ.states t (hτ t) = w ∧ PlusTruthAt M τ t (.stab χ))
 
 /--
@@ -157,7 +157,7 @@ encoding, and the `stab` case is `stab_state_only` — the `→` direction witne
 `←` direction transports the witnessing history's `⊡χ` to `τ` through the shared state.
 -/
 theorem plusTruthAt_iff_atomize (M : TaskModel F) (e : Encoding) (φ : PlusFormula) :
-    ∀ (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration),
+    ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
       PlusTruthAt M τ t φ ↔ TruthAt (M.atomModel e) τ t (atomize e φ) := by
   induction φ with
   | atom p =>

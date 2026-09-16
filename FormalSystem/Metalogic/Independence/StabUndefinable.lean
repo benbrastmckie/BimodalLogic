@@ -93,7 +93,7 @@ noncomputable def stabModel : TaskModel SF where
 theorem sf_deterministic : SF.Deterministic := multiFamTaskFrameGen_deterministic
 
 /-- The flow line of `SF` through profile `g` at offset `w₀`. -/
-noncomputable def stabHist (g : StabFam) (w₀ : ℤ) : ConvexHistory SF :=
+noncomputable def stabHist (g : StabFam) (w₀ : ℤ) : PartialHistory SF :=
   multiFamHistoryGen g w₀
 
 theorem stabHist_isTotal (g : StabFam) (w₀ : ℤ) : (stabHist g w₀).IsTotal :=
@@ -103,12 +103,12 @@ theorem stabHist_isTotal (g : StabFam) (w₀ : ℤ) : (stabHist g w₀).IsTotal 
 totality, leaving the valuation at the history's own state. Stated through `.valuation` rather
 than by unfolding it to a numeral equation, because `NF.WorldState` does not reduce far enough
 for a `ℕ` numeral to elaborate against it. -/
-theorem nf_atom_iff {σ : ConvexHistory NF} (hσ : σ.IsTotal) (t : ℤ) (q : Atom) :
+theorem nf_atom_iff {σ : PartialHistory NF} (hσ : σ.IsTotal) (t : ℤ) (q : Atom) :
     TruthAt natModel σ t (Formula.atom q) ↔ natModel.valuation (σ.states t (hσ t)) q :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨hσ t, h⟩⟩
 
 /-- Atomic truth at a total history of `M₂`, the same way. -/
-theorem sf_atom_iff {σ' : ConvexHistory SF} (hσ' : σ'.IsTotal) (t : ℤ) (q : Atom) :
+theorem sf_atom_iff {σ' : PartialHistory SF} (hσ' : σ'.IsTotal) (t : ℤ) (q : Atom) :
     TruthAt stabModel σ' t (Formula.atom q) ↔ stabModel.valuation (σ'.states t (hσ' t)) q :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨hσ' t, h⟩⟩
 
@@ -150,10 +150,10 @@ noncomputable def stabCorr : TruthCorr natModel stabModel where
 def oneProfile : ℤ → ℕ := fun s => if s = 1 then 0 else 1
 
 /-- `τ₁`: the `M₁` history carrying `oneProfile`. -/
-def tauOne : ConvexHistory NF := natHist oneProfile
+def tauOne : PartialHistory NF := natHist oneProfile
 
 /-- `τ₂`: the `M₂` flow line carrying `oneProfile`. -/
-noncomputable def tauTwo : ConvexHistory SF := stabHist oneProfile 0
+noncomputable def tauTwo : PartialHistory SF := stabHist oneProfile 0
 
 /-- The two histories are `stabCorr`-related: both read `oneProfile` at every time. -/
 theorem tauOne_rel_tauTwo : stabCorr.Rel tauOne tauTwo := by
@@ -233,7 +233,7 @@ points are `stabCorr`-related, and `truthAt_of_truthCorr` transports every `Form
 Paper: `def:BLstar-semantics`
 -/
 theorem stabNotDefinable (p : Atom) :
-    ¬ ∃ ψ : Formula, ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F),
+    ¬ ∃ ψ : Formula, ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
       τ.IsTotal → ∀ t : F.Duration,
         (PlusTruthAt M τ t (PlusFormula.stab (PlusFormula.someFuture (PlusFormula.atom p))) ↔
           TruthAt M τ t ψ) := by

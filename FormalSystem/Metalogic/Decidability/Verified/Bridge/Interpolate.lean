@@ -441,7 +441,7 @@ This is the hypothesis the interpolated construction supplies — the history is
 `regionExtend`, so it is constant on regions by construction — and the only hypothesis the atom
 case of the invariance induction needs.
 -/
-structure RegionConstant (f : ι → D) (τ : ConvexHistory F) : Prop where
+structure RegionConstant (f : ι → D) (τ : PartialHistory F) : Prop where
   /-- Region-mates are both in the domain or both out of it. -/
   domain_congr : ∀ {r r' : D}, SameRegion f r r' → (τ.domain r ↔ τ.domain r')
   /-- Region-mates carry the same world state. -/
@@ -459,7 +459,7 @@ clause, which is totality (`def:BL-semantics`, `docs/reference/paper-definitions
 membership in a chosen set.
 -/
 def InterpInvariant (f : ι → D) (M : TaskModel F) (χ : Formula) : Prop :=
-  ∀ τ : ConvexHistory F, τ.IsTotal →
+  ∀ τ : PartialHistory F, τ.IsTotal →
     ∀ r r' : D, SameRegion f r r' → (TruthAt M τ r χ ↔ TruthAt M τ r' χ)
 
 variable {f : ι → D} {M : TaskModel F}
@@ -471,7 +471,7 @@ variable {f : ι → D} {M : TaskModel F}
 at the state there; a region-constant history agrees with its region-mates on both, so the atom's
 truth value is a function of the region alone.
 -/
-theorem interpInvariant_atom (hRC : ∀ τ : ConvexHistory F, τ.IsTotal → RegionConstant f τ)
+theorem interpInvariant_atom (hRC : ∀ τ : PartialHistory F, τ.IsTotal → RegionConstant f τ)
     (p : Atom) :
     InterpInvariant f M (Formula.atom p) := by
   intro τ hτ r r' hrr'
@@ -532,7 +532,7 @@ variable [Fintype ι] [DenselyOrdered D]
 /-- One direction of the `untl` case, for `r < r'`. The other follows by symmetry of the setup. -/
 private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.untl φ)) : TruthAt M τ r' (ψ.untl φ) := by
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
@@ -553,7 +553,7 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
 /-- The reverse direction of the `untl` case, for `r < r'`. -/
 private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.untl φ)) : TruthAt M τ r (ψ.untl φ) := by
   obtain ⟨s, hr's, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
@@ -591,7 +591,7 @@ theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
 /-- One direction of the `snce` case, for `r < r'`. -/
 private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.snce φ)) : TruthAt M τ r' (ψ.snce φ) := by
   obtain ⟨s, hsr, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
@@ -612,7 +612,7 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
 /-- The reverse direction of the `snce` case, for `r < r'`. -/
 private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.snce φ)) : TruthAt M τ r (ψ.snce φ) := by
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
@@ -681,7 +681,7 @@ This is the whole of stage 3 of the semantic bridge: it is what lets Phase 7's t
 truth at an arbitrary point of the carrier off the branch time whose region that point is in.
 -/
 theorem interpInvariant [NoMaxOrder D] [NoMinOrder D]
-    (hRC : ∀ τ : ConvexHistory F, τ.IsTotal → RegionConstant f τ) (χ : Formula) :
+    (hRC : ∀ τ : PartialHistory F, τ.IsTotal → RegionConstant f τ) (χ : Formula) :
     InterpInvariant f M χ := by
   induction χ with
   | atom p => exact interpInvariant_atom hRC p

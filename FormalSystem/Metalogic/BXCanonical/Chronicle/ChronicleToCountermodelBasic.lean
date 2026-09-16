@@ -820,7 +820,7 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box nextTop.neg ∈ A) :
     ∃ (F : TaskFrame) (TM : TaskModel F)
-      (τ : ConvexHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
+      (τ : PartialHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   have hfam₀ : rootedCantorFmcsDense fc A h_mcs h_box_dense 0 ∈
       (cantorBfmcsDense fc A h_mcs h_box_dense).families :=

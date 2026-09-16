@@ -70,7 +70,7 @@ open FormalSystem.Semantics
 
 section Unfolding
 
-variable {F : FrameOver intOrder} {M : TaskModel F} {τ : ConvexHistory F}
+variable {F : FrameOver intOrder} {M : TaskModel F} {τ : PartialHistory F}
 
 /--
 **The exact one-step unfolding of `untl` over ℤ.**

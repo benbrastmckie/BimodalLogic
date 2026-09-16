@@ -74,13 +74,13 @@ variable {F : TaskFrame}
 /-! ## Pasting two total histories at a shared state -/
 
 /-- `ρ`'s states up to and including `t`, `σ`'s states after `t`. -/
-def pasteFun (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration) :
+def pasteFun (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration) :
     F.Duration → F.WorldState :=
   fun s => if s ≤ t then ρ.states s (hρ s) else σ.states s (hσ s)
 
 /-- The task relation across the seam: from a `ρ`-state at `s ≤ t` to a `σ`-state at `s' > t`,
 by *Compositionality* through the shared state at `t`. -/
-theorem paste_rel_le_lt (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
+theorem paste_rel_le_lt (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
     (hsame : SameStateAt ρ σ t) {s s' : F.Duration} (hs : s ≤ t) (hs' : ¬ s' ≤ t) :
     F.TaskRel (ρ.states s (hρ s)) (s' - s) (σ.states s' (hσ s')) := by
   have h1 : F.TaskRel (ρ.states s (hρ s)) (t - s) (ρ.states t (hρ t)) := ρ.respects_task s t _ _
@@ -94,7 +94,7 @@ theorem paste_rel_le_lt (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.I
 
 /-- The pasted state function respects the task relation: composition across `t`
 (`TaskFrame.comp`), the converse convention for the reverse orientation. -/
-theorem paste_rel (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
+theorem paste_rel (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
     (hsame : SameStateAt ρ σ t) :
     ∀ s s' : F.Duration, F.TaskRel (pasteFun ρ σ hρ hσ t s) (s' - s) (pasteFun ρ σ hρ hσ t s') := by
   intro s s'
@@ -106,34 +106,34 @@ theorem paste_rel (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal
   · rw [if_neg hs, if_neg hs']; exact σ.respects_task s s' _ _
 
 /-- **Pasting.** If `ρ(t) = σ(t)` then `ρ|(-∞,t] ⌢ σ|(t,∞)` is a total history. -/
-def paste (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
-    (hsame : SameStateAt ρ σ t) : ConvexHistory F :=
-  ConvexHistory.ofTotal F (pasteFun ρ σ hρ hσ t) (paste_rel ρ σ hρ hσ t hsame)
+def paste (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
+    (hsame : SameStateAt ρ σ t) : PartialHistory F :=
+  PartialHistory.ofTotal F (pasteFun ρ σ hρ hσ t) (paste_rel ρ σ hρ hσ t hsame)
 
-theorem paste_isTotal (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
+theorem paste_isTotal (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
     (hsame : SameStateAt ρ σ t) : (paste ρ σ hρ hσ t hsame).IsTotal :=
-  ConvexHistory.ofTotal_isTotal _ _ _
+  PartialHistory.ofTotal_isTotal _ _ _
 
 /-! ## Agreement of histories on a half-line -/
 
 /-- `τ` and `σ` agree at every time `≥ t`. -/
-def AgreeFrom (τ σ : ConvexHistory F) (t : F.Duration) : Prop :=
+def AgreeFrom (τ σ : PartialHistory F) (t : F.Duration) : Prop :=
   ∀ s, t ≤ s → ∀ (hτ : τ.domain s) (hσ : σ.domain s), τ.states s hτ = σ.states s hσ
 
 /-- `τ` and `σ` agree at every time `≤ t`. -/
-def AgreeUpTo (τ σ : ConvexHistory F) (t : F.Duration) : Prop :=
+def AgreeUpTo (τ σ : PartialHistory F) (t : F.Duration) : Prop :=
   ∀ s, s ≤ t → ∀ (hτ : τ.domain s) (hσ : σ.domain s), τ.states s hτ = σ.states s hσ
 
-theorem agreeFrom_mono {τ σ : ConvexHistory F} {t s : F.Duration} (hts : t ≤ s)
+theorem agreeFrom_mono {τ σ : PartialHistory F} {t s : F.Duration} (hts : t ≤ s)
     (h : AgreeFrom τ σ t) : AgreeFrom τ σ s :=
   fun r hsr => h r (le_trans hts hsr)
 
-theorem agreeUpTo_mono {τ σ : ConvexHistory F} {t s : F.Duration} (hst : s ≤ t)
+theorem agreeUpTo_mono {τ σ : PartialHistory F} {t s : F.Duration} (hst : s ≤ t)
     (h : AgreeUpTo τ σ t) : AgreeUpTo τ σ s :=
   fun r hrs => h r (le_trans hrs hst)
 
 /-- The pasted history agrees with `σ` from `t` onward (at `t` itself by the shared state). -/
-theorem paste_agreeFrom (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
+theorem paste_agreeFrom (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
     (hsame : SameStateAt ρ σ t) : AgreeFrom (paste ρ σ hρ hσ t hsame) σ t := by
   intro s hts h1 h2
   show pasteFun ρ σ hρ hσ t s = σ.states s h2
@@ -145,7 +145,7 @@ theorem paste_agreeFrom (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.I
   · rw [if_neg h]
 
 /-- The pasted history agrees with `ρ` up to `t`. -/
-theorem paste_agreeUpTo (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
+theorem paste_agreeUpTo (ρ σ : PartialHistory F) (hρ : ρ.IsTotal) (hσ : σ.IsTotal) (t : F.Duration)
     (hsame : SameStateAt ρ σ t) : AgreeUpTo (paste ρ σ hρ hσ t hsame) ρ t := by
   intro s hst h1 h2
   show pasteFun ρ σ hρ hσ t s = ρ.states s h2
@@ -156,7 +156,7 @@ theorem paste_agreeUpTo (ρ σ : ConvexHistory F) (hρ : ρ.IsTotal) (hσ : σ.I
 
 /-- A pure-future formula sees only the history from `t` onward. -/
 theorem truth_congr_agreeFrom (M : TaskModel F) {φ : PlusFormula} (hφ : IsPureFuture φ) :
-    ∀ (τ σ : ConvexHistory F), τ.IsTotal → σ.IsTotal → ∀ t, AgreeFrom τ σ t →
+    ∀ (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal → ∀ t, AgreeFrom τ σ t →
       (PlusTruthAt M τ t φ ↔ PlusTruthAt M σ t φ) := by
   induction hφ with
   | atom p =>
@@ -182,7 +182,7 @@ theorem truth_congr_agreeFrom (M : TaskModel F) {φ : PlusFormula} (hφ : IsPure
 
 /-- A pure-past formula sees only the history up to `t`. -/
 theorem truth_congr_agreeUpTo (M : TaskModel F) {φ : PlusFormula} (hφ : IsPurePast φ) :
-    ∀ (τ σ : ConvexHistory F), τ.IsTotal → σ.IsTotal → ∀ t, AgreeUpTo τ σ t →
+    ∀ (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal → ∀ t, AgreeUpTo τ σ t →
       (PlusTruthAt M τ t φ ↔ PlusTruthAt M σ t φ) := by
   induction hφ with
   | atom p =>
@@ -210,7 +210,7 @@ theorem truth_congr_agreeUpTo (M : TaskModel F) {φ : PlusFormula} (hφ : IsPure
 
 /-- **PS (same-time pasting)**: `⟐φ⁺ ∧ ⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻)` for pure-future `φ⁺` and pure-past
 `ψ⁻`: the `ψ⁻`-witness up to `t` pasted with the `φ⁺`-witness after `t` satisfies both. -/
-theorem paste_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+theorem paste_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     {φ ψ : PlusFormula} (hφ : IsPureFuture φ) (hψ : IsPurePast ψ) :
     PlusTruthAt M τ t (.imp (dstab φ) (.imp (dstab ψ) (dstab (φ.and ψ)))) := by
   intro h1 h2
@@ -231,7 +231,7 @@ theorem paste_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) 
 /-- **PS with the conjuncts exchanged**: `⟐ψ⁻ ∧ ⟐φ⁺ → ⟐(ψ⁻ ∧ φ⁺)` for pure-past `ψ⁻` and
 pure-future `φ⁺`. This is exactly the temporal dual of `paste_valid` (the `paste` axiom's
 `swapTemporal` instance), proved by the same pasting argument. -/
-theorem paste_valid' (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+theorem paste_valid' (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     {ψ φ : PlusFormula} (hψ : IsPurePast ψ) (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (dstab ψ) (.imp (dstab φ) (dstab (ψ.and φ)))) := by
   intro h2 h1
@@ -251,7 +251,7 @@ theorem paste_valid' (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
 
 /-- **FS**: `F⟐φ⁺ → ⟐Fφ⁺` for pure-future `φ⁺`: paste `τ` up to the witnessing future time with
 the `φ⁺`-witness after it. -/
-theorem future_dstab_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
+theorem future_dstab_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
     (t : F.Duration) {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (someFuture (dstab φ)) (dstab (someFuture φ))) := by
   intro h
@@ -269,7 +269,7 @@ theorem future_dstab_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.Is
 
 /-- **GS**: `⊡Gφ⁺ → G⊡φ⁺` for pure-future `φ⁺` — the contrapositive reading of FS. Needs the
 purity restriction: `⊡GPp → G⊡Pp` is refuted (`Semantics/PlusLanguage/PlusNonValidities.lean`). -/
-theorem stab_allFuture_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
+theorem stab_allFuture_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
     (t : F.Duration) {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (.stab (allFuture φ)) (allFuture (.stab φ))) := by
   intro h
@@ -284,7 +284,7 @@ theorem stab_allFuture_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.
 /-- **US (future pasting)**: `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)` for pure-past `α⁻` and pure-future
 `φ⁺`. FS is the instance `α⁻ := ⊤`. The pasted history keeps `τ`'s past, so the pure-past guard
 on `(t, y)` is untouched, and the `φ⁺`-witness after `y` supplies the event. -/
-theorem untl_dstab_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
+theorem untl_dstab_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
     (t : F.Duration) {α φ : PlusFormula} (hα : IsPurePast α) (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (.untl α (dstab φ)) (dstab (.untl α φ))) := by
   intro h
@@ -307,7 +307,7 @@ the `snce` mirror of US, and the temporal dual of the `untl_paste` axiom. The wi
 past time `y < t` is pasted up to `y` with `τ` after `y`: the pasted history keeps `τ`'s future
 (so it shares `τ`'s state at `t` and the pure-future guard on `(y, t)` sees `τ`), and its past
 up to `y` is `ρ`'s, where the pure-past event holds. -/
-theorem snce_dstab_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
+theorem snce_dstab_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
     (t : F.Duration) {α φ : PlusFormula} (hα : IsPureFuture α) (hφ : IsPurePast φ) :
     PlusTruthAt M τ t (.imp (.snce α (dstab φ)) (dstab (.snce α φ))) := by
   intro h

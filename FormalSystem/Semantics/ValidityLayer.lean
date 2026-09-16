@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TaskModel
-import FormalSystem.Semantics.ConvexHistory
+import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.FrameClassValidity
 
 /-!
@@ -169,7 +169,7 @@ parameters — L⋆'s stored-time vector, say — supplies the universally close
 -/
 class PointTruth (L : Type) where
   /-- `sat M τ x φ` — the formula `φ` is true at the point `(M, τ, x)`. -/
-  sat : ∀ {F : TaskFrame}, TaskModel F → ConvexHistory F → F.Duration → L → Prop
+  sat : ∀ {F : TaskFrame}, TaskModel F → PartialHistory F → F.Duration → L → Prop
 
 variable {L : Type} [PointTruth L]
 
@@ -202,11 +202,11 @@ def GenericValid (φ : L) : Prop :=
 
 /-- **The bridge between the two validity shapes.** `GenericValidOn` quantifies over the bundled
 subtype `F.HF`; the adapters below and every hand-written correspondence argument use the
-unbundled pair `(τ : ConvexHistory F) (_ : τ.IsTotal)`. One term in each direction, because
+unbundled pair `(τ : PartialHistory F) (_ : τ.IsTotal)`. One term in each direction, because
 `TaskFrame.HF` is a subtype and `.val`/`.property` are its projections. -/
 theorem genericValidOn_iff_total (F : TaskFrame) (φ : L) :
     TaskFrame.GenericValidOn F φ ↔
-      ∀ (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+      ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
         ∀ x : F.Duration, PointTruth.sat M τ x φ :=
   ⟨fun h M τ hτ x => h M ⟨τ, hτ⟩ x, fun h M τ x => h M τ.val τ.property x⟩
 
@@ -231,23 +231,23 @@ hypothesis site becomes `h.apply_total F hF M τ hτ x`. Two triples — one ind
 predicate, one by a `FrameClass` tag — plus the `.Base` pair that discharges `Sat .Base = True`
 so no call site has to write `trivial`. -/
 
-/-- Introduce `GenericValidOn` from the unbundled `(τ : ConvexHistory F) (hτ : τ.IsTotal)`
+/-- Introduce `GenericValidOn` from the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)`
 shape. -/
 theorem TaskFrame.GenericValidOn.of_forall_total {F : TaskFrame} {φ : L}
-    (h : ∀ (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+    (h : ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
            ∀ x : F.Duration, PointTruth.sat M τ x φ) :
     TaskFrame.GenericValidOn F φ :=
   fun M τ x => h M τ.val τ.property x
 
 /-- Eliminate `GenericValidOn` into the unbundled shape. -/
 theorem TaskFrame.GenericValidOn.apply_total {F : TaskFrame} {φ : L}
-    (h : TaskFrame.GenericValidOn F φ) (M : TaskModel F) (τ : ConvexHistory F)
+    (h : TaskFrame.GenericValidOn F φ) (M : TaskModel F) (τ : PartialHistory F)
     (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
   h M ⟨τ, hτ⟩ x
 
 /-- Introduce `GenericValidOnFrames` from the unbundled shape. -/
 theorem GenericValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : L}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ) :
     GenericValidOnFrames P φ :=
   fun F hF M τ x => h F hF M τ.val τ.property x
@@ -255,12 +255,12 @@ theorem GenericValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : L}
 /-- Eliminate `GenericValidOnFrames` into the unbundled shape. -/
 theorem GenericValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : L}
     (h : GenericValidOnFrames P φ) (F : TaskFrame) (hF : P F) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
   h F hF M ⟨τ, hτ⟩ x
 
 /-- `GenericValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
 theorem GenericValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : L}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
            τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ) :
     GenericValidIn fc φ :=
   GenericValidOnFrames.of_forall_total h
@@ -268,13 +268,13 @@ theorem GenericValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : L}
 /-- `GenericValidOnFrames.apply_total` at a `FrameClass` tag. -/
 theorem GenericValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : L}
     (h : GenericValidIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
   GenericValidOnFrames.apply_total h F hF M τ hτ x
 
 /-- Introduce `GenericValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
 discharged here rather than at each call site. -/
 theorem GenericValid.of_forall_total {φ : L}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
            ∀ x : F.Duration, PointTruth.sat M τ x φ) :
     GenericValid φ :=
   fun F _ M τ x => h F M τ.val τ.property x
@@ -282,7 +282,7 @@ theorem GenericValid.of_forall_total {φ : L}
 /-- Eliminate `GenericValid` into its explicit binder shape; the `Sat .Base` argument is
 discharged here, not at the call site. -/
 theorem GenericValid.apply {φ : L} (h : GenericValid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
   h F trivial M ⟨τ, hτ⟩ x
 
 /-! ### The countermodel-extraction contrapositives
@@ -295,20 +295,20 @@ classical tactic — so that a delegating wrapper's axiom set is exactly its ori
 /-- The contrapositive of `GenericValidOnFrames.of_forall_total`, at a bare frame predicate. -/
 theorem GenericValidOnFrames.of_not {P : TaskFrame → Prop} {φ : L}
     (h : ¬ GenericValidOnFrames P φ) :
-    ¬ ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    ¬ ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
         τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ :=
   fun hc => h (GenericValidOnFrames.of_forall_total hc)
 
 /-- The contrapositive of `GenericValidIn.of_forall_total`, at a `FrameClass` tag. -/
 theorem GenericValidIn.of_not {fc : ProofSystem.FrameClass} {φ : L}
     (h : ¬ GenericValidIn fc φ) :
-    ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : ConvexHistory F),
+    ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
         τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ :=
   fun hc => h (GenericValidIn.of_forall_total hc)
 
 /-- The contrapositive of `GenericValid.of_forall_total`, with `Sat .Base = True` discharged. -/
 theorem GenericValid.of_not {φ : L} (h : ¬ GenericValid φ) :
-    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
         ∀ x : F.Duration, PointTruth.sat M τ x φ :=
   fun hc => h (GenericValid.of_forall_total hc)
 

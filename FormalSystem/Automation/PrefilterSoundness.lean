@@ -80,7 +80,7 @@ Proof by structural induction on `φ`:
 -/
 theorem isUnsatBotTemporal_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {t : F.Duration}
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {t : F.Duration}
     {φ : Formula} (h : isUnsatBotTemporal φ = true) :
     ¬ TruthAt M τ t φ := by
   induction φ generalizing τ t with
@@ -116,7 +116,7 @@ If `G(¬event)` holds at time t, then `U(event, guard)` is false at time t.
 -/
 theorem unfulfillable_until_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : ConvexHistory F} {t : F.Duration}
+    {τ : PartialHistory F} {t : F.Duration}
     {event guard : Formula}
     (h_g_neg : TruthAt M τ t (Formula.allFuture event.neg)) :
     ¬ TruthAt M τ t (Formula.untl guard event) := by
@@ -135,7 +135,7 @@ Symmetric past version of `unfulfillable_until_not_truth`.
 -/
 theorem unfulfillable_since_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : ConvexHistory F} {t : F.Duration}
+    {τ : PartialHistory F} {t : F.Duration}
     {event guard : Formula}
     (h_h_neg : TruthAt M τ t (Formula.allPast event.neg)) :
     ¬ TruthAt M τ t (Formula.snce guard event) := by
@@ -162,7 +162,7 @@ is false.
 -/
 theorem false_consequent_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : ConvexHistory F} (hτ : τ.IsTotal) {t : F.Duration}
+    {τ : PartialHistory F} (hτ : τ.IsTotal) {t : F.Duration}
     {antecedent consequent : Formula}
     (h_false : isUnsatBotTemporal consequent = true)
     (h_ante_true : TruthAt M τ t antecedent) :

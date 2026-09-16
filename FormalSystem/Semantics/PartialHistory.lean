@@ -11,7 +11,7 @@ import FormalSystem.Semantics.TaskFrame
 
 This module lands the layer the JPL paper puts *below* convex histories: a partial history is a
 task-respecting function on a **nonempty** subset of the duration type, with **no** convexity
-requirement. `ConvexHistory` is the convex special case (see `FormalSystem/Semantics/ConvexHistory.lean`).
+requirement. `PartialHistory` is the convex special case (see `FormalSystem/Semantics/PartialHistory.lean`).
 
 ## Paper Specification Reference
 
@@ -34,9 +34,9 @@ this repository cites — never the paper file directly, and never by line numbe
 
 The paper's three tiers are therefore *partial history* -> *convex history* -> *possible world*,
 and "history" is the generic term for all three wherever the distinction is immaterial. The tier
-this module defines is the first; the middle tier is `ConvexHistory` and the top tier is
+this module defines is the first; the middle tier is `PartialHistory` and the top tier is
 `TaskFrame.HF`. The name this repository previously gave the middle tier was one tier too high,
-which is exactly what the `ConvexHistory` rename corrects. The `def:world-history` label id
+which is exactly what the `PartialHistory` rename corrects. The `def:world-history` label id
 survives only for cross-reference stability across the paper's own `\ref` sites.
 
 ## Two transcription decisions, both settled and recorded
@@ -76,10 +76,10 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 
 ## Implementation Notes
 
-- Nothing imports this module yet; it is self-contained new material. `ConvexHistory` is re-based
+- Nothing imports this module yet; it is self-contained new material. `PartialHistory` is re-based
   onto it in a subsequent step.
 - The type-parameter discipline (`D` with `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`)
-  matches `ConvexHistory` exactly, so the re-basing is a structural change only.
+  matches `PartialHistory` exactly, so the re-basing is a structural change only.
 
 ## Tags
 
@@ -97,7 +97,7 @@ $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty s
 $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$.").
 
 The paper's `\textit{convex history}` is the **convex** special case of this structure; see
-`FormalSystem.Semantics.ConvexHistory`.
+`FormalSystem.Semantics.PartialHistory`.
 -/
 structure PartialHistory (F : TaskFrame) where
   /-- Domain predicate: which times are in the history, i.e. the paper's `X ⊆ D`. -/
@@ -135,7 +135,7 @@ variable {F : TaskFrame}
 /--
 The guarded form of task-respect, **derived** from the unconditional field.
 
-This is the shape `ConvexHistory.respects_task` has historically carried. It is a projection, not a
+This is the shape `PartialHistory.respects_task` has historically carried. It is a projection, not a
 weakening: the unconditional field simply ignores the `s ≤ t` hypothesis.
 -/
 theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.domain s) (ht : τ.domain t)
@@ -361,5 +361,70 @@ def trivialFrameHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAd
   ofTotal (FrameOver.trivialFrame (D := D)).toTaskFrame (fun _ => ()) fun _ _ => True.intro
 
 end PartialHistory
+
+/-! ## `H_F`: the world histories of a frame -/
+
+/--
+`H_F` — the paper's set of all **world histories** over a frame, bundled as a type: the partial
+histories whose domain is total.
+
+**Paper Reference**: sec:Construction defines a world history as a partial history whose domain
+is total, `X = D`, and writes `H_F` for the set of them (the appendix `def:world-history` phrases
+the same set as the *convex* histories with total domain; a total domain is trivially convex, so
+the two readings denote the same set — see `PartialHistory.IsTotal.isConvex`).
+
+**Encoding note** (Decision A of `docs/architecture/total-history-validity-decisions.md`): this
+subtype is used **only** where `H_F` appears as an object in its own right — the Extension
+Theorem's conclusion, the Occurrence Corollary, and the optional frame-relative validity. Where
+totality is a *hypothesis* (truth, validity, semantic consequence, satisfiability), the predicate
+form `(τ : PartialHistory F) (hτ : τ.IsTotal)` is used instead.
+
+This is **not** a parallel validity notion or an alias: there is exactly one validity predicate,
+and `HF` is a bundled name for the same `IsTotal` predicate, bridged only by `.val` / `.property`.
+-/
+def TaskFrame.HF (F : TaskFrame) : Type _ :=
+  {τ : PartialHistory F // τ.IsTotal}
+
+namespace TaskFrame.HF
+
+variable {F : TaskFrame}
+
+/--
+**The bundled form of `PartialHistory.ofTotal`.**
+
+`H_F`'s elements are exactly the total histories, and `ofTotal` builds nothing else, so a
+construction that needs an `H_F` value need never assemble the subtype pair by hand.
+-/
+def ofTotal (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : F.HF :=
+  ⟨PartialHistory.ofTotal F f h, PartialHistory.ofTotal_isTotal F f h⟩
+
+@[simp]
+theorem ofTotal_val (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) :
+    (ofTotal F f h).val = PartialHistory.ofTotal F f h := rfl
+
+/-- Time shift lifted to `H_F`, through `PartialHistory.isTotal_timeShift`. -/
+def timeShift (τ : F.HF) (Δ : F.Duration) : F.HF :=
+  ⟨τ.val.timeShift Δ, PartialHistory.isTotal_timeShift τ.property Δ⟩
+
+@[simp]
+theorem timeShift_val (τ : F.HF) (Δ : F.Duration) : (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
+
+end TaskFrame.HF
+
+/--
+`H_F` at the **fibre**, so that `F.HF` resolves for a fibre-typed frame as well as for a
+total-space one.
+
+Generalized field notation resolves by the head constant of `F`'s type and never consults a
+coercion, so both spellings have to exist wherever both are used. `PartialHistory` is declared
+over the total space, so `TaskFrame.HF` is the primitive and this is the delegating spelling.
+-/
+@[reducible] def FrameOver.HF {D : TemporalOrder} (F : FrameOver D) : Type _ :=
+  F.toTaskFrame.HF
+
+/-- The two spellings are the same type, definitionally. -/
+example {D : TemporalOrder} (F : FrameOver D) : F.HF = F.toTaskFrame.HF := rfl
 
 end FormalSystem.Semantics

@@ -156,7 +156,7 @@ counterpart is a separate theorem rather than a corollary.
 theorem extend_periodic {F : FrameOver intOrder} [Finite F.WorldState]
     (τ : PartialHistory F.toTaskFrame) (a b : ℤ) (hab : a ≤ b)
     (hdom : ∀ t : ℤ, τ.domain t ↔ a ≤ t ∧ t ≤ b) :
-    ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val.toPartialHistory τ ∧
+    ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val τ ∧
       ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧
         p₀ ≤ (Nat.card F.WorldState : ℤ) ∧ p₁ ≤ (Nat.card F.WorldState : ℤ) ∧
         (∀ x : ℤ, n₁ ≤ x → σ.path (x + p₁) = σ.path x) ∧
@@ -400,7 +400,7 @@ both directions with both periods bounded by the number of world states.
 -/
 theorem extend_periodic_of_finite_domain {F : FrameOver intOrder} [Finite F.WorldState]
     (τ : PartialHistory F.toTaskFrame) (hfin : {t : ℤ | τ.domain t}.Finite) :
-    ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val.toPartialHistory τ ∧
+    ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val τ ∧
       ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧
         p₀ ≤ (Nat.card F.WorldState : ℤ) ∧ p₁ ≤ (Nat.card F.WorldState : ℤ) ∧
         (∀ x : ℤ, n₁ ≤ x → σ.path (x + p₁) = σ.path x) ∧

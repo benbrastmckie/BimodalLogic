@@ -115,7 +115,7 @@ Together with a model whose valuation is the characteristic function of a set `A
 realizes `A` as the truth set of an atom — which is what makes the translation frame a witness
 for the (⇒) directions of `app:discrete` and `app:complete`.
 -/
-def translationHist (D : TemporalOrder) : ConvexHistory (translationFrame D).toTaskFrame where
+def translationHist (D : TemporalOrder) : PartialHistory (translationFrame D).toTaskFrame where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => t
@@ -123,8 +123,6 @@ def translationHist (D : TemporalOrder) : ConvexHistory (translationFrame D).toT
     intro s t _ _
     show t = s + (t - s)
     abel
-  convex := fun _ _ _ _ _ _ _ => trivial
-
 theorem translationHist_isTotal (D : TemporalOrder) : (translationHist D).IsTotal :=
   fun _ => trivial
 
@@ -184,7 +182,7 @@ the task relation holds at every nonzero duration, and at duration `0` the two e
 coincide.
 -/
 def permissiveHist (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
-    (f : ↑D → Bool) : ConvexHistory (permissiveFrame D so nm).toTaskFrame where
+    (f : ↑D → Bool) : PartialHistory (permissiveFrame D so nm).toTaskFrame where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => f t
@@ -197,8 +195,6 @@ def permissiveHist (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
         exact this
       rw [this]
     · exact Or.inl h
-  convex := fun _ _ _ _ _ _ _ => trivial
-
 theorem permissiveHist_isTotal (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
     (f : ↑D → Bool) : (permissiveHist D so nm f).IsTotal := fun _ => trivial
 

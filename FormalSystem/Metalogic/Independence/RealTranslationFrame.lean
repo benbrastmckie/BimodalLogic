@@ -145,19 +145,19 @@ theorem f1_deterministic : F1.Deterministic :=
 This is the statement that `cor:no-characterization`'s `F¹` half consumes, and it is exactly the
 statement that fails to elaborate on the `translationFrame` route (module docstring, symptom 2).
 -/
-theorem f1_total_eq_orbit (τ : ConvexHistory F1) (hτ : τ.IsTotal) :
+theorem f1_total_eq_orbit (τ : PartialHistory F1) (hτ : τ.IsTotal) :
     τ = oneShift.hist (τ.states 0 (hτ 0)) :=
   oneShift.total_eq_orbit τ hτ
 
 /-- The pointwise form: a total history of `F¹` is `t ↦ τ(0) + t`. -/
-theorem f1_states_eq (τ : ConvexHistory F1) (hτ : τ.IsTotal) (r : ↑realTemporalOrder) :
+theorem f1_states_eq (τ : PartialHistory F1) (hτ : τ.IsTotal) (r : ↑realTemporalOrder) :
     τ.states r (hτ r) = τ.states 0 (hτ 0) + r := by
   have h := τ.respects_task 0 r (hτ 0) (hτ r)
   rw [sub_zero] at h
   exact h
 
 /-- The two-point form: a total history of `F¹` moves by exactly the elapsed duration. -/
-theorem f1_states_sub (τ : ConvexHistory F1) (hτ : τ.IsTotal) (s r : ↑realTemporalOrder) :
+theorem f1_states_sub (τ : PartialHistory F1) (hτ : τ.IsTotal) (s r : ↑realTemporalOrder) :
     τ.states r (hτ r) = τ.states s (hτ s) + (r - s) := by
   have h := τ.respects_task s r (hτ s) (hτ r)
   exact h
@@ -167,7 +167,7 @@ Two total histories of `F¹` agreeing at one time are **equal** — the `⟨τ�
 `lem:deterministic-singleton` at this frame, obtained from the pointwise bridge plus
 `ShiftSet.wh_ext`.
 -/
-theorem f1_eq_of_states_eq {τ σ : ConvexHistory F1} (hτ : τ.IsTotal) (hσ : σ.IsTotal)
+theorem f1_eq_of_states_eq {τ σ : PartialHistory F1} (hτ : τ.IsTotal) (hσ : σ.IsTotal)
     {t : ↑realTemporalOrder} (h : SameStateAt τ σ t) : τ = σ := by
   refine ShiftSet.wh_ext (funext fun z => propext ⟨fun _ => hσ z, fun _ => hτ z⟩) ?_
   intro r _ _

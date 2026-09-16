@@ -31,14 +31,14 @@ the original formula, providing a witness for invalidity.
 
 2. **SemanticCountermodel** (Layer 1): Full finite model with worlds, times,
    temporal ordering, and valuation. Defined directly on the branch structure
-   to avoid universe level issues with the full FrameOver/ConvexHistory stack.
+   to avoid universe level issues with the full FrameOver/PartialHistory stack.
 
 ## Where semantic correctness actually lives
 
 **Not here.** This file extracts countermodel *data* and proves the `sat_*` Hintikka conditions;
 it does not prove a truth lemma, and no longer contains a definition purporting to evaluate truth
 on the extracted structure. The truth lemma is `Verified/Bridge/IntTruth.lean`'s `branchTruthAt`,
-stated against the real `TaskModel`/`ConvexHistory` semantics over a carrier, with
+stated against the real `TaskModel`/`PartialHistory` semantics over a carrier, with
 `Verified/Bridge/DenseTruth.lean` carrying it to the dense carriers.
 
 See "Branch Truth Lemma — Retired", below, for what used to be claimed here, why it was
@@ -159,7 +159,7 @@ A `SemanticCountermodel` captures the full finite model extracted from a
 saturated open branch: world states, time domain, temporal ordering, and
 atom valuation. This is the "Layer 1" (branch model) of the two-layer
 countermodel approach, defined directly on the branch structure to avoid
-universe level issues with the full `FrameOver`/`ConvexHistory` stack.
+universe level issues with the full `FrameOver`/`PartialHistory` stack.
 -/
 
 /--

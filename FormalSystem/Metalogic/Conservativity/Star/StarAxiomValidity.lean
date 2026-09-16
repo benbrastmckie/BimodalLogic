@@ -86,7 +86,7 @@ every register arm below is stated through. They live here rather than in
 `Semantics/StarLanguage/StarTruth.lean` because every consumer is in this directory. -/
 
 /-- The `.iff` clause lemma, in the shape of the `StarTruth.*_iff` family. -/
-theorem starTruth_iff_iff {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory F)
+theorem starTruth_iff_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) (φ ψ : StarFormula) :
     StarTruthAt M τ t v (φ.iff ψ) ↔ (StarTruthAt M τ t v φ ↔ StarTruthAt M τ t v ψ) := by
   simp only [StarFormula.iff, StarTruth.and_iff, StarTruth.imp_iff]
@@ -94,7 +94,7 @@ theorem starTruth_iff_iff {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory 
 
 /-- Introduce `StarValid (φ.iff ψ)` from a pointwise biconditional. -/
 theorem starValid_iff_of_forall {φ ψ : StarFormula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : ConvexHistory F), τ.IsTotal →
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
            ∀ (x : F.Duration) (v : ℕ → F.Duration),
              (StarTruthAt M τ x v φ ↔ StarTruthAt M τ x v ψ)) :
     StarValid (φ.iff ψ) :=
@@ -729,7 +729,7 @@ deferred follow-up work, not done here.
 genuinely new rather than a transcription: no L⁺ statement mentions a register vector. -/
 
 /-- `K⁺φ` at `t`: every point above `t` has a `φ`-point strictly between. -/
-theorem starKPlus_iff {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration)
+theorem starKPlus_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ t v φ.kPlus ↔
       ∀ s : F.Duration, t < s → ∃ r : F.Duration, t < r ∧ r < s ∧ StarTruthAt M τ r v φ := by
@@ -744,7 +744,7 @@ theorem starKPlus_iff {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory F) (
     exact hall r h1 h2 hr
 
 /-- `K⁻φ` at `t`: the past mirror of `starKPlus_iff`. -/
-theorem starKMinus_iff {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration)
+theorem starKMinus_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ t v φ.kMinus ↔
       ∀ s : F.Duration, s < t → ∃ r : F.Duration, s < r ∧ r < t ∧ StarTruthAt M τ r v φ := by
@@ -767,7 +767,7 @@ This is what makes `StarAxiom.modal_future` sound at every `RecallFree φ`: the 
 lemma moves the vector along with the history, and on this fragment that movement is invisible. -/
 theorem recallFree_vector_irrelevant {F : TaskFrame} (M : TaskModel F) {φ : StarFormula}
     (hφ : RecallFree φ) :
-    ∀ (τ : ConvexHistory F) (t : F.Duration) (v w : ℕ → F.Duration),
+    ∀ (τ : PartialHistory F) (t : F.Duration) (v w : ℕ → F.Duration),
       StarTruthAt M τ t v φ ↔ StarTruthAt M τ t w φ := by
   induction hφ with
   | atom p => intros; exact Iff.rfl

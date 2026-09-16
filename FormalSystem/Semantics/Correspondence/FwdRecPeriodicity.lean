@@ -400,7 +400,7 @@ records, seen from the other side. A per-history period survives here **only** b
 case never touches the induction hypothesis.
 -/
 theorem truthAt_add_hist_period {F : TaskFrame} (M : TaskModel F)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) {π : F.Duration}
+    (τ : PartialHistory F) (hτ : τ.IsTotal) {π : F.Duration}
     (hper : ∀ x : F.Duration, τ.states (x + π) (hτ (x + π)) = τ.states x (hτ x)) :
     ∀ (φ : Formula) (t : F.Duration), (TruthAt M τ t φ ↔ TruthAt M τ (t + π) φ) := by
   intro φ
@@ -474,9 +474,9 @@ correspondence comes entirely from deriving this hypothesis out of `TaskFrame.Fw
 what `Walk.periodic` does and what needs the walk induction.
 -/
 theorem density_of_hist_periodic (F : TaskFrame)
-    (h : ∀ (τ : ConvexHistory F) (hτ : τ.IsTotal), ∃ π : F.Duration, 0 < π ∧
+    (h : ∀ (τ : PartialHistory F) (hτ : τ.IsTotal), ∃ π : F.Duration, 0 < π ∧
         ∀ x : F.Duration, τ.states (x + π) (hτ (x + π)) = τ.states x (hτ x))
-    (φ : Formula) (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    (φ : Formula) (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
     TruthAt M τ t (φ.allFuture.allFuture.imp φ.allFuture) := by
   obtain ⟨π, hπ, hper⟩ := h τ hτ
   intro hgg

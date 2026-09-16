@@ -83,10 +83,10 @@ The single-history refinement of `InterpInvariant`. No designated admissible set
 be established for a history whose *time-translates* are not region-constant.
 -/
 def InterpInvariantAt (f : ι → D) (M : TaskModel F)
-    (τ : ConvexHistory F) (χ : Formula) : Prop :=
+    (τ : PartialHistory F) (χ : Formula) : Prop :=
   ∀ r r' : D, SameRegion f r r' → (TruthAt M τ r χ ↔ TruthAt M τ r' χ)
 
-variable {f : ι → D} {M : TaskModel F} {τ : ConvexHistory F}
+variable {f : ι → D} {M : TaskModel F} {τ : PartialHistory F}
 
 /-- The global statement implies the per-history one at each *total* history. -/
 theorem interpInvariantAt_of_interpInvariant {χ : Formula}
@@ -106,7 +106,7 @@ model may read the time component, but only through its region code — and that
 this predicate asks for. `RegionConstant.atomRegionInvariant` records that nothing is lost:
 wherever the old, stronger hypothesis is available, this one follows.
 -/
-structure AtomRegionInvariant (f : ι → D) (M : TaskModel F) (τ : ConvexHistory F) : Prop where
+structure AtomRegionInvariant (f : ι → D) (M : TaskModel F) (τ : PartialHistory F) : Prop where
   /-- Region-mates are both in the domain or both out of it. -/
   domain_congr : ∀ {r r' : D}, SameRegion f r r' → (τ.domain r ↔ τ.domain r')
   /-- Region-mates carry the same atomic truth values. -/
@@ -157,7 +157,7 @@ theorem interpInvariantAt_imp {φ ψ : Formula} (hφ : InterpInvariantAt f M τ 
 `truthAt_box_iff` says `box φ` holds at a point iff `φ` holds at every *total* history and every
 time — a statement with no free evaluation point left in it. This is the case that forced the
 global formulation. It used to be the case shift-closure paid for; under the totality box clause
-it costs nothing, because `ConvexHistory.isTotal_timeShift` supplies the shifted witness outright.
+it costs nothing, because `PartialHistory.isTotal_timeShift` supplies the shifted witness outright.
 -/
 theorem interpInvariantAt_box (φ : Formula) :
     InterpInvariantAt f M τ φ.box := by

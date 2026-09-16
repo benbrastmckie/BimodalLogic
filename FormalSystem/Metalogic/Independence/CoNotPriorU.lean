@@ -172,7 +172,7 @@ module carries no characterization theorems for them, so the three needed here a
 section Connectives
 
 variable {D : TemporalOrder}
-  {F : FrameOver D} {M : TaskModel F} {τ : ConvexHistory F} {t : ↑D}
+  {F : FrameOver D} {M : TaskModel F} {τ : PartialHistory F} {t : ↑D}
 
 /-- `⊤` is true everywhere. -/
 theorem truth_top : TruthAt M τ t Formula.top := fun h => h
@@ -336,7 +336,7 @@ break this, and must not be substituted.
 
 /-- Transporting a history's state assignment along an equality of times. -/
 theorem states_congr {D : TemporalOrder}
-    {F : FrameOver D} {τ : ConvexHistory F} {a b : ↑D} (h : a = b)
+    {F : FrameOver D} {τ : PartialHistory F} {a b : ↑D} (h : a = b)
     (ha : τ.domain a) (hb : τ.domain b) : τ.states a ha = τ.states b hb := by
   subst h; rfl
 
@@ -372,7 +372,7 @@ theorem clockRel_neg {a b : ClockState} {d : ℚ} (h : clockRel a d b) :
   simp only [cneg, hb, cmk_neg]
   abel
 
-theorem reflect_respects (τ : ConvexHistory clockFrame) (hτ : τ.IsTotal) (s t : ℚ) :
+theorem reflect_respects (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (s t : ℚ) :
     clockRel (cneg (τ.states (-s) (hτ (-s)))) (t - s) (cneg (τ.states (-t) (hτ (-t)))) := by
   have h2 := clockRel_neg (a := τ.states (-s) (hτ (-s))) (b := τ.states (-t) (hτ (-t)))
     (d := -t - -s) (τ.respects_task (-s) (-t) (hτ (-s)) (hτ (-t)))
@@ -385,14 +385,12 @@ The **time reversal** of a total history: `t ↦ -τ(-t)`.
 It is again a history of the clock frame — negation on `ℚ ⧸ ℤ` reverses durations, so
 task-respect at `(-s, -t)` becomes task-respect at `(s, t)`.
 -/
-def reflect (τ : ConvexHistory clockFrame) (hτ : τ.IsTotal) : ConvexHistory clockFrame where
+def reflect (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) : PartialHistory clockFrame where
   domain := fun _ => True
   nonempty_domain := ⟨0, trivial⟩
   states := fun t _ => cneg (τ.states (-t) (hτ (-t)))
   respects_task := fun s t _ _ => reflect_respects τ hτ s t
-  convex := by intro _ _ _ _ _ _ _; trivial
-
-theorem reflect_isTotal (τ : ConvexHistory clockFrame) (hτ : τ.IsTotal) :
+theorem reflect_isTotal (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) :
     (reflect τ hτ).IsTotal := fun _ => trivial
 
 /-- Reflecting twice is the identity on total histories: `-(-t) = t` in the times and
@@ -405,7 +403,7 @@ private theorem reflect_reflect (τ : clockFrame.HF) :
   intro r _ h'
   show cneg (cneg (τ.val.states (-(-r)) (τ.property (-(-r))))) = τ.val.states r h'
   exact (cneg_cneg _).trans
-    (ConvexHistory.states_eq_of_time_eq τ.val (-(-r)) r (neg_neg r) _ h')
+    (PartialHistory.states_eq_of_time_eq τ.val (-(-r)) r (neg_neg r) _ h')
 
 /-- Time reversal as an involutive equivalence of `H_clockFrame`. -/
 noncomputable def clockReflectEquiv : clockFrame.HF ≃ clockFrame.HF where
@@ -429,7 +427,7 @@ noncomputable def clockMirrorIso : TruthAntiIso clockModel clockModel where
   atom := by
     intro τ t _
     have hstates : τ.val.states (-(-t)) (τ.property (-(-t))) = τ.val.states t (τ.property t) :=
-      ConvexHistory.states_eq_of_time_eq τ.val (-(-t)) t (neg_neg t) _ _
+      PartialHistory.states_eq_of_time_eq τ.val (-(-t)) t (neg_neg t) _ _
     show OnArc (τ.val.states t (τ.property t)) ↔
       OnArc (cneg (τ.val.states (-(-t)) (τ.property (-(-t)))))
     calc OnArc (τ.val.states t (τ.property t))
@@ -448,7 +446,7 @@ where before it was what made the `□` case work in both directions — that jo
 `TruthAntiIso.hist` being an honest equivalence.
 -/
 theorem truthAt_mirror (φ : Formula) :
-    ∀ (τ σ : ConvexHistory clockFrame) (hτ : τ.IsTotal) (hσ : σ.IsTotal),
+    ∀ (τ σ : PartialHistory clockFrame) (hτ : τ.IsTotal) (hσ : σ.IsTotal),
       (∀ x : ℚ, σ.states (-x) (hσ (-x)) = cneg (τ.states x (hτ x))) →
       ∀ t : ℚ, (TruthAt clockModel σ (-t) φ.swapTemporal ↔ TruthAt clockModel τ t φ) := by
   intro τ σ hτ hσ hrel t
@@ -467,8 +465,8 @@ The form `temporal_duality` consumes: a formula true at every total history and 
 clock model has a temporal dual with the same property.
 -/
 theorem truthAt_swapTemporal (φ : Formula)
-    (h : ∀ (σ : ConvexHistory clockFrame), σ.IsTotal → ∀ t : ℚ, TruthAt clockModel σ t φ)
-    (τ : ConvexHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ) :
+    (h : ∀ (σ : PartialHistory clockFrame), σ.IsTotal → ∀ t : ℚ, TruthAt clockModel σ t φ)
+    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ) :
     TruthAt clockModel τ t φ.swapTemporal := by
   have hrel : ∀ x : ℚ,
       τ.states (-x) (hτ (-x)) = cneg ((reflect τ hτ).states x (reflect_isTotal τ hτ x)) := by
@@ -518,7 +516,7 @@ The axiom case is `soundness_dense` applied to the one-step derivation; the `co`
 universally quantified over the history and the time, which is what the three rule cases need.
 -/
 theorem coDerivation_sound (φ : Formula) (d : CoDerivation φ) :
-    ∀ (τ : ConvexHistory clockFrame), τ.IsTotal → ∀ t : ℚ, TruthAt clockModel τ t φ := by
+    ∀ (τ : PartialHistory clockFrame), τ.IsTotal → ∀ t : ℚ, TruthAt clockModel τ t φ := by
   induction d with
   | «axiom» ψ h h_fc =>
       intro τ hτ t

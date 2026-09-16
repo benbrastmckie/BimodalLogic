@@ -64,12 +64,12 @@ more.
 
 The paper's proof consumes existence in both directions and never injectivity or round-trip
 cancellation, so an equivalence would be strictly more data than the induction spends. More
-importantly, an `Equiv` on `ConvexHistory` itself is a trap: `states` is indexed by a proof of
+importantly, an `Equiv` on `PartialHistory` itself is a trap: `states` is indexed by a proof of
 `domain`, so round-tripping two history transports forces a dependent structure equality and
 degenerates into `HEq` — the failure `IntTransfer.lean`'s "Design decision: `Aligned`, not
 `Equiv`" section records. A `Prop`-valued `Rel` on arbitrary histories has no round trip to
 cancel. Every instance in the tree (`TruthIso.toCorr`, `TimeShift.shiftCorr`,
-`IntTransfer`'s `alignedCorr`) states its relation on arbitrary `ConvexHistory`s, which is what
+`IntTransfer`'s `alignedCorr`) states its relation on arbitrary `PartialHistory`s, which is what
 lets `TimeShift.timeShift_preserves_truth` and `IntTransfer.truthAt_map` keep their
 arbitrary-history statements while being derived from a single induction.
 
@@ -98,14 +98,14 @@ structure TruthCorr {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') whe
   /-- Times reindex by an order isomorphism. -/
   dur : F.Duration ≃o F'.Duration
   /-- The correspondence relation, on arbitrary histories. -/
-  Rel : ConvexHistory F → ConvexHistory F' → Prop
+  Rel : PartialHistory F → PartialHistory F' → Prop
   /-- Atomic truth, domain conjunct included, agrees at every related pair. -/
   atom : ∀ σ σ', Rel σ σ' → ∀ (t : F.Duration) (p : Atom),
     TruthAt M σ t (Formula.atom p) ↔ TruthAt M' σ' (dur t) (Formula.atom p)
   /-- Every total history of `F` is related to some total history of `F'`. -/
-  total_fwd : ∀ σ : ConvexHistory F, σ.IsTotal → ∃ σ', σ'.IsTotal ∧ Rel σ σ'
+  total_fwd : ∀ σ : PartialHistory F, σ.IsTotal → ∃ σ', σ'.IsTotal ∧ Rel σ σ'
   /-- Every total history of `F'` is related to some total history of `F`. -/
-  total_bwd : ∀ σ' : ConvexHistory F', σ'.IsTotal → ∃ σ, σ.IsTotal ∧ Rel σ σ'
+  total_bwd : ∀ σ' : PartialHistory F', σ'.IsTotal → ∃ σ, σ.IsTotal ∧ Rel σ σ'
 
 namespace Truth
 
@@ -126,7 +126,7 @@ rather than `simp only [TruthAt]`, which is what keeps it short.
 -/
 theorem truthAt_of_truthCorr {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
     (I : TruthCorr M M') (φ : Formula) :
-    ∀ (σ : ConvexHistory F) (σ' : ConvexHistory F'), I.Rel σ σ' →
+    ∀ (σ : PartialHistory F) (σ' : PartialHistory F'), I.Rel σ σ' →
       ∀ t : F.Duration, TruthAt M σ t φ ↔ TruthAt M' σ' (I.dur t) φ := by
   induction φ with
   | atom p => intro σ σ' h t; exact I.atom σ σ' h t p
@@ -185,7 +185,7 @@ MF and TF axioms' validity.
 The theorem is `Truth.truthAt_of_truthCorr` at the instance `shiftCorr`: `ShiftRel Δ` is the
 relation of `def:time-shift-histories` read on arbitrary histories, and `shiftCorr`'s
 `total_fwd`/`total_bwd` are `app:auto_existence` ("total since 𝔇 is a group", i.e.
-`ConvexHistory.isTotal_timeShift`). No six-case induction lives in this section; the one that
+`PartialHistory.isTotal_timeShift`). No six-case induction lives in this section; the one that
 used to is the relational transport's, run once.
 -/
 
@@ -197,7 +197,7 @@ Truth transport across equal histories.
 When two histories are equal, truth is preserved.
 -/
 theorem truth_history_eq (M : TaskModel F)
-    (τ₁ τ₂ : ConvexHistory F) (t : F.Duration)
+    (τ₁ τ₂ : PartialHistory F) (t : F.Duration)
     (h_eq : τ₁ = τ₂) (φ : Formula) :
     TruthAt M τ₁ t φ ↔ TruthAt M τ₂ t φ := by
   cases h_eq
@@ -209,31 +209,31 @@ states. This is the relation of `def:time-shift-histories` (`τ ≈ σ` with `τ
 on **arbitrary** histories rather than only on possible worlds — which is what lets
 `timeShift_preserves_truth` keep its arbitrary-`σ` statement.
 -/
-def ShiftRel (Δ : F.Duration) (ρ ρ' : ConvexHistory F) : Prop :=
+def ShiftRel (Δ : F.Duration) (ρ ρ' : PartialHistory F) : Prop :=
   (∀ z, ρ.domain z ↔ ρ'.domain (z + Δ)) ∧
   ∀ z (h : ρ.domain z) (h' : ρ'.domain (z + Δ)), ρ.states z h = ρ'.states (z + Δ) h'
 
 /-- `σ.timeShift Δ` is the `Δ`-shift of `σ`, definitionally. -/
-theorem shiftRel_timeShift (Δ : F.Duration) (σ : ConvexHistory F) :
+theorem shiftRel_timeShift (Δ : F.Duration) (σ : PartialHistory F) :
     ShiftRel Δ (σ.timeShift Δ) σ :=
   ⟨fun _ => Iff.rfl, fun _ _ _ => rfl⟩
 
 /--
 `ρ` is the `Δ`-shift of `ρ.timeShift (-Δ)`. Not definitional: the right-hand side sits at
 `z + Δ + -Δ`, so the domain half is a rewrite and the state half is the tree's existing
-`ConvexHistory.states_eq_of_time_eq` — no `HEq`, no structure equality.
+`PartialHistory.states_eq_of_time_eq` — no `HEq`, no structure equality.
 -/
-theorem shiftRel_timeShift_neg (Δ : F.Duration) (ρ : ConvexHistory F) :
+theorem shiftRel_timeShift_neg (Δ : F.Duration) (ρ : PartialHistory F) :
     ShiftRel Δ ρ (ρ.timeShift (-Δ)) := by
   refine ⟨fun z => ?_, fun z h h' => ?_⟩
   · show ρ.domain z ↔ ρ.domain (z + Δ + -Δ)
     rw [add_neg_cancel_right]
-  · exact ConvexHistory.states_eq_of_time_eq ρ z (z + Δ + -Δ) (add_neg_cancel_right z Δ).symm h h'
+  · exact PartialHistory.states_eq_of_time_eq ρ z (z + Δ + -Δ) (add_neg_cancel_right z Δ).symm h h'
 
 /--
 **Time shift is a truth correspondence** of `M` with itself: times reindex by `· + Δ`, histories
 by `ShiftRel Δ`. `total_fwd` and `total_bwd` are `app:auto_existence` — every possible world has
-a shifted possible world in each direction, `ConvexHistory.isTotal_timeShift` supplying totality
+a shifted possible world in each direction, `PartialHistory.isTotal_timeShift` supplying totality
 — and `atom` is the pointwise domain/state agreement unfolded at one time.
 
 `dur` must be `OrderIso.addRight Δ` itself. A hand-built `{ toEquiv := Equiv.addRight Δ, … }`
@@ -253,9 +253,9 @@ def shiftCorr (M : TaskModel F) (Δ : F.Duration) : TruthCorr M M where
     · rintro ⟨h', hv⟩
       exact ⟨(hd t).mpr h', by rw [hs t ((hd t).mpr h') h']; exact hv⟩
   total_fwd := fun ρ hρ =>
-    ⟨ρ.timeShift (-Δ), ConvexHistory.isTotal_timeShift hρ (-Δ), shiftRel_timeShift_neg Δ ρ⟩
+    ⟨ρ.timeShift (-Δ), PartialHistory.isTotal_timeShift hρ (-Δ), shiftRel_timeShift_neg Δ ρ⟩
   total_bwd := fun ρ' hρ' =>
-    ⟨ρ'.timeShift Δ, ConvexHistory.isTotal_timeShift hρ' Δ, shiftRel_timeShift Δ ρ'⟩
+    ⟨ρ'.timeShift Δ, PartialHistory.isTotal_timeShift hρ' Δ, shiftRel_timeShift Δ ρ'⟩
 
 /--
 Time-shift preserves truth of formulas.
@@ -273,14 +273,14 @@ history being shifted. Every live consumer passes a total history; the `H_F` for
 `rw [add_sub_cancel]`: `simpa` does not normalise `(OrderIso.addRight Δ) x` to `x + Δ`.
 
 **Key Insight**: **no shift-closure hypothesis is required.** Under the totality box clause the
-shifted history's membership in the quantifier's range is `ConvexHistory.isTotal_timeShift`,
+shifted history's membership in the quantifier's range is `PartialHistory.isTotal_timeShift`,
 definitionally `fun t => hρ (t + Δ)` — there is no closure condition left to assume, so this
 statement is strictly stronger than the shift-closure-hypothesised version it replaces.
 -/
 theorem timeShift_preserves_truth (M : TaskModel F)
-    (σ : ConvexHistory F) (x y : F.Duration)
+    (σ : PartialHistory F) (x y : F.Duration)
     (φ : Formula) :
-    TruthAt M (ConvexHistory.timeShift σ (y - x)) x φ ↔ TruthAt M σ y φ := by
+    TruthAt M (PartialHistory.timeShift σ (y - x)) x φ ↔ TruthAt M σ y φ := by
   have h := Truth.truthAt_of_truthCorr (shiftCorr M (y - x)) φ (σ.timeShift (y - x)) σ
     (shiftRel_timeShift (y - x) σ) x
   change TruthAt M (σ.timeShift (y - x)) x φ ↔ TruthAt M σ (x + (y - x)) φ at h
@@ -294,7 +294,7 @@ theorem specialised, and no consumer needs it.
 -/
 theorem timeShift_preserves_truth_total (M : TaskModel F) (τ : F.HF) (x y : F.Duration)
     (φ : Formula) :
-    TruthAt M (ConvexHistory.timeShift τ.val (y - x)) x φ ↔ TruthAt M τ.val y φ :=
+    TruthAt M (PartialHistory.timeShift τ.val (y - x)) x φ ↔ TruthAt M τ.val y φ :=
   timeShift_preserves_truth M τ.val x y φ
 
 /--
@@ -304,10 +304,10 @@ Corollary: For any history σ at time y, there exists a history at time x
 This is the key lemma for proving MF and TF axioms.
 -/
 theorem exists_shifted_history (M : TaskModel F)
-    (σ : ConvexHistory F) (x y : F.Duration)
+    (σ : PartialHistory F) (x y : F.Duration)
     (φ : Formula) :
     TruthAt M σ y φ ↔
-    TruthAt M (ConvexHistory.timeShift σ (y - x)) x φ := by
+    TruthAt M (PartialHistory.timeShift σ (y - x)) x φ := by
   exact (timeShift_preserves_truth M σ x y φ).symm
 
 end TimeShift
@@ -336,7 +336,7 @@ is over-engineered in the proof:
   `∀ σ, σ.IsTotal → TruthAt M σ t φ` — it simply does not mention `τ`. Nothing has to be proved.
 - **Time-independence is the substantive half**, and it is exactly time-homogeneity: given a total
   `ρ` at which `φ` is wanted at `s`, the `(s - t)`-shift of `ρ` is total
-  (`ConvexHistory.isTotal_timeShift`) and is covered by the hypothesis at `t`, and
+  (`PartialHistory.isTotal_timeShift`) and is covered by the hypothesis at `t`, and
   `TimeShift.timeShift_preserves_truth` transports the result back.
 
 The `IsTotal` hypotheses on `τ` and `σ` are stated because that is the setting the result is used
@@ -347,20 +347,20 @@ This is what makes the box case of a finite-model truth lemma routine rather tha
 clause: the set of total histories over a finite carrier is still uncountable, but the box
 *predicate* is constant on it, so a model has one finite set of box facts, computed once.
 -/
-theorem box_const (M : TaskModel F) (τ σ : ConvexHistory F) (_hτ : τ.IsTotal) (_hσ : σ.IsTotal)
+theorem box_const (M : TaskModel F) (τ σ : PartialHistory F) (_hτ : τ.IsTotal) (_hσ : σ.IsTotal)
     (t s : F.Duration) (φ : Formula) :
     TruthAt M τ t φ.box ↔ TruthAt M σ s φ.box := by
   simp only [TruthAt]
   constructor
   · intro h ρ hρ
     exact (TimeShift.timeShift_preserves_truth M ρ t s φ).mp
-      (h (ConvexHistory.timeShift ρ (s - t)) (ConvexHistory.isTotal_timeShift hρ (s - t)))
+      (h (PartialHistory.timeShift ρ (s - t)) (PartialHistory.isTotal_timeShift hρ (s - t)))
   · intro h ρ hρ
     exact (TimeShift.timeShift_preserves_truth M ρ s t φ).mp
-      (h (ConvexHistory.timeShift ρ (t - s)) (ConvexHistory.isTotal_timeShift hρ (t - s)))
+      (h (PartialHistory.timeShift ρ (t - s)) (PartialHistory.isTotal_timeShift hρ (t - s)))
 
 /-- The time-only specialization of `box_const`, at a fixed history. -/
-theorem box_time_const (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t s : F.Duration)
+theorem box_time_const (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t s : F.Duration)
     (φ : Formula) : TruthAt M τ t φ.box ↔ TruthAt M τ s φ.box :=
   box_const M τ τ hτ hτ t s φ
 

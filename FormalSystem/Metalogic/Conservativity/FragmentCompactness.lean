@@ -66,7 +66,7 @@ open FormalSystem.Metalogic
 mirror of `SetConsequenceOnFrames`, against `MinusTruthAt`. -/
 def MinusSetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set MinusFormula) (φ : MinusFormula) : Prop :=
   ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
-    (τ : ConvexHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) → MinusTruthAt M τ t φ
 
 /-- Set-premise consequence for the base language at a `FrameClass` tag. Mirror of

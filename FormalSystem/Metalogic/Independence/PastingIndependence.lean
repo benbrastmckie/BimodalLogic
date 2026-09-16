@@ -99,7 +99,7 @@ noncomputable def pModel : CoarseModel PF where
     exact Int.natAbs_eq_zero.mp (h' ▸ hv')
 
 /-- The flow line of offset `w₀`. -/
-noncomputable def pHist (w₀ : ℤ) : ConvexHistory PF := multiFamHistoryGen () w₀
+noncomputable def pHist (w₀ : ℤ) : PartialHistory PF := multiFamHistoryGen () w₀
 
 theorem pHist_isTotal (w₀ : ℤ) : (pHist w₀).IsTotal := multiFamHistoryGen_total _ _
 
@@ -153,7 +153,7 @@ theorem pHist_someFuture_someFuture_atom (w₀ t : ℤ) (q : Atom) :
 
 /-- A total history of `PF` agrees pointwise with the flow line of its own offset at time `0`,
 by `respects_task` at `(0, t)`. -/
-theorem pTotal_states (σ : ConvexHistory PF) (hσ : σ.IsTotal) (t : ℤ) (h : σ.domain t) :
+theorem pTotal_states (σ : PartialHistory PF) (hσ : σ.IsTotal) (t : ℤ) (h : σ.domain t) :
     σ.states t h = ((), (σ.states 0 (hσ 0)).2 + t) := by
   have hr := σ.respects_task 0 t (hσ 0) h
   obtain ⟨_, h2⟩ := hr
@@ -163,7 +163,7 @@ theorem pTotal_states (σ : ConvexHistory PF) (hσ : σ.IsTotal) (t : ℤ) (h : 
   ring
 
 /-- Hence a total history satisfies exactly what its flow line satisfies. -/
-theorem pTotal_toHist (σ : ConvexHistory PF) (hσ : σ.IsTotal) (t : ℤ) (φ : PlusFormula) :
+theorem pTotal_toHist (σ : PartialHistory PF) (hσ : σ.IsTotal) (t : ℤ) (φ : PlusFormula) :
     CTruthAt pModel σ t φ ↔ CTruthAt pModel (pHist (σ.states 0 (hσ 0)).2) t φ :=
   c_truth_congr_ext pModel φ σ _ t (fun s => ⟨fun _ => trivial, fun _ => hσ s⟩)
     (fun s h1 _ => (pTotal_states σ hσ s h1).trans rfl)
@@ -202,7 +202,7 @@ theorem dstab_psiMinus (p : Atom) :
 
 /-- No total history of the model satisfies `Fp ∧ Pp`: on each flow line the atom holds at
 exactly one time, which cannot be both strictly future and strictly past. -/
-theorem not_and_phiPlus_psiMinus (p : Atom) (σ : ConvexHistory PF) (hσ : σ.IsTotal) (t : ℤ) :
+theorem not_and_phiPlus_psiMinus (p : Atom) (σ : PartialHistory PF) (hσ : σ.IsTotal) (t : ℤ) :
     ¬ CTruthAt pModel σ t ((phiPlus p).and (psiMinus p)) := by
   rw [pTotal_toHist σ hσ t, CTruth.and_iff, phiPlus, psiMinus,
     pHist_someFuture_atom, pHist_somePast_atom]

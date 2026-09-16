@@ -70,7 +70,7 @@ theorem countermodelChronicleMixed (fc : FrameClass) (A : Set Formula)
     (h_not_box_dense : (Formula.box nextTop.neg).neg ∈ A)
     (h_not_box_discrete : (Formula.box nextTop).neg ∈ A) :
     ∃ (F : TaskFrame) (TM : TaskModel F)
-      (τ : ConvexHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
+      (τ : PartialHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   exact False.elim (mcs_mixed_case_absurd fc A h_mcs h_not_box_dense h_not_box_discrete)
 

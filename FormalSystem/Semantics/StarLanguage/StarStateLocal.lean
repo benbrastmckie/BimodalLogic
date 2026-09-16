@@ -183,7 +183,7 @@ The register vector is quantified inside, not fixed outside, so that the `timeSt
 `isStateLocal_of_stateLocal` can instantiate its inductive hypothesis at the updated vector.
 -/
 def IsStateLocal (φ : StarFormula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : ConvexHistory F), τ.IsTotal → σ.IsTotal →
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal →
     ∀ (t : F.Duration) (v : ℕ → F.Duration), SameStateAt τ σ t →
       (StarTruthAt M τ t v φ ↔ StarTruthAt M σ t v φ)
 
@@ -206,7 +206,7 @@ history carrying the same state at `t`.
 -/
 theorem isStateLocal_stab (φ : StarFormula) : IsStateLocal (.stab φ) := by
   intro F M τ σ hτ hσ t v h
-  have hclass : ∀ ρ : ConvexHistory F, SameStateAt τ ρ t ↔ SameStateAt σ ρ t := fun ρ =>
+  have hclass : ∀ ρ : PartialHistory F, SameStateAt τ ρ t ↔ SameStateAt σ ρ t := fun ρ =>
     sameStateAt_congr_left (hτ t) (hσ t) (h (hτ t) (hσ t))
   constructor
   · intro hh ρ hρ hs
@@ -263,13 +263,13 @@ semantic property: the *syntactic* predicate is `False` on these constructors by
 its negation would be a vacuous claim. -/
 
 /-- The constant possible world of `NF` at world state `0`. -/
-private def zeroHist : ConvexHistory NF := natHist (fun _ => 0)
+private def zeroHist : PartialHistory NF := natHist (fun _ => 0)
 
 /-- The possible world of `NF` that sits at state `0` up to time `0` and leaves it afterwards. -/
-private def lateHist : ConvexHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
+private def lateHist : PartialHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
 
 /-- The possible world of `NF` that sits away from state `0` before time `0` and at it after. -/
-private def earlyHist : ConvexHistory NF := natHist (fun s => if s < 0 then 1 else 0)
+private def earlyHist : PartialHistory NF := natHist (fun s => if s < 0 then 1 else 0)
 
 private theorem zero_lateHist_same : SameStateAt zeroHist lateHist (0 : ℤ) := by
   intro _ _
@@ -351,7 +351,7 @@ to left instantiates the `⊡` clause at `τ` itself, via `SameStateAt.refl` —
 place the totality of `τ` is used.
 -/
 theorem stateLocal_stab_iff {F : TaskFrame} {φ : StarFormula} (hφ : φ.StateLocal)
-    (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (v : ℕ → F.Duration) :
     StarTruthAt M τ t v φ ↔ StarTruthAt M τ t v (.stab φ) := by
   constructor

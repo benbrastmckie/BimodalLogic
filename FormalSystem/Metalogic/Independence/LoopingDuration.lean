@@ -78,7 +78,7 @@ times `(x, x + π)`: the clause hands over `τ(x) ⇒_π τ(x + π)`, and a loop
 state only to itself.
 -/
 theorem states_add_of_looping {F : FrameOver D} {π : ↑D} (h : LoopingDuration F π)
-    (τ : ConvexHistory F) (hτ : τ.IsTotal) (x : ↑D) :
+    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : ↑D) :
     τ.states (x + π) (hτ (x + π)) = τ.states x (hτ x) := by
   have hr := τ.respects_task x (x + π) (hτ x) (hτ (x + π))
   have hd : x + π - x = π := by abel
@@ -122,13 +122,13 @@ has to be available at each of them. That requirement is now discharged once, in
 -/
 theorem truthAt_add_period {F : FrameOver D} (M : TaskModel F) {π : ↑D}
     (h : LoopingDuration F π) :
-    ∀ (φ : Formula) (τ : ConvexHistory F), τ.IsTotal → ∀ t : ↑D,
+    ∀ (φ : Formula) (τ : PartialHistory F), τ.IsTotal → ∀ t : ↑D,
       (TruthAt M τ t φ ↔ TruthAt M τ (t + π) φ) :=
   fun φ τ hτ t => Truth.truthAt_of_truthIso (loopingTruthIso M h) φ ⟨τ, hτ⟩ t
 
 /-- **Lemma B, iterated**: truth is invariant under any whole number of loops. -/
 theorem truthAt_add_nsmul {F : FrameOver D} (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (φ : Formula) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : ↑D) :
+    (h : LoopingDuration F π) (φ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D) :
     ∀ n : ℕ, (TruthAt M τ t φ ↔ TruthAt M τ (t + n • π) φ) := by
   intro n
   induction n with
@@ -150,7 +150,7 @@ Given a future point `s`, the Archimedean property supplies a whole number of lo
 strictly below `t`. `ψ` holds there because `Hψ` does, and Lemma B carries it back up to `s`.
 -/
 theorem allPast_imp_allFuture {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (ψ : Formula) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : ↑D)
+    (h : LoopingDuration F π) (ψ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D)
     (hH : TruthAt M τ t ψ.allPast) : TruthAt M τ t ψ.allFuture := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
   rw [Truth.future_iff]
@@ -174,7 +174,7 @@ The past mirror of Lemma C: `Gψ → Hψ`. Free from the same argument, and cons
 `temporal_duality` closure of the `CO` derivation system.
 -/
 theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (ψ : Formula) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : ↑D)
+    (h : LoopingDuration F π) (ψ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D)
     (hG : TruthAt M τ t ψ.allFuture) : TruthAt M τ t ψ.allPast := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
   rw [Truth.past_iff]
@@ -198,7 +198,7 @@ theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskMode
 Lemma C, so the antecedent is discarded.
 -/
 theorem co_true {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (ψ : Formula) (τ : ConvexHistory F) (hτ : τ.IsTotal) (t : ↑D) :
+    (h : LoopingDuration F π) (ψ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D) :
     TruthAt M τ t (Formula.co ψ) :=
   fun _ hH => allPast_imp_allFuture M h ψ τ hτ t hH
 
@@ -216,19 +216,19 @@ theorem clockFrame_looping : LoopingDuration clockFrame (1 : ℚ) :=
 /-- Lemma C at the clock frame: every `CO` instance is true at every point of every model on the
 periodic clock, along every total history. -/
 theorem clock_co_true (M : TaskModel clockFrame) (ψ : Formula)
-    (τ : ConvexHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ) :
+    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ) :
     TruthAt M τ t (Formula.co ψ) :=
   co_true M clockFrame_looping ψ τ hτ t
 
 /-- `Hψ → Gψ` at the clock frame. -/
 theorem clock_allPast_imp_allFuture (M : TaskModel clockFrame) (ψ : Formula)
-    (τ : ConvexHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ)
+    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ)
     (hH : TruthAt M τ t ψ.allPast) : TruthAt M τ t ψ.allFuture :=
   allPast_imp_allFuture M clockFrame_looping ψ τ hτ t hH
 
 /-- `Gψ → Hψ` at the clock frame. -/
 theorem clock_allFuture_imp_allPast (M : TaskModel clockFrame) (ψ : Formula)
-    (τ : ConvexHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ)
+    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ)
     (hG : TruthAt M τ t ψ.allFuture) : TruthAt M τ t ψ.allPast :=
   allFuture_imp_allPast M clockFrame_looping ψ τ hτ t hG
 

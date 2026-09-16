@@ -28,7 +28,7 @@ at `0` recurs at no earlier time.
 
 **Shifting the history does not rescue anchoring**, and it is worth saying why, because it looks
 as though it should. `Semantics.TimeShift.timeShift_preserves_truth` (`Semantics/TruthTransport.lean`)
-moves truth along a time shift, and `ConvexHistory.timeShift` of a total history is total. But the
+moves truth along a time shift, and `PartialHistory.timeShift` of a total history is total. But the
 decision procedure enumerates *lassos*, not histories: `timeShift τ i` is a perfectly good total
 history and is simply not the `unroll` of any enumerated `BiLasso` whose origin sits where the
 shift put it. So the extra degree of freedom has to live in the *consumer* — hence the `∃ i` in
@@ -352,7 +352,7 @@ Local coherence comes from `localCoherentSeq_of_edges` (the splice lemma) fed by
 `coherent` field from `coherent_of_window_step` fed by `realizedStep_step`.
 -/
 theorem exists_annot_of_truth (hbx : BoxOracleSound P bx)
-    (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ)
+    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ)
     (hφ : TruthAt P.toModel τ t φ) :
     ∃ A ∈ boundedAnnots P φ bx (bound P φ),
       ∃ i ∈ Finset.Ico (cohWindowLo A) (cohWindowHi A),

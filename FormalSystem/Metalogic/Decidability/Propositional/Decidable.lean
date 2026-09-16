@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.Propositional.Kalmar
 import FormalSystem.Metalogic.Soundness
-import FormalSystem.Semantics.ConvexHistory
+import FormalSystem.Semantics.PartialHistory
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Data.Int.Basic
 
@@ -19,7 +19,7 @@ propositional (`Formula.isPropositional p = true`, i.e. built only from `atom`/`
 The `true`-branch (`p` a tautology) uses `tautology_derivable` (`Kalmar.lean`) via the
 round-trip reification lemma. The `false`-branch (`p` not a tautology) uses a *semantic*
 falsity direction: a falsifying assignment `v` yields a countermodel on the trivial task
-frame (`FrameOver.trivialFrame`, `Semantics/ConvexHistory.lean`), and the EXISTING semantic
+frame (`FrameOver.trivialFrame`, `Semantics/PartialHistory.lean`), and the EXISTING semantic
 soundness theorem (`Metalogic/Soundness.lean`) rules out `|-! p` in that case. This is
 deliberately *not* the tableau decision procedure (`Metalogic/Decidability/DecisionProcedure`)
 — that procedure is classical-only (`Classical.em`) and unverified for this purpose; this
@@ -158,14 +158,14 @@ via the trivial history's total domain. -/
 theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
     ∀ q : Formula, isPropositional q = true →
       (FormalSystem.Semantics.TruthAt (trivialModel v atomList)
-          (ConvexHistory.trivial (D := Int)) t q ↔ (reifyWith atomList q).eval v = true) := by
+          (PartialHistory.trivialFrameHistory (D := Int)) t q ↔ (reifyWith atomList q).eval v = true) := by
   intro q
   induction q with
   | atom a =>
       intro _
-      -- `ConvexHistory.trivial` is now `ConvexHistory.ofTotal`, so the unfolding chain needs the
+      -- `PartialHistory.trivialFrameHistory` is now `PartialHistory.ofTotal`, so the unfolding chain needs the
       -- constructor as well before the total domain becomes visible.
-      simp [FormalSystem.Semantics.TruthAt, ConvexHistory.trivial, ConvexHistory.ofTotal,
+      simp [FormalSystem.Semantics.TruthAt, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
         trivialModel, reifyWith]
   | bot =>
       intro _
@@ -197,13 +197,13 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
     exact ⟨v, Bool.not_eq_true _ |>.mp hv⟩
   have htruth_iff := trivial_truth_iff v (formulaAtomsList p) (0 : Int) p hp
   have hnot_truth : ¬ FormalSystem.Semantics.TruthAt (trivialModel v (formulaAtomsList p))
-      (ConvexHistory.trivial (D := Int)) (0 : Int) p := by
+      (PartialHistory.trivialFrameHistory (D := Int)) (0 : Int) p := by
     rw [htruth_iff]
     simp [hv]
   obtain ⟨d⟩ := h
   have htruth := FormalSystem.Metalogic.soundness [] p d
     (FrameOver.trivialFrame (D := Int)) (trivialModel v (formulaAtomsList p))
-    (ConvexHistory.trivial (D := Int))
+    (PartialHistory.trivialFrameHistory (D := Int))
     (fun _ => True.intro) (0 : Int) (fun ψ hψ => absurd hψ List.not_mem_nil)
   exact hnot_truth htruth
 

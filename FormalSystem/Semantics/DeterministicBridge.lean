@@ -36,7 +36,7 @@ than a weakening:
 
 1. `states_eq_of_deterministic` already concludes pointwise state agreement, and gets it for
    free from `respects_task` plus determinism at the (possibly negative) duration `s - t`.
-   History *equality* would additionally need extensionality for `ConvexHistory` at a general
+   History *equality* would additionally need extensionality for `PartialHistory` at a general
    frame, which this tree does not have and does not need.
 2. Pointwise agreement is *weaker as a conclusion* and therefore **stronger as a hypothesis**.
    Taking it on both sides makes the biconditional below strictly stronger than the
@@ -96,7 +96,7 @@ See this module's docstring for why the pointwise form is taken on both sides of
 `deterministic_iff_singletonClasses` rather than the paper's history-equality form.
 -/
 def TaskFrame.SingletonClasses (F : TaskFrame) : Prop :=
-  ∀ (τ σ : ConvexHistory F) (hτ : τ.IsTotal) (hσ : σ.IsTotal) (x : F.Duration),
+  ∀ (τ σ : PartialHistory F) (hτ : τ.IsTotal) (hσ : σ.IsTotal) (x : F.Duration),
     SameStateAt τ σ x → ∀ y : F.Duration, τ.states y (hτ y) = σ.states y (hσ y)
 
 /--

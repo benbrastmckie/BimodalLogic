@@ -111,7 +111,7 @@ lemma of the construction.
 -/
 theorem extends_of_agrees (L : PlacedBiLasso P) (τ : PartialHistory P.toTaskFrame)
     (h : ∀ (t : ℤ) (ht : τ.domain t), L.unroll t = τ.states t ht) :
-    PartialHistory.Extends L.toHF.val.toPartialHistory τ where
+    PartialHistory.Extends L.toHF.val τ where
   subset := fun _ _ => trivial
   agree := fun t ht => h t ht
 
@@ -134,7 +134,7 @@ theorem extend_periodic_extends (P : IntPresentation)
     (τ : PartialHistory P.toTaskFrame) (a b : ℤ) (hab : a ≤ b)
     (hdom : ∀ t : ℤ, τ.domain t ↔ a ≤ t ∧ t ≤ b) :
     ∃ L : PlacedBiLasso P,
-      PartialHistory.Extends L.toHF.val.toPartialHistory τ ∧
+      PartialHistory.Extends L.toHF.val τ ∧
       0 < L.lasso.back.length ∧ L.lasso.back.length ≤ P.card ∧
       0 < L.lasso.fwd.length ∧ L.lasso.fwd.length ≤ P.card ∧
       (∀ t : ℤ, t < L.origin → L.unroll (t - (L.lasso.back.length : ℤ)) = L.unroll t) ∧

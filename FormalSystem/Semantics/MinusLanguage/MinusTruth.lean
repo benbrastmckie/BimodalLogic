@@ -44,7 +44,7 @@ theorem stated against `MinusTruthAt` a claim about L⁻ rather than a restateme
 | `G` (`\Future`) | `M,τ,y ⊨ φ` for all `y ∈ D` with `x < y` | `∀ s, t < s → MinusTruthAt M τ s φ` |
 
 The paper's `H`/`G` clauses are **strict** (`y < x`, `x < y`), and so are these. The box clause's
-quantifier ranges over `H_F`, the frame's **total** histories, which `ConvexHistory.IsTotal` is the
+quantifier ranges over `H_F`, the frame's **total** histories, which `PartialHistory.IsTotal` is the
 predicate form of — identical to `Semantics/Truth.lean`'s box clause, with no admissible-history
 parameter and no shift-closure side condition.
 
@@ -105,11 +105,11 @@ The `box` clause recurses at a different history and the temporal clauses at a d
 the equation compiler handles both exactly as it already does for `TruthAt`, so no termination
 annotation is required.
 -/
-def MinusTruthAt (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration) : MinusFormula → Prop
+def MinusTruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) : MinusFormula → Prop
   | .atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
   | .bot => False
   | .imp φ ψ => MinusTruthAt M τ t φ → MinusTruthAt M τ t ψ
-  | .box φ => ∀ (σ : ConvexHistory F), σ.IsTotal → MinusTruthAt M σ t φ
+  | .box φ => ∀ (σ : PartialHistory F), σ.IsTotal → MinusTruthAt M σ t φ
   | .allPast φ => ∀ s : F.Duration, s < t → MinusTruthAt M τ s φ
   | .allFuture φ => ∀ s : F.Duration, t < s → MinusTruthAt M τ s φ
 
@@ -141,7 +141,7 @@ instance : TenseClauses MinusFormula where
 
 namespace MinusTruth
 
-variable {M : TaskModel F} {τ : ConvexHistory F} {t : F.Duration}
+variable {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
 
 /-! ### The primitive clauses -/
 
@@ -155,9 +155,9 @@ theorem imp_iff (φ ψ : MinusFormula) :
 /-- Truth of `□φ`: `φ` holds at every **total** history at the current time.
 
 `def:BL-semantics`'s box clause, "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F", with `H_F`
-membership read off `ConvexHistory.IsTotal`. -/
+membership read off `PartialHistory.IsTotal`. -/
 theorem box_iff (φ : MinusFormula) :
-    MinusTruthAt M τ t φ.box ↔ ∀ (σ : ConvexHistory F), σ.IsTotal → MinusTruthAt M σ t φ := Iff.rfl
+    MinusTruthAt M τ t φ.box ↔ ∀ (σ : PartialHistory F), σ.IsTotal → MinusTruthAt M σ t φ := Iff.rfl
 
 /-- Truth of `Hφ` (universal past): `φ` holds at every **strictly** past time. -/
 theorem past_iff (φ : MinusFormula) :
@@ -197,7 +197,7 @@ re-deriving the classical step at every evaluation site. -/
 
 /-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* total history at the current time. -/
 @[simp] theorem diamond_iff (φ : MinusFormula) :
-    MinusTruthAt M τ t φ.diamond ↔ ∃ σ : ConvexHistory F, σ.IsTotal ∧ MinusTruthAt M σ t φ :=
+    MinusTruthAt M τ t φ.diamond ↔ ∃ σ : PartialHistory F, σ.IsTotal ∧ MinusTruthAt M σ t φ :=
   TruthClauses.diamond_iff (L := MinusFormula) M τ t PUnit.unit φ
 
 /-- Truth of `Pφ` (`¬H¬φ`): `φ` held at *some* strictly past time. -/

@@ -146,7 +146,7 @@ theorem countermodel_discrete (A : Set Formula)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
     ∃ (F : TaskFrame) (_ : F.Deterministic) (TM : TaskModel F)
-      (τ : ConvexHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
+      (τ : PartialHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   -- FamIdx: type of box-equivalent Base MCSes (one per S5 accessibility class)
   let FamIdx := {N : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) N ∧

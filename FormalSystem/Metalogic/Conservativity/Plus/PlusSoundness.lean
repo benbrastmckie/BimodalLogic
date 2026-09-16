@@ -122,7 +122,7 @@ recursion. -/
 theorem plus_soundness_in {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula)
     (d : PlusDerivationTree fc Γ φ)
     (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, PlusTruthAt M τ t ψ) :
     PlusTruthAt M τ t φ := by
   induction d generalizing τ t with
@@ -153,7 +153,7 @@ theorem plus_soundness_valid {φ : PlusFormula} (h : PlusDerivable FrameClass.Ba
 /-- Soundness of TM⁺ at `.Base` (context form). -/
 theorem plus_soundness_base (Γ : PlusContext) (φ : PlusFormula)
     (d : PlusDerivationTree FrameClass.Base Γ φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, PlusTruthAt M τ t ψ) : PlusTruthAt M τ t φ :=
   plus_soundness_in Γ φ d F trivial M τ h_mem t h_ctx
 

@@ -173,7 +173,7 @@ reversed sequence `fun u => datum … (-u)`.
 def SeqStep (d : ℤ → PigeonState P φ) : PigeonState P φ → PigeonState P φ → Prop :=
   fun x y => ∃ u : ℤ, d u = x ∧ d (u + 1) = y
 
-theorem realizedStep_eq {τ : ConvexHistory P.toTaskFrame} (hτ : τ.IsTotal) :
+theorem realizedStep_eq {τ : PartialHistory P.toTaskFrame} (hτ : τ.IsTotal) :
     RealizedStep P φ τ hτ = SeqStep (datum P φ τ hτ) := rfl
 
 /-- A stretch of the datum sequence is an iterate of its edge relation. -/
@@ -462,7 +462,7 @@ theorem exists_good_cycle_of_seq (d : ℤ → PigeonState P φ) (ev : Formula �
 (`SmallModel.lean`) — the observation that a *genuine* history discharges its own eventualities
 for free.
 -/
-theorem exists_good_fwd_cycle {τ : ConvexHistory P.toTaskFrame} (hτ : τ.IsTotal)
+theorem exists_good_fwd_cycle {τ : PartialHistory P.toTaskFrame} (hτ : τ.IsTotal)
     (x : PigeonState P φ) (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ datum P φ τ hτ u = x) :
     ∃ (L : ℕ) (p : ℕ → PigeonState P φ),
       1 ≤ L ∧ L ≤ cycleBound P φ ∧ p 0 = x ∧ p L = x ∧
@@ -491,7 +491,7 @@ search for `snce` witnesses runs leftward.
 Obtained from `exists_good_cycle_of_seq` at the reversed datum sequence `fun u => datum … (-u)`,
 which is exactly the mirror the plan prescribes.
 -/
-theorem exists_good_bwd_cycle {τ : ConvexHistory P.toTaskFrame} (hτ : τ.IsTotal)
+theorem exists_good_bwd_cycle {τ : PartialHistory P.toTaskFrame} (hτ : τ.IsTotal)
     (x : PigeonState P φ) (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ datum P φ τ hτ (-u) = x) :
     ∃ (L : ℕ) (q : ℕ → PigeonState P φ),
       1 ≤ L ∧ L ≤ cycleBound P φ ∧ q 0 = x ∧ q L = x ∧

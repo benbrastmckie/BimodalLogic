@@ -355,6 +355,6 @@ that meets this specification requires the small-model theorem and is deliberate
 -/
 def BoxOracleSound (P : IntPresentation) (bx : Formula → Bool) : Prop :=
   ∀ χ : Formula,
-    bx χ = true ↔ ∀ σ : ConvexHistory P.toTaskFrame, σ.IsTotal → TruthAt P.toModel σ 0 χ
+    bx χ = true ↔ ∀ σ : PartialHistory P.toTaskFrame, σ.IsTotal → TruthAt P.toModel σ 0 χ
 
 end FormalSystem.Metalogic.Decidability

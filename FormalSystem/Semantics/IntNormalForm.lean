@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.ConvexHistory
+import FormalSystem.Semantics.PartialHistory
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Data.Int.SuccPred
 
@@ -77,7 +77,7 @@ That route has since been taken. `Semantics/DurationClassification.lean` carries
 `archimedean_of_lub` for the Dedekind-complete branch and now also the discrete branch's
 successor-based analogue: `archimedean_of_succ` (the `Archimedean D` instance),
 `isLeast_pos_succ_zero` (the witness), and `intIso : D ≃+o ℤ` packaging both.
-`Semantics/IntTransfer.lean` transports the frame, `TaskModel`, `ConvexHistory`, and `TruthAt`
+`Semantics/IntTransfer.lean` transports the frame, `TaskModel`, `PartialHistory`, and `TruthAt`
 along that isomorphism, yielding `validZTime_iff_validInt : ValidZTime φ ↔ ValidInt φ`.
 
 ## What buying the right to work over ℤ is worth

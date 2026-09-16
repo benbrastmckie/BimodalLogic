@@ -115,7 +115,7 @@ expression (including the domain conjunct — see `Semantics/MinusLanguage/Minus
 `box` are congruence under `tr`'s `rfl` push-through equations; `allPast` and `allFuture` are the
 only two cases with content, and `Truth.past_iff` / `Truth.future_iff` supply it.
 -/
-theorem truthAt_tr (M : TaskModel F) (φ : MinusFormula) (τ : ConvexHistory F) (t : F.Duration) :
+theorem truthAt_tr (M : TaskModel F) (φ : MinusFormula) (τ : PartialHistory F) (t : F.Duration) :
     TruthAt M τ t (tr φ) ↔ MinusTruthAt M τ t φ := by
   induction φ generalizing τ t with
   | atom p => exact Iff.rfl
@@ -136,7 +136,7 @@ The context-level form of the bridge: if every formula of an L⁻ context is tru
 of its translation is true. This is the side-condition discharger each of the four soundness
 compositions below calls.
 -/
-theorem truthAt_trCtx (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration)
+theorem truthAt_trCtx (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
     {Γ : MinusLanguage.Context} (h : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     ∀ ψ ∈ trCtx Γ, TruthAt M τ t ψ := by
   intro ψ hψ
@@ -163,10 +163,10 @@ hypothesis is needed, exactly as on the L side, because `ShiftRel` is pointwise.
 **Proof**: rewrite both sides through `truthAt_tr` and apply the L statement at `tr φ`. No
 induction — the induction was already paid for once, in `truthAt_tr`.
 -/
-theorem minusTruthAt_timeShift (M : TaskModel F) (σ : ConvexHistory F)
+theorem minusTruthAt_timeShift (M : TaskModel F) (σ : PartialHistory F)
     (x y : F.Duration) (φ : MinusFormula) :
-    MinusTruthAt M (ConvexHistory.timeShift σ (y - x)) x φ ↔ MinusTruthAt M σ y φ := by
-  rw [← truthAt_tr M φ (ConvexHistory.timeShift σ (y - x)) x, ← truthAt_tr M φ σ y]
+    MinusTruthAt M (PartialHistory.timeShift σ (y - x)) x φ ↔ MinusTruthAt M σ y φ := by
+  rw [← truthAt_tr M φ (PartialHistory.timeShift σ (y - x)) x, ← truthAt_tr M φ σ y]
   exact TimeShift.timeShift_preserves_truth M σ x y (tr φ)
 
 /--
@@ -190,9 +190,9 @@ the translation frames of `Metalogic/Algebraic/FlowFrame.lean` possible at all �
 `box_const`'s own two totality binders it is **not consumed**, the statement holding for an
 arbitrary `τ`.
 -/
-theorem minus_box_universal (M : TaskModel F) (τ : ConvexHistory F)
+theorem minus_box_universal (M : TaskModel F) (τ : PartialHistory F)
     (t : F.Duration) (hτ : τ.IsTotal) (φ : MinusFormula) :
-    MinusTruthAt M τ t φ.box ↔ ∀ (σ : ConvexHistory F), σ.IsTotal → ∀ s, MinusTruthAt M σ s φ := by
+    MinusTruthAt M τ t φ.box ↔ ∀ (σ : PartialHistory F), σ.IsTotal → ∀ s, MinusTruthAt M σ s φ := by
   constructor
   · intro h σ hσ s
     have hb : TruthAt M τ t (tr φ).box := (truthAt_tr M φ.box τ t).mpr h
@@ -298,7 +298,7 @@ Composition of `Conservativity.translate` with `soundness_in`, across `truthAt_t
 theorem minus_soundness_in {fc : FrameClass} (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree fc Γ φ)
     (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   (truthAt_tr M φ τ t).mp
@@ -325,7 +325,7 @@ Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) bu
 theorem minus_soundness (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Base Γ φ)
     (F : TaskFrame) (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   minus_soundness_in Γ φ d F trivial M τ h_mem t h_ctx
@@ -340,7 +340,7 @@ Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) bu
 theorem minus_soundness_dense (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Dense Γ φ)
     (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   minus_soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ h_mem t h_ctx
@@ -356,7 +356,7 @@ theorem minus_soundness_ztime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
     (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
     [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   minus_soundness_in Γ φ d F
@@ -380,7 +380,7 @@ theorem minus_soundness_rtime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (F : TaskFrame) [DenselyOrdered F.Duration]
     (h_lub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   minus_soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ h_mem t h_ctx
@@ -503,7 +503,7 @@ call into `minus_derivable_valid_and_swap_valid_zTimeSucc` mirror that lemma's o
 theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
     (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
-    (τ : ConvexHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ := by
   induction d generalizing τ t with

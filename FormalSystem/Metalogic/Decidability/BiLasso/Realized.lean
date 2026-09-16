@@ -153,10 +153,10 @@ box clause quantifies over all total histories — and like `typeAt` it appears 
 never on any path `check` can reach.
 -/
 noncomputable def datum (P : IntPresentation) (φ : Formula)
-    (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) : PigeonState P φ :=
+    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) : PigeonState P φ :=
   (τ.states u (hτ u), ⟨typeAt P φ τ u, Finset.mem_powerset.mpr (typeAt_subset τ u)⟩)
 
-variable {τ : ConvexHistory P.toTaskFrame} {hτ : τ.IsTotal}
+variable {τ : PartialHistory P.toTaskFrame} {hτ : τ.IsTotal}
 
 /-- Projection: the state component of a position's datum is the history's state there. -/
 @[simp]
@@ -181,7 +181,7 @@ Only edges the history actually traverses are admitted. That is what keeps the g
 finiteness of `PigeonState` is what keeps it useful.
 -/
 def RealizedStep (P : IntPresentation) (φ : Formula)
-    (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) :
+    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) :
     PigeonState P φ → PigeonState P φ → Prop :=
   fun x y => ∃ u : ℤ, datum P φ τ hτ u = x ∧ datum P φ τ hτ (u + 1) = y
 

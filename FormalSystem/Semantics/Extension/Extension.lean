@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Extension.Step
 import FormalSystem.Semantics.PartialHistoryOrder
-import FormalSystem.Semantics.ConvexHistory
+import FormalSystem.Semantics.PartialHistory
 
 /-!
 # `thm:extension` and `cor:occurrence` — closing the extension chain
@@ -57,7 +57,7 @@ The maximal-to-total direction is isolated as `isTotal_of_isMax`, the converse c
 `PartialHistoryOrder`'s `isMax_of_total`. That companion is exactly where `lem:step` is spent:
 maximality plus the ability to extend by one arbitrary duration forces the domain to be all of
 `D`. Totality then yields convexity for free (`total_isConvex`), so the promotion of the maximal
-partial history to a `ConvexHistory`, and thence to an `F.HF` element, is immediate.
+partial history to a `PartialHistory`, and thence to an `F.HF` element, is immediate.
 
 ## What the finite-carrier *Saturation* discharge costs, by contrast
 
@@ -101,12 +101,12 @@ time-shifting a history witnessed at one time — is **gone from this chain and 
 reintroduced**. The anchors that carried it (`thm:occurrence`, `app:nonempty`) no longer exist;
 the paper merged them into the single, strictly stronger `cor:occurrence`, in which the time `x`
 is universally given rather than existentially witnessed. Time-shift machinery survives
-separately (`PartialHistory.timeShift`, `ConvexHistory.timeShift`, `TaskFrame.HF.timeShift`) but
+separately (`PartialHistory.timeShift`, `PartialHistory.timeShift`, `TaskFrame.HF.timeShift`) but
 plays no role here.
 
 ## Main Definitions
 
-- `PartialHistory.toConvexHistory` — promotion of a total partial history to a `ConvexHistory`
+- `PartialHistory.toPartialHistory` — promotion of a total partial history to a `PartialHistory`
 - `PartialHistory.point` — the one-point partial history `{⟨x, w⟩}`
 
 ## Main Results
@@ -122,43 +122,6 @@ namespace FormalSystem.Semantics
 namespace PartialHistory
 
 open TaskFrame
-
-/-! ## From totality to `ConvexHistory` -/
-
-/--
-A **total** domain is convex: every time whatsoever is in it, so in particular every time between
-two domain times is.
-
-**Paper Reference**: `def:world-history` (verbatim: "A \textit{convex history} is any partial
-history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \in X$ and
-$x < y < z$." together with "A \textit{possible world} is any convex history whose domain is
-total, so that $X = D$.").
-
-This is what makes the last step of `thm:extension` immediate: once `lem:step` has forced the
-maximal partial history to be total, no separate convexity argument is needed to view it as a
-convex history — and, being total, as a possible world.
--/
-theorem total_isConvex {F : TaskFrame} {τ : PartialHistory F} (h : τ.IsTotal) :
-    ∀ (x z : F.Duration), τ.domain x → τ.domain z → ∀ (y : F.Duration), x ≤ y → y ≤ z → τ.domain y :=
-  fun _ _ _ _ y _ _ => h y
-
-/--
-Promotion of a **total** partial history to a `ConvexHistory`, via `total_isConvex`.
-
-The underlying `PartialHistory` is unchanged — this adds the `convex` field and nothing else, so
-`(τ.toConvexHistory h).toPartialHistory` is `τ` definitionally.
--/
-def toConvexHistory {F : TaskFrame} (τ : PartialHistory F) (h : τ.IsTotal) : ConvexHistory F where
-  toPartialHistory := τ
-  convex := total_isConvex h
-
-@[simp]
-theorem toConvexHistory_toPartialHistory {F : TaskFrame} (τ : PartialHistory F) (h : τ.IsTotal) :
-    (τ.toConvexHistory h).toPartialHistory = τ := rfl
-
-/-- A promoted total partial history is a total *world* history. -/
-theorem isTotal_toConvexHistory {F : TaskFrame} (τ : PartialHistory F) (h : τ.IsTotal) :
-    (τ.toConvexHistory h).IsTotal := h
 
 /-! ## Maximal implies total — where `lem:step` is spent -/
 
@@ -207,10 +170,10 @@ possible world.
 its sole application site, reads it off the frame as `F.saturation`.
 -/
 theorem extension (F : TaskFrame) (τ : PartialHistory F) :
-    ∃ σ : F.HF, Extends σ.val.toPartialHistory τ := by
+    ∃ σ : F.HF, Extends σ.val τ := by
   obtain ⟨μ, hle, hmax⟩ := exists_maximal_extension τ
   have htot : μ.IsTotal := isTotal_of_isMax F hmax
-  exact ⟨⟨μ.toConvexHistory htot, isTotal_toConvexHistory μ htot⟩, le_def.mp hle⟩
+  exact ⟨⟨μ, htot⟩, le_def.mp hle⟩
 
 /-! ## `cor:occurrence`, frame-intrinsic form -/
 
