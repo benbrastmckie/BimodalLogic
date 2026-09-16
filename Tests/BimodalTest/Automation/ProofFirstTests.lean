@@ -9,7 +9,7 @@ import FormalSystem.ProofSystem.Axioms
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Automation.FormulaEnumerator
 import FormalSystem.Automation.ForwardProofGenerator
-import FormalSystem.Automation.ProofFirstExporter
+import FormalSystem.Automation.ProofFirstGeneratorMain
 import FormalSystem.Automation.ProofFirstBenchmark
 import FormalSystem.Automation.DatasetGenerator
 import FormalSystem.Automation.DataExport

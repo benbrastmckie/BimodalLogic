@@ -41,7 +41,7 @@ lean_exe dataset_validator where
 /-- Proof step extractor for BimodalHarness training data.
     Run with: lake exe proof_extractor -- --output data/proof_steps.jsonl -/
 lean_exe proof_extractor where
-  root := `FormalSystem.Automation.ProofStepExport
+  root := `FormalSystem.Automation.ProofExtractorMain
   srcDir := "."
   supportInterpreter := true
 
@@ -84,7 +84,7 @@ lean_exe tableau_bridge where
 /-- Tableau-derived proof step pipeline for large-scale training data.
     Run with: lake exe tableau_proof_steps -- --max-complexity 7 --output data/tableau_proof_steps.jsonl -/
 lean_exe tableau_proof_steps where
-  root := `FormalSystem.Automation.TableauProofStepPipeline
+  root := `FormalSystem.Automation.TableauProofStepsMain
   srcDir := "."
   supportInterpreter := true
 
@@ -98,7 +98,7 @@ lean_exe trace_exporter where
 /-- Proof-first generator: forward-chains from axioms, emits JSONL theorems.
     Run with: lake exe proof_first_generator -- --max-depth 2 --seed 1000 --output data/proof_first.jsonl -/
 lean_exe proof_first_generator where
-  root := `FormalSystem.Automation.ProofFirstExporter
+  root := `FormalSystem.Automation.ProofFirstGeneratorMain
   srcDir := "."
   supportInterpreter := true
 

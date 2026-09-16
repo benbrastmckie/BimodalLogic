@@ -43,7 +43,7 @@ jobs:
       # Every `lean_exe` root in lakefile.lean sits outside both library root closures, so the
       # `build: true` step above never elaborates any of them: nothing imports them, and
       # `lake build` only walks what is reachable from `FormalSystem` and `BimodalTest`.
-      # FormalSystem/Automation/ProofStepExport.lean failed to elaborate for an extended period
+      # FormalSystem/Automation/ProofExtractorMain.lean (then ProofStepExport.lean) failed to elaborate for an extended period
       # with `lake exe proof_extractor` simply broken and CI green throughout, because no step
       # here could observe it. Marking the exe targets `@[default_target]` was rejected on
       # measured cost -- 240-310 MB of linked binary per root, thirteen of them. These are

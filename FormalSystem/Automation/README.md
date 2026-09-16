@@ -34,27 +34,27 @@ There is no Aesop rule set. One existed and was retired for having zero consumer
 | `BenchmarkOracle.lean` | 370 | Batch oracle: reads formula JSON, runs decision procedure, outputs JSONL labels |
 | `DataExport.lean` | 395 | Core data export: JSONL serialization for formula-label pairs |
 | `DatasetAssembly.lean` | 350 | Dataset assembly: structured JSON dataset with metadata and train/eval split |
-| `DatasetGenerator.lean` | 2,296 | Dataset generator: runs `decide` on enumerated formulas, extracts proof traces |
+| `DatasetGenerator.lean` | 1,742 | Dataset generator: runs `decide` on enumerated formulas, extracts proof traces |
 | `DatasetGeneratorMain.lean` | 1,354 | Dataset export pipeline: formatting, splitting, output orchestration |
 | `DatasetValidatorMain.lean` | 604 | Dataset validator: conformance tests, diversity metrics, feasibility gate |
 | `EnrichedCountermodel.lean` | 223 | Enriched countermodel extraction for dataset negative examples |
 | `EnumBenchmark.lean` | 227 | Enumeration benchmark: performance testing for formula enumeration |
-| `FormulaEnumerator.lean` | 2,374 | Formula enumerator: depth-bounded enumeration of all TM formulas |
+| `FormulaEnumerator.lean` | 2,341 | Formula enumerator: depth-bounded enumeration of all TM formulas |
 | `FormulaMutator.lean` | 1,191 | Formula mutator: systematic mutation for dataset augmentation |
 | `ForwardProofGenerator.lean` | 400 | Forward-chaining proof generation: applies the productive inference rules from axiom instances to build a pool of `(formula, DerivationTree)` pairs |
 | `InterestingnessMetrics.lean` | 584 | Deterministic three-tier interestingness scoring for theorems and derivations |
 | `LemmaDB.lean` | 48 | Declares the `@[tmLemma]` label attribute the `modal_search` tactic family uses to enumerate derived theorems |
 | `MachineAppendixExport.lean` | 498 | Exports the complete TM axiomatization — 45 schemata, 7 rules, derived-operator definitions — as the JSONL machine appendix shipped with BimodalReference |
-| `Normalization.lean` | 1,271 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
+| `Normalization.lean` | 918 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
 | `NormalizationAttr.lean` | 44 | Declares the two simp sets `Normalization.lean` tags its unfold and fold lemmas with |
 | `PrefilterSoundness.lean` | 174 | Soundness proofs for each invalid-pattern recognizer in `DatasetGenerator.lean` |
+| `ProofExtractorMain.lean` | 1,692 | Proof step export: serializes `DerivationTree` steps to JSONL |
 | `ProofFirstBenchmark.lean` | 188 | Eight cross-corpus metrics for labeled formula datasets, plus a side-by-side comparison utility |
-| `ProofFirstExporter.lean` | 148 | CLI executable: runs the forward-chaining generator and emits `LabeledFormula` records as JSONL |
-| `ProofStepExport.lean` | 1,692 | Proof step export: serializes `DerivationTree` steps to JSONL |
+| `ProofFirstGeneratorMain.lean` | 148 | CLI executable: runs the forward-chaining generator and emits `LabeledFormula` records as JSONL |
 | `ProofStepExtractor.lean` | 361 | Proof step extractor: traverses derivation trees to extract steps |
 | `SuccessPatterns.lean` | 429 | Successful proof patterns: heuristic patterns for guided proof search |
 | `TableauBridge.lean` | 648 | Persistent REPL with a JSONL stdin/stdout protocol, composing the formula parser with the decision procedure for live queries |
-| `TableauProofStepPipeline.lean` | 696 | Pipeline joining `FormulaEnumerator`, `DecisionProcedure` and `ProofStepExtractor` into large-scale proof-step training data |
+| `TableauProofStepsMain.lean` | 696 | Pipeline joining `FormulaEnumerator`, `DecisionProcedure` and `ProofStepExtractor` into large-scale proof-step training data |
 | `TraceExporter.lean` | 265 | CLI executable: reads S-expression formulas and streams JSONL `ProofCertificate`s to stdout |
 | `TruthNormAttr.lean` | 57 | Declares the `truth_norm` and `swap_norm` simp sets used by the truth layer's characterization lemmas |
 | `ProofSearch/` | — | Proof search engine: bounded derivation search (Core.lean, Strategies.lean) |
@@ -92,7 +92,7 @@ FormulaMutator      ProofStepExtractor                     DataExport (JSONL)
 | `FormulaMutator.lean` | Step 1b: augment via systematic formula mutation |
 | `DatasetGenerator.lean` | Step 2: label formulas using `decide` decision procedure |
 | `ProofStepExtractor.lean` | Step 2b: extract individual proof steps from derivation trees |
-| `ProofStepExport.lean` | Step 2c: serialize proof steps to JSONL |
+| `ProofExtractorMain.lean` | Step 2c: serialize proof steps to JSONL |
 | `EnrichedCountermodel.lean` | Step 2d: enrich negative examples with countermodel info |
 | `BenchmarkAnchors.lean` | Step 2e: inject ground-truth anchor pairs |
 | `DatasetValidatorMain.lean` | Step 3: validate quality and diversity metrics |

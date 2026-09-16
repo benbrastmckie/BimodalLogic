@@ -149,24 +149,24 @@ build green.
 
 ---
 
-### Phase 2: Proof-step family rename [NOT STARTED]
+### Phase 2: Proof-step family rename [COMPLETED]
 
 **Goal**: Rename `ProofStepExport` -> `ProofExtractorMain`, `TableauProofStepPipeline` ->
 `TableauProofStepsMain`, and `ProofFirstExporter` -> `ProofFirstGeneratorMain`, including the functional C22 path.
 
 **Tasks**:
-- [ ] `git mv` the three files and update their `lakefile.lean` `root :=` lines
-- [ ] Rename the namespaces for `ProofStepExport` and `TableauProofStepPipeline`. Leave `ProofFirstExporter`'s shared
+- [x] `git mv` the three files and update their `lakefile.lean` `root :=` lines
+- [x] Rename the namespaces for `ProofStepExport` and `TableauProofStepPipeline`. Leave `ProofFirstExporter`'s shared
       `FormalSystem.Automation` namespace unchanged
-- [ ] Update `Tests/BimodalTest/Automation/ProofFirstTests.lean` (import) and `Tests/BimodalTest.lean` comments
-- [ ] **Functional**: update `C22_B="FormalSystem/Automation/ProofStepExport.lean"` (~line 2818) and the
+- [x] Update `Tests/BimodalTest/Automation/ProofFirstTests.lean` (import) and `Tests/BimodalTest.lean` comments
+- [x] **Functional**: update `C22_B="FormalSystem/Automation/ProofStepExport.lean"` (~line 2818) and the
       note text (~2842) in `scripts/check-module-invariants.sh`. Also update the matching C16 table comment rows
-- [ ] Update the cross-references in `TableauBridge.lean`, `ProofStepExtractor.lean` (if present), `docs/training/PIPELINE.md`,
+- [x] *(deviation: altered — TableauBridge.lean, ProofStepExtractor.lean, curate_benchmark.py and module-invariants-manifest.txt held no phase-2 names; TemporalDerived.lean, docs/ARCHITECTURE.md and historical comments in check-module-invariants.sh were updated instead, with "(then ProofStepExport.lean)" kept where the text is historical)* Update the cross-references in `TableauBridge.lean`, `ProofStepExtractor.lean` (if present), `docs/training/PIPELINE.md`,
       `docs/development/MODULE_INVARIANTS.md` (~36, ~219), `docs/development/NAMING_CONVENTION_DEVIATION.md`
       (historical wording: "`ProofExtractorMain.lean` (then `ProofStepExport.lean`)"),
       `scripts/curate_benchmark.py`, `scripts/module-invariants-manifest.txt`, and `.github/workflows/ci.yml` line ~46 (comment)
-- [ ] Run `lake build FormalSystem.Automation.ProofExtractorMain FormalSystem.Automation.TableauProofStepsMain FormalSystem.Automation.ProofFirstGeneratorMain BimodalTest`
-- [ ] Commit: `task 591: phase 2: proof-step family rename`
+- [x] Run `lake build FormalSystem.Automation.ProofExtractorMain FormalSystem.Automation.TableauProofStepsMain FormalSystem.Automation.ProofFirstGeneratorMain BimodalTest`
+- [x] Commit: `task 591: phase 2: proof-step family rename`
 
 **Timing**: 1 hour
 

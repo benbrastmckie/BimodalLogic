@@ -20,7 +20,7 @@ outside `Boneyard/`, every one of them invisible to `runLinter` — not exempted
 to it — by one of four independent mechanisms:
 
 1. **Out-of-closure modules.** `FormalSystem/Theorems/ContextualProofs.lean` held 66 of the 71.
-   Its only importer was `FormalSystem/Automation/ProofStepExport.lean`, itself a `lean_exe` root
+   Its only importer was `FormalSystem/Automation/ProofExtractorMain.lean` (then named `ProofStepExport.lean`), itself a `lean_exe` root
    outside the lint closure, so nothing lints or elaborates the file through the `FormalSystem`
    library target.
 2. **The upstream `_1` / `_2` / `_mathlib` heuristic.** Mathlib's `isBadNameWithUnderscore`

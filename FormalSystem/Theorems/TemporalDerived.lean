@@ -62,7 +62,7 @@ under open guard semantics `(t,s)`.
 - `formulaOrComm`: `(A∨B) → (B∨A)`
 
 ### Computability Summary
-- **Computable** (8 unique, suitable for ProofStepExport): fMono, pMono,
+- **Computable** (8 unique, suitable for ProofExtractorMain): fMono, pMono,
   untilMonoGuard, sinceMonoGuard, untilMonoEvent, sinceMonoEvent, fNegG, pNegH
 - **Noncomputable** (12): gDistribution, hDistribution, gTransitivity, hTransitivity,
   gMono, hMono, gAndIntro, hAndIntro, gImpTrans, hImpTrans,
@@ -435,7 +435,7 @@ def pMono {fc : FrameClass} (φ ψ : Formula) :
 
 Past-necessitation of `h`, then `pMono`. Past dual of `someFutureMono`, but
 `noncomputable` because `FormalSystem.Theorems.pastNecessitation` is; this
-asymmetry is why only `someFutureMono` is suitable for `ProofStepExport`.
+asymmetry is why only `someFutureMono` is suitable for `ProofExtractorMain`.
 -/
 noncomputable def somePastMono {fc : FrameClass} {φ ψ : Formula} (h : ⊢[fc] φ.imp ψ) :
     ⊢[fc] φ.somePast.imp ψ.somePast :=
