@@ -396,22 +396,22 @@ Algebraic = 30 files. Confirm with `grep -rl ConvexHistory FormalSystem/Metalogi
 
 ---
 
-### Phase 8: Talk slide update [NOT STARTED]
+### Phase 8: Talk slide update [COMPLETED]
 
 **Goal**: Make the slide "Semantics in Lean II: Histories and Models" quote the new definitions
 verbatim.
 
 **Tasks**:
-- [ ] In `~/Philosophy/Papers/PossibleWorlds/talks/57_possible_worlds_tense_modal/slides.md`
+- [x ] In `~/Philosophy/Papers/PossibleWorlds/talks/57_possible_worlds_tense_modal/slides.md`
   (about lines 1556-1630): replace the `structure ConvexHistory … extends PartialHistory` block
   and its `IsTotal` wrapper with `def IsTotal (τ : PartialHistory F) : Prop := ∀ t, τ.domain t`.
   Optionally add a one-line `IsConvex` predicate.
-- [ ] Change `TaskFrame.HF` to `{τ : PartialHistory F // τ.IsTotal}`.
-- [ ] Retarget the `TruthAt` signature (about line 1673), the box clause (about line 1741), and
+- [x ] Change `TaskFrame.HF` to `{τ : PartialHistory F // τ.IsTotal}`.
+- [x ] Retarget the `TruthAt` signature (about line 1673), the box clause (about line 1741), and
   the history binder at about line 1836 to `PartialHistory F`.
-- [ ] Change the gloss to "World history: a partial history with X = D".
-- [ ] Copy each quoted snippet from the final Lean source (post-Phase 6) rather than retyping it.
-- [ ] Commit in the PossibleWorlds repo, staging only `slides.md`. That repo has unrelated dirty
+- [x ] Change the gloss to "World history: a partial history with X = D".
+- [x ] Copy each quoted snippet from the final Lean source (post-Phase 6) rather than retyping it.
+- [x ] Commit in the PossibleWorlds repo, staging only `slides.md`. That repo has unrelated dirty
   files, so never use `git add -A`.
 
 **Timing**: 0.75 hours
