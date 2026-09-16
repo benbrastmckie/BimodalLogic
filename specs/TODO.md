@@ -1,5 +1,5 @@
 ---
-next_project_number: 581
+next_project_number: 593
 ---
 
 # TODO
@@ -11,17 +11,21 @@ next_project_number: 581
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,560,564,565,567,570 | 298,464,502,559,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566 | 231,465,497,565 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578,581,582,587,590,591,592 | -- | agent-system, algebraic-representation, automation, ... |
+| 2 | 231,282,296,465,497,560,564,565,567,570,584,586 | 298,464,502,559,563,568,582,591 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,583 | 231,465,497,565,581,582,586,590 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,585 | 428,498,499,500,583,584 | algebraic-representation, code-quality, decidability, ... |
+| 5 | 410,501,588,589 | 125,429,585 | algebraic-representation, code-quality, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
 | 9 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+592 [NOT STARTED] — .claude/rules/source-store-deploy-boundary.md directs every...
 
 ### Algebraic Representation
 
@@ -34,6 +38,10 @@ next_project_number: 581
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the... (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems...
 
+### Automation
+
+591 [NOT STARTED] — Adopt a naming convention that distinguishes leanexe roots...
+
 ### Categorical Structure
 
 563 [NOT STARTED] — Promote the presheaf skeleton into the library. DELIVER: the...
@@ -41,6 +49,13 @@ next_project_number: 581
   └─ 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
     └─ 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
   └─ 567 [NOT STARTED] — Prove app:presheaf-dictionary's Determinism clause -- F...
+
+### Code Quality
+
+587 [NOT STARTED] — Clear the two broken: entries in...
+585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
+  └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
+  └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
 ### Dataset Enhancement
 
@@ -64,11 +79,13 @@ next_project_number: 581
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
+581 [NOT STARTED] — Repair the four wired bi-lasso evidence probes so bash...
 
 ### Documentation
 
 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
+590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
 
 ### Formula Refactor
 
@@ -94,21 +111,302 @@ next_project_number: 581
   └─ 560 [NOT STARTED] — GATED IMPLEMENTATION -- do not plan or dispatch until...
 568 [NOT STARTED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
+582 [NOT STARTED] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Paper Refactor
 
 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
+584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
 
 ### Publication Quality
 
 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
+
+### Reference Book
+
+586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
+
+### Repo Hygiene
+
+583 [NOT STARTED] — Wire the repository's check scripts into...
 
 ### Infrastructure
 
 542 [NOT STARTED] — Triage the dead-declaration census that C17 produces,...
 
 ## Tasks
+
+### 592. Fix unfollowable source store rule
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [592_fix_unfollowable_source_store_rule/reports/01_source-store-rule-has-no-target.md]
+
+**Description**: `.claude/rules/source-store-deploy-boundary.md` directs every write targeting `.claude/**` to `agent-system/extensions/**` instead. No `agent-system/` directory exists in this repository. The rule is therefore unfollowable here: an agent obeying it has nowhere to write, and an agent ignoring it writes into `.claude/`, which is gitignored (`/.claude`, .gitignore:85) and overwritten by the next deploy -- exactly the outcome the rule exists to prevent.
+
+The rule is correct in substance; the problem is that it hard-codes a source-store path that is right in the agent-system repository and absent in every repository the system deploys INTO. Its own 'Known limitation' paragraph already names the adjacent blind spot -- a PostToolUse hook 'cannot know ... which repository the path belongs to'.
+
+Note two traps: editing the rule file in place is the very thing it forbids AND would be wiped by the next deploy; and `.claude/` is gitignored here, so an in-place fix is unreviewable. Check `.syncprotect` first -- if the file is listed there, a local correction would survive sync, which changes the calculus.
+
+Options: make the path conditional ('if this repository contains `agent-system/`, edit there; otherwise the source store is external -- do not edit `.claude/**`, report the needed change instead'); have the deploy step rewrite the 'Correct Edit Target' section with the real location, which it knows; or scope the rule out of deployed trees, keeping only the repository-independent agent-contract half.
+
+The durable fix lands in the agent-system repository. This task's deliverable HERE is the diagnosis, the decision, and either a precise patch for that repository or a clarifying note in the tracked root `CLAUDE.md` -- never an edit under `.claude/`.
+
+See specs/reviews/review-2026-09-16.md, Finding L3.
+
+---
+
+### 591. Consolidate automation export names
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: automation
+- **Dependencies**: None
+- **Research**: [591_consolidate_automation_export_names/reports/01_confusable-export-module-names.md]
+
+**Description**: Adopt a naming convention that distinguishes `lean_exe` roots from library modules in `FormalSystem/Automation/`, and apply it to the five confusable modules.
+
+`DataExport.lean` (395, a toJson/prettyPrint library), `DatasetExport.lean` (1,354, the `dataset_generator` exe), `DatasetExporter.lean` (348, a dataset-assembly library), `ProofStepExport.lean` (1,692, the `proof_extractor` exe), `ProofStepExtractor.lean` (361, a library). `Export` means 'is the executable' in two of five cases and 'is a library' in the others; `DataExport` and `DatasetExport` differ by three characters and are functionally unrelated; and `DatasetExporter` -- the name that most suggests 'the thing that exports' -- is a library. A dispatch asked to fix 'the dataset exporter' has three plausible files and will pick by name.
+
+Each module is individually well-documented and coherent, so this is a rename, not a restructure. Propose ONE convention and check it against all thirteen `lean_exe` roots in `lakefile.lean` -- several have the same shape (`BenchmarkOracle`, `TraceExporter`, `MachineAppendixExport`, `TableauProofStepPipeline`). A convention that fixes five and leaves eight inconsistent is worth less.
+
+Keep `lake exe` TARGET names stable unless there is a reason to move them -- they appear in external documentation and the Hugging Face dataset card. Constraints: C25 scrapes `root :=` at run time (so `root`/`srcDir` must stay consistent); CI's exe-root step greps the same pattern; C8 requires a sibling aggregator if a subdirectory is introduced; C4/C5/C12/C24 all move with a rename; and `docs/training/PIPELINE.md`, `typst/chapters/p4-dataset-pipeline.typ`, `FormalSystem/Automation.lean` and `FormalSystem/README.md` all name these modules.
+
+Verify: `lake build` exits 0; both executables still run; full `check-module-invariants.sh` passes (C4/C5/C8/C12/C24/C25); `typst-sync-check.sh` still resolves every backticked module name; `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` still work.
+
+See specs/reviews/review-2026-09-16.md, Finding M5.
+
+---
+
+### 590. Retire stale development documentation
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: documentation
+- **Dependencies**: None
+- **Research**: [590_retire_stale_development_documentation/reports/01_stale-docs-and-task-citations.md]
+
+**Description**: Clear the 142 task-number citations under `docs/` and retire the two stale development docs that carry most of them. This unblocks `ENFORCE_C9_DOCS=1`, which the harness notes can be flipped 'once the citations are cleared' -- hand that switch to the CI task.
+
+Breakdown: `docs/development/PHASED_IMPLEMENTATION.md` 100, `docs/training/PIPELINE.md` 11, `docs/research/NONCOMPUTABLE.md` 5, `docs/project-info/MAINTENANCE.md` 5, `docs/architecture/ADR-004-...` 5. The hard-gated sibling C9 (FormalSystem/, lakefile.lean, README.md, scripts/) is already green, so docs/ is the last pocket. This repository has performed a vault operation (`vault_count: 1`), so some of these numbers are not merely opaque but wrong.
+
+`PHASED_IMPLEMENTATION.md` (548 lines) is a roadmap for 'completing Layer 0 (Core TM)' organised around Tasks 1-7 and '93-143 hours' -- soundness, completeness at four frame classes, strong completeness at two, the decision procedure and the automation layer all exist and are axiom-pinned. Recommended disposition: delete, folding forward anything durable. Referenced from `docs/README.md`, `docs/development/README.md` and `docs/development/MODULE_INVARIANTS.md` -- check the last one specifically in case it cites something structural that needs a home.
+
+`LATEX_STANDARDS.md` prescribes a `{Theory}/latex/{assets,subfiles,bib}` layout that does not exist here (`latex/` sits at the repository root). It reads as inherited boilerplate. Decide what `latex/` is now that README points the reference manual at the Typst edition and `latex/` is explicitly not kept in sync; write the doc to match, or archive both.
+
+Read `.claude/context/standards/task-reference-exemptions.md` BEFORE starting: the goal is zero UNMARKED citations, not zero mentions of history -- an ADR may legitimately name the task that produced it via the `task-ref-ok` marker.
+
+Verify: C9D reports 0 (or only marked citations); `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0; C5, C12 and C13 still pass (deleting a referenced file breaks C13 if referrers are missed); `readme-lint.sh` still PASS.
+
+See specs/reviews/review-2026-09-16.md, Finding M3.
+
+---
+
+### 589. Disambiguate basename citations
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: Task 584, Task 585, Task 591
+- **Research**: [589_disambiguate_basename_citations/reports/01_unverifiable-citation-inventory.md]
+
+**Description**: C20 tier 1 verifies 1,012 `file.lean:NNN` citations land on a real, non-blank line. A further 35 are unverifiable and the check reports them and moves on. They are precisely the citations most likely to be silently wrong -- a basename ambiguous to the checker is ambiguous to a reader too, and none has ever had its line number checked.
+
+22 are AMBIGUOUS (basename resolves to 2+ live files): `Axioms.lean` x7, `Defs.lean` x7, `Formula.lean` x6, `Completeness.lean` x1, `Soundness.lean` x1. Fix by qualifying the path -- but note that is only half the job: once the path resolves, tier 1 checks the LINE, and these lines have never been checked. Expect some to be wrong; correct the number, not the prose. Exploitable structure: the 7 `DenseModelSurgery/` citations almost certainly all mean their own sibling `DenseModelSurgery/Defs.lean`, and `Defs.lean:461` recurs three times across three files.
+
+13 are UNRESOLVED and need ONE convention decision, not 13 edits: 11 cite files in `FormalSystem/Boneyard/` (`NegationIndep.lean` x8, `RefutationF2.lean` x2, `ExteriorPinnedProbeK.lean` x1 -- all real archived files, pruned from every C20 walker by name), and 2 cite `Mathlib/Tactic/Linter/Header.lean` from `check-copyright-headers.sh`, which are genuinely external and doing useful work. Options: a marker suffix C20 recognises; extending C20's resolver to check the archive for real; or dropping line numbers from archive citations in favour of declaration names. The third is most consistent with how this repository already thinks about citations -- C15 resolves paper anchors by name 'never by line number, ... which is what lets the lint survive reflowing', and commit `a16df671f` de-line-numbered citations for that reason. Evaluate it first.
+
+The complete 35-row list is in the report; no re-measurement needed.
+
+Verify: C20's INFO count is 0 or exactly the intentionally-external set; tier 1's verified count rises by the number of newly-resolvable citations with still zero out-of-range or blank-line landings; tier 2 still zero.
+
+See specs/reviews/review-2026-09-16.md, Finding M4.
+
+---
+
+### 588. Triage zero occurrence declarations
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: Task 585, Task 591
+- **Research**: [588_triage_zero_occurrence_declarations/reports/01_dead-declaration-triage.md]
+
+**Description**: Triage the 1,029 declarations C17 reports as having zero occurrences outside their own declaring line. The scan runs on every invariant run, is explicitly REPORTED-never-gated and explicitly approximate, and has never been triaged -- 1,029 is large enough that the number has stopped being informative.
+
+DELIVERABLE IS A CLASSIFICATION, NOT A DELETION SPREE. The scan is textual, so false positives are guaranteed: `instance` declarations resolved by typeclass search, `@[simp]`/`@[aesop]`-attributed declarations reached by attribute, `lean_exe` `main` entry points, constructors reached by pattern matching, and declarations whose only consumers are in `Boneyard/` (excluded from every walker).
+
+Recommended order: (1) stratify by declaration kind and directory before reading anything; (2) mechanically eliminate the known false-positive classes and report how many that removes -- highest-value first step; (3) re-run with `Boneyard/` as a reference source, since 'only consumer is archived' is a different case from 'no consumer'; (4) triage survivors by CLUSTER, not by line; (5) deliver a disposition per cluster and execute only the unambiguous ones, spawning follow-ups for anything contentious.
+
+Strongest true-positive signal to start from: `Automation/Normalization.lean`'s ten consecutive `*_fold` / `*_unfold` entries (`release_unfold` 146, `weak_until_unfold` 150, `trigger_unfold` 154, `weak_since_unfold` 158, `top_fold` 753, `diamond_fold` 760, `some_future_fold` 764, `some_past_fold` 768, `next_fold` 772, `prev_fold` 776). Ten unreferenced siblings is not the shape of a false positive -- and `Boneyard/RetiredTactics/Normalization.lean` holds seven tactic macros lifted out of that very file, which are plausibly their former consumers.
+
+Consider extending C17's filters permanently so the number it reports is the number that matters -- arguably the most durable deliverable here. Do NOT gate C17.
+
+Verify: `lake build` exits 0 and the full invariant harness passes after every deletion batch (C2/C14 baselines unmoved, C15 anchors unbroken, C21 intact); the drop in C17's count is accounted for line by line.
+
+See specs/reviews/review-2026-09-16.md, Finding L1.
+
+---
+
+### 587. Repair or retire broken benchmark modules
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: None
+- **Research**: [587_repair_or_retire_broken_benchmark_modules/reports/01_atom-type-drift-in-benchmarks.md]
+
+**Description**: Clear the two `broken:` entries in `scripts/module-invariants-manifest.txt`: `BimodalTest.ProofSystem.DerivationBenchmark` (374 lines) and `BimodalTest.Semantics.SemanticBenchmark` (358 lines). Both pass `String` where `Atom` is now expected -- they predate the Atom type change and were never updated because nothing builds them. C6 does not compile-check `broken:` entries, so these are the only two live .lean files in the repository with no guarantee of any kind.
+
+Recording them was right; leaving them parked is not. Get the real error count first (`lake env lean` on each, minutes). If small: repair AND pair it with re-manifesting them as plain compile-checked unreachable modules, so C6 guards them every run -- a repaired module that stays unimported rots again immediately. Wiring them into `Tests/BimodalTest.lean` is the other pairing but would slow every `lake test`. Note `DerivationBenchmark.lean` imports `BimodalTest.Automation.ProofSearchBenchmark`; check its status first.
+
+If large: archive both to `FormalSystem/Boneyard/` with a README recording what they measured, following the `RetiredTactics/` precedent -- but first apply the same measurement that retired those (zero real invocations anywhere live or in Tests/). These are benchmark harnesses, not correctness tests, and their docstrings suggest hand-invocation via `#eval`.
+
+Verify: `check-module-invariants.sh` passes with ZERO `broken:` entries remaining -- that is the success criterion either way. If archived, B0 still reports exactly 1 Boneyard directory and C11 resolves every archived import.
+
+See specs/reviews/review-2026-09-16.md, Finding M2.
+
+---
+
+### 586. Rewrite typst proof automation chapter
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: reference-book
+- **Dependencies**: Task 591
+- **Research**: [586_rewrite_typst_proof_automation_chapter/reports/01_retired-tactics-chapter-drift.md]
+
+**Description**: `bash scripts/typst-sync-check.sh` exits 1 with 4 Check-1 violations, all in `typst/chapters/p4-proof-automation.typ`: it cites `AesopRules.lean`, `Automation/Tactics/Helpers.lean` and `Tactics/Helpers.lean` (all archived to `FormalSystem/Boneyard/RetiredTactics/` on 2026-09-07), plus an unmatched `tm_auto 5` span.
+
+The flagged spans understate it. The `== Tactics` section presents `tm_auto`, `temporal_search` and `propositional_search` as live -- all three were absorbed into `modal_search` and removed. The entire `== Aesop Integration` section describes an archived file's rule registrations in the present tense. And the `== Module Map` table has 3 of 7 rows naming files that are absent or misfiled, with every line count stale: `Tactics/Helpers.lean` (claims 1,032; absent), `AesopRules.lean` (claims 276; absent), `EFGameTactics.lean` (claims 326; actually under `Metalogic/WeakCanonical/`, not `Automation/`), `Tactics/Commands.lean` 710->586, `ProofSearch/Core.lean` 1,195->1,283, `Strategies.lean` 379->401, `SuccessPatterns.lean` 423->429. Five live modules are missing entirely, including `Tactics/UserTactics.lean` (275), which now holds `apply_axiom` and `modal_t`. The caption claims 'live line counts' and the text asserts all listed modules are sorry-free -- impossible for two absent files.
+
+This is publication-facing. Verify the tactic surface directly from `Automation/Tactics/*.lean` and `FormalSystem/Automation.lean`'s docstring; do not infer it from the chapter. Consider replacing `== Aesop Integration` with a short retirement note citing the measurement in `Boneyard/RetiredTactics/README.md` -- genuinely good content for a proof-automation chapter. Also decide whether the Module Map should become machine-generated (extend `typst-sync-check.sh` Check 2, which already recomputes counts for `generated/status.typ`) and record the decision; a hand-fix will drift again. The whitelist is not the fix.
+
+Verify: `typst-sync-check.sh` exits 0 with Checks 2/3 still passing; `typst compile` succeeds; every module named resolves to a live file with a matching `wc -l`; no archived declaration described in the present tense.
+
+See specs/reviews/review-2026-09-16.md, Finding M1.
+
+---
+
+### 585. Burn down compiler warnings and add gate
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: Task 583, Task 584
+- **Research**: [585_burn_down_compiler_warnings_and_add_gate/reports/01_compiler-warning-inventory.md]
+
+**Description**: `lake build` exits 0 with 316 warnings across 47 live files, and nothing gates them: C16 runs the Batteries `env_linter` (a declaration linter) which does not see Lean compiler warnings. The two sets are disjoint -- this is a real hole, not a redundancy.
+
+By kind: unused section variable 86, unused simp argument 84, deprecated `push_neg` 71, 'tactic does nothing' 25, unreferenced variable name 25, `Try this: intro` 12, 'never executed' 9, deprecated `IsTrichotomous`/`IsIrrefl` 4.
+
+75 of those are forward-compatibility debt that becomes build errors at the next Mathlib bump. 34 ('does nothing' + 'never executed') are correctness smells -- each marks a tactic whose removal changes nothing, usually a proof that drifted from its intended shape. These deserve reading, not bulk deletion; they cluster with the unused-simp warnings in the termination layer (`SubformulaProperty.lean` 78, `MintPotential.lean` 15, `Fuel.lean` 2), which suggests ONE refactor left several proofs carrying dead tactics. Investigate those three files as one cause.
+
+Then add a gate. Preferred: a CI step that fails when the `warning:` count exceeds a committed baseline (the `nolints.json` pattern applied to compiler warnings), so a PR that adds a warning must edit the baseline and say why. `-DwarningAsError=true` in `lakefile.lean` is the strict alternative but is brittle against Mathlib deprecations. Coordinate the gate with task 583 so CI changes once.
+
+Phase it: (1) push_neg + Mathlib deprecations (75, mechanical); (2) the termination-layer trio (95, needs reading); (3) section variables (86, rebuild per file); (4) names + Try this + remaining simp args (40); (5) the gate. Commit per phase.
+
+Verify: warning count at target; `lake build` exits 0; full `check-module-invariants.sh` passes with C2/C14 axiom baselines unmoved and no `sorry` introduced.
+
+See specs/reviews/review-2026-09-16.md, Finding H4.
+
+---
+
+### 584. Reconcile lean tree with paper vocabulary
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-refactor
+- **Dependencies**: Task 582
+- **Research**: [584_reconcile_lean_tree_with_paper_vocabulary/reports/01_paper-vocabulary-drift.md]
+
+**Description**: `bash scripts/check-paper-definitions.sh` reports case (c) -- FAIL: 16 recorded definitions drifted in the upstream JPL paper, plus one anchor (`thm:M5-valid`) that no longer resolves.
+
+Most are reflow. THREE are substantive renames, and the tree has not followed any of them:
+  - 'converse convention' -> 'reflection convention' (`def:task-relation`). Tree: 35 prose occurrences, `FrameOver.converse` at 9 sites, ZERO occurrences of the new term.
+  - metarule `\aref{TD}` -> `\aref{TR}` (`def:BX`). Tree: `swapTemporal` x925, 'temporal duality' x77, `TemporalDuality` x4, bare `TD` across ~14 files.
+  - `\past`/`\future` labels 'Past'/'Future' -> 'Some Past'/'Some Future' (`def:BLplus-language`).
+
+THIS IS A DECISION TASK BEFORE IT IS AN EDITING TASK. For each of the three, the user chooses: adopt the paper's name, or record a deliberate divergence in `specs/paper-definitions-of-record.md`. Put the three separately, with the counts -- the 44-site rename and the 925-site rename are not one decision. Nothing is renamed before the choices are made.
+
+Also: re-resolve `thm:M5-valid` via the record's `--resolve` mode; check the 'smallest extension closed under' -> 'extends to include' phrasing change against the `DerivationTree` docstrings; and note that `def:BX` acquired a Burgess/Xu axiom-provenance footnote with no counterpart in `ProofSystem/Axioms.lean` (an opportunity, possibly its own task). Re-pin the record per its documented dirty-pin convention.
+
+Verify: `bash scripts/check-paper-definitions.sh` exits 0 (case a or b); C15 still resolves all 58 paper-anchor citations; no site attributes a declined-rename term to the paper anchor; `lake build` exits 0 with no axiom-baseline movement.
+
+See specs/reviews/review-2026-09-16.md, Finding H2.
+
+---
+
+### 583. Wire check scripts into ci
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: Task 581, Task 582, Task 586, Task 590
+- **Research**: [583_wire_check_scripts_into_ci/reports/01_uncalled-check-scripts.md]
+
+**Description**: Wire the repository's check scripts into `.github/workflows/ci.yml`. This is the root cause of three other sweep findings.
+
+`ci.yml` is 65 lines: `lean-action` (build/test/lint) plus a loop over `lean_exe` roots. It does NOT run `scripts/check-module-invariants.sh` -- the 26-check, ~3,300-line phase gate every architecture document cites appears in the workflow ONLY inside a comment on line 48. Five further checks are referenced nowhere outside their own files: `check-copyright-headers.sh`, `check-metalogic-cycles.sh`, `check-evidence-probes.sh`, `check-paper-definitions.sh`, `readme-lint.sh`, `typst-sync-check.sh`.
+
+Runtime is not the obstacle: measured locally, the structural pass (20s) plus copyright (13s), typst (15s), readme-lint (7s) and cycles (<1s) total under a minute.
+
+Two need per-script judgment. `check-paper-definitions.sh` reads a paper in a repository CI cannot see -- make it skip-and-report-neutral on an absent paper rather than fail. `check-evidence-probes.sh` needs a warm Lake cache and a decision on whether a rotted probe fails or reports (its header argues for fails). Also flip `ENFORCE_C9_DOCS=1` once task 590 clears the docs citations.
+
+Invoke `check-copyright-headers.sh` in its strict live-set form (`--strict --exclude '*/Boneyard/*' FormalSystem`); the bare form exits 0 unconditionally.
+
+Verify: a branch with a deliberate violation of each wired check fails CI, and the failing step names the script; a clean run is green; the CI wall-clock increase is measured and recorded.
+
+See specs/reviews/review-2026-09-16.md, Finding H3.
+
+---
+
+### 582. Break or rebaseline metalogic cycle
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+- **Research**: [582_break_or_rebaseline_metalogic_cycle/reports/01_conservativity-deterministic-cycle.md]
+
+**Description**: `bash scripts/check-metalogic-cycles.sh` exits 1: it asserts exactly one directory-level import cycle in `FormalSystem/Metalogic/` and finds two. The new one is `Conservativity <-> Deterministic`, whose entire surface is two import lines:
+  - `Conservativity/Plus/Corollaries.lean:8` -> `FormalSystem.Metalogic.Deterministic.Completeness`
+  - `Deterministic/Soundness.lean:9` -> `FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness`
+
+Both landed in commit `5bd08ce1a` (2026-09-08), 99 commits ago, undetected because the script is not in CI. `FormalSystem/Metalogic/README.md:73` still claims 'exactly one directory-level cycle' and cites this script as proof.
+
+DECIDE, do not patch: (A) break the cycle -- research what each side actually consumes and whether the shared dependency lifts into a third directory; or (B) accept it and re-baseline, which requires a recorded decision with the costing ADR-006 applied, a script header naming BOTH accepted cycles so a third still fails, and an ADR. Bumping the expected count from 1 to 2 without (B)'s paperwork is exactly what the script exists to prevent. Cost Option A first and present the choice; do not pick silently.
+
+Verify: `bash scripts/check-metalogic-cycles.sh` exits 0; `lake build` exits 0; `bash scripts/check-module-invariants.sh` passes in full; `Metalogic/README.md`'s cycle claim matches what the script now asserts.
+
+See specs/reviews/review-2026-09-16.md, Finding H1.
+
+---
+
+### 581. Repair bilasso evidence probes
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Research**: [581_repair_bilasso_evidence_probes/reports/01_bilasso-probe-frameclass-drift.md]
+
+**Description**: Repair the four wired bi-lasso evidence probes so `bash scripts/check-evidence-probes.sh` exits 0.
+
+The path half is ALREADY FIXED: the probes were moved out of gitignored `specs/archive/` back into version control at `specs/evidence/bi-lasso-decision-layer/`, and the guard was repointed. What remains is Lean repair. With the path resolved, all four probes now load and NONE compiles: the `FrameClass`/`TemporalOrder` refactor changed `FiniteFilteredTaskFrame`'s first argument from a `Type` to a `TemporalOrder`, and `FormalSystem.Semantics.TaskFrame.step` no longer exists. ~30 errors across four files.
+
+HARD CONSTRAINT, from the guard's own header: do NOT delete a probe or weaken its statements to make this pass. Repair the drift, or -- if an obstruction genuinely no longer holds under the new API -- say so explicitly and flag that the decision it was holding in place needs revisiting. That is a legitimate and more valuable outcome than a green run.
+
+Leave `spike-untl-unfolding-and-fwd-obstruction` DEFERRED and unwired.
+
+Verify: `bash scripts/check-evidence-probes.sh` exits 0 (4 PASS, 1 SKIP); no repaired probe shows `sorryAx` in `#print axioms`; every changed theorem statement is justified as API-tracking, not content change.
+
+See specs/reviews/review-2026-09-16.md, Finding C1.
+
+---
 
 ### 580. Split semantics truth lean s corresponde
 - **Status**: [COMPLETED]
