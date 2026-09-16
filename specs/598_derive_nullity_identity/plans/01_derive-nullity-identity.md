@@ -1,7 +1,7 @@
 # Implementation Plan: Task #598
 
 - **Task**: 598 - Derive nullity_identity instead of carrying it as a FrameOver field
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking (task 596 nesting is completed; task 599 is in planning and overlaps only on `FormalSystem/Semantics.lean` prose)
 - **Research Inputs**: specs/598_derive_nullity_identity/reports/01_derive-nullity-identity.md

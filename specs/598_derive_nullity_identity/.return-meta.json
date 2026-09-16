@@ -1,22 +1,32 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-16T11:54:43-07:00",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/598_derive_nullity_identity/plans/01_derive-nullity-identity.md",
-      "summary": "5-phase plan: relocate/weaken helpers, atomically remove the FrameOver.nullity_identity field in favor of derived theorems across 17 construction sites, then Lean and external prose updates and a final gate."
+      "type": "summary",
+      "path": "specs/598_derive_nullity_identity/summaries/01_derive-nullity-identity-summary.md",
+      "summary": "Removed the nullity_identity field from FrameOver; it is now a derived theorem (nullity from serial+limit, eq_of_taskRel_zero from limit), with all 18 construction-site discharges and dead helpers deleted and prose updated."
     }
   ],
-  "next_steps": "Run /implement 598 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 5,
-  "dependency_waves": [[1], [2], [3, 4], [5]],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1789584086_2b6633_598",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "FrameOver now carries exactly the paper's four def:frame axioms plus converse and a nonempty carrier; nullity_identity is a theorem with an unchanged statement, derived from the serial and limit fields. All construction sites, dead helpers, docstrings, docs and typst prose were updated, and the full FormalSystem and BimodalTest builds are green.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 4
+  "metadata": {
+    "session_id": "sess_1789584086_2b6633",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "commits": ["9475bb3da", "df57408f0", "054dd8b0a", "88abc3915"]
+  }
 }

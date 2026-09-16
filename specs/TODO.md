@@ -11,7 +11,7 @@ next_project_number: 602
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,598,599,600 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,599,600 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,506,560,564,565,567,569,570,585,601 | 298,464,502,559,563,568,584,586,599 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,588,597 | 231,465,497,565,569,585 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,540,543 | 428,498,499,500,588,597 | algebraic-representation, decidability, metalogic, ... |
@@ -98,7 +98,6 @@ next_project_number: 602
 
 ### Semantics
 
-598 [IMPLEMENTING] — Remove the nullityidentity field from FrameOver in...
 599 [IMPLEMENTING] — Simplify the history definitions to match the paper...
   └─ 601 [NOT STARTED] — Align the Lean task-frame definition with the paper's...
 
@@ -155,12 +154,13 @@ next_project_number: 602
 ---
 
 ### 598. Derive nullity identity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [598_derive_nullity_identity/reports/01_derive-nullity-identity.md]
 - **Plan**: [598_derive_nullity_identity/plans/01_derive-nullity-identity.md]
+- **Summary**: [598_derive_nullity_identity/summaries/01_derive-nullity-identity-summary.md]
 
 **Description**: Remove the nullity_identity field from FrameOver in FormalSystem/Semantics/TaskFrame.lean and derive it instead: reflexivity from serial + limit (TaskFrame.nullity_of_serial_limit) and injectivity-at-zero from limit alone, exposing the result as a theorem (e.g. FrameOver.nullity_identity) so downstream uses keep working. Update every frame construction that currently supplies the field (Independence frames, FlowFrame, IntegerModel/ReynoldsBridge, FMP/Filtration, test generators, etc.), deleting the now-redundant proofs, and revise docstrings and Semantics.lean prose that describe the field as kept for construction ergonomics. Aim for the most elegant, minimal frame definition matching the paper (the four constraints plus converse), avoiding cruft; coordinate with the in-flight semantics file nesting task
 

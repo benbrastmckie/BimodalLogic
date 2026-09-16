@@ -70,12 +70,12 @@
     {
       "project_number": 598,
       "project_name": "derive_nullity_identity",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Remove the nullity_identity field from FrameOver in FormalSystem/Semantics/TaskFrame.lean and derive it instead: reflexivity from serial + limit (TaskFrame.nullity_of_serial_limit) and injectivity-at-zero from limit alone, exposing the result as a theorem (e.g. FrameOver.nullity_identity) so downstream uses keep working. Update every frame construction that currently supplies the field (Independence frames, FlowFrame, IntegerModel/ReynoldsBridge, FMP/Filtration, test generators, etc.), deleting the now-redundant proofs, and revise docstrings and Semantics.lean prose that describe the field as kept for construction ergonomics. Aim for the most elegant, minimal frame definition matching the paper (the four constraints plus converse), avoiding cruft; coordinate with the in-flight semantics file nesting task",
       "topic": "semantics",
       "created": "2026-09-16T18:26:24Z",
-      "last_updated": "2026-09-16T18:53:56Z",
+      "last_updated": "2026-09-16T20:02:39Z",
       "session_id": "sess_1789584086_2b6633",
       "artifacts": [
         {
@@ -87,9 +87,15 @@
           "path": "specs/598_derive_nullity_identity/plans/01_derive-nullity-identity.md",
           "type": "plan",
           "summary": "5-phase plan: relocate/weaken helpers, atomically remove the FrameOver.nullity_identity field in favor of derived theorems across 17 construction sites, then Lean and external prose updates and a final gate."
+        },
+        {
+          "path": "specs/598_derive_nullity_identity/summaries/01_derive-nullity-identity-summary.md",
+          "type": "summary",
+          "summary": "Removed the nullity_identity field from FrameOver; it is now a derived theorem (nullity from serial+limit, eq_of_taskRel_zero from limit), with all 18 construction-site discharges and dead helpers deleted and prose updated."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "FrameOver now carries exactly the paper's four def:frame axioms plus converse and a nonempty carrier; nullity_identity is a theorem with an unchanged statement, derived from the serial and limit fields. All construction sites, dead helpers, docstrings, docs and typst prose were updated, and the full FormalSystem and BimodalTest builds are green."
     },
     {
       "project_number": 594,
