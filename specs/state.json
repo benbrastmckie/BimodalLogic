@@ -101,7 +101,7 @@
     {
       "project_number": 581,
       "project_name": "repair_bilasso_evidence_probes",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Repair the four wired bi-lasso evidence probes so `bash scripts/check-evidence-probes.sh` exits 0.\n\nThe path half is ALREADY FIXED: the probes were moved out of gitignored `specs/archive/` back into version control at `specs/evidence/bi-lasso-decision-layer/`, and the guard was repointed. What remains is Lean repair. With the path resolved, all four probes now load and NONE compiles: the `FrameClass`/`TemporalOrder` refactor changed `FiniteFilteredTaskFrame`'s first argument from a `Type` to a `TemporalOrder`, and `FormalSystem.Semantics.TaskFrame.step` no longer exists. ~30 errors across four files.\n\nHARD CONSTRAINT, from the guard's own header: do NOT delete a probe or weaken its statements to make this pass. Repair the drift, or -- if an obstruction genuinely no longer holds under the new API -- say so explicitly and flag that the decision it was holding in place needs revisiting. That is a legitimate and more valuable outcome than a green run.\n\nLeave `spike-untl-unfolding-and-fwd-obstruction` DEFERRED and unwired.\n\nVerify: `bash scripts/check-evidence-probes.sh` exits 0 (4 PASS, 1 SKIP); no repaired probe shows `sorryAx` in `#print axioms`; every changed theorem statement is justified as API-tracking, not content change.\n\nSee specs/reviews/review-2026-09-16.md, Finding C1.\n\nFINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once `check-evidence-probes.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583 (step named after the script; place it after the lean-action build so the Lake cache is warm; decide and record whether a rotted probe fails or reports -- the script header argues for fails). Verify a deliberately broken probe fails the CI step.",
       "topic": "codebase-cleanup",
@@ -109,7 +109,7 @@
       "effort": "medium",
       "dependencies": [],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T16:08:46Z",
+      "last_updated": "2026-09-16T16:27:33Z",
       "artifacts": [
         {
           "path": "specs/581_repair_bilasso_evidence_probes/reports/02_probe-repair-verified-diffs.md",
@@ -120,6 +120,11 @@
           "path": "specs/581_repair_bilasso_evidence_probes/plans/02_repair-probes-wire-ci.md",
           "type": "plan",
           "summary": "3-phase plan: apply report 02's verified probe diffs, correct stale DEFERRED comment, wire guard into CI as a gating step."
+        },
+        {
+          "path": "specs/581_repair_bilasso_evidence_probes/summaries/02_repair-probes-wire-ci-summary.md",
+          "type": "summary",
+          "summary": "Probe repair + CI wiring summary with per-probe statement justification"
         }
       ],
       "next_artifact_number": 3,
@@ -127,7 +132,8 @@
         "specs/evidence/bi-lasso-decision-layer/",
         "scripts/check-evidence-probes.sh"
       ],
-      "session_id": "sess_1789573870_865f5c"
+      "session_id": "sess_1789573870_865f5c",
+      "completion_summary": "Repaired the four wired bi-lasso evidence probes for the TemporalOrder/FrameOver API with API-tracking-only statement changes, so check-evidence-probes.sh exits 0 (4 PASS, 1 SKIP) with no sorryAx. Corrected the guard's stale DEFERRED comment and wired the guard into ci.yml as a gating step that was shown to fail on a deliberately broken probe."
     },
     {
       "project_number": 582,

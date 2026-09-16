@@ -11,7 +11,7 @@ next_project_number: 598
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,581,582,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,582,587,591,592,594,595,596 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,584,586,590 | 298,464,502,559,563,568,582,591,595,596 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,506,566,569,585 | 231,465,497,565,584,586 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,588,597 | 428,498,499,500,569,585,594 | algebraic-representation, decidability, metalogic, ... |
@@ -98,7 +98,6 @@ next_project_number: 598
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-581 [IMPLEMENTING] — Repair the four wired bi-lasso evidence probes so bash...
 582 [IMPLEMENTING] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
@@ -493,12 +492,13 @@ FINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once
 
 ### 581. Repair bilasso evidence probes
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
 - **Research**: [581_repair_bilasso_evidence_probes/reports/02_probe-repair-verified-diffs.md]
 - **Plan**: [581_repair_bilasso_evidence_probes/plans/02_repair-probes-wire-ci.md]
+- **Summary**: [581_repair_bilasso_evidence_probes/summaries/02_repair-probes-wire-ci-summary.md]
 
 **Description**: Repair the four wired bi-lasso evidence probes so `bash scripts/check-evidence-probes.sh` exits 0.
 

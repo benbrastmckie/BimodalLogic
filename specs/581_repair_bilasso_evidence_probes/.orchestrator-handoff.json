@@ -1,0 +1,13 @@
+{
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 10,
+  "summary": "All 3 phases done: four evidence probes repaired (API-tracking only, obstructions intact, axioms [propext, Classical.choice, Quot.sound]); guard exits 0 with 4 PASS 1 SKIP; DEFERRED comment corrected; check-evidence-probes.sh wired into ci.yml as a gating step, verified to fail on a broken probe.",
+  "artifacts": [
+    {"type": "summary", "path": "specs/581_repair_bilasso_evidence_probes/summaries/02_repair-probes-wire-ci-summary.md", "summary": "Probe repair + CI wiring summary with per-probe statement justification"}
+  ],
+  "phases_completed": 3,
+  "phases_total": 3,
+  "blockers": [],
+  "session_id": "sess_1789573870_865f5c"
+}

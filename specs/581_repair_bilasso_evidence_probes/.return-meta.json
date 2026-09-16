@@ -1,22 +1,30 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/581_repair_bilasso_evidence_probes/plans/02_repair-probes-wire-ci.md",
-      "summary": "3-phase plan: apply report 02's verified probe diffs, correct stale DEFERRED comment, wire guard into CI as a gating step."
-    }
-  ],
-  "next_steps": "Run /implement 581 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1789573870_865f5c_581",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 1.5,
-    "dependency_waves": [[1, 2], [3]]
+  "status": "implemented",
+  "started_at": "2026-09-16T09:08:46-07:00",
+  "completed_at": "2026-09-16T09:12:18-07:00",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_scope": "scripts/check-evidence-probes.sh (lake env lean per probe) exit 0, 4 PASS 1 SKIP; full lake build not run per plan (no library file touched)"
   },
-  "memory_candidates": [],
-  "dispatch_seq": 6
+  "artifacts": [
+    {"type": "summary", "path": "specs/581_repair_bilasso_evidence_probes/summaries/02_repair-probes-wire-ci-summary.md", "summary": "Four bi-lasso evidence probes repaired (API-tracking only, obstructions intact, no sorryAx); guard DEFERRED comment corrected; guard wired into CI as a gating step."}
+  ],
+  "completion_data": {
+    "completion_summary": "Repaired the four wired bi-lasso evidence probes for the TemporalOrder/FrameOver API with API-tracking-only statement changes, so check-evidence-probes.sh exits 0 (4 PASS, 1 SKIP) with no sorryAx. Corrected the guard's stale DEFERRED comment and wired the guard into ci.yml as a gating step that was shown to fail on a deliberately broken probe.",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1789573870_865f5c",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "dispatch_seq": 10,
+    "phases_completed": 3,
+    "phases_total": 3
+  }
 }
