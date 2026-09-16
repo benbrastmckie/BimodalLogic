@@ -9,18 +9,23 @@
     {
       "project_number": 593,
       "project_name": "revise_task_organization_codebase_cleanup",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "I recently created tasks 581-592. I already have many other tasks I've created. I want to know if these tasks can be better organized into topics, combined, replaced, removed, or have new tasks added. I'd like to focus on improving the codebase first, including everything that doesn't involve writing new proofs, but rather changing conventions, removing cruft, improving comments, or otherwise refactoring, where these tasks should all be gathered together under one topic with clear dependencies. Thus the aim of this task is to revise the other tasks as most appropriate. It may be worth researching /home/benjamin/Projects/cslib/ which aimed to provide a high quality of lean engineering for related topics. Though the subject matter there differs, the standards are good to aim for",
       "topic": "code-quality",
       "created": "2026-09-16T15:23:39Z",
-      "last_updated": "2026-09-16T15:32:29Z",
+      "last_updated": "2026-09-16T15:35:21Z",
       "session_id": "sess_1789572316_3a825c",
       "artifacts": [
         {
           "path": "specs/593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md",
           "type": "report",
           "summary": "Inventory of all 60 active tasks with a proposed single codebase-cleanup topic (15 existing members, 542 merged into 588, 4 new tasks), rescoped 583, widened 586/590, a 6-wave dependency DAG, and a cslib conventions comparison."
+        },
+        {
+          "path": "specs/593_revise_task_organization_codebase_cleanup/plans/01_cleanup-topic-reorganization.md",
+          "type": "plan",
+          "summary": "5-phase state-only plan: create codebase-cleanup topic (19 members), abandon 542 into 588, rescope/widen descriptions, create N1-N4, prune stale deps, wire 6-wave DAG."
         }
       ],
       "next_artifact_number": 2
