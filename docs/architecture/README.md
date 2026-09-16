@@ -33,15 +33,18 @@ understand why the system is designed the way it is.
 
 **This directory is the one ADR convention in the repository.** There is no `docs/decisions/`;
 a second location for the same genre would recreate exactly the duplicate-authority problem ADRs
-exist to remove.
+exist to remove. See `docs/README.md`'s "Durable Records Placement" for the full rule on what
+belongs here versus in `docs/reference/`.
 
-## Specification Documents
+## Specification and Decision Documents
 
-Non-ADR architectural specification documents:
+Non-ADR architectural specification and decision-record documents:
 
 | Document | Description |
 |----------|-------------|
 | [BFMCS_architecture.md](BFMCS_ARCHITECTURE.md) | Base Finite Canonical Model Construction (BFMCS) proof architecture specification |
+| [total-history-validity-decisions.md](total-history-validity-decisions.md) | Decision record for the total-history validity refactor (Omega-free semantics core): four settled decisions on `H_F`, quantifier domains, and the frame-alignment axioms |
+| [untl-snce-argument-order.md](untl-snce-argument-order.md) | Decision record for the `untl`/`snce` guard-first argument order: the escalation, the retracted original reasoning, and the resolving migration |
 
 ## ADR Details
 

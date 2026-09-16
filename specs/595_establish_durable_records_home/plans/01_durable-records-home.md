@@ -198,18 +198,18 @@ the move brought into deliverable scope.
 
 ---
 
-### Phase 4: Record the placement decision and final gate [NOT STARTED]
+### Phase 4: Record the placement decision and final gate [COMPLETED]
 
 **Goal**: Write down the chosen home and the rule, catalog the moved files, and run the full acceptance gate.
 
 **Tasks**:
-- [ ] `docs/reference/README.md`: add a "Records of Record" (or similar) table row for `paper-definitions-of-record.md` (pinned paper-anchor manifest; resolution source for C15 and `check-paper-definitions.sh`)
-- [ ] `docs/architecture/README.md`: add rows for both decision records to the "Specification Documents" table (fix the heading text if it becomes "Specification and Decision Documents")
-- [ ] `docs/README.md` (or `docs/architecture/README.md`, whichever the implementer judges the natural entry point, with a one-line pointer from the other): add a short **Durable records placement** rule with rationale. `specs/` is the ephemeral task-management tree (renumbered, archived, partly gitignored). A record cited from live code or checked by a script belongs under `docs/`: decision records in `docs/architecture/`, reference manifests in `docs/reference/`. `docs/decisions/` is not used.
-- [ ] Follow no-task-references: cite section headings and filenames only
-- [ ] Final acceptance run: referrer grep empty; `bash scripts/check-paper-definitions.sh` matches baseline; `bash scripts/check-module-invariants.sh --no-build` has no FAIL beyond the pre-existing C13 nine. Then run the full `bash scripts/check-module-invariants.sh` with build if time allows. The edits are comment-only, so the build-gated checks should not change; if the full run is skipped, record why.
-- [ ] Remove the Phase 1 baseline scratch files from the task dir, or leave them in as dotfiles
-- [ ] Commit: `task 595 phase 4: record durable records home`
+- [x] `docs/reference/README.md`: add a "Records of Record" (or similar) table row for `paper-definitions-of-record.md` (pinned paper-anchor manifest; resolution source for C15 and `check-paper-definitions.sh`) *(completed)*
+- [x] `docs/architecture/README.md`: add rows for both decision records to the "Specification Documents" table (fix the heading text if it becomes "Specification and Decision Documents") *(completed: heading now "Specification and Decision Documents")*
+- [x] `docs/README.md` (or `docs/architecture/README.md`, whichever the implementer judges the natural entry point, with a one-line pointer from the other): add a short **Durable records placement** rule with rationale. `specs/` is the ephemeral task-management tree (renumbered, archived, partly gitignored). A record cited from live code or checked by a script belongs under `docs/`: decision records in `docs/architecture/`, reference manifests in `docs/reference/`. `docs/decisions/` is not used. *(completed: full rule in docs/README.md's new "Durable Records Placement" section, one-line pointers from docs/architecture/README.md and docs/reference/README.md, C18 confirms no duplication)*
+- [x] Follow no-task-references: cite section headings and filenames only *(completed)*
+- [x] Final acceptance run: referrer grep empty; `bash scripts/check-paper-definitions.sh` matches baseline; `bash scripts/check-module-invariants.sh --no-build` has no FAIL beyond the pre-existing C13 nine. Then run the full `bash scripts/check-module-invariants.sh` with build if time allows. The edits are comment-only, so the build-gated checks should not change; if the full run is skipped, record why. *(completed: referrer grep empty, check-paper-definitions.sh matches baseline exactly, --no-build has zero FAIL in this task's scope (one unrelated FAIL from concurrent tasks' in-flight module moves, see Phase 3 progress observations). Full build run skipped: edits are comment/prose-only (no `.lean` code changed outside comments), a full `lake build` on this tree runs long, and multiple other tasks are building concurrently in the same working tree, so a full run here would mostly measure their state, not this task's. The build-gated checks are not expected to move for a comment-only change.)*
+- [x] Remove the Phase 1 baseline scratch files from the task dir, or leave them in as dotfiles *(completed: left as dotfiles in the task dir)*
+- [x] Commit: `task 595 phase 4: record durable records home` *(completed)*
 
 **Timing**: 1 hour
 
@@ -227,12 +227,12 @@ the move brought into deliverable scope.
 
 ## Testing & Validation
 
-- [ ] `grep -rnE "specs/paper-definitions-of-record|specs/decisions/" --exclude-dir=.git --exclude-dir=.lake --exclude-dir=archive . | grep -v '^\./specs/'` is empty
-- [ ] `bash scripts/check-paper-definitions.sh` exit code and output class match the pre-move baseline (skip-neutral when the paper is absent)
-- [ ] `bash scripts/check-module-invariants.sh --no-build`: no FAIL beyond the baseline (C13's 9 pre-existing `../../data/` links); C12, C15 (both), C20 (both tiers) PASS
-- [ ] `bash scripts/typst-sync-check.sh` unchanged from baseline
-- [ ] `git log --follow docs/reference/paper-definitions-of-record.md` shows pre-move history
-- [ ] Placement rule present in the docs README(s)
+- [x] `grep -rnE "specs/paper-definitions-of-record|specs/decisions/" --exclude-dir=.git --exclude-dir=.lake --exclude-dir=archive . | grep -v '^\./specs/'` is empty *(completed: empty, using the `^specs/` filter form — see Phase 1 deviation note)*
+- [x] `bash scripts/check-paper-definitions.sh` exit code and output class match the pre-move baseline (skip-neutral when the paper is absent) *(completed: exit 1, drift + 1 dangling anchor, identical to baseline)*
+- [x] `bash scripts/check-module-invariants.sh --no-build`: no FAIL beyond the baseline (C13's 9 pre-existing `../../data/` links); C12, C15 (both), C20 (both tiers) PASS *(completed: C12/C15/C20/C9D all PASS/back-to-baseline; the only FAIL present (INV stale inventory) is caused by concurrent tasks' in-flight module moves, not this task)*
+- [x] `bash scripts/typst-sync-check.sh` unchanged from baseline *(completed: same 4 pre-existing/unrelated violations in typst/chapters/p4-proof-automation.typ, none touching this task's scope)*
+- [x] `git log --follow docs/reference/paper-definitions-of-record.md` shows pre-move history *(completed: history traces back through task 439/414 commits)*
+- [x] Placement rule present in the docs README(s) *(completed: docs/README.md's "Durable Records Placement" section)*
 
 ## Artifacts & Outputs
 

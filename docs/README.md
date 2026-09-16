@@ -186,6 +186,32 @@ Architectural Decision Records (ADRs) and system architecture documentation:
 
 **Audience**: Architects, maintainers
 
+## Durable Records Placement
+
+A **durable record** is a file that live code, a script, or a gate cites and checks against — not
+a task-management artifact whose lifetime is one task's. `specs/` is the ephemeral
+task-management tree: task directories are renumbered by vault operations, `specs/archive/` is
+gitignored, and its contents are one cleanup away from silently breaking every citer. A record
+cited from live `FormalSystem/**` docstrings or checked by a script belongs under `docs/`
+instead, split by genre:
+
+- **Decision records** (a settled architectural or semantic decision, its rationale, and its
+  consequences) go in [`docs/architecture/`](architecture/), listed in that directory's
+  "Specification and Decision Documents" table. This is also where ADRs live; there is **no**
+  `docs/decisions/` — a second location for the same genre would recreate the duplicate-authority
+  problem ADRs exist to remove.
+- **Reference manifests** (pinned, hash-verified source-of-truth data — e.g. a paper-anchor
+  citation manifest) go in [`docs/reference/`](reference/), listed in that directory's "Records
+  of Record" table.
+
+Moving a record from `specs/` to `docs/` is not a plain rename: `docs/` sits inside several
+gates' scope that `specs/**` is deliberately excluded from (slash-path resolution, relative-link
+resolution, paper-anchor citation resolution, `file.lean:NNN` citation policy, and the
+task-number-citation ban `no-task-references-in-deliverables.md` enforces outside `specs/**`).
+Simulate the move and re-run `scripts/check-module-invariants.sh --no-build` before committing to
+one, and repoint every live referrer (Lean docstrings, scripts, other docs, typst comments) in the
+same change.
+
 ### training/
 
 Training data pipeline documentation:

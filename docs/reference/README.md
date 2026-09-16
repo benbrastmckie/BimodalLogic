@@ -20,6 +20,16 @@ Most reference materials are theory-specific. See:
 |----------|-------------|
 | [API_REFERENCE.md](API_REFERENCE.md) | Project-wide API documentation (key types, functions, and modules) |
 
+## Records of Record
+
+Durable reference manifests: pinned, MANIFEST-hashed source-of-truth data that other files and
+scripts resolve against. See `docs/README.md`'s "Durable records placement" for what belongs
+here versus in `docs/architecture/`.
+
+| Document | Description |
+|----------|-------------|
+| [paper-definitions-of-record.md](paper-definitions-of-record.md) | Pinned paper-anchor manifest for the source paper's `\label`led definitions and theorems; the resolution source `check-paper-definitions.sh` and check **C15** both resolve citations against |
+
 ## Authoring Standards
 
 These three define how the `FormalSystem/` tree is written, and are the specifications the
