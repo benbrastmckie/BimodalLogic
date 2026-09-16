@@ -251,7 +251,7 @@ theorem tmMinusComplete_iff_forward {fc : FrameClass} (engine : WeakCompleteness
 
 /--
 **"TM⁻ is complete over task frames."** `TMMinusComplete` at `.Base`. `MinusValid` is `MinusValidIn .Base`
-definitionally (`Semantics/MinusValidity.lean`), so the statement is unchanged by the
+definitionally (`Semantics/MinusLanguage/MinusValidity.lean`), so the statement is unchanged by the
 generalization. **Unasserted.**
 -/
 def TMMinusCompleteBase : Prop := TMMinusComplete FrameClass.Base

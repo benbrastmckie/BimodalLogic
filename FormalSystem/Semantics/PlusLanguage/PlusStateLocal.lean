@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusNonValidities
+import FormalSystem.Semantics.PlusLanguage.PlusNonValidities
 
 /-!
 # State-locality: the L⁺ fragment whose truth is fixed by the present world state
@@ -35,7 +35,7 @@ agree about `φ`. That is exactly the class `⊡` quantifies over, so a state-lo
 
 ## Which constructors are state-local, and why
 
-Read off `PlusTruthAt` (`Semantics/PlusTruth.lean`) clause by clause, at the **same** evaluation
+Read off `PlusTruthAt` (`Semantics/PlusLanguage/PlusTruth.lean`) clause by clause, at the **same** evaluation
 time on both sides:
 
 | Constructor | State-local? | Why |
@@ -70,7 +70,7 @@ turns on the outermost constructor, not on the whole subformula tree.
 ## The two exclusions live on one frame
 
 `not_isPlusStateLocal_someFuture` and `not_isPlusStateLocal_somePast` are both witnessed on the
-permissive frame `NF` over `ℤ` (`Semantics/PlusNonValidities.lean`), where every function `ℤ → ℕ`
+permissive frame `NF` over `ℤ` (`Semantics/PlusLanguage/PlusNonValidities.lean`), where every function `ℤ → ℕ`
 is a possible world and `natModel` makes each atom true at world state `0` and nowhere else. No
 second countermodel frame is built: two possible worlds agreeing at `0` and disagreeing away from
 `0` refute both.
@@ -94,7 +94,7 @@ difference between the nine-arm and seven-arm recursions. The transfer lives in 
 not here: `Metalogic/Conservativity/Plus/AxiomValidity.lean` imports this one, and an L⋆ import
 here would invert the L → L⁺ → L⋆ layering.
 
-**2. To `stab_state_only` (`Semantics/PlusTruth.lean`).** That lemma is a **different-times**
+**2. To `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`).** That lemma is a **different-times**
 statement: `τ(t) = σ(s)` transfers `⊡φ` from `(τ, t)` to `(σ, s)`, which is what the atomization
 route (`Metalogic/Conservativity/Plus/Atomization.lean`) consumes. This module's `stab` arm,
 `isPlusStateLocal_stab`, is its **same-time shadow**: one `t` on both sides. The two are related
@@ -120,11 +120,11 @@ here.
 
 * JPL paper `def:BLstar-semantics` — the truth clauses being classified; the atom-level
   `p → ⊡p` of its footnote (line 1119) is the `stateLocal_atom` instance of `stab_of_stateLocal`
-* `FormalSystem/Semantics/PlusTruth.lean` — `PlusTruthAt`, `SameStateAt`, `stab_congr_sameState`,
+* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `PlusTruthAt`, `SameStateAt`, `stab_congr_sameState`,
   `stab_state_only`
-* `FormalSystem/Semantics/StarStateLocal.lean` — the L⋆ twin this module mirrors arm for arm
+* `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` — the L⋆ twin this module mirrors arm for arm
 * `FormalSystem/Semantics/StateLocalTransfer.lean` — `stateLocal_ofPlus_iff`
-* `FormalSystem/Semantics/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`
 
 ## Tags
 
@@ -138,7 +138,7 @@ open FormalSystem.Syntax
 **The state-locality fragment of L⁺**, by structural recursion.
 
 `atom`, `bot` and `imp` are the propositional core; `box` and `stab` are admitted for an
-arbitrary argument (see `Semantics/PlusStateLocal.lean`'s `isPlusStateLocal_box` and
+arbitrary argument (see `Semantics/PlusLanguage/PlusStateLocal.lean`'s `isPlusStateLocal_box` and
 `isPlusStateLocal_stab`); and `untl`, `snce` are excluded, each with a countermodel in that
 module.
 
@@ -215,7 +215,7 @@ open FormalSystem.PlusLanguage
 **State-locality, semantically.** `φ` is state-local when, at every frame and model, any two
 possible worlds carrying the same world state at `t` agree about `φ` at `t`.
 
-L⁺ has no time registers, so this is `IsStateLocal` (`Semantics/StarStateLocal.lean`) with the
+L⁺ has no time registers, so this is `IsStateLocal` (`Semantics/StarLanguage/StarStateLocal.lean`) with the
 stored-time vector deleted and nothing else changed; the two are arm-for-arm comparable.
 
 The hypotheses could be weakened from `τ.IsTotal`/`σ.IsTotal` to `τ.domain t`/`σ.domain t` —
@@ -246,7 +246,7 @@ theorem isPlusStateLocal_box (φ : PlusFormula) : IsPlusStateLocal (.box φ) :=
 
 /--
 **`⊡φ` is state-local, whatever `φ` is.** Discharged from `stab_congr_sameState`
-(`Semantics/PlusTruth.lean`), which is exactly this statement at domain hypotheses rather than
+(`Semantics/PlusLanguage/PlusTruth.lean`), which is exactly this statement at domain hypotheses rather than
 totality: the truth of `⊡φ` at `(τ, t)` depends only on the `∼ₜ`-class of `τ`.
 
 That proof dependency is the first of the three relations this module records: the L⁺ fragment's
@@ -295,7 +295,7 @@ theorem isPlusStateLocal_of_stateLocal :
 
 /-! ## The excluded constructors are excluded by theorem
 
-Each witness lives on `NF` with `natModel` (`Semantics/PlusNonValidities.lean`), and each uses a
+Each witness lives on `NF` with `natModel` (`Semantics/PlusLanguage/PlusNonValidities.lean`), and each uses a
 pair of possible worlds agreeing at time `0` and disagreeing away from it. Both are stated as
 negations of `IsPlusStateLocal`, the semantic property: the *syntactic* predicate is `False` on
 these constructors by definition, so its negation would be a vacuous claim.
@@ -388,7 +388,7 @@ theorem plusStateLocal_stab_iff {F : TaskFrame} {φ : PlusFormula} (hφ : φ.Sta
 /--
 **`φ ↔ ⊡φ` for state-local `φ`**, as a validity of L⁺.
 
-The companion facing the other way to `stab_state_only` (`Semantics/PlusTruth.lean`): that lemma
+The companion facing the other way to `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`): that lemma
 says `⊡φ` depends on the world state alone, this one says a formula that already depends on the
 world state alone is `⊡`-stable.
 

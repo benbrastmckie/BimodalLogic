@@ -70,7 +70,7 @@ load-bearing, and worth knowing before anyone "strengthens" that predicate.
 
 ## Why F° survives density where `natFrame` does not
 
-`natFrame` — the frame carrying the `⊡` non-validities in `Semantics/PlusNonValidities.lean` —
+`natFrame` — the frame carrying the `⊡` non-validities in `Semantics/PlusLanguage/PlusNonValidities.lean` —
 relates every state to every state at every nonzero duration, so its cone at a state is the whole
 carrier and its *Limit* field needs a discrete carrier to hold at all. `F°`'s fibres are the
 bounded intervals `[w + d, w + 2d]`, whose width `d` shrinks linearly to `0`, so the cone shrinks

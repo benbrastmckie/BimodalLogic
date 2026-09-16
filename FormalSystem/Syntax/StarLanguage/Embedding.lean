@@ -53,7 +53,7 @@ that is an induction rather than a `rfl`.
 ## The forward direction is elsewhere, and is not symmetric
 
 `TM⋆ ⊢⋆ ofPlus φ ⟹ TM⁺ ⊢⁺ φ` is **not** proved here and is not proved by any syntactic route:
-register erasure is refuted as a translation (`Semantics/StarNonValidities.lean`,
+register erasure is refuted as a translation (`Semantics/StarLanguage/StarNonValidities.lean`,
 `storeG_recall_valid` with `refute_erasure`). It is treated semantically, and only conditionally,
 in `Metalogic/Conservativity/Star/Forward.lean`. The forward direction over the *base* language
 `TM⋆ ⊢⋆ ofPlus (ofFormula φ) ⟹ TM ⊢ φ` is unconditional, because TM has completeness engines and

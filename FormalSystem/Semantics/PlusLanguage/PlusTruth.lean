@@ -35,7 +35,7 @@ histories together with the totality predicate `σ.IsTotal` (the predicate form 
   is S5"; line 1119: `φ → ⊡φ` for non-temporal `φ`): `stab_of_box` (`□φ → ⊡φ`), `of_stab`
   (T), `stab_four` (4), `stab_five` (5). The atom-level `p → ⊡p` of the same footnote is **not**
   stated here: it is the `stateLocal_atom` instance of `stab_of_stateLocal`
-  (`Semantics/PlusStateLocal.lean`), which proves `φ → ⊡φ` for every formula of the
+  (`Semantics/PlusLanguage/PlusStateLocal.lean`), which proves `φ → ⊡φ` for every formula of the
   state-locality fragment
 - `stab_congr_sameState`: `⊡φ` is a state formula at each time; `box_stab_iff` (`□⊡φ ↔ □φ`),
   `stab_box_of_box` (`□φ → ⊡□φ`)
@@ -55,7 +55,7 @@ file); proofs are unchanged.
 
 * JPL paper `possible_worlds.tex` lines 1108, 1114, 1118-1119, 1121
 * `FormalSystem/Semantics/Truth.lean` — the six L clauses being mirrored
-* `FormalSystem/Semantics/MinusTruth.lean` — the sibling native recursion for the base language
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the sibling native recursion for the base language
 
 ## Tags
 

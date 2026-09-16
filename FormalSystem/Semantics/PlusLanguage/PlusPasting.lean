@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusValidity
+import FormalSystem.Semantics.PlusLanguage.PlusValidity
 
 /-!
 # History pasting and the pasting validities of `⊡`
@@ -39,7 +39,7 @@ together with the two **past mirrors** that temporal duality needs (`swapTempora
 
 PS and US are the two pasting **axioms** of TM⁺ (`PlusLanguage/Axioms.lean`); FS, GS and the
 mirrors are derived (the mirrors by TD). The purity restrictions are **necessary**: the
-refutations in `Semantics/PlusNonValidities.lean` show that `G⊡p → ⊡Gp` fails even for atoms
+refutations in `Semantics/PlusLanguage/PlusNonValidities.lean` show that `G⊡p → ⊡Gp` fails even for atoms
 and that `⊡GPp → G⊡Pp` fails once a past operator enters the scope.
 
 The `*_plusValid` packagings at the end state each validity as a `PlusValid`, the shape the
@@ -55,7 +55,7 @@ stability-modal probes recorded with the research on the `⊡` axiomatization; `
 
 * JPL paper `def:frame` — *Compositionality* and the converse convention
   (`Semantics/TaskFrame.lean`)
-* `FormalSystem/Semantics/PlusTruth.lean` — `SameStateAt`, `PlusTruthAt`
+* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `SameStateAt`, `PlusTruthAt`
 
 ## Tags
 
@@ -268,7 +268,7 @@ theorem future_dstab_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.Is
       (paste_agreeFrom τ ρ hτ hρ y hτρ)).mpr hφρ⟩
 
 /-- **GS**: `⊡Gφ⁺ → G⊡φ⁺` for pure-future `φ⁺` — the contrapositive reading of FS. Needs the
-purity restriction: `⊡GPp → G⊡Pp` is refuted (`Semantics/PlusNonValidities.lean`). -/
+purity restriction: `⊡GPp → G⊡Pp` is refuted (`Semantics/PlusLanguage/PlusNonValidities.lean`). -/
 theorem stab_allFuture_valid (M : TaskModel F) (τ : ConvexHistory F) (hτ : τ.IsTotal)
     (t : F.Duration) {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (.stab (allFuture φ)) (allFuture (.stab φ))) := by

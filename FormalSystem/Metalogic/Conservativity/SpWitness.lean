@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.MinusSchemaValidity
+import FormalSystem.Semantics.MinusLanguage.MinusSchemaValidity
 import FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness
 import FormalSystem.Metalogic.BXCanonical
 
@@ -14,7 +14,7 @@ import FormalSystem.Metalogic.BXCanonical
 `(Sp) := □(DF φ) ∨ □(DN ψ)` — the *reconstruction* (not the source's formula; see the
 Provenance section below) of the CEB witness `Conservativity.lean`'s module docstring names.
 This module proves `MinusValid (Sp φ ψ)` from `duration_dense_or_least_pos`'s dichotomy composed
-with `Semantics/MinusSchemaValidity.lean`'s Lemmas B and C, then derives
+with `Semantics/MinusLanguage/MinusSchemaValidity.lean`'s Lemmas B and C, then derives
 `⊢[Base] tr (Sp φ ψ)` from `BXCanonical.completeness` — the CEB analogue of `Conservativity.lean`'s
 `z1_translate`, obtained without the source's TMP-NB/M5 derivation (report §4.1, §6.2 closing
 paragraph).
@@ -28,7 +28,7 @@ module uses is unavailable for that half (report §6.2).
 
 It is, however, no longer an open claim. It is discharged in
 `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean`, which builds the native
-(`TaskFrame`-free) semantics of `FormalSystem/Semantics/MinusFrame.lean`, proves L⁻ soundness for TM⁻
+(`TaskFrame`-free) semantics of `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean`, proves L⁻ soundness for TM⁻
 directly against it, and refutes the atomic instance on the disjoint sum `ℤ ⊕ ℝ` —
 `not_derivable_sp`, and its corollary `tmMinusCompleteBase_refuted : ¬ TMMinusCompleteBase`. Note the claim
 there is **schema-level**: `□(DF ⊤)` holds on every `MinusFrame`, so `Sp ⊤ ψ` is *not* refuted, and
@@ -66,7 +66,7 @@ section, which is the authority on that history.
   prohibition this module never approaches
 * `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` — CEB's failing half, discharged
   over the native `MinusFrame` semantics
-* `FormalSystem/Semantics/MinusSchemaValidity.lean` — the DF/DN semantic lemmas
+* `FormalSystem/Semantics/MinusLanguage/MinusSchemaValidity.lean` — the DF/DN semantic lemmas
 -/
 
 namespace FormalSystem.Metalogic
@@ -78,7 +78,7 @@ open FormalSystem.Semantics
 
 /--
 **The `(Sp)` witness**: `□(DF φ) ∨ □(DN ψ)`, reusing the exact `Axiom.df`/`Axiom.dn` formula
-shapes pinned in `Semantics/MinusSchemaValidity.lean` (which are themselves pinned to
+shapes pinned in `Semantics/MinusLanguage/MinusSchemaValidity.lean` (which are themselves pinned to
 `MinusLanguage/Axioms.lean`'s own definitions).
 -/
 def Sp (φ ψ : MinusFormula) : MinusFormula :=

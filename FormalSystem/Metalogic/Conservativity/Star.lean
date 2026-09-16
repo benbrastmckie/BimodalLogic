@@ -16,7 +16,7 @@ import FormalSystem.Metalogic.Conservativity.Star.Forward
 (`FormalSystem/StarLanguage/`): the 53 TM⁺ schemata re-declared directly over `StarFormula`,
 plus sixteen register schemata, under the seven rules of TM⁺ and TM. Its
 semantics is `def:BLstar-semantics` over points `(τ, x, v⃗)`
-(`FormalSystem/Semantics/StarTruth.lean`).
+(`FormalSystem/Semantics/StarLanguage/StarTruth.lean`).
 
 **This file is the aggregator, and it holds no declarations.**
 

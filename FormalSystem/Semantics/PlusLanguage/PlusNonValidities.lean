@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusValidity
+import FormalSystem.Semantics.PlusLanguage.PlusValidity
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Data.Int.SuccPred
 
@@ -30,7 +30,7 @@ On `refute_determined`: this module lands only the refutation over a non-determi
 schema over deterministic frames is **not** formalized here, and no claim about the class of
 frames validating it is made.
 
-On `refute_allFuture_stab` / `refute_stab_allFuture_past`: GS (`Semantics/PlusPasting.lean`,
+On `refute_allFuture_stab` / `refute_stab_allFuture_past`: GS (`Semantics/PlusLanguage/PlusPasting.lean`,
 `stab_allFuture_valid`) is `⊡Gφ → G⊡φ` for **pure-future** `φ`. The second refutation shows the
 restriction is necessary — with `φ := Pp` the pasted history keeps `τ`'s past, not the
 witness's, and `Pp` flips — and the first shows the converse direction is simply wrong.
@@ -143,7 +143,7 @@ theorem refute_stab_allFuture_past (p : Atom) :
 *Determined* `Fp → ⊡Fp` is refuted over a non-deterministic frame: the **negative half** of
 `app:deterministic`, in the `natFrame` shape.
 
-The positive half **is** formalized, in `FormalSystem/Semantics/PlusDeterminism.lean` — see
+The positive half **is** formalized, in `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — see
 `determined_of_deterministic`, which shows the schema valid on every frame satisfying
 `TaskFrame.Deterministic` (`Semantics/FrameProperty.lean`). The two halves are the two sides of
 `app:deterministic` and cite each other; neither statement claims the other's converse, and in
@@ -153,7 +153,7 @@ is exhibited under `Metalogic/Independence/`).
 Two things the refutation depends on, recorded because both are easy to lose:
 
 * **The refuting instance is `Fp`, not an atom.** At an atom the schema `p → ⊡p` holds on *every*
-  frame (`stab_of_stateLocal` at `stateLocal_atom`, `Semantics/PlusStateLocal.lean`): an atom's
+  frame (`stab_of_stateLocal` at `stateLocal_atom`, `Semantics/PlusLanguage/PlusStateLocal.lean`): an atom's
   truth depends on the world state alone, which is exactly what `⊡` quantifies over. More is
   true — `Fp` is refutable precisely *because* it lies outside the state-locality fragment
   (`not_isPlusStateLocal_someFuture`), and every formula inside it satisfies the schema. So no uniform-substitution argument is

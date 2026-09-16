@@ -55,7 +55,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   (`minusCompactBase`, `minusCompactDense`, `Metalogic/Conservativity/FragmentCompactness.lean`); the
   Discrete/Dedekind non-compactness witnesses lie outside `range tr` and do not transfer.
 - **The stability extension L⁺ / TM⁺** (`Metalogic/Conservativity/Plus.lean`, over
-  `FormalSystem/PlusLanguage/` and `Semantics/Plus*.lean`): SORRY-FREE (axioms: exactly
+  `FormalSystem/PlusLanguage/` and `Semantics/PlusLanguage/`): SORRY-FREE (axioms: exactly
   `propext`, `Classical.choice`, `Quot.sound`). Soundness of TM⁺ at every frame class
   (`plus_soundness_validIn`), TD discharged semantically by the companion recursion with the
   TM schemata over L⁺ handled by atomization; semantic conservativity
@@ -77,7 +77,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   `minus_soundness_ztime`, `minus_soundness_rtime`, plus the empty-context validity forms and the
   consistency corollaries `minus_not_derivable_nil_bot` / `minus_not_derivable_nil_bot_ztime`):
   SORRY-FREE (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Stated against the
-  **native** L⁻ semantics `MinusTruthAt` of `Semantics/MinusTruth.lean` — a six-clause recursion on
+  **native** L⁻ semantics `MinusTruthAt` of `Semantics/MinusLanguage/MinusTruth.lean` — a six-clause recursion on
   `MinusFormula`, not `TruthAt ∘ tr` — and obtained by composing `Conservativity.translate` with the
   four theorems above across the truth-transfer bridge `Semantics.truthAt_tr`, which is proved by
   induction in `Metalogic/Conservativity/MinusLanguageSoundness.lean`. `minus_soundness_rtime` carries
@@ -162,7 +162,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   indistinguishable pair `F°` (a drift band over `ℝ`) and `F¹` (translation over `ℝ`), which
   validate exactly the same L⁺ formulas while differing in determinism. The same pair refutes the
   converse of the deterministic collapse `determined_of_deterministic`
-  (`Semantics/PlusDeterminism.lean`): validity of *Determined* holds on a class strictly larger
+  (`Semantics/PlusLanguage/PlusDeterminism.lean`): validity of *Determined* holds on a class strictly larger
   than the deterministic frames. Uniform substitution is unsound in this setting, so no proof
   here argues by substitution.
 - **Expressive completeness (Kamp, Prior structures)** (`kampPriorExpressiveCompleteness`,

@@ -26,7 +26,7 @@ suppressing the world registers `↑_M`/`↓_M`; this component follows that pre
 
 `PlusFormula` must not grow store/recall constructors. The atomization route to TM⁺ soundness
 (`Metalogic/Conservativity/Plus/Atomization.lean`) rests on `stab_state_only`
-(`Semantics/PlusTruth.lean`): `⊡φ`'s truth depends on the world state alone, at any time. That
+(`Semantics/PlusLanguage/PlusTruth.lean`): `⊡φ`'s truth depends on the world state alone, at any time. That
 invariant is **false inside a recall scope** — `⊡↓ⁱφ` reaches back to a time the register names,
 which the present world state does not determine — so adding the operators to `PlusFormula`
 would silently invalidate a landed conservativity result. `StarFormula` is therefore a separate
@@ -66,7 +66,7 @@ too, so no consumer has to reach back into `PlusFormula` for them.
 Checkable by `grep -rn 'import FormalSystem.Semantics' FormalSystem/StarLanguage/`. The invariant
 is directional, exactly as for `MinusLanguage/` and `PlusLanguage/`: the converse edge is
 permitted and is how L⋆ acquires its semantics
-(`FormalSystem/Semantics/StarTruth.lean`).
+(`FormalSystem/Semantics/StarLanguage/StarTruth.lean`).
 
 ## Where the proof system lives
 
@@ -82,7 +82,7 @@ See `FormalSystem/StarLanguage/README.md`.
 * JPL paper `possible_worlds.tex` — `def:BLstar-semantics` (the store/recall clauses and the
   point `(τ, x, v⃗)`), `sub:Extension`, `sent:det`, `app:deterministic-future`
 * `FormalSystem/PlusLanguage/Formula.lean` — the L⁺ side whose operators are mirrored here
-* `FormalSystem/Semantics/StarTruth.lean` — `StarTruthAt`, the truth recursion over
+* `FormalSystem/Semantics/StarLanguage/StarTruth.lean` — `StarTruthAt`, the truth recursion over
   `(τ, x, v⃗)`
 
 ## Tags
@@ -327,7 +327,7 @@ end StarFormula
 
 /-- The embedding of L⁺ into L⋆, constructor to constructor. Nothing in its image mentions a
 time register, which is why `StarTruthAt` evaluates it independently of the stored-time vector
-(`starTruthAt_ofPlus`, `Semantics/StarTruth.lean`). -/
+(`starTruthAt_ofPlus`, `Semantics/StarLanguage/StarTruth.lean`). -/
 def ofPlus : PlusFormula → StarFormula
   | .atom a => .atom a
   | .bot => .bot
@@ -458,7 +458,7 @@ transfer lemmas below — which say every embedded formula lies in each fragment
 the corresponding TM⁺ schema block reachable at its embedded instances.
 
 **Why `RecallFree` and not a register-free predicate.** MF (`□φ → □Gφ`) is refuted over L⋆ at
-`φ := ↓¹p → p` (`Semantics/StarNonValidities.lean`, `refute_modal_future`), and the obstruction
+`φ := ↓¹p → p` (`Semantics/StarLanguage/StarNonValidities.lean`, `refute_modal_future`), and the obstruction
 is the *recall* register alone: `↓ⁱ` reads at the time register `i` names, which the time-shift
 argument moves. `↑ⁱ` is harmless, so a register-free side condition would discard the sound
 instances at `↑ⁱ`-formulas — `□↑¹p → □G↑¹p` among them, and `↑¹p` is not an `ofPlus` image
@@ -619,7 +619,7 @@ example (p : Atom) (ψ : PlusFormula) :
     ofPlus ψ ≠ StarFormula.timeStore 1 (.atom p) := ofPlus_ne_timeStore ψ 1 _
 
 /-- `↓¹p → p` is **not** `↓ⁱ`-free — and it is precisely `refute_modal_future`'s witness
-(`Semantics/StarNonValidities.lean`). The side condition is exactly what excludes it. -/
+(`Semantics/StarLanguage/StarNonValidities.lean`). The side condition is exactly what excludes it. -/
 example (p : Atom) :
     ¬ RecallFree ((StarFormula.timeRecall 1 (.atom p)).imp (.atom p)) := by
   rintro (_ | _ | ⟨h, -⟩)

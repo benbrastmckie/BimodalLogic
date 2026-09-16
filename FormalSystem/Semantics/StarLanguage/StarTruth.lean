@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusTruth
+import FormalSystem.Semantics.PlusLanguage.PlusTruth
 import FormalSystem.Syntax.StarLanguage.Formula
 import FormalSystem.Semantics.TruthClauses
 
@@ -12,7 +12,7 @@ import FormalSystem.Semantics.TruthClauses
 # `StarTruthAt` — truth for L⋆ over the manuscript's points `(τ, x, v⃗)`
 
 The native truth recursion for `StarFormula` (`FormalSystem/StarLanguage/Formula.lean`). The
-seven L⁺ clauses are those of `PlusTruthAt` (`Semantics/PlusTruth.lean`) verbatim, with the
+seven L⁺ clauses are those of `PlusTruthAt` (`Semantics/PlusLanguage/PlusTruth.lean`) verbatim, with the
 stored-time vector threaded untouched through every one of them, and the two new clauses are
 `def:BLstar-semantics`'s time registers:
 
@@ -43,7 +43,7 @@ time register `i` holds. World registers (`↑_M`, `↓_M`) are suppressed, exac
 ## Two design decisions, recorded so neither reads as a defect
 
 **(a) The time-shift lemma carries the vector shifted, never dropped.**
-`plusTruthAt_timeShift` (`Semantics/PlusTruth.lean`) reads
+`plusTruthAt_timeShift` (`Semantics/PlusLanguage/PlusTruth.lean`) reads
 `PlusTruthAt M (σ.timeShift Δ) t φ ↔ PlusTruthAt M σ (t + Δ) φ`. Its L⋆ restatement cannot
 simply carry `v` across unchanged: `↓ⁱ` evaluates at `vᵢ`, a time in the *unshifted* frame of
 reference, so shifting the history must shift the register contents with it. The lemma below is
@@ -56,7 +56,7 @@ module it names is this one.
 
 **(b) `stab_state_only`'s *different-times* transfer has no L⋆ analogue; its *same-time*
 restriction does, on a fragment.**
-`stab_state_only` (`Semantics/PlusTruth.lean`) says `⊡φ`'s truth depends on the world state
+`stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`) says `⊡φ`'s truth depends on the world state
 alone, **at any two times** — `τ(t) = σ(s)` transfers `⊡φ` from `(τ, t)` to `(σ, s)` — which is
 what licenses the atomization route to TM⁺ soundness
 (`Metalogic/Conservativity/Plus/Atomization.lean`).
@@ -70,7 +70,7 @@ must never be extended to `StarFormula`**. That warning stands unchanged.
 
 *What holds.* The **same-time** statement — one `t`, one register vector `v⃗` on both sides —
 does hold, and holds of a syntactic fragment rather than only of `⊡`-formulas:
-`Semantics/StarStateLocal.lean`'s `isStateLocal_of_stateLocal`, over the fragment
+`Semantics/StarLanguage/StarStateLocal.lean`'s `isStateLocal_of_stateLocal`, over the fragment
 `StarFormula.StateLocal`. On that fragment `φ ↔ ⊡φ` is valid (`stateLocal_starValid_iff_stab`).
 The two statements are not in tension: the fragment excludes `↓ⁱ` outright
 (`not_isStateLocal_timeRecall` is the countermodel), which is precisely the constructor the
@@ -80,7 +80,7 @@ congruence does not let a `⊡`-formula be treated as a fresh state-valued atom 
 ## References
 
 * JPL paper `def:BLstar-semantics` — the store/recall clauses and the point `(τ, x, v⃗)`
-* `FormalSystem/Semantics/PlusTruth.lean` — the seven L⁺ clauses being mirrored, and the two
+* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — the seven L⁺ clauses being mirrored, and the two
   transport lemmas being restated
 * `FormalSystem/StarLanguage/Formula.lean` — `StarFormula`, `ofPlus`
 
@@ -281,7 +281,7 @@ the forms that survive them. -/
 Pointwise-equal histories (same domain, same states) satisfy the same L⋆ formulas, at a fixed
 stored-time vector.
 
-The L⋆ restatement of `truth_congr_ext` (`Semantics/PlusTruth.lean`). The two register cases are
+The L⋆ restatement of `truth_congr_ext` (`Semantics/PlusLanguage/PlusTruth.lean`). The two register cases are
 where the vector moves: `timeStore` recurses at `Function.update v i x`, `timeRecall` at the
 time `v i` — in both cases the *same* vector on both sides of the biconditional, which is why
 this lemma needs no shift.
@@ -338,7 +338,7 @@ theorem update_shift_comm (v : ℕ → F.Duration) (i : ℕ) (t Δ : F.Duration)
 /--
 **L⋆ truth commutes with time shift, the stored-time vector shifting with it.**
 
-The L⋆ restatement of `plusTruthAt_timeShift` (`Semantics/PlusTruth.lean`), whose proof shape it
+The L⋆ restatement of `plusTruthAt_timeShift` (`Semantics/PlusLanguage/PlusTruth.lean`), whose proof shape it
 follows verbatim: the `box` and `stab` cases need the inverse shift plus `star_truth_congr_ext`,
 because `timeShift` is not definitionally involutive. The `timeStore` case consumes
 `update_shift_comm`; the `timeRecall` case is the register lookup commuting with the shift.

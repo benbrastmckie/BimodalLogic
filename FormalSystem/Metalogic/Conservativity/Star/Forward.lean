@@ -56,7 +56,7 @@ Both syntactic translations one would reach for are closed by machine-checked re
 
 - **Naive register erasure** (delete every `↑ⁱ` and `↓ⁱ`) sends the `StarValid` formula
   `↑¹G↓¹p → p` (`storeG_recall_valid`) to `Gp → p`, which is refuted over `NF`
-  (`refute_erasure`) — both in `Semantics/StarNonValidities.lean`.
+  (`refute_erasure`) — both in `Semantics/StarLanguage/StarNonValidities.lean`.
 - **Register collapse** (identify every register with the time of evaluation) sends the rigidity
   schema `↓ⁱφ → G↓ⁱφ` to `φ → Gφ`, which is not a TM⁺ theorem — it is not even valid.
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusValidity
+import FormalSystem.Semantics.PlusLanguage.PlusValidity
 import FormalSystem.Metalogic.Soundness
 
 /-!
@@ -47,7 +47,7 @@ inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_swap_of_tm` its s
 ## References
 
 * `FormalSystem/Metalogic/Soundness.lean` — `axiom_validIn`, `axiom_swap_validIn`
-* `FormalSystem/Semantics/PlusTruth.lean` — `stab_state_only`
+* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `stab_state_only`
 -/
 
 namespace FormalSystem.Metalogic.Conservativity

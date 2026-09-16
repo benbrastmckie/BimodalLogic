@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusNonValidities
-import FormalSystem.Semantics.StarValidity
+import FormalSystem.Semantics.PlusLanguage.PlusNonValidities
+import FormalSystem.Semantics.StarLanguage.StarValidity
 
 /-!
 # `app:deterministic-future`, negative half — `sent:det` refuted over `NF`
@@ -14,7 +14,7 @@ import FormalSystem.Semantics.StarValidity
 "by the same non-deterministic task frame `F'` and countermodel presented in
 `app:deterministic`"; in this tree that countermodel is `NF = FrameOver.natFrame (D := ℤ)` with
 `natHist`, `natModel`, and the history pair `τ = const 0` / `σ = fun s => if s ≤ 0 then 0 else 1`
-that `refute_determined` (`Semantics/PlusNonValidities.lean`) already uses.
+that `refute_determined` (`Semantics/PlusLanguage/PlusNonValidities.lean`) already uses.
 
 Reusing it is the fidelity-preserving choice, not a shortcut: the manuscript explicitly reuses
 its own earlier countermodel, and this module reuses the tree's transcription of that
@@ -45,7 +45,7 @@ who reaches for either move deserves to find a theorem rather than nothing.
 
 **MF is the sole `timeShift` consumer in the TM schema block.** Its L/L⁺ soundness proof
 (`Metalogic/Soundness.lean`, `modal_future_valid`) reaches `φ` at a later time by shifting the
-quantified history. The L⋆ restatement `starTruthAt_timeShift` (`Semantics/StarTruth.lean`)
+quantified history. The L⋆ restatement `starTruthAt_timeShift` (`Semantics/StarLanguage/StarTruth.lean`)
 shifts the **stored-time vector with the history** — it must, since `↓ⁱ` evaluates at a time in
 the unshifted frame of reference — so the shift argument delivers `φ` at a shifted vector, never
 at the original one. `refute_modal_future` shows the gap is real and not an artefact of the
@@ -65,9 +65,9 @@ translating formulas back down; it is obtained semantically
 ## References
 
 * JPL paper `app:deterministic-future` (negative half), `app:deterministic`, `sent:det`
-* `FormalSystem/Semantics/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`,
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`,
   `refute_determined`
-* `FormalSystem/Semantics/StarDeterminism.lean` — the positive half
+* `FormalSystem/Semantics/StarLanguage/StarDeterminism.lean` — the positive half
 
 ## Tags
 

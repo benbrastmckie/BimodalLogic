@@ -22,7 +22,7 @@ This is the system that is **sound** over every frame validating that schema
 ## Why a separate inductive, and not a constructor on `PlusAxiom`
 
 *Determined* is refuted at `.Base`: `Fp → ⊡Fp` fails on the permissive two-state frame
-(`Semantics/PlusNonValidities.lean`, `refute_determined`). Adding a `determined` constructor to
+(`Semantics/PlusLanguage/PlusNonValidities.lean`, `refute_determined`). Adding a `determined` constructor to
 `PlusAxiom` would therefore falsify TM⁺ soundness, which `PlusAxiom`'s own docstring records as
 a standing prohibition. The extension is built here instead, and the live proof system is left
 untouched — `PlusAxiom` has exactly the constructors it had before.
@@ -52,7 +52,7 @@ schema is the only shape that survives those three rules.
 ## References
 
 * `FormalSystem/PlusLanguage/Derivation.lean` — the seven-rule system mirrored here
-* `FormalSystem/Semantics/PlusNonValidities.lean` — `refute_determined`, the reason for the
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `refute_determined`, the reason for the
   separate inductive
 
 ## Tags
@@ -80,8 +80,8 @@ inductive DetAxiom : PlusFormula → Type where
   /-- Every TM⁺ axiom schema instance. -/
   | ofPlus {φ : PlusFormula} (h : PlusAxiom φ) : DetAxiom φ
   /-- *Determined*: `φ → ⊡φ`. Valid on every deterministic frame
-  (`Semantics/PlusDeterminism.lean`, `determined_of_deterministic`) and refuted on some
-  non-deterministic ones (`Semantics/PlusNonValidities.lean`, `refute_determined`) — which is
+  (`Semantics/PlusLanguage/PlusDeterminism.lean`, `determined_of_deterministic`) and refuted on some
+  non-deterministic ones (`Semantics/PlusLanguage/PlusNonValidities.lean`, `refute_determined`) — which is
   why it is here and not in `PlusAxiom`. -/
   | determined (φ : PlusFormula) : DetAxiom (φ.imp (PlusFormula.stab φ))
 

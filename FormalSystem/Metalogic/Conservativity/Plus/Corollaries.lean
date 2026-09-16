@@ -25,7 +25,7 @@ directory does not import the deterministic subtree (which itself imports TM⁺ 
 generic over the engine there, so the four named instances are the one composed row this module
 adds; nothing else in that list is restated.
 
-Likewise the *refuted* directions are cited, not restated: `Semantics/PlusNonValidities.lean`
+Likewise the *refuted* directions are cited, not restated: `Semantics/PlusLanguage/PlusNonValidities.lean`
 carries `refute_stab_box`, `refute_allFuture_stab`, `refute_stab_allFuture_past`,
 `refute_determined` and `refute_somePast_stab`, which between them bound the defined modals'
 logic from above.
@@ -56,7 +56,7 @@ theorem (seriality plus `G`-distribution plus `F`-monotonicity), and
 
 * JPL paper lines 1125-1129 — the defined modals
 * `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean` — the rows cited above
-* `FormalSystem/Semantics/PlusNonValidities.lean` — the refuted directions
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — the refuted directions
 
 ## Tags
 
@@ -169,7 +169,7 @@ theorem willImpAllFuture (φ : PlusFormula) :
   plusAx (PlusAxiom.stab_t (PlusFormula.allFuture φ)) (FrameClass.base_le fc)
 
 /-- **`□Gφ → Will φ`** (`□Gφ → ⊡Gφ`): what is necessary is settled. `box_stab` at `Gφ`; the
-converse is refuted (`Semantics/PlusNonValidities.lean`, `refute_stab_box`). -/
+converse is refuted (`Semantics/PlusLanguage/PlusNonValidities.lean`, `refute_stab_box`). -/
 theorem boxAllFutureImpWill (φ : PlusFormula) :
     PlusDerivable fc [] ((PlusFormula.box (PlusFormula.allFuture φ)).imp (PlusFormula.Will φ)) :=
   plusAx (PlusAxiom.box_stab (PlusFormula.allFuture φ)) (FrameClass.base_le fc)

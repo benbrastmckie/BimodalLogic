@@ -19,7 +19,7 @@ The two headline results, obtained by instantiating the generic state-set bridge
 
 - `fzero_determined` together with `fzero_not_deterministic` — **(T3)**: a frame that validates
   *Determined* without being deterministic, so the converse of
-  `determined_of_deterministic` (`Semantics/PlusDeterminism.lean`) fails
+  `determined_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) fails
 - `fzero_plusValidOn_iff_f1` — **(T4)**: `F°` and `F¹` validate exactly the same `PlusFormula`s
 - `deterministic_not_plusDefinable` — the conclusion: no set of L⁺ formulas defines the
   deterministic frames
@@ -44,7 +44,7 @@ and no repair by a different formula set is possible.
 ## Uniform substitution is unsound here
 
 `p → ⊡p` is frame-valid over `F°`, while `Fp → ⊡Fp` is refutable over `natFrame`
-(`refute_determined`, `Semantics/PlusNonValidities.lean`). A schema's validity at atomic
+(`refute_determined`, `Semantics/PlusLanguage/PlusNonValidities.lean`). A schema's validity at atomic
 instances therefore does not transfer to its substitution instances in this setting — atoms are
 state formulas by definition of the valuation, and general formulas are not. **No proof in this
 development argues by substitution**, and none may.
@@ -75,13 +75,13 @@ that actually matters:
   rather than by `cor:occurrence`.
 
 So no step here is a "validity ⟹ frame condition" step, and nothing reintroduces the ZFC
-direction that `Semantics/PlusDeterminism.lean`'s docstring stays clear of; that module's own
+direction that `Semantics/PlusLanguage/PlusDeterminism.lean`'s docstring stays clear of; that module's own
 collapse theorems still report `[propext]` alone.
 
 ## References
 
 * JPL paper `cor:no-characterization`, `app:deterministic`, `app:drift`
-* `FormalSystem/Semantics/PlusDeterminism.lean` — the positive half whose converse fails here
+* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — the positive half whose converse fails here
 
 ## Tags
 
@@ -147,7 +147,7 @@ theorem fzero_determined (φ : PlusFormula) : F0.PlusValidOn (.imp φ (.stab φ)
 /--
 **(T3): the "exactly" claim is false.** `F°` validates every instance of *Determined* and is not
 deterministic, so the converse of `determined_of_deterministic`
-(`Semantics/PlusDeterminism.lean`) fails — validity of the schema does **not** characterize
+(`Semantics/PlusLanguage/PlusDeterminism.lean`) fails — validity of the schema does **not** characterize
 `TaskFrame.Deterministic`.
 -/
 theorem determined_valid_on_non_deterministic :

@@ -30,12 +30,12 @@ drift between the two inductives fails to typecheck there.
 | Name | Schema | Validity |
 |------|--------|----------|
 | `stab_k` | `⊡(φ → ψ) → (⊡φ → ⊡ψ)` | universal-quantifier shape of the `stab` clause |
-| `stab_t` | `⊡φ → φ` | `Semantics/PlusTruth.lean`, `of_stab` |
+| `stab_t` | `⊡φ → φ` | `Semantics/PlusLanguage/PlusTruth.lean`, `of_stab` |
 | `stab_4` | `⊡φ → ⊡⊡φ` | `stab_four` |
 | `stab_5` | `⟐φ → ⊡⟐φ` (as `¬⊡¬φ → ⊡¬⊡¬φ`) | `stab_five` |
 | `box_stab` | `□φ → ⊡φ` | `stab_of_box` (`⟨τ⟩_x ⊆ H_F`, paper line 1108) |
 | `atom_stab` | `p → ⊡p` for atoms | `stab_of_stateLocal` at `stateLocal_atom` (paper footnote, line 1119) |
-| `paste` | `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))`, `φ⁺` pure-future, `ψ⁻` pure-past | `Semantics/PlusPasting.lean`, `paste_valid` |
+| `paste` | `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))`, `φ⁺` pure-future, `ψ⁻` pure-past | `Semantics/PlusLanguage/PlusPasting.lean`, `paste_valid` |
 | `untl_paste` | `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)`, `α⁻` pure-past, `φ⁺` pure-future | `untl_dstab_valid` |
 
 The first four say that the monomodal logic of `⊡` is S5 (paper footnote, line 1118: `⟨τ⟩_x`
@@ -46,7 +46,7 @@ else. The two pasting schemata `paste` and `untl_paste` add the one structural f
 `⟨τ⟩_x` that the S5 axioms miss — the total histories through a world state are the product of
 its possible pasts and its possible futures — and they are exactly what makes, for instance,
 `⊡Gφ⁺ → G⊡φ⁺` derivable. Their purity side conditions are necessary
-(`Semantics/PlusNonValidities.lean`).
+(`Semantics/PlusLanguage/PlusNonValidities.lean`).
 
 **Derived, not constructors.** FS (`F⟐φ⁺ → ⟐Fφ⁺`) is `untl_paste` at `α⁻ := ⊤`; GS
 (`⊡Gφ⁺ → G⊡φ⁺`) is its contrapositive; the past mirrors (PS with the conjuncts exchanged, and
@@ -57,7 +57,7 @@ exchanges `IsPureFuture` and `IsPurePast`. `⊡`-necessitation is likewise a der
 
 **Refuted, hence absent.** `⊡φ → □⊡φ`, `G⊡p → ⊡Gp`, `⊡GPp → G⊡Pp`, *Determined* `φ → ⊡φ` (over
 non-deterministic frames), and `P⊡p → ⊡Pp` are all refuted in
-`Semantics/PlusNonValidities.lean`. In particular *Determined* must never be added here: it is
+`Semantics/PlusLanguage/PlusNonValidities.lean`. In particular *Determined* must never be added here: it is
 refuted at `.Base`, so adding it would falsify TM⁺ soundness. A validity notion over the
 deterministic frames can be stated through `PlusValidOnFrames` without touching this inductive.
 

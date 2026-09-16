@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.MinusTruth
+import FormalSystem.Semantics.MinusLanguage.MinusTruth
 import FormalSystem.Semantics.DurationClassification
 
 /-!
@@ -108,7 +108,7 @@ history and time.
 **Kept as a direct proof, deliberately.** DN mentions only `G` and `→`, on which `tr` *is* exact,
 so this statement is in principle `Metalogic/Soundness.lean`'s `density_valid` transported across
 `minusValidOnFrames_iff_validOnFrames_tr`. It is not derived that way, because the transport would
-require `Semantics/MinusSchemaValidity.lean` to import `Metalogic/Soundness.lean` — inverting the
+require `Semantics/MinusLanguage/MinusSchemaValidity.lean` to import `Metalogic/Soundness.lean` — inverting the
 `Semantics/` → `Metalogic/` layering that the whole development rests on, to replace a five-line
 self-contained proof. The two statements agree; that they are proved independently is a feature
 here, not duplication to be collapsed.

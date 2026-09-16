@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusNonValidities
-import FormalSystem.Semantics.PlusDeterminism
+import FormalSystem.Semantics.PlusLanguage.PlusNonValidities
+import FormalSystem.Semantics.PlusLanguage.PlusDeterminism
 import FormalSystem.Metalogic.Algebraic.FlowFrame
 
 /-!
@@ -32,7 +32,7 @@ The separating point is `(τ₁, 0)` against `(τ₂, 0)`, where both histories 
 * `⊡Fp` **fails** at `(τ₁, 0)`: the constant history shares `τ₁`'s state at `0` and never
   reaches `p`.
 * `⊡Fp` **holds** at `(τ₂, 0)`: `M₂`'s frame is deterministic, so `⊡` collapses onto its argument
-  (`stab_iff_of_deterministic`, `Semantics/PlusDeterminism.lean`) and `Fp` holds.
+  (`stab_iff_of_deterministic`, `Semantics/PlusLanguage/PlusDeterminism.lean`) and `Fp` holds.
 
 ## The invariance notion is the tree's own `TruthCorr`
 
@@ -46,7 +46,7 @@ fields are the profile-matching constructions above.
 ## Why the separator has to be temporal
 
 An *atomic* separator is impossible: `p → ⊡p` is valid on every frame (the `stateLocal_atom`
-instance of `stab_of_stateLocal`, `Semantics/PlusStateLocal.lean`, the AS axiom), because an
+instance of `stab_of_stateLocal`, `Semantics/PlusLanguage/PlusStateLocal.lean`, the AS axiom), because an
 atom's truth depends on the world state alone — which is exactly what `⊡` quantifies over. So `⊡p ↔ p` everywhere and no atom can
 witness anything. `Fp` is the least temporal formula that can, which is why the statement is
 about `⊡Fp` and not about `⊡` at an arbitrary argument.
@@ -58,7 +58,7 @@ point — `⊡` sits strictly between the identity and `□`.
 ## References
 
 * JPL paper `def:BLstar-semantics` — the `⊡` clause whose expressive strength this bounds below
-* `FormalSystem/Semantics/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`, reused verbatim
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`, reused verbatim
 * `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` — the sibling
   elimination-by-indistinguishability result, on frames rather than formulas
 

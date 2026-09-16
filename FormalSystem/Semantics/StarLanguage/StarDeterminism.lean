@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.StarValidity
+import FormalSystem.Semantics.StarLanguage.StarValidity
 import FormalSystem.Semantics.DeterministicBridge
 
 /-!
@@ -49,7 +49,7 @@ PossibleWorlds repository's determinism-axiom-correspondence report
 sentence letter suffices for the converse direction. That report is the citation of record for them here: they are cited as a
 **report-level result pending paper integration**, never as manuscript text and never as a
 conjecture. What *is* manuscript text is `sent:det` and `app:deterministic-future`, which are
-results (1) and `Semantics/StarNonValidities.lean` below.
+results (1) and `Semantics/StarLanguage/StarNonValidities.lean` below.
 
 ## The single sentence letter is not uniform substitution
 
@@ -98,8 +98,8 @@ correspondence-record-and-store-recall-recommendation report, §II.4's choice-as
   `lem:deterministic-singleton`, `def:BLstar-semantics`
 * The PossibleWorlds `02_determinism-axiom-correspondence.md` report, §4 — Theorem C,
   `Det-pm`, and the §4.1 single-letter note
-* `FormalSystem/Semantics/PlusDeterminism.lean` — `states_eq_of_deterministic`, the L⁺ collapse
-* `FormalSystem/Semantics/StarNonValidities.lean` — `app:deterministic-future`'s negative half
+* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic`, the L⁺ collapse
+* `FormalSystem/Semantics/StarLanguage/StarNonValidities.lean` — `app:deterministic-future`'s negative half
 
 ## Tags
 
@@ -121,7 +121,7 @@ variable {F : TaskFrame}
 their world state at a single time satisfy the same `StarFormula` at *every* time and *every*
 stored-time vector.
 
-This is the L⋆ twin of `stab_iff_of_deterministic` (`Semantics/PlusDeterminism.lean`) and the
+This is the L⋆ twin of `stab_iff_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) and the
 engine both validity results below run on. It consumes the singleton bridge
 (`states_eq_of_deterministic`) rather than re-deriving the collapse, and transports along
 `star_truth_congr_ext` — the transport lemma that survives time registers because it fixes the

@@ -52,7 +52,7 @@ bridge composes unchanged with whatever the totality-based validity definition b
 
 The invariant is **directional**. It forbids the edge `MinusLanguage/ → Semantics/` and says
 nothing about the converse, which is permitted and is how this file's `MinusFormula` acquires a
-semantics: `FormalSystem/Semantics/MinusTruth.lean` imports *this module* — a leaf that itself
+semantics: `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` imports *this module* — a leaf that itself
 imports only `FormalSystem.Syntax.Atom` — and defines `MinusTruthAt` by recursion on the six
 constructors below. Nothing flows back the other way, so the `grep` check above still returns no
 `import` line.

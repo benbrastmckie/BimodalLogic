@@ -271,7 +271,7 @@ the past instances of this predicate are therefore already determined by the fut
 asserted about *every* state. Writing it with an unrestricted binder is what makes that visible.
 
 **Restricting `d` to `0 ≤ d` gives a strictly weaker predicate that does NOT support the bridge
-lemma.** `states_eq_of_deterministic` (`Semantics/PlusDeterminism.lean`) applies this at the
+lemma.** `states_eq_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) applies this at the
 possibly negative duration `s - t`; under a `0 ≤ d` guard the frame `natFrame` over `ℤ` (which
 relates every state to every state at every nonzero duration in the past direction) would count
 as "deterministic" while refuting the collapse. The unrestricted binder is a correctness

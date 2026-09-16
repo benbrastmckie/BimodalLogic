@@ -247,7 +247,7 @@ The stability modal: truth at every total history agreeing with the present one 
 time**.
 
 The agreement relation is carried as the field `sameState` rather than named directly. The tree's
-`SameStateAt` lives in `Semantics/PlusTruth.lean`, which sits above this module in the import
+`SameStateAt` lives in `Semantics/PlusLanguage/PlusTruth.lean`, which sits above this module in the import
 order; taking it as a field keeps this module a leaf while letting each instance supply the real
 relation, so no consumer's statement changes.
 -/

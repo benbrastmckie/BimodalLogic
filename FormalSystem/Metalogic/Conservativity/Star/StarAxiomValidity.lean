@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.StarLanguage.Axioms
-import FormalSystem.Semantics.StarValidity
+import FormalSystem.Semantics.StarLanguage.StarValidity
 import FormalSystem.Metalogic.Conservativity.Plus.AxiomValidity
 import FormalSystem.Metalogic.Conservativity.Star.StarPasting
 
@@ -30,7 +30,7 @@ already not substitution-closed via `PlusAxiom.atom_stab`, and nothing here need
 - **The 53 TM⁺ mirror arms** are named `starValid_*` lemmas, proved **directly against
   `StarTruthAt` at arbitrary `StarFormula` metavariables**. The five closed uniformity schemata
   and the two seriality schemata are parameterless formulas, hence literally `ofPlus` images, and
-  transport along `starValidOnFrames_ofPlus` (`Semantics/StarValidity.lean`); everything else is
+  transport along `starValidOnFrames_ofPlus` (`Semantics/StarLanguage/StarValidity.lean`); everything else is
   a fresh proof. The order-theoretic content is never inlined: `prior_UZ`/`prior_SZ`/`z1` consume
   `SoundnessLemmas/DiscreteOrder.lean` and `sep` consumes `SoundnessLemmas/Separability.lean`,
   each at a `StarTruthAt` predicate.
@@ -83,7 +83,7 @@ open FormalSystem.Metalogic
 
 The `.iff` clause lemma for `StarTruthAt`, and the `StarValid`-at-an-`.iff` introduction rule
 every register arm below is stated through. They live here rather than in
-`Semantics/StarTruth.lean` because every consumer is in this directory. -/
+`Semantics/StarLanguage/StarTruth.lean` because every consumer is in this directory. -/
 
 /-- The `.iff` clause lemma, in the shape of the `StarTruth.*_iff` family. -/
 theorem starTruth_iff_iff {F : TaskFrame} (M : TaskModel F) (τ : ConvexHistory F)
@@ -719,7 +719,7 @@ theorem starValid_z1_swap (φ : StarFormula) :
 /-! ## Two `K±` clause lemmas, and the register-inertness of the `↓ⁱ`-free fragment
 
 `starKPlus_iff` and `starKMinus_iff` unfold the two Reynolds gap operators into the shape the
-Dedekind arms consume. They are declared here rather than in `Semantics/StarTruth.lean` for the
+Dedekind arms consume. They are declared here rather than in `Semantics/StarLanguage/StarTruth.lean` for the
 same reason `starTruth_iff_iff` above is: every consumer is in this directory. Relocating the
 whole `StarTruth.*_iff` family, together with a `star_truth_norm` simp set, is recorded as
 deferred follow-up work, not done here.
@@ -1028,7 +1028,7 @@ lemmas are the `StarValid` packagings the dispatch consumes.
 **Measured correction to this group's swap-closure.** PS and US are not each other's duals.
 `swapTemporal` fixes `⟐` and exchanges `untl`/`snce`, so the dual of PS is PS with the conjuncts
 exchanged (PS'), and the dual of US is SS — exactly as at the L⁺ level, where
-`Semantics/PlusPasting.lean` carries `paste_valid'` and `snce_dstab_valid` for precisely this
+`Semantics/PlusLanguage/PlusPasting.lean` carries `paste_valid'` and `snce_dstab_valid` for precisely this
 reason. The two `*_swap` lemmas below are those duals. -/
 
 /-- PS as a `StarValid`. -/

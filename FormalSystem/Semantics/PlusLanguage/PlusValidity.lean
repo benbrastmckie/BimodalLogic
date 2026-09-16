@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusTruth
+import FormalSystem.Semantics.PlusLanguage.PlusTruth
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.Semantics.Validity
 
@@ -12,12 +12,12 @@ import FormalSystem.Semantics.Validity
 # L⁺ validity — the `PlusFormula` mirrors of `Semantics/Validity.lean`
 
 Validity for the language L⁺ (`FormalSystem/PlusLanguage/Formula.lean`), stated against the
-native `PlusTruthAt` of `Semantics/PlusTruth.lean`, plus the **truth-transfer bridge** along the
+native `PlusTruthAt` of `Semantics/PlusLanguage/PlusTruth.lean`, plus the **truth-transfer bridge** along the
 embedding `ofFormula : Formula → PlusFormula` and the **semantic conservativity** of L⁺ over
 L that follows from it at every frame class.
 
 Each predicate here is a binder-for-binder mirror of its counterpart in `Semantics/Validity.lean`
-(and of the base-language mirror in `Semantics/MinusValidity.lean`): `TaskFrame.PlusValidOn` of
+(and of the base-language mirror in `Semantics/MinusLanguage/MinusValidity.lean`): `TaskFrame.PlusValidOn` of
 `TaskFrame.ValidOn`, `PlusValidOnFrames` of `ValidOnFrames`, `PlusValidIn` of `ValidIn`,
 `PlusValid` of `Valid`. The frame-predicate form `PlusValidOnFrames` is the **primitive**, and
 `PlusValidIn fc := PlusValidOnFrames fc.Sat` its instance at a tag — exactly the shape that lets
@@ -44,7 +44,7 @@ semantics.
 
 * JPL paper `def:frame-validity`, `def:logical-consequence`, `cor:tm-completeness`
 * `FormalSystem/Semantics/Validity.lean` — the L predicates these mirror
-* `FormalSystem/Semantics/MinusValidity.lean` — the base-language mirror, the same shape
+* `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` — the base-language mirror, the same shape
 
 ## Tags
 

@@ -25,7 +25,7 @@ order-reversal transfer lemma. Everything here is additive: `MinusTruthAt`, `Min
 
 ## Why a native frame notion is required
 
-`Semantics/MinusTruth.lean`'s `MinusTruthAt` evaluates at a `TaskModel F` for `F : TaskFrame`, and a
+`Semantics/MinusLanguage/MinusTruth.lean`'s `MinusTruthAt` evaluates at a `TaskModel F` for `F : TaskFrame`, and a
 `TaskFrame` carries its times in a `Duration : TemporalOrder` — a *nontrivial totally ordered
 abelian group*. That group hypothesis is not incidental packaging. It is exactly what
 `Semantics/DurationClassification.lean`'s `duration_dense_or_least_pos` consumes, and
@@ -80,7 +80,7 @@ one line during native soundness — no swap-strengthened simultaneous induction
 
 ## Main Results
 
-`MinusFrameTruth.*` — characterization lemmas mirroring `Semantics/MinusTruth.lean`'s `MinusTruth`
+`MinusFrameTruth.*` — characterization lemmas mirroring `Semantics/MinusLanguage/MinusTruth.lean`'s `MinusTruth`
 namespace one for one:
 
 - `bot_false`, `imp_iff`, `box_iff`, `past_iff`, `future_iff` — the primitive clauses
@@ -96,7 +96,7 @@ formula.
 
 * JPL paper `\S sub:Logic` — `def:BL-language`, `def:BL-semantics` (which this deliberately
   departs from in its `□` clause; see above)
-* `FormalSystem/Semantics/MinusTruth.lean` — the `TaskFrame`-bound recursion this sits beside
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the `TaskFrame`-bound recursion this sits beside
 * `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` — the consumer: native L⁻ soundness
   and the two-fibre refutation of `(Sp)`
 

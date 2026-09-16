@@ -4,19 +4,19 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusPasting
-import FormalSystem.Semantics.StarValidity
+import FormalSystem.Semantics.PlusLanguage.PlusPasting
+import FormalSystem.Semantics.StarLanguage.StarValidity
 
 /-!
 # The two L⋆ purity congruences, and PS / US over `StarFormula`
 
 The semantic content the `paste` and `untl_paste` arms of `StarAxiom` consume
 (`StarLanguage/Axioms.lean`). Everything here is the L⋆ counterpart of
-`Semantics/PlusPasting.lean`'s pasting block, with the stored-time vector threaded through.
+`Semantics/PlusLanguage/PlusPasting.lean`'s pasting block, with the stored-time vector threaded through.
 
 ## What is reused rather than rebuilt
 
-`Semantics/PlusPasting.lean` is imported and consumed **read-only**. Its pasting construction —
+`Semantics/PlusLanguage/PlusPasting.lean` is imported and consumed **read-only**. Its pasting construction —
 `paste`, `paste_isTotal`, `paste_agreeFrom`, `paste_agreeUpTo`, `AgreeFrom`, `AgreeUpTo`,
 `agreeFrom_mono`, `agreeUpTo_mono` — is formula-independent: it splices two total histories at a
 time and says nothing about any language. Only the two *congruences* mention formulas, and those
@@ -39,7 +39,7 @@ widening, independent of the one `RecallFree` carries for `modal_future`.
 
 PS and US are **not** each other's duals. `swapTemporal` fixes `⟐` and exchanges `untl`/`snce`,
 so the dual of PS is PS with the conjuncts exchanged (`star_paste_valid'`) and the dual of US is
-SS (`star_snce_paste_valid`). This is the same shape `Semantics/PlusPasting.lean` has, and for
+SS (`star_snce_paste_valid`). This is the same shape `Semantics/PlusLanguage/PlusPasting.lean` has, and for
 the same reason; both duals are proved here so that the `paste`/`untl_paste` swap arms of
 `starAxiom_swap_validIn_min` have a lemma to land on.
 
@@ -51,7 +51,7 @@ is this directory. The precedent is `Conservativity/Star/StarAxiomValidity.lean`
 
 ## References
 
-* `FormalSystem/Semantics/PlusPasting.lean` — the pasting construction reused read-only, and the
+* `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` — the pasting construction reused read-only, and the
   L⁺ congruences mirrored here
 * `FormalSystem/StarLanguage/Formula.lean` — `StarIsPureFuture`, `StarIsPurePast`
 * JPL paper `possible_worlds.tex` — `def:BLstar-semantics`

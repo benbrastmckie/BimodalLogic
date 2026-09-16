@@ -5,9 +5,9 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.FrameProperty
-import FormalSystem.Semantics.StarDeterminism
-import FormalSystem.Semantics.StarNonValidities
-import FormalSystem.Semantics.StarStateLocal
+import FormalSystem.Semantics.StarLanguage.StarDeterminism
+import FormalSystem.Semantics.StarLanguage.StarNonValidities
+import FormalSystem.Semantics.StarLanguage.StarStateLocal
 
 /-!
 # `F^N` — forward-deterministic, not deterministic
@@ -261,7 +261,7 @@ theorem forwardDeterministic_not_deterministic :
 **The forward analogue of `states_eq_of_deterministic`.** On a forward-deterministic frame, two
 possible worlds agreeing on their world state at `x` agree at every time `y ≥ x`.
 
-This is `states_eq_of_deterministic`'s proof (`Semantics/PlusDeterminism.lean`) with the duration
+This is `states_eq_of_deterministic`'s proof (`Semantics/PlusLanguage/PlusDeterminism.lean`) with the duration
 `y - x` now **nonnegative**, which is exactly the instance the guarded binder supports. Note what
 is *not* concluded: nothing about `y < x`, and `F^N`'s own two possible worlds
 `τ ≡ 0` and `σ(n) = max(0, −n)` agree at `0` while differing at every negative time.
@@ -280,7 +280,7 @@ theorem states_eq_of_forwardDeterministic {F : TaskFrame} (hD : F.ForwardDetermi
 
 `sentDet_unfold`'s `∀ y > x` restriction is what makes the forward engine sufficient: at each
 `y > x`, forward determinism gives `σ(y) = τ(y)` for every `σ ∈ ⟨τ⟩ₓ`, and a **state-local** `φ`
-(`Semantics/StarStateLocal.lean`) cannot distinguish two possible worlds carrying the same world
+(`Semantics/StarLanguage/StarStateLocal.lean`) cannot distinguish two possible worlds carrying the same world
 state at the time of evaluation. One disjunct of `settledDisj` then holds outright.
 
 This is the principled closure of the sentence-letter form this theorem replaces. That form gave
@@ -321,7 +321,7 @@ theorem fn_sentDet_stateLocal (φ : StarFormula) (hφ : φ.StateLocal) :
 not deterministic. So no reading of `app:deterministic-future` may be strengthened to a
 characterization of the deterministic frames: what `sent:det` defines is *forward* determinism.
 
-Contrast `deterministic_starDefinable` (`Semantics/StarDeterminism.lean`), where replacing
+Contrast `deterministic_starDefinable` (`Semantics/StarLanguage/StarDeterminism.lean`), where replacing
 `\Future` by `always` closes exactly this gap — `always` reaches the past, and the past is where
 `F^N` is indeterminate.
 

@@ -32,12 +32,12 @@ separate inductive with a constructor-to-constructor embedding.
 
 ## Where the L⋆ semantics lives
 
-- `FormalSystem/Semantics/StarTruth.lean` — `StarTruthAt` over points `(τ, x, v⃗)`, the transport
+- `FormalSystem/Semantics/StarLanguage/StarTruth.lean` — `StarTruthAt` over points `(τ, x, v⃗)`, the transport
   layer, and the truth transfer `starTruthAt_ofPlus`
-- `FormalSystem/Semantics/StarValidity.lean` — `TaskFrame.StarValidOn`, `sentDet`
-- `FormalSystem/Semantics/StarDeterminism.lean` — `app:deterministic-future`'s positive half,
+- `FormalSystem/Semantics/StarLanguage/StarValidity.lean` — `TaskFrame.StarValidOn`, `sentDet`
+- `FormalSystem/Semantics/StarLanguage/StarDeterminism.lean` — `app:deterministic-future`'s positive half,
   `detPM`, and Theorem C's `Det-pm` half
-- `FormalSystem/Semantics/StarNonValidities.lean` — `app:deterministic-future`'s negative half
+- `FormalSystem/Semantics/StarLanguage/StarNonValidities.lean` — `app:deterministic-future`'s negative half
 - `FormalSystem/Metalogic/Independence/StarDiscrimination.lean` — the discrimination footnote
 
 ## The proof system TM⋆

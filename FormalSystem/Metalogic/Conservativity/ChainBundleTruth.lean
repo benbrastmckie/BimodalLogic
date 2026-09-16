@@ -69,7 +69,7 @@ refutation. That implication is the completeness direction itself.
 * `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — `multiFamTaskFrameGen`,
   `multiFamHistoryGen`, `multiFamHistoryGen_total`, `multiFamGen_total_eq_range`
 * `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` — `minus_box_universal`
-* `FormalSystem/Semantics/MinusTruth.lean` — the six `MinusTruthAt` clauses `chainSat` mirrors
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the six `MinusTruthAt` clauses `chainSat` mirrors
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — the four-row status table
 
 ## Tags

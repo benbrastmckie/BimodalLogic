@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusValidity
+import FormalSystem.Semantics.PlusLanguage.PlusValidity
 
 /-!
 # Order transfer under (H1) and (H2) — the frame-independent layer

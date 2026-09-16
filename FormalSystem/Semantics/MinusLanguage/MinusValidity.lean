@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.MinusTruth
+import FormalSystem.Semantics.MinusLanguage.MinusTruth
 import FormalSystem.Semantics.ValidityLayer
 import FormalSystem.Semantics.Validity
 
@@ -12,7 +12,7 @@ import FormalSystem.Semantics.Validity
 # L⁻ validity — the base-language mirrors of `Semantics/Validity.lean`
 
 Validity and semantic consequence for the tense-primitive base language L⁻, stated against the
-native `MinusTruthAt` of `Semantics/MinusTruth.lean`.
+native `MinusTruthAt` of `Semantics/MinusLanguage/MinusTruth.lean`.
 
 Each predicate here is a **binder-for-binder mirror** of its counterpart in
 `Semantics/Validity.lean`: `MinusValid` of `Valid`, `MinusValidDense` of `ValidDense`,

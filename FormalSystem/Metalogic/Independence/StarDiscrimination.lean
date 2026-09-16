@@ -7,8 +7,8 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Independence.DriftFrame
 import FormalSystem.Metalogic.Independence.RealTranslationFrame
 import FormalSystem.Metalogic.Independence.DeterminismUndefinable
-import FormalSystem.Semantics.StarDeterminism
-import FormalSystem.Semantics.StarNonValidities
+import FormalSystem.Semantics.StarLanguage.StarDeterminism
+import FormalSystem.Semantics.StarLanguage.StarNonValidities
 
 /-!
 # The discrimination footnote — store and recall separate `F°` from `F¹`
@@ -57,7 +57,7 @@ dependence of its own.
   `cor:no-characterization`, `app:deterministic-future` and the footnote following it
 * `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` —
   `deterministic_not_plusDefinable`, `fzero_plusValidOn_iff_f1`
-* `FormalSystem/Semantics/StarDeterminism.lean` — `sentDet_of_deterministic`, the half `F¹` uses
+* `FormalSystem/Semantics/StarLanguage/StarDeterminism.lean` — `sentDet_of_deterministic`, the half `F¹` uses
 
 ## Tags
 
@@ -150,7 +150,7 @@ theorem fzero_refutes_sentDet (p : Atom) :
 
 `F¹` is deterministic (`f1_deterministic`), so this is `sentDet_of_deterministic` instantiated —
 one line, and deliberately so: the positive half of `app:deterministic-future` is proved once,
-in `Semantics/StarDeterminism.lean`, and never re-derived at a particular frame.
+in `Semantics/StarLanguage/StarDeterminism.lean`, and never re-derived at a particular frame.
 -/
 theorem f1_sentDet (φ : StarFormula) : F1.StarValidOn (sentDet φ) :=
   sentDet_of_deterministic f1_deterministic φ

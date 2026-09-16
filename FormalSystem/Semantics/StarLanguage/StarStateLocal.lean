@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.StarValidity
-import FormalSystem.Semantics.PlusNonValidities
+import FormalSystem.Semantics.StarLanguage.StarValidity
+import FormalSystem.Semantics.PlusLanguage.PlusNonValidities
 
 /-!
 # State-locality: the L⋆ fragment whose truth is fixed by the present world state
@@ -33,7 +33,7 @@ over, so a state-local `φ` is already `⊡`-stable — the headline `φ ↔ ⊡
 
 ## Which constructors are state-local, and why
 
-Read off `StarTruthAt` (`Semantics/StarTruth.lean`) clause by clause, at the **same** evaluation
+Read off `StarTruthAt` (`Semantics/StarLanguage/StarTruth.lean`) clause by clause, at the **same** evaluation
 time and the **same** register vector on both sides:
 
 | Constructor | State-local? | Why |
@@ -55,11 +55,11 @@ reading would give.
 
 ## Same-time, not different-times
 
-`stab_state_only` (`Semantics/PlusTruth.lean`) is a **different-times** statement: `τ(t) = σ(s)`
+`stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`) is a **different-times** statement: `τ(t) = σ(s)`
 transfers `⊡φ` from `(τ, t)` to `(σ, s)`. That shape does **not** generalize to this fragment —
 `box φ` at `t` and at `s` can differ, and `timeStore i` writes a different time into the register
 on each side. The same-time shape used here (one `t`, one `v⃗`) is both provable for the fragment
-and exactly what the consumer needs: `settledDisj_iff` (`Semantics/StarValidity.lean`) evaluates
+and exactly what the consumer needs: `settledDisj_iff` (`Semantics/StarLanguage/StarValidity.lean`) evaluates
 `φ` at the *single* time held in register `2`.
 
 So this module is the companion facing the other way to `stab_state_only`: that lemma says `⊡φ`
@@ -77,7 +77,7 @@ a nine-case induction with no side conditions.
 ## The three exclusions live on one frame
 
 `not_isStateLocal_someFuture`, `not_isStateLocal_somePast` and `not_isStateLocal_timeRecall` are
-all witnessed on the permissive frame `NF` over `ℤ` (`Semantics/PlusNonValidities.lean`), where
+all witnessed on the permissive frame `NF` over `ℤ` (`Semantics/PlusLanguage/PlusNonValidities.lean`), where
 every function `ℤ → ℕ` is a possible world and `natModel` makes each atom true at world state `0`
 and nowhere else. No second countermodel frame is built: two possible worlds agreeing at `0` and
 disagreeing away from `0` refute all three.
@@ -85,10 +85,10 @@ disagreeing away from `0` refute all three.
 ## References
 
 * JPL paper `def:BLstar-semantics` — the truth clauses being classified
-* `FormalSystem/Semantics/StarTruth.lean` — `StarTruthAt`
-* `FormalSystem/Semantics/PlusTruth.lean` — `SameStateAt`, `sameStateAt_congr_left`,
+* `FormalSystem/Semantics/StarLanguage/StarTruth.lean` — `StarTruthAt`
+* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `SameStateAt`, `sameStateAt_congr_left`,
   `stab_state_only`
-* `FormalSystem/Semantics/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`
 
 ## Tags
 
@@ -103,7 +103,7 @@ open FormalSystem.Syntax
 **The state-locality fragment of L⋆**, by structural recursion.
 
 `atom`, `bot` and `imp` are the propositional core; `box` and `stab` are admitted for an
-arbitrary argument (see `Semantics/StarStateLocal.lean`'s `isStateLocal_box` and
+arbitrary argument (see `Semantics/StarLanguage/StarStateLocal.lean`'s `isStateLocal_box` and
 `isStateLocal_stab`); `timeStore` is admitted recursively, since it does not move the evaluation
 time; and `untl`, `snce`, `timeRecall` are excluded, each with a countermodel in that module.
 
@@ -363,7 +363,7 @@ theorem stateLocal_stab_iff {F : TaskFrame} {φ : StarFormula} (hφ : φ.StateLo
 /--
 **`φ ↔ ⊡φ` for state-local `φ`**, as a validity of L⋆.
 
-The companion facing the other way to `stab_state_only` (`Semantics/PlusTruth.lean`): that lemma
+The companion facing the other way to `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`): that lemma
 says `⊡φ` depends on the world state alone, this one says a formula that already depends on the
 world state alone is `⊡`-stable.
 

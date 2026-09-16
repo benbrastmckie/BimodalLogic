@@ -4,18 +4,18 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.StarTruth
+import FormalSystem.Semantics.StarLanguage.StarTruth
 import FormalSystem.Semantics.ValidityLayer
-import FormalSystem.Semantics.PlusValidity
+import FormalSystem.Semantics.PlusLanguage.PlusValidity
 
 /-!
 # L⋆ validity, `sent:det`, and the paper's `(∗)` unfolding chain
 
 Validity for the language L⋆ (`FormalSystem/StarLanguage/Formula.lean`), stated against the
-native `StarTruthAt` of `Semantics/StarTruth.lean`, together with the manuscript's sentence
+native `StarTruthAt` of `Semantics/StarLanguage/StarTruth.lean`, together with the manuscript's sentence
 `sent:det` and the biconditional chain `app:deterministic-future`'s proof opens with.
 
-Each predicate is a binder-for-binder mirror of its L⁺ counterpart in `Semantics/PlusValidity.lean`,
+Each predicate is a binder-for-binder mirror of its L⁺ counterpart in `Semantics/PlusLanguage/PlusValidity.lean`,
 with **one new binder**: the stored-time vector. Once `v⃗` is a parameter of the point of
 evaluation, `def:frame-validity`'s "true at every model, possible world and time" reads "true at
 every model, possible world, time, **and stored-time vector**" — the registers are part of the
@@ -54,7 +54,7 @@ stays free for a later world register.
 
 * JPL paper `sent:det`, `app:deterministic-future` (the `(∗)` chain), `def:frame-validity`,
   `def:BLstar-semantics`
-* `FormalSystem/Semantics/PlusValidity.lean` — the L⁺ predicates these mirror
+* `FormalSystem/Semantics/PlusLanguage/PlusValidity.lean` — the L⁺ predicates these mirror
 
 ## Tags
 
@@ -265,7 +265,7 @@ strictly later time `y`, and two possible worlds `σ₁, σ₂ ∈ ⟨τ⟩ₓ` 
 Both `hpos` and `hneg` are stated for *every* stored-time vector, which is what an atomic `φ`
 supplies for free — the atom clause of `StarTruthAt` does not read the registers. Packaging the
 argument here, where the frame is abstract, is what keeps the two refutation sites
-(`Semantics/StarNonValidities.lean` for `NF`, `Metalogic/Independence/StarDiscrimination.lean`
+(`Semantics/StarLanguage/StarNonValidities.lean` for `NF`, `Metalogic/Independence/StarDiscrimination.lean`
 for `F°`) down to their genuinely frame-specific content.
 -/
 theorem not_starValidOn_sentDet {φ : StarFormula} (M : TaskModel F)

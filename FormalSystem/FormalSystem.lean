@@ -12,6 +12,9 @@ import FormalSystem.Syntax.MinusLanguage
 import FormalSystem.Syntax.PlusLanguage
 import FormalSystem.Syntax.StarLanguage
 import FormalSystem.Semantics
+import FormalSystem.Semantics.MinusLanguage
+import FormalSystem.Semantics.PlusLanguage
+import FormalSystem.Semantics.StarLanguage
 import FormalSystem.Metalogic
 import FormalSystem.Theorems
 import FormalSystem.Automation

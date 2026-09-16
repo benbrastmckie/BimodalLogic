@@ -32,7 +32,7 @@ transporting a TM⁺ instance and never by uniform substitution (see
 ## The one exception, and the two mirrored side conditions
 
 `modal_future` (`□φ → □Gφ`) is **refuted** over `StarFormula` — see `refute_modal_future`
-(`Semantics/StarNonValidities.lean`), which fails it already at `φ := ↓¹p → p` over a two-state
+(`Semantics/StarLanguage/StarNonValidities.lean`), which fails it already at `φ := ↓¹p → p` over a two-state
 frame. MF is the sole schema in the TM block whose soundness proof consumes time-shift
 homogeneity, and the L⋆ time-shift lemma shifts the stored-time vector along with the history, so
 a `↓ⁱ` can observe the shift. The gap is real, not an artefact.
@@ -173,7 +173,7 @@ The semantic modules cited in this docstring are cited in prose only.
 ## References
 
 * `FormalSystem/PlusLanguage/Axioms.lean` — `PlusAxiom`, the 53 schemata mirrored here
-* `FormalSystem/Semantics/StarNonValidities.lean` — `refute_modal_future`, the reason
+* `FormalSystem/Semantics/StarLanguage/StarNonValidities.lean` — `refute_modal_future`, the reason
   `modal_future` alone carries a side condition
 * `FormalSystem/StarLanguage/Embedding.lean` — `StarAxiom.ofPlusAxiom`, the embedding recovered
   as a derived function over these constructors
@@ -400,7 +400,7 @@ inductive StarAxiom : StarFormula → Type where
   `PlusAxiom` counterpart.
 
   MF is **refuted** over `StarFormula` at `φ := ↓¹p → p` (`refute_modal_future`,
-  `Semantics/StarNonValidities.lean`): its soundness proof consumes time-shift homogeneity, and
+  `Semantics/StarLanguage/StarNonValidities.lean`): its soundness proof consumes time-shift homogeneity, and
   the L⋆ time-shift lemma shifts the stored-time vector along with the history, which a `↓ⁱ` can
   observe. `RecallFree` (`StarLanguage/Formula.lean`) is exactly the fragment on which the vector
   is inert, and `refute_modal_future`'s witness is exactly a formula outside it.

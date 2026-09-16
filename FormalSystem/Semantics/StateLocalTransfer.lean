@@ -4,14 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusStateLocal
-import FormalSystem.Semantics.StarStateLocal
+import FormalSystem.Semantics.PlusLanguage.PlusStateLocal
+import FormalSystem.Semantics.StarLanguage.StarStateLocal
 
 /-!
 # State-locality transfers along `ofPlus`
 
-`PlusFormula.StateLocal` (`Semantics/PlusStateLocal.lean`) and `StarFormula.StateLocal`
-(`Semantics/StarStateLocal.lean`) are two syntactic fragments cut by structural recursion over
+`PlusFormula.StateLocal` (`Semantics/PlusLanguage/PlusStateLocal.lean`) and `StarFormula.StateLocal`
+(`Semantics/StarLanguage/StarStateLocal.lean`) are two syntactic fragments cut by structural recursion over
 two different languages. `ofPlus` (`StarLanguage/Formula.lean`) embeds L⁺ into L⋆ constructor to
 constructor, and this module records the one fact that makes the pair a single concept rather
 than two parallel ones: the two recursions **agree along the embedding**, in both directions.
@@ -22,11 +22,11 @@ than two parallel ones: the two recursions **agree along the embedding**, in bot
 
 ## Why this is a separate module
 
-The lemma cannot live in `Semantics/PlusStateLocal.lean`. That module is imported by
+The lemma cannot live in `Semantics/PlusLanguage/PlusStateLocal.lean`. That module is imported by
 `Metalogic/Conservativity/Plus/AxiomValidity.lean`, which discharges the AS arm of TM⁺ soundness
 from `stab_of_stateLocal`; putting an L⋆ import into it would make the whole L⁺ conservativity
 route depend on the L⋆ tower, inverting the L → L⁺ → L⋆ layering the tree is built on. It cannot
-live in `Semantics/StarStateLocal.lean` either — that module is outside the territory of the work
+live in `Semantics/StarLanguage/StarStateLocal.lean` either — that module is outside the territory of the work
 that introduced the L⁺ fragment. A third module above both towers is the only placement that
 proves the lemma and preserves the layering, so this is that module.
 
@@ -39,8 +39,8 @@ resolves each side unaided.
 ## References
 
 * `FormalSystem/StarLanguage/Formula.lean` — `ofPlus`
-* `FormalSystem/Semantics/PlusStateLocal.lean` — `PlusFormula.StateLocal`
-* `FormalSystem/Semantics/StarStateLocal.lean` — `StarFormula.StateLocal`
+* `FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean` — `PlusFormula.StateLocal`
+* `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` — `StarFormula.StateLocal`
 
 ## Tags
 

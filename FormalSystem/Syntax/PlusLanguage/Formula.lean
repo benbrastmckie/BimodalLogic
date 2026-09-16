@@ -66,7 +66,7 @@ by `rfl` — the `rfl` pins at the end of this file are what the proof-system em
 This mirrors the `MinusLanguage/ → Semantics/` prohibition recorded in
 `FormalSystem/MinusLanguage/Formula.lean`, and for the same reason: the proof system and its
 embedding are purely syntactic. The invariant is **directional** — the converse edge is
-permitted and used: `FormalSystem/Semantics/PlusTruth.lean` imports this module to define
+permitted and used: `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` imports this module to define
 `PlusTruthAt` natively on the seven constructors.
 
 ## References

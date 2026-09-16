@@ -6,8 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.Conservativity.Backward
-import FormalSystem.Semantics.MinusValidity
-import FormalSystem.Semantics.MinusSchemaValidity
+import FormalSystem.Semantics.MinusLanguage.MinusValidity
+import FormalSystem.Semantics.MinusLanguage.MinusSchemaValidity
 
 /-!
 # Soundness for the base language L⁻, by composition
@@ -23,7 +23,7 @@ by composing two things this repository already has:
 
 The right-hand equality is the **truth-transfer bridge** `truthAt_tr`, proved here by induction on
 `MinusFormula`. It is a theorem, not a definition: `MinusTruthAt` is defined natively on `MinusFormula`
-(`Semantics/MinusTruth.lean`), so the bridge has to be earned. Four of its six cases are `Iff.rfl` or
+(`Semantics/MinusLanguage/MinusTruth.lean`), so the bridge has to be earned. Four of its six cases are `Iff.rfl` or
 congruence; the `allPast` and `allFuture` cases are the two with content, and both are discharged
 by the existing `@[simp]` characterizations `Truth.past_iff` and `Truth.future_iff`, which unfold
 L's `untl`/`snce`-derived `H`/`G` abbreviations to exactly the quantifications `MinusTruthAt`
@@ -46,7 +46,7 @@ valid by unfolding `MinusTruthAt`'s clauses and nothing else.
 ## The Dedekind target
 
 `minus_soundness_rtime` concludes at `MinusValidRTime`, **not** at a density-free
-`MinusValidComplete` — which is deliberately not defined. `Semantics/MinusValidity.lean`'s module
+`MinusValidComplete` — which is deliberately not defined. `Semantics/MinusLanguage/MinusValidity.lean`'s module
 docstring gives the L⁻-native refutation: `Axiom.dn` is admissible at `FrameClass.RTime` and is
 false on `ℤ`, which satisfies every remaining binder. This mirrors `soundness_rtime`'s own
 target on the L side.
@@ -86,7 +86,7 @@ consistency lemma in the tree yet"), and the L⁻ side inherits it exactly.
 * JPL paper `\S sub:Logic` — `thm:TM-soundness`, `def:BL-semantics`
 * `FormalSystem/Metalogic/Soundness.lean` — the four L soundness theorems composed with here
 * `FormalSystem/Metalogic/Conservativity/Backward.lean` — `translate`, the proof-theoretic half
-* `FormalSystem/Semantics/MinusTruth.lean`, `FormalSystem/Semantics/MinusValidity.lean` — the L⁻
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean`, `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` — the L⁻
   semantics this is stated against
 
 ## Tags
@@ -111,7 +111,7 @@ need it at a *different time* `s`. With `generalizing` the hypothesis reads `∀
 use site applies it explicitly.
 
 Case by case: `atom` and `bot` are `Iff.rfl`, because the two clauses are literally the same
-expression (including the domain conjunct — see `Semantics/MinusTruth.lean` on Decision A); `imp` and
+expression (including the domain conjunct — see `Semantics/MinusLanguage/MinusTruth.lean` on Decision A); `imp` and
 `box` are congruence under `tr`'s `rfl` push-through equations; `allPast` and `allFuture` are the
 only two cases with content, and `Truth.past_iff` / `Truth.future_iff` supply it.
 -/
@@ -148,7 +148,7 @@ theorem truthAt_trCtx (M : TaskModel F) (τ : ConvexHistory F) (t : F.Duration)
 Both are L⁻ mirrors of facts `Semantics/Truth.lean` already carries for L, and both are obtained
 by pushing the statement through `truthAt_tr` in each direction rather than by a fresh induction
 on `MinusFormula`. They are grouped here, immediately after the bridge, because that is the only
-reason they are cheap: `Semantics/MinusTruth.lean` cannot state either of them, since it sits below
+reason they are cheap: `Semantics/MinusLanguage/MinusTruth.lean` cannot state either of them, since it sits below
 the translation in the import order.
 -/
 
@@ -371,7 +371,7 @@ density instance and `h_lub` paired into the `Sat .RTime` witness; the binder bu
 hypothesis `h_lub` in its original position.
 
 The `[DenselyOrdered D]` binder is load-bearing, not decorative — see the module docstring and
-`Semantics/MinusValidity.lean`.
+`Semantics/MinusLanguage/MinusValidity.lean`.
 
 Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness theorem)
 -/
@@ -420,7 +420,7 @@ invoking `Soundness.soundness_ztime`, because that theorem's own binder bundle c
 two Archimedean instances being dropped here. It is proved instead by induction on
 `MinusLanguage.DerivationTree FrameClass.ZTime`, directly against `MinusTruthAt`.
 
-The only genuinely new semantic content is `Semantics.MinusSchemaValidity`'s DF lemma
+The only genuinely new semantic content is `Semantics.MinusLanguage.MinusSchemaValidity`'s DF lemma
 (`df_valid_of_succOrder`) and its `PredOrder` past-dual (`swapMinus_df_valid_of_predOrder`), needed
 respectively for the `df` axiom leaf and for the `temporal_duality` case's swap component.
 Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any

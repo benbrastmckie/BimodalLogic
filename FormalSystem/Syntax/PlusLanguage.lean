@@ -37,9 +37,9 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
 
 ## Where the L⁺ semantics and metatheory live
 
-- `FormalSystem/Semantics/PlusTruth.lean` — `SameStateAt`, `PlusTruthAt`
-- `FormalSystem/Semantics/PlusValidity.lean` — `PlusValidIn`, semantic conservativity
-- `FormalSystem/Semantics/PlusPasting.lean`, `PlusNonValidities.lean` — the pasting validities
+- `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `SameStateAt`, `PlusTruthAt`
+- `FormalSystem/Semantics/PlusLanguage/PlusValidity.lean` — `PlusValidIn`, semantic conservativity
+- `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean`, `PlusNonValidities.lean` — the pasting validities
   and the refutations that bound the axiom set
 - `FormalSystem/Metalogic/Conservativity/Plus.lean` — soundness of TM⁺ at all four frame
   classes and proof-theoretic conservativity over TM in both directions
