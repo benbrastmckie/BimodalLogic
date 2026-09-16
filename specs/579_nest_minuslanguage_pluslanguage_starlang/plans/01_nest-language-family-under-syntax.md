@@ -1,7 +1,7 @@
 # Implementation Plan: Task #579
 
 - **Task**: 579 - Nest MinusLanguage/, PlusLanguage/, StarLanguage/ under Syntax/
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/579_nest_minuslanguage_pluslanguage_starlang/reports/01_nest-language-family-under-syntax.md
@@ -550,24 +550,24 @@ is all-or-nothing, not because this task claims the change. The `README.md` tota
 
 ---
 
-### Phase 7: Full gate and no-proof-change audit [NOT STARTED]
+### Phase 7: Full gate and no-proof-change audit [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Prove the whole change is green and that not one character of proof content moved.
 
 **Tasks**:
-- [ ] `lake build` from clean.
-- [ ] `bash scripts/check-module-invariants.sh` (full, with build) — every check green, including
+- [x] `lake build` from clean.
+- [x] `bash scripts/check-module-invariants.sh` (full, with build) — every check green, including
       the extended C8 and the repaired C13.
-- [ ] `bash scripts/readme-lint.sh`.
-- [ ] No-proof-change audit: `git diff -M --stat` over the whole task branch; for each moved
+- [x] `bash scripts/readme-lint.sh`.
+- [x] No-proof-change audit: `git diff -M --stat` over the whole task branch; for each moved
       `.lean` file confirm the only changed lines begin with `import ` (e.g.
       `git diff -M -- 'FormalSystem/Syntax/MinusLanguage/*' | grep '^[+-]' | grep -v '^[+-][+-]' | grep -vc '^[+-]import '`
       should be 0 for every moved tree).
-- [ ] `grep -rn '\bsorry\b' FormalSystem/ --include='*.lean' | grep -v Boneyard` — unchanged from
+- [x] `grep -rn '\bsorry\b' FormalSystem/ --include='*.lean' | grep -v Boneyard` — unchanged from
       baseline (C3 zero-sorry preserved by construction).
-- [ ] Confirm the namespace surface is untouched:
+- [x] Confirm the namespace surface is untouched:
       `git diff -M -- '*.lean' | grep '^[+-]namespace\|^[+-]open '` is empty.
-- [ ] Record in the summary that C13's two-line repair was a pre-existing defect, not a
+- [x] Record in the summary that C13's two-line repair was a pre-existing defect, not a
       consequence of the nesting, citing the recorded baseline.
 
 **Timing**: 0.5 hours
@@ -577,6 +577,24 @@ is all-or-nothing, not because this task claims the change. The `README.md` tota
 **Verification Tier**: full
 
 **Commit Mode**: per-substep
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The `bash scripts/check-module-invariants.sh` **exit-0** criterion, only insofar as it depends on `C20` | The sole `FAIL` in the full run is outside this task's territory and not caused by it. `C20` tier 1 reports `FormalSystem/Semantics/Ultraproduct/Los.lean:22` citing `Semantics/ShiftSet.lean:261`, now blank. `ShiftSet.lean`'s line numbers were shifted by task 580's import insertion in commit `1c9ea208c`; the intended `theorem forward_repr` moved to line 266. Neither file is in this task's file set, neither was edited by it, and `FormalSystem/Semantics/**` (beyond the 4 exempted import lines) is task 580's territory. The orchestrator verified the attribution independently and pre-approved task 580 to fix it by citing the declaration name instead of the line. | `INVARIANTS_EXIT=1` with exactly one `FAIL` group: `FAIL C20 tier 1: 1 of 1053 file.lean:NNN citation(s) point at a line that does not exist or is blank` -> `Los.lean:22 -> Semantics/ShiftSet.lean:261 (line 261 ... is blank)`. Attribution: `git log --oneline -1 -- FormalSystem/Semantics/ShiftSet.lean` = `1c9ea208c task 580 phase 2`; `git log --oneline -1 -- .../Los.lean` = `b9fd6f15c` (task 552, unrelated). |
+
+**Admission-test note on condition 5 ("no residual work")**: this holds *task-locally* — nothing
+remains for any future task-579 dispatch to do. The excluded item is not dropped: it has a named
+owner (task 580's Phase 3 harness run) and a pre-approved fix. It is recorded as an exclusion
+rather than a `[PARTIAL]` because a 579 re-dispatch would have nothing to act on, and it is
+recorded explicitly rather than silently because the phase's stated criterion genuinely is not
+met on its own terms.
+
+**Every other Phase 7 criterion passed unconditionally**, including the two non-enforced `TODO`
+lines in the same run (`C16` env_linter over non-`FormalSystem` lakefile roots, `C9D`
+task-number citations under `docs/`), which are pre-existing, gated off by design, and do not
+affect the exit code.
 
 **Files to modify**:
 - None (verification only)
@@ -591,17 +609,17 @@ is all-or-nothing, not because this task claims the change. The `README.md` tota
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 (baseline: 2651 jobs, exit 0).
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 — an improvement on the recorded baseline,
+- [x] `lake build` exits 0 (baseline: 2651 jobs, exit 0). *(guarded, un-piped: `GUARD_EXIT=0`, `Build completed successfully (2653 jobs).`, 0 `error:` lines)*
+- [x] `bash scripts/check-module-invariants.sh` exits 0 — an improvement on the recorded baseline, *(exclusion-closed: `INVARIANTS_EXIT=1`, sole `FAIL` is task 580's `C20`; see Phase 7's Reasoned Exclusions. Every check this task owns is green, and the baseline's `FAIL C13` is repaired.)*
       which is `FAIL C13`. In particular: C4 (import resolution), C5 (markdown module paths), C8
       (aggregator convention, now covering `FormalSystem/Syntax`), C12/C13 (paths and links), INV
       (generated inventories), and C14 (axiom baseline, expected untouched).
-- [ ] `bash scripts/readme-lint.sh` exits 0 with 0 missing READMEs and 0 broken references.
-- [ ] `Tests/BimodalTest/` builds and passes — zero import-line hits were measured there, so any
+- [x] `bash scripts/readme-lint.sh` exits 0 with 0 missing READMEs and 0 broken references. *(`RESULT: PASS`, 0 broken)*
+- [x] `Tests/BimodalTest/` builds and passes *(`Built BimodalTest`, `Build completed successfully (2705 jobs).`, 0 `error:`)* — zero import-line hits were measured there, so any
       failure indicates an unexpected `open`-resolution change and must be investigated, not
       patched over.
-- [ ] Zero new `sorry`; zero new axioms; zero namespace renames.
-- [ ] `git log --follow` on one moved file per tree returns its pre-move history.
+- [x] Zero new `sorry`; zero new axioms; zero namespace renames. *(`PASS C3` structural inventory zero; axioms 14 = 14 vs pre-task; zero nested-namespace matches)*
+- [x] `git log --follow` on one moved file per tree returns its pre-move history. *(MinusLanguage/Formula.lean 8 commits to `6c361b92a`; PlusLanguage/Axioms.lean 4 to `d370581c5`; StarLanguage/Embedding.lean 4 to `475507a76`)*
 
 ## Artifacts & Outputs
 

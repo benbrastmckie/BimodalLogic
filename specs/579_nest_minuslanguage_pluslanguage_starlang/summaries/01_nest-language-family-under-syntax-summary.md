@@ -1,145 +1,190 @@
 # Implementation Summary: Task #579
 
 - **Task**: 579 - Nest MinusLanguage/, PlusLanguage/, StarLanguage/ under Syntax/
-- **Status**: [BLOCKED]
+- **Status**: [COMPLETED]
 - **Started**: 2026-09-15T21:19:23-07:00
-- **Completed**: 2026-09-15T21:42:00-07:00
-- **Effort**: ~0.4 hours (of a 5.25-hour plan; 1 of 7 phases closed)
+- **Completed**: 2026-09-15T23:20:00-07:00
+- **Effort**: ~2 hours (plan estimated 5.25)
 - **Dependencies**: None
 - **Artifacts**: plans/01_nest-language-family-under-syntax.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Phase 1 of 7 landed and is green: `FormalSystem/Syntax/SubformulaClosure/` now has the sibling
-aggregator that C8 will demand once `FormalSystem/Syntax` joins its `parent` tuple. Phase 2 —
-the move itself, on which Phases 3-7 all transitively depend — is `[BLOCKED]` by a territory
-conflict between the plan and this dispatch's own instructions: 4 of the 41 import lines the
-move must rewrite live under `FormalSystem/Semantics/`, which the dispatch message placed
-off-limits because a concurrent task-580 dispatch owns that directory. No proof content,
-theorem statement, tactic block, namespace, or axiom was touched anywhere.
+The L⁻/L⁺/L⋆ language family now lives under `FormalSystem/Syntax/` instead of as three flat
+siblings of it, and `Syntax/README.md` carries a `Language family` section that names `stab`/`⊡`/
+"boxdot" and points at the existing implementation — which is what actually closes the
+discoverability gap review Finding H1 reported. C8 machine-enforces the aggregator convention on
+the new directories. This was a module-path rename only: **zero non-import changed lines** in all
+three moved trees, zero namespace changes, zero new axioms, zero new sorries.
+
+All 7 phases closed. Phase 7 closed as `[COMPLETED WITH EXCLUSIONS]` for one gate item owned by
+the concurrent task-580 dispatch; every check this task owns is green.
 
 ## What Changed
 
-- `FormalSystem/Syntax/SubformulaClosure.lean` — **created**. Sibling aggregator importing the
-  four leaf modules (`Closure`, `NestingDepth`, `TemporalFormulas`, `IteratedTemporal`), with
-  the standard copyright header and a module docstring in the style of the other aggregators.
-  No declarations, only imports and documentation.
-- `FormalSystem/Syntax.lean` — its four `import FormalSystem.Syntax.SubformulaClosure.*` leaf
-  imports collapsed to the single `import FormalSystem.Syntax.SubformulaClosure`.
+- `FormalSystem/Syntax/{MinusLanguage,PlusLanguage,StarLanguage}/` and their three sibling
+  aggregators — **moved** from `FormalSystem/` via `git mv` (19 renames, history preserved,
+  similarity indices R088-R100).
+- 41 `import` lines rewritten across 26 `.lean` files: `FormalSystem.{X}Language.*` ->
+  `FormalSystem.Syntax.{X}Language.*`. Includes `FormalSystem/FormalSystem.lean` and 7
+  `Metalogic/` consumers.
+- `FormalSystem/Syntax/SubformulaClosure.lean` — **created**; the sibling aggregator C8 requires
+  once `FormalSystem/Syntax` joins its `parent` tuple. `Syntax.lean`'s four leaf imports
+  collapsed to one.
+- `scripts/check-module-invariants.sh` — `"FormalSystem/Syntax"` added to C8's `parent` tuple,
+  plus its pass message, header line and comment block.
+- `FormalSystem/Syntax/README.md` — new `## Language family` section (the deliverable).
+- `FormalSystem/Syntax.lean` — module docstring primitives corrected to `untl`/`snce`, plus three
+  further errors found while confirming it (see `## Decisions`).
+- `docs/development/MODULE_ORGANIZATION.md` — §2's fictional `Bimodal` root namespace and false
+  "namespaces mirror directory structure" claim replaced with the real convention.
+- `scripts/module-invariants-allowlist.txt` — 3 namespace-reading entries.
+- `FormalSystem/README.md` — Submodule Navigation table's root-level language rows replaced by
+  three nested `Syntax/` rows (including the previously missing `StarLanguage/`); Layer 0
+  repathed.
+- 35 slash-shaped and 6 dotted module references repathed across 14 non-`specs/` markdown files;
+  4 generated inventory blocks regenerated; several hand-maintained counts corrected.
+- `FormalSystem/Semantics/{MinusFrame,MinusTruth,PlusTruth,StarTruth}.lean` — one import-prefix
+  line each, under an explicit orchestrator-granted territory exemption.
 
-No Lean declaration was added, removed, or changed. The plan's `## Lean Challenge Statements`
-section commits to no new or changed declarations, and that commitment holds.
+### The Language family section
+
+Three things a reader needs, none of which existed before:
+
+- **Constructor-delta table**, measured against each `Formula.lean`: L 6 (`atom, bot, imp, box,
+  untl, snce`), L⁻ 6 (`allPast`/`allFuture` in place of `untl`/`snce`), L⁺ 7 (L's six + `stab`),
+  L⋆ 9 (L⁺'s seven + `timeStore`, `timeRecall`).
+- **L ⊂ L⁺ ⊂ L⋆ is the chain; L⁻ is not in it.** L⁻ is a sibling variant related to L by
+  `tr : MinusFormula → Formula`, not an extension. The originating review's "one extension
+  hierarchy" phrasing is false and was deliberately not reproduced — putting a fresh false claim
+  into the section written to fix a discoverability defect would have been self-defeating.
+- **"Looking for boxdot?"** — names `stab`, `⊡` and the word "boxdot", and points at the
+  complete, sorry-free `Syntax/PlusLanguage/` implementation.
 
 ## Decisions
 
-- **Phase 1 verified with a scoped build.** `lake build FormalSystem.Syntax` (guarded, detached)
-  rather than a full `lake build`, because the concurrent task-580 dispatch has
-  `FormalSystem/Semantics/` in an intermediate state. `FormalSystem.Syntax` does not import
-  `FormalSystem.Semantics`, so the scoped build covers every module Phase 1 can affect.
-- **No full `lake build` was run at final verification, deliberately.** Two reasons, both about
-  the concurrent dispatch rather than about this task: the result would be a snapshot of a
-  moving tree and therefore uninterpretable, and the build guard's lock is project-granular, so
-  a long full build from this session would serialize task 580's own phase-end build behind it.
-  This is recorded as an explicit omission, not a pass — see `## Verification`.
-- **The territory boundary was not overridden.** Making the 4 `Semantics/` import edits
-  unilaterally would have unblocked Phases 2-7, and the edits are individually trivial, but the
-  dispatch instruction against editing that directory was explicit and the coordination call
-  belongs to the orchestrator. The escalation path (mark `[BLOCKED]`, document, return
-  `partial`) was taken instead.
-- **No shim or partial move was attempted.** Lean has no module-alias mechanism, and leaving
-  re-export shims at `FormalSystem/{Minus,Plus,Star}Language.lean` is ruled out by Phase 2's own
-  verification criterion. There is also no subset of the three directories whose consumers all
-  lie outside `Semantics/`.
+- **Namespaces stay flat** and **`Syntax.lean` does not import the nested aggregators**, both per
+  the plan's Research Integration. Consequence: a dotted name like `FormalSystem.MinusLanguage`
+  may be a namespace reading (correct as written) or a module-path reading (must be repathed),
+  and the two are textually indistinguishable — which is why 3 allowlist entries were added
+  rather than repathing everything, and why each records which reading it covers.
+- **The territory boundary was escalated, not overridden.** 4 of the 41 import lines live under
+  `FormalSystem/Semantics/`, which the dispatch note placed off-limits. Rather than make the
+  trivially-small edits unilaterally, the conflict was raised and Phase 1 closed cleanly while
+  waiting. The orchestrator granted a narrow exemption (recorded in `.decisions.json`), noting
+  the boundary had been an over-narrow guess authored before the blast radius was known.
+- **The C13 repair went further than repathing.** Both sites also asserted the docs workflow
+  "runs on every push to `main`", false since `9bcbe9e41` disabled it. Repathing the link alone
+  would have preserved a false claim while turning the gate green; the claims were corrected too.
+- **Three defects corrected beyond the plan**, all false statements about the primary language
+  sitting in the docstring a reader hits first: `always` was documented as `Hφ ∧ Gφ` but
+  `Formula.lean:478` is `Hφ ∧ (φ ∧ Gφ)`; `sometimes` was `Pφ ∨ Fφ` but `Formula.lean:621` is
+  `¬△¬φ`; and `P`/`F` were shown as derived from `H`/`G`, inverting the real dependency
+  (`someFuture = untl ⊤ φ` is primitive-derived, and `allFuture` derives from *it*).
+- **`specs/paper-definitions-of-record.md`** had two paths left dangling by the move. No gate
+  covers them; repaired anyway rather than knowingly leaving them stale.
 
 ## Plan Deviations
 
-- **Phase 1 verification** altered: scoped `lake build FormalSystem.Syntax` substituted for the
-  plan's `lake build`, for the concurrency reason given under `## Decisions`. Annotated inline
-  in the plan's Phase 1 body.
-- **Phase 2** blocked before any edit landed: see the `**BLOCKER** (Phase 2)` record in the plan
-  file for what failed, what was tried, why it is stuck, what is needed, and the four
-  ready-to-run `sed` commands.
-- **Phases 3-7** not opened. Each depends transitively on Phase 2, and the phase-closure
-  contract's stop-at-a-closed-phase-boundary clause says to stop rather than open a phase that
-  cannot be closed. All five remain `[NOT STARTED]`.
+- **Phase 1 verification** altered: scoped `lake build FormalSystem.Syntax` instead of a full
+  build, because task 580 had `FormalSystem/Semantics/` mid-edit. `Syntax` does not import
+  `Semantics`, so the scoped build covered everything the phase could affect.
+- **Phase 2** was briefly `[BLOCKED]` on the territory conflict, then executed in full under the
+  granted exemption. The blocker record was replaced by an `EXEMPTION GRANTED` record.
+- **Phase 3's** verification expected `FAIL C13` to be the only remaining failure. That assumed
+  Phase 4 had already run (the wave table puts 3 and 4 together); executing depth-first per the
+  phase-closure contract, C5/C12/INV were also open at that point — expected post-move debt owned
+  by Phases 4 and 6, not a regression.
+- **Phase 7** closed `[COMPLETED WITH EXCLUSIONS]`: `check-module-invariants.sh` exits 1, solely
+  on a `C20` finding owned by task 580. See the phase's Reasoned Exclusions table.
+- Scope-hypothesis variances (C5 tokens 9->11, inventory blocks 3->4, and two items the
+  hypotheses missed entirely) are recorded per-phase in the plan.
 
 ## Verification
 
-- Build: **Partial** — `lake build FormalSystem.Syntax` (guarded, detached) exit 0, 712 jobs.
-  Full `lake build` deliberately **not run**; see `## Decisions`.
-- Sorry count: 0 in both changed files (`grep -c '\bsorry\b'` returns 0 for each). `C3`, the
-  structural sorry inventory, reports **PASS** with zero across `FormalSystem/` (Boneyard
-  excluded). The raw 330-hit `grep -rn '\bsorry\b'` figure over the live tree is prose mentions
-  in docstrings and comments, which is why `C3`'s structural check is the load-bearing number.
-- Vacuous count: 0 introduced. The single tree-wide hit,
+- Build: **PASS** — guarded, un-piped, `GUARD_EXIT=0`, `Build completed successfully (2653
+  jobs).`, 0 `error:` lines in guard stdout and stderr.
+- Tests: **PASS** — `Built BimodalTest`, `Build completed successfully (2705 jobs).`, 0 `error:`.
+- Sorry count: **0**. `PASS C3` structural sorry inventory is zero across `FormalSystem/`
+  (Boneyard excluded). The raw 330-hit `grep -rn '\bsorry\b'` over the live tree is prose
+  mentions in docstrings, which is why `C3` is the load-bearing number.
+- Vacuous count: **0 introduced**. The one tree-wide grep hit,
   `FormalSystem/Examples/TemporalStructures.lean:496`, is pre-existing and in a directory this
   task never touched.
-- Axiom count: 14, unchanged from `HEAD~1` (14). No new axioms.
-- Tests: N/A — no test-visible change; the plan measured zero import-line hits under `Tests/`.
+- Axiom count: **14, unchanged** from pre-task (14).
+- **No-proof-change audit: 0 non-import changed lines** in all three moved trees
+  (`.lean`-only, both old and new paths in the pathspec so rename detection pairs them).
+- **Namespace surface untouched**: zero `[+-]namespace`/`[+-]open` lines in this task's `.lean`
+  files; zero `namespace FormalSystem.Syntax.{Minus,Plus,Star}Language` matches.
+- **History preserved**: `git log --follow` reaches pre-move commits on one file per tree
+  (`6c361b92a`, `d370581c5`, `475507a76`).
+- Gates: `PASS C3 C4 C5 C8 C11 C12 C13 C14 C15 C18 C21 C22 C23 C26 INV`. `readme-lint.sh`
+  `RESULT: PASS`, 0 missing READMEs, 0 broken references (recovered from a transient 2 that this
+  task's own sweep introduced and then repaired).
+- **Baseline improved**: the plan's recorded baseline was `FAIL C13`; that is now `PASS C13`.
 - Files verified: Yes.
-- `ENFORCE_C8=1 scripts/check-module-invariants.sh --no-build`: **PASS C8**, which was Phase 1's
-  purpose. `PASS C3 C4 C5 C11 C12 C14 C15 C20 C22 C23 C26` also hold.
-- `scripts/readme-lint.sh`: **PASS**, 0 missing READMEs, 0 broken file references.
 
-### Gate failures currently present, and whose they are
+### Not this task's, and left alone
 
-Recorded so a re-dispatch does not misattribute them. The plan's recorded baseline was a sole
-`FAIL C13`.
-
-| Finding | Owner | Disposition |
-|---------|-------|-------------|
-| `FAIL C13` — 2 unresolved relative markdown links (`README.md:336`, `docs/README.md:308`, both pointing at `.github/workflows/docs.yml`, renamed to `docs.yml.disabled` by commit `9bcbe9e41`) | Pre-existing, matches the plan's recorded baseline | Phase 4 repairs it in a separately-labelled commit |
-| `FAIL C6` — `FormalSystem.Semantics.TruthTransport` unreachable and unmanifested | **Task 580's in-progress work**, not this task | Not touched. Will clear when 580 wires the module in |
-| `FAIL INV` — hand-maintained row: `FormalSystem/Semantics/README.md` has no `TruthTransport.lean` row | **Task 580's in-progress work** | Not touched |
-| `FAIL INV` — 3 stale generated inventory blocks (`README.md`, `FormalSystem/README.md`, `FormalSystem/Syntax/README.md`) | This task's Phase 1 (the new `SubformulaClosure.lean` changes the counts) | Phase 6 regenerates all three; this is exactly the set Phase 6 predicted |
+`FAIL C20` tier 1: `Semantics/Ultraproduct/Los.lean:22` cites `Semantics/ShiftSet.lean:261`, now
+blank. `ShiftSet.lean` was last touched by `1c9ea208c` (task 580 phase 2); `Los.lean` by
+`b9fd6f15c` (task 552). Neither file is this task's. Attribution was verified independently by
+the orchestrator, which pre-approved task 580 to fix it by citing the declaration name.
+`TODO C16` and `TODO C9D` are pre-existing and gated off by design.
 
 ## Impacts
 
-- `FormalSystem.Syntax.SubformulaClosure` is now importable as a single module, so consumers no
-  longer need to name the four leaf modules individually. `FormalSystem/Syntax.lean` already
-  uses it.
-- The C8 prerequisite is satisfied: `for d in FormalSystem/Syntax/*/` now reports a sibling
-  aggregator for every Lean-bearing subdirectory, so Phase 3's one-line tuple extension will
-  land green whenever Phase 2 clears.
-- The boxdot-discoverability gap that motivated this task (review Finding H1) is **not yet
-  closed** — that is Phase 5's `## Language family` section, which has not been written.
+- A reader starting from the base language can now reach `⊡`/`stab` in three ways: the directory
+  layout, the `Syntax/README.md` `Language family` section, and `Syntax.lean`'s own docstring.
+  The duplicate-work risk the review identified is closed.
+- C8 now enforces the aggregator convention on `FormalSystem/Syntax` subdirectories, so a future
+  nested directory without a sibling aggregator fails the gate rather than passing silently.
+- `import FormalSystem.Syntax` stays as cheap as before: the nested aggregators are deliberately
+  not imported there, so the 15 bare consumers do not transitively elaborate `Theorems/` or
+  `Metalogic/Core/`.
+- `MODULE_ORGANIZATION.md` §2 now describes the namespace convention the tree actually follows,
+  which matters beyond this task: the old text would have led a reader to rename namespaces to
+  match directory depth.
 
 ## Follow-ups
 
-- **Unblock Phase 2** by one of the three routes in the plan's blocker record: grant the narrow
-  4-line exemption, hand those 4 lines to the task-580 dispatch, or re-dispatch this task after
-  580 releases `FormalSystem/Semantics/`. The four `sed` commands are recorded verbatim in the
-  plan, verified against the current tree.
-- All of the plan's remaining Scope Hypotheses were confirmed by read-only probes during this
-  dispatch, so a re-dispatch can execute Phases 2-7 without re-measuring:
-  - **Phase 2**: 41 import lines across 26 `.lean` files (matches the plan, not the dispatch
-    description's 24). Zero hits under `Tests/`.
-  - **Phase 4**: 5 module-shaped C5 tokens at `docs/development/MODULE_ORGANIZATION.md:301-305`;
-    1 more at `docs/reference/API_REFERENCE.md:791`; 4 namespace-reading tokens needing
-    allowlist entries at `NOTATION.md:49`, `docs/theorem-index.md:43-45`, and
-    `docs/development/NAMING_CONVENTION_DEVIATION.md:291`. 53 slash-shaped `.md` references
-    outside `specs/`, across 14 files — note `docs/theorem-index.md:196` carries a slash-shaped
-    `FormalSystem/StarLanguage/Derivation.lean` that will break C12 after the move.
-  - **Phase 5**: constructor deltas confirmed at 6 / 6 / 7 / 9. L = `atom, bot, imp, box, untl,
-    snce`; L⁻ = `atom, bot, imp, box, allPast, allFuture`; L⁺ = L's six + `stab`; L⋆ = L⁺'s
-    seven + `timeStore, timeRecall`. The plan's table is correct as drafted. Separately
-    confirmed: `FormalSystem/Syntax.lean`'s docstring really does misstate the primitives as
-    `allPast, allFuture`, so Phase 5's correction targets a real defect.
-  - **Phase 5/2 README link depth**: `FormalSystem/MinusLanguage/README.md` lines 62-66 and
-    `PlusLanguage/README.md` lines 83-87 carry `../` links needing re-depthing;
-    `StarLanguage/README.md` carries none. In both, `../Syntax/README.md` becomes `../README.md`
-    while the other `../X` links become `../../X`, and `PlusLanguage`'s
-    `../MinusLanguage/README.md` stays unchanged (both end up under `Syntax/`).
-  - **Phase 6**: exactly the three inventory blocks the plan named are stale, already confirmed
-    by the live `FAIL INV` output rather than by estimate.
-- A full `lake build` still needs to be run once `FormalSystem/Semantics/` is quiescent, to
-  satisfy the plan's Testing & Validation criteria.
+- None for this task. The one outstanding gate item (`C20`) has a named owner and a pre-approved
+  fix; see `## Verification`.
+
+### Lessons: four broken measurements, none a broken change
+
+The most transferable output of this dispatch. Each of these initially *looked* like a defect in
+the work and was actually a defect in how the work was being measured.
+
+1. **A piped build status is not the build's status.** `lake-build-guard.sh ... | tail -30` makes
+   the reported exit code `tail`'s, which is ~always 0. This produced a false "exit 0" report
+   elsewhere in the session that had to be retracted. Trust either the guard's own un-piped exit
+   code (`GUARD_EXIT=$?`) or an explicit `Build completed successfully (N jobs).` line plus a zero
+   `error:` count — never a pipeline's status.
+2. **A rename audit naming only the destination reports a total rewrite.** `git diff -M` cannot
+   pair a rename when the pathspec hides the source, so all three moved trees showed as wholly
+   added: a phantom 1313/1364/1641 "non-import changed lines" that would have read as
+   catastrophic proof damage. With both old and new paths in the pathspec: 0/0/0.
+3. **A rewrite sweep needs a count assertion on both sides.** A first `sed` used `|` as both the
+   delimiter and the BRE alternation operator, so it matched nothing and exited clean. It surfaced
+   only because the post-sweep residual count was unchanged at 37 rather than 0. A clean exit is
+   not evidence that a sweep did anything.
+4. **`pgrep` and `grep` patterns match themselves and their prefixes.** A liveness check for
+   build processes matched its own shell wrapper; separately, `^namespace Bimodal` returned 55
+   hits that were all `BimodalTest.*` under a different root, briefly appearing to contradict a
+   correct finding. Bracket the pattern (`[p]grep`) and anchor it (`^namespace Bimodal$`).
+
+A fifth, related: a blunt rename regex hit `FormalSystem.StarLanguage.StarAxiom` and
+`.StarDerivationTree`, which are *declarations* in the flat namespace, not module paths.
+Repathing them would have broken C5 and stranded two allowlist entries. This is the pre-edit
+gate's "syntactic match, semantically a different concept" failure mode, caught by checking each
+token's reading against its context before editing.
 
 ## References
 
-- `specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md` — the plan, now carrying the Phase 2 blocker record
+- `specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md` — the plan, with per-phase scope-variance and exclusion records
 - `specs/579_nest_minuslanguage_pluslanguage_starlang/reports/01_nest-language-family-under-syntax.md` — research report
-- `specs/579_nest_minuslanguage_pluslanguage_starlang/handoffs/phase-1-handoff-20260915T212300.md` — Phase 1 handoff
+- `specs/579_nest_minuslanguage_pluslanguage_starlang/.decisions.json` — the territory exemption grant
 - `specs/reviews/review-2026-09-15.md`, Finding H1 — origin of this task
-- `specs/579_nest_minuslanguage_pluslanguage_starlang/.dispatch/5.md` — this dispatch's context
+- Commits: `53747904e` (p1), `2acf1371c` (p2), `2afb961a3` (p3), `dd03a13f3` (p4), `f0e21b6cc` (C13 repair), `f170ffe57` (p4 close), `524b09830` (p5), `83b0fe12f` (p6)

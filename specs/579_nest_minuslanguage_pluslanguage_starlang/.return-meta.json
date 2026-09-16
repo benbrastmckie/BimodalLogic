@@ -1,88 +1,153 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-09-15T21:19:23-07:00",
-  "completed_at": "2026-09-15T21:45:00-07:00",
+  "completed_at": "2026-09-15T23:20:00-07:00",
   "requires_user_review": false,
-  "review_reason": "Superseded: the Phase 2 territory conflict was resolved by the orchestrator granting a narrow exemption for exactly the 4 FormalSystem/Semantics/ import-prefix edits (recorded in .decisions.json). Phase 2 has been executed; no user decision is outstanding.",
-  "partial_progress": {
-    "stage": "phase_2_executed_awaiting_build",
-    "details": "Phase 1 committed (53747904e). Phase 2 fully applied in the working tree and staged: 19 git mv renames, all 41 import lines rewritten (37 by anchored rewrite across 22 files, plus the 4 authorized Semantics lines by line-scoped sed), FormalSystem.lean repointed, Syntax.lean confirmed free of nested-aggregator imports, 10 README links re-depthed. PASS C4; zero non-import changed lines in all three moved trees; zero namespace/open drift in this task's territory. Awaiting the in-flight guarded full lake build to close Phase 2, then Phases 3-7.",
-    "phases_completed": 1,
-    "phases_total": 7
-  },
   "verification": {
-    "verification_passed": false,
+    "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 14,
     "build_passed": true,
-    "build_scope": "scoped",
-    "build_output": "lake build FormalSystem.Syntax (guarded, detached): exit 0, 712 jobs. Full `lake build` deliberately not run: the concurrent task-580 dispatch has FormalSystem/Semantics/ mid-edit, so the result would be a snapshot of a moving tree, and the build guard's project-granular lock would serialize task 580's own phase-end build behind it. Recorded as an explicit omission, not a pass.",
-    "notes": "verification_passed is false solely because Phase 2 is [BLOCKED] and no full lake build was run. axiom_count 14 is unchanged from HEAD~1 (14). sorry_count 0 and vacuous_count 0 are scoped to the two files this dispatch changed; C3 (structural sorry inventory) reports PASS with zero across FormalSystem/ excluding Boneyard. The one tree-wide vacuous grep hit, FormalSystem/Examples/TemporalStructures.lean:496, is pre-existing and in a directory this task never touched. ENFORCE_C8=1 check-module-invariants.sh --no-build reports PASS C8 (Phase 1's whole purpose); scripts/readme-lint.sh PASS with 0 broken references. Live FAIL C6 and the FAIL INV hand-maintained-row finding belong to task 580's in-progress Semantics/TruthTransport.lean, not to this task; FAIL C13 is pre-existing and matches the plan's recorded baseline; the 3 stale generated inventory blocks are this task's Phase 1 consequence and are exactly the set Phase 6 regenerates."
+    "build_scope": "full",
+    "build_output": "Guarded, un-piped: GUARD_EXIT=0, 'Build completed successfully (2653 jobs).', 0 'error:' lines in guard stdout and stderr. Test suite: 'Built BimodalTest', 'Build completed successfully (2705 jobs).', 0 errors.",
+    "notes": "Module-path rename only: 0 non-import changed lines in all three moved trees (.lean-only, both old and new paths in the pathspec so git -M pairs the renames), 0 namespace/open drift, 0 nested-namespace matches, axiom count 14 unchanged from pre-task. PASS C3 C4 C5 C8 C11 C12 C13 C14 C15 C18 C21 C22 C23 C26 INV; readme-lint RESULT: PASS with 0 broken references. The plan's recorded baseline FAIL C13 is now PASS C13. check-module-invariants.sh exits 1 on a single FAIL C20 owned by the concurrent task-580 dispatch (Semantics/Ultraproduct/Los.lean:22 cites Semantics/ShiftSet.lean:261, blanked by 580's commit 1c9ea208c); neither file is in this task's file set. Attribution was verified independently by the orchestrator, which pre-approved 580 to fix it. Phase 7 is therefore [COMPLETED WITH EXCLUSIONS] with a Reasoned Exclusions table, not [COMPLETED]. The single tree-wide vacuous grep hit, Examples/TemporalStructures.lean:496, is pre-existing and in a directory this task never touched."
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
-      "summary": "Phase 1 of 7 closed green (new FormalSystem/Syntax/SubformulaClosure.lean aggregator); Phase 2 blocked by a FormalSystem/Semantics/ territory conflict."
+      "summary": "Nested the L-minus/L-plus/L-star language family under FormalSystem/Syntax/ and added the Language family section that closes the boxdot discoverability gap."
     },
     {
       "type": "handoff",
       "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/handoffs/phase-1-handoff-20260915T212300.md",
-      "summary": "Phase 1 handoff: what landed, verification results, gate-failure attribution, and the Phase 2 blocker."
+      "summary": "Phase 1 handoff written while Phase 2 was blocked on the territory conflict."
     }
   ],
   "modified_files": [
     "FormalSystem/Syntax/SubformulaClosure.lean",
     "FormalSystem/Syntax.lean",
+    "FormalSystem/Syntax/MinusLanguage.lean",
+    "FormalSystem/Syntax/PlusLanguage.lean",
+    "FormalSystem/Syntax/StarLanguage.lean",
+    "FormalSystem/Syntax/MinusLanguage/",
+    "FormalSystem/Syntax/PlusLanguage/",
+    "FormalSystem/Syntax/StarLanguage/",
+    "FormalSystem/FormalSystem.lean",
+    "FormalSystem/Syntax/README.md",
+    "FormalSystem/Syntax/SubformulaClosure/README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/Conservativity/Plus/README.md",
+    "FormalSystem/Metalogic/Conservativity/Star/README.md",
+    "FormalSystem/Metalogic/Conservativity/Backward.lean",
+    "FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean",
+    "FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean",
+    "FormalSystem/Metalogic/Conservativity/Star/StarAxiomValidity.lean",
+    "FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean",
+    "FormalSystem/Metalogic/Deterministic/System.lean",
+    "FormalSystem/Metalogic/Independence/NaiveSystem.lean",
+    "FormalSystem/Semantics/MinusFrame.lean",
+    "FormalSystem/Semantics/MinusTruth.lean",
+    "FormalSystem/Semantics/PlusTruth.lean",
+    "FormalSystem/Semantics/StarTruth.lean",
+    "scripts/check-module-invariants.sh",
+    "scripts/module-invariants-allowlist.txt",
+    "README.md",
+    "docs/README.md",
+    "NOTATION.md",
+    "docs/theorem-index.md",
+    "docs/development/MODULE_ORGANIZATION.md",
+    "docs/reference/API_REFERENCE.md",
+    "docs/project-info/known-limitations.md",
+    "specs/paper-definitions-of-record.md",
     "specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md",
-    "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
-    "specs/579_nest_minuslanguage_pluslanguage_starlang/handoffs/phase-1-handoff-20260915T212300.md"
+    "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md"
   ],
   "reflection": {
-    "what_worked": "Front-loading the blast-radius measurement surfaced the territory conflict before any file moved, so Phase 1 could still be closed cleanly instead of the dispatch stranding a half-moved tree at [PARTIAL]. Running all of Phases 2-7's read-only Scope Hypothesis probes while blocked means a re-dispatch can execute without re-measuring.",
-    "what_was_hard": "The plan and the dispatch instructions were in direct, unflagged conflict: the plan's Phase 2 file list names four FormalSystem/Semantics/ files, while the dispatch message forbids editing that directory. Deciding not to override the boundary on my own judgment was the call; the edits themselves are trivial.",
-    "what_was_missed": "The conflict was detectable at dispatch-construction time by intersecting the plan's Phase 2 file list with the territory assignment. Two messages to the orchestrator went unanswered within this dispatch, which suggests the orchestrator was itself blocked awaiting completions - a coordination deadlock worth designing against rather than discovering.",
-    "successes": "Phase 1 landed green and committed: PASS C8 achieved (the prerequisite Phase 3 needs), scoped build exit 0 over 712 jobs, zero sorries, zero new axioms, and every gate failure in the tree correctly attributed to either the pre-existing baseline or the sibling dispatch."
+    "what_worked": "Measuring the blast radius before moving anything surfaced the territory conflict while Phase 1 could still be closed cleanly, and running every downstream phase's read-only probes while blocked meant Phases 2-7 ran without re-measuring. Depth-first phase closure with a commit per phase kept attribution clean against a concurrent dispatch in the same tree.",
+    "what_was_hard": "Four separate measurement bugs each made correct work look broken: a piped build exit code masking the guard's, a rename audit whose pathspec named only the destination and so reported a phantom 1313-line rewrite, a sed whose delimiter collided with its own alternation and silently matched nothing, and pgrep/grep patterns matching themselves or a longer prefix. Distinguishing a broken measurement from a broken change was most of the verification effort.",
+    "what_was_missed": "The path sweep's pattern assumed a FormalSystem/ prefix and so missed two relative links (../../../PlusLanguage/README.md and its Star counterpart), which only surfaced via readme-lint Check 3. A blunt dotted-path regex also over-applied to two declaration names in the flat namespace. Both argue for letting gate output rather than a pattern decide when a sweep is complete.",
+    "successes": "All 7 phases closed with the full library and test builds green (2653 and 2705 jobs, 0 errors), 0 non-import changed lines across the three moved trees, history preserved on all 19 renames, and the plan's baseline FAIL C13 improved to PASS. Four pre-existing false documentation claims were found and fixed as a by-product of verifying rather than assuming."
   },
   "memory_candidates": [
     {
-      "content": "When /orchestrate dispatches two implementations concurrently with directory-level territory assignments, intersect each plan's per-phase 'Files to modify' list against the assigned territory before dispatching. A module-path rename task's import-rewrite set routinely reaches outside the directory being renamed, so a territory drawn around the renamed directory alone will block the task's central phase.",
-      "category": "WORKFLOW",
+      "content": "A piped build command reports the pipeline's exit status, not the build's: `lake-build-guard.sh ... | tail -30` yields tail's exit code, ~always 0, masking a failed build. Capture the guard's own code un-piped (`cmd > log 2>&1; echo GUARD_EXIT=$?`) or require an explicit 'Build completed successfully (N jobs).' line plus a zero 'error:' count.",
+      "category": "TECHNIQUE",
+      "confidence": 0.95,
       "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+      "suggested_keywords": [
+        "lake-build-guard",
+        "exit-code",
+        "pipeline",
+        "tail",
+        "verification"
+      ]
+    },
+    {
+      "content": "When auditing a git mv for content changes, the pathspec must name BOTH the old and new paths, or `git diff -M` cannot pair the rename and every moved file reports as wholly added - looking like a total rewrite. Restricting to the destination alone produced a phantom 1313/1364/1641 changed lines where the true answer was 0/0/0.",
+      "category": "TECHNIQUE",
+      "confidence": 0.9,
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+      "suggested_keywords": [
+        "git-diff",
+        "rename-detection",
+        "pathspec",
+        "audit",
+        "git-mv"
+      ]
+    },
+    {
+      "content": "A rewrite sweep needs a match-count assertion on both sides, not just a clean exit. A sed using `|` as both the delimiter and the BRE alternation operator (`s|^a\\(x\\|y\\)|...|`) matches nothing and exits 0; the no-op surfaced only because the residual count was unchanged.",
+      "category": "PATTERN",
       "confidence": 0.85,
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+      "suggested_keywords": [
+        "sed",
+        "delimiter",
+        "alternation",
+        "no-op",
+        "count-assertion"
+      ]
+    },
+    {
+      "content": "Renaming a Lean module path must not rename the namespace: a dotted name in prose may be a namespace/declaration reading (correct as written) or a module-path reading (needs repathing), and the two are textually identical. A blunt regex repathed FormalSystem.StarLanguage.StarAxiom, a declaration, breaking C5 and stranding its allowlist entry. Classify each token against its context first.",
+      "category": "INSIGHT",
+      "confidence": 0.9,
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+      "suggested_keywords": [
+        "lean4",
+        "namespace",
+        "module-path",
+        "C5",
+        "allowlist",
+        "rename"
+      ]
+    },
+    {
+      "content": "When /orchestrate dispatches concurrent implementations with directory-level territories, intersect each plan's per-phase 'Files to modify' list against the assigned territory first. A module-path rename's import-rewrite set routinely reaches outside the directory being renamed, so a territory drawn around that directory alone blocks the task's central phase.",
+      "category": "WORKFLOW",
+      "confidence": 0.85,
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
       "suggested_keywords": [
         "orchestrate",
         "territory",
         "concurrent-dispatch",
-        "import-rewrite",
         "blast-radius"
       ]
     },
     {
-      "content": "A subagent that escalates to its dispatching orchestrator mid-dispatch can deadlock: the orchestrator is typically blocked awaiting that subagent's completion, so it never reaches a tool round to read the message. Escalation to a busy parent must therefore be paired with a self-resolving default (close the current phase, mark the blocked one, return partial) rather than treated as a request that will be answered in-flight.",
+      "content": "Repairing a dangling documentation link often means correcting a claim, not just a path. Two links to .github/workflows/docs.yml also asserted the workflow 'runs on every push to main', false since it was renamed to .disabled - repathing alone would have turned the gate green while preserving a false statement.",
       "category": "INSIGHT",
-      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": [
-        "deadlock",
-        "escalation",
-        "subagent",
-        "SendMessage",
-        "orchestrator"
-      ]
-    },
-    {
-      "content": "Adding one sibling aggregator .lean file under a directory that carries a generated inventory block turns INV red in three places at once in BimodalLogic: the directory's own README, FormalSystem/README.md, and the root README.md totals block. Regenerate with `scripts/check-module-invariants.sh --emit-inventory` as part of the same change rather than treating it as a separate defect.",
-      "category": "PATTERN",
       "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
-      "confidence": 0.75,
       "suggested_keywords": [
-        "check-module-invariants",
-        "INV",
-        "inventory-block",
-        "aggregator",
-        "C8"
+        "documentation",
+        "dangling-link",
+        "C13",
+        "stale-claim"
       ]
     }
   ],
@@ -96,6 +161,13 @@
       "skill-lean-implementation"
     ],
     "compliance_check": "skipped",
-    "dispatch_seq": 5
+    "dispatch_seq": 5,
+    "phases_completed": 7,
+    "phases_total": 7,
+    "phase_7_outcome": "COMPLETED WITH EXCLUSIONS"
+  },
+  "completion_data": {
+    "completion_summary": "Moved FormalSystem/{Minus,Plus,Star}Language/ and their sibling aggregators under FormalSystem/Syntax/ (19 git renames, 41 import lines rewritten across 26 files) with zero non-import changed lines, zero namespace changes and zero new axioms or sorries. Added the Syntax/README.md 'Language family' section that names stab/boxdot and points at the existing sorry-free PlusLanguage implementation, which is what closes review Finding H1's discoverability gap, and extended C8 to machine-enforce the aggregator convention on Syntax/ subdirectories. Also corrected four pre-existing false documentation claims found while verifying: the docs workflow link and running-status, the fictional Bimodal root namespace, and the 'always'/'sometimes' derived-operator definitions.",
+    "roadmap_items": []
   }
 }
