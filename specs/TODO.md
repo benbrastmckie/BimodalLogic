@@ -110,7 +110,7 @@ next_project_number: 581
 
 ### Semantics
 
-580 [PLANNING] — Review issue from FormalSystem/ directory-organization review...
+580 [PLANNED] — Review issue from FormalSystem/ directory-organization review...
 
 ### Infrastructure
 
@@ -119,11 +119,12 @@ next_project_number: 581
 ## Tasks
 
 ### 580. Split semantics truth lean s corresponde
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [580_split_semantics_truth_lean_s_corresponde/reports/01_split-truth-correspondence-machinery.md]
+- **Plan**: [580_split_semantics_truth_lean_s_corresponde/plans/01_split-truth-transport-module.md]
 
 **Description**: Review issue from FormalSystem/ directory-organization review on 2026-09-15:
 

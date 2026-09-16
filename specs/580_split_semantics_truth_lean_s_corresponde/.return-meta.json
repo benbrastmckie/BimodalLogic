@@ -1,25 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/580_split_semantics_truth_lean_s_corresponde/reports/01_split-truth-correspondence-machinery.md",
-      "summary": "Three-block split plan for Semantics/Truth.lean: exact line seams (579-891 and 1000-1191 move, 893-996 stays), the box_const dependency that forces it, the 21-consumer import map with a 4-file repair set, and a gate-impact analysis across check-module-invariants.sh."
+      "type": "plan",
+      "path": "specs/580_split_semantics_truth_lean_s_corresponde/plans/01_split-truth-transport-module.md",
+      "summary": "3-phase plan for the verbatim relocation of Truth.lean's truth-transport layer into Semantics/TruthTransport.lean, with 4-file gateway import repair and doc updates."
     }
   ],
-  "user_decision": {
-    "question": "Where should the moved truth-transport machinery (TruthCorr, TruthIso, TruthAntiIso, TimeShift, box_const) live? The review named Semantics/Correspondence/TruthShift.lean, but that directory is documented as the frame-class Galois layer and its members all import Semantics.Validity, which four of the new module's consumers sit below.",
-    "options": [
-      "Semantics/TruthTransport.lean - sibling of Truth.lean, keeps the Semantics/ import order intact and leaves Correspondence/ as the Galois layer its README describes",
-      "Semantics/Correspondence/TruthShift.lean - the location the review named; requires rewriting Correspondence/README.md's import contract and makes that directory both top and bottom of the Semantics/ layering"
-    ],
-    "recommended": "Semantics/TruthTransport.lean - sibling of Truth.lean, keeps the Semantics/ import order intact and leaves Correspondence/ as the Galois layer its README describes",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 580 to execute the plan",
   "metadata": {
     "session_id": "sess_1789531332_91031c_580",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.25,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "memory_candidates": [
+    {
+      "content": "A pure Lean module split (relocating declarations verbatim from file A to new file B) has no green intermediate state: creating B before cutting A duplicates declarations, and cutting A before repairing consumer imports breaks every downstream module. Therefore the create + cut + aggregator-registration + consumer-import-repair steps must be planned as ONE atomic-batch phase ending in a green `lake build`, not as separately committable phases. A second structural point: consumer import repair scales with import-graph gateways, not with consumer count -- in FormalSystem, 21 consumers of a Semantics/ declaration were covered by 4 import lines (Semantics/Validity.lean gateways 13, Metalogic/Decidability/BiLasso/Unfold.lean gateways 7, plus the 2 direct importers). Compute the transitive-import closure to find gateways before enumerating per-consumer edits.",
+      "category": "PATTERN",
+      "source_artifact": "specs/580_split_semantics_truth_lean_s_corresponde/plans/01_split-truth-transport-module.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean-module-split", "atomic-batch", "import-graph-gateway", "phase-decomposition", "file-relocation", "transitive-import-closure"]
+    }
+  ],
+  "dispatch_seq": 4
 }

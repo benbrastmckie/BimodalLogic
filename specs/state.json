@@ -1073,19 +1073,24 @@
     {
       "project_number": 580,
       "project_name": "split_semantics_truth_lean_s_corresponde",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "semantics",
       "priority": "high",
       "description": "Review issue from FormalSystem/ directory-organization review on 2026-09-15:\n\n**File**: FormalSystem/Semantics/Truth.lean (1,193 lines)\n**Severity**: High\n**Description**: Truth.lean defines TruthAt for Formula (the untl/snce/box/boolean primary language) at lines 241-577 -- on-topic and correct -- but from line 623 to the end (~570 lines, 48% of the file) it shifts to a different subject: TruthCorr, TruthIso, TruthAntiIso, ShiftRel, shiftCorr, and a TimeShift namespace, which is correspondence/isomorphism machinery between task models under a time-shift, not truth clauses of Formula itself. Semantics/Correspondence/ already exists as a subdirectory collecting exactly this kind of frame-correspondence material (Galois.lean, FwdRec.lean, FwdRecBridge.lean, FwdRecPeriodicity.lean, Indicator.lean, DurationFrames.lean).\n**Impact**: Reading Truth.lean to understand how truth is defined for the primary language means wading through ~570 lines of unrelated correspondence machinery. This is very plausibly why the file read as \"not focused on\" the primary language on a first pass -- the language coverage is correct, but the file conflates two concerns.\n**Recommended Fix**: Split Truth.lean at its existing internal seam: TruthAt and its immediate corollaries stay in Truth.lean; ShiftRel, shiftCorr, TruthCorr, TruthIso, TruthAntiIso, and the TimeShift namespace move to a new file (e.g. Semantics/Correspondence/TruthShift.lean), joining the existing Correspondence/ subdirectory. This is a pure file split -- no proof content changes -- update import lines in whatever currently reaches the moved declarations via Semantics.Truth.\nVerify: lake build succeeds; scripts/check-module-invariants.sh passes; every moved declaration and proof is preserved verbatim (only its file location and import lines change).\n\nSee specs/reviews/review-2026-09-15.md, Finding H2, for full detail.",
       "created": "2026-09-16T03:33:25Z",
-      "last_updated": "2026-09-16T04:12:38Z",
-      "session_id": "sess_1789531332_91031c_580",
+      "last_updated": "2026-09-16T04:18:01Z",
+      "session_id": "sess_1789531332_91031c",
       "artifacts": [
         {
           "path": "specs/580_split_semantics_truth_lean_s_corresponde/reports/01_split-truth-correspondence-machinery.md",
           "type": "report",
           "summary": "Three-block split plan for Semantics/Truth.lean: exact line seams (579-891 and 1000-1191 move, 893-996 stays), the box_const dependency that forces it, the 21-consumer import map with a 4-file repair set, and a gate-impact analysis across check-module-invariants.sh."
+        },
+        {
+          "path": "specs/580_split_semantics_truth_lean_s_corresponde/plans/01_split-truth-transport-module.md",
+          "type": "plan",
+          "summary": "3-phase plan for the verbatim relocation of Truth.lean's truth-transport layer into Semantics/TruthTransport.lean, with 4-file gateway import repair and doc updates."
         }
       ],
       "next_artifact_number": 2
