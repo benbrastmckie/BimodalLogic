@@ -1,7 +1,7 @@
 # Implementation Plan: Task #596
 
 - **Task**: 596 - Nest the flat `Semantics/` language-family files into per-language subdirectories; write `FormalSystem/ForMathlib/README.md`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None (precedent: `Syntax/*Language/` nesting, commit `2acf1371c`)
 - **Research Inputs**: specs/596_nest_semantics_language_family_files/reports/01_nest-semantics-language-family.md
@@ -88,15 +88,15 @@ owns all `.lean` import lines and the 15 moved files; Phase 4 owns `.lean` docst
 under `FormalSystem/` (except Phase 1's row); Phase 5 owns top-level `README.md`, `NOTATION.md`
 and `docs/**`. Phases 4 and 5 are file-disjoint.
 
-### Phase 1: ForMathlib README [NOT STARTED]
+### Phase 1: ForMathlib README [COMPLETED]
 
 **Goal**: Write `FormalSystem/ForMathlib/README.md` and update the parent README's row.
 
 **Tasks**:
-- [ ] Confirm the dependency rule mechanically: `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returns nothing; read `FormalSystem/ForMathlib.lean` and `FormalSystem/Init.lean` for the exact wording of the rule and the C24 exception.
-- [ ] Write `FormalSystem/ForMathlib/README.md` modeled on `FormalSystem/ForMathlib/Order/README.md` / `FormalSystem/Semantics/Frames/README.md`: title; purpose (Mathlib-shaped extensions in Mathlib's own namespaces, names one-for-one with dualised Mathlib declarations, deleted here on upstreaming); dependency rule `Mathlib -> ForMathlib -> FormalSystem.* -> downstream`, stated precisely (nothing under `ForMathlib/` imports `FormalSystem.*`; the sibling aggregator `ForMathlib.lean` carries `import FormalSystem.Init` as the documented C24 exception); Modules section with a `<!-- BEGIN GENERATED: inventory dir=FormalSystem/ForMathlib -->` block (or a hand row for `Order/` linking `Order/README.md`, whichever the harness expects for a directory with no loose `.lean`); Related Documentation links (`../ForMathlib.lean`, `Order/README.md`, `../Metalogic/Algebraic/README.md`, `../README.md`); `*Last verified: 2026-09-16*`.
-- [ ] Update `FormalSystem/README.md` (~line 310): replace "no README yet" with the linked form `[ForMathlib/](ForMathlib/README.md)`, matching the `Semantics/` row.
-- [ ] No task-number references in the README (deliverable rule).
+- [x] Confirm the dependency rule mechanically: `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returns nothing; read `FormalSystem/ForMathlib.lean` and `FormalSystem/Init.lean` for the exact wording of the rule and the C24 exception.
+- [x] Write `FormalSystem/ForMathlib/README.md` modeled on `FormalSystem/ForMathlib/Order/README.md` / `FormalSystem/Semantics/Frames/README.md`: title; purpose (Mathlib-shaped extensions in Mathlib's own namespaces, names one-for-one with dualised Mathlib declarations, deleted here on upstreaming); dependency rule `Mathlib -> ForMathlib -> FormalSystem.* -> downstream`, stated precisely (nothing under `ForMathlib/` imports `FormalSystem.*`; the sibling aggregator `ForMathlib.lean` carries `import FormalSystem.Init` as the documented C24 exception); Modules section with a `<!-- BEGIN GENERATED: inventory dir=FormalSystem/ForMathlib -->` block (or a hand row for `Order/` linking `Order/README.md`, whichever the harness expects for a directory with no loose `.lean`); *(deviation: altered — generated block uses `rows=subdirs cols=files-lines link=yes`, the Metalogic/README.md shape)* Related Documentation links (`../ForMathlib.lean`, `Order/README.md`, `../Metalogic/Algebraic/README.md`, `../README.md`); `*Last verified: 2026-09-16*`.
+- [x] Update `FormalSystem/README.md` (~line 310): replace "no README yet" with the linked form `[ForMathlib/](ForMathlib/README.md)`, matching the `Semantics/` row.
+- [x] No task-number references in the README (deliverable rule).
 
 **Timing**: 0.5 hours
 

@@ -307,7 +307,7 @@ invariant check allowlists it by name (check C8).
 | [Theorems/](Theorems/README.md) | Yes | Derived theorems |
 | [Automation/](Automation/README.md) | Yes | Proof tactics and ML pipeline |
 | [Examples/](Examples/README.md) | Yes | Pedagogical examples |
-| `ForMathlib/` | No | Mathlib-shaped extensions intended for upstreaming; the dependency rule (`Mathlib → ForMathlib → FormalSystem`) is stated in `ForMathlib.lean` (no README yet) |
+| [ForMathlib/](ForMathlib/README.md) | Yes | Mathlib-shaped extensions intended for upstreaming; nothing under it imports `FormalSystem.*` (`Mathlib → ForMathlib → FormalSystem`) |
 | [Boneyard/](Boneyard/README.md) | Yes | ARCHIVE — retired code, excluded from the live build; no `.olean` is produced under any `Boneyard` path. Its README is the single source for its counts |
 
 ## Quick Reference
