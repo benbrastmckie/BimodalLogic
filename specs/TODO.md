@@ -1,5 +1,5 @@
 ---
-next_project_number: 593
+next_project_number: 594
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 593
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578,581,582,587,590,591,592 | -- | agent-system, algebraic-representation, automation, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,540,542,559,563,568,569,578,581,582,587,590,591,592,593 | -- | agent-system, algebraic-representation, automation, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,584,586 | 298,464,502,559,563,568,582,591 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,583 | 231,465,497,565,581,582,586,590 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,585 | 428,498,499,500,583,584 | algebraic-representation, code-quality, decidability, ... |
@@ -53,6 +53,7 @@ next_project_number: 593
 ### Code Quality
 
 587 [NOT STARTED] — Clear the two broken: entries in...
+593 [NOT STARTED] — I recently created tasks 581-592. I already have many other...
 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
   └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
@@ -136,6 +137,16 @@ next_project_number: 593
 542 [NOT STARTED] — Triage the dead-declaration census that C17 produces,...
 
 ## Tasks
+
+### 593. Revise task organization codebase cleanup
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: I recently created tasks 581-592. I already have many other tasks I've created. I want to know if these tasks can be better organized into topics, combined, replaced, removed, or have new tasks added. I'd like to focus on improving the codebase first, including everything that doesn't involve writing new proofs, but rather changing conventions, removing cruft, improving comments, or otherwise refactoring, where these tasks should all be gathered together under one topic with clear dependencies. Thus the aim of this task is to revise the other tasks as most appropriate. It may be worth researching /home/benjamin/Projects/cslib/ which aimed to provide a high quality of lean engineering for related topics. Though the subject matter there differs, the standards are good to aim for
+
+---
 
 ### 592. Fix unfollowable source store rule
 - **Effort**: small
