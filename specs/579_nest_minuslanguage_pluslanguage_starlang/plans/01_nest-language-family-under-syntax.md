@@ -183,14 +183,63 @@ before writing the file.
 - `FormalSystem/Syntax.lean` - four leaf imports collapsed to one aggregator import
 
 **Verification**:
-- `lake build` exits 0.
+- `lake build` exits 0. *(deviation: altered — verified with the scoped
+  `lake build FormalSystem.Syntax` (guarded, detached; exit 0, 712 jobs) rather than a full
+  `lake build`, because the concurrent task-580 dispatch has `FormalSystem/Semantics/` in an
+  intermediate state. `FormalSystem.Syntax` does not import `FormalSystem.Semantics`, so the
+  scoped build covers every module this phase can affect.)*
 - `ENFORCE_C8=1 bash scripts/check-module-invariants.sh --no-build` shows `PASS C8` (still green;
-  this phase does not yet extend the tuple).
+  this phase does not yet extend the tuple). *(confirmed: PASS C8)*
 - No new `sorry`: `grep -rn '\bsorry\b' FormalSystem/Syntax/SubformulaClosure.lean` is empty.
 
 ---
 
-### Phase 2: The move [NOT STARTED]
+### Phase 2: The move [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: Not a proof or tactic failure — a territory conflict. The implement
+  dispatch message for this task states: "Your territory is FormalSystem/Syntax/,
+  MinusLanguage/, PlusLanguage/, StarLanguage/, FormalSystem/README.md, docs/README.md, and
+  scripts/check-module-invariants.sh. Do not edit files under FormalSystem/Semantics/." Phase 2
+  cannot be completed inside that boundary: 4 of the 41 import lines it must rewrite are under
+  `FormalSystem/Semantics/`.
+- **What was tried**: The blast radius was re-measured before any edit, confirming the plan's
+  Scope Hypothesis exactly —
+  `grep -rn '^import FormalSystem\.\(Minus\|Plus\|Star\)Language' --include='*.lean' .`
+  returns 41 lines across 26 `.lean` files. Four are off-limits:
+  `FormalSystem/Semantics/MinusFrame.lean:7`, `MinusTruth.lean:8`, `PlusTruth.lean:8`,
+  `StarTruth.lean:8` (each `import FormalSystem.{Minus,Plus,Star}Language.Formula`). No
+  alternative was found that avoids them: Lean has no module-alias or re-export mechanism, and
+  leaving shim modules at the old root paths is forbidden by this plan's own Phase 2
+  verification (`ls FormalSystem/*.lean` must show exactly the three aggregators removed).
+- **Why it's stuck**: Without those 4 one-line edits the `git mv` leaves 4 dangling imports,
+  so `lake build` and `C4` both go red and Phase 2's declared verification is unreachable.
+  Phase 2's `Commit Mode: atomic-batch` means it cannot be closed partially either. Phases 3-7
+  all depend transitively on Phase 2, so the whole remainder of the plan is gated on this.
+- **What is needed**: One of (a) a narrow territory exemption for exactly those 4 import-prefix
+  edits (`FormalSystem.` -> `FormalSystem.Syntax.`, applied with `sed` to the single matched
+  line so a concurrent edit to the same file's import block cannot be clobbered); (b) those 4
+  lines made by the task-580 dispatch that owns `FormalSystem/Semantics/`; or (c) re-dispatch of
+  this task after task 580 releases the directory. Two messages requesting this decision were
+  sent to the orchestrator (team-lead) and went unanswered within this dispatch.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+  Also do NOT (i) leave stale aggregators or shim modules at `FormalSystem/{Minus,Plus,Star}Language.lean`,
+  (ii) rename namespaces to `FormalSystem.Syntax.{Minus,Plus,Star}Language` (rejected by the
+  plan's Research Integration — 103 sites plus the C14 baseline), or (iii) move only the
+  subset of directories whose consumers lie outside `Semantics/` (PlusLanguage/ and
+  StarLanguage/ are each reached from `Semantics/`, so no such subset exists).
+
+**Ready-to-run once unblocked** (the 4 edits, verified against the current tree):
+
+```bash
+sed -i 's|^import FormalSystem\.MinusLanguage\.Formula$|import FormalSystem.Syntax.MinusLanguage.Formula|' \
+  FormalSystem/Semantics/MinusFrame.lean FormalSystem/Semantics/MinusTruth.lean
+sed -i 's|^import FormalSystem\.PlusLanguage\.Formula$|import FormalSystem.Syntax.PlusLanguage.Formula|' \
+  FormalSystem/Semantics/PlusTruth.lean
+sed -i 's|^import FormalSystem\.StarLanguage\.Formula$|import FormalSystem.Syntax.StarLanguage.Formula|' \
+  FormalSystem/Semantics/StarTruth.lean
+```
+
 
 **Goal**: Relocate the three directories and their three aggregators under
 `FormalSystem/Syntax/`, rewriting every import line, with proof content and namespaces byte-identical.

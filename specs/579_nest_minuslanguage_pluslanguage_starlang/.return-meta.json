@@ -1,30 +1,90 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-09-15T21:19:23-07:00",
+  "completed_at": "2026-09-15T21:45:00-07:00",
+  "requires_user_review": true,
+  "review_reason": "Phase 2 [BLOCKED] by a territory conflict: 4 of the 41 import lines the move must rewrite live under FormalSystem/Semantics/, which this dispatch's instructions placed off-limits because a concurrent task-580 dispatch owns that directory. Phases 3-7 all depend transitively on Phase 2, so 1 of 7 phases closed. Needs an orchestrator decision, not further implementation work.",
+  "blocked_phase": 2,
+  "user_decision": {
+    "question": "How should task 579's 4 required import-line edits under FormalSystem/Semantics/ be handled, given the concurrent task-580 dispatch owns that directory?",
+    "why_user": "This is a cross-dispatch territory and sequencing call between two concurrently running implementations. The implementer cannot resolve it without either overriding an explicit dispatch instruction or racing a sibling agent's edits; which risk is acceptable is a coordination decision, not an implementation one.",
+    "options": [
+      "Grant a narrow exemption for exactly the 4 import-prefix edits (sed on the single matched line each, in MinusFrame.lean:7, MinusTruth.lean:8, PlusTruth.lean:8, StarTruth.lean:8), then re-dispatch 579 to run Phases 2-7.",
+      "Hand those 4 lines to the task-580 dispatch that owns FormalSystem/Semantics/, then re-dispatch 579.",
+      "Re-dispatch 579 after task 580 completes and releases FormalSystem/Semantics/."
+    ],
+    "blocking": true
+  },
+  "partial_progress": {
+    "stage": "phase_2_blocked",
+    "details": "Phase 1 closed and committed (53747904e). Phase 2 marked [BLOCKED] with a full blocker record plus the four ready-to-run sed commands in the plan file. Phases 3-7 left [NOT STARTED] per the phase-closure contract's stop-at-a-closed-boundary clause. All remaining Scope Hypotheses were confirmed by read-only probes and are recorded in the summary's Follow-ups, so a re-dispatch need not re-measure.",
+    "phases_completed": 1,
+    "phases_total": 7
+  },
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_scope": "scoped",
+    "build_output": "lake build FormalSystem.Syntax (guarded, detached): exit 0, 712 jobs. Full `lake build` deliberately not run: the concurrent task-580 dispatch has FormalSystem/Semantics/ mid-edit, so the result would be a snapshot of a moving tree, and the build guard's project-granular lock would serialize task 580's own phase-end build behind it. Recorded as an explicit omission, not a pass.",
+    "notes": "verification_passed is false solely because Phase 2 is [BLOCKED] and no full lake build was run. axiom_count 14 is unchanged from HEAD~1 (14). sorry_count 0 and vacuous_count 0 are scoped to the two files this dispatch changed; C3 (structural sorry inventory) reports PASS with zero across FormalSystem/ excluding Boneyard. The one tree-wide vacuous grep hit, FormalSystem/Examples/TemporalStructures.lean:496, is pre-existing and in a directory this task never touched. ENFORCE_C8=1 check-module-invariants.sh --no-build reports PASS C8 (Phase 1's whole purpose); scripts/readme-lint.sh PASS with 0 broken references. Live FAIL C6 and the FAIL INV hand-maintained-row finding belong to task 580's in-progress Semantics/TruthTransport.lean, not to this task; FAIL C13 is pre-existing and matches the plan's recorded baseline; the 3 stale generated inventory blocks are this task's Phase 1 consequence and are exactly the set Phase 6 regenerates."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md",
-      "summary": "7-phase plan nesting MinusLanguage/PlusLanguage/StarLanguage under FormalSystem/Syntax/ as a module-path rename, with the C8 SubformulaClosure prerequisite first and a full doc/invariant sweep."
+      "type": "summary",
+      "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+      "summary": "Phase 1 of 7 closed green (new FormalSystem/Syntax/SubformulaClosure.lean aggregator); Phase 2 blocked by a FormalSystem/Semantics/ territory conflict."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/handoffs/phase-1-handoff-20260915T212300.md",
+      "summary": "Phase 1 handoff: what landed, verification results, gate-failure attribution, and the Phase 2 blocker."
     }
   ],
-  "next_steps": "Run /implement 579 to execute the plan",
-  "phase_count": 7,
-  "estimated_hours": 5.25,
-  "dependency_waves": [[1], [2], [3, 4], [5], [6], [7]],
+  "modified_files": [
+    "FormalSystem/Syntax/SubformulaClosure.lean",
+    "FormalSystem/Syntax.lean",
+    "specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md",
+    "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+    "specs/579_nest_minuslanguage_pluslanguage_starlang/handoffs/phase-1-handoff-20260915T212300.md"
+  ],
+  "reflection": {
+    "what_worked": "Front-loading the blast-radius measurement surfaced the territory conflict before any file moved, so Phase 1 could still be closed cleanly instead of the dispatch stranding a half-moved tree at [PARTIAL]. Running all of Phases 2-7's read-only Scope Hypothesis probes while blocked means a re-dispatch can execute without re-measuring.",
+    "what_was_hard": "The plan and the dispatch instructions were in direct, unflagged conflict: the plan's Phase 2 file list names four FormalSystem/Semantics/ files, while the dispatch message forbids editing that directory. Deciding not to override the boundary on my own judgment was the call; the edits themselves are trivial.",
+    "what_was_missed": "The conflict was detectable at dispatch-construction time by intersecting the plan's Phase 2 file list with the territory assignment. Two messages to the orchestrator went unanswered within this dispatch, which suggests the orchestrator was itself blocked awaiting completions - a coordination deadlock worth designing against rather than discovering.",
+    "successes": "Phase 1 landed green and committed: PASS C8 achieved (the prerequisite Phase 3 needs), scoped build exit 0 over 712 jobs, zero sorries, zero new axioms, and every gate failure in the tree correctly attributed to either the pre-existing baseline or the sibling dispatch."
+  },
   "memory_candidates": [
     {
-      "content": "BimodalLogic directory moves have two non-obvious structural constraints. (1) scripts/check-module-invariants.sh's C8 aggregator check walks a hardcoded `parent` tuple (\"FormalSystem\", \"FormalSystem/Metalogic\"), enforced by default via ENFORCE_C8=${ENFORCE_C8:-1}. Adding a parent to that tuple retroactively demands a sibling X.lean aggregator for EVERY Lean-bearing subdirectory of that parent, not just newly moved ones -- so extending C8's scope has a hidden prerequisite of creating any missing aggregator first, or a currently-green C8 turns red. (2) The repo's real convention is that a nested subdirectory KEEPS its component's namespace rather than mirroring its module path (FormalSystem.Syntax.SubformulaClosure.Closure declares `namespace FormalSystem.Syntax`; Metalogic/Conservativity/Plus/Forward.lean declares `namespace FormalSystem.Metalogic.Conservativity`), even though docs/development/MODULE_ORGANIZATION.md section 2 still asserts the opposite. Consequently a nesting move should rewrite ONLY lines beginning `import ` -- a bare token replacement corrupts `open` lines, fully-qualified references, and the C14 `#print axioms` baseline. Gates sensitive to file moves: C4, C5, C8, C12, C13, INV (plus readme-lint Check 3). Gates robust to them: C14 (keys on declaration names) and C20 (suffix-matching path resolver).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md",
+      "content": "When /orchestrate dispatches two implementations concurrently with directory-level territory assignments, intersect each plan's per-phase 'Files to modify' list against the assigned territory before dispatching. A module-path rename task's import-rewrite set routinely reaches outside the directory being renamed, so a territory drawn around the renamed directory alone will block the task's central phase.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["check-module-invariants", "C8-aggregator-convention", "directory-nesting", "namespace-module-divergence", "import-rewrite-scope", "lean-module-move"]
+      "suggested_keywords": ["orchestrate", "territory", "concurrent-dispatch", "import-rewrite", "blast-radius"]
+    },
+    {
+      "content": "A subagent that escalates to its dispatching orchestrator mid-dispatch can deadlock: the orchestrator is typically blocked awaiting that subagent's completion, so it never reaches a tool round to read the message. Escalation to a busy parent must therefore be paired with a self-resolving default (close the current phase, mark the blocked one, return partial) rather than treated as a request that will be answered in-flight.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["deadlock", "escalation", "subagent", "SendMessage", "orchestrator"]
+    },
+    {
+      "content": "Adding one sibling aggregator .lean file under a directory that carries a generated inventory block turns INV red in three places at once in BimodalLogic: the directory's own README, FormalSystem/README.md, and the root README.md totals block. Regenerate with `scripts/check-module-invariants.sh --emit-inventory` as part of the same change rather than treating it as a separate defect.",
+      "category": "PATTERN",
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["check-module-invariants", "INV", "inventory-block", "aggregator", "C8"]
     }
   ],
   "metadata": {
-    "session_id": "sess_1789531332_91031c_579",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1789531332_91031c",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 3
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "dispatch_seq": 5
+  }
 }
