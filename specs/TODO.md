@@ -106,11 +106,11 @@ next_project_number: 581
 
 ### Repo Hygiene
 
-579 [RESEARCHED] — Review issue from FormalSystem/ directory-organization review...
+579 [PLANNED] — Review issue from FormalSystem/ directory-organization review...
 
 ### Semantics
 
-580 [RESEARCHED] — Review issue from FormalSystem/ directory-organization review...
+580 [PLANNING] — Review issue from FormalSystem/ directory-organization review...
 
 ### Infrastructure
 
@@ -119,7 +119,7 @@ next_project_number: 581
 ## Tasks
 
 ### 580. Split semantics truth lean s corresponde
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -139,11 +139,12 @@ See specs/reviews/review-2026-09-15.md, Finding H2, for full detail.
 ---
 
 ### 579. Nest minuslanguage pluslanguage starlang
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [579_nest_minuslanguage_pluslanguage_starlang/reports/01_nest-language-family-under-syntax.md]
+- **Plan**: [579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md]
 
 **Description**: Review issue from FormalSystem/ directory-organization review on 2026-09-15:
 

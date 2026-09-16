@@ -1,16 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/reports/01_nest-language-family-under-syntax.md",
-      "summary": "Blast radius, invariant-gate impact, and phase decomposition for nesting MinusLanguage/PlusLanguage/StarLanguage under Syntax/: 41 import lines across 26 files, no cycle, namespaces must stay flat, C8 change needs a SubformulaClosure.lean prerequisite, and two dispatch premises corrected."
+      "type": "plan",
+      "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md",
+      "summary": "7-phase plan nesting MinusLanguage/PlusLanguage/StarLanguage under FormalSystem/Syntax/ as a module-path rename, with the C8 SubformulaClosure prerequisite first and a full doc/invariant sweep."
+    }
+  ],
+  "next_steps": "Run /implement 579 to execute the plan",
+  "phase_count": 7,
+  "estimated_hours": 5.25,
+  "dependency_waves": [[1], [2], [3, 4], [5], [6], [7]],
+  "memory_candidates": [
+    {
+      "content": "BimodalLogic directory moves have two non-obvious structural constraints. (1) scripts/check-module-invariants.sh's C8 aggregator check walks a hardcoded `parent` tuple (\"FormalSystem\", \"FormalSystem/Metalogic\"), enforced by default via ENFORCE_C8=${ENFORCE_C8:-1}. Adding a parent to that tuple retroactively demands a sibling X.lean aggregator for EVERY Lean-bearing subdirectory of that parent, not just newly moved ones -- so extending C8's scope has a hidden prerequisite of creating any missing aggregator first, or a currently-green C8 turns red. (2) The repo's real convention is that a nested subdirectory KEEPS its component's namespace rather than mirroring its module path (FormalSystem.Syntax.SubformulaClosure.Closure declares `namespace FormalSystem.Syntax`; Metalogic/Conservativity/Plus/Forward.lean declares `namespace FormalSystem.Metalogic.Conservativity`), even though docs/development/MODULE_ORGANIZATION.md section 2 still asserts the opposite. Consequently a nesting move should rewrite ONLY lines beginning `import ` -- a bare token replacement corrupts `open` lines, fully-qualified references, and the C14 `#print axioms` baseline. Gates sensitive to file moves: C4, C5, C8, C12, C13, INV (plus readme-lint Check 3). Gates robust to them: C14 (keys on declaration names) and C20 (suffix-matching path resolver).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-module-invariants", "C8-aggregator-convention", "directory-nesting", "namespace-module-divergence", "import-rewrite-scope", "lean-module-move"]
     }
   ],
   "metadata": {
     "session_id": "sess_1789531332_91031c_579",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 3
 }
