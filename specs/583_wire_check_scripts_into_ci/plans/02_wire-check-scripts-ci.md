@@ -156,30 +156,36 @@ including sourced helpers under `scripts/lib/`.
 
 ---
 
-### Phase 2: Wire the three steps into ci.yml [NOT STARTED]
+### Phase 2: Wire the three steps into ci.yml [COMPLETED]
 
 **Goal**: Add the three check steps using the existing lean_exe step's conventions, and make
 the workflow's comments agree with what it runs.
 
 **Tasks**:
-- [ ] After "Compile lean_exe roots (outside the library closures)" and before "Report
+- [x] After "Compile lean_exe roots (outside the library closures)" and before "Report
   results", add three steps, in this order:
   - `name: Check module invariants (scripts/check-module-invariants.sh --no-build)`
   - `name: Check copyright headers (scripts/check-copyright-headers.sh --strict)`
   - `name: Check README health (scripts/readme-lint.sh)`
 
   Each body is `set -euo pipefail`, then `echo "::group::<script>"`, then the exact command,
-  then `echo "::endgroup::"`.
-- [ ] Put the script path inside each step `name:`, so the Actions UI identifies the script
+  then `echo "::endgroup::"`. *(completed: placed directly before "Report results"; tasks
+  581/582 had already committed their own steps -- check-evidence-probes.sh and
+  check-metalogic-cycles.sh -- in that same slot, so the three new steps land after those two,
+  still before "Report results", matching the recorded append-before-Report-results
+  convention)*
+- [x] Put the script path inside each step `name:`, so the Actions UI identifies the script
   without opening the log. This is the Verify criterion's "failing step names the script".
-- [ ] Replace the sentence at current lines 47-48 ("The local counterpart is invariant C25
+  *(completed)*
+- [x] Replace the sentence at current lines 47-48 ("The local counterpart is invariant C25
   ... at run time") with a line saying C25 is the full-mode counterpart, while CI runs the
-  structural (`--no-build`) pass in the "Check module invariants" step below.
-- [ ] Add a short comment above the first new step, or at the top of the file, that points
+  structural (`--no-build`) pass in the "Check module invariants" step below. *(completed)*
+- [x] Add a short comment above the first new step, or at the top of the file, that points
   to `docs/development/CI_CD_PROCESS.md`'s wiring-pattern section and says new checks go
-  directly before "Report results".
-- [ ] Leave "Report results" as the last step. Do not change `if: always()` or the lean-action
-  outputs.
+  directly before "Report results". *(completed: added at the top of the file, above `name:
+  CI`)*
+- [x] Leave "Report results" as the last step. Do not change `if: always()` or the lean-action
+  outputs. *(completed: unchanged)*
 
 **Timing**: 0.75 hours
 

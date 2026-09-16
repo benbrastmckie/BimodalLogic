@@ -1,3 +1,7 @@
+# See docs/development/CI_CD_PROCESS.md's "Wiring a New Check Script" section for the
+# per-script wiring pattern (step naming, skip-and-report-neutral convention, cache-warm
+# placement, runtime budget) that every step below follows. A new check step is appended
+# directly before "Report results".
 name: CI
 
 on:
@@ -44,8 +48,10 @@ jobs:
       # here could observe it. Marking the exe targets `@[default_target]` was rejected on
       # measured cost -- 240-310 MB of linked binary per root, thirteen of them. These are
       # MODULE targets: elaboration and C emission, no linking, reusing the cache the
-      # lean-action step above already populated. The local counterpart is invariant C25 in
-      # scripts/check-module-invariants.sh, which scrapes the same root list at run time.
+      # lean-action step above already populated. C25 in scripts/check-module-invariants.sh is
+      # the full-mode counterpart of this same root-list scrape; CI itself runs the structural
+      # (--no-build) pass in the "Check module invariants" step below, which skips C25 (and
+      # C1, C24) as already covered by this step and by lean-action.
       - name: Compile lean_exe roots (outside the library closures)
         run: |
           set -euo pipefail
@@ -69,6 +75,31 @@ jobs:
           set -euo pipefail
           echo "::group::bash scripts/check-evidence-probes.sh"
           bash scripts/check-evidence-probes.sh
+          echo "::endgroup::"
+
+      # Structural pass only (--no-build): C1/C16-full/C25 duplicate work the lean-action and
+      # lean_exe steps above already do, and C2/C6/C24 are the resulting known gaps -- see
+      # docs/development/CI_CD_PROCESS.md's "Wiring a New Check Script" section for the full
+      # cache-warm-placement rule new steps here should follow.
+      - name: Check module invariants (scripts/check-module-invariants.sh --no-build)
+        run: |
+          set -euo pipefail
+          echo "::group::bash scripts/check-module-invariants.sh --no-build"
+          bash scripts/check-module-invariants.sh --no-build
+          echo "::endgroup::"
+
+      - name: Check copyright headers (scripts/check-copyright-headers.sh --strict)
+        run: |
+          set -euo pipefail
+          echo "::group::bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem"
+          bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem
+          echo "::endgroup::"
+
+      - name: Check README health (scripts/readme-lint.sh)
+        run: |
+          set -euo pipefail
+          echo "::group::bash scripts/readme-lint.sh"
+          bash scripts/readme-lint.sh
           echo "::endgroup::"
 
       # Metalogic/ is allowed exactly one directory-level import cycle (BXCanonical <->

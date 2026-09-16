@@ -1,0 +1,43 @@
+{
+  "phase": 2,
+  "phase_name": "Wire the three steps into ci.yml",
+  "started_at": "2026-09-16T00:25:00Z",
+  "last_updated": "2026-09-16T00:40:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Add the three named check steps after Compile lean_exe roots / before Report results",
+      "status": "done",
+      "files_touched": [".github/workflows/ci.yml"],
+      "note": "Placed directly before Report results, after 581's check-evidence-probes.sh and 582's check-metalogic-cycles.sh steps (both already committed to main by the time of this edit). Step order verified via python3 yaml.safe_load: checkout, lean-action, lean_exe, check-evidence-probes.sh, invariants, copyright, readme, check-metalogic-cycles.sh, report."
+    },
+    {
+      "id": 2,
+      "description": "Each step name contains the script path",
+      "status": "done",
+      "files_touched": [".github/workflows/ci.yml"]
+    },
+    {
+      "id": 3,
+      "description": "Replace the C25 prose comment with a step-referencing comment",
+      "status": "done",
+      "files_touched": [".github/workflows/ci.yml"]
+    },
+    {
+      "id": 4,
+      "description": "Add a header pointer comment to CI_CD_PROCESS.md's wiring-pattern section",
+      "status": "done",
+      "files_touched": [".github/workflows/ci.yml"]
+    },
+    {
+      "id": 5,
+      "description": "Leave Report results as the last step, unchanged",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}
