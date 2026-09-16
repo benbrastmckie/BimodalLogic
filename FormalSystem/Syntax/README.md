@@ -11,8 +11,15 @@ Core syntactic definitions for TM bimodal logic formulas.
 | `BigConj.lean` | 55 | `bigConj`: Big conjunction over a list of formulas |
 | `Context.lean` | 210 | `Context`: Type alias for `List Formula` (proof contexts) |
 | `Formula.lean` | 855 | `Formula`: Inductive formula type with modal and temporal operators |
+| `MinusLanguage.lean` | 45 | Sibling aggregator for `MinusLanguage/` (the language L⁻) |
+| `PlusLanguage.lean` | 54 | Sibling aggregator for `PlusLanguage/` (the language L⁺) |
+| `StarLanguage.lean` | 60 | Sibling aggregator for `StarLanguage/` (the language L⋆) |
+| `SubformulaClosure.lean` | 38 | Sibling aggregator for `SubformulaClosure/` |
 | `Subformulas.lean` | 235 | `subformulas`: Subformula relation and listing function |
-| `SubformulaClosure/` | — | Subformula closure as `Finset` for BFMCS construction (3 files) |
+| `MinusLanguage/` | — | L⁻: `MinusFormula` with `allPast`/`allFuture` primitive in place of `untl`/`snce`, its axioms, proof system and the translation `tr` to L (6 files) |
+| `PlusLanguage/` | — | L⁺: `PlusFormula` = L plus the stability modal `⊡` (`stab`, "boxdot"), its axioms, proof system, embedding and substitution (5 files) |
+| `StarLanguage/` | — | L⋆: `StarFormula` = L⁺ plus the time registers `↑ⁱ`/`↓ⁱ` (`timeStore`/`timeRecall`), its axioms, proof system and embedding (4 files) |
+| `SubformulaClosure/` | — | Subformula closure as `Finset` for BFMCS construction (4 files) |
 <!-- END GENERATED -->
 
 ## Language family

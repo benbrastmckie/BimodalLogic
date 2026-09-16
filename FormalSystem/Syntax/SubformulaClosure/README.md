@@ -11,9 +11,10 @@ finite model property.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `Closure.lean` | 367 | `subformulaClosure`: Finset of all subformulas of a formula |
-| `NestingDepth.lean` | 232 | Nesting depth measure for formulas; used in bounded search |
-| `TemporalFormulas.lean` | 1296 | Temporal formula classification within subformula closures |
+| `Closure.lean` | 374 | `subformulaClosure`: Finset of all subformulas of a formula |
+| `NestingDepth.lean` | 240 | Nesting depth measure for formulas; used in bounded search |
+| `TemporalFormulas.lean` | 1322 | Temporal formula classification within subformula closures |
+| `IteratedTemporal.lean` | 336 | `iterF`/`iterP`: n-fold F/P application, with injectivity, nesting-depth and closure-escape lemmas |
 
 ## Key Definitions
 

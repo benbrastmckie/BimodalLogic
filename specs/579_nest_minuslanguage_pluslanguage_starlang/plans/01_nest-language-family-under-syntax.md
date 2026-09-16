@@ -487,20 +487,20 @@ the plan, all are false statements about the primary language):
 
 ---
 
-### Phase 6: Regenerate inventory blocks [NOT STARTED]
+### Phase 6: Regenerate inventory blocks [COMPLETED]
 
 **Goal**: Bring the generated inventory blocks in line with the new tree.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory`.
-- [ ] Review the diff: `README.md:17` (`dir=FormalSystem rows=totals desc=no`),
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory`.
+- [x] Review the diff: `README.md:17` (`dir=FormalSystem rows=totals desc=no`),
       `FormalSystem/README.md:240` (`dir=FormalSystem rows=loose`, loses the three root-level
       aggregator rows), and `FormalSystem/Syntax/README.md:7` (`dir=FormalSystem/Syntax`, gains
       three subdirectory rows).
-- [ ] While in `FormalSystem/Syntax/README.md`, fix the hand-written description column's
+- [x] While in `FormalSystem/Syntax/README.md`, fix the hand-written description column's
       `SubformulaClosure/ ... (3 files)` — there are 4. The count sits outside the generated
       region, which is why INV does not catch it.
-- [ ] Verify with `bash scripts/check-module-invariants.sh --emit-inventory --check`.
+- [x] Verify with `bash scripts/check-module-invariants.sh --emit-inventory --check`.
 
 **Timing**: 0.25 hours
 
@@ -520,6 +520,29 @@ plan did not anticipate and must be reviewed before committing.
 - `README.md` - generated inventory block (totals)
 - `FormalSystem/README.md` - generated inventory block (loose rows)
 - `FormalSystem/Syntax/README.md` - generated inventory block plus the `(3 files)` description fix
+
+**Scope-hypothesis variance**: the hypothesis asserted exactly three changed blocks. The emit
+rewrote **four**. The extra one is `FormalSystem/Metalogic/README.md`, and it is **not this
+task's**: its `Decidability/` row moved 53,407 -> 53,408 lines, caused by task 580's committed
+one-line import insertion in `Metalogic/Decidability/BiLasso/Unfold.lean` (commit `1c9ea208c`).
+It is regenerated here because `PASS INV` is unreachable while any block is stale and the emit
+is all-or-nothing, not because this task claims the change. The `README.md` totals block and
+`FormalSystem/README.md`'s loose-rows block likewise mix both tasks' effects by construction
+(the +2 live `.lean` files are this task's `Syntax/SubformulaClosure.lean` and 580's
+`Semantics/TruthTransport.lean`); a shared generated inventory cannot be split by author.
+
+**Additional hand-maintained defects corrected** (same tables, all measured not guessed):
+- The emit produced seven new rows in `FormalSystem/Syntax/README.md` carrying
+  `<!-- TODO: add description -->`; all seven were filled (the three nested language directories,
+  their three sibling aggregators, and `SubformulaClosure.lean`).
+- `FormalSystem/Syntax/SubformulaClosure/README.md`'s module table omitted `IteratedTemporal.lean`
+  entirely — `readme-lint` Check 2 had been reporting it as `NOT LISTED`. Row added.
+- That same hand-maintained table's three existing line counts had drifted below `wc -l`
+  (`Closure` 367->374, `NestingDepth` 232->240, `TemporalFormulas` 1296->1322). `wc -l` is
+  exactly what `scripts/lib/live_walk.py`'s `line_count()` reports and therefore what every
+  GENERATED block in the tree uses, so all four rows are now on that one convention. A first
+  attempt wrote `589` for `IteratedTemporal.lean` from memory rather than measurement; corrected
+  to the measured `336` before commit.
 
 **Verification**:
 - `bash scripts/check-module-invariants.sh --emit-inventory --check` reports `PASS INV`.
