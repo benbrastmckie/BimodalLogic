@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md",
+      "summary": "Re-verified the three in-scope check scripts are green with measured runtimes, recommends --no-build for check-module-invariants.sh on the task's own stated runtime budget, and lays out the four-part wiring-pattern convention (step naming, skip-neutral, cache-warm placement, runtime budget) plus exact step order and commands."
+    }
+  ],
+  "next_steps": "Run /plan 583 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1789573870_865f5c_583",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "findings_count": 5,
+  "dispatch_seq": 1,
+  "memory_candidates": [
+    {
+      "content": "In this repo, check-module-invariants.sh's full (build-dependent) invocation costs ~2 minutes even when the Lake cache and all lean_exe roots are already warm -- the extra cost is dominated by C16's env_linter re-scan across all 14 lakefile roots and the C2 axiom-baseline check, not by re-building anything already built. The --no-build flag runs the structural-only subset in ~20s. When wiring this or a similar phase-gate script into CI, measure both forms with the roots pre-built before assuming --no-build's savings come from skipping a redundant build.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["check-module-invariants", "ci-runtime", "no-build", "lake-cache", "env_linter"]
+    },
+    {
+      "content": "check-copyright-headers.sh's bare invocation (no flags) always exits 0 by design -- it is a report-only mode. The gating form requires --strict plus --exclude '*/Boneyard/*' (or the current archive glob) to avoid counting the deliberately unheadered archive as failures. Any CI wiring or task description referencing this script must use the --strict --exclude form, never the bare form.",
+      "category": "PATTERN",
+      "source_artifact": "specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-copyright-headers", "strict-mode", "ci-wiring", "boneyard-exclude"]
+    }
+  ]
+}

@@ -98,8 +98,8 @@ next_project_number: 598
 ### Codebase Cleanup
 
 578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-581 [NOT STARTED] — Repair the four wired bi-lasso evidence probes so bash...
-582 [NOT STARTED] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
+581 [RESEARCHING] — Repair the four wired bi-lasso evidence probes so bash...
+582 [RESEARCHING] — bash scripts/check-metalogic-cycles.sh exits 1: it asserts...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
     └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
@@ -109,9 +109,9 @@ next_project_number: 598
       └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
       └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
         └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-583 [NOT STARTED] — Wire the check scripts that are GREEN TODAY into...
+583 [RESEARCHED] — Wire the check scripts that are GREEN TODAY into...
   └─ 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,... (see above)
-587 [NOT STARTED] — Clear the two broken: entries in...
+587 [RESEARCHING] — Clear the two broken: entries in...
 591 [NOT STARTED] — Adopt a naming convention that distinguishes leanexe roots...
   └─ 584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --... (see above)
   └─ 586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
@@ -339,7 +339,7 @@ DISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on 
 
 ### 587. Repair or retire broken benchmark modules
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -440,11 +440,11 @@ FINAL PHASE: once `check-paper-definitions.sh` exits 0, make it skip-and-report-
 
 ### 583. Wire check scripts into ci
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
-- **Research**: [583_wire_check_scripts_into_ci/reports/01_uncalled-check-scripts.md]
+- **Research**: [583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md]
 
 **Description**: Wire the check scripts that are GREEN TODAY into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows. (RESCOPED during the codebase-cleanup reorganization of 2026-09-16: this task no longer waits for the repair tasks. Each repair task wires its own script into CI as its final phase, so each fix is locked in the moment it lands rather than after the slowest one.)
 
@@ -467,7 +467,7 @@ See specs/reviews/review-2026-09-16.md, Finding H3; specs/593_revise_task_organi
 
 ### 582. Break or rebaseline metalogic cycle
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
@@ -491,7 +491,7 @@ FINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once
 
 ### 581. Repair bilasso evidence probes
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
