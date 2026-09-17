@@ -95,7 +95,7 @@
 
 // Lean source reference block (module + declaration name, rendered as a
 // blockquote-style raw line). Usage: #leansrc("Metalogic.Soundness", "soundness")
-#let leansrc(module, name) = block(above: 1.0em, below: 1.0em, raw(block: true, "> " + module + "." + name + "."))
+#let leansrc(module, name) = block(above: 1.0em, below: 1.0em, raw(block: true, "> " + (module + "." + name).replace(".", "." + sym.zws) + "."))
 
 // Inline Lean identifier reference (monospace, no path).
 #let leanref(name) = raw(name)

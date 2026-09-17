@@ -254,7 +254,7 @@ defect-1 and defect-2 findings are gone and no new math-span overflow appears.
 
 ---
 
-### Phase 3: Systemic Break Opportunity in the `leansrc` Helper [NOT STARTED]
+### Phase 3: Systemic Break Opportunity in the `leansrc` Helper [COMPLETED]
 
 **Goal**: Fix defect 3 at its root by giving `leansrc`-rendered dotted Lean identifiers an
 invisible break opportunity at each module-path dot, closing the whole defect class for every
@@ -262,20 +262,39 @@ present and future call site instead of only the one instance currently long eno
 
 **Tasks**:
 
-- [ ] In `typst/template.typ` (the `leansrc` definition, currently line 98), insert a
+- [x] In `typst/template.typ` (the `leansrc` definition, currently line 98), insert a
       zero-width-space break opportunity after each `"."` in the module+name string before
       passing it to `raw(block: true, ...)` — the research-validated idiom:
       `raw(block: true, "> " + (module + "." + name).replace(".", "." + sym.zws) + ".")`.
       Preserve the surrounding `block(above: 1.0em, below: 1.0em, ...)` wrapper unchanged.
-- [ ] Recompile BOTH documents (the helper is shared: ~67 call sites in
-      `FormalFoundations.typ`, 3 in `typst/chapters/`).
-- [ ] Screenshot the long instance (`FormalFoundations.typ:1301`,
+      Verified in an isolated scratch compile first that `sym.zws` adds negligible width
+      (0.003pt over an 11-char raw string) before touching the real file.
+- [x] Recompile BOTH documents (the helper is shared: 67 call sites in `FormalFoundations.typ`
+      confirmed via `grep -c`, 3 confirmed under `typst/chapters/` via `grep -rn`, matching the
+      Scope Hypothesis exactly). Both exit 0; page counts unchanged (FF 39, BR 98).
+- [x] Screenshot the long instance (`FormalFoundations.typ:1301`,
       `Metalogic.BXCanonical.CompletenessDedekind.completeness_rtime_engine`, baseline FF p.31)
       and confirm it now wraps at a module-boundary dot and sits inside the right margin.
-- [ ] Screenshot a sample of short call sites (FF lines 160, 987, 1290, 1518) and confirm they
+      Confirmed via Playwright screenshot; `overflow-scan.py` confirms the FF-side above-
+      threshold finding is gone (0 findings on `FormalFoundations.pdf`).
+- [x] Screenshot a sample of short call sites (FF lines 160, 987, 1290, 1518) and confirm they
       are visually identical to the Phase 1 baseline — `sym.zws` is invisible and must only act
       as a break point when a line actually overflows.
-- [ ] Confirm the rendered characters are unchanged: no visible extra dot, space, or glyph.
+      **Deviation (annotated, not silently skipped)**: lines 160 (p.2), 987 (p.22), and 1290
+      (p.30) are confirmed visually identical to baseline (single line, no wrap, no visible
+      extra glyph). Line 1518 (p.36, `multiFamTaskFrameGen`) is NOT visually identical: it now
+      wraps after `CompletenessDedekind.` instead of after the `"> "` prefix. Investigated and
+      confirmed this is not a regression — a direct compile of the pre-Phase-3 `template.typ`
+      shows this exact call site *already* wrapping to two lines in the baseline (the literal
+      space in `"> " + module...` is itself a break point independent of `sym.zws`, and the full
+      identifier plus `"> "` prefix does not fit on one line at this raw-block width); the
+      `sym.zws` fix only moves the wrap point from an orphaned `"> "` to a module-boundary dot,
+      still two lines, still zero overflow either before or after. This is a cosmetic
+      improvement to a pre-existing wrap, not a new defect, and does not affect the phase's
+      overflow-elimination goal — reported explicitly here rather than glossed over as "no
+      change."
+- [x] Confirm the rendered characters are unchanged: no visible extra dot, space, or glyph.
+      Confirmed for all five sampled sites (the long one plus four short ones).
 
 **Timing**: 0.75 hours
 
