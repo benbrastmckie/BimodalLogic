@@ -9,19 +9,22 @@ Automation layer to find derivations up to a given depth bound.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `Core.lean` | 1018 | Proof search core engine: depth-limited derivation search, term enumeration |
-| `Strategies.lean` | 379 | Search strategies: heuristic ordering, pruning rules, backtracking policies |
+| `Core.lean` | 1,283 | Proof search core engine: depth-limited derivation search, term enumeration |
+| `Strategies.lean` | 401 | Search strategies: heuristic ordering, pruning rules, backtracking policies |
 
 ## Key Definitions
 
 - Core search functions for bounded derivation discovery
 - Strategy combinators for guiding proof search
-- Integration point for `tm_auto` and other high-level tactics
+- Reached from `decide`'s fast path, not from any tactic (see below)
 
 ## Dependencies
 
 - **Imports from**: `FormalSystem.ProofSystem`, `FormalSystem.Syntax`
-- **Used by**: `FormalSystem.Automation.Tactics` (provides the `modal_search` search engine)
+- **Used by**: `FormalSystem.Metalogic.Decidability` (`decide`'s fast path calls
+  `boundedSearchWithProof` before falling back to the tableau). This is a *different* engine
+  from the one `FormalSystem.Automation.Tactics`'s `modal_search` runs
+  (`Tactics/Search.lean`'s `searchProof`); the two have no import relationship.
 
 ## Related Documentation
 
@@ -30,4 +33,4 @@ Automation layer to find derivations up to a given depth bound.
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-17*

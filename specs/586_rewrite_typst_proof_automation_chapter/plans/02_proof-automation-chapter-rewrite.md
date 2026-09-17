@@ -244,7 +244,7 @@ whitelist cleanup, and no new Check 1 candidates fail. Confirm by running
 
 ---
 
-### Phase 3: Widened retired-tactic prose outside the chapter [NOT STARTED]
+### Phase 3: Widened retired-tactic prose outside the chapter [COMPLETED]
 
 **Goal**: No live-tree file outside `docs/` and `Boneyard/` describes a retired tactic or file as
 present, and the ProofSearch README stops claiming it powers `modal_search`.

@@ -81,7 +81,7 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `TraceExporterMain.lean` | 265 | CLI executable: reads S-expression formulas and streams JSONL `ProofCertificate`s to stdout |
 | `TruthNormAttr.lean` | 57 | Declares the `truth_norm` and `swap_norm` simp sets used by the truth layer's characterization lemmas |
 | `ProofSearch/` | — | Proof search engine: bounded derivation search (Core.lean, Strategies.lean) |
-| `Tactics/` | — | Tactic elaborators: `apply_axiom`, `modal_t`, `tm_auto` (Commands.lean, Helpers.lean) |
+| `Tactics/` | — | Tactic elaborators: `modal_search`, `apply_axiom`, `modal_t`, `assumption_search`, `deduction`, `undischarge`, `propDecide` (Commands.lean, UserTactics.lean, Deduction.lean, Meta.lean, PropDecide.lean, Search.lean) |
 <!-- END GENERATED -->
 
 ## Proof Automation Components
@@ -132,9 +132,9 @@ ContrastiveGeneratorMain  ProofStepExtractor                       DataExport (J
 example : ⊢ (Formula.box p).imp p := by
   apply_axiom  -- Finds and applies Axiom.modal_t
 
--- Comprehensive automation with Aesop
+-- Bounded proof search: the single proof-search entry point
 example : ⊢ (□p → p) := by
-  tm_auto  -- Uses Aesop with TMLogic rule set
+  modal_search  -- Default depth 10, visitLimit 1000
 ```
 
 ```bash
@@ -154,4 +154,4 @@ lake exe benchmark_oracle -- --input formulas.jsonl --output results.jsonl
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-17*

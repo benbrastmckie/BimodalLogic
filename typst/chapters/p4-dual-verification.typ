@@ -33,7 +33,7 @@ In this repository, the lean-verified instance of this architecture is the decis
 The dual-verification loop for a candidate formula $phi.alt$ has a single entry point and two exits.
 
 + *Pose.* Formulate the conjecture as a `Formula` term -- say the P1 pattern $square.stroked p arrow.r triangle.stroked.t p$ or its converse $triangle.stroked.t p arrow.r square.stroked p$.
-+ *Decide.* Run `decide` (or, inside a proof, attempt `tm_auto`/`modal_search`). The procedure tries the fast paths first -- direct axiom match, bounded proof search -- and falls back to the tableau.
++ *Decide.* Run `decide` (or, inside a proof, attempt `modal_search`). The procedure tries the fast paths first -- direct axiom match, bounded proof search -- and falls back to the tableau.
 + *Exit valid.* The result carries a `DerivationTree` proof term. Lean's kernel re-checks the term independently of the search that found it, so acceptance does not depend on trusting the decision procedure -- this is the content of `decide_sound`.
 + *Exit invalid.* The result carries a `SimpleCountermodel` naming the atom assignment that breaks the formula, extracted from an open saturated tableau branch. The countermodel is a checkable artifact in its own right: evaluating the formula under the reported assignment reproduces the failure.
 
