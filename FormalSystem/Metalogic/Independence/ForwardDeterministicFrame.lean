@@ -263,13 +263,13 @@ is *not* concluded: nothing about `y < x`, and `F^N`'s own two possible worlds
 `τ ≡ 0` and `σ(n) = max(0, −n)` agree at `0` while differing at every negative time.
 -/
 theorem states_eq_of_forwardDeterministic {F : TaskFrame} (hD : F.ForwardDeterministic)
-    {τ σ : PartialHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal) {x : F.Duration}
-    (h : SameStateAt τ σ x) {y : F.Duration} (hxy : x ≤ y) :
-    τ.states y (hτ y) = σ.states y (hσ y) := by
-  have hτr := τ.respects_task x y (hτ x) (hτ y)
-  have hσr := σ.respects_task x y (hσ x) (hσ y)
-  rw [h (hτ x) (hσ x)] at hτr
-  exact hD (σ.states x (hσ x)) (y - x) (sub_nonneg.mpr hxy) hτr hσr
+    {τ σ : WorldHistory F} {x : F.Duration}
+    (h : τ.state x = σ.state x) {y : F.Duration} (hxy : x ≤ y) :
+    τ.state y = σ.state y := by
+  have hτr := τ.val.respects_task x y (τ.property x) (τ.property y)
+  have hσr := σ.val.respects_task x y (σ.property x) (σ.property y)
+  rw [WorldHistory.states_eq_state, h] at hτr
+  exact hD (σ.state x) (y - x) (sub_nonneg.mpr hxy) hτr hσr
 
 /--
 **`sent:det` is valid over `F^N` at every state-local instance.**
@@ -297,20 +297,17 @@ strictly stronger than that report's, which is stated at sentence letters)
 -/
 theorem fn_sentDet_stateLocal (φ : StarFormula) (hφ : φ.StateLocal) :
     FN.StarValidOn (sentDet φ) := by
-  refine TaskFrame.StarValidOn.of_forall_total ?_
-  intro M τ hτ x v
+  intro M τ x v
   rw [sentDet_unfold]
   intro y hy
   rw [settledDisj_iff, update_two_apply_two]
   by_cases hp : StarTruthAt M τ y (Function.update (Function.update v 1 x) 2 y) φ
-  · refine Or.inr fun σ hσ hsame => ?_
-    refine (isStateLocal_of_stateLocal hφ FN M τ σ hτ hσ y _ ?_).mp hp
-    exact fun _ _ =>
-      states_eq_of_forwardDeterministic fn_forwardDeterministic hτ hσ hsame (le_of_lt hy)
-  · refine Or.inl fun σ hσ hsame hcon => hp ?_
-    refine (isStateLocal_of_stateLocal hφ FN M τ σ hτ hσ y _ ?_).mpr hcon
-    exact fun _ _ =>
-      states_eq_of_forwardDeterministic fn_forwardDeterministic hτ hσ hsame (le_of_lt hy)
+  · refine Or.inr fun σ hsame => ?_
+    exact (isStateLocal_of_stateLocal hφ FN M τ σ y _
+      (states_eq_of_forwardDeterministic fn_forwardDeterministic hsame (le_of_lt hy))).mp hp
+  · refine Or.inl fun σ hsame hcon => hp ?_
+    exact (isStateLocal_of_stateLocal hφ FN M τ σ y _
+      (states_eq_of_forwardDeterministic fn_forwardDeterministic hsame (le_of_lt hy))).mpr hcon
 
 /--
 **The separation.** `sent:det` is valid over `F^N` at every state-local instance, while `F^N` is
@@ -364,8 +361,8 @@ the whole state-local fragment, and `fn_sentDet_bounds` records the widened stat
 with the refutation, so the two-sided bound is one object rather than two paragraphs. -/
 
 /-- The constant possible world `τ ≡ 0` of `F^N` — the absorbing state, held forever. -/
-def fnZeroHist : PartialHistory FN :=
-  PartialHistory.ofTotal FN (fun _ => 0) <| by
+def fnZeroHist : WorldHistory FN :=
+  WorldHistory.ofTotal FN (fun _ => 0) <| by
     intro s t
     refine (fn_taskRel_iff _ _ _).mpr ?_
     show fnRel 0 (t - s) 0
@@ -376,13 +373,11 @@ def fnZeroHist : PartialHistory FN :=
     · have h' : (0 : ℤ) ≤ s - t := sub_nonneg.mpr h
       right; push_cast; omega
 
-theorem fnZeroHist_isTotal : fnZeroHist.IsTotal := PartialHistory.ofTotal_isTotal _ _ _
-
 /-- The ramp possible world `σ(n) = max(0, −n)` of `F^N`: it descends to the absorbing state by
 time `0` and stays there. It agrees with `fnZeroHist` at `0` and differs at every negative
 time — the pair the PossibleWorlds determinism-axiom-correspondence report, §3.3, exhibits. -/
-def fnRampHist : PartialHistory FN :=
-  PartialHistory.ofTotal FN (fun n => (-n).toNat) <| by
+def fnRampHist : WorldHistory FN :=
+  WorldHistory.ofTotal FN (fun n => (-n).toNat) <| by
     intro s t
     refine (fn_taskRel_iff _ _ _).mpr ?_
     show fnRel ((-s).toNat) (t - s) ((-t).toNat)
@@ -393,12 +388,9 @@ def fnRampHist : PartialHistory FN :=
     · have h' : (0 : ℤ) ≤ s - t := sub_nonneg.mpr h
       right; rw [Int.toNat_eq_max, Int.toNat_eq_max]; omega
 
-theorem fnRampHist_isTotal : fnRampHist.IsTotal := PartialHistory.ofTotal_isTotal _ _ _
-
 /-- The two possible worlds agree at time `0`: both are at the absorbing state there. -/
-theorem fn_hists_sameStateAt_zero :
-    SameStateAt fnZeroHist fnRampHist (0 : ℤ) := by
-  intro _ _
+theorem fn_hists_state_eq_zero :
+    fnZeroHist.state (0 : ℤ) = fnRampHist.state (0 : ℤ) := by
   show (0 : ℕ) = ((-(0 : ℤ)).toNat)
   norm_num
 
@@ -421,14 +413,13 @@ forward-deterministic case degrades.
 -/
 theorem fn_refutes_sentDet_somePast (p : Atom) :
     ¬ FN.StarValidOn (sentDet (StarFormula.somePast (StarFormula.atom p))) := by
-  refine not_starValidOn_sentDet fnModel fnZeroHist fnZeroHist_isTotal
+  refine not_starValidOn_sentDet fnModel fnZeroHist
     (0 : ℤ) (1 : ℤ) (by norm_num) fnRampHist fnZeroHist
-    fnRampHist_isTotal fnZeroHist_isTotal fn_hists_sameStateAt_zero
-    (SameStateAt.refl _ _) ?_ ?_
+    fn_hists_state_eq_zero rfl ?_ ?_
   · -- the ramp world was at state `3` at time `−3`, so `P p` holds for it at time `1`
     intro v
     rw [StarTruth.somePast_iff]
-    refine ⟨(-3 : ℤ), ?_, ⟨trivial, ?_⟩⟩
+    refine ⟨(-3 : ℤ), ?_, ?_⟩
     · show (-3 : ℤ) < (1 : ℤ)
       omega
     · show ((-(-3 : ℤ)).toNat) = 3
@@ -436,7 +427,7 @@ theorem fn_refutes_sentDet_somePast (p : Atom) :
   · -- the constant world is never at state `3`, so `P p` fails for it at every time
     intro v h
     rw [StarTruth.somePast_iff] at h
-    obtain ⟨_, _, _, hval⟩ := h
+    obtain ⟨_, _, hval⟩ := h
     have h3 : (0 : ℕ) = 3 := hval
     omega
 

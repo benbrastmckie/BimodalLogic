@@ -38,12 +38,12 @@ this file leaves owed; see the section "What the temporal cases still need".
 ## Correction 10 — the carrier has worlds the branch never mentioned, and the model must not
 notice
 
-The total histories of this frame are `regionHistory f w Δ` ranging over **all** of `WorldIndex`,
+The world histories of this frame are `regionHistory f w Δ` ranging over **all** of `WorldIndex`,
 which is `Nat`, and all time offsets. Under `regionFrame`'s task relation — the deterministic
-clock `(w, x) ⇒_d (w, x + d)` — that family is *exactly* the frame's total histories
+clock `(w, x) ⇒_d (w, x + d)` — that family is *exactly* the frame's world histories
 (`isTotal_iff_regionHistory`), because `respects_task` propagates the state at time `0` to every
-other time. So there is no total history outside the family to worry about, and the box clause's
-quantifier over total histories is a quantifier over this family.
+other time. So there is no world history outside the family to worry about, and the box clause's
+quantifier over world histories is a quantifier over this family.
 
 `truthAt_box_iff_base` quantifies over exactly that range, so `T(□φ)` at a label demands `φ` at
 every world of the model, including the cofinitely
@@ -69,8 +69,8 @@ certificate says "no *ordinary* rule applies", and a certified branch may still 
 
 This costs the extracted model nothing: `F ⊤` and `P ⊤` are true at every point of every history
 of any serial frame, and `ℤ` (like `ℚ` and `ℝ`) has no endpoints, so both hold everywhere in
-every region history regardless of what the branch says. Every region history has total domain,
-and by `isTotal_iff_regionHistory` those are all of the frame's total histories, so the argument
+every region history regardless of what the branch says. By `isTotal_iff_regionHistory` the
+region histories are all of the frame's world histories, so the argument
 leaves no history the box clause can reach uncovered. But it is a genuine gap in the certificate,
 and the truth lemma **names** it rather than assuming it away: no lemma below takes
 `T(F ⊤) ∈ b` or `T(P ⊤) ∈ b` as a hypothesis, and none needs to.
@@ -1053,7 +1053,7 @@ theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
       hne
       χ l₀.world (f i)).2 hneg
     (hval.apply (regionFrame WorldIndex (BranchTime b) ℤ) (normModel b ord f)
-      (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i))
+      (regionHistory f l₀.world (0 : ℤ)) (f i))
 
 /--
 **The `ValidZTime` companion.** `ℤ` carries `SuccOrder`, `PredOrder`, `IsSuccArchimedean` and
@@ -1080,9 +1080,9 @@ theorem not_validZTime_of_hasOpen_int (hV : branchOrderValid b ord = true)
       (rayOnly_intPlace hV) (raySplit_intPlace hV) stepped_int hV fc hSat hOpen hTot hBA hCheck hTW
       hne
       χ l₀.world (f i)).2 hneg
-    (ValidIn.apply_total hval (regionFrame WorldIndex (BranchTime b) ℤ)
+    (hval (regionFrame WorldIndex (BranchTime b) ℤ)
       (TaskFrame.isZTime_of_instances _) (normModel b ord f)
-      (regionHistory f l₀.world (0 : ℤ)) (fun _ => trivial) (f i))
+      (regionHistory f l₀.world (0 : ℤ)) (f i))
 
 end IntCarrier
 

@@ -17,8 +17,8 @@ The semantic content the `paste` and `untl_paste` arms of `StarAxiom` consume
 ## What is reused rather than rebuilt
 
 `Semantics/PlusLanguage/PlusPasting.lean` is imported and consumed **read-only**. Its pasting construction —
-`paste`, `paste_isTotal`, `paste_agreeFrom`, `paste_agreeUpTo`, `AgreeFrom`, `AgreeUpTo`,
-`agreeFrom_mono`, `agreeUpTo_mono` — is formula-independent: it splices two total histories at a
+`paste`, `paste_agreeFrom`, `paste_agreeUpTo`, `AgreeFrom`, `AgreeUpTo`,
+`agreeFrom_mono`, `agreeUpTo_mono` — is formula-independent: it splices two histories at a
 time and says nothing about any language. Only the two *congruences* mention formulas, and those
 are what this module re-proves by induction on the L⋆ purity predicates.
 
@@ -77,32 +77,31 @@ quantified inside the motive so the `timeStore` case can recurse at `Function.up
 Paper: `def:BLstar-semantics` -/
 theorem star_truth_congr_agreeFrom (M : TaskModel F) {φ : StarFormula}
     (hφ : StarIsPureFuture φ) :
-    ∀ (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal → ∀ t, AgreeFrom τ σ t →
+    ∀ (τ σ : WorldHistory F) (t : F.Duration), AgreeFrom τ σ t →
       ∀ v : ℕ → F.Duration, (StarTruthAt M τ t v φ ↔ StarTruthAt M σ t v φ) := by
   induction hφ with
   | atom p =>
-    intro τ σ hτ hσ t hag v
-    constructor
-    · rintro ⟨h1, hv⟩; exact ⟨hσ t, by rw [← hag t le_rfl h1 (hσ t)]; exact hv⟩
-    · rintro ⟨h2, hv⟩; exact ⟨hτ t, by rw [hag t le_rfl (hτ t) h2]; exact hv⟩
+    intro τ σ t hag v
+    show M.valuation _ p ↔ M.valuation _ p
+    rw [hag t le_rfl]
   | bot => intros; exact Iff.rfl
   | imp _ _ ihφ ihψ =>
-    intro τ σ hτ hσ t hag v
-    exact Iff.imp (ihφ τ σ hτ hσ t hag v) (ihψ τ σ hτ hσ t hag v)
+    intro τ σ t hag v
+    exact Iff.imp (ihφ τ σ t hag v) (ihψ τ σ t hag v)
   | box φ => intros; exact Iff.rfl
   | stab φ =>
-    intro τ σ hτ hσ t hag v
-    exact forall_congr' fun ρ => imp_congr_right fun _ =>
-      imp_congr_left (sameStateAt_congr_left (hτ t) (hσ t) (hag t le_rfl _ _))
+    intro τ σ t hag v
+    exact forall_congr' fun ρ => imp_congr_left
+      ⟨fun h => (hag t le_rfl).symm.trans h, fun h => (hag t le_rfl).trans h⟩
   | untl _ _ ihψ ihφ =>
-    intro τ σ hτ hσ t hag v
+    intro τ σ t hag v
     exact exists_congr fun s => and_congr_right fun hts =>
-      and_congr (ihφ τ σ hτ hσ s (agreeFrom_mono hts.le hag) v)
+      and_congr (ihφ τ σ s (agreeFrom_mono hts.le hag) v)
         (forall_congr' fun r => imp_congr_right fun htr => imp_congr_right fun _ =>
-          ihψ τ σ hτ hσ r (agreeFrom_mono htr.le hag) v)
+          ihψ τ σ r (agreeFrom_mono htr.le hag) v)
   | timeStore i _ ih =>
-    intro τ σ hτ hσ t hag v
-    exact ih τ σ hτ hσ t hag (Function.update v i t)
+    intro τ σ t hag v
+    exact ih τ σ t hag (Function.update v i t)
 
 /-- **A pure-past L⋆ formula sees only the history up to `t`** — the temporal mirror of
 `star_truth_congr_agreeFrom`.
@@ -110,39 +109,38 @@ theorem star_truth_congr_agreeFrom (M : TaskModel F) {φ : StarFormula}
 Paper: `def:BLstar-semantics` -/
 theorem star_truth_congr_agreeUpTo (M : TaskModel F) {φ : StarFormula}
     (hφ : StarIsPurePast φ) :
-    ∀ (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal → ∀ t, AgreeUpTo τ σ t →
+    ∀ (τ σ : WorldHistory F) (t : F.Duration), AgreeUpTo τ σ t →
       ∀ v : ℕ → F.Duration, (StarTruthAt M τ t v φ ↔ StarTruthAt M σ t v φ) := by
   induction hφ with
   | atom p =>
-    intro τ σ hτ hσ t hag v
-    constructor
-    · rintro ⟨h1, hv⟩; exact ⟨hσ t, by rw [← hag t le_rfl h1 (hσ t)]; exact hv⟩
-    · rintro ⟨h2, hv⟩; exact ⟨hτ t, by rw [hag t le_rfl (hτ t) h2]; exact hv⟩
+    intro τ σ t hag v
+    show M.valuation _ p ↔ M.valuation _ p
+    rw [hag t le_rfl]
   | bot => intros; exact Iff.rfl
   | imp _ _ ihφ ihψ =>
-    intro τ σ hτ hσ t hag v
-    exact Iff.imp (ihφ τ σ hτ hσ t hag v) (ihψ τ σ hτ hσ t hag v)
+    intro τ σ t hag v
+    exact Iff.imp (ihφ τ σ t hag v) (ihψ τ σ t hag v)
   | box φ => intros; exact Iff.rfl
   | stab φ =>
-    intro τ σ hτ hσ t hag v
-    exact forall_congr' fun ρ => imp_congr_right fun _ =>
-      imp_congr_left (sameStateAt_congr_left (hτ t) (hσ t) (hag t le_rfl _ _))
+    intro τ σ t hag v
+    exact forall_congr' fun ρ => imp_congr_left
+      ⟨fun h => (hag t le_rfl).symm.trans h, fun h => (hag t le_rfl).trans h⟩
   | snce _ _ ihψ ihφ =>
-    intro τ σ hτ hσ t hag v
+    intro τ σ t hag v
     exact exists_congr fun s => and_congr_right fun hst =>
-      and_congr (ihφ τ σ hτ hσ s (agreeUpTo_mono hst.le hag) v)
+      and_congr (ihφ τ σ s (agreeUpTo_mono hst.le hag) v)
         (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun hrt =>
-          ihψ τ σ hτ hσ r (agreeUpTo_mono hrt.le hag) v)
+          ihψ τ σ r (agreeUpTo_mono hrt.le hag) v)
   | timeStore i _ ih =>
-    intro τ σ hτ hσ t hag v
-    exact ih τ σ hτ hσ t hag (Function.update v i t)
+    intro τ σ t hag v
+    exact ih τ σ t hag (Function.update v i t)
 
 /-- **PS (same-time pasting) over `StarFormula`**: `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))` at every point,
 for pure-future `φ⁺` and pure-past `ψ⁻`. The L⋆ counterpart of `Semantics.paste_valid`, and the
 semantic content of `StarAxiom.paste`.
 
 Paper: `possible_worlds.tex`, the PS schema -/
-theorem star_paste_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
+theorem star_paste_valid (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {φ ψ : StarFormula}
     (hφ : StarIsPureFuture φ) (hψ : StarIsPurePast ψ) :
     StarTruthAt M τ t v
@@ -150,25 +148,20 @@ theorem star_paste_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsT
         (.imp (StarFormula.dstab ψ) (StarFormula.dstab (φ.and ψ)))) := by
   intro h1 h2
   rw [StarTruth.dstab_iff] at h1 h2 ⊢
-  obtain ⟨σ, hσ, hτσ, hφσ⟩ := h1
-  obtain ⟨ρ, hρ, hτρ, hψρ⟩ := h2
-  have hsame : SameStateAt ρ σ t := fun a b => (hτρ (hτ t) a).symm.trans (hτσ (hτ t) b)
-  refine ⟨paste ρ σ hρ hσ t hsame, paste_isTotal ρ σ hρ hσ t hsame, ?_, ?_⟩
-  · intro a b
-    rw [hτρ a (hρ t)]
-    exact (paste_agreeUpTo ρ σ hρ hσ t hsame t le_rfl b (hρ t)).symm
-  · rw [StarTruth.and_iff]
-    exact ⟨(star_truth_congr_agreeFrom M hφ _ _ (paste_isTotal ρ σ hρ hσ t hsame) hσ t
-              (paste_agreeFrom ρ σ hρ hσ t hsame) v).mpr hφσ,
-           (star_truth_congr_agreeUpTo M hψ _ _ (paste_isTotal ρ σ hρ hσ t hsame) hρ t
-              (paste_agreeUpTo ρ σ hρ hσ t hsame) v).mpr hψρ⟩
+  obtain ⟨σ, hτσ, hφσ⟩ := h1
+  obtain ⟨ρ, hτρ, hψρ⟩ := h2
+  have hsame : ρ.state t = σ.state t := hτρ.symm.trans hτσ
+  refine ⟨paste ρ σ t hsame, hτρ.trans (paste_agreeUpTo ρ σ t hsame t le_rfl).symm, ?_⟩
+  rw [StarTruth.and_iff]
+  exact ⟨(star_truth_congr_agreeFrom M hφ _ _ t (paste_agreeFrom ρ σ t hsame) v).mpr hφσ,
+    (star_truth_congr_agreeUpTo M hψ _ _ t (paste_agreeUpTo ρ σ t hsame) v).mpr hψρ⟩
 
 /-- **US (future pasting) over `StarFormula`**: `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)` at every point, for
 pure-past `α⁻` and pure-future `φ⁺`. The L⋆ counterpart of `Semantics.untl_dstab_valid`, and the
 semantic content of `StarAxiom.untl_paste`.
 
 Paper: `possible_worlds.tex`, the US schema -/
-theorem star_untl_paste_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
+theorem star_untl_paste_valid (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {α φ : StarFormula}
     (hα : StarIsPurePast α) (hφ : StarIsPureFuture φ) :
     StarTruthAt M τ t v
@@ -177,16 +170,15 @@ theorem star_untl_paste_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : �
   rw [StarTruth.untl_iff] at h
   obtain ⟨y, hty, hy, hguard⟩ := h
   rw [StarTruth.dstab_iff] at hy
-  obtain ⟨ρ, hρ, hτρ, hφρ⟩ := hy
+  obtain ⟨ρ, hτρ, hφρ⟩ := hy
   rw [StarTruth.dstab_iff]
-  refine ⟨paste τ ρ hτ hρ y hτρ, paste_isTotal τ ρ hτ hρ y hτρ,
-    fun a b => (paste_agreeUpTo τ ρ hτ hρ y hτρ t hty.le b a).symm, ?_⟩
+  refine ⟨paste τ ρ y hτρ, (paste_agreeUpTo τ ρ y hτρ t hty.le).symm, ?_⟩
   rw [StarTruth.untl_iff]
-  refine ⟨y, hty, (star_truth_congr_agreeFrom M hφ _ _ (paste_isTotal τ ρ hτ hρ y hτρ) hρ y
-    (paste_agreeFrom τ ρ hτ hρ y hτρ) v).mpr hφρ, ?_⟩
+  refine ⟨y, hty,
+    (star_truth_congr_agreeFrom M hφ _ _ y (paste_agreeFrom τ ρ y hτρ) v).mpr hφρ, ?_⟩
   intro r htr hry
-  exact (star_truth_congr_agreeUpTo M hα _ τ (paste_isTotal τ ρ hτ hρ y hτρ) hτ r
-    (agreeUpTo_mono hry.le (paste_agreeUpTo τ ρ hτ hρ y hτρ)) v).mpr (hguard r htr hry)
+  exact (star_truth_congr_agreeUpTo M hα _ τ r
+    (agreeUpTo_mono hry.le (paste_agreeUpTo τ ρ y hτρ)) v).mpr (hguard r htr hry)
 
 /-- **PS with the conjuncts exchanged** over `StarFormula`: `⟐ψ⁻ → (⟐φ⁺ → ⟐(ψ⁻ ∧ φ⁺))` for
 pure-past `ψ⁻` and pure-future `φ⁺`. This is the temporal dual of `star_paste_valid` — the
@@ -194,7 +186,7 @@ pure-past `ψ⁻` and pure-future `φ⁺`. This is the temporal dual of `star_pa
 congruences applied in the other order. The L⁺ counterpart is `Semantics.paste_valid'`.
 
 Paper: `possible_worlds.tex`, the PS schema -/
-theorem star_paste_valid' (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
+theorem star_paste_valid' (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {ψ φ : StarFormula}
     (hψ : StarIsPurePast ψ) (hφ : StarIsPureFuture φ) :
     StarTruthAt M τ t v
@@ -202,18 +194,13 @@ theorem star_paste_valid' (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.Is
         (.imp (StarFormula.dstab φ) (StarFormula.dstab (ψ.and φ)))) := by
   intro h2 h1
   rw [StarTruth.dstab_iff] at h1 h2 ⊢
-  obtain ⟨σ, hσ, hτσ, hφσ⟩ := h1
-  obtain ⟨ρ, hρ, hτρ, hψρ⟩ := h2
-  have hsame : SameStateAt ρ σ t := fun a b => (hτρ (hτ t) a).symm.trans (hτσ (hτ t) b)
-  refine ⟨paste ρ σ hρ hσ t hsame, paste_isTotal ρ σ hρ hσ t hsame, ?_, ?_⟩
-  · intro a b
-    rw [hτρ a (hρ t)]
-    exact (paste_agreeUpTo ρ σ hρ hσ t hsame t le_rfl b (hρ t)).symm
-  · rw [StarTruth.and_iff]
-    exact ⟨(star_truth_congr_agreeUpTo M hψ _ _ (paste_isTotal ρ σ hρ hσ t hsame) hρ t
-              (paste_agreeUpTo ρ σ hρ hσ t hsame) v).mpr hψρ,
-           (star_truth_congr_agreeFrom M hφ _ _ (paste_isTotal ρ σ hρ hσ t hsame) hσ t
-              (paste_agreeFrom ρ σ hρ hσ t hsame) v).mpr hφσ⟩
+  obtain ⟨σ, hτσ, hφσ⟩ := h1
+  obtain ⟨ρ, hτρ, hψρ⟩ := h2
+  have hsame : ρ.state t = σ.state t := hτρ.symm.trans hτσ
+  refine ⟨paste ρ σ t hsame, hτρ.trans (paste_agreeUpTo ρ σ t hsame t le_rfl).symm, ?_⟩
+  rw [StarTruth.and_iff]
+  exact ⟨(star_truth_congr_agreeUpTo M hψ _ _ t (paste_agreeUpTo ρ σ t hsame) v).mpr hψρ,
+    (star_truth_congr_agreeFrom M hφ _ _ t (paste_agreeFrom ρ σ t hsame) v).mpr hφσ⟩
 
 /-- **SS (past pasting) over `StarFormula`**: `(α⁺ S ⟐φ⁻) → ⟐(α⁺ S φ⁻)` for pure-future `α⁺` and
 pure-past `φ⁻` — the `snce` mirror of US, and the temporal dual of the `untl_paste` schema. The
@@ -221,7 +208,7 @@ witness `ρ` at a past time `y < t` is pasted up to `y` with `τ` after `y`. The
 `Semantics.snce_dstab_valid`.
 
 Paper: `possible_worlds.tex`, the US schema (past mirror) -/
-theorem star_snce_paste_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal)
+theorem star_snce_paste_valid (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {α φ : StarFormula}
     (hα : StarIsPureFuture α) (hφ : StarIsPurePast φ) :
     StarTruthAt M τ t v
@@ -230,16 +217,15 @@ theorem star_snce_paste_valid (M : TaskModel F) (τ : PartialHistory F) (hτ : �
   rw [StarTruth.snce_iff] at h
   obtain ⟨y, hyt, hy, hguard⟩ := h
   rw [StarTruth.dstab_iff] at hy
-  obtain ⟨ρ, hρ, hτρ, hφρ⟩ := hy
-  have hsame : SameStateAt ρ τ y := hτρ.symm
+  obtain ⟨ρ, hτρ, hφρ⟩ := hy
+  have hsame : ρ.state y = τ.state y := hτρ.symm
   rw [StarTruth.dstab_iff]
-  refine ⟨paste ρ τ hρ hτ y hsame, paste_isTotal ρ τ hρ hτ y hsame,
-    fun a b => (paste_agreeFrom ρ τ hρ hτ y hsame t hyt.le b a).symm, ?_⟩
+  refine ⟨paste ρ τ y hsame, (paste_agreeFrom ρ τ y hsame t hyt.le).symm, ?_⟩
   rw [StarTruth.snce_iff]
-  refine ⟨y, hyt, (star_truth_congr_agreeUpTo M hφ _ _ (paste_isTotal ρ τ hρ hτ y hsame) hρ y
-    (paste_agreeUpTo ρ τ hρ hτ y hsame) v).mpr hφρ, ?_⟩
+  refine ⟨y, hyt,
+    (star_truth_congr_agreeUpTo M hφ _ _ y (paste_agreeUpTo ρ τ y hsame) v).mpr hφρ, ?_⟩
   intro r hyr hrt
-  exact (star_truth_congr_agreeFrom M hα _ τ (paste_isTotal ρ τ hρ hτ y hsame) hτ r
-    (agreeFrom_mono hyr.le (paste_agreeFrom ρ τ hρ hτ y hsame)) v).mpr (hguard r hyr hrt)
+  exact (star_truth_congr_agreeFrom M hα _ τ r
+    (agreeFrom_mono hyr.le (paste_agreeFrom ρ τ y hsame)) v).mpr (hguard r hyr hrt)
 
 end FormalSystem.Metalogic.Conservativity

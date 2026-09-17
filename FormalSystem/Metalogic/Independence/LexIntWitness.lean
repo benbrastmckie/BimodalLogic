@@ -129,15 +129,15 @@ theorem lexIntStaticFrame_mem_mod :
   · cases ax with
     | prior_UZ ψ =>
         intro M τ x h
-        exact (static_untl_iff_disc (D := ℤ ×ₗ ℤ) hdisc Bool M τ.val τ.property ψ.neg ψ x).mpr
-          ((static_someFuture_iff (D := ℤ ×ₗ ℤ) Bool M τ.val τ.property ψ x).mp h)
+        exact (static_untl_iff_disc (D := ℤ ×ₗ ℤ) hdisc Bool M τ ψ.neg ψ x).mpr
+          ((static_someFuture_iff (D := ℤ ×ₗ ℤ) Bool M τ ψ x).mp h)
     | prior_SZ ψ =>
         intro M τ x h
-        exact (static_snce_iff_disc (D := ℤ ×ₗ ℤ) hpred Bool M τ.val τ.property ψ.neg ψ x).mpr
-          ((static_somePast_iff (D := ℤ ×ₗ ℤ) Bool M τ.val τ.property ψ x).mp h)
+        exact (static_snce_iff_disc (D := ℤ ×ₗ ℤ) hpred Bool M τ ψ.neg ψ x).mpr
+          ((static_somePast_iff (D := ℤ ×ₗ ℤ) Bool M τ ψ x).mp h)
     | z1 ψ =>
         intro M τ x
-        exact static_validates_z1 (D := ℤ ×ₗ ℤ) Bool M τ.val τ.property ψ x
+        exact static_validates_z1 (D := ℤ ×ₗ ℤ) Bool M τ ψ x
     | _ => first
         | exact absurd (show FrameClass.Dense ≤ FrameClass.ZTime from hax) (by decide)
         | exact absurd (FrameClass.base_le FrameClass.Base) hb
@@ -164,7 +164,7 @@ theorem validOn_nextTop_of_mem_mod_discrete {F : TaskFrame}
   intro M τ x
   obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := F.Duration.carrier)
   have hstep := hF ⟨Axiom.prior_UZ Formula.top, by decide⟩ M τ x
-  have hF_top : TruthAt M τ.val x (Formula.someFuture Formula.top) := by
+  have hF_top : TruthAt M τ x (Formula.someFuture Formula.top) := by
     rw [Truth.some_future_iff]
     exact ⟨x + p, lt_add_of_pos_right x hp, fun h => h⟩
   obtain ⟨s, hxs, _, hg⟩ := hstep hF_top

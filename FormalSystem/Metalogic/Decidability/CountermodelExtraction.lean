@@ -38,7 +38,7 @@ the original formula, providing a witness for invalidity.
 **Not here.** This file extracts countermodel *data* and proves the `sat_*` Hintikka conditions;
 it does not prove a truth lemma, and no longer contains a definition purporting to evaluate truth
 on the extracted structure. The truth lemma is `Verified/Bridge/IntTruth.lean`'s `branchTruthAt`,
-stated against the real `TaskModel`/`PartialHistory` semantics over a carrier, with
+stated against the real `TaskModel`/`WorldHistory` semantics over a carrier, with
 `Verified/Bridge/DenseTruth.lean` carrying it to the dense carriers.
 
 See "Branch Truth Lemma — Retired", below, for what used to be claimed here, why it was

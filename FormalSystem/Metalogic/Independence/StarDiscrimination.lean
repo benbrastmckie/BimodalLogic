@@ -81,8 +81,8 @@ Its increment over `[s, t]` is `a · (t - s)`, which lies in `[t - s, 2 (t - s)]
 (`Independence/DriftHistories.lean`) at a general rate; no appeal to `thm:extension` or
 `cor:occurrence`, and hence no Zorn.
 -/
-noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : PartialHistory F0 :=
-  PartialHistory.ofTotal F0 (fun t => a * t) <| by
+noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : WorldHistory F0 :=
+  WorldHistory.ofTotal F0 (fun t => a * t) <| by
     intro s t
     refine (f0_taskRel_iff _ _ _).mpr ?_
     show fzeroRel (a * s) (t - s) (a * t)
@@ -93,13 +93,8 @@ noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : PartialH
     · right
       constructor <;> nlinarith
 
-theorem driftLinear_isTotal (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) :
-    (driftLinear a h1 h2).IsTotal :=
-  PartialHistory.ofTotal_isTotal _ _ _
-
-@[simp] theorem driftLinear_states (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) (t : ↑realTemporalOrder)
-    (ht : (driftLinear a h1 h2).domain t) :
-    (driftLinear a h1 h2).states t ht = a * t := rfl
+@[simp] theorem driftLinear_state (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) (t : ↑realTemporalOrder) :
+    (driftLinear a h1 h2).state t = a * t := rfl
 
 /-- The manuscript's valuation: `|p| = [3/2, ∞)`, at every sentence letter. -/
 noncomputable def driftModel : TaskModel F0 where
@@ -127,20 +122,18 @@ theorem fzero_refutes_sentDet (p : Atom) :
   have h1 : (1 : ℝ) ≤ 1 := le_refl _
   have h1' : (1 : ℝ) ≤ 2 := by norm_num
   refine not_starValidOn_sentDet driftModel (driftLinear 2 h2 h2')
-    (driftLinear_isTotal 2 h2 h2') (0 : ↑realTemporalOrder) (1 : ↑realTemporalOrder)
+    (0 : ↑realTemporalOrder) (1 : ↑realTemporalOrder)
     (by norm_num) (driftLinear 2 h2 h2') (driftLinear 1 h1 h1')
-    (driftLinear_isTotal 2 h2 h2') (driftLinear_isTotal 1 h1 h1')
-    (SameStateAt.refl _ _) ?_ ?_ ?_
+    rfl ?_ ?_ ?_
   · -- `τ(0) = 0 = σ(0)`, so `τ ∈ ⟨σ⟩₀`.
-    intro _ _
     show (2 : ℝ) * (0 : ℝ) = (1 : ℝ) * (0 : ℝ)
     ring
   · -- `σ` satisfies `p` at time `1`: `σ(1) = 2 ≥ 3/2`.
-    refine fun _ => ⟨driftLinear_isTotal 2 h2 h2' 1, ?_⟩
+    refine fun _ => ?_
     show (3 / 2 : ℝ) ≤ (2 : ℝ) * (1 : ℝ)
     norm_num
   · -- `τ` fails `p` at time `1`: `τ(1) = 1 < 3/2`.
-    rintro _ ⟨_, hval⟩
+    intro _ hval
     have hval' : (3 / 2 : ℝ) ≤ (1 : ℝ) * (1 : ℝ) := hval
     norm_num at hval'
 

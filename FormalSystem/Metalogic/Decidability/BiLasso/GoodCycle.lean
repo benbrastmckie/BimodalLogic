@@ -165,7 +165,7 @@ theorem snce_propagates_to_start {lab : ℤ → Finset Formula} {st : ℤ → Fi
 The edge relation induced by a datum sequence: `x` steps to `y` when some index carries `x` and
 its successor carries `y`.
 
-`RealizedStep P φ τ hτ` is `SeqStep (datum P φ τ hτ)` **definitionally** (`realizedStep_eq` below),
+`RealizedStep P φ τ` is `SeqStep (datum P φ τ)` **definitionally** (`realizedStep_eq` below),
 so every result proved here about `SeqStep` applies to the realised graph without transport. The
 abstraction is what lets the backward cycle reuse the forward construction verbatim, at the
 reversed sequence `fun u => datum … (-u)`.
@@ -173,8 +173,8 @@ reversed sequence `fun u => datum … (-u)`.
 def SeqStep (d : ℤ → PigeonState P φ) : PigeonState P φ → PigeonState P φ → Prop :=
   fun x y => ∃ u : ℤ, d u = x ∧ d (u + 1) = y
 
-theorem realizedStep_eq {τ : PartialHistory P.toTaskFrame} (hτ : τ.IsTotal) :
-    RealizedStep P φ τ hτ = SeqStep (datum P φ τ hτ) := rfl
+theorem realizedStep_eq {τ : WorldHistory P.toTaskFrame} :
+    RealizedStep P φ τ = SeqStep (datum P φ τ) := rfl
 
 /-- A stretch of the datum sequence is an iterate of its edge relation. -/
 theorem iter_seqStep (d : ℤ → PigeonState P φ) (a : ℤ) (n : ℕ) :
@@ -462,22 +462,22 @@ theorem exists_good_cycle_of_seq (d : ℤ → PigeonState P φ) (ev : Formula �
 (`SmallModel.lean`) — the observation that a *genuine* history discharges its own eventualities
 for free.
 -/
-theorem exists_good_fwd_cycle {τ : PartialHistory P.toTaskFrame} (hτ : τ.IsTotal)
-    (x : PigeonState P φ) (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ datum P φ τ hτ u = x) :
+theorem exists_good_fwd_cycle {τ : WorldHistory P.toTaskFrame}
+    (x : PigeonState P φ) (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ datum P φ τ u = x) :
     ∃ (L : ℕ) (p : ℕ → PigeonState P φ),
       1 ≤ L ∧ L ≤ cycleBound P φ ∧ p 0 = x ∧ p L = x ∧
-      (∀ j, j < L → RealizedStep P φ τ hτ (p j) (p (j + 1))) ∧
+      (∀ j, j < L → RealizedStep P φ τ (p j) (p (j + 1))) ∧
       (∀ g e : Formula, Formula.untl g e ∈ typeOf x →
         ∃ j, j < L ∧ e ∈ typeOf (p (j + 1))) := by
-  have hful : ∀ (u : ℤ) (f e : Formula), f ∈ typeOf (datum P φ τ hτ u) →
-      untlEvent f = some e → ∃ s : ℤ, u < s ∧ e ∈ typeOf (datum P φ τ hτ s) := by
+  have hful : ∀ (u : ℤ) (f e : Formula), f ∈ typeOf (datum P φ τ u) →
+      untlEvent f = some e → ∃ s : ℤ, u < s ∧ e ∈ typeOf (datum P φ τ s) := by
     intro u f e hfm hev
     obtain ⟨g, rfl⟩ := untlEvent_eq_some hev
     rw [datum_type] at hfm
     obtain ⟨s, hs, hes, -⟩ := (typeAt_fulfillingSeq (P := P) (φ := φ) τ).1 u g e hfm
     exact ⟨s, hs, by rwa [datum_type]⟩
   obtain ⟨L, p, h1, h2, h3, h4, h5, h6⟩ :=
-    exists_good_cycle_of_seq (datum P φ τ hτ) untlEvent x hrec hful
+    exists_good_cycle_of_seq (datum P φ τ) untlEvent x hrec hful
   exact ⟨L, p, h1, h2, h3, h4, h5, fun g e hge => h6 _ e hge rfl⟩
 
 /--
@@ -491,15 +491,15 @@ search for `snce` witnesses runs leftward.
 Obtained from `exists_good_cycle_of_seq` at the reversed datum sequence `fun u => datum … (-u)`,
 which is exactly the mirror the plan prescribes.
 -/
-theorem exists_good_bwd_cycle {τ : PartialHistory P.toTaskFrame} (hτ : τ.IsTotal)
-    (x : PigeonState P φ) (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ datum P φ τ hτ (-u) = x) :
+theorem exists_good_bwd_cycle {τ : WorldHistory P.toTaskFrame}
+    (x : PigeonState P φ) (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ datum P φ τ (-u) = x) :
     ∃ (L : ℕ) (q : ℕ → PigeonState P φ),
       1 ≤ L ∧ L ≤ cycleBound P φ ∧ q 0 = x ∧ q L = x ∧
-      (∀ j, j < L → RealizedStep P φ τ hτ (q (j + 1)) (q j)) ∧
+      (∀ j, j < L → RealizedStep P φ τ (q (j + 1)) (q j)) ∧
       (∀ g e : Formula, Formula.snce g e ∈ typeOf x →
         ∃ j, j < L ∧ e ∈ typeOf (q (j + 1))) := by
-  have hful : ∀ (u : ℤ) (f e : Formula), f ∈ typeOf (datum P φ τ hτ (-u)) →
-      snceEvent f = some e → ∃ s : ℤ, u < s ∧ e ∈ typeOf (datum P φ τ hτ (-s)) := by
+  have hful : ∀ (u : ℤ) (f e : Formula), f ∈ typeOf (datum P φ τ (-u)) →
+      snceEvent f = some e → ∃ s : ℤ, u < s ∧ e ∈ typeOf (datum P φ τ (-s)) := by
     intro u f e hfm hev
     obtain ⟨g, rfl⟩ := snceEvent_eq_some hev
     rw [datum_type] at hfm
@@ -508,7 +508,7 @@ theorem exists_good_bwd_cycle {τ : PartialHistory P.toTaskFrame} (hτ : τ.IsTo
     rw [datum_type, show -(-s) = s by omega]
     exact hes
   obtain ⟨L, q, h1, h2, h3, h4, h5, h6⟩ :=
-    exists_good_cycle_of_seq (fun u => datum P φ τ hτ (-u)) snceEvent x hrec hful
+    exists_good_cycle_of_seq (fun u => datum P φ τ (-u)) snceEvent x hrec hful
   refine ⟨L, q, h1, h2, h3, h4, fun j hj => ?_, fun g e hge => h6 _ e hge rfl⟩
   obtain ⟨u, hu1, hu2⟩ := h5 j hj
   simp only at hu1 hu2

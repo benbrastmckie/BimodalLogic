@@ -65,16 +65,14 @@ open PlusTruth
 abbrev NF : TaskFrame := FrameOver.natFrame (D := ℤ)
 
 /-- Any function `ℤ → ℕ` as a total history of `NF`. -/
-def natHist (f : ℤ → ℕ) : PartialHistory NF :=
-  PartialHistory.ofTotal NF f (fun s t => by
+def natHist (f : ℤ → ℕ) : WorldHistory NF :=
+  WorldHistory.ofTotal NF f (fun s t => by
     refine (FrameOver.natFrame_rel_iff _ _ _).mpr ?_
     by_cases h : t - s = 0
     · right
       have : t = s := sub_eq_zero.mp h
       subst this; rfl
     · left; exact h)
-
-theorem natHist_isTotal (f : ℤ → ℕ) : (natHist f).IsTotal := PartialHistory.ofTotal_isTotal _ _ _
 
 /-- Every atom is true at world state `0` and nowhere else. -/
 def natModel : TaskModel NF where
@@ -84,33 +82,30 @@ def natModel : TaskModel NF where
 theorem refute_stab_box (p : Atom) :
     ¬ PlusValid (.imp (.stab (.atom p)) (.box (.stab (.atom p)))) := by
   intro h
-  have hv := h.apply NF natModel (natHist fun _ => 0) (natHist_isTotal _) 0
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
   have h1 : PlusTruthAt natModel (natHist fun _ => 0) 0 (.stab (.atom p)) := by
-    intro σ hσ hs
-    exact ⟨hσ 0, (hs trivial (hσ 0)).symm⟩
-  have h2 := hv h1 (natHist fun _ => 1) (natHist_isTotal _) (natHist fun _ => 1)
-    (natHist_isTotal _) (fun _ _ => rfl)
+    intro σ hs
+    exact hs.symm
+  have h2 := hv h1 (natHist fun _ => 1) (natHist fun _ => 1) rfl
   rw [atom_iff] at h2
-  obtain ⟨_, h4⟩ := h2
-  have h5 : (1 : ℕ) = 0 := h4
+  have h5 : (1 : ℕ) = 0 := h2
   exact one_ne_zero h5
 
 /-- `G⊡p → ⊡Gp` is refuted: the converse of GS fails even for atoms. -/
 theorem refute_allFuture_stab (p : Atom) :
     ¬ PlusValid (.imp (allFuture (.stab (.atom p))) (.stab (allFuture (.atom p)))) := by
   intro h
-  have hv := h.apply NF natModel (natHist fun _ => 0) (natHist_isTotal _) 0
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
   have hA : PlusTruthAt natModel (natHist fun _ => 0) 0 (allFuture (.stab (.atom p))) := by
     rw [allFuture_iff]
-    intro y _ ρ hρ hs
-    exact ⟨hρ y, (hs trivial (hρ y)).symm⟩
-  have hB := hv hA (natHist fun s => if s = 1 then 1 else 0) (natHist_isTotal _)
-    (fun _ _ => by show (0 : ℕ) = (if (0 : ℤ) = 1 then 1 else 0); simp)
+    intro y _ ρ hs
+    exact hs.symm
+  have hB := hv hA (natHist fun s => if s = 1 then 1 else 0)
+    (by show (0 : ℕ) = (if (0 : ℤ) = 1 then 1 else 0); simp)
   rw [allFuture_iff] at hB
   have hat := hB (1 : ℤ) (one_pos : (0 : ℤ) < 1)
   rw [atom_iff] at hat
-  obtain ⟨_, v⟩ := hat
-  have v' : (if (1 : ℤ) = 1 then (1 : ℕ) else 0) = 0 := v
+  have v' : (if (1 : ℤ) = 1 then (1 : ℕ) else 0) = 0 := hat
   simp at v'
 
 /-- `⊡GPp → G⊡Pp` is refuted: GS genuinely needs its pure-future side condition. -/
@@ -118,25 +113,23 @@ theorem refute_stab_allFuture_past (p : Atom) :
     ¬ PlusValid (.imp (.stab (allFuture (somePast (.atom p))))
         (allFuture (.stab (somePast (.atom p))))) := by
   intro h
-  have hv := h.apply NF natModel (natHist fun _ => 0) (natHist_isTotal _) 0
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
   have hA : PlusTruthAt natModel (natHist fun _ => 0) 0
       (.stab (allFuture (somePast (.atom p)))) := by
-    intro σ hσ hs
+    intro σ hs
     rw [allFuture_iff]
     intro y hy
     rw [somePast_iff]
-    exact ⟨0, hy, hσ 0, (hs trivial (hσ 0)).symm⟩
+    exact ⟨0, hy, hs.symm⟩
   have hB := hv hA
   rw [allFuture_iff] at hB
   have hC := hB (1 : ℤ) (one_pos : (0 : ℤ) < 1) (natHist fun s => if s = 1 then 0 else 1)
-    (natHist_isTotal _)
-    (fun _ _ => by show (0 : ℕ) = (if (1 : ℤ) = 1 then 0 else 1); simp)
+    (by show (0 : ℕ) = (if (1 : ℤ) = 1 then 0 else 1); simp)
   rw [somePast_iff] at hC
   obtain ⟨s, hs1, hat⟩ := hC
   rw [atom_iff] at hat
-  obtain ⟨_, v⟩ := hat
   have hs1' : (s : ℤ) < 1 := hs1
-  have v' : (if (s : ℤ) = 1 then (0 : ℕ) else 1) = 0 := v
+  have v' : (if (s : ℤ) = 1 then (0 : ℕ) else 1) = 0 := hat
   rw [if_neg (fun h => by rw [h] at hs1'; exact lt_irrefl _ hs1')] at v'
   exact one_ne_zero v'
 
@@ -169,17 +162,16 @@ Two things the refutation depends on, recorded because both are easy to lose:
 theorem refute_determined (p : Atom) :
     ¬ PlusValid (.imp (someFuture (.atom p)) (.stab (someFuture (.atom p)))) := by
   intro h
-  have hv := h.apply NF natModel (natHist fun _ => 0) (natHist_isTotal _) 0
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
   have hA : PlusTruthAt natModel (natHist fun _ => 0) 0 (someFuture (.atom p)) := by
-    rw [someFuture_iff]; exact ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), trivial, (rfl : (0 : ℕ) = 0)⟩
-  have hB := hv hA (natHist fun s => if s ≤ 0 then 0 else 1) (natHist_isTotal _)
-    (fun _ _ => by show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp)
+    rw [someFuture_iff]; exact ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), (rfl : (0 : ℕ) = 0)⟩
+  have hB := hv hA (natHist fun s => if s ≤ 0 then 0 else 1)
+    (by show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp)
   rw [someFuture_iff] at hB
   obtain ⟨s, hs, hat⟩ := hB
   rw [atom_iff] at hat
-  obtain ⟨_, v⟩ := hat
   have hs' : (0 : ℤ) < s := hs
-  have v' : (if (s : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := v
+  have v' : (if (s : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := hat
   rw [if_neg (not_le.mpr hs')] at v'
   exact one_ne_zero v'
 
@@ -189,20 +181,19 @@ the single tense/modal interaction axiom of T×W / Ockhamist logic (Kamp's AK12 
 theorem refute_somePast_stab (p : Atom) :
     ¬ PlusValid (.imp (somePast (.stab (.atom p))) (.stab (somePast (.atom p)))) := by
   intro h
-  have hv := h.apply NF natModel (natHist fun _ => 0) (natHist_isTotal _) 0
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
   have hA : PlusTruthAt natModel (natHist fun _ => 0) 0 (somePast (.stab (.atom p))) := by
     rw [somePast_iff]
     refine ⟨(-1 : ℤ), (by decide : (-1 : ℤ) < 0), ?_⟩
-    intro ρ hρ hs
-    exact ⟨hρ (-1), (hs trivial (hρ (-1))).symm⟩
-  have hB := hv hA (natHist fun s => if s < 0 then 1 else 0) (natHist_isTotal _)
-    (fun _ _ => by show (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0); simp)
+    intro ρ hs
+    exact hs.symm
+  have hB := hv hA (natHist fun s => if s < 0 then 1 else 0)
+    (by show (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0); simp)
   rw [somePast_iff] at hB
   obtain ⟨s, hs, hat⟩ := hB
   rw [atom_iff] at hat
-  obtain ⟨_, v⟩ := hat
   have hs' : (s : ℤ) < 0 := hs
-  have v' : (if (s : ℤ) < 0 then (1 : ℕ) else 0) = 0 := v
+  have v' : (if (s : ℤ) < 0 then (1 : ℕ) else 0) = 0 := hat
   rw [if_pos hs'] at v'
   exact one_ne_zero v'
 

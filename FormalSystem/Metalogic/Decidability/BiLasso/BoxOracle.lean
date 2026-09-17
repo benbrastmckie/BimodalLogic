@@ -156,7 +156,7 @@ theorem mem_boundedAnnots_congr_oracle {bx bx' : Formula → Bool} {n : ℕ} {A 
 /-! ## Negation, semantically -/
 
 /-- Truth of a negation is failure of truth. -/
-theorem truth_neg_iff (M : TaskModel P.toTaskFrame) (σ : PartialHistory P.toTaskFrame) (t : ℤ)
+theorem truth_neg_iff (M : TaskModel P.toTaskFrame) (σ : WorldHistory P.toTaskFrame) (t : ℤ)
     (χ : Formula) : TruthAt M σ t (Formula.neg χ) ↔ ¬ TruthAt M σ t χ := by
   rw [Formula.neg, Truth.imp_iff]
   exact ⟨fun h hχ => Truth.bot_false (h hχ), fun h hχ => absurd hχ h⟩
@@ -199,14 +199,14 @@ Proved by induction on a bound for the modal depth. At each formula the argument
 The `←` direction of the specification is where the **time shift** is spent, and it is not
 optional: `BoxOracleSound` is anchored at time `0`, while the windowed enumeration finds its
 refuting witness at a position `i`. `timeShift_preserves_truth` together with
-`PartialHistory.isTotal_timeShift` moves the witness to `0`, which is exactly the obligation the
+`WorldHistory.timeShift` moves the witness to `0`, which is exactly the obligation the
 windowed shape of `exists_annot_of_truth` pushes downstream.
 -/
 theorem boxOracle_sound (P : IntPresentation) : BoxOracleSound P (boxOracle P) := by
   classical
   -- the classical validity oracle: globally sound by construction, proof-local
   set bxs : Formula → Bool :=
-    fun ψ => decide (∀ σ : PartialHistory P.toTaskFrame, σ.IsTotal → TruthAt P.toModel σ 0 ψ)
+    fun ψ => decide (∀ σ : WorldHistory P.toTaskFrame, TruthAt P.toModel σ 0 ψ)
     with hbxsdef
   have hbxs : BoxOracleSound P bxs := by
     intro ψ
@@ -216,7 +216,7 @@ theorem boxOracle_sound (P : IntPresentation) : BoxOracleSound P (boxOracle P) :
       (∀ ψ : Formula, Formula.modalDepth ψ < Formula.modalDepth χ →
         (boxOracle P ψ = true ↔ bxs ψ = true)) →
       (boxOracle P χ = true ↔
-        ∀ σ : PartialHistory P.toTaskFrame, σ.IsTotal → TruthAt P.toModel σ 0 χ) := by
+        ∀ σ : WorldHistory P.toTaskFrame, TruthAt P.toModel σ 0 χ) := by
     intro χ IH
     -- the stratified oracle agrees with the classical one wherever the enumeration reads it
     have hagree : ∀ ψ : Formula, Formula.box ψ ∈ subformulaClosure (Formula.neg χ) →
@@ -232,30 +232,29 @@ theorem boxOracle_sound (P : IntPresentation) : BoxOracleSound P (boxOracle P) :
     rw [boxOracle]
     simp only [Bool.not_eq_true', decide_eq_false_iff_not]
     constructor
-    · -- no enumerated annotation carries `¬χ`, so no total history refutes `χ` at `0`
-      intro hno σ hσ
+    · -- no enumerated annotation carries `¬χ`, so no world history refutes `χ` at `0`
+      intro hno σ
       by_contra hcon
       have htr : TruthAt P.toModel σ 0 (Formula.neg χ) :=
         (truth_neg_iff P.toModel σ 0 χ).mpr hcon
-      obtain ⟨A, hA, i, hi, -, hlab⟩ := exists_annot_of_truth hbxs σ hσ 0 htr
+      obtain ⟨A, hA, i, hi, -, hlab⟩ := exists_annot_of_truth hbxs σ 0 htr
       exact hno ⟨A, mem_boundedAnnots_congr_oracle hagree' hA, i, hi, hlab⟩
-    · -- conversely, an enumerated annotation carrying `¬χ` yields a refuting total history
+    · -- conversely, an enumerated annotation carrying `¬χ` yields a refuting world history
       rintro hall ⟨A, hA, i, hi, hlab⟩
       obtain ⟨hloc, hful, -, -, -⟩ :=
         boundedAnnots_sound (mem_boundedAnnots_congr_oracle hagree hA)
-      have htr : TruthAt P.toModel A.lasso.toWorldHistory.val i (Formula.neg χ) :=
+      have htr : TruthAt P.toModel A.lasso.toWorldHistory i (Formula.neg χ) :=
         (truth_along_annot_at hbxs A hloc hful i (Formula.neg χ)
           (self_mem_subformulaClosure _)).mpr hlab
-      have hshift := (TimeShift.timeShift_preserves_truth P.toModel A.lasso.toWorldHistory.val 0 i
+      have hshift := (TimeShift.timeShift_preserves_truth P.toModel A.lasso.toWorldHistory 0 i
         (Formula.neg χ))
       rw [sub_zero] at hshift
-      have hgood := hall (PartialHistory.timeShift A.lasso.toWorldHistory.val i)
-        (PartialHistory.isTotal_timeShift A.lasso.toWorldHistory.property i)
+      have hgood := hall (A.lasso.toWorldHistory.timeShift i)
       exact (truth_neg_iff P.toModel _ 0 χ).mp (hshift.mpr htr) hgood
   -- induct on a bound for the modal depth
   have key : ∀ (k : ℕ) (χ : Formula), Formula.modalDepth χ ≤ k →
       (boxOracle P χ = true ↔
-        ∀ σ : PartialHistory P.toTaskFrame, σ.IsTotal → TruthAt P.toModel σ 0 χ) := by
+        ∀ σ : WorldHistory P.toTaskFrame, TruthAt P.toModel σ 0 χ) := by
     intro k
     induction k with
     | zero => exact fun χ hχ => main χ (fun ψ hψ => absurd hψ (by omega))

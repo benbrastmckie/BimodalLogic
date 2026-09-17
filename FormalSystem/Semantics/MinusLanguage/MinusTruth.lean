@@ -36,24 +36,19 @@ theorem stated against `MinusTruthAt` a claim about L⁻ rather than a restateme
 
 | Clause | Paper | This module |
 |---|---|---|
-| `pᵢ` | `τ(x)` lies in the extension of `pᵢ` | `∃ (ht : τ.domain t), M.valuation (τ.states t ht) p` |
+| `pᵢ` | `τ(x)` lies in the extension of `pᵢ` | `M.valuation (τ.state t) p` |
 | `⊥` | `M,τ,x ⊭ ⊥` | `False` |
 | `→` | `M,τ,x ⊭ φ` or `M,τ,x ⊨ ψ` | `MinusTruthAt … φ → MinusTruthAt … ψ` |
-| `□` | `M,σ,x ⊨ φ` for all `σ ∈ H_F` | `∀ σ, σ.IsTotal → MinusTruthAt M σ t φ` |
+| `□` | `M,σ,x ⊨ φ` for all `σ ∈ H_F` | `∀ σ : WorldHistory F, MinusTruthAt M σ t φ` |
 | `H` (`\Past`) | `M,τ,y ⊨ φ` for all `y ∈ D` with `y < x` | `∀ s, s < t → MinusTruthAt M τ s φ` |
 | `G` (`\Future`) | `M,τ,y ⊨ φ` for all `y ∈ D` with `x < y` | `∀ s, t < s → MinusTruthAt M τ s φ` |
 
 The paper's `H`/`G` clauses are **strict** (`y < x`, `x < y`), and so are these. The box clause's
-quantifier ranges over `H_F`, the frame's **total** histories, which `PartialHistory.IsTotal` is the
-predicate form of — identical to `Semantics/Truth.lean`'s box clause, with no admissible-history
+quantifier ranges over `H_F`, the frame's world histories `WorldHistory F` — identical to `Semantics/Truth.lean`'s box clause, with no admissible-history
 parameter and no shift-closure side condition.
 
-**Atom clause — a knowingly inherited divergence.** `def:BL-semantics`'s atom clause carries no
-domain check, but the clause here carries the same `∃ (ht : τ.domain t), …` conjunct that
-`TruthAt` does. That is Decision A of `docs/architecture/total-history-validity-decisions.md`: under
-totality the conjunct is vacuously satisfiable at every `t`, so the two readings agree on `H_F`,
-and keeping it is exactly what makes the atom case of the bridge `Iff.rfl`. It is inherited on
-purpose; do not "correct" it away.
+**Atom clause.** `M.valuation (τ.state t) p` is `def:BL-semantics`'s atom clause on the nose, and
+character for character `TruthAt`'s, which is what makes the atom case of the bridge `Iff.rfl`.
 
 ## Module Placement
 
@@ -97,19 +92,19 @@ variable {F : TaskFrame}
 Truth of a base-language formula at a model-history-time triple.
 
 Six clauses, one per `MinusFormula` constructor, transcribing `def:BL-semantics`. See the module
-docstring for the clause-by-clause correspondence with the paper, for why the atom clause carries
-a domain conjunct the paper's does not, and for why this is a native recursion rather than
+docstring for the clause-by-clause correspondence with the paper, and for why this is a native
+recursion rather than
 `TruthAt ∘ tr`.
 
 The `box` clause recurses at a different history and the temporal clauses at a different time;
 the equation compiler handles both exactly as it already does for `TruthAt`, so no termination
 annotation is required.
 -/
-def MinusTruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) : MinusFormula → Prop
-  | .atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
+def MinusTruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) : MinusFormula → Prop
+  | .atom p => M.valuation (τ.state t) p
   | .bot => False
   | .imp φ ψ => MinusTruthAt M τ t φ → MinusTruthAt M τ t ψ
-  | .box φ => ∀ (σ : PartialHistory F), σ.IsTotal → MinusTruthAt M σ t φ
+  | .box φ => ∀ σ : WorldHistory F, MinusTruthAt M σ t φ
   | .allPast φ => ∀ s : F.Duration, s < t → MinusTruthAt M τ s φ
   | .allFuture φ => ∀ s : F.Duration, t < s → MinusTruthAt M τ s φ
 
@@ -141,7 +136,7 @@ instance : TenseClauses MinusFormula where
 
 namespace MinusTruth
 
-variable {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+variable {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
 
 /-! ### The primitive clauses -/
 
@@ -152,12 +147,12 @@ theorem bot_false : ¬ MinusTruthAt M τ t MinusFormula.bot := id
 theorem imp_iff (φ ψ : MinusFormula) :
     MinusTruthAt M τ t (φ.imp ψ) ↔ (MinusTruthAt M τ t φ → MinusTruthAt M τ t ψ) := Iff.rfl
 
-/-- Truth of `□φ`: `φ` holds at every **total** history at the current time.
+/-- Truth of `□φ`: `φ` holds at every world history at the current time.
 
-`def:BL-semantics`'s box clause, "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F", with `H_F`
-membership read off `PartialHistory.IsTotal`. -/
+`def:BL-semantics`'s box clause, "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F", with `H_F` the
+type `WorldHistory F`. -/
 theorem box_iff (φ : MinusFormula) :
-    MinusTruthAt M τ t φ.box ↔ ∀ (σ : PartialHistory F), σ.IsTotal → MinusTruthAt M σ t φ := Iff.rfl
+    MinusTruthAt M τ t φ.box ↔ ∀ σ : WorldHistory F, MinusTruthAt M σ t φ := Iff.rfl
 
 /-- Truth of `Hφ` (universal past): `φ` holds at every **strictly** past time. -/
 theorem past_iff (φ : MinusFormula) :
@@ -195,9 +190,9 @@ are the interface a countermodel evaluation actually calls: the paper states its
 witnesses with the derived existentials `P`, `F` and `◇`, so having them once here saves
 re-deriving the classical step at every evaluation site. -/
 
-/-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* total history at the current time. -/
+/-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* world history at the current time. -/
 @[simp] theorem diamond_iff (φ : MinusFormula) :
-    MinusTruthAt M τ t φ.diamond ↔ ∃ σ : PartialHistory F, σ.IsTotal ∧ MinusTruthAt M σ t φ :=
+    MinusTruthAt M τ t φ.diamond ↔ ∃ σ : WorldHistory F, MinusTruthAt M σ t φ :=
   TruthClauses.diamond_iff (L := MinusFormula) M τ t PUnit.unit φ
 
 /-- Truth of `Pφ` (`¬H¬φ`): `φ` held at *some* strictly past time. -/

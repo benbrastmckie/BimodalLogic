@@ -27,7 +27,7 @@ deterministic in the sense of `def:deterministic`. Its partner `F°` — the *dr
 - `f1_taskRel_iff` — the task relation is `u = w + x`, on the nose
 - `f1_deterministic` — `F1` satisfies `TaskFrame.Deterministic`
 - `f1_total_eq_orbit`, `f1_states_eq`, `f1_states_eq_of_states_eq` — the **world-set
-  characterization**: the total histories of `F¹` are exactly the translations `τ(t) = τ(0) + t`
+  characterization**: the world histories of `F¹` are exactly the translations `τ(t) = τ(0) + t`
 - `f1_determined` — *Determined* is valid on `F¹`, by Phase 1's collapse
 
 ## Why `ShiftSet` and not `translationFrame`
@@ -45,9 +45,9 @@ synthesis and unification work at. There are two distinct symptoms:
    `HAdd ℝ ℝ ?m` synthesis. This one *is* repairable: type the variables at `↑realTemporalOrder` instead
    of at `ℝ`, since `realTemporalOrder` is `@[reducible]` and `↑realTemporalOrder` does reduce.
 2. **At the history level**, the world-set characterization
-   `τ.states r _ = τ.states 0 _ + r` fails with a failed
+   `τ.state r = τ.state 0 + r` fails with a failed
    `HAdd (translationFrame realTemporalOrder).toTaskFrame.WorldState realTemporalOrder.carrier ?m` synthesis,
-   because `τ.states` *returns* a value in the unreduced `WorldState`. This one is **not**
+   because `τ.state` *returns* a value in the unreduced `WorldState`. This one is **not**
    repairable by a type ascription or by a `@[reducible]` alias: the barrier sits inside
    `translationFrame`'s own body, and neither reaches it.
 
@@ -140,38 +140,36 @@ theorem f1_deterministic : F1.Deterministic :=
   TaskFrame.fib_subsingleton_of_functional (f := fun w d => w + d) f1_taskRel_iff
 
 /--
-**The world-set characterization of F¹**, from `ShiftSet.total_eq_orbit`: every total history of
+**The world-set characterization of F¹**, from `ShiftSet.total_eq_orbit`: every world history of
 `F¹` *is* the translation orbit through its own state at time `0`.
 
 This is the statement that `cor:no-characterization`'s `F¹` half consumes, and it is exactly the
 statement that fails to elaborate on the `translationFrame` route (module docstring, symptom 2).
 -/
-theorem f1_total_eq_orbit (τ : PartialHistory F1) (hτ : τ.IsTotal) :
-    τ = oneShift.hist (τ.states 0 (hτ 0)) :=
-  oneShift.total_eq_orbit τ hτ
+theorem f1_total_eq_orbit (τ : WorldHistory F1) :
+    τ = oneShift.hist (τ.state 0) :=
+  oneShift.total_eq_orbit τ
 
-/-- The pointwise form: a total history of `F¹` is `t ↦ τ(0) + t`. -/
-theorem f1_states_eq (τ : PartialHistory F1) (hτ : τ.IsTotal) (r : ↑realTemporalOrder) :
-    τ.states r (hτ r) = τ.states 0 (hτ 0) + r := by
-  have h := (f1_taskRel_iff _ _ _).mp (τ.respects_task 0 r (hτ 0) (hτ r))
+/-- The pointwise form: a world history of `F¹` is `t ↦ τ(0) + t`. -/
+theorem f1_states_eq (τ : WorldHistory F1) (r : ↑realTemporalOrder) :
+    τ.state r = τ.state 0 + r := by
+  have h := (f1_taskRel_iff _ _ _).mp (τ.val.respects_task 0 r (τ.property 0) (τ.property r))
   rw [sub_zero] at h
   exact h
 
-/-- The two-point form: a total history of `F¹` moves by exactly the elapsed duration. -/
-theorem f1_states_sub (τ : PartialHistory F1) (hτ : τ.IsTotal) (s r : ↑realTemporalOrder) :
-    τ.states r (hτ r) = τ.states s (hτ s) + (r - s) := by
-  exact (f1_taskRel_iff _ _ _).mp (τ.respects_task s r (hτ s) (hτ r))
+/-- The two-point form: a world history of `F¹` moves by exactly the elapsed duration. -/
+theorem f1_states_sub (τ : WorldHistory F1) (s r : ↑realTemporalOrder) :
+    τ.state r = τ.state s + (r - s) := by
+  exact (f1_taskRel_iff _ _ _).mp (τ.val.respects_task s r (τ.property s) (τ.property r))
 
 /--
-Two total histories of `F¹` agreeing at one time are **equal** — the `⟨τ⟩_x = {τ}` form of
+Two world histories of `F¹` agreeing at one time are **equal** — the `⟨τ⟩_x = {τ}` form of
 `lem:deterministic-singleton` at this frame, obtained from the pointwise bridge plus
-`ShiftSet.wh_ext`.
+`WorldHistory.ext_state`.
 -/
-theorem f1_eq_of_states_eq {τ σ : PartialHistory F1} (hτ : τ.IsTotal) (hσ : σ.IsTotal)
-    {t : ↑realTemporalOrder} (h : SameStateAt τ σ t) : τ = σ := by
-  refine ShiftSet.wh_ext (funext fun z => propext ⟨fun _ => hσ z, fun _ => hτ z⟩) ?_
-  intro r _ _
-  exact states_eq_of_deterministic f1_deterministic hτ hσ h r
+theorem f1_eq_of_states_eq {τ σ : WorldHistory F1}
+    {t : ↑realTemporalOrder} (h : τ.state t = σ.state t) : τ = σ :=
+  WorldHistory.ext_state fun r => states_eq_of_deterministic f1_deterministic h r
 
 /--
 **Deliverable (a) at F¹**, as a smoke test of Phase 1 against a concrete frame: *Determined*

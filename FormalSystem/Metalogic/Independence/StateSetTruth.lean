@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.Independence.OrderTransfer
 # `satSet` and the state-set bridge — truth depends on the world state alone
 
 The one real proof obligation behind `cor:no-characterization`. Over a frame satisfying (H1) and
-(H2) (`Independence/OrderTransfer.lean`) the truth of an L⁺ formula at a total history and a time
+(H2) (`Independence/OrderTransfer.lean`) the truth of an L⁺ formula at a world history and a time
 depends **only on the world state of evaluation** — not on which history passes through it, and
 not on the time.
 
@@ -34,7 +34,7 @@ membership in it.
 
 Every clause but two is the obvious one. The two worth pausing on:
 
-* **`box`.** `PlusTruthAt`'s `□` clause quantifies over all total histories at the *same* time,
+* **`box`.** `PlusTruthAt`'s `□` clause quantifies over all world histories at the *same* time,
   and under (H2) the states those histories occupy at that time exhaust `W`. So `□φ` is true
   everywhere or nowhere, according as `satSet φ` is everything or not. That is written here as
   `{_w | ∀ v, v ∈ satSet V φ}` — a set whose defining condition ignores its own argument. This
@@ -53,7 +53,7 @@ Every clause but two is the obvious one. The two worth pausing on:
 
 `generalizing` would not suffice — the `box` case needs the induction hypothesis at a *different*
 history than the one the goal mentions, and the temporal cases need it at a different time. So
-the statement proved is `∀ φ, ∀ τ hτ t, …`, with `τ` and `t` bound inside. This is the
+the statement proved is `∀ φ, ∀ τ t, …`, with `τ` and `t` bound inside. This is the
 `Independence/` house style; see that directory's README.
 
 ## References
@@ -119,7 +119,7 @@ end Clauses
 variable {F : TaskFrame} [LinearOrder F.WorldState]
 
 /--
-**The state-set bridge.** Over a frame satisfying (H1) and (H2), an L⁺ formula is true at a total
+**The state-set bridge.** Over a frame satisfying (H1) and (H2), an L⁺ formula is true at a world
 history and a time exactly when the world state occupied there lies in the formula's state set.
 
 By induction on `PlusFormula`, with the history and the time universally quantified inside the
@@ -128,75 +128,71 @@ induction (module docstring). Every constructor has a case: `atom`, `bot`, `imp`
 -/
 theorem plusTruthAt_iff_mem_satSet (h1 : OrderFlow F) (h2 : StateOccurs F)
     (M : TaskModel F) (φ : PlusFormula) :
-    ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
-      PlusTruthAt M τ t φ ↔ τ.states t (hτ t) ∈ satSet M.valuation φ := by
+    ∀ (τ : WorldHistory F) (t : F.Duration),
+      PlusTruthAt M τ t φ ↔ τ.state t ∈ satSet M.valuation φ := by
   induction φ with
   | atom p =>
-    intro τ hτ t
+    intro τ t
     rw [mem_satSet_atom]
-    -- Eliminated by `rintro`, not by `Exists.choose`: the latter would drag `Classical.choice`
-    -- into the axiom profile that `Independence/DeterminismUndefinable.lean` pins.
-    constructor
-    · rintro ⟨_, hv⟩; exact hv
-    · intro hv; exact ⟨hτ t, hv⟩
-  | bot => intro τ hτ t; exact Iff.rfl
+    exact Iff.rfl
+  | bot => intro τ t; exact Iff.rfl
   | imp φ ψ ihφ ihψ =>
-    intro τ hτ t
+    intro τ t
     rw [mem_satSet_imp]
-    exact imp_congr (ihφ τ hτ t) (ihψ τ hτ t)
+    exact imp_congr (ihφ τ t) (ihψ τ t)
   | box φ ih =>
-    intro τ hτ t
+    intro τ t
     rw [mem_satSet_box]
     constructor
     · intro h v
-      obtain ⟨σ, hσ, hst⟩ := h2 v t
-      have hv := (ih σ hσ t).mp (h σ hσ)
+      obtain ⟨σ, hst⟩ := h2 v t
+      have hv := (ih σ t).mp (h σ)
       rwa [hst] at hv
-    · intro h σ hσ
-      exact (ih σ hσ t).mpr (h _)
+    · intro h σ
+      exact (ih σ t).mpr (h _)
   | untl ψ φ ihψ ihφ =>
-    intro τ hτ t
+    intro τ t
     rw [mem_satSet_untl]
     constructor
     · rintro ⟨s, hts, hφ, hψ⟩
-      refine ⟨τ.states s (hτ s), h1.strictMono τ hτ hts, (ihφ τ hτ s).mp hφ, ?_⟩
+      refine ⟨τ.state s, h1.strictMono τ hts, (ihφ τ s).mp hφ, ?_⟩
       intro u hu1 hu2
-      obtain ⟨c, hc1, hc2, hcu⟩ := h1.between τ hτ hu1 hu2
-      have hc := (ihψ τ hτ c).mp (hψ c hc1 hc2)
+      obtain ⟨c, hc1, hc2, hcu⟩ := h1.between τ hu1 hu2
+      have hc := (ihψ τ c).mp (hψ c hc1 hc2)
       rwa [hcu] at hc
     · rintro ⟨v, hlt, hv, hu⟩
-      obtain ⟨s, hts, hsv⟩ := h1.hits_future τ hτ hlt
-      refine ⟨s, hts, (ihφ τ hτ s).mpr (by rw [hsv]; exact hv), ?_⟩
+      obtain ⟨s, hts, hsv⟩ := h1.hits_future τ hlt
+      refine ⟨s, hts, (ihφ τ s).mpr (by rw [hsv]; exact hv), ?_⟩
       intro r hr1 hr2
-      refine (ihψ τ hτ r).mpr (hu _ (h1.strictMono τ hτ hr1) ?_)
-      have hrs := h1.strictMono τ hτ hr2
+      refine (ihψ τ r).mpr (hu _ (h1.strictMono τ hr1) ?_)
+      have hrs := h1.strictMono τ hr2
       rwa [hsv] at hrs
   | snce ψ φ ihψ ihφ =>
-    intro τ hτ t
+    intro τ t
     rw [mem_satSet_snce]
     constructor
     · rintro ⟨s, hst, hφ, hψ⟩
-      refine ⟨τ.states s (hτ s), h1.strictMono τ hτ hst, (ihφ τ hτ s).mp hφ, ?_⟩
+      refine ⟨τ.state s, h1.strictMono τ hst, (ihφ τ s).mp hφ, ?_⟩
       intro u hu1 hu2
-      obtain ⟨c, hc1, hc2, hcu⟩ := h1.between_past τ hτ hu1 hu2
-      have hc := (ihψ τ hτ c).mp (hψ c hc1 hc2)
+      obtain ⟨c, hc1, hc2, hcu⟩ := h1.between_past τ hu1 hu2
+      have hc := (ihψ τ c).mp (hψ c hc1 hc2)
       rwa [hcu] at hc
     · rintro ⟨v, hlt, hv, hu⟩
-      obtain ⟨s, hst, hsv⟩ := h1.hits_past τ hτ hlt
-      refine ⟨s, hst, (ihφ τ hτ s).mpr (by rw [hsv]; exact hv), ?_⟩
+      obtain ⟨s, hst, hsv⟩ := h1.hits_past τ hlt
+      refine ⟨s, hst, (ihφ τ s).mpr (by rw [hsv]; exact hv), ?_⟩
       intro r hr1 hr2
-      refine (ihψ τ hτ r).mpr (hu _ ?_ (h1.strictMono τ hτ hr2))
-      have hsr := h1.strictMono τ hτ hr1
+      refine (ihψ τ r).mpr (hu _ ?_ (h1.strictMono τ hr2))
+      have hsr := h1.strictMono τ hr1
       rwa [hsv] at hsr
   | stab φ ih =>
-    intro τ hτ t
+    intro τ t
     rw [satSet_stab]
     constructor
     · intro h
-      exact (ih τ hτ t).mp (h τ hτ (SameStateAt.refl τ t))
-    · intro h σ hσ hsame
-      refine (ih σ hσ t).mpr ?_
-      rw [← hsame (hτ t) (hσ t)]
+      exact (ih τ t).mp (h τ rfl)
+    · intro h σ hsame
+      refine (ih σ t).mpr ?_
+      rw [← hsame]
       exact h
 
 /--
@@ -212,11 +208,11 @@ theorem plusValidOn_iff_satSet_univ (h1 : OrderFlow F) (h2 : StateOccurs F) (φ 
   · intro hv V
     ext w
     simp only [Set.mem_univ, iff_true]
-    obtain ⟨τ, hτ, hst⟩ := h2 w 0
-    have h := (plusTruthAt_iff_mem_satSet h1 h2 ⟨V⟩ φ τ hτ 0).mp (hv ⟨V⟩ ⟨τ, hτ⟩ 0)
+    obtain ⟨τ, hst⟩ := h2 w 0
+    have h := (plusTruthAt_iff_mem_satSet h1 h2 ⟨V⟩ φ τ 0).mp (hv ⟨V⟩ τ 0)
     rwa [hst] at h
   · intro h M τ t
-    refine (plusTruthAt_iff_mem_satSet h1 h2 M φ τ.val τ.prop t).mpr ?_
+    refine (plusTruthAt_iff_mem_satSet h1 h2 M φ τ t).mpr ?_
     rw [h M.valuation]
     exact Set.mem_univ _
 

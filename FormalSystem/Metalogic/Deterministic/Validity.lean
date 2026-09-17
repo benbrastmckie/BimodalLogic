@@ -169,47 +169,47 @@ theorem ValidIn.toDet {fc : FrameClass} {φ : Formula} (h : ValidIn fc φ) : Val
 
 /-! ### Binder-shape adapters
 
-The same four adapters `Semantics/Validity.lean` and `Semantics/PlusLanguage/PlusValidity.lean` provide, at
-the two restricted notions, so that no consumer has to unfold `DetSat`. -/
+Introduction and elimination at the restricted notions, splitting the frame-predicate conjunction
+so that no consumer has to unfold `DetSat` or `DeterminedSat`. -/
 
 /-- Introduce `ValidDetIn` from the unbundled shape. -/
-theorem ValidDetIn.of_forall_total {fc : FrameClass} {φ : Formula}
+theorem ValidDetIn.of_forall {fc : FrameClass} {φ : Formula}
     (h : ∀ (F : TaskFrame), fc.Sat F → F.Deterministic → ∀ (M : TaskModel F)
-           (τ : PartialHistory F), τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
+           (τ : WorldHistory F) (t : F.Duration), TruthAt M τ t φ) :
     ValidDetIn fc φ :=
-  ValidOnFrames.of_forall_total fun F hF => h F hF.1 hF.2
+  fun F hF => h F hF.1 hF.2
 
 /-- Eliminate `ValidDetIn` into the unbundled shape. -/
-theorem ValidDetIn.apply_total {fc : FrameClass} {φ : Formula} (h : ValidDetIn fc φ)
+theorem ValidDetIn.apply {fc : FrameClass} {φ : Formula} (h : ValidDetIn fc φ)
     (F : TaskFrame) (hF : fc.Sat F) (hD : F.Deterministic) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
-  ValidOnFrames.apply_total h F ⟨hF, hD⟩ M τ hτ t
+    (τ : WorldHistory F) (t : F.Duration) : TruthAt M τ t φ :=
+  h F ⟨hF, hD⟩ M τ t
 
 /-- Introduce `PlusValidDetIn` from the unbundled shape. -/
-theorem PlusValidDetIn.of_forall_total {fc : FrameClass} {φ : PlusFormula}
+theorem PlusValidDetIn.of_forall {fc : FrameClass} {φ : PlusFormula}
     (h : ∀ (F : TaskFrame), fc.Sat F → F.Deterministic → ∀ (M : TaskModel F)
-           (τ : PartialHistory F), τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
+           (τ : WorldHistory F) (t : F.Duration), PlusTruthAt M τ t φ) :
     PlusValidDetIn fc φ :=
-  PlusValidOnFrames.of_forall_total fun F hF => h F hF.1 hF.2
+  fun F hF => h F hF.1 hF.2
 
 /-- Eliminate `PlusValidDetIn` into the unbundled shape. -/
-theorem PlusValidDetIn.apply_total {fc : FrameClass} {φ : PlusFormula} (h : PlusValidDetIn fc φ)
+theorem PlusValidDetIn.apply {fc : FrameClass} {φ : PlusFormula} (h : PlusValidDetIn fc φ)
     (F : TaskFrame) (hF : fc.Sat F) (hD : F.Deterministic) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
-  PlusValidOnFrames.apply_total h F ⟨hF, hD⟩ M τ hτ t
+    (τ : WorldHistory F) (t : F.Duration) : PlusTruthAt M τ t φ :=
+  h F ⟨hF, hD⟩ M τ t
 
 /-- Introduce `PlusValidDeterminedIn` from the unbundled shape. -/
-theorem PlusValidDeterminedIn.of_forall_total {fc : FrameClass} {φ : PlusFormula}
+theorem PlusValidDeterminedIn.of_forall {fc : FrameClass} {φ : PlusFormula}
     (h : ∀ (F : TaskFrame), fc.Sat F → DeterminedValid F → ∀ (M : TaskModel F)
-           (τ : PartialHistory F), τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
+           (τ : WorldHistory F) (t : F.Duration), PlusTruthAt M τ t φ) :
     PlusValidDeterminedIn fc φ :=
-  PlusValidOnFrames.of_forall_total fun F hF => h F hF.1 hF.2
+  fun F hF => h F hF.1 hF.2
 
 /-- Eliminate `PlusValidDeterminedIn` into the unbundled shape. -/
-theorem PlusValidDeterminedIn.apply_total {fc : FrameClass} {φ : PlusFormula}
+theorem PlusValidDeterminedIn.apply {fc : FrameClass} {φ : PlusFormula}
     (h : PlusValidDeterminedIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (hDV : DeterminedValid F)
-    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     PlusTruthAt M τ t φ :=
-  PlusValidOnFrames.apply_total h F ⟨hF, hDV⟩ M τ hτ t
+  h F ⟨hF, hDV⟩ M τ t
 
 end FormalSystem.Metalogic.Deterministic

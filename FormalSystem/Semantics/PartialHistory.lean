@@ -11,10 +11,10 @@ import FormalSystem.Semantics.TaskFrame
 
 This module defines the one history structure the semantics uses. A *partial history* is a
 task-respecting function on a **nonempty** set of durations; a *world history* is a partial
-history whose domain is **total**; and `WorldHistory` is the set of world histories. Truth,
-validity and every consumer range over `PartialHistory F`, cut down to `H_F` either by an
-`IsTotal` hypothesis or by the `WorldHistory` subtype. Convexity is a predicate
-(`PartialHistory.IsConvex`), not a separate structure.
+history whose domain is **total**; and `WorldHistory F` is the type of world histories — the
+paper's `H_F`. Truth, validity, consequence and satisfiability are evaluated at and quantify over
+`WorldHistory F`; non-total partial histories are objects of the extension machinery only.
+Convexity is a predicate (`PartialHistory.IsConvex`), not a separate structure.
 
 ## Paper Specification Reference
 
@@ -50,12 +50,15 @@ with total domain" pick out exactly the same histories. The Lean definition foll
 |-------|------|
 | partial history | `PartialHistory F` |
 | convex history | `τ : PartialHistory F` with `τ.IsConvex` |
-| world history (possible world) | `τ : PartialHistory F` with `τ.IsTotal`; bundled as `WorldHistory` |
-| `H_F` | `WorldHistory` |
+| world history (possible world) | `τ : WorldHistory F` (a partial history with `τ.IsTotal`) |
+| `τ(x)` at a possible world | `τ.state x` |
+| `H_F` | `WorldHistory F` |
 
-There is deliberately no `ConvexHistory` structure and no `abbrev WorldHistory`: no proof consumes
-convexity as a hypothesis, and `WorldHistory` is already the name of the top tier. The layering decision is
-recorded in `docs/architecture/total-history-validity-decisions.md`, Decision B'.
+There is deliberately no `ConvexHistory` structure: no proof consumes convexity as a hypothesis.
+`WorldHistory` is a `def` (not an `abbrev`) subtype of `PartialHistory`, so `IsTotal` stays the one
+defining predicate. The layering decision is recorded in
+`docs/architecture/total-history-validity-decisions.md`, Decision B', and the bundling of truth
+over `WorldHistory` in Decision A'.
 
 ## Two transcription decisions, both settled and recorded
 
@@ -89,7 +92,7 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 - `PartialHistory.ofLe` — smart constructor from a guarded task-respect proof
 - `PartialHistory.timeShift` — time shift on partial histories
 - `PartialHistory.ofTotal` — the total history of a bare state function
-- `WorldHistory` — the paper's `H_F`, the world histories bundled as a subtype
+- `WorldHistory F` — the paper's `H_F`, with `state`, `ofTotal`, `timeShift` and `ext_state`
 
 ## Main Results
 
@@ -200,7 +203,8 @@ since a total domain is convex (`IsTotal.isConvex`).
 Note that this is `∀ t, τ.domain t` — the domain *is* all of `D` — and is deliberately **not**
 Mathlib's `IsMax` or any order-theoretic maximality predicate. Maximality under the extension
 order appears only as an internal step en route to the Extension Theorem; totality is what
-validity quantifies over. See `docs/architecture/total-history-validity-decisions.md`, Decision A.
+validity quantifies over, through `WorldHistory`. See
+`docs/architecture/total-history-validity-decisions.md`, Decision A'.
 -/
 def IsTotal (τ : PartialHistory F) : Prop := ∀ t : F.Duration, τ.domain t
 
@@ -429,6 +433,18 @@ theorem states_eq_state (τ : WorldHistory F) (t : F.Duration) (h : τ.val.domai
 theorem ext {τ σ : WorldHistory F} (h : τ.val = σ.val) : τ = σ :=
   Subtype.ext h
 
+/--
+**A world history is determined by its states.** Two world histories with the same state at every
+time are equal: both domains are everywhere true, and the dependent state fields then agree
+pointwise by proof irrelevance.
+-/
+theorem ext_state {τ σ : WorldHistory F} (h : ∀ t, τ.state t = σ.state t) : τ = σ := by
+  obtain ⟨⟨d₁, n₁, s₁, r₁⟩, h₁⟩ := τ
+  obtain ⟨⟨d₂, n₂, s₂, r₂⟩, h₂⟩ := σ
+  obtain rfl : d₁ = d₂ := funext fun t => propext ⟨fun _ => h₂ t, fun _ => h₁ t⟩
+  obtain rfl : s₁ = s₂ := funext fun t => funext fun _ => h t
+  rfl
+
 /-- The state of a world history at provably equal times. -/
 theorem state_congr (τ : WorldHistory F) {s t : F.Duration} (h : s = t) :
     τ.state s = τ.state t := by
@@ -450,11 +466,6 @@ theorem ofTotal_state (F : TaskFrame) (f : F.Duration → F.WorldState)
     (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) (t : F.Duration) :
     (ofTotal F f h).state t = f t := rfl
 
-@[simp]
-theorem ofTotal_val (F : TaskFrame) (f : F.Duration → F.WorldState)
-    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) :
-    (ofTotal F f h).val = PartialHistory.ofTotal F f h := rfl
-
 /-- Time shift lifted to world histories, through `PartialHistory.isTotal_timeShift`. -/
 def timeShift (τ : WorldHistory F) (Δ : F.Duration) : WorldHistory F :=
   ⟨τ.val.timeShift Δ, PartialHistory.isTotal_timeShift τ.property Δ⟩
@@ -462,10 +473,6 @@ def timeShift (τ : WorldHistory F) (Δ : F.Duration) : WorldHistory F :=
 @[simp]
 theorem timeShift_state (τ : WorldHistory F) (Δ t : F.Duration) :
     (τ.timeShift Δ).state t = τ.state (t + Δ) := rfl
-
-@[simp]
-theorem timeShift_val (τ : WorldHistory F) (Δ : F.Duration) :
-    (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
 
 end WorldHistory
 

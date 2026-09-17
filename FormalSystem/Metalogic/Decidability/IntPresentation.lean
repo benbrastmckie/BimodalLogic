@@ -140,7 +140,7 @@ The presented frame as a **total-space** value — the fibre, included by the co
 The naming split is deliberate and is the decision this migration had to make before touching the
 BiLasso layer. `toFibre` is the value in `FrameOver intOrder`, which is what the ℤ-fibre API
 (`step`, `ofStep_step`, `IsStepPath`, `mem_HF_iff_adjacent`) is stated over; `toTaskFrame` is its
-image in the total space, which is what `PartialHistory`, `TaskModel` and `TruthAt` take. Of
+image in the total space, which is what `WorldHistory`, `TaskModel` and `TruthAt` take. Of
 the 40 `P.toTaskFrame` occurrences across the 13 BiLasso files, **38 sit in total-space positions**
 and keep their exact spelling — and now reach it through the constructor rather than through the
 transitional `CoeOut`, which is what lets Phase 20 delete that coercion without touching BiLasso.

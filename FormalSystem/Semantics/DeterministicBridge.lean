@@ -36,8 +36,8 @@ than a weakening:
 
 1. `states_eq_of_deterministic` already concludes pointwise state agreement, and gets it for
    free from `respects_task` plus determinism at the (possibly negative) duration `s - t`.
-   History *equality* would additionally need extensionality for `PartialHistory` at a general
-   frame, which this tree does not have and does not need.
+   History *equality* would additionally route through `WorldHistory.ext_state`, which spends
+   `propext` and function extensionality and which no consumer needs.
 2. Pointwise agreement is *weaker as a conclusion* and therefore **stronger as a hypothesis**.
    Taking it on both sides makes the biconditional below strictly stronger than the
    history-equality form would be: the (⇐) direction assumes less, and the (⇒) direction
@@ -96,8 +96,8 @@ See this module's docstring for why the pointwise form is taken on both sides of
 `deterministic_iff_singletonClasses` rather than the paper's history-equality form.
 -/
 def TaskFrame.SingletonClasses (F : TaskFrame) : Prop :=
-  ∀ (τ σ : PartialHistory F) (hτ : τ.IsTotal) (hσ : σ.IsTotal) (x : F.Duration),
-    SameStateAt τ σ x → ∀ y : F.Duration, τ.states y (hτ y) = σ.states y (hσ y)
+  ∀ (τ σ : WorldHistory F) (x : F.Duration),
+    τ.state x = σ.state x → ∀ y : F.Duration, τ.state y = σ.state y
 
 /--
 **(⇒) of `lem:deterministic-singleton`**, restated at the `SingletonClasses` predicate: a
@@ -108,7 +108,7 @@ result — the value of the restatement is that it puts both halves in the same 
 `deterministic_iff_singletonClasses` is a bare `⟨_, _⟩`.
 -/
 theorem singletonClasses_of_deterministic (hD : F.Deterministic) : F.SingletonClasses :=
-  fun _ _ hτ hσ _ h y => states_eq_of_deterministic hD hτ hσ h y
+  fun _ _ _ h y => states_eq_of_deterministic hD h y
 
 /--
 **(⇐) of `lem:deterministic-singleton`** — the half `app:deterministic`'s formalization
@@ -140,7 +140,7 @@ theorem deterministic_of_singletonClasses (h : F.SingletonClasses) : F.Determini
   -- extended to a possible world by `thm:extension`. Its domain `{0, x}` is not convex, which is
   -- why the construction happens at the `PartialHistory` layer.
   have key : ∀ z : F.WorldState, F.TaskRel w x z →
-      ∃ σ : WorldHistory F, σ.val.states 0 (σ.property 0) = w ∧ σ.val.states x (σ.property x) = z := by
+      ∃ σ : WorldHistory F, σ.state 0 = w ∧ σ.state x = z := by
     intro z hz
     have h0x : (if (0 : F.Duration) = x then z else w) = w := if_neg hne0
     have hxx : (if x = x then z else w) = z := if_pos rfl
@@ -160,8 +160,7 @@ theorem deterministic_of_singletonClasses (h : F.SingletonClasses) : F.Determini
     exact ⟨σ, (hext.agree 0 (Or.inl rfl)).trans h0x, (hext.agree x (Or.inr rfl)).trans hxx⟩
   obtain ⟨σ₁, h₁0, h₁x⟩ := key u hu
   obtain ⟨σ₂, h₂0, h₂x⟩ := key v hv
-  have hsame : SameStateAt σ₁.val σ₂.val 0 := fun _ _ => h₁0.trans h₂0.symm
-  have hy := h σ₁.val σ₂.val σ₁.property σ₂.property 0 hsame x
+  have hy := h σ₁ σ₂ 0 (h₁0.trans h₂0.symm) x
   rw [h₁x, h₂x] at hy
   exact hy
 

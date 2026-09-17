@@ -385,7 +385,7 @@ constrains its argument and is not satisfied by an arbitrary `Formula → Bool`.
 -/
 theorem boxOracle_false_not_sound : ¬ BoxOracleSound loopPresentation (fun _ => false) := by
   intro h
-  have htaut := (h (Formula.imp Formula.bot Formula.bot)).mpr (fun _ _ hb => hb)
+  have htaut := (h (Formula.imp Formula.bot Formula.bot)).mpr (fun _ hb => hb)
   simp at htaut
 
 /-! ## The decision instances compute, and they discriminate

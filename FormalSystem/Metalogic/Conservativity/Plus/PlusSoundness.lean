@@ -63,34 +63,28 @@ theorem plus_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : PlusFormul
     have h1 := plus_derivable_valid_and_swap_validIn d1
     have h2 := plus_derivable_valid_and_swap_validIn d2
     constructor
-    · refine PlusValidIn.of_forall_total ?_
-      intro F hF M τ hτ t
-      exact (h1.1.apply_total F hF M τ hτ t) (h2.1.apply_total F hF M τ hτ t)
-    · refine PlusValidIn.of_forall_total ?_
-      intro F hF M τ hτ t
-      exact (h1.2.apply_total F hF M τ hτ t) (h2.2.apply_total F hF M τ hτ t)
+    · intro F hF M τ t
+      exact (h1.1 F hF M τ t) (h2.1 F hF M τ t)
+    · intro F hF M τ t
+      exact (h1.2 F hF M τ t) (h2.2 F hF M τ t)
   | .necessitation psi' d' =>
     have h := plus_derivable_valid_and_swap_validIn d'
     constructor
-    · refine PlusValidIn.of_forall_total ?_
-      intro F hF M τ _ t σ hσ
-      exact h.1.apply_total F hF M σ hσ t
-    · refine PlusValidIn.of_forall_total ?_
-      intro F hF M τ _ t σ hσ
-      exact h.2.apply_total F hF M σ hσ t
+    · intro F hF M τ t σ
+      exact h.1 F hF M σ t
+    · intro F hF M τ t σ
+      exact h.2 F hF M σ t
   | .temporal_necessitation psi' d' =>
     have h := plus_derivable_valid_and_swap_validIn d'
     constructor
-    · refine PlusValidIn.of_forall_total ?_
-      intro F hF M τ hτ t
+    · intro F hF M τ t
       rw [PlusTruth.allFuture_iff]
       intro s _
-      exact h.1.apply_total F hF M τ hτ s
-    · refine PlusValidIn.of_forall_total ?_
-      intro F hF M τ hτ t
+      exact h.1 F hF M τ s
+    · intro F hF M τ t
       rw [swap_temporal_all_future, PlusTruth.allPast_iff]
       intro s _
-      exact h.2.apply_total F hF M τ hτ s
+      exact h.2 F hF M τ s
   | .temporal_duality psi' d' =>
     have h := plus_derivable_valid_and_swap_validIn d'
     refine ⟨h.2, ?_⟩
@@ -116,32 +110,32 @@ theorem plus_soundness_validIn {fc : FrameClass} {φ : PlusFormula}
   h.elim fun d => (plus_derivable_valid_and_swap_validIn d).1
 
 /-- **Soundness of TM⁺ at `fc`**, context form: a derivation of `φ` from `Γ` makes `φ` true at
-every model over a frame satisfying `fc`, every total history and every time at which all of `Γ`
+every model over a frame satisfying `fc`, every world history and every time at which all of `Γ`
 is true. Mirror of `soundness_in`; the `temporal_duality` case defers to the companion
 recursion. -/
 theorem plus_soundness_in {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula)
     (d : PlusDerivationTree fc Γ φ)
     (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, PlusTruthAt M τ t ψ) :
     PlusTruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
-    exact (plusAxiom_validIn h_ax h_fc).apply_total F hF M τ h_mem t
+    exact plusAxiom_validIn h_ax h_fc F hF M τ t
   | assumption Γ' φ' h_in => exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    exact (ih1 τ h_mem t h_ctx) (ih2 τ h_mem t h_ctx)
+    exact (ih1 τ t h_ctx) (ih2 τ t h_ctx)
   | necessitation φ' _ ih =>
-    intro σ h_σ_mem
-    exact ih σ h_σ_mem t (by simp)
+    intro σ
+    exact ih σ t (by simp)
   | temporal_necessitation φ' _ ih =>
     rw [PlusTruth.allFuture_iff]
     intro s _
-    exact ih τ h_mem s (by simp)
+    exact ih τ s (by simp)
   | temporal_duality φ' d' _ih =>
-    exact ((plus_derivable_valid_and_swap_validIn d').2).apply_total F hF M τ h_mem t
+    exact (plus_derivable_valid_and_swap_validIn d').2 F hF M τ t
   | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 /-! ## The four rows -/
 
@@ -153,9 +147,9 @@ theorem plus_soundness_valid {φ : PlusFormula} (h : PlusDerivable FrameClass.Ba
 /-- Soundness of TM⁺ at `.Base` (context form). -/
 theorem plus_soundness_base (Γ : PlusContext) (φ : PlusFormula)
     (d : PlusDerivationTree FrameClass.Base Γ φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, PlusTruthAt M τ t ψ) : PlusTruthAt M τ t φ :=
-  plus_soundness_in Γ φ d F trivial M τ h_mem t h_ctx
+  plus_soundness_in Γ φ d F trivial M τ t h_ctx
 
 /-- Soundness of TM⁺ at `.Dense`. -/
 theorem plus_soundness_dense {φ : PlusFormula} (h : PlusDerivable FrameClass.Dense [] φ) :
@@ -187,7 +181,7 @@ theorem plus_not_derivable_nil_bot :
     ¬ PlusDerivable FrameClass.Base [] PlusFormula.bot := by
   intro h
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
-  exact (plus_soundness_validIn h).apply_total (FrameOver.trivialFrame (D := ℤ)) trivial
-    TaskModel.allFalse τ.val τ.property 0
+  exact plus_soundness_validIn h (FrameOver.trivialFrame (D := ℤ)) trivial
+    TaskModel.allFalse τ 0
 
 end FormalSystem.Metalogic.Conservativity

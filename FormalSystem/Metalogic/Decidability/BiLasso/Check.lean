@@ -23,7 +23,7 @@ adjacency matrix together with a valuation; `check` answers a question about tha
 ### Stated the other way: this layer performs no part of the finite-model step
 
 Its *input* is already a presentation — see `exists_annot_of_truth`
-(`BiLasso/Extraction.lean`), which takes a `PartialHistory P.toTaskFrame` and compresses it. The
+(`BiLasso/Extraction.lean`), which takes a `WorldHistory P.toTaskFrame` and compresses it. The
 whole layer is a **model checker for one given finite graph**: it compresses histories *within* a
 presentation. Producing the presentation in the first place, from an arbitrary countermodel, is a
 different theorem that lives nowhere in this directory. Any account of the decidability of
@@ -81,7 +81,7 @@ pigeonhole that compresses a satisfying history puts the point of interest where
 mid segment lands it. Anchoring at `0` would demand a recurrence of the *type* at the point of
 interest, and
 `phase10-origin-anchoring-obstruction.lean`, in the semantic-FMP evidence set,
-exhibits a total history for which no such recurrence exists — machine-checked, sorry-free, and
+exhibits a world history for which no such recurrence exists — machine-checked, sorry-free, and
 retained as a permanent regression guard against re-anchoring this definition.
 
 **Nothing is weakened.** `SatAtState` is existential in the time in either shape, because the
@@ -113,7 +113,7 @@ speed, is the deliverable.
 
 ## Main Definitions
 
-- `SatAtState` — the specification: `φ` holds at some time of some total history passing through
+- `SatAtState` — the specification: `φ` holds at some time of some world history passing through
   `w`
 - `checkAt` — the decision procedure at an explicit enumeration length
 - `check` — `checkAt` at `bound P φ`
@@ -148,8 +148,8 @@ Note the existential over the time. It is there in *either* shape of `check` —
 specification, not an artefact of the windowed enumeration.
 -/
 def SatAtState (P : IntPresentation) (w : Fin P.card) (φ : Formula) : Prop :=
-  ∃ (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ),
-    τ.states t (hτ t) = w ∧ TruthAt P.toModel τ t φ
+  ∃ (τ : WorldHistory P.toTaskFrame) (t : ℤ),
+    τ.state t = w ∧ TruthAt P.toModel τ t φ
 
 /-! ## The procedure -/
 
@@ -190,7 +190,7 @@ theorem check_eq_checkAt (P : IntPresentation) (w : Fin P.card) (φ : Formula) :
   whose soundness is `boxOracle_sound`.
 - `→` is the landed truth lemma `truth_along_annot_at` at the found position `i`, with
   `boundedAnnots_sound` supplying the `LocalCoherent` and `Fulfilling` hypotheses it needs and
-  `Annot.hist_states` identifying the decoded history's state with the lasso's.
+  `Annot.hist_state` identifying the decoded history's state with the lasso's.
 -/
 theorem check_correct (P : IntPresentation) (w : Fin P.card) (φ : Formula) :
     check P w φ = true ↔ SatAtState P w φ := by
@@ -198,14 +198,14 @@ theorem check_correct (P : IntPresentation) (w : Fin P.card) (φ : Formula) :
   constructor
   · rintro ⟨A, hA, i, -, hst, hlab⟩
     obtain ⟨hloc, hful, -, -, -⟩ := boundedAnnots_sound hA
-    refine ⟨A.hist, A.hist_isTotal, i, ?_, ?_⟩
-    · rw [A.hist_states i (A.hist_isTotal i)]
+    refine ⟨A.hist, i, ?_, ?_⟩
+    · rw [A.hist_state i]
       exact hst
     · exact (truth_along_annot_at (boxOracle_sound P) A hloc hful i φ
         (self_mem_subformulaClosure φ)).mpr hlab
-  · rintro ⟨τ, hτ, t, hst, htr⟩
+  · rintro ⟨τ, t, hst, htr⟩
     obtain ⟨A, hA, i, hi, hunroll, hlab⟩ :=
-      exists_annot_of_truth (boxOracle_sound P) τ hτ t htr
+      exists_annot_of_truth (boxOracle_sound P) τ t htr
     exact ⟨A, hA, i, hi, by rw [hunroll, hst], hlab⟩
 
 /--
@@ -235,7 +235,7 @@ witnessed separately, by `check` elaborating without the `noncomputable` keyword
 theorem check_bot_false (P : IntPresentation) (w : Fin P.card) :
     check P w Formula.bot = false := by
   rcases Bool.eq_false_or_eq_true (check P w Formula.bot) with h | h
-  · obtain ⟨τ, hτ, t, -, htr⟩ := (check_correct P w Formula.bot).mp h
+  · obtain ⟨τ, t, -, htr⟩ := (check_correct P w Formula.bot).mp h
     exact absurd htr Truth.bot_false
   · exact h
 
@@ -244,7 +244,7 @@ theorem check_bot_false (P : IntPresentation) (w : Fin P.card) :
 theorem check_top_true :
     check flipPresentation 0 (Formula.imp Formula.bot Formula.bot) = true := by
   refine (check_correct _ _ _).mpr
-    ⟨flipBiLasso.toWorldHistory.val, flipBiLasso.toWorldHistory.property, 0, ?_, ?_⟩
+    ⟨flipBiLasso.toWorldHistory, 0, ?_, ?_⟩
   · show flipBiLasso.unroll 0 = 0
     decide
   · rw [Truth.imp_iff]

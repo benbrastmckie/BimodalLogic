@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.Deterministic.Validity
 # `⊡`-erasure and the semantic collapse over the deterministic frames
 
 `erasePlus` deletes every occurrence of the stability modal from an L⁺ formula, landing in L.
-Over a **deterministic** frame the deletion is truth-preserving at every total history and time
+Over a **deterministic** frame the deletion is truth-preserving at every world history and time
 (`plusTruthAt_erasePlus_of_deterministic`), so L⁺-validity over the deterministic frames of a
 class reduces to L-validity over the same frames — which is what lets the four TM completeness
 engines be reached from an L⁺ hypothesis (`Metalogic/Deterministic/Completeness.lean`).
@@ -28,13 +28,12 @@ engines be reached from an L⁺ hypothesis (`Metalogic/Deterministic/Completenes
 - `validDetIn_erasePlus_of_plusValidDetIn` and its converse — the validity-level corollary, at
   every frame class
 
-## Why the pointwise lemma is stated at *total* histories
+## Why the pointwise lemma quantifies over histories and times
 
-The `box` clause of `PlusTruthAt` quantifies over the frame's total histories, and the induction
+The `box` clause of `PlusTruthAt` quantifies over the frame's world histories, and the induction
 hypothesis is needed there at a **different** history; the `untl`/`snce` clauses need it at a
 different time on the *same* history. So the statement has to be universally quantified over
-total histories and times, and the totality binder cannot be dropped: 536's collapse
-`stab_iff_of_deterministic` consumes `τ.IsTotal` (via `of_stab`, which needs `τ ∈ ⟨τ⟩_t`).
+world histories and times.
 
 ## What this does not say
 
@@ -123,38 +122,38 @@ variable {F : TaskFrame}
 
 /--
 **The pointwise collapse.** Over a deterministic frame, an L⁺ formula and its erasure hold at
-exactly the same total histories and times.
+exactly the same world histories and times.
 
 By induction on `φ`, generalizing the history and the time. The `box` case needs the hypothesis
-at another history — hence the totality binder is carried inside the statement rather than
+at another history — hence the history binder is carried inside the statement rather than
 fixed outside it — and the `untl`/`snce` cases need it at another time. The `stab` case is 536's
 `stab_iff_of_deterministic` followed by the induction hypothesis; nothing here re-derives the
 collapse.
 -/
 theorem plusTruthAt_erasePlus_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
     (φ : PlusFormula) :
-    ∀ (τ : PartialHistory F), τ.IsTotal → ∀ t : F.Duration,
+    ∀ (τ : WorldHistory F) (t : F.Duration),
       PlusTruthAt M τ t φ ↔ TruthAt M τ t (erasePlus φ) := by
   induction φ with
-  | atom p => intro τ _ t; exact Iff.rfl
-  | bot => intro τ _ t; exact Iff.rfl
-  | imp φ ψ ihφ ihψ => intro τ hτ t; exact Iff.imp (ihφ τ hτ t) (ihψ τ hτ t)
+  | atom p => intro τ t; exact Iff.rfl
+  | bot => intro τ t; exact Iff.rfl
+  | imp φ ψ ihφ ihψ => intro τ t; exact Iff.imp (ihφ τ t) (ihψ τ t)
   | box φ ih =>
-    intro τ _ t
-    exact forall_congr' fun σ => imp_congr_right fun hσ => ih σ hσ t
+    intro τ t
+    exact forall_congr' fun σ => ih σ t
   | untl ψ φ ihψ ihφ =>
-    intro τ hτ t
+    intro τ t
     exact exists_congr fun s => and_congr_right fun _ =>
-      and_congr (ihφ τ hτ s)
-        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ hτ r)
+      and_congr (ihφ τ s)
+        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ r)
   | snce ψ φ ihψ ihφ =>
-    intro τ hτ t
+    intro τ t
     exact exists_congr fun s => and_congr_right fun _ =>
-      and_congr (ihφ τ hτ s)
-        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ hτ r)
+      and_congr (ihφ τ s)
+        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ r)
   | stab φ ih =>
-    intro τ hτ t
-    exact (stab_iff_of_deterministic hD M hτ t φ).trans (ih τ hτ t)
+    intro τ t
+    exact (stab_iff_of_deterministic hD M τ t φ).trans (ih τ t)
 
 /-! ## The validity-level corollary -/
 
@@ -162,17 +161,17 @@ theorem plusTruthAt_erasePlus_of_deterministic (hD : F.Deterministic) (M : TaskM
 same frames. -/
 theorem validDetIn_erasePlus_of_plusValidDetIn {fc : FrameClass} {φ : PlusFormula}
     (h : PlusValidDetIn fc φ) : ValidDetIn fc (erasePlus φ) :=
-  ValidDetIn.of_forall_total fun F hF hD M τ hτ t =>
-    (plusTruthAt_erasePlus_of_deterministic hD M φ τ hτ t).mp
-      (PlusValidDetIn.apply_total h F hF hD M τ hτ t)
+  ValidDetIn.of_forall fun F hF hD M τ t =>
+    (plusTruthAt_erasePlus_of_deterministic hD M φ τ t).mp
+      (PlusValidDetIn.apply h F hF hD M τ t)
 
 /-- The converse: L-validity of the erasure over the deterministic frames of `fc` gives
 L⁺-validity of the original over the same frames. -/
 theorem plusValidDetIn_of_validDetIn_erasePlus {fc : FrameClass} {φ : PlusFormula}
     (h : ValidDetIn fc (erasePlus φ)) : PlusValidDetIn fc φ :=
-  PlusValidDetIn.of_forall_total fun F hF hD M τ hτ t =>
-    (plusTruthAt_erasePlus_of_deterministic hD M φ τ hτ t).mpr
-      (ValidDetIn.apply_total h F hF hD M τ hτ t)
+  PlusValidDetIn.of_forall fun F hF hD M τ t =>
+    (plusTruthAt_erasePlus_of_deterministic hD M φ τ t).mpr
+      (ValidDetIn.apply h F hF hD M τ t)
 
 /-- The two directions packaged: over the deterministic frames of any class, an L⁺ formula and
 its erasure are equivalid. -/

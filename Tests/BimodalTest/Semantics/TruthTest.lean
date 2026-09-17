@@ -15,7 +15,7 @@ Tests for truth evaluation in task models.
 
 ## Temporal Type Note
 
-After the temporal generalization, the frame and PartialHistory now take a
+After the temporal generalization, the frame and WorldHistory now take a
 type parameter `T` with `LinearOrderedAddCommGroup` constraint. Tests use
 explicit `Int` annotations.
 -/
@@ -32,22 +32,22 @@ def testFrame : FrameOver intOrder := FrameOver.trivialFrame
 def testModel : TaskModel testFrame where
   valuation := fun _ p => p.base = "p"
 
--- Helper: trivial possible world (universal domain)
-def testHistory : PartialHistory testFrame := PartialHistory.trivialFrameHistory
+-- Helper: the constant world history of the trivial frame
+def testHistory : WorldHistory testFrame :=
+  WorldHistory.ofTotal testFrame.toTaskFrame (fun _ => ())
+    fun _ _ => FrameOver.trivialFrame_taskRel.mpr True.intro
 
--- Test: Bot is false (using trivial history's domain proof)
+-- Test: Bot is false
 example : ¬(TruthAt testModel testHistory (0 : Int) Formula.bot) := by
   exact Truth.bot_false
 
 -- Test: Atom truth depends on valuation (p is true)
 example : (TruthAt testModel testHistory (0 : Int) (Formula.atomS "p")) := by
-  simp [TruthAt, testModel, testHistory, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
-    Formula.atomS, Atom.mkBase]
+  simp [TruthAt, testModel, testHistory, Formula.atomS, Atom.mkBase]
 
 -- Test: Atom truth depends on valuation (q is false)
 example : ¬(TruthAt testModel testHistory (0 : Int) (Formula.atomS "q")) := by
-  simp [TruthAt, testModel, testHistory, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
-    Formula.atomS, Atom.mkBase]
+  simp [TruthAt, testModel, testHistory, Formula.atomS, Atom.mkBase]
 
 -- Test: Implication basic behavior
 -- p → p is true
@@ -67,7 +67,6 @@ example : (TruthAt testModel testHistory (0 : Int) Formula.bot.neg) := by
 -- Test: TruthAt works with explicit Int type
 theorem truth_at_int_example :
     TruthAt testModel testHistory (0 : Int) (Formula.atomS "p") := by
-  simp [TruthAt, testModel, testHistory, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
-    Formula.atomS, Atom.mkBase]
+  simp [TruthAt, testModel, testHistory, Formula.atomS, Atom.mkBase]
 
 end BimodalTest.Semantics

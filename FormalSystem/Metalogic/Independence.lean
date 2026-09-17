@@ -49,7 +49,7 @@ Galois-closed, in contrast with the paper's bare classes.
 ## Contents
 
 * `Independence/ClockFrame.lean` — the periodic clock frame `D = ℚ`, `W = ℚ ⧸ ℤ`, with all
-  `FrameOver` obligations discharged, and its reference total history.
+  `FrameOver` obligations discharged, and its reference world history.
 * `Independence/LoopingDuration.lean` — the reusable content: a frame carrying a *looping
   duration* has periodic histories, hence periodic truth, hence validates `Hψ → Gψ` and every
   instance of `CO`.
@@ -68,7 +68,7 @@ Galois-closed, in contrast with the paper's bare classes.
   elaborates.
 * `Independence/DriftFrame.lean` — `F°`, the drift band `x ≤ u - w ≤ 2x` over `ℝ`, with all five
   `FrameOver` axiom fields and its failure of `def:deterministic`.
-* `Independence/DriftHistories.lean` — `F°`'s total histories are strictly increasing
+* `Independence/DriftHistories.lean` — `F°`'s world histories are strictly increasing
   bi-Lipschitz bijections of `ℝ`; (H1) and (H2) discharged for `F°`.
 * `Independence/OrderTransfer.lean` — the frame-independent layer: hypotheses (H1) `OrderFlow`
   and (H2) `StateOccurs`, and the order-transfer lemmas the temporal cases consume.
@@ -87,7 +87,7 @@ frame property — elimination by indistinguishability rather than by counterexa
 1. build a concrete frame satisfying every structural axiom of the semantics;
 2. prove a truth-invariance lemma for it — a symmetry or periodicity constraining *every* formula
    uniformly, by induction on `Formula` with the history universally quantified **inside** the
-   induction, so that the `□` case (which ranges over all total histories) can apply the
+   induction, so that the `□` case (which ranges over all world histories) can apply the
    induction hypothesis;
 3. show the assumed axioms hold in the model, taking the base axioms free from the matching
    `soundness_*` theorem;

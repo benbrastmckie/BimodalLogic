@@ -67,7 +67,7 @@ variable {F : TaskFrame}
     Unfolding the `untl` clause of `TruthAt`, `TruthAt t (next φ)` reads
     `∃ s > t, φ(s) ∧ ∀ r ∈ (t, s), ⊥` — the empty-gap condition forces `s = Order.succ t`. -/
 theorem truthAt_next_iff [SuccOrder F.Duration] [NoMaxOrder F.Duration]
-    (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : Formula) :
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : Formula) :
     TruthAt M τ t (Formula.next φ) ↔ TruthAt M τ (Order.succ t) φ := by
   constructor
   · rintro ⟨s, hts, hs, hgap⟩
@@ -81,7 +81,7 @@ theorem truthAt_next_iff [SuccOrder F.Duration] [NoMaxOrder F.Duration]
 
 /-- Iterated form of `truthAt_next_iff`: `Xⁿ φ` at `t` is `φ` at the `n`-th successor of `t`. -/
 theorem truthAt_next_iterate [SuccOrder F.Duration] [NoMaxOrder F.Duration]
-    (M : TaskModel F) (τ : PartialHistory F) :
+    (M : TaskModel F) (τ : WorldHistory F) :
     ∀ (n : ℕ) (t : F.Duration) (φ : Formula),
       TruthAt M τ t (Formula.next^[n] φ) ↔ TruthAt M τ (Order.succ^[n] t) φ := by
   intro n
@@ -161,14 +161,11 @@ outright.
 -/
 
 /-- The history over `ℤ` whose world-state flips from `0` to `1` strictly after `N`. -/
-def zHistory (N : ℤ) : PartialHistory (FrameOver.natFrame (D := ℤ)) where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, True.intro⟩
+def zHistory (N : ℤ) : WorldHistory (FrameOver.natFrame (D := ℤ)) :=
   -- `FrameOver.natFrame.WorldState` does not reduce far enough for numeral elaboration, so the
   -- `ite` *body* carries the ascription. Ascribing an existing fvar instead does not work.
-  states := fun t _ => (if N < t then 1 else 0 : Nat)
-  respects_task := by
-    intro s t _ _
+  WorldHistory.ofTotal _ (fun t => (if N < t then 1 else 0 : Nat)) <| by
+    intro s t
     refine (FrameOver.natFrame_rel_iff _ _ _).mpr ?_
     rcases eq_or_ne t s with rfl | hne
     · right; rfl
@@ -181,17 +178,15 @@ def zHistory (N : ℤ) : PartialHistory (FrameOver.natFrame (D := ℤ)) where
 def zModel : TaskModel (FrameOver.natFrame (D := ℤ)) where
   valuation := fun (w : Nat) _ => w = 1
 
-theorem zHistory_total (N : ℤ) : (zHistory N).IsTotal := fun _ => True.intro
-
 @[simp] theorem zTruth_atom (N : ℤ) (p : Atom) (t : ℤ) :
     TruthAt zModel (zHistory N) t (Formula.atom p) ↔ N < t := by
+  show ((if N < t then 1 else 0 : Nat) = 1) ↔ N < t
   constructor
-  · rintro ⟨_, h⟩
-    simp only [zModel, zHistory] at h
+  · intro h
     by_contra hc
     simp [hc] at h
   · intro h
-    exact ⟨True.intro, by simp only [zModel, zHistory]; simp [h]⟩
+    simp [h]
 
 theorem succ_iterate_zero_int (n : ℕ) : Order.succ^[n] (0:ℤ) = (n : ℤ) := by
   induction n with
@@ -211,7 +206,7 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
   classical
   refine SatisfiableSet.of_forall (fc := FrameClass.ZTime) (FrameOver.natFrame (D := ℤ))
     (TaskFrame.isZTime_of_instances _) zModel
-    (zHistory ((L.map witIdx).sum : ℕ)) (zHistory_total _) 0 ?_
+    (zHistory ((L.map witIdx).sum : ℕ)) 0 ?_
   set N : ℕ := (L.map witIdx).sum with hNdef
   intro ψ hψ
   have hmem := hL ψ hψ
@@ -242,7 +237,7 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     the originals. Naming them and re-installing with `haveI` would drop the value and break
     definitional equality with the instances baked into `F`'s and `M`'s types. -/
 theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableZTimeSet (archWitness p) := by
-  rintro ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩
+  rintro ⟨F, ⟨_, _, _, _⟩, M, τ, t, h⟩
   haveI : NoMaxOrder F.Duration := inferInstance
   have hF : TruthAt M τ t ((Formula.atom p).someFuture) := by
     apply h; simp
@@ -285,7 +280,7 @@ theorem notCompactZTime : ¬ CompactZTime :=
 **This proof no longer mentions `soundness_ztime`.** The skeleton routes through
 `compact_of_strongCompleteness`, whose soundness step is the class-generic `soundness_validIn`;
 the per-class soundness corollary is no longer on the refutation path. With it went the
-bare-instance-binder `rintro ⟨F, ⟨_,_,_,_⟩, M, τ, hτ, t, hsat⟩` discipline this proof used to
+bare-instance-binder `rintro ⟨F, ⟨_,_,_,_⟩, M, τ, t, hsat⟩` discipline this proof used to
 need, since it no longer destructures a `SatisfiableZTimeSet` witness itself —
 `archWitness_not_satisfiable` above still does, and still documents the discipline.
 

@@ -66,7 +66,7 @@ open FormalSystem.Metalogic
 mirror of `SetConsequenceOnFrames`, against `MinusTruthAt`. -/
 def MinusSetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set MinusFormula) (φ : MinusFormula) : Prop :=
   ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
-    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (τ : WorldHistory F) (t : F.Duration),
     (∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) → MinusTruthAt M τ t φ
 
 /-- Set-premise consequence for the base language at a `FrameClass` tag. Mirror of
@@ -88,12 +88,12 @@ theorem minusSetConsequenceOnFrames_iff_image (P : TaskFrame → Prop) (Γ : Set
     (φ : MinusFormula) :
     MinusSetConsequenceOnFrames P Γ φ ↔ SetConsequenceOnFrames P (tr '' Γ) (tr φ) := by
   constructor
-  · intro h F hF M τ hτ t hΓ
-    refine (truthAt_tr M φ τ t).mpr (h F hF M τ hτ t ?_)
+  · intro h F hF M τ t hΓ
+    refine (truthAt_tr M φ τ t).mpr (h F hF M τ t ?_)
     intro ψ hψ
     exact (truthAt_tr M ψ τ t).mp (hΓ (tr ψ) ⟨ψ, hψ, rfl⟩)
-  · intro h F hF M τ hτ t hΓ
-    refine (truthAt_tr M φ τ t).mp (h F hF M τ hτ t ?_)
+  · intro h F hF M τ t hΓ
+    refine (truthAt_tr M φ τ t).mp (h F hF M τ t ?_)
     intro ψ' hψ'
     obtain ⟨ψ, hψ, rfl⟩ := hψ'
     exact (truthAt_tr M ψ τ t).mpr (hΓ ψ hψ)

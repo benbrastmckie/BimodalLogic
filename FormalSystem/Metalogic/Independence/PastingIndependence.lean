@@ -20,7 +20,7 @@ together with the six S5/bridge schemata {SK, ST, S4, S5, MS, AS}. The axiom set
 One coarsened-state model (`Metalogic/Independence/CoarsenedModels.lean`) refutes both:
 
 * **Frame** — the deterministic clock over `ℤ` at a one-element family index,
-  `multiFamTaskFrameGen (TemporalOrder.of ℤ) Unit`. Its total histories are exactly the flow
+  `multiFamTaskFrameGen (TemporalOrder.of ℤ) Unit`. Its world histories are exactly the flow
   lines `t ↦ ((), w₀ + t)`, one per offset `w₀ : ℤ` (`pTotal_toHist`).
 * **Valuation** — every atom is true at the states whose clock reads `0`, so along the flow line
   of offset `w₀` the atom holds at exactly the time `-w₀`.
@@ -45,7 +45,7 @@ a strictly intermediate time before its atom.
 ## Why the coarsening is what does the work
 
 On a genuine task frame PS and US are **valid** (`Semantics/PlusLanguage/PlusPasting.lean`): the splice of
-two total histories through a common state is again a total history. Coarsening breaks exactly
+two world histories through a common state is again a world history. Coarsening breaks exactly
 that, and nothing else — the two lines above pass through *different* states at time `0`, so
 there is no state for a splice to run through. Everything else about the model is ordinary.
 
@@ -99,18 +99,15 @@ noncomputable def pModel : CoarseModel PF where
     exact Int.natAbs_eq_zero.mp (h' ▸ hv')
 
 /-- The flow line of offset `w₀`. -/
-noncomputable def pHist (w₀ : ℤ) : PartialHistory PF := multiFamHistoryGen () w₀
+noncomputable def pHist (w₀ : ℤ) : WorldHistory PF := multiFamHistoryGen () w₀
 
-theorem pHist_isTotal (w₀ : ℤ) : (pHist w₀).IsTotal := multiFamHistoryGen_total _ _
-
-theorem pHist_states (w₀ t : ℤ) (h : (pHist w₀).domain t) :
-    (pHist w₀).states t h = ((), w₀ + t) := rfl
+theorem pHist_state (w₀ t : ℤ) : (pHist w₀).state t = ((), w₀ + t) := rfl
 
 /-! ### Truth along a flow line -/
 
 theorem pHist_atom (w₀ t : ℤ) (q : Atom) :
     CTruthAt pModel (pHist w₀) t (.atom q) ↔ w₀ + t = 0 :=
-  ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
+  Iff.rfl
 
 theorem pHist_someFuture_atom (w₀ t : ℤ) (q : Atom) :
     CTruthAt pModel (pHist w₀) t (someFuture (.atom q)) ↔ t < -w₀ := by
@@ -149,24 +146,23 @@ theorem pHist_someFuture_someFuture_atom (w₀ t : ℤ) (q : Atom) :
     have hlt : t < t + 1 := by omega
     exact ⟨t + 1, hlt, (pHist_someFuture_atom w₀ (t + 1) q).mpr (by omega)⟩
 
-/-! ### Every total history is a flow line -/
+/-! ### Every world history is a flow line -/
 
-/-- A total history of `PF` agrees pointwise with the flow line of its own offset at time `0`,
+/-- A world history of `PF` agrees pointwise with the flow line of its own offset at time `0`,
 by `respects_task` at `(0, t)`. -/
-theorem pTotal_states (σ : PartialHistory PF) (hσ : σ.IsTotal) (t : ℤ) (h : σ.domain t) :
-    σ.states t h = ((), (σ.states 0 (hσ 0)).2 + t) := by
+theorem pTotal_states (σ : WorldHistory PF) (t : ℤ) :
+    σ.state t = ((), (σ.state 0).2 + t) := by
   obtain ⟨_, h2⟩ := (FormalSystem.Metalogic.Algebraic.multiFamGen_taskRel (D := TemporalOrder.of ℤ) _ _ _).mp
-    (σ.respects_task 0 t (hσ 0) h)
+    (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
   refine Prod.ext rfl ?_
-  show (σ.states t h).2 = (σ.states 0 (hσ 0)).2 + t
-  rw [h2]
-  ring
+  show (σ.state t).2 = (σ.state 0).2 + t
+  have h2' : (σ.state t).2 = (σ.state 0).2 + (t - 0) := h2
+  rw [h2', sub_zero]
 
-/-- Hence a total history satisfies exactly what its flow line satisfies. -/
-theorem pTotal_toHist (σ : PartialHistory PF) (hσ : σ.IsTotal) (t : ℤ) (φ : PlusFormula) :
-    CTruthAt pModel σ t φ ↔ CTruthAt pModel (pHist (σ.states 0 (hσ 0)).2) t φ :=
-  c_truth_congr_ext pModel φ σ _ t (fun s => ⟨fun _ => trivial, fun _ => hσ s⟩)
-    (fun s h1 _ => (pTotal_states σ hσ s h1).trans rfl)
+/-- Hence a world history satisfies exactly what its flow line satisfies. -/
+theorem pTotal_toHist (σ : WorldHistory PF) (t : ℤ) (φ : PlusFormula) :
+    CTruthAt pModel σ t φ ↔ CTruthAt pModel (pHist (σ.state 0).2) t φ :=
+  c_truth_congr_ext pModel φ σ _ t fun s => (pTotal_states σ s).trans rfl
 
 /-! ## PS is refuted -/
 
@@ -187,7 +183,7 @@ theorem dstab_phiPlus (p : Atom) :
     CTruthAt pModel (pHist (-1)) 0 (dstab (phiPlus p)) := by
   rw [CTruth.dstab_iff]
   have hahead : (0 : ℤ) < -(-1 : ℤ) := by decide
-  exact ⟨pHist (-1), pHist_isTotal _, SameUnder.refl _ _ _,
+  exact ⟨pHist (-1), SameUnder.refl _ _ _,
     (pHist_someFuture_atom (-1) 0 p).mpr hahead⟩
 
 /-- `Pp` holds along the line of offset `1`, which is in the same `π`-class at time `0`. -/
@@ -195,16 +191,15 @@ theorem dstab_psiMinus (p : Atom) :
     CTruthAt pModel (pHist (-1)) 0 (dstab (psiMinus p)) := by
   rw [CTruth.dstab_iff]
   have hback : -(1 : ℤ) < (0 : ℤ) := by decide
-  refine ⟨pHist 1, pHist_isTotal _, ?_, (pHist_somePast_atom 1 0 p).mpr hback⟩
-  intro _ _
+  refine ⟨pHist 1, ?_, (pHist_somePast_atom 1 0 p).mpr hback⟩
   show ((-1 : ℤ) + 0).natAbs = ((1 : ℤ) + 0).natAbs
   decide
 
-/-- No total history of the model satisfies `Fp ∧ Pp`: on each flow line the atom holds at
+/-- No world history of the model satisfies `Fp ∧ Pp`: on each flow line the atom holds at
 exactly one time, which cannot be both strictly future and strictly past. -/
-theorem not_and_phiPlus_psiMinus (p : Atom) (σ : PartialHistory PF) (hσ : σ.IsTotal) (t : ℤ) :
+theorem not_and_phiPlus_psiMinus (p : Atom) (σ : WorldHistory PF) (t : ℤ) :
     ¬ CTruthAt pModel σ t ((phiPlus p).and (psiMinus p)) := by
-  rw [pTotal_toHist σ hσ t, CTruth.and_iff, phiPlus, psiMinus,
+  rw [pTotal_toHist σ t, CTruth.and_iff, phiPlus, psiMinus,
     pHist_someFuture_atom, pHist_somePast_atom]
   omega
 
@@ -220,12 +215,12 @@ theorem pasteNotNaiveDerivable (p : Atom) :
       ¬ NaiveDerivable FrameClass.Base []
         ((dstab φ).imp ((dstab ψ).imp (dstab (φ.and ψ)))) := by
   refine ⟨phiPlus p, psiMinus p, phiPlus_pureFuture p, psiMinus_purePast p, ?_⟩
-  refine not_naiveDerivable_of_cRefuted PF pModel (pHist (-1)) (pHist_isTotal _) 0 ?_
+  refine not_naiveDerivable_of_cRefuted PF pModel (pHist (-1)) 0 ?_
   intro h
   have hcon := h (dstab_phiPlus p) (dstab_psiMinus p)
   rw [CTruth.dstab_iff] at hcon
-  obtain ⟨σ, hσ, _, hand⟩ := hcon
-  exact not_and_phiPlus_psiMinus p σ hσ 0 hand
+  obtain ⟨σ, _, hand⟩ := hcon
+  exact not_and_phiPlus_psiMinus p σ 0 hand
 
 /-! ## US is refuted -/
 
@@ -238,9 +233,7 @@ theorem someFuture_dstab_phiPlus (p : Atom) :
   refine ⟨2, h2, ?_⟩
   rw [CTruth.dstab_iff]
   have hahead : (2 : ℤ) < -(-3 : ℤ) := by decide
-  refine ⟨pHist (-3), pHist_isTotal _, ?_,
-    (pHist_someFuture_atom (-3) 2 p).mpr hahead⟩
-  intro _ _
+  refine ⟨pHist (-3), ?_, (pHist_someFuture_atom (-3) 2 p).mpr hahead⟩
   show ((-1 : ℤ) + 2).natAbs = ((-3 : ℤ) + 2).natAbs
   decide
 
@@ -249,10 +242,9 @@ time before its atom. -/
 theorem not_dstab_someFuture_phiPlus (p : Atom) :
     ¬ CTruthAt pModel (pHist (-1)) 0 (dstab (someFuture (phiPlus p))) := by
   rw [CTruth.dstab_iff]
-  rintro ⟨σ, hσ, hsame, hff⟩
-  have hcls : ((-1 : ℤ) + 0).natAbs = (σ.states 0 (hσ 0)).2.natAbs :=
-    hsame trivial (hσ 0)
-  rw [pTotal_toHist σ hσ 0, phiPlus, pHist_someFuture_someFuture_atom] at hff
+  rintro ⟨σ, hsame, hff⟩
+  have hcls : ((-1 : ℤ) + 0).natAbs = (σ.state 0).2.natAbs := hsame
+  rw [pTotal_toHist σ 0, phiPlus, pHist_someFuture_someFuture_atom] at hff
   omega
 
 /--
@@ -266,7 +258,7 @@ theorem untlPasteNotNaiveDerivable (p : Atom) :
       ¬ NaiveDerivable FrameClass.Base []
         ((PlusFormula.untl α (dstab φ)).imp (dstab (PlusFormula.untl α φ))) := by
   refine ⟨PlusFormula.top, phiPlus p, IsPurePast.top, phiPlus_pureFuture p, ?_⟩
-  refine not_naiveDerivable_of_cRefuted PF pModel (pHist (-1)) (pHist_isTotal _) 0 ?_
+  refine not_naiveDerivable_of_cRefuted PF pModel (pHist (-1)) 0 ?_
   intro h
   exact not_dstab_someFuture_phiPlus p (h (someFuture_dstab_phiPlus p))
 

@@ -63,7 +63,7 @@ adjudication of record is `docs/reference/paper-definitions-of-record.md`'s read
 
 * `translationFrame`, `permissiveFrame` — the two witness frames
 * `noMaxOrder_of_duration`, `succOrderOfIsLeastPos` — the glue
-* `translationWorldHistory`, `permissiveWorldHistory` — each witness frame's reference total history, bundled
+* `translationHist`, `permissiveHist` — each witness frame's reference world history
 * `translation_realizes`, `translation_realizes_allPast`, `translation_realizes_allFuture`,
   `permissive_realizes` — the atom-realisation step, named once instead of rebuilt inline
 * `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered`, `validOn_co_iff_isComplete` —
@@ -115,17 +115,11 @@ Together with a model whose valuation is the characteristic function of a set `A
 realizes `A` as the truth set of an atom — which is what makes the translation frame a witness
 for the (⇒) directions of `app:discrete` and `app:complete`.
 -/
-def translationHist (D : TemporalOrder) : PartialHistory (translationFrame D).toTaskFrame where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => t
-  respects_task := by
-    intro s t _ _
+def translationHist (D : TemporalOrder) : WorldHistory (translationFrame D).toTaskFrame :=
+  WorldHistory.ofTotal _ (fun t => t) fun s t => by
     refine (translationFrame_taskRel _ _ _).mpr ?_
     show t = s + (t - s)
     abel
-theorem translationHist_isTotal (D : TemporalOrder) : (translationHist D).IsTotal :=
-  fun _ => trivial
 
 /-- The model on the translation frame whose atoms are all true exactly on `A ⊆ D`. -/
 def translationModel (D : TemporalOrder) (A : Set ↑D) :
@@ -135,15 +129,7 @@ def translationModel (D : TemporalOrder) (A : Set ↑D) :
 /-- Truth of an atom along `translationHist` is membership in `A`, at every time. -/
 @[simp] theorem translationModel_atom (D : TemporalOrder) (A : Set ↑D) (p : Atom) (t : ↑D) :
     TruthAt (translationModel D A) (translationHist D) t (Formula.atom p) ↔ t ∈ A :=
-  ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
-
-/-- The translation frame's **reference total history**, bundled as a `WorldHistory`.
-
-This is the history every (⇒) witness below evaluates along; naming it here is what lets those
-proofs mention the history once rather than rebuild the `⟨_, _⟩` pair and then carry a `hτ`
-equation through every `simp only`. -/
-def translationWorldHistory (D : TemporalOrder) : WorldHistory (translationFrame D).toTaskFrame :=
-  ⟨translationHist D, translationHist_isTotal D⟩
+  Iff.rfl
 
 /--
 **Atom realisation.** The translation frame realises an arbitrary `A ⊆ ↑D` as the truth set of an
@@ -154,19 +140,19 @@ turn on: pick `A`, and the atom's extension *is* `A`. Any atom does — the valu
 `A`, not read off a fixed one.
 -/
 theorem translation_realizes (D : TemporalOrder) (A : Set ↑D) (p : Atom) (t : ↑D) :
-    TruthAt (translationModel D A) (translationWorldHistory D).val t (Formula.atom p) ↔ t ∈ A :=
+    TruthAt (translationModel D A) (translationHist D) t (Formula.atom p) ↔ t ∈ A :=
   translationModel_atom D A p t
 
 /-- `translation_realizes` under `H`: `Hp` at `u` says every time strictly below `u` lies in `A`. -/
 theorem translation_realizes_allPast (D : TemporalOrder) (A : Set ↑D) (p : Atom) (u : ↑D) :
-    TruthAt (translationModel D A) (translationWorldHistory D).val u (Formula.atom p).allPast
+    TruthAt (translationModel D A) (translationHist D) u (Formula.atom p).allPast
       ↔ ∀ r < u, r ∈ A := by
   rw [Truth.past_iff]
   exact forall_congr' fun r => forall_congr' fun _ => translation_realizes D A p r
 
 /-- `translation_realizes` under `G`: `Gp` at `u` says every time strictly above `u` lies in `A`. -/
 theorem translation_realizes_allFuture (D : TemporalOrder) (A : Set ↑D) (p : Atom) (u : ↑D) :
-    TruthAt (translationModel D A) (translationWorldHistory D).val u (Formula.atom p).allFuture
+    TruthAt (translationModel D A) (translationHist D) u (Formula.atom p).allFuture
       ↔ ∀ r, u < r → r ∈ A := by
   rw [Truth.future_iff]
   exact forall_congr' fun r => forall_congr' fun _ => translation_realizes D A p r
@@ -183,12 +169,8 @@ the task relation holds at every nonzero duration, and at duration `0` the two e
 coincide.
 -/
 def permissiveHist (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
-    (f : ↑D → Bool) : PartialHistory (permissiveFrame D so nm).toTaskFrame where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => f t
-  respects_task := by
-    intro s t _ _
+    (f : ↑D → Bool) : WorldHistory (permissiveFrame D so nm).toTaskFrame :=
+  WorldHistory.ofTotal _ f fun s t => by
     refine (permissiveFrame_taskRel (D := D) so nm _ _ _).mpr ?_
     by_cases h : t - s = 0
     · refine Or.inr ?_
@@ -197,8 +179,6 @@ def permissiveHist (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
         exact this
       rw [this]
     · exact Or.inl h
-theorem permissiveHist_isTotal (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
-    (f : ↑D → Bool) : (permissiveHist D so nm f).IsTotal := fun _ => trivial
 
 /-- The model on the permissive frame that reads an atom off the `Bool` state. -/
 def permissiveModel (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) :
@@ -209,15 +189,7 @@ def permissiveModel (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
 @[simp] theorem permissiveModel_atom (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
     (f : ↑D → Bool) (p : Atom) (t : ↑D) :
     TruthAt (permissiveModel D so nm) (permissiveHist D so nm f) t (Formula.atom p) ↔ f t = true :=
-  ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
-
-/-- The permissive frame's **reference total history** at the state assignment `f`, bundled as a
-`WorldHistory`. The twin of `translationWorldHistory`, for the one (⇒) witness that runs on
-`permissiveFrame`. -/
-def permissiveWorldHistory (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
-    (f : ↑D → Bool) :
-    WorldHistory (permissiveFrame D so nm).toTaskFrame :=
-  ⟨permissiveHist D so nm f, permissiveHist_isTotal D so nm f⟩
+  Iff.rfl
 
 /--
 **Atom realisation, permissive twin.** The permissive frame realises an arbitrary `f : ↑D → Bool`
@@ -229,7 +201,7 @@ one of the three left unconverted.
 -/
 theorem permissive_realizes (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
     (f : ↑D → Bool) (p : Atom) (t : ↑D) :
-    TruthAt (permissiveModel D so nm) (permissiveWorldHistory D so nm f).val t (Formula.atom p)
+    TruthAt (permissiveModel D so nm) (permissiveHist D so nm f) t (Formula.atom p)
       ↔ f t = true :=
   permissiveModel_atom D so nm f p t
 
@@ -289,7 +261,7 @@ theorem validOn_dn_iff_denselyOrdered (D : TemporalOrder) :
       -- Realisation: `p` is true at `t` exactly when `f t = true`.
       have hreal := permissive_realizes D so nm f (Atom.mkBase "p")
       -- The antecedent `GGp`, built through that realisation.
-      have hgg : TruthAt (permissiveModel D so nm) (permissiveWorldHistory D so nm f).val a
+      have hgg : TruthAt (permissiveModel D so nm) (permissiveHist D so nm f) a
           (Formula.atom (Atom.mkBase "p")).allFuture.allFuture := by
         rw [Truth.future_iff]
         intro s has
@@ -301,7 +273,7 @@ theorem validOn_dn_iff_denselyOrdered (D : TemporalOrder) :
         exact ne_of_gt this
       -- Instantiate the schema at the witness frame, then read the consequent back.
       have hg := h (permissiveFrame D so nm) (Formula.atom (Atom.mkBase "p"))
-        (permissiveModel D so nm) (permissiveWorldHistory D so nm f) a hgg
+        (permissiveModel D so nm) (permissiveHist D so nm f) a hgg
       rw [Truth.future_iff] at hg
       have hbad := (hreal (a + p)).mp (hg (a + p) hap)
       simp only [hf, decide_eq_true_eq] at hbad
@@ -339,11 +311,11 @@ theorem validOn_df_iff_isDiscrete (D : TemporalOrder) :
     set A : Set ↑D := {r : ↑D | r ≤ x} with hA
     -- Realisation: `Hp` at `u` says every time strictly below `u` is `≤ x`.
     have hHiff : ∀ u : ↑D,
-        TruthAt (translationModel D A) (translationWorldHistory D).val u
+        TruthAt (translationModel D A) (translationHist D) u
             (Formula.atom (Atom.mkBase "p")).allPast ↔ ∀ r < u, r ≤ x :=
       translation_realizes_allPast D A (Atom.mkBase "p")
     -- The antecedent `(Hp ∧ p) ∧ F⊤`, built through that realisation.
-    have hant : TruthAt (translationModel D A) (translationWorldHistory D).val x
+    have hant : TruthAt (translationModel D A) (translationHist D) x
         (((Formula.atom (Atom.mkBase "p")).allPast.and (Formula.atom (Atom.mkBase "p"))).and
           Formula.top.someFuture) := by
       rw [Truth.and_iff, Truth.and_iff]
@@ -354,7 +326,7 @@ theorem validOn_df_iff_isDiscrete (D : TemporalOrder) :
       exact ⟨y, hy, fun hb => hb⟩
     -- Instantiate the schema at the witness frame, then read the consequent back.
     have hcons := h (translationFrame D) (Formula.atom (Atom.mkBase "p"))
-      (translationModel D A) (translationWorldHistory D) x hant
+      (translationModel D A) (translationHist D) x hant
     rw [Truth.some_future_iff] at hcons
     obtain ⟨v, hxv, hHv⟩ := hcons
     refine ⟨v, hxv, fun z hz => ?_⟩
@@ -402,13 +374,13 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
     set A : Set ↑D := {r : ↑D | ∃ u ∈ S, r < u} with hA
     -- Realisation: `Hp` at `u` says every time strictly below `u` is strictly below a member of `S`.
     have hHiff : ∀ u : ↑D,
-        TruthAt (translationModel D A) (translationWorldHistory D).val u
+        TruthAt (translationModel D A) (translationHist D) u
             (Formula.atom (Atom.mkBase "p")).allPast ↔ ∀ r < u, ∃ w ∈ S, r < w :=
       translation_realizes_allPast D A (Atom.mkBase "p")
     -- `s₀ ∈ S` witnesses `Hp` at `s₀`.
     have hHs₀ := (hHiff s₀).mpr fun r hr => ⟨s₀, hs₀, hr⟩
     -- The `△` antecedent: a time where it failed would be a least upper bound of `S`.
-    have halways : ∀ u : ↑D, TruthAt (translationModel D A) (translationWorldHistory D).val u
+    have halways : ∀ u : ↑D, TruthAt (translationModel D A) (translationHist D) u
         ((Formula.atom (Atom.mkBase "p")).allPast.imp
           (Formula.atom (Atom.mkBase "p")).allPast.someFuture) := by
       intro u hu
@@ -425,7 +397,7 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
           exact absurd (hc hw) (not_le.mpr hcw)
     -- Instantiate the schema at the witness frame, then read the consequent back.
     have hco := h (translationFrame D) (Formula.atom (Atom.mkBase "p"))
-      (translationModel D A) (translationWorldHistory D) s₀ ((Truth.always_iff _).mpr halways) hHs₀
+      (translationModel D A) (translationHist D) s₀ ((Truth.always_iff _).mpr halways) hHs₀
     rw [Truth.future_iff] at hco
     -- `b` is an upper bound strictly above `s₀`, so `Gp` at `s₀` puts `b` strictly below `S`.
     have hs₀b : s₀ < b := by
@@ -438,7 +410,7 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
     rw [Truth.future_iff]
     intro s hts
     by_contra hns
-    set S : Set ↑D := {u : ↑D | ∀ r < u, TruthAt M τ.val r φ} with hS
+    set S : Set ↑D := {u : ↑D | ∀ r < u, TruthAt M τ r φ} with hS
     have htS : t ∈ S := by rw [hS]; rw [Truth.past_iff] at hH; exact hH
     have hbdd : ∀ u ∈ S, u ≤ s := by
       intro u hu

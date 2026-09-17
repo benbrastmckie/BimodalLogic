@@ -19,7 +19,7 @@ over, so a state-local `φ` is already `⊡`-stable — the headline `φ ↔ ⊡
 ## Main Definitions
 
 - `StarFormula.StateLocal` — the syntactic fragment, by structural recursion
-- `IsStateLocal` — the semantic property: `SameStateAt τ σ t` transfers truth at `(t, v⃗)`
+- `IsStateLocal` — the semantic property: `τ.state t = σ.state t` transfers truth at `(t, v⃗)`
 
 ## Main Results
 
@@ -38,11 +38,11 @@ time and the **same** register vector on both sides:
 
 | Constructor | State-local? | Why |
 |---|---|---|
-| `atom p` | yes | `M.valuation (τ.states t ht) p` reads the state at `t` and nothing else |
+| `atom p` | yes | `M.valuation (τ.state t) p` reads the state at `t` and nothing else |
 | `bot` | yes | constant |
 | `imp φ ψ` | yes if both are | pointwise |
-| `box φ` | yes, for arbitrary `φ` | `∀ σ, σ.IsTotal → …` does not mention `τ` at all |
-| `stab φ` | yes, for arbitrary `φ` | the class `⟨τ⟩ₜ` is unchanged by replacing `τ` with any history agreeing at `t` (`sameStateAt_congr_left`) |
+| `box φ` | yes, for arbitrary `φ` | `∀ σ : WorldHistory F, …` does not mention `τ` at all |
+| `stab φ` | yes, for arbitrary `φ` | the class `⟨τ⟩ₜ` is unchanged by replacing `τ` with any history agreeing at `t` (transitivity of the state equation) |
 | `untl ψ φ` | no | quantifies over `s > t`, where the two histories may diverge |
 | `snce ψ φ` | no | quantifies over `s < t`, likewise |
 | `timeStore i φ` | yes if `φ` is | evaluation stays at `t`, and both sides write the same `t` |
@@ -86,8 +86,7 @@ disagreeing away from `0` refute all three.
 
 * JPL paper `def:BLstar-semantics` — the truth clauses being classified
 * `FormalSystem/Semantics/StarLanguage/StarTruth.lean` — `StarTruthAt`
-* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `SameStateAt`, `sameStateAt_congr_left`,
-  `stab_state_only`
+* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `stab_state_only`
 * `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`
 
 ## Tags
@@ -183,36 +182,34 @@ The register vector is quantified inside, not fixed outside, so that the `timeSt
 `isStateLocal_of_stateLocal` can instantiate its inductive hypothesis at the updated vector.
 -/
 def IsStateLocal (φ : StarFormula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal →
-    ∀ (t : F.Duration) (v : ℕ → F.Duration), SameStateAt τ σ t →
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : WorldHistory F) (t : F.Duration)
+    (v : ℕ → F.Duration), τ.state t = σ.state t →
       (StarTruthAt M τ t v φ ↔ StarTruthAt M σ t v φ)
 
 /-! ## `□` and `⊡` are state-local for an arbitrary argument -/
 
 /--
-**`□φ` is state-local, whatever `φ` is.** The `box` clause quantifies over *every* total history
+**`□φ` is state-local, whatever `φ` is.** The `box` clause quantifies over *every* world history
 and never mentions `τ`, so the two sides are literally the same proposition.
 
 This settles, positively, the question of whether `□` belongs in the fragment: it does, and
 without a hypothesis on `φ`.
 -/
 theorem isStateLocal_box (φ : StarFormula) : IsStateLocal (.box φ) :=
-  fun _ _ _ _ _ _ _ _ _ => Iff.rfl
+  fun _ _ _ _ _ _ _ => Iff.rfl
 
 /--
 **`⊡φ` is state-local, whatever `φ` is.** The `stab` clause quantifies over the histories in
-`⟨τ⟩ₜ`, and `sameStateAt_congr_left` says that class is unchanged when `τ` is replaced by any
-history carrying the same state at `t`.
+`⟨τ⟩ₜ`, and by transitivity of the state equation that class is unchanged when `τ` is replaced by
+any history carrying the same state at `t`.
 -/
 theorem isStateLocal_stab (φ : StarFormula) : IsStateLocal (.stab φ) := by
-  intro F M τ σ hτ hσ t v h
-  have hclass : ∀ ρ : PartialHistory F, SameStateAt τ ρ t ↔ SameStateAt σ ρ t := fun ρ =>
-    sameStateAt_congr_left (hτ t) (hσ t) (h (hτ t) (hσ t))
+  intro F M τ σ t v h
   constructor
-  · intro hh ρ hρ hs
-    exact hh ρ hρ ((hclass ρ).mpr hs)
-  · intro hh ρ hρ hs
-    exact hh ρ hρ ((hclass ρ).mp hs)
+  · intro hh ρ hs
+    exact hh ρ (h.trans hs)
+  · intro hh ρ hs
+    exact hh ρ (h.symm.trans hs)
 
 /-! ## Soundness of the syntactic fragment -/
 
@@ -232,27 +229,20 @@ theorem isStateLocal_of_stateLocal : ∀ {φ : StarFormula}, φ.StateLocal → I
   intro φ
   induction φ with
   | atom p =>
-    intro _ _ M τ σ hτ hσ t _ h
-    constructor
-    · rintro ⟨ht, hv⟩
-      refine ⟨hσ t, ?_⟩
-      rw [← h ht (hσ t)]
-      exact hv
-    · rintro ⟨ht, hv⟩
-      refine ⟨hτ t, ?_⟩
-      rw [h (hτ t) ht]
-      exact hv
-  | bot => intro _ _ _ _ _ _ _ _ _ _; exact Iff.rfl
+    intro _ _ M τ σ t _ h
+    show M.valuation _ p ↔ M.valuation _ p
+    rw [h]
+  | bot => intro _ _ _ _ _ _ _ _; exact Iff.rfl
   | imp φ ψ ihφ ihψ =>
-    rintro ⟨hφ, hψ⟩ F M τ σ hτ hσ t v h
-    exact imp_congr (ihφ hφ F M τ σ hτ hσ t v h) (ihψ hψ F M τ σ hτ hσ t v h)
+    rintro ⟨hφ, hψ⟩ F M τ σ t v h
+    exact imp_congr (ihφ hφ F M τ σ t v h) (ihψ hψ F M τ σ t v h)
   | box φ _ => intro _; exact isStateLocal_box φ
   | untl ψ φ _ _ => intro hφ; exact absurd hφ (not_stateLocal_untl ψ φ)
   | snce ψ φ _ _ => intro hφ; exact absurd hφ (not_stateLocal_snce ψ φ)
   | stab φ _ => intro _; exact isStateLocal_stab φ
   | timeStore i φ ih =>
-    intro hφ F M τ σ hτ hσ t v h
-    exact ih hφ F M τ σ hτ hσ t (Function.update v i t) h
+    intro hφ F M τ σ t v h
+    exact ih hφ F M τ σ t (Function.update v i t) h
   | timeRecall i φ _ => intro hφ; exact absurd hφ (not_stateLocal_timeRecall i φ)
 
 /-! ## The excluded constructors are excluded by theorem
@@ -263,21 +253,19 @@ semantic property: the *syntactic* predicate is `False` on these constructors by
 its negation would be a vacuous claim. -/
 
 /-- The constant possible world of `NF` at world state `0`. -/
-private def zeroHist : PartialHistory NF := natHist (fun _ => 0)
+private def zeroHist : WorldHistory NF := natHist (fun _ => 0)
 
 /-- The possible world of `NF` that sits at state `0` up to time `0` and leaves it afterwards. -/
-private def lateHist : PartialHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
+private def lateHist : WorldHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
 
 /-- The possible world of `NF` that sits away from state `0` before time `0` and at it after. -/
-private def earlyHist : PartialHistory NF := natHist (fun s => if s < 0 then 1 else 0)
+private def earlyHist : WorldHistory NF := natHist (fun s => if s < 0 then 1 else 0)
 
-private theorem zero_lateHist_same : SameStateAt zeroHist lateHist (0 : ℤ) := by
-  intro _ _
+private theorem zero_lateHist_same : zeroHist.state (0 : ℤ) = lateHist.state 0 := by
   show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1)
   simp
 
-private theorem zero_earlyHist_same : SameStateAt zeroHist earlyHist (0 : ℤ) := by
-  intro _ _
+private theorem zero_earlyHist_same : zeroHist.state (0 : ℤ) = earlyHist.state 0 := by
   show (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0)
   simp
 
@@ -292,11 +280,11 @@ theorem not_isStateLocal_someFuture (p : Atom) :
   have hleft : StarTruthAt natModel zeroHist (0 : ℤ) (fun _ => 0)
       (StarFormula.someFuture (.atom p)) := by
     rw [StarTruth.someFuture_iff]
-    exact ⟨(1 : ℤ), by norm_num, trivial, rfl⟩
-  have hright := (h NF natModel zeroHist lateHist (natHist_isTotal _) (natHist_isTotal _)
+    exact ⟨(1 : ℤ), by norm_num, rfl⟩
+  have hright := (h NF natModel zeroHist lateHist
     (0 : ℤ) (fun _ => 0) zero_lateHist_same).mp hleft
   rw [StarTruth.someFuture_iff] at hright
-  obtain ⟨s, hs, _, hval⟩ := hright
+  obtain ⟨s, hs, hval⟩ := hright
   have hval' : (if s ≤ (0 : ℤ) then (0 : ℕ) else 1) = 0 := hval
   rw [if_neg (not_le.mpr hs)] at hval'
   exact one_ne_zero hval'
@@ -312,11 +300,11 @@ theorem not_isStateLocal_somePast (p : Atom) :
   have hleft : StarTruthAt natModel zeroHist (0 : ℤ) (fun _ => 0)
       (StarFormula.somePast (.atom p)) := by
     rw [StarTruth.somePast_iff]
-    exact ⟨(-1 : ℤ), by norm_num, trivial, rfl⟩
-  have hright := (h NF natModel zeroHist earlyHist (natHist_isTotal _) (natHist_isTotal _)
+    exact ⟨(-1 : ℤ), by norm_num, rfl⟩
+  have hright := (h NF natModel zeroHist earlyHist
     (0 : ℤ) (fun _ => 0) zero_earlyHist_same).mp hleft
   rw [StarTruth.somePast_iff] at hright
-  obtain ⟨s, hs, _, hval⟩ := hright
+  obtain ⟨s, hs, hval⟩ := hright
   have hval' : (if s < (0 : ℤ) then (1 : ℕ) else 0) = 0 := hval
   rw [if_pos hs] at hval'
   exact one_ne_zero hval'
@@ -333,12 +321,11 @@ theorem not_isStateLocal_timeRecall (p : Atom) :
   have hleft : StarTruthAt natModel zeroHist (0 : ℤ) (fun _ => (1 : ℤ))
       (.timeRecall 0 (.atom p)) := by
     rw [StarTruth.timeRecall_iff]
-    exact ⟨trivial, rfl⟩
-  have hright := (h NF natModel zeroHist lateHist (natHist_isTotal _) (natHist_isTotal _)
+    exact rfl
+  have hright := (h NF natModel zeroHist lateHist
     (0 : ℤ) (fun _ => (1 : ℤ)) zero_lateHist_same).mp hleft
   rw [StarTruth.timeRecall_iff] at hright
-  obtain ⟨_, hval⟩ := hright
-  have hval' : (if (1 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := hval
+  have hval' : (if (1 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := hright
   simp at hval'
 
 /-! ## The headline: a state-local formula is already `⊡`-stable -/
@@ -347,18 +334,17 @@ theorem not_isStateLocal_timeRecall (p : Atom) :
 **`φ ↔ ⊡φ` for state-local `φ`**, pointwise.
 
 Left to right is `isStateLocal_of_stateLocal`: every `σ ∈ ⟨τ⟩ₜ` agrees with `τ` about `φ`. Right
-to left instantiates the `⊡` clause at `τ` itself, via `SameStateAt.refl` — and that is the only
-place the totality of `τ` is used.
+to left instantiates the `⊡` clause at `τ` itself, via `rfl`.
 -/
 theorem stateLocal_stab_iff {F : TaskFrame} {φ : StarFormula} (hφ : φ.StateLocal)
-    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (v : ℕ → F.Duration) :
     StarTruthAt M τ t v φ ↔ StarTruthAt M τ t v (.stab φ) := by
   constructor
-  · intro hh σ hσ hs
-    exact (isStateLocal_of_stateLocal hφ F M τ σ hτ hσ t v hs).mp hh
+  · intro hh σ hs
+    exact (isStateLocal_of_stateLocal hφ F M τ σ t v hs).mp hh
   · intro hh
-    exact hh τ hτ (SameStateAt.refl τ t)
+    exact hh τ rfl
 
 /--
 **`φ ↔ ⊡φ` for state-local `φ`**, as a validity of L⋆.
@@ -373,9 +359,9 @@ which this strictly extends)
 -/
 theorem stateLocal_starValid_iff_stab {φ : StarFormula} (hφ : φ.StateLocal) :
     StarValid (StarFormula.iff φ (.stab φ)) := by
-  refine StarValid.of_forall_total ?_
-  intro F M τ hτ x v
-  have hiff := stateLocal_stab_iff hφ M τ hτ x v
+  refine StarValid.of_forall ?_
+  intro F M τ x v
+  have hiff := stateLocal_stab_iff hφ M τ x v
   simp only [StarFormula.iff]
   rw [StarTruth.and_iff, StarTruth.imp_iff, StarTruth.imp_iff]
   exact ⟨hiff.mp, hiff.mpr⟩

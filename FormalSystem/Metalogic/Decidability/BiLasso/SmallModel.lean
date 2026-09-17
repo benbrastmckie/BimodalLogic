@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.Decidability.BiLasso.TruthLemma
 /-!
 # The Type Sequence of a Genuine History
 
-The small-model theorem extracts a bounded annotated bi-lasso from an arbitrary total history.
+The small-model theorem extracts a bounded annotated bi-lasso from an arbitrary world history.
 Whatever form the extraction takes, it needs one thing first: the *type sequence* of a genuine
 history — the set of closure formulas true at each position — must satisfy the very conditions
 an annotation is required to satisfy. That is what this module establishes.
@@ -93,20 +93,20 @@ theorem fulfilling_iff_seq (A : Annot P φ) :
 /--
 The **type** of a position: the closure formulas true there.
 
-Noncomputable by necessity — `TruthAt`'s box clause quantifies over all total histories. See the
+Noncomputable by necessity — `TruthAt`'s box clause quantifies over all world histories. See the
 module docstring: this is a proof-only construction and never enters `check`.
 -/
 noncomputable def typeAt (P : IntPresentation) (φ : Formula)
-    (τ : PartialHistory P.toTaskFrame) (u : ℤ) : Finset Formula :=
+    (τ : WorldHistory P.toTaskFrame) (u : ℤ) : Finset Formula :=
   @Finset.filter Formula (fun ψ => TruthAt P.toModel τ u ψ) (Classical.decPred _)
     (subformulaClosure φ)
 
-theorem mem_typeAt {τ : PartialHistory P.toTaskFrame} {u : ℤ} {ψ : Formula} :
+theorem mem_typeAt {τ : WorldHistory P.toTaskFrame} {u : ℤ} {ψ : Formula} :
     ψ ∈ typeAt P φ τ u ↔ ψ ∈ subformulaClosure φ ∧ TruthAt P.toModel τ u ψ := by
   simp only [typeAt, Finset.mem_filter]
 
 /-- A type is a set of closure formulas. -/
-theorem typeAt_subset (τ : PartialHistory P.toTaskFrame) (u : ℤ) :
+theorem typeAt_subset (τ : WorldHistory P.toTaskFrame) (u : ℤ) :
     typeAt P φ τ u ⊆ subformulaClosure φ := fun _ hx => (mem_typeAt.mp hx).1
 
 /--
@@ -117,18 +117,18 @@ Every clause is discharged from the semantics itself. The two temporal clauses a
 the box clause is the oracle's soundness moved off time `0` by `box_const`.
 -/
 theorem typeAt_localCoherentSeq (hbx : BoxOracleSound P bx)
-    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) :
-    LocalCoherentSeq P φ bx (typeAt P φ τ) (fun u => τ.states u (hτ u)) := by
+    (τ : WorldHistory P.toTaskFrame) :
+    LocalCoherentSeq P φ bx (typeAt P φ τ) (fun u => τ.state u) := by
   intro t
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
   · -- atom
     intro p hp
     rw [mem_typeAt]
     constructor
-    · rintro ⟨_, ht, hval⟩
+    · rintro ⟨_, hval⟩
       exact hval
     · intro hval
-      exact ⟨hp, hτ t, hval⟩
+      exact ⟨hp, hval⟩
   · -- bot
     intro h
     exact Truth.bot_false (mem_typeAt.mp h).2
@@ -147,9 +147,9 @@ theorem typeAt_localCoherentSeq (hbx : BoxOracleSound P bx)
     rw [mem_typeAt, hbx χ]
     constructor
     · rintro ⟨_, hbox⟩
-      exact (Truth.box_time_const P.toModel τ hτ t 0 χ).mp hbox
+      exact (Truth.box_time_const P.toModel τ t 0 χ).mp hbox
     · intro h
-      exact ⟨hχ, (Truth.box_time_const P.toModel τ hτ 0 t χ).mp h⟩
+      exact ⟨hχ, (Truth.box_time_const P.toModel τ 0 t χ).mp h⟩
   · -- untl: the exact one-step unfolding
     intro g e hge
     have hec : e ∈ subformulaClosure φ := closure_untl_left φ e g hge
@@ -189,7 +189,7 @@ witness, so a real model discharges its own eventualities by definition. Fulfilm
 only when a structure has to be built; read off an existing model it is free. This is why the
 truth lemma takes it as a hypothesis instead of establishing it.
 -/
-theorem typeAt_fulfillingSeq (τ : PartialHistory P.toTaskFrame) :
+theorem typeAt_fulfillingSeq (τ : WorldHistory P.toTaskFrame) :
     FulfillingSeq (typeAt P φ τ) := by
   constructor
   · intro t g e hmem
@@ -223,12 +223,12 @@ its truth set along the path is exactly `[5, ∞)`. Requiring the *type* to repe
 the extracted loop to be long enough for the formula at hand.
 -/
 noncomputable def pigeonDatum (P : IntPresentation) (φ : Formula)
-    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) : Fin P.card × Finset Formula :=
-  (τ.states u (hτ u), typeAt P φ τ u)
+    (τ : WorldHistory P.toTaskFrame) (u : ℤ) : Fin P.card × Finset Formula :=
+  (τ.state u, typeAt P φ τ u)
 
 /-- The pigeonhole datum ranges over a finite set. -/
-theorem pigeonDatum_mem (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) :
-    pigeonDatum P φ τ hτ u ∈
+theorem pigeonDatum_mem (τ : WorldHistory P.toTaskFrame) (u : ℤ) :
+    pigeonDatum P φ τ u ∈
       (Finset.univ : Finset (Fin P.card)) ×ˢ (subformulaClosure φ).powerset := by
   simp only [pigeonDatum, Finset.mem_product, Finset.mem_powerset]
   exact ⟨Finset.mem_univ _, typeAt_subset τ u⟩

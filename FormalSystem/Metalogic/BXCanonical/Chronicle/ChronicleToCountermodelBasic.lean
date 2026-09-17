@@ -812,15 +812,15 @@ build a countermodel on `Rat` where `φ` is false.
 Uses `cantorBfmcsDense` (sorry-free BFMCS) with the three restricted
 coherence conditions. The eval family is `rootedCantorFmcsDense fc A h_mcs h_box_dense 0`
 which has `mcs 0 = A`, so `¬φ ∈ evalFamily.mcs 0`. The countermodel lives on the bundle
-flow frame (`Metalogic/Algebraic/FlowFrame.lean`), whose admissible-history set is
-extensionally the frame's total-history set H_F (`def:world-history`).
+flow frame (`Metalogic/Algebraic/FlowFrame.lean`), evaluated at a world history
+(`def:world-history`).
 -/
 theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box nextTop.neg ∈ A) :
     ∃ (F : TaskFrame) (TM : TaskModel F)
-      (τ : PartialHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
+      (τ : WorldHistory F) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   have hfam₀ : rootedCantorFmcsDense fc A h_mcs h_box_dense 0 ∈
       (cantorBfmcsDense fc A h_mcs h_box_dense).families :=
@@ -828,7 +828,6 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
   refine ⟨(Algebraic.bundleFlowFrame (cantorBfmcsDense fc A h_mcs h_box_dense)).toTaskFrame,
     Algebraic.bundleFlowModel (cantorBfmcsDense fc A h_mcs h_box_dense),
     Algebraic.bundleFlowHistory ⟨rootedCantorFmcsDense fc A h_mcs h_box_dense 0, hfam₀⟩ 0,
-    Algebraic.bundleFlowHistory_total _ _,
     0, ?_⟩
   have h_neg_fam : φ.neg ∈ (rootedCantorFmcsDense fc A h_mcs h_box_dense 0).mcs
       ((0 : Rat) + 0) := by

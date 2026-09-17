@@ -128,11 +128,10 @@ engine both validity results below run on. It consumes the singleton bridge
 vector on both sides.
 -/
 theorem star_congr_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
-    {τ σ : PartialHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal) {x : F.Duration}
-    (hsame : SameStateAt τ σ x) (y : F.Duration) (v : ℕ → F.Duration) (φ : StarFormula) :
+    {τ σ : WorldHistory F} {x : F.Duration}
+    (hsame : τ.state x = σ.state x) (y : F.Duration) (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ y v φ ↔ StarTruthAt M σ y v φ :=
-  star_truth_congr_ext M φ τ σ y v (fun s => by simp [hτ s, hσ s])
-    (fun s _ _ => states_eq_of_deterministic hD hτ hσ hsame s)
+  star_truth_congr_ext M φ τ σ y v (states_eq_of_deterministic hD hsame)
 
 /--
 **Every future time is settled, on a deterministic frame.** The common core of
@@ -144,15 +143,15 @@ the positive case the engine carries `φ` to every `σ ∈ ⟨τ⟩_x`, giving t
 in the negative case it carries the failure, giving `⊡↓²¬φ`.
 -/
 theorem settledDisj_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
-    {τ : PartialHistory F} (hτ : τ.IsTotal) (x : F.Duration) (v : ℕ → F.Duration)
+    (τ : WorldHistory F) (x : F.Duration) (v : ℕ → F.Duration)
     (φ : StarFormula) :
     StarTruthAt M τ x v (settledDisj φ) := by
   rw [settledDisj_iff]
   by_cases hφ : StarTruthAt M τ (v 2) v φ
-  · exact Or.inr fun σ hσ hsame =>
-      (star_congr_of_deterministic hD M hτ hσ hsame (v 2) v φ).mp hφ
-  · exact Or.inl fun σ hσ hsame h =>
-      hφ ((star_congr_of_deterministic hD M hτ hσ hsame (v 2) v φ).mpr h)
+  · exact Or.inr fun σ hsame =>
+      (star_congr_of_deterministic hD M hsame (v 2) v φ).mp hφ
+  · exact Or.inl fun σ hsame h =>
+      hφ ((star_congr_of_deterministic hD M hsame (v 2) v φ).mpr h)
 
 /-! ## `app:deterministic-future`, positive half -/
 
@@ -173,11 +172,10 @@ Quot.sound]`. The `Classical.choice` comes from the ambient L⋆ apparatus (`Sta
 -/
 theorem sentDet_of_deterministic (hD : F.Deterministic) (φ : StarFormula) :
     F.StarValidOn (sentDet φ) := by
-  refine TaskFrame.StarValidOn.of_forall_total ?_
-  intro M τ hτ x v
+  intro M τ x v
   rw [sentDet_unfold]
   intro y _
-  exact settledDisj_of_deterministic hD M hτ x _ φ
+  exact settledDisj_of_deterministic hD M τ x _ φ
 
 /-! ## `Det-pm` — Theorem C's sentence -/
 
@@ -206,7 +204,7 @@ The manuscript's `(∗)` chain transfers verbatim, because no temporal operator 
 stored-time vector; the one new ingredient is `always`'s three-way unfolding into
 `H · ∧ · ∧ G ·`, whose three arms reassemble into the single unrestricted `∀ y` by trichotomy.
 -/
-theorem detPM_unfold (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
+theorem detPM_unfold (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ x v (detPM φ) ↔
       ∀ y : F.Duration, StarTruthAt M τ x (Function.update (Function.update v 1 x) 2 y)
@@ -241,11 +239,10 @@ reaches `states_eq_of_deterministic` through `star_truth_congr_ext` (via
 -/
 theorem detPM_of_deterministic (hD : F.Deterministic) (φ : StarFormula) :
     F.StarValidOn (detPM φ) := by
-  refine TaskFrame.StarValidOn.of_forall_total ?_
-  intro M τ hτ x v
+  intro M τ x v
   rw [detPM_unfold]
   intro y
-  exact settledDisj_of_deterministic hD M hτ x _ φ
+  exact settledDisj_of_deterministic hD M τ x _ φ
 
 /-! ## The definability theorem — Theorem C, `Det-pm` half -/
 
@@ -270,18 +267,16 @@ must; no choice-free pin is claimed.
 theorem deterministic_of_detPM
     (h : ∀ p : Atom, F.StarValidOn (detPM (StarFormula.atom p))) : F.Deterministic := by
   refine deterministic_of_singletonClasses ?_
-  intro τ σ hτ hσ x hsame y
+  intro τ σ x hsame y
   set p : Atom := Atom.mkBase "p" with hp
-  let M : TaskModel F := { valuation := fun w _ => w = τ.states y (hτ y) }
-  have hvalid := (h p).apply_total M τ hτ x (fun _ => 0)
+  let M : TaskModel F := { valuation := fun w _ => w = τ.state y }
+  have hvalid := h p M τ x (fun _ => 0)
   rw [detPM_unfold] at hvalid
   have hy := hvalid y
   rw [settledDisj_iff, update_two_apply_two] at hy
   rcases hy with hneg | hpos
-  · exact absurd (⟨hτ y, rfl⟩ : StarTruthAt M τ y _ (StarFormula.atom p))
-      (hneg τ hτ (SameStateAt.refl τ x))
-  · obtain ⟨_, hval⟩ := hpos σ hσ hsame
-    exact hval.symm
+  · exact absurd (show StarTruthAt M τ y _ (StarFormula.atom p) from rfl) (hneg τ rfl)
+  · exact (show σ.state y = τ.state y from hpos σ hsame).symm
 
 /--
 **Theorem C, `Det-pm` half: `Det-pm` defines the deterministic task frames — in its strongest

@@ -139,15 +139,15 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | prior_S_gap a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.prior_S_gap (A a0)) le_rfl
   | sep a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.sep (A a0)) le_rfl
   | stab_k a0 a1 =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ _ t h1 h2 σ hσ hs => h1 σ hσ hs (h2 σ hσ hs)
-  | stab_t a0 => exact PlusValidIn.of_forall_total fun _ _ M τ hτ t => of_stab M τ hτ t a0
-  | stab_4 a0 => exact PlusValidIn.of_forall_total fun _ _ M τ _ t => stab_four M τ t a0
+    exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)
+  | stab_t a0 => exact fun _ _ M τ t => of_stab M τ t a0
+  | stab_4 a0 => exact fun _ _ M τ t => stab_four M τ t a0
   | stab_5 a0 =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ hτ t h => stab_five M τ hτ t a0.neg h
-  | box_stab a0 => exact PlusValidIn.of_forall_total fun _ _ M τ _ t => stab_of_box M τ t a0
+    exact fun _ _ M τ t h => stab_five M τ t a0.neg h
+  | box_stab a0 => exact fun _ _ M τ t => stab_of_box M τ t a0
   | atom_stab p =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ hτ t =>
-      stab_of_stateLocal (stateLocal_atom p) M τ hτ t
+    exact fun _ _ M τ t =>
+      stab_of_stateLocal (stateLocal_atom p) M τ t
   | paste a0 a1 h0 h1 => exact paste_plusValid h0 h1
   | untl_paste a0 a1 h0 h1 => exact untl_paste_starValid h0 h1
 
@@ -252,19 +252,19 @@ theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.prior_S_gap (A' a0)) le_rfl
   | sep a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.sep (A' a0)) le_rfl
   | stab_k a0 a1 =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ _ t h1 h2 σ hσ hs => h1 σ hσ hs (h2 σ hσ hs)
+    exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)
   | stab_t a0 =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ hτ t => of_stab M τ hτ t a0.swapTemporal
+    exact fun _ _ M τ t => of_stab M τ t a0.swapTemporal
   | stab_4 a0 =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ _ t => stab_four M τ t a0.swapTemporal
+    exact fun _ _ M τ t => stab_four M τ t a0.swapTemporal
   | stab_5 a0 =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ hτ t h =>
-      stab_five M τ hτ t a0.swapTemporal.neg h
+    exact fun _ _ M τ t h =>
+      stab_five M τ t a0.swapTemporal.neg h
   | box_stab a0 =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ _ t => stab_of_box M τ t a0.swapTemporal
+    exact fun _ _ M τ t => stab_of_box M τ t a0.swapTemporal
   | atom_stab p =>
-    exact PlusValidIn.of_forall_total fun _ _ M τ hτ t =>
-      stab_of_stateLocal (stateLocal_atom p) M τ hτ t
+    exact fun _ _ M τ t =>
+      stab_of_stateLocal (stateLocal_atom p) M τ t
   | paste a0 a1 h0 h1 =>
     simp only [PlusFormula.swapTemporal, swap_temporal_dstab, swap_temporal_and]
     exact paste'_plusValid h0.swapTemporal h1.swapTemporal

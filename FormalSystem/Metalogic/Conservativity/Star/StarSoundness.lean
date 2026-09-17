@@ -44,9 +44,9 @@ would require an axiom set that is mirror-closed as a *set of instances*.
 
 * `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` — the theorems mirrored arm for
   arm
-* `FormalSystem/Semantics/StarLanguage/StarValidity.lean` — the binder-shape adapters this recursion runs on
-  (`StarValidIn.of_forall_total` / `.apply_total`), stated there beside `StarValidIn` itself and
-  beside the `StarValidOnFrames` forms they instantiate
+* `FormalSystem/Semantics/StarLanguage/StarValidity.lean` — `StarValidIn` and the
+  `StarValidOnFrames` form it instantiates, whose binders this recursion introduces and applies
+  directly
 * JPL paper `possible_worlds.tex` — `def:frame-validity`, `def:BLstar-semantics`
 
 ## Tags
@@ -80,36 +80,28 @@ theorem star_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : StarFormul
     have h1 := star_derivable_valid_and_swap_validIn d1
     have h2 := star_derivable_valid_and_swap_validIn d2
     constructor
-    · refine StarValidIn.of_forall_total ?_
-      intro F hF M τ hτ x v
-      exact (StarValidIn.apply_total h1.1 F hF M τ hτ x v)
-        (StarValidIn.apply_total h2.1 F hF M τ hτ x v)
-    · refine StarValidIn.of_forall_total ?_
-      intro F hF M τ hτ x v
-      exact (StarValidIn.apply_total h1.2 F hF M τ hτ x v)
-        (StarValidIn.apply_total h2.2 F hF M τ hτ x v)
+    · intro F hF M τ x v
+      exact (h1.1 F hF M τ x v) (h2.1 F hF M τ x v)
+    · intro F hF M τ x v
+      exact (h1.2 F hF M τ x v) (h2.2 F hF M τ x v)
   | .necessitation psi' d' =>
     have h := star_derivable_valid_and_swap_validIn d'
     constructor
-    · refine StarValidIn.of_forall_total ?_
-      intro F hF M τ _ x v σ hσ
-      exact StarValidIn.apply_total h.1 F hF M σ hσ x v
-    · refine StarValidIn.of_forall_total ?_
-      intro F hF M τ _ x v σ hσ
-      exact StarValidIn.apply_total h.2 F hF M σ hσ x v
+    · intro F hF M τ x v σ
+      exact h.1 F hF M σ x v
+    · intro F hF M τ x v σ
+      exact h.2 F hF M σ x v
   | .temporal_necessitation psi' d' =>
     have h := star_derivable_valid_and_swap_validIn d'
     constructor
-    · refine StarValidIn.of_forall_total ?_
-      intro F hF M τ hτ x v
+    · intro F hF M τ x v
       rw [StarTruth.allFuture_iff]
       intro s _
-      exact StarValidIn.apply_total h.1 F hF M τ hτ s v
-    · refine StarValidIn.of_forall_total ?_
-      intro F hF M τ hτ x v
+      exact h.1 F hF M τ s v
+    · intro F hF M τ x v
       rw [StarFormula.swap_temporal_all_future, StarTruth.allPast_iff]
       intro s _
-      exact StarValidIn.apply_total h.2 F hF M τ hτ s v
+      exact h.2 F hF M τ s v
   | .temporal_duality psi' d' =>
     have h := star_derivable_valid_and_swap_validIn d'
     refine ⟨h.2, ?_⟩
@@ -167,7 +159,7 @@ theorem star_not_derivable_nil_bot :
   intro h
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
   exact (star_soundness_valid h).apply (FrameOver.trivialFrame (D := ℤ))
-    TaskModel.allFalse τ.val τ.property 0 (fun _ => 0)
+    TaskModel.allFalse τ 0 (fun _ => 0)
 
 /-! ### Acceptance checks -/
 

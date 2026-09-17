@@ -23,7 +23,7 @@ brings that theorem closer.
 `fmp` is the one open theorem between this layer and decidability of `ValidZTime`. Its crux is
 box-faithfulness and it is genuinely hard — see `README.md` in this directory. Nothing in the
 bi-lasso layer performs any part of it: `exists_annot_of_truth` (`Extraction.lean`) takes a
-`PartialHistory P.toTaskFrame` as *input*, so it compresses histories **within** a given
+`WorldHistory P.toTaskFrame` as *input*, so it compresses histories **within** a given
 presentation; it does not produce a presentation from an arbitrary countermodel.
 
 ## Declarations
@@ -58,10 +58,9 @@ open FormalSystem.Syntax FormalSystem.Semantics
 theorem not_validZTime_of_satAtState
     (P : IntPresentation) (w : Fin P.card) (φ : Formula)
     (h : SatAtState P w φ.neg) : ¬ ValidZTime φ := by
-  obtain ⟨τ, hτ, t, -, htr⟩ := h
+  obtain ⟨τ, t, -, htr⟩ := h
   intro hv
-  exact htr (ValidIn.apply_total hv P.toTaskFrame
-    (TaskFrame.isZTime_of_instances _) P.toModel τ hτ t)
+  exact htr (hv P.toTaskFrame (TaskFrame.isZTime_of_instances _) P.toModel τ t)
 
 theorem validZTime_iff_check
     (canon : Formula → IntPresentation)

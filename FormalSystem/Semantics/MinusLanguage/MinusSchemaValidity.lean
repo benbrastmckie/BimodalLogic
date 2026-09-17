@@ -64,7 +64,7 @@ Witness `F(Hφ)` at `s := t + d`: `t < s` since `0 < d`; and every `u < s` satis
 `φ` itself (at `u = t`) supplies `φ(u)` in both sub-cases.
 -/
 theorem df_valid_of_isLeast_pos {d : F.Duration} (hd : IsLeast {x : F.Duration | 0 < x} d)
-    (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : MinusFormula) :
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : MinusFormula) :
     MinusTruthAt M τ t
       (((φ.allPast.and φ).and MinusFormula.top.someFuture).imp φ.allPast.someFuture) := by
   simp only [MinusTruth.imp_iff, MinusTruth.and_iff, MinusTruth.someFuture_iff, MinusTruth.past_iff]
@@ -94,7 +94,7 @@ transfer theorems in `Metalogic/Conservativity/MinusLanguageSoundness.lean` do n
 stay native. Do not delete either as a duplicate of an L result.
 -/
 theorem df_valid_of_succOrder [SuccOrder F.Duration] [Nontrivial F.Duration]
-    (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : MinusFormula) :
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : MinusFormula) :
     MinusTruthAt M τ t
       (((φ.allPast.and φ).and MinusFormula.top.someFuture).imp φ.allPast.someFuture) :=
   df_valid_of_isLeast_pos (isLeast_pos_succ_zero (D := F.Duration)) M τ t φ
@@ -117,7 +117,7 @@ Given `GGφ` at `t` and `t < s`, density supplies `t < r < s`; apply `GGφ` at `
 `r`) then at `s`.
 -/
 theorem dn_valid_of_denselyOrdered [DenselyOrdered F.Duration]
-    (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : MinusFormula) :
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : MinusFormula) :
     MinusTruthAt M τ t (φ.allFuture.allFuture.imp φ.allFuture) := by
   simp only [MinusTruth.imp_iff, MinusTruth.future_iff]
   intro hGG s hs
@@ -153,7 +153,7 @@ The `Order.pred` mirror of `df_valid_of_isLeast_pos`: witness `P(Gφ)` at `s := 
 so `Gφ` (future of `t`) or `φ` itself (at `u = t`) supplies `φ(u)`.
 -/
 theorem swapMinus_df_valid_of_predOrder [PredOrder F.Duration] [Nontrivial F.Duration]
-    (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : MinusFormula) :
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : MinusFormula) :
     MinusTruthAt M τ t
       (((φ.allFuture.and φ).and MinusFormula.top.somePast).imp φ.allFuture.somePast) := by
   simp only [MinusTruth.imp_iff, MinusTruth.and_iff, MinusTruth.somePast_iff, MinusTruth.future_iff]

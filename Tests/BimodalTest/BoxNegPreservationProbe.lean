@@ -18,7 +18,7 @@ throughout in the past tense.
 ## The branch
 
 Row B of `Tests/BimodalTest/CrossWorldPropagationProbe.lean` is `(G p) → □(G p)`, which is
-**invalid** — some total history may carry a `¬p` somewhere in the future while `τ` has none.
+**invalid** — some world history may carry a `¬p` somewhere in the future while `τ` has none.
 Negating it and applying `impNeg` gives the two-formula branch
 
 ```
@@ -27,7 +27,7 @@ F(□(G p)) @ (w₀, t₀)
 ```
 
 which is therefore **satisfiable**: interpret `w₀` by a history where `p` holds at every later
-time, in a frame that also carries a total history where it does not.
+time, in a frame that also carries a world history where it does not.
 
 ## What the rule used to do to it — the defect
 

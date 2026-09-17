@@ -340,7 +340,7 @@ def Fulfilling (P : IntPresentation) (φ : Formula) (A : Annot P φ) : Prop :=
       ∃ s : ℤ, s < t ∧ e ∈ A.label s ∧ ∀ r : ℤ, s < r → r < t → g ∈ A.label r)
 
 /--
-**Soundness of a box oracle**: `bx χ` is `true` exactly when `χ` holds along every total world
+**Soundness of a box oracle**: `bx χ` is `true` exactly when `χ` holds along every world
 history of the presented frame.
 
 The time is fixed at `0` with no loss: `Semantics.Truth.box_const` makes the truth of a boxed
@@ -350,11 +350,11 @@ one `Bool` per formula is the whole content.
 This is a *specification*, not a construction. It is stated here so the truth lemma can be
 proved relative to any oracle meeting it, before any concrete oracle exists — which is what
 breaks the circularity between the truth lemma and the oracle. `TruthAt`'s box clause quantifies
-over all total histories of the frame, not over any enumerated family, so constructing an oracle
+over all world histories of the frame, not over any enumerated family, so constructing an oracle
 that meets this specification requires the small-model theorem and is deliberately deferred.
 -/
 def BoxOracleSound (P : IntPresentation) (bx : Formula → Bool) : Prop :=
   ∀ χ : Formula,
-    bx χ = true ↔ ∀ σ : PartialHistory P.toTaskFrame, σ.IsTotal → TruthAt P.toModel σ 0 χ
+    bx χ = true ↔ ∀ σ : WorldHistory P.toTaskFrame, TruthAt P.toModel σ 0 χ
 
 end FormalSystem.Metalogic.Decidability

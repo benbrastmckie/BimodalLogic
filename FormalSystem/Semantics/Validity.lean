@@ -20,8 +20,8 @@ This module defines semantic validity and consequence for TM formulas.
 
 ## Main Definitions
 
-- `Valid`: A formula is valid if true at every **total** history, in every model
-- `SemanticConsequence`: Semantic consequence relation, quantified over total histories
+- `Valid`: A formula is valid if true at every world history, in every model
+- `SemanticConsequence`: Semantic consequence relation, quantified over world histories
 - `satisfiable`: A context is satisfiable if consistent (exists some temporal type)
 - Notation: `⊨ φ` for validity, `Γ ⊨ φ` for semantic consequence
 
@@ -33,11 +33,11 @@ This module defines semantic validity and consequence for TM formulas.
 ## Implementation Notes
 
 - Validity quantifies over every temporal type `D` with `LinearOrderedAddCommGroup D`, and over
-  the **total** histories: `τ.IsTotal`, i.e. `∀ t, τ.domain t`. There is no admissible-history
-  parameter and no shift-closure side condition; `TruthAt` takes no set argument.
-- The statement needs no shift-closure hypothesis because `timeShift` preserves totality
-  (`PartialHistory.isTotal_timeShift`), so time-shift invariance carries no side condition.
-- Satisfiability existentially quantifies over a total witness history.
+  the world histories `τ : WorldHistory F`. There is no admissible-history parameter and no
+  shift-closure side condition; `TruthAt` takes no set argument.
+- The statement needs no shift-closure hypothesis because `WorldHistory.timeShift` lands in
+  `WorldHistory F` by construction, so time-shift invariance carries no side condition.
+- Satisfiability existentially quantifies over a witness world history.
 - Caller trap: `Valid` and `SemanticConsequence` are `ValidIn` / `SemanticConsequenceIn` at
   `FrameClass.Base`. Their pre-abbreviation binder shape is reachable through the `.of_forall`
   and `.apply` adapters below, never by `unfold`.
@@ -45,8 +45,8 @@ This module defines semantic validity and consequence for TM formulas.
 ## Paper Alignment
 
 `def:logical-consequence` is quoted verbatim at `SemanticConsequence` below, which is the
-definition of record for this module. `H_F` is the set of total histories of the frame, so
-`τ ∈ H_F` is `τ.IsTotal`; the polymorphic quantification over `LinearOrderedAddCommGroup D`
+definition of record for this module. `H_F` is the set of world histories of the frame, so
+`τ ∈ H_F` is `τ : WorldHistory F`; the polymorphic quantification over `LinearOrderedAddCommGroup D`
 renders "for all models M" and "times x in D".
 
 ## References
@@ -78,8 +78,7 @@ discharge. -/
 predicate-indexed primitive, mirroring `ValidOnFrames`. Indexing by a bare frame predicate rather
 than by a `FrameClass` tag is what lets one definition serve every class. -/
 def ConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
-    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
+  ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- `cor:tm-completeness`'s class-restricted consequence `Γ ⊨_C φ` at a finite context: the
@@ -94,7 +93,7 @@ def SemanticConsequenceIn (fc : ProofSystem.FrameClass) (Γ : Context) (φ : For
 Semantic consequence: `Γ ⊨ φ` means φ is true in all models where all of `Γ` are true,
 for every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
-Formally: for every temporal type `D`, at every model, **total** history and time where all
+Formally: for every temporal type `D`, at every model, world history and time where all
 formulas in `Γ` are true, formula `φ` is also true.
 
 **Definition of record — `def:logical-consequence`**, verbatim:
@@ -104,7 +103,7 @@ formulas in `Γ` are true, formula `φ` is also true.
 > if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
 > *valid* just in case |= phi.
 
-This is that clause on the nose: "possible worlds tau in H_F" is `τ.IsTotal`, and the
+This is that clause on the nose: "possible worlds tau in H_F" is `τ : WorldHistory F`, and the
 quantification is over all `x ∈ D` (all times in the temporal order), not just times in
 `dom(τ)`. No admissible-history parameter, no shift-closure side condition.
 
@@ -125,66 +124,39 @@ notation:50 Γ:50 " ⊨ " φ:50 => SemanticConsequence Γ φ
 
 /-! ### Binder-shape adapters
 
-The explicit binder shapes. `ConsequenceOnFrames` already quantifies over the
-unbundled `(τ : PartialHistory F) (_ : τ.IsTotal)` pair, so — unlike `ValidOnFrames`, which bundles
-the history into `WorldHistory` — no history-shape adapter is needed at the generic layer. What
-each `of_forall` restores is the *frame condition*, putting it back into the local context in the
-form typeclass resolution can see: `Sat .Dense F` is `TaskFrame.IsDense F`, whose head symbol is
-not `DenselyOrdered`, so a bare hypothesis of that type is invisible to instance search. The three
-class-restricted pairs live beside their definitions in `Metalogic/StrongCompleteness.lean`. -/
+`SemanticConsequence` is `SemanticConsequenceIn` at `.Base`, whose frame condition `Sat .Base` is
+`True`; the two adapters below discharge that vacuous argument so that no call site binds it. The
+class-restricted relations need no adapters: `ConsequenceOnFrames` already quantifies over
+`WorldHistory F`, so `intro` and application open it directly. -/
 
 /-- Introduce `SemanticConsequence` from its pre-abbreviation binder shape; the `Sat .Base`
 argument (`True`) is discharged here rather than at each call site. -/
 theorem SemanticConsequence.of_forall {Γ : Context} {φ : Formula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
     SemanticConsequence Γ φ :=
-  fun F _ M τ hτ t => h F M τ hτ t
+  fun F _ M τ t => h F M τ t
 
 /-- Eliminate `SemanticConsequence` into its pre-abbreviation binder shape. -/
 theorem SemanticConsequence.apply {Γ : Context} {φ : Formula}
     (h : SemanticConsequence Γ φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F trivial M τ hτ t hall
-
-/-- Introduce `SemanticConsequenceIn` at an arbitrary tag from the frame-condition-explicit
-binder shape. The body is `h` — `ConsequenceOnFrames` already quantifies over the unbundled
-`(τ : PartialHistory F) (_ : τ.IsTotal)` pair, so nothing has to be reshaped.
-
-**This is why the per-class consequence adapters were boilerplate.** The three pairs that used
-to live in `Metalogic/StrongCompleteness.lean` (`SemanticConsequenceDense`,
-`SemanticConsequenceZTime`, `SemanticConsequenceRTime`) were each this lemma at a fixed
-tag with `fc.Sat F` unfolded to that class's frame condition; they are deleted, and a site now
-writes the tag instead of picking a name. -/
-theorem SemanticConsequenceIn.of_forall_total {fc : ProofSystem.FrameClass} {Γ : Context}
-    {φ : Formula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SemanticConsequenceIn fc Γ φ :=
-  h
-
-/-- Eliminate `SemanticConsequenceIn` at an arbitrary tag into the frame-condition-explicit
-binder shape. The replacement for the three deleted class-specific `.apply` adapters. -/
-theorem SemanticConsequenceIn.apply_total {fc : ProofSystem.FrameClass} {Γ : Context}
-    {φ : Formula} (h : SemanticConsequenceIn fc Γ φ) (F : TaskFrame) (hF : fc.Sat F)
-    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hΓ : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F hF M τ hτ t hΓ
+  h F trivial M τ t hall
 
 /--
 A context is satisfiable in temporal type `D` if there exists a model where all formulas
 in the context are true.
 
-The witness history is required to be **total** (`τ.IsTotal`), which is the exact dual of the
-totality constraint in `Valid`: `satisfiable D Γ` and validity-style quantification range over
+The witness history is a world history (`τ : WorldHistory F`), which is the exact dual of the
+history quantifier in `Valid`: `satisfiable D Γ` and validity-style quantification range over
 the same class of histories, so `¬satisfiable` and consequence line up (see
 `unsatisfiable_implies_all`).
 
 **No paper anchor.** Unlike `Valid` and `SemanticConsequence`, which render
 `def:logical-consequence` verbatim, satisfiability has no counterpart in the definitions of
 record. Its totality constraint and its `[Nontrivial D]` binder are a **design decision**
-inherited from `Valid` so that the two notions are duals over one and the same history class —
+inherited from `Valid` so that the two notions are duals over one and the same history type —
 not a reconciliation finding, and not attributable to any definition anchor.
 
 This is the semantic notion of consistency relative to a temporal type.
@@ -193,8 +165,7 @@ For absolute satisfiability (exists in some type), use `∃ D, satisfiable D Γ`
 **Note**: Satisfiability quantifies over all times `t : D`, not just domain times.
 -/
 def satisfiable (D : TemporalOrder) (Γ : Context) : Prop :=
-  ∃ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
-    (τ : PartialHistory F.toTaskFrame) (_ : τ.IsTotal) (t : ↑D),
+  ∃ (F : FrameOver D) (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ↑D),
     ∀ φ ∈ Γ, TruthAt M τ t φ
 
 /--
@@ -219,12 +190,11 @@ to the existence of finite models.
 **Relationship to Context Satisfiability**:
 `FormulaSatisfiable φ ↔ satisfiable Int [φ]` (for Int time, but holds for any D)
 
-**No paper anchor** — see the note on `satisfiable`. The totality constraint on the witness
-history and the `Nontrivial` binder are inherited from `Valid` as a design decision.
+**No paper anchor** — see the note on `satisfiable`. The world-history witness and the
+`Nontrivial` binder are inherited from `Valid` as a design decision.
 -/
 def FormulaSatisfiable (φ : Formula) : Prop :=
-  ∃ (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
+  ∃ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
     TruthAt M τ t φ
 
 /-- L's instance of the abstract point-truth class of `Semantics/ValidityLayer.lean`: truth at
@@ -251,8 +221,7 @@ used instead, and dot-notation (`F.ValidOn φ`) reads as the paper's `⊨_F φ` 
 
 **This is not a parallel validity notion.** `valid_iff_forall_validOn` below proves the two are
 related by quantification over frames, so `ValidOn` is a specialization of the one validity
-predicate rather than a competitor to it — the same discipline `WorldHistory` follows with
-respect to `PartialHistory.IsTotal`.
+predicate rather than a competitor to it.
 -/
 
 /--
@@ -270,9 +239,7 @@ Each of the three quantifiers is rendered on the nose:
 * "every model `M = ⟨W, D, ⇒, |·|⟩` where `F = ⟨W, D, ⇒⟩`" is `∀ M : TaskModel F` — the frame is
   a *parameter* of `TaskModel`, so the side condition that `M`'s frame reduct is `F` is carried
   by the type rather than by a hypothesis.
-* "possible world `τ ∈ H_F`" is `∀ τ : WorldHistory F`, the bundled subtype. Per `WorldHistory`'s
-  encoding note, the bundled form is used exactly where `H_F` appears as an object in its own
-  right, which is how the recorded text reads here.
+* "possible world `τ ∈ H_F`" is `∀ τ : WorldHistory F`, the type of world histories.
 * "time `x ∈ D`" is `∀ x : D` — all of the temporal order, not merely `dom(τ)`; for a total `τ`
   the two coincide.
 
@@ -280,24 +247,9 @@ Unlike `Valid`, this carries no `[Nontrivial D]` binder: `Valid` needs it to sta
 quantification over temporal types, whereas here `D` and `F` are both already given.
 -/
 def TaskFrame.ValidOn (F : TaskFrame) (φ : Formula) : Prop :=
-  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), TruthAt M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), TruthAt M τ x φ
 
 namespace TaskFrame
-
-/--
-**The bridge between the two validity shapes.**
-
-`TaskFrame.ValidOn` quantifies over the bundled subtype `WorldHistory F`; correspondence arguments are
-naturally written with the history and its totality proof unbundled. One term in each direction,
-because `WorldHistory` is a subtype and `.val`/`.property` are its projections.
-
-Stated here, beside `TaskFrame.ValidOn` itself, rather than in the one correspondence module that
-first needed it: the unbundling is a fact about the definition, not about any particular
-correspondence argument, and its callers now sit in more than one module.
--/
-theorem validOn_iff_total (F : TaskFrame) (φ : Formula) :
-    F.ValidOn φ ↔ ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal → ∀ t, TruthAt M τ t φ :=
-  genericValidOn_iff_total (L := Formula) F φ
 
 /--
 Frame-relative validity is **never vacuous**: no frame validates `⊥`.
@@ -379,11 +331,11 @@ def ValidIn (fc : ProofSystem.FrameClass) (φ : Formula) : Prop :=
   ValidOnFrames fc.Sat φ
 
 /--
-A formula is valid if it is true in all models, at all times, at every **total** history, for
+A formula is valid if it is true in all models, at all times, at every world history, for
 every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
 Formally: for every temporal type `D`, every task frame `F` over `D`, every model `M` over
-`F`, every history `τ` with `τ.IsTotal`, and every time `t : D`, the formula is true at
+`F`, every world history `τ : WorldHistory F`, and every time `t : D`, the formula is true at
 `(M, τ, t)`.
 
 **Definition of record — `def:logical-consequence`**, verbatim:
@@ -393,11 +345,11 @@ Formally: for every temporal type `D`, every task frame `F` over `D`, every mode
 > if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
 > *valid* just in case |= phi.
 
-The "possible worlds tau in H_F" of that clause are the frame's **total** histories, which is
-what `τ.IsTotal` says. There is no admissible-history parameter and no shift-closure side
+The "possible worlds tau in H_F" of that clause are the frame's world histories,
+`τ : WorldHistory F`. There is no admissible-history parameter and no shift-closure side
 condition: a shift-closure hypothesis is unnecessary in the statement of validity because
-totality is trivially preserved by `timeShift` (`PartialHistory.isTotal_timeShift`), so time-shift
-invariance carries no side condition to quantify over. `TruthAt` takes no set argument.
+`WorldHistory.timeShift` lands in `WorldHistory F` by construction, so time-shift invariance
+carries no side condition to quantify over. `TruthAt` takes no set argument.
 
 Validity also quantifies over all `x ∈ D` (all times in the temporal order), not just times in
 `dom(τ)` — for a total history those coincide.
@@ -409,9 +361,9 @@ Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 `def:logical-consequence`'s closing clause. `Valid` stands to `Derivable .Base` as `ValidIn fc`
 stands to `Derivable fc`, with the class tag in the same place on both sides.
 
-Caller trap: the explicit binder shape `∀ (F) (M) (τ : PartialHistory F), τ.IsTotal → ∀ t` is
-reachable through `Valid.of_forall_total` and `Valid.apply`, which discharge the `True` argument
-so no call site writes `trivial`.
+Caller trap: the explicit binder shape `∀ (F) (M) (τ : WorldHistory F) (t)` is reachable
+through `Valid.of_forall` and `Valid.apply`, which discharge the `True` argument so no call site
+writes `trivial`.
 -/
 def Valid (φ : Formula) : Prop :=
   ValidIn ProofSystem.FrameClass.Base φ
@@ -422,28 +374,26 @@ Notation for validity: `⊨ φ` means `Valid φ`.
 notation:50 "⊨ " φ:50 => Valid φ
 
 /-- Introduce `Valid` from its explicit binder shape. The `.Base` class imposes no frame
-condition, so this is `ValidIn.of_forall_total` with the `Sat .Base` argument (`True`)
-discharged here rather than at each call site. -/
-theorem Valid.of_forall_total {φ : Formula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
+condition, so the `Sat .Base` argument (`True`) is discharged here rather than at each call site. -/
+theorem Valid.of_forall {φ : Formula}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      TruthAt M τ t φ) :
     Valid φ :=
-  GenericValid.of_forall_total (L := Formula) (φ := φ) h
+  GenericValid.of_forall (L := Formula) (φ := φ) h
 
 /-- Eliminate `Valid` into its explicit binder shape; the `Sat .Base` argument is discharged
 here, not at the call site. -/
 theorem Valid.apply {φ : Formula} (h : Valid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
-  GenericValid.apply (L := Formula) (φ := φ) h F M τ hτ t
+    (τ : WorldHistory F) (t : F.Duration) : TruthAt M τ t φ :=
+  GenericValid.apply (L := Formula) (φ := φ) h F M τ t
 
-/-- The contrapositive of `Valid.of_forall_total`, in the shape a countermodel extraction
-wants: from a failure of `Valid` it hands back a failure of the explicit ∀-statement, which
-`push Not` takes apart. Caller trap: use this rather than `unfold Valid` — `Valid` is an
-abbreviation over `ValidIn` and has no binder list to open. The `.Base` instance of
-`ValidIn.of_not`, with the `True` frame condition discharged here. -/
+/-- The contrapositive of `Valid.of_forall`, in the shape a countermodel extraction wants: from a
+failure of `Valid` it hands back a failure of the explicit ∀-statement, which `push Not` takes
+apart. Caller trap: use this rather than `unfold Valid` — `Valid` is an abbreviation over
+`ValidIn` and has no binder list to open. -/
 theorem Valid.of_not {φ : Formula} (h : ¬ Valid φ) :
-    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
-        τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
+    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+        TruthAt M τ t φ :=
   GenericValid.of_not (L := Formula) (φ := φ) h
 
 namespace Validity
@@ -459,10 +409,8 @@ temporal type and the frame, `ValidOn` leaves both fixed. Stated as a theorem ra
 introduced as an abbreviation, exactly so that the equivalence is a proof obligation the build
 checks and not a definitional identity asserted by fiat.
 
-Both directions are the `.val`/`.property` bridge between `WorldHistory F` and the predicate form
-`(τ : PartialHistory F) (hτ : τ.IsTotal)` that `Valid` uses — the two spellings of one and the same
-`IsTotal` predicate, per `PartialHistory.lean`'s encoding note. No mathematical content is added in
-either direction; that is the point of the statement.
+Both directions only discharge or supply the vacuous `Sat .Base` argument. No mathematical
+content is added in either direction; that is the point of the statement.
 -/
 theorem valid_iff_forall_validOn (φ : Formula) :
     Valid φ ↔ ∀ (F : TaskFrame), F.ValidOn φ := by
@@ -506,82 +454,6 @@ theorem ValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : Formula} (h : 
     (hv : ValidIn fc₁ φ) : ValidIn fc₂ φ :=
   GenericValidIn.mono (L := Formula) (φ := φ) h hv
 
-/-! ### The migration lever
-
-`ValidOnFrames` is defined through `TaskFrame.ValidOn`, whose history quantifier is the bundled
-`(τ : WorldHistory F)`; every predicate this module states by hand instead uses the unbundled pair
-`(τ : PartialHistory F) (_ : τ.IsTotal)`. `valid_iff_forall_validOn` already proves the two spellings
-agree, but they are not *definitionally* equal, so a proof written against one shape does not
-elaborate against the other. The lemmas below are the shape adapters: a goal site becomes
-`refine ValidOnFrames.of_forall_total ?_; intro F hF M τ hτ t`, and a hypothesis site becomes
-`h.apply_total F hF M τ hτ t`.
-
-**Two triples, and no more than two.** Every adapter in this file is indexed either by a bare
-frame predicate `P : TaskFrame → Prop` (`ValidOnFrames.{of_forall_total, apply_total, of_not}`)
-or by a `FrameClass` tag (`ValidIn.{of_forall_total, apply_total, of_not}`), and the second is
-literally the first at `fc.Sat`. **Do not add a per-class third.** `FrameClass.Sat` is
-`@[reducible]` and `TaskFrame.IsDense` an `abbrev`, so a `Sat .Dense F` hypothesis registers
-itself with instance search on `intro` and a tag-specific copy buys nothing. If a tag needs its
-frame condition taken apart, that is what the `sat_intro` tactic
-(`Semantics/FrameClassValidity.lean`) is for; a new `ValidX.of_forall` is the thing this layer
-exists to make unnecessary.
-
-`Valid.{of_forall_total, apply, of_not}` and `SemanticConsequence.{of_forall, apply}` survive for
-a different reason, and are not exceptions to the rule above: they discharge `Sat .Base = True`
-so that no `.Base` call site has to bind a vacuous `_`, which is a service the generic pair
-cannot render. -/
-
-/-- Introduce `ValidOnFrames` from the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)` shape. -/
-theorem ValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : Formula}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
-    ValidOnFrames P φ :=
-  GenericValidOnFrames.of_forall_total (L := Formula) (φ := φ) h
-
-/-- Eliminate `ValidOnFrames` into the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)` shape. -/
-theorem ValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : Formula} (h : ValidOnFrames P φ)
-    (F : TaskFrame) (hF : P F) (M : TaskModel F) (τ : PartialHistory F)
-    (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
-  GenericValidOnFrames.apply_total (L := Formula) (φ := φ) h F hF M τ hτ t
-
-/-- `ValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
-theorem ValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : Formula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
-    ValidIn fc φ :=
-  GenericValidIn.of_forall_total (L := Formula) (φ := φ) h
-
-/-- `ValidOnFrames.apply_total` at a `FrameClass` tag. -/
-theorem ValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : Formula} (h : ValidIn fc φ)
-    (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F) (τ : PartialHistory F)
-    (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
-  GenericValidIn.apply_total (L := Formula) (φ := φ) h F hF M τ hτ t
-
-/-- The contrapositive of `ValidOnFrames.of_forall_total`, at a bare frame predicate: from a
-failure of `ValidOnFrames P` it hands back a failure of the unbundled ∀-statement, which
-`push Not` can then take apart.
-
-This is `ValidIn.of_not` one layer down, and it is the missing third of the `ValidOnFrames`
-triple. It matters because `ValidComplete` is `ValidOnFrames TaskFrame.IsComplete` — a bare
-predicate that no `FrameClass` tag denotes — so the `ValidOnFrames` triple *is* that predicate's
-whole adapter family, and no class-specific declaration has to exist for it. -/
-theorem ValidOnFrames.of_not {P : TaskFrame → Prop} {φ : Formula} (h : ¬ ValidOnFrames P φ) :
-    ¬ ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-        τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
-  GenericValidOnFrames.of_not (L := Formula) (φ := φ) h
-
-/-- The contrapositive of `ValidIn.of_forall_total`, in the shape a countermodel extraction
-wants: from a failure of `ValidIn fc` it hands back a failure of the unbundled ∀-statement,
-which `push Not` can then take apart.
-
-This is the countermodel-extraction adapter for every tag; there is no per-class variant.
-`Valid.of_not` is the one sibling, and only because it discharges `Sat .Base = True` rather than
-restating a frame condition. -/
-theorem ValidIn.of_not {fc : ProofSystem.FrameClass} {φ : Formula} (h : ¬ ValidIn fc φ) :
-    ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-        τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
-  GenericValidIn.of_not (L := Formula) (φ := φ) h
-
 /--
 A formula is valid over dense temporal orders if it is true in all models where D is
 densely ordered, at all total histories, and all times.
@@ -591,8 +463,8 @@ frame condition for the density axiom DN: `F(phi) -> F(F(phi))`.
 
 **An abbreviation over `ValidIn`.** The frame constraint is `FrameClass.Sat .Dense`, which is
 `TaskFrame.IsDense`, `def:frame-properties`' Dense clause. The explicit binder shape is
-recovered by the generic `ValidIn.of_forall_total` / `ValidIn.apply_total`, and the density
-witness reaches typeclass resolution directly: `Sat` is `@[reducible]` and `TaskFrame.IsDense`
+opened directly by `intro F hF M τ t`, and the density witness reaches typeclass resolution
+directly: `Sat` is `@[reducible]` and `TaskFrame.IsDense`
 is an `abbrev`, so a `Sat .Dense F` hypothesis registers as a `DenselyOrdered` instance the
 moment it is introduced. No class-specific adapter is needed.
 
@@ -611,9 +483,8 @@ capturing the frame condition for the discreteness axioms DF/DP.
 is `TaskFrame.IsZTime` — `def:BX-z`'s narrowing to ℤ-time (`prop:archimedean`), *not*
 `def:frame-properties`' bare Discrete clause. Recording the narrowing in the tag's interpretation
 rather than in a binder list here is what keeps `soundness_ztime` from silently widening its
-frame class. The binder shape this definition used to have is recovered by the generic
-`ValidIn.of_forall_total` / `ValidIn.apply_total` followed by `sat_intro`, which destructures the
-`IsZTime` existential into the four instances.
+frame class. The binder shape this definition used to have is recovered by `intro` followed by `sat_intro`,
+which destructures the `IsZTime` existential into the four instances.
 
 **Notation**: `⊨_discrete φ`
 
@@ -682,10 +553,7 @@ Dedekind completeness is expressed by the explicit `Prop`-valued hypothesis
 
 rather than by swapping the tree's `[LinearOrder D]` binder for
 `[ConditionallyCompleteLinearOrder D]`: every downstream `[LinearOrder D]`-indexed lemma then
-continues to apply with no instance-unification risk. The generic
-`ValidOnFrames.{of_forall_total, apply_total, of_not}` triple adapts between this shape and the
-explicit-hypothesis shape — this predicate is why that triple exists at the bare-predicate layer
-and not only at a `FrameClass` tag.
+continues to apply with no instance-unification risk.
 
 **The model class.** That `ℤ` satisfies every binder is the discrete branch of the Hölder
 dichotomy: by `complete_duration_discrete_or_dense`
@@ -714,9 +582,8 @@ not merely a paradigm one.
 **This is `ValidIn .RTime`** — `FrameClass.Sat .RTime` is `TaskFrame.IsRTime`, the
 conjunction of `def:frame-properties`' Dense and Complete clauses — and it is therefore the
 predicate the `.RTime` tag denotes, whatever its name may suggest about `ValidComplete`. The
-binder shape this definition used to have is recovered by the generic
-`ValidIn.of_forall_total` / `ValidIn.apply_total` followed by `sat_intro`, which splits
-`IsRTime` into the density instance and the least-upper-bound hypothesis.
+binder shape this definition used to have is recovered by `intro` followed by `sat_intro`, which
+splits `IsRTime` into the density instance and the least-upper-bound hypothesis.
 
 **Why the density binder is exactly the right cut.** By
 `FormalSystem.Semantics.complete_duration_discrete_or_dense`
@@ -836,12 +703,12 @@ theorem valid_iff_empty_consequence (φ : Formula) :
   constructor
   · intro h
     refine SemanticConsequence.of_forall ?_
-    intro F M τ hτ t _
-    exact h.apply F M τ hτ t
+    intro F M τ t _
+    exact h.apply F M τ t
   · intro h
-    refine Valid.of_forall_total ?_
-    intro F M τ hτ t
-    exact h.apply F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
+    refine Valid.of_forall ?_
+    intro F M τ t
+    exact h.apply F M τ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 /--
 Semantic consequence is monotonic: adding premises preserves consequences.
@@ -850,15 +717,15 @@ theorem consequence_monotone {Γ Δ : Context} {φ : Formula} :
     Γ ⊆ Δ → (Γ ⊨ φ) → (Δ ⊨ φ) := by
   intro h_sub h_cons
   refine SemanticConsequence.of_forall ?_
-  intro F M τ hτ t h_delta
-  exact h_cons.apply F M τ hτ t (fun ψ hψ => h_delta ψ (h_sub hψ))
+  intro F M τ t h_delta
+  exact h_cons.apply F M τ t (fun ψ hψ => h_delta ψ (h_sub hψ))
 
 /--
 If a formula is valid, it is a semantic consequence of any context.
 -/
 theorem valid_consequence (φ : Formula) (Γ : Context) :
     (⊨ φ) → (Γ ⊨ φ) :=
-  fun h => SemanticConsequence.of_forall fun F M τ hτ t _ => h.apply F M τ hτ t
+  fun h => SemanticConsequence.of_forall fun F M τ t _ => h.apply F M τ t
 
 /--
 Context with all formulas true implies each formula individually true.
@@ -867,7 +734,7 @@ theorem consequence_of_member {Γ : Context} {φ : Formula} :
     φ ∈ Γ → (Γ ⊨ φ) := by
   intro h
   refine SemanticConsequence.of_forall ?_
-  intro F M τ hτ t h_all
+  intro F M τ t h_all
   exact h_all φ h
 
 /--
@@ -886,8 +753,8 @@ binds no `D` — it is `SemanticConsequenceIn .Base`, whose frame quantification
 -/
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
     (∀ D : TemporalOrder, ¬satisfiable D Γ) → (Γ ⊨ φ) :=
-  fun h_unsat => SemanticConsequence.of_forall fun F M τ hτ t h_all =>
-    absurd ⟨F.toFibre, M, τ, hτ, t, h_all⟩ (h_unsat F.Duration)
+  fun h_unsat => SemanticConsequence.of_forall fun F M τ t h_all =>
+    absurd ⟨F.toFibre, M, τ, t, h_all⟩ (h_unsat F.Duration)
 
 /--
 Unsatisfiable context in a fixed temporal type implies consequence in that type.
@@ -896,12 +763,12 @@ This is the type-specific version of explosion.
 theorem unsatisfiable_implies_all_fixed {D : TemporalOrder}
     {Γ : Context} {φ : Formula} :
     ¬satisfiable D Γ → ∀ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
-      (τ : PartialHistory F.toTaskFrame) (_ : τ.IsTotal)
+      (τ : WorldHistory F.toTaskFrame)
       (t : ↑D), (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ := by
-  intro h_unsat F M τ hτ t h_all
+  intro h_unsat F M τ t h_all
   exfalso
   apply h_unsat
-  exact ⟨F, M, τ, hτ, t, h_all⟩
+  exact ⟨F, M, τ, t, h_all⟩
 
 /-! ### Validity Reduction Lemmas
 
@@ -917,9 +784,9 @@ this gives TruthAt φ at t.
 -/
 theorem valid_of_valid_all_future {φ : Formula} (h : Valid (Formula.allFuture φ)) :
     Valid φ := by
-  intro F M τ hτ t
+  intro F hF M τ t
   -- G(φ) valid means ∀ t, ∀ s > t, φ(s). Pick r < t, then G(φ)(r) gives φ(t).
-  have h_G := h F M τ hτ
+  have h_G := h F hF M τ
   obtain ⟨r, hrt⟩ := exists_lt t
   have := h_G r
   simp only [Truth.future_iff] at this
@@ -930,9 +797,9 @@ If H(φ) is valid, then φ is valid.
 -/
 theorem valid_of_valid_all_past {φ : Formula} (h : Valid (Formula.allPast φ)) :
     Valid φ := by
-  intro F M τ hτ t
+  intro F hF M τ t
   -- H(φ) valid at all times. Pick s > t, then H(φ)(s) gives φ(t) since t < s.
-  have h_H := h F M τ hτ
+  have h_H := h F hF M τ
   obtain ⟨s, hts⟩ := exists_gt t
   have := h_H s
   simp only [Truth.past_iff] at this
@@ -941,17 +808,15 @@ theorem valid_of_valid_all_past {φ : Formula} (h : Valid (Formula.allPast φ)) 
 /--
 If □φ is valid, then φ is valid.
 
-Proof: □φ at `(τ, t)` means `∀ σ, σ.IsTotal → TruthAt φ at (σ, t)` per `def:BL-semantics`
-("M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F"). Instantiating that at `σ := τ` needs exactly
-`τ.IsTotal` — which is precisely the hypothesis `Valid` now binds. So the step is the identity
-move: feed `τ`'s own totality witness back in as the box witness.
+Proof: □φ at `(τ, t)` means `∀ σ : WorldHistory F, TruthAt φ at (σ, t)` per `def:BL-semantics`
+("M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F"). Instantiate it at `σ := τ`.
 
 -/
 theorem valid_of_valid_box {φ : Formula} (h : Valid (Formula.box φ)) :
     Valid φ := by
-  refine Valid.of_forall_total ?_
-  intro F M τ hτ t
-  exact h.apply F M τ hτ t τ hτ
+  refine Valid.of_forall ?_
+  intro F M τ t
+  exact h.apply F M τ t τ
 
 end Validity
 

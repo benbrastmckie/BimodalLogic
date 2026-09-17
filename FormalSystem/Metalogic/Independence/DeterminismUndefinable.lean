@@ -29,7 +29,7 @@ The two headline results, obtained by instantiating the generic state-set bridge
 The claim *"Determined (`φ → ⊡φ`) is valid exactly over the Deterministic frames"* runs together
 three different regions, and only the first two coincide:
 
-1. `⊡` trivializes **semantically** — `⟨τ⟩_x` is a singleton at every total history and time —
+1. `⊡` trivializes **semantically** — `⟨τ⟩_x` is a singleton at every world history and time —
    **exactly** on the deterministic frames. That is `lem:deterministic-singleton`, whose (⇒) half
    is `states_eq_of_deterministic`.
 2. `⊡` trivializes **logically** — *Determined* is frame-valid — on a class **strictly
@@ -100,32 +100,32 @@ open FormalSystem.PlusLanguage
 `τ(t) = τ(0) + t` (`f1_states_eq`). -/
 theorem f1_orderFlow : OrderFlow F1 where
   strictMono := by
-    intro τ hτ s t hst
-    have hs := f1_states_eq τ hτ s
-    have ht := f1_states_eq τ hτ t
-    show τ.states s (hτ s) < τ.states t (hτ t)
+    intro τ s t hst
+    have hs := f1_states_eq τ s
+    have ht := f1_states_eq τ t
+    show τ.state s < τ.state t
     rw [hs, ht]
     linarith
   hits_future := by
-    intro τ hτ x v hv
-    refine ⟨x + (v - τ.states x (hτ x)), ?_, ?_⟩
-    · have : (0 : ℝ) < v - τ.states x (hτ x) := sub_pos.mpr hv
-      show x < x + (v - τ.states x (hτ x))
+    intro τ x v hv
+    refine ⟨x + (v - τ.state x), ?_, ?_⟩
+    · have : (0 : ℝ) < v - τ.state x := sub_pos.mpr hv
+      show x < x + (v - τ.state x)
       linarith
-    · have hx := f1_states_eq τ hτ x
-      have hc := f1_states_eq τ hτ (x + (v - τ.states x (hτ x)))
-      show τ.states (x + (v - τ.states x (hτ x))) _ = v
+    · have hx := f1_states_eq τ x
+      have hc := f1_states_eq τ (x + (v - τ.state x))
+      show τ.state (x + (v - τ.state x)) = v
       rw [hc]
       linarith [hx]
   hits_past := by
-    intro τ hτ x v hv
-    refine ⟨x - (τ.states x (hτ x) - v), ?_, ?_⟩
-    · have : (0 : ℝ) < τ.states x (hτ x) - v := sub_pos.mpr hv
-      show x - (τ.states x (hτ x) - v) < x
+    intro τ x v hv
+    refine ⟨x - (τ.state x - v), ?_, ?_⟩
+    · have : (0 : ℝ) < τ.state x - v := sub_pos.mpr hv
+      show x - (τ.state x - v) < x
       linarith
-    · have hx := f1_states_eq τ hτ x
-      have hc := f1_states_eq τ hτ (x - (τ.states x (hτ x) - v))
-      show τ.states (x - (τ.states x (hτ x) - v)) _ = v
+    · have hx := f1_states_eq τ x
+      have hc := f1_states_eq τ (x - (τ.state x - v))
+      show τ.state (x - (τ.state x - v)) = v
       rw [hc]
       linarith [hx]
 
@@ -133,7 +133,7 @@ theorem f1_orderFlow : OrderFlow F1 where
 `x`. No `thm:extension`, no Zorn. -/
 theorem f1_stateOccurs : StateOccurs F1 := by
   intro w x
-  refine ⟨oneShift.hist (w - x), oneShift.hist_isTotal _, ?_⟩
+  refine ⟨oneShift.hist (w - x), ?_⟩
   show w - x + x = w
   ring
 

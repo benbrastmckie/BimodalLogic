@@ -87,13 +87,13 @@ This is the whole of the static frame's semantic content; everything below is a 
 -/
 theorem static_time_invariant (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D))) (φ : Formula)
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal) (t s : D) :
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D))) (t s : D) :
     TruthAt M τ t φ ↔ TruthAt M τ s φ := by
   rcases eq_or_ne (s - t) 0 with h | h
   · rw [sub_eq_zero] at h
     subst h
     exact Iff.rfl
-  · have hper := truthAt_add_period M (staticFrame_looping W h) φ τ hτ t
+  · have hper := truthAt_add_period M (staticFrame_looping W h) φ τ t
     have ht : t + (s - t) = s := by abel
     rwa [ht] at hper
 
@@ -107,46 +107,46 @@ current one so that the universal readings are not vacuous. -/
 /-- `b(Gφ) = b(φ)`. -/
 theorem static_allFuture_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.allFuture ↔ TruthAt M τ t χ := by
   rw [Truth.future_iff]
-  refine ⟨fun h => ?_, fun h s _ => (static_time_invariant W M χ τ hτ t s).mp h⟩
+  refine ⟨fun h => ?_, fun h s _ => (static_time_invariant W M χ τ t s).mp h⟩
   obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := D)
-  exact (static_time_invariant W M χ τ hτ (t + p) t).mp (h _ (lt_add_of_pos_right t hp))
+  exact (static_time_invariant W M χ τ (t + p) t).mp (h _ (lt_add_of_pos_right t hp))
 
 /-- `b(Fφ) = b(φ)`. -/
 theorem static_someFuture_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.someFuture ↔ TruthAt M τ t χ := by
   rw [Truth.some_future_iff]
-  refine ⟨fun ⟨s, _, hs⟩ => (static_time_invariant W M χ τ hτ s t).mp hs, fun h => ?_⟩
+  refine ⟨fun ⟨s, _, hs⟩ => (static_time_invariant W M χ τ s t).mp hs, fun h => ?_⟩
   obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := D)
-  exact ⟨t + p, lt_add_of_pos_right t hp, (static_time_invariant W M χ τ hτ t (t + p)).mp h⟩
+  exact ⟨t + p, lt_add_of_pos_right t hp, (static_time_invariant W M χ τ t (t + p)).mp h⟩
 
 /-- `b(Hφ) = b(φ)`. -/
 theorem static_allPast_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.allPast ↔ TruthAt M τ t χ := by
   rw [Truth.past_iff]
-  refine ⟨fun h => ?_, fun h s _ => (static_time_invariant W M χ τ hτ t s).mp h⟩
+  refine ⟨fun h => ?_, fun h s _ => (static_time_invariant W M χ τ t s).mp h⟩
   obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := D)
-  exact (static_time_invariant W M χ τ hτ (t - p) t).mp (h _ (sub_lt_self t hp))
+  exact (static_time_invariant W M χ τ (t - p) t).mp (h _ (sub_lt_self t hp))
 
 /-- `b(Pφ) = b(φ)`. -/
 theorem static_somePast_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (χ : Formula) (t : D) :
     TruthAt M τ t χ.somePast ↔ TruthAt M τ t χ := by
   rw [Truth.some_past_iff]
-  refine ⟨fun ⟨s, _, hs⟩ => (static_time_invariant W M χ τ hτ s t).mp hs, fun h => ?_⟩
+  refine ⟨fun ⟨s, _, hs⟩ => (static_time_invariant W M χ τ s t).mp hs, fun h => ?_⟩
   obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := D)
-  exact ⟨t - p, sub_lt_self t hp, (static_time_invariant W M χ τ hτ t (t - p)).mp h⟩
+  exact ⟨t - p, sub_lt_self t hp, (static_time_invariant W M χ τ t (t - p)).mp h⟩
 
 /-! ## The `untl` calculus -/
 
@@ -162,16 +162,16 @@ unavailable on a densely ordered carrier and always available on a discrete one.
 -/
 theorem static_untl_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.untl ψ φ) ↔
       (TruthAt M τ t φ ∧ (TruthAt M τ t ψ ∨ ∃ y, IsLeast {z : D | t < z} y)) := by
   constructor
   · rintro ⟨s, hts, hev, hg⟩
-    refine ⟨(static_time_invariant W M φ τ hτ s t).mp hev, ?_⟩
+    refine ⟨(static_time_invariant W M φ τ s t).mp hev, ?_⟩
     by_cases hmid : ∃ r : D, t < r ∧ r < s
     · obtain ⟨r, hr1, hr2⟩ := hmid
-      exact Or.inl ((static_time_invariant W M ψ τ hτ r t).mp (hg r hr1 hr2))
+      exact Or.inl ((static_time_invariant W M ψ τ r t).mp (hg r hr1 hr2))
     · refine Or.inr ⟨s, hts, fun z hz => ?_⟩
       by_contra hlt
       exact hmid ⟨z, hz, not_le.mp hlt⟩
@@ -179,19 +179,19 @@ theorem static_untl_iff (W : Type) [Nonempty W]
     rcases hor with hψ | ⟨y, hy1, hy2⟩
     · obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := D)
       exact ⟨t + p, lt_add_of_pos_right t hp,
-        (static_time_invariant W M φ τ hτ t (t + p)).mp hφ,
-        fun r _ _ => (static_time_invariant W M ψ τ hτ t r).mp hψ⟩
-    · refine ⟨y, hy1, (static_time_invariant W M φ τ hτ t y).mp hφ, fun r hr1 hr2 => ?_⟩
+        (static_time_invariant W M φ τ t (t + p)).mp hφ,
+        fun r _ _ => (static_time_invariant W M ψ τ t r).mp hψ⟩
+    · refine ⟨y, hy1, (static_time_invariant W M φ τ t y).mp hφ, fun r hr1 hr2 => ?_⟩
       exact absurd (hy2 hr1) (not_le.mpr hr2)
 
 /-- A densely ordered carrier has no immediate successors, so the right disjunct of
 `static_untl_iff` is unavailable and `U(ψ, φ)` reduces to the conjunction `b(φ) ∧ b(ψ)`. -/
 theorem static_untl_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.untl ψ φ) ↔ (TruthAt M τ t φ ∧ TruthAt M τ t ψ) := by
-  rw [static_untl_iff W M τ hτ ψ φ t]
+  rw [static_untl_iff W M τ ψ φ t]
   refine and_congr_right fun _ => ⟨fun h => ?_, Or.inl⟩
   rcases h with hψ | ⟨y, hy1, hy2⟩
   · exact hψ
@@ -204,10 +204,10 @@ is never consulted. -/
 theorem static_untl_iff_disc (hdisc : ∀ x : D, ∃ y, IsLeast {z : D | x < z} y)
     (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.untl ψ φ) ↔ TruthAt M τ t φ := by
-  rw [static_untl_iff W M τ hτ ψ φ t]
+  rw [static_untl_iff W M τ ψ φ t]
   exact ⟨And.left, fun h => ⟨h, Or.inr (hdisc t)⟩⟩
 
 /-! ## The `snce` mirrors
@@ -219,16 +219,16 @@ otherwise transcribe unchanged. -/
 /-- The `snce` mirror of `static_untl_iff`. -/
 theorem static_snce_iff (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.snce ψ φ) ↔
       (TruthAt M τ t φ ∧ (TruthAt M τ t ψ ∨ ∃ y, IsGreatest {z : D | z < t} y)) := by
   constructor
   · rintro ⟨s, hst, hev, hg⟩
-    refine ⟨(static_time_invariant W M φ τ hτ s t).mp hev, ?_⟩
+    refine ⟨(static_time_invariant W M φ τ s t).mp hev, ?_⟩
     by_cases hmid : ∃ r : D, s < r ∧ r < t
     · obtain ⟨r, hr1, hr2⟩ := hmid
-      exact Or.inl ((static_time_invariant W M ψ τ hτ r t).mp (hg r hr1 hr2))
+      exact Or.inl ((static_time_invariant W M ψ τ r t).mp (hg r hr1 hr2))
     · refine Or.inr ⟨s, hst, fun z hz => ?_⟩
       by_contra hlt
       exact hmid ⟨z, not_le.mp hlt, hz⟩
@@ -236,18 +236,18 @@ theorem static_snce_iff (W : Type) [Nonempty W]
     rcases hor with hψ | ⟨y, hy1, hy2⟩
     · obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := D)
       exact ⟨t - p, sub_lt_self t hp,
-        (static_time_invariant W M φ τ hτ t (t - p)).mp hφ,
-        fun r _ _ => (static_time_invariant W M ψ τ hτ t r).mp hψ⟩
-    · refine ⟨y, hy1, (static_time_invariant W M φ τ hτ t y).mp hφ, fun r hr1 hr2 => ?_⟩
+        (static_time_invariant W M φ τ t (t - p)).mp hφ,
+        fun r _ _ => (static_time_invariant W M ψ τ t r).mp hψ⟩
+    · refine ⟨y, hy1, (static_time_invariant W M φ τ t y).mp hφ, fun r hr1 hr2 => ?_⟩
       exact absurd (hy2 hr2) (not_le.mpr hr1)
 
 /-- The `snce` mirror of `static_untl_iff_dense`. -/
 theorem static_snce_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.snce ψ φ) ↔ (TruthAt M τ t φ ∧ TruthAt M τ t ψ) := by
-  rw [static_snce_iff W M τ hτ ψ φ t]
+  rw [static_snce_iff W M τ ψ φ t]
   refine and_congr_right fun _ => ⟨fun h => ?_, Or.inl⟩
   rcases h with hψ | ⟨y, hy1, hy2⟩
   · exact hψ
@@ -258,10 +258,10 @@ theorem static_snce_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
 theorem static_snce_iff_disc (hdisc : ∀ x : D, ∃ y, IsGreatest {z : D | z < x} y)
     (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (ψ φ : Formula) (t : D) :
     TruthAt M τ t (Formula.snce ψ φ) ↔ TruthAt M τ t φ := by
-  rw [static_snce_iff W M τ hτ ψ φ t]
+  rw [static_snce_iff W M τ ψ φ t]
   exact ⟨And.left, fun h => ⟨h, Or.inr (hdisc t)⟩⟩
 
 /-! ## Reynolds' `K⁺` and `K⁻` on a dense carrier -/
@@ -270,10 +270,10 @@ theorem static_snce_iff_disc (hdisc : ∀ x : D, ∃ y, IsGreatest {z : D | z < 
 evaluates the inner `untl` to `⊤ ∧ ¬φ`, so `K⁺φ` is `¬¬φ`. -/
 theorem static_kPlus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (χ : Formula) (t : D) :
     TruthAt M τ t (Formula.kPlus χ) ↔ TruthAt M τ t χ := by
-  have hu := static_untl_iff_dense W M τ hτ χ.neg Formula.top t
+  have hu := static_untl_iff_dense W M τ χ.neg Formula.top t
   have htop : TruthAt M τ t Formula.top := fun h => h
   constructor
   · intro h
@@ -285,10 +285,10 @@ theorem static_kPlus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
 /-- `b(K⁻φ) = b(φ)` on a dense carrier; the `snce` mirror of `static_kPlus_iff_dense`. -/
 theorem static_kMinus_iff_dense [DenselyOrdered D] (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (χ : Formula) (t : D) :
     TruthAt M τ t (Formula.kMinus χ) ↔ TruthAt M τ t χ := by
-  have hs := static_snce_iff_dense W M τ hτ χ.neg Formula.top t
+  have hs := static_snce_iff_dense W M τ χ.neg Formula.top t
   have htop : TruthAt M τ t Formula.top := fun h => h
   constructor
   · intro h
@@ -306,18 +306,18 @@ This needs only `static_time_invariant`, not the `untl` calculus: `F(Gφ)` hands
 at which `Gφ` holds, and time-invariance moves that to `t`. The induction-step antecedent
 `G(Gφ → φ)` is not consumed at all.
 
-Stated at the level of `TruthAt` at an arbitrary total history and time, which is the shape
+Stated at the level of `TruthAt` at an arbitrary world history and time, which is the shape
 `TaskFrame.ValidOn` consumes.
 -/
 theorem static_validates_z1 (W : Type) [Nonempty W]
     (M : TaskModel (FrameOver.staticFrame W (D := D)))
-    (τ : PartialHistory (FrameOver.staticFrame W (D := D))) (hτ : τ.IsTotal)
+    (τ : WorldHistory (FrameOver.staticFrame W (D := D)))
     (φ : Formula) (t : D) :
     TruthAt M τ t ((φ.allFuture.imp φ).allFuture.imp
       (φ.allFuture.someFuture.imp φ.allFuture)) := by
   intro _hstep hbase
   rw [Truth.some_future_iff] at hbase
   obtain ⟨s, _, hev⟩ := hbase
-  exact (static_time_invariant W M φ.allFuture τ hτ s t).mp hev
+  exact (static_time_invariant W M φ.allFuture τ s t).mp hev
 
 end FormalSystem.Metalogic.Independence

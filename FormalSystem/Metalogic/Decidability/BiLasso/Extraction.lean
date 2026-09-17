@@ -23,15 +23,15 @@ point of interest lands wherever the compressed mid segment puts it — not at p
 Demanding otherwise demands a recurrence of the *type* at the point of interest, and no such
 recurrence need exist. That is machine-checked, not conjectured:
 `phase10-origin-anchoring-obstruction.lean`
-exhibits a total history whose closure formula `prev⁵ w` has truth set exactly `{0}`, so the type
+exhibits a world history whose closure formula `prev⁵ w` has truth set exactly `{0}`, so the type
 at `0` recurs at no earlier time.
 
 **Shifting the history does not rescue anchoring**, and it is worth saying why, because it looks
 as though it should. `Semantics.TimeShift.timeShift_preserves_truth` (`Semantics/TruthTransport.lean`)
-moves truth along a time shift, and `PartialHistory.timeShift` of a total history is total. But the
-decision procedure enumerates *lassos*, not histories: `timeShift τ i` is a perfectly good total
-history and is simply not the `unroll` of any enumerated `BiLasso` whose origin sits where the
-shift put it. So the extra degree of freedom has to live in the *consumer* — hence the `∃ i` in
+moves truth along a time shift, and `WorldHistory.timeShift` of a world history is again a world
+history. But the decision procedure enumerates *lassos*, not histories: `timeShift τ i` is a
+perfectly good world history and is simply not the `unroll` of any enumerated `BiLasso` whose
+origin sits where the shift put it. So the extra degree of freedom has to live in the *consumer* — hence the `∃ i` in
 the window below.
 
 The concurrent effective-periodic-extension work makes the same degree of freedom structural, by
@@ -329,7 +329,7 @@ theorem witness_pos_mem_cohWindow (A : Annot P φ) {i : ℤ} (h0 : 0 ≤ i) (h1 
 /--
 **The small-model theorem, in the windowed shape.**
 
-If a closure formula holds at *some* time of *some* total history, then one of the finitely many
+If a closure formula holds at *some* time of *some* world history, then one of the finitely many
 annotated bi-lassos with segments bounded by `bound P φ` carries it, at a position inside that
 lasso's own coherence window, over the same state.
 
@@ -352,38 +352,38 @@ Local coherence comes from `localCoherentSeq_of_edges` (the splice lemma) fed by
 `coherent` field from `coherent_of_window_step` fed by `realizedStep_step`.
 -/
 theorem exists_annot_of_truth (hbx : BoxOracleSound P bx)
-    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ)
+    (τ : WorldHistory P.toTaskFrame) (t : ℤ)
     (hφ : TruthAt P.toModel τ t φ) :
     ∃ A ∈ boundedAnnots P φ bx (bound P φ),
       ∃ i ∈ Finset.Ico (cohWindowLo A) (cohWindowHi A),
-        A.lasso.unroll i = τ.states t (hτ t) ∧ φ ∈ A.label i := by
+        A.lasso.unroll i = τ.state t ∧ φ ∈ A.label i := by
   classical
   -- ### The two good cycles
-  obtain ⟨xf, hrecf⟩ := exists_recurring_datum (datum P φ τ hτ)
-  obtain ⟨Lf, pf, hLf1, hLfB, hpf0, hpfL, hpfst, hpfgood⟩ := exists_good_fwd_cycle hτ xf hrecf
-  obtain ⟨xb, hrecb⟩ := exists_recurring_datum (fun u => datum P φ τ hτ (-u))
-  obtain ⟨Lb, qb, hLb1, hLbB, hqb0, hqbL, hqbst, hqbgood⟩ := exists_good_bwd_cycle hτ xb hrecb
+  obtain ⟨xf, hrecf⟩ := exists_recurring_datum (datum P φ τ)
+  obtain ⟨Lf, pf, hLf1, hLfB, hpf0, hpfL, hpfst, hpfgood⟩ := exists_good_fwd_cycle xf hrecf
+  obtain ⟨xb, hrecb⟩ := exists_recurring_datum (fun u => datum P φ τ (-u))
+  obtain ⟨Lb, qb, hLb1, hLbB, hqb0, hqbL, hqbst, hqbgood⟩ := exists_good_bwd_cycle xb hrecb
   -- ### The mid walk, shortened in two legs around the point of interest
   obtain ⟨ub, hubge, hubd⟩ := hrecb (1 - t)
-  have hitA : iter (SeqStep (datum P φ τ hτ)) (t - (-ub + 1)).toNat
-      (datum P φ τ hτ (-ub + 1)) (datum P φ τ hτ t) := by
-    have h := iter_seqStep (datum P φ τ hτ) (-ub + 1) (t - (-ub + 1)).toNat
+  have hitA : iter (SeqStep (datum P φ τ)) (t - (-ub + 1)).toNat
+      (datum P φ τ (-ub + 1)) (datum P φ τ t) := by
+    have h := iter_seqStep (datum P φ τ) (-ub + 1) (t - (-ub + 1)).toNat
     rwa [show -ub + 1 + (((t - (-ub + 1)).toNat : ℕ) : ℤ) = t by omega] at h
-  obtain ⟨a, ha, haiter⟩ := exists_iter_lt_card (SeqStep (datum P φ τ hτ)) hitA
-  obtain ⟨pa, hpa0, hpaa, hpast⟩ := exists_path_of_iter (SeqStep (datum P φ τ hτ)) a _ _ haiter
+  obtain ⟨a, ha, haiter⟩ := exists_iter_lt_card (SeqStep (datum P φ τ)) hitA
+  obtain ⟨pa, hpa0, hpaa, hpast⟩ := exists_path_of_iter (SeqStep (datum P φ τ)) a _ _ haiter
   obtain ⟨uf, hufge, hufd⟩ := hrecf (t + 1)
-  have hitB : iter (SeqStep (datum P φ τ hτ)) (uf - t).toNat (datum P φ τ hτ t) xf := by
-    have h := iter_seqStep (datum P φ τ hτ) t (uf - t).toNat
+  have hitB : iter (SeqStep (datum P φ τ)) (uf - t).toNat (datum P φ τ t) xf := by
+    have h := iter_seqStep (datum P φ τ) t (uf - t).toNat
     rwa [show t + (((uf - t).toNat : ℕ) : ℤ) = uf by omega, hufd] at h
-  obtain ⟨b, hb, hbiter⟩ := exists_iter_lt_card (SeqStep (datum P φ τ hτ)) hitB
-  obtain ⟨pb, hpb0, hpbb, hpbst⟩ := exists_path_of_iter (SeqStep (datum P φ τ hτ)) b _ _ hbiter
+  obtain ⟨b, hb, hbiter⟩ := exists_iter_lt_card (SeqStep (datum P φ τ)) hitB
+  obtain ⟨pb, hpb0, hpbb, hpbst⟩ := exists_path_of_iter (SeqStep (datum P φ τ)) b _ _ hbiter
   -- the first leg, with one real step prepended so that its length is at least one
   obtain ⟨wA, hwA⟩ : ∃ f : ℕ → PigeonState P φ,
       f = fun j => if j = 0 then xb else pa (j - 1) := ⟨_, rfl⟩
   have hwA0 : wA 0 = xb := by rw [hwA]; simp
-  have hwAa : wA (a + 1) = datum P φ τ hτ t := by
+  have hwAa : wA (a + 1) = datum P φ τ t := by
     rw [hwA]; simpa using hpaa
-  have hwAst : ∀ j, j < a + 1 → SeqStep (datum P φ τ hτ) (wA j) (wA (j + 1)) := by
+  have hwAst : ∀ j, j < a + 1 → SeqStep (datum P φ τ) (wA j) (wA (j + 1)) := by
     intro j hj
     rcases Nat.eq_zero_or_pos j with rfl | hjpos
     · rw [hwA]
@@ -397,15 +397,15 @@ theorem exists_annot_of_truth (hbx : BoxOracleSound P bx)
   obtain ⟨w, hw⟩ : ∃ f : ℕ → PigeonState P φ, f = joinPath wA pb (a + 1) := ⟨_, rfl⟩
   have hseam : wA (a + 1) = pb 0 := by rw [hwAa, hpb0]
   have hw0 : w 0 = xb := by rw [hw, joinPath_left wA pb (Nat.zero_le _), hwA0]
-  have hwmark : w (a + 1) = datum P φ τ hτ t := by
+  have hwmark : w (a + 1) = datum P φ τ t := by
     rw [hw, joinPath_left wA pb (le_refl _), hwAa]
   have hwend : w (a + 1 + b) = xf := by rw [hw, joinPath_right wA pb (a + 1) hseam b, hpbb]
-  have hwst : ∀ j, j < a + 1 + b → SeqStep (datum P φ τ hτ) (w j) (w (j + 1)) := by
+  have hwst : ∀ j, j < a + 1 + b → SeqStep (datum P φ τ) (w j) (w (j + 1)) := by
     rw [hw]; exact joinPath_steps wA pb (a + 1) b hseam hwAst hpbst
   -- ### The three segments
   obtain ⟨nm, hnm⟩ : ∃ n : ℕ, n = a + b := ⟨_, rfl⟩
   have hnmw : w (nm + 1) = xf := by rw [hnm, show a + b + 1 = a + 1 + b by omega, hwend]
-  have hnmst : ∀ j, j < nm + 1 → SeqStep (datum P φ τ hτ) (w j) (w (j + 1)) := by
+  have hnmst : ∀ j, j < nm + 1 → SeqStep (datum P φ τ) (w j) (w (j + 1)) := by
     rw [hnm, show a + b + 1 = a + 1 + b by omega]; exact hwst
   obtain ⟨bD, hbD⟩ : ∃ l : List (PigeonState P φ),
       l = (List.range Lb).map (fun i => qb (Lb - 1 - i)) := ⟨_, rfl⟩
@@ -447,7 +447,7 @@ theorem exists_annot_of_truth (hbx : BoxOracleSound P bx)
   have hfDne : fD ≠ [] := by
     intro hnil; rw [hnil] at hfDlen; simp at hfDlen; omega
   have hEstep : ∀ T : ℤ,
-      RealizedStep P φ τ hτ (Periodic.unrollOf bD mD fD T)
+      RealizedStep P φ τ (Periodic.unrollOf bD mD fD T)
         (Periodic.unrollOf bD mD fD (T + 1)) := by
     refine periodic_rel_of_window bD mD fD hbDne hfDne ?_
     intro T h1 h2

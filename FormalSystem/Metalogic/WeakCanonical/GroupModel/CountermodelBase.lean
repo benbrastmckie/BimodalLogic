@@ -125,7 +125,7 @@ private theorem qz_exists_shift (w r : ℚ ×ₗ ℤ) : ∃ x : ℚ ×ₗ ℤ, w
 The Base-MCS discrete countermodel, at the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`.
 
 For any **Base** MCS `A` containing `¬φ` and `□(nextTop)`, constructs a countermodel to `φ`
-on `ℚ ×ₗ ℤ`: `φ` fails at a point of a total history of `multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx`.
+on `ℚ ×ₗ ℤ`: `φ` fails at a point of a world history of `multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx`.
 
 The construction is the multi-family flow-line model, one companion structure per
 box-equivalent MCS family, with `WorldState = FamIdx × (ℚ ×ₗ ℤ)`. Box quantification ranges
@@ -146,7 +146,7 @@ theorem countermodel_discrete (A : Set Formula)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
     ∃ (F : TaskFrame) (_ : F.Deterministic) (TM : TaskModel F)
-      (τ : PartialHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
+      (τ : WorldHistory F) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   -- FamIdx: type of box-equivalent Base MCSes (one per S5 accessibility class)
   let FamIdx := {N : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) N ∧
@@ -194,7 +194,7 @@ theorem countermodel_discrete (A : Set Formula)
     -- `SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean`).
     refine ⟨(multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx).toTaskFrame,
       Algebraic.multiFamTaskFrameGen_deterministic, TM,
-      multiFamHistoryGen f₀ 0, multiFamHistoryGen_total f₀ 0,
+      multiFamHistoryGen f₀ 0,
       s₀, ?_⟩
     intro h_truth_phi
     have h_corr := (h_truth_corr φ (Finset.Subset.refl _) f₀ 0 s₀).mp h_truth_phi
@@ -211,8 +211,7 @@ theorem countermodel_discrete (A : Set Formula)
   induction ψ generalizing f w₀ t with
   | atom a =>
     -- Both sides reduce to Q_f.interp (atomMap (.atom a)) (w₀ + t)
-    simp only [TruthAt, TemporalTruth, multiFamHistoryGen, TM]
-    exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
+    exact Iff.rfl
   | bot =>
     simp only [TruthAt, TemporalTruth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
@@ -221,20 +220,18 @@ theorem countermodel_discrete (A : Set Formula)
       (ih₁ (Finset.Subset.trans Finset.subset_union_left h_sub) f w₀ t)
       (ih₂ (Finset.Subset.trans Finset.subset_union_right h_sub) f w₀ t)
   | box ψ ih =>
-    -- Box case: TruthAt(.box ψ) = ∀ σ, σ.IsTotal → TruthAt σ t ψ
+    -- Box case: TruthAt(.box ψ) = ∀ σ : WorldHistory, TruthAt σ t ψ
     have h_sub_ψ : ψ.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_right h_sub
     simp only [TruthAt]
     constructor
-    · -- Forward: (∀ σ, σ.IsTotal → TruthAt σ t ψ) → TemporalTruth (.box ψ)
+    · -- Forward: (∀ σ, TruthAt σ t ψ) → TemporalTruth (.box ψ)
       intro h_all
       -- Convert to: ∀ f' x, TemporalTruth Q_{f'} atomMap x ψ
       have h_univ : ∀ (f' : FamIdx) (x : ℚ ×ₗ ℤ),
           TemporalTruth ((getQ f').toOrdered sig) (mkAtomMapFwd φ) x ψ := by
         intro f' x
-        have h_tot : (multiFamHistoryGen f' (x - t)).IsTotal :=
-          multiFamHistoryGen_total (D := TemporalOrder.of (ℚ ×ₗ ℤ)) f' (x - t)
-        have h_ta := h_all (multiFamHistoryGen f' (x - t)) h_tot
+        have h_ta := h_all (multiFamHistoryGen (D := TemporalOrder.of (ℚ ×ₗ ℤ)) f' (x - t))
         rw [ih h_sub_ψ f' (x - t) t] at h_ta
         rw [qz_sub_add_cancel] at h_ta
         exact h_ta
@@ -341,9 +338,9 @@ theorem countermodel_discrete (A : Set Formula)
         simp only [sent, eval] at h_eval_Z
         exact fun x => h_eval_Z x
       exact h_all_pred_Z (w₀ + t)
-    · -- Backward: TemporalTruth (.box ψ) → (∀ σ, σ.IsTotal → TruthAt σ t ψ)
-      intro h_box σ h_mem
-      obtain ⟨f', w₀', h_eq⟩ := multiFamGen_total_eq σ h_mem
+    · -- Backward: TemporalTruth (.box ψ) → (∀ σ, TruthAt σ t ψ)
+      intro h_box σ
+      obtain ⟨f', w₀', h_eq⟩ := multiFamGen_total_eq σ
       rw [h_eq, ih h_sub_ψ f' w₀' t]
       -- Step 1: h_box gives the predicate at one point → ∃x. P(x) on Q_f
       have h_box_pred_mem : Formula.box ψ ∈ φ.predFormulas :=

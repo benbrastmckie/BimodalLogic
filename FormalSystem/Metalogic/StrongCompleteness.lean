@@ -219,9 +219,8 @@ drifted. The guard has not been dropped — it has moved somewhere it cannot dri
 condition is `FrameClass.Sat .RTime` (`Semantics/FrameClassValidity.lean`), the *same*
 expression `ValidRTime` and `soundness_in` are indexed by, so there is now one source of
 truth rather than two hand-copied lists. `soundness_rtime_consequence` remains as the
-non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by the
-generic `SemanticConsequenceIn.of_forall_total` / `.apply_total` (`Semantics/Validity.lean`), followed by `sat_intro` where the
-proof consumes the frame condition.
+non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by `intro` (the definitions unfold), followed by
+`sat_intro` where the proof consumes the frame condition.
 -/
 def SemanticConsequenceRTime (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.RTime Γ φ
@@ -237,7 +236,7 @@ enters, which is why the lemma is stated at the bare `TaskModel` binder set and 
 the Base, Dense and Discrete instances below.
 -/
 theorem truthAt_foldr_imp {F : TaskFrame} (M : TaskModel F)
-    (τ : PartialHistory F) (t : F.Duration) (Γ : Context) (φ : Formula) :
+    (τ : WorldHistory F) (t : F.Duration) (Γ : Context) (φ : Formula) :
     TruthAt M τ t (Γ.foldr Formula.imp φ) ↔
       ((∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) := by
   induction Γ with
@@ -263,11 +262,9 @@ theorem semantic_deduction_in {fc : FrameClass} (Γ : Context) (φ : Formula) :
     SemanticConsequenceIn fc Γ φ ↔ ValidIn fc (Γ.foldr Formula.imp φ) := by
   constructor
   · intro h
-    exact ValidIn.of_forall_total fun F hF M τ hτ t =>
-      (truthAt_foldr_imp M τ t Γ φ).mpr (SemanticConsequenceIn.apply_total h F hF M τ hτ t)
+    exact fun F hF M τ t => (truthAt_foldr_imp M τ t Γ φ).mpr (h F hF M τ t)
   · intro h
-    exact SemanticConsequenceIn.of_forall_total fun F hF M τ hτ t =>
-      (truthAt_foldr_imp M τ t Γ φ).mp (ValidIn.apply_total h F hF M τ hτ t)
+    exact fun F hF M τ t => (truthAt_foldr_imp M τ t Γ φ).mp (h F hF M τ t)
 
 /--
 **Semantic deduction theorem for the Dedekind class.** `semantic_deduction_in` at
@@ -307,7 +304,7 @@ not change is that there are still four guards, one per class, each naming its o
 -/
 theorem soundness_consequence {fc : FrameClass} (Γ : Context) (φ : Formula)
     (h : Derivable fc Γ φ) : SemanticConsequenceIn fc Γ φ :=
-  fun F hF M τ hτ t h_ctx => h.elim fun d => soundness_in Γ φ d F hF M τ hτ t h_ctx
+  fun F hF M τ t h_ctx => h.elim fun d => soundness_in Γ φ d F hF M τ t h_ctx
 
 /-- **Soundness at the set-consequence layer**, at an arbitrary `FrameClass`. A set-derivation
 cites finitely many premises (`setDerivable_iff_exists_finite`); `soundness_in` discharges that
@@ -323,8 +320,8 @@ theorem soundness_setConsequence {fc : FrameClass} (Γ : Set Formula) (φ : Form
     (h : SetDerivable fc Γ φ) : SetSemanticConsequenceOn fc Γ φ := by
   obtain ⟨L, hL, hd⟩ := (setDerivable_iff_exists_finite Γ φ).mp h
   refine setConsequenceOnFrames_mono (Γ := {ψ | ψ ∈ L}) (fun ψ hψ => hL ψ hψ) ?_
-  intro F hF M τ hτ t h_all
-  exact hd.elim fun d => soundness_in L φ d F hF M τ hτ t (fun ψ hψ => h_all ψ hψ)
+  intro F hF M τ t h_all
+  exact hd.elim fun d => soundness_in L φ d F hF M τ t (fun ψ hψ => h_all ψ hψ)
 
 /-! ## The proof-theoretic deduction theorem, in fold form -/
 
@@ -478,13 +475,12 @@ non-compactness argument in the tree, named once.
 
 `SetSemanticConsequenceOn fc Γ φ` quantifies over configurations at which every member of `Γ`
 holds; if there are none, the quantification is vacuous and any `φ` follows. Each of the four
-refutations used to open with a four-line `have hcons : … := by refine …of_forall_total …` block
+refutations used to open with a four-line `have hcons : … := by intro …` block
 that was exactly this proof, with `φ := ⊥` and its own witness set substituted in. -/
 theorem setConsequence_of_not_satisfiable {fc : FrameClass} {Γ : Set Formula} {φ : Formula}
     (h : ¬ SatisfiableSet fc Γ) : SetSemanticConsequenceOn fc Γ φ := by
-  refine SetSemanticConsequenceOn.of_forall_total ?_
-  intro F hF M τ hτ t hall
-  exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall) h
+  intro F hF M τ t hall
+  exact absurd (SatisfiableSet.of_forall F hF M τ t hall) h
 
 /-- **Strong completeness implies compactness**, at any frame class — the converse of
 `strongCompleteness_of_compact` above, and the direction that needs no engine.
@@ -495,8 +491,8 @@ empty-context derivation of `L.foldr imp φ`, which `soundness_validIn`
 (`Metalogic/Soundness.lean`) makes `fc`-valid. That is the shape `Compact fc` asks for.
 
 `soundness_validIn` is the right tool here rather than `soundness_in` at the empty context: it is
-already the empty-context form, already uniform in `fc`, and using it avoids both a
-`ValidIn.of_forall_total` wrapper and a vacuous `(by simp)` discharge of the empty premise
+already the empty-context form, already uniform in `fc`, and using it avoids both an
+`intro` over the validity binders and a vacuous `(by simp)` discharge of the empty premise
 binder. -/
 theorem compact_of_strongCompleteness {fc : FrameClass} (h : StrongCompleteness fc) :
     Compact fc := by
@@ -535,9 +531,9 @@ theorem not_compact_of_witness {fc : FrameClass} {W : Set Formula}
     (hunsat : ¬ SatisfiableSet fc W) : ¬ Compact fc := by
   intro hc
   obtain ⟨L, hL, hvalid⟩ := hc W Formula.bot (setConsequence_of_not_satisfiable hunsat)
-  obtain ⟨F, hF, M, τ, hτ, t, hsat⟩ := hfin L hL
+  obtain ⟨F, hF, M, τ, t, hsat⟩ := hfin L hL
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp
-    (ValidIn.apply_total hvalid F hF M τ hτ t) (fun ψ hψ => hsat ψ hψ)
+    (hvalid F hF M τ t) (fun ψ hψ => hsat ψ hψ)
 
 /-- **The shared strong-completeness refutation.** The same witness data refutes strong
 completeness, by routing through `compact_of_strongCompleteness`.
@@ -571,7 +567,7 @@ Three mechanics worth recording. `Formula.neg φ` is `φ.imp ⊥` (`Syntax/Formu
 *definitionally* `TruthAt M τ t φ → False`; no `truthAt_neg` lemma is needed or exists. And
 `Γ : Set Formula` carries no decidability, so `classical` is what makes the `List.filter` step
 available. Finally, the frame condition `hF : fc.Sat F` travels as an ordinary term: it is
-carried out of the failed validity by `ValidIn.of_not` (`Semantics/Validity.lean`), threaded back
+carried out of the failed validity by unfolding it to its binder shape, threaded back
 into the `SatisfiableSet` witness, and applied to `hcons` **directly, with no `.apply`
 adapter** — because `SetSemanticConsequenceOn fc` exposes `fc.Sat F` as an explicit argument.
 The per-class forms are recovered by instantiation, since `ModelExistenceBase` *is*
@@ -601,22 +597,23 @@ theorem compact_of_modelExistence {fc : FrameClass} (h : ModelExistence fc) : Co
     have hsub : ∀ ψ ∈ L.filter (fun ψ => decide (ψ ∈ Γ)), ψ ∈ Γ := by
       intro ψ hψ
       exact of_decide_eq_true (List.mem_filter.mp hψ).2
-    have hnv := ValidIn.of_not (hno _ hsub)
+    have hnv : ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : WorldHistory F)
+        (t : F.Duration), TruthAt M τ t _ := hno _ hsub
     push Not at hnv
-    obtain ⟨F, hF, M, τ, hτ, t, hfalse⟩ := hnv
+    obtain ⟨F, hF, M, τ, t, hfalse⟩ := hnv
     rw [truthAt_foldr_imp] at hfalse
     push Not at hfalse
     obtain ⟨hall, hnφ⟩ := hfalse
-    refine ⟨F, hF, M, τ, hτ, t, ?_⟩
+    refine ⟨F, hF, M, τ, t, ?_⟩
     intro ψ hψ
     by_cases hg : ψ ∈ Γ
     · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
     · rcases hL ψ hψ with rfl | hmem
       · exact fun hp => hnφ hp
       · exact absurd hmem hg
-  obtain ⟨F, hF, M, τ, hτ, t, hsat⟩ := h _ hfin
+  obtain ⟨F, hF, M, τ, t, hsat⟩ := h _ hfin
   exact hsat φ.neg (Set.mem_insert _ _)
-    (hcons F hF M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+    (hcons F hF M τ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
 
 /-! ### The compactness / model-existence equivalence -/
 
@@ -824,7 +821,7 @@ This is the row whose collapse looks different from its three siblings, and the 
 worth recording rather than smoothing over. The other three were already stated against
 `SemanticConsequenceIn`/`ValidIn` at a literal tag; this one was stated against the
 frame-condition-free `SemanticConsequence`/`Valid` names and routed through their bespoke
-adapters `Valid.of_forall_total` / `SemanticConsequence.of_forall` / `.apply`, which discharge
+adapters `Valid.of_forall` / `SemanticConsequence.of_forall` / `.apply`, which discharge
 the `True` frame-condition argument so no call site writes `trivial`. Those adapters are not
 needed here: `SemanticConsequence` *is* `SemanticConsequenceIn .Base` and `Valid` *is*
 `ValidIn .Base`, both definitionally (`Semantics/Validity.lean`), so the generic theorem lands
@@ -933,8 +930,7 @@ there "all carriers" is the class — see the Base section above.)
 **Where the binder guard now lives.** As for `SemanticConsequenceRTime` above: the
 hand-copied binder list has been replaced by `FrameClass.Sat .Dense`, the same expression
 `ValidDense` and `soundness_in` are indexed by, so the guard `soundness_dense_consequence` used
-to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is recovered by the
-generic `SemanticConsequenceIn.of_forall_total` / `.apply_total` (`Semantics/Validity.lean`).
+to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is recovered by `intro` (the definitions unfold).
 -/
 def SemanticConsequenceDense (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.Dense Γ φ
@@ -1049,8 +1045,8 @@ longer reproduced here by hand but read off `FrameClass.Sat .ZTime`
 (`TaskFrame.IsZTime`), the same expression `ValidZTime` and `soundness_in` are
 indexed by. `soundness_ztime_consequence`'s warning about dropping `[IsSuccArchimedean D]`
 still holds and is now enforced at that one definition rather than by keeping two lists in step.
-The pre-abbreviation binder shape is recovered by the
-generic `SemanticConsequenceIn.of_forall_total` / `.apply_total` (`Semantics/Validity.lean`), followed by `sat_intro`.
+The pre-abbreviation binder shape is recovered by `intro` (the definitions unfold), followed by
+`sat_intro`.
 -/
 def SemanticConsequenceZTime (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.ZTime Γ φ

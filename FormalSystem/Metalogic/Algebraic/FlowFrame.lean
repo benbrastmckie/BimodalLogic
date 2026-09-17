@@ -18,7 +18,7 @@ This module defines the deterministic multi-family flow frame `multiFamTaskFrame
 arbitrary ordered abelian group (previously hosted beside the chronicle monadic bridge; moved
 here so the chronicle-side countermodel modules can consume the bundle flow frame without an
 import cycle), proves — once and D-generically — that it satisfies all four axioms of the
-paper's frame definition (`def:frame`), characterizes its total histories as flow lines, and
+paper's frame definition (`def:frame`), characterizes its world histories as flow lines, and
 re-hosts the dense truth lemma onto its bundle-index instantiation `bundleFlowFrame`.
 
 The `ℤ` originals (`multiFamTaskFrame` and siblings, `ReynoldsBridge.lean`) are certified as
@@ -51,10 +51,10 @@ are consumed from `Semantics/TaskFrame.lean` (`TaskFrame.Fib`, `TaskFrame.Seg`,
 
 **Possible worlds (`def:world-history`)**: "A *possible world* is any convex history whose domain
 is total, so that X = D. ... The set of all possible worlds over F is denoted
-H_F." `multiFamGen_total_eq` characterizes the total histories of the flow frame: every
-history with full domain IS a flow line `multiFamHistoryGen f w₀`. Since the flow lines are
-total by construction, the frame's set of possible worlds H_F coincides exactly with the
-flow-line family — the internalization on which the total-history countermodel constructions rest.
+H_F." `multiFamGen_total_eq` characterizes the world histories of the flow frame: every
+`σ : WorldHistory` IS a flow line `multiFamHistoryGen f w₀`. Since the flow lines are
+world histories by construction, the frame's set of possible worlds H_F coincides exactly with
+the flow-line family — the internalization on which the total-history countermodel constructions rest.
 
 **Derived, not cited**: the segment identity `w ⇒_{x+y} v ↔ [w,v]_x^y ≠ ∅`
 (`taskRel_add_iff_seg_nonempty`) is DERIVED here from the compositionality biconditional, the
@@ -71,7 +71,7 @@ reflection convention, and `mem_Seg`. It is not paper text and must not be cited
 - `multiFamGen_serial`: *Seriality*
 - `multiFamGen_limit`: *Limit* (requires `[Nontrivial D]`, as `def:temporal-order` mandates)
 - `multiFamGen_saturation`: *Saturation*
-- `multiFamGen_total_eq`: the totality characterization (every total history is a flow line)
+- `multiFamGen_total_eq`: the totality characterization (every world history is a flow line)
 - `multiFamTaskFrameGen_serial` / `_interpolates` / `_limit` / `_saturation`: the same four
   axioms restated in the bare-relation predicates of record (`TaskFrame.Serial`,
   `TaskFrame.Interpolates`, `TaskFrame.Saturation`, and *Limit*'s literal transcribed shape), so
@@ -172,38 +172,31 @@ theorem multiFamGen_taskRel {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑
     (multiFamTaskFrameGen D FamIdx).TaskRel w d u ↔ (w.1 = u.1 ∧ u.2 = w.2 + d) :=
   FrameOver.ofReflective_taskRel
 
-/-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`; total by
-construction.
+/-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`; a
+`WorldHistory` (total) by construction.
 Generic form of `multiFamHistory` (`ReynoldsBridge.lean`). -/
 noncomputable def multiFamHistoryGen {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ↑D) :
-    PartialHistory (multiFamTaskFrameGen D FamIdx) where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => (f, w₀ + t)
-  respects_task := fun s t _ _ => by
+    WorldHistory (multiFamTaskFrameGen D FamIdx) :=
+  WorldHistory.ofTotal _ (fun t => (f, w₀ + t)) fun s t => by
     refine (multiFamGen_taskRel _ _ _).mpr ⟨rfl, ?_⟩
     show w₀ + t = w₀ + s + (t - s)
     abel
 
+/-- The state of `multiFamHistoryGen f w₀` at time `t` is `(f, w₀ + t)`, definitionally. -/
+@[simp]
+theorem multiFamHistoryGen_state {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ t : ↑D) :
+    (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)).state t =
+      (f, w₀ + t) :=
+  rfl
+
 /-- Time-shifting `multiFamHistoryGen f w₀` by `Δ` gives `multiFamHistoryGen f (w₀ + Δ)`.
 Generic form of `multiFamHistory_shift_eq` (`ReynoldsBridge.lean`). -/
 theorem multiFamHistoryGen_shift_eq {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ Δ : ↑D) :
-    PartialHistory.timeShift
-        (multiFamHistoryGen f w₀ : PartialHistory (multiFamTaskFrameGen D FamIdx)) Δ =
-      multiFamHistoryGen f (w₀ + Δ) := by
-  have h_states : (fun (t : ↑D) (_ : True) => ((f, w₀ + (t + Δ)) : FamIdx × ↑D)) =
-      (fun (t : ↑D) (_ : True) => ((f, w₀ + Δ + t) : FamIdx × ↑D)) := by
-    funext t _; congr 1; abel
-  change PartialHistory.mk _ _ _ _ =
-    PartialHistory.mk _ _ _ _
-  congr 1
-
-/-- Every generic multi-family history is total (`def:world-history`'s cut `X = D`, spelled
-`∀ t, σ.domain t`). Definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. This
-is what the totality-targeted box clause (`def:BL-semantics`) consumes. -/
-theorem multiFamHistoryGen_total {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ↑D) :
-    (multiFamHistoryGen f w₀ : PartialHistory (multiFamTaskFrameGen D FamIdx)).IsTotal :=
-  fun _ => trivial
+    (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)).timeShift Δ =
+      multiFamHistoryGen f (w₀ + Δ) :=
+  WorldHistory.ext_state fun t => by
+    show ((f, w₀ + (t + Δ)) : FamIdx × ↑D) = (f, w₀ + Δ + t)
+    congr 1; abel
 
 /-! ## The derived segment identity
 
@@ -365,62 +358,51 @@ theorem multiFamTaskFrameGen_saturation {FamIdx : Type} [Nonempty FamIdx] :
 /-! ## The totality characterization
 
 `def:world-history`: "A *possible world* is any convex history whose domain is total, so that
-X = D." For the deterministic flow frame, every total history is a flow line: the
+X = D." For the deterministic flow frame, every world history is a flow line: the
 state at time `0` fixes the family index and the offset, and `respects_task` propagates the
-clock to every other time. Together with the (definitional) totality of
-`multiFamHistoryGen`, this identifies the frame's total-history set H_F with the flow-line
-family — the internalization the total-history countermodels rest on. -/
+clock to every other time. Since `multiFamHistoryGen` is itself a `WorldHistory`, this
+identifies the frame's world-history set H_F with the flow-line family — the internalization the total-history countermodels rest on. -/
 
-/-- Every total history of the generic flow frame is a flow line: if `σ.domain` is full
-(`def:world-history`'s totality, X = D), then `σ = multiFamHistoryGen f w₀` for the family
-index and offset read off from `σ` at time `0`. -/
+/-- Every world history of the generic flow frame is a flow line: `σ = multiFamHistoryGen f w₀`
+for the family index and offset read off from `σ` at time `0`. -/
 theorem multiFamGen_total_eq {FamIdx : Type} [Nonempty FamIdx]
-    (σ : PartialHistory (multiFamTaskFrameGen D FamIdx)) (htot : ∀ t, σ.domain t) :
+    (σ : WorldHistory (multiFamTaskFrameGen D FamIdx)) :
     ∃ f w₀, σ = multiFamHistoryGen f w₀ := by
+  refine ⟨(σ.state 0).1, (σ.state 0).2, WorldHistory.ext_state fun t => ?_⟩
   -- The state at any time is the state at time 0 advanced by the clock.
-  have key : ∀ (t : ↑D) (ht : σ.domain t),
-      σ.states t ht = ((σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2 + t) := by
-    intro t ht
-    rcases le_total 0 t with _h0t | _ht0
-    · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp (σ.respects_task 0 t (htot 0) ht)
-      refine Prod.ext h₁.symm ?_
-      rw [h₂]; abel_nf
-    · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp (σ.respects_task t 0 ht (htot 0))
-      refine Prod.ext h₁ ?_
-      rw [h₂]; abel_nf
-  refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
-  obtain ⟨dom, nedom, sts, resp⟩ := σ
-  -- Totality collapses the domain to the full predicate.
-  have hdom : dom = fun _ => True :=
-    funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
-  subst hdom
-  have h_states : sts = fun t (_ : True) =>
-      ((sts 0 (htot 0)).1, (sts 0 (htot 0)).2 + t) :=
-    funext fun t => funext fun ht => key t ht
-  change PartialHistory.mk _ _ _ _ =
-    PartialHistory.mk _ _ _ _
-  congr 1
+  show σ.state t = ((σ.state 0).1, (σ.state 0).2 + t)
+  rcases le_total 0 t with _h0t | _ht0
+  · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp
+      (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
+    rw [WorldHistory.states_eq_state, WorldHistory.states_eq_state] at h₁ h₂
+    refine Prod.ext h₁.symm ?_
+    rw [h₂]; abel_nf
+  · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp
+      (σ.val.respects_task t 0 (σ.property t) (σ.property 0))
+    rw [WorldHistory.states_eq_state, WorldHistory.states_eq_state] at h₁ h₂
+    refine Prod.ext h₁ ?_
+    rw [h₂]; abel_nf
 
-/-- The generic flow frame's total-history set `H_F` **is** the set of flow lines, as a set
+/-- The generic flow frame's world-history set `H_F` **is** the set of flow lines, as a set
 equation.
 
 `def:world-history` fixes `H_F` as the totality-cut of the convex histories: "A \textit{possible
 world} is any convex history whose domain is total, so that $X = D$. ... The set of all possible
-worlds over $\F$ is denoted $H_{\F}$." Here the totality predicate `X = D` is spelled
-`∀ t, σ.domain t`.
+worlds over $\F$ is denoted $H_{\F}$." Here `H_F` is the type `WorldHistory`, so the set is
+`Set.univ`.
 
-The `⊇` direction is definitional: `multiFamHistoryGen` carries `domain := fun _ => True`. The
-`⊆` direction is `multiFamGen_total_eq`. This is the extensional content the box clause
-(`def:BL-semantics`, "for all $\sigma \in H_{\F}$") quantifies over on this carrier. -/
+The `⊇` direction is trivial. The `⊆` direction is `multiFamGen_total_eq`. This is the
+extensional content the box clause (`def:BL-semantics`, "for all $\sigma \in H_{\F}$")
+quantifies over on this carrier. -/
 theorem multiFamGen_total_eq_range (FamIdx : Type) [Nonempty FamIdx] :
-    {σ : PartialHistory (multiFamTaskFrameGen D FamIdx) | ∀ t, σ.domain t} =
+    (Set.univ : Set (WorldHistory (multiFamTaskFrameGen D FamIdx))) =
       Set.range (fun (p : FamIdx × ↑D) => multiFamHistoryGen p.1 p.2) := by
   ext σ
   constructor
-  · intro htot
-    obtain ⟨f, w₀, rfl⟩ := multiFamGen_total_eq σ htot
+  · intro _
+    obtain ⟨f, w₀, rfl⟩ := multiFamGen_total_eq σ
     exact ⟨⟨f, w₀⟩, rfl⟩
-  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
+  · intro _
     trivial
 
 end FlowFrameConformance
@@ -428,7 +410,7 @@ end FlowFrameConformance
 /-! ## The bundle flow frame
 
 The dense/Dedekind countermodel carrier: the generic flow frame instantiated at the index of
-a bundle's own families. Because the carrier contains ONLY bundle families, the frame's total
+a bundle's own families. Because the carrier contains ONLY bundle families, the frame's world
 histories (`def:world-history`'s H_F) are exactly the bundle's flow lines — the countermodel
 family IS H_F, by `bundleFlow_total_eq`. The four `def:frame` axioms and the totality
 characterization are inherited from the generic layer by specialization; no new proof content
@@ -477,23 +459,17 @@ theorem bundleFlowFrame_deterministic (B : BFMCS (fc := fc) D) :
     (bundleFlowFrame B).toTaskFrame.Deterministic :=
   multiFamTaskFrameGen_deterministic
 
-/-- The flow line of the bundle flow frame through family `fam` at offset `w₀`: the total
+/-- The flow line of the bundle flow frame through family `fam` at offset `w₀`: the world
 history visiting `(fam, w₀ + t)` at each time `t`. -/
 noncomputable def bundleFlowHistory {B : BFMCS (fc := fc) D}
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
-    PartialHistory (bundleFlowFrame B) :=
+    WorldHistory (bundleFlowFrame B) :=
   multiFamHistoryGen fam w₀
 
 /-- The bundle flow model: an atom holds at `(fam, w)` exactly when it is in `fam`'s MCS at
 time `w`. -/
 noncomputable def bundleFlowModel (B : BFMCS (fc := fc) D) : TaskModel (bundleFlowFrame B) where
   valuation := fun w p => Formula.atom p ∈ w.1.val.mcs w.2
-
-/-- Every flow line of the bundle flow frame is total (`def:world-history`: X = D). -/
-theorem bundleFlowHistory_total {B : BFMCS (fc := fc) D}
-    (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
-    ∀ t, (bundleFlowHistory fam w₀).domain t :=
-  fun _ => trivial
 
 /-- Deterministic-shift conformance of the bundle flow frame: the duration of a transition is
 recoverable from the endpoint positions (`Prod.snd`). This is the position-function contract
@@ -537,18 +513,18 @@ theorem bundleFlow_saturation {B : BFMCS (fc := fc) D}
     (⋂₀ S).Nonempty :=
   multiFamGen_saturation S hdir hne hfs
 
-/-- The totality characterization at the bundle flow frame: every total history is a flow
-line through a bundle family. Together with `bundleFlowHistory_total`, this identifies the
-frame's total-history set H_F (`def:world-history`) with the bundle's flow-line family. -/
+/-- The totality characterization at the bundle flow frame: every world history is a flow
+line through a bundle family, identifying the frame's world-history set H_F
+(`def:world-history`) with the bundle's flow-line family. -/
 theorem bundleFlow_total_eq {B : BFMCS (fc := fc) D}
-    (σ : PartialHistory (bundleFlowFrame B)) (htot : ∀ t, σ.domain t) :
+    (σ : WorldHistory (bundleFlowFrame B)) :
     ∃ fam w₀, σ = bundleFlowHistory fam w₀ :=
-  multiFamGen_total_eq σ htot
+  multiFamGen_total_eq σ
 
-/-! ## The bundle flow frame's total-history set
+/-! ## The bundle flow frame's world-history set
 
-The bundle flow frame's total-history set H_F (`def:world-history`) is exactly its set of flow
-lines, by `bundleFlowHistory_total` and `bundleFlow_total_eq`. This is what the box clause
+The bundle flow frame's world-history set H_F (`def:world-history`) is exactly its set of flow
+lines, by `bundleFlow_total_eq`. This is what the box clause
 quantifies over per `def:BL-semantics` ("M,σ,x ⊨ φ for all σ ∈ H_F"). -/
 
 /-- The bundle flow frame's set of possible worlds `H_F` (`def:world-history`: "The set of all
@@ -557,7 +533,7 @@ possible worlds over $\F$ is denoted $H_{\F}$") **is** its set of flow lines.
 Immediate specialization of `multiFamGen_total_eq_range` at the bundle index, since
 `bundleFlowFrame` is `multiFamTaskFrameGen` at that index by definition. -/
 theorem bundleFlow_total_eq_range (B : BFMCS (fc := fc) D) :
-    {σ : PartialHistory (bundleFlowFrame B) | ∀ t, σ.domain t} =
+    (Set.univ : Set (WorldHistory (bundleFlowFrame B))) =
       Set.range (fun (p : {fam : FMCS (fc := fc) D // fam ∈ B.families} × D) =>
         bundleFlowHistory p.1 p.2) :=
   multiFamGen_total_eq_range _
@@ -668,7 +644,7 @@ violated `def:frame#Limit` over dense duration types) onto the bundle flow frame
 `bundleFlowHistory fam w₀` at evaluation time `t` visits `(fam, w₀ + t)`, so truth at `t`
 corresponds to MCS membership at absolute time `w₀ + t` — the flow history at offset `w₀` IS
 the shifted history, and the separate "shifted" formulation dissolves. Because the carrier
-contains ONLY bundle families, the frame's full total-history set is exactly the flow-line
+contains ONLY bundle families, the frame's full world-history set is exactly the flow-line
 family (`bundleFlow_total_eq`): internalization holds by construction, with no transfer or
 realization lemma.
 
@@ -694,12 +670,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
   obtain ⟨_, h_fuc, h_buc⟩ := h_coh
   induction φ generalizing fam w₀ t with
   | atom p =>
-    simp only [TruthAt, bundleFlowModel, bundleFlowHistory, multiFamHistoryGen]
-    constructor
-    · intro h_mem
-      exact ⟨trivial, h_mem⟩
-    · intro ⟨_, h_val⟩
-      exact h_val
+    exact Iff.rfl
   | bot =>
     simp only [TruthAt]
     constructor
@@ -738,8 +709,8 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
   | box ψ ih =>
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_box root ψ h_sub
     constructor
-    · intro h_box σ h_σ_mem
-      obtain ⟨fam', w₀', rfl⟩ := bundleFlow_total_eq σ h_σ_mem
+    · intro h_box σ
+      obtain ⟨fam', w₀', rfl⟩ := bundleFlow_total_eq σ
       have h_box' : Formula.box ψ ∈ fam.val.mcs (w₀' + t) :=
         fmcs_box_persistent fam.val ψ (w₀ + t) (w₀' + t) h_box
       have h_ψ_fam' : ψ ∈ fam'.val.mcs (w₀' + t) :=
@@ -749,7 +720,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
       have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs (w₀ + t) := by
         intro fam' hfam'
         exact (ih h_ψ_sub ⟨fam', hfam'⟩ w₀ t).mpr
-          (h_all_σ (bundleFlowHistory ⟨fam', hfam'⟩ w₀) (bundleFlowHistory_total _ _))
+          (h_all_σ (bundleFlowHistory ⟨fam', hfam'⟩ w₀))
       exact B.modal_backward fam.val fam.property ψ (w₀ + t) h_all_fam
   | untl β α ih_β ih_α =>
     have h_α_sub : α ∈ subformulaClosure root := closure_untl_left root α β h_sub

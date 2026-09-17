@@ -22,8 +22,7 @@ module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_swap_
    `e.ι : Atom ⊕ PlusFormula → Atom` (`Encoding`; one exists classically because both sides are
    denumerable).
 3. `TaskModel.atomModel M e` is the L model on the same frame whose valuation reads `e.ι (inl p)`
-   as `p` and `e.ι (inr χ)` as "`⊡χ` holds at some total history through this state, at some
-   time" — well defined by (1).
+   as `p` and `e.ι (inr χ)` as "`⊡χ` holds at some history through this state, at some time" — well defined by (1).
 4. `plusTruthAt_iff_atomize`: `PlusTruthAt M τ t φ ↔ TruthAt (M.atomModel e) τ t (atomize e φ)`.
 
 A TM schema instance over L⁺ then holds in `M` iff its L instance at the atomized parameters
@@ -140,62 +139,61 @@ theorem atomize_swapTemporal (e : Encoding) (φ : PlusFormula) :
 variable {F : TaskFrame}
 
 /-- The L model on `M`'s frame that reads the encoded atoms back: `e.ι (inl p)` as `p`, and
-`e.ι (inr χ)` as "`⊡χ` holds at some total history through this state, at some time". The
+`e.ι (inr χ)` as "`⊡χ` holds at some history through this state, at some time". The
 second clause is well defined as a state property by `stab_state_only`. -/
 def _root_.FormalSystem.Semantics.TaskModel.atomModel (M : TaskModel F) (e : Encoding) :
     TaskModel F where
   valuation w a :=
     (∃ p, e.ι (.inl p) = a ∧ M.valuation w p) ∨
-    (∃ χ, e.ι (.inr χ) = a ∧ ∃ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
-      τ.states t (hτ t) = w ∧ PlusTruthAt M τ t (.stab χ))
+    (∃ χ, e.ι (.inr χ) = a ∧ ∃ (τ : WorldHistory F) (t : F.Duration),
+      τ.state t = w ∧ PlusTruthAt M τ t (.stab χ))
 
 /--
-**The transfer lemma.** At a total history, an L⁺ formula is true in `M` iff its atomization is
+**The transfer lemma.** At every history, an L⁺ formula is true in `M` iff its atomization is
 true in the atomized model. By induction on `φ`, `generalizing τ t`: the six L cases are
-congruence (the `box` case ranges over total `σ`), the `atom` case is injectivity of the
+congruence (the `box` case ranges over all `σ`), the `atom` case is injectivity of the
 encoding, and the `stab` case is `stab_state_only` — the `→` direction witnesses `τ` itself, the
 `←` direction transports the witnessing history's `⊡χ` to `τ` through the shared state.
 -/
 theorem plusTruthAt_iff_atomize (M : TaskModel F) (e : Encoding) (φ : PlusFormula) :
-    ∀ (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration),
+    ∀ (τ : WorldHistory F) (t : F.Duration),
       PlusTruthAt M τ t φ ↔ TruthAt (M.atomModel e) τ t (atomize e φ) := by
   induction φ with
   | atom p =>
-    intro τ hτ t
+    intro τ t
     constructor
-    · rintro ⟨ht, hv⟩
-      exact ⟨ht, Or.inl ⟨p, rfl, hv⟩⟩
-    · rintro ⟨ht, hv⟩
-      refine ⟨ht, ?_⟩
+    · intro hv
+      exact Or.inl ⟨p, rfl, hv⟩
+    · intro hv
       rcases hv with ⟨p', hp, hv⟩ | ⟨χ, hχ, _⟩
       · cases Sum.inl.inj (e.inj hp)
         exact hv
       · exact absurd (e.inj hχ) Sum.inr_ne_inl
-  | bot => intro τ _ t; exact Iff.rfl
-  | imp φ ψ ihφ ihψ => intro τ hτ t; exact Iff.imp (ihφ τ hτ t) (ihψ τ hτ t)
+  | bot => intro τ t; exact Iff.rfl
+  | imp φ ψ ihφ ihψ => intro τ t; exact Iff.imp (ihφ τ t) (ihψ τ t)
   | box φ ih =>
-    intro τ hτ t
-    exact forall_congr' fun σ => imp_congr_right fun hσ => ih σ hσ t
+    intro τ t
+    exact forall_congr' fun σ => ih σ t
   | untl ψ φ ihψ ihφ =>
-    intro τ hτ t
+    intro τ t
     exact exists_congr fun s => and_congr_right fun _ =>
-      and_congr (ihφ τ hτ s)
-        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ hτ r)
+      and_congr (ihφ τ s)
+        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ r)
   | snce ψ φ ihψ ihφ =>
-    intro τ hτ t
+    intro τ t
     exact exists_congr fun s => and_congr_right fun _ =>
-      and_congr (ihφ τ hτ s)
-        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ hτ r)
+      and_congr (ihφ τ s)
+        (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ r)
   | stab χ _ =>
-    intro τ hτ t
+    intro τ t
     constructor
     · intro h
-      exact ⟨hτ t, Or.inr ⟨χ, rfl, τ, hτ, t, rfl, h⟩⟩
-    · rintro ⟨ht, hv⟩
-      rcases hv with ⟨p, hp, _⟩ | ⟨χ', hχ, σ, hσ, s, hst, hs⟩
+      exact Or.inr ⟨χ, rfl, τ, t, rfl, h⟩
+    · intro hv
+      rcases hv with ⟨p, hp, _⟩ | ⟨χ', hχ, σ, s, hst, hs⟩
       · exact absurd (e.inj hp) Sum.inl_ne_inr
       · cases Sum.inr.inj (e.inj hχ)
-        exact (stab_state_only M σ τ hσ hτ s t hst χ).mp hs
+        exact (stab_state_only M σ τ s t hst χ).mp hs
 
 /-! ## The two helpers for the dispatch lemmas -/
 
@@ -206,9 +204,9 @@ at `fc`, then `φ` is `PlusValidIn fc`: `axiom_validIn` on the atomized model (s
 -/
 theorem plusValidIn_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
     (ax : Axiom (atomize e φ)) (h : ax.minFrameClass ≤ fc) : PlusValidIn fc φ :=
-  PlusValidIn.of_forall_total fun F hF M τ hτ t =>
-    (plusTruthAt_iff_atomize M e φ τ hτ t).mpr
-      ((axiom_validIn ax h).apply_total F hF (M.atomModel e) τ hτ t)
+  fun F hF M τ t =>
+    (plusTruthAt_iff_atomize M e φ τ t).mpr
+      (axiom_validIn ax h F hF (M.atomModel e) τ t)
 
 /--
 **TM schema swap-soundness over L⁺.** If the atomization of `φ` **under the conjugated
@@ -219,11 +217,11 @@ rewriting the target.
 theorem plusValidIn_swap_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
     (ax : Axiom (atomize e.swap φ)) (h : ax.minFrameClass ≤ fc) :
     PlusValidIn fc φ.swapTemporal :=
-  PlusValidIn.of_forall_total fun F hF M τ hτ t =>
-    (plusTruthAt_iff_atomize M e φ.swapTemporal τ hτ t).mpr
+  fun F hF M τ t =>
+    (plusTruthAt_iff_atomize M e φ.swapTemporal τ t).mpr
       (by
         rw [atomize_swapTemporal]
-        exact (axiom_swap_validIn ax h).apply_total F hF (M.atomModel e) τ hτ t)
+        exact axiom_swap_validIn ax h F hF (M.atomModel e) τ t)
 
 /-! ## Acceptance test
 

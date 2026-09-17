@@ -79,7 +79,7 @@ are not variants of one another.
 * `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — `Z1`'s discrete countermodel, the
   structural template for the ℚ model below
 * `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — `multiFamTaskFrameGen`,
-  `multiFamHistoryGen`, `multiFamHistoryGen_total`
+  `multiFamHistoryGen`, `multiFamHistoryGen_state`
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — the four-row status table
   this module's results are cited from
 
@@ -194,21 +194,14 @@ noncomputable def qTM : TaskModel qF where
   valuation := fun w _ => 1 ≤ w.2
 
 /-- The countermodel's history: the flow line through family `()` starting at `0`. -/
-noncomputable abbrev qτ : PartialHistory qF := multiFamHistoryGen () (0 : (qD : Type))
+noncomputable abbrev qτ : WorldHistory qF := multiFamHistoryGen () (0 : (qD : Type))
 
-/-- `qτ` is total, definitionally (`multiFamHistoryGen` carries `domain := fun _ => True`). -/
-theorem qτ_total : qτ.IsTotal := multiFamHistoryGen_total (D := qD) () 0
-
-/-- **The valuation lemma.** `p` holds at time `t` along `qτ` iff `1 ≤ t`. The domain conjunct of
-`MinusTruthAt`'s atom clause is `trivial` here, since `qτ` is total. -/
+/-- **The valuation lemma.** `p` holds at time `t` along `qτ` iff `1 ≤ t`: `MinusTruthAt`'s atom
+clause reads the valuation at `qτ`'s state `((), 0 + t)`. -/
 theorem q_atom_iff (p : Atom) (t : (qD : Type)) :
     MinusTruthAt qTM qτ t (MinusFormula.atom p) ↔ (1 : ℚ) ≤ t := by
-  constructor
-  · rintro ⟨_, h⟩
-    simpa [qTM, multiFamHistoryGen] using h
-  · intro h
-    refine ⟨trivial, ?_⟩
-    simpa [qTM, multiFamHistoryGen] using h
+  show qTM.valuation (qτ.state t) p ↔ _
+  simp [qTM, qτ, multiFamHistoryGen_state]
 
 /--
 **`Gp ↔ p`, pointwise** — the collapse that makes `Z1` fail.
@@ -272,7 +265,7 @@ theorem q_not_true_at_zero (p : Atom) :
 **The `.ZTime` witness is not dense-valid.**
 
 `MinusValidDense` is `MinusValidIn .Dense`, so one `.Dense`-satisfying frame carrying a refutation
-suffices; `MinusValidIn.apply_total` supplies the elimination and the `FrameClass.Sat .Dense qF` side
+suffices; applying `h` at that frame supplies the elimination and the `FrameClass.Sat .Dense qF` side
 condition is `inferInstance` through the reducible chain to `DenselyOrdered ℚ`.
 
 With `spDerivableDense`, this is the machine-checked half of the record that the `.Dense` row
@@ -281,6 +274,6 @@ is not a validity of the class.
 -/
 theorem not_minusValidDense_z1 (p : Atom) :
     ¬ MinusValidDense (Conservativity.Z1 (MinusFormula.atom p)) := fun h =>
-  q_not_true_at_zero p (MinusValidIn.apply_total h qF inferInstance qTM qτ qτ_total 0)
+  q_not_true_at_zero p (h qF inferInstance qTM qτ 0)
 
 end FormalSystem.Metalogic

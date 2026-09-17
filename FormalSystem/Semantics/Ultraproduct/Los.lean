@@ -22,9 +22,9 @@ import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
 (`Semantics/ShiftSet.lean`), which is exactly the sort the ultraproduct construction
 quotients. `TruthAt`'s `box` clause quantifies over all *possible worlds* of the frame, a
 sort with no direct ultraproduct presentation; attacking it head-on would require a fresh
-choice-function argument over total histories. That argument already exists, once, inside
+choice-function argument over world histories. That argument already exists, once, inside
 `ShiftSet.forward_repr` (`Semantics/ShiftSet.lean`), whose own `box` case reconciles the two
-quantifiers via `hist_isTotal` and `total_eq_orbit`. So `los_truthAt` is
+quantifiers via `total_eq_orbit`. So `los_truthAt` is
 obtained by *reuse*: conjugate `los` with `forward_repr` on both sides. No new choice argument
 over histories is introduced anywhere in this file.
 
@@ -148,8 +148,8 @@ theorem los (S : ∀ i, ShiftSet (T i)) (χ : Formula) :
 
 This is the statement the task asked for. It is obtained WITHOUT any choice-function argument
 over possible worlds: `forward_repr`'s own `box` case already reconciles `TruthAt`'s
-quantifier over all total histories with `ShiftTruth`'s quantifier over the carrier, via
-`hist_isTotal` (`Semantics/ShiftSet.lean`) and `total_eq_orbit`. Attacking `TruthAt`
+quantifier over all world histories with `ShiftTruth`'s quantifier over the carrier, via
+`total_eq_orbit` (`Semantics/ShiftSet.lean`). Attacking `TruthAt`
 directly would re-open that argument on the ultraproduct; conjugating discharges it by reuse. -/
 theorem los_truthAt (S : ∀ i, ShiftSet (T i)) (f : ∀ i, (S i).Carrier) (x : ∀ i, ↑(T i))
     (χ : Formula) :

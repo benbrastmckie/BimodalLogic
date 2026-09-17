@@ -97,8 +97,8 @@ theorem minusValid_df_or_dn (φ ψ : MinusFormula) :
     MinusValid
       ((((φ.allPast.and φ).and MinusFormula.top.someFuture).imp φ.allPast.someFuture).or
         (ψ.allFuture.allFuture.imp ψ.allFuture)) := by
-  refine MinusValid.of_forall_total ?_
-  intro F M τ _hτ t
+  refine MinusValid.of_forall ?_
+  intro F M τ t
   rcases duration_dense_or_least_pos (D := F.Duration) with hdense | ⟨d, hd⟩
   · exact (MinusTruth.or_iff _ _).mpr (Or.inr (@dn_valid_of_denselyOrdered F hdense M τ t ψ))
   · exact (MinusTruth.or_iff _ _).mpr (Or.inl (df_valid_of_isLeast_pos hd M τ t φ))
@@ -110,19 +110,19 @@ the dense branch gives the right via `dn_valid_of_denselyOrdered`.
 
 The `□` is discharged by the frame carrying **one shared** `Duration`, which is what makes the
 dichotomy a property of the frame rather than of a history: `duration_dense_or_least_pos` is
-applied once, to `F.Duration`, before the `∀ σ, σ.IsTotal → …` quantification of `box_iff`.
+applied once, to `F.Duration`, before the `∀ σ : WorldHistory F, …` quantification of `box_iff`.
 -/
 theorem minusValid_sp (φ ψ : MinusFormula) : MinusValid (Sp φ ψ) := by
-  refine MinusValid.of_forall_total ?_
-  intro F M τ _hτ t
+  refine MinusValid.of_forall ?_
+  intro F M τ t
   rcases duration_dense_or_least_pos (D := F.Duration) with hdense | ⟨d, hd⟩
   · refine (MinusTruth.or_iff _ _).mpr (Or.inr ?_)
     rw [MinusTruth.box_iff]
-    intro σ _hσ
+    intro σ
     exact @dn_valid_of_denselyOrdered F hdense M σ t ψ
   · refine (MinusTruth.or_iff _ _).mpr (Or.inl ?_)
     rw [MinusTruth.box_iff]
-    intro σ _hσ
+    intro σ
     exact df_valid_of_isLeast_pos hd M σ t φ
 
 /--

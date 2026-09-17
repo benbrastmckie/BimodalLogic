@@ -17,10 +17,10 @@ singleton bridge it rests on.
 ## Main Results
 
 - `states_eq_of_deterministic` — the **singleton bridge**, (⇒) half of
-  `lem:deterministic-singleton`: two total histories of a deterministic frame that agree on their
+  `lem:deterministic-singleton`: two world histories of a deterministic frame that agree on their
   world state at one time agree at *every* time
 - `stab_iff_of_deterministic` — the collapse at a point: `⊡φ` and `φ` are equivalent at every
-  total history and time
+  world history and time
 - `determined_of_deterministic` — *Determined* `φ → ⊡φ` is frame-valid on every deterministic
   frame
 - `stab_biconditional_plusValidOn_of_deterministic` — both halves of `⊡φ ↔ φ` as frame validities
@@ -92,7 +92,7 @@ variable {F : TaskFrame}
 /--
 **The singleton bridge**, (⇒) half of `lem:deterministic-singleton`.
 
-On a deterministic frame, two total histories agreeing on their world state at a single time `t`
+On a deterministic frame, two world histories agreeing on their world state at a single time `t`
 have the same world state at *every* time `s`.
 
 The proof is three rewrites: `respects_task t s` on each history gives
@@ -101,16 +101,18 @@ determinism at the duration `s - t` identifies the two targets. `s - t` is negat
 `s < t`, which is precisely why `TaskFrame.Deterministic` quantifies `d` over all of `F.Duration`.
 -/
 theorem states_eq_of_deterministic (hD : F.Deterministic)
-    {τ σ : PartialHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal) {t : F.Duration}
-    (h : SameStateAt τ σ t) (s : F.Duration) :
-    τ.states s (hτ s) = σ.states s (hσ s) := by
-  have hτr := τ.respects_task t s (hτ t) (hτ s)
-  have hσr := σ.respects_task t s (hσ t) (hσ s)
-  rw [h (hτ t) (hσ t)] at hτr
-  exact hD (σ.states t (hσ t)) (s - t) hτr hσr
+    {τ σ : WorldHistory F} {t : F.Duration}
+    (h : τ.state t = σ.state t) (s : F.Duration) :
+    τ.state s = σ.state s := by
+  have hτr : F.TaskRel (τ.state t) (s - t) (τ.state s) :=
+    τ.val.respects_task t s (τ.property t) (τ.property s)
+  have hσr : F.TaskRel (σ.state t) (s - t) (σ.state s) :=
+    σ.val.respects_task t s (σ.property t) (σ.property s)
+  rw [h] at hτr
+  exact hD (σ.state t) (s - t) hτr hσr
 
 /--
-**The collapse at a point**: over a deterministic frame `⊡φ` and `φ` are equivalent at every total
+**The collapse at a point**: over a deterministic frame `⊡φ` and `φ` are equivalent at every world
 history and time, for every `PlusFormula φ`.
 
 (⇒) is `of_stab` — T for `⊡` — and holds on every frame. (⇐) is where determinism enters: any
@@ -118,14 +120,12 @@ history and time, for every `PlusFormula φ`.
 transports the truth of `φ` from `τ` to `σ`.
 -/
 theorem stab_iff_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
-    {τ : PartialHistory F} (hτ : τ.IsTotal) (t : F.Duration) (φ : PlusFormula) :
+    (τ : WorldHistory F) (t : F.Duration) (φ : PlusFormula) :
     PlusTruthAt M τ t (.stab φ) ↔ PlusTruthAt M τ t φ := by
   constructor
-  · intro h; exact of_stab M τ hτ t φ h
-  · intro h σ hσ hsame
-    refine (truth_congr_ext M φ τ σ t (fun s => by simp [hτ s, hσ s]) ?_).mp h
-    intro s _ _
-    exact states_eq_of_deterministic hD hτ hσ hsame s
+  · exact of_stab M τ t φ
+  · intro h σ hsame
+    exact (truth_congr_ext M φ τ σ t (states_eq_of_deterministic hD hsame)).mp h
 
 /--
 **`app:deterministic`, positive half.** *Determined* — `φ → ⊡φ` — is valid on every deterministic
@@ -138,7 +138,7 @@ a non-deterministic frame validating this schema is exhibited.
 -/
 theorem determined_of_deterministic (hD : F.Deterministic) (φ : PlusFormula) :
     F.PlusValidOn (.imp φ (.stab φ)) :=
-  fun M τ t h => (stab_iff_of_deterministic hD M τ.prop t φ).mpr h
+  fun M τ t h => (stab_iff_of_deterministic hD M τ t φ).mpr h
 
 /--
 **The full collapse** `⊡φ ↔ φ`, as the pair of frame validities. The first component holds on
@@ -147,7 +147,7 @@ every frame (it is T for `⊡`); only the second needs determinism.
 theorem stab_biconditional_plusValidOn_of_deterministic (hD : F.Deterministic)
     (φ : PlusFormula) :
     F.PlusValidOn (.imp (.stab φ) φ) ∧ F.PlusValidOn (.imp φ (.stab φ)) :=
-  ⟨fun M τ t h => (stab_iff_of_deterministic hD M τ.prop t φ).mp h,
+  ⟨fun M τ t h => (stab_iff_of_deterministic hD M τ t φ).mp h,
    determined_of_deterministic hD φ⟩
 
 end FormalSystem.Semantics

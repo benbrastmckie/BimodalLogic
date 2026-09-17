@@ -86,7 +86,7 @@ every register arm below is stated through. They live here rather than in
 `Semantics/StarLanguage/StarTruth.lean` because every consumer is in this directory. -/
 
 /-- The `.iff` clause lemma, in the shape of the `StarTruth.*_iff` family. -/
-theorem starTruth_iff_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F)
+theorem starTruth_iff_iff {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) (φ ψ : StarFormula) :
     StarTruthAt M τ t v (φ.iff ψ) ↔ (StarTruthAt M τ t v φ ↔ StarTruthAt M τ t v ψ) := by
   simp only [StarFormula.iff, StarTruth.and_iff, StarTruth.imp_iff]
@@ -94,12 +94,12 @@ theorem starTruth_iff_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory
 
 /-- Introduce `StarValid (φ.iff ψ)` from a pointwise biconditional. -/
 theorem starValid_iff_of_forall {φ ψ : StarFormula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
-           ∀ (x : F.Duration) (v : ℕ → F.Duration),
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F)
+           (x : F.Duration) (v : ℕ → F.Duration),
              (StarTruthAt M τ x v φ ↔ StarTruthAt M τ x v ψ)) :
     StarValid (φ.iff ψ) :=
-  StarValid.of_forall_total fun F M τ hτ x v =>
-    (starTruth_iff_iff M τ x v φ ψ).mpr (h F M τ hτ x v)
+  StarValid.of_forall fun F M τ x v =>
+    (starTruth_iff_iff M τ x v φ ψ).mpr (h F M τ x v)
 
 /-! ## The sixteen register schemata
 
@@ -108,27 +108,27 @@ Each is valid over **every** task frame, hence stated as `StarValid`. -/
 /-- S1: `↑ⁱ↓ⁱφ ↔ ↑ⁱφ` — register `i` of `v⃗[i ↦ x]` is `x`. -/
 theorem starValid_store_recall_same (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeStore i (.timeRecall i φ)).iff (.timeStore i φ)) := by
-  refine starValid_iff_of_forall fun F M τ _ x v => ?_
+  refine starValid_iff_of_forall fun F M τ x v => ?_
   rw [StarTruth.timeStore_iff, StarTruth.timeRecall_iff, Function.update_self,
     StarTruth.timeStore_iff]
 
 /-- S2: `↓ⁱ↑ⁱφ ↔ ↓ⁱφ` — writing `v⃗ᵢ` into register `i` writes back what was there. -/
 theorem starValid_recall_store_same (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeRecall i (.timeStore i φ)).iff (.timeRecall i φ)) := by
-  refine starValid_iff_of_forall fun F M τ _ x v => ?_
+  refine starValid_iff_of_forall fun F M τ x v => ?_
   rw [StarTruth.timeRecall_iff, StarTruth.timeStore_iff, Function.update_eq_self,
     StarTruth.timeRecall_iff]
 
 /-- S3: `↓ⁱ↓ʲφ ↔ ↓ʲφ` — the inner recall overrides the outer one. -/
 theorem starValid_recall_recall (i j : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeRecall i (.timeRecall j φ)).iff (.timeRecall j φ)) :=
-  starValid_iff_of_forall fun _ _ _ _ _ _ => Iff.rfl
+  starValid_iff_of_forall fun _ _ _ _ _ => Iff.rfl
 
 /-- S4: `↑ⁱ↑ʲφ ↔ ↑ʲ↑ⁱφ` — both stores write the same time, so the updates commute. -/
 theorem starValid_store_store_comm (i j : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeStore i (.timeStore j φ)).iff
       (StarFormula.timeStore j (.timeStore i φ))) := by
-  refine starValid_iff_of_forall fun F M τ _ x v => ?_
+  refine starValid_iff_of_forall fun F M τ x v => ?_
   simp only [StarTruth.timeStore_iff]
   by_cases hij : i = j
   · subst hij; rfl
@@ -138,40 +138,40 @@ theorem starValid_store_store_comm (i j : ℕ) (φ : StarFormula) :
 theorem starValid_store_k (i : ℕ) (φ ψ : StarFormula) :
     StarValid ((StarFormula.timeStore i (φ.imp ψ)).iff
       ((StarFormula.timeStore i φ).imp (.timeStore i ψ))) :=
-  starValid_iff_of_forall fun _ _ _ _ _ _ => Iff.rfl
+  starValid_iff_of_forall fun _ _ _ _ _ => Iff.rfl
 
 /-- S5, recall half: `↓ⁱ(φ → ψ) ↔ (↓ⁱφ → ↓ⁱψ)`. -/
 theorem starValid_recall_k (i : ℕ) (φ ψ : StarFormula) :
     StarValid ((StarFormula.timeRecall i (φ.imp ψ)).iff
       ((StarFormula.timeRecall i φ).imp (.timeRecall i ψ))) :=
-  starValid_iff_of_forall fun _ _ _ _ _ _ => Iff.rfl
+  starValid_iff_of_forall fun _ _ _ _ _ => Iff.rfl
 
 /-- S6: `↑ⁱ□φ ↔ □↑ⁱφ` — `□` moves the history, never the time or the vector. -/
 theorem starValid_store_box (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeStore i (.box φ)).iff (StarFormula.box (.timeStore i φ))) :=
-  starValid_iff_of_forall fun _ _ _ _ _ _ => Iff.rfl
+  starValid_iff_of_forall fun _ _ _ _ _ => Iff.rfl
 
 /-- S6, recall half: `↓ⁱ□φ ↔ □↓ⁱφ`. -/
 theorem starValid_recall_box (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeRecall i (.box φ)).iff (StarFormula.box (.timeRecall i φ))) :=
-  starValid_iff_of_forall fun _ _ _ _ _ _ => Iff.rfl
+  starValid_iff_of_forall fun _ _ _ _ _ => Iff.rfl
 
 /-- S7: `↑ⁱ⊡φ ↔ ⊡↑ⁱφ` — `⊡`'s same-state condition is taken at the time `↑ⁱ` writes. The recall
 analogue `↓ⁱ⊡φ ↔ ⊡↓ⁱφ` is **refuted** and is deliberately not among the schemata. -/
 theorem starValid_store_stab (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeStore i (.stab φ)).iff (StarFormula.stab (.timeStore i φ))) :=
-  starValid_iff_of_forall fun _ _ _ _ _ _ => Iff.rfl
+  starValid_iff_of_forall fun _ _ _ _ _ => Iff.rfl
 
 /-- S9: `↑ⁱp ↔ p` for atoms — the atom clause does not read the register vector. -/
 theorem starValid_store_atom (i : ℕ) (p : Atom) :
     StarValid ((StarFormula.timeStore i (.atom p)).iff (StarFormula.atom p)) :=
-  starValid_iff_of_forall fun _ _ _ _ _ _ => Iff.rfl
+  starValid_iff_of_forall fun _ _ _ _ _ => Iff.rfl
 
 /-- S8: `↓ⁱφ → G↓ⁱφ` — a recall's truth does not read the time of evaluation. -/
 theorem starValid_recall_rigid_future (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeRecall i φ).imp
       (StarFormula.allFuture (.timeRecall i φ))) := by
-  refine StarValid.of_forall_total fun F M τ _ x v h => ?_
+  refine StarValid.of_forall fun F M τ x v h => ?_
   rw [StarTruth.allFuture_iff]
   intro s _
   exact h
@@ -180,7 +180,7 @@ theorem starValid_recall_rigid_future (i : ℕ) (φ : StarFormula) :
 theorem starValid_future_rigid_recall (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.allFuture (.timeRecall i φ)).imp
       (StarFormula.timeRecall i φ)) := by
-  refine StarValid.of_forall_total fun F M τ _ x v h => ?_
+  refine StarValid.of_forall fun F M τ x v h => ?_
   rw [StarTruth.allFuture_iff] at h
   obtain ⟨y, hy⟩ := exists_gt x
   exact h y hy
@@ -189,7 +189,7 @@ theorem starValid_future_rigid_recall (i : ℕ) (φ : StarFormula) :
 theorem starValid_recall_rigid_past (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeRecall i φ).imp
       (StarFormula.allPast (.timeRecall i φ))) := by
-  refine StarValid.of_forall_total fun F M τ _ x v h => ?_
+  refine StarValid.of_forall fun F M τ x v h => ?_
   rw [StarTruth.allPast_iff]
   intro s _
   exact h
@@ -198,7 +198,7 @@ theorem starValid_recall_rigid_past (i : ℕ) (φ : StarFormula) :
 theorem starValid_past_rigid_recall (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.allPast (.timeRecall i φ)).imp
       (StarFormula.timeRecall i φ)) := by
-  refine StarValid.of_forall_total fun F M τ _ x v h => ?_
+  refine StarValid.of_forall fun F M τ x v h => ?_
   rw [StarTruth.allPast_iff] at h
   obtain ⟨y, hy⟩ := exists_lt x
   exact h y hy
@@ -208,7 +208,7 @@ the existence of the interval. -/
 theorem starValid_recall_export_until (i : ℕ) (φ ψ : StarFormula) :
     StarValid ((StarFormula.untl ψ (.timeRecall i φ)).iff
       ((StarFormula.timeRecall i φ).and (StarFormula.untl ψ StarFormula.top))) := by
-  refine starValid_iff_of_forall fun F M τ _ x v => ?_
+  refine starValid_iff_of_forall fun F M τ x v => ?_
   rw [StarTruth.and_iff]
   simp only [StarTruth.untl_iff, StarTruth.timeRecall_iff]
   constructor
@@ -221,7 +221,7 @@ theorem starValid_recall_export_until (i : ℕ) (φ ψ : StarFormula) :
 theorem starValid_recall_export_since (i : ℕ) (φ ψ : StarFormula) :
     StarValid ((StarFormula.snce ψ (.timeRecall i φ)).iff
       ((StarFormula.timeRecall i φ).and (StarFormula.snce ψ StarFormula.top))) := by
-  refine starValid_iff_of_forall fun F M τ _ x v => ?_
+  refine starValid_iff_of_forall fun F M τ x v => ?_
   rw [StarTruth.and_iff]
   simp only [StarTruth.snce_iff, StarTruth.timeRecall_iff]
   constructor
@@ -244,94 +244,94 @@ non-substitution-closed. Every arm below is a fresh direct proof. -/
 /-- Propositional K over L⋆. Mirror of `PlusAxiom.prop_k`'s validity. -/
 theorem starValid_prop_k (φ ψ χ : StarFormula) :
     StarValid ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) :=
-  StarValid.of_forall_total fun _ _ _ _ _ _ h1 h2 h3 => h1 h3 (h2 h3)
+  StarValid.of_forall fun _ _ _ _ _ h1 h2 h3 => h1 h3 (h2 h3)
 
 /-- Propositional S (weakening) over L⋆. -/
 theorem starValid_prop_s (φ ψ : StarFormula) : StarValid (φ.imp (ψ.imp φ)) :=
-  StarValid.of_forall_total fun _ _ _ _ _ _ h _ => h
+  StarValid.of_forall fun _ _ _ _ _ h _ => h
 
 /-- Ex Falso Quodlibet over L⋆. -/
 theorem starValid_ex_falso (φ : StarFormula) : StarValid (StarFormula.bot.imp φ) :=
-  StarValid.of_forall_total fun _ _ _ _ _ _ h => h.elim
+  StarValid.of_forall fun _ _ _ _ _ h => h.elim
 
 /-- Peirce's Law over L⋆, by classical case analysis on `φ`. -/
 theorem starValid_peirce (φ ψ : StarFormula) : StarValid (((φ.imp ψ).imp φ).imp φ) := by
-  refine StarValid.of_forall_total fun F M τ _ x v h => ?_
+  refine StarValid.of_forall fun F M τ x v h => ?_
   by_cases hφ : StarTruthAt M τ x v φ
   · exact hφ
   · exact h fun hp => absurd hp hφ
 
-/-- Modal T over L⋆: the evaluation history is itself total, so `□` reflects. -/
+/-- Modal T over L⋆: the evaluation history is itself a world history, so `□` reflects. -/
 theorem starValid_modal_t (φ : StarFormula) : StarValid ((StarFormula.box φ).imp φ) :=
-  StarValid.of_forall_total fun _ _ τ hτ _ _ h => h τ hτ
+  StarValid.of_forall fun _ _ τ _ _ h => h τ
 
-/-- Modal 4 over L⋆: the `box` clause quantifies over all total histories, so it is idempotent. -/
+/-- Modal 4 over L⋆: the `box` clause quantifies over all world histories, so it is idempotent. -/
 theorem starValid_modal_4 (φ : StarFormula) :
     StarValid ((StarFormula.box φ).imp (StarFormula.box (StarFormula.box φ))) :=
-  StarValid.of_forall_total fun _ _ _ _ _ _ h _ _ => h
+  StarValid.of_forall fun _ _ _ _ _ h _ => h
 
 /-- Modal B over L⋆. -/
 theorem starValid_modal_b (φ : StarFormula) :
     StarValid (φ.imp (StarFormula.box φ.diamond)) := by
-  refine StarValid.of_forall_total fun F M τ hτ x v h => ?_
-  intro σ _
+  refine StarValid.of_forall fun F M τ x v h => ?_
+  intro σ
   rw [StarTruth.diamond_iff]
-  exact ⟨τ, hτ, h⟩
+  exact ⟨τ, h⟩
 
 /-- Modal 5 Collapse over L⋆. -/
 theorem starValid_modal_5_collapse (φ : StarFormula) :
     StarValid (φ.box.diamond.imp φ.box) := by
-  refine StarValid.of_forall_total fun F M τ _ x v h => ?_
+  refine StarValid.of_forall fun F M τ x v h => ?_
   rw [StarTruth.diamond_iff] at h
-  obtain ⟨σ, hσ, hb⟩ := h
+  obtain ⟨σ, hb⟩ := h
   exact hb
 
 /-- Modal K distribution over L⋆. -/
 theorem starValid_modal_k_dist (φ ψ : StarFormula) :
     StarValid ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) :=
-  StarValid.of_forall_total fun _ _ _ _ _ _ h1 h2 σ hσ => h1 σ hσ (h2 σ hσ)
+  StarValid.of_forall fun _ _ _ _ _ h1 h2 σ => h1 σ (h2 σ)
 
 /-- SK over L⋆: K for `⊡`, from the universal-quantifier shape of the `stab` clause. -/
 theorem starValid_stab_k (φ ψ : StarFormula) :
     StarValid ((StarFormula.stab (φ.imp ψ)).imp
       ((StarFormula.stab φ).imp (StarFormula.stab ψ))) :=
-  StarValid.of_forall_total fun _ _ _ _ _ _ h1 h2 σ hσ hs => h1 σ hσ hs (h2 σ hσ hs)
+  StarValid.of_forall fun _ _ _ _ _ h1 h2 σ hs => h1 σ hs (h2 σ hs)
 
-/-- ST over L⋆: `SameStateAt` is reflexive. -/
+/-- ST over L⋆: state equality is reflexive. -/
 theorem starValid_stab_t (φ : StarFormula) : StarValid ((StarFormula.stab φ).imp φ) :=
-  StarValid.of_forall_total fun _ _ τ hτ _ _ h => h τ hτ (SameStateAt.refl τ _)
+  StarValid.of_forall fun _ _ τ _ _ h => h τ rfl
 
-/-- S4 for `⊡` over L⋆: `SameStateAt` at a fixed time is transitive. -/
+/-- S4 for `⊡` over L⋆: state equality at a fixed time is transitive. -/
 theorem starValid_stab_4 (φ : StarFormula) :
     StarValid ((StarFormula.stab φ).imp (StarFormula.stab (StarFormula.stab φ))) := by
-  refine StarValid.of_forall_total fun F M τ hτ x v h => ?_
-  intro σ hσ hσsame ρ hρ hρsame
-  exact h ρ hρ (fun hτ' hρ' => by rw [hσsame hτ' (hσ x), hρsame (hσ x) hρ'])
+  refine StarValid.of_forall fun F M τ x v h => ?_
+  intro σ hσsame ρ hρsame
+  exact h ρ (hσsame.trans hρsame)
 
-/-- S5 for `⊡` over L⋆: `SameStateAt` at a fixed time is symmetric. -/
+/-- S5 for `⊡` over L⋆: state equality at a fixed time is symmetric. -/
 theorem starValid_stab_5 (φ : StarFormula) :
     StarValid ((StarFormula.dstab φ).imp (StarFormula.stab (StarFormula.dstab φ))) := by
-  refine StarValid.of_forall_total fun F M τ hτ x v h => ?_
-  intro σ hσ hσsame
+  refine StarValid.of_forall fun F M τ x v h => ?_
+  intro σ hσsame
   rw [StarTruth.dstab_iff] at h ⊢
-  obtain ⟨ρ, hρ, hρsame, hφ⟩ := h
-  exact ⟨ρ, hρ, fun hσ' hρ' => by rw [← hσsame (hτ x) hσ', ← hρsame (hτ x) hρ'], hφ⟩
+  obtain ⟨ρ, hρsame, hφ⟩ := h
+  exact ⟨ρ, hσsame.symm.trans hρsame, hφ⟩
 
 /-- MS over L⋆: `⟨τ⟩_x ⊆ H_F`, so `□` is stronger than `⊡` — **at every `φ : StarFormula`**,
 registers included. This is the schematic fact that makes `stabNecessitation`
 (`StarLanguage/Derivation.lean`) unrestricted. -/
 theorem starValid_box_stab (φ : StarFormula) :
     StarValid ((StarFormula.box φ).imp (StarFormula.stab φ)) :=
-  StarValid.of_forall_total fun _ _ _ _ _ _ h σ hσ _ => h σ hσ
+  StarValid.of_forall fun _ _ _ _ _ h σ _ => h σ
 
-/-- AS over L⋆: the atom clause reads the world state alone, which `SameStateAt` fixes. -/
+/-- AS over L⋆: the atom clause reads the world state alone, which the `stab` clause fixes. -/
 theorem starValid_atom_stab (p : Atom) :
     StarValid ((StarFormula.atom p).imp (StarFormula.stab (StarFormula.atom p))) := by
-  refine StarValid.of_forall_total fun F M τ hτ x v h => ?_
-  intro σ hσ hsame
+  refine StarValid.of_forall fun F M τ x v h => ?_
+  intro σ hsame
   rw [StarTruth.atom_iff] at h ⊢
-  obtain ⟨ht, hval⟩ := h
-  exact ⟨hσ x, by rw [← hsame ht (hσ x)]; exact hval⟩
+  rw [← hsame]
+  exact h
 
 /-! ## The TM⁺ mirror block — seriality, monotonicity, connection
 
@@ -356,7 +356,7 @@ theorem starValid_serial_past :
 theorem starValid_left_mono_until_G (φ χ ψ : StarFormula) :
     StarValid ((φ.imp χ).allFuture.imp
       ((StarFormula.untl φ ψ).imp (StarFormula.untl χ ψ))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allFuture_iff, StarTruth.untl_iff]
   rintro h_G ⟨s, hts, h_event, h_guard⟩
   exact ⟨s, hts, h_event, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
@@ -365,7 +365,7 @@ theorem starValid_left_mono_until_G (φ χ ψ : StarFormula) :
 theorem starValid_left_mono_since_H (φ χ ψ : StarFormula) :
     StarValid ((φ.imp χ).allPast.imp
       ((StarFormula.snce φ ψ).imp (StarFormula.snce χ ψ))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allPast_iff, StarTruth.snce_iff]
   rintro h_H ⟨s, hst, h_event, h_guard⟩
   exact ⟨s, hst, h_event, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
@@ -374,7 +374,7 @@ theorem starValid_left_mono_since_H (φ χ ψ : StarFormula) :
 theorem starValid_right_mono_until (φ ψ χ : StarFormula) :
     StarValid ((φ.imp ψ).allFuture.imp
       ((StarFormula.untl χ φ).imp (StarFormula.untl χ ψ))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allFuture_iff, StarTruth.untl_iff]
   rintro h_G ⟨s, hts, h_event, h_guard⟩
   exact ⟨s, hts, h_G s hts h_event, h_guard⟩
@@ -383,7 +383,7 @@ theorem starValid_right_mono_until (φ ψ χ : StarFormula) :
 theorem starValid_right_mono_since (φ ψ χ : StarFormula) :
     StarValid ((φ.imp ψ).allPast.imp
       ((StarFormula.snce χ φ).imp (StarFormula.snce χ ψ))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allPast_iff, StarTruth.snce_iff]
   rintro h_H ⟨s, hst, h_event, h_guard⟩
   exact ⟨s, hst, h_H s hst h_event, h_guard⟩
@@ -391,7 +391,7 @@ theorem starValid_right_mono_since (φ ψ χ : StarFormula) :
 /-- BX4 over L⋆: what is true now is always going to have been true. -/
 theorem starValid_connect_future (φ : StarFormula) :
     StarValid (φ.imp (φ.somePast.allFuture)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allFuture_iff, StarTruth.somePast_iff]
   intro h s hts
   exact ⟨t, hts, h⟩
@@ -399,7 +399,7 @@ theorem starValid_connect_future (φ : StarFormula) :
 /-- BX4' over L⋆, the past mirror of `starValid_connect_future`. -/
 theorem starValid_connect_past (φ : StarFormula) :
     StarValid (φ.imp (φ.someFuture.allPast)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allPast_iff, StarTruth.someFuture_iff]
   intro h s hst
   exact ⟨t, hst, h⟩
@@ -415,7 +415,7 @@ lemmas are spelled out. As throughout: no atomization, no uniform substitution. 
 theorem starValid_enrichment_until (φ ψ p : StarFormula) :
     StarValid (StarFormula.and p (StarFormula.untl φ ψ) |>.imp
       (StarFormula.untl φ (StarFormula.and ψ (StarFormula.snce φ p)))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.untl_iff, StarTruth.snce_iff]
   rintro ⟨h_pt, s, hts, h_ψs, h_guard⟩
   exact ⟨s, hts, ⟨h_ψs, t, hts, h_pt, h_guard⟩, h_guard⟩
@@ -424,7 +424,7 @@ theorem starValid_enrichment_until (φ ψ p : StarFormula) :
 theorem starValid_enrichment_since (φ ψ p : StarFormula) :
     StarValid (StarFormula.and p (StarFormula.snce φ ψ) |>.imp
       (StarFormula.snce φ (StarFormula.and ψ (StarFormula.untl φ p)))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.untl_iff, StarTruth.snce_iff]
   rintro ⟨h_pt, s, hst, h_ψs, h_guard⟩
   exact ⟨s, hst, ⟨h_ψs, t, hst, h_pt, h_guard⟩, h_guard⟩
@@ -433,7 +433,7 @@ theorem starValid_enrichment_since (φ ψ p : StarFormula) :
 theorem starValid_self_accum_until (φ ψ : StarFormula) :
     StarValid ((StarFormula.untl φ ψ).imp
       (StarFormula.untl (StarFormula.and φ (StarFormula.untl φ ψ)) ψ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.untl_iff]
   rintro ⟨s, hts, h_ψs, h_guard⟩
   refine ⟨s, hts, h_ψs, fun r htr hrs => ⟨h_guard r htr hrs, ?_⟩⟩
@@ -443,7 +443,7 @@ theorem starValid_self_accum_until (φ ψ : StarFormula) :
 theorem starValid_self_accum_since (φ ψ : StarFormula) :
     StarValid ((StarFormula.snce φ ψ).imp
       (StarFormula.snce (StarFormula.and φ (StarFormula.snce φ ψ)) ψ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.snce_iff]
   rintro ⟨s, hst, h_ψs, h_guard⟩
   refine ⟨s, hst, h_ψs, fun r hsr hrt => ⟨h_guard r hsr hrt, ?_⟩⟩
@@ -453,7 +453,7 @@ theorem starValid_self_accum_since (φ ψ : StarFormula) :
 theorem starValid_absorb_until (φ ψ : StarFormula) :
     StarValid ((StarFormula.untl φ (StarFormula.and φ (StarFormula.untl φ ψ))).imp
       (StarFormula.untl φ ψ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.untl_iff]
   rintro ⟨s₁, hts₁, ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩, h_guard₁⟩
   refine ⟨s₂, lt_trans hts₁ hs₁s₂, h_ψs₂, fun q htq hqs₂ => ?_⟩
@@ -466,7 +466,7 @@ theorem starValid_absorb_until (φ ψ : StarFormula) :
 theorem starValid_absorb_since (φ ψ : StarFormula) :
     StarValid ((StarFormula.snce φ (StarFormula.and φ (StarFormula.snce φ ψ))).imp
       (StarFormula.snce φ ψ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.snce_iff]
   rintro ⟨s₁, hs₁t, ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩, h_guard₁⟩
   refine ⟨s₂, lt_trans hs₂s₁ hs₁t, h_ψs₂, fun q hs₂q hqt => ?_⟩
@@ -483,7 +483,7 @@ theorem starValid_linear_until (φ ψ χ θ : StarFormula) :
           (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ θ))
           (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ χ)))
         (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and φ θ)))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.untl_iff]
   rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
   rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
@@ -502,7 +502,7 @@ theorem starValid_linear_since (φ ψ χ θ : StarFormula) :
           (StarFormula.snce (StarFormula.and φ χ) (StarFormula.and ψ θ))
           (StarFormula.snce (StarFormula.and φ χ) (StarFormula.and ψ χ)))
         (StarFormula.snce (StarFormula.and φ χ) (StarFormula.and φ θ)))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.snce_iff]
   rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
   rcases lt_trichotomy s₂ s₁ with h_lt | h_eq | h_gt
@@ -518,7 +518,7 @@ theorem starValid_linear_since (φ ψ χ θ : StarFormula) :
 /-- BX10 over L⋆: an `until` witness is a future witness. -/
 theorem starValid_until_F (φ ψ : StarFormula) :
     StarValid ((StarFormula.untl φ ψ).imp (StarFormula.someFuture ψ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.untl_iff, StarTruth.someFuture_iff]
   rintro ⟨s, hts, h_ψs, _⟩
   exact ⟨s, hts, h_ψs⟩
@@ -526,7 +526,7 @@ theorem starValid_until_F (φ ψ : StarFormula) :
 /-- BX10' over L⋆, the past mirror of `starValid_until_F`. -/
 theorem starValid_since_P (φ ψ : StarFormula) :
     StarValid ((StarFormula.snce φ ψ).imp (StarFormula.somePast ψ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.snce_iff, StarTruth.somePast_iff]
   rintro ⟨s, hst, h_ψs, _⟩
   exact ⟨s, hst, h_ψs⟩
@@ -537,7 +537,7 @@ theorem starValid_temp_linearity (φ ψ : StarFormula) :
       (StarFormula.or (StarFormula.someFuture (StarFormula.and φ ψ))
         (StarFormula.or (StarFormula.someFuture (StarFormula.and φ (StarFormula.someFuture ψ)))
           (StarFormula.someFuture (StarFormula.and (StarFormula.someFuture φ) ψ))))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.someFuture_iff]
   rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
   rcases lt_trichotomy s₁ s₂ with h | h | h
@@ -551,7 +551,7 @@ theorem starValid_temp_linearity_past (φ ψ : StarFormula) :
       (StarFormula.or (StarFormula.somePast (StarFormula.and φ ψ))
         (StarFormula.or (StarFormula.somePast (StarFormula.and φ (StarFormula.somePast ψ)))
           (StarFormula.somePast (StarFormula.and (StarFormula.somePast φ) ψ))))) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.somePast_iff]
   rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
   rcases lt_trichotomy s₁ s₂ with h | h | h
@@ -563,7 +563,7 @@ theorem starValid_temp_linearity_past (φ ψ : StarFormula) :
 theorem starValid_F_until_equiv (φ : StarFormula) :
     StarValid ((StarFormula.someFuture φ).imp
       (StarFormula.untl (StarFormula.bot.imp StarFormula.bot) φ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.someFuture_iff, StarTruth.untl_iff]
   rintro ⟨s, hts, h_φs⟩
   exact ⟨s, hts, h_φs, fun _ _ _ => id⟩
@@ -572,7 +572,7 @@ theorem starValid_F_until_equiv (φ : StarFormula) :
 theorem starValid_P_since_equiv (φ : StarFormula) :
     StarValid ((StarFormula.somePast φ).imp
       (StarFormula.snce (StarFormula.bot.imp StarFormula.bot) φ)) := by
-  refine StarValid.of_forall_total fun F M τ _ t v => ?_
+  refine StarValid.of_forall fun F M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.somePast_iff, StarTruth.snce_iff]
   rintro ⟨s, hst, h_φs⟩
   exact ⟨s, hst, h_φs, fun _ _ _ => id⟩
@@ -644,7 +644,7 @@ theorem starValid_discrete_box_necessity_swap :
 /-- Density over L⋆ at `.Dense`: `GGφ → Gφ`. -/
 theorem starValid_density (φ : StarFormula) :
     StarValidIn FrameClass.Dense ((φ.allFuture.allFuture).imp φ.allFuture) := by
-  refine StarValidIn.of_forall_total fun F h_dense M τ _ t v => ?_
+  refine fun F h_dense M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allFuture_iff]
   intro h_GG s hts
   obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense F.Duration _ h_dense t s hts
@@ -655,7 +655,7 @@ theorem starValid_density (φ : StarFormula) :
 constructor — mirroring `Metalogic/Soundness.lean`'s `density_swap_valid`. -/
 theorem starValid_density_swap (φ : StarFormula) :
     StarValidIn FrameClass.Dense ((φ.allPast.allPast).imp φ.allPast) := by
-  refine StarValidIn.of_forall_total fun F h_dense M τ _ t v => ?_
+  refine fun F h_dense M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allPast_iff]
   intro h_HH s hst
   obtain ⟨r, hsr, hrt⟩ := @DenselyOrdered.dense F.Duration _ h_dense s t hst
@@ -674,7 +674,7 @@ theorem starValid_dense_indicator_swap :
 /-- Prior-UZ over L⋆ at `.ZTime`: the nearest `φ`-point above `t` witnesses `U(φ, ¬φ)`. -/
 theorem starValid_prior_UZ (φ : StarFormula) :
     StarValidIn FrameClass.ZTime (φ.someFuture.imp (StarFormula.untl φ.neg φ)) := by
-  refine StarValidIn.of_forall_total fun F hF M τ _ t v => ?_
+  refine fun F hF M τ t v => ?_
   sat_intro hF
   simp only [StarTruth.imp_iff, StarTruth.someFuture_iff, StarTruth.untl_iff, StarTruth.neg_iff]
   rintro ⟨s, hts, hs⟩
@@ -685,7 +685,7 @@ theorem starValid_prior_UZ (φ : StarFormula) :
 `exists_nearest_gt` at `Dᵒᵈ`. The dualisation is of the *carrier*, never of the formula. -/
 theorem starValid_prior_SZ (φ : StarFormula) :
     StarValidIn FrameClass.ZTime (φ.somePast.imp (StarFormula.snce φ.neg φ)) := by
-  refine StarValidIn.of_forall_total fun F hF M τ _ t v => ?_
+  refine fun F hF M τ t v => ?_
   sat_intro hF
   simp only [StarTruth.imp_iff, StarTruth.somePast_iff, StarTruth.snce_iff, StarTruth.neg_iff]
   rintro ⟨s, hst, hs⟩
@@ -696,7 +696,7 @@ theorem starValid_prior_SZ (φ : StarFormula) :
 theorem starValid_z1 (φ : StarFormula) :
     StarValidIn FrameClass.ZTime ((φ.allFuture.imp φ).allFuture.imp
       (φ.allFuture.someFuture.imp φ.allFuture)) := by
-  refine StarValidIn.of_forall_total fun F hF M τ _ t v => ?_
+  refine fun F hF M τ t v => ?_
   sat_intro hF
   simp only [StarTruth.imp_iff, StarTruth.allFuture_iff, StarTruth.someFuture_iff]
   rintro h_GGpIp ⟨s₀, hts₀, hs₀⟩
@@ -709,7 +709,7 @@ among the schemata, so this dual is named here — mirroring
 theorem starValid_z1_swap (φ : StarFormula) :
     StarValidIn FrameClass.ZTime ((φ.allPast.imp φ).allPast.imp
       (φ.allPast.somePast.imp φ.allPast)) := by
-  refine StarValidIn.of_forall_total fun F hF M τ _ t v => ?_
+  refine fun F hF M τ t v => ?_
   sat_intro hF
   simp only [StarTruth.imp_iff, StarTruth.allPast_iff, StarTruth.somePast_iff]
   rintro h_HHpIp ⟨s₀, hs₀t, hs₀⟩
@@ -729,7 +729,7 @@ deferred follow-up work, not done here.
 genuinely new rather than a transcription: no L⁺ statement mentions a register vector. -/
 
 /-- `K⁺φ` at `t`: every point above `t` has a `φ`-point strictly between. -/
-theorem starKPlus_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem starKPlus_iff {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ t v φ.kPlus ↔
       ∀ s : F.Duration, t < s → ∃ r : F.Duration, t < r ∧ r < s ∧ StarTruthAt M τ r v φ := by
@@ -744,7 +744,7 @@ theorem starKPlus_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) 
     exact hall r h1 h2 hr
 
 /-- `K⁻φ` at `t`: the past mirror of `starKPlus_iff`. -/
-theorem starKMinus_iff {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem starKMinus_iff {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (v : ℕ → F.Duration) (φ : StarFormula) :
     StarTruthAt M τ t v φ.kMinus ↔
       ∀ s : F.Duration, s < t → ∃ r : F.Duration, s < r ∧ r < t ∧ StarTruthAt M τ r v φ := by
@@ -767,13 +767,13 @@ This is what makes `StarAxiom.modal_future` sound at every `RecallFree φ`: the 
 lemma moves the vector along with the history, and on this fragment that movement is invisible. -/
 theorem recallFree_vector_irrelevant {F : TaskFrame} (M : TaskModel F) {φ : StarFormula}
     (hφ : RecallFree φ) :
-    ∀ (τ : PartialHistory F) (t : F.Duration) (v w : ℕ → F.Duration),
+    ∀ (τ : WorldHistory F) (t : F.Duration) (v w : ℕ → F.Duration),
       StarTruthAt M τ t v φ ↔ StarTruthAt M τ t w φ := by
   induction hφ with
   | atom p => intros; exact Iff.rfl
   | bot => intros; exact Iff.rfl
   | imp _ _ ihφ ihψ => intro τ t v w; exact Iff.imp (ihφ τ t v w) (ihψ τ t v w)
-  | box _ ih => intro τ t v w; exact forall_congr' fun ρ => imp_congr_right fun _ => ih ρ t v w
+  | box _ ih => intro τ t v w; exact forall_congr' fun ρ => ih ρ t v w
   | untl _ _ ihψ ihφ =>
     intro τ t v w
     exact exists_congr fun s => and_congr_right fun _ =>
@@ -786,7 +786,7 @@ theorem recallFree_vector_irrelevant {F : TaskFrame} (M : TaskModel F) {φ : Sta
         imp_congr_right fun _ => ihψ τ r v w)
   | stab _ ih =>
     intro τ t v w
-    exact forall_congr' fun ρ => imp_congr_right fun _ => imp_congr_right fun _ => ih ρ t v w
+    exact forall_congr' fun ρ => imp_congr_right fun _ => ih ρ t v w
   | timeStore i _ ih =>
     intro τ t v w
     exact ih τ t (Function.update v i t) (Function.update w i t)
@@ -799,7 +799,7 @@ theorem starValid_prior_U_gap (φ : StarFormula) :
     StarValidIn FrameClass.RTime
       ((StarFormula.and (StarFormula.untl φ StarFormula.top) φ.neg.someFuture).imp
         (StarFormula.untl φ (StarFormula.or φ.neg (StarFormula.kPlus φ.neg)))) := by
-  refine StarValidIn.of_forall_total fun F h_lub M τ _hτ t v h_ant => ?_
+  refine fun F h_lub M τ t v h_ant => ?_
   sat_intro h_lub
   simp only [StarTruth.and_iff, StarTruth.untl_iff, StarTruth.someFuture_iff,
     StarTruth.neg_iff] at h_ant
@@ -843,7 +843,7 @@ theorem starValid_prior_S_gap (φ : StarFormula) :
     StarValidIn FrameClass.RTime
       ((StarFormula.and (StarFormula.snce φ StarFormula.top) φ.neg.somePast).imp
         (StarFormula.snce φ (StarFormula.or φ.neg (StarFormula.kMinus φ.neg)))) := by
-  refine StarValidIn.of_forall_total fun F h_lub M τ _hτ t v h_ant => ?_
+  refine fun F h_lub M τ t v h_ant => ?_
   sat_intro h_lub
   simp only [StarTruth.and_iff, StarTruth.snce_iff, StarTruth.somePast_iff,
     StarTruth.neg_iff] at h_ant
@@ -888,7 +888,7 @@ theorem starValid_sep (φ : StarFormula) :
       ((StarFormula.and (StarFormula.kPlus φ)
         (StarFormula.kPlus (StarFormula.and φ (StarFormula.untl φ.neg φ))).neg).imp
         (StarFormula.kPlus (StarFormula.and (StarFormula.kPlus φ) (StarFormula.kMinus φ)))) := by
-  refine StarValidIn.of_forall_total fun F h_lub M τ _hτ t vec h_ant => ?_
+  refine fun F h_lub M τ t vec h_ant => ?_
   sat_intro h_lub
   obtain ⟨Q, hQc, hQd⟩ := Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
   obtain ⟨h1, h2⟩ := (StarTruth.and_iff _ _ _ _ _ _).mp h_ant
@@ -943,7 +943,7 @@ theorem starValid_sep_swap (φ : StarFormula) :
         (StarFormula.kPlus (StarFormula.and φ (StarFormula.untl φ.neg φ))).neg).imp
         (StarFormula.kPlus
           (StarFormula.and (StarFormula.kPlus φ) (StarFormula.kMinus φ)))).swapTemporal) := by
-  refine StarValidIn.of_forall_total fun F h_lub M τ _hτ t vec h_ant => ?_
+  refine fun F h_lub M τ t vec h_ant => ?_
   sat_intro h_lub
   obtain ⟨Q, hQc, hQd⟩ := Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
   obtain ⟨h1, h2⟩ := (StarTruth.and_iff _ _ _ _ _ _).mp h_ant
@@ -994,11 +994,11 @@ instances. The argument is the L-level one, `starTruthAt_timeShift` supplying ho
 `recallFree_vector_irrelevant` absorbing the vector the L⋆ shift drags along. -/
 theorem starValid_modal_future {φ : StarFormula} (hφ : RecallFree φ) :
     StarValid ((StarFormula.box φ).imp (StarFormula.box (StarFormula.allFuture φ))) := by
-  refine StarValid.of_forall_total fun F M τ _hτ t v h => ?_
-  intro σ hσ
+  refine StarValid.of_forall fun F M τ t v h => ?_
+  intro σ
   rw [StarTruth.allFuture_iff]
   intro s hts
-  have h1 := h (σ.timeShift (s - t)) (timeShift_isTotal' σ hσ (s - t))
+  have h1 := h (σ.timeShift (s - t))
   have h2 := (starTruthAt_timeShift M φ σ t (s - t) v).mp h1
   rw [add_sub_cancel] at h2
   exact (recallFree_vector_irrelevant M hφ σ s _ v).mp h2
@@ -1010,11 +1010,11 @@ theorem starValid_modal_future_swap {φ : StarFormula} (hφ : RecallFree φ) :
     StarValid (((StarFormula.box φ).imp
       (StarFormula.box (StarFormula.allFuture φ))).swapTemporal) := by
   simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
-  refine StarValid.of_forall_total fun F M τ _hτ t v h => ?_
-  intro σ hσ
+  refine StarValid.of_forall fun F M τ t v h => ?_
+  intro σ
   rw [StarTruth.allPast_iff]
   intro s hst
-  have h1 := h (σ.timeShift (s - t)) (timeShift_isTotal' σ hσ (s - t))
+  have h1 := h (σ.timeShift (s - t))
   have h2 := (starTruthAt_timeShift M φ.swapTemporal σ t (s - t) v).mp h1
   rw [add_sub_cancel] at h2
   exact (recallFree_vector_irrelevant M hφ.swapTemporal σ s _ v).mp h2
@@ -1035,7 +1035,7 @@ reason. The two `*_swap` lemmas below are those duals. -/
 theorem starValid_paste {φ ψ : StarFormula} (hφ : StarIsPureFuture φ) (hψ : StarIsPurePast ψ) :
     StarValid ((StarFormula.dstab φ).imp
       ((StarFormula.dstab ψ).imp (StarFormula.dstab (φ.and ψ)))) :=
-  StarValid.of_forall_total fun _ M τ hτ t v => star_paste_valid M τ hτ t v hφ hψ
+  StarValid.of_forall fun _ M τ t v => star_paste_valid M τ t v hφ hψ
 
 /-- The temporal dual of PS: the same schema with the conjuncts exchanged, `⟐ψ⁻ → (⟐φ⁺ →
 ⟐(ψ⁻ ∧ φ⁺))`. Mirrors `Semantics.paste_valid'`. -/
@@ -1043,14 +1043,14 @@ theorem starValid_paste_swap {ψ φ : StarFormula} (hψ : StarIsPurePast ψ)
     (hφ : StarIsPureFuture φ) :
     StarValid ((StarFormula.dstab ψ).imp
       ((StarFormula.dstab φ).imp (StarFormula.dstab (ψ.and φ)))) :=
-  StarValid.of_forall_total fun _ M τ hτ t v => star_paste_valid' M τ hτ t v hψ hφ
+  StarValid.of_forall fun _ M τ t v => star_paste_valid' M τ t v hψ hφ
 
 /-- US as a `StarValid`. -/
 theorem starValid_untl_paste {α φ : StarFormula} (hα : StarIsPurePast α)
     (hφ : StarIsPureFuture φ) :
     StarValid ((StarFormula.untl α (StarFormula.dstab φ)).imp
       (StarFormula.dstab (StarFormula.untl α φ))) :=
-  StarValid.of_forall_total fun _ M τ hτ t v => star_untl_paste_valid M τ hτ t v hα hφ
+  StarValid.of_forall fun _ M τ t v => star_untl_paste_valid M τ t v hα hφ
 
 /-- The temporal dual of US, namely SS: `(α⁺ S ⟐φ⁻) → ⟐(α⁺ S φ⁻)`. Mirrors
 `Semantics.snce_dstab_valid`. -/
@@ -1058,7 +1058,7 @@ theorem starValid_untl_paste_swap {α φ : StarFormula} (hα : StarIsPureFuture 
     (hφ : StarIsPurePast φ) :
     StarValid ((StarFormula.snce α (StarFormula.dstab φ)).imp
       (StarFormula.dstab (StarFormula.snce α φ))) :=
-  StarValid.of_forall_total fun _ M τ hτ t v => star_snce_paste_valid M τ hτ t v hα hφ
+  StarValid.of_forall fun _ M τ t v => star_snce_paste_valid M τ t v hα hφ
 
 /-! ## Validity -/
 

@@ -128,8 +128,7 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   `MinusValidZTime` and `MinusValidRTime`, binder for binder against `MinusTruthAt`; there is
   deliberately no density-free `MinusValidComplete`, which would be refutable
 - `PlusLanguage.PlusTruth`: the truth recursion for the language L⁺ (L plus the stability modal `⊡`,
-  `FormalSystem/PlusLanguage/Formula.lean`) — `SameStateAt` (the paper's `⟨τ⟩_x`, line 1108) and
-  `PlusTruthAt`, whose seventh clause is the paper's `($\Stability$)` clause (`def:BLstar-semantics`); the
+  `FormalSystem/PlusLanguage/Formula.lean`) — `PlusTruthAt`, whose seventh clause is the paper's `($\Stability$)` clause (`def:BLstar-semantics`); the
   `PlusTruth.*` clause lemmas, the S5 validities of `⊡`, and `stab_state_only` (`⊡φ` depends on
   the world state alone)
 - `PlusLanguage.PlusValidity`: the L⁺ mirrors of `Validity` — `PlusValidOnFrames` (the frame-predicate
@@ -216,7 +215,7 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 | Limit | `⋂_{x > 0} (w)_x = {w}` | `limit` field |
 | Saturation | `⋂ S ≠ ∅` for a `⊇`-directed family of nonempty fibers and segments | `saturation` field |
 | Partial History | `τ : X → W`, `X ⊆ D` nonempty (`def:world-history`) | `PartialHistory F` |
-| World History | partial history with `X = D` (sec:Construction) | `WorldHistory`; predicate form `PartialHistory.IsTotal` |
+| World History | partial history with `X = D` (sec:Construction) | `WorldHistory F` (defining predicate `PartialHistory.IsTotal`); `τ.state x` is `τ(x)` |
 | Truth | `M,τ,x ⊨ φ` | `TruthAt M τ t φ` |
 | Validity | True in all models, at every total history | `Valid φ` |
 
@@ -244,10 +243,10 @@ see `Truth.lean`'s `Truth.*_iff` family for their characterizations.
 
 | Formula | Truth Condition |
 |---------|-----------------|
-| `atom p` | `∃ (ht : τ.domain t), M.valuation (τ.states t ht) p` |
+| `atom p` | `M.valuation (τ.state t) p` |
 | `⊥` | `False` |
 | `φ → ψ` | `TruthAt M τ t φ → TruthAt M τ t ψ` |
-| `□φ` | `∀ σ, σ.IsTotal → TruthAt M σ t φ` |
+| `□φ` | `∀ σ : WorldHistory F, TruthAt M σ t φ` |
 | `U(ψ, φ)` (`untl ψ φ`) | `∃ s > t, TruthAt M τ s φ ∧ ∀ r, t < r → r < s → TruthAt M τ r ψ` |
 | `S(ψ, φ)` (`snce ψ φ`) | `∃ s < t, TruthAt M τ s φ ∧ ∀ r, s < r → r < t → TruthAt M τ r ψ` |
 

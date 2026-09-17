@@ -154,19 +154,17 @@ noncomputable def trivialModel (v : Nat → Bool) (atomList : List Atom) :
 /-- The trivial-frame truth lemma: on the trivial model built from `v`/`atomList`, truth of a
 purely propositional formula `q` at any time coincides with `PropForm.eval` of its
 reification. Box/until/since cases are dismissed by `isPropositional`; the atom case reduces
-via the trivial history's total domain. -/
+because the trivial model's valuation ignores the state. -/
 theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
     ∀ q : Formula, isPropositional q = true →
       (FormalSystem.Semantics.TruthAt (trivialModel v atomList)
-          (PartialHistory.trivialFrameHistory (D := Int)) t q ↔ (reifyWith atomList q).eval v = true) := by
+          (⟨PartialHistory.trivialFrameHistory (D := Int), fun _ => trivial⟩ :
+            WorldHistory _) t q ↔ (reifyWith atomList q).eval v = true) := by
   intro q
   induction q with
   | atom a =>
       intro _
-      -- `PartialHistory.trivialFrameHistory` is built with `PartialHistory.ofTotal`, so the unfolding
-      -- chain needs the constructor as well before the total domain becomes visible.
-      simp [FormalSystem.Semantics.TruthAt, PartialHistory.trivialFrameHistory, PartialHistory.ofTotal,
-        trivialModel, reifyWith]
+      simp [FormalSystem.Semantics.TruthAt, trivialModel, reifyWith]
   | bot =>
       intro _
       simp [FormalSystem.Semantics.TruthAt, reifyWith]
@@ -197,14 +195,15 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
     exact ⟨v, Bool.not_eq_true _ |>.mp hv⟩
   have htruth_iff := trivial_truth_iff v (formulaAtomsList p) (0 : Int) p hp
   have hnot_truth : ¬ FormalSystem.Semantics.TruthAt (trivialModel v (formulaAtomsList p))
-      (PartialHistory.trivialFrameHistory (D := Int)) (0 : Int) p := by
+      (⟨PartialHistory.trivialFrameHistory (D := Int), fun _ => trivial⟩ : WorldHistory _)
+      (0 : Int) p := by
     rw [htruth_iff]
     simp [hv]
   obtain ⟨d⟩ := h
   have htruth := FormalSystem.Metalogic.soundness [] p d
     (FrameOver.trivialFrame (D := Int)) (trivialModel v (formulaAtomsList p))
-    (PartialHistory.trivialFrameHistory (D := Int))
-    (fun _ => True.intro) (0 : Int) (fun ψ hψ => absurd hψ List.not_mem_nil)
+    (⟨PartialHistory.trivialFrameHistory (D := Int), fun _ => trivial⟩ : WorldHistory _)
+    (0 : Int) (fun ψ hψ => absurd hψ List.not_mem_nil)
   exact hnot_truth htruth
 
 /-- Concrete decidability of `|-! p` for purely propositional `p`: dispatches on

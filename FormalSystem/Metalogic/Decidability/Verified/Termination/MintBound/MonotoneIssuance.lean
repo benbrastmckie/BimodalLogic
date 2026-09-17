@@ -299,8 +299,9 @@ def orientedSplitArms (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) 
   [ (b, ord.addFuture t₁ t₂), (b, ord.addFuture t₂ t₁), identifyOriented b ord t₁ t₂ ]
 
 /-- **The "single non-additive step" claim, checked rather than cited.**
-`Verified/Decidable.lean:274` asserts in prose that the ordered split's identification arm is the
-engine's only non-additive branch step. This is that assertion as a theorem, and the enumeration
+The "Well-formedness of the `(branch, ordering)` pair" section of `Verified/Decidable.lean`
+asserts in prose that the ordered split's identification arm is the engine's only non-additive
+branch step. This is that assertion as a theorem, and the enumeration
 behind it is complete: `ExpansionResult` has exactly **four** constructors, and every one is
 accounted for.
 

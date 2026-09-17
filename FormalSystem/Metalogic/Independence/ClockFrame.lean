@@ -27,7 +27,7 @@ The independence witness for `CO ⊬ Prior-U` is built on a single frame, define
 
 The torsion in `ℚ ⧸ ℤ` is load bearing, not decorative. Duration `1` is a **looping duration**:
 `⟦1⟧ = 0`, so `w ⇒_1 w` and nothing else. `def:world-history`'s task-respect clause then forces
-every total history to be `1`-periodic — periodicity is a consequence of the frame, not an extra
+every world history to be `1`-periodic — periodicity is a consequence of the frame, not an extra
 assumption — and `Metalogic/Independence/LoopingDuration.lean` turns that into validity of every
 `CO` instance. On the *un-quotiented* line frame (`W = ℚ`, `u = w + x`) the same time shift moves
 world states rather than fixing them and the argument collapses.
@@ -50,7 +50,7 @@ not a model of the intended interpretation. Three points make the witness legiti
 
 * `ClockState` — the carrier `ℚ ⧸ AddSubgroup.zmultiples (1 : ℚ)`, with the projection `cmk`.
 * `clockFrame` — the `FrameOver (TemporalOrder.of ℚ)` above, with all its obligations discharged.
-* `clockHistory` — the reference total history `t ↦ ⟦t⟧`, with `clockHistory_isTotal`.
+* `clockHistory` — the reference world history `t ↦ ⟦t⟧`.
 -/
 
 namespace FormalSystem.Metalogic.Independence
@@ -209,21 +209,15 @@ The reference history of the clock frame: time `t` sits at circle position `⟦t
 This is the history the `Prior-U` refutation is stated at. It is total, and `respects_task` holds
 by the group law alone: `⟦t⟧ = ⟦s⟧ + ⟦t - s⟧`.
 -/
-def clockHistory : PartialHistory clockFrame where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => cmk t
-  respects_task := by
-    intro s t _ _
+def clockHistory : WorldHistory clockFrame :=
+  WorldHistory.ofTotal clockFrame cmk (by
+    intro s t
     refine (clockFrame_taskRel _ _ _).mpr ?_
     show cmk t = cmk s + cmk (t - s)
     rw [← cmk_add]
     congr 1
-    ring
-@[simp] theorem clockHistory_states (t : ℚ) (ht : clockHistory.domain t) :
-    clockHistory.states t ht = cmk t := rfl
+    ring)
 
-/-- The reference history is total: its domain is all of `ℚ`. -/
-theorem clockHistory_isTotal : clockHistory.IsTotal := fun _ => trivial
+@[simp] theorem clockHistory_state (t : ℚ) : clockHistory.state t = cmk t := rfl
 
 end FormalSystem.Metalogic.Independence

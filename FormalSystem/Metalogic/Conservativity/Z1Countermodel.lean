@@ -20,7 +20,7 @@ sorry-free), and refutes `TM⁻_z`'s weak completeness over ℤ-time (report §6
 ## The countermodel
 
 `D := ℚ ×ₗ ℤ`, `F := multiFamTaskFrameGen (TemporalOrder.of D) Unit`,
-`τ := multiFamHistoryGen () 0` (total, by `multiFamHistoryGen_total`),
+`τ := multiFamHistoryGen () 0`,
 `M.valuation w _ := 1 ≤ (ofLex w.2).1`. The refuting structure **is** a task frame — a
 lexicographic product of ordered abelian groups is an ordered abelian group — so the CEF
 refutation never leaves `TaskFrame`; `Semantics/LexCarrier.lean` supplies the `SuccOrder`/
@@ -71,23 +71,16 @@ noncomputable abbrev z1F : TaskFrame := multiFamTaskFrameGen z1D Unit
 noncomputable def z1TM : TaskModel z1F where
   valuation := fun w _ => 1 ≤ (ofLex w.2).1
 
-/-- The countermodel's history: the flow line through family `()` starting at `0`. Total by
-`multiFamHistoryGen_total`. -/
-noncomputable abbrev z1τ : PartialHistory z1F := multiFamHistoryGen () (0 : (z1D : Type))
-
-theorem z1τ_total : z1τ.IsTotal := multiFamHistoryGen_total (D := z1D) () 0
+/-- The countermodel's history: the flow line through family `()` starting at `0`. -/
+noncomputable abbrev z1τ : WorldHistory z1F := multiFamHistoryGen () (0 : (z1D : Type))
 
 /-! ## The valuation lemma -/
 
 /-- `p` holds at `t` along `z1τ` iff `t`'s `ℚ`-coordinate is `≥ 1`. -/
 theorem z1_atom_iff (p : Atom) (t : (z1D : Type)) :
     MinusTruthAt z1TM z1τ t (MinusFormula.atom p) ↔ 1 ≤ (ofLex t).1 := by
-  constructor
-  · rintro ⟨_, h⟩
-    simpa [z1TM, multiFamHistoryGen] using h
-  · intro h
-    refine ⟨trivial, ?_⟩
-    simpa [z1TM, multiFamHistoryGen] using h
+  show z1TM.valuation (z1τ.state t) p ↔ _
+  simp [z1TM, z1τ, multiFamHistoryGen_state]
 
 /-! ## `Gp ↔ p` pointwise -/
 
@@ -179,7 +172,7 @@ theorem not_minus_derivable_z1 (p : Atom) :
     ¬ MinusLanguage.Derivable FrameClass.ZTime [] (Conservativity.Z1 (MinusFormula.atom p)) := by
   rintro ⟨d⟩
   exact z1_not_true_at_zero p
-    (minus_soundness_ztime_succ [] _ d z1F z1TM z1τ z1τ_total z1pt (by simp))
+    (minus_soundness_ztime_succ [] _ d z1F z1TM z1τ z1pt (by simp))
 
 /--
 **Deliverable 2.** `Z1 p` is `MinusValidZTime`: from `Conservativity.z1_translate`

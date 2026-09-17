@@ -46,27 +46,19 @@ corrected against the anchor of record.)
 - `M,τ,x ⊨ Past φ` iff `M,τ,y ⊨ φ` for all y ∈ D where y < x (past, strict)
 - `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x < y (future, strict)
 
-**Critical Semantic Design (this tree's encoding; Decision A of
+**Critical Semantic Design (this tree's encoding; Decision A' of
 `docs/architecture/total-history-validity-decisions.md`)**:
 `def:BL-semantics` defines truth only at possible worlds `τ ∈ H_F`, whose domain is all of `D`,
-and quantifies the temporal clauses over all `y ∈ D`. This tree evaluates `TruthAt` on
-**arbitrary** `PartialHistory`s and reads the paper's clauses unchanged on them; the one place that
-forces a choice is the atom clause, and the choice is:
-- Atoms at times outside the domain are FALSE (not undefined). The domain conjunct is this
-  tree's generalisation, not a paper clause; at a possible world it is trivially satisfied.
-- Temporal operators still quantify over all of `D`, "beyond" the history's domain
-- Validity (`Validity.lean`) quantifies only over total histories, so the paper's statements are
-  unaffected; the generalisation matters only for finite histories used as intermediate objects
-  (e.g., a chess game ending at move 31)
+and quantifies the temporal clauses over all `y ∈ D`. This tree does the same: `TruthAt` is
+evaluated at `τ : WorldHistory F`, the bundled type of total histories, and reads the state
+through the non-dependent accessor `WorldHistory.state`. No clause carries a domain conjunct.
 
 **ProofChecker Implementation Alignment**:
-✓ Atom: `∃ (ht : τ.domain t), M.valuation (τ.states t ht) p`
-  is the paper's `τ(x) ∈ |p|` plus the domain conjunct described above (atoms false outside
-  the domain; trivially satisfied at a possible world)
+✓ Atom: `M.valuation (τ.state t) p` is the paper's `τ(x) ∈ |p|`
 ✓ Bot: `False` matches paper's definition
 ✓ Imp: Standard material conditional matches paper
-✓ Box: `∀ (σ : PartialHistory F), σ.IsTotal → TruthAt M σ t φ`
-  matches paper's quantification over σ ∈ H_F (the frame's total histories)
+✓ Box: `∀ σ : WorldHistory F, TruthAt M σ t φ`
+  matches paper's quantification over σ ∈ H_F (the frame's world histories)
 ✓ Past (H): via `@[simp] past_iff`: `∀ s, s < t → TruthAt M τ s φ`
   uses strict ordering (all past times, excluding now); derived via def + Until/Since
 ✓ Future (G): via `@[simp] future_iff`: `∀ s, t < s → TruthAt M τ s φ`
@@ -101,8 +93,8 @@ of the same formula were each checked to converge on the normal form under bare 
 | `φ → ψ` | `imp_iff` | `TruthAt … φ → TruthAt … ψ` |
 | `φ ∧ ψ` | `and_iff` | `TruthAt … φ ∧ TruthAt … ψ` |
 | `φ ∨ ψ` | `or_iff` | `TruthAt … φ ∨ TruthAt … ψ` |
-| `□φ` | `box_iff` | `∀ σ, σ.IsTotal → TruthAt M σ t φ` |
-| `◇φ` | `diamond_iff` | `∃ σ, σ.IsTotal ∧ TruthAt M σ t φ` |
+| `□φ` | `box_iff` | `∀ σ : WorldHistory F, TruthAt M σ t φ` |
+| `◇φ` | `diamond_iff` | `∃ σ : WorldHistory F, TruthAt M σ t φ` |
 | `ψ U φ` | `untl_iff` | the `untl` clause |
 | `ψ S φ` | `snce_iff` | the `snce` clause |
 | `Fφ` | `some_future_iff` | `∃ s, t < s ∧ TruthAt M τ s φ` |
@@ -146,7 +138,7 @@ on no proof-system notion.
 - Modal box quantifies over all possible worlds at current time
 - Until/Since use strict witness (s > t / s < t) with open guards (t,s) / (s,t)
 - G/H/F/P are `def` abbreviations with `@[simp]` characterization theorems
-- Atoms are false at times outside the history's domain
+- Truth is evaluated at world histories only; atoms read `WorldHistory.state`
 
 ## References
 
@@ -156,8 +148,8 @@ on no proof-system notion.
 * [TaskModel.lean](TaskModel.lean) - Task model structure
 * JPL Paper `app:TaskSemantics`, `def:BL-semantics` — formal truth definition, cited by
   `\label` (pinned verbatim in `docs/reference/paper-definitions-of-record.md`)
-* `docs/architecture/total-history-validity-decisions.md` — Decision A, the arbitrary-history
-  encoding of the atom clause
+* `docs/architecture/total-history-validity-decisions.md` — Decision A', the bundled
+  world-history encoding of truth
 
 ## Tags
 
@@ -175,15 +167,14 @@ Truth of a formula at a model-history-time triple.
 
 Given:
 - `M`: A task model (frame + valuation)
-- `τ`: A partial history (function from times to states); callers supply `τ.IsTotal`
+- `τ`: A world history (a possible world `τ ∈ H_F`, total by construction)
 - `t`: A time point
 - `φ`: A formula
 
 Returns whether `φ` is true at this semantic configuration.
 
 The evaluation is defined recursively on formula structure (6 constructors):
-- Atoms: true iff there exists a proof that t is in the history's domain
-  AND valuation says so at current state (atoms are false at times outside domain)
+- Atoms: true iff the valuation holds at the history's state `τ.state t`
 - Bot (⊥): always false
 - Implication: standard material conditional
 - Box (□): true iff φ true at all **possible worlds** at time t
@@ -194,21 +185,19 @@ G (allFuture), H (allPast), F (someFuture), P (somePast) are `def` abbreviations
 with `@[simp]` characterization theorems (see `future_iff`, `past_iff`, etc.).
 
 **Paper Reference**: `def:BL-semantics`'s box clause, verbatim: "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ
-for all σ ∈ H_F". The quantifier ranges over `H_F` — the TOTAL histories — with no `Ω` and no
-shift-closure side condition. `PartialHistory.IsTotal` is the predicate form of `H_F` membership
-(Decision A of `docs/architecture/total-history-validity-decisions.md`); it is deliberately **not**
-Mathlib's `IsMax` or any order-theoretic maximality predicate.
+for all σ ∈ H_F". The quantifier ranges over `WorldHistory F` — the paper's `H_F`, the TOTAL
+histories — with no `Ω` and no shift-closure side condition (Decision A' of
+`docs/architecture/total-history-validity-decisions.md`).
 
 **There is no admissible-history parameter.** `TruthAt` takes the model, the history, the time
 and the formula, and nothing else. The designated-carrier argument that earlier revisions
 threaded through every clause has been deleted outright: the box clause reads its quantifier
-range off `PartialHistory.IsTotal`, so no set-valued parameter can narrow, widen, or otherwise
+range off the type `WorldHistory F`, so no set-valued parameter can narrow, widen, or otherwise
 influence the meaning of any connective.
 
-**Atom clause** (Decision A, accepted gap): the `∃ (ht : τ.domain t)` conjunct is retained even
-though `def:BL-semantics`'s atom clause has no domain conjunct. Under totality the conjunct is
-vacuously satisfiable at every `t`, so the two readings agree on `H_F`; the conjunct is what keeps
-`TruthAt` meaningful at the partial histories that the extension machinery still traffics in.
+**Atom clause**: `M.valuation (τ.state t) p` is `def:BL-semantics`'s `τ(x) ∈ |p|` on the nose.
+Truth is evaluated only at world histories, exactly as in the paper, so there is no domain
+conjunct.
 
 **Until / Since argument order**: `untl`/`snce` are **guard-first / event-second** — `untl ψ φ`
 reads "ψ is the guard, φ is the event". The two clauses below transcribe
@@ -241,11 +230,11 @@ to the paper by a uniform argument swap of the definition and every call site. S
 box retarget.
 -/
 def TruthAt (M : TaskModel F)
-    (τ : PartialHistory F) (t : F.Duration) : Formula → Prop
-  | Formula.atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
+    (τ : WorldHistory F) (t : F.Duration) : Formula → Prop
+  | Formula.atom p => M.valuation (τ.state t) p
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
-  | Formula.box φ => ∀ (σ : PartialHistory F), σ.IsTotal → TruthAt M σ t φ
+  | Formula.box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ
   | Formula.untl ψ φ => ∃ s : F.Duration, t < s ∧ TruthAt M τ s φ ∧
       ∀ r : F.Duration, t < r → r < s → TruthAt M τ r ψ
   | Formula.snce ψ φ => ∃ s : F.Duration, s < t ∧ TruthAt M τ s φ ∧
@@ -286,7 +275,7 @@ namespace Truth
 Bot (⊥) is false everywhere.
 -/
 @[simp] theorem bot_false
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration} :
     ¬(TruthAt M τ t Formula.bot) := by
   intro h
@@ -296,7 +285,7 @@ Bot (⊥) is false everywhere.
 Truth of implication is material conditional.
 -/
 @[simp] theorem imp_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ ψ : Formula) :
     (TruthAt M τ t (φ.imp ψ)) ↔
@@ -304,48 +293,28 @@ Truth of implication is material conditional.
   rfl
 
 /--
-Truth of atom at a time in the domain: true iff valuation says so at current state.
-For times outside domain, atoms are always false.
+Truth of an atom: the valuation at the history's current state — `def:BL-semantics`'s
+`τ(x) ∈ |p|`.
 -/
-theorem atom_iff_of_domain
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
-    {t : F.Duration} (ht : τ.domain t)
-    (p : Atom) :
-    (TruthAt M τ t (Formula.atom p)) ↔
-      M.valuation (τ.states t ht) p := by
-  simp only [TruthAt]
-  constructor
-  · intro ⟨ht', h⟩
-    -- By proof irrelevance, τ.states t ht' = τ.states t ht
-    exact h
-  · intro h
-    exact ⟨ht, h⟩
+theorem atom_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration} (p : Atom) :
+    TruthAt M τ t (Formula.atom p) ↔ M.valuation (τ.state t) p :=
+  Iff.rfl
 
 /--
-Truth of atom at a time outside the domain is false.
--/
-theorem atom_false_of_not_domain
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
-    {t : F.Duration} (ht : ¬τ.domain t)
-    (p : Atom) :
-    ¬(TruthAt M τ t (Formula.atom p)) := by
-  simp only [TruthAt]
-  intro ⟨ht', _⟩
-  exact ht ht'
-
-/--
-Truth of box: formula true at every **total** history at the current time.
+Truth of box: formula true at every world history at the current time.
 
 **Paper Reference**: `def:BL-semantics`'s box clause, "M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all
-σ ∈ H_F". The quantifier's range is `PartialHistory.IsTotal`, taken directly from the frame; there
+σ ∈ H_F". The quantifier's range is `WorldHistory F`, taken directly from the frame; there
 is no carrier parameter to supply.
 -/
 @[simp] theorem box_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ : Formula) :
     (TruthAt M τ t φ.box) ↔
-      ∀ (σ : PartialHistory F), σ.IsTotal → (TruthAt M σ t φ) := by
+      ∀ σ : WorldHistory F, TruthAt M σ t φ := by
   rfl
 
 /--
@@ -353,7 +322,7 @@ Truth of someFuture: existential future operator.
 F(φ) = U(φ, ⊤) is true iff there exists a strictly future time where φ holds.
 -/
 @[simp] theorem some_future_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t (Formula.someFuture φ) ↔
@@ -365,7 +334,7 @@ Truth of somePast: existential past operator.
 P(φ) = S(φ, ⊤) is true iff there exists a strictly past time where φ held.
 -/
 @[simp] theorem some_past_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t (Formula.somePast φ) ↔
@@ -377,7 +346,7 @@ Truth of allFuture: universal future operator.
 G(φ) = ¬F(¬φ) is true iff φ holds at all strictly future times.
 -/
 @[simp] theorem future_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.allFuture ↔
@@ -389,7 +358,7 @@ Truth of allPast: universal past operator.
 H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
 -/
 @[simp] theorem past_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.allPast ↔
@@ -402,7 +371,7 @@ True iff there exists a strictly future time where ψ ∧ φ holds,
 with ψ holding at all intermediate times.
 -/
 @[simp] theorem strong_release_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (Formula.strongRelease φ ψ) ↔
@@ -416,7 +385,7 @@ True iff there exists a strictly past time where ψ ∧ φ held,
 with ψ holding at all intermediate times.
 -/
 @[simp] theorem strong_trigger_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (Formula.strongTrigger φ ψ) ↔
@@ -434,37 +403,37 @@ this family retires. -/
 
 /-- Truth of `¬φ`. -/
 @[simp, truth_norm] theorem neg_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.neg ↔ ¬ TruthAt M τ t φ :=
   TruthClauses.neg_iff (L := Formula) M τ t PUnit.unit φ
 
 /-- `⊤` is true everywhere. -/
 @[simp, truth_norm] theorem top_true
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration} :
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration} :
     TruthAt M τ t Formula.top :=
   TruthClauses.top_true (L := Formula) M τ t PUnit.unit
 
 /-- Truth of `φ ∧ ψ`. Classical: `and` is the double-negated implication. -/
 @[simp, truth_norm] theorem and_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (φ.and ψ) ↔ (TruthAt M τ t φ ∧ TruthAt M τ t ψ) :=
   TruthClauses.and_iff (L := Formula) M τ t PUnit.unit φ ψ
 
 /-- Truth of `φ ∨ ψ`. Classical: `or` is `¬φ → ψ`. -/
 @[simp, truth_norm] theorem or_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (φ.or ψ) ↔ (TruthAt M τ t φ ∨ TruthAt M τ t ψ) :=
   TruthClauses.or_iff (L := Formula) M τ t PUnit.unit φ ψ
 
-/-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* total history at the current time. The classical
+/-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* world history at the current time. The classical
 `¬∀¬ ↔ ∃` step over `box_iff`. -/
 @[simp, truth_norm] theorem diamond_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
-    TruthAt M τ t φ.diamond ↔ ∃ σ : PartialHistory F, σ.IsTotal ∧ TruthAt M σ t φ :=
+    TruthAt M τ t φ.diamond ↔ ∃ σ : WorldHistory F, TruthAt M σ t φ :=
   TruthClauses.diamond_iff (L := Formula) M τ t PUnit.unit φ
 
 /-! ### The primitive temporal clauses
@@ -477,7 +446,7 @@ are guard-first / event-second, matching `TruthAt`. -/
 
 /-- Truth of `ψ U φ` (guard `ψ`, event `φ`): the `untl` clause of `TruthAt`, as a biconditional. -/
 @[simp, truth_norm] theorem untl_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (ψ φ : Formula) :
     TruthAt M τ t (Formula.untl ψ φ) ↔
       ∃ s : F.Duration, t < s ∧ TruthAt M τ s φ ∧
@@ -485,7 +454,7 @@ are guard-first / event-second, matching `TruthAt`. -/
 
 /-- Truth of `ψ S φ` (guard `ψ`, event `φ`): the `snce` clause of `TruthAt`, as a biconditional. -/
 @[simp, truth_norm] theorem snce_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (ψ φ : Formula) :
     TruthAt M τ t (Formula.snce ψ φ) ↔
       ∃ s : F.Duration, s < t ∧ TruthAt M τ s φ ∧
@@ -507,7 +476,7 @@ The **introduction** form — this is the shape you build an `always` from, and 
 mirrors `Formula.always` and `MinusTruth.always_iff`. It is **not** the simp normal form and must
 never be tagged; see the section note above. Use `always_iff` for elimination. -/
 theorem always_iff_tri
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.always ↔
       (∀ s : F.Duration, s < t → TruthAt M τ s φ) ∧ TruthAt M τ t φ ∧
@@ -519,7 +488,7 @@ theorem always_iff_tri
 Collapsing the three strict cases into one unrestricted `∀ s` is what removes the hand-rolled
 `lt_trichotomy` case split that every `always` elimination otherwise has to perform. -/
 @[simp, truth_norm] theorem always_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.always ↔ ∀ s : F.Duration, TruthAt M τ s φ := by
   rw [always_iff_tri]
@@ -537,7 +506,7 @@ Collapsing the three strict cases into one unrestricted `∀ s` is what removes 
 /-- Truth of `K⁺φ` (`¬(¬φ U ⊤)`): between the present and every strictly future time there is an
 intermediate time at which `φ` holds. -/
 @[simp, truth_norm] theorem kPlus_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.kPlus ↔
       ∀ s : F.Duration, t < s → ∃ r : F.Duration, t < r ∧ r < s ∧ TruthAt M τ r φ := by
@@ -553,7 +522,7 @@ intermediate time at which `φ` holds. -/
 
 /-- Truth of `K⁻φ` (`¬(¬φ S ⊤)`): the past dual of `kPlus_iff`. -/
 @[simp, truth_norm] theorem kMinus_iff
-    {F : TaskFrame} {M : TaskModel F} {τ : PartialHistory F} {t : F.Duration}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.kMinus ↔
       ∀ s : F.Duration, s < t → ∃ r : F.Duration, s < r ∧ r < t ∧ TruthAt M τ r φ := by
@@ -587,12 +556,12 @@ each instead of re-deriving the translation argument five times over. -/
 /-- **Truth of an atom-free formula does not depend on the history.**
 
 The `box` case is where this is not merely an induction bookkeeping step: `def:BL-semantics`'s box
-clause quantifies over *all* total histories and does not mention `τ`, so the two sides are
+clause quantifies over *all* world histories and does not mention `τ`, so the two sides are
 definitionally equal there and the induction hypothesis is not needed. Every other case is
 congruence. The atom case is vacuous — `(Formula.atom p).atoms = {p} ≠ ∅`. -/
 theorem truthAt_atomFree_history_indep (M : TaskModel F) :
     ∀ (φ : Formula), φ.atoms = ∅ →
-      ∀ (τ σ : PartialHistory F) (t : F.Duration), TruthAt M τ t φ ↔ TruthAt M σ t φ := by
+      ∀ (τ σ : WorldHistory F) (t : F.Duration), TruthAt M τ t φ ↔ TruthAt M σ t φ := by
   intro φ
   induction φ with
   | atom p => intro h; simp only [Formula.atoms, Finset.singleton_ne_empty] at h
@@ -618,7 +587,7 @@ theorem truthAt_atomFree_history_indep (M : TaskModel F) :
 /-- The **gap formula** `⊥ U (⊥ → ⊥)`, characterized: there is a point strictly above `t` with
 nothing strictly between. The right-hand side mentions neither `M` nor `τ` — that is the entire
 content of the uniformity block, isolated. -/
-theorem truthAt_gap (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) :
+theorem truthAt_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ t (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) ↔
       ∃ s : F.Duration, t < s ∧ ∀ r : F.Duration, t < r → r < s → False := by
   simp only [TruthAt]
@@ -628,7 +597,7 @@ theorem truthAt_gap (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) :
 
 /-- The past dual of `truthAt_gap`: `⊥ S (⊥ → ⊥)` says there is a point strictly below `t` with
 nothing strictly between. -/
-theorem truthAt_cogap (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) :
+theorem truthAt_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ t (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)) ↔
       ∃ s : F.Duration, s < t ∧ ∀ r : F.Duration, s < r → r < t → False := by
   simp only [TruthAt]
@@ -639,7 +608,7 @@ theorem truthAt_cogap (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
 /-- **Gaps translate.** A gap immediately above `t` is a gap immediately above every point: shift
 the witness by `u - t` and shift any intruder back. Translation invariance of `<` on the duration
 group is the whole argument, which is why the statement mentions no history and no model. -/
-theorem truthAt_gap_shift (M : TaskModel F) (τ : PartialHistory F) (t u : F.Duration)
+theorem truthAt_gap_shift (M : TaskModel F) (τ : WorldHistory F) (t u : F.Duration)
     (h : TruthAt M τ t (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) :
     TruthAt M τ u (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) := by
   rw [truthAt_gap] at h ⊢
@@ -655,7 +624,7 @@ theorem truthAt_gap_shift (M : TaskModel F) (τ : PartialHistory F) (t u : F.Dur
 
 /-- **A gap above is a gap below.** The mirror of `truthAt_gap_shift`: reflect the witness through
 `t`. Its two directions are what make the two `discrete_symm_*` axioms one term each. -/
-theorem truthAt_gap_iff_cogap (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) :
+theorem truthAt_gap_iff_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ t (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) ↔
       TruthAt M τ t (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)) := by
   rw [truthAt_gap, truthAt_cogap]

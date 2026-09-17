@@ -77,8 +77,8 @@ noncomputable example (B : BFMCS (fc := fc) (ℚ ×ₗ ℤ)) : TaskModel (bundle
   bundleFlowModel B
 
 noncomputable example (B : BFMCS (fc := fc) (ℚ ×ₗ ℤ)) :
-    Set (PartialHistory (bundleFlowFrame B)) :=
-  {σ | ∀ t, σ.domain t}
+    Set (WorldHistory (bundleFlowFrame B)) :=
+  Set.univ
 
 noncomputable example (B : BFMCS (fc := fc) (ℚ ×ₗ ℤ)) (root : Formula)
     (h_rtc : B.RestrictedTemporallyCoherent root)

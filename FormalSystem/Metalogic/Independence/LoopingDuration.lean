@@ -18,11 +18,11 @@ Three lemmas follow, each proved for an arbitrary frame carrying a looping durat
 
 * **Lemma A** (`states_add_of_looping`) — *history* periodicity. `def:world-history`'s
   task-respect clause, applied at the single pair `(x, x + π)`, already forces
-  `τ(x + π) = τ(x)` for every total history. Nothing about `H_F` is needed.
+  `τ(x + π) = τ(x)` for every world history. Nothing about `H_F` is needed.
 * **Lemma B** (`truthAt_add_period`) — *truth* periodicity:
   `M,τ,t ⊨ φ ⟺ M,τ,t+π ⊨ φ`, by induction on `Formula`. The history is universally quantified
   *inside* the induction, which is what lets the `□` case — whose clause ranges over **all**
-  total histories — apply the induction hypothesis at each of them.
+  world histories — apply the induction hypothesis at each of them.
 * **Lemma C** (`allPast_imp_allFuture`, `co_true`) — over an Archimedean `D`, periodicity
   collapses past and future: `Hψ → Gψ` holds at every point, and hence every instance of `CO`
   is true at every point, for every `ψ`.
@@ -71,16 +71,16 @@ theorem LoopingDuration.exists_pos {F : FrameOver D} {π : ↑D} (h : LoopingDur
 /-! ## Lemma A — history periodicity -/
 
 /--
-**Lemma A.** A looping duration makes every total history periodic.
+**Lemma A.** A looping duration makes every world history periodic.
 
 This is forced by `def:world-history`'s task-respect clause alone, applied at the single pair of
 times `(x, x + π)`: the clause hands over `τ(x) ⇒_π τ(x + π)`, and a looping duration relates a
 state only to itself.
 -/
 theorem states_add_of_looping {F : FrameOver D} {π : ↑D} (h : LoopingDuration F π)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : ↑D) :
-    τ.states (x + π) (hτ (x + π)) = τ.states x (hτ x) := by
-  have hr := τ.respects_task x (x + π) (hτ x) (hτ (x + π))
+    (τ : WorldHistory F) (x : ↑D) :
+    τ.state (x + π) = τ.state x := by
+  have hr := τ.val.respects_task x (x + π) (τ.property x) (τ.property (x + π))
   have hd : x + π - x = π := by abel
   rw [hd] at hr
   exact (h.2 _ _).mp hr
@@ -96,7 +96,7 @@ times, not histories — and `atom` is `states_add_of_looping`. Everything else 
 
 The period must be **frame-uniform** (`LoopingDuration F π` is a property of the frame, not of a
 history) and that is not an artefact of this packaging: `TruthIso.atom` is quantified over every
-total history because `TruthAt`'s `box` clause is. Contrast
+world history because `TruthAt`'s `box` clause is. Contrast
 `Semantics.Correspondence.FwdRecPeriodicity.truthAt_add_hist_period`, whose period belongs to one
 history and which therefore cannot be an instance of this structure; its own docstring records
 why.
@@ -106,35 +106,34 @@ noncomputable def loopingTruthIso {F : FrameOver D} (M : TaskModel F) {π : ↑D
   dur := OrderIso.addRight π
   hist := Equiv.refl _
   atom := fun τ t p => by
-    show M.valuation (τ.val.states t (τ.property t)) p ↔
-      M.valuation (τ.val.states (t + π) (τ.property (t + π))) p
-    rw [states_add_of_looping h τ.val τ.property t]
+    show M.valuation (τ.state t) p ↔ M.valuation (τ.state (t + π)) p
+    rw [states_add_of_looping h τ t]
 
 /--
-**Lemma B.** Truth is `π`-periodic in time, for every formula, at every total history.
+**Lemma B.** Truth is `π`-periodic in time, for every formula, at every world history.
 
 An instantiation of `Truth.truthAt_of_truthIso` at `loopingTruthIso`, replacing the 68-line
 hand-written six-case induction this used to carry. The statement is unchanged, including its
 quantification of the history **inside** the theorem — which is essential and not stylistic,
-since the `□` clause of `TruthAt` ranges over all total histories and the induction hypothesis
+since the `□` clause of `TruthAt` ranges over all world histories and the induction hypothesis
 has to be available at each of them. That requirement is now discharged once, inside
 `truthAt_of_truthIso`, rather than restated here.
 -/
 theorem truthAt_add_period {F : FrameOver D} (M : TaskModel F) {π : ↑D}
     (h : LoopingDuration F π) :
-    ∀ (φ : Formula) (τ : PartialHistory F), τ.IsTotal → ∀ t : ↑D,
+    ∀ (φ : Formula) (τ : WorldHistory F) (t : ↑D),
       (TruthAt M τ t φ ↔ TruthAt M τ (t + π) φ) :=
-  fun φ τ hτ t => Truth.truthAt_of_truthIso (loopingTruthIso M h) φ ⟨τ, hτ⟩ t
+  fun φ τ t => Truth.truthAt_of_truthIso (loopingTruthIso M h) φ τ t
 
 /-- **Lemma B, iterated**: truth is invariant under any whole number of loops. -/
 theorem truthAt_add_nsmul {F : FrameOver D} (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (φ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D) :
+    (h : LoopingDuration F π) (φ : Formula) (τ : WorldHistory F) (t : ↑D) :
     ∀ n : ℕ, (TruthAt M τ t φ ↔ TruthAt M τ (t + n • π) φ) := by
   intro n
   induction n with
   | zero => simp
   | succ n ih =>
-      have h1 := truthAt_add_period M h φ τ hτ (t + n • π)
+      have h1 := truthAt_add_period M h φ τ (t + n • π)
       have h2 : t + n • π + π = t + (n + 1) • π := by
         rw [succ_nsmul]; abel
       rw [h2] at h1
@@ -150,7 +149,7 @@ Given a future point `s`, the Archimedean property supplies a whole number of lo
 strictly below `t`. `ψ` holds there because `Hψ` does, and Lemma B carries it back up to `s`.
 -/
 theorem allPast_imp_allFuture {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (ψ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D)
+    (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (t : ↑D)
     (hH : TruthAt M τ t ψ.allPast) : TruthAt M τ t ψ.allFuture := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
   rw [Truth.future_iff]
@@ -166,7 +165,7 @@ theorem allPast_imp_allFuture {F : FrameOver D} [Archimedean ↑D] (M : TaskMode
       _ ≤ t - p := sub_le_sub_right h1 p
       _ < t := sub_lt_self t hp
   have hbase := hH (s - (n + 1) • p) hlt
-  have hstep := (truthAt_add_nsmul M hlp ψ τ hτ (s - (n + 1) • p) (n + 1)).mp hbase
+  have hstep := (truthAt_add_nsmul M hlp ψ τ (s - (n + 1) • p) (n + 1)).mp hbase
   rwa [sub_add_cancel] at hstep
 
 /--
@@ -174,7 +173,7 @@ The past mirror of Lemma C: `Gψ → Hψ`. Free from the same argument, and cons
 `temporal_duality` closure of the `CO` derivation system.
 -/
 theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (ψ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D)
+    (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (t : ↑D)
     (hG : TruthAt M τ t ψ.allFuture) : TruthAt M τ t ψ.allPast := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
   rw [Truth.past_iff]
@@ -189,7 +188,7 @@ theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskMode
       _ < s + n • p + p := lt_add_of_pos_right _ hp
       _ = s + (n + 1) • p := by rw [succ_nsmul]; abel
   have hbase := hG (s + (n + 1) • p) hgt
-  exact (truthAt_add_nsmul M hlp ψ τ hτ s (n + 1)).mpr hbase
+  exact (truthAt_add_nsmul M hlp ψ τ s (n + 1)).mpr hbase
 
 /--
 **Every `CO` instance is true everywhere** in every model on a frame with a looping duration.
@@ -198,9 +197,9 @@ theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskMode
 Lemma C, so the antecedent is discarded.
 -/
 theorem co_true {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
-    (h : LoopingDuration F π) (ψ : Formula) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : ↑D) :
+    (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (t : ↑D) :
     TruthAt M τ t (Formula.co ψ) :=
-  fun _ hH => allPast_imp_allFuture M h ψ τ hτ t hH
+  fun _ hH => allPast_imp_allFuture M h ψ τ t hH
 
 /-! ## The clock instance -/
 
@@ -214,22 +213,22 @@ theorem clockFrame_looping : LoopingDuration clockFrame (1 : ℚ) :=
   ⟨one_ne_zero, fun w u => clockRel_one w u⟩
 
 /-- Lemma C at the clock frame: every `CO` instance is true at every point of every model on the
-periodic clock, along every total history. -/
+periodic clock, along every world history. -/
 theorem clock_co_true (M : TaskModel clockFrame) (ψ : Formula)
-    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ) :
+    (τ : WorldHistory clockFrame) (t : ℚ) :
     TruthAt M τ t (Formula.co ψ) :=
-  co_true M clockFrame_looping ψ τ hτ t
+  co_true M clockFrame_looping ψ τ t
 
 /-- `Hψ → Gψ` at the clock frame. -/
 theorem clock_allPast_imp_allFuture (M : TaskModel clockFrame) (ψ : Formula)
-    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ)
+    (τ : WorldHistory clockFrame) (t : ℚ)
     (hH : TruthAt M τ t ψ.allPast) : TruthAt M τ t ψ.allFuture :=
-  allPast_imp_allFuture M clockFrame_looping ψ τ hτ t hH
+  allPast_imp_allFuture M clockFrame_looping ψ τ t hH
 
 /-- `Gψ → Hψ` at the clock frame. -/
 theorem clock_allFuture_imp_allPast (M : TaskModel clockFrame) (ψ : Formula)
-    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ)
+    (τ : WorldHistory clockFrame) (t : ℚ)
     (hG : TruthAt M τ t ψ.allFuture) : TruthAt M τ t ψ.allPast :=
-  allFuture_imp_allPast M clockFrame_looping ψ τ hτ t hG
+  allFuture_imp_allPast M clockFrame_looping ψ τ t hG
 
 end FormalSystem.Metalogic.Independence

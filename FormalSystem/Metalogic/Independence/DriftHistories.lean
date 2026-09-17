@@ -8,16 +8,16 @@ import FormalSystem.Metalogic.Independence.DriftFrame
 import FormalSystem.Metalogic.Independence.OrderTransfer
 
 /-!
-# F°'s total histories are order-isomorphisms of `(ℝ, <)`
+# F°'s world histories are order-isomorphisms of `(ℝ, <)`
 
 `app:drift`'s key lemma, and the reason `F°` is indistinguishable from the deterministic `F¹`
-despite not being deterministic: although the drift relation is a *band*, any single total
+despite not being deterministic: although the drift relation is a *band*, any single world
 history through it is a strictly increasing bi-Lipschitz bijection of `ℝ` onto `ℝ`. So each
 history, taken on its own, sees exactly the order structure a translation history sees.
 
 The content is proved first on a bare state function `f : ℝ → ℝ` satisfying
-`∀ s t, fzeroRel (f s) (t - s) (f t)` — which is what a total history's `states` field collapses
-to, `hf` being exactly `respects_task` — and then lifted to `PartialHistory F0`, in the shape
+`∀ s t, fzeroRel (f s) (t - s) (f t)` — which a world history's `state` function satisfies,
+`hf` being exactly `respects_task` — and then lifted to `WorldHistory F0`, in the shape
 `Independence/OrderTransfer.lean`'s hypotheses (H1) and (H2) demand.
 
 ## Main Results
@@ -43,7 +43,7 @@ being promoted.
 
 `StateOccurs` says every state is occupied at every time. The general theorem to that effect
 (`cor:occurrence`) runs through `thm:extension` and hence Zorn. Nothing of the sort is needed
-here: the translation `δ(t) := t + w - x` is *itself* a total history of `F°` — its increments
+here: the translation `δ(t) := t + w - x` is *itself* a world history of `F°` — its increments
 are `t - s`, which lies in the band `[t - s, 2(t - s)]` at its own left endpoint — and it has
 state `w` at time `x`. That explicit witness is what keeps `cor:no-characterization` choice-free.
 
@@ -128,31 +128,31 @@ theorem fzero_strictMono : StrictMono f := by
 
 end BareFunction
 
-/-! ## Lifted to `F°`'s total histories -/
+/-! ## Lifted to `F°`'s world histories -/
 
-/-- A total history of `F°` satisfies the bare hypothesis `hf`: `respects_task`, read at the pair
+/-- A world history of `F°` satisfies the bare hypothesis `hf`: `respects_task`, read at the pair
 `(s, t)`, *is* the drift condition on the state function (through `f0_taskRel_iff`). -/
-theorem fzero_hist_rel (τ : PartialHistory F0) (hτ : τ.IsTotal) :
-    ∀ s t : ℝ, fzeroRel (τ.states s (hτ s)) (t - s) (τ.states t (hτ t)) :=
-  fun s t => (f0_taskRel_iff _ _ _).mp (τ.respects_task s t (hτ s) (hτ t))
+theorem fzero_hist_rel (τ : WorldHistory F0) :
+    ∀ s t : ℝ, fzeroRel (τ.state s) (t - s) (τ.state t) :=
+  fun s t => (f0_taskRel_iff _ _ _).mp (τ.val.respects_task s t (τ.property s) (τ.property t))
 
-/-- **(H1) for `F°`**: every total history is an order-isomorphism of `(ℝ, <)` onto `(ℝ, <)`. -/
+/-- **(H1) for `F°`**: every world history is an order-isomorphism of `(ℝ, <)` onto `(ℝ, <)`. -/
 theorem fzero_orderFlow : OrderFlow F0 where
   strictMono := by
-    intro τ hτ s t hst
-    exact fzero_strictMono (fun r => τ.states r (hτ r)) (fzero_hist_rel τ hτ) hst
+    intro τ s t hst
+    exact fzero_strictMono (fun r => τ.state r) (fzero_hist_rel τ) hst
   hits_future := by
-    intro τ hτ x v hv
-    exact fzero_hits_future (fun r => τ.states r (hτ r)) (fzero_hist_rel τ hτ) hv
+    intro τ x v hv
+    exact fzero_hits_future (fun r => τ.state r) (fzero_hist_rel τ) hv
   hits_past := by
-    intro τ hτ x v hv
-    exact fzero_hits_past (fun r => τ.states r (hτ r)) (fzero_hist_rel τ hτ) hv
+    intro τ x v hv
+    exact fzero_hits_past (fun r => τ.state r) (fzero_hist_rel τ) hv
 
-/-- The translation `t ↦ t + c` is a total history of `F°`: its increment over `[s, t]` is
+/-- The translation `t ↦ t + c` is a world history of `F°`: its increment over `[s, t]` is
 `t - s`, the left endpoint of the band `[t - s, 2 (t - s)]` (and its right endpoint when the
 duration is negative). -/
-noncomputable def driftTranslation (c : ℝ) : PartialHistory F0 :=
-  PartialHistory.ofTotal F0 (fun t => t + c) <| by
+noncomputable def driftTranslation (c : ℝ) : WorldHistory F0 :=
+  WorldHistory.ofTotal F0 (fun t => t + c) <| by
     intro s t
     refine (f0_taskRel_iff _ _ _).mpr ?_
     show fzeroRel (s + c) (t - s) (t + c)
@@ -161,18 +161,15 @@ noncomputable def driftTranslation (c : ℝ) : PartialHistory F0 :=
     · left; constructor <;> linarith
     · right; constructor <;> linarith
 
-theorem driftTranslation_isTotal (c : ℝ) : (driftTranslation c).IsTotal :=
-  PartialHistory.ofTotal_isTotal _ _ _
-
 /--
 **(H2) for `F°`**, with an explicit witness: given a state `w` and a time `x`, the translation
-`δ(t) = t + (w - x)` is a total history of `F°` with `δ(x) = w`.
+`δ(t) = t + (w - x)` is a world history of `F°` with `δ(x) = w`.
 
 No appeal to `thm:extension` or `cor:occurrence`, and hence no Zorn — see the module docstring.
 -/
 theorem fzero_stateOccurs : StateOccurs F0 := by
   intro w x
-  refine ⟨driftTranslation (w - x), driftTranslation_isTotal _, ?_⟩
+  refine ⟨driftTranslation (w - x), ?_⟩
   show x + (w - x) = w
   ring
 

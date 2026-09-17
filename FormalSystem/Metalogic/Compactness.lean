@@ -145,14 +145,14 @@ theorem modelExistence_of_satPreserved {fc : ProofSystem.FrameClass}
       (fun i => sat_ofModel_frame (P i).Model (P i).inClass))
     (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).model
     ((uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).hist
-      (omk (fun i => (⟨(P i).hist, (P i).htotal⟩ : WorldHistory (P i).Frame))))
-    (ShiftSet.hist_isTotal _ _) (Ultraproduct.mk (fun i => (P i).time)) ?_
+      (omk (fun i => (P i).hist)))
+    (Ultraproduct.mk (fun i => (P i).time)) ?_
   intro ψ hψ
   refine (los_truthAt (fun i => ShiftSet.ofModel (P i).Frame (P i).Model) _ _ ψ).mpr ?_
   refine (eventually_mem Γ hψ).mono ?_
   intro i hi
   exact (ShiftSet.forward_repr _ _ _ ψ).mpr
-    ((ShiftSet.reverse_repr (P i).Frame (P i).Model ⟨(P i).hist, (P i).htotal⟩ (P i).time ψ).mpr
+    ((ShiftSet.reverse_repr (P i).Frame (P i).Model (P i).hist (P i).time ψ).mpr
       ((P i).models ψ hi))
 
 /--

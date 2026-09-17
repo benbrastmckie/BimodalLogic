@@ -108,17 +108,17 @@ through `box` and `stab`, neither of which disturbs the registers. The two new c
 `def:BLstar-semantics`'s: `↑ⁱφ` evaluates `φ` with the current time written into register `i`,
 and `↓ⁱφ` evaluates `φ` at the time register `i` holds.
 -/
-def StarTruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (v : ℕ → F.Duration) :
+def StarTruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (v : ℕ → F.Duration) :
     StarFormula → Prop
-  | .atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
+  | .atom p => M.valuation (τ.state t) p
   | .bot => False
   | .imp φ ψ => StarTruthAt M τ t v φ → StarTruthAt M τ t v ψ
-  | .box φ => ∀ (σ : PartialHistory F), σ.IsTotal → StarTruthAt M σ t v φ
+  | .box φ => ∀ σ : WorldHistory F, StarTruthAt M σ t v φ
   | .untl ψ φ => ∃ s : F.Duration, t < s ∧ StarTruthAt M τ s v φ ∧
       ∀ r : F.Duration, t < r → r < s → StarTruthAt M τ r v ψ
   | .snce ψ φ => ∃ s : F.Duration, s < t ∧ StarTruthAt M τ s v φ ∧
       ∀ r : F.Duration, s < r → r < t → StarTruthAt M τ r v ψ
-  | .stab φ => ∀ (σ : PartialHistory F), σ.IsTotal → SameStateAt τ σ t → StarTruthAt M σ t v φ
+  | .stab φ => ∀ σ : WorldHistory F, τ.state t = σ.state t → StarTruthAt M σ t v φ
   | .timeStore i φ => StarTruthAt M τ t (Function.update v i t) φ
   | .timeRecall i φ => StarTruthAt M τ (v i) v φ
 
@@ -147,7 +147,6 @@ instance : StabClauses StarFormula where
   untl := StarFormula.untl
   snce := StarFormula.snce
   stab := StarFormula.stab
-  sameState := SameStateAt
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl
@@ -157,10 +156,10 @@ instance : StabClauses StarFormula where
 
 namespace StarTruth
 
-variable (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (v : ℕ → F.Duration)
+variable (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (v : ℕ → F.Duration)
 
 theorem atom_iff (p : Atom) :
-    StarTruthAt M τ t v (.atom p) ↔ ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p := Iff.rfl
+    StarTruthAt M τ t v (.atom p) ↔ M.valuation (τ.state t) p := Iff.rfl
 
 @[simp] theorem bot_false : ¬ StarTruthAt M τ t v .bot := fun h => h
 
@@ -168,8 +167,7 @@ theorem imp_iff (φ ψ : StarFormula) :
     StarTruthAt M τ t v (.imp φ ψ) ↔ (StarTruthAt M τ t v φ → StarTruthAt M τ t v ψ) := Iff.rfl
 
 theorem box_iff (φ : StarFormula) :
-    StarTruthAt M τ t v (.box φ) ↔ ∀ σ : PartialHistory F, σ.IsTotal → StarTruthAt M σ t v φ :=
-  Iff.rfl
+    StarTruthAt M τ t v (.box φ) ↔ ∀ σ : WorldHistory F, StarTruthAt M σ t v φ := Iff.rfl
 
 theorem untl_iff (ψ φ : StarFormula) :
     StarTruthAt M τ t v (.untl ψ φ) ↔ ∃ s, t < s ∧ StarTruthAt M τ s v φ ∧
@@ -181,7 +179,7 @@ theorem snce_iff (ψ φ : StarFormula) :
 
 theorem stab_iff (φ : StarFormula) :
     StarTruthAt M τ t v (.stab φ) ↔
-      ∀ σ : PartialHistory F, σ.IsTotal → SameStateAt τ σ t → StarTruthAt M σ t v φ := Iff.rfl
+      ∀ σ : WorldHistory F, τ.state t = σ.state t → StarTruthAt M σ t v φ := Iff.rfl
 
 /-- `(↑ⁱ)` of `def:BLstar-semantics`: store the present time in register `i`. -/
 theorem timeStore_iff (i : ℕ) (φ : StarFormula) :
@@ -223,12 +221,12 @@ theorem allPast_iff (φ : StarFormula) :
   TruthClauses.allPast_iff (L := StarFormula) M τ t v φ
 
 theorem diamond_iff (φ : StarFormula) :
-    StarTruthAt M τ t v (diamond φ) ↔ ∃ σ : PartialHistory F, σ.IsTotal ∧ StarTruthAt M σ t v φ :=
+    StarTruthAt M τ t v (diamond φ) ↔ ∃ σ : WorldHistory F, StarTruthAt M σ t v φ :=
   TruthClauses.diamond_iff (L := StarFormula) M τ t v φ
 
 theorem dstab_iff (φ : StarFormula) :
     StarTruthAt M τ t v (dstab φ) ↔
-      ∃ σ : PartialHistory F, σ.IsTotal ∧ SameStateAt τ σ t ∧ StarTruthAt M σ t v φ :=
+      ∃ σ : WorldHistory F, τ.state t = σ.state t ∧ StarTruthAt M σ t v φ :=
   TruthClauses.dstab_iff (L := StarFormula) M τ t v φ
 
 /-- `△φ` unfolds three ways, exactly as in L⁺: past, present, and future. -/
@@ -252,14 +250,14 @@ and L⋆ truth is L⁺ truth. -/
 true in L⁺, at the same model, history and time — at *every* stored-time vector, which is
 universally quantified and unused in the conclusion.
 -/
-theorem starTruthAt_ofPlus (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
+theorem starTruthAt_ofPlus (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration)
     (v : ℕ → F.Duration) (φ : PlusFormula) :
     StarTruthAt M τ x v (ofPlus φ) ↔ PlusTruthAt M τ x φ := by
   induction φ generalizing τ x with
   | atom p => exact Iff.rfl
   | bot => exact Iff.rfl
   | imp φ ψ ihφ ihψ => exact Iff.imp (ihφ τ x) (ihψ τ x)
-  | box φ ih => exact forall_congr' fun σ => imp_congr_right fun _ => ih σ x
+  | box φ ih => exact forall_congr' fun σ => ih σ x
   | untl ψ φ ihψ ihφ =>
     exact exists_congr fun s => and_congr_right fun _ =>
       and_congr (ihφ τ s)
@@ -269,7 +267,7 @@ theorem starTruthAt_ofPlus (M : TaskModel F) (τ : PartialHistory F) (x : F.Dura
       and_congr (ihφ τ s)
         (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ r)
   | stab φ ih =>
-    exact forall_congr' fun σ => imp_congr_right fun _ => imp_congr_right fun _ => ih σ x
+    exact forall_congr' fun σ => imp_congr_right fun _ => ih σ x
 
 /-! ## The transport layer
 
@@ -278,7 +276,7 @@ flagged as breaking under time registers, restated in
 the forms that survive them. -/
 
 /--
-Pointwise-equal histories (same domain, same states) satisfy the same L⋆ formulas, at a fixed
+World histories with the same state at every time satisfy the same L⋆ formulas, at a fixed
 stored-time vector.
 
 The L⋆ restatement of `truth_congr_ext` (`Semantics/PlusLanguage/PlusTruth.lean`). The two register cases are
@@ -287,39 +285,33 @@ time `v i` — in both cases the *same* vector on both sides of the biconditiona
 this lemma needs no shift.
 -/
 theorem star_truth_congr_ext (M : TaskModel F) (φ : StarFormula) :
-    ∀ (τ σ : PartialHistory F) (x : F.Duration) (v : ℕ → F.Duration),
-      (∀ s, τ.domain s ↔ σ.domain s) →
-      (∀ s (hτ : τ.domain s) (hσ : σ.domain s), τ.states s hτ = σ.states s hσ) →
+    ∀ (τ σ : WorldHistory F) (x : F.Duration) (v : ℕ → F.Duration),
+      (∀ s, τ.state s = σ.state s) →
       (StarTruthAt M τ x v φ ↔ StarTruthAt M σ x v φ) := by
   induction φ with
-  | atom p =>
-    intro τ σ x v hd hs
-    constructor
-    · rintro ⟨h1, hv⟩; exact ⟨(hd x).mp h1, by rw [← hs x h1 ((hd x).mp h1)]; exact hv⟩
-    · rintro ⟨h2, hv⟩; exact ⟨(hd x).mpr h2, by rw [hs x ((hd x).mpr h2) h2]; exact hv⟩
+  | atom p => intro τ σ x v hs; show M.valuation _ p ↔ M.valuation _ p; rw [hs x]
   | bot => intros; exact Iff.rfl
   | imp φ ψ ihφ ihψ =>
-    intro τ σ x v hd hs; exact Iff.imp (ihφ τ σ x v hd hs) (ihψ τ σ x v hd hs)
+    intro τ σ x v hs; exact Iff.imp (ihφ τ σ x v hs) (ihψ τ σ x v hs)
   | box φ _ => intros; exact Iff.rfl
   | untl ψ φ ihψ ihφ =>
-    intro τ σ x v hd hs
-    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s v hd hs)
-      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r v hd hs)
+    intro τ σ x v hs
+    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s v hs)
+      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r v hs)
   | snce ψ φ ihψ ihφ =>
-    intro τ σ x v hd hs
-    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s v hd hs)
-      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r v hd hs)
+    intro τ σ x v hs
+    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s v hs)
+      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r v hs)
   | stab φ _ =>
-    intro τ σ x v hd hs
-    refine forall_congr' fun ρ => imp_congr_right fun _ => imp_congr_left ⟨?_, ?_⟩
-    · intro h hσ' hρ'; rw [← hs x ((hd x).mpr hσ') hσ']; exact h _ _
-    · intro h hτ' hρ'; rw [hs x hτ' ((hd x).mp hτ')]; exact h _ _
+    intro τ σ x v hs
+    exact forall_congr' fun ρ => imp_congr_left ⟨fun h => (hs x).symm.trans h,
+      fun h => (hs x).trans h⟩
   | timeStore i φ ih =>
-    intro τ σ x v hd hs
-    exact ih τ σ x (Function.update v i x) hd hs
+    intro τ σ x v hs
+    exact ih τ σ x (Function.update v i x) hs
   | timeRecall i φ ih =>
-    intro τ σ x v hd hs
-    exact ih τ σ (v i) v hd hs
+    intro τ σ x v hs
+    exact ih τ σ (v i) v hs
 
 /--
 **The update/shift commutation identity.** Writing `t` into register `i` and then shifting every
@@ -343,14 +335,9 @@ follows verbatim: the `box` and `stab` cases need the inverse shift plus `star_t
 because `timeShift` is not definitionally involutive. The `timeStore` case consumes
 `update_shift_comm`; the `timeRecall` case is the register lookup commuting with the shift.
 
-**Divergence from the plan's pinned Challenge statement, recorded**: that statement carried a
-totality hypothesis `hσ : σ.IsTotal`. It is not needed — the `box` and `stab` cases apply
-totality to the *quantified* history `ρ`, never to `σ` — so it is dropped here, which
-strengthens the lemma rather than weakening it. `plusTruthAt_timeShift`, the lemma this one
-restates, likewise takes no totality hypothesis.
 -/
 theorem starTruthAt_timeShift (M : TaskModel F) (φ : StarFormula) :
-    ∀ (σ : PartialHistory F) (t Δ : F.Duration) (v : ℕ → F.Duration),
+    ∀ (σ : WorldHistory F) (t Δ : F.Duration) (v : ℕ → F.Duration),
       StarTruthAt M (σ.timeShift Δ) t v φ ↔ StarTruthAt M σ (t + Δ) (fun i => v i + Δ) φ := by
   induction φ with
   | atom p => intros; exact Iff.rfl
@@ -359,13 +346,12 @@ theorem starTruthAt_timeShift (M : TaskModel F) (φ : StarFormula) :
   | box φ ih =>
     intro σ t Δ v
     constructor
-    · intro h ρ hρ
-      exact (ih ρ t Δ v).mp (h (ρ.timeShift Δ) (timeShift_isTotal' ρ hρ Δ))
-    · intro h ρ hρ
-      have h1 := (ih (ρ.timeShift (-Δ)) t Δ v).mpr
-        (h (ρ.timeShift (-Δ)) (timeShift_isTotal' ρ hρ (-Δ)))
-      exact (star_truth_congr_ext M φ _ ρ t v (shift_neg_shift_domain ρ Δ)
-        (shift_neg_shift_states ρ Δ)).mp h1
+    · intro h ρ
+      exact (ih ρ t Δ v).mp (h (ρ.timeShift Δ))
+    · intro h ρ
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ v).mpr (h (ρ.timeShift (-Δ)))
+      exact (star_truth_congr_ext M φ _ ρ t v (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+        ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
   | untl ψ φ ihψ ihφ =>
     intro σ t Δ v
     constructor
@@ -403,16 +389,14 @@ theorem starTruthAt_timeShift (M : TaskModel F) (φ : StarFormula) :
   | stab φ ih =>
     intro σ t Δ v
     constructor
-    · intro h ρ hρ hs
-      exact (ih ρ t Δ v).mp (h (ρ.timeShift Δ) (timeShift_isTotal' ρ hρ Δ) hs)
-    · intro h ρ hρ hs
-      have hs' : SameStateAt σ (ρ.timeShift (-Δ)) (t + Δ) := by
-        intro hσ' hρ'
-        exact (hs hσ' (hρ t)).trans (states_congr ρ (add_neg_cancel_right t Δ).symm (hρ t))
-      have h1 := (ih (ρ.timeShift (-Δ)) t Δ v).mpr
-        (h (ρ.timeShift (-Δ)) (timeShift_isTotal' ρ hρ (-Δ)) hs')
-      exact (star_truth_congr_ext M φ _ ρ t v (shift_neg_shift_domain ρ Δ)
-        (shift_neg_shift_states ρ Δ)).mp h1
+    · intro h ρ hs
+      exact (ih ρ t Δ v).mp (h (ρ.timeShift Δ) hs)
+    · intro h ρ hs
+      have hs' : σ.state (t + Δ) = (ρ.timeShift (-Δ)).state (t + Δ) :=
+        hs.trans (congrArg ρ.state (add_neg_cancel_right t Δ).symm)
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ v).mpr (h (ρ.timeShift (-Δ)) hs')
+      exact (star_truth_congr_ext M φ _ ρ t v (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+        ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
   | timeStore i φ ih =>
     intro σ t Δ v
     rw [StarTruth.timeStore_iff, StarTruth.timeStore_iff, ih σ t Δ (Function.update v i t),

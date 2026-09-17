@@ -16,7 +16,7 @@ graph** and proves the one lemma that licenses cutting and pasting walks in it.
 
 ## Why a graph, and why this graph
 
-The extraction must produce an annotated bi-lasso from an arbitrary total history. A bi-lasso is
+The extraction must produce an annotated bi-lasso from an arbitrary world history. A bi-lasso is
 three finite lists, so the history's bi-infinite datum sequence has to be compressed into finitely
 many positions, and the compression is done by excising stretches between two positions carrying
 the *same* datum. Two things must hold for that to be sound:
@@ -149,26 +149,26 @@ The pigeonhole datum of a position, refined into `PigeonState`.
 
 This is `SmallModel.lean`'s `pigeonDatum` with its second component carrying the membership proof
 `pigeonDatum_mem` supplies. It is `noncomputable` for exactly the reason `typeAt` is — `TruthAt`'s
-box clause quantifies over all total histories — and like `typeAt` it appears only inside proofs,
+box clause quantifies over all world histories — and like `typeAt` it appears only inside proofs,
 never on any path `check` can reach.
 -/
 noncomputable def datum (P : IntPresentation) (φ : Formula)
-    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) (u : ℤ) : PigeonState P φ :=
-  (τ.states u (hτ u), ⟨typeAt P φ τ u, Finset.mem_powerset.mpr (typeAt_subset τ u)⟩)
+    (τ : WorldHistory P.toTaskFrame) (u : ℤ) : PigeonState P φ :=
+  (τ.state u, ⟨typeAt P φ τ u, Finset.mem_powerset.mpr (typeAt_subset τ u)⟩)
 
-variable {τ : PartialHistory P.toTaskFrame} {hτ : τ.IsTotal}
+variable {τ : WorldHistory P.toTaskFrame}
 
 /-- Projection: the state component of a position's datum is the history's state there. -/
 @[simp]
-theorem datum_state (u : ℤ) : stateOf (datum P φ τ hτ u) = τ.states u (hτ u) := rfl
+theorem datum_state (u : ℤ) : stateOf (datum P φ τ u) = τ.state u := rfl
 
 /-- Projection: the type component of a position's datum is the position's type. -/
 @[simp]
-theorem datum_type (u : ℤ) : typeOf (datum P φ τ hτ u) = typeAt P φ τ u := rfl
+theorem datum_type (u : ℤ) : typeOf (datum P φ τ u) = typeAt P φ τ u := rfl
 
 /-- `datum` really is the landed `pigeonDatum`, forgetting the membership proof. -/
 theorem datum_eq_pigeonDatum (u : ℤ) :
-    (stateOf (datum P φ τ hτ u), typeOf (datum P φ τ hτ u)) = pigeonDatum P φ τ hτ u := rfl
+    (stateOf (datum P φ τ u), typeOf (datum P φ τ u)) = pigeonDatum P φ τ u := rfl
 
 /-! ## The realised-step relation -/
 
@@ -181,13 +181,13 @@ Only edges the history actually traverses are admitted. That is what keeps the g
 finiteness of `PigeonState` is what keeps it useful.
 -/
 def RealizedStep (P : IntPresentation) (φ : Formula)
-    (τ : PartialHistory P.toTaskFrame) (hτ : τ.IsTotal) :
+    (τ : WorldHistory P.toTaskFrame) :
     PigeonState P φ → PigeonState P φ → Prop :=
-  fun x y => ∃ u : ℤ, datum P φ τ hτ u = x ∧ datum P φ τ hτ (u + 1) = y
+  fun x y => ∃ u : ℤ, datum P φ τ u = x ∧ datum P φ τ (u + 1) = y
 
 /-- Every position contributes a realised edge to the next. -/
 theorem realizedStep_datum (u : ℤ) :
-    RealizedStep P φ τ hτ (datum P φ τ hτ u) (datum P φ τ hτ (u + 1)) :=
+    RealizedStep P φ τ (datum P φ τ u) (datum P φ τ (u + 1)) :=
   ⟨u, rfl, rfl⟩
 
 /--
@@ -197,12 +197,12 @@ The history is a bi-infinite step path of the presented frame (`WorldHistory.isS
 `IntPresentation.isStepPath_iff` reads that off as the adjacency matrix at consecutive times. This
 is what lets the extraction discharge a bi-lasso's `coherent` field from a walk in this graph.
 -/
-theorem realizedStep_step {x y : PigeonState P φ} (h : RealizedStep P φ τ hτ x y) :
+theorem realizedStep_step {x y : PigeonState P φ} (h : RealizedStep P φ τ x y) :
     P.step (stateOf x) (stateOf y) = true := by
   obtain ⟨u, hx, hy⟩ := h
   subst hx; subst hy
-  have hpath : IsStepPath P.toFibre (fun t => τ.states t (hτ t)) :=
-    WorldHistory.isStepPath (F := P.toFibre) ⟨τ, hτ⟩
+  have hpath : IsStepPath P.toFibre (fun t => τ.state t) :=
+    WorldHistory.isStepPath (F := P.toFibre) τ
   exact (P.isStepPath_iff _).mp hpath u
 
 /-! ## Coherence as an edge condition -/
@@ -241,11 +241,11 @@ clauses at the source position `u`, and the `snce` clause is its `snce` clause a
 backward reference `(u + 1) - 1` is `u`.
 -/
 theorem coherentEdge_of_realizedStep (hbx : BoxOracleSound P bx)
-    {x y : PigeonState P φ} (h : RealizedStep P φ τ hτ x y) :
+    {x y : PigeonState P φ} (h : RealizedStep P φ τ x y) :
     CoherentEdge P φ bx x y := by
   obtain ⟨u, hx, hy⟩ := h
   subst hx; subst hy
-  have hseq := typeAt_localCoherentSeq (φ := φ) hbx τ hτ
+  have hseq := typeAt_localCoherentSeq (φ := φ) hbx τ
   obtain ⟨ha, hb, hi, hbox, hu, _⟩ := hseq u
   obtain ⟨_, _, _, _, _, hs⟩ := hseq (u + 1)
   refine ⟨ha, hb, hi, hbox, hu, ?_⟩

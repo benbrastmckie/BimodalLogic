@@ -18,8 +18,8 @@ Each predicate here is a **binder-for-binder mirror** of its counterpart in
 `Semantics/Validity.lean`: `MinusValid` of `Valid`, `MinusValidDense` of `ValidDense`,
 `MinusValidZTime` of `ValidZTime`, `MinusValidRTime` of `ValidRTime`, and
 `MinusSemanticConsequence` of `SemanticConsequence`. Nothing changes but `Formula ↦ MinusFormula` and
-`TruthAt ↦ MinusTruthAt`; in particular the histories quantified over are the **total** ones
-(`τ.IsTotal`, the predicate form of `H_F`), matching `def:logical-consequence`, and `Type` rather
+`TruthAt ↦ MinusTruthAt`; in particular the histories quantified over are the world histories
+(`τ : WorldHistory F`, the paper's `H_F`), matching `def:logical-consequence`, and `Type` rather
 than `Type*` is used throughout for the same universe reason recorded on `Valid`.
 
 ## The RTime asymmetry — read this before adding a `MinusValidComplete`
@@ -71,14 +71,13 @@ namespace FormalSystem.Semantics
 open FormalSystem.MinusLanguage
 
 /--
-Semantic consequence in the base language: `φ` is true at every model, **total** history and time
+Semantic consequence in the base language: `φ` is true at every model, world history and time
 at which every formula of `Γ` is true.
 
 Binder-for-binder mirror of `Semantics.SemanticConsequence`.
 -/
 def MinusSemanticConsequence (Γ : MinusLanguage.Context) (φ : MinusFormula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
     (∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) →
     MinusTruthAt M τ t φ
 
@@ -102,10 +101,10 @@ every model over `F`, every possible world `τ ∈ H_F`, and every time `x ∈ D
 
 The L⁻ mirror of `TaskFrame.ValidOn`, and in fact the more literal reading of the anchor, whose
 text is stated for "a well-formed sentence `φ` of `L⁻`". `TaskFrame.ValidOn` is the same clause
-applied to the full language's `Formula`. Both render the bundled `H_F` as `WorldHistory`.
+applied to the full language's `Formula`. Both render `H_F` as `WorldHistory F`.
 -/
 def TaskFrame.MinusValidOn (F : TaskFrame) (φ : MinusFormula) : Prop :=
-  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), MinusTruthAt M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), MinusTruthAt M τ x φ
 
 /-- `φ` is valid on every frame satisfying `P`. The L⁻ mirror of `Semantics.ValidOnFrames`, and
 for the same reason: indexing the primitive by a bare frame predicate rather than by a
@@ -120,32 +119,32 @@ def MinusValidIn (fc : ProofSystem.FrameClass) (φ : MinusFormula) : Prop :=
 
 /--
 A base-language formula is **valid** if it is true in all models, at all times, at every
-**total** history, for every temporal type `D` satisfying the ordered-group binder set.
+world history, for every temporal type `D` satisfying the ordered-group binder set.
 
 Binder-for-binder mirror of `Semantics.Valid`; see `def:logical-consequence`, whose "possible
-worlds tau in H_F" are the total histories that `τ.IsTotal` picks out.
+worlds tau in H_F" are the world histories `τ : WorldHistory F`.
 
 Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `Valid` does.
 
 **`MinusValid` is `MinusValidIn` at the unconstrained class**, exactly as `Valid` is `ValidIn .Base`:
 `Sat FrameClass.Base` is `True`, so the tag attaches no frame condition. The pre-abbreviation
-binder shape is reachable through `MinusValid.of_forall_total` / `MinusValid.apply` below.
+binder shape is reachable through `MinusValid.of_forall` / `MinusValid.apply` below.
 -/
 def MinusValid (φ : MinusFormula) : Prop :=
   MinusValidIn ProofSystem.FrameClass.Base φ
 
 /-- Introduce `MinusValid` from its pre-abbreviation binder shape; the `Sat .Base` argument (`True`)
-is discharged here rather than at each call site. The L⁻ mirror of `Valid.of_forall_total`. -/
-theorem MinusValid.of_forall_total {φ : MinusFormula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, MinusTruthAt M τ t φ) :
+is discharged here rather than at each call site. The L⁻ mirror of `Valid.of_forall`. -/
+theorem MinusValid.of_forall {φ : MinusFormula}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      MinusTruthAt M τ t φ) :
     MinusValid φ :=
-  GenericValid.of_forall_total (L := MinusFormula) (φ := φ) h
+  GenericValid.of_forall (L := MinusFormula) (φ := φ) h
 
 /-- Eliminate `MinusValid` into its pre-abbreviation binder shape. The L⁻ mirror of `Valid.apply`. -/
 theorem MinusValid.apply {φ : MinusFormula} (h : MinusValid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : MinusTruthAt M τ t φ :=
-  GenericValid.apply (L := MinusFormula) (φ := φ) h F M τ hτ t
+    (τ : WorldHistory F) (t : F.Duration) : MinusTruthAt M τ t φ :=
+  GenericValid.apply (L := MinusFormula) (φ := φ) h F M τ t
 
 /-- **The one monotonicity lemma for L**: `MinusValidOnFrames` is antitone in its frame predicate.
 The L⁻ mirror of `Semantics.ValidOnFrames.mono`. -/
@@ -159,57 +158,13 @@ theorem MinusValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : MinusForm
     (hv : MinusValidIn fc₁ φ) : MinusValidIn fc₂ φ :=
   GenericValidIn.mono (L := MinusFormula) (φ := φ) h hv
 
-/-! ### Binder-shape adapters for the generic layer
-
-The L⁻ mirrors of `Semantics.ValidOnFrames.of_forall_total` / `.apply_total` and their
-`FrameClass`-tagged forms. `MinusValidOnFrames` is stated over the bundled `(τ : WorldHistory F)`;
-every proof that consumes or produces it works with the unbundled pair
-`(τ : PartialHistory F) (hτ : τ.IsTotal)`. The two spellings are not definitionally equal, so these
-four are the shape adapters, exactly as on the full-language side: a goal site becomes
-`refine MinusValidIn.of_forall_total ?_; intro F hF M τ hτ t`, and a hypothesis site becomes
-`h.apply_total F hF M τ hτ t`.
-
-Unlike the per-class `.of_forall`/`.apply` pairs further down, these are generic in the frame
-predicate, which is what lets one pair serve every class at once. -/
-
-/-- Introduce `MinusValidOnFrames` from the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)` shape.
-The L⁻ mirror of `Semantics.ValidOnFrames.of_forall_total`. -/
-theorem MinusValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : MinusFormula}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, MinusTruthAt M τ t φ) :
-    MinusValidOnFrames P φ :=
-  GenericValidOnFrames.of_forall_total (L := MinusFormula) (φ := φ) h
-
-/-- Eliminate `MinusValidOnFrames` into the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)` shape.
-The L⁻ mirror of `Semantics.ValidOnFrames.apply_total`. -/
-theorem MinusValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : MinusFormula}
-    (h : MinusValidOnFrames P φ) (F : TaskFrame) (hF : P F) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : MinusTruthAt M τ t φ :=
-  GenericValidOnFrames.apply_total (L := MinusFormula) (φ := φ) h F hF M τ hτ t
-
-/-- `MinusValidOnFrames.of_forall_total` at a `FrameClass` tag. The L⁻ mirror of
-`Semantics.ValidIn.of_forall_total`. -/
-theorem MinusValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : MinusFormula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, MinusTruthAt M τ t φ) :
-    MinusValidIn fc φ :=
-  GenericValidIn.of_forall_total (L := MinusFormula) (φ := φ) h
-
-/-- `MinusValidOnFrames.apply_total` at a `FrameClass` tag. The L⁻ mirror of
-`Semantics.ValidIn.apply_total`. -/
-theorem MinusValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : MinusFormula}
-    (h : MinusValidIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : MinusTruthAt M τ t φ :=
-  GenericValidIn.apply_total (L := MinusFormula) (φ := φ) h F hF M τ hτ t
-
 /--
 Validity over **dense** temporal orders, capturing the frame condition for L⁻'s density axiom
 `dn` (`GGφ → Gφ`).
 
 Binder-for-binder mirror of `Semantics.ValidDense`, and like it now an abbreviation: the frame
 constraint is `FrameClass.Sat .Dense`, i.e. `TaskFrame.IsDense`. The binder shape this definition
-used to have is recovered by the generic `MinusValidIn.of_forall_total` /
-`MinusValidIn.apply_total`; the density witness reaches typeclass resolution
+used to have is opened directly by `intro`; the density witness reaches typeclass resolution
 directly, because `FrameClass.Sat` is `@[reducible]` and `TaskFrame.IsDense` is an `abbrev`.
 -/
 def MinusValidDense (φ : MinusFormula) : Prop := MinusValidIn ProofSystem.FrameClass.Dense φ
@@ -220,9 +175,8 @@ added to the binder list, capturing the frame condition for L⁻'s discreteness 
 
 Binder-for-binder mirror of `Semantics.ValidZTime`, and like it now an abbreviation: the frame
 constraint is `FrameClass.Sat .ZTime`, i.e. `TaskFrame.IsZTime` — `def:BX-z`'s
-narrowing to ℤ-time (`prop:archimedean`). The binder shape this definition used to have is recovered by the generic `MinusValidIn.of_forall_total` /
-`MinusValidIn.apply_total` followed by
-`sat_intro`, which destructures the `IsZTime` existential into the four instances.
+narrowing to ℤ-time (`prop:archimedean`). The binder shape this definition used to have is recovered by `intro` followed by `sat_intro`,
+which destructures the `IsZTime` existential into the four instances.
 -/
 def MinusValidZTime (φ : MinusFormula) : Prop := MinusValidIn ProofSystem.FrameClass.ZTime φ
 
@@ -243,7 +197,7 @@ assume Archimedean structure, so it applies to the non-Archimedean carrier `ℚ 
 -/
 def MinusValidZTimeSucc (φ : MinusFormula) : Prop :=
   ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
-    (τ : PartialHistory F), τ.IsTotal → ∀ t : F.Duration, MinusTruthAt M τ t φ
+    (τ : WorldHistory F) (t : F.Duration), MinusTruthAt M τ t φ
 
 /-- `MinusValid` weakens to `MinusValidZTimeSucc`, mirroring `MinusValidity.minusValid_implies_minusValidZTime`
 and its dense/RTime siblings.
@@ -258,7 +212,7 @@ corollary of `minusValidIn_iff_validIn_tr`. This one is neither, and cannot be m
 semantic convenience. Leave it as a direct lambda. -/
 theorem MinusValidity.minusValid_implies_minusValidZTimeSucc {φ : MinusFormula} (h : MinusValid φ) :
     MinusValidZTimeSucc φ :=
-  fun F _ _ M τ hτ t => h.apply F M τ hτ t
+  fun F _ _ M τ t => h.apply F M τ t
 
 /--
 Validity over **dense Dedekind-complete** temporal orders: the least-upper-bound hypothesis
@@ -271,9 +225,8 @@ at `FrameClass.RTime` and is false on `ℤ`, which satisfies every remaining bin
 deliberately no `MinusValidComplete` in this file.
 
 Now an abbreviation: the frame constraint is `FrameClass.Sat .RTime`, i.e.
-`TaskFrame.IsRTime`. The binder shape this definition used to have is recovered by the generic `MinusValidIn.of_forall_total` /
-`MinusValidIn.apply_total` followed by
-`sat_intro`, which splits `IsRTime` into the density instance and the least-upper-bound
+`TaskFrame.IsRTime`. The binder shape this definition used to have is recovered by `intro`
+followed by `sat_intro`, which splits `IsRTime` into the density instance and the least-upper-bound
 hypothesis.
 -/
 def MinusValidRTime (φ : MinusFormula) : Prop := MinusValidIn ProofSystem.FrameClass.RTime φ
@@ -313,19 +266,18 @@ theorem minusValid_implies_minusValidRTime {φ : MinusFormula} (h : MinusValid �
 `Validity.valid_iff_empty_consequence`.
 
 **Documented exception to the transfer-theorem collapse.** `MinusSemanticConsequence` is an
-orthogonal `Prop` shape, not a `MinusValidIn` at any tag: it takes the history `τ` unbundled, carries
-no `FrameClass` index, and mentions no `tr`. So neither
+orthogonal `Prop` shape, not a `MinusValidIn` at any tag: it carries no `FrameClass` index, and mentions no `tr`. So neither
 `minusValidOnFrames_iff_validOnFrames_tr` nor `minusValidIn_iff_validIn_tr`
 (`Metalogic/Conservativity/MinusLanguageSoundness.lean`) can prove it, and this two-branch script stays. -/
 theorem minusValid_iff_empty_consequence (φ : MinusFormula) :
     MinusValid φ ↔ MinusSemanticConsequence [] φ := by
   constructor
-  · intro h F M τ hτ t _
-    exact h.apply F M τ hτ t
+  · intro h F M τ t _
+    exact h.apply F M τ t
   · intro h
-    refine MinusValid.of_forall_total ?_
-    intro F M τ hτ t
-    exact h F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
+    refine MinusValid.of_forall ?_
+    intro F M τ t
+    exact h F M τ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 end MinusValidity
 

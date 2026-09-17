@@ -85,11 +85,11 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) : FrameOver (TemporalOrder.of �
 noncomputable example (B : BFMCS (fc := fc) ℝ) : TaskModel (bundleFlowFrame B) :=
   bundleFlowModel B
 
-/-- The flow-line history space — the frame's total-history set `H_F`
+/-- The flow-line history space — the frame's world-history set `H_F`
 (`def:world-history`) — elaborates at `D := ℝ`. -/
 noncomputable example (B : BFMCS (fc := fc) ℝ) :
-    Set (PartialHistory (bundleFlowFrame B)) :=
-  {σ | ∀ t, σ.domain t}
+    Set (WorldHistory (bundleFlowFrame B)) :=
+  Set.univ
 
 /--
 The re-hosted completeness engine typechecks at `D := ℝ` against a hypothesised real-carrier
@@ -308,7 +308,7 @@ the box-dense indicator `□(¬U(⊤,⊥))`, there is a task model **over the re
 The construction is the dense mirror of `countermodel_discrete_reynolds_v2`: one `ℝ`-flowed
 monadic structure per box-equivalence class of MCSs, assembled into the single task frame
 `multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx` whose world states are `FamIdx × ℝ`. Box quantification over
-the frame's total histories `H_F` — which comprises every family at every offset
+the frame's world histories `H_F` — which comprises every family at every offset
 (`multiFamGen_total_eq_range`) — is what makes the modal dimension come
 out right, exactly as in the `ℤ` original: the monadic language never unfolds `□`, it reads it
 as an opaque unary predicate, and the S5 content is carried by the chronicle's box-equivalence
@@ -324,7 +324,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
     ∃ (F : FrameOver (TemporalOrder.of ℝ)) (_ : F.toTaskFrame.Deterministic) (TM : TaskModel F)
-      (τ : PartialHistory F) (_ : τ.IsTotal) (t : ℝ),
+      (τ : WorldHistory F) (t : ℝ),
       ¬TruthAt TM τ t φ := by
   classical
   -- The finite monadic language and the depth Reynolds sets "one greater than the depth".
@@ -373,7 +373,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
           ψ by
     refine ⟨multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx,
       Algebraic.multiFamTaskFrameGen_deterministic, TM, multiFamHistoryGen f₀ 0,
-      multiFamHistoryGen_total f₀ 0, s₀.val, ?_⟩
+      s₀.val, ?_⟩
     intro h_truth_phi
     have h_corr := (h_truth_corr φ (self_mem_subformulaClosure φ) f₀ 0 s₀.val).mp h_truth_phi
     have h_eq : realFlowPoint (hR f₀) (0 + s₀.val) = s₀ :=
@@ -383,8 +383,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
   intro ψ h_sub f w₀ t
   induction ψ generalizing f w₀ t with
   | atom a =>
-    simp only [TruthAt, TemporalTruth, multiFamHistoryGen, TM]
-    exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
+    exact Iff.rfl
   | bot => simp only [TruthAt, TemporalTruth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [TruthAt, TemporalTruth]
@@ -464,8 +463,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
         have h_pt : ∀ x : ((Rf f').toOrdered sig).carrier,
             TemporalTruth ((Rf f').toOrdered sig) (mkAtomMapFwd φ) x ψ := by
           intro x
-          have h_tot := multiFamHistoryGen_total (D := TemporalOrder.of ℝ) f' (x.val - t)
-          have h_ta := h_all _ h_tot
+          have h_ta := h_all (multiFamHistoryGen (D := TemporalOrder.of ℝ) f' (x.val - t))
           rw [ih h_sub_ψ f' (x.val - t) t] at h_ta
           have h_eq : realFlowPoint (hR f') (x.val - t + t) = x :=
             Subtype.ext (show x.val - t + t = x.val by ring)
@@ -489,8 +487,8 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
       exact h_pred_transfer f ((f.property.2.2 ψ).mp h_box_A) _
     · -- Backward: the box predicate at `f` forces `□ψ ∈ A`, hence `ψ` everywhere on every
       -- family.
-      intro h_box σ h_mem
-      obtain ⟨f', w₀', h_eq⟩ := multiFamGen_total_eq σ h_mem
+      intro h_box σ
+      obtain ⟨f', w₀', h_eq⟩ := multiFamGen_total_eq σ
       rw [h_eq, ih h_sub_ψ f' w₀' t]
       have h_ex_depth : (MonadicFormula.ex (.atom p ⟨0, by omega⟩) :
           MonadicSentence sig).quantifierDepth ≤ k := by
@@ -586,8 +584,8 @@ Contrapositive, four steps, no case split:
    `completeness` and `derivable_of_validZTime` must discharge does not exist here.
 4. `countermodel_dedekind_dense` at `ℝ` produces the countermodel, with `by decide` discharging
    `FrameClass.RTime ≤ FrameClass.RTime` and `real_lub_of_bddAbove` discharging the
-   least-upper-bound binder of `ValidRTime`. That binder is reached through the generic
-   `ValidIn.apply_total`: `ValidRTime` is `ValidIn FrameClass.RTime`, whose frame
+   least-upper-bound binder of `ValidRTime`. That binder is reached by applying
+   `h_valid` directly: `ValidRTime` is `ValidIn FrameClass.RTime`, whose frame
    hypothesis is the packed `TaskFrame.IsRTime`, supplied as `⟨inferInstance, hlub⟩` — density
    is found by search because `IsDense` is an `abbrev` and `Sat` is `@[reducible]`.
 
@@ -601,10 +599,9 @@ theorem completeness_rtime_engine (ψ : Formula) :
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg ψ} h_cons
   have h_neg_in : Formula.neg ψ ∈ M := hM_sup (Set.mem_singleton _)
   have h_box_dense : Formula.box Chronicle.nextTop.neg ∈ M := dedekind_box_dense_mem hM_mcs
-  obtain ⟨F, _hdet, TM, τ, h_tot, t, h_not_true⟩ :=
+  obtain ⟨F, _hdet, TM, τ, t, h_not_true⟩ :=
     countermodel_dedekind_dense (by decide) M hM_mcs ψ h_neg_in h_box_dense
-  exact h_not_true (ValidIn.apply_total h_valid F.toTaskFrame
-    ⟨inferInstance, real_lub_of_bddAbove⟩ TM τ h_tot t)
+  exact h_not_true (h_valid F.toTaskFrame ⟨inferInstance, real_lub_of_bddAbove⟩ TM τ t)
 
 /-! ## Axiom Audit
 

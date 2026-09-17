@@ -72,7 +72,7 @@ Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
 
 * `FrameOver` (`Semantics/TaskFrame.lean`) is indexed by a single `(D : TemporalOrder)` and by
   nothing else — `def:temporal-order`'s four algebraic components are `D`'s own fields.
-  `PartialHistory` and `PartialHistory.timeShift` see the same `D` and no successor structure.
+  `WorldHistory` and `WorldHistory.timeShift` see the same `D` and no successor structure.
 * `Formula.predFormulas` (`Syntax/Formula.lean`) is a purely syntactic recursion on
   `Formula` with no temporal parameter at all, and `mkSigFrom φ`
   (`WeakCanonical/Transfer.lean`) is `Finset.cons Formula.bot φ.predFormulas _`. No
@@ -148,11 +148,11 @@ theorem multiFamTaskFrameGen_int (FamIdx : Type) [Nonempty FamIdx] :
 theorem multiFamHistoryGen_int {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
     multiFamHistoryGen f w₀ = multiFamHistory f w₀ := rfl
 
-/-- The `ℤ` frame's total-history set `H_F` (`def:world-history`) is definitionally the
+/-- The `ℤ` frame's world-history set `H_F` (`def:world-history`) is definitionally the
 generic frame's at `D := ℤ`. -/
 theorem multiFamGen_total_int (FamIdx : Type) [Nonempty FamIdx] :
-    {σ : PartialHistory (multiFamTaskFrameGen intOrder FamIdx) | ∀ t, σ.domain t} =
-      {σ : PartialHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} := rfl
+    (Set.univ : Set (WorldHistory (multiFamTaskFrameGen intOrder FamIdx))) =
+      (Set.univ : Set (WorldHistory (multiFamTaskFrame FamIdx))) := rfl
 
 end MultiFamGen
 

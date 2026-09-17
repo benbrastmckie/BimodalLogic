@@ -388,7 +388,7 @@ histories — `truthAt_of_truthIso`, `TimeShift.timeShift_preserves_truth`,
 `IntTransfer.truthAt_map` — and `truthAt_add_period` above is one of its instances (through
 `TruthIso`). This theorem is **not**, and cannot be made one without weakening it.
 `TruthCorr.atom` is quantified over *every* related pair of histories, and `TruthIso.atom` over
-every total history — it has to be, because `TruthAt`'s `□` clause ranges over all of them and
+every world history — it has to be, because `TruthAt`'s `□` clause ranges over all of them and
 the generic induction applies its hypothesis at a pair the caller did not choose. This theorem's
 hypothesis `hper` is about **one** history `τ`. Supplying a `TruthCorr` would therefore mean
 strengthening `hper` to a frame-uniform period, which is exactly `truthAt_add_period`'s
@@ -400,19 +400,15 @@ records, seen from the other side. A per-history period survives here **only** b
 case never touches the induction hypothesis.
 -/
 theorem truthAt_add_hist_period {F : TaskFrame} (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) {π : F.Duration}
-    (hper : ∀ x : F.Duration, τ.states (x + π) (hτ (x + π)) = τ.states x (hτ x)) :
+    (τ : WorldHistory F) {π : F.Duration}
+    (hper : ∀ x : F.Duration, τ.state (x + π) = τ.state x) :
     ∀ (φ : Formula) (t : F.Duration), (TruthAt M τ t φ ↔ TruthAt M τ (t + π) φ) := by
   intro φ
   induction φ with
   | atom p =>
       intro t
       simp only [TruthAt]
-      constructor
-      · rintro ⟨_, hv⟩
-        exact ⟨hτ _, by rw [hper t]; exact hv⟩
-      · rintro ⟨_, hv⟩
-        exact ⟨hτ _, by rw [← hper t]; exact hv⟩
+      rw [hper t]
   | bot => intro _; exact Iff.rfl
   | imp ψ χ ihψ ihχ =>
       intro t
@@ -421,7 +417,7 @@ theorem truthAt_add_hist_period {F : TaskFrame} (M : TaskModel F)
              fun hi hψ => (ihχ t).mpr (hi ((ihψ t).mp hψ))⟩
   | box ψ _ =>
       intro t
-      exact Truth.box_time_const M τ hτ t (t + π) ψ
+      exact Truth.box_time_const M τ t (t + π) ψ
   | untl χ ψ ihχ ihψ =>
       intro t
       simp only [TruthAt]
@@ -474,11 +470,11 @@ correspondence comes entirely from deriving this hypothesis out of `TaskFrame.Fw
 what `Walk.periodic` does and what needs the walk induction.
 -/
 theorem density_of_hist_periodic (F : TaskFrame)
-    (h : ∀ (τ : PartialHistory F) (hτ : τ.IsTotal), ∃ π : F.Duration, 0 < π ∧
-        ∀ x : F.Duration, τ.states (x + π) (hτ (x + π)) = τ.states x (hτ x))
-    (φ : Formula) (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    (h : ∀ τ : WorldHistory F, ∃ π : F.Duration, 0 < π ∧
+        ∀ x : F.Duration, τ.state (x + π) = τ.state x)
+    (φ : Formula) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ t (φ.allFuture.allFuture.imp φ.allFuture) := by
-  obtain ⟨π, hπ, hper⟩ := h τ hτ
+  obtain ⟨π, hπ, hper⟩ := h τ
   intro hgg
   rw [Truth.future_iff]
   intro s hs
@@ -486,6 +482,6 @@ theorem density_of_hist_periodic (F : TaskFrame)
   have h1 := hgg s hs
   rw [Truth.future_iff] at h1
   have h2 : TruthAt M τ (s + π) φ := h1 (s + π) (by simpa using hπ)
-  exact (truthAt_add_hist_period M τ hτ hper φ s).mpr h2
+  exact (truthAt_add_hist_period M τ hper φ s).mpr h2
 
 end FormalSystem.Semantics

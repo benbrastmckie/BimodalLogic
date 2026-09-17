@@ -185,7 +185,7 @@ class TruthEnv (L : Type) where
   /-- The type of the inert extra parameter at each frame; `fun _ => PUnit` when there is none. -/
   Env : TaskFrame → Type
   /-- `T M τ t e φ` — the formula `φ` is true at `(M, τ, t)` under the environment `e`. -/
-  T : ∀ {F : TaskFrame}, TaskModel F → PartialHistory F → F.Duration → Env F → L → Prop
+  T : ∀ {F : TaskFrame}, TaskModel F → WorldHistory F → F.Duration → Env F → L → Prop
 
 /-!
 ## One class per primitive operator
@@ -199,7 +199,7 @@ class BotClause (L : Type) [TruthEnv L] where
   /-- The falsum constructor. -/
   bot : L
   /-- `⊥` is false at every point. -/
-  bot_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+  bot_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F), ¬ TruthEnv.T M τ t e bot
 
 /-- Material implication. -/
@@ -207,18 +207,18 @@ class ImpClause (L : Type) [TruthEnv L] where
   /-- The implication constructor. -/
   imp : L → L → L
   /-- Truth of an implication is the material conditional. -/
-  imp_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+  imp_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L),
     TruthEnv.T M τ t e (imp φ ψ) ↔ (TruthEnv.T M τ t e φ → TruthEnv.T M τ t e ψ)
 
-/-- The modal box: truth at every total history at the current time. -/
+/-- The modal box: truth at every world history at the current time. -/
 class BoxClause (L : Type) [TruthEnv L] where
   /-- The box constructor. -/
   box : L → L
-  /-- `□φ` holds iff `φ` holds at every **total** history at the current time. -/
-  box_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+  /-- `□φ` holds iff `φ` holds at every world history at the current time. -/
+  box_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L),
-    TruthEnv.T M τ t e (box φ) ↔ ∀ σ : PartialHistory F, σ.IsTotal → TruthEnv.T M σ t e φ
+    TruthEnv.T M τ t e (box φ) ↔ ∀ σ : WorldHistory F, TruthEnv.T M σ t e φ
 
 /-- Strict `until`, guard first. -/
 class UntlClause (L : Type) [TruthEnv L] where
@@ -226,7 +226,7 @@ class UntlClause (L : Type) [TruthEnv L] where
   untl : L → L → L
   /-- `untl ψ φ` holds iff `φ` holds at some strictly future time with `ψ` throughout the open
   interval between. -/
-  untl_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+  untl_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (ψ φ : L),
     TruthEnv.T M τ t e (untl ψ φ) ↔ ∃ s : F.Duration, t < s ∧ TruthEnv.T M τ s e φ ∧
       ∀ r : F.Duration, t < r → r < s → TruthEnv.T M τ r e ψ
@@ -237,37 +237,33 @@ class SnceClause (L : Type) [TruthEnv L] where
   snce : L → L → L
   /-- `snce ψ φ` holds iff `φ` held at some strictly past time with `ψ` throughout the open
   interval between. -/
-  snce_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+  snce_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (ψ φ : L),
     TruthEnv.T M τ t e (snce ψ φ) ↔ ∃ s : F.Duration, s < t ∧ TruthEnv.T M τ s e φ ∧
       ∀ r : F.Duration, s < r → r < t → TruthEnv.T M τ r e ψ
 
 /--
-The stability modal: truth at every total history agreeing with the present one **at the present
-time**.
+The stability modal: truth at every world history in the same state as the present one **at the
+present time**.
 
-The agreement relation is carried as the field `sameState` rather than named directly. The tree's
-`SameStateAt` lives in `Semantics/PlusLanguage/PlusTruth.lean`, which sits above this module in the import
-order; taking it as a field keeps this module a leaf while letting each instance supply the real
-relation, so no consumer's statement changes.
+The agreement relation is the plain state equation `τ.state t = σ.state t`: world histories carry
+a non-dependent state accessor, so no separate same-state relation is needed.
 -/
 class StabClause (L : Type) [TruthEnv L] where
   /-- The stability constructor. -/
   stab : L → L
-  /-- The same-state-at-a-time relation the stability clause quantifies over. -/
-  sameState : ∀ {F : TaskFrame}, PartialHistory F → PartialHistory F → F.Duration → Prop
-  /-- `⊡φ` holds iff `φ` holds at every total history in the same state at the current time. -/
-  stab_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+  /-- `⊡φ` holds iff `φ` holds at every world history in the same state at the current time. -/
+  stab_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L),
-    TruthEnv.T M τ t e (stab φ) ↔ ∀ σ : PartialHistory F, σ.IsTotal →
-      sameState τ σ t → TruthEnv.T M σ t e φ
+    TruthEnv.T M τ t e (stab φ) ↔ ∀ σ : WorldHistory F, τ.state t = σ.state t →
+      TruthEnv.T M σ t e φ
 
 /-- The **primitive** universal future, for a tense-primitive language. -/
 class AllFutureClause (L : Type) [TruthEnv L] where
   /-- The universal-future constructor. -/
   allFuture : L → L
   /-- `Gφ` holds iff `φ` holds at every strictly future time. -/
-  allFuture_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F)
+  allFuture_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (φ : L),
     TruthEnv.T M τ t e (allFuture φ) ↔ ∀ s : F.Duration, t < s → TruthEnv.T M τ s e φ
 
@@ -276,7 +272,7 @@ class AllPastClause (L : Type) [TruthEnv L] where
   /-- The universal-past constructor. -/
   allPast : L → L
   /-- `Hφ` holds iff `φ` holds at every strictly past time. -/
-  allPast_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F)
+  allPast_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (φ : L),
     TruthEnv.T M τ t e (allPast φ) ↔ ∀ s : F.Duration, s < t → TruthEnv.T M τ s e φ
 
@@ -327,20 +323,20 @@ abbrev or (φ ψ : L) : L := ImpClause.imp (neg φ) ψ
 
 Proved by `rw` and explicit terms rather than a classical tactic: this lemma is `[propext]` in
 every language today, and every wrapper's axiom set is inherited from here. -/
-theorem neg_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem neg_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (neg φ) ↔ ¬ TruthEnv.T M τ t e φ := by
   rw [neg, ImpClause.imp_clause]
   exact ⟨fun h hφ => BotClause.bot_clause M τ t e (h hφ), fun h hφ => absurd hφ h⟩
 
 /-- `⊤` is true everywhere. -/
-theorem top_true (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem top_true (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) : TruthEnv.T M τ t e (top : L) := by
   rw [top, ImpClause.imp_clause]
   exact id
 
 /-- Truth of `φ ∧ ψ`. Classical: `and` is the double-negated implication. -/
-theorem and_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem and_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e (and φ ψ) ↔ (TruthEnv.T M τ t e φ ∧ TruthEnv.T M τ t e ψ) := by
   rw [and, neg_iff, ImpClause.imp_clause, neg_iff]
@@ -351,7 +347,7 @@ theorem and_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
     exact (h hφ) hψ
 
 /-- Truth of `φ ∨ ψ`. Classical: `or` is `¬φ → ψ`. -/
-theorem or_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem or_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e (or φ ψ) ↔ (TruthEnv.T M τ t e φ ∨ TruthEnv.T M τ t e ψ) := by
   rw [or, ImpClause.imp_clause, neg_iff]
@@ -370,20 +366,20 @@ variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [BoxClause L] {F : 
 /-- Possibility (`◇φ`): `¬□¬φ`. -/
 abbrev diamond (φ : L) : L := neg (BoxClause.box (neg φ))
 
-/-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* total history at the current time. The classical
+/-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* world history at the current time. The classical
 `¬∀¬ ↔ ∃` step over the box clause. -/
-theorem diamond_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem diamond_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (diamond φ) ↔
-      ∃ σ : PartialHistory F, σ.IsTotal ∧ TruthEnv.T M σ t e φ := by
+      ∃ σ : WorldHistory F, TruthEnv.T M σ t e φ := by
   rw [diamond, neg_iff, BoxClause.box_clause]
   constructor
   · intro h
     by_contra hc
     push Not at hc
-    exact h (fun σ hσ => (neg_iff M σ t e φ).mpr (hc σ hσ))
-  · rintro ⟨σ, hσ, hφ⟩ h
-    exact ((neg_iff M σ t e φ).mp (h σ hσ)) hφ
+    exact h (fun σ => (neg_iff M σ t e φ).mpr (hc σ))
+  · rintro ⟨σ, hφ⟩ h
+    exact ((neg_iff M σ t e φ).mp (h σ)) hφ
 
 end Modal
 
@@ -405,7 +401,7 @@ abbrev allFuture (φ : L) : L := neg (someFuture (neg φ))
 
 /-- Truth of `Fφ`: `φ` holds at some strictly future time. The `⊤` guard is discharged by
 `top_true`. -/
-theorem someFuture_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem someFuture_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (someFuture φ) ↔ ∃ s : F.Duration, t < s ∧ TruthEnv.T M τ s e φ := by
   rw [someFuture, UntlClause.untl_clause]
@@ -413,7 +409,7 @@ theorem someFuture_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration
     fun ⟨s, hs, hφ⟩ => ⟨s, hs, hφ, fun r _ _ => top_true M τ r e⟩⟩
 
 /-- Truth of `Gφ`: `φ` holds at every strictly future time. The classical `¬∃¬ ↔ ∀` step. -/
-theorem allFuture_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem allFuture_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (allFuture φ) ↔ ∀ s : F.Duration, t < s → TruthEnv.T M τ s e φ := by
   rw [allFuture, neg_iff, someFuture_iff]
@@ -440,7 +436,7 @@ abbrev somePast (φ : L) : L := SnceClause.snce top φ
 abbrev allPast (φ : L) : L := neg (somePast (neg φ))
 
 /-- Truth of `Pφ`: `φ` held at some strictly past time. -/
-theorem somePast_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem somePast_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (somePast φ) ↔ ∃ s : F.Duration, s < t ∧ TruthEnv.T M τ s e φ := by
   rw [somePast, SnceClause.snce_clause]
@@ -448,7 +444,7 @@ theorem somePast_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
     fun ⟨s, hs, hφ⟩ => ⟨s, hs, hφ, fun r _ _ => top_true M τ r e⟩⟩
 
 /-- Truth of `Hφ`: `φ` holds at every strictly past time. -/
-theorem allPast_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem allPast_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (allPast φ) ↔ ∀ s : F.Duration, s < t → TruthEnv.T M τ s e φ := by
   rw [allPast, neg_iff, somePast_iff]
@@ -475,7 +471,7 @@ abbrev always (φ : L) : L := and (allPast φ) (and φ (allFuture φ))
 /-- Truth of `△φ` in three-conjunct form: past, present, future. The **introduction** shape,
 mirroring the association of `always` itself. Collapsing the three cases into one unrestricted
 `∀ s` needs the frame's trichotomy and stays per-language. -/
-theorem always_iff_tri (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem always_iff_tri (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (always φ) ↔
       (∀ s : F.Duration, s < t → TruthEnv.T M τ s e φ) ∧ TruthEnv.T M τ t e φ ∧
@@ -494,21 +490,20 @@ variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [StabClause L] {F :
 /-- The dual stability modal (`⟐φ`): `¬⊡¬φ`. -/
 abbrev dstab (φ : L) : L := neg (StabClause.stab (neg φ))
 
-/-- Truth of `⟐φ`: some total history in the same state at the current time satisfies `φ`. The
+/-- Truth of `⟐φ`: some world history in the same state at the current time satisfies `φ`. The
 classical `¬∀¬ ↔ ∃` step over the stability clause. -/
-theorem dstab_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem dstab_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (dstab φ) ↔
-      ∃ σ : PartialHistory F, σ.IsTotal ∧ StabClause.sameState (L := L) τ σ t ∧
-        TruthEnv.T M σ t e φ := by
+      ∃ σ : WorldHistory F, τ.state t = σ.state t ∧ TruthEnv.T M σ t e φ := by
   rw [dstab, neg_iff, StabClause.stab_clause]
   constructor
   · intro h
     by_contra hc
     push Not at hc
-    exact h (fun σ hσ hs => (neg_iff M σ t e φ).mpr (hc σ hσ hs))
-  · rintro ⟨σ, hσ, hs, hφ⟩ h
-    exact ((neg_iff M σ t e φ).mp (h σ hσ hs)) hφ
+    exact h (fun σ hs => (neg_iff M σ t e φ).mpr (hc σ hs))
+  · rintro ⟨σ, hs, hφ⟩ h
+    exact ((neg_iff M σ t e φ).mp (h σ hs)) hφ
 
 end Stab
 
@@ -529,7 +524,7 @@ variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [AllFutureClause L]
 abbrev someFuture' (φ : L) : L := neg (AllFutureClause.allFuture (neg φ))
 
 /-- Truth of `Fφ` when the universal future is primitive. The classical `¬∀¬ ↔ ∃` step. -/
-theorem someFuture_iff_of_allFuture (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem someFuture_iff_of_allFuture (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (someFuture' φ) ↔
       ∃ s : F.Duration, t < s ∧ TruthEnv.T M τ s e φ := by
@@ -551,7 +546,7 @@ variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [AllPastClause L] {
 abbrev somePast' (φ : L) : L := neg (AllPastClause.allPast (neg φ))
 
 /-- Truth of `Pφ` when the universal past is primitive. -/
-theorem somePast_iff_of_allPast (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem somePast_iff_of_allPast (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (somePast' φ) ↔
       ∃ s : F.Duration, s < t ∧ TruthEnv.T M τ s e φ := by
@@ -575,7 +570,7 @@ abbrev always' (φ : L) : L :=
   and (AllPastClause.allPast φ) (and φ (AllFutureClause.allFuture φ))
 
 /-- Truth of `△φ` in three-conjunct form, over the primitive tenses. -/
-theorem always_iff_of_tense (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem always_iff_of_tense (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e (always' φ) ↔
       (∀ s : F.Duration, s < t → TruthEnv.T M τ s e φ) ∧ TruthEnv.T M τ t e φ ∧

@@ -64,7 +64,7 @@ Tableau-based decision procedure returning proof terms or countermodels.
 - `Verified.Bridge.Interpolate`: the region structure a placement cuts in the carrier, the
   total-on-`D` extension operator, and the invariance induction's propositional and modal cases
 - `Verified.Bridge.RegionFrame`: the countermodel's frame, its region histories, the fact
-  that those are exactly the frame's total histories — which is what `valid` quantifies over —
+  that those are exactly the frame's world histories — which is what `valid` quantifies over —
   and `truthAt_box_iff`: `□` is the universal modality, with no closure hypothesis needed
 - `Verified.Bridge.TruthLemma`: `InterpInvariantAt`, region invariance at a single history — the
   form this carrier admits — and its instantiation at the countermodel's base histories

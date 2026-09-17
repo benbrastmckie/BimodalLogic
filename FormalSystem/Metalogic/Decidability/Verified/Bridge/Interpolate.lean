@@ -76,14 +76,14 @@ two rays, or a gap with an identified pair of endpoints.
 
 ## What the invariance lemmas quantify over
 
-`InterpInvariant f M χ` says: for every **total** history and every pair of `SameRegion`
-points, `χ` has the same truth value. The quantifier over the total histories rather than over the
+`InterpInvariant f M χ` says: for every world history and every pair of `SameRegion`
+points, `χ` has the same truth value. The quantifier over all world histories rather than over the
 single history under consideration is what makes the `box` case go through: `TruthAt … (box φ)` is
-a universal over the total histories at a *fixed* time, so the induction hypothesis has to be
+a universal over the world histories at a *fixed* time, so the induction hypothesis has to be
 available at every such history simultaneously. It is available at no cost, because the atom
-case's hypothesis (`RegionConstant`) is likewise imposed on every total history. `box` carries
-**no accessibility relation** — `TruthAt` quantifies over totality outright — so that case is pure
-transport and needs nothing from the order.
+case's hypothesis (`RegionConstant`) is likewise imposed on every world history. `box` carries
+**no accessibility relation** — `TruthAt` quantifies over world histories outright — so that case
+is pure transport and needs nothing from the order.
 
 The designated admissible set is gone from the statement entirely: `TruthAt`'s remaining carrier
 argument is inert and is supplied as `Set.univ`, and it no longer indexes what `box` ranges over.
@@ -434,32 +434,29 @@ variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Non
 variable {F : FrameOver (TemporalOrder.of D)} {ι : Type*}
 
 /--
-A history is *region-constant* for the placement `f`: it cannot tell two points of one region
-apart, either in its domain or in the state it assigns.
+A world history is *region-constant* for the placement `f`: it cannot tell two points of one
+region apart by the state it assigns.
 
 This is the hypothesis the interpolated construction supplies — the history is built by
 `regionExtend`, so it is constant on regions by construction — and the only hypothesis the atom
 case of the invariance induction needs.
 -/
-structure RegionConstant (f : ι → D) (τ : PartialHistory F) : Prop where
-  /-- Region-mates are both in the domain or both out of it. -/
-  domain_congr : ∀ {r r' : D}, SameRegion f r r' → (τ.domain r ↔ τ.domain r')
+structure RegionConstant (f : ι → D) (τ : WorldHistory F) : Prop where
   /-- Region-mates carry the same world state. -/
-  states_congr : ∀ {r r' : D} (_h : SameRegion f r r') (hr : τ.domain r) (hr' : τ.domain r'),
-      τ.states r hr = τ.states r' hr'
+  state_congr : ∀ {r r' : D}, SameRegion f r r' → τ.state r = τ.state r'
 
 /--
-The invariance property for a single formula: across the total histories, truth of `χ` does not
+The invariance property for a single formula: across the world histories, truth of `χ` does not
 distinguish points of a common region.
 
-Quantified over all total histories rather than over one history, because `box` is a universal
-over the total histories at a fixed time and its case needs the induction hypothesis at every
+Quantified over all world histories rather than over one history, because `box` is a universal
+over the world histories at a fixed time and its case needs the induction hypothesis at every
 such history simultaneously. No designated admissible set appears; the quantifier tracks the box
-clause, which is totality (`def:BL-semantics`, `docs/reference/paper-definitions-of-record.md`), not
+clause, which ranges over every world history (`def:BL-semantics`, `docs/reference/paper-definitions-of-record.md`), not
 membership in a chosen set.
 -/
 def InterpInvariant (f : ι → D) (M : TaskModel F) (χ : Formula) : Prop :=
-  ∀ τ : PartialHistory F, τ.IsTotal →
+  ∀ τ : WorldHistory F,
     ∀ r r' : D, SameRegion f r r' → (TruthAt M τ r χ ↔ TruthAt M τ r' χ)
 
 variable {f : ι → D} {M : TaskModel F}
@@ -467,48 +464,39 @@ variable {f : ι → D} {M : TaskModel F}
 /-! ### Propositional and modal cases -/
 
 /--
-**Atom case.** An atom is true at `r` iff `r` is in the history's domain and the valuation holds
-at the state there; a region-constant history agrees with its region-mates on both, so the atom's
-truth value is a function of the region alone.
+**Atom case.** An atom is true at `r` iff the valuation holds at the history's state there; a
+region-constant history assigns region-mates the same state, so the atom's truth value is a
+function of the region alone.
 -/
-theorem interpInvariant_atom (hRC : ∀ τ : PartialHistory F, τ.IsTotal → RegionConstant f τ)
+theorem interpInvariant_atom (hRC : ∀ τ : WorldHistory F, RegionConstant f τ)
     (p : Atom) :
     InterpInvariant f M (Formula.atom p) := by
-  intro τ hτ r r' hrr'
-  have hC := hRC τ hτ
-  simp only [TruthAt]
-  constructor
-  · rintro ⟨hr, hv⟩
-    have hr' : τ.domain r' := (hC.domain_congr hrr').mp hr
-    refine ⟨hr', ?_⟩
-    rwa [← hC.states_congr hrr' hr hr']
-  · rintro ⟨hr', hv⟩
-    have hr : τ.domain r := (hC.domain_congr hrr').mpr hr'
-    refine ⟨hr, ?_⟩
-    rwa [hC.states_congr hrr' hr hr']
+  intro τ r r' hrr'
+  show M.valuation (τ.state r) p ↔ M.valuation (τ.state r') p
+  rw [(hRC τ).state_congr hrr']
 
 /-- **Bottom case.** `⊥` is false everywhere, so it is in particular region-invariant. -/
 theorem interpInvariant_bot : InterpInvariant f M Formula.bot := by
-  intro _ _ _ _ _
+  intro _ _ _ _
   exact Iff.rfl
 
 /-- **Implication case.** The material conditional of two region-invariant formulas. -/
 theorem interpInvariant_imp {φ ψ : Formula} (hφ : InterpInvariant f M φ)
     (hψ : InterpInvariant f M ψ) : InterpInvariant f M (φ.imp ψ) := by
-  intro τ hτ r r' hrr'
-  exact imp_congr (hφ τ hτ r r' hrr') (hψ τ hτ r r' hrr')
+  intro τ r r' hrr'
+  exact imp_congr (hφ τ r r' hrr') (hψ τ r r' hrr')
 
 /--
-**Box case.** `TruthAt … (box φ)` is a universal over the *total* histories at a *fixed* time,
+**Box case.** `TruthAt … (box φ)` is a universal over the world histories at a *fixed* time,
 with no accessibility relation to move the time, so the case is pure transport of the induction
-hypothesis across those histories. This is exactly why `InterpInvariant` quantifies over the
-total histories rather than over a single history.
+hypothesis across those histories. This is exactly why `InterpInvariant` quantifies over all
+world histories rather than over a single history.
 -/
 theorem interpInvariant_box {φ : Formula} (hφ : InterpInvariant f M φ) :
     InterpInvariant f M φ.box := by
-  intro _ _ r r' hrr'
+  intro _ r r' hrr'
   simp only [TruthAt]
-  exact forall_congr' fun σ => imp_congr_right fun hσ => hφ σ hσ r r' hrr'
+  exact forall_congr' fun σ => hφ σ r r' hrr'
 
 /-- **Negation.** `¬φ` is `φ → ⊥` by definition, so it inherits invariance from `φ`. -/
 theorem interpInvariant_neg {φ : Formula} (hφ : InterpInvariant f M φ) :
@@ -532,7 +520,7 @@ variable [Fintype ι] [DenselyOrdered D]
 /-- One direction of the `untl` case, for `r < r'`. The other follows by symmetry of the setup. -/
 private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
-    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.untl φ)) : TruthAt M τ r' (ψ.untl φ) := by
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
@@ -545,15 +533,15 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
     have hx₀reg : SameRegion f r x₀ := sameRegion_convex hsreg hx₀l.le hx₀r.le
     have hψx₀ : TruthAt M τ x₀ ψ := hg x₀ hx₀l hx₀r
     refine ⟨s', hr's', ?_, ?_⟩
-    · exact (hφ τ hτ s s' ((hsreg.symm.trans hrr').trans hs'reg)).mp hφs
+    · exact (hφ τ s s' ((hsreg.symm.trans hrr').trans hs'reg)).mp hφs
     · intro x hx hxs'
       have hxreg : SameRegion f r' x := sameRegion_convex hs'reg hx.le hxs'.le
-      exact (hψ τ hτ x₀ x ((hx₀reg.symm.trans hrr').trans hxreg)).mp hψx₀
+      exact (hψ τ x₀ x ((hx₀reg.symm.trans hrr').trans hxreg)).mp hψx₀
 
 /-- The reverse direction of the `untl` case, for `r < r'`. -/
 private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
-    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.untl φ)) : TruthAt M τ r (ψ.untl φ) := by
   obtain ⟨s, hr's, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
@@ -569,7 +557,7 @@ private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
   · exact hg x hcase hxs
   · push_neg at hcase
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hx.le hcase
-    exact (hψ τ hτ y x ((hyreg.symm.trans hrr'.symm).trans hxreg)).mp hψy
+    exact (hψ τ y x ((hyreg.symm.trans hrr'.symm).trans hxreg)).mp hψy
 
 /--
 **Until case.** `U(φ, ψ)` is region-invariant when `φ` and `ψ` are, on a densely ordered carrier
@@ -582,16 +570,16 @@ replaced by a fresh one inside the region.
 theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
     InterpInvariant f M (Formula.untl ψ φ) := by
-  intro τ hτ r r' hrr'
+  intro τ r r' hrr'
   rcases lt_trichotomy r r' with hlt | heq | hgt
-  · exact ⟨untl_forward hφ hψ hτ hrr' hlt, untl_backward hψ hτ hrr' hlt⟩
+  · exact ⟨untl_forward hφ hψ hrr' hlt, untl_backward hψ hrr' hlt⟩
   · rw [heq]
-  · exact ⟨untl_backward hψ hτ hrr'.symm hgt, untl_forward hφ hψ hτ hrr'.symm hgt⟩
+  · exact ⟨untl_backward hψ hrr'.symm hgt, untl_forward hφ hψ hrr'.symm hgt⟩
 
 /-- One direction of the `snce` case, for `r < r'`. -/
 private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
-    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.snce φ)) : TruthAt M τ r' (ψ.snce φ) := by
   obtain ⟨s, hsr, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
@@ -607,12 +595,12 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
   · exact hg x hsx hcase
   · push_neg at hcase
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hcase hxr'.le
-    exact (hψ τ hτ y x (hyreg.symm.trans hxreg)).mp hψy
+    exact (hψ τ y x (hyreg.symm.trans hxreg)).mp hψy
 
 /-- The reverse direction of the `snce` case, for `r < r'`. -/
 private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
-    {τ : PartialHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
+    {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.snce φ)) : TruthAt M τ r (ψ.snce φ) := by
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
@@ -625,11 +613,11 @@ private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
     have hyreg : SameRegion f s y := sameRegion_convex (hsreg.symm.trans hrr') hyl.le hyr.le
     have hψy : TruthAt M τ y ψ := hg y hyl hyr
     refine ⟨s', hs'r, ?_, ?_⟩
-    · exact (hφ τ hτ s s' (hsreg.symm.trans hs'reg)).mp hφs
+    · exact (hφ τ s s' (hsreg.symm.trans hs'reg)).mp hφs
     · intro x hs'x hxr
       have hxreg : SameRegion f r x :=
         hs'reg.trans (sameRegion_convex hs'reg.symm hs'x.le hxr.le)
-      exact (hψ τ hτ y x ((hyreg.symm.trans hsreg.symm).trans hxreg)).mp hψy
+      exact (hψ τ y x ((hyreg.symm.trans hsreg.symm).trans hxreg)).mp hψy
 
 /--
 **Since case.** The mirror image of `interpInvariant_untl`, on a densely ordered carrier with no
@@ -638,11 +626,11 @@ least element.
 theorem interpInvariant_snce [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
     InterpInvariant f M (Formula.snce ψ φ) := by
-  intro τ hτ r r' hrr'
+  intro τ r r' hrr'
   rcases lt_trichotomy r r' with hlt | heq | hgt
-  · exact ⟨snce_forward hψ hτ hrr' hlt, snce_backward hφ hψ hτ hrr' hlt⟩
+  · exact ⟨snce_forward hψ hrr' hlt, snce_backward hφ hψ hrr' hlt⟩
   · rw [heq]
-  · exact ⟨snce_backward hφ hψ hτ hrr'.symm hgt, snce_forward hψ hτ hrr'.symm hgt⟩
+  · exact ⟨snce_backward hφ hψ hrr'.symm hgt, snce_forward hψ hrr'.symm hgt⟩
 
 /-! ### The derived temporal operators
 
@@ -674,14 +662,14 @@ theorem interpInvariant_allPast [NoMinOrder D] {φ : Formula}
 
 /--
 **Interpolation invariance.** On a densely ordered carrier with no endpoints, truth of *every*
-formula is constant on each region cut out by the placement, provided every total history is
+formula is constant on each region cut out by the placement, provided every world history is
 region-constant.
 
 This is the whole of stage 3 of the semantic bridge: it is what lets Phase 7's truth lemma read
 truth at an arbitrary point of the carrier off the branch time whose region that point is in.
 -/
 theorem interpInvariant [NoMaxOrder D] [NoMinOrder D]
-    (hRC : ∀ τ : PartialHistory F, τ.IsTotal → RegionConstant f τ) (χ : Formula) :
+    (hRC : ∀ τ : WorldHistory F, RegionConstant f τ) (χ : Formula) :
     InterpInvariant f M χ := by
   induction χ with
   | atom p => exact interpInvariant_atom hRC p

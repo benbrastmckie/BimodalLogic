@@ -17,10 +17,10 @@ shorthand for anything L can already say.
 
 ## The two models
 
-Both live over `ℤ`, both realize **exactly the same atom profiles** along their total histories,
+Both live over `ℤ`, both realize **exactly the same atom profiles** along their world histories,
 and they differ only in *which* histories share a world state at a given time.
 
-| | frame | total histories | `⟨τ⟩₀` |
+| | frame | world histories | `⟨τ⟩₀` |
 |---|---|---|---|
 | `M₁` | `NF`, the permissive frame (`Semantics/TaskFrame.lean`, `natFrame`) | every `f : ℤ → ℕ` | every history agreeing with `τ` at `0` |
 | `M₂` | `multiFamTaskFrameGen`, the deterministic clock at family index `ℤ → ℕ` | the flow lines `t ↦ (g, w₀ + t)` | `{τ}` |
@@ -40,7 +40,7 @@ No new bisimulation machinery is introduced. `TruthCorr` (`Semantics/TruthTransp
 packages exactly what an L formula can see — an order isomorphism of times, a relation on
 histories, agreement on atoms at related pairs, and the two `□`-existence conditions — and
 `truthAt_of_truthCorr` transports every `Formula` along it. Here the relation is simply
-"agrees on every atom at every time", so the `atom` field is definitional and the two totality
+"agrees on every atom at every time", so the `atom` field is definitional and the two existence
 fields are the profile-matching constructions above.
 
 ## Why the separator has to be temporal
@@ -93,56 +93,50 @@ noncomputable def stabModel : TaskModel SF where
 theorem sf_deterministic : SF.Deterministic := multiFamTaskFrameGen_deterministic
 
 /-- The flow line of `SF` through profile `g` at offset `w₀`. -/
-noncomputable def stabHist (g : StabFam) (w₀ : ℤ) : PartialHistory SF :=
+noncomputable def stabHist (g : StabFam) (w₀ : ℤ) : WorldHistory SF :=
   multiFamHistoryGen g w₀
 
-theorem stabHist_isTotal (g : StabFam) (w₀ : ℤ) : (stabHist g w₀).IsTotal :=
-  multiFamHistoryGen_total g w₀
+/-- Atomic truth at a world history of `M₁`: the valuation at the history's own state. Stated
+through `.valuation` rather than by unfolding it to a numeral equation, because `NF.WorldState`
+does not reduce far enough for a `ℕ` numeral to elaborate against it. -/
+theorem nf_atom_iff (σ : WorldHistory NF) (t : ℤ) (q : Atom) :
+    TruthAt natModel σ t (Formula.atom q) ↔ natModel.valuation (σ.state t) q :=
+  Iff.rfl
 
-/-- Atomic truth at a total history of `M₁`: the clause's domain conjunct is discharged by
-totality, leaving the valuation at the history's own state. Stated through `.valuation` rather
-than by unfolding it to a numeral equation, because `NF.WorldState` does not reduce far enough
-for a `ℕ` numeral to elaborate against it. -/
-theorem nf_atom_iff {σ : PartialHistory NF} (hσ : σ.IsTotal) (t : ℤ) (q : Atom) :
-    TruthAt natModel σ t (Formula.atom q) ↔ natModel.valuation (σ.states t (hσ t)) q :=
-  ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨hσ t, h⟩⟩
-
-/-- Atomic truth at a total history of `M₂`, the same way. -/
-theorem sf_atom_iff {σ' : PartialHistory SF} (hσ' : σ'.IsTotal) (t : ℤ) (q : Atom) :
-    TruthAt stabModel σ' t (Formula.atom q) ↔ stabModel.valuation (σ'.states t (hσ' t)) q :=
-  ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨hσ' t, h⟩⟩
+/-- Atomic truth at a world history of `M₂`, the same way. -/
+theorem sf_atom_iff (σ' : WorldHistory SF) (t : ℤ) (q : Atom) :
+    TruthAt stabModel σ' t (Formula.atom q) ↔ stabModel.valuation (σ'.state t) q :=
+  Iff.rfl
 
 /-! ## The truth correspondence
 
 The relation is "agrees on every atom at every time". The `atom` field is then definitional, and
-the two totality fields are the profile-matching constructions: forward, read the profile off the
+the two existence fields are the profile-matching constructions: forward, read the profile off the
 `M₁` history and flow it; backward, read the `ℕ`-value off the `M₂` history's own states and feed
 it to `natHist`, which accepts *any* function because `NF` is permissive.
 -/
 
-/-- Every atom profile realized by a total history of `M₁` is realized by one of `M₂`, and
+/-- Every atom profile realized by a world history of `M₁` is realized by one of `M₂`, and
 conversely; the relation recording that is a `TruthCorr`. -/
 noncomputable def stabCorr : TruthCorr natModel stabModel where
   dur := OrderIso.refl _
   Rel := fun σ σ' => ∀ (t : ℤ) (q : Atom),
     TruthAt natModel σ t (Formula.atom q) ↔ TruthAt stabModel σ' t (Formula.atom q)
   atom := fun _ _ h t q => h t q
-  total_fwd := by
-    intro σ hσ
-    refine ⟨stabHist (fun s => σ.states s (hσ s)) 0, stabHist_isTotal _ _, ?_⟩
+  fwd := by
+    intro σ
+    refine ⟨stabHist (fun s => σ.state s) 0, ?_⟩
     intro t q
-    refine Iff.trans (nf_atom_iff hσ t q)
-      (Iff.trans ?_ (sf_atom_iff (stabHist_isTotal _ _) t q).symm)
-    show natModel.valuation (σ.states t (hσ t)) q ↔
-      stabModel.valuation ((fun s => σ.states s (hσ s)), (0 : ℤ) + t) q
+    refine Iff.trans (nf_atom_iff σ t q) (Iff.trans ?_ (sf_atom_iff _ t q).symm)
+    show natModel.valuation (σ.state t) q ↔
+      stabModel.valuation ((fun s => σ.state s), (0 : ℤ) + t) q
     rw [zero_add]
     exact Iff.rfl
-  total_bwd := by
-    intro σ' hσ'
-    refine ⟨natHist (fun s => (σ'.states s (hσ' s)).1 (σ'.states s (hσ' s)).2),
-      natHist_isTotal _, ?_⟩
+  bwd := by
+    intro σ'
+    refine ⟨natHist (fun s => (σ'.state s).1 (σ'.state s).2), ?_⟩
     intro t q
-    exact Iff.trans (nf_atom_iff (natHist_isTotal _) t q) (sf_atom_iff hσ' t q).symm
+    exact Iff.trans (nf_atom_iff _ t q) (sf_atom_iff σ' t q).symm
 
 /-! ## The separating pair -/
 
@@ -150,16 +144,15 @@ noncomputable def stabCorr : TruthCorr natModel stabModel where
 def oneProfile : ℤ → ℕ := fun s => if s = 1 then 0 else 1
 
 /-- `τ₁`: the `M₁` history carrying `oneProfile`. -/
-def tauOne : PartialHistory NF := natHist oneProfile
+def tauOne : WorldHistory NF := natHist oneProfile
 
 /-- `τ₂`: the `M₂` flow line carrying `oneProfile`. -/
-noncomputable def tauTwo : PartialHistory SF := stabHist oneProfile 0
+noncomputable def tauTwo : WorldHistory SF := stabHist oneProfile 0
 
 /-- The two histories are `stabCorr`-related: both read `oneProfile` at every time. -/
 theorem tauOne_rel_tauTwo : stabCorr.Rel tauOne tauTwo := by
   intro t q
-  refine Iff.trans (nf_atom_iff (natHist_isTotal oneProfile) t q)
-    (Iff.trans ?_ (sf_atom_iff (stabHist_isTotal oneProfile 0) t q).symm)
+  refine Iff.trans (nf_atom_iff tauOne t q) (Iff.trans ?_ (sf_atom_iff tauTwo t q).symm)
   show natModel.valuation (oneProfile t) q ↔ stabModel.valuation (oneProfile, (0 : ℤ) + t) q
   rw [zero_add]
   exact Iff.rfl
@@ -168,63 +161,61 @@ theorem tauOne_rel_tauTwo : stabCorr.Rel tauOne tauTwo := by
 theorem someFuture_tauOne (p : Atom) :
     PlusTruthAt natModel tauOne 0 (someFuture (.atom p)) := by
   rw [PlusTruth.someFuture_iff]
-  exact ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), trivial, (by simp [oneProfile] : oneProfile 1 = 0)⟩
+  exact ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), (by simp [oneProfile] : oneProfile 1 = 0)⟩
 
 /-- `⊡Fp` **fails** at `(τ₁, 0)`: the constant history shares `τ₁`'s state at time `0` — both are
 `1`, since `oneProfile 0 = 1` — and never reaches `p`. -/
 theorem not_stab_someFuture_tauOne (p : Atom) :
     ¬ PlusTruthAt natModel tauOne 0 (.stab (someFuture (.atom p))) := by
   intro h
-  have hB := h (natHist fun _ => 1) (natHist_isTotal _)
-    (fun _ _ => by show oneProfile 0 = 1; simp [oneProfile])
+  have hB := h (natHist fun _ => 1) (by show oneProfile 0 = 1; simp [oneProfile])
   rw [PlusTruth.someFuture_iff] at hB
-  obtain ⟨s, _, hat⟩ := hB
-  obtain ⟨_, v⟩ := hat
+  obtain ⟨s, _, v⟩ := hB
   exact one_ne_zero (v : (1 : ℕ) = 0)
 
 /-- `Fp` holds at `(τ₂, 0)`. -/
 theorem someFuture_tauTwo (p : Atom) :
     PlusTruthAt stabModel tauTwo 0 (someFuture (.atom p)) := by
   rw [PlusTruth.someFuture_iff]
-  refine ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), trivial, ?_⟩
+  refine ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), ?_⟩
   show oneProfile (0 + 1) = 0
   norm_num [oneProfile]
 
 /-- `⊡Fp` **holds** at `(τ₂, 0)`: `SF` is deterministic, so `⊡` collapses onto its argument. -/
 theorem stab_someFuture_tauTwo (p : Atom) :
     PlusTruthAt stabModel tauTwo 0 (.stab (someFuture (.atom p))) :=
-  (stab_iff_of_deterministic sf_deterministic stabModel (stabHist_isTotal _ _) 0 _).mpr
+  (stab_iff_of_deterministic sf_deterministic stabModel tauTwo 0 _).mpr
     (someFuture_tauTwo p)
 
 /-! ### `□Fp` fails on both sides
 
 Recorded because it is what makes the separation informative: `⊡` is not doing `□`'s work. On
 `M₁` the witness is the constant history; on `M₂` it is the flow line of the constant profile,
-which is total because every flow line is. -/
+which is a world history because every flow line is. -/
 
 /-- `□Fp` fails at `(τ₁, 0)`. -/
 theorem box_someFuture_false_left (p : Atom) :
     ¬ PlusTruthAt natModel tauOne 0 (.box (someFuture (.atom p))) := by
   intro h
-  have hB := h (natHist fun _ => 1) (natHist_isTotal _)
+  have hB := h (natHist fun _ => 1)
   rw [PlusTruth.someFuture_iff] at hB
-  obtain ⟨s, _, _, v⟩ := hB
+  obtain ⟨s, _, v⟩ := hB
   exact one_ne_zero (v : (1 : ℕ) = 0)
 
 /-- `□Fp` fails at `(τ₂, 0)`. -/
 theorem box_someFuture_false_right (p : Atom) :
     ¬ PlusTruthAt stabModel tauTwo 0 (.box (someFuture (.atom p))) := by
   intro h
-  have hB := h (stabHist (fun _ => 1) 0) (stabHist_isTotal _ _)
+  have hB := h (stabHist (fun _ => 1) 0)
   rw [PlusTruth.someFuture_iff] at hB
-  obtain ⟨s, _, _, v⟩ := hB
+  obtain ⟨s, _, v⟩ := hB
   exact one_ne_zero (v : (1 : ℕ) = 0)
 
 /-! ## The theorem -/
 
 /--
 **The stability modal is not L-definable.** No `Formula` `ψ` of L is equivalent to the
-`PlusFormula` `⊡Fp` at every task model, total history and time.
+`PlusFormula` `⊡Fp` at every task model, world history and time.
 
 Any such `ψ` would have to be false at `(M₁, τ₁, 0)` and true at `(M₂, τ₂, 0)`; but the two
 points are `stabCorr`-related, and `truthAt_of_truthCorr` transports every `Formula` along a
@@ -233,16 +224,16 @@ points are `stabCorr`-related, and `truthAt_of_truthCorr` transports every `Form
 Paper: `def:BLstar-semantics`
 -/
 theorem stabNotDefinable (p : Atom) :
-    ¬ ∃ ψ : Formula, ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
-      τ.IsTotal → ∀ t : F.Duration,
+    ¬ ∃ ψ : Formula, ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F)
+      (t : F.Duration),
         (PlusTruthAt M τ t (PlusFormula.stab (PlusFormula.someFuture (PlusFormula.atom p))) ↔
           TruthAt M τ t ψ) := by
   rintro ⟨ψ, hψ⟩
   have hleft : ¬ TruthAt natModel tauOne 0 ψ := fun h =>
     not_stab_someFuture_tauOne p
-      ((hψ NF natModel tauOne (natHist_isTotal _) 0).mpr h)
+      ((hψ NF natModel tauOne 0).mpr h)
   have hright : TruthAt stabModel tauTwo 0 ψ :=
-    (hψ SF stabModel tauTwo (stabHist_isTotal _ _) 0).mp (stab_someFuture_tauTwo p)
+    (hψ SF stabModel tauTwo 0).mp (stab_someFuture_tauTwo p)
   exact hleft
     ((Truth.truthAt_of_truthCorr stabCorr ψ tauOne tauTwo tauOne_rel_tauTwo 0).mpr hright)
 

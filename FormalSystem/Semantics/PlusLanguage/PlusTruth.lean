@@ -20,12 +20,11 @@ M,τ,x ⊨ ⊡φ   iff   M,σ,x ⊨ φ for all σ ∈ ⟨τ⟩_x,
 ```
 
 where `⟨τ⟩_x := {σ ∈ H_F | σ(x) = τ(x)}` (line 1108) is the set of possible worlds that share
-`τ`'s world state at `x`. Here `⟨τ⟩_x` is rendered by the relation `SameStateAt τ σ x` on
-histories together with the totality predicate `σ.IsTotal` (the predicate form of `H_F`).
+`τ`'s world state at `x`. Here `⟨τ⟩_x` is rendered on the nose: `σ : WorldHistory F` with the
+state equation `τ.state x = σ.state x`.
 
 ## Main Definitions
 
-- `SameStateAt τ σ t` — `σ ∈ ⟨τ⟩_t`: the two histories carry the same world state at `t`
 - `PlusTruthAt M τ t φ` — the seven-clause truth recursion
 
 ## Main Results
@@ -37,7 +36,7 @@ histories together with the totality predicate `σ.IsTotal` (the predicate form 
   stated here: it is the `stateLocal_atom` instance of `stab_of_stateLocal`
   (`Semantics/PlusLanguage/PlusStateLocal.lean`), which proves `φ → ⊡φ` for every formula of the
   state-locality fragment
-- `stab_congr_sameState`: `⊡φ` is a state formula at each time; `box_stab_iff` (`□⊡φ ↔ □φ`),
+- `stab_congr_state`: `⊡φ` is a state formula at each time; `box_stab_iff` (`□⊡φ ↔ □φ`),
   `stab_box_of_box` (`□φ → ⊡□φ`)
 - `plusTruthAt_timeShift`: L⁺ truth commutes with time shift (the `PlusFormula` twin of
   `timeShift_preserves_truth`, proved directly because `TruthCorr` is `Formula`-only)
@@ -71,71 +70,31 @@ open scoped Classical
 
 variable {F : TaskFrame}
 
-/-! ## `⟨τ⟩_x` as a relation on histories -/
-
-/-- `σ ∈ ⟨τ⟩_t` (paper line 1108): `τ` and `σ` carry the same world state at `t`. Stated over
-both domain proofs, so that it is meaningful for partial histories and reduces to a plain state
-equation at total ones (`sameStateAt_iff_of_total`). -/
-def SameStateAt (τ σ : PartialHistory F) (t : F.Duration) : Prop :=
-  ∀ (hτ : τ.domain t) (hσ : σ.domain t), τ.states t hτ = σ.states t hσ
-
-/-- At total histories, `SameStateAt` is the state equation at `t`. -/
-theorem sameStateAt_iff_of_total {τ σ : PartialHistory F} (hτ : τ.IsTotal) (hσ : σ.IsTotal)
-    (t : F.Duration) :
-    SameStateAt τ σ t ↔ τ.states t (hτ t) = σ.states t (hσ t) :=
-  ⟨fun h => h _ _, fun h _ _ => h⟩
-
-theorem SameStateAt.refl (τ : PartialHistory F) (t : F.Duration) : SameStateAt τ τ t :=
-  fun _ _ => rfl
-
-theorem SameStateAt.symm {τ σ : PartialHistory F} {t : F.Duration} (h : SameStateAt τ σ t) :
-    SameStateAt σ τ t :=
-  fun hσ hτ => (h hτ hσ).symm
-
-/-- Transitivity, given that the middle history is defined at `t` (automatic at a total one). -/
-theorem SameStateAt.trans {τ σ ρ : PartialHistory F} {t : F.Duration} (hσ : σ.domain t)
-    (h₁ : SameStateAt τ σ t) (h₂ : SameStateAt σ ρ t) : SameStateAt τ ρ t :=
-  fun hτ hρ => (h₁ hτ hσ).trans (h₂ hσ hρ)
-
-/-- `∼_t` commutes with time shift; `Iff.rfl` because `timeShift.states` is definitional. -/
-theorem sameStateAt_timeShift (τ σ : PartialHistory F) (t Δ : F.Duration) :
-    SameStateAt (τ.timeShift Δ) (σ.timeShift Δ) t ↔ SameStateAt τ σ (t + Δ) := Iff.rfl
-
-/-- Replacing the left history by one with the same state at `t` does not change the relation. -/
-theorem sameStateAt_congr_left {τ σ ρ : PartialHistory F} {t : F.Duration}
-    (hτ : τ.domain t) (hσ : σ.domain t) (h : τ.states t hτ = σ.states t hσ) :
-    SameStateAt τ ρ t ↔ SameStateAt σ ρ t := by
-  constructor
-  · intro hh hσ' hρ'; rw [← h]; exact hh _ _
-  · intro hh hτ' hρ'; rw [h]; exact hh _ _
-
 /-! ## The truth recursion -/
 
 /--
-Truth of an L⁺ formula at a model, history and time.
+Truth of an L⁺ formula at a model, world history and time.
 
 The six L clauses are `TruthAt`'s verbatim (`Semantics/Truth.lean`). The `stab` clause is the
-paper's `($\Stability$)` clause of `def:BLstar-semantics`: `⊡φ` holds at `(τ, t)` iff `φ` holds at `(σ, t)` for every
-**total** history `σ` with `SameStateAt τ σ t`.
+paper's `($\Stability$)` clause of `def:BLstar-semantics`: `⊡φ` holds at `(τ, t)` iff `φ` holds at
+`(σ, t)` for every world history `σ` with `τ.state t = σ.state t` — i.e. every `σ ∈ ⟨τ⟩_t`
+(paper line 1108).
 -/
-def PlusTruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) : PlusFormula → Prop
-  | .atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
+def PlusTruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) : PlusFormula → Prop
+  | .atom p => M.valuation (τ.state t) p
   | .bot => False
   | .imp φ ψ => PlusTruthAt M τ t φ → PlusTruthAt M τ t ψ
-  | .box φ => ∀ (σ : PartialHistory F), σ.IsTotal → PlusTruthAt M σ t φ
+  | .box φ => ∀ σ : WorldHistory F, PlusTruthAt M σ t φ
   | .untl ψ φ => ∃ s : F.Duration, t < s ∧ PlusTruthAt M τ s φ ∧
       ∀ r : F.Duration, t < r → r < s → PlusTruthAt M τ r ψ
   | .snce ψ φ => ∃ s : F.Duration, s < t ∧ PlusTruthAt M τ s φ ∧
       ∀ r : F.Duration, s < r → r < t → PlusTruthAt M τ r ψ
-  | .stab φ => ∀ (σ : PartialHistory F), σ.IsTotal → SameStateAt τ σ t → PlusTruthAt M σ t φ
+  | .stab φ => ∀ σ : WorldHistory F, τ.state t = σ.state t → PlusTruthAt M σ t φ
 
 /-! ### The abstract clause layer, instantiated
 
 L⁺'s instances of `Semantics/TruthClauses.lean`. L⁺ adds the stability modal to L's six clauses,
-so it instantiates the `stab` tier and inherits `dstab_iff` on top of everything L gets. The
-class's `sameState` field is supplied with `SameStateAt` here, which is why
-`PlusTruth.dstab_iff`'s statement below is unchanged: the generic lemma's `sameState` reduces to
-`SameStateAt` at this instance. -/
+so it instantiates the `stab` tier and inherits `dstab_iff` on top of everything L gets. -/
 
 /-- L⁺'s pointed truth relation, with the trivial environment. -/
 instance : TruthEnv PlusFormula where
@@ -150,7 +109,6 @@ instance : StabClauses PlusFormula where
   untl := PlusFormula.untl
   snce := PlusFormula.snce
   stab := PlusFormula.stab
-  sameState := SameStateAt
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl
@@ -162,10 +120,10 @@ namespace PlusTruth
 
 /-! ### Clause lemmas, mirroring `MinusTruth.*` -/
 
-variable (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+variable (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 
 theorem atom_iff (p : Atom) :
-    PlusTruthAt M τ t (.atom p) ↔ ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p := Iff.rfl
+    PlusTruthAt M τ t (.atom p) ↔ M.valuation (τ.state t) p := Iff.rfl
 
 @[simp] theorem bot_false : ¬ PlusTruthAt M τ t .bot := fun h => h
 
@@ -173,7 +131,7 @@ theorem imp_iff (φ ψ : PlusFormula) :
     PlusTruthAt M τ t (.imp φ ψ) ↔ (PlusTruthAt M τ t φ → PlusTruthAt M τ t ψ) := Iff.rfl
 
 theorem box_iff (φ : PlusFormula) :
-    PlusTruthAt M τ t (.box φ) ↔ ∀ σ : PartialHistory F, σ.IsTotal → PlusTruthAt M σ t φ := Iff.rfl
+    PlusTruthAt M τ t (.box φ) ↔ ∀ σ : WorldHistory F, PlusTruthAt M σ t φ := Iff.rfl
 
 theorem untl_iff (ψ φ : PlusFormula) :
     PlusTruthAt M τ t (.untl ψ φ) ↔ ∃ s, t < s ∧ PlusTruthAt M τ s φ ∧
@@ -185,7 +143,7 @@ theorem snce_iff (ψ φ : PlusFormula) :
 
 theorem stab_iff (φ : PlusFormula) :
     PlusTruthAt M τ t (.stab φ) ↔
-      ∀ σ : PartialHistory F, σ.IsTotal → SameStateAt τ σ t → PlusTruthAt M σ t φ := Iff.rfl
+      ∀ σ : WorldHistory F, τ.state t = σ.state t → PlusTruthAt M σ t φ := Iff.rfl
 
 theorem top_true : PlusTruthAt M τ t top :=
   TruthClauses.top_true (L := PlusFormula) M τ t PUnit.unit
@@ -202,10 +160,10 @@ theorem or_iff (φ ψ : PlusFormula) :
     PlusTruthAt M τ t (φ.or ψ) ↔ PlusTruthAt M τ t φ ∨ PlusTruthAt M τ t ψ :=
   TruthClauses.or_iff (L := PlusFormula) M τ t PUnit.unit φ ψ
 
-/-- `⟐φ` (paper line 1121): some total history in `⟨τ⟩_t` satisfies `φ`. -/
+/-- `⟐φ` (paper line 1121): some world history in `⟨τ⟩_t` satisfies `φ`. -/
 theorem dstab_iff (φ : PlusFormula) :
     PlusTruthAt M τ t (dstab φ) ↔
-      ∃ σ : PartialHistory F, σ.IsTotal ∧ SameStateAt τ σ t ∧ PlusTruthAt M σ t φ :=
+      ∃ σ : WorldHistory F, τ.state t = σ.state t ∧ PlusTruthAt M σ t φ :=
   TruthClauses.dstab_iff (L := PlusFormula) M τ t PUnit.unit φ
 
 theorem someFuture_iff (φ : PlusFormula) :
@@ -225,7 +183,7 @@ theorem allPast_iff (φ : PlusFormula) :
   TruthClauses.allPast_iff (L := PlusFormula) M τ t PUnit.unit φ
 
 theorem diamond_iff (φ : PlusFormula) :
-    PlusTruthAt M τ t (diamond φ) ↔ ∃ σ : PartialHistory F, σ.IsTotal ∧ PlusTruthAt M σ t φ :=
+    PlusTruthAt M τ t (diamond φ) ↔ ∃ σ : WorldHistory F, PlusTruthAt M σ t φ :=
   TruthClauses.diamond_iff (L := PlusFormula) M τ t PUnit.unit φ
 
 end PlusTruth
@@ -235,111 +193,75 @@ open PlusTruth
 /-! ## The definitional validities of `⊡` (paper lines 1118-1119) -/
 
 /-- **`□φ → ⊡φ`**: `⟨τ⟩_x ⊆ H_F` (paper line 1108). -/
-theorem stab_of_box (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : PlusFormula)
+theorem stab_of_box (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : PlusFormula)
     (h : PlusTruthAt M τ t (.box φ)) : PlusTruthAt M τ t (.stab φ) :=
-  fun σ hσ _ => h σ hσ
+  fun σ _ => h σ
 
-/-- **T for `⊡`**: `⊡φ → φ`, at a total history (`τ ∈ ⟨τ⟩_t`). -/
-theorem of_stab (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+/-- **T for `⊡`**: `⊡φ → φ` (`τ ∈ ⟨τ⟩_t`). -/
+theorem of_stab (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (φ : PlusFormula) (h : PlusTruthAt M τ t (.stab φ)) : PlusTruthAt M τ t φ :=
-  h τ hτ (SameStateAt.refl τ t)
+  h τ rfl
 
-/-- **4 for `⊡`**: `⊡φ → ⊡⊡φ`, by transitivity of `∼_t`. -/
-theorem stab_four (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+/-- **4 for `⊡`**: `⊡φ → ⊡⊡φ`, by transitivity of the state equation. -/
+theorem stab_four (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (φ : PlusFormula) (h : PlusTruthAt M τ t (.stab φ)) :
-    PlusTruthAt M τ t (.stab (.stab φ)) := by
-  intro σ hσ hσsame ρ hρ hρsame
-  exact h ρ hρ (fun hτ' hρ' => by rw [hσsame hτ' (hσ t), hρsame (hσ t) hρ'])
+    PlusTruthAt M τ t (.stab (.stab φ)) :=
+  fun _ hσ ρ hρ => h ρ (hσ.trans hρ)
 
-/-- **5 for `⊡`**: `¬⊡φ → ⊡¬⊡φ`, at a total history, by symmetry and transitivity of `∼_t`. -/
-theorem stab_five (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+/-- **5 for `⊡`**: `¬⊡φ → ⊡¬⊡φ`, by symmetry and transitivity of the state equation. -/
+theorem stab_five (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (φ : PlusFormula) (h : ¬ PlusTruthAt M τ t (.stab φ)) :
-    PlusTruthAt M τ t (.stab (.imp (.stab φ) .bot)) := by
-  intro σ hσ hσsame hstab
-  apply h
-  intro ρ hρ hρsame
-  exact hstab ρ hρ (fun hσ' hρ' => by rw [← hσsame (hτ t) hσ', ← hρsame (hτ t) hρ'])
+    PlusTruthAt M τ t (.stab (.imp (.stab φ) .bot)) :=
+  fun _ hσ hstab => h fun ρ hρ => hstab ρ (hσ.symm.trans hρ)
 
 /-! ## `⊡φ` is a state formula at each time; `□⊡ ↔ □`; `□ → ⊡□` -/
 
-/-- The truth of `⊡φ` at `(τ, t)` depends only on the `∼_t`-class of `τ`. -/
-theorem stab_congr_sameState (M : TaskModel F) (τ σ : PartialHistory F) (t : F.Duration)
-    (hτ : τ.domain t) (hσ : σ.domain t) (h : SameStateAt τ σ t) (φ : PlusFormula) :
-    PlusTruthAt M τ t (.stab φ) ↔ PlusTruthAt M σ t (.stab φ) := by
-  constructor
-  · intro hτs ρ hρ hρs
-    exact hτs ρ hρ (fun hτ' hρ' => by rw [h hτ' hσ, hρs hσ hρ'])
-  · intro hσs ρ hρ hρs
-    exact hσs ρ hρ (fun hσ' hρ' => by rw [← h hτ hσ', hρs hτ hρ'])
+/-- The truth of `⊡φ` at `(τ, t)` depends only on the state of `τ` at `t`. -/
+theorem stab_congr_state (M : TaskModel F) (τ σ : WorldHistory F) (t : F.Duration)
+    (h : τ.state t = σ.state t) (φ : PlusFormula) :
+    PlusTruthAt M τ t (.stab φ) ↔ PlusTruthAt M σ t (.stab φ) :=
+  ⟨fun hτs ρ hρ => hτs ρ (h.trans hρ), fun hσs ρ hρ => hσs ρ (h.symm.trans hρ)⟩
 
 /-- `□⊡φ ↔ □φ` semantically (derivable from K, T for `⊡`, 4 for `□`, and `□φ → ⊡φ`). -/
-theorem box_stab_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : PlusFormula) :
-    PlusTruthAt M τ t (.box (.stab φ)) ↔ PlusTruthAt M τ t (.box φ) := by
-  constructor
-  · intro h σ hσ; exact h σ hσ σ hσ (SameStateAt.refl σ t)
-  · intro h σ hσ ρ hρ _; exact h ρ hρ
+theorem box_stab_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : PlusFormula) :
+    PlusTruthAt M τ t (.box (.stab φ)) ↔ PlusTruthAt M τ t (.box φ) :=
+  ⟨fun h σ => h σ σ rfl, fun h _ ρ _ => h ρ⟩
 
 /-- `□φ → ⊡□φ` (derivable from 4 for `□` and `□φ → ⊡φ`). -/
-theorem stab_box_of_box (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ : PlusFormula)
+theorem stab_box_of_box (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : PlusFormula)
     (h : PlusTruthAt M τ t (.box φ)) : PlusTruthAt M τ t (.stab (.box φ)) :=
-  fun _ _ _ => h
+  fun _ _ => h
 
 /-! ## Time-shift invariance: `⊡φ` depends on the world state alone -/
 
-/-- Transport of a state along an equation of times. -/
-theorem states_congr (ρ : PartialHistory F) {s s' : F.Duration} (h : s = s') (hs : ρ.domain s) :
-    ρ.states s hs = ρ.states s' (h ▸ hs) := by subst h; rfl
-
-/-- Pointwise-equal histories (same domain, same states) satisfy the same L⁺ formulas. -/
+/-- World histories with the same state at every time satisfy the same L⁺ formulas. -/
 theorem truth_congr_ext (M : TaskModel F) (φ : PlusFormula) :
-    ∀ (τ σ : PartialHistory F) (t : F.Duration),
-      (∀ s, τ.domain s ↔ σ.domain s) →
-      (∀ s (hτ : τ.domain s) (hσ : σ.domain s), τ.states s hτ = σ.states s hσ) →
+    ∀ (τ σ : WorldHistory F) (t : F.Duration), (∀ s, τ.state s = σ.state s) →
       (PlusTruthAt M τ t φ ↔ PlusTruthAt M σ t φ) := by
   induction φ with
-  | atom p =>
-    intro τ σ t hd hs
-    constructor
-    · rintro ⟨h1, hv⟩; exact ⟨(hd t).mp h1, by rw [← hs t h1 ((hd t).mp h1)]; exact hv⟩
-    · rintro ⟨h2, hv⟩; exact ⟨(hd t).mpr h2, by rw [hs t ((hd t).mpr h2) h2]; exact hv⟩
+  | atom p => intro τ σ t hs; show M.valuation _ p ↔ M.valuation _ p; rw [hs t]
   | bot => intros; exact Iff.rfl
-  | imp φ ψ ihφ ihψ => intro τ σ t hd hs; exact Iff.imp (ihφ τ σ t hd hs) (ihψ τ σ t hd hs)
+  | imp φ ψ ihφ ihψ => intro τ σ t hs; exact Iff.imp (ihφ τ σ t hs) (ihψ τ σ t hs)
   | box φ _ => intros; exact Iff.rfl
   | untl ψ φ ihψ ihφ =>
-    intro τ σ t hd hs
-    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s hd hs)
-      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r hd hs)
+    intro τ σ t hs
+    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s hs)
+      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r hs)
   | snce ψ φ ihψ ihφ =>
-    intro τ σ t hd hs
-    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s hd hs)
-      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r hd hs)
+    intro τ σ t hs
+    exact exists_congr fun s => and_congr_right fun _ => and_congr (ihφ τ σ s hs)
+      (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ σ r hs)
   | stab φ _ =>
-    intro τ σ t hd hs
-    refine forall_congr' fun ρ => imp_congr_right fun _ => imp_congr_left ⟨?_, ?_⟩
-    · intro h hσ' hρ'; rw [← hs t ((hd t).mpr hσ') hσ']; exact h _ _
-    · intro h hτ' hρ'; rw [hs t hτ' ((hd t).mp hτ')]; exact h _ _
-
-/-- A time shift of a total history is total. -/
-theorem timeShift_isTotal' (σ : PartialHistory F) (hσ : σ.IsTotal) (Δ : F.Duration) :
-    (σ.timeShift Δ).IsTotal := fun z => hσ (z + Δ)
-
-theorem shift_neg_shift_domain (ρ : PartialHistory F) (Δ s : F.Duration) :
-    ((ρ.timeShift (-Δ)).timeShift Δ).domain s ↔ ρ.domain s := by
-  show ρ.domain (s + Δ + -Δ) ↔ ρ.domain s
-  rw [add_neg_cancel_right]
-
-theorem shift_neg_shift_states (ρ : PartialHistory F) (Δ s : F.Duration)
-    (h1 : ((ρ.timeShift (-Δ)).timeShift Δ).domain s) (h2 : ρ.domain s) :
-    ((ρ.timeShift (-Δ)).timeShift Δ).states s h1 = ρ.states s h2 := by
-  show ρ.states (s + Δ + -Δ) h1 = ρ.states s h2
-  exact (states_congr ρ (add_neg_cancel_right s Δ) h1)
+    intro τ σ t hs
+    exact forall_congr' fun ρ => imp_congr_left ⟨fun h => (hs t).symm.trans h,
+      fun h => (hs t).trans h⟩
 
 /-- **L⁺ truth commutes with time shift.** The `PlusFormula` twin of
 `timeShift_preserves_truth`, proved directly because `TruthCorr` is `Formula`-only; the `box`
 and `stab` cases need the inverse shift and `truth_congr_ext`, since `timeShift` is not
 definitionally involutive. -/
 theorem plusTruthAt_timeShift (M : TaskModel F) (φ : PlusFormula) :
-    ∀ (σ : PartialHistory F) (t Δ : F.Duration),
+    ∀ (σ : WorldHistory F) (t Δ : F.Duration),
       PlusTruthAt M (σ.timeShift Δ) t φ ↔ PlusTruthAt M σ (t + Δ) φ := by
   induction φ with
   | atom p => intros; exact Iff.rfl
@@ -348,13 +270,13 @@ theorem plusTruthAt_timeShift (M : TaskModel F) (φ : PlusFormula) :
   | box φ ih =>
     intro σ t Δ
     constructor
-    · intro h ρ hρ
-      exact (ih ρ t Δ).mp (h (ρ.timeShift Δ) (timeShift_isTotal' ρ hρ Δ))
-    · intro h ρ hρ
-      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr
-        (h (ρ.timeShift (-Δ)) (timeShift_isTotal' ρ hρ (-Δ)))
-      exact (truth_congr_ext M φ _ ρ t (shift_neg_shift_domain ρ Δ)
-        (shift_neg_shift_states ρ Δ)).mp h1
+    · intro h ρ
+      exact (ih ρ t Δ).mp (h (ρ.timeShift Δ))
+    · intro h ρ
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr (h (ρ.timeShift (-Δ)))
+      exact (truth_congr_ext M φ _ ρ t
+        (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+          ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
   | untl ψ φ ihψ ihφ =>
     intro σ t Δ
     constructor
@@ -392,30 +314,26 @@ theorem plusTruthAt_timeShift (M : TaskModel F) (φ : PlusFormula) :
   | stab φ ih =>
     intro σ t Δ
     constructor
-    · intro h ρ hρ hs
-      exact (ih ρ t Δ).mp (h (ρ.timeShift Δ) (timeShift_isTotal' ρ hρ Δ) hs)
-    · intro h ρ hρ hs
-      have hs' : SameStateAt σ (ρ.timeShift (-Δ)) (t + Δ) := by
-        intro hσ' hρ'
-        exact (hs hσ' (hρ t)).trans (states_congr ρ (add_neg_cancel_right t Δ).symm (hρ t))
-      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr
-        (h (ρ.timeShift (-Δ)) (timeShift_isTotal' ρ hρ (-Δ)) hs')
-      exact (truth_congr_ext M φ _ ρ t (shift_neg_shift_domain ρ Δ)
-        (shift_neg_shift_states ρ Δ)).mp h1
+    · intro h ρ hs
+      exact (ih ρ t Δ).mp (h (ρ.timeShift Δ) hs)
+    · intro h ρ hs
+      have hs' : σ.state (t + Δ) = (ρ.timeShift (-Δ)).state (t + Δ) :=
+        hs.trans (congrArg ρ.state (add_neg_cancel_right t Δ).symm)
+      have h1 := (ih (ρ.timeShift (-Δ)) t Δ).mpr (h (ρ.timeShift (-Δ)) hs')
+      exact (truth_congr_ext M φ _ ρ t
+        (fun s => (congrArg ρ.state (add_neg_cancel_right s Δ) :
+          ρ.state (s + Δ + -Δ) = ρ.state s))).mp h1
 
 /-- **`⊡φ` depends on the world state alone.** If `τ(t) = σ(s)` — at possibly different times —
 then `⊡φ` has the same truth value at `(τ, t)` and `(σ, s)`. This is what licenses treating each
 `⊡φ` as a fresh state-valued atom: the atomization route to TM-schema soundness over L⁺
 (`Metalogic/Conservativity/Plus/Atomization.lean`). -/
-theorem stab_state_only (M : TaskModel F) (τ σ : PartialHistory F) (hτ : τ.IsTotal)
-    (hσ : σ.IsTotal) (t s : F.Duration) (h : τ.states t (hτ t) = σ.states s (hσ s))
-    (φ : PlusFormula) :
+theorem stab_state_only (M : TaskModel F) (τ σ : WorldHistory F) (t s : F.Duration)
+    (h : τ.state t = σ.state s) (φ : PlusFormula) :
     PlusTruthAt M τ t (.stab φ) ↔ PlusTruthAt M σ s (.stab φ) := by
-  have hsame : SameStateAt τ (σ.timeShift (s - t)) t := by
-    intro h1 h2
-    rw [h]
-    exact states_congr σ (add_sub_cancel t s).symm (hσ s)
-  rw [stab_congr_sameState M τ (σ.timeShift (s - t)) t (hτ t) (hσ (t + (s - t))) hsame φ,
-    plusTruthAt_timeShift, add_sub_cancel]
+  have hsame : τ.state t = (σ.timeShift (s - t)).state t :=
+    h.trans (congrArg σ.state (add_sub_cancel t s).symm)
+  rw [stab_congr_state M τ (σ.timeShift (s - t)) t hsame φ, plusTruthAt_timeShift,
+    add_sub_cancel]
 
 end FormalSystem.Semantics

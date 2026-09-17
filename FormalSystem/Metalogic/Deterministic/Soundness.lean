@@ -75,9 +75,9 @@ theorem detAxiom_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax : De
   cases ax with
   | ofPlus hp => exact PlusValidIn.toDetermined (plusAxiom_validIn hp h)
   | determined ψ =>
-    refine PlusValidDeterminedIn.of_forall_total ?_
-    intro F _ hDV M τ hτ t
-    exact hDV ψ M ⟨τ, hτ⟩ t
+    refine PlusValidDeterminedIn.of_forall ?_
+    intro F _ hDV M τ t
+    exact hDV ψ M τ t
 
 /-- The temporal dual of every extended-system axiom instance is likewise valid over the
 *Determined*-valid frames. The `determined` arm needs no separate argument: `swapTemporal` fixes
@@ -87,9 +87,9 @@ theorem detAxiom_swap_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax
   cases ax with
   | ofPlus hp => exact PlusValidIn.toDetermined (plusAxiom_swap_validIn hp h)
   | determined ψ =>
-    refine PlusValidDeterminedIn.of_forall_total ?_
-    intro F _ hDV M τ hτ t
-    exact hDV ψ.swapTemporal M ⟨τ, hτ⟩ t
+    refine PlusValidDeterminedIn.of_forall ?_
+    intro F _ hDV M τ t
+    exact hDV ψ.swapTemporal M τ t
 
 /-! ## The companion recursion -/
 
@@ -109,34 +109,34 @@ theorem det_derivable_valid_and_swap_validDeterminedIn {fc : FrameClass} {φ : P
     have h1 := det_derivable_valid_and_swap_validDeterminedIn d1
     have h2 := det_derivable_valid_and_swap_validDeterminedIn d2
     constructor
-    · refine PlusValidDeterminedIn.of_forall_total ?_
-      intro F hF hDV M τ hτ t
-      exact (h1.1.apply_total F hF hDV M τ hτ t) (h2.1.apply_total F hF hDV M τ hτ t)
-    · refine PlusValidDeterminedIn.of_forall_total ?_
-      intro F hF hDV M τ hτ t
-      exact (h1.2.apply_total F hF hDV M τ hτ t) (h2.2.apply_total F hF hDV M τ hτ t)
+    · refine PlusValidDeterminedIn.of_forall ?_
+      intro F hF hDV M τ t
+      exact (h1.1.apply F hF hDV M τ t) (h2.1.apply F hF hDV M τ t)
+    · refine PlusValidDeterminedIn.of_forall ?_
+      intro F hF hDV M τ t
+      exact (h1.2.apply F hF hDV M τ t) (h2.2.apply F hF hDV M τ t)
   | .necessitation psi' d' =>
     have h := det_derivable_valid_and_swap_validDeterminedIn d'
     constructor
-    · refine PlusValidDeterminedIn.of_forall_total ?_
-      intro F hF hDV M τ _ t σ hσ
-      exact h.1.apply_total F hF hDV M σ hσ t
-    · refine PlusValidDeterminedIn.of_forall_total ?_
-      intro F hF hDV M τ _ t σ hσ
-      exact h.2.apply_total F hF hDV M σ hσ t
+    · refine PlusValidDeterminedIn.of_forall ?_
+      intro F hF hDV M τ t σ
+      exact h.1.apply F hF hDV M σ t
+    · refine PlusValidDeterminedIn.of_forall ?_
+      intro F hF hDV M τ t σ
+      exact h.2.apply F hF hDV M σ t
   | .temporal_necessitation psi' d' =>
     have h := det_derivable_valid_and_swap_validDeterminedIn d'
     constructor
-    · refine PlusValidDeterminedIn.of_forall_total ?_
-      intro F hF hDV M τ hτ t
+    · refine PlusValidDeterminedIn.of_forall ?_
+      intro F hF hDV M τ t
       rw [PlusTruth.allFuture_iff]
       intro s _
-      exact h.1.apply_total F hF hDV M τ hτ s
-    · refine PlusValidDeterminedIn.of_forall_total ?_
-      intro F hF hDV M τ hτ t
+      exact h.1.apply F hF hDV M τ s
+    · refine PlusValidDeterminedIn.of_forall ?_
+      intro F hF hDV M τ t
       rw [swap_temporal_all_future, PlusTruth.allPast_iff]
       intro s _
-      exact h.2.apply_total F hF hDV M τ hτ s
+      exact h.2.apply F hF hDV M τ s
   | .temporal_duality psi' d' =>
     have h := det_derivable_valid_and_swap_validDeterminedIn d'
     refine ⟨h.2, ?_⟩
@@ -179,26 +179,26 @@ model over a *Determined*-valid frame of `fc` at which all of `Γ` is true. -/
 theorem detSoundnessIn {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula)
     (d : DetDerivationTree fc Γ φ)
     (F : TaskFrame) (hF : fc.Sat F) (hDV : DeterminedValid F) (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, PlusTruthAt M τ t ψ) :
     PlusTruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
-    exact (detAxiom_validDeterminedIn h_ax h_fc).apply_total F hF hDV M τ h_mem t
+    exact (detAxiom_validDeterminedIn h_ax h_fc).apply F hF hDV M τ t
   | assumption Γ' φ' h_in => exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    exact (ih1 τ h_mem t h_ctx) (ih2 τ h_mem t h_ctx)
+    exact (ih1 τ t h_ctx) (ih2 τ t h_ctx)
   | necessitation φ' _ ih =>
-    intro σ h_σ_mem
-    exact ih σ h_σ_mem t (by simp)
+    intro σ
+    exact ih σ t (by simp)
   | temporal_necessitation φ' _ ih =>
     rw [PlusTruth.allFuture_iff]
     intro s _
-    exact ih τ h_mem s (by simp)
+    exact ih τ s (by simp)
   | temporal_duality φ' d' _ih =>
-    exact ((det_derivable_valid_and_swap_validDeterminedIn d').2).apply_total F hF hDV M τ h_mem t
+    exact ((det_derivable_valid_and_swap_validDeterminedIn d').2).apply F hF hDV M τ t
   | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 /-! ## Consistency -/
 
@@ -213,8 +213,8 @@ theorem det_not_derivable_nil_bot :
     ¬ DetDerivable FrameClass.Base [] PlusFormula.bot := by
   intro h
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms Independence.F1
-  exact (detSoundness h).apply_total Independence.F1 trivial
+  exact (detSoundness h).apply Independence.F1 trivial
     (deterministic_determinedValid Independence.f1_deterministic)
-    TaskModel.allFalse τ.val τ.property 0
+    TaskModel.allFalse τ 0
 
 end FormalSystem.Metalogic.Deterministic

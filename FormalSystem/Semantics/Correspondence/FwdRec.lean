@@ -66,7 +66,7 @@ refutation recorded in `Semantics/Correspondence/DurationFrames.lean`.
 def TaskFrame.FwdRec (F : TaskFrame) : Prop :=
   ∀ (τ : WorldHistory F) (t s : F.Duration), t < s → (∀ r, t < r → r < s → False) →
     ∀ A : F.WorldState → Prop,
-      (∀ r, s < r → A (τ.val.states r (τ.property r))) → A (τ.val.states s (τ.property s))
+      (∀ r, s < r → A (τ.state r)) → A (τ.state s)
 
 /-! ## The atomic correspondence -/
 
@@ -85,11 +85,10 @@ theorem validOn_atomic_density_iff_fwdRec (F : TaskFrame) :
     (∀ p : Atom,
         F.ValidOn ((Formula.atom p).allFuture.allFuture.imp (Formula.atom p).allFuture))
       ↔ F.FwdRec := by
-  simp only [TaskFrame.validOn_iff_total]
   constructor
   · intro h τ t s hts hcov A hA
     let M : TaskModel F := ⟨fun w _ => A w⟩
-    have hgg : TruthAt M τ.val t (Formula.atom (Atom.mkBase "p")).allFuture.allFuture := by
+    have hgg : TruthAt M τ t (Formula.atom (Atom.mkBase "p")).allFuture.allFuture := by
       rw [Truth.future_iff]
       intro u hu
       rw [Truth.future_iff]
@@ -97,12 +96,11 @@ theorem validOn_atomic_density_iff_fwdRec (F : TaskFrame) :
       have hsu : s ≤ u := by
         by_contra hlt
         exact hcov u hu (lt_of_not_ge hlt)
-      exact ⟨τ.property r, hA r (lt_of_le_of_lt hsu hr)⟩
-    have hg := h (Atom.mkBase "p") M τ.val τ.property t hgg
+      exact hA r (lt_of_le_of_lt hsu hr)
+    have hg := h (Atom.mkBase "p") M τ t hgg
     rw [Truth.future_iff] at hg
-    obtain ⟨_, hv⟩ := hg s hts
-    exact hv
-  · intro h p M τ hτ t hgg
+    exact hg s hts
+  · intro h p M τ t hgg
     rw [Truth.future_iff]
     intro s hst
     rw [Truth.future_iff] at hgg
@@ -112,12 +110,11 @@ theorem validOn_atomic_density_iff_fwdRec (F : TaskFrame) :
       rw [Truth.future_iff] at hr
       exact hr s h2
     · have hcov : ∀ r, t < r → r < s → False := fun r hr1 hr2 => hmid ⟨r, hr1, hr2⟩
-      have hA : ∀ r : F.Duration, s < r → M.valuation (τ.states r (hτ r)) p := by
+      have hA : ∀ r : F.Duration, s < r → M.valuation (τ.state r) p := by
         intro r hr
         have hs := hgg s hst
         rw [Truth.future_iff] at hs
-        obtain ⟨_, hv⟩ := hs r hr
-        exact hv
-      exact ⟨hτ s, h ⟨τ, hτ⟩ t s hst hcov (fun w => M.valuation w p) hA⟩
+        exact hs r hr
+      exact h τ t s hst hcov (fun w => M.valuation w p) hA
 
 end FormalSystem.Semantics

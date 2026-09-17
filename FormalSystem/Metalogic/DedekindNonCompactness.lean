@@ -170,7 +170,7 @@ variable {F : TaskFrame}
 /-- `Xq φ` holds at `t` exactly when some later point `s` is a `q`-point satisfying `φ` with no
 `q`-point strictly between `t` and `s` — i.e. `s` is *the next* `q`-point. The uniqueness this
 gap clause provides is what the chain construction in `dedWitness_core` runs on. -/
-theorem truthAt_qNext_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem truthAt_qNext_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (q : Atom) (φ : Formula) :
     TruthAt M τ t (qNext q φ) ↔ ∃ s, t < s ∧ TruthAt M τ s (Formula.atom q) ∧
       TruthAt M τ s φ ∧ ∀ r, t < r → r < s → ¬ TruthAt M τ r (Formula.atom q) := by
@@ -182,7 +182,7 @@ theorem truthAt_qNext_iff (M : TaskModel F) (τ : PartialHistory F) (t : F.Durat
     exact ⟨s, hts, (Truth.and_iff _ _).mpr ⟨hq, hφ⟩, fun r h1 h2 hqr => hgap r h1 h2 hqr⟩
 
 /-- `qGap q` at `t`: every later `s` has a `¬q` interval `(u, s)` immediately below it. -/
-theorem truthAt_qGap (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (q : Atom)
+theorem truthAt_qGap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (q : Atom)
     (h : TruthAt M τ t (qGap q)) :
     ∀ s, t < s → ∃ u, u < s ∧ ∀ r, u < r → r < s → ¬ TruthAt M τ r (Formula.atom q) := by
   intro s hts
@@ -190,7 +190,7 @@ theorem truthAt_qGap (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) 
   exact ⟨u, hus, fun r h1 h2 hq => hgap r h1 h2 hq⟩
 
 /-- `qBound q` at `t`: some later `x` has no `q`-point above it. -/
-theorem truthAt_qBound (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (q : Atom)
+theorem truthAt_qBound (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (q : Atom)
     (h : TruthAt M τ t (qBound q)) :
     ∃ x, t < x ∧ ∀ y, x < y → ¬ TruthAt M τ y (Formula.atom q) := by
   obtain ⟨x, htx, hx⟩ := (Truth.some_future_iff _).mp h
@@ -215,7 +215,7 @@ whole of the induction step; `exists_strictMono_qPoints` below iterates it.
 
 Extracted from `dedWitness_core`, which used to carry it as a `have step : …` occupying half the
 proof. -/
-theorem qAlpha_step (q : Atom) (M : TaskModel F) (τ : PartialHistory F) (a : F.Duration)
+theorem qAlpha_step (q : Atom) (M : TaskModel F) (τ : WorldHistory F) (a : F.Duration)
     (ha : ∀ n, TruthAt M τ a (qAlpha q n)) :
     ∃ s, a < s ∧ TruthAt M τ s (Formula.atom q) ∧ ∀ n, TruthAt M τ s (qAlpha q n) := by
   have h1 : TruthAt M τ a (qNext q (qAlpha q 0)) := by
@@ -244,7 +244,7 @@ indexed off by one for exactly this reason: `ch n := (c (n+1)).1`, so `ch 0` is 
 `qAlpha_step` above `t` rather than being `t` itself.
 
 Extracted from `dedWitness_core`. -/
-theorem exists_strictMono_qPoints (q : Atom) (M : TaskModel F) (τ : PartialHistory F)
+theorem exists_strictMono_qPoints (q : Atom) (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (ht : ∀ n, TruthAt M τ t (qAlpha q n)) :
     ∃ ch : ℕ → F.Duration, StrictMono ch ∧ t < ch 0 ∧
       ∀ n, TruthAt M τ (ch n) (Formula.atom q) := by
@@ -273,7 +273,7 @@ above `t`; `qBound` bounds that chain, completeness supplies a least upper bound
 at `z` demands a `¬q` interval `(u, z)`. But `z` is a *least* upper bound, so some `ch n` lies in
 `(u, z]`, and `ch n ≠ z` because `ch (n+1) ≤ z` is strictly above it. That `ch n` is a `q`-point
 in the interval the gap clause forbids. -/
-theorem dedWitness_core (q : Atom) (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem dedWitness_core (q : Atom) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (hlub : F.IsComplete)
     (h : ∀ ψ ∈ dedWitness q, TruthAt M τ t ψ) : False := by
   classical
@@ -301,7 +301,7 @@ class: the `Sat .RTime` slot is `IsDense ∧ IsComplete`, and only its second co
 used. -/
 theorem dedWitness_not_satisfiable (q : Atom) :
     ¬ SatisfiableRTimeSet (dedWitness q) := by
-  rintro ⟨F, ⟨-, hlub⟩, M, τ, hτ, t, h⟩
+  rintro ⟨F, ⟨-, hlub⟩, M, τ, t, h⟩
   exact dedWitness_core q M τ t hlub h
 
 /-! ## The `ℝ` model for finite satisfiability
@@ -346,8 +346,8 @@ contradiction `|u - w| < |u - w|`. -/
 /-- The task model induced by `rShift`. -/
 noncomputable def rM (q : Atom) (N : ℕ) : TaskModel (rShift q N).frame := (rShift q N).model
 
-/-- The orbit through `0`, as a `PartialHistory`. -/
-noncomputable def rH (q : Atom) (N : ℕ) : PartialHistory (rShift q N).frame := (rShift q N).hist 0
+/-- The orbit through `0`, as a `WorldHistory`. -/
+noncomputable def rH (q : Atom) (N : ℕ) : WorldHistory (rShift q N).frame := (rShift q N).hist 0
 
 /-- Atom truth along the orbit through `0`, via `ShiftSet.forward_repr`. -/
 theorem rTruth_atom (q : Atom) (N : ℕ) (t : ℝ) :
@@ -428,8 +428,7 @@ theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
   classical
   set N : ℕ := (L.map qDepth).sum with hNdef
   refine SatisfiableSet.of_forall (fc := FrameClass.RTime) (rShift q N).frame
-    ⟨inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩ (rM q N) (rH q N)
-    (ShiftSet.hist_isTotal _ _) 0 ?_
+    ⟨inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩ (rM q N) (rH q N) 0 ?_
   intro ψ hψ
   have hmem := hL ψ hψ
   simp only [mem_dedWitness_iff] at hmem

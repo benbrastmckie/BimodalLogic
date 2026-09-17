@@ -18,7 +18,7 @@ agree about `φ`. That is exactly the class `⊡` quantifies over, so a state-lo
 ## Main Definitions
 
 - `PlusFormula.StateLocal` — the syntactic fragment, by structural recursion
-- `IsPlusStateLocal` — the semantic property: `SameStateAt τ σ t` transfers truth at `t`
+- `IsPlusStateLocal` — the semantic property: `τ.state t = σ.state t` transfers truth at `t`
 
 ## Main Results
 
@@ -40,10 +40,10 @@ time on both sides:
 
 | Constructor | State-local? | Why |
 |---|---|---|
-| `atom p` | yes | `M.valuation (τ.states t ht) p` reads the state at `t` and nothing else |
+| `atom p` | yes | `M.valuation (τ.state t) p` reads the state at `t` and nothing else |
 | `bot` | yes | constant |
 | `imp φ ψ` | yes if both are | pointwise |
-| `box φ` | yes, for arbitrary `φ` | `∀ σ, σ.IsTotal → …` does not mention `τ` at all |
+| `box φ` | yes, for arbitrary `φ` | `∀ σ : WorldHistory F, …` does not mention `τ` at all |
 | `stab φ` | yes, for arbitrary `φ` | the class `⟨τ⟩ₜ` is unchanged by replacing `τ` with any history agreeing at `t` (`stab_congr_sameState`) |
 | `untl ψ φ` | no | quantifies over `s > t`, where the two histories may diverge |
 | `snce ψ φ` | no | quantifies over `s < t`, likewise |
@@ -107,7 +107,7 @@ says a state-local `φ` is already `⊡`-stable.
 **3. To `c_stab_state_only` (`Metalogic/Independence/CoarsenedModels.lean`).** That is the
 **coarsened port** of (2), and it is the one relation that is *not* covered by anything here.
 `CTruthAt` differs from `PlusTruthAt` in the `stab` clause alone: it quantifies over `SameUnder K`
-(agreement of the states' `π`-images) rather than over `SameStateAt` (agreement of the states
+(agreement of the states' `π`-images) rather than over the state equation (agreement of the states
 themselves), which is strictly weaker. `IsPlusStateLocal` transfers truth along state equality
 only, so no instantiation of the results here produces a `CTruthAt` goal, and the coarsened `atom`
 case rests on `CoarseModel.atom_inv` — a field of the coarsened model that this fragment has no
@@ -120,7 +120,7 @@ here.
 
 * JPL paper `def:BLstar-semantics` — the truth clauses being classified; the atom-level
   `p → ⊡p` of its footnote (line 1119) is the `stateLocal_atom` instance of `stab_of_stateLocal`
-* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `PlusTruthAt`, `SameStateAt`, `stab_congr_sameState`,
+* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `PlusTruthAt`, `stab_congr_state`,
   `stab_state_only`
 * `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` — the L⋆ twin this module mirrors arm for arm
 * `FormalSystem/Semantics/StateLocalTransfer.lean` — `stateLocal_ofPlus_iff`
@@ -217,22 +217,16 @@ possible worlds carrying the same world state at `t` agree about `φ` at `t`.
 
 L⁺ has no time registers, so this is `IsStateLocal` (`Semantics/StarLanguage/StarStateLocal.lean`) with the
 stored-time vector deleted and nothing else changed; the two are arm-for-arm comparable.
-
-The hypotheses could be weakened from `τ.IsTotal`/`σ.IsTotal` to `τ.domain t`/`σ.domain t` —
-every proof below uses totality only at `t`, except `plusStateLocal_stab_iff`'s right-to-left
-half, which needs `τ ∈ ⟨τ⟩ₜ` and therefore genuinely needs `τ` total. The stronger hypotheses
-are kept deliberately, so that this definition and `IsStateLocal` differ in exactly one respect
-(the register vector) rather than two.
 -/
 def IsPlusStateLocal (φ : PlusFormula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : PartialHistory F), τ.IsTotal → σ.IsTotal →
-    ∀ t : F.Duration, SameStateAt τ σ t →
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : WorldHistory F) (t : F.Duration),
+    τ.state t = σ.state t →
       (PlusTruthAt M τ t φ ↔ PlusTruthAt M σ t φ)
 
 /-! ## `□` and `⊡` are state-local for an arbitrary argument -/
 
 /--
-**`□φ` is state-local, whatever `φ` is.** The `box` clause quantifies over *every* total history
+**`□φ` is state-local, whatever `φ` is.** The `box` clause quantifies over *every* world history
 and never mentions `τ`, so the two sides are literally the same proposition.
 
 This settles, positively and by proof rather than by analogy with L⋆, the question of whether
@@ -242,20 +236,20 @@ Paper: — (the formalization's own: the manuscript classifies no L⁺ construct
 state-locality)
 -/
 theorem isPlusStateLocal_box (φ : PlusFormula) : IsPlusStateLocal (.box φ) :=
-  fun _ _ _ _ _ _ _ _ => Iff.rfl
+  fun _ _ _ _ _ _ => Iff.rfl
 
 /--
-**`⊡φ` is state-local, whatever `φ` is.** Discharged from `stab_congr_sameState`
-(`Semantics/PlusLanguage/PlusTruth.lean`), which is exactly this statement at domain hypotheses rather than
-totality: the truth of `⊡φ` at `(τ, t)` depends only on the `∼ₜ`-class of `τ`.
+**`⊡φ` is state-local, whatever `φ` is.** Discharged from `stab_congr_state`
+(`Semantics/PlusLanguage/PlusTruth.lean`), which is exactly this statement: the truth of `⊡φ` at
+`(τ, t)` depends only on the state of `τ` at `t`.
 
 That proof dependency is the first of the three relations this module records: the L⁺ fragment's
-`stab` arm *is* `stab_congr_sameState`, not a re-derivation of it.
+`stab` arm *is* `stab_congr_state`, not a re-derivation of it.
 
 Paper: — (the formalization's own; the underlying clause is `def:BLstar-semantics`)
 -/
 theorem isPlusStateLocal_stab (φ : PlusFormula) : IsPlusStateLocal (.stab φ) :=
-  fun _ M τ σ hτ hσ t h => stab_congr_sameState M τ σ t (hτ t) (hσ t) h φ
+  fun _ M τ σ t h => stab_congr_state M τ σ t h φ
 
 /-! ## Soundness of the syntactic fragment -/
 
@@ -274,20 +268,13 @@ theorem isPlusStateLocal_of_stateLocal :
   intro φ
   induction φ with
   | atom p =>
-    intro _ _ M τ σ hτ hσ t h
-    constructor
-    · rintro ⟨ht, hv⟩
-      refine ⟨hσ t, ?_⟩
-      rw [← h ht (hσ t)]
-      exact hv
-    · rintro ⟨ht, hv⟩
-      refine ⟨hτ t, ?_⟩
-      rw [h (hτ t) ht]
-      exact hv
-  | bot => intro _ _ _ _ _ _ _ _ _; exact Iff.rfl
+    intro _ _ M τ σ t h
+    show M.valuation _ p ↔ M.valuation _ p
+    rw [h]
+  | bot => intro _ _ _ _ _ _ _; exact Iff.rfl
   | imp φ ψ ihφ ihψ =>
-    rintro ⟨hφ, hψ⟩ F M τ σ hτ hσ t h
-    exact imp_congr (ihφ hφ F M τ σ hτ hσ t h) (ihψ hψ F M τ σ hτ hσ t h)
+    rintro ⟨hφ, hψ⟩ F M τ σ t h
+    exact imp_congr (ihφ hφ F M τ σ t h) (ihψ hψ F M τ σ t h)
   | box φ _ => intro _; exact isPlusStateLocal_box φ
   | untl ψ φ _ _ => intro hφ; exact absurd hφ (not_stateLocal_untl ψ φ)
   | snce ψ φ _ _ => intro hφ; exact absurd hφ (not_stateLocal_snce ψ φ)
@@ -304,21 +291,19 @@ L⁺ has no time registers, so the L⋆ module's third exclusion — `not_isStat
 does not arise here. Two exclusions are all the seven-constructor recursion needs. -/
 
 /-- The constant possible world of `NF` at world state `0`. -/
-private def zeroHist : PartialHistory NF := natHist (fun _ => 0)
+private def zeroHist : WorldHistory NF := natHist (fun _ => 0)
 
 /-- The possible world of `NF` that sits at state `0` up to time `0` and leaves it afterwards. -/
-private def lateHist : PartialHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
+private def lateHist : WorldHistory NF := natHist (fun s => if s ≤ 0 then 0 else 1)
 
 /-- The possible world of `NF` that sits away from state `0` before time `0` and at it after. -/
-private def earlyHist : PartialHistory NF := natHist (fun s => if s < 0 then 1 else 0)
+private def earlyHist : WorldHistory NF := natHist (fun s => if s < 0 then 1 else 0)
 
-private theorem zero_lateHist_same : SameStateAt zeroHist lateHist (0 : ℤ) := by
-  intro _ _
+private theorem zero_lateHist_same : zeroHist.state (0 : ℤ) = lateHist.state 0 := by
   show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1)
   simp
 
-private theorem zero_earlyHist_same : SameStateAt zeroHist earlyHist (0 : ℤ) := by
-  intro _ _
+private theorem zero_earlyHist_same : zeroHist.state (0 : ℤ) = earlyHist.state 0 := by
   show (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0)
   simp
 
@@ -334,11 +319,10 @@ theorem not_isPlusStateLocal_someFuture (p : Atom) :
   intro h
   have hleft : PlusTruthAt natModel zeroHist (0 : ℤ) (PlusFormula.someFuture (.atom p)) := by
     rw [PlusTruth.someFuture_iff]
-    exact ⟨(1 : ℤ), by norm_num, trivial, rfl⟩
-  have hright := (h NF natModel zeroHist lateHist (natHist_isTotal _) (natHist_isTotal _)
-    (0 : ℤ) zero_lateHist_same).mp hleft
+    exact ⟨(1 : ℤ), by norm_num, rfl⟩
+  have hright := (h NF natModel zeroHist lateHist (0 : ℤ) zero_lateHist_same).mp hleft
   rw [PlusTruth.someFuture_iff] at hright
-  obtain ⟨s, hs, _, hval⟩ := hright
+  obtain ⟨s, hs, hval⟩ := hright
   have hval' : (if s ≤ (0 : ℤ) then (0 : ℕ) else 1) = 0 := hval
   rw [if_neg (not_le.mpr hs)] at hval'
   exact one_ne_zero hval'
@@ -355,11 +339,10 @@ theorem not_isPlusStateLocal_somePast (p : Atom) :
   intro h
   have hleft : PlusTruthAt natModel zeroHist (0 : ℤ) (PlusFormula.somePast (.atom p)) := by
     rw [PlusTruth.somePast_iff]
-    exact ⟨(-1 : ℤ), by norm_num, trivial, rfl⟩
-  have hright := (h NF natModel zeroHist earlyHist (natHist_isTotal _) (natHist_isTotal _)
-    (0 : ℤ) zero_earlyHist_same).mp hleft
+    exact ⟨(-1 : ℤ), by norm_num, rfl⟩
+  have hright := (h NF natModel zeroHist earlyHist (0 : ℤ) zero_earlyHist_same).mp hleft
   rw [PlusTruth.somePast_iff] at hright
-  obtain ⟨s, hs, _, hval⟩ := hright
+  obtain ⟨s, hs, hval⟩ := hright
   have hval' : (if s < (0 : ℤ) then (1 : ℕ) else 0) = 0 := hval
   rw [if_pos hs] at hval'
   exact one_ne_zero hval'
@@ -370,20 +353,19 @@ theorem not_isPlusStateLocal_somePast (p : Atom) :
 **`φ ↔ ⊡φ` for state-local `φ`**, pointwise.
 
 Left to right is `isPlusStateLocal_of_stateLocal`: every `σ ∈ ⟨τ⟩ₜ` agrees with `τ` about `φ`.
-Right to left instantiates the `⊡` clause at `τ` itself, via `SameStateAt.refl` — and that is the
-only place the totality of `τ` is used.
+Right to left instantiates the `⊡` clause at `τ` itself, via `rfl`.
 
 Paper: — (the formalization's own; the nearest paper-anchored statement is the atom-level
 `p → ⊡p` of `def:BLstar-semantics`'s footnote, line 1119, which this strictly extends)
 -/
 theorem plusStateLocal_stab_iff {F : TaskFrame} {φ : PlusFormula} (hφ : φ.StateLocal)
-    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     PlusTruthAt M τ t φ ↔ PlusTruthAt M τ t (.stab φ) := by
   constructor
-  · intro hh σ hσ hs
-    exact (isPlusStateLocal_of_stateLocal hφ F M τ σ hτ hσ t hs).mp hh
+  · intro hh σ hs
+    exact (isPlusStateLocal_of_stateLocal hφ F M τ σ t hs).mp hh
   · intro hh
-    exact hh τ hτ (SameStateAt.refl τ t)
+    exact hh τ rfl
 
 /--
 **`φ ↔ ⊡φ` for state-local `φ`**, as a validity of L⁺.
@@ -398,9 +380,9 @@ extends)
 -/
 theorem plusStateLocal_plusValid_iff_stab {φ : PlusFormula} (hφ : φ.StateLocal) :
     PlusValid (PlusFormula.iff φ (.stab φ)) := by
-  refine PlusValid.of_forall_total ?_
-  intro F M τ hτ x
-  have hiff := plusStateLocal_stab_iff hφ M τ hτ x
+  refine PlusValid.of_forall ?_
+  intro F M τ x
+  have hiff := plusStateLocal_stab_iff hφ M τ x
   simp only [PlusFormula.iff]
   rw [PlusTruth.and_iff, PlusTruth.imp_iff, PlusTruth.imp_iff]
   exact ⟨hiff.mp, hiff.mpr⟩
@@ -415,15 +397,11 @@ seven-constructor recursion admits — every Boolean combination of atoms, `□`
 instance in one application, which is how `Metalogic/Conservativity/Plus/AxiomValidity.lean`
 discharges the `PlusAxiom.atom_stab` arm.
 
-The one hypothesis the atom-restricted statement did not carry is `hτ`: totality is needed for
-the right-to-left half of `plusStateLocal_stab_iff` and hence, harmlessly, here. Both consumers
-sit inside `PlusValidIn.of_forall_total`, which already binds it.
-
 Paper: — (the formalization's own; the atom instance is the footnote at line 1119)
 -/
 theorem stab_of_stateLocal {F : TaskFrame} {φ : PlusFormula} (hφ : φ.StateLocal)
-    (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (h : PlusTruthAt M τ t φ) : PlusTruthAt M τ t (.stab φ) :=
-  (plusStateLocal_stab_iff hφ M τ hτ t).mp h
+  (plusStateLocal_stab_iff hφ M τ t).mp h
 
 end FormalSystem.Semantics

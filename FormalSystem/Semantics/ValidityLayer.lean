@@ -32,12 +32,9 @@ below.
 
 ## Main Results
 
-- `genericValidOn_iff_total` — the bundled/unbundled history bridge
 - `GenericValidOnFrames.mono`, `GenericValidIn.mono` — the two monotonicity lemmas
-- `TaskFrame.GenericValidOn.of_forall_total` / `.apply_total`, and the `GenericValidOnFrames`,
-  `GenericValidIn` and `GenericValid` forms — the binder-shape adapters
-- `GenericValidOnFrames.of_not`, `GenericValidIn.of_not`, `GenericValid.of_not` — the
-  countermodel-extraction contrapositives
+- `GenericValid.of_forall` / `.apply` / `.of_not` — the `.Base` binder-shape adapters, which
+  discharge the vacuous `Sat .Base` argument
 
 ## Design Invariants — the extension contract
 
@@ -88,20 +85,17 @@ outside the shared clause classes.
 
 ### What the instance buys — the inherited names
 
-All eighteen, for that one field:
+All nine, for that one field:
 
 - `TaskFrame.GenericValidOn`, `GenericValidOnFrames`, `GenericValidIn`, `GenericValid`
-- `genericValidOn_iff_total`
 - `GenericValidOnFrames.mono`, `GenericValidIn.mono`
-- `TaskFrame.GenericValidOn.of_forall_total` / `.apply_total`
-- `GenericValidOnFrames.of_forall_total` / `.apply_total`
-- `GenericValidIn.of_forall_total` / `.apply_total`
-- `GenericValid.of_forall_total`, `GenericValid.apply`
-- `GenericValidOnFrames.of_not`, `GenericValidIn.of_not`, `GenericValid.of_not`
+- `GenericValid.of_forall`, `GenericValid.apply`, `GenericValid.of_not`
 
-Measured payoff across the four landed instantiations: **38 per-language theorem bodies** became
-one-line delegations (12 for L, 8 for L⁻, 8 for L⁺, 10 for L⋆) against 14 generic theorems
-written once. A fifth language pays one instance and inherits the lot.
+Every history quantifier ranges over the bundled `WorldHistory F`, so the frame-predicate and
+frame-class notions need no binder-shape adapters at all: a goal is opened by `intro F hF M τ x`
+and a hypothesis is applied as `h F hF M τ x`. Only the `.Base` forms keep adapters, because they
+discharge the vacuous `Sat .Base` argument. A fifth language pays one instance and inherits the
+lot.
 
 ### What is NOT inherited — the honest boundary
 
@@ -113,7 +107,7 @@ landed tree that is:
   (whose *statement*, uniquely, differs between languages: it shifts the vector alongside the
   history)
 - truth congruence — `truth_congr_ext`, `star_truth_congr_ext`
-- state locality — `stab_state_only`, the `PlusStateLocal`/`StarStateLocal` families, `SameStateAt`
+- state locality — `stab_state_only`, the `PlusStateLocal`/`StarStateLocal` families
 - the embedding bridges — `plusTruthAt_ofFormula`, `starTruthAt_ofPlus`, `starValidOn_ofPlus`,
   `starValidOnFrames_ofPlus`
 
@@ -169,7 +163,7 @@ parameters — L⋆'s stored-time vector, say — supplies the universally close
 -/
 class PointTruth (L : Type) where
   /-- `sat M τ x φ` — the formula `φ` is true at the point `(M, τ, x)`. -/
-  sat : ∀ {F : TaskFrame}, TaskModel F → PartialHistory F → F.Duration → L → Prop
+  sat : ∀ {F : TaskFrame}, TaskModel F → WorldHistory F → F.Duration → L → Prop
 
 variable {L : Type} [PointTruth L]
 
@@ -178,10 +172,10 @@ variable {L : Type} [PointTruth L]
 /-- `def:frame-validity`, stated once: `φ` is valid over the frame `F` iff it is true at every
 model over `F`, every possible world `τ ∈ H_F`, and every time `x`.
 
-The history quantifier is the bundled subtype `WorldHistory F`, exactly as every per-language
-`ValidOn` in the tree writes it; `genericValidOn_iff_total` is the bridge to the unbundled pair. -/
+The history quantifier is `WorldHistory F`, exactly as every per-language `ValidOn` in the tree
+writes it. -/
 def TaskFrame.GenericValidOn (F : TaskFrame) (φ : L) : Prop :=
-  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PointTruth.sat M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PointTruth.sat M τ x φ
 
 /-- `φ` is valid on every frame satisfying the predicate `P`. The frame-predicate-indexed
 primitive that every class-restricted validity notion is an instance of. -/
@@ -198,18 +192,6 @@ so this quantifies over every task frame with no frame condition attached. -/
 def GenericValid (φ : L) : Prop :=
   GenericValidIn ProofSystem.FrameClass.Base φ
 
-/-! ### The bundled/unbundled history bridge -/
-
-/-- **The bridge between the two validity shapes.** `GenericValidOn` quantifies over the bundled
-subtype `WorldHistory F`; the adapters below and every hand-written correspondence argument use the
-unbundled pair `(τ : PartialHistory F) (_ : τ.IsTotal)`. One term in each direction, because
-`WorldHistory` is a subtype and `.val`/`.property` are its projections. -/
-theorem genericValidOn_iff_total (F : TaskFrame) (φ : L) :
-    TaskFrame.GenericValidOn F φ ↔
-      ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
-        ∀ x : F.Duration, PointTruth.sat M τ x φ :=
-  ⟨fun h M τ hτ x => h M ⟨τ, hτ⟩ x, fun h M τ x => h M τ.val τ.property x⟩
-
 /-! ### Monotonicity -/
 
 /-- **The one monotonicity lemma.** `GenericValidOnFrames` is antitone in its frame predicate:
@@ -224,92 +206,34 @@ theorem GenericValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : L} (h :
     (hv : GenericValidIn fc₁ φ) : GenericValidIn fc₂ φ :=
   GenericValidOnFrames.mono (fun _ => ProofSystem.FrameClass.Sat.anti h) hv
 
-/-! ### The binder-shape adapters
+/-! ### The `.Base` binder-shape adapters
 
-A goal site becomes `refine GenericValidOnFrames.of_forall_total ?_; intro F hF M τ hτ x`, and a
-hypothesis site becomes `h.apply_total F hF M τ hτ x`. Two triples — one indexed by a bare frame
-predicate, one by a `FrameClass` tag — plus the `.Base` pair that discharges `Sat .Base = True`
-so no call site has to write `trivial`. -/
-
-/-- Introduce `GenericValidOn` from the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)`
-shape. -/
-theorem TaskFrame.GenericValidOn.of_forall_total {F : TaskFrame} {φ : L}
-    (h : ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
-           ∀ x : F.Duration, PointTruth.sat M τ x φ) :
-    TaskFrame.GenericValidOn F φ :=
-  fun M τ x => h M τ.val τ.property x
-
-/-- Eliminate `GenericValidOn` into the unbundled shape. -/
-theorem TaskFrame.GenericValidOn.apply_total {F : TaskFrame} {φ : L}
-    (h : TaskFrame.GenericValidOn F φ) (M : TaskModel F) (τ : PartialHistory F)
-    (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
-  h M ⟨τ, hτ⟩ x
-
-/-- Introduce `GenericValidOnFrames` from the unbundled shape. -/
-theorem GenericValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : L}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ) :
-    GenericValidOnFrames P φ :=
-  fun F hF M τ x => h F hF M τ.val τ.property x
-
-/-- Eliminate `GenericValidOnFrames` into the unbundled shape. -/
-theorem GenericValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : L}
-    (h : GenericValidOnFrames P φ) (F : TaskFrame) (hF : P F) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
-  h F hF M ⟨τ, hτ⟩ x
-
-/-- `GenericValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
-theorem GenericValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : L}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ) :
-    GenericValidIn fc φ :=
-  GenericValidOnFrames.of_forall_total h
-
-/-- `GenericValidOnFrames.apply_total` at a `FrameClass` tag. -/
-theorem GenericValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : L}
-    (h : GenericValidIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
-  GenericValidOnFrames.apply_total h F hF M τ hτ x
+`GenericValid` is `GenericValidIn` at the unconstrained class, whose frame condition
+`Sat .Base` is `True`. These three discharge that vacuous argument so that no call site has to
+bind it. The frame-predicate and frame-class notions need no adapters: their quantifiers already
+range over `WorldHistory F`, so `intro` and application open them directly. -/
 
 /-- Introduce `GenericValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
 discharged here rather than at each call site. -/
-theorem GenericValid.of_forall_total {φ : L}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
-           ∀ x : F.Duration, PointTruth.sat M τ x φ) :
+theorem GenericValid.of_forall {φ : L}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration),
+      PointTruth.sat M τ x φ) :
     GenericValid φ :=
-  fun F _ M τ x => h F M τ.val τ.property x
+  fun F _ M τ x => h F M τ x
 
 /-- Eliminate `GenericValid` into its explicit binder shape; the `Sat .Base` argument is
 discharged here, not at the call site. -/
 theorem GenericValid.apply {φ : L} (h : GenericValid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (x : F.Duration) : PointTruth.sat M τ x φ :=
-  h F trivial M ⟨τ, hτ⟩ x
+    (τ : WorldHistory F) (x : F.Duration) : PointTruth.sat M τ x φ :=
+  h F trivial M τ x
 
-/-! ### The countermodel-extraction contrapositives
-
-Each is the contrapositive of the corresponding `of_forall_total`, in the shape a countermodel
-extraction wants: from a failure of validity it hands back a failure of the explicit
-∀-statement, which `push Not` takes apart. Proved by the plain term `fun hc => h (… hc)` — no
-classical tactic — so that a delegating wrapper's axiom set is exactly its original's. -/
-
-/-- The contrapositive of `GenericValidOnFrames.of_forall_total`, at a bare frame predicate. -/
-theorem GenericValidOnFrames.of_not {P : TaskFrame → Prop} {φ : L}
-    (h : ¬ GenericValidOnFrames P φ) :
-    ¬ ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-        τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ :=
-  fun hc => h (GenericValidOnFrames.of_forall_total hc)
-
-/-- The contrapositive of `GenericValidIn.of_forall_total`, at a `FrameClass` tag. -/
-theorem GenericValidIn.of_not {fc : ProofSystem.FrameClass} {φ : L}
-    (h : ¬ GenericValidIn fc φ) :
-    ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-        τ.IsTotal → ∀ x : F.Duration, PointTruth.sat M τ x φ :=
-  fun hc => h (GenericValidIn.of_forall_total hc)
-
-/-- The contrapositive of `GenericValid.of_forall_total`, with `Sat .Base = True` discharged. -/
+/-- The contrapositive of `GenericValid.of_forall`, in the shape a countermodel extraction wants:
+from a failure of validity it hands back a failure of the explicit ∀-statement, which `push Not`
+takes apart. Proved by the plain term `fun hc => h (… hc)` — no classical tactic — so that a
+delegating wrapper's axiom set is exactly its original's. -/
 theorem GenericValid.of_not {φ : L} (h : ¬ GenericValid φ) :
-    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
-        ∀ x : F.Duration, PointTruth.sat M τ x φ :=
-  fun hc => h (GenericValid.of_forall_total hc)
+    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration),
+        PointTruth.sat M τ x φ :=
+  fun hc => h (GenericValid.of_forall hc)
 
 end FormalSystem.Semantics

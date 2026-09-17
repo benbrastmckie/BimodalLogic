@@ -19,7 +19,7 @@ then the formula is indeed not valid in the TM logic.
 ## Main Results
 
 - `isUnsatBotTemporal_not_truth`: If `isUnsatBotTemporal φ = true`, then `φ` is false
-  at every world/time whose evaluation history is total.
+  at every world history and time.
 - `unfulfillable_until_not_truth`: If `G(¬event)` holds at time t, then
   `U(event, guard)` is false at time t.
 - `unfulfillable_since_not_truth`: If `H(¬event)` holds at time t, then
@@ -33,10 +33,9 @@ Combined with the observation that non-trivially-false antecedents admit models
 where they are true, this establishes invalidity (the negation of universal
 validity).
 
-The `box` case in `isUnsatBotTemporal` requires `τ.IsTotal` so that the box
-quantifier — which under `def:BL-semantics` ranges over the total histories
-`H_F` — is instantiable at the evaluation history itself. This is automatically
-satisfied in the validity definition, where `τ.IsTotal` is a premise.
+The `box` case in `isUnsatBotTemporal` instantiates the box quantifier — which under
+`def:BL-semantics` ranges over the world histories `H_F` — at the evaluation history
+itself, which is possible because truth is evaluated at a `WorldHistory`.
 
 No declaration in this module quantifies over an admissible-history set, and none
 carries a shift-closure side condition: under the totality box clause there is no
@@ -56,13 +55,12 @@ open FormalSystem.Automation
 ## Core Lemma: isUnsatBotTemporal implies falsity
 
 The key soundness lemma: any formula recognized as "always false" by
-`isUnsatBotTemporal` is indeed false at every evaluation point, provided
-the evaluation history is total (needed for the box case).
+`isUnsatBotTemporal` is indeed false at every evaluation point.
 -/
 
 /--
 If `isUnsatBotTemporal φ = true`, then `φ` evaluates to `False` at every
-model point `(M, τ, t)` where `τ` is total.
+model point `(M, τ, t)`.
 
 This is the core soundness lemma for the invalid prefilter. It establishes
 that `isUnsatBotTemporal` is a sound "always false" recognizer.
@@ -74,13 +72,13 @@ Proof by structural induction on `φ`:
   TruthAt ... s event`, which is impossible.
 - `snce guard event`: Symmetric to Until.
 - `box a`: If `isUnsatBotTemporal a = true`, then by IH, `a` is false
-  at every model point whose history is total. Since `τ` is total
-  and `box(a)` requires `∀ σ, σ.IsTotal → TruthAt ... σ t a`, choosing
+  at every model point. Since `box(a)` requires `∀ σ : WorldHistory F, TruthAt ... σ t a`,
+  choosing
   `σ = τ` gives `TruthAt ... τ t a`, which contradicts the IH.
 -/
 theorem isUnsatBotTemporal_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : PartialHistory F} (hτ : τ.IsTotal) {t : F.Duration}
+    {τ : WorldHistory F} {t : F.Duration}
     {φ : Formula} (h : isUnsatBotTemporal φ = true) :
     ¬ TruthAt M τ t φ := by
   induction φ generalizing τ t with
@@ -88,15 +86,15 @@ theorem isUnsatBotTemporal_not_truth
   | untl guard event _ih_guard ih_event =>
     simp only [isUnsatBotTemporal] at h
     intro ⟨s, _hts, h_event, _h_guard⟩
-    exact ih_event hτ h h_event
+    exact ih_event h h_event
   | snce guard event _ih_guard ih_event =>
     simp only [isUnsatBotTemporal] at h
     intro ⟨s, _hst, h_event, _h_guard⟩
-    exact ih_event hτ h h_event
+    exact ih_event h h_event
   | box a ih_a =>
     simp only [isUnsatBotTemporal] at h
     intro h_box
-    exact ih_a hτ h (h_box τ hτ)
+    exact ih_a h (h_box τ)
   | atom _ => simp [isUnsatBotTemporal] at h
   | imp _ _ => simp [isUnsatBotTemporal] at h
 
@@ -116,7 +114,7 @@ If `G(¬event)` holds at time t, then `U(event, guard)` is false at time t.
 -/
 theorem unfulfillable_until_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : PartialHistory F} {t : F.Duration}
+    {τ : WorldHistory F} {t : F.Duration}
     {event guard : Formula}
     (h_g_neg : TruthAt M τ t (Formula.allFuture event.neg)) :
     ¬ TruthAt M τ t (Formula.untl guard event) := by
@@ -135,7 +133,7 @@ Symmetric past version of `unfulfillable_until_not_truth`.
 -/
 theorem unfulfillable_since_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : PartialHistory F} {t : F.Duration}
+    {τ : WorldHistory F} {t : F.Duration}
     {event guard : Formula}
     (h_h_neg : TruthAt M τ t (Formula.allPast event.neg)) :
     ¬ TruthAt M τ t (Formula.snce guard event) := by
@@ -153,7 +151,7 @@ foundation for the `invalid_false_consequent` pattern.
 -/
 
 /--
-If `φ` is always false (at points where `τ` is total), then `antecedent → φ`
+If `φ` is always false, then `antecedent → φ`
 is false at any point where `antecedent` is true.
 
 This is immediate: `antecedent → φ` evaluated as `TruthAt ... antecedent →
@@ -162,13 +160,13 @@ is false.
 -/
 theorem false_consequent_not_truth
     {F : TaskFrame} {M : TaskModel F}
-    {τ : PartialHistory F} (hτ : τ.IsTotal) {t : F.Duration}
+    {τ : WorldHistory F} {t : F.Duration}
     {antecedent consequent : Formula}
     (h_false : isUnsatBotTemporal consequent = true)
     (h_ante_true : TruthAt M τ t antecedent) :
     ¬ TruthAt M τ t (Formula.imp antecedent consequent) := by
   intro h_imp
   have h_conseq := h_imp h_ante_true
-  exact isUnsatBotTemporal_not_truth hτ h_false h_conseq
+  exact isUnsatBotTemporal_not_truth h_false h_conseq
 
 end FormalSystem.Automation.PrefilterSoundness

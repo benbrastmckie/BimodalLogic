@@ -98,20 +98,19 @@ theorem allRec_of_fwdRec (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec) :
 
 /-- **Over `ℤ`, `FwdRec F` forces every total history to be periodic.** -/
 theorem hist_periodic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
-    (τ : PartialHistory F.toTaskFrame) (hτ : τ.IsTotal) :
-    ∃ π : ℤ, 0 < π ∧ ∀ n : ℤ, τ.states (n + π) (hτ (n + π)) = τ.states n (hτ n) :=
-  Walk.periodic (allRec_of_fwdRec F hF) (WorldHistory.isStepPath ⟨τ, hτ⟩)
+    (τ : WorldHistory F.toTaskFrame) :
+    ∃ π : ℤ, 0 < π ∧ ∀ n : ℤ, τ.state (n + π) = τ.state n :=
+  Walk.periodic (allRec_of_fwdRec F hF) (WorldHistory.isStepPath τ)
 
 /--
 **The structural shape of a `FwdRec` frame over `ℤ`**: the one-step relation is *deterministic*
-along histories — two total histories that agree at one time agree one step later.
+along histories — two world histories that agree at one time agree one step later.
 -/
 theorem hist_deterministic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
-    (τ ρ : PartialHistory F.toTaskFrame) (hτ : τ.IsTotal) (hρ : ρ.IsTotal) (t : ℤ)
-    (h : τ.states t (hτ t) = ρ.states t (hρ t)) :
-    τ.states (t + 1) (hτ (t + 1)) = ρ.states (t + 1) (hρ (t + 1)) :=
-  Walk.succ_unique' (allRec_of_fwdRec F hF) (WorldHistory.isStepPath ⟨τ, hτ⟩)
-    (WorldHistory.isStepPath ⟨ρ, hρ⟩) h
+    (τ ρ : WorldHistory F.toTaskFrame) (t : ℤ) (h : τ.state t = ρ.state t) :
+    τ.state (t + 1) = ρ.state (t + 1) :=
+  Walk.succ_unique' (allRec_of_fwdRec F hF) (WorldHistory.isStepPath τ)
+    (WorldHistory.isStepPath ρ) h
 
 /--
 **Full-schema exactness over `ℤ`.**
@@ -128,10 +127,8 @@ theorem density_schema_iff_fwdRec (F : FrameOver intOrder) :
   · intro h
     exact (validOn_atomic_density_iff_fwdRec F.toTaskFrame).mp fun p => h (Formula.atom p)
   · intro hF φ
-    rw [TaskFrame.validOn_iff_total]
-    intro M τ hτ t
-    exact density_of_hist_periodic F.toTaskFrame
-      (fun τ' hτ' => hist_periodic F hF τ' hτ') φ M τ hτ t
+    intro M τ t
+    exact density_of_hist_periodic F.toTaskFrame (hist_periodic F hF) φ M τ t
 
 /--
 **Deliverable (3) at the `Mod` level**: on the `ℤ` fibre, the model class of the density schema

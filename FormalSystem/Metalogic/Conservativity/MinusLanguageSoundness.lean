@@ -111,11 +111,11 @@ need it at a *different time* `s`. With `generalizing` the hypothesis reads `∀
 use site applies it explicitly.
 
 Case by case: `atom` and `bot` are `Iff.rfl`, because the two clauses are literally the same
-expression (including the domain conjunct — see `Semantics/MinusLanguage/MinusTruth.lean` on Decision A); `imp` and
+expression (see `Semantics/MinusLanguage/MinusTruth.lean`); `imp` and
 `box` are congruence under `tr`'s `rfl` push-through equations; `allPast` and `allFuture` are the
 only two cases with content, and `Truth.past_iff` / `Truth.future_iff` supply it.
 -/
-theorem truthAt_tr (M : TaskModel F) (φ : MinusFormula) (τ : PartialHistory F) (t : F.Duration) :
+theorem truthAt_tr (M : TaskModel F) (φ : MinusFormula) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ t (tr φ) ↔ MinusTruthAt M τ t φ := by
   induction φ generalizing τ t with
   | atom p => exact Iff.rfl
@@ -123,7 +123,7 @@ theorem truthAt_tr (M : TaskModel F) (φ : MinusFormula) (τ : PartialHistory F)
   | imp φ ψ ih1 ih2 => simp only [tr_imp, MinusTruthAt]; exact imp_congr (ih1 τ t) (ih2 τ t)
   | box φ ih =>
       simp only [tr_box, MinusTruthAt, Truth.box_iff]
-      exact forall_congr' fun σ => imp_congr_right fun _ => ih σ t
+      exact forall_congr' fun σ => ih σ t
   | allPast φ ih =>
       simp only [tr_allPast, MinusTruthAt, Truth.past_iff]
       exact forall_congr' fun s => imp_congr_right fun _ => ih τ s
@@ -136,7 +136,7 @@ The context-level form of the bridge: if every formula of an L⁻ context is tru
 of its translation is true. This is the side-condition discharger each of the four soundness
 compositions below calls.
 -/
-theorem truthAt_trCtx (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem truthAt_trCtx (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     {Γ : MinusLanguage.Context} (h : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     ∀ ψ ∈ trCtx Γ, TruthAt M τ t ψ := by
   intro ψ hψ
@@ -157,26 +157,26 @@ the translation in the import order.
 `Semantics.TimeShift.timeShift_preserves_truth`.
 
 Shifting a history by `y - x` moves the truth value at time `y` to time `x`, for every L⁻ formula
-and at an *arbitrary* history: no totality, convexity-beyond-the-structure, or shift-closure
+and at an *arbitrary* history: no convexity-beyond-the-structure or shift-closure
 hypothesis is needed, exactly as on the L side, because `ShiftRel` is pointwise.
 
 **Proof**: rewrite both sides through `truthAt_tr` and apply the L statement at `tr φ`. No
 induction — the induction was already paid for once, in `truthAt_tr`.
 -/
-theorem minusTruthAt_timeShift (M : TaskModel F) (σ : PartialHistory F)
+theorem minusTruthAt_timeShift (M : TaskModel F) (σ : WorldHistory F)
     (x y : F.Duration) (φ : MinusFormula) :
-    MinusTruthAt M (PartialHistory.timeShift σ (y - x)) x φ ↔ MinusTruthAt M σ y φ := by
-  rw [← truthAt_tr M φ (PartialHistory.timeShift σ (y - x)) x, ← truthAt_tr M φ σ y]
+    MinusTruthAt M (σ.timeShift (y - x)) x φ ↔ MinusTruthAt M σ y φ := by
+  rw [← truthAt_tr M φ (σ.timeShift (y - x)) x, ← truthAt_tr M φ σ y]
   exact TimeShift.timeShift_preserves_truth M σ x y (tr φ)
 
 /--
 **`□` is the universal modality over the whole model.**
 
-`MinusTruthAt`'s box clause quantifies over all total histories at the *current* time, so
+`MinusTruthAt`'s box clause quantifies over all world histories at the *current* time, so
 history-independence is definitional. Time-independence is the substantive half and is
 `Truth.box_const`, itself time-homogeneity (`minusTruthAt_timeShift` is the same fact stated at the
-L⁻ level). Composing the two: `□φ` holds at one total history-and-time exactly when `φ` holds at
-*every* total history and *every* time.
+L⁻ level). Composing the two: `□φ` holds at one history-and-time exactly when `φ` holds at
+*every* history and *every* time.
 
 **Consequence, and the reason this lemma is stated rather than left implicit.** L⁻ over task
 frames is not a product logic in the hard sense: the `□`/`H`,`G` interaction contributes no
@@ -185,21 +185,17 @@ time-indexed fibre. The Kripke structure an L⁻ formula can see is therefore an
 `F.Duration`-chains with a *universal* box, which is what makes a valuation-only truth lemma over
 the translation frames of `Metalogic/Algebraic/FlowFrame.lean` possible at all — see
 `Metalogic/Conservativity/ChainBundleTruth.lean`.
-
-`hτ` is stated because every consumer has it to hand and because `Truth.box_const` binds it; like
-`box_const`'s own two totality binders it is **not consumed**, the statement holding for an
-arbitrary `τ`.
 -/
-theorem minus_box_universal (M : TaskModel F) (τ : PartialHistory F)
-    (t : F.Duration) (hτ : τ.IsTotal) (φ : MinusFormula) :
-    MinusTruthAt M τ t φ.box ↔ ∀ (σ : PartialHistory F), σ.IsTotal → ∀ s, MinusTruthAt M σ s φ := by
+theorem minus_box_universal (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (φ : MinusFormula) :
+    MinusTruthAt M τ t φ.box ↔ ∀ (σ : WorldHistory F) s, MinusTruthAt M σ s φ := by
   constructor
-  · intro h σ hσ s
+  · intro h σ s
     have hb : TruthAt M τ t (tr φ).box := (truthAt_tr M φ.box τ t).mpr h
-    have h2 := (Truth.box_const M τ σ hτ hσ t s (tr φ)).mp hb
-    exact (truthAt_tr M φ σ s).mp (h2 σ hσ)
-  · intro h σ hσ
-    exact h σ hσ t
+    have h2 := (Truth.box_const M τ σ t s (tr φ)).mp hb
+    exact (truthAt_tr M φ σ s).mp (h2 σ)
+  · intro h σ
+    exact h σ t
 
 /-! ### The two transfer theorems
 
@@ -226,14 +222,10 @@ why that distinction is load-bearing.
 theorem minusValidOnFrames_iff_validOnFrames_tr (P : TaskFrame → Prop) (φ : MinusFormula) :
     MinusValidOnFrames P φ ↔ ValidOnFrames P (tr φ) := by
   constructor
-  · intro h
-    refine ValidOnFrames.of_forall_total ?_
-    intro F hF M τ hτ t
-    exact (truthAt_tr M φ τ t).mpr (MinusValidOnFrames.apply_total h F hF M τ hτ t)
-  · intro h
-    refine MinusValidOnFrames.of_forall_total ?_
-    intro F hF M τ hτ t
-    exact (truthAt_tr M φ τ t).mp (ValidOnFrames.apply_total h F hF M τ hτ t)
+  · intro h F hF M τ t
+    exact (truthAt_tr M φ τ t).mpr (h F hF M τ t)
+  · intro h F hF M τ t
+    exact (truthAt_tr M φ τ t).mp (h F hF M τ t)
 
 /--
 **Transfer at a `FrameClass` tag.** `minusValidOnFrames_iff_validOnFrames_tr` at `fc.Sat`, which is
@@ -290,7 +282,7 @@ each supplying its class's `FrameClass.Sat` witness and keeping its original sta
 
 /--
 **Soundness of L⁻ at an arbitrary `FrameClass`.** An L⁻ derivation of `φ` from `Γ` at `fc` makes
-`φ` true at every model, **total** history and time over any frame satisfying `fc`, at which every
+`φ` true at every model, history and time over any frame satisfying `fc`, at which every
 formula of `Γ` is true.
 
 Composition of `Conservativity.translate` with `soundness_in`, across `truthAt_tr`.
@@ -298,25 +290,25 @@ Composition of `Conservativity.translate` with `soundness_in`, across `truthAt_t
 theorem minus_soundness_in {fc : FrameClass} (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree fc Γ φ)
     (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   (truthAt_tr M φ τ t).mp
-    (soundness_in (trCtx Γ) (tr φ) (Conservativity.translate d) F hF M τ h_mem t
+    (soundness_in (trCtx Γ) (tr φ) (Conservativity.translate d) F hF M τ t
       (truthAt_trCtx M τ t h_ctx))
 
 /-- Empty-context form of `minus_soundness_in`: an L⁻ theorem at `fc` is `MinusValidIn fc`. The four
 `minus_soundness*_valid` theorems below are its instances. -/
 theorem minus_soundness_validIn {fc : FrameClass} {φ : MinusFormula}
     (d : MinusLanguage.DerivationTree fc [] φ) : MinusValidIn fc φ :=
-  MinusValidIn.of_forall_total fun F hF M τ h_mem t =>
-    minus_soundness_in [] φ d F hF M τ h_mem t (by simp)
+  fun F hF M τ t =>
+    minus_soundness_in [] φ d F hF M τ t (by simp)
 
 /-! ### The four per-class instances -/
 
 /--
 **Soundness of L⁻ at `FrameClass.Base`.** An L⁻ derivation of `φ` from `Γ` makes `φ` true at every
-model, **total** history and time at which every formula of `Γ` is true.
+model, history and time at which every formula of `Γ` is true.
 
 `minus_soundness_in` at `fc = .Base`; `Sat .Base` is `True`, so the witness is `trivial`.
 
@@ -325,10 +317,10 @@ Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) bu
 theorem minus_soundness (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Base Γ φ)
     (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
-  minus_soundness_in Γ φ d F trivial M τ h_mem t h_ctx
+  minus_soundness_in Γ φ d F trivial M τ t h_ctx
 
 /--
 **Soundness of L⁻ at `FrameClass.Dense`.** `minus_soundness_in` at `fc = .Dense`, with the
@@ -340,10 +332,10 @@ Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) bu
 theorem minus_soundness_dense (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Dense Γ φ)
     (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
-  minus_soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ h_mem t h_ctx
+  minus_soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ t h_ctx
 
 /--
 **Soundness of L⁻ at `FrameClass.ZTime`.** `minus_soundness_in` at `fc = .ZTime`, with the
@@ -356,13 +348,13 @@ theorem minus_soundness_ztime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
     (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
     [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   minus_soundness_in Γ φ d F
     ⟨‹SuccOrder F.Duration›, ‹PredOrder F.Duration›,
       ‹IsSuccArchimedean F.Duration›, ‹IsPredArchimedean F.Duration›⟩
-    M τ h_mem t h_ctx
+    M τ t h_ctx
 
 /--
 **Soundness of L⁻ at `FrameClass.RTime`.** `minus_soundness_in` at `fc = .RTime`, with the
@@ -380,10 +372,10 @@ theorem minus_soundness_rtime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (F : TaskFrame) [DenselyOrdered F.Duration]
     (h_lub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
-  minus_soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ h_mem t h_ctx
+  minus_soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ t h_ctx
 
 /-! ## Empty-context validity forms -/
 
@@ -459,8 +451,8 @@ private theorem minus_derivable_valid_and_swap_valid_zTimeSucc {φ : MinusFormul
               (minus_soundness_valid (.temporal_duality _ (.axiom [] _ h_ax hbase)))⟩
     · cases h_ax with
       | df ψ =>
-          exact ⟨fun F _ _ M τ _hτ t => df_valid_of_succOrder M τ t ψ,
-                 fun F _ _ M τ _hτ t => swapMinus_df_valid_of_predOrder M τ t ψ.swapMinus⟩
+          exact ⟨fun F _ _ M τ t => df_valid_of_succOrder M τ t ψ,
+                 fun F _ _ M τ t => swapMinus_df_valid_of_predOrder M τ t ψ.swapMinus⟩
       | dn _ => exact absurd h_fc (show ¬ (FrameClass.Dense ≤ FrameClass.ZTime) by decide)
       | co _ => exact absurd h_fc (show ¬ (FrameClass.RTime ≤ FrameClass.ZTime) by decide)
       | _ => exact absurd trivial hbase
@@ -468,16 +460,16 @@ private theorem minus_derivable_valid_and_swap_valid_zTimeSucc {φ : MinusFormul
   | .modus_ponens _ ψ' _ d1 d2 =>
     obtain ⟨h1_valid, h1_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d1
     obtain ⟨h2_valid, h2_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d2
-    exact ⟨fun F _ _ M τ hτ t => h1_valid F M τ hτ t (h2_valid F M τ hτ t),
-           fun F _ _ M τ hτ t => h1_swap F M τ hτ t (h2_swap F M τ hτ t)⟩
+    exact ⟨fun F _ _ M τ t => h1_valid F M τ t (h2_valid F M τ t),
+           fun F _ _ M τ t => h1_swap F M τ t (h2_swap F M τ t)⟩
   | .necessitation _ d' =>
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
-    exact ⟨fun F _ _ M _τ _hτ t σ hσ => h_valid F M σ hσ t,
-           fun F _ _ M _τ _hτ t σ hσ => h_swap F M σ hσ t⟩
+    exact ⟨fun F _ _ M _τ t σ => h_valid F M σ t,
+           fun F _ _ M _τ t σ => h_swap F M σ t⟩
   | .temporal_necessitation _ d' =>
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
-    exact ⟨fun F _ _ M τ hτ t s _hs => h_valid F M τ hτ s,
-           fun F _ _ M τ hτ t s _hs => h_swap F M τ hτ s⟩
+    exact ⟨fun F _ _ M τ t s _hs => h_valid F M τ s,
+           fun F _ _ M τ t s _hs => h_swap F M τ s⟩
   | .temporal_duality _ d' =>
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
     exact ⟨h_swap, by rw [MinusFormula.swapMinus_involution]; exact h_valid⟩
@@ -492,7 +484,7 @@ decreasing_by
 
 /--
 **Soundness of L⁻ at `FrameClass.ZTime`, binder-weakened.** An L⁻ derivation of `φ` from `Γ`
-makes `φ` true at every model, **total** history and time at which every formula of `Γ` is true —
+makes `φ` true at every model, history and time at which every formula of `Γ` is true —
 on any `TaskFrame` carrying `[SuccOrder] [PredOrder]`, with **no** `IsSuccArchimedean` /
 `IsPredArchimedean` requirement.
 
@@ -503,13 +495,13 @@ call into `minus_derivable_valid_and_swap_valid_zTimeSucc` mirror that lemma's o
 theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
     (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
-    (τ : PartialHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
     by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base
-    · exact (minus_soundness_valid (.axiom [] _ h_ax hbase)).apply F M τ h_mem t
+    · exact (minus_soundness_valid (.axiom [] _ h_ax hbase)).apply F M τ t
     · cases h_ax with
       | df ψ => exact df_valid_of_succOrder M τ t ψ
       | dn _ => exact absurd h_fc (show ¬ (FrameClass.Dense ≤ FrameClass.ZTime) by decide)
@@ -517,24 +509,24 @@ theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormu
       | _ => exact absurd trivial hbase
   | assumption Γ' φ' h_in => exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' d1 d2 ih1 ih2 =>
-    exact (ih1 τ h_mem t h_ctx) (ih2 τ h_mem t h_ctx)
+    exact (ih1 τ t h_ctx) (ih2 τ t h_ctx)
   | necessitation φ' d' ih =>
     rw [MinusTruth.box_iff]
-    intro σ hσ
-    exact ih σ hσ t (by simp)
+    intro σ
+    exact ih σ t (by simp)
   | temporal_necessitation φ' d' ih =>
     rw [MinusTruth.future_iff]
     intro s _hts
-    exact ih τ h_mem s (by simp)
+    exact ih τ s (by simp)
   | temporal_duality φ' d' _ih =>
-    exact (minus_derivable_valid_and_swap_valid_zTimeSucc d').2 F M τ h_mem t
+    exact (minus_derivable_valid_and_swap_valid_zTimeSucc d').2 F M τ t
   | weakening Γ' Δ' φ' d' h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 /-- Empty-context form of `minus_soundness_ztime_succ`. -/
 theorem minus_soundness_ztime_succ_valid {φ : MinusFormula}
     (d : MinusLanguage.DerivationTree FrameClass.ZTime [] φ) : MinusValidZTimeSucc φ :=
-  fun F so po M τ h_mem t => minus_soundness_ztime_succ [] φ d F M τ h_mem t (by simp)
+  fun F so po M τ t => minus_soundness_ztime_succ [] φ d F M τ t (by simp)
 
 /-! ## Consistency
 
@@ -557,22 +549,22 @@ theorem minus_not_derivable_nil_bot :
   rintro ⟨d⟩
   refine TaskFrame.not_validOn_bot (FrameOver.trivialFrame (D := Int)) ?_
   intro M τ x
-  exact minus_soundness [] MinusFormula.bot d (FrameOver.trivialFrame (D := Int)) M τ.val
-    τ.property x (by simp)
+  exact minus_soundness [] MinusFormula.bot d (FrameOver.trivialFrame (D := Int)) M τ
+    x (by simp)
 
 /--
 **L⁻ at `FrameClass.ZTime` is consistent**: `⊥` is not derivable from the empty context in the
 system extended by the discreteness axioms.
 
-The witness is again `trivialFrame` over `ℤ`, with the single total history supplied by
+The witness is again `trivialFrame` over `ℤ`, with a world history supplied by
 `TaskFrame.hF_nonempty_of_frameAxioms` and the valuation by `TaskModel.allFalse`.
 -/
 theorem minus_not_derivable_nil_bot_ztime :
     ¬ MinusLanguage.Derivable FrameClass.ZTime ([] : MinusLanguage.Context) MinusFormula.bot := by
   rintro ⟨d⟩
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
-  exact MinusValidIn.apply_total (minus_soundness_ztime_valid d) (FrameOver.trivialFrame (D := ℤ))
-    (TaskFrame.isZTime_of_instances _) TaskModel.allFalse τ.val τ.property 0
+  exact minus_soundness_ztime_valid d (FrameOver.trivialFrame (D := ℤ))
+    (TaskFrame.isZTime_of_instances _) TaskModel.allFalse τ 0
 
 /-! ## Native spot checks
 
@@ -589,25 +581,25 @@ that `MinusTruthAt` is a separate definition which happens to agree with `TruthA
 were ever redefined as the composite, the transfer theorems would become `Iff.rfl` and would stop
 carrying any information — and these three examples are what would fail first and say so.
 
-`MT` is the informative one: it closes because `τ` is *itself* total, which is precisely the `H_F`
-reading of `def:BL-semantics`'s box clause. -/
+`MT` is the informative one: it closes because `τ` is *itself* a world history, which is precisely
+the `H_F` reading of `def:BL-semantics`'s box clause. -/
 
 /-- TK — the temporal distribution scheme `G(φ → ψ) → (Gφ → Gψ)`. -/
 example (φ ψ : MinusFormula) : MinusValid ((φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)) := by
-  refine MinusValid.of_forall_total ?_
-  intro F M τ _ t hk hf s hs
+  refine MinusValid.of_forall ?_
+  intro F M τ t hk hf s hs
   exact hk s hs (hf s hs)
 
 /-- T4 — temporal transitivity `Gφ → GGφ`. -/
 example (φ : MinusFormula) : MinusValid (φ.allFuture.imp φ.allFuture.allFuture) := by
-  refine MinusValid.of_forall_total ?_
-  intro F M τ _ t h s hs r hr
+  refine MinusValid.of_forall ?_
+  intro F M τ t h s hs r hr
   exact h r (lt_trans hs hr)
 
 /-- MT — the modal T scheme `□φ → φ`. -/
 example (φ : MinusFormula) : MinusValid (φ.box.imp φ) := by
-  refine MinusValid.of_forall_total ?_
-  intro F M τ hτ t h
-  exact h τ hτ
+  refine MinusValid.of_forall ?_
+  intro F M τ t h
+  exact h τ
 
 end FormalSystem.Metalogic

@@ -11,7 +11,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.TruthLemma
 
 `Bridge/RegionFrame.lean` fixes the frame (`regionFrame W ι D`, whose states are `W × D` — a
 branch world paired with a **time**, since the deterministic clock relation forced the region code
-out of the state space) and its total histories. `Bridge/TruthLemma.lean` proves that truth is
+out of the state space) and its world histories. `Bridge/TruthLemma.lean` proves that truth is
 constant on each region of the placement, given that the *model* reads the time only through its
 region code (`RegionValued`). Neither file supplies a `TaskModel`. This file does, and discharges
 that condition for it (`regionValued_regionModel`).
@@ -222,17 +222,15 @@ theorem regionValued_regionModel (f : ι → D) (placedVal : W → ι → Atom �
   simp only [regionModel_valuation, sameRegion_iff_regionCode_eq.mp h]
 
 /--
-**The atom clause of the truth lemma, at an arbitrary carrier point.** Every region history has
-total domain, so the existential in `TruthAt`'s atom case is discharged outright and truth of an
-atom is exactly the valuation at the point's region code.
+**The atom clause of the truth lemma, at an arbitrary carrier point.** A region history's state at
+`r` is `(w, r)`, so truth of an atom is exactly the valuation at the point's region code.
 -/
 theorem truthAt_atom_regionHistory (f : ι → D) (placedVal : W → ι → Atom → Prop)
     (gapVal : W → Set ι × Set ι → Atom → Prop) (w : W) (r : D) (p : Atom) :
     TruthAt (regionModel f placedVal gapVal) (regionHistory f w (0 : D)) r
         (Formula.atom p) ↔
       regionValuation f (placedVal w) (gapVal w) (regionCode f r) p := by
-  simp only [TruthAt, regionHistory_states, regionModel_valuation, add_zero]
-  exact ⟨fun ⟨_, hv⟩ => hv, fun hv => ⟨trivial, hv⟩⟩
+  simp only [TruthAt, regionHistory_state, regionModel_valuation, add_zero]
 
 /-- **The atom clause at a placed point** — the form the truth lemma's induction consumes. -/
 theorem truthAt_atom_placed {f : ι → D} (hf : Function.Injective f)
@@ -556,7 +554,7 @@ atom clause. `GapAdequate` constrains the policy at *atoms* only, on the stated 
 every compound formula the value is fixed by the induction". That ground is false for `□`.
 
 `truthAt_box_iff_base` makes `□` the universal modality over **every point of every base
-history**, gaps included, and `regionHistory` has total domain — so a branch fact `T(□χ)` with
+history**, gaps included, and `regionHistory` is defined at every point — so a branch fact `T(□χ)` with
 `χ` compound is a demand on the gap points' *induced* values, which the atom policy alone must
 already satisfy. Take `χ := p → q`. A branch may carry `T(□p)` and `T(□(p → q))` and no `T(□q)`,
 no `T(G q)` and no `T(H q)` anywhere — the engine never emits `T(□q)`, since `boxPos` copies a box

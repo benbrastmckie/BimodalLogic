@@ -12,12 +12,12 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionFrame
 `Bridge/Interpolate.lean` proves region invariance in the form
 
 ```
-InterpInvariant f M χ := ∀ τ, τ.IsTotal → ∀ r r', SameRegion f r r' →
+InterpInvariant f M χ := ∀ τ : WorldHistory F, ∀ r r', SameRegion f r r' →
   (TruthAt … τ r χ ↔ … τ r' χ)
 ```
 
-from the hypothesis `∀ τ, τ.IsTotal → RegionConstant f τ`. `Bridge/RegionFrame.lean`'s module docstring
-shows that hypothesis is **unsatisfiable** here (the total histories are closed under time
+from the hypothesis `∀ τ : WorldHistory F, RegionConstant f τ`. `Bridge/RegionFrame.lean`'s module
+docstring shows that hypothesis is **unsatisfiable** here (the world histories are closed under time
 translation, and asking every translate to be constant on the regions of one fixed placement
 forces the states constant, hence the model blind to time);
 `not_regionConstant_regionHistory_one` is the concrete witness.
@@ -29,7 +29,7 @@ InterpInvariantAt f M τ χ := ∀ r r', SameRegion f r r' → (TruthAt … τ r
 ```
 
 hypothesised on `AtomRegionInvariant f M τ` for that history alone — and, since the box clause was
-retargeted from membership in a designated set to totality, on nothing else.
+retargeted from membership in a designated set to all world histories, on nothing else.
 
 `AtomRegionInvariant` is the weakening `regionFrame`'s determinism forces: it asks that `M` and
 `τ` agree *atomically* on region-mates, not that `τ` assign them the same state. Region-constancy
@@ -42,8 +42,8 @@ a region-constant history would repeat a state at two distinct times
 ## What changes, and what does not
 
 Only the `box` case changes, and it gets *easier*. The global form's `box` case is the reason that
-form exists at all: `TruthAt … (box φ)` is a universal over the total histories, so equating its
-value at `r` and at `r'` needed the induction hypothesis at every total history simultaneously.
+form exists at all: `TruthAt … (box φ)` is a universal over the world histories, so equating its
+value at `r` and at `r'` needed the induction hypothesis at every world history simultaneously.
 Here the case consumes `truthAt_box_iff` instead — truth of `box φ` does not depend on the
 evaluation point at all — and uses **no** induction hypothesis. The atom case needs
 atomic region-invariance of `τ` against `M` only, and the `untl`/`snce` cases were already single-history arguments
@@ -83,20 +83,19 @@ The single-history refinement of `InterpInvariant`. No designated admissible set
 be established for a history whose *time-translates* are not region-constant.
 -/
 def InterpInvariantAt (f : ι → D) (M : TaskModel F)
-    (τ : PartialHistory F) (χ : Formula) : Prop :=
+    (τ : WorldHistory F) (χ : Formula) : Prop :=
   ∀ r r' : D, SameRegion f r r' → (TruthAt M τ r χ ↔ TruthAt M τ r' χ)
 
-variable {f : ι → D} {M : TaskModel F} {τ : PartialHistory F}
+variable {f : ι → D} {M : TaskModel F} {τ : WorldHistory F}
 
-/-- The global statement implies the per-history one at each *total* history. -/
+/-- The global statement implies the per-history one at each world history. -/
 theorem interpInvariantAt_of_interpInvariant {χ : Formula}
-    (h : InterpInvariant f M χ) (hτ : τ.IsTotal) : InterpInvariantAt f M τ χ :=
-  fun r r' hrr' => h τ hτ r r' hrr'
+    (h : InterpInvariant f M χ) : InterpInvariantAt f M τ χ :=
+  fun r r' hrr' => h τ r r' hrr'
 
 /--
 **The atom case's actual hypothesis**: the pair `(M, τ)` cannot tell two points of one region
-apart *atomically* — neither in `τ`'s domain, nor in the truth value the valuation assigns to the
-states there.
+apart *atomically*: the valuation assigns region-mates' states the same truth values.
 
 This is strictly weaker than `RegionConstant f τ`, which demands the two states be *equal*.
 The weakening is forced: `regionFrame`'s task relation is now the deterministic clock, so a state
@@ -106,39 +105,29 @@ model may read the time component, but only through its region code — and that
 this predicate asks for. `RegionConstant.atomRegionInvariant` records that nothing is lost:
 wherever the old, stronger hypothesis is available, this one follows.
 -/
-structure AtomRegionInvariant (f : ι → D) (M : TaskModel F) (τ : PartialHistory F) : Prop where
-  /-- Region-mates are both in the domain or both out of it. -/
-  domain_congr : ∀ {r r' : D}, SameRegion f r r' → (τ.domain r ↔ τ.domain r')
+structure AtomRegionInvariant (f : ι → D) (M : TaskModel F) (τ : WorldHistory F) : Prop where
   /-- Region-mates carry the same atomic truth values. -/
-  valuation_congr : ∀ {r r' : D} (_h : SameRegion f r r') (hr : τ.domain r) (hr' : τ.domain r')
-      (p : Atom), (M.valuation (τ.states r hr) p ↔ M.valuation (τ.states r' hr') p)
+  valuation_congr : ∀ {r r' : D} (_h : SameRegion f r r') (p : Atom),
+      (M.valuation (τ.state r) p ↔ M.valuation (τ.state r') p)
 
 /-- A region-constant history is atomically region-invariant against *every* model. -/
 theorem RegionConstant.atomRegionInvariant (hRC : RegionConstant f τ) (M : TaskModel F) :
     AtomRegionInvariant f M τ where
-  domain_congr := hRC.domain_congr
   valuation_congr := by
-    intro r r' h hr hr' p
-    rw [hRC.states_congr h hr hr']
+    intro r r' h p
+    rw [hRC.state_congr h]
 
 /-! ### Propositional and modal cases -/
 
 /--
 **Atom case.** Needs atomic region-invariance of this history against this model only: the atom's
-value at `r` is a function of `τ`'s domain at `r` and of the valuation at the state there, and
-both agree with their region-mates.
+value at `r` is a function of the valuation at `τ`'s state there, which agrees with its
+region-mates.
 -/
 theorem interpInvariantAt_atom (hAI : AtomRegionInvariant f M τ) (p : Atom) :
     InterpInvariantAt f M τ (Formula.atom p) := by
   intro r r' hrr'
-  simp only [TruthAt]
-  constructor
-  · rintro ⟨hr, hv⟩
-    have hr' : τ.domain r' := (hAI.domain_congr hrr').mp hr
-    exact ⟨hr', (hAI.valuation_congr hrr' hr hr' p).mp hv⟩
-  · rintro ⟨hr', hv⟩
-    have hr : τ.domain r := (hAI.domain_congr hrr').mpr hr'
-    exact ⟨hr, (hAI.valuation_congr hrr' hr hr' p).mpr hv⟩
+  exact hAI.valuation_congr hrr' p
 
 /-- **Bottom case.** -/
 theorem interpInvariantAt_bot : InterpInvariantAt f M τ Formula.bot := by
@@ -154,10 +143,10 @@ theorem interpInvariantAt_imp {φ ψ : Formula} (hφ : InterpInvariantAt f M τ 
 /--
 **Box case.** Free, and it does not consume the induction hypothesis.
 
-`truthAt_box_iff` says `box φ` holds at a point iff `φ` holds at every *total* history and every
+`truthAt_box_iff` says `box φ` holds at a point iff `φ` holds at every world history and every
 time — a statement with no free evaluation point left in it. This is the case that forced the
-global formulation. It used to be the case shift-closure paid for; under the totality box clause
-it costs nothing, because `PartialHistory.isTotal_timeShift` supplies the shifted witness outright.
+global formulation. It used to be the case shift-closure paid for; under the world-history box
+clause it costs nothing, because `WorldHistory.timeShift` supplies the shifted witness outright.
 -/
 theorem interpInvariantAt_box (φ : Formula) :
     InterpInvariantAt f M τ φ.box := by
@@ -317,9 +306,9 @@ every formula in an *atomically region-invariant* history is constant on each re
 
 The one hypothesis is exactly what the countermodel supplies:
 `atomRegionInvariant_regionHistory` for the base history. Shift-closure is no longer needed — the
-box case now instantiates against totality, which `timeShift` preserves outright.
+box case now instantiates against world histories, which `timeShift` preserves outright.
 Contrast the global `interpInvariant`, which additionally demands region-constancy of *every*
-total history — a demand this carrier cannot meet (`Bridge/RegionFrame.lean`, Consequence 3).
+world history — a demand this carrier cannot meet (`Bridge/RegionFrame.lean`, Consequence 3).
 -/
 theorem interpInvariantAt [NoMaxOrder D] [NoMinOrder D]
     (hAI : AtomRegionInvariant f M τ) (χ : Formula) :
@@ -367,23 +356,21 @@ def RegionValued (f : ι → D) (M : TaskModel (regionFrame W ι D)) : Prop :=
 omit [Fintype ι] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D] in
 /--
 **A region-valued model is atomically region-invariant at every base history.** `regionHistory`'s
-domain is total, so the domain half is trivial, and its state at `r` is `(w, r)`, so the valuation
-half is exactly `RegionValued`.
+state at `r` is `(w, r)`, so the condition is exactly `RegionValued`.
 -/
 theorem atomRegionInvariant_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
     (hRV : RegionValued f M) (w : W) :
     AtomRegionInvariant f M (regionHistory f w (0 : D)) where
-  domain_congr := fun _ => Iff.rfl
   valuation_congr := by
-    intro r r' h hr hr' p
-    simp only [regionHistory_states, add_zero]
+    intro r r' h p
+    simp only [regionHistory_state, add_zero]
     exact hRV w r r' h p
 
 /--
 **The countermodel is region-invariant at every base history.** The hypothesis of
 `interpInvariantAt` is discharged by construction: the model is region-valued (supplied by
 `Bridge/Valuation.lean`). The former second hypothesis, shift-closure of the admissible set, is
-gone with the retarget of the box clause to totality.
+gone with the retarget of the box clause to world histories.
 -/
 theorem interpInvariantAt_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
     (hRV : RegionValued f M) (w : W) (χ : Formula) :
@@ -405,8 +392,8 @@ plugged into it. The interfaces, and where they live:
 (world, region code) — and is `RegionValued` by construction. At a
 *placed* code — one of the form `regionCode f (f i)` — the branch dictates the value:
 `branchPlacedVal`, reading `b.hasPosAt (.atom p) ⟨w, timeAt b i⟩`, with `truthAt_atom_branch_placed`
-the readback. `regionValuation` is total on codes; `truthAt_atom_regionHistory` discharges the
-domain existential outright.
+the readback. `regionValuation` is total on codes; `truthAt_atom_regionHistory` reads the atom
+off the history's state outright.
 
 **O2 — the gap policy. OPEN, and its interface is refuted** (`Bridge/Valuation.lean`). Three
 successive statements of this obligation have now been machine-refuted, each by the file that

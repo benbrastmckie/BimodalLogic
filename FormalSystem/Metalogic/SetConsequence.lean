@@ -98,7 +98,7 @@ collapsed onto `setConsequenceOnFrames_mono`. -/
 primitive, mirroring `Semantics.ValidOnFrames`. -/
 def SetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set Formula) (φ : Formula) : Prop :=
   ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
-    (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (τ : WorldHistory F) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- `cor:tm-completeness`'s class-restricted consequence `Γ ⊨_C φ` at a possibly-infinite premise
@@ -153,16 +153,14 @@ structure PointedModel (fc : FrameClass) (Γ : Set Formula) where
   /-- A model over that frame. -/
   Model : TaskModel Frame
   /-- The history at which `Γ` is witnessed. -/
-  hist : PartialHistory Frame
-  /-- That history is total. -/
-  htotal : hist.IsTotal
+  hist : WorldHistory Frame
   /-- The time at which `Γ` is witnessed. -/
   time : Frame.Duration
   /-- Every member of `Γ` is true there. -/
   models : ∀ ψ ∈ Γ, TruthAt Model hist time ψ
 
 /-- Satisfiability of a possibly-infinite set over the frames of `fc`: some frame satisfying
-`fc`, together with a model, a total history and a time, makes every member of `Γ` true at
+`fc`, together with a model, a world history and a time, makes every member of `Γ` true at
 once. This is `FormulaSatisfiable` (`Validity.lean`) at `ValidIn fc`'s binder list, with the
 conclusion generalised from a single formula to `∀ ψ ∈ Γ`.
 
@@ -260,33 +258,13 @@ travels as the single `fc.Sat F` argument, and a proof that needs it taken apart
 `.Dense`/`.RTime` and destructures `TaskFrame.IsZTime` at `.ZTime`. Per-class
 `SetSemanticConsequence*.{of_forall, apply}` pairs would exist only
 because a `Sat .Dense F` hypothesis was once invisible to instance search; `FrameClass.Sat` is now
-`@[reducible]`, so they were deleted rather than maintained. -/
-
-/-- Introduce `SetSemanticConsequenceOn` at an arbitrary tag from the frame-condition-explicit
-binder shape. The body is `h`: `SetConsequenceOnFrames` already quantifies over the unbundled
-`(τ : PartialHistory F) (_ : τ.IsTotal)` pair. This replaced the four class-specific
-`SetSemanticConsequence{Base,Dense,Discrete,DedekindDense}.of_forall` adapters, each of which was
-this lemma at a fixed tag. -/
-theorem SetSemanticConsequenceOn.of_forall_total {fc : FrameClass} {Γ : Set Formula}
-    {φ : Formula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SetSemanticConsequenceOn fc Γ φ :=
-  h
-
-/-- Eliminate `SetSemanticConsequenceOn` at an arbitrary tag into the frame-condition-explicit
-binder shape. This replaced the four class-specific `.apply` adapters. -/
-theorem SetSemanticConsequenceOn.apply_total {fc : FrameClass} {Γ : Set Formula} {φ : Formula}
-    (h : SetSemanticConsequenceOn fc Γ φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hΓ : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F hF M τ hτ t hΓ
+`@[reducible]`, so they were deleted rather than maintained. `SetSemanticConsequenceOn` itself
+needs no adapter: `intro F hF M τ t` introduces it and `h F hF M τ t` eliminates it. -/
 
 /-! ### `SatisfiableSet` binder-shape adapter
 
-The same service `SetSemanticConsequenceOn.of_forall_total` above performs, on the introduction
-side of `SatisfiableSet`, and likewise a single `fc`-indexed declaration where four tag-specific
-ones used to stand. It takes the frame condition in the single `fc.Sat F` slot; a site holding
+The introduction side of `SatisfiableSet`: a single `fc`-indexed declaration where four
+tag-specific ones used to stand. It takes the frame condition in the single `fc.Sat F` slot; a site holding
 the four discrete instances flat reaches that slot through
 `TaskFrame.isZTime_of_instances` (`Semantics/FrameProperty.lean`). It serves every
 `SatisfiableSet` name stated at the end of this module (`SatisfiableBaseSet`,
@@ -299,9 +277,9 @@ a model/history/time at which every member of `Γ` is true. A `def`, not a `theo
 `PointedModel` lives in `Type`, so a `theorem` here fails with "type of theorem is not a
 proposition". -/
 def PointedModel.of {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
-    (hF : fc.Sat F) (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : PointedModel fc Γ :=
-  ⟨F, hF, M, τ, hτ, t, h⟩
+  ⟨F, hF, M, τ, t, h⟩
 
 /-- Introduce `SatisfiableSet` at an arbitrary tag from the same flat binder shape — `PointedModel.of`
 wrapped in `Nonempty.intro`, retained under its original name because every introduction site in
@@ -310,9 +288,9 @@ the tree calls it. This replaced the four
 at a fixed tag with `fc.Sat F` unfolded to that class's frame condition, which is the only thing
 that made four copies look necessary. -/
 theorem SatisfiableSet.of_forall {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
-    (hF : fc.Sat F) (M : TaskModel F) (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : SatisfiableSet fc Γ :=
-  ⟨PointedModel.of F hF M τ hτ t h⟩
+  ⟨PointedModel.of F hF M τ t h⟩
 
 /-! ### Monotonicity and finite satisfiability -/
 
@@ -371,14 +349,12 @@ four refutations consume. -/
 theorem setConsequence_iff_not_satisfiable {fc : FrameClass} {Γ : Set Formula} {φ : Formula} :
     SetSemanticConsequenceOn fc Γ φ ↔ ¬ SatisfiableSet fc (Γ ∪ {φ.neg}) := by
   constructor
-  · rintro h ⟨F, hF, M, τ, hτ, t, hsat⟩
+  · rintro h ⟨F, hF, M, τ, t, hsat⟩
     exact hsat φ.neg (Set.mem_union_right _ rfl)
-      (h F hF M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_union_left _ hψ)))
-  · intro h
-    refine SetSemanticConsequenceOn.of_forall_total ?_
-    intro F hF M τ hτ t hall
+      (h F hF M τ t (fun ψ hψ => hsat ψ (Set.mem_union_left _ hψ)))
+  · intro h F hF M τ t hall
     by_contra hnφ
-    refine h (SatisfiableSet.of_forall F hF M τ hτ t ?_)
+    refine h (SatisfiableSet.of_forall F hF M τ t ?_)
     rintro ψ (hψ | rfl)
     · exact hall ψ hψ
     · exact hnφ
@@ -389,8 +365,8 @@ theorem setConsequence_iff_not_satisfiable {fc : FrameClass} {Γ : Set Formula} 
 in the premise set. The four per-class copies below are one-line corollaries. -/
 theorem setConsequenceOnFrames_mono {P : TaskFrame → Prop} {Γ Δ : Set Formula} {φ : Formula}
     (h_sub : Γ ⊆ Δ) (h : SetConsequenceOnFrames P Γ φ) : SetConsequenceOnFrames P Δ φ := by
-  intro F hF M τ hτ t h_all
-  exact h F hF M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+  intro F hF M τ t h_all
+  exact h F hF M τ t (fun ψ hψ => h_all ψ (h_sub hψ))
 
 /-! ## Finite restriction and agreement with the finite-context layer -/
 
@@ -533,8 +509,8 @@ def StrongCompletenessZTime : Prop := StrongCompleteness FrameClass.ZTime
     introduction site should call `SatisfiableSet.of_forall` with
     `TaskFrame.isZTime_of_instances` (`Semantics/FrameProperty.lean`) in the
     frame-condition slot, and an elimination pattern needs exactly one nesting pair,
-    `⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩` — or a single `hF` passed straight back to
-    `ValidIn.apply_total`.
+    `⟨F, ⟨_, _, _, _⟩, M, τ, t, h⟩` — or a single `hF` passed straight back to a
+    `ValidIn` hypothesis.
  -/
 def SatisfiableZTimeSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.ZTime Γ
 
@@ -558,9 +534,8 @@ every Dedekind-complete carrier. That witness is a *new* one: `DiscreteNonCompac
 `archWitness` does not port, because `Formula.next` is vacuously false on a densely ordered
 carrier.
 
-Naming the row costs nothing beyond the four instantiations below: the binder-shape adapters it
-needs (`SatisfiableSet.of_forall`, `SetSemanticConsequenceOn.of_forall_total` / `.apply_total`)
-are the generic, `fc`-indexed ones above, so no new adapter and no new binder list is introduced
+Naming the row costs nothing beyond the four instantiations below: the binder-shape adapter it
+needs (`SatisfiableSet.of_forall`) is the generic, `fc`-indexed one above, so no new adapter and no new binder list is introduced
 here — and none is introduced for any other tag either.
 
 No import change is required: `DenselyOrdered` is already in scope via
@@ -593,7 +568,7 @@ def CompactRTime : Prop := Compact FrameClass.RTime
     conclusion generalised from a single formula to `∀ ψ ∈ Γ`.
 
     `Sat .RTime` is `TaskFrame.IsRTime`, i.e. `IsDense ∧ IsComplete`, so a destructuring
-    pattern needs exactly one nesting pair here, `⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, h⟩`, and an
+    pattern needs exactly one nesting pair here, `⟨F, ⟨hd, hlub⟩, M, τ, t, h⟩`, and an
     introduction site should call `SatisfiableSet.of_forall` above. The destructured
     `hd : F.IsDense` **is** visible to instance search: `TaskFrame.IsDense` is an `abbrev` and
     `FrameClass.Sat` is `@[reducible]`, so the whole chain down to `DenselyOrdered F.Duration`

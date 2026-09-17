@@ -445,8 +445,8 @@ A `FrameOver intOrder` with `WorldState = ℤ` where the state at each time IS t
 because atom predicates on the Z-interval are not constant in general.
 
 With this frame:
-- Each history is parameterized by an offset w₀, with states t _ = w₀ + t
-- The frame's total-history set `H_F` is exactly the offset histories (`zHistoryV2_total_eq`)
+- Each history is parameterized by an offset w₀, with state t = w₀ + t
+- The frame's world-history set `H_F` is exactly the offset histories (`zHistoryV2_total_eq`)
 - Box quantification ranges over all offsets, giving S5 semantics
 -/
 
@@ -530,25 +530,18 @@ Helper D applied to `zShiftRel_fib_subsingleton`. -/
 theorem zTaskFrameV2_saturation : TaskFrame.Saturation zTaskFrameV2.TaskRel :=
   zTaskFrameV2.saturation
 
-/-- World history with offset w₀: domain = all of ℤ (hence total),
-states t _ = w₀ + t. -/
-noncomputable def zHistoryV2 (w₀ : ℤ) : PartialHistory zTaskFrameV2 where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => w₀ + t
-  respects_task := fun s t _ _ => by
+/-- World history with offset w₀: state at time `t` is `w₀ + t`. -/
+noncomputable def zHistoryV2 (w₀ : ℤ) : WorldHistory zTaskFrameV2 :=
+  WorldHistory.ofTotal _ (fun t => (w₀ + t : ℤ)) fun s t => by
     refine (zTaskFrameV2_taskRel _ _ _).mpr ?_
     change w₀ + t = (w₀ + s) + (t - s); omega
 
 /-- Time-shifting zHistoryV2 w₀ by Δ gives zHistoryV2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
-    PartialHistory.timeShift (zHistoryV2 w₀) Δ = zHistoryV2 (w₀ + Δ) := by
-  change PartialHistory.mk _ _ _ _ =
-    PartialHistory.mk _ _ _ _
-  have h_states : (fun (t : ℤ) (_ : True) => w₀ + (t + Δ)) =
-      (fun (t : ℤ) (_ : True) => (w₀ + Δ) + t) := by
-    funext t _; omega
-  congr 2
+    (zHistoryV2 w₀).timeShift Δ = zHistoryV2 (w₀ + Δ) :=
+  WorldHistory.ext_state fun t => by
+    show (w₀ + (t + Δ) : ℤ) = (w₀ + Δ) + t
+    omega
 
 /-- TaskModel: valuation at world state w evaluates Z-interval atom predicate at w. -/
 noncomputable def zTaskModelV2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -642,46 +635,33 @@ theorem z_interval_carrier_contains_all
   · rw [h_lo_none]; simp [Option.elim]
   · rw [h_hi_none]; simp [Option.elim]
 
-/-- Every total history of `zTaskFrameV2` is an offset history. Totality here is
-`def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`.
+/-- Every world history of `zTaskFrameV2` is an offset history.
 
 `zTaskFrameV2`'s task relation `u = w + d` is deterministic, so the state at time `0` fixes the
 offset and `respects_task` propagates it to every other time. -/
-theorem zHistoryV2_total_eq (σ : PartialHistory zTaskFrameV2) (htot : ∀ t, σ.domain t) :
+theorem zHistoryV2_total_eq (σ : WorldHistory zTaskFrameV2) :
     ∃ w₀, σ = zHistoryV2 w₀ := by
+  refine ⟨σ.state 0, WorldHistory.ext_state fun t => ?_⟩
   -- `zTaskFrameV2.WorldState` is `ℤ` but not syntactically so; `show ℤ from` forces the
   -- arithmetic to elaborate in `ℤ` where `omega` can see it.
-  have key : ∀ (t : ℤ) (ht : σ.domain t),
-      (show ℤ from σ.states t ht) = (show ℤ from σ.states 0 (htot 0)) + t := by
-    intro t ht
-    have h : (show ℤ from σ.states t ht) =
-        (show ℤ from σ.states 0 (htot 0)) + (t - 0) :=
-      (zTaskFrameV2_taskRel _ _ _).mp (σ.respects_task 0 t (htot 0) ht)
-    omega
-  refine ⟨σ.states 0 (htot 0), ?_⟩
-  obtain ⟨dom, nedom, sts, resp⟩ := σ
-  have hdom : dom = fun _ => True :=
-    funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
-  subst hdom
-  have h_states : sts = fun t (_ : True) => (show ℤ from sts 0 (htot 0)) + t :=
-    funext fun t => funext fun ht => key t ht
-  change PartialHistory.mk _ _ _ _ =
-    PartialHistory.mk _ _ _ _
-  congr 1
+  have h : (show ℤ from σ.state t) = (show ℤ from σ.state 0) + (t - 0) :=
+    (zTaskFrameV2_taskRel _ _ _).mp (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
+  show (show ℤ from σ.state t) = (show ℤ from σ.state 0) + t
+  omega
 
-/-- `zTaskFrameV2`'s total-history set `H_F` (`def:world-history`: "The set of all total world
+/-- `zTaskFrameV2`'s world-history set `H_F` (`def:world-history`: "The set of all total world
 histories over $\F$ is denoted $H_{\F}$") **is** its set of offset histories.
 
-`⊇` is definitional — `zHistoryV2` carries `domain := fun _ => True`; `⊆` is
+Here `H_F` is the type `WorldHistory`, so the set is `Set.univ`; `⊆` is
 `zHistoryV2_total_eq`. -/
 theorem zHistoryV2_total_eq_range :
-    {σ : PartialHistory zTaskFrameV2 | ∀ t, σ.domain t} = Set.range zHistoryV2 := by
+    (Set.univ : Set (WorldHistory zTaskFrameV2)) = Set.range zHistoryV2 := by
   ext σ
   constructor
-  · intro htot
-    obtain ⟨w₀, rfl⟩ := zHistoryV2_total_eq σ htot
+  · intro _
+    obtain ⟨w₀, rfl⟩ := zHistoryV2_total_eq σ
     exact ⟨w₀, rfl⟩
-  · rintro ⟨w₀, rfl⟩ t
+  · intro _
     trivial
 
 /--
@@ -750,7 +730,7 @@ theorem predFormulas_operator_depth_le (φ : Formula) :
 
 The multi-family approach resolves the box semantics mismatch:
 - `TemporalTruth(.box ψ)` = opaque predicate lookup on each Z-interval
-- `TruthAt(.box ψ)` = universal quantification over the frame's total histories `H_F`
+- `TruthAt(.box ψ)` = universal quantification over the frame's world histories `H_F`
 
 By using one Z-interval per box-equivalent MCS family, `H_F` comprises
 histories for all families × all offsets (`multiFam_total_eq_range`), so the universal
@@ -828,80 +808,53 @@ theorem multiFamTaskFrame_deterministic (FamIdx : Type) [Nonempty FamIdx] :
 /-- World history for the multi-family frame, parameterized by a family index
 and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -/
 noncomputable def multiFamHistory {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
-    PartialHistory (multiFamTaskFrame FamIdx) where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => (f, w₀ + t)
-  respects_task := fun s t _ _ => by
+    WorldHistory (multiFamTaskFrame FamIdx) :=
+  WorldHistory.ofTotal _ (fun t => ((f, w₀ + t) : FamIdx × ℤ)) fun s t => by
     refine (Algebraic.multiFamGen_taskRel (D := intOrder) _ _ _).mpr ?_
     change (f, w₀ + s).1 = (f, w₀ + t).1 ∧ (f, w₀ + t).2 = (f, w₀ + s).2 + (t - s)
     exact ⟨rfl, by omega⟩
 
 /-- Time-shifting `multiFamHistory f w₀` by `Δ` gives `multiFamHistory f (w₀ + Δ)`. -/
 theorem multiFamHistory_shift_eq {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ Δ : ℤ) :
-    PartialHistory.timeShift (multiFamHistory f w₀ : PartialHistory (multiFamTaskFrame FamIdx)) Δ =
-      multiFamHistory f (w₀ + Δ) := by
-  change PartialHistory.mk _ _ _ _ =
-    PartialHistory.mk _ _ _ _
-  have h_states : (fun (t : ℤ) (_ : True) => (f, w₀ + (t + Δ))) =
-      (fun (t : ℤ) (_ : True) => (f, (w₀ + Δ) + t)) := by
-    funext t _; congr 1; omega
-  congr 2
+    (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)).timeShift Δ =
+      multiFamHistory f (w₀ + Δ) :=
+  WorldHistory.ext_state fun t => by
+    show ((f, w₀ + (t + Δ)) : FamIdx × ℤ) = (f, (w₀ + Δ) + t)
+    congr 1; omega
 
-/-- Every family line is total (`def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`).
-Definitional: `multiFamHistory` carries `domain := fun _ => True`. This is the `ℤ` counterpart
-of `bundleFlowHistory_total` (`FlowFrame.lean`), and is what the totality-targeted box clause
-(`def:BL-semantics`, "for all $\sigma \in H_{\F}$") consumes. -/
-theorem multiFamHistory_total {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
-    (multiFamHistory f w₀ : PartialHistory (multiFamTaskFrame FamIdx)).IsTotal :=
-  fun _ => trivial
-
-/-- Every total history of the multi-family frame is a family line. Totality is
-`def:world-history`'s cut `X = D`, spelled `∀ t, σ.domain t`.
+/-- Every world history of the multi-family frame is a family line.
 
 `multiFamTaskFrame`'s task relation is deterministic (same family, position shifted by `d`), so
 the state at time `0` fixes both the family index and the offset, and `respects_task` propagates
 them to every other time. This is the `ℤ` specialization of `multiFamGen_total_eq`
 (`FlowFrame.lean`), reproved here because the two frames are separate definitions. -/
 theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
-    (σ : PartialHistory (multiFamTaskFrame FamIdx)) (htot : ∀ t, σ.domain t) :
+    (σ : WorldHistory (multiFamTaskFrame FamIdx)) :
     ∃ f w₀, σ = multiFamHistory f w₀ := by
-  have key : ∀ (t : ℤ) (ht : σ.domain t),
-      σ.states t ht = ((σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2 + t) := by
-    intro t ht
-    obtain ⟨h₁, h₂⟩ : (σ.states 0 (htot 0)).1 = (σ.states t ht).1 ∧
-        (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + (t - 0) :=
-      (Algebraic.multiFamGen_taskRel (D := intOrder) _ _ _).mp (σ.respects_task 0 t (htot 0) ht)
-    refine Prod.ext h₁.symm ?_
-    show (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + t
-    rw [h₂, sub_zero]
-  refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
-  obtain ⟨dom, nedom, sts, resp⟩ := σ
-  have hdom : dom = fun _ => True :=
-    funext fun t => propext ⟨fun _ => trivial, fun _ => htot t⟩
-  subst hdom
-  have h_states : sts = fun t (_ : True) =>
-      ((sts 0 (htot 0)).1, (sts 0 (htot 0)).2 + t) :=
-    funext fun t => funext fun ht => key t ht
-  change PartialHistory.mk _ _ _ _ =
-    PartialHistory.mk _ _ _ _
-  congr 1
+  refine ⟨(σ.state 0).1, (σ.state 0).2, WorldHistory.ext_state fun t => ?_⟩
+  obtain ⟨h₁, h₂⟩ : (σ.state 0).1 = (σ.state t).1 ∧
+      (σ.state t).2 = (σ.state 0).2 + (t - 0) :=
+    (Algebraic.multiFamGen_taskRel (D := intOrder) _ _ _).mp
+      (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
+  refine Prod.ext h₁.symm ?_
+  show (σ.state t).2 = (σ.state 0).2 + t
+  rw [h₂, sub_zero]
 
 /-- The multi-family frame's set of possible worlds `H_F` (`def:world-history`: "The set of all
 possible worlds over $\F$ is denoted $H_{\F}$") **is** its set of family lines.
 
-`⊇` is definitional — `multiFamHistory` carries `domain := fun _ => True`; `⊆` is
+Here `H_F` is the type `WorldHistory`, so the set is `Set.univ`; `⊆` is
 `multiFam_total_eq`. This is the `ℤ` case of the generic `multiFamGen_total_eq_range`
 (`FlowFrame.lean`). -/
 theorem multiFam_total_eq_range (FamIdx : Type) [Nonempty FamIdx] :
-    {σ : PartialHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} =
+    (Set.univ : Set (WorldHistory (multiFamTaskFrame FamIdx))) =
       Set.range (fun (p : FamIdx × ℤ) => multiFamHistory p.1 p.2) := by
   ext σ
   constructor
-  · intro htot
-    obtain ⟨f, w₀, rfl⟩ := multiFam_total_eq σ htot
+  · intro _
+    obtain ⟨f, w₀, rfl⟩ := multiFam_total_eq σ
     exact ⟨⟨f, w₀⟩, rfl⟩
-  · rintro ⟨⟨f, w₀⟩, rfl⟩ t
+  · intro _
     trivial
 
 /--
@@ -916,7 +869,7 @@ MCS family, with `WorldState = FamIdx × ℤ`. Box quantification ranges over
 all families (via `H_F` comprising all family×offset histories), resolving
 the single-Z-interval box semantics mismatch.
 
-The key insight: `TruthAt(.box ψ)` quantifies over all total histories,
+The key insight: `TruthAt(.box ψ)` quantifies over all world histories,
 which includes all families. By the S5 box-equivalence structure, `.box ψ ∈ A`
 iff `.box ψ ∈ N` for every box-equivalent MCS N. The box predicate on each
 Z-interval is constant (inherited from the chronicle's S5 structure via
@@ -931,7 +884,7 @@ theorem countermodel_discrete_reynolds_v2
     ∃ (F : TaskFrame) (_ : SuccOrder ↑F.Duration) (_ : PredOrder ↑F.Duration)
       (_ : IsSuccArchimedean ↑F.Duration) (_ : IsPredArchimedean ↑F.Duration)
       (_ : F.Deterministic)
-      (TM : TaskModel F) (τ : PartialHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
+      (TM : TaskModel F) (τ : WorldHistory F) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   -- === Multi-Family Z-Interval Approach (bypasses chronicle_gap_contradiction) ===
   --
@@ -997,7 +950,7 @@ theorem countermodel_discrete_reynolds_v2
     refine ⟨(multiFamTaskFrame FamIdx).toTaskFrame,
       inferInstance, inferInstance, inferInstance, inferInstance,
       multiFamTaskFrame_deterministic FamIdx, TM,
-      multiFamHistory f₀ 0, multiFamHistory_total f₀ 0,
+      multiFamHistory f₀ 0,
       s₀.val, ?_⟩
     intro h_truth_phi
     have h_corr := (h_truth_corr φ (Finset.Subset.refl _) f₀ 0 s₀.val).mp h_truth_phi
@@ -1010,12 +963,11 @@ theorem countermodel_discrete_reynolds_v2
   intro ψ h_sub f w₀ t
   induction ψ generalizing f w₀ t with
   | atom a =>
-    -- TruthAt(.atom a) = ∃ ht, TM.valuation (states t ht) a
+    -- TruthAt(.atom a) = TM.valuation (state t) a
     -- Both sides reduce to Z_f.interp(atomMap(.atom a))(toCarrier(w₀+t))
-    -- LHS: ∃ ht, (getZ f).interp ... (toCarrier (w₀+t)) [via TM def + multiFamHistory.states]
+    -- LHS: (getZ f).interp ... (toCarrier (w₀+t)) [via TM def + multiFamHistory.state]
     -- RHS: (getZ f).interp ... (toCarrier (w₀+t)) [via TemporalTruth def]
-    simp only [TruthAt, TemporalTruth, multiFamHistory, TM]
-    exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
+    exact Iff.rfl
   | bot =>
     simp only [TruthAt, TemporalTruth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
@@ -1024,23 +976,21 @@ theorem countermodel_discrete_reynolds_v2
       (ih₁ (Finset.Subset.trans Finset.subset_union_left h_sub) f w₀ t)
       (ih₂ (Finset.Subset.trans Finset.subset_union_right h_sub) f w₀ t)
   | box ψ ih =>
-    -- Box case: TruthAt(.box ψ) = ∀ σ, σ.IsTotal → TruthAt σ t ψ
+    -- Box case: TruthAt(.box ψ) = ∀ σ : WorldHistory, TruthAt σ t ψ
     -- h_sub : (.box ψ).predFormulas ⊆ φ.predFormulas
     -- This gives: ψ.predFormulas ⊆ φ.predFormulas and .box ψ ∈ φ.predFormulas
     have h_sub_ψ : ψ.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_right h_sub
     simp only [TruthAt]
     constructor
-    · -- Forward: (∀ σ, σ.IsTotal → TruthAt σ t ψ) → TemporalTruth (.box ψ)
+    · -- Forward: (∀ σ, TruthAt σ t ψ) → TemporalTruth (.box ψ)
       intro h_all
       -- Convert to: ∀ f' z, TemporalTruth Z_{f'} atomMap (toCarrier z) ψ
       have h_univ : ∀ (f' : FamIdx) (z : ℤ),
           TemporalTruth ((getZ f').toOrdered sig) (mkAtomMapFwd φ)
             (toCarrier (h_lo f') (h_hi f') z) ψ := by
         intro f' z
-        have h_tot : (multiFamHistory f' (z - t)).IsTotal :=
-          multiFamHistory_total f' (z - t)
-        have h_ta := h_all (multiFamHistory f' (z - t)) h_tot
+        have h_ta := h_all (multiFamHistory f' (z - t))
         rw [ih h_sub_ψ f' (z - t) t] at h_ta
         have h_eq : z - t + t = z := by omega
         rw [h_eq] at h_ta
@@ -1173,9 +1123,9 @@ theorem countermodel_discrete_reynolds_v2
         simp only [sent, eval] at h_eval_Z
         exact fun x => h_eval_Z x
       exact h_all_pred_Z (toCarrier (h_lo f) (h_hi f) (w₀ + t))
-    · -- Backward: TemporalTruth (.box ψ) → (∀ σ, σ.IsTotal → TruthAt σ t ψ)
-      intro h_box σ h_mem
-      obtain ⟨f', w₀', h_eq⟩ := multiFam_total_eq σ h_mem
+    · -- Backward: TemporalTruth (.box ψ) → (∀ σ, TruthAt σ t ψ)
+      intro h_box σ
+      obtain ⟨f', w₀', h_eq⟩ := multiFam_total_eq σ
       rw [h_eq, ih h_sub_ψ f' w₀' t]
       -- h_box : TemporalTruth (.box ψ) at (f, w₀+t) on Z_f
       -- = (getZ f).interp (mkAtomMapFwd φ (.box ψ)) (w₀+t)

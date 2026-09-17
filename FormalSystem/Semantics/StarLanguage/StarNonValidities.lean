@@ -93,15 +93,14 @@ registers buy, and it is why no uniform-substitution argument is needed — or a
 -/
 theorem refute_sentDet (p : Atom) :
     ¬ NF.StarValidOn (sentDet (ofPlus (PlusFormula.atom p))) := by
-  refine not_starValidOn_sentDet natModel (natHist fun _ => 0) (natHist_isTotal _)
+  refine not_starValidOn_sentDet natModel (natHist fun _ => 0)
     (0 : ℤ) (1 : ℤ) (one_pos : (0 : ℤ) < 1)
-    (natHist fun _ => 0) (natHist fun s => if s ≤ 0 then 0 else 1)
-    (natHist_isTotal _) (natHist_isTotal _) (SameStateAt.refl _ _)
-    (fun _ _ => by show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp) ?_ ?_
+    (natHist fun _ => 0) (natHist fun s => if s ≤ 0 then 0 else 1) rfl
+    (by show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp) ?_ ?_
   · -- `τ` itself satisfies `p` at time `1`: `τ(1) = 0` and `|p| = {0}`.
-    exact fun _ => ⟨trivial, (rfl : (0 : ℕ) = 0)⟩
+    exact fun _ => (rfl : (0 : ℕ) = 0)
   · -- `σ` fails `p` at time `1`: `σ(1) = 1 ∉ |p|`.
-    rintro _ ⟨_, hval⟩
+    intro _ hval
     have hval' : (if (1 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := hval
     simp at hval'
 
@@ -134,20 +133,18 @@ theorem refute_modal_future (p : Atom) :
       ((StarFormula.box (mfWitness p)).imp
         (StarFormula.box (StarFormula.allFuture (mfWitness p)))) := by
   intro h
-  have hv := h.apply_total natModel (natHist fun _ => 0) (natHist_isTotal _) (0 : ℤ)
-    (fun _ => (0 : ℤ))
+  have hv := h natModel (natHist fun _ => 0) (0 : ℤ) (fun _ => (0 : ℤ))
   have hA : StarTruthAt natModel (natHist fun _ => 0) (0 : ℤ) (fun _ => (0 : ℤ))
       (StarFormula.box (mfWitness p)) := by
-    intro σ _ hrec
+    intro σ hrec
     exact hrec
-  have hB := hv hA (natHist fun s => if s ≤ 0 then 0 else 1) (natHist_isTotal _)
+  have hB := hv hA (natHist fun s => if s ≤ 0 then 0 else 1)
   rw [StarTruth.allFuture_iff] at hB
   have hC := hB (1 : ℤ) (one_pos : (0 : ℤ) < 1)
   have hp0 : StarTruthAt natModel (natHist fun s => if s ≤ 0 then 0 else 1)
       ((fun _ => (0 : ℤ)) 1) (fun _ => (0 : ℤ)) (StarFormula.atom p) :=
-    ⟨trivial, by show (if (0 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0; simp⟩
-  obtain ⟨_, hval⟩ := hC hp0
-  have hval' : (if (1 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := hval
+    by show (if (0 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0; simp
+  have hval' : (if (1 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := hC hp0
   simp at hval'
 
 /-! ## Register erasure is not a translation -/
@@ -163,8 +160,8 @@ vector. -/
 theorem storeG_recall_valid (p : Atom) :
     StarValid ((StarFormula.timeStore 1
       (StarFormula.allFuture (.timeRecall 1 (.atom p)))).imp (.atom p)) := by
-  refine StarValid.of_forall_total ?_
-  intro F M τ _hτ x v h
+  refine StarValid.of_forall ?_
+  intro F M τ x v h
   rw [StarTruth.timeStore_iff, StarTruth.allFuture_iff] at h
   obtain ⟨y, hy⟩ := exists_gt x
   have hx := h y hy
@@ -185,16 +182,14 @@ theorem refute_erasure (p : Atom) :
     ¬ StarValid ((StarFormula.allFuture (.atom p)).imp (.atom p)) := by
   intro h
   have hv := h.apply NF natModel (natHist fun s => if s ≤ 0 then 1 else 0)
-    (natHist_isTotal _) (0 : ℤ) (fun _ => (0 : ℤ))
+    (0 : ℤ) (fun _ => (0 : ℤ))
   have hA : StarTruthAt natModel (natHist fun s => if s ≤ 0 then 1 else 0) (0 : ℤ)
       (fun _ => (0 : ℤ)) (StarFormula.allFuture (.atom p)) := by
     rw [StarTruth.allFuture_iff]
     intro s hs
-    exact ⟨trivial, by
-      show (if s ≤ 0 then (1 : ℕ) else 0) = 0
-      rw [if_neg (not_le.mpr hs)]⟩
-  obtain ⟨_, hval⟩ := hv hA
-  have hval' : (if (0 : ℤ) ≤ 0 then (1 : ℕ) else 0) = 0 := hval
+    show (if s ≤ 0 then (1 : ℕ) else 0) = 0
+    rw [if_neg (not_le.mpr hs)]
+  have hval' : (if (0 : ℤ) ≤ 0 then (1 : ℕ) else 0) = 0 := hv hA
   simp at hval'
 
 end FormalSystem.Semantics

@@ -540,9 +540,9 @@ and shape is what the soundness argument turns on. `boxDiamondPersistence` copie
 one time to another inside a single world, and a formula's truth is in general not time-invariant
 — that is exactly the unsoundness that was removed from `boxNeg`/`diamondPos`. The copy is sound
 here only because both source lists are restricted to modal formulas: `T(□A)` says
-`∀ σ, σ.IsTotal → A` at the evaluation time, and `F(◇A)` says `∀ σ, σ.IsTotal → ¬A` at it, and a
-claim universal over the total histories *is* time-invariant, because `timeShift` preserves
-totality.
+`∀ σ : WorldHistory F, A` at the evaluation time, and `F(◇A)` says `∀ σ : WorldHistory F, ¬A` at
+it, and a claim universal over the world histories *is* time-invariant, because `timeShift` maps
+world histories to world histories.
 
 So a consumer needs to see the `□`/`◇` shape to invoke that time-invariance at all. This lemma supplies
 it: everything emitted is either a positive `□` formula or a negative `◇` formula, `◇` in its
@@ -616,7 +616,7 @@ times *within one world*; that is sound and is unaffected.
 time*. `Formula.untl`/`Formula.snce` are evaluated inside a single history and their truth is
 interval-relative, so such a copy asserts at a later instant what is only known at an earlier
 one. It is not rescued by the time-invariance argument, because the claim is not universal over
-the total histories, and no
+the world histories, and no
 syntactic guard computable from `(branch, timeOrd)` expresses the semantic condition under which
 the copy would be sound. Both blocks were removed; do not reintroduce them, in guarded form or
 otherwise. Deleting them can only make branches *harder* to close, and the full conformance
@@ -955,7 +955,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         -- `F(U(e',g'))` standing at `l.time` unconditionally to `freshTime`. `Formula.untl` is
         -- evaluated inside a single history and its truth is interval-relative, so
         -- `F(U(e',g'))@t` does not imply `F(U(e',g'))@t'` for `t < t'`; unlike the `□`/`◇`
-        -- copies below, the claim is not universal over the total histories, so the
+        -- copies below, the claim is not universal over the world histories, so the
         -- time-invariance argument does not transfer.
         -- The block mapped a satisfiable branch to two unsatisfiable ones and made
         -- `RuleSound carrierBase .untlPos` false as stated. Same reason as the six group-3
@@ -1099,7 +1099,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           -- for the time-axis prohibition. `Formula.untl` is interval-relative along a single
           -- history, so `F(U(e',g'))@t` does not imply `F(U(e',g'))@t'` for `t < t'`, and no
           -- time-invariance argument is available, because the claim is not universal over the
-          -- total histories. A
+          -- world histories. A
           -- *guarded* copy is not available either: soundness would need
           -- `¬U(e',g')@A → ¬U(e',g')@C` for a freshly chosen `C > A`, a semantic condition on
           -- the model that no syntactic guard computable from `(branch, ord)` expresses. This

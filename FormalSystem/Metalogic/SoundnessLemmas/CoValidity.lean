@@ -73,11 +73,10 @@ Hilbert-side companion is `FormalSystem.Theorems.DedekindDerived.coDerived`. See
 `Formula.co` for the source citation and the operator-resolution warning.
 -/
 theorem co_valid (φ : Formula) : ValidRTime (Formula.co φ) := by
-  -- `ValidIn.of_forall_total` restores the frame-condition-explicit binder shape; `sat_intro`
+  -- `intro` unfolds `ValidRTime` to the frame-condition-explicit binder shape; `sat_intro`
   -- then splits `Sat .RTime F` into the density instance and the LUB hypothesis, keeping the
   -- latter under the caller's own name.
-  refine ValidIn.of_forall_total ?_
-  intro F h_lub M τ _hτ t
+  intro F h_lub M τ t
   sat_intro h_lub
   simp only [Formula.co]
   intro h_tri h_H

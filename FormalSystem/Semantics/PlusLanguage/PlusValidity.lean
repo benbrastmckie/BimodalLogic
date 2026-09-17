@@ -33,8 +33,7 @@ semantics.
 ## Main Results
 
 - `PlusValidOnFrames.mono`, `PlusValidIn.mono` — monotonicity
-- `PlusValidIn.of_forall_total` / `.apply_total` and the `PlusValidOnFrames` forms — the
-  binder-shape adapters
+- `PlusValid.of_forall` / `.apply` — the `.Base` binder-shape adapters
 - `plusTruthAt_ofFormula` — **the truth-transfer bridge**: an L formula is true in L⁺ exactly
   when it is true in L, at the same model, history and time
 - `plusValidIn_ofFormula_iff` — **semantic conservativity of L⁺ over L, at every frame
@@ -68,7 +67,7 @@ instance : PointTruth PlusFormula where
 over `F`, every possible world `τ ∈ H_F`, and every time. The L⁺ mirror of
 `TaskFrame.ValidOn`. -/
 def TaskFrame.PlusValidOn (F : TaskFrame) (φ : PlusFormula) : Prop :=
-  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PlusTruthAt M τ.val x φ
+  ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PlusTruthAt M τ x φ
 
 /-- `φ` is valid on every frame satisfying `P`. **The primitive**: the L⁺ mirror of
 `ValidOnFrames`, indexed by a bare frame predicate rather than a `FrameClass` tag so that one
@@ -82,7 +81,7 @@ over the same `FrameClass.Sat`. -/
 def PlusValidIn (fc : ProofSystem.FrameClass) (φ : PlusFormula) : Prop :=
   PlusValidOnFrames fc.Sat φ
 
-/-- An L⁺ formula is **valid** if it is true in all models, at all times, at every **total**
+/-- An L⁺ formula is **valid** if it is true in all models, at all times, at every world
 history, over every task frame. `PlusValidIn` at the unconstrained class, exactly as `Valid` is
 `ValidIn .Base`. -/
 def PlusValid (φ : PlusFormula) : Prop :=
@@ -111,48 +110,21 @@ theorem PlusValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : PlusFormul
 
 /-! ### Binder-shape adapters
 
-`PlusValidOnFrames` is stated over the bundled `(τ : WorldHistory F)`; every proof that consumes
-or produces it works with the unbundled pair `(τ : PartialHistory F) (hτ : τ.IsTotal)`. These four
-are the adapters, exactly as on the L and L⁻ sides. -/
+Only the `.Base` pair: it discharges the vacuous `Sat .Base` argument. `PlusValidOnFrames` and
+`PlusValidIn` quantify over `WorldHistory F` directly, so `intro` and application open them. -/
 
-/-- Introduce `PlusValidOnFrames` from the unbundled shape. -/
-theorem PlusValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : PlusFormula}
-    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
-    PlusValidOnFrames P φ :=
-  GenericValidOnFrames.of_forall_total (L := PlusFormula) (φ := φ) h
-
-/-- Eliminate `PlusValidOnFrames` into the unbundled shape. -/
-theorem PlusValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : PlusFormula}
-    (h : PlusValidOnFrames P φ) (F : TaskFrame) (hF : P F) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
-  GenericValidOnFrames.apply_total (L := PlusFormula) (φ := φ) h F hF M τ hτ t
-
-/-- `PlusValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
-theorem PlusValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : PlusFormula}
-    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
-    PlusValidIn fc φ :=
-  GenericValidIn.of_forall_total (L := PlusFormula) (φ := φ) h
-
-/-- `PlusValidOnFrames.apply_total` at a `FrameClass` tag. -/
-theorem PlusValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : PlusFormula}
-    (h : PlusValidIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
-  GenericValidIn.apply_total (L := PlusFormula) (φ := φ) h F hF M τ hτ t
-
-/-- Introduce `PlusValid` from the unbundled shape; the `Sat .Base` argument (`True`) is
-discharged here. Mirror of `Valid.of_forall_total`. -/
-theorem PlusValid.of_forall_total {φ : PlusFormula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F),
-           τ.IsTotal → ∀ t : F.Duration, PlusTruthAt M τ t φ) :
+/-- Introduce `PlusValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
+discharged here. Mirror of `Valid.of_forall`. -/
+theorem PlusValid.of_forall {φ : PlusFormula}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      PlusTruthAt M τ t φ) :
     PlusValid φ :=
-  GenericValid.of_forall_total (L := PlusFormula) (φ := φ) h
+  GenericValid.of_forall (L := PlusFormula) (φ := φ) h
 
-/-- Eliminate `PlusValid` into the unbundled shape. Mirror of `Valid.apply`. -/
+/-- Eliminate `PlusValid` into its explicit binder shape. Mirror of `Valid.apply`. -/
 theorem PlusValid.apply {φ : PlusFormula} (h : PlusValid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : PartialHistory F) (hτ : τ.IsTotal) (t : F.Duration) : PlusTruthAt M τ t φ :=
-  GenericValid.apply (L := PlusFormula) (φ := φ) h F M τ hτ t
+    (τ : WorldHistory F) (t : F.Duration) : PlusTruthAt M τ t φ :=
+  GenericValid.apply (L := PlusFormula) (φ := φ) h F M τ t
 
 /-! ## The truth-transfer bridge along `ofFormula` -/
 
@@ -168,13 +140,13 @@ six L clauses of `PlusTruthAt` are `TruthAt`'s verbatim and `ofFormula` is
 constructor-to-constructor.
 -/
 theorem plusTruthAt_ofFormula (M : TaskModel F) (φ : Formula) :
-    ∀ (τ : PartialHistory F) (t : F.Duration),
+    ∀ (τ : WorldHistory F) (t : F.Duration),
       PlusTruthAt M τ t (ofFormula φ) ↔ TruthAt M τ t φ := by
   induction φ with
   | atom p => intro τ t; exact Iff.rfl
   | bot => intro τ t; exact Iff.rfl
   | imp φ ψ ihφ ihψ => intro τ t; exact Iff.imp (ihφ τ t) (ihψ τ t)
-  | box φ ih => intro τ t; exact forall_congr' fun σ => imp_congr_right fun _ => ih σ t
+  | box φ ih => intro τ t; exact forall_congr' fun σ => ih σ t
   | untl ψ φ ihψ ihφ =>
     intro τ t
     exact exists_congr fun s => and_congr_right fun _ =>
@@ -187,7 +159,7 @@ theorem plusTruthAt_ofFormula (M : TaskModel F) (φ : Formula) :
         (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ τ r)
 
 /-- The context-level form of the bridge. -/
-theorem plusTruthAt_ofCtx (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration)
+theorem plusTruthAt_ofCtx (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     {Γ : Context} (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     ∀ ψ ∈ ofCtx Γ, PlusTruthAt M τ t ψ := by
   intro ψ hψ
@@ -199,14 +171,10 @@ satisfying `P` is L validity over the same frames. -/
 theorem plusValidOnFrames_ofFormula_iff (P : TaskFrame → Prop) (φ : Formula) :
     PlusValidOnFrames P (ofFormula φ) ↔ ValidOnFrames P φ := by
   constructor
-  · intro h
-    refine ValidOnFrames.of_forall_total ?_
-    intro F hF M τ hτ t
-    exact (plusTruthAt_ofFormula M φ τ t).mp (PlusValidOnFrames.apply_total h F hF M τ hτ t)
-  · intro h
-    refine PlusValidOnFrames.of_forall_total ?_
-    intro F hF M τ hτ t
-    exact (plusTruthAt_ofFormula M φ τ t).mpr (ValidOnFrames.apply_total h F hF M τ hτ t)
+  · intro h F hF M τ t
+    exact (plusTruthAt_ofFormula M φ τ t).mp (h F hF M τ t)
+  · intro h F hF M τ t
+    exact (plusTruthAt_ofFormula M φ τ t).mpr (h F hF M τ t)
 
 /--
 **Semantic conservativity of L⁺ over L, at every frame class.** An L formula is L⁺-valid over

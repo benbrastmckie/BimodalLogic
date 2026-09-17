@@ -219,12 +219,12 @@ inductive Toy where
 
 /-- The truth recursion for `Toy`, with the same four clause shapes as every other language in
 the tree. -/
-def ToyTruthAt {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) :
+def ToyTruthAt {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
     Toy → Prop
-  | .atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
+  | .atom p => M.valuation (τ.state t) p
   | .bot => False
   | .imp φ ψ => ToyTruthAt M τ t φ → ToyTruthAt M τ t ψ
-  | .box φ => ∀ (σ : PartialHistory F), σ.IsTotal → ToyTruthAt M σ t φ
+  | .box φ => ∀ (σ : WorldHistory F), ToyTruthAt M σ t φ
 
 /-! ### Everything the contract asks for, and nothing else -/
 
@@ -253,7 +253,7 @@ Every `example` below elaborates from the three instances above and nothing else
 
 section Inherited
 variable (F : TaskFrame) (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass)
-  (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (φ ψ : Toy)
+  (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ ψ : Toy)
 
 -- The four validity notions.
 example : Prop := TaskFrame.GenericValidOn F φ
@@ -261,12 +261,11 @@ example : Prop := GenericValidOnFrames P φ
 example : Prop := GenericValidIn fc φ
 example : Prop := GenericValid φ
 
--- The bundled/unbundled bridge, both monotonicity lemmas, and a representative adapter from
--- each of the four families.
+-- The unbundled shape is definitional, both monotonicity lemmas, direct elimination at each
+-- of the three frame-indexed notions, and the `.Base` adapters.
 example : TaskFrame.GenericValidOn F φ ↔
-    ∀ (M : TaskModel F) (τ : PartialHistory F), τ.IsTotal →
-      ∀ x : F.Duration, PointTruth.sat M τ x φ :=
-  genericValidOn_iff_total F φ
+    ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PointTruth.sat M τ x φ :=
+  Iff.rfl
 
 example {Q : TaskFrame → Prop} (h : ∀ G, Q G → P G) (hP : GenericValidOnFrames P φ) :
     GenericValidOnFrames Q φ :=
@@ -276,21 +275,21 @@ example {fc₁ fc₂ : ProofSystem.FrameClass} (h : fc₁ ≤ fc₂) (hv : Gener
     GenericValidIn fc₂ φ :=
   GenericValidIn.mono h hv
 
-example (h : TaskFrame.GenericValidOn F φ) (hτ : τ.IsTotal) : PointTruth.sat M τ t φ :=
-  TaskFrame.GenericValidOn.apply_total h M τ hτ t
+example (h : TaskFrame.GenericValidOn F φ) : PointTruth.sat M τ t φ :=
+  h M τ t
 
-example (h : GenericValidOnFrames P φ) (hF : P F) (hτ : τ.IsTotal) : PointTruth.sat M τ t φ :=
-  GenericValidOnFrames.apply_total h F hF M τ hτ t
+example (h : GenericValidOnFrames P φ) (hF : P F) : PointTruth.sat M τ t φ :=
+  h F hF M τ t
 
-example (h : GenericValidIn fc φ) (hF : fc.Sat F) (hτ : τ.IsTotal) : PointTruth.sat M τ t φ :=
-  GenericValidIn.apply_total h F hF M τ hτ t
+example (h : GenericValidIn fc φ) (hF : fc.Sat F) : PointTruth.sat M τ t φ :=
+  h F hF M τ t
 
-example (h : GenericValid φ) (hτ : τ.IsTotal) : PointTruth.sat M τ t φ :=
-  GenericValid.apply h F M τ hτ t
+example (h : GenericValid φ) : PointTruth.sat M τ t φ :=
+  GenericValid.apply h F M τ t
 
 example (h : ¬ GenericValid φ) :
-    ¬ ∀ (G : TaskFrame) (N : TaskModel G) (σ : PartialHistory G), σ.IsTotal →
-        ∀ x : G.Duration, PointTruth.sat N σ x φ :=
+    ¬ ∀ (G : TaskFrame) (N : TaskModel G) (σ : WorldHistory G) (x : G.Duration),
+        PointTruth.sat N σ x φ :=
   GenericValid.of_not h
 
 -- The whole Boolean clause tier, at the toy language's own truth relation.
@@ -309,7 +308,7 @@ example : ToyTruthAt M τ t (TruthClauses.or φ ψ) ↔
   TruthClauses.or_iff (L := Toy) M τ t PUnit.unit φ ψ
 
 example : ToyTruthAt M τ t (TruthClauses.diamond φ) ↔
-    ∃ σ : PartialHistory F, σ.IsTotal ∧ ToyTruthAt M σ t φ :=
+    ∃ σ : WorldHistory F, ToyTruthAt M σ t φ :=
   TruthClauses.diamond_iff (L := Toy) M τ t PUnit.unit φ
 
 end Inherited

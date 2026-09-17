@@ -20,7 +20,7 @@ syntax and proof system live at `FormalSystem/Syntax/PlusLanguage/`. The declara
 
 ## Modules
 
-- `PlusLanguage.PlusTruth` — `SameStateAt` and `PlusTruthAt`, the truth recursion whose seventh
+- `PlusLanguage.PlusTruth` — `PlusTruthAt`, the truth recursion whose seventh
   clause is the stability clause of `def:BLstar-semantics`
 - `PlusLanguage.PlusValidity` — `PlusValidOnFrames`, `PlusValidIn`, `PlusValid`, and the
   semantic conservativity of L⁺ over L

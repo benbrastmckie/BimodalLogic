@@ -121,7 +121,7 @@ def ArcTime (t : ℚ) : Prop := ∃ n : ℤ, |(t : ℝ) - (n : ℝ)| < arcRadius
 @[simp] theorem clock_atom_truth (a : Atom) (t : ℚ) :
     TruthAt clockModel clockHistory t (Formula.atom a) ↔ ArcTime t := by
   constructor
-  · rintro ⟨_, hq⟩
+  · intro hq
     obtain ⟨q, hqe, hqlt⟩ := hq
     obtain ⟨n, hn⟩ := (cmk_eq_cmk_iff q t).mp hqe
     refine ⟨-n, ?_⟩
@@ -130,7 +130,6 @@ def ArcTime (t : ℚ) : Prop := ∃ n : ℤ, |(t : ℝ) - (n : ℝ)| < arcRadius
     rw [heq]
     exact hqlt
   · rintro ⟨n, hn⟩
-    refine ⟨trivial, ?_⟩
     show OnArc (cmk t)
     refine ⟨t - (n : ℚ), ?_, ?_⟩
     · rw [cmk_eq_cmk_iff]
@@ -172,7 +171,7 @@ module carries no characterization theorems for them, so the three needed here a
 section Connectives
 
 variable {D : TemporalOrder}
-  {F : FrameOver D} {M : TaskModel F} {τ : PartialHistory F} {t : ↑D}
+  {F : FrameOver D} {M : TaskModel F} {τ : WorldHistory F} {t : ↑D}
 
 /-- `⊤` is true everywhere. -/
 theorem truth_top : TruthAt M τ t Formula.top := fun h => h
@@ -320,10 +319,10 @@ theorem co_not_derives_prior_U_gap (a : Atom) (Γ : Context)
     ¬ Derivable FrameClass.Dense Γ (priorUGapFormula (Formula.atom a)) := by
   rintro ⟨d⟩
   refine priorUGapFormula_false a ?_
-  refine soundness_dense Γ _ d clockFrame clockModel clockHistory clockHistory_isTotal 0 ?_
+  refine soundness_dense Γ _ d clockFrame clockModel clockHistory 0 ?_
   intro ψ hψ
   obtain ⟨χ, rfl⟩ := hΓ ψ hψ
-  exact clock_co_true clockModel χ clockHistory clockHistory_isTotal 0
+  exact clock_co_true clockModel χ clockHistory 0
 
 /-! ## The time-reversal mirror
 
@@ -333,12 +332,6 @@ clock model is, and that is precisely why the arc was centred at `0`: negation `
 automorphism of the circle that preserves the arc and reverses durations. An asymmetric arc would
 break this, and must not be substituted.
 -/
-
-/-- Transporting a history's state assignment along an equality of times. -/
-theorem states_congr {D : TemporalOrder}
-    {F : FrameOver D} {τ : PartialHistory F} {a b : ↑D} (h : a = b)
-    (ha : τ.domain a) (hb : τ.domain b) : τ.states a ha = τ.states b hb := by
-  subst h; rfl
 
 /--
 Negation on the clock's world states.
@@ -372,45 +365,38 @@ theorem clockRel_neg {a b : ClockState} {d : ℚ} (h : clockRel a d b) :
   simp only [cneg, hb, cmk_neg]
   abel
 
-theorem reflect_respects (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (s t : ℚ) :
-    clockRel (cneg (τ.states (-s) (hτ (-s)))) (t - s) (cneg (τ.states (-t) (hτ (-t)))) := by
-  have h2 := clockRel_neg (a := τ.states (-s) (hτ (-s))) (b := τ.states (-t) (hτ (-t)))
-    (d := -t - -s) ((clockFrame_taskRel _ _ _).mp (τ.respects_task (-s) (-t) (hτ (-s)) (hτ (-t))))
+theorem reflect_respects (τ : WorldHistory clockFrame) (s t : ℚ) :
+    clockRel (cneg (τ.state (-s))) (t - s) (cneg (τ.state (-t))) := by
+  have h2 := clockRel_neg (a := τ.state (-s)) (b := τ.state (-t)) (d := -t - -s)
+    ((clockFrame_taskRel _ _ _).mp (τ.val.respects_task (-s) (-t) (τ.property (-s))
+      (τ.property (-t))))
   have he : -(-t - -s) = t - s := by ring
   rwa [he] at h2
 
 /--
-The **time reversal** of a total history: `t ↦ -τ(-t)`.
+The **time reversal** of a world history: `t ↦ -τ(-t)`.
 
 It is again a history of the clock frame — negation on `ℚ ⧸ ℤ` reverses durations, so
 task-respect at `(-s, -t)` becomes task-respect at `(s, t)`.
 -/
-def reflect (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) : PartialHistory clockFrame where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => cneg (τ.states (-t) (hτ (-t)))
-  respects_task := fun s t _ _ => (clockFrame_taskRel _ _ _).mpr (reflect_respects τ hτ s t)
-theorem reflect_isTotal (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) :
-    (reflect τ hτ).IsTotal := fun _ => trivial
+def reflect (τ : WorldHistory clockFrame) : WorldHistory clockFrame :=
+  WorldHistory.ofTotal clockFrame (fun t => cneg (τ.state (-t)))
+    (fun s t => (clockFrame_taskRel _ _ _).mpr (reflect_respects τ s t))
 
-/-- Reflecting twice is the identity on total histories: `-(-t) = t` in the times and
+/-- Reflecting twice is the identity on world histories: `-(-t) = t` in the times and
 `cneg (cneg w) = w` in the states. This is what makes `reflect` an **equivalence** on `H_F`
 rather than merely a map, which is what `TruthAntiIso.hist` requires. -/
 private theorem reflect_reflect (τ : WorldHistory clockFrame) :
-    reflect (reflect τ.val τ.property) (reflect_isTotal _ _) = τ.val := by
-  refine ShiftSet.wh_ext
-    (funext fun z => propext ⟨fun _ => τ.property z, fun _ => trivial⟩) ?_
-  intro r _ h'
-  show cneg (cneg (τ.val.states (-(-r)) (τ.property (-(-r))))) = τ.val.states r h'
-  exact (cneg_cneg _).trans
-    (PartialHistory.states_eq_of_time_eq τ.val (-(-r)) r (neg_neg r) _ h')
+    reflect (reflect τ) = τ :=
+  WorldHistory.ext_state fun r =>
+    (cneg_cneg _).trans (τ.state_congr (neg_neg r))
 
 /-- Time reversal as an involutive equivalence of `H_clockFrame`. -/
 noncomputable def clockReflectEquiv : WorldHistory clockFrame ≃ WorldHistory clockFrame where
-  toFun := fun τ => ⟨reflect τ.val τ.property, reflect_isTotal _ _⟩
-  invFun := fun τ => ⟨reflect τ.val τ.property, reflect_isTotal _ _⟩
-  left_inv := fun τ => Subtype.ext (reflect_reflect τ)
-  right_inv := fun τ => Subtype.ext (reflect_reflect τ)
+  toFun := reflect
+  invFun := reflect
+  left_inv := reflect_reflect
+  right_inv := reflect_reflect
 
 /--
 **The clock frame's time-reversal anti-isomorphism.**
@@ -426,13 +412,11 @@ noncomputable def clockMirrorIso : TruthAntiIso clockModel clockModel where
   hist := clockReflectEquiv
   atom := by
     intro τ t _
-    have hstates : τ.val.states (-(-t)) (τ.property (-(-t))) = τ.val.states t (τ.property t) :=
-      PartialHistory.states_eq_of_time_eq τ.val (-(-t)) t (neg_neg t) _ _
-    show OnArc (τ.val.states t (τ.property t)) ↔
-      OnArc (cneg (τ.val.states (-(-t)) (τ.property (-(-t)))))
-    calc OnArc (τ.val.states t (τ.property t))
-        ↔ OnArc (τ.val.states (-(-t)) (τ.property (-(-t)))) := by rw [hstates]
-      _ ↔ OnArc (cneg (τ.val.states (-(-t)) (τ.property (-(-t))))) := (onArc_neg _).symm
+    have hstates : τ.state (-(-t)) = τ.state t := τ.state_congr (neg_neg t)
+    show OnArc (τ.state t) ↔ OnArc (cneg (τ.state (-(-t))))
+    calc OnArc (τ.state t)
+        ↔ OnArc (τ.state (-(-t))) := by rw [hstates]
+      _ ↔ OnArc (cneg (τ.state (-(-t)))) := (onArc_neg _).symm
 
 /--
 **The mirror lemma.** If `σ` is the time reversal of `τ` — pointwise, `σ(-x) = -τ(x)` — then `σ`
@@ -446,35 +430,33 @@ where before it was what made the `□` case work in both directions — that jo
 `TruthAntiIso.hist` being an honest equivalence.
 -/
 theorem truthAt_mirror (φ : Formula) :
-    ∀ (τ σ : PartialHistory clockFrame) (hτ : τ.IsTotal) (hσ : σ.IsTotal),
-      (∀ x : ℚ, σ.states (-x) (hσ (-x)) = cneg (τ.states x (hτ x))) →
+    ∀ (τ σ : WorldHistory clockFrame),
+      (∀ x : ℚ, σ.state (-x) = cneg (τ.state x)) →
       ∀ t : ℚ, (TruthAt clockModel σ (-t) φ.swapTemporal ↔ TruthAt clockModel τ t φ) := by
-  intro τ σ hτ hσ hrel t
-  have hσeq : σ = reflect τ hτ := by
-    refine ShiftSet.wh_ext (funext fun z => propext ⟨fun _ => trivial, fun _ => hσ z⟩) ?_
-    intro r h _
-    show σ.states r h = cneg (τ.states (-r) (hτ (-r)))
+  intro τ σ hrel t
+  have hσeq : σ = reflect τ := by
+    refine WorldHistory.ext_state fun r => ?_
+    show σ.state r = cneg (τ.state (-r))
     have hx := hrel (-r)
     rw [neg_neg] at hx
     exact hx
   subst hσeq
-  exact (Truth.truthAt_of_truthAntiIso clockMirrorIso φ ⟨τ, hτ⟩ t).symm
+  exact (Truth.truthAt_of_truthAntiIso clockMirrorIso φ τ t).symm
 
 /--
-The form `temporal_duality` consumes: a formula true at every total history and every time of the
+The form `temporal_duality` consumes: a formula true at every world history and every time of the
 clock model has a temporal dual with the same property.
 -/
 theorem truthAt_swapTemporal (φ : Formula)
-    (h : ∀ (σ : PartialHistory clockFrame), σ.IsTotal → ∀ t : ℚ, TruthAt clockModel σ t φ)
-    (τ : PartialHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ) :
+    (h : ∀ (σ : WorldHistory clockFrame) (t : ℚ), TruthAt clockModel σ t φ)
+    (τ : WorldHistory clockFrame) (t : ℚ) :
     TruthAt clockModel τ t φ.swapTemporal := by
-  have hrel : ∀ x : ℚ,
-      τ.states (-x) (hτ (-x)) = cneg ((reflect τ hτ).states x (reflect_isTotal τ hτ x)) := by
+  have hrel : ∀ x : ℚ, τ.state (-x) = cneg ((reflect τ).state x) := by
     intro x
-    exact (cneg_cneg (τ.states (-x) (hτ (-x)))).symm
-  have hm := truthAt_mirror φ (reflect τ hτ) τ (reflect_isTotal τ hτ) hτ hrel (-t)
+    exact (cneg_cneg (τ.state (-x))).symm
+  have hm := truthAt_mirror φ (reflect τ) τ hrel (-t)
   rw [neg_neg] at hm
-  exact hm.mpr (h (reflect τ hτ) (reflect_isTotal τ hτ) (-t))
+  exact hm.mpr (h (reflect τ) (-t))
 
 /-! ## Statement S2 — the CO-closed derivation system -/
 
@@ -516,19 +498,19 @@ The axiom case is `soundness_dense` applied to the one-step derivation; the `co`
 universally quantified over the history and the time, which is what the three rule cases need.
 -/
 theorem coDerivation_sound (φ : Formula) (d : CoDerivation φ) :
-    ∀ (τ : PartialHistory clockFrame), τ.IsTotal → ∀ t : ℚ, TruthAt clockModel τ t φ := by
+    ∀ (τ : WorldHistory clockFrame) (t : ℚ), TruthAt clockModel τ t φ := by
   induction d with
   | «axiom» ψ h h_fc =>
-      intro τ hτ t
-      exact soundness_dense [] ψ (DerivationTree.axiom [] ψ h h_fc) clockFrame clockModel τ hτ t
+      intro τ t
+      exact soundness_dense [] ψ (DerivationTree.axiom [] ψ h h_fc) clockFrame clockModel τ t
         (by simp)
-  | co χ => intro τ hτ t; exact clock_co_true clockModel χ τ hτ t
-  | modus_ponens _ _ _ _ ih₁ ih₂ => intro τ hτ t; exact (ih₁ τ hτ t) (ih₂ τ hτ t)
-  | necessitation _ _ ih => intro τ hτ t; exact fun σ hσ => ih σ hσ t
+  | co χ => intro τ t; exact clock_co_true clockModel χ τ t
+  | modus_ponens _ _ _ _ ih₁ ih₂ => intro τ t; exact (ih₁ τ t) (ih₂ τ t)
+  | necessitation _ _ ih => intro τ t; exact fun σ => ih σ t
   | temporal_necessitation ψ _ ih =>
-      intro τ hτ t
-      exact (Truth.future_iff ψ).mpr fun s _ => ih τ hτ s
-  | temporal_duality ψ _ ih => intro τ hτ t; exact truthAt_swapTemporal ψ ih τ hτ t
+      intro τ t
+      exact (Truth.future_iff ψ).mpr fun s _ => ih τ s
+  | temporal_duality ψ _ ih => intro τ t; exact truthAt_swapTemporal ψ ih τ t
 
 /--
 **`CO` does not derive Prior-U (schema form).** The unqualified statement.
@@ -545,6 +527,6 @@ theorem co_not_derives_prior_U_gap_schema (a : Atom) :
     ¬ Nonempty (CoDerivation (priorUGapFormula (Formula.atom a))) := by
   rintro ⟨d⟩
   exact priorUGapFormula_false a
-    (coDerivation_sound _ d clockHistory clockHistory_isTotal 0)
+    (coDerivation_sound _ d clockHistory 0)
 
 end FormalSystem.Metalogic.Independence
