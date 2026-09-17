@@ -11,7 +11,7 @@ next_project_number: 614
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,610,611,612,613 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,585,592,603,604,605,606,607,608,610,611,612,613 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -118,7 +118,6 @@ next_project_number: 614
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
       └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
-578 [IMPLEMENTING] — Fix the API documentation integration into the CI pipeline:...
 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
   └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
@@ -762,7 +761,7 @@ See specs/reviews/review-2026-09-15.md, Finding H1, for full detail.
 ---
 
 ### 578. Fix api documentation ci integration
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None

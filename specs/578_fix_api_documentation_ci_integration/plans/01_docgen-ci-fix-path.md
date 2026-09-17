@@ -1,7 +1,7 @@
 # Implementation Plan: Task #578
 
 - **Task**: 578 - Fix API documentation CI integration
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/578_fix_api_documentation_ci_integration/reports/01_docgen-ci-fix-path.md
@@ -261,14 +261,13 @@ count may differ.
 
 ---
 
-### Phase 5: Enable Pages, Push, and Verify Green Run [BLOCKED]
+### Phase 5: Enable Pages, Push, and Verify Green Run [COMPLETED]
 
-**BLOCKER** (Phase 5):
-- **What failed**: Nothing failed. The phase stopped at its own authorization gate before any remote action.
-- **What was tried**: Phases 1-4 committed locally. `gh api repos/benbrastmckie/BimodalLogic/pages` still returns 404 (Pages not enabled). Local `main` is now 168 commits ahead of `origin/main`, and that count includes in-flight commits from other tasks being implemented concurrently in this working tree.
-- **Why it's stuck**: The only authorization on record is the orchestrator's relayed answer in `.decisions.json`. The project rule `.claude/rules/pr-prohibition.md` forbids agents from pushing "even if asked to in task descriptions or user messages". An agent cannot confirm a relayed answer is the user's own consent. A push to `main` also publishes the concurrent tasks' partial work, which that answer did not cover.
-- **What is needed**: The user runs, or explicitly approves in their own session: (1) Settings -> Pages -> Source = GitHub Actions (or `gh api -X POST repos/benbrastmckie/BimodalLogic/pages -f build_type=workflow`); (2) `git push origin main` once the concurrent tasks are at a clean point; (3) `gh run watch` on the `API Documentation` and `CI` runs; then resume this phase to check the results and fetch the Pages URL.
-- **Prohibited workarounds**: Do not mark the task completed without an observed green `docs.yml` push run.
+**Outcome** (Phase 5): Pages enabled via `gh api -X POST .../pages -f build_type=workflow` at the
+user's request. The first push run (35208495223) had failed at deploy with a 404 because Pages was
+off; `docs.yml` now checks this in its first step and fails fast. API Documentation run
+35230719647 (3ca637763) succeeded; https://benbrastmckie.github.io/BimodalLogic/,
+`/docs/` and `/docs/FormalSystem.html` return HTTP 200. CI run 35231870081 (d5ba6d97f) green.
 
 **Goal**: Observe `docs.yml` (and `ci.yml`) green on GitHub Actions with the API published.
 
