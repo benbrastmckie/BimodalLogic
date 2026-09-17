@@ -11,11 +11,11 @@ next_project_number: 605
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,578,584,586,590,592,603,604 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,506,560,564,565,567,569,570,585,600 | 298,464,502,559,563,568,584,586,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,588,597 | 231,465,497,565,569,585 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,540,543 | 428,498,499,500,588,597 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 410,501,589 | 125,429,540 | algebraic-representation, decidability, codebase-cleanup |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,569,578,585,586,590,592,603,604 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,506,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,586,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
@@ -100,19 +100,18 @@ next_project_number: 605
 
 ### Codebase Cleanup
 
-578 [PLANNED] — Fix the API documentation integration into the CI pipeline:...
-584 [PLANNED] — bash scripts/check-paper-definitions.sh reports case (c) --...
-  └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
-    └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
-      └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
-        └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
-  └─ 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
-    └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
-    └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
-      └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-586 [PLANNED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
+569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
+  └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
+    └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
+      └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
+578 [IMPLEMENTING] — Fix the API documentation integration into the CI pipeline:...
+585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
+  └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
+  └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
+    └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
+586 [IMPLEMENTING] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
   └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-590 [PLANNED] — Clear the 142 task-number citations under docs/ and retire...
+590 [IMPLEMENTING] — Clear the 142 task-number citations under docs/ and retire...
 
 ## Tasks
 
@@ -338,7 +337,7 @@ See specs/reviews/review-2026-09-16.md, Finding M5.
 
 ### 590. Retire stale development documentation
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 595
@@ -447,7 +446,7 @@ See specs/reviews/review-2026-09-16.md, Finding M2.
 
 ### 586. Rewrite typst proof automation chapter
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: typst
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 591
@@ -498,12 +497,13 @@ GATE-PHASE NOTE (codebase-cleanup reorganization, 2026-09-16): weigh cslib's app
 
 ### 584. Reconcile lean tree with paper vocabulary
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 582, Task 591, Task 596, Task 595
 - **Research**: [584_reconcile_lean_tree_with_paper_vocabulary/reports/02_paper-vocabulary-decisions.md]
 - **Plan**: [584_reconcile_lean_tree_with_paper_vocabulary/plans/02_paper-vocabulary-reconciliation.md]
+- **Summary**: [584_reconcile_lean_tree_with_paper_vocabulary/summaries/02_paper-vocabulary-reconciliation-summary.md]
 
 **Description**: `bash scripts/check-paper-definitions.sh` reports case (c) -- FAIL: 16 recorded definitions drifted in the upstream JPL paper, plus one anchor (`thm:M5-valid`) that no longer resolves.
 
@@ -659,7 +659,7 @@ See specs/reviews/review-2026-09-15.md, Finding H1, for full detail.
 ---
 
 ### 578. Fix api documentation ci integration
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None

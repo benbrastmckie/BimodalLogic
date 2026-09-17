@@ -1,7 +1,7 @@
 # Implementation Plan: Task #584
 
 - **Task**: 584 - Reconcile the Lean tree with the paper's renamed vocabulary and re-pin the record
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: 595 (records home, done: record lives at `docs/reference/paper-definitions-of-record.md`), 583 (CI wiring convention, done), 601 (reflection convention, done). Coordinate with 589 (owns the `specs/archive/` citation fix in `MinusLanguage/Axioms.lean`), 600 (planned Lean rename, overlapping files), 586/590/578 (planning; touch typst and docs)
 - **Research Inputs**: specs/584_reconcile_lean_tree_with_paper_vocabulary/reports/02_paper-vocabulary-decisions.md (supersedes reports/01_paper-vocabulary-drift.md)
