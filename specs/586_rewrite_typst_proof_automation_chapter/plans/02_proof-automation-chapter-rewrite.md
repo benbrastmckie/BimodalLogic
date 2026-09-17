@@ -1,7 +1,7 @@
 # Implementation Plan: Task #586
 
 - **Task**: 586 - Rewrite typst proof-automation chapter against the retired-tactics tree (widened: all non-`docs/` retired-tactic prose; final phase: CI wiring of `typst-sync-check.sh`)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None (task 591 module renames confirmed `completed`; no overlap with the rows below)
 - **Research Inputs**: specs/586_rewrite_typst_proof_automation_chapter/reports/02_verified-tactic-surface-and-ci-wiring.md (primary); reports/01_retired-tactics-chapter-drift.md (superseded on numbers)
