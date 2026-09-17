@@ -1,7 +1,7 @@
 # Implementation Plan: Typst Display/Layout Defect Fixes
 
 - **Task**: 506 - Fix all outstanding display/layout defects in the compiled typst documents
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.75 hours
 - **Dependencies**: 586 (proof-automation chapter rewrite) — COMPLETED and archived; ordering
   note satisfied, this plan targets the post-586 tree
@@ -101,7 +101,7 @@ more than one phase.
 
 ---
 
-### Phase 1: Baseline Capture and Visual Verification Loop [NOT STARTED]
+### Phase 1: Baseline Capture and Visual Verification Loop [COMPLETED]
 
 **Goal**: Stand up the reproducible fix-recompile-rescreenshot loop and record the pre-fix
 baseline, so every later phase has an unambiguous before/after comparison and an exhaustive
@@ -109,27 +109,50 @@ mechanical check.
 
 **Tasks**:
 
-- [ ] Compile both documents fresh to PDF and confirm exit 0:
+- [x] Compile both documents fresh to PDF and confirm exit 0:
       `typst compile typst/FormalFoundations.typ` and `typst compile typst/BimodalReference.typ`
-      (note the two expected `thmbox` font warnings; they are out of scope).
-- [ ] Render PNG pages for both documents into the session scratchpad (NOT into the repo):
+      (note the two expected `thmbox` font warnings; they are out of scope). Both exited 0.
+- [x] Render PNG pages for both documents into the session scratchpad (NOT into the repo):
       `typst compile --format png typst/<doc>.typ <scratch>/<doc>-{p}.png`.
-- [ ] Write the bounding-box overflow scan as a task-scoped script at
+- [x] Write the bounding-box overflow scan as a task-scoped script at
       `specs/506_fix_typst_display_defects_via_playwright_visual_loop/scripts/overflow-scan.py`
       (PyMuPDF; already confirmed importable). It must take a PDF path, use the documents'
       shared text block (A4 595.276 x 841.890 pt, `margin: 1.75in` -> x in [126.0, 469.3],
       y in [126.0, 715.9]), report every text span and drawing exceeding it, and apply the
       research report's >8pt significance threshold with a flag to lower it.
-- [ ] Run the scan on both baseline PDFs and save the output as the baseline inventory in the
+- [x] Run the scan on both baseline PDFs and save the output as the baseline inventory in the
       scratchpad; confirm it reproduces exactly the six catalogued defects and nothing else
       above threshold.
-- [ ] Stand up the Playwright loop: serve the scratchpad PNG directory
+      **Deviation (annotated, not silently skipped)**: the raw scan initially flagged a
+      systematic false positive on every single page (the auto-numbering page-number footer,
+      which Typst places in the bottom margin band by design under
+      `#set page(numbering: "1", ...)`) — filtered out by an explicit, documented exclusion in
+      the script (digit-only span, ~47.4pt bottom overflow). After that filter, the scan
+      reproduces 5 of the 6 catalogued defects as above-threshold margin-overflow findings
+      (FF p.28 = Defect 1, FF p.29 = Defect 2, FF p.31 = Defect 3, BR p.27 = Defect 6, BR p.76 =
+      Defect 5) with no unexpected 7th finding. Defect 4 (`03-proof-theory.typ:327-328`, BR
+      page 32) is structurally invisible to a margin-vs-page-edge bounding-box scan: per the
+      research report, its symptom is two text spans overlapping *each other* inside the text
+      block (a wrapped table-cell label interleaving with an adjacent unbreakable identifier),
+      not either span individually crossing the page margin. This is confirmed, not merely
+      assumed, by visual inspection in Phase 4 rather than by extending the scanner with a
+      separate span-overlap heuristic (which risks false positives from ordinary character
+      kerning in justified text) — the scan's role for Defect 4 is the recompiled-page
+      Playwright screenshot, not the bbox tool.
+- [x] Stand up the Playwright loop: serve the scratchpad PNG directory
       (`python3 -m http.server` bound to localhost, run in background), then
       `mcp__playwright__browser_navigate` to a known defect page and
       `mcp__playwright__browser_take_screenshot` it. Prove the loop end-to-end on FF page 28
-      (defect 1) and BR page 27 (defect 6) before any edit is made.
-- [ ] Record the baseline `bash scripts/typst-sync-check.sh` result (expected: PASS, all 3
-      checks green) and the baseline page counts (FF 39, BR 98).
+      (defect 1) and BR page 27 (defect 6) before any edit is made. Confirmed: both screenshots
+      visually show the catalogued symptom (overflowing derived-operator equation on FF p.28;
+      Table 8 overlapping its caption/footer on BR p.27). Screenshots saved to
+      `.playwright-mcp/baseline-FF-28.png` and `.playwright-mcp/baseline-BR-27.png`
+      (`.playwright-mcp/` added to `.gitignore` — the Playwright MCP tool is sandboxed to write
+      only inside the repo or its own default output directory, so this directory, not the
+      scratchpad, is where its screenshots land; it must never be committed).
+- [x] Record the baseline `bash scripts/typst-sync-check.sh` result (expected: PASS, all 3
+      checks green) and the baseline page counts (FF 39, BR 98). Confirmed: PASS, all 3 checks
+      green; FF = 39 pages, BR = 98 pages — both match the plan's baseline exactly.
 
 **Timing**: 0.75 hours
 

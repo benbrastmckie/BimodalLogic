@@ -97,3 +97,8 @@ indent.log
 # Python bytecode caches (scripts/lib/ is imported by the invariant harness)
 __pycache__/
 *.pyc
+
+# Playwright MCP screenshot output (visual-verification-loop scratch artifacts; the MCP tool
+# is sandboxed to write only within the repo or this default directory, so screenshots must be
+# gitignored here rather than routed to a scratchpad)
+.playwright-mcp/

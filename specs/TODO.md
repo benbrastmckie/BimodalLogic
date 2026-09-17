@@ -107,7 +107,7 @@ next_project_number: 616
 
 ### Codebase Cleanup
 
-506 [PLANNED] — Fix all outstanding display/layout defects in the compiled...
+506 [IMPLEMENTING] — Fix all outstanding display/layout defects in the compiled...
 585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
@@ -530,7 +530,7 @@ GROUND TRUTH to read first: 535's report §3-4 and §7.3 with its probes; 533's 
 ---
 
 ### 506. Fix typst display defects via playwright visual loop
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: typst
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 586
