@@ -183,15 +183,18 @@ elab_rules : tactic
 explanation of `Lean.Elab.Tactic` API, expression manipulation, and proof term
 construction.
 
-### Pattern 1b: Complete Working modal_4_tactic Example
+### Pattern 1b: Illustrative Operator-Specific Tactic
 
-This section provides the actual working implementation from Tactics.lean:
+This section is a worked, illustrative pattern for an operator-specific tactic in the style of
+`apply_axiom` -- it is a teaching example, not a tactic present in
+`FormalSystem/Automation/Tactics/`. There is no live `modal_4_tactic` (or any other
+per-axiom/per-rule tactic); `apply_axiom` handles axiom matching generically and `modal_search`
+handles bounded search, which is why the live tactic surface has no per-operator family:
 
 ```lean
 /--
-`modal_4_tactic` applies the modal 4 axiom `□φ → □□φ`.
-
-Automatically applies the axiom when the goal matches the pattern.
+Illustrative pattern: a hypothetical `modal_4_tactic` that applies the modal 4 axiom `□φ → □□φ`,
+automatically when the goal matches the pattern.
 
 **Example**:
 ```lean
@@ -389,36 +392,33 @@ theorem modal_b_derivable (φ : Formula) : Derivable [] φ.imp (Formula.box (dia
   exact Axiom.modal_b φ
 ```
 
-### Implementing tm_auto Tactic
+### Historical: the `tm_auto` Tactic (Retired)
 
-The `tm_auto` tactic invokes Aesop with the TMLogic rule set:
+An earlier `tm_auto` tactic invoked Aesop with a dedicated `TMLogic` rule set, attempting to
+prove goals using all TM axioms, perpetuity principles, and modal/temporal simplifications
+registered in that rule set:
 
 ```lean
-/-- Comprehensive TM automation using Aesop
-
-Attempts to prove goal using all TM axioms, perpetuity principles, and modal/temporal
-simplifications registered in the TMLogic rule set.
-
-**Usage:**
-```lean
-example (P : Formula) : [] ⊢ (Formula.box P).imp P := by
-  tm_auto
-
-example (P Q : Formula) : [Formula.box P, P.imp Q] ⊢ Formula.box Q := by
-  tm_auto
-```
-
-**Limitations:**
-- May not find proof if requires deep search
-- Does not handle counterfactual or epistemic operators (Layer 1+)
-- Performance degrades on deeply nested formulas (>10 operators)
--/
+-- Historical (no longer present in the codebase):
 macro "tm_auto" : tactic =>
   `(tactic| aesop (rule_sets [TMLogic]))
+```
 
--- Alternative: tm_auto with custom simp set
-macro "tm_auto_simp" : tactic =>
-  `(tactic| aesop (rule_sets [TMLogic]) (simp_options := {decide := true}))
+This was retired: the rule set and its rules were archived to
+`FormalSystem/Boneyard/RetiredTactics/` once measurement showed rules in a dedicated Aesop rule
+set are reachable only through an explicit `aesop (rule_sets := [TMLogic])`, with no such call
+site anywhere in the library or tests, and Aesop's proof reconstruction does not work over
+`Type`-valued `DerivationTree` goals in general. `modal_search` (below) is the tactic that
+replaced it, along with `temporal_search` and `propositional_search`, whose `SearchConfig`
+weight fields differed from `modal_search`'s only in fields `searchProof` never read.
+
+**Usage of the replacement**:
+```lean
+example (P : Formula) : [] ⊢ (Formula.box P).imp P := by
+  modal_search
+
+example (P Q : Formula) : [P, P.imp Q] ⊢ Q := by
+  modal_search
 ```
 
 ### Normalization Rules
@@ -657,10 +657,9 @@ example (P : Formula) : ⊢ (P.box.imp P) := by
 
 ```lean
 /-- Test tactic performance on complex formula -/
-example (P Q R : Formula) :
-  ⊢ ((P.box.and Q.box).and R.box).imp (P.and (Q.and R)).box := by
+example (P : Formula) : ⊢ P.box.imp P := by
   -- Should complete in reasonable time
-  tm_auto
+  modal_search
 
 /-- Benchmark: deeply nested modal formula -/
 def deeply_nested (n : Nat) : Formula :=
@@ -734,7 +733,6 @@ Document what the tactic cannot handle:
 /-- Modal proof search with bounded depth.
 
 **Limitations:**
-- Does not handle temporal operators (use `temporal_search`)
 - May not find proof within depth limit
 - Does not backtrack on suboptimal choices
 

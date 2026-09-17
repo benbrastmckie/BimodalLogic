@@ -235,7 +235,7 @@ def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
   | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporalNecessitation _ d => 1 + d.height
-  | .temporalDuality _ d => 1 + d.height
+  | .timeReflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 -- Example: compute height of a simple derivation
@@ -254,7 +254,7 @@ def usesAxiom {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Bool
   | .modusPonens _ _ _ d1 d2 => d1.usesAxiom || d2.usesAxiom
   | .necessitation _ d => d.usesAxiom
   | .temporalNecessitation _ d => d.usesAxiom
-  | .temporalDuality _ d => d.usesAxiom
+  | .timeReflection _ d => d.usesAxiom
   | .weakening _ _ _ d _ => d.usesAxiom
 ```
 
@@ -274,19 +274,13 @@ example (P : Formula) : [P.box.box] ⊢ P := by
   modal_search 3
 
 -- Comprehensive TM automation
-example (P Q : Formula) : [P.box, (P.imp Q).box] ⊢ Q.box := by
-  tm_auto
+example (P Q : Formula) : [P, P.imp Q] ⊢ Q := by
+  modal_search
 ```
 
-### Using Aesop
-
-With Aesop integration:
-
-```lean
--- Automatic proof using marked lemmas
-example (P : Formula) : ⊢ (P.box.imp P) := by
-  aesop (rule_sets [TMLogic])
-```
+`modal_search` is the single proof-search entry point in this codebase. It replaced `tm_auto`,
+`temporal_search`, and `propositional_search`, whose Aesop-based `TMLogic` rule set has been
+retired (Aesop's proof reconstruction does not work over `Type`-valued `DerivationTree` goals).
 
 ## 6. Semantics
 

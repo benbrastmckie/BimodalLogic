@@ -424,14 +424,14 @@ example (P : Formula) : ¬consistent [P.box, diamond (neg P)] := by
 
 ```lean
 /-- Temporal duality: swapping allPast and allFuture preserves provability -/
-example (P : Formula) (h : ⊢ P) : ⊢ (swapTemporal P) := by
-  apply DerivationTree.temporalDuality
+example (P : Formula) (h : ⊢ P) : ⊢ (reflectTime P) := by
+  apply DerivationTree.timeReflection
   exact h
 
 /-- Example: if ⊢ Gp → GGp, then ⊢ Hp → HHp -/
 example (P : Formula) : ⊢ (Formula.allPast P).imp (Formula.allPast (Formula.allPast P)) := by
   -- By TD applied to T4
-  apply DerivationTree.temporalDuality
+  apply DerivationTree.timeReflection
   apply DerivationTree.axiom
   apply Axiom.temp_4
 ```
@@ -439,10 +439,9 @@ example (P : Formula) : ⊢ (Formula.allPast P).imp (Formula.allPast (Formula.al
 ### Custom Tactic Usage
 
 ```lean
-/-- Using modal_auto for complex proofs -/
-example (P Q : Formula) :
-  [P.box, Q.box] ⊢ (and P Q).box := by
-  tm_auto
+/-- Using modal_search for automatic proof -/
+example (P Q : Formula) : [P, P.imp Q] ⊢ Q := by
+  modal_search
 
 /-- Using modal_search with depth limit -/
 example (P : Formula) : [P.box.box.box] ⊢ P := by
@@ -496,7 +495,7 @@ def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
   | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporalNecessitation _ d => 1 + d.height
-  | .temporalDuality _ d => 1 + d.height
+  | .timeReflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 /-- Example: axiom derivations have height 0 -/
@@ -523,7 +522,7 @@ def usesAxiom {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Bool
   | .modusPonens _ _ _ d1 d2 => d1.usesAxiom || d2.usesAxiom
   | .necessitation _ d => d.usesAxiom
   | .temporalNecessitation _ d => d.usesAxiom
-  | .temporalDuality _ d => d.usesAxiom
+  | .timeReflection _ d => d.usesAxiom
   | .weakening _ _ _ d _ => d.usesAxiom
 
 /-- Count the number of modus ponens applications -/
@@ -533,7 +532,7 @@ def countModusPonens {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Na
   | .modusPonens _ _ _ d1 d2 => 1 + d1.countModusPonens + d2.countModusPonens
   | .necessitation _ d => d.countModusPonens
   | .temporalNecessitation _ d => d.countModusPonens
-  | .temporalDuality _ d => d.countModusPonens
+  | .timeReflection _ d => d.countModusPonens
   | .weakening _ _ _ d _ => d.countModusPonens
 ```
 

@@ -181,7 +181,7 @@ noncomputable example (φ : Formula) : [φ.box] ⊢ φ.box.box := by
   exact Theorems.generalizedModalK [φ] φ.box h
 ```
 
-### 3.2 "cannot apply 'DerivationTree.temporal_duality': context is not empty"
+### 3.2 "cannot apply 'DerivationTree.time_reflection': context is not empty"
 
 **Error**: Temporal duality requires empty context.
 
@@ -267,20 +267,19 @@ example (φ : Formula) : ⊢ complex_formula := by
   modal_search (depth := 25)
 ```
 
-### 4.2 "aesop: internal error during proof reconstruction"
+### 4.2 "unknown tactic" for `tm_auto`
 
-**Error**: `tm_auto` fails with aesop internal error.
+**Error**: `tm_auto` is not a known tactic.
 
-**Cause**: Known issue with aesop on `DerivationTree` goals. See [known-limitations.md](../project-info/known-limitations.md).
+**Cause**: `tm_auto` (and `temporal_search`, `propositional_search`) were retired and
+consolidated into `modal_search`: their `SearchConfig` weight fields differed from
+`modal_search`'s only in fields that `searchProof` never read. The Aesop-based `TMLogic`
+rule set `tm_auto` expanded to has also been retired — Aesop's proof reconstruction does
+not work over `Type`-valued `DerivationTree` goals.
 
-**Solution**: Use `modal_search` instead of `tm_auto`:
+**Solution**: Use `modal_search` instead:
 
 ```lean
--- May fail with aesop error
-example (φ : Formula) : ⊢ φ.box.imp φ := by
-  tm_auto  -- Error!
-
--- Use modal_search instead
 example (φ : Formula) : ⊢ φ.box.imp φ := by
   modal_search
 ```

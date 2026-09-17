@@ -257,16 +257,16 @@ appearing in a tactic table, and grepping each against `FormalSystem/Automation/
 
 ---
 
-### Phase 5: Fix retired-tactic prose in user guides and METAPROGRAMMING_GUIDE [NOT STARTED]
+### Phase 5: Fix retired-tactic prose in user guides and METAPROGRAMMING_GUIDE [COMPLETED]
 
 **Goal**: Retarget examples and prose that present retired tactics as live.
 
 **Tasks**:
-- [ ] `docs/user-guide/tutorial.md:278`, `docs/user-guide/examples.md:445`: replace the `tm_auto` example with `modal_search`, and check the snippet elaborates
-- [ ] `docs/user-guide/tactic-development.md` (~392-420, 663, 737): retarget `tm_auto`/`temporal_search` discussion to `modal_search`, and where the section is about how tm_auto was built, recast it as retired history or drop it
-- [ ] `docs/user-guide/troubleshooting.md` section 4.2 (~272-281): rewrite from "tm_auto errors" to "tm_auto was retired; use modal_search"
-- [ ] `docs/development/METAPROGRAMMING_GUIDE.md` (~19, ~436-438, ~604): change error-message worked examples to cite `modal_search`
-- [ ] Re-grep all five files for the three retired names and the six nonexistent tactic names
+- [x] `docs/user-guide/tutorial.md:278`, `docs/user-guide/examples.md:445`: replace the `tm_auto` example with `modal_search`, and check the snippet elaborates *(completed: also fixed the adjacent retired-TMLogic Aesop example in tutorial.md)*
+- [x] `docs/user-guide/tactic-development.md` (~392-420, 663, 737): retarget `tm_auto`/`temporal_search` discussion to `modal_search`, and where the section is about how tm_auto was built, recast it as retired history or drop it *(completed: also reframed the modal_4_tactic "actual working implementation" claim as illustrative, since that tactic does not exist)*
+- [x] `docs/user-guide/troubleshooting.md` section 4.2 (~272-281): rewrite from "tm_auto errors" to "tm_auto was retired; use modal_search" *(completed)*
+- [x] `docs/development/METAPROGRAMMING_GUIDE.md` (~19, ~436-438, ~604): change error-message worked examples to cite `modal_search` *(completed: also cleared 1 Task-7 citation and the fictional temporal_t Decision Matrix row)*
+- [x] Re-grep all five files for the three retired names and the six nonexistent tactic names *(completed: only retired/historical/illustrative-framed mentions remain)*
 
 **Timing**: 1.5 hours
 

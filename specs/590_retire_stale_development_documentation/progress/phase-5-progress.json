@@ -1,0 +1,32 @@
+{
+  "phase": 5,
+  "phase_name": "Fix retired-tactic prose in user guides and METAPROGRAMMING_GUIDE",
+  "started_at": "2026-09-17T09:50:00Z",
+  "last_updated": "2026-09-17T10:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "tutorial.md, examples.md: replace tm_auto examples with modal_search", "status": "done", "files_touched": ["docs/user-guide/tutorial.md", "docs/user-guide/examples.md"]},
+    {"id": 2, "description": "tactic-development.md: retarget tm_auto/temporal_search discussion", "status": "done", "files_touched": ["docs/user-guide/tactic-development.md"]},
+    {"id": 3, "description": "troubleshooting.md section 4.2 rewrite", "status": "done", "files_touched": ["docs/user-guide/troubleshooting.md"]},
+    {"id": 4, "description": "METAPROGRAMMING_GUIDE.md worked examples", "status": "done", "files_touched": ["docs/development/METAPROGRAMMING_GUIDE.md"]},
+    {"id": 5, "description": "Re-grep all five files for retired/nonexistent names", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "5.extra",
+      "description": "tactic-development.md also had a 'modal_4_tactic ... actual working implementation from Tactics.lean' section presenting a nonexistent operator-specific tactic as real live source code (not just prose mentioning tm_auto).",
+      "type": "altered",
+      "reason": "Directly matches the plan's overall Goal ('no doc presents ... the six nonexistent operator-specific tactics as live') even though not itemized for this specific file; reframed as an illustrative pattern rather than removing the useful pedagogical content.",
+      "annotation": "*(deviation: altered — reframed modal_4_tactic section as illustrative/hypothetical rather than claiming it is real source)*"
+    },
+    {
+      "task_id": "5.extra2",
+      "description": "METAPROGRAMMING_GUIDE.md carried 1 Task-7 citation (line 10-19 area) and a fictional 'temporal_t' Decision Matrix row, both caught while fixing the tm_auto references in the same file.",
+      "type": "altered",
+      "reason": "Same file, same pass; cleared to keep the C9D=0 gate reachable and avoid leaving a second fictional tactic name.",
+      "annotation": "*(deviation: altered — cleared Task-7 citation and removed fictional temporal_t row)*"
+    }
+  ]
+}

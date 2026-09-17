@@ -7,17 +7,17 @@
 This guide provides systematic coverage of LEAN 4 metaprogramming fundamentals for
 implementing custom tactics in the Bimodal automation package. It focuses on the
 `Lean.Elab.Tactic` API, expression manipulation, goal management, and proof term
-construction required for Task 7 (Implement Core Automation, 40-60 hours).
+construction required for the core automation tactics in `FormalSystem/Automation/Tactics/`.
 
 ### Audience
 
 This guide targets developers implementing custom tactics for ProofChecker,
 particularly those working on:
 
-- `apply_axiom` - Apply specific TM axiom to goal (8-10 hours)
-- `modal_t` - Apply modal axiom MT (`□φ → φ`) (4-6 hours)
-- `tm_auto` - Comprehensive TM automation with Aesop (15-20 hours)
-- `assumption_search` - Search context for matching assumptions (8-12 hours)
+- `apply_axiom` - Apply specific TM axiom to goal
+- `modal_t` - Apply modal axiom MT (`□φ → φ`)
+- `modal_search` - Bounded best-first proof search for derivability goals
+- `assumption_search` - Search context for matching assumptions
 
 ### Prerequisites
 
@@ -433,7 +433,7 @@ elab "try_modal_t" : tactic => do
 
 ```lean
 throwError "modal_t: expected goal of form `□φ → φ`, got {goalType}"
-throwError "tm_auto: could not find proof within depth limit {depth}"
+throwError "modal_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for goal {goalType}"
 throwError "assumption_search: no matching assumption in context {context}"
 ```
 
@@ -599,11 +599,9 @@ backtracking, or complex control flow.
 | Tactic | Approach | Justification |
 |--------|----------|---------------|
 | `apply_axiom` | Macro | Simple expansion to `apply` |
-| `modal_t` | elab_rules | Pattern-matched goal inspection |
-| `temporal_t` | elab_rules | Pattern-matched goal inspection |
-| `tm_auto` | Macro | Expands to `aesop (rule_sets [TMLogic])` |
-| `assumption_search` | TacticM | Iterates over context |
-| `modal_search` | TacticM | Bounded depth search with backtracking |
+| `modal_t` | Macro | Simple expansion to `apply` |
+| `assumption_search` | `elab` (TacticM) | Iterates over context |
+| `modal_search` | `elab_rules` (TacticM) | Bounded best-first search with backtracking |
 
 ## 8. Complete Working Examples
 
