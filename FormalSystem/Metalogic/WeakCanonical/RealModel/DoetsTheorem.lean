@@ -780,8 +780,8 @@ open scoped Classical in
 noncomputable instance instLinearOrderClassQuot (h : IsConvexEquiv M ε) :
     LinearOrder h.ClassQuot :=
   letI : IsTrans h.ClassQuot h.classLt := ⟨fun _ _ _ => h.classLt_trans⟩
-  letI : IsIrrefl h.ClassQuot h.classLt := ⟨h.classLt_irrefl⟩
-  letI : IsTrichotomous h.ClassQuot h.classLt := ⟨fun a b hab hba => by
+  letI : Std.Irrefl h.classLt := ⟨h.classLt_irrefl⟩
+  letI : Std.Trichotomous h.classLt := ⟨fun a b hab hba => by
     rcases h.classLt_trichotomous a b with hc | hc | hc
     · exact absurd hc hab
     · exact hc

@@ -287,14 +287,14 @@ A point outside `Q₀` and below `t` is below *every* point of `Q₀`, by convex
 theorem lt_of_before (hS : IsBadIntervalSurgery M ε Q t) {x u : M.carrier} (hx : ¬ Q x)
     (hxt : x < t) (hu : Q u) : x < u := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact hx (hS.isBad.convex u x t hcon hxt.le hu hS.mem)
 
 /-- **`Q⁺` follows the bad interval** — *"all that follows"*, printed p.181. -/
 theorem lt_of_after (hS : IsBadIntervalSurgery M ε Q t) {x u : M.carrier} (hx : ¬ Q x)
     (htx : t < x) (hu : Q u) : u < x := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact hx (hS.isBad.convex t x u htx.le hcon hS.mem hu)
 
 /-- A point of `N` outside `Q₀` is either wholly below `Q₀` or wholly above it. -/
@@ -513,7 +513,7 @@ theorem reynolds_lemma8_untl_forward (atomMap : Formula → sig.preds)
         have hIs : ∀ y : M.carrier, ContempEquivDense M ε t y → y < s := by
           intro y hy
           by_contra hcon
-          push_neg at hcon
+          push Not at hcon
           exact hsI (contemp_trans hε M hxI
             (contemp_of_between hε M (le_of_lt hxs) hcon
               (contemp_trans hε M (contemp_symm hε M hxI) hy)))

@@ -393,7 +393,7 @@ theorem mixed_step {k : Nat} {I J : Type} [LinearOrder I] [LinearOrder J]
           rw [(hsucc q).1, (hsucc q).2]
           exact hlink q hp
   · -- **Case 2**: the index `j₀` is new, so the coloured index game must answer it.
-    push_neg at hcase
+    push Not at hcase
     -- The coloured index game's forward clause, restated with its witness typed in `I` rather
     -- than in the (definitionally equal) carrier of the coloured structure. Without this the
     -- `Fin.cons` terms below are type-correct only at default transparency, and `simp` and `rw`

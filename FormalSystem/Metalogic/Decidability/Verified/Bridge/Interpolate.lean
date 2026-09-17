@@ -216,10 +216,10 @@ theorem sameRegion_of_gap {f : ι → D} {r r' : D} (h : ∀ i, (f i < r ↔ f i
   intro i
   refine ⟨h i, ⟨fun hlt => ?_, fun hlt => ?_⟩⟩
   · by_contra hc
-    push_neg at hc
+    push Not at hc
     exact absurd ((h i).mpr (lt_of_le_of_ne hc (hr' i))) (asymm hlt)
   · by_contra hc
-    push_neg at hc
+    push Not at hc
     exact absurd ((h i).mp (lt_of_le_of_ne hc (hr i))) (asymm hlt)
 
 /-! ### The extension operator -/
@@ -307,7 +307,7 @@ theorem exists_gt_sameRegion [DenselyOrdered D] [NoMaxOrder D] {f : ι → D} {r
     · exact hlt
     · exact absurd heq (hr k)
     · exact absurd (hmin k hgt) (not_le.mpr (lt_trans hk hsi))
-  · push_neg at h
+  · push Not at h
     obtain ⟨s, hs⟩ := exists_gt r
     have hlt : ∀ k, f k < r := fun k => lt_of_le_of_ne (h k) (hr k)
     have hns : ∀ k, f k ≠ s := by
@@ -336,7 +336,7 @@ theorem exists_lt_sameRegion [DenselyOrdered D] [NoMinOrder D] {f : ι → D} {r
       exact absurd hle (not_le.mpr his)
     refine ⟨s, hsr, sameRegion_of_gap (fun k => ⟨fun hk => ?_, fun hk => lt_trans hk hsr⟩) hr hs⟩
     exact lt_of_le_of_lt (hmax k hk) his
-  · push_neg at h
+  · push Not at h
     obtain ⟨s, hs⟩ := exists_lt r
     have hgt : ∀ k, r < f k := fun k => lt_of_le_of_ne (h k) (Ne.symm (hr k))
     have hns : ∀ k, f k ≠ s := by
@@ -361,15 +361,15 @@ theorem region_total (f : ι → D) (r : D) :
       ∃ i j, (f i < r ∧ ∀ k, f k < r → f k ≤ f i) ∧ (r < f j ∧ ∀ k, r < f k → f j ≤ f k) := by
   by_cases hplaced : ∃ i, f i = r
   · exact Or.inl hplaced
-  · push_neg at hplaced
+  · push Not at hplaced
     by_cases hbelow : ∃ i, f i < r
     · by_cases habove : ∃ i, r < f i
       · obtain ⟨i, hi⟩ := exists_greatest_placed_lt f r hbelow
         obtain ⟨j, hj⟩ := exists_least_placed_gt f r habove
         exact Or.inr (Or.inr (Or.inr ⟨i, j, hi, hj⟩))
-      · push_neg at habove
+      · push Not at habove
         exact Or.inr (Or.inr (Or.inl fun k => lt_of_le_of_ne (habove k) (hplaced k)))
-    · push_neg at hbelow
+    · push Not at hbelow
       exact Or.inr (Or.inl fun k => lt_of_le_of_ne (hbelow k) (Ne.symm (hplaced k)))
 
 end Regions
@@ -525,7 +525,7 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
   · exact ⟨s, hcase, hφs, fun x hx hxs => hg x (lt_trans hlt hx) hxs⟩
-  · push_neg at hcase
+  · push Not at hcase
     have hsreg : SameRegion f r s := sameRegion_convex hrr' hrs.le hcase
     have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
     obtain ⟨s', hr's', hs'reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
@@ -555,7 +555,7 @@ private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
   intro x hx hxs
   by_cases hcase : r' < x
   · exact hg x hcase hxs
-  · push_neg at hcase
+  · push Not at hcase
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hx.le hcase
     exact (hψ τ y x ((hyreg.symm.trans hrr'.symm).trans hxreg)).mp hψy
 
@@ -593,7 +593,7 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
   intro x hsx hxr'
   by_cases hcase : x < r
   · exact hg x hsx hcase
-  · push_neg at hcase
+  · push Not at hcase
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hcase hxr'.le
     exact (hψ τ y x (hyreg.symm.trans hxreg)).mp hψy
 
@@ -605,7 +605,7 @@ private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
   · exact ⟨s, hcase, hφs, fun x hsx hxr => hg x hsx (lt_trans hxr hlt)⟩
-  · push_neg at hcase
+  · push Not at hcase
     have hsreg : SameRegion f r s := sameRegion_convex hrr' hcase hsr'.le
     have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
     obtain ⟨s', hs'r, hs'reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1

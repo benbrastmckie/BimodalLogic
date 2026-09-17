@@ -179,7 +179,7 @@ private theorem untlAt_forward [NoMaxOrder D] {φ ψ : Formula}
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
   · exact ⟨s, hcase, hφs, fun x hx hxs => hg x (lt_trans hlt hx) hxs⟩
-  · push_neg at hcase
+  · push Not at hcase
     have hsreg : SameRegion f r s := sameRegion_convex hrr' hrs.le hcase
     have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
     obtain ⟨s', hr's', hs'reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
@@ -209,7 +209,7 @@ private theorem untlAt_backward [NoMaxOrder D] {φ ψ : Formula}
   intro x hx hxs
   by_cases hcase : r' < x
   · exact hg x hcase hxs
-  · push_neg at hcase
+  · push Not at hcase
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hx.le hcase
     exact (hψ y x ((hyreg.symm.trans hrr'.symm).trans hxreg)).mp hψy
 
@@ -240,7 +240,7 @@ private theorem snceAt_forward [NoMinOrder D] {φ ψ : Formula}
   intro x hsx hxr'
   by_cases hcase : x < r
   · exact hg x hsx hcase
-  · push_neg at hcase
+  · push Not at hcase
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hcase hxr'.le
     exact (hψ y x (hyreg.symm.trans hxreg)).mp hψy
 
@@ -252,7 +252,7 @@ private theorem snceAt_backward [NoMinOrder D] {φ ψ : Formula}
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
   · exact ⟨s, hcase, hφs, fun x hsx hxr => hg x hsx (lt_trans hxr hlt)⟩
-  · push_neg at hcase
+  · push Not at hcase
     have hsreg : SameRegion f r s := sameRegion_convex hrr' hcase hsr'.le
     have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
     obtain ⟨s', hs'r, hs'reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1

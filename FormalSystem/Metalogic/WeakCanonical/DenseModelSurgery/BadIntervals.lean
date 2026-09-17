@@ -551,7 +551,7 @@ theorem false_of_allClassesHaveLeftEnd (atomMap : Formula → sig.preds)
   -- later class.
   have hu₀ : ∃ u : M.carrier, s < u ∧ u < b ∧ ¬ ContempEquivDense M ε s u := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨b, hsb, hnb, fun z h₁ h₂ => hcon z h₁ h₂⟩
   obtain ⟨u₀, hsu₀, hu₀b, hnu₀⟩ := hu₀
   obtain ⟨w₀, hw₀c, hw₀min⟩ := hleft u₀ hsu₀ hu₀b
@@ -559,7 +559,7 @@ theorem false_of_allClassesHaveLeftEnd (atomMap : Formula → sig.preds)
   have hw₀b : w₀ < b := lt_of_le_of_lt hw₀u₀ hu₀b
   have hsw₀ : s < w₀ := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have h1 : ContempEquivDense M ε w₀ s :=
       contemp_of_between hε M hcon hsu₀.le (contemp_symm hε M hw₀c)
     exact hnu₀ (contemp_trans hε M (contemp_symm hε M h1) (contemp_symm hε M hw₀c))
@@ -570,7 +570,7 @@ theorem false_of_allClassesHaveLeftEnd (atomMap : Formula → sig.preds)
   obtain ⟨s₁, hss₁, hbelow, hcase⟩ := h_prior_U s B hstretch ⟨w₀, hsw₀, hnBw₀⟩
   have hs₁w₀ : s₁ ≤ w₀ := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hnBw₀ (hbelow w₀ hsw₀ hcon)
   have hs₁b : s₁ < b := lt_of_le_of_lt hs₁w₀ hw₀b
   rcases hcase with hnB₁ | ⟨hB₁, hkplus⟩
@@ -581,14 +581,14 @@ theorem false_of_allClassesHaveLeftEnd (atomMap : Formula → sig.preds)
         ⟨v, contemp_trans hε M (contemp_symm hε M hc) hvc, lt_trans hvs hss₁⟩)
     have hex : ∃ r : M.carrier, s < r ∧ r < s₁ ∧ ¬ ContempEquivDense M ε s r := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       exact hs.2.2 ⟨s₁, hss₁, hns₁, fun z h₁ h₂ => hcon z h₁ h₂⟩
     obtain ⟨r, hsr, hrs₁, hnr⟩ := hex
     obtain ⟨w, hwc, hwmin⟩ := hleft r hsr (lt_trans hrs₁ hs₁b)
     have hwr : w ≤ r := not_lt.mp (hwmin r (contemp_refl hε M r))
     have hsw : s < w := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       have h1 : ContempEquivDense M ε w s :=
         contemp_of_between hε M hcon hsr.le (contemp_symm hε M hwc)
       exact hnr (contemp_trans hε M (contemp_symm hε M h1) (contemp_symm hε M hwc))
@@ -641,7 +641,7 @@ theorem endsInGapOnLeft_of_endsInGapOnRight (atomMap : Formula → sig.preds)
     have hzle : z ≤ t := not_lt.mp (fun h => hzmin t h (contemp_refl hε M t))
     have haz : a < z := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       have hza : ContempEquivDense M ε z a :=
         contemp_of_between hε M hcon hint.left_lt.le (contemp_symm hε M hzc)
       exact hint.left_out (contemp_trans hε M hzc hza)
@@ -656,7 +656,7 @@ theorem endsInGapOnLeft_of_endsInGapOnRight (atomMap : Formula → sig.preds)
       contemp_trans hε M (contemp_symm hε M hcs) (contemp_symm hε M hzc)
     have hsb : s < b := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       exact hint.right_out
         (contemp_of_between hε M hint.lt_right.le hcon (contemp_symm hε M hst))
     have hnb : ¬ ContempEquivDense M ε s b :=
@@ -675,7 +675,7 @@ theorem endsInGapOnLeft_of_endsInGapOnRight (atomMap : Formula → sig.preds)
     rintro ⟨z, hzt, hnz, hall⟩
     have haz : a ≤ z := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       exact hint.left_out (hall a hcon hint.left_lt)
     exact not_endsInGapOnRight_of_immediatePredecessor hε M hzt hnz hall
       (hint.rThroughout z haz (le_trans hzt.le hint.lt_right.le))
@@ -705,7 +705,7 @@ theorem lt_of_classMate {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {a t s : M.carrier} (hat : a < t)
     (hna : ¬ ContempEquivDense M ε t a) (hts : ContempEquivDense M ε t s) : a < s := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact hna (contemp_trans hε M hts
     (contemp_of_between hε M hcon hat.le (contemp_symm hε M hts)))
 
@@ -714,7 +714,7 @@ theorem classMate_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t b s : M.carrier} (htb : t < b)
     (hnb : ¬ ContempEquivDense M ε t b) (hts : ContempEquivDense M ε t s) : s < b := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact hnb (contemp_of_between hε M htb.le hcon hts)
 
 /-! ## The gap-crossing contradiction Lemma 7 actually licenses
@@ -750,7 +750,7 @@ theorem false_of_holds_throughout_class_from_bounded {atomMap : Formula → sig.
   -- *"there is no first point after the class"*: some point of `(s,b)` is already outside it.
   have hu₀ : ∃ u : M.carrier, s < u ∧ u < b ∧ ¬ ContempEquivDense M ε s u := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨b, hsb, hnb, fun y h₁ h₂ => hcon y h₁ h₂⟩
   obtain ⟨u₀, hsu₀, hu₀b, hnu₀⟩ := hu₀
   obtain ⟨r₀, hsr₀, hr₀u₀, hnP₀⟩ := hout u₀ hsu₀ hu₀b hnu₀
@@ -770,7 +770,7 @@ theorem false_of_holds_throughout_class_from_bounded {atomMap : Formula → sig.
         (le_trans hss₁.le hs₁r.le))
   have hex : ∃ r : M.carrier, s < r ∧ r < s₁ ∧ ¬ ContempEquivDense M ε s r := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨s₁, hss₁, hns₁, fun z h₁ h₂ => hcon z h₁ h₂⟩
   obtain ⟨r, hsr, hrs₁, hnr⟩ := hex
   rcases lt_or_ge r₀ s₁ with hlt | hge
@@ -928,7 +928,7 @@ theorem reynolds_lemma7_start (atomMap : Formula → sig.preds)
     · have hkey : ∀ z : M.carrier, ContempEquivDense M ε w z → s < z := by
         intro z hwz
         by_contra hcon
-        push_neg at hcon
+        push Not at hcon
         have hzs : ContempEquivDense M ε z s :=
           contemp_of_between hε M hcon hsw.le (contemp_symm hε M hwz)
         exact hnsw (contemp_trans hε M (contemp_symm hε M hzs) (contemp_symm hε M hwz))
@@ -963,7 +963,7 @@ theorem reynolds_lemma7_close_to_left (atomMap : Formula → sig.preds)
     (x : M.carrier) (hxc : ContempEquivDense M ε t x) :
     ∃ q : M.carrier, ContempEquivDense M ε t q ∧ q < x ∧ TemporalTruth M atomMap q A := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   obtain ⟨u, hau, hub, hAu⟩ := hsome
   exact reynolds_lemma7_start atomMap h_surj hε M h_prior_U h_prior_S
     (Formula.imp A Formula.bot) hint ⟨x, hxc, fun q hq hqx => hcon q hq hqx⟩ hau hub hAu
@@ -996,7 +996,7 @@ theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivD
       fun _ => contemp_congr_left hε M hpq
     refine ⟨⟨y₀, ?_, fun hc => hny₀ ((key y₀).mpr hc)⟩, ?_, ?_⟩
     · by_contra hle
-      push_neg at hle
+      push Not at hle
       exact hny₀ ((key y₀).mpr
         (contemp_of_between hε M hle hy₀p.le (contemp_symm hε M hpq)))
     · rintro ⟨z, hz, hz2⟩
@@ -1004,7 +1004,7 @@ theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivD
     · rintro ⟨z, hzq, hnz, hall⟩
       refine h3 ⟨z, ?_, fun hc => hnz ((key z).mp hc), ?_⟩
       · by_contra hle
-        push_neg at hle
+        push Not at hle
         exact hnz ((key z).mp (contemp_of_between hε M hle hzq.le hpq))
       · intro y hzy hyp
         rcases lt_or_ge y q with hyq | hqy
@@ -1019,7 +1019,7 @@ theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDense
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier} (h : EndsInGapOnLeft M ε t) :
     ∃ y : M.carrier, y < t ∧ ContempEquivDense M ε t y := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact h.2.1 ⟨t, contemp_refl hε M t, fun y hy => hcon y hy⟩
 
 /-- **`t`'s class lies in the interior of a bad interval** — printed p.180, Lemma 6: *"In any bad
@@ -1047,7 +1047,7 @@ theorem false_of_holds_throughout_class_upto_bounded {atomMap : Formula → sig.
       ∃ r : M.carrier, r < s ∧ u ≤ r ∧ ¬ TemporalTruth M atomMap r P) : False := by
   have hu₀ : ∃ u : M.carrier, u < s ∧ b < u ∧ ¬ ContempEquivDense M ε s u := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨b, hbs, hnb, fun y h₁ h₂ => hcon y h₂ h₁⟩
   obtain ⟨u₀, hu₀s, hbu₀, hnu₀⟩ := hu₀
   obtain ⟨r₀, hr₀s, hu₀r₀, hnP₀⟩ := hout u₀ hu₀s hbu₀ hnu₀
@@ -1070,7 +1070,7 @@ theorem false_of_holds_throughout_class_upto_bounded {atomMap : Formula → sig.
         (contemp_of_between hε M hy'r.le hrs₁.le (contemp_symm hε M hcy'))
   have hex : ∃ r : M.carrier, r < s ∧ s₁ < r ∧ ¬ ContempEquivDense M ε s r := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨s₁, hs₁s, hns₁, fun z h₁ h₂ => hcon z h₂ h₁⟩
   obtain ⟨r, hrs, hs₁r, hnr⟩ := hex
   rcases lt_or_ge s₁ r₀ with hlt | hge
@@ -1200,7 +1200,7 @@ theorem reynolds_lemma7_end (atomMap : Formula → sig.preds)
     · have hkey : ∀ z : M.carrier, ContempEquivDense M ε w z → z < s := by
         intro z hwz
         by_contra hcon
-        push_neg at hcon
+        push Not at hcon
         have hws' : ContempEquivDense M ε w s :=
           contemp_of_between hε M hws.le hcon hwz
         exact hnsw (contemp_symm hε M hws')
@@ -1226,7 +1226,7 @@ theorem reynolds_lemma7_close_to_right (atomMap : Formula → sig.preds)
     (x : M.carrier) (hxc : ContempEquivDense M ε t x) :
     ∃ q : M.carrier, ContempEquivDense M ε t q ∧ x < q ∧ TemporalTruth M atomMap q A := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   obtain ⟨u, hau, hub, hAu⟩ := hsome
   exact reynolds_lemma7_end atomMap h_surj hε M h_prior_U h_prior_S
     (Formula.imp A Formula.bot) hint ⟨x, hxc, fun q hq hxq => hcon q hq hxq⟩ hau hub hAu
@@ -1444,7 +1444,7 @@ theorem exists_classInteriorToRInterval (atomMap : Formula → sig.preds)
   have hlow : ∃ y : M.carrier, y < t ∧ ¬ ContempEquivDense M ε t y ∧
       ∀ z : M.carrier, y ≤ z → z < t → EndsInGapOnRight M ε z := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     refine hnf ⟨ht, fun y hy hny => ?_⟩
     obtain ⟨z, hyz, hzt, hnz⟩ := hcon y hy hny
     exact ⟨z, hyz, hzt, hnz⟩

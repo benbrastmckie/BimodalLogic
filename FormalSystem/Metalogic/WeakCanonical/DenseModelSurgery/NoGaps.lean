@@ -708,7 +708,7 @@ omit h_surj in
 theorem exists_not_isBadPoint_gt (hS : IsBadIntervalSurgery M ε Q t) {y : M.carrier}
     (hty : t < y) (hny : ¬ Q y) : ∃ u : M.carrier, t < u ∧ ¬ IsBadPoint M ε u := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact hny (mem_of_badStretch hS hty fun z hz _ => hcon z hz)
 
 /-- **Reynolds 1992, §6 Lemma 9, printed p.182.**

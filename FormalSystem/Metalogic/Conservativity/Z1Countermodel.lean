@@ -94,7 +94,7 @@ theorem z1_gp_iff_p (p : Atom) (t : (z1D : Type)) :
   constructor
   · intro h
     by_contra hc
-    push_neg at hc
+    push Not at hc
     have hlt : t < toLex ((ofLex t).1, (ofLex t).2 + 1) := by
       rw [Prod.Lex.lt_iff]
       exact Or.inr ⟨rfl, lt_add_one _⟩
@@ -141,7 +141,7 @@ theorem z1_F_Gp (p : Atom) :
 theorem z1_not_Gp (p : Atom) :
     ¬ MinusTruthAt z1TM z1τ z1pt (MinusFormula.atom p).allFuture := by
   rw [MinusTruth.future_iff]
-  push_neg
+  push Not
   refine ⟨z1pt2, ?_, ?_⟩
   · show z1pt < z1pt2
     rw [Prod.Lex.lt_iff]

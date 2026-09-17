@@ -983,7 +983,7 @@ theorem boundedWitness_of_limitGuardBelow {fc : FrameClass} (hfc : FrameClass.RT
     (c : Rat) (hc : r < (c : ℝ)) :
     ∃ w : Rat, r < (w : ℝ) ∧ (w : ℝ) < (c : ℝ) ∧ φ ∈ m w := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hguard : ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → φ.neg ∈ m q := by
     intro q h1 h2
     rcases SetMaximalConsistent.negation_complete (hm q) φ with h | h

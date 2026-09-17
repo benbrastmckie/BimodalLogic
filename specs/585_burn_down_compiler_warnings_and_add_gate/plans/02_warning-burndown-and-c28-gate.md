@@ -272,28 +272,28 @@ delta verification rests on these two agreeing.
 
 ---
 
-### Phase 2: Wire the scanner as C28, report-only [NOT STARTED]
+### Phase 2: Wire the scanner as C28, report-only [COMPLETED]
 
 **Goal**: C28 runs inside `scripts/check-module-invariants.sh` in every mode including `--no-build`,
 reports the warning budget, and does not yet affect the exit code.
 
 **Tasks**:
-- [ ] Add a C28 block to `scripts/check-module-invariants.sh` that shells out to
+- [x] Add a C28 block to `scripts/check-module-invariants.sh` that shells out to
       `python3 scripts/warning-budget.py` and **never invokes `lake`** — this is the whole reason the
       trace-scan acquisition was chosen; a build-dependent C28 would join C2/C6/C24 in
       `CI_CD_PROCESS.md`'s documented not-in-CI gap list, because CI runs the harness as
       `--no-build`.
-- [ ] Ship it behind `ENFORCE_C28=0` (report-only), following the pattern `MODULE_INVARIANTS.md`'s
+- [x] Ship it behind `ENFORCE_C28=0` (report-only), following the pattern `MODULE_INVARIANTS.md`'s
       "Adding a Check" section documents for `ENFORCE_C16_ROOTS` and C8/C9/C10: compute and print
       from the outset, gate the exit code behind the flag while the burn-down is in progress.
       Note in the code comment that the anti-silence and undispositioned-class guards (exit 2) are
       **not** suppressed by `ENFORCE_C28=0` — a measurement the harness cannot trust is an error in
       every mode.
-- [ ] Add C28 to the `# Checks:` header comment block at the top of the script.
-- [ ] Add the C28 row to `docs/development/MODULE_INVARIANTS.md`, and a
+- [x] Add C28 to the `# Checks:` header comment block at the top of the script.
+- [x] Add the C28 row to `docs/development/MODULE_INVARIANTS.md`, and a
       `### scripts/warning-budget.txt` subsection alongside the existing
       `scripts/debug-artifact-allowlist.txt` (C27) subsection.
-- [ ] Perform the **deliberate negative test** that `MODULE_INVARIANTS.md`'s "Adding a Check"
+- [x] Perform the **deliberate negative test** that `MODULE_INVARIANTS.md`'s "Adding a Check"
       requires: with `ENFORCE_C28=1`, hand-introduce one warning, observe `FAIL C28` and a non-zero
       script exit, revert, observe green. Record the observation in the commit message.
 
@@ -325,28 +325,37 @@ reuse C26.
 
 ---
 
-### Phase 3: Deprecations in `FormalSystem/` [NOT STARTED]
+### Phase 3: Deprecations in `FormalSystem/` [COMPLETED]
 
 **Goal**: Zero deprecation warnings in `FormalSystem/` (excluding `DatasetGeneratorMain.lean`, which
 Phase 8 owns): 71 `push_neg` → `push Not`, 4 `IsTrichotomous`/`IsIrrefl` → `Std.*`.
 
 **Tasks**:
-- [ ] Substitute `push_neg` → `push Not` at all 71 sites. Both live forms are covered: bare
-      `push_neg` (5) and `push_neg at <h>` (66). The substitution is provably identity —
+- [x] Substitute `push_neg` → `push Not` at all 71 sites. Both live forms are covered: bare
+      `push_neg` (5) and `push_neg at <h>` (66). *(deviation: altered — the live split is 1 bare
+      (`Z1Countermodel.lean:144`) and 70 `at <h>`, not 5/66; the substitution is identical for
+      both forms, so only the plan's arithmetic was wrong. 71 total confirmed.)* The substitution is provably identity —
       `Mathlib/Tactic/Push.lean:281-292` defines the deprecated tactic as the same `push` call plus a
       `logWarning`.
-- [ ] Work **per file with a per-file rebuild**, using the per-file warning counts as the exact
+- [x] Work **per file with a per-file rebuild**, using the per-file warning counts as the exact
       expected delta: `BadIntervals.lean` 22, `Lemma34.lean` 12, `Interpolate.lean` 11,
       `Lemma5.lean` 6, `Decidable.lean` 4, `TruthLemma.lean` 4, `TruthTransfer.lean` 3,
       `Z1Countermodel.lean` 2, `DurationClassification.lean` 2, `ChronicleRealExtension.lean` 1,
       `DenseObstructionTransfer.lean` 1, `MixedSum.lean` 1, `NoGaps.lean` 1, `ShiftSetProduct.lean` 1.
       (`DoetsTheorem.lean` 2 and `BlockDecomposition.lean` 2 are the `Std` migration below, not `push_neg`.)
-- [ ] `IsTrichotomous` → `Std.Trichotomous` and `IsIrrefl` → `Std.Irrefl`: 2 in `DoetsTheorem.lean`,
-      2 in `BlockDecomposition.lean`.
-- [ ] Do **not** adopt Mathlib's alternative suggestion of re-declaring `push_neg` as a local macro:
+- [x] `IsTrichotomous` → `Std.Trichotomous` and `IsIrrefl` → `Std.Irrefl`: 2 in `DoetsTheorem.lean`,
+      2 in `BlockDecomposition.lean`. *(deviation: altered — NOT a pure rename. The `Std.*` form
+      takes the carrier type IMPLICITLY (`{α : Sort u}` vs `(α : Sort u_1)`), so the explicit type
+      argument must be dropped. In `DoetsTheorem.lean` the relation `h.classLt` still pins the type
+      through `h` and the drop sufficed. In `BlockDecomposition.lean` bare `blockLt` does not pin
+      `α`: the first attempt failed to build with `typeclass instance problem is stuck` at :301 and a
+      sort mismatch at :306. Resolved by writing `Std.Irrefl (blockLt (α := α))` and
+      `Std.Trichotomous (blockLt (α := α))`, the idiom the file already used one line below for
+      `DecidableRel (blockLt (α := α))`.)*
+- [x] Do **not** adopt Mathlib's alternative suggestion of re-declaring `push_neg` as a local macro:
       it perpetuates a deprecated spelling, risks parser ambiguity against the still-present upstream
       `elab`, and re-does the work when upstream deletes the tactic.
-- [ ] Run `python3 scripts/warning-budget.py --update` and include the diff in the phase commit.
+- [x] Run `python3 scripts/warning-budget.py --update` and include the diff in the phase commit.
 
 **Timing**: 2 hours
 

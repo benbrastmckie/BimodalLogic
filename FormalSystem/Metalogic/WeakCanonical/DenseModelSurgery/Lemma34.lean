@@ -228,14 +228,14 @@ private theorem endsInGapOnRight_of_contemp {t u : M.carrier}
     fun _ => contemp_congr_left hε M htu
   refine ⟨⟨y₀, ?_, fun hc => hny₀ ((key y₀).mpr hc)⟩, ?_, ?_⟩
   · by_contra hle
-    push_neg at hle
+    push Not at hle
     exact hny₀ (contemp_of_between hε M hty₀.le hle htu)
   · rintro ⟨z, hz, hz2⟩
     exact h2 ⟨z, (key z).mpr hz, fun y hy hc => hz2 y hy ((key y).mp hc)⟩
   · rintro ⟨z, huz, hnz, hall⟩
     refine h3 ⟨z, ?_, fun hc => hnz ((key z).mp hc), ?_⟩
     · by_contra hle
-      push_neg at hle
+      push Not at hle
       exact hnz (contemp_of_between hε M huz.le hle (contemp_symm hε M htu))
     · intro y hty hyz
       rcases le_or_gt y u with hyu | huy
@@ -272,7 +272,7 @@ reason the corpus text cannot be used. -/
 theorem exists_contemp_gt {t : M.carrier} (h : EndsInGapOnRight M ε t) :
     ∃ y : M.carrier, t < y ∧ ContempEquivDense M ε t y := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact h.2.1 ⟨t, contemp_refl hε M t, fun y hy => hcon y hy⟩
 
 include hε in
@@ -536,13 +536,13 @@ theorem exists_gt_notContemp_holds (atomMap : Formula → sig.preds)
     rcases eq_or_lt_of_le hsq with rfl | h
     · exact hs
     · exact hforever q h
-  · push_neg at hforever
+  · push Not at hforever
     obtain ⟨s', hss', hbelow, hns'⟩ :=
       reynolds_lemma3_right atomMap h_surj hε M h_prior_U h_prior_S hs hforever
     by_cases hall : ∀ y : M.carrier, s < y → y < s' → ContempEquivDense M ε s y
     · exact absurd
         ⟨s', hss', fun hc => hns' ((endsInGapOnRight_congr hε M hc).mp hs), hall⟩ hs.2.2
-    · push_neg at hall
+    · push Not at hall
       obtain ⟨u, hsu, hus', hnu⟩ := hall
       refine ⟨u, hsu, hnu, fun q hsq hqu => ?_⟩
       rcases eq_or_lt_of_le hsq with rfl | h
@@ -565,7 +565,7 @@ theorem not_classBeginsAtGapStart {ε : MonadicFormula sig 2} (hε : IsContempEq
   have hwu : w ≤ u := not_lt.mp (hmin u (contemp_refl hε M u))
   have hsw : s < w := by
     by_contra hle
-    push_neg at hle
+    push Not at hle
     have hwu' : ContempEquivDense M ε w u := contemp_symm hε M huw
     have hws : ContempEquivDense M ε w s := contemp_of_between hε M hle hsu.le hwu'
     exact hnu (contemp_trans hε M (contemp_symm hε M hws) hwu')
@@ -627,7 +627,7 @@ theorem false_of_holds_throughout_class (atomMap : Formula → sig.preds)
       exact hnr (hin r (contemp_trans hε M hc (contemp_of_between hε M hs₁r.le hry'.le hcy')))
   have hex : ∃ r : M.carrier, s < r ∧ r < s₁ ∧ ¬ ContempEquivDense M ε s r := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨s₁, hss₁, hns₁, fun y h₁ h₂ => hcon y h₁ h₂⟩
   obtain ⟨r, hsr, hrs₁, hnr⟩ := hex
   rcases lt_or_ge u₀ s₁ with hlt | hge
@@ -767,7 +767,7 @@ theorem reynolds_lemma3 (atomMap : Formula → sig.preds)
   by_cases hb : ∃ u : M.carrier, u < t ∧ ¬ EndsInGapOnRight M ε u
   · obtain ⟨s, hst, hbelow, _⟩ := reynolds_lemma3_left atomMap h_surj hε M h_prior_U h_prior_S ht hb
     exact ⟨s, hst, hbelow⟩
-  · push_neg at hb
+  · push Not at hb
     exact ⟨a₀, ha₀, fun r _ h₂ => hb r h₂⟩
 
 end Lemma3
@@ -849,13 +849,13 @@ theorem isFirstClassPoint_congr {ε : MonadicFormula sig 2} (hε : IsContempEqui
   -- `y < t`: otherwise `t ≤ y ≤ t'` and convexity would put `y` in the class.
   have hyt : y < t := by
     by_contra hle
-    push_neg at hle
+    push Not at hle
     exact hnty (contemp_of_between hε M hle hyt'.le htt')
   obtain ⟨z, hyz, hzt, hnz⟩ := h.2 y hyt hnty
   -- `z < t'`: otherwise `t' ≤ z ≤ t` and convexity would put `z` in the class, where `R` holds.
   refine ⟨z, hyz, ?_, hnz⟩
   by_contra hle
-  push_neg at hle
+  push Not at hle
   exact hnz ((endsInGapOnRight_congr hε M
     (contemp_of_between hε M hle hzt.le (contemp_symm hε M htt'))).mp
       ((endsInGapOnRight_congr hε M htt').mp h.1))
@@ -1043,12 +1043,12 @@ theorem isFirstClassPointClosed_congr {ε : MonadicFormula sig 2} (hε : IsConte
     hny (contemp_trans hε M (contemp_symm hε M htt') hc)
   have hyt : y < t := by
     by_contra hle
-    push_neg at hle
+    push Not at hle
     exact hnty (contemp_of_between hε M hle hyt'.le htt')
   obtain ⟨z, hyz, hzt, hnz⟩ := h.2 y hyt hnty
   refine ⟨z, hyz, ?_, hnz⟩
   by_contra hle
-  push_neg at hle
+  push Not at hle
   exact hnz ((endsInGapOnRight_congr hε M
     (contemp_of_between hε M hle hzt.le (contemp_symm hε M htt'))).mp
       ((endsInGapOnRight_congr hε M htt').mp h.1))

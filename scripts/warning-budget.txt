@@ -26,14 +26,11 @@
 # disposition linter.unusedTactic blocking fix or document via declaration-scoped `set_option ... in`
 # disposition linter.unusedVariables blocking rename to a `_`-prefixed binder; do not delete (arity)
 #
-# Baseline total: 348 warning(s) across 56 file(s).
+# Baseline total: 273 warning(s) across 47 file(s).
 
 1 FormalSystem/Automation/DatasetGeneratorMain.lean deprecated
 1 FormalSystem/Metalogic/Algebraic/FlowFrame.lean linter.unusedSectionVars
-1 FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean deprecated
 1 FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean linter.unusedSimpArgs
-1 FormalSystem/Metalogic/Conservativity/DenseObstructionTransfer.lean deprecated
-2 FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean deprecated
 1 FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean introMerge
 1 FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean linter.unusedSimpArgs
 2 FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean linter.unusedSimpArgs
@@ -45,11 +42,8 @@
 5 FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean linter.unusedSectionVars
 4 FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean linter.unusedSectionVars
 8 FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean linter.unusedVariables
-11 FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean deprecated
 1 FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean linter.unusedVariables
-4 FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean deprecated
 3 FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean linter.unusedSectionVars
-4 FormalSystem/Metalogic/Decidability/Verified/Decidable.lean deprecated
 4 FormalSystem/Metalogic/Decidability/Verified/Decidable.lean linter.unusedSectionVars
 1 FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean linter.unreachableTactic
 1 FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean linter.unusedTactic
@@ -65,31 +59,21 @@
 2 FormalSystem/Metalogic/Soundness.lean introMerge
 8 FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean introMerge
 1 FormalSystem/Metalogic/SoundnessLemmas/Separability.lean linter.unusedSimpArgs
-22 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean deprecated
 14 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean linter.unusedSectionVars
-12 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean deprecated
 5 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean linter.unusedSectionVars
 2 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean linter.unusedSimpArgs
-6 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean deprecated
 4 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean linter.unusedSectionVars
-1 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean deprecated
 6 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean linter.unusedSectionVars
 4 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean linter.unusedVariables
 3 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Singletons.lean linter.unusedSectionVars
-3 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean deprecated
 3 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean linter.unusedSectionVars
-2 FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean deprecated
-1 FormalSystem/Metalogic/WeakCanonical/MixedSum.lean deprecated
-2 FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean deprecated
 9 FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean linter.unusedSectionVars
 5 FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean linter.unusedVariables
 1 FormalSystem/Metalogic/WeakCanonical/RealModel/ShuffleReal.lean linter.unusedSectionVars
 1 FormalSystem/Semantics/Correspondence/FwdRecBridge.lean introMerge
-2 FormalSystem/Semantics/DurationClassification.lean deprecated
 3 FormalSystem/Semantics/LexCarrier.lean linter.unusedSectionVars
 1 FormalSystem/Semantics/PartialHistoryOrder.lean linter.unusedVariables
 20 FormalSystem/Semantics/TaskFrame.lean linter.unusedSectionVars
-1 FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean deprecated
 1 Tests/BimodalTest/Automation/DatasetGeneratorTest.lean linter.unusedVariables
 2 Tests/BimodalTest/Automation/ProofSearchTest.lean linter.unusedVariables
 6 Tests/BimodalTest/Automation/TacticsTest.lean linter.unusedVariables

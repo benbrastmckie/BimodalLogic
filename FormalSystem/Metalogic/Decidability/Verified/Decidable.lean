@@ -885,7 +885,7 @@ theorem ruleSound_boxNeg : RuleSound carrierBase .boxNeg := by
     | box ψ =>
       have hsrc : SatAt M hist tv ⟨.neg, Formula.box ψ, l⟩ := hst.sat _ hmem
       simp only [SatAt, TruthAt] at hsrc
-      push_neg at hsrc
+      push Not at hsrc
       obtain ⟨σ, hσfail⟩ := hsrc
       simp only [applyRule]
       refine ⟨Function.update hist b.nextWorld σ, tv, hst.ordResp, ?_⟩
@@ -918,7 +918,7 @@ theorem ruleSound_diamondPos : RuleSound carrierBase .diamondPos := by
       simp only [SatAt, hφ, TruthAt] at hsrc
       have hex : ∃ σ : WorldHistory F, TruthAt M σ (tv l.time) ψ := by
         by_contra hcon
-        push_neg at hcon
+        push Not at hcon
         exact hsrc fun σ hσt => hcon σ hσt
       obtain ⟨σ, hσtrue⟩ := hex
       simp only [applyRule, hA]
@@ -1222,7 +1222,7 @@ theorem exists_gt_not_truthAt_of_allFuture {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
     (h : ¬ TruthAt M τ t ψ.allFuture) : ∃ s, t < s ∧ ¬ TruthAt M τ s ψ := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact h ((Truth.future_iff ψ).mpr hcon)
 
 /-- `F(Hψ) @ t` yields a strictly earlier time at which `ψ` fails. The witness time of
@@ -1231,7 +1231,7 @@ theorem exists_lt_not_truthAt_of_allPast {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
     (h : ¬ TruthAt M τ t ψ.allPast) : ∃ s, s < t ∧ ¬ TruthAt M τ s ψ := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact h ((Truth.past_iff ψ).mpr hcon)
 
 /-- `T(Fψ) @ t` yields a strictly later time at which `ψ` holds. The witness time of

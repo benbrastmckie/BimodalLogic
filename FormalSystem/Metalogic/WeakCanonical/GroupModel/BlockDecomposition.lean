@@ -296,8 +296,8 @@ open scoped Classical in
 trichotomous, so this is `linearOrderOfSTO` and nothing more. -/
 noncomputable instance instLinearOrderBlockQuot : LinearOrder (BlockQuot α) :=
   letI : IsTrans (BlockQuot α) blockLt := ⟨fun _ _ _ => blockLt_trans⟩
-  letI : IsIrrefl (BlockQuot α) blockLt := ⟨blockLt_irrefl⟩
-  letI : IsTrichotomous (BlockQuot α) blockLt := ⟨fun a b hab hba => by
+  letI : Std.Irrefl (blockLt (α := α)) := ⟨blockLt_irrefl⟩
+  letI : Std.Trichotomous (blockLt (α := α)) := ⟨fun a b hab hba => by
     rcases blockLt_trichotomous a b with hc | hc | hc
     · exact absurd hc hab
     · exact hc

@@ -345,12 +345,12 @@ theorem duration_dense_or_least_pos {D : Type} [AddCommGroup D] [LinearOrder D]
   by_cases hd : ∀ a b : D, a < b → ∃ c, a < c ∧ c < b
   · exact Or.inl ⟨hd⟩
   · right
-    push_neg at hd
+    push Not at hd
     obtain ⟨a, b, hab, hc⟩ := hd
     refine ⟨b - a, sub_pos.mpr hab, ?_⟩
     intro c hc'
     by_contra hlt
-    push_neg at hlt
+    push Not at hlt
     have h1 : a < a + c := lt_add_of_pos_right a hc'
     have h2 : c + a < b := lt_sub_iff_add_lt.mp hlt
     have h3 : a + c < b := by rw [add_comm]; exact h2

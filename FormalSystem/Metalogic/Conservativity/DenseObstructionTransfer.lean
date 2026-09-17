@@ -218,7 +218,7 @@ theorem q_gp_iff_p (p : Atom) (t : (qD : Type)) :
   constructor
   · intro h
     by_contra hc
-    push_neg at hc
+    push Not at hc
     obtain ⟨s, hts, hs1⟩ := exists_between (show (t : ℚ) < 1 from hc)
     have h2 := h s hts
     rw [q_atom_iff] at h2

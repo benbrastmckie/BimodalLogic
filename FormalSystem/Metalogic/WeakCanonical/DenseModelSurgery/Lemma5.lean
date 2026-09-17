@@ -416,7 +416,7 @@ theorem false_of_holds_throughout_class_bounded {atomMap : Formula → sig.preds
   -- *"there is no first point after the class"*: some point of `(s,b)` is already outside it.
   have hu₀ : ∃ u : M.carrier, s < u ∧ u < b ∧ ¬ ContempEquivDense M ε s u := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨b, hsb, hnb, fun y h₁ h₂ => hcon y h₁ h₂⟩
   obtain ⟨u₀, hsu₀, hu₀b, hnu₀⟩ := hu₀
   have hnP₀ : ¬ TemporalTruth M atomMap u₀ P := hout u₀ hsu₀ hu₀b hnu₀
@@ -435,7 +435,7 @@ theorem false_of_holds_throughout_class_bounded {atomMap : Formula → sig.preds
       exact hnr (hin r (contemp_trans hε M hc (contemp_of_between hε M hs₁r.le hry'.le hcy')))
   have hex : ∃ r : M.carrier, s < r ∧ r < s₁ ∧ ¬ ContempEquivDense M ε s r := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hs.2.2 ⟨s₁, hss₁, hns₁, fun z h₁ h₂ => hcon z h₁ h₂⟩
   obtain ⟨r, hsr, hrs₁, hnr⟩ := hex
   rcases lt_or_ge u₀ s₁ with hlt | hge
@@ -468,7 +468,7 @@ theorem exists_bound_notHolds {atomMap : Formula → sig.preds}
   by_cases hall : ∀ u : M.carrier, s < u → ¬ TemporalTruth M atomMap u B
   · obtain ⟨b, hsb, hnb⟩ := hs.1
     exact ⟨b, hsb, hnb, fun q h₁ _ => hall q h₁⟩
-  · push_neg at hall
+  · push Not at hall
     obtain ⟨u, hsu, hBu⟩ := hall
     obtain ⟨y, hsy, hcy⟩ := exists_contemp_gt hε M hs
     obtain ⟨s₂, hss₂, hbelow, hcase⟩ := h_prior_U s (Formula.imp B Formula.bot)
@@ -533,7 +533,7 @@ theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
     ⟨t', htt', hnB⟩
   have hst' : s ≤ t' := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact hnB (hbelow t' htt' hcon)
   have hRs : EndsInGapOnRight M ε s := hIcc s hts.le hst'
   -- *"not possible as `B` must continue for a while"*: the last-point case is excluded.
@@ -561,7 +561,7 @@ theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
     obtain ⟨w, hvw, hcw⟩ := exists_contemp_gt hε M hRv'
     have hws : w < s := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       have hc : ContempEquivDense M ε (max v t) s :=
         contemp_of_between hε M hv'.le hcon hcw
       exact hmin (max v t) (contemp_symm hε M hc) hv'
@@ -582,7 +582,7 @@ theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
     have hwu : w ≤ u := not_lt.mp (hwmin u (contemp_refl hε M u))
     have hsw : s < w := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       have hwu' : ContempEquivDense M ε w u := contemp_symm hε M huw
       have hws : ContempEquivDense M ε w s := contemp_of_between hε M hcon hsu.le hwu'
       exact hnsu (contemp_trans hε M (contemp_symm hε M hws) hwu')

@@ -98,7 +98,7 @@ theorem uSep (S : ∀ i, ShiftSet (T i)) (w u : UOmega φ (fun i => (S i).Carrie
   have h2 : ∀ᶠ i in φ, ∃ x : ↑(T i), 0 < x ∧ ∀ y, |y| < x → ¬ (g i = (S i).sh (f i) y) := by
     refine h1.mono (fun i hi => ?_)
     by_contra hx
-    push_neg at hx
+    push Not at hx
     exact hi ((S i).sep (f i) (g i) (fun x hx0 => hx x hx0))
   obtain ⟨ξ, hξ⟩ := exists_section h2
   obtain ⟨y, hy1, hy2⟩ := h (mk ξ) (by
