@@ -1,5 +1,5 @@
 ---
-next_project_number: 611
+next_project_number: 612
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 611
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609,610 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609,610,611 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -26,6 +26,7 @@ next_project_number: 611
 ### Agent System
 
 592 [NOT STARTED] — .claude/rules/source-store-deploy-boundary.md directs every...
+611 [NOT STARTED] — Fix git-commit-scoped.sh dropping staged deletions: when a...
 
 ### Algebraic Representation
 
@@ -124,6 +125,16 @@ next_project_number: 611
 609 [NOT STARTED] — Fix scripts/check-evidence-probes.sh, which fails 4 of 4...
 
 ## Tasks
+
+### 611. Fix git commit scoped dropping staged deletions
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Fix git-commit-scoped.sh dropping staged deletions: when a scoped commit includes a deleted file (e.g. git rm lakefile.lean, renaming docs.yml.disabled), the deletion is left out of the commit and must be committed separately. Edit the source store at ~/.config/nvim/agent-system/extensions/core/scripts/git-commit-scoped.sh (not .claude/), add a regression test covering deleted and renamed paths, and redeploy. Observed twice during task 578's implementation.
+
+---
 
 ### 610. Replace remaining lakefile lean mentions in docs
 - **Status**: [NOT STARTED]

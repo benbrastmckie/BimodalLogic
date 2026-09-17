@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 611,
+  "next_project_number": 612,
   "active_projects": [
+    {
+      "project_number": 611,
+      "project_name": "fix_git_commit_scoped_dropping_staged_deletions",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Fix git-commit-scoped.sh dropping staged deletions: when a scoped commit includes a deleted file (e.g. git rm lakefile.lean, renaming docs.yml.disabled), the deletion is left out of the commit and must be committed separately. Edit the source store at ~/.config/nvim/agent-system/extensions/core/scripts/git-commit-scoped.sh (not .claude/), add a regression test covering deleted and renamed paths, and redeploy. Observed twice during task 578's implementation.",
+      "topic": "agent-system",
+      "created": "2026-09-17T10:01:10Z",
+      "last_updated": "2026-09-17T10:01:10Z"
+    },
     {
       "project_number": 610,
       "project_name": "replace_remaining_lakefile_lean_mentions_in_docs",
