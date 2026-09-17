@@ -1,0 +1,26 @@
+{
+  "phase": 8,
+  "phase_name": "Flip ENFORCE_C9_DOCS and document the gate",
+  "started_at": "2026-09-17T11:20:00Z",
+  "last_updated": "2026-09-17T11:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Fresh C9D check before flipping", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Flip ENFORCE_C9_DOCS default and update comments", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 3, "description": "Rewrite MODULE_INVARIANTS.md live-example paragraph", "status": "done", "files_touched": ["docs/development/MODULE_INVARIANTS.md"]},
+    {"id": 4, "description": "Add CI_CD_PROCESS.md gating note", "status": "done", "files_touched": ["docs/development/CI_CD_PROCESS.md"]},
+    {"id": 5, "description": "Final gate: both invocations exit 0, C5/C12/C13/readme-lint PASS", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Confirm no ENFORCE override in ci.yml", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "8.extra",
+      "description": "docs/reference/README.md's 'Common Tactics' table presented `temporal_search` as a live tactic (not framed as retired), found during the final validation grep required by this phase's own acceptance test. This file was never assigned to any phase.",
+      "type": "altered",
+      "reason": "The Testing & Validation checklist item ('grep ... returns only explicit retirement mentions') would otherwise fail; fixed to keep the overall task's acceptance criteria genuinely met rather than narrowly true only for itemized files.",
+      "annotation": "*(deviation: altered — fixed docs/reference/README.md's live-presented temporal_search row, found during Phase 8's final grep)*"
+    }
+  ]
+}

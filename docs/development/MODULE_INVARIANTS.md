@@ -187,17 +187,13 @@ does not yet satisfy. Each is computed and reported from the outset but gated be
 a `TODO` line and does not affect the exit code. This makes progress visible without a
 permanently-red gate.
 
-`ENFORCE_C9_DOCS` is the live example. It defaults to **0**, and the check reports a
-three-figure citation count at every gate, two thirds of it in a single historical file
-(`PHASED_IMPLEMENTATION.md`). Verify it is a real computation rather than a stub with:
+`ENFORCE_C9_DOCS` (no task-number citations under `docs/`) followed this pattern: it defaulted
+to 0 while the tree carried a three-figure citation count, two thirds of it in a single
+historical file (`docs/development/PHASED_IMPLEMENTATION.md`, since deleted). It is now
+enforced from the outset, the same as C8/C9/C10 above -- clearing the citations is the only
+way past the check; the flag must never be flipped back to 0 to quiet a new one.
 
-```bash
-ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build   # exits 1, with a count
-```
-
-Flip the default to 1 once those citations are cleared.
-
-`ENFORCE_C16_ROOTS` is the second live example, and it was added by the same change that added
+`ENFORCE_C16_ROOTS` is the live example of the pattern today, and it was added by the same change that added
 C26. The env_linter batch had only ever been pointed at the `FormalSystem` library root, which
 observes that root's import closure and nothing else — so every `lean_exe` root and the other
 library root were unlinted, the same structural gap C25 closes for *compilation*, left open for

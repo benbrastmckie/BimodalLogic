@@ -113,8 +113,8 @@ See [axiom-reference.md](axiom-reference.md) for complete details.
 |--------|---------|
 | `modal_t` | Apply modal T axiom |
 | `apply_axiom` | Apply specific axiom schema |
-| `modal_search` | Automated modal proof search |
-| `temporal_search` | Automated temporal proof search |
+| `modal_search` | Bounded best-first proof search for derivability goals (modal and temporal) |
+| `propDecide` | Reflective propositional tautology decision |
 
 See [tactic-reference.md](tactic-reference.md) for usage details.
 

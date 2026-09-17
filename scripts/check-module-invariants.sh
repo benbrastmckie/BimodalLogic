@@ -67,7 +67,7 @@
 #       FormalSystem/ is on scripts/debug-artifact-allowlist.txt with an exact
 #       per-file count and a reason; comment-aware (docstring usage blocks are
 #       documentation), unlike cslib's plain pre-pr-check.sh grep
-#   C9D Task-number citations under docs/ (computed always, soft by default)
+#   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
 # Every filesystem traversal excludes the archive via `-not -path '*/Boneyard/*'`.
@@ -522,10 +522,11 @@ fi
 ENFORCE_C8=${ENFORCE_C8:-1}   # aggregator convention (enforced)
 ENFORCE_C9=${ENFORCE_C9:-1}   # no task-number citations under FormalSystem/ (enforced)
 ENFORCE_C10=${ENFORCE_C10:-1} # no stale docs/latex/typst paths (enforced)
-# C9D is the C9 rule applied to docs/, which does not yet satisfy it. Computed and
-# reported from the outset; flip to 1 once docs/development/PHASED_IMPLEMENTATION.md
-# and the smaller residue are cleared.
-ENFORCE_C9_DOCS=${ENFORCE_C9_DOCS:-0} # no task-number citations under docs/ (NOT yet enforced)
+# C9D is the C9 rule applied to docs/. The citations that kept it soft (100 in
+# docs/development/PHASED_IMPLEMENTATION.md, plus the smaller residue across a dozen
+# other files) have been cleared, so this is now enforced from the outset like C9
+# itself. Never flip it back to 0; clear any new citation with a durable anchor instead.
+ENFORCE_C9_DOCS=${ENFORCE_C9_DOCS:-1} # no task-number citations under docs/ (enforced)
 # C16 gates the Batteries env_linter batch (defsWithUnderscore, docBlame, simpNF,
 # structureInType, tacticDocs, unusedArguments -- everything `lake exe runLinter`/the
 # configured `lintDriver` checks). scripts/nolints.json grandfathers 217 findings, all
@@ -3521,10 +3522,10 @@ echo
 # C9-DOCS: task-number citations under docs/
 #
 # `.claude/rules/no-task-references-in-deliverables.md` binds docs/ exactly as it
-# binds FormalSystem/, but docs/ does not yet satisfy it. Following this script's
-# own documented pattern for an end-state invariant the tree has not reached, the
-# computation runs from the outset and is REPORTED at every gate, while only the
-# flag controls whether it affects the exit code.
+# binds FormalSystem/, and docs/ now satisfies it: the citations that kept this soft
+# (the deleted docs/development/PHASED_IMPLEMENTATION.md plus a dozen other files'
+# residue) have all been cleared to durable anchors. Enforced from the outset, the
+# same as C9 itself.
 #
 # Do not silently omit this check to keep the gate quiet, and do not flip the flag
 # to 0 once it is 1. Clear the citations instead.

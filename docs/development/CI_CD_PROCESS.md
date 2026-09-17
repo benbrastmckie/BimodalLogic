@@ -132,6 +132,11 @@ and lean_exe steps so the Lake cache is warm for the checks that do call `lake`/
 scripts/check-module-invariants.sh`, to also run the build-dependent checks — see "Known
 Not-in-CI Gaps" below).
 
+**C9D became gating (2026-09-17)**: `ENFORCE_C9_DOCS` now defaults to 1 in the script (no
+task-number citations under `docs/`), so this CI step gates on it too, with no workflow change
+required — `ci.yml` invokes `check-module-invariants.sh` bare and inherits whatever default the
+script sets. See `docs/development/MODULE_INVARIANTS.md`'s "Adding a Check" section.
+
 ### Check Copyright Headers Step
 
 **Step name**: `Check copyright headers (scripts/check-copyright-headers.sh --strict)`

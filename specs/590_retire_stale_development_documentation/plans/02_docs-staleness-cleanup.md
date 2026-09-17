@@ -338,18 +338,18 @@ with `grep -nE 'tm_auto|temporal_search|propositional_search'` before editing.
 
 ---
 
-### Phase 8: Flip ENFORCE_C9_DOCS and document the gate [NOT STARTED]
+### Phase 8: Flip ENFORCE_C9_DOCS and document the gate [COMPLETED]
 
 **Goal**: With C9D at 0, make it exit-code-affecting by default (CI inherits this) and update the
 docs that describe the flag.
 
 **Tasks**:
-- [ ] Fresh `bash scripts/check-module-invariants.sh --no-build`: C9D must read 0 (or only `task-ref-ok`-marked). If new citations appeared from concurrent work, clear them first
-- [ ] `scripts/check-module-invariants.sh:525-528`: change the default to `${ENFORCE_C9_DOCS:-1}`, update the trailing comment to "(enforced)", replace the comment block above it (which names `PHASED_IMPLEMENTATION.md`), and update the header list line ~70 ("soft by default" becomes "enforced"); leave the check block's "do not flip back to 0" comment intact
-- [ ] `docs/development/MODULE_INVARIANTS.md:185-196`: rewrite the "live example" paragraph. State that `ENFORCE_C9_DOCS` is now enforced; if another soft flag still defaults to 0 (grep the flag block), cite it as the example, otherwise describe the pattern generically. Remove the `PHASED_IMPLEMENTATION.md` mention and the "exits 1, with a count" snippet
-- [ ] `docs/development/CI_CD_PROCESS.md`: add a short note that C9D (no task-number citations under `docs/`) became gating via the script default, with no workflow change because the "Check module invariants" step runs the script bare. Date only, no task number
-- [ ] Final gate: `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0 and the default run exits 0; C5, C12, C13 PASS; `bash scripts/readme-lint.sh` PASS; `bash .claude/scripts/check-task-references.sh` (if present) clean for `docs/`
-- [ ] Confirm `grep -n ENFORCE .github/workflows/ci.yml` is still empty (no override masks the new default)
+- [x] Fresh `bash scripts/check-module-invariants.sh --no-build`: C9D must read 0 (or only `task-ref-ok`-marked). If new citations appeared from concurrent work, clear them first *(completed: 0)*
+- [x] `scripts/check-module-invariants.sh:525-528`: change the default to `${ENFORCE_C9_DOCS:-1}`, update the trailing comment to "(enforced)", replace the comment block above it (which names `PHASED_IMPLEMENTATION.md`), and update the header list line ~70 ("soft by default" becomes "enforced"); leave the check block's "do not flip back to 0" comment intact *(completed)*
+- [x] `docs/development/MODULE_INVARIANTS.md:185-196`: rewrite the "live example" paragraph. State that `ENFORCE_C9_DOCS` is now enforced; if another soft flag still defaults to 0 (grep the flag block), cite it as the example, otherwise describe the pattern generically. Remove the `PHASED_IMPLEMENTATION.md` mention and the "exits 1, with a count" snippet *(completed: ENFORCE_C16_ROOTS is the sole remaining soft-default flag; cited as the live example)*
+- [x] `docs/development/CI_CD_PROCESS.md`: add a short note that C9D (no task-number citations under `docs/`) became gating via the script default, with no workflow change because the "Check module invariants" step runs the script bare. Date only, no task number *(completed)*
+- [x] Final gate: `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0 and the default run exits 0; C5, C12, C13 PASS; `bash scripts/readme-lint.sh` PASS; `bash .claude/scripts/check-task-references.sh` (if present) clean for `docs/` *(completed: also fixed a genuinely-live-presented `temporal_search` row found in docs/reference/README.md's Common Tactics table during this final gate pass, unassigned to any phase)*
+- [x] Confirm `grep -n ENFORCE .github/workflows/ci.yml` is still empty (no override masks the new default) *(completed: empty)*
 
 **Timing**: 1 hour
 
@@ -367,12 +367,12 @@ docs that describe the flag.
 
 ## Testing & Validation
 
-- [ ] C9D: `PASS C9D zero task-number citations under docs/`
-- [ ] `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0 (and so does the default invocation after the flip)
-- [ ] C5, C12, C13 PASS
-- [ ] `bash scripts/readme-lint.sh` PASS
-- [ ] `grep -rnE 'tm_auto|temporal_search|propositional_search' docs/` returns only explicit retirement mentions
-- [ ] `grep -rn PHASED_IMPLEMENTATION --exclude-dir={specs,.git,.claude} .` returns nothing
+- [x] C9D: `PASS C9D zero task-number citations under docs/`
+- [x] `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0 (and so does the default invocation after the flip)
+- [x] C5, C12, C13 PASS
+- [x] `bash scripts/readme-lint.sh` PASS
+- [x] `grep -rnE 'tm_auto|temporal_search|propositional_search' docs/` returns only explicit retirement mentions
+- [x] `grep -rn PHASED_IMPLEMENTATION --exclude-dir={specs,.git,.claude} .` returns nothing
 
 ## Artifacts & Outputs
 
