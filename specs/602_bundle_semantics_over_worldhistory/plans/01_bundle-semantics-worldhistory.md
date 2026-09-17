@@ -1,7 +1,7 @@
 # Implementation Plan: Task #602
 
 - **Task**: 602 - Bundle semantics over WorldHistory
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 20 hours
 - **Dependencies**: None (coordinate with task 601: whichever lands second rebases)
 - **Research Inputs**: specs/602_bundle_semantics_over_worldhistory/reports/01_bundle-semantics-worldhistory.md

@@ -1,0 +1,262 @@
+=== Module invariants: 60e7a7ecc ===
+
+PASS  B0   Boneyard exclusion covers exactly 1 directory
+            FormalSystem/Boneyard
+            excluded 169 archived .lean files (695 total -> 526 live)
+
+PASS  C1   lake build exits 0
+PASS  C1   lake build BimodalTest exits 0
+
+PASS  C2   all four flagship axiom sets match baseline
+            'FormalSystem.Metalogic.BXCanonical.completeness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.derivable_of_validDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+PASS  C3   structural sorry inventory is ZERO across FormalSystem/ (Boneyard/ excluded)
+
+PASS  C4   all 1775 FormalSystem/BimodalTest import lines resolve
+FAIL  C5   1 unresolved module path(s) in non-specs markdown
+            docs/theorem-index.md:36: FormalSystem.Semantics.WorldHistory
+PASS  C6   all 15 unreachable live module(s) are manifested
+PASS  C6   all 15 manifested module(s) still compile in isolation
+INFO  C7   588 live .lean files (526 FormalSystem / 61 Tests); 573 reachable, 15 unreachable
+            (loose)                11
+            Automation             37
+            Examples                2
+            ForMathlib              1
+            Metalogic             371
+            ProofSystem             4
+            Semantics              58
+            Syntax                 26
+            Theorems               16
+PASS  C8   every FormalSystem/, Metalogic/, Syntax/ and Semantics/ subdirectory has exactly one sibling aggregator
+PASS  C11  all 539 archived import lines in 169 archived file(s) resolve (8 waived)
+
+FAIL  INV  12 file(s) carry a stale generated inventory block
+            FormalSystem/Automation/README.md
+            FormalSystem/Metalogic/Conservativity/Plus/README.md
+            FormalSystem/Metalogic/Conservativity/README.md
+            FormalSystem/Metalogic/Conservativity/Star/README.md
+            FormalSystem/Metalogic/Independence/README.md
+            FormalSystem/Metalogic/README.md
+            FormalSystem/Metalogic/SoundnessLemmas/README.md
+            FormalSystem/README.md
+            FormalSystem/Semantics/MinusLanguage/README.md
+            FormalSystem/Semantics/PlusLanguage/README.md
+            FormalSystem/Semantics/StarLanguage/README.md
+            README.md
+            run: bash scripts/check-module-invariants.sh --emit-inventory
+
+PASS  C9   zero task-number citations under FormalSystem/, lakefile.lean, README.md, scripts/
+
+PASS  C10  zero references to FormalSystem/{docs,latex,typst} outside specs/
+
+PASS  C12  all slash-shaped source paths in 81 markdown files resolve
+PASS  C13  all relative markdown links in 78 markdown files resolve (3 file(s) allowlisted)
+
+PASS  C14  no stale axiom or sorry counts documented in docs/ + README.md + FormalSystem/*.lean
+PASS  C14  every pinned declaration matches its axiom baseline (the consequence/compactness stack plus every SORRY-FREE claim in Metalogic.lean)
+            'FormalSystem.Metalogic.Decidability.sound_of_isValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.completeness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.strongCompletenessBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.strongCompletenessDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.semantic_deduction_in' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_setConsequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.strongCompleteness_of_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.setConsequence_of_not_satisfiable' depends on axioms: [propext]
+            'FormalSystem.Metalogic.compact_of_strongCompleteness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.strongCompleteness_iff_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.not_compact_of_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.not_strongCompleteness_of_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.compact_of_modelExistence' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.modelExistence_of_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.compact_iff_modelExistence' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.consequence_completeness_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.completeness_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_base_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.consequence_completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_dense_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.consequence_completeness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.completeness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_ztime_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.sat_ofModel_frame' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.modelExistence_of_satPreserved' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.modelExistenceBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.modelExistenceDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.compactBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.compactDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.truthAt_next_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.truthAt_next_iterate' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.archWitness_finitely_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.archWitness_not_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.notStrongCompletenessZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.qDepth_qAlpha' depends on axioms: [propext, Quot.sound]
+            'FormalSystem.Metalogic.dedWitness_core' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.dedWitness_not_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.dedWitness_finitely_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.notStrongCompletenessRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.modelExistenceRTime_refuted' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.tmMinusComplete_iff_forward' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.tmMinusCompleteBase_iff_forwardBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.tmMinusCompleteZTime_iff_forwardZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.tmMinusCompleteDense_iff_forwardDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.tmMinusCompleteRTime_iff_forwardRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.qAlpha_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.exists_strictMono_qPoints' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.setConsequence_iff_not_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.satisfiableSet_iff_finitelySatisfiable' depends on axioms: [propext]
+            'FormalSystem.Metalogic.modelExistence_iff_finitelySatisfiable' depends on axioms: [propext]
+            'FormalSystem.Metalogic.soundness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.soundness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.WeakCanonical.countermodel_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.notCompactZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.notCompactRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Semantics.truthAt_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.minus_soundness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.minus_soundness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.minus_soundness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.minus_soundness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.minus_not_derivable_nil_bot' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.minus_not_derivable_nil_bot_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.translate' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.derivable_translate' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.ceb_backward' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.cef_backward' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.ced_backward' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.cec_backward' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.TMFrag' depends on axioms: [propext]
+            'FormalSystem.Metalogic.Conservativity.tmFrag_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.tmFrag_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.tmFrag_complete_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.tmFrag_complete_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.tmFrag_complete_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.tmFrag_complete_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.tmMinus_le_tmFrag' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.tmMinus_lt_tmFrag_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.minusCompactBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.minusCompactDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.plus_soundness_validIn' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Semantics.plusValidIn_ofFormula_iff' depends on axioms: [propext]
+            'FormalSystem.Metalogic.Decidability.decide' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Semantics.galoisClosed_mod' depends on axioms: [propext]
+            'FormalSystem.Semantics.galoisClosed_of_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Semantics.galoisClosed_sat_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Semantics.galoisClosed_isDiscrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Semantics.validOn_nextTop_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Semantics.validOn_nextTop_iff_isDiscrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Independence.sat_rtime_ssubset_mod_axiomSet' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Independence.sat_ztime_ssubset_mod_axiomSet' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.consequence_completeness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.completeness_rtime_engine' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.countermodel_dedekind_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.StarLanguage.StarDerivationTree' depends on axioms: [propext]
+            'FormalSystem.Metalogic.Conservativity.star_soundness_validIn' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.starDerivable_ofFormula_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.starConservative_of_plusComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Conservativity.plusIncomplete_of_starNonconservative' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.real_lub_of_bddAbove' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.dedekind_box_dense_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Deterministic.detCompletenessBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Deterministic.detCompletenessDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Deterministic.detCompletenessZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Deterministic.detCompletenessRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+PASS  C15  all 58 paper-anchor citation(s) resolve against docs/reference/paper-definitions-of-record.md
+PASS  C15  all 75 theorem-index row(s) carry their anchor (or `Paper: —`) at the declaration
+
+FAIL  C20  tier 1: 1 of 1047 file.lean:NNN citation(s) point at a line that does not exist or is blank
+            FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MonotoneIssuance.lean:302  ->  Verified/Decidable.lean:274  (line 274 of FormalSystem/Metalogic/Decidability/Verified/Decidable.lean is blank)
+            replace each with the declaration name at the intended site
+INFO  C20  35 citation(s) name a filename that is ambiguous or resolves to no live file (not checkable, not failed)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:763  ->  Axioms.lean:524  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:772  ->  Axioms.lean:377  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:774  ->  Formula.lean:163  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:908  ->  Axioms.lean:398  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean:579  ->  Completeness.lean:72  (ambiguous)
+PASS  C20  tier 2: zero file.lean:NNN citations in publication-facing scope
+
+PASS  C16  env_linter batch (defsWithUnderscore, docBlame, simpNF, structureInType, tacticDocs, unusedArguments) has no un-nolisted finding
+TODO  C16  179 env_linter finding(s) across 10 of 14 non-FormalSystem lakefile root(s) (not yet enforced)
+            BimodalTest: 85
+            FormalSystem.Automation.DatasetGeneratorMain: 32
+            FormalSystem.Automation.MachineAppendixMain: 16
+            FormalSystem.Automation.ContrastiveGeneratorMain: 14
+            FormalSystem.Automation.TableauBridgeMain: 12
+            FormalSystem.Automation.BenchmarkOracleMain: 9
+            these roots are outside the FormalSystem closure, so `runLinter FormalSystem` reports 0 on them by construction
+            set ENFORCE_C16_ROOTS=1 to make this exit-code-affecting once the count reaches zero
+PASS  C16  dupNamespace: zero declaration(s) with a repeated namespace component (live textual check)
+PASS  C23  zero live `lemma` declarations (both C17 and C19 can see every declaration)
+PASS  C23  no Uppercase_x name outside the tense-operator, no-such-prefix and
+            name-capture classes
+PASS  C23  no outer-shadows-inner bare-declaration pair outside the recorded set
+
+INFO  C17  1016 declaration(s) with zero other occurrences (dead-declaration scan, approximate; never affects FAILURES)
+            FormalSystem/Automation/AtomCanonicalization.lean:129: isCanonical
+            FormalSystem/Automation/ContrastiveGeneratorMain.lean:773: natToString
+            FormalSystem/Automation/ContrastiveGeneratorMain.lean:1070: runBatchContrastive
+            FormalSystem/Automation/DatasetGenerator.lean:1021: hitRate
+            FormalSystem/Automation/FormulaEnumerator.lean:1278: schemaMinFrameClass
+            FormalSystem/Automation/FormulaEnumerator.lean:1479: generateValidFromMP
+            FormalSystem/Automation/FormulaEnumerator.lean:1761: CheckpointState
+            FormalSystem/Automation/FormulaEnumerator.lean:2293: enumerateWithPipeline
+            FormalSystem/Automation/ForwardProofGenerator.lean:187: schemaLayer
+            FormalSystem/Automation/ForwardProofGenerator.lean:202: randomAxiomSchema
+            FormalSystem/Automation/Normalization.lean:146: release_unfold
+            FormalSystem/Automation/Normalization.lean:150: weak_until_unfold
+            FormalSystem/Automation/Normalization.lean:154: trigger_unfold
+            FormalSystem/Automation/Normalization.lean:158: weak_since_unfold
+            FormalSystem/Automation/Normalization.lean:526: top_fold
+            FormalSystem/Automation/Normalization.lean:533: diamond_fold
+            FormalSystem/Automation/Normalization.lean:537: some_future_fold
+            FormalSystem/Automation/Normalization.lean:541: some_past_fold
+            FormalSystem/Automation/Normalization.lean:545: next_fold
+            FormalSystem/Automation/Normalization.lean:549: prev_fold
+            ... and 996 more
+
+PASS  C18  zero duplicated paragraph(s) across the four top-level READMEs
+PASS  C18  zero duplicated sentence(s) (>= 15 words) across the same four files
+
+INFO  C19  docstring coverage (unrefined G-12): 9905/11043 = 89.69%
+PASS  C19  docstring coverage (refined, /-! section credit): 10215/11043 = 92.50% (floor: 90%)
+
+PASS  C21  all 27 declaration(s) named in MainResults.lean are pinned by C2 or C14
+
+PASS  C22  the two allAxiomNames lists agree (45 names each)
+
+PASS  C24  every FormalSystem module transitively imports FormalSystem.Init
+
+PASS  C25  all 13 lean_exe root module(s) from lakefile.lean compile
+
+PASS  C25N all 13 lean_exe root(s) are named PascalCase(target)Main, and no other live module ends in Main
+
+PASS  C26  zero snake_case `def`/`abbrev` names in the live tree (textual scan:
+            out-of-closure modules, `private` declarations and `_1`/`_2`-shaped
+            names all in view)
+PASS  C26  all 7 in-source `nolint` attribute pair(s) are on
+            scripts/nolint-attribute-allowlist.txt
+
+PASS  C27  54 live debug directive line(s) in 1 file(s), every one allow-listed
+            with an exact count and a reason (0 masker fixture failures)
+
+TODO  C9D  142 task-number citation(s) under docs/ (use a durable anchor instead) (not yet enforced)
+                100 docs/development/PHASED_IMPLEMENTATION.md
+                 11 docs/training/PIPELINE.md
+                  5 docs/research/NONCOMPUTABLE.md
+                  5 docs/project-info/MAINTENANCE.md
+                  5 docs/architecture/ADR-004-Remove-Project-Level-State-Files.md
+            set ENFORCE_C9_DOCS=1 to make this exit-code-affecting once the citations are cleared
+
+===========================================================
+3 CHECK GROUP(S) FAILED
+EXIT 1

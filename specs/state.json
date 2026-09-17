@@ -29,12 +29,12 @@
     {
       "project_number": 602,
       "project_name": "bundle_semantics_over_worldhistory",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Introduce `WorldHistory F` as the named type of world histories and make the semantics evaluate at and quantify over it, so that truth reads exactly as the paper's satisfaction clauses (JPL/possible_worlds.tex, sec:Construction: 'satisfaction at a possible world τ ∈ H_F'). Target shape: `def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) : Formula → Prop` with `| .atom p => M.valuation (τ.state t) p`, `| .box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ`, `| .stab φ => ∀ σ : WorldHistory F, τ.state t = σ.state t → TruthAt M σ t φ` (Plus/Star layers), replacing the current `(τ : PartialHistory F)` evaluation point, the atom clause's `∃ (ht : τ.domain t)` conjunct, the `∀ (σ : PartialHistory F), σ.IsTotal → …` quantifier pattern, and `SameStateAt`'s dependent-proof formulation. Motivation: the unbundled pattern (~150 binder sites across ~80 files: Semantics/TruthClauses.lean box/stab/diamond lemmas, Semantics/Validity.lean ValidIn/SemanticConsequenceIn/satisfiability, the Plus/Minus/Star truth and validity layers, truth transport, Metalogic/Independence, Decidability/BiLasso and Verified/Bridge, Conservativity, BXCanonical, Correspondence, Extension, plus docs/ and typst/) forces domain-membership proofs into clauses where they carry no content and is quoted verbatim in the PossibleWorlds talk. Design, to be confirmed or improved at research time: (1) rename `TaskFrame.HF` to `WorldHistory (F : TaskFrame) : Type := {τ : PartialHistory F // τ.IsTotal}` with a `CoeOut` to `PartialHistory F`, keep `PartialHistory.IsTotal` as its defining predicate, move `HF.ofTotal` and friends to the `WorldHistory` namespace — no `HF` alias left behind (no compatibility shims); (2) add `WorldHistory.state (τ : WorldHistory F) (t : F.Duration) : F.WorldState := τ.val.states t (τ.property t)` with its simp API (`state_eq_states`, proof-irrelevance lemma, `ofTotal_state`), and `WorldHistory.timeShift` with `timeShift_state`; (3) change `TruthAt` and the Plus/Minus/Star truth relations to take `τ : WorldHistory F`, and make every quantifier over world histories — box, stability, their duals, ValidIn/Valid, SemanticConsequenceIn, satisfiability, frame-relative validity — range over `WorldHistory F`; drop `SameStateAt` in favour of `τ.state t = σ.state t`; (4) audit every consumer that currently evaluates truth at a possibly non-total history (truth transport `truthAt_of_truthCorr`/`shiftCorr`, `timeShift_preserves_truth`, the Extension Theorem, canonical/chronicle countermodel constructions, the decidability bridge, MinusLanguage native semantics) and restate it over `WorldHistory F`; if any genuinely needs truth at a partial history, stop and report the obstruction with the concrete site rather than reintroducing a parallel partial-history truth relation; (5) provide only the transitional bridge lemmas needed to migrate proofs mechanically, deleting any that end up unused. This supersedes Decision A and the 'deferred alternative' note of Decision B' in docs/architecture/total-history-validity-decisions.md and the 'no abbrev WorldHistory' note in Semantics/PartialHistory.lean: record the new decision as Decision A' in that file (including the removal of the accepted fidelity gap for the atom clause), update the PartialHistory.lean module docstring's paper/Lean table, docs/reference, docs/user-guide, typst chapters and theorem-index rows that quote the old signatures. Acceptance: zero `sorry`, axiom baselines unchanged (C2/C14 green), `lake build` and the module-invariant checks pass, no remaining `σ.IsTotal →` / `τ.IsTotal ∧` quantifier pattern and no `∃ (ht : τ.domain t)` atom conjunct in truth definitions outside Boneyard/. Coordinate with task 601 (reflection convention, touches TaskFrame.lean and many of the same frame-construction files) — whichever lands second rebases. Downstream: the PossibleWorlds talk slides 'Semantics in Lean II: Histories and Models', 'Syntax and Semantics' and 'Perpetuity, Twice' already quote the target form (WorldHistory, WorldHistory.state, TruthAt at τ : WorldHistory F, timeShift_preserves_truth over WorldHistory) and must be re-checked against the final names",
       "topic": "semantics",
       "created": "2026-09-16T20:04:29Z",
-      "last_updated": "2026-09-16T21:16:25Z",
+      "last_updated": "2026-09-17T00:59:07Z",
       "session_id": "sess_1789592641_69db81",
       "artifacts": [
         {
@@ -46,9 +46,15 @@
           "path": "specs/602_bundle_semantics_over_worldhistory/plans/01_bundle-semantics-worldhistory.md",
           "type": "plan",
           "summary": "10-phase plan: green WorldHistory/HF-rename phase, 8-phase atomic batch retargeting all truth/validity relations over WorldHistory with a single green commit, then Decision A' and docs."
+        },
+        {
+          "path": "specs/602_bundle_semantics_over_worldhistory/summaries/01_bundle-semantics-worldhistory-summary.md",
+          "type": "summary",
+          "summary": "Truth, validity, consequence and satisfiability bundled over WorldHistory F; TaskFrame.HF, SameStateAt and the identity totality adapters deleted; Decision A' recorded."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Introduced WorldHistory F (bundled total histories with a non-dependent state accessor) in place of TaskFrame.HF and retargeted TruthAt, the Minus/Plus/Star/coarse truth relations and every validity, consequence and satisfiability predicate over it, deleting SameStateAt, the atom-clause domain conjunct and the identity binder-shape adapters. Full lake build (FormalSystem + BimodalTest) and check-module-invariants are green with C2/C14 axiom baselines unchanged; Decision A' and the docs/typst were updated."
     },
     {
       "project_number": 601,

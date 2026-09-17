@@ -1,0 +1,119 @@
+=== Module invariants: 60e7a7ecc ===
+
+PASS  B0   Boneyard exclusion covers exactly 1 directory
+            FormalSystem/Boneyard
+            excluded 169 archived .lean files (695 total -> 526 live)
+
+INFO  C1   skipped (--no-build)
+
+INFO  C2   skipped (--no-build)
+
+PASS  C3   structural sorry inventory is ZERO across FormalSystem/ (Boneyard/ excluded)
+
+PASS  C4   all 1775 FormalSystem/BimodalTest import lines resolve
+PASS  C5   all module-shaped paths in 1323 markdown files resolve (9 allowlisted)
+PASS  C6   all 15 unreachable live module(s) are manifested
+INFO  C6   compile-check skipped (--no-build)
+INFO  C7   588 live .lean files (526 FormalSystem / 61 Tests); 573 reachable, 15 unreachable
+            (loose)                11
+            Automation             37
+            Examples                2
+            ForMathlib              1
+            Metalogic             371
+            ProofSystem             4
+            Semantics              58
+            Syntax                 26
+            Theorems               16
+PASS  C8   every FormalSystem/, Metalogic/, Syntax/ and Semantics/ subdirectory has exactly one sibling aggregator
+PASS  C11  all 539 archived import lines in 169 archived file(s) resolve (8 waived)
+
+PASS  INV  every generated inventory block is current, every hand-maintained one is exhaustive
+
+PASS  C9   zero task-number citations under FormalSystem/, lakefile.lean, README.md, scripts/
+
+PASS  C10  zero references to FormalSystem/{docs,latex,typst} outside specs/
+
+PASS  C12  all slash-shaped source paths in 81 markdown files resolve
+PASS  C13  all relative markdown links in 78 markdown files resolve (3 file(s) allowlisted)
+
+PASS  C14  no stale axiom or sorry counts documented in docs/ + README.md + FormalSystem/*.lean
+INFO  C14  #print axioms half skipped (--no-build); the content scan above still ran
+
+PASS  C15  all 58 paper-anchor citation(s) resolve against docs/reference/paper-definitions-of-record.md
+PASS  C15  all 75 theorem-index row(s) carry their anchor (or `Paper: —`) at the declaration
+
+PASS  C20  tier 1: all 1011 resolvable file.lean:NNN citation(s) land on a real, non-blank line
+INFO  C20  35 citation(s) name a filename that is ambiguous or resolves to no live file (not checkable, not failed)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:763  ->  Axioms.lean:524  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:772  ->  Axioms.lean:377  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:774  ->  Formula.lean:163  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean:908  ->  Axioms.lean:398  (ambiguous)
+            FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean:579  ->  Completeness.lean:72  (ambiguous)
+PASS  C20  tier 2: zero file.lean:NNN citations in publication-facing scope
+
+INFO  C16  env_linter batch skipped (--no-build)
+INFO  C16  env_linter batch over the other lakefile roots skipped (--no-build)
+PASS  C16  dupNamespace: zero declaration(s) with a repeated namespace component (live textual check)
+PASS  C23  zero live `lemma` declarations (both C17 and C19 can see every declaration)
+PASS  C23  no Uppercase_x name outside the tense-operator, no-such-prefix and
+            name-capture classes
+PASS  C23  no outer-shadows-inner bare-declaration pair outside the recorded set
+
+INFO  C17  1016 declaration(s) with zero other occurrences (dead-declaration scan, approximate; never affects FAILURES)
+            FormalSystem/Automation/AtomCanonicalization.lean:129: isCanonical
+            FormalSystem/Automation/ContrastiveGeneratorMain.lean:773: natToString
+            FormalSystem/Automation/ContrastiveGeneratorMain.lean:1070: runBatchContrastive
+            FormalSystem/Automation/DatasetGenerator.lean:1021: hitRate
+            FormalSystem/Automation/FormulaEnumerator.lean:1278: schemaMinFrameClass
+            FormalSystem/Automation/FormulaEnumerator.lean:1479: generateValidFromMP
+            FormalSystem/Automation/FormulaEnumerator.lean:1761: CheckpointState
+            FormalSystem/Automation/FormulaEnumerator.lean:2293: enumerateWithPipeline
+            FormalSystem/Automation/ForwardProofGenerator.lean:187: schemaLayer
+            FormalSystem/Automation/ForwardProofGenerator.lean:202: randomAxiomSchema
+            FormalSystem/Automation/Normalization.lean:146: release_unfold
+            FormalSystem/Automation/Normalization.lean:150: weak_until_unfold
+            FormalSystem/Automation/Normalization.lean:154: trigger_unfold
+            FormalSystem/Automation/Normalization.lean:158: weak_since_unfold
+            FormalSystem/Automation/Normalization.lean:526: top_fold
+            FormalSystem/Automation/Normalization.lean:533: diamond_fold
+            FormalSystem/Automation/Normalization.lean:537: some_future_fold
+            FormalSystem/Automation/Normalization.lean:541: some_past_fold
+            FormalSystem/Automation/Normalization.lean:545: next_fold
+            FormalSystem/Automation/Normalization.lean:549: prev_fold
+            ... and 996 more
+
+PASS  C18  zero duplicated paragraph(s) across the four top-level READMEs
+PASS  C18  zero duplicated sentence(s) (>= 15 words) across the same four files
+
+INFO  C19  docstring coverage (unrefined G-12): 9905/11043 = 89.69%
+PASS  C19  docstring coverage (refined, /-! section credit): 10215/11043 = 92.50% (floor: 90%)
+
+PASS  C21  all 27 declaration(s) named in MainResults.lean are pinned by C2 or C14
+
+PASS  C22  the two allAxiomNames lists agree (45 names each)
+
+INFO  C24  FormalSystem.Init transitive-import check skipped (--no-build)
+
+INFO  C25  lean_exe root compile check skipped (--no-build)
+
+PASS  C25N all 13 lean_exe root(s) are named PascalCase(target)Main, and no other live module ends in Main
+
+PASS  C26  zero snake_case `def`/`abbrev` names in the live tree (textual scan:
+            out-of-closure modules, `private` declarations and `_1`/`_2`-shaped
+            names all in view)
+PASS  C26  all 7 in-source `nolint` attribute pair(s) are on
+            scripts/nolint-attribute-allowlist.txt
+
+PASS  C27  54 live debug directive line(s) in 1 file(s), every one allow-listed
+            with an exact count and a reason (0 masker fixture failures)
+
+TODO  C9D  142 task-number citation(s) under docs/ (use a durable anchor instead) (not yet enforced)
+                100 docs/development/PHASED_IMPLEMENTATION.md
+                 11 docs/training/PIPELINE.md
+                  5 docs/research/NONCOMPUTABLE.md
+                  5 docs/project-info/MAINTENANCE.md
+                  5 docs/architecture/ADR-004-Remove-Project-Level-State-Files.md
+            set ENFORCE_C9_DOCS=1 to make this exit-code-affecting once the citations are cleared
+
+===========================================================
+ALL CHECKS PASSED
