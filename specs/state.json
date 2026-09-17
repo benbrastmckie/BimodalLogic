@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 612,
+  "next_project_number": 613,
   "active_projects": [
+    {
+      "project_number": 612,
+      "project_name": "prevent_dispatched_agents_ending_turn_on_background_waits",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Prevent orchestrator-dispatched implementation agents from ending their turn while waiting on a background build, Monitor, or backgrounded Bash job. In one /orchestrate batch, two lean-implementation-agent dispatches (tasks 584 and 578) stopped mid-phase ('waiting for lake build', 'Monitor is already watching') and had to be manually resumed; ending the turn ends the dispatch. Add an explicit MUST NOT and a foreground-polling pattern for long lake builds to the agent contracts and build-guard guidance in ~/.config/nvim/agent-system/extensions/core (agents, context, scripts), and consider having postflight detect a stop without handoff/.return-meta.json.",
+      "topic": "agent-system",
+      "created": "2026-09-17T10:01:19Z",
+      "last_updated": "2026-09-17T10:01:19Z"
+    },
     {
       "project_number": 611,
       "project_name": "fix_git_commit_scoped_dropping_staged_deletions",

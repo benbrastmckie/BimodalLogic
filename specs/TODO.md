@@ -1,5 +1,5 @@
 ---
-next_project_number: 612
+next_project_number: 613
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 612
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609,610,611 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609,610,611,612 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -27,6 +27,7 @@ next_project_number: 612
 
 592 [NOT STARTED] — .claude/rules/source-store-deploy-boundary.md directs every...
 611 [NOT STARTED] — Fix git-commit-scoped.sh dropping staged deletions: when a...
+612 [NOT STARTED] — Prevent orchestrator-dispatched implementation agents from...
 
 ### Algebraic Representation
 
@@ -125,6 +126,16 @@ next_project_number: 612
 609 [NOT STARTED] — Fix scripts/check-evidence-probes.sh, which fails 4 of 4...
 
 ## Tasks
+
+### 612. Prevent dispatched agents ending turn on background waits
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Prevent orchestrator-dispatched implementation agents from ending their turn while waiting on a background build, Monitor, or backgrounded Bash job. In one /orchestrate batch, two lean-implementation-agent dispatches (tasks 584 and 578) stopped mid-phase ('waiting for lake build', 'Monitor is already watching') and had to be manually resumed; ending the turn ends the dispatch. Add an explicit MUST NOT and a foreground-polling pattern for long lake builds to the agent contracts and build-guard guidance in ~/.config/nvim/agent-system/extensions/core (agents, context, scripts), and consider having postflight detect a stop without handoff/.return-meta.json.
+
+---
 
 ### 611. Fix git commit scoped dropping staged deletions
 - **Status**: [NOT STARTED]
