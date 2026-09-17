@@ -449,7 +449,7 @@
     {
       "project_number": 584,
       "project_name": "reconcile_lean_tree_with_paper_vocabulary",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "`bash scripts/check-paper-definitions.sh` reports case (c) -- FAIL: 16 recorded definitions drifted in the upstream JPL paper, plus one anchor (`thm:M5-valid`) that no longer resolves.\n\nMost are reflow. THREE are substantive renames, and the tree has not followed any of them:\n  - 'converse convention' -> 'reflection convention' (`def:task-relation`). Tree: 35 prose occurrences, `FrameOver.converse` at 9 sites, ZERO occurrences of the new term.\n  - metarule `\\aref{TD}` -> `\\aref{TR}` (`def:BX`). Tree: `swapTemporal` x925, 'temporal duality' x77, `TemporalDuality` x4, bare `TD` across ~14 files.\n  - `\\past`/`\\future` labels 'Past'/'Future' -> 'Some Past'/'Some Future' (`def:BLplus-language`).\n\nTHIS IS A DECISION TASK BEFORE IT IS AN EDITING TASK. For each of the three, the user chooses: adopt the paper's name, or record a deliberate divergence in `specs/paper-definitions-of-record.md`. Put the three separately, with the counts -- the 44-site rename and the 925-site rename are not one decision. Nothing is renamed before the choices are made.\n\nAlso: re-resolve `thm:M5-valid` via the record's `--resolve` mode; check the 'smallest extension closed under' -> 'extends to include' phrasing change against the `DerivationTree` docstrings; and note that `def:BX` acquired a Burgess/Xu axiom-provenance footnote with no counterpart in `ProofSystem/Axioms.lean` (an opportunity, possibly its own task). Re-pin the record per its documented dirty-pin convention.\n\nVerify: `bash scripts/check-paper-definitions.sh` exits 0 (case a or b); C15 still resolves all 58 paper-anchor citations; no site attributes a declined-rename term to the paper anchor; `lake build` exits 0 with no axiom-baseline movement.\n\nSee specs/reviews/review-2026-09-16.md, Finding H2.\n\nALSO ABSORB (codebase-cleanup reorganization, 2026-09-16): the open constructor-by-constructor naming audit noted at `FormalSystem/Syntax/MinusLanguage/Axioms.lean:76` (the paper's `UE`/`UT`/`NP`/... names vs the Lean `BX` layer's 45 until/since constructors). Resolve or explicitly record it alongside the three rename decisions. That docstring also cites a gitignored `specs/archive/` path; the basename-citation task (589) owns the citation fix, this task owns the audit itself.\n\nRECORDS HOME: the durable-records-home task (595) runs first and may move `specs/paper-definitions-of-record.md`; use whatever location it settles on.\n\nFINAL PHASE: once `check-paper-definitions.sh` exits 0, make it skip-and-report-neutral when the upstream paper is absent (CI cannot see it) and wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583.",
       "topic": "codebase-cleanup",
@@ -462,15 +462,15 @@
         595
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-17T07:58:30Z",
       "artifacts": [
         {
-          "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/reports/01_paper-vocabulary-drift.md",
+          "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/reports/02_paper-vocabulary-decisions.md",
           "type": "report",
-          "summary": "16 pinned paper definitions drifted; three substantive renames (converse->reflection, TD->TR, Some Past/Some Future) with live-tree occurrence counts, plus the dangling thm:M5-valid anchor."
+          "summary": "Re-verified drift (now 14 anchors + dangling thm:M5-valid, which is commented out -> retire); rename 1 already adopted by task 601; rename 3 already matched by Lean somePast/allPast names; TD->TR is the only open decision (recommend prose-only); constructor naming audit closed with full paper-key-to-constructor/mirror table; CI skip-neutral wiring plan."
         }
       ],
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "file_scope": [
         "FormalSystem/Semantics/",
         "FormalSystem/Syntax/",
@@ -478,7 +478,8 @@
         "specs/paper-definitions-of-record.md",
         "docs/reference/operators.md",
         "NOTATION.md"
-      ]
+      ],
+      "session_id": "sess_1789631305_c7d7a7"
     },
     {
       "project_number": 585,
@@ -512,7 +513,7 @@
     {
       "project_number": 586,
       "project_name": "rewrite_typst_proof_automation_chapter",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "typst",
       "description": "`bash scripts/typst-sync-check.sh` exits 1 with 4 Check-1 violations, all in `typst/chapters/p4-proof-automation.typ`: it cites `AesopRules.lean`, `Automation/Tactics/Helpers.lean` and `Tactics/Helpers.lean` (all archived to `FormalSystem/Boneyard/RetiredTactics/` on 2026-09-07), plus an unmatched `tm_auto 5` span.\n\nThe flagged spans understate it. The `== Tactics` section presents `tm_auto`, `temporal_search` and `propositional_search` as live -- all three were absorbed into `modal_search` and removed. The entire `== Aesop Integration` section describes an archived file's rule registrations in the present tense. And the `== Module Map` table has 3 of 7 rows naming files that are absent or misfiled, with every line count stale: `Tactics/Helpers.lean` (claims 1,032; absent), `AesopRules.lean` (claims 276; absent), `EFGameTactics.lean` (claims 326; actually under `Metalogic/WeakCanonical/`, not `Automation/`), `Tactics/Commands.lean` 710->586, `ProofSearch/Core.lean` 1,195->1,283, `Strategies.lean` 379->401, `SuccessPatterns.lean` 423->429. Five live modules are missing entirely, including `Tactics/UserTactics.lean` (275), which now holds `apply_axiom` and `modal_t`. The caption claims 'live line counts' and the text asserts all listed modules are sorry-free -- impossible for two absent files.\n\nThis is publication-facing. Verify the tactic surface directly from `Automation/Tactics/*.lean` and `FormalSystem/Automation.lean`'s docstring; do not infer it from the chapter. Consider replacing `== Aesop Integration` with a short retirement note citing the measurement in `Boneyard/RetiredTactics/README.md` -- genuinely good content for a proof-automation chapter. Also decide whether the Module Map should become machine-generated (extend `typst-sync-check.sh` Check 2, which already recomputes counts for `generated/status.typ`) and record the decision; a hand-fix will drift again. The whitelist is not the fix.\n\nVerify: `typst-sync-check.sh` exits 0 with Checks 2/3 still passing; `typst compile` succeeds; every module named resolves to a live file with a matching `wc -l`; no archived declaration described in the present tense.\n\nSee specs/reviews/review-2026-09-16.md, Finding M1.\n\nWIDENED (codebase-cleanup reorganization, 2026-09-16): cover ALL retired-tactic prose outside `docs/`, not only this chapter. Verified at reorganization time: `FormalSystem/Automation/README.md:61` (Tactics row lists `tm_auto`) and `:114` (`tm_auto -- Uses Aesop with TMLogic rule set`), `FormalSystem/Automation/ProofSearch/README.md:19` (`Integration point for tm_auto ...`), and `typst/chapters/p4-dual-verification.typ:36` (`attempt tm_auto/modal_search`). Re-grep for `tm_auto`/`temporal_search`/`propositional_search` outside `docs/` and `Boneyard/` before closing; files that already describe them correctly as removed (`Automation.lean`, `Tactics/README.md`, `docs/reference/tactic-reference.md`) stay. The `docs/` occurrences belong to 590.\n\nFINAL PHASE: once `typst-sync-check.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583.",
       "topic": "codebase-cleanup",
@@ -522,7 +523,7 @@
         591
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:27Z",
+      "last_updated": "2026-09-17T07:48:43Z",
       "artifacts": [
         {
           "path": "specs/586_rewrite_typst_proof_automation_chapter/reports/01_retired-tactics-chapter-drift.md",
@@ -534,7 +535,8 @@
       "file_scope": [
         "typst/chapters/p4-proof-automation.typ",
         "typst/sync-check-whitelist.txt"
-      ]
+      ],
+      "session_id": "sess_1789631305_c7d7a7_586"
     },
     {
       "project_number": 587,
@@ -639,7 +641,7 @@
     {
       "project_number": 590,
       "project_name": "retire_stale_development_documentation",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "markdown",
       "description": "Clear the 142 task-number citations under `docs/` and retire the two stale development docs that carry most of them. This unblocks `ENFORCE_C9_DOCS=1`, which the harness notes can be flipped 'once the citations are cleared' -- hand that switch to the CI task.\n\nBreakdown: `docs/development/PHASED_IMPLEMENTATION.md` 100, `docs/training/PIPELINE.md` 11, `docs/research/NONCOMPUTABLE.md` 5, `docs/project-info/MAINTENANCE.md` 5, `docs/architecture/ADR-004-...` 5. The hard-gated sibling C9 (FormalSystem/, lakefile.lean, README.md, scripts/) is already green, so docs/ is the last pocket. This repository has performed a vault operation (`vault_count: 1`), so some of these numbers are not merely opaque but wrong.\n\n`PHASED_IMPLEMENTATION.md` (548 lines) is a roadmap for 'completing Layer 0 (Core TM)' organised around Tasks 1-7 and '93-143 hours' -- soundness, completeness at four frame classes, strong completeness at two, the decision procedure and the automation layer all exist and are axiom-pinned. Recommended disposition: delete, folding forward anything durable. Referenced from `docs/README.md`, `docs/development/README.md` and `docs/development/MODULE_INVARIANTS.md` -- check the last one specifically in case it cites something structural that needs a home.\n\n`LATEX_STANDARDS.md` prescribes a `{Theory}/latex/{assets,subfiles,bib}` layout that does not exist here (`latex/` sits at the repository root). It reads as inherited boilerplate. Decide what `latex/` is now that README points the reference manual at the Typst edition and `latex/` is explicitly not kept in sync; write the doc to match, or archive both.\n\nRead `.claude/context/standards/task-reference-exemptions.md` BEFORE starting: the goal is zero UNMARKED citations, not zero mentions of history -- an ADR may legitimately name the task that produced it via the `task-ref-ok` marker.\n\nVerify: C9D reports 0 (or only marked citations); `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0; C5, C12 and C13 still pass (deleting a referenced file breaks C13 if referrers are missed); `readme-lint.sh` still PASS.\n\nSee specs/reviews/review-2026-09-16.md, Finding M3.\n\nWIDENED (codebase-cleanup reorganization, 2026-09-16) to a staleness audit of `docs/` as a whole, in addition to the citations work above:\n  - retired-tactic prose (`tm_auto`, `temporal_search`, `propositional_search` described as live) in the nine files the reorganization research listed: `docs/user-guide/{tutorial,examples,tactic-development,troubleshooting}.md`, `docs/project-info/{tactic-registry,FEATURE_REGISTRY,test-coverage}.md`, `docs/development/METAPROGRAMMING_GUIDE.md`, `docs/reference/API_REFERENCE.md` (re-grep: at reorganization time two of these showed no match for those three names and may carry other retired names);\n  - the four `docs/research/leansearch-*.md` files (~1,450 lines about the LeanSearch API rather than this logic): keep, move, or retire with a recorded reason;\n  - `docs/project-info/{implementation-status,performance-targets,test-coverage}.md`: refresh against the current tree or retire;\n  - the root `CLAUDE.md` title (\"ProofChecker\") and the naming inconsistency across surfaces (Lake `package Logos`, library `FormalSystem`, test library `BimodalTest`, repository `BimodalLogic`) -- align the prose; the package-name decision itself belongs to 578's toml migration;\n  - flip `ENFORCE_C9_DOCS=1` yourself once C9D reports 0 (previously handed to 583; 583 no longer owns it), and wire it into CI following 583's recorded pattern.\nRECORDS HOME: the durable-records-home task (595) runs first; do not move or delete records it has settled.\nPLANNER NOTE: this is now larger than one agent run. Split into phases (citations; development docs; retired-tactic docs; research/project-info docs; naming; ENFORCE flip) rather than truncating any of them.",
       "topic": "codebase-cleanup",
@@ -649,7 +651,7 @@
         595
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-17T07:48:52Z",
       "artifacts": [
         {
           "path": "specs/590_retire_stale_development_documentation/reports/01_stale-docs-and-task-citations.md",
@@ -665,7 +667,8 @@
         "docs/research/NONCOMPUTABLE.md",
         "docs/project-info/MAINTENANCE.md",
         "docs/architecture/ADR-004-Remove-Project-Level-State-Files.md"
-      ]
+      ],
+      "session_id": "sess_1789631305_c7d7a7_590"
     },
     {
       "project_number": 591,
@@ -732,13 +735,14 @@
     {
       "project_number": 578,
       "project_name": "fix_api_documentation_ci_integration",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.\n\nALSO DECIDE (codebase-cleanup reorganization, 2026-09-16): if migrating to `lakefile.toml`, settle the package name as part of the migration -- the Lake package is `Logos` while the library is `FormalSystem`, the test library `BimodalTest`, and the repository `BimodalLogic`. Record the choice (keep `Logos`, or rename to `FormalSystem`/`BimodalLogic`) and its downstream effect on doc URLs. Precedent: cslib (`/home/benjamin/Projects/cslib`) uses `lakefile.toml` with a working `docgen-action` in `.github/workflows/docs.yml`; read both before choosing the fix path.",
       "topic": "codebase-cleanup",
       "created": "2026-09-11T20:05:59Z",
-      "last_updated": "2026-09-16T15:38:44Z",
-      "dependencies": []
+      "last_updated": "2026-09-17T07:49:02Z",
+      "dependencies": [],
+      "session_id": "sess_1789631305_c7d7a7_578"
     },
     {
       "project_number": 534,

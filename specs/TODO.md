@@ -100,8 +100,8 @@ next_project_number: 605
 
 ### Codebase Cleanup
 
-578 [NOT STARTED] — Fix the API documentation integration into the CI pipeline:...
-584 [NOT STARTED] — bash scripts/check-paper-definitions.sh reports case (c) --...
+578 [RESEARCHING] — Fix the API documentation integration into the CI pipeline:...
+584 [RESEARCHED] — bash scripts/check-paper-definitions.sh reports case (c) --...
   └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
     └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
       └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
@@ -110,9 +110,9 @@ next_project_number: 605
     └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
     └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
       └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-586 [NOT STARTED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
+586 [RESEARCHING] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
   └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-590 [NOT STARTED] — Clear the 142 task-number citations under docs/ and retire...
+590 [RESEARCHING] — Clear the 142 task-number citations under docs/ and retire...
 
 ## Tasks
 
@@ -338,7 +338,7 @@ See specs/reviews/review-2026-09-16.md, Finding M5.
 
 ### 590. Retire stale development documentation
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 595
@@ -446,7 +446,7 @@ See specs/reviews/review-2026-09-16.md, Finding M2.
 
 ### 586. Rewrite typst proof automation chapter
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: typst
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 591
@@ -496,11 +496,11 @@ GATE-PHASE NOTE (codebase-cleanup reorganization, 2026-09-16): weigh cslib's app
 
 ### 584. Reconcile lean tree with paper vocabulary
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 582, Task 591, Task 596, Task 595
-- **Research**: [584_reconcile_lean_tree_with_paper_vocabulary/reports/01_paper-vocabulary-drift.md]
+- **Research**: [584_reconcile_lean_tree_with_paper_vocabulary/reports/02_paper-vocabulary-decisions.md]
 
 **Description**: `bash scripts/check-paper-definitions.sh` reports case (c) -- FAIL: 16 recorded definitions drifted in the upstream JPL paper, plus one anchor (`thm:M5-valid`) that no longer resolves.
 
@@ -656,7 +656,7 @@ See specs/reviews/review-2026-09-15.md, Finding H1, for full detail.
 ---
 
 ### 578. Fix api documentation ci integration
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None

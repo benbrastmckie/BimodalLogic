@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/reports/02_paper-vocabulary-decisions.md",
+      "summary": "Re-verified drift (now 14 anchors + dangling thm:M5-valid, which is commented out -> retire); rename 1 already adopted by task 601; rename 3 already matched by Lean somePast/allPast names; TD->TR is the only open decision (recommend prose-only); constructor naming audit closed with full paper-key-to-constructor/mirror table; CI skip-neutral wiring plan."
+    }
+  ],
+  "user_decision": {
+    "question": "The paper renamed metarule TD to TR (def:BX) but keeps lem:temporal-duality for the semantic lemma. How should the tree follow? (bare TD: 60 hits/29 files; temporal_duality: 255; swapTemporal: 1032; 'temporal duality' prose: 130)",
+    "options": [
+      "A - Full rename: TD->TR in prose AND rename swapTemporal/temporal_duality/TemporalDuality identifiers (~1,300+ sites)",
+      "B - Prose-only: rename the rule abbreviation TD->TR (~30 files); keep swapTemporal, temporal_duality, 'temporal duality' lemma vocabulary; record identifier divergence in the record",
+      "C - Decline: keep TD everywhere; record a deliberate divergence and ensure no site attributes TD to def:BX"
+    ],
+    "recommended": "B - Prose-only: rename the rule abbreviation TD->TR (~30 files); keep swapTemporal, temporal_duality, 'temporal duality' lemma vocabulary; record identifier divergence in the record",
+    "blocking": true
+  },
+  "metadata": {
+    "session_id": "sess_1789631305_c7d7a7_584",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
