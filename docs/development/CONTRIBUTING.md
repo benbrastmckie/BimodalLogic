@@ -140,7 +140,7 @@ All other directories use lowercase:
 - `docs/` - Project documentation
 - `scripts/` - Utility scripts
 - `benchmarks/` - Performance benchmarks
-- `latex/` - LaTeX resources and templates
+- `latex/` - Superseded LaTeX edition (frozen; see typst/)
 
 **Rationale**: Aligns with standard software project conventions and provides visual distinction between code and non-code directories.
 

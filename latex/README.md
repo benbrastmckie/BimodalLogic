@@ -1,5 +1,8 @@
 # LaTeX Documentation
 
+> **Frozen edition**: this LaTeX source is a superseded reference edition and is not kept in
+> sync with the Lean source. The maintained edition is [`typst/BimodalReference.typ`](../typst/README.md).
+
 LaTeX source for the Bimodal TM Logic reference document.
 
 ## Contents
@@ -28,7 +31,7 @@ latexmk -pdf BimodalReference.tex
 ## Related Documentation
 
 - [Parent README](../README.md)
-- [Typst Documentation](../typst/README.md) - Alternative Typst version
+- [Typst Documentation](../typst/README.md) - Maintained edition
 
 ---
 

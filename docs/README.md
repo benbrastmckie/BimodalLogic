@@ -150,7 +150,7 @@ Developer standards, conventions, and contribution workflow:
 - [CONTRIBUTING.md](development/CONTRIBUTING.md) - Contribution guidelines and workflow
 - [DIRECTORY_README_STANDARD.md](development/DIRECTORY_README_STANDARD.md) - Directory-level documentation standard
 - [DOC_QUALITY_CHECKLIST.md](development/DOC_QUALITY_CHECKLIST.md) - Documentation quality assurance checklist
-- [LATEX_STANDARDS.md](development/LATEX_STANDARDS.md) - LaTeX documentation standards and conventions
+- [LATEX_STANDARDS.md](development/LATEX_STANDARDS.md) - Frozen LaTeX edition (latex/): what it is and how to rebuild it
 - [LEAN_STYLE_GUIDE.md](development/LEAN_STYLE_GUIDE.md) - Coding conventions and documentation requirements
 - [METAPROGRAMMING_GUIDE.md](development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming fundamentals for tactics
 - [MODULE_ORGANIZATION.md](development/MODULE_ORGANIZATION.md) - Directory structure and namespace patterns

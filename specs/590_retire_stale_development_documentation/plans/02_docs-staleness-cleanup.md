@@ -168,17 +168,17 @@ report 01. Confirm with the grep above and the C9D count before and after.
 
 ---
 
-### Phase 2: Rewrite LATEX_STANDARDS.md for the frozen latex/ edition [NOT STARTED]
+### Phase 2: Rewrite LATEX_STANDARDS.md for the frozen latex/ edition [COMPLETED]
 
 **Goal**: Replace the fictional `{Theory}/latex/` layout doc with an accurate short description of
 `latex/` as a frozen, superseded edition (Decision 2).
 
 **Tasks**:
-- [ ] Read `latex/README.md`, `latex/latexmkrc`, and `README.md:13,351` to ground the description
-- [ ] Rewrite `docs/development/LATEX_STANDARDS.md` (currently 170 lines) as a 2-4 paragraph note: contents of `latex/`, frozen and not synced, `typst/BimodalReference.typ` is maintained, and the rebuild command if ever needed. Remove the "ProofChecker"-specific boilerplate only where it describes the wrong layout
-- [ ] Update descriptions in `docs/README.md` (~153) and `docs/development/README.md` (~32, ~84) to "frozen LaTeX edition" wording; drop it from any "read this first" ordering
-- [ ] Update `docs/development/CONTRIBUTING.md:143` (`latex/` "LaTeX resources and templates") to "superseded LaTeX edition (frozen; see typst/)"
-- [ ] Check `latex/README.md` agrees; if it prescribes a live workflow, add a one-line frozen banner (the only `latex/` edit allowed)
+- [x] Read `latex/README.md`, `latex/latexmkrc`, and `README.md:13,351` to ground the description *(completed)*
+- [x] Rewrite `docs/development/LATEX_STANDARDS.md` (currently 170 lines) as a 2-4 paragraph note: contents of `latex/`, frozen and not synced, `typst/BimodalReference.typ` is maintained, and the rebuild command if ever needed. Remove the "ProofChecker"-specific boilerplate only where it describes the wrong layout *(completed)*
+- [x] Update descriptions in `docs/README.md` (~153) and `docs/development/README.md` (~32, ~84) to "frozen LaTeX edition" wording; drop it from any "read this first" ordering *(completed)*
+- [x] Update `docs/development/CONTRIBUTING.md:143` (`latex/` "LaTeX resources and templates") to "superseded LaTeX edition (frozen; see typst/)" *(completed)*
+- [x] Check `latex/README.md` agrees; if it prescribes a live workflow, add a one-line frozen banner (the only `latex/` edit allowed) *(completed: added frozen banner + updated Typst cross-reference wording)*
 
 **Timing**: 45 minutes
 

@@ -1,0 +1,16 @@
+{
+  "phase": 2,
+  "phase_name": "Rewrite LATEX_STANDARDS.md for the frozen latex/ edition",
+  "started_at": "2026-09-17T08:25:00Z",
+  "last_updated": "2026-09-17T08:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Read latex/README.md, latexmkrc, README.md:13,351 to ground the description", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Rewrite docs/development/LATEX_STANDARDS.md as short frozen-edition note", "status": "done", "files_touched": ["docs/development/LATEX_STANDARDS.md"]},
+    {"id": 3, "description": "Update descriptions in docs/README.md and docs/development/README.md", "status": "done", "files_touched": ["docs/README.md", "docs/development/README.md"]},
+    {"id": 4, "description": "Update docs/development/CONTRIBUTING.md:143", "status": "done", "files_touched": ["docs/development/CONTRIBUTING.md"]},
+    {"id": 5, "description": "Check latex/README.md agrees; add frozen banner", "status": "done", "files_touched": ["latex/README.md"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
