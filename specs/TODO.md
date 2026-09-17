@@ -1,5 +1,5 @@
 ---
-next_project_number: 614
+next_project_number: 615
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 614
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,585,592,603,604,605,606,607,608,610,611,612,613 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,585,592,603,604,605,606,607,608,610,611,612,613,614 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -77,6 +77,7 @@ next_project_number: 614
 
 607 [NOT STARTED] — Resync typst/FormalFoundations.typ with the current Lean tree...
 610 [NOT STARTED] — Update remaining documentation references to lakefile.lean...
+614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
 
 ### Formula Refactor
 
@@ -125,6 +126,16 @@ next_project_number: 614
 608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
 ## Tasks
+
+### 614. Refresh stale readme date stamps across
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: readme-lint.sh reports 47 of 60 FormalSystem/README.md files with a stale or missing date stamp (stamp predates the directory's last git-committed change), left behind by the recent Syntax/Semantics language-family nesting, Metalogic import-cycle repair, and WorldHistory retarget work. Advisory only (readme-lint.sh exits RESULT: PASS regardless), but the drift is now wide enough to warrant a single sweep. Update each listed README's date stamp to reflect its directory's current state, and add a date line to the 3 files currently missing one (Metalogic/Conservativity/Star/README.md, Metalogic/Decidability/Verified/Termination/MintBound/README.md, Syntax/StarLanguage/README.md). See specs/reviews/review-2026-09-17.md's Low Priority Issues section for the full 47-file list. Purely mechanical; re-verify with scripts/readme-lint.sh after.
+
+---
 
 ### 613. Serialize concurrent implement dispatches sharing working tree
 - **Status**: [NOT STARTED]

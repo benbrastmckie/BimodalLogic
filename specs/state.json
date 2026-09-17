@@ -4,7 +4,7 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 614,
+  "next_project_number": 615,
   "active_projects": [
     {
       "project_number": 613,
@@ -1212,6 +1212,16 @@
       "created": "2026-09-08T17:34:36Z",
       "last_updated": "2026-09-08T17:34:36Z",
       "priority": "low"
+    },
+    {
+      "project_number": 614,
+      "project_name": "refresh_stale_readme_date_stamps_across",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "documentation",
+      "priority": "low",
+      "description": "readme-lint.sh reports 47 of 60 FormalSystem/README.md files with a stale or missing date stamp (stamp predates the directory's last git-committed change), left behind by the recent Syntax/Semantics language-family nesting, Metalogic import-cycle repair, and WorldHistory retarget work. Advisory only (readme-lint.sh exits RESULT: PASS regardless), but the drift is now wide enough to warrant a single sweep. Update each listed README's date stamp to reflect its directory's current state, and add a date line to the 3 files currently missing one (Metalogic/Conservativity/Star/README.md, Metalogic/Decidability/Verified/Termination/MintBound/README.md, Syntax/StarLanguage/README.md). See specs/reviews/review-2026-09-17.md's Low Priority Issues section for the full 47-file list. Purely mechanical; re-verify with scripts/readme-lint.sh after.",
+      "created": "2026-09-17T16:42:12Z"
     }
   ],
   "artifacts": [
@@ -1276,5 +1286,5 @@
     "toolchain",
     "codebase-cleanup"
   ],
-  "active_goal": "Consolidate the metalogic after the FrameClass refactor: delete superseded code, land the truth/frame/consequence core utilities, then publish -- doc-gen, theorem index, CI lint."
+  "active_goal": "Close the residual repository-hygiene backlog"
 }
