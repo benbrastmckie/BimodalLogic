@@ -1,16 +1,28 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/578_fix_api_documentation_ci_integration/reports/01_docgen-ci-fix-path.md",
-      "summary": "Chooses lakefile.toml migration (lossless via lake translate-config, verified) plus rename Logos->BimodalLogic (no doc URL effect); identifies 5 lakefile scrape sites to port to tomllib and two further latent docs.yml defects (missing lean-action step, homepage: docs uploads hand-written docs/)."
+      "type": "plan",
+      "path": "specs/578_fix_api_documentation_ci_integration/plans/01_docgen-ci-fix-path.md",
+      "summary": "5-phase plan: baseline, atomic lakefile.toml migration (package renamed BimodalLogic) with shared tomllib scraper, docs.yml rewrite/re-enable, prose updates, user-authorized Pages enable + push + green-run verification."
     }
   ],
+  "dispatch_seq": 8,
+  "next_steps": "Run /implement 578 to execute the plan",
+  "phase_count": 5,
+  "estimated_hours": 5,
+  "dependency_waves": 4,
+  "memory_candidates": [],
+  "user_decision": {
+    "question": "Phase 5 must push local main (about 148 commits ahead of origin) and enable a public GitHub Pages site (source = GitHub Actions) to verify the docs workflow. Authorize both when implementation reaches that phase?",
+    "options": ["Authorize push to main and Pages enablement in Phase 5", "Defer: stop after Phase 4 and push/enable Pages manually later"],
+    "recommended": "Authorize push to main and Pages enablement in Phase 5",
+    "blocking": false
+  },
   "metadata": {
     "session_id": "sess_1789631305_c7d7a7_578",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
