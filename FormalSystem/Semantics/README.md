@@ -33,7 +33,7 @@ live file and subdirectory here, and no row for anything else.
 | LexCarrier.lean | `LexInt`: `SuccOrder`/`PredOrder` instances, `isLeast_pos`, and the three non-Archimedean theorems for `α ×ₗ ℤ` at an arbitrary ordered abelian group `α` — instantiated at `ℚ` for the CEF countermodel and at `ℤ` for the `Sat .Discrete` separation |
 | FrameAxioms.lean | The frame axioms (nullity, compositionality, reflection) as standalone statements |
 | IntTransfer.lean | Transfer of ℤ-frame facts across the normal form |
-| PartialHistory.lean | Partial histories on arbitrary nonempty subsets of the duration group, the `IsTotal`/`IsConvex` predicates, time shift, and `TaskFrame.HF` — the world histories (the paper's possible worlds) |
+| PartialHistory.lean | Partial histories on arbitrary nonempty subsets of the duration group, the `IsTotal`/`IsConvex` predicates, time shift, and `WorldHistory` — the world histories (the paper's possible worlds), with the `state` accessor |
 | PartialHistoryOrder.lean | The order structure on partial histories |
 | MinusLanguage.lean | Aggregator for `MinusLanguage/`; imported by the root aggregator `FormalSystem/FormalSystem.lean`, mirroring `Syntax/MinusLanguage.lean` |
 | [MinusLanguage/](MinusLanguage/README.md) | L⁻ semantics: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity` (4 files) — native truth for the tense-primitive base language, its `TaskFrame`-free frame notion, and its validity predicates |
@@ -52,7 +52,7 @@ live file and subdirectory here, and no row for anything else.
 
 - `TaskFrame`: Frame structure with world-time pairs and accessibility
 - `TaskModel`: Frame with valuation function for atoms
-- `PartialHistory`: World states indexed by a nonempty set of times; the domain need not be all of `D`. The total ones are the world histories, `TaskFrame.HF`; convexity is the predicate `IsConvex`
+- `PartialHistory`: World states indexed by a nonempty set of times; the domain need not be all of `D`. The total ones are the world histories, `WorldHistory F`, at which truth is evaluated; convexity is the predicate `IsConvex`
 - `truth_at`: Truth of formula at a world history and time
 - `valid`: Formula true in all models at all possible worlds
 

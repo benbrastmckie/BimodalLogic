@@ -408,7 +408,7 @@ ProofChecker follows consistent naming conventions for variables across document
 - **h** - Primary history variable
 - **h'** - Alternative history
 
-**LEAN Usage**: `(h : PartialHistory F)`
+**LEAN Usage**: `(τ : WorldHistory F)`
 **Examples**: `M,h,τ ⊨ φ`
 
 ### Models

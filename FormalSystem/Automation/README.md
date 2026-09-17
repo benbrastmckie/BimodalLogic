@@ -70,7 +70,7 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `MachineAppendixMain.lean` | 500 | Exports the complete TM axiomatization — 45 schemata, 7 rules, derived-operator definitions — as the JSONL machine appendix shipped with BimodalReference |
 | `Normalization.lean` | 918 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
 | `NormalizationAttr.lean` | 44 | Declares the two simp sets `Normalization.lean` tags its unfold and fold lemmas with |
-| `PrefilterSoundness.lean` | 174 | Soundness proofs for each invalid-pattern recognizer in `DatasetGenerator.lean` |
+| `PrefilterSoundness.lean` | 172 | Soundness proofs for each invalid-pattern recognizer in `DatasetGenerator.lean` |
 | `ProofExtractorMain.lean` | 1,692 | Proof step export: serializes `DerivationTree` steps to JSONL |
 | `ProofFirstBenchmark.lean` | 188 | Eight cross-corpus metrics for labeled formula datasets, plus a side-by-side comparison utility |
 | `ProofFirstGeneratorMain.lean` | 148 | CLI executable: runs the forward-chaining generator and emits `LabeledFormula` records as JSONL |

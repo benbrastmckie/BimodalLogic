@@ -495,7 +495,7 @@ frame rather than only of a carrier.
 
 #### Partial and World Histories
 
-A **partial history** is a function from a nonempty set of times to world states that respects the task relation. A partial history whose domain is all of `D` is a **world history** (the paper's possible world); `TaskFrame.HF` is the set of those. Convexity is kept only as the predicate `PartialHistory.IsConvex`: a total domain is trivially convex, so the appendix phrasing of JPL paper `def:world-history` ("convex history whose domain is total") denotes the same set.
+A **partial history** is a function from a nonempty set of times to world states that respects the task relation. A partial history whose domain is all of `D` is a **world history** (the paper's possible world); `WorldHistory F` is the type of those, and truth is evaluated at them. Convexity is kept only as the predicate `PartialHistory.IsConvex`: a total domain is trivially convex, so the appendix phrasing of JPL paper `def:world-history` ("convex history whose domain is total") denotes the same set.
 
 ```lean
 structure PartialHistory (F : TaskFrame) where
@@ -505,12 +505,12 @@ structure PartialHistory (F : TaskFrame) where
   respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
     F.TaskRel (states s hs) (t - s) (states t ht)              -- τ(s) ⇒_{t-s} τ(t)
 
--- A world history is a partial history with total domain; H_F is the set of them
+-- A world history is a partial history with total domain; H_F is the type of them
 def PartialHistory.IsTotal (τ : PartialHistory F) : Prop := ∀ t, τ.domain t
-def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
-
--- Notation for history evaluation
-notation τ "(" t ")" => PartialHistory.states τ t
+def WorldHistory (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
+-- the state of a world history at a time, with no domain proof: the paper's τ(x)
+def WorldHistory.state (τ : WorldHistory F) (t : F.Duration) : F.WorldState :=
+  τ.val.states t (τ.property t)
 ```
 
 #### Task Model and Truth Evaluation
@@ -522,30 +522,26 @@ structure TaskModel (F : TaskFrame) where
 
 -- Truth at model-history-time triple (polymorphic over T)
 def TruthAt {F : TaskFrame}
-    (M : TaskModel F) (τ : PartialHistory F) (t : F.Duration) (ht : τ.domain t) : Formula → Prop
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) : Formula → Prop
   | Formula.atom p =>
-      M.valuation (τ.states t ht) p                          -- Atomic truth
+      M.valuation (τ.state t) p                              -- Atomic truth
   | Formula.bot =>
       False                                                   -- Falsity never true
   | Formula.imp φ ψ =>
-      TruthAt M τ t ht φ → TruthAt M τ t ht ψ              -- Implication
+      TruthAt M τ t φ → TruthAt M τ t ψ                      -- Implication
   | Formula.box φ =>
-      ∀ (σ : PartialHistory F) (hs : σ.domain t),
-        TruthAt M σ t hs φ                                   -- Necessity: all histories at t
+      ∀ σ : WorldHistory F, TruthAt M σ t φ                  -- Necessity: all world histories at t
   | Formula.allPast φ =>
-      ∀ (s : T) (hs : τ.domain s), s < t →
-        TruthAt M τ s hs φ                                   -- Universal past (H)
+      ∀ s, s < t → TruthAt M τ s φ                           -- Universal past (H)
   | Formula.allFuture φ =>
-      ∀ (s : T) (hs : τ.domain s), t < s →
-        TruthAt M τ s hs φ                                   -- Universal future (G)
+      ∀ s, t < s → TruthAt M τ s φ                           -- Universal future (G)
 
 notation M ", " τ ", " t " ⊨ " φ => TruthAt M τ t φ
 
 -- Time-shift invariance (critical theorem for temporal reasoning)
 theorem time_shift_preserves_truth {F : TaskFrame}
-    (M : TaskModel F) (τ : PartialHistory F) (t : T) (Δ : T) (φ : Formula)
-    (ht : τ.domain t) (ht' : (timeShift τ Δ).domain (t + Δ)) :
-  TruthAt M τ t ht φ ↔ TruthAt M (timeShift τ Δ) (t + Δ) ht' φ := by sorry
+    (M : TaskModel F) (σ : WorldHistory F) (x y : F.Duration) (φ : Formula) :
+  TruthAt M (σ.timeShift (y - x)) x φ ↔ TruthAt M σ y φ
 ```
 
 #### Layer 2 Extended Task Semantics (Future Work)
@@ -556,7 +552,7 @@ Layer 2 extends task models with selection functions for counterfactuals and gro
 -- Layer 2: Extended task model
 structure ExtendedTaskModel (F : TaskFrame) extends TaskModel F where
   -- Counterfactual selection function
-  counterfactual_selection : F.WorldState → Formula → Set (PartialHistory F)
+  counterfactual_selection : F.WorldState → Formula → Set (WorldHistory F)
 
   -- Grounding relation
   grounding_relation : F.WorldState → Formula → Formula → Prop
@@ -568,7 +564,7 @@ structure ExtendedTaskModel (F : TaskFrame) extends TaskModel F where
   -- Grounding relation constraints (to be specified)
 
 -- Extended truth evaluation for Layer 2 operators
-def extended_truth_at (M : ExtendedTaskModel F) (τ : PartialHistory F) (t : F.Time) :
+def extended_truth_at (M : ExtendedTaskModel F) (τ : WorldHistory F) (t : F.Time) :
   ExtendedFormula → Prop
   | ExtendedFormula.core φ =>
       TruthAt M.toTaskModel τ t φ                                         -- Embed Layer 1
@@ -588,16 +584,16 @@ def extended_truth_at (M : ExtendedTaskModel F) (τ : PartialHistory F) (t : F.T
 ```lean
 -- Global validity (truth at all history-time pairs in all task models)
 def valid (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (t : F.Time),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     M, τ, t ⊨ φ
 
 -- Local validity (truth at all history-time pairs in a specific model)
 def valid_in_model (M : TaskModel F) (φ : Formula) : Prop :=
-  ∀ (τ : PartialHistory F) (t : F.Time), M, τ, t ⊨ φ
+  ∀ (τ : WorldHistory F) (t : F.Time), M, τ, t ⊨ φ
 
 -- Semantic consequence
 def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (t : F.Time),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     (∀ ψ ∈ Γ, M, τ, t ⊨ ψ) → M, τ, t ⊨ φ
 
 notation Γ " ⊨ " φ => SemanticConsequence Γ φ
@@ -605,12 +601,12 @@ notation " ⊨ " φ => valid φ
 
 -- Satisfiability
 def satisfiable (Γ : Context) : Prop :=
-  ∃ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (t : F.Time),
+  ∃ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     ∀ φ ∈ Γ, M, τ, t ⊨ φ
 
 -- Semantic equivalence
 def semantically_equivalent (φ ψ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (t : F.Time),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     (M, τ, t ⊨ φ) ↔ (M, τ, t ⊨ ψ)
 ```
 
@@ -1090,7 +1086,7 @@ FormalSystem/                              # Main source directory
 │   └── AxiomDischarge.lean
 ├── Semantics/
 │   ├── TaskFrame.lean                     # Task frame structure
-│   ├── PartialHistory.lean                 # Partial/world histories, TaskFrame.HF
+│   ├── PartialHistory.lean                 # Partial histories and WorldHistory
 │   ├── TaskModel.lean                     # Task model with valuation
 │   ├── Truth.lean                         # Truth evaluation
 │   ├── MinusTruth.lean                       # Native truth evaluation for the base language

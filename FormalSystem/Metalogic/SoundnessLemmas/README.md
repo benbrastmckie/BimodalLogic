@@ -11,9 +11,9 @@ Dedekind-class separability axiom.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/SoundnessLemmas -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `CoValidity.lean` | 113 | `co_valid`: semantic validity of the paper's CO principle `△(Hφ → F Hφ) → (Hφ → Gφ)` on dense Dedekind-complete flows. Not a soundness case — CO is a derived theorem here, not an `Axiom` constructor |
+| `CoValidity.lean` | 112 | `co_valid`: semantic validity of the paper's CO principle `△(Hφ → F Hφ) → (Hφ → Gφ)` on dense Dedekind-complete flows. Not a soundness case — CO is a derived theorem here, not an `Axiom` constructor |
 | `DiscreteOrder.lean` | 175 | The order cores of the four discrete-frame validity proofs — `exists_nearest_gt`, `exists_nearest_lt` and their duals — stated over an abstract predicate `P : D → Prop`, mentioning neither `Formula` nor `TruthAt` |
-| `FrameClassVariants.lean` | 834 | The per-axiom swap-validity and validity lemmas at `FrameClass.Base`, the 45-arm dispatcher `axiom_swap_valid_general` that delegates to them one line per arm, and the four discrete Prior/z1 lemmas at `ValidDiscrete`; consumed by `Metalogic/Soundness.lean`'s `axiom_swap_validIn_min` |
+| `FrameClassVariants.lean` | 791 | The per-axiom swap-validity and validity lemmas at `FrameClass.Base`, the 45-arm dispatcher `axiom_swap_valid_general` that delegates to them one line per arm, and the four discrete Prior/z1 lemmas at `ValidDiscrete`; consumed by `Metalogic/Soundness.lean`'s `axiom_swap_validIn_min` |
 | `Separability.lean` | 334 | Separability of dense Dedekind-complete duration groups and the order-theoretic core of the Sep axiom (Reynolds 1992, §7 lemma 10) |
 <!-- END GENERATED -->
 

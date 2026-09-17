@@ -316,9 +316,12 @@ structure PartialHistory (F : TaskFrame) where
   respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
     F.TaskRel (states s hs) (t - s) (states t ht)              -- τ(s) ⇒_{t-s} τ(t)
 
--- A world history is a partial history with total domain; H_F is the set of them
+-- A world history is a partial history with total domain; H_F is the type of them
 def PartialHistory.IsTotal (τ : PartialHistory F) : Prop := ∀ t, τ.domain t
-def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
+def WorldHistory (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
+-- the state of a world history at a time, with no domain proof: the paper's τ(x)
+def WorldHistory.state (τ : WorldHistory F) (t : F.Duration) : F.WorldState :=
+  τ.val.states t (τ.property t)
 ```
 
 ### Task Models
@@ -337,12 +340,12 @@ Truth at a model-history-time triple:
 
 ```lean
 -- Evaluate formula truth
-def TruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Time) :
+def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
   Formula → Prop
-  | Formula.atom p => t ∈ τ.domain ∧ τ(t) ∈ M.valuation p
+  | Formula.atom p => M.valuation (τ.state t) p
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
-  | Formula.box φ => ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ t φ
+  | Formula.box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ
   | Formula.allPast φ => ∀ s < t, TruthAt M τ s φ
   | Formula.allFuture φ => ∀ s > t, TruthAt M τ s φ
 ```
@@ -352,12 +355,12 @@ def TruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Time) :
 ```lean
 -- Global validity
 def valid (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Time),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     M, τ, t ⊨ φ
 
 -- Semantic consequence
 def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : PartialHistory F) (_ : τ.IsTotal) (t : F.Time),
+  ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Time),
     (∀ ψ ∈ Γ, M, τ, t ⊨ ψ) → M, τ, t ⊨ φ
 ```
 

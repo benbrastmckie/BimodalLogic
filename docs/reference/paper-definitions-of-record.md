@@ -285,7 +285,7 @@ Classification, anchor by anchor:
 
 **The repository's Lean statements are unaffected.** Every change above is equivalent to the
 pinned text it replaces: `WorldHistory.timeShift` was already the pointwise `σ(z + Δ)` reading
-of `def:time-shift-histories`, `H_F` (`TaskFrame.HF`) already denotes exactly the total
+of `def:time-shift-histories`, `H_F` (`WorldHistory F`) already denotes exactly the total
 histories, and the emphasis/rename changes carry no content. The two in-tree verbatim quotations
 that this correction does move — the `def:world-history` closing sentence, quoted in
 the former `ConvexHistory` module (the renamed successor to the former
@@ -814,7 +814,7 @@ partial history $\tau : X \to W$ whose domain is \textit{total}, so that $X = D$
 for the set of all world histories and then calling them the possible worlds. The appendix
 `def:world-history` pinned above routes the same tier through convex histories ("any convex
 history whose domain is total"). The two phrasings denote the **same set**, because a total
-domain is trivially convex. The Lean definition follows the body: `TaskFrame.HF` is
+domain is trivially convex. The Lean definition follows the body: `WorldHistory F` is
 `{τ : PartialHistory F // τ.IsTotal}`, convexity is the predicate `PartialHistory.IsConvex`, and
 `PartialHistory.IsTotal.isConvex` records the inclusion. The paper text is not edited, and this
 note adds no anchor, `verbatim:` block, `sha256:` line or manifest row.

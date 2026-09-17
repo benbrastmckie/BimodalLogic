@@ -47,7 +47,7 @@ side of the permitted import edge:
 
 | File | What it carries |
 |------|-----------------|
-| `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` | `SameStateAt` (the paper's `⟨τ⟩_x`) and `PlusTruthAt`, the seven-clause truth recursion; the S5 validities of `⊡`; `stab_state_only` |
+| `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` | `PlusTruthAt`, the seven-clause truth recursion (the paper's `⟨τ⟩_x` as a state equation); the S5 validities of `⊡`; `stab_state_only` |
 | `FormalSystem/Semantics/PlusLanguage/PlusValidity.lean` | `PlusValidOnFrames`, `PlusValidIn`, `PlusValid`; `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff` (semantic conservativity at every class) |
 | `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` | the history-pasting lemma and the pasting validities PS/US/FS/GS with their past mirrors |
 | `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` | the five refutations on `natFrame` over ℤ that bound the axiom set |

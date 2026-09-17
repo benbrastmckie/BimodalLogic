@@ -206,7 +206,7 @@ structure TaskModel (F : TaskFrame) where
 
 **Module**: `FormalSystem/Semantics/PartialHistory.lean`
 
-Partial histories: task-respecting functions from a nonempty set of times to world states. The total ones are the world histories (the paper's possible worlds), collected as `TaskFrame.HF`.
+Partial histories: task-respecting functions from a nonempty set of times to world states. The total ones are the world histories (the paper's possible worlds), bundled as the type `WorldHistory F`, at which truth is evaluated.
 
 #### Structure Definition
 
@@ -218,9 +218,12 @@ structure PartialHistory (F : TaskFrame) where
   respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
     F.TaskRel (states s hs) (t - s) (states t ht)              -- τ(s) ⇒_{t-s} τ(t)
 
--- A world history is a partial history with total domain; H_F is the set of them
+-- A world history is a partial history with total domain; H_F is the type of them
 def PartialHistory.IsTotal (τ : PartialHistory F) : Prop := ∀ t, τ.domain t
-def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
+def WorldHistory (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
+-- the state of a world history at a time, with no domain proof: the paper's τ(x)
+def WorldHistory.state (τ : WorldHistory F) (t : F.Duration) : F.WorldState :=
+  τ.val.states t (τ.property t)
 ```
 
 **Fields**:
@@ -231,6 +234,10 @@ def TaskFrame.HF (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTota
 
 **Predicates and constructions**: `IsTotal` (world history), `IsConvex` (convex domain;
 `IsTotal.isConvex`), `Extends`, `timeShift` (with `isTotal_timeShift`), `ofTotal`.
+
+**World histories**: `WorldHistory F`, with `state`, `WorldHistory.ofTotal` (`ofTotal_state`),
+`WorldHistory.timeShift` (`timeShift_state`), and `WorldHistory.ext_state` (a world history is
+determined by its states).
 
 ---
 

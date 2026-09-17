@@ -164,7 +164,7 @@ share one red working tree and one build, so they are not parallel-safe.
 - [x] `IntTransfer.lean`: add `WorldHistory.map`/`comap`; *(deviation: altered — `isTotal_map` deleted; `Aligned` is a `def`, not a structure)* `Aligned` as `∀ n, σ'.state n = σ.state (e.symm n)`; `truthAt_map`, `validZTime_iff_validInt`
 - [x] `IntNormalForm.lean`, `ShiftSet.lean`, `DeterministicBridge.lean` (`SingletonClasses` over `WorldHistory`), `FrameAxioms.lean`, `PartialHistoryOrder.lean` (only if affected), `Extension/{Extension,PeriodicExtension,Admissible,Constraint}.lean` (restate `extension`/`occurrence` conclusions over `WorldHistory`; `Extends` stays on `PartialHistory`), `Correspondence/{DurationFrames *(deviation: altered — `translationHist`/`permissiveHist` are now the `WorldHistory`s themselves; the Phase 1 `translationWorldHistory`/`permissiveWorldHistory` wrappers were deleted)*,FwdRec,FwdRecBridge,FwdRecPeriodicity}.lean`, `Ultraproduct/*`, frame-class validity module
 - [x] Targeted builds in import order for each touched module
-- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
+- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated *(deviation: altered — Phases 5-9 ran as parallel subagent waves over disjoint directories under one shared contract; snapshots taken at wave boundaries)*
 
 **Timing**: 2 hours
 
@@ -215,15 +215,15 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 5: Atomic batch B2 - Star language and Conservativity [IN PROGRESS]
+### Phase 5: Atomic batch B2 - Star language and Conservativity [COMPLETED]
 
 **Goal**: Retarget `StarTruthAt` layers and the Conservativity consumers of all three languages.
 
 **Tasks**:
 - [x] `StarLanguage/{StarTruth,StarValidity,StarStateLocal,StarDeterminism,StarNonValidities}.lean` and remaining Star files
-- [ ] `Metalogic/Conservativity/MinusLanguageSoundness.lean` (`truthAt_tr` over `WorldHistory`), `Plus/{Atomization,PlusSoundness}`, `Star/{StarAxiomValidity,StarPasting}`, `ChainBundleTruth`, `DenseObstructionTransfer`, `FragmentCompactness`, `SpWitness`, `Z1Countermodel`, `Conservativity.lean`
-- [ ] Targeted builds in import order
-- [ ] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
+- [x] `Metalogic/Conservativity/MinusLanguageSoundness.lean` (`truthAt_tr` over `WorldHistory`), `Plus/{Atomization,PlusSoundness}`, `Star/{StarAxiomValidity,StarPasting}`, `ChainBundleTruth`, `DenseObstructionTransfer`, `FragmentCompactness`, `SpWitness`, `Z1Countermodel`, `Conservativity.lean`
+- [x] Targeted builds in import order
+- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
 
 **Timing**: 2 hours
 
@@ -243,16 +243,16 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 6: Atomic batch C1 - soundness, canonical and countermodel consumers [NOT STARTED]
+### Phase 6: Atomic batch C1 - soundness, canonical and countermodel consumers [COMPLETED]
 
 **Goal**: Retarget soundness-family, deterministic, compactness and canonical-model consumers.
 
 **Tasks**:
-- [ ] `Metalogic/Soundness.lean`, `SoundnessLemmas.lean`, `SoundnessLemmas/{CoValidity,DiscreteOrder,FrameClassVariants}`, `SetConsequence.lean`, `StrongCompleteness.lean`, `Compactness.lean`, `DedekindNonCompactness.lean`, `DiscreteNonCompactness.lean`, `Metalogic.lean` docstring
-- [ ] `Metalogic/Deterministic/{Erasure,Soundness,Validity}`
-- [ ] `WeakCanonical/{GroupModel/CountermodelBase,IntegerModel/ReynoldsBridge,Table}` (set equality at ReynoldsBridge restated as surjectivity / `Set.univ = Set.range`), `BXCanonical/{Chronicle/*,Completeness,CompletenessDedekind,DiscreteCarrierProbe,TruthLemma}` (ChronicleMonadicBridge set equality likewise), `Algebraic/FlowFrame` (histories as `WorldHistory.ofTotal` or `⟨rec, fun _ => trivial⟩`)
-- [ ] Targeted builds in import order
-- [ ] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
+- [x] `Metalogic/Soundness.lean`, `SoundnessLemmas.lean`, `SoundnessLemmas/{CoValidity,DiscreteOrder,FrameClassVariants}`, `SetConsequence.lean`, `StrongCompleteness.lean`, `Compactness.lean`, `DedekindNonCompactness.lean`, `DiscreteNonCompactness.lean`, `Metalogic.lean` docstring
+- [x] `Metalogic/Deterministic/{Erasure,Soundness,Validity}`
+- [x] `WeakCanonical/{GroupModel/CountermodelBase,IntegerModel/ReynoldsBridge,Table}` (set equality at ReynoldsBridge restated as surjectivity / `Set.univ = Set.range`), `BXCanonical/{Chronicle/*,Completeness,CompletenessDedekind,DiscreteCarrierProbe,TruthLemma}` (ChronicleMonadicBridge set equality likewise), `Algebraic/FlowFrame` (histories as `WorldHistory.ofTotal` or `⟨rec, fun _ => trivial⟩`)
+- [x] Targeted builds in import order
+- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
 
 **Timing**: 2 hours
 
@@ -272,15 +272,15 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 7: Atomic batch C2 - Independence countermodels [NOT STARTED]
+### Phase 7: Atomic batch C2 - Independence countermodels [COMPLETED]
 
 **Goal**: Retarget the Independence countermodels, including the separate coarse truth relation `CTruthAt`.
 
 **Tasks**:
-- [ ] `Independence/CoarsenedModels.lean`: `CTruthAt` over `WorldHistory` (retargeted on its own, not a `TruthClauses` instance)
-- [ ] `Independence/{StaticFrame,OrderTransfer,CoNotPriorU,DeterminismUndefinable,LoopingDuration,StabUndefinable,PastingIndependence,RealTranslationFrame,ForwardDeterministicFrame,DriftHistories,StateSetTruth,StarDiscrimination,ClockFrame,LexIntWitness}`
-- [ ] Targeted builds in import order
-- [ ] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
+- [x] `Independence/CoarsenedModels.lean`: `CTruthAt` over `WorldHistory` (retargeted on its own, not a `TruthClauses` instance)
+- [x] `Independence/{StaticFrame,OrderTransfer,CoNotPriorU,DeterminismUndefinable,LoopingDuration,StabUndefinable,PastingIndependence,RealTranslationFrame,ForwardDeterministicFrame,DriftHistories,StateSetTruth,StarDiscrimination,ClockFrame,LexIntWitness}`
+- [x] Targeted builds in import order
+- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
 
 **Timing**: 2 hours
 
@@ -300,16 +300,16 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 8: Atomic batch C3 - Decidability stack [NOT STARTED]
+### Phase 8: Atomic batch C3 - Decidability stack [COMPLETED]
 
 **Goal**: Retarget BiLasso, the verified decidability bridge and the remaining Decidability modules.
 
 **Tasks**:
-- [ ] `Decidability/BiLasso/*` (`hist A := A.lasso.toWorldHistory`, no `.val`)
-- [ ] `Verified/Bridge/{RegionFrame,Interpolate,TruthLemma}`: `regionHistory : WorldHistory _`; `isTotal_iff_regionHistory` restated as `∀ σ : WorldHistory F, ∃ w Δ, σ = regionHistory f w Δ` (via `Subtype.ext` on the existing proof); `RegionConstant` retyped
-- [ ] `Verified/Decidable.lean`, `CountermodelExtraction`, `FMP`, `IntPresentation`, `Propositional`, `Tableau`, `Decidability.lean`
-- [ ] Targeted builds in import order (BiLasso, then Verified/Bridge, then Verified/Decidable)
-- [ ] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
+- [x] `Decidability/BiLasso/*` (`hist A := A.lasso.toWorldHistory`, no `.val`)
+- [x] `Verified/Bridge/{RegionFrame,Interpolate,TruthLemma}`: `regionHistory : WorldHistory _`; `isTotal_iff_regionHistory` restated as `∀ σ : WorldHistory F, ∃ w Δ, σ = regionHistory f w Δ` (via `Subtype.ext` on the existing proof); `RegionConstant` retyped
+- [x] `Verified/Decidable.lean`, `CountermodelExtraction`, `FMP`, `IntPresentation`, `Propositional`, `Tableau`, `Decidability.lean`
+- [x] Targeted builds in import order (BiLasso, then Verified/Bridge, then Verified/Decidable)
+- [x] End of phase: `git-snapshot.sh 602 --no-revert`; progress file updated
 
 **Timing**: 2 hours
 
@@ -329,17 +329,17 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 9: Close the batch - Automation, Tests, dead-lemma sweep, full gate, commit [NOT STARTED]
+### Phase 9: Close the batch - Automation, Tests, dead-lemma sweep, full gate, commit [COMPLETED]
 
 **Goal**: Finish remaining consumers, delete unused bridge lemmas, pass the full gate set, and land the batch as one green commit.
 
 **Tasks**:
-- [ ] `Automation/{PrefilterSoundness,TruthNormAttr}`, `FormalSystem/Examples/*`, `FormalSystem/Semantics.lean` code (docstring deferred to Phase 9), `Syntax/PlusLanguage.lean` if affected, `Tests/BimodalTest/Semantics/ValidityLayerTest.lean` (`ToyTruthAt`), `Tests/BimodalTest/*Probe.lean`
-- [ ] Dead-lemma sweep: for each surviving transitional/adapter lemma (`WorldHistory.mk_state`, `ofTotal_val`, `timeShift_val`, renamed `apply`/`of_forall` adapters, `state_congr`), check references (`lean_references` or grep); delete any with zero callers
-- [ ] Full `lake build` (detached, guarded) exits 0, including `BimodalTest`
-- [ ] `scripts/check-module-invariants.sh` passes (C2/C14 axiom baselines unchanged vs. Phase 1 record; C3 zero sorry). Any documented-count drift in docstrings is fixed here only if C14 requires it to go green
-- [ ] Acceptance greps (outside Boneyard) all empty: `grep -rnE "\.IsTotal *(→|∧)" --include=*.lean FormalSystem Tests`, `grep -rn "∃ (ht : τ.domain t)" --include=*.lean FormalSystem Tests`, `grep -rnwE "HF|SameStateAt" --include=*.lean FormalSystem Tests`
-- [ ] Single commit of Phases 2-9 on the task branch: `task 602 phase 9: retarget semantics over WorldHistory`; fast-forward/merge into main per the atomic-batch carve-out (local only, no push)
+- [x] `Automation/{PrefilterSoundness,TruthNormAttr}`, `FormalSystem/Examples/*`, `FormalSystem/Semantics.lean` code (docstring deferred to Phase 9), `Syntax/PlusLanguage.lean` if affected, `Tests/BimodalTest/Semantics/ValidityLayerTest.lean` (`ToyTruthAt`), `Tests/BimodalTest/*Probe.lean`
+- [x] Dead-lemma sweep: for each surviving transitional/adapter lemma (`WorldHistory.mk_state`, `ofTotal_val`, `timeShift_val`, renamed `apply`/`of_forall` adapters, `state_congr`), check references (`lean_references` or grep); delete any with zero callers
+- [x] Full `lake build` (detached, guarded) exits 0, including `BimodalTest`
+- [x] `scripts/check-module-invariants.sh` passes (C2/C14 axiom baselines unchanged vs. Phase 1 record; C3 zero sorry). Any documented-count drift in docstrings is fixed here only if C14 requires it to go green
+- [x] Acceptance greps (outside Boneyard) all empty: `grep -rnE "\.IsTotal *(→|∧)" --include=*.lean FormalSystem Tests`, `grep -rn "∃ (ht : τ.domain t)" --include=*.lean FormalSystem Tests`, `grep -rnwE "HF|SameStateAt" --include=*.lean FormalSystem Tests`
+- [x] Single commit of Phases 2-9 *(deviation: altered — committed directly on main, no task branch)*: `task 602 phase 9: retarget semantics over WorldHistory`; fast-forward/merge into main per the atomic-batch carve-out (local only, no push)
 
 **Timing**: 2 hours
 
@@ -359,19 +359,19 @@ share one red working tree and one build, so they are not parallel-safe.
 
 ---
 
-### Phase 10: Decision A', docstrings, docs, typst, slide re-check [NOT STARTED]
+### Phase 10: Decision A', docstrings, docs, typst, slide re-check [COMPLETED]
 
 **Goal**: Bring all prose in line with the bundled encoding and record the decision.
 
 **Tasks**:
-- [ ] `docs/architecture/total-history-validity-decisions.md`: add Decision A' (bundled `WorldHistory`, literal atom clause, no `SameStateAt`, removal of the accepted atom-clause fidelity gap); mark Decision A and B''s "deferred alternative" superseded
-- [ ] `FormalSystem/Semantics/PartialHistory.lean` module docstring: rewrite paper/Lean table (`H_F` -> `WorldHistory F`, possible world -> `τ : WorldHistory F`), delete the "no `abbrev WorldHistory`" note
-- [ ] `FormalSystem/Semantics/Truth.lean` docstring ("ProofChecker Implementation Alignment", simp-normal-form rows for `box_iff`/`diamond_iff`); `FormalSystem/Semantics.lean` docstring; `FormalSystem/Semantics/README.md`
-- [ ] `docs/user-guide/architecture.md`, `tutorial.md`, `docs/reference/API_REFERENCE.md`, `paper-definitions-of-record.md`, `LEAN_STYLE_GUIDE.md`, `theorem-index.md`, `operators.md`, `INTEGRATION.md`, `DIRECTORY_README_STANDARD.md`, `README.md`, `typst/chapters/02-semantics.typ`
-- [ ] Re-grep docs/typst for `\bHF\b|IsTotal →|SameStateAt|PartialHistory F` in signature quotes and fix remaining hits
-- [ ] Re-check talk slides (`~/Philosophy/Papers/PossibleWorlds/talks/57_possible_worlds_tense_modal/slides.md`, lines ~1623-1892) against final names; do not edit (outside repo); list any mismatch in the implementation summary
-- [ ] `scripts/check-module-invariants.sh` (C5/C12/C13/C14/C15) and `check-paper-definitions.sh` show no new failures vs. the Phase 1 baseline; no task-number citations in deliverables; `typst compile` of the affected document succeeds
-- [ ] Commit `task 602 phase 10: record Decision A' and update docs`
+- [x] `docs/architecture/total-history-validity-decisions.md`: add Decision A' (bundled `WorldHistory`, literal atom clause, no `SameStateAt`, removal of the accepted atom-clause fidelity gap); mark Decision A and B''s "deferred alternative" superseded
+- [x] `FormalSystem/Semantics/PartialHistory.lean` module docstring: rewrite paper/Lean table (`H_F` -> `WorldHistory F`, possible world -> `τ : WorldHistory F`), delete the "no `abbrev WorldHistory`" note
+- [x] `FormalSystem/Semantics/Truth.lean` docstring ("ProofChecker Implementation Alignment", simp-normal-form rows for `box_iff`/`diamond_iff`); `FormalSystem/Semantics.lean` docstring; `FormalSystem/Semantics/README.md`
+- [x] `docs/user-guide/architecture.md`, `tutorial.md`, `docs/reference/API_REFERENCE.md`, `paper-definitions-of-record.md`, `LEAN_STYLE_GUIDE.md`, `theorem-index.md`, `operators.md`, `INTEGRATION.md`, `DIRECTORY_README_STANDARD.md`, `README.md`, `typst/chapters/02-semantics.typ`
+- [x] Re-grep docs/typst for `\bHF\b|IsTotal →|SameStateAt|PartialHistory F` in signature quotes and fix remaining hits
+- [x] Re-check talk slides (`~/Philosophy/Papers/PossibleWorlds/talks/57_possible_worlds_tense_modal/slides.md`, lines ~1623-1892) against final names; do not edit (outside repo); list any mismatch in the implementation summary
+- [x] `scripts/check-module-invariants.sh` (C5/C12/C13/C14/C15) and `check-paper-definitions.sh` show no new failures vs. the Phase 1 baseline; no task-number citations in deliverables; `typst compile` of the affected document succeeds
+- [x] Commit `task 602 phase 10: record Decision A' and update docs` *(deviation: altered — docs were edited during the batch and land in this separate commit)*
 
 **Timing**: 2 hours
 

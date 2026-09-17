@@ -18,8 +18,8 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 | Metric | Count |
 |--------|-------|
 | Live `.lean` files | 526 |
-| Live lines of code | 164,014 |
-| Live comment lines | 97,411 |
+| Live lines of code | 163,274 |
+| Live comment lines | 97,107 |
 | Archived `.lean` files | 169 |
 | Archived lines | 91,983 |
 <!-- END GENERATED -->
@@ -83,14 +83,14 @@ A **task frame** `F = (W, D, R)` consists of a **nonempty** set `W` of world-sta
 
 Nullity (`w ⇒_0 w`) is **not** an axiom: it is derived, choice-free, from *Seriality* at `x = 0` together with *Limit*. In Lean, `structure FrameOver` (`FormalSystem/Semantics/TaskFrame.lean`) — the fibre over a temporal order, of which `TaskFrame` is the total space — has exactly the paper's fields: the nonempty world-state type, a primitive relation `PosRel` on the positive cone, and the four axioms. The two-sided `TaskRel` is *defined* from `PosRel` by the reflection convention, and the reflection law `TaskRel w d u ↔ TaskRel u (-d) w` is the theorem `reflection`, not a field. The zero-duration law `nullity_identity` (`TaskRel w 0 u ↔ w = u`) is a theorem, derived from `serial` and `limit`, not a field.
 
-A **partial history** `τ` in a task frame `F` is a function `τ : X → W` from a nonempty subset `X ⊆ D` to world states that respects the task relation: for all times `x, y ∈ X`, we have `τ(x) ⇒_{y-x} τ(y)`. A partial history whose domain is all of `D` is a **world history** (a **possible world**); the paper writes `H_F` for the set of those. In Lean, `PartialHistory F` is the one history structure and `TaskFrame.HF` is `{τ : PartialHistory F // τ.IsTotal}`.
+A **partial history** `τ` in a task frame `F` is a function `τ : X → W` from a nonempty subset `X ⊆ D` to world states that respects the task relation: for all times `x, y ∈ X`, we have `τ(x) ⇒_{y-x} τ(y)`. A partial history whose domain is all of `D` is a **world history** (a **possible world**); the paper writes `H_F` for the set of those. In Lean, `PartialHistory F` is the one history structure and `WorldHistory F` is `{τ : PartialHistory F // τ.IsTotal}`, the type of possible worlds; `τ.state x` is the paper's `τ(x)`.
 
-A **task model** `M = (F, I)` extends a task frame `F` with an interpretation function `I : W → Atom → Prop` that assigns truth values to sentence letters `Atom := {p_i : i ∈ ℕ}` at each world state. Truth is evaluated relative to a model `M`, a history `τ`, and a time `x`:
+A **task model** `M = (F, I)` extends a task frame `F` with an interpretation function `I : W → Atom → Prop` that assigns truth values to sentence letters `Atom := {p_i : i ∈ ℕ}` at each world state. Truth is evaluated relative to a model `M`, a possible world `τ`, and a time `x`:
 
-- `M, τ, x ⊨ p_i` iff `x ∈ dom(τ)` and `I(τ(x), p_i)`
+- `M, τ, x ⊨ p_i` iff `I(τ(x), p_i)`
 - `M, τ, x ⊨ ⊥` never
 - `M, τ, x ⊨ φ → ψ` iff `M, τ, x ⊭ φ` or `M, τ, x ⊨ ψ`
-- `M, τ, x ⊨ □φ` iff `M, σ, x ⊨ φ` for all **possible worlds** `σ` (the partial histories with `dom(σ) = D`; the paper's `H_F`)
+- `M, τ, x ⊨ □φ` iff `M, σ, x ⊨ φ` for all **possible worlds** `σ` (the partial histories with `dom(σ) = D`; the paper's `H_F`, Lean's `WorldHistory F`)
 - `M, τ, x ⊨ U(φ,ψ)` iff there exists `y > x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `x < z < y`
 - `M, τ, x ⊨ S(φ,ψ)` iff there exists `y < x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `y < z < x`
 

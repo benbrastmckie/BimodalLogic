@@ -63,7 +63,7 @@ command declares it:
 ```lean
 -- Good
 def swapTemporal : Formula → Formula := ...                    -- data: lowerCamelCase
-def TruthAt (M : TaskModel F) (τ : PartialHistory F)
+def TruthAt (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Time) : Formula → Prop := ...                       -- predicate: UpperCamelCase
 theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := ...
 lemma modal_t_valid (φ : Formula) : valid (φ.box.imp φ) := ...
@@ -128,12 +128,12 @@ theorem strong_completeness (Γ : Context) (φ : Formula) : Γ ⊨ φ → Γ ⊢
 
 ```lean
 -- Good
-def TruthAt (M : TaskModel F) (τ : PartialHistory F) (t : F.Time) :
+def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Time) :
   Formula → Prop
-  | Formula.atom p => t ∈ τ.domain ∧ τ(t) ∈ M.valuation p
+  | Formula.atom p => M.valuation (τ.state t) p
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
-  | Formula.box φ => ∀ σ : PartialHistory F, σ.IsTotal → TruthAt M σ t φ
+  | Formula.box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ
   | Formula.allPast φ => ∀ s < t, TruthAt M τ s φ
   | Formula.allFuture φ => ∀ s > t, TruthAt M τ s φ
 

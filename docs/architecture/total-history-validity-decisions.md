@@ -17,6 +17,10 @@ number. That record is drift-linted by `scripts/check-paper-definitions.sh`.
 
 ## Decision A — `H_F` encoding (hybrid predicate/subtype)
 
+> **Superseded by Decision A'** (below, after Decision B'). Truth and validity are now bundled over
+> `WorldHistory F`; the hybrid encoding and its accepted atom-clause gap no longer describe the
+> tree. The text is kept as the historical record of the earlier choice.
+
 **Decision.** Totality is encoded two ways, deliberately, with a sharp boundary between them:
 
 - **Predicate-hypothesis form** — `(τ : WorldHistory F) (hτ : τ.IsTotal)` — in `TruthAt`, `valid`,
@@ -45,7 +49,7 @@ never any order-theoretic maximality predicate. Maximality appears only as an *i
 route to `thm:extension` (see Decision B's `exists_maximal_extension` note), never as the target
 predicate of validity.
 
-### Accepted fidelity gap — the atom clause's `∃ (ht : τ.domain t)`
+### Accepted fidelity gap — the atom clause's domain conjunct (removed by Decision A')
 
 `def:BL-semantics`'s atom clause is:
 
@@ -162,8 +166,63 @@ supersedes.
 subtype form is still used only where `H_F` is an object in its own right. Keeping Decision A
 was the research recommendation, adopted by default at plan time rather than as an explicit owner
 answer. **Deferred alternative:** fully bundling truth and validity over `F.HF` (which would also
-let the atom clause drop its `∃ (ht : τ.domain t)` conjunct) is out of scope and remains open as a
-possible follow-up.
+let the atom clause drop its domain conjunct) is out of scope and remains open as a possible
+follow-up. *(This paragraph is superseded: the deferred alternative was adopted as Decision A'.)*
+
+---
+
+## Decision A' — truth and validity bundled over `WorldHistory F` (supersedes Decision A)
+
+**Decision.** The paper's `H_F` is the type
+
+```lean
+def WorldHistory (F : TaskFrame) : Type _ := {τ : PartialHistory F // τ.IsTotal}
+def WorldHistory.state (τ : WorldHistory F) (t : F.Duration) : F.WorldState :=
+  τ.val.states t (τ.property t)
+```
+
+and every truth relation — `TruthAt`, `MinusTruthAt`, `PlusTruthAt`, `StarTruthAt`, and the
+coarse `CTruthAt` of the independence countermodels — is evaluated at `τ : WorldHistory F`. Every
+quantifier over histories in truth, validity, consequence and satisfiability ranges over
+`WorldHistory F`:
+
+- atom: `M.valuation (τ.state t) p` — `def:BL-semantics`'s `τ(x) ∈ |p|` on the nose;
+- box: `∀ σ : WorldHistory F, TruthAt M σ t φ`;
+- stability (L⁺/L⋆): `∀ σ : WorldHistory F, τ.state t = σ.state t → …`, so the paper's
+  `⟨τ⟩_x` is a plain state equation and no separate same-state relation exists;
+- `Valid`, `ValidIn`, `ValidOnFrames`, `TaskFrame.ValidOn`, `SemanticConsequence(In)`,
+  `satisfiable`, `FormulaSatisfiable` and the per-language mirrors all read
+  `∀ … (τ : WorldHistory F) (t), …`.
+
+`PartialHistory` is unchanged and remains the one history *structure*; `PartialHistory.IsTotal`
+remains the defining predicate of `WorldHistory`. Partial histories that are not total survive
+only as objects of the extension machinery (`thm:extension`, `cor:occurrence`, the constraint
+and admissibility lemmas), none of which evaluates truth.
+
+**Anchor.** sec:Construction's "satisfaction at a possible world τ ∈ H_F", and
+`def:BL-semantics`'s clauses, which are stated only at possible worlds.
+
+**Rationale.** An audit of every consumer found no site that evaluates truth at a non-total
+history, so the unbundled `(τ : PartialHistory F) (hτ : τ.IsTotal)` pattern forced domain proofs
+into clauses where they carried no content. Bundling removes them:
+
+- the atom clause's domain conjunct is gone, closing the fidelity gap Decision A accepted;
+- the truth transports (`TruthCorr`, `shiftCorr`, `IntTransfer`'s `Aligned`) become pointwise
+  state equations with no dependent domain transport;
+- the identity binder-shape adapters (`of_forall_total`, `apply_total`, `of_not` for the
+  frame-predicate and frame-class notions) and `validOn_iff_total` are deleted — `intro` and
+  application open the definitions directly. Only the `.Base` adapters survive (as
+  `Valid.of_forall` / `Valid.apply` / `Valid.of_not` and the per-language mirrors), because they
+  discharge the vacuous `Sat .Base` argument.
+
+`WorldHistory` is a `def`, not an `abbrev`, so `Subtype` instances and simp lemmas do not leak
+onto it; `WorldHistory.states_eq_state` rewrites dependent projections toward `state`, and
+`WorldHistory.ext_state` says a world history is determined by its states.
+
+**Why this is not a §9 violation.** There is still exactly one history structure and one validity
+predicate per language. `WorldHistory` is the paper's `H_F`, not an alias of an existing API
+surface: the previous name `TaskFrame.HF` was removed with no compatibility shim, and no parallel
+partial-history truth relation exists.
 
 ---
 

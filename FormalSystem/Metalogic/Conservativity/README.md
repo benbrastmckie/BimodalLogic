@@ -29,17 +29,17 @@ than deferred debt.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Backward.lean` | 211 | <!-- TODO: add description --> |
-| `ChainBundleTruth.lean` | 250 | The valuation-only truth lemma for the flow frames of `Metalogic/Algebraic/FlowFrame.lean`: `chainSat` (Kripke satisfaction on a disjoint union of `D`-chains, `□` universal) and `chainBundle_truth_lemma`, plus the transfer corollary `not_minusValidIn_of_not_chainSat` and its ℚ/ℝ instantiations |
-| `DenseObstructionTransfer.lean` | 286 | Machine-checked evidence that neither closed row's separating witness transfers to the dense classes: `Sp` is a theorem of both `TM⁻_d` and `TM⁻_dc` (`spDerivableDense`, `spDerivableRTime`), and `Z1` is refuted on the flow frame over ℚ (`not_minusValidDense_z1`) |
+| `ChainBundleTruth.lean` | 241 | The valuation-only truth lemma for the flow frames of `Metalogic/Algebraic/FlowFrame.lean`: `chainSat` (Kripke satisfaction on a disjoint union of `D`-chains, `□` universal) and `chainBundle_truth_lemma`, plus the transfer corollary `not_minusValidIn_of_not_chainSat` and its ℚ/ℝ instantiations |
+| `DenseObstructionTransfer.lean` | 279 | Machine-checked evidence that neither closed row's separating witness transfers to the dense classes: `Sp` is a theorem of both `TM⁻_d` and `TM⁻_dc` (`spDerivableDense`, `spDerivableRTime`), and `Z1` is refuted on the flow frame over ℚ (`not_minusValidDense_z1`) |
 | `Fragment.lean` | 190 | <!-- TODO: add description --> |
 | `FragmentCompactness.lean` | 150 | <!-- TODO: add description --> |
-| `MinusLanguageSoundness.lean` | 613 | <!-- TODO: add description --> |
+| `MinusLanguageSoundness.lean` | 605 | <!-- TODO: add description --> |
 | `Plus.lean` | 66 | <!-- TODO: add description --> |
 | `SpCountermodel.lean` | 390 | CEB's failing half: native L⁻ soundness for TM⁻ against `Semantics/MinusLanguage/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
 | `SpWitness.lean` | 138 | <!-- TODO: add description --> |
 | `Star.lean` | 50 | Aggregator for the L⋆ metatheory; holds no declarations. |
 | `TMCompletenessReduction.lean` | 309 | <!-- TODO: add description --> |
-| `Z1Countermodel.lean` | 205 | <!-- TODO: add description --> |
+| `Z1Countermodel.lean` | 198 | <!-- TODO: add description --> |
 | `Plus/` | — | <!-- TODO: add description --> |
 | `Star/` | — | The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆: axiom validity, soundness, conservativity over TM (unconditional) and over TM⁺ (a conditional pair), and the completeness OPEN record. |
 <!-- END GENERATED -->

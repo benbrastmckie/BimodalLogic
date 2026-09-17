@@ -256,7 +256,7 @@ Not every partial history is total, and it is not obvious that a frame has *any*
   It does *not* discharge *Saturation* for infinite-$W$ frames: those still need the axiom in full.
 ]
 
-The Lean formalization runs this exact chain. `PartialHistory` (`Semantics/PartialHistory.lean`) is the one history structure: convexity is the predicate `PartialHistory.IsConvex`, and `PartialHistory.IsTotal` is the totality predicate identifying membership in $H_(cal(F))$ --- the possible worlds have no separate structure of their own and are exactly the subtype `TaskFrame.HF`. Since a total domain is trivially convex, a partial history with total domain is the same thing as a convex history with total domain.
+The Lean formalization runs this exact chain. `PartialHistory` (`Semantics/PartialHistory.lean`) is the one history structure: convexity is the predicate `PartialHistory.IsConvex`, and `PartialHistory.IsTotal` is the totality predicate identifying membership in $H_(cal(F))$ --- the possible worlds have no separate structure of their own and are exactly the subtype `WorldHistory F`, at which truth is evaluated. Since a total domain is trivially convex, a partial history with total domain is the same thing as a convex history with total domain.
 `Semantics/Extension/Constraint.lean`, `Admissible.lean`, `Step.lean`, and `Extension.lean` carry the whole existence chain --- constraints, the Constraint Lemma, admissibility, the Step Lemma, the Extension Theorem, and Occurrence --- as a machine-checked sequence of lemmas rather than restating it inline.
 
 == Task Models
@@ -279,7 +279,7 @@ Whereas the model fixes the interpretation of the language, the contextual param
 // CONFIRM(paper): def:BL-semantics's box clause ranges over all sigma in H_F with no admissible-history or
 //   shift-closure parameter, and def:BL-semantics states the guard-first since/until clauses transcribed below.
 #definition("Truth")[
-  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. The box clause quantifies over all possible worlds (`PartialHistory.IsTotal`), with no admissible-history or shift-closure parameter.]
+  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. It is evaluated at `τ : WorldHistory F`, reads atoms at `τ.state x`, and the box clause quantifies over all possible worlds (`∀ σ : WorldHistory F`), with no admissible-history or shift-closure parameter.]
   $
     cal(M), tau, x tack.r.double p &#Iff x in "dom"(tau) "and" I(tau(x), p) \
     cal(M), tau, x tack.r.double.not bot \
