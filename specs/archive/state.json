@@ -1923,6 +1923,700 @@
   ],
   "completed_projects": [
     {
+      "project_number": 609,
+      "project_name": "fix_failing_evidence_probes_convexhistory_ofreflective",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Fix scripts/check-evidence-probes.sh, which fails 4 of 4 probes with errors about ConvexHistory and FrameOver.ofReflective. The failures predate the TD->TR rename (task 584) and are likely stale probes left after the WorldHistory retarget that retired TaskFrame.HF (task 602). Update the probes (or the declarations they reference) so the script passes, and consider wiring it into CI so it cannot silently rot again.",
+      "topic": "codebase-cleanup",
+      "created": "2026-09-17T10:00:50Z",
+      "last_updated": "2026-09-17T14:18:46Z",
+      "session_id": "sess_1789654726_ci609",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 602,
+      "project_name": "bundle_semantics_over_worldhistory",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Introduce `WorldHistory F` as the named type of world histories and make the semantics evaluate at and quantify over it, so that truth reads exactly as the paper's satisfaction clauses (JPL/possible_worlds.tex, sec:Construction: 'satisfaction at a possible world τ ∈ H_F'). Target shape: `def TruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) : Formula → Prop` with `| .atom p => M.valuation (τ.state t) p`, `| .box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ`, `| .stab φ => ∀ σ : WorldHistory F, τ.state t = σ.state t → TruthAt M σ t φ` (Plus/Star layers), replacing the current `(τ : PartialHistory F)` evaluation point, the atom clause's `∃ (ht : τ.domain t)` conjunct, the `∀ (σ : PartialHistory F), σ.IsTotal → …` quantifier pattern, and `SameStateAt`'s dependent-proof formulation. Motivation: the unbundled pattern (~150 binder sites across ~80 files: Semantics/TruthClauses.lean box/stab/diamond lemmas, Semantics/Validity.lean ValidIn/SemanticConsequenceIn/satisfiability, the Plus/Minus/Star truth and validity layers, truth transport, Metalogic/Independence, Decidability/BiLasso and Verified/Bridge, Conservativity, BXCanonical, Correspondence, Extension, plus docs/ and typst/) forces domain-membership proofs into clauses where they carry no content and is quoted verbatim in the PossibleWorlds talk. Design, to be confirmed or improved at research time: (1) rename `TaskFrame.HF` to `WorldHistory (F : TaskFrame) : Type := {τ : PartialHistory F // τ.IsTotal}` with a `CoeOut` to `PartialHistory F`, keep `PartialHistory.IsTotal` as its defining predicate, move `HF.ofTotal` and friends to the `WorldHistory` namespace — no `HF` alias left behind (no compatibility shims); (2) add `WorldHistory.state (τ : WorldHistory F) (t : F.Duration) : F.WorldState := τ.val.states t (τ.property t)` with its simp API (`state_eq_states`, proof-irrelevance lemma, `ofTotal_state`), and `WorldHistory.timeShift` with `timeShift_state`; (3) change `TruthAt` and the Plus/Minus/Star truth relations to take `τ : WorldHistory F`, and make every quantifier over world histories — box, stability, their duals, ValidIn/Valid, SemanticConsequenceIn, satisfiability, frame-relative validity — range over `WorldHistory F`; drop `SameStateAt` in favour of `τ.state t = σ.state t`; (4) audit every consumer that currently evaluates truth at a possibly non-total history (truth transport `truthAt_of_truthCorr`/`shiftCorr`, `timeShift_preserves_truth`, the Extension Theorem, canonical/chronicle countermodel constructions, the decidability bridge, MinusLanguage native semantics) and restate it over `WorldHistory F`; if any genuinely needs truth at a partial history, stop and report the obstruction with the concrete site rather than reintroducing a parallel partial-history truth relation; (5) provide only the transitional bridge lemmas needed to migrate proofs mechanically, deleting any that end up unused. This supersedes Decision A and the 'deferred alternative' note of Decision B' in docs/architecture/total-history-validity-decisions.md and the 'no abbrev WorldHistory' note in Semantics/PartialHistory.lean: record the new decision as Decision A' in that file (including the removal of the accepted fidelity gap for the atom clause), update the PartialHistory.lean module docstring's paper/Lean table, docs/reference, docs/user-guide, typst chapters and theorem-index rows that quote the old signatures. Acceptance: zero `sorry`, axiom baselines unchanged (C2/C14 green), `lake build` and the module-invariant checks pass, no remaining `σ.IsTotal →` / `τ.IsTotal ∧` quantifier pattern and no `∃ (ht : τ.domain t)` atom conjunct in truth definitions outside Boneyard/. Coordinate with task 601 (reflection convention, touches TaskFrame.lean and many of the same frame-construction files) — whichever lands second rebases. Downstream: the PossibleWorlds talk slides 'Semantics in Lean II: Histories and Models', 'Syntax and Semantics' and 'Perpetuity, Twice' already quote the target form (WorldHistory, WorldHistory.state, TruthAt at τ : WorldHistory F, timeShift_preserves_truth over WorldHistory) and must be re-checked against the final names",
+      "topic": "semantics",
+      "created": "2026-09-16T20:04:29Z",
+      "last_updated": "2026-09-17T00:59:07Z",
+      "session_id": "sess_1789592641_69db81",
+      "artifacts": [
+        {
+          "path": "specs/602_bundle_semantics_over_worldhistory/reports/01_bundle-semantics-worldhistory.md",
+          "type": "report",
+          "summary": "Confirms subtype WorldHistory design (matches talk slides), audits all consumers (no truth at partial histories, no obstruction), prototypes TruthAt/TruthCorr/timeShift_preserves_truth over WorldHistory sorry-free at baseline axioms, sizes migration (~87 files) and gives atomic-batch phasing, bridge-lemma deletions, and doc update list."
+        },
+        {
+          "path": "specs/602_bundle_semantics_over_worldhistory/plans/01_bundle-semantics-worldhistory.md",
+          "type": "plan",
+          "summary": "10-phase plan: green WorldHistory/HF-rename phase, 8-phase atomic batch retargeting all truth/validity relations over WorldHistory with a single green commit, then Decision A' and docs."
+        },
+        {
+          "path": "specs/602_bundle_semantics_over_worldhistory/summaries/01_bundle-semantics-worldhistory-summary.md",
+          "type": "summary",
+          "summary": "Truth, validity, consequence and satisfiability bundled over WorldHistory F; TaskFrame.HF, SameStateAt and the identity totality adapters deleted; Decision A' recorded."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Introduced WorldHistory F (bundled total histories with a non-dependent state accessor) in place of TaskFrame.HF and retargeted TruthAt, the Minus/Plus/Star/coarse truth relations and every validity, consequence and satisfiability predicate over it, deleting SameStateAt, the atom-clause domain conjunct and the identity binder-shape adapters. Full lake build (FormalSystem + BimodalTest) and check-module-invariants are green with C2/C14 axiom baselines unchanged; Decision A' and the docs/typst were updated.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 601,
+      "project_name": "align_task_frame_reflection_convention",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Align the Lean task-frame definition with the paper's reflection convention. The paper (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, def:task-relation ~L2803 and def:frame ~L2812-2826; also L964 and L2887/2948/2998/3518) now calls the stipulation w =>_{-x} u := u =>_x w (x >= 0) the 'reflection convention' (formerly 'converse convention'), and it is pure notation: a task relation is primitive on D+ only, and def:frame's four axioms (Compositionality, Seriality, Limit, Saturation) do NOT include it. In Lean, FrameOver (FormalSystem/Semantics/TaskFrame.lean) instead carries it as a structure field `converse : ∀ w d u, TaskRel w d u ↔ TaskRel u (-d) w` over a two-sided TaskRel, which every frame construction must prove (~46 field/projection sites; 'converse' appears ~295 times in ~121 Lean files plus ~18 docs/typst files). Goal: make the Lean structure match the paper systematically and at publication quality — (1) research the cleanest encoding in which the reflection convention is a definition rather than a field (e.g. a primitive relation on the positive cone with the two-sided relation defined from it so the reflection law is a theorem, versus alternatives), weighing proof burden on existing consumers, faithfulness to def:task-relation/def:frame, and Mathlib idiom; (2) implement it so FrameOver's fields are exactly nonempty W plus the paper's four axioms, with the reflection law derived; (3) rename 'converse convention' -> 'reflection convention' throughout Lean identifiers (with deprecated aliases only if warranted), docstrings, docs/, typst/, README/NOTATION, and paper-definitions-of-record, distinguishing genuine uses of 'converse' (e.g. converse frames, logical converses) that must NOT be renamed; (4) full lake build, BimodalTest, check-module-invariants.sh, readme-lint.sh, no new sorry/axioms. Sequence after task 599 (history unification) completes, since both touch Semantics core files; task 598 (derived nullity_identity) is already implemented and fixes the field set this builds on",
+      "topic": "semantics",
+      "dependencies": [
+        599
+      ],
+      "created": "2026-09-16T19:51:44Z",
+      "last_updated": "2026-09-16T22:18:32Z",
+      "session_id": "sess_1789592641_69db81",
+      "artifacts": [
+        {
+          "path": "specs/601_align_task_frame_reflection_convention/reports/01_reflection-convention-encoding.md",
+          "type": "report",
+          "summary": "Recommends a D+-typed primitive PosRel field with TaskRel := reflect PosRel as a definition and a derived reflection theorem (prototyped sorry-free), plus an ofReflective smart constructor; maps 18 construction sites, 28 projections, and the converse->reflection rename surface with genuine-converse exclusions."
+        },
+        {
+          "path": "specs/601_align_task_frame_reflection_convention/plans/01_reflection-convention-frame.md",
+          "type": "plan",
+          "summary": "7-phase plan (11h): additive reflect API, FrameOver restructure to PosRel + four axioms with derived reflection and ofReflective constructor, Semantics then Examples/Metalogic/Tests migration, Lean and non-Lean prose rename, final gates and converse audit."
+        },
+        {
+          "path": "specs/601_align_task_frame_reflection_convention/summaries/01_reflection-convention-frame-summary.md",
+          "type": "summary",
+          "summary": "FrameOver restructured to PosRel on D+ plus the four def:frame axioms; reflection law derived as FrameOver.reflection; all sites migrated; converse->reflection convention renamed across Lean/docs/typst/latex; full build, tests, module invariants and readme-lint green."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "FrameOver's fields are now exactly WorldState, worldNonempty, a primitive PosRel on the positive cone, and the four def:frame axioms; the two-sided TaskRel is the definition TaskFrame.reflect PosRel and the reflection law is the derived theorem FrameOver.reflection (smart constructor FrameOver.ofReflective for two-sided presentations). All construction sites and concrete-frame consumers were migrated, and 'converse convention' was renamed to 'reflection convention' across Lean, docs, typst and LaTeX with def:task-relation/def:deterministic re-pinned.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 599,
+      "project_name": "unify_total_histories_partial",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Simplify the history definitions to match the paper (JPL/possible_worlds.tex, sec:Construction), where a world history is any partial history with total domain X = D and H_F is the set of world histories: define totality once on PartialHistory, drop the duplicate ConvexHistory.IsTotal wrapper, and reconsider whether TaskFrame.HF, TruthAt, validity (Semantics/Validity.lean) and the (τ : ConvexHistory F) (_ : τ.IsTotal) quantifier pattern should range over total PartialHistory rather than ConvexHistory (a total history is trivially convex). Audit the Semantics/ history layer (PartialHistory, ConvexHistory, HF, time-shift, extension) for the most elegant and systematic definitions, and refactor to remove cruft, duplication and ungainly bundled/unbundled variants, keeping ConvexHistory only where convexity is genuinely used. Downstream: the PossibleWorlds talk slide \"Semantics in Lean II: Histories and Models\" quotes these definitions and must be updated to match",
+      "topic": "semantics",
+      "created": "2026-09-16T18:26:24Z",
+      "last_updated": "2026-09-16T20:02:57Z",
+      "session_id": "sess_1789584086_2b6633",
+      "artifacts": [
+        {
+          "path": "specs/599_unify_total_histories_partial/reports/01_unify-total-histories-partial.md",
+          "type": "report",
+          "summary": "Audit of the Semantics history layer: convexity is never used, all ConvexHistory values are total; recommends deleting the ConvexHistory structure, retargeting TruthAt/validity/HF to total PartialHistory, keeping IsConvex as a predicate, with a probe-verified core API, migration phases, and slide update."
+        },
+        {
+          "path": "specs/599_unify_total_histories_partial/plans/01_unify-total-histories-partial.md",
+          "type": "plan",
+          "summary": "8-phase plan: additive PartialHistory API, core flip behind a deprecated ConvexHistory shim, directory-by-directory rename (Semantics, Metalogic x2, Examples/Tests + shim deletion), docs/decision record, talk slide; hybrid Decision A encoding retained."
+        },
+        {
+          "path": "specs/599_unify_total_histories_partial/summaries/01_unify-total-histories-partial-summary.md",
+          "type": "summary",
+          "summary": "ConvexHistory deleted; H_F, truth and validity re-based on PartialHistory with IsTotal/IsConvex predicates; docs, Decision B' and talk slide updated."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Deleted the ConvexHistory structure and re-based the history layer on PartialHistory: IsTotal and IsConvex are predicates, TaskFrame.HF is {τ : PartialHistory F // τ.IsTotal}, and truth, transport and validity range over PartialHistory F. Docs, the decision record (Decision B') and the PossibleWorlds history slide were updated to match; full build and tests are green.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 598,
+      "project_name": "derive_nullity_identity",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Remove the nullity_identity field from FrameOver in FormalSystem/Semantics/TaskFrame.lean and derive it instead: reflexivity from serial + limit (TaskFrame.nullity_of_serial_limit) and injectivity-at-zero from limit alone, exposing the result as a theorem (e.g. FrameOver.nullity_identity) so downstream uses keep working. Update every frame construction that currently supplies the field (Independence frames, FlowFrame, IntegerModel/ReynoldsBridge, FMP/Filtration, test generators, etc.), deleting the now-redundant proofs, and revise docstrings and Semantics.lean prose that describe the field as kept for construction ergonomics. Aim for the most elegant, minimal frame definition matching the paper (the four constraints plus converse), avoiding cruft; coordinate with the in-flight semantics file nesting task",
+      "topic": "semantics",
+      "created": "2026-09-16T18:26:24Z",
+      "last_updated": "2026-09-16T20:02:39Z",
+      "session_id": "sess_1789584086_2b6633",
+      "artifacts": [
+        {
+          "path": "specs/598_derive_nullity_identity/reports/01_derive-nullity-identity.md",
+          "type": "report",
+          "summary": "Verified sorry-free derivation of nullity_identity from serial+limit; import-order fix (move nullity_of_serial_limit into TaskFrame.lean); 17 construction sites, consumers, and prose to update."
+        },
+        {
+          "path": "specs/598_derive_nullity_identity/plans/01_derive-nullity-identity.md",
+          "type": "plan",
+          "summary": "5-phase plan: relocate/weaken helpers, atomically remove the FrameOver.nullity_identity field in favor of derived theorems across 17 construction sites, then Lean and external prose updates and a final gate."
+        },
+        {
+          "path": "specs/598_derive_nullity_identity/summaries/01_derive-nullity-identity-summary.md",
+          "type": "summary",
+          "summary": "Removed the nullity_identity field from FrameOver; it is now a derived theorem (nullity from serial+limit, eq_of_taskRel_zero from limit), with all 18 construction-site discharges and dead helpers deleted and prose updated."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "FrameOver now carries exactly the paper's four def:frame axioms plus converse and a nonempty carrier; nullity_identity is a theorem with an unchanged statement, derived from the serial and limit fields. All construction sites, dead helpers, docstrings, docs and typst prose were updated, and the full FormalSystem and BimodalTest builds are green.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 594,
+      "project_name": "relocate_in_library_smoke_tests",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "codebase-cleanup",
+      "priority": "medium",
+      "effort": "medium",
+      "dependencies": [],
+      "description": "Relocate test-shaped smoke tests out of the live library. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): 404 `#check`/`#eval`/`#print` lines across 29 live (non-Boneyard) library files (largest: DatasetGenerator 116, Saturation 59, MainResults 54, Normalization 42, Syntax/Formula 20) plus 389 top-level `example`s outside `FormalSystem/Examples/`. cslib (`scripts/pre-pr-check.sh`) treats `#check`/`#eval`/`dbg_trace` in library code as debug artifacts.\n\nWORK: (1) classify every occurrence as test-shaped (asserts behaviour, belongs in `Tests/BimodalTest/` as `#guard`/`example`) or documentation-shaped (illustrates an API next to its definition; may stay). (2) Move the test-shaped ones into the matching `Tests/BimodalTest/` module. (3) Keep `FormalSystem/MainResults.lean` as-is: its `#print axioms` block is an intentional axiom-audit page. (4) Add a debug-artifact invariant check to `scripts/check-module-invariants.sh` with a recorded allowlist (MainResults plus any documentation-shaped survivors), so new debug output cannot land silently.\n\nORDERING NOTE: C17 counts `#check @foo` as an occurrence (e.g. Normalization's `#check @neg_unfold` block), so this relocation changes C17's zero-occurrence census; it therefore precedes the zero-occurrence declaration triage in this topic.\n\nACCEPTANCE: `lake build` green; test suite green; new invariant check passes and is documented in the harness header; remaining in-library `#check`/`#eval`/`#print` lines are all allowlisted with a reason.",
+      "created": "2026-09-16T15:37:27Z",
+      "last_updated": "2026-09-16T18:39:20Z",
+      "session_id": "sess_1789577011_0f6aae",
+      "artifacts": [
+        {
+          "path": "specs/594_relocate_in_library_smoke_tests/reports/01_relocate-smoke-tests.md",
+          "type": "report",
+          "summary": "Re-measured census (365 live debug directives in 22 files + 39 in docstrings), 4-class classification with per-file relocation targets and #guard conversions (all #eval outputs captured by running), class-B #print axioms folded into C14, C27 debug-artifact invariant spec with exact-count allowlist, scoped example relocation."
+        },
+        {
+          "path": "specs/594_relocate_in_library_smoke_tests/plans/01_relocate-smoke-tests.md",
+          "type": "plan",
+          "summary": "8-phase plan: seed an enforced comment-aware C27 debug-artifact gate first, then ratchet it down by relocating class C/D probes to Tests as asserting guards, migrating class-B axiom prints to C14, moving test-labelled examples, and closing on the full gate."
+        },
+        {
+          "path": "specs/594_relocate_in_library_smoke_tests/summaries/01_relocate-smoke-tests-summary.md",
+          "type": "summary",
+          "summary": "Relocated 311 live in-library debug directives and ~115 test-labelled examples to Tests/BimodalTest as asserting guards, migrated 19 #print axioms to the C14 baseline, and added the comment-aware C27 debug-artifact invariant (allowlist: MainResults 54)."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "All test-shaped #check/#eval/#print probes and test-labelled example sections moved from FormalSystem/ into Tests/BimodalTest, with bare #evals converted to #guards pinning captured values; class-B #print axioms were migrated into the C14 baseline. New harness check C27 (comment-aware, exact-count allowlist) passes with only MainResults.lean allowlisted, and lake build, lake build BimodalTest and the full harness are green.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 595,
+      "project_name": "establish_durable_records_home",
+      "status": "completed",
+      "task_type": "markdown",
+      "topic": "codebase-cleanup",
+      "priority": "high",
+      "effort": "small",
+      "dependencies": [],
+      "description": "Decide where durable project records live and move them there if the decision is to move. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `specs/paper-definitions-of-record.md` and `specs/decisions/*.md` (currently `total-history-validity-decisions.md`, `untl-snce-argument-order.md`) are cited 43 times from live Lean (25 paper-definitions-of-record, 18 decisions) and `specs/paper-definitions-of-record.md` is read by `scripts/check-paper-definitions.sh`. `specs/` is the task-management tree (and `specs/archive/` is gitignored), so durable records there are one cleanup away from breaking.\n\nWORK: (1) decide, with a short recorded rationale, whether these records belong under `docs/` (e.g. `docs/records/`, `docs/decisions/`) or stay in `specs/`; (2) if moving, `git mv` them, repoint all Lean docstring citations, `check-paper-definitions.sh`, and any doc/README links; (3) record the chosen home in the relevant README so future records land there.\n\nORDERING NOTE: precedes the paper-vocabulary reconciliation (which re-pins the definitions record) and the `docs/` staleness audit in this topic.\n\nACCEPTANCE: decision recorded; if moved, zero remaining citations of the old paths (grep), `check-paper-definitions.sh` passes (or stays skip-neutral when the paper is absent), invariant harness passes (C13/C15 catch missed referrers).",
+      "created": "2026-09-16T15:37:27Z",
+      "last_updated": "2026-09-16T18:39:39Z",
+      "session_id": "sess_1789577011_0f6aae",
+      "artifacts": [
+        {
+          "path": "specs/595_establish_durable_records_home/reports/01_durable-records-home.md",
+          "type": "report",
+          "summary": "Recommends moving specs/paper-definitions-of-record.md to docs/reference/ and specs/decisions/*.md to docs/architecture/ (folded into its existing non-ADR Specification Documents table), since docs/architecture/README.md already forbids a second docs/decisions/ location; enumerates every script, Lean docstring, and markdown consumer that needs repointing."
+        },
+        {
+          "path": "specs/595_establish_durable_records_home/plans/01_durable-records-home.md",
+          "type": "plan",
+          "summary": "4-phase plan: baseline+git mv records to docs/reference and docs/architecture, repoint all live referrers, clear measured new docs/ gate exposure (C12/C15/C20/C9D), record placement rule and final gate."
+        },
+        {
+          "path": "specs/595_establish_durable_records_home/summaries/01_durable-records-home-summary.md",
+          "type": "summary",
+          "summary": "Moved paper-definitions-of-record.md and the two decision records from specs/ to docs/reference/ and docs/architecture/, repointed all live citations, cleared the new gate exposure, and documented the placement rule."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Moved paper-definitions-of-record.md and the two decision records (total-history-validity-decisions.md, untl-snce-argument-order.md) from the ephemeral specs/ tree to docs/reference/ and docs/architecture/ respectively (git history preserved), repointed all ~74 live citations across Lean docstrings, two scripts, docs, typst comments, references.bib, and in-library READMEs, cleared the C12/C15/C20 tier 2/C9D gate exposure the move introduced in check-module-invariants.sh, and recorded the placement rule and rationale in docs/README.md, docs/reference/README.md, and docs/architecture/README.md.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 596,
+      "project_name": "nest_semantics_language_family_files",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "codebase-cleanup",
+      "priority": "medium",
+      "effort": "medium",
+      "dependencies": [],
+      "description": "Nest the flat `Semantics/` language-family files into per-language subdirectories, and add the one missing directory README. MEASURED AT REORGANIZATION TIME (2026-09-16): `FormalSystem/Semantics/` holds 15 flat files -- `Minus{Frame,SchemaValidity,Truth,Validity}.lean` (4), `Plus{Determinism,NonValidities,Pasting,StateLocal,Truth,Validity}.lean` (6), `Star{Determinism,NonValidities,StateLocal,Truth,Validity}.lean` (5) -- while `Syntax/` already uses `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` subdirectories with aggregator modules. `FormalSystem/ForMathlib/` is the only non-Boneyard directory without a README. Source: review `specs/reviews/review-2026-09-15.md` findings M1 and the ForMathlib half of M2.\n\nWORK: (1) move the 15 files into `Semantics/` subdirectories mirroring the `Syntax/*Language/` layout (choose names consistent with it, and add aggregators if the Syntax side has them); (2) update every import, the root aggregator, and the C8 parent tuple in `scripts/check-module-invariants.sh`; (3) repoint path citations in docstrings, READMEs and typst; (4) write `FormalSystem/ForMathlib/README.md` (purpose: Mathlib-shaped extensions intended for upstreaming; must import nothing from `FormalSystem.*`). Module-path-only change: no declaration is renamed or restated.\n\nORDERING NOTE: a structural move in the first wave of this topic; precedes paper-vocabulary reconciliation and basename-citation disambiguation.\n\nACCEPTANCE: `lake build` green; invariant harness passes (C8 aggregator, C13/C15 citations); `readme-lint.sh` exit 0.",
+      "created": "2026-09-16T15:37:27Z",
+      "last_updated": "2026-09-16T18:39:57Z",
+      "file_scope": [
+        "FormalSystem/Semantics",
+        "FormalSystem/ForMathlib/README.md",
+        "scripts/check-module-invariants.sh"
+      ],
+      "session_id": "sess_1789577011_0f6aae",
+      "artifacts": [
+        {
+          "path": "specs/596_nest_semantics_language_family_files/reports/01_nest-semantics-language-family.md",
+          "type": "report",
+          "summary": "Blast-radius inventory (55 import lines/29 files, ~50 citation files, zero typst hits), recommended Semantics/{Minus,Plus,Star}Language/ layout with prefixed basenames kept, C8 tuple change exposing 5 pre-existing violations, namespace-vs-module sed hazard, ForMathlib README content, phased plan."
+        },
+        {
+          "path": "specs/596_nest_semantics_language_family_files/plans/01_nest-semantics-language-family.md",
+          "type": "plan",
+          "summary": "6-phase plan: ForMathlib README; atomic git-mv of 15 Semantics files into {Minus,Plus,Star}Language/ with aggregators and import rewrite; C8 extension to Semantics (4 aggregators + Extension allowlist); in-tree and top-level citation repointing; inventory refresh and full gate."
+        },
+        {
+          "path": "specs/596_nest_semantics_language_family_files/summaries/01_nest-semantics-language-family-summary.md",
+          "type": "summary",
+          "summary": "15 language-family semantics modules nested into Semantics/{Minus,Plus,Star}Language/ with aggregators; C8 extended to Semantics/; ForMathlib README written."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Nested the 15 L-minus/L-plus/L-star semantics modules into Semantics/{MinusLanguage,PlusLanguage,StarLanguage}/ with sibling aggregators, extended invariant C8 to walk Semantics/ (adding four more aggregators and allowlisting Extension/Extension.lean), repointed all imports and path citations, and wrote FormalSystem/ForMathlib/README.md. lake build, the full invariant harness and readme-lint all pass.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 593,
+      "project_name": "revise_task_organization_codebase_cleanup",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "I recently created tasks 581-592. I already have many other tasks I've created. I want to know if these tasks can be better organized into topics, combined, replaced, removed, or have new tasks added. I'd like to focus on improving the codebase first, including everything that doesn't involve writing new proofs, but rather changing conventions, removing cruft, improving comments, or otherwise refactoring, where these tasks should all be gathered together under one topic with clear dependencies. Thus the aim of this task is to revise the other tasks as most appropriate. It may be worth researching /home/benjamin/Projects/cslib/ which aimed to provide a high quality of lean engineering for related topics. Though the subject matter there differs, the standards are good to aim for",
+      "topic": "code-quality",
+      "created": "2026-09-16T15:23:39Z",
+      "last_updated": "2026-09-16T15:40:09Z",
+      "session_id": "sess_1789572316_3a825c",
+      "artifacts": [
+        {
+          "path": "specs/593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md",
+          "type": "report",
+          "summary": "Inventory of all 60 active tasks with a proposed single codebase-cleanup topic (15 existing members, 542 merged into 588, 4 new tasks), rescoped 583, widened 586/590, a 6-wave dependency DAG, and a cslib conventions comparison."
+        },
+        {
+          "path": "specs/593_revise_task_organization_codebase_cleanup/plans/01_cleanup-topic-reorganization.md",
+          "type": "plan",
+          "summary": "5-phase state-only plan: create codebase-cleanup topic (19 members), abandon 542 into 588, rescope/widen descriptions, create N1-N4, prune stale deps, wire 6-wave DAG."
+        },
+        {
+          "path": "specs/593_revise_task_organization_codebase_cleanup/summaries/01_cleanup-topic-reorganization-summary.md",
+          "type": "summary",
+          "summary": "Gathered 19 codebase-cleanup tasks under one topic with a 6-wave acyclic DAG; abandoned 542 into 588; created 594-597; rescoped 583; pruned 56 stale dependencies."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Created the codebase-cleanup topic with 19 members (15 re-topicked plus new tasks 594-597) wired into an acyclic six-wave dependency DAG, merged 542 into 588, rescoped 583 to wire the checks that pass today and gave each repair task its own CI-wiring phase, and pruned 56 stale dependency references across the backlog.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 581,
+      "project_name": "repair_bilasso_evidence_probes",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Repair the four wired bi-lasso evidence probes so `bash scripts/check-evidence-probes.sh` exits 0.\n\nThe path half is ALREADY FIXED: the probes were moved out of gitignored `specs/archive/` back into version control at `specs/evidence/bi-lasso-decision-layer/`, and the guard was repointed. What remains is Lean repair. With the path resolved, all four probes now load and NONE compiles: the `FrameClass`/`TemporalOrder` refactor changed `FiniteFilteredTaskFrame`'s first argument from a `Type` to a `TemporalOrder`, and `FormalSystem.Semantics.TaskFrame.step` no longer exists. ~30 errors across four files.\n\nHARD CONSTRAINT, from the guard's own header: do NOT delete a probe or weaken its statements to make this pass. Repair the drift, or -- if an obstruction genuinely no longer holds under the new API -- say so explicitly and flag that the decision it was holding in place needs revisiting. That is a legitimate and more valuable outcome than a green run.\n\nLeave `spike-untl-unfolding-and-fwd-obstruction` DEFERRED and unwired.\n\nVerify: `bash scripts/check-evidence-probes.sh` exits 0 (4 PASS, 1 SKIP); no repaired probe shows `sorryAx` in `#print axioms`; every changed theorem statement is justified as API-tracking, not content change.\n\nSee specs/reviews/review-2026-09-16.md, Finding C1.\n\nFINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once `check-evidence-probes.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583 (step named after the script; place it after the lean-action build so the Lake cache is warm; decide and record whether a rotted probe fails or reports -- the script header argues for fails). Verify a deliberately broken probe fails the CI step.",
+      "topic": "codebase-cleanup",
+      "priority": "high",
+      "effort": "medium",
+      "dependencies": [],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-16T16:27:33Z",
+      "artifacts": [
+        {
+          "path": "specs/581_repair_bilasso_evidence_probes/reports/02_probe-repair-verified-diffs.md",
+          "type": "report",
+          "summary": "Machine-verified repair diffs for all four bi-lasso evidence probes (API-tracking only, sorry-free, obstructions intact) plus CI gating-step design; flags stale DEFERRED-probe comment."
+        },
+        {
+          "path": "specs/581_repair_bilasso_evidence_probes/plans/02_repair-probes-wire-ci.md",
+          "type": "plan",
+          "summary": "3-phase plan: apply report 02's verified probe diffs, correct stale DEFERRED comment, wire guard into CI as a gating step."
+        },
+        {
+          "path": "specs/581_repair_bilasso_evidence_probes/summaries/02_repair-probes-wire-ci-summary.md",
+          "type": "summary",
+          "summary": "Probe repair + CI wiring summary with per-probe statement justification"
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        "specs/evidence/bi-lasso-decision-layer/",
+        "scripts/check-evidence-probes.sh"
+      ],
+      "session_id": "sess_1789573870_865f5c",
+      "completion_summary": "Repaired the four wired bi-lasso evidence probes for the TemporalOrder/FrameOver API with API-tracking-only statement changes, so check-evidence-probes.sh exits 0 (4 PASS, 1 SKIP) with no sorryAx. Corrected the guard's stale DEFERRED comment and wired the guard into ci.yml as a gating step that was shown to fail on a deliberately broken probe.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 582,
+      "project_name": "break_or_rebaseline_metalogic_cycle",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "`bash scripts/check-metalogic-cycles.sh` exits 1: it asserts exactly one directory-level import cycle in `FormalSystem/Metalogic/` and finds two. The new one is `Conservativity <-> Deterministic`, whose entire surface is two import lines:\n  - `Conservativity/Plus/Corollaries.lean:8` -> `FormalSystem.Metalogic.Deterministic.Completeness`\n  - `Deterministic/Soundness.lean:9` -> `FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness`\n\nBoth landed in commit `5bd08ce1a` (2026-09-08), 99 commits ago, undetected because the script is not in CI. `FormalSystem/Metalogic/README.md:73` still claims 'exactly one directory-level cycle' and cites this script as proof.\n\nDECIDE, do not patch: (A) break the cycle -- research what each side actually consumes and whether the shared dependency lifts into a third directory; or (B) accept it and re-baseline, which requires a recorded decision with the costing ADR-006 applied, a script header naming BOTH accepted cycles so a third still fails, and an ADR. Bumping the expected count from 1 to 2 without (B)'s paperwork is exactly what the script exists to prevent. Cost Option A first and present the choice; do not pick silently.\n\nVerify: `bash scripts/check-metalogic-cycles.sh` exits 0; `lake build` exits 0; `bash scripts/check-module-invariants.sh` passes in full; `Metalogic/README.md`'s cycle claim matches what the script now asserts.\n\nSee specs/reviews/review-2026-09-16.md, Finding H1.\n\nFINAL PHASE (added during the codebase-cleanup reorganization, 2026-09-16): once `check-metalogic-cycles.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583, so a third directory-level cycle can never again land undetected. Verify a deliberately introduced cycle fails the CI step.",
+      "topic": "codebase-cleanup",
+      "priority": "high",
+      "effort": "small",
+      "dependencies": [],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-16T16:27:55Z",
+      "artifacts": [
+        {
+          "path": "specs/582_break_or_rebaseline_metalogic_cycle/reports/02_cycle-break-costing.md",
+          "type": "report",
+          "summary": "Costs Options A1/A2/B for the Conservativity<->Deterministic cycle; A1 (relocate detDerivable_ofFormula_iff into Deterministic/Completeness.lean, drop one import) verified by scratch compile and simulated cycle check."
+        },
+        {
+          "path": "specs/582_break_or_rebaseline_metalogic_cycle/plans/02_cycle-break-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan executing Option A1: relocate detDerivable_ofFormula_iff into Deterministic/Completeness.lean and drop the cycle-forming import, update doc anchors, run full gates, then wire check-metalogic-cycles.sh into CI with a negative test."
+        },
+        {
+          "path": "specs/582_break_or_rebaseline_metalogic_cycle/summaries/02_cycle-break-plan-summary.md",
+          "type": "summary",
+          "summary": "Broke the Metalogic Conservativity <-> Deterministic cycle by relocating detDerivable_ofFormula_iff; cycle check wired into CI."
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        "FormalSystem/Metalogic/Conservativity/Plus/Corollaries.lean",
+        "FormalSystem/Metalogic/Deterministic/Soundness.lean",
+        "FormalSystem/Metalogic/README.md",
+        "scripts/check-metalogic-cycles.sh",
+        "docs/architecture/"
+      ],
+      "session_id": "sess_1789573870_865f5c",
+      "completion_summary": "Broke the second Metalogic directory-level import cycle (Conservativity <-> Deterministic) by relocating detDerivable_ofFormula_iff into Deterministic/Completeness.lean and deleting the cycle-forming import; check-metalogic-cycles.sh now passes and runs as a CI step.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 583,
+      "project_name": "wire_check_scripts_into_ci",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Wire the check scripts that are GREEN TODAY into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows. (RESCOPED during the codebase-cleanup reorganization of 2026-09-16: this task no longer waits for the repair tasks. Each repair task wires its own script into CI as its final phase, so each fix is locked in the moment it lands rather than after the slowest one.)\n\nWHY: `ci.yml` (65 lines at sweep time) runs `lean-action` (build/test/lint) plus a loop over `lean_exe` roots. It does NOT run `scripts/check-module-invariants.sh` -- the 26-check phase gate every architecture document cites appears in the workflow only inside a comment. `check-copyright-headers.sh`, `check-metalogic-cycles.sh`, `check-evidence-probes.sh`, `check-paper-definitions.sh`, `readme-lint.sh` and `typst-sync-check.sh` are referenced nowhere outside their own files. Runtime is not the obstacle: measured locally, the structural pass (20s) plus copyright (13s), typst (15s), readme-lint (7s) and cycles (<1s) total under a minute.\n\nSCOPE (wire these three, verified green at reorganization time -- re-run each before wiring):\n  - `scripts/check-module-invariants.sh` -- full, or `--no-build` placed after the lean-action build step so it reuses that cache;\n  - `scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem` -- the strict live-set form; the bare form exits 0 unconditionally;\n  - `scripts/readme-lint.sh`.\n\nALSO DELIVER, as a short recorded convention (in the workflow header comment and/or `docs/development/`): the per-script wiring pattern -- step naming (the failing step must name the script), the skip-and-report-neutral convention for checks whose inputs CI cannot see (e.g. an external paper), how a check that needs a warm Lake cache is placed, and the runtime budget with the measured wall-clock delta.\n\nOUT OF SCOPE (owned elsewhere in this topic, each wired by its own task following this pattern): `check-evidence-probes.sh` (581), `check-metalogic-cycles.sh` (582), `check-paper-definitions.sh` (584, skip-neutral when the paper is absent), `typst-sync-check.sh` (586), flipping `ENFORCE_C9_DOCS=1` (590). The compiler-warning gate (585) extends this workflow rather than competing with it.\n\nVerify: a branch with a deliberate violation of each wired check fails CI and the failing step names the script; a clean run is green; the CI wall-clock increase is measured and recorded.\n\nSee specs/reviews/review-2026-09-16.md, Finding H3; specs/593_revise_task_organization_codebase_cleanup/reports/01_cleanup-topic-reorganization.md, Recommendation 3.",
+      "topic": "codebase-cleanup",
+      "priority": "high",
+      "effort": "medium",
+      "dependencies": [],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-16T16:27:09Z",
+      "artifacts": [
+        {
+          "path": "specs/583_wire_check_scripts_into_ci/reports/02_wire-check-scripts-ci.md",
+          "type": "report",
+          "summary": "Re-verified the three in-scope check scripts are green with measured runtimes, recommends --no-build for check-module-invariants.sh on the task's own stated runtime budget, and lays out the four-part wiring-pattern convention (step naming, skip-neutral, cache-warm placement, runtime budget) plus exact step order and commands."
+        },
+        {
+          "path": "specs/583_wire_check_scripts_into_ci/plans/02_wire-check-scripts-ci.md",
+          "type": "plan",
+          "summary": "4-phase plan: re-verify green, wire invariants --no-build/copyright --strict/readme-lint steps into ci.yml, record wiring pattern in CI_CD_PROCESS.md, deliberate-violation local verification plus runtime delta and user remote-confirmation checklist."
+        },
+        {
+          "path": "specs/583_wire_check_scripts_into_ci/summaries/02_wire-check-scripts-ci-summary.md",
+          "type": "summary",
+          "summary": "Wired check-module-invariants.sh --no-build, check-copyright-headers.sh --strict, and readme-lint.sh into ci.yml, recorded the wiring-pattern convention in CI_CD_PROCESS.md, and proved each step fails on a deliberate violation and passes clean."
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        ".github/workflows/ci.yml",
+        "scripts/check-paper-definitions.sh",
+        "docs/development/MODULE_INVARIANTS.md"
+      ],
+      "session_id": "sess_1789573870_865f5c",
+      "completion_summary": "Wired three green check scripts (check-module-invariants.sh --no-build, check-copyright-headers.sh --strict, readme-lint.sh) into .github/workflows/ci.yml as named steps before Report results, and recorded the per-script wiring pattern (step naming, skip-and-report-neutral convention, cache-warm placement, measured runtime budget) in docs/development/CI_CD_PROCESS.md. Each wired step was proven to fail under its own name on a deliberate violation and to pass on a clean re-run; a remote-confirmation checklist is left for the user in the implementation summary.",
+      "roadmap_items": [
+        "Wire the check scripts that are green today into `.github/workflows/ci.yml`, and establish the per-script wiring pattern every later check follows"
+      ],
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 584,
+      "project_name": "reconcile_lean_tree_with_paper_vocabulary",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "`bash scripts/check-paper-definitions.sh` reports case (c) -- FAIL: 16 recorded definitions drifted in the upstream JPL paper, plus one anchor (`thm:M5-valid`) that no longer resolves.\n\nMost are reflow. THREE are substantive renames, and the tree has not followed any of them:\n  - 'converse convention' -> 'reflection convention' (`def:task-relation`). Tree: 35 prose occurrences, `FrameOver.converse` at 9 sites, ZERO occurrences of the new term.\n  - metarule `\\aref{TD}` -> `\\aref{TR}` (`def:BX`). Tree: `swapTemporal` x925, 'temporal duality' x77, `TemporalDuality` x4, bare `TD` across ~14 files.\n  - `\\past`/`\\future` labels 'Past'/'Future' -> 'Some Past'/'Some Future' (`def:BLplus-language`).\n\nTHIS IS A DECISION TASK BEFORE IT IS AN EDITING TASK. For each of the three, the user chooses: adopt the paper's name, or record a deliberate divergence in `specs/paper-definitions-of-record.md`. Put the three separately, with the counts -- the 44-site rename and the 925-site rename are not one decision. Nothing is renamed before the choices are made.\n\nAlso: re-resolve `thm:M5-valid` via the record's `--resolve` mode; check the 'smallest extension closed under' -> 'extends to include' phrasing change against the `DerivationTree` docstrings; and note that `def:BX` acquired a Burgess/Xu axiom-provenance footnote with no counterpart in `ProofSystem/Axioms.lean` (an opportunity, possibly its own task). Re-pin the record per its documented dirty-pin convention.\n\nVerify: `bash scripts/check-paper-definitions.sh` exits 0 (case a or b); C15 still resolves all 58 paper-anchor citations; no site attributes a declined-rename term to the paper anchor; `lake build` exits 0 with no axiom-baseline movement.\n\nSee specs/reviews/review-2026-09-16.md, Finding H2.\n\nALSO ABSORB (codebase-cleanup reorganization, 2026-09-16): the open constructor-by-constructor naming audit noted at `FormalSystem/Syntax/MinusLanguage/Axioms.lean:76` (the paper's `UE`/`UT`/`NP`/... names vs the Lean `BX` layer's 45 until/since constructors). Resolve or explicitly record it alongside the three rename decisions. That docstring also cites a gitignored `specs/archive/` path; the basename-citation task (589) owns the citation fix, this task owns the audit itself.\n\nRECORDS HOME: the durable-records-home task (595) runs first and may move `specs/paper-definitions-of-record.md`; use whatever location it settles on.\n\nFINAL PHASE: once `check-paper-definitions.sh` exits 0, make it skip-and-report-neutral when the upstream paper is absent (CI cannot see it) and wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583.",
+      "topic": "codebase-cleanup",
+      "priority": "high",
+      "effort": "large",
+      "dependencies": [
+        582,
+        591,
+        596,
+        595
+      ],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-17T09:26:43Z",
+      "artifacts": [
+        {
+          "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/reports/02_paper-vocabulary-decisions.md",
+          "type": "report",
+          "summary": "Re-verified drift (now 14 anchors + dangling thm:M5-valid, which is commented out -> retire); rename 1 already adopted by task 601; rename 3 already matched by Lean somePast/allPast names; TD->TR is the only open decision (recommend prose-only); constructor naming audit closed with full paper-key-to-constructor/mirror table; CI skip-neutral wiring plan."
+        },
+        {
+          "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/plans/02_paper-vocabulary-reconciliation.md",
+          "type": "plan",
+          "summary": "6-phase plan: re-quote 14 drifted anchors and retire thm:M5-valid; atomic full TD->TR identifier rename (swapTemporal->reflectTime, temporal_duality->time_reflection, TemporalDuality->TimeReflection) with enumerated carve-outs; classified prose rename; rename-3 labels and naming-audit closure; record decisions, re-pin and full gates; skip-neutral mode and CI wiring."
+        },
+        {
+          "path": "specs/584_reconcile_lean_tree_with_paper_vocabulary/summaries/02_paper-vocabulary-reconciliation-summary.md",
+          "type": "summary",
+          "summary": "Paper-definition drift absorbed (14 re-hashed, thm:M5-valid retired), full TD->TR rename with carve-outs, labels adopted, naming audit closed, record re-pinned, check wired into CI with skip-neutral path."
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        "FormalSystem/Semantics/",
+        "FormalSystem/Syntax/",
+        "FormalSystem/Metalogic/Conservativity/",
+        "specs/paper-definitions-of-record.md",
+        "docs/reference/operators.md",
+        "NOTATION.md"
+      ],
+      "session_id": "sess_1789631305_c7d7a7",
+      "completion_summary": "check-paper-definitions.sh now exits 0 (case a) after re-quoting 14 drifted anchors, retiring thm:M5-valid and re-pinning the record. The metarule rename TD->TR was applied in full (swapTemporal->reflectTime, temporal_duality->time_reflection and related families, plus rule-sense prose) with operator-duality, lemma-sense and wire-tag carve-outs recorded; the Some/All Past/Future labels were adopted, the constructor naming audit was closed, and the check is wired into CI via a skip-and-report-neutral path.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 586,
+      "project_name": "rewrite_typst_proof_automation_chapter",
+      "status": "completed",
+      "task_type": "typst",
+      "description": "`bash scripts/typst-sync-check.sh` exits 1 with 4 Check-1 violations, all in `typst/chapters/p4-proof-automation.typ`: it cites `AesopRules.lean`, `Automation/Tactics/Helpers.lean` and `Tactics/Helpers.lean` (all archived to `FormalSystem/Boneyard/RetiredTactics/` on 2026-09-07), plus an unmatched `tm_auto 5` span.\n\nThe flagged spans understate it. The `== Tactics` section presents `tm_auto`, `temporal_search` and `propositional_search` as live -- all three were absorbed into `modal_search` and removed. The entire `== Aesop Integration` section describes an archived file's rule registrations in the present tense. And the `== Module Map` table has 3 of 7 rows naming files that are absent or misfiled, with every line count stale: `Tactics/Helpers.lean` (claims 1,032; absent), `AesopRules.lean` (claims 276; absent), `EFGameTactics.lean` (claims 326; actually under `Metalogic/WeakCanonical/`, not `Automation/`), `Tactics/Commands.lean` 710->586, `ProofSearch/Core.lean` 1,195->1,283, `Strategies.lean` 379->401, `SuccessPatterns.lean` 423->429. Five live modules are missing entirely, including `Tactics/UserTactics.lean` (275), which now holds `apply_axiom` and `modal_t`. The caption claims 'live line counts' and the text asserts all listed modules are sorry-free -- impossible for two absent files.\n\nThis is publication-facing. Verify the tactic surface directly from `Automation/Tactics/*.lean` and `FormalSystem/Automation.lean`'s docstring; do not infer it from the chapter. Consider replacing `== Aesop Integration` with a short retirement note citing the measurement in `Boneyard/RetiredTactics/README.md` -- genuinely good content for a proof-automation chapter. Also decide whether the Module Map should become machine-generated (extend `typst-sync-check.sh` Check 2, which already recomputes counts for `generated/status.typ`) and record the decision; a hand-fix will drift again. The whitelist is not the fix.\n\nVerify: `typst-sync-check.sh` exits 0 with Checks 2/3 still passing; `typst compile` succeeds; every module named resolves to a live file with a matching `wc -l`; no archived declaration described in the present tense.\n\nSee specs/reviews/review-2026-09-16.md, Finding M1.\n\nWIDENED (codebase-cleanup reorganization, 2026-09-16): cover ALL retired-tactic prose outside `docs/`, not only this chapter. Verified at reorganization time: `FormalSystem/Automation/README.md:61` (Tactics row lists `tm_auto`) and `:114` (`tm_auto -- Uses Aesop with TMLogic rule set`), `FormalSystem/Automation/ProofSearch/README.md:19` (`Integration point for tm_auto ...`), and `typst/chapters/p4-dual-verification.typ:36` (`attempt tm_auto/modal_search`). Re-grep for `tm_auto`/`temporal_search`/`propositional_search` outside `docs/` and `Boneyard/` before closing; files that already describe them correctly as removed (`Automation.lean`, `Tactics/README.md`, `docs/reference/tactic-reference.md`) stay. The `docs/` occurrences belong to 590.\n\nFINAL PHASE: once `typst-sync-check.sh` exits 0, wire it into `.github/workflows/ci.yml` following the wiring pattern recorded by 583.",
+      "topic": "codebase-cleanup",
+      "priority": "medium",
+      "effort": "medium",
+      "dependencies": [
+        591
+      ],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-17T09:27:02Z",
+      "artifacts": [
+        {
+          "path": "specs/586_rewrite_typst_proof_automation_chapter/reports/02_verified-tactic-surface-and-ci-wiring.md",
+          "type": "report",
+          "summary": "Re-verifies the live Automation/ tactic and proof-search surface directly from Lean source (finding Commands.lean has drifted again since the 2026-09-16 review, to 163 lines), gives a corrected 9-row Module Map table, locates the 4 remaining widened-scope retired-tactic-prose sites outside docs/ and Boneyard/ with exact line numbers, recommends replacing Aesop Integration with a retirement note and pruning two now-orphaned whitelist entries, recommends machine-generating the Module Map (concrete extension path via typst-status-counts.sh/Check 2, modeled on the sorry-table split-row precedent), and gives the exact CI step block to wire typst-sync-check.sh into ci.yml following task 583's pattern."
+        },
+        {
+          "path": "specs/586_rewrite_typst_proof_automation_chapter/plans/02_proof-automation-chapter-rewrite.md",
+          "type": "plan",
+          "summary": "4-phase plan: build-free module-map generator + Check 2 extension, chapter rewrite (incl. two-engine correction), widened retired-tactic prose fixes, CI wiring of typst-sync-check.sh."
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        "typst/chapters/p4-proof-automation.typ",
+        "typst/sync-check-whitelist.txt"
+      ],
+      "session_id": "sess_1789631305_c7d7a7",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 587,
+      "project_name": "repair_or_retire_broken_benchmark_modules",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Clear the two `broken:` entries in `scripts/module-invariants-manifest.txt`: `BimodalTest.ProofSystem.DerivationBenchmark` (374 lines) and `BimodalTest.Semantics.SemanticBenchmark` (358 lines). Both pass `String` where `Atom` is now expected -- they predate the Atom type change and were never updated because nothing builds them. C6 does not compile-check `broken:` entries, so these are the only two live .lean files in the repository with no guarantee of any kind.\n\nRecording them was right; leaving them parked is not. Get the real error count first (`lake env lean` on each, minutes). If small: repair AND pair it with re-manifesting them as plain compile-checked unreachable modules, so C6 guards them every run -- a repaired module that stays unimported rots again immediately. Wiring them into `Tests/BimodalTest.lean` is the other pairing but would slow every `lake test`. Note `DerivationBenchmark.lean` imports `BimodalTest.Automation.ProofSearchBenchmark`; check its status first.\n\nIf large: archive both to `FormalSystem/Boneyard/` with a README recording what they measured, following the `RetiredTactics/` precedent -- but first apply the same measurement that retired those (zero real invocations anywhere live or in Tests/). These are benchmark harnesses, not correctness tests, and their docstrings suggest hand-invocation via `#eval`.\n\nVerify: `check-module-invariants.sh` passes with ZERO `broken:` entries remaining -- that is the success criterion either way. If archived, B0 still reports exactly 1 Boneyard directory and C11 resolves every archived import.\n\nSee specs/reviews/review-2026-09-16.md, Finding M2.",
+      "topic": "codebase-cleanup",
+      "priority": "low",
+      "effort": "small",
+      "dependencies": [],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-16T16:28:17Z",
+      "artifacts": [
+        {
+          "path": "specs/587_repair_or_retire_broken_benchmark_modules/reports/02_benchmark-repair-measurement.md",
+          "type": "report",
+          "summary": "Measured 38/20 real errors from 8 API drifts; DerivationBenchmark repair verified in scratch (35 lines, 0 errors, runs) -> re-manifest as C6 compile-checked; SemanticBenchmark never calls TruthAt and self-fails 14/16 after repair -> archive to Boneyard with README; gate mechanics for B0/C6/C11 confirmed."
+        },
+        {
+          "path": "specs/587_repair_or_retire_broken_benchmark_modules/plans/02_repair-and-retire-benchmarks.md",
+          "type": "plan",
+          "summary": "4-phase plan: repair and re-manifest DerivationBenchmark, archive SemanticBenchmark to the Boneyard, fix stale prose, full gate verification."
+        },
+        {
+          "path": "specs/587_repair_or_retire_broken_benchmark_modules/summaries/02_repair-and-retire-benchmarks-summary.md",
+          "type": "summary",
+          "summary": "Repaired DerivationBenchmark and re-manifested it as a compile-checked module; retired SemanticBenchmark (never called TruthAt) to the Boneyard; zero broken: manifest entries; full gate, lake build, lake test green."
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        "Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean",
+        "Tests/BimodalTest/Semantics/SemanticBenchmark.lean",
+        "scripts/module-invariants-manifest.txt"
+      ],
+      "session_id": "sess_1789573870_865f5c",
+      "completion_summary": "Repaired DerivationBenchmark and re-manifested it as a compile-checked module; retired SemanticBenchmark (never called TruthAt) to the Boneyard; zero broken: manifest entries; full gate, lake build, lake test green.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 590,
+      "project_name": "retire_stale_development_documentation",
+      "status": "completed",
+      "task_type": "markdown",
+      "description": "Clear the 142 task-number citations under `docs/` and retire the two stale development docs that carry most of them. This unblocks `ENFORCE_C9_DOCS=1`, which the harness notes can be flipped 'once the citations are cleared' -- hand that switch to the CI task.\n\nBreakdown: `docs/development/PHASED_IMPLEMENTATION.md` 100, `docs/training/PIPELINE.md` 11, `docs/research/NONCOMPUTABLE.md` 5, `docs/project-info/MAINTENANCE.md` 5, `docs/architecture/ADR-004-...` 5. The hard-gated sibling C9 (FormalSystem/, lakefile.lean, README.md, scripts/) is already green, so docs/ is the last pocket. This repository has performed a vault operation (`vault_count: 1`), so some of these numbers are not merely opaque but wrong.\n\n`PHASED_IMPLEMENTATION.md` (548 lines) is a roadmap for 'completing Layer 0 (Core TM)' organised around Tasks 1-7 and '93-143 hours' -- soundness, completeness at four frame classes, strong completeness at two, the decision procedure and the automation layer all exist and are axiom-pinned. Recommended disposition: delete, folding forward anything durable. Referenced from `docs/README.md`, `docs/development/README.md` and `docs/development/MODULE_INVARIANTS.md` -- check the last one specifically in case it cites something structural that needs a home.\n\n`LATEX_STANDARDS.md` prescribes a `{Theory}/latex/{assets,subfiles,bib}` layout that does not exist here (`latex/` sits at the repository root). It reads as inherited boilerplate. Decide what `latex/` is now that README points the reference manual at the Typst edition and `latex/` is explicitly not kept in sync; write the doc to match, or archive both.\n\nRead `.claude/context/standards/task-reference-exemptions.md` BEFORE starting: the goal is zero UNMARKED citations, not zero mentions of history -- an ADR may legitimately name the task that produced it via the `task-ref-ok` marker.\n\nVerify: C9D reports 0 (or only marked citations); `ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build` exits 0; C5, C12 and C13 still pass (deleting a referenced file breaks C13 if referrers are missed); `readme-lint.sh` still PASS.\n\nSee specs/reviews/review-2026-09-16.md, Finding M3.\n\nWIDENED (codebase-cleanup reorganization, 2026-09-16) to a staleness audit of `docs/` as a whole, in addition to the citations work above:\n  - retired-tactic prose (`tm_auto`, `temporal_search`, `propositional_search` described as live) in the nine files the reorganization research listed: `docs/user-guide/{tutorial,examples,tactic-development,troubleshooting}.md`, `docs/project-info/{tactic-registry,FEATURE_REGISTRY,test-coverage}.md`, `docs/development/METAPROGRAMMING_GUIDE.md`, `docs/reference/API_REFERENCE.md` (re-grep: at reorganization time two of these showed no match for those three names and may carry other retired names);\n  - the four `docs/research/leansearch-*.md` files (~1,450 lines about the LeanSearch API rather than this logic): keep, move, or retire with a recorded reason;\n  - `docs/project-info/{implementation-status,performance-targets,test-coverage}.md`: refresh against the current tree or retire;\n  - the root `CLAUDE.md` title (\"ProofChecker\") and the naming inconsistency across surfaces (Lake `package Logos`, library `FormalSystem`, test library `BimodalTest`, repository `BimodalLogic`) -- align the prose; the package-name decision itself belongs to 578's toml migration;\n  - flip `ENFORCE_C9_DOCS=1` yourself once C9D reports 0 (previously handed to 583; 583 no longer owns it), and wire it into CI following 583's recorded pattern.\nRECORDS HOME: the durable-records-home task (595) runs first; do not move or delete records it has settled.\nPLANNER NOTE: this is now larger than one agent run. Split into phases (citations; development docs; retired-tactic docs; research/project-info docs; naming; ENFORCE flip) rather than truncating any of them.",
+      "topic": "codebase-cleanup",
+      "priority": "low",
+      "effort": "medium",
+      "dependencies": [
+        595
+      ],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-17T09:27:20Z",
+      "artifacts": [
+        {
+          "path": "specs/590_retire_stale_development_documentation/reports/02_widened-docs-staleness-audit.md",
+          "type": "report",
+          "summary": "Widened-scope audit: retired-tactic prose in 9 files (API_REFERENCE.md worst, naming 6 nonexistent tactics), leansearch-*.md disposition options, implementation-status.md refresh needs, confirmed 5-way naming inconsistency, ENFORCE_C9_DOCS CI-flip mechanics (no new CI step needed), and a verified-dead ADR-004 task-276 citation."
+        },
+        {
+          "path": "specs/590_retire_stale_development_documentation/plans/02_docs-staleness-cleanup.md",
+          "type": "plan",
+          "summary": "8-phase plan (9.5h): retire PHASED_IMPLEMENTATION.md, rewrite LATEX_STANDARDS.md for frozen latex/, de-cite residual docs, fix retired-tactic docs, reframe leansearch notes and refresh implementation-status, align naming prose, then flip ENFORCE_C9_DOCS."
+        },
+        {
+          "path": "specs/590_retire_stale_development_documentation/summaries/02_docs-staleness-cleanup-summary.md",
+          "type": "summary",
+          "summary": "Cleared all 142 task-number citations under docs/ (now 0), retired PHASED_IMPLEMENTATION.md, rewrote tactic reference docs against the real tactic surface, reframed leansearch research notes, aligned naming prose, and flipped ENFORCE_C9_DOCS to enforced."
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        "docs/development/PHASED_IMPLEMENTATION.md",
+        "docs/development/LATEX_STANDARDS.md",
+        "docs/training/PIPELINE.md",
+        "docs/research/NONCOMPUTABLE.md",
+        "docs/project-info/MAINTENANCE.md",
+        "docs/architecture/ADR-004-Remove-Project-Level-State-Files.md"
+      ],
+      "session_id": "sess_1789631305_c7d7a7",
+      "completion_summary": "Cleared all task-number citations under docs/ (C9D: 142 -> 0), retired the obsolete PHASED_IMPLEMENTATION.md roadmap, rewrote LATEX_STANDARDS.md and the tactic reference documentation against the real tactic surface, reframed the leansearch-*.md research notes, refreshed implementation-status.md, aligned naming prose across CLAUDE.md and installation docs, and flipped ENFORCE_C9_DOCS to enforced by default with CI documentation. All 8 plan phases completed across all named verification gates (C5, C9D, C12, C13, readme-lint, check-task-references).",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 591,
+      "project_name": "consolidate_automation_export_names",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Adopt a naming convention that distinguishes `lean_exe` roots from library modules in `FormalSystem/Automation/`, and apply it to the five confusable modules.\n\n`DataExport.lean` (395, a toJson/prettyPrint library), `DatasetExport.lean` (1,354, the `dataset_generator` exe), `DatasetExporter.lean` (348, a dataset-assembly library), `ProofStepExport.lean` (1,692, the `proof_extractor` exe), `ProofStepExtractor.lean` (361, a library). `Export` means 'is the executable' in two of five cases and 'is a library' in the others; `DataExport` and `DatasetExport` differ by three characters and are functionally unrelated; and `DatasetExporter` -- the name that most suggests 'the thing that exports' -- is a library. A dispatch asked to fix 'the dataset exporter' has three plausible files and will pick by name.\n\nEach module is individually well-documented and coherent, so this is a rename, not a restructure. Propose ONE convention and check it against all thirteen `lean_exe` roots in `lakefile.lean` -- several have the same shape (`BenchmarkOracle`, `TraceExporter`, `MachineAppendixExport`, `TableauProofStepPipeline`). A convention that fixes five and leaves eight inconsistent is worth less.\n\nKeep `lake exe` TARGET names stable unless there is a reason to move them -- they appear in external documentation and the Hugging Face dataset card. Constraints: C25 scrapes `root :=` at run time (so `root`/`srcDir` must stay consistent); CI's exe-root step greps the same pattern; C8 requires a sibling aggregator if a subdirectory is introduced; C4/C5/C12/C24 all move with a rename; and `docs/training/PIPELINE.md`, `typst/chapters/p4-dataset-pipeline.typ`, `FormalSystem/Automation.lean` and `FormalSystem/README.md` all name these modules.\n\nVerify: `lake build` exits 0; both executables still run; full `check-module-invariants.sh` passes (C4/C5/C8/C12/C24/C25); `typst-sync-check.sh` still resolves every backticked module name; `scripts/export-training-data.sh` and `scripts/run_dataset_generation.sh` still work.\n\nSee specs/reviews/review-2026-09-16.md, Finding M5.",
+      "topic": "codebase-cleanup",
+      "priority": "low",
+      "effort": "medium",
+      "dependencies": [],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-16T18:39:01Z",
+      "artifacts": [
+        {
+          "path": "specs/591_consolidate_automation_export_names/reports/02_exe-root-naming-convention.md",
+          "type": "report",
+          "summary": "Proposes one convention for all 13 lean_exe roots (root of `lake exe foo_bar` is `FooBarMain`, Main reserved), renames DatasetExporter->DatasetAssembly, keeps DataExport/ProofStepExtractor, keeps exe targets and emitted generator strings, and enumerates the full edit surface including functional script edits."
+        },
+        {
+          "path": "specs/591_consolidate_automation_export_names/plans/02_exe-root-rename-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: adopt target-derived *Main exe-root convention across all 13 lean_exe roots (plus DatasetExporter -> DatasetAssembly), in dataset/proof-step/remaining families, then convention doc + C25 guard, then full gate."
+        },
+        {
+          "path": "specs/591_consolidate_automation_export_names/summaries/02_exe-root-rename-summary.md",
+          "type": "summary",
+          "summary": "Renamed all 13 lean_exe roots to PascalCase(target)Main, renamed DatasetExporter to DatasetAssembly, documented the convention, and added the C25N guard."
+        }
+      ],
+      "next_artifact_number": 3,
+      "file_scope": [
+        "FormalSystem/Automation/DataExport.lean",
+        "FormalSystem/Automation/DatasetExport.lean",
+        "FormalSystem/Automation/DatasetExporter.lean",
+        "FormalSystem/Automation/ProofStepExport.lean",
+        "FormalSystem/Automation/ProofStepExtractor.lean",
+        "lakefile.lean"
+      ],
+      "session_id": "sess_1789577011_0f6aae",
+      "completion_summary": "Every lean_exe root is now named PascalCase(target)Main (for example DatasetGeneratorMain and ProofExtractorMain), and the DatasetExporter library is now DatasetAssembly. lake exe targets and emitted provenance strings did not change. The convention is documented in FormalSystem/Automation/README.md and enforced by the new C25N invariant check. The full lake build and the full check-module-invariants.sh both pass.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 578,
+      "project_name": "fix_api_documentation_ci_integration",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.\n\nALSO DECIDE (codebase-cleanup reorganization, 2026-09-16): if migrating to `lakefile.toml`, settle the package name as part of the migration -- the Lake package is `Logos` while the library is `FormalSystem`, the test library `BimodalTest`, and the repository `BimodalLogic`. Record the choice (keep `Logos`, or rename to `FormalSystem`/`BimodalLogic`) and its downstream effect on doc URLs. Precedent: cslib (`/home/benjamin/Projects/cslib`) uses `lakefile.toml` with a working `docgen-action` in `.github/workflows/docs.yml`; read both before choosing the fix path.",
+      "topic": "codebase-cleanup",
+      "created": "2026-09-11T20:05:59Z",
+      "last_updated": "2026-09-17T14:35:39Z",
+      "dependencies": [],
+      "session_id": "sess_1789655739_docs578",
+      "artifacts": [
+        {
+          "path": "specs/578_fix_api_documentation_ci_integration/reports/01_docgen-ci-fix-path.md",
+          "type": "report",
+          "summary": "Chooses lakefile.toml migration (lossless via lake translate-config, verified) plus rename Logos->BimodalLogic (no doc URL effect); identifies 5 lakefile scrape sites to port to tomllib and two further latent docs.yml defects (missing lean-action step, homepage: docs uploads hand-written docs/)."
+        },
+        {
+          "path": "specs/578_fix_api_documentation_ci_integration/plans/01_docgen-ci-fix-path.md",
+          "type": "plan",
+          "summary": "5-phase plan: baseline, atomic lakefile.toml migration (package renamed BimodalLogic) with shared tomllib scraper, docs.yml rewrite/re-enable, prose updates, user-authorized Pages enable + push + green-run verification."
+        }
+      ],
+      "next_artifact_number": 2,
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 579,
+      "project_name": "nest_minuslanguage_pluslanguage_starlang",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "repo-hygiene",
+      "priority": "high",
+      "description": "Review issue from FormalSystem/ directory-organization review on 2026-09-15:\n\n**Files**: FormalSystem/Syntax/, FormalSystem/MinusLanguage/, FormalSystem/PlusLanguage/, FormalSystem/StarLanguage/\n**Severity**: High\n**Description**: Syntax/Formula.lean (L: untl/snce primitive, box, boolean ops), MinusLanguage/Formula.lean (L-minus: H/G primitive, translated to/from L), PlusLanguage/Formula.lean (L-plus = L plus the stability modal boxdot/stab), and StarLanguage/Formula.lean (L-star = L-plus plus the hybrid time-register operators) form one deliberate extension hierarchy, but are filed as four flat siblings under FormalSystem/ with nothing signaling the relationship. The boxdot operator already exists in PlusLanguage/ -- fully built, sorry-free, with axioms, derivation system, embedding, and semantics -- but was not discoverable from Syntax/.\n**Impact**: Real risk of duplicate proof work (boxdot already exists), and the same discoverability gap recurs for the next reader. MinusLanguage/StarLanguage were also checked against Boneyard/README.md's admission criteria (abandoned/refuted approaches, sorry-carrying proofs) and do NOT qualify -- both are live, imported, sorry-free, and back documented results (L-minus soundness, backward conservativity); do not archive them.\n**Recommended Fix**: Physically nest MinusLanguage/, PlusLanguage/, StarLanguage/ under Syntax/ (e.g. Syntax/MinusLanguage/, Syntax/PlusLanguage/, Syntax/StarLanguage/, alongside Syntax/Formula.lean as the base case). Measured blast radius is small and safe to move (unlike the ADR-006-declined Metalogic regroup, which cited 339 import lines across 137 files and a directory-level cycle): imports of FormalSystem.MinusLanguage.*/.PlusLanguage.*/.StarLanguage.* total 7+11+6=24 files, Syntax itself (path unchanged) is imported by 67 files, and there is no cycle -- Minus/Plus/Star each import from Syntax/PlusLanguage, never the reverse. Scope:\n1. Move the three directories under Syntax/, updating the ~24 import lines and the 3 sibling aggregator files (MinusLanguage.lean, PlusLanguage.lean, StarLanguage.lean) to their new paths, preserving every declaration and proof verbatim (module-path rename only, no proof content changes).\n2. Write a new Syntax/README.md \"Language family\" section mapping each operator delta to its directory (L: untl/snce primitive; L-minus: +H/G primitive instead; L-plus: +boxdot; L-star: +time-store/recall) -- this is what closes the boxdot-discoverability gap for future readers.\n3. Write the two missing per-directory READMEs flagged by FormalSystem/README's own structure table: ForMathlib/README.md is NOT needed here (see M3, out of scope -- ForMathlib stays where it is) but MinusLanguage/README.md is in scope, following the existing PlusLanguage/README.md as a template.\n4. Update scripts/check-module-invariants.sh's C8 aggregator-convention check: add \"FormalSystem/Syntax\" to the `parent` tuple (currently `(\"FormalSystem\", \"FormalSystem/Metalogic\")`) so C8 enforces the aggregator convention on the newly nested directories.\n5. Update every README table and doc cross-reference that lists MinusLanguage/, PlusLanguage/, StarLanguage/ as FormalSystem/-root-level directories (FormalSystem/README.md at minimum).\nVerify: lake build succeeds; scripts/check-module-invariants.sh passes (including the updated C8); no proof content changed (only module paths).\n\nSee specs/reviews/review-2026-09-15.md, Finding H1, for full detail.",
+      "created": "2026-09-16T03:33:13Z",
+      "last_updated": "2026-09-16T06:10:13Z",
+      "session_id": "sess_1789531332_91031c",
+      "artifacts": [
+        {
+          "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/reports/01_nest-language-family-under-syntax.md",
+          "type": "report",
+          "summary": "Blast radius, invariant-gate impact, and phase decomposition for nesting MinusLanguage/PlusLanguage/StarLanguage under Syntax/: 41 import lines across 26 files, no cycle, namespaces must stay flat, C8 change needs a SubformulaClosure.lean prerequisite, and two dispatch premises corrected."
+        },
+        {
+          "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/plans/01_nest-language-family-under-syntax.md",
+          "type": "plan",
+          "summary": "7-phase plan nesting MinusLanguage/PlusLanguage/StarLanguage under FormalSystem/Syntax/ as a module-path rename, with the C8 SubformulaClosure prerequisite first and a full doc/invariant sweep."
+        },
+        {
+          "path": "specs/579_nest_minuslanguage_pluslanguage_starlang/summaries/01_nest-language-family-under-syntax-summary.md",
+          "type": "summary",
+          "summary": "Nested the L-minus/L-plus/L-star language family under FormalSystem/Syntax/ and added the Language family section that closes the boxdot discoverability gap."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Moved FormalSystem/{Minus,Plus,Star}Language/ and their sibling aggregators under FormalSystem/Syntax/ (19 git renames, 41 import lines rewritten across 26 files) with zero non-import changed lines, zero namespace changes and zero new axioms or sorries. Added the Syntax/README.md 'Language family' section that names stab/boxdot and points at the existing sorry-free PlusLanguage implementation, which is what closes review Finding H1's discoverability gap, and extended C8 to machine-enforce the aggregator convention on Syntax/ subdirectories. Also corrected four pre-existing false documentation claims found while verifying: the docs workflow link and running-status, the fictional Bimodal root namespace, and the 'always'/'sometimes' derived-operator definitions.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
+      "project_number": 580,
+      "project_name": "split_semantics_truth_lean_s_corresponde",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "semantics",
+      "priority": "high",
+      "description": "Review issue from FormalSystem/ directory-organization review on 2026-09-15:\n\n**File**: FormalSystem/Semantics/Truth.lean (1,193 lines)\n**Severity**: High\n**Description**: Truth.lean defines TruthAt for Formula (the untl/snce/box/boolean primary language) at lines 241-577 -- on-topic and correct -- but from line 623 to the end (~570 lines, 48% of the file) it shifts to a different subject: TruthCorr, TruthIso, TruthAntiIso, ShiftRel, shiftCorr, and a TimeShift namespace, which is correspondence/isomorphism machinery between task models under a time-shift, not truth clauses of Formula itself. Semantics/Correspondence/ already exists as a subdirectory collecting exactly this kind of frame-correspondence material (Galois.lean, FwdRec.lean, FwdRecBridge.lean, FwdRecPeriodicity.lean, Indicator.lean, DurationFrames.lean).\n**Impact**: Reading Truth.lean to understand how truth is defined for the primary language means wading through ~570 lines of unrelated correspondence machinery. This is very plausibly why the file read as \"not focused on\" the primary language on a first pass -- the language coverage is correct, but the file conflates two concerns.\n**Recommended Fix**: Split Truth.lean at its existing internal seam: TruthAt and its immediate corollaries stay in Truth.lean; ShiftRel, shiftCorr, TruthCorr, TruthIso, TruthAntiIso, and the TimeShift namespace move to a new file (e.g. Semantics/Correspondence/TruthShift.lean), joining the existing Correspondence/ subdirectory. This is a pure file split -- no proof content changes -- update import lines in whatever currently reaches the moved declarations via Semantics.Truth.\nVerify: lake build succeeds; scripts/check-module-invariants.sh passes; every moved declaration and proof is preserved verbatim (only its file location and import lines change).\n\nSee specs/reviews/review-2026-09-15.md, Finding H2, for full detail.",
+      "created": "2026-09-16T03:33:25Z",
+      "last_updated": "2026-09-16T06:10:28Z",
+      "session_id": "sess_1789531332_91031c",
+      "artifacts": [
+        {
+          "path": "specs/580_split_semantics_truth_lean_s_corresponde/reports/01_split-truth-correspondence-machinery.md",
+          "type": "report",
+          "summary": "Three-block split plan for Semantics/Truth.lean: exact line seams (579-891 and 1000-1191 move, 893-996 stays), the box_const dependency that forces it, the 21-consumer import map with a 4-file repair set, and a gate-impact analysis across check-module-invariants.sh."
+        },
+        {
+          "path": "specs/580_split_semantics_truth_lean_s_corresponde/plans/01_split-truth-transport-module.md",
+          "type": "plan",
+          "summary": "3-phase plan for the verbatim relocation of Truth.lean's truth-transport layer into Semantics/TruthTransport.lean, with 4-file gateway import repair and doc updates."
+        },
+        {
+          "path": "specs/580_split_semantics_truth_lean_s_corresponde/summaries/01_split-truth-transport-module-summary.md",
+          "type": "summary",
+          "summary": "Relocated Truth.lean's 17-declaration truth-transport layer verbatim into a new Semantics/TruthTransport.lean and repaired the import and documentation graph."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Split FormalSystem/Semantics/Truth.lean at its internal seam: the model-to-model truth-transport layer (TruthCorr, the TimeShift family, TruthIso, TruthAntiIso, box_const/box_time_const - 17 declarations) moved verbatim into a new sibling module FormalSystem/Semantics/TruthTransport.lean, leaving Truth.lean at 684 lines reading as one subject, the TruthAt recursion. Relocation verified byte-identical two independent ways, with git recording the Truth.lean hunk as 510 deletions and 0 insertions. lake build exits 0 at 2653/2653 jobs and scripts/check-module-invariants.sh reports ALL CHECKS PASSED.",
+      "archived_at": "2026-09-17T15:36:57Z"
+    },
+    {
       "project_number": 542,
       "project_name": "dead_declaration_triage_c17_findings",
       "status": "abandoned",

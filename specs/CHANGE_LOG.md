@@ -1,6 +1,34 @@
 # Change Log
 
 
+## 2026-09-17: Archive 20 completed tasks
+
+**Archived**:
+- **609** (completed, lean4): Repaired the four wired bi-lasso evidence probes for the ConvexHistory/FrameOver.ofReflective API drift left by the TD->TR rename and the WorldHistory retarget, so `check-evidence-probes.sh` passes again
+- **602** (completed, lean4): Introduced `WorldHistory F` (bundled total histories with a non-dependent state accessor) in place of `TaskFrame.HF` and retargeted `TruthAt`, the Minus/Plus/Star/coarse truth relations and every validity, consequence and satisfiability predicate over it, deleting `SameStateAt`, the atom-clause domain conjunct and the identity binder-shape adapters
+- **601** (completed, lean4): `FrameOver`'s fields are now exactly `WorldState`, `worldNonempty`, a primitive `PosRel` on the positive cone, and the four `def:frame` axioms; the two-sided `TaskRel` is `TaskFrame.reflect PosRel` and the reflection law is the derived theorem `FrameOver.reflection`; "converse convention" renamed to "reflection convention" across Lean, docs, typst and LaTeX
+- **599** (completed, lean4): Deleted the `ConvexHistory` structure and re-based the history layer on `PartialHistory`: `IsTotal`/`IsConvex` are predicates, `TaskFrame.HF` is `{τ : PartialHistory F // τ.IsTotal}`, and truth/transport/validity range over `PartialHistory F`
+- **598** (completed, lean4): `FrameOver` now carries exactly the paper's four `def:frame` axioms plus converse and a nonempty carrier; `nullity_identity` is a theorem derived from the serial and limit fields
+- **595** (completed, markdown): Moved `paper-definitions-of-record.md` and two decision records from the ephemeral `specs/` tree to `docs/reference/` and `docs/architecture/` (git history preserved), repointed ~74 live citations, and cleared the C12/C15/C20/C9D gate exposure the move introduced
+- **594** (completed, lean4): Relocated all test-shaped `#check`/`#eval`/`#print` probes and test-labelled example sections from `FormalSystem/` into `Tests/BimodalTest`, converting bare `#eval`s to `#guard`s; new harness check C27 passes with only `MainResults.lean` allowlisted
+- **596** (completed, lean4): Nested the 15 L-minus/L-plus/L-star semantics modules into `Semantics/{MinusLanguage,PlusLanguage,StarLanguage}/` with sibling aggregators, extended invariant C8 to walk `Semantics/`, and repointed all imports and path citations
+- **593** (completed, lean4): Created the codebase-cleanup topic with 19 members wired into an acyclic six-wave dependency DAG, merged task 542 into 588, rescoped 583, and pruned 56 stale dependency references across the backlog
+- **591** (completed, lean4): Renamed every `lean_exe` root to `PascalCase(target)Main` and the `DatasetExporter` library to `DatasetAssembly`; convention documented and enforced by new invariant C25N
+- **590** (completed, markdown): Cleared all task-number citations under `docs/` (C9D: 142 -> 0), retired the obsolete `PHASED_IMPLEMENTATION.md` roadmap, rewrote `LATEX_STANDARDS.md` and the tactic reference docs, and flipped `ENFORCE_C9_DOCS` to enforced by default
+- **587** (completed, lean4): Repaired `DerivationBenchmark` as a compile-checked module; retired `SemanticBenchmark` (never called `TruthAt`) to the Boneyard; zero `broken:` manifest entries remain
+- **586** (completed, typst): Rewrote `typst/chapters/p4-proof-automation.typ` against the live `Automation/` tree (correct tactic surface, past-tense Aesop retirement note, two distinct search engines correctly distinguished), added a machine-generated Module Map via a new `typst-module-map.sh` generator, and wired `typst-sync-check.sh`'s Check 2b into CI
+- **584** (completed, lean4): `check-paper-definitions.sh` now exits 0 after re-quoting 14 drifted anchors and retiring `thm:M5-valid`; applied the TD->TR metarule rename (`swapTemporal`->`reflectTime`, `temporal_duality`->`time_reflection`) in full, with the check wired into CI
+- **583** (completed, general): Wired three green check scripts (`check-module-invariants.sh --no-build`, `check-copyright-headers.sh --strict`, `readme-lint.sh`) into `.github/workflows/ci.yml`, each proven to fail under its own name on a deliberate violation and pass on a clean re-run
+- **582** (completed, lean4): Broke the second Metalogic directory-level import cycle (Conservativity <-> Deterministic) by relocating `detDerivable_ofFormula_iff`; `check-metalogic-cycles.sh` now passes and runs as a CI step
+- **581** (completed, lean4): Repaired the four wired bi-lasso evidence probes for the TemporalOrder/FrameOver API so `check-evidence-probes.sh` exits 0, corrected the guard's stale DEFERRED comment, and wired the guard into `ci.yml` as a gating step
+- **580** (completed, lean4): Split `FormalSystem/Semantics/Truth.lean` at its internal seam -- the model-to-model truth-transport layer (17 declarations) moved verbatim into a new sibling module `TruthTransport.lean`, verified byte-identical two independent ways
+- **579** (completed, lean4): Moved `FormalSystem/{Minus,Plus,Star}Language/` and their sibling aggregators under `FormalSystem/Syntax/` (19 git renames, 41 import lines rewritten) with zero non-import changed lines, and extended C8 to machine-enforce the aggregator convention on `Syntax/` subdirectories
+- **578** (completed, lean4): Migrated Lake configuration from `lakefile.lean` to `lakefile.toml` (package renamed `Logos` -> `BimodalLogic`), added a single TOML-reading helper (`scripts/lake_targets.py`) for every lakefile scraper, and rewrote the API-docs CI workflow
+
+**Directories moved**: 19 (specs/ -> specs/archive/); task 609 had no directory
+**Roadmap updates**: 0 (1 eligible match found, low-confidence keyword match against task 602; ROADMAP.md unchanged)
+**Memory harvest**: none (no candidates recorded on any archived task)
+
 ## 2026-09-16: Archive 11 completed tasks
 
 **Archived**:
