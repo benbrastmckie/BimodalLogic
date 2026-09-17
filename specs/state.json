@@ -1163,7 +1163,7 @@
           "summary": "The task's premise is stale: tasks 599/601/602 already executed the described retarget; the IntTransfer gate resolves positive (sorryAx-free at the total index); the residual gap is 36 sites, 22 of them closed by one missing API lemma; the flat-structure conversion is optional and relocates bridging rather than removing it."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 3
     },
     {
       "project_number": 570,
