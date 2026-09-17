@@ -131,15 +131,15 @@ theorem spikePath_isStepPath : IsStepPath freePresentation.toFibre spikePath := 
   rfl
 
 /-- The total history determined by that path. -/
-def spikeHF : freePresentation.toTaskFrame.HF :=
-  FrameOver.HFofStepPath freePresentation.toFibre spikePath spikePath_isStepPath
+def spikeHF : WorldHistory freePresentation.toTaskFrame :=
+  FrameOver.worldHistoryOfStepPath freePresentation.toFibre spikePath spikePath_isStepPath
 
 /-- `prev ψ`, in the live guard-first order: guard `⊥`, event `ψ`. -/
 def prev (ψ : Formula) : Formula := Formula.snce Formula.bot ψ
 
 /-- `prev` steps truth back exactly one tick. The guard is `⊥`, so the propagation disjunct of
 the one-step unfolding is dead and only the immediate-event disjunct survives. -/
-theorem truth_prev {τ : ConvexHistory freePresentation.toTaskFrame} (t : ℤ) (ψ : Formula) :
+theorem truth_prev {τ : WorldHistory freePresentation.toTaskFrame} (t : ℤ) (ψ : Formula) :
     TruthAt freePresentation.toModel τ t (prev ψ) ↔
       TruthAt freePresentation.toModel τ (t - 1) ψ := by
   rw [prev, truth_snce_pred]
@@ -154,9 +154,9 @@ def prev5 : Formula := prev (prev (prev (prev (prev (Formula.atom pw)))))
 
 /-- The atom `w` is true along the spike history exactly at time `-5`. -/
 theorem truth_atom_spike (t : ℤ) :
-    TruthAt freePresentation.toModel spikeHF.val t (Formula.atom pw) ↔ t = -5 := by
+    TruthAt freePresentation.toModel spikeHF t (Formula.atom pw) ↔ t = -5 := by
   constructor
-  · rintro ⟨ht, hval⟩
+  · intro hval
     by_cases h : t = -5
     · exact h
     · exfalso
@@ -165,7 +165,6 @@ theorem truth_atom_spike (t : ℤ) :
       rw [this] at hv
       simp [freePresentation, pw] at hv
   · intro h
-    refine ⟨trivial, ?_⟩
     have : spikePath t = 1 := by simp [spikePath, h]
     show freePresentation.val pw (spikePath t) = true
     rw [this]
@@ -178,7 +177,7 @@ Five applications of `truth_prev` reduce truth at `t` to truth of the atom at `t
 atom holds only at `-5`.
 -/
 theorem truth_prev5_spike (t : ℤ) :
-    TruthAt freePresentation.toModel spikeHF.val t prev5 ↔ t = 0 := by
+    TruthAt freePresentation.toModel spikeHF t prev5 ↔ t = 0 := by
   rw [prev5, truth_prev, truth_prev, truth_prev, truth_prev, truth_prev, truth_atom_spike]
   omega
 
@@ -191,10 +190,10 @@ every `u < 0`, so no backward repeat can be anchored at the point of interest.
 -/
 theorem type_at_origin_never_recurs :
     ∀ u : ℤ, u < 0 →
-      ¬ (TruthAt freePresentation.toModel spikeHF.val u prev5 ↔
-         TruthAt freePresentation.toModel spikeHF.val 0 prev5) := by
+      ¬ (TruthAt freePresentation.toModel spikeHF u prev5 ↔
+         TruthAt freePresentation.toModel spikeHF 0 prev5) := by
   intro u hu hiff
-  have h0 : TruthAt freePresentation.toModel spikeHF.val 0 prev5 :=
+  have h0 : TruthAt freePresentation.toModel spikeHF 0 prev5 :=
     (truth_prev5_spike 0).mpr rfl
   have hu' := (truth_prev5_spike u).mp (hiff.mpr h0)
   omega
@@ -208,18 +207,18 @@ theorem prev5_mem_closure : prev5 ∈ subformulaClosure prev5 :=
 strictly earlier time. -/
 theorem typeAt_origin_never_recurs :
     ∀ u : ℤ, u < 0 →
-      typeAt freePresentation prev5 spikeHF.val u ≠
-        typeAt freePresentation prev5 spikeHF.val 0 := by
+      typeAt freePresentation prev5 spikeHF u ≠
+        typeAt freePresentation prev5 spikeHF 0 := by
   intro u hu heq
   refine type_at_origin_never_recurs u hu ?_
   constructor
   · intro h
-    have : prev5 ∈ typeAt freePresentation prev5 spikeHF.val u :=
+    have : prev5 ∈ typeAt freePresentation prev5 spikeHF u :=
       mem_typeAt.mpr ⟨prev5_mem_closure, h⟩
     rw [heq] at this
     exact (mem_typeAt.mp this).2
   · intro h
-    have : prev5 ∈ typeAt freePresentation prev5 spikeHF.val 0 :=
+    have : prev5 ∈ typeAt freePresentation prev5 spikeHF 0 :=
       mem_typeAt.mpr ⟨prev5_mem_closure, h⟩
     rw [← heq] at this
     exact (mem_typeAt.mp this).2
@@ -233,10 +232,10 @@ claims it.
 
 /-- The Phase 10 deliverable, in the shape that survives the anchoring obstruction. -/
 def Phase10Target (P : IntPresentation) (φ : Formula) (bx : Formula → Bool) (bound : ℕ) : Prop :=
-  ∀ (τ : ConvexHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ),
+  ∀ (τ : WorldHistory P.toTaskFrame) (t : ℤ),
     TruthAt P.toModel τ t φ →
       ∃ A ∈ boundedAnnots P φ bx bound, ∃ i : ℤ,
-        A.lasso.unroll i = τ.states t (hτ t) ∧ φ ∈ A.label i
+        A.lasso.unroll i = τ.state t ∧ φ ∈ A.label i
 
 /-! ## Axiom audit
 

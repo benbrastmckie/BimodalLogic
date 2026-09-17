@@ -87,20 +87,19 @@ def pAtom : Atom := Atom.mkBase "p"
 abbrev M : TaskModel chainPresentation.toTaskFrame := chainPresentation.toModel
 
 /-- The total world history the bi-lasso decodes to. -/
-abbrev tau : ConvexHistory chainPresentation.toTaskFrame := L.toHF.val
+abbrev tau : WorldHistory chainPresentation.toTaskFrame := L.toWorldHistory
 
 /-! ## The truth set of `prevⁿ p` along this path is exactly `[n, ∞)` -/
 
 /-- The atom holds exactly from the origin rightward. -/
 theorem truth_atom (s : ℤ) : TruthAt M tau s (Formula.atom pAtom) ↔ 0 ≤ s := by
   constructor
-  · rintro ⟨hd, hv⟩
+  · intro hv
     have hv' : chainPresentation.val pAtom (L.unroll s) = true := hv
     by_contra hs
     rw [unroll_eq, if_pos (by omega : s < 0)] at hv'
     simp [chainPresentation] at hv'
   · intro hs
-    refine ⟨trivial, ?_⟩
     show chainPresentation.val pAtom (L.unroll s) = true
     rw [unroll_eq, if_neg (by omega : ¬ s < 0)]
     simp [chainPresentation]

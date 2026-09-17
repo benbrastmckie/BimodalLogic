@@ -19,22 +19,22 @@ def univ2 : IntPresentation where
 /-- Satisfiability at a state: the reading the planned `check_correct` bridge assigns to
 `check P w φ = true`. -/
 def Sat (P : IntPresentation) (w : Fin P.card) (φ : Formula) : Prop :=
-  ∃ τ : P.toTaskFrame.HF, τ.path 0 = w ∧ TruthAt P.toModel τ.val 0 φ
+  ∃ τ : WorldHistory P.toTaskFrame, τ.path 0 = w ∧ TruthAt P.toModel τ 0 φ
 
 /-- Every function into `univ2`'s carrier is a step path. -/
 theorem univ2_all (f : ℤ → Fin univ2.card) : IsStepPath univ2.toFibre f := by
   rw [univ2.isStepPath_iff]; intro _; rfl
 
 /-- The `H_F` member a bare function determines. -/
-noncomputable def hist (f : ℤ → Fin univ2.card) : univ2.toTaskFrame.HF :=
-  FrameOver.HFofStepPath univ2.toFibre f (univ2_all f)
+noncomputable def hist (f : ℤ → Fin univ2.card) : WorldHistory univ2.toTaskFrame :=
+  FrameOver.worldHistoryOfStepPath univ2.toFibre f (univ2_all f)
 
 theorem hist_path (f : ℤ → Fin univ2.card) : (hist f).path = f := rfl
 
 /-- Truth of an atom at a `hist` reduces to the valuation at the state. -/
 theorem truth_atom (f : ℤ → Fin univ2.card) (t : ℤ) (p : Atom) :
-    TruthAt univ2.toModel (hist f).val t (Formula.atom p) ↔ (f t == 0) = true :=
-  ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
+    TruthAt univ2.toModel (hist f) t (Formula.atom p) ↔ (f t == 0) = true :=
+  Iff.rfl
 
 /-- `⊤`, as this `Formula` type spells it. -/
 def top : Formula := Formula.imp Formula.bot Formula.bot
@@ -56,7 +56,7 @@ variable (p : Atom)
 /-- FACT 1. At state `1`, `someFutureP p` is satisfiable: the path that sits at `1` until time 0
 and drops to `0` afterwards witnesses it. -/
 theorem fact1 : Sat univ2 1 (someFutureP p) := by
-  refine ⟨hist (fun n => if 0 < n then 0 else 1), by simp [hist_path] <;> rfl, ?_⟩
+  refine ⟨hist (fun n => if 0 < n then 0 else 1), by simp [hist_path]; rfl, ?_⟩
   refine ⟨1, by decide, ?_, ?_⟩
   · exact (truth_atom _ 1 p).mpr (by decide)
   · intro r _ hr2; exact fun h => h
@@ -75,7 +75,7 @@ theorem fact3 : Sat univ2 1 (Formula.imp (someFutureP p) Formula.bot) := by
 makes `p` true there, so the implication would need `⊥`. -/
 theorem fact4 : ¬ Sat univ2 0 (Formula.imp (Formula.atom p) Formula.bot) := by
   rintro ⟨τ, h0, himp⟩
-  refine himp ⟨τ.property 0, ?_⟩
+  refine himp ?_
   show univ2.val p (τ.path 0) = true
   rw [h0]; rfl
 
