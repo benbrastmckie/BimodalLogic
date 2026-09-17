@@ -1,5 +1,5 @@
 ---
-next_project_number: 616
+next_project_number: 619
 ---
 
 # TODO
@@ -12,8 +12,8 @@ next_project_number: 616
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,585,603,604,605,606,607,608,610,614,615 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600,616,617 | 298,464,502,559,563,568,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,540,566,618 | 231,465,497,564,565,588,597,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -38,9 +38,13 @@ next_project_number: 616
 
 563 [NOT STARTED] — Promote the presheaf skeleton into the library. DELIVER: the...
   └─ 564 [NOT STARTED] — Prove app:gluing for two interval sections whose germs agree...
+    └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
   └─ 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
     └─ 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
   └─ 567 [NOT STARTED] — Prove app:presheaf-dictionary's Determinism clause -- F...
+  └─ 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
+    └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove... (see above)
+  └─ 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
 
 ### Dataset Enhancement
 
@@ -120,6 +124,87 @@ next_project_number: 616
 615 [NOT STARTED] — Close the residue of the possible-world index retarget. The...
 
 ## Tasks
+
+### 618. Path category and conduche fibration
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: categorical-structure
+- **Dependencies**: Task 563, Task 564, Task 616
+
+**Description**: Formalize the path category `Path(F)` and prove `cor:path-fibration`: the length functor `len : Path(F) -> BD+` is a discrete Conduche fibration whose associated presheaf is `Beh(F)`, together with the `D = Z` clause identifying `Path(F)` as the free category on the graph `(W, =>_1)`.
+
+DELIVER:
+- `def:conduche`'s notions: a discrete Conduche fibration `P : E -> BD+` (every morphism `e` and every factorization `P(e) = x + y` admits a unique pair `e1 : A -> C`, `e2 : C -> B` with `e = e2 . e1`, `P(e1) = x`, `P(e2) = y`); the associated presheaf of such a fibration; the associated category of a sheaf on `Int(D)`; and the length functor.
+- `def:path-category`'s `Path(F)`: the associated category of `Beh(F)`, whose objects the Germs clause identifies with the world states and whose morphisms `w -> u` of length `l` are the sections `tau` in `Beh(F)(l)` with `tau(0) = w` and `tau(l) = u`, composing by gluing with the germs as identities.
+- `cor:path-fibration` proper. Note the paper's proof establishes something sharper than the equivalence alone delivers: the associated presheaf of `len` is EQUAL to `Beh(F)`, not merely naturally isomorphic to it, because restriction along `Tr p` is literally the middle factor of the unique factorization. Formalize the equality, and say in the docstring why it is available.
+- The `D = Z` clause: iterating Compositionality identifies `=>_n` for positive `n` with the `n`-fold composite of `=>_1`, and `=>_0` is the identity by `lem:nullity` and Limit, so a function on `[0, l]` is a convex history exactly when it is a path of length `l` in `(W, =>_1)`, gluing is concatenation, and `Path(F)` is the free category on that graph.
+
+HARD SCOPE LIMIT. `fact:conduche-equivalence` -- Johnstone's general equivalence between the sheaves on `Int(D)` and the discrete Conduche fibrations over `BD+` -- is stated in the paper as a CITED FACT (Johnstone, Prop. 3.6; Schultz, Spivak, and Vasilakopoulou, Thm. A.2.1) and is not proved there. Do NOT set out to formalize Johnstone's theorem in general. Formalize the instance: build `Path(F)` directly and prove the fibration property for it. Record in the module docstring that the general equivalence is external and cited, so a later reader does not mistake the instance for the theorem. If a phase discovers the general proof is cheap at this site, that is a finding to report, not a licence to expand scope mid-task.
+
+WHY IT IS WORTH DOING. The `D = Z` clause is the payoff a reader can hold onto: it says the whole categorical packaging, over the discrete temporal order, is the free category on the one-step task graph. It is also the clause most likely to connect to existing work here, since `FormalSystem/Semantics/IntTransfer.lean` already carries the adjacency characterization of `H_F` over `Z`; reuse that reasoning rather than re-deriving it.
+
+PAPER ANCHORS. `def:conduche`, `def:path-category`, `fact:conduche-equivalence`, and `cor:path-fibration` in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, all COMMENTED OUT inside the "SECTION CUT" block holding `app:Structure` -- read them there.
+
+DEPENDENCIES. Task 563 (interval site and behavior presheaf), task 564 (the Sheaf clause, since composition in `Path(F)` IS gluing), and the twisted-arrow task, which supplies the factorization-linearity the fibration property leans on. This is the last and largest item on the categorical front; it should not be started before those land.
+
+CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.
+
+---
+
+### 617. Reflection clause converse frame naturality
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: categorical-structure
+- **Dependencies**: Task 563
+
+**Description**: Prove `app:presheaf-dictionary`'s Reflection clause: reflection is a natural isomorphism `Beh(F) iso Beh(F-) . ref` between the behavior presheaf of a task frame and that of its converse frame, precomposed with the reflection automorphism of the interval category.
+
+DELIVER, following `def:behavior-presheaf` and the Reflection paragraph of `app:presheaf-dictionary`'s proof:
+- The reflection of a section: `tau^r (z) = tau(l - z)` on `[0, l]`.
+- The converse frame `F- = (W, D, =>-)` with `w =>-_x u` iff `w =>_{-x} u`.
+- The reflection automorphism `ref` of `Int(D)`: involutive, fixing objects, sending `Tr p : l' -> l` to `Tr (l - p - l') : l' -> l`, thereby interchanging left and right restrictions. Prove it preserves composition, fixes identities, and is its own inverse.
+- That `tau^r` lies in `Beh(F-)(l)` whenever `tau` lies in `Beh(F)(l)`, naturality in the translations, and that each component is a bijection, using `(F-)- = F` and `(tau^r)^r = tau`.
+
+THE POINT OF THE CLAUSE, which belongs in the module docstring rather than being left implicit in the proof terms: this natural isomorphism is what underlies the soundness of the time reflection metarule `TR` (`thm:TR-valid` in the paper). The reflection convention on the task relation supplies the involution by definition rather than by assumption, which is why the clause costs so little. Along with the Determinism clause of task 567, this is one of the few places where the categorical packaging says something about the logic rather than merely restating the semantics.
+
+REUSE, NOT REBUILD. This repository already carries time-reflection and converse machinery -- `FormalSystem/Semantics/TruthTransport.lean` and the `reflectTime` vocabulary adopted in the TD->TR rename, with the `swapUS`/`swapMinus` families still under review in task 608. Survey what exists before defining a second converse-frame construction. If the existing API already yields the converse frame, this task consumes it; if not, say in the docstring why a separate one was needed. A duplicate converse frame is a failure of this task, not a side effect of it.
+
+PAPER ANCHOR. The Reflection clauses of `def:behavior-presheaf` and `app:presheaf-dictionary` in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, both COMMENTED OUT inside the "SECTION CUT" block holding `app:Structure` -- read them there.
+
+DEPENDENCY. Task 563, for `Beh(F)` and `Int(D)`.
+
+CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.
+
+---
+
+### 616. Duration monoid twisted arrow interval site
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: categorical-structure
+- **Dependencies**: Task 563
+
+**Description**: Formalize the duration monoid `BD+`, its twisted-arrow category, and `lem:interval-twisted-arrow`: `BD+` is factorization-linear and `Tw(BD+)` is isomorphic to the interval category `Int(D)` by an isomorphism carrying the Johnstone coverage of the one to that of the other.
+
+WHY THIS IS NOW ITS OWN TASK. Task 563 carries this as "OPTIONAL, only if cheap". It is being promoted because the paper has changed around it: the presheaf appendix `app:Structure` was cut from /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and the main-body conclusion is being rewritten to assert the Johnstone route in prose -- interval site, sheaf condition, discrete Conduche fibrations, path category -- with the supporting results promised elsewhere. This repository is where "elsewhere" is meant to be. The lemma is no longer an optional extra on the interval-site task; it is the load-bearing step behind a claim the paper now makes in its body with no appendix under it.
+
+DELIVER:
+- The duration monoid `BD+`: the one-object category whose morphisms are the durations in the positive cone, composing by addition with identity 0.
+- The factorization category `Fact(l)` of a duration: objects the factorizations `l = x + y` with `x, y` positive, morphisms `(x, y) -> (x', y')` the durations `z` with `z + x = x'` and `y = z + y'`.
+- Factorization-linearity: each factorization category is a linear preorder -- any two objects related by at most one morphism, and by at least one in one direction or the other.
+- The twisted-arrow category `Tw(BD+)`: objects the durations, morphisms `l' -> l` the pairs `(p, q)` of positive durations with `p + l' + q = l`, composing `(p, q) . (p', q') = (p + p', q' + q)` with identities `(0, 0)`.
+- The Johnstone coverage on both `Tw(BD+)` and `Int(D)`, and the coverage-preserving isomorphism `Int(D) iso Tw(BD+)`.
+
+SHAPE OF THE WORK. This is pure order algebra over the positive cone of a linearly ordered abelian group. It needs no task frame, no world states, and no history theory -- only `TemporalOrder.lean`'s carrier and its order and group structure. That makes it the most self-contained item on the categorical front and a reasonable one to land early.
+
+DESIGN DECISION TO RECORD EXPLICITLY, not to settle by accident in the first proof: whether these categories are stated as concrete Lean structures with hand-rolled composition lemmas, or as `Mathlib.CategoryTheory.Category` instances. `grep -rl CategoryTheory FormalSystem/` currently returns exactly one file, `FormalSystem/Boneyard/RetiredTactics/AesopRuleSet.lean`, so the live tree imports no category theory at all. Introducing it is a real dependency decision for the whole categorical cluster (tasks 563-567 included) and should be made once, here, and written into the module docstring with its reasoning -- not made implicitly by whichever task gets there first. The concrete route is cheaper and keeps the import surface flat; the Mathlib route is what makes `fact:conduche-equivalence` and the free-category statement expressible without re-inventing vocabulary. State the trade-off, pick one, say why.
+
+PAPER ANCHORS. `def:interval-site`, `def:twisted-arrow`, and `lem:interval-twisted-arrow` in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex. NOTE that all three are COMMENTED OUT in the current source, inside the "SECTION CUT" block that holds `app:Structure` in full -- read them there rather than concluding the paper never had them. Docstrings must cite the labels. Read also /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/111_verify_interval_twisted_arrow_lemma/reports/01_verify-twisted-arrow-lemma.md, where the lemma was verified and its proof rebuilt on that repository's side; that report is the statement of record, ahead of any older phrasing.
+
+DEPENDENCY. Task 563, which introduces `Int(D)`. If 563 lands the optional twisted-arrow material after all, this task narrows to the factorization-linearity proof and the coverage transport rather than disappearing -- reconcile at plan time rather than assuming disjointness.
+
+CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.
+
+---
 
 ### 615. Close world history reach through residue
 - **Effort**: small
@@ -381,15 +466,15 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 
-**Description**: Prove `app:presheaf-dictionary`'s Determinism clause -- `F` deterministic iff every restriction map of `Beh(F)` is injective -- and connect it to `StarDeterminism.states_eq_of_deterministic`.
+**Description**: Prove `app:presheaf-dictionary`'s Determinism clause -- `F` deterministic iff every restriction map of `Beh(F)` is injective -- and connect it to `states_eq_of_deterministic` in `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean`.
 
 THE DELIVERABLE THAT MAKES THIS WORTH DOING is not the dictionary row but the asymmetry the study found (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.2.1): SEPARATEDNESS of `Beh(F)` is STRICTLY STRONGER than the validity of `Determined` on `F`. The witness for the failure of the converse is the drift frame already living in `FormalSystem/Metalogic/Independence/` -- this repository's own countermodel, not a new construction. State the result as a THEOREM PAIR (one direction proved, the converse refuted by that countermodel), not as a single clause.
 
 WHY IT MATTERS. This is one of only two results the study found running FROM this repository's semantics TO the paper's category theory rather than the reverse. That direction is the point of the categorical front, not a by-product of it.
 
-OPEN QUESTION TO POSE, NOT TO SETTLE: does any `BL-star` formula characterize separatedness of `Beh(F)` exactly? `StarDeterminism.lean`'s own choice-dependence note suggests it does not. Record the question in the module docstring; do not spend phases attacking it.
+OPEN QUESTION TO POSE, NOT TO SETTLE: does any `BL-star` formula characterize separatedness of `Beh(F)` exactly? `PlusDeterminism.lean`'s own choice-dependence note suggests it does not. Record the question in the module docstring; do not spend phases attacking it.
 
-DEPENDENCY NOTE. Waits on the language-name sync, which renames `Semantics/StarDeterminism.lean` to `PlusDeterminism.lean` under its mapping (c).
+DEPENDENCY NOTE, NOW DISCHARGED. The language-name sync has landed: the file is `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean`.
 
 CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase.
 
@@ -439,11 +524,11 @@ Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-co
 
 THE COMPOSITION STEP IS ALREADY PROVED as `glue_seam` in `specs/553_decide_convex_history_layer_collapse/probes/04_presheaf-skeleton.lean`. The remainder is assembling the glued section by cases and applying `ShiftSet.wh_ext`.
 
-THE DE-DUPLICATION THAT MAKES THIS WORTH DOING, and which is part of the deliverable rather than optional: generalize `StarPasting.paste` off its totality hypothesis. `FormalSystem/Semantics/StarPasting.lean`'s `paste_rel_le_lt` is the SAME ARGUMENT as the interval-site gluing step. The study established that the general-convex and interval-site versions share one proof and should not be written twice; delivering the Sheaf clause while leaving `paste` untouched creates exactly the duplication this task exists to prevent.
+THE DE-DUPLICATION THAT MAKES THIS WORTH DOING, and which is part of the deliverable rather than optional: generalize `PlusPasting`s `paste` off its totality hypothesis. `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean`'s `paste_rel_le_lt` is the SAME ARGUMENT as the interval-site gluing step. The study established that the general-convex and interval-site versions share one proof and should not be written twice; delivering the Sheaf clause while leaving `paste` untouched creates exactly the duplication this task exists to prevent.
 
 RECORD in the module docstring which dictionary clauses are choice-free. Sheaf is.
 
-DEPENDENCY NOTE. Waits on the language-name sync because that task renames `Semantics/StarPasting.lean` to `PlusPasting.lean` under its mapping (c). Doing this generalization first would write it against a filename and a declaration prefix that are about to change, forcing a second pass.
+DEPENDENCY NOTE, NOW DISCHARGED. This formerly waited on the language-name sync. That rename has landed: the file is `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` and `paste_rel_le_lt` lives there in namespace `FormalSystem.Semantics`. Nothing blocks the generalization on naming grounds any longer.
 
 CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` sections 5.1 and 5.2.
 
