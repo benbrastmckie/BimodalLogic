@@ -192,26 +192,26 @@ list. Confirm with `grep -rn "lakefile" scripts .github --include=*.sh --include
 
 ---
 
-### Phase 3: Rewrite and Re-enable docs.yml [NOT STARTED]
+### Phase 3: Rewrite and Re-enable docs.yml [COMPLETED]
 
 **Goal**: A correct docs workflow at `.github/workflows/docs.yml`.
 
 **Tasks**:
-- [ ] `git mv .github/workflows/docs.yml.disabled .github/workflows/docs.yml`.
-- [ ] Steps: `actions/checkout` (fetch-depth 0) -> `leanprover/lean-action@v1` with
+- [x] `git mv .github/workflows/docs.yml.disabled .github/workflows/docs.yml`.
+- [x] Steps: `actions/checkout` (fetch-depth 0) -> `leanprover/lean-action@v1` with
       `build: true`, `test: false`, `lint: false`, `use-mathlib-cache: true` ->
       `leanprover-community/docgen-action@<full SHA of 56023ee2>` with `build-page: false`,
       `blueprint: false`, `homepage: api-site`, and `references: references.bib` only if that
-      file exists (otherwise omit the input).
-- [ ] Check triggers include `push` to `main` (deploy only runs on push) and keep
+      file exists (otherwise omit the input). *(deviation: altered — added a step writing `api-site/index.html`, a redirect to `docs/`, so the site root is not a 404; `references.bib` exists and is kept; added `timeout-minutes: 300` for the cold doc-gen4 build)*
+- [x] Check triggers include `push` to `main` (deploy only runs on push) and keep
       `workflow_dispatch`; confirm required `permissions` (`contents: read`, `pages: write`,
       `id-token: write`) against the pinned action's README.
-- [ ] Rewrite header comment: remove DISABLED block and the incorrect "publishes the API
+- [x] Rewrite header comment: remove DISABLED block and the incorrect "publishes the API
       documentation alone" claim; state lakefile.toml requirement, lean-action precondition,
       `homepage: api-site` rationale, resulting URL, and the no-doc-gen4-in-manifest rule.
-- [ ] Lint YAML (`actionlint` if installed, else `python3 -c 'import yaml,sys;
+- [x] Lint YAML *(deviation: altered — actionlint not installed; parsed with PyYAML)* (`actionlint` if installed, else `python3 -c 'import yaml,sys;
       yaml.safe_load(open(...))'`).
-- [ ] Commit.
+- [x] Commit.
 
 **Timing**: 0.75 hours
 

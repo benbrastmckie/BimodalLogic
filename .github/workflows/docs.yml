@@ -1,0 +1,96 @@
+name: API Documentation
+
+# Builds the doc-gen4 API documentation for FormalSystem and deploys it to GitHub Pages at
+# https://benbrastmckie.github.io/BimodalLogic/docs/ (module pages such as
+# docs/FormalSystem.html; the site root redirects there).
+#
+# PREREQUISITES (each one was a cause of this workflow failing before):
+#   - `lakefile.toml`. leanprover-community/docgen-action reads the package `name` and
+#     `defaultTargets` from `lakefile.toml` only, with no fallback for a Lean-syntax lakefile.
+#     The package name it reads is the Lake package (`BimodalLogic`), not the library.
+#   - `leanprover/lean-action` runs FIRST. docgen-action installs neither elan nor the Mathlib
+#     cache itself; it calls `~/.elan/bin/lake` and expects the project to be built already.
+#   - Pages source = "GitHub Actions" (Settings -> Pages -> Build and deployment -> Source).
+#     A workflow cannot set this for itself; until it is set the deploy step has nowhere to
+#     publish.
+#   - A `push` event. The action builds the API docs and deploys only on push; a
+#     `workflow_dispatch` run exercises the setup steps but publishes nothing.
+#
+# The action supplies doc-gen4 itself (a throwaway `docbuild/` package pinned to the doc-gen4
+# tag matching `lean-toolchain`), which is why `lakefile.toml` and `lake-manifest.json` carry no
+# doc-gen4 dependency and must not acquire one: adding it would put doc-gen4 into every
+# contributor's `lake build` for the sake of a job that only runs here.
+#
+# `homepage: api-site` and `build-page: false` are load-bearing, not defaults being restated.
+# The action copies the generated API into `<homepage>/docs` and uploads the whole `<homepage>`
+# folder. Its default `homepage` is `docs`, which in this repository is a hand-maintained tree of
+# markdown files: the default would publish that tree with the API nested at `/docs/docs/`.
+# `api-site` is a folder that does not exist in the repository, created only inside this job, so
+# the published site holds the API documentation and the one-line redirect written below, and
+# nothing else. `build-page: false` skips the Jekyll build, since there is no Jekyll site. The
+# upgrade path, if a landing page is ever wanted, is a real Jekyll site in a new folder named by
+# `homepage` -- never `docs`.
+#
+# docgen-action is pinned to a commit SHA rather than `@main`, so an upstream change cannot alter
+# what this job publishes without a reviewed edit here.
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a queued run supersedes an older queued run but never cancels a
+# deploy already in flight.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  docs:
+    name: Build and deploy API documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    environment:
+      name: github-pages
+      url: ${{ steps.docgen.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build the project (elan, Mathlib cache, oleans)
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          test: false
+          lint: false
+          use-mathlib-cache: true
+
+      - name: Write the site-root redirect to the API index
+        run: |
+          set -euo pipefail
+          mkdir -p api-site
+          cat > api-site/index.html <<'HTML'
+          <!DOCTYPE html>
+          <meta charset="utf-8">
+          <title>BimodalLogic API documentation</title>
+          <meta http-equiv="refresh" content="0; url=docs/">
+          <a href="docs/">BimodalLogic API documentation</a>
+          HTML
+
+      - name: Build and deploy doc-gen4 documentation
+        id: docgen
+        uses: leanprover-community/docgen-action@56023ee2a4b3630c1071825be5bafdb43f540bbd
+        with:
+          api-docs: true
+          blueprint: false
+          build-page: false
+          homepage: api-site
+          references: references.bib
