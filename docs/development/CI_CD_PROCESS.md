@@ -56,8 +56,7 @@ with:
 
 The build step compiles all Lean source files in the project:
 
-- `Logos` library (main logic implementation in `FormalSystem/`)
-- `Bimodal` library (TM logic implementation)
+- `FormalSystem` library (the default target; package `BimodalLogic`)
 - `BimodalTest` test library
 - All executable scripts
 
@@ -101,14 +100,20 @@ The lint step runs the project's lint driver (`lintAll`) which orchestrates:
 
 **Step name**: `Compile lean_exe roots (outside the library closures)`
 
-**Command**: for each `root :=` target scraped from `lakefile.lean`, `lake build "$root"`.
+**Command**: for each `lean_exe` root printed by `python3 scripts/lake_targets.py exe-roots`, `lake build "$root"`.
+
+`scripts/lake_targets.py` is the single reader of `lakefile.toml` for every script and CI step
+that enumerates Lake targets (this step, and C6, C16, C25 and C25N in
+`check-module-invariants.sh`). It applies Lake's omitted defaults and exits non-zero when the
+lakefile is missing, unparseable, or declares no target of the requested kind, so a moved or
+reshaped lakefile fails the step instead of producing an empty root list.
 
 Every `lean_exe` root sits outside both library root closures (`FormalSystem`, `BimodalTest`),
 so the lean-action build step above never elaborates any of them on its own. This step compiles
 each one as a MODULE target (elaboration and C emission, no linking), reusing the Lake cache the
 lean-action step already populated. It exists because an executable root broke without CI
 noticing, since nothing else observed it. The local counterpart is `check-module-invariants.sh`'s
-C25, which scrapes the same root list; CI runs the check script's structural (`--no-build`) pass
+C25, which reads the same root list; CI runs the check script's structural (`--no-build`) pass
 instead of its full mode, so C25 is skipped there as redundant with this step (see the "Known
 Not-in-CI Gaps" subsection below).
 
@@ -366,6 +371,14 @@ To require CI to pass before merging, configure GitHub branch protection:
 Code coverage reporting is not currently implemented. There is no production-ready code coverage tool for Lean 4 as of 2026. This will be added when tooling becomes available.
 
 ### Documentation Builds
+
+The API documentation is built and deployed by `.github/workflows/docs.yml`, a separate workflow
+from `ci.yml`. Its prerequisites are recorded in that file's header: a `lakefile.toml` (the
+`leanprover-community/docgen-action` step reads the package name and default targets from it and
+has no fallback for a Lean-syntax lakefile), `leanprover/lean-action` running before the docgen
+step, the repository's Pages source set to **GitHub Actions**, and a `push` event (the action
+builds and deploys only on push). The published site is
+<https://benbrastmckie.github.io/BimodalLogic/docs/>.
 
 LaTeX documentation builds could be added as a separate CI job if needed:
 

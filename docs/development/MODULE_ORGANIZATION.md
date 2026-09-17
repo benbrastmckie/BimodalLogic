@@ -6,7 +6,7 @@ This document specifies the directory structure, namespace conventions, and modu
 
 ```
 BimodalLogic/
-├── lakefile.lean               # Lake build configuration
+├── lakefile.toml               # Lake build configuration (package BimodalLogic)
 ├── lean-toolchain              # Lean version pin
 ├── FormalSystem.lean           # Library root (re-exports all sub-modules)
 ├── FormalSystem/               # Main library source

@@ -49,7 +49,7 @@ opens.
 
 **Cite durable anchors, never task numbers or ephemeral task-directory paths.** Task directories are
 renumbered by vault operations and mean nothing to a future reader. Check **C9** enforces this
-across `FormalSystem/`, `lakefile.lean`, `README.md` and `scripts/`; **C9D** reports it for
+across `FormalSystem/`, `lakefile.toml`, `README.md` and `scripts/`; **C9D** reports it for
 `docs/`. Both patterns match a `specs/<number>_<slug>/` path as well as a bare task-number citation.
 
 ## About Bimodal Logic

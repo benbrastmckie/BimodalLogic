@@ -131,7 +131,7 @@ Two rules keep this safe:
 
 The one deliberate exception to the sibling rule is the Lake library root pair
 `FormalSystem.lean` + `FormalSystem/FormalSystem.lean` — *both* files, not one of them.
-`lean_lib FormalSystem` sets `srcDir := "."` and ``roots := #[`FormalSystem]`` (`lakefile.lean`),
+`lean_lib FormalSystem` takes Lake's defaults `srcDir = "."` and `roots = ["FormalSystem"]` (`lakefile.toml`),
 so module `FormalSystem` resolves to the **repository-root** `FormalSystem.lean`, which
 in turn imports module `FormalSystem.FormalSystem` — the file `FormalSystem/FormalSystem.lean`.
 Both are rows in [`FormalSystem/README.md`](../README.md)'s generated root-module table.

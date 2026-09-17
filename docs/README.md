@@ -3,7 +3,7 @@
 Project-wide documentation hub for the ProofChecker formal verification project.
 
 > **Project Naming**: The repository is named **BimodalLogic**, the project display name is
-> **ProofChecker**, the Lake package is named **Logos** (in lakefile.toml), and the primary
+> **ProofChecker**, the Lake package is named **BimodalLogic** (in `lakefile.toml`), and the primary
 > Lean library namespace is **Bimodal** (in `FormalSystem/`). These names serve different
 > purposes: the repository name reflects the GitHub URL, the display name appears in user-facing
 > documentation, the package name is used by Lake for dependency resolution, and the library
@@ -329,14 +329,14 @@ For detailed documentation standards, see:
 ### Building Documentation
 
 Generated API documentation is published by
-[`.github/workflows/docs.yml.disabled`](../.github/workflows/docs.yml.disabled), which runs
-`leanprover-community/docgen-action` and deploys the result to GitHub Pages. The workflow is
-**currently disabled** (`docgen-action` requires a `lakefile.toml`), so it does not run on push
-and the published site is not being refreshed. The docstrings in the tree are the source; `references.bib` at the repository root
+[`.github/workflows/docs.yml`](../.github/workflows/docs.yml) on every push to `main`: it builds
+the project with `leanprover/lean-action`, runs `leanprover-community/docgen-action` (which reads
+the package name from `lakefile.toml`), and deploys the result to GitHub Pages at
+<https://benbrastmckie.github.io/BimodalLogic/docs/>. The docstrings in the tree are the source; `references.bib` at the repository root
 supplies the bibliography, so a `[key]` citation in a `## References` block renders as a real
 reference rather than a bare surname and year.
 
-**There is deliberately no `doc-gen4` entry in `lakefile.lean` or `lake-manifest.json`, and
+**There is deliberately no `doc-gen4` entry in `lakefile.toml` or `lake-manifest.json`, and
 none should be added.** The action supplies doc-gen4 itself. Declaring it as a package
 dependency would put it into every contributor's `lake build` for the sake of a job that only
 ever runs in CI. `lake build :docs` therefore still does not exist and is still not the way to
@@ -347,11 +347,13 @@ source must be set to **GitHub Actions** (Settings → Pages → Build and deplo
 workflow cannot set this for itself. Until it is set, the workflow runs and the deploy step has
 nowhere to publish.
 
-The workflow passes `build-page: false`. That is load-bearing rather than a default restated:
-the action's `homepage` input defaults to `docs`, and it expects that directory to be a Jekyll
-site into whose `docs/docs/` subdirectory the API pages are placed. This `docs/` tree is ~100
-hand-written markdown files with no `_config.yml`. If a landing page is ever wanted, the route
-is `homepage: website` pointing at a real Jekyll site in a new directory — never this one.
+The workflow passes `homepage: api-site` and `build-page: false`. Both are load-bearing rather
+than defaults restated: the action copies the API pages into `<homepage>/docs/` and uploads the
+whole `<homepage>` directory, and its default `homepage` is `docs` — this hand-written markdown
+tree, which would then be published with the API nested at `/docs/docs/`. `api-site` exists only
+inside the CI job, so the site holds the API pages and a root redirect to them. If a landing page
+is ever wanted, the route is a real Jekyll site in a new directory named by `homepage` — never
+this one.
 
 [`reference/API_REFERENCE.md`](reference/API_REFERENCE.md) remains the hand-written reading
 guide and [`theorem-index.md`](theorem-index.md) the per-theorem ledger; the generated site

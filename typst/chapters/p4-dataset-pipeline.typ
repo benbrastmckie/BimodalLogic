@@ -58,7 +58,7 @@ The record design encodes the dual-signal contract structurally: `proof_trace` (
 The redundant formula encodings serve different consumers: `formula_str` for human inspection, `formula_ast` (the `Formula.toJson` tag schema) for tokenizer-free tree models, an S-expression and a prefix-notation token list for sequence models, and folded variants that restore derived-operator vocabulary ($not$, $and$, $or$, $diamond.stroked$) for models trained on the surface language.
 `pattern_key` mirrors the structural features the proof-search learning layer uses (@sec:proof-automation), and `metrics` records difficulty measures (complexity, modal depth, temporal depth) that support curriculum ordering and stratified splits downstream.
 
-Two `lake exe` executables compile from this pipeline:#footnote[`docs/training/PIPELINE.md:428-437`, quoting the `lakefile.lean` executable declarations.]
+Two `lake exe` executables compile from this pipeline:#footnote[`docs/training/PIPELINE.md:428-437`, quoting the `lakefile.toml` executable declarations.]
 
 #items[
   #item[`dataset_generator` (root `FormalSystem.Automation.DatasetGeneratorMain`) -- the main JSONL export executable.]

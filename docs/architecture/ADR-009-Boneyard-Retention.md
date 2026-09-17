@@ -12,7 +12,7 @@ in proof position. A reader encountering it for the first time reasonably asks t
 does this code affect the results, and why is it here at all?
 
 The first question already has a machine-checked answer. The archive is excluded from the build
-by construction, not by convention: `lakefile.lean`'s `lean_lib FormalSystem` roots only
+by construction, not by convention: `lakefile.toml`'s `lean_lib FormalSystem` roots only
 `FormalSystem`, nothing under a `Boneyard` directory is reachable from any Lake root, and a full
 `lake build` produces **zero** `.olean` files under any `Boneyard` path out of 546 built. Check
 **C3** independently asserts that the structural `sorry` count across the live tree is **zero**;

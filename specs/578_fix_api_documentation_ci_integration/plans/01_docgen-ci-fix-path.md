@@ -227,21 +227,21 @@ list. Confirm with `grep -rn "lakefile" scripts .github --include=*.sh --include
 
 ---
 
-### Phase 4: Update Prose References [NOT STARTED]
+### Phase 4: Update Prose References [COMPLETED]
 
 **Goal**: Documentation accurately names `lakefile.toml` and package `BimodalLogic`.
 
 **Tasks**:
-- [ ] `CLAUDE.md` "Lean Version" section: requested Mathlib tag is in `lakefile.toml`.
-- [ ] `docs/development/CI_CD_PROCESS.md` (~L104): lakefile name; add a short note on
+- [x] `CLAUDE.md` "Lean Version" section: requested Mathlib tag is in `lakefile.toml`.
+- [x] `docs/development/CI_CD_PROCESS.md` (~L104): lakefile name; add a short note on
       `scripts/lake_targets.py` as the single scrape and on docs-workflow prerequisites
       (lakefile.toml, lean-action first, Pages source = GitHub Actions, push-only deploy).
-- [ ] Sweep `grep -rn "lakefile.lean\|package Logos" --exclude-dir=specs --exclude-dir=.lake
+- [x] *(deviation: altered — four current-state mentions left for a follow-up because their files carry uncommitted concurrent edits: docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333; generic `Add to your lakefile.lean` advice in docs/research/ left as external-reader guidance)* Sweep `grep -rn "lakefile.lean\|package Logos" --exclude-dir=specs --exclude-dir=.lake
       --exclude-dir=.claude --exclude-dir=agent-system .` and update current-state prose in
       docs/READMEs/typst; keep `typst/sync-check-whitelist.txt` and
       `scripts/typst-machine-appendix.sh` comments accurate. Leave clearly historical text alone.
-- [ ] No task-number citations in any edited deliverable.
-- [ ] Commit.
+- [x] No task-number citations in any edited deliverable.
+- [x] Commit.
 
 **Timing**: 0.75 hours
 

@@ -37,10 +37,10 @@ lake exe test
 
 1. Create `Tests/NewTheoryTest/` directory
 2. Create `Tests/NewTheoryTest.lean` as the root module
-3. Add `lean_lib NewTheoryTest` to `lakefile.lean`:
-   ```lean
-   lean_lib NewTheoryTest where
-     srcDir := "Tests"
-     roots := #[`NewTheoryTest]
-     leanOptions := theoryLeanOptions
+3. Add a `lean_lib` table for `NewTheoryTest` to `lakefile.toml`:
+   ```toml
+   [[lean_lib]]
+   name = "NewTheoryTest"
+   srcDir = "Tests"
+   leanOptions = {pp.unicode.fun = true, autoImplicit = false}
    ```

@@ -388,18 +388,18 @@ The gate passes only when **all** hard criteria are satisfied:
 
 ## Executable Targets
 
-Two `lake exe` targets are registered in `lakefile.lean`:
+Two of the `lake exe` targets registered in `lakefile.toml` belong to this pipeline:
 
-```lean
-lean_exe dataset_generator where
-  root := `FormalSystem.Automation.DatasetGeneratorMain
-  srcDir := "FormalSystem"
-  supportInterpreter := true
+```toml
+[[lean_exe]]
+name = "dataset_generator"
+root = "FormalSystem.Automation.DatasetGeneratorMain"
+supportInterpreter = true
 
-lean_exe dataset_validator where
-  root := `FormalSystem.Automation.DatasetValidatorMain
-  srcDir := "FormalSystem"
-  supportInterpreter := true
+[[lean_exe]]
+name = "dataset_validator"
+root = "FormalSystem.Automation.DatasetValidatorMain"
+supportInterpreter = true
 ```
 
 ### `lake exe dataset_generator`

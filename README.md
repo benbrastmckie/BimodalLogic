@@ -104,7 +104,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 
 ```
 .                                 # repository root
-├── lakefile.lean                 # two libraries: FormalSystem (default target), BimodalTest
+├── lakefile.toml                 # package BimodalLogic; libraries FormalSystem (default target), BimodalTest
 ├── FormalSystem.lean             # Lake root module for the FormalSystem library
 ├── FormalSystem/                 # TM bimodal logic library (live file and line counts: see the table above)
 │   ├── FormalSystem.lean         # library aggregator
@@ -332,10 +332,8 @@ It is load-bearing for the live completeness chain via `uSExpressivelyCompleteOv
 ## Documentation
 
 **[API documentation](https://benbrastmckie.github.io/BimodalLogic/)** — the generated
-doc-gen4 reference for every declaration in `FormalSystem`. The deploying workflow is
-currently **disabled**: it lives at
-[`.github/workflows/docs.yml.disabled`](.github/workflows/docs.yml.disabled) because
-`docgen-action` requires a `lakefile.toml`, so the published site is not rebuilt on push.
+doc-gen4 reference for every declaration in `FormalSystem`, rebuilt on every push to `main` by
+[`.github/workflows/docs.yml`](.github/workflows/docs.yml).
 
 ### Start here
 

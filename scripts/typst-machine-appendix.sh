@@ -14,7 +14,7 @@
 # machines (clang OOM, exit 137). The interpreter consumes the ordinary
 # .oleans (built by `lake build FormalSystem.Automation.MachineAppendixMain`)
 # and produces byte-identical JSONL in seconds. The `lean_exe
-# machine_appendix` stanza remains in lakefile.lean for machines that can
+# machine_appendix` stanza remains in lakefile.toml for machines that can
 # afford the native build, but this script's default path is the
 # interpreter.
 #
