@@ -443,7 +443,7 @@ constrains is the points of evaluation, not the propositions.
 == Proof Systems
 
 #definition("S5")[
-  *S5* is the smallest extension of classical propositional logic CPL closed under the following
+  *S5* extends classical propositional logic CPL to include the following
   schemata, rule, and metarule:
   #items[
     + *MK*: $square.stroked(phi.alt arrow.r psi) arrow.r (square.stroked phi.alt arrow.r square.stroked psi)$.
@@ -457,8 +457,8 @@ constrains is the points of evaluation, not the propositions.
 
 #definition("BX")[
   Let $phi.alt_(chevron.l "S"|"U" chevron.r)$ denote the result of swapping all occurrences of
-  $#since$ and $#until$ in $phi.alt$. The *Base Burgess--Xu Tense Logic* is the smallest
-  extension of CPL closed under all instances of the following rules and axiom schemata:
+  $#since$ and $#until$ in $phi.alt$. The *Base Burgess--Xu Tense Logic* extends
+  CPL to include all instances of the following rules and axiom schemata:
   #items[
     + *TN*: if $tack.r phi.alt$ then $tack.r #allfuture phi.alt$.
     + *TR*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "S"|"U" chevron.r)$.
@@ -487,7 +487,7 @@ constrains is the points of evaluation, not the propositions.
 ]
 
 #definition($op("TM")^+$)[
-  $op("TM")^+$, the base logic for $#BLplus$, is the smallest extension of S5 and BX to include
+  $op("TM")^+$, the base logic for $#BLplus$, extends S5 and BX to include
   all instances of the sole bimodal-interaction axiom:
   #items[
     + *MF*: $square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$.
@@ -495,7 +495,7 @@ constrains is the points of evaluation, not the propositions.
 ]
 
 #definition($"BX"_f$)[
-  The *Discrete Burgess--Xu Tense Logic* $"BX"_f$ is the smallest extension of BX to include all
+  The *Discrete Burgess--Xu Tense Logic* $"BX"_f$ extends BX to include all
   instances of:
   #items[
     + *UZ*: $#somefuture phi.alt arrow.r (not phi.alt #until phi.alt)$.
@@ -524,7 +524,7 @@ constrains is the points of evaluation, not the propositions.
 ]
 
 #definition($"BX"_d$)[
-  The *Dense Burgess--Xu Tense Logic* $"BX"_d$ is the smallest extension of BX to include all
+  The *Dense Burgess--Xu Tense Logic* $"BX"_d$ extends BX to include all
   instances of:
   #items[
     + *DN*: $#allfuture #allfuture phi.alt arrow.r #allfuture phi.alt$.
@@ -537,8 +537,8 @@ constrains is the points of evaluation, not the propositions.
 #definition($"BX"_c$)[
   Let $K^+ phi.alt := not (not phi.alt #until top)$ and $K^- phi.alt := not (not phi.alt #since top)$,
   read *"$phi.alt$ recurs arbitrarily soon in the future"* and *"$phi.alt$ recurred arbitrarily
-  recently in the past"* respectively. The *Complete Burgess--Xu Tense Logic* $"BX"_c$ is the
-  smallest extension of BX to include all instances of:
+  recently in the past"* respectively. The *Complete Burgess--Xu Tense Logic* $"BX"_c$
+  extends BX to include all instances of:
   #items[
     + *Prior-U*: $(phi.alt #until top) and #somefuture not phi.alt arrow.r phi.alt #until (not phi.alt or K^+ not phi.alt)$.
     + *Sep*: $K^+ phi.alt and not K^+ (phi.alt and (not phi.alt #until phi.alt)) arrow.r K^+ (K^+ phi.alt and K^- phi.alt)$.
@@ -574,8 +574,8 @@ The complete class is therefore exactly ${ZZ, RR}$ up to isomorphism, and the de
 class exactly $RR$.
 
 #definition("TM")[
-  *TM*, the *Logic of Tense and Modality* for $#BL$, is the smallest extension of CPL closed
-  under all instances of the following rules and axiom schemata:
+  *TM*, the *Logic of Tense and Modality* for $#BL$, extends CPL to include
+  all instances of the following rules and axiom schemata:
   #items[
     + *MP*: $phi.alt, phi.alt arrow.r psi tack.r psi$.
     + *MN*: if $tack.r phi.alt$ then $tack.r square.stroked phi.alt$.
@@ -688,8 +688,8 @@ $op("TM")_d$ either; its status is covered only by the headline above.
 At the $#BLplus$ level three positive results are machine-checked, each of the form
 $"Valid"_cal(C) phi.alt arrow.r "Derivable"_cal(C) phi.alt$. They are stated here in the
 development's own frame-class vocabulary. The paper attributes them to its systems
-$op("TM")^+_d$, $op("TM")^+_f$, $op("TM")^+_c$; that identification is a conjecture, and
-@sec:construction says why it is left as one.
+$op("TM")^+_d$, $op("TM")^+_f$, $op("TM")^+_c$; that identification rests on a key-by-key
+textual correspondence, not a machine-checked equivalence, as @sec:construction records.
 
 #theorem("Weak completeness, dense class")[
   Every sentence valid over every dense task frame is derivable in the Dense frame class.
@@ -1034,11 +1034,14 @@ No step of the base-class route carries `sorryAx`.
 #remark[
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `ZTime`,
   `RTime`. It is not silently identified with the paper's $op("TM")^+$, $op("TM")^+_d$,
-  $op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations do line up in shape --- the paper states
+  $op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations line up key for key --- the paper states
   eleven primary Since/Until axioms and derives their past mirrors by the rule TR, while the
-  development has no TR rule and states all twenty-two explicitly, one pair per paper axiom --- but
-  no theorem establishes that they prove the same sentences, and the uniformity layer does not even
-  match in count. The identification is a conjecture and is treated as one throughout.
+  development states all twenty-two explicitly, one pair per paper axiom, and also has TR as a rule
+  (`DerivationTree.time_reflection`). The uniformity layer reconciles too: the paper's four axioms
+  appear as five constructors, NP's past mirror being explicit. Every constructor is a paper axiom
+  instance or a TR image of one, so the two presentations derive the same theorems at the empty
+  context; the key-by-key table is in `docs/reference/axiom-reference.md`. That correspondence is
+  textual, not a machine-checked equivalence theorem.
 ]
 
 Decidability's two machine-checked components are narrower than the open question of

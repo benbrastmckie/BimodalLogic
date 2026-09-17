@@ -29,10 +29,14 @@ Bimodal formulas are built from:
 | `bot` | False (`⊥`) | `bot` |
 | `φ.imp ψ` | Implication (`φ → ψ`) | `p.imp q` |
 | `φ.box` | Necessity (`□φ`) | `p.box` |
-| `φ.past` | Historical (`▽φ`) | `p.past` |
-| `φ.future` | Future (`△φ`) | `p.future` |
+| `untl φ ψ` | Until (`φ U ψ`) | `untl top p` |
+| `snce φ ψ` | Since (`φ S ψ`) | `snce top p` |
 
 Derived operators:
+- `φ.someFuture` = `untl top φ` (Some Future, `F φ`)
+- `φ.somePast` = `snce top φ` (Some Past, `P φ`)
+- `φ.allFuture` = `φ.neg.someFuture.neg` (All Future, `G φ`)
+- `φ.allPast` = `φ.neg.somePast.neg` (All Past, `H φ`)
 - `φ.neg` = `φ.imp bot` (negation)
 - `φ.diamond` = `φ.box.neg.neg` (possibility)
 - `φ.and ψ` = conjunction

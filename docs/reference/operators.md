@@ -177,7 +177,7 @@ Universal past operator - expresses that a formula held at all past times.
 
 **Formal Definition**: Primitive temporal operator quantifying over past times
 **LEAN Code**: `Formula.allPast φ`
-**Alternative Notation**: `H` (from "Historically" or "Has always been")
+**Alternative Notation**: `H`; labelled *All Past* in the paper (`\Past`)
 **Semantics**: `M,h,t ⊨ H φ` iff for all times t' < t in domain(h), `M,h,t' ⊨ φ`
 **See also**: [P (somePast)](#p-somePast--existential-past), [G (allFuture)](#g-allFuture--universal-future)
 **Examples**: `H p` means "p has always been true (in the past)"
@@ -187,7 +187,7 @@ Existential past operator - expresses that a formula held at some past time.
 
 **Formal Definition**: `P φ := ¬H¬φ` (dual of universal past)
 **LEAN Code**: Defined via `Formula.allPast` and negation as `somePast`
-**Alternative Notation**: `P` (from "Previously" or "Past occurrence")
+**Alternative Notation**: `P`; labelled *Some Past* in the paper (`\past`)
 **Semantics**: `M,h,t ⊨ P φ` iff there exists time t' < t in domain(h) such that `M,h,t' ⊨ φ`
 **See also**: [H (allPast)](#h-allPast--universal-past), [F (someFuture)](#f-someFuture--existential-future)
 **Duality**: `P φ ↔ ¬H¬φ`
@@ -198,7 +198,7 @@ Universal future operator - expresses that a formula will hold at all future tim
 
 **Formal Definition**: Primitive temporal operator quantifying over future times
 **LEAN Code**: `Formula.allFuture φ`
-**Alternative Notation**: `G` (from "Globally" or "Going to always be")
+**Alternative Notation**: `G`; labelled *All Future* in the paper (`\Future`)
 **Semantics**: `M,h,t ⊨ G φ` iff for all times t' > t in domain(h), `M,h,t' ⊨ φ`
 **Formal Definition**: `G φ := ¬F¬φ` (`FormalSystem/Syntax/Formula.lean`) -- derived, not primitive
 **Axioms**: `connect_future` (`φ → G P φ`). Note that `G φ → G G φ` is the *derived* theorem `temporal4Derived` (`FormalSystem/Theorems/TemporalDerived.lean`), not an axiom
@@ -212,7 +212,7 @@ Existential future operator - expresses that a formula will hold at some future 
 `F φ ↔ ¬G¬φ` holds, but the *definitional* direction runs the other way: `allFuture` is defined
 from `someFuture`, which is defined from `untl`.
 **LEAN Code**: `Formula.someFuture`
-**Alternative Notation**: `F` (from "Future occurrence" or "Finally")
+**Alternative Notation**: `F`; labelled *Some Future* in the paper (`\future`)
 **Semantics**: `M,h,t ⊨ F φ` iff there exists time t' > t in domain(h) such that `M,h,t' ⊨ φ`
 **See also**: [G (allFuture)](#g-allFuture--universal-future), [P (somePast)](#p-somePast--existential-past)
 **Duality**: `F φ ↔ ¬G¬φ`

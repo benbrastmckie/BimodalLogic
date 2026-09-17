@@ -10,10 +10,11 @@ import FormalSystem.ProofSystem.Axioms
 /-!
 # `MinusLanguage.Axiom` — TM⁻'s axiom schemata over the base language L⁻
 
-TM⁻, the *Logic of Tense and Modality*, is (JPL paper, `\S sub:Logic`) the smallest extension of
-**CPL** over the base language L⁻ closed under the schemata MK, MT, M5, MF, TK, T4, TS, TC, TL
-and the rules MP, MN, TR. This module carries the **axiom** half of that list; MP, MN and TR are
-*rules* and live in `MinusLanguage/Derivation.lean`.
+TM⁻ is this repository's own transposition of the paper's tense-and-modality logic to the
+Past/Future base language L⁻; the paper names no such system. It comprises **CPL** over L⁻
+together with the schemata MK, MT, M5, MF, TK, T4, TS, TC, TL and the rules MP, MN, TR. This
+module carries the **axiom** half of that list; MP, MN and TR are *rules* and live in
+`MinusLanguage/Derivation.lean`.
 
 The three extension axioms of `\S sub:Extension` are included in the same inductive, routed to
 their frame classes by `Axiom.minFrameClass`:
@@ -73,7 +74,7 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
 | `TS` | `Axiom.temp_serial` | |
 | `TC` | `Axiom.temp_connect` | |
 | `TL` | `Axiom.temp_linearity` | Disjunct order/association is the paper's, transcribed verbatim (see the doc-comment above). |
-| `UE`, `UT`, `NP`, `NF`, `UI`, `UC`, `UF`, `UG`, `SU`, `NA`, `NB`, `CN` | none (under these names) | The Lean `BX` layer (`ProofSystem/Axioms.lean`'s 45-constructor until/since system: `serial_future`, `left_mono_until_G`, `enrichment_until`, ...) is a structurally finer, differently-named axiomatization of the same fragment. A constructor-by-constructor naming audit remains open — see `specs/archive/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md` §1.2 in this repository. |
+| `UE`, `UT`, `NP`, `NF`, `UI`, `UC`, `UF`, `UG`, `SU`, `NA`, `NB`, `CN` | none (under these names) | The Lean `BX` layer (`ProofSystem/Axioms.lean`'s until/since constructors: `serial_future`, `left_mono_until_G`, `enrichment_until`, ...) states the same system under descriptive names, with each past mirror explicit where the paper derives it by TR. The constructor-by-constructor naming audit is **closed**: the key-to-constructor-to-mirror table is in `docs/reference/axiom-reference.md` § Paper Key Correspondence (a textual correspondence, not a machine-checked equivalence). The audit was originally opened in `specs/archive/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md` §1.2. |
 
 **Bimodal Logic (`\S sub:Logic`) — interaction and derived perpetuity principles:**
 
@@ -143,7 +144,7 @@ while producing a `DerivationTree` (itself a `Type`). A `Prop`-valued inductive 
 
 ## References
 
-* JPL paper `\S sub:Logic` — the TM axiomatization (MP/MN/MK/MT/M5/MF/TR/TK/T4/TS/TC/TL) that TM⁻ transposes
+* JPL paper `\S sub:Logic` — the source of the keys MP/MN/MK/MT/M5/MF/TR/TS/TC/TL; TM⁻'s selection of them (with TK, T4) is this repository's own transposition, not a paper system
 * JPL paper `\S sub:Extension` — DF, DN, CO
 * `FormalSystem/ProofSystem/Axioms.lean` — the L (Burgess-Xu) counterpart
 -/

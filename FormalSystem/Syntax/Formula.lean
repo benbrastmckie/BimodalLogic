@@ -144,7 +144,7 @@ Existential future operator (Fφ, "φ will be true at some future time").
 Derived as: F(φ) = U(φ, ⊤) — "φ eventually, with ⊤ holding until then".
 This means: there exists a future time where φ is true.
 
-**DSL Notation**: `F φ` for "Future" / "Finally"
+**DSL Notation**: `F φ`, labelled *Some Future* (the paper's `\future`)
 -/
 def someFuture (φ : Formula) : Formula := Formula.untl Formula.top φ
 
@@ -154,7 +154,7 @@ Existential past operator (Pφ, "φ was true at some past time").
 Derived as: P(φ) = S(φ, ⊤) — "φ occurred, with ⊤ holding since then".
 This means: there exists a past time where φ is true.
 
-**DSL Notation**: `P φ` for "Past" / "Previously"
+**DSL Notation**: `P φ`, labelled *Some Past* (the paper's `\past`)
 -/
 def somePast (φ : Formula) : Formula := Formula.snce Formula.top φ
 
@@ -164,7 +164,7 @@ Universal future operator (Gφ, "φ will always be true").
 Derived as: G(φ) = ¬F(¬φ) = ¬(U(¬φ, ⊤)) — "it is not the case that ¬φ eventually".
 This means: φ holds at all strictly future times.
 
-**DSL Notation**: `G φ` for "Globally" / "Generally"
+**DSL Notation**: `G φ`, labelled *All Future* (the paper's `\Future`)
 -/
 def allFuture (φ : Formula) : Formula := (someFuture φ.neg).neg
 
@@ -174,7 +174,7 @@ Universal past operator (Hφ, "φ has always been true").
 Derived as: H(φ) = ¬P(¬φ) = ¬(S(¬φ, ⊤)) — "it is not the case that ¬φ occurred".
 This means: φ holds at all strictly past times.
 
-**DSL Notation**: `H φ` for "Historically"
+**DSL Notation**: `H φ`, labelled *All Past* (the paper's `\Past`)
 -/
 def allPast (φ : Formula) : Formula := (somePast φ.neg).neg
 
@@ -597,14 +597,15 @@ prefix:80 "▽" => Formula.sometimes
 `Tests/BimodalTest/Syntax/FormulaTest.lean`. -/
 
 /--
-Swap temporal operators (past ↔ future) in a formula.
+Time reflection: interchange past and future throughout a formula.
 
-This transformation is used in the time reflection inference rule (TR),
-which states that if `⊢ φ` then `⊢ reflectTime φ`.
+This is the paper's `φ⟨S|U⟩`, the operation behind the time reflection metarule (TR):
+if `⊢ φ` then `⊢ reflectTime φ`.
 
-The function recursively swaps:
-- `allPast φ` ↔ `allFuture φ`
-- All other constructors are preserved with recursive application
+The primitive constructors it swaps are `untl` ↔ `snce` (with both arguments reflected
+recursively); `atom`, `bot`, `imp` and `box` are preserved. Because every tense operator is
+defined from `untl`/`snce`, the derived operators follow: `someFuture` ↔ `somePast` and
+`allFuture` ↔ `allPast` (see the `reflect_time_*` simp lemmas below).
 -/
 def reflectTime : Formula → Formula
   | atom s => atom s

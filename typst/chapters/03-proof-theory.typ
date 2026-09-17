@@ -357,7 +357,7 @@ Derivations are represented as inductive trees.
 == The Tense-Primitive Subsystem <sec:paper-contrast>
 
 The system of this chapter takes Since and Until as its temporal primitives.
-There is also a *tense-primitive subsystem*: the logic of the one-place $H$/$G$ sublanguage (@sec:formulas), presentable economically as the smallest extension of classical propositional logic closed under twelve schemata --- the rules MP, MN, and TR, and the axioms MK, MT, M5, MF, TK, T4, TB, TA, and TL.
+There is also a *tense-primitive subsystem*: the logic of the one-place $H$/$G$ sublanguage (@sec:formulas), presentable economically as extending classical propositional logic to include twelve schemata --- the rules MP, MN, and TR, and the axioms MK, MT, M5, MF, TK, T4, TB, TA, and TL.
 That subsystem is *deferred* in this book: its axiom map is recorded in the back matter's design-notes chapter, and the Frame Classes chapter's conservativity note states what its intended future development delivers.
 The full system presented here is the book's object of study throughout.
 

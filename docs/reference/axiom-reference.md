@@ -307,6 +307,41 @@ DerivationTree.temporalNecessitation : DerivationTree [] φ →
 `axiom`, `assumption`, `modus_ponens`, `necessitation`, `temporal_necessitation`,
 `time_reflection`, and `weakening`.
 
+## Paper Key Correspondence (BX temporal group)
+
+The paper's `def:BX` names its base tense logic by `\aitem` keys (TN, TR, TS, TC, TL, UE, UT, UI,
+UC, UF, UG, SU, CN, NP, NF, NA, NB). `FormalSystem/ProofSystem/Axioms.lean` states the same
+system under descriptive constructor names, and states each past mirror explicitly where the
+paper obtains it by the time reflection metarule TR. "Mirror" means the constructor is the exact
+`Formula.reflectTime` image of its partner.
+
+| Paper key | Paper schema | Lean primary constructor | Lean mirror (paper derives it by TR) |
+|---|---|---|---|
+| TN | if ⊢φ then ⊢Gφ | `DerivationTree.temporal_necessitation` (rule) | none |
+| TR | if ⊢φ then ⊢φ⟨S\|U⟩ | `DerivationTree.time_reflection` (rule, `reflectTime`) | none |
+| TS | F⊤ | `serial_future` (⊤→F⊤) | `serial_past` |
+| TC | φ → GPφ | `connect_future` | `connect_past` |
+| TL | Fφ∧Fψ → F(Fφ∧ψ) ∨ F(φ∧ψ) ∨ F(φ∧Fψ) | `temp_linearity` (disjuncts ordered F(φ∧ψ) ∨ (F(φ∧Fψ) ∨ F(Fφ∧ψ)), a reordering of the paper's) | `temp_linearity_past` |
+| UE | (φUψ) → Fψ | `until_F` | `since_P` |
+| UT | Fφ → (⊤Uφ) | `F_until_equiv` | `P_since_equiv` |
+| UI | φU(φ∧(φUψ)) → φUψ | `absorb_until` | `absorb_since` |
+| UC | G(φ→ψ) → (χUφ → χUψ) | `right_mono_until` | `right_mono_since` |
+| UF | (φUψ) → (φ∧(φUψ))Uψ | `self_accum_until` | `self_accum_since` |
+| UG | G(φ→χ) → (φUψ → χUψ) | `left_mono_until_G` | `left_mono_since_H` |
+| SU | θ∧(φUψ) → φU(ψ∧(φSθ)) | `enrichment_until` | `enrichment_since` |
+| CN | (φUψ ∧ χUθ) → three-way disjunction | `linear_until` (left-associated `(A∨B)∨C`) | `linear_since` |
+| NP | X⊤ → Y⊤ | `discrete_symm_fwd` | `discrete_symm_bwd` |
+| NF | X⊤ → GX⊤ | `discrete_propagate_fwd` | none |
+| NA | X⊤ → HX⊤ | `discrete_propagate_bwd` (the name suggests a mirror, but it is NA itself) | none |
+| NB | X⊤ → □X⊤ | `discrete_box_necessity` | none |
+
+The counts reconcile: the paper's 11 non-uniformity temporal axioms appear as 11 pairs (22
+constructors), and its 4 uniformity axioms as 5 constructors (NP's mirror is explicit), giving
+the tree's 27. Every Lean constructor is a paper axiom instance or a TR image of one, and TR is a
+Lean rule, so the two presentations derive the same theorems at the empty context. This is a
+textual correspondence, checked by inspection and by `simp` spot checks on representative
+mirror pairs; it is **not** a machine-checked `derivable_iff` theorem.
+
 ## Axiom Application Examples
 
 ### Example 1: Derive `□p → ◇p`

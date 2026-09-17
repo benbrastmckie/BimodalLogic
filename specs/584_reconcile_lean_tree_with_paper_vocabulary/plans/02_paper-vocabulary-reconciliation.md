@@ -289,32 +289,32 @@ Confirm with the ledger. The final count of renamed vs kept sites goes into the 
 
 ---
 
-### Phase 4: Rename 3 labels, stale docstrings, and naming-audit closure [NOT STARTED]
+### Phase 4: Rename 3 labels, stale docstrings, and naming-audit closure [COMPLETED]
 
 **Goal**: Adopt the Some/All Past/Future labels, fix the known-stale docstrings, and close the
 constructor naming audit in-tree.
 
 **Tasks**:
-- [ ] Labels: `docs/user-guide/quickstart.md:28-33` (the label "Historical" -> "All Past", and replace the
-      nonexistent `φ.past`/`φ.future` with `somePast`/`someFuture`/`allPast`/`allFuture`);
+- [x] Labels: `docs/user-guide/quickstart.md:28-33` (the label "Historical" -> "All Past", and replace the
+      nonexistent `φ.past`/`φ.future` with `somePast`/`someFuture`/`allPast`/`allFuture`); *(deviation: altered — the constructor table now lists the real primitives `untl`/`snce`, and the four labelled operators moved to the derived list; `operators.md` also relabels P/G/F, not only H)*
       `FormalSystem/Syntax/Formula.lean:~177` ("DSL Notation: `H φ` for Historically" -> All Past);
       `docs/reference/operators.md:~180`. Grep for other operator-label uses of
       Past/Future/Historical/Henceforth and fix the label senses only.
-- [ ] Fix the `Formula.reflectTime` docstring (`Syntax/Formula.lean` ~599-607) so it says the operation
+- [x] Fix the `Formula.reflectTime` docstring (`Syntax/Formula.lean` ~599-607) so it says the operation
       interchanges `untl` and `snce` (the paper's φ⟨S|U⟩) and cites TR. Check the Plus/Star variants
-      for the same error.
-- [ ] `FormalSystem/Syntax/MinusLanguage/Axioms.lean`: rewrite lines ~13-15 and ~146 so TM⁻ is the
+      for the same error. *(Plus/Star docstrings defer to `Formula.reflectTime` and carry no error; unchanged)*
+- [x] `FormalSystem/Syntax/MinusLanguage/Axioms.lean`: rewrite lines ~13-15 and ~146 so TM⁻ is the
       tree's own transposition with no paper attribution (no "smallest extension ... closed under"
       paper quote). Replace the open audit note at ~73-76 with the closed paper-key -> constructor ->
       mirror table from report 02 (or a pointer to it in `docs/reference/axiom-reference.md`, adding
       the table there), including the `temp_linearity` disjunct-order note and the NA =
       `discrete_propagate_bwd` note. Leave the `specs/archive/` citation for 589.
-- [ ] "smallest extension ... closed under" phrasing: update the 7 typst sites
+- [x] "smallest extension ... closed under" phrasing: update the 7 typst sites
       (`typst/FormalFoundations.typ` ~446, 490, 498, 527, 541, 577; `typst/chapters/03-proof-theory.typ`
       ~360) to "extends ... to include". Correct the `FormalFoundations.typ` remark (~1034-1041)
       whose "no TD rule" and "uniformity layer does not even match in count" claims the audit
-      refutes. Confirm `DerivationTree` docstrings need no change.
-- [ ] Gates: `lake build`; `bash scripts/typst-sync-check.sh`; `bash scripts/readme-lint.sh`.
+      refutes. Confirm `DerivationTree` docstrings need no change. *(deviation: altered — also reworded the dependent `FormalFoundations.typ` sentence (~691) that called the identification a conjecture; the table lives in `docs/reference/axiom-reference.md` § Paper Key Correspondence)*
+- [x] Gates: `lake build`; `bash scripts/typst-sync-check.sh`; `bash scripts/readme-lint.sh`.
 
 **Timing**: 1.5 hours
 
