@@ -201,10 +201,10 @@ does not vendor), the step or script must detect that case explicitly, print a l
 a present-but-wrong input must never be silently skipped — the skip path is for a genuinely
 absent input only, not a shortcut around a real check.
 
-**Known non-conforming script**: `check-paper-definitions.sh` currently exits 2 when its input
-is missing. That is a failure exit, not a neutral skip, so it must adopt this convention (an
-explicit "input present?" check that prints `SKIP (neutral): ...` and exits 0 when absent)
-before it can be wired into CI.
+`check-paper-definitions.sh` is the reference implementation of this convention: when the
+upstream paper file is absent (always the case on the runner) and neither `--against` nor
+`--resolve` was given, it prints `SKIP (neutral): paper not found at <path>` and exits 0, while a
+missing record file stays a failure (exit 2).
 
 ### 3. Cache-Warm Placement
 
@@ -229,7 +229,8 @@ run; "minimal env, extracted body" re-derives the exact `run:` body from the com
 | `Check copyright headers (scripts/check-copyright-headers.sh --strict)` | 10.98s | 4.5s | _(pending)_ |
 | `Check README health (scripts/readme-lint.sh)` | 7.34s | 4.7s | _(pending)_ |
 | `Typst sync check (scripts/typst-sync-check.sh)` | 13.6s | 14.1s | _(pending)_ |
-| **Sum (added local delta)** | **~55.5s** | **~43.6s** | _(pending)_ |
+| `Check paper definitions (scripts/check-paper-definitions.sh)` | 0.85s (paper present, full manifest walk; 0.03s on the unchanged-checksum fast path), measured 2026-09-17 | 0.02s (paper absent: the neutral-skip path CI takes) | _(pending)_ |
+| **Sum (added local delta)** | **~56.4s** | **~43.6s** | _(pending)_ |
 
 A task that wires a new check step updates this table in the same change, adding its own row
 and re-summing.

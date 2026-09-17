@@ -33,7 +33,10 @@
 #                                                         # help add a new manifest row
 #   check-paper-definitions.sh -h | --help
 #
-# Exit codes: 0 = case (a) or (b) [or --resolve succeeded]; 1 = case (c); 2 = usage/setup error.
+# Exit codes: 0 = case (a) or (b) [or --resolve succeeded], or a neutral skip when the paper file
+#   is absent and neither --against nor --resolve was given (prints "SKIP (neutral): ..."; this is
+#   the CI path, since CI cannot see the paper's repository); 1 = case (c); 2 = usage/setup error
+#   (including a missing record file, and a missing paper under --resolve).
 set -uo pipefail
 
 RECORD_DEFAULT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/docs/reference/paper-definitions-of-record.md"
@@ -54,7 +57,7 @@ while [ $# -gt 0 ]; do
     --resolve) RESOLVE_SPEC="$2"; shift 2 ;;
     --resolve=*) RESOLVE_SPEC="${1#--resolve=}"; shift ;;
     -h|--help)
-      sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '2,39p' "$0" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *)
@@ -135,6 +138,14 @@ if [ -n "$AGAINST" ]; then
   CURRENT_LABEL="commit ${AGAINST}"
 else
   if [ ! -f "$PAPER" ]; then
+    if [ -z "$RESOLVE_SPEC" ]; then
+      # Skip-and-report-neutral (docs/development/CI_CD_PROCESS.md, "Wiring a New Check Script"):
+      # the paper lives in a separate repository that CI cannot see, so an absent paper is a
+      # genuinely absent input, not a failure. --resolve and --against still need real input and
+      # keep their exit-2 behaviour; a missing RECORD is caught above and stays exit 2.
+      echo "SKIP (neutral): paper not found at $PAPER"
+      exit 0
+    fi
     echo "error: paper file not found: $PAPER" >&2
     exit 2
   fi

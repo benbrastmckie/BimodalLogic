@@ -1996,21 +1996,16 @@ the passage has acquired a resolvable anchor upstream first.
   import-graph fact — and **not** as choice-freedom in Lean's sense, which is a claim about a
   different axiom. The measured accounting lives in `extend_periodic`'s own docstring.
 
-## Invocation from skills or hooks — decision (recorded, not implemented)
+## Invocation from CI, skills or hooks — decision (CI wired 2026-09-17)
 
-CI cannot enforce this lint: `.github/workflows/ci.yml` has no visibility into
-`/home/benjamin/Philosophy/Papers/` (a different repository entirely), so wiring it into CI would
-require vendoring or submoduling the paper, which is explicitly out of scope for this task.
+`scripts/check-paper-definitions.sh` now runs in `.github/workflows/ci.yml` as the step
+`Check paper definitions (scripts/check-paper-definitions.sh)`. CI still has no visibility into
+`/home/benjamin/Philosophy/Papers/`, a different repository that is not vendored, so on the runner
+the script takes its **skip-and-report-neutral** path: it prints `SKIP (neutral): paper not found
+at ...` and exits 0 (see `docs/development/CI_CD_PROCESS.md`, "Wiring a New Check Script"). What CI
+does enforce is that the record stays parseable, since a missing record file is still exit 2. The
+real drift check runs wherever the paper is present, which means locally, by hand, as before.
 
-**Decision**: `scripts/check-paper-definitions.sh` should be invoked manually for now, in the same
-family as its siblings (`check-copyright-headers.sh`, `check-module-invariants.sh`,
-`readme-lint.sh`, `typst-sync-check.sh`), none of which are CI- or hook-wired either. The strongest
-candidate for automatic invocation, if this is revisited, is a **skill preflight hook** for the
-`paper-refactor` topic specifically (e.g. `/research`, `/plan`, `/implement` preflight for a task
-whose `topic` is `paper-refactor`) — that is the exact population of tasks that quotes this file's
-anchors and would benefit from an automatic staleness check before dispatch. A git pre-commit hook
-was considered and rejected: this repository's commits do not touch the paper file at all (it
-lives in a separate repository), so a pre-commit hook here would never fire on the event that
-actually causes drift. **Implementing either integration is explicitly out of scope for this task**
-(deliverable 2 is the lint script itself); this section records the recommendation for whoever
-picks up that follow-on work.
+A skill preflight hook for the `paper-refactor` topic remains the strongest candidate for automatic
+local invocation and is still not implemented. A git pre-commit hook in this repository stays
+rejected: commits here never touch the paper, so it would never fire on the event that causes drift.

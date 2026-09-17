@@ -391,24 +391,24 @@ task's acceptance bar.
 
 ---
 
-### Phase 6: Skip-neutral mode and CI wiring [NOT STARTED]
+### Phase 6: Skip-neutral mode and CI wiring [COMPLETED]
 
 **Goal**: Make the drift check CI-safe and gate it in CI.
 
 **Tasks**:
-- [ ] In `scripts/check-paper-definitions.sh`'s paper-absent branch (`if [ ! -f "$PAPER" ]`, the non
+- [x] In `scripts/check-paper-definitions.sh`'s paper-absent branch (`if [ ! -f "$PAPER" ]`, the non
       `--against` path): when neither `--against` nor `--resolve` was given, print
       `SKIP (neutral): paper not found at $PAPER` and exit 0. Keep exit 2 for a missing record, for
       `--against`, and for `--resolve`. Update the header's exit-code documentation.
-- [ ] Test all four paths: `--paper /nonexistent` -> SKIP, exit 0; `--record /nonexistent` -> exit 2;
+- [x] Test all four paths: `--paper /nonexistent` -> SKIP, exit 0; `--record /nonexistent` -> exit 2;
       `--resolve ... --paper /nonexistent` -> exit 2; live run -> exit 0.
-- [ ] Add a step directly before "Report results" in `.github/workflows/ci.yml`, named
+- [x] Add a step directly before "Report results" in `.github/workflows/ci.yml`, named
       `Check paper definitions (scripts/check-paper-definitions.sh)`, with the
       `set -euo pipefail` + `::group::` body.
-- [ ] `docs/development/CI_CD_PROCESS.md`: add the Runtime Budget row (measure locally with the paper
+- [x] `docs/development/CI_CD_PROCESS.md`: add the Runtime Budget row (measure locally with the paper
       present and with the paper absent under a minimal env using the extracted step body), and
       delete the "Known non-conforming script" paragraph.
-- [ ] Gates: `bash scripts/check-module-invariants.sh --no-build`; `bash scripts/readme-lint.sh`; YAML
+- [x] Gates: `bash scripts/check-module-invariants.sh --no-build`; `bash scripts/readme-lint.sh`; YAML
       sanity (`python3 -c 'import yaml,sys; yaml.safe_load(open(".github/workflows/ci.yml"))'`).
 
 **Timing**: 1 hour
