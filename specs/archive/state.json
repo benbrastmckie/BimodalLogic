@@ -1923,6 +1923,30 @@
   ],
   "completed_projects": [
     {
+      "project_number": 569,
+      "project_name": "retarget_semantics_to_possible_world_index",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "description": "Retarget the semantics from a convex index carrying an `IsTotal` side hypothesis to a total-by-construction index.\n\nTHE CORRECTNESS ARGUMENT, machine-checked in `specs/553_decide_convex_history_layer_collapse/probes/01_bounded-index-diagnosis.lean`: the current bounded-index reading is INCOHERENT, not merely unused. `refute_modal_t_at_bounded_index` proves that `box p implies p` -- an axiom of TM -- is FALSE at a bounded convex index at a point off its domain, because `TruthAt`'s atom clause is domain-relative (`exists ht : tau.domain t`) while its box clause re-indexes to `H_F`, which is total. The degeneracy is exactly `x not in dom tau`; on the domain the axiom holds. The `IsTotal` guard (239 in-code occurrences across 55 files) is load-bearing, and this is precisely what it guards. This is a correctness argument, not a tidiness one.\n\nTARGET: `structure PossibleWorld (F : TaskFrame) where states : F.Duration -> F.WorldState ; respects_task : forall s t, F.TaskRel (states s) (t - s) (states t)` -- named for the paper's own term, the paper having withdrawn `world history` entirely -- so that `PossibleWorld F` and `F.HF` coincide definitionally exactly as they do in the paper, with no side condition and no bridging apparatus.\n\n`ConvexHistory` SURVIVES as a definition. This is the retarget half of DEVELOP-AND-RETARGET, not a collapse: the presheaf front and the C3/C4 front both continue to use the convex layer, and removing it would foreclose both.\n\nGATE, BEFORE ANY OTHER PHASE: a one-phase spike resolving whether the Z-transfer machinery in `FormalSystem/Semantics/IntTransfer.lean` survives a narrower index (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1, obligation class (ii)). This is the ONE item in the whole retarget that grep cannot answer. It is a spike inside this task, not a task of its own. If it comes back negative, revise this description before continuing rather than absorbing the surprise.\n\nSUGGESTED PHASE DECOMPOSITION, each one agent run, each leaving the build green: (1) introduce `PossibleWorld` with an `abbrev` bridge and prove the round trip against `TaskFrame.HF`; (2) retarget `TruthAt` and `Truth.lean`'s lemma block; (3) retarget `Validity.lean` and delete the 12 bridges (`TaskFrame.HF.val`/`.property`, `SemanticConsequence.of_forall`/`.apply`, `SemanticConsequenceIn.of_forall_total`/`.apply_total`, `Valid.of_forall_total`/`.apply`, `validOn_iff_total` and the rest), keeping deprecated aliases; (4-6) sweep the roughly 280 bridge call sites across 26 files, ONE module cluster per phase, with `Metalogic/Soundness.lean` and `Metalogic/Decidability/` LAST; (7) delete the deprecated aliases and run the `assert_not_exists` audit.\n\nMEASURED SIZE (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1): roughly 600 touch points across 55-75 files, net MINUS 150 to MINUS 250 lines out of 283,541. Volume, not depth. Two corrections to the original costing: only 64 of 133 dependent `.states` sites are at the convex layer, and the roughly 280 bridge call sites across 26 files -- which the original costing omitted entirely -- dominate the work.\n\nHARD CONSTRAINTS. Leave `PartialHistory` and the Extension Theorem untouched: the Extension Theorem's conclusion is stated at the partial layer and is unaffected either way. lake build FormalSystem must be green with no new sorry at the end of every phase.",
+      "topic": "codebase-cleanup",
+      "dependencies": [
+        584
+      ],
+      "created": "2026-09-08T17:34:36Z",
+      "last_updated": "2026-09-17T22:35:27Z",
+      "priority": "high",
+      "session_id": "sess_1789683510_f29336",
+      "artifacts": [
+        {
+          "path": "specs/569_retarget_semantics_to_possible_world_index/reports/01_possible-world-index-retarget.md",
+          "type": "report",
+          "summary": "The task's premise is stale: tasks 599/601/602 already executed the described retarget; the IntTransfer gate resolves positive (sorryAx-free at the total index); the residual gap is 36 sites, 22 of them closed by one missing API lemma; the flat-structure conversion is optional and relocates bridging rather than removing it."
+        }
+      ],
+      "next_artifact_number": 3,
+      "abandoned": "2026-09-17T22:45:54Z"
+    },
+    {
       "project_number": 613,
       "project_name": "serialize_concurrent_implement_dispatches_sharing_working_tree",
       "status": "abandoned",

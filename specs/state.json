@@ -4,7 +4,7 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 615,
+  "next_project_number": 616,
   "active_projects": [
     {
       "project_number": 610,
@@ -1143,29 +1143,6 @@
       "priority": "high"
     },
     {
-      "project_number": 569,
-      "project_name": "retarget_semantics_to_possible_world_index",
-      "status": "researched",
-      "task_type": "lean4",
-      "description": "Retarget the semantics from a convex index carrying an `IsTotal` side hypothesis to a total-by-construction index.\n\nTHE CORRECTNESS ARGUMENT, machine-checked in `specs/553_decide_convex_history_layer_collapse/probes/01_bounded-index-diagnosis.lean`: the current bounded-index reading is INCOHERENT, not merely unused. `refute_modal_t_at_bounded_index` proves that `box p implies p` -- an axiom of TM -- is FALSE at a bounded convex index at a point off its domain, because `TruthAt`'s atom clause is domain-relative (`exists ht : tau.domain t`) while its box clause re-indexes to `H_F`, which is total. The degeneracy is exactly `x not in dom tau`; on the domain the axiom holds. The `IsTotal` guard (239 in-code occurrences across 55 files) is load-bearing, and this is precisely what it guards. This is a correctness argument, not a tidiness one.\n\nTARGET: `structure PossibleWorld (F : TaskFrame) where states : F.Duration -> F.WorldState ; respects_task : forall s t, F.TaskRel (states s) (t - s) (states t)` -- named for the paper's own term, the paper having withdrawn `world history` entirely -- so that `PossibleWorld F` and `F.HF` coincide definitionally exactly as they do in the paper, with no side condition and no bridging apparatus.\n\n`ConvexHistory` SURVIVES as a definition. This is the retarget half of DEVELOP-AND-RETARGET, not a collapse: the presheaf front and the C3/C4 front both continue to use the convex layer, and removing it would foreclose both.\n\nGATE, BEFORE ANY OTHER PHASE: a one-phase spike resolving whether the Z-transfer machinery in `FormalSystem/Semantics/IntTransfer.lean` survives a narrower index (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1, obligation class (ii)). This is the ONE item in the whole retarget that grep cannot answer. It is a spike inside this task, not a task of its own. If it comes back negative, revise this description before continuing rather than absorbing the surprise.\n\nSUGGESTED PHASE DECOMPOSITION, each one agent run, each leaving the build green: (1) introduce `PossibleWorld` with an `abbrev` bridge and prove the round trip against `TaskFrame.HF`; (2) retarget `TruthAt` and `Truth.lean`'s lemma block; (3) retarget `Validity.lean` and delete the 12 bridges (`TaskFrame.HF.val`/`.property`, `SemanticConsequence.of_forall`/`.apply`, `SemanticConsequenceIn.of_forall_total`/`.apply_total`, `Valid.of_forall_total`/`.apply`, `validOn_iff_total` and the rest), keeping deprecated aliases; (4-6) sweep the roughly 280 bridge call sites across 26 files, ONE module cluster per phase, with `Metalogic/Soundness.lean` and `Metalogic/Decidability/` LAST; (7) delete the deprecated aliases and run the `assert_not_exists` audit.\n\nMEASURED SIZE (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1): roughly 600 touch points across 55-75 files, net MINUS 150 to MINUS 250 lines out of 283,541. Volume, not depth. Two corrections to the original costing: only 64 of 133 dependent `.states` sites are at the convex layer, and the roughly 280 bridge call sites across 26 files -- which the original costing omitted entirely -- dominate the work.\n\nHARD CONSTRAINTS. Leave `PartialHistory` and the Extension Theorem untouched: the Extension Theorem's conclusion is stated at the partial layer and is unaffected either way. lake build FormalSystem must be green with no new sorry at the end of every phase.",
-      "topic": "codebase-cleanup",
-      "dependencies": [
-        584
-      ],
-      "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-09-17T22:35:27Z",
-      "priority": "high",
-      "session_id": "sess_1789683510_f29336",
-      "artifacts": [
-        {
-          "path": "specs/569_retarget_semantics_to_possible_world_index/reports/01_possible-world-index-retarget.md",
-          "type": "report",
-          "summary": "The task's premise is stale: tasks 599/601/602 already executed the described retarget; the IntTransfer gate resolves positive (sorryAx-free at the total index); the residual gap is 36 sites, 22 of them closed by one missing API lemma; the flat-structure conversion is optional and relocates bridging rather than removing it."
-        }
-      ],
-      "next_artifact_number": 3
-    },
-    {
       "project_number": 570,
       "project_name": "c3_completeness_question",
       "status": "not_started",
@@ -1188,6 +1165,21 @@
       "priority": "low",
       "description": "readme-lint.sh reports 47 of 60 FormalSystem/README.md files with a stale or missing date stamp (stamp predates the directory's last git-committed change), left behind by the recent Syntax/Semantics language-family nesting, Metalogic import-cycle repair, and WorldHistory retarget work. Advisory only (readme-lint.sh exits RESULT: PASS regardless), but the drift is now wide enough to warrant a single sweep. Update each listed README's date stamp to reflect its directory's current state, and add a date line to the 3 files currently missing one (Metalogic/Conservativity/Star/README.md, Metalogic/Decidability/Verified/Termination/MintBound/README.md, Syntax/StarLanguage/README.md). See specs/reviews/review-2026-09-17.md's Low Priority Issues section for the full 47-file list. Purely mechanical; re-verify with scripts/readme-lint.sh after.",
       "created": "2026-09-17T16:42:12Z"
+    },
+    {
+      "project_number": 615,
+      "project_name": "close_world_history_reach_through_residue",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Close the residue of the possible-world index retarget. The seven-phase retarget itself was already executed by three earlier tasks in this topic; research against the current tree confirmed the surviving gap is 36 sites, not the ~600 the superseded description assumed (28 reach-throughs plus 8 layer crossings).\n\nREQUIRED WORK:\n\n(1) Add `WorldHistory.respects_task` -- a three-line lemma, already machine-checked in the probe at `specs/archive/569_retarget_semantics_to_possible_world_index/probes/01_possible-world-spike.lean`. This single lemma is what 22 of the 28 reach-through sites need; rewrite those 22 call sites to use it instead of reaching through the subtype.\n\n(2) Fix the two layer-crossing defects at `FormalSystem/Automation/IntNormalForm.lean:282` and `FormalSystem/Metalogic/Extension.lean:219`.\n\n(3) Triage the remaining 6 reach-throughs and 8 layer crossings, disposing of each explicitly.\n\nOUT OF SCOPE (deliberately, each needing its own justification rather than inheriting one from the superseded description):\n- The `PossibleWorld` rename (503 binders plus the namespace). Blocked on settling whether H_F or the time-shift quotient W_F owns the name \"possible world\" -- `possible_worlds.tex:1046` makes them different objects and `:1050` licenses both names.\n- Converting `WorldHistory` from a subtype to a flat structure. Research found this is a real net win (the `CoeOut` instance never fires, `WorldHistory.ext` has zero call sites, `states_eq_state` goes away) at the cost of a ~6-line `toPartialHistory` bridge for the Extension Theorem -- but it relocates bridging rather than removing it, so it belongs in its own task.\n\nVERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_iff_validInt` and `truthAt_map` still returns exactly `[propext, Classical.choice, Quot.sound]` with no `sorryAx`.",
+      "topic": "semantics-refactor",
+      "priority": "medium",
+      "effort": "small",
+      "dependencies": [],
+      "created": "2026-09-17T22:46:34Z",
+      "last_updated": "2026-09-17T22:46:34Z",
+      "artifacts": [],
+      "next_artifact_number": 1
     }
   ],
   "artifacts": [

@@ -1,5 +1,5 @@
 ---
-next_project_number: 615
+next_project_number: 616
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 615
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,585,603,604,605,606,607,608,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,585,603,604,605,606,607,608,610,614,615 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -108,17 +108,44 @@ next_project_number: 615
 ### Codebase Cleanup
 
 506 [RESEARCHED] — Fix all outstanding display/layout defects in the compiled...
-569 [RESEARCHED] — Retarget the semantics from a convex index carrying an...
+585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
       └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
-585 [NOT STARTED] — lake build exits 0 with 316 warnings across 47 live files,...
-  └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
   └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
+### Semantics Refactor
+
+615 [NOT STARTED] — Close the residue of the possible-world index retarget. The...
+
 ## Tasks
+
+### 615. Close world history reach through residue
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics-refactor
+- **Dependencies**: None
+
+**Description**: Close the residue of the possible-world index retarget. The seven-phase retarget itself was already executed by three earlier tasks in this topic; research against the current tree confirmed the surviving gap is 36 sites, not the ~600 the superseded description assumed (28 reach-throughs plus 8 layer crossings).
+
+REQUIRED WORK:
+
+(1) Add `WorldHistory.respects_task` -- a three-line lemma, already machine-checked in the probe at `specs/archive/569_retarget_semantics_to_possible_world_index/probes/01_possible-world-spike.lean`. This single lemma is what 22 of the 28 reach-through sites need; rewrite those 22 call sites to use it instead of reaching through the subtype.
+
+(2) Fix the two layer-crossing defects at `FormalSystem/Automation/IntNormalForm.lean:282` and `FormalSystem/Metalogic/Extension.lean:219`.
+
+(3) Triage the remaining 6 reach-throughs and 8 layer crossings, disposing of each explicitly.
+
+OUT OF SCOPE (deliberately, each needing its own justification rather than inheriting one from the superseded description):
+- The `PossibleWorld` rename (503 binders plus the namespace). Blocked on settling whether H_F or the time-shift quotient W_F owns the name "possible world" -- `possible_worlds.tex:1046` makes them different objects and `:1050` licenses both names.
+- Converting `WorldHistory` from a subtype to a flat structure. Research found this is a real net win (the `CoeOut` instance never fires, `WorldHistory.ext` has zero call sites, `states_eq_state` goes away) at the cost of a ~6-line `toPartialHistory` bridge for the Extension Theorem -- but it relocates bridging rather than removing it, so it belongs in its own task.
+
+VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_iff_validInt` and `truthAt_map` still returns exactly `[propext, Classical.choice, Quot.sound]` with no `sorryAx`.
+
+---
 
 ### 614. Refresh stale readme date stamps across
 - **Status**: [NOT STARTED]
@@ -323,31 +350,6 @@ THE FIRST OBSTACLE, which any canonical-model construction will hit immediately 
 SEQUENCING. Do not start before the box-range design choice recorded in the C3/C4 library task is settled by the author. If the box range is cut back, this task is about a DIFFERENT logic and this description must be revised before any work begins.
 
 LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear order BEFORE unboundedness is added, which is exactly the setting C3 lives in. Check the Literature/ index for both before starting; acquire them if absent.
-
----
-
-### 569. Retarget semantics to possible world index
-- **Status**: [RESEARCHED]
-- **Task Type**: lean4
-- **Topic**: codebase-cleanup
-- **Dependencies**: Task 584
-- **Research**: [569_retarget_semantics_to_possible_world_index/reports/01_possible-world-index-retarget.md]
-
-**Description**: Retarget the semantics from a convex index carrying an `IsTotal` side hypothesis to a total-by-construction index.
-
-THE CORRECTNESS ARGUMENT, machine-checked in `specs/553_decide_convex_history_layer_collapse/probes/01_bounded-index-diagnosis.lean`: the current bounded-index reading is INCOHERENT, not merely unused. `refute_modal_t_at_bounded_index` proves that `box p implies p` -- an axiom of TM -- is FALSE at a bounded convex index at a point off its domain, because `TruthAt`'s atom clause is domain-relative (`exists ht : tau.domain t`) while its box clause re-indexes to `H_F`, which is total. The degeneracy is exactly `x not in dom tau`; on the domain the axiom holds. The `IsTotal` guard (239 in-code occurrences across 55 files) is load-bearing, and this is precisely what it guards. This is a correctness argument, not a tidiness one.
-
-TARGET: `structure PossibleWorld (F : TaskFrame) where states : F.Duration -> F.WorldState ; respects_task : forall s t, F.TaskRel (states s) (t - s) (states t)` -- named for the paper's own term, the paper having withdrawn `world history` entirely -- so that `PossibleWorld F` and `F.HF` coincide definitionally exactly as they do in the paper, with no side condition and no bridging apparatus.
-
-`ConvexHistory` SURVIVES as a definition. This is the retarget half of DEVELOP-AND-RETARGET, not a collapse: the presheaf front and the C3/C4 front both continue to use the convex layer, and removing it would foreclose both.
-
-GATE, BEFORE ANY OTHER PHASE: a one-phase spike resolving whether the Z-transfer machinery in `FormalSystem/Semantics/IntTransfer.lean` survives a narrower index (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1, obligation class (ii)). This is the ONE item in the whole retarget that grep cannot answer. It is a spike inside this task, not a task of its own. If it comes back negative, revise this description before continuing rather than absorbing the surprise.
-
-SUGGESTED PHASE DECOMPOSITION, each one agent run, each leaving the build green: (1) introduce `PossibleWorld` with an `abbrev` bridge and prove the round trip against `TaskFrame.HF`; (2) retarget `TruthAt` and `Truth.lean`'s lemma block; (3) retarget `Validity.lean` and delete the 12 bridges (`TaskFrame.HF.val`/`.property`, `SemanticConsequence.of_forall`/`.apply`, `SemanticConsequenceIn.of_forall_total`/`.apply_total`, `Valid.of_forall_total`/`.apply`, `validOn_iff_total` and the rest), keeping deprecated aliases; (4-6) sweep the roughly 280 bridge call sites across 26 files, ONE module cluster per phase, with `Metalogic/Soundness.lean` and `Metalogic/Decidability/` LAST; (7) delete the deprecated aliases and run the `assert_not_exists` audit.
-
-MEASURED SIZE (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 6.1): roughly 600 touch points across 55-75 files, net MINUS 150 to MINUS 250 lines out of 283,541. Volume, not depth. Two corrections to the original costing: only 64 of 133 dependent `.states` sites are at the convex layer, and the roughly 280 bridge call sites across 26 files -- which the original costing omitted entirely -- dominate the work.
-
-HARD CONSTRAINTS. Leave `PartialHistory` and the Extension Theorem untouched: the Extension Theorem's conclusion is stated at the partial layer and is unaffected either way. lake build FormalSystem must be green with no new sorry at the end of every phase.
 
 ---
 
