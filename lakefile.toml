@@ -1,0 +1,123 @@
+# Lake configuration for the BimodalLogic package.
+#
+# The package is named after the repository; the main library is `FormalSystem` and the test
+# library `BimodalTest`. This file is declarative TOML (not a Lean-syntax lakefile) because
+# leanprover-community/docgen-action, used by .github/workflows/docs.yml, reads only
+# `lakefile.toml`. Scripts that need the declared targets read this file through
+# scripts/lake_targets.py rather than scraping it with their own regex.
+#
+# Defaults Lake applies and this file therefore omits: a library's `srcDir` is "." and its
+# `roots` is `[name]`; an executable's `srcDir` is ".".
+
+name = "BimodalLogic"
+testDriver = "BimodalTest"
+lintDriver = "batteries/runLinter"
+defaultTargets = ["FormalSystem"]
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "v4.33.0-rc1"
+
+[[lean_lib]]
+name = "FormalSystem"
+leanOptions = {pp.unicode.fun = true, autoImplicit = false}
+
+[[lean_lib]]
+name = "BimodalTest"
+srcDir = "Tests"
+leanOptions = {pp.unicode.fun = true, autoImplicit = false}
+
+# Dataset generator executable for ML training data.
+# Run with: lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic.jsonl
+[[lean_exe]]
+name = "dataset_generator"
+root = "FormalSystem.Automation.DatasetGeneratorMain"
+supportInterpreter = true
+
+# Dataset validator executable for conformance testing and feasibility gate.
+# Run with: lake exe dataset_validator
+[[lean_exe]]
+name = "dataset_validator"
+root = "FormalSystem.Automation.DatasetValidatorMain"
+supportInterpreter = true
+
+# Proof step extractor for BimodalHarness training data.
+# Run with: lake exe proof_extractor -- --output data/proof_steps.jsonl
+[[lean_exe]]
+name = "proof_extractor"
+root = "FormalSystem.Automation.ProofExtractorMain"
+supportInterpreter = true
+
+# Enumerator benchmark: validates complexity 5-7 feasibility gates.
+# Run with: lake exe enum_benchmark
+[[lean_exe]]
+name = "enum_benchmark"
+root = "FormalSystem.Automation.EnumBenchmarkMain"
+supportInterpreter = true
+
+# Benchmark anchor generator: produces axiom instances for BMLogic-Bench.
+# Run with: lake exe benchmark_anchors -- --output data/axiom-instances.jsonl
+[[lean_exe]]
+name = "benchmark_anchors"
+root = "FormalSystem.Automation.BenchmarkAnchorsMain"
+supportInterpreter = true
+
+# Benchmark oracle: validates formula labels via decision procedure.
+# Run with: lake exe benchmark_oracle -- --input data/bmlogic-bench-candidates.jsonl --output data/bmlogic-bench-validated.jsonl
+[[lean_exe]]
+name = "benchmark_oracle"
+root = "FormalSystem.Automation.BenchmarkOracleMain"
+supportInterpreter = true
+
+# Contrastive pair generator for dual-verification training signal.
+# Run with: lake exe contrastive_generator -- --max-complexity 5 --output data/contrastive_pairs.jsonl
+[[lean_exe]]
+name = "contrastive_generator"
+root = "FormalSystem.Automation.ContrastiveGeneratorMain"
+supportInterpreter = true
+
+# Tableau bridge REPL for live formula queries.
+# Run with: lake exe tableau_bridge
+# Then send JSONL requests on stdin, one per line.
+[[lean_exe]]
+name = "tableau_bridge"
+root = "FormalSystem.Automation.TableauBridgeMain"
+supportInterpreter = true
+
+# Tableau-derived proof step pipeline for large-scale training data.
+# Run with: lake exe tableau_proof_steps -- --max-complexity 7 --output data/tableau_proof_steps.jsonl
+[[lean_exe]]
+name = "tableau_proof_steps"
+root = "FormalSystem.Automation.TableauProofStepsMain"
+supportInterpreter = true
+
+# Trace certificate exporter: emits JSONL proof certificates.
+# Run with: echo '{"command":"trace_decide","formula":{"tag":"atom","name":"p"}}' | lake exe trace_exporter
+[[lean_exe]]
+name = "trace_exporter"
+root = "FormalSystem.Automation.TraceExporterMain"
+supportInterpreter = true
+
+# Proof-first generator: forward-chains from axioms, emits JSONL theorems.
+# Run with: lake exe proof_first_generator -- --max-depth 2 --seed 1000 --output data/proof_first.jsonl
+[[lean_exe]]
+name = "proof_first_generator"
+root = "FormalSystem.Automation.ProofFirstGeneratorMain"
+supportInterpreter = true
+
+# Machine-readable axiomatization appendix exporter.
+# Run with: lake exe machine_appendix -- --output typst/generated/machine-appendix.jsonl --stamp-commit SHA --stamp-date DATE
+# Normally invoked via scripts/typst-machine-appendix.sh (injects git stamps).
+[[lean_exe]]
+name = "machine_appendix"
+root = "FormalSystem.Automation.MachineAppendixMain"
+supportInterpreter = true
+
+# Reports FormalSystem modules that do not (transitively) import FormalSystem.Init.
+# Run with: lake exe checkInitImports
+[[lean_exe]]
+name = "checkInitImports"
+srcDir = "scripts"
+root = "CheckInitImportsMain"
+supportInterpreter = true

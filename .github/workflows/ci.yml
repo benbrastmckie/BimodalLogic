@@ -40,7 +40,7 @@ jobs:
           lint: true
           use-mathlib-cache: true
 
-      # Every `lean_exe` root in lakefile.lean sits outside both library root closures, so the
+      # Every `lean_exe` root in lakefile.toml sits outside both library root closures, so the
       # `build: true` step above never elaborates any of them: nothing imports them, and
       # `lake build` only walks what is reachable from `FormalSystem` and `BimodalTest`.
       # FormalSystem/Automation/ProofExtractorMain.lean (then ProofStepExport.lean) failed to elaborate for an extended period
@@ -49,13 +49,15 @@ jobs:
       # measured cost -- 240-310 MB of linked binary per root, thirteen of them. These are
       # MODULE targets: elaboration and C emission, no linking, reusing the cache the
       # lean-action step above already populated. C25 in scripts/check-module-invariants.sh is
-      # the full-mode counterpart of this same root-list scrape; CI itself runs the structural
+      # the full-mode counterpart of this same root list, and both read it through
+      # scripts/lake_targets.py (which exits non-zero, failing this step under `set -e`, if
+      # lakefile.toml is missing or declares no lean_exe); CI itself runs the structural
       # (--no-build) pass in the "Check module invariants" step below, which skips C25 (and
       # C1, C24) as already covered by this step and by lean-action.
       - name: Compile lean_exe roots (outside the library closures)
         run: |
           set -euo pipefail
-          roots=$(grep -oP 'root\s*:=\s*`\K[A-Za-z0-9_.]+' lakefile.lean)
+          roots=$(python3 scripts/lake_targets.py exe-roots)
           test -n "$roots"
           for root in $roots; do
             echo "::group::lake build $root"
@@ -112,6 +114,18 @@ jobs:
           set -euo pipefail
           echo "::group::bash scripts/check-metalogic-cycles.sh"
           bash scripts/check-metalogic-cycles.sh
+          echo "::endgroup::"
+
+      # Build-free: jq/python3/awk only, no lake or typst binary invocation (Check 2's
+      # --json regeneration mode is documented as deliberately skipping the one `lake env
+      # lean` call the underlying generator script contains). Placed here purely by
+      # convention, matching the other structural checks above -- it has no cache-warm
+      # ordering dependency of its own.
+      - name: Typst sync check (scripts/typst-sync-check.sh)
+        run: |
+          set -euo pipefail
+          echo "::group::bash scripts/typst-sync-check.sh"
+          bash scripts/typst-sync-check.sh
           echo "::endgroup::"
 
       - name: Report results

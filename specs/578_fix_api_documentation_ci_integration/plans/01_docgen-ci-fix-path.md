@@ -131,38 +131,38 @@ before relying on the numbers; if different, use the observed counts as the base
 
 ---
 
-### Phase 2: Migrate to lakefile.toml and Repoint Scrapers (atomic) [NOT STARTED]
+### Phase 2: Migrate to lakefile.toml and Repoint Scrapers (atomic) [COMPLETED]
 
 **Goal**: Replace `lakefile.lean` with an equivalent `lakefile.toml` named `BimodalLogic`, and
 update every scraper in the same commit.
 
 **Tasks**:
-- [ ] Run `lake translate-config toml`; delete the produced `lakefile.lean.bak` and ensure
+- [x] Run `lake translate-config toml`; delete the produced `lakefile.lean.bak` and ensure
       `lakefile.lean` is gone.
-- [ ] Set `name = "BimodalLogic"`; restore per-exe and header docstrings as `#` comments (no
+- [x] Set `name = "BimodalLogic"`; restore per-exe and header docstrings as `#` comments (no
       task-number citations — C9 still scans the lakefile).
-- [ ] Edit `lake-manifest.json` root `"name": "Logos"` -> `"BimodalLogic"` by hand (no
+- [x] Edit `lake-manifest.json` root `"name": "Logos"` -> `"BimodalLogic"` by hand (no
       `lake update`).
-- [ ] Diff the TOML against the old lakefile setting-by-setting: `testDriver`, `lintDriver`,
+- [x] Diff the TOML against the old lakefile setting-by-setting: `testDriver`, `lintDriver`,
       `defaultTargets = ["FormalSystem"]`, mathlib `rev = "v4.33.0-rc1"`, both libs' `srcDir` and
       `leanOptions` (`pp.unicode.fun = true`, `autoImplicit = false`), 13 exes with `root`,
       `supportInterpreter = true`, `srcDir = "scripts"` on `checkInitImports`.
-- [ ] Create `scripts/lake_targets.py` (Python 3.11+ `tomllib`): `exe-roots` prints each exe
+- [x] Create `scripts/lake_targets.py` (Python 3.11+ `tomllib`): `exe-roots` prints each exe
       `root` (default: exe name); `lib-roots` prints `roots or [name]` per lib; `exes` prints
       `name\troot\tsrcDir-or-.`. Exit 2 with a stderr message if `lakefile.toml` is missing or
       unparseable.
-- [ ] `scripts/check-module-invariants.sh`: repoint C6 reachability (~L864), `LAKE_EXE_ROOTS` /
+- [x] `scripts/check-module-invariants.sh`: repoint C6 reachability (~L864), `LAKE_EXE_ROOTS` /
       `LAKE_LIB_ROOTS` (~L2035-2056), and C25N parser (~L3085) at the helper; replace the
       silent `SystemExit(0)`/`pass` fallbacks with a failure; update C9's scanned-path list
-      (~L1131) and all `lakefile.lean` message/comment strings to `lakefile.toml`.
-- [ ] `.github/workflows/ci.yml` "Compile lean_exe roots" step: `roots=$(python3
+      (~L1131) and all `lakefile.lean` message/comment strings to `lakefile.toml`. *(deviation: altered — C9 grep also includes `*.toml` so the lakefile's comments stay in scope; a structural `FAIL LAKE` line fires under --no-build when the helper errors)*
+- [x] `.github/workflows/ci.yml` "Compile lean_exe roots" step: `roots=$(python3
       scripts/lake_targets.py exe-roots)`, keep `test -n "$roots"`; update the comment block.
-- [ ] Build: `lake build` (detached with log, poll to completion), then `lake test`, `lake lint`.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build`, then the full mode (C25, C16
-      roots); compare root counts and PASS set with Phase 1 baseline.
-- [ ] Negative check in a scratch copy: temporarily move `lakefile.toml` away and confirm the
+- [x] Build: `lake build` (detached with log, poll to completion), then `lake test`, `lake lint`.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build`, then the full mode (C25, C16
+      roots); compare root counts and PASS set with Phase 1 baseline. *(deviation: altered — full mode replaced by its build components run directly: `lake build`, `lake test`, `lake lint` and all 13 exe-root module builds green; `--no-build` compared against baseline in a HEAD worktree carrying only this phase's files: no new FAIL; the working tree's `FAIL INV` stems from concurrent edits under FormalSystem/Automation/, not this change)*
+- [x] Negative check in a scratch copy: temporarily move `lakefile.toml` away and confirm the
       helper and the scrape sites fail loudly (not pass); restore.
-- [ ] Commit all of the above as one commit.
+- [x] Commit all of the above as one commit.
 
 **Timing**: 2 hours (includes rebuild wait)
 

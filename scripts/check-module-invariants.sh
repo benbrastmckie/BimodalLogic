@@ -16,7 +16,7 @@
 #   C8  Aggregator convention: sibling `X.lean` beside `X/`, no `X/X.lean`
 #       Walked parents: FormalSystem/, FormalSystem/Metalogic/, FormalSystem/Syntax/,
 #       FormalSystem/Semantics/
-#   C9  Zero task-number citations under FormalSystem/, lakefile.lean, README.md,
+#   C9  Zero task-number citations under FormalSystem/, lakefile.toml, README.md,
 #       and scripts/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
 #   C11 Every import inside FormalSystem/Boneyard/ resolves, or is waived
@@ -56,7 +56,7 @@
 #       FormalSystem.Init, via `lake exe checkInitImports` -- the root file is the
 #       single place repository-wide linter options and tactic imports are
 #       inherited from, so a module with no path to it silently opts out
-#   C25 Every `lean_exe` root declared in lakefile.lean compiles -- the root list
+#   C25 Every `lean_exe` root declared in lakefile.toml compiles -- the root list
 #       is scraped at run time, so a newly declared executable is covered the day
 #       it is added and there is no list to forget
 #   C25N Every `lean_exe` root is named PascalCase(target)Main; no other live module ends in Main
@@ -558,7 +558,7 @@ ENFORCE_C23=${ENFORCE_C23:-1} # naming regressions (enforced)
 # quiet a failure; add the import at the offending module's own minimal element, or record a
 # genuinely-cannot-import module in `exceptions` in scripts/CheckInitImportsMain.lean.
 ENFORCE_C24=${ENFORCE_C24:-1} # every module transitively imports FormalSystem.Init (enforced)
-# C25 compile-checks every `lean_exe` root declared in lakefile.lean. Those roots sit outside
+# C25 compile-checks every `lean_exe` root declared in lakefile.toml. Those roots sit outside
 # both library root closures, so `lake build` never elaborates them and C24's closure walk never
 # reaches them -- ProofExtractorMain.lean was failing to elaborate with no gate anywhere able to
 # observe it. The repair landed in the same change that added this check, so all thirteen roots
@@ -604,7 +604,7 @@ ENFORCE_C26=${ENFORCE_C26:-1} # no snake_case def/abbrev, no unlisted nolint att
 # suite, or add a reasoned entry.
 ENFORCE_C27=${ENFORCE_C27:-1} # live debug directives all allow-listed with exact counts (enforced)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
-# every root declared in lakefile.lean -- the other library root and all thirteen `lean_exe`
+# every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
 # reachable only from an exe root is invisible to it. That is the same blind spot C26's textual
 # scan closes for declared names; this half is what closes it for shapes only ELABORATION can
@@ -861,12 +861,16 @@ if stale_allow:
         note(m)
 
 # --- reachability (feeds C6 and C7) ----------------------------------------
-roots = ["FormalSystem", "BimodalTest"]
-try:
-    lf = open("lakefile.lean", encoding="utf-8").read()
-    roots += re.findall(r"root\s*:=\s*`([A-Za-z0-9_.]+)", lf)
-except OSError:
-    pass
+# Seeds: both library roots plus every lean_exe root, all read from lakefile.toml through the
+# shared reader. A missing or unparseable lakefile is a FAILURE, never a silent fallback to the
+# library roots alone -- that fallback would shrink the reachable set and hide real rot.
+roots = []
+for mode in ("lib-roots", "exe-roots"):
+    r = subprocess.run([sys.executable, os.path.join("scripts", "lake_targets.py"), mode],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        bad("C6", f"cannot read Lake targets from lakefile.toml ({mode}): {r.stderr.strip()}")
+    roots += r.stdout.split()
 seen, stack = set(), list(roots)
 while stack:
     m = stack.pop()
@@ -1103,14 +1107,14 @@ echo
 
 
 # ---------------------------------------------------------------------------
-# C9: no task-number citations under FormalSystem/, lakefile.lean, README.md,
+# C9: no task-number citations under FormalSystem/, lakefile.toml, README.md,
 # or scripts/
 #
 # `.claude/rules/no-task-references-in-deliverables.md` forbids ephemeral
 # task-management identifiers in deliverable files. Task numbers are renumbered
 # by vault operations and mean nothing to a future reader of a README. Scope
 # widened beyond FormalSystem/ to catch the same defect in the other places it
-# was slipping past this check: lakefile.lean's lean_exe docstrings and
+# was slipping past this check: the lakefile's lean_exe comments and
 # scripts/*.sh's own comments. specs/** stays excluded -- it is the rule's own
 # documented exemption -- and this script's own path is excluded (self-match:
 # widening the scan to scripts/ would otherwise catch this file's own header
@@ -1126,16 +1130,16 @@ echo
 # names is not a citation but the directory it exists to read, so the rule's
 # "use a durable anchor instead" remedy does not apply to it.
 # ---------------------------------------------------------------------------
-TASK_REFS=$(grep -rniE --include='*.lean' --include='*.md' --include='*.sh' \
+TASK_REFS=$(grep -rniE --include='*.lean' --include='*.md' --include='*.sh' --include='*.toml' \
   '\b(tasks?[[:space:]]+#?[0-9]+|task-[0-9]+)\b|specs/[0-9]{3}_[A-Za-z0-9_]+' \
-  FormalSystem lakefile.lean README.md scripts 2>/dev/null \
+  FormalSystem lakefile.toml README.md scripts 2>/dev/null \
   | grep -v '/Boneyard/' | grep -v '^scripts/check-module-invariants\.sh:' \
   | grep -v '^scripts/check-evidence-probes\.sh:')
 TASK_REF_COUNT=$(printf '%s' "$TASK_REFS" | grep -c . || true)
 if [ "$TASK_REF_COUNT" -eq 0 ]; then
-  pass C9 "zero task-number citations under FormalSystem/, lakefile.lean, README.md, scripts/"
+  pass C9 "zero task-number citations under FormalSystem/, lakefile.toml, README.md, scripts/"
 else
-  MSG="$TASK_REF_COUNT task-number citation(s) under FormalSystem/, lakefile.lean, README.md, scripts/ (use a durable anchor instead)"
+  MSG="$TASK_REF_COUNT task-number citation(s) under FormalSystem/, lakefile.toml, README.md, scripts/ (use a durable anchor instead)"
   if [ "$ENFORCE_C9" -eq 1 ]; then fail C9 "$MSG"; else soft C9 "$MSG (not yet enforced)"; fi
   printf '%s\n' "$TASK_REFS" | head -20 | while IFS= read -r l; do note "$l"; done
   [ "$TASK_REF_COUNT" -gt 20 ] && note "... and $((TASK_REF_COUNT - 20)) more"
@@ -2027,33 +2031,23 @@ echo
 # The lakefile root scrape: ONE site, two consumers.
 #
 # C25 compile-checks every `lean_exe` root; C16's second half lints every root of either kind.
-# Both read the list from here rather than each scraping `lakefile.lean` for itself, so a newly
-# declared target is covered by both the day it is added and there is no second regex to forget.
-# The `lean_exe` regex is the one C6's reachability walk already uses; the `lean_lib` form is
-# `roots := #[...]`, which that regex deliberately does not match (there `root` is followed by
-# an `s`, not by `:=`), so the two lists are disjoint by construction rather than by filtering.
+# Both read the list from here rather than each reading `lakefile.toml` for itself, so a newly
+# declared target is covered by both the day it is added. The reading itself is delegated to
+# scripts/lake_targets.py, the same reader C6's reachability walk, C25N and CI's exe-root step
+# use, which applies Lake's omitted defaults (a lean_lib's roots default to its name). The two
+# lists come from the `[[lean_exe]]` and `[[lean_lib]]` tables respectively, so they are disjoint
+# by construction rather than by filtering.
 # ---------------------------------------------------------------------------
-LAKE_EXE_ROOTS=$(python3 - <<'PYEOF'
-import re
-try:
-    lf = open("lakefile.lean", encoding="utf-8").read()
-except OSError:
-    raise SystemExit(0)
-for m in re.findall(r"root\s*:=\s*`([A-Za-z0-9_.]+)", lf):
-    print(m)
-PYEOF
-)
-LAKE_LIB_ROOTS=$(python3 - <<'PYEOF'
-import re
-try:
-    lf = open("lakefile.lean", encoding="utf-8").read()
-except OSError:
-    raise SystemExit(0)
-for block in re.findall(r"roots\s*:=\s*#\[([^\]]*)\]", lf):
-    for m in re.findall(r"`([A-Za-z0-9_.]+)", block):
-        print(m)
-PYEOF
-)
+LAKE_TARGETS_ERR=""
+LAKE_EXE_ROOTS=$(python3 scripts/lake_targets.py exe-roots 2>&1) \
+  || { LAKE_TARGETS_ERR="$LAKE_EXE_ROOTS"; LAKE_EXE_ROOTS=""; }
+LAKE_LIB_ROOTS=$(python3 scripts/lake_targets.py lib-roots 2>&1) \
+  || { LAKE_TARGETS_ERR="${LAKE_TARGETS_ERR:+$LAKE_TARGETS_ERR; }$LAKE_LIB_ROOTS"; LAKE_LIB_ROOTS=""; }
+if [ -n "$LAKE_TARGETS_ERR" ]; then
+  # Structural, so it fires under --no-build too: every consumer below would otherwise see an
+  # empty root list, and only the build-mode consumers treat that as a failure.
+  fail LAKE "cannot read Lake targets from lakefile.toml: $LAKE_TARGETS_ERR"
+fi
 
 # ---------------------------------------------------------------------------
 # C16: environment linters (defsWithUnderscore, docBlame, simpNF, structureInType,
@@ -2146,7 +2140,7 @@ else
   info C16 "env_linter batch skipped (--no-build)"
 fi
 
-# C16, second half: the same env_linter batch over EVERY root declared in lakefile.lean.
+# C16, second half: the same env_linter batch over EVERY root declared in lakefile.toml.
 # Reporting-only while ENFORCE_C16_ROOTS is 0 -- see that flag and the decision recorded in this
 # check's header above. The root list comes from the single scrape site above, so a newly
 # declared target is covered the day it is added.
@@ -2181,7 +2175,7 @@ if [ "$RUN_BUILD" -eq 1 ]; then
   done <<< "$LAKE_EXE_ROOTS"$'\n'"$LAKE_LIB_ROOTS"
   rm -f "$C16R_LOG"
   if [ "$C16R_COUNT" -eq 0 ]; then
-    fail C16 "no non-FormalSystem root scraped from lakefile.lean -- the scraper regex or the lakefile's shape changed"
+    fail C16 "no non-FormalSystem root read from lakefile.toml -- the lakefile is missing or its shape changed"
   elif [ "$C16R_TOTAL" -eq 0 ]; then
     pass C16 "env_linter batch is clean on all $C16R_COUNT non-FormalSystem lakefile root(s)"
     note "every root is now clean; set ENFORCE_C16_ROOTS=1 to make this exit-code-affecting"
@@ -2969,13 +2963,13 @@ fi
 echo
 
 # ---------------------------------------------------------------------------
-# C25: every `lean_exe` root declared in lakefile.lean compiles
+# C25: every `lean_exe` root declared in lakefile.toml compiles
 #
 # `lake build` builds the two library targets, so it elaborates exactly what is
 # reachable from `FormalSystem` and `BimodalTest`. Every `lean_exe` root is outside
 # both closures: nothing imports it, `lake build` never touches it, and C24's
 # closure walk never reaches it either. C6's rot guard does not cover them either --
-# C6 seeds its reachability walk from every `root :=` in this same lakefile, so an
+# C6 seeds its reachability walk from every `lean_exe` root in this same lakefile, so an
 # exe root is *reachable* by C6's definition and listing one in
 # scripts/module-invariants-manifest.txt trips C6's stale-manifest branch instead of
 # covering it. That is the wrong mechanism; this check is the right one, and the
@@ -2988,10 +2982,11 @@ echo
 # the repository was able to observe it. `lake exe proof_extractor` was simply
 # broken, and the tree was green.
 #
-# The root list is scraped from lakefile.lean at run time with the same regex C6's
-# reachability block uses, so a newly declared `lean_exe` is covered the day it is
-# added and there is no second list to forget to update. An empty scrape is a
-# failure, not a silent pass: it means the regex or the lakefile's shape changed.
+# The root list is read from lakefile.toml at run time through scripts/lake_targets.py,
+# the same reader C6's reachability block uses, so a newly declared `lean_exe` is
+# covered the day it is added and there is no second list to forget to update. An
+# empty list is a failure, not a silent pass: it means the lakefile moved or changed
+# shape.
 #
 # Module targets, never exe targets. `lake build <root>` elaborates and emits C
 # without linking; `lake exe <name>` would link a 240-310 MB binary per root, and
@@ -3023,12 +3018,12 @@ echo
 # ---------------------------------------------------------------------------
 if [ "$RUN_BUILD" -eq 1 ]; then
   # Scraped once, near C16 -- see "The lakefile root scrape" above. An empty list is still a
-  # failure here, not a silent pass: it means the regex or the lakefile's shape changed.
+  # failure here, not a silent pass: it means the lakefile moved or changed shape.
   C25_ROOTS="$LAKE_EXE_ROOTS"
   C25_ROOT_COUNT=$(printf '%s\n' "$C25_ROOTS" | grep -c . || true)
   if [ "$C25_ROOT_COUNT" -eq 0 ]; then
-    fail C25 "no lean_exe root scraped from lakefile.lean -- the scraper regex or the lakefile's shape changed"
-    note "expected one or more \`root := \\\`Module.Name\` lines in lakefile.lean"
+    fail C25 "no lean_exe root read from lakefile.toml -- the lakefile is missing or its shape changed"
+    note "expected one or more \`[[lean_exe]]\` tables in lakefile.toml"
   else
     C25_LOG=$(mktemp)
     C25_BROKEN=""
@@ -3042,7 +3037,7 @@ if [ "$RUN_BUILD" -eq 1 ]; then
     rm -f "$C25_LOG"
     C25_BROKEN_COUNT=$(printf '%s\n' "$C25_BROKEN" | grep -c . || true)
     if [ "$C25_BROKEN_COUNT" -eq 0 ]; then
-      pass C25 "all $C25_ROOT_COUNT lean_exe root module(s) from lakefile.lean compile"
+      pass C25 "all $C25_ROOT_COUNT lean_exe root module(s) from lakefile.toml compile"
     else
       MSG="$C25_BROKEN_COUNT of $C25_ROOT_COUNT lean_exe root module(s) do not compile"
       if [ "$ENFORCE_C25" -eq 1 ]; then fail C25 "$MSG"; else soft C25 "$MSG (not yet enforced)"; fi
@@ -3072,7 +3067,7 @@ echo
 # `DatasetExporter` library, `TraceExport` vs `TraceExporter`), and a new executable would
 # reintroduce that drift silently without this check.
 #
-# Parses each `lean_exe NAME where` block for its `root :=` and `srcDir :=`; the stray-`Main`
+# Reads each `[[lean_exe]]` table's `name`, `root` and `srcDir` via scripts/lake_targets.py; the stray-`Main`
 # scan walks FormalSystem/, Tests/ and scripts/ (Boneyard excluded) and compares file paths
 # against the roots resolved through their srcDir.
 #
@@ -3083,18 +3078,14 @@ echo
 # re-observed.
 # ---------------------------------------------------------------------------
 C25N_OUT=$(python3 - <<'PYEOF'
-import os, re
-try:
-    lf = open("lakefile.lean", encoding="utf-8").read()
-except OSError:
+import os, subprocess, sys
+r = subprocess.run([sys.executable, os.path.join("scripts", "lake_targets.py"), "exes"],
+                   capture_output=True, text=True)
+if r.returncode != 0:
+    # No COUNT line: the shell below turns that into FAIL C25N rather than a silent pass.
+    print("ERROR " + r.stderr.strip())
     raise SystemExit(0)
-exes = []
-for m in re.finditer(r"lean_exe\s+(\S+)\s+where(.*?)(?=\n(?:lean_exe|lean_lib|require|package|@\[)|\Z)", lf, re.S):
-    target, body = m.group(1), m.group(2)
-    r = re.search(r"root\s*:=\s*`([A-Za-z0-9_.]+)", body)
-    d = re.search(r'srcDir\s*:=\s*"([^"]*)"', body)
-    if r:
-        exes.append((target, r.group(1), d.group(1) if d else "."))
+exes = [tuple(line.split("\t")) for line in r.stdout.splitlines() if line]
 print("COUNT %d" % len(exes))
 root_paths = set()
 for target, root, src in exes:
@@ -3116,7 +3107,8 @@ PYEOF
 C25N_COUNT=$(printf '%s\n' "$C25N_OUT" | sed -n 's/^COUNT //p')
 C25N_BAD=$(printf '%s\n' "$C25N_OUT" | grep -E '^(BADROOT|STRAY) ' || true)
 if [ -z "$C25N_COUNT" ] || [ "$C25N_COUNT" -eq 0 ]; then
-  fail C25N "no lean_exe block parsed from lakefile.lean -- the parser regex or the lakefile's shape changed"
+  fail C25N "no lean_exe table read from lakefile.toml -- the lakefile is missing or its shape changed"
+  printf '%s\n' "$C25N_OUT" | sed -n 's/^ERROR //p' | while IFS= read -r l; do note "$l"; done
 elif [ -z "$C25N_BAD" ]; then
   pass C25N "all $C25N_COUNT lean_exe root(s) are named PascalCase(target)Main, and no other live module ends in Main"
 else
