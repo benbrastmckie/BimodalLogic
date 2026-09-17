@@ -12,35 +12,34 @@ This registry provides a high-level view of tactic implementation status across 
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_k_tactic` | Apply modal K rule (MK) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `temporal_k_tactic` | Apply temporal K rule (TK) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `modal_t` | Apply axiom MT (□φ → φ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `modal_4_tactic` | Apply axiom M4 (□φ → □□φ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `modal_b_tactic` | Apply axiom MB (φ → □◇φ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `temp_4_tactic` | Apply axiom T4 (Fφ → FFφ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `temp_a_tactic` | Apply axiom TA (φ → F(Pφ)) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `apply_axiom` | Apply TM axiom by unification | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `assumption_search` | Search context for matching assumption | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `tm_auto` | Comprehensive TM automation (Aesop) | 🚧 Partial (noncomputable errors fixed, proof reconstruction issues remain) | `FormalSystem/Automation/Tactics/` |
+| `apply_axiom` | Apply TM axiom by unification | ✅ Complete | `FormalSystem/Automation/Tactics/UserTactics.lean` |
+| `modal_t` | Apply axiom MT (□φ → φ) | ✅ Complete | `FormalSystem/Automation/Tactics/UserTactics.lean` |
+| `assumption_search` | Search context for matching assumption | ✅ Complete | `FormalSystem/Automation/Tactics/UserTactics.lean` |
+| `propDecide` | Reflective propositional tautology decision | ✅ Complete | `FormalSystem/Automation/Tactics/PropDecide.lean` |
+| `deduction` | Apply the deduction theorem `n` times | ✅ Complete | `FormalSystem/Automation/Tactics/Deduction.lean` |
+| `undischarge` | Reverse-direction deduction theorem application | ✅ Complete | `FormalSystem/Automation/Tactics/Deduction.lean` |
 | `s5_simp` | Simplify S5 modal formulas | 📋 Planned | N/A |
 | `temporal_simp` | Simplify temporal formulas | 📋 Planned | N/A |
 | `bimodal_simp` | Simplify using MF/TF axioms | 📋 Planned | N/A |
 | `perpetuity` | Apply perpetuity principles P1-P6 | 📋 Planned | N/A |
 
+**Retired**: `modal_k_tactic`, `temporal_k_tactic`, `modal_4_tactic`, `modal_b_tactic`,
+`temp_4_tactic`, and `temp_a_tactic` were never implemented as separate operator-specific
+tactics; `modal_search` (below) subsumes this role.
+
 ### Advanced Tactics
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_search` | Bounded proof search for TM derivability goals | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `temporal_search` | Proof search optimized for temporal formulas | ✅ Complete | `FormalSystem/Automation/Tactics/` |
-| `propositional_search` | Proof search for purely propositional formulas | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `modal_search` | Bounded best-first proof search for TM derivability goals | ✅ Complete | `FormalSystem/Automation/Tactics/Commands.lean` |
 
 **Advanced-tactic implementation notes**:
-- `modal_search`: General purpose bounded proof search with configurable depth
-- `temporal_search`: Uses SearchConfig.temporal (prioritizes temporal K rules)
-- `propositional_search`: Uses SearchConfig.propositional (disables modal/temporal K)
-- All tactics work at meta-level in TacticM, bypassing Axiom Prop vs Type issue
-- Supports named parameters: `(depth := n)`, `(visitLimit := n)`, weight parameters
+- `modal_search`: the single proof-search entry point. It replaced `temporal_search`,
+  `propositional_search`, and `tm_auto`, which differed from it only in `SearchConfig` weight
+  fields that `searchProof` never read, and which have been removed.
+- Works at meta-level in `TacticM`, bypassing the Axiom Prop vs Type issue
+- Supports both a bare depth (`modal_search 5`) and named parameters
+  (`modal_search (depth := 5) (visitLimit := 200)`)
 
 ## Layer 1 - Extended Modalities
 
@@ -129,14 +128,16 @@ This registry provides a high-level view of tactic implementation status across 
 
 ## Summary Statistics
 
-- **Total Tactics Implemented**: 19 (identified in Tactics.lean)
-- **Completed**: 15 (78.9%)
-- **In Progress**: 1 (5.3%) - tm_auto has proof reconstruction issues
-- **Planned**: 3 (15.8%) - s5_simp, temporal_simp, bimodal_simp
+- **Total Tactics Implemented**: 7 (`apply_axiom`, `modal_t`, `assumption_search`, `propDecide`,
+  `deduction`, `undischarge`, `modal_search`), across the six files under
+  `FormalSystem/Automation/Tactics/`
+- **Completed**: 7 (100% of implemented tactics)
+- **Planned**: 4 - `s5_simp`, `temporal_simp`, `bimodal_simp`, `perpetuity`
 
 ### By Category
-- **Layer 0 Core**: 9/10 complete (90%) - All major tactics implemented
-- **Layer 0 Advanced**: 3/3 complete (100%) - modal_search, temporal_search, propositional_search
+- **Layer 0 Core**: 6/6 implemented tactics complete (`s5_simp`, `temporal_simp`, `bimodal_simp`,
+  `perpetuity` remain planned)
+- **Layer 0 Advanced**: 1/1 complete (`modal_search`)
 - **Layer 1 Extended**: 0/2 complete (0%)
 - **Simplification Lemmas**: 3/10 complete (30%)
 - **Syntax Macros**: 4/5 complete (80%)

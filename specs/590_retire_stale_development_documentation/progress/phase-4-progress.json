@@ -1,0 +1,25 @@
+{
+  "phase": 4,
+  "phase_name": "Rewrite tactic reference tables (API_REFERENCE, tactic-registry, FEATURE_REGISTRY)",
+  "started_at": "2026-09-17T09:15:00Z",
+  "last_updated": "2026-09-17T09:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Inventory live tactics via grep + Automation.lean retirement note", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Rewrite API_REFERENCE.md tactic tables", "status": "done", "files_touched": ["docs/reference/API_REFERENCE.md"]},
+    {"id": 3, "description": "Rewrite tactic-registry.md body", "status": "done", "files_touched": ["docs/project-info/tactic-registry.md"]},
+    {"id": 4, "description": "Fix FEATURE_REGISTRY.md file list", "status": "done", "files_touched": ["docs/project-info/FEATURE_REGISTRY.md"]},
+    {"id": 5, "description": "Grep-verify tactic names and lake-env-lean verify snippets", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "4.extra",
+      "description": "API_REFERENCE.md also carried 2 stale 'Task 176' citations (benchmark results section, version history) unrelated to the retired-tactic cleanup but caught by the C9D re-grep.",
+      "type": "altered",
+      "reason": "Already editing this file for the tactic rewrite; cleared these too so Phase 8's C9D=0 gate stays reachable.",
+      "annotation": "*(deviation: altered — cleared 2 extra Task 176 citations in API_REFERENCE.md)*"
+    }
+  ]
+}

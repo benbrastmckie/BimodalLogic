@@ -58,7 +58,7 @@ For implementation status by module, see [implementation-status.md](implementati
 - **Status**: Active
 - **Description**: Custom Lean 4 tactics for TM modal-temporal reasoning.
 - **Key Files**: `FormalSystem/Automation/Tactics/` (`Commands.lean`, `Deduction.lean`,
-  `Helpers.lean`, `PropDecide.lean`)
+  `Meta.lean`, `PropDecide.lean`, `Search.lean`, `UserTactics.lean`)
 - **Theory-Specific Registry**: See [docs/project-info/tactic-registry.md](tactic-registry.md)
 
 ### Proof Search

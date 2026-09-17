@@ -76,16 +76,16 @@ complexity (atom "p") = 1
 complexity (p.imp q) = 1 + complexity p + complexity q
 ```
 
-##### `swapTemporal : Formula → Formula`
+##### `reflectTime : Formula → Formula`
 
 Swap temporal operators (past ↔ future) in a formula. Used in the temporal duality inference rule (TD).
 
-**Theorem**: `swap_temporal_involution` - Applying twice gives identity.
+**Theorem**: `reflect_time_involution` - Applying twice gives identity.
 
 **Example**:
 ```lean
-swapTemporal (p.allPast) = p.allFuture
-swapTemporal (p.allFuture) = p.allPast
+reflectTime (p.allPast) = p.allFuture
+reflectTime (p.allFuture) = p.allPast
 ```
 
 ---
@@ -333,7 +333,7 @@ inductive DerivationTree : Context → Formula → Prop where
   | modus_ponens : DerivationTree Γ (φ.imp ψ) → DerivationTree Γ φ → DerivationTree Γ ψ
   | modal_k : DerivationTree (Γ.map box) φ → DerivationTree Γ (φ.box)
   | temporal_k : DerivationTree (Γ.map allFuture) φ → DerivationTree Γ (φ.allFuture)
-  | temporal_dual : DerivationTree Γ φ → DerivationTree Γ (φ.swapTemporal)
+  | temporal_dual : DerivationTree Γ φ → DerivationTree Γ (φ.reflectTime)
 ```
 
 **Notation**: `Γ ⊢ φ` means `DerivationTree Γ φ`
@@ -357,7 +357,9 @@ inductive DerivationTree : Context → Formula → Prop where
 
 **Module**: `FormalSystem/Automation/Tactics/`
 
-Custom tactics for modal and temporal reasoning.
+Custom tactics for modal and temporal reasoning. `tm_auto`, `temporal_search`, and
+`propositional_search` were consolidated into `modal_search` (their `SearchConfig` weight
+fields differed but `searchProof` never read them) and have been removed.
 
 #### Core Tactics
 
@@ -382,16 +384,6 @@ example (p : Formula) : [p.box] ⊢ p := by
   assumption
 ```
 
-##### `tm_auto`
-
-Aesop-powered TM automation with forward chaining and safe apply rules.
-
-**Example**:
-```lean
-example : ⊢ (□p → p) := by
-  tm_auto  -- Uses Aesop with TM-specific rules
-```
-
 ##### `assumption_search`
 
 Search local context for assumption matching the goal.
@@ -402,23 +394,45 @@ example (h : p → q) : p → q := by
   assumption_search  -- Finds h
 ```
 
-#### Operator-Specific Tactics
+##### `propDecide`
 
-| Tactic | Description |
-|--------|-------------|
-| `modal_k_tactic` | Apply modal K inference rule |
-| `temporal_k_tactic` | Apply temporal K inference rule |
-| `modal_4_tactic` | Apply modal 4 axiom |
-| `modal_b_tactic` | Apply modal B axiom |
-| `temp_4_tactic` | Apply temporal 4 axiom |
-| `temp_a_tactic` | Apply temporal A axiom |
+Reflective propositional tautology tactic. Closes `⊢ φ`, `⊢[fc] φ`, `|-! φ`, and `|-![fc] φ`
+goals whose implication/bot skeleton is a propositional tautology, treating modal/temporal
+subterms (and free formula variables) as opaque reified variables.
 
-#### Proof Search Tactics
+**Example**:
+```lean
+noncomputable example (p q : Formula) : ⊢ p.imp (q.imp p) := by propDecide
+noncomputable example (A : Formula) : ⊢ A.box.imp A.box := by propDecide
+```
 
-| Tactic | Description |
-|--------|-------------|
-| `modal_search depth` | Bounded proof search for modal formulas |
-| `temporal_search depth` | Bounded proof search for temporal formulas |
+##### `deduction` / `undischarge`
+
+`deduction [n]` applies the deduction theorem `n` times (default 1), moving the antecedent of
+`Γ ⊢[fc] A → B` into the context to leave `(A :: Γ) ⊢[fc] B`. `undischarge h` is the reverse
+direction: it closes `Γ ⊢[fc] A → B` given `h : (A :: Γ) ⊢[fc] B`. Both require the enclosing
+`def`/`example` to be `noncomputable` (the underlying `deductionTheorem` is noncomputable);
+`Derivable`-level (`|-!`) statements are unaffected.
+
+**Example**:
+```lean
+noncomputable example (p q : Formula) : ⊢ p.imp (q.imp p) := by
+  deduction 2
+  exact DerivationTree.assumption _ _ (by simp)
+```
+
+#### Proof Search Tactic
+
+##### `modal_search`
+
+Bounded best-first proof search for derivability goals `Γ ⊢[fc] φ` — the single proof-search
+entry point in this codebase. Accepts either a bare depth or named `SearchConfig` overrides:
+
+```lean
+modal_search             -- default depth
+modal_search 5           -- depth override (positional)
+modal_search (depth := 5) (visitLimit := 200)  -- named-parameter form
+```
 
 ---
 
@@ -482,7 +496,7 @@ Batch search that accumulates patterns across multiple goals.
 | `modalKWeight` | 5 | Cost for modal K rule |
 | `temporalKWeight` | 5 | Cost for temporal K rule |
 
-#### Benchmark Results (Task 176)
+#### Benchmark Results (IDDFS vs. BestFirst comparison)
 
 | Category | IDDFS | BestFirst | Winner |
 |----------|-------|-----------|--------|
@@ -902,9 +916,9 @@ example (p : Formula) : ⊢ (p.box.imp p) := by
 example (p q : Formula) (h1 : ⊢ p.imp q) (h2 : ⊢ p) : ⊢ q := by
   apply DerivationTree.modus_ponens h1 h2
 
--- Use tm_auto for automatic proof
+-- Use modal_search for automatic proof
 example (p : Formula) : ⊢ (p.box.imp p) := by
-  tm_auto
+  modal_search
 ```
 
 ### Proof Search
@@ -968,7 +982,7 @@ All Bimodal modules follow these documentation standards:
 
 ## Version History
 
-- **1.1.0** (2026-01-11): Task 176 - Enhanced proof search documentation
+- **1.1.0** (2026-01-11): Enhanced proof search documentation
   - Added `FormalSystem.Automation.ProofSearch` with multiple strategies
   - Added `FormalSystem.Automation.SuccessPatterns` for pattern learning
   - Updated search function signatures and benchmark results

@@ -227,17 +227,17 @@ C9D regex against each file before editing, and fix whatever it actually returns
 
 ---
 
-### Phase 4: Rewrite tactic reference tables (API_REFERENCE, tactic-registry, FEATURE_REGISTRY) [NOT STARTED]
+### Phase 4: Rewrite tactic reference tables (API_REFERENCE, tactic-registry, FEATURE_REGISTRY) [COMPLETED]
 
 **Goal**: Make the structural tactic references match the real `FormalSystem/Automation/Tactics/`
 surface. This is a real rewrite, not a substitution.
 
 **Tasks**:
-- [ ] Inventory the live tactics: grep `syntax`/`elab`/`macro` declarations in `FormalSystem/Automation/Tactics/{Commands,UserTactics,Deduction,Meta,PropDecide,Search}.lean` and read `FormalSystem/Automation.lean:34-37` (retirement note)
-- [ ] `docs/reference/API_REFERENCE.md`: rewrite the tactic tables (~385-421) and the "Operator-Specific Tactics" table (remove `modal_k_tactic`, `temporal_k_tactic`, `modal_4_tactic`, `modal_b_tactic`, `temp_4_tactic`, `temp_a_tactic` unless the inventory finds them), fix ~905-907; add a one-line note that `tm_auto`/`temporal_search`/`propositional_search` were consolidated into `modal_search`
-- [ ] `docs/project-info/tactic-registry.md`: rewrite the body (11 occurrences) against the inventory
-- [ ] `docs/project-info/FEATURE_REGISTRY.md:59-61`: replace `Helpers.lean` with the actual six-file list
-- [ ] Every tactic name left in the three files must grep-match in `FormalSystem/`. Verify runnable snippets with `lean_run_code` (import `FormalSystem`) where practical
+- [x] Inventory the live tactics: grep `syntax`/`elab`/`macro` declarations in `FormalSystem/Automation/Tactics/{Commands,UserTactics,Deduction,Meta,PropDecide,Search}.lean` and read `FormalSystem/Automation.lean:34-37` (retirement note) *(completed: 7 live tactics -- apply_axiom, modal_t, assumption_search, propDecide, deduction, undischarge, modal_search)*
+- [x] `docs/reference/API_REFERENCE.md`: rewrite the tactic tables (~385-421) and the "Operator-Specific Tactics" table (remove `modal_k_tactic`, `temporal_k_tactic`, `modal_4_tactic`, `modal_b_tactic`, `temp_4_tactic`, `temp_a_tactic` unless the inventory finds them), fix ~905-907; add a one-line note that `tm_auto`/`temporal_search`/`propositional_search` were consolidated into `modal_search` *(completed: also cleared 2 Task-176 citations found by re-grep)*
+- [x] `docs/project-info/tactic-registry.md`: rewrite the body (11 occurrences) against the inventory *(completed)*
+- [x] `docs/project-info/FEATURE_REGISTRY.md:59-61`: replace `Helpers.lean` with the actual six-file list *(completed)*
+- [x] Every tactic name left in the three files must grep-match in `FormalSystem/`. Verify runnable snippets with `lean_run_code` (import `FormalSystem`) where practical *(completed: verified modal_search/propDecide/deduction snippets with `lake env lean` on a scratch file)*
 
 **Timing**: 2 hours
 
