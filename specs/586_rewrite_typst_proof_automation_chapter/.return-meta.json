@@ -1,19 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/586_rewrite_typst_proof_automation_chapter/reports/02_verified-tactic-surface-and-ci-wiring.md",
-      "summary": "Re-verifies the live Automation/ tactic and proof-search surface directly from Lean source (finding Commands.lean has drifted again since the 2026-09-16 review, to 163 lines), gives a corrected 9-row Module Map table, locates the 4 remaining widened-scope retired-tactic-prose sites outside docs/ and Boneyard/ with exact line numbers, recommends replacing Aesop Integration with a retirement note and pruning two now-orphaned whitelist entries, recommends machine-generating the Module Map (concrete extension path via typst-status-counts.sh/Check 2, modeled on the sorry-table split-row precedent), and gives the exact CI step block to wire typst-sync-check.sh into ci.yml following task 583's pattern."
+      "type": "plan",
+      "path": "specs/586_rewrite_typst_proof_automation_chapter/plans/02_proof-automation-chapter-rewrite.md",
+      "summary": "4-phase plan: build-free module-map generator + Check 2 extension, chapter rewrite (incl. two-engine correction), widened retired-tactic prose fixes, CI wiring of typst-sync-check.sh."
     }
   ],
-  "next_steps": "Run /plan 586 to turn this into a phased implementation plan: (1) rewrite p4-proof-automation.typ's Tactics/Aesop Integration/Module Map sections against the verified data in this report, (2) fix the 4 widened-scope sites (FormalSystem/Automation/README.md:84,137; FormalSystem/Automation/ProofSearch/README.md:19; typst/chapters/p4-dual-verification.typ:36), (3) decide and record the machine-generation question for the Module Map, (4) remove the two now-orphaned Aesop whitelist entries if the retirement note drops literal attribute syntax, (5) wire typst-sync-check.sh into .github/workflows/ci.yml per the given step block.",
+  "next_steps": "Run /implement 586 to execute the plan",
+  "phase_count": 4,
+  "estimated_hours": 5.5,
+  "dependency_waves": [[1, 3], [2], [4]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1789631305_c7d7a7_586",
-    "agent_type": "typst-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "typst-research-agent"],
-    "findings_count": 7
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 6
 }
