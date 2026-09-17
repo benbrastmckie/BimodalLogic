@@ -735,14 +735,22 @@
     {
       "project_number": 578,
       "project_name": "fix_api_documentation_ci_integration",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.\n\nALSO DECIDE (codebase-cleanup reorganization, 2026-09-16): if migrating to `lakefile.toml`, settle the package name as part of the migration -- the Lake package is `Logos` while the library is `FormalSystem`, the test library `BimodalTest`, and the repository `BimodalLogic`. Record the choice (keep `Logos`, or rename to `FormalSystem`/`BimodalLogic`) and its downstream effect on doc URLs. Precedent: cslib (`/home/benjamin/Projects/cslib`) uses `lakefile.toml` with a working `docgen-action` in `.github/workflows/docs.yml`; read both before choosing the fix path.",
       "topic": "codebase-cleanup",
       "created": "2026-09-11T20:05:59Z",
-      "last_updated": "2026-09-17T07:49:02Z",
+      "last_updated": "2026-09-17T07:59:27Z",
       "dependencies": [],
-      "session_id": "sess_1789631305_c7d7a7_578"
+      "session_id": "sess_1789631305_c7d7a7",
+      "artifacts": [
+        {
+          "path": "specs/578_fix_api_documentation_ci_integration/reports/01_docgen-ci-fix-path.md",
+          "type": "report",
+          "summary": "Chooses lakefile.toml migration (lossless via lake translate-config, verified) plus rename Logos->BimodalLogic (no doc URL effect); identifies 5 lakefile scrape sites to port to tomllib and two further latent docs.yml defects (missing lean-action step, homepage: docs uploads hand-written docs/)."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 534,

@@ -100,7 +100,7 @@ next_project_number: 605
 
 ### Codebase Cleanup
 
-578 [RESEARCHING] — Fix the API documentation integration into the CI pipeline:...
+578 [RESEARCHED] — Fix the API documentation integration into the CI pipeline:...
 584 [RESEARCHED] — bash scripts/check-paper-definitions.sh reports case (c) --...
   └─ 569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
     └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
@@ -656,10 +656,11 @@ See specs/reviews/review-2026-09-15.md, Finding H1, for full detail.
 ---
 
 ### 578. Fix api documentation ci integration
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: None
+- **Research**: [578_fix_api_documentation_ci_integration/reports/01_docgen-ci-fix-path.md]
 
 **Description**: Fix the API documentation integration into the CI pipeline: leanprover-community/docgen-action@main requires a lakefile.toml, but this repository's canonical build file is lakefile.lean, so .github/workflows/docs.yml failed on every run since it was added and is currently disabled (renamed to docs.yml.disabled, with the reason recorded in its header comment). Research and decide a fix path -- migrate the project to lakefile.toml (preserving every setting: Mathlib pin, lean_exe roots, lint config, and verifying lake build still passes), obtain/contribute upstream lakefile.lean support in docgen-action, or adopt an alternative doc-gen4 CI integration -- then re-enable docs.yml and verify the workflow runs green on GitHub Actions.
 
