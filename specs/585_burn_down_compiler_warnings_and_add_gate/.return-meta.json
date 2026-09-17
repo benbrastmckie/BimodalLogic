@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/585_burn_down_compiler_warnings_and_add_gate/reports/02_warning-gate-design-remeasure.md",
+      "summary": "Re-measures the compiler-warning surface at 348 across 56 files (not 316/47), settles the warm-cache log-replay question empirically, and specifies the gate as a build-free C26 ratchet in check-module-invariants.sh."
+    }
+  ],
+  "next_steps": "Run /plan 585 to phase the burn-down (0: land C26 report-only + baseline; 1: 82 deprecations; 2a-2c: the simp/dead-tactic cluster per site; 3: 85 section variables; 4: 60 mechanical; 5: gate to zero plus CI_CD_PROCESS.md correction).",
+  "metadata": {
+    "session_id": "sess_1789686569_90aa7e_585",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
