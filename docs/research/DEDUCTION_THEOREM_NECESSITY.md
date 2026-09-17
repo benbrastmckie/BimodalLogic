@@ -529,4 +529,5 @@ For theorem proving purposes, this is acceptable and idiomatic.
 
 **Research Complete**: 2025-12-28  
 **Recommendation**: Mark functions as `noncomputable` and proceed with implementation  
-**Next Action**: Implement task 192 fix (add `noncomputable` keyword)
+**Status**: Implemented — `generalizedModalK` and `generalizedTemporalK` in
+`GeneralizedNecessitation.lean` are marked `noncomputable`

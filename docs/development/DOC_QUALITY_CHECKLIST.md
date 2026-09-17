@@ -475,15 +475,14 @@ TASK_COUNT=$(grep -E "^### [0-9]+\. [A-Z]" TODO.md | grep -v "Archive/" |
              grep -v "FormalSystem/" | wc -l)
 echo "Total tasks in TODO.md: $TASK_COUNT"
 
-# Expected: 13 tasks (11 original + 2 new from best practices)
+# Expected: task count matches the number of active_projects entries in specs/state.json
 
-# Manual verification: Ensure Tasks 12 and 13 exist
-grep "### 12. Create Comprehensive Tactic Test Suite" TODO.md
-grep "### 13. Create Proof Strategy Documentation" TODO.md
+# Manual verification: Ensure newly-added tasks exist
+grep "### {N}. {Task Title}" specs/TODO.md
 ```
 
-**Expected**: TODO.md should contain 13 tasks including new Tasks 12 and 13 derived
-from best practices report.
+**Expected**: `specs/TODO.md` should contain a task entry for every task newly added
+from a best-practices report.
 
 **Action if Failed**: Add missing tasks or update task numbering to reflect
 current priorities.

@@ -1,13 +1,13 @@
 # BimodalLogic Training Data Pipeline
 
 **Last Updated**: 2026-05-29
-**Provenance**: Tasks 201 (alphazero_proof_search_harness), 203 (formula_enumerator_dataset_export), 209 (document_training_pipeline)
+**Provenance**: `alphazero_proof_search_harness`, `formula_enumerator_dataset_export`, `document_training_pipeline`
 
 ---
 
 ## Overview
 
-**Canonical narrative: `typst/BimodalReference.typ` Part IV, "The BMLogic Dataset Pipeline"** (task 313 Phase 10). This file is an operational quick-reference (build/run commands, config knobs, schemas) for users of the pipeline; the dual-signal architecture description, the module-count discrepancy note, the Tier-1 feasibility gate results, and the Tier-2 theorem-mining recommendation live in the book chapter, not here, to avoid maintaining two divergent copies.
+**Canonical narrative: `typst/BimodalReference.typ` Part IV, "The BMLogic Dataset Pipeline"** (the `design_full_extent_bimodalreference_book` reference-book chapter). This file is an operational quick-reference (build/run commands, config knobs, schemas) for users of the pipeline; the dual-signal architecture description, the module-count discrepancy note, the Tier-1 feasibility gate results, and the Tier-2 theorem-mining recommendation live in the book chapter, not here, to avoid maintaining two divergent copies.
 
 The BimodalLogic repository contains a Lean-native training data pipeline for the TM bimodal logic: it enumerates formulas, decides their validity using the formal decision procedure, extracts proof traces and countermodels, and exports the results as JSONL or structured JSON files, consumed by [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) (artifact-only integration -- see the book chapter and the Sync Mechanism section below).
 
@@ -104,7 +104,7 @@ RuleProfile ::= {
   mpCount                 -- .modus_ponens _ _ _ d1 d2
   necessitationCount      -- .necessitation _ d
   temporalNecessitationCount  -- .temporal_necessitation _ d
-  temporalDualityCount    -- .temporal_duality _ d
+  timeReflectionCount    -- .time_reflection _ d
   weakeningCount          -- .weakening _ _ _ d _
 }
 ```
@@ -119,9 +119,9 @@ All serialization is pure string manipulation — no `import Json` or external d
 
 **Path**: `FormalSystem/Automation/FormulaEnumerator.lean`
 **Namespace**: `FormalSystem.Automation`
-**Role**: Bounded enumeration of TM bimodal logic formulas. Provides both exhaustive enumeration (for small complexity bounds) and deterministic pseudo-random sampling (for larger spaces). Contains two APIs: the plan-specified API (Task 201) and a legacy API (Task 203).
+**Role**: Bounded enumeration of TM bimodal logic formulas. Provides both exhaustive enumeration (for small complexity bounds) and deterministic pseudo-random sampling (for larger spaces). Contains two APIs: the plan-specified API (from `alphazero_proof_search_harness`, which revised the design) and an earlier legacy API (from `formula_enumerator_dataset_export`).
 
-#### Plan-Specified API (Task 201): EnumConfig
+#### Plan-Specified API (`alphazero_proof_search_harness`): EnumConfig
 
 | Name | Signature | Description |
 |------|-----------|-------------|
@@ -135,7 +135,7 @@ All serialization is pure string manipulation — no `import Json` or external d
 | `DiversitySummary` | `structure` | Operator distribution, depth histograms, category counts |
 | `diversitySummary` | `List Formula -> DiversitySummary` | Compute diversity metrics over a formula list |
 
-#### Legacy API (Task 203): EnumParams
+#### Legacy API (`formula_enumerator_dataset_export`): EnumParams
 
 | Name | Signature | Description |
 |------|-----------|-------------|
@@ -143,7 +143,7 @@ All serialization is pure string manipulation — no `import Json` or external d
 | `EnumParams` | `structure` | `maxComplexity`, `maxModalDepth`, `maxTemporalDepth`, `atoms`, `maxFormulas`, `samplingMode` |
 | `enumerateExhaustive` | `EnumParams -> List Formula` | Exhaustive via budget recursion |
 | `sampleRandom` | `EnumParams -> IO (List Formula)` | IO-based random generation |
-| `enrichWithDuals` | `List Formula -> List Formula` | Free 2x augmentation via `swapTemporal` |
+| `enrichWithDuals` | `List Formula -> List Formula` | Free 2x augmentation via `reflectTime` |
 | `generateFormulas` | `EnumParams -> IO (List Formula)` | Dispatch by `SamplingMode` |
 | `DiversityReport` | `structure` | `GoalCategory` counts, modal/temporal depth buckets |
 | `computeDiversity` | `List Formula -> DiversityReport` | Legacy diversity computation |
@@ -415,7 +415,7 @@ lake exe dataset_generator -- [OPTIONS]
   --max-formulas N        Maximum formulas to generate (default: 5000)
   --output PATH           Output JSONL file path (default: data/bmlogic.jsonl)
   --mode MODE             Sampling mode: exhaustive|random|hybrid (default: exhaustive)
-  --include-duals         Include temporal dual augmentation via swapTemporal
+  --include-duals         Include temporal dual augmentation via reflectTime
 ```
 
 **Output files** (both written by default):
@@ -638,13 +638,13 @@ src/bimodal_harness/
 
 ### Downstream Tasks Using Pipeline Output
 
-| BimodalHarness Task | Uses |
+| BimodalHarness Component | Uses |
 |--------------------|------|
-| Task 4: Tokenizer | Reads `formula_ast` to build token vocabulary |
-| Task 5: Text serializer | Serializes `formula_ast` to natural-language string |
-| Task 7: PyTorch Dataset | Loads JSONL via `load_jsonl()` |
-| Task 10: MCTS | Uses `LabeledFormula`-shaped records for proof state representation |
-| Task 19: Z3 countermodel | Uses `BimodalSemantics` (ModelChecker) for INVALID candidates |
+| Tokenizer | Reads `formula_ast` to build token vocabulary |
+| Text serializer | Serializes `formula_ast` to natural-language string |
+| PyTorch Dataset | Loads JSONL via `load_jsonl()` |
+| MCTS | Uses `LabeledFormula`-shaped records for proof state representation |
+| Z3 countermodel | Uses `BimodalSemantics` (ModelChecker) for INVALID candidates |
 
 ---
 
@@ -673,7 +673,7 @@ Small config: `maxModalDepth=2`, `maxTemporalDepth=2`, `maxSize=8`, 3 atoms (p, 
 
 **Known invalid formulas (20/20)**: All 20 curated non-theorems (bare atoms, non-valid implications, `box p`, `diamond p`, `F(p)`, `P(p)`, contradictions, temporal formulas) correctly decided `.invalid`.
 
-**Full dataset statistics, operator distribution, the 6-criterion feasibility gate table (3 of 6 FAILED), root-cause analysis, and the Tier-2 theorem-mining/biased-enumeration/EnrichedCountermodel-wiring recommendations are in the book's Part IV dataset-pipeline chapter (task 313 Phase 10) -- not duplicated here.**
+**Full dataset statistics, operator distribution, the 6-criterion feasibility gate table (3 of 6 FAILED), root-cause analysis, and the Tier-2 theorem-mining/biased-enumeration/EnrichedCountermodel-wiring recommendations are in the book's Part IV dataset-pipeline chapter (`design_full_extent_bimodalreference_book`) -- not duplicated here.**
 
 ### Planned Tasks
 

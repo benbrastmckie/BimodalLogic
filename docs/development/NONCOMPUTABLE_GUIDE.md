@@ -44,7 +44,7 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../a
 - **Total Noncomputable Definitions**: 36
   - DeductionTheorem.lean: 2
   - Propositional.lean: 32 (entire section)
-  - GeneralizedNecessitation.lean: 2 (need fixing - Task 192)
+  - GeneralizedNecessitation.lean: 2 (fixed; see below)
 
 ### Module: `FormalSystem/Metalogic/`
 
@@ -161,31 +161,23 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 
 ---
 
-#### File: `GeneralizedNecessitation.lean` (⚠️ Needs Fixing - Task 192)
+#### File: `GeneralizedNecessitation.lean` (fixed)
 
-**Status**: Currently has **compilation errors** due to missing `noncomputable` markers
+**Status**: Both definitions below are marked `noncomputable` and the file compiles cleanly.
 
-**Definitions That Need Fixing**:
+**Definitions**:
 
-1. **`generalizedModalK`** (Line 66)
+1. **`generalizedModalK`**
    ```lean
-   def generalizedModalK (Γ : Context) (Γ' : Context) (A φ : Formula)
+   noncomputable def generalizedModalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) → ...
    ```
-   - **Current Status**: Marked as `def` (computable)
-   - **Problem**: Calls `deductionTheorem` (Line 71) without being marked noncomputable
-   - **Error**: `failed to compile definition, compiler IR check failed at 'FormalSystem.Theorems.generalized_modal_k'. Error: depends on declaration 'FormalSystem.Metalogic.Core.deduction_theorem', which has no executable code`
-   - **Fix**: Add `noncomputable` keyword
-   - **Why Noncomputable**: Dependency on `deductionTheorem`
+   - **Why Noncomputable**: Calls `deductionTheorem`
 
-2. **`generalizedTemporalK`** (Line 101)
+2. **`generalizedTemporalK`**
    ```lean
-   def generalizedTemporalK (Γ : Context) (Γ' : Context) (A φ : Formula)
+   noncomputable def generalizedTemporalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) → ...
    ```
-   - **Current Status**: Marked as `def` (computable)
-   - **Problem**: Calls `deductionTheorem` (Line 105) without being marked noncomputable
-   - **Error**: `failed to compile definition, compiler IR check failed at 'FormalSystem.Theorems.generalized_temporal_k'. Error: depends on declaration 'FormalSystem.Metalogic.Core.deduction_theorem', which has no executable code`
-   - **Fix**: Add `noncomputable` keyword
-   - **Why Noncomputable**: Dependency on `deductionTheorem`
+   - **Why Noncomputable**: Calls `deductionTheorem`
 
 ---
 

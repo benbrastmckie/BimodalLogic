@@ -204,7 +204,7 @@ path and link resolves, so a stale cross-reference fails the gate rather than ac
 git log --all --grep="Complete Task" --oneline --date=short
 
 # Find when specific task completed
-git log --all --grep="Task 7" --grep="complete" --oneline
+git log --all --grep="Task {N}" --grep="complete" --oneline
 
 # View completion details
 git show <commit-hash>
@@ -235,7 +235,7 @@ git log --all --since="2025-12-01" --oneline | wc -l
 find specs -name "*summary*.md" -o -name "*FINAL*.md"
 
 # Search summaries for task
-grep -r "Task 7" specs/*/summaries/
+grep -r "Task {N}" specs/*/summaries/
 
 # List summaries by size (find detailed docs)
 find specs -name "*summary*.md" -exec du -h {} \; | sort -hr
@@ -247,7 +247,7 @@ find specs -name "*summary*.md" -mtime -7
 find specs -name "*summary*.md" | wc -l
 
 # View specific summary
-cat specs/025_soundness_automation_implementation/summaries/004_iteration_3_final_summary.md
+cat specs/{NNN}_{slug}/summaries/{NN}_{short-slug}-summary.md
 ```
 
 ### Sorry Placeholder Queries
@@ -584,7 +584,7 @@ These are not compatibility layers because they:
 
 ### Related Standards
 
-- Task 169: Implemented clean-break approach for /implement command (removed backward compatibility, updated 80+ files in single commit)
+- Implemented a clean-break approach for the `/implement` command (removed backward compatibility, updated 80+ files in a single commit)
 - LEAN_STYLE_GUIDE.md: Prefer direct changes over deprecated wrappers
 - VERSIONING.md: Breaking changes are acceptable pre-1.0
 
@@ -671,7 +671,7 @@ These instructions are general and apply to any repository using this workflow s
 - docs/development/LEAN_STYLE_GUIDE.md
 - docs/development/CONTRIBUTING.md
 
-**Summary**: specs/007_emoji_removal/summaries/implementation-summary.md
+**Summary**: `specs/{NNN}_{slug}/summaries/{NN}_{short-slug}-summary.md` (example path shape)
 
 ---
 

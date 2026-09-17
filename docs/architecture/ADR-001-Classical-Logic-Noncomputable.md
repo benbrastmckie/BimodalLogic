@@ -205,16 +205,14 @@ Classical.propDecidable
 
 ## Implementation Plan
 
-### Phase 1: Fix Current Errors (Task 192)
+### Phase 1: Fix Current Errors
 
-**Status**: In Progress
+**Status**: Complete
 
-1. ✅ Research completed (comprehensive)
-2. ✅ Documentation created (this ADR + NONCOMPUTABLE_GUIDE.md)
-3. ⏳ Fix `GeneralizedNecessitation.lean`:
-   - Add `noncomputable` to `generalizedModalK` (line 66)
-   - Add `noncomputable` to `generalizedTemporalK` (line 101)
-4. ⏳ Verify build passes
+1. Research completed (comprehensive)
+2. Documentation created (this ADR + NONCOMPUTABLE_GUIDE.md)
+3. Fixed `GeneralizedNecessitation.lean`: `generalizedModalK` and `generalizedTemporalK` are `noncomputable`
+4. Build passes
 
 ### Phase 2: Documentation (In Progress)
 
@@ -237,7 +235,7 @@ Classical.propDecidable
 
 - [x] All noncomputable definitions are cataloged
 - [x] Root cause analysis completed for each
-- [ ] Build passes with no "no executable code" errors (pending Task 192 fix)
+- [x] Build passes with no "no executable code" errors
 - [x] Documentation explains why classical logic is appropriate
 - [x] Guidelines provided for future contributors
 
@@ -283,7 +281,7 @@ Classical.propDecidable
 
 ### Historical Context
 
-- **2025-12-28**: Task 192 identified noncomputable errors in `GeneralizedNecessitation.lean`
+- **2025-12-28**: Identified noncomputable errors in `GeneralizedNecessitation.lean`
 - **2025-12-28**: Research completed on noncomputable necessity
 - **2025-12-28**: Decision formalized in this ADR
 - **2025-12-28**: Comprehensive catalog created ([NONCOMPUTABLE_GUIDE.md](../development/NONCOMPUTABLE_GUIDE.md))
@@ -315,4 +313,4 @@ This separation is common in proof assistants (e.g., Coq's `Ltac` vs. `gallina`)
 **Rationale Summary**:  
 Classical logic with noncomputable definitions is the standard, appropriate, and maintainable choice for ProofChecker's Hilbert-style proof system. The alternatives (constructive logic, Curry-Howard, quotient types) offer no practical benefits and impose significant costs.
 
-**Implementation**: Proceeding with Task 192 fix and documentation updates.
+**Implementation**: `GeneralizedNecessitation.lean` fix and documentation updates complete.

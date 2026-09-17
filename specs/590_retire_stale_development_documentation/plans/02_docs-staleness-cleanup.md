@@ -196,18 +196,18 @@ report 01. Confirm with the grep above and the C9D count before and after.
 
 ---
 
-### Phase 3: De-cite the residual docs (PIPELINE, NONCOMPUTABLE, MAINTENANCE, ADR-004) [NOT STARTED]
+### Phase 3: De-cite the residual docs (PIPELINE, NONCOMPUTABLE, MAINTENANCE, ADR-004) [COMPLETED]
 
 **Goal**: Clear the remaining citations with durable anchors per
 `.claude/context/standards/task-reference-exemptions.md` (read it first).
 
 **Tasks**:
-- [ ] Read `.claude/context/standards/task-reference-exemptions.md`
-- [ ] `docs/training/PIPELINE.md`: line 4 provenance becomes slugs without numbers (`alphazero_proof_search_harness`, `formula_enumerator_dataset_export`, `document_training_pipeline`); line 10 "task 313 Phase 10" becomes a durable anchor (slug `design_full_extent_bimodalreference_book` or the reference-book chapter name); strip the numeric "Task N:" prefixes from the downstream table (~643-647); handle any remaining matches from `grep -niE` with the C9D regex
-- [ ] `docs/research/NONCOMPUTABLE.md`: the 5 "task 192" mentions (3, 18, 156, 163, 616, 677; note line 3's `**Task**: 192` header) become references to the GeneralizedNecessitation.lean termination fix. The citation is a vault casualty (`specs/archive/192_*` is `master_tactic_dispatch`); do not mark it. Line 677's "Ready for implementation" status line goes (historical report)
-- [ ] `docs/project-info/MAINTENANCE.md`: example commands (~207, ~238, ~250, ~674) become `{N}`/`{NNN}_{slug}` placeholders; line ~587 "Task 169: ..." becomes the plain fact without the number
-- [ ] `docs/architecture/ADR-004-Remove-Project-Level-State-Files.md`: lines ~25, ~227-229, ~251 drop the task-276 citations and dead `specs/276_...` paths; state that the implementation record was not preserved after a repository renumbering, or remove it entirely
-- [ ] Re-run the C9D grep, restricted to these four files, and confirm 0
+- [x] Read `.claude/context/standards/task-reference-exemptions.md` *(completed)*
+- [x] `docs/training/PIPELINE.md`: line 4 provenance becomes slugs without numbers (`alphazero_proof_search_harness`, `formula_enumerator_dataset_export`, `document_training_pipeline`); line 10 "task 313 Phase 10" becomes a durable anchor (slug `design_full_extent_bimodalreference_book` or the reference-book chapter name); strip the numeric "Task N:" prefixes from the downstream table (~643-647); handle any remaining matches from `grep -niE` with the C9D regex *(completed)*
+- [x] `docs/research/NONCOMPUTABLE.md`: the 5 "task 192" mentions (3, 18, 156, 163, 616, 677; note line 3's `**Task**: 192` header) become references to the GeneralizedNecessitation.lean termination fix. The citation is a vault casualty (`specs/archive/192_*` is `master_tactic_dispatch`); do not mark it. Line 677's "Ready for implementation" status line goes (historical report) *(completed)*
+- [x] `docs/project-info/MAINTENANCE.md`: example commands (~207, ~238, ~250, ~674) become `{N}`/`{NNN}_{slug}` placeholders; line ~587 "Task 169: ..." becomes the plain fact without the number *(completed)*
+- [x] `docs/architecture/ADR-004-Remove-Project-Level-State-Files.md`: lines ~25, ~227-229, ~251 drop the task-276 citations and dead `specs/276_...` paths; state that the implementation record was not preserved after a repository renumbering, or remove it entirely *(completed: stated as not preserved after renumbering)*
+- [x] Re-run the C9D grep, restricted to these four files, and confirm 0 *(completed: also extended to 5 additional unassigned files -- see progress/phase-3-progress.json deviation -- full-repo C9D down to 6, confined to Phase 4/6 territory)*
 
 **Timing**: 1 hour
 

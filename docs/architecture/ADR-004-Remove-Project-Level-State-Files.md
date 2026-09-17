@@ -22,7 +22,7 @@ The system previously maintained duplicate state information in two locations:
 
 ### Research Findings
 
-Comprehensive analysis (Task 276, research-001.md) revealed:
+Comprehensive analysis revealed:
 
 1. **Zero reads**: No command or agent reads project-level state.json
    - Comprehensive codebase search found no reads
@@ -224,9 +224,8 @@ Specifically:
 
 ## References
 
-- **Research Report**: `specs/276_investigate_remove_redundant_project_level_state_json/reports/research-001.md`
-- **Implementation Plan**: `specs/276_investigate_remove_redundant_project_level_state_json/plans/implementation-001.md`
-- **Task**: Task 276 in `specs/TODO.md`
+- **Research and implementation record**: not preserved after a subsequent repository task-number
+  renumbering; the task directory this ADR originally cited no longer exists under that number.
 
 ## Future Considerations
 
@@ -248,7 +247,7 @@ If future features require project-specific metadata:
 
 ## Approval
 
-- **Author**: Task 276 Implementation
+- **Author**: Automated implementation (task record not preserved after renumbering)
 - **Date**: 2026-01-03
 - **Reviewers**: N/A (automated implementation)
 - **Status**: Accepted and Implemented

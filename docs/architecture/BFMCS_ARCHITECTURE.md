@@ -2,7 +2,7 @@
 
 **Version**: 1.0
 **Date**: 2026-02-20
-**Related Tasks**: Task 914 (BFMCS rename), Task 915 (this documentation), Task 916 (F/P witness tracking)
+**Related Work**: the BFMCS rename, this documentation, and F/P witness tracking
 
 ## Executive Summary
 

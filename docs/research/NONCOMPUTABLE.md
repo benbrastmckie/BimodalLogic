@@ -1,6 +1,6 @@
 # Research Report: The `noncomputable` Keyword in Lean 4
 
-**Task**: 192 (Research Extension)  
+**Context**: `FormalSystem/Theorems/GeneralizedNecessitation.lean` termination-error fix  
 **Research Date**: 2025-12-28  
 **Researcher**: AI Assistant  
 **Status**: Research Complete
@@ -15,7 +15,7 @@
 
 ## Executive Summary
 
-This report provides a comprehensive technical explanation of the `noncomputable` keyword in Lean 4, specifically in the context of task 192 (fixing GeneralizedNecessitation.lean termination errors) and the broader ProofChecker codebase. The `noncomputable` keyword is a critical annotation that marks definitions which cannot be compiled to executable code, typically because they depend on classical axioms or constructively uncomputable operations.
+This report provides a comprehensive technical explanation of the `noncomputable` keyword in Lean 4, specifically in the context of the `GeneralizedNecessitation.lean` termination-error fix and the broader ProofChecker codebase. The `noncomputable` keyword is a critical annotation that marks definitions which cannot be compiled to executable code, typically because they depend on classical axioms or constructively uncomputable operations.
 
 **Key Takeaways**:
 - `noncomputable` is a computability annotation, not a logical correctness marker
@@ -153,14 +153,14 @@ noncomputable def f (x : Nat) : Nat :=
   g x + g (x + 1)
 ```
 
-This is exactly what happens in task 192:
+This is exactly what happens in the `GeneralizedNecessitation.lean` case:
 - `deductionTheorem` is `noncomputable` (uses structural induction + classical reasoning)
 - `generalizedModalK` calls `deductionTheorem`
 - Therefore `generalizedModalK` MUST be `noncomputable`
 
 ---
 
-## Task 192: The GeneralizedNecessitation.lean Case
+## The GeneralizedNecessitation.lean Case
 
 ### Context
 
@@ -613,7 +613,7 @@ For ProofChecker, we don't need code extraction (only proof verification), so `n
 - Required for classical reasoning (em, choice) and certain induction patterns
 - Propagates through dependency chains
 
-**Why needed in Task 192**:
+**Why needed in `GeneralizedNecessitation.lean`**:
 - `deductionTheorem` uses classical logic → noncomputable
 - `generalizedModalK` and `generalizedTemporalK` call `deductionTheorem`
 - Must mark callers as `noncomputable` to satisfy dependency constraint
@@ -674,4 +674,4 @@ For ProofChecker, we don't need code extraction (only proof verification), so `n
 **Research Complete**: 2025-12-28  
 **Report Type**: Technical Deep Dive  
 **Audience**: ProofChecker developers, Lean 4 theorem provers  
-**Status**: Ready for implementation (task 192) and reference
+**Status**: Historical research report; the `GeneralizedNecessitation.lean` fix it informed is complete. Retained for reference.
