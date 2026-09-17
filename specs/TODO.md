@@ -11,7 +11,7 @@ next_project_number: 616
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,585,603,604,605,606,607,608,610,614,615 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,585,603,604,605,606,607,608,610,614,615 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -107,8 +107,7 @@ next_project_number: 616
 
 ### Codebase Cleanup
 
-506 [IMPLEMENTING] — Fix all outstanding display/layout defects in the compiled...
-585 [PLANNED] — lake build exits 0 with 316 warnings across 47 live files,...
+585 [IMPLEMENTING] — lake build exits 0 with 316 warnings across 47 live files,...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
       └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
@@ -311,7 +310,7 @@ DISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on 
 
 ### 585. Burn down compiler warnings and add gate
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 583, Task 584
@@ -531,12 +530,13 @@ GROUND TRUTH to read first: 535's report §3-4 and §7.3 with its probes; 533's 
 ---
 
 ### 506. Fix typst display defects via playwright visual loop
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 586
 - **Research**: [506_fix_typst_display_defects_via_playwright_visual_loop/reports/01_typst-display-defects-catalog.md]
 - **Plan**: [506_fix_typst_display_defects_via_playwright_visual_loop/plans/01_typst-layout-defect-fixes.md]
+- **Summary**: [506_fix_typst_display_defects_via_playwright_visual_loop/summaries/01_typst-layout-defect-fixes-summary.md]
 
 **Description**: Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only
 
