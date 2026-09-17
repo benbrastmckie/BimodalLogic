@@ -1,0 +1,44 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-17T22:19:16Z",
+  "completed_at": "2026-09-17T23:05:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/569_retarget_semantics_to_possible_world_index/reports/01_possible-world-index-retarget.md",
+      "summary": "The task's premise is stale: tasks 599/601/602 already executed the described retarget; the IntTransfer gate resolves positive (sorryAx-free at the total index); the residual gap is 36 sites, 22 of them closed by one missing API lemma; the flat-structure conversion is optional and relocates bridging rather than removing it."
+    },
+    {
+      "type": "probe",
+      "path": "specs/569_retarget_semantics_to_possible_world_index/probes/01_possible-world-spike.lean",
+      "summary": "Compiling Lean probe: axiom check on validZTime_iff_validInt and truthAt_map, WorldHistory <-> flat PossibleWorld Equiv, and the Extends bridge friction a flat structure would add."
+    }
+  ],
+  "user_decision": {
+    "question": "Task 569's description is factually stale against the current tree: tasks 599, 601 and 602 already performed the retarget it specifies, its ConvexHistory hard constraint contradicts task 599 (which deleted ConvexHistory), and its claim that the paper withdrew 'world history' is refuted by possible_worlds.tex:1019, which still uses that term definitionally. How should task 569 be disposed of?",
+    "options": [
+      "Close 569 as superseded, and spawn a small follow-on for the residue (add WorldHistory.respects_task, rewrite its 22 call sites, fix IntNormalForm.lean:282 and Extension.lean:219)",
+      "Revise 569's description in place down to that same residue cleanup and keep the task number",
+      "Keep the PossibleWorld rename as a separate scoped task (503 binders plus the namespace, one atomic batch, no representation change) after settling whether H_F or the quotient W_F owns the name 'possible world'",
+      "Separately, convert WorldHistory from a subtype to a flat structure on its own rationale (deletes a dead CoeOut, a zero-call-site ext, and states_eq_state; costs a ~6-line toPartialHistory bridge for the Extension Theorem)",
+      "Execute the description as written anyway"
+    ],
+    "recommended": "Close 569 as superseded, and spawn a small follow-on for the residue (add WorldHistory.respects_task, rewrite its 22 call sites, fix IntNormalForm.lean:282 and Extension.lean:219)",
+    "blocking": true
+  },
+  "metadata": {
+    "session_id": "sess_1789683510_f29336_569",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ],
+    "build_status": "green (lake build FormalSystem, 2659 jobs, exit 0)",
+    "gate_outcome": "IntTransfer spike POSITIVE: validZTime_iff_validInt and truthAt_map already proved at the total index, axioms [propext, Classical.choice, Quot.sound]",
+    "mcp_failures": [
+      "lean-lsp MCP server failed to connect (CONNECT_TIMEOUT); substituted lake env lean probe compilation and grep/read"
+    ]
+  }
+}

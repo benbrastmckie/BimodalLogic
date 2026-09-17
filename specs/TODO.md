@@ -108,7 +108,7 @@ next_project_number: 615
 ### Codebase Cleanup
 
 506 [RESEARCHED] — Fix all outstanding display/layout defects in the compiled...
-569 [RESEARCHING] — Retarget the semantics from a convex index carrying an...
+569 [RESEARCHED] — Retarget the semantics from a convex index carrying an...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
       └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
@@ -327,10 +327,11 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 569. Retarget semantics to possible world index
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 584
+- **Research**: [569_retarget_semantics_to_possible_world_index/reports/01_possible-world-index-retarget.md]
 
 **Description**: Retarget the semantics from a convex index carrying an `IsTotal` side hypothesis to a total-by-construction index.
 
