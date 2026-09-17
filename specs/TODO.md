@@ -107,8 +107,8 @@ next_project_number: 615
 
 ### Codebase Cleanup
 
-506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-569 [NOT STARTED] — Retarget the semantics from a convex index carrying an...
+506 [RESEARCHED] — Fix all outstanding display/layout defects in the compiled...
+569 [RESEARCHING] — Retarget the semantics from a convex index carrying an...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
       └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
@@ -327,7 +327,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 569. Retarget semantics to possible world index
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 584
@@ -527,10 +527,11 @@ GROUND TRUTH to read first: 535's report §3-4 and §7.3 with its probes; 533's 
 ---
 
 ### 506. Fix typst display defects via playwright visual loop
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: typst
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 586
+- **Research**: [506_fix_typst_display_defects_via_playwright_visual_loop/reports/01_typst-display-defects-catalog.md]
 
 **Description**: Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only
 

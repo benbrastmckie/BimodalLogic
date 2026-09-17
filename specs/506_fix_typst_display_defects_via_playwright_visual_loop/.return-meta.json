@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/506_fix_typst_display_defects_via_playwright_visual_loop/reports/01_typst-display-defects-catalog.md",
+      "summary": "Catalogs 6 confirmed layout defects (2 unbreakable display-math equations, 3 unbreakable long Lean-identifier overflows, 1 non-breakable oversized table) across FormalFoundations.typ and BimodalReference.typ's included chapters, each located by page+source-line via a full PDF bounding-box overflow scan and confirmed by direct visual inspection, with every proposed fix empirically pre-validated against this Typst install."
+    }
+  ],
+  "next_steps": "Run /plan 506 to turn the 6 catalogued defects and their empirically-verified fix techniques (display-math \\ line breaks; #show figure: set block(breakable: true) for the oversized table; sym.zws break-opportunities for unbreakable Lean identifiers) into an implementation plan, prioritized as: Defect 6 (critical, illegible table/caption overlap) > Defects 1-2 (known + sibling display-math overflow) > Defect 4 (table column overlap) > Defect 5 (module-map role-text overflow) > Defect 3 (leansrc helper, recommend systemic fix over point fix).",
+  "metadata": {
+    "session_id": "sess_1789683510_f29336_506",
+    "agent_type": "typst-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "typst-research-agent"]
+  }
+}
