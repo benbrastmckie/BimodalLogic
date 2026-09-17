@@ -1,6 +1,10 @@
 # A Bimodal Logic for Tense and Modality
 
 [![CI](https://github.com/benbrastmckie/BimodalLogic/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/BimodalLogic/actions/workflows/ci.yml)
+[![API docs](https://img.shields.io/badge/docs-API-blue)](https://benbrastmckie.github.io/BimodalLogic/docs/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![Lean](https://img.shields.io/badge/Lean-v4.33.0--rc1-blue)](lean-toolchain)
+[![Mathlib](https://img.shields.io/badge/Mathlib-v4.33.0--rc1-blue)](https://github.com/leanprover-community/mathlib4/tree/v4.33.0-rc1)
 
 This repository implements the **bimodal fragment** of the [Logos](https://logos-labs.ai/) in Lean 4, establishing soundness and completeness for a logic designed for reasoning about future contingency in non-deterministic dynamical systems. The **task semantics** evaluates formulas at both a history and a time, where histories are functions from times to world-states constrained by the task relation which encodes the possible transitions between world-states over a duration of time.
 
