@@ -1,5 +1,5 @@
 ---
-next_project_number: 610
+next_project_number: 611
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 610
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609,610 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -73,6 +73,7 @@ next_project_number: 610
 ### Documentation
 
 607 [NOT STARTED] — Resync typst/FormalFoundations.typ with the current Lean tree...
+610 [NOT STARTED] — Update remaining documentation references to lakefile.lean...
 
 ### Formula Refactor
 
@@ -123,6 +124,16 @@ next_project_number: 610
 609 [NOT STARTED] — Fix scripts/check-evidence-probes.sh, which fails 4 of 4...
 
 ## Tasks
+
+### 610. Replace remaining lakefile lean mentions in docs
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Update remaining documentation references to lakefile.lean now that the project uses lakefile.toml (package renamed to BimodalLogic): docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333. Task 578 skipped these because concurrent tasks held uncommitted edits in them; re-grep the tree for any other lakefile.lean or Logos package-name mentions.
+
+---
 
 ### 609. Fix failing evidence probes convexhistory ofreflective
 - **Status**: [NOT STARTED]

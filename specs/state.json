@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 610,
+  "next_project_number": 611,
   "active_projects": [
+    {
+      "project_number": 610,
+      "project_name": "replace_remaining_lakefile_lean_mentions_in_docs",
+      "status": "not_started",
+      "task_type": "markdown",
+      "description": "Update remaining documentation references to lakefile.lean now that the project uses lakefile.toml (package renamed to BimodalLogic): docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333. Task 578 skipped these because concurrent tasks held uncommitted edits in them; re-grep the tree for any other lakefile.lean or Logos package-name mentions.",
+      "topic": "documentation",
+      "created": "2026-09-17T10:01:00Z",
+      "last_updated": "2026-09-17T10:01:00Z"
+    },
     {
       "project_number": 609,
       "project_name": "fix_failing_evidence_probes_convexhistory_ofreflective",
