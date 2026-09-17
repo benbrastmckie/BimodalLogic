@@ -1187,7 +1187,7 @@ echo
 # than forcing an unrelated edit.
 # ---------------------------------------------------------------------------
 python3 - "$SLASH_ALLOWLIST" "$LINK_ALLOWLIST" <<'MDPYEOF'
-import os, re, sys
+import os, re, subprocess, sys
 
 slash_allow_path, link_allow_path = sys.argv[1], sys.argv[2]
 failures = 0
@@ -1262,6 +1262,7 @@ link_re = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 link_allow = read_allowlist(link_allow_path)
 used_link_allow = set()
 broken = []
+present = []
 for f in md_files:
     if f in link_allow:
         used_link_allow.add(f)
@@ -1277,6 +1278,23 @@ for f in md_files:
             full = target if target.startswith("/") else os.path.join(d, target)
             if not os.path.exists(full):
                 broken.append((f, i, link))
+            else:
+                present.append((f, i, link, os.path.normpath(full)))
+
+# A target that exists only because it is gitignored (e.g. the local `data/` tree) resolves in a
+# working copy but not in a fresh clone or on CI, so the check would pass locally and fail there.
+# Judge such links by what git tracks, not by what happens to be on disk. `git check-ignore` never
+# reports a tracked file, so a tracked file under an ignored directory still counts as resolved.
+if present:
+    try:
+        r = subprocess.run(["git", "check-ignore", "--stdin"], text=True, capture_output=True,
+                           input="\n".join(sorted({p[3] for p in present})) + "\n")
+        ignored = set(r.stdout.splitlines()) if r.returncode in (0, 1) else set()
+    except OSError:
+        ignored = set()
+    for f, i, link, full in present:
+        if full in ignored:
+            broken.append((f, i, link + "  (exists locally but is gitignored)"))
 
 if broken:
     bad("C13", f"{len(broken)} unresolved relative markdown link(s) in docs/ + README.md")

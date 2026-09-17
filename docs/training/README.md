@@ -21,9 +21,9 @@ dataset publishing, and training data generation.
 
 | Path | Description |
 |---|---|
-| [`data/`](../../data/) | Canonical JSONL dataset files and metadata |
-| [`data/hf-dataset/`](../../data/hf-dataset/) | Upload tooling, dataset card, and validation scripts |
+| `data/` | Canonical JSONL dataset files and metadata (local working tree only; not tracked in git) |
+| `data/hf-dataset/` | Upload tooling, dataset card, and validation scripts (local working tree only) |
 
 For the full operator-level publishing workflow (account setup, validation
 steps, troubleshooting), see
-[`data/hf-dataset/PUBLISHING.md`](../../data/hf-dataset/PUBLISHING.md).
+`data/hf-dataset/PUBLISHING.md` (in the local, untracked `data/` tree).

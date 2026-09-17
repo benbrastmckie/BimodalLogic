@@ -58,7 +58,7 @@ benchmarks. Includes a 13-dimension feature comparison matrix covering 12 benchm
 assessment, gap analysis, and enhancement roadmap (R1–R7).
 
 **Status**: Complete analysis
-**Related**: [data/README.md](../../data/README.md), [data/dataset-card.md](../../data/dataset-card.md)
+**Related**: `data/README.md`, `data/dataset-card.md` (local working tree only; `data/` is not tracked in git)
 
 ---
 

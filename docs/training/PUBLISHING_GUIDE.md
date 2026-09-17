@@ -86,7 +86,7 @@ If your pipeline previously used `git lfs pull` for these files:
 
 This section summarises the key commands. For full details — including prerequisite
 account setup, troubleshooting, and NeurIPS-specific extras — see the operator guide:
-[`data/hf-dataset/PUBLISHING.md`](../../data/hf-dataset/PUBLISHING.md).
+`data/hf-dataset/PUBLISHING.md` (in the local, untracked `data/` tree).
 
 ### Prerequisites
 
@@ -230,8 +230,8 @@ https://huggingface.co/datasets/logos-labs/bmlogic-bench/resolve/main/croissant.
 
 Include this file in the NeurIPS submission appendix or supplementary materials.
 
-A pre-generated `data/croissant.json` is also checked in to this repository; see
-[`data/README.md`](../../data/README.md#croissant-metadata) for validation commands.
+A pre-generated `data/croissant.json` is kept in the local `data/` tree (which is not tracked in
+git); see the "Croissant metadata" section of `data/README.md` there for validation commands.
 
 ### RAI Fields
 
@@ -337,6 +337,6 @@ NixOS setup options.
 
 | Document | Description |
 |---|---|
-| [`data/hf-dataset/PUBLISHING.md`](../../data/hf-dataset/PUBLISHING.md) | Full operator guide with account setup |
-| [`data/README.md`](../../data/README.md) | Dataset inventory, Croissant validation, download commands |
+| `data/hf-dataset/PUBLISHING.md` | Full operator guide with account setup (local, untracked `data/` tree) |
+| `data/README.md` | Dataset inventory, Croissant validation, download commands (local, untracked `data/` tree) |
 | [`docs/training/PIPELINE.md`](PIPELINE.md) | Dual-signal training pipeline (Lean modules, JSON schemas) |
