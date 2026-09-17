@@ -1,5 +1,5 @@
 ---
-next_project_number: 605
+next_project_number: 606
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 605
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -98,6 +98,10 @@ next_project_number: 605
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
+### Paper Refactor
+
+605 [NOT STARTED] — Reconcile the Burgess/Xu axiom provenance and add the paper's...
+
 ### Codebase Cleanup
 
 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
@@ -112,6 +116,16 @@ next_project_number: 605
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 
 ## Tasks
+
+### 605. Reconcile burgess a7a provenance and add axiom source footnote
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-refactor
+- **Dependencies**: None
+
+**Description**: Reconcile the Burgess/Xu axiom provenance and add the paper's axiom-source footnote to FormalSystem/ProofSystem/Axioms.lean. The paper's footnote says CN is Burgess's A7a, but an existing note in Axioms.lean says A7a was removed as unsound; determine which claim is correct against Burgess and Xu, then copy the reconciled provenance into the axiom docstrings and docs/reference/paper-definitions-of-record.md. Follow-up recorded by the paper-vocabulary reconciliation (task 584).
+
+---
 
 ### 604. Support zstd compressed jsonl datasets
 - **Status**: [NOT STARTED]

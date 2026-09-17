@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 605,
+  "next_project_number": 606,
   "active_projects": [
+    {
+      "project_number": 605,
+      "project_name": "reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Reconcile the Burgess/Xu axiom provenance and add the paper's axiom-source footnote to FormalSystem/ProofSystem/Axioms.lean. The paper's footnote says CN is Burgess's A7a, but an existing note in Axioms.lean says A7a was removed as unsound; determine which claim is correct against Burgess and Xu, then copy the reconciled provenance into the axiom docstrings and docs/reference/paper-definitions-of-record.md. Follow-up recorded by the paper-vocabulary reconciliation (task 584).",
+      "topic": "paper-refactor",
+      "created": "2026-09-17T10:00:13Z",
+      "last_updated": "2026-09-17T10:00:13Z"
+    },
     {
       "project_number": 604,
       "project_name": "support_zstd_compressed_jsonl_datasets",
