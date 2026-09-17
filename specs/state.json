@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 609,
+  "next_project_number": 610,
   "active_projects": [
+    {
+      "project_number": 609,
+      "project_name": "fix_failing_evidence_probes_convexhistory_ofreflective",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Fix scripts/check-evidence-probes.sh, which fails 4 of 4 probes with errors about ConvexHistory and FrameOver.ofReflective. The failures predate the TD->TR rename (task 584) and are likely stale probes left after the WorldHistory retarget that retired TaskFrame.HF (task 602). Update the probes (or the declarations they reference) so the script passes, and consider wiring it into CI so it cannot silently rot again.",
+      "topic": "codebase-cleanup",
+      "created": "2026-09-17T10:00:50Z",
+      "last_updated": "2026-09-17T10:00:50Z"
+    },
     {
       "project_number": 608,
       "project_name": "decide_and_rename_swapus_swapminus_families",
