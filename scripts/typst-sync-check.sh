@@ -7,7 +7,12 @@
 #                           against live Lean source (excl. Boneyard/) or
 #                           the whitelist.
 #   2. Count freshness   -- regenerated status.typ (JSON) matches the
-#                           committed typst/generated/status.typ exactly.
+#                           committed typst/generated/status.typ exactly, AND
+#                           (module-map sub-check) the committed
+#                           typst/generated/automation-module-map.typ agrees
+#                           with a live regeneration from
+#                           scripts/typst-module-map.sh --json (build-free:
+#                           no lake invocation either).
 #   3. Machine appendix  -- committed generated/machine-appendix.jsonl agrees
 #                           with a live recount of the Axiom/DerivationTree
 #                           constructor blocks, and machine-appendix.typ is
@@ -35,6 +40,7 @@ TYPST_DIR="${REPO_ROOT}/typst"
 WHITELIST="${TYPST_DIR}/sync-check-whitelist.txt"
 MAIN_FILE="${TYPST_DIR}/BimodalReference.typ"
 STATUS_TYP="${TYPST_DIR}/generated/status.typ"
+MODULE_MAP_TYP="${TYPST_DIR}/generated/automation-module-map.typ"
 
 FAIL=0
 
@@ -245,6 +251,60 @@ PYEOF
     FAIL=1
   else
     echo "All fields in generated/status.typ match a live regeneration." >&2
+  fi
+fi
+
+# --- Check 2 (module-map sub-check): automation-module-map.typ vs a live
+# regeneration from scripts/typst-module-map.sh --json (build-free) ---
+echo "== Check 2b: module map freshness (generated/automation-module-map.typ vs live regeneration) ==" >&2
+
+if [[ ! -f "${MODULE_MAP_TYP}" ]]; then
+  echo "VIOLATION: ${MODULE_MAP_TYP} does not exist -- run scripts/typst-module-map.sh" >&2
+  FAIL=1
+else
+  LIVE_MODULE_MAP_JSON=$(bash "${REPO_ROOT}/scripts/typst-module-map.sh" --json)
+  MODULE_MAP_REPORT=$(python3 - "${MODULE_MAP_TYP}" << PYEOF
+import re, sys, json
+
+live = json.loads('''${LIVE_MODULE_MAP_JSON}''')
+live_rows = {r["path"]: (r["lines"], r["sorry_free"]) for r in live["rows"]}
+live_total = live["total"]
+
+with open(sys.argv[1], encoding="utf-8") as fh:
+    text = fh.read()
+
+m = re.search(r"#let automation-module-map = \((.*?)\n\)", text, re.DOTALL)
+committed_rows = {}
+if m:
+    for row in re.finditer(r'\("([^"]+)",\s*(\d+),\s*(true|false)\)', m.group(1)):
+        committed_rows[row.group(1)] = (int(row.group(2)), row.group(3) == "true")
+
+tm = re.search(r"#let automation-module-total = (\d+)", text)
+committed_total = int(tm.group(1)) if tm else None
+
+mismatches = []
+added = set(live_rows) - set(committed_rows)
+removed = set(committed_rows) - set(live_rows)
+for p in sorted(added):
+    mismatches.append(f"row added (present live, missing in committed file): {p} {live_rows[p]}")
+for p in sorted(removed):
+    mismatches.append(f"row removed (present in committed file, absent live): {p} {committed_rows[p]}")
+for p in sorted(set(live_rows) & set(committed_rows)):
+    if live_rows[p] != committed_rows[p]:
+        mismatches.append(f"row changed: {p} committed={committed_rows[p]} live={live_rows[p]}")
+if committed_total != live_total:
+    mismatches.append(f"automation-module-total: committed={committed_total} live={live_total}")
+
+for msg in mismatches:
+    print("VIOLATION: " + msg + " -- regenerate via: bash scripts/typst-module-map.sh")
+print(f"MODULE_MAP_MISMATCHES={len(mismatches)}")
+PYEOF
+)
+  echo "${MODULE_MAP_REPORT}" >&2
+  if ! echo "${MODULE_MAP_REPORT}" | grep -q "^MODULE_MAP_MISMATCHES=0$"; then
+    FAIL=1
+  else
+    echo "generated/automation-module-map.typ matches a live regeneration." >&2
   fi
 fi
 

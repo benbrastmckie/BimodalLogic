@@ -167,7 +167,7 @@ dense_indicator).
 
 7 rules, unchanged (`ProofSystem/Derivation.lean`, `inductive DerivationTree`):
 axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
-temporal_duality, weakening.
+time_reflection, weakening.
 
 ### Sorry counts (genuine `sorry` terms, comments stripped)
 
@@ -232,7 +232,7 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 | 61-63 | `neg`,`and`,`or` | verified | Formula.lean |
 | 84 | `pos` | stale name | `diamond` (Formula.lean, def diamond) |
 | 108-111 | `somePast`,`someFuture`,`always`,`sometimes` | verified | Formula.lean, 157+ |
-| 119 | `swapTemporal` | verified | Formula.lean (defined on untl/snce) |
+| 119 | `reflectTime` | verified | Formula.lean (defined on untl/snce) |
 
 ### 02-semantics.typ
 
@@ -475,3 +475,43 @@ claim guarded by a maintainer-only `CONFIRM` comment rather than status prose. C
   subsystem, with the conservativity theorem box replaced by a deferred-subsystem note.
 - The historical tables and prior verdict sections above are unmodified, per this file's own
   header rule.
+
+## 2026-09-17 Decision — Machine-Generate the Automation Module Map
+
+`typst/chapters/p4-proof-automation.typ`'s "Module Map" table (the tactic/proof-search half of
+`FormalSystem/Automation/`) had drifted twice inside two months against a hand-maintained table:
+once at the 2026-09-07 tactic retirement, and again in the header's approximate line-count
+figure. The sibling contrast already visible in the Lean tree settled the question: the
+generated-inventory block in `FormalSystem/Automation/Tactics/README.md` stayed accurate across
+both drifts, while the hand-written table in `FormalSystem/Automation/ProofSearch/README.md`
+(no such marker) went stale by 265 lines on `Core.lean` and nobody caught it. **Decision:
+generate it, following the same split between generated facts and hand-written prose that
+`scripts/typst-status-counts.sh`'s `sorry-table` already establishes.**
+
+- **Separate generator, separate output file**: `scripts/typst-module-map.sh`, writing
+  `typst/generated/automation-module-map.typ`, rather than folding into
+  `typst-status-counts.sh`. That script's write path requires a built library (`lake env lean`
+  for the axiom report) and re-stamps its output on every run; bolting a Module Map refresh onto
+  it would force a full build and a `status.typ` re-stamp for a change that needs neither. This
+  mirrors the existing precedent of `generated/machine-appendix.typ` getting its own generator
+  rather than sharing `status.typ`'s.
+- **Rows discovered by glob, never a fixed list**: `FormalSystem/Automation/Tactics/*.lean`,
+  `FormalSystem/Automation/ProofSearch/*.lean`, `FormalSystem/Automation/SuccessPatterns.lean`
+  (excluding any `Boneyard/` subtree, defensively, though none exists under these roots today).
+  A renamed, added, or removed module under these globs changes the live regeneration
+  automatically, so `scripts/typst-sync-check.sh` Check 2's new module-map sub-check fails
+  loudly in CI on drift, and the chapter's `roles.at(path)` dictionary lookup plus a length
+  assertion makes `typst compile` fail loudly locally on the same drift.
+- **Generated columns**: `(path, lines, sorry_free)`, emitted as a `#let automation-module-map`
+  tuple array plus `#let automation-module-total`, mirroring `status.typ`'s tuple-array
+  convention. The `Role` column stays hand-written in the chapter, keyed by the same path
+  strings the generator prints — a script should synthesize regenerable facts (name, line
+  count, sorry-freedom), never prose. Sorry detection reuses `typst-status-counts.sh`'s
+  comment-stripped `\bsorry\b` methodology verbatim (block `/- -/` and line `--` comments
+  stripped before counting), rather than inventing a second one.
+- **No commit/date stamp** in the generated file, unlike `status.typ`: this keeps the Check 2
+  diff exact (no stamp-field churn to special-case) since the module list is a live-tree glob,
+  not a point-in-time measurement tied to a specific commit.
+- Verified build-free: `scripts/typst-module-map.sh --json` runs with no `lake`/`lean`
+  invocation, matching the same build-free contract `typst-status-counts.sh --json` already
+  gives Check 2 for the scalar counts.

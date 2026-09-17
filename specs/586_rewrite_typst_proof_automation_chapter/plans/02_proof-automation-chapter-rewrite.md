@@ -1,7 +1,7 @@
 # Implementation Plan: Task #586
 
 - **Task**: 586 - Rewrite typst proof-automation chapter against the retired-tactics tree (widened: all non-`docs/` retired-tactic prose; final phase: CI wiring of `typst-sync-check.sh`)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None (task 591 module renames confirmed `completed`; no overlap with the rows below)
 - **Research Inputs**: specs/586_rewrite_typst_proof_automation_chapter/reports/02_verified-tactic-surface-and-ci-wiring.md (primary); reports/01_retired-tactics-chapter-drift.md (superseded on numbers)
@@ -112,7 +112,7 @@ Generate it. A hand fix has already drifted twice; the sibling
 
 Phases within the same wave can execute in parallel (Phases 1 and 3 touch disjoint files).
 
-### Phase 1: Module-map generator and Check 2 extension [NOT STARTED]
+### Phase 1: Module-map generator and Check 2 extension [COMPLETED]
 
 **Goal**: A build-free generator emits `typst/generated/automation-module-map.typ`, and
 `typst-sync-check.sh` Check 2 fails when the committed file disagrees with a live regeneration.
