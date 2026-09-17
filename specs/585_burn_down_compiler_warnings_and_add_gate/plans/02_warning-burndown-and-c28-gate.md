@@ -1,7 +1,7 @@
 # Implementation Plan: Burn down the live compiler warnings and add a warning gate
 
 - **Task**: 585 - Burn down the live compiler warnings and add a warning gate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17.5 hours
 - **Dependencies**: Task 583 (CI wiring pattern) — complete and archived; Task 584 — complete.
   Downstream: Task 597 (Mathlib standard linter set + blanket-suppression ratchet) baselines its
@@ -202,45 +202,45 @@ per `context/project/lean4/operations/long-builds.md`. The full-surface target s
 
 ---
 
-### Phase 1: Warning-budget scanner and all-target baseline [NOT STARTED]
+### Phase 1: Warning-budget scanner and all-target baseline [COMPLETED]
 
 **Goal**: A standalone, build-free scanner that measures the all-target warning surface from Lake's
 trace store, writes and verifies `scripts/warning-budget.txt`, and refuses to pass when it cannot
 trust its own measurement or when a linter class has no recorded disposition.
 
 **Tasks**:
-- [ ] Create `scripts/warning-budget.py` following the `scripts/lake_targets.py` precedent for a
+- [x] Create `scripts/warning-budget.py` following the `scripts/lake_targets.py` precedent for a
       python3 helper the bash harness shells out to.
-- [ ] **Acquisition**: walk `.lake/build/lib/lean/**/*.trace`, take `log[]` entries with
+- [x] **Acquisition**: walk `.lake/build/lib/lean/**/*.trace`, take `log[]` entries with
       `level == "warning"`, parse `<path>:<line>:<col>: ` off the front of each message, and drop any
       entry whose source path no longer exists.
-- [ ] **Classification**: read the linter name out of the
+- [x] **Classification**: read the linter name out of the
       ``Note: This linter can be disabled with `set_option linter.X false` `` line (present on 252 of
       348); classify the remainder by message pattern as `deprecated` (`has been deprecated`) and
       `introMerge` (`Try this: intro`). Any message matching none of the three is `UNCLASSIFIED` and
       is an error, not a silent bucket.
-- [ ] **Baseline key**: `<count> <path> <linter>` — deliberately not a per-class scalar (which cannot
+- [x] **Baseline key**: `<count> <path> <linter>` — deliberately not a per-class scalar (which cannot
       catch one warning fixed and another introduced) and deliberately without line numbers (so
       ordinary edits do not churn the baseline).
-- [ ] **Disposition table** in `scripts/warning-budget.txt`'s header: one row per linter class with a
+- [x] **Disposition table** in `scripts/warning-budget.txt`'s header: one row per linter class with a
       value in `{blocking, advisory, pending}`. Seed it as: deprecations `blocking`;
       `linter.unusedSimpArgs` `blocking`; `linter.unusedSectionVars` `blocking`;
       `linter.unusedVariables` `blocking`; `linter.unusedTactic` and `linter.unreachableTactic`
       `blocking` with "fix or document via declaration-scoped `set_option … in`" named as the
       sanctioned resolution; `introMerge` `advisory`; `linter.defProp` **`pending`** (no artifact has
       analysed it — Phase 8 sets it).
-- [ ] **Undispositioned-class guard**: exit 2 when an observed linter class has no row in the
+- [x] **Undispositioned-class guard**: exit 2 when an observed linter class has no row in the
       disposition table. This is what stops a future class being absorbed by a routine `--update`.
-- [ ] **Anti-silence guard**: exit 2 — never pass — when no trace files are found, when every trace
+- [x] **Anti-silence guard**: exit 2 — never pass — when no trace files are found, when every trace
       lacks a `log` key, or when the recorded baseline total is non-zero while the observed total is 0.
-- [ ] **Modes**: default verify (exit 1 on any count above its baseline entry), `--update` (rewrite
+- [x] **Modes**: default verify (exit 1 on any count above its baseline entry), `--update` (rewrite
       the file), `--list` (current counts, highest first), `--from-build` (re-derive the same numbers
       from all-target `lake build` stdout, schema-independent, for re-baselining and after a toolchain
       bump). Exit 2 for usage/environment error. Model: `~/Projects/cslib/scripts/check-lint-suppressions.sh`.
-- [ ] Copy C16's never-regenerate-to-hide-a-regression warning (`check-module-invariants.sh:2083-2086`)
+- [x] Copy C16's never-regenerate-to-hide-a-regression warning (`check-module-invariants.sh:2083-2086`)
       verbatim into both the script header and the baseline file header, together with the
       "counts are a CEILING and may only decrease" rule.
-- [ ] Generate the initial baseline against the **all-target** set and commit it.
+- [x] Generate the initial baseline against the **all-target** set and commit it.
 
 **Timing**: 2 hours
 
