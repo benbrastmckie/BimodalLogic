@@ -45,15 +45,122 @@ re-derives every hash below directly from the live paper file on every run.
 | Ten-anchor drift correction re-pin (UTC) | 2026-09-02T23:08Z (see "Drift correction (2026-09-02): ten-anchor re-pin" below) |
 | Base commit at the z/d/r rename-absorption re-pin (paper repo `git HEAD`; file dirty against it, and the last commit to touch the file is `acfa75fdd270dd69145c76b788144b1ce0aee98c`) | `f61bbd75d3aa0c777fdeb91804868145f7169684` |
 | File checksum, first re-pin during the z/d/r rename-absorption (sha256, superseded within the hour) | `c3846c1ef93991228f2e309c7d9831df732b5dec657157425cf593a0256d278e` (line count 4483) |
-| **File checksum, re-pinned after the in-flight `def:BX-z` follow-on drift (sha256, current authoritative pin)** | `1b3c33a2b6a445b14e13e2f59b10c02b5140bb00280a3191ef27448e63460aa5` |
+| File checksum, re-pinned after the in-flight `def:BX-z` follow-on drift (sha256, superseded 2026-09-17) | `1b3c33a2b6a445b14e13e2f59b10c02b5140bb00280a3191ef27448e63460aa5` |
 | Line count at that re-pin | 4452 |
 | z/d/r rename-absorption re-pin (UTC) | 2026-09-08T01:30Z (15 entries re-hashed, 9 anchors retired, 3 renamed anchors newly pinned; see "Drift correction and rename absorption (2026-09-07)" below) |
+| Base commit at the time-reflection wave re-pin (paper repo `git HEAD`; file dirty against it) | `a166fcbf2951482ecdccc643c7458ac92d67126c` |
+| **File checksum, re-pinned at the time-reflection wave (sha256, current authoritative pin)** | `b4e45e2c5f771ee0d86be6c6e3a302cceb454771cd53475ed3628258083ddfa0` |
+| Line count at that re-pin | 4529 |
+| Time-reflection wave re-pin (UTC) | 2026-09-17T09:19Z (14 entries re-hashed, `thm:M5-valid` retired, TD → TR absorbed with carve-outs; see "Drift correction and rename absorption (2026-09-17)" below) |
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: f61bbd75d3aa0c777fdeb91804868145f7169684 -->
-<!-- FILE_CHECKSUM: 1b3c33a2b6a445b14e13e2f59b10c02b5140bb00280a3191ef27448e63460aa5 -->
-<!-- LINE_COUNT: 4452 -->
+<!-- PINNED_COMMIT: a166fcbf2951482ecdccc643c7458ac92d67126c -->
+<!-- FILE_CHECKSUM: b4e45e2c5f771ee0d86be6c6e3a302cceb454771cd53475ed3628258083ddfa0 -->
+<!-- LINE_COUNT: 4529 -->
+
+### Drift correction and rename absorption (2026-09-17): the time-reflection wave
+
+The checker was red (exit 1, case (c)) before this correction: **14 pinned entries drifted and
+1 pinned anchor went dangling**. It gives the quiet case-(a) pass after it.
+
+**Re-hashed (re-quoted from live text via `--resolve`, none hand-written):** `def:BL-semantics`,
+`def:BLplus-language`, `def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`, `def:TMplus`,
+`app:discrete`, `app:dense`, `app:complete`, `def:frame-properties`, `cor:tm-completeness`,
+`def:id`. Most of the drift is reflow and rewording. In particular every system definition changed
+"the smallest extension of X closed under Y" to "X extends ... to include Y", and `def:TMplus`
+gained the sentence that the derivation relation is the smallest relation closed under a system's
+axioms and rules. The `DerivationTree` docstrings use neither phrasing and needed no edit, since an
+inductive family already is that least relation. Eight in-tree paraphrases of the old phrasing (seven
+in `typst/`, one in `FormalSystem/Syntax/MinusLanguage/Axioms.lean`) were reworded.
+
+**Retired (manifest row removed, prose entry retained and marked `DANGLING`, `KNOWN-ANCHORS` row
+added):** `thm:M5-valid`. The paper commented out the whole theorem environment. No live citation
+existed.
+
+**Three substantive renames, each decided separately:**
+
+1. **"converse convention" → "reflection convention"** (`def:task-relation`). **Adopted earlier**:
+   the tree already follows it. See the re-pin note at the `def:task-relation` entry. Regression
+   gate: the phrase "converse convention" survives only as quoted history in this file.
+2. **Metarule `TD` → `TR`** (`def:BX`, "time reflection"). **Adopted in full**, identifiers
+   included, by the user's decision. The rule abbreviation `TD` became `TR` in prose, and
+   rule-sense "temporal duality" became "time reflection". Identifier map (substring rename across
+   `FormalSystem/` excluding `Boneyard/`, `Tests/`, READMEs, `docs/` and `typst/`):
+
+   | Old | New |
+   |---|---|
+   | `swapTemporal` (on `Formula`, `PlusFormula`, `StarFormula`, and every compound such as `ofPlus_swapTemporal`, `swapTemporal_injective`) | `reflectTime` |
+   | `swap_temporal_*` (e.g. `swap_temporal_involution`, `provEquiv_swap_temporal_congr`) | `reflect_time_*` |
+   | `temporal_duality` (every `DerivationTree` constructor, `temporal_duality_height_succ`) | `time_reflection` |
+   | `TemporalDuality` (`applyTemporalDuality`, `mkTemporalDuality`, `TemporalDualityIntegration`) | `TimeReflection` |
+   | `temporalDuality` (`MutationType.temporalDuality`, `temporalDualityCount`) | `timeReflection` |
+
+   Scale: 1,466 identifier occurrences across 81 Lean files, plus 187 prose lines renamed and
+   28 kept after classification.
+
+   **Deliberate divergences (carve-outs), each with its reason:**
+   - **Operator duality is a different concept.** `temporalDualityNeg`/`temporalDualityNegRev` and
+     the "modal and temporal duality" prose of `Theorems/Perpetuity/MonotonicityDuality.lean`, its
+     README, `Theorems/Perpetuity.lean` and `PerpetuityTest.lean` name the ▽/△ duality. So do the
+     `section TemporalDuality` of `Theorems/TemporalDerived.lean` and its "Temporal Duality" headings
+     (F/G and P/H via double negation). None of these mean the metarule, and none is renamed.
+   - **The semantic lemma keeps its name.** The paper itself keeps `lem:temporal-duality`. Prose
+     meaning that lemma ("temporal duality soundness", "past-future swap preserves validity") is kept.
+     No site attributes "time reflection" to `lem:temporal-duality`.
+   - **Serialized wire tags stay byte-stable.** These are the `"temporal_duality"` string literals in
+     dataset/JSON output (`Automation/DataExport.lean`, `DatasetGenerator.lean`,
+     `ProofStepExtractor.lean`, `ContrastiveGeneratorMain.lean`, `ProofExtractorMain.lean`), the
+     `"temporalDualityCount"` key in `ProofFirstBenchmark.lean`, and the rule-name list in
+     `docs/training/SYNC_PROTOCOL.md`. Each code site carries a comment saying so. These tags are
+     *not* a claim about the paper's `def:BX`. The one exception is `MachineAppendixMain.lean`,
+     whose rule `name`/`conclusion` strings follow the live constructor names, because the typst
+     machine appendix is recounted against them.
+   - **Not in the decided set.** `swapUS`, `swapMinus`, `truth_swap` and the `*_swap_valid*`
+     soundness-lemma families are left as-is. Renaming them is a possible follow-up.
+   - **`FormalSystem/Boneyard/**`** is an archive that is not built, and it is untouched.
+   - Benchmark output labels (`"Temporal duality"` in `DerivationBenchmark.lean`,
+     `docs/project-info/performance-targets.md`) and the migration pattern data in
+     `scripts/swap_untl_snce.py` are kept for output and history stability.
+3. **`\past`/`\future` labels "Past"/"Future" → "Some Past"/"Some Future"**, with `\Past`/`\Future`
+   now "All Past"/"All Future" (`def:BLplus-language`). **Adopted.** The Lean names
+   `somePast`/`someFuture`/`allPast`/`allFuture` already matched. The label sites in
+   `Syntax/Formula.lean`, `docs/reference/operators.md` and `docs/user-guide/quickstart.md` now use
+   the paper's labels.
+
+**Constructor naming audit: closed.** The open note in `FormalSystem/Syntax/MinusLanguage/Axioms.lean`
+has been replaced. The paper-key → primary constructor → explicit mirror table is now in
+`docs/reference/axiom-reference.md` § Paper Key Correspondence. The verdict is *same system,
+explicit mirrors*: the paper's 11 non-uniformity axioms appear as 11 pairs and its 4 uniformity
+axioms as 5 constructors, and TR is a rule on both sides. Two quirks are recorded there. First,
+`temp_linearity`'s disjuncts are a reordering of TL's. Second, `discrete_propagate_bwd` is NA
+itself, not a mirror. This correspondence is textual, with `simp` spot checks. A machine-checked
+`derivable_iff` is a follow-up. The same closure corrected
+`typst/FormalFoundations.typ`'s remark that the development "has no TR rule" and that the
+uniformity layer "does not even match in count". Both claims were wrong.
+
+**TM⁻ de-attributed.** `MinusLanguage/Axioms.lean` no longer describes TM⁻ as a paper system. It
+now reads as this repository's own transposition, consistent with "Language correspondence
+(2026-09-08)" above.
+
+**Open opportunity: `def:BX`'s Burgess/Xu provenance footnote.** The paper now attributes TN, TS,
+UC/UG/SU/UF/UI (A1a/A2a/A3a/A5a/A6a), CN (A7a, with Xu) and TL (in spirit, Xu's V₃) to Burgess and
+Xu, and marks TC/UT/NP/NF/NA/NB as original. Of these attributions only SU (`enrichment_until`,
+"Burgess A3a, Xu (3)") has a counterpart in `ProofSystem/Axioms.lean`. **Caution for whoever folds
+it in:** the `linear_until` region of `Axioms.lean` carries a NOTE saying Burgess's A7a was
+*removed as unsound under open guard*, while the footnote says CN *is* A7a. The two claims must be
+reconciled (fixed-event vs. per-witness events), not copied verbatim.
+
+**`cor:tm-completeness`'s new *Determined* sentence is backed by the tree.** It reads: each system
+"extended to include *Determined* ... sound over the task frames in its class validating
+*Determined* and weakly complete over the Deterministic task frames in that class".
+`FormalSystem/Metalogic/Deterministic/` proves exactly this shape: `detSoundness` and
+`detSoundnessDet` in `Soundness.lean`, and `detCompletenessBase`/`detCompletenessDense`/
+`detCompletenessZTime` in `Completeness.lean`.
+
+**Record-side TD mentions.** The paper's validity theorem for the rule is now `thm:TR-valid`
+(formerly `thm:TD-valid`). Neither is pinned or cited in live tree scope. The quoted historical
+text in this file (for example the retired `def:TMplus-c` block's `\aref{TMP-TD}`) is left verbatim.
 
 ### Language correspondence (2026-09-08): permanent, prose only, no re-pin
 
@@ -181,7 +288,7 @@ strictness claim.
   cites either name. No `DANGLING` row is added: the record's rule is that a row is a decision,
   and there is no citation to make honest.
 
-**No repository-side consequence:** `lem:temporal-duality` (paper line 4061) and `thm:TD-valid`
+**No repository-side consequence:** `lem:temporal-duality` (paper line 4061) and `thm:TD-valid` (since renamed `thm:TR-valid`; see the 2026-09-17 wave)
 (line 4133) were restated for the since/until interchange with new inductive `U`/`S` cases, but
 neither has a manifest row and neither is cited anywhere in live tree scope, so this wave leaves
 them alone. `prop:archimedean` (line 3265) is a live `Pthm` that `def:BX-z` now cites for the

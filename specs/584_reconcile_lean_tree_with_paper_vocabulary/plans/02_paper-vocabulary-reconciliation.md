@@ -339,13 +339,13 @@ start (line numbers are indicative only).
 
 ---
 
-### Phase 5: Record the decisions, re-pin, and run the full gate set [NOT STARTED]
+### Phase 5: Record the decisions, re-pin, and run the full gate set [COMPLETED]
 
 **Goal**: Make the record the durable home of every decision, re-pin the sentinel, and prove the
 task's acceptance bar.
 
 **Tasks**:
-- [ ] Add a section "Drift correction and rename absorption (2026-09-17)" to
+- [x] Add a section "Drift correction and rename absorption (2026-09-17)" to
       `docs/reference/paper-definitions-of-record.md`:
       - the 14 re-hashed anchors and the `thm:M5-valid` retirement;
       - rename 1 adopted earlier (pointer to the existing reflection-convention entry);
@@ -357,13 +357,13 @@ task's acceptance bar.
       - the `def:BX` Burgess/Xu footnote as an open provenance opportunity, with the A7a-vs-CN
         caution;
       - the `cor:tm-completeness` Determined sentence backed by `Metalogic/Deterministic/`.
-- [ ] Update the record's own TD mentions (narrative line ~184 `thm:TD-valid` -> note the paper's
+- [x] Update the record's own TD mentions (narrative line ~184 `thm:TD-valid` -> note the paper's
       `thm:TR-valid`; do not edit quoted historical text).
-- [ ] Re-run `bash scripts/check-paper-definitions.sh` **immediately** before pinning. Then set
+- [x] Re-run `bash scripts/check-paper-definitions.sh` **immediately** before pinning. Then set
       `PINNED_COMMIT` (paper repo `git HEAD` now), `FILE_CHECKSUM` (sha256 of the live file) and
       `LINE_COUNT`, and add provenance-table rows (base commit, checksum, line count, UTC) per the
       dirty-pin convention.
-- [ ] Final gates:
+- [x] Final gates:
       - `bash scripts/check-paper-definitions.sh` exits 0 (case a);
       - full `bash scripts/check-module-invariants.sh` (C2/C14 baseline unchanged, C15 resolves all
         paper-anchor citations, expected 58, confirm the count it prints);
@@ -387,7 +387,7 @@ task's acceptance bar.
 - `docs/reference/paper-definitions-of-record.md`
 
 **Verification**:
-- Every final gate above green, with outputs captured in the implementation summary
+- Every final gate above green, with outputs captured in the implementation summary (check-paper-definitions case (a) exit 0; full invariants ALL PASSED incl. C2/C14/C15 58 citations/C25 13 exe roots; lake test green; typst-sync-check 0 violations; readme-lint PASS; copyright headers exit 0). *(deviation: altered — `converse convention` occurs 3 times in the record: the historical re-pin note plus 2 mentions inside the new 2026-09-17 section)*
 
 ---
 
