@@ -1,5 +1,5 @@
 ---
-next_project_number: 607
+next_project_number: 608
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 607
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -70,6 +70,10 @@ next_project_number: 607
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 
+### Documentation
+
+607 [NOT STARTED] — Resync typst/FormalFoundations.typ with the current Lean tree...
+
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -117,6 +121,16 @@ next_project_number: 607
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 
 ## Tasks
+
+### 607. Resync formalfoundations typ with lean tree
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary: audit every claim about the proof system, axiom counts, the TR (time reflection) rule, renamed identifiers (reflectTime, time_reflection, TimeReflection), and the Some/All Past/Future labels, and correct stale statements. Task 584 fixed the one remark that wrongly said there was no TR rule and that uniformity axiom counts don't match, but deferred a full resync.
+
+---
 
 ### 606. Prove equivalence of paper and lean axiom systems
 - **Status**: [NOT STARTED]
