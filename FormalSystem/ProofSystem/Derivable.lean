@@ -168,7 +168,7 @@ theorem Derivable.temp_nec {fc : FrameClass} {p : Formula}
   exact Nonempty.intro (DerivationTree.temporal_necessitation p d)
 
 /--
-Temporal duality: If `|-![fc] p` then `|-![fc] reflectTime p` (Prop-valued).
+Time reflection: If `|-![fc] p` then `|-![fc] reflectTime p` (Prop-valued).
 -/
 @[aesop safe apply]
 theorem Derivable.temp_dual {fc : FrameClass} {p : Formula}

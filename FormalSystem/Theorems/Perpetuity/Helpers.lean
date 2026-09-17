@@ -45,7 +45,7 @@ open FormalSystem.Theorems.Combinators  -- Re-export combinators
 ## Helper Lemmas: Temporal Components
 
 The perpetuity principle P1 (□φ → △φ) requires deriving each temporal component:
-- □φ → Hφ (past): via temporal duality on MF
+- □φ → Hφ (past): via time reflection on MF
 - □φ → φ (present): via MT axiom
 - □φ → Gφ (future): via MF then MT
 -/
@@ -69,13 +69,13 @@ def boxToFuture {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp φ.allFutu
 /--
 Box implies past: `⊢ □φ → Hφ`.
 
-Proof via temporal duality:
+Proof via time reflection:
 1. For any ψ, `boxToFuture` gives: `⊢ □ψ → Gψ`
 2. Apply to ψ = swap(φ): `⊢ □(swap φ) → G(swap φ)`
-3. By temporal duality: `⊢ swap(□(swap φ) → G(swap φ))`
+3. By time reflection: `⊢ swap(□(swap φ) → G(swap φ))`
 4. swap(□(swap φ) → G(swap φ)) = □(swap(swap φ)) → H(swap(swap φ)) = □φ → Hφ
 
-This clever use of temporal duality avoids needing a separate "modal-past" axiom.
+This clever use of time reflection avoids needing a separate "modal-past" axiom.
 -/
 @[tmLemma]
 def boxToPast {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp φ.allPast := by

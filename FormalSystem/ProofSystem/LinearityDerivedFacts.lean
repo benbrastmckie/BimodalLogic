@@ -54,11 +54,11 @@ of the temporal order. This is sound for the intended linear integer time semant
 2. Document as a permanent axiom of TM for linear time completeness
 3. The axiom is standard in tense logics of linear orders (Kt.Li, see Goldblatt 1992)
 
-## Past Linearity via Temporal Duality
+## Past Linearity via Time Reflection
 
 The past version of linearity:
   `P(phi) and P(psi) -> P(phi and psi) or P(phi and P(psi)) or P(P(phi) and psi)`
-is derivable from `temp_linearity` via the temporal duality rule (reflectTime).
+is derivable from `temp_linearity` via the time reflection rule (reflectTime).
 This is handled automatically by `DerivationTree.time_reflection`.
 
 ## References

@@ -85,7 +85,7 @@ inductive PlusDerivationTree (fc : FrameClass) : PlusContext → PlusFormula →
   /-- Temporal necessitation: from `⊢ φ`, conclude `⊢ Gφ`. Theorems only. -/
   | temporal_necessitation (φ : PlusFormula)
       (d : PlusDerivationTree fc [] φ) : PlusDerivationTree fc [] (PlusFormula.allFuture φ)
-  /-- Temporal duality: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
+  /-- Time reflection: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
   | time_reflection (φ : PlusFormula)
       (d : PlusDerivationTree fc [] φ) : PlusDerivationTree fc [] φ.reflectTime
   /-- Weakening: from `Γ ⊢ φ` and `Γ ⊆ Δ`, conclude `Δ ⊢ φ`. -/

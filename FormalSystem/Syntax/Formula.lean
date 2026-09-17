@@ -20,7 +20,7 @@ combining S5 modal logic with linear temporal logic.
 - `Formula.neg`, `Formula.and`, `Formula.or`: Derived Boolean operators
 - `Formula.diamond`: Derived modal possibility operator
 - `Formula.always`, `Formula.sometimes`: Derived universal/existential temporal operators
-- `Formula.reflectTime`: Temporal duality transformation
+- `Formula.reflectTime`: Time reflection transformation
 
 ## Main Results
 
@@ -599,7 +599,7 @@ prefix:80 "▽" => Formula.sometimes
 /--
 Swap temporal operators (past ↔ future) in a formula.
 
-This transformation is used in the temporal duality inference rule (TD),
+This transformation is used in the time reflection inference rule (TR),
 which states that if `⊢ φ` then `⊢ reflectTime φ`.
 
 The function recursively swaps:
@@ -618,7 +618,7 @@ def reflectTime : Formula → Formula
 /--
 Theorem: reflectTime is an involution (applying it twice gives identity).
 
-This is essential for the temporal duality rule to be well-behaved.
+This is essential for the time reflection rule to be well-behaved.
 -/
 theorem reflect_time_involution (φ : Formula) :
   φ.reflectTime.reflectTime = φ := by

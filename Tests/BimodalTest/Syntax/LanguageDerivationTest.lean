@@ -93,7 +93,7 @@ example (fc : FrameClass) (p : Atom) :
   .axiom [] _ (StarAxiom.modal_future _ (RecallFree.timeStore 1 (RecallFree.atom p)))
     (FrameClass.base_le fc)
 
-/-- Temporal duality applies to a register formula: the dual of forward rigidity is backward
+/-- Time reflection applies to a register formula: the dual of forward rigidity is backward
 rigidity, and it is reached by the rule rather than by a second axiom. -/
 example (fc : FrameClass) (i : ℕ) (φ : StarFormula) :
     ⊢⋆[fc] ((StarFormula.timeRecall i φ).imp

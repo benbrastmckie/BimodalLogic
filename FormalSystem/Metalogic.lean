@@ -57,7 +57,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 - **The stability extension L⁺ / TM⁺** (`Metalogic/Conservativity/Plus.lean`, over
   `FormalSystem/PlusLanguage/` and `Semantics/PlusLanguage/`): SORRY-FREE (axioms: exactly
   `propext`, `Classical.choice`, `Quot.sound`). Soundness of TM⁺ at every frame class
-  (`plus_soundness_validIn`), TD discharged semantically by the companion recursion with the
+  (`plus_soundness_validIn`), TR discharged semantically by the companion recursion with the
   TM schemata over L⁺ handled by atomization; semantic conservativity
   (`Semantics.plusValidIn_ofFormula_iff`); and **proof-theoretic conservativity of TM⁺ over TM
   in both directions at all four classes** (`plusDerivable_ofFormula_iff`) — the forward

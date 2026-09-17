@@ -12,7 +12,7 @@ import FormalSystem.ProofSystem.Axioms
 
 TM⁻, the *Logic of Tense and Modality*, is (JPL paper, `\S sub:Logic`) the smallest extension of
 **CPL** over the base language L⁻ closed under the schemata MK, MT, M5, MF, TK, T4, TS, TC, TL
-and the rules MP, MN, TD. This module carries the **axiom** half of that list; MP, MN and TD are
+and the rules MP, MN, TR. This module carries the **axiom** half of that list; MP, MN and TR are
 *rules* and live in `MinusLanguage/Derivation.lean`.
 
 The three extension axioms of `\S sub:Extension` are included in the same inductive, routed to
@@ -69,7 +69,7 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
 | Paper key | Lean identifier | Notes |
 |---|---|---|
 | `TN` | `MinusLanguage.DerivationTree.temporal_necessitation` | Rule; content matches, paper key not quoted verbatim in the doc-comment. |
-| `TD` | `MinusLanguage.DerivationTree.time_reflection` | Rule. |
+| `TR` | `MinusLanguage.DerivationTree.time_reflection` | Rule. |
 | `TS` | `Axiom.temp_serial` | |
 | `TC` | `Axiom.temp_connect` | |
 | `TL` | `Axiom.temp_linearity` | Disjunct order/association is the paper's, transcribed verbatim (see the doc-comment above). |
@@ -143,7 +143,7 @@ while producing a `DerivationTree` (itself a `Type`). A `Prop`-valued inductive 
 
 ## References
 
-* JPL paper `\S sub:Logic` — the TM axiomatization (MP/MN/MK/MT/M5/MF/TD/TK/T4/TS/TC/TL) that TM⁻ transposes
+* JPL paper `\S sub:Logic` — the TM axiomatization (MP/MN/MK/MT/M5/MF/TR/TK/T4/TS/TC/TL) that TM⁻ transposes
 * JPL paper `\S sub:Extension` — DF, DN, CO
 * `FormalSystem/ProofSystem/Axioms.lean` — the L (Burgess-Xu) counterpart
 -/
@@ -159,7 +159,7 @@ The propositional group (`prop_k`, `prop_s`, `ex_falso`, `peirce`) is transcribe
 constructor-for-constructor from `FormalSystem.ProofSystem.Axiom`'s own propositional layer, so
 that the discharge in `MinusLanguage/AxiomDischarge.lean` is a one-line match on each.
 
-MP, MN and TD are **rules**, not axioms; they are constructors of
+MP, MN and TR are **rules**, not axioms; they are constructors of
 `MinusLanguage.DerivationTree`.
 -/
 inductive Axiom : MinusFormula → Type where

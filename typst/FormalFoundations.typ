@@ -461,7 +461,7 @@ constrains is the points of evaluation, not the propositions.
   extension of CPL closed under all instances of the following rules and axiom schemata:
   #items[
     + *TN*: if $tack.r phi.alt$ then $tack.r #allfuture phi.alt$.
-    + *TD*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "S"|"U" chevron.r)$.
+    + *TR*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "S"|"U" chevron.r)$.
     + *TB*: $#somefuture top$.
     + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi) or #somefuture (#somefuture phi.alt and psi)]$.
     + *CN*: $[(phi.alt #until psi) and (chi #until theta)] arrow.r [(phi.alt and chi) #until (psi and theta) or (phi.alt and chi) #until (psi and chi) or (phi.alt and chi) #until (phi.alt and theta)]$.
@@ -481,9 +481,9 @@ constrains is the points of evaluation, not the propositions.
   TB, TL, and CN state seriality, linearity, and connectedness respectively; TA, UE, UT, UI, UC,
   UF, UG, and SU are the primary Since/Until axioms; NP, NF, NA, and NB are the uniformity axioms,
   holding vacuously unless the order is discrete. In every case the past/since direction is
-  derived from the future/until direction by TD, not separately postulated -- only the
+  derived from the future/until direction by TR, not separately postulated -- only the
   future/until direction is stated above. NB is stated here as it belongs to BX in the paper, even
-  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TD), three seriality/linearity/connectedness axioms (TB, TL, CN), eight primary Since/Until axioms (TA, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
+  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TR), three seriality/linearity/connectedness axioms (TB, TL, CN), eight primary Since/Until axioms (TA, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
 ]
 
 #definition($op("TM")^+$)[
@@ -543,7 +543,7 @@ constrains is the points of evaluation, not the propositions.
     + *Prior-U*: $(phi.alt #until top) and #somefuture not phi.alt arrow.r phi.alt #until (not phi.alt or K^+ not phi.alt)$.
     + *Sep*: $K^+ phi.alt and not K^+ (phi.alt and (not phi.alt #until phi.alt)) arrow.r K^+ (K^+ phi.alt and K^- phi.alt)$.
   ]
-  Only the future/until direction of Prior-U is stated; its past/since direction follows by TD.
+  Only the future/until direction of Prior-U is stated; its past/since direction follows by TR.
   The following restates CO from TM below, and is a *derived theorem* of $"BX"_c$ from Prior-U
   and the base BX axioms, not a further axiom, so it may be omitted from the extension:
   #items[
@@ -583,7 +583,7 @@ class exactly $RR$.
     + *MT*: $square.stroked phi.alt arrow.r phi.alt$.
     + *M5*: $diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$.
     + *MF*: $square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$.
-    + *TD*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "P"|"F" chevron.r)$, where
+    + *TR*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "P"|"F" chevron.r)$, where
       $phi.alt_(chevron.l "P"|"F" chevron.r)$ swaps all occurrences of $#allpast$ and $#allfuture$
       in $phi.alt$.
     + *TK*: $#allfuture (phi.alt arrow.r psi) arrow.r (#allfuture phi.alt arrow.r #allfuture psi)$.
@@ -592,7 +592,7 @@ class exactly $RR$.
     + *TA*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
     + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (#somefuture phi.alt and psi) or #somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi)]$.
   ]
-  MP and MN are rules; MK, MT, M5, MF, TK, T4, TB, TA, and TL are axiom schemata; TD is a rule
+  MP and MN are rules; MK, MT, M5, MF, TK, T4, TB, TA, and TL are axiom schemata; TR is a rule
   making the logic symmetric with respect to past and future at each time. TM's TL lists the same
   three disjuncts as BX's TL above but in a different order; this is the paper's own presentation
   and not a discrepancy to normalize.
@@ -1035,8 +1035,8 @@ No step of the base-class route carries `sorryAx`.
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `ZTime`,
   `RTime`. It is not silently identified with the paper's $op("TM")^+$, $op("TM")^+_d$,
   $op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations do line up in shape --- the paper states
-  eleven primary Since/Until axioms and derives their past mirrors by the rule TD, while the
-  development has no TD rule and states all twenty-two explicitly, one pair per paper axiom --- but
+  eleven primary Since/Until axioms and derives their past mirrors by the rule TR, while the
+  development has no TR rule and states all twenty-two explicitly, one pair per paper axiom --- but
   no theorem establishes that they prove the same sentences, and the uniformity layer does not even
   match in count. The identification is a conjecture and is treated as one throughout.
 ]
@@ -1217,7 +1217,7 @@ a point.
   A *$op("TM")^+_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a
   *$op("TM")^+_f$-algebra* additionally satisfies UZ and Z1; a *$op("TM")^+_c$-algebra*
   additionally satisfies Prior-U and Sep, each read as an inequality in the same way. All four
-  classes are varieties. The rule TD becomes closure of the class under the signature automorphism
+  classes are varieties. The rule TR becomes closure of the class under the signature automorphism
   swapping $#until$ and $#since$ --- which holds because the defining set of inequalities is
   mirror-closed --- and is not itself an operation of the algebra: the swap is not in the
   signature.

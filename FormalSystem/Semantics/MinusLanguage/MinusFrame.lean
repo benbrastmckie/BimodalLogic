@@ -62,11 +62,11 @@ discrepancy: an underivability result needs only *some* class of structures on w
 schema is sound, and the native class here is that class. Nothing in this module claims the two
 semantics agree, and nothing downstream should assume they do.
 
-## Converse closure and TD
+## Converse closure and TR
 
 `no_min` and `past_lin` are fields rather than derived facts precisely so the class is closed
 under order reversal (`MinusFrame.swap`). That closure is what makes `truth_swap` available, and
-`truth_swap` is what discharges the temporal-duality *rule* `DerivationTree.time_reflection` in
+`truth_swap` is what discharges the time-reflection *rule* `DerivationTree.time_reflection` in
 one line during native soundness — no swap-strengthened simultaneous induction is needed.
 
 ## Main Definitions
@@ -120,7 +120,7 @@ dense-or-discrete dichotomy that makes `(Sp)` valid on every task frame — see 
 docstring.
 
 `no_min` and `past_lin` are included so that the class is closed under order reversal
-(`MinusFrame.swap`); that closure discharges the temporal-duality rule.
+(`MinusFrame.swap`); that closure discharges the time-reflection rule.
 -/
 structure MinusFrame where
   /-- The carrier: the frame's set of times. -/
@@ -164,7 +164,7 @@ Order reversal on a `MinusFrame`: keep the points, invert `lt`.
 
 The class of `MinusFrame`s is closed under this operation — `no_max` and `no_min` swap roles, as do
 `fut_lin` and `past_lin` (modulo `triRotate`). That closure is exactly what makes the
-temporal-duality rule sound on the class, via `truth_swap`.
+time-reflection rule sound on the class, via `truth_swap`.
 -/
 def MinusFrame.swap (F : MinusFrame) : MinusFrame where
   Point := F.Point
@@ -293,7 +293,7 @@ swapped formula.
 
 Six cases, each immediate: the atom and bot clauses do not mention the order, `imp` and `box` are
 congruences, and the two temporal clauses trade places exactly as `MinusFormula.swapMinus` does. This
-one lemma is what makes the temporal-duality rule sound on the native class, replacing the
+one lemma is what makes the time-reflection rule sound on the native class, replacing the
 swap-strengthened simultaneous induction used in the task-frame soundness proof.
 -/
 theorem truth_swap (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point) (φ : MinusFormula) :

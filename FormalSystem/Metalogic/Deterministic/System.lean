@@ -120,7 +120,7 @@ inductive DetDerivationTree (fc : FrameClass) : PlusContext → PlusFormula → 
   /-- Temporal necessitation: from `⊢ φ`, conclude `⊢ Gφ`. Theorems only. -/
   | temporal_necessitation (φ : PlusFormula)
       (d : DetDerivationTree fc [] φ) : DetDerivationTree fc [] (PlusFormula.allFuture φ)
-  /-- Temporal duality: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
+  /-- Time reflection: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
   | time_reflection (φ : PlusFormula)
       (d : DetDerivationTree fc [] φ) : DetDerivationTree fc [] φ.reflectTime
   /-- Weakening. -/

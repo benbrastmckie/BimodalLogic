@@ -23,7 +23,7 @@ engines be reached from an L⁺ hypothesis (`Metalogic/Deterministic/Completenes
 ## Main Results
 
 - `erasePlus_ofFormula` — `erasePlus` is a retraction of the embedding `ofFormula`
-- `erasePlus_reflectTime` — erasure commutes with temporal duality (`⊡` is fixed by it)
+- `erasePlus_reflectTime` — erasure commutes with time reflection (`⊡` is fixed by it)
 - `plusTruthAt_erasePlus_of_deterministic` — the pointwise collapse
 - `validDetIn_erasePlus_of_plusValidDetIn` and its converse — the validity-level corollary, at
   every frame class
@@ -83,7 +83,7 @@ returns it unchanged. -/
   | untl _ _ ih1 ih2 => simp only [ofFormula, erasePlus, ih1, ih2]
   | snce _ _ ih1 ih2 => simp only [ofFormula, erasePlus, ih1, ih2]
 
-/-- Erasure commutes with temporal duality: `reflectTime` fixes `⊡` on the L⁺ side and the six
+/-- Erasure commutes with time reflection: `reflectTime` fixes `⊡` on the L⁺ side and the six
 L constructors are exchanged in the same pattern on both sides. -/
 theorem erasePlus_reflectTime (φ : PlusFormula) :
     erasePlus φ.reflectTime = (erasePlus φ).reflectTime := by

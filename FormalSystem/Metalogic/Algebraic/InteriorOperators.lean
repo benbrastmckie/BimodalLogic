@@ -74,7 +74,7 @@ structure InteriorOp (α : Type*) [PartialOrder α] where
 /--
 H is monotone: `φ ≤ ψ → Hφ ≤ Hψ`.
 
-Uses `pastMono` from Perpetuity (derived via temporal duality).
+Uses `pastMono` from Perpetuity (derived via time reflection).
 This property holds under both reflexive and strict semantics.
 -/
 theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : hQuot a ≤ hQuot b := by

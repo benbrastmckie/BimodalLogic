@@ -600,7 +600,7 @@ private noncomputable def negImpNegConsequent (ψ χ : Formula) :
 temporal dual (`□φ → H□φ`). Relocated from the superseded parametric truth-lemma module;
 purely MCS-level, frame-independent. -/
 
-/-- Past analog of TF axiom: `□φ → H(□φ)`, derived via temporal duality. -/
+/-- Past analog of TF axiom: `□φ → H(□φ)`, derived via time reflection. -/
 private def pastTfDeriv (φ : Formula) :
     DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).allPast) := by
   have h_tf_swap : DerivationTree fc [] _ :=

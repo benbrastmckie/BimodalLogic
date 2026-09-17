@@ -43,7 +43,7 @@ too, so no consumer has to reach back into `PlusFormula` for them.
 ## Main Definitions
 
 - `StarFormula`: nine-constructor inductive type for L⋆; `StarContext := List StarFormula`
-- `StarFormula.reflectTime`: the past/future interchange for the TD rule
+- `StarFormula.reflectTime`: the past/future interchange for the TR rule
   (`stab ↦ stab`, `timeStore ↦ timeStore`, `timeRecall ↦ timeRecall`)
 - Derived operators with `PlusFormula`'s right-hand sides: `top`, `neg`, `and`, `or`, `iff`,
   `diamond`, `someFuture`, `somePast`, `allFuture`, `allPast`, `kPlus`, `kMinus`, `always`,
@@ -213,7 +213,7 @@ def Could (φ : StarFormula) : StarFormula := dstab (allFuture φ)
 /-- `could φ := ⟐Fφ`. Mirrors `PlusFormula.could`. -/
 def could (φ : StarFormula) : StarFormula := dstab (someFuture φ)
 
-/-! ### Temporal duality
+/-! ### Time reflection
 
 `reflectTime` interchanges past and future. It is what the `time_reflection` rule of TM⋆
 (`FormalSystem/StarLanguage/Derivation.lean`) applies to a theorem, and what the swap half of
@@ -370,7 +370,7 @@ theorem ofPlus_injective : Function.Injective ofPlus := by
     ofPlus φ ≠ StarFormula.timeRecall i ψ := by
   cases φ <;> simp [ofPlus]
 
-/-- `ofPlus` commutes with temporal duality — the pin the `time_reflection` case of the
+/-- `ofPlus` commutes with time reflection — the pin the `time_reflection` case of the
 proof-system embedding (`StarLanguage/Embedding.lean`) and the swap arms of validity
 (`Metalogic/Conservativity/Star/StarAxiomValidity.lean`) both route through. Mirrors
 `ofFormula_reflectTime`. -/

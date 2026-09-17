@@ -20,7 +20,7 @@ The #axiom-count axiom schemata are the constructors of the inductive family `Ax
 Throughout, $phi.alt #snce psi$ and $phi.alt #untl psi$ are the guard-first infix primitives of @sec:formulas: the *guard* $phi.alt$ holds at all strictly intermediate times and the *event* $psi$ at the witness time.
 Derived operators: $P phi.alt = top #snce phi.alt$, $F phi.alt = top #untl phi.alt$, $H phi.alt = not P not phi.alt$, $G phi.alt = not F not phi.alt$, and $top = bot arrow.r bot$.
 Alongside its structural name (BX1, BX2G, ...), each temporal schema carries a *short name* (TB, UG, UC, TA, ...) shown in the tables below; the short names are the citation form used when an axiom is invoked individually, and the extended systems of the metalogic chapter are picked out by which short-named axioms they add.
-Past mirrors (primed rows) are the temporal-duality images of their future counterparts and carry no separate short name.
+Past mirrors (primed rows) are the time-reflection images of their future counterparts and carry no separate short name.
 
 === Layer 1: Propositional (4)
 
@@ -153,7 +153,7 @@ They encode the *uniformity of discreteness* in ordered abelian groups --- by tr
     [NB], [`Axiom.discrete_box_necessity`], [$(bot #untl top) arrow.r square.stroked (bot #untl top)$],
     table.hline(),
   ),
-  caption: [`discrete_symm_bwd` is the converse of NP, obtainable via temporal duality, and carries no separate short name.],
+  caption: [`discrete_symm_bwd` is the converse of NP, obtainable via time reflection, and carries no separate short name.],
 )
 
 === Layers 6--7: Prior and Z1 (3, discrete-only)
@@ -220,7 +220,7 @@ where $K^+ phi.alt$ says that $phi.alt$ recurs arbitrarily soon in the future an
     [Sep], [`Axiom.sep`], [$K^+ phi.alt and not K^+ (phi.alt and (not phi.alt #untl phi.alt)) arrow.r K^+ (K^+ phi.alt and K^- phi.alt)$],
     table.hline(),
   ),
-  caption: [Only the future/until direction of Prior-U is axiomatic; its past mirror `prior_S_gap` is the temporal-duality image. These axioms enforce *definable* Dedekind completeness --- no temporal formula characterizes completeness outright.],
+  caption: [Only the future/until direction of Prior-U is axiomatic; its past mirror `prior_S_gap` is the time-reflection image. These axioms enforce *definable* Dedekind completeness --- no temporal formula characterizes completeness outright.],
 )
 
 Prior-U says a bounded region where $phi.alt$ has held throughout acquires a definable upper endpoint; Sep is Reynolds' separation axiom, semantically backed by the separability of the reals.
@@ -298,7 +298,7 @@ Here $Gamma tack.r_(f c) phi.alt$ abbreviates `DerivationTree fc Γ φ`; the pla
   Applies only to theorems (empty context).
 ]
 
-#definition("Temporal Duality")[
+#definition("Time Reflection")[
   $
     (tack.r_(f c) phi.alt) / (tack.r_(f c) chevron.l S chevron.r phi.alt)
   $
@@ -325,7 +325,7 @@ Here $Gamma tack.r_(f c) phi.alt$ abbreviates `DerivationTree fc Γ φ`; the pla
     [Modus Ponens], [`DerivationTree.modus_ponens`], [Any],
     [Necessitation], [`DerivationTree.necessitation`], [Empty only],
     [Temp. Necessitation], [`DerivationTree.temporal_necessitation`], [Empty only],
-    [Temporal Duality], [`DerivationTree.time_reflection`], [Empty only],
+    [Time Reflection], [`DerivationTree.time_reflection`], [Empty only],
     [Weakening], [`DerivationTree.weakening`], [Any],
     table.hline(),
   ),
@@ -357,7 +357,7 @@ Derivations are represented as inductive trees.
 == The Tense-Primitive Subsystem <sec:paper-contrast>
 
 The system of this chapter takes Since and Until as its temporal primitives.
-There is also a *tense-primitive subsystem*: the logic of the one-place $H$/$G$ sublanguage (@sec:formulas), presentable economically as the smallest extension of classical propositional logic closed under twelve schemata --- the rules MP, MN, and TD, and the axioms MK, MT, M5, MF, TK, T4, TB, TA, and TL.
+There is also a *tense-primitive subsystem*: the logic of the one-place $H$/$G$ sublanguage (@sec:formulas), presentable economically as the smallest extension of classical propositional logic closed under twelve schemata --- the rules MP, MN, and TR, and the axioms MK, MT, M5, MF, TK, T4, TB, TA, and TL.
 That subsystem is *deferred* in this book: its axiom map is recorded in the back matter's design-notes chapter, and the Frame Classes chapter's conservativity note states what its intended future development delivers.
 The full system presented here is the book's object of study throughout.
 
@@ -366,7 +366,7 @@ Several presentation choices of the axiomatization are *design facts*, intended 
 - *CPL is spelled out*: classical propositional logic is often subsumed in a single phrase; this axiomatization lists its four Hilbert schemata (Layer 1) explicitly, so that derivations are fully constructor-level.
 - *S5 is closed under theorems*: M4 and MB appear alongside MT, M5, MK --- derivable in S5 but convenient as primitives.
 - *Since/Until is the temporal engine*: with the two-place primitives, TK and T4 become derived theorems, and TB, TA, TL live inside the BX layer (@sec:derived-axioms).
-- *Past mirrors are primed constructors*: past duals are generable by the TD rule alone, but the primed mirror constructors (BX1$'$--BX13$'$) are included as primitives, which makes derivations at non-empty contexts more direct.
+- *Past mirrors are primed constructors*: past duals are generable by the TR rule alone, but the primed mirror constructors (BX1$'$--BX13$'$) are included as primitives, which makes derivations at non-empty contexts more direct.
 - *Frame-class axioms are gated structurally*: the extensions *TM*#sub[f], *TM*#sub[d], and *TM*#sub[c] are the `ZTime`, `Dense`, and `RTime` frame classes of @sec:frame-classes rather than separately axiomatized systems.
 
 == Notation

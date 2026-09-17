@@ -354,7 +354,7 @@ imported lemma it uses is stated at `FrameClass.Base`.) The base axioms consumed
 (BX2H), `right_mono_until` (BX3), `right_mono_since` (BX3'), `self_accum_until` (BX5),
 `self_accum_since` (BX5'), `linear_since` (BX7') and `enrichment_until` (BX13). The rules used
 are modus ponens, assumption, weakening, temporal necessitation and — via
-`Theorems.pastNecessitation` — temporal duality.
+`Theorems.pastNecessitation` — time reflection.
 
 **Shape of the argument.** Assume `△(Hφ → F Hφ)` and `Hφ`, and for contradiction `F(¬φ)`. The
 middle conjunct of the triangle gives `F(Hφ)`, whence `φ` (L2) and `U(⊤, φ)` (L1). Prior-U at
@@ -367,7 +367,7 @@ to `U(⊥, φ)`, which is absurd.
 machine-checked **refutation**: `FormalSystem.Metalogic.Independence.CoNotPriorU` proves that
 CO does not derive `Axiom.prior_U_gap` over the dense base, both for contexts of CO instances
 (`co_not_derives_prior_U_gap`) and for a CO-closed schema system closed under modus ponens,
-modal and temporal necessitation, and temporal duality
+modal and temporal necessitation, and time reflection
 (`co_not_derives_prior_U_gap_schema`). See the module docstring.
 
 **Semantic cross-check.** `FormalSystem.Metalogic.SoundnessLemmas.co_valid` proves

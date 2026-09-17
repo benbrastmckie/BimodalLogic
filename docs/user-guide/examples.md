@@ -276,7 +276,7 @@ example (P : Formula) : [P.box] ⊢ and (Formula.box (Formula.allFuture P)) (For
 /-- Modal necessity implies temporal persistence -/
 example (P : Formula) : [P.box] ⊢ always P := by
   -- This is essentially P1: `□φ → △φ`
-  -- Requires proving from MF, TF, MT, and temporal duality
+  -- Requires proving from MF, TF, MT, and time reflection
   sorry
 ```
 
@@ -332,7 +332,7 @@ theorem perpetuity_1_example (P : Formula) : ⊢ (P.box.imp (△P)) := by
   -- 1. `□P → □Future P` (MF)
   -- 2. `□Future P → Future P` (MT)
   -- 3. `□P → Future P` (transitivity)
-  -- 4. By TD (temporal duality), `□P → Past P`
+  -- 4. By TR (time reflection), `□P → Past P`
   -- 5. `□P → P` (MT)
   -- 6. Combine: `□P → Past P ∧ P ∧ Future P = always P`
   sorry
@@ -420,17 +420,17 @@ example (P : Formula) : ¬consistent [P.box, diamond (neg P)] := by
   sorry
 ```
 
-### Temporal Duality Example
+### Time Reflection Example
 
 ```lean
-/-- Temporal duality: swapping allPast and allFuture preserves provability -/
+/-- Time reflection: swapping allPast and allFuture preserves provability -/
 example (P : Formula) (h : ⊢ P) : ⊢ (reflectTime P) := by
   apply DerivationTree.timeReflection
   exact h
 
 /-- Example: if ⊢ Gp → GGp, then ⊢ Hp → HHp -/
 example (P : Formula) : ⊢ (Formula.allPast P).imp (Formula.allPast (Formula.allPast P)) := by
-  -- By TD applied to T4
+  -- By TR applied to T4
   apply DerivationTree.timeReflection
   apply DerivationTree.axiom
   apply Axiom.temp_4

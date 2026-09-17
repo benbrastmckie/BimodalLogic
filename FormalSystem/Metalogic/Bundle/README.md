@@ -38,7 +38,7 @@ The BFMCS approach constructs exactly ONE such satisfying model by:
 The completeness theorem states that derivability and BFMCS-validity coincide. Combined with
 soundness (derivability implies standard-validity), we get a full characterization.
 
-## Temporal Duality Discipline
+## Time Reflection Discipline
 
 **The rule**: when a past statement is the `Formula.reflectTime` image of a future one, prove
 the future form and obtain the past form by `Formula.reflectTime` +

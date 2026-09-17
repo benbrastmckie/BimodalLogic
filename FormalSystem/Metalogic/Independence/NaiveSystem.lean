@@ -127,7 +127,7 @@ theorem naiveTNec {φ : PlusFormula} (h : NaiveDerivable fc [] φ) :
     NaiveDerivable fc [] (PlusFormula.allFuture φ) :=
   h.elim fun d hn => ⟨.temporal_necessitation φ d, hn⟩
 
-/-- Temporal duality in the naive system. -/
+/-- Time reflection in the naive system. -/
 theorem naiveTDual {φ : PlusFormula} (h : NaiveDerivable fc [] φ) :
     NaiveDerivable fc [] φ.reflectTime :=
   h.elim fun d hn => ⟨.time_reflection φ d, hn⟩

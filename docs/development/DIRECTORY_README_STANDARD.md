@@ -427,7 +427,7 @@ For truth evaluation details, see `TruthAt` in [Semantics/Truth.lean](Semantics/
 
 **Example**:
 ```markdown
-- **Rules.lean**: Inference rules (MP, MK, TK, TD)
+- **Rules.lean**: Inference rules (MP, MK, TK, TR)
 ```
 (when `Rules.lean` doesn't exist and rules are actually in `Derivation.lean`)
 

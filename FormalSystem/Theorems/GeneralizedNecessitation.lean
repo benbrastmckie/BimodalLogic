@@ -30,8 +30,8 @@ All theorems in this module are now fully proven derived theorems.
 
 ## Supporting Theorems
 
-- `pastNecessitation`: If `⊢ φ`, then `⊢ Hφ` (derived via temporal duality)
-- `pastKDist`: `⊢ H(A → B) → (HA → HB)` (derived via temporal duality)
+- `pastNecessitation`: If `⊢ φ`, then `⊢ Hφ` (derived via time reflection)
+- `pastKDist`: `⊢ H(A → B) → (HA → HB)` (derived via time reflection)
 - `reverseDeduction`: If `Γ ⊢ A → B`, then `A :: Γ ⊢ B`
 
 ## References
@@ -86,7 +86,7 @@ Derived past necessitation rule.
 
 If `⊢ φ`, then `⊢ Hφ` (where H is the "allPast" operator).
 
-This is derived via temporal duality:
+This is derived via time reflection:
 1. Apply `time_reflection` to get `⊢ reflectTime(φ)`
 2. Apply `temporal_necessitation` to get `⊢ G(reflectTime(φ))`
 3. Apply `time_reflection` again
@@ -104,11 +104,11 @@ noncomputable def pastNecessitation {fc : FrameClass} (φ : Formula)
   exact final
 
 /--
-Past K distribution axiom (derived via temporal duality).
+Past K distribution axiom (derived via time reflection).
 
 `⊢ H(A → B) → (HA → HB)`
 
-This is the past analog of `temp_k_dist`, derived by applying temporal duality
+This is the past analog of `temp_k_dist`, derived by applying time reflection
 to the future K distribution axiom.
 -/
 noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
@@ -117,7 +117,7 @@ noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
   have fk_fc : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
                (A.reflectTime.allFuture.imp B.reflectTime.allFuture) :=
     tempKDistLocal A.reflectTime B.reflectTime
-  -- Apply temporal duality
+  -- Apply time reflection
   have td : DerivationTree fc [] ((A.reflectTime.imp B.reflectTime).allFuture.imp
                 (A.reflectTime.allFuture.imp B.reflectTime.allFuture)).reflectTime :=
     DerivationTree.time_reflection _ fk_fc

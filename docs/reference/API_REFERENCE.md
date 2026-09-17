@@ -78,7 +78,7 @@ complexity (p.imp q) = 1 + complexity p + complexity q
 
 ##### `reflectTime : Formula → Formula`
 
-Swap temporal operators (past ↔ future) in a formula. Used in the temporal duality inference rule (TD).
+Swap temporal operators (past ↔ future) in a formula. Used in the time reflection inference rule (TR).
 
 **Theorem**: `reflect_time_involution` - Applying twice gives identity.
 

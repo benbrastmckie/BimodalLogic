@@ -64,7 +64,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
 **Key Techniques**:
 - Time-shift invariance (MF, and TF through it): Uses `WorldHistory.timeShift` and
   `TimeShift.timeShift_preserves_truth` to relate truth at different times. TF is not a
-  separate `Axiom` constructor — it is reached by temporal duality, so its validity rides on
+  separate `Axiom` constructor — it is reached by time reflection, so its validity rides on
   `mf_swap_valid`, the swap half of the same schema. See **The time-shift consumer set** below
   for the full enumeration and why its size is load-bearing.
 - Classical logic helpers for conjunction extraction (TL)

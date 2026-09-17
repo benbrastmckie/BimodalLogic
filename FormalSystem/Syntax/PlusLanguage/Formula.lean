@@ -48,7 +48,7 @@ by `rfl` — the `rfl` pins at the end of this file are what the proof-system em
   `diamond`, `someFuture`, `somePast`, `allFuture`, `allPast`, `kPlus`, `kMinus`, `always`,
   `sometimes`, `next`, `prev`
 - The `⊡`-specific operators `dstab` (`⟐`), `Will`, `will`, `Could`, `could`
-- `PlusFormula.reflectTime`: the past/future interchange for the TD rule (`stab ↦ stab`)
+- `PlusFormula.reflectTime`: the past/future interchange for the TR rule (`stab ↦ stab`)
 - `IsPureFuture`, `IsPurePast`: the syntactic purity predicates that guard the pasting axioms
 - `ofFormula`, `ofCtx`: the embedding of L into L⁺
 
@@ -196,7 +196,7 @@ def Could (φ : PlusFormula) : PlusFormula := dstab (allFuture φ)
 future. -/
 def could (φ : PlusFormula) : PlusFormula := dstab (someFuture φ)
 
-/-! ### Temporal duality -/
+/-! ### Time reflection -/
 
 /--
 Swap temporal operators (past ↔ future) in an L⁺ formula.
@@ -410,7 +410,7 @@ theorem ofFormula_injective : Function.Injective ofFormula := by
     ofFormula φ ≠ PlusFormula.stab ψ := by
   cases φ <;> simp [ofFormula]
 
-/-- `ofFormula` commutes with temporal duality, which is what the `time_reflection` case of the
+/-- `ofFormula` commutes with time reflection, which is what the `time_reflection` case of the
 proof-system embedding needs. -/
 theorem ofFormula_reflectTime (φ : Formula) :
     ofFormula φ.reflectTime = (ofFormula φ).reflectTime := by

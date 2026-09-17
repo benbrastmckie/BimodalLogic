@@ -124,7 +124,7 @@ example (σ : Atom → PlusFormula) (φ : Formula) :
 /-! ## The swap interaction -/
 
 /--
-**Substitution and temporal duality commute after shifting the substitution.**
+**Substitution and time reflection commute after shifting the substitution.**
 
 `substPlus σ` and `reflectTime` do not commute on the nose: at an atom the left side yields
 `σ p` and the right side `(σ p).reflectTime`. Running the substitution at

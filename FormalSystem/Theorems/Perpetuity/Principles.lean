@@ -67,7 +67,7 @@ then φ is always true (true at all times: past, present, and future).
 P1: `□φ → △φ` (necessary implies always)
 
 Derivation combines three components:
-1. `□φ → Hφ` (past): via temporal duality on MF (see `boxToPast`)
+1. `□φ → Hφ` (past): via time reflection on MF (see `boxToPast`)
 2. `□φ → φ` (present): via MT axiom (see `boxToPresent`)
 3. `□φ → Gφ` (future): via MF then MT (see `boxToFuture`)
 4. Combine: `□φ → Hφ ∧ (φ ∧ Gφ)` (see `combineImpConj3`)
@@ -330,7 +330,7 @@ What is necessary is necessarily always true.
 /--
 Box implies boxed past: `⊢ □φ → □Hφ`.
 
-Derived via temporal duality on MF, analogous to `boxToPast`.
+Derived via time reflection on MF, analogous to `boxToPast`.
 -/
 @[tmLemma]
 def boxToBoxPast {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp (φ.allPast.box) := by
@@ -432,7 +432,7 @@ P3: `□φ → □△φ` (necessity of perpetuity)
 What is necessary is necessarily always true.
 
 Derivation combines three boxed temporal components using modal K distribution:
-1. `□φ → □Hφ` (via temporal duality on MF, see `boxToBoxPast`)
+1. `□φ → □Hφ` (via time reflection on MF, see `boxToBoxPast`)
 2. `□φ → □φ` (identity on boxed formula)
 3. `□φ → □Gφ` (MF axiom)
 4. Combine using `boxConjIntroImp3` to get `□φ → □(Hφ ∧ (φ ∧ Gφ))`
@@ -577,9 +577,9 @@ def boxDiamondToFutureBoxDiamond {fc : FrameClass} (φ : Formula) :
   temporalFutureDerived φ.diamond
 
 /--
-Helper lemma: Apply temporal duality to get past component.
+Helper lemma: Apply time reflection to get past component.
 
-From TF on `□◇φ`, derive `H□◇φ` via temporal duality.
+From TF on `□◇φ`, derive `H□◇φ` via time reflection.
 -/
 def boxDiamondToPastBoxDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.diamond.box.imp (φ.diamond.box.allPast) := by
@@ -587,7 +587,7 @@ def boxDiamondToPastBoxDiamond {fc : FrameClass} (φ : Formula) :
   have tf_swap : ⊢[fc] φ.diamond.box.reflectTime.imp
                     (φ.diamond.box.reflectTime.allFuture) :=
     boxDiamondToFutureBoxDiamond φ.reflectTime
-  -- Apply temporal duality
+  -- Apply time reflection
   have td : ⊢[fc] (φ.diamond.box.reflectTime.imp
                 φ.diamond.box.reflectTime.allFuture).reflectTime :=
     DerivationTree.time_reflection _ tf_swap
@@ -654,12 +654,12 @@ noncomputable def futureKDist {fc : FrameClass} (A B : Formula) :
 /--
 Temporal K distribution for past: `H(A → B) → (HA → HB)`.
 
-This is the past analog of future K distribution, derived via temporal duality.
+This is the past analog of future K distribution, derived via time reflection.
 
 **Semantic Justification**: By temporal symmetry in task semantics, if A → B holds
 at all past times and A holds at all past times, then B must hold at all past times.
 
-**Derivation**: This follows from `futureKDist` applied with temporal duality.
+**Derivation**: This follows from `futureKDist` applied with time reflection.
 -/
 noncomputable def pastKDistFromFuture {fc : FrameClass} (A B : Formula) :
     ⊢[fc] (A.imp B).allPast.imp (A.allPast.imp B.allPast) := by
@@ -667,7 +667,7 @@ noncomputable def pastKDistFromFuture {fc : FrameClass} (A B : Formula) :
   have fk : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
                (A.reflectTime.allFuture.imp B.reflectTime.allFuture) :=
     futureKDist A.reflectTime B.reflectTime
-  -- Apply temporal duality
+  -- Apply time reflection
   have td : ⊢[fc] ((A.reflectTime.imp B.reflectTime).allFuture.imp
                 (A.reflectTime.allFuture.imp B.reflectTime.allFuture)).reflectTime :=
     DerivationTree.time_reflection _ fk
@@ -684,7 +684,7 @@ If φ is possible, then φ is always possible — at every time in the history.
 **Derivation**:
 1. `modal5`: `◇φ → □◇φ` (the S5 characteristic axiom supplies the lifting step)
 2. `temporalFutureDerived` (TF): `□◇φ → G□◇φ`
-3. TF under `time_reflection` (TD): `□◇φ → H□◇φ`
+3. TF under `time_reflection` (TR): `□◇φ → H□◇φ`
 4. `modal_t` (MT) strips each box, and the three temporal components are combined
    into `△◇φ = H◇φ ∧ ◇φ ∧ G◇φ`
 
@@ -700,7 +700,7 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
   -- Expanded: ◇φ → H◇φ ∧ ◇φ ∧ G◇φ
   --
   -- KEY INSIGHT: Use modal5 (◇φ → □◇φ) as starting point
-  -- Then apply TF and TD to □◇φ to get temporal components
+  -- Then apply TF and TR to □◇φ to get temporal components
   -- Then apply MT to strip the boxes
 
   -- KEY: Use modal5 to get ◇φ → □◇φ (S5 characteristic axiom)
@@ -708,13 +708,13 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
   -- We can derive: □◇φ → F□◇φ from TF
   have tf : ⊢[fc] φ.diamond.box.imp φ.diamond.box.allFuture :=
     temporalFutureDerived φ.diamond
-  -- We can derive: □◇φ → H□◇φ from TD (temporal duality on TF)
+  -- We can derive: □◇φ → H□◇φ from TR (time reflection on TF)
   have td : ⊢[fc] φ.diamond.box.imp φ.diamond.box.allPast := by
     -- Apply TF to swapped temporal version
     have tf_swap : ⊢[fc] φ.diamond.box.reflectTime.imp
                       (φ.diamond.box.reflectTime.allFuture) :=
       temporalFutureDerived φ.diamond.reflectTime
-    -- Apply temporal duality
+    -- Apply time reflection
     have td_result : ⊢[fc] (φ.diamond.box.reflectTime.imp
                           φ.diamond.box.reflectTime.allFuture).reflectTime :=
       DerivationTree.time_reflection _ tf_swap
@@ -799,7 +799,7 @@ P5: `◇▽φ → △◇φ` (persistent possibility)
 - All components proven as of Phase 3 completion
 - Uses `modal5` (`◇φ → □◇φ`, the S5 characteristic axiom derived from MB + diamond4)
 - Persistence lemma proven using `reflect_time_diamond` for formula simplification
-- Past component: temporal duality + past K distribution
+- Past component: time reflection + past K distribution
 - Future component: temporal K + future K distribution
 
 **Semantic Justification** (Corollary 2.11):

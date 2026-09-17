@@ -247,23 +247,23 @@ by re-grep at phase start, and treat build errors as the authoritative residual 
 
 ---
 
-### Phase 3: Prose rename TD -> TR and rule-sense "temporal duality" [NOT STARTED]
+### Phase 3: Prose rename TD -> TR and rule-sense "temporal duality" [COMPLETED]
 
 **Goal**: Change the rule's prose name everywhere it means the metarule, and keep the carve-out senses.
 
 **Tasks**:
-- [ ] Build a site ledger (scratch file in the task dir) for every bare `\bTD\b` and every
+- [x] Build a site ledger (scratch file in the task dir) for every bare `\bTD\b` and every
       `[Tt]emporal [Dd]uality` hit outside `specs/`, `.lake`, `.git`, `.claude`, `agent-system`,
       `Boneyard`, and the record. Classify each hit as **rule** (rename), **lemma**
       (`lem:temporal-duality` sense, keep), **operator duality** (▽/△ or modal/temporal dual pairs,
       keep), or **other** (e.g. mermaid `graph TD`, keep).
-- [ ] Apply the rule-sense edits. Use "TR" for the abbreviation, and "time reflection" /
+- [x] Apply the rule-sense edits. Use "TR" for the abbreviation, and "time reflection" /
       "the time reflection rule (TR)" for the prose name. Do not attribute "time reflection" to
       `lem:temporal-duality`.
-- [ ] Cover Lean docstrings/comments (`MinusLanguage/*`, `Theorems/Perpetuity/*`,
+- [x] Cover Lean docstrings/comments (`MinusLanguage/*`, `Theorems/Perpetuity/*`,
       `Metalogic/Conservativity/**`, `Formula.lean` variants, etc.), READMEs, `docs/**`, `typst/**`
       (including `typst/FormalFoundations.typ` TD tokens), and `latex/subfiles/*.tex`.
-- [ ] Gates: `lake build` (docstrings compile); `bash scripts/readme-lint.sh`;
+- [x] Gates: `lake build` (docstrings compile); `bash scripts/readme-lint.sh`;
       `bash scripts/typst-sync-check.sh`; `bash scripts/check-module-invariants.sh --no-build`
       (C14 content scan, C15).
 
@@ -285,7 +285,7 @@ Confirm with the ledger. The final count of renamed vs kept sites goes into the 
 
 **Verification**:
 - Every ledger row resolved. Post-pass grep shows only the ledger's kept rows
-- Gates above green
+- Gates above green (ledger: 215 hit lines, 187 renamed, 28 kept; lake build FormalSystem+BimodalTest green, readme-lint PASS, invariants --no-build PASS; typst-sync-check's single violation is the pre-existing `lakefile.toml` token in `p4-dataset-pipeline.typ` from the concurrent lakefile migration)
 
 ---
 

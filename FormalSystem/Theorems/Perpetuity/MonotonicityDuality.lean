@@ -165,7 +165,7 @@ def futureMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc]
 /--
 Past monotonicity: from `⊢ A → B`, derive `⊢ HA → HB`.
 
-Derived via temporal duality from future monotonicity.
+Derived via time reflection from future monotonicity.
 -/
 def pastMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.allPast.imp B.allPast := by
   have h_swap : ⊢[fc] A.reflectTime.imp B.reflectTime := by
@@ -591,7 +591,7 @@ def perpetuity6 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.sometimes.imp 
 - **Persistence lemma**: `◇φ → △◇φ` (zero sorry)
   - Helper components proven: `modal5` (`◇φ → □◇φ` from MB + diamond4)
   - Uses `reflect_time_diamond` and `reflect_time_involution` for formula simplification
-  - Past component: temporal duality + past K distribution
+  - Past component: time reflection + past K distribution
   - Future component: temporal K + future K distribution
   - FULLY PROVEN as of Phase 3 completion
 - P5: `◇▽φ → △◇φ` (persistent possibility)
@@ -611,21 +611,21 @@ def perpetuity6 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.sometimes.imp 
 - `combineImpConj`: Combine implications into conjunction implication
 - `combineImpConj3`: Three-way version for P1
 - `boxToFuture`: `⊢ □φ → Gφ` (MF + MT)
-- `boxToPast`: `⊢ □φ → Hφ` (temporal duality on MF)
+- `boxToPast`: `⊢ □φ → Hφ` (time reflection on MF)
 - `boxToPresent`: `⊢ □φ → φ` (MT axiom)
-- `boxToBoxPast`: `⊢ □φ → □Hφ` (temporal duality on MF)
+- `boxToBoxPast`: `⊢ □φ → □Hφ` (time reflection on MF)
 - `boxConjIntro`: Boxed conjunction introduction
 - `boxConjIntroImp`: Implicational version for combining `P → □A` and `P → □B`
 - `boxConjIntroImp3`: Three-way version for P3
 - `boxDne`: Apply DNE inside modal box
 - `mbDiamond`: Modal B axiom instantiation for diamonds
 - `boxDiamondToFutureBoxDiamond`: TF axiom for `□◇φ`
-- `boxDiamondToPastBoxDiamond`: Temporal duality for `□◇φ`
+- `boxDiamondToPastBoxDiamond`: Time reflection for `□◇φ`
 - `contraposition`: Classical contraposition (proven via B combinator)
 - `boxMono`: Box monotonicity `⊢ (A → B) → (□A → □B)` (via necessitation + K)
 - `diamondMono`: Diamond monotonicity `⊢ (A → B) → (◇A → ◇B)` (via contraposition of boxMono)
 - `futureMono`: Future monotonicity `⊢ (A → B) → (GA → GB)` (via temporal K + future K dist)
-- `pastMono`: Past monotonicity `⊢ (A → B) → (HA → HB)` (via temporal duality on futureMono)
+- `pastMono`: Past monotonicity `⊢ (A → B) → (HA → HB)` (via time reflection on futureMono)
 - `doubleContrapose`: From `⊢ ¬A → ¬B`, derive `⊢ B → A` (combines contraposition with DNE/DNI)
 - `bridge1`: `⊢ ¬□△φ → ◇▽¬φ` (for P6 derivation)
 - `bridge2`: `⊢ △◇¬φ → ¬▽□φ` (for P6 derivation)

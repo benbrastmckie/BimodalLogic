@@ -36,7 +36,7 @@ We handle each case of the Derivable relation:
 - Base case: assumption (splits into same vs other)
 - Inductive case: modus ponens
 - Inductive case: weakening (reduces to subderivation)
-- Modal/temporal K rules and temporal duality do not apply with non-empty contexts
+- Modal/temporal K rules and time reflection do not apply with non-empty contexts
 
 ## References
 
@@ -312,7 +312,7 @@ into implicational theorems.
   2. `A ∉ Γ'`: Use S axiom (A not needed)
   3. `A ∈ Γ'` but `Γ' ≠ A :: Γ`: Use recursion on permuted context (KEY CASE)
 - Modal/temporal necessitation: Cannot occur (require empty context)
-- Temporal duality: Cannot occur (requires empty context)
+- Time reflection: Cannot occur (requires empty context)
 
 **Well-Founded Recursion**: The recursion terminates because:
 - In modus ponens: both subderivations have strictly smaller height

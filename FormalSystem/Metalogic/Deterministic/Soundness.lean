@@ -27,7 +27,7 @@ completeness over the *deterministic* frames is exactly what forces the two logi
 The same companion recursion TM and TM⁺ soundness use
 (`Metalogic/Conservativity/Plus/PlusSoundness.lean`, `plus_derivable_valid_and_swap_validIn`):
 carry both `PlusValidDeterminedIn fc φ` and `PlusValidDeterminedIn fc φ.reflectTime`, so the
-`time_reflection` case exchanges the two components. TD is discharged **semantically**, never by
+`time_reflection` case exchanges the two components. TR is discharged **semantically**, never by
 mapping derivations to mirrored derivations — the axiom set is not mirror-closed.
 
 The two axiom arms:

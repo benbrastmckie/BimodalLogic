@@ -14,7 +14,7 @@ bisimulation-invariant properties expressible in the language.
 | `Defs.lean` | 553 | Core definitions for the separation argument: N-types, separating formulas |
 | `Distributivity.lean` | 188 | Distributivity lemmas for temporal connectives in separation arguments |
 | `DualEliminations.lean` | 101 | Dual elimination lemmas: eliminating Until/Since via duality |
-| `Duality.lean` | 342 | Temporal duality (G/H, F/P, U/S) in the separation context |
+| `Duality.lean` | 342 | Time reflection (G/H, F/P, U/S) in the separation context |
 | `Eliminations.lean` | 902 | Elimination lemmas: reducing complex formulas in separation arguments |
 | `FormulaOps.lean` | 235 | Formula operations used in separation: substitution, normalization |
 | `IntHelpers.lean` | 131 | Integer arithmetic helpers for time-point calculations |

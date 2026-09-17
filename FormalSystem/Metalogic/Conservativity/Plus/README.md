@@ -40,7 +40,7 @@ does not define the deterministic frames, and no L⁺ formula set does
 
 ## Key Results
 
-- `plus_soundness_validIn` — soundness of TM⁺ at every frame class, with TD discharged
+- `plus_soundness_validIn` — soundness of TM⁺ at every frame class, with TR discharged
   semantically by the companion recursion and the TM schemata over L⁺ handled by atomization
 - `plusDerivable_ofFormula_iff` — proof-theoretic conservativity of TM⁺ over TM in **both**
   directions, at all four classes

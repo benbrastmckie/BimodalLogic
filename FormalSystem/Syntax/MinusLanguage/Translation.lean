@@ -24,7 +24,7 @@ name. For `allPast`/`allFuture` the target is L's *derived* `Formula.allPast`/
 ## Main Results
 
 - `tr_swapMinus` : `tr (swapMinus φ) = reflectTime (tr φ)` — **the load-bearing lemma**, without
-  which the TD case of `FormalSystem.Metalogic.Conservativity.translate` does not typecheck
+  which the TR case of `FormalSystem.Metalogic.Conservativity.translate` does not typecheck
 - `tr_ne_untl`, `tr_ne_snce` : `tr` never produces a top-level `untl`/`snce`
 - `tr_injective` : `tr` is injective
 - push-through equations for the derived Boolean and modal operators
@@ -130,14 +130,14 @@ theorem tr_somePast_ne (φ : MinusFormula) :
     tr φ.somePast ≠ Formula.somePast (tr φ) :=
   tr_ne_snce φ.somePast Formula.top (tr φ)
 
-/-! ### The commutation lemma for TM⁻'s TD rule -/
+/-! ### The commutation lemma for TM⁻'s TR rule -/
 
 /--
 **The load-bearing lemma**: `tr` intertwines the L⁻-side past/future interchange `swapMinus` with
 the L-side one `reflectTime`.
 
-TM⁻'s **TD** rule concludes `⊢ swapMinus φ` from `⊢ φ`; L's `DerivationTree.time_reflection`
-concludes `⊢ reflectTime ψ` from `⊢ ψ`. Without this equation the TD case of
+TM⁻'s **TR** rule concludes `⊢ swapMinus φ` from `⊢ φ`; L's `DerivationTree.time_reflection`
+concludes `⊢ reflectTime ψ` from `⊢ ψ`. Without this equation the TR case of
 `FormalSystem.Metalogic.Conservativity.translate` does not typecheck at all.
 
 The `allPast`/`allFuture` cases are the only real content: they need

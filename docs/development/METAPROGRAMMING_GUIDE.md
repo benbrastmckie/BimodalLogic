@@ -27,7 +27,7 @@ Before reading this guide, you should have:
 2. **Bimodal Architecture**: Understanding of `Formula`, `Derivable`, `Axiom`
    types (see `docs/user-guide/architecture.md`)
 3. **Proof System Knowledge**: Familiarity with TM axioms (MT, M4, MB, T4, TA, TL,
-   MF, TF) and inference rules (MP, MK, TK, TD)
+   MF, TF) and inference rules (MP, MK, TK, TR)
 
 ### Quick Reference
 

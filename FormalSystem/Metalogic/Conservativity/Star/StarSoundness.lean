@@ -29,7 +29,7 @@ vector, `↓ⁱ` changes the time, neither escapes the frame — so `necessitati
 formula just as they do at a register-free one.
 
 **No argument here uses uniform substitution**, and none is available: TM⁺ is already not
-substitution-closed (`PlusAxiom.atom_stab`), and TD is discharged semantically through
+substitution-closed (`PlusAxiom.atom_stab`), and TR is discharged semantically through
 `starAxiom_swap_validIn_min` rather than by mapping derivations to mirrored derivations, which
 would require an axiom set that is mirror-closed as a *set of instances*.
 
@@ -51,7 +51,7 @@ would require an axiom set that is mirror-closed as a *set of instances*.
 
 ## Tags
 
-soundness · star-language · store-recall · temporal-duality
+soundness · star-language · store-recall · time-reflection
 -/
 
 namespace FormalSystem.Metalogic.Conservativity

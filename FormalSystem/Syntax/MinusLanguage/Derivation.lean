@@ -21,16 +21,16 @@ case per rule and no bookkeeping.
 3. `modus_ponens` — **MP**
 4. `necessitation` — **MN**, empty context only
 5. `temporal_necessitation` — `⊢ φ ⟹ ⊢ Gφ`, empty context only
-6. `time_reflection` — **TD**, empty context only, via **`swapMinus`**
+6. `time_reflection` — **TR**, empty context only, via **`swapMinus`**
 7. `weakening`
 
-**TD uses `swapMinus`, not `reflectTime`.** `reflectTime` acts on L's `untl`/`snce`; the L⁻
+**TR uses `swapMinus`, not `reflectTime`.** `reflectTime` acts on L's `untl`/`snce`; the L⁻
 side has no such constructors. The two are intertwined by `MinusLanguage.tr_swapMinus`.
 
 ## Fidelity note: `temporal_necessitation` is not a strengthening
 
 TM⁻ as axiomatized in the paper (`\S sub:Logic`) has **no primitive temporal necessitation
-rule** — its rules are exactly MP, MN and TD. Including `temporal_necessitation` here therefore
+rule** — its rules are exactly MP, MN and TR. Including `temporal_necessitation` here therefore
 looks like an addition, but it changes no theorem of TM⁻: `⊢ φ ⟹ ⊢ Gφ` is already *derivable*
 in TM⁻ from MN + MF + MT, by necessitating `φ` to `□φ`, applying **MF** (`□φ → □Gφ`) and then
 **MT** (`□Gφ → Gφ`). The rule is carried as a primitive purely to keep the seven-rule mirror,
@@ -51,7 +51,7 @@ that a file opening both namespaces cannot silently mean the wrong system. There
 
 ## References
 
-* JPL paper `\S sub:Logic` — the rules MP, MN, TD that TM⁻ inherits
+* JPL paper `\S sub:Logic` — the rules MP, MN, TR that TM⁻ inherits
 * `FormalSystem/ProofSystem/Derivation.lean` — the L counterpart being mirrored
 -/
 
@@ -82,7 +82,7 @@ inductive DerivationTree (fc : FrameClass) : Context → MinusFormula → Type w
       fidelity note in the module docstring and `temporalNecessitationDerivable`. -/
   | temporal_necessitation (φ : MinusFormula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.allFuture
-  /-- **TD**: from `⊢ φ`, conclude `⊢ φ⟨P|F⟩`, i.e. `⊢ swapMinus φ`. Theorems only. -/
+  /-- **TR**: from `⊢ φ`, conclude `⊢ φ⟨P|F⟩`, i.e. `⊢ swapMinus φ`. Theorems only. -/
   | time_reflection (φ : MinusFormula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.swapMinus
   /-- Weakening: from `Γ ⊢ φ` and `Γ ⊆ Δ`, conclude `Δ ⊢ φ`. -/
@@ -166,7 +166,7 @@ notation:50 "⊢⁻[" fc "] " φ => DerivationTree fc [] φ
 
 /-! ## The fidelity note, discharged
 
-TM⁻'s rule set is MP, MN, TD. `temporal_necessitation` is carried as an eighth-slot primitive
+TM⁻'s rule set is MP, MN, TR. `temporal_necessitation` is carried as an eighth-slot primitive
 only to mirror L's seven-rule shape; the derivation below shows it adds nothing. -/
 
 /--

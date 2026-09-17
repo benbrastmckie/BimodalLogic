@@ -94,7 +94,7 @@ inductive StarDerivationTree (fc : FrameClass) : StarContext → StarFormula →
   /-- Temporal necessitation: from `⊢ φ`, conclude `⊢ Gφ`. Theorems only. -/
   | temporal_necessitation (φ : StarFormula)
       (d : StarDerivationTree fc [] φ) : StarDerivationTree fc [] (StarFormula.allFuture φ)
-  /-- Temporal duality: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
+  /-- Time reflection: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
   | time_reflection (φ : StarFormula)
       (d : StarDerivationTree fc [] φ) : StarDerivationTree fc [] φ.reflectTime
   /-- Weakening: from `Γ ⊢ φ` and `Γ ⊆ Δ`, conclude `Δ ⊢ φ`. -/

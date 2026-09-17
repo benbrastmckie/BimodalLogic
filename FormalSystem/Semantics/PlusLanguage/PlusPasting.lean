@@ -29,7 +29,7 @@ with the purity side conditions:
 | **FS** | `F⟐φ⁺ → ⟐Fφ⁺` | `future_dstab_valid` (= US at `α⁻ := ⊤`) |
 | **GS** | `⊡Gφ⁺ → G⊡φ⁺` | `stab_allFuture_valid` (the contrapositive reading of FS) |
 
-together with the two **past mirrors** that temporal duality needs (`reflectTime` exchanges
+together with the two **past mirrors** that time reflection needs (`reflectTime` exchanges
 `IsPureFuture` and `IsPurePast`):
 
 | Name | Schema | Lean |
@@ -38,7 +38,7 @@ together with the two **past mirrors** that temporal duality needs (`reflectTime
 | **SS** (past pasting) | `(α⁺ S ⟐φ⁻) → ⟐(α⁺ S φ⁻)` | `snce_dstab_valid` |
 
 PS and US are the two pasting **axioms** of TM⁺ (`PlusLanguage/Axioms.lean`); FS, GS and the
-mirrors are derived (the mirrors by TD). The purity restrictions are **necessary**: the
+mirrors are derived (the mirrors by TR). The purity restrictions are **necessary**: the
 refutations in `Semantics/PlusLanguage/PlusNonValidities.lean` show that `G⊡p → ⊡Gp` fails even for atoms
 and that `⊡GPp → G⊡Pp` fails once a past operator enters the scope.
 

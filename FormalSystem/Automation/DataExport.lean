@@ -302,7 +302,7 @@ structure RuleProfile where
   necessitationCount : Nat
   /-- Number of temporal necessitation applications. -/
   temporalNecessitationCount : Nat
-  /-- Number of temporal duality applications. -/
+  /-- Number of time reflection applications. -/
   timeReflectionCount : Nat
   /-- Number of weakening applications. -/
   weakeningCount : Nat

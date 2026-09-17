@@ -1050,7 +1050,7 @@ are excluded. Extending to those requires making them computable first.
 Currently handles (unambiguous head shapes, checked in order):
 - TF (temporalFutureDerived): `□φ → G(□φ)` -- derived from MF + T + Modal 4
 - boxToFuture: `□φ → Gφ` -- MF + T composition
-- boxToPast: `□φ → Hφ` -- boxToFuture + temporal duality
+- boxToPast: `□φ → Hφ` -- boxToFuture + time reflection
 - identity: `φ → φ` -- SKK construction
 - notNotIntro: `φ → ¬¬φ` -- double negation introduction
 -/

@@ -20,7 +20,7 @@ Lake executable.
 ## Main Definitions
 
 - `DatasetRecord`: Export-ready record structure with all fields for JSONL output
-- `AugmentationInfo`: Tracks whether a record was produced via temporal duality
+- `AugmentationInfo`: Tracks whether a record was produced via time reflection
 - `DatasetMetadata`: Dataset-level statistics (counts, distributions, parameters)
 - `writeRecordJSONL`: Write a single record as one JSON line
 - `writeDatasetJSONL`: Stream all records to a JSONL file

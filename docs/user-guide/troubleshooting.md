@@ -183,7 +183,7 @@ noncomputable example (φ : Formula) : [φ.box] ⊢ φ.box.box := by
 
 ### 3.2 "cannot apply 'DerivationTree.time_reflection': context is not empty"
 
-**Error**: Temporal duality requires empty context.
+**Error**: Time reflection requires empty context.
 
 **Cause**: Same as necessitation - this is a theorem-level rule.
 

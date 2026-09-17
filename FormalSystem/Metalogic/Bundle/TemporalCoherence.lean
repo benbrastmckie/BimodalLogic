@@ -35,7 +35,7 @@ the re-hosted bundle-flow truth lemma, the backward lemmas proven from them, and
 The backward lemmas are proven by contraposition:
 1. Assume G(phi) not in fam.mcs t
 2. By MCS maximality: neg(G(phi)) in fam.mcs t
-3. By temporal duality: F(neg phi) in fam.mcs t
+3. By time reflection: F(neg phi) in fam.mcs t
 4. By restricted forward_F: exists s > t with neg(phi) in fam.mcs s
 5. But by hypothesis: phi in fam.mcs s -- contradiction
 
@@ -54,7 +54,7 @@ open FormalSystem.Theorems.ModalDerived
 variable {fc : FrameClass} {D : Type} [Preorder D] [Zero D]
 
 /-!
-## Temporal Duality Infrastructure
+## Time Reflection Infrastructure
 
 These lemmas establish the transformation from neg(G phi) to F(neg phi) in MCS context,
 enabling the contraposition argument for temporal backward proofs.
@@ -152,7 +152,7 @@ as a hypothesis).
 The proof is by contraposition:
 1. Assume G(phi) not in fam.mcs t
 2. By MCS maximality: neg(G(phi)) in fam.mcs t
-3. By temporal duality: F(neg phi) in fam.mcs t
+3. By time reflection: F(neg phi) in fam.mcs t
 4. By restricted forward_F (using h_neg_phi_dc): exists s ≥ t with neg(phi) in fam.mcs s
 5. Contradiction with phi in fam.mcs s
 -/

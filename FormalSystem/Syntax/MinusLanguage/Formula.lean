@@ -28,7 +28,7 @@ substance of the backward conservativity bridge in
 - `MinusFormula.neg`, `top`, `and`, `or`, `iff`: derived Boolean operators
 - `MinusFormula.somePast` (P), `MinusFormula.someFuture` (F): derived existential temporal operators
 - `MinusFormula.always` (△): `Hφ ∧ φ ∧ Gφ`, mirroring `Formula.always`
-- `MinusFormula.swapMinus`: the past/future interchange used by TM⁻'s **TD** rule
+- `MinusFormula.swapMinus`: the past/future interchange used by TM⁻'s **TR** rule
 
 ## Main Results
 
@@ -134,7 +134,7 @@ def always (φ : MinusFormula) : MinusFormula := φ.allPast.and (φ.and φ.allFu
 /--
 Interchange the two universal temporal operators `H` and `G` throughout a formula.
 
-This is the L⁻-side analogue of `Formula.reflectTime` and is what TM⁻'s **TD** rule
+This is the L⁻-side analogue of `Formula.reflectTime` and is what TM⁻'s **TR** rule
 ("if `⊢ φ` then `⊢ φ⟨P|F⟩`") transforms by. Note that on the L side the corresponding
 operation swaps the *primitive* `untl`/`snce`; the commutation of the two is
 `MinusLanguage.tr_swapMinus`.
@@ -154,7 +154,7 @@ theorem swapMinus_involution (φ : MinusFormula) : φ.swapMinus.swapMinus = φ :
 /-! ### `swapMinus` push-through lemmas for the derived operators
 
 These are the L⁻-side counterparts of `Formula.reflect_time_neg`,
-`Formula.reflect_time_some_future`, and friends. They are `@[simp]` so that the TD case of
+`Formula.reflect_time_some_future`, and friends. They are `@[simp]` so that the TR case of
 the Phase 8 recursion and the axiom-discharge table can normalise a `swapMinus` of a derived
 operator without unfolding to primitives by hand. -/
 

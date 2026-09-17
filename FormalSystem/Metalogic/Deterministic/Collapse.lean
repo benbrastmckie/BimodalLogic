@@ -89,7 +89,7 @@ theorem detTNec {φ : PlusFormula} (h : DetDerivable fc [] φ) :
   h.elim fun d => ⟨.temporal_necessitation φ d⟩
 
 /-- **Past temporal necessitation**, derived: from `⊢ φ` conclude `⊢ Hφ`. There is no `H`-rule in
-the system — the past half of every temporal principle is obtained by temporal duality, exactly as
+the system — the past half of every temporal principle is obtained by time reflection, exactly as
 in TM. Three rule applications: dualize, `G`-necessitate, dualize back, the last step landing on
 `Hφ` because `reflectTime` is an involution. -/
 theorem detHNec {φ : PlusFormula} (h : DetDerivable fc [] φ) :
@@ -254,7 +254,7 @@ theorem detUntlCongr {ψ ψ' α α' : PlusFormula} (hg : DetDerivable fc [] (ψ.
 
 /-- **Congruence at `S`**, the past mirror of `detUntlCongr`; the temporal-necessitation step is
 the same rule, because `left_mono_since_H` and `right_mono_since` take `H`-guarded premises and
-`Gφ`'s derivation gives `Hφ`'s by temporal duality — which is already inside the axioms here, so
+`Gφ`'s derivation gives `Hφ`'s by time reflection — which is already inside the axioms here, so
 the derivation reads exactly as the future one with `H` in place of `G`. -/
 theorem detSnceCongr {ψ ψ' α α' : PlusFormula} (hg : DetDerivable fc [] (ψ.iff ψ'))
     (he : DetDerivable fc [] (α.iff α')) :

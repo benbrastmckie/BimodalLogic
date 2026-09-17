@@ -172,7 +172,7 @@ theorem provEquiv_box_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) : φ.box ≈ₚ
 /--
 Provable equivalence respects allPast (H): `φ ≈ₚ ψ → Hφ ≈ₚ Hψ`.
 
-This uses `pastMono` from Perpetuity which derives it via temporal duality.
+This uses `pastMono` from Perpetuity which derives it via time reflection.
 -/
 theorem provEquiv_all_past_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
     φ.allPast ≈ₚ ψ.allPast := by
@@ -310,9 +310,9 @@ Bottom element of the Lindenbaum algebra: the class of ⊥.
 def botQuot : LindenbaumAlg := toQuot Formula.bot
 
 /-!
-## Temporal Duality (sigma)
+## Time Reflection (sigma)
 
-We lift the `reflectTime` operation to the quotient, establishing temporal duality
+We lift the `reflectTime` operation to the quotient, establishing time reflection
 on the Lindenbaum algebra. This is essential for the STSA (Shift-closed Tense S5 Algebra) structure.
 -/
 
@@ -338,10 +338,10 @@ theorem provEquiv_reflect_time_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
   ⟨reflect_time_derives h.1, reflect_time_derives h.2⟩
 
 /--
-Lifted temporal duality (sigma) on the Lindenbaum algebra.
+Lifted time reflection (sigma) on the Lindenbaum algebra.
 
 This swaps G (allFuture) and H (allPast) operators throughout a formula,
-implementing the temporal duality principle.
+implementing the time reflection principle.
 -/
 def sigmaQuot : LindenbaumAlg → LindenbaumAlg :=
   Quotient.lift (fun φ => toQuot φ.reflectTime)

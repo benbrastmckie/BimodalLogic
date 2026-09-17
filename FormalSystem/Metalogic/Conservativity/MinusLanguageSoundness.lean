@@ -417,7 +417,7 @@ The only genuinely new semantic content is `Semantics.MinusLanguage.MinusSchemaV
 respectively for the `df` axiom leaf and for the `time_reflection` case's swap component.
 Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any
 semantic argument at all**: `minus_derivable_valid_and_swap_valid_zTimeSucc` re-derives each one
-(and its swap) proof-theoretically, by composing `minus_soundness_valid` with the `TD` rule itself
+(and its swap) proof-theoretically, by composing `minus_soundness_valid` with the `TR` rule itself
 (`⊢[Base] φ ⟹ ⊢[Base] φ.swapMinus`), never touching `MinusTruthAt` directly for those twelve. `dn`/`co`
 are eliminated structurally: `FrameClass.Dense` and `FrameClass.RTime` are each incomparable
 with `FrameClass.ZTime`, so their axiom leaves are unreachable under the `h_fc` side
@@ -436,7 +436,7 @@ The `axiom` case's `by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base` spl
 device `Metalogic/Soundness.lean`'s `axiom_swap_validIn_min` uses: it separates the twelve
 instance-free (`.Base`-classed)
 axioms — whose validity **and swap-validity** both come for free via `minus_soundness_valid`
-composed with the `TD` proof rule — from the three that are not, without enumerating the twelve
+composed with the `TR` proof rule — from the three that are not, without enumerating the twelve
 constructors by name.
 -/
 private theorem minus_derivable_valid_and_swap_valid_zTimeSucc {φ : MinusFormula}

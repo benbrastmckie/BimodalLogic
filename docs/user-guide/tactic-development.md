@@ -533,7 +533,7 @@ Simp lemmas must reduce formulas toward a normal form to guarantee termination:
 -- Idempotence: `HHφ = Hφ` (all-past collapse)
 @[simp] theorem past_past_eq_past (φ : Formula) :
   Formula.allPast (Formula.allPast φ) = Formula.allPast φ := by
-  sorry  -- Prove using temporal duality and T4
+  sorry  -- Prove using time reflection and T4
 ```
 
 ### Bimodal Interaction Simplifications
@@ -549,7 +549,7 @@ Simp lemmas must reduce formulas toward a normal form to guarantee termination:
 -- Commutativity: `□Hφ = H□φ` (necessity distributes over all-past)
 @[simp] theorem box_past_eq_past_box (φ : Formula) :
   Formula.box (Formula.allPast φ) = Formula.allPast (Formula.box φ) := by
-  sorry  -- Prove using temporal duality of MF/TF
+  sorry  -- Prove using time reflection of MF/TF
 ```
 
 ### Propositional Simplifications

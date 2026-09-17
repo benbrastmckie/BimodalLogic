@@ -28,7 +28,7 @@ module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_swap_
 A TM schema instance over L⁺ then holds in `M` iff its L instance at the atomized parameters
 holds in `M.atomModel e`, which is the landed lemma applied on the same frame — so `fc.Sat` is
 inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_swap_of_tm` its swap form via
-`atomize_reflectTime` (atomization commutes with temporal duality up to swapping the encoding,
+`atomize_reflectTime` (atomization commutes with time reflection up to swapping the encoding,
 `Encoding.swap`).
 
 ## Main Definitions
@@ -77,7 +77,7 @@ theorem Encoding.nonempty : Nonempty Encoding := by
 theorem reflectTime_injective : Function.Injective PlusFormula.reflectTime :=
   Function.Involutive.injective reflect_time_involution
 
-/-- The encoding conjugated by temporal duality on the `⊡`-formula side: `e.swap.ι (inr χ) =
+/-- The encoding conjugated by time reflection on the `⊡`-formula side: `e.swap.ι (inr χ) =
 e.ι (inr χ.reflectTime)`. Injective because `reflectTime` is an involution. -/
 def Encoding.swap (e : Encoding) : Encoding where
   ι := e.ι ∘ Sum.map id PlusFormula.reflectTime
@@ -121,7 +121,7 @@ right-hand sides, and `atomize` is structural on the L constructors. -/
 @[simp] theorem atomize_kMinus (e : Encoding) (φ : PlusFormula) :
     atomize e (kMinus φ) = Formula.kMinus (atomize e φ) := rfl
 
-/-- Atomization commutes with temporal duality, up to conjugating the encoding: the fresh atom
+/-- Atomization commutes with time reflection, up to conjugating the encoding: the fresh atom
 for `⊡χ.reflectTime` under `e` is the fresh atom for `⊡χ` under `e.swap`. -/
 theorem atomize_reflectTime (e : Encoding) (φ : PlusFormula) :
     atomize e φ.reflectTime = (atomize e.swap φ).reflectTime := by

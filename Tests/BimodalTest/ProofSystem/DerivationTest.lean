@@ -21,7 +21,7 @@ Tests for the DerivationTree relation and inference rules.
 - Modus ponens (implication elimination)
 - Modal K rule
 - Temporal K rule
-- Temporal duality rule
+- Time reflection rule
 - Weakening rule
 - Example derivations
 -/
@@ -156,14 +156,14 @@ example (φ : Formula) (d : ⊢ φ) : ⊢ φ.allFuture := by
   exact DerivationTree.temporal_necessitation φ d
 
 -- ============================================================
--- Temporal Duality Rule Tests
+-- Time Reflection Rule Tests
 -- ============================================================
 
--- Test: Temporal duality on Modal T
+-- Test: Time reflection on Modal T
 example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
   DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
--- Test: Temporal duality swaps allPast/allFuture
+-- Test: Time reflection swaps allPast/allFuture
 -- If ⊢ φ then ⊢ reflectTime φ (using connect_future as the base derivation)
 example : ⊢ ((Formula.atomS "p").imp (Formula.allFuture
     (Formula.atomS "p").somePast)).reflectTime :=

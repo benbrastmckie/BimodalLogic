@@ -16,7 +16,7 @@ import Std.Data.HashSet
 
 This module implements a forward-chaining proof generation system for bimodal
 logic TM. Starting from axiom instances, it applies productive inference rules
-(modus ponens, necessitation, temporal necessitation, temporal duality) to
+(modus ponens, necessitation, temporal necessitation, time reflection) to
 build a pool of `(formula, DerivationTree)` pairs where every pair is a theorem
 by construction.
 
@@ -290,7 +290,7 @@ def applyTemporalNecessitation {fc : FrameClass} (pool : ProofPool fc) : ProofPo
     | ⟨φ, d⟩ => p.add (Formula.allFuture φ) (DerivationTree.temporal_necessitation φ d)
   ) pool
 
-/-- Apply temporal duality to every formula in the pool. -/
+/-- Apply time reflection to every formula in the pool. -/
 def applyTimeReflection {fc : FrameClass} (pool : ProofPool fc) : ProofPool fc :=
   pool.entries.foldl (fun p σ =>
     match σ with

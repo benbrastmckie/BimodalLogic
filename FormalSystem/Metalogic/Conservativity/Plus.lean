@@ -27,7 +27,7 @@ the L⁺ metatheory:
 |--------|----------|
 | `Conservativity/Plus/Atomization.lean` | `Encoding`, `atomize`, `TaskModel.atomModel`, the transfer lemma `plusTruthAt_iff_atomize`, and `plusValidIn_of_tm` / `plusValidIn_swap_of_tm` — TM schema soundness over L⁺ in one lemma |
 | `Conservativity/Plus/AxiomValidity.lean` | `plusAxiom_validIn_min`, `plusAxiom_swap_validIn_min` — validity and swap-validity of every `PlusAxiom` constructor, one arm each |
-| `Conservativity/Plus/PlusSoundness.lean` | `plus_derivable_valid_and_swap_validIn`, `plus_soundness_validIn`, `plus_soundness_in`, the four rows — soundness of TM⁺ at every class, TD discharged semantically |
+| `Conservativity/Plus/PlusSoundness.lean` | `plus_derivable_valid_and_swap_validIn`, `plus_soundness_validIn`, `plus_soundness_in`, the four rows — soundness of TM⁺ at every class, TR discharged semantically |
 | `Conservativity/Plus/Forward.lean` | `forward_plus`, `plusDerivable_ofFormula_iff`, `plus_of_tmMinus`, `tmFrag_iff_plus` — conservativity over TM in both directions |
 
 ## The result, stated precisely

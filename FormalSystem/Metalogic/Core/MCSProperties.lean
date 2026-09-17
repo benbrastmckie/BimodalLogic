@@ -278,17 +278,17 @@ theorem SetMaximalConsistent.all_future_all_future {fc : FrameClass} {S : Set Fo
 /--
 Derivation of temporal 4 axiom for past: Hφ → HHφ.
 
-Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
+Derived by applying time reflection to the temp_4 axiom (Gφ → GGφ).
 -/
 noncomputable def temporal4Past (φ : Formula) : ⊢ (φ.allPast.imp φ.allPast.allPast) := by
   -- We want: Hφ → HHφ
-  -- By temporal duality from: Gψ → GGψ where ψ = reflectTime φ
+  -- By time reflection from: Gψ → GGψ where ψ = reflectTime φ
   -- reflectTime of (Gψ → GGψ) = Hφ' → HHφ' where φ' = reflectTime ψ = φ
   let ψ := φ.reflectTime
   -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
   have h1 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture) :=
     FormalSystem.Theorems.TemporalDerived.temporal4Derived ψ
-  -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
+  -- Step 2: Apply time reflection to get: H(swap ψ) → HH(swap ψ)
   have h2 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture).reflectTime :=
     DerivationTree.time_reflection _ h1
   -- Step 3: The result has type H(swap ψ) → HH(swap ψ) = Hφ → HHφ

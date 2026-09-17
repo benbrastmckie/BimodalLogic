@@ -405,7 +405,7 @@ inductive Axiom : Formula → Type where
   -- over the dense base: see `FormalSystem.Metalogic.Independence.CoNotPriorU`, whose
   -- `co_not_derives_prior_U_gap` (contexts of CO instances) and
   -- `co_not_derives_prior_U_gap_schema` (a CO-closed system with modus ponens, modal and
-  -- temporal necessitation, and temporal duality) are both sorry-free. The witness is the
+  -- temporal necessitation, and time reflection) are both sorry-free. The witness is the
   -- periodic clock model -- `D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u iff u = w + ⟦x⟧`, with the
   -- symmetric irrational arc valuation `|q| < √2/4` -- in which every CO instance is true and
   -- `prior_U_gap p` is false at time `0`.

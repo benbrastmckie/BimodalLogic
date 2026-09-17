@@ -61,7 +61,7 @@ Seven cases, one per L⁻ rule:
 - `modus_ponens`, `weakening` — structural.
 - `necessitation`, `temporal_necessitation` — structural; both rules are empty-context on both
   sides and `trCtx [] = []` definitionally.
-- `time_reflection` — the load-bearing case. TM⁻'s **TD** concludes `⊢ swapMinus φ` while L's
+- `time_reflection` — the load-bearing case. TM⁻'s **TR** concludes `⊢ swapMinus φ` while L's
   rule concludes `⊢ reflectTime (tr φ)`; `MinusLanguage.tr_swapMinus` is exactly the equation that
   makes those the same formula, and without it this case does not typecheck.
 -/

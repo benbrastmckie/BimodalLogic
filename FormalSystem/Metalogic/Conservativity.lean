@@ -162,7 +162,7 @@ this section previously said was missing — a frame notion outside `TaskFrame`
 irreflexive, forward- and backward-linear order and **no group structure**, with `□` read as the
 universal modality over the points) plus a *native*, non-composed L⁻ soundness theorem over it
 (`minusFrameValid_of_derivation`, by recursion on `MinusLanguage.DerivationTree`, with
-`Semantics.truth_swap` discharging the temporal-duality rule). The countermodel is the disjoint
+`Semantics.truth_swap` discharging the time-reflection rule). The countermodel is the disjoint
 sum `ℤ ⊕ ℝ` — a discrete fibre refuting the `DN` disjunct and a dense-complete fibre refuting the
 `DF` disjunct, both `□`-accessible. Note that the native soundness theorem is about **TM⁻**
 (`MinusLanguage.DerivationTree`), never about TM; the two must not be blurred.

@@ -39,7 +39,7 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
   `starValidOnFrames_ofPlus`. **No L⋆ atomization is used, and none can exist** (neither `↓ⁱχ`
   nor `↑ⁱχ` is state-determined, so `stab_state_only` has no L⋆ analogue), and no argument
   anywhere uses uniform substitution.
-- `star_soundness_validIn` — soundness of TM⋆ at every frame class, TD discharged semantically.
+- `star_soundness_validIn` — soundness of TM⋆ at every frame class, TR discharged semantically.
 - `starDerivable_ofFormula_iff` — **TM⋆ is a conservative extension of TM**, both directions, at
   all four classes, unconditionally.
 - `starConservative_of_plusComplete` with `plusIncomplete_of_starNonconservative` — the L⁺ ⊂ L⋆

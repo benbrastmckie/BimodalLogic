@@ -262,7 +262,7 @@ noncomputable def gDistribution {fc : FrameClass} (φ ψ : Formula) :
   temporalKDistDerived φ ψ
 
 /--
-`⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H-distribution. Derived via temporal duality from G-distribution.
+`⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H-distribution. Derived via time reflection from G-distribution.
 -/
 @[tmLemma]
 noncomputable def hDistribution {fc : FrameClass} (φ ψ : Formula) :
@@ -277,12 +277,12 @@ noncomputable def gTransitivity {fc : FrameClass} (φ : Formula) :
   temporal4Derived φ
 
 /--
-`⊢ H(φ) → H(H(φ))`: H-transitivity. Derived via temporal duality from G-transitivity.
+`⊢ H(φ) → H(H(φ))`: H-transitivity. Derived via time reflection from G-transitivity.
 -/
 @[tmLemma]
 noncomputable def hTransitivity {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.allPast.imp φ.allPast.allPast := by
-  -- Derive by applying temporal duality to G-transitivity of reflectTime φ
+  -- Derive by applying time reflection to G-transitivity of reflectTime φ
   let ψ := φ.reflectTime
   have h1 : ⊢[fc] ψ.allFuture.imp ψ.allFuture.allFuture :=
     temporal4Derived ψ
@@ -516,7 +516,7 @@ end UntilSinceStructural
 These express the relationship between F/G and P/H duality via double negation.
 -/
 
-section TimeReflection
+section TemporalDuality
 
 /--
 `⊢ F(¬φ) → ¬(G(φ))`: If ¬φ is eventually true, then φ is not always true.
@@ -538,7 +538,7 @@ def pNegH {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (φ.neg.somePast).imp φ.allPast.neg :=
   notNotIntro (φ.neg.somePast)
 
-end TimeReflection
+end TemporalDuality
 
 /-!
 ## Category A: G/H Distribution Variants (4 noncomputable theorems)

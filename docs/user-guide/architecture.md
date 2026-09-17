@@ -50,7 +50,7 @@ def always (φ : Formula) : Formula := (Formula.allPast φ).and (φ.and (Formula
 -- 'sometimes' is dual of 'always': φ holds at some time (past, present, or future)
 def sometimes (φ : Formula) : Formula := neg (always (neg φ))
 
--- Temporal duality: swap allPast and allFuture operators
+-- Time reflection: swap allPast and allFuture operators
 def reflectTime : Formula → Formula
   | Formula.atom p => Formula.atom p
   | Formula.bot => Formula.bot
@@ -198,7 +198,7 @@ inductive DerivationTree : Context → Formula → Type
       (h : DerivationTree (Γ.map Formula.allFuture) φ) :
       DerivationTree Γ (Formula.allFuture φ)                                   -- TK: If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
   | timeReflection (φ : Formula)
-      (h : DerivationTree [] φ) : DerivationTree [] (reflectTime φ)               -- TD: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
+      (h : DerivationTree [] φ) : DerivationTree [] (reflectTime φ)               -- TR: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
   | weakening (Γ Δ : Context) (φ : Formula)
       (h1 : DerivationTree Γ φ) (h2 : Γ ⊆ Δ) : DerivationTree Δ φ
 
@@ -1270,7 +1270,7 @@ example (P Q : Formula) : [P.imp Q, P] ⊢ Q := by
 ### 7.2 Perpetuity Principles
 
 ```lean
--- Example: Derive P1 (□φ → always φ) using MF, MT, TD
+-- Example: Derive P1 (□φ → always φ) using MF, MT, TR
 theorem derive_perpetuity_1 (φ : Formula) : ⊢ (φ.box.imp (always φ)) := by
   -- Step 1: □φ → □Gφ (from MF)
   have h1 : ⊢ (φ.box.imp (Formula.box (Formula.allFuture φ))) := by
@@ -1283,9 +1283,9 @@ theorem derive_perpetuity_1 (φ : Formula) : ⊢ (φ.box.imp (always φ)) := by
   -- Step 3: Combine to get □φ → Gφ
   have h3 : ⊢ (φ.box.imp (Formula.allFuture φ)) := by
     sorry -- Apply transitivity
-  -- Step 4: By TD, get □φ → Hφ
+  -- Step 4: By TR, get □φ → Hφ
   have h4 : ⊢ (φ.box.imp (Formula.allPast φ)) := by
-    sorry -- Apply temporal duality to h3
+    sorry -- Apply time reflection to h3
   -- Step 5: Combine with MT to get always φ
   sorry
 

@@ -55,7 +55,7 @@ The derivation tree includes 7 inference rules:
 - Height function is computable via pattern matching (not axiomatized)
 - Height properties are proven as theorems (not axioms)
 - Necessitation rules only apply to theorems (empty context)
-- Temporal duality only applies to theorems (empty context)
+- Time reflection only applies to theorems (empty context)
 - Weakening allows adding unused assumptions
 - K distribution is handled by axioms (`modal_k_dist`, `temp_k_dist`)
 
@@ -146,7 +146,7 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   | temporal_necessitation (φ : Formula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.allFuture φ)
   /--
-  Temporal duality rule: Swapping past and future in theorems.
+  Time reflection rule: Swapping past and future in theorems.
 
   If `⊢[fc] φ` (derivable from empty context), then `⊢[fc] reflectTime φ`.
 
@@ -319,7 +319,7 @@ theorem temporal_necessitation_height_succ {fc : FrameClass} {φ : Formula}
   omega
 
 /--
-Temporal duality increases height by exactly 1.
+Time reflection increases height by exactly 1.
 -/
 theorem time_reflection_height_succ {fc : FrameClass} {φ : Formula}
     (d : DerivationTree fc [] φ) :

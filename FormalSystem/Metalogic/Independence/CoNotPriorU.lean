@@ -487,7 +487,7 @@ inductive CoDerivation : Formula → Type where
   /-- Temporal necessitation. -/
   | temporal_necessitation (φ : Formula) (d : CoDerivation φ) :
       CoDerivation (Formula.allFuture φ)
-  /-- Temporal duality. -/
+  /-- Time reflection. -/
   | time_reflection (φ : Formula) (d : CoDerivation φ) : CoDerivation φ.reflectTime
 
 /--
@@ -516,7 +516,7 @@ theorem coDerivation_sound (φ : Formula) (d : CoDerivation φ) :
 **`CO` does not derive Prior-U (schema form).** The unqualified statement.
 
 There is no derivation of `Axiom.prior_U_gap p` in the system consisting of the dense base, the
-whole `CO` schema, modus ponens, modal and temporal necessitation, and temporal duality. Unlike
+whole `CO` schema, modus ponens, modal and temporal necessitation, and time reflection. Unlike
 `co_not_derives_prior_U_gap`, this leaves no residue: the `CO` instances here are axioms, so they
 are available under every rule, including the three that `DerivationTree` restricts to the empty
 context.

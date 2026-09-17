@@ -199,7 +199,7 @@ def mkNecessitation : DerivationTree .Base [] (Formula.box ((Formula.box p).imp 
 def mkTemporalNecessitation : DerivationTree .Base [] (Formula.allFuture ((Formula.box p).imp p)) :=
   DerivationTree.temporal_necessitation _ mkModalT
 
-/-- Temporal duality on Modal-Future -/
+/-- Time reflection on Modal-Future -/
 def mkTimeReflection :
     DerivationTree .Base []
       ((Formula.box p).imp (Formula.box (Formula.allFuture p))).reflectTime :=

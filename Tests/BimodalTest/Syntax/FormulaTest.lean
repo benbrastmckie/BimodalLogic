@@ -19,7 +19,7 @@ Tests for the Formula inductive type and derived operators.
 - Derived Boolean operators (neg, and, or)
 - Derived modal operators (diamond)
 - Derived temporal operators (always, sometimes, somePast, someFuture)
-- Temporal duality (reflectTime)
+- Time reflection (reflectTime)
 -/
 
 namespace BimodalTest.Syntax

@@ -23,7 +23,7 @@ This test suite covers:
 3. Temporal L axiom integration (△p → F(Pp))
 4. Temporal K distribution integration
 5. Temporal necessitation workflows
-6. Temporal duality integration
+6. Time reflection integration
 7. Mixed past-future derivations
 
 ## Organization
@@ -34,7 +34,7 @@ Tests are organized by temporal axiom:
 - Temporal L (linearity)
 - Temporal K (distribution)
 - Temporal necessitation
-- Temporal duality
+- Time reflection
 
 ## References
 
@@ -383,13 +383,13 @@ example : True := by
 end TemporalNecessitationIntegration
 
 -- ============================================================
--- Temporal Duality Integration
+-- Time Reflection Integration
 -- ============================================================
 
 section TimeReflectionIntegration
 
 /--
-Test 12: Temporal duality rule.
+Test 12: Time reflection rule.
 
 From ⊢ φ, derive ⊢ reflectTime φ.
 -/
@@ -400,7 +400,7 @@ example : True := by
   let d1 : ⊢ (p.allFuture.imp p.allFuture.allFuture) :=
     FormalSystem.Theorems.TemporalDerived.temporal4Derived p
   
-  -- Apply temporal duality
+  -- Apply time reflection
   let d2 : ⊢ ((p.allFuture.imp p.allFuture.allFuture).reflectTime) :=
     DerivationTree.time_reflection _ d1
   
@@ -411,9 +411,9 @@ example : True := by
   trivial
 
 /--
-Test 13: Temporal duality with complex formula.
+Test 13: Time reflection with complex formula.
 
-Apply temporal duality to formula with mixed operators.
+Apply time reflection to formula with mixed operators.
 -/
 example : True := by
   let p := Formula.atomS "p"
@@ -422,7 +422,7 @@ example : True := by
   let d1 : ⊢ (p.imp (Formula.allFuture p.somePast)) :=
     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future p) trivial
   
-  -- Apply temporal duality
+  -- Apply time reflection
   let d2 : ⊢ ((p.imp (Formula.allFuture p.somePast)).reflectTime) :=
     DerivationTree.time_reflection _ d1
   

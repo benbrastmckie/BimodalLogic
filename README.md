@@ -253,7 +253,7 @@ ledger. The five rows below are a highlights table, not a second copy of it.
 | Result | L⁻ (TM⁻, via `tr`) | L⁺ (TM⁺, via `ofFormula`) |
 |--------|--------------------|----------------------------|
 | Semantic conservativity over/under L | `minusValidIn_iff_validIn_tr` | `plusValidIn_ofFormula_iff` |
-| Soundness | `minus_soundness_*` (TM⁻) | `plus_soundness_validIn` (TM⁺), TD discharged semantically |
+| Soundness | `minus_soundness_*` (TM⁻) | `plus_soundness_validIn` (TM⁺), TR discharged semantically |
 | Proof-theoretic conservativity, backward | `derivable_translate` (TM⁻ ⊆ TM) | `plusDerivable_of_derivable` (TM ⊆ TM⁺) |
 | Proof-theoretic conservativity, forward | **refuted** at Base/ZTime, open at Dense/RTime (`tmMinusComplete_iff_forward`, `tmMinusCompleteBase_refuted`, `tmMinusCompleteZTime_refuted`) | **proved**: `plusDerivable_ofFormula_iff`, from TM⁺ soundness and the four completeness engines |
 | Completeness and compactness | of the **H/G-fragment** `TMFrag fc φ := TM ⊢[fc] tr φ` (`tmFrag_iff_minusValidIn`), whose consequence relation is compact at Base and Dense (`minusCompactBase`, `minusCompactDense`); TM⁻ itself is incomplete, and `TM⁻ ⊊ TMFrag` at ZTime (`tmMinus_lt_tmFrag_ztime`) | **open**; compactness not attempted (see below) |

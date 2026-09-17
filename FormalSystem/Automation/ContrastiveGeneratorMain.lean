@@ -13,7 +13,7 @@ import FormalSystem.Automation.FormulaEnumerator
 
 This module implements systematic formula mutations for generating contrastive
 training pairs. For each valid formula, mutations are applied (atom substitution,
-operator weakening, subformula deletion, depth reduction, temporal duality) and
+operator weakening, subformula deletion, depth reduction, time reflection) and
 the decision procedure re-run to produce (valid_formula, invalid_mutation,
 countermodel) triples.
 
@@ -79,7 +79,7 @@ inductive MutationType where
   | modalDepthReduction
   /-- Reduce temporal depth by stripping outermost untl/snce operators. -/
   | temporalDepthReduction
-  /-- Apply temporal duality via reflectTime. -/
+  /-- Apply time reflection via reflectTime. -/
   | timeReflection
   -- Single-occurrence mutations
   /-- Swap box to diamond at a specific occurrence index. -/
@@ -508,7 +508,7 @@ Returns a list of (mutated_formula, mutation_type) pairs. The mutations include:
 5. Subformula deletion (with bot): for each proper subformula
 6. Modal depth reduction: if the formula has modal depth > 0
 7. Temporal depth reduction: if the formula has temporal depth > 0
-8. Temporal duality: if the formula contains temporal operators
+8. Time reflection: if the formula contains temporal operators
 9. Single-occurrence mutations: ~10 fine-grained structural changes
 -/
 private def dedupMutations (muts : List (Formula × MutationType)) : List (Formula × MutationType) :=
@@ -645,7 +645,7 @@ def classifyMutation (original : Formula) (originalLabel : FormulaLabel)
 Generate all contrastive pairs for a labeled formula.
 
 For valid formulas: generates all mutations and classifies each.
-For invalid formulas: tries temporal duality (reflectTime) to find
+For invalid formulas: tries time reflection (reflectTime) to find
 cases where the dual has different validity.
 -/
 def generateContrastivePairs (lf : LabeledFormula) : IO (List ContrastivePair) := do
@@ -659,7 +659,7 @@ def generateContrastivePairs (lf : LabeledFormula) : IO (List ContrastivePair) :
       pairs := pair :: pairs
     return pairs.reverse
   | .invalid =>
-    -- For invalid formulas, try temporal duality
+    -- For invalid formulas, try time reflection
     if hasTemporal lf.formula then
       let dual := lf.formula.reflectTime
       if dual != lf.formula then

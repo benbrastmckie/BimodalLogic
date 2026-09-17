@@ -17,9 +17,9 @@ the `time_reflection` case simply exchanges the two components. The `axiom` case
 two dispatch lemmas of `Conservativity/Plus/AxiomValidity.lean`; everything else is the clause
 structure of `PlusTruthAt`.
 
-**TD is discharged semantically, never proof-theoretically.** Mapping derivations to mirrored
+**TR is discharged semantically, never proof-theoretically.** Mapping derivations to mirrored
 derivations would require the axiom set to be mirror-closed, which TM's is not (BX lists the
-future halves and obtains the past halves by TD); the companion recursion needs only
+future halves and obtains the past halves by TR); the companion recursion needs only
 per-schema swap-validity, which `plusAxiom_swap_validIn_min` supplies for every constructor.
 
 ## Main Results

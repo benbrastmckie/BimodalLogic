@@ -142,7 +142,7 @@ The following operators are defined in terms of the primitives; each equation is
 
 Because $P$, $F$, $H$, and $G$ are `def` abbreviations rather than constructors, they unfold definitionally; the semantics chapter gives their truth conditions as derived characterizations.
 
-== Temporal Duality
+== Time Reflection
 
 The `reflectTime` function exchanges past and future operators.
 
