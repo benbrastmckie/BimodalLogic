@@ -1,5 +1,5 @@
 ---
-next_project_number: 613
+next_project_number: 614
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 613
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609,610,611,612 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608,609,610,611,612,613 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -28,6 +28,7 @@ next_project_number: 613
 592 [NOT STARTED] — .claude/rules/source-store-deploy-boundary.md directs every...
 611 [NOT STARTED] — Fix git-commit-scoped.sh dropping staged deletions: when a...
 612 [NOT STARTED] — Prevent orchestrator-dispatched implementation agents from...
+613 [NOT STARTED] — Prevent cross-task commit misattribution when /orchestrate...
 
 ### Algebraic Representation
 
@@ -126,6 +127,16 @@ next_project_number: 613
 609 [NOT STARTED] — Fix scripts/check-evidence-probes.sh, which fails 4 of 4...
 
 ## Tasks
+
+### 613. Serialize concurrent implement dispatches sharing working tree
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Prevent cross-task commit misattribution when /orchestrate runs several implement dispatches concurrently in one working tree. In a 4-task batch (584, 586, 590, 578) admission allowed parallel implementation despite overlapping edits (docs/, typst/, CI_CD_PROCESS.md, sync-check-whitelist.txt); tasks 590, 578 and 586 committed files still holding 584's uncommitted rename edits, so git history credits those changes to the wrong tasks. Evaluate options in ~/.config/nvim/agent-system/extensions/core: serializing implement phases whose effective edit sets overlap, per-task git worktrees, or pre-commit hunk-level ownership checks; also note file_scope declarations were too coarse for the collision gate to catch this.
+
+---
 
 ### 612. Prevent dispatched agents ending turn on background waits
 - **Status**: [NOT STARTED]
