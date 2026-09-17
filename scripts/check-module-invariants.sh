@@ -67,6 +67,11 @@
 #       FormalSystem/ is on scripts/debug-artifact-allowlist.txt with an exact
 #       per-file count and a reason; comment-aware (docstring usage blocks are
 #       documentation), unlike cslib's plain pre-pr-check.sh grep
+#   C28 No file's compiler-warning count exceeds its scripts/warning-budget.txt
+#       baseline, measured build-free from Lake's own trace store so the check
+#       runs under --no-build exactly as it does in a full pass -- C16's
+#       env_linter is a declaration linter and never sees a compiler warning,
+#       so the two checks cover disjoint sets
 #   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -95,6 +100,7 @@
 #   scripts/nolints.json                       grandfathered env_linter findings (C16)
 #   scripts/nolint-attribute-allowlist.txt     reviewed in-source nolint attributes (C26)
 #   scripts/debug-artifact-allowlist.txt       allow-listed live debug directives (C27)
+#   scripts/warning-budget.txt                 per-file compiler-warning baseline (C28)
 
 set -uo pipefail
 
@@ -604,6 +610,14 @@ ENFORCE_C26=${ENFORCE_C26:-1} # no snake_case def/abbrev, no unlisted nolint att
 # entry in the same change. Never flip it to 0 to quiet a failure: move the probe to the test
 # suite, or add a reasoned entry.
 ENFORCE_C27=${ENFORCE_C27:-1} # live debug directives all allow-listed with exact counts (enforced)
+# C28 asserts that no file's compiler-warning count exceeds its scripts/warning-budget.txt
+# baseline. It ships REPORT-ONLY while the burn-down that introduced it is in progress, following
+# the pattern MODULE_INVARIANTS.md's "Adding a Check" documents for ENFORCE_C16_ROOTS and
+# C8/C9/C10: compute and print from the outset, gate the exit code behind the flag, flip the
+# default to 1 once the count reaches zero. NOTE: the scanner's exit-2 conditions -- an
+# untrustworthy measurement, or an observed linter class with no disposition row -- are NOT
+# suppressed by ENFORCE_C28=0 and fail the harness in every mode.
+ENFORCE_C28=${ENFORCE_C28:-0} # compiler-warning budget (report-only during burn-down)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
@@ -3533,6 +3547,45 @@ PYEOF
 C27_STATUS=$?
 if [ "$C27_STATUS" -ne 0 ] && [ "$ENFORCE_C27" -eq 1 ]; then
   FAILURES=$((FAILURES + 1))
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C28: compiler-warning budget, against scripts/warning-budget.txt
+#
+# `lake build` exits 0 while emitting compiler warnings, and C16 -- Batteries' env_linter suite
+# via `lake exe runLinter` -- is a DECLARATION linter that never sees one. The two sets are
+# disjoint, so before this check a module could accumulate deprecations and dead tactics with
+# every gate green. C28 closes that hole with the nolints.json pattern applied to compiler
+# warnings: a committed per-file, per-linter baseline that may only decrease, so a change which
+# adds a warning must edit the baseline and say why.
+#
+# BUILD-FREE BY CONSTRUCTION, and that is the whole point of the trace-scan acquisition. CI runs
+# this harness as `bash scripts/check-module-invariants.sh --no-build` (.github/workflows/ci.yml,
+# "Check module invariants"), and docs/development/CI_CD_PROCESS.md records that C2/C6/C24 are
+# consequently not run in CI at all. A C28 that shelled out to `lake` would silently join that
+# list -- present in the script, absent from CI. Instead scripts/warning-budget.py walks Lake's
+# own .lake/build/lib/lean/**/*.trace store, which records each module's diagnostics and replays
+# them on a cache hit; that replay is also why `lake build --wfail` fails on a warm cache.
+#
+# The scanner's anti-silence guards (no traces found, no trace carrying a `log` key, or a
+# non-zero recorded baseline against a zero observation) and its undispositioned-linter-class
+# guard both exit 2, and exit 2 is NOT suppressed by ENFORCE_C28=0. A measurement this harness
+# cannot trust is an error in every mode: a report-only window is permission to carry known
+# warnings, never permission to read silence as success.
+# ---------------------------------------------------------------------------
+WARNING_BUDGET_OUT=$(python3 scripts/warning-budget.py 2>&1)
+C28_STATUS=$?
+if [ "$C28_STATUS" -eq 0 ]; then
+  pass C28 "$(printf '%s' "$WARNING_BUDGET_OUT" | head -1 | sed 's/^warning-budget: //')"
+elif [ "$C28_STATUS" -eq 2 ]; then
+  # Untrustworthy measurement or an undispositioned class: an error in EVERY mode.
+  fail C28 "warning-budget measurement could not be trusted (exit 2; not suppressed by ENFORCE_C28=0)"
+  printf '%s\n' "$WARNING_BUDGET_OUT" | head -6 | while IFS= read -r l; do note "$l"; done
+else
+  MSG="compiler-warning count above scripts/warning-budget.txt baseline"
+  if [ "$ENFORCE_C28" -eq 1 ]; then fail C28 "$MSG"; else soft C28 "$MSG (report-only)"; fi
+  printf '%s\n' "$WARNING_BUDGET_OUT" | head -8 | while IFS= read -r l; do note "$l"; done
 fi
 echo
 
