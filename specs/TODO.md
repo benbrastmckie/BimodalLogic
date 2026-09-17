@@ -110,7 +110,7 @@ next_project_number: 605
     └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
     └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
       └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-586 [RESEARCHING] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
+586 [RESEARCHED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
   └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
 590 [RESEARCHING] — Clear the 142 task-number citations under docs/ and retire...
 
@@ -446,11 +446,11 @@ See specs/reviews/review-2026-09-16.md, Finding M2.
 
 ### 586. Rewrite typst proof automation chapter
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: typst
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 591
-- **Research**: [586_rewrite_typst_proof_automation_chapter/reports/01_retired-tactics-chapter-drift.md]
+- **Research**: [586_rewrite_typst_proof_automation_chapter/reports/02_verified-tactic-surface-and-ci-wiring.md]
 
 **Description**: `bash scripts/typst-sync-check.sh` exits 1 with 4 Check-1 violations, all in `typst/chapters/p4-proof-automation.typ`: it cites `AesopRules.lean`, `Automation/Tactics/Helpers.lean` and `Tactics/Helpers.lean` (all archived to `FormalSystem/Boneyard/RetiredTactics/` on 2026-09-07), plus an unmatched `tm_auto 5` span.
 
