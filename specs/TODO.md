@@ -1,5 +1,5 @@
 ---
-next_project_number: 606
+next_project_number: 607
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 606
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -96,6 +96,7 @@ next_project_number: 606
   └─ 560 [NOT STARTED] — GATED IMPLEMENTATION -- do not plan or dispatch until...
 568 [NOT STARTED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
+606 [NOT STARTED] — Prove in Lean that the paper's axiom system (axioms plus...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Paper Refactor
@@ -116,6 +117,16 @@ next_project_number: 606
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 
 ## Tasks
+
+### 606. Prove equivalence of paper and lean axiom systems
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: Prove in Lean that the paper's axiom system (axioms plus mirrors derived via the TR time-reflection rule) and the Lean DerivationTree constructor set derive the same theorems. The Paper Key Correspondence table in docs/reference/axiom-reference.md currently matches the 27 temporal/uniformity constructors by inspection only (five pairs spot-checked in Lean). Note the known mismatches: temp_linearity orders its three cases differently from TL, and discrete_propagate_bwd is the paper's NA itself rather than a mirror of NF. Follow-up from task 584.
+
+---
 
 ### 605. Reconcile burgess a7a provenance and add axiom source footnote
 - **Status**: [NOT STARTED]

@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 606,
+  "next_project_number": 607,
   "active_projects": [
+    {
+      "project_number": 606,
+      "project_name": "prove_equivalence_of_paper_and_lean_axiom_systems",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Prove in Lean that the paper's axiom system (axioms plus mirrors derived via the TR time-reflection rule) and the Lean DerivationTree constructor set derive the same theorems. The Paper Key Correspondence table in docs/reference/axiom-reference.md currently matches the 27 temporal/uniformity constructors by inspection only (five pairs spot-checked in Lean). Note the known mismatches: temp_linearity orders its three cases differently from TL, and discrete_propagate_bwd is the paper's NA itself rather than a mirror of NF. Follow-up from task 584.",
+      "topic": "metalogic",
+      "created": "2026-09-17T10:00:22Z",
+      "last_updated": "2026-09-17T10:00:22Z"
+    },
     {
       "project_number": 605,
       "project_name": "reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote",
