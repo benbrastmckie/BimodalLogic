@@ -1,6 +1,11 @@
-# ProofChecker
+# BimodalLogic (ProofChecker)
 
 Lean 4 formalization of bimodal logic TM (Tense and Modality) combining S5 modal logic with linear temporal logic.
+
+**Names**: the repository is `BimodalLogic`; `ProofChecker` is the project's role name in the
+Logos dual-verification architecture (paired with a ModelChecker), used throughout `README.md`
+and the Typst reference manual; the Lake package (in `lakefile.toml`) is `BimodalLogic`; the
+main Lean library is `FormalSystem`; the test library is `BimodalTest`.
 
 ## Build
 

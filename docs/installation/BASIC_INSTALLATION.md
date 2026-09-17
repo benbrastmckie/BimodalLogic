@@ -83,7 +83,7 @@ cd ~/Documents/Projects  # or wherever you keep projects
 git clone https://github.com/benbrastmckie/BimodalLogic.git
 
 # Enter the project directory
-cd ProofChecker
+cd BimodalLogic
 ```
 
 ### Step 4: Build the Project
@@ -120,7 +120,7 @@ If tests pass, installation is complete.
 To update to the latest version:
 
 ```bash
-cd ~/Documents/Projects/ProofChecker
+cd ~/Documents/Projects/BimodalLogic
 git pull
 lake update
 lake build

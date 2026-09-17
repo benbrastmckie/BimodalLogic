@@ -311,15 +311,15 @@ with `grep -nE 'tm_auto|temporal_search|propositional_search'` before editing.
 
 ---
 
-### Phase 7: Align naming prose (CLAUDE.md naming key, installation paths) [NOT STARTED]
+### Phase 7: Align naming prose (CLAUDE.md naming key, installation paths) [COMPLETED]
 
 **Goal**: Apply Decision 4. Fix the `CLAUDE.md` title/body and correct concretely wrong
 "ProofChecker" directory usages, without a mass rename.
 
 **Tasks**:
-- [ ] Root `CLAUDE.md`: retitle (for example `# BimodalLogic (ProofChecker)`) and add a short "Names" list: repository `BimodalLogic`; ProofChecker = role name in the Logos dual-verification architecture; Lake package `Logos` (package-name decision tracked by the lakefile.toml migration, not by this file; no task number); library `FormalSystem`; test library `BimodalTest`
-- [ ] `docs/installation/BASIC_INSTALLATION.md` (~82-123) and `docs/installation/README.md`: fix clone URL, `cd ProofChecker`, and `~/Documents/Projects/ProofChecker` paths to the `BimodalLogic` repository name; keep prose uses of the role name
-- [ ] `grep -rn 'cd ProofChecker\|/ProofChecker\b\|ProofChecker.git' --exclude-dir={specs,.claude,.git,.lake} .` for other literal path usages and fix only those in `docs/` or root markdown (leave `typst/`, `latex/`, and `.lean` untouched and list them in the summary)
+- [x] Root `CLAUDE.md`: retitle (for example `# BimodalLogic (ProofChecker)`) and add a short "Names" list: repository `BimodalLogic`; ProofChecker = role name in the Logos dual-verification architecture; Lake package `Logos` (package-name decision tracked by the lakefile.toml migration, not by this file; no task number); library `FormalSystem`; test library `BimodalTest` *(completed: ground truth moved during this dispatch -- concurrent task 578's toml migration landed while this phase ran, and the Lake package is now `BimodalLogic`, not `Logos`; the naming key reflects the actual committed lakefile.toml rather than the plan's now-superseded assumption)*
+- [x] `docs/installation/BASIC_INSTALLATION.md` (~82-123) and `docs/installation/README.md`: fix clone URL, `cd ProofChecker`, and `~/Documents/Projects/ProofChecker` paths to the `BimodalLogic` repository name; keep prose uses of the role name *(completed: docs/installation/README.md was already correct)*
+- [x] `grep -rn 'cd ProofChecker\|/ProofChecker\b\|ProofChecker.git' --exclude-dir={specs,.claude,.git,.lake} .` for other literal path usages and fix only those in `docs/` or root markdown (leave `typst/`, `latex/`, and `.lean` untouched and list them in the summary) *(completed: fixed docs/research/proof-search-automation.md's hardcoded report-path line; left latex/assets/notation-standards.sty, typst/notation/shared-notation.typ, and 2 FormalSystem/Examples/*.lean files untouched per scope)*
 
 **Timing**: 45 minutes
 
