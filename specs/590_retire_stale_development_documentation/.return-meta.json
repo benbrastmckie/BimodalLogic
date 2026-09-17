@@ -1,10 +1,83 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 11,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/590_retire_stale_development_documentation/summaries/02_docs-staleness-cleanup-summary.md",
+      "summary": "Cleared all 142 task-number citations under docs/ (now 0), retired PHASED_IMPLEMENTATION.md, rewrote tactic reference docs against the real tactic surface, reframed leansearch research notes, aligned naming prose, and flipped ENFORCE_C9_DOCS to enforced."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Cleared all task-number citations under docs/ (C9D: 142 -> 0), retired the obsolete PHASED_IMPLEMENTATION.md roadmap, rewrote LATEX_STANDARDS.md and the tactic reference documentation against the real tactic surface, reframed the leansearch-*.md research notes, refreshed implementation-status.md, aligned naming prose across CLAUDE.md and installation docs, and flipped ENFORCE_C9_DOCS to enforced by default with CI documentation. All 8 plan phases completed across all named verification gates (C5, C9D, C12, C13, readme-lint, check-task-references)."
+  },
+  "modified_files": [
+    "CLAUDE.md",
+    "docs/architecture/ADR-001-Classical-Logic-Noncomputable.md",
+    "docs/architecture/ADR-004-Remove-Project-Level-State-Files.md",
+    "docs/architecture/BFMCS_ARCHITECTURE.md",
+    "docs/development/CI_CD_PROCESS.md",
+    "docs/development/CONTRIBUTING.md",
+    "docs/development/DOC_QUALITY_CHECKLIST.md",
+    "docs/development/LATEX_STANDARDS.md",
+    "docs/development/METAPROGRAMMING_GUIDE.md",
+    "docs/development/MODULE_INVARIANTS.md",
+    "docs/development/NONCOMPUTABLE_GUIDE.md",
+    "docs/development/PHASED_IMPLEMENTATION.md",
+    "docs/development/README.md",
+    "docs/installation/BASIC_INSTALLATION.md",
+    "docs/project-info/FEATURE_REGISTRY.md",
+    "docs/project-info/implementation-status.md",
+    "docs/project-info/MAINTENANCE.md",
+    "docs/project-info/tactic-registry.md",
+    "docs/README.md",
+    "docs/reference/API_REFERENCE.md",
+    "docs/reference/README.md",
+    "docs/research/DEDUCTION_THEOREM_NECESSITY.md",
+    "docs/research/leansearch-api-specification.md",
+    "docs/research/leansearch-best-first-search.md",
+    "docs/research/leansearch-priority-queue.md",
+    "docs/research/leansearch-proof-caching-memoization.md",
+    "docs/research/NONCOMPUTABLE.md",
+    "docs/research/proof-search-automation.md",
+    "docs/research/README.md",
+    "docs/training/PIPELINE.md",
+    "docs/user-guide/examples.md",
+    "docs/user-guide/tactic-development.md",
+    "docs/user-guide/troubleshooting.md",
+    "docs/user-guide/tutorial.md",
+    "latex/README.md",
+    "scripts/check-module-invariants.sh"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When bulk-clearing task-number citations in a docs/ tree gated by a mechanical grep-based check (e.g. check-module-invariants.sh's C9D), do not trust a research report's per-file breakdown as exhaustive -- the report's own count list is often truncated (e.g. 'top 5' files) and the full regex re-run after each file's fix routinely surfaces additional unassigned files carrying the remaining citations. Budget an extra pass per phase to re-run the exact enforcement regex (not just the itemized files) and clear what it finds, tracking the extra work as a plan deviation rather than leaving the phase closed with the mechanical gate still red.",
+      "category": "PATTERN",
+      "source_artifact": "specs/590_retire_stale_development_documentation/summaries/02_docs-staleness-cleanup-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["task-reference-cleanup", "C9D", "mechanical-gate", "re-grep", "docs-staleness"]
+    },
+    {
+      "content": "A bare `cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .` run from the repo root over-counts the live library when the repo also has specs/ task-artifact scratch files and .claude/ test fixtures containing .lean files -- these are swept in despite the exclude-dir list because they live under directories named neither .lake, lake-packages, nor Boneyard. Scope the cloc invocation to the actual library roots (e.g. `cloc --include-lang=Lean --exclude-dir=Boneyard FormalSystem Tests`) to match what the project's own structural-invariant script counts as 'live'.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/590_retire_stale_development_documentation/summaries/02_docs-staleness-cleanup-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["cloc", "statistics-refresh", "lean", "repo-scoping", "implementation-status"]
+    },
+    {
+      "content": "When implementing a task concurrently with sibling tasks that touch the same shared files (e.g. a package/naming migration), re-read ground truth (grep the actual config file, e.g. lakefile.toml's `name =` line) rather than trusting the plan's naming assumption before writing a naming key or cross-reference -- the plan may have been authored before the sibling task's migration landed, and the sibling's commit history (git log --oneline -- <file>) shows whether it already completed.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/590_retire_stale_development_documentation/summaries/02_docs-staleness-cleanup-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["concurrent-tasks", "ground-truth-verification", "naming-migration", "plan-staleness"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789631305_c7d7a7",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 8,
+    "phases_total": 8
   }
 }
