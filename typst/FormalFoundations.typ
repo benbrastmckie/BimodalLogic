@@ -1202,8 +1202,8 @@ a point.
   A *$op("TM")^+$-algebra* is a Boolean algebra $A = (A, and, or, not, 0, 1)$ together with a
   unary operation $square.stroked$ and binary operations $#until$, $#since$, from which the
   following are derived:
-  $ #somefuture a := 1 #until a, quad #allfuture a := not #somefuture (not a), quad
-    #somepast a := 1 #since a, quad #allpast a := not #somepast (not a), quad
+  $ #somefuture a := 1 #until a, quad #allfuture a := not #somefuture (not a), \
+    #somepast a := 1 #since a, quad #allpast a := not #somepast (not a), \
     #Nxt a := 0 #until a, quad #always a := #allpast a and a and #allfuture a. $
   Every element $a, b in A$ satisfies:
   #items[
@@ -1252,7 +1252,7 @@ a point.
 #definition("Complex algebra")[
   For a shift set $S = (Omega, D, "sh", A)$ (below), the *complex algebra* $op("Cm")(S)$
   is the power-set Boolean algebra $cal(P)(Omega)$ with
-  $ square.stroked X := cases(Omega & "if" X = Omega, emptyset & "otherwise"), quad
+  $ square.stroked X := cases(Omega & "if" X = Omega, emptyset & "otherwise"), \
     X #until Y := {w : exists d > 0, "sh"(w,d) in Y "and" forall e (0 < e < d arrow.r "sh"(w,e) in X)}, $
   and $X #since Y$ the mirror image with $d < 0$. For a task frame $#taskframe$,
   $op("Cm")(#taskframe) := op("Cm")("ofModel"(#taskframe)) = cal(P)(H_(#taskframe))$, where

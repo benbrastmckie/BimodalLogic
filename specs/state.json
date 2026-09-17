@@ -124,7 +124,7 @@
     {
       "project_number": 585,
       "project_name": "burn_down_compiler_warnings_and_add_gate",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "`lake build` exits 0 with 316 warnings across 47 live files, and nothing gates them: C16 runs the Batteries `env_linter` (a declaration linter) which does not see Lean compiler warnings. The two sets are disjoint -- this is a real hole, not a redundancy.\n\nBy kind: unused section variable 86, unused simp argument 84, deprecated `push_neg` 71, 'tactic does nothing' 25, unreferenced variable name 25, `Try this: intro` 12, 'never executed' 9, deprecated `IsTrichotomous`/`IsIrrefl` 4.\n\n75 of those are forward-compatibility debt that becomes build errors at the next Mathlib bump. 34 ('does nothing' + 'never executed') are correctness smells -- each marks a tactic whose removal changes nothing, usually a proof that drifted from its intended shape. These deserve reading, not bulk deletion; they cluster with the unused-simp warnings in the termination layer (`SubformulaProperty.lean` 78, `MintPotential.lean` 15, `Fuel.lean` 2), which suggests ONE refactor left several proofs carrying dead tactics. Investigate those three files as one cause.\n\nThen add a gate. Preferred: a CI step that fails when the `warning:` count exceeds a committed baseline (the `nolints.json` pattern applied to compiler warnings), so a PR that adds a warning must edit the baseline and say why. `-DwarningAsError=true` in `lakefile.lean` is the strict alternative but is brittle against Mathlib deprecations. Coordinate the gate with task 583 so CI changes once.\n\nPhase it: (1) push_neg + Mathlib deprecations (75, mechanical); (2) the termination-layer trio (95, needs reading); (3) section variables (86, rebuild per file); (4) names + Try this + remaining simp args (40); (5) the gate. Commit per phase.\n\nVerify: warning count at target; `lake build` exits 0; full `check-module-invariants.sh` passes with C2/C14 axiom baselines unmoved and no `sorry` introduced.\n\nSee specs/reviews/review-2026-09-16.md, Finding H4.\n\nGATE-PHASE NOTE (codebase-cleanup reorganization, 2026-09-16): weigh cslib's approach -- CI builds with `--wfail --iofail` -- against the committed warning-count baseline proposed above, and record the choice. The CI wiring task (583) now lands first and records the wiring pattern; extend its workflow rather than editing CI independently. The Mathlib-standard-linter task (597) runs after this and will baseline its new warnings under whichever gate is chosen here, so the gate should accommodate a per-linter baseline.",
       "topic": "codebase-cleanup",
@@ -135,7 +135,7 @@
         584
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:27Z",
+      "last_updated": "2026-09-17T23:11:04Z",
       "artifacts": [
         {
           "path": "specs/585_burn_down_compiler_warnings_and_add_gate/reports/01_compiler-warning-inventory.md",
@@ -148,7 +148,8 @@
         "FormalSystem/Metalogic/Decidability/",
         "FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/",
         "FormalSystem/Semantics/TaskFrame.lean"
-      ]
+      ],
+      "session_id": "sess_1789686569_90aa7e_585"
     },
     {
       "project_number": 588,

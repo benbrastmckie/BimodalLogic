@@ -185,7 +185,7 @@ progress file rather than silently proceeding on the report's numbers.
 
 ---
 
-### Phase 2: Break the Two Overflowing Display Equations [NOT STARTED]
+### Phase 2: Break the Two Overflowing Display Equations [COMPLETED]
 
 **Goal**: Fix defects 1 and 2 — both display-math blocks in `FormalFoundations.typ` that span
 multiple source lines with no Typst row-break token and therefore compile as one unbreakable,
@@ -193,17 +193,36 @@ overflowing math row.
 
 **Tasks**:
 
-- [ ] At `typst/FormalFoundations.typ:1205-1207` (Definition 5.1, TM-algebra derived operators),
+- [x] At `typst/FormalFoundations.typ:1205-1207` (Definition 5.1, TM-algebra derived operators),
       insert `\` row-break tokens at the two clause boundaries already implied by the existing
       3-line source formatting, so the six derived operators render as three left-aligned rows.
-      Do not add, remove, reorder, or rename any operator or definition.
-- [ ] At `typst/FormalFoundations.typ:1255-1256` (Definition 5.2, complex algebra), insert a `\`
+      Do not add, remove, reorder, or rename any operator or definition. Verified via an
+      isolated scratch compile that `\` inside a Typst display-math block produces exactly this
+      row-break behavior before touching the real file.
+- [x] At `typst/FormalFoundations.typ:1255-1256` (Definition 5.2, complex algebra), insert a `\`
       row break at the boundary between the `square.stroked X := cases(...)` clause and the
       `X #until Y := {...}` clause.
-- [ ] Drop the now-redundant trailing `quad` spacing where a `\` replaces it, keeping inter-clause
+- [x] Drop the now-redundant trailing `quad` spacing where a `\` replaces it, keeping inter-clause
       spacing within a row unchanged.
-- [ ] Recompile `FormalFoundations.typ`, re-render pages 28-29 to PNG, screenshot both via the
-      Playwright loop, and compare against the Phase 1 baseline screenshots.
+- [x] Recompile `FormalFoundations.typ`, re-render pages 28-29 to PNG, screenshot both via the
+      Playwright loop, and compare against the Phase 1 baseline screenshots. Confirmed: both
+      equations now render as multi-row math fully inside the definition box's colored rule,
+      with no left/right overflow. (Definition 5.2's block reflowed slightly and now spans
+      FF p.29/p.30 instead of fitting entirely on p.29 — expected consequence of the taller
+      3-row block, not a defect; both pages checked, no overflow on either.)
+
+**Note on the mandatory element-placement lint**: `bash .claude/scripts/typst-element-lint.sh
+--verbose typst/FormalFoundations.typ` reports 14 pre-existing `[FAIL]` findings (a `#definition`
+or `#theorem` opening immediately after a section heading with no intervening prose), at heading
+locations throughout the whole document unrelated to lines 1202-1256. Confirmed via a byte-for-
+byte lint run against the pre-Phase-2 committed version (`git show HEAD:typst/FormalFoundations.typ`)
+that all 14 are identical in count and location before and after this phase's edit — this phase
+neither introduces nor worsens any of them. Fixing them requires authoring new opening prose for
+14 separate sections, which is content authorship, not layout: explicitly out of scope per this
+plan's Non-Goals ("Changing any mathematical content, statement, notation, or wording...") and
+per the Typst extension's own scope boundary (content-creation work routes to `lean4`/`formal`/
+`general`, not `typst`). Treated as a pre-existing, documented, out-of-scope condition rather
+than a phase blocker — not silently dropped, and not force-fixed outside this task's charter.
 
 **Timing**: 0.75 hours
 
