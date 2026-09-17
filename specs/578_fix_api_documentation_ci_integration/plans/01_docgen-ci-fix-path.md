@@ -1,7 +1,7 @@
 # Implementation Plan: Task #578
 
 - **Task**: 578 - Fix API documentation CI integration
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/578_fix_api_documentation_ci_integration/reports/01_docgen-ci-fix-path.md
@@ -101,18 +101,18 @@ Not consulted (no roadmap_path in dispatch).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Capture Pre-Migration Baseline [NOT STARTED]
+### Phase 1: Capture Pre-Migration Baseline [COMPLETED]
 
 **Goal**: Record the exact root sets and invariant-check results the migration must preserve.
 
 **Tasks**:
-- [ ] Confirm `git status` shows no uncommitted edits to `lakefile.lean`, `lake-manifest.json`,
+- [x] Confirm `git status` shows no uncommitted edits to `lakefile.lean`, `lake-manifest.json`,
       `scripts/check-module-invariants.sh`, `.github/workflows/`.
-- [ ] Record exe roots: `grep -oP 'root\s*:=\s*`\K[A-Za-z0-9_.]+' lakefile.lean | sort` (expect 13).
-- [ ] Record lib roots from `roots := #[...]` (expect `BimodalTest`, `FormalSystem`) and the
+- [x] Record exe roots: `grep -oP 'root\s*:=\s*`\K[A-Za-z0-9_.]+' lakefile.lean | sort` (expect 13).
+- [x] Record lib roots from `roots := #[...]` (expect `BimodalTest`, `FormalSystem`) and the
       C25N `(target, root, srcDir)` triples.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and save the PASS/FAIL/INFO lines.
-- [ ] Save all of the above to the scratchpad (not the repo) for comparison in Phase 2.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and save the PASS/FAIL/INFO lines.
+- [x] Save all of the above to the scratchpad (not the repo) for comparison in Phase 2.
 
 **Timing**: 0.25 hours
 
