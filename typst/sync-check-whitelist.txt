@@ -126,13 +126,3 @@ kind: "derived_operator"
 # already resolves via an unrelated Lean doc-comment and needs no entry.) ---
 def:task-topology
 app:topology-t1
-
-# --- Aesop attribute exposition in p4-proof-automation.typ. The chapter cites
-# the attribute families `@[aesop norm unfold]` and `@[aesop safe forward]` in
-# their bare, documentation form; every occurrence in FormalSystem/Automation/
-# AesopRules.lean carries a rule-set argument (`@[aesop safe forward
-# (rule_sets := [TMLogic])]`), so the bare spans cannot literal-grep-match.
-# These are exposition of Aesop's own vocabulary, not claims about a
-# declaration in this tree. ---
-@[aesop norm unfold]
-@[aesop safe forward]

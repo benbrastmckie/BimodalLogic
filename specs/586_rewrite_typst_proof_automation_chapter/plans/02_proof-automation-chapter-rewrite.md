@@ -164,7 +164,7 @@ must cover the actual set.
 
 ---
 
-### Phase 2: Rewrite the proof-automation chapter [NOT STARTED]
+### Phase 2: Rewrite the proof-automation chapter [COMPLETED]
 
 **Goal**: `typst/chapters/p4-proof-automation.typ` describes only the live tree, renders its
 Module Map from generated data, and Check 1 goes to 0 violations.
