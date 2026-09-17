@@ -1,7 +1,7 @@
 # Implementation Plan: Task #584
 
 - **Task**: 584 - Reconcile the Lean tree with the paper's renamed vocabulary and re-pin the record
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: 595 (records home, done: record lives at `docs/reference/paper-definitions-of-record.md`), 583 (CI wiring convention, done), 601 (reflection convention, done). Coordinate with 589 (owns the `specs/archive/` citation fix in `MinusLanguage/Axioms.lean`), 600 (planned Lean rename, overlapping files), 586/590/578 (planning; touch typst and docs)
 - **Research Inputs**: specs/584_reconcile_lean_tree_with_paper_vocabulary/reports/02_paper-vocabulary-decisions.md (supersedes reports/01_paper-vocabulary-drift.md)
@@ -150,22 +150,22 @@ No ROADMAP.md consulted (no roadmap_path in this dispatch).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Re-quote drifted anchors and retire thm:M5-valid [NOT STARTED]
+### Phase 1: Re-quote drifted anchors and retire thm:M5-valid [COMPLETED]
 
 **Goal**: Bring the record's quoted text and manifest hashes in line with the live paper. The
 sentinel is not re-pinned yet (Phase 5 does that).
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh` and capture the live drift set. Confirm it matches
+- [x] Run `bash scripts/check-paper-definitions.sh` and capture the live drift set. Confirm it matches
       the 14 anchors in report 02 (`def:BL-semantics`, `def:BLplus-language`, `def:S5`, `def:BX`,
       `def:BX-z`, `def:BX-d`, `def:BX-r`, `def:TMplus`, `def:frame-properties`, `app:discrete`,
       `app:dense`, `app:complete`, `cor:tm-completeness`, `def:id`) plus the dangling `thm:M5-valid`.
-- [ ] For each drifted anchor, run `--resolve "ID|env|-|-"` to get the live text and sha256. Replace the
+- [x] For each drifted anchor, run `--resolve "ID|env|-|-"` to get the live text and sha256. Replace the
       quoted block under its `### \`ID\`` entry and the manifest hash.
-- [ ] Retire `thm:M5-valid`: mark its heading **DANGLING as of the 2026-09-17 re-pin (removed from
+- [x] Retire `thm:M5-valid`: mark its heading **DANGLING as of the 2026-09-17 re-pin (removed from
       manifest)**, delete its manifest row, add a `thm:M5-valid|DANGLING|fully COMMENTED OUT in
       the paper ...` row to KNOWN-ANCHORS. First grep live scope to confirm there are no citations.
-- [ ] Re-run the script and confirm case (b): the pinned checksum still differs, but all recorded blocks match.
+- [x] Re-run the script and confirm case (b): the pinned checksum still differs, but all recorded blocks match.
 
 **Timing**: 1.5 hours
 

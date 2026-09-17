@@ -980,9 +980,10 @@ sha256: `239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f`
       \strut\hspace{1.55in}for all $y \in D$ with $x < y < z$.
 	\end{enumerate}
   \vspace{-.1in}
+Since the defined operators $\Past$ and $\Future$ satisfy the natural truth clauses, proofs will appeal to them freely without derivation.
 \end{Ddef}
 ```
-sha256: `b64b782a61c9a9613b68f37ec2d12229e7df8498043faeb1cf1c2686b8dd5a75`
+sha256: `aad8ee543a63a394983e02c2c7ec81e02aaf7737768bcb0d492c668c38de3eb2`
 
 **The box clause's quantifier domain is `H_F`** — the set of *possible worlds*, not a
 maximal-history set `H^max_F` (that vocabulary is retired; the block's own `%%` comment history
@@ -997,7 +998,7 @@ closes. See "Downstream consumers" below.
 
 ```latex
 \begin{Ddef} \label{def:BLplus-language}
-	The language $\BL \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i: i\in \N}$ is a countable set of sentence letters and the remaining symbols denote falsity, material implication, the metaphysical necessity operator, the since operator, and the until operator, respectively.
+	The language $\BL \coloneq \tuple{\SL,\bot,\rightarrow,\Box,\since,\until}$ where $\SL \coloneq \set{p_i: i\in \N}$ is a countable set of \textit{sentence letters} with operators for \textit{falsity}, \textit{material implication}, \textit{metaphysical necessity}, \textit{since}, and \textit{until}, respectively.
 	Well-formed sentences of $\BL$ are defined by:
 	\[
 		\varphi, \psi \Coloneq p_i \mid \bot \mid \varphi \rightarrow \psi \mid \Box\varphi \mid \varphi\since\psi \mid \varphi\until\psi.
@@ -1006,10 +1007,10 @@ closes. See "Downstream consumers" below.
   \vspace{-.125in}
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\begin{multicols}{2}
-			\item[\it Past:] $\past\varphi \coloneq \top\since\varphi$.
-			\item[\it Future:] $\future\varphi \coloneq \top\until\varphi$.
-			\item[\it Historical:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
-			\item[\it Henceforth:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
+			\item[\it Some Past:] $\past\varphi \coloneq \top\since\varphi$.
+			\item[\it Some Future:] $\future\varphi \coloneq \top\until\varphi$.
+			\item[\it All Past:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
+			\item[\it All Future:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
 			\item[\it Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
 			\item[\it Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
 			\item[\it Next:] $\Next\varphi \coloneq \bot\until\varphi$.
@@ -1019,7 +1020,7 @@ closes. See "Downstream consumers" below.
   \vspace{-.25in}
 \end{Ddef}
 ```
-sha256: `574bc1ad10ca0957a5b76c0d74f7ff5b2ea6a09fa180475c9c22eb6ea5b3e8e2`
+sha256: `67a17cd2e0b0867fdbcfdaa48fe9765b135978dbaf34459ca2055629533729b3`
 
 ### `def:BLplus-semantics` — the `\since` / `\until` truth clauses (and the argument-order footnote) — **DANGLING as of the 2026-09-07 rename-absorption re-pin (removed from manifest)**
 
@@ -1212,19 +1213,27 @@ by a live task at recording time.
 
 ```latex
 \begin{Ddef} \label{def:S5}
-  The \textbf{S5} \textit{Modal Logic} is the smallest extension of \textit{Classical Propositional Logic} \textbf{CPL} closed under all instances of the axiom schemata \textbf{\aref{MK}}, \textbf{\aref{MT}}, and \textbf{\aref{M5}}, the rule \textbf{\aref{MP}}, and the metarule \textbf{\aref{MN}} presented in \textbf{\S\ref{sub:Logic}}.
+  The \textbf{S5} \textit{Modal Logic} extends \textit{Classical Propositional Logic} \textbf{CPL} to include all instances of the axiom schemata \textbf{\aref{MK}}, \textbf{\aref{MT}}, and \textbf{\aref{M5}}, the rule \textbf{\aref{MP}}, and the metarule \textbf{\aref{MN}} presented in \textbf{\S\ref{sub:Logic}}.
 \end{Ddef}
 ```
-sha256: `82ec82d7ef3c0e24732fe6216b3326998412c594984ce02639ea4030ceabdb38`
+sha256: `dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257`
 
 ### `def:BX` — the Base Burgess–Xu tense logic
 
 ```latex
 \begin{Ddef} \label{def:BX}
-  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} is the smallest extension of \textbf{CPL} closed under the metarules \textbf{\aref{TN}} and \textbf{\aref{TD}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.
+  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.%
+    \footnote{
+      \textbf{\aref{TN}} is (half of) Burgess's necessitation rule \textsc{TG}~\cite[\S1.3]{Burgess1982}, and \textbf{\aref{TS}} is his \textit{No Last Element} variant~\cite[\S1.6]{Burgess1982}.
+      \textbf{\aref{UC}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{UF}}, and \textbf{\aref{UI}} are his axioms A1a, A2a, A3a, A5a, and A6a respectively~\cite[\S1.3]{Burgess1982}, their past-tense duals following by \textbf{\aref{TR}}, his working mirror-image convention.
+      \textbf{\aref{CN}} is his axiom A7a, independently confirmed by Xu as defining linear frames~\cite[\S3]{Xu1988}.
+      \textbf{\aref{UE}} is not among Burgess's numbered axioms but follows immediately from \textbf{\aref{UC}} taking $\psi = \top$.
+      \textbf{\aref{TC}}, \textbf{\aref{UT}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} are not found in Burgess or Xu and are the present system's own additions.
+      \textbf{\aref{TL}} corresponds in spirit to the local-linearity axioms Xu gives for his frame class $\mathsf{V}_3$~\cite[\S3]{Xu1988}, though the exact correspondence among his formulas is not pinpointed here.
+    }
 \end{Ddef}
 ```
-sha256: `e1617a218b03206e11ebb9886b9a6a2add44591ce47f719445664e608f39e13e`
+sha256: `8ff38fe7e73cc6978a5b7079542d55686a820dc4d5ceb4614a763b802d2fc87d`
 
 ### `def:TMplus-f` — the discrete Burgess–Xu tense logic BX_f, and its Z-time footnote — **DANGLING as of the 2026-09-07 rename-absorption re-pin: RENAMED to `def:BX-z` (removed from manifest)**
 
@@ -1321,11 +1330,12 @@ now cites `prop:archimedean` for the failure of `UZ`/`Z1` over non-Archimedean d
 
 ```latex
 \begin{Ddef} \label{def:BX-z}
-  The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ is the smallest extension of the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} and \textbf{\aref{Z1}} presented in \textbf{\S\ref{sub:Extension}}.
+  The \textit{Discrete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{z}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{UZ}} and \textbf{\aref{Z1}} presented in \textbf{\S\ref{sub:Extension}}.
+  Neither \textbf{\aref{UZ}} nor \textbf{\aref{Z1}} is due to Burgess or Xu; both are the present system's own principles for capturing $\Z$-time.
   Since \textbf{\aref{UZ}} and \textbf{\aref{Z1}} fail over every discrete temporal order that is not Archimedean (\textbf{\ref{prop:archimedean}}), and the Archimedean discrete orders are exactly $\Z$-time (\textbf{\S\ref{sub:Extension}}), the discrete task frames over which \textbf{BX}$_\textsc{z}$ and \textbf{TM}$_\textsc{z}$ are sound and complete are exactly those over $\Z$-time.
 \end{Ddef}
 ```
-sha256: `3e2af812eaf4319b349ed734d9b63ffa04f6c72545a9363504b2b9b89694248f`
+sha256: `21277d0a1046e1bc1dfe7b9a215c24a07fa0008d27a22234886a8e94b884456b`
 
 ### `def:BX-d` — the dense Burgess–Xu tense logic BX_d (RENAMED from `def:TMplus-d`)
 
@@ -1334,10 +1344,11 @@ definition cites `\S`Extensions for them.
 
 ```latex
 \begin{Ddef} \label{def:BX-d}
-  The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ is the smallest extension of the base logic \textbf{BX} to include all instances of \textbf{\aref{DN}} and \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
+  The \textit{Dense Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{d}$ extends the base logic \textbf{BX} to include all instances of \textbf{\aref{DN}} and \textbf{\aref{NN}} presented in \textbf{\S\ref{sub:Extension}}.
+  Neither \textbf{\aref{DN}} nor \textbf{\aref{NN}} is due to Burgess or Xu; both are the present system's own principles for the dense extension.
 \end{Ddef}
 ```
-sha256: `555db844b3c15ca4f878406540d88c457f372a774bbb59776e3f1b0d0fb76394`
+sha256: `5783d60a441fcb38f44e285b7766ee176c366a1c3948daffa9684855d656dc24`
 
 ### `def:BX-r` — the dense-and-complete Burgess–Xu tense logic BX_r (RENAMED from `def:TMplus-c`), CO derived
 
@@ -1349,27 +1360,29 @@ old definition carried no longer exists (see the `CO` / `TMP-CO` entry above).
 
 ```latex
 \begin{Ddef} \label{def:BX-r}
-  The \textit{Dense and Complete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{r}$ is the smallest extension of the dense logic \textbf{BX}$_\textsc{d}$ to include all instances of \textbf{\aref{PU}} and \textbf{\aref{SEP}} presented in \textbf{\S\ref{sub:Extension}}.
-  % NEW CHANGE [fragment leftovers]: reference to the deleted fragment system TM^- replaced by a section reference.
+  The \textit{Dense and Complete Burgess--Xu Tense Logic} \textbf{BX}$_\textsc{r}$ extends the dense logic \textbf{BX}$_\textsc{d}$ to include \textbf{\aref{PU}} and \textbf{\aref{SEP}} presented in \textbf{\S\ref{sub:Extension}}.
   The completeness axiom \textbf{\aref{CO}} of \textbf{\S\ref{sub:Extension}} is a \textit{derived theorem} of \textbf{BX}$_\textsc{r}$ rather than a further axiom, using only \textbf{\aref{PU}} and the axioms of \textbf{BX}, and so is not included among the axioms of \textbf{BX}$_\textsc{r}$.
-  % This derivation is machine-checked in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so will not be provided here.
-  % Whether \textbf{\aref{CO}} alone axiomatizes the same logic as the full triple is open: the converse derivation--- deriving \textbf{\aref{PU}} and \textbf{\aref{SEP}} from \textbf{\aref{CO}} alone--- is conjectured to fail, via an unformalized pen-and-paper sketch involving a $\Q$-flow with isolated $\neg\varphi$ points accumulating at an irrational from above; this independence is not asserted as established.
-  % NEW CHANGE [Hölder consolidation]: a commented-out footnote duplicating the Hölder footnote of \S\ref{sub:Extension} was deleted here.
 \end{Ddef}
 ```
-sha256: `b35751c79a502988f9f77880354c9ed5200e9751361f2f6c209fcc3247721284`
+sha256: `650cb790801150df6a3d04a1356bb8c346b4e24694f381d8c5fbc7458da8f038`
 
 ### `def:TMplus` — TM+ base logic for BL+, and the four-part conservativity footnote
 
 ```latex
 \begin{Ddef} \label{def:TMplus}
-  The \textit{Base Logic of Tense and Modality} \textbf{TM} for $\BL$ is the smallest extension of \textbf{S5} and the base logic \textbf{BX} that includes all instances of the \textit{bimodal interaction} axiom \textbf{\aref{MF}} presented in \textbf{\S\ref{sub:Logic}}.
-  Similarly, the discrete \textbf{TM}$_\textsc{z}$, dense \textbf{TM}$_\textsc{d}$, and dense and complete \textbf{TM}$_\textsc{r}$ extensions of \textbf{TM} include the additional axioms that distinguish \textbf{BX}$_\textsc{z}$, \textbf{BX}$_\textsc{d}$, and \textbf{BX}$_\textsc{r}$, respectively.
+  The \textit{Base Logic of Tense and Modality} \textbf{TM} for $\BL$ extends \textbf{S5} and the base logic \textbf{BX} to include all instances of the \textit{bimodal interaction} axiom \textbf{\aref{MF}} presented in \textbf{\S\ref{sub:Logic}}.
+  The discrete \textbf{TM}$_\textsc{z}$, dense \textbf{TM}$_\textsc{d}$, and dense and complete \textbf{TM}$_\textsc{r}$ extensions of \textbf{TM} include the additional axioms that distinguish \textbf{BX}$_\textsc{z}$, \textbf{BX}$_\textsc{d}$, and \textbf{BX}$_\textsc{r}$, respectively.
+  The derivation relation $\vdash_\Lambda$ for the system $\Lambda$ is the smallest relation closed under the axioms and rules for $\Lambda$, omitting subscripts when ambiguity does not threaten.
 \end{Ddef}
 ```
-sha256: `c14cad798aac2c73319de9ccc0a34ce6ca07971dbb6427e5107a08f23cc4cea8`
+sha256: `d71622fc325a3d40ae4a7823c0d5d17f73e4a18bcf2e1c4be59e6693db35e142`
 
-### `thm:M5-valid` — the M5 axiom is valid
+### `thm:M5-valid` — the M5 axiom is valid — **DANGLING as of the 2026-09-17 re-pin (removed from manifest)**
+
+The paper fully commented out this theorem environment (its `\label{thm:M5-valid}` line now sits
+behind `%`), so `resolve_env` can no longer resolve it. No file in live tree scope cites the anchor.
+The quoted text below is retained as the last-resolved historical record, following the
+2026-09-07 retirement precedent.
 
 ```latex
 \begin{Tthm} \label{thm:M5-valid}
@@ -1391,7 +1404,7 @@ sha256: `23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529`
 
 ```latex
 \begin{Tthm} \label{app:discrete}
-	For any temporal order $\D$, $\vDash_{\D} (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\D$ is \textsc{Discrete}.%
+	$\vDash_{\D} (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\D$ is \textsc{Discrete}.%
 	  \footnote{
 	    The theorems of this kind cannot be sharpened to single task frames.
 	    The \textit{static} task frame over $\D$, in which $w \Rightarrow_x u$ just in case $w = u$, satisfies every clause of \textbf{\ref{def:frame}}--- each cone and each nonempty fiber and segment being a singleton--- yet its possible worlds are constant, so that every sentence of $\BL$ has the same truth value at every time along a possible world and \textbf{\aref{DF}}, \textbf{\aref{DN}}, and \textbf{\aref{CO}} are all valid over it whatever $\D$ may be.
@@ -1399,25 +1412,25 @@ sha256: `23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529`
 	  }
 \end{Tthm}
 ```
-sha256: `23a54c163da3ed991258ccd9647ae153bb2704cd0f86c138c7e5381ac6190e0e`
+sha256: `b23ad82538bf651b879667b90954669ab952d94fee55e47d97b4298df06c56ee`
 
 ### `app:dense` — the Dense correspondence theorem (DN)
 
 ```latex
 \begin{Tthm} \label{app:dense}
-	For any temporal order $\D$, $\vDash_{\D} \Future\Future\varphi \rightarrow \Future\varphi$ iff $\D$ is \textsc{Dense}.
+	$\vDash_{\D} \Future\Future\varphi \rightarrow \Future\varphi$ iff $\D$ is \textsc{Dense}.
 \end{Tthm}
 ```
-sha256: `751ad28ba753b718dad05beca27b6403a274977ff6e42a53e791d1770041b7d5`
+sha256: `2b12df669aeba06156557e0bddf36aaa2461a3e76fb01fe4b85dd0ad893a90c8`
 
 ### `app:complete` — the Complete correspondence theorem (CO)
 
 ```latex
 \begin{Tthm} \label{app:complete}
-	For any temporal order $\D$, $\vDash_{\D} \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\D$ is \textsc{Complete}.
+	$\vDash_{\D} \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\D$ is \textsc{Complete}.
 \end{Tthm}
 ```
-sha256: `9d962cf8efb3530cad11939c690d0a704154f4ddaaa7904f21ea9b8226a1f2fe`
+sha256: `aee906f8218c159034fe60d26dfb309ebe55abd27c7257b4ce8b19a03fe0e8f2`
 
 #### Reading note (of record) on `app:discrete` / `app:dense` / `app:complete`
 
@@ -1449,10 +1462,10 @@ definitional-review-and-closure research report (2026, `app:dense` conflict adju
 		\item[\sc Dense] if for any $x, y \in D$ where $x < y$, there exists $z \in D$ where $x < z < y$.
 		\item[\sc Complete] if every nonempty $S \subseteq D$ bounded above has a least upper bound in $D$.
 	\end{enumerate}
-	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Discrete}, \textsc{Dense}, or \textsc{Complete} just in case its temporal order $\D$ is.
+	A task frame $\F = \tuple{W, \D, \Rightarrow}$ inherits these properties from $\D$.
 \end{Ddef}
 ```
-sha256: `709cefc5c849b2fe6bb950cbde6b1a738181c48eeff25e89df0bb5a457e2f268`
+sha256: `d47ebef79f2988c0573f44b944ac049ea85ac841e5edab1a6f551183885fb63b`
 
 Note: promoted into coverage by this task (previously listed under "Deliberately not covered"
 below, which is updated accordingly).
@@ -1504,11 +1517,12 @@ sha256: `ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3`
   \end{enumerate}
   Strong completeness provably fails for $\Z$-time as well as $\R$-time where compactness fails, and so weak completeness is the appropriate target.%
     \footnote{
-      These results, together with the soundness of the corresponding systems, have been established in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so their proofs are not reproduced here.
+      These results, together with the soundness of the corresponding systems, are established in the Lean 4 \leanrepo{} for this paper, and so their proofs are not reproduced here.
+      Each system is also extended to include \textit{Determined} and governing axioms in the language with $\Stability$, each sound over the task frames in its class validating \textit{Determined} and weakly complete over the \textsc{Deterministic} task frames in that class.
     }
 \end{Cthm}
 ```
-sha256: `a374007e4006c6ae8388e9e0077e5579fc54d0b032b0369b546be1dfd0271643`
+sha256: `da75cac2b1c97db4458549c405a279762ea3a68977bd2ea1c3954e3dc4c97664`
 
 ### `cor:tm-decidability` — the Decidability corollary (open) — **DANGLING as of the 2026-08-17 re-pin (removed from manifest)**
 
@@ -1549,7 +1563,7 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
         \footnote{
           A formula $\psi$ is \textit{free for} $\varphi$ in $\chi$ just in case no replaced occurrence of $\varphi$ lies within the scope of a quantifier binding a variable free in $\varphi$ or $\psi$.
           The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers.
-          The operator-scope proviso makes $\equiv$ a congruence for the logical vocabulary--- identicals may be substituted for one another within $\rightarrow$, $\bot$, $\equiv$, and the quantifiers added below--- but not for operator terms. % as in \textbf{\S\ref{sec:Introduction}}. %: the logical constants are objective, whereas an operator may be opaque.
+          % The operator-scope proviso makes $\equiv$ a congruence for the logical vocabulary--- identicals may be substituted for one another within $\rightarrow$, $\bot$, $\equiv$, and the quantifiers added below--- but not for operator terms. % as in \textbf{\S\ref{sec:Introduction}}. %: the logical constants are objective, whereas an operator may be opaque.
         }
 		\end{multicols}
 	\end{enumerate}
@@ -1560,7 +1574,7 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
   % Given also $\psi \equiv \theta$, a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
 \end{Ddef}
 ```
-sha256: `1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238`
+sha256: `78b20a9942c9beaac45336954aee21d57b8c67a755692e17259c5e5a2bd00c3f`
 
 ### `def:strongest` — strongest objective normal modal operator, Str^O_L(Q)
 
@@ -1737,28 +1751,27 @@ lem:nonempty|env|-|-|8067bf45a360f04db7a94280bde1b359dac58e8311f2fba1d58db15bf23
 lem:constraint|env|-|-|ca6719adfaad9f6dc3d1b6a57de013598dd80847014d9c2fb60ed626b895370f
 lem:admissible|env|-|-|9606ef1f1264887ed51358744df7e5fc290250dd8209f445fd138700da56de8e
 lem:step|env|-|-|b1f65f70cc243de5b32d4e2a46c35c986dd0322cf3ca0524fb76701af3e3be4b
-def:BL-semantics|env|-|-|b64b782a61c9a9613b68f37ec2d12229e7df8498043faeb1cf1c2686b8dd5a75
-def:BLplus-language|env|-|-|574bc1ad10ca0957a5b76c0d74f7ff5b2ea6a09fa180475c9c22eb6ea5b3e8e2
+def:BL-semantics|env|-|-|aad8ee543a63a394983e02c2c7ec81e02aaf7737768bcb0d492c668c38de3eb2
+def:BLplus-language|env|-|-|67a17cd2e0b0867fdbcfdaa48fe9765b135978dbaf34459ca2055629533729b3
 def:time-shift-histories|env|-|-|0b5c05e8f579807c7701cd3d28cb8f7d00a2ec42d85eec2515c48edab355b88d
 def:frame-validity|env|-|-|86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259
 def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
 CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
-def:S5|env|-|-|82ec82d7ef3c0e24732fe6216b3326998412c594984ce02639ea4030ceabdb38
-def:BX|env|-|-|e1617a218b03206e11ebb9886b9a6a2add44591ce47f719445664e608f39e13e
-def:BX-z|env|-|-|3e2af812eaf4319b349ed734d9b63ffa04f6c72545a9363504b2b9b89694248f
-def:BX-d|env|-|-|555db844b3c15ca4f878406540d88c457f372a774bbb59776e3f1b0d0fb76394
-def:BX-r|env|-|-|b35751c79a502988f9f77880354c9ed5200e9751361f2f6c209fcc3247721284
-def:TMplus|env|-|-|c14cad798aac2c73319de9ccc0a34ce6ca07971dbb6427e5107a08f23cc4cea8
-thm:M5-valid|env|-|-|bce3cc3be256f7b4c10e34a397e4b3b14abe4e8ed6728e8e91768e9a2ad8b2af
+def:S5|env|-|-|dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257
+def:BX|env|-|-|8ff38fe7e73cc6978a5b7079542d55686a820dc4d5ceb4614a763b802d2fc87d
+def:BX-z|env|-|-|21277d0a1046e1bc1dfe7b9a215c24a07fa0008d27a22234886a8e94b884456b
+def:BX-d|env|-|-|5783d60a441fcb38f44e285b7766ee176c366a1c3948daffa9684855d656dc24
+def:BX-r|env|-|-|650cb790801150df6a3d04a1356bb8c346b4e24694f381d8c5fbc7458da8f038
+def:TMplus|env|-|-|d71622fc325a3d40ae4a7823c0d5d17f73e4a18bcf2e1c4be59e6693db35e142
 thm:TM-soundness|env|-|-|23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529
-app:discrete|env|-|-|23a54c163da3ed991258ccd9647ae153bb2704cd0f86c138c7e5381ac6190e0e
-app:dense|env|-|-|751ad28ba753b718dad05beca27b6403a274977ff6e42a53e791d1770041b7d5
-app:complete|env|-|-|9d962cf8efb3530cad11939c690d0a704154f4ddaaa7904f21ea9b8226a1f2fe
-def:frame-properties|env|-|-|709cefc5c849b2fe6bb950cbde6b1a738181c48eeff25e89df0bb5a457e2f268
+app:discrete|env|-|-|b23ad82538bf651b879667b90954669ab952d94fee55e47d97b4298df06c56ee
+app:dense|env|-|-|2b12df669aeba06156557e0bddf36aaa2461a3e76fb01fe4b85dd0ad893a90c8
+app:complete|env|-|-|aee906f8218c159034fe60d26dfb309ebe55abd27c7257b4ce8b19a03fe0e8f2
+def:frame-properties|env|-|-|d47ebef79f2988c0573f44b944ac049ea85ac841e5edab1a6f551183885fb63b
 def:deterministic|env|-|-|edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab721bdca88110
 cor:saturation-finite|env|-|-|ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3
-cor:tm-completeness|env|-|-|a374007e4006c6ae8388e9e0077e5579fc54d0b032b0369b546be1dfd0271643
-def:id|env|-|-|1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238
+cor:tm-completeness|env|-|-|da75cac2b1c97db4458549c405a279762ea3a68977bd2ea1c3954e3dc4c97664
+def:id|env|-|-|78b20a9942c9beaac45336954aee21d57b8c67a755692e17259c5e5a2bd00c3f
 def:strongest|env|-|-|57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369
 thm:exist|env|-|-|fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9
 lem:uniq|env|-|-|ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf
@@ -1809,6 +1822,7 @@ sent:det|LIVE-UNPINNED|the displayed sentence of app:deterministic-future, up^1 
 TMP-CO|DANGLING|the BL^+ restatement of CO; it went away with def:TMplus-c (now def:BX-r), which derives CO from PU rather than restating it under a second label. The plain CO anchor is still live and still pinned
 app:nonempty|DANGLING|merged by the paper into cor:occurrence; cited only where the tree records the merge
 app:valid|DANGLING|NEVER EXISTED; earlier revisions cited it at a bogus line number, corrected to cor:perpetuity-valid
+thm:M5-valid|DANGLING|fully COMMENTED OUT in the paper (2026-09-17 wave); retained above as a DANGLING entry; no live citation
 cor:tm-decidability|DANGLING|fully COMMENTED OUT in the paper; retained above as a DANGLING entry
 def:BL-model|DANGLING|label removed by the paper; retained above as a DANGLING entry
 def:BLplus-defined|DANGLING|label removed when the paper collapsed BL^+ into BL; the defined temporal operators now sit inside def:BLplus-language's block. Retained above as a DANGLING entry
