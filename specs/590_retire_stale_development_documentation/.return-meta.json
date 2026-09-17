@@ -1,36 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/590_retire_stale_development_documentation/reports/02_widened-docs-staleness-audit.md",
-      "summary": "Widened-scope audit: retired-tactic prose in 9 files (API_REFERENCE.md worst, naming 6 nonexistent tactics), leansearch-*.md disposition options, implementation-status.md refresh needs, confirmed 5-way naming inconsistency, ENFORCE_C9_DOCS CI-flip mechanics (no new CI step needed), and a verified-dead ADR-004 task-276 citation."
+      "type": "plan",
+      "path": "specs/590_retire_stale_development_documentation/plans/02_docs-staleness-cleanup.md",
+      "summary": "8-phase plan (9.5h): retire PHASED_IMPLEMENTATION.md, rewrite LATEX_STANDARDS.md for frozen latex/, de-cite residual docs, fix retired-tactic docs, reframe leansearch notes and refresh implementation-status, align naming prose, then flip ENFORCE_C9_DOCS."
     }
   ],
-  "next_steps": "Run /plan 590 to create implementation plan",
+  "next_steps": "Run /implement 590 to execute the plan",
+  "phase_count": 8,
+  "estimated_hours": 9.5,
+  "dependency_waves": [[1, 3, 4, 5, 6, 7], [2], [8]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1789631305_c7d7a7_590",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   },
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic, when check-module-invariants.sh's ENFORCE_<CHECK> flags already run unconditionally in .github/workflows/ci.yml with no per-flag environment overrides in the workflow file, 'wiring a check into CI' for an already-invoked script reduces to flipping the script's own default (e.g. ENFORCE_C9_DOCS=${ENFORCE_C9_DOCS:-0} -> :-1); CI picks it up automatically. Verify by grepping the workflow file for the flag name before assuming a new step is needed.",
-      "category": "PATTERN",
-      "source_artifact": "specs/590_retire_stale_development_documentation/reports/02_widened-docs-staleness-audit.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["ENFORCE_C9_DOCS", "check-module-invariants", "CI wiring", "soft-to-hard gate flip"]
-    },
-    {
-      "content": "After a vault operation (specs/state.json vault_count > 0), task-number citations in docs outside specs/** are not just stale-but-harmless anchors -- some are actively wrong, because task numbers get reused. Verify each citation resolves against specs/, specs/archive/, and specs/vault/ before deciding rewrite-vs-mark; a citation to a task-number/slug pair that no longer exists anywhere (e.g. ADR-004's specs/276_investigate_remove_redundant_project_level_state_json/, where 276 is now a different task) must be rewritten to drop the number, not task-ref-ok-marked, since marking would assert a false provenance claim.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/590_retire_stale_development_documentation/reports/02_widened-docs-staleness-audit.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["vault operation", "task-number citation", "dead reference", "task-reference-exemptions"]
-    }
-  ],
-  "modified_files": [],
-  "findings_count": 8,
-  "dispatch_seq": 3
+  "dispatch_seq": 7
 }
