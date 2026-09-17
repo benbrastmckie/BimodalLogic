@@ -11,7 +11,7 @@ next_project_number: 615
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,585,592,603,604,605,606,607,608,610,611,612,613,614 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,585,603,604,605,606,607,608,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -22,13 +22,6 @@ next_project_number: 615
 | 9 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-592 [NOT STARTED] — .claude/rules/source-store-deploy-boundary.md directs every...
-611 [NOT STARTED] — Fix git-commit-scoped.sh dropping staged deletions: when a...
-612 [NOT STARTED] — Prevent orchestrator-dispatched implementation agents from...
-613 [NOT STARTED] — Prevent cross-task commit misattribution when /orchestrate...
 
 ### Algebraic Representation
 
@@ -137,36 +130,6 @@ next_project_number: 615
 
 ---
 
-### 613. Serialize concurrent implement dispatches sharing working tree
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: Prevent cross-task commit misattribution when /orchestrate runs several implement dispatches concurrently in one working tree. In a 4-task batch (584, 586, 590, 578) admission allowed parallel implementation despite overlapping edits (docs/, typst/, CI_CD_PROCESS.md, sync-check-whitelist.txt); tasks 590, 578 and 586 committed files still holding 584's uncommitted rename edits, so git history credits those changes to the wrong tasks. Evaluate options in ~/.config/nvim/agent-system/extensions/core: serializing implement phases whose effective edit sets overlap, per-task git worktrees, or pre-commit hunk-level ownership checks; also note file_scope declarations were too coarse for the collision gate to catch this.
-
----
-
-### 612. Prevent dispatched agents ending turn on background waits
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: Prevent orchestrator-dispatched implementation agents from ending their turn while waiting on a background build, Monitor, or backgrounded Bash job. In one /orchestrate batch, two lean-implementation-agent dispatches (tasks 584 and 578) stopped mid-phase ('waiting for lake build', 'Monitor is already watching') and had to be manually resumed; ending the turn ends the dispatch. Add an explicit MUST NOT and a foreground-polling pattern for long lake builds to the agent contracts and build-guard guidance in ~/.config/nvim/agent-system/extensions/core (agents, context, scripts), and consider having postflight detect a stop without handoff/.return-meta.json.
-
----
-
-### 611. Fix git commit scoped dropping staged deletions
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: Fix git-commit-scoped.sh dropping staged deletions: when a scoped commit includes a deleted file (e.g. git rm lakefile.lean, renaming docs.yml.disabled), the deletion is left out of the commit and must be committed separately. Edit the source store at ~/.config/nvim/agent-system/extensions/core/scripts/git-commit-scoped.sh (not .claude/), add a regression test covering deleted and renamed paths, and redeploy. Observed twice during task 578's implementation.
-
----
-
 ### 610. Replace remaining lakefile lean mentions in docs
 - **Status**: [NOT STARTED]
 - **Task Type**: markdown
@@ -263,28 +226,6 @@ WORK: (1) enable `weak.linter.mathlibStandardSet` with documented opt-outs where
 ORDERING NOTE: runs after the warning burn-down/gate task so the new warnings land under an existing gate. Large: the planner should split phases per linter class rather than truncate.
 
 ACCEPTANCE: linter set enabled; `lake build` green; warning count within the recorded baseline; zero blanket suppressions and zero unscoped `maxHeartbeats`; ratchet check in place and documented.
-
----
-
-### 592. Fix unfollowable source store rule
-- **Effort**: small
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-- **Research**: [592_fix_unfollowable_source_store_rule/reports/01_source-store-rule-has-no-target.md]
-
-**Description**: `.claude/rules/source-store-deploy-boundary.md` directs every write targeting `.claude/**` to `agent-system/extensions/**` instead. No `agent-system/` directory exists in this repository. The rule is therefore unfollowable here: an agent obeying it has nowhere to write, and an agent ignoring it writes into `.claude/`, which is gitignored (`/.claude`, .gitignore:85) and overwritten by the next deploy -- exactly the outcome the rule exists to prevent.
-
-The rule is correct in substance; the problem is that it hard-codes a source-store path that is right in the agent-system repository and absent in every repository the system deploys INTO. Its own 'Known limitation' paragraph already names the adjacent blind spot -- a PostToolUse hook 'cannot know ... which repository the path belongs to'.
-
-Note two traps: editing the rule file in place is the very thing it forbids AND would be wiped by the next deploy; and `.claude/` is gitignored here, so an in-place fix is unreviewable. Check `.syncprotect` first -- if the file is listed there, a local correction would survive sync, which changes the calculus.
-
-Options: make the path conditional ('if this repository contains `agent-system/`, edit there; otherwise the source store is external -- do not edit `.claude/**`, report the needed change instead'); have the deploy step rewrite the 'Correct Edit Target' section with the real location, which it knows; or scope the rule out of deployed trees, keeping only the repository-independent agent-contract half.
-
-The durable fix lands in the agent-system repository. This task's deliverable HERE is the diagnosis, the decision, and either a precise patch for that repository or a clarifying note in the tracked root `CLAUDE.md` -- never an edit under `.claude/`.
-
-See specs/reviews/review-2026-09-16.md, Finding L3.
 
 ---
 

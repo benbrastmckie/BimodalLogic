@@ -1923,6 +1923,61 @@
   ],
   "completed_projects": [
     {
+      "project_number": 613,
+      "project_name": "serialize_concurrent_implement_dispatches_sharing_working_tree",
+      "status": "abandoned",
+      "task_type": "meta",
+      "description": "Prevent cross-task commit misattribution when /orchestrate runs several implement dispatches concurrently in one working tree. In a 4-task batch (584, 586, 590, 578) admission allowed parallel implementation despite overlapping edits (docs/, typst/, CI_CD_PROCESS.md, sync-check-whitelist.txt); tasks 590, 578 and 586 committed files still holding 584's uncommitted rename edits, so git history credits those changes to the wrong tasks. Evaluate options in ~/.config/nvim/agent-system/extensions/core: serializing implement phases whose effective edit sets overlap, per-task git worktrees, or pre-commit hunk-level ownership checks; also note file_scope declarations were too coarse for the collision gate to catch this.\n\n=== RELOCATED TO THE SOURCE-STORE REPOSITORY (2026-09-17) ===\nThis task's durable fix lands in ~/.config/nvim (the agent-system source store), not here. It has\nbeen filed or folded there and is abandoned in this repository to avoid a duplicate that can never\nbe implemented locally. See the mapping note in that repository's specs/ for which entry now owns\nthis work.",
+      "topic": "agent-system",
+      "created": "2026-09-17T10:01:30Z",
+      "last_updated": "2026-09-17T10:01:30Z",
+      "abandoned": "2026-09-17T20:13:15Z"
+    },
+    {
+      "project_number": 612,
+      "project_name": "prevent_dispatched_agents_ending_turn_on_background_waits",
+      "status": "abandoned",
+      "task_type": "meta",
+      "description": "Prevent orchestrator-dispatched implementation agents from ending their turn while waiting on a background build, Monitor, or backgrounded Bash job. In one /orchestrate batch, two lean-implementation-agent dispatches (tasks 584 and 578) stopped mid-phase ('waiting for lake build', 'Monitor is already watching') and had to be manually resumed; ending the turn ends the dispatch. Add an explicit MUST NOT and a foreground-polling pattern for long lake builds to the agent contracts and build-guard guidance in ~/.config/nvim/agent-system/extensions/core (agents, context, scripts), and consider having postflight detect a stop without handoff/.return-meta.json.\n\n=== RELOCATED TO THE SOURCE-STORE REPOSITORY (2026-09-17) ===\nThis task's durable fix lands in ~/.config/nvim (the agent-system source store), not here. It has\nbeen filed or folded there and is abandoned in this repository to avoid a duplicate that can never\nbe implemented locally. See the mapping note in that repository's specs/ for which entry now owns\nthis work.",
+      "topic": "agent-system",
+      "created": "2026-09-17T10:01:19Z",
+      "last_updated": "2026-09-17T10:01:19Z",
+      "abandoned": "2026-09-17T20:13:15Z"
+    },
+    {
+      "project_number": 611,
+      "project_name": "fix_git_commit_scoped_dropping_staged_deletions",
+      "status": "abandoned",
+      "task_type": "meta",
+      "description": "Fix git-commit-scoped.sh dropping staged deletions: when a scoped commit includes a deleted file (e.g. git rm lakefile.lean, renaming docs.yml.disabled), the deletion is left out of the commit and must be committed separately. Edit the source store at ~/.config/nvim/agent-system/extensions/core/scripts/git-commit-scoped.sh (not .claude/), add a regression test covering deleted and renamed paths, and redeploy. Observed twice during task 578's implementation.\n\n=== RELOCATED TO THE SOURCE-STORE REPOSITORY (2026-09-17) ===\nThis task's durable fix lands in ~/.config/nvim (the agent-system source store), not here. It has\nbeen filed or folded there and is abandoned in this repository to avoid a duplicate that can never\nbe implemented locally. See the mapping note in that repository's specs/ for which entry now owns\nthis work.",
+      "topic": "agent-system",
+      "created": "2026-09-17T10:01:10Z",
+      "last_updated": "2026-09-17T10:01:10Z",
+      "abandoned": "2026-09-17T20:13:15Z"
+    },
+    {
+      "project_number": 592,
+      "project_name": "fix_unfollowable_source_store_rule",
+      "status": "abandoned",
+      "task_type": "meta",
+      "description": "`.claude/rules/source-store-deploy-boundary.md` directs every write targeting `.claude/**` to `agent-system/extensions/**` instead. No `agent-system/` directory exists in this repository. The rule is therefore unfollowable here: an agent obeying it has nowhere to write, and an agent ignoring it writes into `.claude/`, which is gitignored (`/.claude`, .gitignore:85) and overwritten by the next deploy -- exactly the outcome the rule exists to prevent.\n\nThe rule is correct in substance; the problem is that it hard-codes a source-store path that is right in the agent-system repository and absent in every repository the system deploys INTO. Its own 'Known limitation' paragraph already names the adjacent blind spot -- a PostToolUse hook 'cannot know ... which repository the path belongs to'.\n\nNote two traps: editing the rule file in place is the very thing it forbids AND would be wiped by the next deploy; and `.claude/` is gitignored here, so an in-place fix is unreviewable. Check `.syncprotect` first -- if the file is listed there, a local correction would survive sync, which changes the calculus.\n\nOptions: make the path conditional ('if this repository contains `agent-system/`, edit there; otherwise the source store is external -- do not edit `.claude/**`, report the needed change instead'); have the deploy step rewrite the 'Correct Edit Target' section with the real location, which it knows; or scope the rule out of deployed trees, keeping only the repository-independent agent-contract half.\n\nThe durable fix lands in the agent-system repository. This task's deliverable HERE is the diagnosis, the decision, and either a precise patch for that repository or a clarifying note in the tracked root `CLAUDE.md` -- never an edit under `.claude/`.\n\nSee specs/reviews/review-2026-09-16.md, Finding L3.\n\n=== RELOCATED TO THE SOURCE-STORE REPOSITORY (2026-09-17) ===\nThis task's durable fix lands in ~/.config/nvim (the agent-system source store), not here. It has\nbeen filed or folded there and is abandoned in this repository to avoid a duplicate that can never\nbe implemented locally. See the mapping note in that repository's specs/ for which entry now owns\nthis work.",
+      "topic": "agent-system",
+      "priority": "low",
+      "effort": "small",
+      "dependencies": [],
+      "created": "2026-09-16T07:10:01Z",
+      "last_updated": "2026-09-16T07:10:01Z",
+      "artifacts": [
+        {
+          "path": "specs/592_fix_unfollowable_source_store_rule/reports/01_source-store-rule-has-no-target.md",
+          "type": "report",
+          "summary": "The deployed source-store-deploy-boundary rule names an agent-system/ directory that does not exist in this repository, making it unfollowable; three fix options."
+        }
+      ],
+      "next_artifact_number": 2,
+      "abandoned": "2026-09-17T20:13:14Z"
+    },
+    {
       "project_number": 609,
       "project_name": "fix_failing_evidence_probes_convexhistory_ofreflective",
       "status": "completed",
