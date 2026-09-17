@@ -282,21 +282,21 @@ Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
 -/
 noncomputable def temporal4Past (φ : Formula) : ⊢ (φ.allPast.imp φ.allPast.allPast) := by
   -- We want: Hφ → HHφ
-  -- By temporal duality from: Gψ → GGψ where ψ = swapTemporal φ
-  -- swapTemporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swapTemporal ψ = φ
-  let ψ := φ.swapTemporal
+  -- By temporal duality from: Gψ → GGψ where ψ = reflectTime φ
+  -- reflectTime of (Gψ → GGψ) = Hφ' → HHφ' where φ' = reflectTime ψ = φ
+  let ψ := φ.reflectTime
   -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
   have h1 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture) :=
     FormalSystem.Theorems.TemporalDerived.temporal4Derived ψ
   -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
-  have h2 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture).swapTemporal :=
-    DerivationTree.temporal_duality _ h1
+  have h2 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture).reflectTime :=
+    DerivationTree.time_reflection _ h1
   -- Step 3: The result has type H(swap ψ) → HH(swap ψ) = Hφ → HHφ
   -- since swap(swap φ) = φ by involution
-  have h3 : (ψ.allFuture.imp ψ.allFuture.allFuture).swapTemporal =
+  have h3 : (ψ.allFuture.imp ψ.allFuture.allFuture).reflectTime =
       φ.allPast.imp φ.allPast.allPast := by
-    simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
-    have h_inv : ψ.swapTemporal = φ := Formula.swap_temporal_involution φ
+    simp only [Formula.reflect_time_all_future, Formula.reflectTime]
+    have h_inv : ψ.reflectTime = φ := Formula.reflect_time_involution φ
     rw [h_inv]
   rw [h3] at h2
   exact h2

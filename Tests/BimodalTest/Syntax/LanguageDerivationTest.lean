@@ -97,8 +97,8 @@ example (fc : FrameClass) (p : Atom) :
 rigidity, and it is reached by the rule rather than by a second axiom. -/
 example (fc : FrameClass) (i : ℕ) (φ : StarFormula) :
     ⊢⋆[fc] ((StarFormula.timeRecall i φ).imp
-      (StarFormula.allFuture (.timeRecall i φ))).swapTemporal :=
-  .temporal_duality _ (.axiom [] _ (StarAxiom.recall_rigid_future i φ) (FrameClass.base_le fc))
+      (StarFormula.allFuture (.timeRecall i φ))).reflectTime :=
+  .time_reflection _ (.axiom [] _ (StarAxiom.recall_rigid_future i φ) (FrameClass.base_le fc))
 
 end StarLanguage
 

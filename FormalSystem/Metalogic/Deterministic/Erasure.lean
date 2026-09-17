@@ -23,7 +23,7 @@ engines be reached from an L⁺ hypothesis (`Metalogic/Deterministic/Completenes
 ## Main Results
 
 - `erasePlus_ofFormula` — `erasePlus` is a retraction of the embedding `ofFormula`
-- `erasePlus_swapTemporal` — erasure commutes with temporal duality (`⊡` is fixed by it)
+- `erasePlus_reflectTime` — erasure commutes with temporal duality (`⊡` is fixed by it)
 - `plusTruthAt_erasePlus_of_deterministic` — the pointwise collapse
 - `validDetIn_erasePlus_of_plusValidDetIn` and its converse — the validity-level corollary, at
   every frame class
@@ -83,21 +83,21 @@ returns it unchanged. -/
   | untl _ _ ih1 ih2 => simp only [ofFormula, erasePlus, ih1, ih2]
   | snce _ _ ih1 ih2 => simp only [ofFormula, erasePlus, ih1, ih2]
 
-/-- Erasure commutes with temporal duality: `swapTemporal` fixes `⊡` on the L⁺ side and the six
+/-- Erasure commutes with temporal duality: `reflectTime` fixes `⊡` on the L⁺ side and the six
 L constructors are exchanged in the same pattern on both sides. -/
-theorem erasePlus_swapTemporal (φ : PlusFormula) :
-    erasePlus φ.swapTemporal = (erasePlus φ).swapTemporal := by
+theorem erasePlus_reflectTime (φ : PlusFormula) :
+    erasePlus φ.reflectTime = (erasePlus φ).reflectTime := by
   induction φ with
   | atom _ => rfl
   | bot => rfl
   | imp _ _ ih1 ih2 =>
-    simp only [PlusFormula.swapTemporal, erasePlus, Formula.swapTemporal, ih1, ih2]
-  | box _ ih => simp only [PlusFormula.swapTemporal, erasePlus, Formula.swapTemporal, ih]
+    simp only [PlusFormula.reflectTime, erasePlus, Formula.reflectTime, ih1, ih2]
+  | box _ ih => simp only [PlusFormula.reflectTime, erasePlus, Formula.reflectTime, ih]
   | untl _ _ ih1 ih2 =>
-    simp only [PlusFormula.swapTemporal, erasePlus, Formula.swapTemporal, ih1, ih2]
+    simp only [PlusFormula.reflectTime, erasePlus, Formula.reflectTime, ih1, ih2]
   | snce _ _ ih1 ih2 =>
-    simp only [PlusFormula.swapTemporal, erasePlus, Formula.swapTemporal, ih1, ih2]
-  | stab _ ih => simp only [PlusFormula.swapTemporal, erasePlus, ih]
+    simp only [PlusFormula.reflectTime, erasePlus, Formula.reflectTime, ih1, ih2]
+  | stab _ ih => simp only [PlusFormula.reflectTime, erasePlus, ih]
 
 /-! ### Push-through pins for the derived operators
 

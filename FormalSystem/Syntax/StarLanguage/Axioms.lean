@@ -96,28 +96,28 @@ inductive consumes either.
 
 ## Swap-closure — a stated invariant, checked constructor by constructor
 
-`StarDerivationTree`'s `temporal_duality` rule is discharged **semantically**
+`StarDerivationTree`'s `time_reflection` rule is discharged **semantically**
 (`Metalogic/Conservativity/Star/StarSoundness.lean`, the companion recursion), so the standing
-obligation on this inductive is that every constructor's `swapTemporal` is again valid. It is,
+obligation on this inductive is that every constructor's `reflectTime` is again valid. It is,
 and by the strongest available route — every arm's dual is an *instance of a constructor of this
 same inductive*:
 
 * `store_recall_same`, `recall_store_same`, `recall_recall`, `store_store_comm`, `store_k`,
   `recall_k`, `store_box`, `recall_box`, `store_stab`, `store_atom` — **self-dual**: each is an
   `.iff` of formulas built from `imp`, `box`, `stab` and the two registers, none of which
-  `swapTemporal` exchanges, so the dual is the same constructor at `φ.swapTemporal`.
+  `reflectTime` exchanges, so the dual is the same constructor at `φ.reflectTime`.
 * `recall_rigid_future` ↔ `recall_rigid_past` and `future_rigid_recall` ↔ `past_rigid_recall` —
-  **dual pairs**, since `swapTemporal` exchanges `allFuture` and `allPast`.
-* `recall_export_until` ↔ `recall_export_since` — a **dual pair**, since `swapTemporal`
+  **dual pairs**, since `reflectTime` exchanges `allFuture` and `allPast`.
+* `recall_export_until` ↔ `recall_export_since` — a **dual pair**, since `reflectTime`
   exchanges `untl` and `snce` and fixes `top`.
 * The **TM⁺ mirror block**, group by group as it lands:
   * `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`, `modal_b`,
     `modal_5_collapse`, `modal_k_dist`, `stab_k`, `stab_t`, `stab_4`, `stab_5`, `box_stab`,
     `atom_stab` — **self-dual**: each is built from `imp`, `box`, `stab`, `bot` and `atom`, none
-    of which `swapTemporal` exchanges.
+    of which `reflectTime` exchanges.
   * `serial_future` ↔ `serial_past`, `left_mono_until_G` ↔ `left_mono_since_H`,
     `right_mono_until` ↔ `right_mono_since`, `connect_future` ↔ `connect_past` — four **dual
-    pairs**, since `swapTemporal` exchanges `untl`/`snce` and `allFuture`/`allPast`.
+    pairs**, since `reflectTime` exchanges `untl`/`snce` and `allFuture`/`allPast`.
   * `enrichment_until` ↔ `enrichment_since`, `self_accum_until` ↔ `self_accum_since`,
     `absorb_until` ↔ `absorb_since`, `linear_until` ↔ `linear_since` — four **dual pairs**.
   * `until_F` ↔ `since_P`, `temp_linearity` ↔ `temp_linearity_past`,
@@ -131,12 +131,12 @@ same inductive*:
   * `prior_U_gap` ↔ `prior_S_gap` — a **dual pair**.
   * `sep` and `modal_future` — arms whose dual is again not a constructor instance:
     `starValid_sep_swap` (through `SoundnessLemmas.sep_order_mirror`) and
-    `starValid_modal_future_swap` (through `RecallFree.swapTemporal`) supply them.
+    `starValid_modal_future_swap` (through `RecallFree.reflectTime`) supply them.
   * `paste` and `untl_paste` — the duals are PS with the conjuncts exchanged, and SS; neither is
     a constructor instance, and both are supplied by named lemmas in
     `Conservativity/Star/StarAxiomValidity.lean` over
     `Conservativity/Star/StarPasting.lean`'s validities, with
-    `StarIsPureFuture.swapTemporal` / `StarIsPurePast.swapTemporal` carrying the side conditions
+    `StarIsPureFuture.reflectTime` / `StarIsPurePast.reflectTime` carrying the side conditions
     across.
 
 Every arm is therefore accounted for; a constructor added later must extend this list or the

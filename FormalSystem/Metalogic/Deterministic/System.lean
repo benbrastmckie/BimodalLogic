@@ -31,7 +31,7 @@ untouched — `PlusAxiom` has exactly the constructors it had before.
 
 The obvious lightweight alternative — carry the *Determined* instances in `Γ` and reason in
 `PlusDerivable fc Γ` — does not work: `PlusDerivationTree`'s `necessitation`,
-`temporal_necessitation` and `temporal_duality` are all restricted to the **empty** context
+`temporal_necessitation` and `time_reflection` are all restricted to the **empty** context
 (theorems only, as in TM), so no rule application could ever pass under a nonempty `Γ`. An axiom
 schema is the only shape that survives those three rules.
 
@@ -120,9 +120,9 @@ inductive DetDerivationTree (fc : FrameClass) : PlusContext → PlusFormula → 
   /-- Temporal necessitation: from `⊢ φ`, conclude `⊢ Gφ`. Theorems only. -/
   | temporal_necessitation (φ : PlusFormula)
       (d : DetDerivationTree fc [] φ) : DetDerivationTree fc [] (PlusFormula.allFuture φ)
-  /-- Temporal duality: from `⊢ φ`, conclude `⊢ swapTemporal φ`. Theorems only. -/
-  | temporal_duality (φ : PlusFormula)
-      (d : DetDerivationTree fc [] φ) : DetDerivationTree fc [] φ.swapTemporal
+  /-- Temporal duality: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
+  | time_reflection (φ : PlusFormula)
+      (d : DetDerivationTree fc [] φ) : DetDerivationTree fc [] φ.reflectTime
   /-- Weakening. -/
   | weakening (Γ Δ : PlusContext) (φ : PlusFormula)
       (d : DetDerivationTree fc Γ φ)
@@ -138,7 +138,7 @@ def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
   | .modus_ponens Γ φ ψ d1 d2 => .modus_ponens Γ φ ψ (d1.lift h_le) (d2.lift h_le)
   | .necessitation φ d => .necessitation φ (d.lift h_le)
   | .temporal_necessitation φ d => .temporal_necessitation φ (d.lift h_le)
-  | .temporal_duality φ d => .temporal_duality φ (d.lift h_le)
+  | .time_reflection φ d => .time_reflection φ (d.lift h_le)
   | .weakening Γ Δ φ d h => .weakening Γ Δ φ (d.lift h_le) h
 
 /-- Height of a derivation, mirroring `PlusDerivationTree.height`. -/
@@ -149,7 +149,7 @@ def height {fc : FrameClass} {Γ : PlusContext} {φ : PlusFormula} :
   | .modus_ponens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporal_necessitation _ d => 1 + d.height
-  | .temporal_duality _ d => 1 + d.height
+  | .time_reflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 /-- Re-target a derivation whose context is a subset of the empty context. -/
@@ -197,7 +197,7 @@ def ofPlus {fc : FrameClass} : {Γ : PlusContext} → {φ : PlusFormula} →
   | _, _, .modus_ponens Γ φ ψ d1 d2 => .modus_ponens Γ φ ψ (ofPlus d1) (ofPlus d2)
   | _, _, .necessitation φ d => .necessitation φ (ofPlus d)
   | _, _, .temporal_necessitation φ d => .temporal_necessitation φ (ofPlus d)
-  | _, _, .temporal_duality φ d => .temporal_duality φ (ofPlus d)
+  | _, _, .time_reflection φ d => .time_reflection φ (ofPlus d)
   | _, _, .weakening Γ Δ φ d h => .weakening Γ Δ φ (ofPlus d) h
 
 /-- The *Determined* schema as a one-line derivation at every frame class. -/

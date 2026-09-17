@@ -204,7 +204,7 @@ Compute coverage metrics: (rules_covered, total_rules, axioms_covered, total_axi
 def computeCoverage (dist : StepDistribution) : Nat × Nat × Nat × Nat :=
   let rulesCovered := dist.ruleHistogram.size
   let totalRules := 7  -- axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
-  -- temporal_duality, weakening
+  -- time_reflection, weakening
   let axiomsCovered := dist.axiomHistogram.size
   let totalAxioms := 45
   (rulesCovered, totalRules, axiomsCovered, totalAxioms)

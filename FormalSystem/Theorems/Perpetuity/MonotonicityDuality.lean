@@ -168,16 +168,16 @@ Past monotonicity: from `⊢ A → B`, derive `⊢ HA → HB`.
 Derived via temporal duality from future monotonicity.
 -/
 def pastMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.allPast.imp B.allPast := by
-  have h_swap : ⊢[fc] A.swapTemporal.imp B.swapTemporal := by
-    have td : ⊢[fc] (A.imp B).swapTemporal := DerivationTree.temporal_duality (A.imp B) h
+  have h_swap : ⊢[fc] A.reflectTime.imp B.reflectTime := by
+    have td : ⊢[fc] (A.imp B).reflectTime := DerivationTree.time_reflection (A.imp B) h
     exact td
-  have g_swap : ⊢[fc] (A.swapTemporal.imp B.swapTemporal).allFuture :=
+  have g_swap : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture :=
     DerivationTree.temporal_necessitation _ h_swap
-  have past_raw : ⊢[fc] ((A.swapTemporal.imp B.swapTemporal).allFuture).swapTemporal :=
-    DerivationTree.temporal_duality _ g_swap
+  have past_raw : ⊢[fc] ((A.reflectTime.imp B.reflectTime).allFuture).reflectTime :=
+    DerivationTree.time_reflection _ g_swap
   have h_past : ⊢[fc] (A.imp B).allPast := by
-    simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-      Formula.swap_temporal_involution] at past_raw
+    simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+      Formula.reflect_time_involution] at past_raw
     exact past_raw
   have pk : ⊢[fc] (A.imp B).allPast.imp (A.allPast.imp B.allPast) := pastKDistFromFuture A B
   exact DerivationTree.modus_ponens [] _ _ pk h_past
@@ -272,13 +272,13 @@ def alwaysDni {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.imp φ.neg.ne
     have pk : ⊢[fc] (φ.imp φ.neg.neg).allPast.imp (φ.allPast.imp φ.neg.neg.allPast) :=
       pastKDistFromFuture φ φ.neg.neg
     have past_dni : ⊢[fc] (φ.imp φ.neg.neg).allPast := by
-      have h_swap : ⊢[fc] (φ.imp φ.neg.neg).swapTemporal := DerivationTree.temporal_duality _ dni_phi
-      have g_swap : ⊢[fc] (φ.imp φ.neg.neg).swapTemporal.allFuture :=
+      have h_swap : ⊢[fc] (φ.imp φ.neg.neg).reflectTime := DerivationTree.time_reflection _ dni_phi
+      have g_swap : ⊢[fc] (φ.imp φ.neg.neg).reflectTime.allFuture :=
         DerivationTree.temporal_necessitation _ h_swap
-      have past_raw : ⊢[fc] ((φ.imp φ.neg.neg).swapTemporal.allFuture).swapTemporal :=
-        DerivationTree.temporal_duality _ g_swap
-      simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-      Formula.swap_temporal_involution] at past_raw
+      have past_raw : ⊢[fc] ((φ.imp φ.neg.neg).reflectTime.allFuture).reflectTime :=
+        DerivationTree.time_reflection _ g_swap
+      simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+      Formula.reflect_time_involution] at past_raw
       exact past_raw
     exact DerivationTree.modus_ponens [] _ _ pk past_dni
   -- Step 3: Present is just dni_phi
@@ -370,13 +370,13 @@ def alwaysDne {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.neg.always.imp �
     have pk : ⊢[fc] (φ.neg.neg.imp φ).allPast.imp (φ.neg.neg.allPast.imp φ.allPast) :=
       pastKDistFromFuture φ.neg.neg φ
     have past_dne : ⊢[fc] (φ.neg.neg.imp φ).allPast := by
-      have h_swap : ⊢[fc] (φ.neg.neg.imp φ).swapTemporal := DerivationTree.temporal_duality _ dne_phi
-      have g_swap : ⊢[fc] (φ.neg.neg.imp φ).swapTemporal.allFuture :=
+      have h_swap : ⊢[fc] (φ.neg.neg.imp φ).reflectTime := DerivationTree.time_reflection _ dne_phi
+      have g_swap : ⊢[fc] (φ.neg.neg.imp φ).reflectTime.allFuture :=
         DerivationTree.temporal_necessitation _ h_swap
-      have past_raw : ⊢[fc] ((φ.neg.neg.imp φ).swapTemporal.allFuture).swapTemporal :=
-        DerivationTree.temporal_duality _ g_swap
-      simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-      Formula.swap_temporal_involution] at past_raw
+      have past_raw : ⊢[fc] ((φ.neg.neg.imp φ).reflectTime.allFuture).reflectTime :=
+        DerivationTree.time_reflection _ g_swap
+      simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+      Formula.reflect_time_involution] at past_raw
       exact past_raw
     exact DerivationTree.modus_ponens [] _ _ pk past_dne
   -- Step 3: Present is just dne_phi
@@ -590,7 +590,7 @@ def perpetuity6 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.sometimes.imp 
   - Complete proof with zero sorry (Phase 2)
 - **Persistence lemma**: `◇φ → △◇φ` (zero sorry)
   - Helper components proven: `modal5` (`◇φ → □◇φ` from MB + diamond4)
-  - Uses `swap_temporal_diamond` and `swap_temporal_involution` for formula simplification
+  - Uses `reflect_time_diamond` and `reflect_time_involution` for formula simplification
   - Past component: temporal duality + past K distribution
   - Future component: temporal K + future K distribution
   - FULLY PROVEN as of Phase 3 completion
@@ -649,7 +649,7 @@ def perpetuity6 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.sometimes.imp 
 
 **Future Work**:
 1. Derive `alwaysMono` compositionally (requires conjunction elimination lemmas)
-2. Add `swap_temporal_box` lemma to show box commutes with temporal swap (for symmetry)
+2. Add `reflect_time_box` lemma to show box commutes with temporal swap (for symmetry)
 3. Document modal-temporal duality relationships more precisely
 -/
 

@@ -305,7 +305,7 @@ DerivationTree.temporalNecessitation : DerivationTree [] φ →
 
 `DerivationTree` (`FormalSystem/ProofSystem/Derivation.lean`) has **7** constructors:
 `axiom`, `assumption`, `modus_ponens`, `necessitation`, `temporal_necessitation`,
-`temporal_duality`, and `weakening`.
+`time_reflection`, and `weakening`.
 
 ## Axiom Application Examples
 

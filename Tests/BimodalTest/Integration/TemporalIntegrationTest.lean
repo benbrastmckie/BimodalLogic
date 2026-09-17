@@ -386,12 +386,12 @@ end TemporalNecessitationIntegration
 -- Temporal Duality Integration
 -- ============================================================
 
-section TemporalDualityIntegration
+section TimeReflectionIntegration
 
 /--
 Test 12: Temporal duality rule.
 
-From ⊢ φ, derive ⊢ swapTemporal φ.
+From ⊢ φ, derive ⊢ reflectTime φ.
 -/
 example : True := by
   let p := Formula.atomS "p"
@@ -401,11 +401,11 @@ example : True := by
     FormalSystem.Theorems.TemporalDerived.temporal4Derived p
   
   -- Apply temporal duality
-  let d2 : ⊢ ((p.allFuture.imp p.allFuture.allFuture).swapTemporal) :=
-    DerivationTree.temporal_duality _ d1
+  let d2 : ⊢ ((p.allFuture.imp p.allFuture.allFuture).reflectTime) :=
+    DerivationTree.time_reflection _ d1
   
   -- Verify soundness
-  have v : [] ⊨ ((p.allFuture.imp p.allFuture.allFuture).swapTemporal) :=
+  have v : [] ⊨ ((p.allFuture.imp p.allFuture.allFuture).reflectTime) :=
     soundness_in [] _ d2
   
   trivial
@@ -423,16 +423,16 @@ example : True := by
     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future p) trivial
   
   -- Apply temporal duality
-  let d2 : ⊢ ((p.imp (Formula.allFuture p.somePast)).swapTemporal) :=
-    DerivationTree.temporal_duality _ d1
+  let d2 : ⊢ ((p.imp (Formula.allFuture p.somePast)).reflectTime) :=
+    DerivationTree.time_reflection _ d1
   
   -- Verify soundness
-  have v : [] ⊨ ((p.imp (Formula.allFuture p.somePast)).swapTemporal) :=
+  have v : [] ⊨ ((p.imp (Formula.allFuture p.somePast)).reflectTime) :=
     soundness_in [] _ d2
   
   trivial
 
-end TemporalDualityIntegration
+end TimeReflectionIntegration
 
 -- ============================================================
 -- Mixed Past-Future Derivations

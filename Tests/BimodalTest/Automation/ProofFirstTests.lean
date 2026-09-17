@@ -116,7 +116,7 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
   | .modus_ponens _ _ _ d1 d2 => hasWeakeningNode d1 || hasWeakeningNode d2
   | .necessitation _ d => hasWeakeningNode d
   | .temporal_necessitation _ d => hasWeakeningNode d
-  | .temporal_duality _ d => hasWeakeningNode d
+  | .time_reflection _ d => hasWeakeningNode d
   | _ => false
 
 #eval do
@@ -199,7 +199,7 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
     ruleProfile := some {
       axiomCount := 1, assumptionCount := 0, mpCount := 0,
       necessitationCount := 0, temporalNecessitationCount := 0,
-      temporalDualityCount := 0, weakeningCount := 0 },
+      timeReflectionCount := 0, weakeningCount := 0 },
     decisionMethod := "proof_first", countermodelConsistent := none,
     enrichedCountermodel := none, semanticCountermodelSummary := none,
     proofReconstructionMethod := none }
@@ -210,7 +210,7 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
     ruleProfile := some {
       axiomCount := 1, assumptionCount := 0, mpCount := 0,
       necessitationCount := 0, temporalNecessitationCount := 0,
-      temporalDualityCount := 0, weakeningCount := 0 },
+      timeReflectionCount := 0, weakeningCount := 0 },
     decisionMethod := "proof_first", countermodelConsistent := none,
     enrichedCountermodel := none, semanticCountermodelSummary := none,
     proofReconstructionMethod := none }

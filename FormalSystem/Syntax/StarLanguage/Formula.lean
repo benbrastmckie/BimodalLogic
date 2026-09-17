@@ -43,7 +43,7 @@ too, so no consumer has to reach back into `PlusFormula` for them.
 ## Main Definitions
 
 - `StarFormula`: nine-constructor inductive type for L⋆; `StarContext := List StarFormula`
-- `StarFormula.swapTemporal`: the past/future interchange for the TD rule
+- `StarFormula.reflectTime`: the past/future interchange for the TD rule
   (`stab ↦ stab`, `timeStore ↦ timeStore`, `timeRecall ↦ timeRecall`)
 - Derived operators with `PlusFormula`'s right-hand sides: `top`, `neg`, `and`, `or`, `iff`,
   `diamond`, `someFuture`, `somePast`, `allFuture`, `allPast`, `kPlus`, `kMinus`, `always`,
@@ -55,8 +55,8 @@ too, so no consumer has to reach back into `PlusFormula` for them.
 - `DecidableEq`, `Countable`, `Infinite`, `Denumerable` for `StarFormula`
 - `ofPlus_injective`, and the `rfl`-shaped commutation lemmas `ofPlus_neg`, `ofPlus_allFuture`,
   `ofPlus_always`, `ofPlus_someFuture`, `ofPlus_or`, `ofPlus_top`
-- `StarFormula.swapTemporal` with `swap_temporal_involution`, the `swap_temporal_*`
-  push-through family, and the commutation pin `ofPlus_swapTemporal`
+- `StarFormula.reflectTime` with `reflect_time_involution`, the `reflect_time_*`
+  push-through family, and the commutation pin `ofPlus_reflectTime`
 - `ofPlus_ne_timeStore`, `ofPlus_ne_timeRecall`: nothing in the image of the embedding is a
   top-level register operator
 
@@ -72,8 +72,8 @@ permitted and is how L⋆ acquires its semantics
 
 `StarAxiom` (`StarLanguage/Axioms.lean`) and `StarDerivationTree` with the notation `⊢⋆[fc]`
 (`StarLanguage/Derivation.lean`) present **TM⋆**, the proof system for L⋆. Nothing in this file
-depends on them; `swapTemporal` and `ofPlus_swapTemporal` are declared here because they are
-syntax, and the `temporal_duality` rule and the swap-validity dispatch both consume them from
+depends on them; `reflectTime` and `ofPlus_reflectTime` are declared here because they are
+syntax, and the `time_reflection` rule and the swap-validity dispatch both consume them from
 above.
 See `FormalSystem/StarLanguage/README.md`.
 
@@ -215,7 +215,7 @@ def could (φ : StarFormula) : StarFormula := dstab (someFuture φ)
 
 /-! ### Temporal duality
 
-`swapTemporal` interchanges past and future. It is what the `temporal_duality` rule of TM⋆
+`reflectTime` interchanges past and future. It is what the `time_reflection` rule of TM⋆
 (`FormalSystem/StarLanguage/Derivation.lean`) applies to a theorem, and what the swap half of
 TM⋆ soundness (`Metalogic/Conservativity/Star/StarSoundness.lean`) carries alongside validity.
 
@@ -225,101 +225,101 @@ and carry no orientation of their own, so neither `↑ⁱ` nor `↓ⁱ` is excha
 /--
 Swap temporal operators (past ↔ future) in an L⋆ formula.
 
-Mirrors `PlusFormula.swapTemporal` constructor for constructor, with `timeStore i φ ↦
-timeStore i φ.swapTemporal` and `timeRecall i φ ↦ timeRecall i φ.swapTemporal`.
+Mirrors `PlusFormula.reflectTime` constructor for constructor, with `timeStore i φ ↦
+timeStore i φ.reflectTime` and `timeRecall i φ ↦ timeRecall i φ.reflectTime`.
 -/
-def swapTemporal : StarFormula → StarFormula
+def reflectTime : StarFormula → StarFormula
   | atom p => atom p
   | bot => bot
-  | imp φ ψ => imp φ.swapTemporal ψ.swapTemporal
-  | box φ => box φ.swapTemporal
-  | untl ψ φ => snce ψ.swapTemporal φ.swapTemporal
-  | snce ψ φ => untl ψ.swapTemporal φ.swapTemporal
-  | stab φ => stab φ.swapTemporal
-  | timeStore i φ => timeStore i φ.swapTemporal
-  | timeRecall i φ => timeRecall i φ.swapTemporal
+  | imp φ ψ => imp φ.reflectTime ψ.reflectTime
+  | box φ => box φ.reflectTime
+  | untl ψ φ => snce ψ.reflectTime φ.reflectTime
+  | snce ψ φ => untl ψ.reflectTime φ.reflectTime
+  | stab φ => stab φ.reflectTime
+  | timeStore i φ => timeStore i φ.reflectTime
+  | timeRecall i φ => timeRecall i φ.reflectTime
 
-/-- `swapTemporal` is an involution. -/
-theorem swap_temporal_involution (φ : StarFormula) :
-    φ.swapTemporal.swapTemporal = φ := by
+/-- `reflectTime` is an involution. -/
+theorem reflect_time_involution (φ : StarFormula) :
+    φ.reflectTime.reflectTime = φ := by
   induction φ with
   | atom _ => rfl
   | bot => rfl
-  | imp _ _ ihp ihq => simp only [swapTemporal, ihp, ihq]
-  | box _ ih => simp only [swapTemporal, ih]
-  | untl _ _ ih2 ih1 => simp only [swapTemporal, ih1, ih2]
-  | snce _ _ ih2 ih1 => simp only [swapTemporal, ih1, ih2]
-  | stab _ ih => simp only [swapTemporal, ih]
-  | timeStore _ _ ih => simp only [swapTemporal, ih]
-  | timeRecall _ _ ih => simp only [swapTemporal, ih]
+  | imp _ _ ihp ihq => simp only [reflectTime, ihp, ihq]
+  | box _ ih => simp only [reflectTime, ih]
+  | untl _ _ ih2 ih1 => simp only [reflectTime, ih1, ih2]
+  | snce _ _ ih2 ih1 => simp only [reflectTime, ih1, ih2]
+  | stab _ ih => simp only [reflectTime, ih]
+  | timeStore _ _ ih => simp only [reflectTime, ih]
+  | timeRecall _ _ ih => simp only [reflectTime, ih]
 
-/-! The push-through lemmas, mirroring the `PlusFormula.swap_temporal_*` family. -/
+/-! The push-through lemmas, mirroring the `PlusFormula.reflect_time_*` family. -/
 
-theorem swap_temporal_top : top.swapTemporal = top := rfl
+theorem reflect_time_top : top.reflectTime = top := rfl
 
-theorem swap_temporal_neg (φ : StarFormula) :
-    φ.neg.swapTemporal = φ.swapTemporal.neg := by
-  simp only [neg, swapTemporal]
+theorem reflect_time_neg (φ : StarFormula) :
+    φ.neg.reflectTime = φ.reflectTime.neg := by
+  simp only [neg, reflectTime]
 
-theorem swap_temporal_diamond (φ : StarFormula) :
-    φ.diamond.swapTemporal = φ.swapTemporal.diamond := by
-  simp only [diamond, neg, swapTemporal]
-
-@[simp]
-theorem swap_temporal_some_future (φ : StarFormula) :
-    (someFuture φ).swapTemporal = somePast φ.swapTemporal := by
-  simp only [someFuture, somePast, top, swapTemporal]
+theorem reflect_time_diamond (φ : StarFormula) :
+    φ.diamond.reflectTime = φ.reflectTime.diamond := by
+  simp only [diamond, neg, reflectTime]
 
 @[simp]
-theorem swap_temporal_some_past (φ : StarFormula) :
-    (somePast φ).swapTemporal = someFuture φ.swapTemporal := by
-  simp only [somePast, someFuture, top, swapTemporal]
+theorem reflect_time_some_future (φ : StarFormula) :
+    (someFuture φ).reflectTime = somePast φ.reflectTime := by
+  simp only [someFuture, somePast, top, reflectTime]
 
 @[simp]
-theorem swap_temporal_all_future (φ : StarFormula) :
-    (allFuture φ).swapTemporal = allPast φ.swapTemporal := by
-  simp only [allFuture, allPast, someFuture, somePast, neg, top, swapTemporal]
+theorem reflect_time_some_past (φ : StarFormula) :
+    (somePast φ).reflectTime = someFuture φ.reflectTime := by
+  simp only [somePast, someFuture, top, reflectTime]
 
 @[simp]
-theorem swap_temporal_all_past (φ : StarFormula) :
-    (allPast φ).swapTemporal = allFuture φ.swapTemporal := by
-  simp only [allPast, allFuture, somePast, someFuture, neg, top, swapTemporal]
+theorem reflect_time_all_future (φ : StarFormula) :
+    (allFuture φ).reflectTime = allPast φ.reflectTime := by
+  simp only [allFuture, allPast, someFuture, somePast, neg, top, reflectTime]
 
-theorem swap_temporal_and (φ ψ : StarFormula) :
-    (φ.and ψ).swapTemporal = φ.swapTemporal.and ψ.swapTemporal := by
-  simp only [and, neg, swapTemporal]
+@[simp]
+theorem reflect_time_all_past (φ : StarFormula) :
+    (allPast φ).reflectTime = allFuture φ.reflectTime := by
+  simp only [allPast, allFuture, somePast, someFuture, neg, top, reflectTime]
 
-theorem swap_temporal_or (φ ψ : StarFormula) :
-    (φ.or ψ).swapTemporal = φ.swapTemporal.or ψ.swapTemporal := by
-  simp only [or, neg, swapTemporal]
+theorem reflect_time_and (φ ψ : StarFormula) :
+    (φ.and ψ).reflectTime = φ.reflectTime.and ψ.reflectTime := by
+  simp only [and, neg, reflectTime]
 
-theorem swap_temporal_iff (φ ψ : StarFormula) :
-    (φ.iff ψ).swapTemporal = φ.swapTemporal.iff ψ.swapTemporal := by
-  simp only [StarFormula.iff, and, neg, swapTemporal]
+theorem reflect_time_or (φ ψ : StarFormula) :
+    (φ.or ψ).reflectTime = φ.reflectTime.or ψ.reflectTime := by
+  simp only [or, neg, reflectTime]
 
-/-- `swapTemporal` fixes `⟐`, as it fixes `⊡`. -/
-theorem swap_temporal_dstab (φ : StarFormula) :
-    (dstab φ).swapTemporal = dstab φ.swapTemporal := by
-  simp only [dstab, neg, swapTemporal]
+theorem reflect_time_iff (φ ψ : StarFormula) :
+    (φ.iff ψ).reflectTime = φ.reflectTime.iff ψ.reflectTime := by
+  simp only [StarFormula.iff, and, neg, reflectTime]
 
-/-- The store register is unoriented: `swapTemporal` passes straight through it. -/
-theorem swap_temporal_timeStore (i : ℕ) (φ : StarFormula) :
-    (StarFormula.timeStore i φ).swapTemporal = StarFormula.timeStore i φ.swapTemporal := rfl
+/-- `reflectTime` fixes `⟐`, as it fixes `⊡`. -/
+theorem reflect_time_dstab (φ : StarFormula) :
+    (dstab φ).reflectTime = dstab φ.reflectTime := by
+  simp only [dstab, neg, reflectTime]
 
-/-- The recall register is unoriented: `swapTemporal` passes straight through it. -/
-theorem swap_temporal_timeRecall (i : ℕ) (φ : StarFormula) :
-    (StarFormula.timeRecall i φ).swapTemporal = StarFormula.timeRecall i φ.swapTemporal := rfl
+/-- The store register is unoriented: `reflectTime` passes straight through it. -/
+theorem reflect_time_timeStore (i : ℕ) (φ : StarFormula) :
+    (StarFormula.timeStore i φ).reflectTime = StarFormula.timeStore i φ.reflectTime := rfl
 
-/-- `swapTemporal` exchanges the two Reynolds gap operators, mirroring
-`PlusFormula.swap_temporal_kPlus`. -/
-theorem swap_temporal_kPlus (φ : StarFormula) :
-    φ.kPlus.swapTemporal = φ.swapTemporal.kMinus := by
-  simp only [kPlus, kMinus, neg, top, swapTemporal]
+/-- The recall register is unoriented: `reflectTime` passes straight through it. -/
+theorem reflect_time_timeRecall (i : ℕ) (φ : StarFormula) :
+    (StarFormula.timeRecall i φ).reflectTime = StarFormula.timeRecall i φ.reflectTime := rfl
 
-/-- The mirror of `swap_temporal_kPlus`, matching `PlusFormula.swap_temporal_kMinus`. -/
-theorem swap_temporal_kMinus (φ : StarFormula) :
-    φ.kMinus.swapTemporal = φ.swapTemporal.kPlus := by
-  simp only [kMinus, kPlus, neg, top, swapTemporal]
+/-- `reflectTime` exchanges the two Reynolds gap operators, mirroring
+`PlusFormula.reflect_time_kPlus`. -/
+theorem reflect_time_kPlus (φ : StarFormula) :
+    φ.kPlus.reflectTime = φ.reflectTime.kMinus := by
+  simp only [kPlus, kMinus, neg, top, reflectTime]
+
+/-- The mirror of `reflect_time_kPlus`, matching `PlusFormula.reflect_time_kMinus`. -/
+theorem reflect_time_kMinus (φ : StarFormula) :
+    φ.kMinus.reflectTime = φ.reflectTime.kPlus := by
+  simp only [kMinus, kPlus, neg, top, reflectTime]
 
 end StarFormula
 
@@ -370,23 +370,23 @@ theorem ofPlus_injective : Function.Injective ofPlus := by
     ofPlus φ ≠ StarFormula.timeRecall i ψ := by
   cases φ <;> simp [ofPlus]
 
-/-- `ofPlus` commutes with temporal duality — the pin the `temporal_duality` case of the
+/-- `ofPlus` commutes with temporal duality — the pin the `time_reflection` case of the
 proof-system embedding (`StarLanguage/Embedding.lean`) and the swap arms of validity
 (`Metalogic/Conservativity/Star/StarAxiomValidity.lean`) both route through. Mirrors
-`ofFormula_swapTemporal`. -/
-theorem ofPlus_swapTemporal (φ : PlusFormula) :
-    ofPlus φ.swapTemporal = (ofPlus φ).swapTemporal := by
+`ofFormula_reflectTime`. -/
+theorem ofPlus_reflectTime (φ : PlusFormula) :
+    ofPlus φ.reflectTime = (ofPlus φ).reflectTime := by
   induction φ with
   | atom _ => rfl
   | bot => rfl
   | imp _ _ ih1 ih2 =>
-    simp only [PlusFormula.swapTemporal, ofPlus, StarFormula.swapTemporal, ih1, ih2]
-  | box _ ih => simp only [PlusFormula.swapTemporal, ofPlus, StarFormula.swapTemporal, ih]
+    simp only [PlusFormula.reflectTime, ofPlus, StarFormula.reflectTime, ih1, ih2]
+  | box _ ih => simp only [PlusFormula.reflectTime, ofPlus, StarFormula.reflectTime, ih]
   | untl _ _ ih1 ih2 =>
-    simp only [PlusFormula.swapTemporal, ofPlus, StarFormula.swapTemporal, ih1, ih2]
+    simp only [PlusFormula.reflectTime, ofPlus, StarFormula.reflectTime, ih1, ih2]
   | snce _ _ ih1 ih2 =>
-    simp only [PlusFormula.swapTemporal, ofPlus, StarFormula.swapTemporal, ih1, ih2]
-  | stab _ ih => simp only [PlusFormula.swapTemporal, ofPlus, StarFormula.swapTemporal, ih]
+    simp only [PlusFormula.reflectTime, ofPlus, StarFormula.reflectTime, ih1, ih2]
+  | stab _ ih => simp only [PlusFormula.reflectTime, ofPlus, StarFormula.reflectTime, ih]
 
 /-- The embedding lifted to contexts. Definitionally `List.map ofPlus`. -/
 abbrev ofStarCtx (Γ : PlusContext) : StarContext := List.map ofPlus Γ
@@ -524,11 +524,11 @@ inductive StarIsPurePast : StarFormula → Prop
   | snce {ψ φ : StarFormula} : StarIsPurePast ψ → StarIsPurePast φ → StarIsPurePast (.snce ψ φ)
   | timeStore (i : ℕ) {φ : StarFormula} : StarIsPurePast φ → StarIsPurePast (.timeStore i φ)
 
-/-- `swapTemporal` preserves `↓ⁱ`-freedom: it exchanges `untl` and `snce` and fixes everything
+/-- `reflectTime` preserves `↓ⁱ`-freedom: it exchanges `untl` and `snce` and fixes everything
 else, and `RecallFree` treats those two arms alike. This is what makes the swap arm of
 `StarAxiom.modal_future` land. -/
-theorem RecallFree.swapTemporal {φ : StarFormula} (h : RecallFree φ) :
-    RecallFree φ.swapTemporal := by
+theorem RecallFree.reflectTime {φ : StarFormula} (h : RecallFree φ) :
+    RecallFree φ.reflectTime := by
   induction h with
   | atom p => exact RecallFree.atom p
   | bot => exact RecallFree.bot
@@ -539,10 +539,10 @@ theorem RecallFree.swapTemporal {φ : StarFormula} (h : RecallFree φ) :
   | stab _ ih => exact RecallFree.stab ih
   | timeStore i _ ih => exact RecallFree.timeStore i ih
 
-/-- `swapTemporal` exchanges the two L⋆ purity fragments, mirroring
-`PlusFormula.IsPureFuture.swapTemporal`. -/
-theorem StarIsPureFuture.swapTemporal {φ : StarFormula} (h : StarIsPureFuture φ) :
-    StarIsPurePast φ.swapTemporal := by
+/-- `reflectTime` exchanges the two L⋆ purity fragments, mirroring
+`PlusFormula.IsPureFuture.reflectTime`. -/
+theorem StarIsPureFuture.reflectTime {φ : StarFormula} (h : StarIsPureFuture φ) :
+    StarIsPurePast φ.reflectTime := by
   induction h with
   | atom p => exact StarIsPurePast.atom p
   | bot => exact StarIsPurePast.bot
@@ -552,9 +552,9 @@ theorem StarIsPureFuture.swapTemporal {φ : StarFormula} (h : StarIsPureFuture �
   | untl _ _ ih1 ih2 => exact StarIsPurePast.snce ih1 ih2
   | timeStore i _ ih => exact StarIsPurePast.timeStore i ih
 
-/-- The mirror of `StarIsPureFuture.swapTemporal`. -/
-theorem StarIsPurePast.swapTemporal {φ : StarFormula} (h : StarIsPurePast φ) :
-    StarIsPureFuture φ.swapTemporal := by
+/-- The mirror of `StarIsPureFuture.reflectTime`. -/
+theorem StarIsPurePast.reflectTime {φ : StarFormula} (h : StarIsPurePast φ) :
+    StarIsPureFuture φ.reflectTime := by
   induction h with
   | atom p => exact StarIsPureFuture.atom p
   | bot => exact StarIsPureFuture.bot

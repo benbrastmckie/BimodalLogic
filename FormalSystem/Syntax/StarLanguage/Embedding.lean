@@ -33,8 +33,8 @@ Three arms consume a side condition, and each gets it from a transfer lemma in
 from `starIsPureFuture_ofPlus` / `starIsPurePast_ofPlus`. Nothing in `ofPlus`'s image mentions a
 register, so all three discharge unconditionally.
 
-Six of the seven derivation cases are structural. The seventh, `temporal_duality`, transports
-along `ofPlus_swapTemporal` (`StarLanguage/Formula.lean`) — the one commutation in the family
+Six of the seven derivation cases are structural. The seventh, `time_reflection`, transports
+along `ofPlus_reflectTime` (`StarLanguage/Formula.lean`) — the one commutation in the family
 that is an induction rather than a `rfl`.
 
 ## Main Results
@@ -164,8 +164,8 @@ theorem StarAxiom.minFrameClass_ofPlusAxiom {φ : PlusFormula} (ax : PlusAxiom �
 **The backward conservativity bridge for L⁺ ⊂ L⋆.** Every TM⁺ derivation becomes a TM⋆
 derivation of its embedding, at the same frame class and over the embedded context. Seven cases,
 one per rule; the `axiom` case goes through `StarAxiom.ofPlusAxiom` and is gated by
-`StarAxiom.minFrameClass_ofPlusAxiom`, the `temporal_duality` case transports along
-`ofPlus_swapTemporal`, and the rest are structural.
+`StarAxiom.minFrameClass_ofPlusAxiom`, the `time_reflection` case transports along
+`ofPlus_reflectTime`, and the rest are structural.
 -/
 def StarDerivationTree.ofPlusTree {fc : FrameClass} {Γ : PlusContext} {φ : PlusFormula} :
     PlusDerivationTree fc Γ φ → StarDerivationTree fc (ofStarCtx Γ) (ofPlus φ)
@@ -177,9 +177,9 @@ def StarDerivationTree.ofPlusTree {fc : FrameClass} {Γ : PlusContext} {φ : Plu
       .modus_ponens _ (ofPlus φ) (ofPlus ψ) (ofPlusTree d1) (ofPlusTree d2)
   | .necessitation φ d => .necessitation (ofPlus φ) (ofPlusTree d)
   | .temporal_necessitation φ d => .temporal_necessitation (ofPlus φ) (ofPlusTree d)
-  | .temporal_duality φ d =>
-      (ofPlus_swapTemporal φ).symm ▸
-        StarDerivationTree.temporal_duality (ofPlus φ) (ofPlusTree d)
+  | .time_reflection φ d =>
+      (ofPlus_reflectTime φ).symm ▸
+        StarDerivationTree.time_reflection (ofPlus φ) (ofPlusTree d)
   | .weakening _ _ _ d h =>
       .weakening _ _ _ (ofPlusTree d)
         (by
@@ -211,11 +211,11 @@ example (p : Atom) :
   StarDerivationTree.ofPlusTree
     (.axiom [] _ (PlusAxiom.modal_future _) (FrameClass.base_le _))
 
-/-- A TM⁺ theorem obtained by the `temporal_duality` rule crosses too — the case that consumes
-`ofPlus_swapTemporal`. -/
+/-- A TM⁺ theorem obtained by the `time_reflection` rule crosses too — the case that consumes
+`ofPlus_reflectTime`. -/
 example (fc : FrameClass) (φ : PlusFormula) :
-    StarDerivable fc [] (ofPlus ((PlusFormula.stab φ).imp φ).swapTemporal) :=
+    StarDerivable fc [] (ofPlus ((PlusFormula.stab φ).imp φ).reflectTime) :=
   starDerivable_of_plusDerivable
-    ⟨.temporal_duality _ (.axiom [] _ (PlusAxiom.stab_t φ) (FrameClass.base_le fc))⟩
+    ⟨.time_reflection _ (.axiom [] _ (PlusAxiom.stab_t φ) (FrameClass.base_le fc))⟩
 
 end FormalSystem.StarLanguage

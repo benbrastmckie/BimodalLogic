@@ -157,7 +157,7 @@ def usedFormulas {fc : FrameClass} {Γ : Context} {φ : Formula} : DerivationTre
   | DerivationTree.modus_ponens _ _ _ d1 d2 => usedFormulas d1 ++ usedFormulas d2
   | DerivationTree.necessitation _ d => usedFormulas d
   | DerivationTree.temporal_necessitation _ d => usedFormulas d
-  | DerivationTree.temporal_duality _ d => usedFormulas d
+  | DerivationTree.time_reflection _ d => usedFormulas d
   | DerivationTree.weakening _ _ _ d _ => usedFormulas d
 
 /--
@@ -188,7 +188,7 @@ theorem usedFormulas_subset {fc : FrameClass} {Γ : Context} {φ : Formula}
     intro ψ hψ
     have := ih ψ hψ
     exact (List.not_mem_nil this).elim
-  | temporal_duality _ d ih =>
+  | time_reflection _ d ih =>
     simp only [usedFormulas]
     intro ψ hψ
     have := ih ψ hψ

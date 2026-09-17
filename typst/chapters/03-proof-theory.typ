@@ -325,7 +325,7 @@ Here $Gamma tack.r_(f c) phi.alt$ abbreviates `DerivationTree fc Γ φ`; the pla
     [Modus Ponens], [`DerivationTree.modus_ponens`], [Any],
     [Necessitation], [`DerivationTree.necessitation`], [Empty only],
     [Temp. Necessitation], [`DerivationTree.temporal_necessitation`], [Empty only],
-    [Temporal Duality], [`DerivationTree.temporal_duality`], [Empty only],
+    [Temporal Duality], [`DerivationTree.time_reflection`], [Empty only],
     [Weakening], [`DerivationTree.weakening`], [Any],
     table.hline(),
   ),

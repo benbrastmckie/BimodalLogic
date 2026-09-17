@@ -48,17 +48,17 @@ by `rfl` — the `rfl` pins at the end of this file are what the proof-system em
   `diamond`, `someFuture`, `somePast`, `allFuture`, `allPast`, `kPlus`, `kMinus`, `always`,
   `sometimes`, `next`, `prev`
 - The `⊡`-specific operators `dstab` (`⟐`), `Will`, `will`, `Could`, `could`
-- `PlusFormula.swapTemporal`: the past/future interchange for the TD rule (`stab ↦ stab`)
+- `PlusFormula.reflectTime`: the past/future interchange for the TD rule (`stab ↦ stab`)
 - `IsPureFuture`, `IsPurePast`: the syntactic purity predicates that guard the pasting axioms
 - `ofFormula`, `ofCtx`: the embedding of L into L⁺
 
 ## Main Results
 
 - `DecidableEq`, `Countable`, `Infinite`, `Denumerable` for `PlusFormula`
-- `swap_temporal_involution` and the push-through lemmas for every derived operator
-- `IsPureFuture.swapTemporal`, `IsPurePast.swapTemporal`: `swapTemporal` exchanges the purity
+- `reflect_time_involution` and the push-through lemmas for every derived operator
+- `IsPureFuture.reflectTime`, `IsPurePast.reflectTime`: `reflectTime` exchanges the purity
   predicates
-- `ofFormula_injective`, `ofFormula_ne_stab`, `ofFormula_swapTemporal`, `mem_ofCtx`
+- `ofFormula_injective`, `ofFormula_ne_stab`, `ofFormula_reflectTime`, `mem_ofCtx`
 
 ## Module Invariant
 
@@ -201,91 +201,91 @@ def could (φ : PlusFormula) : PlusFormula := dstab (someFuture φ)
 /--
 Swap temporal operators (past ↔ future) in an L⁺ formula.
 
-Mirrors `Formula.swapTemporal` constructor for constructor; the new case sends `stab φ` to
-`stab φ.swapTemporal` — `⊡` is fixed by time reversal because `⟨τ⟩_x` is defined by a
+Mirrors `Formula.reflectTime` constructor for constructor; the new case sends `stab φ` to
+`stab φ.reflectTime` — `⊡` is fixed by time reversal because `⟨τ⟩_x` is defined by a
 same-time condition on world states.
 -/
-def swapTemporal : PlusFormula → PlusFormula
+def reflectTime : PlusFormula → PlusFormula
   | atom s => atom s
   | bot => bot
-  | imp φ ψ => imp φ.swapTemporal ψ.swapTemporal
-  | box φ => box φ.swapTemporal
-  | untl ψ φ => snce ψ.swapTemporal φ.swapTemporal
-  | snce ψ φ => untl ψ.swapTemporal φ.swapTemporal
-  | stab φ => stab φ.swapTemporal
+  | imp φ ψ => imp φ.reflectTime ψ.reflectTime
+  | box φ => box φ.reflectTime
+  | untl ψ φ => snce ψ.reflectTime φ.reflectTime
+  | snce ψ φ => untl ψ.reflectTime φ.reflectTime
+  | stab φ => stab φ.reflectTime
 
-/-- `swapTemporal` is an involution. -/
-theorem swap_temporal_involution (φ : PlusFormula) :
-    φ.swapTemporal.swapTemporal = φ := by
+/-- `reflectTime` is an involution. -/
+theorem reflect_time_involution (φ : PlusFormula) :
+    φ.reflectTime.reflectTime = φ := by
   induction φ with
   | atom _ => rfl
   | bot => rfl
-  | imp _ _ ihp ihq => simp only [swapTemporal, ihp, ihq]
-  | box _ ih => simp only [swapTemporal, ih]
-  | untl _ _ ih2 ih1 => simp only [swapTemporal, ih1, ih2]
-  | snce _ _ ih2 ih1 => simp only [swapTemporal, ih1, ih2]
-  | stab _ ih => simp only [swapTemporal, ih]
+  | imp _ _ ihp ihq => simp only [reflectTime, ihp, ihq]
+  | box _ ih => simp only [reflectTime, ih]
+  | untl _ _ ih2 ih1 => simp only [reflectTime, ih1, ih2]
+  | snce _ _ ih2 ih1 => simp only [reflectTime, ih1, ih2]
+  | stab _ ih => simp only [reflectTime, ih]
 
-/-! The push-through lemmas, mirroring the `Formula.swap_temporal_*` family. -/
+/-! The push-through lemmas, mirroring the `Formula.reflect_time_*` family. -/
 
-theorem swap_temporal_top : top.swapTemporal = top := rfl
+theorem reflect_time_top : top.reflectTime = top := rfl
 
-theorem swap_temporal_neg (φ : PlusFormula) :
-    φ.neg.swapTemporal = φ.swapTemporal.neg := by
-  simp only [neg, swapTemporal]
+theorem reflect_time_neg (φ : PlusFormula) :
+    φ.neg.reflectTime = φ.reflectTime.neg := by
+  simp only [neg, reflectTime]
 
-theorem swap_temporal_diamond (φ : PlusFormula) :
-    φ.diamond.swapTemporal = φ.swapTemporal.diamond := by
-  simp only [diamond, neg, swapTemporal]
-
-@[simp]
-theorem swap_temporal_some_future (φ : PlusFormula) :
-    (someFuture φ).swapTemporal = somePast φ.swapTemporal := by
-  simp only [someFuture, somePast, top, swapTemporal]
+theorem reflect_time_diamond (φ : PlusFormula) :
+    φ.diamond.reflectTime = φ.reflectTime.diamond := by
+  simp only [diamond, neg, reflectTime]
 
 @[simp]
-theorem swap_temporal_some_past (φ : PlusFormula) :
-    (somePast φ).swapTemporal = someFuture φ.swapTemporal := by
-  simp only [somePast, someFuture, top, swapTemporal]
+theorem reflect_time_some_future (φ : PlusFormula) :
+    (someFuture φ).reflectTime = somePast φ.reflectTime := by
+  simp only [someFuture, somePast, top, reflectTime]
 
 @[simp]
-theorem swap_temporal_all_future (φ : PlusFormula) :
-    (allFuture φ).swapTemporal = allPast φ.swapTemporal := by
-  simp only [allFuture, allPast, someFuture, somePast, neg, top, swapTemporal]
+theorem reflect_time_some_past (φ : PlusFormula) :
+    (somePast φ).reflectTime = someFuture φ.reflectTime := by
+  simp only [somePast, someFuture, top, reflectTime]
 
 @[simp]
-theorem swap_temporal_all_past (φ : PlusFormula) :
-    (allPast φ).swapTemporal = allFuture φ.swapTemporal := by
-  simp only [allPast, allFuture, somePast, someFuture, neg, top, swapTemporal]
+theorem reflect_time_all_future (φ : PlusFormula) :
+    (allFuture φ).reflectTime = allPast φ.reflectTime := by
+  simp only [allFuture, allPast, someFuture, somePast, neg, top, reflectTime]
 
-theorem swap_temporal_next (φ : PlusFormula) :
-    φ.next.swapTemporal = φ.swapTemporal.prev := by
-  simp only [next, prev, swapTemporal]
+@[simp]
+theorem reflect_time_all_past (φ : PlusFormula) :
+    (allPast φ).reflectTime = allFuture φ.reflectTime := by
+  simp only [allPast, allFuture, somePast, someFuture, neg, top, reflectTime]
 
-theorem swap_temporal_prev (φ : PlusFormula) :
-    φ.prev.swapTemporal = φ.swapTemporal.next := by
-  simp only [prev, next, swapTemporal]
+theorem reflect_time_next (φ : PlusFormula) :
+    φ.next.reflectTime = φ.reflectTime.prev := by
+  simp only [next, prev, reflectTime]
 
-theorem swap_temporal_and (φ ψ : PlusFormula) :
-    (φ.and ψ).swapTemporal = φ.swapTemporal.and ψ.swapTemporal := by
-  simp only [and, neg, swapTemporal]
+theorem reflect_time_prev (φ : PlusFormula) :
+    φ.prev.reflectTime = φ.reflectTime.next := by
+  simp only [prev, next, reflectTime]
 
-theorem swap_temporal_or (φ ψ : PlusFormula) :
-    (φ.or ψ).swapTemporal = φ.swapTemporal.or ψ.swapTemporal := by
-  simp only [or, neg, swapTemporal]
+theorem reflect_time_and (φ ψ : PlusFormula) :
+    (φ.and ψ).reflectTime = φ.reflectTime.and ψ.reflectTime := by
+  simp only [and, neg, reflectTime]
 
-theorem swap_temporal_kPlus (φ : PlusFormula) :
-    φ.kPlus.swapTemporal = φ.swapTemporal.kMinus := by
-  simp only [kPlus, kMinus, neg, top, swapTemporal]
+theorem reflect_time_or (φ ψ : PlusFormula) :
+    (φ.or ψ).reflectTime = φ.reflectTime.or ψ.reflectTime := by
+  simp only [or, neg, reflectTime]
 
-theorem swap_temporal_kMinus (φ : PlusFormula) :
-    φ.kMinus.swapTemporal = φ.swapTemporal.kPlus := by
-  simp only [kMinus, kPlus, neg, top, swapTemporal]
+theorem reflect_time_kPlus (φ : PlusFormula) :
+    φ.kPlus.reflectTime = φ.reflectTime.kMinus := by
+  simp only [kPlus, kMinus, neg, top, reflectTime]
 
-/-- `swapTemporal` fixes `⟐`, as it fixes `⊡`. -/
-theorem swap_temporal_dstab (φ : PlusFormula) :
-    (dstab φ).swapTemporal = dstab φ.swapTemporal := by
-  simp only [dstab, neg, swapTemporal]
+theorem reflect_time_kMinus (φ : PlusFormula) :
+    φ.kMinus.reflectTime = φ.reflectTime.kPlus := by
+  simp only [kMinus, kPlus, neg, top, reflectTime]
+
+/-- `reflectTime` fixes `⟐`, as it fixes `⊡`. -/
+theorem reflect_time_dstab (φ : PlusFormula) :
+    (dstab φ).reflectTime = dstab φ.reflectTime := by
+  simp only [dstab, neg, reflectTime]
 
 /-! ### Purity predicates
 
@@ -313,9 +313,9 @@ inductive IsPurePast : PlusFormula → Prop
   | stab (φ : PlusFormula) : IsPurePast (.stab φ)
   | snce {ψ φ : PlusFormula} : IsPurePast ψ → IsPurePast φ → IsPurePast (.snce ψ φ)
 
-/-- `swapTemporal` sends pure-future formulas to pure-past ones. -/
-theorem IsPureFuture.swapTemporal {φ : PlusFormula} (h : IsPureFuture φ) :
-    IsPurePast φ.swapTemporal := by
+/-- `reflectTime` sends pure-future formulas to pure-past ones. -/
+theorem IsPureFuture.reflectTime {φ : PlusFormula} (h : IsPureFuture φ) :
+    IsPurePast φ.reflectTime := by
   induction h with
   | atom p => exact IsPurePast.atom p
   | bot => exact IsPurePast.bot
@@ -324,9 +324,9 @@ theorem IsPureFuture.swapTemporal {φ : PlusFormula} (h : IsPureFuture φ) :
   | stab φ => exact IsPurePast.stab _
   | untl _ _ ih1 ih2 => exact IsPurePast.snce ih1 ih2
 
-/-- `swapTemporal` sends pure-past formulas to pure-future ones. -/
-theorem IsPurePast.swapTemporal {φ : PlusFormula} (h : IsPurePast φ) :
-    IsPureFuture φ.swapTemporal := by
+/-- `reflectTime` sends pure-past formulas to pure-future ones. -/
+theorem IsPurePast.reflectTime {φ : PlusFormula} (h : IsPurePast φ) :
+    IsPureFuture φ.reflectTime := by
   induction h with
   | atom p => exact IsPureFuture.atom p
   | bot => exact IsPureFuture.bot
@@ -410,17 +410,17 @@ theorem ofFormula_injective : Function.Injective ofFormula := by
     ofFormula φ ≠ PlusFormula.stab ψ := by
   cases φ <;> simp [ofFormula]
 
-/-- `ofFormula` commutes with temporal duality, which is what the `temporal_duality` case of the
+/-- `ofFormula` commutes with temporal duality, which is what the `time_reflection` case of the
 proof-system embedding needs. -/
-theorem ofFormula_swapTemporal (φ : Formula) :
-    ofFormula φ.swapTemporal = (ofFormula φ).swapTemporal := by
+theorem ofFormula_reflectTime (φ : Formula) :
+    ofFormula φ.reflectTime = (ofFormula φ).reflectTime := by
   induction φ with
   | atom _ => rfl
   | bot => rfl
-  | imp _ _ ih1 ih2 => simp only [Formula.swapTemporal, ofFormula, PlusFormula.swapTemporal, ih1, ih2]
-  | box _ ih => simp only [Formula.swapTemporal, ofFormula, PlusFormula.swapTemporal, ih]
-  | untl _ _ ih1 ih2 => simp only [Formula.swapTemporal, ofFormula, PlusFormula.swapTemporal, ih1, ih2]
-  | snce _ _ ih1 ih2 => simp only [Formula.swapTemporal, ofFormula, PlusFormula.swapTemporal, ih1, ih2]
+  | imp _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih1, ih2]
+  | box _ ih => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih]
+  | untl _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih1, ih2]
+  | snce _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih1, ih2]
 
 /-- The embedding lifted to contexts. Definitionally `List.map ofFormula`. -/
 abbrev ofCtx (Γ : Context) : PlusContext := List.map ofFormula Γ

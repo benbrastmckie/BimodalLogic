@@ -289,7 +289,7 @@ Counts of rule applications in a derivation tree.
 
 Each field corresponds to one of the 7 constructors of `DerivationTree`:
 `axiom`, `assumption`, `modus_ponens`, `necessitation`,
-`temporal_necessitation`, `temporal_duality`, `weakening`.
+`temporal_necessitation`, `time_reflection`, `weakening`.
 -/
 structure RuleProfile where
   /-- Number of axiom invocations in the profiled derivation. -/
@@ -303,7 +303,7 @@ structure RuleProfile where
   /-- Number of temporal necessitation applications. -/
   temporalNecessitationCount : Nat
   /-- Number of temporal duality applications. -/
-  temporalDualityCount : Nat
+  timeReflectionCount : Nat
   /-- Number of weakening applications. -/
   weakeningCount : Nat
   deriving Repr, Inhabited
@@ -315,7 +315,7 @@ def RuleProfile.empty : RuleProfile :=
   , mpCount := 0
   , necessitationCount := 0
   , temporalNecessitationCount := 0
-  , temporalDualityCount := 0
+  , timeReflectionCount := 0
   , weakeningCount := 0 }
 
 /-- Merge two rule profiles by summing corresponding counts. -/
@@ -325,7 +325,7 @@ def RuleProfile.merge (r1 r2 : RuleProfile) : RuleProfile :=
   , mpCount := r1.mpCount + r2.mpCount
   , necessitationCount := r1.necessitationCount + r2.necessitationCount
   , temporalNecessitationCount := r1.temporalNecessitationCount + r2.temporalNecessitationCount
-  , temporalDualityCount := r1.temporalDualityCount + r2.temporalDualityCount
+  , timeReflectionCount := r1.timeReflectionCount + r2.timeReflectionCount
   , weakeningCount := r1.weakeningCount + r2.weakeningCount }
 
 /--
@@ -349,9 +349,9 @@ def walkDerivationTree {fc : FrameClass} {Γ : Context} {φ : Formula}
   | .temporal_necessitation _ d =>
     let r := walkDerivationTree d
     { r with temporalNecessitationCount := r.temporalNecessitationCount + 1 }
-  | .temporal_duality _ d =>
+  | .time_reflection _ d =>
     let r := walkDerivationTree d
-    { r with temporalDualityCount := r.temporalDualityCount + 1 }
+    { r with timeReflectionCount := r.timeReflectionCount + 1 }
   | .weakening _ _ _ d _ =>
     let r := walkDerivationTree d
     { r with weakeningCount := r.weakeningCount + 1 }
@@ -371,7 +371,8 @@ def RuleProfile.toJson (rp : RuleProfile) : String :=
   ++ ", \"modus_ponens\": " ++ toString rp.mpCount
   ++ ", \"necessitation\": " ++ toString rp.necessitationCount
   ++ ", \"temporal_necessitation\": " ++ toString rp.temporalNecessitationCount
-  ++ ", \"temporal_duality\": " ++ toString rp.temporalDualityCount
+  -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
+  ++ ", \"temporal_duality\": " ++ toString rp.timeReflectionCount
   ++ ", \"weakening\": " ++ toString rp.weakeningCount
   ++ "}"
 

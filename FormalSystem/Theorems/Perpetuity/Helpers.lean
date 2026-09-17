@@ -79,11 +79,11 @@ This clever use of temporal duality avoids needing a separate "modal-past" axiom
 -/
 @[tmLemma]
 def boxToPast {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp φ.allPast := by
-  have h1 : ⊢[fc] φ.swapTemporal.box.imp φ.swapTemporal.allFuture := boxToFuture φ.swapTemporal
-  have h2 : ⊢[fc] (φ.swapTemporal.box.imp φ.swapTemporal.allFuture).swapTemporal :=
-    DerivationTree.temporal_duality (φ.swapTemporal.box.imp φ.swapTemporal.allFuture) h1
-  simp only [Formula.swap_temporal_all_future,
-    Formula.swapTemporal, Formula.swap_temporal_involution] at h2
+  have h1 : ⊢[fc] φ.reflectTime.box.imp φ.reflectTime.allFuture := boxToFuture φ.reflectTime
+  have h2 : ⊢[fc] (φ.reflectTime.box.imp φ.reflectTime.allFuture).reflectTime :=
+    DerivationTree.time_reflection (φ.reflectTime.box.imp φ.reflectTime.allFuture) h1
+  simp only [Formula.reflect_time_all_future,
+    Formula.reflectTime, Formula.reflect_time_involution] at h2
   exact h2
 
 /--

@@ -291,10 +291,10 @@ def applyTemporalNecessitation {fc : FrameClass} (pool : ProofPool fc) : ProofPo
   ) pool
 
 /-- Apply temporal duality to every formula in the pool. -/
-def applyTemporalDuality {fc : FrameClass} (pool : ProofPool fc) : ProofPool fc :=
+def applyTimeReflection {fc : FrameClass} (pool : ProofPool fc) : ProofPool fc :=
   pool.entries.foldl (fun p σ =>
     match σ with
-    | ⟨φ, d⟩ => p.add (φ.swapTemporal) (DerivationTree.temporal_duality φ d)
+    | ⟨φ, d⟩ => p.add (φ.reflectTime) (DerivationTree.time_reflection φ d)
   ) pool
 
 /-- Apply all three unary rules in sequence, with progress logging. -/
@@ -302,7 +302,7 @@ def applyUnaryRules (cfg : ForwardConfig) (pool : ProofPool cfg.frameClass)
     : IO (ProofPool cfg.frameClass) := do
   let pool1 := applyNecessitation pool
   let pool2 := applyTemporalNecessitation pool1
-  let pool3 := applyTemporalDuality pool2
+  let pool3 := applyTimeReflection pool2
   return pool3
 
 /-! ## Bounded Fixpoint Loop and Ex-Falso Cap -/

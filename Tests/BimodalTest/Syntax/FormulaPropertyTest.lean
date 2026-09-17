@@ -72,13 +72,13 @@ This is proven as a theorem in Formula.lean, here we test it.
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) := by
+-- example : Testable (∀ φ : Formula, φ.reflectTime.reflectTime = φ) := by
 --   infer_instance
 
 /-!
 Test: Temporal swap involution (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) {
+#eval Testable.check (∀ φ : Formula, φ.reflectTime.reflectTime = φ) {
   numInst := 100,
   maxSize := 50
 }
@@ -91,13 +91,13 @@ swap(◇φ) = ◇(swap φ)
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.diamond.swapTemporal = φ.swapTemporal.diamond) := by
+-- example : Testable (∀ φ : Formula, φ.diamond.reflectTime = φ.reflectTime.diamond) := by
 --   infer_instance
 
 /-!
 Test: Temporal swap distributes over diamond (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.diamond.swapTemporal = φ.swapTemporal.diamond) {
+#eval Testable.check (∀ φ : Formula, φ.diamond.reflectTime = φ.reflectTime.diamond) {
   numInst := 100,
   maxSize := 50
 }
@@ -110,13 +110,13 @@ swap(¬φ) = ¬(swap φ)
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.neg.swapTemporal = φ.swapTemporal.neg) := by
+-- example : Testable (∀ φ : Formula, φ.neg.reflectTime = φ.reflectTime.neg) := by
 --   infer_instance
 
 /-!
 Test: Temporal swap distributes over negation (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.neg.swapTemporal = φ.swapTemporal.neg) {
+#eval Testable.check (∀ φ : Formula, φ.neg.reflectTime = φ.reflectTime.neg) {
   numInst := 100,
   maxSize := 50
 }

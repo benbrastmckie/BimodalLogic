@@ -27,7 +27,7 @@ atomization transfer rely on.
 
 | File | Description |
 |------|-------------|
-| `Formula.lean` | `PlusFormula`, the derived operators (with `Formula`'s right-hand sides), the `⊡`-specific `dstab`/`Will`/`will`/`Could`/`could`, `swapTemporal` (`stab ↦ stab`), the purity predicates `IsPureFuture`/`IsPurePast` with their `swapTemporal` exchange lemmas, and the embedding `ofFormula`/`ofCtx` with `ofFormula_injective`, `ofFormula_ne_stab`, `ofFormula_swapTemporal` |
+| `Formula.lean` | `PlusFormula`, the derived operators (with `Formula`'s right-hand sides), the `⊡`-specific `dstab`/`Will`/`will`/`Could`/`could`, `reflectTime` (`stab ↦ stab`), the purity predicates `IsPureFuture`/`IsPurePast` with their `reflectTime` exchange lemmas, and the embedding `ofFormula`/`ofCtx` with `ofFormula_injective`, `ofFormula_ne_stab`, `ofFormula_reflectTime` |
 | `Axioms.lean` | `PlusAxiom`, the **closed** inductive of TM⁺ schemata: the 45 TM schemata re-declared with `PlusFormula` parameters, plus eight `⊡` schemata — SK, ST, S4, S5 (S5 for `⊡`), MS `□φ → ⊡φ`, AS `p → ⊡p` for atoms, and the two pasting schemata PS `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))` and US `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)` with pure-future/pure-past side conditions; `PlusAxiom.minFrameClass` |
 | `Derivation.lean` | `PlusDerivationTree` (the seven rules of TM, constructor for constructor), `PlusDerivable`, `⊢⁺[fc]` notation, the derived `⊡`-necessitation rule `stabNecessitation`, and the backward conservativity bridge `PlusAxiom.ofTM` / `PlusDerivationTree.ofTM` / `plusDerivable_of_derivable`: `TM ⊢[fc] φ ⟹ TM⁺ ⊢[fc] ofFormula φ` |
 

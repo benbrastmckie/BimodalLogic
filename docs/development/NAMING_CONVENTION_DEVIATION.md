@@ -145,7 +145,7 @@ Keyed on what a declaration *produces*, not on which command declares it:
 
 | Declaration produces | Convention | Example |
 |---|---|---|
-| data (including all `DerivationTree`-valued results) | lowerCamelCase | `allFuture`, `swapTemporal` |
+| data (including all `DerivationTree`-valued results) | lowerCamelCase | `allFuture`, `reflectTime` |
 | a `Prop` — i.e. it *defines a predicate* | UpperCamelCase | `TruthAt`, `TemporalTruth`, `IsRDefinableGap` |
 | a `Sort`/`Type` | UpperCamelCase | `TaskFrame` |
 | a proof (`theorem`/`lemma`) | snake_case | `soundness`, `truth_lemma` |

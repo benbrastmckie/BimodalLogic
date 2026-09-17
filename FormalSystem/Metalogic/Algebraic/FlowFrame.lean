@@ -604,12 +604,12 @@ purely MCS-level, frame-independent. -/
 private def pastTfDeriv (φ : Formula) :
     DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).allPast) := by
   have h_tf_swap : DerivationTree fc [] _ :=
-      FormalSystem.Theorems.Combinators.temporalFutureDerived (Formula.swapTemporal φ)
-  have h_dual := DerivationTree.temporal_duality _ h_tf_swap
-  have h_eq : Formula.swapTemporal ((Formula.box (Formula.swapTemporal φ)).imp
-      (Formula.box (Formula.swapTemporal φ)).allFuture) =
+      FormalSystem.Theorems.Combinators.temporalFutureDerived (Formula.reflectTime φ)
+  have h_dual := DerivationTree.time_reflection _ h_tf_swap
+  have h_eq : Formula.reflectTime ((Formula.box (Formula.reflectTime φ)).imp
+      (Formula.box (Formula.reflectTime φ)).allFuture) =
     (Formula.box φ).imp (Formula.box φ).allPast := by
-    simp [Formula.swapTemporal, Formula.swap_temporal_involution]
+    simp [Formula.reflectTime, Formula.reflect_time_involution]
   rw [h_eq] at h_dual
   exact h_dual
 

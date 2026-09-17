@@ -37,7 +37,7 @@ are already derivable at `FrameClass.Base`, and `nextConj` is stated `{fc}`-poly
 - `noBlockingTriple` — the schema does real work: at `Discrete` a world holding `U(p,q)` while
   omitting both `U(p,r)` and `U(q,s)` is derivably impossible.
 - `nextAllFuture` / `prevAllPast` — `X (Gφ ∧ φ) → Gφ` and its free past dual
-  `Y (Hφ ∧ φ) → Hφ`, obtained through `DerivationTree.temporal_duality`.
+  `Y (Hφ ∧ φ) → Hφ`, obtained through `DerivationTree.time_reflection`.
 - `dfSchema` — the paper's **DF** schema `(Hφ ∧ φ ∧ F⊤) → F(Hφ)`, consumed by
   `FormalSystem.MinusLanguage.AxiomDischarge` for the `Discrete` row of the backward
   conservativity bridge. Derived syntactically; no completeness dependency.
@@ -436,26 +436,26 @@ def nextAllFuture (φ : Formula) :
         (lceImp φ.allFuture φ)) a3
     exact ctxMp (wk _ _ (untlBotFalse Formula.bot)) a4
 
-/-- The `swapTemporal` image of `nextAllFuture`'s statement, computed once so that
+/-- The `reflectTime` image of `nextAllFuture`'s statement, computed once so that
 `prevAllPast` is a `▸`-rewrite rather than a `simp` inside a term. -/
 theorem swap_next_all_future_eq (φ : Formula) :
-    Formula.swapTemporal
-      ((Formula.next (Formula.and (φ.swapTemporal).allFuture φ.swapTemporal)).imp
-        (φ.swapTemporal).allFuture)
+    Formula.reflectTime
+      ((Formula.next (Formula.and (φ.reflectTime).allFuture φ.reflectTime)).imp
+        (φ.reflectTime).allFuture)
       = (Formula.prev (Formula.and φ.allPast φ)).imp φ.allPast := by
-  simp only [Formula.next, Formula.prev, Formula.and, Formula.neg, Formula.swapTemporal,
-    Formula.swap_temporal_all_future, Formula.swap_temporal_involution]
+  simp only [Formula.next, Formula.prev, Formula.and, Formula.neg, Formula.reflectTime,
+    Formula.reflect_time_all_future, Formula.reflect_time_involution]
 
 /-- **Step 3, past form**: `⊢[Discrete] Y (Hφ ∧ φ) → Hφ`.
 
-The past dual of `nextAllFuture`, and it is *free*: `DerivationTree.temporal_duality` is a
-primitive rule at every frame class, so applying it to `nextAllFuture (swapTemporal φ)` and
-using `Formula.swap_temporal_involution` returns exactly this statement. No past-mirrored axiom
+The past dual of `nextAllFuture`, and it is *free*: `DerivationTree.time_reflection` is a
+primitive rule at every frame class, so applying it to `nextAllFuture (reflectTime φ)` and
+using `Formula.reflect_time_involution` returns exactly this statement. No past-mirrored axiom
 is introduced. -/
 def prevAllPast (φ : Formula) :
     ⊢[FrameClass.ZTime]
       (Formula.prev (Formula.and φ.allPast φ)).imp φ.allPast :=
-  swap_next_all_future_eq φ ▸ DerivationTree.temporal_duality _ (nextAllFuture φ.swapTemporal)
+  swap_next_all_future_eq φ ▸ DerivationTree.time_reflection _ (nextAllFuture φ.reflectTime)
 
 /-- **`⊢[Discrete] (Hφ ∧ φ ∧ F⊤) → F(Hφ)`** — the paper's **DF** schema.
 

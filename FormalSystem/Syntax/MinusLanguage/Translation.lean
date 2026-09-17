@@ -23,7 +23,7 @@ name. For `allPast`/`allFuture` the target is L's *derived* `Formula.allPast`/
 
 ## Main Results
 
-- `tr_swapMinus` : `tr (swapMinus φ) = swapTemporal (tr φ)` — **the load-bearing lemma**, without
+- `tr_swapMinus` : `tr (swapMinus φ) = reflectTime (tr φ)` — **the load-bearing lemma**, without
   which the TD case of `FormalSystem.Metalogic.Conservativity.translate` does not typecheck
 - `tr_ne_untl`, `tr_ne_snce` : `tr` never produces a top-level `untl`/`snce`
 - `tr_injective` : `tr` is injective
@@ -134,25 +134,25 @@ theorem tr_somePast_ne (φ : MinusFormula) :
 
 /--
 **The load-bearing lemma**: `tr` intertwines the L⁻-side past/future interchange `swapMinus` with
-the L-side one `swapTemporal`.
+the L-side one `reflectTime`.
 
-TM⁻'s **TD** rule concludes `⊢ swapMinus φ` from `⊢ φ`; L's `DerivationTree.temporal_duality`
-concludes `⊢ swapTemporal ψ` from `⊢ ψ`. Without this equation the TD case of
+TM⁻'s **TD** rule concludes `⊢ swapMinus φ` from `⊢ φ`; L's `DerivationTree.time_reflection`
+concludes `⊢ reflectTime ψ` from `⊢ ψ`. Without this equation the TD case of
 `FormalSystem.Metalogic.Conservativity.translate` does not typecheck at all.
 
 The `allPast`/`allFuture` cases are the only real content: they need
-`Formula.swap_temporal_all_past` / `Formula.swap_temporal_all_future`, since on the L side
-`allPast`/`allFuture` are abbreviations over `snce`/`untl` and `swapTemporal` acts on the
+`Formula.reflect_time_all_past` / `Formula.reflect_time_all_future`, since on the L side
+`allPast`/`allFuture` are abbreviations over `snce`/`untl` and `reflectTime` acts on the
 primitives.
 -/
-theorem tr_swapMinus (φ : MinusFormula) : tr φ.swapMinus = (tr φ).swapTemporal := by
+theorem tr_swapMinus (φ : MinusFormula) : tr φ.swapMinus = (tr φ).reflectTime := by
   induction φ with
   | atom _ => rfl
   | bot => rfl
-  | imp _ _ ih1 ih2 => simp [tr, MinusFormula.swapMinus, Formula.swapTemporal, ih1, ih2]
-  | box _ ih => simp [tr, MinusFormula.swapMinus, Formula.swapTemporal, ih]
-  | allPast _ ih => simp [tr, MinusFormula.swapMinus, Formula.swap_temporal_all_past, ih]
-  | allFuture _ ih => simp [tr, MinusFormula.swapMinus, Formula.swap_temporal_all_future, ih]
+  | imp _ _ ih1 ih2 => simp [tr, MinusFormula.swapMinus, Formula.reflectTime, ih1, ih2]
+  | box _ ih => simp [tr, MinusFormula.swapMinus, Formula.reflectTime, ih]
+  | allPast _ ih => simp [tr, MinusFormula.swapMinus, Formula.reflect_time_all_past, ih]
+  | allFuture _ ih => simp [tr, MinusFormula.swapMinus, Formula.reflect_time_all_future, ih]
 
 /-! ### Injectivity
 

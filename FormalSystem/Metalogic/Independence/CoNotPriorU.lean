@@ -108,7 +108,7 @@ def OnArc (w : ClockState) : Prop := ∃ q : ℚ, cmk q = w ∧ |(q : ℝ)| < ar
 
 The valuation ignores the atom: every atom is true exactly on the arc. That is deliberate — the
 refutation needs only one atom, and a uniform valuation keeps the model manifestly symmetric under
-`w ↦ -w`, which is what the `temporal_duality` closure below consumes.
+`w ↦ -w`, which is what the `time_reflection` closure below consumes.
 -/
 def clockModel : TaskModel clockFrame where
   valuation := fun w _ => OnArc w
@@ -308,7 +308,7 @@ instances, together with the dense base, derives Prior-U.*
   derive `priorUGapFormula p`. The witness is `clockModel` at `clockHistory`, time `0`.
 * Also claimed, and strictly stronger: the schema-level statement
   `co_not_derives_prior_U_gap_schema` below, which closes the gap left by this one — a context
-  cannot appear under `necessitation`, `temporal_necessitation` or `temporal_duality`, since
+  cannot appear under `necessitation`, `temporal_necessitation` or `time_reflection`, since
   `DerivationTree`'s rule constructors are restricted to the empty context.
 * **Not** claimed, and in fact false: any *frame*-level statement. `def:frame-validity`
   quantifies over all valuations, and under that quantifier frame-validity of `CO` on a dense
@@ -326,7 +326,7 @@ theorem co_not_derives_prior_U_gap (a : Atom) (Γ : Context)
 
 /-! ## The time-reversal mirror
 
-`temporal_duality` (`⊢ φ` gives `⊢ φ.swapTemporal`) is the one closure rule whose soundness over a
+`time_reflection` (`⊢ φ` gives `⊢ φ.reflectTime`) is the one closure rule whose soundness over a
 *fixed* model is not automatic: it needs the model to be isomorphic to its own time reversal. The
 clock model is, and that is precisely why the arc was centred at `0`: negation `w ↦ -w` is an
 automorphism of the circle that preserves the arc and reverses durations. An asymmetric arc would
@@ -420,7 +420,7 @@ noncomputable def clockMirrorIso : TruthAntiIso clockModel clockModel where
 
 /--
 **The mirror lemma.** If `σ` is the time reversal of `τ` — pointwise, `σ(-x) = -τ(x)` — then `σ`
-at `-t` satisfies `φ.swapTemporal` exactly when `τ` at `t` satisfies `φ`.
+at `-t` satisfies `φ.reflectTime` exactly when `τ` at `t` satisfies `φ`.
 
 An instantiation of `Truth.truthAt_of_truthAntiIso` at `clockMirrorIso`, replacing the 80-line
 hand-written six-case induction this used to carry. The statement is unchanged, relational form
@@ -432,7 +432,7 @@ where before it was what made the `□` case work in both directions — that jo
 theorem truthAt_mirror (φ : Formula) :
     ∀ (τ σ : WorldHistory clockFrame),
       (∀ x : ℚ, σ.state (-x) = cneg (τ.state x)) →
-      ∀ t : ℚ, (TruthAt clockModel σ (-t) φ.swapTemporal ↔ TruthAt clockModel τ t φ) := by
+      ∀ t : ℚ, (TruthAt clockModel σ (-t) φ.reflectTime ↔ TruthAt clockModel τ t φ) := by
   intro τ σ hrel t
   have hσeq : σ = reflect τ := by
     refine WorldHistory.ext_state fun r => ?_
@@ -444,13 +444,13 @@ theorem truthAt_mirror (φ : Formula) :
   exact (Truth.truthAt_of_truthAntiIso clockMirrorIso φ τ t).symm
 
 /--
-The form `temporal_duality` consumes: a formula true at every world history and every time of the
+The form `time_reflection` consumes: a formula true at every world history and every time of the
 clock model has a temporal dual with the same property.
 -/
-theorem truthAt_swapTemporal (φ : Formula)
+theorem truthAt_reflectTime (φ : Formula)
     (h : ∀ (σ : WorldHistory clockFrame) (t : ℚ), TruthAt clockModel σ t φ)
     (τ : WorldHistory clockFrame) (t : ℚ) :
-    TruthAt clockModel τ t φ.swapTemporal := by
+    TruthAt clockModel τ t φ.reflectTime := by
   have hrel : ∀ x : ℚ, τ.state (-x) = cneg ((reflect τ).state x) := by
     intro x
     exact (cneg_cneg (τ.state (-x))).symm
@@ -464,13 +464,13 @@ theorem truthAt_swapTemporal (φ : Formula)
 The **`CO`-closed schema system**: the dense base, every instance of `CO`, and closure under
 every rule of `DerivationTree` that the empty-context schema form admits.
 
-`DerivationTree`'s `necessitation`, `temporal_necessitation` and `temporal_duality` constructors
+`DerivationTree`'s `necessitation`, `temporal_necessitation` and `time_reflection` constructors
 all require `Γ = []`, so no `CO` instance supplied as a *context* can ever appear under them. That
 is exactly the gap `co_not_derives_prior_U_gap` leaves open and this system closes: here the `CO`
 instances are axioms of the system, not assumptions, so they sit under every rule.
 
 `assumption` and `weakening` are absent because they are context rules with nothing to act on in
-the schema form. `temporal_duality` is present and must stay present: dropping it would silently
+the schema form. `time_reflection` is present and must stay present: dropping it would silently
 weaken what the theorem below claims.
 -/
 inductive CoDerivation : Formula → Type where
@@ -488,13 +488,13 @@ inductive CoDerivation : Formula → Type where
   | temporal_necessitation (φ : Formula) (d : CoDerivation φ) :
       CoDerivation (Formula.allFuture φ)
   /-- Temporal duality. -/
-  | temporal_duality (φ : Formula) (d : CoDerivation φ) : CoDerivation φ.swapTemporal
+  | time_reflection (φ : Formula) (d : CoDerivation φ) : CoDerivation φ.reflectTime
 
 /--
 **Soundness of the `CO`-closed system over the arc model.**
 
 The axiom case is `soundness_dense` applied to the one-step derivation; the `co` case is
-`LoopingDuration.lean`'s Lemma C; `temporal_duality` is the mirror lemma. The conclusion is
+`LoopingDuration.lean`'s Lemma C; `time_reflection` is the mirror lemma. The conclusion is
 universally quantified over the history and the time, which is what the three rule cases need.
 -/
 theorem coDerivation_sound (φ : Formula) (d : CoDerivation φ) :
@@ -510,7 +510,7 @@ theorem coDerivation_sound (φ : Formula) (d : CoDerivation φ) :
   | temporal_necessitation ψ _ ih =>
       intro τ t
       exact (Truth.future_iff ψ).mpr fun s _ => ih τ s
-  | temporal_duality ψ _ ih => intro τ t; exact truthAt_swapTemporal ψ ih τ t
+  | time_reflection ψ _ ih => intro τ t; exact truthAt_reflectTime ψ ih τ t
 
 /--
 **`CO` does not derive Prior-U (schema form).** The unqualified statement.

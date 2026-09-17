@@ -334,12 +334,12 @@ Derived via temporal duality on MF, analogous to `boxToPast`.
 -/
 @[tmLemma]
 def boxToBoxPast {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp (φ.allPast.box) := by
-  have mf : ⊢[fc] φ.swapTemporal.box.imp (φ.swapTemporal.allFuture.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_future φ.swapTemporal) (FrameClass.base_le fc)
-  have mf_swap : ⊢[fc] (φ.swapTemporal.box.imp (φ.swapTemporal.allFuture.box)).swapTemporal :=
-    DerivationTree.temporal_duality _ mf
-  simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-    Formula.swap_temporal_involution] at mf_swap
+  have mf : ⊢[fc] φ.reflectTime.box.imp (φ.reflectTime.allFuture.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_future φ.reflectTime) (FrameClass.base_le fc)
+  have mf_swap : ⊢[fc] (φ.reflectTime.box.imp (φ.reflectTime.allFuture.box)).reflectTime :=
+    DerivationTree.time_reflection _ mf
+  simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+    Formula.reflect_time_involution] at mf_swap
   exact mf_swap
 
 /--
@@ -584,16 +584,16 @@ From TF on `□◇φ`, derive `H□◇φ` via temporal duality.
 def boxDiamondToPastBoxDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.diamond.box.imp (φ.diamond.box.allPast) := by
   -- Apply TF to swapped temporal version
-  have tf_swap : ⊢[fc] φ.diamond.box.swapTemporal.imp
-                    (φ.diamond.box.swapTemporal.allFuture) :=
-    boxDiamondToFutureBoxDiamond φ.swapTemporal
+  have tf_swap : ⊢[fc] φ.diamond.box.reflectTime.imp
+                    (φ.diamond.box.reflectTime.allFuture) :=
+    boxDiamondToFutureBoxDiamond φ.reflectTime
   -- Apply temporal duality
-  have td : ⊢[fc] (φ.diamond.box.swapTemporal.imp
-                φ.diamond.box.swapTemporal.allFuture).swapTemporal :=
-    DerivationTree.temporal_duality _ tf_swap
+  have td : ⊢[fc] (φ.diamond.box.reflectTime.imp
+                φ.diamond.box.reflectTime.allFuture).reflectTime :=
+    DerivationTree.time_reflection _ tf_swap
   -- Simplify: swap(swap x) = x
-  simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-    Formula.swap_temporal_involution] at td
+  simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+    Formula.reflect_time_involution] at td
   exact td
 
 /--
@@ -664,16 +664,16 @@ at all past times and A holds at all past times, then B must hold at all past ti
 noncomputable def pastKDistFromFuture {fc : FrameClass} (A B : Formula) :
     ⊢[fc] (A.imp B).allPast.imp (A.allPast.imp B.allPast) := by
   -- Apply futureKDist to swapped formulas
-  have fk : ⊢[fc] (A.swapTemporal.imp B.swapTemporal).allFuture.imp
-               (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture) :=
-    futureKDist A.swapTemporal B.swapTemporal
+  have fk : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
+               (A.reflectTime.allFuture.imp B.reflectTime.allFuture) :=
+    futureKDist A.reflectTime B.reflectTime
   -- Apply temporal duality
-  have td : ⊢[fc] ((A.swapTemporal.imp B.swapTemporal).allFuture.imp
-                (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture)).swapTemporal :=
-    DerivationTree.temporal_duality _ fk
+  have td : ⊢[fc] ((A.reflectTime.imp B.reflectTime).allFuture.imp
+                (A.reflectTime.allFuture.imp B.reflectTime.allFuture)).reflectTime :=
+    DerivationTree.time_reflection _ fk
   -- Simplify: swap(swap x) = x
-  simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-    Formula.swap_temporal_involution] at td
+  simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+    Formula.reflect_time_involution] at td
   exact td
 
 /--
@@ -684,7 +684,7 @@ If φ is possible, then φ is always possible — at every time in the history.
 **Derivation**:
 1. `modal5`: `◇φ → □◇φ` (the S5 characteristic axiom supplies the lifting step)
 2. `temporalFutureDerived` (TF): `□◇φ → G□◇φ`
-3. TF under `temporal_duality` (TD): `□◇φ → H□◇φ`
+3. TF under `time_reflection` (TD): `□◇φ → H□◇φ`
 4. `modal_t` (MT) strips each box, and the three temporal components are combined
    into `△◇φ = H◇φ ∧ ◇φ ∧ G◇φ`
 
@@ -711,16 +711,16 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
   -- We can derive: □◇φ → H□◇φ from TD (temporal duality on TF)
   have td : ⊢[fc] φ.diamond.box.imp φ.diamond.box.allPast := by
     -- Apply TF to swapped temporal version
-    have tf_swap : ⊢[fc] φ.diamond.box.swapTemporal.imp
-                      (φ.diamond.box.swapTemporal.allFuture) :=
-      temporalFutureDerived φ.diamond.swapTemporal
+    have tf_swap : ⊢[fc] φ.diamond.box.reflectTime.imp
+                      (φ.diamond.box.reflectTime.allFuture) :=
+      temporalFutureDerived φ.diamond.reflectTime
     -- Apply temporal duality
-    have td_result : ⊢[fc] (φ.diamond.box.swapTemporal.imp
-                          φ.diamond.box.swapTemporal.allFuture).swapTemporal :=
-      DerivationTree.temporal_duality _ tf_swap
+    have td_result : ⊢[fc] (φ.diamond.box.reflectTime.imp
+                          φ.diamond.box.reflectTime.allFuture).reflectTime :=
+      DerivationTree.time_reflection _ tf_swap
     -- Simplify: swap(swap x) = x
-    simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-    Formula.swap_temporal_involution] at td_result
+    simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+    Formula.reflect_time_involution] at td_result
     exact td_result
   -- Now build the components of △◇φ = H◇φ ∧ ◇φ ∧ G◇φ
   -- We need: ◇φ → H◇φ, ◇φ → ◇φ, ◇φ → G◇φ
@@ -734,16 +734,16 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
     have mt : ⊢[fc] φ.diamond.box.imp φ.diamond := boxToPresent φ.diamond
     -- We need H(□◇φ → ◇φ) to apply past K distribution
     -- Build this by applying temporal_k to the swapped formula, then swap back
-    have mt_swap : ⊢[fc] φ.diamond.box.swapTemporal.imp φ.diamond.swapTemporal :=
-      boxToPresent φ.diamond.swapTemporal
-    have future_mt_swap : ⊢[fc] (φ.diamond.box.swapTemporal.imp φ.diamond.swapTemporal).allFuture :=
+    have mt_swap : ⊢[fc] φ.diamond.box.reflectTime.imp φ.diamond.reflectTime :=
+      boxToPresent φ.diamond.reflectTime
+    have future_mt_swap : ⊢[fc] (φ.diamond.box.reflectTime.imp φ.diamond.reflectTime).allFuture :=
       DerivationTree.temporal_necessitation _ mt_swap
     have past_mt_raw :
-      ⊢[fc] ((φ.diamond.box.swapTemporal.imp φ.diamond.swapTemporal).allFuture).swapTemporal :=
-      DerivationTree.temporal_duality _ future_mt_swap
-    -- Simplify using swap_temporal_diamond and swap_temporal_involution
+      ⊢[fc] ((φ.diamond.box.reflectTime.imp φ.diamond.reflectTime).allFuture).reflectTime :=
+      DerivationTree.time_reflection _ future_mt_swap
+    -- Simplify using reflect_time_diamond and reflect_time_involution
     -- The key: swap(G(...)) = H(swap(...)), and swap is involutive
-    -- swap(◇ψ) = ◇(swap ψ) by swap_temporal_diamond
+    -- swap(◇ψ) = ◇(swap ψ) by reflect_time_diamond
     -- swap(□ψ) = □(swap ψ) similarly (box commutes with swap)
     -- So: swap(G(□◇(swap φ) → ◇(swap φ))) = H(□◇φ → ◇φ)
     have past_mt : ⊢[fc] (φ.diamond.box.imp φ.diamond).allPast := by
@@ -751,11 +751,11 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
       show ⊢[fc] (φ.diamond.box.imp φ.diamond).allPast
       -- past_mt_raw has type that simplifies to what we need
       have eq1 :
-        ((φ.diamond.box.swapTemporal.imp φ.diamond.swapTemporal).allFuture).swapTemporal =
+        ((φ.diamond.box.reflectTime.imp φ.diamond.reflectTime).allFuture).reflectTime =
         (φ.diamond.box.imp φ.diamond).allPast := by
         -- Expand definitions and apply involution/commutation lemmas
-        simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
-    Formula.swap_temporal_involution]
+        simp only [Formula.reflectTime, Formula.reflect_time_all_future,
+    Formula.reflect_time_involution]
       rw [← eq1]
       exact past_mt_raw
     -- Use past K distribution: H(□◇φ → ◇φ) → (H□◇φ → H◇φ)
@@ -798,7 +798,7 @@ P5: `◇▽φ → △◇φ` (persistent possibility)
 **Implementation Status**: FULLY PROVEN (zero sorry)
 - All components proven as of Phase 3 completion
 - Uses `modal5` (`◇φ → □◇φ`, the S5 characteristic axiom derived from MB + diamond4)
-- Persistence lemma proven using `swap_temporal_diamond` for formula simplification
+- Persistence lemma proven using `reflect_time_diamond` for formula simplification
 - Past component: temporal duality + past K distribution
 - Future component: temporal K + future K distribution
 

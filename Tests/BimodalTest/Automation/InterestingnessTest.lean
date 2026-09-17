@@ -296,7 +296,7 @@ Verify that derived operator patterns are correctly detected.
     mpCount := 2
     necessitationCount := 1
     temporalNecessitationCount := 1
-    temporalDualityCount := 0
+    timeReflectionCount := 0
     weakeningCount := 0
   }
   let result := computeInterestingness φ (some proofData) (some rp)

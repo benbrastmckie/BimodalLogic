@@ -30,7 +30,7 @@ to another.
 - `TruthIso`: the bijective special case of `TruthCorr`, whose times reindex by an order
   isomorphism and whose world histories reindex by an equivalence
 - `TruthAntiIso`: the order-reversing twin of `TruthIso`, which transports truth along
-  `Formula.swapTemporal`
+  `Formula.reflectTime`
 
 ## Main Results
 
@@ -404,10 +404,10 @@ end Truth
 
 `TruthIso` transports truth along an *order-preserving* reindexing of time. A time **reversal**
 is order-reversing, so it cannot be one — and the formula it transports to is not `φ` but
-`φ.swapTemporal`, since reversing time exchanges `untl` with `snce`. `TruthAntiIso` is that
+`φ.reflectTime`, since reversing time exchanges `untl` with `snce`. `TruthAntiIso` is that
 twin, and `truthAt_of_truthAntiIso` its generic lemma.
 
-`Formula.swapTemporal` (`Syntax/Formula.lean`) fixes `atom` and `bot`, distributes through `imp`
+`Formula.reflectTime` (`Syntax/Formula.lean`) fixes `atom` and `bot`, distributes through `imp`
 and `box`, and exchanges `untl` with `snce` — exactly the six-case shape the twin's induction
 needs, one clause per constructor with no residue.
 -/
@@ -442,32 +442,32 @@ namespace Truth
 **The generic truth transport across an anti-isomorphism.**
 
 The order-reversing twin of `truthAt_of_truthCorr` (at the `TruthIso` instance), concluding at
-`φ.swapTemporal`. Its `atom`,
-`bot`, `imp` and `box` cases are the same arguments, since `swapTemporal` is the identity on the
+`φ.reflectTime`. Its `atom`,
+`bot`, `imp` and `box` cases are the same arguments, since `reflectTime` is the identity on the
 first two and structural on the second two; only `untl` and `snce` differ, and they differ by
 exchanging places and reading every bound through `dur_rev` instead of `OrderIso.lt_iff_lt`.
 
 Note on `swap_norm`: the plan for this work specified writing the body against that simp set.
-`swap_norm` collects the eleven `Formula.swap_temporal_*` lemmas, which push `swapTemporal`
+`swap_norm` collects the eleven `Formula.reflect_time_*` lemmas, which push `reflectTime`
 through the **derived** operators (`neg`, `diamond`, `someFuture`, `next`, …). A six-constructor
-induction needs the *base* equations of `Formula.swapTemporal` instead, and those are not in the
+induction needs the *base* equations of `Formula.reflectTime` instead, and those are not in the
 set — nor should they be, since adding them would make `swap_norm` unfold the definition at every
-call site. `simp only [Formula.swapTemporal, …]` is therefore what the base cases use; `swap_norm`
+call site. `simp only [Formula.reflectTime, …]` is therefore what the base cases use; `swap_norm`
 remains the right tool for a caller reasoning about a derived operator.
 -/
 theorem truthAt_of_truthAntiIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
     (I : TruthAntiIso M M') (φ : Formula) (τ : WorldHistory F) (t : F.Duration) :
-    TruthAt M τ t φ ↔ TruthAt M' (I.hist τ) (I.dur t) φ.swapTemporal := by
+    TruthAt M τ t φ ↔ TruthAt M' (I.hist τ) (I.dur t) φ.reflectTime := by
   induction φ generalizing τ t with
   | atom p =>
-      rw [Formula.swapTemporal]
+      rw [Formula.reflectTime]
       exact I.atom τ t p
-  | bot => simp [Formula.swapTemporal]
+  | bot => simp [Formula.reflectTime]
   | imp φ ψ ihφ ihψ =>
-      simp only [Formula.swapTemporal, imp_iff]
+      simp only [Formula.reflectTime, imp_iff]
       rw [ihφ τ t, ihψ τ t]
   | box φ ih =>
-      simp only [Formula.swapTemporal, box_iff]
+      simp only [Formula.reflectTime, box_iff]
       constructor
       · intro h σ'
         obtain ⟨τ', hτ'⟩ := I.hist.surjective σ'
@@ -477,7 +477,7 @@ theorem truthAt_of_truthAntiIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskM
       · intro h σ
         exact (ih σ t).mpr (h (I.hist σ))
   | untl ψ φ ihψ ihφ =>
-      simp only [Formula.swapTemporal, untl_iff, snce_iff]
+      simp only [Formula.reflectTime, untl_iff, snce_iff]
       constructor
       · rintro ⟨s, hts, hs, hg⟩
         refine ⟨I.dur s, (I.dur_rev s t).mpr hts, (ihφ τ s).mp hs, ?_⟩
@@ -490,7 +490,7 @@ theorem truthAt_of_truthAntiIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskM
         intro r h1 h2
         exact (ihψ τ r).mpr (hg' (I.dur r) ((I.dur_rev s r).mpr h2) ((I.dur_rev r t).mpr h1))
   | snce ψ φ ihψ ihφ =>
-      simp only [Formula.swapTemporal, snce_iff, untl_iff]
+      simp only [Formula.reflectTime, snce_iff, untl_iff]
       constructor
       · rintro ⟨s, hst, hs, hg⟩
         refine ⟨I.dur s, (I.dur_rev t s).mpr hst, (ihφ τ s).mp hs, ?_⟩

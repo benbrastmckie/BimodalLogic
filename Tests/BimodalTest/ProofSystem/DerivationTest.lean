@@ -164,10 +164,10 @@ example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
   DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 -- Test: Temporal duality swaps allPast/allFuture
--- If ⊢ φ then ⊢ swapTemporal φ (using connect_future as the base derivation)
+-- If ⊢ φ then ⊢ reflectTime φ (using connect_future as the base derivation)
 example : ⊢ ((Formula.atomS "p").imp (Formula.allFuture
-    (Formula.atomS "p").somePast)).swapTemporal :=
-  DerivationTree.temporal_duality _ (DerivationTree.axiom [] _ (Axiom.connect_future _) trivial)
+    (Formula.atomS "p").somePast)).reflectTime :=
+  DerivationTree.time_reflection _ (DerivationTree.axiom [] _ (Axiom.connect_future _) trivial)
 
 -- The above should derive: ⊢ p → H(F(p)) (swapped from p → G(P(p)))
 

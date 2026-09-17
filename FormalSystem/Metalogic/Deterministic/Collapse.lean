@@ -91,13 +91,13 @@ theorem detTNec {φ : PlusFormula} (h : DetDerivable fc [] φ) :
 /-- **Past temporal necessitation**, derived: from `⊢ φ` conclude `⊢ Hφ`. There is no `H`-rule in
 the system — the past half of every temporal principle is obtained by temporal duality, exactly as
 in TM. Three rule applications: dualize, `G`-necessitate, dualize back, the last step landing on
-`Hφ` because `swapTemporal` is an involution. -/
+`Hφ` because `reflectTime` is an involution. -/
 theorem detHNec {φ : PlusFormula} (h : DetDerivable fc [] φ) :
     DetDerivable fc [] (PlusFormula.allPast φ) := by
-  have h1 : DetDerivable fc [] φ.swapTemporal := h.elim fun d => ⟨.temporal_duality φ d⟩
-  have h3 : DetDerivable fc [] (PlusFormula.allFuture φ.swapTemporal).swapTemporal :=
-    (detTNec h1).elim fun d => ⟨.temporal_duality _ d⟩
-  rwa [PlusFormula.swap_temporal_all_future, PlusFormula.swap_temporal_involution] at h3
+  have h1 : DetDerivable fc [] φ.reflectTime := h.elim fun d => ⟨.time_reflection φ d⟩
+  have h3 : DetDerivable fc [] (PlusFormula.allFuture φ.reflectTime).reflectTime :=
+    (detTNec h1).elim fun d => ⟨.time_reflection _ d⟩
+  rwa [PlusFormula.reflect_time_all_future, PlusFormula.reflect_time_involution] at h3
 
 /-! ## Layer 1: propositional glue, imported by substitution
 

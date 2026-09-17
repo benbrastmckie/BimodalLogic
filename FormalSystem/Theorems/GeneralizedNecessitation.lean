@@ -87,20 +87,20 @@ Derived past necessitation rule.
 If `⊢ φ`, then `⊢ Hφ` (where H is the "allPast" operator).
 
 This is derived via temporal duality:
-1. Apply `temporal_duality` to get `⊢ swapTemporal(φ)`
-2. Apply `temporal_necessitation` to get `⊢ G(swapTemporal(φ))`
-3. Apply `temporal_duality` again
-4. Simplify using `swap_temporal_involution` to get `⊢ Hφ`
+1. Apply `time_reflection` to get `⊢ reflectTime(φ)`
+2. Apply `temporal_necessitation` to get `⊢ G(reflectTime(φ))`
+3. Apply `time_reflection` again
+4. Simplify using `reflect_time_involution` to get `⊢ Hφ`
 -/
 noncomputable def pastNecessitation {fc : FrameClass} (φ : Formula)
     (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.allPast φ) := by
-  have h_swap : DerivationTree fc [] φ.swapTemporal := DerivationTree.temporal_duality _ d
-  have g_swap : DerivationTree fc [] φ.swapTemporal.allFuture :=
+  have h_swap : DerivationTree fc [] φ.reflectTime := DerivationTree.time_reflection _ d
+  have g_swap : DerivationTree fc [] φ.reflectTime.allFuture :=
     DerivationTree.temporal_necessitation _ h_swap
-  have final : DerivationTree fc [] φ.swapTemporal.allFuture.swapTemporal :=
-    DerivationTree.temporal_duality _ g_swap
-  simp only [Formula.swap_temporal_all_future,
-    Formula.swap_temporal_involution] at final
+  have final : DerivationTree fc [] φ.reflectTime.allFuture.reflectTime :=
+    DerivationTree.time_reflection _ g_swap
+  simp only [Formula.reflect_time_all_future,
+    Formula.reflect_time_involution] at final
   exact final
 
 /--
@@ -114,16 +114,16 @@ to the future K distribution axiom.
 noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
     DerivationTree fc [] ((A.imp B).allPast.imp (A.allPast.imp B.allPast)) := by
   -- Apply derived temp_k_dist to swapped formulas, already at `fc`
-  have fk_fc : ⊢[fc] (A.swapTemporal.imp B.swapTemporal).allFuture.imp
-               (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture) :=
-    tempKDistLocal A.swapTemporal B.swapTemporal
+  have fk_fc : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
+               (A.reflectTime.allFuture.imp B.reflectTime.allFuture) :=
+    tempKDistLocal A.reflectTime B.reflectTime
   -- Apply temporal duality
-  have td : DerivationTree fc [] ((A.swapTemporal.imp B.swapTemporal).allFuture.imp
-                (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture)).swapTemporal :=
-    DerivationTree.temporal_duality _ fk_fc
+  have td : DerivationTree fc [] ((A.reflectTime.imp B.reflectTime).allFuture.imp
+                (A.reflectTime.allFuture.imp B.reflectTime.allFuture)).reflectTime :=
+    DerivationTree.time_reflection _ fk_fc
   -- Simplify: swap(swap x) = x
-  simp only [Formula.swap_temporal_all_future,
-    Formula.swapTemporal, Formula.swap_temporal_involution] at td
+  simp only [Formula.reflect_time_all_future,
+    Formula.reflectTime, Formula.reflect_time_involution] at td
   exact td
 
 /--

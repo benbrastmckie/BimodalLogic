@@ -50,7 +50,7 @@ its possible pasts and its possible futures — and they are exactly what makes,
 
 **Derived, not constructors.** FS (`F⟐φ⁺ → ⟐Fφ⁺`) is `untl_paste` at `α⁻ := ⊤`; GS
 (`⊡Gφ⁺ → G⊡φ⁺`) is its contrapositive; the past mirrors (PS with the conjuncts exchanged, and
-SS `(α⁺ S ⟐φ⁻) → ⟐(α⁺ S φ⁻)`) are obtained by the temporal-duality rule, since `swapTemporal`
+SS `(α⁺ S ⟐φ⁻) → ⟐(α⁺ S φ⁻)`) are obtained by the temporal-duality rule, since `reflectTime`
 exchanges `IsPureFuture` and `IsPurePast`. `⊡`-necessitation is likewise a derived rule
 (necessitation for `□` followed by `box_stab`; `PlusLanguage/Derivation.lean`,
 `stabNecessitation`).

@@ -40,13 +40,13 @@ soundness (derivability implies standard-validity), we get a full characterizati
 
 ## Temporal Duality Discipline
 
-**The rule**: when a past statement is the `Formula.swapTemporal` image of a future one, prove
-the future form and obtain the past form by `Formula.swapTemporal` +
-`DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`; do not write the mirror
+**The rule**: when a past statement is the `Formula.reflectTime` image of a future one, prove
+the future form and obtain the past form by `Formula.reflectTime` +
+`DerivationTree.time_reflection` + `Formula.reflect_time_involution`; do not write the mirror
 by hand. `Algebraic/FlowFrame.lean`'s `pastTfDeriv` is the reference implementation: it proves
 a future-side syntactic theorem generically in its argument formula, applies it at the *swapped*
-argument, dualizes the whole derivation with `DerivationTree.temporal_duality`, then uses
-`swap_temporal_involution` (plus the `swap_temporal_*` simp set) to fold the double-swap back to
+argument, dualizes the whole derivation with `DerivationTree.time_reflection`, then uses
+`reflect_time_involution` (plus the `reflect_time_*` simp set) to fold the double-swap back to
 the original formula.
 
 **Worked example**: `WitnessSeed.lean`'s `allFutureBotImpNegDeriv` /
@@ -58,10 +58,10 @@ pattern verbatim and is wired into the shared witness-seed core
 second hand derivation through `pastNecessitation`/`pastKDist`.
 
 **The boundary the technique does not cross**: the rule applies to *closed* syntactic facts
-(`⊢[fc] φ`, no free context) — a `Formula.swapTemporal`-image of a provable formula is provable,
+(`⊢[fc] φ`, no free context) — a `Formula.reflectTime`-image of a provable formula is provable,
 full stop. It does **not** apply directly to a statement relative to a fixed, arbitrary MCS `M`
 (or a fixed `FMCS` family), because swapping the *formula* without also transporting `M` itself
-(via `Formula.swapTemporal '' M`, together with a proof that the image of an MCS is again an MCS)
+(via `Formula.reflectTime '' M`, together with a proof that the image of an MCS is again an MCS)
 proves a fact about a *different* set, not about `M`. Four mirror pairs surveyed during this
 discipline's rollout — `TemporalContent.lean`'s `f_content_iff_not_neg_in_g_content` /
 `p_content_iff_not_neg_in_h_content`, `TemporalCoherence.lean`'s
@@ -74,13 +74,13 @@ size of these four pairs. See the implementation plan's Phase 5 Reasoned Exclusi
 full per-pair evidence.
 
 **Order-theoretic mirrors are a separate case, handled separately**: where the "mirror" is a
-`<`/`>` order reversal rather than a `swapTemporal` image — the `limitSet`/`limitMCS` family in
+`<`/`>` order reversal rather than a `reflectTime` image — the `limitSet`/`limitMCS` family in
 `LimitMCS.lean` — this discipline does not apply at all. That duplication is closed by the
 `TemporalSide` parameter (`below`/`above`), landed in `LimitMCS.lean`: `limitFilter`, `limitSet`,
 `limitSet_consistent`, `limitUltrafilter`, `limitMCS` and its supporting theorems are each stated
 once, parameterized on it, with `limitFilterBelow`/`limitSetBelow`/`limitMCSBelow` surviving as
 unchanged thin specializations at `.below` and `limitFilterAbove`/`limitMCSAbove` newly available
-at `.above`. Not `swapTemporal`.
+at `.above`. Not `reflectTime`.
 
 ## Architecture
 

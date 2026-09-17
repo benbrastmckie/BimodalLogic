@@ -8,11 +8,11 @@
 // which is produced by the Lean exporter (interpreted via `lake env lean
 // --run`) with schema formulas extracted from the Axiom type index --
 // never hand-copied.
-// Stamped from live source at commit 79bd1794f (2026-09-07).
+// Stamped from live source at commit 1f15da212 (2026-09-17).
 // ============================================================================
 
-#let stamp-commit = "79bd1794f"
-#let stamp-date = "2026-09-07"
+#let stamp-commit = "1f15da212"
+#let stamp-date = "2026-09-17"
 
 #let machine-axiom-count = 45
 #let machine-rule-count = 7
@@ -72,7 +72,7 @@
   ("modus_ponens", "Γ ⊢[fc] φ → ψ; Γ ⊢[fc] φ", "Γ ⊢[fc] ψ", "—"),
   ("necessitation", "⊢[fc] φ", "⊢[fc] □φ", "empty context only (theorems)"),
   ("temporal_necessitation", "⊢[fc] φ", "⊢[fc] Gφ", "empty context only (theorems)"),
-  ("temporal_duality", "⊢[fc] φ", "⊢[fc] swapTemporal φ", "empty context only (theorems)"),
+  ("time_reflection", "⊢[fc] φ", "⊢[fc] reflectTime φ", "empty context only (theorems)"),
   ("weakening", "Γ ⊢[fc] φ", "Δ ⊢[fc] φ", "Γ ⊆ Δ"),
 )
 

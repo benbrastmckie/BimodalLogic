@@ -12,7 +12,7 @@ import FormalSystem.Init
 
 Declares the two dedicated simp sets that the truth layer tags its characterization lemmas with:
 `truth_norm` for the `TruthAt` equations and the `Truth.*_iff` family in
-`FormalSystem/Semantics/Truth.lean`, and `swap_norm` for the eleven `Formula.swap_temporal_*`
+`FormalSystem/Semantics/Truth.lean`, and `swap_norm` for the eleven `Formula.reflect_time_*`
 lemmas in `FormalSystem/Syntax/Formula.lean`.
 
 **Why this is a separate module.** `register_simp_attr` expands to an `initialize` block plus a
@@ -32,7 +32,7 @@ only**, no lemmas and no definitions.
 
 **Why these sets exist at all.** `truth_norm` gives the truth layer an on-demand handle on the
 whole characterization family, so a proof can open the normal form with `simp only [truth_norm]`
-without naming ten lemmas. `swap_norm` collects the `swap_temporal_*` family, only four of which
+without naming ten lemmas. `swap_norm` collects the `reflect_time_*` family, only four of which
 carry `@[simp]`, so the complete eleven-lemma family is reachable as one set at every use site.
 
 **There is no wrapper tactic, deliberately.** A `truth_simp` macro expanding to
@@ -50,8 +50,8 @@ goal about a compound formula into the corresponding meta-level connective. Use 
 `simp only [truth_norm]`. -/
 register_simp_attr truth_norm
 
-/-- Simp set for the eleven `Formula.swap_temporal_*` lemmas of
-`FormalSystem/Syntax/Formula.lean`, which push `Formula.swapTemporal` through the connectives.
+/-- Simp set for the eleven `Formula.reflect_time_*` lemmas of
+`FormalSystem/Syntax/Formula.lean`, which push `Formula.reflectTime` through the connectives.
 Four of the eleven also carry `@[simp]`; this set makes the whole family reachable at once. Use
 as `simp only [swap_norm]`. -/
 register_simp_attr swap_norm

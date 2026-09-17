@@ -312,30 +312,30 @@ def botQuot : LindenbaumAlg := toQuot Formula.bot
 /-!
 ## Temporal Duality (sigma)
 
-We lift the `swapTemporal` operation to the quotient, establishing temporal duality
+We lift the `reflectTime` operation to the quotient, establishing temporal duality
 on the Lindenbaum algebra. This is essential for the STSA (Shift-closed Tense S5 Algebra) structure.
 -/
 
 /--
-Derivability respects swapTemporal: if `⊢ φ → ψ`, then `⊢ swapTemporal(φ) → swapTemporal(ψ)`.
+Derivability respects reflectTime: if `⊢ φ → ψ`, then `⊢ reflectTime(φ) → reflectTime(ψ)`.
 
-This follows from the temporal_duality inference rule.
+This follows from the time_reflection inference rule.
 -/
-theorem swap_temporal_derives {φ ψ : Formula} (h : Derives φ ψ) :
-    Derives φ.swapTemporal ψ.swapTemporal := by
+theorem reflect_time_derives {φ ψ : Formula} (h : Derives φ ψ) :
+    Derives φ.reflectTime ψ.reflectTime := by
   unfold Derives at *
   obtain ⟨d⟩ := h
-  have d_swap : DerivationTree FrameClass.Base [] (φ.imp ψ).swapTemporal :=
-    DerivationTree.temporal_duality (φ.imp ψ) d
-  simp only [Formula.swapTemporal] at d_swap
+  have d_swap : DerivationTree FrameClass.Base [] (φ.imp ψ).reflectTime :=
+    DerivationTree.time_reflection (φ.imp ψ) d
+  simp only [Formula.reflectTime] at d_swap
   exact ⟨d_swap⟩
 
 /--
-Provable equivalence respects swapTemporal: `φ ≈ₚ ψ → swapTemporal(φ) ≈ₚ swapTemporal(ψ)`.
+Provable equivalence respects reflectTime: `φ ≈ₚ ψ → reflectTime(φ) ≈ₚ reflectTime(ψ)`.
 -/
-theorem provEquiv_swap_temporal_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
-    φ.swapTemporal ≈ₚ ψ.swapTemporal :=
-  ⟨swap_temporal_derives h.1, swap_temporal_derives h.2⟩
+theorem provEquiv_reflect_time_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
+    φ.reflectTime ≈ₚ ψ.reflectTime :=
+  ⟨reflect_time_derives h.1, reflect_time_derives h.2⟩
 
 /--
 Lifted temporal duality (sigma) on the Lindenbaum algebra.
@@ -344,8 +344,8 @@ This swaps G (allFuture) and H (allPast) operators throughout a formula,
 implementing the temporal duality principle.
 -/
 def sigmaQuot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => toQuot φ.swapTemporal)
-    (fun _ _ h => Quotient.sound (provEquiv_swap_temporal_congr h))
+  Quotient.lift (fun φ => toQuot φ.reflectTime)
+    (fun _ _ h => Quotient.sound (provEquiv_reflect_time_congr h))
 
 /--
 Sigma is an involution: applying it twice gives the identity.
@@ -353,8 +353,8 @@ Sigma is an involution: applying it twice gives the identity.
 theorem sigma_quot_involution (a : LindenbaumAlg) : sigmaQuot (sigmaQuot a) = a := by
   induction a using Quotient.ind
   rename_i φ
-  change toQuot (φ.swapTemporal.swapTemporal) = toQuot φ
-  rw [Formula.swap_temporal_involution]
+  change toQuot (φ.reflectTime.reflectTime) = toQuot φ
+  rw [Formula.reflect_time_involution]
 
 /--
 Sigma respects negation: `σ(¬a) = ¬σ(a)`.
@@ -363,8 +363,8 @@ theorem sigma_quot_neg (a : LindenbaumAlg) :
     sigmaQuot (negQuot a) = negQuot (sigmaQuot a) := by
   induction a using Quotient.ind
   rename_i φ
-  change toQuot (φ.neg.swapTemporal) = negQuot (toQuot (φ.swapTemporal))
-  simp only [Formula.neg, Formula.swapTemporal]
+  change toQuot (φ.neg.reflectTime) = negQuot (toQuot (φ.reflectTime))
+  simp only [Formula.neg, Formula.reflectTime]
   rfl
 
 /--
@@ -375,8 +375,8 @@ theorem sigma_quot_sup (a b : LindenbaumAlg) :
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  change toQuot ((φ.or ψ).swapTemporal) = orQuot (toQuot φ.swapTemporal) (toQuot ψ.swapTemporal)
-  simp only [Formula.or, Formula.neg, Formula.swapTemporal]
+  change toQuot ((φ.or ψ).reflectTime) = orQuot (toQuot φ.reflectTime) (toQuot ψ.reflectTime)
+  simp only [Formula.or, Formula.neg, Formula.reflectTime]
   rfl
 
 /--
@@ -386,8 +386,8 @@ theorem sigma_quot_box (a : LindenbaumAlg) :
     sigmaQuot (boxQuot a) = boxQuot (sigmaQuot a) := by
   induction a using Quotient.ind
   rename_i φ
-  change toQuot (φ.box.swapTemporal) = boxQuot (toQuot φ.swapTemporal)
-  simp only [Formula.swapTemporal]
+  change toQuot (φ.box.reflectTime) = boxQuot (toQuot φ.reflectTime)
+  simp only [Formula.reflectTime]
   rfl
 
 end FormalSystem.Metalogic.Algebraic.LindenbaumQuotient

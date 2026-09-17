@@ -37,7 +37,7 @@ so `Semantics.validOn_neg_nextTop_iff` applies directly.
 ## Both sandwiches are over `AxiomSet`, and deliberately so
 
 `Mod` of the *theorem* set is not attempted anywhere in this file. It would require a single-frame
-`F.ValidOn φ → F.ValidOn φ.swapTemporal` closure lemma for the `temporal_duality` rule; no such
+`F.ValidOn φ → F.ValidOn φ.reflectTime` closure lemma for the `time_reflection` rule; no such
 lemma exists and it is false in general, since a frame need not be closed under time reversal.
 Since `AxiomSet fc ⊆ {φ | Derivable fc [] φ}`, the `AxiomSet` sandwich is the stronger statement
 anyway. See `Semantics/Correspondence/Galois.lean`'s "Reified sets" section.

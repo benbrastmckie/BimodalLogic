@@ -249,7 +249,7 @@ private noncomputable def deductionWithMem {fc : FrameClass} (Γ' : Context) (A 
       simp at hA
   | DerivationTree.temporal_necessitation ψ h_deriv =>
       simp at hA
-  | DerivationTree.temporal_duality ψ h_deriv =>
+  | DerivationTree.time_reflection ψ h_deriv =>
       simp at hA
   | DerivationTree.weakening Γ'' _ ψ h1 h2 =>
       haveI : Decidable (A ∈ Γ'') := Classical.propDecidable _

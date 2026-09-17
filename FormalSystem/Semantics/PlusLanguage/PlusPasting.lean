@@ -29,7 +29,7 @@ with the purity side conditions:
 | **FS** | `F⟐φ⁺ → ⟐Fφ⁺` | `future_dstab_valid` (= US at `α⁻ := ⊤`) |
 | **GS** | `⊡Gφ⁺ → G⊡φ⁺` | `stab_allFuture_valid` (the contrapositive reading of FS) |
 
-together with the two **past mirrors** that temporal duality needs (`swapTemporal` exchanges
+together with the two **past mirrors** that temporal duality needs (`reflectTime` exchanges
 `IsPureFuture` and `IsPurePast`):
 
 | Name | Schema | Lean |
@@ -217,7 +217,7 @@ theorem paste_valid (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 
 /-- **PS with the conjuncts exchanged**: `⟐ψ⁻ ∧ ⟐φ⁺ → ⟐(ψ⁻ ∧ φ⁺)` for pure-past `ψ⁻` and
 pure-future `φ⁺`. This is exactly the temporal dual of `paste_valid` (the `paste` axiom's
-`swapTemporal` instance), proved by the same pasting argument. -/
+`reflectTime` instance), proved by the same pasting argument. -/
 theorem paste_valid' (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     {ψ φ : PlusFormula} (hψ : IsPurePast ψ) (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (dstab ψ) (.imp (dstab φ) (dstab (ψ.and φ)))) := by

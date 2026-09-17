@@ -187,36 +187,36 @@ Phase-start script run. If the set differs, re-quote whatever the live run repor
 
 ---
 
-### Phase 2: Atomic Lean identifier rename (TD -> TR families) [NOT STARTED]
+### Phase 2: Atomic Lean identifier rename (TD -> TR families) [COMPLETED]
 
 **Goal**: Rename every in-scope identifier across `FormalSystem/`, `Tests/` and the name-bearing
 generated/typst artifacts in one green commit.
 
 **Tasks**:
-- [ ] Re-grep counts (exclude `.lake`, `.git`, `specs`, `.claude`, `agent-system`, `Boneyard`) and write
+- [x] Re-grep counts (exclude `.lake`, `.git`, `specs`, `.claude`, `agent-system`, `Boneyard`) and write
       the rename map to `specs/584_reconcile_lean_tree_with_paper_vocabulary/rename-map.tsv`
       (old token -> new token, one per line, including every compound such as `ofPlus_swapTemporal`,
       `atomize_swapTemporal`, `substPlus_swapTemporal`, `erasePlus_swapTemporal`, `truthAt_swapTemporal`,
       `swapTemporal_injective`, `StarIsPureFuture.swapTemporal`, `temporal_duality_height_succ`,
       `temporalDualityCount`) plus an exclusion list (`temporalDualityNeg`, `temporalDualityNegRev`).
-- [ ] Write a scratch rename script (python, in the scratchpad, not committed) that rewrites identifier
+- [x] Write a scratch rename script (python, in the scratchpad, not committed) that rewrites identifier
       tokens by whole-token match (identifier chars `[A-Za-z0-9_'.]` as boundaries, each dotted
       component matched). It skips string literals, except `MachineAppendixMain.lean`'s
       `name`/`conclusion` strings. It rewrites backticked identifiers inside comments and docstrings,
       and leaves bare-prose words alone.
-- [ ] Apply it to `FormalSystem/**/*.lean` (excluding `Boneyard/`) and `Tests/**/*.lean`. Also update
+- [x] Apply it to `FormalSystem/**/*.lean` (excluding `Boneyard/`) and `Tests/**/*.lean`. Also update
       `swapTemporal` mentions in `scripts/swap_untl_snce.py` doc text only if they name the Lean
-      function.
-- [ ] Update backticked identifier references in `typst/**/*.typ` and `typst/SYNC-MAP.md` (row 119, the
+      function. *(deviation: altered — the two `swap_untl_snce.py` hits are historical migration pattern data, kept; backticked identifier mentions in docs/** and READMEs were also renamed in this batch)*
+- [x] Update backticked identifier references in `typst/**/*.typ` and `typst/SYNC-MAP.md` (row 119, the
       rules list at ~170). Regenerate `typst/generated/machine-appendix.{jsonl,typ}` and
-      `typst/generated/status.typ` via their generator scripts.
-- [ ] Add a one-line comment at each kept wire-tag string saying the tag is byte-stable across the
+      `typst/generated/status.typ` via their generator scripts. *(deviation: altered — status.typ carries no renamed names and was left untouched; machine-appendix regenerated)*
+- [x] Add a one-line comment at each kept wire-tag string saying the tag is byte-stable across the
       rename (no task numbers).
-- [ ] Gates: `lake build`; `lake build BimodalTest` (or `lake test`); the CI lean_exe loop
+- [x] Gates: `lake build`; `lake build BimodalTest` (or `lake test`); the CI lean_exe loop
       (`for root in $(grep -oP 'root\s*:=\s*`\K[A-Za-z0-9_.]+' lakefile.lean); do lake build "$root"; done`);
       `bash scripts/check-evidence-probes.sh`; `bash scripts/typst-sync-check.sh`; full
-      `bash scripts/check-module-invariants.sh` (C2/C14 unchanged).
-- [ ] Residual grep: zero hits for `swapTemporal|swap_temporal|temporal_duality|TemporalDuality` and for
+      `bash scripts/check-module-invariants.sh` (C2/C14 unchanged). *(deviation: altered — `check-evidence-probes.sh` fails 4/4 on pre-existing drift unrelated to the rename (`ConvexHistory`, `FrameOver.ofReflective`; no probe mentions a renamed name); `typst-sync-check.sh` reports one violation for `lakefile.toml` in `p4-dataset-pipeline.typ`, introduced by the concurrent lakefile migration, not this rename; the INV inventory block was regenerated for the added wire-tag comments. lake build + all 13 lean_exe roots + BimodalTest green; C2/C14 PASS)*
+- [x] Residual grep: zero hits for `swapTemporal|swap_temporal|temporal_duality|TemporalDuality` and for
       `temporalDuality` other than `temporalDualityNeg*`, in `FormalSystem/` (non-Boneyard) and
       `Tests/` code, except the enumerated wire-tag string literals.
 

@@ -43,13 +43,13 @@ Modal T axiom (MT) is self-dual under swap: `box φ -> φ` swaps to `box(swap φ
 Since `box(swap φ) -> swap φ` is still an instance of MT (just with swapped subformula),
 and MT is valid, this is immediate.
 
-**Proof**: The swapped form is `(box φ.swapTemporal).imp φ.swapTemporal`.
+**Proof**: The swapped form is `(box φ.reflectTime).imp φ.reflectTime`.
 At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t) specifically.
 -/
 theorem mt_swap_valid (φ : Formula) :
-    ValidIn FrameClass.Base ((Formula.box φ).imp φ).swapTemporal := by
+    ValidIn FrameClass.Base ((Formula.box φ).imp φ).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, truth_norm]
+  simp only [Formula.reflectTime, truth_norm]
   intro h_box_swap_φ
   exact h_box_swap_φ τ
 
@@ -64,9 +64,9 @@ This is still M4, just applied to swapped formula.
 holds at all world histories at t (trivially, as this is a global property).
 -/
 theorem m4_swap_valid (φ : Formula) :
-    ValidIn FrameClass.Base ((Formula.box φ).imp (Formula.box (Formula.box φ))).swapTemporal := by
+    ValidIn FrameClass.Base ((Formula.box φ).imp (Formula.box (Formula.box φ))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, truth_norm]
+  simp only [Formula.reflectTime, truth_norm]
   intro h_box_swap_φ σ ρ
   exact h_box_swap_φ ρ
 
@@ -81,9 +81,9 @@ at σ.
 The diamond means "there exists some world history where it holds". We have τ witnessing this.
 -/
 theorem mb_swap_valid (φ : Formula) :
-    ValidIn FrameClass.Base (φ.imp (Formula.box φ.diamond)).swapTemporal := by
+    ValidIn FrameClass.Base (φ.imp (Formula.box φ.diamond)).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.diamond, Formula.neg]
+  simp only [Formula.reflectTime, Formula.diamond, Formula.neg]
   simp only [truth_norm]
   intro h_swap_φ σ h_all_not
   exact h_all_not τ h_swap_φ
@@ -101,26 +101,26 @@ condition is required.
 -/
 theorem mf_swap_valid (φ : Formula) :
     ValidIn FrameClass.Base
-      ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))).swapTemporal := by
+      ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_box_swap σ s h_s_lt_t
   have h_at_shifted := h_box_swap (σ.timeShift (s - t))
-  exact (TimeShift.timeShift_preserves_truth M σ t s φ.swapTemporal).mp h_at_shifted
+  exact (TimeShift.timeShift_preserves_truth M σ t s φ.reflectTime).mp h_at_shifted
 
 /-- Propositional K swaps to itself at swapped subformulas: swap distributes over `imp`, and
 `TruthAt` at an implication is definitionally an arrow, so this is the K combinator. -/
 theorem prop_k_swap_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
-      ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))).swapTemporal := by
+      ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))).reflectTime := by
   intro F _ M τ t
   intro h_abc h_ab h_a
   exact h_abc h_a (h_ab h_a)
 
 /-- Propositional S swaps to itself at swapped subformulas: the K combinator of the pair. -/
 theorem prop_s_swap_valid (φ ψ : Formula) :
-    ValidIn FrameClass.Base (φ.imp (ψ.imp φ)).swapTemporal := by
+    ValidIn FrameClass.Base (φ.imp (ψ.imp φ)).reflectTime := by
   intro F _ M τ t
   intro h_a _
   exact h_a
@@ -129,9 +129,9 @@ theorem prop_s_swap_valid (φ ψ : Formula) :
 swap touches no modal operator. The `box`/`diamond` pair is the S5 collapse over world histories,
 which does not mention time at all. -/
 theorem modal_5_collapse_swap_valid (φ : Formula) :
-    ValidIn FrameClass.Base (φ.box.diamond.imp φ.box).swapTemporal := by
+    ValidIn FrameClass.Base (φ.box.diamond.imp φ.box).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.diamond, Formula.neg]
+  simp only [Formula.reflectTime, Formula.diamond, Formula.neg]
   simp only [truth_norm]
   intro h_diamond_box σ
   by_contra h_not_psi
@@ -142,7 +142,7 @@ theorem modal_5_collapse_swap_valid (φ : Formula) :
 
 /-- Ex falso swaps to itself at a swapped consequent. -/
 theorem ex_falso_swap_valid (φ : Formula) :
-    ValidIn FrameClass.Base (Formula.bot.imp φ).swapTemporal := by
+    ValidIn FrameClass.Base (Formula.bot.imp φ).reflectTime := by
   intro F _ M τ t
   intro h_bot
   exfalso
@@ -151,13 +151,13 @@ theorem ex_falso_swap_valid (φ : Formula) :
 /-- Peirce's law swaps to itself at swapped subformulas; the proof is the classical case split on
 whether the swapped antecedent holds. -/
 theorem peirce_swap_valid (φ ψ : Formula) :
-    ValidIn FrameClass.Base (((φ.imp ψ).imp φ).imp φ).swapTemporal := by
+    ValidIn FrameClass.Base (((φ.imp ψ).imp φ).imp φ).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, truth_norm]
+  simp only [Formula.reflectTime, truth_norm]
   intro h_peirce
-  by_cases h : TruthAt M τ t φ.swapTemporal
+  by_cases h : TruthAt M τ t φ.reflectTime
   · exact h
-  · have h_imp : TruthAt M τ t (φ.swapTemporal.imp ψ.swapTemporal) := by
+  · have h_imp : TruthAt M τ t (φ.reflectTime.imp ψ.reflectTime) := by
       unfold TruthAt
       intro h_psi
       exfalso
@@ -167,7 +167,7 @@ theorem peirce_swap_valid (φ ψ : Formula) :
 /-- Modal K distribution swaps to itself: the swap fixes `□`, so this is K at swapped
 subformulas. -/
 theorem modal_k_dist_swap_valid (φ ψ : Formula) :
-    ValidIn FrameClass.Base ((φ.imp ψ).box.imp (φ.box.imp ψ.box)).swapTemporal := by
+    ValidIn FrameClass.Base ((φ.imp ψ).box.imp (φ.box.imp ψ.box)).reflectTime := by
   intro F _ M τ t
   intro h_box_imp h_box_psi σ
   exact h_box_imp σ (h_box_psi σ)
@@ -177,9 +177,9 @@ theorem modal_k_dist_swap_valid (φ ψ : Formula) :
 theorem serial_future_swap_valid :
     ValidIn FrameClass.Base
       ((Formula.bot.imp Formula.bot).imp
-        (Formula.someFuture (Formula.bot.imp Formula.bot))).swapTemporal := by
+        (Formula.someFuture (Formula.bot.imp Formula.bot))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro _
   obtain ⟨s, hst⟩ := exists_lt t
@@ -190,9 +190,9 @@ theorem serial_future_swap_valid :
 theorem serial_past_swap_valid :
     ValidIn FrameClass.Base
       ((Formula.bot.imp Formula.bot).imp
-        (Formula.somePast (Formula.bot.imp Formula.bot))).swapTemporal := by
+        (Formula.somePast (Formula.bot.imp Formula.bot))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro _
   obtain ⟨s, hts⟩ := exists_gt t
@@ -202,9 +202,9 @@ theorem serial_past_swap_valid :
 `H(φ' → χ') → (φ' S ψ') → (χ' S ψ')`. -/
 theorem left_mono_until_G_swap_valid (φ χ ψ : Formula) :
     ValidIn FrameClass.Base
-      ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))).swapTemporal := by
+      ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_H ⟨s, hst, h_ψs, h_guard⟩
   exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
@@ -213,9 +213,9 @@ theorem left_mono_until_G_swap_valid (φ χ ψ : Formula) :
 `G(φ' → χ') → (φ' U ψ') → (χ' U ψ')`. -/
 theorem left_mono_since_H_swap_valid (φ χ ψ : Formula) :
     ValidIn FrameClass.Base
-      ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))).swapTemporal := by
+      ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_G ⟨s, hts, h_ψs, h_guard⟩
   exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
@@ -224,9 +224,9 @@ theorem left_mono_since_H_swap_valid (φ χ ψ : Formula) :
 `H(φ' → ψ') → (χ' S φ') → (χ' S ψ')`. -/
 theorem right_mono_until_swap_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
-      ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))).swapTemporal := by
+      ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_H ⟨s, hst, h_φs, h_guard⟩
   exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
@@ -235,9 +235,9 @@ theorem right_mono_until_swap_valid (φ ψ χ : Formula) :
 `G(φ' → ψ') → (χ' U φ') → (χ' U ψ')`. -/
 theorem right_mono_since_swap_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
-      ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ))).swapTemporal := by
+      ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_G ⟨s, hts, h_φs, h_guard⟩
   exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
@@ -245,9 +245,9 @@ theorem right_mono_since_swap_valid (φ ψ χ : Formula) :
 /-- The future connection axiom `φ → G(Pφ)` swaps to `φ' → H(Fφ')`: at any past `s < t`, the
 present `t` is itself the required future witness. -/
 theorem connect_future_swap_valid (φ : Formula) :
-    ValidIn FrameClass.Base (φ.imp (φ.somePast.allFuture)).swapTemporal := by
+    ValidIn FrameClass.Base (φ.imp (φ.somePast.allFuture)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_φt s hst
   exact ⟨t, hst, h_φt⟩
@@ -255,9 +255,9 @@ theorem connect_future_swap_valid (φ : Formula) :
 /-- The past connection axiom `φ → H(Fφ)` swaps to `φ' → G(Pφ')`, mirror of
 `connect_future_swap_valid`. -/
 theorem connect_past_swap_valid (φ : Formula) :
-    ValidIn FrameClass.Base (φ.imp (φ.someFuture.allPast)).swapTemporal := by
+    ValidIn FrameClass.Base (φ.imp (φ.someFuture.allPast)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_φt s hts
   exact ⟨t, hts, h_φt⟩
@@ -266,14 +266,14 @@ theorem connect_past_swap_valid (φ : Formula) :
 Since-witness `s < t` also witnesses the inner Until, with `t` itself carrying `p'`. -/
 theorem enrichment_until_swap_valid (φ ψ p : Formula) :
     ValidIn FrameClass.Base (Formula.and p (Formula.untl φ ψ) |>.imp
-        (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))).swapTemporal := by
+        (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.neg, TruthAt]
   intro h_conj
-  have h_pt : TruthAt M τ t p.swapTemporal := by
+  have h_pt : TruthAt M τ t p.reflectTime := by
     by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-  have h_since : ∃ s, s < t ∧ TruthAt M τ s ψ.swapTemporal ∧
-      ∀ r, s < r → r < t → TruthAt M τ r φ.swapTemporal := by
+  have h_since : ∃ s, s < t ∧ TruthAt M τ s ψ.reflectTime ∧
+      ∀ r, s < r → r < t → TruthAt M τ r φ.reflectTime := by
     by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
   obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
   refine ⟨s, hst, ?_, h_guard⟩
@@ -283,14 +283,14 @@ theorem enrichment_until_swap_valid (φ ψ p : Formula) :
 /-- Since enrichment swaps to Until enrichment, mirror of `enrichment_until_swap_valid`. -/
 theorem enrichment_since_swap_valid (φ ψ p : Formula) :
     ValidIn FrameClass.Base (Formula.and p (Formula.snce φ ψ) |>.imp
-        (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))).swapTemporal := by
+        (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.neg, TruthAt]
   intro h_conj
-  have h_pt : TruthAt M τ t p.swapTemporal := by
+  have h_pt : TruthAt M τ t p.reflectTime := by
     by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-  have h_until : ∃ s, t < s ∧ TruthAt M τ s ψ.swapTemporal ∧
-      ∀ r, t < r → r < s → TruthAt M τ r φ.swapTemporal := by
+  have h_until : ∃ s, t < s ∧ TruthAt M τ s ψ.reflectTime ∧
+      ∀ r, t < r → r < s → TruthAt M τ r φ.reflectTime := by
     by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
   obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
   refine ⟨s, hts, ?_, h_guard⟩
@@ -302,9 +302,9 @@ theorem enrichment_since_swap_valid (φ ψ p : Formula) :
 inherits the Since from the same witness. -/
 theorem self_accum_until_swap_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((Formula.untl φ ψ).imp
-        (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)).swapTemporal := by
+        (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.neg, TruthAt]
   intro ⟨s, hst, h_ψs, h_guard⟩
   refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
   exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
@@ -314,9 +314,9 @@ theorem self_accum_until_swap_valid (φ ψ : Formula) :
 `self_accum_until_swap_valid`. -/
 theorem self_accum_since_swap_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((Formula.snce φ ψ).imp
-        (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ)).swapTemporal := by
+        (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.neg, TruthAt]
   intro ⟨s, hts, h_ψs, h_guard⟩
   refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
   exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
@@ -328,13 +328,13 @@ guard obligation splits by trichotomy at the intermediate point `s₁`. -/
 theorem absorb_until_swap_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base
       ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp
-        (Formula.untl φ ψ)).swapTemporal := by
+        (Formula.untl φ ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
-  have h_φs₁_and_since : TruthAt M τ s₁ φ.swapTemporal ∧
-      (∃ s₂, s₂ < s₁ ∧ TruthAt M τ s₂ ψ.swapTemporal ∧
-        ∀ q, s₂ < q → q < s₁ → TruthAt M τ q φ.swapTemporal) := by
+  have h_φs₁_and_since : TruthAt M τ s₁ φ.reflectTime ∧
+      (∃ s₂, s₂ < s₁ ∧ TruthAt M τ s₂ ψ.reflectTime ∧
+        ∀ q, s₂ < q → q < s₁ → TruthAt M τ q φ.reflectTime) := by
     constructor
     · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
     · by_contra h_neg; exact h_conj (fun _ h_since => h_neg h_since)
@@ -349,13 +349,13 @@ theorem absorb_until_swap_valid (φ ψ : Formula) :
 theorem absorb_since_swap_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base
       ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp
-        (Formula.snce φ ψ)).swapTemporal := by
+        (Formula.snce φ ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
-  have h_φs₁_and_until : TruthAt M τ s₁ φ.swapTemporal ∧
-      (∃ s₂, s₁ < s₂ ∧ TruthAt M τ s₂ ψ.swapTemporal ∧
-        ∀ q, s₁ < q → q < s₂ → TruthAt M τ q φ.swapTemporal) := by
+  have h_φs₁_and_until : TruthAt M τ s₁ φ.reflectTime ∧
+      (∃ s₂, s₁ < s₂ ∧ TruthAt M τ s₂ ψ.reflectTime ∧
+        ∀ q, s₁ < q → q < s₂ → TruthAt M τ q φ.reflectTime) := by
     constructor
     · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
     · by_contra h_neg; exact h_conj (fun _ h_until => h_neg h_until)
@@ -374,14 +374,14 @@ theorem linear_until_swap_valid (φ ψ χ θ : Formula) :
           (Formula.or
             (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
             (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
-          (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))).swapTemporal := by
+          (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
-  have h_both : (∃ s, s < t ∧ TruthAt M τ s ψ.swapTemporal ∧
-      ∀ r, s < r → r < t → TruthAt M τ r φ.swapTemporal) ∧
-    (∃ s, s < t ∧ TruthAt M τ s θ.swapTemporal ∧
-      ∀ r, s < r → r < t → TruthAt M τ r χ.swapTemporal) := by
+  have h_both : (∃ s, s < t ∧ TruthAt M τ s ψ.reflectTime ∧
+      ∀ r, s < r → r < t → TruthAt M τ r φ.reflectTime) ∧
+    (∃ s, s < t ∧ TruthAt M τ s θ.reflectTime ∧
+      ∀ r, s < r → r < t → TruthAt M τ r χ.reflectTime) := by
     constructor
     · by_contra h; exact h_conj (fun h1 _ => h h1)
     · by_contra h; exact h_conj (fun _ h2 => h h2)
@@ -410,14 +410,14 @@ theorem linear_since_swap_valid (φ ψ χ θ : Formula) :
           (Formula.or
             (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
             (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
-          (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))).swapTemporal := by
+          (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
+  simp only [Formula.reflectTime, Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
-  have h_both : (∃ s, t < s ∧ TruthAt M τ s ψ.swapTemporal ∧
-      ∀ r, t < r → r < s → TruthAt M τ r φ.swapTemporal) ∧
-    (∃ s, t < s ∧ TruthAt M τ s θ.swapTemporal ∧
-      ∀ r, t < r → r < s → TruthAt M τ r χ.swapTemporal) := by
+  have h_both : (∃ s, t < s ∧ TruthAt M τ s ψ.reflectTime ∧
+      ∀ r, t < r → r < s → TruthAt M τ r φ.reflectTime) ∧
+    (∃ s, t < s ∧ TruthAt M τ s θ.reflectTime ∧
+      ∀ r, t < r → r < s → TruthAt M τ r χ.reflectTime) := by
     constructor
     · by_contra h; exact h_conj (fun h1 _ => h h1)
     · by_contra h; exact h_conj (fun _ h2 => h h2)
@@ -442,18 +442,18 @@ theorem linear_since_swap_valid (φ ψ χ θ : Formula) :
 /-- `(φ U ψ) → Fψ` swaps to `(φ' S ψ') → Pψ'`: the Since-witness is the past witness, and the
 guard is discarded. -/
 theorem until_F_swap_valid (φ ψ : Formula) :
-    ValidIn FrameClass.Base ((Formula.untl φ ψ).imp (Formula.someFuture ψ)).swapTemporal := by
+    ValidIn FrameClass.Base ((Formula.untl φ ψ).imp (Formula.someFuture ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨s, hst, h_ψs, _h_guard⟩
   exact ⟨s, hst, h_ψs⟩
 
 /-- `(φ S ψ) → Pψ` swaps to `(φ' U ψ') → Fψ'`, mirror of `until_F_swap_valid`. -/
 theorem since_P_swap_valid (φ ψ : Formula) :
-    ValidIn FrameClass.Base ((Formula.snce φ ψ).imp (Formula.somePast ψ)).swapTemporal := by
+    ValidIn FrameClass.Base ((Formula.snce φ ψ).imp (Formula.somePast ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨s, hts, h_ψs, _h_guard⟩
   exact ⟨s, hts, h_ψs⟩
@@ -463,9 +463,9 @@ the reflected point `t + (t - r)` is a successor gap, since a point strictly ins
 reflected interval maps back into `(r, t)`. -/
 theorem discrete_symm_fwd_swap_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))).swapTemporal := by
+      (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, truth_norm]
+  simp only [Formula.reflectTime, truth_norm]
   intro ⟨r, hrt, _h_top_r, h_guard⟩
   refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
   have h1 : r < c - (t - r) := by
@@ -480,9 +480,9 @@ theorem discrete_symm_fwd_swap_valid :
 `discrete_symm_fwd_swap_valid`. -/
 theorem discrete_symm_bwd_swap_valid :
     ValidIn FrameClass.Base ((Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))).swapTemporal := by
+      (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, truth_norm]
+  simp only [Formula.reflectTime, truth_norm]
   intro ⟨s, hts, _h_top_s, h_guard⟩
   refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
   have h1 : t < c + (s - t) :=
@@ -498,9 +498,9 @@ a gap of the same width at every `u`, by shifting the witness. -/
 theorem discrete_propagate_fwd_swap_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.allFuture
-        (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).swapTemporal := by
+        (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
   refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
@@ -517,9 +517,9 @@ theorem discrete_propagate_fwd_swap_valid :
 `discrete_propagate_fwd_swap_valid`. -/
 theorem discrete_propagate_bwd_swap_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).swapTemporal := by
+      (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.swapTemporal]
+  simp only [swap_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
   refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
@@ -536,9 +536,9 @@ theorem discrete_propagate_bwd_swap_valid :
 duration order, so it transfers unchanged to every world history. -/
 theorem discrete_box_necessity_swap_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.box (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).swapTemporal := by
+      (Formula.box (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).reflectTime := by
   intro F _ M τ t
-  simp only [Formula.swapTemporal, truth_norm]
+  simp only [Formula.reflectTime, truth_norm]
   intro ⟨r, hrt, _h_top_r, h_guard⟩ σ
   exact ⟨r, hrt, fun h => h, h_guard⟩
 
@@ -655,7 +655,7 @@ without requiring `[DenselyOrdered ↑D]` or `[Nontrivial D]`. These general ver
 remove frame constraints from the swap/locally-valid lemmas, enabling soundness proofs
 for the base frame class without unnecessary hypotheses.
 
-These are what the `temporal_duality` case of `soundness`, `soundness_ztime_valid` and
+These are what the `time_reflection` case of `soundness`, `soundness_ztime_valid` and
 `soundness_ztime` (`Metalogic/Soundness.lean`) discharge against. The tree carries zero
 structural sorries; check C3 asserts that by content.
 -/
@@ -670,7 +670,7 @@ instances. The wider case is `Metalogic/Soundness.lean`'s `axiom_swap_validIn_mi
 that split once for every class and consumes this lemma as its `.Base` branch. -/
 theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
       h.minFrameClass ≤ FrameClass.Base)
-    : ValidIn FrameClass.Base φ.swapTemporal := by
+    : ValidIn FrameClass.Base φ.reflectTime := by
   cases h with
   | prop_k ψ χ ρ => exact prop_k_swap_valid ψ χ ρ
   | prop_s ψ χ => exact prop_s_swap_valid ψ χ
@@ -702,10 +702,10 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   -- open-guard refactor)
   | until_F φ ψ => exact until_F_swap_valid φ ψ
   | since_P φ ψ => exact since_P_swap_valid φ ψ
-  | temp_linearity φ ψ => exact temp_linearity_past_validIn φ.swapTemporal ψ.swapTemporal
-  | temp_linearity_past φ ψ => exact temp_linearity_validIn φ.swapTemporal ψ.swapTemporal
-  | F_until_equiv φ => exact P_since_equiv_validIn φ.swapTemporal
-  | P_since_equiv φ => exact F_until_equiv_validIn φ.swapTemporal
+  | temp_linearity φ ψ => exact temp_linearity_past_validIn φ.reflectTime ψ.reflectTime
+  | temp_linearity_past φ ψ => exact temp_linearity_validIn φ.reflectTime ψ.reflectTime
+  | F_until_equiv φ => exact P_since_equiv_validIn φ.reflectTime
+  | P_since_equiv φ => exact F_until_equiv_validIn φ.reflectTime
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
   -- open-guard refactor)
   | modal_future ψ => exact mf_swap_valid ψ

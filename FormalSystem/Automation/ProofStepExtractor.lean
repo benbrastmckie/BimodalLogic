@@ -31,7 +31,7 @@ BimodalHarness AlphaZero-style training pipeline.
 The 52-action space consists of:
 - 45 axiom constructors (via `Axiom.toName`)
 - 7 inference rules (axiom, assumption, modus_ponens, necessitation,
-  temporal_necessitation, temporal_duality, weakening)
+  temporal_necessitation, time_reflection, weakening)
 
 Each `ProofStep` captures the proof state at a single node: the current
 context, the goal formula, which rule was applied, which axiom (if any),
@@ -309,13 +309,14 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
     let (steps, idx) := extractStepSequence thmName fcStr (startIndex + 1) d
     ([step] ++ steps, idx)
 
-  | .temporal_duality φ d =>
+  | .time_reflection φ d =>
     let step : ProofStep := {
       theoremName := thmName
       stepIndex := startIndex
       context := []
-      goal := φ.swapTemporal
-      goalFoldedJson := φ.swapTemporal.toEnrichedJson
+      goal := φ.reflectTime
+      goalFoldedJson := φ.reflectTime.toEnrichedJson
+      -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
       rule := "temporal_duality"
       axiomName := none
       subgoals := [φ]

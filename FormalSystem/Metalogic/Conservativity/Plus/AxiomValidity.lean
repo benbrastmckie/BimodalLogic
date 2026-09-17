@@ -19,7 +19,7 @@ arm — so that a constructor added to `PlusAxiom` fails the build here until it
 - `plusAxiom_swap_validIn_min` — every schema's temporal dual is valid at its own
   `minFrameClass`.
 
-The second is what makes the `temporal_duality` rule sound **semantically**
+The second is what makes the `time_reflection` rule sound **semantically**
 (`Conservativity/Plus/PlusSoundness.lean`, the companion recursion): no proof-theoretic
 mirror argument is used, since the TM axiom set is not mirror-closed.
 
@@ -33,10 +33,10 @@ mirror argument is used, since the TM axiom set is not mirror-closed.
   (`of_stab`, `stab_four`, `stab_five`, `stab_of_box`; K is the universal-quantifier shape of the
   `stab` clause) together with `stab_of_stateLocal` (`Semantics/PlusLanguage/PlusStateLocal.lean`), which
   discharges AS at the atom instance `stateLocal_atom p` of the state-locality fragment. Their temporal duals are the same schemata
-  at swapped parameters, because `swapTemporal` fixes `stab`.
+  at swapped parameters, because `reflectTime` fixes `stab`.
 - **The two pasting arms** are the PS/US validities of `Semantics/PlusLanguage/PlusPasting.lean`; their
   temporal duals are the past mirrors `paste'_plusValid` and `snce_paste_plusValid`, with the
-  purity side conditions exchanged by `IsPureFuture.swapTemporal` / `IsPurePast.swapTemporal`.
+  purity side conditions exchanged by `IsPureFuture.reflectTime` / `IsPurePast.reflectTime`.
 
 ## References
 
@@ -159,9 +159,9 @@ theorem plusAxiom_validIn {φ : PlusFormula} {fc : FrameClass} (ax : PlusAxiom �
 /-! ## Swap-validity -/
 
 /-- **Every TM⁺ schema's temporal dual is valid at its own minimum frame class.** One arm per
-constructor; the semantic input to the `temporal_duality` case of soundness. -/
+constructor; the semantic input to the `time_reflection` case of soundness. -/
 theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
-    PlusValidIn ax.minFrameClass φ.swapTemporal := by
+    PlusValidIn ax.minFrameClass φ.reflectTime := by
   cases ax with
   | prop_k a0 a1 a2 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.prop_k (A' a0) (A' a1) (A' a2)) le_rfl
@@ -254,27 +254,27 @@ theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | stab_k a0 a1 =>
     exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)
   | stab_t a0 =>
-    exact fun _ _ M τ t => of_stab M τ t a0.swapTemporal
+    exact fun _ _ M τ t => of_stab M τ t a0.reflectTime
   | stab_4 a0 =>
-    exact fun _ _ M τ t => stab_four M τ t a0.swapTemporal
+    exact fun _ _ M τ t => stab_four M τ t a0.reflectTime
   | stab_5 a0 =>
     exact fun _ _ M τ t h =>
-      stab_five M τ t a0.swapTemporal.neg h
+      stab_five M τ t a0.reflectTime.neg h
   | box_stab a0 =>
-    exact fun _ _ M τ t => stab_of_box M τ t a0.swapTemporal
+    exact fun _ _ M τ t => stab_of_box M τ t a0.reflectTime
   | atom_stab p =>
     exact fun _ _ M τ t =>
       stab_of_stateLocal (stateLocal_atom p) M τ t
   | paste a0 a1 h0 h1 =>
-    simp only [PlusFormula.swapTemporal, swap_temporal_dstab, swap_temporal_and]
-    exact paste'_plusValid h0.swapTemporal h1.swapTemporal
+    simp only [PlusFormula.reflectTime, reflect_time_dstab, reflect_time_and]
+    exact paste'_plusValid h0.reflectTime h1.reflectTime
   | untl_paste a0 a1 h0 h1 =>
-    simp only [PlusFormula.swapTemporal, swap_temporal_dstab]
-    exact snce_paste_plusValid h0.swapTemporal h1.swapTemporal
+    simp only [PlusFormula.reflectTime, reflect_time_dstab]
+    exact snce_paste_plusValid h0.reflectTime h1.reflectTime
 
 /-- Swap-validity of a TM⁺ schema at any class admitting it. -/
 theorem plusAxiom_swap_validIn {φ : PlusFormula} {fc : FrameClass} (ax : PlusAxiom φ)
-    (h : ax.minFrameClass ≤ fc) : PlusValidIn fc φ.swapTemporal :=
+    (h : ax.minFrameClass ≤ fc) : PlusValidIn fc φ.reflectTime :=
   PlusValidIn.mono h (plusAxiom_swap_validIn_min ax)
 
 end FormalSystem.Metalogic.Conservativity

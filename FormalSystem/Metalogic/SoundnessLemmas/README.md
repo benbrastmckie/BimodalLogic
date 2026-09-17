@@ -20,7 +20,7 @@ Dedekind-class separability axiom.
 ## Key Results
 
 - Validity of each individual axiom schema on its required frame class
-- Swap-validity of each axiom schema, the input to the `temporal_duality` soundness case
+- Swap-validity of each axiom schema, the input to the `time_reflection` soundness case
 - Monotonicity lemmas for temporal operators
 
 ## Dependencies

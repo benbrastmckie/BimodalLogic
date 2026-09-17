@@ -37,7 +37,7 @@ widening, independent of the one `RecallFree` carries for `modal_future`.
 
 ## The temporal duals are separate theorems, not instances of the same one
 
-PS and US are **not** each other's duals. `swapTemporal` fixes `⟐` and exchanges `untl`/`snce`,
+PS and US are **not** each other's duals. `reflectTime` fixes `⟐` and exchanges `untl`/`snce`,
 so the dual of PS is PS with the conjuncts exchanged (`star_paste_valid'`) and the dual of US is
 SS (`star_snce_paste_valid`). This is the same shape `Semantics/PlusLanguage/PlusPasting.lean` has, and for
 the same reason; both duals are proved here so that the `paste`/`untl_paste` swap arms of
@@ -182,7 +182,7 @@ theorem star_untl_paste_valid (M : TaskModel F) (τ : WorldHistory F)
 
 /-- **PS with the conjuncts exchanged** over `StarFormula`: `⟐ψ⁻ → (⟐φ⁺ → ⟐(ψ⁻ ∧ φ⁺))` for
 pure-past `ψ⁻` and pure-future `φ⁺`. This is the temporal dual of `star_paste_valid` — the
-`swapTemporal` instance of the `paste` schema — proved by the same pasting argument with the two
+`reflectTime` instance of the `paste` schema — proved by the same pasting argument with the two
 congruences applied in the other order. The L⁺ counterpart is `Semantics.paste_valid'`.
 
 Paper: `possible_worlds.tex`, the PS schema -/

@@ -48,7 +48,7 @@ This table is the subsystem's axiom map: it records, for each of the twelve, whe
     table.hline(),
     [MP], [`DerivationTree.modus_ponens`], [Inference rule],
     [MN], [`DerivationTree.necessitation`], [Inference rule],
-    [TD], [`DerivationTree.temporal_duality`], [Inference rule],
+    [TD], [`DerivationTree.time_reflection`], [Inference rule],
     [MK], [`Axiom.modal_k_dist`], [Axiom],
     [MT], [`Axiom.modal_t`], [Axiom],
     [M5], [`Axiom.modal_5_collapse`], [Axiom],

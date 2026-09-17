@@ -28,7 +28,7 @@ Three lemmas follow, each proved for an arbitrary frame carrying a looping durat
   is true at every point, for every `ψ`.
 
 `allFuture_imp_allPast` records the past mirror `Gψ → Hψ`, which the same argument gives for
-free and which the `temporal_duality` closure of `CoNotPriorU.lean` consumes.
+free and which the `time_reflection` closure of `CoNotPriorU.lean` consumes.
 
 The clock frame instantiates all of this at `π = 1`: see `clockFrame_looping` and
 `clock_co_true` at the end of the file.
@@ -170,7 +170,7 @@ theorem allPast_imp_allFuture {F : FrameOver D} [Archimedean ↑D] (M : TaskMode
 
 /--
 The past mirror of Lemma C: `Gψ → Hψ`. Free from the same argument, and consumed by the
-`temporal_duality` closure of the `CO` derivation system.
+`time_reflection` closure of the `CO` derivation system.
 -/
 theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
     (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (t : ↑D)

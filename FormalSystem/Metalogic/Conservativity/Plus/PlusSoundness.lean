@@ -12,8 +12,8 @@ import FormalSystem.Syntax.PlusLanguage
 
 `TM⁺ ⊢[fc] φ ⟹ PlusValidIn fc φ`, for every `fc`, by the same companion recursion the L
 soundness theorem uses (`Metalogic/Soundness.lean`, `derivable_valid_and_swap_validIn`):
-the recursion carries **both** `PlusValidIn fc φ` and `PlusValidIn fc φ.swapTemporal`, so that
-the `temporal_duality` case simply exchanges the two components. The `axiom` case feeds in the
+the recursion carries **both** `PlusValidIn fc φ` and `PlusValidIn fc φ.reflectTime`, so that
+the `time_reflection` case simply exchanges the two components. The `axiom` case feeds in the
 two dispatch lemmas of `Conservativity/Plus/AxiomValidity.lean`; everything else is the clause
 structure of `PlusTruthAt`.
 
@@ -53,7 +53,7 @@ temporal dual. Mirror of `derivable_valid_and_swap_validIn`, arm for arm; well-f
 derivation's height because the `weakening` case re-targets to the empty context without a
 structural descent. -/
 theorem plus_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : PlusFormula}
-    (d : PlusDerivationTree fc [] φ) : PlusValidIn fc φ ∧ PlusValidIn fc φ.swapTemporal := by
+    (d : PlusDerivationTree fc [] φ) : PlusValidIn fc φ ∧ PlusValidIn fc φ.reflectTime := by
   match d with
   | .axiom _ _ h_ax h_fc =>
     exact ⟨plusAxiom_validIn h_ax h_fc, plusAxiom_swap_validIn h_ax h_fc⟩
@@ -82,13 +82,13 @@ theorem plus_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : PlusFormul
       intro s _
       exact h.1 F hF M τ s
     · intro F hF M τ t
-      rw [swap_temporal_all_future, PlusTruth.allPast_iff]
+      rw [reflect_time_all_future, PlusTruth.allPast_iff]
       intro s _
       exact h.2 F hF M τ s
-  | .temporal_duality psi' d' =>
+  | .time_reflection psi' d' =>
     have h := plus_derivable_valid_and_swap_validIn d'
     refine ⟨h.2, ?_⟩
-    rw [swap_temporal_involution]
+    rw [reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub =>
     have h_term := PlusDerivationTree.height_ofWeakeningNil_lt d' h_sub
@@ -111,7 +111,7 @@ theorem plus_soundness_validIn {fc : FrameClass} {φ : PlusFormula}
 
 /-- **Soundness of TM⁺ at `fc`**, context form: a derivation of `φ` from `Γ` makes `φ` true at
 every model over a frame satisfying `fc`, every world history and every time at which all of `Γ`
-is true. Mirror of `soundness_in`; the `temporal_duality` case defers to the companion
+is true. Mirror of `soundness_in`; the `time_reflection` case defers to the companion
 recursion. -/
 theorem plus_soundness_in {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula)
     (d : PlusDerivationTree fc Γ φ)
@@ -132,7 +132,7 @@ theorem plus_soundness_in {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula
     rw [PlusTruth.allFuture_iff]
     intro s _
     exact ih τ s (by simp)
-  | temporal_duality φ' d' _ih =>
+  | time_reflection φ' d' _ih =>
     exact (plus_derivable_valid_and_swap_validIn d').2 F hF M τ t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))

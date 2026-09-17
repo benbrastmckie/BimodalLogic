@@ -35,7 +35,7 @@ Property-based testing is a testing methodology that automatically generates tes
 
 ✅ **Use for**:
 - Universal invariants (e.g., `complexity ≥ 1`)
-- Algebraic properties (e.g., `swapTemporal` involution)
+- Algebraic properties (e.g., `reflectTime` involution)
 - Structural properties (e.g., weakening, reflexivity)
 - Transformation correctness (e.g., derived operator definitions)
 
@@ -302,10 +302,10 @@ Properties expressing algebraic laws:
 
 ```lean
 -- Involution
-#test ∀ φ : Formula, φ.swapTemporal.swapTemporal = φ
+#test ∀ φ : Formula, φ.reflectTime.reflectTime = φ
 
 -- Distributivity
-#test ∀ φ : Formula, φ.diamond.swapTemporal = φ.swapTemporal.diamond
+#test ∀ φ : Formula, φ.diamond.reflectTime = φ.reflectTime.diamond
 
 -- Associativity
 #test ∀ x y z : Int, (x + y) + z = x + (y + z)
@@ -640,10 +640,10 @@ example : Testable (∀ φ : Formula, φ.complexity ≥ 1) := by
 
 ```lean
 -- Property: Swapping temporal operators twice gives original
-example : Testable (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) := by
+example : Testable (∀ φ : Formula, φ.reflectTime.reflectTime = φ) := by
   infer_instance
 
-#eval Testable.check (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) {
+#eval Testable.check (∀ φ : Formula, φ.reflectTime.reflectTime = φ) {
   numInst := 100,
   maxSize := 50
 }

@@ -144,7 +144,7 @@ Because $P$, $F$, $H$, and $G$ are `def` abbreviations rather than constructors,
 
 == Temporal Duality
 
-The `swapTemporal` function exchanges past and future operators.
+The `reflectTime` function exchanges past and future operators.
 
 #definition("Temporal Swap")[
   The function $chevron.l S chevron.r : "Formula" arrow.r "Formula"$ is defined by recursion on the primitive constructors (`Syntax/Formula.lean`):
@@ -160,5 +160,5 @@ The `swapTemporal` function exchanges past and future operators.
 ]
 
 #theorem("Involution")[
-  $chevron.l S chevron.r chevron.l S chevron.r phi.alt = phi.alt$#footnote[Proven as `swap_temporal_involution` in `Syntax/Formula.lean`.]
+  $chevron.l S chevron.r chevron.l S chevron.r phi.alt = phi.alt$#footnote[Proven as `reflect_time_involution` in `Syntax/Formula.lean`.]
 ]

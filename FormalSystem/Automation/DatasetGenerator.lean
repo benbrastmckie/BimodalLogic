@@ -344,10 +344,11 @@ def extractProofTrace {fc : FrameClass} {Γ : Context} {φ : Formula}
     { height := 1 + t1.height
       axiomsUsed := t1.axiomsUsed
       rulesApplied := "temporal_necessitation" :: t1.rulesApplied }
-  | .temporal_duality _ d1 =>
+  | .time_reflection _ d1 =>
     let t1 := extractProofTrace d1
     { height := 1 + t1.height
       axiomsUsed := t1.axiomsUsed
+      -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
       rulesApplied := "temporal_duality" :: t1.rulesApplied }
   | .weakening _ _ _ d1 _ =>
     let t1 := extractProofTrace d1
@@ -384,7 +385,7 @@ Infer the proof reconstruction method from the proof structure.
 -/
 def inferReconstructionMethod (rp : RuleProfile) (height : Nat) : String :=
   let totalRules := rp.mpCount + rp.necessitationCount + rp.temporalNecessitationCount +
-                    rp.temporalDualityCount + rp.weakeningCount + rp.assumptionCount
+                    rp.timeReflectionCount + rp.weakeningCount + rp.assumptionCount
   if totalRules == 0 && rp.axiomCount > 0 then
     "axiom_match"
   else if rp.weakeningCount > 0 && rp.mpCount == 0 && rp.axiomCount <= 1 then
@@ -1235,7 +1236,7 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       let trace := extractProofTrace proof
       let rp := walkDerivationTree proof
       let method := if rp.mpCount == 0 && rp.necessitationCount == 0 &&
-                       rp.temporalNecessitationCount == 0 && rp.temporalDualityCount == 0 &&
+                       rp.temporalNecessitationCount == 0 && rp.timeReflectionCount == 0 &&
                        rp.weakeningCount == 0 && rp.assumptionCount == 0
                     then "fast_path_axiom"
                     else fuelTier
@@ -1302,7 +1303,7 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     let rp := walkDerivationTree proof
     -- Determine decision method: combine fast-path detection with fuel tier info
     let method := if rp.mpCount == 0 && rp.necessitationCount == 0 &&
-                     rp.temporalNecessitationCount == 0 && rp.temporalDualityCount == 0 &&
+                     rp.temporalNecessitationCount == 0 && rp.timeReflectionCount == 0 &&
                      rp.weakeningCount == 0 && rp.assumptionCount == 0
                   then "fast_path_axiom"
                   else fuelTier

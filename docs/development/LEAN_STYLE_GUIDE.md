@@ -45,7 +45,7 @@ structure task_frame where      -- snake_case for type
 The rule is Mathlib's, and it keys on **what the declaration produces**, not on what kind of
 command declares it:
 
-- **`def` producing data** — lowerCamelCase (`swapTemporal`, `canonicalHistory`, `allFuture`,
+- **`def` producing data** — lowerCamelCase (`reflectTime`, `canonicalHistory`, `allFuture`,
   `somePast`). This includes every `DerivationTree`-valued result in `Theorems/`: those are
   mathematically theorems but are forced into `def` by the encoding (see below), and the rule
   follows the syntactic category.
@@ -62,14 +62,14 @@ command declares it:
 
 ```lean
 -- Good
-def swapTemporal : Formula → Formula := ...                    -- data: lowerCamelCase
+def reflectTime : Formula → Formula := ...                    -- data: lowerCamelCase
 def TruthAt (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Time) : Formula → Prop := ...                       -- predicate: UpperCamelCase
 theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := ...
 lemma modal_t_valid (φ : Formula) : valid (φ.box.imp φ) := ...
 
 -- Avoid
-def swap_temporal ...           -- snake_case for a def
+def reflect_time ...           -- snake_case for a def
 def truthAt ...                 -- lowerCamelCase for a Prop-valued def
 theorem Soundness ...           -- UpperCamelCase for a theorem
 ```
@@ -924,11 +924,11 @@ but false at some past time. Then `ValidIn fc φ.swap` holds (p always true in f
 
 **Derivable vs Valid**: Properties true for derivable formulas may be false for arbitrary
 valid formulas. The theorem `ValidIn fc φ.swap → ValidIn fc φ` is false for arbitrary formulas
-but true for derivable formulas (due to temporal_duality rule). Always check whether a
+but true for derivable formulas (due to time_reflection rule). Always check whether a
 theorem requires derivability as a precondition.
 
 **Circular Dependencies**: When proving soundness-related theorems, be aware of circular
-dependencies between derivability and validity. The temporal_duality soundness case requires
+dependencies between derivability and validity. The time_reflection soundness case requires
 soundness itself, creating a circular dependency that must be resolved at the file/module level.
 
 ## References

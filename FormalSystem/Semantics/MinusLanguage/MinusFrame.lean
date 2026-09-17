@@ -66,7 +66,7 @@ semantics agree, and nothing downstream should assume they do.
 
 `no_min` and `past_lin` are fields rather than derived facts precisely so the class is closed
 under order reversal (`MinusFrame.swap`). That closure is what makes `truth_swap` available, and
-`truth_swap` is what discharges the temporal-duality *rule* `DerivationTree.temporal_duality` in
+`truth_swap` is what discharges the temporal-duality *rule* `DerivationTree.time_reflection` in
 one line during native soundness — no swap-strengthened simultaneous induction is needed.
 
 ## Main Definitions

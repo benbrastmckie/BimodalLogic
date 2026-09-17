@@ -31,7 +31,7 @@ trees with 7 inference rules.
 
 - `Derivation`: Derivation tree type `Γ ⊢ φ` with 7 inference rules
   - axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
-    temporal_duality, weakening
+    time_reflection, weakening
 
 - `LinearityDerivedFacts`: consequences of `temp_linearity`, including the
   counterexample showing it is not derivable from the other axioms. `Axioms.lean`
@@ -56,7 +56,7 @@ trees with 7 inference rules.
 | modus_ponens | Γ ⊢ φ → ψ, Γ ⊢ φ | Γ ⊢ ψ |
 | necessitation | ⊢ φ | ⊢ □φ |
 | temporal_necessitation | ⊢ φ | ⊢ Fφ |
-| temporal_duality | ⊢ φ | ⊢ swapTemporal φ |
+| time_reflection | ⊢ φ | ⊢ reflectTime φ |
 | weakening | Γ ⊢ φ, Γ ⊆ Δ | Δ ⊢ φ |
 
 ## Usage

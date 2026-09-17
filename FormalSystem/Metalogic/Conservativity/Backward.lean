@@ -61,8 +61,8 @@ Seven cases, one per L⁻ rule:
 - `modus_ponens`, `weakening` — structural.
 - `necessitation`, `temporal_necessitation` — structural; both rules are empty-context on both
   sides and `trCtx [] = []` definitionally.
-- `temporal_duality` — the load-bearing case. TM⁻'s **TD** concludes `⊢ swapMinus φ` while L's
-  rule concludes `⊢ swapTemporal (tr φ)`; `MinusLanguage.tr_swapMinus` is exactly the equation that
+- `time_reflection` — the load-bearing case. TM⁻'s **TD** concludes `⊢ swapMinus φ` while L's
+  rule concludes `⊢ reflectTime (tr φ)`; `MinusLanguage.tr_swapMinus` is exactly the equation that
   makes those the same formula, and without it this case does not typecheck.
 -/
 noncomputable def translate {fc : FrameClass} {Γ : MinusLanguage.Context} {φ : MinusFormula} :
@@ -75,9 +75,9 @@ noncomputable def translate {fc : FrameClass} {Γ : MinusLanguage.Context} {φ :
       .modus_ponens _ (tr φ) (tr ψ) (translate d1) (translate d2)
   | .necessitation φ d => .necessitation (tr φ) (translate d)
   | .temporal_necessitation φ d => .temporal_necessitation (tr φ) (translate d)
-  | .temporal_duality φ d =>
+  | .time_reflection φ d =>
       (MinusLanguage.tr_swapMinus φ).symm ▸
-        ProofSystem.DerivationTree.temporal_duality (tr φ) (translate d)
+        ProofSystem.DerivationTree.time_reflection (tr φ) (translate d)
   | .weakening _ _ _ d h =>
       .weakening _ _ _ (translate d)
         (by

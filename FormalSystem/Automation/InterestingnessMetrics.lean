@@ -349,7 +349,7 @@ def proofRichness (rp : RuleProfile) (φ : Formula) : Nat :=
   if c == 0 then 0
   else
     let totalNonAxiom := rp.mpCount + rp.necessitationCount +
-      rp.temporalNecessitationCount + rp.temporalDualityCount +
+      rp.temporalNecessitationCount + rp.timeReflectionCount +
       rp.weakeningCount + rp.assumptionCount
     totalNonAxiom * 100 / c
 

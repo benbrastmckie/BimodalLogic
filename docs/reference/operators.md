@@ -256,7 +256,7 @@ Syntactic provability relation - expresses derivability in the TM proof system.
 is always relative to a frame class, and the invariant `ax.minFrameClass ≤ fc` governs which
 axioms may appear.
 **Rules**: the 7 `DerivationTree` constructors -- `axiom`, `assumption`, `modus_ponens`,
-`necessitation`, `temporal_necessitation`, `temporal_duality`, `weakening`
+`necessitation`, `temporal_necessitation`, `time_reflection`, `weakening`
 **See also**: [⊨ (semantic consequence)](#-models--semantic-consequence)
 **Soundness**: If `Γ ⊢ φ` then `Γ ⊨ φ`
 **Examples**: `⊢ □p → p` means "necessarily p implies p" is a theorem (axiom MT)

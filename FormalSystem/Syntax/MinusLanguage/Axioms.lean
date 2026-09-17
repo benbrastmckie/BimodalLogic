@@ -69,7 +69,7 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
 | Paper key | Lean identifier | Notes |
 |---|---|---|
 | `TN` | `MinusLanguage.DerivationTree.temporal_necessitation` | Rule; content matches, paper key not quoted verbatim in the doc-comment. |
-| `TD` | `MinusLanguage.DerivationTree.temporal_duality` | Rule. |
+| `TD` | `MinusLanguage.DerivationTree.time_reflection` | Rule. |
 | `TS` | `Axiom.temp_serial` | |
 | `TC` | `Axiom.temp_connect` | |
 | `TL` | `Axiom.temp_linearity` | Disjunct order/association is the paper's, transcribed verbatim (see the doc-comment above). |

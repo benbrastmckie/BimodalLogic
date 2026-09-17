@@ -42,7 +42,7 @@ so the derivation trees can be evaluated at runtime.
 334 entries organized by category:
 - 44 original computable standalone theorems (from 7 source files + 8 new TemporalDerived)
 - 44 G-wrapped (temporal_necessitation of each original)
-- 44 H-wrapped (temporal_duality of temporal_necessitation of each original)
+- 44 H-wrapped (time_reflection of temporal_necessitation of each original)
 - 12 GG-double-wrapped (selected small theorems)
 - 7 GGG-triple-wrapped (single-step theorems)
 - 18 temporal axiom instantiations (covering all 18 Base-compatible BX axioms)
@@ -73,7 +73,7 @@ Source files for the 36 original theorems:
 - axiom_name is non-null iff rule = "axiom" (0 violations)
 - Step indices are monotonically ordered per theorem
 - Rule distribution: axiom (4635, 46.1%), modus_ponens (4325, 43.0%),
-  temporal_necessitation (991, 9.8%), temporal_duality (63, 0.6%),
+  temporal_necessitation (991, 9.8%), time_reflection (63, 0.6%),
   necessitation (49, 0.5%)
 - Temporal rule coverage: 1103/10063 = 11.0% (target: >= 10%)
 - 31 of 45 axiom names present (up from 13)
@@ -441,170 +441,170 @@ def theoremRegistry : List TheoremEntry := [
       (FormalSystem.Theorems.Perpetuity.boxDiamondToPastBoxDiamond p)),
 
   -- ============================================================
-  -- H-WRAPPED: temporal_duality ∘ temporal_necessitation
-  -- Each adds 1 temporal_duality + 1 temporal_necessitation step
+  -- H-WRAPPED: time_reflection ∘ temporal_necessitation
+  -- Each adds 1 time_reflection + 1 temporal_necessitation step
   -- For propositional/modal formulas: ⊢ H(φ)
-  -- For temporal formulas: ⊢ H(swapTemporal(φ))
+  -- For temporal formulas: ⊢ H(reflectTime(φ))
   -- ============================================================
 
   -- Combinators H-wrapped
   mkEntry "H_identity"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@identity .Base p))),
   mkEntry "H_b_combinator"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@bCombinator .Base (A := p) (B := q) (C := r)))),
   mkEntry "H_theorem_flip"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@theoremFlip .Base (A := p) (B := q) (C := r)))),
   mkEntry "H_theorem_app1"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@theoremApp1 .Base (A := p) (B := q)))),
   mkEntry "H_theorem_app2"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@theoremApp2 .Base (A := p) (B := q) (C := r)))),
   mkEntry "H_pairing"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@pairing .Base p q))),
   mkEntry "H_dni"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@notNotIntro .Base p))),
   mkEntry "H_temp_future_derived"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@temporalFutureDerived .Base p))),
 
   -- ModalS4 H-wrapped
   mkEntry "H_s4_box_diamond_box"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p))),
   mkEntry "H_s4_diamond_box_diamond"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.ModalS4.s4DiamondBoxDiamond p))),
 
   -- ModalS5 H-wrapped
   mkEntry "H_t_box_to_diamond"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.tBoxToDiamond p))),
   mkEntry "H_box_contrapose"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.boxContrapose p q))),
   mkEntry "H_k_dist_diamond"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.kDistDiamond p q))),
   mkEntry "H_t_box_consistency"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.tBoxConsistency p))),
   mkEntry "H_s5_diamond_box"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.s5DiamondBox p))),
   mkEntry "H_s5_diamond_box_to_truth"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p))),
 
   -- TemporalDerived H-wrapped
   mkEntry "H_connect_future_thm"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.connectFutureThm p))),
   mkEntry "H_connect_past_thm"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.connectPastThm p))),
   mkEntry "H_G_implies_G_id"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.gImpliesGId p))),
   mkEntry "H_until_implies_some_future"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p q))),
   mkEntry "H_since_implies_some_past"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q))),
   mkEntry "H_until_imp_F"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.untilImpF p q))),
   mkEntry "H_since_imp_P"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.sinceImpP p q))),
 
   -- New TemporalDerived H-wrapped
   mkEntry "H_F_mono"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.fMono p q))),
   mkEntry "H_P_mono"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.pMono p q))),
   mkEntry "H_until_mono_guard"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.untilMonoGuard p q r))),
   mkEntry "H_since_mono_guard"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.sinceMonoGuard p q r))),
   mkEntry "H_until_mono_event"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.untilMonoEvent p q r))),
   mkEntry "H_since_mono_event"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.sinceMonoEvent p q r))),
   mkEntry "H_F_neg_G"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.fNegG p))),
   mkEntry "H_P_neg_H"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.pNegH p))),
 
   -- Helpers H-wrapped
   mkEntry "H_box_to_future"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToFuture p))),
   mkEntry "H_box_to_past"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToPast p))),
   mkEntry "H_box_to_present"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToPresent p))),
 
   -- Principles H-wrapped
   mkEntry "H_perpetuity_1"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.perpetuity1 p))),
   mkEntry "H_diamond_4"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.diamond4 p))),
   mkEntry "H_modal_5"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.modal5 p))),
   mkEntry "H_perpetuity_2"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.perpetuity2 p))),
   mkEntry "H_box_to_box_past"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToBoxPast p))),
   mkEntry "H_perpetuity_3"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.perpetuity3 p))),
   mkEntry "H_perpetuity_4"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.perpetuity4 p))),
   mkEntry "H_mb_diamond"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.mbDiamond p))),
   mkEntry "H_box_diamond_to_future_box_diamond"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (FormalSystem.Theorems.Perpetuity.boxDiamondToFutureBoxDiamond p))),
   mkEntry "H_box_diamond_to_past_box_diamond"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (FormalSystem.Theorems.Perpetuity.boxDiamondToPastBoxDiamond p))),
 
@@ -976,19 +976,19 @@ def theoremRegistry : List TheoremEntry := [
 
   -- H-wrapped axiom instantiation variants (2 temporal steps each)
   mkEntry "H_serial_future_axiom"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial))),
   mkEntry "H_serial_past_axiom"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_past trivial))),
   mkEntry "H_self_accum_until_axiom"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until p q) trivial))),
   mkEntry "H_absorb_until_axiom"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial))),
 
@@ -1243,9 +1243,9 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce q r) trivial)),
 
-  -- H-wrapped peirce (temporal_duality of temporal_necessitation)
+  -- H-wrapped peirce (time_reflection of temporal_necessitation)
   mkEntry "H_peirce_axiom"
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce p q) trivial))),
 
@@ -1289,15 +1289,15 @@ def theoremRegistry : List TheoremEntry := [
 
   -- H-wrapped non-Base axioms (selected)
   mkEntryAt "H_discrete_symm_fwd_axiom" .ZTime
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial))),
   mkEntryAt "H_prior_UZ_axiom" .ZTime
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.prior_UZ p) trivial))),
   mkEntryAt "H_density_axiom" .Dense
-    (DerivationTree.temporal_duality _
+    (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial))),
 
@@ -1567,6 +1567,7 @@ def allAxiomNames : List String :=
 /-- All 7 canonical inference rule name strings. -/
 def allRuleNames : List String :=
   ["axiom", "assumption", "modus_ponens", "necessitation",
+   -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
    "temporal_necessitation", "temporal_duality", "weakening"]
 
 /--

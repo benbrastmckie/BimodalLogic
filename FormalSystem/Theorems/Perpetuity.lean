@@ -35,7 +35,7 @@ between modal necessity (□) and temporal operators (always △, sometimes ▽)
 - P1-P4: Fully proven in initial implementation
 - P5: Fully proven via persistence lemma (uses `modal5`, temporal K distribution)
 - P6: Fully proven via P5(¬φ) + bridge lemmas + doubleContrapose
-- Persistence lemma: Fully proven using `swap_temporal_diamond` and temporal K distribution
+- Persistence lemma: Fully proven using `reflect_time_diamond` and temporal K distribution
 
 Key P6 derivation components:
 - `bridge1`: `¬□△φ → ◇▽¬φ` (modal/temporal duality)
@@ -51,8 +51,8 @@ The perpetuity principles follow from the TM axiom system, particularly:
 
 Key helper lemmas:
 - `modal5`: `◇φ → □◇φ` (S5 characteristic, derived from MB + diamond4)
-- `swap_temporal_diamond`: Temporal swap distributes over diamond
-- `swap_temporal_involution`: Temporal swap is involutive
+- `reflect_time_diamond`: Temporal swap distributes over diamond
+- `reflect_time_involution`: Temporal swap is involutive
 
 Note: `always φ = Hφ ∧ φ ∧ Gφ` (past, present, and future), so `△φ` covers all times.
 

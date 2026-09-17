@@ -396,12 +396,12 @@ theorem cValid_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e φ
   fun F K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
     (axiom_validIn ax h F trivial (K.atomModel e) τ t)
 
-/-- The swap form, via `atomize_swapTemporal` at the conjugated encoding. -/
+/-- The swap form, via `atomize_reflectTime` at the conjugated encoding. -/
 theorem cValid_swap_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e.swap φ))
-    (h : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.swapTemporal :=
-  fun F K τ t => (cTruthAt_iff_atomize K e φ.swapTemporal τ t).mpr
+    (h : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime :=
+  fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
-      rw [atomize_swapTemporal]
+      rw [atomize_reflectTime]
       exact axiom_swap_validIn ax h F trivial (K.atomModel e) τ t)
 
 /-! ## The six naive `⊡` schemata are coarsely valid
@@ -546,10 +546,10 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | untl_paste a0 a1 h0 h1 => exact hn.elim
 
 /-- **The temporal dual of every naive TM⁺ schema admissible at `.Base` is coarsely valid.** The
-six `⊡` arms need no separate argument: `swapTemporal` fixes `⊡`, so each of their duals is an
+six `⊡` arms need no separate argument: `reflectTime` fixes `⊡`, so each of their duals is an
 instance of the same schema at swapped parameters. -/
 theorem naiveAxiom_cValid_swap {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom.IsNaive ax)
-    (hb : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.swapTemporal := by
+    (hb : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime := by
   cases ax with
   | prop_k a0 a1 a2 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.prop_k (A' a0) (A' a1) (A' a2)) (by trivial)
@@ -633,11 +633,11 @@ theorem naiveAxiom_cValid_swap {φ : PlusFormula} (ax : PlusAxiom φ) (hn : Plus
   | prior_U_gap a0 => exact hb.elim
   | prior_S_gap a0 => exact hb.elim
   | sep a0 => exact hb.elim
-  | stab_k a0 a1 => exact cValid_stab_k a0.swapTemporal a1.swapTemporal
-  | stab_t a0 => exact cValid_stab_t a0.swapTemporal
-  | stab_4 a0 => exact cValid_stab_4 a0.swapTemporal
-  | stab_5 a0 => exact cValid_stab_5 a0.swapTemporal
-  | box_stab a0 => exact cValid_box_stab a0.swapTemporal
+  | stab_k a0 a1 => exact cValid_stab_k a0.reflectTime a1.reflectTime
+  | stab_t a0 => exact cValid_stab_t a0.reflectTime
+  | stab_4 a0 => exact cValid_stab_4 a0.reflectTime
+  | stab_5 a0 => exact cValid_stab_5 a0.reflectTime
+  | box_stab a0 => exact cValid_box_stab a0.reflectTime
   | atom_stab p => exact cValid_atom_stab p
   | paste a0 a1 h0 h1 => exact hn.elim
   | untl_paste a0 a1 h0 h1 => exact hn.elim
@@ -659,7 +659,7 @@ coarsely valid, and so is its temporal dual. Mirror of
 derivation's height for the same reason.
 -/
 theorem naive_cValid_and_swap {φ : PlusFormula} (d : PlusDerivationTree FrameClass.Base [] φ)
-    (hn : d.NaiveOnly) : CValid φ ∧ CValid φ.swapTemporal := by
+    (hn : d.NaiveOnly) : CValid φ ∧ CValid φ.reflectTime := by
   match d, hn with
   | .axiom _ _ h_ax h_fc, hn =>
     exact ⟨naiveAxiom_cValid h_ax hn h_fc, naiveAxiom_cValid_swap h_ax hn h_fc⟩
@@ -681,13 +681,13 @@ theorem naive_cValid_and_swap {φ : PlusFormula} (d : PlusDerivationTree FrameCl
       intro s _
       exact h.1 F K τ s
     · intro F K τ t
-      rw [swap_temporal_all_future, CTruth.allPast_iff]
+      rw [reflect_time_all_future, CTruth.allPast_iff]
       intro s _
       exact h.2 F K τ s
-  | .temporal_duality psi' d', hn =>
+  | .time_reflection psi' d', hn =>
     have h := naive_cValid_and_swap d' hn
     refine ⟨h.2, ?_⟩
-    rw [swap_temporal_involution]
+    rw [reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub, hn =>
     have h_term := PlusDerivationTree.height_ofWeakeningNil_lt d' h_sub

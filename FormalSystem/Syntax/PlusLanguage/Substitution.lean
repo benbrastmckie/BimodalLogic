@@ -37,18 +37,18 @@ missing piece for reasoning inside TM⁺ without rebuilding a `Theorems/` layer 
 ## Main Results
 
 - `substPlus_atom` — `substPlus PlusFormula.atom = ofFormula`
-- `substPlus_swapTemporal` — the swap interaction, at the *shifted* substitution
-  `swapTemporal ∘ σ`; this is what makes the `temporal_duality` case of the transfer close
+- `substPlus_reflectTime` — the swap interaction, at the *shifted* substitution
+  `reflectTime ∘ σ`; this is what makes the `time_reflection` case of the transfer close
 - `PlusAxiom.ofTMSubst` — every TM axiom instance is a TM⁺ axiom instance under `substPlus σ`
 - `PlusDerivationTree.ofTMSubst`, `plusDerivable_substPlus` — the transfer
 
 ## Why the substitution must vary along the recursion
 
-`temporal_duality` concludes `⊢ φ.swapTemporal` from `⊢ φ`. Under `substPlus σ` the target is
-`substPlus σ φ.swapTemporal`, which is **not** `(substPlus σ φ).swapTemporal` — the two differ
+`time_reflection` concludes `⊢ φ.reflectTime` from `⊢ φ`. Under `substPlus σ` the target is
+`substPlus σ φ.reflectTime`, which is **not** `(substPlus σ φ).reflectTime` — the two differ
 exactly at the atoms, where the first leaves `σ p` alone and the second reverses it. The
-identity that does hold is `substPlus_swapTemporal`, which repairs the mismatch by running the
-recursive call at `fun p => (σ p).swapTemporal` instead. So the recursion is over derivations
+identity that does hold is `substPlus_reflectTime`, which repairs the mismatch by running the
+recursive call at `fun p => (σ p).reflectTime` instead. So the recursion is over derivations
 *and* substitutions jointly, and `σ` is an explicit argument rather than a section variable.
 
 ## Uniform substitution is a syntactic transfer, not a semantic principle
@@ -126,23 +126,23 @@ example (σ : Atom → PlusFormula) (φ : Formula) :
 /--
 **Substitution and temporal duality commute after shifting the substitution.**
 
-`substPlus σ` and `swapTemporal` do not commute on the nose: at an atom the left side yields
-`σ p` and the right side `(σ p).swapTemporal`. Running the substitution at
-`fun p => (σ p).swapTemporal` repairs it, the atom case closing by `swap_temporal_involution`.
+`substPlus σ` and `reflectTime` do not commute on the nose: at an atom the left side yields
+`σ p` and the right side `(σ p).reflectTime`. Running the substitution at
+`fun p => (σ p).reflectTime` repairs it, the atom case closing by `reflect_time_involution`.
 -/
-theorem substPlus_swapTemporal (σ : Atom → PlusFormula) (φ : Formula) :
-    substPlus σ φ.swapTemporal
-      = (substPlus (fun p => (σ p).swapTemporal) φ).swapTemporal := by
+theorem substPlus_reflectTime (σ : Atom → PlusFormula) (φ : Formula) :
+    substPlus σ φ.reflectTime
+      = (substPlus (fun p => (σ p).reflectTime) φ).reflectTime := by
   induction φ with
-  | atom p => exact (PlusFormula.swap_temporal_involution (σ p)).symm
+  | atom p => exact (PlusFormula.reflect_time_involution (σ p)).symm
   | bot => rfl
   | imp _ _ ih1 ih2 =>
-    simp only [Formula.swapTemporal, substPlus, PlusFormula.swapTemporal, ih1, ih2]
-  | box _ ih => simp only [Formula.swapTemporal, substPlus, PlusFormula.swapTemporal, ih]
+    simp only [Formula.reflectTime, substPlus, PlusFormula.reflectTime, ih1, ih2]
+  | box _ ih => simp only [Formula.reflectTime, substPlus, PlusFormula.reflectTime, ih]
   | untl _ _ ih1 ih2 =>
-    simp only [Formula.swapTemporal, substPlus, PlusFormula.swapTemporal, ih1, ih2]
+    simp only [Formula.reflectTime, substPlus, PlusFormula.reflectTime, ih1, ih2]
   | snce _ _ ih1 ih2 =>
-    simp only [Formula.swapTemporal, substPlus, PlusFormula.swapTemporal, ih1, ih2]
+    simp only [Formula.reflectTime, substPlus, PlusFormula.reflectTime, ih1, ih2]
 
 /-! ## The axiom transfer -/
 
@@ -220,9 +220,9 @@ theorem PlusAxiom.minFrameClass_ofTMSubst (σ : Atom → PlusFormula) {φ : Form
 **The substitution transfer.** Every TM derivation becomes a TM⁺ derivation of the substituted
 conclusion over the substituted context, at the same frame class.
 
-Seven cases, one per rule. The `axiom` case is `PlusAxiom.ofTMSubst`; the `temporal_duality` case
-recurses at the *shifted* substitution `fun p => (σ p).swapTemporal` and transports along
-`substPlus_swapTemporal`; the rest are structural. `ofTM` is the special case `σ =
+Seven cases, one per rule. The `axiom` case is `PlusAxiom.ofTMSubst`; the `time_reflection` case
+recurses at the *shifted* substitution `fun p => (σ p).reflectTime` and transports along
+`substPlus_reflectTime`; the rest are structural. `ofTM` is the special case `σ =
 PlusFormula.atom` (`substPlus_atom`).
 -/
 def PlusDerivationTree.ofTMSubst {fc : FrameClass} (σ : Atom → PlusFormula) :
@@ -236,10 +236,10 @@ def PlusDerivationTree.ofTMSubst {fc : FrameClass} (σ : Atom → PlusFormula) :
       .modus_ponens _ (substPlus σ φ) (substPlus σ ψ) (ofTMSubst σ d1) (ofTMSubst σ d2)
   | _, _, .necessitation φ d => .necessitation (substPlus σ φ) (ofTMSubst σ d)
   | _, _, .temporal_necessitation φ d => .temporal_necessitation (substPlus σ φ) (ofTMSubst σ d)
-  | _, _, .temporal_duality φ d =>
-      (substPlus_swapTemporal σ φ).symm ▸
-        PlusDerivationTree.temporal_duality (substPlus (fun p => (σ p).swapTemporal) φ)
-          (ofTMSubst (fun p => (σ p).swapTemporal) d)
+  | _, _, .time_reflection φ d =>
+      (substPlus_reflectTime σ φ).symm ▸
+        PlusDerivationTree.time_reflection (substPlus (fun p => (σ p).reflectTime) φ)
+          (ofTMSubst (fun p => (σ p).reflectTime) d)
   | _, _, .weakening _ _ _ d h =>
       .weakening _ _ _ (ofTMSubst σ d)
         (by

@@ -40,7 +40,7 @@ distinction is load-bearing for the sandwich theorems in `Metalogic/Independence
 `AxiomSet fc ⊆ {φ | Derivable fc [] φ}`, antitonicity gives
 `Mod {φ | Derivable fc [] φ} ⊆ Mod (AxiomSet fc)`, so a sandwich stated over `AxiomSet` is the
 stronger statement. It is also the only one available: `Mod` of a theorem set would require a
-single-frame `F.ValidOn φ → F.ValidOn φ.swapTemporal` closure lemma for the `temporal_duality`
+single-frame `F.ValidOn φ → F.ValidOn φ.reflectTime` closure lemma for the `time_reflection`
 rule, and no such lemma exists — nor should it, since a frame need not be closed under time
 reversal.
 

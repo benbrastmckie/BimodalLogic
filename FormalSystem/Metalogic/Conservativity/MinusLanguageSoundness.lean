@@ -414,7 +414,7 @@ two Archimedean instances being dropped here. It is proved instead by induction 
 
 The only genuinely new semantic content is `Semantics.MinusLanguage.MinusSchemaValidity`'s DF lemma
 (`df_valid_of_succOrder`) and its `PredOrder` past-dual (`swapMinus_df_valid_of_predOrder`), needed
-respectively for the `df` axiom leaf and for the `temporal_duality` case's swap component.
+respectively for the `df` axiom leaf and for the `time_reflection` case's swap component.
 Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any
 semantic argument at all**: `minus_derivable_valid_and_swap_valid_zTimeSucc` re-derives each one
 (and its swap) proof-theoretically, by composing `minus_soundness_valid` with the `TD` rule itself
@@ -426,7 +426,7 @@ condition. -/
 /--
 Combined validity and swap-validity, on `[SuccOrder] [PredOrder]` frames (no Archimedean
 binders), for L⁻ theorems (empty-context derivations) at `FrameClass.ZTime`. The companion
-`minus_soundness_ztime_succ`'s `temporal_duality` case needs exactly the swap half of this, as an
+`minus_soundness_ztime_succ`'s `time_reflection` case needs exactly the swap half of this, as an
 external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_swap_validIn` (the
 L sibling this parallels), but over L⁻'s own 15-constructor `Axiom` rather than L's 45, and
 without the `FrameClass` parameter, since the binder-weakened `.ZTime` frames this is stated
@@ -448,7 +448,7 @@ private theorem minus_derivable_valid_and_swap_valid_zTimeSucc {φ : MinusFormul
     · exact ⟨MinusValidity.minusValid_implies_minusValidZTimeSucc
               (minus_soundness_valid (.axiom [] _ h_ax hbase)),
              MinusValidity.minusValid_implies_minusValidZTimeSucc
-              (minus_soundness_valid (.temporal_duality _ (.axiom [] _ h_ax hbase)))⟩
+              (minus_soundness_valid (.time_reflection _ (.axiom [] _ h_ax hbase)))⟩
     · cases h_ax with
       | df ψ =>
           exact ⟨fun F _ _ M τ t => df_valid_of_succOrder M τ t ψ,
@@ -470,7 +470,7 @@ private theorem minus_derivable_valid_and_swap_valid_zTimeSucc {φ : MinusFormul
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
     exact ⟨fun F _ _ M τ t s _hs => h_valid F M τ s,
            fun F _ _ M τ t s _hs => h_swap F M τ s⟩
-  | .temporal_duality _ d' =>
+  | .time_reflection _ d' =>
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
     exact ⟨h_swap, by rw [MinusFormula.swapMinus_involution]; exact h_valid⟩
   | .weakening Γ' _ _ d' h_sub =>
@@ -489,7 +489,7 @@ on any `TaskFrame` carrying `[SuccOrder] [PredOrder]`, with **no** `IsSuccArchim
 `IsPredArchimedean` requirement.
 
 By induction on `d`, directly against `MinusTruthAt` (see the module docstring above for why this
-cannot be a composition). The `axiom` case's `by_cases` split and the `temporal_duality` case's
+cannot be a composition). The `axiom` case's `by_cases` split and the `time_reflection` case's
 call into `minus_derivable_valid_and_swap_valid_zTimeSucc` mirror that lemma's own proof exactly.
 -/
 theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormula)
@@ -518,7 +518,7 @@ theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormu
     rw [MinusTruth.future_iff]
     intro s _hts
     exact ih τ s (by simp)
-  | temporal_duality φ' d' _ih =>
+  | time_reflection φ' d' _ih =>
     exact (minus_derivable_valid_and_swap_valid_zTimeSucc d').2 F M τ t
   | weakening Γ' Δ' φ' d' h_sub ih =>
     exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))

@@ -51,8 +51,8 @@ imported into the semantic sandwich.
 ## The sandwich is over `AxiomSet`, never a theorem set
 
 Same contract as `Metalogic/Independence/RationalWitness.lean`: `Mod` of the theorem set would
-require a single-frame `F.ValidOn φ → F.ValidOn φ.swapTemporal` closure lemma for
-`temporal_duality`, which does not exist and is false in general.
+require a single-frame `F.ValidOn φ → F.ValidOn φ.reflectTime` closure lemma for
+`time_reflection`, which does not exist and is false in general.
 
 ## Main results
 

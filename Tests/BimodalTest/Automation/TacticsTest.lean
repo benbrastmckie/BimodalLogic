@@ -25,7 +25,7 @@ Comprehensive test suite covering:
 - Context-based assumption finding (assumption_search)
 - Formula pattern matching helpers
 - Negative tests and edge cases
-- Inference rule tests (modal_k, temporal_k, temporal_duality)
+- Inference rule tests (modal_k, temporal_k, time_reflection)
 - ProofSearch function tests (boundedSearch, heuristics, helpers)
 - Propositional depth tests (prop_k, prop_s chaining)
 - Aesop integration tests (complex TM proofs)
@@ -352,7 +352,7 @@ example (a b c d _ : Nat) : Nat := by
 /-!
 ## Phase 5 Group 1: Inference Rule Tests
 
-Tests for generalizedModalK, generalizedTemporalK, temporal_duality inference rules.
+Tests for generalizedModalK, generalizedTemporalK, time_reflection inference rules.
 
 NOTE: DerivationTree.modal_k and DerivationTree.temporal_k were removed in Task 44.
 The generalized rules are now in FormalSystem.Theorems.GeneralizedNecessitation.
@@ -371,11 +371,11 @@ noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atomS "p")
         (Formula.allFuture (Formula.atomS "p")) :=
   generalizedTemporalK [] _ h
 
-/-- Test 53: temporal_duality swaps past and future -/
+/-- Test 53: time_reflection swaps past and future -/
 example (h : DerivationTree FrameClass.Base [] (Formula.allPast (Formula.atomS "p"))) :
-    DerivationTree FrameClass.Base [] (Formula.swapTemporal
+    DerivationTree FrameClass.Base [] (Formula.reflectTime
         (Formula.allPast (Formula.atomS "p"))) :=
-  DerivationTree.temporal_duality _ h
+  DerivationTree.time_reflection _ h
 
 open FormalSystem.Theorems in
 /-- Test 54: generalizedModalK with axiom derivation -/
@@ -406,12 +406,12 @@ noncomputable example (h : DerivationTree FrameClass.Base [Formula.atomS "p"] (F
         (Formula.allFuture (Formula.atomS "p")) :=
   generalizedTemporalK _ _ h
 
-/-- Test 58: temporal_duality with implication -/
+/-- Test 58: time_reflection with implication -/
 example (h : DerivationTree FrameClass.Base []
     (Formula.allPast (Formula.imp (Formula.atomS "p") (Formula.atomS "q")))) :
-    DerivationTree FrameClass.Base [] (Formula.swapTemporal
+    DerivationTree FrameClass.Base [] (Formula.reflectTime
         (Formula.allPast (Formula.imp (Formula.atomS "p") (Formula.atomS "q")))) :=
-  DerivationTree.temporal_duality _ h
+  DerivationTree.time_reflection _ h
 
 /-!
 ## Phase 5 Group 2: Additional Derivation Tests

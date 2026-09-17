@@ -28,7 +28,7 @@ module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_swap_
 A TM schema instance over L⁺ then holds in `M` iff its L instance at the atomized parameters
 holds in `M.atomModel e`, which is the landed lemma applied on the same frame — so `fc.Sat` is
 inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_swap_of_tm` its swap form via
-`atomize_swapTemporal` (atomization commutes with temporal duality up to swapping the encoding,
+`atomize_reflectTime` (atomization commutes with temporal duality up to swapping the encoding,
 `Encoding.swap`).
 
 ## Main Definitions
@@ -39,7 +39,7 @@ inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_swap_of_tm` its s
 ## Main Results
 
 - `plusTruthAt_iff_atomize` — the transfer lemma
-- `atomize_swapTemporal` — `atomize e φ.swapTemporal = (atomize e.swap φ).swapTemporal`
+- `atomize_reflectTime` — `atomize e φ.reflectTime = (atomize e.swap φ).reflectTime`
 - `plusValidIn_of_tm`, `plusValidIn_swap_of_tm` — the two helpers the dispatch lemmas of
   `Conservativity/Plus/AxiomValidity.lean` consume
 
@@ -73,15 +73,15 @@ theorem Encoding.nonempty : Nonempty Encoding := by
   exact ⟨⟨(Denumerable.eqv (Atom ⊕ PlusFormula)).trans (Denumerable.eqv Atom).symm,
     Equiv.injective _⟩⟩
 
-/-- `swapTemporal` is injective, being an involution. -/
-theorem swapTemporal_injective : Function.Injective PlusFormula.swapTemporal :=
-  Function.Involutive.injective swap_temporal_involution
+/-- `reflectTime` is injective, being an involution. -/
+theorem reflectTime_injective : Function.Injective PlusFormula.reflectTime :=
+  Function.Involutive.injective reflect_time_involution
 
 /-- The encoding conjugated by temporal duality on the `⊡`-formula side: `e.swap.ι (inr χ) =
-e.ι (inr χ.swapTemporal)`. Injective because `swapTemporal` is an involution. -/
+e.ι (inr χ.reflectTime)`. Injective because `reflectTime` is an involution. -/
 def Encoding.swap (e : Encoding) : Encoding where
-  ι := e.ι ∘ Sum.map id PlusFormula.swapTemporal
-  inj := e.inj.comp (Sum.map_injective.mpr ⟨fun _ _ h => h, swapTemporal_injective⟩)
+  ι := e.ι ∘ Sum.map id PlusFormula.reflectTime
+  inj := e.inj.comp (Sum.map_injective.mpr ⟨fun _ _ h => h, reflectTime_injective⟩)
 
 /-! ## Atomization -/
 
@@ -122,16 +122,16 @@ right-hand sides, and `atomize` is structural on the L constructors. -/
     atomize e (kMinus φ) = Formula.kMinus (atomize e φ) := rfl
 
 /-- Atomization commutes with temporal duality, up to conjugating the encoding: the fresh atom
-for `⊡χ.swapTemporal` under `e` is the fresh atom for `⊡χ` under `e.swap`. -/
-theorem atomize_swapTemporal (e : Encoding) (φ : PlusFormula) :
-    atomize e φ.swapTemporal = (atomize e.swap φ).swapTemporal := by
+for `⊡χ.reflectTime` under `e` is the fresh atom for `⊡χ` under `e.swap`. -/
+theorem atomize_reflectTime (e : Encoding) (φ : PlusFormula) :
+    atomize e φ.reflectTime = (atomize e.swap φ).reflectTime := by
   induction φ with
   | atom p => rfl
   | bot => rfl
-  | imp φ ψ ihφ ihψ => simp only [PlusFormula.swapTemporal, atomize, Formula.swapTemporal, ihφ, ihψ]
-  | box φ ih => simp only [PlusFormula.swapTemporal, atomize, Formula.swapTemporal, ih]
-  | untl φ ψ ihφ ihψ => simp only [PlusFormula.swapTemporal, atomize, Formula.swapTemporal, ihφ, ihψ]
-  | snce φ ψ ihφ ihψ => simp only [PlusFormula.swapTemporal, atomize, Formula.swapTemporal, ihφ, ihψ]
+  | imp φ ψ ihφ ihψ => simp only [PlusFormula.reflectTime, atomize, Formula.reflectTime, ihφ, ihψ]
+  | box φ ih => simp only [PlusFormula.reflectTime, atomize, Formula.reflectTime, ih]
+  | untl φ ψ ihφ ihψ => simp only [PlusFormula.reflectTime, atomize, Formula.reflectTime, ihφ, ihψ]
+  | snce φ ψ ihφ ihψ => simp only [PlusFormula.reflectTime, atomize, Formula.reflectTime, ihφ, ihψ]
   | stab χ _ => rfl
 
 /-! ## The atomized model -/
@@ -210,17 +210,17 @@ theorem plusValidIn_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
 
 /--
 **TM schema swap-soundness over L⁺.** If the atomization of `φ` **under the conjugated
-encoding** is a TM axiom instance admissible at `fc`, then `φ.swapTemporal` is
-`PlusValidIn fc`: `axiom_swap_validIn` on the atomized model, with `atomize_swapTemporal`
+encoding** is a TM axiom instance admissible at `fc`, then `φ.reflectTime` is
+`PlusValidIn fc`: `axiom_swap_validIn` on the atomized model, with `atomize_reflectTime`
 rewriting the target.
 -/
 theorem plusValidIn_swap_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
     (ax : Axiom (atomize e.swap φ)) (h : ax.minFrameClass ≤ fc) :
-    PlusValidIn fc φ.swapTemporal :=
+    PlusValidIn fc φ.reflectTime :=
   fun F hF M τ t =>
-    (plusTruthAt_iff_atomize M e φ.swapTemporal τ t).mpr
+    (plusTruthAt_iff_atomize M e φ.reflectTime τ t).mpr
       (by
-        rw [atomize_swapTemporal]
+        rw [atomize_reflectTime]
         exact axiom_swap_validIn ax h F hF (M.atomModel e) τ t)
 
 /-! ## Acceptance test

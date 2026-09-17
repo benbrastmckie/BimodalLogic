@@ -36,8 +36,8 @@ reverse, and vice versa).
   applications of the future-side core (`UntilWitnessSeed` was a byte-identical duplicate of
   `ForwardTemporalWitnessSeed` and has been removed)
 - `allPast_neg_of_hseed_inconsistent`: past-side core, mirroring the future core; its
-  `bot`-derivation branch is obtained from the future core's by `Formula.swapTemporal` +
-  `DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`
+  `bot`-derivation branch is obtained from the future core's by `Formula.reflectTime` +
+  `DerivationTree.time_reflection` + `Formula.reflect_time_involution`
   (`allPastBotImpNegDeriv`) rather than a second hand derivation
 - `past_temporal_witness_seed_consistent`: application of the past-side core
 - `g_content_subset_implies_h_content_reverse`: GContent(M) ⊆ M' implies HContent(M') ⊆ M
@@ -163,19 +163,19 @@ private noncomputable def allFutureBotImpNegDeriv {fc : FrameClass} (chi : Formu
 
 /--
 Past dual of `allFutureBotImpNegDeriv`: `⊢ H(⊥) → H(¬psi)`, obtained by
-`Formula.swapTemporal` + `DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`
+`Formula.reflectTime` + `DerivationTree.time_reflection` + `Formula.reflect_time_involution`
 -- the `pastTfDeriv` technique (`Algebraic/FlowFrame.lean`) -- applied to the future core
-above at the swapped formula `psi.swapTemporal`, then unswapped back to `psi` by involution.
+above at the swapped formula `psi.reflectTime`, then unswapped back to `psi` by involution.
 -/
 private noncomputable def allPastBotImpNegDeriv {fc : FrameClass} (psi : Formula) :
     DerivationTree fc []
       ((Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg psi))) := by
-  have h_fut := allFutureBotImpNegDeriv (fc := fc) (Formula.swapTemporal psi)
-  have h_dual := DerivationTree.temporal_duality _ h_fut
-  have h_eq : Formula.swapTemporal ((Formula.allFuture Formula.bot).imp
-      (Formula.allFuture (Formula.neg (Formula.swapTemporal psi)))) =
+  have h_fut := allFutureBotImpNegDeriv (fc := fc) (Formula.reflectTime psi)
+  have h_dual := DerivationTree.time_reflection _ h_fut
+  have h_eq : Formula.reflectTime ((Formula.allFuture Formula.bot).imp
+      (Formula.allFuture (Formula.neg (Formula.reflectTime psi)))) =
       (Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg psi)) := by
-    simp [Formula.swapTemporal, Formula.swap_temporal_involution, Formula.swap_temporal_neg]
+    simp [Formula.reflectTime, Formula.reflect_time_involution, Formula.reflect_time_neg]
   rw [h_eq] at h_dual
   exact h_dual
 
@@ -383,7 +383,7 @@ Past temporal witness seed consistency: If P(psi) is in an MCS M, then
 
 Application of the shared core `allPast_neg_of_hseed_inconsistent`, whose past-only
 `bot`-derivation branch is itself obtained from the future core by
-`Formula.swapTemporal` + `DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`
+`Formula.reflectTime` + `DerivationTree.time_reflection` + `Formula.reflect_time_involution`
 (see `allPastBotImpNegDeriv` above) rather than a second hand proof.
 -/
 theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula)

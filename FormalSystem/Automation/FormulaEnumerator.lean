@@ -32,7 +32,7 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 - `EnumParams`: Configuration structure for formula generation
 - `enumerateWithProgress`: IO-based exhaustive enumeration with progress/checkpoint
 - `sampleRandom`: IO-based random formula generation
-- `enrichWithDuals`: Apply `swapTemporal` for free 2x augmentation
+- `enrichWithDuals`: Apply `reflectTime` for free 2x augmentation
 - `DiversityReport`: Distribution statistics across GoalCategory and depth buckets
 
 ### Exact-complexity enumeration with memoization
@@ -982,9 +982,9 @@ partial def sampleRandom (params : EnumParams) : IO (List Formula) := do
   return deduped.take targetCount
 
 /--
-Enrich a formula list with temporal duals via `swapTemporal`.
+Enrich a formula list with temporal duals via `reflectTime`.
 
-For each formula in the input, adds `swapTemporal φ` if it is different
+For each formula in the input, adds `reflectTime φ` if it is different
 from `φ` (i.e., if the formula actually contains temporal operators).
 This provides a free 2x augmentation for formulas with temporal content.
 
@@ -993,7 +993,7 @@ Invalid formulas may or may not produce invalid duals.
 -/
 def enrichWithDuals (formulas : List Formula) : List Formula :=
   let withDuals := formulas.flatMap fun φ =>
-    let dual := φ.swapTemporal
+    let dual := φ.reflectTime
     if dual == φ then [φ] else [φ, dual]
   withDuals.eraseDups
 

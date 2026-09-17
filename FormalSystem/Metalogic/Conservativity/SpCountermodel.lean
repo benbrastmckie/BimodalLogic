@@ -184,7 +184,7 @@ on the whole native L⁻ frame class.
 Recursion over all seven `MinusLanguage.DerivationTree` constructors. `assumption` is vacuous at
 the empty context; `modus_ponens`, `necessitation` and `temporal_necessitation` are immediate
 from the corresponding truth clauses (the last two because `MinusFrameValid` already quantifies over
-every point). `temporal_duality` is one line via `Semantics.truth_swap` at `F.swap`, which is
+every point). `time_reflection` is one line via `Semantics.truth_swap` at `F.swap`, which is
 available precisely because the frame class is converse-closed. `weakening` routes through
 `DerivationTree.ofWeakeningNil`, with `height_ofWeakeningNil_lt` supplying termination.
 -/
@@ -199,7 +199,7 @@ theorem minusFrameValid_of_derivation {φ : MinusFormula}
   | .necessitation _ d' => exact fun F V _ v => minusFrameValid_of_derivation d' F V v
   | .temporal_necessitation _ d' =>
       exact fun F V _ v _ => minusFrameValid_of_derivation d' F V v
-  | .temporal_duality φ' d' =>
+  | .time_reflection φ' d' =>
       intro F V w
       exact (truth_swap F V w φ').mp (minusFrameValid_of_derivation d' F.swap V w)
   | .weakening Γ' _ _ d' h_sub =>

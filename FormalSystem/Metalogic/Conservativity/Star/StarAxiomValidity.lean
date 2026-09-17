@@ -20,7 +20,7 @@ supplied:
 - `starAxiom_swap_validIn_min` — every schema's temporal dual is valid at its own
   `minFrameClass`.
 
-The second is what makes the `temporal_duality` rule sound **semantically**
+The second is what makes the `time_reflection` rule sound **semantically**
 (`Conservativity/Star/StarSoundness.lean`, the companion recursion). No proof-theoretic mirror
 argument is used, and — as everywhere in this tree — no argument by uniform substitution: TM⁺ is
 already not substitution-closed via `PlusAxiom.atom_stab`, and nothing here needs it.
@@ -49,8 +49,8 @@ already not substitution-closed via `PlusAxiom.atom_stab`, and nothing here need
 - **Most swap arms reuse a validity arm; the rest have named duals.** Where a schema's temporal
   dual *is* an instance of a constructor of this inductive — the ten `.iff` register schemata are
   self-dual, the rigidity arms pair G↔H, the export arms pair U↔S, and the mirror block supplies
-  fifteen dual pairs — the swap arm normalises `swapTemporal` through the
-  `StarFormula.swap_temporal_*` family and applies the matching validity lemma at swapped
+  fifteen dual pairs — the swap arm normalises `reflectTime` through the
+  `StarFormula.reflect_time_*` family and applies the matching validity lemma at swapped
   arguments. Eleven schemata have **no** dual constructor (`discrete_propagate_fwd`/`_bwd`,
   `discrete_box_necessity`, `dense_indicator`, `density`, `z1`, `sep`, `modal_future`, `paste`,
   `untl_paste`), exactly as at the L level, where `SoundnessLemmas/FrameClassVariants.lean`
@@ -590,7 +590,7 @@ order-theoretic content is **not** inlined: `prior_UZ`/`prior_SZ` consume
 `P := fun x => StarTruthAt M τ x v φ`.
 
 **Measured correction to this group's swap-closure.** Three of the five uniformity schemata are
-*not* closed under `swapTemporal` within the group — `swapTemporal` exchanges `untl` and `snce`,
+*not* closed under `reflectTime` within the group — `reflectTime` exchanges `untl` and `snce`,
 so the dual of `U(⊤,⊥) → G(U(⊤,⊥))` is `S(⊤,⊥) → H(S(⊤,⊥))`, which is no member's statement —
 and neither `density`, `dense_indicator` nor `z1` has a past twin among the schemata. This
 mirrors the L level exactly, where `SoundnessLemmas.FrameClassVariants` carries a dedicated
@@ -942,23 +942,23 @@ theorem starValid_sep_swap (φ : StarFormula) :
       (((StarFormula.and (StarFormula.kPlus φ)
         (StarFormula.kPlus (StarFormula.and φ (StarFormula.untl φ.neg φ))).neg).imp
         (StarFormula.kPlus
-          (StarFormula.and (StarFormula.kPlus φ) (StarFormula.kMinus φ)))).swapTemporal) := by
+          (StarFormula.and (StarFormula.kPlus φ) (StarFormula.kMinus φ)))).reflectTime) := by
   refine fun F h_lub M τ t vec h_ant => ?_
   sat_intro h_lub
   obtain ⟨Q, hQc, hQd⟩ := Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
   obtain ⟨h1, h2⟩ := (StarTruth.and_iff _ _ _ _ _ _).mp h_ant
   simp only [StarFormula.and, StarFormula.neg, StarFormula.kPlus, StarFormula.kMinus,
-    StarFormula.top, StarFormula.swapTemporal, StarTruthAt] at h1 h2 ⊢
+    StarFormula.top, StarFormula.reflectTime, StarTruthAt] at h1 h2 ⊢
   rintro ⟨s₂, hs₂t, -, hno⟩
-  have hK : ∀ w, w < t → ∃ u, w < u ∧ u < t ∧ StarTruthAt M τ u vec φ.swapTemporal := by
+  have hK : ∀ w, w < t → ∃ u, w < u ∧ u < t ∧ StarTruthAt M τ u vec φ.reflectTime := by
     intro w hwt
     by_contra hc
     refine h1 ⟨w, hwt, fun hb => hb, ?_⟩
     intro r hwr hrt hrφ
     exact hc ⟨r, hwr, hrt, hrφ⟩
   have h2' : ∃ s₁, s₁ < t ∧ (True) ∧ ∀ u, u < t → s₁ < u →
-      (StarTruthAt M τ u vec φ.swapTemporal →
-        StarTruthAt M τ u vec (StarFormula.snce φ.swapTemporal.neg φ.swapTemporal) → False) := by
+      (StarTruthAt M τ u vec φ.reflectTime →
+        StarTruthAt M τ u vec (StarFormula.snce φ.reflectTime.neg φ.reflectTime) → False) := by
     refine Classical.byContradiction (fun hc => h2 ?_)
     intro hbad
     exact hc (by
@@ -966,18 +966,18 @@ theorem starValid_sep_swap (φ : StarFormula) :
       exact ⟨s₁, hs₁t, trivial, fun u hut hs₁u => Classical.byContradiction (hu u hs₁u hut)⟩)
   obtain ⟨s₁, hs₁t, -, hstart⟩ := h2'
   refine Metalogic.SoundnessLemmas.sep_order_mirror h_lub Q hQc hQd
-    {u | StarTruthAt M τ u vec φ.swapTemporal} t s₁ s₂ hs₁t hs₂t hK ?_ ?_
+    {u | StarTruthAt M τ u vec φ.reflectTime} t s₁ s₂ hs₁t hs₂t hK ?_ ?_
   · rintro u hut hs₁u huP ⟨w, hwu, hwP, hfree⟩
     exact hstart u hut hs₁u huP ⟨w, hwu, hwP, fun r hwr hru => hfree r hwr hru⟩
   · intro u hut hs₂u
-    have hAB : StarTruthAt M τ u vec (StarFormula.kMinus φ.swapTemporal) →
-        StarTruthAt M τ u vec (StarFormula.kPlus φ.swapTemporal) → False := by
+    have hAB : StarTruthAt M τ u vec (StarFormula.kMinus φ.reflectTime) →
+        StarTruthAt M τ u vec (StarFormula.kPlus φ.reflectTime) → False := by
       intro ha hb
       exact hno u hs₂u hut (fun k => k ha hb)
-    by_cases hL : ∃ w, w < u ∧ ∀ z, w < z → z < u → ¬ StarTruthAt M τ z vec φ.swapTemporal
+    by_cases hL : ∃ w, w < u ∧ ∀ z, w < z → z < u → ¬ StarTruthAt M τ z vec φ.reflectTime
     · exact Or.inl hL
     · refine Or.inr ?_
-      have ha : StarTruthAt M τ u vec (StarFormula.kMinus φ.swapTemporal) := by
+      have ha : StarTruthAt M τ u vec (StarFormula.kMinus φ.reflectTime) := by
         rw [starKMinus_iff]
         intro s hsu
         by_contra hc
@@ -1004,20 +1004,20 @@ theorem starValid_modal_future {φ : StarFormula} (hφ : RecallFree φ) :
   exact (recallFree_vector_irrelevant M hφ σ s _ v).mp h2
 
 /-- MF's temporal dual, at every `↓ⁱ`-free `StarFormula`: `□φ → □(Hφ)`. No `modal_past` schema
-exists, so this dual is named here. `RecallFree.swapTemporal` carries the side condition across.
+exists, so this dual is named here. `RecallFree.reflectTime` carries the side condition across.
 -/
 theorem starValid_modal_future_swap {φ : StarFormula} (hφ : RecallFree φ) :
     StarValid (((StarFormula.box φ).imp
-      (StarFormula.box (StarFormula.allFuture φ))).swapTemporal) := by
-  simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
+      (StarFormula.box (StarFormula.allFuture φ))).reflectTime) := by
+  simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
   refine StarValid.of_forall fun F M τ t v h => ?_
   intro σ
   rw [StarTruth.allPast_iff]
   intro s hst
   have h1 := h (σ.timeShift (s - t))
-  have h2 := (starTruthAt_timeShift M φ.swapTemporal σ t (s - t) v).mp h1
+  have h2 := (starTruthAt_timeShift M φ.reflectTime σ t (s - t) v).mp h1
   rw [add_sub_cancel] at h2
-  exact (recallFree_vector_irrelevant M hφ.swapTemporal σ s _ v).mp h2
+  exact (recallFree_vector_irrelevant M hφ.reflectTime σ s _ v).mp h2
 
 /-! ## The TM⁺ mirror block — the two pasting schemata
 
@@ -1026,7 +1026,7 @@ the four pasting validities, over the L⋆ purity predicates. Nothing is re-prov
 lemmas are the `StarValid` packagings the dispatch consumes.
 
 **Measured correction to this group's swap-closure.** PS and US are not each other's duals.
-`swapTemporal` fixes `⟐` and exchanges `untl`/`snce`, so the dual of PS is PS with the conjuncts
+`reflectTime` fixes `⟐` and exchanges `untl`/`snce`, so the dual of PS is PS with the conjuncts
 exchanged (PS'), and the dual of US is SS — exactly as at the L⁺ level, where
 `Semantics/PlusLanguage/PlusPasting.lean` carries `paste_valid'` and `snce_dstab_valid` for precisely this
 reason. The two `*_swap` lemmas below are those duals. -/
@@ -1145,235 +1145,235 @@ theorem starAxiom_validIn {φ : StarFormula} {fc : FrameClass} (ax : StarAxiom �
 /-! ## Swap-validity -/
 
 /-- **Every TM⋆ schema's temporal dual is valid at its own minimum frame class.** One arm per
-constructor; the semantic input to the `temporal_duality` case of soundness. Each register arm
-normalises `swapTemporal` and lands on the matching validity lemma — the swap-closure invariant
+constructor; the semantic input to the `time_reflection` case of soundness. Each register arm
+normalises `reflectTime` and lands on the matching validity lemma — the swap-closure invariant
 of `StarLanguage/Axioms.lean`, discharged constructor by constructor. -/
 theorem starAxiom_swap_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
-    StarValidIn ax.minFrameClass φ.swapTemporal := by
+    StarValidIn ax.minFrameClass φ.reflectTime := by
   cases ax with
   | prop_k φ ψ χ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_prop_k φ.swapTemporal ψ.swapTemporal χ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_prop_k φ.reflectTime ψ.reflectTime χ.reflectTime
   | prop_s φ ψ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_prop_s φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_prop_s φ.reflectTime ψ.reflectTime
   | ex_falso φ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_ex_falso φ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_ex_falso φ.reflectTime
   | peirce φ ψ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_peirce φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_peirce φ.reflectTime ψ.reflectTime
   | modal_t φ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_modal_t φ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_modal_t φ.reflectTime
   | modal_4 φ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_modal_4 φ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_modal_4 φ.reflectTime
   | modal_b φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_diamond]
-    exact starValid_modal_b φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_diamond]
+    exact starValid_modal_b φ.reflectTime
   | modal_5_collapse φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_diamond]
-    exact starValid_modal_5_collapse φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_diamond]
+    exact starValid_modal_5_collapse φ.reflectTime
   | modal_k_dist φ ψ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_modal_k_dist φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_modal_k_dist φ.reflectTime ψ.reflectTime
   | stab_k φ ψ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_stab_k φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_stab_k φ.reflectTime ψ.reflectTime
   | stab_t φ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_stab_t φ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_stab_t φ.reflectTime
   | stab_4 φ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_stab_4 φ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_stab_4 φ.reflectTime
   | stab_5 φ =>
-    simp only [StarFormula.swap_temporal_dstab, StarFormula.swapTemporal]
-    exact starValid_stab_5 φ.swapTemporal
+    simp only [StarFormula.reflect_time_dstab, StarFormula.reflectTime]
+    exact starValid_stab_5 φ.reflectTime
   | box_stab φ =>
-    simp only [StarFormula.swapTemporal]
-    exact starValid_box_stab φ.swapTemporal
+    simp only [StarFormula.reflectTime]
+    exact starValid_box_stab φ.reflectTime
   | atom_stab p =>
-    simp only [StarFormula.swapTemporal]
+    simp only [StarFormula.reflectTime]
     exact starValid_atom_stab p
   | serial_future =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_some_future]
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_some_future]
     exact starValid_serial_past
   | serial_past =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_some_past]
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_some_past]
     exact starValid_serial_future
   | left_mono_until_G φ χ ψ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
-    exact starValid_left_mono_since_H φ.swapTemporal χ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
+    exact starValid_left_mono_since_H φ.reflectTime χ.reflectTime ψ.reflectTime
   | left_mono_since_H φ χ ψ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_past]
-    exact starValid_left_mono_until_G φ.swapTemporal χ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_past]
+    exact starValid_left_mono_until_G φ.reflectTime χ.reflectTime ψ.reflectTime
   | right_mono_until φ ψ χ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
-    exact starValid_right_mono_since φ.swapTemporal ψ.swapTemporal χ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
+    exact starValid_right_mono_since φ.reflectTime ψ.reflectTime χ.reflectTime
   | right_mono_since φ ψ χ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_past]
-    exact starValid_right_mono_until φ.swapTemporal ψ.swapTemporal χ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_past]
+    exact starValid_right_mono_until φ.reflectTime ψ.reflectTime χ.reflectTime
   | connect_future φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future,
-      StarFormula.swap_temporal_some_past]
-    exact starValid_connect_past φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future,
+      StarFormula.reflect_time_some_past]
+    exact starValid_connect_past φ.reflectTime
   | connect_past φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_past,
-      StarFormula.swap_temporal_some_future]
-    exact starValid_connect_future φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_past,
+      StarFormula.reflect_time_some_future]
+    exact starValid_connect_future φ.reflectTime
   | enrichment_until φ ψ p =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swapTemporal]
-    exact starValid_enrichment_since φ.swapTemporal ψ.swapTemporal p.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflectTime]
+    exact starValid_enrichment_since φ.reflectTime ψ.reflectTime p.reflectTime
   | enrichment_since φ ψ p =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swapTemporal]
-    exact starValid_enrichment_until φ.swapTemporal ψ.swapTemporal p.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflectTime]
+    exact starValid_enrichment_until φ.reflectTime ψ.reflectTime p.reflectTime
   | self_accum_until φ ψ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swapTemporal]
-    exact starValid_self_accum_since φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflectTime]
+    exact starValid_self_accum_since φ.reflectTime ψ.reflectTime
   | self_accum_since φ ψ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swapTemporal]
-    exact starValid_self_accum_until φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflectTime]
+    exact starValid_self_accum_until φ.reflectTime ψ.reflectTime
   | absorb_until φ ψ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swapTemporal]
-    exact starValid_absorb_since φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflectTime]
+    exact starValid_absorb_since φ.reflectTime ψ.reflectTime
   | absorb_since φ ψ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swapTemporal]
-    exact starValid_absorb_until φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflectTime]
+    exact starValid_absorb_until φ.reflectTime ψ.reflectTime
   | linear_until φ ψ χ θ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swap_temporal_or,
-      StarFormula.swapTemporal]
-    exact starValid_linear_since φ.swapTemporal ψ.swapTemporal χ.swapTemporal θ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
+      StarFormula.reflectTime]
+    exact starValid_linear_since φ.reflectTime ψ.reflectTime χ.reflectTime θ.reflectTime
   | linear_since φ ψ χ θ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swap_temporal_or,
-      StarFormula.swapTemporal]
-    exact starValid_linear_until φ.swapTemporal ψ.swapTemporal χ.swapTemporal θ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
+      StarFormula.reflectTime]
+    exact starValid_linear_until φ.reflectTime ψ.reflectTime χ.reflectTime θ.reflectTime
   | until_F φ ψ =>
-    simp only [StarFormula.swap_temporal_some_future, StarFormula.swapTemporal]
-    exact starValid_since_P φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_some_future, StarFormula.reflectTime]
+    exact starValid_since_P φ.reflectTime ψ.reflectTime
   | since_P φ ψ =>
-    simp only [StarFormula.swap_temporal_some_past, StarFormula.swapTemporal]
-    exact starValid_until_F φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_some_past, StarFormula.reflectTime]
+    exact starValid_until_F φ.reflectTime ψ.reflectTime
   | temp_linearity φ ψ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swap_temporal_or,
-      StarFormula.swap_temporal_some_future, StarFormula.swapTemporal]
-    exact starValid_temp_linearity_past φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
+      StarFormula.reflect_time_some_future, StarFormula.reflectTime]
+    exact starValid_temp_linearity_past φ.reflectTime ψ.reflectTime
   | temp_linearity_past φ ψ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swap_temporal_or,
-      StarFormula.swap_temporal_some_past, StarFormula.swapTemporal]
-    exact starValid_temp_linearity φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
+      StarFormula.reflect_time_some_past, StarFormula.reflectTime]
+    exact starValid_temp_linearity φ.reflectTime ψ.reflectTime
   | F_until_equiv φ =>
-    simp only [StarFormula.swap_temporal_some_future, StarFormula.swapTemporal]
-    exact starValid_P_since_equiv φ.swapTemporal
+    simp only [StarFormula.reflect_time_some_future, StarFormula.reflectTime]
+    exact starValid_P_since_equiv φ.reflectTime
   | P_since_equiv φ =>
-    simp only [StarFormula.swap_temporal_some_past, StarFormula.swapTemporal]
-    exact starValid_F_until_equiv φ.swapTemporal
+    simp only [StarFormula.reflect_time_some_past, StarFormula.reflectTime]
+    exact starValid_F_until_equiv φ.reflectTime
   | discrete_symm_fwd =>
-    simp only [StarFormula.swapTemporal]
+    simp only [StarFormula.reflectTime]
     exact starValid_discrete_symm_bwd
   | discrete_symm_bwd =>
-    simp only [StarFormula.swapTemporal]
+    simp only [StarFormula.reflectTime]
     exact starValid_discrete_symm_fwd
   | discrete_propagate_fwd =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
     exact starValid_discrete_propagate_fwd_swap
   | discrete_propagate_bwd =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_past]
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_past]
     exact starValid_discrete_propagate_bwd_swap
   | discrete_box_necessity =>
-    simp only [StarFormula.swapTemporal]
+    simp only [StarFormula.reflectTime]
     exact starValid_discrete_box_necessity_swap
   | density φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
-    exact starValid_density_swap φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
+    exact starValid_density_swap φ.reflectTime
   | dense_indicator =>
-    simp only [StarFormula.swap_temporal_neg, StarFormula.swapTemporal]
+    simp only [StarFormula.reflect_time_neg, StarFormula.reflectTime]
     exact starValid_dense_indicator_swap
   | prior_UZ φ =>
-    simp only [StarFormula.swap_temporal_neg, StarFormula.swap_temporal_some_future,
-      StarFormula.swapTemporal]
-    exact starValid_prior_SZ φ.swapTemporal
+    simp only [StarFormula.reflect_time_neg, StarFormula.reflect_time_some_future,
+      StarFormula.reflectTime]
+    exact starValid_prior_SZ φ.reflectTime
   | prior_SZ φ =>
-    simp only [StarFormula.swap_temporal_neg, StarFormula.swap_temporal_some_past,
-      StarFormula.swapTemporal]
-    exact starValid_prior_UZ φ.swapTemporal
+    simp only [StarFormula.reflect_time_neg, StarFormula.reflect_time_some_past,
+      StarFormula.reflectTime]
+    exact starValid_prior_UZ φ.reflectTime
   | z1 φ =>
-    simp only [StarFormula.swap_temporal_all_future, StarFormula.swap_temporal_some_future,
-      StarFormula.swapTemporal]
-    exact starValid_z1_swap φ.swapTemporal
+    simp only [StarFormula.reflect_time_all_future, StarFormula.reflect_time_some_future,
+      StarFormula.reflectTime]
+    exact starValid_z1_swap φ.reflectTime
   | prior_U_gap φ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swap_temporal_or,
-      StarFormula.swap_temporal_neg, StarFormula.swap_temporal_some_future,
-      StarFormula.swap_temporal_kPlus, StarFormula.swap_temporal_top, StarFormula.swapTemporal]
-    exact starValid_prior_S_gap φ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
+      StarFormula.reflect_time_neg, StarFormula.reflect_time_some_future,
+      StarFormula.reflect_time_kPlus, StarFormula.reflect_time_top, StarFormula.reflectTime]
+    exact starValid_prior_S_gap φ.reflectTime
   | prior_S_gap φ =>
-    simp only [StarFormula.swap_temporal_and, StarFormula.swap_temporal_or,
-      StarFormula.swap_temporal_neg, StarFormula.swap_temporal_some_past,
-      StarFormula.swap_temporal_kMinus, StarFormula.swap_temporal_top, StarFormula.swapTemporal]
-    exact starValid_prior_U_gap φ.swapTemporal
+    simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
+      StarFormula.reflect_time_neg, StarFormula.reflect_time_some_past,
+      StarFormula.reflect_time_kMinus, StarFormula.reflect_time_top, StarFormula.reflectTime]
+    exact starValid_prior_U_gap φ.reflectTime
   | sep φ => exact starValid_sep_swap φ
   | modal_future φ hφ => exact starValid_modal_future_swap hφ
   | paste φ ψ hφ hψ =>
-    simp only [StarFormula.swap_temporal_dstab, StarFormula.swap_temporal_and,
-      StarFormula.swapTemporal]
-    exact starValid_paste_swap hφ.swapTemporal hψ.swapTemporal
+    simp only [StarFormula.reflect_time_dstab, StarFormula.reflect_time_and,
+      StarFormula.reflectTime]
+    exact starValid_paste_swap hφ.reflectTime hψ.reflectTime
   | untl_paste α φ hα hφ =>
-    simp only [StarFormula.swap_temporal_dstab, StarFormula.swapTemporal]
-    exact starValid_untl_paste_swap hα.swapTemporal hφ.swapTemporal
+    simp only [StarFormula.reflect_time_dstab, StarFormula.reflectTime]
+    exact starValid_untl_paste_swap hα.reflectTime hφ.reflectTime
   | store_recall_same i φ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_store_recall_same i φ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_store_recall_same i φ.reflectTime
   | recall_store_same i φ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_recall_store_same i φ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_recall_store_same i φ.reflectTime
   | recall_recall i j φ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_recall_recall i j φ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_recall_recall i j φ.reflectTime
   | store_store_comm i j φ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_store_store_comm i j φ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_store_store_comm i j φ.reflectTime
   | store_k i φ ψ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_store_k i φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_store_k i φ.reflectTime ψ.reflectTime
   | recall_k i φ ψ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_recall_k i φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_recall_k i φ.reflectTime ψ.reflectTime
   | store_box i φ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_store_box i φ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_store_box i φ.reflectTime
   | recall_box i φ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_recall_box i φ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_recall_box i φ.reflectTime
   | store_stab i φ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
-    exact starValid_store_stab i φ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
+    exact starValid_store_stab i φ.reflectTime
   | store_atom i p =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swapTemporal]
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
     exact starValid_store_atom i p
   | recall_rigid_future i φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
-    exact starValid_recall_rigid_past i φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
+    exact starValid_recall_rigid_past i φ.reflectTime
   | future_rigid_recall i φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_future]
-    exact starValid_past_rigid_recall i φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
+    exact starValid_past_rigid_recall i φ.reflectTime
   | recall_rigid_past i φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_past]
-    exact starValid_recall_rigid_future i φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_past]
+    exact starValid_recall_rigid_future i φ.reflectTime
   | past_rigid_recall i φ =>
-    simp only [StarFormula.swapTemporal, StarFormula.swap_temporal_all_past]
-    exact starValid_future_rigid_recall i φ.swapTemporal
+    simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_past]
+    exact starValid_future_rigid_recall i φ.reflectTime
   | recall_export_until i φ ψ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swap_temporal_and,
-      StarFormula.swap_temporal_top, StarFormula.swapTemporal]
-    exact starValid_recall_export_since i φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflect_time_and,
+      StarFormula.reflect_time_top, StarFormula.reflectTime]
+    exact starValid_recall_export_since i φ.reflectTime ψ.reflectTime
   | recall_export_since i φ ψ =>
-    simp only [StarFormula.swap_temporal_iff, StarFormula.swap_temporal_and,
-      StarFormula.swap_temporal_top, StarFormula.swapTemporal]
-    exact starValid_recall_export_until i φ.swapTemporal ψ.swapTemporal
+    simp only [StarFormula.reflect_time_iff, StarFormula.reflect_time_and,
+      StarFormula.reflect_time_top, StarFormula.reflectTime]
+    exact starValid_recall_export_until i φ.reflectTime ψ.reflectTime
 
 /-- Swap-validity of a TM⋆ schema at any class admitting it. -/
 theorem starAxiom_swap_validIn {φ : StarFormula} {fc : FrameClass} (ax : StarAxiom φ)
-    (h : ax.minFrameClass ≤ fc) : StarValidIn fc φ.swapTemporal :=
+    (h : ax.minFrameClass ≤ fc) : StarValidIn fc φ.reflectTime :=
   StarValidIn.mono h (starAxiom_swap_validIn_min ax)
 
 end FormalSystem.Metalogic.Conservativity

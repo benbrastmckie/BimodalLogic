@@ -289,14 +289,14 @@ def RuleEntry.toJsonLine (e : RuleEntry) : String :=
 /--
 The 7 inference rules of `DerivationTree`, in constructor source order
 (`Derivation.lean`: `axiom`, `assumption`, `modus_ponens`, `necessitation`,
-`temporal_necessitation`, `temporal_duality`, `weakening`).
+`temporal_necessitation`, `time_reflection`, `weakening`).
 
 Side conditions:
 - `axiom` requires an axiom witness with compatible frame class
   (`h.minFrameClass ≤ fc`);
 - `assumption` requires context membership (`φ ∈ Γ`);
 - the three necessitation-style rules (`necessitation`,
-  `temporal_necessitation`, `temporal_duality`) apply to theorems only
+  `temporal_necessitation`, `time_reflection`) apply to theorems only
   (empty context);
 - `weakening` requires `Γ ⊆ Δ`.
 -/
@@ -321,9 +321,9 @@ def allRuleEntries : List RuleEntry :=
     , premises := ["⊢[fc] φ"]
     , conclusion := "⊢[fc] Gφ"
     , sideCondition := some "empty context only (theorems)" }
-  , { name := "temporal_duality"
+  , { name := "time_reflection"
     , premises := ["⊢[fc] φ"]
-    , conclusion := "⊢[fc] swapTemporal φ"
+    , conclusion := "⊢[fc] reflectTime φ"
     , sideCondition := some "empty context only (theorems)" }
   , { name := "weakening"
     , premises := ["Γ ⊢[fc] φ"]
@@ -336,7 +336,7 @@ def allRuleEntries : List RuleEntry :=
 
 Each entry applies the real `Formula` def to schematic atoms, so the exported
 definition is the kernel-computed unfolding to the six primitives — never a
-hand transcription. `atomS` (constructor convenience) and `swapTemporal`
+hand transcription. `atomS` (constructor convenience) and `reflectTime`
 (formula transformer, not a connective) are deliberately excluded.
 -/
 

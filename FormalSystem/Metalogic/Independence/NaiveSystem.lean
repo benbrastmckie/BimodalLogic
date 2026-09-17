@@ -72,7 +72,7 @@ def _root_.FormalSystem.PlusLanguage.PlusDerivationTree.NaiveOnly {fc : FrameCla
   | _, _, .modus_ponens _ _ _ d1 d2 => d1.NaiveOnly ∧ d2.NaiveOnly
   | _, _, .necessitation _ d => d.NaiveOnly
   | _, _, .temporal_necessitation _ d => d.NaiveOnly
-  | _, _, .temporal_duality _ d => d.NaiveOnly
+  | _, _, .time_reflection _ d => d.NaiveOnly
   | _, _, .weakening _ _ _ d _ => d.NaiveOnly
 
 /-- Derivability in TM⁺ with the two pasting axioms withheld. -/
@@ -95,7 +95,7 @@ theorem _root_.FormalSystem.PlusLanguage.PlusDerivationTree.naiveOnly_lift {fc�
       ⟨naiveOnly_lift h_le d1 hd.1, naiveOnly_lift h_le d2 hd.2⟩
   | _, _, .necessitation _ d, hd => naiveOnly_lift h_le d hd
   | _, _, .temporal_necessitation _ d, hd => naiveOnly_lift h_le d hd
-  | _, _, .temporal_duality _ d, hd => naiveOnly_lift h_le d hd
+  | _, _, .time_reflection _ d, hd => naiveOnly_lift h_le d hd
   | _, _, .weakening _ _ _ d _, hd => naiveOnly_lift h_le d hd
 
 /-- `NaiveDerivable` is monotone in the frame class. -/
@@ -129,8 +129,8 @@ theorem naiveTNec {φ : PlusFormula} (h : NaiveDerivable fc [] φ) :
 
 /-- Temporal duality in the naive system. -/
 theorem naiveTDual {φ : PlusFormula} (h : NaiveDerivable fc [] φ) :
-    NaiveDerivable fc [] φ.swapTemporal :=
-  h.elim fun d hn => ⟨.temporal_duality φ d, hn⟩
+    NaiveDerivable fc [] φ.reflectTime :=
+  h.elim fun d hn => ⟨.time_reflection φ d, hn⟩
 
 /-- **`⊡`-necessitation is derived in the naive system too**: `MS` (`box_stab`) is naive, so the
 route through `necessitation` survives the restriction. -/

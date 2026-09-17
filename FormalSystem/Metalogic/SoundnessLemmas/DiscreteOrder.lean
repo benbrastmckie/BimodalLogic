@@ -39,7 +39,7 @@ forward one read in `Dᵒᵈ` with nothing to transport. `Separability.lean`'s
 `sep_order` / `sep_order_mirror` pair is the precedent this follows.
 
 **The dualisation is of the carrier `D`, never of `Formula`.** A single-frame
-`F.ValidOn φ → F.ValidOn φ.swapTemporal` closure lemma does not exist and is false in general;
+`F.ValidOn φ → F.ValidOn φ.reflectTime` closure lemma does not exist and is false in general;
 `Metalogic/Independence/LexIntWitness.lean` records that. Nothing here dualises a formula.
 -/
 

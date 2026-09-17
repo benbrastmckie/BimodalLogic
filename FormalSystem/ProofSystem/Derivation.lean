@@ -46,7 +46,7 @@ The derivation tree includes 7 inference rules:
 3. **modus_ponens**: If `Γ ⊢[fc] φ → ψ` and `Γ ⊢[fc] φ` then `Γ ⊢[fc] ψ`
 4. **necessitation**: If `⊢[fc] φ` then `⊢[fc] □φ`
 5. **temporal_necessitation**: If `⊢[fc] φ` then `⊢[fc] Gφ`
-6. **temporal_duality**: If `⊢[fc] φ` then `⊢[fc] swapTemporal φ`
+6. **time_reflection**: If `⊢[fc] φ` then `⊢[fc] reflectTime φ`
 7. **weakening**: If `Γ ⊢[fc] φ` and `Γ ⊆ Δ` then `Δ ⊢[fc] φ`
 
 ## Implementation Notes
@@ -148,12 +148,12 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   /--
   Temporal duality rule: Swapping past and future in theorems.
 
-  If `⊢[fc] φ` (derivable from empty context), then `⊢[fc] swapTemporal φ`.
+  If `⊢[fc] φ` (derivable from empty context), then `⊢[fc] reflectTime φ`.
 
   This rule only applies to theorems (proofs from no assumptions).
   -/
-  | temporal_duality (φ : Formula)
-      (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.swapTemporal
+  | time_reflection (φ : Formula)
+      (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.reflectTime
   /--
   Weakening rule: Adding unused assumptions.
 
@@ -194,7 +194,7 @@ def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
   | .modus_ponens Γ φ ψ d1 d2 => .modus_ponens Γ φ ψ (d1.lift h_le) (d2.lift h_le)
   | .necessitation φ d => .necessitation φ (d.lift h_le)
   | .temporal_necessitation φ d => .temporal_necessitation φ (d.lift h_le)
-  | .temporal_duality φ d => .temporal_duality φ (d.lift h_le)
+  | .time_reflection φ d => .time_reflection φ (d.lift h_le)
   | .weakening Γ Δ φ d h => .weakening Γ Δ φ (d.lift h_le) h
 
 /-! ## Derivation Height Measure -/
@@ -204,7 +204,7 @@ Computable height function via pattern matching.
 
 The height is defined as the maximum depth of the derivation tree:
 - Base cases (axiom, assumption): height 0
-- Unary rules (necessitation, temporal_necessitation, temporal_duality, weakening):
+- Unary rules (necessitation, temporal_necessitation, time_reflection, weakening):
   height of subderivation + 1
 - Binary rules (modus_ponens): max of both subderivations + 1
 
@@ -226,7 +226,7 @@ def height {fc : FrameClass} {Γ : Context} {φ : Formula} : DerivationTree fc �
   | .modus_ponens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporal_necessitation _ d => 1 + d.height
-  | .temporal_duality _ d => 1 + d.height
+  | .time_reflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 /-! ## Height Properties -/
@@ -321,9 +321,9 @@ theorem temporal_necessitation_height_succ {fc : FrameClass} {φ : Formula}
 /--
 Temporal duality increases height by exactly 1.
 -/
-theorem temporal_duality_height_succ {fc : FrameClass} {φ : Formula}
+theorem time_reflection_height_succ {fc : FrameClass} {φ : Formula}
     (d : DerivationTree fc [] φ) :
-    (temporal_duality φ d).height = d.height + 1 := by
+    (time_reflection φ d).height = d.height + 1 := by
   simp [height]
   omega
 

@@ -200,10 +200,10 @@ def mkTemporalNecessitation : DerivationTree .Base [] (Formula.allFuture ((Formu
   DerivationTree.temporal_necessitation _ mkModalT
 
 /-- Temporal duality on Modal-Future -/
-def mkTemporalDuality :
+def mkTimeReflection :
     DerivationTree .Base []
-      ((Formula.box p).imp (Formula.box (Formula.allFuture p))).swapTemporal :=
-  DerivationTree.temporal_duality _ mkModalFuture
+      ((Formula.box p).imp (Formula.box (Formula.allFuture p))).reflectTime :=
+  DerivationTree.time_reflection _ mkModalFuture
 
 /-- Double necessitation: □□(Modal T) -/
 def mkDoubleNecessitation :
@@ -222,7 +222,7 @@ def runModalRuleBenchmarks : IO (List DerivationBenchmarkResult) := do
   printResult r2
   results := results ++ [r2]
 
-  let r3 ← runBenchmark "Temporal duality" (fun _ => mkTemporalDuality)
+  let r3 ← runBenchmark "Temporal duality" (fun _ => mkTimeReflection)
   printResult r3
   results := results ++ [r3]
 

@@ -168,13 +168,13 @@ theorem Derivable.temp_nec {fc : FrameClass} {p : Formula}
   exact Nonempty.intro (DerivationTree.temporal_necessitation p d)
 
 /--
-Temporal duality: If `|-![fc] p` then `|-![fc] swapTemporal p` (Prop-valued).
+Temporal duality: If `|-![fc] p` then `|-![fc] reflectTime p` (Prop-valued).
 -/
 @[aesop safe apply]
 theorem Derivable.temp_dual {fc : FrameClass} {p : Formula}
-    (h : Derivable fc [] p) : Derivable fc [] p.swapTemporal := by
+    (h : Derivable fc [] p) : Derivable fc [] p.reflectTime := by
   obtain ⟨d⟩ := h
-  exact Nonempty.intro (DerivationTree.temporal_duality p d)
+  exact Nonempty.intro (DerivationTree.time_reflection p d)
 
 /-! The `aesop`/`simp` examples over these lemmas live in
 `Tests/BimodalTest/ProofSystem/DerivationTest.lean`. -/

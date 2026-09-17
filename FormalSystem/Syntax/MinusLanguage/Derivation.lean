@@ -21,10 +21,10 @@ case per rule and no bookkeeping.
 3. `modus_ponens` — **MP**
 4. `necessitation` — **MN**, empty context only
 5. `temporal_necessitation` — `⊢ φ ⟹ ⊢ Gφ`, empty context only
-6. `temporal_duality` — **TD**, empty context only, via **`swapMinus`**
+6. `time_reflection` — **TD**, empty context only, via **`swapMinus`**
 7. `weakening`
 
-**TD uses `swapMinus`, not `swapTemporal`.** `swapTemporal` acts on L's `untl`/`snce`; the L⁻
+**TD uses `swapMinus`, not `reflectTime`.** `reflectTime` acts on L's `untl`/`snce`; the L⁻
 side has no such constructors. The two are intertwined by `MinusLanguage.tr_swapMinus`.
 
 ## Fidelity note: `temporal_necessitation` is not a strengthening
@@ -83,7 +83,7 @@ inductive DerivationTree (fc : FrameClass) : Context → MinusFormula → Type w
   | temporal_necessitation (φ : MinusFormula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.allFuture
   /-- **TD**: from `⊢ φ`, conclude `⊢ φ⟨P|F⟩`, i.e. `⊢ swapMinus φ`. Theorems only. -/
-  | temporal_duality (φ : MinusFormula)
+  | time_reflection (φ : MinusFormula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.swapMinus
   /-- Weakening: from `Γ ⊢ φ` and `Γ ⊆ Δ`, conclude `Δ ⊢ φ`. -/
   | weakening (Γ Δ : Context) (φ : MinusFormula)
@@ -107,7 +107,7 @@ def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
   | .modus_ponens Γ φ ψ d1 d2 => .modus_ponens Γ φ ψ (d1.lift h_le) (d2.lift h_le)
   | .necessitation φ d => .necessitation φ (d.lift h_le)
   | .temporal_necessitation φ d => .temporal_necessitation φ (d.lift h_le)
-  | .temporal_duality φ d => .temporal_duality φ (d.lift h_le)
+  | .time_reflection φ d => .time_reflection φ (d.lift h_le)
   | .weakening Γ Δ φ d h => .weakening Γ Δ φ (d.lift h_le) h
 
 /-- Height of a derivation, mirroring `ProofSystem.DerivationTree.height`. -/
@@ -117,7 +117,7 @@ def height {fc : FrameClass} {Γ : Context} {φ : MinusFormula} : DerivationTree
   | .modus_ponens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporal_necessitation _ d => 1 + d.height
-  | .temporal_duality _ d => 1 + d.height
+  | .time_reflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 /--

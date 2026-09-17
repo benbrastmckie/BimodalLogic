@@ -130,7 +130,7 @@
 | modus_ponens | ✓ | ✓ | ✓ |
 | necessitation | ✓ | ✓ | ✓ |
 | temporal_necessitation | ✓ | ✓ | ✓ |
-| temporal_duality | ✓ | ✓ | ✓ |
+| time_reflection | ✓ | ✓ | ✓ |
 | weakening | ✓ | ✓ | ✓ |
 
 **Coverage**: 7/7 rules (100%)

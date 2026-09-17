@@ -116,7 +116,8 @@ def computeCorpusMetrics (labeled : List LabeledFormula) (costMs : Nat := 0) : C
     let acc3 := incrString acc2 "mpCount" rp.mpCount
     let acc4 := incrString acc3 "necessitationCount" rp.necessitationCount
     let acc5 := incrString acc4 "temporalNecessitationCount" rp.temporalNecessitationCount
-    let acc6 := incrString acc5 "temporalDualityCount" rp.temporalDualityCount
+    -- The "temporalDualityCount" wire tag is byte-stable across the time-reflection rename.
+    let acc6 := incrString acc5 "temporalDualityCount" rp.timeReflectionCount
     let acc7 := incrString acc6 "weakeningCount" rp.weakeningCount
     acc7) {}
   -- Ex_falso dominance

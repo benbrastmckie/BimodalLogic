@@ -63,7 +63,7 @@ the density-free `ValidComplete`, because `density` and `dense_indicator` are ad
 | `modus_ponens` | From `⊢ φ → ψ` and `⊢ φ`, derive `⊢ ψ` |
 | `necessitation` | From `⊢ φ`, derive `⊢ □φ` |
 | `temporal_necessitation` | From `⊢ φ`, derive `⊢ Gφ` |
-| `temporal_duality` | From `⊢ φ`, derive `⊢ swap(φ)` |
+| `time_reflection` | From `⊢ φ`, derive `⊢ swap(φ)` |
 
 **Note**: `DerivationTree` is `Type` (not `Prop`) for computability reasons.
 Use `Derivable` from `Derivable.lean` for Prop-valued derivability.

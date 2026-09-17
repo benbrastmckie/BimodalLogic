@@ -134,7 +134,7 @@ def always (φ : MinusFormula) : MinusFormula := φ.allPast.and (φ.and φ.allFu
 /--
 Interchange the two universal temporal operators `H` and `G` throughout a formula.
 
-This is the L⁻-side analogue of `Formula.swapTemporal` and is what TM⁻'s **TD** rule
+This is the L⁻-side analogue of `Formula.reflectTime` and is what TM⁻'s **TD** rule
 ("if `⊢ φ` then `⊢ φ⟨P|F⟩`") transforms by. Note that on the L side the corresponding
 operation swaps the *primitive* `untl`/`snce`; the commutation of the two is
 `MinusLanguage.tr_swapMinus`.
@@ -153,8 +153,8 @@ theorem swapMinus_involution (φ : MinusFormula) : φ.swapMinus.swapMinus = φ :
 
 /-! ### `swapMinus` push-through lemmas for the derived operators
 
-These are the L⁻-side counterparts of `Formula.swap_temporal_neg`,
-`Formula.swap_temporal_some_future`, and friends. They are `@[simp]` so that the TD case of
+These are the L⁻-side counterparts of `Formula.reflect_time_neg`,
+`Formula.reflect_time_some_future`, and friends. They are `@[simp]` so that the TD case of
 the Phase 8 recursion and the axiom-discharge table can normalise a `swapMinus` of a derived
 operator without unfolding to primitives by hand. -/
 

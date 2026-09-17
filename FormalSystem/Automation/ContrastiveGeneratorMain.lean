@@ -79,8 +79,8 @@ inductive MutationType where
   | modalDepthReduction
   /-- Reduce temporal depth by stripping outermost untl/snce operators. -/
   | temporalDepthReduction
-  /-- Apply temporal duality via swapTemporal. -/
-  | temporalDuality
+  /-- Apply temporal duality via reflectTime. -/
+  | timeReflection
   -- Single-occurrence mutations
   /-- Swap box to diamond at a specific occurrence index. -/
   | boxToDiamondAtOccurrence (occurrenceIdx : Nat)
@@ -557,8 +557,8 @@ def generateMutations (φ : Formula) : List (Formula × MutationType) :=
     else []
   let dualityMutation :=
     if hasTemporal φ then
-      let m := φ.swapTemporal
-      if m == φ then [] else [(m, MutationType.temporalDuality)]
+      let m := φ.reflectTime
+      if m == φ then [] else [(m, MutationType.timeReflection)]
     else []
   -- Single-occurrence mutations
   let boxToDiamondOccs := dedupMutations <|
@@ -645,7 +645,7 @@ def classifyMutation (original : Formula) (originalLabel : FormulaLabel)
 Generate all contrastive pairs for a labeled formula.
 
 For valid formulas: generates all mutations and classifies each.
-For invalid formulas: tries temporal duality (swapTemporal) to find
+For invalid formulas: tries temporal duality (reflectTime) to find
 cases where the dual has different validity.
 -/
 def generateContrastivePairs (lf : LabeledFormula) : IO (List ContrastivePair) := do
@@ -661,9 +661,9 @@ def generateContrastivePairs (lf : LabeledFormula) : IO (List ContrastivePair) :
   | .invalid =>
     -- For invalid formulas, try temporal duality
     if hasTemporal lf.formula then
-      let dual := lf.formula.swapTemporal
+      let dual := lf.formula.reflectTime
       if dual != lf.formula then
-        let pair ← classifyMutation lf.formula lf.label none dual .temporalDuality
+        let pair ← classifyMutation lf.formula lf.label none dual .timeReflection
         return [pair]
       else return []
     else return []
@@ -721,7 +721,8 @@ def MutationType.toString : MutationType → String
   | .subformulaDeletion _ _ => "subformula_deletion"
   | .modalDepthReduction => "modal_depth_reduction"
   | .temporalDepthReduction => "temporal_depth_reduction"
-  | .temporalDuality => "temporal_duality"
+  -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
+  | .timeReflection => "temporal_duality"
   -- Single-occurrence mutations
   | .boxToDiamondAtOccurrence i => s!"box_to_diamond_at({i})"
   | .diamondToBoxAtOccurrence i => s!"diamond_to_box_at({i})"
@@ -750,7 +751,8 @@ def MutationType.toJson : MutationType → String
   | .subformulaDeletion _ _ => "\"subformula_deletion\""
   | .modalDepthReduction => "\"modal_depth_reduction\""
   | .temporalDepthReduction => "\"temporal_depth_reduction\""
-  | .temporalDuality => "\"temporal_duality\""
+  -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
+  | .timeReflection => "\"temporal_duality\""
   -- Single-occurrence mutations
   | .boxToDiamondAtOccurrence i => "\"box_to_diamond_at_" ++ Nat.repr i ++ "\""
   | .diamondToBoxAtOccurrence i => "\"diamond_to_box_at_" ++ Nat.repr i ++ "\""
@@ -793,7 +795,8 @@ def MutationType.mutationFamily : MutationType → String
   | .subformulaDeletion _ _ => "subformula_deletion"
   | .modalDepthReduction => "modal_depth_reduction"
   | .temporalDepthReduction => "temporal_depth_reduction"
-  | .temporalDuality => "temporal_duality"
+  -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
+  | .timeReflection => "temporal_duality"
   | .untilToReleaseAtOccurrence _ | .releaseToUntilAtOccurrence _ => "temporal_swap"
   | .futureToGloballyAtOccurrence _ | .globallyToFutureAtOccurrence _
   | .pastToHistoricallyAtOccurrence _ | .historicallyToPastAtOccurrence _ => "temporal_swap"
@@ -955,7 +958,7 @@ structure ContrastiveBatchStats where
   subformulaDeletionCount : Nat
   modalReductionCount : Nat
   temporalReductionCount : Nat
-  temporalDualityCount : Nat
+  timeReflectionCount : Nat
   /-- Breakdown by single-occurrence mutation family. -/
   modalSwapCount : Nat
   temporalSwapCount : Nat
@@ -997,8 +1000,8 @@ def computeContrastiveStats (totalMutations : Nat) (pairs : List ContrastivePair
     temporalReductionCount := pairs.filter
         (fun p => match p.mutationType with | .temporalDepthReduction => true | _ => false)
             |>.length
-    temporalDualityCount := pairs.filter
-        (fun p => match p.mutationType with | .temporalDuality => true | _ => false)
+    timeReflectionCount := pairs.filter
+        (fun p => match p.mutationType with | .timeReflection => true | _ => false)
             |>.length
     modalSwapCount := pairs.filter (fun p => p.mutationType.mutationFamily == "modal_swap")
         |>.length
@@ -1028,7 +1031,7 @@ def printContrastiveStats (stats : ContrastiveBatchStats) : IO Unit := do
   IO.println s!"  subformula_deletion: {stats.subformulaDeletionCount}"
   IO.println s!"  modal_depth_reduction: {stats.modalReductionCount}"
   IO.println s!"  temporal_depth_reduction: {stats.temporalReductionCount}"
-  IO.println s!"  temporal_duality: {stats.temporalDualityCount}"
+  IO.println s!"  temporal_duality: {stats.timeReflectionCount}"
   IO.println "\nBreakdown by single-occurrence mutation family:"
   IO.println s!"  modal_swap: {stats.modalSwapCount}"
   IO.println s!"  temporal_swap: {stats.temporalSwapCount}"
@@ -1052,7 +1055,8 @@ def writeYieldSummary (stats : ContrastiveBatchStats) (path : System.FilePath) :
     ++ ", \"subformula_deletion\": " ++ toString stats.subformulaDeletionCount
     ++ ", \"modal_depth_reduction\": " ++ toString stats.modalReductionCount
     ++ ", \"temporal_depth_reduction\": " ++ toString stats.temporalReductionCount
-    ++ ", \"temporal_duality\": " ++ toString stats.temporalDualityCount
+    -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
+    ++ ", \"temporal_duality\": " ++ toString stats.timeReflectionCount
     ++ ", \"temporal_swap\": " ++ toString stats.temporalSwapCount
     ++ ", \"derived_swap\": " ++ toString stats.derivedSwapCount
     ++ ", \"structural_flip\": " ++ toString stats.structuralFlipCount

@@ -126,7 +126,7 @@ theorem truth_untl_succ (t : ℤ) (g e : Formula) :
 /--
 **The exact one-step unfolding of `snce` over ℤ** — the leftward mirror of `truth_untl_succ`.
 
-Proved directly rather than by appeal to a duality transport: `temporal_duality` is a statement
+Proved directly rather than by appeal to a duality transport: `time_reflection` is a statement
 about *derivability* in the proof system, not about `TruthAt`, so it does not apply here, and
 "by symmetry" is not a proof. The argument is the exact reflection of the `untl` one, with
 `t - 1` the greatest position strictly below `t`.

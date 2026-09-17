@@ -24,7 +24,7 @@ rule, and what lets the soundness companion recursion
 3. `modus_ponens`
 4. `necessitation` — `⊢ φ ⟹ ⊢ □φ`, empty context only
 5. `temporal_necessitation` — `⊢ φ ⟹ ⊢ Gφ`, empty context only
-6. `temporal_duality` — `⊢ φ ⟹ ⊢ swapTemporal φ`, empty context only
+6. `time_reflection` — `⊢ φ ⟹ ⊢ reflectTime φ`, empty context only
 7. `weakening`
 
 **There is no `⊡`-necessitation rule.** `⊢ φ ⟹ ⊢ ⊡φ` is derivable — `necessitation` gives
@@ -85,9 +85,9 @@ inductive PlusDerivationTree (fc : FrameClass) : PlusContext → PlusFormula →
   /-- Temporal necessitation: from `⊢ φ`, conclude `⊢ Gφ`. Theorems only. -/
   | temporal_necessitation (φ : PlusFormula)
       (d : PlusDerivationTree fc [] φ) : PlusDerivationTree fc [] (PlusFormula.allFuture φ)
-  /-- Temporal duality: from `⊢ φ`, conclude `⊢ swapTemporal φ`. Theorems only. -/
-  | temporal_duality (φ : PlusFormula)
-      (d : PlusDerivationTree fc [] φ) : PlusDerivationTree fc [] φ.swapTemporal
+  /-- Temporal duality: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
+  | time_reflection (φ : PlusFormula)
+      (d : PlusDerivationTree fc [] φ) : PlusDerivationTree fc [] φ.reflectTime
   /-- Weakening: from `Γ ⊢ φ` and `Γ ⊆ Δ`, conclude `Δ ⊢ φ`. -/
   | weakening (Γ Δ : PlusContext) (φ : PlusFormula)
       (d : PlusDerivationTree fc Γ φ)
@@ -104,7 +104,7 @@ def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
   | .modus_ponens Γ φ ψ d1 d2 => .modus_ponens Γ φ ψ (d1.lift h_le) (d2.lift h_le)
   | .necessitation φ d => .necessitation φ (d.lift h_le)
   | .temporal_necessitation φ d => .temporal_necessitation φ (d.lift h_le)
-  | .temporal_duality φ d => .temporal_duality φ (d.lift h_le)
+  | .time_reflection φ d => .time_reflection φ (d.lift h_le)
   | .weakening Γ Δ φ d h => .weakening Γ Δ φ (d.lift h_le) h
 
 /-- Height of a derivation, mirroring `ProofSystem.DerivationTree.height`. -/
@@ -115,7 +115,7 @@ def height {fc : FrameClass} {Γ : PlusContext} {φ : PlusFormula} :
   | .modus_ponens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporal_necessitation _ d => 1 + d.height
-  | .temporal_duality _ d => 1 + d.height
+  | .time_reflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 /-- Re-target a derivation whose context is a subset of the empty context. Mirror of
@@ -247,8 +247,8 @@ theorem PlusAxiom.minFrameClass_ofTM {φ : Formula} (ax : Axiom φ) :
 /--
 **The backward conservativity bridge.** Every TM derivation becomes a TM⁺ derivation of its
 embedding, at the same frame class and over the embedded context. Seven cases, one per rule; the
-`axiom` case is `PlusAxiom.ofTM`, the `temporal_duality` case transports along
-`ofFormula_swapTemporal`, and the rest are structural.
+`axiom` case is `PlusAxiom.ofTM`, the `time_reflection` case transports along
+`ofFormula_reflectTime`, and the rest are structural.
 -/
 def PlusDerivationTree.ofTM {fc : FrameClass} {Γ : Context} {φ : Formula} :
     DerivationTree fc Γ φ → PlusDerivationTree fc (ofCtx Γ) (ofFormula φ)
@@ -259,9 +259,9 @@ def PlusDerivationTree.ofTM {fc : FrameClass} {Γ : Context} {φ : Formula} :
       .modus_ponens _ (ofFormula φ) (ofFormula ψ) (ofTM d1) (ofTM d2)
   | .necessitation φ d => .necessitation (ofFormula φ) (ofTM d)
   | .temporal_necessitation φ d => .temporal_necessitation (ofFormula φ) (ofTM d)
-  | .temporal_duality φ d =>
-      (ofFormula_swapTemporal φ).symm ▸
-        PlusDerivationTree.temporal_duality (ofFormula φ) (ofTM d)
+  | .time_reflection φ d =>
+      (ofFormula_reflectTime φ).symm ▸
+        PlusDerivationTree.time_reflection (ofFormula φ) (ofTM d)
   | .weakening _ _ _ d h =>
       .weakening _ _ _ (ofTM d)
         (by

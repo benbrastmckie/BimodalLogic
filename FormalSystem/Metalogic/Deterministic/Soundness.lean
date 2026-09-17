@@ -26,8 +26,8 @@ completeness over the *deterministic* frames is exactly what forces the two logi
 
 The same companion recursion TM and TM⁺ soundness use
 (`Metalogic/Conservativity/Plus/PlusSoundness.lean`, `plus_derivable_valid_and_swap_validIn`):
-carry both `PlusValidDeterminedIn fc φ` and `PlusValidDeterminedIn fc φ.swapTemporal`, so the
-`temporal_duality` case exchanges the two components. TD is discharged **semantically**, never by
+carry both `PlusValidDeterminedIn fc φ` and `PlusValidDeterminedIn fc φ.reflectTime`, so the
+`time_reflection` case exchanges the two components. TD is discharged **semantically**, never by
 mapping derivations to mirrored derivations — the axiom set is not mirror-closed.
 
 The two axiom arms:
@@ -35,8 +35,8 @@ The two axiom arms:
 - `ofPlus` — TM⁺'s own validity and swap-validity, transported down the frame predicate by
   `PlusValidIn.toDetermined`. Nothing about `⊡` is re-proved.
 - `determined` — direct from the `DeterminedValid F` component of the frame predicate. Its
-  temporal dual is again a *Determined* instance, because `swapTemporal` fixes `⊡`
-  (`PlusFormula.swapTemporal`, `stab φ ↦ stab φ.swapTemporal`), so the swap arm needs no
+  temporal dual is again a *Determined* instance, because `reflectTime` fixes `⊡`
+  (`PlusFormula.reflectTime`, `stab φ ↦ stab φ.reflectTime`), so the swap arm needs no
   separate argument.
 
 ## Main Results
@@ -80,16 +80,16 @@ theorem detAxiom_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax : De
     exact hDV ψ M τ t
 
 /-- The temporal dual of every extended-system axiom instance is likewise valid over the
-*Determined*-valid frames. The `determined` arm needs no separate argument: `swapTemporal` fixes
-`⊡`, so the dual of `φ → ⊡φ` is `φ' → ⊡φ'` at `φ' = φ.swapTemporal`. -/
+*Determined*-valid frames. The `determined` arm needs no separate argument: `reflectTime` fixes
+`⊡`, so the dual of `φ → ⊡φ` is `φ' → ⊡φ'` at `φ' = φ.reflectTime`. -/
 theorem detAxiom_swap_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax : DetAxiom φ)
-    (h : ax.minFrameClass ≤ fc) : PlusValidDeterminedIn fc φ.swapTemporal := by
+    (h : ax.minFrameClass ≤ fc) : PlusValidDeterminedIn fc φ.reflectTime := by
   cases ax with
   | ofPlus hp => exact PlusValidIn.toDetermined (plusAxiom_swap_validIn hp h)
   | determined ψ =>
     refine PlusValidDeterminedIn.of_forall ?_
     intro F _ hDV M τ t
-    exact hDV ψ.swapTemporal M τ t
+    exact hDV ψ.reflectTime M τ t
 
 /-! ## The companion recursion -/
 
@@ -99,7 +99,7 @@ theorem detAxiom_swap_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax
 because the `weakening` case re-targets to the empty context without a structural descent. -/
 theorem det_derivable_valid_and_swap_validDeterminedIn {fc : FrameClass} {φ : PlusFormula}
     (d : DetDerivationTree fc [] φ) :
-    PlusValidDeterminedIn fc φ ∧ PlusValidDeterminedIn fc φ.swapTemporal := by
+    PlusValidDeterminedIn fc φ ∧ PlusValidDeterminedIn fc φ.reflectTime := by
   match d with
   | .axiom _ _ h_ax h_fc =>
     exact ⟨detAxiom_validDeterminedIn h_ax h_fc, detAxiom_swap_validDeterminedIn h_ax h_fc⟩
@@ -134,13 +134,13 @@ theorem det_derivable_valid_and_swap_validDeterminedIn {fc : FrameClass} {φ : P
       exact h.1.apply F hF hDV M τ s
     · refine PlusValidDeterminedIn.of_forall ?_
       intro F hF hDV M τ t
-      rw [swap_temporal_all_future, PlusTruth.allPast_iff]
+      rw [reflect_time_all_future, PlusTruth.allPast_iff]
       intro s _
       exact h.2.apply F hF hDV M τ s
-  | .temporal_duality psi' d' =>
+  | .time_reflection psi' d' =>
     have h := det_derivable_valid_and_swap_validDeterminedIn d'
     refine ⟨h.2, ?_⟩
-    rw [swap_temporal_involution]
+    rw [reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub =>
     have h_term := DetDerivationTree.height_ofWeakeningNil_lt d' h_sub
@@ -195,7 +195,7 @@ theorem detSoundnessIn {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula)
     rw [PlusTruth.allFuture_iff]
     intro s _
     exact ih τ s (by simp)
-  | temporal_duality φ' d' _ih =>
+  | time_reflection φ' d' _ih =>
     exact ((det_derivable_valid_and_swap_validDeterminedIn d').2).apply F hF hDV M τ t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))

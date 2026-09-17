@@ -51,13 +51,13 @@ def always (φ : Formula) : Formula := (Formula.allPast φ).and (φ.and (Formula
 def sometimes (φ : Formula) : Formula := neg (always (neg φ))
 
 -- Temporal duality: swap allPast and allFuture operators
-def swapTemporal : Formula → Formula
+def reflectTime : Formula → Formula
   | Formula.atom p => Formula.atom p
   | Formula.bot => Formula.bot
-  | Formula.imp φ ψ => (swapTemporal φ).imp (swapTemporal ψ)
-  | Formula.box φ => (swapTemporal φ).box
-  | Formula.allPast φ => (swapTemporal φ).allFuture
-  | Formula.allFuture φ => (swapTemporal φ).allPast
+  | Formula.imp φ ψ => (reflectTime φ).imp (reflectTime ψ)
+  | Formula.box φ => (reflectTime φ).box
+  | Formula.allPast φ => (reflectTime φ).allFuture
+  | Formula.allFuture φ => (reflectTime φ).allPast
 
 -- DSL syntax support for more readable formula construction
 syntax "atom" str : term
@@ -197,8 +197,8 @@ inductive DerivationTree : Context → Formula → Type
   | temporalNecessitation (Γ : Context) (φ : Formula)
       (h : DerivationTree (Γ.map Formula.allFuture) φ) :
       DerivationTree Γ (Formula.allFuture φ)                                   -- TK: If `GΓ ⊢ φ` then `Γ ⊢ Gφ`
-  | temporalDuality (φ : Formula)
-      (h : DerivationTree [] φ) : DerivationTree [] (swapTemporal φ)               -- TD: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
+  | timeReflection (φ : Formula)
+      (h : DerivationTree [] φ) : DerivationTree [] (reflectTime φ)               -- TD: If `⊢ φ` then `⊢ φ_{⟨H|G⟩}`
   | weakening (Γ Δ : Context) (φ : Formula)
       (h1 : DerivationTree Γ φ) (h2 : Γ ⊆ Δ) : DerivationTree Δ φ
 
@@ -213,7 +213,7 @@ def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
   | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporalNecessitation _ d => 1 + d.height
-  | .temporalDuality _ d => 1 + d.height
+  | .timeReflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 -- Perpetuity Principles (derived theorems in TM)
@@ -268,7 +268,7 @@ def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
   | .modusPonens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporalNecessitation _ d => 1 + d.height
-  | .temporalDuality _ d => 1 + d.height
+  | .timeReflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 ```
 
@@ -719,7 +719,7 @@ theorem soundness (Γ : Context) (φ : Formula) :
     intro s h_gt
     apply ih F M τ s
     sorry -- Show Gψ ∈ Γ implies ψ true at future times
-  | temporalDuality φ h ih =>
+  | timeReflection φ h ih =>
     intro F M τ t hΓ
     sorry -- Use time-shift invariance and temporal symmetry
   | weakening Γ Δ φ h1 h2 ih =>

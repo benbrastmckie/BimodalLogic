@@ -24,7 +24,7 @@ so that the soundness companion recursion
 3. `modus_ponens`
 4. `necessitation` — `⊢ φ ⟹ ⊢ □φ`, empty context only
 5. `temporal_necessitation` — `⊢ φ ⟹ ⊢ Gφ`, empty context only
-6. `temporal_duality` — `⊢ φ ⟹ ⊢ swapTemporal φ`, empty context only
+6. `time_reflection` — `⊢ φ ⟹ ⊢ reflectTime φ`, empty context only
 7. `weakening`
 
 **There is no register-necessitation rule and no `⊡`-necessitation rule.** Register
@@ -94,9 +94,9 @@ inductive StarDerivationTree (fc : FrameClass) : StarContext → StarFormula →
   /-- Temporal necessitation: from `⊢ φ`, conclude `⊢ Gφ`. Theorems only. -/
   | temporal_necessitation (φ : StarFormula)
       (d : StarDerivationTree fc [] φ) : StarDerivationTree fc [] (StarFormula.allFuture φ)
-  /-- Temporal duality: from `⊢ φ`, conclude `⊢ swapTemporal φ`. Theorems only. -/
-  | temporal_duality (φ : StarFormula)
-      (d : StarDerivationTree fc [] φ) : StarDerivationTree fc [] φ.swapTemporal
+  /-- Temporal duality: from `⊢ φ`, conclude `⊢ reflectTime φ`. Theorems only. -/
+  | time_reflection (φ : StarFormula)
+      (d : StarDerivationTree fc [] φ) : StarDerivationTree fc [] φ.reflectTime
   /-- Weakening: from `Γ ⊢ φ` and `Γ ⊆ Δ`, conclude `Δ ⊢ φ`. -/
   | weakening (Γ Δ : StarContext) (φ : StarFormula)
       (d : StarDerivationTree fc Γ φ)
@@ -113,7 +113,7 @@ def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
   | .modus_ponens Γ φ ψ d1 d2 => .modus_ponens Γ φ ψ (d1.lift h_le) (d2.lift h_le)
   | .necessitation φ d => .necessitation φ (d.lift h_le)
   | .temporal_necessitation φ d => .temporal_necessitation φ (d.lift h_le)
-  | .temporal_duality φ d => .temporal_duality φ (d.lift h_le)
+  | .time_reflection φ d => .time_reflection φ (d.lift h_le)
   | .weakening Γ Δ φ d h => .weakening Γ Δ φ (d.lift h_le) h
 
 /-- Height of a derivation, mirroring `PlusDerivationTree.height`. -/
@@ -124,7 +124,7 @@ def height {fc : FrameClass} {Γ : StarContext} {φ : StarFormula} :
   | .modus_ponens _ _ _ d1 d2 => 1 + max d1.height d2.height
   | .necessitation _ d => 1 + d.height
   | .temporal_necessitation _ d => 1 + d.height
-  | .temporal_duality _ d => 1 + d.height
+  | .time_reflection _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 /-- Re-target a derivation whose context is a subset of the empty context. Mirror of

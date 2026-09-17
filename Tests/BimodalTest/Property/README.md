@@ -53,7 +53,7 @@ Properties that are preserved by transformations:
 
 ```lean
 -- Swap temporal is involution
-#test ∀ φ : Formula, φ.swap_temporal.swap_temporal = φ
+#test ∀ φ : Formula, φ.reflect_time.reflect_time = φ
 ```
 
 ## Generator Patterns
@@ -219,7 +219,7 @@ Property tests are more expensive than unit tests:
 See individual test files for examples:
 
 - `Generators.lean`: Generator implementations (Formula, Context, TaskFrame, TaskModel)
-- `../Syntax/FormulaPropertyTest.lean`: Formula transformation properties (complexity, swap_temporal, derived operators)
+- `../Syntax/FormulaPropertyTest.lean`: Formula transformation properties (complexity, reflect_time, derived operators)
 - `../ProofSystem/DerivationPropertyTest.lean`: Derivation structural properties (reflexivity, weakening, height)
 - `../Semantics/SemanticPropertyTest.lean`: Frame and model properties (nullity, compositionality, valuation)
 - `../Metalogic/SoundnessPropertyTest.lean`: Axiom validity tests (all 14 axiom schemas)

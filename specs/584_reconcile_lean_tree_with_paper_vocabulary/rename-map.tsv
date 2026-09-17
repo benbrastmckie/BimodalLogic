@@ -1,0 +1,14 @@
+# old_substring	new_substring	scope/notes
+swapTemporal	reflectTime	all identifier tokens incl. compounds (ofPlus_swapTemporal, atomize_swapTemporal, substPlus_swapTemporal, erasePlus_swapTemporal, ofFormula_swapTemporal, truthAt_swapTemporal, swapTemporal_injective, StarIsPureFuture.swapTemporal)
+swap_temporal	reflect_time	lemma components (swap_temporal_involution, provEquiv_swap_temporal_congr, atoms_swap_temporal, swap_temporal_* simp set)
+temporal_duality	time_reflection	DerivationTree constructors (all variants), temporal_duality_height_succ
+TemporalDuality	TimeReflection	applyTemporalDuality, mkTemporalDuality, section TemporalDuality, TemporalDualityIntegration
+temporalDuality	timeReflection	MutationType.temporalDuality, temporalDualityCount (field)
+# EXCLUSIONS
+temporalDualityNeg	(kept)	operator duality, not the metarule
+temporalDualityNegRev	(kept)	operator duality, not the metarule
+"temporal_duality"	(kept)	serialized wire-tag string literals (DataExport, DatasetGenerator, ProofStepExtractor, ContrastiveGeneratorMain, ProofExtractorMain); also docs/training/SYNC_PROTOCOL.md rule-name list
+"temporalDualityCount"	(kept)	ProofFirstBenchmark JSON key string
+MachineAppendixMain name/conclusion	(renamed)	exception: appendix follows live constructor names
+scripts/swap_untl_snce.py pattern data	(kept)	historical migration-script patterns, not live references
+FormalSystem/Boneyard/**	(kept)	archive, not built

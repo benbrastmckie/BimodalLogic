@@ -19,7 +19,7 @@ Tests for the Formula inductive type and derived operators.
 - Derived Boolean operators (neg, and, or)
 - Derived modal operators (diamond)
 - Derived temporal operators (always, sometimes, somePast, someFuture)
-- Temporal duality (swapTemporal)
+- Temporal duality (reflectTime)
 -/
 
 namespace BimodalTest.Syntax
@@ -140,40 +140,40 @@ example (p : Formula) : p.always = p.allPast.and (p.and p.allFuture) := rfl
 -- Test: sometimes definition consistency - verify dual of always
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
--- Test: swapTemporal on atom (unchanged)
-example : (Formula.atomS "p").swapTemporal = Formula.atomS "p" := rfl
+-- Test: reflectTime on atom (unchanged)
+example : (Formula.atomS "p").reflectTime = Formula.atomS "p" := rfl
 
--- Test: swapTemporal on bot (unchanged)
-example : Formula.bot.swapTemporal = Formula.bot := rfl
+-- Test: reflectTime on bot (unchanged)
+example : Formula.bot.reflectTime = Formula.bot := rfl
 
--- Test: swapTemporal on implication (recursive)
+-- Test: reflectTime on implication (recursive)
 example (p q : Formula) :
-  (p.imp q).swapTemporal = (p.swapTemporal.imp q.swapTemporal) := rfl
+  (p.imp q).reflectTime = (p.reflectTime.imp q.reflectTime) := rfl
 
--- Test: swapTemporal on box (unchanged)
-example (p : Formula) : (p.box).swapTemporal = p.swapTemporal.box := rfl
+-- Test: reflectTime on box (unchanged)
+example (p : Formula) : (p.box).reflectTime = p.reflectTime.box := rfl
 
--- Test: swapTemporal on allPast (becomes allFuture)
+-- Test: reflectTime on allPast (becomes allFuture)
 -- Note: allPast/allFuture are def abbreviations (Task 116), so equality
 -- requires unfolding through imp/untl/snce.
-example (p : Formula) : (p.allPast).swapTemporal = p.swapTemporal.allFuture := by
+example (p : Formula) : (p.allPast).reflectTime = p.reflectTime.allFuture := by
   simp only [Formula.allPast, Formula.allFuture, Formula.somePast, Formula.someFuture,
-    Formula.neg, Formula.top, Formula.swapTemporal]
+    Formula.neg, Formula.top, Formula.reflectTime]
 
--- Test: swapTemporal on allFuture (becomes allPast)
-example (p : Formula) : (p.allFuture).swapTemporal = p.swapTemporal.allPast := by
+-- Test: reflectTime on allFuture (becomes allPast)
+example (p : Formula) : (p.allFuture).reflectTime = p.reflectTime.allPast := by
   simp only [Formula.allFuture, Formula.allPast, Formula.someFuture, Formula.somePast,
-    Formula.neg, Formula.top, Formula.swapTemporal]
+    Formula.neg, Formula.top, Formula.reflectTime]
 
--- Test: swapTemporal is involution (applying twice gives identity)
-example (p : Formula) : p.swapTemporal.swapTemporal = p := by
+-- Test: reflectTime is involution (applying twice gives identity)
+example (p : Formula) : p.reflectTime.reflectTime = p := by
   induction p with
   | atom _ => rfl
   | bot => rfl
-  | imp p q ihp ihq => simp only [Formula.swapTemporal, ihp, ihq]
-  | box p ih => simp only [Formula.swapTemporal, ih]
-  | untl q p ih2 ih1 => simp only [Formula.swapTemporal, ih1, ih2]
-  | snce q p ih2 ih1 => simp only [Formula.swapTemporal, ih1, ih2]
+  | imp p q ihp ihq => simp only [Formula.reflectTime, ihp, ihq]
+  | box p ih => simp only [Formula.reflectTime, ih]
+  | untl q p ih2 ih1 => simp only [Formula.reflectTime, ih1, ih2]
+  | snce q p ih2 ih1 => simp only [Formula.reflectTime, ih1, ih2]
 
 /-! ## Formula Complexity Metrics Tests -/
 
@@ -253,19 +253,19 @@ example : (Formula.strongRelease p q).complexity = 4 := rfl
 -- Test: strongTrigger complexity for atoms (overhead 2)
 example : (Formula.strongTrigger p q).complexity = 4 := rfl
 
--- Test: swapTemporal on strongRelease
+-- Test: reflectTime on strongRelease
 example (φ ψ : Formula) :
-    (Formula.strongRelease φ ψ).swapTemporal = Formula.strongTrigger φ.swapTemporal
-        ψ.swapTemporal := by
-  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal,
-      Formula.swap_temporal_neg]
+    (Formula.strongRelease φ ψ).reflectTime = Formula.strongTrigger φ.reflectTime
+        ψ.reflectTime := by
+  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.reflectTime,
+      Formula.reflect_time_neg]
 
--- Test: swapTemporal on strongTrigger
+-- Test: reflectTime on strongTrigger
 example (φ ψ : Formula) :
-    (Formula.strongTrigger φ ψ).swapTemporal = Formula.strongRelease φ.swapTemporal
-        ψ.swapTemporal := by
-  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal,
-      Formula.swap_temporal_neg]
+    (Formula.strongTrigger φ ψ).reflectTime = Formula.strongRelease φ.reflectTime
+        ψ.reflectTime := by
+  simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.reflectTime,
+      Formula.reflect_time_neg]
 
 -- Test: strongRelease modal depth
 example : (Formula.strongRelease p q).modalDepth = 0 := rfl

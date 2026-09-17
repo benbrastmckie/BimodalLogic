@@ -264,17 +264,17 @@ example (φ : Formula) : [] ⊨ ((φ.box.imp φ).allFuture) := by
 /--
 Test 21: Temporal duality is sound.
 
-From ⊢ φ, we get ⊨ swapTemporal φ.
+From ⊢ φ, we get ⊨ reflectTime φ.
 -/
 example : [] ⊨ ((Formula.allFuture (Formula.atomS "p")).imp 
-              (Formula.allFuture (Formula.allFuture (Formula.atomS "p")))).swapTemporal := by
+              (Formula.allFuture (Formula.allFuture (Formula.atomS "p")))).reflectTime := by
   let deriv : [] ⊢ ((Formula.allFuture (Formula.atomS "p")).imp 
                     (Formula.allFuture (Formula.allFuture (Formula.atomS "p")))) :=
     FormalSystem.Theorems.TemporalDerived.temporal4Derived (Formula.atomS "p")
   let deriv_swap : [] ⊢ ((Formula.allFuture (Formula.atomS "p")).imp 
                          (Formula.allFuture (Formula.allFuture
-                             (Formula.atomS "p")))).swapTemporal :=
-    DerivationTree.temporal_duality _ deriv
+                             (Formula.atomS "p")))).reflectTime :=
+    DerivationTree.time_reflection _ deriv
   exact soundness_in [] _ deriv_swap
 
 /--

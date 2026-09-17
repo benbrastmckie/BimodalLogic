@@ -13,7 +13,7 @@ import FormalSystem.Syntax.StarLanguage
 `TM⋆ ⊢⋆[fc] φ ⟹ StarValidIn fc φ`, for every `fc`, by the same companion recursion TM⁺ and TM
 soundness use (`Conservativity/Plus/PlusSoundness.lean`,
 `plus_derivable_valid_and_swap_validIn`): the recursion carries **both** `StarValidIn fc φ` and
-`StarValidIn fc φ.swapTemporal`, so that the `temporal_duality` case exchanges the two
+`StarValidIn fc φ.reflectTime`, so that the `time_reflection` case exchanges the two
 components. The `axiom` case feeds in the two dispatch lemmas of
 `Conservativity/Star/StarAxiomValidity.lean`; everything else is the clause structure of
 `StarTruthAt`.
@@ -25,7 +25,7 @@ time and the possible world (`Semantics/StarLanguage/StarValidity.lean`): once `
 evaluation, `def:frame-validity`'s "true at every model, possible world and time" reads "…and
 every stored-time vector". Both register clauses map a point to a point — `↑ⁱ` changes the
 vector, `↓ⁱ` changes the time, neither escapes the frame — so `necessitation`,
-`temporal_necessitation` and `temporal_duality` all preserve validity at a register-containing
+`temporal_necessitation` and `time_reflection` all preserve validity at a register-containing
 formula just as they do at a register-free one.
 
 **No argument here uses uniform substitution**, and none is available: TM⁺ is already not
@@ -70,7 +70,7 @@ temporal dual. Mirror of `plus_derivable_valid_and_swap_validIn`, arm for arm; w
 the derivation's height because the `weakening` case re-targets to the empty context without a
 structural descent. -/
 theorem star_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : StarFormula}
-    (d : StarDerivationTree fc [] φ) : StarValidIn fc φ ∧ StarValidIn fc φ.swapTemporal := by
+    (d : StarDerivationTree fc [] φ) : StarValidIn fc φ ∧ StarValidIn fc φ.reflectTime := by
   match d with
   | .axiom _ _ h_ax h_fc =>
     exact ⟨starAxiom_validIn h_ax h_fc, starAxiom_swap_validIn h_ax h_fc⟩
@@ -99,13 +99,13 @@ theorem star_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : StarFormul
       intro s _
       exact h.1 F hF M τ s v
     · intro F hF M τ x v
-      rw [StarFormula.swap_temporal_all_future, StarTruth.allPast_iff]
+      rw [StarFormula.reflect_time_all_future, StarTruth.allPast_iff]
       intro s _
       exact h.2 F hF M τ s v
-  | .temporal_duality psi' d' =>
+  | .time_reflection psi' d' =>
     have h := star_derivable_valid_and_swap_validIn d'
     refine ⟨h.2, ?_⟩
-    rw [StarFormula.swap_temporal_involution]
+    rw [StarFormula.reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub =>
     have h_term := StarDerivationTree.height_ofWeakeningNil_lt d' h_sub
@@ -168,11 +168,11 @@ example (i : ℕ) (φ : StarFormula) :
     StarValid ((StarFormula.timeRecall i φ).imp (StarFormula.allFuture (.timeRecall i φ))) :=
   star_soundness_valid ⟨.axiom [] _ (StarAxiom.recall_rigid_future i φ) le_rfl⟩
 
-/-- And it reaches a formula obtained by `temporal_duality` from one. -/
+/-- And it reaches a formula obtained by `time_reflection` from one. -/
 example (i : ℕ) (φ : StarFormula) :
     StarValid (((StarFormula.timeRecall i φ).imp
-      (StarFormula.allFuture (.timeRecall i φ))).swapTemporal) :=
+      (StarFormula.allFuture (.timeRecall i φ))).reflectTime) :=
   star_soundness_valid
-    ⟨.temporal_duality _ (.axiom [] _ (StarAxiom.recall_rigid_future i φ) le_rfl)⟩
+    ⟨.time_reflection _ (.axiom [] _ (StarAxiom.recall_rigid_future i φ) le_rfl)⟩
 
 end FormalSystem.Metalogic.Conservativity
