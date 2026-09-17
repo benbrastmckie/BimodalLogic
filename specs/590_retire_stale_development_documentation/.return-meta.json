@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/590_retire_stale_development_documentation/plans/02_docs-staleness-cleanup.md",
-      "summary": "8-phase plan (9.5h): retire PHASED_IMPLEMENTATION.md, rewrite LATEX_STANDARDS.md for frozen latex/, de-cite residual docs, fix retired-tactic docs, reframe leansearch notes and refresh implementation-status, align naming prose, then flip ENFORCE_C9_DOCS."
-    }
-  ],
-  "next_steps": "Run /implement 590 to execute the plan",
-  "phase_count": 8,
-  "estimated_hours": 9.5,
-  "dependency_waves": [[1, 3, 4, 5, 6, 7], [2], [8]],
-  "memory_candidates": [],
+  "status": "in_progress",
+  "dispatch_seq": 11,
   "metadata": {
-    "session_id": "sess_1789631305_c7d7a7_590",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 7
+    "session_id": "sess_1789631305_c7d7a7",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

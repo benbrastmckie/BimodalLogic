@@ -155,7 +155,6 @@ Developer standards, conventions, and contribution workflow:
 - [METAPROGRAMMING_GUIDE.md](development/METAPROGRAMMING_GUIDE.md) - LEAN 4 metaprogramming fundamentals for tactics
 - [MODULE_ORGANIZATION.md](development/MODULE_ORGANIZATION.md) - Directory structure and namespace patterns
 - [NONCOMPUTABLE_GUIDE.md](development/NONCOMPUTABLE_GUIDE.md) - Handling noncomputable definitions and Classical logic
-- [PHASED_IMPLEMENTATION.md](development/PHASED_IMPLEMENTATION.md) - Implementation roadmap with execution waves
 - [PROPERTY_TESTING_GUIDE.md](development/PROPERTY_TESTING_GUIDE.md) - Property-based testing patterns and Plausible usage
 - [QUALITY_METRICS.md](development/QUALITY_METRICS.md) - Quality targets and performance benchmarks
 - [TESTING_STANDARDS.md](development/TESTING_STANDARDS.md) - Test requirements and coverage targets
@@ -243,8 +242,7 @@ Training data pipeline documentation:
 1. [Testing Standards](development/TESTING_STANDARDS.md) - Test requirements
 2. [Module Organization](development/MODULE_ORGANIZATION.md) - Project structure
 3. [Metaprogramming Guide](development/METAPROGRAMMING_GUIDE.md) - LEAN 4 tactics
-4. [Phased Implementation](development/PHASED_IMPLEMENTATION.md) - Execution roadmap
-5. [Quality Metrics](development/QUALITY_METRICS.md) - Quality targets
+4. [Quality Metrics](development/QUALITY_METRICS.md) - Quality targets
 
 ### For Researchers
 

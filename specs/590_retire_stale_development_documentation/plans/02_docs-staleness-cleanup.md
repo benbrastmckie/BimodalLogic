@@ -1,7 +1,7 @@
 # Implementation Plan: Task #590
 
 - **Task**: 590 - Retire stale development documentation (widened: `docs/` staleness audit)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9.5 hours
 - **Dependencies**: 595 (durable-records-home, completed; settles nothing in this plan's file set)
 - **Research Inputs**:
@@ -137,17 +137,17 @@ Phases within the same wave can execute in parallel. Territory: each phase owns 
 in its "Files to modify" list. Phase 2 follows Phase 1 because both edit `docs/README.md` and
 `docs/development/README.md`. `docs/development/MODULE_INVARIANTS.md` belongs to Phase 8 alone.
 
-### Phase 1: Retire PHASED_IMPLEMENTATION.md [NOT STARTED]
+### Phase 1: Retire PHASED_IMPLEMENTATION.md [COMPLETED]
 
 **Goal**: Delete the obsolete Layer-0 roadmap (100 of 142 citations) after folding forward
 anything durable, and remove its index entries.
 
 **Tasks**:
-- [ ] Skim `docs/development/PHASED_IMPLEMENTATION.md` sections 6-7 and References for any content not restated elsewhere; fold any genuine residue into the appropriate README (expected: none; record the finding in the phase summary)
-- [ ] `git rm docs/development/PHASED_IMPLEMENTATION.md`
-- [ ] Remove its entries in `docs/README.md` (lines ~158 and ~246; renumber the reading-order list at ~246) and `docs/development/README.md` (~46)
-- [ ] `grep -rn PHASED_IMPLEMENTATION --exclude-dir=specs --exclude-dir=.claude --exclude-dir=.git --exclude-dir=.lake .`: only `docs/development/MODULE_INVARIANTS.md:192` may remain (Phase 8 owns it)
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C5/C12/C13 PASS and C9D drops to about 42
+- [x] Skim `docs/development/PHASED_IMPLEMENTATION.md` sections 6-7 and References for any content not restated elsewhere; fold any genuine residue into the appropriate README (expected: none; record the finding in the phase summary) *(completed: no durable residue found -- content fully obsolete/restated elsewhere)*
+- [x] `git rm docs/development/PHASED_IMPLEMENTATION.md` *(completed)*
+- [x] Remove its entries in `docs/README.md` (lines ~158 and ~246; renumber the reading-order list at ~246) and `docs/development/README.md` (~46) *(completed)*
+- [x] `grep -rn PHASED_IMPLEMENTATION --exclude-dir=specs --exclude-dir=.claude --exclude-dir=.git --exclude-dir=.lake .`: only `docs/development/MODULE_INVARIANTS.md:192` may remain (Phase 8 owns it) *(completed: also scripts/check-module-invariants.sh:526 comment remains, Phase 8 territory)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C5/C12/C13 PASS and C9D drops to about 42 *(completed: C9D dropped exactly 100 -> 42; C5/C12/C13 PASS)*
 
 **Timing**: 1 hour
 
