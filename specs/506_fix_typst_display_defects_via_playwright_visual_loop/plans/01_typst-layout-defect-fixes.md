@@ -329,7 +329,7 @@ baseline scan output rather than from the report. If the scan shows a second ove
 
 ---
 
-### Phase 4: Make Table 8 Breakable and De-overlap the DerivationTree Table [NOT STARTED]
+### Phase 4: Make Table 8 Breakable and De-overlap the DerivationTree Table [COMPLETED]
 
 **Goal**: Fix the two `03-proof-theory.typ` defects — defect 6 (the 24-row BX-temporal figure
 that cannot fit one page, overflowing its own caption and the footer by up to 84.6pt: the most
@@ -338,25 +338,55 @@ Necessitation" label visually interleaves with the unbreakable adjacent Lean con
 
 **Tasks**:
 
-- [ ] Defect 6: wrap the single `#figure(...)` call beginning at
-      `typst/chapters/03-proof-theory.typ:71` in a block-local show rule so only that figure
-      becomes page-breakable — `{ show figure: set block(breakable: true); figure(...) }` or the
-      equivalent local scoping construct. Do NOT place the show rule at file scope.
-- [ ] Recompile `BimodalReference.typ` and confirm the table now splits across a page boundary
+- [x] Defect 6: wrap the single `#figure(...)` call beginning at
+      `typst/chapters/03-proof-theory.typ:71` (actual: line 73) in a block-local show rule so
+      only that figure becomes page-breakable — `{ show figure: set block(breakable: true);
+      figure(...) }` or the equivalent local scoping construct. Do NOT place the show rule at
+      file scope. Verified the exact idiom in an isolated 4-page scratch compile first (header
+      repeat + trailing-caption behavior confirmed) before touching the real file.
+- [x] Recompile `BimodalReference.typ` and confirm the table now splits across a page boundary
       with `table.header` repeating on the continuation page and the caption following the
-      table's true final row.
-- [ ] Confirm other figures in the same chapter still render atomically (spot-check at least
+      table's true final row. Confirmed: Table 8 now spans pages 26-27 (was entirely on page 27,
+      overflowing, in the baseline); the header row repeats at the top of page 27 and the
+      caption follows BX13' (the true final row).
+- [x] Confirm other figures in the same chapter still render atomically (spot-check at least
       the DerivationTree figure at line ~314 and one diagram/table figure elsewhere in the
-      chapter) — i.e. the show rule did not leak.
-- [ ] Defect 4: for the two long raw identifiers at `typst/chapters/03-proof-theory.typ:327-328`
+      chapter) — i.e. the show rule did not leak. Confirmed via screenshots of the Layer 1
+      (Propositional), Layer 2 (S5 Modal), and Prior-U/Sep tables — all remain single-page,
+      unsplit.
+- [x] Defect 4: for the two long raw identifiers at `typst/chapters/03-proof-theory.typ:327-328`
       (`DerivationTree.temporal_necessitation`, `DerivationTree.time_reflection`), introduce the
       same dot break-opportunity so the Lean Constructor column wraps cleanly instead of
       overlapping the Rule column. If the wrap alone leaves the columns crowded, additionally
       give the 3-column table explicit width behavior (`columns: (auto, 1fr, auto)`).
-- [ ] Recompile and screenshot the DerivationTree table's page; confirm the Rule and Lean
-      Constructor columns are visually separated with no interleaved glyphs.
-- [ ] Record the new BimodalReference page count and the new rendered page numbers for the two
+      **Deviation (annotated, not silently skipped)**: applying the break-opportunity to only
+      the two named long identifiers, per a pre-edit probe in an isolated scratch compile,
+      caused every OTHER (unmodified, still-unbreakable) raw span in the same column to overlap
+      column 3 — the column's `auto` width shrank to fit the now-partially-breakable cells,
+      leaving the still-unbreakable ones too wide for their allotted space. Root-caused via a
+      second scratch probe: Typst's per-column `auto` sizing treats a breakable cell's minimum
+      width as its narrowest unbreakable run, not its full length, so mixing breakable and
+      unbreakable cells in one column desyncs the width computation. Fix widened to apply the
+      same break-opportunity uniformly to *all seven* raw spans in the column (via a small local
+      `#let derivation-tree-rule(name) = raw(name.replace(".", "." + sym.zws))` helper defined
+      just above the table), which is still confined to this phase's declared file. Even with
+      uniform breakability, `"Temp. Necessitation"` (the longest Rule-column label) still wrapped
+      and collided at the auto-computed width, so the plan's stated fallback --
+      `columns: (auto, 1fr, auto)` -- was also applied, confirmed necessary and sufficient in a
+      third scratch probe before landing in the real file.
+- [x] Recompile and screenshot the DerivationTree table's page; confirm the Rule and Lean
+      Constructor columns are visually separated with no interleaved glyphs. Confirmed on
+      BimodalReference page 32 (unchanged page number — Table 8's split absorbed into existing
+      whitespace rather than shifting pagination, see next item): every row's three columns are
+      cleanly separated, no overlap.
+- [x] Record the new BimodalReference page count and the new rendered page numbers for the two
       fixed tables (page numbers after the Table 8 split will shift by ~1 for all later pages).
+      **Correction to the Scope Hypothesis's page-count prediction**: the page count did NOT
+      change (98 -> 98, not 98 -> ~99) — Table 8's extra row-height was absorbed by existing
+      slack in the surrounding pages' reflow rather than pushing a new page in. Table 8 now
+      renders on pages 26-27 (previously entirely, and overflowing, on page 27); the
+      DerivationTree table remains on page 32 (unchanged, since it is not itself a new page,
+      only a same-page re-layout).
 
 **Timing**: 1.0 hours
 

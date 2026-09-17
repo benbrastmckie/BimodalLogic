@@ -70,7 +70,9 @@ The metaphysical necessity operator $square.stroked$ is S5: it quantifies over a
 The temporal core consists of eleven schemata in future/past mirror pairs, following Burgess @burgess1982axioms @burgess1984basic and Xu @xu1988until for Until/Since logic on linear orders.
 The primed names denote past mirrors.
 
-#figure(
+#{
+  show figure: set block(breakable: true)
+  figure(
   table(
     columns: 4,
     stroke: none,
@@ -103,7 +105,8 @@ The primed names denote past mirrors.
     table.hline(),
   ),
   caption: [BX temporal layer. Gaps in the structural numbering (BX2, BX8, BX9, BX14) mark schemata of Burgess @burgess1982axioms that were removed as unsound or unnecessary under the strict-witness/open-guard semantics; see the source comments in `ProofSystem/Axioms.lean`. TB is stated as $top arrow.r F top$, trivially interderivable with the bare $F top$ form of the seriality axiom.],
-)
+  )
+}
 
 Highlights of the layer:
 - *Seriality* (BX1/BX1$'$) replaces the temporal T-axioms, which are invalid under the strict semantics: every time has a strictly later and a strictly earlier time.
@@ -311,22 +314,23 @@ Here $Gamma tack.r_(f c) phi.alt$ abbreviates `DerivationTree fc Γ φ`; the pla
   $
 ]
 
+#let derivation-tree-rule(name) = raw(name.replace(".", "." + sym.zws))
 #figure(
   table(
-    columns: 3,
+    columns: (auto, 1fr, auto),
     stroke: none,
     table.hline(),
     table.header(
       [*Rule*], [*Lean Constructor*], [*Context Requirement*],
     ),
     table.hline(),
-    [Axiom], [`DerivationTree.axiom`], [Any (gated by `minFrameClass`)],
-    [Assumption], [`DerivationTree.assumption`], [Any],
-    [Modus Ponens], [`DerivationTree.modus_ponens`], [Any],
-    [Necessitation], [`DerivationTree.necessitation`], [Empty only],
-    [Temp. Necessitation], [`DerivationTree.temporal_necessitation`], [Empty only],
-    [Time Reflection], [`DerivationTree.time_reflection`], [Empty only],
-    [Weakening], [`DerivationTree.weakening`], [Any],
+    [Axiom], [#derivation-tree-rule("DerivationTree.axiom")], [Any (gated by `minFrameClass`)],
+    [Assumption], [#derivation-tree-rule("DerivationTree.assumption")], [Any],
+    [Modus Ponens], [#derivation-tree-rule("DerivationTree.modus_ponens")], [Any],
+    [Necessitation], [#derivation-tree-rule("DerivationTree.necessitation")], [Empty only],
+    [Temp. Necessitation], [#derivation-tree-rule("DerivationTree.temporal_necessitation")], [Empty only],
+    [Time Reflection], [#derivation-tree-rule("DerivationTree.time_reflection")], [Empty only],
+    [Weakening], [#derivation-tree-rule("DerivationTree.weakening")], [Any],
     table.hline(),
   ),
   caption: none,
