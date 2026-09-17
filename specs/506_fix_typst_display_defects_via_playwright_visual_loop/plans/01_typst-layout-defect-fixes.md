@@ -1,7 +1,7 @@
 # Implementation Plan: Typst Display/Layout Defect Fixes
 
 - **Task**: 506 - Fix all outstanding display/layout defects in the compiled typst documents
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.75 hours
 - **Dependencies**: 586 (proof-automation chapter rewrite) — COMPLETED and archived; ordering
   note satisfied, this plan targets the post-586 tree
@@ -497,7 +497,7 @@ regenerates the map live and would flag a mismatch.
 
 ---
 
-### Phase 6: Full Re-sweep, Playwright Confirmation, and Final Gate [NOT STARTED]
+### Phase 6: Full Re-sweep, Playwright Confirmation, and Final Gate [COMPLETED]
 
 **Goal**: Prove systematically that all six defects are gone, that no fix introduced a new one
 anywhere across both documents, and that the repository's gates are green — the dispatch's
@@ -505,23 +505,57 @@ anywhere across both documents, and that the repository's gates are green — th
 
 **Tasks**:
 
-- [ ] Recompile both documents from a clean state to PDF and to per-page PNG.
-- [ ] Run `overflow-scan.py` over ALL pages of both PDFs at the >8pt significance threshold and
+- [x] Recompile both documents from a clean state to PDF and to per-page PNG. Both exit 0; page
+      counts: FF 39 (unchanged), BR 98 (unchanged).
+- [x] Run `overflow-scan.py` over ALL pages of both PDFs at the >8pt significance threshold and
       confirm zero findings; then re-run at a lowered threshold (8-20pt band) and confirm every
       remaining item is ordinary justified-line-end / footer rendering, exactly as the research
       report's non-findings section characterized the baseline noise.
-- [ ] Playwright-screenshot each of the six fixed locations at its post-fix page number and
-      visually confirm the defect is resolved.
-- [ ] Playwright-screenshot the immediate neighborhood of every fix (page before and after) to
-      confirm nothing was newly crowded by reflow or repagination.
-- [ ] Re-scan for the report's non-finding categories at the new pagination: heading spans within
+      Result: FF = 0 above-threshold findings (fully clean, all 3 FF defects resolved with no
+      new regressions anywhere in the document). BR = 3 above-threshold findings, all three
+      being the same one caption line (split into 3 text spans by the PDF text extractor)
+      already investigated and documented in Phase 5 (8.1pt bottom overflow, 28.3pt of clear
+      whitespace above the footer, judged benign). The 8-20pt band for both documents contains
+      no other items beyond that one already-documented caption line — confirming no other
+      reflow-induced regressions anywhere across either document's full page range.
+- [x] Playwright-screenshot each of the six fixed locations at its post-fix page number and
+      visually confirm the defect is resolved. All six re-confirmed at Phase 6: FF p.28 (Defect
+      1), FF p.29-30 (Defect 2), FF p.31 (Defect 3), BR p.26-27 (Defect 6), BR p.32 (Defect 4),
+      BR p.76 (Defect 5) — each shown fully inside its text block / table / definition box.
+- [x] Playwright-screenshot the immediate neighborhood of every fix (page before and after) to
+      confirm nothing was newly crowded by reflow or repagination. Checked: FF p.27 and p.32;
+      BR p.28, p.33, and p.77. All clean, no crowding, no leaked breakable-figure behavior.
+- [x] Re-scan for the report's non-finding categories at the new pagination: heading spans within
       80pt of the bottom margin (orphaned headings) and a `pdftotext` pass for `??`, `[?]`, and
       `undefined` (broken references / citation placeholders). Confirm still clean.
-- [ ] Run `bash scripts/typst-sync-check.sh` and confirm PASS, all three checks green.
-- [ ] Confirm the working tree carries no compiled artifacts (`git status --porcelain typst/`
+      `pdftotext` scan: zero `??`/`[?]` matches in either document; the one `undefined` match in
+      BR (page ~57 body text, "atoms are false (rather than undefined) at times") is ordinary
+      prose, not a placeholder. Heading-near-bottom scan (font size >= 12.5pt, y1 in
+      (635.9, 715.9]): two candidates found (BR p.51 "8.1 Perpetuity Principles", BR p.67 "11.6
+      Applications Outlook`), both confirmed via direct text extraction to have at least one line
+      of body prose following them on the same page before the page break — ordinary pagination,
+      not a genuine orphaned heading (zero body content before the break), and both are far from
+      every phase's edit sites, so not a regression.
+- [x] Run `bash scripts/typst-sync-check.sh` and confirm PASS, all three checks green. Confirmed.
+- [x] Confirm the working tree carries no compiled artifacts (`git status --porcelain typst/`
       shows only the intended `.typ` source edits; PDFs and PNGs live in the scratchpad).
-- [ ] Record final page counts for both documents and the per-defect before/after evidence in
-      the execution summary.
+      Confirmed: `git status --porcelain` shows no `.pdf`/`.png` entries anywhere in the tree.
+- [x] Record final page counts for both documents and the per-defect before/after evidence in
+      the execution summary. FF = 39 pages (unchanged from baseline), BR = 98 pages (unchanged
+      from baseline, despite Phase 4's Scope Hypothesis predicting a page increase from Table
+      8's split — corrected in Phase 4's own record). Per-defect before/after evidence recorded
+      in the phase-by-phase handoffs and carried into the execution summary.
+
+Also ran the whole-document element-placement/density lint (mechanical backstop) across every
+`.typ` file touched by this task: `bash .claude/scripts/typst-element-lint.sh --verbose
+typst/FormalFoundations.typ typst/template.typ typst/chapters/03-proof-theory.typ
+typst/chapters/p4-proof-automation.typ`. Result: `template.typ`, `03-proof-theory.typ`, and
+`p4-proof-automation.typ` all PASS with 0 findings. `FormalFoundations.typ` reports the same 14
+pre-existing `[FAIL]` findings documented in Phase 2 (heading-adjacent `#definition`/`#theorem`
+elements with no intervening prose, at line numbers unrelated to and unchanged by any of this
+task's edits) — confirmed unchanged from the Phase 2 baseline comparison, still out of scope per
+this task's Non-Goals and the Typst extension's content-authorship boundary. No `[WARN]`
+advisory findings were reported by any of the four files.
 
 **Timing**: 1.0 hours
 
@@ -552,16 +586,22 @@ fix it there before closing this phase.
 
 ## Testing & Validation
 
-- [ ] `typst compile typst/FormalFoundations.typ` exits 0 (the two `thmbox` font warnings are
+- [x] `typst compile typst/FormalFoundations.typ` exits 0 (the two `thmbox` font warnings are
       pre-existing and out of scope).
-- [ ] `typst compile typst/BimodalReference.typ` exits 0.
-- [ ] `bash scripts/typst-sync-check.sh` exits 0 with all three checks green.
-- [ ] Bounding-box scan reports zero >8pt overflows across all pages of both documents.
-- [ ] Each of the six catalogued defects has a before/after Playwright screenshot pair.
-- [ ] Source diff review confirms zero mathematical-content changes: only break tokens,
+- [x] `typst compile typst/BimodalReference.typ` exits 0.
+- [x] `bash scripts/typst-sync-check.sh` exits 0 with all three checks green.
+- [x] Bounding-box scan reports zero >8pt overflows across all pages of both documents.
+      **Annotated, not a blind pass**: FF is fully clean (0 findings). BR carries 3 findings, all
+      three being fragments of the *same one* caption line on page 76 (8.1pt bottom overflow) —
+      a documented, investigated, judged-benign side effect of the Defect 5 fix (see Phase 5 and
+      Phase 6's own findings above: 28.3pt of clear whitespace above the footer, no visual
+      overlap). This is the one place this checklist item is not literally "zero" and it is
+      called out explicitly rather than checked off silently.
+- [x] Each of the six catalogued defects has a before/after Playwright screenshot pair.
+- [x] Source diff review confirms zero mathematical-content changes: only break tokens,
       whitespace, a show-rule scope, column-width behavior, and one module-path prefix removal
       in non-mathematical table prose.
-- [ ] No compiled PDFs/PNGs added to the repository.
+- [x] No compiled PDFs/PNGs added to the repository.
 
 ## Artifacts & Outputs
 
