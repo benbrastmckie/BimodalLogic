@@ -112,7 +112,7 @@ next_project_number: 605
       └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 586 [RESEARCHED] — bash scripts/typst-sync-check.sh exits 1 with 4 Check-1...
   └─ 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled...
-590 [RESEARCHING] — Clear the 142 task-number citations under docs/ and retire...
+590 [RESEARCHED] — Clear the 142 task-number citations under docs/ and retire...
 
 ## Tasks
 
@@ -338,11 +338,11 @@ See specs/reviews/review-2026-09-16.md, Finding M5.
 
 ### 590. Retire stale development documentation
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 595
-- **Research**: [590_retire_stale_development_documentation/reports/01_stale-docs-and-task-citations.md]
+- **Research**: [590_retire_stale_development_documentation/reports/02_widened-docs-staleness-audit.md]
 
 **Description**: Clear the 142 task-number citations under `docs/` and retire the two stale development docs that carry most of them. This unblocks `ENFORCE_C9_DOCS=1`, which the harness notes can be flipped 'once the citations are cleared' -- hand that switch to the CI task.
 
