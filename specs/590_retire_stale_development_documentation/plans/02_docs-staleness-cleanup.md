@@ -1,7 +1,7 @@
 # Implementation Plan: Task #590
 
 - **Task**: 590 - Retire stale development documentation (widened: `docs/` staleness audit)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9.5 hours
 - **Dependencies**: 595 (durable-records-home, completed; settles nothing in this plan's file set)
 - **Research Inputs**:

@@ -11,7 +11,7 @@ next_project_number: 605
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,590,592,603,604 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -110,7 +110,6 @@ next_project_number: 605
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
   └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-590 [IMPLEMENTING] — Clear the 142 task-number citations under docs/ and retire...
 
 ## Tasks
 
@@ -336,12 +335,13 @@ See specs/reviews/review-2026-09-16.md, Finding M5.
 
 ### 590. Retire stale development documentation
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 595
 - **Research**: [590_retire_stale_development_documentation/reports/02_widened-docs-staleness-audit.md]
 - **Plan**: [590_retire_stale_development_documentation/plans/02_docs-staleness-cleanup.md]
+- **Summary**: [590_retire_stale_development_documentation/summaries/02_docs-staleness-cleanup-summary.md]
 
 **Description**: Clear the 142 task-number citations under `docs/` and retire the two stale development docs that carry most of them. This unblocks `ENFORCE_C9_DOCS=1`, which the harness notes can be flipped 'once the citations are cleared' -- hand that switch to the CI task.
 
