@@ -1,5 +1,5 @@
 ---
-next_project_number: 608
+next_project_number: 609
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 608
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,506,534,559,563,568,569,578,585,592,603,604,605,606,607,608 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600 | 298,464,502,559,563,568,569,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566 | 231,465,497,565,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
@@ -119,8 +119,19 @@ next_project_number: 608
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero... (see above)
   └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
+608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
 ## Tasks
+
+### 608. Decide and rename swapus swapminus families
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: codebase-cleanup
+- **Dependencies**: None
+
+**Description**: Decide whether to rename the swapUS, swapMinus and *_swap_valid* identifier families to match the time-reflection vocabulary adopted in the TD->TR rename (swapTemporal -> reflectTime), and if so perform the rename via a map file with whole-word matching, keeping serialized dataset strings byte-stable. These families were explicitly left out of scope by task 584; see specs/584_reconcile_lean_tree_with_paper_vocabulary/rename-map.tsv and the record's 2026-09-17 section for the conventions used.
+
+---
 
 ### 607. Resync formalfoundations typ with lean tree
 - **Status**: [NOT STARTED]
