@@ -12,7 +12,7 @@ name: API Documentation
 #     cache itself; it calls `~/.elan/bin/lake` and expects the project to be built already.
 #   - Pages source = "GitHub Actions" (Settings -> Pages -> Build and deployment -> Source).
 #     A workflow cannot set this for itself; until it is set the deploy step has nowhere to
-#     publish.
+#     publish. The first step checks it and fails fast.
 #   - A `push` event. The action builds the API docs and deploys only on push; a
 #     `workflow_dispatch` run exercises the setup steps but publishes nothing.
 #
@@ -60,6 +60,24 @@ jobs:
       url: ${{ steps.docgen.outputs.page_url }}
 
     steps:
+      # Fail in seconds, not after the ~90-minute doc build, when the Pages prerequisite above is
+      # unmet: deploy-pages otherwise reports only an opaque `HttpError: Not Found` at the very
+      # last step. `pages: write` covers this read.
+      - name: Check GitHub Pages is enabled with source "GitHub Actions"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! build_type=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq .build_type); then
+            echo "::error::GitHub Pages is not enabled. Settings -> Pages -> Source = GitHub Actions, or: gh api -X POST repos/${GITHUB_REPOSITORY}/pages -f build_type=workflow"
+            exit 1
+          fi
+          if [ "$build_type" != "workflow" ]; then
+            echo "::error::GitHub Pages source is '${build_type}', expected 'workflow' (GitHub Actions). Settings -> Pages -> Source = GitHub Actions."
+            exit 1
+          fi
+          echo "GitHub Pages enabled (build_type=${build_type})"
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
