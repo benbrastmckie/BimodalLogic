@@ -294,7 +294,7 @@ re-grep in the first task.
 
 ---
 
-### Phase 4: Wire typst-sync-check.sh into CI [NOT STARTED]
+### Phase 4: Wire typst-sync-check.sh into CI [COMPLETED]
 
 **Goal**: CI runs `typst-sync-check.sh` on every push/PR, following the documented wiring pattern.
 

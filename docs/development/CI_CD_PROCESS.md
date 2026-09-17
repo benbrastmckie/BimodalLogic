@@ -167,7 +167,8 @@ failure signal; the script's own `RESULT: PASS`/`FAIL` line, not the presence of
 This is the convention every task that adds a new gating step to `.github/workflows/ci.yml`
 follows. It was established when `check-module-invariants.sh --no-build`,
 `check-copyright-headers.sh --strict`, and `readme-lint.sh` were first wired in, alongside the
-independently-wired `check-evidence-probes.sh` and `check-metalogic-cycles.sh` steps.
+independently-wired `check-evidence-probes.sh`, `check-metalogic-cycles.sh`, and
+`typst-sync-check.sh` steps.
 
 ### 1. Step Naming
 
@@ -222,7 +223,8 @@ run; "minimal env, extracted body" re-derives the exact `run:` body from the com
 | `Check module invariants (scripts/check-module-invariants.sh --no-build)` | 23.6s | 20.3s | _(fill in from a confirmation run — see the implementation summary's remote-confirmation checklist)_ |
 | `Check copyright headers (scripts/check-copyright-headers.sh --strict)` | 10.98s | 4.5s | _(pending)_ |
 | `Check README health (scripts/readme-lint.sh)` | 7.34s | 4.7s | _(pending)_ |
-| **Sum (added local delta)** | **~41.9s** | **~29.5s** | _(pending)_ |
+| `Typst sync check (scripts/typst-sync-check.sh)` | 13.6s | 14.1s | _(pending)_ |
+| **Sum (added local delta)** | **~55.5s** | **~43.6s** | _(pending)_ |
 
 A task that wires a new check step updates this table in the same change, adding its own row
 and re-summing.

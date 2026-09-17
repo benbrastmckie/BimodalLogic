@@ -126,3 +126,14 @@ kind: "derived_operator"
 # already resolves via an unrelated Lean doc-comment and needs no entry.) ---
 def:task-topology
 app:topology-t1
+
+# --- Runtime-only directory, intentionally untracked (p4-dataset-pipeline.typ's
+# description of the BimodalLogic -> BimodalHarness sync step). `data/` holds
+# generated JSONL output (see .gitignore's `data/*.jsonl`) and carries no
+# tracked files at all, so it is absent from a fresh checkout -- exactly the
+# situation a CI runner starts from. Found while verifying that
+# scripts/typst-sync-check.sh exits 0 on a clean checkout before wiring it
+# into CI; without this entry, Check 1 fails on every CI run regardless of
+# any content change, on a directory this whitelist's other categories do
+# not cover. ---
+data/
