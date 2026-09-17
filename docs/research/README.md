@@ -36,7 +36,7 @@ Comprehensive explanation of the `noncomputable` keyword in Lean 4, covering wha
 definitions become noncomputable, and the relationship between classical logic and computability
 in proof systems. Analyzes ProofChecker's use of classical axioms in metalogic theorems.
 
-**Status**: Complete analysis (Task 192)
+**Status**: Complete analysis
 **Related**: [ADR-001-Classical-Logic-Noncomputable.md](../architecture/ADR-001-Classical-Logic-Noncomputable.md)
 
 #### DEDUCTION_THEOREM_NECESSITY.md
@@ -45,7 +45,7 @@ Detailed analysis of whether the deduction theorem MUST be noncomputable in Proo
 Evaluates alternatives and concludes that classical logic with noncomputable definitions is
 necessary, expected, and appropriate for Hilbert-style proof systems.
 
-**Status**: Complete analysis (Task 192)
+**Status**: Complete analysis
 
 ---
 
@@ -89,7 +89,7 @@ Comprehensive research on property-based testing in Lean 4, covering LeanCheck f
 testing, generators for custom types, and integration with ProofChecker's formula and derivation
 types.
 
-**Status**: Research complete (Task 199)
+**Status**: Research complete
 **Related**: [TESTING_STANDARDS.md](../development/TESTING_STANDARDS.md)
 
 ---
@@ -105,10 +105,16 @@ Located in [docs/research/](.):
 - **modal-temporal-proof-search.md** - Proof search architecture
 - **proof-search-automation.md** - Automation strategies
 - **temporal-logic-automation.md** - Temporal tactics
-- **leansearch-api-specification.md** - LeanSearch API
-- **leansearch-best-first-search.md** - Best-first search
-- **leansearch-priority-queue.md** - Priority queue design
-- **leansearch-proof-caching-memoization.md** - Caching design
+- **leansearch-api-specification.md** - LeanSearch API (historical design research, not a live API reference)
+- **leansearch-best-first-search.md** - Best-first search (historical design research)
+- **leansearch-priority-queue.md** - Priority queue design (historical design research)
+- **leansearch-proof-caching-memoization.md** - Caching design (historical design research)
+
+> **The four `leansearch-*.md` files above are historical design research** (December 2025) that
+> informed `FormalSystem/Automation/ProofSearch/` and `SuccessPatterns.lean`. They are kept as
+> the only written rationale for the best-first search, priority queue, and caching choices made
+> there, not as a live API reference; the upstream services and libraries they cite may have
+> changed since.
 
 ---
 
@@ -171,12 +177,16 @@ decision procedures, and adaptation strategies for bimodal temporal logic.
 
 ### LeanSearch Integration
 
+> **Historical design research** (December 2025), not a live API reference. These four files
+> informed `FormalSystem/Automation/ProofSearch/` and `SuccessPatterns.lean`; the upstream
+> LeanSearch/Loogle services and Mathlib/Batteries APIs they cite may have changed since.
+
 #### leansearch-api-specification.md
 
 API specification for LeanSearch integration, documenting REST API endpoints, query parameters,
 response formats, and integration strategies for proof search automation.
 
-**Status**: Research complete
+**Status**: Historical design research (complete; see banner above)
 
 #### leansearch-best-first-search.md
 

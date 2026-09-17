@@ -1,5 +1,11 @@
 # LeanSearch Results: Priority Queue Data Structures
 
+> **Historical design research** (December 2025): this document informed the design of
+> `FormalSystem/Automation/ProofSearch/` and `SuccessPatterns.lean`. It is not a live API
+> reference -- the upstream LeanSearch/Loogle services and Mathlib/Batteries APIs it cites may
+> have changed since. See [research/README.md](README.md) for the reframing note.
+
+
 **Query**: "priority queue"  
 **Date**: Sun Dec 21 2025  
 **Results Found**: 15+  

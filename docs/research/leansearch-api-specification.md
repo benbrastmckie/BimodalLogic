@@ -1,5 +1,11 @@
 # LeanSearch API Specification
 
+> **Historical design research** (December 2025): this document informed the design of
+> `FormalSystem/Automation/ProofSearch/` and `SuccessPatterns.lean`. It is not a live API
+> reference -- the upstream LeanSearch/Loogle services and Mathlib/Batteries APIs it cites may
+> have changed since. See [research/README.md](README.md) for the reframing note.
+
+
 **Research Date:** December 21, 2025  
 **Primary Sources:**
 - https://leansearch.net/

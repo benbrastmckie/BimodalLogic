@@ -124,21 +124,23 @@ Module-by-module implementation status for the Bimodal TM logic library.
 - All core propositional theorems proven
 - Combinators (identity, composition, flip, etc.)
 
-## Layer 4: Automation (🔶 Partial)
+## Layer 4: Automation (✅ Complete)
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| `Tactics.lean` | ✅ | Core tactics working |
+| `Automation/Tactics/` (`Commands`, `Deduction`, `Meta`, `PropDecide`, `Search`, `UserTactics`) | ✅ | Core tactics working |
 | `Automation/ProofSearch/Core.lean` | ✅ | Builds cleanly |
 | `Automation/ProofSearch/Strategies.lean` | ✅ | Builds cleanly |
 
 **Working**:
-- `modal_t` tactic
-- `apply_axiom` tactic
-- Aesop integration
+- `apply_axiom`, `modal_t`, `assumption_search` tactics
+- `propDecide` reflective propositional decision
+- `deduction` / `undischarge` deduction-theorem tactics
+- `modal_search` bounded best-first proof search
 
-**Issues**:
-- Bounded search timeout issues
+**Retired**: the Aesop-based `TMLogic` rule set (`tm_auto` and related tactics) was archived to
+`FormalSystem/Boneyard/RetiredTactics/` -- Aesop's proof reconstruction does not work over
+`Type`-valued `DerivationTree` goals.
 
 ## Examples (✅ Complete)
 
@@ -149,18 +151,22 @@ Module-by-module implementation status for the Bimodal TM logic library.
 
 ## Overall Statistics
 
+**As of 2026-09-17**:
+
 | Metric | Value |
 |--------|-------|
-| Total Lean files | 539 |
-| Lines of code | 170,898 |
-| Comment lines | 96,290 |
+| Total Lean files | 587 |
+| Lines of code | 171,776 |
+| Comment lines | 105,106 |
 | Known sorries | 0 |
 | Build status | ✅ Passes |
 
-Do not hardcode these figures elsewhere. Reproduce them:
+Do not hardcode these figures elsewhere. Reproduce them (scoped to the live library and test
+tree; a bare repo-wide `cloc` also sweeps up `specs/` scratch files and `.claude/` test
+fixtures, which inflates the count):
 
 ```bash
-cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .
+cloc --include-lang=Lean --exclude-dir=Boneyard FormalSystem Tests
 ```
 
 The sorry count is asserted, not documented: check C3 of

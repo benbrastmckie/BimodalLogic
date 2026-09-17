@@ -285,17 +285,17 @@ with `grep -nE 'tm_auto|temporal_search|propositional_search'` before editing.
 
 ---
 
-### Phase 6: Reframe leansearch research notes and refresh implementation-status.md [NOT STARTED]
+### Phase 6: Reframe leansearch research notes and refresh implementation-status.md [COMPLETED]
 
 **Goal**: Apply Decision 3 to the four `leansearch-*.md` files, and refresh the stale sections of
 `implementation-status.md`.
 
 **Tasks**:
-- [ ] Add a short "Historical design research" banner to each of `docs/research/leansearch-{api-specification,best-first-search,priority-queue,proof-caching-memoization}.md`: dated Dec 2025, informed `FormalSystem/Automation/ProofSearch/` and `SuccessPatterns.lean`, not a live API reference, and upstream services may have changed (verify both paths exist first)
-- [ ] `docs/research/README.md` (~108-111, ~174-198): add a note giving the reframing and its reason (Decision 3)
-- [ ] `docs/project-info/implementation-status.md`: re-run `cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .` and update the statistics table (~150-156) with the date; rewrite the Layer 4 Automation section (~127-141) with the `Automation/Tactics/` directory instead of `Tactics.lean`, add `modal_search` to Working, and re-verify or drop the "Bounded search timeout" issue (grep ProofSearch for timeout/fuel handling; if unverifiable, remove the claim)
-- [ ] Spot-check the rest of `implementation-status.md` for module paths that no longer exist (`ls` each named file)
-- [ ] Confirm `performance-targets.md` and `test-coverage.md` need no change (no edit; note in summary)
+- [x] Add a short "Historical design research" banner to each of `docs/research/leansearch-{api-specification,best-first-search,priority-queue,proof-caching-memoization}.md`: dated Dec 2025, informed `FormalSystem/Automation/ProofSearch/` and `SuccessPatterns.lean`, not a live API reference, and upstream services may have changed (verify both paths exist first) *(completed)*
+- [x] `docs/research/README.md` (~108-111, ~174-198): add a note giving the reframing and its reason (Decision 3) *(completed: also cleared 3 Task-192/199 citations found by re-grep)*
+- [x] `docs/project-info/implementation-status.md`: re-run `cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .` and update the statistics table (~150-156) with the date; rewrite the Layer 4 Automation section (~127-141) with the `Automation/Tactics/` directory instead of `Tactics.lean`, add `modal_search` to Working, and re-verify or drop the "Bounded search timeout" issue (grep ProofSearch for timeout/fuel handling; if unverifiable, remove the claim) *(completed: repo-wide cloc pollutes count with specs/.claude scratch files, so re-scoped the reproduction command to FormalSystem+Tests, matching C7's live-file count; dropped the unverifiable timeout claim per known-limitations.md's 'Resolved' status)*
+- [x] Spot-check the rest of `implementation-status.md` for module paths that no longer exist (`ls` each named file) *(completed: all named paths resolve)*
+- [x] Confirm `performance-targets.md` and `test-coverage.md` need no change (no edit; note in summary) *(completed: confirmed no citations, no edit needed)*
 
 **Timing**: 1.5 hours
 
