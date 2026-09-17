@@ -1,17 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/585_burn_down_compiler_warnings_and_add_gate/reports/02_warning-gate-design-remeasure.md",
-      "summary": "Re-measures the compiler-warning surface at 348 across 56 files (not 316/47), settles the warm-cache log-replay question empirically, and specifies the gate as a build-free C26 ratchet in check-module-invariants.sh."
+      "type": "plan",
+      "path": "specs/585_burn_down_compiler_warnings_and_add_gate/plans/02_warning-burndown-and-c28-gate.md",
+      "summary": "Ten-phase burn-down of all 348 all-target compiler warnings to zero, gated by a build-free trace-scan ratchet (scripts/warning-budget.py + C28) landed before the first fix, with a dedicated read-and-disposition phase for the 35 previously unanalyzed Tests/BimodalTest + exe-root warnings."
     }
   ],
-  "next_steps": "Run /plan 585 to phase the burn-down (0: land C26 report-only + baseline; 1: 82 deprecations; 2a-2c: the simp/dead-tactic cluster per site; 3: 85 section variables; 4: 60 mechanical; 5: gate to zero plus CI_CD_PROCESS.md correction).",
+  "next_steps": "Run /implement 585 to execute the plan, starting with Phase 1 (warning-budget scanner and all-target baseline).",
+  "phase_count": 10,
+  "estimated_hours": 17.5,
+  "dependency_waves": [[1], [2], [3, 4, 5, 8], [6], [7], [9], [10]],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, CI invokes `bash scripts/check-module-invariants.sh --no-build`, so any new numbered check (C1..C28) that shells out to `lake build` silently joins C2/C6/C24 in the documented 'Known Not-in-CI Gaps' list -- it passes locally and never runs on a PR. A gate intended to run in CI must therefore be build-free. For measurement gates over compiler output this is cheap rather than limiting: Lake stores each module's messages in `.lake/build/lib/lean/**/*.trace` as a JSON `log[]` array with a `level` field and replays them on a cache hit, so a pure trace scan reproduces the full warning surface in ~0.05s with no `lake` invocation, versus ~6s for a warm all-target replay build. Two guards are mandatory for such a scan: drop entries whose source path no longer exists (stale traces from deleted/renamed files), and exit non-zero -- never pass -- when no trace files are found or when a recorded non-zero baseline meets an observed zero, because a gate that silently measures zero is worse than no gate. Also verify the highest live check ID before numbering a new check: this harness is numbered past what its own header comment and external reports assume.",
+      "category": "PATTERN",
+      "source_artifact": "specs/585_burn_down_compiler_warnings_and_add_gate/plans/02_warning-burndown-and-c28-gate.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-module-invariants", "no-build", "lake-trace", "ci-gate", "warning-baseline", "ratchet"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789686569_90aa7e_585",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }

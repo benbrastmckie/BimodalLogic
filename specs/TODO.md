@@ -108,7 +108,7 @@ next_project_number: 616
 ### Codebase Cleanup
 
 506 [IMPLEMENTING] — Fix all outstanding display/layout defects in the compiled...
-585 [PLANNING] — lake build exits 0 with 316 warnings across 47 live files,...
+585 [PLANNED] — lake build exits 0 with 316 warnings across 47 live files,...
   └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
       └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
@@ -311,11 +311,12 @@ DISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on 
 
 ### 585. Burn down compiler warnings and add gate
 - **Effort**: large
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 583, Task 584
 - **Research**: [585_burn_down_compiler_warnings_and_add_gate/reports/02_warning-gate-design-remeasure.md]
+- **Plan**: [585_burn_down_compiler_warnings_and_add_gate/plans/02_warning-burndown-and-c28-gate.md]
 
 **Description**: `lake build` exits 0 with 316 warnings across 47 live files, and nothing gates them: C16 runs the Batteries `env_linter` (a declaration linter) which does not see Lean compiler warnings. The two sets are disjoint -- this is a real hole, not a redundancy.
 
