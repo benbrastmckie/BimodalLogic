@@ -111,7 +111,7 @@ The module belongs to the discrete-case expressiveness infrastructure of the met
 
 #let roles = (
   "Tactics/Commands.lean": [The `modal_search` tactic: its `SearchConfig`, its two syntax forms, and the elaborators that run the search],
-  "Tactics/Deduction.lean": [`deduction`, `deduction n`, `undischarge`: frame-class-polymorphic applications of `Metalogic.Core.deductionTheorem`],
+  "Tactics/Deduction.lean": [`deduction`, `deduction n`, `undischarge`: frame-class-polymorphic applications of `deductionTheorem`],
   "Tactics/Meta.lean": [Shared `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding],
   "Tactics/PropDecide.lean": [`propDecide`: reflective tautology tactic for the propositional fragment],
   "Tactics/Search.lean": [The bounded proof-search engine behind `modal_search`: `searchProof` and its five strategies, in `TacticM` because `Axiom` is `Prop`-valued and `DerivationTree` is `Type`-valued],

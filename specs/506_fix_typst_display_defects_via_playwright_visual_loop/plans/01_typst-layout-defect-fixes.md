@@ -419,7 +419,7 @@ by content, not by the baseline numbering.
 
 ---
 
-### Phase 5: Shorten the Overflowing Module-Map Role Text [NOT STARTED]
+### Phase 5: Shorten the Overflowing Module-Map Role Text [COMPLETED]
 
 **Goal**: Fix defect 5 — the largest single measured overflow (129.5pt, over 1.8in past the
 margin) — where the unbreakable inline code span `Metalogic.Core.deductionTheorem` is pushed off
@@ -427,21 +427,45 @@ the visible page inside a Module Map table cell.
 
 **Tasks**:
 
-- [ ] Locate the target by content, not by page number (Phase 4 shifted BimodalReference
+- [x] Locate the target by content, not by page number (Phase 4 shifted BimodalReference
       pagination): `typst/chapters/p4-proof-automation.typ`, the `roles` dictionary entry for
-      `"Tactics/Deduction.lean"` (currently line ~114).
-- [ ] Shorten the inline code span from `` `Metalogic.Core.deductionTheorem` `` to
+      `"Tactics/Deduction.lean"` (found at line 114, matching the plan's estimate exactly).
+- [x] Shorten the inline code span from `` `Metalogic.Core.deductionTheorem` `` to
       `` `deductionTheorem` ``, matching every sibling cell in the same table, which already
       uses bare identifiers (`deduction`, `deduction n`, `undischarge`). The module context is
       not lost: `04-metalogic.typ` already documents `deductionTheorem`'s location. This is the
       research report's primary recommendation and a stylistic-consistency win.
-- [ ] Run `bash scripts/typst-sync-check.sh` and confirm Check 1 (backtick name resolution)
+- [x] Run `bash scripts/typst-sync-check.sh` and confirm Check 1 (backtick name resolution)
       still passes with the bare identifier. `deductionTheorem` is present in
       `FormalSystem/Metalogic/Core/MaximalConsistent.lean`, so it is expected to resolve.
+      Confirmed by direct grep before editing, then by a full sync-check run after: PASS, all 3
+      checks green (Check 2's module-map sub-check confirms this cell is hand-authored prose,
+      not desynchronized from the generator, per the Scope Hypothesis).
 - [ ] If Check 1 fails on the bare name, revert to the fully-qualified name and instead apply the
       dot break-opportunity technique (Phase 3's idiom) to that span; re-run the gate.
-- [ ] Recompile `BimodalReference.typ`, find the Module Map table's current page by text match,
-      and screenshot it via the Playwright loop.
+      (Not needed — Check 1 passed on the first attempt.)
+- [x] Recompile `BimodalReference.typ`, find the Module Map table's current page by text match,
+      and screenshot it via the Playwright loop. Found on page 76 (unchanged from the report's
+      page number, since Phase 4's fix did not shift BimodalReference's pagination after all —
+      see Phase 4's page-count correction). Confirmed via direct PNG inspection: the role cell's
+      full text, including `deductionTheorem`, now sits fully inside the table's right edge.
+
+**Follow-on finding (investigated, not silently dropped)**: recompiling after this fix,
+`overflow-scan.py --threshold 8` surfaces one new marginal finding not present in the baseline:
+BimodalReference page 76, caption text ("...dataset-pipeline half is covered in Chapter 13."),
+bottom overflow 8.1pt — just above the significance threshold. Root cause: shortening the long
+identifier changed the "Tactics/Deduction.lean" row's wrap points, growing that one row from 3
+lines to 4 (the bare `deductionTheorem` no longer fits on the same line as "polymorphic
+applications of", so it wraps to its own new line), which pushes every subsequent row and the
+caption down by one line-height. Investigated directly rather than deferred to Phase 6: measured
+the actual gap between the caption's last line (y1=724.0pt) and the footer page-number glyph
+(y0=752.3pt) — 28.3pt of clear, unambiguous whitespace, with no visual overlap or crowding.
+Judged not a genuine display defect (the task's dispatch describes "text running past margins"
+and "content escaping... boxes" as the defect class; this is a caption's last line sitting 8.1pt
+past a mathematically-derived margin line while remaining comfortably inside the physical page
+with normal footer clearance) — a trade of a 129.5pt severe horizontal overflow for an 8.1pt
+sub-visual technical crossing of the scan's boundary is a clear net improvement, not a new
+defect. Re-verified in Phase 6's full sweep rather than asserted here alone.
 
 **Timing**: 0.5 hours
 
