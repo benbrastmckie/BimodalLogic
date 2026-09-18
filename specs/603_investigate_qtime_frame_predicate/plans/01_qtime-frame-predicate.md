@@ -1,7 +1,7 @@
 # Implementation Plan: Task #603
 
 - **Task**: 603 - Investigate a ℚ-time frame predicate (`TaskFrame.IsQTime`)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None (coordinate with in-flight task 588 edits under `Metalogic/`; see Risks)
 - **Research Inputs**: specs/603_investigate_qtime_frame_predicate/reports/01_qtime-frame-predicate.md
@@ -86,24 +86,24 @@ No roadmap consulted (no roadmap_flag in this dispatch).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Define IsQTime and its density bridge [NOT STARTED]
+### Phase 1: Define IsQTime and its density bridge [COMPLETED]
 
 **Goal**: Add the intrinsic ℚ-time predicate and `isDense_of_isQTime` to `FrameProperty.lean`.
 
 **Tasks**:
-- [ ] Insert `def TaskFrame.IsQTime` after `TaskFrame.IsRTime` (report Appendix, verbatim):
+- [x] Insert `def TaskFrame.IsQTime` after `TaskFrame.IsRTime` (report Appendix, verbatim):
   divisibility clause `∀ n : ℕ, n ≠ 0 → Function.Surjective (fun x : F.Duration => n • x)` and
   commensurability clause `∀ a b, a ≠ 0 → ∃ (m : ℤ) (n : ℕ), n ≠ 0 ∧ (n : ℤ) • b = m • a`.
-- [ ] Docstring: why intrinsic rather than `≃+o ℚ` (IsZTime/intIso pattern, keeps ℚ out of the
+- [x] Docstring: why intrinsic rather than `≃+o ℚ` (IsZTime/intIso pattern, keeps ℚ out of the
   lower semantic layer); why no density conjunct (derivable, unlike `IsRTime`); which near-miss
   group each clause excludes (`ℤ`, `ℤ[1/2]` fail divisibility; `ℚ+ℚ√2`, `ℚ ×ₗ ℚ` fail
   commensurability); why candidate (c) fails (only `≃o`); that it is not a `FrameClass`
   constructor (precedent: `ValidComplete`); that the `≃+o ℚ` classification is deferred.
-- [ ] Add `theorem TaskFrame.isDense_of_isQTime` next to `isDense_of_isRTime` (verified proof).
-- [ ] Update module docstring "Main Definitions" and "Why five predicates" section (six frame
+- [x] Add `theorem TaskFrame.isDense_of_isQTime` next to `isDense_of_isRTime` (verified proof).
+- [x] Update module docstring "Main Definitions" and "Why five predicates" section (six frame
   predicates plus determinism), and mention `IsQTime` in "The two narrowed classes" section
   (now three narrowed classes, or add a sentence explaining ℚ-time as a class inside `IsDense`).
-- [ ] No task-number references in Lean docstrings.
+- [x] No task-number references in Lean docstrings.
 
 **Timing**: 45 minutes
 
