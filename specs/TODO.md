@@ -99,7 +99,7 @@ next_project_number: 623
 
 ### Paper Refactor
 
-621 [NOT STARTED] — Adopt uniform reflect naming for time reversal: the paper...
+621 [RESEARCHED] — Adopt uniform reflect naming for time reversal: the paper...
   └─ 622 [NOT STARTED] — Align frame-class subscripts with the paper in...
 
 ### Codebase Cleanup
@@ -121,10 +121,11 @@ next_project_number: 623
 ---
 
 ### 621. Adopt uniform reflect naming for time reversal
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
+- **Research**: [621_adopt_uniform_reflect_naming_for_time_reversal/reports/01_uniform-reflect-naming.md]
 
 **Description**: Adopt uniform reflect naming for time reversal: the paper renamed lem:temporal-duality to lem:time-reflection. Update docs/reference/paper-definitions-of-record.md (retire the 'semantic lemma keeps its name' carve-out, record the new label), then apply the principle 'reflect names every operation reversing the time order on any object (formula, frame, history, truth lemma); swap survives only for non-time-reversal exchanges'. Rename MinusFrame.swap -> MinusFrame.reflect, truth_swap -> truth_reflectTime, swapUS -> a qualified reflect name (e.g. reflectTimeBoxOpaque, box subformulas treated as atoms). Classify by the same test the leftover families swap_norm, *_swap_of_tm*, cValid swaps, starValid_*_swap and rename those that denote time reflection. Keep serialized wire/mutation tags byte-stable. Update prose citing the temporal duality lemma, READMEs, typst citations; run check-paper-definitions.sh, check-module-invariants.sh, lake build
 
