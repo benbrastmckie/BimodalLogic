@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/622_align_typst_frame_subscripts_zdr_and_bx_r/plans/01_frame-subscript-alignment.md",
-      "summary": "3-phase plan: f->z relabels + citation swap + decidability line, BX_c->BX_r redefinition extending BX_d with R-time claim audit, provenance remark rewrite + full gates."
-    }
-  ],
-  "next_steps": "Run /implement 622 to execute the plan",
-  "phase_count": 3,
-  "estimated_hours": 2.5,
-  "dependency_waves": 3,
-  "memory_candidates": [],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1789751834_287b73_622",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1789751834_287b73",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "dispatch_seq": 5
+  "dispatch_seq": 6
 }

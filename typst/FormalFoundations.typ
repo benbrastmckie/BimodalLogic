@@ -495,8 +495,8 @@ constrains is the points of evaluation, not the propositions.
   ]
 ]
 
-#definition($"BX"_f$)[
-  The *Discrete Burgess--Xu Tense Logic* $"BX"_f$ extends BX to include all
+#definition($"BX"_z$)[
+  The *Discrete Burgess--Xu Tense Logic* $"BX"_z$ extends BX to include all
   instances of:
   #items[
     + *UZ*: $#somefuture phi.alt arrow.r (not phi.alt #until phi.alt)$.
@@ -556,15 +556,15 @@ constrains is the points of evaluation, not the propositions.
   ]
 ]
 
-Similarly, $op("TM")_f$, $op("TM")_d$, and $op("TM")_c$ extend $op("TM")$ with the
-additional axioms that distinguish $"BX"_f$, $"BX"_d$, and $"BX"_c$ respectively: $op("TM")_f$
+Similarly, $op("TM")_z$, $op("TM")_d$, and $op("TM")_c$ extend $op("TM")$ with the
+additional axioms that distinguish $"BX"_z$, $"BX"_d$, and $"BX"_c$ respectively: $op("TM")_z$
 adds UZ and Z1, $op("TM")_d$ adds DN and NN, and $op("TM")_c$ adds Prior-U and Sep.#footnote[Whether CO alone axiomatizes the same $#BL$-logic as Prior-U and Sep together is open.]
 
 #figure(
   table(
     columns: 2, stroke: none, align: (left,left),
     table.hline(), table.header([*System*],[*Additional axioms*]), table.hline(),
-    [$op("TM")_f$], [UZ, Z1 (backward induction; fail off the Archimedean discrete orders, hence exactly $ZZ$-time)],
+    [$op("TM")_z$], [UZ, Z1 (backward induction; fail off the Archimedean discrete orders, hence exactly $ZZ$-time)],
     [$op("TM")_d$], [DN ($#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt$), NN ($not #Nxt top$)],
     [$op("TM")_c$], [Prior-U, Sep; CO is a derived theorem, not a further axiom],
     table.hline(),
@@ -652,10 +652,10 @@ op("Log")("Dense")$, which is a target rather than a result.
   If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM⁻ and for each of its four frame-class
   extensions $op("TM")^-_f$, $op("TM")^-_d$, $op("TM")^-_c$, $op("TM")^-_(d c)$ over its own class.#footnote[The characteristic case is M5, $#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, which holds because $square.stroked$ quantifies over $H_(#taskframe)$ entire and so is insensitive to the possible world at which it is evaluated.]
 ]
-#leansrc("Metalogic.Soundness", "soundness")
-#leansrc("Metalogic.Soundness", "soundness_dense")
-#leansrc("Metalogic.Soundness", "soundness_ztime")
-#leansrc("Metalogic.Soundness", "soundness_rtime")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_dense")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_ztime")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_rtime")
 
 The three frame properties that separate the extensions are each characterized by a single axiom.
 These correspondences are what make the extensions extensions *of a frame class* and not merely of
@@ -705,7 +705,7 @@ $op("TM")^-_d$ either; its status is covered only by the headline above.
 At the $#BL$ level three positive results are machine-checked, each of the form
 $"Valid"_cal(C) phi.alt arrow.r "Derivable"_cal(C) phi.alt$. They are stated here in the
 development's own frame-class vocabulary. The paper attributes them to its systems
-$op("TM")_d$, $op("TM")_f$, $op("TM")_c$; that identification rests on a key-by-key
+$op("TM")_d$, $op("TM")_z$, $op("TM")_c$; that identification rests on a key-by-key
 textual correspondence, not a machine-checked equivalence, as @sec:construction records.
 
 #theorem("Weak completeness, dense class")[
@@ -1051,7 +1051,7 @@ No step of the base-class route carries `sorryAx`.
 #remark[
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `ZTime`,
   `RTime`. It is not silently identified with the paper's $op("TM")$, $op("TM")_d$,
-  $op("TM")_f$, $op("TM")_c$. The two axiomatizations line up key for key --- the paper states
+  $op("TM")_z$, $op("TM")_c$. The two axiomatizations line up key for key --- the paper states
   eleven primary Since/Until axioms in the future direction and derives their past mirrors by the
   rule TR, and the development states exactly the same *11* future-direction constructors
   (`FormalSystem.ProofSystem.Axioms`), with the past mirrors machine-checked as derived theorems
@@ -1240,7 +1240,7 @@ a point.
     + $#allfuture 1 = #allpast 1 = 1$ (TN and its mirror) and $square.stroked 1 = 1$ (MN).
   ]
   A *$op("TM")_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a
-  *$op("TM")_f$-algebra* additionally satisfies UZ and Z1; a *$op("TM")_c$-algebra*
+  *$op("TM")_z$-algebra* additionally satisfies UZ and Z1; a *$op("TM")_c$-algebra*
   additionally satisfies Prior-U and Sep, each read as an inequality in the same way. All four
   classes are varieties. The rule TR becomes closure of the class under the signature automorphism
   swapping $#until$ and $#since$ --- which holds because the defining set of inequalities is
@@ -1291,15 +1291,15 @@ a point.
 
 #proposition("Algebraic soundness")[
   For every task frame $#taskframe$, $op("Cm")(#taskframe)$ is a $op("TM")$-algebra; it is a
-  $op("TM")_d$-algebra when $#Dur$ is dense, a $op("TM")_f$-algebra when $#Dur$ is a
+  $op("TM")_d$-algebra when $#Dur$ is dense, a $op("TM")_z$-algebra when $#Dur$ is a
   $ZZ$-group, and a $op("TM")_c$-algebra when $#Dur in {ZZ, RR}$. For every shift set $S$,
   $op("Cm")(S)$ is $square.stroked$-simple: $square.stroked X$ takes only the values $emptyset$ and
   $Omega$.
 ]
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness")
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_dense")
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_ztime")
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_rtime")
+#leansrc("Metalogic.Soundness", "soundness")
+#leansrc("Metalogic.Soundness", "soundness_dense")
+#leansrc("Metalogic.Soundness", "soundness_ztime")
+#leansrc("Metalogic.Soundness", "soundness_rtime")
 
 #lemma("Lindenbaum–Tarski")[
   The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")$-algebra on $X$, and its
@@ -1474,7 +1474,7 @@ axiom above, which is first-order.
   every $op("Cm")(S)$ is a $square.stroked$-simple $op("TM")$-algebra.
 
   *Per class.* If $A$ is a $op("TM")_d$-algebra, every $D_k$ is dense (and may be taken
-  divisible). If $A$ is a $op("TM")_f$-algebra, every $D_k$ is a $ZZ$-group, elementarily
+  divisible). If $A$ is a $op("TM")_z$-algebra, every $D_k$ is a $ZZ$-group, elementarily
   equivalent to $ZZ$. If $A$ is a $op("TM")_c$-algebra, every $D_k$ is a divisible ordered
   abelian group, elementarily equivalent to $RR$.
 ]
@@ -1560,7 +1560,7 @@ axiom above, which is first-order.
 ]
 
 #proposition("ℤ-time and ℝ")[
-  For $op("TM")_f$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum
+  For $op("TM")_z$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum
   algebra has an ultrafilter, realized at no point of any model over $ZZ$, witnessed by
   `discrete_consequence_not_compact`. For $op("TM")_c$ there is none over $RR$-flows
   @reynolds1992. What holds over $ZZ$-flows and $RR$-flows is the SP-representation of the

@@ -1,0 +1,17 @@
+{
+  "phase": 1,
+  "phase_name": "Pure relabels, decidability chapter, and citation swap",
+  "started_at": "2026-09-18T00:00:00Z",
+  "last_updated": "2026-09-18T00:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Record baseline TM-minus token count (13)", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Rename BX_f -> BX_z in definition block", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 3, "description": "Rename TM_f -> TM_z at non-minus sites", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 4, "description": "Update p2-decidability-practice.typ line 27", "status": "done", "files_touched": ["typst/chapters/p2-decidability-practice.typ"]},
+    {"id": 5, "description": "Swap section 2 / section 5 leansrc citations", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 6, "description": "Run typst-sync-check.sh and typst compile", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

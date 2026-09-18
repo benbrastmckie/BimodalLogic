@@ -24,7 +24,7 @@ Its soundness half is carried by `decide_sound` below; its completeness half run
 
 The finite model property that carries decidability is necessarily *class-specific*.
 A blanket finite-model-property-over-$D = ZZ$ statement is false, witnessed twice over:
-axiom DF is a non-theorem of *TM*, $op("TM")_d$, and $op("TM")_c$ (each is sound over a class containing a dense or $RR$ member on which DF fails) yet is valid in every model over $D = ZZ$; and axiom CO is a non-theorem of $op("TM")_f$ (witnessed by the non-Archimedean discrete order $ZZ times_(op("lex")) ZZ$) yet is likewise valid in every model over $D = ZZ$.
+axiom DF is a non-theorem of *TM*, $op("TM")_d$, and $op("TM")_r$ (each is sound over a class containing a dense or $RR$ member on which DF fails) yet is valid in every model over $D = ZZ$; and axiom CO is a non-theorem of $op("TM")_z$ (witnessed by the non-Archimedean discrete order $ZZ times_(op("lex")) ZZ$) yet is likewise valid in every model over $D = ZZ$.
 A finite model property therefore ranges over effective non-Archimedean carriers such as $ZZ times_(op("lex")) ZZ$ for the discrete systems rather than $ZZ$ alone, with analogous constructions for the dense and complete classes.
 
 Each system here is recursively axiomatized -- a recursive set of schemata and finitary rules -- so its theorems are recursively enumerable regardless of completeness; decidability additionally needs the non-theorems to be r.e., standardly via a finite model property of the class-specific kind above.

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #622
 
 - **Task**: 622 - Align typst frame-class subscripts (z/d/r) and BX_r with the paper
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (task 607's TM/TM⁻ resync already landed)
 - **Research Inputs**: specs/622_align_typst_frame_subscripts_zdr_and_bx_r/reports/01_frame-subscript-alignment.md
@@ -108,31 +108,34 @@ Not consulted. No roadmap_path was provided for this dispatch.
 
 The phases run in sequence because Phases 1–3 all edit `typst/FormalFoundations.typ`.
 
-### Phase 1: Pure relabels, decidability chapter, and citation swap [NOT STARTED]
+### Phase 1: Pure relabels, decidability chapter, and citation swap [COMPLETED]
 
 **Goal**: Make every change that needs no semantic judgment: the `f -> z` relabels, the one-line
 decidability-chapter update, and the §2/§5 `#leansrc` swap.
 
 **Tasks**:
-- [ ] Record the baseline token count: `grep -c 'op("TM")^-_' typst/FormalFoundations.typ`. It must
-      be unchanged at the end of this phase.
-- [ ] In `typst/FormalFoundations.typ`, change `"BX"_f` -> `"BX"_z` inside the `#definition($"BX"_f$)`
+- [x] Record the baseline token count: `grep -c 'op("TM")^-_' typst/FormalFoundations.typ`. It must
+      be unchanged at the end of this phase. *(completed: baseline = 13, unchanged after phase)*
+- [x] In `typst/FormalFoundations.typ`, change `"BX"_f` -> `"BX"_z` inside the `#definition($"BX"_f$)`
       block, including the definition title. Leave the `"BX"_f` mentions inside the Naming provenance
-      remark for Phase 3.
-- [ ] Change `op("TM")_f` -> `op("TM")_z` at the non-minus sites: the TM-level "Similarly" sentence,
+      remark for Phase 3. *(completed)*
+- [x] Change `op("TM")_f` -> `op("TM")_z` at the non-minus sites: the TM-level "Similarly" sentence,
       the summary-table row, the "paper attributes them to" sentence (~708), the remark at ~1053–1054,
       the TM-algebra definition (~1243), the Algebraic soundness proposition (~1294), the Per-class
-      remark (~1477), and the representation remark (~1563).
-- [ ] In `typst/chapters/p2-decidability-practice.typ` line 27, change `op("TM")_c` -> `op("TM")_r`
+      remark (~1477), and the representation remark (~1563). *(completed)*
+- [x] In `typst/chapters/p2-decidability-practice.typ` line 27, change `op("TM")_c` -> `op("TM")_r`
       and `op("TM")_f` -> `op("TM")_z`. Recheck the wording: "sound over a class containing a dense
       or `RR` member" still holds for the narrowed `TM_r`, and the `ZZ times_lex ZZ` witness for
-      `TM_z` is unaffected.
-- [ ] Citation swap. Retarget the §2 "Soundness" theorem's four `#leansrc` lines to
+      `TM_z` is unaffected. *(completed)*
+- [x] Citation swap. Retarget the §2 "Soundness" theorem's four `#leansrc` lines to
       `Metalogic.Conservativity.MinusLanguageSoundness` with `minus_soundness`,
       `minus_soundness_dense`, `minus_soundness_ztime`, and `minus_soundness_rtime`. Retarget the §5
       "Algebraic soundness" proposition's four `#leansrc` lines to `Metalogic.Soundness` with
-      `soundness`, `soundness_dense`, `soundness_ztime`, and `soundness_rtime`.
-- [ ] Run `bash scripts/typst-sync-check.sh` and `typst compile` on both documents.
+      `soundness`, `soundness_dense`, `soundness_ztime`, and `soundness_rtime`. *(completed: verified
+      both symbol families exist in FormalSystem/Metalogic/Soundness.lean and
+      FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean)*
+- [x] Run `bash scripts/typst-sync-check.sh` and `typst compile` on both documents. *(completed: all
+      pass)*
 
 **Timing**: 0.75 hours
 
