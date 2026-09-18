@@ -1,0 +1,17 @@
+{
+  "phase": 2,
+  "phase_name": "Spot-Check Conversion Fidelity and Reconcile the Label",
+  "started_at": "2026-09-18T00:15:00Z",
+  "last_updated": "2026-09-18T00:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-download PDF from journals.msp.org endpoint, verify HTTP 200/content-type/magic bytes", "status": "done", "files_touched": [], "note": "HTTP 200, content-type: application/pdf, magic bytes %PDF-1.3 confirmed."},
+    {"id": 2, "description": "Compare re-download to scratchpad copy by size and sha256sum", "status": "done", "files_touched": [], "note": "Both 223069 bytes; sha256 6dd101dc53a5368ae73046a72c328bec119d1f4b67fd307ac77493f2bd7315ff identical -- byte-for-byte match, no divergence to record."},
+    {"id": 3, "description": "Place PDF in corpus source directory alongside chunks", "status": "done", "files_touched": ["~/Projects/Literature/sources/gehrke_jonsson_2004/gehrke_jonsson_2004.pdf"], "note": "Placed matching sibling directory layout convention (gitignored *.pdf, on-disk retention only)."},
+    {"id": 4, "description": "Cross-check 3 numbered items (theorem, definition, section heading) between chunks and PDF page images", "status": "done", "files_touched": [], "note": "Section heading 2.2 'Six topologies' (PDF p.5 / journal p.18) matches chunk_0012 verbatim. Definition 2.7 (PDF p.6 / journal p.18) matches chunk_0013 verbatim (ligature-only rendering diff). Theorem 2.8 statement+proof (PDF p.6-7 / journal p.18-19) matches chunk_0014 verbatim. All 3 match."},
+    {"id": 5, "description": "Keep verified_conversion and rewrite fidelity string naming evidence, since all 3 matched", "status": "done", "files_touched": ["specs/literature-index.json"], "note": "fidelity string rewritten to cite the sha256 verification and the 3 specific spot-checked items with page numbers, replacing the quality-gate-only justification. Global index provenance_fidelity already verified_conversion -- no downgrade needed, left unchanged per plan branch (only downgrade path touches it)."},
+    {"id": 6, "description": "Apply any other Phase 1 discrepancy", "status": "done", "files_touched": [], "note": "Phase 1 found no discrepancies to apply."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

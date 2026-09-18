@@ -176,34 +176,41 @@ finding for Phase 2, not a reason to stop.
 
 ---
 
-### Phase 2: Spot-Check Conversion Fidelity and Reconcile the Label [NOT STARTED]
+### Phase 2: Spot-Check Conversion Fidelity and Reconcile the Label [COMPLETED]
 
 **Goal**: Make the `fidelity` / `provenance_fidelity` label on `gehrke_jonsson_2004` reflect a
 check that was actually performed, and retain the source PDF on disk so any future citation from
 this document can be re-checked.
 
 **Tasks**:
-- [ ] Re-download the PDF from the known-good endpoint
+- [x] Re-download the PDF from the known-good endpoint
       `https://journals.msp.org/mscand/article/download/791/790` and verify HTTP 200,
       `content-type: application/pdf`, and PDF magic bytes.
-- [ ] Compare the re-download to the scratchpad copy
+      *(completed: HTTP 200, content-type application/pdf, magic bytes %PDF-1.3 confirmed)*
+- [x] Compare the re-download to the scratchpad copy
       (`/tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/36806a6d-d7d5-4f49-931d-ee0ede39e2f1/scratchpad/gehrke_jonsson_2004.pdf`,
       223,069 bytes) by byte size and `sha256sum`. If they differ, record both checksums and run
       the spot-check against the scratchpad copy — that is the file that was actually converted.
-- [ ] Place the PDF in `~/Projects/Literature/sources/gehrke_jonsson_2004/` alongside the chunks,
+      *(completed: byte-identical, both 223,069 bytes, sha256 6dd101dc53a5368ae73046a72c328bec119d1f4b67fd307ac77493f2bd7315ff — no divergence)*
+- [x] Place the PDF in `~/Projects/Literature/sources/gehrke_jonsson_2004/` alongside the chunks,
       matching the sibling `gehrke_vosmaer_2011_view-of-canonical-extension/` directory layout.
       (Note: `*.pdf` is gitignored in that repo, so this is on-disk retention only, by design.)
-- [ ] Cross-check at least three numbered items — a theorem statement, a definition, and a
+      *(completed)*
+- [x] Cross-check at least three numbered items — a theorem statement, a definition, and a
       section heading with its page number — between the converted chunks and the PDF page
       images, choosing items a future citation would plausibly use (the canonical extension
       `A^sigma` definition and its density/compactness conditions are the obvious candidates).
-- [ ] If all three match: keep `verified_conversion` and rewrite the `fidelity` string in
+      *(completed: section heading 2.2 "Six topologies" (p.18), Definition 2.7 (p.18), Theorem 2.8 statement+proof (p.18-19) — all match verbatim modulo font ligatures)*
+- [x] If all three match: keep `verified_conversion` and rewrite the `fidelity` string in
       `specs/literature-index.json` to name the evidence actually obtained (which items were
       checked, against which page numbers), replacing the current quality-gate-only justification.
+      *(completed: all 3 matched, label kept and string rewritten with the sha256 check and the 3 specific items/pages)*
 - [ ] If any mismatch is found: downgrade `fidelity` to `unverified_conversion` in
       `specs/literature-index.json` and `provenance_fidelity` to match in
       `~/Projects/Literature/index.json`, naming the specific defect observed.
-- [ ] Apply any other discrepancy Phase 1 surfaced.
+      *(deviation: skipped — condition not triggered, no mismatch was found)*
+- [x] Apply any other discrepancy Phase 1 surfaced.
+      *(completed: none — Phase 1 found no discrepancies)*
 
 **Timing**: 1 hour
 

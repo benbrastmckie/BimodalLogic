@@ -416,6 +416,14 @@
       "fidelity": "Chunk of blackburn_2002_book (parent stamped verified_conversion); clean conversion with page anchors. Verify any theorem statement against the printed page before relying on it.",
       "added": "2026-09-03",
       "source": "manual (task 528 round-03 source-acquisition dossier)"
+    },
+    {
+      "doc_id": "gehrke_jonsson_2004",
+      "reason": "Representation section: the primary canonical-extension framework for bounded distributive lattice expansions (DLEs) that the representation-literature research report (specs/archive/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md) used gehrke_vosmaer_2011 as a proxy for, because this paper's original mscand.dk URL 404'd. Acquired directly from the journal's post-migration host (journals.msp.org) after mscand.dk's OJS migration. Defines the canonical extension A^sigma for arbitrary DLEs, its topologies, and which properties (homomorphisms, Boolean/direct products, varieties) canonical extension preserves.",
+      "added": "2026-09-18",
+      "source": "general-research (retry acquisition of missing representation sources)",
+      "citation_rule": "Cite by the paper's own theorem/section numbers (e.g. Theorem 2.8, Section 3.3) plus Math. Scand. 94 (2004) page numbers. Never cite md line numbers.",
+      "fidelity": "verified_conversion: re-downloaded PDF (journals.msp.org, HTTP 200, sha256 6dd101dc53a5368ae73046a72c328bec119d1f4b67fd307ac77493f2bd7315ff, byte-identical to the file actually converted) and spot-checked 3 items against page images: section heading 2.2 'Six topologies' (Math. Scand. p.18, chunk_0012), Definition 2.7 (p.18, chunk_0013), Theorem 2.8 statement + proof (p.18-19, chunk_0014) — all match verbatim modulo font ligature rendering (e.g. 'fi' rendered as a joined glyph)."
     }
   ]
 }
