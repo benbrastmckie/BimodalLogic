@@ -543,12 +543,6 @@ theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
     show (w₀ + (t + Δ) : ℤ) = (w₀ + Δ) + t
     omega
 
-/-- TaskModel: valuation at world state w evaluates Z-interval atom predicate at w. -/
-noncomputable def zTaskModelV2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
-    (Z : ZIntervalStructure sig) (atomMap : Formula → sig.preds) :
-    TaskModel zTaskFrameV2 where
-  valuation w p := Z.interp (atomMap (.atom p)) w
-
 /--
 If M has NoMaxOrder/NoMinOrder and is k-equivalent (k ≥ 2) to a Z-interval,
 then every integer is in the Z-interval's carrier (the interval is unbounded).
