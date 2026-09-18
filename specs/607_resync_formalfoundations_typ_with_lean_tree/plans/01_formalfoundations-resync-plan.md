@@ -281,27 +281,36 @@ the counts when writing the inventory, and record the actual totals at the top o
 
 ---
 
-### Phase 4: §2-§5 system renames [NOT STARTED]
+### Phase 4: §2-§5 system renames [COMPLETED]
 
 **Goal**: Apply the Phase 2 verdicts to `= Completeness and Decidability` and the sections after
 it.
 
 **Tasks**:
-- [ ] §2: rename the Soundness theorem, the section intro ("nothing positive is known at the ...
+- [x] §2: rename the Soundness theorem, the section intro ("nothing positive is known at the ...
       level"), `Incompleteness at the base level`, the paragraph after it, `Decidability`, and
       `Failure of a uniform finite model property`. Their `#BL`-level system names become TM⁻ /
       `op("TM")^-_x`. `op("TM")^+*` in the weak-completeness lead-in, the strong-completeness
       paragraph and the conservativity remark become `op("TM")*`. The conservativity remark
-      should read "No conservativity claim is made for TM over TM⁻".
-- [ ] §3 (`= The Completeness Construction`): rename the `Machine-Checked Status` remark from
+      should read "No conservativity claim is made for TM over TM⁻". *(completed, exact wording match)*
+- [x] §3 (`= The Completeness Construction`): rename the `Machine-Checked Status` remark from
       Phase 1 (`op("TM")^+`, `op("TM")^+_d`, ... -> `op("TM")`, `op("TM")_d`, ...), and every other
-      `op("TM")^+` site.
-- [ ] §4 (`= Two Costs of the Semantics`): rename the §Contingency `op("TM")_f/d/c` family to
+      `op("TM")^+` site. *(completed)*
+- [x] §4 (`= Two Costs of the Semantics`): rename the §Contingency `op("TM")_f/d/c` family to
       `op("TM")^-_x` where the inventory says so. Rename `op("TM")^+` sites to `op("TM")`.
-- [ ] §5 (`= The Representation Theorem`): rename the TM^+-algebra definitions, lemmas, and the
-      `TS`/`TC` derivation remark to plain `TM`, following the verdicts.
-- [ ] Check each theorem statement against its `#leansrc` target, as Phase 2 recorded, so that the
-      named system is the one the Lean declaration is about.
+      *(completed; also renamed the Discreteness Dichotomy remark's "TM-unprovable"/"TM-sound" to
+      "TM⁻-unprovable"/"TM⁻-sound", and the §Strongest Objective Modality contrast sentence's bare
+      "TM" to "TM⁻" in "never a theorem of TM⁻ or op(TM)")*
+- [x] §5 (`= The Representation Theorem`): rename the TM^+-algebra definitions, lemmas, and the
+      `TS`/`TC` derivation remark to plain `TM`, following the verdicts. *(completed via the
+      global op("TM")^+ -> op("TM") mechanical strip; the closing remark's "#BL-level TM has no
+      representation theorem" -> "#BLminus-level TM⁻ has no representation theorem", and "TM is
+      not complete" -> "TM⁻ is not complete")*
+- [x] Check each theorem statement against its `#leansrc` target, as Phase 2 recorded, so that the
+      named system is the one the Lean declaration is about. *(completed during Phase 2's
+      cross-referencing; the two apparent pre-existing citation-target defects found there
+      (Soundness theorem's citations, Algebraic-soundness proposition's citations) are recorded
+      as follow-ups, not altered, per this plan's renaming-only scope)*
 
 **Timing**: 2 hours
 

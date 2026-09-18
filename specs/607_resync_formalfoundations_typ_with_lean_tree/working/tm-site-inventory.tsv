@@ -18,102 +18,102 @@
 # halves per this row's reason. Union of all pattern-matched lines: 96 lines (see raw-*.txt and
 # tm-union.tsv in this same directory for the machine-generated source lists this file was
 # built from).
-line	section	pattern	excerpt	verdict	reason
-3	(header)	TMprose	// Formal Foundations of Bimodal TM Logic: Completeness and Representation	TM	Title comment; paper's TM.
-6	(header)	TMprose	// TM, in five sections: the system (semantics first, then the proof systems);	TM	Title comment; paper's TM.
-41	(header)	TMprose	title: "Formal Foundations of Bimodal TM Logic: Completeness and Representation",	TM	Document title metadata; paper's TM.
-62	(header)	TMprose	// Automatically bold "TM" throughout the document, matching the book.	keep	Typesetting directive comment, applies to the literal string "TM" uniformly; not a site-specific system reference.
-63	(header)	TMprose	#show "TM": strong	keep	Typesetting directive itself (bolds every literal "TM"); mechanical, no rename.
-85	(macro block)	macro	#let BL = $op("BL")$	macro	Phase 3 task 1: rename this binding's NAME to `BLminus` (keep body `op("BL")^-`per plan: "#let BLminus = $op(\"BL\")^-$"). Must be renamed FIRST, before the BLplus rename below, to avoid a merge collision.
-86	(macro block)	macro	#let BLplus = $op("BL")^+$	macro	Phase 3 task 1: rename this binding's NAME to `BL` (keep body as `op("BL")` per plan: "#let BL = $op(\"BL\")$"). Must be renamed SECOND (after line 85's rename), so the old `BL` name is already vacated.
-107	(header)	TMprose	#text(...)[Formal Foundations of Bimodal TM Logic]	TM	Cover title; paper's TM.
-121	(header)	TMprose	*Abstract.* This report states what is proved about the bimodal logic *TM* --- a fusion of S5	TM	Abstract; paper's TM (the document's own subject).
-133	(header)	TMprose	theorem for *TM*: every *TM*-algebra embeds, point-completely, into a product of complex	TM	Abstract's Representation Theorem summary; matches def:("TM-algebra") = op("TM")^+-algebra, i.e. paper's TM.
-136	(header)	TMprose	the *TM*-algebras. Complexity as distinct from	TM	Abstract, same as above.
-154	The Language	L(BLplus)	$#BLplus := chevron.l ...$, where	L	Language definition itself; macro token, mechanical BLplus->BL rename (Phase 3).
-163	The Language	L(BLplus)	footnote: "The paper's base language $#BL$ takes ... $#allpast$/$#allfuture$ as primitive instead; it embeds into $#BLplus$..."	Lminus+prose-fix	Phase 3 task 4 explicitly names this footnote. Macro tokens rename mechanically (#BL->#BLminus, #BLplus->#BL), but the SENTENCE must also change: post-rename this is NOT "the paper's base language" -- it is the repository's own L^- (H/G primitive), with no paper counterpart. Rewrite to state that explicitly.
-180	The Language	L(BLplus+BL)	one sentence is what separates $#BLplus$ from $#BL$ everywhere below	L+Lminus	Macro tokens, mechanical rename (both present, contrasted deliberately -- keep the contrast, just swap tokens).
-182	The Language	L(BL)	its absence from $#BL$ is what produces the split validity of @sec:dichotomy.	Lminus	Macro token, mechanical #BL->#BLminus.
-489	Proof Systems	TMplus	#definition($op("TM")^+$)[	TM	Definition head for the paper's TM (base logic for #BLplus, extends S5+BX with MF). Mechanical op("TM")^+ -> op("TM").
-490	Proof Systems	L(BLplus)+TMplus	$op("TM")^+$, the base logic for $#BLplus$, extends S5 and BX to include	TM+L	Both tokens mechanical: op("TM")^+->op("TM"), #BLplus->#BL.
-509	Proof Systems	TMprose	its TM extension are sound and complete are exactly those over $ZZ$-time.	TM	"this system [BX_f] and its TM extension" = BX_f extended by the paper's TM (i.e. op("TM")^+_f). Bare "TM" here ALREADY means the paper's system pre-rename (per plan Research Integration/Phase 3 task 5) -- verified, no textual change needed.
-515	Proof Systems	L(BLplus)	$#BLplus$. The paper's 2026-09 revision collapsed $#BLplus$ into $#BL$, dropped the $+$	L	Naming-provenance remark (historical fact about the paper's own revision). Macro tokens mechanical; the surrounding remark prose is updated in Phase 5 per plan.
-516	Proof Systems	TMprose	superscript from the TM family, and renamed the extensions $"BX"_z slash "BX"_d slash "BX"_r$	TM	"the TM family" = the paper's TM family (whose + superscript was dropped in the paper's own revision). Historical/provenance prose, updated in Phase 5.
-533	Proof Systems	L(BLplus)+TMprose	DN coincides with TM's DN below; NN is specific to the $#BLplus$ level and asserts no time has an immediate successor.	TMminus+L	"TM's DN below" forward-references the bare-TM (#BL-level) extension paragraph's DN (line 605) -> TMminus. "$#BLplus$ level" is a macro token, mechanical rename to #BL; per plan Phase 3 task 4 this phrase is CORRECT as-is after the mechanical swap (NN really is BLplus/TM-only per MinusLanguage/Axioms.lean's table, which lists only DF/DN/CO for TM^-, no NN) -- no extra prose fix needed beyond the token swap.
-547	Proof Systems	TMprose	The following restates CO from TM below, and is a *derived theorem* of $"BX"_c$ from Prior-U	TMminus	"CO from TM below" forward-references the bare-TM extension paragraph's CO (line 606) -> TMminus.
-554	Proof Systems	TMplus	Similarly, $op("TM")^+_f$, $op("TM")^+_d$, and $op("TM")^+_c$ extend $op("TM")^+$ with the	TM	Mechanical op("TM")^+_x -> op("TM")_x.
-555	Proof Systems	TMplus	additional axioms ... $op("TM")^+_f$	TM	Mechanical.
-556	Proof Systems	L(BLplus)+TMplus	adds UZ and Z1, $op("TM")^+_d$ adds DN and NN, and $op("TM")^+_c$ adds Prior-U and Sep. footnote: "$#BLplus$-logic"	TM+L	Mechanical (both tokens).
-562	Proof Systems	TMplus	[$op("TM")^+_f$], [UZ, Z1 ...]	TM	Table row; mechanical.
-563	Proof Systems	TMplus	[$op("TM")^+_d$], [DN (...), NN (...)]	TM	Table row; mechanical.
-564	Proof Systems	TMplus	[$op("TM")^+_c$], [Prior-U, Sep; CO is a derived theorem, not a further axiom]	TM	Table row; mechanical.
-567	Proof Systems	TMplus	caption: [The three frame-class extensions of $op("TM")^+$.]	TM	Mechanical.
-576	Proof Systems	TMprose	#definition("TM")[	TMminus	The #BL-level definition block itself (uses TK/T4/TS/TC/TL, MinusLanguage/Axioms.lean's key list). Core plan example; title becomes "TM⁻" or $op("TM")^-$.
-577	Proof Systems	L(BL)+TMprose	*TM*, the *Logic of Tense and Modality* for $#BL$, extends CPL to include	TMminus+Lminus	Body of the #BL-level TM definition; both tokens.
-596	Proof Systems	TMprose	making the logic symmetric...TM's TL lists the same three disjuncts as BX's TL above	TMminus	Self-reference within the TM⁻ definition block.
-601	Proof Systems	TMprose	TM is strengthened by constraining the temporal order $#Dur$ to be Discrete, Dense, or Complete	TMminus	Introduces the DF/DN/CO extension paragraph for the #BL-level system.
-608	Proof Systems	TMsub+TMprose	Letting $op("TM")_f$ extend TM to include all instances of DF, $op("TM")_d$ to include all	TMminus	DF/DN/CO extension family, exclusively TM⁻'s per MinusLanguage/Axioms.lean.
-609	Proof Systems	TMsub	instances of DN, and $op("TM")_c$ to include all instances of CO, $op("TM")_(d c)$ is the minimal	TMminus	Same family.
-610	Proof Systems	TMsub	extension of $op("TM")_d$ and $op("TM")_c$, corresponding to the continuous temporal orders	TMminus	Same family.
-611	Proof Systems	TMprose	are both dense and Dedekind complete. Since no temporal order is both Discrete and Dense, TM	TMminus	Self-reference, TM⁻.
-615	Proof Systems	TMprose	The *derivation relation* $tack.r$ for TM is the smallest relation closed under the axioms and	TMminus	Derivability block, explicitly named TMminus by the plan's default rule.
-616	Proof Systems	TMprose	rules for TM given above.	TMminus	Same Derivability block.
-621	Completeness and Decidability	TMprose	This section covers five results. Soundness holds for TM and its four frame-class extensions	TMminus	Phase 4 task 1 explicitly names "the section intro" as a TM⁻ rename target.
-626	Completeness and Decidability	L(BL)	positive is known at the $#BL$ level, while three weak completeness results...	Lminus	Macro token, mechanical.
-627	Completeness and Decidability	L(BLplus)	the $#BLplus$ level, with the base frame class left as an outstanding proof obligation.	L	Macro token, mechanical.
-635	Soundness and Correspondence	TMprose	If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and for each of its four frame-class	TMminus	Phase 4 task 1 explicitly names "the Soundness theorem" as a TM⁻ rename target. NOTE (flag for summary follow-up): its #leansrc citations (Metalogic.Soundness.soundness/soundness_dense/soundness_ztime/soundness_rtime, lines 638-641) are over `Formula` (until/since-primitive = paper TM, per Soundness.lean:185's own docstring), not `MinusFormula` -- i.e. the citations look swapped with the dedicated `minus_soundness`/`minus_soundness_dense`/`minus_soundness_ztime`/`minus_soundness_rtime` family in Conservativity/MinusLanguageSoundness.lean. This is a #leansrc correctness issue distinct from the naming task and is out of this plan's explicit scope (Phase 6's leansrc check is existence-only); recorded as a follow-up in the summary, citations left untouched.
-636	Soundness and Correspondence	TMsub	extensions $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ over its own class.	TMminus	Same Soundness theorem, subscripted family.
-665	Perpetuity and Collapse	TMprose	... are all theorems of TM.	TM	Ambiguous: not listed among Phase 4's explicit rename targets, uses no DF/DN/CO disambiguator (footnote cites MF+MT, axioms common to both TM and TM⁻), no #leansrc tag. Defaulted to TM (paper) per the plan's own framing that unqualified "TM" is the paper's name going forward; left unchanged since bare "TM" IS the correct post-rename spelling for the paper's system. Flagged for review, not altered beyond the default.
-675	Completeness	L(BL)	Completeness is stated per system and per class. At the $#BL$ level there is no positive result.	Lminus	Macro token, mechanical; matches the doc's own "$#BL$ level"="no positive completeness" theme (consistent w/ TMminus verdicts below).
-678	Completeness	TMsub+TMprose	#theorem("Incompleteness at the base level")[ None of TM, $op("TM")_f$, ... is complete	TMminus	Phase 4 task 1 explicitly names "Incompleteness at the base level" as a TM⁻ rename target.
-682	Completeness	TMsub+TMprose	@sec:dichotomy gives the argument for TM itself. $op("TM")_c$ fails identically over {ZZ,RR}.	TMminus	"the paragraph after it" per Phase 4 task 1 (follows Incompleteness theorem).
-683	Completeness	TMsub	$op("TM")_f$ is the one case that must not be lumped in with the others...	TMminus	Same paragraph.
-686	Completeness	TMsub	$op("TM")_d$ either; its status is covered only by the headline above.	TMminus	Same paragraph.
-688	Completeness	L(BLplus)	At the $#BLplus$ level three positive results are machine-checked...	L	Macro token, mechanical.
-691	Completeness	TMplus	... systems $op("TM")^+_d$, $op("TM")^+_f$, $op("TM")^+_c$; that identification rests on a key-by-key	TM	Mechanical.
-728	Completeness	TMplus	set --- is the aim for $op("TM")^+$ and $op("TM")^+_d$, with no known obstruction...	TM	Mechanical.
-733	Completeness	TMplus+TMprose	No conservativity claim is made for $op("TM")^+$ over TM. The backward direction holds	TM+TMminus	Deliberate contrast (same pattern as line 1176). Plan Phase 4 task 1 gives the exact target text: "No conservativity claim is made for TM over TM⁻." op("TM")^+->TM (mechanical), trailing bare "TM"->TM⁻ (explicit contrast).
-734	Completeness	L(BLplus)+L(BL)	unconditionally, since $#BL$ embeds into $#BLplus$. The forward direction fails for the base	Lminus+L	Both macro tokens, mechanical, contrast preserved.
-743	Decidability	TMsub+TMprose	#theorem("Decidability")[ Whether TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$,... are decidable	TMminus	Phase 4 task 1 explicitly names "Decidability" as a TM⁻ rename target.
-753	Decidability	TMsub+TMprose	#proposition("Failure of a uniform finite model property..."): DF is a non-theorem of TM, ...	TMminus	Phase 4 task 1 explicitly names "Failure of a uniform finite model property" as a TM⁻ rename target.
-754	Decidability	TMsub	every model over $D=ZZ$. And CO is a non-theorem of $op("TM")_f$, witnessed by	TMminus	Same proposition.
-783	Consistency and Maximal Consistent Sets	L(BLplus)	Relative to a frame class ..., a set $S$ of $#BLplus$-sentences is *consistent*...	L	Macro token, mechanical. All of section 3 (The Completeness Construction) is over #BLplus/Formula per its #leansrc citations (Metalogic.Core/BXCanonical/Bundle/Algebraic/WeakCanonical) -- consistent w/ verdict TM/L throughout this section.
-825	The Discreteness Dichotomy	L(BLplus)	closed under disjoint union. In $#BLplus$ the dichotomy is *internal*: the uniformity axiom NB	L	Macro token, mechanical.
-827	The Discreteness Dichotomy	TMplus	$ tack.r_(op("TM")^+) square.stroked #Nxt top or square.stroked not #Nxt top, $	TM	Mechanical.
-832	The Discreteness Dichotomy	L(BL)	$#BL$ has no sentence naming discreteness, and this is what its incompleteness comes to.	Lminus	Macro token, mechanical; matches TM⁻'s known incompleteness (@sec:completeness-status).
-835	The Discreteness Dichotomy	TMprose	frame yet TM-unprovable, since a structure with one $ZZ$ fibre and one $RR$ fibre and	TMminus	Contrasted against #BLplus in the same remark (line 837); "TM-unprovable"/"TM-sound" describe the #BL-level system's incompleteness.
-836	The Discreteness Dichotomy	TMprose	$square.stroked$ read across both is TM-sound while refuting both disjuncts. The same dichotomy	TMminus	Same remark.
-837	The Discreteness Dichotomy	L(BLplus)	that leaves $#BL$ with an unprovable validity gives $#BLplus$ a theorem to case-split on.	Lminus+L	Both macro tokens, mechanical, contrast preserved.
-838	The Discreteness Dichotomy	L(BL)	below uses the $#BL$-level schema.	Lminus	Macro token, mechanical.
-1036	Machine-Checked Status	TMplus	`RTime`. It is not silently identified with the paper's $op("TM")^+$, $op("TM")^+_d$,	TM	Handled directly in Phase 1's remark rewrite (system names left as op("TM")^+ there per plan instruction); Phase 4 task 2 renames these tokens mechanically now that Phase 1's content fix is done.
-1037	Machine-Checked Status	TMplus	$op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations line up key for key --- the paper states	TM	Same remark; mechanical.
-1067	The Contingency of the Temporal Axioms	TMsub	characterized by an axiom, giving the systems $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, with	TMminus	Phase 4 task 3 explicitly names "the §Contingency op(TM)_f/d/c family" as a TM⁻ rename target.
-1068	The Contingency of the Temporal Axioms	TMsub	$op("TM")_(d c)$ the minimal common extension of the last two. By the Dichotomy no temporal order	TMminus	Same family.
-1139	The Strongest Objective Modality	L(BL)	The apparatus needed is higher-order. $#BL$ is extended with a primitive propositional identity	Lminus	Macro token, mechanical (applies file-wide regardless of section topic).
-1176	The Strongest Objective Modality	TMplus+TMprose	under study and never a theorem of TM or $op("TM")^+$. Whether the characterization is	TMminus+TM	Deliberate contrast, same pattern as line 733. Becomes "never a theorem of TM⁻ or TM."
-1192	The Representation Theorem	TMprose	Every TM-algebra embeds, point-completely, into a product of complex algebras of shift-set	TM	Section intro; "TM-algebra" here is shorthand for the just-defined op("TM")^+-algebra (def:TM-algebra, line 1205) = paper's TM.
-1195	The Representation Theorem	TMprose	frame is a TM-algebra (algebraic soundness), the class of representable algebras is exactly	TM	Same intro paragraph.
-1196	The Representation Theorem	TMprose	class of TM-algebras: representation and completeness meet exactly at "point-complete."	TM	Same intro paragraph.
-1205	Algebras and Complex Algebras	TMprose	#definition("TM-algebra")[	TM	Definition title; body is explicitly $op("TM")^+$-algebra (line 1206) = paper's TM. Title kept as bare "TM-algebra" (shorthand), matching post-rename convention where bare TM = paper.
-1206	Algebras and Complex Algebras	TMplus	A *$op("TM")^+$-algebra* is a Boolean algebra $A = (A, and, or, not, 0, 1)$ together with a	TM	Mechanical.
-1224	Algebras and Complex Algebras	TMplus	A *$op("TM")^+_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a	TM	Mechanical.
-1225	Algebras and Complex Algebras	TMplus	*$op("TM")^+_f$-algebra* additionally satisfies UZ and Z1; a *$op("TM")^+_c$-algebra*	TM	Mechanical.
-1275	Algebras and Complex Algebras	TMplus	For every task frame $#taskframe$, $op("Cm")(#taskframe)$ is a $op("TM")^+$-algebra; it is a	TM	Mechanical. NOTE (flag for summary follow-up): this proposition's #leansrc citations (lines 1281-1284) read `#leansrc("Metalogic.MinusLanguageSoundness", "minus_soundness"...)` -- both a stale module path (actual file is `Metalogic/Conservativity/MinusLanguageSoundness.lean`) and, on the same swapped-citation pattern flagged at line 635, apparently the wrong theorem family for a claim about op("TM")^+-algebras. Left untouched (out of this plan's explicit renaming scope); recorded as a follow-up.
-1276	Algebras and Complex Algebras	TMplus	$op("TM")^+_d$-algebra when $#Dur$ is dense, a $op("TM")^+_f$-algebra when $#Dur$ is a	TM	Mechanical.
-1277	Algebras and Complex Algebras	TMplus	$ZZ$-group, and a $op("TM")^+_c$-algebra when $#Dur in {ZZ, RR}$. For every shift set $S$,	TM	Mechanical.
-1287	Algebras and Complex Algebras	TMplus	The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")^+$-algebra on $X$, and its	TM	Mechanical.
-1289	Algebras and Complex Algebras	TMplus	$X$. Every $op("TM")^+$-algebra $A$ is a quotient $q : op("Fr")(A) arrow.r A "(surjective)"$,	TM	Mechanical.
-1297	Algebras and Complex Algebras	TMplus	For a class $K$ of task frames, $op("Fr")(omega) in op("SP") op("Cm")(K)$ iff $op("TM")^+$ is	TM	Mechanical.
-1326	Shift Sets	L(BLplus)	Each formula $phi.alt$ of $#BLplus$ translates to a formula $phi.alt^*(w,t)$ of the two-sorted	L	Macro token, mechanical.
-1378	The Ultrafilter Frame	TMplus	For a $op("TM")^+$-algebra $A$, the *ultrafilter frame* $op("Uf")(A)$ has as its points the	TM	Mechanical.
-1387	The Ultrafilter Frame	TMplus	For every $op("TM")^+$-algebra $A$:	TM	Mechanical.
-1433	The Ultrafilter Frame	TMplus	$op("TM")^+$-algebra rather than for the Lindenbaum algebra alone.	TM	Mechanical.
-1440	The Representation Theorem	TMplus	Let $A$ be a $op("TM")^+$-algebra. For every $R_square.stroked$-class $k$ of $op("Uf")(A)$ there	TM	Mechanical.
-1456	The Representation Theorem	TMplus	every $op("Cm")(S)$ is a $square.stroked$-simple $op("TM")^+$-algebra.	TM	Mechanical.
-1458	The Representation Theorem	TMplus	*Per class.* If $A$ is a $op("TM")^+_d$-algebra, every $D_k$ is dense (and may be taken	TM	Mechanical.
-1459	The Representation Theorem	TMplus	divisible). If $A$ is a $op("TM")^+_f$-algebra, every $D_k$ is a $ZZ$-group, elementarily	TM	Mechanical.
-1460	The Representation Theorem	TMplus	equivalent to $ZZ$. If $A$ is a $op("TM")^+_c$-algebra, every $D_k$ is a divisible ordered	TM	Mechanical.
-1545	The Representation Theorem	TMplus	For $op("TM")^+_f$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum	TM	Mechanical.
-1547	The Representation Theorem	TMplus	`discrete_consequence_not_compact`. For $op("TM")^+_c$ there is none over $RR$-flows	TM	Mechanical.
-1555	The Representation Theorem	L(BL)+TMprose	$#BL$-level TM has no representation theorem of this kind, since it has no representation	Lminus+TMminus	Both tokens explicitly qualified "#BL-level" -> unambiguous TM⁻.
-1556	The Representation Theorem	TMprose	theorem at all: `cor:tm-completeness` and its kin show TM is not complete over its class, so no	TMminus	Same remark, self-reference to the just-established TM⁻.
+line	section	pattern	excerpt	verdict	reason	applied
+3	(header)	TMprose	// Formal Foundations of Bimodal TM Logic: Completeness and Representation	TM	Title comment; paper's TM.	yes
+6	(header)	TMprose	// TM, in five sections: the system (semantics first, then the proof systems);	TM	Title comment; paper's TM.	yes
+41	(header)	TMprose	title: "Formal Foundations of Bimodal TM Logic: Completeness and Representation",	TM	Document title metadata; paper's TM.	yes
+62	(header)	TMprose	// Automatically bold "TM" throughout the document, matching the book.	keep	Typesetting directive comment, applies to the literal string "TM" uniformly; not a site-specific system reference.	yes
+63	(header)	TMprose	#show "TM": strong	keep	Typesetting directive itself (bolds every literal "TM"); mechanical, no rename.	yes
+85	(macro block)	macro	#let BL = $op("BL")$	macro	Phase 3 task 1: rename this binding's NAME to `BLminus` (keep body `op("BL")^-`per plan: "#let BLminus = $op(\"BL\")^-$"). Must be renamed FIRST, before the BLplus rename below, to avoid a merge collision.	yes
+86	(macro block)	macro	#let BLplus = $op("BL")^+$	macro	Phase 3 task 1: rename this binding's NAME to `BL` (keep body as `op("BL")` per plan: "#let BL = $op(\"BL\")$"). Must be renamed SECOND (after line 85's rename), so the old `BL` name is already vacated.	yes
+107	(header)	TMprose	#text(...)[Formal Foundations of Bimodal TM Logic]	TM	Cover title; paper's TM.	yes
+121	(header)	TMprose	*Abstract.* This report states what is proved about the bimodal logic *TM* --- a fusion of S5	TM	Abstract; paper's TM (the document's own subject).	yes
+133	(header)	TMprose	theorem for *TM*: every *TM*-algebra embeds, point-completely, into a product of complex	TM	Abstract's Representation Theorem summary; matches def:("TM-algebra") = op("TM")^+-algebra, i.e. paper's TM.	yes
+136	(header)	TMprose	the *TM*-algebras. Complexity as distinct from	TM	Abstract, same as above.	yes
+154	The Language	L(BLplus)	$#BLplus := chevron.l ...$, where	L	Language definition itself; macro token, mechanical BLplus->BL rename (Phase 3).	yes
+163	The Language	L(BLplus)	footnote: "The paper's base language $#BL$ takes ... $#allpast$/$#allfuture$ as primitive instead; it embeds into $#BLplus$..."	Lminus+prose-fix	Phase 3 task 4 explicitly names this footnote. Macro tokens rename mechanically (#BL->#BLminus, #BLplus->#BL), but the SENTENCE must also change: post-rename this is NOT "the paper's base language" -- it is the repository's own L^- (H/G primitive), with no paper counterpart. Rewrite to state that explicitly.	yes
+180	The Language	L(BLplus+BL)	one sentence is what separates $#BLplus$ from $#BL$ everywhere below	L+Lminus	Macro tokens, mechanical rename (both present, contrasted deliberately -- keep the contrast, just swap tokens).	yes
+182	The Language	L(BL)	its absence from $#BL$ is what produces the split validity of @sec:dichotomy.	Lminus	Macro token, mechanical #BL->#BLminus.	yes
+489	Proof Systems	TMplus	#definition($op("TM")^+$)[	TM	Definition head for the paper's TM (base logic for #BLplus, extends S5+BX with MF). Mechanical op("TM")^+ -> op("TM").	yes
+490	Proof Systems	L(BLplus)+TMplus	$op("TM")^+$, the base logic for $#BLplus$, extends S5 and BX to include	TM+L	Both tokens mechanical: op("TM")^+->op("TM"), #BLplus->#BL.	yes
+509	Proof Systems	TMprose	its TM extension are sound and complete are exactly those over $ZZ$-time.	TM	"this system [BX_f] and its TM extension" = BX_f extended by the paper's TM (i.e. op("TM")^+_f). Bare "TM" here ALREADY means the paper's system pre-rename (per plan Research Integration/Phase 3 task 5) -- verified, no textual change needed.	yes
+515	Proof Systems	L(BLplus)	$#BLplus$. The paper's 2026-09 revision collapsed $#BLplus$ into $#BL$, dropped the $+$	L	Naming-provenance remark (historical fact about the paper's own revision). Macro tokens mechanical; the surrounding remark prose is updated in Phase 5 per plan.	yes
+516	Proof Systems	TMprose	superscript from the TM family, and renamed the extensions $"BX"_z slash "BX"_d slash "BX"_r$	TM	"the TM family" = the paper's TM family (whose + superscript was dropped in the paper's own revision). Historical/provenance prose, updated in Phase 5.	yes
+533	Proof Systems	L(BLplus)+TMprose	DN coincides with TM's DN below; NN is specific to the $#BLplus$ level and asserts no time has an immediate successor.	TMminus+L	"TM's DN below" forward-references the bare-TM (#BL-level) extension paragraph's DN (line 605) -> TMminus. "$#BLplus$ level" is a macro token, mechanical rename to #BL; per plan Phase 3 task 4 this phrase is CORRECT as-is after the mechanical swap (NN really is BLplus/TM-only per MinusLanguage/Axioms.lean's table, which lists only DF/DN/CO for TM^-, no NN) -- no extra prose fix needed beyond the token swap.	yes
+547	Proof Systems	TMprose	The following restates CO from TM below, and is a *derived theorem* of $"BX"_c$ from Prior-U	TMminus	"CO from TM below" forward-references the bare-TM extension paragraph's CO (line 606) -> TMminus.	yes
+554	Proof Systems	TMplus	Similarly, $op("TM")^+_f$, $op("TM")^+_d$, and $op("TM")^+_c$ extend $op("TM")^+$ with the	TM	Mechanical op("TM")^+_x -> op("TM")_x.	yes
+555	Proof Systems	TMplus	additional axioms ... $op("TM")^+_f$	TM	Mechanical.	yes
+556	Proof Systems	L(BLplus)+TMplus	adds UZ and Z1, $op("TM")^+_d$ adds DN and NN, and $op("TM")^+_c$ adds Prior-U and Sep. footnote: "$#BLplus$-logic"	TM+L	Mechanical (both tokens).	yes
+562	Proof Systems	TMplus	[$op("TM")^+_f$], [UZ, Z1 ...]	TM	Table row; mechanical.	yes
+563	Proof Systems	TMplus	[$op("TM")^+_d$], [DN (...), NN (...)]	TM	Table row; mechanical.	yes
+564	Proof Systems	TMplus	[$op("TM")^+_c$], [Prior-U, Sep; CO is a derived theorem, not a further axiom]	TM	Table row; mechanical.	yes
+567	Proof Systems	TMplus	caption: [The three frame-class extensions of $op("TM")^+$.]	TM	Mechanical.	yes
+576	Proof Systems	TMprose	#definition("TM")[	TMminus	The #BL-level definition block itself (uses TK/T4/TS/TC/TL, MinusLanguage/Axioms.lean's key list). Core plan example; title becomes "TM⁻" or $op("TM")^-$.	yes
+577	Proof Systems	L(BL)+TMprose	*TM*, the *Logic of Tense and Modality* for $#BL$, extends CPL to include	TMminus+Lminus	Body of the #BL-level TM definition; both tokens.	yes
+596	Proof Systems	TMprose	making the logic symmetric...TM's TL lists the same three disjuncts as BX's TL above	TMminus	Self-reference within the TM⁻ definition block.	yes
+601	Proof Systems	TMprose	TM is strengthened by constraining the temporal order $#Dur$ to be Discrete, Dense, or Complete	TMminus	Introduces the DF/DN/CO extension paragraph for the #BL-level system.	yes
+608	Proof Systems	TMsub+TMprose	Letting $op("TM")_f$ extend TM to include all instances of DF, $op("TM")_d$ to include all	TMminus	DF/DN/CO extension family, exclusively TM⁻'s per MinusLanguage/Axioms.lean.	yes
+609	Proof Systems	TMsub	instances of DN, and $op("TM")_c$ to include all instances of CO, $op("TM")_(d c)$ is the minimal	TMminus	Same family.	yes
+610	Proof Systems	TMsub	extension of $op("TM")_d$ and $op("TM")_c$, corresponding to the continuous temporal orders	TMminus	Same family.	yes
+611	Proof Systems	TMprose	are both dense and Dedekind complete. Since no temporal order is both Discrete and Dense, TM	TMminus	Self-reference, TM⁻.	yes
+615	Proof Systems	TMprose	The *derivation relation* $tack.r$ for TM is the smallest relation closed under the axioms and	TMminus	Derivability block, explicitly named TMminus by the plan's default rule.	yes
+616	Proof Systems	TMprose	rules for TM given above.	TMminus	Same Derivability block.	yes
+621	Completeness and Decidability	TMprose	This section covers five results. Soundness holds for TM and its four frame-class extensions	TMminus	Phase 4 task 1 explicitly names "the section intro" as a TM⁻ rename target.	yes
+626	Completeness and Decidability	L(BL)	positive is known at the $#BL$ level, while three weak completeness results...	Lminus	Macro token, mechanical.	yes
+627	Completeness and Decidability	L(BLplus)	the $#BLplus$ level, with the base frame class left as an outstanding proof obligation.	L	Macro token, mechanical.	yes
+635	Soundness and Correspondence	TMprose	If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and for each of its four frame-class	TMminus	Phase 4 task 1 explicitly names "the Soundness theorem" as a TM⁻ rename target. NOTE (flag for summary follow-up): its #leansrc citations (Metalogic.Soundness.soundness/soundness_dense/soundness_ztime/soundness_rtime, lines 638-641) are over `Formula` (until/since-primitive = paper TM, per Soundness.lean:185's own docstring), not `MinusFormula` -- i.e. the citations look swapped with the dedicated `minus_soundness`/`minus_soundness_dense`/`minus_soundness_ztime`/`minus_soundness_rtime` family in Conservativity/MinusLanguageSoundness.lean. This is a #leansrc correctness issue distinct from the naming task and is out of this plan's explicit scope (Phase 6's leansrc check is existence-only); recorded as a follow-up in the summary, citations left untouched.	yes
+636	Soundness and Correspondence	TMsub	extensions $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ over its own class.	TMminus	Same Soundness theorem, subscripted family.	yes
+665	Perpetuity and Collapse	TMprose	... are all theorems of TM.	TM	Ambiguous: not listed among Phase 4's explicit rename targets, uses no DF/DN/CO disambiguator (footnote cites MF+MT, axioms common to both TM and TM⁻), no #leansrc tag. Defaulted to TM (paper) per the plan's own framing that unqualified "TM" is the paper's name going forward; left unchanged since bare "TM" IS the correct post-rename spelling for the paper's system. Flagged for review, not altered beyond the default.	yes
+675	Completeness	L(BL)	Completeness is stated per system and per class. At the $#BL$ level there is no positive result.	Lminus	Macro token, mechanical; matches the doc's own "$#BL$ level"="no positive completeness" theme (consistent w/ TMminus verdicts below).	yes
+678	Completeness	TMsub+TMprose	#theorem("Incompleteness at the base level")[ None of TM, $op("TM")_f$, ... is complete	TMminus	Phase 4 task 1 explicitly names "Incompleteness at the base level" as a TM⁻ rename target.	yes
+682	Completeness	TMsub+TMprose	@sec:dichotomy gives the argument for TM itself. $op("TM")_c$ fails identically over {ZZ,RR}.	TMminus	"the paragraph after it" per Phase 4 task 1 (follows Incompleteness theorem).	yes
+683	Completeness	TMsub	$op("TM")_f$ is the one case that must not be lumped in with the others...	TMminus	Same paragraph.	yes
+686	Completeness	TMsub	$op("TM")_d$ either; its status is covered only by the headline above.	TMminus	Same paragraph.	yes
+688	Completeness	L(BLplus)	At the $#BLplus$ level three positive results are machine-checked...	L	Macro token, mechanical.	yes
+691	Completeness	TMplus	... systems $op("TM")^+_d$, $op("TM")^+_f$, $op("TM")^+_c$; that identification rests on a key-by-key	TM	Mechanical.	yes
+728	Completeness	TMplus	set --- is the aim for $op("TM")^+$ and $op("TM")^+_d$, with no known obstruction...	TM	Mechanical.	yes
+733	Completeness	TMplus+TMprose	No conservativity claim is made for $op("TM")^+$ over TM. The backward direction holds	TM+TMminus	Deliberate contrast (same pattern as line 1176). Plan Phase 4 task 1 gives the exact target text: "No conservativity claim is made for TM over TM⁻." op("TM")^+->TM (mechanical), trailing bare "TM"->TM⁻ (explicit contrast).	yes
+734	Completeness	L(BLplus)+L(BL)	unconditionally, since $#BL$ embeds into $#BLplus$. The forward direction fails for the base	Lminus+L	Both macro tokens, mechanical, contrast preserved.	yes
+743	Decidability	TMsub+TMprose	#theorem("Decidability")[ Whether TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$,... are decidable	TMminus	Phase 4 task 1 explicitly names "Decidability" as a TM⁻ rename target.	yes
+753	Decidability	TMsub+TMprose	#proposition("Failure of a uniform finite model property..."): DF is a non-theorem of TM, ...	TMminus	Phase 4 task 1 explicitly names "Failure of a uniform finite model property" as a TM⁻ rename target.	yes
+754	Decidability	TMsub	every model over $D=ZZ$. And CO is a non-theorem of $op("TM")_f$, witnessed by	TMminus	Same proposition.	yes
+783	Consistency and Maximal Consistent Sets	L(BLplus)	Relative to a frame class ..., a set $S$ of $#BLplus$-sentences is *consistent*...	L	Macro token, mechanical. All of section 3 (The Completeness Construction) is over #BLplus/Formula per its #leansrc citations (Metalogic.Core/BXCanonical/Bundle/Algebraic/WeakCanonical) -- consistent w/ verdict TM/L throughout this section.	yes
+825	The Discreteness Dichotomy	L(BLplus)	closed under disjoint union. In $#BLplus$ the dichotomy is *internal*: the uniformity axiom NB	L	Macro token, mechanical.	yes
+827	The Discreteness Dichotomy	TMplus	$ tack.r_(op("TM")^+) square.stroked #Nxt top or square.stroked not #Nxt top, $	TM	Mechanical.	yes
+832	The Discreteness Dichotomy	L(BL)	$#BL$ has no sentence naming discreteness, and this is what its incompleteness comes to.	Lminus	Macro token, mechanical; matches TM⁻'s known incompleteness (@sec:completeness-status).	yes
+835	The Discreteness Dichotomy	TMprose	frame yet TM-unprovable, since a structure with one $ZZ$ fibre and one $RR$ fibre and	TMminus	Contrasted against #BLplus in the same remark (line 837); "TM-unprovable"/"TM-sound" describe the #BL-level system's incompleteness.	yes
+836	The Discreteness Dichotomy	TMprose	$square.stroked$ read across both is TM-sound while refuting both disjuncts. The same dichotomy	TMminus	Same remark.	yes
+837	The Discreteness Dichotomy	L(BLplus)	that leaves $#BL$ with an unprovable validity gives $#BLplus$ a theorem to case-split on.	Lminus+L	Both macro tokens, mechanical, contrast preserved.	yes
+838	The Discreteness Dichotomy	L(BL)	below uses the $#BL$-level schema.	Lminus	Macro token, mechanical.	yes
+1036	Machine-Checked Status	TMplus	`RTime`. It is not silently identified with the paper's $op("TM")^+$, $op("TM")^+_d$,	TM	Handled directly in Phase 1's remark rewrite (system names left as op("TM")^+ there per plan instruction); Phase 4 task 2 renames these tokens mechanically now that Phase 1's content fix is done.	yes
+1037	Machine-Checked Status	TMplus	$op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations line up key for key --- the paper states	TM	Same remark; mechanical.	yes
+1067	The Contingency of the Temporal Axioms	TMsub	characterized by an axiom, giving the systems $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, with	TMminus	Phase 4 task 3 explicitly names "the §Contingency op(TM)_f/d/c family" as a TM⁻ rename target.	yes
+1068	The Contingency of the Temporal Axioms	TMsub	$op("TM")_(d c)$ the minimal common extension of the last two. By the Dichotomy no temporal order	TMminus	Same family.	yes
+1139	The Strongest Objective Modality	L(BL)	The apparatus needed is higher-order. $#BL$ is extended with a primitive propositional identity	Lminus	Macro token, mechanical (applies file-wide regardless of section topic).	yes
+1176	The Strongest Objective Modality	TMplus+TMprose	under study and never a theorem of TM or $op("TM")^+$. Whether the characterization is	TMminus+TM	Deliberate contrast, same pattern as line 733. Becomes "never a theorem of TM⁻ or TM."	yes
+1192	The Representation Theorem	TMprose	Every TM-algebra embeds, point-completely, into a product of complex algebras of shift-set	TM	Section intro; "TM-algebra" here is shorthand for the just-defined op("TM")^+-algebra (def:TM-algebra, line 1205) = paper's TM.	yes
+1195	The Representation Theorem	TMprose	frame is a TM-algebra (algebraic soundness), the class of representable algebras is exactly	TM	Same intro paragraph.	yes
+1196	The Representation Theorem	TMprose	class of TM-algebras: representation and completeness meet exactly at "point-complete."	TM	Same intro paragraph.	yes
+1205	Algebras and Complex Algebras	TMprose	#definition("TM-algebra")[	TM	Definition title; body is explicitly $op("TM")^+$-algebra (line 1206) = paper's TM. Title kept as bare "TM-algebra" (shorthand), matching post-rename convention where bare TM = paper.	yes
+1206	Algebras and Complex Algebras	TMplus	A *$op("TM")^+$-algebra* is a Boolean algebra $A = (A, and, or, not, 0, 1)$ together with a	TM	Mechanical.	yes
+1224	Algebras and Complex Algebras	TMplus	A *$op("TM")^+_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a	TM	Mechanical.	yes
+1225	Algebras and Complex Algebras	TMplus	*$op("TM")^+_f$-algebra* additionally satisfies UZ and Z1; a *$op("TM")^+_c$-algebra*	TM	Mechanical.	yes
+1275	Algebras and Complex Algebras	TMplus	For every task frame $#taskframe$, $op("Cm")(#taskframe)$ is a $op("TM")^+$-algebra; it is a	TM	Mechanical. NOTE (flag for summary follow-up): this proposition's #leansrc citations (lines 1281-1284) read `#leansrc("Metalogic.MinusLanguageSoundness", "minus_soundness"...)` -- both a stale module path (actual file is `Metalogic/Conservativity/MinusLanguageSoundness.lean`) and, on the same swapped-citation pattern flagged at line 635, apparently the wrong theorem family for a claim about op("TM")^+-algebras. Left untouched (out of this plan's explicit renaming scope); recorded as a follow-up.	yes
+1276	Algebras and Complex Algebras	TMplus	$op("TM")^+_d$-algebra when $#Dur$ is dense, a $op("TM")^+_f$-algebra when $#Dur$ is a	TM	Mechanical.	yes
+1277	Algebras and Complex Algebras	TMplus	$ZZ$-group, and a $op("TM")^+_c$-algebra when $#Dur in {ZZ, RR}$. For every shift set $S$,	TM	Mechanical.	yes
+1287	Algebras and Complex Algebras	TMplus	The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")^+$-algebra on $X$, and its	TM	Mechanical.	yes
+1289	Algebras and Complex Algebras	TMplus	$X$. Every $op("TM")^+$-algebra $A$ is a quotient $q : op("Fr")(A) arrow.r A "(surjective)"$,	TM	Mechanical.	yes
+1297	Algebras and Complex Algebras	TMplus	For a class $K$ of task frames, $op("Fr")(omega) in op("SP") op("Cm")(K)$ iff $op("TM")^+$ is	TM	Mechanical.	yes
+1326	Shift Sets	L(BLplus)	Each formula $phi.alt$ of $#BLplus$ translates to a formula $phi.alt^*(w,t)$ of the two-sorted	L	Macro token, mechanical.	yes
+1378	The Ultrafilter Frame	TMplus	For a $op("TM")^+$-algebra $A$, the *ultrafilter frame* $op("Uf")(A)$ has as its points the	TM	Mechanical.	yes
+1387	The Ultrafilter Frame	TMplus	For every $op("TM")^+$-algebra $A$:	TM	Mechanical.	yes
+1433	The Ultrafilter Frame	TMplus	$op("TM")^+$-algebra rather than for the Lindenbaum algebra alone.	TM	Mechanical.	yes
+1440	The Representation Theorem	TMplus	Let $A$ be a $op("TM")^+$-algebra. For every $R_square.stroked$-class $k$ of $op("Uf")(A)$ there	TM	Mechanical.	yes
+1456	The Representation Theorem	TMplus	every $op("Cm")(S)$ is a $square.stroked$-simple $op("TM")^+$-algebra.	TM	Mechanical.	yes
+1458	The Representation Theorem	TMplus	*Per class.* If $A$ is a $op("TM")^+_d$-algebra, every $D_k$ is dense (and may be taken	TM	Mechanical.	yes
+1459	The Representation Theorem	TMplus	divisible). If $A$ is a $op("TM")^+_f$-algebra, every $D_k$ is a $ZZ$-group, elementarily	TM	Mechanical.	yes
+1460	The Representation Theorem	TMplus	equivalent to $ZZ$. If $A$ is a $op("TM")^+_c$-algebra, every $D_k$ is a divisible ordered	TM	Mechanical.	yes
+1545	The Representation Theorem	TMplus	For $op("TM")^+_f$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum	TM	Mechanical.	yes
+1547	The Representation Theorem	TMplus	`discrete_consequence_not_compact`. For $op("TM")^+_c$ there is none over $RR$-flows	TM	Mechanical.	yes
+1555	The Representation Theorem	L(BL)+TMprose	$#BL$-level TM has no representation theorem of this kind, since it has no representation	Lminus+TMminus	Both tokens explicitly qualified "#BL-level" -> unambiguous TM⁻.	yes
+1556	The Representation Theorem	TMprose	theorem at all: `cor:tm-completeness` and its kin show TM is not complete over its class, so no	TMminus	Same remark, self-reference to the just-established TM⁻.	yes

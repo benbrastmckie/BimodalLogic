@@ -1,0 +1,17 @@
+{
+  "phase": 4,
+  "phase_name": "§2-§5 system renames",
+  "started_at": "2026-09-18T02:20:00Z",
+  "last_updated": "2026-09-18T03:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "§2 renames: Soundness theorem, section intro, Incompleteness at base level, Decidability, FMP failure -> TM⁻; weak-completeness/conservativity op(TM)^+ -> op(TM)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 2, "description": "§3 Machine-Checked Status remark and every other op(TM)^+ site -> op(TM)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 3, "description": "§4 Contingency op(TM)_f/d/c -> op(TM)^-_x; Discreteness Dichotomy and Strongest Objective Modality contrast sentences", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 4, "description": "§5 TM^+-algebra definitions/lemmas -> TM; closing #BL-level remark -> TM⁻", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 5, "description": "Check each theorem statement against its #leansrc target", "status": "done", "files_touched": ["specs/607_resync_formalfoundations_typ_with_lean_tree/working/tm-site-inventory.tsv"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

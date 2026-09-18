@@ -619,7 +619,7 @@ cannot be extended to include both DF and DN while remaining consistent.
 
 = Completeness and Decidability <sec:key-theorems>
 
-This section covers five results. Soundness holds for TM and its four frame-class extensions, and
+This section covers five results. Soundness holds for TM⁻ and its four frame-class extensions, and
 three axioms correspond exactly to frame conditions: DF to Discrete, DN to Dense, and CO to
 Complete. The perpetuity principles then show that a modality prefixed by a tense operator, or a
 tense operator prefixed by $square.stroked$, collapses to the modality alone, which bounds what the
@@ -633,8 +633,8 @@ op("Log")("Dense")$, which is a target rather than a result.
 == Soundness and Correspondence
 
 #theorem("Soundness")[
-  If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and for each of its four frame-class
-  extensions $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ over its own class.#footnote[The characteristic case is M5, $#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, which holds because $square.stroked$ quantifies over $H_(#taskframe)$ entire and so is insensitive to the possible world at which it is evaluated.]
+  If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM⁻ and for each of its four frame-class
+  extensions $op("TM")^-_f$, $op("TM")^-_d$, $op("TM")^-_c$, $op("TM")^-_(d c)$ over its own class.#footnote[The characteristic case is M5, $#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, which holds because $square.stroked$ quantifies over $H_(#taskframe)$ entire and so is insensitive to the possible world at which it is evaluated.]
 ]
 #leansrc("Metalogic.Soundness", "soundness")
 #leansrc("Metalogic.Soundness", "soundness_dense")
@@ -676,20 +676,20 @@ manage the interaction axiom MF and not an open-ended supply of mixed principles
 Completeness is stated per system and per class. At the $#BLminus$ level there is no positive result.
 
 #theorem("Incompleteness at the base level")[
-  None of TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ is complete over its
+  None of TM⁻, $op("TM")^-_f$, $op("TM")^-_d$, $op("TM")^-_c$, $op("TM")^-_(d c)$ is complete over its
   class.
 ]
 
-@sec:dichotomy gives the argument for TM itself. $op("TM")_c$ fails identically over ${ZZ, RR}$.
-$op("TM")_f$ is the one case that must not be lumped in with the others: it is sound over every
+@sec:dichotomy gives the argument for TM⁻ itself. $op("TM")^-_c$ fails identically over ${ZZ, RR}$.
+$op("TM")^-_f$ is the one case that must not be lumped in with the others: it is sound over every
 discrete frame, since DF is valid there, but whether it is complete over that class is *open*, and
 no counterexample is known. The paper offers no separate incompleteness argument for
-$op("TM")_d$ either; its status is covered only by the headline above.
+$op("TM")^-_d$ either; its status is covered only by the headline above.
 
 At the $#BL$ level three positive results are machine-checked, each of the form
 $"Valid"_cal(C) phi.alt arrow.r "Derivable"_cal(C) phi.alt$. They are stated here in the
 development's own frame-class vocabulary. The paper attributes them to its systems
-$op("TM")^+_d$, $op("TM")^+_f$, $op("TM")^+_c$; that identification rests on a key-by-key
+$op("TM")_d$, $op("TM")_f$, $op("TM")_c$; that identification rests on a key-by-key
 textual correspondence, not a machine-checked equivalence, as @sec:construction records.
 
 #theorem("Weak completeness, dense class")[
@@ -726,12 +726,12 @@ are Lean's, and Lean's single `Classical.choice` axiom yields excluded middle an
 jointly, so an axiom report cannot express the paper's finer distinction between a choice-free
 argument and a ZFC one; where that distinction matters it is drawn on the paper side, as in
 @sec:histories.#footnote[The development has separately machine-checked that *Saturation* on a finite carrier implies weak excluded middle, so no `Classical.choice`-free Lean proof of Extension could exist even in the finite case.] Second, *strong* completeness --- consequence from a possibly infinite premise
-set --- is the aim for $op("TM")^+$ and $op("TM")^+_d$, with no known obstruction over the base and
+set --- is the aim for $op("TM")$ and $op("TM")_d$, with no known obstruction over the base and
 dense classes; it *provably fails* for $ZZ$-time and for $RR$, where compactness fails. Nothing is
 asserted about compactness of the full discrete class in either direction.
 
 #remark[
-  No conservativity claim is made for $op("TM")^+$ over TM. The backward direction holds
+  No conservativity claim is made for $op("TM")$ over TM⁻. The backward direction holds
   unconditionally, since $#BLminus$ embeds into $#BL$. The forward direction fails for the base
   case, witnessed by (DD) in @sec:dichotomy, and fails for the discrete extension via Z1 over
   $ZZ times_"lex" ZZ$; for the dense and complete extensions it is open, with no known
@@ -741,7 +741,7 @@ asserted about compactness of the full discrete class in either direction.
 == Decidability
 
 #theorem("Decidability")[
-  Whether TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ are decidable is open.
+  Whether TM⁻, $op("TM")^-_f$, $op("TM")^-_d$, $op("TM")^-_c$, $op("TM")^-_(d c)$ are decidable is open.
 ]
 
 Each system is recursively axiomatized, so its theorems are recursively enumerable whatever its
@@ -751,8 +751,8 @@ finite model @chagrovzakharyaschev1997 @goldblatt1992logics. The premise that a 
 property over $D = ZZ$ delivers this uniformly is false, and is retracted with two witnesses.
 
 #proposition("Failure of a uniform finite model property over $ZZ$")[
-  DF is a non-theorem of TM, $op("TM")_d$, $op("TM")_c$, and $op("TM")_(d c)$, yet is valid in
-  every model over $D = ZZ$. And CO is a non-theorem of $op("TM")_f$, witnessed by
+  DF is a non-theorem of TM⁻, $op("TM")^-_d$, $op("TM")^-_c$, and $op("TM")^-_(d c)$, yet is valid in
+  every model over $D = ZZ$. And CO is a non-theorem of $op("TM")^-_f$, witnessed by
   $ZZ times_"lex" ZZ$, yet is likewise valid in every model over $D = ZZ$.
 ]
 
@@ -825,7 +825,7 @@ exhaustive is a fact about temporal orders, not about the logic.
 So the class of all task frames is a disjoint union of two incompatible subclasses and is not
 closed under disjoint union. In $#BL$ the dichotomy is *internal*: the uniformity axiom NB
 ($#Nxt top arrow.r square.stroked #Nxt top$) and M5 together give
-$ tack.r_(op("TM")^+) square.stroked #Nxt top or square.stroked not #Nxt top, $
+$ tack.r_(op("TM")) square.stroked #Nxt top or square.stroked not #Nxt top, $
 so every maximal consistent set contains one of the two disjuncts, and which one it contains fixes
 the shape of the flow its countermodel must be built on.
 
@@ -833,8 +833,8 @@ the shape of the flow its countermodel must be built on.
   $#BLminus$ has no sentence naming discreteness, and this is what its incompleteness comes to. The
   disjunction above is available there only as the schema
   $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN")) $, valid over every task
-  frame yet TM-unprovable, since a structure with one $ZZ$ fibre and one $RR$ fibre and
-  $square.stroked$ read across both is TM-sound while refuting both disjuncts. The same dichotomy
+  frame yet TM⁻-unprovable, since a structure with one $ZZ$ fibre and one $RR$ fibre and
+  $square.stroked$ read across both is TM⁻-sound while refuting both disjuncts. The same dichotomy
   that leaves $#BLminus$ with an unprovable validity gives $#BL$ a theorem to case-split on. Nothing
   below uses the $#BLminus$-level schema.
 ]
@@ -1034,8 +1034,8 @@ No step of the base-class route carries `sorryAx`.
 
 #remark[
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `ZTime`,
-  `RTime`. It is not silently identified with the paper's $op("TM")^+$, $op("TM")^+_d$,
-  $op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations line up key for key --- the paper states
+  `RTime`. It is not silently identified with the paper's $op("TM")$, $op("TM")_d$,
+  $op("TM")_f$, $op("TM")_c$. The two axiomatizations line up key for key --- the paper states
   eleven primary Since/Until axioms in the future direction and derives their past mirrors by the
   rule TR, and the development states exactly the same *11* future-direction constructors
   (`FormalSystem.ProofSystem.Axioms`), with the past mirrors machine-checked as derived theorems
@@ -1065,8 +1065,8 @@ of this section says where they meet.
 == The Contingency of the Temporal Axioms <sec:contingency>
 
 By @sec:key-theorems's Correspondence proposition, each of Discrete, Dense, and Complete is
-characterized by an axiom, giving the systems $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, with
-$op("TM")_(d c)$ the minimal common extension of the last two. By the Dichotomy no temporal order
+characterized by an axiom, giving the systems $op("TM")^-_f$, $op("TM")^-_d$, $op("TM")^-_c$, with
+$op("TM")^-_(d c)$ the minimal common extension of the last two. By the Dichotomy no temporal order
 is both discrete and dense, so no consistent system contains both DF and DN.
 
 #proposition("Necessity of temporal structure")[
@@ -1174,7 +1174,7 @@ It is $prec.eq$-leastness, and not S5-hood, that picks $square.stroked$ out.
 #remark[
   The cost is that leastness is a condition of the higher-order theory, and the link between the
   two levels is a *hypothesis*, $op("Str")^O_L (square.stroked)$, adopted afresh for each system
-  under study and never a theorem of TM or $op("TM")^+$. Whether the characterization is
+  under study and never a theorem of TM⁻ or $op("TM")$. Whether the characterization is
   expressible or derivable at the propositional level at all is open, as is what a propositional
   axiomatization would have to add.
 ]
@@ -1204,7 +1204,7 @@ a point.
 == Algebras and Complex Algebras
 
 #definition("TM-algebra")[
-  A *$op("TM")^+$-algebra* is a Boolean algebra $A = (A, and, or, not, 0, 1)$ together with a
+  A *$op("TM")$-algebra* is a Boolean algebra $A = (A, and, or, not, 0, 1)$ together with a
   unary operation $square.stroked$ and binary operations $#until$, $#since$, from which the
   following are derived:
   $ #somefuture a := 1 #until a, quad #allfuture a := not #somefuture (not a), \
@@ -1222,8 +1222,8 @@ a point.
       sides denote;
     + $#allfuture 1 = #allpast 1 = 1$ (TN and its mirror) and $square.stroked 1 = 1$ (MN).
   ]
-  A *$op("TM")^+_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a
-  *$op("TM")^+_f$-algebra* additionally satisfies UZ and Z1; a *$op("TM")^+_c$-algebra*
+  A *$op("TM")_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a
+  *$op("TM")_f$-algebra* additionally satisfies UZ and Z1; a *$op("TM")_c$-algebra*
   additionally satisfies Prior-U and Sep, each read as an inequality in the same way. All four
   classes are varieties. The rule TR becomes closure of the class under the signature automorphism
   swapping $#until$ and $#since$ --- which holds because the defining set of inequalities is
@@ -1273,9 +1273,9 @@ a point.
 #leansrc("Semantics.ShiftSet", "reverse_repr")
 
 #proposition("Algebraic soundness")[
-  For every task frame $#taskframe$, $op("Cm")(#taskframe)$ is a $op("TM")^+$-algebra; it is a
-  $op("TM")^+_d$-algebra when $#Dur$ is dense, a $op("TM")^+_f$-algebra when $#Dur$ is a
-  $ZZ$-group, and a $op("TM")^+_c$-algebra when $#Dur in {ZZ, RR}$. For every shift set $S$,
+  For every task frame $#taskframe$, $op("Cm")(#taskframe)$ is a $op("TM")$-algebra; it is a
+  $op("TM")_d$-algebra when $#Dur$ is dense, a $op("TM")_f$-algebra when $#Dur$ is a
+  $ZZ$-group, and a $op("TM")_c$-algebra when $#Dur in {ZZ, RR}$. For every shift set $S$,
   $op("Cm")(S)$ is $square.stroked$-simple: $square.stroked X$ takes only the values $emptyset$ and
   $Omega$.
 ]
@@ -1285,9 +1285,9 @@ a point.
 #leansrc("Metalogic.MinusLanguageSoundness", "minus_soundness_rtime")
 
 #lemma("Lindenbaum–Tarski")[
-  The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")^+$-algebra on $X$, and its
+  The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")$-algebra on $X$, and its
   ultrafilters correspond bijectively to the maximal consistent sets of the language generated by
-  $X$. Every $op("TM")^+$-algebra $A$ is a quotient $q : op("Fr")(A) arrow.r A "(surjective)"$,
+  $X$. Every $op("TM")$-algebra $A$ is a quotient $q : op("Fr")(A) arrow.r A "(surjective)"$,
   $x_a mapsto a$, of the free algebra on a generating set indexed by $A$ itself.
 ]
 #leansrc("Metalogic.Algebraic.LindenbaumQuotient", "LindenbaumAlg")
@@ -1295,7 +1295,7 @@ a point.
 #leansrc("Metalogic.Algebraic.UltrafilterMCS", "ultrafilter_correspondence")
 
 #proposition("Weak completeness, algebraically")[
-  For a class $K$ of task frames, $op("Fr")(omega) in op("SP") op("Cm")(K)$ iff $op("TM")^+$ is
+  For a class $K$ of task frames, $op("Fr")(omega) in op("SP") op("Cm")(K)$ iff $op("TM")$ is
   weakly complete over $K$: the map sending a formula to the tuple of its propositions across every
   model on a frame of $K$ is a homomorphism into $product_M op("Cm")((#taskframe)_M)$, injective
   exactly when every non-theorem is refuted somewhere in $K$. The three machine-checked weak
@@ -1376,7 +1376,7 @@ axiom above, which is first-order.
 == The Ultrafilter Frame
 
 #definition("Ultrafilter frame")[
-  For a $op("TM")^+$-algebra $A$, the *ultrafilter frame* $op("Uf")(A)$ has as its points the
+  For a $op("TM")$-algebra $A$, the *ultrafilter frame* $op("Uf")(A)$ has as its points the
   ultrafilters of $A$, with three relations: $U R_square.stroked V$ iff
   $forall a (square.stroked a in U arrow.r a in V)$; $U R_F V$ iff
   $forall a (#allfuture a in U arrow.r a in V)$; and $U R_P V$ the mirror. $op("Uf")(A)$ is not,
@@ -1385,7 +1385,7 @@ axiom above, which is first-order.
 ]
 
 #lemma("Relational correspondents")[
-  For every $op("TM")^+$-algebra $A$:
+  For every $op("TM")$-algebra $A$:
   #items[
     + $R_square.stroked$ is an equivalence relation (from the S5 equations);
     + $R_F$ is transitive (T4), serial (TS), and weakly linear (TL): if $U R_F V$ and $U R_F V'$
@@ -1431,14 +1431,14 @@ axiom above, which is first-order.
       $square.stroked$-simple algebra: $#Nxt top = 1$ iff $#Nxt top$ lies in every ultrafilter of
       the class (the discrete case), $#Nxt top = 0$ iff its negation does (the dense case). This
       is the algebraic form of the Case Split of @sec:dichotomy, stated for an arbitrary
-      $op("TM")^+$-algebra rather than for the Lindenbaum algebra alone.
+      $op("TM")$-algebra rather than for the Lindenbaum algebra alone.
   ]
 ]
 
 == The Representation Theorem
 
 #theorem("Representation")[
-  Let $A$ be a $op("TM")^+$-algebra. For every $R_square.stroked$-class $k$ of $op("Uf")(A)$ there
+  Let $A$ be a $op("TM")$-algebra. For every $R_square.stroked$-class $k$ of $op("Uf")(A)$ there
   is a shift set $S_k = (Omega_k, D_k, "sh"_k, A_k)$ over a temporal order $D_k$ --- discrete if
   $#Nxt top = 1$ in $A slash theta_k$, dense if $#Nxt top = 0$ --- and a homomorphism
   $h_k : A arrow.r op("Cm")(S_k)$ such that:
@@ -1454,11 +1454,11 @@ axiom above, which is first-order.
   If $A$ is $square.stroked$-simple there is a single class, and $A arrow.r.hook op("Cm")(S)$
   point-completely, into the complex algebra of one flow --- and the embedding is into a
   subalgebra: $op("Cm")(S)$ itself need not lie in the subvariety $A$ belongs to. Conversely,
-  every $op("Cm")(S)$ is a $square.stroked$-simple $op("TM")^+$-algebra.
+  every $op("Cm")(S)$ is a $square.stroked$-simple $op("TM")$-algebra.
 
-  *Per class.* If $A$ is a $op("TM")^+_d$-algebra, every $D_k$ is dense (and may be taken
-  divisible). If $A$ is a $op("TM")^+_f$-algebra, every $D_k$ is a $ZZ$-group, elementarily
-  equivalent to $ZZ$. If $A$ is a $op("TM")^+_c$-algebra, every $D_k$ is a divisible ordered
+  *Per class.* If $A$ is a $op("TM")_d$-algebra, every $D_k$ is dense (and may be taken
+  divisible). If $A$ is a $op("TM")_f$-algebra, every $D_k$ is a $ZZ$-group, elementarily
+  equivalent to $ZZ$. If $A$ is a $op("TM")_c$-algebra, every $D_k$ is a divisible ordered
   abelian group, elementarily equivalent to $RR$.
 ]
 
@@ -1543,9 +1543,9 @@ axiom above, which is first-order.
 ]
 
 #proposition("ℤ-time and ℝ")[
-  For $op("TM")^+_f$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum
+  For $op("TM")_f$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum
   algebra has an ultrafilter, realized at no point of any model over $ZZ$, witnessed by
-  `discrete_consequence_not_compact`. For $op("TM")^+_c$ there is none over $RR$-flows
+  `discrete_consequence_not_compact`. For $op("TM")_c$ there is none over $RR$-flows
   @reynolds1992. What holds over $ZZ$-flows and $RR$-flows is the SP-representation of the
   Lindenbaum algebra --- `completeness_ztime` and `completeness_rtime_engine` --- which is
   weak completeness restated; what holds point-completely is the Representation theorem's per-class
@@ -1553,8 +1553,8 @@ axiom above, which is first-order.
 ]
 
 #remark[
-  $#BLminus$-level TM has no representation theorem of this kind, since it has no representation
-  theorem at all: `cor:tm-completeness` and its kin show TM is not complete over its class, so no
+  $#BLminus$-level TM⁻ has no representation theorem of this kind, since it has no representation
+  theorem at all: `cor:tm-completeness` and its kin show TM⁻ is not complete over its class, so no
   algebra-to-frame construction can be point-complete for it. A product of complex algebras is
   not, in general, the complex algebra of a single frame, which is why the Representation theorem
   ranges over a family of flows rather than a single one --- answering @sec:contingency's
