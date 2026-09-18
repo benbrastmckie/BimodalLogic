@@ -63,7 +63,7 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `DatasetValidatorMain.lean` | 604 | Dataset validator: conformance tests, diversity metrics, feasibility gate |
 | `EnrichedCountermodel.lean` | 223 | Enriched countermodel extraction for dataset negative examples |
 | `EnumBenchmarkMain.lean` | 227 | Enumeration benchmark: performance testing for formula enumeration |
-| `FormulaEnumerator.lean` | 2,178 | Formula enumerator: depth-bounded enumeration of all TM formulas |
+| `FormulaEnumerator.lean` | 2,088 | Formula enumerator: depth-bounded enumeration of all TM formulas |
 | `ForwardProofGenerator.lean` | 353 | Forward-chaining proof generation: applies the productive inference rules from axiom instances to build a pool of `(formula, DerivationTree)` pairs |
 | `InterestingnessMetrics.lean` | 584 | Deterministic three-tier interestingness scoring for theorems and derivations |
 | `LemmaDB.lean` | 48 | Declares the `@[tmLemma]` label attribute the `modal_search` tactic family uses to enumerate derived theorems |
