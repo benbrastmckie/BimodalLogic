@@ -119,13 +119,14 @@ Reynolds states Lemma 3 as one sentence about "the maximal intervals in which `R
 *proof* establishes three separable facts, and this module lands them as three named theorems plus
 the assembled statement, so that a reader can check the transcription proof-step by proof-step:
 
-| Reynolds' proof step | In-tree name |
-|---|---|
-| *"`ρ` holding at `t` implies that `R` will hold for a while after `t`"* | `endsInGapOnRight_forAWhile` |
-| *"Prior-U applied to `R` … a first point of `¬R`"* | `reynolds_lemma3_right` |
-| *"we must rule out the third case"* (no first point of `R`) | `reynolds_lemma3_no_first_point` |
-| *"Prior-S … a last point of `¬R` just before this stretch"* | `reynolds_lemma3_left` |
-| the assembled statement | `reynolds_lemma3` |
+Each entry reads *Reynolds' proof step* — *In-tree name*:
+
+* *"`ρ` holding at `t` implies that `R` will hold for a while after `t`"* —
+  `endsInGapOnRight_forAWhile`
+* *"Prior-U applied to `R` … a first point of `¬R`"* — `reynolds_lemma3_right`
+* *"we must rule out the third case"* (no first point of `R`) — `reynolds_lemma3_no_first_point`
+* *"Prior-S … a last point of `¬R` just before this stretch"* — `reynolds_lemma3_left`
+* the assembled statement — `reynolds_lemma3`
 
 "Open interval" is rendered as: `R` holds on a two-sided neighbourhood of each of its points
 (`reynolds_lemma3_open`). "If bounded, have elements of `M` as their (excluded) end points" is
@@ -504,7 +505,8 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 put a whole interval `(v, s)` inside the class, where `R` holds, leaving no room for the `¬R`
 points `K⁻(¬R)` demands. -/
 theorem contemp_not_lt_of_kminus {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] {s : M.carrier} (hs : EndsInGapOnRight M ε s)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {s : M.carrier}
+        (hs : EndsInGapOnRight M ε s)
     (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ EndsInGapOnRight M ε r)
     {v : M.carrier} (hv : ContempEquivDense M ε s v) : ¬ v < s := by
   intro hvs
@@ -579,7 +581,8 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Reynolds 1992, printed p.178**: *"`B` holds in `s`'s class"* — with `s` itself as the witness
 that the class begins with a point satisfying `R ∧ K⁻(¬R)`. -/
 theorem classBeginsAtGapStart_of_contemp {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] {s t : M.carrier} (hs : EndsInGapOnRight M ε s)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {s t : M.carrier}
+        (hs : EndsInGapOnRight M ε s)
     (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ EndsInGapOnRight M ε r)
     (hst : ContempEquivDense M ε s t) : ClassBeginsAtGapStart M ε t :=
   ⟨s, contemp_symm hε M hst,

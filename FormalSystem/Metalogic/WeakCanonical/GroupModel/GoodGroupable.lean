@@ -37,14 +37,16 @@ section); this module consumes that transcription rather than repeating it.
 
 ## Source phrase to declaration map
 
-| Reynolds' phrase (printed p.185) | Declaration in this module |
-|---|---|
-| *"the flow of time of `N`"* — here `ℚ ×ₗ ℤ` rather than an interval of `ℝ` | `QZStructure`, `QZStructure.toMonadic`, `QZStructure.toOrdered` |
-| the flow **is** the carrier, not a subtype of it | `QZStructure.toOrdered_carrier` (`rfl`) |
-| *"`M` is good"* | `goodGroupable` |
-| *"there is some `N ≡_k M`"* — the notion is `≡_k`-invariant | `goodGroupable_of_kEquiv` |
-| the notion depends only on order-and-predicate structure | `goodGroupable_of_orderIso` |
-| *"since `k ≥ 2` … both have a right (resp. left) hand end point"* | `noMaxOrder_of_goodGroupable`, `noMinOrder_of_goodGroupable` |
+Each entry reads *Reynolds' phrase (printed p.185)* — *Declaration in this module*:
+
+* *"the flow of time of `N`"* — here `ℚ ×ₗ ℤ` rather than an interval of `ℝ` — `QZStructure`,
+  `QZStructure.toMonadic`, `QZStructure.toOrdered`
+* the flow **is** the carrier, not a subtype of it — `QZStructure.toOrdered_carrier` (`rfl`)
+* *"`M` is good"* — `goodGroupable`
+* *"there is some `N ≡_k M`"* — the notion is `≡_k`-invariant — `goodGroupable_of_kEquiv`
+* the notion depends only on order-and-predicate structure — `goodGroupable_of_orderIso`
+* *"since `k ≥ 2` … both have a right (resp. left) hand end point"* — `noMaxOrder_of_goodGroupable`,
+  `noMinOrder_of_goodGroupable`
 
 ## ADAPTED-FROM
 

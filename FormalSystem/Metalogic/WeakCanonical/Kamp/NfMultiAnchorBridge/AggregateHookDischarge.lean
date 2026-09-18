@@ -40,7 +40,7 @@ skeleton-shaped conclusions, which Route V produces directly.
 This is the free-anchor obstruction machine-established by `endChar0_correct`'s counterexample
 record (Base.lean:1070-1079) and by the sorry-free refutation pair
 `endCharN0_correct_world_local_obstruction` / `endCharN0_correct_infeasible`
-(Base.lean:1779/1811): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
+(Base.lean:1777/1811): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
 while the RHS constrains the predicate layer at the anchor position `t` (indices 1, 2 of the
 env `[w, t, t]`) — no choice of closed `pastEnd` can bridge this. The diag arms below therefore
 do NOT instantiate `A_diag_correct`; they land additive variants with the same skeleton-shaped
@@ -54,17 +54,18 @@ case discards the second bracket's content — `conj_struct_holds` proves only `
 holds` of the conjunction, never the converse), and there is no Prop 4.2 negation closure to
 use: the declaration that once presented itself as one was MODEL-DEPENDENT (existential `∃ v'`,
 not a fixed syntactic object), vacuous, and has since been deleted — see `Prop42Vacuity`.
-Neither could assemble a fixed formula with a biconditional correctness statement. The k=0 aggregate is instead built as a SINGLE global object via the depth-1 fold
-engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:466): the whole population
-`∀ qnf : NormalForm sig 0 3, ((∃ w, NfEvalNf M 0 3 (zoneEnv3 w x t) qnf) ↔ sub_nf.2 qnf)`
-re-fibers losslessly (depth-0 split-kit bijection, `nf0_split_assemble`, NfEFold:235) into
-zone-bounded MONADIC fibers `(zs : ZoneSpec 2) × (χ : NormalForm sig 0 1)`, encoded by the
-`kvBody` device one arity down: biconditional `lit` literals at the two fixed anchors
-(Since/Until for the exterior zones, plain characteristics for the point zones), one uniform
-exclusion segment plus arrangement witness slots for the single interior zone, and the
-two-conjunct gate (off-fiber honesty + order-conflict falsity). No `VVecEA2` conjunction and no
-negation closure is needed. This realizes the plan's per-qnf 5-zone routing (the five zones ARE
-the order-consistent `ZoneSpec 2` values) with strictly fewer moving parts.
+Neither could assemble a fixed formula with a biconditional correctness statement. The k=0 aggregate
+is instead built as a SINGLE global object via the depth-1 fold engine (`nf_eval_depth1_fold_iff`,
+CarrierKv.lean:466): the whole population
+`∀ qnf : NormalForm sig 0 3, ((∃ w, NfEvalNf M 0 3 (zoneEnv3 w x t) qnf) ↔ sub_nf.2 qnf)` re-fibers
+losslessly (depth-0 split-kit bijection, `nf0_split_assemble`, NfEFold:235) into zone-bounded
+MONADIC fibers `(zs : ZoneSpec 2) × (χ : NormalForm sig 0 1)`, encoded by the `kvBody` device one
+arity down: biconditional `lit` literals at the two fixed anchors (Since/Until for the exterior
+zones, plain characteristics for the point zones), one uniform exclusion segment plus arrangement
+witness slots for the single interior zone, and the two-conjunct gate (off-fiber honesty +
+order-conflict falsity). No `VVecEA2` conjunction and no negation closure is needed. This realizes
+the plan's per-qnf 5-zone routing (the five zones ARE the order-consistent `ZoneSpec 2` values) with
+strictly fewer moving parts.
 
 ## The six target statements (Phase 1 freeze — shapes BINDING for Phases 2-5)
 

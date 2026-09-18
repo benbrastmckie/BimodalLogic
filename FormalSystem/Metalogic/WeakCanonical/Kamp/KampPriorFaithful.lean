@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.ZetaUniformExtractFaithful
 # The `kampPriorExpressiveCompleteness` spine at the faithful eq (5.2) carrier
 
 The top of the expressive-completeness spine, restated with `SemanticPriorUZ` / `SemanticPriorSZ`
-replaced by `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:320` and
+replaced by `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:322` and
 its `Since`-dual) — Rabinovich 2014's eq (5.2), PDF p.8, at the source's own `K⁺` rather than at
 this tree's `kplus`.
 

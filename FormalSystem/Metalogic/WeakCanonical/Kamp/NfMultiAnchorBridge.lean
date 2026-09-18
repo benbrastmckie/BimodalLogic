@@ -17,21 +17,20 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53Faithful
 import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53FaithfulPast
 import Mathlib.Data.List.Permutation
 -- NOTE: `import ...Kamp.Lemma53FaithfulPast` lands the import edge for the SINCE/`HasDedekindSUP`
--- MIRROR of the faithful eq (5.2) primitives (Rabinovich 2014, PDF p.8, mirrored). `Lemma53Faithful`
--- above is entirely future-directed; `kminus` (`PriorINF.lean`) was declared with no
--- object-language spelling and no correctness lemma anywhere in the tree, so `HasDedekindSUP`
+-- MIRROR of the faithful eq (5.2) primitives (Rabinovich 2014, PDF p.8, mirrored).
+-- `Lemma53Faithful` above is entirely future-directed; `kminus` (`PriorINF.lean`) was declared with
+-- no object-language spelling and no correctness lemma anywhere in the tree, so `HasDedekindSUP`
 -- (`DedekindINF.lean:153`) could be stated but none of its content could be used. This module
 -- supplies `kminusFormula`/`kminus_formula_correct`, `kminusPred`/`kminusPred_eval`,
--- `HasDedekindSUP.last_occ_tp`, the right-end chain primitives
--- (`orderedPointsExist_combine_right`, `orderedPointsExist_combine_kminus`,
--- `orderedPointsExist_widen_right`) and the SUP-side exclusion route
--- (`HasAttainedSUP.toHasDefinableSUP`, `hasDefinableSUP_excludes_kminus`,
--- `prior_makes_kminus_disjunct_unreachable`). NO hypothesis absent from p.8 is introduced: Since
--- is interpreted natively by `Formula.snce` (`Table.lean:198`), so `K⁻` is TL-definable exactly as
+-- `HasDedekindSUP.last_occ_tp`, the right-end chain primitives (`orderedPointsExist_combine_right`,
+-- `orderedPointsExist_combine_kminus`, `orderedPointsExist_widen_right`) and the SUP-side exclusion
+-- route (`HasAttainedSUP.toHasDefinableSUP`, `hasDefinableSUP_excludes_kminus`,
+-- `prior_makes_kminus_disjunct_unreachable`). NO hypothesis absent from p.8 is introduced: Since is
+-- interpreted natively by `Formula.snce` (`Table.lean:198`), so `K⁻` is TL-definable exactly as
 -- `K⁺` is. Like the INF direction, the past mirror is NOT observable by any current consumer —
 -- `prior_makes_kminus_disjunct_unreachable` proves the `K⁻` boundary disjunct is dead on every
--- Prior structure. The edge exists for the same reason as the `Lemma53Faithful` edge: parking it
--- in `Kamp/Boneyard/` would put it under no glob and in no CI build, so both the mirror and its
+-- Prior structure. The edge exists for the same reason as the `Lemma53Faithful` edge: parking it in
+-- `Kamp/Boneyard/` would put it under no glob and in no CI build, so both the mirror and its
 -- exclusion theorem would rot invisibly. The module contains **no sorries** and every declaration
 -- is axiom-clean. Cycle-free: Lemma53FaithfulPast imports only `...Kamp.DedekindINF`, already in
 -- this file's transitive closure.
@@ -39,7 +38,7 @@ import Mathlib.Data.List.Permutation
 -- LEMMA 5.3 (Rabinovich 2014, PDF p.8): `negChainOnFaithful` / `negChainOnFaithful_iff` and
 -- `lemma53Faithful`, which restore the paper's printed disjunct (2) `K⁺(P₁)(z₀) ∧ Oₙ(rest)` that
 -- the landed `negChainOn` (`EANegationFix/OnBuilder.lean:179`) truncates away, over the faithful
--- `HasFaithfulDedekindINF` carrier (`KPlusFaithful.lean:320`) rather than `HasAttainedINF`.
+-- `HasFaithfulDedekindINF` carrier (`KPlusFaithful.lean:322`) rather than `HasAttainedINF`.
 -- The edge exists for the same reason as
 -- the `DedekindINF` edge below: parking it in `Kamp/Boneyard/` would put it under no glob and in
 -- no CI build, so the faithful transcription — and, worse, the two NON-VACUITY declarations that
@@ -54,10 +53,10 @@ import Mathlib.Data.List.Permutation
 -- boundary), and the machine-checked strictness delta against `HasDefinableINF`. **The deferral
 -- this NOTE used to record is now CLOSED**: Lemma 5.3 (`Lemma53Faithful` edge above), Lemma 5.1
 -- at one witness and in list form, and Prop 4.2 are all landed — and they are landed one step
--- BELOW this carrier, at `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`), which states
+-- BELOW this carrier, at `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`), which states
 -- Rabinovich's eq (5.2) dichotomy at the SOURCE'S OWN `K⁺` (his Definition (3), PDF p.3) rather
 -- than at this tree's extra-conjunct `kplus`. `HasDedekindINF` remains landed, consumed and
--- supplied — `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`) is the edge
+-- supplied — `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`) is the edge
 -- that keeps every existing supplier working — but it is no longer the faithful chain's carrier.
 -- The whole re-base is still unobservable to every current consumer, because the live chain is
 -- Prior structures where attainment holds outright (`prior_makes_disjunct2_unreachable` proves

@@ -49,7 +49,7 @@ an ad-hoc `find` to re-derive live counts.
 
 ## Key Results
 
-- `countermodel_discrete` (`GroupModel/CountermodelBase.lean:142`): the discrete countermodel at
+- `countermodel_discrete` (`GroupModel/CountermodelBase.lean:143`): the discrete countermodel at
   the non-Archimedean carrier `ℚ ×ₗ ℤ`, off `companionChronicle`. It is the Base-frame discrete
   branch of the flagship `completeness`.
 - `truth_transfer` (`Transfer.lean:359`): truth transfers across the signature/atom-map layer,

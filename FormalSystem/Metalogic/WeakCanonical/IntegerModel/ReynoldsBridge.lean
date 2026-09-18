@@ -33,9 +33,9 @@ This eliminates the sorry chain
 
 The bypass is what made that archival possible: because `completeness_ztime` routes through
 `countermodel_discrete_reynolds_v2` below rather than through the chain, the whole chain was
-dead and could be excised. **Caller trap.** `countermodel_discrete_reynolds_v2` (this file, sorry-free) is a different
-theorem from the archived, `sorryAx`-tainted `countermodel_discrete_reynolds`; the two names
-differ only in a suffix.
+dead and could be excised. **Caller trap.** `countermodel_discrete_reynolds_v2` (this file,
+sorry-free) is a different theorem from the archived, `sorryAx`-tainted
+`countermodel_discrete_reynolds`; the two names differ only in a suffix.
 
 ## Key Theorems
 
@@ -169,7 +169,8 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
     intro t
     constructor
     · exact False.elim
-    · intro h; exact absurd h (SetMaximalConsistent.bot_not_mem (limit_c0 fc A h_mcs t.val t.property))
+    · intro h; exact absurd h (SetMaximalConsistent.bot_not_mem
+        (limit_c0 fc A h_mcs t.val t.property))
   | imp f₁ f₂ ih₁ ih₂ =>
     intro t
     simp only [TemporalTruth, limitdomEffectiveFormula, effectiveFormula]
@@ -1052,7 +1053,8 @@ theorem countermodel_discrete_reynolds_v2
           (SetMaximalConsistent.negation_complete h_mcs (Formula.box ψ)).resolve_left h_not_box
         have h_diamond_neg : (Formula.neg ψ).diamond ∈ A :=
           FormalSystem.Metalogic.Core.SetMaximalConsistent.contrapositive h_mcs
-            (liftBase FrameClass.ZTime (FormalSystem.Theorems.ModalDerived.boxDneTheorem ψ)) h_neg_box
+            (liftBase FrameClass.ZTime
+                (FormalSystem.Theorems.ModalDerived.boxDneTheorem ψ)) h_neg_box
         obtain ⟨v, h_v_mcs, h_v_equiv, h_neg_ψ_v⟩ :=
           bx_modal_witness_fc h_mcs (Formula.neg ψ) h_diamond_neg
         -- v is box-equiv to A, so □(nextTop) ∈ v

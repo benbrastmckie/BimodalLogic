@@ -153,7 +153,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,609 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 18 | 4,992 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,424 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,053 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,153 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -196,13 +196,13 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Kamp/` | 116 | 77,603 |
+| `Kamp/` | 116 | 77,609 |
 | `EFGames/` | 8 | 11,797 |
 | `Expressiveness/` | 5 | 9,507 |
-| `DenseModelSurgery/` | 9 | 7,650 |
-| `RealModel/` | 7 | 6,675 |
-| `IntegerModel/` | 6 | 5,610 |
-| `GroupModel/` | 6 | 3,361 |
+| `DenseModelSurgery/` | 9 | 7,711 |
+| `RealModel/` | 7 | 6,698 |
+| `IntegerModel/` | 6 | 5,612 |
+| `GroupModel/` | 6 | 3,365 |
 | `Separation/` | 3 | 926 |
 <!-- END GENERATED -->
 
@@ -217,9 +217,9 @@ sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
-| `NfMultiAnchorBridge/` | 47 | 41,358 |
+| `NfMultiAnchorBridge/` | 47 | 41,359 |
 | `EANegationFix/` | 7 | 3,227 |
-| `EANegationFixFaithful/` | 5 | 2,661 |
+| `EANegationFixFaithful/` | 5 | 2,664 |
 <!-- END GENERATED -->
 
 `Kamp/` alone is larger than every other directory in `Metalogic/` combined. Any

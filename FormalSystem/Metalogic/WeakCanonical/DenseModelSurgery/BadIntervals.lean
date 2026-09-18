@@ -77,26 +77,38 @@ Printed **pp.180-181**, **Lemma 7**:
 
 Reynolds' proof steps, in printed order, against the declarations below.
 
-| Printed step (p.179-181) | Declaration |
-| --- | --- |
-| *"a bad point … where `R ∨ L` holds"* | `IsBadPoint`, `badPointFormula` (+ `_spec`) |
-| *"a bad interval … non-empty and maximal one in which `R ∨ L` holds throughout"* | `IsBadInterval` (+ `IsBadInterval.maximal_among`) |
-| *"a temporal formula true at times which are not left hand end points of their `∼`-classes"* | `notLeftEndFormula` / `NotLeftEnd` / `notLeftEndTemporal` (+ `_eval`, `_spec`) |
-| *"we can not have a class beginning just after a point `r` of `M`"* | `not_endsInGapOnRight_of_immediatePredecessor` |
-| *"throughout the bad interval all classes include their left hand end points"* | `exists_leftEnd_throughout` (via `reynolds_lemma5_first`) |
-| *"`B` is true continuously in any class … `B` must be false arbitrarily soon after the gap contradicting Prior-U"* | `false_of_allClassesHaveLeftEnd` |
-| *"`L` holds wherever `R` does"* | `endsInGapOnLeft_of_endsInGapOnRight` |
-| *"Bad points only occur in non-singleton bad intervals"* | `reynolds_lemma6_nonsingleton` |
-| *"any bad interval, if bounded, has excluded end points in `M`"* | `reynolds_lemma6_right_endpoint` |
-| *"using mirror images of the above and previous results"* | `ClassInteriorToLInterval`, `endsInGapOnRight_of_endsInGapOnLeft` (via `Dual.lean`) |
-| Lemma 6, all four clauses, assembled | `reynolds_lemma6` |
-| *"a temporal formula `C` which is true only at points within a `∼`-class after some `¬B` in that class"* | `afterNotHoldsInClassFormula` / `AfterNotHoldsInClass` / `afterNotHoldsInClassTemporal` (+ `_eval`, `_spec`) |
-| *"`C` is true for a while up to the gap at the end and false arbitrarily soon after the gap. This contradicts Prior-U"* | `false_of_holds_throughout_class_from_bounded` |
-| *"`C` will be false for a while at the beginning of each class"* | `exists_notAfterNotHolds_in_class` (via `reynolds_lemma5_first`) |
-| Lemma 7, first statement, *"at the start"* | `reynolds_lemma7_start` |
-| Lemma 7, first statement, *"Similarly at the end"* | `reynolds_lemma7_end` (mirror: Prior-S, `λ`, `beforeNotHoldsInClassTemporal`) |
-| Lemma 7, second statement | `reynolds_lemma7_close_to_left` / `reynolds_lemma7_close_to_right` |
-| both statements assembled | `reynolds_lemma7` |
+Each entry reads *Printed step (p.179-181)* — *Declaration*:
+
+* *"a bad point … where `R ∨ L` holds"* — `IsBadPoint`, `badPointFormula` (+ `_spec`)
+* *"a bad interval … non-empty and maximal one in which `R ∨ L` holds throughout"* — `IsBadInterval`
+  (+ `IsBadInterval.maximal_among`)
+* *"a temporal formula true at times which are not left hand end points of their `∼`-classes"* —
+  `notLeftEndFormula` / `NotLeftEnd` / `notLeftEndTemporal` (+ `_eval`, `_spec`)
+* *"we can not have a class beginning just after a point `r` of `M`"* —
+  `not_endsInGapOnRight_of_immediatePredecessor`
+* *"throughout the bad interval all classes include their left hand end points"* —
+  `exists_leftEnd_throughout` (via `reynolds_lemma5_first`)
+* *"`B` is true continuously in any class … `B` must be false arbitrarily soon after the gap
+  contradicting Prior-U"* — `false_of_allClassesHaveLeftEnd`
+* *"`L` holds wherever `R` does"* — `endsInGapOnLeft_of_endsInGapOnRight`
+* *"Bad points only occur in non-singleton bad intervals"* — `reynolds_lemma6_nonsingleton`
+* *"any bad interval, if bounded, has excluded end points in `M`"* —
+  `reynolds_lemma6_right_endpoint`
+* *"using mirror images of the above and previous results"* — `ClassInteriorToLInterval`,
+  `endsInGapOnRight_of_endsInGapOnLeft` (via `Dual.lean`)
+* Lemma 6, all four clauses, assembled — `reynolds_lemma6`
+* *"a temporal formula `C` which is true only at points within a `∼`-class after some `¬B` in that
+  class"* — `afterNotHoldsInClassFormula` / `AfterNotHoldsInClass` / `afterNotHoldsInClassTemporal`
+  (+ `_eval`, `_spec`)
+* *"`C` is true for a while up to the gap at the end and false arbitrarily soon after the gap. This
+  contradicts Prior-U"* — `false_of_holds_throughout_class_from_bounded`
+* *"`C` will be false for a while at the beginning of each class"* —
+  `exists_notAfterNotHolds_in_class` (via `reynolds_lemma5_first`)
+* Lemma 7, first statement, *"at the start"* — `reynolds_lemma7_start`
+* Lemma 7, first statement, *"Similarly at the end"* — `reynolds_lemma7_end` (mirror: Prior-S, `λ`,
+  `beforeNotHoldsInClassTemporal`)
+* Lemma 7, second statement — `reynolds_lemma7_close_to_left` / `reynolds_lemma7_close_to_right`
+* both statements assembled — `reynolds_lemma7`
 
 ## LEMMA 6'S FOUR HALVES — all discharged, the fourth by duality transport
 
@@ -157,7 +169,7 @@ using either. The answer is **neither**, and the reason is visible in Reynolds' 
 *"`C` will be false for a while at the beginning of each class and then true for a while at the
 end"*.
 
-* `false_of_holds_throughout_class` (`Lemma34.lean:595`, Phase 18) requires the auxiliary formula
+* `false_of_holds_throughout_class` (`Lemma34.lean:598`, Phase 18) requires the auxiliary formula
   to hold **throughout** `s`'s class and to fail at **every** later point outside it. Reynolds'
   `C` fails both halves: it is false at the beginning of `s`'s own class, and it is true again
   near the end of every later class in the interval.
@@ -189,7 +201,7 @@ changes. The new theorem is proved from scratch rather than by generalising eith
   maximal-among-bad-intervals reading from it, so the rendering is checked rather than asserted.
 * *"the class includes its left hand end point"* is rendered as the existence of a class-mate `w`
   with no class-mate strictly below it, matching the `¬ v < w` idiom `ClassBeginsWith`
-  (`Lemma5.lean:278`) and `ClassBeginsAtGapStart` (`Lemma34.lean:434`) already use.
+  (`Lemma5.lean:278`) and `ClassBeginsAtGapStart` (`Lemma34.lean:435`) already use.
 
 ## Honest caveat, carried forward
 
@@ -358,7 +370,8 @@ omit [IsDualClosed C] in
 /-- **`B` is upward closed in a class** — *"`B` is true continuously in any class from just after
 the left hand end point up until the gap"* (printed p.180). -/
 theorem notLeftEnd_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t u : M.carrier} (htu : ContempEquivDense M ε t u)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t u : M.carrier}
+        (htu : ContempEquivDense M ε t u)
     (hle : t ≤ u) (ht : NotLeftEnd M ε t) : NotLeftEnd M ε u := by
   obtain ⟨v, hvc, hvt⟩ := ht
   exact ⟨v, contemp_trans hε M (contemp_symm hε M htu) hvc, lt_of_lt_of_le hvt hle⟩
@@ -405,7 +418,8 @@ omit [IsDualClosed C] in
 If `t`'s class begins just after `r` — `r` below the class, and everything in `(r, t)` inside it —
 then `r` is the greatest element of its own class, so `ρ` fails at `r`. -/
 theorem not_endsInGapOnRight_of_immediatePredecessor {ε : MonadicFormula sig 2}
-    (hε : IsContempEquivDenseOn ε C) (M : OrderedMonadicStructure sig) [InStructureClass C M] {t r : M.carrier}
+    (hε : IsContempEquivDenseOn ε C) (M : OrderedMonadicStructure sig) [InStructureClass C M]
+        {t r : M.carrier}
     (hrt : r < t) (hnrt : ¬ ContempEquivDense M ε t r)
     (hbetween : ∀ y : M.carrier, r < y → y < t → ContempEquivDense M ε t y) :
     ¬ EndsInGapOnRight M ε r := by
@@ -460,7 +474,8 @@ omit [IsDualClosed C] [Fintype sig.preds] [DecidableEq sig.preds] in
 One direction of Reynolds' *"use the previous result"* step: it is what lets Lemma 5 be applied
 to the property *"includes its left hand end point"*, which is not itself a temporal formula. -/
 theorem leftEnd_iff_exists_not_notLeftEnd {ε : MonadicFormula sig 2}
-    (hε : IsContempEquivDenseOn ε C) (M : OrderedMonadicStructure sig) [InStructureClass C M] (t : M.carrier) :
+    (hε : IsContempEquivDenseOn ε C) (M : OrderedMonadicStructure sig) [InStructureClass C M]
+        (t : M.carrier) :
     (∃ w : M.carrier, ContempEquivDense M ε t w ∧
         ∀ u : M.carrier, ContempEquivDense M ε t u → ¬ u < w) ↔
       ∃ w : M.carrier, ContempEquivDense M ε t w ∧ ¬ NotLeftEnd M ε w := by
@@ -697,7 +712,8 @@ Where `R` holds, `R` holds on a whole stretch above, so the point is not an isol
 This is `endsInGapOnRight_forAWhile` (`Lemma34.lean`) read as a statement about bad
 points. -/
 theorem reynolds_lemma6_nonsingleton {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier}
+        (ht : EndsInGapOnRight M ε t) :
     ∃ y : M.carrier, t < y ∧ ∀ r : M.carrier, t < r → r ≤ y → IsBadPoint M ε r := by
   obtain ⟨y, hty, hy⟩ := endsInGapOnRight_forAWhile hε M ht
   exact ⟨y, hty, fun r h₁ h₂ => IsBadPoint.of_right (hy r h₁ h₂)⟩
@@ -730,7 +746,7 @@ theorem classMate_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε
 
 /-! ## The gap-crossing contradiction Lemma 7 actually licenses
 
-See the module header for why neither `false_of_holds_throughout_class` (`Lemma34.lean:595`) nor
+See the module header for why neither `false_of_holds_throughout_class` (`Lemma34.lean:598`) nor
 `false_of_holds_throughout_class_bounded` (`Lemma5.lean`) can be used here. Both slots are
 weakened:
 
@@ -820,7 +836,8 @@ theorem afterNotHoldsInClassFormula_eval (M : OrderedMonadicStructure sig)
 omit [IsDualClosed C] in
 /-- **`C` is upward closed in a class** — *"then true for a while at the end"* (printed p.180). -/
 theorem afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop)
+        {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) (hle : t ≤ u) (ht : AfterNotHoldsInClass M ε P t) :
     AfterNotHoldsInClass M ε P u := by
   obtain ⟨v, hvc, hvt, hnv⟩ := ht
@@ -830,7 +847,8 @@ omit [IsDualClosed C] in
 /-- **`¬C` is downward closed in a class** — *"`C` will be false for a while at the beginning of
 each class"* (printed p.180). The contrapositive of `afterNotHoldsInClass_of_le`. -/
 theorem not_afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop)
+        {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) (hle : u ≤ t) (ht : ¬ AfterNotHoldsInClass M ε P t) :
     ¬ AfterNotHoldsInClass M ε P u := fun h =>
   ht (afterNotHoldsInClass_of_le hε M P (contemp_symm hε M htu) hle h)
@@ -1001,7 +1019,7 @@ package below carries both. -/
 
 omit [IsDualClosed C] in
 /-- **`λ` is a property of the `∼`-class**, the mirror of `endsInGapOnRight_congr`
-(`Lemma34.lean:242`). Reynolds uses it silently on both sides. -/
+(`Lemma34.lean:243`). Reynolds uses it silently on both sides. -/
 theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) : EndsInGapOnLeft M ε t ↔ EndsInGapOnLeft M ε u := by
@@ -1031,10 +1049,11 @@ theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivD
   exact ⟨main htu, main (contemp_symm hε M htu)⟩
 
 omit [IsDualClosed C] in
-/-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:265`):
+/-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:266`):
 `λ(t)`'s second conjunct at `z := t`, with reflexivity. -/
 theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier} (h : EndsInGapOnLeft M ε t) :
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier}
+        (h : EndsInGapOnLeft M ε t) :
     ∃ y : M.carrier, y < t ∧ ContempEquivDense M ε t y := by
   by_contra hcon
   push Not at hcon
@@ -1123,7 +1142,8 @@ theorem beforeNotHoldsInClassFormula_eval (M : OrderedMonadicStructure sig)
 omit [IsDualClosed C] in
 /-- **`C'` is downward closed in a class** — the mirror of `afterNotHoldsInClass_of_le`. -/
 theorem beforeNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop)
+        {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) (hle : u ≤ t) (ht : BeforeNotHoldsInClass M ε P t) :
     BeforeNotHoldsInClass M ε P u := by
   obtain ⟨v, hvc, htv, hnv⟩ := ht
@@ -1293,7 +1313,7 @@ theorem reynolds_lemma7 (atomMap : Formula → sig.preds)
 /-! ## *"Any bad interval, if bounded, has excluded end points in `M`"*
 
 Printed p.180, the third clause of Lemma 6's statement. This is Lemma 3's argument
-(`reynolds_lemma3_right`, `Lemma34.lean:308`) run on `R ∨ L` in place of `R`: Prior-U applied to
+(`reynolds_lemma3_right`, `Lemma34.lean:309`) run on `R ∨ L` in place of `R`: Prior-U applied to
 the temporal formula `badPointFormula` produces a first non-bad point, which is an element of `M`
 excluded from the interval.
 

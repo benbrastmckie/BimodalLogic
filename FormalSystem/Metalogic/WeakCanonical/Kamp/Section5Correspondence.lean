@@ -48,7 +48,7 @@ discharged by **wiring**, not by new transcription.
 ## The faithful re-base table — the same chain at the faithful eq (5.2) carrier
 
 Every row above assumes `HasAttainedINF`/`HasAttainedSUP`. The rows below are the mirror chain
-re-based onto `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) and its `Since`-dual
+re-based onto `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) and its `Since`-dual
 `HasFaithfulDedekindSUP` (`:339`) — Rabinovich's own eq (5.2) dichotomy, PDF p.8, rather than this
 tree's `kplus`. **Nothing above was deleted, weakened or renamed to make room for them** — the
 attained stack in `EANegationFix/` stays live and consumed, and each faithful module mirrors its
@@ -59,7 +59,7 @@ attained counterpart declaration for declaration.
 is the *previous* pin, retained unweakened at the terminus (see the last row), and every chain
 member below is in fact stated at the strictly weaker `HasFaithfulDedekindINF`. The two are
 comparable in one direction only — `HasDedekindINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:364`) — and `prop42_faithful_covers_what_dedekind_excludes`
+(`KPlusFaithful.lean:366`) — and `prop42_faithful_covers_what_dedekind_excludes`
 (`Prop42Faithful.lean`) exhibits a structure inside the faithful carrier and outside the Dedekind
 one, so the gap is real rather than notational.
 
@@ -79,18 +79,18 @@ one, so the gap is real rather than notational.
 `negBoundedRightFixAnchoredFaithful_iff` / `negBoundedLeftFixAnchoredFaithful_iff` |
 `EANegationFixFaithful/BoundedFixAnchoredFaithful.lean:163` / `:246` |
 | Lemma 5.1 — base case at `n = 1` (pp.9-10) | `negFixOneFaithful_iff` |
-`EANegationFixFaithful/NegFixOneFaithful.lean:636` |
+`EANegationFixFaithful/NegFixOneFaithful.lean:640` |
 | Lemma 5.1 — `Aᵢ`/`Bᵢ` split + closing induction (pp.10-11) | `negFixListFaithful_iff` |
-`EANegationFixFaithful/NegFixListFaithful.lean:392` |
+`EANegationFixFaithful/NegFixListFaithful.lean:391` |
 | Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFixFaithful_iff` |
 `EANegationFixFaithful/VecEANegFixFaithful.lean:244` |
 | **Prop 4.2 itself, at the faithful carrier (p.6)** | `prop42_contentful_of_faithful` |
-`Prop42Faithful.lean:192` |
+`Prop42Faithful.lean:193` |
 | Prop 4.2 at the **previous** pin, retained unweakened (p.6) | `prop42_contentful_of_dedekind` |
-`Prop42Faithful.lean:208` |
+`Prop42Faithful.lean:209` |
 
 Every entry is landed, sorry-free and axiom-clean. `prop42_contentful_of_faithful`
-(`Prop42Faithful.lean:192`) is what they compose to: the **same** `Prop42Contentful` target
+(`Prop42Faithful.lean:193`) is what they compose to: the **same** `Prop42Contentful` target
 discharged below at `HasAttainedINF` + `HasAttainedSUP`, discharged there from
 `HasFaithfulDedekindINF` **alone**. `prop42_contentful_of_dedekind` (`:208`) is the chain's
 former terminus, kept as a one-line corollary through

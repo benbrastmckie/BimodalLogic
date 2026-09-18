@@ -91,7 +91,7 @@ Reynolds' proof needs three things this tree did not have.
    with `R ∧ K⁻(¬R)` in the payload slot; it is **not** refactored to go through these — nothing is
    removed or renamed — and the relationship is recorded at `classBeginsWithFormula`'s docstring.
 
-3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:595`)
+3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:598`)
    asks for the auxiliary formula to fail at **every** point outside the class with `R` throughout
    in between. Lemma 5's `C` does not satisfy that, and cannot: with classes `C₀ ⊨ ¬B`, `C₁ ⊨ B`,
    `C₂ ⊨ ¬B` in a row, `C₂`'s left end point does carry `K⁻(B)`, so `C` is true again at `C₂`.
@@ -326,7 +326,8 @@ omit [IsDualClosed C] in
 /-- *"`A` occurs somewhere in their `∼`-class"* is a property of the class, which is the whole
 point of building `B` this way. -/
 theorem holdsSomewhereInClass_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {a c : M.carrier}
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop)
+        {a c : M.carrier}
     (hac : ContempEquivDense M ε a c) :
     HoldsSomewhereInClass M ε P a ↔ HoldsSomewhereInClass M ε P c := by
   constructor
@@ -388,7 +389,7 @@ end Temporal
 
 /-! ## The bounded gap-crossing
 
-Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:595`) isolates Reynolds' recurring
+Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:598`) isolates Reynolds' recurring
 *"holds up to a gap and is false arbitrarily soon after the gap, contradicting Prior-U"* step, and
 requires the auxiliary formula to fail at **every** point outside the class reachable with `R`
 throughout. Reynolds' Lemma 5 supplies less: only *"false afterwards"*, on the stretch on which
@@ -461,7 +462,8 @@ omit [IsDualClosed C] in
 The bound `b` is beyond the class, and `B` is false throughout `(s,b)`. -/
 theorem exists_bound_notHolds {atomMap : Formula → sig.preds}
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap) (B : Formula)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
+        (B : Formula)
     (hinv : ∀ a c : M.carrier, ContempEquivDense M ε a c →
       (TemporalTruth M atomMap a B ↔ TemporalTruth M atomMap c B))
     {s : M.carrier} (hs : EndsInGapOnRight M ε s)
@@ -743,7 +745,8 @@ omit [IsDualClosed C] in
 /-- Modelling `φ` is a property of the class, not of the point — the classes of two class-mates are
 the same set, so the relativized satisfaction relations coincide. -/
 theorem classModels_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] {a c : M.carrier} (hac : ContempEquivDense M ε a c)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] {a c : M.carrier}
+        (hac : ContempEquivDense M ε a c)
     (φ : MonadicFormula sig 0) : ClassModels M ε a φ ↔ ClassModels M ε c φ := by
   have h : ContempEquivDense M ε a = ContempEquivDense M ε c := by
     funext z
@@ -863,7 +866,8 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 with `R` replaced by `L` throughout. **Reynolds prints no such statement**; see the section
 header for what licenses it and for why it is not attributed to him.
 
-Proved by instantiating `reynolds_lemma5_first` at `(dual M, dualize ε)` and at `reflectTimeBoxOpaque A`. -/
+Proved by instantiating `reynolds_lemma5_first` at `(dual M, dualize ε)` and at
+`reflectTimeBoxOpaque A`. -/
 theorem reynolds_lemma5_first_left {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
@@ -885,8 +889,10 @@ theorem reynolds_lemma5_first_left {atomMap : Formula → sig.preds}
       (temporalTruth_dual' (M := M) atomMap w A).mpr hAw⟩
   obtain ⟨w, hcw, hAw⟩ :=
     reynolds_lemma5_first h_surj (isContempEquivDense_dualize hε) (dual M)
-      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U) (reflectTimeBoxOpaque A) hIcc' hA'
-  exact ⟨w, (contempEquivDense_dual (M := M) ε t' w).mp hcw, (temporalTruth_dual' (M := M) atomMap w A).mp hAw⟩
+      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
+          (reflectTimeBoxOpaque A) hIcc' hA'
+  exact ⟨w, (contempEquivDense_dual (M := M) ε t' w).mp hcw,
+      (temporalTruth_dual' (M := M) atomMap w A).mp hAw⟩
 
 end FirstLeft
 

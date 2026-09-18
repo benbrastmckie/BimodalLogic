@@ -14,7 +14,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
 `ExistProviders.correct` and `BracketCarrierCorrectVPrior` — against
 `SemanticPriorUZ` / `SemanticPriorSZ` (`WeakCanonical/PriorDefs.lean`, `:33`). This module
 restates both against `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`
-(`Kamp/KPlusFaithful.lean:320`, `:339`), which are Rabinovich's eq (5.2) dichotomy (PDF p.8) at
+(`Kamp/KPlusFaithful.lean:322`, `:339`), which are Rabinovich's eq (5.2) dichotomy (PDF p.8) at
 the source's own `K⁺` / `K⁻` (his Definitions (2)/(3), PDF p.3).
 
 ## Why this module is the bottom rung of the spine re-base
@@ -30,8 +30,8 @@ above those. So re-basing here is what makes the rungs above it re-basable at al
 
 `SemanticPriorUZ` implies `HasAttainedINF` (`prior_hasAttainedINF`, `Kamp/PriorINF.lean:230`),
 which implies `HasFaithfulDedekindINF` (`HasAttainedINF.toHasFaithfulDedekindINF`,
-`KPlusFaithful.lean:382`); the composite has no converse
-(`hasFaithfulDedekindINF_not_implies_hasDedekindINF`, `KPlusFaithful.lean:693`). The faithful
+`KPlusFaithful.lean:384`); the composite has no converse
+(`hasFaithfulDedekindINF_not_implies_hasDedekindINF`, `KPlusFaithful.lean:695`). The faithful
 hypothesis is therefore strictly *weaker*, so:
 
 - a `ExistProvidersFaithful` bundle is a strictly *stronger* obligation on the provider than an
@@ -105,7 +105,7 @@ structure ExistProvidersFaithful (sig : MonadicSignature) [Fintype sig.preds]
 `SemanticPriorUZ` / `SemanticPriorSZ` is served by an `ExistProvidersFaithful`, through
 `prior_hasAttainedINF` / `prior_hasAttainedSUP` (`Kamp/PriorINF.lean:230`, `:275`) composed with
 `HasAttainedINF.toHasFaithfulDedekindINF` / `HasAttainedSUP.toHasFaithfulDedekindSUP`
-(`KPlusFaithful.lean:382`, `:389`). The `existF` field is carried across unchanged, so the
+(`KPlusFaithful.lean:384`, `:389`). The `existF` field is carried across unchanged, so the
 converter formula produced is literally the same one.
 
 This is the D11 coverage record: it machine-checks that the re-base weakens hypotheses rather than

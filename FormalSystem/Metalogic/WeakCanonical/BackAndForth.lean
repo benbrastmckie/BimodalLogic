@@ -41,7 +41,8 @@ the other, so nothing can be phrased through a single `I`. `BackForth` is the re
 * `backForth_mono` — a strategy for a longer game restricts to a shorter one.
 
 ## References
-- [doets1989], Section 1 (n-characteristics and the game): `literature/Doets_1989_Monadic_Pi11_Theories.md`
+- [doets1989], Section 1 (n-characteristics and the game):
+  `literature/Doets_1989_Monadic_Pi11_Theories.md`
 - Ehrenfeucht-Fraïssé: the standard equivalence of `≡ₖ` with the depth-`k` game
 -/
 

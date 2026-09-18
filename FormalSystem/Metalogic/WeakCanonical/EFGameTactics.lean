@@ -148,7 +148,8 @@ theorem gap_point_agreement_of_cases {sig : MonadicSignature}
   · by_cases hi_b : i.val = n + 1
     · simp only [hi_b, Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceDIte]; exact hgp_b
     · by_cases hi_y : i.val = n + 2
-      · simp only [hi_y, Nat.add_eq_zero_iff, OfNat.ofNat_ne_zero, and_false, ↓reduceDIte, Nat.add_left_cancel_iff, OfNat.ofNat_ne_one]; exact hgp_y
+      · simp only [hi_y, Nat.add_eq_zero_iff, OfNat.ofNat_ne_zero, and_false, ↓reduceDIte,
+          Nat.add_left_cancel_iff, OfNat.ofNat_ne_one]; exact hgp_y
       · simp only [hi0, ↓reduceDIte, hi_b, hi_y]; exact hgp_sel ⟨i.val - 1, by omega⟩
 
 /-- Helper lemma for FormulaAgreement proofs: dispatch a 4-way case split
@@ -182,7 +183,8 @@ theorem formula_agreement_of_cases {sig : MonadicSignature}
   · by_cases hi_b : i.val = n + 1
     · simp only [hi_b, Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceDIte]; exact hform_b A hA
     · by_cases hi_y : i.val = n + 2
-      · simp only [hi_y, Nat.add_eq_zero_iff, OfNat.ofNat_ne_zero, and_false, ↓reduceDIte, Nat.add_left_cancel_iff, OfNat.ofNat_ne_one]; exact hform_y A hA
+      · simp only [hi_y, Nat.add_eq_zero_iff, OfNat.ofNat_ne_zero, and_false, ↓reduceDIte,
+          Nat.add_left_cancel_iff, OfNat.ofNat_ne_one]; exact hform_y A hA
       · simp only [hi0, ↓reduceDIte, hi_b, hi_y]
         exact hform_sel ⟨i.val - 1, by omega⟩ A hA
 

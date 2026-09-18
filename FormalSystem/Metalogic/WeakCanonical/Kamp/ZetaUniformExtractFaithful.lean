@@ -12,13 +12,13 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.VecEANegF
 
 `ZetaUniformExtract.lean` runs the `M`-uniform `∨∃∀` extraction (Rabinovich 2014, Theorem 4.4,
 PDF p.6) on `HasAttainedINF` / `HasAttainedSUP` — the *attained originals*. This module re-bases
-that wire onto `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:320`,
+that wire onto `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:322`,
 `:339`), which are Rabinovich's eq (5.2) dichotomy (PDF p.8) at the source's own `K⁺`/`K⁻`.
 
 ## What the re-base actually cost, as measured
 
 `HasAttainedINF` is a *strictly stronger* carrier than `HasFaithfulDedekindINF`
-(`HasAttainedINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:382`, runs attained → faithful and
+(`HasAttainedINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:384`, runs attained → faithful and
 has no converse — `hasFaithfulDedekindINF_not_implies_hasDedekindINF`, `:693`). So this is not a
 free swap: it weakens a hypothesis the originals could have leaned on anywhere.
 

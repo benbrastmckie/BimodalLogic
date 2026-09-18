@@ -16,7 +16,7 @@ hypotheses `SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean`) — with 
 assumption and **no** attainment assumption. It is the dense sibling of `prior_hasDedekindINF`
 (`DedekindINF.lean:232`), which is a one-liner off `prior_hasAttainedINF` and therefore consumes
 the *integer* hypothesis `SemanticPriorUZ`, refuted on every dense flow by
-`semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:271`).
+`semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:272`).
 
 `DedekindINF.lean` and `PriorINF.lean` are **read, not edited** by this module.
 
@@ -111,7 +111,7 @@ module's carriers remain landed, supplied and unedited.
 
 `hasGuardedDedekindINF_of_dense_window` / `hasGuardedDedekindSUP_of_dense_window` instantiate the
 two theorems at `denseWindowFlow`, whose Prior-U antecedent is genuinely reachable
-(`densePriorU_antecedent_reachable`, `PriorDefsDense.lean:391`). Both disjuncts of the conclusion
+(`densePriorU_antecedent_reachable`, `PriorDefsDense.lean:392`). Both disjuncts of the conclusion
 are reachable there: `denseWindow_kplus_at_zero` lands the **left** one at `z₀ = 0`, and
 `denseWindow_guardedINF_right_disjunct` lands the **right** one at `z₀ = -1`, so neither
 alternative is dead weight.
@@ -355,7 +355,7 @@ Rabinovich 2014, Lemma 5.3 Case 2 and eq (5.2), PDF p.8, obtained from Reynolds'
     **This derivation does not route through `prior_hasAttainedINF` (`PriorINF.lean:230`) and
     therefore carries no discreteness.** That is the whole point: `prior_hasAttainedINF` consumes
     `SemanticPriorUZ`, which `semanticPriorUZ_fails_of_interval_witness`
-    (`PriorDefsDense.lean:271`) refutes on every densely ordered flow carrying a formula true
+    (`PriorDefsDense.lean:272`) refutes on every densely ordered flow carrying a formula true
     throughout an open interval. No attainment hypothesis and no completeness hypothesis on the
     flow is used here either. -/
 theorem prior_hasGuardedDedekindINF_dense {sig : MonadicSignature}
@@ -473,7 +473,7 @@ theorem prior_hasDenseDedekindSUP_dense {sig : MonadicSignature}
 
 /-! ## The exclusion lemma: the *unguarded* carrier is refutable on a dense flow
 
-The dense counterpart of `semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:271`),
+The dense counterpart of `semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:272`),
 and the reason the guard above is a hypothesis rather than an oversight. -/
 
 /-- **On a densely ordered flow, `HasDedekindINF` fails as soon as some formula holds at a point
@@ -524,7 +524,7 @@ theorem hasDedekindSUP_fails_of_interval_witness {sig : MonadicSignature}
 
 /-! ## The witnesses
 
-Instantiations at Phase 9's `denseWindowFlow` (`PriorDefsDense.lean:336`) — the real line with a
+Instantiations at Phase 9's `denseWindowFlow` (`PriorDefsDense.lean:337`) — the real line with a
 single predicate true exactly on `(0,1)`, which satisfies `SemanticPriorU` and `SemanticPriorS`
 outright and whose Prior-U antecedent is genuinely reachable. -/
 

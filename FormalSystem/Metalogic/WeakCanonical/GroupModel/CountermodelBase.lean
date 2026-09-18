@@ -125,7 +125,8 @@ private theorem qz_exists_shift (w r : ℚ ×ₗ ℤ) : ∃ x : ℚ ×ₗ ℤ, w
 The Base-MCS discrete countermodel, at the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`.
 
 For any **Base** MCS `A` containing `¬φ` and `□(nextTop)`, constructs a countermodel to `φ`
-on `ℚ ×ₗ ℤ`: `φ` fails at a point of a world history of `multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx`.
+on `ℚ ×ₗ ℤ`: `φ` fails at a point of a world history of
+`multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx`.
 
 The construction is the multi-family flow-line model, one companion structure per
 box-equivalent MCS family, with `WorldState = FamIdx × (ℚ ×ₗ ℤ)`. Box quantification ranges
@@ -295,7 +296,8 @@ theorem countermodel_discrete (A : Set Formula)
           (SetMaximalConsistent.negation_complete h_mcs (Formula.box ψ)).resolve_left h_not_box
         have h_diamond_neg : (Formula.neg ψ).diamond ∈ A :=
           FormalSystem.Metalogic.Core.SetMaximalConsistent.contrapositive h_mcs
-            (liftBase FrameClass.Base (FormalSystem.Theorems.ModalDerived.boxDneTheorem ψ)) h_neg_box
+            (liftBase FrameClass.Base
+                (FormalSystem.Theorems.ModalDerived.boxDneTheorem ψ)) h_neg_box
         obtain ⟨v, h_v_mcs, h_v_equiv, h_neg_ψ_v⟩ :=
           bx_modal_witness_fc h_mcs (Formula.neg ψ) h_diamond_neg
         -- v is box-equiv to A, so □(nextTop) ∈ v

@@ -397,7 +397,7 @@ the free direction. `instInStructureClassCountableDense` turns the `[Countable _
 `[DenselyOrdered _]` binders of `IsContempEquivDenseCD`'s clauses into class membership.
 
 `IsContempEquivDenseCD` itself is untouched by the class parameterization, so `epsDense`'s witness
-(`RealModel/EpsilonDense.lean:1075`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
+(`RealModel/EpsilonDense.lean:1077`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
 are unaffected. -/
 theorem isContempEquivDenseCD_of_countableDense {sig : MonadicSignature}
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε (CountableDense sig)) :

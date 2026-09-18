@@ -766,7 +766,7 @@ instances of the other axioms hold everywhere"*, executed in Lean:
 2. `theorem_in_mcs` (`Core/MaximalConsistent.lean:491`) puts it in the family's MCS at *every*
    rational — Reynolds' "hold everywhere";
 3. Part 6 reads it back semantically, and `kPlus_formula_correct` / `kMinus_formula_correct`
-   (`Kamp/KPlusFaithful.lean:150` / ) read the `K⁺` / `K⁻` the axioms are stated with.
+   (`Kamp/KPlusFaithful.lean:152` / ) read the `K⁺` / `K⁻` the axioms are stated with.
 
 Step 3's bridge lemma is the one the plan names: `Axiom.prior_U_gap` is stated with
 `Formula.kPlus` (`Axioms.lean:377`; `Syntax/Formula.lean:181`), and `kPlus_formula_correct` is

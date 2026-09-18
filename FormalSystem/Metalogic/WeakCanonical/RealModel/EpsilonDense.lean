@@ -75,11 +75,11 @@ The discrete development's §10 Lemma 15 relativizes to the **closed** `[z,t]`, 
 the tree's `relativize` (`MonadicFO.lean:551`) implements, with `≤` guards and
 `OrderedMonadicStructure.subinterval` as its semantic counterpart. Reynolds' §8 `γ(z,t)`
 relativizes to the **open** `(z,t)`, matching `OrderedMonadicStructure.openSubinterval`
-(`GoodDense.lean:224`). `relativizeOpen` below is the open sibling: the same recursion with `<`
+(`GoodDense.lean:234`). `relativizeOpen` below is the open sibling: the same recursion with `<`
 guards. The two cannot be interchanged — the whole force of `ε` is that its inner interval
 excludes its endpoints, so that `ε(a,b)` says exactly *"`M | (a,b)` is very good"*.
 
-`relativizeAt` (`DenseModelSurgery/Lemma5.lean:672`) is a different operator again: it
+`relativizeAt` (`DenseModelSurgery/Lemma5.lean:674`) is a different operator again: it
 relativizes to an `ε`-**class**, cut out by a binary formula at a single parameter. Reynolds'
 `γ(z,t)` needs **two** parameters cutting out an interval, which is `relativizeOpen`'s job.
 
@@ -462,7 +462,8 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- The sentence case: `γ(z,t)` holds at `(lo,hi)` exactly when `M | (lo,hi) ⊨ γ`. -/
 theorem relativizeOpenSentence_correct (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
     (φ : MonadicSentence sig) :
-    eval M ![lo, hi] (relativizeOpenSentence φ) ↔ eval (M.openSubinterval sig lo hi) Fin.elim0 φ := by
+    eval M ![lo,
+        hi] (relativizeOpenSentence φ) ↔ eval (M.openSubinterval sig lo hi) Fin.elim0 φ := by
   have h := relativizeOpen_correct M lo hi (Fin.elim0 : Fin 0 → _) φ
   have henv : relativizeOpenEnv M lo hi (Fin.elim0 : Fin 0 → (M.openSubinterval sig lo hi).carrier)
       = ![lo, hi] := by
@@ -979,7 +980,8 @@ theorem veryGoodDense_openSub_trans (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadic
       (binSum sig (M.openSubinterval sig t b)
         (pointSum sig M b (M.openSubinterval sig b u))) :=
     (kEquiv_openSub_split k M t b u htb hbu).trans
-      (kEquiv_binSum k (rfl : KEquiv sig k (M.openSubinterval sig t b) _) (kEquiv_halfOpen_pointSum sig k M b u hbu))
+      (kEquiv_binSum k (rfl : KEquiv sig k (M.openSubinterval sig t b) _)
+          (kEquiv_halfOpen_pointSum sig k M b u hbu))
   exact goodDense_of_kEquiv sig k hsplit
     (goodDense_binSum_pointSum k hk M b _ _
       (reynolds_lemma11 sig k hk _ hXvg) (reynolds_lemma11 sig k hk _ hYvg))

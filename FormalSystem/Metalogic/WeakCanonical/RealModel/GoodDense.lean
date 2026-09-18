@@ -87,25 +87,35 @@ module.**
 
 ## Proof step to declaration map
 
-| Reynolds' step (printed pp.185-186) | Declaration |
-|---|---|
-| *"the flow of time of `N` is an interval of the reals"* | `RIntervalStructure`, `RIntervalStructure.toOrdered` |
-| *"`M` is good"* | `goodDense` |
-| *"`M` is very good"* | `veryGoodDense` |
-| *"since `k ≥ 2` … both have a right (resp. left) hand end point"* | `noMaxOrder_of_kEquiv`, `noMinOrder_of_kEquiv` |
-| *"All one point structures are good"* | `goodDense_of_subsingleton` |
-| *"no bigger but finite structures are very good"* | `not_veryGoodDense_of_finite_two_lt` |
-| *"suppose that `N` has countably infinite domain"* | the `[Countable]` hypothesis of `reynolds_lemma11` |
-| *"First the case when `N` has no end points"* | `reynolds_lemma11_no_endpoints` |
-| *"Choose `a_i ∈ N` … `a_i < t < a_j`"* | `veryGoodSpine`, `veryGoodSpine_strictMono`, `veryGoodSpine_cofinal` |
-| *"Since `N` is very good, `N \| (a_i,a_{i+1})` is good"* | `veryGoodDense`, applied at `spine i < spine (i+1)` |
-| *"Take `R_i ≡_k N \| (a_i,a_{i+1})` with an open interval of `R` as a flow"* | `exists_iooUnit_witness` |
-| *"Because `≡_k` is preserved under lexicographic sums"* | `doets_lemma_1_4` (`OrderedSum.lean:41`), applied twice |
-| *"`N ≡_k Σ_{i∈Z}(N \| {a_i} + R_i)`"* | `kEquiv_blockSum` |
-| *"and this latter has flow isomorphic to `R`"* | `blockSumWitness_iso_real` |
-| *"its interior does not have end points"* | `belowSubinterval`, `aboveSubinterval`, `veryGoodDense_belowSubinterval`, `veryGoodDense_aboveSubinterval` |
-| *"use the lexicographic sum result to add appropriate singleton structures to the end(s)"* | `sumPoint`, `snocBlock`, `goodDense_pointSum`, `goodDense_sumPoint`, `goodDense_pointSum_sumPoint` |
-| *"Now if `N` has one or two end points …"* | `kEquiv_sumPoint_below`, `kEquiv_pointSum_above`, `kEquiv_above_below_open`, assembled in `reynolds_lemma11` |
+Each entry reads *Reynolds' step (printed pp.185-186)* — *Declaration*:
+
+* *"the flow of time of `N` is an interval of the reals"* — `RIntervalStructure`,
+  `RIntervalStructure.toOrdered`
+* *"`M` is good"* — `goodDense`
+* *"`M` is very good"* — `veryGoodDense`
+* *"since `k ≥ 2` … both have a right (resp. left) hand end point"* — `noMaxOrder_of_kEquiv`,
+  `noMinOrder_of_kEquiv`
+* *"All one point structures are good"* — `goodDense_of_subsingleton`
+* *"no bigger but finite structures are very good"* — `not_veryGoodDense_of_finite_two_lt`
+* *"suppose that `N` has countably infinite domain"* — the `[Countable]` hypothesis of
+  `reynolds_lemma11`
+* *"First the case when `N` has no end points"* — `reynolds_lemma11_no_endpoints`
+* *"Choose `a_i ∈ N` … `a_i < t < a_j`"* — `veryGoodSpine`, `veryGoodSpine_strictMono`,
+  `veryGoodSpine_cofinal`
+* *"Since `N` is very good, `N | (a_i,a_{i+1})` is good"* — `veryGoodDense`, applied at
+  `spine i < spine (i+1)`
+* *"Take `R_i ≡_k N | (a_i,a_{i+1})` with an open interval of `R` as a flow"* —
+  `exists_iooUnit_witness`
+* *"Because `≡_k` is preserved under lexicographic sums"* — `doets_lemma_1_4`
+  (`OrderedSum.lean:41`), applied twice
+* *"`N ≡_k Σ_{i∈Z}(N | {a_i} + R_i)`"* — `kEquiv_blockSum`
+* *"and this latter has flow isomorphic to `R`"* — `blockSumWitness_iso_real`
+* *"its interior does not have end points"* — `belowSubinterval`, `aboveSubinterval`,
+  `veryGoodDense_belowSubinterval`, `veryGoodDense_aboveSubinterval`
+* *"use the lexicographic sum result to add appropriate singleton structures to the end(s)"* —
+  `sumPoint`, `snocBlock`, `goodDense_pointSum`, `goodDense_sumPoint`, `goodDense_pointSum_sumPoint`
+* *"Now if `N` has one or two end points …"* — `kEquiv_sumPoint_below`, `kEquiv_pointSum_above`,
+  `kEquiv_above_below_open`, assembled in `reynolds_lemma11`
 
 ## ADAPTED-FROM
 
@@ -716,7 +726,8 @@ theorem exists_ioo_witness (sig : MonadicSignature) [Fintype sig.preds] [Decidab
     (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig) [Nonempty M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier] (hM : goodDense sig k M) {c d : ℝ}
     (hcd : c < d) :
-    ∃ R : RIntervalStructure sig, R.carrierSet = Set.Ioo c d ∧ KEquiv sig k M (R.toOrdered sig) := by
+    ∃ R : RIntervalStructure sig, R.carrierSet = Set.Ioo c d ∧ KEquiv sig k M (R.toOrdered sig) :=
+        by
   obtain ⟨R₀, hR₀⟩ := hM
   haveI hne : Nonempty {x : ℝ // x ∈ R₀.carrierSet} :=
     nonempty_of_kEquiv sig k (le_trans one_le_two hk) hR₀

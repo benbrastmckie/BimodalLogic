@@ -20,12 +20,14 @@ This tree carries three, and the reader must keep them apart. The name-collision
 `Syntax/Formula.lean:164-179` names the first two; this module adds the third and, with the bridge
 lemmas below, reduces the number of *unbridged* spellings from two to zero.
 
-| Spelling | Level | Definition | Transcribes |
-|---|---|---|---|
-| `Formula.kPlus` (`Syntax/Formula.lean:181`) | object | `(untl ⊤ φ.neg).neg` | **the sources, exactly** |
-| `kplusOpen` (**this module**) | `Prop` | `∀ s > t, ∃ r ∈ (t,s), P(r)` | **the sources, exactly** — the semantic reading of `Formula.kPlus` |
-| `kplus` (`Kamp/PriorINF.lean:86`) | `Prop` | `¬P(t) ∧ ∀ s > t, ∃ r ∈ (t,s), P(r)` | **neither source** — strictly stronger, by the added `¬P(t)` |
-| `kplusFormula` (`Kamp/PriorINF.lean:~93`) | object | `P.neg ∧ ¬(⊤ U P.neg)` | the object-level spelling of `kplus`, not of the sources' `K⁺` |
+* `Formula.kPlus` (`Syntax/Formula.lean:181`), object level, `(untl ⊤ φ.neg).neg` — transcribes
+  **the sources, exactly**.
+* `kplusOpen` (**this module**), `Prop` level, `∀ s > t, ∃ r ∈ (t,s), P(r)` — transcribes **the
+  sources, exactly**; it is the semantic reading of `Formula.kPlus`.
+* `kplus` (`Kamp/PriorINF.lean:86`), `Prop` level, `¬P(t) ∧ ∀ s > t, ∃ r ∈ (t,s), P(r)` —
+  transcribes **neither source**: strictly stronger, by the added `¬P(t)`.
+* `kplusFormula` (`Kamp/PriorINF.lean:~93`), object level, `P.neg ∧ ¬(⊤ U P.neg)` — the
+  object-level spelling of `kplus`, not of the sources' `K⁺`.
 
 The two source definitions, read verbatim from the corpus at this revision:
 
@@ -46,13 +48,13 @@ conventions, and `Formula.untl φ ψ` (`Table.lean:188`) follows Reynolds'.
 
 ## The bridge, and why its absence mattered
 
-`Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`), `DerivedAxioms.priorSGap` (`:387`) and `Axiom.sep`
-(`:390`) are all stated with `Formula.kPlus` / `Formula.kMinus`, while the whole Prop-level carrier
-apparatus — `kplus`, `HasDefinableINF`, `HasAttainedINF`, `HasDedekindINF`, `HasGuardedDedekindINF`,
-`HasDenseDedekindINF` and the eight `*Faithful*` modules — is stated with `kplus`. Nothing in the
-tree could read the axioms semantically, and nothing could move between the two spellings.
-`kPlus_formula_correct` and `kMinus_formula_correct` below are that bridge, and they are
-independently valuable to any later phase that must relate an axiom to a truth condition.
+`Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`), `DerivedAxioms.priorSGap` (`:387`) and
+`Axiom.sep` (`:390`) are all stated with `Formula.kPlus` / `Formula.kMinus`, while the whole
+Prop-level carrier apparatus — `kplus`, `HasDefinableINF`, `HasAttainedINF`, `HasDedekindINF`,
+`HasGuardedDedekindINF`, `HasDenseDedekindINF` and the eight `*Faithful*` modules — is stated with
+`kplus`. Nothing in the tree could read the axioms semantically, and nothing could move between the
+two spellings. `kPlus_formula_correct` and `kMinus_formula_correct` below are that bridge, and they
+are independently valuable to any later phase that must relate an axiom to a truth condition.
 
 ## The faithful carrier
 
@@ -167,8 +169,8 @@ theorem kPlus_formula_correct {sig : MonadicSignature}
 /-- **The bridge, mirrored: `Formula.kMinus` is `kminusOpen`.**
 
     `Formula.kMinus P` is `(snce P.neg ⊤).neg` (`Syntax/Formula.lean:193`), Reynolds' `¬S(⊤,¬P)`
-    (printed p.168). `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:387`) and `Axiom.sep` (`:390`)
-    are stated with it. -/
+    (printed p.168). `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:387`) and `Axiom.sep`
+    (`:390`) are stated with it. -/
 theorem kMinus_formula_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) :
@@ -630,7 +632,7 @@ theorem hasFaithfulDedekindINF_survives_interval_witness {sig : MonadicSignature
   ⟨kplusOpen_of_interval_witness M atomMap hdense P z0 z1 h_lt h_on,
     hasDedekindINF_fails_of_interval_witness M atomMap hdense P z0 z1 h_lt h_at h_on⟩
 
-/-- **The probe at the concrete configuration** — `denseWindowFlow` (`PriorDefsDense.lean:336`),
+/-- **The probe at the concrete configuration** — `denseWindowFlow` (`PriorDefsDense.lean:337`),
     `z₀ = 1/2`, `z₁ = 1`, `P` the atom true exactly on `(0,1)`.
 
     This is precisely the point at which `denseWindow_endpoint_disjunct_forced`

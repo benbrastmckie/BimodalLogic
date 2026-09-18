@@ -88,7 +88,7 @@ unavailability as a claim about this module's own target.
   under `Kamp/NfMultiAnchorBridge/`, and the spine `Kamp/KampPriorFaithful.lean`.
 * `uSExpressivelyCompleteOverDensePriorOfFaithful` — **sorry-free**. The composition the plan
   chartered, discharged in full: the obligation plus `prior_hasFaithfulDedekindINF_dense` /
-  `prior_hasFaithfulDedekindSUP_dense` (Phase 10.1, `Kamp/KPlusFaithful.lean:474`, `:524`) gives
+  `prior_hasFaithfulDedekindSUP_dense` (Phase 10.1, `Kamp/KPlusFaithful.lean:476`, `:524`) gives
   the dense target. Every step of the intended composition that *can* be taken is taken here.
 * `uSExpressivelyCompleteOverDensePrior` — the plan-shaped target, obtained from the conditional
   by discharging the obligation. **This module is sorry-free**, as is the whole of
@@ -171,7 +171,7 @@ target rests on, and the faithful sibling of `Kamp.kampPriorExpressiveCompletene
 
 Same shape as `kampPriorExpressiveCompleteness`, with `SemanticPriorUZ` / `SemanticPriorSZ`
 replaced by `Kamp.HasFaithfulDedekindINF` / `Kamp.HasFaithfulDedekindSUP`
-(`Kamp/KPlusFaithful.lean:320` and its `Since`-dual) — Rabinovich 2014's eq (5.2), PDF p.8, at
+(`Kamp/KPlusFaithful.lean:322` and its `Since`-dual) — Rabinovich 2014's eq (5.2), PDF p.8, at
 the source's own `K⁺` rather than at this tree's `kplus`.
 
 Stated at `MonadicFormula sig 1`: the arity at which the existing chain closes, inheriting
@@ -203,7 +203,7 @@ unconditional `uSExpressivelyCompleteOverDensePrior` is the obligation above. -/
 
 The composition: `SemanticPriorU` yields `Kamp.HasFaithfulDedekindINF` with no completeness or
 discreteness hypothesis on the flow (`Kamp.prior_hasFaithfulDedekindINF_dense`,
-`Kamp/KPlusFaithful.lean:474`), and `SemanticPriorS` yields the `Since`-dual
+`Kamp/KPlusFaithful.lean:476`), and `SemanticPriorS` yields the `Since`-dual
 (`Kamp.prior_hasFaithfulDedekindSUP_dense`, `:524`); feeding both to the obligation gives the
 dense target, with the *same* witness formula `A`.
 
@@ -336,10 +336,10 @@ how the expressive-completeness obligation is met. A sorry-free
 `uSExpressivelyCompleteOverDensePrior` whose hypothesis no dense structure satisfies would
 reproduce the exact defect this whole block exists to repair, so
 the hypothesis pair is exhibited as inhabited at Phase 9's positive dense witness
-`denseWindowFlow` (`PriorDefsDense.lean:336`), and the conditional theorem is instantiated there
+`denseWindowFlow` (`PriorDefsDense.lean:337`), and the conditional theorem is instantiated there
 at a non-trivial `psi`. -/
 
-/-- `densePriorSig.preds` is `Unit` (`PriorDefsDense.lean:294`), hence finite.
+/-- `densePriorSig.preds` is `Unit` (`PriorDefsDense.lean:295`), hence finite.
 
 `MonadicSignature` deliberately carries no `Fintype` field (`MonadicFO.lean:61-63`) under the
 infinite-alphabet discipline, so the instance is supplied per-signature, as here. -/
@@ -359,7 +359,7 @@ at the dense window flow, and so does the faithful carrier the composition route
 neither the target's hypothesis pair nor the intermediate carrier is empty.
 
 The carrier facts are Phase 13's `Kamp.hasFaithfulDedekindINF_of_dense_window` and its dual
-(`Kamp/KPlusFaithful.lean:672`, `:678`); listing them alongside the Prior hypotheses records that
+(`Kamp/KPlusFaithful.lean:674`, `:678`); listing them alongside the Prior hypotheses records that
 `uSExpressivelyCompleteOverDensePriorOfFaithful`'s *internal* step is inhabited here too, not
 only its premise. -/
 theorem densePrior_target_hypotheses_inhabited :

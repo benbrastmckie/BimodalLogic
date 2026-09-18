@@ -137,21 +137,25 @@ caveat is load-bearing and is not to be weakened.
 
 ## Proof-step → name map
 
-| Printed step (pp.181-182) | Declaration |
-|---|---|
-| *"Let `Q₀` be the bad interval itself and `I` be any one of its `∼`-classes"* | `IsBadIntervalSurgery` |
-| *"the substructure of `M` whose domain is just `Q⁻ ∪ I ∪ Q⁺`"* | `SurgeryDomain`, `surgeredStructure` |
-| *"`Q⁻` … all that precedes"*, *"`Q⁺` … all that follows"* | `IsBadIntervalSurgery.lt_of_before`, `.lt_of_after` |
-| *"`I` … one of its `∼`-classes"* (`I ⊆ Q₀`) | `IsBadIntervalSurgery.mem_of_contemp` |
-| *"by lemma 7 … holds everywhere in `Q₀`"* (start) | `IsBadIntervalSurgery.lemma7_start_wide` |
-| *"by lemma 7 … holds everywhere in `Q₀`"* (end) | `IsBadIntervalSurgery.lemma7_end_wide` |
-| *"true arbitrarily close to the end of `I`"* | `IsBadIntervalSurgery.lemma7_close_right_wide` |
-| *"true arbitrarily close to \[the start\] of `I`"* | `IsBadIntervalSurgery.lemma7_close_left_wide` |
-| *"The cases of atomic and boolean `A` are immediate"* | `reynolds_lemma8` — `atom`/`bot`/`imp`/`box` |
-| forward cases 1-7 | `reynolds_lemma8_untl_forward` |
-| backward cases 1-6 | `reynolds_lemma8_untl_backward` |
-| *"`S(A,B)` is similar"* | `reynolds_lemma8_snce_forward`, `reynolds_lemma8_snce_backward` |
-| **LEMMA 8** itself | `reynolds_lemma8` |
+Each entry reads *Printed step (pp.181-182)* — *Declaration*:
+
+* *"Let `Q₀` be the bad interval itself and `I` be any one of its `∼`-classes"* —
+  `IsBadIntervalSurgery`
+* *"the substructure of `M` whose domain is just `Q⁻ ∪ I ∪ Q⁺`"* — `SurgeryDomain`,
+  `surgeredStructure`
+* *"`Q⁻` … all that precedes"*, *"`Q⁺` … all that follows"* — `IsBadIntervalSurgery.lt_of_before`,
+  `.lt_of_after`
+* *"`I` … one of its `∼`-classes"* (`I ⊆ Q₀`) — `IsBadIntervalSurgery.mem_of_contemp`
+* *"by lemma 7 … holds everywhere in `Q₀`"* (start) — `IsBadIntervalSurgery.lemma7_start_wide`
+* *"by lemma 7 … holds everywhere in `Q₀`"* (end) — `IsBadIntervalSurgery.lemma7_end_wide`
+* *"true arbitrarily close to the end of `I`"* — `IsBadIntervalSurgery.lemma7_close_right_wide`
+* *"true arbitrarily close to \[the start\] of `I`"* — `IsBadIntervalSurgery.lemma7_close_left_wide`
+* *"The cases of atomic and boolean `A` are immediate"* — `reynolds_lemma8` —
+  `atom`/`bot`/`imp`/`box`
+* forward cases 1-7 — `reynolds_lemma8_untl_forward`
+* backward cases 1-6 — `reynolds_lemma8_untl_backward`
+* *"`S(A,B)` is similar"* — `reynolds_lemma8_snce_forward`, `reynolds_lemma8_snce_backward`
+* **LEMMA 8** itself — `reynolds_lemma8`
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
@@ -267,7 +271,8 @@ omit [IsDualClosed C] in
 
 Derived, not assumed: the interiority witnesses put the class inside `[a, b]`, `R` holds
 throughout `[a, b]`, and the saturation clause of `IsBadInterval` then pulls `[a, b]` into `Q`. -/
-theorem mem_of_contemp (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+theorem mem_of_contemp (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDenseOn ε C)
+    [InStructureClass C M]
     {p q : M.carrier} (hp : Q p) (hpq : ContempEquivDense M ε p q) : Q q := by
   obtain ⟨a, b, _, _, hint⟩ := hS.interior p p hp hp
   have haq : a < q := lt_of_classMate hε M hint.toR.left_lt hint.toR.left_out hpq
@@ -279,7 +284,8 @@ theorem mem_of_contemp (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEqui
 
 omit [IsDualClosed C] in
 /-- **`I ⊆ Q₀`** at the designated class. -/
-theorem mem_of_contemp_base (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+theorem mem_of_contemp_base (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDenseOn ε C)
+    [InStructureClass C M]
     {q : M.carrier} (h : ContempEquivDense M ε t q) : Q q :=
   hS.mem_of_contemp hε hS.mem h
 
@@ -655,7 +661,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`TemporalTruth` is invariant along a structure isomorphism.**
 
-`eval_iso` (`Dual.lean:351`) with `table_correctness` (`Table.lean:254`) on both sides. This is
+`eval_iso` (`Dual.lean:358`) with `table_correctness` (`Table.lean:254`) on both sides. This is
 the lemma `Dual.lean` stopped one step short of; it is stated for an arbitrary `StructIso`, so it
 is reusable for any later carrier transport. -/
 theorem temporalTruth_iso {M N : OrderedMonadicStructure sig} (e : StructIso M N)
@@ -740,15 +746,17 @@ theorem isBadIntervalSurgery_dual (hS : IsBadIntervalSurgery M ε Q t) :
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The induction hypotheses transport across the mirror.**
 
-An `N`-versus-`M` agreement at `C` becomes an `N'`-versus-`dual M` agreement at `reflectTimeBoxOpaque C`, where
-`N'` is the surgered dual. Both sides move at once: the base side by `temporalTruth_dual'`, the
-surgered side by `temporalTruth_dual'` followed by `temporalTruth_iso`. -/
+An `N`-versus-`M` agreement at `C` becomes an `N'`-versus-`dual M` agreement at
+`reflectTimeBoxOpaque C`, where `N'` is the surgered dual. Both sides move at once: the base side by
+`temporalTruth_dual'`, the surgered side by `temporalTruth_dual'` followed by `temporalTruth_iso`.
+-/
 theorem snce_mirror_ih (atomMap : Formula → sig.preds) {C : Formula}
     (ih : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val C ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y C) :
     ∀ y : (surgeredStructure (dual M) (dualize ε) Q (d t)).carrier,
       TemporalTruth (dual M) atomMap y.val (reflectTimeBoxOpaque C) ↔
-        TemporalTruth (surgeredStructure (dual M) (dualize ε) Q (d t)) atomMap y (reflectTimeBoxOpaque C) := by
+        TemporalTruth (surgeredStructure (dual M) (dualize ε) Q
+            (d t)) atomMap y (reflectTimeBoxOpaque C) := by
   intro y
   obtain ⟨y₀, rfl⟩ := (surgeredDualEquiv M ε Q t).surjective y
   exact ((temporalTruth_dual' (M := M) atomMap y₀.val C).trans (ih y₀)).trans
@@ -801,7 +809,8 @@ theorem reynolds_lemma8_snce_backward (atomMap : Formula → sig.preds)
     (isBadIntervalSurgery_dual hS) (reflectTimeBoxOpaque A) (reflectTimeBoxOpaque B)
     (snce_mirror_ih atomMap ihA) (snce_mirror_ih atomMap ihB)
     ((surgeredDualIso M ε Q t).toEquiv (d x)) ?_
-  exact (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x) (reflectTimeBoxOpaque (.snce B A))).mpr
+  exact (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x)
+      (reflectTimeBoxOpaque (.snce B A))).mpr
     ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snce B A)).mpr h)
 
 /-! ## Lemma 8

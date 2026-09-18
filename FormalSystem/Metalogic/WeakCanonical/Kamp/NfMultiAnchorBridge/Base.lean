@@ -1635,13 +1635,11 @@ depth-`k` IH: at each future witness `x > t`, the hook's `.EvalAt x` conjoined w
 `seg`
 holding on `(t, x)` characterizes the coupled arity-3 quant layer of `sub_nf` at `[x, t]`, one depth
 down), the future-arm formula holds at `t` iff there is a future witness `t < x` where `sub_nf`
-evaluates on the two-anchor env `[x, t]`. Assembled from `temporalTruth_and_iff` (origin factor split)
-+
-`A_future_correct` (Phase 1 outer bracket) + `nf_char2_atom_offdiag_correct_future` (Phase 5 flipped
-atom locus) + the depth-`(k+1)` `NfEvalNf` unfolding, with the quant layer routed through
-`h_quant`.
-`zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _ => t))` matches `NfEvalNf`'s inner env. Rabinovich
-Cor 5.4 `F_i` chain future arm (md:154-157).
+evaluates on the two-anchor env `[x, t]`. Assembled from `temporalTruth_and_iff` (origin factor
+split) + `A_future_correct` (Phase 1 outer bracket) + `nf_char2_atom_offdiag_correct_future` (Phase
+5 flipped atom locus) + the depth-`(k+1)` `NfEvalNf` unfolding, with the quant layer routed through
+`h_quant`. `zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _ => t))` matches `NfEvalNf`'s inner env.
+Rabinovich Cor 5.4 `F_i` chain future arm (md:154-157).
 
 **Downstream citability — the future-arm hook is DISCHARGED at k=0 in the sense
 that binds.** Downstream assembly should consume the skeleton-shaped conclusion by name, NOT

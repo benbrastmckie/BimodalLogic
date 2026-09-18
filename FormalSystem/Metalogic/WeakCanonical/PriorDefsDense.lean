@@ -31,10 +31,10 @@ gaps. Note that this result does not hold for the original Prior axioms in the l
 `P`."*
 
 The object-level axioms already exist in this tree as `Axiom.prior_U_gap`
-(`ProofSystem/Axioms.lean:377`) and `DerivedAxioms.priorSGap` (`:387`), each of which carries an explicit
-"THIS IS NOT `prior_UZ`/`prior_SZ`" caveat. `SemanticPriorU` / `SemanticPriorS` below are the
-semantic side of exactly those two axioms, read at an `OrderedMonadicStructure` in the same idiom
-`PriorDefs.lean` uses for the integer pair.
+(`ProofSystem/Axioms.lean:377`) and `DerivedAxioms.priorSGap` (`:387`), each of which carries an
+explicit "THIS IS NOT `prior_UZ`/`prior_SZ`" caveat. `SemanticPriorU` / `SemanticPriorS` below are
+the semantic side of exactly those two axioms, read at an `OrderedMonadicStructure` in the same
+idiom `PriorDefs.lean` uses for the integer pair.
 
 Unfolding the temporal operators with this tree's `TemporalTruth` (`Table.lean:188`):
 
@@ -134,8 +134,9 @@ abbrev SemanticPriorU {sig : MonadicSignature}
 mirror of `SemanticPriorU` in the past direction, with `K⁻` (`kminus`, `Kamp/PriorINF.lean`) in
 place of `K⁺`.
 
-This is the semantic side of `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:387`), and stands to
-`SemanticPriorSZ` (`PriorDefs.lean:39`) exactly as `SemanticPriorU` stands to `SemanticPriorUZ`. -/
+This is the semantic side of `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:387`), and stands
+to `SemanticPriorSZ` (`PriorDefs.lean:39`) exactly as `SemanticPriorU` stands to `SemanticPriorUZ`.
+-/
 abbrev SemanticPriorS {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) : Prop :=

@@ -76,18 +76,24 @@ prose, which is the half of the corpus the standing warning rates as clean.
 
 ## Proof-step → name map
 
-| Printed step (pp.182-183) | Declaration |
-|---|---|
-| *"`N` is a Prior structure: we still have all the instances of Prior-U/S continuing to hold"* | `priorUFormula`, `priorSFormula`, `surgeredSemanticPriorU`, `surgeredSemanticPriorS` |
-| *"as any counterexample point in `N` is also one in `M`"* | `reynolds_lemma8` applied to `priorUFormula p` |
-| *"By lemma 8, `R` holds in `I` in `N`"* | `reynolds_lemma9_R_in_N` |
-| *"by lemma 2, `R` holds at a point in any Prior structure (not just `M`)"* | `gapRightFormula_spec` at `surgeredStructure` |
-| *"By the contemporaneity of `ε`, `I` … is all in one `∼_N`-class"* | `surgeredContempEquiv_of_base` |
-| *"Thus `Q⁺` is non-empty"* | `reynolds_lemma9_exists_after`, `exists_not_isBadPoint_gt` |
-| *"and by lemma 6 begins with a point `q`"*, *"`¬R` holds at `q`"* | `reynolds_lemma6_right_endpoint` |
-| *"Clearly `q` is not in the class of `I` in `N`. Thus the class ends just before `q`"* | `reynolds_lemma9` (the closing `refine`, on `endsInGapOnRight_congr`) |
-| **LEMMA 9** itself | `reynolds_lemma9` |
-| **THEOREM 4** | `no_gaps_dense_prior` |
+Each entry reads *Printed step (pp.182-183)* — *Declaration*:
+
+* *"`N` is a Prior structure: we still have all the instances of Prior-U/S continuing to hold"* —
+  `priorUFormula`, `priorSFormula`, `surgeredSemanticPriorU`, `surgeredSemanticPriorS`
+* *"as any counterexample point in `N` is also one in `M`"* — `reynolds_lemma8` applied to
+  `priorUFormula p`
+* *"By lemma 8, `R` holds in `I` in `N`"* — `reynolds_lemma9_R_in_N`
+* *"by lemma 2, `R` holds at a point in any Prior structure (not just `M`)"* —
+  `gapRightFormula_spec` at `surgeredStructure`
+* *"By the contemporaneity of `ε`, `I` … is all in one `∼_N`-class"* —
+  `surgeredContempEquiv_of_base`
+* *"Thus `Q⁺` is non-empty"* — `reynolds_lemma9_exists_after`, `exists_not_isBadPoint_gt`
+* *"and by lemma 6 begins with a point `q`"*, *"`¬R` holds at `q`"* —
+  `reynolds_lemma6_right_endpoint`
+* *"Clearly `q` is not in the class of `I` in `N`. Thus the class ends just before `q`"* —
+  `reynolds_lemma9` (the closing `refine`, on `endsInGapOnRight_congr`)
+* **LEMMA 9** itself — `reynolds_lemma9`
+* **THEOREM 4** — `no_gaps_dense_prior`
 
 ## Honest caveat on conditionality — what this module does and does not retire
 
@@ -254,10 +260,10 @@ theorem semanticPriorU_iff_forall :
 
 /-! ### The past mirror
 
-Written out rather than obtained by instantiation at `dual M`. `Dual.lean`'s `reflectTimeBoxOpaque` does give
-`reflectTimeBoxOpaque (priorUFormula p) = priorSFormula (reflectTimeBoxOpaque p)`, but the transport it feeds
-(`semanticPriorS_dual`) runs `SemanticPriorU M → SemanticPriorS (dual M)` and the direction
-needed here is the other one, at `M` itself; supplying it would be more new work than the
+Written out rather than obtained by instantiation at `dual M`. `Dual.lean`'s `reflectTimeBoxOpaque`
+does give `reflectTimeBoxOpaque (priorUFormula p) = priorSFormula (reflectTimeBoxOpaque p)`, but the
+transport it feeds (`semanticPriorS_dual`) runs `SemanticPriorU M → SemanticPriorS (dual M)` and the
+direction needed here is the other one, at `M` itself; supplying it would be more new work than the
 transcription below.
 
 The transcription is not a *mirror* in the sense `Dual.lean` exists to avoid, either: Reynolds
@@ -446,7 +452,8 @@ def surgerySubintervalIso (M : OrderedMonadicStructure sig) (ε : MonadicFormula
 omit [IsDualClosed C] in
 /-- **A class is convex, as a set of points**: anything between two members of `t`'s class is in
 `t`'s class. Clause (ii) of `IsContempEquivDense` with the base point moved to `t`. -/
-theorem contemp_of_mem_class_interval (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x y z : M.carrier}
+theorem contemp_of_mem_class_interval (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+    {x y z : M.carrier}
     (hx : ContempEquivDense M ε t x) (hy : ContempEquivDense M ε t y)
     (h₁ : min x y ≤ z) (h₂ : z ≤ max x y) : ContempEquivDense M ε t z := by
   have hequiv := hε.equiv M
@@ -489,7 +496,7 @@ Reynolds' six sentences become six named lemmas; the last of them closes the con
 
 **The hypothesis Reynolds does not name.** His *"by lemma 6 begins with a point `q`"* is the third
 clause of Lemma 6, which in this tree is `reynolds_lemma6_right_endpoint`
-(`BadIntervals.lean:1283`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
+(`BadIntervals.lean:1303`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
 point at or above `t` is an `R`-point"* — because Reynolds' *"plainly impossible given `ρ`"* step
 inside it needs Lemma 6's **first** clause (*"in any bad interval both `R` and `L` hold
 throughout"*) at the boundary point, and the landed development declined to assume that silently.
@@ -553,7 +560,8 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 `R` holds at every point of `Q₀` (`endsInGapOnRight_of_mem`), and `ρ`'s second conjunct is
 exactly *"the class has no last point"* (`exists_contemp_gt`). -/
 theorem exists_contemp_gt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
-    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x : M.carrier} (hx : ContempEquivDense M ε t x) :
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x : M.carrier}
+        (hx : ContempEquivDense M ε t x) :
     ∃ w : M.carrier, x < w ∧ ContempEquivDense M ε t w := by
   obtain ⟨w, hxw, hcw⟩ :=
     exists_contemp_gt hε M (endsInGapOnRight_of_mem hS (hS.mem_of_contemp_base hε hx))
@@ -564,7 +572,8 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` has no first point** — the mirror of `exists_contemp_gt_of_mem`, through
 `endsInGapOnLeft_of_mem` and `λ`'s second conjunct (`exists_contemp_lt`). -/
 theorem exists_contemp_lt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
-    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x : M.carrier} (hx : ContempEquivDense M ε t x) :
+    (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x : M.carrier}
+        (hx : ContempEquivDense M ε t x) :
     ∃ w : M.carrier, w < x ∧ ContempEquivDense M ε t w := by
   obtain ⟨w, hwx, hcw⟩ :=
     exists_contemp_lt hε M (endsInGapOnLeft_of_mem hS (hS.mem_of_contemp_base hε hx))
@@ -805,7 +814,7 @@ maximal interval. The obstruction is exact and was measured, not guessed:
 * but `IsBadIntervalSurgery.interior` demands `ClassInteriorToBadInterval`, which carries `R`
   **and** `L` throughout its segment;
 * closing that gap is the implication `L → R` at a point where only `L` is known. The landed
-  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1348`) proves it, but only from a
+  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1368`) proves it, but only from a
   `ClassInteriorToLInterval` witness, and producing that witness at a merely-`L` point was exactly
   what was missing.
 

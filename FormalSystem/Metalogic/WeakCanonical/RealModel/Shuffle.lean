@@ -59,7 +59,7 @@ renders:
 
 **Lemma 13's hypotheses are strengthened, and the strengthening is real.** Reynolds states the
 lemma *"for any structure `M`"*. His one-line proof turns on *"clearly `M | E` is very good"*,
-and `veryGoodDense` (`GoodDense.lean:253`) — faithfully following his own §8 definition —
+and `veryGoodDense` (`GoodDense.lean:263`) — faithfully following his own §8 definition —
 demands that every open subinterval be **non-empty**. At a structure with an immediate successor
 pair `p ⋖ q` inside a class, `M | (p,q)` is empty, so `M | E` is *not* very good and the
 one-liner fails. Getting from *very good* to *good* is Lemma 11, which is stated for
@@ -289,7 +289,8 @@ theorem kEquiv_orderedSum_reindex (k : Nat) {I J : Type}
       (fun x y h => le_of_eq_of_le rfl (by
         rcases eq_or_lt_of_le h with rfl | h' <;> [exact le_refl _; exact le_of_lt (hmono _ _ h')]))
       (fun x y h => by
-        rcases eq_or_lt_of_le h with rfl | h' <;> [exact le_refl _; exact le_of_lt (hmono' _ _ h')]))
+        rcases eq_or_lt_of_le h with rfl | h'
+            <;> [exact le_refl _; exact le_of_lt (hmono' _ _ h')]))
     (fun p x => by rcases x with ⟨i, c⟩; exact Iff.rfl)
 
 /-- **Sums over order-isomorphic index sets are `≡ₖ`**, when matched summands are.

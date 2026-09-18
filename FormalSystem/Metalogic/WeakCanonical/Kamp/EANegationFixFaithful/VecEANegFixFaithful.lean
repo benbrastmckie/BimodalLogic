@@ -39,10 +39,10 @@ and, immediately below it, the De Morgan fold:
 
 The two-free-variable case those steps invoke is Proposition 4.2 itself — stated on the same page
 as holding **over Dedekind complete chains**, which is precisely the carrier this module's `_iff`
-lemmas are anchored to (via `HasFaithfulDedekindINF`, `KPlusFaithful.lean:320`) rather than the
+lemmas are anchored to (via `HasFaithfulDedekindINF`, `KPlusFaithful.lean:322`) rather than the
 strictly stronger attainment the landed chain assumes. Lemma 5.1's recursion, PDF **pp.10-11**,
 supplies the bracket leg and is consumed opaquely here through `negFixListFaithful_iff`
-(`NegFixListFaithful.lean:333`).
+(`NegFixListFaithful.lean:332`).
 
 ## What the migrated type buys at the lift
 
@@ -64,11 +64,11 @@ deleting the paper's limit case; that is the failure mode these two declarations
 
 ## Carrier discipline
 
-Every `_iff` lemma here assumes `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) and nothing
+Every `_iff` lemma here assumes `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) and nothing
 else — no `HasDedekindSUP`, no `HasAttained*`. That is Rabinovich's eq (5.2) dichotomy at the
 *source's* `K⁺`, one strengthening step weaker than the `HasDedekindINF` this module assumed
 before the re-base. The only shim used is `HasAttainedINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:382`, the direct composite landed with the faithful carrier), in the
+(`KPlusFaithful.lean:384`, the direct composite landed with the faithful carrier), in the
 attained → faithful direction, in `VVecEA2.negFixFaithful_iff_of_attained`. There is no use of a
 faithful → attained shim anywhere in this module; such a use would be a strengthening, not a lift.
 
@@ -233,8 +233,8 @@ theorem vecEANegFixFaithfulFold_iff {sig : MonadicSignature}
 
 /-- **Prop 4.2 / 4.3, faithful** (Rabinovich 2014, PDF p.6): over `HasFaithfulDedekindINF`
     **alone**, the De Morgan fold `v.negFixFaithful` holds on `(z₀,z₁)` iff the `VVecEA2`
-    disjunction `v` fails there. Mirror of `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`), which needs
-    `HasAttainedINF` **and** `HasAttainedSUP`.
+    disjunction `v` fails there. Mirror of `VVecEA2.negFix_iff`
+    (`EANegationFix/VecEANegFix.lean:183`), which needs `HasAttainedINF` **and** `HasAttainedSUP`.
 
     Rabinovich states Proposition 4.2 over **Dedekind complete chains** (p.6) — verbatim, PDF p.6:
     *"Proposition 4.2. (Closure under negation) The negation of ∃⃗∀-formulas with at most two free
@@ -291,12 +291,12 @@ theorem VecEA2.negFixFaithful_of_bracket {sig : MonadicSignature}
     version stayed true only via `kplusOpen_of_kplus`, and an indispensability artifact stated at
     a gate strictly stronger than the one the definition carries certifies less than it appears
     to. Re-pointed here for the same reason `negFixListFaithful_case1_is_indispensable`
-    (`NegFixListFaithful.lean:542`) was re-pointed: the two are comparable, so re-pointing
+    (`NegFixListFaithful.lean:541`) was re-pointed: the two are comparable, so re-pointing
     strengthens rather than duplicates. Every consumer holding the old `kplus` form recovers this
     one by `kplusOpen_of_kplus`.
 
     This is the Phase-8 counterpart of `negFixListFaithful_case1_is_indispensable`
-    (`NegFixListFaithful.lean:542`): that one shows the limit disjunct cannot be absorbed by its
+    (`NegFixListFaithful.lean:541`): that one shows the limit disjunct cannot be absorbed by its
     neighbours *inside* the recursion, this one shows it is not quietly discarded *by the lift*.
     Together they exclude the two ways a three-disjunct recursion degrades into a two-disjunct one
     without any statement in this module becoming false. -/
@@ -319,10 +319,10 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
 /-! ## Availability shim (attained → faithful, never the reverse) -/
 
 /-- The faithful fold is available wherever the attained one is, and needs only the INF half:
-    `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:382`) supplies the carrier, and
+    `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:384`) supplies the carrier, and
     `HasAttainedSUP` — which `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`) requires —
     is not needed at all. Mirrors `negFixListFaithful_iff_of_attained`
-    (`NegFixListFaithful.lean:574`).
+    (`NegFixListFaithful.lean:573`).
 
     The shim runs attained → faithful. No declaration in this module runs it in the opposite
     direction; a faithful → attained use would be a strengthening, not a lift. -/

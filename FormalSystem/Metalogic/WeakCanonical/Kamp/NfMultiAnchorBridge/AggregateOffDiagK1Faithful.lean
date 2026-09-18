@@ -125,12 +125,12 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 record: a consumer arriving with `HasAttainedINF` / `HasAttainedSUP` — as both
 `aggPop1_correct` and `aggPop1F_correct` do, via `prior_hasAttainedINF` / `prior_hasAttainedSUP` —
 can read off the faithful fold, through `HasAttainedINF.toHasFaithfulDedekindINF` /
-`HasAttainedSUP.toHasFaithfulDedekindSUP` (`KPlusFaithful.lean:382`, `:389`).
+`HasAttainedSUP.toHasFaithfulDedekindSUP` (`KPlusFaithful.lean:384`, `:389`).
 
 This machine-checks that the re-base is a weakening of hypotheses and not a sideways move.
 `aggOdPopFold_iff` itself is left untouched, and there is no converse: the faithful carrier does
 not yield `HasAttainedINF` (`hasFaithfulDedekindINF_not_implies_hasDedekindINF`,
-`KPlusFaithful.lean:693`).
+`KPlusFaithful.lean:695`).
 
 Note that the two folds are *different carrier terms* — this one negates with `negFixFaithful`,
 the original with `negFix` — so this is coverage of the attained hypothesis set, not an identity

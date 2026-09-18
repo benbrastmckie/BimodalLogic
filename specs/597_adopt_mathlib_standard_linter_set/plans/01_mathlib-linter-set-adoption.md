@@ -529,12 +529,12 @@ the lakefile options plus `longLine` on and report no warning at all.
 
 ---
 
-### Phase 10: `longLine` (2 of 4) -- `Metalogic/WeakCanonical` [NOT STARTED]
+### Phase 10: `longLine` (2 of 4) -- `Metalogic/WeakCanonical` [COMPLETED]
 
 **Goal**: The same work as Phase 9, for the WeakCanonical subtree.
 
 **Tasks**:
-- [ ] Reflow the flagged lines, run the per-file sweep to zero, and build the touched modules.
+- [x] Reflow the flagged lines, run the per-file sweep to zero, and build the touched modules.
 
 **Timing**: 1.5 hours
 
@@ -547,6 +547,14 @@ Phase 9 if it has more than about 300.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/WeakCanonical/**` - reflow
+
+**Phase 10 notes**: 28 files. Same reflow helper, now also refusing to merge a `NOTE:`/`TODO:`/
+`FIX:`/`QUESTION:` line into the paragraph above it (the tag scanner needs them at line start).
+Markdown tables with a row over 100 columns cannot be wrapped: the ten 2-column source maps
+(printed step -> declaration) became bullet lists `* step — declaration` introduced by one
+line naming the two columns; the four wider Kamp tables were rewritten as lists by hand.
+153 citations re-pointed. All 45 touched files elaborate with the lakefile options plus
+`longLine` on and report no warning; invariants pass.
 
 **Verification**:
 - The per-file `longLine` sweep of this subtree reports 0, and the touched modules build.

@@ -71,20 +71,26 @@ this module.**
 
 ## Proof step to declaration map
 
-| Reynolds' step (printed p.184) | Declaration |
-|---|---|
-| *"the classes do not end at gaps"* | `no_gaps_dense_prior` / `no_gaps_dense_prior_left` (Phase 22, 22.1) |
-| *"the classes must be closed intervals"*, right end | `exists_rightEndPoint` |
-| *"…"*, left end | `exists_leftEndPoint` (by order duality, not a hand mirror) |
-| *"Without loss of generality, `c` is the right hand end point of its class"* | `exists_rightEndPoint`, applied to `c` inside `reynolds_theorem5` |
-| *"Let the temporal formula `C` be true exactly at … left hand end points"* | `leftEndFormula`, `classLeftEndFormula`, `classLeftEndFormula_spec` |
-| *"We use expressive completeness here"* | `uSExpressivelyCompleteOverDensePrior` (§5 Theorem 3), consumed in `classLeftEndFormula` |
-| *"`C ∧ U(C,¬C)` never holds in `M`"* | `not_leftEnd_and_untl` |
-| *"…so `¬K⁺(C ∧ U(C,¬C))` holds at `c`"* | `not_kplusOpen_of_never` |
-| *"Also `K⁺(C)` holds at `c`"* | `kplusOpen_classLeftEnd` |
-| *"we can use axiom Sep to deduce that `K⁺(K⁺C ∧ K⁻C)` holds at `c`"* | the `h_sep` hypothesis of `reynolds_theorem5` |
-| *"`K⁺C ∧ K⁻C` must hold at some `e` between `c` and `d`"* | `reynolds_theorem5`, the final `h_sep … d hc'd` |
-| *"but clearly `e` must be in a class of its own"* | `isSingletonClass_of_kplus_kminus` |
+Each entry reads *Reynolds' step (printed p.184)* — *Declaration*:
+
+* *"the classes do not end at gaps"* — `no_gaps_dense_prior` / `no_gaps_dense_prior_left` (Phase 22,
+  22.1)
+* *"the classes must be closed intervals"*, right end — `exists_rightEndPoint`
+* *"…"*, left end — `exists_leftEndPoint` (by order duality, not a hand mirror)
+* *"Without loss of generality, `c` is the right hand end point of its class"* —
+  `exists_rightEndPoint`, applied to `c` inside `reynolds_theorem5`
+* *"Let the temporal formula `C` be true exactly at … left hand end points"* — `leftEndFormula`,
+  `classLeftEndFormula`, `classLeftEndFormula_spec`
+* *"We use expressive completeness here"* — `uSExpressivelyCompleteOverDensePrior` (§5 Theorem 3),
+  consumed in `classLeftEndFormula`
+* *"`C ∧ U(C,¬C)` never holds in `M`"* — `not_leftEnd_and_untl`
+* *"…so `¬K⁺(C ∧ U(C,¬C))` holds at `c`"* — `not_kplusOpen_of_never`
+* *"Also `K⁺(C)` holds at `c`"* — `kplusOpen_classLeftEnd`
+* *"we can use axiom Sep to deduce that `K⁺(K⁺C ∧ K⁻C)` holds at `c`"* — the `h_sep` hypothesis of
+  `reynolds_theorem5`
+* *"`K⁺C ∧ K⁻C` must hold at some `e` between `c` and `d`"* — `reynolds_theorem5`, the final
+  `h_sep … d hc'd`
+* *"but clearly `e` must be in a class of its own"* — `isSingletonClass_of_kplus_kminus`
 
 *"We use expressive completeness here"* is the sentence Block D exists for. It is consumed at
 exactly one place — `classLeftEndFormula` — and nowhere else in this module.
@@ -98,7 +104,7 @@ reading of the axiom scheme at a structure — exactly as Phase 16 does for Prio
 
 `Axiom.sep` (`ProofSystem/Axioms.lean:420`) is stated with `Formula.kPlus` / `Formula.kMinus`.
 It is read here through **Phase 10.1's bridge**, cited by name: `Kamp.kPlus_formula_correct` and
-`Kamp.kMinus_formula_correct` (`Kamp/KPlusFaithful.lean:150`, `:170`), which identify
+`Kamp.kMinus_formula_correct` (`Kamp/KPlusFaithful.lean:152`, `:170`), which identify
 `Formula.kPlus` / `Formula.kMinus` with `Kamp.kplusOpen` / `Kamp.kminusOpen` — the faithful
 `Prop`-level readings, **not** this tree's stronger `kplus` / `kminus`, which carry an extra
 conjunct that is in neither Reynolds nor Rabinovich.
@@ -143,7 +149,7 @@ below as `quotientDenselyOrdered_epsTop_vacuous` rather than left to be rediscov
 - `Defs.lean` — `ContempEquivDense`, `IsContempEquivDense`, `EndsInGapOnRight` / `OnLeft`
 - `Dual.lean` — the order-duality transport used for the left-hand closed-interval lemma
 - `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:302`) — §5 Theorem 3
-- `Kamp.kplusOpen` / `Kamp.kminusOpen` (`Kamp/KPlusFaithful.lean:113`, `:126`) — Reynolds' `K⁺`/`K⁻`
+- `Kamp.kplusOpen` / `Kamp.kminusOpen` (`Kamp/KPlusFaithful.lean:115`, `:126`) — Reynolds' `K⁺`/`K⁻`
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery

@@ -24,7 +24,7 @@ Sources: Doets 1987, chapters 3 and 7; Reynolds 1992, section 8.
 
 ## Key Results
 
-- `countermodel_discrete` (`CountermodelBase.lean:142`) — the deliverable of this directory,
+- `countermodel_discrete` (`CountermodelBase.lean:143`) — the deliverable of this directory,
   and a **proved** theorem rather than a deprecated pipeline.
 - `companionGeneral` / `companionChronicle` (`GroupableCompanion.lean`) — the companion lemma
   in general and at the chronicle structure.

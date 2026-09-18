@@ -69,7 +69,8 @@ takes only the shuffle data `hγ` and `hσ` it was always a consequence of.
 ## References
 - [reynolds1992], §8, printed p.188:
   `literature/sources/reynolds_1992/sec04_7-separability.md`
-- [doets1987], [doets1989], 3.1.8 (the mixing lemma): `literature/Doets_1989_Monadic_Pi11_Theories.md`
+- [doets1987], [doets1989], 3.1.8 (the mixing lemma):
+  `literature/Doets_1989_Monadic_Pi11_Theories.md`
 - [doets1989], Lemma 1.4 (shared-index case): `doets_lemma_1_4` (`OrderedSum.lean`)
 -/
 
@@ -108,7 +109,7 @@ theorem shuffleColourReal_irrational {ι : Type} (γ₁ : ι) (σ : ℚ → ι) 
   rw [shuffleColourReal, dif_neg hr]
 
 /-- **Reynolds' density condition, read at `ℝ`.** The `ℚ`-form is `IsShuffleMap`
-(`Shuffle.lean:320`); this is the same condition with the index order `ℝ`, and is what the
+(`Shuffle.lean:321`); this is the same condition with the index order `ℝ`, and is what the
 `ℝ`-shuffle's order-theoretic facts consume. -/
 def IsShuffleMapReal {ι : Type} (S : Finset ι) (π : ℝ → ι) : Prop :=
   (∀ r : ℝ, π r ∈ S) ∧

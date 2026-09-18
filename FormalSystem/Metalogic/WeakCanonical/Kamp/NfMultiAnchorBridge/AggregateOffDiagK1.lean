@@ -548,7 +548,7 @@ theorem aggOdZone3F_bot_eval_false (M : OrderedMonadicStructure sig)
 
 The point channels collapse (Lemma 3.2(2)) to the fixed-anchor arity-2 evaluation
 `NfEvalNf M 1 2 [x, t] sub_nf` — a TWO-PIN object. The delivered `agg2Past` carrier
-(AggregateHookDischarge.lean:494) already packages exactly the right fiber content
+(AggregateHookDischarge.lean:495) already packages exactly the right fiber content
 (endpoint packs at `x`/`t` + interior arrangement bracket + gate); the delivered
 correctness `agg2Past_holdsRight_iff` reads it ONE-FREE-VARIABLE (`∃ x < t` folded at
 `t`). Here we prove the POINTWISE 2-pin reading at the fixed pair `(x, t)` under the

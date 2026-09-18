@@ -65,7 +65,7 @@ Nothing in `EANegationFix/` is deleted, weakened, or edited. `negBoundedRightFix
 `negBoundedLeftFixAnchored` and their `_iff` lemmas stay live and stay consumed; everything below is
 a pure addition, and the attained carriers reach the faithful ones through the landed shims
 `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`) and
-`HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`).
+`HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`).
 
 `ADAPTED-FROM`: both `_iff` statements below were first pinned at `HasDedekindINF`. Re-basing
 `negChainOnFaithful_iff` (`Lemma53Faithful.lean`) onto `HasFaithfulDedekindINF` moved the two
@@ -159,7 +159,7 @@ noncomputable def negBoundedRightFixAnchoredFaithful (α : TemporalPred) {n : Na
     that changed is the carrier binder; the statement and the proof are otherwise unchanged. The
     swap is forced by `negChainOnFaithful_iff` (`Lemma53Faithful.lean`), which now binds the
     faithful carrier, and it strictly weakens the hypothesis:
-    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`) runs one way only. -/
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`) runs one way only. -/
 theorem negBoundedRightFixAnchoredFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasFaithfulDedekindINF M atomMap) (α : TemporalPred)
@@ -293,7 +293,7 @@ anchored call sites lose nothing, while the converse direction is exactly what i
 /-- The anchored faithful Cor 5.4(1) is available wherever the attained anchored one is:
     `HasAttainedINF` reaches `HasDedekindINF` through `HasAttainedINF.toHasDedekindINF`
     (`DedekindINF.lean:172`), and `HasDedekindINF` reaches the faithful carrier through
-    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`). -/
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`). -/
 theorem negBoundedRightFixAnchoredFaithful_iff_of_attained {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasAttainedINF M atomMap) (α : TemporalPred)

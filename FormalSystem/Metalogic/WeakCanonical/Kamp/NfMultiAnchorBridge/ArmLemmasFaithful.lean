@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterf
 
 The `k = 0` and `k = 1` arm closures of `nf_nvar_exist_all_depths`' `| 1 =>` arm, restated with
 `SemanticPriorUZ` / `SemanticPriorSZ` replaced by `HasFaithfulDedekindINF` /
-`HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:320` and its `Since`-dual) — Rabinovich 2014's
+`HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:322` and its `Since`-dual) — Rabinovich 2014's
 eq (5.2), PDF p.8, at the source's own `K⁺`.
 
 ## What this module is, and what it is not
@@ -23,16 +23,18 @@ completeness carrier at exactly one substantive step, and that step is discharge
 declaration below re-runs its attained original's proof against a leaf that already exists at the
 faithful carrier:
 
-| this module's leaf consumer | landed faithful leaf it consumes |
-|---|---|
-| `CAggInt.clause_iff_faithful` | `bracketEndChar_kv_correct_one_prior_faithful` (`PriorInterfaceFaithful.lean:196`) |
-| `aggPop1_correct_faithful`, `aggPop1F_correct_faithful` | `aggOdPopFold_iff_faithful` (`AggregateOffDiagK1Faithful.lean:89`) |
-| the three `k = 0` arms | *nothing* — their attained originals never touch the carrier (see below) |
+Each entry reads *this module's leaf consumer* — *landed faithful leaf it consumes*:
+
+* `CAggInt.clause_iff_faithful` — `bracketEndChar_kv_correct_one_prior_faithful`
+  (`PriorInterfaceFaithful.lean:196`)
+* `aggPop1_correct_faithful`, `aggPop1F_correct_faithful` — `aggOdPopFold_iff_faithful`
+  (`AggregateOffDiagK1Faithful.lean:89`)
+* the three `k = 0` arms — *nothing* — their attained originals never touch the carrier (see below)
 
 ## The `k = 0` arms bind the carrier but never use it
 
 `kampArm_past_k0_correct`, `kampArm_diag_k0_correct` and `kampArm_future_k0_correct`
-(`AggregateHookDischarge.lean:1704`, `:1725`, `:1745`) each open with `intro M _h_UZ _h_SZ t` and
+(`AggregateHookDischarge.lean:1705`, `:1725`, `:1745`) each open with `intro M _h_UZ _h_SZ t` and
 then run a proof that mentions neither hypothesis: the arm formulas are `M`-independent by
 construction, so `agg2Past_holdsRight_iff` / `agg2Diag_iff` / `agg2Fut_holdsLeft_iff` carry them
 outright. Their faithful siblings below are therefore the same formulas with the same proofs,
@@ -88,7 +90,7 @@ variable (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
 /-! ## 1. The three `k = 0` arms -/
 
 /-- **k=0 past-arm hook discharge at the faithful carrier** — the faithful sibling of
-`kampArm_past_k0_correct` (`AggregateHookDischarge.lean:1704`). Same formula `kampArmPastK0`,
+`kampArm_past_k0_correct` (`AggregateHookDischarge.lean:1705`). Same formula `kampArmPastK0`,
 same proof: the original's body uses neither Prior hypothesis. -/
 theorem kampArm_past_k0_correct_faithful (sub_nf : NormalForm sig 1 2) :
     ∀ (M : OrderedMonadicStructure sig),
@@ -102,7 +104,7 @@ theorem kampArm_past_k0_correct_faithful (sub_nf : NormalForm sig 1 2) :
   exact agg2Past_holdsRight_iff atomMap h_surj sub_nf M t
 
 /-- **k=0 diagonal-arm hook discharge at the faithful carrier** — the faithful sibling of
-`kampArm_diag_k0_correct` (`AggregateHookDischarge.lean:1727`). -/
+`kampArm_diag_k0_correct` (`AggregateHookDischarge.lean:1728`). -/
 theorem kampArm_diag_k0_correct_faithful (sub_nf : NormalForm sig 1 2) :
     ∀ (M : OrderedMonadicStructure sig),
       HasFaithfulDedekindINF M atomMap → HasFaithfulDedekindSUP M atomMap →
@@ -113,7 +115,7 @@ theorem kampArm_diag_k0_correct_faithful (sub_nf : NormalForm sig 1 2) :
   exact agg2Diag_iff atomMap h_surj sub_nf M t
 
 /-- **k=0 future-arm hook discharge at the faithful carrier** — the faithful sibling of
-`kampArm_future_k0_correct` (`AggregateHookDischarge.lean:1747`). -/
+`kampArm_future_k0_correct` (`AggregateHookDischarge.lean:1748`). -/
 theorem kampArm_future_k0_correct_faithful (sub_nf : NormalForm sig 1 2) :
     ∀ (M : OrderedMonadicStructure sig),
       HasFaithfulDedekindINF M atomMap → HasFaithfulDedekindSUP M atomMap →
@@ -127,7 +129,7 @@ theorem kampArm_future_k0_correct_faithful (sub_nf : NormalForm sig 1 2) :
 
 /-! ## 2. The `k = 1` diagonal seam
 
-`aggPosDiagK1_correct` (`AggregateHookDischarge.lean:2030`) uses its Prior hypotheses at exactly
+`aggPosDiagK1_correct` (`AggregateHookDischarge.lean:2031`) uses its Prior hypotheses at exactly
 three places, all three of them the `k = 0` arm lemmas above; its off-gate branch (the fixpoint
 refutation) is carrier-free. So the faithful sibling is the same proof with the three arms
 swapped. -/
@@ -143,7 +145,7 @@ theorem aggDiagEnv2_const_faithful {α : Type _} (t : α) :
   simp [Fin.cons_succ]
 
 /-- **Per-`qnf` diagonal-seam positive clause, correct at the faithful carrier** — the faithful
-sibling of `aggPosDiagK1_correct` (`AggregateHookDischarge.lean:2030`). Same formula
+sibling of `aggPosDiagK1_correct` (`AggregateHookDischarge.lean:2031`). Same formula
 `aggPosDiagK1`; the on-gate branch routes through the three faithful `k = 0` arms above, the
 off-gate branch is unchanged because it never mentions the carrier. -/
 theorem aggPosDiagK1_correct_faithful (qnf : NormalForm sig 1 3)
@@ -217,7 +219,7 @@ theorem aggPosDiagK1_correct_faithful (qnf : NormalForm sig 1 3)
             exact hE3 j
 
 /-- **k=1 diagonal-arm hook discharge at the faithful carrier** — the faithful sibling of
-`kampArm_diag_k1_correct` (`AggregateHookDischarge.lean:2118`). Same formula `kampArmDiagK1`;
+`kampArm_diag_k1_correct` (`AggregateHookDischarge.lean:2119`). Same formula `kampArmDiagK1`;
 the per-`qnf` population literals route through `aggPosDiagK1_correct_faithful`. -/
 theorem kampArm_diag_k1_correct_faithful (sub_nf : NormalForm sig 2 2) :
     ∀ (M : OrderedMonadicStructure sig),

@@ -61,11 +61,13 @@ imported by neither.
 
 ## Source map
 
-| Reynolds 1992 | Here |
-|---|---|
-| §8 Theorem 6, printed pp.185-188 | `doets_theorem_dense` (imported) |
-| §9, *"D1 and D2 follow from Theorems 4 and 5"* | `chronicleMonadic_doetsD1`, `chronicleMonadic_doetsD2` |
-| §9, *"there is a structure with flow of time `ℝ` …"* | `chronicleRealFlow`, `chronicleRealFlow_kEquiv` |
+Each entry reads *Reynolds 1992* — *Here*:
+
+* §8 Theorem 6, printed pp.185-188 — `doets_theorem_dense` (imported)
+* §9, *"D1 and D2 follow from Theorems 4 and 5"* — `chronicleMonadic_doetsD1`,
+  `chronicleMonadic_doetsD2`
+* §9, *"there is a structure with flow of time `ℝ` …"* — `chronicleRealFlow`,
+  `chronicleRealFlow_kEquiv`
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle

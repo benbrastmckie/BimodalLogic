@@ -33,18 +33,19 @@ unavailable, so Case 1 is `K⁺(¬s0)(z₀)` alone.
 The three cases are the three outcomes of the faithful carrier read at `P := ¬β₁`, which is why
 this module needs no case analysis of its own beyond the paper's:
 
-| paper (PDF pp.9-10) | this module | carrier obligation |
-|---|---|---|
-| Case 2: `β₁` along `(z₀,z₁)` | `negFixOneCase2` | `¬β₁` does not occur — no `first_occ` call |
-| Case 1: `K⁺(¬β₁)(z₀)` | `negFixOneCase1` | `HasFaithfulDedekindINF.first_occ`, **left** disjunct |
-| Case 3: the `r₀` pin, eq (5.3) | `negFixOneCase3a/b/c` | `HasFaithfulDedekindINF.first_occ`, right |
+* Case 2 (PDF pp.9-10), `β₁` along `(z₀,z₁)`: `negFixOneCase2`. Carrier obligation: none —
+  `¬β₁` does not occur, so there is no `first_occ` call.
+* Case 1, `K⁺(¬β₁)(z₀)`: `negFixOneCase1`. Carrier obligation:
+  `HasFaithfulDedekindINF.first_occ`, **left** disjunct.
+* Case 3, the `r₀` pin, eq (5.3): `negFixOneCase3a/b/c`. Carrier obligation:
+  `HasFaithfulDedekindINF.first_occ`, right disjunct.
 
 and eq (5.3) of PDF p.10,
 
 > `INF^{¬β₁}(z₀,z,z₁) := z₀ < z < z₁ ∧ (∀y)^{<z}_{>z₀} β₁(y) ∧ (¬β₁(z) ∨ K⁺(¬β₁)(z))`,
 
 is eq (5.2) of PDF p.8 read at `P := ¬β₁` — the same formula the faithful carrier
-`HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) is stated from. Its three conjuncts appear
+`HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) is stated from. Its three conjuncts appear
 here as: the `z₀ < r < z₁` of `VVecEA2.concatPin` (`VecEACombinators.lean:194`); the left block
 `allSeg s0`; and the pin point type `infPinPoint s0`.
 
@@ -82,7 +83,7 @@ read at the left endpoint, never at the pin.
 **Which `K⁺`.** Rabinovich's `K⁺`, Definition (3), PDF p.3 — *"`K⁺(F)` holds at a moment `t` iff
 `t = inf({t′ | t′ > t and F holds at t′})`"* — and Reynolds' `K⁺A := ¬U(⊤,¬A)`, *"`A` will be
 true arbitrarily soon"* (printed p.168), say **nothing about whether `F` holds at `t` itself**.
-That is `kplusOpen` (`KPlusFaithful.lean:113`). This tree's `kplus` (`PriorINF.lean:86`) carries
+That is `kplusOpen` (`KPlusFaithful.lean:115`). This tree's `kplus` (`PriorINF.lean:86`) carries
 an extra first conjunct `¬F(t)` that is **this tree's addition, not the sources'**.
 
 **The tree's `kplus` would not make the split exhaustive**, and the failure is exactly at the
@@ -94,9 +95,9 @@ is available. A carrier stated at `kplus` must therefore print a *third* endpoin
 (`DedekindINFDense.lean:222`), whose `first_occ` reads `P(z₀) ∨ kplus P z₀ ∨ (pin)`. The paper's
 three-case enumeration has no slot for that first disjunct, so a trichotomy carrier would force a
 proof branch Rabinovich never writes. `kplusOpen_not_implied_by_truth_at`
-(`KPlusFaithful.lean:272`) exhibits the gap concretely — `P(t)` alone does not give
+(`KPlusFaithful.lean:274`) exhibits the gap concretely — `P(t)` alone does not give
 `kplusOpen P t` — so the two operators are genuinely different and the choice between them is not
-cosmetic; and `hasFaithfulDedekindINF_survives_interval_witness` (`KPlusFaithful.lean:623`)
+cosmetic; and `hasFaithfulDedekindINF_survives_interval_witness` (`KPlusFaithful.lean:625`)
 exhibits a structure where the faithful carrier holds and the `kplus`-stated one fails.
 
 This is why `negFixOneFaithful_cover` below can be a two-arm `rcases` on
@@ -129,18 +130,21 @@ faithful `n = 1` negation has to be the paper's case split, which is what is bui
 
 ## What this costs in carrier strength
 
-| | attained, `VBracketFormula` | faithful, `VVecEA2` (here) |
-|---|---|---|
-| shape | six gated disjuncts `{A,B1,B2,B3,B4,B4′}` | Rabinovich's `∨ᵢ (Condᵢ ∧ Formᵢ)`, three cases |
-| pinned points | four, all attained | one, `r₀`, as eq (5.3) |
-| carrier | `HasAttainedINF` **and** `HasAttainedSUP` | `HasFaithfulDedekindINF` **alone** |
-| `K⁺` | n/a — attainment deletes the branch | the sources' conjunct-free `kplusOpen` |
+Attained (`VBracketFormula`) against faithful (`VVecEA2`, here):
+
+* **Shape**: six gated disjuncts `{A,B1,B2,B3,B4,B4′}`, against Rabinovich's
+  `∨ᵢ (Condᵢ ∧ Formᵢ)` with three cases.
+* **Pinned points**: four, all attained, against one, `r₀`, as eq (5.3).
+* **Carrier**: `HasAttainedINF` **and** `HasAttainedSUP`, against `HasFaithfulDedekindINF`
+  **alone**.
+* **`K⁺`**: not applicable (attainment deletes the branch), against the sources' conjunct-free
+  `kplusOpen`.
 
 Nothing in `EANegationFix/` is deleted, weakened, or edited. `negFixOne`, `negFixOne_cover`,
 `negFixOne_iff` and the `ℤ` gate probe `NegFixGateProbe` all stay live and stay consumed
 (`NfMultiAnchorBridge/Base.lean:1418` cites them); everything below is a pure addition, and the
 attained carriers reach the faithful statement through `HasAttainedINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:382`).
+(`KPlusFaithful.lean:384`).
 
 **ADAPTED-FROM.** Every statement below previously bound `HasDedekindINF`
 (`DedekindINF.lean:136`) and read the tree's `kplus` at the left endpoint. The one clause that
@@ -148,7 +152,7 @@ changed is the carrier and, with it, the endpoint operator: `HasDedekindINF →
 HasFaithfulDedekindINF`, and `kplus`/`kplusPred`/`kplusLeftBlock` → `kplusOpen`/`kplusOpenPred`/
 `kplusOpenLeftBlock` at the two places the endpoint operator is read (`negFixOneCase1` and the
 eq (5.3) pin type `infPinPoint`). This is a **hypothesis weakening** — `HasDedekindINF` implies
-`HasFaithfulDedekindINF` (`HasDedekindINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:364`) —
+`HasFaithfulDedekindINF` (`HasDedekindINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:366`) —
 so every previous supplier still supplies, and no conclusion was weakened to buy it. Not one
 case of the cover was added, merged, or removed.
 
@@ -244,7 +248,7 @@ theorem HasDedekindINF.first_occ_tp {sig : MonadicSignature}
       fun y hy0 hy1 hPy => h_none y hy0 hy1 hPy, h_disj⟩
 
 /-- First occurrence of a temporal predicate `P` in `(z₀,z₁)` on structures satisfying
-    `HasFaithfulDedekindINF` (`KPlusFaithful.lean:320`) — the same wrapper as
+    `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) — the same wrapper as
     `HasDedekindINF.first_occ_tp` above, at the source's `K⁺`.
 
     **This is the form Rabinovich's Lemma 5.1 case split reads.** Its left disjunct is
@@ -289,7 +293,7 @@ theorem HasFaithfulDedekindINF.first_occ_tp {sig : MonadicSignature}
     second alternative into its first. The re-spelling removes that.
 
     Note this **weakens** the point type, hence weakens the Case 3 disjuncts: every consumer that
-    supplied the old pin still supplies this one (`kplusOpen_of_kplus`, `KPlusFaithful.lean:212`),
+    supplied the old pin still supplies this one (`kplusOpen_of_kplus`, `KPlusFaithful.lean:214`),
     and `bracketOne_witness_le_infPin` below shows the weaker type still confines every witness,
     which is the only thing the soundness direction asks of it. -/
 noncomputable def infPinPoint (β : TemporalPred) : TemporalPred :=
@@ -578,7 +582,7 @@ theorem negFixOneFaithful_cover {sig : MonadicSignature}
     · exact Or.inl ((TemporalPred.eval_at_neg' M atomMap s0 r0).mp h)
     -- The carrier's right disjunct still prints the tree's `kplus` at the pin (it is literally
     -- `HasDedekindINF`'s), while eq (5.3)'s pin type is now at the source's `K⁺`. Dropping the
-    -- extra conjunct is `kplusOpen_of_kplus` (`KPlusFaithful.lean:212`); this is a weakening, so
+    -- extra conjunct is `kplusOpen_of_kplus` (`KPlusFaithful.lean:214`); this is a weakening, so
     -- nothing is assumed here that the carrier did not already supply.
     · exact Or.inr (kplusOpen_of_kplus h)
   by_cases hQ : ∃ y : M.carrier, r0 < y ∧ y < z1 ∧ ¬s1.EvalAt M atomMap y
@@ -632,7 +636,7 @@ theorem negFixOneFaithful_cover {sig : MonadicSignature}
 
     ADAPTED-FROM the `HasDedekindINF` binder this theorem previously carried; the one clause that
     changed is the carrier. `HasDedekindINF` still reaches it, through
-    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:364`). -/
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`). -/
 theorem negFixOneFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasFaithfulDedekindINF M atomMap)
