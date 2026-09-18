@@ -1,1 +1,30 @@
-{"status":"researched","artifacts":[{"type":"report","path":"specs/597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md","summary":"Measured 2,451 new warnings (14 classes, 283 files; ~2,700 projected) under mathlibStandardSet; --wfail forces per-class zero or documented opt-out; recommends staged enablement, in-source longFile baselines, and a zero-baseline ratchet extending C29."}],"metadata":{"session_id":"sess_1789754326_b6255f_597","agent_type":"lean-research-agent","delegation_depth":1,"delegation_path":["orchestrator","research","lean-research-agent"]}}
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/597_adopt_mathlib_standard_linter_set/plans/01_mathlib-linter-set-adoption.md",
+      "summary": "16-phase staged enablement of mathlibStandardSet: package-level enable with temporary per-class opt-outs, one phase per linter class (longLine split 4 ways), bounded fallback for unusedDecidableInType, C30 blanket-suppression ratchet, policy docs and final --wfail gate."
+    }
+  ],
+  "next_steps": "Run /implement 597 to execute the plan",
+  "phase_count": 16,
+  "estimated_hours": 25,
+  "dependency_waves": [[1],[2],[3],[4],[5,15],[6],[7],[8],[9],[10],[11],[12],[13],[14],[16]],
+  "memory_candidates": [
+    {
+      "content": "Adopting a warning-emitting linter set under a CI that builds with --wfail: stage enablement by turning the whole set on in the lakefile plus a temporary per-class `weak.linter.X = false` opt-out, then one phase per class takes it to zero and deletes its line. Keeps the build green every phase and avoids a non-zero warning baseline (which --wfail forbids). Verify per file during a phase with `lake env lean -Dweak.linter.X=true` (ignores lakefile options, writes no oleans) and edit the lakefile only at phase close, since every leanOptions change forces a full rebuild. Put the option in a package-level [leanOptions] table so lean_exe roots are covered.",
+      "category": "PATTERN",
+      "source_artifact": "specs/597_adopt_mathlib_standard_linter_set/plans/01_mathlib-linter-set-adoption.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["linter", "mathlibStandardSet", "wfail", "leanOptions", "staged-enablement", "lakefile"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789754326_b6255f_597",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
+}

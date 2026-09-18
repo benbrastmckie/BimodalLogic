@@ -1,17 +1,17 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 2,
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 16,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md",
-      "summary": "Measured 2,451 new warnings (14 classes, 283 files; ~2,700 projected) under mathlibStandardSet; --wfail forces per-class zero or documented opt-out; recommends staged enablement, in-source longFile baselines, and a zero-baseline ratchet extending C29."
+      "type": "plan",
+      "path": "specs/597_adopt_mathlib_standard_linter_set/plans/01_mathlib-linter-set-adoption.md",
+      "summary": "16-phase staged enablement of mathlibStandardSet with temporary per-class opt-outs, per-class fix phases, C30 ratchet, and final --wfail gate."
     }
   ],
-  "summary": "Premises corrected: lakefile.toml; 1 blanket suppression remains (Carrier.lean); longFile inert unless weak.linter.style.longFile=1500; CI --wfail precludes non-zero C28 baseline; 5 #guard_msgs test files error under longLine. 35 files unmeasured due to concurrent build.",
+  "summary": "Plan written: package-level enable + temporary opt-outs (P1), trivial+Carrier (P2), heartbeats (P3), longFile in-source baselines (P4), hashCommand test-lib opt-out (P5), emptyLine/show/flexible (P6-8), longLine x4 incl. #guard_msgs (P9-12), Fintype/DecidableEq instance hyps with bounded documented fallback (P13-14), C30 ratchet (P15, parallel), policy docs + final gate (P16).",
   "blockers": [],
-  "next_action_hint": "plan",
-  "phase": "research"
+  "next_action_hint": "implement",
+  "phase": "plan"
 }

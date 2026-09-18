@@ -104,7 +104,7 @@ next_project_number: 623
 
 ### Codebase Cleanup
 
-597 [RESEARCHED] — Adopt Mathlib's standard linter set, following cslib's...
+597 [PLANNED] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
@@ -396,11 +396,12 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 
 ### 597. Adopt mathlib standard linter set
 - **Effort**: large
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 585
 - **Research**: [597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md]
+- **Plan**: [597_adopt_mathlib_standard_linter_set/plans/01_mathlib-linter-set-adoption.md]
 
 **Description**: Adopt Mathlib's standard linter set, following cslib's precedent. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `lakefile.lean` sets only `autoImplicit false` and `pp.unicode.fun`; cslib enables `weak.linter.mathlibStandardSet = true` in `[leanOptions]`. Against Mathlib defaults this tree has 692 lines over 100 characters in 154 files (`longLine`) and 37 files over 1,500 lines (`longFile`; largest `EFGames/GapDetection.lean` at 5,090). There are 4 file-scoped blanket `set_option linter.* false` suppressions (3 in `Semantics/Ultraproduct/`, 1 in a test) and 7 unscoped `set_option maxHeartbeats` (48 are already `in`-scoped).
 

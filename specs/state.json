@@ -343,7 +343,7 @@
     {
       "project_number": 597,
       "project_name": "adopt_mathlib_standard_linter_set",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "low",
@@ -353,7 +353,7 @@
       ],
       "description": "Adopt Mathlib's standard linter set, following cslib's precedent. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `lakefile.lean` sets only `autoImplicit false` and `pp.unicode.fun`; cslib enables `weak.linter.mathlibStandardSet = true` in `[leanOptions]`. Against Mathlib defaults this tree has 692 lines over 100 characters in 154 files (`longLine`) and 37 files over 1,500 lines (`longFile`; largest `EFGames/GapDetection.lean` at 5,090). There are 4 file-scoped blanket `set_option linter.* false` suppressions (3 in `Semantics/Ultraproduct/`, 1 in a test) and 7 unscoped `set_option maxHeartbeats` (48 are already `in`-scoped).\n\nWORK: (1) enable `weak.linter.mathlibStandardSet` with documented opt-outs where a linter does not fit this project (cite cslib's `docs/lint-suppression-policy.md` as a model); (2) measure the new warning surface; (3) fix cheap classes, and baseline the rest under the compiler-warning gate from the warning burn-down task in this topic -- never bulk-suppress; `longFile` is baselined, not fixed by splitting, unless a split is independently justified; (4) convert the 4 blanket linter suppressions and 7 unscoped `maxHeartbeats` to `in`-scoped form; (5) add a blanket-suppression ratchet check (only `set_option ... false in` allowed) to the invariant harness or CI.\n\nORDERING NOTE: runs after the warning burn-down/gate task so the new warnings land under an existing gate. Large: the planner should split phases per linter class rather than truncate.\n\nACCEPTANCE: linter set enabled; `lake build` green; warning count within the recorded baseline; zero blanket suppressions and zero unscoped `maxHeartbeats`; ratchet check in place and documented.",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-18T18:22:21Z",
+      "last_updated": "2026-09-18T18:25:54Z",
       "file_scope": [
         "lakefile.lean"
       ],
@@ -363,6 +363,11 @@
           "path": "specs/597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md",
           "type": "report",
           "summary": "Measured 2,451 new warnings (14 classes, 283 files; ~2,700 projected) under mathlibStandardSet; --wfail forces per-class zero or documented opt-out; recommends staged enablement, in-source longFile baselines, and a zero-baseline ratchet extending C29."
+        },
+        {
+          "path": "specs/597_adopt_mathlib_standard_linter_set/plans/01_mathlib-linter-set-adoption.md",
+          "type": "plan",
+          "summary": "16-phase staged enablement of mathlibStandardSet with temporary per-class opt-outs, per-class fix phases, C30 ratchet, and final --wfail gate."
         }
       ],
       "next_artifact_number": 2
