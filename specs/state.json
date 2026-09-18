@@ -4,7 +4,7 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 619,
+  "next_project_number": 620,
   "active_projects": [
     {
       "project_number": 618,
@@ -1244,6 +1244,30 @@
       "dependencies": [],
       "created": "2026-09-17T22:46:34Z",
       "last_updated": "2026-09-17T22:46:34Z",
+      "artifacts": [],
+      "next_artifact_number": 1
+    },
+    {
+      "project_number": 619,
+      "project_name": "require_reasons_for_linter_suppressions",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Every linter suppression in the tree must carry a recorded reason, and a check must keep it that way. An audit performed during the compiler-warning burn-down found 10 declaration- and file-scoped `set_option linter.* false` suppressions in the live tree, of which SIX are bare -- no comment above them, nothing in the surrounding docstring, no rationale anywhere. An undocumented suppression is indistinguishable from giving up, and the new C28 warning gate will report a clean zero while they sit there.\n\nTHE SIX (verified at burn-down time; re-verify line numbers before editing, since the burn-down shifted lines in several of these files):\n- FormalSystem/Metalogic/Decidability/Verified/Bridge/UntlSnceFree.lean:352 -- `set_option linter.unusedTactic false in`\n- FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:128 -- `set_option linter.unusedVariables false in`\n- FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:278 -- `set_option linter.unusedVariables false in`\n- FormalSystem/Semantics/Ultraproduct/Carrier.lean:63 -- file-scoped `linter.unusedSectionVars`\n- FormalSystem/Semantics/Ultraproduct/Los.lean:47 -- file-scoped `linter.unusedSectionVars`\n- FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean:60 -- file-scoped `linter.unusedSectionVars`\n\nDIVISION OF LABOUR WITH THE MATHLIB-LINTER-SET TASK IN THIS TOPIC. That task already owns converting the three file-scoped Ultraproduct blankets to `in`-scoped form and adding a ratchet that permits only the `in`-scoped shape. It does NOT require a reason for any suppression, and it does not touch the three declaration-scoped ones at all -- those are already correctly scoped and merely unexplained, so they fall through both tasks otherwise. THIS task owns the reason requirement. Do not re-do the scoping conversion here; if that task has already run, the Ultraproduct three will be `in`-scoped and still need reasons.\n\nWORK:\n(1) For each of the three declaration-scoped suppressions, determine WHY it is there -- git archaeology on the introducing commit, then an empirical deletion trial: remove the suppression, build, and record what actually breaks. The trial is the evidence, not the commit message.\n(2) Dispose of each explicitly: if the suppression is load-bearing, keep it with an in-source comment naming what the deletion trial showed (the house model is the documented suppression in MintBound/Invariants.lean, which names all twelve goals its deletion experiment left unsolved). If it is not load-bearing, delete it and fix the warning it was hiding.\n(3) Same treatment for the three Ultraproduct suppressions. Their deletion trial has a known prerequisite: the un-suppressed warning count behind them was measured during the burn-down -- read that measurement rather than re-deriving it.\n(4) Add a check to scripts/check-module-invariants.sh requiring that every `set_option linter.* false` occurrence has a non-blank comment line immediately above it, or is listed in a companion allowlist with a reason column. Follow the C28 precedent from the burn-down task: build-free, runnable under `--no-build`, with an anti-silence guard that exits non-zero rather than passing when it finds nothing to check. Take the next free check ID -- C26 and C27 are already live, and the burn-down takes C28, so verify the current highest ID rather than assuming.\n(5) Add a row for the new check to docs/development/MODULE_INVARIANTS.md.\n\nACCEPTANCE: zero bare `set_option linter.* false` occurrences in the tree; every retained suppression names what breaks without it, on evidence from an actual deletion trial; the new check fails loudly on an injected bare suppression (negative-test it); `lake build` green; the warning budget unchanged or reduced, never increased to accommodate a deletion.",
+      "topic": "codebase-cleanup",
+      "priority": "medium",
+      "effort": "medium",
+      "dependencies": [
+        585
+      ],
+      "created": "2026-09-18T00:17:57Z",
+      "last_updated": "2026-09-18T00:17:57Z",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/Verified/Bridge/UntlSnceFree.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean",
+        "FormalSystem/Semantics/Ultraproduct/",
+        "scripts/check-module-invariants.sh",
+        "docs/development/MODULE_INVARIANTS.md"
+      ],
       "artifacts": [],
       "next_artifact_number": 1
     }

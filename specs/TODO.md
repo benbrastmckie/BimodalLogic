@@ -1,18 +1,18 @@
 ---
-next_project_number: 619
+next_project_number: 620
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-09-17. Generated from state.json dependency graph.*
+*Updated 2026-09-18. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,585,603,604,605,606,607,608,610,614,615 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600,616,617 | 298,464,502,559,563,568,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600,616,617,619 | 298,464,502,559,563,568,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,540,566,618 | 231,465,497,564,565,588,597,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -117,6 +117,7 @@ next_project_number: 619
       └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
   └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
     └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
+  └─ 619 [NOT STARTED] — Every linter suppression in the tree must carry a recorded...
 608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
 ### Semantics Refactor
@@ -124,6 +125,36 @@ next_project_number: 619
 615 [NOT STARTED] — Close the residue of the possible-world index retarget. The...
 
 ## Tasks
+
+### 619. Require reasons for linter suppressions
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: codebase-cleanup
+- **Dependencies**: Task 585
+
+**Description**: Every linter suppression in the tree must carry a recorded reason, and a check must keep it that way. An audit performed during the compiler-warning burn-down found 10 declaration- and file-scoped `set_option linter.* false` suppressions in the live tree, of which SIX are bare -- no comment above them, nothing in the surrounding docstring, no rationale anywhere. An undocumented suppression is indistinguishable from giving up, and the new C28 warning gate will report a clean zero while they sit there.
+
+THE SIX (verified at burn-down time; re-verify line numbers before editing, since the burn-down shifted lines in several of these files):
+- FormalSystem/Metalogic/Decidability/Verified/Bridge/UntlSnceFree.lean:352 -- `set_option linter.unusedTactic false in`
+- FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:128 -- `set_option linter.unusedVariables false in`
+- FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:278 -- `set_option linter.unusedVariables false in`
+- FormalSystem/Semantics/Ultraproduct/Carrier.lean:63 -- file-scoped `linter.unusedSectionVars`
+- FormalSystem/Semantics/Ultraproduct/Los.lean:47 -- file-scoped `linter.unusedSectionVars`
+- FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean:60 -- file-scoped `linter.unusedSectionVars`
+
+DIVISION OF LABOUR WITH THE MATHLIB-LINTER-SET TASK IN THIS TOPIC. That task already owns converting the three file-scoped Ultraproduct blankets to `in`-scoped form and adding a ratchet that permits only the `in`-scoped shape. It does NOT require a reason for any suppression, and it does not touch the three declaration-scoped ones at all -- those are already correctly scoped and merely unexplained, so they fall through both tasks otherwise. THIS task owns the reason requirement. Do not re-do the scoping conversion here; if that task has already run, the Ultraproduct three will be `in`-scoped and still need reasons.
+
+WORK:
+(1) For each of the three declaration-scoped suppressions, determine WHY it is there -- git archaeology on the introducing commit, then an empirical deletion trial: remove the suppression, build, and record what actually breaks. The trial is the evidence, not the commit message.
+(2) Dispose of each explicitly: if the suppression is load-bearing, keep it with an in-source comment naming what the deletion trial showed (the house model is the documented suppression in MintBound/Invariants.lean, which names all twelve goals its deletion experiment left unsolved). If it is not load-bearing, delete it and fix the warning it was hiding.
+(3) Same treatment for the three Ultraproduct suppressions. Their deletion trial has a known prerequisite: the un-suppressed warning count behind them was measured during the burn-down -- read that measurement rather than re-deriving it.
+(4) Add a check to scripts/check-module-invariants.sh requiring that every `set_option linter.* false` occurrence has a non-blank comment line immediately above it, or is listed in a companion allowlist with a reason column. Follow the C28 precedent from the burn-down task: build-free, runnable under `--no-build`, with an anti-silence guard that exits non-zero rather than passing when it finds nothing to check. Take the next free check ID -- C26 and C27 are already live, and the burn-down takes C28, so verify the current highest ID rather than assuming.
+(5) Add a row for the new check to docs/development/MODULE_INVARIANTS.md.
+
+ACCEPTANCE: zero bare `set_option linter.* false` occurrences in the tree; every retained suppression names what breaks without it, on evidence from an actual deletion trial; the new check fails loudly on an injected bare suppression (negative-test it); `lake build` green; the warning budget unchanged or reduced, never increased to accommodate a deletion.
+
+---
 
 ### 618. Path category and conduche fibration
 - **Status**: [NOT STARTED]
