@@ -9,18 +9,23 @@
     {
       "project_number": 620,
       "project_name": "lean_appendix_bimodal_reference",
-      "status": "researched",
+      "status": "planned",
       "task_type": "typst",
       "description": "Develop a Lean 4 appendix for typst/BimodalReference.typ, building up from the basics. It should cover what Lean is, types vs Props and dependent types, propositions-as-types and proof terms, inductive types (with Formula and DerivationTree as running examples), structures and classes, tactic proofs vs term proofs, Mathlib conventions, and lake and project layout. Then go all the way to reading the FormalSystem/ source that the book's formal claims point to. None exists yet: the only back-matter appendix is chapters/ax-machine-appendix.typ. Add it as a new chapters/ax-lean-appendix.typ included in the back matter, and cross-reference it from the introduction. Seed material: the existing markdown Lean guides. The main candidate is docs/user-guide/tutorial.md ('Logos Tutorial': installing Lean, formula construction, derivation trees, Type vs Prop), plus docs/user-guide/quickstart.md, docs/development/LEAN_STYLE_GUIDE.md and docs/reference/tactic-reference.md. Also check /home/benjamin/Projects/Logos/Verification/ (notes/, docs/) for any Lean basics note. Research should confirm which document the user meant and inventory what can be reused versus what is out of date. Consult /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ only where it helps. Its chapters/01-introduction.typ section 'Lean Implementation' (sec-lean-implementation) and the leansrc cross-reference convention are relevant; it has no Lean-from-basics primer. Every Lean snippet must compile against the current toolchain and cite real declarations. Follow the typst/SYNC-MAP.md and typst-sync-check.sh conventions",
       "topic": "reference-book",
       "created": "2026-09-18T05:24:14Z",
-      "last_updated": "2026-09-18T05:32:06Z",
+      "last_updated": "2026-09-18T05:35:55Z",
       "session_id": "sess_1789709144_d37ec5",
       "artifacts": [
         {
           "path": "specs/620_lean_appendix_bimodal_reference/reports/01_lean-appendix-research.md",
           "type": "report",
           "summary": "Confirms tutorial.md as primary seed doc, inventories stale vs. current claims across four markdown Lean guides, and documents the leansrc/sync-check conventions the new appendix must follow."
+        },
+        {
+          "path": "specs/620_lean_appendix_bimodal_reference/plans/01_lean-appendix-plan.md",
+          "type": "plan",
+          "summary": "6-phase plan (7.75h): skeleton+wiring, verified Lean snippet corpus, three serialized prose phases covering the nine primer topics, and a sync-check/SYNC-MAP final gate."
         }
       ],
       "next_artifact_number": 2

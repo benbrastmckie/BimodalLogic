@@ -1,33 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/620_lean_appendix_bimodal_reference/reports/01_lean-appendix-research.md",
-      "summary": "Confirms tutorial.md as primary seed doc, inventories stale vs. current claims across four markdown Lean guides, and documents the leansrc/sync-check conventions the new appendix must follow."
+      "type": "plan",
+      "path": "specs/620_lean_appendix_bimodal_reference/plans/01_lean-appendix-plan.md",
+      "summary": "6-phase plan (7.75h): skeleton+wiring, verified Lean snippet corpus, three serialized prose phases covering the nine primer topics, and a sync-check/SYNC-MAP final gate."
     }
   ],
-  "next_steps": "Run /plan 620 to create the implementation plan for chapters/ax-lean-appendix.typ, using the section-to-source mapping in report section 5 and resolving the open items in report section 6 (appendix ordering, bibliography entry decision, compile-verification workflow, and locating a Derivable Prop counterpart to DerivationTree if one exists).",
+  "next_steps": "Run /implement 620 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 7.75,
+  "dependency_waves": [[1, 2], [3], [4], [5], [6]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1789709144_d37ec5_620",
-    "agent_type": "typst-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "typst-research", "typst-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   },
-  "memory_candidates": [
-    {
-      "content": "BimodalLogic's typst/template.typ already ports LogosManual's #leansrc(module, name)/#leanref(name) helpers, and they are already used in chapters/p2-frame-classes.typ and chapters/p2-decidability-practice.typ (both #include'd by BimodalReference.typ). The pattern is #leansrc(...) followed by an unlabeled (no 'lean' tag) fenced code block containing the literal excerpt. Any future typst chapter adding a Lean source excerpt should follow this exact idiom rather than inventing a new code-block convention.",
-      "category": "PATTERN",
-      "source_artifact": "specs/620_lean_appendix_bimodal_reference/reports/01_lean-appendix-research.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["typst", "leansrc", "BimodalReference", "template.typ", "code block convention"]
-    },
-    {
-      "content": "docs/user-guide/tutorial.md and docs/user-guide/quickstart.md in BimodalLogic are significantly stale against live FormalSystem/ source: wrong import name (import Logos / import Bimodal instead of import FormalSystem), Formula.atom takes an Atom not a String (use atomS or Atom.mkBase), DerivationTree constructors are snake_case (modus_ponens, temporal_necessitation) not camelCase, DerivationTree is now FrameClass-parameterized (DerivationTree fc Gamma phi), and .future/.past should be .always/.sometimes. docs/reference/tactic-reference.md was found current and well-maintained by contrast. Any task reusing these docs as seed material must re-verify every snippet against live source rather than copying verbatim.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/620_lean_appendix_bimodal_reference/reports/01_lean-appendix-research.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["BimodalLogic", "docs staleness", "tutorial.md", "quickstart.md", "FormalSystem"]
-    }
-  ]
+  "dispatch_seq": 2
 }

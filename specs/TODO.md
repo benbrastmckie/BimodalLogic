@@ -111,7 +111,7 @@ next_project_number: 621
 
 ### Reference Book
 
-620 [RESEARCHED] — Develop a Lean 4 appendix for typst/BimodalReference.typ,...
+620 [PLANNED] — Develop a Lean 4 appendix for typst/BimodalReference.typ,...
 
 ### Codebase Cleanup
 
@@ -130,11 +130,12 @@ next_project_number: 621
 ## Tasks
 
 ### 620. Lean appendix bimodal reference
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
 - **Research**: [620_lean_appendix_bimodal_reference/reports/01_lean-appendix-research.md]
+- **Plan**: [620_lean_appendix_bimodal_reference/plans/01_lean-appendix-plan.md]
 
 **Description**: Develop a Lean 4 appendix for typst/BimodalReference.typ, building up from the basics. It should cover what Lean is, types vs Props and dependent types, propositions-as-types and proof terms, inductive types (with Formula and DerivationTree as running examples), structures and classes, tactic proofs vs term proofs, Mathlib conventions, and lake and project layout. Then go all the way to reading the FormalSystem/ source that the book's formal claims point to. None exists yet: the only back-matter appendix is chapters/ax-machine-appendix.typ. Add it as a new chapters/ax-lean-appendix.typ included in the back matter, and cross-reference it from the introduction. Seed material: the existing markdown Lean guides. The main candidate is docs/user-guide/tutorial.md ('Logos Tutorial': installing Lean, formula construction, derivation trees, Type vs Prop), plus docs/user-guide/quickstart.md, docs/development/LEAN_STYLE_GUIDE.md and docs/reference/tactic-reference.md. Also check /home/benjamin/Projects/Logos/Verification/ (notes/, docs/) for any Lean basics note. Research should confirm which document the user meant and inventory what can be reused versus what is out of date. Consult /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ only where it helps. Its chapters/01-introduction.typ section 'Lean Implementation' (sec-lean-implementation) and the leansrc cross-reference convention are relevant; it has no Lean-from-basics primer. Every Lean snippet must compile against the current toolchain and cite real declarations. Follow the typst/SYNC-MAP.md and typst-sync-check.sh conventions
 
