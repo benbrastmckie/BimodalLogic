@@ -399,12 +399,24 @@ and that they return *different* answers on the two witnesses.
 section SmokeTests
 
 -- The positive witness: both checks return `true`.
+-- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
+-- (a kernel proof would not show the instance computes); it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard decide (LocalCoherent loopPresentation φPos (fun _ => false) posAnnot)
+-- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
+-- (a kernel proof would not show the instance computes); it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard decide (Fulfilling loopPresentation φPos posAnnot)
 
 -- The negative witness: locally coherent, **not** fulfilling. The second line is the one that
 -- would fail if the fulfilment window were ever weakened into a purely local check.
+-- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
+-- (a kernel proof would not show the instance computes); it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard decide (LocalCoherent loopPresentation φNeg (fun _ => false) negAnnot)
+-- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
+-- (a kernel proof would not show the instance computes); it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard !decide (Fulfilling loopPresentation φNeg negAnnot)
 
 /-! ### The bounded enumeration

@@ -901,14 +901,26 @@ private def censusSample : List Formula := [
 ]
 
 -- The value-level census and the folded-tag census agree on the sample.
+-- linter.hashCommand: this `#guard` is an evaluator-level regression check on the compiled
+-- census code, which a kernel `decide` would not exercise; it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard valueCensus censusSample == foldedCensus censusSample
 
 -- All 6 binary operators have nonzero presence (each tag appears exactly once).
+-- linter.hashCommand: this `#guard` is an evaluator-level regression check on the compiled
+-- census code, which a kernel `decide` would not exercise; it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard valueCensus censusSample ==
   ["release", "strongRelease", "strongTrigger", "trigger", "weakSince", "weakUntil"]
 
 -- The collapse case contributes no binary tag to either census.
+-- linter.hashCommand: this `#guard` is an evaluator-level regression check on the compiled
+-- census code, which a kernel `decide` would not exercise; it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard Formula.matchBinaryDerived (Formula.release (.atom cp) Formula.bot) == none
+-- linter.hashCommand: this `#guard` is an evaluator-level regression check on the compiled
+-- census code, which a kernel `decide` would not exercise; it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard Formula.foldedBinaryTag (Formula.release (.atom cp) Formula.bot) == none
 
 end CensusTests

@@ -291,8 +291,17 @@ section SmokeTests
 
 open BiLassoExamples
 
+-- linter.hashCommand: this `#guard` evaluates the compiled `checkAt`, the computation smoke test
+-- the section docstring describes; it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard !checkAt loopPresentation 0 Formula.bot 1
+-- linter.hashCommand: this `#guard` evaluates the compiled `checkAt`, the computation smoke test
+-- the section docstring describes; it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard checkAt loopPresentation 0 (Formula.atom pA) 1
+-- linter.hashCommand: this `#guard` evaluates the compiled `checkAt`, the computation smoke test
+-- the section docstring describes; it emits nothing when it passes.
+set_option linter.hashCommand false in
 #guard !checkAt loopPresentation 0 (Formula.atom qA) 1
 
 end SmokeTests

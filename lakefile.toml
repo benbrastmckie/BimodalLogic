@@ -31,7 +31,6 @@ weak.linter.style.longLine = false # TEMPORARY (staged enablement)
 weak.linter.style.emptyLine = false # TEMPORARY (staged enablement)
 weak.linter.unusedFintypeInType = false # TEMPORARY (staged enablement)
 weak.linter.unusedDecidableInType = false # TEMPORARY (staged enablement)
-weak.linter.hashCommand = false # TEMPORARY (staged enablement)
 weak.linter.style.show = false # TEMPORARY (staged enablement)
 weak.linter.flexible = false # TEMPORARY (staged enablement)
 
@@ -44,10 +43,14 @@ rev = "v4.33.0-rc1"
 name = "FormalSystem"
 leanOptions = {pp.unicode.fun = true, autoImplicit = false}
 
+# Permanent opt-out: the `#`-command linter is off for the test library only. Its `#eval`,
+# `#guard` and `#check` probes are the content of those files, not development leftovers. A
+# library-level option overrides the package-level set (Lake appends library options after the
+# package's, and a later entry wins).
 [[lean_lib]]
 name = "BimodalTest"
 srcDir = "Tests"
-leanOptions = {pp.unicode.fun = true, autoImplicit = false}
+leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashCommand = false}
 
 # Dataset generator executable for ML training data.
 # Run with: lake exe dataset_generator -- --max-complexity 5 --output data/bmlogic.jsonl

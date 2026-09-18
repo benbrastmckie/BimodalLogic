@@ -68,7 +68,7 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `InterestingnessMetrics.lean` | 584 | Deterministic three-tier interestingness scoring for theorems and derivations |
 | `LemmaDB.lean` | 48 | Declares the `@[tmLemma]` label attribute the `modal_search` tactic family uses to enumerate derived theorems |
 | `MachineAppendixMain.lean` | 478 | Exports the complete TM axiomatization — 29 axiom schemata, 7 rules, derived-operator definitions — as the JSONL machine appendix shipped with BimodalReference |
-| `Normalization.lean` | 918 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
+| `Normalization.lean` | 930 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
 | `NormalizationAttr.lean` | 44 | Declares the two simp sets `Normalization.lean` tags its unfold and fold lemmas with |
 | `PrefilterSoundness.lean` | 172 | Soundness proofs for each invalid-pattern recognizer in `DatasetGenerator.lean` |
 | `ProofExtractorMain.lean` | 1,698 | Proof step export: serializes `DerivationTree` steps to JSONL |

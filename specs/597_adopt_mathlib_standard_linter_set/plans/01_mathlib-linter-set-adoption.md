@@ -352,19 +352,19 @@ lakefile's `longFile = 1500` is now live. Full `--wfail` build green (1,219 s); 
 
 ---
 
-### Phase 5: `hashCommand` permanent opt-out for the test library [NOT STARTED]
+### Phase 5: `hashCommand` permanent opt-out for the test library [COMPLETED]
 
 **Goal**: Settle `hashCommand`'s 241 warnings. All of them are in `Tests/`, where `#eval` and
 `#guard` probes are the whole point of the files.
 
 **Tasks**:
-- [ ] Move the opt-out from the package-level temporary line to the `BimodalTest` library's
+- [x] Move the opt-out from the package-level temporary line to the `BimodalTest` library's
       `leanOptions` (`weak.linter.hashCommand = false`), with a permanent reason comment. This
       follows cslib's per-library precedent for its tests. If Phase 1's probe showed that the
       library value does not override the package value, use the fallback recorded there.
-- [ ] Confirm that `FormalSystem` and the exe roots produce no `hashCommand` warnings, then fix
-      any that do. The research measured all of them in `Tests/`.
-- [ ] Run a guarded full build with `--wfail`.
+- [x] Confirm that `FormalSystem` and the exe roots produce no `hashCommand` warnings, then fix
+      any that do. The research measured all of them in `Tests/`. *(deviation: altered — the re-measurement found 11 in FormalSystem, all `#guard` evaluator smoke tests (Normalization 4, BiLasso/Examples 4, BiLasso/Check 3); each got a per-command `set_option linter.hashCommand false in` with a C29 reason, since a kernel `decide` would not test what they test)*
+- [x] Run a guarded full build with `--wfail`.
 
 **Timing**: 0.5 hours
 
@@ -378,6 +378,11 @@ confirms that none are outside `Tests/`.
 **Files to modify**:
 - `lakefile.toml` - remove the package-level temporary line and add the `BimodalTest` library
   opt-out
+
+**Phase 5 notes**: the `BimodalTest` library-level `weak.linter.hashCommand = false` overrides
+the package set (confirmed by the green `--wfail` build, which covers the 230 test-library sites).
+This build also verified the Phase 4 citation re-pointing. Full `--wfail` build green (1,097 s);
+C28/C29 pass (C29 now 17 sites).
 
 **Verification**:
 - `lake build --wfail` is green, and the `hashCommand` class shows zero in `FormalSystem`.
