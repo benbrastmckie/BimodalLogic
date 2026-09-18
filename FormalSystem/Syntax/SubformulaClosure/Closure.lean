@@ -107,11 +107,6 @@ Membership in closureWithNeg is decidable.
 instance (phi : Formula) : DecidablePred (· ∈ closureWithNeg phi) :=
   fun psi => Finset.decidableMem psi (closureWithNeg phi)
 
-/--
-Size of the closure with negations (useful for termination measures).
--/
-def closureWithNegCard (phi : Formula) : Nat := (closureWithNeg phi).card
-
 /-!
 ## Diamond Formula Detection
 
@@ -145,12 +140,6 @@ IsDiamondFormula is decidable.
 instance : DecidablePred IsDiamondFormula :=
   fun psi => decidable_of_iff ((extractDiamondInner psi).isSome = true)
     (by simp only [IsDiamondFormula])
-
-/--
-Boolean version: check if formula is Diamond.
--/
-def isDiamondFormulaBool (psi : Formula) : Bool :=
-  (extractDiamondInner psi).isSome
 
 /--
 The Diamond constructor matches the extract function.
@@ -223,11 +212,6 @@ theorem mem_diamondSubformulas_isDiamond {phi psi : Formula}
     (h : psi ∈ diamondSubformulas phi) : IsDiamondFormula psi := by
   unfold diamondSubformulas at h
   exact (Finset.mem_filter.mp h).2
-
-/--
-Count of Diamond formulas in closure (bounds saturation iterations).
--/
-def diamondCount (phi : Formula) : Nat := (diamondSubformulas phi).card
 
 /-!
 ## Subformula Membership Lemmas
