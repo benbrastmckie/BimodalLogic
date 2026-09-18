@@ -1274,13 +1274,6 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
 
 /-! ## Axiom Instantiation with Witness -/
 
-/-- Return the minimum FrameClass for each schema index (0-41). -/
-def schemaMinFrameClass (idx : Nat) : FrameClass :=
-  match idx with
-  | 37 | 38 | 39 => .ZTime
-  | 40 | 41 => .Dense
-  | _ => .Base
-
 /-- Build a random axiom witness for a given schema index. -/
 def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
     (Option (Σ φ, Axiom φ)) := do
@@ -1471,16 +1464,6 @@ def instantiateAxiomWithWitness (atoms : List Atom) (maxParamSize : Nat) (fc : F
     else
       return none
   | none => return none
-
-/--
-Apply modus ponens: given valid φ and valid (φ → ψ), return ψ.
-Returns `none` if the implication does not match.
--/
-def generateValidFromMP (antecedent implication : Formula) : Option Formula :=
-  match implication with
-  | .imp lhs rhs =>
-    if lhs == antecedent then some rhs else none
-  | _ => none
 
 /--
 Apply necessitation: given valid φ, return □φ (also valid by the necessitation rule).
@@ -2280,62 +2263,5 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
     -- Store in cache for subsequent use
     let finalCache := immutableCache.insert key result
     return (result, finalCache)
-
-/--
-Exhaustive enumeration with parallel cross-product computation and pipeline
-overlap. For each complexity level, spawns parallel tasks for binary partitions
-and invokes the `onLevelComplete` callback when a level finishes.
-
-**Pipeline overlap**: The callback receives completed levels immediately,
-allowing downstream processing (e.g., labeling) to begin while enumeration
-of later levels continues.
--/
-def enumerateWithPipeline (params : EnumParams) (parallelConfig : ParallelEnumConfig)
-    (onLevelComplete : LevelComplete → IO Unit) : IO (List Formula) := do
-  let startMs ← IO.monoMsNow
-  let mut cache : EnumCache := {}
-  let mut allFormulas : Array Formula := #[]
-  let mut totalCount : Nat := 0
-  let mut canonicalSeen : Std.HashSet Formula := {}
-  for i in List.range params.maxComplexity do
-    let level := i + 1
-    let levelStartMs ← IO.monoMsNow
-    let (exact, cache') ← enumerateLevelParallel params.atoms params.maxModalDepth
-                            params.maxTemporalDepth level cache parallelConfig
-    cache := cache'
-    let filtered := exact.filter passesFilter
-    -- Apply canonical dedup if enabled
-    let rawCount := filtered.size
-    let levelFormulas ← if params.canonicalDedup then do
-      let (deduped, seen') := canonicalDedupArray filtered canonicalSeen
-      canonicalSeen := seen'
-      pure deduped
-    else
-      pure filtered
-    allFormulas := allFormulas ++ levelFormulas
-    totalCount := totalCount + levelFormulas.size
-    let levelEndMs ← IO.monoMsNow
-    let levelElapsed := levelEndMs - levelStartMs
-    let elapsedSecs := (levelEndMs - startMs) / 1000
-    let rate := if elapsedSecs > 0 then totalCount / elapsedSecs else totalCount
-    let dedupStr := if params.canonicalDedup then
-        s!" (raw: {rawCount}, deduped: {levelFormulas.size})" else ""
-    IO.println
-        s!"[parallel] Level {level}/{params.maxComplexity}: {levelFormulas.size} \
-            formulas{dedupStr} (cumulative: {totalCount}), {levelElapsed}ms this level,
-                {elapsedSecs}s total, {rate} formulas/sec"
-    -- Fire pipeline overlap callback
-    onLevelComplete { level, formulas := levelFormulas, elapsedMs := levelElapsed }
-    -- Write checkpoint if enabled
-    match params.checkpointDir with
-    | some dir =>
-      let jsonlPath := dir / "formulas.jsonl"
-      writeFormulaJSONL jsonlPath levelFormulas level
-      writeCheckpointMarker dir level totalCount (levelEndMs - startMs)
-    | none => pure ()
-    if params.maxFormulas > 0 && totalCount ≥ params.maxFormulas then
-      break
-  let result := allFormulas.toList
-  if params.maxFormulas == 0 then return result else return result.take params.maxFormulas
 
 end FormalSystem.Automation
