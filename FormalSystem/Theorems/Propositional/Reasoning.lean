@@ -171,45 +171,5 @@ noncomputable def de {fc : FrameClass} (Γ : Context) (A B C : Formula) (h1 : (A
 
 end -- noncomputable section
 
-/--
-From (A ∨ B), ¬A, and ¬B, derive ⊥.
-
-This is the key lemma for disjunction elimination when both alternatives are refuted:
-if we have A ∨ B and both A and B lead to contradiction, then we can derive ⊥.
-
-**Proof Strategy**:
-1. From A :: Γ, derive ⊥ using h_neg_A (weakened) and the assumption A
-2. From B :: Γ, derive ⊥ using h_neg_B (weakened) and the assumption B
-3. Apply disjunction elimination `de` to get (A ∨ B) :: Γ ⊢ ⊥
-4. Apply cut with h_or to eliminate A ∨ B from context
--/
-noncomputable def orElimNegNeg {fc : FrameClass} (Γ : Context) (A B : Formula)
-    (h_or : Γ ⊢[fc] A.or B)
-    (h_neg_A : Γ ⊢[fc] A.neg)
-    (h_neg_B : Γ ⊢[fc] B.neg) :
-    Γ ⊢[fc] Formula.bot := by
-  -- From A :: Γ, derive ⊥
-  have h_A_bot : (A :: Γ) ⊢[fc] Formula.bot := by
-    have h_A : (A :: Γ) ⊢[fc] A := DerivationTree.assumption (A :: Γ) A (@List.mem_cons_self _ A Γ)
-    have h_neg_A' : (A :: Γ) ⊢[fc] A.neg :=
-      DerivationTree.weakening Γ (A :: Γ)
-        A.neg h_neg_A (List.subset_cons_of_subset A (List.Subset.refl Γ))
-    -- neg φ = φ.imp bot, so modus ponens gives us bot
-    exact DerivationTree.modus_ponens (A :: Γ) A Formula.bot h_neg_A' h_A
-  -- From B :: Γ, derive ⊥
-  have h_B_bot : (B :: Γ) ⊢[fc] Formula.bot := by
-    have h_B : (B :: Γ) ⊢[fc] B := DerivationTree.assumption (B :: Γ) B (@List.mem_cons_self _ B Γ)
-    have h_neg_B' : (B :: Γ) ⊢[fc] B.neg :=
-      DerivationTree.weakening Γ (B :: Γ)
-        B.neg h_neg_B (List.subset_cons_of_subset B (List.Subset.refl Γ))
-    -- neg φ = φ.imp bot, so modus ponens gives us bot
-    exact DerivationTree.modus_ponens (B :: Γ) B Formula.bot h_neg_B' h_B
-  -- Apply disjunction elimination: de Γ A B ⊥ h_A_bot h_B_bot : (A.or B) :: Γ ⊢ ⊥
-  have h_disj_bot : ((A.or B) :: Γ) ⊢[fc] Formula.bot := de Γ A B Formula.bot h_A_bot h_B_bot
-  -- Apply cut with h_or: deductionTheorem gives Γ ⊢ (A.or B) → ⊥, then modus_ponens with h_or
-  have h_impl : Γ ⊢[fc] (A.or B).imp Formula.bot :=
-    FormalSystem.Metalogic.Core.deductionTheorem Γ (A.or B) Formula.bot h_disj_bot
-  exact DerivationTree.modus_ponens Γ (A.or B) Formula.bot h_impl h_or
-
 
 end FormalSystem.Theorems.Propositional
