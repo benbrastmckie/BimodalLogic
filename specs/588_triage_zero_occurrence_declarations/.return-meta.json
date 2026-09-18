@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/588_triage_zero_occurrence_declarations/reports/02_c17-zero-occurrence-triage.md",
+      "summary": "Stratifies C17's 1,020-row zero-occurrence census into six tiers; known false positives explain only 21%, 792 survive; resolves the release_unfold dispute against the review; flags 7 declarations pinned by the C2/C14 axiom baselines inside the invariant script itself; specifies a six-filter C17 extension (1,020 -> 771) and a new import-orphan module check."
+    },
+    {
+      "type": "tool",
+      "path": "specs/588_triage_zero_occurrence_declarations/tools/c17_triage.py",
+      "summary": "Reproduces C17 exactly (1,020) and annotates each flagged declaration with tier, Boneyard reference count, and import-orphan status; --summary prints the stratification."
+    },
+    {
+      "type": "data",
+      "path": "specs/588_triage_zero_occurrence_declarations/tools/c17_census.tsv",
+      "summary": "Full 1,020-row tiered census snapshot (tier, file, line, kind, name, attrs, boneyard_refs, orphan_module)."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789696399_5c64b8_588",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

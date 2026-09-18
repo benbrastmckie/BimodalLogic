@@ -209,7 +209,7 @@
     {
       "project_number": 588,
       "project_name": "triage_zero_occurrence_declarations",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Triage the 1,029 declarations C17 reports as having zero occurrences outside their own declaring line. The scan runs on every invariant run, is explicitly REPORTED-never-gated and explicitly approximate, and has never been triaged -- 1,029 is large enough that the number has stopped being informative.\n\nDELIVERABLE IS A CLASSIFICATION, NOT A DELETION SPREE. The scan is textual, so false positives are guaranteed: `instance` declarations resolved by typeclass search, `@[simp]`/`@[aesop]`-attributed declarations reached by attribute, `lean_exe` `main` entry points, constructors reached by pattern matching, and declarations whose only consumers are in `Boneyard/` (excluded from every walker).\n\nRecommended order: (1) stratify by declaration kind and directory before reading anything; (2) mechanically eliminate the known false-positive classes and report how many that removes -- highest-value first step; (3) re-run with `Boneyard/` as a reference source, since 'only consumer is archived' is a different case from 'no consumer'; (4) triage survivors by CLUSTER, not by line; (5) deliver a disposition per cluster and execute only the unambiguous ones, spawning follow-ups for anything contentious.\n\nStrongest true-positive signal to start from: `Automation/Normalization.lean`'s ten consecutive `*_fold` / `*_unfold` entries (`release_unfold` 146, `weak_until_unfold` 150, `trigger_unfold` 154, `weak_since_unfold` 158, `top_fold` 753, `diamond_fold` 760, `some_future_fold` 764, `some_past_fold` 768, `next_fold` 772, `prev_fold` 776). Ten unreferenced siblings is not the shape of a false positive -- and `Boneyard/RetiredTactics/Normalization.lean` holds seven tactic macros lifted out of that very file, which are plausibly their former consumers.\n\nConsider extending C17's filters permanently so the number it reports is the number that matters -- arguably the most durable deliverable here. Do NOT gate C17.\n\nVerify: `lake build` exits 0 and the full invariant harness passes after every deletion batch (C2/C14 baselines unmoved, C15 anchors unbroken, C21 intact); the drop in C17's count is accounted for line by line.\n\nSee specs/reviews/review-2026-09-16.md, Finding L1.\n\nABSORBS THE FORMER DEAD-DECLARATION TRIAGE TASK (542, `dead_declaration_triage_c17_findings`, abandoned as a duplicate of this task; it measured the same C17 census at 989 flagged of 10,346 declarations). Carry over its step (1) as a required early step: quantify the attribute/simp-set blind spot before deleting anything -- enumerate the attribute and simp-set mechanisms in use (`@[formula_unfold]`, `@[simp]` sets, aesop rule sets, instance registration) and report how many flagged declarations are reachable only through one of them. If that reachability analysis is mechanizable, fold it into C17 and document the new counting rule in the script header.\n\nDISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on `release_unfold`. This description treats the `*_fold`/`*_unfold` run as a true-positive signal; the absorbed task treated `release_unfold` as live via `@[formula_unfold]`. Verified at reorganization time (2026-09-16): `release_unfold` IS registered with `@[formula_unfold]`, but the only consumers of that simp set in live code are the `#check`/`example` block inside `Automation/Normalization.lean` itself and `Tests/BimodalTest/Automation/NormalizationTest.lean`. Whether a simp set consumed only by its own smoke tests and one test file counts as \"live\" is the decision this task must make explicitly. Note also that the in-library smoke-test relocation task in this topic runs first and will change C17 occurrence counts (C17 counts `#check @foo` as an occurrence).",
       "topic": "codebase-cleanup",
@@ -221,15 +221,16 @@
         594
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-18T02:04:17Z",
       "artifacts": [
         {
-          "path": "specs/588_triage_zero_occurrence_declarations/reports/01_dead-declaration-triage.md",
+          "path": "specs/588_triage_zero_occurrence_declarations/reports/02_c17-zero-occurrence-triage.md",
           "type": "report",
-          "summary": "C17's 1,029 zero-occurrence declarations have never been triaged; false-positive classes to filter first and the Normalization.lean *_fold cluster as the strongest true-positive signal."
+          "summary": "Stratifies C17's 1,020-row zero-occurrence census into six tiers; known false positives explain only 21%, 792 survive; resolves the release_unfold dispute against the review; flags 7 declarations pinned by the C2/C14 axiom baselines inside the invariant script itself; specifies a six-filter C17 extension (1,020 -> 771) and a new import-orphan module check."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 3,
+      "session_id": "sess_1789696399_5c64b8"
     },
     {
       "project_number": 589,
@@ -1241,7 +1242,7 @@
     {
       "project_number": 615,
       "project_name": "close_world_history_reach_through_residue",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Close the residue of the possible-world index retarget. The seven-phase retarget itself was already executed by three earlier tasks in this topic; research against the current tree confirmed the surviving gap is 36 sites, not the ~600 the superseded description assumed (28 reach-throughs plus 8 layer crossings).\n\nREQUIRED WORK:\n\n(1) Add `WorldHistory.respects_task` -- a three-line lemma, already machine-checked in the probe at `specs/archive/569_retarget_semantics_to_possible_world_index/probes/01_possible-world-spike.lean`. This single lemma is what 22 of the 28 reach-through sites need; rewrite those 22 call sites to use it instead of reaching through the subtype.\n\n(2) Fix the two layer-crossing defects at `FormalSystem/Automation/IntNormalForm.lean:282` and `FormalSystem/Metalogic/Extension.lean:219`.\n\n(3) Triage the remaining 6 reach-throughs and 8 layer crossings, disposing of each explicitly.\n\nOUT OF SCOPE (deliberately, each needing its own justification rather than inheriting one from the superseded description):\n- The `PossibleWorld` rename (503 binders plus the namespace). Blocked on settling whether H_F or the time-shift quotient W_F owns the name \"possible world\" -- `possible_worlds.tex:1046` makes them different objects and `:1050` licenses both names.\n- Converting `WorldHistory` from a subtype to a flat structure. Research found this is a real net win (the `CoeOut` instance never fires, `WorldHistory.ext` has zero call sites, `states_eq_state` goes away) at the cost of a ~6-line `toPartialHistory` bridge for the Extension Theorem -- but it relocates bridging rather than removing it, so it belongs in its own task.\n\nVERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_iff_validInt` and `truthAt_map` still returns exactly `[propext, Classical.choice, Quot.sound]` with no `sorryAx`.",
       "topic": "semantics-refactor",
@@ -1249,14 +1250,15 @@
       "effort": "small",
       "dependencies": [],
       "created": "2026-09-17T22:46:34Z",
-      "last_updated": "2026-09-17T22:46:34Z",
+      "last_updated": "2026-09-18T01:53:56Z",
       "artifacts": [],
-      "next_artifact_number": 1
+      "next_artifact_number": 1,
+      "session_id": "sess_1789696399_5c64b8_615"
     },
     {
       "project_number": 619,
       "project_name": "require_reasons_for_linter_suppressions",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Every linter suppression in the tree must carry a recorded reason, and a check must keep it that way. An audit performed during the compiler-warning burn-down found 10 declaration- and file-scoped `set_option linter.* false` suppressions in the live tree, of which SIX are bare -- no comment above them, nothing in the surrounding docstring, no rationale anywhere. An undocumented suppression is indistinguishable from giving up, and the new C28 warning gate will report a clean zero while they sit there.\n\nTHE SIX (verified at burn-down time; re-verify line numbers before editing, since the burn-down shifted lines in several of these files):\n- FormalSystem/Metalogic/Decidability/Verified/Bridge/UntlSnceFree.lean:352 -- `set_option linter.unusedTactic false in`\n- FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:128 -- `set_option linter.unusedVariables false in`\n- FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:278 -- `set_option linter.unusedVariables false in`\n- FormalSystem/Semantics/Ultraproduct/Carrier.lean:63 -- file-scoped `linter.unusedSectionVars`\n- FormalSystem/Semantics/Ultraproduct/Los.lean:47 -- file-scoped `linter.unusedSectionVars`\n- FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean:60 -- file-scoped `linter.unusedSectionVars`\n\nDIVISION OF LABOUR WITH THE MATHLIB-LINTER-SET TASK IN THIS TOPIC. That task already owns converting the three file-scoped Ultraproduct blankets to `in`-scoped form and adding a ratchet that permits only the `in`-scoped shape. It does NOT require a reason for any suppression, and it does not touch the three declaration-scoped ones at all -- those are already correctly scoped and merely unexplained, so they fall through both tasks otherwise. THIS task owns the reason requirement. Do not re-do the scoping conversion here; if that task has already run, the Ultraproduct three will be `in`-scoped and still need reasons.\n\nWORK:\n(1) For each of the three declaration-scoped suppressions, determine WHY it is there -- git archaeology on the introducing commit, then an empirical deletion trial: remove the suppression, build, and record what actually breaks. The trial is the evidence, not the commit message.\n(2) Dispose of each explicitly: if the suppression is load-bearing, keep it with an in-source comment naming what the deletion trial showed (the house model is the documented suppression in MintBound/Invariants.lean, which names all twelve goals its deletion experiment left unsolved). If it is not load-bearing, delete it and fix the warning it was hiding.\n(3) Same treatment for the three Ultraproduct suppressions. Their deletion trial has a known prerequisite: the un-suppressed warning count behind them was measured during the burn-down -- read that measurement rather than re-deriving it.\n(4) Add a check to scripts/check-module-invariants.sh requiring that every `set_option linter.* false` occurrence has a non-blank comment line immediately above it, or is listed in a companion allowlist with a reason column. Follow the C28 precedent from the burn-down task: build-free, runnable under `--no-build`, with an anti-silence guard that exits non-zero rather than passing when it finds nothing to check. Take the next free check ID -- C26 and C27 are already live, and the burn-down takes C28, so verify the current highest ID rather than assuming.\n(5) Add a row for the new check to docs/development/MODULE_INVARIANTS.md.\n\nACCEPTANCE: zero bare `set_option linter.* false` occurrences in the tree; every retained suppression names what breaks without it, on evidence from an actual deletion trial; the new check fails loudly on an injected bare suppression (negative-test it); `lake build` green; the warning budget unchanged or reduced, never increased to accommodate a deletion.",
       "topic": "codebase-cleanup",
@@ -1266,7 +1268,7 @@
         585
       ],
       "created": "2026-09-18T00:17:57Z",
-      "last_updated": "2026-09-18T00:17:57Z",
+      "last_updated": "2026-09-18T01:54:06Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Bridge/UntlSnceFree.lean",
         "FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean",
@@ -1275,7 +1277,8 @@
         "docs/development/MODULE_INVARIANTS.md"
       ],
       "artifacts": [],
-      "next_artifact_number": 1
+      "next_artifact_number": 1,
+      "session_id": "sess_1789696399_5c64b8_619"
     }
   ],
   "artifacts": [

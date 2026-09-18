@@ -1,0 +1,1021 @@
+tier	file	line	kind	name	attrs	boneyard_refs	orphan_module
+SURVIVOR	FormalSystem/Automation/AtomCanonicalization.lean	129	def	isCanonical		0	
+SURVIVOR	FormalSystem/Automation/ContrastiveGeneratorMain.lean	775	def	natToString		0	
+SURVIVOR	FormalSystem/Automation/ContrastiveGeneratorMain.lean	1074	def	runBatchContrastive		0	
+SURVIVOR	FormalSystem/Automation/DatasetGenerator.lean	1022	def	DecideCache.hitRate		0	
+SURVIVOR	FormalSystem/Automation/FormulaEnumerator.lean	1278	def	schemaMinFrameClass		0	
+SURVIVOR	FormalSystem/Automation/FormulaEnumerator.lean	1479	def	generateValidFromMP		0	
+SURVIVOR	FormalSystem/Automation/FormulaEnumerator.lean	1761	structure	CheckpointState		0	
+SURVIVOR	FormalSystem/Automation/FormulaEnumerator.lean	2293	def	enumerateWithPipeline		0	
+SURVIVOR	FormalSystem/Automation/ForwardProofGenerator.lean	187	def	schemaLayer		0	
+SURVIVOR	FormalSystem/Automation/ForwardProofGenerator.lean	202	def	randomAxiomSchema		0	
+SURVIVOR	FormalSystem/Automation/PrefilterSoundness.lean	161	theorem	false_consequent_not_truth		0	
+SURVIVOR	FormalSystem/Automation/ProofSearch/Core.lean	945	def	orderSubgoalsByPatternScore		0	
+SURVIVOR	FormalSystem/Automation/ProofSearch/Strategies.lean	377	def	patternStats		0	
+SURVIVOR	FormalSystem/Automation/SuccessPatterns.lean	319	def	bestStrategyHint		0	
+SURVIVOR	FormalSystem/Automation/Tactics/Search.lean	342	def	extractImplicationAntecedent		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	97	theorem	intTimeFrame_serial		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	103	theorem	intTimeFrame_interpolates		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	108	theorem	intTimeFrame_limit		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	116	theorem	intTimeFrame_saturation		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	173	theorem	intNatFrame_serial		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	179	theorem	intNatFrame_interpolates		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	186	theorem	intNatFrame_limit		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	193	theorem	intNatFrame_saturation		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	264	theorem	intBoolFrame_serial		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	270	theorem	intBoolFrame_interpolates		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	275	theorem	intBoolFrame_limit		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	289	theorem	intBoolFrame_saturation		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	326	theorem	genericTimeFrame_serial		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	332	theorem	genericTimeFrame_interpolates		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	338	theorem	genericTimeFrame_limit		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	346	theorem	genericTimeFrame_saturation		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	377	theorem	genericNatFrame_serial		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	384	theorem	genericNatFrame_interpolates		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	406	theorem	genericNatFrame_saturation		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	480	theorem	int_domain_universal		0	
+SURVIVOR	FormalSystem/Examples/TemporalStructures.lean	485	theorem	generic_domain_universal		0	
+SURVIVOR	FormalSystem/ForMathlib/Order/PFilter.lean	94	theorem	IsProper.exists_notMem		0	
+SURVIVOR	FormalSystem/ForMathlib/Order/PFilter.lean	132	theorem	isProper_iff_bot_notMem		0	
+SURVIVOR	FormalSystem/ForMathlib/Order/PFilter.lean	155	theorem	IsProper.notMem_or_compl_notMem		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/FlowFrame.lean	194	theorem	multiFamHistoryGen_shift_eq		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/FlowFrame.lean	484	theorem	bundleFlow_comp_iff		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/FlowFrame.lean	492	theorem	bundleFlow_serial		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/FlowFrame.lean	500	theorem	bundleFlow_limit		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/FlowFrame.lean	507	theorem	bundleFlow_saturation		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/FlowFrame.lean	535	theorem	bundleFlow_total_eq_range		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/LindenbaumQuotient.lean	268	def	impQuot		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/LindenbaumQuotient.lean	353	theorem	sigma_quot_involution		1	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/LindenbaumQuotient.lean	362	theorem	sigma_quot_neg		1	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/LindenbaumQuotient.lean	373	theorem	sigma_quot_sup		1	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/LindenbaumQuotient.lean	385	theorem	sigma_quot_box		1	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	433	theorem	mcsToSet_compl_not		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	509	theorem	mem_mcsToPFilter_iff		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	542	theorem	mem_mcsToUltrafilter_iff		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	777	theorem	ultrafilter_neg_iff		0	
+SURVIVOR	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	783	theorem	ultrafilter_neg_iff'		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalChain.lean	59	theorem	P_imp_top_since_mcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalChain.lean	71	theorem	absorb_until_mcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalChain.lean	81	theorem	absorb_since_mcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalChain.lean	99	theorem	delegation_until_eventuality		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalChain.lean	108	theorem	delegation_since_eventuality		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	86	theorem	fwd_succ_resolves		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	98	theorem	h_content_consistent		1	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	133	theorem	bwd_pred_resolves		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	232	theorem	fwd_chain_reverse_h		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	323	theorem	bx_fmcs_at_zero		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	342	theorem	shifted_bx_fmcs_at_s		2	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	414	theorem	box_stable_in_shifted_fmcs		3	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	497	theorem	fwd_succ_fc_resolves		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	534	theorem	bwd_pred_fc_resolves		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean	634	theorem	fwd_chain_fc_reverse_h		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	90	theorem	singleton_dom		2	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	96	theorem	singleton_f_zero		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	124	theorem	singleton_invariant		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	169	theorem	singleton_c4		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	180	theorem	singleton_c4'		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	315	theorem	omega_chain_c2'		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	338	theorem	omega_chain_no_guard_accumulation		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	442	theorem	omega_chain_g_agrees_le		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	957	theorem	limit_c3_interval_subset_point		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	971	theorem	limit_c3_interval_subset_left		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	985	theorem	limit_c3_interval_subset_right		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	1014	theorem	g_content_sub_imp_h_content_sub		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	1056	theorem	h_content_sub_imp_g_content_sub		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	1249	theorem	chronicle_model_exists		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	1292	theorem	omega_chain_c5_forward_resolved_no_new		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean	1316	theorem	omega_chain_c5_backward_resolved_no_new		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleGuardAccumulation.lean	235	theorem	noGuardAccumulation_of_guard_never_fails		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleGuardAccumulation.lean	801	theorem	noGuardAccumulation_not_implied_by_limit_data		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	1034	def	chronicleMonadicExpressiveCompleteness		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean	213	theorem	limitDomSubtype_succ_iter_injective		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean	329	theorem	collapse_equiv_succ_congr		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean	407	theorem	collapse_not_equiv_of_orbit		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean	728	theorem	discrete_f_at_zero		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean	1022	theorem	order_succ_eq_limitDomSubtype_succ		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean	1034	theorem	order_pred_eq_limitDomSubtype_pred		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean	1082	theorem	limitDomSubtype_pred_succ		1	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean	1111	theorem	limitDomSubtype_le_pred_of_lt		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	268	theorem	dcs_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	680	structure	ValidChronicle		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	707	theorem	c3_interval_subset_point		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	719	theorem	c3_interval_subset_left		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	731	theorem	c3_interval_subset_right		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	794	theorem	r3Relation_implies_rRelation		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	798	theorem	r3Relation_implies_rRelationSince		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	808	theorem	R3Maximal.dcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	818	theorem	R3Maximal_rRelation		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	847	theorem	dcs_inter_mcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	866	theorem	three_way_inter_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean	875	theorem	dcs_inter_mcs_inter_dcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean	133	theorem	exists_rat_between_not_in_finset		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean	269	theorem	c2'_preserved_on_old_adjacent		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean	298	theorem	burgessR3Maximal_from_h_content_sub		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean	449	theorem	eliminate_g_prop_counterexample		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean	489	theorem	eliminate_h_prop_counterexample		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	118	theorem	P_neg_of_H_not		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	296	theorem	lemma_2_5b_past		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	512	theorem	r3Maximal_neg_of_not_mem		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	543	theorem	mcs_no_proper_dcs_extension		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	755	theorem	xu_lemma_2_3_until_top		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	819	theorem	set_univ_closed_under_derivation		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	863	theorem	H_ex_falso_strengthen		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	925	theorem	BurgessR3Maximal.neg_or_ext_fails		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	980	def	conjIntroCurried		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	1003	theorem	h_content_sub_imp_g_content_sub'		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	1035	theorem	g_content_sub_imp_h_content_sub'		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	1195	def	andLeftImpl		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	1200	def	andRightImpl		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	1232	theorem	inconsistent_from_implied		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	1338	def	untlRightMonoDeriv		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean	1347	def	snceRightMonoDeriv		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	287	theorem	rMaximalSince_extension_exists		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	340	theorem	r3Maximal_extension_exists		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	386	theorem	r3MaximalSince_extension_exists		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	434	theorem	r3_seed_from_rRelation		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	662	theorem	c4'_hard_case_H_neg_delta		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	711	theorem	closed_under_derivation_inconsistent_eq_univ		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	781	theorem	BurgessR3Maximal.cud		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	795	theorem	BurgessR3Maximal_burgessRSet		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	802	theorem	BurgessR3Maximal_burgessRSetSince		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	823	theorem	burgessR3_untl_in		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	832	theorem	burgessR3_snce_in		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	849	theorem	burgessR3_gamma_not_in_B		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	864	theorem	burgessR3_gamma_not_in_B_since		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	890	theorem	dcs_neg_insert_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	1472	theorem	burgessRSet_iff_burgessRSetSince		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Chronicle/RRelation.lean	1507	theorem	burgessR3_untl_conj_in_A		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Filtration/DefectChain.lean	68	def	IsUntilDefect		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Filtration/DefectChain.lean	95	theorem	defect_step_connect		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Filtration/DefectChain.lean	113	def	sigmaSinceDefectCount		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Filtration/DefectChain.lean	119	theorem	since_defect_step_P_psi		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Filtration/DefectChain.lean	127	theorem	since_defect_step_connect		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Frame.lean	388	theorem	bx_modal_equiv_refl		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Frame.lean	391	theorem	bx_modal_equiv_symm		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Frame.lean	395	theorem	bx_modal_equiv_trans		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Frame.lean	641	theorem	bx_modal_equiv_of_bx_le		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/OrderedSeedConsistency.lean	188	theorem	two_defect_consistent_seed		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/OrderedSeedConsistency.lean	234	theorem	no_new_f_defects		1	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/OrderedSeedConsistency.lean	252	theorem	resolved_target_in_successor		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	120	theorem	self_accum_mcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	156	theorem	since_P_mcs		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	297	theorem	hintikka_step_target_decrease_since		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	362	def	QuasimodelChain.witnessReached		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	371	theorem	QuasimodelChain.length_pos		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	796	theorem	chain_step_seed_consistent_since		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	809	theorem	hintikka_chain_guard_step		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/HintikkaPoint.lean	73	theorem	HintikkaPoint.mem_sigma		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/HintikkaPoint.lean	78	theorem	HintikkaPoint.not_mem_of_neg_mem		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/HintikkaPoint.lean	140	theorem	sigma_signature_mem		21	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/HintikkaPoint.lean	147	theorem	hintikka_point_formulas_injective		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Realization.lean	59	theorem	F_from_above		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Realization.lean	202	theorem	chain_step_seed_consistent_enriched_since		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Realization.lean	455	theorem	SubformulaClosure.H_closed		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/Realization.lean	490	theorem	SubformulaClosure.untl_closed		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/SubformulaClosure.lean	89	theorem	g_enrichment_mem		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/SubformulaClosure.lean	97	theorem	h_enrichment_mem		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/SubformulaClosure.lean	104	theorem	closure_finite		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/Quasimodel/SubformulaClosure.lean	110	theorem	neg_pairing		0	
+SURVIVOR	FormalSystem/Metalogic/BXCanonical/TruthLemma.lean	210	def	BxLt		0	
+SURVIVOR	FormalSystem/Metalogic/Bundle/LimitMCS.lean	481	theorem	limitMCSAbove_is_mcs		0	
+SURVIVOR	FormalSystem/Metalogic/Bundle/TemporalCoherence.lean	213	theorem	restricted_temporal_backward_G_strict		1	
+SURVIVOR	FormalSystem/Metalogic/Bundle/TemporalCoherence.lean	238	theorem	restricted_temporal_backward_H_strict		1	
+SURVIVOR	FormalSystem/Metalogic/Bundle/WitnessSeed.lean	135	theorem	psi_mem_forward_temporal_witness_seed		1	
+SURVIVOR	FormalSystem/Metalogic/Bundle/WitnessSeed.lean	295	theorem	psi_mem_past_temporal_witness_seed		2	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Corollaries.lean	83	theorem	tmFragIffPlusDense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Corollaries.lean	88	theorem	tmFragIffPlusZTime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Corollaries.lean	93	theorem	tmFragIffPlusRTime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	69	theorem	forward_plus_base		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	74	theorem	forward_plus_dense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	79	theorem	forward_plus_ztime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	85	theorem	forward_plus_rtime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	101	theorem	plusDerivable_ofFormula_iff_base		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	106	theorem	plusDerivable_ofFormula_iff_dense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	112	theorem	plusDerivable_ofFormula_iff_ztime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	118	theorem	plusDerivable_ofFormula_iff_rtime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	138	theorem	plus_of_tmMinus_base		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	143	theorem	plus_of_tmMinus_dense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	148	theorem	plus_of_tmMinus_ztime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/Forward.lean	154	theorem	plus_of_tmMinus_rtime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean	155	theorem	plus_soundness_dense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean	160	theorem	plus_soundness_ztime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean	165	theorem	plus_soundness_rtime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean	180	theorem	plus_not_derivable_nil_bot		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	105	theorem	forward_star_base		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	111	theorem	forward_star_dense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	117	theorem	forward_star_ztime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	123	theorem	forward_star_rtime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	140	theorem	starDerivable_ofFormula_iff_base		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	146	theorem	starDerivable_ofFormula_iff_dense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	152	theorem	starDerivable_ofFormula_iff_ztime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/Forward.lean	158	theorem	starDerivable_ofFormula_iff_rtime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean	137	theorem	star_soundness_dense		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean	142	theorem	star_soundness_ztime		0	
+SURVIVOR	FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean	147	theorem	star_soundness_rtime		0	
+SURVIVOR	FormalSystem/Metalogic/Core/DeductionTheorem.lean	129	theorem	cons_removeAll_perm		0	
+SURVIVOR	FormalSystem/Metalogic/Core/MaximalConsistent.lean	115	theorem	base_mem_consistent_extensions		0	
+SURVIVOR	FormalSystem/Metalogic/Core/MaximalConsistent.lean	128	theorem	consistent_implies_set_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/Core/MaximalConsistent.lean	208	theorem	derivation_uses_finite_context		0	
+SURVIVOR	FormalSystem/Metalogic/Core/MaximalConsistent.lean	387	theorem	SetMaximalConsistent.finite_subset_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/Core/MaximalConsistent.lean	435	theorem	maximal_negation_complete		0	
+SURVIVOR	FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean	91	theorem	restricted_consistent_is_restricted		0	
+SURVIVOR	FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean	98	theorem	restricted_consistent_is_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean	105	theorem	restricted_mcs_is_restricted_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Annotation.lean	135	theorem	default_finset		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean	108	theorem	cyc_reduce		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Check.lean	181	theorem	check_eq_checkAt		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean	225	theorem	mem_rawLabels_spec		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean	373	theorem	fulfilling_not_implied_by_localCoherent		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean	386	theorem	boxOracle_false_not_sound		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean	428	theorem	posAnnot_mem_boundedAnnots		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Extend.lean	111	theorem	unroll_mid		0	orphan
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean	149	theorem	iterSucc_add		0	orphan
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean	156	theorem	iterPred_add		0	orphan
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean	273	theorem	fwdCycle_length_le		0	orphan
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean	278	theorem	bwdCycle_length_le		0	orphan
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Realized.lean	170	theorem	datum_eq_pigeonDatum		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/BiLasso/Realized.lean	189	theorem	realizedStep_datum		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	154	structure	OpenBranch		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	173	def	classifyBranch		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	188	theorem	hasNeg_mono		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	199	theorem	hasPos_mono		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	221	theorem	hasPosAt_mono		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	232	theorem	hasBotPos_mono		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	304	theorem	closed_extend_closed		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	351	theorem	add_neg_causes_closure		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	396	def	countPotentialContradictions		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Closure.lean	402	def	countNegatedAxioms		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	76	theorem	decide_sound'		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	124	theorem	decide_isValid_sound		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	157	theorem	isValid_validDense		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	164	theorem	isValid_validZTime		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	171	theorem	isValid_validRTime		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	179	theorem	decideBlocking_isValid_sound		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	187	theorem	decideAuto_isValid_sound		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	275	theorem	isKnownValid_of_extractionFailed		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	323	theorem	fmp_incompleteness_witness		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Correctness.lean	332	theorem	countermodel_size_bound		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	148	def	extractCountermodelFromTableau		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	210	def	isTimeOrderedAfter		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	232	def	timesBetween		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	351	theorem	valuation_reflects_pos		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	363	theorem	valuation_reflects_neg		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	400	theorem	expanded_iff_no_applicable		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	935	def	findSemanticCountermodel		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean	949	def	extractCountermodelsFromTableau		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/DecisionProcedure.lean	419	def	decideBatch		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/DecisionProcedure.lean	476	def	isContingent		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/DecisionProcedure.lean	581	def	decideAutoWithTrace		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/ClosureMCS.lean	119	theorem	full_mcs_projection_consistent		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/ClosureMCS.lean	145	theorem	closure_mcs_formula_decided		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/ClosureMCS.lean	236	theorem	closure_mcs_exists_from_consistent_formula		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/ClosureMCS.lean	245	theorem	closure_mcs_exists_containing		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/ClosureMCS.lean	268	theorem	closure_mcs_finite_bound		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/ClosureMCS.lean	278	theorem	closure_mcs_card_bound		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/FMP.lean	168	structure	BundledFilteredFrame		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/Filtration.lean	109	def	MCSFiltrationSetoid		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/Filtration.lean	419	theorem	filtered_world_lift_prop		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/Filtration.lean	460	theorem	filteredWorldMem_iff		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean	193	theorem	FiniteFilteredTaskFrame.taskRel_eq		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean	197	theorem	FiniteFilteredTaskFrame_serial		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean	203	theorem	FiniteFilteredTaskFrame_interpolates		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean	209	theorem	FiniteFilteredTaskFrame_limit		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean	215	theorem	FiniteFilteredTaskFrame_saturation		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/TruthPreservation.lean	203	theorem	mcs_box_box		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/TruthPreservation.lean	249	theorem	mcs_all_future_all_future		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/TruthPreservation.lean	271	theorem	mcs_all_past_all_past		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/FMP/TruthPreservation.lean	330	theorem	mcs_imp_intro		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/IntPresentation.lean	164	def	toFiniteFrame	@[reducible]	0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/ProofExtraction.lean	60	def	proofFromBot		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/ProofExtraction.lean	347	def	verifyProof		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/ProofExtraction.lean	353	def	proofHeight		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/ProofExtraction.lean	363	structure	ProofExtractionStats		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Saturation.lean	394	theorem	allocateFuelProportionally_le		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Saturation.lean	604	theorem	buildTableau_saturateBlocked_arm_unreachable		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Saturation.lean	1232	def	isSaturated		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Saturation.lean	1239	def	isAtomicBranch		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Saturation.lean	1254	def	expansionMeasure		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Saturation.lean	1268	structure	TableauStats		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Saturation.lean	1926	theorem	buildTableauAt_hasOpen_findClosure_none		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	281	def	hasContradiction		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	296	def	extendMany		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	430	def	untlNegFormulas		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	441	def	snceNegFormulas		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	452	def	untlPosFormulas		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	463	def	sncePosFormulas		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	599	def	hasPending		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	607	def	isFulfilled		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	682	def	initWithTime0		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	900	def	addBlocked		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	904	def	isBlocked		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	1022	def	signedSubformulaClosure		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/SignedFormula.lean	1050	def	branchUnexpandedComplexity		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Tableau.lean	2433	theorem	applyRule_fresh_branching_ne_nil		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Tableau.lean	2726	theorem	exists_not_mem_of_all_contains_false		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Tableau.lean	2958	def	countUnexpanded		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Tableau.lean	2965	def	totalUnexpandedComplexity		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Tableau.lean	3009	theorem	saturated_downward_closed		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/TraceCertificate.lean	275	def	setCert		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/BoxSaturation.lean	361	theorem	mem_directFutureOf_iff_mem_directPastOf		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean	364	theorem	BranchOrder_lt_iff		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean	380	theorem	le_of_strictBefore		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean	388	theorem	strictBefore_of_lt		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean	162	theorem	normWorld_idem		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean	253	theorem	regionExtend_total		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean	652	theorem	interpInvariant_allFuture		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean	657	theorem	interpInvariant_allPast		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean	218	theorem	regionFrame_fib_subsingleton		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean	230	theorem	regionFrame_serial		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean	240	theorem	regionFrame_interpolates		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean	264	theorem	regionFrame_saturation		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean	384	theorem	truthAt_box_congr_history		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean	315	theorem	regionLabel_not_hasNeg		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean	337	theorem	regionLabel_not_hasPos		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean	362	theorem	regionLabel_diaNeg		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean	477	theorem	truthAt_atom_gap_of_box		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean	292	theorem	interpInvariantAt_allFuture		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean	297	theorem	interpInvariantAt_allPast		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Decidable.lean	1156	theorem	addPast_nextTime_cycle_unsatisfiable		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/RuleSpec.lean	282	theorem	allTableauRules_length		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/RuleSpec.lean	349	theorem	mem_allRulesForFC_mono		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	480	theorem	chain_le_card_universe		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	630	theorem	timeFinset_card_le_of_not_blocked_empty		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	1505	theorem	expandBranchWithFuel_nil_isSome		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	1594	theorem	budget_le_of_betaBudget		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	1639	theorem	pick_splitOrdered		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	2538	theorem	splitPathBound_le_splitAwareFuel		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	2613	theorem	soundFuel'_le_worldFuel'		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean	406	theorem	timeMergeClosed_concrete		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/ClosureResidual.lean	411	theorem	timeMergeClosed_concrete_nonempty		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/FourComponent.lean	446	theorem	splitAwareFuel_le_mintAwareFuelAt		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/Measure.lean	522	theorem	difficultyCeiling_mono		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean	865	theorem	labelFinset_card_le_of_seed_run		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean	878	theorem	chain_le_worldFuel'_of_seed		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean	1132	theorem	mintBudget_preserved		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean	1138	theorem	mintBudget_preserved_mint		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean	1495	theorem	idents_le_knownTimes_add_mints		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean	1521	theorem	shrinkage_total_le		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean	1531	theorem	extensions_le		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MonotoneIssuance.lean	110	theorem	oriented_reuse_not_driven_through_engine		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MonotoneIssuance.lean	203	theorem	oriented_arm_symmetric_trigger		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MonotoneIssuance.lean	424	theorem	identifyTime_no_collapse_oriented		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MonotoneIssuance.lean	471	theorem	knownTimes_card_lt_identifyTime_oriented		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrderingTimes.lean	323	theorem	counterexample_dies		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrderingTimes.lean	501	theorem	applyRule_irreflOrd_from_known		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrderingTimes.lean	507	theorem	ne_nextTime_from_known		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrderingTimes.lean	992	theorem	witnessPresent_no_flip		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	57	theorem	selfGuard_column_at_live_time		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	185	theorem	mintPaysForTimeAt_of_mintPaysForTime		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	263	theorem	orientedGate_runInvariant		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	269	theorem	orientedGate_confined		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	285	theorem	orientedGate_is_oriented_arm_state		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	319	theorem	orientedGate_step_fires		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	344	theorem	orientedGate_disjuncts_measured		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	423	theorem	mintPaysForTimeStable_body_at_orientedGate		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	661	theorem	sigmaTimeStable_rhoSF_of_lt		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean	914	theorem	sigmaFixesFrom_rhoSF		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/PostBlocking.lean	962	theorem	pbrWitness_saturateBlocked_self		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/PostBlocking.lean	1227	theorem	postBlockingSettlesSeedRun_of_postBlockingSettlesRun		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SigmaFixed.lean	120	theorem	fh_universe_card		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SigmaFixed.lean	245	theorem	sigmaFixesFormulasFrom_rhoSF		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SigmaFixed.lean	431	theorem	mintPaysForTimeFixed_no_leak		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/SigmaFixed.lean	953	theorem	mintPaysForTimeFixed_empty		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean	69	theorem	freshTimeRules_card		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean	448	theorem	applyRule_emitted_timeFinset_mem		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean	478	theorem	ordTimesWitnessOrd_not_ordTimesKnown		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/UntlSnceFree.lean	72	theorem	untlSnceFree_box		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/UntlSnceFree.lean	77	theorem	untlSnceFree_imp		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/UntlSnceFree.lean	651	theorem	mintPaysForTime_modalWitness		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean	321	theorem	tableauClosed_closureIter		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean	621	theorem	emissions_bot		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean	1095	theorem	subformulasFinset_or		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean	1100	theorem	subformulasFinset_kPlus		0	
+SURVIVOR	FormalSystem/Metalogic/Decidability/Verified/Termination/TimeTypeBound.lean	1106	theorem	subformulasFinset_kMinus		0	
+SURVIVOR	FormalSystem/Metalogic/Deterministic/Collapse.lean	188	theorem	detIffSymm		0	
+SURVIVOR	FormalSystem/Metalogic/Deterministic/Erasure.lean	178	theorem	plusValidDetIn_iff_validDetIn_erasePlus		0	
+SURVIVOR	FormalSystem/Metalogic/Deterministic/Validity.lean	139	theorem	determinedSat_not_detSat_base		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/ClockFrame.lean	81	theorem	cmk_sub		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/ClockFrame.lean	99	theorem	cmk_surjective		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/CoNotPriorU.lean	206	def	priorUGapFormulaIsAxiom		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/CoarsenedModels.lean	134	theorem	sameUnder_timeShift		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean	250	theorem	forwardDeterministic_not_deterministic		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean	339	theorem	fn_forwardDeterministic_not_singletonClasses		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean	436	theorem	not_forall_fn_sentDet		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/LoopingDuration.lean	223	theorem	clock_allPast_imp_allFuture		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/LoopingDuration.lean	229	theorem	clock_allFuture_imp_allPast		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/NaiveSystem.lean	137	theorem	naiveStabNec		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/OrderTransfer.lean	111	theorem	states_injective		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/PastingIndependence.lean	104	theorem	pHist_state		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/RealTranslationFrame.lean	161	theorem	f1_states_sub		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/RealTranslationFrame.lean	183	theorem	f1_stab_biconditional		0	
+SURVIVOR	FormalSystem/Metalogic/Independence/StabUndefinable.lean	161	theorem	someFuture_tauOne		0	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	375	theorem	temp_a_dual_valid		0	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	491	theorem	discreteness_forward_valid		1	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	506	theorem	seriality_future_valid		0	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	518	theorem	seriality_past_valid		0	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	843	theorem	necessitation_preserves_valid		0	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	855	theorem	temporal_necessitation_preserves_valid		0	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	1452	theorem	soundness_dense_valid		0	
+SURVIVOR	FormalSystem/Metalogic/Soundness.lean	1544	theorem	soundness_rtime_valid		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	50	def	DiscreteHypothesis		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	60	theorem	prior_UZ_in_limit_domain		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	70	theorem	prior_SZ_in_limit_domain		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	188	theorem	chronicle_no_endpoints_forward		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	196	theorem	chronicle_no_endpoints_backward		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	204	def	chronicleDiscreteSucc		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	211	def	chronicleDiscretePred		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean	259	theorem	IsBadPoint.of_left		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean	358	theorem	notLeftEnd_of_le		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean	830	theorem	not_afterNotHoldsInClass_of_le		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean	194	theorem	no_gaps_dense_prior_unrestricted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean	204	theorem	no_gaps_dense_prior_left_unrestricted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean	214	theorem	reynolds_theorem5_unrestricted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean	225	theorem	dense_singletons_of_sep_unrestricted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean	236	theorem	chronicleMonadic_no_gaps_unrestricted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean	246	theorem	chronicleMonadic_no_gaps_left_unrestricted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean	257	theorem	chronicleMonadic_dense_singletons_unrestricted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean	623	theorem	reynolds_lemma2_dual		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean	688	theorem	not_gapRightFormula_epsTop		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean	397	theorem	c4_three		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean	934	theorem	reynolds_lemma4		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean	1119	theorem	not_isFirstClassPoint_epsTop		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean	821	theorem	reynolds_lemma5		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean	916	theorem	btw_of_minmax		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean	323	theorem	exists_mem_gt		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean	441	theorem	untl_backward_of_between		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean	275	theorem	rank_type_ne_of_nf_profile_ne		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean	413	theorem	x_t_implies_agreement		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean	559	theorem	sf_snce_depth		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean	582	theorem	sf_snce_truth_mu		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean	617	theorem	untl_type_depth_le_r_plus_4		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Composition.lean	23	theorem	pivot_flip		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	79	theorem	gap_splits_interval_points		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	435	theorem	ghr93_duplicator_wins_rank_cast		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	527	theorem	rank_embed_game_tuple		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	655	theorem	ghr93_strategy_rank_lift		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	726	theorem	stavi_depth_sf_K_plus		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	731	theorem	stavi_depth_sf_K_minus		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	739	theorem	sf_K_plus_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	764	theorem	sf_K_minus_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	1118	theorem	in_rank_embed_range_point		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/CustomGame.lean	1125	theorem	in_rank_embed_range_embed		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Decomposition.lean	307	theorem	ghr93_game_iff_decomposition		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Defs.lean	73	def	EfDuplicatorWins		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Defs.lean	105	theorem	game_depth_succ_ge_two		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Defs.lean	200	theorem	stavi_n_equiv_symm		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Defs.lean	212	theorem	stavi_n_equiv_mono		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Defs.lean	523	theorem	gap_complement_pred_closed		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/Defs.lean	544	theorem	discrete_no_gaps		14	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/GapDetection.lean	213	theorem	operator_depth_flatten_stavi_le		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/GapDetection.lean	316	theorem	stavi_depth_right_formula		2	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/GapDetection.lean	1137	theorem	left_formula_gap_detection		4	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	62	theorem	liftSigFormula_depth		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	76	theorem	liftSigFormula_eval		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	95	theorem	liftSigFormula_lift_comm		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	114	def	muEx		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	120	def	muAll		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	472	theorem	stavi_depth_le_fo_depth		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	1517	def	nfSuccSf		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	1574	def	interval2varNfTypes		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	1585	theorem	nf_char_depth_decrease		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	1632	theorem	interval_nf_types_depth_decrease		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean	1700	theorem	below_min_depth_decrease		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean	179	theorem	rank_embed_comp_heq		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean	189	theorem	rank_embed_ne		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean	286	theorem	not_mu_holds_gap		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean	458	theorem	mem_rank_type_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean	472	theorem	neg_mem_rank_type_of_not		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Expressiveness/Claim1.lean	253	theorem	inf_carrier_cut_nonempty		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/FrameProperties.lean	28	theorem	z1_in_frame		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/FrameProperties.lean	40	theorem	prior_UZ_in_frame		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/FrameProperties.lean	48	theorem	prior_SZ_in_frame		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/FrameProperties.lean	56	theorem	serial_future_in_frame		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/FrameProperties.lean	62	theorem	serial_past_in_frame		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean	261	theorem	blockMk_eq_blockMk_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean	371	def	AllPredicatesAccessible		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean	670	theorem	right_gap_class_pred		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean	913	theorem	right_gap_class_formula_implies_bounded		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	498	theorem	zTaskFrameV2_deterministic		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	503	theorem	zTaskFrameV2_serial		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	511	theorem	zTaskFrameV2_interpolates		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	519	theorem	zTaskFrameV2_limit		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	530	theorem	zTaskFrameV2_saturation		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	540	theorem	zHistory_v2_shift_eq		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	547	def	zTaskModelV2		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	657	theorem	zHistoryV2_total_eq_range		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	771	theorem	multiFamTaskFrame_serial		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	779	theorem	multiFamTaskFrame_interpolates		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	787	theorem	multiFamTaskFrame_limit		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	795	theorem	multiFamTaskFrame_saturation		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINFDense.lean	548	theorem	hasDenseDedekindINF_of_dense_window		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/DedekindINFDense.lean	553	theorem	hasDenseDedekindSUP_of_dense_window		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean	263	theorem	neg_b2_bracket_formula_hasINF		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean	325	theorem	neg_b2_bracket_formula_disjoint		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean	700	theorem	neg_disjunct_list		2	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean	756	theorem	exists_permutation_head		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/NegFixOne.lean	471	theorem	bfZ_not_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/NegFixOne.lean	485	theorem	caseA_not_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/NegFixOne.lean	494	theorem	caseB1_not_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/NegFixOne.lean	507	theorem	caseB2_not_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFix/NegFixOne.lean	520	theorem	caseB3_not_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixAnchoredFaithful.lean	297	theorem	negBoundedRightFixAnchoredFaithful_iff_of_attained		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixAnchoredFaithful.lean	310	theorem	negBoundedLeftFixAnchoredFaithful_iff_of_attained		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixAnchoredFaithful.lean	359	theorem	endpointFailRightAnchored_of_leftPinBracket		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixFaithful.lean	322	theorem	negBoundedRightFixFaithful_iff_of_attained		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixFaithful.lean	333	theorem	negBoundedLeftFixFaithful_iff_of_attained		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/BoundedFixFaithful.lean	377	theorem	endpointFailRight_of_leftPinBracket		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixOneFaithful.lean	836	theorem	MR.dedekind_shape_at_pR		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/NegFixOneFaithful.lean	877	theorem	negFixOne_not_a_cover_without_attainment		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ESigmaExpansion.lean	118	theorem	canonExpand_carrier		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ESigmaExpansion.lean	147	theorem	atom_eval_order		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallFormula.lean	148	theorem	efSat_strictMono		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallFormula.lean	159	theorem	efSat_pinned		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	142	theorem	conjSatFin_append		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	303	theorem	env_lt_of_pin_lt_fin		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	323	theorem	pointType_holds_at_env_fin		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	334	theorem	partialHolds_subinterval		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	447	theorem	loPosFin_mem		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	455	theorem	hiPosFin_mem		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean	160	theorem	IntervalPattern.holds_of_eq		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean	168	theorem	IntervalPattern.holds_zero		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean	176	theorem	IntervalPattern.holds_succ		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	239	theorem	kvE2_futSpikeBase_zone		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	399	theorem	kvE2_futBelowSpec_zPastX3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	400	theorem	kvE2_futBelowSpec_zAtX3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	401	theorem	kvE2_futBelowSpec_zXW3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	402	theorem	kvE2_futBelowSpec_zAtW3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	403	theorem	kvE2_futBelowSpec_zWT3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	404	theorem	kvE2_futBelowSpec_zAtT3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	438	theorem	kvE2_futCharZone3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	476	theorem	futZoneBit_selfx1		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	491	theorem	futZoneBit_below		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean	505	theorem	kvE2_extNegFutSpike_sound		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/IntervalType.lean	142	theorem	intervalHoldsFin_ofCompleteFin_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/IntervalType.lean	149	theorem	intervalHoldsFin_bot		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/IntervalType.lean	171	theorem	intervalHoldsFin_inter_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/IntervalType.lean	178	theorem	intervalHoldsFin_inter_left		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/IntervalType.lean	184	theorem	intervalHoldsFin_inter_right		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean	205	theorem	kminus_iff_not_and_kminusOpen		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean	593	theorem	kminusOpen_of_interval_witness		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean	655	theorem	denseWindow_probe_verdict		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/KPlusFaithful.lean	702	theorem	hasFaithfulDedekindSUP_not_implies_hasDedekindSUP		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean	167	theorem	nf_2var_exist_depth0_tl_fn_correct		2	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean	1603	theorem	kampPrior_fChain_realize_bracket		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53Faithful.lean	281	theorem	kplusLeftBlock_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/LiftPair.lean	189	theorem	exists_partialHolds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean	56	theorem	insertEnv_init		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean	176	theorem	totalUnskip_skipFin		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean	371	theorem	liftIdx_comp		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean	378	theorem	liftIdx_id		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean	629	theorem	buildRight_top_of_mono		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean	669	theorem	buildLeft_top_of_mono		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfEFold.lean	703	theorem	nf_eval_nfk_iff_efold_k1_recovers		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateHookDischarge.lean	1908	theorem	agg_dup32_fst		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateHookDischarge.lean	1913	theorem	agg_dup32_snd		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	271	theorem	aggOdClassify_extPast		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	279	theorem	aggOdClassify_ptX		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	287	theorem	aggOdClassify_int		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	296	theorem	aggOdClassify_ptT		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	306	theorem	aggOdClassify_extFut		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	466	theorem	aggOdClassifyF_extPast		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	473	theorem	aggOdClassifyF_ptT		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	481	theorem	aggOdClassifyF_int		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	490	theorem	aggOdClassifyF_ptX		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	500	theorem	aggOdClassifyF_extFut		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean	530	theorem	aggOdZone3F_bot_eval_false		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean	155	theorem	aggOdPopFold_iff_faithful_on_prior		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregatePointMergeK1.lean	670	theorem	aggPm02_clause_fold_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean	1715	theorem	nf_eval_nf_step_unfold		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean	926	theorem	bracketFromLists_flatMap_first_pin_anchor		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.lean	75	theorem	nfk_truncD_atom		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberK.lean	123	theorem	kvE_fiberPos_correct		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberK.lean	206	theorem	kvE_fiberBucket_nodup		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberK.lean	217	theorem	kvE_fiberBucket_nonempty_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNavPastK1.lean	1072	theorem	navD_inconsistent_eval_false		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationK.lean	119	theorem	kvE_futFreshProfile		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationPastK.lean	305	theorem	kvE_pastGapZone_mem		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationPastK.lean	309	theorem	kvE_pastSelfZone_mem		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationPastK.lean	313	theorem	kvE_pastRayZone_mem		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorZoneTriage.lean	142	theorem	kvE2_exterior_zone_determination		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	259	theorem	kvE_nonInterior_zPastX_sound		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	274	theorem	kvE_nonInterior_zFutT_sound		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	288	theorem	kvE_nonInterior_zAtX_sound		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	300	theorem	kvE_nonInterior_zAtT_sound		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	314	theorem	kvE_nonInterior_zAtW_sound		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	347	theorem	kvE_nonInterior_zPastX_complete		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	361	theorem	kvE_nonInterior_zFutT_complete		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	373	theorem	kvE_nonInterior_zAtX_complete		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	383	theorem	kvE_nonInterior_zAtT_complete		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean	394	theorem	kvE_nonInterior_zAtW_complete		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGateFaithful.lean	200	theorem	bracketEndChar_kvE2_correct_two_prior_frag_faithful_covers_prior		0	orphan
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/PriorInterfaceFaithful.lean	181	theorem	bracketEndChar_kv_correct_zero_prior_faithful		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Carrier.lean	124	theorem	kvE2_sep_pairwise_flatMap		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Carrier.lean	155	theorem	kvE2_sepSlotLe_of_ne_compat		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Carrier.lean	237	theorem	kvE2_sepSlotsLFor_pairwise		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Carrier.lean	270	theorem	kvE2_sepSlotsRFor_pairwise		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Carrier.lean	724	theorem	kvE2_sepFreshAnchor_ne_baseChiPoint		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean	63	theorem	kvE2_sepZipPayload_flatMap		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean	508	theorem	kvE2_sepAnchorFam_injective		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean	1129	theorem	kvE2_sepHonest_rank_strictMono		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/DisjunctionSpikes.lean	76	theorem	kvE2_sepSpike_twoOwner_coincidence_nonvacuous		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/EngineInputs.lean	108	theorem	kvE2_sepSlotGIdx_honestOrder_injOn		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/EngineInputs.lean	233	theorem	kvE2_sepSlotsROf_honest_valueSorted		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/EngineInputs.lean	283	theorem	kvE2_sepSlotValue_rX1_mem		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/EngineInputs.lean	299	theorem	kvE2_sepSlotValue_lX1_injOn		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/EngineInputs.lean	311	theorem	kvE2_sepSlotValue_rX1_injOn		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/EngineInputs.lean	565	theorem	kvE2_sepSlotsROf_pairwise_sameOwner		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/EngineInputs.lean	665	theorem	kvE2_sepHonestBaseRealizerR		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Slots.lean	349	def	kvE2SepSlotsR		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Slots.lean	516	theorem	kvE2_sepPosI_flatMap_slotsRFor		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Slots.lean	692	theorem	kvE2_sepBlockPos_lt		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Soundness.lean	60	theorem	kvE2_sepPos_mem		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Soundness.lean	560	theorem	kvE2_sepDisjunct'_singleton_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Soundness.lean	1284	theorem	kvE2_sepDisjunct_halves		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean	694	theorem	k1v_sorted_realizationK_regress_k3		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean	1194	theorem	kvE_subBracket2V_fold_zXU		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean	1214	theorem	kvE_subBracket2V_fold_zUW		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean	1234	theorem	kvE_subBracket2V_fold_zWT		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean	250	theorem	nf3_order_yt		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean	261	theorem	nf3_order_xy		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean	272	theorem	nf3_order_xt		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean	283	theorem	nf3_order_ty		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean	294	theorem	nf3_order_tx		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean	146	theorem	nf_zone_flatten_navigable_k1_probe		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean	175	theorem	exterior_future_zone_eval_shape		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/PerFormulaRender.lean	119	theorem	nameOfSurj_hName		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean	209	theorem	prior_hasDefinableSUP		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42Contentful.lean	269	theorem	endpointRightNegBlock_sound		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42ExistsForall.lean	461	theorem	prop42_veeSatFin_negation		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean	95	theorem	negLeftClauseFin_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean	129	theorem	negRightClauseFin_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Translation.lean	79	theorem	temporal_truth_all_future		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Translation.lean	97	theorem	temporal_truth_all_past		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/Translation.lean	297	def	ef1ToTemporal		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean	111	theorem	vvecea2_collapse_of_perClauseFin		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean	131	theorem	intervalTypeFin_captures_temporalPred		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAClosure.lean	253	theorem	VBracketFormula.conj_holds_vbracket		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAConjFull.lean	567	theorem	VVecEA2.conjFull_trivialTrue_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAConjFull.lean	576	theorem	VVecEA2.trivialTrue_conjFull_iff		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean	153	theorem	BracketFormula.toIntervalPattern_toBracketFormula		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean	159	theorem	IntervalPattern.toBracketFormula_toIntervalPattern		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean	179	theorem	BracketFormula.holds_eq_intervalPattern_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean	210	def	VEF.toVBracketFormula		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean	214	theorem	VBracketFormula.holds_iff_vef_holds		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/MixedSum.lean	295	theorem	colour_eq_agree		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/MonadicFO.lean	811	theorem	nfCount_pos		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean	341	theorem	denseRayFlow_pred_nontrivial		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/PriorExpressivenessDense.lean	384	theorem	denseTestPsi_eval		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/PriorExpressivenessDense.lean	401	def	uSExpressivelyCompleteOverDensePriorAtDenseWindow		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean	287	theorem	exists_realFlow_of_kEquiv_shuffle		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean	310	theorem	exists_realFlow_shuffleReal_point		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/EpsilonDense.lean	1017	theorem	simDense_equivalence		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/OrderIsoReal.lean	298	theorem	nonempty_orderIso_real_of_facts		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/OrderIsoReal.lean	337	theorem	nonempty_orderIso_real_real		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/Shuffle.lean	348	theorem	kEquiv_shuffle_congr_orderIso		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/Shuffle.lean	478	theorem	blocks_lt_of_monotone_cls		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/Shuffle.lean	492	theorem	kEquiv_singletonBlocks		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/RealModel/ShuffleReal.lean	584	theorem	pointFam_orderedSum_facts		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	104	theorem	tempR_fwd_trans		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	219	theorem	reflCanR_linear		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	428	theorem	tempR_bwd_imp_reflCanR_bwd		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	457	theorem	reflCanR_refl		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	476	theorem	reflCanR_trans		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	681	theorem	next_top_in_box_class		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	689	theorem	canS5R_refl		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	702	theorem	canS5R_symm		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/ReflexiveCanonical.lean	748	theorem	canS5R_trans		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	127	theorem	int_equiv_refl		85	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	131	theorem	int_equiv_symm		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	135	theorem	int_equiv_trans		13	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	401	theorem	count_U_total_zero_iff_U_free		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	487	theorem	int_truth_depends_only_on_atoms		2	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	562	theorem	separable_iff_properly_separable		1	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Separation/SemanticBridge.lean	175	theorem	int_equiv_implies_temporal_equiv_with_iso		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/StaviConnectives.lean	237	theorem	cofinal_above_iff_succ		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/StaviConnectives.lean	261	theorem	cofinal_below_iff_pred		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/StaviConnectives.lean	311	theorem	since_bot_iff_pred		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Transfer.lean	77	theorem	predFormulas_trans		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Transfer.lean	728	theorem	ghr93_forward_to_backward_discrete		0	
+SURVIVOR	FormalSystem/Metalogic/WeakCanonical/Transfer.lean	1015	theorem	chronicle_semantic_prior_SZ		0	
+SURVIVOR	FormalSystem/ProofSystem/Derivation.lean	237	theorem	weakening_height_succ		0	
+SURVIVOR	FormalSystem/ProofSystem/Derivation.lean	324	theorem	time_reflection_height_succ		0	
+SURVIVOR	FormalSystem/ProofSystem/LinearityDerivedFacts.lean	81	def	temporalLinearityDerivation		0	
+SURVIVOR	FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean	135	theorem	per_val		0	
+SURVIVOR	FormalSystem/Semantics/Extension/Admissible.lean	253	theorem	adjoin_states_self		0	
+SURVIVOR	FormalSystem/Semantics/Extension/PeriodicExtension.lean	401	theorem	extend_periodic_of_finite_domain		0	
+SURVIVOR	FormalSystem/Semantics/FrameProperty.lean	320	theorem	forwardDeterministic_iff		0	
+SURVIVOR	FormalSystem/Semantics/FrameProperty.lean	329	theorem	forwardDeterministic_of_deterministic		0	
+SURVIVOR	FormalSystem/Semantics/IntNormalForm.lean	184	theorem	step_def		0	
+SURVIVOR	FormalSystem/Semantics/IntNormalForm.lean	394	theorem	ofStepRel_of_nonpos		0	
+SURVIVOR	FormalSystem/Semantics/MinusLanguage/MinusValidity.lean	261	theorem	minusValid_implies_minusValidRTime		0	
+SURVIVOR	FormalSystem/Semantics/PartialHistoryOrder.lean	99	theorem	domain_mono		0	
+SURVIVOR	FormalSystem/Semantics/PlusLanguage/PlusPasting.lean	329	theorem	future_dstab_plusValid		0	
+SURVIVOR	FormalSystem/Semantics/PlusLanguage/PlusPasting.lean	334	theorem	stab_allFuture_plusValid		0	
+SURVIVOR	FormalSystem/Semantics/PlusLanguage/PlusValidity.lean	162	theorem	plusTruthAt_ofCtx		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	407	theorem	cone_mono		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	1859	theorem	trivialFrame_serial		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	1865	theorem	trivialFrame_interpolates		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	1870	theorem	trivialFrame_limit		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	1879	theorem	trivialFrame_saturation		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	1941	theorem	staticFrame_interpolates		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	1955	theorem	staticFrame_saturation		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	1995	theorem	natFrame_serial		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	2001	theorem	natFrame_interpolates		0	
+SURVIVOR	FormalSystem/Semantics/TaskFrame.lean	2024	theorem	natFrame_saturation		0	
+SURVIVOR	FormalSystem/Semantics/TaskModel.lean	84	def	fromList		0	
+SURVIVOR	FormalSystem/Semantics/TaskModel.lean	101	abbrev	FiniteTaskModel		0	
+SURVIVOR	FormalSystem/Semantics/TruthTransport.lean	193	theorem	truth_history_eq		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	630	theorem	validDense_iff_validIn_dense		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	639	theorem	validZTime_iff_validIn_ztime		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	645	theorem	validRTime_iff_validIn_rtime		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	655	theorem	validComplete_iff_validOnFrames_isComplete		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	716	theorem	consequence_monotone		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	726	theorem	valid_consequence		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	733	theorem	consequence_of_member		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	785	theorem	valid_of_valid_all_future		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	798	theorem	valid_of_valid_all_past		0	
+SURVIVOR	FormalSystem/Semantics/Validity.lean	815	theorem	valid_of_valid_box		0	
+SURVIVOR	FormalSystem/Syntax/Atom.lean	124	def	freshBase		14	
+SURVIVOR	FormalSystem/Syntax/Atom.lean	127	theorem	mk_fresh_injective		2	
+SURVIVOR	FormalSystem/Syntax/Atom.lean	133	theorem	mk_base_injective		0	
+SURVIVOR	FormalSystem/Syntax/Atom.lean	139	theorem	mk_base_ne_mk_fresh		0	
+SURVIVOR	FormalSystem/Syntax/Atom.lean	212	theorem	Atom.fresh_for_not_mem		0	
+SURVIVOR	FormalSystem/Syntax/Formula.lean	765	theorem	atoms_reflect_time		0	
+SURVIVOR	FormalSystem/Syntax/MinusLanguage/Formula.lean	192	theorem	swapMinus_always		0	
+SURVIVOR	FormalSystem/Syntax/MinusLanguage/Translation.lean	102	theorem	tr_someFuture		0	
+SURVIVOR	FormalSystem/Syntax/MinusLanguage/Translation.lean	107	theorem	tr_somePast		0	
+SURVIVOR	FormalSystem/Syntax/PlusLanguage/Derivation.lean	281	theorem	plus_backward_base		0	
+SURVIVOR	FormalSystem/Syntax/PlusLanguage/Derivation.lean	286	theorem	plus_backward_dense		0	
+SURVIVOR	FormalSystem/Syntax/PlusLanguage/Derivation.lean	291	theorem	plus_backward_ztime		0	
+SURVIVOR	FormalSystem/Syntax/PlusLanguage/Derivation.lean	297	theorem	plus_backward_rtime		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	306	theorem	reflect_time_timeStore		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	310	theorem	reflect_time_timeRecall		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	413	theorem	ofPlus_and		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	422	theorem	ofPlus_somePast		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	428	theorem	ofPlus_allPast		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	434	theorem	ofPlus_sometimes		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	437	theorem	ofPlus_diamond		0	
+SURVIVOR	FormalSystem/Syntax/StarLanguage/Formula.lean	440	theorem	ofPlus_dstab		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/Closure.lean	113	def	closureWithNegCard		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/Closure.lean	152	def	isDiamondFormulaBool		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/Closure.lean	165	theorem	isDiamondFormula_of_extract		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/Closure.lean	201	theorem	diamondSubformulas_subset		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/Closure.lean	210	theorem	diamond_in_diamondSubformulas		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/Closure.lean	222	theorem	mem_diamondSubformulas_isDiamond		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/Closure.lean	230	def	diamondCount		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean	101	theorem	iter_F_complexity_strictly_increasing		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean	115	theorem	iter_F_one_eq_some_future		3	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean	186	theorem	iter_F_succ_eq		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean	213	theorem	iter_P_some_past		3	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean	222	theorem	iter_P_succ_eq		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean	254	theorem	iter_P_complexity_strictly_increasing		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean	267	theorem	iter_P_one_eq_some_past		3	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	44	theorem	f_nesting_depth_nonneg		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	128	theorem	p_nesting_depth_nonneg		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	308	theorem	self_mem_deferralClosure		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	312	theorem	neg_self_mem_deferralClosure		1	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	370	theorem	all_future_neg_mem_deferralClosure_of_some_future		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	377	theorem	all_past_neg_mem_deferralClosure_of_some_past		2	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	407	theorem	G_neg_neg_bot_mem_deferralClosure		6	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	412	theorem	H_neg_neg_bot_mem_deferralClosure		4	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	417	theorem	neg_G_neg_neg_bot_mem_deferralClosure		2	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	422	theorem	neg_H_neg_neg_bot_mem_deferralClosure		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	447	theorem	F_top_deferral_eq		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	450	theorem	P_top_deferral_eq		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	622	theorem	max_P_depth_deferralClosure_eq		2	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	871	theorem	all_future_in_deferralClosure_is_in_closureWithNeg		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	959	theorem	all_past_in_deferralClosure_is_in_closureWithNeg		0	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	972	theorem	deferralClosure_all_future		6	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	1015	theorem	deferralClosure_all_past		2	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	1202	theorem	P_inner_in_deferralClosure		1	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	1242	theorem	deferral_of_P_in_deferralClosure		2	
+SURVIVOR	FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean	1315	theorem	box_inner_in_deferralClosure		0	
+SURVIVOR	FormalSystem/Theorems/Propositional/Reasoning.lean	186	def	orElimNegNeg		0	
+T0_parse_artifact	FormalSystem/Automation/Tactics/Search.lean	283	lemma	premises.		0	
+T0_parse_artifact	FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean	740	structure	field.		0	orphan
+T0_parse_artifact	FormalSystem/Metalogic/Decidability/Verified/Bridge/Interpolate.lean	96	structure	alone.		0	
+T0_parse_artifact	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean	254	theorem	consumes.		0	
+T0_parse_artifact	FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Assembly.lean	1073	class	order.		0	
+T0_parse_artifact	FormalSystem/Semantics/Extension/Admissible.lean	101	structure	field.		0	
+T0_parse_artifact	FormalSystem/Semantics/FrameClassValidity.lean	134	instance	cache.		0	
+T0_parse_artifact	FormalSystem/Syntax.lean	74	def	necessityP		0	
+T0_parse_artifact	FormalSystem/Syntax.lean	75	def	futureQ		0	
+T0_parse_artifact	FormalSystem/Syntax.lean	78	def	possiblyP		0	
+T0_parse_artifact	FormalSystem/Syntax/StarLanguage/Axioms.lean	422	instance	supplies.		0	
+T1_instance	FormalSystem/Metalogic/Algebraic/BooleanStructure.lean	44	instance	instLELindenbaumAlg		0	
+T1_instance	FormalSystem/Metalogic/Algebraic/BooleanStructure.lean	96	instance	instTopLindenbaumAlg		0	
+T1_instance	FormalSystem/Metalogic/Algebraic/BooleanStructure.lean	102	instance	instBotLindenbaumAlg		0	
+T1_instance	FormalSystem/Metalogic/Algebraic/FlowFrame.lean	444	instance	bundleFamilies_nonempty		0	
+T1_instance	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	516	instance	mcsToPFilter_isProper		0	
+T1_instance	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	525	instance	mcsToPFilter_isPrime		0	
+T1_instance	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean	500	instance	collapseClassLinearOrder		0	
+T1_instance	FormalSystem/Metalogic/Bundle/LimitMCS.lean	210	instance	limitFilterBelow_neBot		0	
+T1_instance	FormalSystem/Metalogic/Bundle/LimitMCS.lean	211	instance	limitFilterAbove_neBot		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean	77	instance	instInhabitedFin		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	310	instance	instDecidableClauseAt		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	325	instance	instDecidableLocalCoherentAt		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	434	instance	instDecidableLocalCoherent		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	489	instance	instDecidableUntlOblB		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	493	instance	instDecidableSnceOblB		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	701	instance	instDecidableEventClauseAt		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	710	instance	instDecidableFulfilAt		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean	894	instance	instDecidableFulfilling		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean	139	instance	instDecidableIsLasso		0	
+T1_instance	FormalSystem/Metalogic/Decidability/BiLasso/Realized.lean	136	instance	instInhabitedPigeonState		0	
+T1_instance	FormalSystem/Metalogic/Decidability/IntPresentation.lean	108	instance	instNeZeroCard		0	
+T1_instance	FormalSystem/Metalogic/Decidability/IntPresentation.lean	110	instance	instNonemptyFin		0	
+T1_instance	FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean	294	instance	instDecidableBranchLT		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	174	instance	chroniclePriorDomainLinearOrder		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/ChronicleExtraction.lean	181	instance	chronicle_prior_domain_countable		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Dual.lean	484	instance	instIsDualClosedCountableDense		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean	246	instance	muSigFintypePreds		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean	251	instance	muSigDecEqPreds		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean	297	instance	instLinearOrderBlockQuot		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean	174	instance	succOrderLexProdRatInt		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean	188	instance	predOrderLexProdRatInt		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	87	instance	limitdom_monadic_structure_countable		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	95	instance	limitdom_monadic_structure_noMax		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	103	instance	limitdom_monadic_structure_noMin		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean	111	instance	limitdom_monadic_structure_nonempty		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/Kamp/ESigmaExpansion.lean	95	instance	sigEDecEqPreds		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean	1255	instance	chronicleAsMonadicStructure_countable		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean	1264	instance	chronicleAsMonadicStructure_no_max		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean	1273	instance	chronicleAsMonadicStructure_no_min		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean	1282	instance	chronicleAsMonadicStructureSucc		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean	1291	instance	chronicleAsMonadicStructurePred		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean	1300	instance	chronicleAsMonadicStructure_succ_archimedean		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NEquivalence.lean	1310	instance	chronicleAsMonadicStructure_nonempty		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/NormalForm.lean	100	instance	atomKindFintype		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean	787	instance	instLinearOrderClassQuot		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/Transfer.lean	137	instance	instFintypeMkSigFromPreds		0	
+T1_instance	FormalSystem/Metalogic/WeakCanonical/Transfer.lean	141	instance	instDecEqMkSigFromPreds		0	
+T1_instance	FormalSystem/Semantics/Ultraproduct/IndexFilter.lean	78	instance	tailFilter_neBot		0	
+T2_simp	FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean	798	theorem	ultrafilter_to_mcs_val	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	273	theorem	chronicleMonadicStructureOf_carrier	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	277	theorem	chronicleMonadicStructureOf_interp	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	615	theorem	chronicleEff_top	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	618	theorem	chronicleEff_neg	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	621	theorem	chronicleEff_and	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	626	theorem	chronicleEff_or	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	631	theorem	chronicleEff_someFuture	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	635	theorem	chronicleEff_somePast	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	641	theorem	chronicleEff_kPlus	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean	646	theorem	chronicleEff_kMinus	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean	230	theorem	realFlowPoint_val	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	479	theorem	HintikkaRawChain.singleton_last	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/BXCanonical/Quasimodel/Construction.lean	522	theorem	HintikkaRawChain.cons_head	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Bundle/TemporalContent.lean	135	theorem	mem_u_content_iff	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Bundle/TemporalContent.lean	139	theorem	mem_s_content_iff	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	102	theorem	atomize_top	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	103	theorem	atomize_neg	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	105	theorem	atomize_and	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	107	theorem	atomize_or	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	109	theorem	atomize_diamond	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	111	theorem	atomize_someFuture	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	113	theorem	atomize_somePast	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	115	theorem	atomize_allFuture	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	117	theorem	atomize_allPast	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	119	theorem	atomize_kPlus	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean	121	theorem	atomize_kMinus	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/SpCountermodel.lean	266	theorem	twoFibre_lt	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Conservativity/SpCountermodel.lean	269	theorem	twoFibre_atom	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/GoodCycle.lean	279	theorem	untlEvent_untl	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/GoodCycle.lean	280	theorem	snceEvent_snce	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean	240	theorem	fwdTail_length	@[simp]	0	orphan
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/Realized.lean	140	theorem	stateOf_default	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/Realized.lean	143	theorem	typeOf_default	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/Realized.lean	163	theorem	datum_state	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean	99	theorem	iterSucc_zero	@[simp]	0	orphan
+T2_simp	FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean	111	theorem	iterPred_zero	@[simp]	0	orphan
+T2_simp	FormalSystem/Metalogic/Decidability/Propositional/Kalmar.lean	84	theorem	litCtx_nil	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Propositional/PropForm.lean	78	theorem	eval_var	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Propositional/PropForm.lean	80	theorem	eval_fls	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Propositional/PropForm.lean	91	theorem	vars_var	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Propositional/PropForm.lean	93	theorem	vars_fls	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Propositional/PropForm.lean	207	theorem	denote_fls	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Propositional/PropForm.lean	209	theorem	denote_imp	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/SignedFormula.lean	125	theorem	flip_pos	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/SignedFormula.lean	128	theorem	flip_neg	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Tableau.lean	1555	theorem	RuleResult.branching_ne_notApplicable	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Tableau.lean	1562	theorem	RuleResult.linear_ne_notApplicable	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Tableau.lean	1569	theorem	RuleResult.persistent_ne_notApplicable	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	1220	theorem	witnessSig_formula	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean	1222	theorem	witnessSig_label	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean	144	theorem	RuleResult.emitted_persistent	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean	147	theorem	RuleResult.emitted_branching	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean	150	theorem	RuleResult.emitted_branchingOrdered	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean	153	theorem	RuleResult.emitted_notApplicable	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Deterministic/Collapse.lean	121	theorem	substPlus_substVar	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Deterministic/System.lean	94	theorem	DetAxiom.minFrameClass_ofPlus	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Deterministic/System.lean	97	theorem	DetAxiom.minFrameClass_determined	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Independence/ClockFrame.lean	196	theorem	clockFrame_worldState	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Independence/ClockFrame.lean	221	theorem	clockHistory_state	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Independence/StarDiscrimination.lean	96	theorem	driftLinear_state	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/Independence/StateSetTruth.lean	96	theorem	mem_satSet_bot	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/ColourOrders.lean	62	theorem	colourStructure_interp	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Dual.lean	122	theorem	dual_carrier	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean	186	theorem	restrictStructure_lt	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean	270	theorem	blockLt_blockMk	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean	327	theorem	zPoint_natCast	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean	331	theorem	zPoint_zero	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	121	theorem	conjSatFin_nil	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean	128	theorem	conjSatFin_cons	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Kamp/Prop43Translate.lean	228	theorem	insertPerm_zero	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Kamp/VeeExistsForall.lean	64	theorem	veeSat_singleton	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/MonadicFO.lean	516	theorem	eval_true	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/MonadicFO.lean	523	theorem	eval_false	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean	757	theorem	classLt_cls	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	61	theorem	int_truth_all_past	@[simp]	10	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	71	theorem	int_truth_all_future	@[simp]	5	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	81	theorem	int_truth_some_past	@[simp]	2	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	90	theorem	int_truth_some_future	@[simp]	2	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	110	theorem	formula_atoms_all_past	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	115	theorem	formula_atoms_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	181	theorem	is_U_free_all_past	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	186	theorem	is_U_free_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	191	theorem	is_S_free_all_past	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	196	theorem	is_S_free_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	222	theorem	is_syntactically_separated_all_past	@[simp]	4	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	227	theorem	is_syntactically_separated_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	255	theorem	is_future_only_all_past	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	260	theorem	is_future_only_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	276	theorem	is_past_only_all_past	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	281	theorem	is_past_only_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	302	theorem	is_properly_separated_all_past	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	307	theorem	is_properly_separated_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	358	theorem	junction_depth_all_past	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	363	theorem	junction_depth_all_future	@[simp]	0	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	473	theorem	no_S_nested_in_U_all_past	@[simp]	1	
+T2_simp	FormalSystem/Metalogic/WeakCanonical/Separation/Defs.lean	478	theorem	no_S_nested_in_U_all_future	@[simp]	0	
+T2_simp	FormalSystem/Semantics/Extension/Extension.lean	200	theorem	point_states	@[simp]	0	
+T2_simp	FormalSystem/Semantics/PartialHistory.lean	307	theorem	timeShift_domain	@[simp]	0	
+T2_simp	FormalSystem/Semantics/PartialHistory.lean	361	theorem	ofTotal_domain	@[simp]	0	
+T2_simp	FormalSystem/Semantics/StarLanguage/StarStateLocal.lean	139	theorem	stateLocal_timeStore_iff	@[simp]	0	
+T2_simp	FormalSystem/Semantics/TaskFrame.lean	400	theorem	mem_cone	@[simp]	0	
+T2_simp	FormalSystem/Semantics/TaskFrame.lean	905	theorem	reflect_posRel	@[simp]	0	
+T2_simp	FormalSystem/Syntax/BigConj.lean	45	theorem	bigconj_nil	@[simp]	0	
+T2_simp	FormalSystem/Syntax/BigConj.lean	47	theorem	bigconj_singleton	@[simp]	0	
+T2_simp	FormalSystem/Syntax/BigConj.lean	49	theorem	bigconj_cons_cons	@[simp]	0	
+T2_simp	FormalSystem/Syntax/BigConj.lean	52	theorem	neg_bigconj_def	@[simp]	0	
+T2_simp	FormalSystem/Syntax/Formula.lean	730	theorem	needsPositiveHypotheses_atom	@[simp]	0	
+T2_simp	FormalSystem/Syntax/Formula.lean	733	theorem	needsPositiveHypotheses_bot	@[simp]	0	
+T2_simp	FormalSystem/Syntax/Formula.lean	736	theorem	needsPositiveHypotheses_box	@[simp]	0	
+T2_simp	FormalSystem/Syntax/Formula.lean	739	theorem	needsPositiveHypotheses_untl	@[simp]	0	
+T2_simp	FormalSystem/Syntax/Formula.lean	742	theorem	needsPositiveHypotheses_snce	@[simp]	0	
+T2_simp	FormalSystem/Syntax/Formula.lean	745	theorem	needsPositiveHypotheses_imp	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	161	theorem	swapMinus_top	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	163	theorem	swapMinus_neg	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	165	theorem	swapMinus_and	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	168	theorem	swapMinus_or	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	171	theorem	swapMinus_iff	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	174	theorem	swapMinus_diamond	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	178	theorem	swapMinus_somePast	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Formula.lean	182	theorem	swapMinus_someFuture	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	83	theorem	tr_atom	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	84	theorem	tr_bot	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	90	theorem	tr_top	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	91	theorem	tr_neg	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	92	theorem	tr_and	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	93	theorem	tr_or	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	94	theorem	tr_diamond	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	98	theorem	tr_always	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	249	theorem	trCtx_nil	@[simp]	0	
+T2_simp	FormalSystem/Syntax/MinusLanguage/Translation.lean	251	theorem	trCtx_cons	@[simp]	0	
+T2_simp	FormalSystem/Syntax/PlusLanguage/Formula.lean	428	theorem	ofCtx_nil	@[simp]	0	
+T2_simp	FormalSystem/Syntax/PlusLanguage/Formula.lean	430	theorem	ofCtx_cons	@[simp]	0	
+T2_simp	FormalSystem/Syntax/StarLanguage/Formula.lean	394	theorem	ofStarCtx_nil	@[simp]	0	
+T2_simp	FormalSystem/Syntax/StarLanguage/Formula.lean	396	theorem	ofStarCtx_cons	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	58	theorem	f_nesting_depth_atom	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	62	theorem	f_nesting_depth_bot	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	66	theorem	f_nesting_depth_box	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	70	theorem	f_nesting_depth_all_past	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	75	theorem	f_nesting_depth_all_future	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	142	theorem	p_nesting_depth_atom	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	146	theorem	p_nesting_depth_bot	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	150	theorem	p_nesting_depth_box	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	154	theorem	p_nesting_depth_all_future	@[simp]	0	
+T2_simp	FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean	160	theorem	p_nesting_depth_all_past	@[simp]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	146	theorem	release_unfold	@[formula_unfold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	150	theorem	weak_until_unfold	@[formula_unfold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	154	theorem	trigger_unfold	@[formula_unfold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	158	theorem	weak_since_unfold	@[formula_unfold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	526	theorem	top_fold	@[formula_fold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	533	theorem	diamond_fold	@[formula_fold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	537	theorem	some_future_fold	@[formula_fold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	541	theorem	some_past_fold	@[formula_fold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	545	theorem	next_fold	@[formula_fold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	549	theorem	prev_fold	@[formula_fold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	553	theorem	all_future_fold	@[formula_fold]	0	
+T3_custom_simp	FormalSystem/Automation/Normalization.lean	557	theorem	all_past_fold	@[formula_fold]	0	
+T4_corpus_external	FormalSystem/Examples/TemporalStructures.lean	440	theorem	int_nullity_example		0	
+T4_corpus_external	FormalSystem/Examples/TemporalStructures.lean	446	theorem	generic_nullity_example		0	
+T4_corpus_external	FormalSystem/Examples/TemporalStructures.lean	453	theorem	int_compositionality_example		0	
+T4_corpus_external	FormalSystem/Examples/TemporalStructures.lean	468	theorem	generic_compositionality		0	
+T4_corpus_external	FormalSystem/Metalogic/Conservativity/Fragment.lean	121	theorem	tmFrag_complete_dense		0	
+T4_corpus_external	FormalSystem/Metalogic/Conservativity/Fragment.lean	126	theorem	tmFrag_complete_ztime		0	
+T4_corpus_external	FormalSystem/Metalogic/Conservativity/Fragment.lean	131	theorem	tmFrag_complete_rtime		0	
+T4_corpus_external	FormalSystem/Metalogic/Decidability/DecisionProcedure.lean	138	def	getProof		0	
+T4_corpus_external	FormalSystem/Metalogic/SetConsequence.lean	325	theorem	modelExistence_iff_finitelySatisfiable		0	
+T4_corpus_external	FormalSystem/Metalogic/SetConsequence.lean	335	theorem	satisfiableSet_iff_finitelySatisfiable		0	
+T4_corpus_external	FormalSystem/Metalogic/SetConsequence.lean	349	theorem	setConsequence_iff_not_satisfiable		0	
+T4_corpus_external	FormalSystem/Metalogic/StrongCompleteness.lean	319	theorem	soundness_setConsequence		0	
