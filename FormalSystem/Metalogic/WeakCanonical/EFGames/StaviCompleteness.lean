@@ -1316,21 +1316,6 @@ private def sfConjList : List StaviFormula → StaviFormula
 private def sfAtomLiteral (a : Atom) (val : Bool) : StaviFormula :=
   if val then .base (.atom a) else .neg (.base (.atom a))
 
-/-! ## Base-case NF characterization helpers -/
-
-/-- For an AtomKind at n=1, map it to a StaviFormula literal.
-    `pred p ⟨0,_⟩` maps to the corresponding atom literal.
-    `order i j h` is impossible for n=1 since Fin 1 has one element. -/
-noncomputable def atomKindToSfLiteral
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (ak : AtomKind sig 1) (val : Bool) : StaviFormula :=
-  match ak with
-  | .pred p _ =>
-    let a := Classical.choose (h_surj p)
-    sfAtomLiteral a val
-  | .order i j h => absurd (Fin.ext_iff.mpr (by omega : i.val = j.val)) h
-
 /-! ## Existence Formulas for Quantifier Part
 
 For the inductive step of NF characterization, we need to express the existential

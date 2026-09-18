@@ -268,15 +268,6 @@ def hasNegAt (b : Branch) (φ : Formula) (l : Label) : Bool :=
 def hasBotPos (b : Branch) : Bool :=
   b.any fun sf => sf.sign == .pos && sf.formula == .bot
 
-/--
-Check if branch has a direct contradiction: both T(φ) and F(φ) at the same label.
-Returns `some φ` if contradiction found, `none` otherwise.
--/
-def findContradiction (b : Branch) : Option Formula :=
-  b.findSome? fun sf =>
-    if sf.isPos ∧ b.hasNegAt sf.formula sf.label then some sf.formula
-    else none
-
 /-- Get all positive formulas in the branch. -/
 def positives (b : Branch) : List Formula :=
   b.filterMap fun sf => if sf.isPos then some sf.formula else none
@@ -943,24 +934,5 @@ This bounds the size of the tableau and ensures termination.
 -/
 def subformulaClosure (b : Branch) : List Formula :=
   (b.flatMap (fun sf => Formula.subformulas sf.formula)).eraseDups
-
-/-!
-## Complexity Measures for Termination
--/
-
-/--
-Unexpanded complexity of a signed formula.
-
-This measures how much "work" remains to fully expand the formula.
-Atomic formulas and bot have 0 unexpanded complexity (nothing to expand).
--/
-def unexpandedComplexity (sf : SignedFormula) : Nat :=
-  match sf.formula with
-  | .atom _ => 0
-  | .bot => 0
-  | .imp _ _ => sf.formula.complexity
-  | .box _ => sf.formula.complexity
-  | .untl _ _ => sf.formula.complexity
-  | .snce _ _ => sf.formula.complexity
 
 end FormalSystem.Metalogic.Decidability

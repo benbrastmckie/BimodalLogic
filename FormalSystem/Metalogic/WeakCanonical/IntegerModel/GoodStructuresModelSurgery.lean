@@ -353,18 +353,6 @@ theorem class_gap_exists (sig : MonadicSignature) [Fintype sig.preds] [Decidable
   have := one_class_archimedean sig k M a b
   exact h_diff this
 
-/-! ## Predicate Accessibility -/
-
-/--
-A predicate is temporally accessible if there exists a formula whose temporal
-truth at any point equals the predicate's interpretation.
--/
-def PredicateAccessible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
-    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (p : sig.preds) : Prop :=
-  ∃ f : Formula, ∀ t : M.carrier,
-    TemporalTruth M atomMap t f ↔ M.interp p t
-
 /-! ## Reynolds Theorem 14: Class boundaries cannot be at gaps
 
 The core argument (Reynolds 1994 Lemmas 6-13, Theorem 14):
