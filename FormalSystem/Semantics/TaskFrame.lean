@@ -2131,10 +2131,6 @@ instance instCoeOutFrameOver {D : TemporalOrder} : CoeOut (FrameOver D) TaskFram
 
 namespace FiniteFrameOver
 
-/-- The inclusion of a finite fibre into the finite total space — again the constructor. -/
-@[reducible] def toFiniteTaskFrame {D : TemporalOrder} (F : FiniteFrameOver D) :
-    FiniteTaskFrame := ⟨D, F⟩
-
 end FiniteFrameOver
 
 namespace TaskFrame
