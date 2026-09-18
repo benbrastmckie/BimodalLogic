@@ -936,19 +936,6 @@ def patternAwareScore (weights : HeuristicWeights := {}) (Γ : Context) (φ : Fo
   let patternBonus := patternDb.heuristicBonus φ strategy
   (baseScore + patternBonus).toNat  -- Clamp to 0 if negative
 
-/--
-Order candidate subgoals by pattern-aware heuristic score.
-
-Uses the pattern database to boost scores for formulas that match
-previously successful patterns.
--/
-def orderSubgoalsByPatternScore (weights : HeuristicWeights) (Γ : Context)
-    (targets : List Formula) (patternDb : PatternDatabase := PatternDatabase.empty) :
-    List Formula :=
-  targets.mergeSort (fun φ ψ =>
-    patternAwareScore weights Γ φ patternDb .ModusPonens ≤
-    patternAwareScore weights Γ ψ patternDb .ModusPonens)
-
 /-!
 ## Search Functions
 -/
