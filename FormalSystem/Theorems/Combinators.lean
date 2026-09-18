@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ProofSystem.Derivation
+import FormalSystem.ProofSystem.DerivedAxioms
 import FormalSystem.Syntax.Formula
 import FormalSystem.Automation.LemmaDB
 
@@ -626,46 +627,6 @@ def combineImpConj3 {fc : FrameClass} {P A B C : Formula}
   have hBC := combineImpConj hB hC
   exact combineImpConj hA hBC
 
-/-!
-## Derived Modal-Temporal Theorem: TF
-
-The TF axiom (`□φ → G(□φ)`) is derivable from MF (`□φ → □(Gφ)`), T (`□φ → φ`),
-and Modal 4 (`□φ → □□φ`). This eliminates TF as a primitive axiom.
-
-**Derivation**:
-1. MF at `□φ`: `□(□φ) → □(G(□φ))`
-2. T at `G(□φ)`: `□(G(□φ)) → G(□φ)`
-3. Chain (1,2): `□(□φ) → G(□φ)`
-4. Modal 4 at `φ`: `□φ → □(□φ)`
-5. Chain (4,3): `□φ → G(□φ)` = TF
--/
-
-/--
-Derived TF theorem: `□φ → G(□φ)`.
-
-Necessary truths will always be necessary. Derived from MF + T + Modal 4:
-- MF gives `□(□φ) → □(G(□φ))` (box distributes into G)
-- T gives `□(G(□φ)) → G(□φ)` (T applied to `G(□φ)`)
-- Modal 4 gives `□φ → □(□φ)` (positive introspection)
-- Composing: `□φ → □(□φ) → □(G(□φ)) → G(□φ)`
--/
-@[tmLemma]
-def temporalFutureDerived {fc : FrameClass} (φ : Formula) :
-    ⊢[fc] (Formula.box φ).imp (Formula.allFuture (Formula.box φ)) :=
-  let mf_box :=
-    DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ)) (FrameClass.base_le fc)
-    -- □(□φ) → □(G(□φ))
-  let t_G_box :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.allFuture (Formula.box φ)))
-    (FrameClass.base_le fc)
-    -- □(G(□φ)) → G(□φ)
-  let chain1 := impTrans mf_box t_G_box
-    -- □(□φ) → G(□φ)
-  let m4 := DerivationTree.axiom [] _ (Axiom.modal_4 φ) (FrameClass.base_le fc)
-    -- □φ → □(□φ)
-  impTrans m4 chain1
-    -- □φ → G(□φ)
-
 /-! ## Context and frame-class plumbing
 
 The combinators below were previously duplicated as `private` helpers in
@@ -743,5 +704,130 @@ def eventMono {fc : FrameClass} (Γ : Context) (e e' g : Formula)
       (DerivationTree.axiom Γ _ (Axiom.right_mono_until e e' g) (FrameClass.base_le fc))
       (necG Γ _ he))
     h
+
+end FormalSystem.Theorems.Combinators
+
+/-!
+## Derived S5 Theorems: Modal 4 and Modal B
+
+The paper's modal system `def:S5` is MK, MT and M5 (`modal_k_dist`, `modal_t`,
+`modal_5_collapse`) with the rule MN. The familiar S5 schemata B (`φ → □◇φ`) and 4
+(`□φ → □□φ`) are derived here, so neither is an `Axiom` constructor.
+
+**Derivation of B**:
+1. MT at `¬φ`, flipped: `φ → ◇φ` (since `◇φ = □¬φ → ⊥`).
+2. M5 at `¬φ` reads `¬□◇φ → □¬φ`; contraposed: `◇φ → ¬¬□◇φ`; double negation
+   elimination (EFQ + Peirce): `◇φ → □◇φ`.
+3. Chain: `φ → □◇φ`.
+
+**Derivation of 4**:
+1. B at `□φ`: `□φ → □◇□φ`.
+2. MN on M5 (`◇□φ → □φ`), then MK: `□◇□φ → □□φ`.
+3. Chain: `□φ → □□φ`.
+-/
+
+namespace FormalSystem.ProofSystem.DerivedAxioms
+
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+open FormalSystem.Theorems.Combinators
+
+/-- Double negation elimination from EFQ and Peirce. The public form is
+`FormalSystem.Theorems.Propositional.doubleNegation`, which sits downstream of this file. -/
+private def dneBase {fc : FrameClass} (A : Formula) : ⊢[fc] A.neg.neg.imp A :=
+  let efq : ⊢[fc] Formula.bot.imp A :=
+    DerivationTree.axiom [] _ (Axiom.ex_falso A) (FrameClass.base_le fc)
+  let h1 : ⊢[fc] A.neg.neg.imp (A.neg.imp A) :=
+    mp efq (bCombinator (A := A.neg) (B := Formula.bot) (C := A))
+  impTrans h1 (DerivationTree.axiom [] _ (Axiom.peirce A Formula.bot) (FrameClass.base_le fc))
+
+/-- Contraposition of a theorem: from `⊢ X → Y` derive `⊢ ¬Y → ¬X`. -/
+private def contraBase {fc : FrameClass} {X Y : Formula} (h : ⊢[fc] X.imp Y) :
+    ⊢[fc] Y.neg.imp X.neg :=
+  mp h (mp (bCombinator (A := X) (B := Y) (C := Formula.bot))
+    (theoremFlip (A := Y.neg) (B := X.imp Y) (C := X.neg)))
+
+/-- Modal B, `φ → □◇φ`, derived from MT and M5 (`def:S5`). -/
+@[tmLemma]
+def modal_b {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.imp (Formula.box φ.diamond) :=
+  -- MT at ¬φ: □¬φ → ¬φ, flipped to φ → ◇φ
+  let mt : ⊢[fc] φ.neg.box.imp (φ.imp Formula.bot) :=
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.neg) (FrameClass.base_le fc)
+  let toDia : ⊢[fc] φ.imp φ.diamond :=
+    mp mt (theoremFlip (A := φ.neg.box) (B := φ) (C := Formula.bot))
+  -- M5 at ¬φ: ¬□◇φ → □¬φ, contraposed to ◇φ → ¬¬□◇φ
+  let m5 : ⊢[fc] φ.diamond.box.neg.imp φ.neg.box :=
+    DerivationTree.axiom [] _ (Axiom.modal_5_collapse φ.neg) (FrameClass.base_le fc)
+  let diaBox : ⊢[fc] φ.diamond.imp φ.diamond.box.neg.neg := contraBase m5
+  impTrans toDia (impTrans diaBox (dneBase φ.diamond.box))
+
+/-- Modal 4, `□φ → □□φ`, derived from B, MN, M5 and MK (`def:S5`). -/
+@[tmLemma]
+def modal_4 {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
+  let b : ⊢[fc] φ.box.imp φ.box.diamond.box := modal_b φ.box
+  let m5 : ⊢[fc] φ.box.diamond.imp φ.box :=
+    DerivationTree.axiom [] _ (Axiom.modal_5_collapse φ) (FrameClass.base_le fc)
+  let mk : ⊢[fc] (φ.box.diamond.imp φ.box).box.imp (φ.box.diamond.box.imp φ.box.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.box.diamond φ.box) (FrameClass.base_le fc)
+  impTrans b (mp (DerivationTree.necessitation _ m5) mk)
+
+/-- Context-lifted `modal_b`. -/
+def modal_bAt {fc : FrameClass} (Γ : Context) (φ : Formula) :
+    Γ ⊢[fc] φ.imp (Formula.box φ.diamond) :=
+  lift Γ (modal_b φ)
+
+/-- Context-lifted `modal_4`. -/
+def modal_4At {fc : FrameClass} (Γ : Context) (φ : Formula) :
+    Γ ⊢[fc] (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
+  lift Γ (modal_4 φ)
+
+end FormalSystem.ProofSystem.DerivedAxioms
+
+namespace FormalSystem.Theorems.Combinators
+
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
+
+/-!
+## Derived Modal-Temporal Theorem: TF
+
+The TF axiom (`□φ → G(□φ)`) is derivable from MF (`□φ → □(Gφ)`), T (`□φ → φ`),
+and Modal 4 (`□φ → □□φ`, itself derived from MK, MT and M5 above). This eliminates TF as
+a primitive axiom.
+
+**Derivation**:
+1. MF at `□φ`: `□(□φ) → □(G(□φ))`
+2. T at `G(□φ)`: `□(G(□φ)) → G(□φ)`
+3. Chain (1,2): `□(□φ) → G(□φ)`
+4. Modal 4 at `φ`: `□φ → □(□φ)`
+5. Chain (4,3): `□φ → G(□φ)` = TF
+-/
+
+/--
+Derived TF theorem: `□φ → G(□φ)`.
+
+Necessary truths will always be necessary. Derived from MF + T + Modal 4:
+- MF gives `□(□φ) → □(G(□φ))` (box distributes into G)
+- T gives `□(G(□φ)) → G(□φ)` (T applied to `G(□φ)`)
+- Modal 4 gives `□φ → □(□φ)` (positive introspection)
+- Composing: `□φ → □(□φ) → □(G(□φ)) → G(□φ)`
+-/
+@[tmLemma]
+def temporalFutureDerived {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] (Formula.box φ).imp (Formula.allFuture (Formula.box φ)) :=
+  let mf_box :=
+    DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ)) (FrameClass.base_le fc)
+    -- □(□φ) → □(G(□φ))
+  let t_G_box :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.allFuture (Formula.box φ)))
+    (FrameClass.base_le fc)
+    -- □(G(□φ)) → G(□φ)
+  let chain1 := impTrans mf_box t_G_box
+    -- □(□φ) → G(□φ)
+  let m4 := FormalSystem.ProofSystem.DerivedAxioms.modal_4 (fc := fc) φ
+    -- □φ → □(□φ)
+  impTrans m4 chain1
+    -- □φ → G(□φ)
 
 end FormalSystem.Theorems.Combinators

@@ -385,12 +385,13 @@ example (p q : Formula) : [p.imp q, p] ⊢ q := by
   · exact .assumption _ _ (by simp)
 
 /--
-Example: Modal 4 axiom is a theorem.
+Example: Modal 5 collapse axiom is a theorem.
 
-`⊢ □φ → □□φ` for any formula φ.
+`⊢ ◇□φ → □φ` for any formula φ. (Modal 4 and B are derived theorems; see
+`FormalSystem.ProofSystem.DerivedAxioms.modal_4`.)
 -/
-example (φ : Formula) : ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
-  .axiom _ _ (Axiom.modal_4 _) trivial
+example (φ : Formula) : ⊢ φ.box.diamond.imp φ.box :=
+  .axiom _ _ (Axiom.modal_5_collapse _) trivial
 
 /--
 Example: Weakening allows adding assumptions.

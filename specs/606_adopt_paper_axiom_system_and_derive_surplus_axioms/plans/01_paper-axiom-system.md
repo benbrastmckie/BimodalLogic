@@ -133,20 +133,20 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 2: Derived modal_4, modal_b and the TF relocation [NOT STARTED]
+### Phase 2: Derived modal_4, modal_b and the TF relocation [COMPLETED]
 
 **Goal**: Derive `modal_4` and `modal_b` from MK, MT and M5 in a module placed after `Propositional.Core`, and remove every pre-`Propositional` use of `Axiom.modal_4`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Theorems/ModalPrimitiveDerived.lean` (namespace `FormalSystem.ProofSystem.DerivedAxioms`), importing `Theorems.Propositional.Core`.
+- [x] Create `FormalSystem/Theorems/ModalPrimitiveDerived.lean` (namespace `FormalSystem.ProofSystem.DerivedAxioms`), importing `Theorems.Propositional.Core`. *(deviation: altered — no new module; `modal_b`/`modal_4` (+`…At`) are declared in namespace `FormalSystem.ProofSystem.DerivedAxioms` inside `Theorems/Combinators.lean`, using a local EFQ+Peirce double-negation elimination, so there is no dependency on `Propositional.Core` and no import cycle)*
   - `modal_b {fc} (φ) : ⊢[fc] φ.imp (Formula.box φ.diamond)`: contrapose MT at `¬φ` with DNI to get `φ → ◇φ`; contrapose M5 at `¬φ` with `doubleNegation` to get `◇φ → □◇φ`; then `impTrans`.
   - `modal_4 {fc} (φ)`: B at `□φ` gives `□φ → □◇□φ`; MN of M5 plus MK gives `□◇□φ → □□φ`; then `impTrans`.
   - Add the `…At Γ` helpers as in phase 1.
-- [ ] Move `temporalFutureDerived` from `Theorems/Combinators.lean` into this module, keeping the same name and namespace and the `@[tmLemma]` attribute. It now uses the derived `modal_4`.
+- [x] Move `temporalFutureDerived` from `Theorems/Combinators.lean` into this module, keeping the same name and namespace and the `@[tmLemma]` attribute. It now uses the derived `modal_4`. *(deviation: skipped — relocation unnecessary; `temporalFutureDerived` stays in `Combinators.lean` (moved below the derived S5 block) and consumers need no import changes)*
   - Add the new import to each of its consumers that does not already reach this module transitively: `BXCanonical/CanonicalModel.lean`, `BXCanonical/Frame.lean`, `Chronicle/ChronicleToCountermodelBasic.lean`, `Algebraic/FlowFrame.lean`, `Bundle/RealExtensionBundle.lean`, `Perpetuity/Principles.lean`, `Automation/FormulaEnumerator.lean`, `Automation/ProofSearch/Core.lean` and `Syntax/MinusLanguage/Axioms.lean`.
   - If any consumer sits upstream of `Propositional.Core` and so creates a cycle, stop and restructure that consumer's use instead. Do not reintroduce a primitive.
-- [ ] Replace the `Derivation.lean:393` example ("Modal 4 axiom is a theorem") with an equivalent example over a remaining primitive, or delete it. Its point is served by the new module.
-- [ ] Add the module to the `FormalSystem/Theorems.lean` aggregator, if one exists, and run `lean_verify` on `modal_4` and `modal_b`.
+- [x] Replace the `Derivation.lean:393` example ("Modal 4 axiom is a theorem") with an equivalent example over a remaining primitive, or delete it. Its point is served by the new module.
+- [x] Add the module to the `FormalSystem/Theorems.lean` aggregator, if one exists, and run `lean_verify` on `modal_4` and `modal_b`. *(aggregator step not applicable, no new module)*
 
 **Timing**: 1.5 hours
 
