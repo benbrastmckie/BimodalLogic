@@ -1,26 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/588_triage_zero_occurrence_declarations/reports/02_c17-zero-occurrence-triage.md",
-      "summary": "Stratifies C17's 1,020-row zero-occurrence census into six tiers; known false positives explain only 21%, 792 survive; resolves the release_unfold dispute against the review; flags 7 declarations pinned by the C2/C14 axiom baselines inside the invariant script itself; specifies a six-filter C17 extension (1,020 -> 771) and a new import-orphan module check."
-    },
-    {
-      "type": "tool",
-      "path": "specs/588_triage_zero_occurrence_declarations/tools/c17_triage.py",
-      "summary": "Reproduces C17 exactly (1,020) and annotates each flagged declaration with tier, Boneyard reference count, and import-orphan status; --summary prints the stratification."
-    },
-    {
-      "type": "data",
-      "path": "specs/588_triage_zero_occurrence_declarations/tools/c17_census.tsv",
-      "summary": "Full 1,020-row tiered census snapshot (tier, file, line, kind, name, attrs, boneyard_refs, orphan_module)."
+      "type": "plan",
+      "path": "specs/588_triage_zero_occurrence_declarations/plans/02_c17-census-filter-and-triage.md",
+      "summary": "11-phase plan (13.5h) extending C17's counting rule (1,020 -> 771 plus a 47-row Boneyard sub-count), reconciling the import-orphan finding with C6's existing manifest, dispositioning all 771 post-filter survivors, and executing only the 81 def deletions in three verified batches."
     }
   ],
   "metadata": {
     "session_id": "sess_1789696399_5c64b8_588",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 11,
+    "estimated_hours": 13.5,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6, 7], [8], [9], [10], [11]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Before planning a new repo-health check proposed by research, verify no existing check already computes the same property. In BimodalLogic, a research report recommended adding an import-reachability check for 10 orphan modules on the grounds that 'nothing currently reports it'; C6 in scripts/check-module-invariants.sh already seeds a reachability walk from every lakefile.toml lean_lib/lean_exe root, fails on an unreachable module absent from scripts/module-invariants-manifest.txt, and all 10 modules were already listed there. A duplicate check would have tripped C6's own stale-manifest branch. The general pattern: a finding phrased as 'nothing measures X' is a hypothesis about the instrument set, cheap to falsify with one grep of the existing harness, and worth falsifying before it becomes a plan phase. The salvageable residue is usually narrower than the proposal (here: the declaration count behind the orphan modules, added to the existing check's INFO line rather than as a new check).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/588_triage_zero_occurrence_declarations/plans/02_c17-census-filter-and-triage.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["invariant-harness", "duplicate-check", "reachability", "research-verification", "module-invariants", "planning"]
+    }
+  ],
+  "dispatch_seq": 4
 }
