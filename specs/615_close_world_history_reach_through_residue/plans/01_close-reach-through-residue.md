@@ -223,25 +223,25 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 own disjoint
 
 ---
 
-### Phase 4: Fix the two layer-crossing defects [NOT STARTED]
+### Phase 4: Fix the two layer-crossing defects [COMPLETED]
 
 - **Goal:** Neither a definition body nor a theorem statement opens the subtype. Both fixes are
   probe-verified `rfl`-equal / proof-term-identical, so no consumer adjusts.
 - **Tasks:**
-  - [ ] `FormalSystem/Semantics/IntNormalForm.lean:280-282`: replace the body
+  - [x] `FormalSystem/Semantics/IntNormalForm.lean:280-282`: replace the body
         `fun t => τ.val.states t (τ.property t)` with `τ.state`.
-  - [ ] Re-check the three `rfl`/`@[simp]` lemmas that ride on the path accessor still close by
+  - [x] Re-check the three `rfl`/`@[simp]` lemmas that ride on the path accessor still close by
         `rfl`: `IntNormalForm.lean:322`, `Metalogic/Decidability/BiLasso/Extend.lean:89`,
         `Metalogic/Decidability/BiLasso/Basic.lean:276`.
-  - [ ] `FormalSystem/Semantics/Extension/Extension.lean:218-220`: replace the statement
+  - [x] `FormalSystem/Semantics/Extension/Extension.lean:218-220`: replace the statement
         `∃ τ : WorldHistory F, τ.val.states x (τ.property x) = w` with
         `∃ τ : WorldHistory F, τ.state x = w`. The proof term `exact ⟨τ, hext.agree x rfl⟩` is
         unchanged.
-  - [ ] Confirm both consumers still compile untouched: `Extension/Extension.lean:235`
+  - [x] Confirm both consumers still compile untouched: `Extension/Extension.lean:235`
         (`hF_nonempty`) and `Semantics/Validity.lean:273` (`not_validOn_bot`); both destructure as
         `⟨τ, _⟩` and discard the witness.
-  - [ ] Commit each fix as its own green sub-step.
-  - [ ] Close with `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`.
+  - [x] Commit each fix as its own green sub-step.
+  - [x] Close with `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`. *(deviation: altered — the `.path` dependent set is wider than the 3 enumerated `rfl` lemmas (`PeriodicExtension.lean:162-163`, `:406-407`, `IntNormalForm.lean:340`, `:527` also mention `σ.path`), so per this phase's own Scope Hypothesis the one-hop build was replaced by a full `lake build FormalSystem`, which passed)*
 - **Timing:** 25 minutes
 - **Depends on:** 2
 - **Verification Tier:** interface

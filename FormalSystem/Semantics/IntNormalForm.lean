@@ -275,11 +275,14 @@ namespace FrameOver
 
 open TaskFrame
 
-/-- The bare path underlying a possible world: totality makes the domain proof uniform, so
-the dependent `states` field collapses to a plain function `ℤ → WorldState`. -/
+/-- The bare path underlying a possible world: the `ℤ`-indexed reading of
+`WorldHistory.state`, which already absorbs the domain proof that totality makes uniform. Reading
+it through `state` rather than the dependent `states` field keeps the accessor on the
+world-history layer; the two are definitionally equal, so every `rfl` lemma about `path` is
+unaffected. -/
 def _root_.FormalSystem.Semantics.WorldHistory.path {F : FrameOver intOrder}
     (τ : WorldHistory F) : ℤ → F.WorldState :=
-  fun t => τ.val.states t (τ.property t)
+  τ.state
 
 /--
 Along a bi-infinite step-path, an `n`-step iterate connects a state to the state `n` times later.

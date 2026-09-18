@@ -216,7 +216,7 @@ how the recorded source literally reads; the axioms reach `step` as the frame's 
 this module's docstring.
 -/
 theorem occurrence (F : TaskFrame) (w : F.WorldState) (x : F.Duration) :
-    ∃ τ : WorldHistory F, τ.val.states x (τ.property x) = w := by
+    ∃ τ : WorldHistory F, τ.state x = w := by
   obtain ⟨τ, hext⟩ := extension F (point F w x)
   exact ⟨τ, hext.agree x rfl⟩
 
