@@ -107,7 +107,14 @@
       "description": "Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary: audit every claim about the proof system, axiom counts, the TR (time reflection) rule, renamed identifiers (reflectTime, time_reflection, TimeReflection), and the Some/All Past/Future labels, and correct stale statements. Task 584 fixed the one remark that wrongly said there was no TR rule and that uniformity axiom counts don't match, but deferred a full resync.",
       "topic": "documentation",
       "created": "2026-09-17T10:00:31Z",
-      "last_updated": "2026-09-17T10:00:31Z"
+      "last_updated": "2026-09-18T06:45:24Z",
+      "dependencies": [
+        600,
+        603,
+        605,
+        606,
+        608
+      ]
     },
     {
       "project_number": 606,
