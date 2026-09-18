@@ -11,12 +11,12 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,605,615,616,617,619 | 298,464,502,559,563,568,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,589,606,618 | 231,465,497,540,564,565,605,615,616,619 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,608 | 428,498,499,500,606 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 410,501,600 | 125,429,603,608 | algebraic-representation, decidability, frame-extensions |
-| 6 | 411,607 | 410,600 | decidability, documentation |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,597,603,604,605,610,614,615,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,606,616,617 | 298,464,502,559,563,568,597,605,615,619 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,589,608,618 | 231,465,497,540,564,565,606,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,600 | 428,498,499,500,603,608 | algebraic-representation, decidability, frame-extensions, ... |
+| 5 | 410,501,607 | 125,429,600 | algebraic-representation, decidability, documentation |
+| 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
 | 9 | 482 | 412 | decidability |
@@ -85,7 +85,7 @@ next_project_number: 621
 
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
-603 [PLANNED] — Investigate how to define a ℚ-time frame predicate...
+603 [IMPLEMENTING] — Investigate how to define a ℚ-time frame predicate...
   └─ 600 [PLANNED] — Investigate why the dense frame-class extension is named...
 
 ### Incompleteness
@@ -111,12 +111,10 @@ next_project_number: 621
 
 ### Codebase Cleanup
 
-588 [IMPLEMENTING] — Triage the 1,029 declarations C17 reports as having zero...
+597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
-  └─ 619 [IMPLEMENTING] — Every linter suppression in the tree must carry a recorded...
-597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
-  └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
+619 [IMPLEMENTING] — Every linter suppression in the tree must carry a recorded...
 608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
 ### Semantics Refactor
@@ -349,7 +347,7 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 603. Investigate qtime frame predicate
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: frame-extensions
 - **Dependencies**: None
@@ -416,12 +414,13 @@ ORDERING NOTE: this is the terminal task of the codebase-cleanup topic because e
 
 ### 588. Triage zero occurrence declarations
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 585, Task 591, Task 594
 - **Research**: [588_triage_zero_occurrence_declarations/reports/02_c17-zero-occurrence-triage.md]
 - **Plan**: [588_triage_zero_occurrence_declarations/plans/02_c17-census-filter-and-triage.md]
+- **Summary**: [588_triage_zero_occurrence_declarations/summaries/02_c17-census-filter-and-triage-summary.md]
 
 **Description**: Triage the 1,029 declarations C17 reports as having zero occurrences outside their own declaring line. The scan runs on every invariant run, is explicitly REPORTED-never-gated and explicitly approximate, and has never been triaged -- 1,029 is large enough that the number has stopped being informative.
 
