@@ -192,16 +192,15 @@ theorem applyRule_emitted_world_mem {rule : TableauRule} {sf : SignedFormula}
                all_goals first
                  | (subst hy; rfl)
                  | (simp only [reduceCtorEq] at hy))
-            | (simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas,
+            | (simp only [RuleResult.emitted, 
                  Branch.allFuturePosFormulas, Branch.allPastPosFormulas,
                  Branch.someFutureNegFormulas, Branch.somePastNegFormulas,
-                 Branch.untlNegFormulas, Branch.snceNegFormulas,
+                 
                  List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil,
                  List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil,
                  or_false, List.mem_filter] at hg)
             | (subst hg; exact hw)
-            | (rcases hg with hg | hg)
-            | (obtain ⟨hg, -⟩ := hg))
+            | (rcases hg with hg | hg))
 
 set_option maxHeartbeats 1000000 in
 /-- `boxNeg` emits **only** at `Branch.nextWorld`: the witness and both auto-propagation blocks
@@ -224,7 +223,7 @@ theorem applyRule_boxNeg_emitted_world {sf : SignedFormula} {b : Branch} {ord : 
              | (subst hy; rfl)
              | (simp only [reduceCtorEq] at hy))
         | (simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas,
-             List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg)
+             List.mem_cons, List.mem_append, List.not_mem_nil] at hg)
         | (subst hg; rfl)
         | (rcases hg with hg | hg)
 
@@ -234,7 +233,7 @@ theorem applyRule_diamondPos_emitted_world {sf : SignedFormula} {b : Branch} {or
     ∀ g ∈ (applyRule .diamondPos sf b ord).1.emitted, g.label.world = b.nextWorld := by
   cases sf with
   | mk sign formula label =>
-    cases sign <;> simp only [applyRule] <;> (repeat' split) <;> (try contradiction) <;>
+    cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
       intro g hg <;>
       repeat' first
         | rfl
@@ -248,7 +247,7 @@ theorem applyRule_diamondPos_emitted_world {sf : SignedFormula} {b : Branch} {or
              | (subst hy; rfl)
              | (simp only [reduceCtorEq] at hy))
         | (simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas,
-             List.mem_cons, List.mem_append, List.not_mem_nil, or_false] at hg)
+             List.mem_cons, List.mem_append, List.not_mem_nil] at hg)
         | (subst hg; rfl)
         | (rcases hg with hg | hg)
 
@@ -264,7 +263,6 @@ theorem applyRule_boxNeg_shape {sf : SignedFormula} {b : Branch} {ord : TimeOrde
       first
         | contradiction
         | exact ⟨_, rfl, rfl⟩
-        | (simp only [RuleResult.emitted, List.not_mem_nil] at hg)
 
 set_option maxHeartbeats 1000000 in
 /-- The `diamondPos` mirror of `applyRule_boxNeg_shape`. -/
@@ -277,7 +275,6 @@ theorem applyRule_diamondPos_shape {sf : SignedFormula} {b : Branch} {ord : Time
       first
         | contradiction
         | exact ⟨_, by assumption, rfl⟩
-        | (simp only [RuleResult.emitted, List.not_mem_nil] at hg)
 
 /-- At its own trigger shape, `boxNeg` returns a `.linear` result — so its successor is the single
 branch `fs ++ b`, and everything it emitted is on that branch. -/
@@ -539,13 +536,13 @@ theorem resultBranch_sub {b nb : Branch} {res : RuleResult}
     (∀ x ∈ b, x ∈ nb) ∧ (∀ x ∈ nb, x ∈ res.emitted ∨ x ∈ b) := by
   cases res with
   | linear fs =>
-    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, List.mem_append,
+    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, 
       List.mem_cons, List.not_mem_nil, or_false, List.append_nil] at h
     subst h
     exact ⟨fun x hx => List.mem_append_right _ hx,
       fun x hx => (List.mem_append.mp hx).imp id id⟩
   | persistent fs =>
-    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, List.mem_append,
+    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, 
       List.mem_cons, List.not_mem_nil, or_false, List.append_nil] at h
     subst h
     exact ⟨fun x hx => List.mem_append_right _ hx,

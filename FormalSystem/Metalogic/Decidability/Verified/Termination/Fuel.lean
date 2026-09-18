@@ -2024,8 +2024,7 @@ theorem applyRule_branching_arity_le (rule : TableauRule) (sf : SignedFormula) (
       (repeat' split at h) <;>
       (try simp_all) <;>
       (try subst h) <;>
-      (try simp) <;>
-      (try omega)
+      (try simp)
 
 /--
 **Split arity, proved: `β = 3` is a theorem, not a census.**

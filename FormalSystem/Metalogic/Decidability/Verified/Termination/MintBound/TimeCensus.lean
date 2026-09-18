@@ -348,6 +348,14 @@ theorem applyRule_orderTrichotomy_emitted_time {sf : SignedFormula} {b : Branch}
     | exact ht
 
 set_option maxHeartbeats 4000000 in
+-- `linter.unusedTactic` calls the `assumption` in the `mem_identifyTime_time_at_trigger`
+-- alternative below dead. It is NOT dead, and unlike the `_oriented` twin immediately after it
+-- the linter is simply wrong here: that `refine ... ?_ hg` leaves the `?_` goal open and
+-- `assumption` is what closes it. Deleting it was tried and the build failed with `unsolved
+-- goals` at this declaration, so the alternative would have silently stopped discharging its
+-- own side condition. The linter's per-tactic "changed nothing" test does not see a goal that
+-- `refine` created and `assumption` consumed inside one `first` alternative.
+set_option linter.unusedTactic false in
 /-- **The time-dimension analogue of `applyRule_emitted_world_mem`.** A rule outside the minting
 census emits only at times the branch already knows.
 
@@ -619,7 +627,7 @@ theorem applyRule_emitted_time_dichotomy {rule : TableauRule} {sf : SignedFormul
     · refine applyRule_emitted_time_dichotomy_selfGuarded hsf ?_ g hg
       simp only [Bool.not_eq_true] at hL
       revert hT hL
-      cases rule <;> simp +decide [ruleMintsFreshTime, ruleMintsFreshLabel]
+      cases rule <;> simp +decide
   · simp only [Bool.not_eq_true] at hT
     exact Or.inl (applyRule_emitted_time_mem hsf haux hT g hg)
 
