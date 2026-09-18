@@ -308,18 +308,6 @@ def queryPatterns (db : PatternDatabase) (φ : Formula) (_contextSize : Nat := 0
   db.patterns[key]?
 
 /--
-Get the best strategy hint for a formula.
-
-**Parameters**:
-- `db`: Pattern database
-- `φ`: Goal formula
-
-**Returns**: Optional best strategy based on past successes
--/
-def bestStrategyHint (db : PatternDatabase) (φ : Formula) : Option ProofStrategy :=
-  db.queryPatterns φ |>.bind SuccessData.bestStrategy
-
-/--
 Get heuristic bonus based on pattern history.
 
 Returns a negative bonus (priority boost) if the pattern has high success rate.
