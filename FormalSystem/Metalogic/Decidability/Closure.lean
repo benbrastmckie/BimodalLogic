@@ -167,14 +167,6 @@ inductive BranchStatus where
   | open
   deriving Repr
 
-/--
-Classify a branch as closed or open.
--/
-def classifyBranch (b : Branch) (fc : FrameClass := .Base) : BranchStatus :=
-  match findClosure b fc with
-  | some reason => .closed reason
-  | none => .open
-
 /-!
 ## Monotonicity Lemmas
 
@@ -388,18 +380,5 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) (fc : FrameClass := .
 /-!
 ## Closure Detection Statistics
 -/
-
-/--
-Count potential contradictions in a branch (for heuristic guidance).
-Counts formulas that have their negation present.
--/
-def countPotentialContradictions (b : Branch) : Nat :=
-  b.filter (fun sf => sf.isPos ∧ b.hasNegAt sf.formula sf.label) |>.length
-
-/--
-Count negated axiom instances in a branch.
--/
-def countNegatedAxioms (b : Branch) : Nat :=
-  b.filter (fun sf => sf.isNeg ∧ (matchAxiom sf.formula).isSome) |>.length
 
 end FormalSystem.Metalogic.Decidability
