@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/plans/01_formalfoundations-resync-plan.md",
-      "summary": "6-phase resync plan: TB/TA->TS/TC and count-remark fix, TM/BL site inventory, TM^+->TM and BL-level TM->TM-minus renames, provenance remarks, full gates incl. #leansrc existence check."
-    }
-  ],
-  "next_steps": "Run /implement 607 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 7,
-  "dependency_waves": [[1,2],[3],[4],[5],[6]],
-  "memory_candidates": [],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1789728492_5b1bc4_607",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1789728492_5b1bc4",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "dispatch_seq": 9
+  "dispatch_seq": 10
 }

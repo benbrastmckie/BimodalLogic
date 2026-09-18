@@ -1,0 +1,15 @@
+{
+  "phase": 1,
+  "phase_name": "Axiom-key renames and count-remark correction",
+  "started_at": "2026-09-18T00:00:00Z",
+  "last_updated": "2026-09-18T00:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Replace TB with TS and TA with TC at every site (whole-word)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 2, "description": "Update def:BX footnote category phrase to (TS, TL, CN) and (TC, UE, ...)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 3, "description": "Rewrite Machine-Checked Status remark with correct 11/4 counts", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 4, "description": "Re-read Axioms.lean docstring and axiom-reference.md before writing counts", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

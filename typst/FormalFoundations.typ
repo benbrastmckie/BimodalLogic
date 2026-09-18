@@ -462,10 +462,10 @@ constrains is the points of evaluation, not the propositions.
   #items[
     + *TN*: if $tack.r phi.alt$ then $tack.r #allfuture phi.alt$.
     + *TR*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "S"|"U" chevron.r)$.
-    + *TB*: $#somefuture top$.
+    + *TS*: $#somefuture top$.
     + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi) or #somefuture (#somefuture phi.alt and psi)]$.
     + *CN*: $[(phi.alt #until psi) and (chi #until theta)] arrow.r [(phi.alt and chi) #until (psi and theta) or (phi.alt and chi) #until (psi and chi) or (phi.alt and chi) #until (phi.alt and theta)]$.
-    + *TA*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
+    + *TC*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
     + *UE*: $(phi.alt #until psi) arrow.r #somefuture psi$.
     + *UT*: $#somefuture phi.alt arrow.r (top #until phi.alt)$.
     + *UI*: $phi.alt #until (phi.alt and (phi.alt #until psi)) arrow.r phi.alt #until psi$.
@@ -478,12 +478,12 @@ constrains is the points of evaluation, not the propositions.
     + *NA*: $#Nxt top arrow.r #somepast #Nxt top$.
     + *NB*: $#Nxt top arrow.r square.stroked #Nxt top$.
   ]
-  TB, TL, and CN state seriality, linearity, and connectedness respectively; TA, UE, UT, UI, UC,
+  TS, TL, and CN state seriality, linearity, and connectedness respectively; TC, UE, UT, UI, UC,
   UF, UG, and SU are the primary Since/Until axioms; NP, NF, NA, and NB are the uniformity axioms,
   holding vacuously unless the order is discrete. In every case the past/since direction is
   derived from the future/until direction by TR, not separately postulated -- only the
   future/until direction is stated above. NB is stated here as it belongs to BX in the paper, even
-  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TR), three seriality/linearity/connectedness axioms (TB, TL, CN), eight primary Since/Until axioms (TA, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
+  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TR), three seriality/linearity/connectedness axioms (TS, TL, CN), eight primary Since/Until axioms (TC, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
 ]
 
 #definition($op("TM")^+$)[
@@ -588,11 +588,11 @@ class exactly $RR$.
       in $phi.alt$.
     + *TK*: $#allfuture (phi.alt arrow.r psi) arrow.r (#allfuture phi.alt arrow.r #allfuture psi)$.
     + *T4*: $#allfuture phi.alt arrow.r #allfuture #allfuture phi.alt$.
-    + *TB*: $#somefuture top$.
-    + *TA*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
+    + *TS*: $#somefuture top$.
+    + *TC*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
     + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (#somefuture phi.alt and psi) or #somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi)]$.
   ]
-  MP and MN are rules; MK, MT, M5, MF, TK, T4, TB, TA, and TL are axiom schemata; TR is a rule
+  MP and MN are rules; MK, MT, M5, MF, TK, T4, TS, TC, and TL are axiom schemata; TR is a rule
   making the logic symmetric with respect to past and future at each time. TM's TL lists the same
   three disjuncts as BX's TL above but in a different order; this is the paper's own presentation
   and not a discrepancy to normalize.
@@ -1035,13 +1035,17 @@ No step of the base-class route carries `sorryAx`.
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `ZTime`,
   `RTime`. It is not silently identified with the paper's $op("TM")^+$, $op("TM")^+_d$,
   $op("TM")^+_f$, $op("TM")^+_c$. The two axiomatizations line up key for key --- the paper states
-  eleven primary Since/Until axioms and derives their past mirrors by the rule TR, while the
-  development states all twenty-two explicitly, one pair per paper axiom, and also has TR as a rule
-  (`DerivationTree.time_reflection`). The uniformity layer reconciles too: the paper's four axioms
-  appear as five constructors, NP's past mirror being explicit. Every constructor is a paper axiom
-  instance or a TR image of one, so the two presentations derive the same theorems at the empty
-  context; the key-by-key table is in `docs/reference/axiom-reference.md`. That correspondence is
-  textual, not a machine-checked equivalence theorem.
+  eleven primary Since/Until axioms in the future direction and derives their past mirrors by the
+  rule TR, and the development states exactly the same *11* future-direction constructors
+  (`FormalSystem.ProofSystem.Axioms`), with the past mirrors machine-checked as derived theorems
+  (`FormalSystem.ProofSystem.DerivedAxioms`) obtained by TR (`DerivationTree.time_reflection`),
+  not stated as separate axiom constructors. The uniformity layer reconciles too: the paper's four
+  axioms NP, NF, NA, NB appear as exactly *4* constructors, one per key. Only NP's past mirror is
+  TR-derived; NA is the paper's NA itself (`X top arrow.r H X top`), not the mirror of NF. Every
+  constructor is a paper axiom instance or a TR image of one, so the two presentations derive the
+  same theorems at the empty context; the key-by-key table is in
+  `docs/reference/axiom-reference.md`. That correspondence is textual, not a machine-checked
+  equivalence theorem.
 ]
 
 Decidability's two machine-checked components are narrower than the open question of
@@ -1230,15 +1234,15 @@ a point.
   What the representation below actually uses of $#allfuture$ and $#allpast$ is: normality and
   multiplicativity ($#allfuture 1 = 1$, $#allfuture (a and b) = #allfuture a and #allfuture b$,
   from TN and TK); transitivity ($#allfuture a lt.eq #allfuture #allfuture a$, from T4); seriality
-  ($#somefuture 1 = 1$, from TB); weak linearity ($#somefuture a and #somefuture b lt.eq
+  ($#somefuture 1 = 1$, from TS); weak linearity ($#somefuture a and #somefuture b lt.eq
   #somefuture (a and b) or #somefuture (a and #somefuture b) or #somefuture (#somefuture a and b)$,
   from TL); and tense conjugacy ($a lt.eq #allfuture #somepast a$, $a lt.eq #allpast #somefuture a$,
-  from TA and its mirror), together with the $square.stroked$-interactions MF and its mirror. Not
+  from TC and its mirror), together with the $square.stroked$-interactions MF and its mirror. Not
   on this list, and not needed, is the T-axiom for $#allfuture$ or $#allpast$: both are transitive,
   serial, weakly linear operators in the tradition of tense algebras
   @venema2007algebrascoalgebras, not reflexive closure operators, and irreflexivity is neither
   expressible nor needed here --- strictness lives in the order on the duration sort of the
-  representing flow (below), not in a relation on the point set. By TA and its mirror,
+  representing flow (below), not in a relation on the point set. By TC and its mirror,
   $#somefuture$ and $#somepast$ are the conjugate pair of a tense algebra, hence *complete*
   operators: they preserve every existing join, not merely finite ones
   @venema2007algebrascoalgebras. The binary operations $#until$ and $#since$, by contrast, are
@@ -1383,9 +1387,9 @@ axiom above, which is first-order.
   For every $op("TM")^+$-algebra $A$:
   #items[
     + $R_square.stroked$ is an equivalence relation (from the S5 equations);
-    + $R_F$ is transitive (T4), serial (TB), and weakly linear (TL): if $U R_F V$ and $U R_F V'$
+    + $R_F$ is transitive (T4), serial (TS), and weakly linear (TL): if $U R_F V$ and $U R_F V'$
       then $V R_F V'$ or $V = V'$ or $V' R_F V$;
-    + $R_P = R_F^(-1)$ (TA and its mirror);
+    + $R_P = R_F^(-1)$ (TC and its mirror);
     + $R_F subset.eq R_square.stroked$ and $R_P subset.eq R_square.stroked$ (MF and its mirror):
       if $square.stroked a in U$ then $square.stroked #allfuture a in U$, so $#allfuture a in U$,
       so $a in V$ for every $V$ with $U R_F V$; hence each $R_square.stroked$-class is closed

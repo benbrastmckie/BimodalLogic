@@ -1,7 +1,7 @@
 # Implementation Plan: Task #607
 
 - **Task**: 607 - Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None (task 584, which deferred this work, is complete)
 - **Research Inputs**: specs/607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md
@@ -131,18 +131,18 @@ Phases in the same wave can run in parallel. Phase 2 writes only a specs work fi
 `FormalFoundations.typ`, so it does not conflict with Phase 1's edits. Phases 3-5 all edit the same
 file and must run in sequence.
 
-### Phase 1: Axiom-key renames and count-remark correction [NOT STARTED]
+### Phase 1: Axiom-key renames and count-remark correction [COMPLETED]
 
 **Goal**: Fix the self-contained factual errors: the wrong keys and the wrong constructor counts.
 
 **Tasks**:
-- [ ] Replace `TB` with `TS` and `TA` with `TC` at every site. The expected sites are the `def:BX`
+- [x] Replace `TB` with `TS` and `TA` with `TC` at every site. The expected sites are the `def:BX`
       items and the list in its footnote (`Seventeen named keys ...`), the `#BL`-level definition
       block's items and its summary sentence, the §Algebras derivation remark, and the Ultrafilter
-      Frame lemma. Use whole-word matching only.
-- [ ] Update the `def:BX` footnote's category phrase so the keys read "(TS, TL, CN)" and "(TC, UE,
-      ...)". The total of seventeen keys stays the same.
-- [ ] Rewrite the remark in `== Machine-Checked Status` (the one starting "The vocabulary above is
+      Frame lemma. Use whole-word matching only. *(completed: 7 TB->TS, 8 TA->TC, 15 sites total, whole-word sed)*
+- [x] Update the `def:BX` footnote's category phrase so the keys read "(TS, TL, CN)" and "(TC, UE,
+      ...)". The total of seventeen keys stays the same. *(completed: satisfied automatically by the whole-word TB/TA rename above)*
+- [x] Rewrite the remark in `== Machine-Checked Status` (the one starting "The vocabulary above is
       the development's own"). It should say that the development states the **11** primary
       Since/Until axioms in the future direction only, and that their past mirrors are
       machine-checked derived theorems (`FormalSystem.ProofSystem.DerivedAxioms`), obtained by TR
@@ -151,10 +151,10 @@ file and must run in sequence.
       is the paper's NA itself, not the mirror of NF. Keep the closing sentences about textual,
       not machine-checked, correspondence and the pointer to `docs/reference/axiom-reference.md`.
       At this phase, leave the system names in the remark (`op("TM")^+` etc.) as they are. Phase 4
-      renames them.
-- [ ] Before writing the counts, re-read the `Axioms.lean` module docstring ("BX Temporal (11,
+      renames them. *(completed)*
+- [x] Before writing the counts, re-read the `Axioms.lean` module docstring ("BX Temporal (11,
       future direction only ...)", "Total: 29 ...") and `axiom-reference.md`'s "Derived schemata"
-      table.
+      table. *(completed)*
 
 **Timing**: 45 minutes
 
