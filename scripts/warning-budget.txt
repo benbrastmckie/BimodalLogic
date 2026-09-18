@@ -25,6 +25,21 @@
 # disposition linter.unusedSimpArgs blocking dead simp argument; safe to delete (no `<-` caveat in tree)
 # disposition linter.unusedTactic blocking fix or document via declaration-scoped `set_option ... in`
 # disposition linter.unusedVariables blocking rename to a `_`-prefixed binder; do not delete (arity)
+# disposition linter.flexible blocking fix with the `simp only` list `simp?` prints, or merge into `simpa`
+# disposition linter.hashCommand blocking fix outside the test library (`#eval`/`#check` probes do not belong in library code)
+# disposition linter.style.cdot blocking use the `·` focusing dot, not `.`
+# disposition linter.style.docString blocking fix the docstring spacing the linter names
+# disposition linter.style.emptyLine blocking delete the blank line inside the command
+# disposition linter.style.longFile blocking baseline in source with `set_option linter.style.longFile N` at the file head; do not split just to satisfy it
+# disposition linter.style.longLine blocking reflow to 100 characters; a guarded `#guard_msgs` output may use a declaration-scoped `set_option ... false in` with a reason
+# disposition linter.style.maxHeartbeats blocking put the reason in a `--` comment after the `in`, before the declaration
+# disposition linter.style.missingEnd blocking close the section or namespace with `end`
+# disposition linter.style.multiGoal blocking focus each goal with `·`
+# disposition linter.style.openClassical blocking scope it with `open Classical in` on the declaration that needs it
+# disposition linter.style.setOption blocking scope heartbeat and other options to a declaration with `... in`
+# disposition linter.style.show blocking use `change` where the goal changes
+# disposition linter.unusedDecidableInType blocking drop the unused instance from the statement and supply it in the proof
+# disposition linter.unusedFintypeInType blocking drop the unused instance from the statement and supply it in the proof
 #
 # Baseline total: 0 warning(s) across 0 file(s).
 

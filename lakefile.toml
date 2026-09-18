@@ -14,6 +14,33 @@ testDriver = "BimodalTest"
 lintDriver = "batteries/runLinter"
 defaultTargets = ["FormalSystem"]
 
+# Package-level Lean options: Mathlib's standard syntax-linter set, plus the length limit that
+# switches on the long-file linter (it is inert at its default of 0). These live at package level,
+# not in each `[[lean_lib]]`, because the `[[lean_exe]]` roots below do not inherit a library's
+# `leanOptions`; package options reach every target. The `weak.` prefix makes an option that an
+# upstream package does not define a no-op instead of an error. See the lint-suppression policy in
+# docs/development/LEAN_STYLE_GUIDE.md for what is enabled and every permanent opt-out.
+[leanOptions]
+weak.linter.mathlibStandardSet = true
+# weak.linter.style.longFile = 1500 # TEMPORARY (staged enablement): uncommented once every long
+# file carries its in-source baseline; a TOML key cannot be set twice, so it is held off here.
+# TEMPORARY (staged enablement): each line below holds one not-yet-clean class off while its
+# warnings are fixed; the line is deleted once that class reaches zero.
+weak.linter.style.longLine = false # TEMPORARY (staged enablement)
+weak.linter.style.emptyLine = false # TEMPORARY (staged enablement)
+weak.linter.unusedFintypeInType = false # TEMPORARY (staged enablement)
+weak.linter.unusedDecidableInType = false # TEMPORARY (staged enablement)
+weak.linter.hashCommand = false # TEMPORARY (staged enablement)
+weak.linter.style.show = false # TEMPORARY (staged enablement)
+weak.linter.flexible = false # TEMPORARY (staged enablement)
+weak.linter.style.maxHeartbeats = false # TEMPORARY (staged enablement)
+weak.linter.style.setOption = false # TEMPORARY (staged enablement)
+weak.linter.style.docString = false # TEMPORARY (staged enablement)
+weak.linter.style.multiGoal = false # TEMPORARY (staged enablement)
+weak.linter.style.openClassical = false # TEMPORARY (staged enablement)
+weak.linter.style.missingEnd = false # TEMPORARY (staged enablement)
+weak.linter.style.cdot = false # TEMPORARY (staged enablement)
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"

@@ -67,8 +67,10 @@ TRACE_GLOB_ROOT = ".lake/build/lib/lean"
 
 # Position prefix Lean puts on every diagnostic: `<path>:<line>:<col>: `.
 POS_RE = re.compile(r"^([^\s:]+\.lean):(\d+):(\d+): ")
-# The `Note: This linter can be disabled with `set_option linter.X false`` trailer.
-LINTER_RE = re.compile(r"set_option (linter\.[A-Za-z0-9_]+) false")
+# The `Note: This linter can be disabled with `set_option linter.X false`` trailer. The class
+# name may be dotted (Mathlib's style linters are `linter.style.longLine` and similar), so the
+# character class admits `.`; the trailing ` false` anchors the end of the name.
+LINTER_RE = re.compile(r"set_option (linter\.[A-Za-z0-9_.]+) false")
 
 DISPOSITIONS = ("blocking", "advisory", "pending")
 
@@ -104,6 +106,10 @@ def classify(message: str) -> str:
     m = LINTER_RE.search(message)
     if m:
         return m.group(1)
+    # The long-file linter is a numeric option, so its trailer reads `... longFile 0`, not
+    # `... false`.
+    if "set_option linter.style.longFile 0" in message:
+        return "linter.style.longFile"
     if "has been deprecated" in message:
         return "deprecated"
     if "Try this: intro" in message:

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #597
 
 - **Task**: 597 - Adopt Mathlib's standard linter set, following cslib's precedent
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25 hours
 - **Dependencies**: Task 585 (compiler-warning burn-down + C28 gate) -- completed
 - **Research Inputs**: specs/597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md
@@ -119,36 +119,36 @@ sequential, for three reasons: they overlap in which files they touch; each one 
 `lakefile.toml` and `scripts/warning-budget.txt`; and each lakefile edit forces a full rebuild.
 Phase 15 edits only the harness script and its doc, so it can run alongside the Lean phases.
 
-### Phase 1: Package-level enablement, temporary opt-outs, authoritative re-measurement [NOT STARTED]
+### Phase 1: Package-level enablement, temporary opt-outs, authoritative re-measurement [COMPLETED]
 
 **Goal**: Turn the full linter set on at package level while the build stays green, and replace
 the research sweep's partial counts with authoritative ones.
 
 **Tasks**:
-- [ ] Add a top-level `[leanOptions]` table to `lakefile.toml` containing
+- [x] Add a top-level `[leanOptions]` table to `lakefile.toml` containing
       `weak.linter.mathlibStandardSet = true` and `weak.linter.style.longFile = 1500`. Keep the
       per-library `pp.unicode.fun` / `autoImplicit` entries unchanged. Add a header comment that
       explains the package-level placement: the `lean_exe` roots do not inherit library options.
-- [ ] Add a `weak.linter.<X> = false` line, each with a `# TEMPORARY (staged enablement)`
+- [x] Add a `weak.linter.<X> = false` line, each with a `# TEMPORARY (staged enablement)`
       comment, for every class with a non-zero count: `style.longLine`, `style.emptyLine`,
       `unusedFintypeInType`, `unusedDecidableInType`, `hashCommand`, `style.show`, `flexible`,
       `style.maxHeartbeats`, `style.setOption`, `style.docString`, `style.multiGoal`,
       `style.openClassical`, `style.missingEnd`, `style.cdot`, and `style.longFile`. `longFile`
       is included because it only fires once the 1500 limit is set. Do not cite task numbers in
-      these comments.
-- [ ] Re-measure all 590 live files once no other session is rebuilding. Use the per-file sweep
+      these comments. *(deviation: altered — longFile held off by commenting out the `= 1500` line, since TOML forbids a duplicate key)*
+- [x] Re-measure all 590 live files once no other session is rebuilding. Use the per-file sweep
       from the research appendix (`lake env lean -Dweak.linter.mathlibStandardSet=true
       -Dweak.linter.style.longFile=1500`, `xargs -P5`). Record per-class and per-directory counts
       in this phase's completion notes. Any file that still fails is either a `#guard_msgs` file
       (expected) or needs a named explanation.
-- [ ] Probe library-over-package override. Set a `BimodalTest`-level
+- [x] Probe library-over-package override. Set a `BimodalTest`-level
       `leanOptions = {..., weak.linter.hashCommand = false}` against a package-level `true` and
-      confirm on one test file that the library value wins. Record the result for Phase 5.
-- [ ] Run `warning-budget.py` and learn the exact class-name spelling it observes (for example
+      confirm on one test file that the library value wins. Record the result for Phase 5. *(deviation: altered — settled from Lake source (`LeanLib.leanOptions`) instead of a probe build)*
+- [x] Run `warning-budget.py` and learn the exact class-name spelling it observes (for example
       `linter.style.longLine`). Add a `# disposition <class> blocking <reason>` row for every set
       member it can observe. Confirm that rows for classes with zero observations are accepted
       and not rejected.
-- [ ] Do a guarded full build of all targets (`lake build FormalSystem BimodalTest` plus every exe
+- [x] Do a guarded full build of all targets (`lake build FormalSystem BimodalTest` plus every exe
       root) with `--wfail`. It must be green. Run `check-module-invariants.sh` with C28 and C29
       green.
 
@@ -169,6 +169,46 @@ superseding numbers.
 **Verification**:
 - `lake build --wfail` is green across all targets, and C28/C29 pass.
 - The re-measurement table is recorded in the plan's phase notes.
+
+**Phase 1 notes (authoritative re-measurement, 2026-09-18)**: per-file sweep of all 591 live files
+(590 under FormalSystem/ + Tests/, plus `scripts/CheckInitImportsMain.lean` and the root
+`FormalSystem.lean`), `lake env lean -DautoImplicit=false -Dpp.unicode.fun=true
+-Dweak.linter.mathlibStandardSet=true -Dweak.linter.style.longFile=1500`, `xargs -P6`, 949 s.
+Total 2,685 warnings. Every file elaborated; the only failures are the 5 expected `#guard_msgs`
+files (17 guard mismatches: BoxSpreadProbe 1, RayRegionProbe 3, RegionGateProbe 1,
+TableauConformance 3, TemporalWitnessProbe 9).
+
+| Class | Warnings | Files |
+|-------|----------|-------|
+| style.longLine | 1,010 | 202 |
+| style.emptyLine | 540 | 33 |
+| unusedFintypeInType | 274 | 55 |
+| unusedDecidableInType | 249 | 53 |
+| hashCommand | 241 | 10 (11 of them in FormalSystem: Normalization 4, BiLasso/Examples 4, BiLasso/Check 3) |
+| style.show | 196 | 62 |
+| flexible | 88 | 11 |
+| style.longFile (at 1500) | 38 | 38 |
+| style.maxHeartbeats | 32 | 11 |
+| style.setOption | 7 | 3 |
+| style.docString | 4 | 4 |
+| style.multiGoal | 2 | 1 |
+| style.openClassical | 2 | 2 |
+| style.missingEnd | 1 | 1 |
+| style.cdot | 1 | 1 |
+
+`longLine` by directory: Metalogic/Decidability 206, Semantics 170, Metalogic/WeakCanonical 121,
+Metalogic/Conservativity(+.lean) 138, Tests 87, Theorems 65, Syntax 58, Metalogic/Independence 47,
+remaining FormalSystem ~118. Phase 11's share (rest of FormalSystem) is therefore ~600, above its
+350 split threshold.
+
+Deviations recorded in this phase:
+- `longFile = 1500` is held commented-out rather than paired with a `longFile = 0` line: a TOML
+  key cannot be set twice. Phase 4 uncomments it.
+- Library-over-package override settled from Lake source rather than a probe build:
+  `LeanLib.leanOptions = buildType ++ pkg.leanOptions ++ config.leanOptions`, and `LeanOptions`
+  `++` lets the later entry override a clashing one, so a `BimodalTest` value wins.
+- `scripts/warning-budget.py` could not classify the new classes: its trailer regex stopped at
+  the first `.` of `linter.style.X`, and the longFile trailer ends in `0`, not `false`. Both fixed.
 
 ---
 
