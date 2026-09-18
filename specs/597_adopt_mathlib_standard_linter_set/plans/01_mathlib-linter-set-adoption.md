@@ -212,22 +212,22 @@ Deviations recorded in this phase:
 
 ---
 
-### Phase 2: Trivial classes and the Carrier.lean blanket suppression [NOT STARTED]
+### Phase 2: Trivial classes and the Carrier.lean blanket suppression [COMPLETED]
 
 **Goal**: Take `docString` (4), `multiGoal` (2), `openClassical` (2), `missingEnd` (1) and `cdot`
 (1) to zero, and remove the one remaining blanket suppression.
 
 **Tasks**:
-- [ ] Fix each warning site reported by the per-file sweep. For `openClassical`, scope it to
+- [x] Fix each warning site reported by the per-file sweep. For `openClassical`, scope it to
       `open Classical in` on the declarations that need it, at `DeterministicBridge.lean:87` and
       `PlusTruth.lean:69`. Do not write `set_option ... in open Classical`: cslib's policy doc
-      records that this form scopes the `open` itself.
-- [ ] Restructure `FormalSystem/Semantics/Ultraproduct/Carrier.lean` as its own comment
+      records that this form scopes the `open` itself. *(deviation: altered — both files elaborate with no `Classical` at all, so the `open scoped Classical` lines were deleted outright rather than scoped)*
+- [x] Restructure `FormalSystem/Semantics/Ultraproduct/Carrier.lean` as its own comment
       prescribes. Split the `variable` block so that `[∀ i, LinearOrder (D i)]` and
       `[∀ i, IsOrderedAddMonoid (D i)]` are in scope only for the declarations that depend on the
       order. Then delete the file-scoped `set_option linter.* false`. The fallback is a
       per-declaration `set_option ... false in` with a C29 reason.
-- [ ] Delete the five temporary lakefile lines, then do a guarded full build with `--wfail`.
+- [x] Delete the five temporary lakefile lines, then do a guarded full build with `--wfail`.
 
 **Timing**: 1.5 hours
 
@@ -245,6 +245,13 @@ Phase 1 re-measurement confirms these numbers.
   `RamseyFactorization.lean`, `DeterministicBridge.lean`, `PlusTruth.lean`, and the 4
   `docString` sites
 - `lakefile.toml` - remove the 5 temporary lines
+
+**Phase 2 notes**: docString fixes were trailing-whitespace/blank-line docstring ends; `multiGoal`
+at `IntTruth.lean:375` was an unassigned `?f` metavariable goal left by `rw [truthAt_box_iff_base]`,
+fixed by `(f := f)`; `Carrier.lean` now has a group-only base `variable` block, two
+`section Order` blocks with `[∀ i, LinearOrder (D i)]`, and `IsOrderedAddMonoid` as a binder of
+its one instance. Full `--wfail` build green (1,267 s); C28/C29 pass (C29 now 6 sites). The INV
+inventory blocks in 5 READMEs were regenerated for the changed line counts.
 
 **Verification**:
 - A grep for file-level `set_option linter\.[^ ]+ false$` (not followed by `in`) in live trees

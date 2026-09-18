@@ -17,7 +17,7 @@ set quantifies over its own carrier, where `TruthAt` quantifies over possible wo
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Ultraproduct -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `Carrier.lean` | 304 | <!-- TODO: add description --> |
+| `Carrier.lean` | 301 | <!-- TODO: add description --> |
 | `IndexFilter.lean` | 97 | <!-- TODO: add description --> |
 | `Los.lean` | 160 | <!-- TODO: add description --> |
 | `ShiftSetProduct.lean` | 134 | <!-- TODO: add description --> |

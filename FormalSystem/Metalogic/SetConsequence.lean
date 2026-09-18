@@ -511,7 +511,7 @@ def StrongCompletenessZTime : Prop := StrongCompleteness FrameClass.ZTime
     frame-condition slot, and an elimination pattern needs exactly one nesting pair,
     `⟨F, ⟨_, _, _, _⟩, M, τ, t, h⟩` — or a single `hF` passed straight back to a
     `ValidIn` hypothesis.
- -/
+-/
 def SatisfiableZTimeSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.ZTime Γ
 
 /-- Semantic compactness of the Discrete consequence relation, in the same shape as

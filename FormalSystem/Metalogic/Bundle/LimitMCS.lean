@@ -482,3 +482,5 @@ theorem limitMCSAbove_is_mcs {fc : FrameClass} (m : Rat → Set Formula)
     (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q)) (r : ℝ) :
     SetMaximalConsistent (fc := fc) (limitMCSAbove m r) :=
   limitMCS_is_mcs .above m hm r
+
+end FormalSystem.Metalogic.Bundle

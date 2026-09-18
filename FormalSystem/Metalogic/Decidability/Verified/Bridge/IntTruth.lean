@@ -371,7 +371,7 @@ theorem branchTruthAt_box (hf : Function.Injective f)
   constructor
   · intro hp
     have hmem := (hasPosAt_iff_mem b _ _).mp hp
-    rw [truthAt_box_iff_base]
+    rw [truthAt_box_iff_base (f := f)]
     intro w' y
     refine (hφ w' y).1 ?_
     rw [hasPosAt_iff_mem]

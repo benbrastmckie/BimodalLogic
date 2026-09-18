@@ -60,32 +60,17 @@ the `Nontrivial` and `DenselyOrdered` instances, and `exists_section` — the sa
 `ShiftSet.reverse_repr` already carries.
 -/
 
--- `linter.unusedSectionVars` is suppressed for this whole file rather than at one declaration,
--- and that is a measured decision rather than a shrug. Deleting the suppression was tried: the
--- build reports exactly three warnings, every one naming `[∀ (i : I), IsOrderedAddMonoid (D i)]`,
--- at `mem_evZero`, `mk_surjective` and `mk_zero`.
--- Applying the `omit [...] in` form Lean prints at those three does NOT converge. Each `omit`
--- narrows that lemma's signature, so the proofs using it stop mentioning the instance as well and
--- the linter moves on to the next declaration and the next instance. With those three `omit`s in
--- place the build reported six warnings -- the same three, now for `[(i : I) → LinearOrder (D i)]`,
--- plus `mk_eq_mk`, `mk_le_mk` and `shU_mk` for `IsOrderedAddMonoid`. With six `omit`s it reported
--- six further ones: `mk_eq_mk` and `shU_mk` for `LinearOrder`, plus `mk_lt_mk`, `shU_zero`,
--- `shU_add` and `mk_max`. The `omit` route ends with an `omit` line above nearly every theorem
--- here, which is noise, not a fix.
--- The real fix is the one the linter's own message suggests first, and the one
--- `scripts/warning-budget.txt` records for the same condition elsewhere in the tree: split the
--- `variable` block below so `[∀ i, LinearOrder (D i)]` and `[∀ i, IsOrderedAddMonoid (D i)]` are
--- in scope only for the order-dependent declarations. That is a restructuring of this file rather
--- than a suppression decision, and it is left as its own change.
--- Nothing is baselined in `scripts/warning-budget.txt` for this file; this comment is the record.
-set_option linter.unusedSectionVars false
+-- The order instances are section variables only where an order is used: the quotient group
+-- and the carrier ultraproduct need nothing beyond `AddCommGroup`, so the `LinearOrder` binder
+-- lives in the two `section Order` blocks and `IsOrderedAddMonoid` is a binder of the one
+-- instance that consumes it. A single file-wide variable block carrying all three would make
+-- every group-only theorem take instances it never uses.
 
 open Filter
 
 namespace FormalSystem.Semantics.Ultraproduct
 
-variable {I : Type} {φ : Ultrafilter I} {D : I → Type}
-  [∀ i, AddCommGroup (D i)] [∀ i, LinearOrder (D i)] [∀ i, IsOrderedAddMonoid (D i)]
+variable {I : Type} {φ : Ultrafilter I} {D : I → Type} [∀ i, AddCommGroup (D i)]
 
 variable (φ D) in
 /-- The eventually-zero subgroup of the Pi group. -/
@@ -117,6 +102,10 @@ theorem mk_eq_mk {f g : ∀ i, D i} : mk (φ := φ) f = mk g ↔ ∀ᶠ i in φ,
   · exact fun h => h.mono (fun i hi => by simp [hi])
 
 /-! ### The order — the only genuinely hand-supplied structure -/
+
+section Order
+
+variable [∀ i, LinearOrder (D i)]
 
 instance : LE (UD φ D) :=
   ⟨fun a b => Quotient.liftOn₂' a b (fun f g => ∀ᶠ i in φ, f i ≤ g i) (by
@@ -162,7 +151,7 @@ noncomputable instance : LinearOrder (UD φ D) where
         · exact Or.inr (h.mono (fun i hi => le_of_not_ge hi))
   toDecidableLE := Classical.decRel _
 
-instance : IsOrderedAddMonoid (UD φ D) where
+instance [∀ i, IsOrderedAddMonoid (D i)] : IsOrderedAddMonoid (UD φ D) where
   add_le_add_left a b := by
     induction a using QuotientAddGroup.induction_on with
     | H f =>
@@ -210,6 +199,8 @@ instance [∀ i, DenselyOrdered (D i)] : DenselyOrdered (UD φ D) := by
           simp only [dif_pos hi]; exact (exists_between hi).choose_spec.1))
       · exact mk_lt_mk.mpr (h.mono (fun i hi => by
           simp only [dif_pos hi]; exact (exists_between hi).choose_spec.2))
+
+end Order
 
 /-! ### The carrier ultraproduct and its shift action -/
 
@@ -287,6 +278,10 @@ theorem mk_surjective (a : UD φ D) : ∃ f : ∀ i, D i, mk f = a := by
 
 theorem mk_zero : mk (φ := φ) (0 : ∀ i, D i) = 0 := rfl
 
+section Order
+
+variable [∀ i, LinearOrder (D i)]
+
 theorem mk_max (f g : ∀ i, D i) :
     max (mk (φ := φ) f) (mk g) = mk (fun i => max (f i) (g i)) := by
   rcases φ.em (fun i => f i ≤ g i) with h | h
@@ -300,5 +295,7 @@ theorem mk_max (f g : ∀ i, D i) :
 theorem mk_abs (f : ∀ i, D i) : |mk (φ := φ) f| = mk (fun i => |f i|) := by
   simp only [abs_eq_max_neg]
   rw [show (-(mk (φ := φ) f)) = mk (fun i => -(f i)) from rfl, mk_max]
+
+end Order
 
 end FormalSystem.Semantics.Ultraproduct

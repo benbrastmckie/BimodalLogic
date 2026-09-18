@@ -837,7 +837,6 @@ If □φ is valid, then φ is valid.
 
 Proof: □φ at `(τ, t)` means `∀ σ : WorldHistory F, TruthAt φ at (σ, t)` per `def:BL-semantics`
 ("M,τ,x ⊨ □φ *iff* M,σ,x ⊨ φ for all σ ∈ H_F"). Instantiate it at `σ := τ`.
-
 -/
 theorem valid_of_valid_box {φ : Formula} (h : Valid (Formula.box φ)) :
     Valid φ := by

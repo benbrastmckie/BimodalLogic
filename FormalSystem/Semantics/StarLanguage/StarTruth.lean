@@ -334,7 +334,6 @@ The L⋆ restatement of `plusTruthAt_timeShift` (`Semantics/PlusLanguage/PlusTru
 follows verbatim: the `box` and `stab` cases need the inverse shift plus `star_truth_congr_ext`,
 because `timeShift` is not definitionally involutive. The `timeStore` case consumes
 `update_shift_comm`; the `timeRecall` case is the register lookup commuting with the shift.
-
 -/
 theorem starTruthAt_timeShift (M : TaskModel F) (φ : StarFormula) :
     ∀ (σ : WorldHistory F) (t Δ : F.Duration) (v : ℕ → F.Duration),

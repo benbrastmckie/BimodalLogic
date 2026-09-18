@@ -84,7 +84,6 @@ determinism · singleton-bridge · extension-theorem · lem:deterministic-single
 namespace FormalSystem.Semantics
 
 open FormalSystem.PlusLanguage
-open scoped Classical
 
 variable {F : TaskFrame}
 

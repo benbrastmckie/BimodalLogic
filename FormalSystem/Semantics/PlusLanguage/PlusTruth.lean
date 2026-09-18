@@ -66,7 +66,6 @@ namespace FormalSystem.Semantics
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.PlusLanguage.PlusFormula
-open scoped Classical
 
 variable {F : TaskFrame}
 

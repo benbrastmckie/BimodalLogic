@@ -631,8 +631,7 @@ theorem inflate_right (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq 
         rename_i i j
         rcases sumLex_cases i with ⟨z, rfl⟩ | ⟨x, rfl⟩ <;>
           rcases sumLex_cases j with ⟨z', rfl⟩ | ⟨x', rfl⟩
-        ·
-          have hzz : z < z' := Sum.Lex.inl_lt_inl_iff.mp hij
+        · have hzz : z < z' := Sum.Lex.inl_lt_inl_iff.mp hij
           have hab : a.1 < b.1 := by
             calc a.1 < W (z + 1) := a.2.2
               _ ≤ W z' := hmono (by omega)
