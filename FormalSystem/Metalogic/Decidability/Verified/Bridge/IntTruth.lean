@@ -227,6 +227,7 @@ theorem stateTime_placed (hf : Function.Injective f) (w : WorldIndex) {r : D}
   congr 1
   exact hf (hex.choose_spec.trans hi.symm)
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 theorem stateTime_gap (w : WorldIndex) {r : D} (hr : ¬ IsPlacedCode f (regionCode f r)) :
     stateTime b ord f w r = regionLabel b ord w (cutIndex (regionCode f r)) := by
@@ -234,18 +235,21 @@ theorem stateTime_gap (w : WorldIndex) {r : D} (hr : ¬ IsPlacedCode f (regionCo
   rintro ⟨i, hi⟩
   exact hr (isPlacedCode_of_eq hi)
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 theorem stateLabel_placed (hf : Function.Injective f) (w : WorldIndex) {r : D}
     {i : BranchTime b} (hi : f i = r) :
     stateLabel b ord f w r = ⟨normWorld b w, timeAt b i⟩ := by
   rw [stateLabel, stateTime_placed hf _ hi]
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 theorem stateLabel_gap (w : WorldIndex) {r : D} (hr : ¬ IsPlacedCode f (regionCode f r)) :
     stateLabel b ord f w r =
       ⟨normWorld b w, regionLabel b ord (normWorld b w) (cutIndex (regionCode f r))⟩ := by
   rw [stateLabel, stateTime_gap _ hr]
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- The label a point reads is always a label the branch knows the time of. -/
 theorem stateTime_mem_knownTimes (hf : Function.Injective f)
@@ -485,6 +489,7 @@ theorem isPlacedCode_of_between (hRO : RayOnly b f) (hRS : RaySplit b f)
   · exact absurd ((hRS u hu).1 h0 i) (asymm hiu)
   · exact absurd ((hRS u hu).2 hn j) (asymm huj)
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 **The upper ray is upward-closed.** Everything strictly above an upper-ray point is itself on the
@@ -514,6 +519,7 @@ theorem upperRay_of_gt (hRO : RayOnly b f) (hRS : RaySplit b f) {r s : D}
         (habove ⟨0, Nat.pos_of_ne_zero hlen⟩))) (lt_irrefl r)
   · exact hn'
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- **The lower ray is downward-closed**, the mirror. -/
 theorem lowerRay_of_lt (hRO : RayOnly b f) (hRS : RaySplit b f) {r s : D}
@@ -861,8 +867,8 @@ theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful 
 theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
-    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
-    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (_hSat : findUnexpanded b (timeOrd := ord) = none) (_hOpen : findClosure b fc = none)
+    (_hTot : timeOrderTotal b ord = true) (_hBA : boxAnchoredCheck b = true)
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
@@ -874,8 +880,8 @@ theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b or
 theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hV : branchOrderValid b ord = true) (fc : ProofSystem.FrameClass)
-    (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
-    (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
+    (_hSat : findUnexpanded b (timeOrd := ord) = none) (_hOpen : findClosure b fc = none)
+    (_hTot : timeOrderTotal b ord = true) (_hBA : boxAnchoredCheck b = true)
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :

@@ -753,12 +753,15 @@ def classLt (h : IsConvexEquiv M ε) : h.ClassQuot → h.ClassQuot → Prop :=
     propext ⟨fun hh => h.ltPt_congr ha hb hh,
       fun hh => h.ltPt_congr (h.equiv.symm ha) (h.equiv.symm hb) hh⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 @[simp] theorem classLt_cls (h : IsConvexEquiv M ε) {a b : M.carrier} :
     h.classLt (h.cls a) (h.cls b) ↔ ContempLtPt M ε a b := Iff.rfl
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 theorem classLt_irrefl (h : IsConvexEquiv M ε) (A : h.ClassQuot) : ¬ h.classLt A A :=
   Quotient.inductionOn A fun a hh => absurd hh.1 (lt_irrefl a)
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 theorem classLt_trans (h : IsConvexEquiv M ε) {A B C : h.ClassQuot} :
     h.classLt A B → h.classLt B C → h.classLt A C := by
   refine Quotient.inductionOn₃ A B C fun a b c hab hbc => ?_
@@ -767,6 +770,7 @@ theorem classLt_trans (h : IsConvexEquiv M ε) {A B C : h.ClassQuot} :
   exact ⟨lt_trans hab₁ hbc₁,
     fun hac => hab₂ (h.convex a b c (le_of_lt hab₁) (le_of_lt hbc₁) hac)⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 theorem classLt_trichotomous (h : IsConvexEquiv M ε) (A B : h.ClassQuot) :
     h.classLt A B ∨ A = B ∨ h.classLt B A := by
   refine Quotient.inductionOn₂ A B fun a b => ?_
@@ -794,6 +798,7 @@ noncomputable instance instLinearOrderClassQuot (h : IsConvexEquiv M ε) :
   letI : DecidableRel h.classLt := fun _ _ => Classical.dec _
   linearOrderOfSTO h.classLt
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 theorem cls_lt_cls (h : IsConvexEquiv M ε) {a b : M.carrier} :
     h.cls a < h.cls b ↔ ContempLtPt M ε a b := Iff.rfl
 
@@ -818,7 +823,7 @@ theorem classStrictlyBetween_of_between (h : IsConvexEquiv M ε) {c d e : M.carr
 /-- Reynolds' `I` as a predicate on `M/∼`: *"`E` is a `∼`-class strictly between `c` and `d`"*.
 `ClassStrictlyBetween` is `∼`-invariant because it quantifies over the whole class. -/
 def ClassStrictlyBetweenQ (h : IsConvexEquiv M ε) (c d : M.carrier) : h.ClassQuot → Prop :=
-  Quotient.lift (ClassStrictlyBetween M ε c d) fun a b hab =>
+  Quotient.lift (ClassStrictlyBetween M ε c d) fun _a _b hab =>
     propext ⟨fun hh x hx => hh x (h.equiv.trans hab hx),
       fun hh x hx => hh x (h.equiv.trans (h.equiv.symm hab) hx)⟩
 
@@ -846,6 +851,7 @@ theorem not_contempEquiv_ends (h : IsConvexEquiv M ε) {c d e : M.carrier}
   · exact absurd (hbet c (h.equiv.symm hc)).1 (lt_irrefl c)
   · exact absurd (hbet d hd).2 (lt_irrefl d)
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` is nonempty** — from `c ≁ d` and density of `M/∼`. -/
 theorem nonempty_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
     {c d : M.carrier} (hcd : c < d) (hns : ¬ ContempEquivDense M ε c d) :
@@ -853,6 +859,7 @@ theorem nonempty_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrde
   obtain ⟨e, hce, hed, hnce, hned⟩ := hq c d hcd hns
   exact ⟨⟨h.cls e, h.classStrictlyBetween_of_between hce hed hnce hned⟩⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` is densely ordered** — this is `QuotientDenselyOrdered` read at the quotient, which is
 exactly what it was stated pointwise in order to supply. -/
 theorem denselyOrdered_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
@@ -872,6 +879,7 @@ theorem denselyOrdered_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDense
       lt_trans hxb (h.lt_of_classStrictlyBetween hB).2⟩
   exact ⟨⟨h.cls e, hbet⟩, ⟨hae, hnae⟩, ⟨heb, hneb⟩⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` has no least element** — there is always a further class between `c` and the given one,
 because a class strictly inside `(c,d)` is inequivalent to `c`. -/
 theorem noMinOrder_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
@@ -888,6 +896,7 @@ theorem noMinOrder_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOr
   obtain ⟨hcx, hxa⟩ := h.classStrictlyBetween_of_between hce hea hnce hnea x hx
   exact ⟨hcx, lt_trans hxa had⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` has no greatest element** — the mirror of `noMinOrder_classBetween`. -/
 theorem noMaxOrder_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOrdered M ε)
     (c d : M.carrier) : NoMaxOrder (h.ClassBetween c d) := by
@@ -1938,7 +1947,7 @@ is all `γ₁` needs to be: its class structure is a one-point structure, so `γ
 of a one-point structure, and it lies in `G` because the class lies inside `(c,d) ⊆ (a,b)`.
 -/
 theorem exists_singleton_class_between (D1 : DoetsD1 sig M) (D2 : DoetsD2 sig M)
-    (h : IsConvexEquiv M (epsDense sig k)) {c d : M.carrier} (hcd : c < d)
+    (_h : IsConvexEquiv M (epsDense sig k)) {c d : M.carrier} (hcd : c < d)
     (hns : ¬ SimDense sig k M c d) :
     ∃ e₁ : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d e₁ ∧
       Subsingleton (contempClassStructure sig M (epsDense sig k) e₁).carrier := by
@@ -1987,7 +1996,7 @@ points, since `E ⊆ (c',d')` by `hI`; `kEquiv_openSub_restrictSet` (Layer 12) i
 and `kEquiv_of_shared_nf` then replaces the class by the family's representative of its colour —
 Reynolds' *"for any `E ∈ I`, `M | E ≡ₖ N_γ` for one of the `γ`'s in `G`"*.
 -/
-theorem kEquiv_classBlock (D1 : DoetsD1 sig M) (h : IsConvexEquiv M (epsDense sig k))
+theorem kEquiv_classBlock (_D1 : DoetsD1 sig M) (h : IsConvexEquiv M (epsDense sig k))
     {a b c d c' d' : M.carrier} (hac : a ≤ c) (hdb : d ≤ b)
     (hI : ∀ y : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d y ↔ (c' < y ∧ y < d'))
     (N : NormalForm sig k 0 → OrderedMonadicStructure sig)
@@ -2052,7 +2061,7 @@ theorem goodDense_unionClasses (sig : MonadicSignature) [Fintype sig.preds]
       (gammaBetween sig k (epsDense sig k) M a b).card ≤
         (gammaBetween sig k (epsDense sig k) M a' b').card)
     {c d : M.carrier} (hac : a ≤ c) (hcd : c < d) (hdb : d ≤ b)
-    (hns : ¬ SimDense sig k M c d) {c' d' : M.carrier} (hc'd' : c' < d')
+    (hns : ¬ SimDense sig k M c d) {c' d' : M.carrier} (_hc'd' : c' < d')
     (hI : ∀ e : M.carrier, ClassStrictlyBetween M (epsDense sig k) c d e ↔ (c' < e ∧ e < d')) :
     goodDense sig k (M.openSubinterval sig c' d') := by
   classical

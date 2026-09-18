@@ -160,6 +160,7 @@ noncomputable def regionValuation (f : ι → D) (placedVal : ι → Atom → Pr
     (gapVal : Set ι × Set ι → Atom → Prop) (c : Set ι × Set ι) (p : Atom) : Prop :=
   if h : IsPlacedCode f c then placedVal h.choose p else gapVal c p
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- **Readback at a placed code.** The only property of `regionValuation` the truth lemma uses. -/
 theorem regionValuation_placed {f : ι → D} (hf : Function.Injective f)

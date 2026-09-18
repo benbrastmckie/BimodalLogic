@@ -575,6 +575,7 @@ theorem not_classBeginsAtGapStart {ε : MonadicFormula sig 2} (hε : IsContempEq
   obtain ⟨r, hsr, hrw, hnr⟩ := hk s hsw
   exact hnr (hIcc r hsr.le (le_trans hrw.le hwu))
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Reynolds 1992, printed p.178**: *"`B` holds in `s`'s class"* — with `s` itself as the witness
 that the class begins with a point satisfying `R ∧ K⁻(¬R)`. -/
 theorem classBeginsAtGapStart_of_contemp {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)

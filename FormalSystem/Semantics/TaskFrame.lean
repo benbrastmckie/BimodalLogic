@@ -1524,6 +1524,7 @@ theorem forward_comp_of_permissive {W : Type} {R : W → D → W → Prop}
       exact neg_nonneg.mp (hx_eq ▸ hx)
     · exact Or.inr (hwu.trans huv)
 
+omit [Nontrivial D] in
 /--
 *Compositionality* for a permissive relation, as the biconditional field of record.
 
@@ -1534,6 +1535,7 @@ theorem comp_of_permissive {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Compositional R :=
   comp_of (interpolates_of_permissive hR) (forward_comp_of_permissive hR)
 
+omit [Nontrivial D] in
 /--
 *Limit* for a permissive relation over a discrete duration type.
 
@@ -1547,6 +1549,7 @@ theorem limit_of_permissive [SuccOrder D] [NoMaxOrder D] {W : Type} {R : W → D
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w :=
   limit_of_succOrder fun w u h => by rw [hR] at h; simpa [eq_comm] using h
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 Every nonempty fiber or segment of a permissive relation is the whole carrier or a singleton.
@@ -1587,6 +1590,7 @@ theorem univ_or_singleton_of_permissive {W : Type} {R : W → D → W → Prop}
           rw [Seg, Fib.permissive_ne hR w hx, Fib.permissive_ne hR v (by simpa using hy),
             Set.inter_self])
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 *Saturation* for a permissive relation: its nonempty fibers and segments are each the whole
@@ -1639,6 +1643,7 @@ theorem limit_of_eq {W : Type} {R : W → D → W → Prop}
   obtain ⟨y, _, hR'⟩ := h x₀ hx₀
   exact ((hR w y u).mp hR').symm
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 *Saturation* for an equality relation: every fiber is a singleton and every segment is an

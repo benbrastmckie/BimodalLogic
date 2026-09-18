@@ -458,6 +458,7 @@ theorem contemp_of_mem_class_interval (hε : IsContempEquivDenseOn ε C) [InStru
     rw [max_eq_left hxy] at h₂
     exact hequiv.trans hy (hε.convex M y z x h₁ h₂ (hequiv.trans (hequiv.symm hy) hx))
 
+omit [IsDualClosed C] in
 /-- **`I` is all in one `∼_N`-class** — printed p.182.
 
 Two survivors of the designated class `I` are `∼_N`-equivalent. -/
@@ -545,6 +546,7 @@ inferred point-adjacency from Lemma 4 directly and concluded the opposite; that 
 not go through, and the source of the missing premise is Lemma 6's first clause, which
 `IsBadIntervalSurgery.interior` already supplies at every point of `Q₀`. -/
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` has no last point**: a class-mate of `t` strictly above any given point of the class.
 
 `R` holds at every point of `Q₀` (`endsInGapOnRight_of_mem`), and `ρ`'s second conjunct is
@@ -556,6 +558,7 @@ theorem exists_contemp_gt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
     exists_contemp_gt hε M (endsInGapOnRight_of_mem hS (hS.mem_of_contemp_base hε hx))
   exact ⟨w, hxw, contemp_trans hε M hx hcw⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` has no first point** — the mirror of `exists_contemp_gt_of_mem`, through
 `endsInGapOnLeft_of_mem` and `λ`'s second conjunct (`exists_contemp_lt`). -/
 theorem exists_contemp_lt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
@@ -572,6 +575,7 @@ theorem countable_surgeredStructure (M : OrderedMonadicStructure sig)
     Countable (surgeredStructure M ε Q t).carrier :=
   Subtype.countable
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`N` is densely ordered when `M` is** — printed p.181's *"the substructure of `M` whose
 domain is just `Q⁻ ∪ I ∪ Q⁺`"*, shown dense.
 
@@ -707,6 +711,7 @@ theorem reynolds_lemma9_exists_after (hε : IsContempEquivDenseOn ε C) [InStruc
   refine ⟨y.val, hty, fun hQ => hny ?_⟩
   exact surgeredContempEquiv_of_base hε ((hε.equiv M).refl t) (y.property.resolve_left (· hQ))
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 omit h_surj in
 /-- **A non-bad point above `t`** — the input Lemma 6's third clause needs, extracted from
 `Q⁺` being non-empty by maximality of `Q₀`. -/
@@ -937,10 +942,10 @@ omit [IsDualClosed C] [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- The bad-connected component is a bad interval: non-empty, bad throughout, convex, and
 saturated. All four are read straight off `Btw`'s case structure. -/
 theorem badComp_isBadInterval (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
-    (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
-    (h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
+    (_h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {ε : MonadicFormula sig 2} (_hε : IsContempEquivDenseOn ε C)
+    (M : OrderedMonadicStructure sig) [InStructureClass C M] (_h_prior_U : SemanticPriorU M atomMap)
+    (_h_prior_S : SemanticPriorS M atomMap) {t : M.carrier} (ht : EndsInGapOnRight M ε t) :
     IsBadInterval M ε (badComp M ε t) := by
   refine ⟨⟨t, fun q hq => ?_⟩, fun x hx => hx x (btw_self t x),
     fun a b c hab hbc ha hc q hq => ?_, fun a x ha hsat q hq => ?_⟩

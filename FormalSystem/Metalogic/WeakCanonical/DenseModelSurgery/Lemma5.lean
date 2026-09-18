@@ -499,6 +499,7 @@ section First
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — the first proof paragraph.**
 
 > *Choose a point `t` in this former class in which `B` holds. `B` holds in the whole of a class if
@@ -592,6 +593,7 @@ theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
     obtain ⟨r, hsr, hrw, hBr⟩ := hkw s hsw
     exact hnBq r hsr (lt_of_lt_of_le hrw (le_trans hwu hub.le)) hBr
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — first statement.**
 
 > *If a temporal formula holds somewhere in one `∼`-class in a maximal interval of `R`, then it

@@ -171,6 +171,7 @@ and every one of the three properties *holds*. The obstruction is precisely that
 coordinate has room the second coordinate's steps can never cross.
 -/
 
+omit [AddCommGroup α] [IsOrderedAddMonoid α] in
 /--
 **`α ×ₗ ℤ` is not successor-Archimedean.** For `a < b` in `α`, the points `(a, 0)` and `(b, 0)`
 are related by `≤`, yet no finite number of `succ` steps — which only ever advance the second
@@ -196,6 +197,7 @@ theorem not_isSuccArchimedean [Nontrivial α] : ¬ IsSuccArchimedean (α ×ₗ �
   simp only [ofLex_toLex] at hcontra
   exact absurd hcontra (ne_of_lt hab)
 
+omit [AddCommGroup α] [IsOrderedAddMonoid α] in
 /-- The `PredOrder` mirror of `not_isSuccArchimedean`. -/
 theorem not_isPredArchimedean [Nontrivial α] : ¬ IsPredArchimedean (α ×ₗ ℤ) := by
   intro h

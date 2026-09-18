@@ -822,6 +822,7 @@ theorem afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempE
   obtain ⟨v, hvc, hvt, hnv⟩ := ht
   exact ⟨v, contemp_trans hε M (contemp_symm hε M htu) hvc, lt_of_lt_of_le hvt hle, hnv⟩
 
+omit [IsDualClosed C] in
 /-- **`¬C` is downward closed in a class** — *"`C` will be false for a while at the beginning of
 each class"* (printed p.180). The contrapositive of `afterNotHoldsInClass_of_le`. -/
 theorem not_afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
@@ -1045,6 +1046,7 @@ structure ClassInteriorToBadInterval (M : OrderedMonadicStructure sig)
   /-- The `L` half of *"both `R` and `L` hold throughout"*. -/
   lThroughout : ∀ q : M.carrier, a ≤ q → q ≤ b → EndsInGapOnLeft M ε q
 
+omit [IsDualClosed C] in
 /-- **The gap-crossing contradiction, up to `s` and bounded** — the past-directed mirror of
 `false_of_holds_throughout_class_from_bounded`, on Prior-S and `λ`. No printed source: Reynolds
 writes only *"Similarly at the end"*. -/

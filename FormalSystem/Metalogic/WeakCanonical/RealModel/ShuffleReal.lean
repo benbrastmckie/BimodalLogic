@@ -214,6 +214,7 @@ theorem doets_lemma_1_5 (k : Nat) {I J : Type} [LinearOrder I] [LinearOrder J]
     KEquiv sig k (orderedSum sig I m) (orderedSum sig J m') :=
   kEquiv_orderedSum_of_kEquiv_colour k m m' hcol
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **`Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`** — Reynolds 1992, §8, printed p.188.
 

@@ -261,6 +261,7 @@ variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2} {Q : M.ca
 theorem badPoint (hS : IsBadIntervalSurgery M ε Q t) {u : M.carrier} (hu : Q u) :
     IsBadPoint M ε u := hS.isBad.bad u hu
 
+omit [IsDualClosed C] in
 /-- **A whole `∼`-class of a point of `Q₀` lies inside `Q₀`** — *"`I` be any one of its
 `∼`-classes"* read as a containment.
 
@@ -276,6 +277,7 @@ theorem mem_of_contemp (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEqui
   · exact le_trans (le_min hint.toR.left_lt.le haq.le) hr₁
   · exact le_trans hr₂ (max_le hint.toR.lt_right.le hqb.le)
 
+omit [IsDualClosed C] in
 /-- **`I ⊆ Q₀`** at the designated class. -/
 theorem mem_of_contemp_base (hS : IsBadIntervalSurgery M ε Q t) (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     {q : M.carrier} (h : ContempEquivDense M ε t q) : Q q :=
@@ -709,6 +711,7 @@ theorem classInteriorToBadInterval_dual {a p b : M.carrier}
   lThroughout := fun q h₁ h₂ =>
     (endsInGapOnLeft_dual (M := M) ε q).mpr (h.toR.rThroughout q h₂ h₁)
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The surgery set-up transports to the dual.**
 
 Every clause is its own mirror: *"non-empty"* is unchanged, *"`R ∨ L` throughout"* is
@@ -728,6 +731,7 @@ theorem isBadIntervalSurgery_dual (hS : IsBadIntervalSurgery M ε Q t) :
     obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
     exact ⟨d b, d a, hub, hau, classInteriorToBadInterval_dual hint⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The induction hypotheses transport across the mirror.**
 
 An `N`-versus-`M` agreement at `C` becomes an `N'`-versus-`dual M` agreement at `swapUS C`, where

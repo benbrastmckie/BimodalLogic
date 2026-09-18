@@ -356,6 +356,7 @@ this costs **nothing** in gate strength: `untlGuards` is already a row of `regio
 consuming it adds no obligation that sub-phase 7.3 did not already carry.
 -/
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- A known time whose rank reaches a non-placed point's region is placed strictly above it.
 The converse of `branchRank_lt_cutIndex`, in the contrapositive form the witness leaf needs. -/
@@ -368,6 +369,7 @@ theorem lt_of_cutIndex_le_branchRank (hV : branchOrderValid b ord = true)
   · exact absurd (isPlacedCode_of_eq heq) hr
   · exact hgt
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- The mirror: a known time whose rank falls short of a non-placed point's region is placed
 strictly below it. -/
