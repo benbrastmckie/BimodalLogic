@@ -772,8 +772,6 @@ def MutationType.toJson : MutationType → String
   | .removeLeftConjunctAtOccurrence i => "\"remove_left_conjunct_at_" ++ Nat.repr i ++ "\""
   | .removeRightConjunctAtOccurrence i => "\"remove_right_conjunct_at_" ++ Nat.repr i ++ "\""
 
-private def natToString (n : Nat) : String := Nat.repr n
-
 /--
 Produce a JSON string for the mutation_detail field.
 
@@ -1063,26 +1061,6 @@ def writeYieldSummary (stats : ContrastiveBatchStats) (path : System.FilePath) :
     ++ ", \"conjunct_removal\": " ++ toString stats.conjunctRemovalCount
     ++ "}}"
   handle.putStrLn json
-
-/--
-Run the contrastive pair generation pipeline over a pre-labeled corpus.
-
-Takes a list of labeled formulas (e.g., from c5/c7 corpus), generates
-contrastive pairs, writes them to JSONL, and exports yield statistics
-to a separate JSON summary file.
--/
-def runBatchContrastive (labeledFormulas : List LabeledFormula)
-    (outputPath : System.FilePath)
-    (summaryPath : System.FilePath) : IO Unit := do
-  IO.println s!"Running batch contrastive on {labeledFormulas.length} labeled formulas..."
-  let pairs ← generateBatchContrastive labeledFormulas
-  let stats := computeContrastiveStats (pairs.length +
-      (pairs.filter (·.mutatedLabel == .timeout)).length) pairs
-  writeContrastiveJSONL pairs outputPath
-  writeYieldSummary stats summaryPath
-  printContrastiveStats stats
-  IO.println s!"Output written to: {outputPath}"
-  IO.println s!"Summary written to: {summaryPath}"
 
 end FormalSystem.Automation.ContrastiveGeneratorMain
 
