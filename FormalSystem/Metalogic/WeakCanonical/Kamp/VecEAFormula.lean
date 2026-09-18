@@ -206,10 +206,6 @@ def VBracketFormula.holds {sig : MonadicSignature}
 def VBracketFormula.toVEF (v : VBracketFormula) : VEF :=
   { patterns := v.disjuncts.map (fun ⟨n, bf⟩ => ⟨n, bf.toIntervalPattern⟩) }
 
-/-- Convert a `VEF` to a `VBracketFormula`. -/
-def VEF.toVBracketFormula (v : VEF) : VBracketFormula :=
-  { disjuncts := v.patterns.map (fun ⟨n, ip⟩ => ⟨n, ip.toBracketFormula⟩) }
-
 /-- The semantics of `VBracketFormula` agrees with `VEF` via conversion. -/
 theorem VBracketFormula.holds_iff_vef_holds {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
