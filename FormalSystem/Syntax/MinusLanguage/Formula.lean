@@ -28,7 +28,8 @@ substance of the backward conservativity bridge in
 - `MinusFormula.neg`, `top`, `and`, `or`, `iff`: derived Boolean operators
 - `MinusFormula.somePast` (P), `MinusFormula.someFuture` (F): derived existential temporal operators
 - `MinusFormula.always` (△): `Hφ ∧ φ ∧ Gφ`, mirroring `Formula.always`
-- `MinusFormula.reflectTime`: the past/future interchange used by TM⁻'s **TR** rule
+- `MinusFormula.reflectTime`: the L⁻ time reflection `φ⟨P|F⟩` used by TM⁻'s **TR** rule, the
+  analogue of `Formula.reflectTime`
 
 ## Main Results
 
@@ -132,11 +133,12 @@ is what makes the CO axiom's translation line up with `Formula.co` without reass
 def always (φ : MinusFormula) : MinusFormula := φ.allPast.and (φ.and φ.allFuture)
 
 /--
-Interchange the two universal temporal operators `H` and `G` throughout a formula.
+The L⁻ time reflection: interchange the two universal temporal operators `H` and `G`
+throughout a formula, recursing into `□`.
 
-This is the L⁻-side analogue of `Formula.reflectTime` and is what TM⁻'s **TR** rule
-("if `⊢ φ` then `⊢ φ⟨P|F⟩`") transforms by. Note that on the L side the corresponding
-operation swaps the *primitive* `untl`/`snce`; the commutation of the two is
+This is the L⁻-side analogue of `Formula.reflectTime` (the paper's `φ⟨S|U⟩`) and is what
+TM⁻'s **TR** rule ("if `⊢ φ` then `⊢ φ⟨P|F⟩`") transforms by. Note that on the L side the
+corresponding operation swaps the *primitive* `untl`/`snce`; the commutation of the two is
 `MinusLanguage.tr_reflectTime`.
 -/
 def reflectTime : MinusFormula → MinusFormula

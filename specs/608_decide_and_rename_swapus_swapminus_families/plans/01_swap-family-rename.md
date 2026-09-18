@@ -155,7 +155,7 @@ missed or over-matched. Investigate before building.
 
 ---
 
-### Phase 2: Classified prose pass [NOT STARTED]
+### Phase 2: Classified prose pass [IN PROGRESS]
 
 **Goal**: Reword every docstring or comment where the token substitution produced a wrong or
 self-contradictory contrast, so that L⁻ time reflection and L time reflection are distinguished by

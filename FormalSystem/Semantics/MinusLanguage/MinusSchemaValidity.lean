@@ -32,7 +32,7 @@ association is checked by elaboration against `MinusLanguage/Axioms.lean`'s own 
   via `DurationClassification.isLeast_pos_succ_zero`.
 - `dn_valid_of_denselyOrdered` — **Lemma C**: if `F.Duration` is densely ordered, DN is true
   everywhere.
-- `reflectTime_df_valid_of_predOrder` — **the past-dual of Lemma B**: `reflectTime (Axiom.df φ)` —
+- `reflectTime_df_valid_of_predOrder` — **the past-dual of Lemma B**: `(Axiom.df φ).reflectTime` —
   `(Gφ ∧ φ ∧ P⊤) → P(Gφ)` — is true everywhere under `[PredOrder F.Duration]`.
 
 ## References
@@ -143,7 +143,7 @@ private theorem isGreatest_neg_pred_zero {D : Type} [AddCommGroup D] [LinearOrde
   ⟨Order.pred_lt (0 : D), fun _ hy => Order.le_pred_of_lt hy⟩
 
 /--
-**The past-dual of Lemma B.** Under `[PredOrder F.Duration]`, `reflectTime (Axiom.df φ)` — which
+**The past-dual of Lemma B.** Under `[PredOrder F.Duration]`, `(Axiom.df φ).reflectTime` — which
 unfolds to `(Gφ ∧ φ ∧ P⊤) → P(Gφ)`, the `H`/`G` and `F`/`P` interchange of DF — is true at every
 model, history and time.
 

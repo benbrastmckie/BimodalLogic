@@ -89,8 +89,9 @@ namespace one for one:
   `¬∀¬ ↔ ∃` step
 - `always_iff` — `△φ`, from `and_iff` together with `past_iff` and `future_iff`
 
-`truth_swap` — the order-reversal transfer lemma: truth on `F.swap` is truth on `F` of the swapped
-formula.
+`truth_swap` — the order-reversal transfer lemma: truth on `F.swap` is truth on `F` of the
+time-reflected formula `φ.reflectTime`. The `swap` in its name is the frame operation
+`MinusFrame.swap` (the paper's `F⁻`), not a formula operation.
 
 ## References
 
@@ -289,12 +290,13 @@ end MinusFrameTruth
 
 /--
 **Order-reversal transfer.** Truth on the reversed frame is truth on the original frame of the
-swapped formula.
+time-reflected formula `φ.reflectTime`. This is the L⁻ analogue of the paper's
+`lem:temporal-duality`; the `swap` in the name is `MinusFrame.swap`, the order reversal.
 
 Six cases, each immediate: the atom and bot clauses do not mention the order, `imp` and `box` are
-congruences, and the two temporal clauses trade places exactly as `MinusFormula.reflectTime` does. This
-one lemma is what makes the time-reflection rule sound on the native class, replacing the
-swap-strengthened simultaneous induction used in the task-frame soundness proof.
+congruences, and the two temporal clauses trade places exactly as `MinusFormula.reflectTime`
+does. This one lemma is what makes the time-reflection rule sound on the native class, replacing
+the swap-strengthened simultaneous induction used in the task-frame soundness proof.
 -/
 theorem truth_swap (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point) (φ : MinusFormula) :
     MinusFrameTruth F.swap V w φ ↔ MinusFrameTruth F V w φ.reflectTime := by

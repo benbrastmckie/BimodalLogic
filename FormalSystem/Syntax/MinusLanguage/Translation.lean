@@ -23,8 +23,9 @@ name. For `allPast`/`allFuture` the target is L's *derived* `Formula.allPast`/
 
 ## Main Results
 
-- `tr_reflectTime` : `tr (reflectTime φ) = reflectTime (tr φ)` — **the load-bearing lemma**, without
-  which the TR case of `FormalSystem.Metalogic.Conservativity.translate` does not typecheck
+- `tr_reflectTime` : `tr φ.reflectTime = (tr φ).reflectTime`, `MinusFormula.reflectTime` on the
+  left and `Formula.reflectTime` on the right — **the load-bearing lemma**, without which the TR
+  case of `FormalSystem.Metalogic.Conservativity.translate` does not typecheck
 - `tr_ne_untl`, `tr_ne_snce` : `tr` never produces a top-level `untl`/`snce`
 - `tr_injective` : `tr` is injective
 - push-through equations for the derived Boolean and modal operators
@@ -133,16 +134,17 @@ theorem tr_somePast_ne (φ : MinusFormula) :
 /-! ### The commutation lemma for TM⁻'s TR rule -/
 
 /--
-**The load-bearing lemma**: `tr` intertwines the L⁻-side past/future interchange `reflectTime` with
-the L-side one `reflectTime`.
+**The load-bearing lemma**: `tr` intertwines the L⁻ time reflection `MinusFormula.reflectTime`
+with the L time reflection `Formula.reflectTime`.
 
-TM⁻'s **TR** rule concludes `⊢ reflectTime φ` from `⊢ φ`; L's `DerivationTree.time_reflection`
-concludes `⊢ reflectTime ψ` from `⊢ ψ`. Without this equation the TR case of
-`FormalSystem.Metalogic.Conservativity.translate` does not typecheck at all.
+TM⁻'s **TR** rule concludes `⊢ φ.reflectTime` (`MinusFormula`) from `⊢ φ`; L's
+`DerivationTree.time_reflection` concludes `⊢ ψ.reflectTime` (`Formula`) from `⊢ ψ`. Without this
+equation the TR case of `FormalSystem.Metalogic.Conservativity.translate` does not typecheck at
+all.
 
 The `allPast`/`allFuture` cases are the only real content: they need
 `Formula.reflect_time_all_past` / `Formula.reflect_time_all_future`, since on the L side
-`allPast`/`allFuture` are abbreviations over `snce`/`untl` and `reflectTime` acts on the
+`allPast`/`allFuture` are abbreviations over `snce`/`untl` and `Formula.reflectTime` acts on the
 primitives.
 -/
 theorem tr_reflectTime (φ : MinusFormula) : tr φ.reflectTime = (tr φ).reflectTime := by
