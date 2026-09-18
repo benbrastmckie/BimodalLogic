@@ -1,7 +1,7 @@
 # Implementation Plan: Linter-Suppression Reason Requirement
 
 - **Task**: 619 - require_reasons_for_linter_suppressions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: 585 (burn-down; complete — its recorded Ultraproduct measurement is an input here)
 - **Research Inputs**: specs/619_require_reasons_for_linter_suppressions/reports/01_linter-suppression-reasons.md

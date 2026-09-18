@@ -1,7 +1,7 @@
 # Implementation Plan: Close the world-history reach-through residue
 
 - **Task**: 615 - Close world history reach-through residue
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None (the three predecessor tasks in this topic are archived and complete)
 - **Research Inputs**: specs/615_close_world_history_reach_through_residue/reports/01_close-reach-through-residue.md

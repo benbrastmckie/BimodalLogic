@@ -1,5 +1,5 @@
 ---
-next_project_number: 620
+next_project_number: 621
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 620
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,605,606,607,608,610,614,615,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,605,606,607,608,610,614,615,619,620 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,540,560,564,565,567,570,600,616,617 | 298,464,502,559,563,568,588,597,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -109,6 +109,10 @@ next_project_number: 620
 
 605 [NOT STARTED] — Reconcile the Burgess/Xu axiom provenance and add the paper's...
 
+### Reference Book
+
+620 [NOT STARTED] — Develop a Lean 4 appendix for typst/BimodalReference.typ,...
+
 ### Codebase Cleanup
 
 588 [IMPLEMENTING] — Triage the 1,029 declarations C17 reports as having zero...
@@ -124,6 +128,16 @@ next_project_number: 620
 615 [IMPLEMENTING] — Close the residue of the possible-world index retarget. The...
 
 ## Tasks
+
+### 620. Lean appendix bimodal reference
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: reference-book
+- **Dependencies**: None
+
+**Description**: Develop a Lean 4 appendix for typst/BimodalReference.typ, building up from the basics. It should cover what Lean is, types vs Props and dependent types, propositions-as-types and proof terms, inductive types (with Formula and DerivationTree as running examples), structures and classes, tactic proofs vs term proofs, Mathlib conventions, and lake and project layout. Then go all the way to reading the FormalSystem/ source that the book's formal claims point to. None exists yet: the only back-matter appendix is chapters/ax-machine-appendix.typ. Add it as a new chapters/ax-lean-appendix.typ included in the back matter, and cross-reference it from the introduction. Seed material: the existing markdown Lean guides. The main candidate is docs/user-guide/tutorial.md ('Logos Tutorial': installing Lean, formula construction, derivation trees, Type vs Prop), plus docs/user-guide/quickstart.md, docs/development/LEAN_STYLE_GUIDE.md and docs/reference/tactic-reference.md. Also check /home/benjamin/Projects/Logos/Verification/ (notes/, docs/) for any Lean basics note. Research should confirm which document the user meant and inventory what can be reused versus what is out of date. Consult /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ only where it helps. Its chapters/01-introduction.typ section 'Lean Implementation' (sec-lean-implementation) and the leansrc cross-reference convention are relevant; it has no Lean-from-basics primer. Every Lean snippet must compile against the current toolchain and cite real declarations. Follow the typst/SYNC-MAP.md and typst-sync-check.sh conventions
+
+---
 
 ### 619. Require reasons for linter suppressions
 - **Effort**: medium
