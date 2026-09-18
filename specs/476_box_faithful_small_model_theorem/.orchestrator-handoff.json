@@ -1,0 +1,33 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "task_number": 476,
+  "phase": "research",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md",
+      "summary": "Literature gate: target fmp over IntPresentation is refuted (machine-checked counterexample psi = box(p or Fp or Pp) and box(p -> not Pp)); GKWZ 5.30/5.32 confirm no fmp; decidability still holds via quasimodel/ShiftSet witness-family route."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean",
+      "summary": "Sorry-free Lean probe fmp_false: the Assembly fmp hypothesis is false for every candidate list."
+    }
+  ],
+  "user_decision": {
+    "question": "The literature gate refuted task 476's target: the fmp hypothesis over IntPresentation candidates is provably false for every cands (machine-checked). The task text forbids agents re-describing it. How should task 476 proceed?",
+    "options": [
+      "Abandon 476 as refuted and create a new task for the quasimodel / ShiftSet witness-family route to Decidable (ValidZTime phi)",
+      "Keep 476 open and let the user rewrite its description to the quasimodel route",
+      "Abandon 476 with no follow-up task"
+    ],
+    "recommended": "Abandon 476 as refuted and create a new task for the quasimodel / ShiftSet witness-family route to Decidable (ValidZTime phi)",
+    "blocking": true
+  },
+  "summary": "Target refuted: fmp over IntPresentation is false for every cands (Probe476.fmp_false, sorry-free). Decidability of ValidZTime still expected via quasimodel/ShiftSet witness-family route; blocking user decision on re-scope.",
+  "next_action": "user_decision",
+  "blockers": []
+}

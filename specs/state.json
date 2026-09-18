@@ -1194,7 +1194,7 @@
     {
       "project_number": 476,
       "project_name": "box_faithful_small_model_theorem",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "low",
@@ -1206,9 +1206,16 @@
         "FormalSystem/Metalogic/Decidability/IntPresentation.lean"
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-09-18T19:16:49Z",
-      "artifacts": [],
-      "session_id": "sess_1789758953_24f7fc_476"
+      "last_updated": "2026-09-18T19:43:24Z",
+      "artifacts": [
+        {
+          "path": "specs/476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md",
+          "type": "report",
+          "summary": "Literature gate: target fmp over IntPresentation is refuted (machine-checked counterexample psi = box(p or Fp or Pp) and box(p -> not Pp)); GKWZ 5.30/5.32 confirm no fmp; decidability still holds via quasimodel/ShiftSet witness-family route."
+        }
+      ],
+      "session_id": "sess_1789758953_24f7fc",
+      "next_artifact_number": 2
     },
     {
       "project_number": 481,

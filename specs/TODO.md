@@ -67,7 +67,7 @@ next_project_number: 623
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction...
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
-476 [RESEARCHING] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
+476 [RESEARCHED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 
 ### Documentation
@@ -871,10 +871,11 @@ POINTER REFRESH (2026-09-16 reorganization): `MintBound.lean` was split into the
 
 ### 476. Box faithful small model theorem
 - **Effort**: large
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md]
 
 **Description**: THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 
