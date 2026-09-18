@@ -65,10 +65,10 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - Time-shift invariance (MF, and TF through it): Uses `WorldHistory.timeShift` and
   `TimeShift.timeShift_preserves_truth` to relate truth at different times. TF is not a
   separate `Axiom` constructor — it is reached by time reflection, so its validity rides on
-  `mf_reflect_time_valid`, the swap half of the same schema. See **The time-shift consumer set**
+  `mf_reflect_time_valid`, the reflection half of the same schema. See **The time-shift consumer set**
   below for the full enumeration and why its size is load-bearing.
 - Classical logic helpers for conjunction extraction (TL)
-- Derivation-indexed induction for temporal duality soundness
+- Derivation-indexed induction for time-reflection soundness
 
 **Totality Parameterization**:
 Validity and semantic consequence quantify over the frame's world histories
@@ -148,11 +148,11 @@ The induction over `DerivationTree` is written **once**, in `soundness_in`, at a
 4. **`necessitation`**: If `⊨ φ` then `⊨ □φ` (follows from S5 universal accessibility)
 5. **`temporal_necessitation`**: If `⊨ φ` then `⊨ Gφ` (follows from temporal quantification)
 6. **`time_reflection`**: `derivable_valid_and_reflect_time_validIn`, the companion recursion that
-   proves validity and swap-validity simultaneously, again at an arbitrary `fc`
+   proves validity and reflection-validity simultaneously, again at an arbitrary `fc`
 7. **`weakening`**: Monotonicity of semantic consequence
 
 The `time_reflection` case is where the four per-class proofs used to diverge, each reaching
-for its own swap-validity recursion — one in `SoundnessLemmas/FrameClassVariants.lean` for
+for its own reflection-validity recursion — one in `SoundnessLemmas/FrameClassVariants.lean` for
 `.Base`, one there for `.ZTime`, a third for `.Dense` in a dense-specific module of its own,
 and a fourth written out in this file for `.RTime`. Carrying the class as a parameter rather
 than baking it into the statement collapses all four into the one arm above, and the four
@@ -199,7 +199,7 @@ in the tree.
 * [architecture.md](../../docs/user-guide/architecture.md) - Soundness specification
 * [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
 * [Validity.lean](../../Semantics/Validity.lean) - Semantic validity
-* [SoundnessLemmas.lean](./SoundnessLemmas.lean) - Axiom validity and swap preservation
+* [SoundnessLemmas.lean](./SoundnessLemmas.lean) - Axiom validity and reflection preservation
 * JPL Paper `cor:perpetuity-valid` - Perpetuity principle validity proofs
 
 ## Tags
@@ -1109,11 +1109,11 @@ theorem sep_valid (φ : Formula) :
 /-- **Sep⁻ validity**: the temporal dual of `sep_valid`, needed by `time_reflection`.
 
 Unlike the Prior pair -- where `Formula.reflectTime` carries `prior_U_gap` onto `prior_S_gap`
-definitionally (verified by `rfl`), so those two lemmas cover each other's swap -- Sep is not
-self-covering under the swap: `(sep φ).reflectTime` exchanges `K⁺`/`K⁻` and `U`/`S`, and the
+definitionally (verified by `rfl`), so those two lemmas cover each other's reflection -- Sep is not
+self-covering under the reflection: `(sep φ).reflectTime` exchanges `K⁺`/`K⁻` and `U`/`S`, and the
 result is NOT an instance of `Axiom.sep`. It is therefore a genuinely separate semantic fact and
 gets its own lemma, matching the tree's `<axiom>_reflect_time_valid` convention in
-`SoundnessLemmas/FrameClassVariants.lean` (none bundled with its unswapped partner).
+`SoundnessLemmas/FrameClassVariants.lean` (none bundled with its unreflected partner).
 
 Stated separately from `sep_valid` rather than folded into a conjunction with it: the two are
 consumed at different call sites (`axiom_validIn_min`'s `sep` arm and
@@ -1124,7 +1124,7 @@ The proof reuses the forward order-theoretic core rather than mirroring it by ha
 `SoundnessLemmas.sep_order_mirror` is `SoundnessLemmas.sep_order` instantiated at `Dᵒᵈ`, so the
 ~130-line nested-interval argument is written once. (The Prior pair took the opposite route
 because its dualised body is only ~25 lines.) `reflectTime` distributes through `imp` and `bot`,
-hence through `neg` and `and`, exchanges `U`/`S` and fixes `top`; so the swapped Sep is the exact
+hence through `neg` and `and`, exchanges `U`/`S` and fixes `top`; so the reflected Sep is the exact
 past mirror with `ψ := φ.reflectTime`, and a single `simp only` performs the whole unfolding.
 See `sep_valid` for the separability input and the recorded fidelity deviation from Reynolds. -/
 theorem sep_reflect_time_valid (φ : Formula) :
@@ -1180,9 +1180,9 @@ theorem sep_reflect_time_valid (φ : Formula) :
       by_contra hc
       exact hns ⟨s, hus, fun w huw hws hw => hc ⟨w, huw, hws, hw⟩⟩
 
-/-- **Density axiom swap-validity**: the swap of `GGφ → Gφ` is `HHφ → Hφ`, valid on every densely
+/-- **Density axiom reflection-validity**: the reflection of `GGφ → Gφ` is `HHφ → Hφ`, valid on every densely
 ordered frame. Given a `¬φ` point `s < t`, density supplies `r` with `s < r < t`, and `r` then
-witnesses `P(¬Hφ)`, which is what the swapped antecedent forbids. -/
+witnesses `P(¬Hφ)`, which is what the reflected antecedent forbids. -/
 theorem density_reflect_time_valid (φ : Formula) :
     ValidDense ((φ.allFuture.allFuture.imp φ.allFuture).reflectTime) := by
   intro F _ M τ t
@@ -1191,7 +1191,7 @@ theorem density_reflect_time_valid (φ : Formula) :
   obtain ⟨r, hsr, hrt⟩ := exists_between hst
   exact h_HH r hrt s hsr
 
-/-- **Dense-indicator axiom swap-validity**: the swap of `¬U(⊤,⊥)` is `¬S(⊤,⊥)`, the past density
+/-- **Dense-indicator axiom reflection-validity**: the reflection of `¬U(⊤,⊥)` is `¬S(⊤,⊥)`, the past density
 indicator. `S(⊤,⊥)` at `t` needs an `s < t` with `(s,t)` empty, which density refutes. -/
 theorem dense_indicator_reflect_time_valid :
     ValidDense ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg.reflectTime) := by
@@ -1244,7 +1244,7 @@ theorem axiom_validIn_min {φ : Formula} (ax : Axiom φ) : ValidIn ax.minFrameCl
   | prior_U_gap a0 => exact prior_U_gap_valid a0
   | sep a0 => exact sep_valid a0
 
-/-- Uniform per-axiom swap-validity at the axiom's own minimum frame class. -/
+/-- Uniform per-axiom reflection-validity at the axiom's own minimum frame class. -/
 theorem axiom_reflect_time_validIn_min {φ : Formula} (ax : Axiom φ) :
     ValidIn ax.minFrameClass φ.reflectTime := by
   by_cases hbase : ax.minFrameClass ≤ FrameClass.Base
@@ -1269,7 +1269,7 @@ theorem axiom_reflect_time_validIn {φ : Formula} {fc : FrameClass} (ax : Axiom 
     (h_fc : ax.minFrameClass ≤ fc) : ValidIn fc φ.reflectTime :=
   ValidIn.mono h_fc (axiom_reflect_time_validIn_min ax)
 
-/-- The uniform combined valid/swap-valid recursion at an arbitrary `fc`. -/
+/-- The uniform combined valid/reflection-valid recursion at an arbitrary `fc`. -/
 theorem derivable_valid_and_reflect_time_validIn {fc : FrameClass} {φ : Formula}
     (d : DerivationTree fc [] φ) : ValidIn fc φ ∧ ValidIn fc φ.reflectTime := by
   match d with
@@ -1502,7 +1502,7 @@ valid on all discrete frames.
 
 **Note on time_reflection**: this is `soundness_validIn` at `.ZTime`. The
 `time_reflection` case is handled inside `derivable_valid_and_reflect_time_validIn`, which carries
-validity and swap-validity together at an arbitrary `fc`; the discrete swap facts it needs
+validity and reflection-validity together at an arbitrary `fc`; the discrete reflection facts it needs
 (Prior-SZ for Prior-UZ and vice versa, `z1_past` for `z1`) enter through
 `axiom_reflect_time_validIn_min`'s discrete arms.
 -/

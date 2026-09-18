@@ -13,7 +13,7 @@ import Mathlib.Order.SuccPred.Archimedean
 /-!
 # Soundness Lemmas for General and Discrete Frame Classes
 
-Per-axiom validity and swap-validity for the base frame class, stated without density
+Per-axiom validity and reflection-validity for the base frame class, stated without density
 constraints, together with the discrete-specific axioms. The two `Per-Axiom` sections below
 hold the individual schema lemmas; `axiom_reflect_time_valid_general` dispatches over all 29 axiom
 constructors and delegates to them.
@@ -25,26 +25,26 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
 open FormalSystem.Semantics
 
-/-! ## Per-Axiom Swap Validity
+/-! ## Per-Axiom Reflection Validity
 
-Validity of swapped axioms, which is what lets temporal-duality soundness run by derivation
-induction instead of formula induction: "valid φ → valid φ.swap" is false for arbitrary
-formulas, but each axiom *schema* remains valid after swap, and that is all a derivation needs.
+Validity of reflected axioms, which is what lets time-reflection soundness run by derivation
+induction instead of formula induction: "valid φ → valid φ.reflectTime" is false for arbitrary
+formulas, but each axiom *schema* remains valid after reflection, and that is all a derivation needs.
 
-**Self-Dual Axioms**: MT, M4, MB have the property that swap preserves their schema form.
+**Self-Dual Axioms**: MT, M4, MB have the property that reflection preserves their schema form.
 **Transformed Axiom**: MF transforms to a different but still valid formula.
 
 These are the delegation targets of `axiom_reflect_time_valid_general`'s one-line arms below.
 -/
 
 /--
-Modal T axiom (MT) is self-dual under swap: `box φ -> φ` swaps to `box(swap φ) -> swap φ`.
+Modal T axiom (MT) is self-dual under reflection: `box φ -> φ` reflects to `box(reflectTime φ) -> reflectTime φ`.
 
-Since `box(swap φ) -> swap φ` is still an instance of MT (just with swapped subformula),
+Since `box(reflectTime φ) -> reflectTime φ` is still an instance of MT (just with reflected subformula),
 and MT is valid, this is immediate.
 
-**Proof**: The swapped form is `(box φ.reflectTime).imp φ.reflectTime`.
-At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t) specifically.
+**Proof**: The reflected form is `(box φ.reflectTime).imp φ.reflectTime`.
+At any triple (M, τ, t), if box φ.reflectTime holds, then φ.reflectTime holds at (M, τ, t) specifically.
 -/
 theorem mt_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.box φ).imp φ).reflectTime := by
@@ -54,13 +54,13 @@ theorem mt_reflect_time_valid (φ : Formula) :
   exact h_box_swap_φ τ
 
 /--
-Modal 4 axiom (M4) is self-dual under swap: `box φ -> box box φ` swaps to `box(swap φ) -> box
-box(swap φ)`.
+Modal 4 axiom (M4) is self-dual under reflection: `box φ -> box box φ` reflects to `box(reflectTime φ) -> box
+box(reflectTime φ)`.
 
-This is still M4, just applied to swapped formula.
+This is still M4, just applied to reflected formula.
 
-**Proof**: If φ.swap holds at all world histories at t, then
-"φ.swap holds at all world histories at t"
+**Proof**: If φ.reflectTime holds at all world histories at t, then
+"φ.reflectTime holds at all world histories at t"
 holds at all world histories at t (trivially, as this is a global property).
 -/
 theorem m4_reflect_time_valid (φ : Formula) :
@@ -71,12 +71,12 @@ theorem m4_reflect_time_valid (φ : Formula) :
   exact h_box_swap_φ ρ
 
 /--
-Modal B axiom (MB) is self-dual under swap: `φ -> box diamond φ` swaps to `swap φ -> box
-diamond(swap φ)`.
+Modal B axiom (MB) is self-dual under reflection: `φ -> box diamond φ` reflects to `reflectTime φ -> box
+diamond(reflectTime φ)`.
 
-This is still MB, just applied to swapped formula.
+This is still MB, just applied to reflected formula.
 
-**Proof**: If φ.swap holds at (M, τ, t), then for any world history σ at t, diamond(φ.swap) holds
+**Proof**: If φ.reflectTime holds at (M, τ, t), then for any world history σ at t, diamond(φ.reflectTime) holds
 at σ.
 The diamond means "there exists some world history where it holds". We have τ witnessing this.
 -/
@@ -89,11 +89,11 @@ theorem mb_reflect_time_valid (φ : Formula) :
   exact h_all_not τ h_swap_φ
 
 /--
-Modal-Future axiom (MF) swaps to a valid formula: `box φ -> box Fφ` swaps to `box(swap φ) -> box
-P(swap φ)`.
+Modal-Future axiom (MF) reflects to a valid formula: `box φ -> box Fφ` reflects to `box(reflectTime φ) -> box
+P(reflectTime φ)`.
 
-The swapped form states: if swap φ holds at all world histories at time t, then for all total
-histories σ at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s < t in σ).
+The reflected form states: if reflectTime φ holds at all world histories at time t, then for all total
+histories σ at time t, P(reflectTime φ) holds at σ (i.e., reflectTime φ holds at all times s < t in σ).
 
 **Proof Strategy**: Use `timeShift_preserves_truth` to bridge from time t to time s < t.
 The shifted history `σ.timeShift (s - t)` is again a `WorldHistory`; no shift-closure side
@@ -109,7 +109,7 @@ theorem mf_reflect_time_valid (φ : Formula) :
   have h_at_shifted := h_box_swap (σ.timeShift (s - t))
   exact (TimeShift.timeShift_preserves_truth M σ t s φ.reflectTime).mp h_at_shifted
 
-/-- Propositional K swaps to itself at swapped subformulas: swap distributes over `imp`, and
+/-- Propositional K reflects to itself at reflected subformulas: reflection distributes over `imp`, and
 `TruthAt` at an implication is definitionally an arrow, so this is the K combinator. -/
 theorem prop_k_reflect_time_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
@@ -117,14 +117,14 @@ theorem prop_k_reflect_time_valid (φ ψ χ : Formula) :
   intro F _ M τ t h_abc h_ab h_a
   exact h_abc h_a (h_ab h_a)
 
-/-- Propositional S swaps to itself at swapped subformulas: the K combinator of the pair. -/
+/-- Propositional S reflects to itself at reflected subformulas: the K combinator of the pair. -/
 theorem prop_s_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base (φ.imp (ψ.imp φ)).reflectTime := by
   intro F _ M τ t h_a _
   exact h_a
 
-/-- Modal 5 collapse swaps to itself: `◇□φ → □φ` is self-dual under the temporal swap, since the
-swap touches no modal operator. The `box`/`diamond` pair is the S5 collapse over world histories,
+/-- Modal 5 collapse reflects to itself: `◇□φ → □φ` is self-dual under time reflection, since the
+reflection touches no modal operator. The `box`/`diamond` pair is the S5 collapse over world histories,
 which does not mention time at all. -/
 theorem modal_5_collapse_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.box.diamond.imp φ.box).reflectTime := by
@@ -138,15 +138,15 @@ theorem modal_5_collapse_reflect_time_valid (φ : Formula) :
   have h_psi_at_sigma := h_box_at_rho σ
   exact h_not_psi h_psi_at_sigma
 
-/-- Ex falso swaps to itself at a swapped consequent. -/
+/-- Ex falso reflects to itself at a reflected consequent. -/
 theorem ex_falso_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (Formula.bot.imp φ).reflectTime := by
   intro F _ M τ t h_bot
   exfalso
   exact h_bot
 
-/-- Peirce's law swaps to itself at swapped subformulas; the proof is the classical case split on
-whether the swapped antecedent holds. -/
+/-- Peirce's law reflects to itself at reflected subformulas; the proof is the classical case split on
+whether the reflected antecedent holds. -/
 theorem peirce_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base (((φ.imp ψ).imp φ).imp φ).reflectTime := by
   intro F _ M τ t
@@ -161,14 +161,14 @@ theorem peirce_reflect_time_valid (φ ψ : Formula) :
       exact h h_psi
     exact h_peirce h_imp
 
-/-- Modal K distribution swaps to itself: the swap fixes `□`, so this is K at swapped
+/-- Modal K distribution reflects to itself: the reflection fixes `□`, so this is K at reflected
 subformulas. -/
 theorem modal_k_dist_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((φ.imp ψ).box.imp (φ.box.imp ψ.box)).reflectTime := by
   intro F _ M τ t h_box_imp h_box_psi σ
   exact h_box_imp σ (h_box_psi σ)
 
-/-- Future seriality swaps to past seriality: `⊤ → F⊤` becomes `⊤ → P⊤`, witnessed by
+/-- Future seriality reflects to past seriality: `⊤ → F⊤` becomes `⊤ → P⊤`, witnessed by
 `exists_lt`. -/
 theorem serial_future_reflect_time_valid :
     ValidIn FrameClass.Base
@@ -181,13 +181,13 @@ theorem serial_future_reflect_time_valid :
   obtain ⟨s, hst⟩ := exists_lt t
   exact ⟨s, hst, fun h => h⟩
 
-/-- The paper's TS, `F⊤`, swaps to `P⊤`: `serial_future_reflect_time_valid` at the trivially true
+/-- The paper's TS, `F⊤`, reflects to `P⊤`: `serial_future_reflect_time_valid` at the trivially true
 antecedent. -/
 theorem serial_future_paper_reflect_time_valid :
     ValidIn FrameClass.Base (Formula.someFuture (Formula.bot.imp Formula.bot)).reflectTime :=
   fun F hF M τ t => (serial_future_reflect_time_valid F hF M τ t) id
 
-/-- Past seriality swaps to future seriality: `⊤ → P⊤` becomes `⊤ → F⊤`, witnessed by
+/-- Past seriality reflects to future seriality: `⊤ → P⊤` becomes `⊤ → F⊤`, witnessed by
 `exists_gt`. -/
 theorem serial_past_reflect_time_valid :
     ValidIn FrameClass.Base
@@ -200,7 +200,7 @@ theorem serial_past_reflect_time_valid :
   obtain ⟨s, hts⟩ := exists_gt t
   exact ⟨s, hts, fun h => h⟩
 
-/-- Left monotonicity of Until under `G` swaps to left monotonicity of Since under `H`:
+/-- Left monotonicity of Until under `G` reflects to left monotonicity of Since under `H`:
 `H(φ' → χ') → (φ' S ψ') → (χ' S ψ')`. -/
 theorem left_mono_until_G_reflect_time_valid (φ χ ψ : Formula) :
     ValidIn FrameClass.Base
@@ -211,7 +211,7 @@ theorem left_mono_until_G_reflect_time_valid (φ χ ψ : Formula) :
   intro h_H ⟨s, hst, h_ψs, h_guard⟩
   exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
 
-/-- Left monotonicity of Since under `H` swaps to left monotonicity of Until under `G`:
+/-- Left monotonicity of Since under `H` reflects to left monotonicity of Until under `G`:
 `G(φ' → χ') → (φ' U ψ') → (χ' U ψ')`. -/
 theorem left_mono_since_H_reflect_time_valid (φ χ ψ : Formula) :
     ValidIn FrameClass.Base
@@ -222,7 +222,7 @@ theorem left_mono_since_H_reflect_time_valid (φ χ ψ : Formula) :
   intro h_G ⟨s, hts, h_ψs, h_guard⟩
   exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
 
-/-- Right monotonicity of Until swaps to right monotonicity of Since:
+/-- Right monotonicity of Until reflects to right monotonicity of Since:
 `H(φ' → ψ') → (χ' S φ') → (χ' S ψ')`. -/
 theorem right_mono_until_reflect_time_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
@@ -233,7 +233,7 @@ theorem right_mono_until_reflect_time_valid (φ ψ χ : Formula) :
   intro h_H ⟨s, hst, h_φs, h_guard⟩
   exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
 
-/-- Right monotonicity of Since swaps to right monotonicity of Until:
+/-- Right monotonicity of Since reflects to right monotonicity of Until:
 `G(φ' → ψ') → (χ' U φ') → (χ' U ψ')`. -/
 theorem right_mono_since_reflect_time_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
@@ -244,7 +244,7 @@ theorem right_mono_since_reflect_time_valid (φ ψ χ : Formula) :
   intro h_G ⟨s, hts, h_φs, h_guard⟩
   exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
 
-/-- The future connection axiom `φ → G(Pφ)` swaps to `φ' → H(Fφ')`: at any past `s < t`, the
+/-- The future connection axiom `φ → G(Pφ)` reflects to `φ' → H(Fφ')`: at any past `s < t`, the
 present `t` is itself the required future witness. -/
 theorem connect_future_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.imp (φ.somePast.allFuture)).reflectTime := by
@@ -254,7 +254,7 @@ theorem connect_future_reflect_time_valid (φ : Formula) :
   intro h_φt s hst
   exact ⟨t, hst, h_φt⟩
 
-/-- The past connection axiom `φ → H(Fφ)` swaps to `φ' → G(Pφ')`, mirror of
+/-- The past connection axiom `φ → H(Fφ)` reflects to `φ' → G(Pφ')`, mirror of
 `connect_future_reflect_time_valid`. -/
 theorem connect_past_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.imp (φ.someFuture.allPast)).reflectTime := by
@@ -264,7 +264,7 @@ theorem connect_past_reflect_time_valid (φ : Formula) :
   intro h_φt s hts
   exact ⟨t, hts, h_φt⟩
 
-/-- Until enrichment swaps to Since enrichment: `p' ∧ (φ' S ψ') → φ' S (ψ' ∧ (φ' U p'))`. The
+/-- Until enrichment reflects to Since enrichment: `p' ∧ (φ' S ψ') → φ' S (ψ' ∧ (φ' U p'))`. The
 Since-witness `s < t` also witnesses the inner Until, with `t` itself carrying `p'`. -/
 theorem enrichment_until_reflect_time_valid (φ ψ p : Formula) :
     ValidIn FrameClass.Base (Formula.and p (Formula.untl φ ψ) |>.imp
@@ -282,7 +282,7 @@ theorem enrichment_until_reflect_time_valid (φ ψ p : Formula) :
   intro h_imp
   exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
 
-/-- Since enrichment swaps to Until enrichment, mirror of `enrichment_until_reflect_time_valid`. -/
+/-- Since enrichment reflects to Until enrichment, mirror of `enrichment_until_reflect_time_valid`. -/
 theorem enrichment_since_reflect_time_valid (φ ψ p : Formula) :
     ValidIn FrameClass.Base (Formula.and p (Formula.snce φ ψ) |>.imp
         (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))).reflectTime := by
@@ -299,7 +299,7 @@ theorem enrichment_since_reflect_time_valid (φ ψ p : Formula) :
   intro h_imp
   exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
 
-/-- Until self-accumulation swaps to Since self-accumulation:
+/-- Until self-accumulation reflects to Since self-accumulation:
 `(φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')`. The original witness is reused, and each guard point
 inherits the Since from the same witness. -/
 theorem self_accum_until_reflect_time_valid (φ ψ : Formula) :
@@ -312,7 +312,7 @@ theorem self_accum_until_reflect_time_valid (φ ψ : Formula) :
   exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
       h_guard q hsq (lt_trans hqr hrt)⟩
 
-/-- Since self-accumulation swaps to Until self-accumulation, mirror of
+/-- Since self-accumulation reflects to Until self-accumulation, mirror of
 `self_accum_until_reflect_time_valid`. -/
 theorem self_accum_since_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((Formula.snce φ ψ).imp
@@ -324,7 +324,7 @@ theorem self_accum_since_reflect_time_valid (φ ψ : Formula) :
   exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
       h_guard q (lt_trans htr hrq) hqs⟩
 
-/-- Until absorption swaps to Since absorption:
+/-- Until absorption reflects to Since absorption:
 `(φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')`. The inner witness `s₂` serves as the outer one, and the
 guard obligation splits by trichotomy at the intermediate point `s₁`. -/
 theorem absorb_until_reflect_time_valid (φ ψ : Formula) :
@@ -347,7 +347,7 @@ theorem absorb_until_reflect_time_valid (φ ψ : Formula) :
   · exact h_eq ▸ h_φs₁
   · exact h_guard₁ q h_gt hqt
 
-/-- Since absorption swaps to Until absorption, mirror of `absorb_until_reflect_time_valid`. -/
+/-- Since absorption reflects to Until absorption, mirror of `absorb_until_reflect_time_valid`. -/
 theorem absorb_since_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base
       ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp
@@ -368,7 +368,7 @@ theorem absorb_since_reflect_time_valid (φ ψ : Formula) :
   · exact h_eq ▸ h_φs₁
   · exact h_guard₂ q h_gt hqs₂
 
-/-- Until linearity swaps to Since linearity. Two Since-witnesses `s₁` and `s₂` below `t` are
+/-- Until linearity reflects to Since linearity. Two Since-witnesses `s₁` and `s₂` below `t` are
 ordered by `lt_trichotomy`, and each of the three cases selects the matching disjunct. -/
 theorem linear_until_reflect_time_valid (φ ψ χ θ : Formula) :
     ValidIn FrameClass.Base (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
@@ -405,7 +405,7 @@ theorem linear_until_reflect_time_valid (φ ψ χ θ : Formula) :
     · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
     · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
 
-/-- Since linearity swaps to Until linearity, mirror of `linear_until_reflect_time_valid`. -/
+/-- Since linearity reflects to Until linearity, mirror of `linear_until_reflect_time_valid`. -/
 theorem linear_since_reflect_time_valid (φ ψ χ θ : Formula) :
     ValidIn FrameClass.Base (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
         |>.imp (Formula.or
@@ -441,7 +441,7 @@ theorem linear_since_reflect_time_valid (φ ψ χ θ : Formula) :
     · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
     · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
 
-/-- `(φ U ψ) → Fψ` swaps to `(φ' S ψ') → Pψ'`: the Since-witness is the past witness, and the
+/-- `(φ U ψ) → Fψ` reflects to `(φ' S ψ') → Pψ'`: the Since-witness is the past witness, and the
 guard is discarded. -/
 theorem until_F_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((Formula.untl φ ψ).imp (Formula.someFuture ψ)).reflectTime := by
@@ -451,7 +451,7 @@ theorem until_F_reflect_time_valid (φ ψ : Formula) :
   intro ⟨s, hst, h_ψs, _h_guard⟩
   exact ⟨s, hst, h_ψs⟩
 
-/-- `(φ S ψ) → Pψ` swaps to `(φ' U ψ') → Fψ'`, mirror of `until_F_reflect_time_valid`. -/
+/-- `(φ S ψ) → Pψ` reflects to `(φ' U ψ') → Fψ'`, mirror of `until_F_reflect_time_valid`. -/
 theorem since_P_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((Formula.snce φ ψ).imp (Formula.somePast ψ)).reflectTime := by
   intro F _ M τ t
@@ -460,7 +460,7 @@ theorem since_P_reflect_time_valid (φ ψ : Formula) :
   intro ⟨s, hts, h_ψs, _h_guard⟩
   exact ⟨s, hts, h_ψs⟩
 
-/-- Forward discreteness symmetry swaps to the backward direction. From a predecessor gap `r < t`
+/-- Forward discreteness symmetry reflects to the backward direction. From a predecessor gap `r < t`
 the reflected point `t + (t - r)` is a successor gap, since a point strictly inside the
 reflected interval maps back into `(r, t)`. -/
 theorem discrete_symm_fwd_reflect_time_valid :
@@ -478,7 +478,7 @@ theorem discrete_symm_fwd_reflect_time_valid :
     exact sub_lt_sub_right hcs _
   exact h_guard (c - (t - r)) h1 h2
 
-/-- Backward discreteness symmetry swaps to the forward direction, mirror of
+/-- Backward discreteness symmetry reflects to the forward direction, mirror of
 `discrete_symm_fwd_reflect_time_valid`. -/
 theorem discrete_symm_bwd_reflect_time_valid :
     ValidIn FrameClass.Base ((Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
@@ -495,7 +495,7 @@ theorem discrete_symm_bwd_reflect_time_valid :
       _ = s := by rw [add_comm, sub_add_cancel]
   exact h_guard (c + (s - t)) h1 h2
 
-/-- Forward gap propagation swaps to past propagation: a gap of width `t - r` at `t` translates to
+/-- Forward gap propagation reflects to past propagation: a gap of width `t - r` at `t` translates to
 a gap of the same width at every `u`, by shifting the witness. -/
 theorem discrete_propagate_fwd_reflect_time_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
@@ -515,7 +515,7 @@ theorem discrete_propagate_fwd_reflect_time_valid :
     exact add_lt_add_left hcu (t - u)
   exact h_guard (c + (t - u)) h1 h2
 
-/-- Backward gap propagation swaps to future propagation, mirror of
+/-- Backward gap propagation reflects to future propagation, mirror of
 `discrete_propagate_fwd_reflect_time_valid`. -/
 theorem discrete_propagate_bwd_reflect_time_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
@@ -534,7 +534,7 @@ theorem discrete_propagate_bwd_reflect_time_valid :
     exact add_lt_add_left hcu (t - u)
   exact h_guard (c + (t - u)) h1 h2
 
-/-- Gap necessity swaps to itself with `U` exchanged for `S`: the gap witness is a fact about the
+/-- Gap necessity reflects to itself with `U` exchanged for `S`: the gap witness is a fact about the
 duration order, so it transfers unchanged to every world history. -/
 theorem discrete_box_necessity_reflect_time_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
@@ -544,10 +544,10 @@ theorem discrete_box_necessity_reflect_time_valid :
   intro ⟨r, hrt, _h_top_r, h_guard⟩ σ
   exact ⟨r, hrt, fun h => h, h_guard⟩
 
-/-! ## Per-Axiom Validity of the Unswapped Schemas
+/-! ## Per-Axiom Validity of the Unreflected Schemas
 
-Validity of the unswapped axiom schemas at `FrameClass.Base`. The swap arms below consume these
-at swapped arguments, which is why the temporal-linearity and until/since pairs come in both
+Validity of the unreflected axiom schemas at `FrameClass.Base`. The reflection arms below consume these
+at reflected arguments, which is why the temporal-linearity and until/since pairs come in both
 future- and past-directed forms.
 -/
 
@@ -654,7 +654,7 @@ theorem P_since_equiv_validIn (φ : Formula) :
 
 All base axioms (those with `minFrameClass = .Base`) are valid on any linear order,
 without requiring `[DenselyOrdered ↑D]` or `[Nontrivial D]`. These general versions
-remove frame constraints from the swap/locally-valid lemmas, enabling soundness proofs
+remove frame constraints from the reflection/locally-valid lemmas, enabling soundness proofs
 for the base frame class without unnecessary hypotheses.
 
 These are what the `time_reflection` case of `soundness`, `soundness_ztime_valid` and
@@ -687,12 +687,12 @@ theorem validIn_imp_or_assoc {fc : FrameClass} {A X Y Z : Formula}
   simp only [Truth.or_iff] at h' ⊢
   tauto
 
-/-- All base axiom swaps are valid without DenselyOrdered constraints.
+/-- All base axiom reflections are valid without DenselyOrdered constraints.
 Base axioms (minFrameClass = .Base) don't need density or discreteness.
 
 **Why `FrameClass.Base` is essential here**: `h_fc : h.minFrameClass ≤ FrameClass.Base` is the
 admissibility *split* that makes the conclusion hold with no order-theoretic instances on `D`.
-Widening it to an arbitrary `fc` would admit axioms whose swap-validity genuinely needs those
+Widening it to an arbitrary `fc` would admit axioms whose reflection-validity genuinely needs those
 instances. The wider case is `Metalogic/Soundness.lean`'s `axiom_reflect_time_validIn_min`, which
 does that split once for every class and consumes this lemma as its `.Base` branch. -/
 theorem axiom_reflect_time_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
@@ -739,7 +739,7 @@ theorem axiom_reflect_time_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
 
 /-! ## Discrete Frame Versions
 
-The following theorems provide validity and swap-validity for all axioms on discrete
+The following theorems provide validity and reflection-validity for all axioms on discrete
 frames. Prior-UZ/SZ have `minFrameClass = .ZTime` and are only valid on discrete orders,
 so these theorems handle all axioms including Prior-UZ/SZ. The discrete frame class
 constraint `h.minFrameClass ≤ .ZTime` structurally excludes the density axiom.

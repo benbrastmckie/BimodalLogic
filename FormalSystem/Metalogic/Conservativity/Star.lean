@@ -23,7 +23,7 @@ semantics is `def:BLstar-semantics` over points `(τ, x, v⃗)`
 | Module | Contents |
 |--------|----------|
 | `Conservativity/Star/StarPasting.lean` | `star_truth_congr_agreeFrom`, `star_truth_congr_agreeUpTo`, `star_paste_valid`, `star_untl_paste_valid` — the two L⋆ purity congruences and the PS / US validities the pasting schemata consume |
-| `Conservativity/Star/StarAxiomValidity.lean` | `starAxiom_validIn_min`, `starAxiom_reflect_time_validIn_min` — validity and swap-validity of every `StarAxiom` constructor, one arm each and no wildcard |
+| `Conservativity/Star/StarAxiomValidity.lean` | `starAxiom_validIn_min`, `starAxiom_reflect_time_validIn_min` — validity and reflection-validity of every `StarAxiom` constructor, one arm each and no wildcard |
 | `Conservativity/Star/StarSoundness.lean` | `star_derivable_valid_and_reflect_time_validIn`, `star_soundness_validIn`, the four rows, `star_not_derivable_nil_bot` — soundness of TM⋆ at every class, TR discharged semantically |
 | `Conservativity/Star/Forward.lean` | `forward_star`, `starDerivable_ofFormula_iff` — TM⋆ conservative over TM in both directions, unconditionally; `starConservative_of_plusComplete` and `plusIncomplete_of_starNonconservative` — the conditional pair over TM⁺ |
 

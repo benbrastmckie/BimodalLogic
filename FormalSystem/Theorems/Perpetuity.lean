@@ -51,8 +51,8 @@ The perpetuity principles follow from the TM axiom system, particularly:
 
 Key helper lemmas:
 - `modal5`: `◇φ → □◇φ` (S5 characteristic, derived from MB + diamond4)
-- `reflect_time_diamond`: Temporal swap distributes over diamond
-- `reflect_time_involution`: Temporal swap is involutive
+- `reflect_time_diamond`: Time reflection distributes over diamond
+- `reflect_time_involution`: Time reflection is involutive
 
 Note: `always φ = Hφ ∧ φ ∧ Gφ` (past, present, and future), so `△φ` covers all times.
 

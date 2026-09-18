@@ -988,7 +988,7 @@ For each formula in the input, adds `reflectTime φ` if it is different
 from `φ` (i.e., if the formula actually contains temporal operators).
 This provides a free 2x augmentation for formulas with temporal content.
 
-Note: Temporal duality preserves validity, so valid formulas produce valid duals.
+Note: Time reflection preserves validity, so valid formulas produce valid duals.
 Invalid formulas may or may not produce invalid duals.
 -/
 def enrichWithDuals (formulas : List Formula) : List Formula :=

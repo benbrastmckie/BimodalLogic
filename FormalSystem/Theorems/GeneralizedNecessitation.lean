@@ -113,7 +113,7 @@ to the future K distribution axiom.
 -/
 noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
     DerivationTree fc [] ((A.imp B).allPast.imp (A.allPast.imp B.allPast)) := by
-  -- Apply derived temp_k_dist to swapped formulas, already at `fc`
+  -- Apply derived temp_k_dist to reflected formulas, already at `fc`
   have fk_fc : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
                (A.reflectTime.allFuture.imp B.reflectTime.allFuture) :=
     tempKDistLocal A.reflectTime B.reflectTime
@@ -121,7 +121,7 @@ noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
   have td : DerivationTree fc [] ((A.reflectTime.imp B.reflectTime).allFuture.imp
                 (A.reflectTime.allFuture.imp B.reflectTime.allFuture)).reflectTime :=
     DerivationTree.time_reflection _ fk_fc
-  -- Simplify: swap(swap x) = x
+  -- Simplify: reflectTime(reflectTime x) = x
   simp only [Formula.reflect_time_all_future,
     Formula.reflectTime, Formula.reflect_time_involution] at td
   exact td

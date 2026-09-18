@@ -17,9 +17,9 @@ Property-based tests for Formula transformations and invariants.
 
 - Complexity is always positive
 - Double negation equivalence (structural)
-- Temporal swap involution
-- Temporal swap distributes over diamond
-- Temporal swap distributes over negation
+- Time reflection involution
+- Time reflection distributes over diamond
+- Time reflection distributes over negation
 
 ## Implementation Notes
 
@@ -61,12 +61,12 @@ Test: Complexity is always positive (100 test cases).
   maxSize := 50
 }
 
-/-! ## Temporal Swap Properties -/
+/-! ## Time Reflection Properties -/
 
 /-!
-Property: Temporal swap is an involution.
+Property: Time reflection is an involution.
 
-Swapping temporal operators twice gives the original formula.
+Reflecting time twice gives the original formula.
 This is proven as a theorem in Formula.lean, here we test it.
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
@@ -76,7 +76,7 @@ This is proven as a theorem in Formula.lean, here we test it.
 --   infer_instance
 
 /-!
-Test: Temporal swap involution (100 test cases).
+Test: Time reflection involution (100 test cases).
 -/
 #eval Testable.check (∀ φ : Formula, φ.reflectTime.reflectTime = φ) {
   numInst := 100,
@@ -84,9 +84,9 @@ Test: Temporal swap involution (100 test cases).
 }
 
 /-!
-Property: Temporal swap distributes over diamond.
+Property: Time reflection distributes over diamond.
 
-swap(◇φ) = ◇(swap φ)
+reflectTime(◇φ) = ◇(reflectTime φ)
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
@@ -95,7 +95,7 @@ swap(◇φ) = ◇(swap φ)
 --   infer_instance
 
 /-!
-Test: Temporal swap distributes over diamond (100 test cases).
+Test: Time reflection distributes over diamond (100 test cases).
 -/
 #eval Testable.check (∀ φ : Formula, φ.diamond.reflectTime = φ.reflectTime.diamond) {
   numInst := 100,
@@ -103,9 +103,9 @@ Test: Temporal swap distributes over diamond (100 test cases).
 }
 
 /-!
-Property: Temporal swap distributes over negation.
+Property: Time reflection distributes over negation.
 
-swap(¬φ) = ¬(swap φ)
+reflectTime(¬φ) = ¬(reflectTime φ)
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
@@ -114,7 +114,7 @@ swap(¬φ) = ¬(swap φ)
 --   infer_instance
 
 /-!
-Test: Temporal swap distributes over negation (100 test cases).
+Test: Time reflection distributes over negation (100 test cases).
 -/
 #eval Testable.check (∀ φ : Formula, φ.neg.reflectTime = φ.reflectTime.neg) {
   numInst := 100,

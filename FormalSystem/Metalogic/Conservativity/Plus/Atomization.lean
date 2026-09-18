@@ -27,8 +27,8 @@ module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_refle
 
 A TM schema instance over L⁺ then holds in `M` iff its L instance at the atomized parameters
 holds in `M.atomModel e`, which is the landed lemma applied on the same frame — so `fc.Sat` is
-inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_reflect_time_of_tm` its swap form via
-`atomize_reflectTime` (atomization commutes with time reflection up to swapping the encoding,
+inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_reflect_time_of_tm` its reflection form via
+`atomize_reflectTime` (atomization commutes with time reflection up to conjugating the encoding,
 `Encoding.reflectTime`).
 
 ## Main Definitions
@@ -210,7 +210,7 @@ theorem plusValidIn_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
       (axiom_validIn ax h F hF (M.atomModel e) τ t)
 
 /--
-**TM schema swap-soundness over L⁺.** If the atomization of `φ` **under the conjugated
+**TM schema reflection-soundness over L⁺.** If the atomization of `φ` **under the conjugated
 encoding** is a TM axiom instance admissible at `fc`, then `φ.reflectTime` is
 `PlusValidIn fc`: `axiom_reflect_time_validIn` on the atomized model, with `atomize_reflectTime`
 rewriting the target.
@@ -237,7 +237,7 @@ theorem plusValidIn_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : PlusFormu
       (soundness_validIn d F hF (M.atomModel e) τ t)
 
 /--
-**TM theorem swap-soundness over L⁺.** The derivation-taking form of `plusValidIn_reflect_time_of_tm`.
+**TM theorem reflection-soundness over L⁺.** The derivation-taking form of `plusValidIn_reflect_time_of_tm`.
 -/
 theorem plusValidIn_reflect_time_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
     (d : DerivationTree fc [] (atomize e.reflectTime φ)) : PlusValidIn fc φ.reflectTime :=

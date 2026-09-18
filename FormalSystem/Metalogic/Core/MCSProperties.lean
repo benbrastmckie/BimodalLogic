@@ -288,11 +288,11 @@ noncomputable def temporal4Past (φ : Formula) : ⊢ (φ.allPast.imp φ.allPast.
   -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
   have h1 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture) :=
     FormalSystem.Theorems.TemporalDerived.temporal4Derived ψ
-  -- Step 2: Apply time reflection to get: H(swap ψ) → HH(swap ψ)
+  -- Step 2: Apply time reflection to get: H(reflectTime ψ) → HH(reflectTime ψ)
   have h2 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture).reflectTime :=
     DerivationTree.time_reflection _ h1
-  -- Step 3: The result has type H(swap ψ) → HH(swap ψ) = Hφ → HHφ
-  -- since swap(swap φ) = φ by involution
+  -- Step 3: The result has type H(reflectTime ψ) → HH(reflectTime ψ) = Hφ → HHφ
+  -- since reflectTime(reflectTime φ) = φ by involution
   have h3 : (ψ.allFuture.imp ψ.allFuture.allFuture).reflectTime =
       φ.allPast.imp φ.allPast.allPast := by
     simp only [Formula.reflect_time_all_future, Formula.reflectTime]

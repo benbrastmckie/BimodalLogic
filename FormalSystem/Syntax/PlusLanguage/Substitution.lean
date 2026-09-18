@@ -37,7 +37,7 @@ missing piece for reasoning inside TM⁺ without rebuilding a `Theorems/` layer 
 ## Main Results
 
 - `substPlus_atom` — `substPlus PlusFormula.atom = ofFormula`
-- `substPlus_reflectTime` — the swap interaction, at the *shifted* substitution
+- `substPlus_reflectTime` — the reflection interaction, at the *shifted* substitution
   `reflectTime ∘ σ`; this is what makes the `time_reflection` case of the transfer close
 - `PlusAxiom.ofTMSubst` — every TM axiom instance is a TM⁺ axiom instance under `substPlus σ`
 - `PlusDerivationTree.ofTMSubst`, `plusDerivable_substPlus` — the transfer
@@ -121,7 +121,7 @@ example (σ : Atom → PlusFormula) (φ : Formula) :
 example (σ : Atom → PlusFormula) (φ : Formula) :
     substPlus σ (Formula.kPlus φ) = PlusFormula.kPlus (substPlus σ φ) := rfl
 
-/-! ## The swap interaction -/
+/-! ## The reflection interaction -/
 
 /--
 **Substitution and time reflection commute after shifting the substitution.**

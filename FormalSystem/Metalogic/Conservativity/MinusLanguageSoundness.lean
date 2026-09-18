@@ -414,19 +414,19 @@ two Archimedean instances being dropped here. It is proved instead by induction 
 
 The only genuinely new semantic content is `Semantics.MinusLanguage.MinusSchemaValidity`'s DF lemma
 (`df_valid_of_succOrder`) and its `PredOrder` past-dual (`reflectTime_df_valid_of_predOrder`),
-needed respectively for the `df` axiom leaf and for the `time_reflection` case's swap component.
+needed respectively for the `df` axiom leaf and for the `time_reflection` case's reflection component.
 Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any
 semantic argument at all**: `minus_derivable_valid_and_reflect_time_valid_zTimeSucc` re-derives each
-one (and its swap) proof-theoretically, by composing `minus_soundness_valid` with the `TR` rule
+one (and its reflection) proof-theoretically, by composing `minus_soundness_valid` with the `TR` rule
 itself (`⊢[Base] φ ⟹ ⊢[Base] φ.reflectTime`), never touching `MinusTruthAt` directly for those
 twelve. `dn`/`co` are eliminated structurally: `FrameClass.Dense` and `FrameClass.RTime` are each
 incomparable with `FrameClass.ZTime`, so their axiom leaves are unreachable under the `h_fc` side
 condition. -/
 
 /--
-Combined validity and swap-validity, on `[SuccOrder] [PredOrder]` frames (no Archimedean
+Combined validity and reflection-validity, on `[SuccOrder] [PredOrder]` frames (no Archimedean
 binders), for L⁻ theorems (empty-context derivations) at `FrameClass.ZTime`. The companion
-`minus_soundness_ztime_succ`'s `time_reflection` case needs exactly the swap half of this, as an
+`minus_soundness_ztime_succ`'s `time_reflection` case needs exactly the reflection half of this, as an
 external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_reflect_time_validIn`
 (the L sibling this parallels), but over L⁻'s own 15-constructor `Axiom` rather than L's 29, and
 without the `FrameClass` parameter, since the binder-weakened `.ZTime` frames this is stated
@@ -435,7 +435,7 @@ over are not a `FrameClass.Sat` variant.
 The `axiom` case's `by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base` split is the same
 device `Metalogic/Soundness.lean`'s `axiom_reflect_time_validIn_min` uses: it separates the twelve
 instance-free (`.Base`-classed)
-axioms — whose validity **and swap-validity** both come for free via `minus_soundness_valid`
+axioms — whose validity **and reflection-validity** both come for free via `minus_soundness_valid`
 composed with the `TR` proof rule — from the three that are not, without enumerating the twelve
 constructors by name.
 -/

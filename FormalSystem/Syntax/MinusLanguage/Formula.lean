@@ -138,7 +138,7 @@ throughout a formula, recursing into `□`.
 
 This is the L⁻-side analogue of `Formula.reflectTime` (the paper's `φ⟨S|U⟩`) and is what
 TM⁻'s **TR** rule ("if `⊢ φ` then `⊢ φ⟨P|F⟩`") transforms by. Note that on the L side the
-corresponding operation swaps the *primitive* `untl`/`snce`; the commutation of the two is
+corresponding operation exchanges the *primitive* `untl`/`snce`; the commutation of the two is
 `MinusLanguage.tr_reflectTime`.
 -/
 def reflectTime : MinusFormula → MinusFormula
@@ -176,18 +176,18 @@ operator without unfolding to primitives by hand. -/
 @[simp] theorem reflectTime_diamond (φ : MinusFormula) :
     φ.diamond.reflectTime = φ.reflectTime.diamond := rfl
 
-/-- `reflectTime` exchanges the existential past and future: `swap(Pφ) = F(swap φ)`. -/
+/-- `reflectTime` exchanges the existential past and future: `reflectTime(Pφ) = F(reflectTime φ)`. -/
 @[simp] theorem reflectTime_somePast (φ : MinusFormula) :
     φ.somePast.reflectTime = φ.reflectTime.someFuture := rfl
 
-/-- `reflectTime` exchanges the existential future and past: `swap(Fφ) = P(swap φ)`. -/
+/-- `reflectTime` exchanges the existential future and past: `reflectTime(Fφ) = P(reflectTime φ)`. -/
 @[simp] theorem reflectTime_someFuture (φ : MinusFormula) :
     φ.someFuture.reflectTime = φ.reflectTime.somePast := rfl
 
-/-- `reflectTime` fixes `△` up to the swap of its argument: `swap(△φ) = △(swap φ)`.
+/-- `reflectTime` fixes `△` up to reflecting its argument: `reflectTime(△φ) = △(reflectTime φ)`.
 
-`always φ = Hφ ∧ (φ ∧ Gφ)`, and swapping turns that into `Gφ' ∧ (φ' ∧ Hφ')` with
-`φ' = swap φ` — the same three conjuncts in the *reverse* order, so this is **not** `rfl`.
+`always φ = Hφ ∧ (φ ∧ Gφ)`, and reflecting turns that into `Gφ' ∧ (φ' ∧ Hφ')` with
+`φ' = reflectTime φ` — the same three conjuncts in the *reverse* order, so this is **not** `rfl`.
 It is nonetheless true because `△` is symmetric in H and G once the conjunction is
 reassociated; the statement below is therefore about `always` up to that reordering and is
 proved by the explicit unfolding. -/

@@ -583,7 +583,7 @@ From TF on `□◇φ`, derive `H□◇φ` via time reflection.
 -/
 def boxDiamondToPastBoxDiamond {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.diamond.box.imp (φ.diamond.box.allPast) := by
-  -- Apply TF to swapped temporal version
+  -- Apply TF to reflected temporal version
   have tf_swap : ⊢[fc] φ.diamond.box.reflectTime.imp
                     (φ.diamond.box.reflectTime.allFuture) :=
     boxDiamondToFutureBoxDiamond φ.reflectTime
@@ -591,7 +591,7 @@ def boxDiamondToPastBoxDiamond {fc : FrameClass} (φ : Formula) :
   have td : ⊢[fc] (φ.diamond.box.reflectTime.imp
                 φ.diamond.box.reflectTime.allFuture).reflectTime :=
     DerivationTree.time_reflection _ tf_swap
-  -- Simplify: swap(swap x) = x
+  -- Simplify: reflectTime(reflectTime x) = x
   simp only [Formula.reflectTime, Formula.reflect_time_all_future,
     Formula.reflect_time_involution] at td
   exact td
@@ -663,7 +663,7 @@ at all past times and A holds at all past times, then B must hold at all past ti
 -/
 noncomputable def pastKDistFromFuture {fc : FrameClass} (A B : Formula) :
     ⊢[fc] (A.imp B).allPast.imp (A.allPast.imp B.allPast) := by
-  -- Apply futureKDist to swapped formulas
+  -- Apply futureKDist to reflected formulas
   have fk : ⊢[fc] (A.reflectTime.imp B.reflectTime).allFuture.imp
                (A.reflectTime.allFuture.imp B.reflectTime.allFuture) :=
     futureKDist A.reflectTime B.reflectTime
@@ -671,7 +671,7 @@ noncomputable def pastKDistFromFuture {fc : FrameClass} (A B : Formula) :
   have td : ⊢[fc] ((A.reflectTime.imp B.reflectTime).allFuture.imp
                 (A.reflectTime.allFuture.imp B.reflectTime.allFuture)).reflectTime :=
     DerivationTree.time_reflection _ fk
-  -- Simplify: swap(swap x) = x
+  -- Simplify: reflectTime(reflectTime x) = x
   simp only [Formula.reflectTime, Formula.reflect_time_all_future,
     Formula.reflect_time_involution] at td
   exact td
@@ -710,7 +710,7 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
     temporalFutureDerived φ.diamond
   -- We can derive: □◇φ → H□◇φ from TR (time reflection on TF)
   have td : ⊢[fc] φ.diamond.box.imp φ.diamond.box.allPast := by
-    -- Apply TF to swapped temporal version
+    -- Apply TF to reflected temporal version
     have tf_swap : ⊢[fc] φ.diamond.box.reflectTime.imp
                       (φ.diamond.box.reflectTime.allFuture) :=
       temporalFutureDerived φ.diamond.reflectTime
@@ -718,7 +718,7 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
     have td_result : ⊢[fc] (φ.diamond.box.reflectTime.imp
                           φ.diamond.box.reflectTime.allFuture).reflectTime :=
       DerivationTree.time_reflection _ tf_swap
-    -- Simplify: swap(swap x) = x
+    -- Simplify: reflectTime(reflectTime x) = x
     simp only [Formula.reflectTime, Formula.reflect_time_all_future,
     Formula.reflect_time_involution] at td_result
     exact td_result
@@ -733,7 +733,7 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
     -- Apply MT to get □◇φ → ◇φ
     have mt : ⊢[fc] φ.diamond.box.imp φ.diamond := boxToPresent φ.diamond
     -- We need H(□◇φ → ◇φ) to apply past K distribution
-    -- Build this by applying temporal_k to the swapped formula, then swap back
+    -- Build this by applying temporal_k to the reflected formula, then reflect back
     have mt_swap : ⊢[fc] φ.diamond.box.reflectTime.imp φ.diamond.reflectTime :=
       boxToPresent φ.diamond.reflectTime
     have future_mt_swap : ⊢[fc] (φ.diamond.box.reflectTime.imp φ.diamond.reflectTime).allFuture :=
@@ -742,10 +742,10 @@ noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diam
       ⊢[fc] ((φ.diamond.box.reflectTime.imp φ.diamond.reflectTime).allFuture).reflectTime :=
       DerivationTree.time_reflection _ future_mt_swap
     -- Simplify using reflect_time_diamond and reflect_time_involution
-    -- The key: swap(G(...)) = H(swap(...)), and swap is involutive
-    -- swap(◇ψ) = ◇(swap ψ) by reflect_time_diamond
-    -- swap(□ψ) = □(swap ψ) similarly (box commutes with swap)
-    -- So: swap(G(□◇(swap φ) → ◇(swap φ))) = H(□◇φ → ◇φ)
+    -- The key: reflectTime(G(...)) = H(reflectTime(...)), and reflection is involutive
+    -- reflectTime(◇ψ) = ◇(reflectTime ψ) by reflect_time_diamond
+    -- reflectTime(□ψ) = □(reflectTime ψ) similarly (box commutes with reflection)
+    -- So: reflectTime(G(□◇(reflectTime φ) → ◇(reflectTime φ))) = H(□◇φ → ◇φ)
     have past_mt : ⊢[fc] (φ.diamond.box.imp φ.diamond).allPast := by
       -- Show the equality of formula structures
       show ⊢[fc] (φ.diamond.box.imp φ.diamond).allPast

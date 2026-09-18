@@ -40,7 +40,7 @@ widening, independent of the one `RecallFree` carries for `modal_future`.
 PS and US are **not** each other's duals. `reflectTime` fixes `⟐` and exchanges `untl`/`snce`,
 so the dual of PS is PS with the conjuncts exchanged (`star_paste_valid'`) and the dual of US is
 SS (`star_snce_paste_valid`). This is the same shape `Semantics/PlusLanguage/PlusPasting.lean` has, and for
-the same reason; both duals are proved here so that the `paste`/`untl_paste` swap arms of
+the same reason; both duals are proved here so that the `paste`/`untl_paste` reflection arms of
 `starAxiom_reflect_time_validIn_min` have a lemma to land on.
 
 ## Why this file lives here rather than under `Semantics/`

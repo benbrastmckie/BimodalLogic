@@ -396,7 +396,7 @@ theorem cValid_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e φ
   fun F K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
     (axiom_validIn ax h F trivial (K.atomModel e) τ t)
 
-/-- The swap form, via `atomize_reflectTime` at the conjugated encoding. -/
+/-- The reflection form, via `atomize_reflectTime` at the conjugated encoding. -/
 theorem cValid_reflect_time_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e.reflectTime φ))
     (h : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime :=
   fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
@@ -562,7 +562,7 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
 
 /-- **The temporal dual of every naive TM⁺ schema admissible at `.Base` is coarsely valid.** The
 six `⊡` arms need no separate argument: `reflectTime` fixes `⊡`, so each of their duals is an
-instance of the same schema at swapped parameters. -/
+instance of the same schema at reflected parameters. -/
 theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom.IsNaive ax)
     (hb : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime := by
   cases ax with

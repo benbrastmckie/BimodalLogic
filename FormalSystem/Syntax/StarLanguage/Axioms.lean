@@ -25,7 +25,7 @@ arbitrary `φ`, and that rule (`StarLanguage/Derivation.lean`, `stabNecessitatio
 what an embedding-only route cannot reach.
 
 **Fifty-two of the 53 are schematic without any new side condition.** Each was proved valid, and
-swap-valid, at arbitrary `StarFormula` metavariables — directly against `StarTruthAt`, never by
+reflection-valid, at arbitrary `StarFormula` metavariables — directly against `StarTruthAt`, never by
 transporting a TM⁺ instance and never by uniform substitution (see
 `Metalogic/Conservativity/Star/StarAxiomValidity.lean`).
 
@@ -94,7 +94,7 @@ free in `φ` (`store_atom` is its atomic case) needs a free-register predicate a
 lemma; register renaming needs a register substitution. Nothing in the metatheory built on this
 inductive consumes either.
 
-## Swap-closure — a stated invariant, checked constructor by constructor
+## Reflection-closure — a stated invariant, checked constructor by constructor
 
 `StarDerivationTree`'s `time_reflection` rule is discharged **semantically**
 (`Metalogic/Conservativity/Star/StarSoundness.lean`, the companion recursion), so the standing
@@ -126,7 +126,7 @@ same inductive*:
   * `discrete_propagate_fwd`, `discrete_propagate_bwd`, `discrete_box_necessity`,
     `dense_indicator`, `density`, `z1` — arms whose dual is **not** an instance of any
     constructor of this inductive, exactly as at the L level. Each has a named
-    `starValid_*_swap` lemma in `Conservativity/Star/StarAxiomValidity.lean`; the four closed
+    `starValid_*_reflect_time` lemma in `Conservativity/Star/StarAxiomValidity.lean`; the four closed
     ones transport along `ofPlus`, and `density`/`z1` are direct.
   * `prior_U_gap` ↔ `prior_S_gap` — a **dual pair**.
   * `sep` and `modal_future` — arms whose dual is again not a constructor instance:
@@ -140,7 +140,7 @@ same inductive*:
     across.
 
 Every arm is therefore accounted for; a constructor added later must extend this list or the
-swap dispatch lemma will not close.
+reflection dispatch lemma will not close.
 
 ## Frame classes
 
@@ -162,7 +162,7 @@ constructors: `StarAxiom.minFrameClass` below, and the two dispatch lemmas
 `starAxiom_validIn_min` / `starAxiom_reflect_time_validIn_min`
 (`Metalogic/Conservativity/Star/StarAxiomValidity.lean`), neither of which carries a wildcard
 arm. Adding a constructor means one constructor line, one `minFrameClass` arm, one arm in each
-dispatch lemma, and one row in the swap-closure list above. The absence of a wildcard is a
+dispatch lemma, and one row in the reflection-closure list above. The absence of a wildcard is a
 deliberate build gate, not an oversight: it is what makes an unsupplied arm a compile error.
 
 ## Module Invariant
@@ -194,7 +194,7 @@ open FormalSystem.PlusLanguage
 Axiom schemata of TM⋆ over `StarFormula`: the 53 TM⁺ schemata re-declared directly over
 `StarFormula`, then the sixteen register schemata — 70 constructors. See the module docstring for
 the design, the schema inventory, the one side condition that has no `PlusAxiom` counterpart, and
-the swap-closure invariant.
+the reflection-closure invariant.
 
 Paper: — (formalization-native; the manuscript supplies no proof system for `\BL^\star`)
 -/

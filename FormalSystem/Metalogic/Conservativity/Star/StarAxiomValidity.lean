@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.Conservativity.Plus.AxiomValidity
 import FormalSystem.Metalogic.Conservativity.Star.StarPasting
 
 /-!
-# Validity and swap-validity of every TM⋆ axiom schema
+# Validity and reflection-validity of every TM⋆ axiom schema
 
 The two dispatch lemmas of TM⋆ soundness, one arm per `StarAxiom` constructor and **no wildcard
 arm** — so that a constructor added to `StarAxiom` fails the build here until its arm is
@@ -46,23 +46,23 @@ already not substitution-closed via `PlusAxiom.atom_stab`, and nothing here need
   (`Iff.rfl`, or one `Function.update` identity); the four rigidity arms use forward and backward
   seriality; the two export arms are a six-line `constructor`.
 
-- **Most swap arms reuse a validity arm; the rest have named duals.** Where a schema's temporal
+- **Most reflection arms reuse a validity arm; the rest have named duals.** Where a schema's temporal
   dual *is* an instance of a constructor of this inductive — the ten `.iff` register schemata are
   self-dual, the rigidity arms pair G↔H, the export arms pair U↔S, and the mirror block supplies
-  fifteen dual pairs — the swap arm normalises `reflectTime` through the
-  `StarFormula.reflect_time_*` family and applies the matching validity lemma at swapped
+  fifteen dual pairs — the reflection arm normalises `reflectTime` through the
+  `StarFormula.reflect_time_*` family and applies the matching validity lemma at reflected
   arguments. Eleven schemata have **no** dual constructor (`discrete_propagate_fwd`/`_bwd`,
   `discrete_box_necessity`, `dense_indicator`, `density`, `z1`, `sep`, `modal_future`, `paste`,
   `untl_paste`), exactly as at the L level, where `SoundnessLemmas/FrameClassVariants.lean`
-  carries a `*_reflect_time_valid` lemma for each; the corresponding `starValid_*_swap` lemmas below
-  supply those duals. That is the swap-closure invariant of `StarLanguage/Axioms.lean`,
+  carries a `*_reflect_time_valid` lemma for each; the corresponding `starValid_*_reflect_time` lemmas below
+  supply those duals. That is the reflection-closure invariant of `StarLanguage/Axioms.lean`,
   discharged.
 
 ## References
 
 * `FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean` — the TM⁺ dispatch pair being
   transported, and the dispatch shape being mirrored
-* `FormalSystem/StarLanguage/Axioms.lean` — `StarAxiom` and its swap-closure invariant
+* `FormalSystem/StarLanguage/Axioms.lean` — `StarAxiom` and its reflection-closure invariant
 * JPL paper `possible_worlds.tex` — `def:BLstar-semantics`
 
 ## Tags
@@ -659,7 +659,7 @@ theorem starValid_P_since_equiv (φ : StarFormula) :
 /-! ## The TM⁺ mirror block — discrete uniformity, density, Prior, Z1
 
 The five uniformity schemata are **closed** formulas, hence literally `ofPlus` images: their
-validity and their swap-validity both transport along `starValidOnFrames_ofPlus` from
+validity and their reflection-validity both transport along `starValidOnFrames_ofPlus` from
 `plusAxiom_validIn_min` / `plusAxiom_reflect_time_validIn_min`, with no L⋆ argument at all.
 
 `density`, `z1`, `prior_UZ` and `prior_SZ` carry a metavariable and are proved directly. The
@@ -668,12 +668,12 @@ order-theoretic content is **not** inlined: `prior_UZ`/`prior_SZ` consume
 `forall_gt_of_succ_step`/`forall_lt_of_pred_step`, each at
 `P := fun x => StarTruthAt M τ x v φ`.
 
-**Measured correction to this group's swap-closure.** Three of the five uniformity schemata are
+**Measured correction to this group's reflection-closure.** Three of the five uniformity schemata are
 *not* closed under `reflectTime` within the group — `reflectTime` exchanges `untl` and `snce`,
 so the dual of `U(⊤,⊥) → G(U(⊤,⊥))` is `S(⊤,⊥) → H(S(⊤,⊥))`, which is no member's statement —
 and neither `density`, `dense_indicator` nor `z1` has a past twin among the schemata. This
 mirrors the L level exactly, where `SoundnessLemmas.FrameClassVariants` carries a dedicated
-`*_reflect_time_valid` lemma for each. The named `*_swap` lemmas below are those duals; the closed
+`*_reflect_time_valid` lemma for each. The named `*_reflect_time` lemmas below are those duals; the closed
 ones transport, `density` and `z1` are direct. -/
 
 /-- `discrete_symm_fwd` over L⋆, by transport: the formula is closed. -/
@@ -1105,11 +1105,11 @@ The semantic content is `Conservativity/Star/StarPasting.lean`'s: the two purity
 the four pasting validities, over the L⋆ purity predicates. Nothing is re-proved here; these four
 lemmas are the `StarValid` packagings the dispatch consumes.
 
-**Measured correction to this group's swap-closure.** PS and US are not each other's duals.
+**Measured correction to this group's reflection-closure.** PS and US are not each other's duals.
 `reflectTime` fixes `⟐` and exchanges `untl`/`snce`, so the dual of PS is PS with the conjuncts
 exchanged (PS'), and the dual of US is SS — exactly as at the L⁺ level, where
 `Semantics/PlusLanguage/PlusPasting.lean` carries `paste_valid'` and `snce_dstab_valid` for precisely this
-reason. The two `*_swap` lemmas below are those duals. -/
+reason. The two `*_reflect_time` lemmas below are those duals. -/
 
 /-- PS as a `StarValid`. -/
 theorem starValid_paste {φ ψ : StarFormula} (hφ : StarIsPureFuture φ) (hψ : StarIsPurePast ψ) :
@@ -1222,11 +1222,11 @@ theorem starAxiom_validIn {φ : StarFormula} {fc : FrameClass} (ax : StarAxiom �
     (h : ax.minFrameClass ≤ fc) : StarValidIn fc φ :=
   StarValidIn.mono h (starAxiom_validIn_min ax)
 
-/-! ## Swap-validity -/
+/-! ## Reflection-validity -/
 
 /-- **Every TM⋆ schema's temporal dual is valid at its own minimum frame class.** One arm per
 constructor; the semantic input to the `time_reflection` case of soundness. Each register arm
-normalises `reflectTime` and lands on the matching validity lemma — the swap-closure invariant
+normalises `reflectTime` and lands on the matching validity lemma — the reflection-closure invariant
 of `StarLanguage/Axioms.lean`, discharged constructor by constructor. -/
 theorem starAxiom_reflect_time_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
     StarValidIn ax.minFrameClass φ.reflectTime := by
@@ -1451,7 +1451,7 @@ theorem starAxiom_reflect_time_validIn_min {φ : StarFormula} (ax : StarAxiom φ
       StarFormula.reflect_time_top, StarFormula.reflectTime]
     exact starValid_recall_export_until i φ.reflectTime ψ.reflectTime
 
-/-- Swap-validity of a TM⋆ schema at any class admitting it. -/
+/-- Reflection-validity of a TM⋆ schema at any class admitting it. -/
 theorem starAxiom_reflect_time_validIn {φ : StarFormula} {fc : FrameClass} (ax : StarAxiom φ)
     (h : ax.minFrameClass ≤ fc) : StarValidIn fc φ.reflectTime :=
   StarValidIn.mono h (starAxiom_reflect_time_validIn_min ax)

@@ -199,7 +199,7 @@ def could (φ : PlusFormula) : PlusFormula := dstab (someFuture φ)
 /-! ### Time reflection -/
 
 /--
-Swap temporal operators (past ↔ future) in an L⁺ formula.
+Reflect time (past ↔ future) in an L⁺ formula.
 
 Mirrors `Formula.reflectTime` constructor for constructor; the new case sends `stab φ` to
 `stab φ.reflectTime` — `⊡` is fixed by time reversal because `⟨τ⟩_x` is defined by a

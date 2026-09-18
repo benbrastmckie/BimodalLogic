@@ -71,9 +71,9 @@ Box implies past: `⊢ □φ → Hφ`.
 
 Proof via time reflection:
 1. For any ψ, `boxToFuture` gives: `⊢ □ψ → Gψ`
-2. Apply to ψ = swap(φ): `⊢ □(swap φ) → G(swap φ)`
-3. By time reflection: `⊢ swap(□(swap φ) → G(swap φ))`
-4. swap(□(swap φ) → G(swap φ)) = □(swap(swap φ)) → H(swap(swap φ)) = □φ → Hφ
+2. Apply to ψ = reflectTime(φ): `⊢ □(reflectTime φ) → G(reflectTime φ)`
+3. By time reflection: `⊢ reflectTime(□(reflectTime φ) → G(reflectTime φ))`
+4. reflectTime(□(reflectTime φ) → G(reflectTime φ)) = □(reflectTime(reflectTime φ)) → H(reflectTime(reflectTime φ)) = □φ → Hφ
 
 This clever use of time reflection avoids needing a separate "modal-past" axiom.
 -/

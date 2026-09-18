@@ -681,7 +681,7 @@ def surgeredDualEquiv (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig
   right_inv _ := rfl
 
 /-- **The commutation is a structure isomorphism**, on the model of `subintervalDualIso`
-(`Dual.lean:444`): both order and interpretation are preserved definitionally. -/
+(in `Dual.lean`): both order and interpretation are preserved definitionally. -/
 def surgeredDualIso (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
     (Q : M.carrier → Prop) (t : M.carrier) :
     StructIso (dual (surgeredStructure M ε Q t))

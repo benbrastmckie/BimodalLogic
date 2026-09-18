@@ -67,7 +67,7 @@ semantics agree, and nothing downstream should assume they do.
 `no_min` and `past_lin` are fields rather than derived facts precisely so the class is closed
 under order reversal (`MinusFrame.reflect`). That closure is what makes `truth_reflectTime` available, and
 `truth_reflectTime` is what discharges the time-reflection *rule* `DerivationTree.time_reflection` in
-one line during native soundness — no swap-strengthened simultaneous induction is needed.
+one line during native soundness — no reflection-strengthened simultaneous induction is needed.
 
 ## Main Definitions
 
@@ -90,8 +90,7 @@ namespace one for one:
 - `always_iff` — `△φ`, from `and_iff` together with `past_iff` and `future_iff`
 
 `truth_reflectTime` — the order-reversal transfer lemma: truth on `F.reflect` is truth on `F` of the
-time-reflected formula `φ.reflectTime`. The `swap` in its name is the frame operation
-`MinusFrame.reflect` (the paper's `F⁻`), not a formula operation.
+time-reflected formula `φ.reflectTime`; the L⁻ analogue of the paper's `lem:time-reflection`.
 
 ## References
 
@@ -292,14 +291,14 @@ past, present and future. The association mirrors `MinusFormula.always`. -/
 end MinusFrameTruth
 
 /--
-**Order-reversal transfer.** Truth on the reversed frame is truth on the original frame of the
-time-reflected formula `φ.reflectTime`. This is the L⁻ analogue of the paper's
-temporal-duality lemma; the `swap` in the name is `MinusFrame.reflect`, the order reversal.
+**Time-reflection transfer.** Truth on the reflected frame `F.reflect` (the paper's `F⁻`) is
+truth on the original frame of the time-reflected formula `φ.reflectTime`. This is the L⁻
+analogue of the paper's `lem:time-reflection`.
 
 Six cases, each immediate: the atom and bot clauses do not mention the order, `imp` and `box` are
 congruences, and the two temporal clauses trade places exactly as `MinusFormula.reflectTime`
 does. This one lemma is what makes the time-reflection rule sound on the native class, replacing
-the swap-strengthened simultaneous induction used in the task-frame soundness proof.
+the reflection-strengthened simultaneous induction used in the task-frame soundness proof.
 -/
 theorem truth_reflectTime (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point) (φ : MinusFormula) :
     MinusFrameTruth F.reflect V w φ ↔ MinusFrameTruth F V w φ.reflectTime := by

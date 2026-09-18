@@ -26,7 +26,7 @@ combining S5 modal logic with linear temporal logic.
 
 - `DecidableEq Formula`: Formulas have decidable equality
 - `Countable Formula`: Formulas are countable (for completeness proofs)
-- `reflect_time_involution`: Swapping temporal operators twice gives identity
+- `reflect_time_involution`: Reflecting time twice gives identity
 
 ## Implementation Notes
 
@@ -602,7 +602,7 @@ Time reflection: interchange past and future throughout a formula.
 This is the paper's `φ⟨S|U⟩`, the operation behind the time reflection metarule (TR):
 if `⊢ φ` then `⊢ reflectTime φ`.
 
-The primitive constructors it swaps are `untl` ↔ `snce` (with both arguments reflected
+The primitive constructors it exchanges are `untl` ↔ `snce` (with both arguments reflected
 recursively); `atom`, `bot`, `imp` and `box` are preserved. Because every tense operator is
 defined from `untl`/`snce`, the derived operators follow: `someFuture` ↔ `somePast` and
 `allFuture` ↔ `allPast` (see the `reflect_time_*` simp lemmas below).
@@ -633,12 +633,12 @@ theorem reflect_time_involution (φ : Formula) :
 
 
 /--
-Temporal swap distributes over diamond: `swap(◇φ) = ◇(swap φ)`.
+Time reflection distributes over diamond: `reflectTime(◇φ) = ◇(reflectTime φ)`.
 
 Since `diamond φ = φ.neg.box.neg`, and `reflectTime` recurses through
-`imp` and `box` without changing their structure (only swapping allPast/allFuture),
+`imp` and `box` without changing their structure (only exchanging allPast/allFuture),
 we have:
-- `swap(φ.neg.box.neg) = swap(φ.neg).box.neg = (swap φ).neg.box.neg = (swap φ).diamond`
+- `reflectTime(φ.neg.box.neg) = reflectTime(φ.neg).box.neg = (reflectTime φ).neg.box.neg = (reflectTime φ).diamond`
 
 Note: `neg φ = φ.imp bot` and `reflectTime bot = bot`, so
 `reflectTime (φ.neg) = (reflectTime φ).neg`.
@@ -648,56 +648,56 @@ theorem reflect_time_diamond (φ : Formula) :
   simp only [diamond, neg, reflectTime]
 
 /--
-Temporal swap distributes over negation: `swap(¬φ) = ¬(swap φ)`.
+Time reflection distributes over negation: `reflectTime(¬φ) = ¬(reflectTime φ)`.
 
 Since `neg φ = φ.imp bot` and `reflectTime bot = bot`:
-`swap(φ.imp bot) = (swap φ).imp bot = (swap φ).neg`
+`reflectTime(φ.imp bot) = (reflectTime φ).imp bot = (reflectTime φ).neg`
 -/
 theorem reflect_time_neg (φ : Formula) :
     φ.neg.reflectTime = φ.reflectTime.neg := by
   simp only [neg, reflectTime]
 
-/-- reflectTime exchanges someFuture and somePast: swap(F(φ)) = P(swap(φ)). -/
+/-- reflectTime exchanges someFuture and somePast: reflectTime(F(φ)) = P(reflectTime(φ)). -/
 @[simp]
 theorem reflect_time_some_future (φ : Formula) :
     (someFuture φ).reflectTime = somePast φ.reflectTime := by
   simp only [someFuture, somePast, top, reflectTime]
 
-/-- reflectTime exchanges somePast and someFuture: swap(P(φ)) = F(swap(φ)). -/
+/-- reflectTime exchanges somePast and someFuture: reflectTime(P(φ)) = F(reflectTime(φ)). -/
 @[simp]
 theorem reflect_time_some_past (φ : Formula) :
     (somePast φ).reflectTime = someFuture φ.reflectTime := by
   simp only [somePast, someFuture, top, reflectTime]
 
-/-- reflectTime exchanges allFuture and allPast: swap(G(φ)) = H(swap(φ)). -/
+/-- reflectTime exchanges allFuture and allPast: reflectTime(G(φ)) = H(reflectTime(φ)). -/
 @[simp]
 theorem reflect_time_all_future (φ : Formula) :
     (allFuture φ).reflectTime = allPast φ.reflectTime := by
   simp only [allFuture, allPast, someFuture, somePast, neg, top, reflectTime]
 
-/-- reflectTime exchanges allPast and allFuture: swap(H(φ)) = G(swap(φ)). -/
+/-- reflectTime exchanges allPast and allFuture: reflectTime(H(φ)) = G(reflectTime(φ)). -/
 @[simp]
 theorem reflect_time_all_past (φ : Formula) :
     (allPast φ).reflectTime = allFuture φ.reflectTime := by
   simp only [allPast, allFuture, somePast, someFuture, neg, top, reflectTime]
 
-/-- reflectTime distributes over next/prev: swap(X(phi)) = Y(swap(phi)). -/
+/-- reflectTime distributes over next/prev: reflectTime(X(phi)) = Y(reflectTime(phi)). -/
 theorem reflect_time_next (φ : Formula) :
     φ.next.reflectTime = φ.reflectTime.prev := by
   simp [next, prev, reflectTime]
 
-/-- reflectTime distributes over prev/next: swap(Y(phi)) = X(swap(phi)). -/
+/-- reflectTime distributes over prev/next: reflectTime(Y(phi)) = X(reflectTime(phi)). -/
 theorem reflect_time_prev (φ : Formula) :
     φ.prev.reflectTime = φ.reflectTime.next := by
   simp [prev, next, reflectTime]
 
-/-- reflectTime distributes over strongRelease: swap(M(φ,ψ)) = ST(swap(φ),swap(ψ)). -/
+/-- reflectTime distributes over strongRelease: reflectTime(M(φ,ψ)) = ST(reflectTime(φ),reflectTime(ψ)). -/
 theorem reflect_time_strong_release (φ ψ : Formula) :
     (Formula.strongRelease φ ψ).reflectTime = Formula.strongTrigger φ.reflectTime
       ψ.reflectTime := by
   simp [strongRelease, strongTrigger, and, reflectTime, reflect_time_neg]
 
-/-- reflectTime distributes over strongTrigger: swap(ST(φ,ψ)) = M(swap(φ),swap(ψ)). -/
+/-- reflectTime distributes over strongTrigger: reflectTime(ST(φ,ψ)) = M(reflectTime(φ),reflectTime(ψ)). -/
 theorem reflect_time_strong_trigger (φ ψ : Formula) :
     (Formula.strongTrigger φ ψ).reflectTime = Formula.strongRelease φ.reflectTime
       ψ.reflectTime := by
@@ -761,7 +761,7 @@ def atoms : Formula → Finset Atom
   | untl ψ φ => φ.atoms ∪ ψ.atoms
   | snce ψ φ => φ.atoms ∪ ψ.atoms
 
-/-- reflectTime preserves atoms: swapping past/future does not change which atoms appear. -/
+/-- reflectTime preserves atoms: reflecting time does not change which atoms appear. -/
 theorem atoms_reflect_time (φ : Formula) : φ.reflectTime.atoms = φ.atoms := by
   induction φ with
   | atom _ => rfl

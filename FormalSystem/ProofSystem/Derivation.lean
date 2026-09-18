@@ -146,7 +146,7 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   | temporal_necessitation (φ : Formula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.allFuture φ)
   /--
-  Time reflection rule: Swapping past and future in theorems.
+  Time reflection rule: Reflecting past and future in theorems.
 
   If `⊢[fc] φ` (derivable from empty context), then `⊢[fc] reflectTime φ`.
 

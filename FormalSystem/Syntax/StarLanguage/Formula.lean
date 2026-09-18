@@ -73,7 +73,7 @@ permitted and is how L⋆ acquires its semantics
 `StarAxiom` (`StarLanguage/Axioms.lean`) and `StarDerivationTree` with the notation `⊢⋆[fc]`
 (`StarLanguage/Derivation.lean`) present **TM⋆**, the proof system for L⋆. Nothing in this file
 depends on them; `reflectTime` and `ofPlus_reflectTime` are declared here because they are
-syntax, and the `time_reflection` rule and the swap-validity dispatch both consume them from
+syntax, and the `time_reflection` rule and the reflection-validity dispatch both consume them from
 above.
 See `FormalSystem/StarLanguage/README.md`.
 
@@ -216,14 +216,14 @@ def could (φ : StarFormula) : StarFormula := dstab (someFuture φ)
 /-! ### Time reflection
 
 `reflectTime` interchanges past and future. It is what the `time_reflection` rule of TM⋆
-(`FormalSystem/StarLanguage/Derivation.lean`) applies to a theorem, and what the swap half of
+(`FormalSystem/StarLanguage/Derivation.lean`) applies to a theorem, and what the reflection half of
 TM⋆ soundness (`Metalogic/Conservativity/Star/StarSoundness.lean`) carries alongside validity.
 
 The two register cases are **structural**, exactly as `stab ↦ stab` is: registers hold *times*
 and carry no orientation of their own, so neither `↑ⁱ` nor `↓ⁱ` is exchanged for anything. -/
 
 /--
-Swap temporal operators (past ↔ future) in an L⋆ formula.
+Reflect time (past ↔ future) in an L⋆ formula.
 
 Mirrors `PlusFormula.reflectTime` constructor for constructor, with `timeStore i φ ↦
 timeStore i φ.reflectTime` and `timeRecall i φ ↦ timeRecall i φ.reflectTime`.
@@ -371,7 +371,7 @@ theorem ofPlus_injective : Function.Injective ofPlus := by
   cases φ <;> simp [ofPlus]
 
 /-- `ofPlus` commutes with time reflection — the pin the `time_reflection` case of the
-proof-system embedding (`StarLanguage/Embedding.lean`) and the swap arms of validity
+proof-system embedding (`StarLanguage/Embedding.lean`) and the reflection arms of validity
 (`Metalogic/Conservativity/Star/StarAxiomValidity.lean`) both route through. Mirrors
 `ofFormula_reflectTime`. -/
 theorem ofPlus_reflectTime (φ : PlusFormula) :
@@ -525,7 +525,7 @@ inductive StarIsPurePast : StarFormula → Prop
   | timeStore (i : ℕ) {φ : StarFormula} : StarIsPurePast φ → StarIsPurePast (.timeStore i φ)
 
 /-- `reflectTime` preserves `↓ⁱ`-freedom: it exchanges `untl` and `snce` and fixes everything
-else, and `RecallFree` treats those two arms alike. This is what makes the swap arm of
+else, and `RecallFree` treats those two arms alike. This is what makes the reflection arm of
 `StarAxiom.modal_future` land. -/
 theorem RecallFree.reflectTime {φ : StarFormula} (h : RecallFree φ) :
     RecallFree φ.reflectTime := by

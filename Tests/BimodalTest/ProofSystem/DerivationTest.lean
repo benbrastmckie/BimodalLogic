@@ -163,13 +163,13 @@ example (φ : Formula) (d : ⊢ φ) : ⊢ φ.allFuture := by
 example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
   DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
--- Test: Time reflection swaps allPast/allFuture
+-- Test: Time reflection exchanges allPast/allFuture
 -- If ⊢ φ then ⊢ reflectTime φ (using connect_future as the base derivation)
 example : ⊢ ((Formula.atomS "p").imp (Formula.allFuture
     (Formula.atomS "p").somePast)).reflectTime :=
   DerivationTree.time_reflection _ (DerivationTree.axiom [] _ (Axiom.connect_future _) trivial)
 
--- The above should derive: ⊢ p → H(F(p)) (swapped from p → G(P(p)))
+-- The above should derive: ⊢ p → H(F(p)) (reflected from p → G(P(p)))
 
 -- ============================================================
 -- Weakening Rule Tests

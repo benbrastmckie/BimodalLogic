@@ -333,7 +333,7 @@ theorem provEquiv_reflect_time_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
 /--
 Lifted time reflection (sigma) on the Lindenbaum algebra.
 
-This swaps G (allFuture) and H (allPast) operators throughout a formula,
+This exchanges G (allFuture) and H (allPast) operators throughout a formula,
 implementing the time reflection principle.
 -/
 def sigmaQuot : LindenbaumAlg → LindenbaumAlg :=

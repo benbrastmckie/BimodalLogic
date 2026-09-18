@@ -11,7 +11,7 @@ import FormalSystem.Syntax.PlusLanguage.Axioms
 import FormalSystem.Theorems.Combinators
 
 /-!
-# Validity and swap-validity of every TM⁺ axiom schema
+# Validity and reflection-validity of every TM⁺ axiom schema
 
 The two dispatch lemmas of TM⁺ soundness, one arm per `PlusAxiom` constructor and no wildcard
 arm — so that a constructor added to `PlusAxiom` fails the build here until its arm is supplied:
@@ -35,7 +35,7 @@ mirror argument is used, since the TM axiom set is not mirror-closed.
   (`of_stab`, `stab_four`, `stab_five`, `stab_of_box`; K is the universal-quantifier shape of the
   `stab` clause) together with `stab_of_stateLocal` (`Semantics/PlusLanguage/PlusStateLocal.lean`), which
   discharges AS at the atom instance `stateLocal_atom p` of the state-locality fragment. Their temporal duals are the same schemata
-  at swapped parameters, because `reflectTime` fixes `stab`.
+  at reflected parameters, because `reflectTime` fixes `stab`.
 - **The two pasting arms** are the PS/US validities of `Semantics/PlusLanguage/PlusPasting.lean`; their
   temporal duals are the past mirrors `paste'_plusValid` and `snce_paste_plusValid`, with the
   purity side conditions exchanged by `IsPureFuture.reflectTime` / `IsPurePast.reflectTime`.
@@ -61,7 +61,7 @@ noncomputable def theEncoding : Encoding := Classical.choice Encoding.nonempty
 /-- Atomization under the fixed encoding. -/
 noncomputable abbrev A (φ : PlusFormula) : Formula := atomize theEncoding φ
 
-/-- Atomization under the conjugated fixed encoding (for the swap arms). -/
+/-- Atomization under the conjugated fixed encoding (for the reflection arms). -/
 noncomputable abbrev A' (φ : PlusFormula) : Formula := atomize theEncoding.reflectTime φ
 
 /-! ## Validity -/
@@ -169,7 +169,7 @@ theorem plusAxiom_validIn {φ : PlusFormula} {fc : FrameClass} (ax : PlusAxiom �
     (h : ax.minFrameClass ≤ fc) : PlusValidIn fc φ :=
   PlusValidIn.mono h (plusAxiom_validIn_min ax)
 
-/-! ## Swap-validity -/
+/-! ## Reflection-validity -/
 
 /-- **Every TM⁺ schema's temporal dual is valid at its own minimum frame class.** One arm per
 constructor; the semantic input to the `time_reflection` case of soundness. -/
@@ -288,7 +288,7 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
     simp only [PlusFormula.reflectTime, reflect_time_dstab]
     exact snce_paste_plusValid h0.reflectTime h1.reflectTime
 
-/-- Swap-validity of a TM⁺ schema at any class admitting it. -/
+/-- Reflection-validity of a TM⁺ schema at any class admitting it. -/
 theorem plusAxiom_reflect_time_validIn {φ : PlusFormula} {fc : FrameClass} (ax : PlusAxiom φ)
     (h : ax.minFrameClass ≤ fc) : PlusValidIn fc φ.reflectTime :=
   PlusValidIn.mono h (plusAxiom_reflect_time_validIn_min ax)

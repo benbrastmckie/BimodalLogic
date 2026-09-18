@@ -371,7 +371,7 @@ noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atomS "p")
         (Formula.allFuture (Formula.atomS "p")) :=
   generalizedTemporalK [] _ h
 
-/-- Test 53: time_reflection swaps past and future -/
+/-- Test 53: time_reflection reflects past and future -/
 example (h : DerivationTree FrameClass.Base [] (Formula.allPast (Formula.atomS "p"))) :
     DerivationTree FrameClass.Base [] (Formula.reflectTime
         (Formula.allPast (Formula.atomS "p"))) :=

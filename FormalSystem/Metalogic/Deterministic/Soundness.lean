@@ -33,11 +33,11 @@ components. TR is discharged **semantically**, never by mapping derivations to m
 
 The two axiom arms:
 
-- `ofPlus` — TM⁺'s own validity and swap-validity, transported down the frame predicate by
+- `ofPlus` — TM⁺'s own validity and reflection-validity, transported down the frame predicate by
   `PlusValidIn.toDetermined`. Nothing about `⊡` is re-proved.
 - `determined` — direct from the `DeterminedValid F` component of the frame predicate. Its
   temporal dual is again a *Determined* instance, because `reflectTime` fixes `⊡`
-  (`PlusFormula.reflectTime`, `stab φ ↦ stab φ.reflectTime`), so the swap arm needs no
+  (`PlusFormula.reflectTime`, `stab φ ↦ stab φ.reflectTime`), so the reflection arm needs no
   separate argument.
 
 ## Main Results

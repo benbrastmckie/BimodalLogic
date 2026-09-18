@@ -22,7 +22,7 @@ This test suite covers:
 3. Derivation → Validity workflow for each axiom
 4. Modus ponens soundness with various formula combinations
 5. Necessitation soundness (modal and temporal)
-6. Temporal duality soundness (swap preservation)
+6. Time reflection soundness (reflection preservation)
 7. Weakening soundness
 8. Context semantic consequence vs derivability
 9. Complex derivation chains produce valid results
@@ -262,7 +262,7 @@ example (φ : Formula) : [] ⊨ ((φ.box.imp φ).allFuture) := by
   exact soundness_in [] _ deriv_future
 
 /--
-Test 21: Temporal duality is sound.
+Test 21: Time reflection is sound.
 
 From ⊢ φ, we get ⊨ reflectTime φ.
 -/
