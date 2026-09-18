@@ -274,7 +274,6 @@ section Histories
 variable {W ι D : Type} [Nonempty W] [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
   [Nontrivial D]
 
-set_option linter.unusedVariables false in
 /--
 The history of world `w` viewed with time offset `Δ`: total in time, assigning to `r` the state
 "world `w`, at time `r + Δ`".
@@ -283,12 +282,13 @@ The history of world `w` viewed with time offset `Δ`: total in time, assigning 
 base histories (`timeShift_regionHistory`), and they are world histories exactly as the base
 histories are.
 
-The placement `f` is retained as a parameter — it no longer occurs in the states, since the
+The placement `_f` is retained as a parameter — it no longer occurs in the states, since the
 region code moved out of the frame's state space when the task relation became deterministic —
-so that every declaration below keeps its shape. Regions re-enter through the valuation, which
-reads `regionCode f` off the time component.
+so that every declaration below keeps its shape. It is spelled with a leading underscore because
+it is genuinely unused in the body; every call site passes it positionally. Regions re-enter
+through the valuation, which reads `regionCode f` off the time component.
 -/
-def regionHistory (f : ι → D) (w : W) (Δ : D) : WorldHistory (regionFrame W ι D) :=
+def regionHistory (_f : ι → D) (w : W) (Δ : D) : WorldHistory (regionFrame W ι D) :=
   WorldHistory.ofTotal _ (fun r => (w, r + Δ)) (by
     intro s t
     refine (regionFrame_taskRel W ι D _ _ _).mpr ⟨rfl, ?_⟩
