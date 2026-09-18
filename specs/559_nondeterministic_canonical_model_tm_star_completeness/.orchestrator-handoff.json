@@ -1,14 +1,14 @@
 {
   "status": "researched",
   "phase": "research",
-  "dispatch_seq": 4,
-  "summary": "TM+ (current axioms) proved incomplete over all-histories semantics at ZTime modulo in-repo transcription: LC+ := (dstab X p & stab G(p -> dstab X p)) -> dstab G p is ZTime-valid (compiled) and refuted in a paste-closed coarsened model on an infinite Z-frame (compiled), with soundness via CoarsenedModels + PS/US arms. Positive completeness >= full CTL* hardness; not implementable now. Task 560 description rescoped to plus_incomplete_ztime (4 phases).",
+  "dispatch_seq": 5,
+  "summary": "Round 03. Compiled (Z mirror, sorry-free): truth invariance under surjective two-way bounded morphisms; soundness of Gabbay IRR and of a stronger stab-local clock naming rule via the clock product; semantic core of Reynolds 2001 AA rule via forward-cone unravelling; general omega-limit-of-splices principle; validity of Reynolds 2003 LC_n schema transposed to stab for all n and arbitrary parameters. Paper: Saturation idle at ZTime (oriented forests satisfy the literal Saturation), ZTime validity decidable (rests on recalled Rabin theorem), LC_n valid at Base (Zorn + extension), clock product preserves all four frame axioms at every class, until-form LCU is ZTime-only (Zeno refutation over dense time). Base/Dense/RTime r.e. status OPEN with located obstruction. No completeness theorem stated. 560 rescope of report 02 (plus_incomplete_base with BLC) unchanged; follow-on task A (frame morphisms + clock product in FormalSystem) and task B (ZTime engine research round) proposed.",
   "artifacts": [
-    {"type": "report", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/01_nondeterministic-canonical-model.md", "summary": "Verdict-first research report with per-class table and 560 design."},
-    {"type": "probe", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/01_limit-closure-probes.lean", "summary": "Sorry-free Mathlib-only probes (limit closure, pasting, countermodel, naming-rule unsoundness)."}
+    {"type": "report", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md", "summary": "Verdict-first round-03 report: Q1-Q6 verdicts, per-class table, 560 and follow-on proposals."},
+    {"type": "probe", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean", "summary": "Sorry-free Mathlib-only probes: two-way morphism invariance, clock rule and IRR soundness, AA expansion, omega-chain, LC_n validity."}
   ],
   "phases_completed": 0,
   "phases_total": 0,
   "blockers": [],
-  "next_action_hint": "Plan task 559 closure / proceed to task 560 (rescoped) planning; user may confirm the rescope (non-blocking)."
+  "next_action_hint": "Research-only task: no plan/implement phase is intended. Next round via /orchestrate 559 --research --lit (ZTime engine: Reynolds 2001 sections 9-15, oriented-forest Saturation probe, finite model property); acquire Reynolds 2005, Zanardo 1991, Di Maio-Zanardo 1998 first. Task 560 proceeds on report 02's rescope."
 }

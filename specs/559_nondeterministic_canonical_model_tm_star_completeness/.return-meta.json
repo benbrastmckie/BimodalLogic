@@ -1,17 +1,21 @@
 {
   "status": "researched",
-  "started_at": "2026-09-18T19:19:00Z",
-  "completed_at": "2026-09-18T19:41:53Z",
+  "started_at": "2026-09-18T23:22:07Z",
+  "completed_at": "2026-09-18T23:44:21Z",
   "artifacts": [
-    {"type": "report", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/01_nondeterministic-canonical-model.md", "summary": "Verdict: current TM+ is incomplete over all-histories semantics at ZTime (LC+ limit-closure witness, valid and not derivable via paste-closed coarse countermodel); obstruction is limit closure; naming-rule candidate unsound; bundled/completion indistinguishability refuted; per-class table; 560 rescoped to plus_incomplete_ztime."},
-    {"type": "probe", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/01_limit-closure-probes.lean", "summary": "550-line sorry-free Mathlib-only mirror: LC+ validity over all Z-digraph models, PS/US in paste-closed bundles, LC+ refuted in paste-closed bundle realized on infinite digraph cR, coarse-truth = image-bundle truth, naming antecedent unsatisfiable."}
+    {
+      "type": "report",
+      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
+      "summary": "Round 03: truth is invariant under two-way bounded morphisms (compiled), so Gabbay IRR, a stronger clock naming rule and the semantic core of Reynolds' AA rule are all sound (compiled over Z; clock product at every class on paper); Reynolds 2003's LC_n schema transposed to stab is valid on every all-walks Z-model (compiled) and at Base on paper; Saturation is idle at ZTime and ZTime validity is decidable (paper, rests on recalled Rabin theorem); until-form LCU is ZTime-only; per-class table; ZTime-first engine recommendation with located two-sided-automaton obstruction; 560 rescope of report 02 unchanged; two follow-on tasks proposed."
+    },
+    {
+      "type": "probe",
+      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean",
+      "summary": "814-line sorry-free Mathlib-only probe (bare lean, exit 0): TwoWay/lift_walk/tw_invariance, clockR/clock_irr_sound/irr_sound, coneR/cone_twoWay/aa_expand, omega_limit/omega_chain/lcN_valid_full. Axioms: propext, Classical.choice, Quot.sound only."
+    }
   ],
-  "user_decision": {
-    "blocking": false,
-    "question": "Task 560 was rescoped from 'implement TM+ completeness' to 'implement plus_incomplete_ztime' (incompleteness of the current axioms at ZTime), per 559's negative verdict. Confirm this rescope, or keep 560 aimed at the (research-grade, >= full CTL*) positive problem instead."
-  },
   "metadata": {
-    "session_id": "sess_1789758953_24f7fc_559",
+    "session_id": "sess_1789773503_8e1220_559",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
