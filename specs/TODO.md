@@ -111,7 +111,7 @@ next_project_number: 621
 
 ### Reference Book
 
-620 [RESEARCHING] — Develop a Lean 4 appendix for typst/BimodalReference.typ,...
+620 [RESEARCHED] — Develop a Lean 4 appendix for typst/BimodalReference.typ,...
 
 ### Codebase Cleanup
 
@@ -130,7 +130,7 @@ next_project_number: 621
 ## Tasks
 
 ### 620. Lean appendix bimodal reference
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
