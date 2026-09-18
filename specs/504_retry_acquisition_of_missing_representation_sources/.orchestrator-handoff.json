@@ -1,16 +1,31 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
-  "phase": "research",
-  "summary": "Retried acquisition of 8 standard representation-theorem sources; recovered Gehrke & Jonsson 2004 (mscand.dk migrated to journals.msp.org) and confirmed, with new source-specific evidence, that the other 7 remain genuinely unacquirable via this pipeline.",
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phase": "plan",
+  "summary": "Authored a 5-phase plan (3.25h, waves [1,3,5]/[2]/[4]) finalizing the representation-source acquisition. Research already performed the acquisition itself, so the plan covers what remains: auditing the gehrke_jonsson_2004 registration, earning or downgrading its over-strong verified_conversion fidelity label, recording the seven confirmed-unacquirable sources durably in ~/Projects/Literature/SOURCES.md (the corpus's established W-/A-series blocker format), logging the zotero-cli-cc/httpx2 write-bridge defect in specs/errors.json, and landing a scoped commit of the sub-index.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md",
-      "summary": "Retry-acquisition report: 1 of 8 sources newly acquired and registered in specs/literature-index.json; 7 confirmed unacquirable with evidence (paywall, bronze-OA-but-403, authenticated-only mirror, or absent from author homepage)."
+      "type": "plan",
+      "path": "specs/504_retry_acquisition_of_missing_representation_sources/plans/01_finalize-acquisition-record-blockers.md",
+      "summary": "5-phase implementation plan: registration audit, fidelity spot-check and label reconciliation, durable SOURCES.md blocker record, errors.json defect entry, scoped commit and backup cleanup."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 5,
+  "decisions_made": [
+    "Did not plan a re-run of Tier 3 discovery for the seven unacquired sources: Tier 3 was verified healthy across ~10 queries this session with zero TIER3_STATUS: FAILED, so the rate-limit hypothesis that justified this retry task is discharged and each remaining blocker is now source-specific.",
+    "Planned no commit in the ~/Projects/Literature/ repository. Its index.json carries 7,205 insertions across five doc_ids (four belonging to concurrent lamport/wijesekera/xu ingests) and SOURCES.md carries 215 uncommitted lines from another task's dossier; no non-interactive staging can separate them, and git add -p is unavailable. The plan writes to that working tree and requires the summary to name the uncommitted paths.",
+    "Verified and rejected three candidate defects before planning around them: the corpus dir's sparse metadata.json (151 of 163 such files are equally sparse — the norm, not a defect), the absence of a full {doc_id}.md (only 132 of 299 source dirs have one), and the per-chunk global-index entries (91 of 164 doc_ids have multiple entries — also the norm)."
+  ],
+  "user_decision": {
+    "question": "Sambin & Vaccaro 1988 'Topology and duality in modal logic' is free-to-read at the publisher (Unpaywall is_oa: true, oa_status: bronze) but ScienceDirect returns HTTP 403 to a non-browser fetch, so it is blocked by an anti-bot/TDM control rather than a paywall. SOURCES.md's policy says 'no paywall circumvention' but also treats anti-bot-walled free items (W11/W13/W16) as the cheapest acquisitions; Playwright is available in this session. Should a browser-driven fetch be authorized for this item?",
+    "options": [
+      "Record it as not acquired (plan Phase 3, entry R1) and leave acquisition to a human with a real browser or institutional access",
+      "Authorize a Playwright-driven fetch of the free-to-read publisher copy and ingest it as an eighth source",
+      "Authorize a Playwright-driven fetch as a general policy for any Unpaywall-bronze item this pipeline's curl tooling cannot reach"
+    ],
+    "recommended": "Record it as not acquired (plan Phase 3, entry R1) and leave acquisition to a human with a real browser or institutional access",
+    "blocking": false
+  },
   "blockers": []
 }

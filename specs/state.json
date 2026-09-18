@@ -454,12 +454,12 @@
     {
       "project_number": 504,
       "project_name": "retry_acquisition_of_missing_representation_sources",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "description": "Retry acquisition of the standard modal-representation sources that the representation-section literature research could not obtain because Semantic Scholar (literature-discover.sh Tier 3) was rate-limited (HTTP 429) for the whole session: Sambin & Vaccaro 1988 \"Topology and duality in modal logic\"; S. K. Thomason 1972 \"Semantic analysis of tense logics\" and 1975 \"Categories of frames for modal logic\"; Goldblatt 1976 \"Metamathematics of modal logic\" I-II; Fine 1975 \"Some connections between elementary and modal logic\"; Gehrke & Jonsson 2004 \"Bounded distributive lattice expansions\" (mscand.dk URLs 404; proxy gehrke_vosmaer_2011 already ingested); Gabbay & Shehtman \"Products of modal logics I\"; Marx & Venema 1997 \"Multi-dimensional modal logic\" (Zotero metadata only, no PDF). Use /literature \"<title>\" or literature-discover.sh once Tier 3 recovers (or after the S2_API_KEY / multi-provider fallback lands in the literature extension), ingest what is open-access or in Zotero, record paywalled items honestly as not acquired, and register every acquired doc in specs/literature-index.json with reason and citation_rule fields following the existing entries. Evidence and the full standard-sources checklist are in specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md sections 2.2-2.3",
       "topic": "literature",
       "created": "2026-08-26T18:54:46Z",
-      "last_updated": "2026-09-18T11:05:56Z",
+      "last_updated": "2026-09-18T11:15:18Z",
       "priority": "low",
       "session_id": "sess_1789728911_1b865e",
       "artifacts": [
@@ -467,6 +467,11 @@
           "path": "specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md",
           "type": "report",
           "summary": "Retry-acquisition report: 1 of 8 sources newly acquired and registered in specs/literature-index.json; 7 confirmed unacquirable with evidence (paywall, bronze-OA-but-403, authenticated-only mirror, or absent from author homepage)."
+        },
+        {
+          "path": "specs/504_retry_acquisition_of_missing_representation_sources/plans/01_finalize-acquisition-record-blockers.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan: registration audit, fidelity spot-check and label reconciliation, durable SOURCES.md blocker record, errors.json defect entry, scoped commit and backup cleanup."
         }
       ],
       "next_artifact_number": 2
