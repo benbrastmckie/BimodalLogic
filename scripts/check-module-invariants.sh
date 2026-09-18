@@ -940,6 +940,54 @@ if manifest_broken:
     for m in manifest_broken:
         note(m)
 
+# --- C6, reporting addition: the SIZE of the out-of-graph population --------
+# C6's gate is about ROT -- does a module outside the build graph still compile.
+# It never said how much code sits out there. Nothing else reported it either:
+# `lake build` cannot see these modules by construction, C7's rollup counts
+# FILES not declarations, and C17's textual census barely surfaces them (the
+# declarations inside an orphan module reference each other, so they almost
+# never reach zero occurrences). The result was that the out-of-graph population
+# was invisible at every gate.
+#
+# This is REPORTING ONLY and deliberately so. A dedicated import-reachability
+# check was considered and rejected: the walk above already IS that check, and a
+# second one would duplicate it and trip C6's own stale-manifest branch. The one
+# genuinely missing thing was the count, so the count is what was added.
+#
+# The declaration regex is comment-aware (block comments and docstrings skipped),
+# matching C17/C19/C23's post-fix behaviour -- a comment-blind count here would
+# over-report by the same phantom-declaration margin.
+c6_decl_re = re.compile(
+    r"^(?:@\[[^\]]*\]\s*)*"
+    r"(?:private\s+|protected\s+|noncomputable\s+|scoped\s+|local\s+|mutual\s+)*"
+    r"(?:structure|inductive|def|abbrev|theorem|lemma|instance|class)\s+[A-Za-z_]")
+c6_mods = c6_decls = c6_lines = 0
+c6_lib_mods = c6_lib_decls = c6_lib_lines = 0
+for c6_m in sorted(manifest_set):
+    c6_p = mod_to_path(c6_m)
+    if not os.path.isfile(c6_p):
+        continue
+    c6_src = open(c6_p, encoding="utf-8", errors="replace").readlines()
+    c6_n, c6_depth = 0, 0
+    for c6_raw in c6_src:
+        c6_inside = c6_depth > 0
+        c6_depth = max(0, c6_depth + c6_raw.count("/-") - c6_raw.count("-/"))
+        if c6_inside:
+            continue
+        if c6_decl_re.match(c6_raw.strip()):
+            c6_n += 1
+    c6_mods += 1
+    c6_decls += c6_n
+    c6_lines += len(c6_src)
+    if c6_m.startswith("FormalSystem"):
+        c6_lib_mods += 1
+        c6_lib_decls += c6_n
+        c6_lib_lines += len(c6_src)
+inf("C6", f"{c6_mods} manifested module(s) carry {c6_decls} declaration(s) across "
+          f"{c6_lines} line(s) outside the build graph "
+          f"({c6_lib_mods} FormalSystem module(s): {c6_lib_decls} declaration(s), "
+          f"{c6_lib_lines} line(s))")
+
 if os.environ.get("SKIP_BUILD") != "1":
     broken = []
     for m in manifest:

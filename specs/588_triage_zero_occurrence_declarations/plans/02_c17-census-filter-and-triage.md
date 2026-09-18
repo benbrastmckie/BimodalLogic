@@ -190,22 +190,26 @@ they did at research time.
 
 ---
 
-### Phase 2: Import-orphan reconciliation with C6 [NOT STARTED]
+### Phase 2: Import-orphan reconciliation with C6 [COMPLETED]
 
 **Goal**: Close research finding F5/R2 correctly -- confirm C6 already covers all ten orphan
 modules, and add the one thing genuinely missing, the declaration count behind them.
 
 **Tasks**:
-- [ ] Verify each of the ten modules named in F5 appears verbatim in
+- [x] Verify each of the ten modules named in F5 appears verbatim in
       `scripts/module-invariants-manifest.txt`, and that C6 passes with
-      `all N unreachable live module(s) are manifested`.
-- [ ] Record in the phase notes that R2's "nothing currently reports it" is superseded: C6's
+      `all N unreachable live module(s) are manifested`. *(completed -- all ten match exactly;
+      C6 prints `all 15 unreachable live module(s) are manifested`, the same pass branch as the
+      baseline)*
+- [x] Record in the phase notes that R2's "nothing currently reports it" is superseded: C6's
       reachability walk is the existing instrument, and a second check would trip C6's own
-      stale-manifest branch.
-- [ ] Extend C6's reporting (not its gating) to print the aggregate declaration count and line
+      stale-manifest branch. *(completed -- see Phase Notes below)*
+- [x] Extend C6's reporting (not its gating) to print the aggregate declaration count and line
       count carried by the manifested unreachable modules, so the size of the out-of-graph
-      population is visible at every gate.
-- [ ] Re-run the harness; confirm C6's pass/fail state is unchanged and only its INFO text moved.
+      population is visible at every gate. *(completed)*
+- [x] Re-run the harness; confirm C6's pass/fail state is unchanged and only its INFO text moved.
+      *(completed -- full harness exit 0; the ONLY line differing from `baseline-harness.txt` is
+      the new INFO line)*
 
 **Timing**: 1 hour
 
@@ -228,6 +232,34 @@ one.
 - C6 still passes, with the same pass branch taken as in the baseline.
 - The new INFO line prints a non-zero declaration count and a module count matching the manifest.
 - No other check's output changed relative to `baseline-harness.txt`.
+
+#### Phase Notes (measured at implementation time)
+
+**R2 is superseded, and the record says so explicitly.** Research recommended adding a new
+import-reachability check for the ten orphan modules because "nothing currently reports it".
+C6 already performs exactly that walk: it seeds reachability from every `lean_lib` and
+`lean_exe` root in `lakefile.toml`, fails on an unreachable live module missing from
+`scripts/module-invariants-manifest.txt`, fails on a phantom entry, fails on an entry that has
+become reachable, and compile-checks each manifested module in isolation. All ten F5 modules are
+already manifested -- verified name by name against the manifest's fifteen entries. A second
+check would duplicate that walk and trip C6's own stale-manifest branch. The one thing genuinely
+unreported was the SIZE of the out-of-graph population, so the size is what was added, as an INFO
+line, with no change to what C6 gates on.
+
+**Measured, replacing the plan's estimate.** The Scope Hypothesis predicted "roughly 91
+declarations across ~2,018 lines" for the ten FormalSystem modules. Line count matches exactly;
+the measured declaration count is **89**, not 91. The difference is comment-awareness: the
+research report's per-module table was produced with the comment-blind regex and double-counts
+two declaration-shaped lines inside comments (one in `BiLasso/Orbit.lean`, one in
+`BiLasso/Agreement.lean`) -- the same phantom class Phase 3 removes from C17. The new INFO line
+uses the comment-aware count, so it agrees with C17's post-Phase-3 denominator rather than
+contradicting it.
+
+New output line, verbatim:
+
+```
+INFO  C6   15 manifested module(s) carry 128 declaration(s) across 3104 line(s) outside the build graph (10 FormalSystem module(s): 89 declaration(s), 2018 line(s))
+```
 
 ---
 
