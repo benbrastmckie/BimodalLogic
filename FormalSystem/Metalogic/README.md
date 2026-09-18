@@ -107,6 +107,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `Compactness.lean` | 229 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
 | `DedekindNonCompactness.lean` | 532 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
+| `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |
 | `SetConsequence.lean` | 590 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.Dedekind` row (`CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`, `ModelExistenceDedekind`) |
 | `Soundness.lean` | 1,636 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,141 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
@@ -143,14 +144,14 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=subdirs cols=files-lines link=yes -->
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Algebraic/`](Algebraic/README.md) | 5 | 2,416 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,067 | Chronicle completeness route; the wired entry point |
+| [`Algebraic/`](Algebraic/README.md) | 5 | 2,414 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,104 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,856 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 21 | 5,915 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 4 | 1,837 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 80 | 51,890 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 80 | 51,889 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,608 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Independence/`](Independence/README.md) | 18 | 4,988 | Axiom-independence models |
+| [`Independence/`](Independence/README.md) | 18 | 4,987 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,408 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,019 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
@@ -169,7 +170,7 @@ Loose modules:
 |--------|------:|
 | `CanonicalChain.lean` | 115 |
 | `CanonicalModel.lean` | 846 |
-| `Completeness.lean` | 460 |
+| `Completeness.lean` | 497 |
 | `CompletenessDedekind.lean` | 614 |
 | `DiscreteCarrierProbe.lean` | 96 |
 | `Frame.lean` | 718 |

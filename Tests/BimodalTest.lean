@@ -17,6 +17,7 @@ import BimodalTest.Semantics.TaskFrameTest
 import BimodalTest.Semantics.SaturationFiniteAxiomTest
 import BimodalTest.Semantics.SemanticPropertyTest
 import BimodalTest.Semantics.DependentUltraproductProbe
+import BimodalTest.Semantics.QTimeTest
 import BimodalTest.Theorems.PropositionalTest
 import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #603
 
 - **Task**: 603 - Investigate a ℚ-time frame predicate (`TaskFrame.IsQTime`)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (coordinate with in-flight task 588 edits under `Metalogic/`; see Risks)
 - **Research Inputs**: specs/603_investigate_qtime_frame_predicate/reports/01_qtime-frame-predicate.md
@@ -195,18 +195,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Tests and full build [NOT STARTED]
+### Phase 4: Tests and full build [COMPLETED]
 
 **Goal**: Exercise the API and confirm the whole tree is green.
 
 **Tasks**:
-- [ ] Add `Tests/BimodalTest/Semantics/QTimeTest.lean` (or extend `SemanticPropertyTest.lean`,
+- [x] Add `Tests/BimodalTest/Semantics/QTimeTest.lean` (or extend `SemanticPropertyTest.lean`,
   following local convention) with: `isQTime_rat` applied to a ℚ frame, `isDense_of_isQTime`
   usage, `validQTime_iff_validDense` usage, and `#print axioms` checks. Optionally a negative
   example (the ℤ duration group fails divisibility at `n = 2`) if cheap.
-- [ ] Register the test file in the test library root if files are listed explicitly.
-- [ ] Run full `lake build` (and the test target); fix any fallout.
-- [ ] `grep -n "sorry" ` on all touched files returns nothing new; run the repo task-reference
+- [x] Register the test file in the test library root if files are listed explicitly.
+- [x] Run full `lake build` (and the test target); fix any fallout.
+- [x] `grep -n "sorry" ` on all touched files returns nothing new; run the repo task-reference
   lint over touched non-specs files.
 
 **Timing**: 30 minutes
@@ -225,12 +225,12 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] `lake build` green across the tree.
-- [ ] `TaskFrame.isDense_of_isQTime`, `isQTime_rat`, `derivable_of_validQTime`,
+- [x] `lake build` green across the tree.
+- [x] `TaskFrame.isDense_of_isQTime`, `isQTime_rat`, `derivable_of_validQTime`,
   `derivable_of_validDense`, `validQTime_iff_validDense` all verify with standard axioms only.
-- [ ] `FrameProperty.lean` import list unchanged; `assert_not_exists` guard intact.
-- [ ] No `FrameClass` constructor added; `FrameClass.Sat` untouched.
-- [ ] No task-number references in deliverable files.
+- [x] `FrameProperty.lean` import list unchanged; `assert_not_exists` guard intact.
+- [x] No `FrameClass` constructor added; `FrameClass.Sat` untouched.
+- [x] No task-number references in deliverable files.
 
 ## Artifacts & Outputs
 
