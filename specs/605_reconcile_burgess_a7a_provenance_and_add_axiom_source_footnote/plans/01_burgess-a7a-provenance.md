@@ -1,7 +1,7 @@
 # Implementation Plan: Task #605
 
 - **Task**: 605 - Reconcile Burgess A7a provenance and add axiom-source footnote
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (the research's dependency on 588 is informational only; no code from it is needed)
 - **Research Inputs**: specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/reports/01_burgess-a7a-provenance.md
@@ -99,34 +99,34 @@ No roadmap consultation was requested for this dispatch.
 
 Phases within the same wave can execute in parallel. Their file sets are disjoint.
 
-### Phase 1: Axioms.lean provenance note, docstring tags, Axiom Sources section [NOT STARTED]
+### Phase 1: Axioms.lean provenance note, docstring tags, Axiom Sources section [COMPLETED]
 
 **Goal**: Make `FormalSystem/ProofSystem/Axioms.lean` carry the reconciled Burgess/Xu provenance.
 
 **Tasks**:
-- [ ] Replace the NOTE block after `linear_since` (it begins "NOTE: BX7a/BX7a' ... removed --
+- [x] Replace the NOTE block after `linear_since` (it begins "NOTE: BX7a/BX7a' ... removed --
       unsound under open guard") with the corrected note from the report's Recommendation 1. The
       new note must say that `linear_until`/`linear_since` ARE Burgess 1982 A7a/A7b (Xu (10)/(11)),
       and that A7a's disjuncts share a fixed GUARD `q∧s`. It must also say the removed
       `linear_until_a7a`/`linear_since_a7a` pair transcribed A7a without swapping to guard-first
       order, which produced an unsound fixed-event variant, and that Burgess's 1982 §1.2 semantics
       is the same strict/open-guard semantics used here.
-- [ ] `linear_until` docstring: add "(Burgess 1982 A7a, Xu 1988 (10))" and the line
+- [x] `linear_until` docstring: add "(Burgess 1982 A7a, Xu 1988 (10))" and the line
       `Burgess: U(p,q) ∧ U(r,s) → U(p∧r, q∧s) ∨ U(p∧s, q∧s) ∨ U(q∧r, q∧s)`, and point to
       `linear_until_valid` for soundness. `linear_since`: "(Burgess A7b, Xu (11))".
-- [ ] `right_mono_until` "(Burgess A1a, Xu (1))" / `right_mono_since` "(Burgess A1b, Xu (2))".
-- [ ] `left_mono_until_G` "(Burgess A2a, Xu (1))" / `left_mono_since_H` "(Burgess A2b, Xu (2))".
-- [ ] `self_accum_until/since` "(Burgess A5a/A5b, Xu (7)/(8))"; `absorb_until` "(Burgess A6a,
+- [x] `right_mono_until` "(Burgess A1a, Xu (1))" / `right_mono_since` "(Burgess A1b, Xu (2))".
+- [x] `left_mono_until_G` "(Burgess A2a, Xu (1))" / `left_mono_since_H` "(Burgess A2b, Xu (2))".
+- [x] `self_accum_until/since` "(Burgess A5a/A5b, Xu (7)/(8))"; `absorb_until` "(Burgess A6a,
       Xu (9))"; `absorb_since` "(Burgess A6b)".
-- [ ] `serial_future` "(Burgess 1982 §1.6, No Last Element)"; `temp_linearity` "(Burgess 1984
+- [x] `serial_future` "(Burgess 1982 §1.6, No Last Element)"; `temp_linearity` "(Burgess 1984
       §0.3 axiom A2a)"; `until_F` "(the paper's UE; derivable from UG with χ = ⊤ plus TN)".
-- [ ] Module docstring: add a `## Axiom Sources` subsection. It should give a compact table
+- [x] Module docstring: add a `## Axiom Sources` subsection *(deviation: altered — placed as a top-level section before `## References` so it does not split `## Axiom System` from its `### Layers`)*. It should give a compact table
       mapping each paper key to the Lean constructor, the Burgess number (1982 or 1984, labeled
       explicitly) and the Xu number. It should note that Burgess A4a/A4b is the one omitted 1982
       pair, and that TC/UT/NP/NF/NA/NB are original.
-- [ ] Correct the header "Under reflexive semantics ... (G/H use ≤/≥, U/S use ≤/≥ ...)" sentence
+- [x] Correct the header "Under reflexive semantics ... (G/H use ≤/≥, U/S use ≤/≥ ...)" sentence
       in `## Axiom System` so it agrees with the file's irreflexive/open-guard statement.
-- [ ] Check every quoted Burgess formula against report Step Map items 2-3, symbol by symbol.
+- [x] Check every quoted Burgess formula against report Step Map items 2-3, symbol by symbol.
 
 **Timing**: 1 hour
 
@@ -149,13 +149,13 @@ Phases within the same wave can execute in parallel. Their file sets are disjoin
 
 ---
 
-### Phase 2: Disambiguate Burgess 1984 A7a in Chronicle files [NOT STARTED]
+### Phase 2: Disambiguate Burgess 1984 A7a in Chronicle files [COMPLETED]
 
 **Goal**: Stop the three Burgess 1984 A7a citations from being read as the 1982 Until-linearity
 axiom.
 
 **Tasks**:
-- [ ] At the first A7a mention in each file, append "(Burgess 1984's Dedekind-completeness
+- [x] At the first A7a mention in each file, append "(Burgess 1984's Dedekind-completeness
       axiom `Fp ∧ FG¬p → F(HFp ∧ G¬p)`, not the 1982 Until-linearity axiom of the same number)",
       or an equivalent shorter parenthetical.
 
@@ -179,22 +179,22 @@ axiom.
 
 ---
 
-### Phase 3: Close the record-file opportunity; add the source column [NOT STARTED]
+### Phase 3: Close the record-file opportunity; add the source column [COMPLETED]
 
 **Goal**: Record the reconciliation and the paper errata in the reference docs.
 
 **Tasks**:
-- [ ] `docs/reference/paper-definitions-of-record.md`: rewrite the "Open opportunity: `def:BX`'s
+- [x] `docs/reference/paper-definitions-of-record.md`: rewrite the "Open opportunity: `def:BX`'s
       Burgess/Xu provenance footnote" paragraph as a closed record. It should give the verdict
       (the paper is correct: CN is A7a; the tree NOTE was a transcription artifact, now
       corrected), point to the `Axioms.lean` `## Axiom Sources` section, and state Xu's result
       precisely (Σ₄ / 𝒞₄, (10) defines (10)*).
-- [ ] Add a "Paper footnote errata (outside this repository)" list with two items: (i) UE follows
+- [x] Add a "Paper footnote errata (outside this repository)" list with two items: (i) UE follows
       from UG with χ = ⊤ (plus TN), not from UC with ψ = ⊤; (ii) Xu has no class `𝖵₃`, so TL is
       Burgess 1984 §0.3 A2a verbatim, and its nearest Xu formula is (13) (§4 Thm 4.3). State
       that the paper source is not edited here.
-- [ ] Leave the verbatim quoted `def:BX` footnote block byte-identical.
-- [ ] `docs/reference/axiom-reference.md` § Paper Key Correspondence: add a "Burgess / Xu
+- [x] Leave the verbatim quoted `def:BX` footnote block byte-identical.
+- [x] `docs/reference/axiom-reference.md` § Paper Key Correspondence: add a "Burgess / Xu
       source" column populated from the verified map. Label Burgess 1982 and Burgess 1984
       explicitly. Mark TC/UT/NP/NF/NA/NB as "original"; TR has no source listed.
 
@@ -214,7 +214,9 @@ axiom.
 
 ---
 
-### Phase 4: Final gate [NOT STARTED]
+### Phase 4: Final gate [PARTIAL]
+
+**Status note**: the full `lake build` and the task-reference/module-invariants lint run were both stopped by the harness because the system was low on memory, not because of a failure. They were not restarted, as the harness instructed. `scripts/check-paper-definitions.sh` passed, and the scoped build of Axioms plus the three Chronicle modules passed (1755 jobs, no warnings in those modules).
 
 **Goal**: Run the full gate set over the combined change.
 
@@ -222,7 +224,7 @@ axiom.
 - [ ] `lake build` (full) is green, with no new warnings in touched modules.
 - [ ] `bash .claude/scripts/check-task-references.sh` is clean on all changed files.
 - [ ] `bash scripts/check-paper-definitions.sh` and `bash scripts/check-module-invariants.sh`
-      pass.
+      pass. *(paper-definitions passed; module-invariants not run — stopped for low memory)*
 - [ ] `git diff --stat` lists only the six planned files.
 
 **Timing**: 30 minutes
