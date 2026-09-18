@@ -772,6 +772,143 @@ def modal_4 {fc : FrameClass} (φ : Formula) :
     DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.box.diamond φ.box) (FrameClass.base_le fc)
   impTrans b (mp (DerivationTree.necessitation _ m5) mk)
 
+/-! ### Disjunction permutations
+
+`A ∨ B` is `¬A → B`. The two combinators below are the only propositional reshuffles the
+paper's linearity schemata need: `orRotate` cycles a right-associated 3-way disjunction and
+`orAssocRev` re-associates it to the left. Both are built from K, S, B, C and double negation
+elimination alone, so every derivation using them stays computable. -/
+
+/-- `(¬Y → Z) → (¬Z → Y)`: classical contraposition of a negated antecedent. -/
+def contraSwap {fc : FrameClass} {Y Z : Formula} : ⊢[fc] (Y.neg.imp Z).imp (Z.neg.imp Y) :=
+  -- B at (Z → ⊥): (Z → ⊥) → (¬Y → Z) → ¬¬Y, flipped
+  let f1 : ⊢[fc] (Y.neg.imp Z).imp (Z.neg.imp Y.neg.neg) :=
+    mp (bCombinator (A := Y.neg) (B := Z) (C := Formula.bot))
+      (theoremFlip (A := Z.neg) (B := Y.neg.imp Z) (C := Y.neg.neg))
+  impTrans f1 (mp (dneBase Y) (bCombinator (A := Z.neg) (B := Y.neg.neg) (C := Y)))
+
+/-- `X ∨ (Y ∨ Z) → Z ∨ (X ∨ Y)`: rotate a right-associated 3-way disjunction. -/
+def orRotate {fc : FrameClass} {X Y Z : Formula} :
+    ⊢[fc] (X.or (Y.or Z)).imp (Z.or (X.or Y)) :=
+  -- h : ¬X → (¬Y → Z) ↦ (¬X → (¬Z → Y)) ↦ (¬Z → (¬X → Y))
+  let step : ⊢[fc] (X.neg.imp (Y.neg.imp Z)).imp (X.neg.imp (Z.neg.imp Y)) :=
+    mp (contraSwap (Y := Y) (Z := Z)) (bCombinator (A := X.neg))
+  impTrans step (theoremFlip (A := X.neg) (B := Z.neg) (C := Y))
+
+/-- `A ∨ (B ∨ C) → (A ∨ B) ∨ C`: re-associate a 3-way disjunction to the left. -/
+def orAssocRev {fc : FrameClass} {A B C : Formula} :
+    ⊢[fc] (A.or (B.or C)).imp ((A.or B).or C) :=
+  -- A ∨ (B ∨ C) ↦ C ∨ (A ∨ B) = ¬C → (A ∨ B) ↦ ¬(A ∨ B) → C
+  impTrans (orRotate (X := A) (Y := B) (Z := C)) (contraSwap (Y := C) (Z := A.or B))
+
+/-! ### Linearity: legacy forms and past mirrors
+
+The primitive `Axiom.temp_linearity` (TL) and `Axiom.linear_until` (CN) are the paper's
+statements verbatim. The forms the tree used before, and the past mirrors in that historical
+disjunct order, are derived here: the future forms by `orRotate`/`orAssocRev` from the axiom,
+the past forms from the TR image of the axiom followed by the same permutation. -/
+
+/-- The former statement of TL, `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ (F(φ ∧ Fψ) ∨ F(Fφ ∧ ψ))`: the
+paper's TL with its disjuncts rotated twice. -/
+@[tmLemma]
+def temp_linearity_legacy {fc : FrameClass} (φ ψ : Formula) :
+    ⊢[fc] (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
+      (Formula.or (Formula.someFuture (Formula.and φ ψ))
+        (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
+          (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))))) :=
+  impTrans (DerivationTree.axiom [] _ (Axiom.temp_linearity φ ψ) (FrameClass.base_le fc))
+    (impTrans orRotate orRotate)
+
+/-- The former statement of CN, with the 3-way disjunction left-associated
+`(A ∨ B) ∨ C`: the paper's CN re-associated. -/
+@[tmLemma]
+def linear_until_legacy {fc : FrameClass} (φ ψ χ θ : Formula) :
+    ⊢[fc] (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
+      |>.imp (Formula.or
+        (Formula.or
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
+        (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) :=
+  impTrans (DerivationTree.axiom [] _ (Axiom.linear_until φ ψ χ θ) (FrameClass.base_le fc))
+    orAssocRev
+
+/-- Past linearity `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ (P(φ ∧ Pψ) ∨ P(Pφ ∧ ψ))`: TR of the paper's TL,
+then its disjuncts rotated twice. -/
+@[tmLemma]
+def temp_linearity_past {fc : FrameClass} (φ ψ : Formula) :
+    ⊢[fc] (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
+      (Formula.or (Formula.somePast (Formula.and φ ψ))
+        (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
+          (Formula.somePast (Formula.and (Formula.somePast φ) ψ))))) :=
+  let tr : ⊢[fc] (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
+      (Formula.or (Formula.somePast (Formula.and (Formula.somePast φ) ψ))
+        (Formula.or (Formula.somePast (Formula.and φ ψ))
+          (Formula.somePast (Formula.and φ (Formula.somePast ψ)))))) :=
+    ofReflect (DerivationTree.axiom [] _ (Axiom.temp_linearity φ.reflectTime ψ.reflectTime)
+        (FrameClass.base_le fc))
+      (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top,
+        Formula.and, Formula.or, Formula.neg, Formula.reflect_time_involution])
+  impTrans tr (impTrans orRotate orRotate)
+
+/-- Linearity of Since, `(φ S ψ) ∧ (χ S θ) → ((φ∧χ) S (ψ∧θ) ∨ (φ∧χ) S (ψ∧χ)) ∨ (φ∧χ) S (φ∧θ)`:
+TR of the paper's CN, then re-associated. -/
+@[tmLemma]
+def linear_since {fc : FrameClass} (φ ψ χ θ : Formula) :
+    ⊢[fc] (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
+      |>.imp (Formula.or
+        (Formula.or
+          (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
+          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
+        (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) :=
+  let tr : ⊢[fc] (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
+      |>.imp (Formula.or
+        (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
+        (Formula.or
+          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ))
+          (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))) :=
+    ofReflect (DerivationTree.axiom [] _
+        (Axiom.linear_until φ.reflectTime ψ.reflectTime χ.reflectTime θ.reflectTime)
+        (FrameClass.base_le fc))
+      (by simp [Formula.reflectTime, Formula.and, Formula.or, Formula.neg,
+        Formula.reflect_time_involution])
+  impTrans tr orAssocRev
+
+/-- Context-lifted `temp_linearity_legacy`. -/
+def temp_linearity_legacyAt {fc : FrameClass} (Γ : Context) (φ ψ : Formula) :
+    Γ ⊢[fc] (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
+      (Formula.or (Formula.someFuture (Formula.and φ ψ))
+        (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
+          (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))))) :=
+  lift Γ (temp_linearity_legacy φ ψ)
+
+/-- Context-lifted `linear_until_legacy`. -/
+def linear_until_legacyAt {fc : FrameClass} (Γ : Context) (φ ψ χ θ : Formula) :
+    Γ ⊢[fc] (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
+      |>.imp (Formula.or
+        (Formula.or
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
+        (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) :=
+  lift Γ (linear_until_legacy φ ψ χ θ)
+
+/-- Context-lifted `temp_linearity_past`. -/
+def temp_linearity_pastAt {fc : FrameClass} (Γ : Context) (φ ψ : Formula) :
+    Γ ⊢[fc] (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
+      (Formula.or (Formula.somePast (Formula.and φ ψ))
+        (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
+          (Formula.somePast (Formula.and (Formula.somePast φ) ψ))))) :=
+  lift Γ (temp_linearity_past φ ψ)
+
+/-- Context-lifted `linear_since`. -/
+def linear_sinceAt {fc : FrameClass} (Γ : Context) (φ ψ χ θ : Formula) :
+    Γ ⊢[fc] (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
+      |>.imp (Formula.or
+        (Formula.or
+          (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
+          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
+        (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) :=
+  lift Γ (linear_since φ ψ χ θ)
+
 /-- Context-lifted `modal_b`. -/
 def modal_bAt {fc : FrameClass} (Γ : Context) (φ : Formula) :
     Γ ⊢[fc] φ.imp (Formula.box φ.diamond) :=

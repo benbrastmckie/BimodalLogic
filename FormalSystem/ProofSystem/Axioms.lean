@@ -228,16 +228,19 @@ inductive Axiom : Formula → Type where
   guard-first untl(guard, event)):
   `U(ψ,φ) ∧ U(θ,χ) → U(ψ∧θ, φ∧χ) ∨ U(ψ∧χ, φ∧χ) ∨ U(φ∧θ, φ∧χ)`.
   All three disjuncts share the fixed guard `φ∧χ` (Burgess's `q ∧ s`); only the events vary.
+  Stated as the paper's CN (`sub:Logic`) verbatim: the disjuncts in the paper's order, the
+  3-way disjunction right-associated `A ∨ (B ∨ C)`. The former left-associated form
+  `(A ∨ B) ∨ C` is the derived `DerivedAxioms.linear_until_legacy`.
   If two Until formulas hold simultaneously, their witnesses are linearly ordered.
   The three disjuncts correspond to: witnesses coincide, first comes first, second comes first.
   Sound under this tree's strict/open-guard semantics: see `linear_until_valid`. -/
   | linear_until (φ ψ χ θ : Formula) :
       Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
         |>.imp (Formula.or
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
           (Formula.or
-            (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-            (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
-          (Formula.untl (Formula.and φ χ) (Formula.and φ θ))))
+            (Formula.untl (Formula.and φ χ) (Formula.and ψ χ))
+            (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))))
   -- NOTE (provenance): `linear_until`/`linear_since` ARE Burgess 1982 A7a/A7b
   -- (Xu 1988 (10)/(11)). Burgess writes U(event, guard), and A7a's three disjuncts share
   -- the fixed GUARD q∧s while the events vary. A former constructor pair
@@ -262,14 +265,17 @@ inductive Axiom : Formula → Type where
       Axiom ((Formula.untl φ ψ).imp (Formula.someFuture ψ))
   -- Layer 3b: Additional BX Temporal (TL, UT; their past mirrors are TR-derived)
   /-- BX11: Temporal linearity (Burgess 1984 §0.3 axiom A2a; nearest Xu 1988 formula is (13)):
-  `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`.
+  `F(φ) ∧ F(ψ) → F(F(φ) ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)))`.
+  Stated as the paper's TL (`sub:Logic`) verbatim, with the 3-way disjunction right-associated.
+  The former disjunct order `F(φ ∧ ψ) ∨ (F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ))` is the derived
+  `DerivedAxioms.temp_linearity_legacy`.
   Future witnesses are linearly ordered. Uses linearity of the underlying temporal order.
   This axiom is NOT derivable from BX1-BX10 (see LinearityDerivedFacts.lean counterexample). -/
   | temp_linearity (φ ψ : Formula) :
       Axiom (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
-        (Formula.or (Formula.someFuture (Formula.and φ ψ))
-          (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
-            (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ)))))
+        (Formula.or (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))
+          (Formula.or (Formula.someFuture (Formula.and φ ψ))
+            (Formula.someFuture (Formula.and φ (Formula.someFuture ψ))))))
   /-- BX12: F-Until equivalence (guard-first: untl(guard, event)):
   `F(φ) → U(φ, ⊤)`.
   Every future eventuality can be witnessed by an Until formula with vacuous guard.

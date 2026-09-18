@@ -249,7 +249,7 @@ theorem linear_until_mcs (fc : FrameClass) {A : Set Formula}
   -- Form the conjunction: U(φ,ψ) ∧ U(χ,θ) ∈ A
   have h_conj := conj_mcs fc h_mcs _ _ h_u1 h_u2
   -- Apply BX7 axiom
-  have h_bx7 := DerivationTree.axiom (fc := fc) [] _ (Axiom.linear_until φ ψ χ θ) trivial
+  have h_bx7 := (DerivedAxioms.linear_until_legacy (fc := fc) φ ψ χ θ)
   have h_disj := SetMaximalConsistent.mp_of_theorem h_mcs h_bx7 h_conj
   -- h_disj : (D1 ∨ D2) ∨ D3 ∈ A
   -- Case split on the outer disjunction

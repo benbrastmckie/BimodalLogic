@@ -171,14 +171,14 @@ inductive PlusAxiom : PlusFormula → Type where
   | absorb_since (φ ψ : PlusFormula) :
       PlusAxiom ((PlusFormula.snce φ (PlusFormula.and φ (PlusFormula.snce φ ψ))).imp
         (PlusFormula.snce φ ψ))
-  /-- BX7: linearity of Until -/
+  /-- BX7: linearity of Until (the paper's CN, right-associated) -/
   | linear_until (φ ψ χ θ : PlusFormula) :
       PlusAxiom (PlusFormula.and (PlusFormula.untl φ ψ) (PlusFormula.untl χ θ)
         |>.imp (PlusFormula.or
+          (PlusFormula.untl (PlusFormula.and φ χ) (PlusFormula.and ψ θ))
           (PlusFormula.or
-            (PlusFormula.untl (PlusFormula.and φ χ) (PlusFormula.and ψ θ))
-            (PlusFormula.untl (PlusFormula.and φ χ) (PlusFormula.and ψ χ)))
-          (PlusFormula.untl (PlusFormula.and φ χ) (PlusFormula.and φ θ))))
+            (PlusFormula.untl (PlusFormula.and φ χ) (PlusFormula.and ψ χ))
+            (PlusFormula.untl (PlusFormula.and φ χ) (PlusFormula.and φ θ)))))
   /-- BX7': linearity of Since -/
   | linear_since (φ ψ χ θ : PlusFormula) :
       PlusAxiom (PlusFormula.and (PlusFormula.snce φ ψ) (PlusFormula.snce χ θ)
@@ -193,12 +193,12 @@ inductive PlusAxiom : PlusFormula → Type where
   /-- BX10': `S(ψ, φ) → P(ψ)` -/
   | since_P (φ ψ : PlusFormula) :
       PlusAxiom ((PlusFormula.snce φ ψ).imp (PlusFormula.somePast ψ))
-  /-- BX11: `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)` -/
+  /-- BX11 (the paper's TL, verbatim): `F(φ) ∧ F(ψ) → F(F(φ) ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)))` -/
   | temp_linearity (φ ψ : PlusFormula) :
       PlusAxiom (PlusFormula.and (PlusFormula.someFuture φ) (PlusFormula.someFuture ψ) |>.imp
-        (PlusFormula.or (PlusFormula.someFuture (PlusFormula.and φ ψ))
-          (PlusFormula.or (PlusFormula.someFuture (PlusFormula.and φ (PlusFormula.someFuture ψ)))
-            (PlusFormula.someFuture (PlusFormula.and (PlusFormula.someFuture φ) ψ)))))
+        (PlusFormula.or (PlusFormula.someFuture (PlusFormula.and (PlusFormula.someFuture φ) ψ))
+          (PlusFormula.or (PlusFormula.someFuture (PlusFormula.and φ ψ))
+            (PlusFormula.someFuture (PlusFormula.and φ (PlusFormula.someFuture ψ))))))
   /-- BX11': `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` -/
   | temp_linearity_past (φ ψ : PlusFormula) :
       PlusAxiom (PlusFormula.and (PlusFormula.somePast φ) (PlusFormula.somePast ψ) |>.imp

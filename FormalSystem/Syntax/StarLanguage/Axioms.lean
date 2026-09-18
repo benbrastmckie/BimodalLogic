@@ -303,10 +303,10 @@ inductive StarAxiom : StarFormula → Type where
   | linear_until (φ ψ χ θ : StarFormula) :
       StarAxiom (StarFormula.and (StarFormula.untl φ ψ) (StarFormula.untl χ θ)
         |>.imp (StarFormula.or
+          (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ θ))
           (StarFormula.or
-            (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ θ))
-            (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ χ)))
-          (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and φ θ))))
+            (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ χ))
+            (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and φ θ)))))
   /-- BX7': linearity of Since. Mirrors `PlusAxiom.linear_since`. -/
   | linear_since (φ ψ χ θ : StarFormula) :
       StarAxiom (StarFormula.and (StarFormula.snce φ ψ) (StarFormula.snce χ θ)
@@ -322,13 +322,13 @@ inductive StarAxiom : StarFormula → Type where
   /-- BX10': `S(ψ, φ) → P(ψ)`. Mirrors `PlusAxiom.since_P`. -/
   | since_P (φ ψ : StarFormula) :
       StarAxiom ((StarFormula.snce φ ψ).imp (StarFormula.somePast ψ))
-  /-- BX11: `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`. Mirrors
+  /-- BX11 (the paper's TL): `F(φ) ∧ F(ψ) → F(F(φ) ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)))`. Mirrors
   `PlusAxiom.temp_linearity`. -/
   | temp_linearity (φ ψ : StarFormula) :
       StarAxiom (StarFormula.and (StarFormula.someFuture φ) (StarFormula.someFuture ψ) |>.imp
-        (StarFormula.or (StarFormula.someFuture (StarFormula.and φ ψ))
-          (StarFormula.or (StarFormula.someFuture (StarFormula.and φ (StarFormula.someFuture ψ)))
-            (StarFormula.someFuture (StarFormula.and (StarFormula.someFuture φ) ψ)))))
+        (StarFormula.or (StarFormula.someFuture (StarFormula.and (StarFormula.someFuture φ) ψ))
+          (StarFormula.or (StarFormula.someFuture (StarFormula.and φ ψ))
+            (StarFormula.someFuture (StarFormula.and φ (StarFormula.someFuture ψ))))))
   /-- BX11': `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)`. Mirrors
   `PlusAxiom.temp_linearity_past`. -/
   | temp_linearity_past (φ ψ : StarFormula) :

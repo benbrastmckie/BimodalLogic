@@ -747,7 +747,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX7: linear_until: U(ψ,φ) ∧ U(θ,χ) → ...
   mkEntry "linear_until_axiom"
-    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.linear_until p q r s) trivial),
+    (DerivedAxioms.linear_until_legacy (fc := .Base) p q r s),
 
   -- BX7': linear_since: S(ψ,φ) ∧ S(θ,χ) → ...
   mkEntry "linear_since_axiom"
@@ -755,7 +755,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX11: temp_linearity: F(φ) ∧ F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
   mkEntry "temp_linearity_axiom"
-    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.temp_linearity p q) trivial),
+    (DerivedAxioms.temp_linearity_legacy (fc := .Base) p q),
 
   -- BX11': temp_linearity_past: P(φ) ∧ P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
   mkEntry "temp_linearity_past_axiom"
@@ -903,7 +903,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "absorb_since_axiom_qr"
     (DerivedAxioms.absorb_since (fc := .Base) q r),
   mkEntry "temp_linearity_axiom_qr"
-    (DerivationTree.axiom (fc := .Base) [] _ (Axiom.temp_linearity q r) trivial),
+    (DerivedAxioms.temp_linearity_legacy (fc := .Base) q r),
   mkEntry "F_until_equiv_axiom_q"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv q) trivial),
   mkEntry "P_since_equiv_axiom_q"
@@ -969,7 +969,7 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial)),
   mkEntry "G_temp_linearity_axiom"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .Base) [] _ (Axiom.temp_linearity p q) trivial)),
+      (DerivedAxioms.temp_linearity_legacy (fc := .Base) p q)),
   mkEntry "G_F_until_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial)),

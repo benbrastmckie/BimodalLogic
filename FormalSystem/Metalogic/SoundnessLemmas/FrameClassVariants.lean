@@ -656,6 +656,31 @@ These are what the `time_reflection` case of `soundness`, `soundness_ztime_valid
 structural sorries; check C3 asserts that by content.
 -/
 
+/-! ### Disjunct permutations of valid implications
+
+The paper states TL and CN with a right-associated 3-way disjunction in its own disjunct order
+(`Axiom.temp_linearity`, `Axiom.linear_until`); the per-schema validity lemmas above are stated
+in the tree's historical order. Validity is invariant under permuting the disjuncts, which these
+two lemmas record once for every frame class. -/
+
+/-- Rotating the consequent `X ∨ (Y ∨ Z)` of a valid implication to `Z ∨ (X ∨ Y)` preserves
+validity. -/
+theorem validIn_imp_or_rotate {fc : FrameClass} {A X Y Z : Formula}
+    (h : ValidIn fc (A.imp (X.or (Y.or Z)))) : ValidIn fc (A.imp (Z.or (X.or Y))) := by
+  intro F hF M τ t hA
+  have h' := h F hF M τ t hA
+  simp only [Truth.or_iff] at h' ⊢
+  tauto
+
+/-- Re-associating the consequent `(X ∨ Y) ∨ Z` of a valid implication to `X ∨ (Y ∨ Z)`
+preserves validity. -/
+theorem validIn_imp_or_assoc {fc : FrameClass} {A X Y Z : Formula}
+    (h : ValidIn fc (A.imp ((X.or Y).or Z))) : ValidIn fc (A.imp (X.or (Y.or Z))) := by
+  intro F hF M τ t hA
+  have h' := h F hF M τ t hA
+  simp only [Truth.or_iff] at h' ⊢
+  tauto
+
 /-- All base axiom swaps are valid without DenselyOrdered constraints.
 Base axioms (minFrameClass = .Base) don't need density or discreteness.
 
@@ -682,12 +707,13 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   | enrichment_until φ ψ p => exact enrichment_until_swap_valid φ ψ p
   | self_accum_until φ ψ => exact self_accum_until_swap_valid φ ψ
   | absorb_until φ ψ => exact absorb_until_swap_valid φ ψ
-  | linear_until φ ψ χ θ => exact linear_until_swap_valid φ ψ χ θ
+  | linear_until φ ψ χ θ => exact validIn_imp_or_assoc (linear_until_swap_valid φ ψ χ θ)
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
   -- NOTE: until_elim / since_elim match arms removed (constructors deleted in the
   -- open-guard refactor)
   | until_F φ ψ => exact until_F_swap_valid φ ψ
-  | temp_linearity φ ψ => exact temp_linearity_past_validIn φ.reflectTime ψ.reflectTime
+  | temp_linearity φ ψ =>
+    exact validIn_imp_or_rotate (temp_linearity_past_validIn φ.reflectTime ψ.reflectTime)
   | F_until_equiv φ => exact P_since_equiv_validIn φ.reflectTime
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
   -- open-guard refactor)

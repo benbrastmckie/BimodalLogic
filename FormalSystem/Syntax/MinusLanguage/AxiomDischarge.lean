@@ -39,7 +39,7 @@ is a single `DerivationTree.axiom` or a single named theorem.
 | DN | `Axiom.density` | yes |
 | TS | `Axiom.serial_future` + MP | **no** — `F`-bridge |
 | TC | `Axiom.connect_future` | **no** — `P`-bridge under `G` |
-| TL | `Axiom.temp_linearity` | **no** — `F`-bridge *and* a disjunct reshuffle |
+| TL | `Axiom.temp_linearity` (via `DerivedAxioms.temp_linearity_legacy`) | **no** — `F`-bridge *and* a disjunct reshuffle |
 | DF | `Theorems.DiscreteUnfolding.dfSchema` | **no** — `F`-bridge on both sides |
 | CO | `Theorems.DedekindDerived.coDerived` | **no** — `F`-bridge under `△` |
 
@@ -238,9 +238,10 @@ def dischargeTempConnect {fc : FrameClass} (a : MinusFormula) :
 /--
 **TL**, the one Base row with real friction.
 
-The paper's disjunct order is `F(Fφ ∧ ψ) ∨ F(φ ∧ ψ) ∨ F(φ ∧ Fψ)`; this repository's
-`Axiom.temp_linearity` gives `F(φ ∧ ψ) ∨ (F(φ ∧ Fψ) ∨ F(Fφ ∧ ψ))` — the same three disjuncts,
-differently ordered and associated. On top of that every `F` has to cross the bridge.
+The paper's disjunct order is `F(Fφ ∧ ψ) ∨ F(φ ∧ ψ) ∨ F(φ ∧ Fψ)`, which `Axiom.temp_linearity`
+now states verbatim. The discharge below still routes through the derived
+`DerivedAxioms.temp_linearity_legacy`, `F(φ ∧ ψ) ∨ (F(φ ∧ Fψ) ∨ F(Fφ ∧ ψ))` — the same three
+disjuncts, differently ordered and associated. On top of that every `F` has to cross the bridge.
 
 Route: bridge the antecedent down to `Fφ ∧ Fψ`, apply the axiom, then `orElim` the three
 disjuncts and re-introduce each into its paper position, bridging (and, in two cases, pushing
@@ -269,8 +270,7 @@ def dischargeTempLinearity {fc : FrameClass} (a b : MinusFormula) :
       ((Formula.and A B).someFuture).or
         (((Formula.and A B.someFuture).someFuture).or
           ((Formula.and A.someFuture B).someFuture)) :=
-    ctxMp (DerivationTree.axiom _ _ (ProofSystem.Axiom.temp_linearity A B)
-      (FrameClass.base_le fc)) (andIntro hFA hFB)
+    ctxMp (ProofSystem.DerivedAxioms.temp_linearity_legacyAt _ A B) (andIntro hFA hFB)
   refine orElim Γ ((Formula.and A B).someFuture)
     (((Formula.and A B.someFuture).someFuture).or ((Formula.and A.someFuture B).someFuture))
     C hLin ?_ ?_

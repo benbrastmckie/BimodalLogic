@@ -151,8 +151,7 @@ def unfoldForward (e g : Formula) :
         (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.bot))).or
         (Formula.untl (Formula.and G' Formula.bot) (Formula.and G' Formula.top)) :=
     DerivationTree.modus_ponens _ _ _
-      (DerivationTree.axiom _ _ (Axiom.linear_until G' e Formula.bot Formula.top)
-        (FrameClass.base_le _)) h4
+      (DerivedAxioms.linear_until_legacyAt _ G' e Formula.bot Formula.top) h4
   -- Disjunct 1: `U(e ∧ ⊤, G' ∧ ⊥)` collapses to `X e`.
   have d1 : Γ ⊢[FrameClass.ZTime]
       (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.top)).imp C := by
@@ -238,8 +237,7 @@ def nextConj {fc : FrameClass} (A B : Formula) :
   have h4 : Γ ⊢[fc] D := DerivationTree.assumption Γ D (by simp [hΓ])
   have h5 : Γ ⊢[fc] (E1.or E2).or E3 :=
     DerivationTree.modus_ponens Γ _ _
-      (DerivationTree.axiom Γ _ (Axiom.linear_until Formula.bot A Formula.bot B)
-        (FrameClass.base_le _)) h4
+      (DerivedAxioms.linear_until_legacyAt Γ Formula.bot A Formula.bot B) h4
   have kill : ∀ (Δ : Context) (E : Formula), (⊢[fc] E.imp Formula.bot) →
       (Δ ⊢[fc] (Formula.untl W E).imp T) := by
     intro Δ E hE

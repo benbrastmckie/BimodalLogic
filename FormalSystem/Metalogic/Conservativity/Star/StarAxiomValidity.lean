@@ -494,6 +494,44 @@ theorem starValid_linear_until (φ ψ χ θ : StarFormula) :
   · exact .inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
       fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩
 
+/-- The paper's CN over L⋆ (`StarAxiom.linear_until`, right-associated). -/
+theorem starValid_linear_until_paper (φ ψ χ θ : StarFormula) :
+    StarValid (StarFormula.and (StarFormula.untl φ ψ) (StarFormula.untl χ θ)
+      |>.imp (StarFormula.or
+        (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ θ))
+        (StarFormula.or
+          (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and ψ χ))
+          (StarFormula.untl (StarFormula.and φ χ) (StarFormula.and φ θ))))) := by
+  refine StarValid.of_forall fun F M τ t v => ?_
+  simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.untl_iff]
+  rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · exact .inr (.inl ⟨s₁, hts₁, ⟨h_ψs₁, h_guard₂ s₁ hts₁ h_lt⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (lt_trans hrs h_lt)⟩⟩)
+  · exact .inl ⟨s₁, hts₁, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (h_eq ▸ hrs)⟩⟩
+  · exact .inr (.inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩)
+
+/-- The time reflection of the paper's CN over L⋆: Since linearity, right-associated. -/
+theorem starValid_linear_since_paper (φ ψ χ θ : StarFormula) :
+    StarValid (StarFormula.and (StarFormula.snce φ ψ) (StarFormula.snce χ θ)
+      |>.imp (StarFormula.or
+        (StarFormula.snce (StarFormula.and φ χ) (StarFormula.and ψ θ))
+        (StarFormula.or
+          (StarFormula.snce (StarFormula.and φ χ) (StarFormula.and ψ χ))
+          (StarFormula.snce (StarFormula.and φ χ) (StarFormula.and φ θ))))) := by
+  refine StarValid.of_forall fun F M τ t v => ?_
+  simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.snce_iff]
+  rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
+  rcases lt_trichotomy s₂ s₁ with h_lt | h_eq | h_gt
+  · exact .inr (.inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_guard₂ s₁ h_lt hs₁t⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (lt_trans h_lt hs₁r) hrt⟩⟩)
+  · exact .inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (h_eq ▸ hs₁r) hrt⟩⟩
+  · exact .inr (.inr ⟨s₂, hs₂t, ⟨h_guard₁ s₂ h_gt hs₂t, h_θs₂⟩,
+      fun r hs₂r hrt => ⟨h_guard₁ r (lt_trans h_gt hs₂r) hrt, h_guard₂ r hs₂r hrt⟩⟩)
+
 /-- BX7' over L⋆, the past mirror of `starValid_linear_until`. -/
 theorem starValid_linear_since (φ ψ χ θ : StarFormula) :
     StarValid (StarFormula.and (StarFormula.snce φ ψ) (StarFormula.snce χ θ)
@@ -544,6 +582,34 @@ theorem starValid_temp_linearity (φ ψ : StarFormula) :
   · exact .inr (.inl ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
   · exact .inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩
   · exact .inr (.inr ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩)
+
+/-- The paper's TL over L⋆ (`StarAxiom.temp_linearity`). -/
+theorem starValid_temp_linearity_paper (φ ψ : StarFormula) :
+    StarValid (StarFormula.and (StarFormula.someFuture φ) (StarFormula.someFuture ψ) |>.imp
+      (StarFormula.or (StarFormula.someFuture (StarFormula.and (StarFormula.someFuture φ) ψ))
+        (StarFormula.or (StarFormula.someFuture (StarFormula.and φ ψ))
+          (StarFormula.someFuture (StarFormula.and φ (StarFormula.someFuture ψ)))))) := by
+  refine StarValid.of_forall fun F M τ t v => ?_
+  simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.someFuture_iff]
+  rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inr (.inr ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
+  · exact .inr (.inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩)
+  · exact .inl ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩
+
+/-- The time reflection of the paper's TL over L⋆. -/
+theorem starValid_temp_linearity_past_paper (φ ψ : StarFormula) :
+    StarValid (StarFormula.and (StarFormula.somePast φ) (StarFormula.somePast ψ) |>.imp
+      (StarFormula.or (StarFormula.somePast (StarFormula.and (StarFormula.somePast φ) ψ))
+        (StarFormula.or (StarFormula.somePast (StarFormula.and φ ψ))
+          (StarFormula.somePast (StarFormula.and φ (StarFormula.somePast ψ)))))) := by
+  refine StarValid.of_forall fun F M τ t v => ?_
+  simp only [StarTruth.imp_iff, StarTruth.and_iff, StarTruth.or_iff, StarTruth.somePast_iff]
+  rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inl ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩
+  · exact .inr (.inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩)
+  · exact .inr (.inr ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
 
 /-- BX11' over L⋆, the past mirror of `starValid_temp_linearity`. -/
 theorem starValid_temp_linearity_past (φ ψ : StarFormula) :
@@ -1096,11 +1162,11 @@ theorem starAxiom_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
   | self_accum_since φ ψ => exact starValid_self_accum_since φ ψ
   | absorb_until φ ψ => exact starValid_absorb_until φ ψ
   | absorb_since φ ψ => exact starValid_absorb_since φ ψ
-  | linear_until φ ψ χ θ => exact starValid_linear_until φ ψ χ θ
+  | linear_until φ ψ χ θ => exact starValid_linear_until_paper φ ψ χ θ
   | linear_since φ ψ χ θ => exact starValid_linear_since φ ψ χ θ
   | until_F φ ψ => exact starValid_until_F φ ψ
   | since_P φ ψ => exact starValid_since_P φ ψ
-  | temp_linearity φ ψ => exact starValid_temp_linearity φ ψ
+  | temp_linearity φ ψ => exact starValid_temp_linearity_paper φ ψ
   | temp_linearity_past φ ψ => exact starValid_temp_linearity_past φ ψ
   | F_until_equiv φ => exact starValid_F_until_equiv φ
   | P_since_equiv φ => exact starValid_P_since_equiv φ
@@ -1243,7 +1309,7 @@ theorem starAxiom_swap_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
   | linear_until φ ψ χ θ =>
     simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
       StarFormula.reflectTime]
-    exact starValid_linear_since φ.reflectTime ψ.reflectTime χ.reflectTime θ.reflectTime
+    exact starValid_linear_since_paper φ.reflectTime ψ.reflectTime χ.reflectTime θ.reflectTime
   | linear_since φ ψ χ θ =>
     simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
       StarFormula.reflectTime]
@@ -1257,7 +1323,7 @@ theorem starAxiom_swap_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
   | temp_linearity φ ψ =>
     simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
       StarFormula.reflect_time_some_future, StarFormula.reflectTime]
-    exact starValid_temp_linearity_past φ.reflectTime ψ.reflectTime
+    exact starValid_temp_linearity_past_paper φ.reflectTime ψ.reflectTime
   | temp_linearity_past φ ψ =>
     simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
       StarFormula.reflect_time_some_past, StarFormula.reflectTime]

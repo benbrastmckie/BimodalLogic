@@ -949,7 +949,7 @@ theorem untl_conj_guard (fc : FrameClass) {A : Set Formula}
   have h_conj : Formula.and (Formula.untl β₁ γ) (Formula.untl β₂ γ) ∈ A :=
     dcs_conj_closed (mcs_is_dcs h_mcs) h1 h2
   have h_bx7 := theorem_in_mcs h_mcs
-    (DerivationTree.axiom [] _ (Axiom.linear_until β₁ γ β₂ γ) trivial)
+    (DerivedAxioms.linear_until_legacy β₁ γ β₂ γ)
   have h_disj := SetMaximalConsistent.implication_property h_mcs h_bx7 h_conj
   set guard := Formula.and β₁ β₂
   set D1 := Formula.untl guard (Formula.and γ γ)

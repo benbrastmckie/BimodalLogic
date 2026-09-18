@@ -241,9 +241,10 @@ def ruleAxioms : TableauRule → List AxiomInstance
   -- axioms BX10'/BX5' are the derived TR mirrors `DerivedAxioms.since_P`/`self_accum_since`.
   | .sncePos => [⟨_, .until_F pA qA⟩, ⟨_, .self_accum_until pA qA⟩]
   | .snceNeg => []
-  -- Order trichotomy (1): the three branches ARE the three `temp_linearity` disjuncts. That
-  -- identity is settled design, and it is what makes the eventual admissibility lemma a
-  -- one-liner.
+  -- Order trichotomy (1): the three branches ARE the three `temp_linearity` disjuncts, in the
+  -- order of the derived `DerivedAxioms.temp_linearity_legacy` (the primitive axiom states the
+  -- paper's TL, whose disjuncts are the same three rotated). That identity is settled design,
+  -- and it is what makes the eventual admissibility lemma a one-liner.
   | .orderTrichotomy => [⟨_, .temp_linearity pA qA⟩]
   -- Dense (2)
   | .denseIndicatorClosure => [⟨_, .dense_indicator⟩]

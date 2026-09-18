@@ -21,7 +21,7 @@ constructor.
 Every definition here is obtained by one application of `time_reflection` to the
 primitive's axiom instance at time-reflected arguments, followed by a formula identity
 proved with `Formula.reflect_time_involution`. Each mirror has the same minimal frame class
-as its primary: the twelve Base mirrors are `fc`-polymorphic, `prior_SZ` is gated by
+as its primary: the Base mirrors are `fc`-polymorphic, `prior_SZ` is gated by
 `FrameClass.ZTime ≤ fc` and `prior_S_gap` by `FrameClass.RTime ≤ fc`.
 
 ## Main Definitions
@@ -35,9 +35,7 @@ as its primary: the twelve Base mirrors are `fc`-polymorphic, `prior_SZ` is gate
 | `enrichment_since` | `enrichment_until` (SU) |
 | `self_accum_since` | `self_accum_until` (UF) |
 | `absorb_since` | `absorb_until` (UI) |
-| `linear_since` | `linear_until` (CN) |
 | `since_P` | `until_F` (UE) |
-| `temp_linearity_past` | `temp_linearity` (TL) |
 | `P_since_equiv` | `F_until_equiv` (UT) |
 | `discrete_symm_bwd` | `discrete_symm_fwd` (NP) |
 | `prior_SZ` | `prior_UZ` (UZ) |
@@ -45,6 +43,12 @@ as its primary: the twelve Base mirrors are `fc`-polymorphic, `prior_SZ` is gate
 
 For every `X` there is also a context-lifted form `XAt Γ … : Γ ⊢[fc] …`, obtained by
 weakening from the empty context.
+
+The two linearity mirrors `temp_linearity_past` and `linear_since` keep the historical disjunct
+order, which differs from the TR image of the paper's TL and CN by a propositional permutation;
+they are therefore derived in `Theorems/Combinators.lean`, next to the propositional combinators
+they need, together with the legacy future forms `temp_linearity_legacy` and
+`linear_until_legacy`.
 -/
 
 namespace FormalSystem.ProofSystem.DerivedAxioms
@@ -113,35 +117,12 @@ private def baseAx {fc : FrameClass} {φ : Formula} (a : Axiom φ)
   ofReflect (baseAx (Axiom.absorb_until φ.reflectTime ψ.reflectTime) rfl)
     (by simp [Formula.reflectTime, Formula.and, Formula.neg, Formula.reflect_time_involution])
 
-/-- Linearity of Since: TR of CN (`linear_until`). -/
-@[tmLemma] def linear_since {fc : FrameClass} (φ ψ χ θ : Formula) :
-    ⊢[fc] (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
-      |>.imp (Formula.or
-        (Formula.or
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) :=
-  ofReflect (baseAx (Axiom.linear_until φ.reflectTime ψ.reflectTime χ.reflectTime
-      θ.reflectTime) rfl)
-    (by simp [Formula.reflectTime, Formula.and, Formula.or, Formula.neg,
-      Formula.reflect_time_involution])
-
 /-- `(φ S ψ) → Pψ`: TR of UE (`until_F`). -/
 @[tmLemma] def since_P {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.snce φ ψ).imp (Formula.somePast ψ) :=
   ofReflect (baseAx (Axiom.until_F φ.reflectTime ψ.reflectTime) rfl)
     (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top,
       Formula.reflect_time_involution])
-
-/-- Past linearity: TR of TL (`temp_linearity`). -/
-@[tmLemma] def temp_linearity_past {fc : FrameClass} (φ ψ : Formula) :
-    ⊢[fc] (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
-      (Formula.or (Formula.somePast (Formula.and φ ψ))
-        (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
-          (Formula.somePast (Formula.and (Formula.somePast φ) ψ))))) :=
-  ofReflect (baseAx (Axiom.temp_linearity φ.reflectTime ψ.reflectTime) rfl)
-    (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top,
-      Formula.and, Formula.or, Formula.neg, Formula.reflect_time_involution])
 
 /-- `Pφ → S(⊤, φ)`: TR of UT (`F_until_equiv`). -/
 @[tmLemma] def P_since_equiv {fc : FrameClass} (φ : Formula) :
@@ -214,28 +195,10 @@ def absorb_sinceAt {fc : FrameClass} (Γ : Context) (φ ψ : Formula) :
     Γ ⊢[fc] (Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ) :=
   lift Γ (absorb_since φ ψ)
 
-/-- Context-lifted `linear_since`. -/
-def linear_sinceAt {fc : FrameClass} (Γ : Context) (φ ψ χ θ : Formula) :
-    Γ ⊢[fc] (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
-      |>.imp (Formula.or
-        (Formula.or
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) :=
-  lift Γ (linear_since φ ψ χ θ)
-
 /-- Context-lifted `since_P`. -/
 def since_PAt {fc : FrameClass} (Γ : Context) (φ ψ : Formula) :
     Γ ⊢[fc] (Formula.snce φ ψ).imp (Formula.somePast ψ) :=
   lift Γ (since_P φ ψ)
-
-/-- Context-lifted `temp_linearity_past`. -/
-def temp_linearity_pastAt {fc : FrameClass} (Γ : Context) (φ ψ : Formula) :
-    Γ ⊢[fc] (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
-      (Formula.or (Formula.somePast (Formula.and φ ψ))
-        (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
-          (Formula.somePast (Formula.and (Formula.somePast φ) ψ))))) :=
-  lift Γ (temp_linearity_past φ ψ)
 
 /-- Context-lifted `P_since_equiv`. -/
 def P_since_equivAt {fc : FrameClass} (Γ : Context) (φ : Formula) :

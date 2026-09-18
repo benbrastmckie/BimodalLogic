@@ -485,12 +485,12 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- temp_linearity (BX11): F(φ)∧F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
+      -- temp_linearity (TL, paper order): F(φ)∧F(ψ) → F(F(φ)∧ψ) ∨ (F(φ∧ψ) ∨ F(φ∧F(ψ)))
       <|> (match lhs, rhs with
            | .and (.someFuture phi) (.someFuture psi),
-             .or (.someFuture (.and phi' psi'))
-               (.or (.someFuture (.and phi'' (.someFuture psi'')))
-                 (.someFuture (.and (.someFuture phi''') psi'''))) =>
+             .or (.someFuture (.and (.someFuture phi''') psi'''))
+               (.or (.someFuture (.and phi' psi'))
+                 (.someFuture (.and phi'' (.someFuture psi'')))) =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
                   psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
                  some ⟨_, Axiom.temp_linearity phi psi⟩
@@ -540,12 +540,12 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -- 4-parameter axioms
       -------------------------------------------------------------------
 
-      -- linear_until (BX7): U(ψ,φ)∧U(θ,χ) → U(ψ∧θ,φ∧χ) ∨ U(ψ∧χ,φ∧χ) ∨ U(φ∧θ,φ∧χ)
+      -- linear_until (CN, right-associated): U(ψ,φ)∧U(θ,χ) → U(ψ∧θ,φ∧χ) ∨ (U(ψ∧χ,φ∧χ) ∨ U(φ∧θ,φ∧χ))
       <|> (match lhs, rhs with
            | .and (.untl phi psi) (.untl chi theta),
-             .or (.or (.untl (.and phi' chi') (.and psi' theta'))
-                      (.untl (.and phi'' chi''') (.and psi'' chi'')))
-                 (.untl (.and phi''''' chi'''') (.and phi'''' theta'')) =>
+             .or (.untl (.and phi' chi') (.and psi' theta'))
+                 (.or (.untl (.and phi'' chi''') (.and psi'' chi''))
+                      (.untl (.and phi''''' chi'''') (.and phi'''' theta''))) =>
                if psi = psi' ∧ psi' = psi'' ∧
                   theta = theta' ∧ theta' = theta'' ∧
                   phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
@@ -698,6 +698,31 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                   phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
                   chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
                  some ⟨_, DerivedAxioms.linear_since phi psi chi theta⟩
+               else none
+           | _, _ => none)
+      -- temp_linearity_legacy: F(φ)∧F(ψ) → F(φ∧ψ) ∨ (F(φ∧F(ψ)) ∨ F(F(φ)∧ψ))
+      <|> (match lhs, rhs with
+           | .and (.someFuture phi) (.someFuture psi),
+             .or (.someFuture (.and phi' psi'))
+               (.or (.someFuture (.and phi'' (.someFuture psi'')))
+                 (.someFuture (.and (.someFuture phi''') psi'''))) =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
+                  psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
+                 some ⟨_, DerivedAxioms.temp_linearity_legacy phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- linear_until_legacy: U(ψ,φ)∧U(θ,χ) → (U(ψ∧θ,φ∧χ) ∨ U(ψ∧χ,φ∧χ)) ∨ U(φ∧θ,φ∧χ)
+      <|> (match lhs, rhs with
+           | .and (.untl phi psi) (.untl chi theta),
+             .or (.or (.untl (.and phi' chi') (.and psi' theta'))
+                      (.untl (.and phi'' chi''') (.and psi'' chi'')))
+                 (.untl (.and phi''''' chi'''') (.and phi'''' theta'')) =>
+               if psi = psi' ∧ psi' = psi'' ∧
+                  theta = theta' ∧ theta' = theta'' ∧
+                  phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
+                  chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
+                 some ⟨_, DerivedAxioms.linear_until_legacy phi psi chi theta⟩
                else none
            | _, _ => none)
   | _ => none

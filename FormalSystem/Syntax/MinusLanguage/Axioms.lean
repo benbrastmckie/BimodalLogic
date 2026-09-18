@@ -198,9 +198,9 @@ inductive Axiom : MinusFormula → Type where
   /-- **TL**: `(Fφ ∧ Fψ) → [F(Fφ ∧ ψ) ∨ F(φ ∧ ψ) ∨ F(φ ∧ Fψ)]`.
 
       The disjunct order and right-association here are the **paper's**, transcribed verbatim.
-      This repository's `ProofSystem.Axiom.temp_linearity` carries the same three disjuncts in a
-      different order and association; the reshuffle happens once, in
-      `MinusLanguage/AxiomDischarge.lean`, and is deliberately not pre-applied here. -/
+      `ProofSystem.Axiom.temp_linearity` now states the same verbatim form; the discharge in
+      `MinusLanguage/AxiomDischarge.lean` still goes through the derived pre-paper order
+      `DerivedAxioms.temp_linearity_legacy`, which is deliberately not pre-applied here. -/
   | temp_linearity (φ ψ : MinusFormula) :
       Axiom ((φ.someFuture.and ψ.someFuture).imp
         (((φ.someFuture.and ψ).someFuture).or

@@ -298,22 +298,22 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 7: Restate TL and CN verbatim, in lockstep with TM⁺ [NOT STARTED]
+### Phase 7: Restate TL and CN verbatim, in lockstep with TM⁺ [COMPLETED]
 
 **Goal**: State `temp_linearity` as the paper's TL and `linear_until` as the paper's CN, with right-associated disjunctions, keeping the old forms as derived legacy definitions.
 
 **Tasks**:
-- [ ] In `Axioms.lean`, set TL to `F φ ∧ F ψ → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))`.
-- [ ] In `Axioms.lean`, set CN to `(φ U ψ) ∧ (χ U θ) → (φ∧χ) U (ψ∧θ) ∨ ((φ∧χ) U (ψ∧χ) ∨ (φ∧χ) U (φ∧θ))`, with the guard written first.
-- [ ] Re-prove `temp_linearity_valid` and `linear_until_valid`, together with their swap forms. Only the disjunct permutation changes.
-- [ ] Add `DerivedAxioms.temp_linearity_legacy` and `DerivedAxioms.linear_until_legacy` (the old statements) to `DerivedAxioms.lean` or a small follow-on module, using disjunction permutation and regrouping. Reuse `orElim`, `orIntroL`, `orIntroR` and `deductionTheorem`, or the reshuffle already in `MinusLanguage/AxiomDischarge.lean`'s `dischargeTempLinearity`.
-  - This may need a propositional module to be imported. If so, place the legacy defs in `ModalPrimitiveDerived.lean`'s layer, or a sibling after `Propositional.Core`.
-- [ ] Re-derive `DerivedAxioms.temp_linearity_past` and `DerivedAxioms.linear_since`, keeping their current statements, by TR of the new primaries followed by the same permutation.
-- [ ] Lockstep:
+- [x] In `Axioms.lean`, set TL to `F φ ∧ F ψ → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))`.
+- [x] In `Axioms.lean`, set CN to `(φ U ψ) ∧ (χ U θ) → (φ∧χ) U (ψ∧θ) ∨ ((φ∧χ) U (ψ∧χ) ∨ (φ∧χ) U (φ∧θ))`, with the guard written first.
+- [x] Re-prove `temp_linearity_valid` and `linear_until_valid`, together with their swap forms. Only the disjunct permutation changes. *(deviation: altered — the existing lemmas keep their statements; new `temp_linearity_paper_valid`/`linear_until_paper_valid` are obtained from them by two generic semantic lemmas `SoundnessLemmas.validIn_imp_or_rotate`/`validIn_imp_or_assoc`, which also give the swap arms)*
+- [x] Add `DerivedAxioms.temp_linearity_legacy` and `DerivedAxioms.linear_until_legacy` (the old statements) to `DerivedAxioms.lean` or a small follow-on module, using disjunction permutation and regrouping. Reuse `orElim`, `orIntroL`, `orIntroR` and `deductionTheorem`, or the reshuffle already in `MinusLanguage/AxiomDischarge.lean`'s `dischargeTempLinearity`.
+  - This may need a propositional module to be imported. If so, place the legacy defs in `ModalPrimitiveDerived.lean`'s layer, or a sibling after `Propositional.Core`. *(placed in `Theorems/Combinators.lean` via new computable combinators `contraSwap`, `orRotate`, `orAssocRev`; no deduction theorem, so everything stays computable for the proof-search/extraction code)*
+- [x] Re-derive `DerivedAxioms.temp_linearity_past` and `DerivedAxioms.linear_since`, keeping their current statements, by TR of the new primaries followed by the same permutation.
+- [x] Lockstep:
   - Restate `PlusAxiom.temp_linearity` and `PlusAxiom.linear_until` identically, and re-prove their Plus validity lemmas.
-  - Grep `StarAxiom`, `DetAxiom` and `MinusLanguage.Axiom` for any `ofTM`/`ofPlus`-style embedding that is definitionally aligned, and restate those twins too. A twin with no aligned embedding stays as-is.
-- [ ] Switch every consumer of the old order to the `*_legacy` definitions. That covers Tableau, RuleSpec (whose "branches are the TL disjuncts" comment now points at the legacy lemma), `BXCanonical/OrderedSeedConsistency.lean`, `Chronicle/PointInsertion.lean`, `Chronicle/RRelation.lean`, `Theorems/DiscreteUnfolding.lean`, `MinusLanguage/AxiomDischarge.lean` and `Automation`.
-  - Simplify `dischargeTempLinearity` where TL is now verbatim.
+  - Grep `StarAxiom`, `DetAxiom` and `MinusLanguage.Axiom` for any `ofTM`/`ofPlus`-style embedding that is definitionally aligned, and restate those twins too. A twin with no aligned embedding stays as-is. *(TM⁺ and TM⋆ restated (Star via the rfl-shaped `StarAxiom.ofPlus`); Star validity re-proved as `starValid_{temp_linearity,linear_until}_paper` and `_past_paper`/`linear_since_paper` for swaps; Plus validity is by atomization and needed no change; `MinusLanguage.Axiom` already verbatim; no Det embedding affected)*
+- [x] Switch every consumer of the old order to the `*_legacy` definitions. That covers Tableau, RuleSpec (whose "branches are the TL disjuncts" comment now points at the legacy lemma), `BXCanonical/OrderedSeedConsistency.lean`, `Chronicle/PointInsertion.lean`, `Chronicle/RRelation.lean`, `Theorems/DiscreteUnfolding.lean`, `MinusLanguage/AxiomDischarge.lean` and `Automation`.
+  - Simplify `dischargeTempLinearity` where TL is now verbatim. *(deviation: skipped — it now routes through `temp_linearity_legacyAt` unchanged, docstrings updated; matchAxiom patterns restated and the legacy forms added to `mirrorCandidate` so the tableau's negated-axiom closure still fires on them)*
 
 **Timing**: 2 hours
 

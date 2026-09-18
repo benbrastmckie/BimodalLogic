@@ -146,7 +146,7 @@ theorem temp_linearity_mcs {M : Set Formula}
       (Formula.or (Formula.someFuture (Formula.and A B))
         (Formula.or (Formula.someFuture (Formula.and A (Formula.someFuture B)))
           (Formula.someFuture (Formula.and (Formula.someFuture A) B)))) :=
-    DerivationTree.axiom [] _ (Axiom.temp_linearity A B) trivial
+    (DerivedAxioms.temp_linearity_legacy A B)
   have h_disj := SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_conj
   -- Case split on the disjunction
   -- Formula.or P Q = P.neg.imp Q, so we handle it via negation completeness

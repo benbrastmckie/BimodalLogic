@@ -399,6 +399,15 @@ theorem temp_linearity_valid (φ ψ : Formula) :
   · exact .inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩
   · exact .inr (.inr ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩)
 
+/-- The paper's TL, `F(φ) ∧ F(ψ) → F(Fφ ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ Fψ))` (`Axiom.temp_linearity`),
+is valid: `temp_linearity_valid` with its disjuncts rotated. -/
+theorem temp_linearity_paper_valid (φ ψ : Formula) :
+    ⊨ (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
+      (Formula.or (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))
+        (Formula.or (Formula.someFuture (Formula.and φ ψ))
+          (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))))) :=
+  SoundnessLemmas.validIn_imp_or_rotate (temp_linearity_valid φ ψ)
+
 /-- Past temporal linearity axiom validity (BX11'):
 `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is valid.
 
@@ -714,6 +723,17 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
   · -- s₂ < s₁: third disjunct with witness s₂ (φ(s₂) ∧ θ(s₂))
     exact .inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
       fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩
+
+/-- The paper's CN (`Axiom.linear_until`), with its 3-way disjunction right-associated, is
+valid: `linear_until_valid` re-associated. -/
+theorem linear_until_paper_valid (φ ψ χ θ : Formula) :
+    ⊨ (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
+      |>.imp (Formula.or
+        (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
+        (Formula.or
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ))
+          (Formula.untl (Formula.and φ χ) (Formula.and φ θ))))) :=
+  SoundnessLemmas.validIn_imp_or_assoc (linear_until_valid φ ψ χ θ)
 
 theorem linear_since_valid (φ ψ χ θ : Formula) :
     ⊨ (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
@@ -1202,9 +1222,9 @@ theorem axiom_validIn_min {φ : Formula} (ax : Axiom φ) : ValidIn ax.minFrameCl
   | enrichment_until a0 a1 a2 => exact enrichment_until_valid a0 a1 a2
   | self_accum_until a0 a1 => exact self_accum_until_valid a0 a1
   | absorb_until a0 a1 => exact absorb_until_valid a0 a1
-  | linear_until a0 a1 a2 a3 => exact linear_until_valid a0 a1 a2 a3
+  | linear_until a0 a1 a2 a3 => exact linear_until_paper_valid a0 a1 a2 a3
   | until_F a0 a1 => exact until_F_valid a0 a1
-  | temp_linearity a0 a1 => exact temp_linearity_valid a0 a1
+  | temp_linearity a0 a1 => exact temp_linearity_paper_valid a0 a1
   | F_until_equiv a0 => exact F_until_equiv_valid a0
   | modal_future a0 => exact modal_future_valid a0
   | discrete_symm_fwd => exact discrete_symm_fwd_valid
