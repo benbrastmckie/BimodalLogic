@@ -99,7 +99,7 @@ next_project_number: 623
 
 ### Paper Refactor
 
-622 [RESEARCHED] — Align frame-class subscripts with the paper in...
+622 [PLANNED] — Align frame-class subscripts with the paper in...
 
 ### Codebase Cleanup
 
@@ -110,11 +110,12 @@ next_project_number: 623
 ## Tasks
 
 ### 622. Align typst frame subscripts zdr and bx r
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: paper-refactor
 - **Dependencies**: Task 621
 - **Research**: [622_align_typst_frame_subscripts_zdr_and_bx_r/reports/01_frame-subscript-alignment.md]
+- **Plan**: [622_align_typst_frame_subscripts_zdr_and_bx_r/plans/01_frame-subscript-alignment.md]
 
 **Description**: Align frame-class subscripts with the paper in typst/FormalFoundations.typ and typst/chapters/p2-decidability-practice.typ: rename BX_f/BX_d/BX_c and TM_f/TM_d/TM_c (and TM-minus variants where they track the paper) to the paper's z/d/r (def:BX-z, def:BX-d, def:BX-r). f->z is a pure relabel (BX + UZ + Z1). c->r is not: the document's BX_c is BX + PU + SEP (sound over Dedekind-complete orders including Z, so it does not prove DN), whereas the paper's BX_r and Lean's RTime extend BX_d (BX + DN + NN + PU + SEP, intended class R-time). Redefine BX_r as an extension of BX_d, recheck every claim citing TM_c/BX_c against R-time semantics, rewrite or drop the 'Naming provenance' remark and the footnote on whether CO alone axiomatizes the same logic, and update the decidability chapter's DF/CO non-theorem claims. Also investigate the flagged possible citation swap between the section 2 Soundness theorem and the section 5 Algebraic-soundness proposition. Gates: typst compile, typst-sync-check.sh, check-paper-definitions.sh
 

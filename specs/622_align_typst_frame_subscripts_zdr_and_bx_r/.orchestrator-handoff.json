@@ -1,18 +1,18 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 4,
-  "summary": "Researched the f/d/c->z/d/r frame-class subscript rename and BX_c->BX_r redefinition in typst/FormalFoundations.typ and typst/chapters/p2-decidability-practice.typ, confirmed the section 2/5 soundness citation swap against Lean source, and produced a full per-site edit inventory for the plan phase.",
+  "task_number": 622,
+  "phase": "plan",
+  "status": "planned",
+  "dispatch_seq": 5,
+  "phases_completed": 0,
+  "phases_total": 3,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/622_align_typst_frame_subscripts_zdr_and_bx_r/reports/01_frame-subscript-alignment.md",
-      "summary": "Full site inventory and redefinition plan for renaming typst BX_f/BX_d/BX_c and TM_f/TM_d/TM_c to the paper's z/d/r, redefining BX_r/TM_r to extend BX_d/TM_d, fixing the section 2/5 soundness citation swap, and updating the decidability chapter's DF/CO claims."
+      "type": "plan",
+      "path": "specs/622_align_typst_frame_subscripts_zdr_and_bx_r/plans/01_frame-subscript-alignment.md",
+      "summary": "3-phase plan for z/d/r subscript alignment, BX_r redefinition, and soundness citation swap."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": [],
-  "continuation_path": null,
-  "next_action_hint": "Run /plan 622 (or the plan phase of /orchestrate 622) to turn the report's site inventory into a phased implementation plan."
+  "next_action": "implement",
+  "summary": "Created 3-phase implementation plan (2.5h) for z/d/r subscript alignment, BX_r redefinition over BX_d, and section 2/5 soundness citation swap.",
+  "blockers": []
 }
