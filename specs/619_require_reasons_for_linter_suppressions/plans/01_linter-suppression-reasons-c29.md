@@ -428,25 +428,28 @@ record the number the scan actually printed.
 
 ---
 
-### Phase 7: Negative-Test C29 [NOT STARTED]
+### Phase 7: Negative-Test C29 [COMPLETED]
 
 **Goal**: Prove the check fails loudly rather than merely printing — the task's stated acceptance
 criterion.
 
 **Tasks**:
-- [ ] Inject `set_option linter.unusedTactic false in` above some declaration in a live `.lean`
+- [x] Inject `set_option linter.unusedTactic false in` above some declaration in a live `.lean`
       file with no comment above it.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build`; confirm **both** a printed
+- [x] Run `bash scripts/check-module-invariants.sh --no-build`; confirm **both** a printed
       `FAIL C29` naming the injected file and line **and** a non-zero script exit code (the C25
       precedent at `scripts/check-module-invariants.sh:3044-3045` — the printed line alone is not
       the test).
-- [ ] Revert the injection; verify byte-identical restoration (`git status --porcelain` empty over
+- [x] Revert the injection; verify byte-identical restoration (`git status --porcelain` empty over
       the touched path) and confirm `PASS C29` returns.
-- [ ] Separately exercise the anti-silence guard by pointing the scan at an empty walk; confirm
-      **exit 2** and that `ENFORCE_C29=0` does not suppress it.
-- [ ] Exercise a documented-but-does-not-name-the-linter case (e.g. a `-- see above` comment) and
+- [x] Separately exercise the anti-silence guard by pointing the scan at an empty walk; confirm
+      **exit 2** and that `ENFORCE_C29=0` does not suppress it. *(deviation: altered — BOTH
+      anti-silence paths were exercised, not just the empty walk: an empty root directory (zero
+      `.lean` files) and a root holding one `.lean` file with no suppression in it. Both exit 2
+      under `ENFORCE_C29=1` and `ENFORCE_C29=0`.)*
+- [x] Exercise a documented-but-does-not-name-the-linter case (e.g. a `-- see above` comment) and
       confirm it fails.
-- [ ] Record all three outcomes verbatim for the implementation summary.
+- [x] Record all three outcomes verbatim for the implementation summary.
 
 **Timing**: 0.75 hours
 
@@ -466,28 +469,29 @@ criterion.
 
 ---
 
-### Phase 8: Documentation [NOT STARTED]
+### Phase 8: Documentation [COMPLETED]
 
 **Goal**: Record C29 where readers and the harness's own header will find it, and stop the style
 guide teaching the shape C29 rejects.
 
 **Tasks**:
-- [ ] Add a `| C29 (enforced) | … | … |` row to `docs/development/MODULE_INVARIANTS.md` after
+- [x] Add a `| C29 (enforced) | … | … |` row to `docs/development/MODULE_INVARIANTS.md` after
       C28's, in the existing 3-column `| ID | Check | Why it exists |` table, matching C28's row
       for length and tone. The "Why it exists" column carries the `RegionFrame.lean:128` story as
       its evidence: a suppression introduced for one declaration, silently retargeted onto another
       by an unrelated insertion, left dead across two further commits with every gate green.
-- [ ] **No task-number citations in this row** — C9D is enforced over `docs/`. Cite durable
+- [x] **No task-number citations in this row** — C9D is enforced over `docs/`. Cite durable
       anchors: file paths, commit SHAs (`bcb8e110b`, `e18cd2271`), check IDs.
-- [ ] Add a C29 entry to the script header's check list
-      (`scripts/check-module-invariants.sh`, the `#   C28 …` block).
-- [ ] Update `docs/development/LEAN_STYLE_GUIDE.md`'s "Suppressing Linters" section
+- [x] Add a C29 entry to the script header's check list
+      (`scripts/check-module-invariants.sh`, the `#   C28 …` block). *(deviation: altered — done in
+      Phase 6's commit rather than this one, alongside the block it describes.)*
+- [x] Update `docs/development/LEAN_STYLE_GUIDE.md`'s "Suppressing Linters" section
       (around lines 807-830): give its `set_option linter.unusedVariables false in` snippet a
       reason comment, and add a short note that inserting a declaration below a `set_option … in`
       line silently retargets the option onto the new declaration.
-- [ ] Read the diff and confirm every hunk is prose or comment text.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C9D still passes.
-- [ ] Commit once green.
+- [x] Read the diff and confirm every hunk is prose or comment text.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C9D still passes.
+- [x] Commit once green.
 
 **Timing**: 0.75 hours
 

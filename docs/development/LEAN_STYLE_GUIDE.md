@@ -810,11 +810,27 @@ lake check-lint
 def myFunction := ...
 ```
 
-**File/section scope:**
+**Declaration scope**, which is the only suppression shape this tree accepts. Every
+`set_option linter.* false` must carry a `--` comment block directly above it naming the linter
+and saying what a deletion trial actually showed — check C29 in
+`scripts/check-module-invariants.sh` fails on a bare one, and on a comment that never names the
+linter it is disabling:
+
 ```lean
+-- `linter.unusedVariables` flags `f` here. It is NOT removable: `regionCode f` reads it back
+-- through the valuation, and the arity is part of this definition's published shape. Renaming
+-- to `_f` was tried and is the fix where it works; it does not here because ...
 set_option linter.unusedVariables false in
 def myFunction := ...
 ```
+
+**A `set_option … in` binds to the next declaration, whatever that turns out to be.** Inserting a
+new declaration between the option and the one it was written for silently retargets it: the
+option now covers the newcomer and no longer covers its original target, with no diagnostic and
+no gate turning red. That is not hypothetical — it happened in
+`FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean` (commits `bcb8e110b` then
+`e18cd2271`), leaving a dead suppression in place across two further commits. Naming the linter
+*and* its target in the comment is what makes the drift visible in the diff that causes it.
 
 **Project-wide exceptions**: there are none, and a `scripts/nolints.json` must not be
 reintroduced. The former 860-entry file was deleted once the naming migration reached genuine
