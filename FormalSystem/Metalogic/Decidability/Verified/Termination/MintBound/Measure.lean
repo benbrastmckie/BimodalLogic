@@ -665,8 +665,8 @@ emitted list anywhere is `2 + 4 * b.length`, so a successor `formulas ++ b` has 
 **Ordering-driven arms** — four of them, and the reason `RunInvariant` appears in the hypothesis:
 * `.allFuturePos` 751 and `.someFutureNeg` 863 `filterMap` over `timeOrd.futureOf l.time`;
   `.allPastPos` 791 and `.somePastNeg` 907 over `timeOrd.pastOf l.time`.
-* `futureOf`/`pastOf` (`SignedFormula.lean:776`, `782`) are duplicate-free: `reachableForward` and
-  `reachableBackward` (`SignedFormula.lean:741-758`) `eraseDups` each layer and filter it against
+* `TimeOrdering.futureOf`/`TimeOrdering.pastOf` are duplicate-free: `reachableForward` and
+  `reachableBackward` `eraseDups` each layer and filter it against
   the visited set. Every element is the target of an ordering constraint, so `OrdTimesKnown`
   puts it in `b.knownTimes`, whose length is at most `b.length` because
   `Branch.knownTimes` is a map-then-`eraseDups` of `b`. Hence at most `b.length` again — but only
