@@ -863,7 +863,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 with `R` replaced by `L` throughout. **Reynolds prints no such statement**; see the section
 header for what licenses it and for why it is not attributed to him.
 
-Proved by instantiating `reynolds_lemma5_first` at `(dual M, dualize ε)` and at `swapUS A`. -/
+Proved by instantiating `reynolds_lemma5_first` at `(dual M, dualize ε)` and at `reflectTimeBoxOpaque A`. -/
 theorem reynolds_lemma5_first_left {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
@@ -879,13 +879,13 @@ theorem reynolds_lemma5_first_left {atomMap : Formula → sig.preds}
     exact (endsInGapOnRight_dual (M := M) ε q).mpr (hIcc q h₂ h₁)
   have hA' : ∃ w : (dual M).carrier,
       ContempEquivDense (dual M) (dualize ε) (d t) w ∧
-        TemporalTruth (dual M) atomMap w (swapUS A) := by
+        TemporalTruth (dual M) atomMap w (reflectTimeBoxOpaque A) := by
     obtain ⟨w, hcw, hAw⟩ := hA
     exact ⟨d w, (contempEquivDense_dual (M := M) ε t w).mpr hcw,
       (temporalTruth_dual' (M := M) atomMap w A).mpr hAw⟩
   obtain ⟨w, hcw, hAw⟩ :=
     reynolds_lemma5_first h_surj (isContempEquivDense_dualize hε) (dual M)
-      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U) (swapUS A) hIcc' hA'
+      (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U) (reflectTimeBoxOpaque A) hIcc' hA'
   exact ⟨w, (contempEquivDense_dual (M := M) ε t' w).mp hcw, (temporalTruth_dual' (M := M) atomMap w A).mp hAw⟩
 
 end FirstLeft

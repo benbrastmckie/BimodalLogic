@@ -78,7 +78,7 @@ nothing is lost.
 
 ## References
 
-* `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean` — the native frame notion and `truth_swap`
+* `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean` — the native frame notion and `truth_reflectTime`
 * `FormalSystem/Metalogic/Conservativity/SpWitness.lean` — `Sp`, `minusValid_sp`, `sp_translate`
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — `TMMinusCompleteBase`
 * `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — the `.ZTime` mirror
@@ -184,7 +184,7 @@ on the whole native L⁻ frame class.
 Recursion over all seven `MinusLanguage.DerivationTree` constructors. `assumption` is vacuous at
 the empty context; `modus_ponens`, `necessitation` and `temporal_necessitation` are immediate
 from the corresponding truth clauses (the last two because `MinusFrameValid` already quantifies over
-every point). `time_reflection` is one line via `Semantics.truth_swap` at `F.swap`, which is
+every point). `time_reflection` is one line via `Semantics.truth_reflectTime` at `F.reflect`, which is
 available precisely because the frame class is converse-closed. `weakening` routes through
 `DerivationTree.ofWeakeningNil`, with `height_ofWeakeningNil_lt` supplying termination.
 -/
@@ -201,7 +201,7 @@ theorem minusFrameValid_of_derivation {φ : MinusFormula}
       exact fun F V _ v _ => minusFrameValid_of_derivation d' F V v
   | .time_reflection φ' d' =>
       intro F V w
-      exact (truth_swap F V w φ').mp (minusFrameValid_of_derivation d' F.swap V w)
+      exact (truth_reflectTime F V w φ').mp (minusFrameValid_of_derivation d' F.reflect V w)
   | .weakening Γ' _ _ d' h_sub =>
       have h_term := MinusLanguage.DerivationTree.height_ofWeakeningNil_lt d' h_sub
       exact minusFrameValid_of_derivation (d'.ofWeakeningNil h_sub)

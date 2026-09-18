@@ -14,7 +14,7 @@ Namespaces are unchanged by the nesting: every declaration here lives in `Formal
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/MinusLanguage -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `MinusFrame.lean` | 311 | `MinusFrame` — a native L⁻ frame notion not bound to `TaskFrame` (points with an unbounded, transitive, irreflexive, forward- and backward-linear strict order, no group structure), its truth recursion `MinusFrameTruth` with `□` as the universal modality, `MinusFrameValid`, the `MinusFrameTruth.*` characterization family, and the order-reversal transfer lemma `truth_swap`; the frame class a countermodel to `(Sp)` lives on |
+| `MinusFrame.lean` | 311 | `MinusFrame` — a native L⁻ frame notion not bound to `TaskFrame` (points with an unbounded, transitive, irreflexive, forward- and backward-linear strict order, no group structure), its truth recursion `MinusFrameTruth` with `□` as the universal modality, `MinusFrameValid`, the `MinusFrameTruth.*` characterization family, and the order-reversal transfer lemma `truth_reflectTime`; the frame class a countermodel to `(Sp)` lives on |
 | `MinusSchemaValidity.lean` | 175 | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/Conservativity/SpWitness.lean` and `minus_soundness_ztime_succ` |
 | `MinusTruth.lean` | 221 | `MinusTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `MinusFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
 | `MinusValidity.lean` | 284 | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidZTimeSucc`, `MinusValidRTime` — binder-for-binder base-language mirrors of Validity.lean |

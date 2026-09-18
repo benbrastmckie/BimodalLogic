@@ -694,7 +694,7 @@ theorem starValid_discrete_propagate_fwd :
 /-- The temporal dual of `discrete_propagate_fwd`: `S(⊤,⊥) → H(S(⊤,⊥))`. Not an instance of any
 schema, so it is named here, mirroring
 `SoundnessLemmas.discrete_propagate_fwd_reflect_time_valid`. -/
-theorem starValid_discrete_propagate_fwd_swap :
+theorem starValid_discrete_propagate_fwd_reflect_time :
     StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allPast (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
     (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_propagate_fwd)
@@ -705,7 +705,7 @@ theorem starValid_discrete_propagate_bwd :
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_propagate_bwd)
 
 /-- The temporal dual of `discrete_propagate_bwd`: `S(⊤,⊥) → G(S(⊤,⊥))`. -/
-theorem starValid_discrete_propagate_bwd_swap :
+theorem starValid_discrete_propagate_bwd_reflect_time :
     StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allFuture (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
     (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_propagate_bwd)
@@ -716,7 +716,7 @@ theorem starValid_discrete_box_necessity :
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_box_necessity)
 
 /-- The temporal dual of `discrete_box_necessity`: `S(⊤,⊥) → □(S(⊤,⊥))`. -/
-theorem starValid_discrete_box_necessity_swap :
+theorem starValid_discrete_box_necessity_reflect_time :
     StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.box (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
     (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_box_necessity)
@@ -733,7 +733,7 @@ theorem starValid_density (φ : StarFormula) :
 /-- The temporal dual of `starValid_density`: `HHφ → Hφ`, again at `.Dense`. There is no
 `density_past` schema, so this dual is named here rather than dispatched to a sibling
 constructor — mirroring `Metalogic/Soundness.lean`'s `density_reflect_time_valid`. -/
-theorem starValid_density_swap (φ : StarFormula) :
+theorem starValid_density_reflect_time (φ : StarFormula) :
     StarValidIn FrameClass.Dense ((φ.allPast.allPast).imp φ.allPast) := by
   refine fun F h_dense M τ t v => ?_
   simp only [StarTruth.imp_iff, StarTruth.allPast_iff]
@@ -747,7 +747,7 @@ theorem starValid_dense_indicator :
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.dense_indicator)
 
 /-- The temporal dual of the dense indicator: `¬S(⊤,⊥)`, by transport. -/
-theorem starValid_dense_indicator_swap :
+theorem starValid_dense_indicator_reflect_time :
     StarValidIn FrameClass.Dense (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).neg :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_reflect_time_validIn_min PlusAxiom.dense_indicator)
 
@@ -786,7 +786,7 @@ theorem starValid_z1 (φ : StarFormula) :
 /-- The temporal dual of `starValid_z1`, through `forall_lt_of_pred_step`. Z1 has no past twin
 among the schemata, so this dual is named here — mirroring
 `SoundnessLemmas.z1_past_valid`. -/
-theorem starValid_z1_swap (φ : StarFormula) :
+theorem starValid_z1_reflect_time (φ : StarFormula) :
     StarValidIn FrameClass.ZTime ((φ.allPast.imp φ).allPast.imp
       (φ.allPast.somePast.imp φ.allPast)) := by
   refine fun F hF M τ t v => ?_
@@ -1017,7 +1017,7 @@ theorem starValid_sep (φ : StarFormula) :
 dual is named here; the order-theoretic core is `SoundnessLemmas.sep_order_mirror`, which is
 `sep_order` instantiated at `Dᵒᵈ`, so the nested-interval argument is written once. Mirrors
 `Metalogic/Soundness.lean`'s `sep_reflect_time_valid`. -/
-theorem starValid_sep_swap (φ : StarFormula) :
+theorem starValid_sep_reflect_time (φ : StarFormula) :
     StarValidIn FrameClass.RTime
       (((StarFormula.and (StarFormula.kPlus φ)
         (StarFormula.kPlus (StarFormula.and φ (StarFormula.untl φ.neg φ))).neg).imp
@@ -1086,7 +1086,7 @@ theorem starValid_modal_future {φ : StarFormula} (hφ : RecallFree φ) :
 /-- MF's temporal dual, at every `↓ⁱ`-free `StarFormula`: `□φ → □(Hφ)`. No `modal_past` schema
 exists, so this dual is named here. `RecallFree.reflectTime` carries the side condition across.
 -/
-theorem starValid_modal_future_swap {φ : StarFormula} (hφ : RecallFree φ) :
+theorem starValid_modal_future_reflect_time {φ : StarFormula} (hφ : RecallFree φ) :
     StarValid (((StarFormula.box φ).imp
       (StarFormula.box (StarFormula.allFuture φ))).reflectTime) := by
   simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
@@ -1119,7 +1119,7 @@ theorem starValid_paste {φ ψ : StarFormula} (hφ : StarIsPureFuture φ) (hψ :
 
 /-- The temporal dual of PS: the same schema with the conjuncts exchanged, `⟐ψ⁻ → (⟐φ⁺ →
 ⟐(ψ⁻ ∧ φ⁺))`. Mirrors `Semantics.paste_valid'`. -/
-theorem starValid_paste_swap {ψ φ : StarFormula} (hψ : StarIsPurePast ψ)
+theorem starValid_paste_reflect_time {ψ φ : StarFormula} (hψ : StarIsPurePast ψ)
     (hφ : StarIsPureFuture φ) :
     StarValid ((StarFormula.dstab ψ).imp
       ((StarFormula.dstab φ).imp (StarFormula.dstab (ψ.and φ)))) :=
@@ -1134,7 +1134,7 @@ theorem starValid_untl_paste {α φ : StarFormula} (hα : StarIsPurePast α)
 
 /-- The temporal dual of US, namely SS: `(α⁺ S ⟐φ⁻) → ⟐(α⁺ S φ⁻)`. Mirrors
 `Semantics.snce_dstab_valid`. -/
-theorem starValid_untl_paste_swap {α φ : StarFormula} (hα : StarIsPureFuture α)
+theorem starValid_untl_paste_reflect_time {α φ : StarFormula} (hα : StarIsPureFuture α)
     (hφ : StarIsPurePast φ) :
     StarValid ((StarFormula.snce α (StarFormula.dstab φ)).imp
       (StarFormula.dstab (StarFormula.snce α φ))) :=
@@ -1356,19 +1356,19 @@ theorem starAxiom_reflect_time_validIn_min {φ : StarFormula} (ax : StarAxiom φ
     exact starValid_discrete_symm_fwd
   | discrete_propagate_fwd =>
     simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
-    exact starValid_discrete_propagate_fwd_swap
+    exact starValid_discrete_propagate_fwd_reflect_time
   | discrete_propagate_bwd =>
     simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_past]
-    exact starValid_discrete_propagate_bwd_swap
+    exact starValid_discrete_propagate_bwd_reflect_time
   | discrete_box_necessity =>
     simp only [StarFormula.reflectTime]
-    exact starValid_discrete_box_necessity_swap
+    exact starValid_discrete_box_necessity_reflect_time
   | density φ =>
     simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
-    exact starValid_density_swap φ.reflectTime
+    exact starValid_density_reflect_time φ.reflectTime
   | dense_indicator =>
     simp only [StarFormula.reflect_time_neg, StarFormula.reflectTime]
-    exact starValid_dense_indicator_swap
+    exact starValid_dense_indicator_reflect_time
   | prior_UZ φ =>
     simp only [StarFormula.reflect_time_neg, StarFormula.reflect_time_some_future,
       StarFormula.reflectTime]
@@ -1380,7 +1380,7 @@ theorem starAxiom_reflect_time_validIn_min {φ : StarFormula} (ax : StarAxiom φ
   | z1 φ =>
     simp only [StarFormula.reflect_time_all_future, StarFormula.reflect_time_some_future,
       StarFormula.reflectTime]
-    exact starValid_z1_swap φ.reflectTime
+    exact starValid_z1_reflect_time φ.reflectTime
   | prior_U_gap φ =>
     simp only [StarFormula.reflect_time_and, StarFormula.reflect_time_or,
       StarFormula.reflect_time_neg, StarFormula.reflect_time_some_future,
@@ -1391,15 +1391,15 @@ theorem starAxiom_reflect_time_validIn_min {φ : StarFormula} (ax : StarAxiom φ
       StarFormula.reflect_time_neg, StarFormula.reflect_time_some_past,
       StarFormula.reflect_time_kMinus, StarFormula.reflect_time_top, StarFormula.reflectTime]
     exact starValid_prior_U_gap φ.reflectTime
-  | sep φ => exact starValid_sep_swap φ
-  | modal_future φ hφ => exact starValid_modal_future_swap hφ
+  | sep φ => exact starValid_sep_reflect_time φ
+  | modal_future φ hφ => exact starValid_modal_future_reflect_time hφ
   | paste φ ψ hφ hψ =>
     simp only [StarFormula.reflect_time_dstab, StarFormula.reflect_time_and,
       StarFormula.reflectTime]
-    exact starValid_paste_swap hφ.reflectTime hψ.reflectTime
+    exact starValid_paste_reflect_time hφ.reflectTime hψ.reflectTime
   | untl_paste α φ hα hφ =>
     simp only [StarFormula.reflect_time_dstab, StarFormula.reflectTime]
-    exact starValid_untl_paste_swap hα.reflectTime hφ.reflectTime
+    exact starValid_untl_paste_reflect_time hα.reflectTime hφ.reflectTime
   | store_recall_same i φ =>
     simp only [StarFormula.reflect_time_iff, StarFormula.reflectTime]
     exact starValid_store_recall_same i φ.reflectTime

@@ -436,7 +436,7 @@ def nextAllFuture (φ : Formula) :
 
 /-- The `reflectTime` image of `nextAllFuture`'s statement, computed once so that
 `prevAllPast` is a `▸`-rewrite rather than a `simp` inside a term. -/
-theorem swap_next_all_future_eq (φ : Formula) :
+theorem reflect_time_next_all_future_eq (φ : Formula) :
     Formula.reflectTime
       ((Formula.next (Formula.and (φ.reflectTime).allFuture φ.reflectTime)).imp
         (φ.reflectTime).allFuture)
@@ -453,7 +453,7 @@ is introduced. -/
 def prevAllPast (φ : Formula) :
     ⊢[FrameClass.ZTime]
       (Formula.prev (Formula.and φ.allPast φ)).imp φ.allPast :=
-  swap_next_all_future_eq φ ▸ DerivationTree.time_reflection _ (nextAllFuture φ.reflectTime)
+  reflect_time_next_all_future_eq φ ▸ DerivationTree.time_reflection _ (nextAllFuture φ.reflectTime)
 
 /-- **`⊢[Discrete] (Hφ ∧ φ ∧ F⊤) → F(Hφ)`** — the paper's **DF** schema.
 

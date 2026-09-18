@@ -254,8 +254,8 @@ theorem semanticPriorU_iff_forall :
 
 /-! ### The past mirror
 
-Written out rather than obtained by instantiation at `dual M`. `Dual.lean`'s `swapUS` does give
-`swapUS (priorUFormula p) = priorSFormula (swapUS p)`, but the transport it feeds
+Written out rather than obtained by instantiation at `dual M`. `Dual.lean`'s `reflectTimeBoxOpaque` does give
+`reflectTimeBoxOpaque (priorUFormula p) = priorSFormula (reflectTimeBoxOpaque p)`, but the transport it feeds
 (`semanticPriorS_dual`) runs `SemanticPriorU M → SemanticPriorS (dual M)` and the direction
 needed here is the other one, at `M` itself; supplying it would be more new work than the
 transcription below.

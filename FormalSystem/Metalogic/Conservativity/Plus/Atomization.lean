@@ -27,22 +27,22 @@ module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_refle
 
 A TM schema instance over L⁺ then holds in `M` iff its L instance at the atomized parameters
 holds in `M.atomModel e`, which is the landed lemma applied on the same frame — so `fc.Sat` is
-inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_swap_of_tm` its swap form via
+inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_reflect_time_of_tm` its swap form via
 `atomize_reflectTime` (atomization commutes with time reflection up to swapping the encoding,
-`Encoding.swap`).
+`Encoding.reflectTime`).
 
 ## Main Definitions
 
-- `Encoding`, `Encoding.nonempty`, `Encoding.swap`
+- `Encoding`, `Encoding.nonempty`, `Encoding.reflectTime`
 - `atomize`, `TaskModel.atomModel`
 
 ## Main Results
 
 - `plusTruthAt_iff_atomize` — the transfer lemma
-- `atomize_reflectTime` — `atomize e φ.reflectTime = (atomize e.swap φ).reflectTime`
-- `plusValidIn_of_tm`, `plusValidIn_swap_of_tm` — the two helpers the dispatch lemmas of
+- `atomize_reflectTime` — `atomize e φ.reflectTime = (atomize e.reflectTime φ).reflectTime`
+- `plusValidIn_of_tm`, `plusValidIn_reflect_time_of_tm` — the two helpers the dispatch lemmas of
   `Conservativity/Plus/AxiomValidity.lean` consume, with derivation-taking forms
-  `plusValidIn_of_tm_deriv`, `plusValidIn_swap_of_tm_deriv` for the TM-derived schemata
+  `plusValidIn_of_tm_deriv`, `plusValidIn_reflect_time_of_tm_deriv` for the TM-derived schemata
 
 ## References
 
@@ -78,9 +78,9 @@ theorem Encoding.nonempty : Nonempty Encoding := by
 theorem reflectTime_injective : Function.Injective PlusFormula.reflectTime :=
   Function.Involutive.injective reflect_time_involution
 
-/-- The encoding conjugated by time reflection on the `⊡`-formula side: `e.swap.ι (inr χ) =
+/-- The encoding conjugated by time reflection on the `⊡`-formula side: `e.reflectTime.ι (inr χ) =
 e.ι (inr χ.reflectTime)`. Injective because `reflectTime` is an involution. -/
-def Encoding.swap (e : Encoding) : Encoding where
+def Encoding.reflectTime (e : Encoding) : Encoding where
   ι := e.ι ∘ Sum.map id PlusFormula.reflectTime
   inj := e.inj.comp (Sum.map_injective.mpr ⟨fun _ _ h => h, reflectTime_injective⟩)
 
@@ -123,9 +123,9 @@ right-hand sides, and `atomize` is structural on the L constructors. -/
     atomize e (kMinus φ) = Formula.kMinus (atomize e φ) := rfl
 
 /-- Atomization commutes with time reflection, up to conjugating the encoding: the fresh atom
-for `⊡χ.reflectTime` under `e` is the fresh atom for `⊡χ` under `e.swap`. -/
+for `⊡χ.reflectTime` under `e` is the fresh atom for `⊡χ` under `e.reflectTime`. -/
 theorem atomize_reflectTime (e : Encoding) (φ : PlusFormula) :
-    atomize e φ.reflectTime = (atomize e.swap φ).reflectTime := by
+    atomize e φ.reflectTime = (atomize e.reflectTime φ).reflectTime := by
   induction φ with
   | atom p => rfl
   | bot => rfl
@@ -215,8 +215,8 @@ encoding** is a TM axiom instance admissible at `fc`, then `φ.reflectTime` is
 `PlusValidIn fc`: `axiom_reflect_time_validIn` on the atomized model, with `atomize_reflectTime`
 rewriting the target.
 -/
-theorem plusValidIn_swap_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
-    (ax : Axiom (atomize e.swap φ)) (h : ax.minFrameClass ≤ fc) :
+theorem plusValidIn_reflect_time_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
+    (ax : Axiom (atomize e.reflectTime φ)) (h : ax.minFrameClass ≤ fc) :
     PlusValidIn fc φ.reflectTime :=
   fun F hF M τ t =>
     (plusTruthAt_iff_atomize M e φ.reflectTime τ t).mpr
@@ -237,10 +237,10 @@ theorem plusValidIn_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : PlusFormu
       (soundness_validIn d F hF (M.atomModel e) τ t)
 
 /--
-**TM theorem swap-soundness over L⁺.** The derivation-taking form of `plusValidIn_swap_of_tm`.
+**TM theorem swap-soundness over L⁺.** The derivation-taking form of `plusValidIn_reflect_time_of_tm`.
 -/
-theorem plusValidIn_swap_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
-    (d : DerivationTree fc [] (atomize e.swap φ)) : PlusValidIn fc φ.reflectTime :=
+theorem plusValidIn_reflect_time_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
+    (d : DerivationTree fc [] (atomize e.reflectTime φ)) : PlusValidIn fc φ.reflectTime :=
   fun F hF M τ t =>
     (plusTruthAt_iff_atomize M e φ.reflectTime τ t).mpr
       (by

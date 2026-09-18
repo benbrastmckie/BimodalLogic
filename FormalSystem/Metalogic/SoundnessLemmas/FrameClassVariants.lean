@@ -103,7 +103,7 @@ theorem mf_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base
       ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_box_swap σ s h_s_lt_t
   have h_at_shifted := h_box_swap (σ.timeShift (s - t))
@@ -175,7 +175,7 @@ theorem serial_future_reflect_time_valid :
       ((Formula.bot.imp Formula.bot).imp
         (Formula.someFuture (Formula.bot.imp Formula.bot))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro _
   obtain ⟨s, hst⟩ := exists_lt t
@@ -194,7 +194,7 @@ theorem serial_past_reflect_time_valid :
       ((Formula.bot.imp Formula.bot).imp
         (Formula.somePast (Formula.bot.imp Formula.bot))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro _
   obtain ⟨s, hts⟩ := exists_gt t
@@ -206,7 +206,7 @@ theorem left_mono_until_G_reflect_time_valid (φ χ ψ : Formula) :
     ValidIn FrameClass.Base
       ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_H ⟨s, hst, h_ψs, h_guard⟩
   exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
@@ -217,7 +217,7 @@ theorem left_mono_since_H_reflect_time_valid (φ χ ψ : Formula) :
     ValidIn FrameClass.Base
       ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_G ⟨s, hts, h_ψs, h_guard⟩
   exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
@@ -228,7 +228,7 @@ theorem right_mono_until_reflect_time_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
       ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_H ⟨s, hst, h_φs, h_guard⟩
   exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
@@ -239,7 +239,7 @@ theorem right_mono_since_reflect_time_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
       ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_G ⟨s, hts, h_φs, h_guard⟩
   exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
@@ -249,7 +249,7 @@ present `t` is itself the required future witness. -/
 theorem connect_future_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.imp (φ.somePast.allFuture)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_φt s hst
   exact ⟨t, hst, h_φt⟩
@@ -259,7 +259,7 @@ theorem connect_future_reflect_time_valid (φ : Formula) :
 theorem connect_past_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.imp (φ.someFuture.allPast)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro h_φt s hts
   exact ⟨t, hts, h_φt⟩
@@ -446,7 +446,7 @@ guard is discarded. -/
 theorem until_F_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((Formula.untl φ ψ).imp (Formula.someFuture ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨s, hst, h_ψs, _h_guard⟩
   exact ⟨s, hst, h_ψs⟩
@@ -455,7 +455,7 @@ theorem until_F_reflect_time_valid (φ ψ : Formula) :
 theorem since_P_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((Formula.snce φ ψ).imp (Formula.somePast ψ)).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨s, hts, h_ψs, _h_guard⟩
   exact ⟨s, hts, h_ψs⟩
@@ -502,7 +502,7 @@ theorem discrete_propagate_fwd_reflect_time_valid :
       (Formula.allFuture
         (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
   refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
@@ -521,7 +521,7 @@ theorem discrete_propagate_bwd_reflect_time_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).reflectTime := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime]
+  simp only [reflect_time_norm, Formula.reflectTime]
   simp only [truth_norm]
   intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
   refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩

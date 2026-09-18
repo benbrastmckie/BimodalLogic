@@ -703,16 +703,16 @@ theorem reflect_time_strong_trigger (φ ψ : Formula) :
       ψ.reflectTime := by
   simp [strongRelease, strongTrigger, and, reflectTime, reflect_time_neg]
 
-/-! ### The `swap_norm` simp set
+/-! ### The `reflect_time_norm` simp set
 
 The eleven `reflect_time_*` lemmas above push `reflectTime` through the connectives. Four of
 them (`some_future`, `some_past`, `all_future`, `all_past`) also carry `@[simp]`; the other seven
 do not, so before this set the complete family was only reachable by naming all eleven. Tagging
 them here, in the declaring module, is what guarantees membership at every use site — simp-set
 membership is an environment extension, so it has to be established upstream of the users, not
-at them. Use as `simp only [swap_norm]`. -/
+at them. Use as `simp only [reflect_time_norm]`. -/
 
-attribute [swap_norm] reflect_time_involution reflect_time_diamond reflect_time_neg
+attribute [reflect_time_norm] reflect_time_involution reflect_time_diamond reflect_time_neg
   reflect_time_some_future reflect_time_some_past reflect_time_all_future
   reflect_time_all_past reflect_time_next reflect_time_prev
   reflect_time_strong_release reflect_time_strong_trigger

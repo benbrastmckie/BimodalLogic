@@ -130,8 +130,8 @@ same inductive*:
     ones transport along `ofPlus`, and `density`/`z1` are direct.
   * `prior_U_gap` ↔ `prior_S_gap` — a **dual pair**.
   * `sep` and `modal_future` — arms whose dual is again not a constructor instance:
-    `starValid_sep_swap` (through `SoundnessLemmas.sep_order_mirror`) and
-    `starValid_modal_future_swap` (through `RecallFree.reflectTime`) supply them.
+    `starValid_sep_reflect_time` (through `SoundnessLemmas.sep_order_mirror`) and
+    `starValid_modal_future_reflect_time` (through `RecallFree.reflectTime`) supply them.
   * `paste` and `untl_paste` — the duals are PS with the conjuncts exchanged, and SS; neither is
     a constructor instance, and both are supplied by named lemmas in
     `Conservativity/Star/StarAxiomValidity.lean` over

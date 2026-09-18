@@ -740,20 +740,20 @@ theorem isBadIntervalSurgery_dual (hS : IsBadIntervalSurgery M ε Q t) :
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The induction hypotheses transport across the mirror.**
 
-An `N`-versus-`M` agreement at `C` becomes an `N'`-versus-`dual M` agreement at `swapUS C`, where
+An `N`-versus-`M` agreement at `C` becomes an `N'`-versus-`dual M` agreement at `reflectTimeBoxOpaque C`, where
 `N'` is the surgered dual. Both sides move at once: the base side by `temporalTruth_dual'`, the
 surgered side by `temporalTruth_dual'` followed by `temporalTruth_iso`. -/
 theorem snce_mirror_ih (atomMap : Formula → sig.preds) {C : Formula}
     (ih : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val C ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y C) :
     ∀ y : (surgeredStructure (dual M) (dualize ε) Q (d t)).carrier,
-      TemporalTruth (dual M) atomMap y.val (swapUS C) ↔
-        TemporalTruth (surgeredStructure (dual M) (dualize ε) Q (d t)) atomMap y (swapUS C) := by
+      TemporalTruth (dual M) atomMap y.val (reflectTimeBoxOpaque C) ↔
+        TemporalTruth (surgeredStructure (dual M) (dualize ε) Q (d t)) atomMap y (reflectTimeBoxOpaque C) := by
   intro y
   obtain ⟨y₀, rfl⟩ := (surgeredDualEquiv M ε Q t).surjective y
   exact ((temporalTruth_dual' (M := M) atomMap y₀.val C).trans (ih y₀)).trans
     ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap y₀ C).symm.trans
-      (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap y₀ (swapUS C)).symm)
+      (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap y₀ (reflectTimeBoxOpaque C)).symm)
 
 /-- **Reynolds 1992, §6 Lemma 8, printed p.181 — the `S` case, forward direction.**
 
@@ -773,10 +773,10 @@ theorem reynolds_lemma8_snce_forward (atomMap : Formula → sig.preds)
     TemporalTruth (surgeredStructure M ε Q t) atomMap x (.snce B A) := by
   refine (temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snce B A)).mp ?_
   refine (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x)
-    (swapUS (.snce B A))).mp ?_
+    (reflectTimeBoxOpaque (.snce B A))).mp ?_
   exact reynolds_lemma8_untl_forward atomMap h_surj (isContempEquivDense_dualize hε)
     (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
-    (isBadIntervalSurgery_dual hS) (swapUS A) (swapUS B)
+    (isBadIntervalSurgery_dual hS) (reflectTimeBoxOpaque A) (reflectTimeBoxOpaque B)
     (snce_mirror_ih atomMap ihA) (snce_mirror_ih atomMap ihB)
     ((surgeredDualIso M ε Q t).toEquiv (d x))
     ((temporalTruth_dual' (M := M) atomMap x.val (.snce B A)).mpr h)
@@ -798,10 +798,10 @@ theorem reynolds_lemma8_snce_backward (atomMap : Formula → sig.preds)
   refine (temporalTruth_dual' (M := M) atomMap x.val (.snce B A)).mp ?_
   refine reynolds_lemma8_untl_backward atomMap h_surj (isContempEquivDense_dualize hε)
     (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
-    (isBadIntervalSurgery_dual hS) (swapUS A) (swapUS B)
+    (isBadIntervalSurgery_dual hS) (reflectTimeBoxOpaque A) (reflectTimeBoxOpaque B)
     (snce_mirror_ih atomMap ihA) (snce_mirror_ih atomMap ihB)
     ((surgeredDualIso M ε Q t).toEquiv (d x)) ?_
-  exact (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x) (swapUS (.snce B A))).mpr
+  exact (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x) (reflectTimeBoxOpaque (.snce B A))).mpr
     ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snce B A)).mpr h)
 
 /-! ## Lemma 8
@@ -812,7 +812,7 @@ immediate."* — printed p.181.
 *Immediate* is exact here: `surgeredStructure` inherits `M.interp p x.val` definitionally, so the
 `atom` and `box` cases are `Iff.rfl`, as is `bot`; `imp` is a congruence. `box` is atomic in this
 reading because `TemporalTruth` sends a box-subformula to `atomMap (.box φ)` rather than
-recursing — the same reason `swapUS` leaves `.box` opaque. -/
+recursing — the same reason `reflectTimeBoxOpaque` leaves `.box` opaque. -/
 
 /-- **Reynolds 1992, §6 Lemma 8, printed pp.181-182.**
 

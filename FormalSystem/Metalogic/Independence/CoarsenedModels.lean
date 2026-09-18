@@ -62,8 +62,8 @@ by its `π`-image `SameUnder`.
 
 - `c_truth_congr_ext`, `cTruthAt_timeShift`, `c_stab_state_only` — the three structural ports
 - `cTruthAt_iff_atomize` — the atomization transfer, whence `cValid_of_tm` /
-  `cValid_swap_of_tm`
-- `naiveAxiom_cValid`, `naiveAxiom_cValid_swap` — every naive schema is coarsely valid at
+  `cValid_reflect_time_of_tm`
+- `naiveAxiom_cValid`, `naiveAxiom_cValid_reflect_time` — every naive schema is coarsely valid at
   `.Base`, one arm per constructor
 - `naive_cValid` — **naive soundness**: `NaiveDerivable .Base [] φ → CValid φ`
 
@@ -397,7 +397,7 @@ theorem cValid_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e φ
     (axiom_validIn ax h F trivial (K.atomModel e) τ t)
 
 /-- The swap form, via `atomize_reflectTime` at the conjugated encoding. -/
-theorem cValid_swap_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e.swap φ))
+theorem cValid_reflect_time_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e.reflectTime φ))
     (h : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime :=
   fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
@@ -411,9 +411,9 @@ theorem cValid_of_tm_deriv (e : Encoding) (φ : PlusFormula)
   fun F K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
     (soundness_validIn d F trivial (K.atomModel e) τ t)
 
-/-- The derivation-taking form of `cValid_swap_of_tm`. -/
-theorem cValid_swap_of_tm_deriv (e : Encoding) (φ : PlusFormula)
-    (d : DerivationTree FrameClass.Base [] (atomize e.swap φ)) : CValid φ.reflectTime :=
+/-- The derivation-taking form of `cValid_reflect_time_of_tm`. -/
+theorem cValid_reflect_time_of_tm_deriv (e : Encoding) (φ : PlusFormula)
+    (d : DerivationTree FrameClass.Base [] (atomize e.reflectTime φ)) : CValid φ.reflectTime :=
   fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
       rw [atomize_reflectTime]
@@ -563,87 +563,87 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
 /-- **The temporal dual of every naive TM⁺ schema admissible at `.Base` is coarsely valid.** The
 six `⊡` arms need no separate argument: `reflectTime` fixes `⊡`, so each of their duals is an
 instance of the same schema at swapped parameters. -/
-theorem naiveAxiom_cValid_swap {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom.IsNaive ax)
+theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom.IsNaive ax)
     (hb : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime := by
   cases ax with
   | prop_k a0 a1 a2 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.prop_k (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.prop_k (A' a0) (A' a1) (A' a2)) (by trivial)
   | prop_s a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.prop_s (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.prop_s (A' a0) (A' a1)) (by trivial)
   | ex_falso a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.ex_falso (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.ex_falso (A' a0)) (by trivial)
   | peirce a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.peirce (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.peirce (A' a0) (A' a1)) (by trivial)
   | modal_t a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.modal_t (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.modal_t (A' a0)) (by trivial)
   | modal_4 a0 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.modal4 (A' a0))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.modal4 (A' a0))
   | modal_b a0 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.modalB (A' a0))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.modalB (A' a0))
   | modal_5_collapse a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.modal_5_collapse (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.modal_5_collapse (A' a0)) (by trivial)
   | modal_k_dist a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.modal_k_dist (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.modal_k_dist (A' a0) (A' a1)) (by trivial)
   | serial_future =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.serial_future) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.serial_future) (by trivial)
   | serial_past =>
-    exact cValid_swap_of_tm_deriv theEncoding _ DerivedAxioms.serialPast
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ DerivedAxioms.serialPast
   | left_mono_until_G a0 a1 a2 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.left_mono_until_G (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.left_mono_until_G (A' a0) (A' a1) (A' a2)) (by trivial)
   | left_mono_since_H a0 a1 a2 =>
-    exact cValid_swap_of_tm_deriv theEncoding _
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.leftMonoSinceH (A' a0) (A' a1) (A' a2))
   | right_mono_until a0 a1 a2 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.right_mono_until (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.right_mono_until (A' a0) (A' a1) (A' a2)) (by trivial)
   | right_mono_since a0 a1 a2 =>
-    exact cValid_swap_of_tm_deriv theEncoding _
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.rightMonoSince (A' a0) (A' a1) (A' a2))
   | connect_future a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.connect_future (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.connect_future (A' a0)) (by trivial)
   | connect_past a0 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.connectPast (A' a0))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.connectPast (A' a0))
   | enrichment_until a0 a1 a2 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) (by trivial)
   | enrichment_since a0 a1 a2 =>
-    exact cValid_swap_of_tm_deriv theEncoding _
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.enrichmentSince (A' a0) (A' a1) (A' a2))
   | self_accum_until a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.self_accum_until (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.self_accum_until (A' a0) (A' a1)) (by trivial)
   | self_accum_since a0 a1 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.selfAccumSince (A' a0) (A' a1))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.selfAccumSince (A' a0) (A' a1))
   | absorb_until a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.absorb_until (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.absorb_until (A' a0) (A' a1)) (by trivial)
   | absorb_since a0 a1 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.absorbSince (A' a0) (A' a1))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.absorbSince (A' a0) (A' a1))
   | linear_until a0 a1 a2 a3 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.linear_until (A' a0) (A' a1) (A' a2) (A' a3)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.linear_until (A' a0) (A' a1) (A' a2) (A' a3)) (by trivial)
   | linear_since a0 a1 a2 a3 =>
-    exact cValid_swap_of_tm_deriv theEncoding _
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.linearSince (A' a0) (A' a1) (A' a2) (A' a3))
   | until_F a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.until_F (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.until_F (A' a0) (A' a1)) (by trivial)
   | since_P a0 a1 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.sinceP (A' a0) (A' a1))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.sinceP (A' a0) (A' a1))
   | temp_linearity a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.temp_linearity (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.temp_linearity (A' a0) (A' a1)) (by trivial)
   | temp_linearity_past a0 a1 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.tempLinearityPast (A' a0) (A' a1))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.tempLinearityPast (A' a0) (A' a1))
   | F_until_equiv a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) (by trivial)
   | P_since_equiv a0 =>
-    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.pSinceEquiv (A' a0))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.pSinceEquiv (A' a0))
   | modal_future a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.modal_future (A' a0)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.modal_future (A' a0)) (by trivial)
   | discrete_symm_fwd =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
   | discrete_symm_bwd =>
-    exact cValid_swap_of_tm_deriv theEncoding _ DerivedAxioms.discreteSymmBwd
+    exact cValid_reflect_time_of_tm_deriv theEncoding _ DerivedAxioms.discreteSymmBwd
   | discrete_propagate_fwd =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
   | discrete_propagate_bwd =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.discrete_propagate_bwd) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_propagate_bwd) (by trivial)
   | discrete_box_necessity =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.discrete_box_necessity) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.discrete_box_necessity) (by trivial)
   | prior_UZ a0 => exact hb.elim
   | prior_SZ a0 => exact hb.elim
   | z1 a0 => exact hb.elim
@@ -677,23 +677,23 @@ coarsely valid, and so is its temporal dual. Mirror of
 `Conservativity.plus_derivable_valid_and_reflect_time_validIn`, arm for arm; well-founded on the
 derivation's height for the same reason.
 -/
-theorem naive_cValid_and_swap {φ : PlusFormula} (d : PlusDerivationTree FrameClass.Base [] φ)
+theorem naive_cValid_and_reflect_time {φ : PlusFormula} (d : PlusDerivationTree FrameClass.Base [] φ)
     (hn : d.NaiveOnly) : CValid φ ∧ CValid φ.reflectTime := by
   match d, hn with
   | .axiom _ _ h_ax h_fc, hn =>
-    exact ⟨naiveAxiom_cValid h_ax hn h_fc, naiveAxiom_cValid_swap h_ax hn h_fc⟩
+    exact ⟨naiveAxiom_cValid h_ax hn h_fc, naiveAxiom_cValid_reflect_time h_ax hn h_fc⟩
   | .assumption _ _ h_mem, _ =>
     exact absurd h_mem List.not_mem_nil
   | .modus_ponens _ psi' _ d1 d2, hn =>
-    have h1 := naive_cValid_and_swap d1 hn.1
-    have h2 := naive_cValid_and_swap d2 hn.2
+    have h1 := naive_cValid_and_reflect_time d1 hn.1
+    have h2 := naive_cValid_and_reflect_time d2 hn.2
     exact ⟨fun F K τ t => (h1.1 F K τ t) (h2.1 F K τ t),
       fun F K τ t => (h1.2 F K τ t) (h2.2 F K τ t)⟩
   | .necessitation psi' d', hn =>
-    have h := naive_cValid_and_swap d' hn
+    have h := naive_cValid_and_reflect_time d' hn
     exact ⟨fun F K _ t σ => h.1 F K σ t, fun F K _ t σ => h.2 F K σ t⟩
   | .temporal_necessitation psi' d', hn =>
-    have h := naive_cValid_and_swap d' hn
+    have h := naive_cValid_and_reflect_time d' hn
     constructor
     · intro F K τ t
       rw [CTruth.allFuture_iff]
@@ -704,13 +704,13 @@ theorem naive_cValid_and_swap {φ : PlusFormula} (d : PlusDerivationTree FrameCl
       intro s _
       exact h.2 F K τ s
   | .time_reflection psi' d', hn =>
-    have h := naive_cValid_and_swap d' hn
+    have h := naive_cValid_and_reflect_time d' hn
     refine ⟨h.2, ?_⟩
     rw [reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub, hn =>
     have h_term := PlusDerivationTree.height_ofWeakeningNil_lt d' h_sub
-    exact naive_cValid_and_swap (d'.ofWeakeningNil h_sub)
+    exact naive_cValid_and_reflect_time (d'.ofWeakeningNil h_sub)
       (naiveOnly_ofWeakeningNil d' h_sub hn)
 termination_by d.height
 decreasing_by
@@ -731,7 +731,7 @@ Paper: — (formalization-native; the naive `⊡`-set and the coarsened semantic
 own, with no paper counterpart)
 -/
 theorem naive_cValid {φ : PlusFormula} (h : NaiveDerivable FrameClass.Base [] φ) : CValid φ :=
-  h.elim fun d hn => (naive_cValid_and_swap d hn).1
+  h.elim fun d hn => (naive_cValid_and_reflect_time d hn).1
 
 /-- The contrapositive, in the shape a refutation consumes. -/
 theorem not_naiveDerivable_of_cRefuted {φ : PlusFormula} (F : TaskFrame) (K : CoarseModel F)

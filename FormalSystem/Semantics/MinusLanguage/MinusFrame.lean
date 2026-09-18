@@ -65,15 +65,15 @@ semantics agree, and nothing downstream should assume they do.
 ## Converse closure and TR
 
 `no_min` and `past_lin` are fields rather than derived facts precisely so the class is closed
-under order reversal (`MinusFrame.swap`). That closure is what makes `truth_swap` available, and
-`truth_swap` is what discharges the time-reflection *rule* `DerivationTree.time_reflection` in
+under order reversal (`MinusFrame.reflect`). That closure is what makes `truth_reflectTime` available, and
+`truth_reflectTime` is what discharges the time-reflection *rule* `DerivationTree.time_reflection` in
 one line during native soundness — no swap-strengthened simultaneous induction is needed.
 
 ## Main Definitions
 
 - `MinusFrame`: the native frame notion — a nonempty point set with an unbounded, transitive,
   irreflexive, forward- and backward-linear strict order
-- `MinusFrame.swap`: order reversal, witnessing converse closure of the class
+- `MinusFrame.reflect`: order reversal, witnessing converse closure of the class
 - `MinusFrameTruth`: truth of a `MinusFormula` at a point of a `MinusFrame` under a valuation, by
   six-clause recursion with `□` read as the universal modality
 - `MinusFrameValid`: validity — truth at every point of every `MinusFrame` under every valuation
@@ -89,9 +89,9 @@ namespace one for one:
   `¬∀¬ ↔ ∃` step
 - `always_iff` — `△φ`, from `and_iff` together with `past_iff` and `future_iff`
 
-`truth_swap` — the order-reversal transfer lemma: truth on `F.swap` is truth on `F` of the
+`truth_reflectTime` — the order-reversal transfer lemma: truth on `F.reflect` is truth on `F` of the
 time-reflected formula `φ.reflectTime`. The `swap` in its name is the frame operation
-`MinusFrame.swap` (the paper's `F⁻`), not a formula operation.
+`MinusFrame.reflect` (the paper's `F⁻`), not a formula operation.
 
 ## References
 
@@ -121,7 +121,7 @@ dense-or-discrete dichotomy that makes `(Sp)` valid on every task frame — see 
 docstring.
 
 `no_min` and `past_lin` are included so that the class is closed under order reversal
-(`MinusFrame.swap`); that closure discharges the time-reflection rule.
+(`MinusFrame.reflect`); that closure discharges the time-reflection rule.
 -/
 structure MinusFrame where
   /-- The carrier: the frame's set of times. -/
@@ -149,7 +149,7 @@ attribute [instance] MinusFrame.pointNonempty
 /--
 Rotate a trichotomy disjunction `r b c ∨ b = c ∨ r c b` into `r c b ∨ b = c ∨ r b c`.
 
-Used only by `MinusFrame.swap`: reversing the order turns `fut_lin`'s conclusion into `past_lin`'s
+Used only by `MinusFrame.reflect`: reversing the order turns `fut_lin`'s conclusion into `past_lin`'s
 and vice versa, but the two disjunctions list their strict cases in opposite orders, so a rotation
 is needed to match the field shape.
 -/
@@ -161,13 +161,16 @@ private theorem triRotate {α : Type} {r : α → α → Prop} {b c : α}
   · exact Or.inl h
 
 /--
-Order reversal on a `MinusFrame`: keep the points, invert `lt`.
+Time reflection on a `MinusFrame` (the paper's `F⁻`): keep the points, invert `lt`.
 
-The class of `MinusFrame`s is closed under this operation — `no_max` and `no_min` swap roles, as do
+Not to be confused with `TaskFrame.reflect`, the reflection convention on task relations; the two
+live in different namespaces.
+
+The class of `MinusFrame`s is closed under this operation — `no_max` and `no_min` exchange roles, as do
 `fut_lin` and `past_lin` (modulo `triRotate`). That closure is exactly what makes the
-time-reflection rule sound on the class, via `truth_swap`.
+time-reflection rule sound on the class, via `truth_reflectTime`.
 -/
-def MinusFrame.swap (F : MinusFrame) : MinusFrame where
+def MinusFrame.reflect (F : MinusFrame) : MinusFrame where
   Point := F.Point
   lt := fun a b => F.lt b a
   lt_trans := fun h1 h2 => F.lt_trans h2 h1
@@ -291,15 +294,15 @@ end MinusFrameTruth
 /--
 **Order-reversal transfer.** Truth on the reversed frame is truth on the original frame of the
 time-reflected formula `φ.reflectTime`. This is the L⁻ analogue of the paper's
-temporal-duality lemma; the `swap` in the name is `MinusFrame.swap`, the order reversal.
+temporal-duality lemma; the `swap` in the name is `MinusFrame.reflect`, the order reversal.
 
 Six cases, each immediate: the atom and bot clauses do not mention the order, `imp` and `box` are
 congruences, and the two temporal clauses trade places exactly as `MinusFormula.reflectTime`
 does. This one lemma is what makes the time-reflection rule sound on the native class, replacing
 the swap-strengthened simultaneous induction used in the task-frame soundness proof.
 -/
-theorem truth_swap (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point) (φ : MinusFormula) :
-    MinusFrameTruth F.swap V w φ ↔ MinusFrameTruth F V w φ.reflectTime := by
+theorem truth_reflectTime (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point) (φ : MinusFormula) :
+    MinusFrameTruth F.reflect V w φ ↔ MinusFrameTruth F V w φ.reflectTime := by
   induction φ generalizing w with
   | atom p => exact Iff.rfl
   | bot => exact Iff.rfl

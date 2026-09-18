@@ -447,12 +447,12 @@ The order-reversing twin of `truthAt_of_truthCorr` (at the `TruthIso` instance),
 first two and structural on the second two; only `untl` and `snce` differ, and they differ by
 exchanging places and reading every bound through `dur_rev` instead of `OrderIso.lt_iff_lt`.
 
-Note on `swap_norm`: the plan for this work specified writing the body against that simp set.
-`swap_norm` collects the eleven `Formula.reflect_time_*` lemmas, which push `reflectTime`
+Note on `reflect_time_norm`: the plan for this work specified writing the body against that simp set.
+`reflect_time_norm` collects the eleven `Formula.reflect_time_*` lemmas, which push `reflectTime`
 through the **derived** operators (`neg`, `diamond`, `someFuture`, `next`, …). A six-constructor
 induction needs the *base* equations of `Formula.reflectTime` instead, and those are not in the
-set — nor should they be, since adding them would make `swap_norm` unfold the definition at every
-call site. `simp only [Formula.reflectTime, …]` is therefore what the base cases use; `swap_norm`
+set — nor should they be, since adding them would make `reflect_time_norm` unfold the definition at every
+call site. `simp only [Formula.reflectTime, …]` is therefore what the base cases use; `reflect_time_norm`
 remains the right tool for a caller reasoning about a derived operator.
 -/
 theorem truthAt_of_truthAntiIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}

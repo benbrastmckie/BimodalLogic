@@ -131,7 +131,7 @@ Languages that *do* inherit MF get it by transfer through the two declarations a
 re-proving it from time shift: L⁻ discharges it proof-theoretically
 (`MinusLanguage/AxiomDischarge.lean`, `dischargeModalFuture`), L⁺ transfers it
 (`Metalogic/Conservativity/Plus/Atomization.lean`'s `plusValidIn_of_tm` and
-`plusValidIn_swap_of_tm`, applied at `Axiom.modal_future` in
+`plusValidIn_reflect_time_of_tm`, applied at `Axiom.modal_future` in
 `Metalogic/Conservativity/Plus/AxiomValidity.lean`), and the coarsened independence models
 transfer it
 (`Metalogic/Independence/CoarsenedModels.lean`, `cValid_of_tm`). Adding a third consumer to the
@@ -1186,7 +1186,7 @@ witnesses `P(¬Hφ)`, which is what the swapped antecedent forbids. -/
 theorem density_reflect_time_valid (φ : Formula) :
     ValidDense ((φ.allFuture.allFuture.imp φ.allFuture).reflectTime) := by
   intro F _ M τ t
-  simp only [swap_norm, Formula.reflectTime, truth_norm]
+  simp only [reflect_time_norm, Formula.reflectTime, truth_norm]
   intro h_HH s hst
   obtain ⟨r, hsr, hrt⟩ := exists_between hst
   exact h_HH r hrt s hsr

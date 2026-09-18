@@ -23,7 +23,7 @@ and, closing Lemma 2, the bare sentence *"Dually L."*; and closing Lemma 6 (prin
 
 This module makes that sentence a **construction** rather than a second proof. It builds the
 order-dual `dual M` of an `OrderedMonadicStructure`, the syntactic dualization `dualize` of a
-`MonadicFormula` and `swapUS` of a `Formula`, and proves that `eval`, `TemporalTruth`, the
+`MonadicFormula` and `reflectTimeBoxOpaque` of a `Formula`, and proves that `eval`, `TemporalTruth`, the
 Prior-U/Prior-S pair, `∼` and the gap predicates all transport across. A §6 *"mirror image"*
 then costs an instantiation at `(dual M, dualize ε)` rather than a hand-written module.
 
@@ -174,34 +174,36 @@ theorem eval_dualize {M : OrderedMonadicStructure sig} :
 
 /-! ## Temporal dualization -/
 
-/-- **`swapUS`** — exchange `U` and `S` throughout a temporal formula.
+/-- **`reflectTimeBoxOpaque`** — time reflection with box subformulas treated as atoms: exchange
+`U` and `S` throughout a temporal formula, leaving every `.box φ` untouched.
 
 `.box φ` is left **opaque**, which is required rather than optional: `TemporalTruth` reads a
 box-subformula through `atomMap (.box φ)` as an atom of the signature, so recursing into it
-would change which atom is being read. It is therefore deliberately distinct from the time
-reflection `Formula.reflectTime`, which recurses into `box`, and does not share its name. -/
-def swapUS : Formula → Formula
+would change which atom is being read. It is therefore deliberately distinct from the full time
+reflection `Formula.reflectTime`, which recurses into `box`; the `BoxOpaque` qualifier in its
+name records the difference. -/
+def reflectTimeBoxOpaque : Formula → Formula
   | .atom a => .atom a
   | .bot => .bot
-  | .imp φ ψ => .imp (swapUS φ) (swapUS ψ)
+  | .imp φ ψ => .imp (reflectTimeBoxOpaque φ) (reflectTimeBoxOpaque ψ)
   | .box φ => .box φ
-  | .untl ψ φ => .snce (swapUS ψ) (swapUS φ)
-  | .snce ψ φ => .untl (swapUS ψ) (swapUS φ)
+  | .untl ψ φ => .snce (reflectTimeBoxOpaque ψ) (reflectTimeBoxOpaque φ)
+  | .snce ψ φ => .untl (reflectTimeBoxOpaque ψ) (reflectTimeBoxOpaque φ)
 
-/-- `swapUS` is an involution. -/
-theorem swapUS_involutive : ∀ A : Formula, swapUS (swapUS A) = A
+/-- `reflectTimeBoxOpaque` is an involution. -/
+theorem reflectTimeBoxOpaque_involutive : ∀ A : Formula, reflectTimeBoxOpaque (reflectTimeBoxOpaque A) = A
   | .atom _ => rfl
   | .bot => rfl
-  | .imp φ ψ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
+  | .imp φ ψ => by rw [reflectTimeBoxOpaque, reflectTimeBoxOpaque, reflectTimeBoxOpaque_involutive φ, reflectTimeBoxOpaque_involutive ψ]
   | .box _ => rfl
-  | .untl ψ φ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
-  | .snce ψ φ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
+  | .untl ψ φ => by rw [reflectTimeBoxOpaque, reflectTimeBoxOpaque, reflectTimeBoxOpaque_involutive φ, reflectTimeBoxOpaque_involutive ψ]
+  | .snce ψ φ => by rw [reflectTimeBoxOpaque, reflectTimeBoxOpaque, reflectTimeBoxOpaque_involutive φ, reflectTimeBoxOpaque_involutive ψ]
 
-/-- **The `TemporalTruth` transport.** Truth of `A` in the dual is truth of `swapUS A` in the
+/-- **The `TemporalTruth` transport.** Truth of `A` in the dual is truth of `reflectTimeBoxOpaque A` in the
 original, at the same point. -/
 theorem temporalTruth_dual {M : OrderedMonadicStructure sig} (atomMap : Formula → sig.preds)
     (t : M.carrier) (A : Formula) :
-    TemporalTruth (dual M) atomMap (d t) A ↔ TemporalTruth M atomMap t (swapUS A) := by
+    TemporalTruth (dual M) atomMap (d t) A ↔ TemporalTruth M atomMap t (reflectTimeBoxOpaque A) := by
   induction A generalizing t with
   | atom _ => exact Iff.rfl
   | bot => exact Iff.rfl
@@ -221,26 +223,26 @@ theorem temporalTruth_dual {M : OrderedMonadicStructure sig} (atomMap : Formula 
         exact ⟨d s, hts, (ihφ s).mpr hφ, fun r h₁ h₂ => (ihψ r).mpr (hψ r h₂ h₁)⟩
 
 /-- **The `TemporalTruth` transport, stated at the formula one actually starts from.** Truth of
-`A` in `M` is truth of `swapUS A` in the dual — the `swapUS_involutive` rearrangement of
+`A` in `M` is truth of `reflectTimeBoxOpaque A` in the dual — the `reflectTimeBoxOpaque_involutive` rearrangement of
 `temporalTruth_dual`, which is the form every instantiation below consumes. -/
 theorem temporalTruth_dual' {M : OrderedMonadicStructure sig} (atomMap : Formula → sig.preds)
     (t : M.carrier) (A : Formula) :
-    TemporalTruth (dual M) atomMap (d t) (swapUS A) ↔ TemporalTruth M atomMap t A := by
-  have h := temporalTruth_dual (M := M) atomMap t (swapUS A)
-  rw [swapUS_involutive] at h
+    TemporalTruth (dual M) atomMap (d t) (reflectTimeBoxOpaque A) ↔ TemporalTruth M atomMap t A := by
+  have h := temporalTruth_dual (M := M) atomMap t (reflectTimeBoxOpaque A)
+  rw [reflectTimeBoxOpaque_involutive] at h
   exact h
 
 /-! ## The Prior hypotheses
 
 `SemanticPriorU` and `SemanticPriorS` (`PriorDefsDense.lean:119`, `:138`) are exact mirrors of
 one another and are both quantified over **all** formulas `p`, which is what makes the exchange
-go through: a Prior-S instance at `swapUS p` is a Prior-U instance at `p` in the dual. -/
+go through: a Prior-S instance at `reflectTimeBoxOpaque p` is a Prior-U instance at `p` in the dual. -/
 
 /-- **Prior-S transports to Prior-U across the dual.** -/
 theorem semanticPriorU_dual {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (h : SemanticPriorS M atomMap) : SemanticPriorU (dual M) atomMap := by
   intro t p hstretch hfail
-  obtain ⟨s, hst, hbelow, hcase⟩ := h t (swapUS p)
+  obtain ⟨s, hst, hbelow, hcase⟩ := h t (reflectTimeBoxOpaque p)
     (by
       obtain ⟨s, hts, hall⟩ := hstretch
       exact ⟨s, hts, fun r h₁ h₂ => (temporalTruth_dual (M := M) atomMap r p).mp (hall r h₂ h₁)⟩)
@@ -259,7 +261,7 @@ theorem semanticPriorU_dual {M : OrderedMonadicStructure sig} {atomMap : Formula
 theorem semanticPriorS_dual {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (h : SemanticPriorU M atomMap) : SemanticPriorS (dual M) atomMap := by
   intro t p hstretch hfail
-  obtain ⟨s, hts, hbelow, hcase⟩ := h t (swapUS p)
+  obtain ⟨s, hts, hbelow, hcase⟩ := h t (reflectTimeBoxOpaque p)
     (by
       obtain ⟨s, hst, hall⟩ := hstretch
       exact ⟨s, hst, fun r h₁ h₂ => (temporalTruth_dual (M := M) atomMap r p).mp (hall r h₂ h₁)⟩)

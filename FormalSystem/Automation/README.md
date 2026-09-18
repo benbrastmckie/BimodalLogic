@@ -79,7 +79,7 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `TableauBridgeMain.lean` | 648 | Persistent REPL with a JSONL stdin/stdout protocol, composing the formula parser with the decision procedure for live queries |
 | `TableauProofStepsMain.lean` | 696 | Pipeline joining `FormulaEnumerator`, `DecisionProcedure` and `ProofStepExtractor` into large-scale proof-step training data |
 | `TraceExporterMain.lean` | 265 | CLI executable: reads S-expression formulas and streams JSONL `ProofCertificate`s to stdout |
-| `TruthNormAttr.lean` | 57 | Declares the `truth_norm` and `swap_norm` simp sets used by the truth layer's characterization lemmas |
+| `TruthNormAttr.lean` | 57 | Declares the `truth_norm` and `reflect_time_norm` simp sets used by the truth layer's characterization lemmas |
 | `ProofSearch/` | — | Proof search engine: bounded derivation search (Core.lean, Strategies.lean) |
 | `Tactics/` | — | Tactic elaborators: `modal_search`, `apply_axiom`, `modal_t`, `assumption_search`, `deduction`, `undischarge`, `propDecide` (Commands.lean, UserTactics.lean, Deduction.lean, Meta.lean, PropDecide.lean, Search.lean) |
 <!-- END GENERATED -->

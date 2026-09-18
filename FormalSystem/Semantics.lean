@@ -117,10 +117,10 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   natively on `MinusFormula`'s six constructors per `def:BL-semantics` (H and G quantify over
   strictly past/future times directly, not via `untl`/`snce`), plus the `MinusTruth.*` clause and
   derived-operator characterization lemmas
-- `MinusLanguage.MinusFrame`: a native L⁻ frame notion *not* bound to `TaskFrame` — `MinusFrame`, `MinusFrame.swap`,
+- `MinusLanguage.MinusFrame`: a native L⁻ frame notion *not* bound to `TaskFrame` — `MinusFrame`, `MinusFrame.reflect`,
   `MinusFrameTruth` (with `□` read as the universal modality over the point set) and
   `MinusFrameValid`, plus the `MinusFrameTruth.*` characterization family and the order-reversal
-  transfer lemma `truth_swap`. Dropping the `Duration : TemporalOrder` group structure is what
+  transfer lemma `truth_reflectTime`. Dropping the `Duration : TemporalOrder` group structure is what
   frees the class from the dense-or-discrete dichotomy, which is what makes a countermodel to
   `(Sp)` possible; see `Metalogic/Conservativity/SpCountermodel.lean`
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
