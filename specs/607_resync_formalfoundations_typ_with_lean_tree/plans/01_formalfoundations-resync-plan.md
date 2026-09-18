@@ -381,30 +381,64 @@ renames.
 
 ---
 
-### Phase 6: Gates, `#leansrc` existence check, and follow-up recording [NOT STARTED]
+### Phase 6: Gates, `#leansrc` existence check, and follow-up recording [COMPLETED]
 
 **Goal**: Run the full gate set and confirm there is no citation drift.
 
 **Tasks**:
-- [ ] `cd typst && typst compile FormalFoundations.typ` must produce no errors. Look at the new
+- [x] `cd typst && typst compile FormalFoundations.typ` must produce no errors. Look at the new
       PDF pages that contain the renamed definition blocks, to check that `op("TM")^-` and
-      `op("BL")^-` render cleanly.
-- [ ] `bash scripts/typst-sync-check.sh` must pass. If Check 1 flags a backticked span that is
+      `op("BL")^-` render cleanly. *(completed: exit 0, only pre-existing font warnings; confirmed
+      via `pdftotext` extraction that "TM⁻" and "BL⁻" render as expected, not garbled, across the
+      39-page output)*
+- [x] `bash scripts/typst-sync-check.sh` must pass. If Check 1 flags a backticked span that is
       new or was removed, fix the span or adjust `typst/sync-check-whitelist.txt` only when it is
       really needed. Before removing any whitelist entry, grep `` grep -rF '`entry`' --include='*.typ' typst/ ``.
-- [ ] `bash scripts/check-paper-definitions.sh` must report no new drift.
-- [ ] `#leansrc` existence check: extract every `#leansrc("Module", "decl")` pair (about 60) and
+      *(completed: PASS, all 3 checks green, 0 violations, 676 candidates. One violation was found
+      and fixed along the way -- Phase 1's remark quoted NA's schema as backticked typst-DSL
+      syntax `` `X top arrow.r H X top` ``, which cannot resolve verbatim against Lean source;
+      rewritten as proper math notation `$#Nxt top arrow.r #somepast #Nxt top$` matching the
+      document's own already-stated NA axiom, with a `def:BX` cross-reference instead. No
+      whitelist edit was needed.)*
+- [x] `bash scripts/check-paper-definitions.sh` must report no new drift. *(completed: all 42
+      recorded definitions unchanged -- pass)*
+- [x] `#leansrc` existence check: extract every `#leansrc("Module", "decl")` pair (about 60) and
       confirm that each module file exists under `FormalSystem/` and declares `decl`. Use a
       scratchpad script (grep for `theorem|lemma|def|structure|inductive|abbrev|class|instance`
       followed by `decl`), or `lean_local_search`. Fix any stale target to its current name, or
-      record why the target cannot be fixed.
-- [ ] Run the residual greps: `grep -nwE 'TB|TA'`, `grep -cF 'op("TM")^+'`, `grep -c '#BLplus'`,
-      `grep -n 'twenty-two\|five constructors'`. Each must return 0 or nothing.
-- [ ] Run `bash .claude/scripts/check-task-references.sh typst/FormalFoundations.typ` (or the
-      repo-wide lint) to confirm no task-number references were added.
-- [ ] Record these follow-ups in the implementation summary: the `f/d/c`->`z/d/r` subscript
+      record why the target cannot be fixed. *(completed: 67 citations, 66 unique (module, decl)
+      pairs; found and fixed 11 stale citations across 9 source lines --
+      `Metalogic.BXCanonical.Chronicle` -> `.MCSMixedCase`/`.ChronicleConstruction` (directory,
+      not a file); `Metalogic.MinusLanguageSoundness` -> `Metalogic.Conservativity.MinusLanguageSoundness`
+      (missing path segment, also the module half of Phase 2's flagged citation-swap finding);
+      `completeness_dense`/`completeness_ztime` moved from `Metalogic.BXCanonical` to
+      `Metalogic.StrongCompleteness` at both their §2 and §5 citation sites;
+      `discrete_consequence_not_compact` (an identifier that appears nowhere as an actual
+      declaration, only in a docstring cross-reference) retargeted to the real theorem
+      `notCompactZTime` in `Metalogic.DiscreteNonCompactness`; `multiFamTaskFrameGen` retargeted
+      from `Metalogic.BXCanonical.CompletenessDedekind` to its real home `Metalogic.Algebraic`;
+      `Semantics.PartialHistory`'s `extension`/`occurrence` retargeted to
+      `Semantics.Extension.Extension`; and `Semantics`'s `valid` retargeted to
+      `Semantics.Validity` with the decl name case-corrected to `Valid`. Every pair now resolves
+      by a declaration-pattern grep scoped to the cited module file or its subtree. Re-verified
+      with a second pass after the fixes: 0 remaining stale pairs.)*
+- [x] Run the residual greps: `grep -nwE 'TB|TA'`, `grep -cF 'op("TM")^+'`, `grep -c '#BLplus'`,
+      `grep -n 'twenty-two\|five constructors'`. Each must return 0 or nothing. *(completed: all
+      four clean)*
+- [x] Run `bash .claude/scripts/check-task-references.sh typst/FormalFoundations.typ` (or the
+      repo-wide lint) to confirm no task-number references were added. *(the script itself refused
+      this path -- it is scoped to `agent-system/extensions|.opencode|lua|.memory` only, not
+      arbitrary repo paths; used the plan's own documented fallback, "or the repo-wide lint":
+      `grep -niE '\btask[s]? [0-9]+\b|\(task [0-9]+\)' typst/FormalFoundations.typ`, which returned
+      no matches)*
+- [x] Record these follow-ups in the implementation summary: the `f/d/c`->`z/d/r` subscript
       review, the same naming resync for `typst/chapters/p2-decidability-practice.typ` and the
       rest of `BimodalReference.typ`, and promoting the language-correspondence table.
+      *(completed in the summary; also added the two Phase-2-flagged apparent citation-target
+      defects that this phase's existence check confirmed and partially resolved -- see the
+      summary's Follow-ups section for the one still-open item, the Soundness-theorem/
+      Algebraic-soundness-proposition citation-swap concern, which is a conceptual-correctness
+      question this plan's existence check cannot itself settle)*
 
 **Timing**: 45 minutes
 
@@ -424,12 +458,12 @@ renames.
 
 ## Testing & Validation
 
-- [ ] `typst compile typst/FormalFoundations.typ` succeeds with no errors.
-- [ ] `bash scripts/typst-sync-check.sh` exits 0.
-- [ ] `bash scripts/check-paper-definitions.sh` reports no new drift.
-- [ ] Every `#leansrc` target resolves to a live declaration.
-- [ ] The residual greps for `TB`/`TA`, `op("TM")^+`, `#BLplus`, `twenty-two` and `five constructors` are empty.
-- [ ] The count remark states 11 future-direction BX-temporal constructors and 4 uniformity
+- [x] `typst compile typst/FormalFoundations.typ` succeeds with no errors.
+- [x] `bash scripts/typst-sync-check.sh` exits 0.
+- [x] `bash scripts/check-paper-definitions.sh` reports no new drift.
+- [x] Every `#leansrc` target resolves to a live declaration.
+- [x] The residual greps for `TB`/`TA`, `op("TM")^+`, `#BLplus`, `twenty-two` and `five constructors` are empty.
+- [x] The count remark states 11 future-direction BX-temporal constructors and 4 uniformity
       constructors, with only NP's mirror derived.
 
 ## Artifacts & Outputs

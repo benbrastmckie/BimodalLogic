@@ -321,7 +321,7 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 #theorem("Extension")[
   Every partial history over a frame is extended by a possible world.
 ]
-#leansrc("Semantics.PartialHistory", "extension")
+#leansrc("Semantics.Extension.Extension", "extension")
 #proof[
   The partial histories extending $tau$ are partially ordered by extension, and every chain among
   them is bounded above by its union, which restricts on any pair of times to a single member of
@@ -336,7 +336,7 @@ below: two of the three results in @sec:histories are theorems of ZFC.
   For every frame $#taskframe$, world state $w in W$, and time $x in D$, there is some possible world $tau in H_(#taskframe)$ which has
   $tau(x) = w$. In particular $H_(#taskframe) eq.not emptyset$.
 ]
-#leansrc("Semantics.PartialHistory", "occurrence")
+#leansrc("Semantics.Extension.Extension", "occurrence")
 
 The Step Lemma above is the sole application site of *Saturation*, and Extension is the sole
 consumer of the Step Lemma; every appeal to *Saturation* in the semantics passes through this one
@@ -431,8 +431,8 @@ Its logic is correspondingly S5, and @sec:objective-modality takes up what else,
   $Gamma #satisfies phi.alt$ just in case $phi.alt$ is true in every model, at every possible world, and time at which every
   member of $Gamma$ is true; $phi.alt$ is *valid* when $#satisfies phi.alt$.
 ]
-#leansrc("Semantics", "valid")
-#leansrc("Semantics", "SemanticConsequence")
+#leansrc("Semantics.Validity", "Valid")
+#leansrc("Semantics.Validity", "SemanticConsequence")
 
 By Occurrence $H_(#taskframe)$ is never empty, so frame validity is never vacuous and
 $#taskframe #notsatisfies bot$ for every frame. Fixing $H_(#taskframe)$ with the frame does not
@@ -711,14 +711,14 @@ textual correspondence, not a machine-checked equivalence, as @sec:construction 
 #theorem("Weak completeness, dense class")[
   Every sentence valid over every dense task frame is derivable in the Dense frame class.
 ]
-#leansrc("Metalogic.BXCanonical", "completeness_dense")
+#leansrc("Metalogic.StrongCompleteness", "completeness_dense")
 Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 
 #theorem("Weak completeness, discrete class")[
   Every sentence valid over $ZZ$-time, in its successor-Archimedean formulation, is derivable in
   the ZTime frame class.
 ]
-#leansrc("Metalogic.BXCanonical", "completeness_ztime")
+#leansrc("Metalogic.StrongCompleteness", "completeness_ztime")
 Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 
 #theorem("Weak completeness, dense-and-complete class")[
@@ -865,7 +865,7 @@ the shape of the flow its countermodel must be built on.
   ]
   The remaining case, in which $M$ contains neither, is impossible.
 ]
-#leansrc("Metalogic.BXCanonical.Chronicle", "mcs_mixed_case_absurd")
+#leansrc("Metalogic.BXCanonical.Chronicle.MCSMixedCase", "mcs_mixed_case_absurd")
 The mixed case is eliminated from the axiom NB alone: were $not square.stroked #Nxt top$ and
 $not square.stroked not #Nxt top$ both in $M$, contraposing NB and necessitating would put $bot$
 in $M$. A maximal consistent set cannot be undecided about discreteness.
@@ -942,8 +942,8 @@ has nonempty intersection outright.#footnote[`multiFamGen_saturation`, via the r
   potential counterexample, enumerated from $QQ times "Formula" times "Formula" times "Bool"$; and
   the limit is the union of the chain.#footnote[Countability of the enumeration is what makes an $omega$-chain sufficient.]
 ]
-#leansrc("Metalogic.BXCanonical.Chronicle", "singletonChronicle")
-#leansrc("Metalogic.BXCanonical.Chronicle", "omegaChain")
+#leansrc("Metalogic.BXCanonical.Chronicle.ChronicleConstruction", "singletonChronicle")
+#leansrc("Metalogic.BXCanonical.Chronicle.ChronicleConstruction", "omegaChain")
 
 The obligation the chain exists to discharge is *eventuality-filling*. A sentence
 $phi.alt #until psi$ in a chronicle's set at $t$ is a promise that $psi$ holds at some later
@@ -1058,7 +1058,8 @@ No step of the base-class route carries `sorryAx`.
   (`FormalSystem.ProofSystem.DerivedAxioms`) obtained by TR (`DerivationTree.time_reflection`),
   not stated as separate axiom constructors. The uniformity layer reconciles too: the paper's four
   axioms NP, NF, NA, NB appear as exactly *4* constructors, one per key. Only NP's past mirror is
-  TR-derived; NA is the paper's NA itself (`X top arrow.r H X top`), not the mirror of NF. Every
+  TR-derived; NA is the paper's NA itself ($#Nxt top arrow.r #somepast #Nxt top$, `def:BX`'s own
+  NA above), not the mirror of NF. Every
   constructor is a paper axiom instance or a TR image of one, so the two presentations derive the
   same theorems at the empty context; the key-by-key table is in
   `docs/reference/axiom-reference.md`. That correspondence is textual, not a machine-checked
@@ -1295,10 +1296,10 @@ a point.
   $op("Cm")(S)$ is $square.stroked$-simple: $square.stroked X$ takes only the values $emptyset$ and
   $Omega$.
 ]
-#leansrc("Metalogic.MinusLanguageSoundness", "minus_soundness")
-#leansrc("Metalogic.MinusLanguageSoundness", "minus_soundness_dense")
-#leansrc("Metalogic.MinusLanguageSoundness", "minus_soundness_ztime")
-#leansrc("Metalogic.MinusLanguageSoundness", "minus_soundness_rtime")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_dense")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_ztime")
+#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_rtime")
 
 #lemma("Lindenbaum–Tarski")[
   The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")$-algebra on $X$, and its
@@ -1317,8 +1318,8 @@ a point.
   exactly when every non-theorem is refuted somewhere in $K$. The three machine-checked weak
   completeness results are exactly SP-representations of this shape.
 ]
-#leansrc("Metalogic.BXCanonical.Completeness", "completeness_dense")
-#leansrc("Metalogic.WeakCanonical", "completeness_ztime")
+#leansrc("Metalogic.StrongCompleteness", "completeness_dense")
+#leansrc("Metalogic.StrongCompleteness", "completeness_ztime")
 #leansrc("Metalogic.BXCanonical.CompletenessDedekind", "completeness_rtime_engine")
 
 The correspondence between ultrafilters and points above specializes Stone's theorem
@@ -1380,7 +1381,7 @@ the full similarity type.
   (`discrete_consequence_not_compact`), and Reynolds proves the analogous failure over $RR$
   @reynolds1992.
 ]
-#leansrc("Metalogic.SetConsequence", "discrete_consequence_not_compact")
+#leansrc("Metalogic.DiscreteNonCompactness", "notCompactZTime")
 
 The frame induced by a shift set is deterministic --- its task relation is functional, since
 $u = "sh"(w,d)$ determines $u$ from $w$ and $d$ --- so *Compositionality*, *Seriality*, and
@@ -1536,7 +1537,7 @@ axiom above, which is first-order.
 #leansrc("Metalogic.SetConsequence", "CompactBase")
 #leansrc("Metalogic.SetConsequence", "ModelExistenceBase")
 #leansrc("Metalogic.Bundle.BFMCS", "BFMCS")
-#leansrc("Metalogic.BXCanonical.CompletenessDedekind", "multiFamTaskFrameGen")
+#leansrc("Metalogic.Algebraic", "multiFamTaskFrameGen")
 
 #remark("The canonical construction")[
   For a $square.stroked$-simple $A$ with $#Nxt top = 0$, the theorem also has a direct
