@@ -242,23 +242,25 @@ no longer retrievable" as the recorded reason rather than leaving an unearned la
 
 ---
 
-### Phase 3: Record the Seven Unacquired Sources in `SOURCES.md` [NOT STARTED]
+### Phase 3: Record the Seven Unacquired Sources in `SOURCES.md` [COMPLETED]
 
 **Goal**: Give the confirmed blockers a durable home in the corpus's own acquisition record, so a
 future retry starts from the known DOI and the known, source-specific blocker instead of
 re-deriving both from an archived task report for a third time.
 
 **Tasks**:
-- [ ] Read the existing `~/Projects/Literature/SOURCES.md` W-series (lines ~185-480) and A-series
+- [x] Read the existing `~/Projects/Literature/SOURCES.md` W-series (lines ~185-480) and A-series
       (lines ~498-709) sections to fix the exact conventions in hand: the dated `# {title}
       (YYYY-MM-DD)` section header, the `## {PREFIX}{n}. Author (Year) — Title` entry heading, the
       `**Authors**` / `**Venue**` / `**Reason not obtained**` / `**Substitute ingested**` /
       `**Access route**` fields, the fenced bibtex block, and the closing `## ... acquisition
       notes` subsection.
-- [ ] Append a new dated top-level section (separated by the `---` the file uses between sections)
+      *(completed)*
+- [x] Append a new dated top-level section (separated by the `---` the file uses between sections)
       for the modal-representation/duality acquisition front, using a fresh entry prefix not
       already in use (`W` and `A` are taken; `R` is free).
-- [ ] Write one entry per unacquired source, each stating the blocker as *confirmed evidence*, not
+      *(completed: "Modal-Representation and Duality Acquisition Front (2026-09-18)" appended at EOF, verified as a pure append — pre-existing 709 lines byte-identical)*
+- [x] Write one entry per unacquired source, each stating the blocker as *confirmed evidence*, not
       as a guess — the report's Findings table has the specifics for all seven:
       - R1 Sambin & Vaccaro 1988 — Unpaywall `is_oa: true` / `oa_status: bronze`,
         `best_oa_location.url_for_pdf: null`, DOI `10.1016/0168-0072(88)90021-8`, ScienceDirect
@@ -279,20 +281,24 @@ re-deriving both from an archived task report for a third time.
       - R7 Marx & Venema 1997, "Multi-dimensional modal logic" — Kluwer/Springer monograph;
         Venema's own `staff.science.uva.nl/y.venema/books.html` lists it with a purchase link
         only, no PDF.
-- [ ] For each entry, record the corpus substitute where one exists, using the report's mapping:
+      *(completed: all 7 entries written with the confirmed evidence above, plus DOI/venue/publisher fields following the W-series template)*
+- [x] For each entry, record the corpus substitute where one exists, using the report's mapping:
       `venema_2007_algebras_and_coalgebras` Theorem 5.28 covers Goldblatt 1976 and Esakia duality
       (R4); the same document's Theorem 6.17 covers Fine 1975 (R5). State plainly, for R1, R2 and
       R3, that **no substitute exists** for the historical narrative around the origins of the
       discrete-frame/BAO duality — that gap is the one real informational loss and must not be
       papered over.
-- [ ] Add a short closing notes subsection recording (a) that Gehrke & Jónsson 2004 came off this
+      *(completed)*
+- [x] Add a short closing notes subsection recording (a) that Gehrke & Jónsson 2004 came off this
       same checklist and is now in the corpus as `gehrke_jonsson_2004`, superseding the
       `gehrke_vosmaer_2011` proxy for the canonical-extension framework; (b) that Tier 3 discovery
       was confirmed healthy on 2026-09-18 across ~10 queries, so these seven are not blocked by
       tooling and re-running discovery will not change the outcome; and (c) a priority ordering
       for anyone with institutional access.
-- [ ] Cite the evidence source by durable path (`BimodalLogic/specs/.../reports/01_retry-acquisition-representation-sources.md`)
+      *(completed: "Modal-representation acquisition notes" subsection covers all three points)*
+- [x] Cite the evidence source by durable path (`BimodalLogic/specs/.../reports/01_retry-acquisition-representation-sources.md`)
       following the A-series precedent, rather than by a bare task number.
+      *(completed: cited by durable path in the section intro; no "task 504" string appears anywhere in the appended text, confirmed by grep)*
 
 **Timing**: 1 hour
 
