@@ -263,26 +263,30 @@ INFO  C6   15 manifested module(s) carry 128 declaration(s) across 3104 line(s) 
 
 ---
 
-### Phase 3: C17 filter set, part 1 -- comment-aware regex and widened corpus [NOT STARTED]
+### Phase 3: C17 filter set, part 1 -- comment-aware regex and widened corpus [COMPLETED]
 
 **Goal**: Fix the two classes that are wrong rather than merely noisy: phantom declarations
 parsed out of comments (T0), and the load-bearing references C17 cannot see because they live
 outside its corpus (T4).
 
 **Tasks**:
-- [ ] In C17's Python block, strip comments before matching the declaration regex and skip lines
+- [x] In C17's Python block, strip comments before matching the declaration regex and skip lines
       inside `/- ... -/` blocks (including docstring blocks), so a continuation line such as
-      `lemma premises. -/` no longer parses as a declaration.
-- [ ] Add `typst/**/*.typ` and `scripts/*.sh` to the occurrence corpus, alongside the existing
-      `FormalSystem/` + `Tests/` `.lean` files and repo `.md` files.
-- [ ] Re-run and confirm the T0 rows (11) and T4 rows (12) have left the report, and that the
-      scanned-declaration denominator has dropped by the phantom count.
-- [ ] Spot-check that the seven C2/C14 baseline names (`soundness_setConsequence`,
+      `lemma premises. -/` no longer parses as a declaration. *(completed -- new `strip_comments`
+      helper; the declaration side is comment-aware, the occurrence side deliberately is not)*
+- [x] Add `typst/**/*.typ` and `scripts/*.sh` to the occurrence corpus, alongside the existing
+      `FormalSystem/` + `Tests/` `.lean` files and repo `.md` files. *(completed)*
+- [x] Re-run and confirm the T0 rows (11) and T4 rows (12) have left the report, and that the
+      scanned-declaration denominator has dropped by the phantom count. *(completed -- census
+      1,020 -> 997, exactly the 23 rows predicted; denominator 11,046 -> 10,850)*
+- [x] Spot-check that the seven C2/C14 baseline names (`soundness_setConsequence`,
       `setConsequence_iff_not_satisfiable`, `satisfiableSet_iff_finitelySatisfiable`,
       `modelExistence_iff_finitelySatisfiable`, `tmFrag_complete_dense`, `tmFrag_complete_ztime`,
       `tmFrag_complete_rtime`) and the five Typst-cited names (`getProof`,
       `int_nullity_example`, `generic_nullity_example`, `int_compositionality_example`,
-      `generic_compositionality`) are no longer reported.
+      `generic_compositionality`) are no longer reported. *(completed -- all twelve absent, checked
+      by name against the full 997-row list, not just the 20 the INFO line prints; all eleven T0
+      phantoms absent too)*
 
 **Timing**: 1.25 hours
 
@@ -303,6 +307,23 @@ of the twelve named T4 declarations -- all twelve must be absent.
 - All twelve T4 names absent from C17's output.
 - Scanned-declaration denominator dropped to the real declaration count.
 - Harness exit code and every other check's state unchanged from the baseline.
+
+#### Phase Notes (measured at implementation time)
+
+Scope Hypothesis confirmed exactly: 1,020 -> 997 (11 T0 + 12 T4 rows leave), denominator
+11,046 -> 10,850 (196 phantoms leave). Full harness exit 0; diffing every `PASS`/`FAIL`/`INFO`/
+`TODO` line against the Phase 2 run shows **one** changed line, C17's own.
+
+One addition beyond the stated tasks, made because the task "confirm the denominator has
+dropped" was otherwise unobservable from the harness: **C17 never printed a denominator at all**.
+Its INFO line now reads `N of M declaration(s) ...`, so the number the census is read against is
+visible at the gate rather than having to be re-derived by hand. This is a reporting change
+only; C17 remains reporting-only and still never touches `FAILURES`.
+
+The two comment-aware counting variants were measured against each other before one was chosen:
+requiring the stripped line to match (used) and additionally requiring the raw line to match the
+same name (the stratifier's rule) give an identical 10,850, with zero rows differing. The simpler
+rule was taken.
 
 ---
 

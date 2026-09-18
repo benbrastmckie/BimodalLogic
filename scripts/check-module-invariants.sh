@@ -2595,6 +2595,33 @@ decl_re = re.compile(
 )
 token_re = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
 
+def strip_comments(lines):
+    """(started-inside-a-block-comment, comment-stripped text) per line.
+
+    The declaration side of this scan is comment-AWARE; the occurrence side
+    deliberately is not (see the corpus note below). Without this, a wrapped
+    prose line such as `lemma premises. -/` parses as a declaration named
+    `premises`, which is then reported dead because nothing else mentions it --
+    196 such phantoms were counted before this was added, both inflating the
+    census and inflating the denominator it is read against.
+    """
+    depth, inside, code = 0, [], []
+    for raw in lines:
+        inside.append(depth > 0)
+        out, i, n = [], 0, len(raw)
+        while i < n:
+            if depth == 0 and raw.startswith("--", i):
+                break
+            if raw.startswith("/-", i):
+                depth += 1; i += 2; continue
+            if depth > 0 and raw.startswith("-/", i):
+                depth -= 1; i += 2; continue
+            if depth == 0:
+                out.append(raw[i])
+            i += 1
+        code.append("".join(out))
+    return inside, code
+
 lean_files = live_lean_files("FormalSystem")
 declarations = []
 for path in lean_files:
@@ -2602,8 +2629,11 @@ for path in lean_files:
         lines = open(path, encoding="utf-8", errors="replace").readlines()
     except OSError:
         continue
-    for i, raw in enumerate(lines, 1):
-        m = decl_re.match(raw.strip())
+    inside, code = strip_comments(lines)
+    for i in range(1, len(lines) + 1):
+        if inside[i - 1]:
+            continue
+        m = decl_re.match(code[i - 1].strip())
         if m:
             declarations.append((m.group(2).split(".")[-1], path, i))
 
@@ -2616,6 +2646,30 @@ for root, dirs, files in os.walk("Tests"):
     for f in files:
         if f.endswith(".lean"):
             occurrence_files.append(os.path.join(root, f))
+
+# Two more reference corpora, both load-bearing and both previously invisible.
+#
+#   typst/**/*.typ  -- the reference manual cites library declarations by name.
+#   scripts/*.sh    -- THIS script pins declaration names in the C2 and C14
+#                      `#print axioms` heredocs. Twelve declarations were
+#                      reported dead solely because their only non-declaring
+#                      reference lived in one of these two places; seven of the
+#                      twelve are the axiom baselines C2/C14 assert against, so
+#                      acting on that report would have broken the gates.
+#
+# The corpus is widened here and deliberately never narrowed. Stripping comments
+# from the OCCURRENCE side (so only code counts) was measured and rejected: it
+# takes the census to 1827, because 818 declarations are referenced only from
+# prose. A census that reports a documented-but-uncalled declaration as dead is
+# less actionable, not more.
+for root, dirs, files in os.walk("typst"):
+    dirs[:] = [d for d in dirs if d not in (".git", ".lake", "build", "__pycache__")]
+    for f in files:
+        if f.endswith(".typ"):
+            occurrence_files.append(os.path.join(root, f))
+for f in sorted(os.listdir("scripts")) if os.path.isdir("scripts") else []:
+    if f.endswith(".sh"):
+        occurrence_files.append(os.path.join("scripts", f))
 
 occurrences = {}
 for path in occurrence_files:
@@ -2636,7 +2690,7 @@ for base, decl_file, decl_line in declarations:
 if not dead:
     print("PASS  C17  zero dead declaration(s) (base-identifier token scan)")
 else:
-    print(f"INFO  C17  {len(dead)} declaration(s) with zero other occurrences (dead-declaration scan, approximate; never affects FAILURES)")
+    print(f"INFO  C17  {len(dead)} of {len(declarations)} declaration(s) have zero other occurrences (dead-declaration scan, approximate; never affects FAILURES)")
     for base, f, l in dead[:20]:
         print(f"            {f}:{l}: {base}")
     if len(dead) > 20:
