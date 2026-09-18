@@ -29,9 +29,10 @@ author's own and follows their convention rather than any of the three above.
 
 ## Axiom System
 
-The BX axiom system replaces the previous mixed-semantics axiom set. Under reflexive
-semantics for all temporal operators (G/H use ≤/≥, U/S use ≤/≥ for witness), the
-BX axioms provide a complete axiomatization for linear temporal orders without
+The BX axiom system replaces the previous mixed-semantics axiom set. Under irreflexive
+semantics for all temporal operators (G/H quantify over strictly later/earlier times, and U/S
+take a strictly later/earlier witness with the guard required only on the open interval
+between), the BX axioms provide a complete axiomatization for linear temporal orders without
 requiring successor-chain constructions.
 
 ### Layers
@@ -76,6 +77,33 @@ Note: temp_k_dist and temp_4 are now derived theorems (`temporalKDistDerived`,
 - Discrete axioms (X/Y-based) are separate extension points, not included here
 - BX5 + BX6 resolve Until-eventualities axiomatically (no forward_F needed)
 - BX7 ensures linearity of temporal witnesses
+
+## Axiom Sources
+
+The paper's `def:BX` footnote attributes most of the BX temporal schemata to Burgess and Xu.
+The reconciled map is below. "B82" is Burgess 1982 ("Axioms for tense logic I: Since and
+Until", §1.3 unless noted), "B84" is Burgess 1984 ("Basic Tense Logic"), and "Xu" gives the
+formula numbers of Xu 1988 ("On some U,S-tense logics"). Burgess numbers his axioms `A1a`-`A7a`
+with mirror images `A1b`-`A7b`, and B82 and B84 each have their own, unrelated, `A7a`. Burgess
+writes `U(event, guard)`, so each `Burgess:` line in a docstring below is quoted in that order.
+
+| Paper key | Lean constructors | Burgess | Xu 1988 |
+|---|---|---|---|
+| TN | `DerivationTree.temporal_necessitation` (rule) | B82 rule TG, its G half | — |
+| TS | `serial_future` / `serial_past` | B82 §1.6, "No Last Element" `F⊤` (and mirror) | — |
+| UC | `right_mono_until` / `right_mono_since` | B82 A1a / A1b | (1) / (2) |
+| UG | `left_mono_until_G` / `left_mono_since_H` | B82 A2a / A2b | (1) / (2) |
+| SU | `enrichment_until` / `enrichment_since` | B82 A3a / A3b | (3) / (4) |
+| UF | `self_accum_until` / `self_accum_since` | B82 A5a / A5b | (7) / (8) |
+| UI | `absorb_until` / `absorb_since` | B82 A6a / A6b | (9) / — |
+| CN | `linear_until` / `linear_since` | B82 A7a / A7b | (10) / (11) |
+| UE | `until_F` / `since_P` | not in B82: follows from UG with new guard `⊤`, plus TN | — |
+| TL | `temp_linearity` / `temp_linearity_past` | B84 §0.3 A2a / A2b, verbatim | (13) nearest |
+
+B82's A4a/A4b is the one Burgess 1982 pair the system omits (see the `BX14` note below). TC, UT,
+NP, NF, NA and NB are original to the paper, and TR is a metarule with no listed source. Xu
+places (10) in his axiom set Σ₄, which is complete for the class 𝒞₄ of linear frames. On its
+own, (10) defines a first-order condition on intervals, his (10)*, not linearity itself.
 
 ## References
 
@@ -135,7 +163,7 @@ inductive Axiom : Formula → Type where
   -- Layer 3: BX Temporal (20 = 10 future + 10 past-mirrors derived via duality)
   -- Note: temp_k_dist and temp_4 are now derived theorems.
   -- See Theorems/TemporalDerived.lean for temporalKDistDerived and temporal4Derived.
-  /-- Serial future: `⊤ → F(⊤)` (future seriality).
+  /-- Serial future: `⊤ → F(⊤)` (future seriality; Burgess 1982 §1.6, No Last Element).
   Under irreflexive semantics, every time point has a strict future. -/
   | serial_future :
     Axiom ((Formula.bot.imp Formula.bot).imp (Formula.someFuture (Formula.bot.imp Formula.bot)))
@@ -143,24 +171,30 @@ inductive Axiom : Formula → Type where
   Under irreflexive semantics, every time point has a strict past. -/
   | serial_past :
     Axiom ((Formula.bot.imp Formula.bot).imp (Formula.somePast (Formula.bot.imp Formula.bot)))
-  /-- BX2G: Guard monotonicity of Until under G (guard-first: untl(guard, event)):
+  /-- BX2G: Guard monotonicity of Until under G (Burgess A2a, Xu axiom (1)):
+  Burgess: `G(p ⊃ q) ⊃ (U(r, p) ⊃ U(r, q))`.
+  In this tree's guard-first order (untl(guard, event)):
   `G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
   Under open guard (t,s): G(φ→χ) covers all r > t, which includes (t,s).
   Unlike BX2, the pointwise (φ→χ) at t is not needed since t ∉ (t,s). -/
   | left_mono_until_G (φ χ ψ : Formula) :
       Axiom ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ)))
-  /-- BX2H: Guard monotonicity of Since under H (guard-first: snce(guard, event)):
+  /-- BX2H: Guard monotonicity of Since under H (Burgess A2b, Xu axiom (2);
+  guard-first: snce(guard, event)):
   `H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
   Under open guard (s,t): H(φ→χ) covers all r < t, which includes (s,t).
   Unlike BX2', the pointwise (φ→χ) at t is not needed since t ∉ (s,t). -/
   | left_mono_since_H (φ χ ψ : Formula) :
       Axiom ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
-  /-- BX3: Event monotonicity of Until (guard-first: untl(guard, event)):
+  /-- BX3: Event monotonicity of Until (Burgess A1a, Xu axiom (1)):
+  Burgess: `G(p ⊃ q) ⊃ (U(p, r) ⊃ U(q, r))`.
+  In this tree's guard-first order (untl(guard, event)):
   `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
   If φ implies ψ at all times, then U(φ,χ) implies U(ψ,χ). -/
   | right_mono_until (φ ψ χ : Formula) :
       Axiom ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ)))
-  /-- BX3': Event monotonicity of Since (guard-first: snce(guard, event)):
+  /-- BX3': Event monotonicity of Since (Burgess A1b, Xu axiom (2);
+  guard-first: snce(guard, event)):
   `H(φ → ψ) → ((χ S φ) → (χ S ψ))`. -/
   | right_mono_since (φ ψ χ : Formula) :
       Axiom ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ)))
@@ -194,32 +228,42 @@ inductive Axiom : Formula → Type where
   -- REMOVED: BX14 (separation_until) and BX14' (separation_since) constructors.
   -- These axioms (Burgess A4a/A4b) are unnecessary for axiom minimality.
   -- The chronicle splitting construction now uses Xu 1988 Lemma 3.2.1/3.2.2 instead.
-  /-- BX5: Self-accumulation of Until (guard-first: untl(guard, event)):
+  /-- BX5: Self-accumulation of Until (Burgess A5a, Xu axiom (7)):
+  Burgess: `U(p, q) ⊃ U(p, q ∧ U(p, q))`.
+  Printer order (event first; the constructor itself is guard-first untl(guard, event)):
   `U(ψ, φ) → U(ψ, φ ∧ U(ψ, φ))`.
   The eventuality enriches its own guard: at intermediate points, both φ holds
   AND the eventuality U(ψ,φ) persists. This is the key axiom for eventuality resolution. -/
   | self_accum_until (φ ψ : Formula) :
       Axiom ((Formula.untl φ ψ).imp
         (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ))
-  /-- BX5': Self-accumulation of Since (guard-first: snce(guard, event)):
+  /-- BX5': Self-accumulation of Since (Burgess A5b, Xu axiom (8);
+  guard-first: snce(guard, event)):
   `S(ψ, φ) → S(ψ, φ ∧ S(ψ, φ))`. -/
   | self_accum_since (φ ψ : Formula) :
       Axiom ((Formula.snce φ ψ).imp
         (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ))
-  /-- BX6: Absorption of Until (guard-first: untl(guard, event)):
+  /-- BX6: Absorption of Until (Burgess A6a, Xu axiom (9)):
+  Burgess: `U(q ∧ U(p, q), q) ⊃ U(p, q)`.
+  Printer order (event first; the constructor itself is guard-first untl(guard, event)):
   `U(φ ∧ U(ψ, φ), φ) → U(ψ, φ)`.
   Prevents infinite deferral: if the eventuality is deferred to a point where it
   still holds as φ ∧ U(ψ,φ), the two-step resolution collapses. -/
   | absorb_until (φ ψ : Formula) :
       Axiom ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ))
-  /-- BX6': Absorption of Since (guard-first: snce(guard, event)):
+  /-- BX6': Absorption of Since (Burgess A6b; guard-first: snce(guard, event)):
   `S(φ ∧ S(ψ, φ), φ) → S(ψ, φ)`. -/
   | absorb_since (φ ψ : Formula) :
       Axiom ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ))
-  /-- BX7: Linearity of Until (guard-first: untl(guard, event)):
+  /-- BX7: Linearity of Until (Burgess 1982 A7a, Xu 1988 axiom (10)):
+  Burgess: `U(p, q) ∧ U(r, s) ⊃ U(p ∧ r, q ∧ s) ∨ U(p ∧ s, q ∧ s) ∨ U(q ∧ r, q ∧ s)`.
+  With p = ψ, q = φ, r = θ, s = χ, in printer order (event first; the constructor itself is
+  guard-first untl(guard, event)):
   `U(ψ,φ) ∧ U(θ,χ) → U(ψ∧θ, φ∧χ) ∨ U(ψ∧χ, φ∧χ) ∨ U(φ∧θ, φ∧χ)`.
+  All three disjuncts share the fixed guard `φ∧χ` (Burgess's `q ∧ s`); only the events vary.
   If two Until formulas hold simultaneously, their witnesses are linearly ordered.
-  The three disjuncts correspond to: witnesses coincide, first comes first, second comes first. -/
+  The three disjuncts correspond to: witnesses coincide, first comes first, second comes first.
+  Sound under this tree's strict/open-guard semantics: see `linear_until_valid`. -/
   | linear_until (φ ψ χ θ : Formula) :
       Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
         |>.imp (Formula.or
@@ -227,7 +271,8 @@ inductive Axiom : Formula → Type where
             (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
             (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.untl (Formula.and φ χ) (Formula.and φ θ))))
-  /-- BX7': Linearity of Since (guard-first: snce(guard, event)):
+  /-- BX7': Linearity of Since (Burgess 1982 A7b, Xu 1988 axiom (11);
+  guard-first: snce(guard, event)):
   `S(ψ,φ) ∧ S(θ,χ) → S(ψ∧θ, φ∧χ) ∨ S(ψ∧χ, φ∧χ) ∨ S(φ∧θ, φ∧χ)`. -/
   | linear_since (φ ψ χ θ : Formula) :
       Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
@@ -236,18 +281,24 @@ inductive Axiom : Formula → Type where
             (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
             (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
-  -- NOTE: BX7a/BX7a' (linear_until_a7a/linear_since_a7a) removed -- unsound under open guard.
-  -- Burgess's A7a has fixed event (ψ∧θ) in all disjuncts, but with strict/open guard
-  -- semantics (t < r < s), the two Until witnesses s₁, s₂ cannot both contribute their
-  -- events at a single point when s₁ ≠ s₂. Countermodel: φ=χ=⊤, ψ true only at s₁,
-  -- θ true only at s₂ with s₁≠s₂ -- no point satisfies ψ∧θ.
-  -- A7a may be valid under Burgess's closed-guard semantics (t ≤ r ≤ s) but not here.
+  -- NOTE (provenance): `linear_until`/`linear_since` ARE Burgess 1982 A7a/A7b
+  -- (Xu 1988 (10)/(11)). Burgess writes U(event, guard), and A7a's three disjuncts share
+  -- the fixed GUARD q∧s while the events vary. A former constructor pair
+  -- `linear_until_a7a`/`linear_since_a7a` copied A7a's argument positions into the
+  -- guard-first `untl`/`snce` without swapping them, so Burgess's fixed guard landed in the
+  -- event slot and every disjunct had the fixed EVENT ψ∧θ. That fixed-event variant is
+  -- unsound (countermodel: φ=χ=⊤, ψ true only at s₁, θ true only at s₂, s₁≠s₂, so no
+  -- point satisfies ψ∧θ) and was removed. The defect was in the transcription, not in A7a:
+  -- Burgess's own semantics (1982 §1.2) is the same strict/open-guard semantics used here
+  -- (the guard holds on x < z < y), under which A7a is valid (`linear_until_valid`).
 
   -- NOTE: BX8/BX8' (until_step/since_step) removed -- not sound under open guard.
 
   -- NOTE: BX9/BX9' (until_elim/since_elim) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
-  /-- BX10: Until implies eventuality (guard-first: untl(guard, event)):
+  /-- BX10: Until implies eventuality (the paper's UE; not a Burgess axiom, since it follows
+  from UG = `left_mono_until_G` with the new guard `⊤`, plus TN for `G(φ → ⊤)`;
+  guard-first: untl(guard, event)):
   `U(ψ, φ) → F(ψ)`.
   U(ψ,φ) at t has witness s > t with ψ(s), so F(ψ) holds. -/
   | until_F (φ ψ : Formula) :
@@ -258,7 +309,7 @@ inductive Axiom : Formula → Type where
   | since_P (φ ψ : Formula) :
       Axiom ((Formula.snce φ ψ).imp (Formula.somePast ψ))
   -- Layer 3b: Additional BX Temporal (4 = 2 axioms x 2 directions)
-  /-- BX11: Temporal linearity:
+  /-- BX11: Temporal linearity (Burgess 1984 §0.3 axiom A2a; nearest Xu 1988 formula is (13)):
   `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`.
   Future witnesses are linearly ordered. Uses linearity of the underlying temporal order.
   This axiom is NOT derivable from BX1-BX10 (see LinearityDerivedFacts.lean counterexample). -/
