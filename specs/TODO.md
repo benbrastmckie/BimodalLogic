@@ -11,11 +11,11 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,605,606,608,610,614,615,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,600,616,617 | 298,464,502,559,563,568,588,597,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,589,607,618 | 231,465,497,540,564,565,600,605,606,608,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,605,610,614,615,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,606,616,617 | 298,464,502,559,563,568,588,597,605,615,619 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,589,608,618 | 231,465,497,540,564,565,606,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,600 | 428,498,499,500,603,608 | algebraic-representation, decidability, frame-extensions, ... |
+| 5 | 410,501,607 | 125,429,600 | algebraic-representation, decidability, documentation |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
@@ -107,7 +107,7 @@ next_project_number: 621
 ### Paper Refactor
 
 605 [NOT STARTED] — Reconcile the Burgess/Xu axiom provenance and add the paper's...
-606 [NOT STARTED] — Revise the primitive axiom system in...
+  └─ 606 [NOT STARTED] — Revise the primitive axiom system in...
 
 ### Codebase Cleanup
 
@@ -116,8 +116,8 @@ next_project_number: 621
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 619 [IMPLEMENTING] — Every linter suppression in the tree must carry a recorded...
+608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
 ### Semantics Refactor
 
@@ -302,7 +302,7 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
-- **Dependencies**: None
+- **Dependencies**: Task 606
 
 **Description**: Decide whether to rename the swapUS, swapMinus and *_swap_valid* identifier families to match the time-reflection vocabulary adopted in the TD->TR rename (swapTemporal -> reflectTime), and if so perform the rename via a map file with whole-word matching, keeping serialized dataset strings byte-stable. These families were explicitly left out of scope by task 584; see specs/584_reconcile_lean_tree_with_paper_vocabulary/rename-map.tsv and the record's 2026-09-17 section for the conventions used.
 
@@ -322,7 +322,7 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 588, Task 605, Task 615, Task 619
 
 **Description**: Revise the primitive axiom system in FormalSystem/ProofSystem/Axioms.lean (the Axiom type index and the DerivationTree constructor set) to match the paper's axiom system exactly, and demote every current axiom that goes beyond the paper to a derived theorem. The paper is the JPL paper (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, read-only); cite it through docs/reference/paper-definitions-of-record.md by \label{} or \aitem{} key, never by line number. GOAL: the primitive axioms and rules are exactly the paper's (def:BX plus its modal and interaction axioms). Everything else currently primitive becomes a theorem with a DerivationTree proof, keeping its current name where possible so downstream code keeps compiling. KNOWN SURPLUS in the BX temporal group (see "Paper Key Correspondence" in docs/reference/axiom-reference.md): the explicitly stated past mirrors (serial_past, connect_past, temp_linearity_past, since_P, P_since_equiv, absorb_since, right_mono_since, self_accum_since, left_mono_since_H, enrichment_since, linear_since, discrete_symm_bwd), which the paper obtains through the TR time-reflection rule (DerivationTree.time_reflection, Formula.reflectTime). Derive each one by TR from its primary. Also restate temp_linearity (TL) and linear_until (CN) with the paper's disjunct order and grouping, keeping the old forms as derived lemmas if anything uses them. Note that discrete_propagate_bwd is the paper's NA itself, not a mirror of NF: it stays primitive, and consider renaming it to match. RESEARCH FIRST: audit the WHOLE Axiom type (all constructors, not only the temporal group) against the paper's full axiom list. Produce a table classifying every constructor as paper-primitive, derivable surplus (with a derivation sketch), or surplus with no known derivation. The last class must be reported, not silently kept or dropped. Also check whether any surplus axiom is needed per FrameClass (Base, Dense, ZTime, RTime) and whether TR is available in every frame class where a mirror is used. BLAST RADIUS to plan for: soundness (per-axiom validity cases shrink; keep the mirror validity lemmas as lemmas), completeness and canonical-model constructions that pattern-match on Axiom constructors, the decidability/tableau and proof-extraction code, Automation (apply_axiom, proof search, axiom tables), the lake exe machine_appendix JSONL and typst/generated/ counts (the axiom count drops from its current value), the dataset pipeline's serialized axiom names (keep existing serialized datasets byte-stable or version them explicitly), Tests/BimodalTest, and docs/reference/axiom-reference.md (turn the correspondence table into a statement of the primitive system plus its derived mirrors). ACCEPTANCE: lake build is green with no new sorry or axiom, all tests pass, and every former primitive is either a paper axiom or a proved theorem, with a lean_verify axiom check on the derived mirrors. Supersedes the earlier scope of this task, which only proved the two presentations equivalent without changing the primitive set.
 
@@ -362,7 +362,7 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: frame-extensions
-- **Dependencies**: Task 603
+- **Dependencies**: Task 603, Task 606, Task 608
 - **Research**: [600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md]
 - **Plan**: [600_rename_dense_extension_qtime/plans/01_dense-naming-rationale.md]
 
