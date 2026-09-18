@@ -43,14 +43,6 @@ open FormalSystem.Metalogic.BXCanonical.Chronicle
 
 /-! ## Discrete Hypothesis -/
 
-/--
-The hypothesis that `nextTop` (= U(⊤, ⊥)) is in every MCS of the limit domain.
-This follows from `□(nextTop) ∈ A` via `box_discrete_gives_discreteness`.
--/
-def DiscreteHypothesis (fc : FrameClass) (A : Set Formula)
-    (h_mcs : SetMaximalConsistent (fc := fc) A) : Prop :=
-  ∀ x ∈ LimitDom fc A h_mcs, nextTop ∈ LimitF fc A h_mcs x
-
 /-! ## Prior-UZ/SZ Validity -/
 
 /--
@@ -196,20 +188,5 @@ Follows from seriality + `limit_P_resolution`.
 theorem chronicle_no_endpoints_backward (M : ChronicleAsPriorModel)
     (t : M.domain) : ∃ (s : M.domain), s < t :=
   exists_lt t
-
-/--
-The chronicle prior model is discrete: every point has an immediate successor.
-Follows from `limitDomSubtypeSuccOrder` (defined when `nextTop` is everywhere).
--/
-def chronicleDiscreteSucc (M : ChronicleAsPriorModel)
-    (t : M.domain) : M.domain :=
-  Order.succ t
-
-/--
-The chronicle prior model has an immediate predecessor for every point.
--/
-def chronicleDiscretePred (M : ChronicleAsPriorModel)
-    (t : M.domain) : M.domain :=
-  Order.pred t
 
 end FormalSystem.Metalogic.WeakCanonical
