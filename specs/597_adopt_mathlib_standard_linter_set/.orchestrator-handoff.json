@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "phases_completed": 0,
+  "phases_total": 0,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md",
+      "summary": "Measured 2,451 new warnings (14 classes, 283 files; ~2,700 projected) under mathlibStandardSet; --wfail forces per-class zero or documented opt-out; recommends staged enablement, in-source longFile baselines, and a zero-baseline ratchet extending C29."
+    }
+  ],
+  "summary": "Premises corrected: lakefile.toml; 1 blanket suppression remains (Carrier.lean); longFile inert unless weak.linter.style.longFile=1500; CI --wfail precludes non-zero C28 baseline; 5 #guard_msgs test files error under longLine. 35 files unmeasured due to concurrent build.",
+  "blockers": [],
+  "next_action_hint": "plan",
+  "phase": "research"
+}

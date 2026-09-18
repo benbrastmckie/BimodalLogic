@@ -22,12 +22,12 @@
     {
       "project_number": 621,
       "project_name": "adopt_uniform_reflect_naming_for_time_reversal",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Adopt uniform reflect naming for time reversal: the paper renamed lem:temporal-duality to lem:time-reflection. Update docs/reference/paper-definitions-of-record.md (retire the 'semantic lemma keeps its name' carve-out, record the new label), then apply the principle 'reflect names every operation reversing the time order on any object (formula, frame, history, truth lemma); swap survives only for non-time-reversal exchanges'. Rename MinusFrame.swap -> MinusFrame.reflect, truth_swap -> truth_reflectTime, swapUS -> a qualified reflect name (e.g. reflectTimeBoxOpaque, box subformulas treated as atoms). Classify by the same test the leftover families swap_norm, *_swap_of_tm*, cValid swaps, starValid_*_swap and rename those that denote time reflection. Keep serialized wire/mutation tags byte-stable. Update prose citing the temporal duality lemma, READMEs, typst citations; run check-paper-definitions.sh, check-module-invariants.sh, lake build",
       "topic": "paper-refactor",
       "created": "2026-09-18T15:46:50Z",
-      "last_updated": "2026-09-18T17:27:03Z",
+      "last_updated": "2026-09-18T17:27:20Z",
       "session_id": "sess_1789751834_287b73",
       "artifacts": [
         {
@@ -343,7 +343,7 @@
     {
       "project_number": 597,
       "project_name": "adopt_mathlib_standard_linter_set",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "low",
@@ -353,10 +353,19 @@
       ],
       "description": "Adopt Mathlib's standard linter set, following cslib's precedent. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `lakefile.lean` sets only `autoImplicit false` and `pp.unicode.fun`; cslib enables `weak.linter.mathlibStandardSet = true` in `[leanOptions]`. Against Mathlib defaults this tree has 692 lines over 100 characters in 154 files (`longLine`) and 37 files over 1,500 lines (`longFile`; largest `EFGames/GapDetection.lean` at 5,090). There are 4 file-scoped blanket `set_option linter.* false` suppressions (3 in `Semantics/Ultraproduct/`, 1 in a test) and 7 unscoped `set_option maxHeartbeats` (48 are already `in`-scoped).\n\nWORK: (1) enable `weak.linter.mathlibStandardSet` with documented opt-outs where a linter does not fit this project (cite cslib's `docs/lint-suppression-policy.md` as a model); (2) measure the new warning surface; (3) fix cheap classes, and baseline the rest under the compiler-warning gate from the warning burn-down task in this topic -- never bulk-suppress; `longFile` is baselined, not fixed by splitting, unless a split is independently justified; (4) convert the 4 blanket linter suppressions and 7 unscoped `maxHeartbeats` to `in`-scoped form; (5) add a blanket-suppression ratchet check (only `set_option ... false in` allowed) to the invariant harness or CI.\n\nORDERING NOTE: runs after the warning burn-down/gate task so the new warnings land under an existing gate. Large: the planner should split phases per linter class rather than truncate.\n\nACCEPTANCE: linter set enabled; `lake build` green; warning count within the recorded baseline; zero blanket suppressions and zero unscoped `maxHeartbeats`; ratchet check in place and documented.",
       "created": "2026-09-16T15:37:27Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-18T18:22:21Z",
       "file_scope": [
         "lakefile.lean"
-      ]
+      ],
+      "session_id": "sess_1789754326_b6255f",
+      "artifacts": [
+        {
+          "path": "specs/597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md",
+          "type": "report",
+          "summary": "Measured 2,451 new warnings (14 classes, 283 files; ~2,700 projected) under mathlibStandardSet; --wfail forces per-class zero or documented opt-out; recommends staged enablement, in-source longFile baselines, and a zero-baseline ratchet extending C29."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 585,
