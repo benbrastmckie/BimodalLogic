@@ -511,21 +511,16 @@ constrains is the points of evaluation, not the propositions.
 ]
 
 #remark[
-  *Naming provenance.* This section transcribes the paper's earlier presentation, in which the
-  three extensions were $"BX"_f slash "BX"_d slash "BX"_c$ over the separate language written
-  $"BL"^+$. The paper's 2026-09 revision collapsed that $"BL"^+$ into bare "BL", dropped the $+$
-  superscript from the TM family, and renamed the extensions $"BX"_z slash "BX"_d slash "BX"_r$
-  under the anchors `def:BX-z`, `def:BX-d` and `def:BX-r` (see
-  `docs/reference/paper-definitions-of-record.md`; the old anchors `def:TMplus-f`, `def:TMplus-d` and
-  `def:TMplus-c` are recorded there as `DANGLING`). This document's $#BL$ and $op("TM")$ macros
-  follow that same current convention, without the $+$ superscript, in line with `def:TMplus`. The
-  subscripts used throughout this section are nonetheless still the paper's *old* ones, read
-  $f arrow.r z$ and $c arrow.r r$; the mathematics is unchanged. The $c arrow.r r$ reading is not a
-  pure relabel: the paper's current $"BX"_r$ extends $"BX"_d$, while this section's $"BX"_c$
-  extends BX directly. Two further presentational differences also follow from the paper's
-  revision and are *not* transcribed here: the live definitions cite the Extensions section for
-  their axioms rather than displaying them, and $"BX"_r$ is presented as an extension of
-  $"BX"_d$ rather than of BX.
+  *Naming provenance.* The paper's 2026-09 revision merged $"BL"^+$ into bare "BL" and dropped the
+  $+$ superscript from the TM family; this document's $#BL$ and $op("TM")$ macros follow that
+  change, in line with `def:TMplus`. The extensions formerly named $"BX"_f slash "BX"_d slash
+  "BX"_c$ (anchors `def:TMplus-f`, `def:TMplus-d`, `def:TMplus-c`, now recorded as `DANGLING`) are
+  now $"BX"_z slash "BX"_d slash "BX"_r$ (`def:BX-z`, `def:BX-d`, `def:BX-r`; see
+  `docs/reference/paper-definitions-of-record.md`), and this section uses the current names.
+  $f arrow.r z$ was a relabel; $c arrow.r r$ was a redefinition: $"BX"_r$ extends $"BX"_d$, so its
+  class is R-time rather than all Dedekind-complete orders. One presentational difference remains:
+  the live paper definitions cite the Extensions section for their axioms, while this section
+  displays them.
 ]
 
 #definition($"BX"_d$)[

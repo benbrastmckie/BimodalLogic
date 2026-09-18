@@ -239,13 +239,13 @@ Naming provenance remark should remain.
 
 ---
 
-### Phase 3: Rewrite the Naming provenance remark, final sweep, and full gates [NOT STARTED]
+### Phase 3: Rewrite the Naming provenance remark, final sweep, and full gates [COMPLETED]
 
 **Goal**: Make the provenance remark describe the document as it now stands, confirm no stale
 subscript remains, and run the full gate set.
 
 **Tasks**:
-- [ ] Rewrite the `#remark[*Naming provenance.* ...]` block that follows the `BX_z` definition as a
+- [x] Rewrite the `#remark[*Naming provenance.* ...]` block that follows the `BX_z` definition as a
       short historical note. It should cover these points:
   - The paper's 2026-09 revision merged `BL^+` into BL and dropped the `+` superscript. This
     document's `#BL`/`op("TM")` macros follow that change, in line with `def:TMplus`.
@@ -259,20 +259,29 @@ subscript remains, and run the full gate set.
     still true.
 
   Remove the "subscripts ... are nonetheless still the paper's *old* ones" and "*not* transcribed
-  here" sentences.
-- [ ] Do not mention task numbers anywhere in the typst deliverables. They must be clean under
-      `no-task-references-in-deliverables.md`.
-- [ ] Final sweep: `grep -nE '"BX"_[fc]|op\("TM"\)_[fc]' typst/FormalFoundations.typ typst/chapters/*.typ typst/*.typ`
+  here" sentences. *(completed: verified against docs/reference/paper-definitions-of-record.md
+  lines 327-331 that the "cite Extensions section" presentational difference is still current, so
+  it was kept)*
+- [x] Do not mention task numbers anywhere in the typst deliverables. They must be clean under
+      `no-task-references-in-deliverables.md`. *(completed: grep for task-number patterns in both
+      edited files found none)*
+- [x] Final sweep: `grep -nE '"BX"_[fc]|op\("TM"\)_[fc]' typst/FormalFoundations.typ typst/chapters/*.typ typst/*.typ`
       may only return hits inside the provenance remark's historical mention of the old names. Any
-      `op("TM")^-_` tokens must match the Phase 1 baseline count.
-- [ ] Run the gates in order:
+      `op("TM")^-_` tokens must match the Phase 1 baseline count. *(completed: only hits are lines
+      516-517 inside the Naming provenance remark; TM-minus count still 13)*
+- [x] Run the gates in order:
   - `cd typst && typst compile FormalFoundations.typ build/FormalFoundations.pdf`
   - `cd typst && typst compile BimodalReference.typ build/BimodalReference.pdf`, the compiled book,
     which `#include`s the decidability chapter
   - `bash scripts/typst-sync-check.sh`
   - `bash scripts/check-paper-definitions.sh`
-- [ ] Run `bash .claude/scripts/check-task-references.sh` (or the equivalent task-reference lint) on
-      the two edited files, if it is available.
+  *(completed: all four exit 0; check-paper-definitions.sh reported a live-tree checksum notice
+  for possible_worlds.tex with all 42 recorded definitions unchanged -- a pass, not a neutral-skip)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` (or the equivalent task-reference lint) on
+      the two edited files, if it is available. *(completed with substitution: the script's
+      TREE_ROOTS are agent-system/extensions, .opencode, lua, .memory only -- it rejects a
+      typst/ path with exit 2 (usage error). Used a manual grep for task-number patterns instead,
+      per the task-number-references task above; found none)*
 
 **Timing**: 0.75 hours
 
@@ -291,13 +300,14 @@ subscript remains, and run the full gate set.
 
 ## Testing & Validation
 
-- [ ] `typst compile typst/FormalFoundations.typ` succeeds
-- [ ] `typst compile typst/BimodalReference.typ` succeeds
-- [ ] `bash scripts/typst-sync-check.sh` passes, including resolution of the swapped `#leansrc` targets
-- [ ] `bash scripts/check-paper-definitions.sh` passes (or neutral-skips)
-- [ ] No non-minus `_f`/`_c` frame-class subscripts remain outside the historical provenance note
-- [ ] The count of TM⁻ subscript tokens is unchanged from the baseline
-- [ ] The Algebraic soundness proposition's `TM_r` class agrees with the Per-class remark (R-time only)
+- [x] `typst compile typst/FormalFoundations.typ` succeeds
+- [x] `typst compile typst/BimodalReference.typ` succeeds
+- [x] `bash scripts/typst-sync-check.sh` passes, including resolution of the swapped `#leansrc` targets
+- [x] `bash scripts/check-paper-definitions.sh` passes (or neutral-skips) *(passed: live-tree
+      checksum notice, all 42 recorded definitions unchanged)*
+- [x] No non-minus `_f`/`_c` frame-class subscripts remain outside the historical provenance note
+- [x] The count of TM⁻ subscript tokens is unchanged from the baseline (13)
+- [x] The Algebraic soundness proposition's `TM_r` class agrees with the Per-class remark (R-time only)
 
 ## Artifacts & Outputs
 
