@@ -103,13 +103,6 @@ theorem mcs_filtration_equiv_equivalence (phi : Formula) :
    fun h => mcs_filtration_equiv_symm phi h,
    fun h1 h2 => mcs_filtration_equiv_trans phi h1 h2⟩
 
-/--
-The setoid for MCS filtration.
--/
-def MCSFiltrationSetoid (phi : Formula) : Setoid (Set Formula) where
-  r := MCSFiltrationEquiv phi
-  iseqv := mcs_filtration_equiv_equivalence phi
-
 /-!
 ## Closure MCS Bundle
 
