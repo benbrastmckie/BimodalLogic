@@ -15,10 +15,18 @@ open FormalSystem FormalSystem.Semantics
 #print axioms FormalSystem.Semantics.truthAt_map
 
 -- (b) THE LEMMA
+-- Implementation note: this probe originally *declared* `WorldHistory.respects_task` here, to
+-- machine-check the lemma before it existed in the library. Phase 1 landed it in
+-- `FormalSystem/Semantics/PartialHistory.lean`, so the local declaration now collides with the
+-- real one ("has already been declared"). The check it was performing is preserved below in the
+-- only form still available: the library constant is confirmed to exist, and the probe's own
+-- proof term is re-checked as an anonymous `example`.
 namespace FormalSystem.Semantics.WorldHistory
 variable {F : TaskFrame}
 
-theorem respects_task (τ : WorldHistory F) (s t : F.Duration) :
+#check @FormalSystem.Semantics.WorldHistory.respects_task
+
+example (τ : WorldHistory F) (s t : F.Duration) :
     F.TaskRel (τ.state s) (t - s) (τ.state t) :=
   τ.val.respects_task s t (τ.property s) (τ.property t)
 

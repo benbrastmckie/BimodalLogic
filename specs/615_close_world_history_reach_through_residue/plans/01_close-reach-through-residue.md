@@ -1,11 +1,11 @@
 # Implementation Plan: Close the world-history reach-through residue
 
 - **Task**: 615 - Close world history reach-through residue
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (the three predecessor tasks in this topic are archived and complete)
 - **Research Inputs**: specs/615_close_world_history_reach_through_residue/reports/01_close-reach-through-residue.md
-- **Artifacts**: plans/01_close-reach-through-residue.md (this file)
+- **Artifacts**: plans/01_close-reach-through-residue.md (this file), summaries/01_close-reach-through-residue-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
@@ -294,34 +294,34 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 own disjoint
 
 ---
 
-### Phase 6: Record the triage and hold the gate [NOT STARTED]
+### Phase 6: Record the triage and hold the gate [COMPLETED]
 
 - **Goal:** The triage of every non-rewritten site is a recorded deliverable, and the task's stated
   VERIFY clause is demonstrated green rather than assumed.
 - **Tasks:**
-  - [ ] Run the final gate:
-    - [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits 0
-    - [ ] `#print axioms FormalSystem.Semantics.validZTime_iff_validInt` returns exactly
+  - [x] Run the final gate:
+    - [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits 0
+    - [x] `#print axioms FormalSystem.Semantics.validZTime_iff_validInt` returns exactly
           `[propext, Classical.choice, Quot.sound]`
-    - [ ] `#print axioms FormalSystem.Semantics.truthAt_map` returns exactly
+    - [x] `#print axioms FormalSystem.Semantics.truthAt_map` returns exactly
           `[propext, Classical.choice, Quot.sound]`
-    - [ ] No `sorryAx` in either, and no live `sorry` introduced in non-Boneyard `FormalSystem/`
-  - [ ] Write the reach-through triage table into the implementation summary: 22 REWRITTEN
+    - [x] No `sorryAx` in either, and no live `sorry` introduced in non-Boneyard `FormalSystem/`
+  - [x] Write the reach-through triage table into the implementation summary: 22 REWRITTEN
         (Phases 2-3), 4 KEEP (the definitional sites inside `PartialHistory.lean` — the `state`
         body at `:423`, the `states_eq_state` statement and proof at `:428`/`:429`, and the
         `timeShift` body at `:471` — these *are* the accessor API and are the only places the
         subtype may legitimately be opened), 2 FIXED (Phase 4).
-  - [ ] Write the layer-crossing triage table into the summary: all 9 KEEP, with the reason stated
+  - [x] Write the layer-crossing triage table into the summary: all 9 KEEP, with the reason stated
         once for the group — `PartialHistory.Extends` is a partial-history-layer relation, the
         Extension Theorem is out of scope, and no world-history-level restatement exists that is
         not the flat-structure refactor. The 9: `Extension/Extension.lean:172`,
         `Extension/PeriodicExtension.lean:159`, `:403`, `:429` (the `.property`-direction crossing
         the prior audit missed), `Decidability/BiLasso/Agreement.lean:114`, `:137`,
         `IntTransfer.lean:205`, `:235`, `PartialHistory.lean:433`.
-  - [ ] Record the two parked items and why: `WorldHistory.ext` (zero call sites but `@[ext]`) and
+  - [x] Record the two parked items and why: `WorldHistory.ext` (zero call sites but `@[ext]`) and
         `states_eq_state` (zero explicit call sites but `@[simp]`), both deliberately retained.
-  - [ ] Record the Phase 5 outcome (instance deleted, or reverted with the build evidence).
-  - [ ] Commit.
+  - [x] Record the Phase 5 outcome (instance deleted, or reverted with the build evidence).
+  - [x] Commit.
 - **Timing:** 25 minutes
 - **Depends on:** 5
 - **Verification Tier:** full
@@ -356,19 +356,27 @@ end FormalSystem.Semantics.WorldHistory
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits 0
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits 0
       (baseline: 2659 jobs, green today)
-- [ ] `#print axioms FormalSystem.Semantics.validZTime_iff_validInt` -> `[propext, Classical.choice, Quot.sound]`
-- [ ] `#print axioms FormalSystem.Semantics.truthAt_map` -> `[propext, Classical.choice, Quot.sound]`
-- [ ] No `sorryAx` in either gate theorem; no live `sorry` added to non-Boneyard `FormalSystem/`
-- [ ] `grep -rn '\.val\.respects_task' FormalSystem/ Tests/ --include=*.lean | grep -v Boneyard`
+- [x] `#print axioms FormalSystem.Semantics.validZTime_iff_validInt` -> `[propext, Classical.choice, Quot.sound]`
+- [x] `#print axioms FormalSystem.Semantics.truthAt_map` -> `[propext, Classical.choice, Quot.sound]`
+- [x] No `sorryAx` in either gate theorem; no live `sorry` added to non-Boneyard `FormalSystem/`
+- [x] `grep -rn '\.val\.respects_task' FormalSystem/ Tests/ --include=*.lean | grep -v Boneyard`
       returns 0
-- [ ] `grep -rnE '\.val\.(states|domain|respects_task|nonempty_domain|timeShift)' FormalSystem/ Tests/ --include=*.lean | grep -v Boneyard`
-      returns exactly 4 hits, all inside `FormalSystem/Semantics/PartialHistory.lean`
-- [ ] `grep -rn "states_eq_state" FormalSystem/ --include=*.lean | grep -v Boneyard` returns exactly
+- [x] `grep -rnE '\.val\.(states|domain|respects_task|nonempty_domain|timeShift)' FormalSystem/ Tests/ --include=*.lean | grep -v Boneyard`
+      returns exactly 4 hits, all inside `FormalSystem/Semantics/PartialHistory.lean` *(deviation:
+      altered — returns 6, all inside `PartialHistory.lean`. The 2 extra are the Phase 1 lemma's
+      own docstring (`:433`, prose) and proof body (`:440`), neither of which existed when
+      research took the measurement; the proof body is a legitimate accessor-API site by the same
+      reasoning as the other four)*
+- [x] `grep -rn "states_eq_state" FormalSystem/ --include=*.lean | grep -v Boneyard` returns exactly
       2 hits (the definition and its docstring)
-- [ ] The probe at `specs/615_close_world_history_reach_through_residue/probes/01_respects-task-residue.lean`
-      still elaborates: `lake env lean <probe>` exits 0
+- [x] The probe at `specs/615_close_world_history_reach_through_residue/probes/01_respects-task-residue.lean`
+      still elaborates: `lake env lean <probe>` exits 0 *(deviation: altered — the probe declared
+      `WorldHistory.respects_task` itself, so after Phase 1 it collided with the real lemma
+      ("has already been declared"). Its local declaration was replaced by a `#check` of the
+      library constant plus an anonymous `example` carrying the identical proof term; it now
+      exits 0 and its later examples resolve against the real lemma)*
 
 ## Artifacts & Outputs
 
