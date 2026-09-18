@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "summary": "Created a 4-phase implementation plan for task 605. It edits only docstrings and docs: it corrects the linear_until A7a NOTE, tags the axioms with their Burgess/Xu sources, disambiguates Burgess 1984 A7a in three Chronicle files, and records the paper errata in paper-definitions-of-record.md.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/plans/01_burgess-a7a-provenance.md",
+      "summary": "4-phase docstring/doc-only plan reconciling Burgess A7a provenance."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "dispatch_seq": 5,
+  "next_action_hint": "implement"
+}

@@ -105,7 +105,7 @@ next_project_number: 621
 
 ### Paper Refactor
 
-605 [RESEARCHED] — Reconcile the Burgess/Xu axiom provenance and add the paper's...
+605 [PLANNED] — Reconcile the Burgess/Xu axiom provenance and add the paper's...
   └─ 606 [NOT STARTED] — Revise the primitive axiom system in...
 
 ### Codebase Cleanup
@@ -322,11 +322,12 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 605. Reconcile burgess a7a provenance and add axiom source footnote
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 588
 - **Research**: [605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/reports/01_burgess-a7a-provenance.md]
+- **Plan**: [605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/plans/01_burgess-a7a-provenance.md]
 
 **Description**: Reconcile the Burgess/Xu axiom provenance and add the paper's axiom-source footnote to FormalSystem/ProofSystem/Axioms.lean. The paper's footnote says CN is Burgess's A7a, but an existing note in Axioms.lean says A7a was removed as unsound; determine which claim is correct against Burgess and Xu, then copy the reconciled provenance into the axiom docstrings and docs/reference/paper-definitions-of-record.md. Follow-up recorded by the paper-vocabulary reconciliation (task 584).
 
