@@ -121,27 +121,27 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: ValidQTime and the ℚ completeness engine [NOT STARTED]
+### Phase 2: ValidQTime and the ℚ completeness engine [COMPLETED]
 
 **Goal**: Add `ValidQTime` and route the dense completeness engine through ℚ-time.
 
 **Tasks**:
-- [ ] Pre-check: `git status --short` and `git log -3 --` on `Validity.lean` and
+- [x] Pre-check: `git status --short` and `git log -3 --` on `Validity.lean` and
   `BXCanonical/Completeness.lean`; if another session has uncommitted edits there, apply the
   fallback in Risks (put the Completeness.lean items in `Metalogic/QTime.lean`).
-- [ ] `Validity.lean`, beside `ValidComplete`: `def ValidQTime (φ : Formula) : Prop :=
+- [x] `Validity.lean`, beside `ValidComplete`: `def ValidQTime (φ : Formula) : Prop :=
   ValidOnFrames TaskFrame.IsQTime φ`, docstring stating it equals `ValidDense`
   (`validQTime_iff_validDense`), that only weak (and finite-context) completeness transfers, and
   that set-based strong completeness over ℚ-time is open (ultrapowers of ℚ are non-Archimedean).
-- [ ] `Validity.lean`: `theorem validQTime_of_validDense {φ} (h : ValidDense φ) : ValidQTime φ :=
+- [x] `Validity.lean`: `theorem validQTime_of_validDense {φ} (h : ValidDense φ) : ValidQTime φ :=
   ValidOnFrames.mono (fun F hF => TaskFrame.isDense_of_isQTime hF) h` (adjust if `ValidDense`
   must first be unfolded via `validDense_iff_validIn_dense`).
-- [ ] `Completeness.lean`: `theorem isQTime_rat (F : FrameOver (TemporalOrder.of ℚ)) :
+- [x] `Completeness.lean`: `theorem isQTime_rat (F : FrameOver (TemporalOrder.of ℚ)) :
   F.toTaskFrame.IsQTime` (verified proof).
-- [ ] `Completeness.lean`: `theorem derivable_of_validQTime (φ) : ValidQTime φ → Derivable
+- [x] `Completeness.lean`: `theorem derivable_of_validQTime (φ) : ValidQTime φ → Derivable
   FrameClass.Dense [] φ` — body of current `derivable_of_validDense` with `isQTime_rat F` in
   place of `inferInstance`.
-- [ ] Re-prove `derivable_of_validDense` as `fun h => derivable_of_validQTime φ
+- [x] Re-prove `derivable_of_validDense` as `fun h => derivable_of_validQTime φ
   (validQTime_of_validDense h)`, keeping name, signature, and "Sorry Status" docstring accurate.
 
 **Timing**: 1 hour

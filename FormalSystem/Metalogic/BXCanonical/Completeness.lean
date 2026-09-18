@@ -244,36 +244,55 @@ theorem completeness (φ : Formula) :
 -- Boneyard/DeadChronicleGapElimination/TransferDead.lean
 
 /--
-Dense Completeness Theorem: If a formula is valid on all densely ordered models,
-then it is derivable in the Dense proof system.
+**Every frame over `ℚ` is a ℚ-time frame.** Divisibility: `y / n` halves, thirds, ... `y`.
+Commensurability: `b / a` is a fraction `num / den`, so `den • b = num • a`.
 
-**Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
-but using Dense-derivability and Dense-MCS throughout.
-- Dense case: `countermodel_dense_enriched` produces a countermodel on `Rat`
-  (DenselyOrdered), directly contradicting `ValidDense`.
+This is the membership fact that lets the dense completeness engine, whose countermodels are all
+built over `ℚ` (`countermodel_dense_enriched`), prove completeness for the narrower ℚ-time class.
+-/
+theorem isQTime_rat (F : FrameOver (TemporalOrder.of ℚ)) : F.toTaskFrame.IsQTime := by
+  refine ⟨fun n hn y => ⟨(y : ℚ) / n, ?_⟩, fun a b ha => ⟨((b : ℚ) / a).num, ((b : ℚ) / a).den,
+    ((b : ℚ) / a).den_nz, ?_⟩⟩
+  · have : (n : ℚ) ≠ 0 := by exact_mod_cast hn
+    show n • ((y : ℚ) / n) = y
+    simp only [nsmul_eq_mul]; field_simp
+  · show (((b : ℚ) / a).den : ℤ) • (b : ℚ) = ((b : ℚ) / a).num • (a : ℚ)
+    have ha' : (a : ℚ) ≠ 0 := ha
+    have h := Rat.mul_den_eq_num ((b : ℚ) / a)
+    simp only [zsmul_eq_mul, Int.cast_natCast]
+    rw [← h]; field_simp
+
+/--
+ℚ-time Completeness Theorem: If a formula is valid on all ℚ-time frames
+(`TaskFrame.IsQTime`), then it is derivable in the Dense proof system.
+
+This is the engine behind `derivable_of_validDense`: the dense countermodel is built over `ℚ`, so
+validity on ℚ-time frames is all the argument ever consumes.
+
+**Proof Strategy**: contrapositive + MCS construction, using Dense-derivability and Dense-MCS
+throughout.
+- Dense case: `countermodel_dense_enriched` produces a countermodel over `ℚ`, which is a ℚ-time
+  frame by `isQTime_rat`, directly contradicting `ValidQTime`.
 - Non-dense case: the `dense_indicator` axiom `¬U(⊤,⊥)` is a Dense
   theorem, so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 
-**Sorry Status**: sorryAx-free (machine-verified; axioms: exactly `propext`,
-`Classical.choice`, `Quot.sound`). The
-non-dense branch closes via the `dense_indicator` axiom: `¬U(⊤,⊥)` is a Dense theorem,
-so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
+**Sorry Status**: sorryAx-free (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`).
 
 Paper: `cor:tm-completeness`
 -/
-theorem derivable_of_validDense (φ : Formula) :
-    ValidDense φ → Derivable FrameClass.Dense [] φ := by
-  intro h_valid_dense
+theorem derivable_of_validQTime (φ : Formula) :
+    ValidQTime φ → Derivable FrameClass.Dense [] φ := by
+  intro h_valid_qtime
   by_contra h_not_deriv
   have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Dense) φ h_not_deriv
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg φ} h_cons
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
-  · -- Dense case: □(F'T) ∈ M — countermodel on Rat (DenselyOrdered)
+  · -- Dense case: □(F'T) ∈ M — countermodel on Rat, a ℚ-time frame
     obtain ⟨F, _hdet, TM, τ, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (h_valid_dense F inferInstance TM τ t)
+    exact h_not_true (h_valid_qtime F.toTaskFrame (isQTime_rat F) TM τ t)
   · -- Non-dense case: ¬□(F'T) ∈ M. But the dense_indicator axiom ¬U(⊤,⊥)
     -- is a Dense theorem, so □(¬U(⊤,⊥)) = □(F'T) is in every Dense-MCS.
     -- Contradiction with h_not_box_dense : ¬□(F'T) ∈ M.
@@ -283,6 +302,24 @@ theorem derivable_of_validDense (φ : Formula) :
       DerivationTree.necessitation _ h_ax
     have h_in : Chronicle.nextTop.neg.box ∈ M := theorem_in_mcs hM_mcs h_box
     exact set_consistent_not_both hM_mcs.1 (Chronicle.nextTop.neg.box) h_in h_not_box_dense
+
+/--
+Dense Completeness Theorem: If a formula is valid on all densely ordered models,
+then it is derivable in the Dense proof system.
+
+**Proof Strategy**: every ℚ-time frame is dense, so `ValidDense φ` gives `ValidQTime φ`
+(`Validity.validQTime_of_validDense`), and `derivable_of_validQTime` does the rest. The
+contrapositive + MCS construction lives there: its countermodel is built over `ℚ` by
+`countermodel_dense_enriched`, and its non-dense branch closes via the `dense_indicator` axiom.
+
+**Sorry Status**: sorryAx-free (machine-verified; axioms: exactly `propext`,
+`Classical.choice`, `Quot.sound`).
+
+Paper: `cor:tm-completeness`
+-/
+theorem derivable_of_validDense (φ : Formula) :
+    ValidDense φ → Derivable FrameClass.Dense [] φ :=
+  fun h => derivable_of_validQTime φ (Validity.validQTime_of_validDense h)
 
 /--
 **`U(⊤,⊥)` is a `.ZTime` theorem.** The ten-step derivation that eliminates the *dense* branch of

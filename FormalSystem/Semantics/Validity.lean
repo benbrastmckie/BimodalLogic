@@ -606,6 +606,25 @@ p.168) includes in US/R "axioms for density and no end points: `K⁺⊤`, `K⁻�
 -/
 def ValidRTime (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.RTime φ
 
+/--
+A formula is valid over **ℚ-time**: true on every frame whose duration group is divisible and
+pairwise commensurable (`TaskFrame.IsQTime`), which up to order-and-group isomorphism is `ℚ`.
+
+**`ValidOnFrames`, not `ValidIn`.** Like `ValidComplete`, this is validity at a frame predicate
+that no `FrameClass` tag denotes. There is no ℚ-time proof system to be sound for, because the
+class adds no new logic: `Metalogic/QTime.lean`'s `validQTime_iff_validDense` proves this predicate
+*equal* to `ValidDense`. The inclusion `ValidDense → ValidQTime` is `Validity.validQTime_of_validDense`
+below. The converse holds because the dense completeness engine already builds its countermodels
+over `ℚ` (`derivable_of_validQTime`, `Metalogic/BXCanonical/Completeness.lean`).
+
+**Only weak completeness transfers.** Finite-context consequence completeness over ℚ-time follows
+the same way, but needs a consequence layer indexed by frame predicates rather than tags, and is not
+stated here. *Set-based* strong completeness (compactness) over ℚ-time is open: the ultraproduct
+route that gives it over the dense class does not stay inside ℚ-time, since an ultrapower of `ℚ` is
+non-Archimedean and so fails commensurability.
+-/
+def ValidQTime (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsQTime φ
+
 namespace Validity
 
 /-! ### Equivalence with the `FrameClass`-indexed layer
@@ -694,6 +713,14 @@ proves the weaker `ValidRTime`, and anything genuinely established at
 theorem validRTime_of_validComplete {φ : Formula} (h : ValidComplete φ) :
     ValidRTime φ :=
   ValidOnFrames.mono (fun _ => TaskFrame.isComplete_of_isRTime) h
+
+/--
+Dense validity implies ℚ-time validity: every ℚ-time frame is dense
+(`TaskFrame.isDense_of_isQTime`). The converse is `validQTime_iff_validDense`
+(`Metalogic/QTime.lean`), which needs completeness.
+-/
+theorem validQTime_of_validDense {φ : Formula} (h : ValidDense φ) : ValidQTime φ :=
+  ValidOnFrames.mono (fun _ => TaskFrame.isDense_of_isQTime) h
 
 /--
 Valid formulas are semantic consequences of empty context.
