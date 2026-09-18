@@ -1519,11 +1519,14 @@ def theoremRegistry : List TheoremEntry := [
 /-!
 ## Coverage Tracking
 
-Canonical lists of all 45 axiom names and 7 inference rule names,
+Canonical lists of all 29 axiom names and 7 inference rule names,
 plus functions to compute and print coverage after extraction.
 -/
 
-/-- All 45 canonical axiom name strings, matching `Axiom.toName` output.
+/-- All 29 canonical axiom name strings (the primitive schemata of the paper's axiom system),
+matching `Axiom.toName` output. The time-reflection mirrors and modal 4/B are derived theorems
+(`FormalSystem.ProofSystem.DerivedAxioms`), so their proof steps serialize as
+`time_reflection` (or as a composite derivation) over primitive axioms, never as an axiom name.
 
 **DUPLICATION WARNING**: this list is a second, independent copy of the canonical list in
 `FormalSystem/Automation/AxiomNames.lean`. This module is a `lean_exe` root and declares its
@@ -1533,35 +1536,35 @@ BOTH lists must be updated in the same change. -/
 def allAxiomNames : List String :=
   [ -- Layer 1: Propositional (4)
     "prop_k", "prop_s", "ex_falso", "peirce",
-    -- Layer 2: S5 Modal (5)
-    "modal_t", "modal_4", "modal_b", "modal_5_collapse", "modal_k_dist",
-    -- Layer 3: BX Temporal (20)
-    "serial_future", "serial_past",
-    "left_mono_until_G", "left_mono_since_H",
-    "right_mono_until", "right_mono_since",
-    "connect_future", "connect_past",
-    "enrichment_until", "enrichment_since",
-    "self_accum_until", "self_accum_since",
-    "absorb_until", "absorb_since",
-    "linear_until", "linear_since",
-    "until_F", "since_P",
-    "temp_linearity", "temp_linearity_past",
-    -- Layer 3b: Additional BX Temporal (2)
-    "F_until_equiv", "P_since_equiv",
+    -- Layer 2: S5 Modal (3)
+    "modal_t", "modal_5_collapse", "modal_k_dist",
+    -- Layer 3: BX Temporal (10)
+    "serial_future",
+    "left_mono_until_G",
+    "right_mono_until",
+    "connect_future",
+    "enrichment_until",
+    "self_accum_until",
+    "absorb_until",
+    "linear_until",
+    "until_F",
+    "temp_linearity",
+    -- Layer 3b: Additional BX Temporal (1)
+    "F_until_equiv",
     -- Layer 4: Modal-Temporal Interaction (1)
     "modal_future",
-    -- Layer 5: Uniformity Axioms (5)
-    "discrete_symm_fwd", "discrete_symm_bwd",
+    -- Layer 5: Uniformity Axioms (4)
+    "discrete_symm_fwd",
     "discrete_propagate_fwd", "discrete_propagate_bwd",
     "discrete_box_necessity",
-    -- Layer 6: Prior Axioms (2)
-    "prior_UZ", "prior_SZ",
+    -- Layer 6: Prior Axioms (1)
+    "prior_UZ",
     -- Layer 7: Z1 Axiom (1)
     "z1",
     -- Layer 8: Density Axioms (2)
     "density", "dense_indicator",
-    -- Layer 9: Reynolds Dedekind Axioms (3)
-    "prior_U_gap", "prior_S_gap", "sep"
+    -- Layer 9: Reynolds Dedekind Axioms (2)
+    "prior_U_gap", "sep"
   ]
 
 /-- All 7 canonical inference rule name strings. -/

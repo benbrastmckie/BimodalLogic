@@ -121,8 +121,6 @@ theorem lexIntStaticFrame_mem_mod :
     lexIntStaticFrame ∈ Semantics.Mod (AxiomSet FrameClass.ZTime) := by
   have hdisc : ∀ x : ℤ ×ₗ ℤ, ∃ y, IsLeast {z : ℤ ×ₗ ℤ | x < z} y :=
     fun x => ⟨_, isLeast_succ_of_isLeast_pos LexInt.isLeast_pos x⟩
-  have hpred : ∀ x : ℤ ×ₗ ℤ, ∃ y, IsGreatest {z : ℤ ×ₗ ℤ | z < x} y :=
-    fun x => ⟨_, isGreatest_pred_of_isLeast_pos LexInt.isLeast_pos x⟩
   rintro φ ⟨ax, hax⟩
   by_cases hb : ax.minFrameClass ≤ FrameClass.Base
   · exact Validity.validOn_of_valid (axiom_valid ax hb) lexIntStaticFrame
@@ -131,10 +129,6 @@ theorem lexIntStaticFrame_mem_mod :
         intro M τ x h
         exact (static_untl_iff_disc (D := ℤ ×ₗ ℤ) hdisc Bool M τ ψ.neg ψ x).mpr
           ((static_someFuture_iff (D := ℤ ×ₗ ℤ) Bool M τ ψ x).mp h)
-    | prior_SZ ψ =>
-        intro M τ x h
-        exact (static_snce_iff_disc (D := ℤ ×ₗ ℤ) hpred Bool M τ ψ.neg ψ x).mpr
-          ((static_somePast_iff (D := ℤ ×ₗ ℤ) Bool M τ ψ x).mp h)
     | z1 ψ =>
         intro M τ x
         exact static_validates_z1 (D := ℤ ×ₗ ℤ) Bool M τ ψ x

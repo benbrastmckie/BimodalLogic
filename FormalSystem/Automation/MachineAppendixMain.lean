@@ -13,7 +13,7 @@ import FormalSystem.Automation.AxiomNames
 # Machine Appendix Export - Shipped Machine-Readable Axiomatization
 
 This module exports the complete TM axiomatization as a JSONL artifact shipped
-with the BimodalReference book: the 45 axiom schemata, the 7 inference rules of
+with the BimodalReference book: the 29 axiom schemata, the 7 inference rules of
 `DerivationTree`, and the derived-operator definitions, in the same formula
 encoding as the dataset pipeline (`Formula.toJson` tag schema).
 
@@ -35,7 +35,7 @@ and the rule *count* is cross-checked against the live source by
 ## Coverage Assertions
 
 `main` fails with a nonzero exit unless:
-- exactly 45 axiom entries are present, with name multiset equal to
+- exactly 29 axiom entries are present, with name multiset equal to
   `FormalSystem.Automation.allAxiomNames` (shared with `BenchmarkAnchorsMain.lean` via
   `Automation/AxiomNames.lean`; no missing, no extra, no duplicates);
 - exactly 7 inference-rule entries are present.
@@ -66,10 +66,10 @@ Invoked by `scripts/typst-machine-appendix.sh`, which injects the git stamps
 
 ## References
 
-- `FormalSystem.ProofSystem.Axioms` — the 45 `Axiom` constructors and `FrameClass`
+- `FormalSystem.ProofSystem.Axioms` — the 29 `Axiom` constructors and `FrameClass`
 - `FormalSystem.ProofSystem.Derivation` — the 7 `DerivationTree` constructors
 - `FormalSystem.Automation.DataExport` — `Formula.toJson`, `prettyPrint`, escaping
-- `FormalSystem.Automation.AxiomNames` — `allAxiomNames` (canonical 45-name list)
+- `FormalSystem.Automation.AxiomNames` — `allAxiomNames` (canonical 29-name list)
 -/
 
 namespace FormalSystem.Automation.MachineAppendixMain
@@ -160,27 +160,27 @@ def AxiomEntry.toJsonLine (e : AxiomEntry) : String :=
 
 /-- Layer name: Propositional (Layer 1, 4 axioms). -/
 def layerPropositional : String := "Propositional"
-/-- Layer name: S5 Modal (Layer 2, 5 axioms). -/
+/-- Layer name: S5 Modal (Layer 2, 3 axioms). -/
 def layerS5Modal : String := "S5 Modal"
-/-- Layer name: BX Temporal (Layer 3, 18 axioms). -/
+/-- Layer name: BX Temporal (Layer 3, 9 axioms). -/
 def layerBXTemporal : String := "BX Temporal"
-/-- Layer name: Additional BX Temporal (Layer 3b, 4 axioms). -/
+/-- Layer name: Additional BX Temporal (Layer 3b, 2 axioms). -/
 def layerAdditionalBX : String := "Additional BX Temporal"
 /-- Layer name: Modal-Temporal Interaction (Layer 4, 1 axiom). -/
 def layerInteraction : String := "Modal-Temporal Interaction"
-/-- Layer name: Uniformity (Layer 5, 5 axioms). -/
+/-- Layer name: Uniformity (Layer 5, 4 axioms). -/
 def layerUniformity : String := "Uniformity"
-/-- Layer name: Prior (Layer 6, 2 axioms). -/
+/-- Layer name: Prior (Layer 6, 1 axiom). -/
 def layerPrior : String := "Prior"
 /-- Layer name: Z1 (Layer 7, 1 axiom). -/
 def layerZ1 : String := "Z1"
 /-- Layer name: Density (Layer 8, 2 axioms). -/
 def layerDensity : String := "Density"
-/-- Layer name: Reynolds Dedekind (Layer 9, 3 axioms). -/
+/-- Layer name: Reynolds Dedekind (Layer 9, 2 axioms). -/
 def layerReynoldsDedekind : String := "Reynolds Dedekind"
 
 /--
-All 45 axiom entries, in `Axioms.lean` source order (the same order as
+All 29 axiom entries, in `Axioms.lean` source order (the same order as
 `BenchmarkAnchorsMain.allAxiomNames`). Each entry applies the real constructor to
 schematic atoms; the schema formula and frame class are extracted from the
 resulting `Axiom φ` witness, never transcribed.
@@ -191,67 +191,45 @@ def allAxiomEntries : List AxiomEntry :=
   , mkAxiomEntry "prop_s" layerPropositional ["φ", "ψ"] (Axiom.prop_s phiS psiS)
   , mkAxiomEntry "ex_falso" layerPropositional ["φ"] (Axiom.ex_falso phiS)
   , mkAxiomEntry "peirce" layerPropositional ["φ", "ψ"] (Axiom.peirce phiS psiS)
-    -- Layer 2: S5 Modal (5)
+    -- Layer 2: S5 Modal (3)
   , mkAxiomEntry "modal_t" layerS5Modal ["φ"] (Axiom.modal_t phiS)
-  , mkAxiomEntry "modal_4" layerS5Modal ["φ"] (Axiom.modal_4 phiS)
-  , mkAxiomEntry "modal_b" layerS5Modal ["φ"] (Axiom.modal_b phiS)
   , mkAxiomEntry "modal_5_collapse" layerS5Modal ["φ"] (Axiom.modal_5_collapse phiS)
   , mkAxiomEntry "modal_k_dist" layerS5Modal ["φ", "ψ"] (Axiom.modal_k_dist phiS psiS)
-    -- Layer 3: BX Temporal (18)
+    -- Layer 3: BX Temporal (9)
   , mkAxiomEntry "serial_future" layerBXTemporal [] Axiom.serial_future
-  , mkAxiomEntry "serial_past" layerBXTemporal [] Axiom.serial_past
   , mkAxiomEntry "left_mono_until_G" layerBXTemporal ["φ", "χ", "ψ"]
       (Axiom.left_mono_until_G phiS chiS psiS)
-  , mkAxiomEntry "left_mono_since_H" layerBXTemporal ["φ", "χ", "ψ"]
-      (Axiom.left_mono_since_H phiS chiS psiS)
   , mkAxiomEntry "right_mono_until" layerBXTemporal ["φ", "ψ", "χ"]
       (Axiom.right_mono_until phiS psiS chiS)
-  , mkAxiomEntry "right_mono_since" layerBXTemporal ["φ", "ψ", "χ"]
-      (Axiom.right_mono_since phiS psiS chiS)
   , mkAxiomEntry "connect_future" layerBXTemporal ["φ"] (Axiom.connect_future phiS)
-  , mkAxiomEntry "connect_past" layerBXTemporal ["φ"] (Axiom.connect_past phiS)
   , mkAxiomEntry "enrichment_until" layerBXTemporal ["φ", "ψ", "p"]
       (Axiom.enrichment_until phiS psiS pS)
-  , mkAxiomEntry "enrichment_since" layerBXTemporal ["φ", "ψ", "p"]
-      (Axiom.enrichment_since phiS psiS pS)
   , mkAxiomEntry "self_accum_until" layerBXTemporal ["φ", "ψ"]
       (Axiom.self_accum_until phiS psiS)
-  , mkAxiomEntry "self_accum_since" layerBXTemporal ["φ", "ψ"]
-      (Axiom.self_accum_since phiS psiS)
   , mkAxiomEntry "absorb_until" layerBXTemporal ["φ", "ψ"] (Axiom.absorb_until phiS psiS)
-  , mkAxiomEntry "absorb_since" layerBXTemporal ["φ", "ψ"] (Axiom.absorb_since phiS psiS)
   , mkAxiomEntry "linear_until" layerBXTemporal ["φ", "ψ", "χ", "θ"]
       (Axiom.linear_until phiS psiS chiS thetaS)
-  , mkAxiomEntry "linear_since" layerBXTemporal ["φ", "ψ", "χ", "θ"]
-      (Axiom.linear_since phiS psiS chiS thetaS)
   , mkAxiomEntry "until_F" layerBXTemporal ["φ", "ψ"] (Axiom.until_F phiS psiS)
-  , mkAxiomEntry "since_P" layerBXTemporal ["φ", "ψ"] (Axiom.since_P phiS psiS)
-    -- Layer 3b: Additional BX Temporal (4)
+    -- Layer 3b: Additional BX Temporal (2)
   , mkAxiomEntry "temp_linearity" layerAdditionalBX ["φ", "ψ"]
       (Axiom.temp_linearity phiS psiS)
-  , mkAxiomEntry "temp_linearity_past" layerAdditionalBX ["φ", "ψ"]
-      (Axiom.temp_linearity_past phiS psiS)
   , mkAxiomEntry "F_until_equiv" layerAdditionalBX ["φ"] (Axiom.F_until_equiv phiS)
-  , mkAxiomEntry "P_since_equiv" layerAdditionalBX ["φ"] (Axiom.P_since_equiv phiS)
     -- Layer 4: Modal-Temporal Interaction (1)
   , mkAxiomEntry "modal_future" layerInteraction ["φ"] (Axiom.modal_future phiS)
-    -- Layer 5: Uniformity (5)
+    -- Layer 5: Uniformity (4)
   , mkAxiomEntry "discrete_symm_fwd" layerUniformity [] Axiom.discrete_symm_fwd
-  , mkAxiomEntry "discrete_symm_bwd" layerUniformity [] Axiom.discrete_symm_bwd
   , mkAxiomEntry "discrete_propagate_fwd" layerUniformity [] Axiom.discrete_propagate_fwd
   , mkAxiomEntry "discrete_propagate_bwd" layerUniformity [] Axiom.discrete_propagate_bwd
   , mkAxiomEntry "discrete_box_necessity" layerUniformity [] Axiom.discrete_box_necessity
-    -- Layer 6: Prior (2)
+    -- Layer 6: Prior (1)
   , mkAxiomEntry "prior_UZ" layerPrior ["φ"] (Axiom.prior_UZ phiS)
-  , mkAxiomEntry "prior_SZ" layerPrior ["φ"] (Axiom.prior_SZ phiS)
     -- Layer 7: Z1 (1)
   , mkAxiomEntry "z1" layerZ1 ["φ"] (Axiom.z1 phiS)
     -- Layer 8: Density (2)
   , mkAxiomEntry "density" layerDensity ["φ"] (Axiom.density phiS)
   , mkAxiomEntry "dense_indicator" layerDensity [] Axiom.dense_indicator
-    -- Layer 9: Reynolds Dedekind (3)
+    -- Layer 9: Reynolds Dedekind (2)
   , mkAxiomEntry "prior_U_gap" layerReynoldsDedekind ["φ"] (Axiom.prior_U_gap phiS)
-  , mkAxiomEntry "prior_S_gap" layerReynoldsDedekind ["φ"] (Axiom.prior_S_gap phiS)
   , mkAxiomEntry "sep" layerReynoldsDedekind ["φ"] (Axiom.sep phiS)
   ]
 
@@ -433,7 +411,7 @@ def metadataLine (cfg : Config) (axCount ruleCount opCount : Nat) : String :=
 
 /--
 Coverage check mirroring `BenchmarkAnchorsMain.checkCoverage`: the axiom entry
-names must be exactly the 45 names in `allAxiomNames` (no missing, no extra,
+names must be exactly the 29 names in `allAxiomNames` (no missing, no extra,
 no duplicates), and there must be exactly 7 rule entries. Returns diagnostics
 (empty list = pass).
 -/
@@ -442,8 +420,8 @@ def coverageDiagnostics : List String :=
   let missing := allAxiomNames.filter (fun n => !(names.contains n))
   let extra := names.filter (fun n => !(allAxiomNames.contains n))
   let dups := names.length - names.eraseDups.length
-  let d1 := if allAxiomEntries.length == 45 then []
-    else [s!"axiom entry count {allAxiomEntries.length} ≠ 45"]
+  let d1 := if allAxiomEntries.length == 29 then []
+    else [s!"axiom entry count {allAxiomEntries.length} ≠ 29"]
   let d2 := if missing.isEmpty then []
     else [s!"missing axiom entries: {missing}"]
   let d3 := if extra.isEmpty then []
@@ -456,7 +434,7 @@ def coverageDiagnostics : List String :=
 
 /--
 Entry point: verify coverage, then stream the JSONL artifact (metadata line
-first, then 45 axiom lines, 7 rule lines, and the derived-operator lines).
+first, then 29 axiom lines, 7 rule lines, and the derived-operator lines).
 Exits nonzero with diagnostics on any coverage mismatch.
 -/
 def main (args : List String) : IO UInt32 := do

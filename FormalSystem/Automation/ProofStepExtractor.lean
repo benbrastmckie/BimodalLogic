@@ -71,45 +71,30 @@ def _root_.FormalSystem.ProofSystem.Axiom.toName {φ : Formula} : Axiom φ → S
   | .peirce _ _ => "peirce"
   -- Layer 2: S5 Modal (5)
   | .modal_t _ => "modal_t"
-  | .modal_4 _ => "modal_4"
-  | .modal_b _ => "modal_b"
   | .modal_5_collapse _ => "modal_5_collapse"
   | .modal_k_dist _ _ => "modal_k_dist"
   -- Layer 3: BX Temporal (20)
   | .serial_future => "serial_future"
-  | .serial_past => "serial_past"
   | .left_mono_until_G _ _ _ => "left_mono_until_G"
-  | .left_mono_since_H _ _ _ => "left_mono_since_H"
   | .right_mono_until _ _ _ => "right_mono_until"
-  | .right_mono_since _ _ _ => "right_mono_since"
   | .connect_future _ => "connect_future"
-  | .connect_past _ => "connect_past"
   | .enrichment_until _ _ _ => "enrichment_until"
-  | .enrichment_since _ _ _ => "enrichment_since"
   | .self_accum_until _ _ => "self_accum_until"
-  | .self_accum_since _ _ => "self_accum_since"
   | .absorb_until _ _ => "absorb_until"
-  | .absorb_since _ _ => "absorb_since"
   | .linear_until _ _ _ _ => "linear_until"
-  | .linear_since _ _ _ _ => "linear_since"
   | .until_F _ _ => "until_F"
-  | .since_P _ _ => "since_P"
   | .temp_linearity _ _ => "temp_linearity"
-  | .temp_linearity_past _ _ => "temp_linearity_past"
   -- Layer 3b: Additional BX Temporal (4)
   | .F_until_equiv _ => "F_until_equiv"
-  | .P_since_equiv _ => "P_since_equiv"
   -- Layer 4: Modal-Temporal Interaction (1)
   | .modal_future _ => "modal_future"
   -- Layer 5: Uniformity Axioms (5)
   | .discrete_symm_fwd => "discrete_symm_fwd"
-  | .discrete_symm_bwd => "discrete_symm_bwd"
   | .discrete_propagate_fwd => "discrete_propagate_fwd"
   | .discrete_propagate_bwd => "discrete_propagate_bwd"
   | .discrete_box_necessity => "discrete_box_necessity"
   -- Layer 6: Prior Axioms (2)
   | .prior_UZ _ => "prior_UZ"
-  | .prior_SZ _ => "prior_SZ"
   -- Layer 7: Z1 Axiom (1)
   | .z1 _ => "z1"
   -- Layer 8: Density Axioms (2)
@@ -117,7 +102,6 @@ def _root_.FormalSystem.ProofSystem.Axiom.toName {φ : Formula} : Axiom φ → S
   | .dense_indicator => "dense_indicator"
   -- Layer 9: Reynolds Dedekind (3)
   | .prior_U_gap _ => "prior_U_gap"
-  | .prior_S_gap _ => "prior_S_gap"
   | .sep _ => "sep"
 
 /-!

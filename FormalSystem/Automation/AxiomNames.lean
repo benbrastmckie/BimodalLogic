@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 /-!
-# Axiom Names - Canonical 45-Constructor Name List
+# Axiom Names - Canonical 29-Constructor Name List
 
 The canonical list of all `FormalSystem.ProofSystem.Axiom` constructor names, in
 `Axioms.lean` source order.
@@ -29,29 +29,31 @@ The mismatch is caught mechanically:
 
 namespace FormalSystem.Automation
 
-/-- All 45 axiom constructor names, in `Axioms.lean` source order. -/
+/-- All 29 axiom constructor names, in `Axioms.lean` source order. These are exactly the
+primitive schemata of the paper's axiom system; the time-reflection mirrors and modal 4/B are
+derived theorems in `FormalSystem.ProofSystem.DerivedAxioms`. -/
 def allAxiomNames : List String :=
   [ "prop_k", "prop_s", "ex_falso", "peirce"
-  , "modal_t", "modal_4", "modal_b", "modal_5_collapse", "modal_k_dist"
-  , "serial_future", "serial_past"
-  , "left_mono_until_G", "left_mono_since_H"
-  , "right_mono_until", "right_mono_since"
-  , "connect_future", "connect_past"
-  , "enrichment_until", "enrichment_since"
-  , "self_accum_until", "self_accum_since"
-  , "absorb_until", "absorb_since"
-  , "linear_until", "linear_since"
-  , "until_F", "since_P"
-  , "temp_linearity", "temp_linearity_past"
-  , "F_until_equiv", "P_since_equiv"
+  , "modal_t", "modal_5_collapse", "modal_k_dist"
+  , "serial_future"
+  , "left_mono_until_G"
+  , "right_mono_until"
+  , "connect_future"
+  , "enrichment_until"
+  , "self_accum_until"
+  , "absorb_until"
+  , "linear_until"
+  , "until_F"
+  , "temp_linearity"
+  , "F_until_equiv"
   , "modal_future"
-  , "discrete_symm_fwd", "discrete_symm_bwd"
+  , "discrete_symm_fwd"
   , "discrete_propagate_fwd", "discrete_propagate_bwd"
   , "discrete_box_necessity"
-  , "prior_UZ", "prior_SZ"
+  , "prior_UZ"
   , "z1"
   , "density", "dense_indicator"
-  , "prior_U_gap", "prior_S_gap", "sep"
+  , "prior_U_gap", "sep"
   ]
 
 end FormalSystem.Automation

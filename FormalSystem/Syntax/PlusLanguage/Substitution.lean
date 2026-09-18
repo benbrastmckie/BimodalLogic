@@ -159,53 +159,33 @@ def PlusAxiom.ofTMSubst (σ : Atom → PlusFormula) : {φ : Formula} → Axiom �
   | _, .ex_falso φ => .ex_falso (substPlus σ φ)
   | _, .peirce φ ψ => .peirce (substPlus σ φ) (substPlus σ ψ)
   | _, .modal_t φ => .modal_t (substPlus σ φ)
-  | _, .modal_4 φ => .modal_4 (substPlus σ φ)
-  | _, .modal_b φ => .modal_b (substPlus σ φ)
   | _, .modal_5_collapse φ => .modal_5_collapse (substPlus σ φ)
   | _, .modal_k_dist φ ψ => .modal_k_dist (substPlus σ φ) (substPlus σ ψ)
   | _, .serial_future => .serial_future
-  | _, .serial_past => .serial_past
   | _, .left_mono_until_G φ χ ψ =>
       .left_mono_until_G (substPlus σ φ) (substPlus σ χ) (substPlus σ ψ)
-  | _, .left_mono_since_H φ χ ψ =>
-      .left_mono_since_H (substPlus σ φ) (substPlus σ χ) (substPlus σ ψ)
   | _, .right_mono_until φ ψ χ =>
       .right_mono_until (substPlus σ φ) (substPlus σ ψ) (substPlus σ χ)
-  | _, .right_mono_since φ ψ χ =>
-      .right_mono_since (substPlus σ φ) (substPlus σ ψ) (substPlus σ χ)
   | _, .connect_future φ => .connect_future (substPlus σ φ)
-  | _, .connect_past φ => .connect_past (substPlus σ φ)
   | _, .enrichment_until φ ψ p =>
       .enrichment_until (substPlus σ φ) (substPlus σ ψ) (substPlus σ p)
-  | _, .enrichment_since φ ψ p =>
-      .enrichment_since (substPlus σ φ) (substPlus σ ψ) (substPlus σ p)
   | _, .self_accum_until φ ψ => .self_accum_until (substPlus σ φ) (substPlus σ ψ)
-  | _, .self_accum_since φ ψ => .self_accum_since (substPlus σ φ) (substPlus σ ψ)
   | _, .absorb_until φ ψ => .absorb_until (substPlus σ φ) (substPlus σ ψ)
-  | _, .absorb_since φ ψ => .absorb_since (substPlus σ φ) (substPlus σ ψ)
   | _, .linear_until φ ψ χ θ =>
       .linear_until (substPlus σ φ) (substPlus σ ψ) (substPlus σ χ) (substPlus σ θ)
-  | _, .linear_since φ ψ χ θ =>
-      .linear_since (substPlus σ φ) (substPlus σ ψ) (substPlus σ χ) (substPlus σ θ)
   | _, .until_F φ ψ => .until_F (substPlus σ φ) (substPlus σ ψ)
-  | _, .since_P φ ψ => .since_P (substPlus σ φ) (substPlus σ ψ)
   | _, .temp_linearity φ ψ => .temp_linearity (substPlus σ φ) (substPlus σ ψ)
-  | _, .temp_linearity_past φ ψ => .temp_linearity_past (substPlus σ φ) (substPlus σ ψ)
   | _, .F_until_equiv φ => .F_until_equiv (substPlus σ φ)
-  | _, .P_since_equiv φ => .P_since_equiv (substPlus σ φ)
   | _, .modal_future φ => .modal_future (substPlus σ φ)
   | _, .discrete_symm_fwd => .discrete_symm_fwd
-  | _, .discrete_symm_bwd => .discrete_symm_bwd
   | _, .discrete_propagate_fwd => .discrete_propagate_fwd
   | _, .discrete_propagate_bwd => .discrete_propagate_bwd
   | _, .discrete_box_necessity => .discrete_box_necessity
   | _, .prior_UZ φ => .prior_UZ (substPlus σ φ)
-  | _, .prior_SZ φ => .prior_SZ (substPlus σ φ)
   | _, .z1 φ => .z1 (substPlus σ φ)
   | _, .density φ => .density (substPlus σ φ)
   | _, .dense_indicator => .dense_indicator
   | _, .prior_U_gap φ => .prior_U_gap (substPlus σ φ)
-  | _, .prior_S_gap φ => .prior_S_gap (substPlus σ φ)
   | _, .sep φ => .sep (substPlus σ φ)
 
 /-- Substitution preserves the minimum frame class: the routing depends on the constructor

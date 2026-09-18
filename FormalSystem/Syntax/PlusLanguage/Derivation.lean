@@ -196,47 +196,30 @@ def PlusAxiom.ofTM : {φ : Formula} → Axiom φ → PlusAxiom (ofFormula φ)
   | _, .ex_falso φ => .ex_falso (ofFormula φ)
   | _, .peirce φ ψ => .peirce (ofFormula φ) (ofFormula ψ)
   | _, .modal_t φ => .modal_t (ofFormula φ)
-  | _, .modal_4 φ => .modal_4 (ofFormula φ)
-  | _, .modal_b φ => .modal_b (ofFormula φ)
   | _, .modal_5_collapse φ => .modal_5_collapse (ofFormula φ)
   | _, .modal_k_dist φ ψ => .modal_k_dist (ofFormula φ) (ofFormula ψ)
   | _, .serial_future => .serial_future
-  | _, .serial_past => .serial_past
   | _, .left_mono_until_G φ χ ψ => .left_mono_until_G (ofFormula φ) (ofFormula χ) (ofFormula ψ)
-  | _, .left_mono_since_H φ χ ψ => .left_mono_since_H (ofFormula φ) (ofFormula χ) (ofFormula ψ)
   | _, .right_mono_until φ ψ χ => .right_mono_until (ofFormula φ) (ofFormula ψ) (ofFormula χ)
-  | _, .right_mono_since φ ψ χ => .right_mono_since (ofFormula φ) (ofFormula ψ) (ofFormula χ)
   | _, .connect_future φ => .connect_future (ofFormula φ)
-  | _, .connect_past φ => .connect_past (ofFormula φ)
   | _, .enrichment_until φ ψ p => .enrichment_until (ofFormula φ) (ofFormula ψ) (ofFormula p)
-  | _, .enrichment_since φ ψ p => .enrichment_since (ofFormula φ) (ofFormula ψ) (ofFormula p)
   | _, .self_accum_until φ ψ => .self_accum_until (ofFormula φ) (ofFormula ψ)
-  | _, .self_accum_since φ ψ => .self_accum_since (ofFormula φ) (ofFormula ψ)
   | _, .absorb_until φ ψ => .absorb_until (ofFormula φ) (ofFormula ψ)
-  | _, .absorb_since φ ψ => .absorb_since (ofFormula φ) (ofFormula ψ)
   | _, .linear_until φ ψ χ θ =>
       .linear_until (ofFormula φ) (ofFormula ψ) (ofFormula χ) (ofFormula θ)
-  | _, .linear_since φ ψ χ θ =>
-      .linear_since (ofFormula φ) (ofFormula ψ) (ofFormula χ) (ofFormula θ)
   | _, .until_F φ ψ => .until_F (ofFormula φ) (ofFormula ψ)
-  | _, .since_P φ ψ => .since_P (ofFormula φ) (ofFormula ψ)
   | _, .temp_linearity φ ψ => .temp_linearity (ofFormula φ) (ofFormula ψ)
-  | _, .temp_linearity_past φ ψ => .temp_linearity_past (ofFormula φ) (ofFormula ψ)
   | _, .F_until_equiv φ => .F_until_equiv (ofFormula φ)
-  | _, .P_since_equiv φ => .P_since_equiv (ofFormula φ)
   | _, .modal_future φ => .modal_future (ofFormula φ)
   | _, .discrete_symm_fwd => .discrete_symm_fwd
-  | _, .discrete_symm_bwd => .discrete_symm_bwd
   | _, .discrete_propagate_fwd => .discrete_propagate_fwd
   | _, .discrete_propagate_bwd => .discrete_propagate_bwd
   | _, .discrete_box_necessity => .discrete_box_necessity
   | _, .prior_UZ φ => .prior_UZ (ofFormula φ)
-  | _, .prior_SZ φ => .prior_SZ (ofFormula φ)
   | _, .z1 φ => .z1 (ofFormula φ)
   | _, .density φ => .density (ofFormula φ)
   | _, .dense_indicator => .dense_indicator
   | _, .prior_U_gap φ => .prior_U_gap (ofFormula φ)
-  | _, .prior_S_gap φ => .prior_S_gap (ofFormula φ)
   | _, .sep φ => .sep (ofFormula φ)
 
 /-- The embedding preserves the minimum frame class. -/

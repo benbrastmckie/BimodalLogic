@@ -135,12 +135,6 @@ theorem ratStaticFrame_mem_mod :
         have hψ := ((static_untl_iff_dense (D := ℚ) Bool M τ
           ψ Formula.top x).mp h1).2
         exact absurd hψ ((static_someFuture_iff (D := ℚ) Bool M τ ψ.neg x).mp h2)
-    | prior_S_gap ψ =>
-        intro M τ x hant
-        obtain ⟨h1, h2⟩ := andE hant
-        have hψ := ((static_snce_iff_dense (D := ℚ) Bool M τ
-          ψ Formula.top x).mp h1).2
-        exact absurd hψ ((static_somePast_iff (D := ℚ) Bool M τ ψ.neg x).mp h2)
     | sep ψ =>
         intro M τ x hant
         obtain ⟨h1, _⟩ := andE hant
@@ -150,8 +144,6 @@ theorem ratStaticFrame_mem_mod :
         exact hc ((static_kPlus_iff_dense (D := ℚ) Bool M τ ψ x).mpr hψ)
           ((static_kMinus_iff_dense (D := ℚ) Bool M τ ψ x).mpr hψ)
     | prior_UZ _ =>
-        exact absurd (show FrameClass.ZTime ≤ FrameClass.RTime from hax) (by decide)
-    | prior_SZ _ =>
         exact absurd (show FrameClass.ZTime ≤ FrameClass.RTime from hax) (by decide)
     | z1 _ =>
         exact absurd (show FrameClass.ZTime ≤ FrameClass.RTime from hax) (by decide)

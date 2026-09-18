@@ -262,21 +262,21 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 6: Remove the 16 surplus constructors [NOT STARTED]
+### Phase 6: Remove the 16 surplus constructors [COMPLETED]
 
 **Goal**: Delete the surplus constructors from `inductive Axiom`, together with every dispatcher arm, so that the primitive set is the 29 paper schemata (TL, CN and TS are still in the old form).
 
 **Tasks**:
-- [ ] Delete the 16 constructors from `ProofSystem/Axioms.lean`, and delete the `prior_SZ` and `prior_S_gap` arms of `Axiom.minFrameClass`.
-- [ ] Delete the matching arms in the following dispatchers. The derived definitions are already TR-based, so nothing downstream depends on these arms.
+- [x] Delete the 16 constructors from `ProofSystem/Axioms.lean`, and delete the `prior_SZ` and `prior_S_gap` arms of `Axiom.minFrameClass`.
+- [x] Delete the matching arms in the following dispatchers. The derived definitions are already TR-based, so nothing downstream depends on these arms.
   - `Metalogic/Soundness.lean`: `axiom_validIn_min`. Keep every `*_valid` / `*_swap_valid` lemma for the mirrors as a plain lemma, because the primaries' swap arms use them.
   - `SoundnessLemmas/FrameClassVariants.lean`: `axiom_swap_valid_general`.
   - `Syntax/PlusLanguage/Derivation.lean`: `PlusAxiom.ofTM` and `minFrameClass_ofTM`.
   - `Automation/DatasetGenerator.lean` and `Automation/ProofStepExtractor.lean`.
   - `Automation/AxiomNames.lean`.
   - `Automation/MachineAppendixMain.lean`.
-  - Any further arm the compiler reports.
-- [ ] Update the `Axioms.lean` constructor-count docstring (45 constructors in nine layers) to the 29-schema layout. The full documentation pass comes in phase 9.
+  - Any further arm the compiler reports. *(compiler additionally reported `PlusLanguage/Substitution.lean` (`PlusAxiom.ofTMSubst`, 16 arms), `Independence/LexIntWitness.lean` (1) and `Independence/RationalWitness.lean` (2); also updated `ProofExtractorMain.allAxiomNames` and removed the now-unused `hpred` in LexIntWitness)*
+- [x] Update the `Axioms.lean` constructor-count docstring (45 constructors in nine layers) to the 29-schema layout. The full documentation pass comes in phase 9.
 
 **Timing**: 1.5 hours
 

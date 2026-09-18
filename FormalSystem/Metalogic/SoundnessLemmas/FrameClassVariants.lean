@@ -671,54 +671,38 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   | prop_k ψ χ ρ => exact prop_k_swap_valid ψ χ ρ
   | prop_s ψ χ => exact prop_s_swap_valid ψ χ
   | modal_t ψ => exact mt_swap_valid ψ
-  | modal_4 ψ => exact m4_swap_valid ψ
-  | modal_b ψ => exact mb_swap_valid ψ
   | modal_5_collapse ψ => exact modal_5_collapse_swap_valid ψ
   | ex_falso ψ => exact ex_falso_swap_valid ψ
   | peirce ψ χ => exact peirce_swap_valid ψ χ
   | modal_k_dist ψ χ => exact modal_k_dist_swap_valid ψ χ
   | serial_future => exact serial_future_swap_valid
-  | serial_past => exact serial_past_swap_valid
   | left_mono_until_G φ χ ψ => exact left_mono_until_G_swap_valid φ χ ψ
-  | left_mono_since_H φ χ ψ => exact left_mono_since_H_swap_valid φ χ ψ
   | right_mono_until φ ψ χ => exact right_mono_until_swap_valid φ ψ χ
-  | right_mono_since φ ψ χ => exact right_mono_since_swap_valid φ ψ χ
   | connect_future φ => exact connect_future_swap_valid φ
-  | connect_past φ => exact connect_past_swap_valid φ
   | enrichment_until φ ψ p => exact enrichment_until_swap_valid φ ψ p
-  | enrichment_since φ ψ p => exact enrichment_since_swap_valid φ ψ p
   | self_accum_until φ ψ => exact self_accum_until_swap_valid φ ψ
-  | self_accum_since φ ψ => exact self_accum_since_swap_valid φ ψ
   | absorb_until φ ψ => exact absorb_until_swap_valid φ ψ
-  | absorb_since φ ψ => exact absorb_since_swap_valid φ ψ
   | linear_until φ ψ χ θ => exact linear_until_swap_valid φ ψ χ θ
-  | linear_since φ ψ χ θ => exact linear_since_swap_valid φ ψ χ θ
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
   -- NOTE: until_elim / since_elim match arms removed (constructors deleted in the
   -- open-guard refactor)
   | until_F φ ψ => exact until_F_swap_valid φ ψ
-  | since_P φ ψ => exact since_P_swap_valid φ ψ
   | temp_linearity φ ψ => exact temp_linearity_past_validIn φ.reflectTime ψ.reflectTime
-  | temp_linearity_past φ ψ => exact temp_linearity_validIn φ.reflectTime ψ.reflectTime
   | F_until_equiv φ => exact P_since_equiv_validIn φ.reflectTime
-  | P_since_equiv φ => exact F_until_equiv_validIn φ.reflectTime
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
   -- open-guard refactor)
   | modal_future ψ => exact mf_swap_valid ψ
   | discrete_symm_fwd => exact discrete_symm_fwd_swap_valid
-  | discrete_symm_bwd => exact discrete_symm_bwd_swap_valid
   | discrete_propagate_fwd => exact discrete_propagate_fwd_swap_valid
   | discrete_propagate_bwd => exact discrete_propagate_bwd_swap_valid
   | discrete_box_necessity => exact discrete_box_necessity_swap_valid
   | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   -- Reynolds Dedekind axioms: eliminated by frame-class incomparability
   -- (`Dedekind ≰ Base`), exactly like the Dense and Discrete cases above.
   | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
 
 /-! ## Discrete Frame Versions

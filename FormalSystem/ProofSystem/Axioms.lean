@@ -37,37 +37,42 @@ requiring successor-chain constructions.
 
 ### Layers
 
-1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce
-2. **S5 Modal** (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
-3. **BX Temporal** (22 = 11 schemas x 2 directions):
-   - BX1/BX1': serial_future/past (seriality, replaces reflexivity)
-   - BX2/BX2': REMOVED (left_mono_until/since subsumed by BX2G/BX2H under open guard)
-   - BX2G/BX2H: left_mono_until_G/since_H (left monotonicity under G/H)
-   - BX3/BX3': right_mono_until/since (right monotonicity)
-   - BX4/BX4': connect_future/connect_past (temporal connectedness)
-   - BX5/BX5': self_accum_until/since (self-accumulation)
-   - BX6/BX6': absorb_until/since (absorption)
-   - BX7/BX7': linear_until/since (linearity)
-   - BX8/BX8': REMOVED (until_step/since_step not sound under open guard)
-   - BX9/BX9': REMOVED (until_elim/since_elim unsound under open guard)
-   - BX10/BX10': until_F/since_P (eventuality extraction)
-   - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
-   - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
-   - BX13/BX13': enrichment_until/since (Until-Since enrichment; Burgess A3a, Xu axiom (3))
-4. **Modal-Temporal Interaction** (1): modal_future
-   Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
-5. **Uniformity** (5): discrete_symm_fwd/bwd, discrete_propagate_fwd/bwd, discrete_box_necessity
-6. **Prior** (2): prior_UZ, prior_SZ
-7. **Z1** (1): z1
-8. **Density** (2): density, dense_indicator
-9. **Reynolds Dedekind** (3): prior_U_gap, prior_S_gap, sep
+The primitive axioms are exactly the paper's axiom schemata (`def:S5`, `def:BX`, `def:BX-z`,
+`def:BX-d`, `def:BX-r`; see `docs/reference/paper-definitions-of-record.md`). Every
+past-directed mirror, and the S5 schemata 4 and B, are derived theorems in
+`FormalSystem.ProofSystem.DerivedAxioms` (mirrors by the time-reflection rule TR,
+`DerivationTree.time_reflection`; 4 and B from MK, MT and M5).
 
-**Total**: 45 axiom constructors
-(32 core + 5 uniformity + 2 prior + 1 Z1 + 2 density + 3 Reynolds Dedekind),
-where "core" is layers 1-4 (4 + 5 + 22 + 1). By frame class that is
-37 base (layers 1-5) + 3 discrete-only (layers 6-7) + 2 dense-only (layer 8)
-+ 3 RTime-only (layer 9), matching `scripts/typst-status-counts.sh`.
-Note: temp_k_dist and temp_4 are now derived theorems (`temporalKDistDerived`,
+1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce (CPL)
+2. **S5 Modal** (3): modal_t (MT), modal_5_collapse (M5), modal_k_dist (MK)
+3. **BX Temporal** (11, future direction only; the past mirrors are TR-derived):
+   - TS: serial_future
+   - UG: left_mono_until_G
+   - UC: right_mono_until
+   - TC: connect_future
+   - SU: enrichment_until
+   - UF: self_accum_until
+   - UI: absorb_until
+   - CN: linear_until
+   - UE: until_F
+   - TL: temp_linearity
+   - UT: F_until_equiv
+4. **Modal-Temporal Interaction** (1): modal_future (MF)
+   Note: temp_future (□φ → G□φ) is derived from MF + T + Modal 4.
+5. **Uniformity** (4): discrete_symm_fwd (NP), discrete_propagate_fwd (NF),
+   discrete_propagate_bwd (NA; this is the paper's NA itself, `X⊤ → H X⊤`, not a mirror of
+   NF), discrete_box_necessity (NB)
+6. **Prior** (1): prior_UZ (UZ)
+7. **Z1** (1): z1 (Z1)
+8. **Density** (2): density (DN), dense_indicator (NN)
+9. **Reynolds Dedekind** (2): prior_U_gap (PU), sep (SEP)
+
+**Total**: 29 axiom constructors
+(19 core + 4 uniformity + 1 prior + 1 Z1 + 2 density + 2 Reynolds Dedekind),
+where "core" is layers 1-4 (4 + 3 + 11 + 1). By frame
+class that is 23 base (layers 1-5) + 2 discrete-only (layers 6-7) + 2 dense-only (layer 8)
++ 2 RTime-only (layer 9), matching `scripts/typst-status-counts.sh`.
+Note: temp_k_dist and temp_4 are derived theorems (`temporalKDistDerived`,
 `temporal4Derived` in TemporalDerived.lean).
 
 ### Key Properties
@@ -87,7 +92,7 @@ formula numbers of Xu 1988 ("On some U,S-tense logics"). Burgess numbers his axi
 with mirror images `A1b`-`A7b`, and B82 and B84 each have their own, unrelated, `A7a`. Burgess
 writes `U(event, guard)`, so each `Burgess:` line in a docstring below is quoted in that order.
 
-| Paper key | Lean constructors | Burgess | Xu 1988 |
+| Paper key | Lean constructor / derived mirror (`DerivedAxioms`) | Burgess | Xu 1988 |
 |---|---|---|---|
 | TN | `DerivationTree.temporal_necessitation` (rule) | B82 rule TG, its G half | — |
 | TS | `serial_future` / `serial_past` | B82 §1.6, "No Last Element" `F⊤` (and mirror) | — |
@@ -117,23 +122,26 @@ namespace FormalSystem.ProofSystem
 open FormalSystem.Syntax
 
 /--
-Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
+Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system: exactly the paper's
+primitive schemata.
 
-45 constructors organized into nine layers:
+29 constructors organized into nine layers:
 - **Propositional** (4): Classical propositional tautologies
-- **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (22): Burgess-Xu axioms for Until/Since on linear orders
-- **Interaction** (1): Modal-temporal interaction axiom (MF; TF now derived)
-- **Uniformity** (5): Discreteness uniformity axioms (valid on all ordered abelian groups)
-- **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
+- **S5 Modal** (3): MT, M5 and MK (4 and B are derived, `DerivedAxioms.modal_4`/`modal_b`)
+- **BX Temporal** (11): Burgess-Xu axioms for Until/Since on linear orders, future direction;
+  the past mirrors are derived by TR (`DerivedAxioms`)
+- **Interaction** (1): Modal-temporal interaction axiom (MF; TF derived)
+- **Uniformity** (4): Discreteness uniformity axioms NP, NF, NA, NB (valid on all ordered
+  abelian groups)
+- **Prior** (1): Prior-UZ for discrete well-ordering (valid on discrete orders only)
 - **Z1** (1): IsSuccArchimedean characteristic axiom (discrete-only)
 - **Density** (2): GGφ → Gφ and ¬U(⊤,⊥) (dense-only)
-- **Reynolds Dedekind** (3): Prior-U/Prior-S gap axioms and Sep (RTime-only)
+- **Reynolds Dedekind** (2): Prior-U gap axiom and Sep (RTime-only)
 
-Base axioms (37) are valid on all linear temporal orders. Prior/Z1 axioms (3) are discrete-only.
-The density axioms (2) are valid only on densely ordered frames, and the three Reynolds
-definable-gap axioms (3) only on the RTime class.
-Note: temp_k_dist and temp_4 are now derived theorems (`temporalKDistDerived`,
+Base axioms (23) are valid on all linear temporal orders. Prior/Z1 axioms (2) are discrete-only.
+The density axioms (2) are valid only on densely ordered frames, and the two Reynolds
+definable-gap axioms (2) only on the RTime class.
+Note: temp_k_dist and temp_4 are derived theorems (`temporalKDistDerived`,
 `temporal4Derived` in TemporalDerived.lean).
 -/
 inductive Axiom : Formula → Type where
@@ -148,29 +156,22 @@ inductive Axiom : Formula → Type where
   | ex_falso (φ : Formula) : Axiom (Formula.bot.imp φ)
   /-- Peirce's Law: `((φ → ψ) → φ) → φ` -/
   | peirce (φ ψ : Formula) : Axiom (((φ.imp ψ).imp φ).imp φ)
-  -- Layer 2: S5 Modal (5)
+  -- Layer 2: S5 Modal (3; modal 4 and B are derived, see `DerivedAxioms`)
   /-- Modal T: `□φ → φ` (reflexivity) -/
   | modal_t (φ : Formula) : Axiom (Formula.box φ |>.imp φ)
-  /-- Modal 4: `□φ → □□φ` (transitivity) -/
-  | modal_4 (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.box φ)))
-  /-- Modal B: `φ → □◇φ` (symmetry) -/
-  | modal_b (φ : Formula) : Axiom (φ.imp (Formula.box φ.diamond))
   /-- Modal 5 Collapse: `◇□φ → □φ` (S5 characteristic) -/
   | modal_5_collapse (φ : Formula) : Axiom (φ.box.diamond.imp φ.box)
   /-- Modal K Distribution: `□(φ → ψ) → (□φ → □ψ)` -/
   | modal_k_dist (φ ψ : Formula) :
       Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
-  -- Layer 3: BX Temporal (20 = 10 future + 10 past-mirrors derived via duality)
+  -- Layer 3: BX Temporal (future direction; every past mirror is derived by the time-reflection
+  -- rule TR, see `FormalSystem.ProofSystem.DerivedAxioms`)
   -- Note: temp_k_dist and temp_4 are now derived theorems.
   -- See Theorems/TemporalDerived.lean for temporalKDistDerived and temporal4Derived.
   /-- Serial future: `⊤ → F(⊤)` (future seriality; Burgess 1982 §1.6, No Last Element).
   Under irreflexive semantics, every time point has a strict future. -/
   | serial_future :
     Axiom ((Formula.bot.imp Formula.bot).imp (Formula.someFuture (Formula.bot.imp Formula.bot)))
-  /-- Serial past: `⊤ → P(⊤)` (past seriality).
-  Under irreflexive semantics, every time point has a strict past. -/
-  | serial_past :
-    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.somePast (Formula.bot.imp Formula.bot)))
   /-- BX2G: Guard monotonicity of Until under G (Burgess A2a, Xu axiom (1)):
   Burgess: `G(p ⊃ q) ⊃ (U(r, p) ⊃ U(r, q))`.
   In this tree's guard-first order (untl(guard, event)):
@@ -179,13 +180,6 @@ inductive Axiom : Formula → Type where
   Unlike BX2, the pointwise (φ→χ) at t is not needed since t ∉ (t,s). -/
   | left_mono_until_G (φ χ ψ : Formula) :
       Axiom ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ)))
-  /-- BX2H: Guard monotonicity of Since under H (Burgess A2b, Xu axiom (2);
-  guard-first: snce(guard, event)):
-  `H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
-  Under open guard (s,t): H(φ→χ) covers all r < t, which includes (s,t).
-  Unlike BX2', the pointwise (φ→χ) at t is not needed since t ∉ (s,t). -/
-  | left_mono_since_H (φ χ ψ : Formula) :
-      Axiom ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
   /-- BX3: Event monotonicity of Until (Burgess A1a, Xu axiom (1)):
   Burgess: `G(p ⊃ q) ⊃ (U(p, r) ⊃ U(q, r))`.
   In this tree's guard-first order (untl(guard, event)):
@@ -193,20 +187,11 @@ inductive Axiom : Formula → Type where
   If φ implies ψ at all times, then U(φ,χ) implies U(ψ,χ). -/
   | right_mono_until (φ ψ χ : Formula) :
       Axiom ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ)))
-  /-- BX3': Event monotonicity of Since (Burgess A1b, Xu axiom (2);
-  guard-first: snce(guard, event)):
-  `H(φ → ψ) → ((χ S φ) → (χ S ψ))`. -/
-  | right_mono_since (φ ψ χ : Formula) :
-      Axiom ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ)))
   /-- BX4: Temporal connectedness (future): `φ → G(P(φ))`.
   If φ holds now, then at all future times, P(φ) holds — the present is
   always in the past of the future. -/
   | connect_future (φ : Formula) :
       Axiom (φ.imp (φ.somePast.allFuture))
-  /-- BX4': Temporal connectedness (past): `φ → H(F(φ))`.
-  Mirror of BX4: the present is always in the future of the past. -/
-  | connect_past (φ : Formula) :
-      Axiom (φ.imp (φ.someFuture.allPast))
   /-- BX13: Until-Since enrichment (Burgess A3a, Xu axiom (3)):
   Burgess: `p ∧ U(α, β) → U(α ∧ S(p, β), β)`.
   In this tree's guard-first order (untl(guard, event)):
@@ -217,14 +202,6 @@ inductive Axiom : Formula → Type where
   | enrichment_until (φ ψ p : Formula) :
       Axiom (Formula.and p (Formula.untl φ ψ) |>.imp
         (Formula.untl φ (Formula.and ψ (Formula.snce φ p))))
-  /-- BX13': Since-Until enrichment (Burgess A3b, Xu axiom (4)):
-  Burgess: `p ∧ S(α, β) → S(α ∧ U(p, β), β)`.
-  In this tree's guard-first order (snce(guard, event)):
-  `p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))`.
-  Mirror of enrichment_until for the Since direction. -/
-  | enrichment_since (φ ψ p : Formula) :
-      Axiom (Formula.and p (Formula.snce φ ψ) |>.imp
-        (Formula.snce φ (Formula.and ψ (Formula.untl φ p))))
   -- REMOVED: BX14 (separation_until) and BX14' (separation_since) constructors.
   -- These axioms (Burgess A4a/A4b) are unnecessary for axiom minimality.
   -- The chronicle splitting construction now uses Xu 1988 Lemma 3.2.1/3.2.2 instead.
@@ -237,12 +214,6 @@ inductive Axiom : Formula → Type where
   | self_accum_until (φ ψ : Formula) :
       Axiom ((Formula.untl φ ψ).imp
         (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ))
-  /-- BX5': Self-accumulation of Since (Burgess A5b, Xu axiom (8);
-  guard-first: snce(guard, event)):
-  `S(ψ, φ) → S(ψ, φ ∧ S(ψ, φ))`. -/
-  | self_accum_since (φ ψ : Formula) :
-      Axiom ((Formula.snce φ ψ).imp
-        (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ))
   /-- BX6: Absorption of Until (Burgess A6a, Xu axiom (9)):
   Burgess: `U(q ∧ U(p, q), q) ⊃ U(p, q)`.
   Printer order (event first; the constructor itself is guard-first untl(guard, event)):
@@ -251,10 +222,6 @@ inductive Axiom : Formula → Type where
   still holds as φ ∧ U(ψ,φ), the two-step resolution collapses. -/
   | absorb_until (φ ψ : Formula) :
       Axiom ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ))
-  /-- BX6': Absorption of Since (Burgess A6b; guard-first: snce(guard, event)):
-  `S(φ ∧ S(ψ, φ), φ) → S(ψ, φ)`. -/
-  | absorb_since (φ ψ : Formula) :
-      Axiom ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ))
   /-- BX7: Linearity of Until (Burgess 1982 A7a, Xu 1988 axiom (10)):
   Burgess: `U(p, q) ∧ U(r, s) ⊃ U(p ∧ r, q ∧ s) ∨ U(p ∧ s, q ∧ s) ∨ U(q ∧ r, q ∧ s)`.
   With p = ψ, q = φ, r = θ, s = χ, in printer order (event first; the constructor itself is
@@ -271,16 +238,6 @@ inductive Axiom : Formula → Type where
             (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
             (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.untl (Formula.and φ χ) (Formula.and φ θ))))
-  /-- BX7': Linearity of Since (Burgess 1982 A7b, Xu 1988 axiom (11);
-  guard-first: snce(guard, event)):
-  `S(ψ,φ) ∧ S(θ,χ) → S(ψ∧θ, φ∧χ) ∨ S(ψ∧χ, φ∧χ) ∨ S(φ∧θ, φ∧χ)`. -/
-  | linear_since (φ ψ χ θ : Formula) :
-      Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
-        |>.imp (Formula.or
-          (Formula.or
-            (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
-            (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
-          (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
   -- NOTE (provenance): `linear_until`/`linear_since` ARE Burgess 1982 A7a/A7b
   -- (Xu 1988 (10)/(11)). Burgess writes U(event, guard), and A7a's three disjuncts share
   -- the fixed GUARD q∧s while the events vary. A former constructor pair
@@ -303,12 +260,7 @@ inductive Axiom : Formula → Type where
   U(ψ,φ) at t has witness s > t with ψ(s), so F(ψ) holds. -/
   | until_F (φ ψ : Formula) :
       Axiom ((Formula.untl φ ψ).imp (Formula.someFuture ψ))
-  /-- BX10': Since implies past eventuality (guard-first: snce(guard, event)):
-  `S(ψ, φ) → P(ψ)`.
-  Mirror of BX10 for the past direction. -/
-  | since_P (φ ψ : Formula) :
-      Axiom ((Formula.snce φ ψ).imp (Formula.somePast ψ))
-  -- Layer 3b: Additional BX Temporal (4 = 2 axioms x 2 directions)
+  -- Layer 3b: Additional BX Temporal (TL, UT; their past mirrors are TR-derived)
   /-- BX11: Temporal linearity (Burgess 1984 §0.3 axiom A2a; nearest Xu 1988 formula is (13)):
   `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`.
   Future witnesses are linearly ordered. Uses linearity of the underlying temporal order.
@@ -318,25 +270,12 @@ inductive Axiom : Formula → Type where
         (Formula.or (Formula.someFuture (Formula.and φ ψ))
           (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
             (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ)))))
-  /-- BX11': Temporal linearity (past):
-  `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)`.
-  Past dual of BX11. -/
-  | temp_linearity_past (φ ψ : Formula) :
-      Axiom (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
-        (Formula.or (Formula.somePast (Formula.and φ ψ))
-          (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
-            (Formula.somePast (Formula.and (Formula.somePast φ) ψ)))))
   /-- BX12: F-Until equivalence (guard-first: untl(guard, event)):
   `F(φ) → U(φ, ⊤)`.
   Every future eventuality can be witnessed by an Until formula with vacuous guard.
   Here ⊤ = ¬⊥ = ⊥ → ⊥. Bridges F-formulas to Until-formulas. -/
   | F_until_equiv (φ : Formula) :
       Axiom ((Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ))
-  /-- BX12': P-Since equivalence (guard-first: snce(guard, event)):
-  `P(φ) → S(φ, ⊤)`.
-  Past dual of BX12. -/
-  | P_since_equiv (φ : Formula) :
-      Axiom ((Formula.somePast φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ))
   -- NOTE: Layer 3c (until_guard/since_guard) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
 
@@ -344,7 +283,7 @@ inductive Axiom : Formula → Type where
   -- Note: TF (□φ → G□φ) is now derived from MF + T + Modal 4 in Theorems/Combinators.lean.
   /-- Modal-Future: `□φ → □(Gφ)`. Necessary truths remain necessary in the future. -/
   | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.allFuture φ)))
-  -- Layer 5: Uniformity Axioms (5)
+  -- Layer 5: Uniformity Axioms (4: NP, NF, NA, NB; the NP mirror is TR-derived)
   -- These encode the uniformity of discreteness in ordered abelian groups.
   -- U(⊤,⊥) = "next top" witnesses an immediate successor (gap of size d > 0).
   -- By translation invariance of the group, this gap is uniform across all time points.
@@ -354,18 +293,15 @@ inductive Axiom : Formula → Type where
   | discrete_symm_fwd :
       Axiom ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
         (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)))
-  /-- Discrete symmetry backward: S(⊤,⊥) → U(⊤,⊥).
-  Mirror of discrete_symm_fwd: a backward gap implies a forward gap. -/
-  | discrete_symm_bwd :
-      Axiom ((Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
-        (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))
   /-- Discrete propagation forward: U(⊤,⊥) → G(U(⊤,⊥)).
   If there is a gap of size d at t, then by translation invariance the same gap
   exists at every future point s > t (translate by s-t). -/
   | discrete_propagate_fwd :
       Axiom ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
         (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))))
-  /-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)).
+  /-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)). This is the paper's NA
+  (`X⊤ → H X⊤`) itself, a primitive axiom: despite the name it is **not** the time-reflection
+  mirror of NF (`discrete_propagate_fwd`), which would be `Y⊤ → H Y⊤`.
   If there is a gap of size d at t, then by translation invariance the same gap
   exists at every past point s < t. -/
   | discrete_propagate_bwd :
@@ -379,7 +315,7 @@ inductive Axiom : Formula → Type where
   | discrete_box_necessity :
       Axiom ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
         (Formula.box (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))))
-  -- Layer 6: Prior Axioms for Integers (2)
+  -- Layer 6: Prior Axiom for Integers (1: UZ; its past mirror is TR-derived)
   -- These axioms encode the well-ordering property for definable sets.
   -- Prior-UZ: Fp -> U(p, neg p). If p holds somewhere in the future,
   -- then p holds until not-p (i.e., the first future p-point is reachable).
@@ -392,11 +328,6 @@ inductive Axiom : Formula → Type where
   Equivalent to Venema's axiom (W): every definable future set has a least element. -/
   | prior_UZ (φ : Formula) :
       Axiom (φ.someFuture.imp (Formula.untl φ.neg φ))
-  /-- Prior-SZ: `P(φ) → S(φ, ¬φ)`.
-  Past dual of Prior-UZ. If φ held at some past time, then there is a nearest past
-  time where φ held, with ¬φ holding at all intermediate points. -/
-  | prior_SZ (φ : Formula) :
-      Axiom (φ.somePast.imp (Formula.snce φ.neg φ))
   -- Layer 7: Z1 Axiom (IsSuccArchimedean characteristic axiom)
   -- Z1: G(Gφ→φ) → (FGφ→Gφ)
   -- Valid on all IsSuccArchimedean discrete linear orders (e.g. ℤ).
@@ -431,7 +362,7 @@ inductive Axiom : Formula → Type where
   but U(⊤,⊥) is true on ℤ). -/
   | dense_indicator :
       Axiom (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg
-  -- Layer 9: Reynolds Dedekind Axioms (3)
+  -- Layer 9: Reynolds Dedekind Axioms (2: PU, SEP; the PU mirror is TR-derived)
   -- Reynolds' definable-gap-freeness axioms for real flow, printed p.168 of
   -- "An axiomatization for Until and Since over the reals without the IRR rule" (1992).
   -- These use the abbreviations `Formula.kPlus` / `Formula.kMinus`
@@ -502,16 +433,6 @@ inductive Axiom : Formula → Type where
   | prior_U_gap (φ : Formula) :
       Axiom ((Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
         (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg))))
-  /-- Prior-S (gap form): `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)`.
-  Past dual of `prior_U_gap`; the φ-region has a definable lower endpoint (an infimum).
-
-  **Source**: Reynolds 1992, printed p.168, axiom "Prior-S" of the system US/R.
-
-  **THIS IS NOT `prior_SZ`**, which is the integer well-ordering axiom
-  `P(φ) → S(φ,¬φ)` at `FrameClass.ZTime`. See the caveat on `prior_U_gap`. -/
-  | prior_S_gap (φ : Formula) :
-      Axiom ((Formula.and (Formula.snce φ Formula.top) φ.neg.somePast).imp
-        (Formula.snce φ (Formula.or φ.neg (Formula.kMinus φ.neg))))
   /-- Sep (separation): `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)`.
   Reynolds' separation axiom. Its semantic validity over ℝ turns on the separability of the
   reals (ℝ has a countable dense suborder), though Sep does not *characterize* separability —
@@ -659,10 +580,8 @@ def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
   | density _ => .Dense
   | dense_indicator => .Dense
   | prior_UZ _ => .ZTime
-  | prior_SZ _ => .ZTime
   | z1 _ => .ZTime
   | prior_U_gap _ => .RTime
-  | prior_S_gap _ => .RTime
   | sep _ => .RTime
   | _ => .Base
 
