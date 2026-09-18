@@ -59,6 +59,53 @@ re-derives every hash below directly from the live paper file on every run.
 <!-- FILE_CHECKSUM: b4e45e2c5f771ee0d86be6c6e3a302cceb454771cd53475ed3628258083ddfa0 -->
 <!-- LINE_COUNT: 4529 -->
 
+### Label rename absorption (2026-09-18): `lem:temporal-duality` → `lem:time-reflection`, prose only, no re-pin
+
+The paper renamed `lem:temporal-duality` to `lem:time-reflection`. The old label no longer occurs
+anywhere in the paper. The lemma also grew: besides the truth equivalence
+`M,τ,x ⊨ φ ⇔ M⁻,τ⁻,n(x) ⊨ φ⟨S|U⟩`, it now states that `F⁻` is a task frame and that `τ ↦ τ⁻` is
+a bijection `H_F → H_{F⁻}`. `thm:TR-valid` cites it by the new label.
+`bash scripts/check-paper-definitions.sh` reports case (b): the checksum moved, and every recorded
+definition is unchanged. Neither label has a manifest row, so nothing is re-hashed, and per the
+dirty-pin convention the whole-file sentinels are **not** re-pinned (case (b) is not a drift
+correction). `lem:time-reflection` gets a `LIVE-UNPINNED` row in `KNOWN-ANCHORS`: the tree now cites
+it by name (the `MinusFrame.lean` truth-lemma docstrings) but only paraphrases it. No
+`lem:temporal-duality` row is added, because no site outside this file keeps the old label.
+
+The rename removes the justification for the 2026-09-17 wave's "semantic lemma keeps its name"
+carve-out, so the carve-out is withdrawn and one principle now governs the tree: **`reflect` names
+every operation that reverses time order on any object (formula, frame, history, truth lemma);
+`swap` survives only for exchanges that are not time reversal.** Each remaining `swap`-named
+family was classified by that test.
+
+**Renamed (time reversal).** Statements are unchanged; only names move.
+
+| Old | New | Why it is time reversal |
+|---|---|---|
+| `MinusFrame.swap` | `MinusFrame.reflect` | the paper's `F⁻` (distinct from `TaskFrame.reflect`, the reflection convention on relations; different namespace) |
+| `truth_swap` | `truth_reflectTime` | the L⁻ analogue of `lem:time-reflection` |
+| `swapUS`, `swapUS_involutive` | `reflectTimeBoxOpaque`, `reflectTimeBoxOpaque_involutive` | time reflection with box subformulas treated as atoms |
+| `swap_norm` (simp attribute) | `reflect_time_norm` | collects the `reflect_time_*` push-through lemmas |
+| `Encoding.swap` | `Encoding.reflectTime` | the encoding conjugated by `reflectTime`; it exchanges nothing |
+| `plusValidIn_swap_of_tm`, `plusValidIn_swap_of_tm_deriv` | `plusValidIn_reflect_time_of_tm`, `plusValidIn_reflect_time_of_tm_deriv` | conclude validity of `φ.reflectTime` |
+| `cValid_swap_of_tm`, `cValid_swap_of_tm_deriv`, `naiveAxiom_cValid_swap`, `naive_cValid_and_swap` | `cValid_reflect_time_of_tm`, `cValid_reflect_time_of_tm_deriv`, `naiveAxiom_cValid_reflect_time`, `naive_cValid_and_reflect_time` | conclude `CValid φ.reflectTime` |
+| `starValid_{discrete_propagate_fwd, discrete_propagate_bwd, discrete_box_necessity, density, dense_indicator, z1, sep, modal_future, paste, untl_paste}_swap` | `starValid_*_reflect_time` | each is the `reflectTime` image of a schema |
+| `swap_next_all_future_eq` | `reflect_time_next_all_future_eq` | a `reflectTime` image equation |
+
+**Kept (exchange, not time reversal).** Mathlib `Equiv.swap`/`Prod.swap`/`List.Perm.swap`; the
+Kamp/EF index transpositions `aggOdSwap12*`, `CAggOdSwap_clause_iff*`, `swapNF01*`,
+`cons2_comp_swap01`; `monoInv_swap`/`monoInv_of_swap` (pair-component exchange);
+`pairProject_swap_*`; `contraSwap` (contraposition argument exchange); the `trySwap*` mutators,
+which exchange operators within one time direction (until↔release, P↔H, box↔diamond). The
+serialized tags stay byte-stable for output compatibility: the mutation-family strings
+`"modal_swap"`/`"temporal_swap"`/`"derived_swap"` with their `*SwapCount` fields, and the
+`"temporal_duality"` strings and `"temporalDualityCount"` key already carved out by the 2026-09-17
+wave. Operator-duality names (▽/△, F/G) are a different concept and also stay. The typst notation
+macro `#let swap` is a macro name, not a claim, and is kept.
+
+**Deferred.** Other words for time reversal (`clockMirrorIso`/`truthAt_mirror`, `TruthAntiIso`,
+`DenseModelSurgery.dual`) are not `swap` and are left for a possible follow-up.
+
 ### Drift correction and rename absorption (2026-09-17): the time-reflection wave
 
 The checker was red (exit 1, case (c)) before this correction: **14 pinned entries drifted and
@@ -105,9 +152,11 @@ existed.
      README, `Theorems/Perpetuity.lean` and `PerpetuityTest.lean` name the ▽/△ duality. So do the
      `section TemporalDuality` of `Theorems/TemporalDerived.lean` and its "Temporal Duality" headings
      (F/G and P/H via double negation). None of these mean the metarule, and none is renamed.
-   - **The semantic lemma keeps its name.** The paper itself keeps `lem:temporal-duality`. Prose
-     meaning that lemma ("temporal duality soundness", "past-future swap preserves validity") is kept.
-     No site attributes "time reflection" to `lem:temporal-duality`.
+   - **The semantic lemma's name (carve-out withdrawn 2026-09-18).** This wave originally kept
+     prose naming `lem:temporal-duality` ("temporal duality soundness", "past-future swap preserves
+     validity") because the paper kept that label. The paper has since renamed it
+     `lem:time-reflection`, so the carve-out is withdrawn and that prose now uses time-reflection
+     wording. See "Label rename absorption (2026-09-18)" above.
    - **Serialized wire tags stay byte-stable.** These are the `"temporal_duality"` string literals in
      dataset/JSON output (`Automation/DataExport.lean`, `DatasetGenerator.lean`,
      `ProofStepExtractor.lean`, `ContrastiveGeneratorMain.lean`, `ProofExtractorMain.lean`), the
@@ -126,19 +175,20 @@ existed.
      - `*_swap_valid*` → `*_reflect_time_valid*` (**renamed**). Every member concludes validity of
        `φ.reflectTime` for an axiom or derivation, which is `thm:TR-valid` restricted to axioms
        (e.g. `axiom_reflect_time_validIn_min`, `derivable_valid_and_reflect_time_validIn`).
-     - `swapUS` (**kept**). It leaves `.box φ` opaque on purpose, because `TemporalTruth` reads
-       box-subformulas as atoms, so it is not `φ⟨S|U⟩` on boxes and must not share the
-       `reflectTime` name. Its docstring says so.
-     - `truth_swap` (**kept**). It is the L⁻ analogue of `lem:temporal-duality`, whose name the
-       paper keeps (see the carve-out above), and its `swap` names the frame operation
-       `MinusFrame.swap` (the paper's `F⁻`), not a formula operation.
+     - `swapUS` (kept by this wave; **renamed 2026-09-18** to `reflectTimeBoxOpaque`). It leaves
+       `.box φ` opaque on purpose, because `TemporalTruth` reads box-subformulas as atoms, so it is
+       not `φ⟨S|U⟩` on boxes and must not share the bare `reflectTime` name. The qualified name
+       says so, and so does its docstring.
+     - `truth_swap` (kept by this wave; **renamed 2026-09-18** to `truth_reflectTime`). It is the
+       L⁻ analogue of `lem:time-reflection` (then `lem:temporal-duality`). The frame operation it
+       uses, `MinusFrame.swap` (the paper's `F⁻`), is renamed `MinusFrame.reflect` in the same
+       step.
      - The serialized mutation-family tags `"modal_swap"`, `"temporal_swap"` and `"derived_swap"`
        are a different concept and stay byte-stable. No renamed substring occurs in any string
        literal.
      - Adjacent `swap`-named identifiers (the `swap_norm` simp attribute, `*_swap_of_tm*`, the
-       `cValid` swaps, `starValid_*_swap`) are outside this decision. Several mix the
-       `Encoding.swap` conjugation or state mirror schemata explicitly, so each needs its own
-       classification. Renaming them is a possible follow-up.
+       `cValid` swaps, `starValid_*_swap`) were outside this decision. They have since been
+       classified and renamed; see "Label rename absorption (2026-09-18)" above for the full map.
    - **`FormalSystem/Boneyard/**`** is an archive that is not built, and it is untouched.
    - Benchmark output labels (`"Temporal duality"` in `DerivationBenchmark.lean`,
      `docs/project-info/performance-targets.md`) and the migration pattern data in
@@ -335,7 +385,7 @@ strictness claim.
   cites either name. No `DANGLING` row is added: the record's rule is that a row is a decision,
   and there is no citation to make honest.
 
-**No repository-side consequence:** `lem:temporal-duality` (paper line 4061) and `thm:TD-valid` (since renamed `thm:TR-valid`; see the 2026-09-17 wave)
+**No repository-side consequence:** `lem:temporal-duality` (since renamed `lem:time-reflection`; see the 2026-09-18 absorption) (paper line 4061) and `thm:TD-valid` (since renamed `thm:TR-valid`; see the 2026-09-17 wave)
 (line 4133) were restated for the since/until interchange with new inductive `U`/`S` cases, but
 neither has a manifest row and neither is cited anywhere in live tree scope, so this wave leaves
 them alone. `prop:archimedean` (line 3265) is a live `Pthm` that `def:BX-z` now cites for the
@@ -1971,6 +2021,7 @@ def:BLstar-semantics|LIVE-UNPINNED|the truth definition for the manuscript's \BL
 def:task-topology|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
 lem:deterministic-singleton|LIVE-UNPINNED|deterministic-frame singleton fibers (Lthm); cited as a pointer (StateSetTruth.lean names its choice-free direction but quotes no text)
 lem:history-time-shift-preservation|LIVE-UNPINNED|time-shift preservation; cited as a pointer
+lem:time-reflection|LIVE-UNPINNED|the time-reflection lemma (renamed by the paper from lem:temporal-duality, 2026-09-18): truth is preserved from M,tau,x to M-,tau-,n(x) under reflectTime, F- is a task frame, and tau -> tau- is a bijection. Cited as a pointer by the MinusFrame.lean truth-lemma docstrings (truth_reflectTime is its L- analogue); paraphrased, never quoted
 prop:archimedean|LIVE-UNPINNED|the Pthm asserting that UZ and Z1 both fail over every non-Archimedean Discrete temporal order; def:BX-z cites it for the ZTime narrowing, and the tree now cites it by name at the IsZTime sites (FrameProperty.lean, FrameClassValidity.lean, Validity.lean, BLValidity.lean, Indicator.lean, LexIntWitness.lean, Semantics.lean, Correspondence/README.md, FormalFoundations.typ). Cited as a pointer; this repository does NOT check it -- it is a pen-and-paper result, and pinning would assert a verification the tree does not have. Promote to the manifest only if a docstring starts quoting its text
 sent:det|LIVE-UNPINNED|the displayed sentence of app:deterministic-future, up^1 Future up^2 down^1 (Stability down^2 not-phi or Stability down^2 phi); transcribed as sentDet (Semantics/StarLanguage/StarValidity.lean) and cited by name in StarValidity.lean, StarDeterminism.lean, StarNonValidities.lean, StarDiscrimination.lean and ForwardDeterministicFrame.lean. Cited by name only; not pinned, since the transcription is of the operator structure rather than of quoted prose. Note that \Future here is the manuscript preamble's BOXED F (universal future), not the diamond f -- checked against the display and against the (*) chain's "for all y > x" step
 TMP-CO|DANGLING|the BL^+ restatement of CO; it went away with def:TMplus-c (now def:BX-r), which derives CO from PU rather than restating it under a second label. The plain CO anchor is still live and still pinned
