@@ -138,15 +138,24 @@
     {
       "project_number": 605,
       "project_name": "reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Reconcile the Burgess/Xu axiom provenance and add the paper's axiom-source footnote to FormalSystem/ProofSystem/Axioms.lean. The paper's footnote says CN is Burgess's A7a, but an existing note in Axioms.lean says A7a was removed as unsound; determine which claim is correct against Burgess and Xu, then copy the reconciled provenance into the axiom docstrings and docs/reference/paper-definitions-of-record.md. Follow-up recorded by the paper-vocabulary reconciliation (task 584).",
       "topic": "paper-refactor",
       "created": "2026-09-17T10:00:13Z",
-      "last_updated": "2026-09-18T07:00:31Z",
+      "last_updated": "2026-09-18T07:48:11Z",
       "dependencies": [
         588
-      ]
+      ],
+      "session_id": "sess_1789714964_200d88",
+      "artifacts": [
+        {
+          "path": "specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/reports/01_burgess-a7a-provenance.md",
+          "type": "report",
+          "summary": "Verdict: the paper is right. CN/linear_until is exactly Burgess 1982 A7a (Xu (10)). The Axioms.lean NOTE describes a removed fixed-event mis-transcription. Includes the full Burgess/Xu attribution map, two paper footnote errata (UE, TL/V3) and the docstring text to add."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 604,
