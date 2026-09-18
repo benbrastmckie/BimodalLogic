@@ -12,18 +12,18 @@ import FormalSystem.Semantics.Validity
 # L⁺ validity — the `PlusFormula` mirrors of `Semantics/Validity.lean`
 
 Validity for the language L⁺ (`FormalSystem/PlusLanguage/Formula.lean`), stated against the
-native `PlusTruthAt` of `Semantics/PlusLanguage/PlusTruth.lean`, plus the **truth-transfer bridge** along the
-embedding `ofFormula : Formula → PlusFormula` and the **semantic conservativity** of L⁺ over
-L that follows from it at every frame class.
+native `PlusTruthAt` of `Semantics/PlusLanguage/PlusTruth.lean`, plus the **truth-transfer bridge**
+along the embedding `ofFormula : Formula → PlusFormula` and the **semantic conservativity** of L⁺
+over L that follows from it at every frame class.
 
 Each predicate here is a binder-for-binder mirror of its counterpart in `Semantics/Validity.lean`
-(and of the base-language mirror in `Semantics/MinusLanguage/MinusValidity.lean`): `TaskFrame.PlusValidOn` of
-`TaskFrame.ValidOn`, `PlusValidOnFrames` of `ValidOnFrames`, `PlusValidIn` of `ValidIn`,
-`PlusValid` of `Valid`. The frame-predicate form `PlusValidOnFrames` is the **primitive**, and
-`PlusValidIn fc := PlusValidOnFrames fc.Sat` its instance at a tag — exactly the shape that lets
-one monotonicity lemma serve every bridge, and that lets a validity notion over a frame class no
-`FrameClass` tag denotes (for instance the deterministic frames) be stated without touching the
-semantics.
+(and of the base-language mirror in `Semantics/MinusLanguage/MinusValidity.lean`):
+`TaskFrame.PlusValidOn` of `TaskFrame.ValidOn`, `PlusValidOnFrames` of `ValidOnFrames`,
+`PlusValidIn` of `ValidIn`, `PlusValid` of `Valid`. The frame-predicate form `PlusValidOnFrames` is
+the **primitive**, and `PlusValidIn fc := PlusValidOnFrames fc.Sat` its instance at a tag — exactly
+the shape that lets one monotonicity lemma serve every bridge, and that lets a validity notion over
+a frame class no `FrameClass` tag denotes (for instance the deterministic frames) be stated without
+touching the semantics.
 
 ## Main Definitions
 
@@ -43,7 +43,8 @@ semantics.
 
 * JPL paper `def:frame-validity`, `def:logical-consequence`, `cor:tm-completeness`
 * `FormalSystem/Semantics/Validity.lean` — the L predicates these mirror
-* `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` — the base-language mirror, the same shape
+* `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` — the base-language mirror, the same
+  shape
 
 ## Tags
 
@@ -180,7 +181,8 @@ theorem plusValidOnFrames_ofFormula_iff (P : TaskFrame → Prop) (φ : Formula) 
 **Semantic conservativity of L⁺ over L, at every frame class.** An L formula is L⁺-valid over
 the frames of `fc` iff it is L-valid over them. `plusValidOnFrames_ofFormula_iff` at `fc.Sat`.
 
-Paper: — (formalization-native; L⁺ is the ⊡-only fragment of the paper's `\BL^\star`, for which the paper supplies no logic)
+Paper: — (formalization-native; L⁺ is the ⊡-only fragment of the paper's `\BL^\star`, for which the
+paper supplies no logic)
 -/
 theorem plusValidIn_ofFormula_iff (fc : ProofSystem.FrameClass) (φ : Formula) :
     PlusValidIn fc (ofFormula φ) ↔ ValidIn fc φ :=

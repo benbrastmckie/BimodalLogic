@@ -53,9 +53,9 @@ bridge composes unchanged with whatever the totality-based validity definition b
 
 The invariant is **directional**. It forbids the edge `MinusLanguage/ → Semantics/` and says
 nothing about the converse, which is permitted and is how this file's `MinusFormula` acquires a
-semantics: `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` imports *this module* — a leaf that itself
-imports only `FormalSystem.Syntax.Atom` — and defines `MinusTruthAt` by recursion on the six
-constructors below. Nothing flows back the other way, so the `grep` check above still returns no
+semantics: `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` imports *this module* — a leaf
+that itself imports only `FormalSystem.Syntax.Atom` — and defines `MinusTruthAt` by recursion on the
+six constructors below. Nothing flows back the other way, so the `grep` check above still returns no
 `import` line.
 
 ## References
@@ -176,11 +176,13 @@ operator without unfolding to primitives by hand. -/
 @[simp] theorem reflectTime_diamond (φ : MinusFormula) :
     φ.diamond.reflectTime = φ.reflectTime.diamond := rfl
 
-/-- `reflectTime` exchanges the existential past and future: `reflectTime(Pφ) = F(reflectTime φ)`. -/
+/-- `reflectTime` exchanges the existential past and future: `reflectTime(Pφ) = F(reflectTime φ)`.
+-/
 @[simp] theorem reflectTime_somePast (φ : MinusFormula) :
     φ.somePast.reflectTime = φ.reflectTime.someFuture := rfl
 
-/-- `reflectTime` exchanges the existential future and past: `reflectTime(Fφ) = P(reflectTime φ)`. -/
+/-- `reflectTime` exchanges the existential future and past: `reflectTime(Fφ) = P(reflectTime φ)`.
+-/
 @[simp] theorem reflectTime_someFuture (φ : MinusFormula) :
     φ.someFuture.reflectTime = φ.reflectTime.somePast := rfl
 

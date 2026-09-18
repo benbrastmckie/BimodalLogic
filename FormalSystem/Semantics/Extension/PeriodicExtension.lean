@@ -146,9 +146,9 @@ The construction is the one the informal argument describes. Seriality — taken
 `FrameOver.serial` at duration `1`, through `exists_iter_fwd` and `exists_iter_bwd` — supplies a
 successor and a predecessor at every state. Iterating them out of the two ends of the window gives
 two orbits; finiteness forces each to revisit a state (`exists_repeat_of_card_le`), which makes it
-periodic from that visit onward; and `FrameOver.worldHistoryOfStepPath` turns the resulting bi-infinite walk
-into a genuine element of `H_F`, discharging the all-pairs task-respect obligation from adjacency
-alone.
+periodic from that visit onward; and `FrameOver.worldHistoryOfStepPath` turns the resulting
+bi-infinite walk into a genuine element of `H_F`, discharging the all-pairs task-respect obligation
+from adjacency alone.
 
 No `IntPresentation` appears here, and none can: see this module's docstring on why the effective
 counterpart is a separate theorem rather than a corollary.
@@ -322,7 +322,8 @@ up to some `M` bounding `S`, agreeing with the history at `a` and at every membe
 The induction is on `S.card`, peeling off the largest member and joining it to the previous
 frontier with an explicit path of exactly the right length.
 -/
-theorem exists_filler {F : FrameOver intOrder} (τ : PartialHistory F.toTaskFrame) (a : ℤ) (ha : τ.domain a) :
+theorem exists_filler {F : FrameOver intOrder} (τ : PartialHistory F.toTaskFrame) (a : ℤ)
+    (ha : τ.domain a) :
     ∀ (n : ℕ) (S : Finset ℤ), S.card = n → (∀ t ∈ S, a < t) → (∀ t ∈ S, τ.domain t) →
       ∃ (M : ℤ) (w : ℤ → F.WorldState),
         (∀ t ∈ S, t ≤ M) ∧ a ≤ M ∧ (M = a ∨ M ∈ S) ∧

@@ -37,17 +37,18 @@ deterministic in the sense of `def:deterministic`. Its partner `F°` — the *dr
 reducibility barrier that bites late rather than early.
 
 `translationFrame` is a plain `def`, not `@[reducible]`, so
-`(translationFrame realTemporalOrder).WorldState` does not reduce to `ℝ` at the transparency instance
-synthesis and unification work at. There are two distinct symptoms:
+`(translationFrame realTemporalOrder).WorldState` does not reduce to `ℝ` at the transparency
+instance synthesis and unification work at. There are two distinct symptoms:
 
 1. **At the frame level**, `example (w x u : ℝ) : F1.TaskRel w x u ↔ u = w + x := Iff.rfl` fails
    with "`w` has type `ℝ` but is expected to have type `F1.WorldState`" and a failed
-   `HAdd ℝ ℝ ?m` synthesis. This one *is* repairable: type the variables at `↑realTemporalOrder` instead
-   of at `ℝ`, since `realTemporalOrder` is `@[reducible]` and `↑realTemporalOrder` does reduce.
+   `HAdd ℝ ℝ ?m` synthesis. This one *is* repairable: type the variables at `↑realTemporalOrder`
+   instead of at `ℝ`, since `realTemporalOrder` is `@[reducible]` and `↑realTemporalOrder` does
+   reduce.
 2. **At the history level**, the world-set characterization
    `τ.state r = τ.state 0 + r` fails with a failed
-   `HAdd (translationFrame realTemporalOrder).toTaskFrame.WorldState realTemporalOrder.carrier ?m` synthesis,
-   because `τ.state` *returns* a value in the unreduced `WorldState`. This one is **not**
+   `HAdd (translationFrame realTemporalOrder).toTaskFrame.WorldState realTemporalOrder.carrier ?m`
+   synthesis, because `τ.state` *returns* a value in the unreduced `WorldState`. This one is **not**
    repairable by a type ascription or by a `@[reducible]` alias: the barrier sits inside
    `translationFrame`'s own body, and neither reaches it.
 
@@ -62,9 +63,9 @@ fields was also built during research and is **deliberately not promoted**: it d
 
 ## `realTemporalOrder` is defined here rather than imported
 
-`Metalogic/DedekindNonCompactness.lean` already defines a `realTemporalOrder`, with `@[reducible]` and
-`noncomputable` both load-bearing for exactly the reasons recorded at that declaration; this is a
-second copy of that two-line definition rather than an import, and the duplication is deliberate:
+`Metalogic/DedekindNonCompactness.lean` already defines a `realTemporalOrder`, with `@[reducible]`
+and `noncomputable` both load-bearing for exactly the reasons recorded at that declaration; this is
+a second copy of that two-line definition rather than an import, and the duplication is deliberate:
 
 - **Not imported from `DedekindNonCompactness`**, because that module imports
   `Metalogic.StrongCompleteness` — the entire completeness development — which is far too heavy a

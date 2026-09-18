@@ -80,12 +80,14 @@ apply to it.
 
 ### The tiers, and which language takes which
 
-| Bundle | Primitives | Lemmas inherited | Instantiated by |
-|--------|-----------|------------------|-----------------|
-| `BoolClauses` | `bot`, `imp`, `box` | `neg_iff`, `top_true`, `and_iff`, `or_iff`, `diamond_iff` | (via the three below) |
-| `UntlClauses` | + `untl`, `snce` | + `someFuture_iff`, `somePast_iff`, `allFuture_iff`, `allPast_iff`, `always_iff_tri` | L |
-| `StabClauses` | + `stab` | + `dstab_iff` | L⁺, L⋆ |
-| `TenseClauses` | `allFuture`, `allPast` **primitive** instead of `untl`/`snce` | the five Boolean ones, plus `someFuture_iff_of_allFuture`, `somePast_iff_of_allPast`, `always_iff_of_tense` | L⁻ |
+* `BoolClauses` — Primitives: `bot`, `imp`, `box`; Lemmas inherited: `neg_iff`, `top_true`,
+  `and_iff`, `or_iff`, `diamond_iff`; Instantiated by: (via the three below)
+* `UntlClauses` — Primitives: + `untl`, `snce`; Lemmas inherited: + `someFuture_iff`,
+  `somePast_iff`, `allFuture_iff`, `allPast_iff`, `always_iff_tri`; Instantiated by: L
+* `StabClauses` — Primitives: + `stab`; Lemmas inherited: + `dstab_iff`; Instantiated by: L⁺, L⋆
+* `TenseClauses` — Primitives: `allFuture`, `allPast` **primitive** instead of `untl`/`snce`; Lemmas
+  inherited: the five Boolean ones, plus `someFuture_iff_of_allFuture`, `somePast_iff_of_allPast`,
+  `always_iff_of_tense`; Instantiated by: L⁻
 
 L⁻ is the case that justifies the tense tier's existence: it has the universal tenses as
 constructors, so its existential tenses are derived in the *opposite* duality direction

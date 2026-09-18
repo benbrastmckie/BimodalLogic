@@ -32,8 +32,9 @@ only**, no lemmas and no definitions.
 
 **Why these sets exist at all.** `truth_norm` gives the truth layer an on-demand handle on the
 whole characterization family, so a proof can open the normal form with `simp only [truth_norm]`
-without naming ten lemmas. `reflect_time_norm` collects the `reflect_time_*` family, only four of which
-carry `@[simp]`, so the complete eleven-lemma family is reachable as one set at every use site.
+without naming ten lemmas. `reflect_time_norm` collects the `reflect_time_*` family, only four of
+which carry `@[simp]`, so the complete eleven-lemma family is reachable as one set at every use
+site.
 
 **There is no wrapper tactic, deliberately.** A `truth_simp` macro expanding to
 `simp only [truth_norm]` lived here and was retired to `Boneyard/RetiredTactics/` on the same

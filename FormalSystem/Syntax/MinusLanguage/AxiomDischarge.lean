@@ -27,21 +27,20 @@ translation, at the frame class the L⁻-side side condition already supplies.
 Seven rows are *exact*: `tr` of the L⁻ axiom is syntactically the L asset, and the discharge
 is a single `DerivationTree.axiom` or a single named theorem.
 
-| Row | L asset | Exact? |
-|---|---|---|
-| CPL (4) | `Axiom.prop_k`, `prop_s`, `ex_falso`, `peirce` | yes |
-| MK | `Axiom.modal_k_dist` | yes |
-| MT | `Axiom.modal_t` | yes |
-| M5 | `Axiom.modal_5_collapse` | yes |
-| MF | `Axiom.modal_future` | yes |
-| TK | `Theorems.TemporalDerived.gDistribution` | yes |
-| T4 | `Theorems.TemporalDerived.gTransitivity` | yes |
-| DN | `Axiom.density` | yes |
-| TS | `Axiom.serial_future` | **no** — `F`-bridge |
-| TC | `Axiom.connect_future` | **no** — `P`-bridge under `G` |
-| TL | `Axiom.temp_linearity` (via `DerivedAxioms.tempLinearityLegacy`) | **no** — `F`-bridge *and* a disjunct reshuffle |
-| DF | `Theorems.DiscreteUnfolding.dfSchema` | **no** — `F`-bridge on both sides |
-| CO | `Theorems.DedekindDerived.coDerived` | **no** — `F`-bridge under `△` |
+* CPL (4) — L asset: `Axiom.prop_k`, `prop_s`, `ex_falso`, `peirce`; Exact?: yes
+* MK — L asset: `Axiom.modal_k_dist`; Exact?: yes
+* MT — L asset: `Axiom.modal_t`; Exact?: yes
+* M5 — L asset: `Axiom.modal_5_collapse`; Exact?: yes
+* MF — L asset: `Axiom.modal_future`; Exact?: yes
+* TK — L asset: `Theorems.TemporalDerived.gDistribution`; Exact?: yes
+* T4 — L asset: `Theorems.TemporalDerived.gTransitivity`; Exact?: yes
+* DN — L asset: `Axiom.density`; Exact?: yes
+* TS — L asset: `Axiom.serial_future`; Exact?: **no** — `F`-bridge
+* TC — L asset: `Axiom.connect_future`; Exact?: **no** — `P`-bridge under `G`
+* TL — L asset: `Axiom.temp_linearity` (via `DerivedAxioms.tempLinearityLegacy`); Exact?: **no** —
+  `F`-bridge *and* a disjunct reshuffle
+* DF — L asset: `Theorems.DiscreteUnfolding.dfSchema`; Exact?: **no** — `F`-bridge on both sides
+* CO — L asset: `Theorems.DedekindDerived.coDerived`; Exact?: **no** — `F`-bridge under `△`
 
 The research report predicted "exact syntactic match" for TC and TS. That is **refuted**, and
 structurally so rather than by accident: L⁻'s `F`/`P` are *derived* (`Fφ = ¬G¬φ`), so `tr (Fφ)`
@@ -116,8 +115,8 @@ private def andMono {fc : FrameClass} {A A' B B' : Formula}
 
 /-- Implication is antitone in its antecedent and monotone in its consequent.
 
-Public (unlike its neighbours) because `Metalogic/Conservativity/Backward.lean`'s `z1_translate` needs
-it to push the `F`-bridge into the antecedent of `Axiom.z1`'s consequent. -/
+Public (unlike its neighbours) because `Metalogic/Conservativity/Backward.lean`'s `z1_translate`
+needs it to push the `F`-bridge into the antecedent of `Axiom.z1`'s consequent. -/
 def impMono {fc : FrameClass} {A A' B B' : Formula}
     (hA : ⊢[fc] A'.imp A) (hB : ⊢[fc] B.imp B') : ⊢[fc] (A.imp B).imp (A'.imp B') := by
   refine deductionTheorem [] (A.imp B) (A'.imp B') ?_

@@ -39,8 +39,8 @@ together with the two **past mirrors** that time reflection needs (`reflectTime`
 
 PS and US are the two pasting **axioms** of TM⁺ (`PlusLanguage/Axioms.lean`); FS, GS and the
 mirrors are derived (the mirrors by TR). The purity restrictions are **necessary**: the
-refutations in `Semantics/PlusLanguage/PlusNonValidities.lean` show that `G⊡p → ⊡Gp` fails even for atoms
-and that `⊡GPp → G⊡Pp` fails once a past operator enters the scope.
+refutations in `Semantics/PlusLanguage/PlusNonValidities.lean` show that `G⊡p → ⊡Gp` fails even for
+atoms and that `⊡GPp → G⊡Pp` fails once a past operator enters the scope.
 
 The `*_plusValid` packagings at the end state each validity as a `PlusValid`, the shape the
 axiom-validity dispatch (`Metalogic/Conservativity/Plus/AxiomValidity.lean`) consumes.

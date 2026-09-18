@@ -26,9 +26,10 @@ language L⁻ of `def:BL-language`, whose `H`/`G` are *primitive* — directly b
 terms: the `allPast`/`allFuture` clauses state the paper's universal quantification over times
 directly rather than routing through L's `untl`/`snce` abbreviations, and no clause mentions
 the translation. That is what makes the truth-transfer bridge
-(`FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`'s `truthAt_tr`) a *theorem* with content in
-its temporal cases, rather than a definitional unfolding — and it is what makes an L⁻ soundness
-theorem stated against `MinusTruthAt` a claim about L⁻ rather than a restatement of the L one.
+(`FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`'s `truthAt_tr`) a *theorem*
+with content in its temporal cases, rather than a definitional unfolding — and it is what makes an
+L⁻ soundness theorem stated against `MinusTruthAt` a claim about L⁻ rather than a restatement of the
+L one.
 
 ## Paper Specification Reference
 
@@ -44,8 +45,9 @@ theorem stated against `MinusTruthAt` a claim about L⁻ rather than a restateme
 | `G` (`\Future`) | `M,τ,y ⊨ φ` for all `y ∈ D` with `x < y` | `∀ s, t < s → MinusTruthAt M τ s φ` |
 
 The paper's `H`/`G` clauses are **strict** (`y < x`, `x < y`), and so are these. The box clause's
-quantifier ranges over `H_F`, the frame's world histories `WorldHistory F` — identical to `Semantics/Truth.lean`'s box clause, with no admissible-history
-parameter and no shift-closure side condition.
+quantifier ranges over `H_F`, the frame's world histories `WorldHistory F` — identical to
+`Semantics/Truth.lean`'s box clause, with no admissible-history parameter and no shift-closure side
+condition.
 
 **Atom clause.** `M.valuation (τ.state t) p` is `def:BL-semantics`'s atom clause on the nose, and
 character for character `TruthAt`'s, which is what makes the atom case of the bridge `Iff.rfl`.

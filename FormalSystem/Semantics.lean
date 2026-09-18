@@ -55,8 +55,8 @@ through their sibling aggregators `Semantics/Extension.lean` and so on.
 - `TaskFrame`: the total space of the frame fibration — a `Duration : TemporalOrder` paired
   with a `FrameOver Duration`, so `def:frame`'s `⟨W, 𝔇, ⇒⟩` unfolds exactly as the paper writes
   it. `FrameOver D` is the fibre over a fixed temporal order and the sole declaration site of
-  the four frame axioms over a primitive relation on `D⁺`; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.saturation`)
-  is preserved by delegating accessors
+  the four frame axioms over a primitive relation on `D⁺`; `TaskFrame`'s flat surface
+  (`F.WorldState`, `F.TaskRel`, `F.saturation`) is preserved by delegating accessors
 - `FrameProperty`: `def:frame-properties` as predicates on a *frame* — `TaskFrame.IsDense`,
   `IsDiscrete`, `IsComplete`, plus the two narrowings the tree's soundness targets actually need
   (`IsZTime`, `def:BX-z`'s narrowing to ℤ-time via `prop:archimedean`; `IsRTime`,
@@ -113,57 +113,58 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   tiered by which primitives a language has. L⁻ takes the tense-primitive tier, L⁺ and L⋆ the
   stability tier, and L⋆'s environment is its stored-time vector
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
-- `MinusLanguage.MinusTruth`: the same recursion for the tense-primitive base language — `MinusTruthAt`, defined
-  natively on `MinusFormula`'s six constructors per `def:BL-semantics` (H and G quantify over
-  strictly past/future times directly, not via `untl`/`snce`), plus the `MinusTruth.*` clause and
-  derived-operator characterization lemmas
-- `MinusLanguage.MinusFrame`: a native L⁻ frame notion *not* bound to `TaskFrame` — `MinusFrame`, `MinusFrame.reflect`,
-  `MinusFrameTruth` (with `□` read as the universal modality over the point set) and
-  `MinusFrameValid`, plus the `MinusFrameTruth.*` characterization family and the order-reversal
-  transfer lemma `truth_reflectTime`. Dropping the `Duration : TemporalOrder` group structure is what
-  frees the class from the dense-or-discrete dichotomy, which is what makes a countermodel to
-  `(Sp)` possible; see `Metalogic/Conservativity/SpCountermodel.lean`
+- `MinusLanguage.MinusTruth`: the same recursion for the tense-primitive base language —
+  `MinusTruthAt`, defined natively on `MinusFormula`'s six constructors per `def:BL-semantics` (H
+  and G quantify over strictly past/future times directly, not via `untl`/`snce`), plus the
+  `MinusTruth.*` clause and derived-operator characterization lemmas
+- `MinusLanguage.MinusFrame`: a native L⁻ frame notion *not* bound to `TaskFrame` — `MinusFrame`,
+  `MinusFrame.reflect`, `MinusFrameTruth` (with `□` read as the universal modality over the point
+  set) and `MinusFrameValid`, plus the `MinusFrameTruth.*` characterization family and the
+  order-reversal transfer lemma `truth_reflectTime`. Dropping the `Duration : TemporalOrder` group
+  structure is what frees the class from the dense-or-discrete dichotomy, which is what makes a
+  countermodel to `(Sp)` possible; see `Metalogic/Conservativity/SpCountermodel.lean`
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
-- `MinusLanguage.MinusValidity`: the base-language mirrors — `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`,
-  `MinusValidZTime` and `MinusValidRTime`, binder for binder against `MinusTruthAt`; there is
-  deliberately no density-free `MinusValidComplete`, which would be refutable
+- `MinusLanguage.MinusValidity`: the base-language mirrors — `MinusValid`,
+  `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime` and `MinusValidRTime`, binder for
+  binder against `MinusTruthAt`; there is deliberately no density-free `MinusValidComplete`, which
+  would be refutable
 - `PlusLanguage.PlusTruth`: the truth recursion for the language L⁺ (L plus the stability modal `⊡`,
-  `FormalSystem/PlusLanguage/Formula.lean`) — `PlusTruthAt`, whose seventh clause is the paper's `($\Stability$)` clause (`def:BLstar-semantics`); the
-  `PlusTruth.*` clause lemmas, the S5 validities of `⊡`, and `stab_state_only` (`⊡φ` depends on
-  the world state alone)
-- `PlusLanguage.PlusValidity`: the L⁺ mirrors of `Validity` — `PlusValidOnFrames` (the frame-predicate
-  primitive), `PlusValidIn`, `PlusValid` and the per-class abbreviations — plus the truth-transfer
-  bridge `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, the semantic conservativity of
-  L⁺ over L at every frame class
-- `PlusLanguage.PlusPasting`: the history-pasting lemma (`paste`: two total histories sharing a state at `t`
-  paste into a total history, by *Compositionality* and the reflection convention alone), the
-  purity congruences, and the pasting validities PS/US/FS/GS and their past mirrors — the
-  `⊡`/tense interaction principles the S5 axioms of `⊡` miss
-- `PlusLanguage.PlusNonValidities`: the five refutations on `natFrame` over `ℤ` (`⊡p → □⊡p`, `G⊡p → ⊡Gp`,
-  `⊡GPp → G⊡Pp`, *Determined* `Fp → ⊡Fp` over a non-deterministic frame, `P⊡p → ⊡Pp`), which
-  bound the axiom set from above
+  `FormalSystem/PlusLanguage/Formula.lean`) — `PlusTruthAt`, whose seventh clause is the paper's
+  `($\Stability$)` clause (`def:BLstar-semantics`); the `PlusTruth.*` clause lemmas, the S5
+  validities of `⊡`, and `stab_state_only` (`⊡φ` depends on the world state alone)
+- `PlusLanguage.PlusValidity`: the L⁺ mirrors of `Validity` — `PlusValidOnFrames` (the
+  frame-predicate primitive), `PlusValidIn`, `PlusValid` and the per-class abbreviations — plus the
+  truth-transfer bridge `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, the semantic
+  conservativity of L⁺ over L at every frame class
+- `PlusLanguage.PlusPasting`: the history-pasting lemma (`paste`: two total histories sharing a
+  state at `t` paste into a total history, by *Compositionality* and the reflection convention
+  alone), the purity congruences, and the pasting validities PS/US/FS/GS and their past mirrors —
+  the `⊡`/tense interaction principles the S5 axioms of `⊡` miss
+- `PlusLanguage.PlusNonValidities`: the five refutations on `natFrame` over `ℤ` (`⊡p → □⊡p`,
+  `G⊡p → ⊡Gp`, `⊡GPp → G⊡Pp`, *Determined* `Fp → ⊡Fp` over a non-deterministic frame, `P⊡p → ⊡Pp`),
+  which bound the axiom set from above
 - `PlusLanguage.PlusDeterminism`: `app:deterministic`'s **positive** half — the singleton bridge
   `states_eq_of_deterministic` and the deterministic collapse `⊡φ ↔ φ`
   (`determined_of_deterministic`, `stab_biconditional_plusValidOn_of_deterministic`), valid on
   every frame satisfying `TaskFrame.Deterministic`, and choice-free
-- `PlusLanguage.PlusStateLocal`: the **state-locality** fragment of L⁺ — `PlusFormula.StateLocal`, the
-  syntactic predicate cut by structural recursion over all seven constructors (`atom`, `bot`,
-  `imp` propositionally; `box` and `stab` for an *arbitrary* argument; `untl`, `snce` excluded),
-  and `IsPlusStateLocal`, the semantic property it approximates: two possible worlds carrying the
-  same world state at `t` agree about `φ` at `t`. Carries the soundness induction
+- `PlusLanguage.PlusStateLocal`: the **state-locality** fragment of L⁺ — `PlusFormula.StateLocal`,
+  the syntactic predicate cut by structural recursion over all seven constructors (`atom`, `bot`,
+  `imp` propositionally; `box` and `stab` for an *arbitrary* argument; `untl`, `snce` excluded), and
+  `IsPlusStateLocal`, the semantic property it approximates: two possible worlds carrying the same
+  world state at `t` agree about `φ` at `t`. Carries the soundness induction
   `isPlusStateLocal_of_stateLocal`, a non-preservation witness for each excluded constructor, and
   the headline `φ ↔ ⊡φ` (`plusStateLocal_stab_iff`, `plusStateLocal_plusValid_iff_stab`) together
   with its argument-shaped half `stab_of_stateLocal`, which is what discharges the AS arm of TM⁺
   soundness and which strictly generalizes the atom-level `p → ⊡p` this tower used to carry
-- `StarLanguage.StarStateLocal`: the **state-locality** fragment of L⋆ — `StarFormula.StateLocal`, the
-  syntactic predicate cut by structural recursion (`atom`, `bot`, `imp`, `timeStore` recursively;
-  `box` and `stab` for an *arbitrary* argument; `untl`, `snce`, `timeRecall` excluded), and
-  `IsStateLocal`, the semantic property it approximates: two possible worlds carrying the same
-  world state at `t` agree about `φ` at `t`, under one and the same stored-time vector. Carries
-  the soundness induction `isStateLocal_of_stateLocal`, a non-preservation witness for each
-  excluded constructor, and the headline `φ ↔ ⊡φ` (`stateLocal_stab_iff`,
-  `stateLocal_starValid_iff_stab`) — the companion facing the other way to `stab_state_only`,
-  which says `⊡φ` is state-local where this says a state-local `φ` is already `⊡`-stable
+- `StarLanguage.StarStateLocal`: the **state-locality** fragment of L⋆ — `StarFormula.StateLocal`,
+  the syntactic predicate cut by structural recursion (`atom`, `bot`, `imp`, `timeStore`
+  recursively; `box` and `stab` for an *arbitrary* argument; `untl`, `snce`, `timeRecall` excluded),
+  and `IsStateLocal`, the semantic property it approximates: two possible worlds carrying the same
+  world state at `t` agree about `φ` at `t`, under one and the same stored-time vector. Carries the
+  soundness induction `isStateLocal_of_stateLocal`, a non-preservation witness for each excluded
+  constructor, and the headline `φ ↔ ⊡φ` (`stateLocal_stab_iff`, `stateLocal_starValid_iff_stab`) —
+  the companion facing the other way to `stab_state_only`, which says `⊡φ` is state-local where this
+  says a state-local `φ` is already `⊡`-stable
 - `StateLocalTransfer`: `stateLocal_ofPlus_iff` — the two state-locality fragments agree along
   `ofPlus`, as a **biconditional**, so the L⁺ fragment is exactly the `ofPlus`-preimage of the L⋆
   one. Its own module rather than either fragment's, so that the L⁺ conservativity route does not
@@ -207,17 +208,21 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
 
 The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 
-| Component | Paper Definition | Implementation |
-|-----------|------------------|----------------|
-| Task Frame | `F = ⟨W, D, ⇒⟩` (`def:frame`) | `TaskFrame` = `Σ D : TemporalOrder, FrameOver D` |
-| Compositionality | `w ⇒_(x+y) v` iff `w ⇒_x u` and `u ⇒_y v` for some `u` | `comp` field |
-| Seriality | `w ⇒_x u` and `v ⇒_x w` for some `u, v` | `serial` field |
-| Limit | `⋂_{x > 0} (w)_x = {w}` | `limit` field |
-| Saturation | `⋂ S ≠ ∅` for a `⊇`-directed family of nonempty fibers and segments | `saturation` field |
-| Partial History | `τ : X → W`, `X ⊆ D` nonempty (`def:world-history`) | `PartialHistory F` |
-| World History | partial history with `X = D` (sec:Construction) | `WorldHistory F` (defining predicate `PartialHistory.IsTotal`); `τ.state x` is `τ(x)` |
-| Truth | `M,τ,x ⊨ φ` | `TruthAt M τ t φ` |
-| Validity | True in all models, at every total history | `Valid φ` |
+* Task Frame — Paper Definition: `F = ⟨W, D, ⇒⟩` (`def:frame`); Implementation: `TaskFrame` =
+  `Σ D : TemporalOrder, FrameOver D`
+* Compositionality — Paper Definition: `w ⇒_(x+y) v` iff `w ⇒_x u` and `u ⇒_y v` for some `u`;
+  Implementation: `comp` field
+* Seriality — Paper Definition: `w ⇒_x u` and `v ⇒_x w` for some `u, v`; Implementation: `serial`
+  field
+* Limit — Paper Definition: `⋂_{x > 0} (w)_x = {w}`; Implementation: `limit` field
+* Saturation — Paper Definition: `⋂ S ≠ ∅` for a `⊇`-directed family of nonempty fibers and
+  segments; Implementation: `saturation` field
+* Partial History — Paper Definition: `τ : X → W`, `X ⊆ D` nonempty (`def:world-history`);
+  Implementation: `PartialHistory F`
+* World History — Paper Definition: partial history with `X = D` (sec:Construction); Implementation:
+  `WorldHistory F` (defining predicate `PartialHistory.IsTotal`); `τ.state x` is `τ(x)`
+* Truth — Paper Definition: `M,τ,x ⊨ φ`; Implementation: `TruthAt M τ t φ`
+* Validity — Paper Definition: True in all models, at every total history; Implementation: `Valid φ`
 
 The frame carries **four** axioms, the four rows above. *Nullity* (`w ⇒_0 w`) is **derived**,
 choice-free, from Seriality at `x = 0` together with Limit. `FrameOver` has no zero-duration
@@ -273,7 +278,8 @@ variable {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Durati
 ## References
 
 * [TaskFrame.lean](Semantics/TaskFrame.lean) - Task frame structure
-* [PartialHistory.lean](Semantics/PartialHistory.lean) - Partial and world histories, and `WorldHistory`
+* [PartialHistory.lean](Semantics/PartialHistory.lean) - Partial and world histories, and
+  `WorldHistory`
 * [TaskModel.lean](Semantics/TaskModel.lean) - Task model with valuation
 * [Truth.lean](Semantics/Truth.lean) - Truth evaluation
 * [Validity.lean](Semantics/Validity.lean) - Validity and semantic consequence

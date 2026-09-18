@@ -79,7 +79,8 @@ For set-based MCS, derivable formulas are in the set.
 
 If S is SetMaximalConsistent (fc := fc) and L ⊆ S derives φ, then φ ∈ S.
 -/
-theorem SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.closed_under_derivation {fc : FrameClass}
+    {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) S)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ S)
     (h_deriv : DerivationTree fc L φ) : φ ∈ S := by

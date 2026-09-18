@@ -31,11 +31,12 @@ This module defines task frames, the fundamental semantic structures for bimodal
 order**, and a task relation. The temporal order is a *component*, on the same footing as the
 other two. This module encodes that as a fibration, in three declarations:
 
-| Lean | Paper | Role |
-|------|-------|------|
-| `TemporalOrder` (`Semantics/TemporalOrder.lean`) | `def:temporal-order` | the object `𝔇` — "a nontrivial totally ordered abelian group", reified |
-| `FrameOver D` | frames at a fixed `𝔇` | the **fibre**; the sole declaration site of the frame fields (`PosRel`, `comp`, `serial`, `limit`, `saturation`) |
-| `TaskFrame` | `𝔉 = ⟨W, 𝔇, ⇒⟩` | the **total space**, `Σ (D : TemporalOrder), FrameOver D` |
+* `TemporalOrder` (`Semantics/TemporalOrder.lean`) — Paper: `def:temporal-order`; Role: the object
+  `𝔇` — "a nontrivial totally ordered abelian group", reified
+* `FrameOver D` — Paper: frames at a fixed `𝔇`; Role: the **fibre**; the sole declaration site of
+  the frame fields (`PosRel`, `comp`, `serial`, `limit`, `saturation`)
+* `TaskFrame` — Paper: `𝔉 = ⟨W, 𝔇, ⇒⟩`; Role: the **total space**,
+  `Σ (D : TemporalOrder), FrameOver D`
 
 `FrameOver.toTaskFrame` is the inclusion of a fibre into the total space, and it is literally the
 constructor: `⟨D, F⟩`. Structure eta makes the projection an identity rather than an isomorphism
@@ -88,10 +89,10 @@ The supporting apparatus — nonempty `W`, the positive-cone primitive relation,
 convention, fiber, cone, and segment (`def:task-relation`), and the `⊇`-directed family
 (`def:frame`'s opening clause; formerly the standalone `def:directed`, which the paper's 2026-09
 wave inlined into `def:frame` and deleted — recorded `DANGLING` in
-`docs/reference/paper-definitions-of-record.md`) — is transcribed in this module's "Fiber, cone, segment,
-and directed-family apparatus" section. The temporal order is `def:temporal-order` (verbatim: "A \textit{temporal
-order} is a nontrivial totally ordered abelian group $\D = \tuple{D, +, 0, \leq}$ with
-\textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.").
+`docs/reference/paper-definitions-of-record.md`) — is transcribed in this module's "Fiber, cone,
+segment, and directed-family apparatus" section. The temporal order is `def:temporal-order`
+(verbatim: "A \textit{temporal order} is a nontrivial totally ordered abelian group $\D = \tuple{D,
++, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.").
 
 **ProofChecker Implementation**:
 This implementation generalizes the time group to any type `D` with an
@@ -444,8 +445,8 @@ and a `$\subseteq$-Directed` clause, of which *Saturation* consumes only the `$\
 then the paper's 2026-09 wave deleted `def:directed` outright, dropped the `$\subseteq$` half
 entirely, and inlined the `$\supseteq$` half into `def:frame`'s opening clause — which is what is
 quoted above. `def:directed` is recorded `DANGLING` in
-`docs/reference/paper-definitions-of-record.md`; do not cite it as a live anchor, and do not reintroduce
-the unqualified word "directed", which was ambiguous even before the split.
+`docs/reference/paper-definitions-of-record.md`; do not cite it as a live anchor, and do not
+reintroduce the unqualified word "directed", which was ambiguous even before the split.
 
 The nonemptiness of the family is part of the definition (it comes from "a nonempty family of
 sets"); the nonemptiness of its *members* is a separate hypothesis wherever
@@ -664,8 +665,8 @@ A two-sided relation `R` satisfying the reflection law is the extension of its o
 to `D⁺` (`reflect_eq_of_reflective`). The lemmas below transport that fact to the relation itself
 and to each `def:frame` axiom, so that a frame whose relation is most naturally written on all of
 `D` can supply its primitive as that restriction, `fun w x u => R w ↑x u`, and discharge
-every axiom field against `R` directly. `FrameOver.ofReflective` packages all five; a frame that must
-stay a literal structure (for instance so that its world-state type reduces at reducible
+every axiom field against `R` directly. `FrameOver.ofReflective` packages all five; a frame that
+must stay a literal structure (for instance so that its world-state type reduces at reducible
 transparency) cites them field by field.
 
 Each transport is a `rw` along `reflect_eq_of_reflective`, never an `▸` cast, whose motive would
@@ -1311,10 +1312,10 @@ theorem sInter_nonempty_of_directed_of_univ_or_singleton {W : Type} {S : Set (Se
 The *Saturation* core argument for a directed family that has a `⊆`-minimal member: **the paper's
 actual mathematical content, in fully constructive form**.
 
-Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`, verbatim:
-"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation},
-choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member to a `⊆`-*least*
-member, and a least member is both nonempty and equal to the intersection.
+Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`,
+verbatim: "Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies
+\textit{Saturation}, choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member
+to a `⊆`-*least* member, and a least member is both nonempty and equal to the intersection.
 
 Given a minimal `Sstar` and any other member `T`, directedness supplies `S' ∈ S` with
 `S' ⊆ Sstar ∩ T`. Then `S' ⊆ Sstar`, so minimality forces `Sstar ⊆ S'`, and composing gives
@@ -1351,10 +1352,11 @@ omit [IsOrderedAddMonoid D] in
 /--
 **Every relation on a finite carrier satisfies *Saturation***.
 
-Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`, verbatim:
-"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation},
-choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a directed family has
-a `⊆`-minimal member; `sInter_nonempty_of_directed_of_minimal` above then closes the goal.
+Recorded source (`cor:saturation-finite`, via `docs/reference/paper-definitions-of-record.md`,
+verbatim: "Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies
+\textit{Saturation}, choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a
+directed family has a `⊆`-minimal member; `sInter_nonempty_of_directed_of_minimal` above then closes
+the goal.
 
 **Indifferent to the kind of member.** The proof consumes only *finiteness*, *directedness*, and
 *member nonemptiness*; the `IsFiber R s ∨ IsSegment R s` disjunct is never used. That matches the
@@ -1797,12 +1799,14 @@ re-opened.
 
 **The measurement** (whole repository, `FormalSystem/` and `Tests/`, at the time of the count):
 
-| Constant | Occurrences | Explicit `(D := …)` | of which **concrete** (`Int`/`ℤ`/`ℚ`/`ℤ ×ₗ ℤ`) | of which **abstract** (`D`/`↑D`) |
-|---|---|---|---|---|
-| `trivialFrame` | 61 | 33 | 21 | 12 |
-| `staticFrame`  | 61 | 43 |  9 | 34 |
-| `natFrame`     | 53 | 25 | 17 |  8 |
-| **total**      | 175 | **101** | **47** | **54** |
+* `trivialFrame` — Occurrences: 61; Explicit `(D := …)`: 33; of which **concrete**
+  (`Int`/`ℤ`/`ℚ`/`ℤ ×ₗ ℤ`): 21; of which **abstract** (`D`/`↑D`): 12
+* `staticFrame` — Occurrences: 61; Explicit `(D := …)`: 43; of which **concrete**
+  (`Int`/`ℤ`/`ℚ`/`ℤ ×ₗ ℤ`): 9; of which **abstract** (`D`/`↑D`): 34
+* `natFrame` — Occurrences: 53; Explicit `(D := …)`: 25; of which **concrete**
+  (`Int`/`ℤ`/`ℚ`/`ℤ ×ₗ ℤ`): 17; of which **abstract** (`D`/`↑D`): 8
+* **total** — Occurrences: 175; Explicit `(D := …)`: **101**; of which **concrete**
+  (`Int`/`ℤ`/`ℚ`/`ℤ ×ₗ ℤ`): **47**; of which **abstract** (`D`/`↑D`): **54**
 
 **Why that count decides it.** The migration was expected to be a mechanical
 `(D := ℤ) → (D := intOrder)` rewrite that *removed* annotations. It removes none. A concrete site
@@ -2192,7 +2196,8 @@ end TaskFrame
 namespace FiniteTaskFrame
 
 /-- A finite total-space frame is a total-space frame. -/
-@[reducible] def toTaskFrame (F : FiniteTaskFrame) : TaskFrame := ⟨F.Duration, F.toFibre.toFrameOver⟩
+@[reducible] def toTaskFrame (F : FiniteTaskFrame) : TaskFrame := ⟨F.Duration,
+    F.toFibre.toFrameOver⟩
 
 /-- The frame's type of world states. -/
 @[reducible] def WorldState (F : FiniteTaskFrame) : Type := F.toFibre.toFrameOver.WorldState

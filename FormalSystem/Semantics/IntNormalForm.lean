@@ -13,8 +13,8 @@ import Mathlib.Data.Int.SuccPred
 
 Over `D = ℤ` a task frame is determined by a single relation: its **one-step** relation
 `step w u := TaskRel w 1 u`. This module establishes that determination in the decomposition
-direction — every `FrameOver intOrder` *is* the iterate of its own one-step relation — and supplies the
-arithmetic core (`iter`, `iter_add`) that the synthesis direction and the history-space
+direction — every `FrameOver intOrder` *is* the iterate of its own one-step relation — and supplies
+the arithmetic core (`iter`, `iter_add`) that the synthesis direction and the history-space
 characterization both consume.
 
 ## Why ℤ, and why this is the spine
@@ -93,11 +93,11 @@ and nothing else. `Decidability/IntPresentation.lean`'s `toTaskFrame` is literal
 This pricing is available **only over ℤ**, and the asymmetry is the whole reason the transfer is
 worth doing first. Two of the discharges are ℤ-specific: `limit` comes from
 `TaskFrame.limit_of_succOrder`, which needs the successor structure, and `ofStep` itself is stated
-at `FrameOver intOrder`. A frame left polymorphic in `D` — such as `RefinedFilteredTaskFrame D` under
-`Metalogic/Decidability/FMP/` — has neither, so each axiom must be re-discharged by hand for the
-particular relation at hand. Estimates that price re-discharging the frame axioms as a large,
-open-ended piece of work are measuring the `D`-polymorphic case; they do not transfer to the
-ℤ case, and quoting them at a ℤ-frame overstates its cost by a wide margin.
+at `FrameOver intOrder`. A frame left polymorphic in `D` — such as `RefinedFilteredTaskFrame D`
+under `Metalogic/Decidability/FMP/` — has neither, so each axiom must be re-discharged by hand for
+the particular relation at hand. Estimates that price re-discharging the frame axioms as a large,
+open-ended piece of work are measuring the `D`-polymorphic case; they do not transfer to the ℤ case,
+and quoting them at a ℤ-frame overstates its cost by a wide margin.
 
 ## References
 
@@ -181,7 +181,8 @@ graph.
 def step (F : FrameOver intOrder) : F.WorldState → F.WorldState → Prop :=
   fun w u => F.TaskRel w 1 u
 
-theorem step_def (F : FrameOver intOrder) (w u : F.WorldState) : F.step w u ↔ F.TaskRel w 1 u := Iff.rfl
+theorem step_def (F : FrameOver intOrder)
+    (w u : F.WorldState) : F.step w u ↔ F.TaskRel w 1 u := Iff.rfl
 
 /--
 **The decomposition theorem, nonnegative core**: over ℤ, a task of natural-number duration `n` is
@@ -321,7 +322,8 @@ def worldHistoryOfStepPath (F : FrameOver intOrder) (f : ℤ → F.WorldState) (
   WorldHistory.ofTotal F.toTaskFrame f (respects_of_isStepPath h)
 
 @[simp]
-theorem worldHistoryOfStepPath.path (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+theorem worldHistoryOfStepPath.path (F : FrameOver intOrder) (f : ℤ → F.WorldState)
+    (h : IsStepPath F f) :
     (worldHistoryOfStepPath F f h).path = f := rfl
 
 /-- Every possible world over ℤ is a bi-infinite step-path. -/
@@ -431,14 +433,15 @@ open TaskFrame
 
 The field discharges, and where each comes from:
 
-| field | source |
-|-------|--------|
-| `nonempty` | the `[Nonempty W]` instance |
-| `comp` | free — `iter_add`, which is the paper's biconditional *Compositionality* whole |
-| reflection (`hR`) | free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by construction |
-| `serial` | **the one genuine obligation**: exactly `fwd` and `bwd` (see the section note above) |
-| `limit` | `TaskFrame.limit_of_succOrder` — ℤ is a `SuccOrder`, so *Limit* is automatic |
-| `saturation` | `TaskFrame.saturation_of_finite` — the carrier is finite |
+Each entry reads *field* — *source*:
+
+* `nonempty` — the `[Nonempty W]` instance
+* `comp` — free — `iter_add`, which is the paper's biconditional *Compositionality* whole
+* reflection (`hR`) — free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by
+  construction
+* `serial` — **the one genuine obligation**: exactly `fwd` and `bwd` (see the section note above)
+* `limit` — `TaskFrame.limit_of_succOrder` — ℤ is a `SuccOrder`, so *Limit* is automatic
+* `saturation` — `TaskFrame.saturation_of_finite` — the carrier is finite
 
 `saturation_of_finite` is the *only* applicable route here, because `R₁` is arbitrary in shape and
 every other `Saturation` helper constrains the relation's shape. It costs `Classical.choice`, and
@@ -511,9 +514,9 @@ example (W : Type) [Nonempty W] (w : W) :
   intro _
   exact (FrameOver.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl
 
-/-- The two-state flip relation on `Bool` is bi-serial, so `ofStep` synthesizes a `FrameOver intOrder`
-from it: the canonical two-cycle, and the smallest frame on which a lasso argument has anything
-to bite on. -/
+/-- The two-state flip relation on `Bool` is bi-serial, so `ofStep` synthesizes a
+`FrameOver intOrder` from it: the canonical two-cycle, and the smallest frame on which a lasso
+argument has anything to bite on. -/
 def flipFrame : FrameOver intOrder :=
   FrameOver.ofStep (fun w u : Bool => w ≠ u)
     (fun w => ⟨!w, by cases w <;> simp⟩) (fun w => ⟨!w, by cases w <;> simp⟩)

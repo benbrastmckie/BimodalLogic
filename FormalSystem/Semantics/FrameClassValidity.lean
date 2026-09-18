@@ -27,17 +27,16 @@ below.
 
 ## The interpretation of record
 
-| Constructor | `Sat` | Anchor |
-|-------------|-------|--------|
-| `.Base` | `True` | — (unconstrained: `def:logical-consequence`'s own class) |
-| `.Dense` | `TaskFrame.IsDense` | `def:frame-properties`, Dense clause |
-| `.ZTime` | `TaskFrame.IsZTime` | `def:BX-z` (narrowing to ℤ-time) |
-| `.RTime` | `TaskFrame.IsRTime` | `def:frame-properties` Complete + Dense; `cor:tm-completeness`'s TM_r clause |
+* `.Base` — `Sat`: `True`; Anchor: — (unconstrained: `def:logical-consequence`'s own class)
+* `.Dense` — `Sat`: `TaskFrame.IsDense`; Anchor: `def:frame-properties`, Dense clause
+* `.ZTime` — `Sat`: `TaskFrame.IsZTime`; Anchor: `def:BX-z` (narrowing to ℤ-time)
+* `.RTime` — `Sat`: `TaskFrame.IsRTime`; Anchor: `def:frame-properties` Complete + Dense;
+  `cor:tm-completeness`'s TM_r clause
 
 Two of these are the *narrowed* member of a split pair, and deliberately so — interpreting
 `.ZTime` by the bare `TaskFrame.IsDiscrete`, or `.RTime` by the bare `TaskFrame.IsComplete`,
-would widen the frame class a soundness theorem at that tag ranges over. `Semantics/FrameProperty.lean`
-records both splits and the paper sentences that force them.
+would widen the frame class a soundness theorem at that tag ranges over.
+`Semantics/FrameProperty.lean` records both splits and the paper sentences that force them.
 
 `.RTime` is the paper's TM_r class, the `ℝ`-time row of `cor:tm-completeness`: dense and
 Dedekind-complete, hence exactly the real flow `ℝ` up to order-and-group isomorphism.
@@ -95,8 +94,8 @@ Per-constructor anchors:
 * `.ZTime ↦ TaskFrame.IsZTime`, **not** `TaskFrame.IsDiscrete`. `def:BX-z`'s closing
   sentence narrows the discrete class over which BX_z and TM_z are sound and complete to exactly
   the frames over ℤ-time — `UZ` and `Z1` fail over every discrete order that is not Archimedean —
-  and it is that narrowed class `Axiom.prior_UZ`, `DerivedAxioms.priorSZ` and `Axiom.z1` are sound over.
-  Interpreting `.ZTime` by the bare Discrete clause would silently widen the class under
+  and it is that narrowed class `Axiom.prior_UZ`, `DerivedAxioms.priorSZ` and `Axiom.z1` are sound
+  over. Interpreting `.ZTime` by the bare Discrete clause would silently widen the class under
   `soundness_ztime`.
 * `.RTime ↦ TaskFrame.IsRTime`, **not** `TaskFrame.IsComplete`. `FrameClass.RTime` sits
   strictly above `FrameClass.Dense`, so `density` and `dense_indicator` are admissible in a

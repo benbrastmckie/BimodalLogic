@@ -336,7 +336,8 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
     have h_box_neg_x : (Formula.box φ).neg ∈ LimitF fc A h_mcs x := by
       rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
       · -- x > 0: use G propagation
-        have h_G := SetMaximalConsistent.mp_of_theorem h_mcs (FormalSystem.Theorems.Combinators.temporalFutureDerived
+        have h_G := SetMaximalConsistent.mp_of_theorem h_mcs
+            (FormalSystem.Theorems.Combinators.temporalFutureDerived
               (Formula.box φ).neg)
           h_box_neg
         rw [← limit_f_zero fc A h_mcs] at h_G
@@ -556,7 +557,8 @@ noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
     have h_box_in_N' : Formula.box φ ∈ N' := (h_eqN' φ).mp h_box_A
     have h_box_t' : Formula.box φ ∈ (rootedCantorFmcsDense fc N' h_N' h_box_N' s').mcs t :=
       (box_stable_in_rooted_cantor_fmcs_dense fc N' h_N' h_box_N' φ s' t).mpr h_box_in_N'
-    exact SetMaximalConsistent.mp_of_theorem ((rootedCantorFmcsDense fc N' h_N' h_box_N' s').is_mcs t)
+    exact SetMaximalConsistent.mp_of_theorem
+        ((rootedCantorFmcsDense fc N' h_N' h_box_N' s').is_mcs t)
       (DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial) h_box_t'
   modal_backward := by
     intro fam hfam φ t h_all

@@ -64,14 +64,16 @@ open FormalSystem.Metalogic
 
 /-- Set-premise consequence for the base language over the frames satisfying `P`. Binder-for-binder
 mirror of `SetConsequenceOnFrames`, against `MinusTruthAt`. -/
-def MinusSetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set MinusFormula) (φ : MinusFormula) : Prop :=
+def MinusSetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set MinusFormula)
+    (φ : MinusFormula) : Prop :=
   ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration),
     (∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) → MinusTruthAt M τ t φ
 
 /-- Set-premise consequence for the base language at a `FrameClass` tag. Mirror of
 `SetSemanticConsequenceOn`. -/
-def MinusSetSemanticConsequenceOn (fc : FrameClass) (Γ : Set MinusFormula) (φ : MinusFormula) : Prop :=
+def MinusSetSemanticConsequenceOn (fc : FrameClass) (Γ : Set MinusFormula)
+    (φ : MinusFormula) : Prop :=
   MinusSetConsequenceOnFrames fc.Sat Γ φ
 
 /-- **Compactness of the base-language consequence relation at `fc`**, in the consequence form:

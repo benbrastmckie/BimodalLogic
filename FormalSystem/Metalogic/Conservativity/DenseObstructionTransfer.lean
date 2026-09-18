@@ -15,10 +15,13 @@ Both frame classes over which the forward direction of `L⁻ ⊂ L` is **refuted
 *dichotomy witness*: a base-language schema that is valid over the class because the class splits
 into two H/G-distinguishable halves, while no single TM⁻-derivation covers both halves at once.
 
-| Row | Witness | Why it separates |
-|---|---|---|
-| `.Base` | `Sp φ ψ := □(DF φ) ∨ □(DN ψ)` (`Conservativity/SpWitness.lean`) | every frame's single `Duration` is either dense or has a least positive element (`duration_dense_or_least_pos`), so one disjunct always holds — but which one is not decided uniformly |
-| `.ZTime` | `Z1 φ := G(Gφ → φ) → (F(Gφ) → Gφ)` (`Conservativity/Backward.lean`) | valid over ℤ-time proper, refuted over the non-Archimedean discrete carrier `ℚ ×ₗ ℤ` (`Conservativity/Z1Countermodel.lean`) |
+* `.Base` — Witness: `Sp φ ψ := □(DF φ) ∨ □(DN ψ)` (`Conservativity/SpWitness.lean`); Why it
+  separates: every frame's single `Duration` is either dense or has a least positive element
+  (`duration_dense_or_least_pos`), so one disjunct always holds — but which one is not decided
+  uniformly
+* `.ZTime` — Witness: `Z1 φ := G(Gφ → φ) → (F(Gφ) → Gφ)` (`Conservativity/Backward.lean`); Why it
+  separates: valid over ℤ-time proper, refuted over the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`
+  (`Conservativity/Z1Countermodel.lean`)
 
 This module machine-checks that **neither witness survives the move to `FrameClass.Dense`**, for
 two different and independent reasons:
@@ -213,7 +216,8 @@ discrete carrier `ℚ ×ₗ ℤ` the corresponding witness was the lexicographic
 `(t.1, t.2 + 1)` instead, which is why the two models are not variants of one another.
 -/
 theorem q_gp_iff_p (p : Atom) (t : (qD : Type)) :
-    MinusTruthAt qTM qτ t (MinusFormula.atom p).allFuture ↔ MinusTruthAt qTM qτ t (MinusFormula.atom p) := by
+    MinusTruthAt qTM qτ t (MinusFormula.atom p).allFuture ↔ MinusTruthAt qTM qτ t
+        (MinusFormula.atom p) := by
   rw [MinusTruth.future_iff, q_atom_iff]
   constructor
   · intro h
@@ -265,8 +269,8 @@ theorem q_not_true_at_zero (p : Atom) :
 **The `.ZTime` witness is not dense-valid.**
 
 `MinusValidDense` is `MinusValidIn .Dense`, so one `.Dense`-satisfying frame carrying a refutation
-suffices; applying `h` at that frame supplies the elimination and the `FrameClass.Sat .Dense qF` side
-condition is `inferInstance` through the reducible chain to `DenselyOrdered ℚ`.
+suffices; applying `h` at that frame supplies the elimination and the `FrameClass.Sat .Dense qF`
+side condition is `inferInstance` through the reducible chain to `DenselyOrdered ℚ`.
 
 With `spDerivableDense`, this is the machine-checked half of the record that the `.Dense` row
 has no known separating witness: one of the two candidates is a theorem of the system, the other

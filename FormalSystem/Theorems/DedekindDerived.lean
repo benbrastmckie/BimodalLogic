@@ -334,9 +334,9 @@ which is `BX_d` extended by PU and SEP — the same arrangement as this tree's, 
 module exists. **Retired anchor**: this formula used to be quoted from `TMP-CO`, the `BL^+`
 restatement carried inside the old `def:TMplus-c`. The paper's 2026-09 wave dropped that
 restatement — `def:BX-r` now derives CO rather than displaying it a second time — so `TMP-CO` is
-recorded `DANGLING` in `docs/reference/paper-definitions-of-record.md` while the plain `CO` anchor stays
-pinned. The formula is character-for-character the same under both. The `△` is the temporal triangle `Formula.always`, not `Formula.box`; see
-`Formula.co`.
+recorded `DANGLING` in `docs/reference/paper-definitions-of-record.md` while the plain `CO` anchor
+stays pinned. The formula is character-for-character the same under both. The `△` is the temporal
+triangle `Formula.always`, not `Formula.box`; see `Formula.co`.
 
 **CO is derived here, not primitive.** No `Axiom.co` constructor exists; the official
 Dedekind-class basis remains `Axiom.prior_U_gap` / `DerivedAxioms.priorSGap` / `Axiom.sep`.

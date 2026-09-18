@@ -65,7 +65,8 @@ def PlusAxiom.IsNaive {φ : PlusFormula} : PlusAxiom φ → Prop
   | _ => True
 
 /-- A derivation is **naive-only** when every `axiom` node in it cites a naive schema. -/
-def _root_.FormalSystem.PlusLanguage.PlusDerivationTree.NaiveOnly {fc : FrameClass} : {Γ : PlusContext} → {φ : PlusFormula} →
+def _root_.FormalSystem.PlusLanguage.PlusDerivationTree.NaiveOnly
+    {fc : FrameClass} : {Γ : PlusContext} → {φ : PlusFormula} →
     PlusDerivationTree fc Γ φ → Prop
   | _, _, .axiom _ _ h _ => PlusAxiom.IsNaive h
   | _, _, .assumption _ _ _ => True
@@ -86,7 +87,8 @@ theorem naiveDerivable_imp_plusDerivable {fc : FrameClass} {Γ : PlusContext} {�
   h.elim fun d _ => ⟨d⟩
 
 /-- `lift` preserves naivety: it rewrites only the frame-class side conditions. -/
-theorem _root_.FormalSystem.PlusLanguage.PlusDerivationTree.naiveOnly_lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂) :
+theorem _root_.FormalSystem.PlusLanguage.PlusDerivationTree.naiveOnly_lift {fc₁ fc₂ : FrameClass}
+    (h_le : fc₁ ≤ fc₂) :
     ∀ {Γ : PlusContext} {φ : PlusFormula} (d : PlusDerivationTree fc₁ Γ φ),
       d.NaiveOnly → (d.lift h_le).NaiveOnly
   | _, _, .axiom _ _ _ _, hd => hd

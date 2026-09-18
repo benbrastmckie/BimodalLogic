@@ -20,8 +20,8 @@ partial history by one point", mirroring the paper's decomposition exactly:
 
 ## Paper Specification Reference
 
-Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the paper
-source — is the citation source of record.
+Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
+paper source — is the citation source of record.
 
 - `lem:fibers` (verbatim, as last resolved before the paper retired the anchor): "For any
   partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration
@@ -44,10 +44,10 @@ source — is the citation source of record.
 **`lem:fibers` is a RETIRED paper anchor.** The paper removed `\label{lem:fibers}` in a
 2026-08-17 editing wave; the lemma's content was absorbed into the proof of `lem:admissible`
 rather than restated. Every `lem:fibers` citation in this tree resolves against
-`docs/reference/paper-definitions-of-record.md`'s **DANGLING** entry — which retains the lemma's last
-resolved text — and not against any live `\label` in the paper. The name is kept because the
-statement is still exactly what `PartialHistory.fibers` proves and because no live anchor covers
-the same content; a reader going to the paper for it will not find it there.
+`docs/reference/paper-definitions-of-record.md`'s **DANGLING** entry — which retains the lemma's
+last resolved text — and not against any live `\label` in the paper. The name is kept because the
+statement is still exactly what `PartialHistory.fibers` proves and because no live anchor covers the
+same content; a reader going to the paper for it will not find it there.
 
 
 The recorded proof recipe for `lem:admissible` is: "Proof consumes `lem:nullity` (the zero loop at
@@ -175,7 +175,8 @@ theorem fibers (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState) :
 -/
 
 /-- The domain of the one-point extension: the paper's `X ∪ {z}`. -/
-def adjoinDomain (τ : PartialHistory F) (z : F.Duration) : F.Duration → Prop := fun t => τ.domain t ∨ t = z
+def adjoinDomain (τ : PartialHistory F)
+    (z : F.Duration) : F.Duration → Prop := fun t => τ.domain t ∨ t = z
 
 open Classical in
 /--
@@ -191,7 +192,8 @@ Classical case distinction on `τ.domain t` is what makes this `noncomputable`; 
 function precisely because of the paper's `z ∈ D \ X` proviso, which the results below carry as
 the explicit hypothesis `hz` wherever it is needed.
 -/
-noncomputable def adjoinFun (τ : PartialHistory F) (u : F.WorldState) (t : F.Duration) : F.WorldState :=
+noncomputable def adjoinFun (τ : PartialHistory F) (u : F.WorldState)
+    (t : F.Duration) : F.WorldState :=
   if ht : τ.domain t then τ.states t ht else u
 
 /-- On the old domain, the one-point extension is `τ` itself. -/
@@ -213,8 +215,9 @@ Only task-respect is asserted: the other requirement of `def:world-history`, non
 domain, is automatic here (`X` is already nonempty, and `z` is in the extended domain regardless),
 so the condition below is the entire content of the phrase `lem:admissible` uses.
 
-Note the condition is stated **unconditionally** over pairs, matching `PartialHistory.respects_task`;
-`adjoin` discharges that field with a proof of this predicate verbatim, with no `ofLe` detour.
+Note the condition is stated **unconditionally** over pairs, matching
+`PartialHistory.respects_task`; `adjoin` discharges that field with a proof of this predicate
+verbatim, with no `ofLe` detour.
 -/
 def AdjoinRespects (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState) : Prop :=
   ∀ (s t : F.Duration), adjoinDomain τ z s → adjoinDomain τ z t →
@@ -273,9 +276,9 @@ every member of the constraints imposed on $z$."
 
 - both times in `X`: `τ`'s own `respects_task`, no axiom needed;
 - old time then `z`: the fiber condition at that time, i.e. `fibers`;
-- `z` then old time: the same fiber condition through the reflection convention (`FrameOver.reflection`
-  plus `neg_sub`), which is precisely the negative-difference instance `def:world-history`'s `%`
-  comment covers;
+- `z` then old time: the same fiber condition through the reflection convention
+  (`FrameOver.reflection` plus `neg_sub`), which is precisely the negative-difference instance
+  `def:world-history`'s `%` comment covers;
 - `z` twice: `u ⇒₀ u`, which is `lem:nullity` — taken here from
   `TaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free).
 

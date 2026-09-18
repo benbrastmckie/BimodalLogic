@@ -32,7 +32,8 @@ with linear temporal logic.
 
 - `FormalSystem.ForMathlib`: Mathlib-shaped extensions intended for upstreaming (currently the
   proper/maximal/prime-filter API of `Order.PFilter` and the bundled `Order.PrimeFilter`). Imports
-  nothing from `FormalSystem.*`; the import direction is strictly `Mathlib → ForMathlib → FormalSystem`
+  nothing from `FormalSystem.*`; the import direction is strictly
+  `Mathlib → ForMathlib → FormalSystem`
 - `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
   plus derived operators and context types
 - `FormalSystem.ProofSystem`: Hilbert-style proof system with 29 axiom schemata

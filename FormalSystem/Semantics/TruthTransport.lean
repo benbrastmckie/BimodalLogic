@@ -70,8 +70,8 @@ statement about `WorldHistory.state`, which is what lets each of them be derived
 induction.
 
 `TruthIso` (below, after the time-shift section) is the bijective special case:
-`TruthIso.toCorr` reads an equivalence `WorldHistory F ≃ WorldHistory F'` as the relation "`hist` sends the one to
-the other", and `truthAt_of_truthIso` is `truthAt_of_truthCorr` at that instance.
+`TruthIso.toCorr` reads an equivalence `WorldHistory F ≃ WorldHistory F'` as the relation "`hist`
+sends the one to the other", and `truthAt_of_truthIso` is `truthAt_of_truthCorr` at that instance.
 -/
 
 /--
@@ -179,8 +179,8 @@ MF and TF axioms' validity.
 
 The theorem is `Truth.truthAt_of_truthCorr` at the instance `shiftCorr`: `ShiftRel Δ` is the
 relation of `def:time-shift-histories`, and `shiftCorr`'s `fwd`/`bwd` are `app:auto_existence`
-("total since 𝔇 is a group", i.e. `WorldHistory.timeShift`). No six-case induction lives in this section; the one that
-used to is the relational transport's, run once.
+("total since 𝔇 is a group", i.e. `WorldHistory.timeShift`). No six-case induction lives in this
+section; the one that used to is the relational transport's, run once.
 -/
 
 namespace TimeShift
@@ -327,9 +327,9 @@ end Truth
 /-! ## Truth isomorphisms — the bijective special case
 
 `TruthIso` is the bijective special case of `TruthCorr`: times reindex by an order isomorphism
-and world histories reindex by an equivalence `WorldHistory F ≃ WorldHistory F'`. It is the packaging
-`Independence/LoopingDuration.lean`'s duration reindexings naturally come in, and it is kept as a
-structure in its own right for them. It is not a second induction: `TruthIso.toCorr` reads
+and world histories reindex by an equivalence `WorldHistory F ≃ WorldHistory F'`. It is the
+packaging `Independence/LoopingDuration.lean`'s duration reindexings naturally come in, and it is
+kept as a structure in its own right for them. It is not a second induction: `TruthIso.toCorr` reads
 `hist` as the relation "`hist` sends the one to the other", and `truthAt_of_truthIso` is
 `truthAt_of_truthCorr` at that instance.
 
@@ -344,11 +344,11 @@ primitive and this structure the special case.
 
 ### Why `atom` is quantified over all histories
 
-The `atom` field has to hold at every `τ : WorldHistory F`, not at one distinguished history, because the
-`box` case applies the induction hypothesis at a history the caller did not choose. A per-history
-atom hypothesis would not survive the box case — which is precisely why
-`Correspondence/FwdRecPeriodicity.truthAt_add_hist_period` is **not** an instance of this
-structure, nor of `TruthCorr`, and keeps its own induction; see its docstring.
+The `atom` field has to hold at every `τ : WorldHistory F`, not at one distinguished history,
+because the `box` case applies the induction hypothesis at a history the caller did not choose. A
+per-history atom hypothesis would not survive the box case — which is precisely why
+`Correspondence/FwdRecPeriodicity.truthAt_add_hist_period` is **not** an instance of this structure,
+nor of `TruthCorr`, and keeps its own induction; see its docstring.
 -/
 
 /--
@@ -447,13 +447,13 @@ The order-reversing twin of `truthAt_of_truthCorr` (at the `TruthIso` instance),
 first two and structural on the second two; only `untl` and `snce` differ, and they differ by
 exchanging places and reading every bound through `dur_rev` instead of `OrderIso.lt_iff_lt`.
 
-Note on `reflect_time_norm`: the plan for this work specified writing the body against that simp set.
-`reflect_time_norm` collects the eleven `Formula.reflect_time_*` lemmas, which push `reflectTime`
-through the **derived** operators (`neg`, `diamond`, `someFuture`, `next`, …). A six-constructor
-induction needs the *base* equations of `Formula.reflectTime` instead, and those are not in the
-set — nor should they be, since adding them would make `reflect_time_norm` unfold the definition at every
-call site. `simp only [Formula.reflectTime, …]` is therefore what the base cases use; `reflect_time_norm`
-remains the right tool for a caller reasoning about a derived operator.
+Note on `reflect_time_norm`: the plan for this work specified writing the body against that simp
+set. `reflect_time_norm` collects the eleven `Formula.reflect_time_*` lemmas, which push
+`reflectTime` through the **derived** operators (`neg`, `diamond`, `someFuture`, `next`, …). A
+six-constructor induction needs the *base* equations of `Formula.reflectTime` instead, and those are
+not in the set — nor should they be, since adding them would make `reflect_time_norm` unfold the
+definition at every call site. `simp only [Formula.reflectTime, …]` is therefore what the base cases
+use; `reflect_time_norm` remains the right tool for a caller reasoning about a derived operator.
 -/
 theorem truthAt_of_truthAntiIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
     (I : TruthAntiIso M M') (φ : Formula) (τ : WorldHistory F) (t : F.Duration) :

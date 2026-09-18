@@ -467,8 +467,8 @@ The paper's **CO** formula (Cauchy/completeness-of-order principle), as a *named
 **Retired anchor**: this used to be quoted from `TMP-CO`, the `BL^+` restatement inside the old
 `def:TMplus-c`; the paper's 2026-09 wave dropped that restatement (`def:BX-r` derives CO from PU
 instead of displaying it again), so `TMP-CO` is recorded `DANGLING` in
-`docs/reference/paper-definitions-of-record.md` and the plain `CO` anchor is the live, pinned one. The
-formula is unchanged. In `def:BX-r` CO is a *derived theorem* of the dense-and-complete
+`docs/reference/paper-definitions-of-record.md` and the plain `CO` anchor is the live, pinned one.
+The formula is unchanged. In `def:BX-r` CO is a *derived theorem* of the dense-and-complete
 extension, not a further axiom.
 
 **Operator resolution (important).** The `△` here is the **temporal** triangle
@@ -638,7 +638,8 @@ Time reflection distributes over diamond: `reflectTime(◇φ) = ◇(reflectTime 
 Since `diamond φ = φ.neg.box.neg`, and `reflectTime` recurses through
 `imp` and `box` without changing their structure (only exchanging allPast/allFuture),
 we have:
-- `reflectTime(φ.neg.box.neg) = reflectTime(φ.neg).box.neg = (reflectTime φ).neg.box.neg = (reflectTime φ).diamond`
+- `reflectTime(φ.neg.box.neg) = reflectTime(φ.neg).box.neg = (reflectTime φ).neg.box.neg =
+  (reflectTime φ).diamond`
 
 Note: `neg φ = φ.imp bot` and `reflectTime bot = bot`, so
 `reflectTime (φ.neg) = (reflectTime φ).neg`.
@@ -691,13 +692,15 @@ theorem reflect_time_prev (φ : Formula) :
     φ.prev.reflectTime = φ.reflectTime.next := by
   simp [prev, next, reflectTime]
 
-/-- reflectTime distributes over strongRelease: reflectTime(M(φ,ψ)) = ST(reflectTime(φ),reflectTime(ψ)). -/
+/-- reflectTime distributes over strongRelease: reflectTime(M(φ,ψ)) =
+ST(reflectTime(φ),reflectTime(ψ)). -/
 theorem reflect_time_strong_release (φ ψ : Formula) :
     (Formula.strongRelease φ ψ).reflectTime = Formula.strongTrigger φ.reflectTime
       ψ.reflectTime := by
   simp [strongRelease, strongTrigger, and, reflectTime, reflect_time_neg]
 
-/-- reflectTime distributes over strongTrigger: reflectTime(ST(φ,ψ)) = M(reflectTime(φ),reflectTime(ψ)). -/
+/-- reflectTime distributes over strongTrigger: reflectTime(ST(φ,ψ)) =
+M(reflectTime(φ),reflectTime(ψ)). -/
 theorem reflect_time_strong_trigger (φ ψ : Formula) :
     (Formula.strongTrigger φ ψ).reflectTime = Formula.strongRelease φ.reflectTime
       ψ.reflectTime := by

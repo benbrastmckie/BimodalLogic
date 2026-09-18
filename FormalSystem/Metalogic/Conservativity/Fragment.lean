@@ -33,8 +33,9 @@ mechanically through the landed truth-transfer bridge `minusValidIn_iff_validIn_
   `derivable_translate`);
 - **`TM⁻ ⊊ TMFrag` at `.ZTime`** (`tmMinus_lt_tmFrag_ztime`): the Z1 schema is in the fragment
   (`z1_translate`) but not a TM⁻_z theorem (`not_minus_derivable_z1`);
-- the reduction restated in fragment terms (`tmMinusComplete_iff_tmFrag_le_tmMinus`): TM⁻ is complete at
-  `fc` iff the fragment collapses onto TM⁻ at `fc` — with `Forward` unfolded, never asserted.
+- the reduction restated in fragment terms (`tmMinusComplete_iff_tmFrag_le_tmMinus`): TM⁻ is
+  complete at `fc` iff the fragment collapses onto TM⁻ at `fc` — with `Forward` unfolded, never
+  asserted.
 
 Compactness of the fragment at `.Base` and `.Dense` is the sibling module
 `Conservativity/FragmentCompactness.lean`.
@@ -104,7 +105,8 @@ theorem tmFrag_complete {fc : FrameClass} (engine : WeakCompleteness fc) (φ : M
   engine (tr φ) ((minusValidIn_iff_validIn_tr fc φ).mp h)
 
 /-- **The fragment is exactly base-language validity**, at every class with an engine. -/
-theorem tmFrag_iff_minusValidIn {fc : FrameClass} (engine : WeakCompleteness fc) (φ : MinusFormula) :
+theorem tmFrag_iff_minusValidIn {fc : FrameClass} (engine : WeakCompleteness fc)
+    (φ : MinusFormula) :
     TMFrag fc φ ↔ MinusValidIn fc φ :=
   ⟨tmFrag_sound φ, tmFrag_complete engine φ⟩
 

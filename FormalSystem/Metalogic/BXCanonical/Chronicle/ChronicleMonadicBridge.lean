@@ -527,7 +527,7 @@ subformulas of the root. Part 4's truth correspondence is closure-bounded, so Pa
 re-runs it unrestricted; that needs unrestricted Until/Since coherence.
 
 It is available for free. `cantor_bfmcs_dense_restricted_fuc` / `_buc`
-(`ChronicleToCountermodelBasic.lean:755` / ) are polymorphic in `root` and **discard**
+(`ChronicleToCountermodelBasic.lean:757` / ) are polymorphic in `root` and **discard**
 their closure-membership argument (their proofs open with `intro t φ ψ _`), so instantiating at
 `root := Formula.untl α β` — respectively `Formula.snce α β` — and discharging with
 `self_mem_subformulaClosure` recovers the unrestricted statement. This is the same **self-root
@@ -783,7 +783,7 @@ original glue on a sourced statement. -/
 Sep:   K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)
 ```
 
-the semantic reading of `Axiom.sep` (`ProofSystem/Axioms.lean:398`), in the idiom
+the semantic reading of `Axiom.sep` (`ProofSystem/Axioms.lean:400`), in the idiom
 `PriorDefsDense.lean` uses for `SemanticPriorU` / `SemanticPriorS`. Reynolds defers its validity
 proof: *"we investigate this axiom in more detail in section 7 and defer proving its validity in
 ℝ until lemma 10 there"* (printed p.168, quoted in the `Axiom.sep` docstring). **Lemma 10 is not

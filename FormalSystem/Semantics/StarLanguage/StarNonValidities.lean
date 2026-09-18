@@ -45,15 +45,16 @@ who reaches for either move deserves to find a theorem rather than nothing.
 
 **MF is the sole `timeShift` consumer in the TM schema block.** Its L/L⁺ soundness proof
 (`Metalogic/Soundness.lean`, `modal_future_valid`) reaches `φ` at a later time by shifting the
-quantified history. The L⋆ restatement `starTruthAt_timeShift` (`Semantics/StarLanguage/StarTruth.lean`)
-shifts the **stored-time vector with the history** — it must, since `↓ⁱ` evaluates at a time in
-the unshifted frame of reference — so the shift argument delivers `φ` at a shifted vector, never
-at the original one. `refute_modal_future` shows the gap is real and not an artefact of the
-proof: MF fails over `NF` already at `φ := ↓¹p → p`, whose `□`-antecedent is valid on *every*
-frame and model. This is why `StarAxiom.modal_future` is the one TM⋆ schema carrying a side
-condition its `PlusAxiom` mirror does not: it is declared at every `RecallFree` (`↓ⁱ`-free)
-formula, a fragment that excludes this witness and is nevertheless strictly wider than the
-`ofPlus` image, since `↑¹p` is `RecallFree` and is not embedded (`ofPlus_ne_timeStore`).
+quantified history. The L⋆ restatement `starTruthAt_timeShift`
+(`Semantics/StarLanguage/StarTruth.lean`) shifts the **stored-time vector with the history** — it
+must, since `↓ⁱ` evaluates at a time in the unshifted frame of reference — so the shift argument
+delivers `φ` at a shifted vector, never at the original one. `refute_modal_future` shows the gap is
+real and not an artefact of the proof: MF fails over `NF` already at `φ := ↓¹p → p`, whose
+`□`-antecedent is valid on *every* frame and model. This is why `StarAxiom.modal_future` is the one
+TM⋆ schema carrying a side condition its `PlusAxiom` mirror does not: it is declared at every
+`RecallFree` (`↓ⁱ`-free) formula, a fragment that excludes this witness and is nevertheless strictly
+wider than the `ofPlus` image, since `↑¹p` is `RecallFree` and is not embedded
+(`ofPlus_ne_timeStore`).
 
 **Register erasure is not a conservativity translation.** The obvious syntactic route from L⋆ to
 L⁺ — delete every `↑ⁱ` and `↓ⁱ` — does not preserve validity in either useful direction:

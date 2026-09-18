@@ -226,7 +226,8 @@ def diamond4 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diamond.diamond.imp �
     DerivationTree.necessitation _ combined
   have mk_dist : ⊢[fc] (φ.neg.box.neg.neg.imp φ.neg.box.box).box.imp
                     (φ.neg.box.neg.neg.box.imp φ.neg.box.box.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box.neg.neg φ.neg.box.box) (FrameClass.base_le fc)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box.neg.neg φ.neg.box.box)
+        (FrameClass.base_le fc)
   have distributed : ⊢[fc] φ.neg.box.neg.neg.box.imp φ.neg.box.box.box :=
     DerivationTree.modus_ponens [] _ _ mk_dist box_combined
   -- Step 6: Negate both sides: ¬□□□¬φ → ¬□¬¬□¬φ
@@ -256,7 +257,8 @@ def diamond4 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diamond.diamond.imp �
   -- Distribute
   have mk_dni : ⊢[fc] (φ.neg.box.imp φ.neg.box.neg.neg).box.imp
                    (φ.neg.box.box.imp φ.neg.box.neg.neg.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box φ.neg.box.neg.neg) (FrameClass.base_le fc)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box φ.neg.box.neg.neg)
+        (FrameClass.base_le fc)
   have bridge : ⊢[fc] φ.neg.box.box.imp φ.neg.box.neg.neg.box :=
     DerivationTree.modus_ponens [] _ _ mk_dni box_dni
   -- Contrapose: ¬□¬¬□¬φ → ¬□□¬φ
@@ -290,7 +292,8 @@ def modal5 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diamond.imp φ.diamond.
   -- Step 4: MK distribution
   have mk : ⊢[fc] (φ.diamond.diamond.imp φ.diamond).box.imp
                (φ.diamond.diamond.box.imp φ.diamond.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.diamond.diamond φ.diamond) (FrameClass.base_le fc)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.diamond.diamond φ.diamond)
+        (FrameClass.base_le fc)
   have d4_box : ⊢[fc] φ.diamond.diamond.box.imp φ.diamond.box :=
     DerivationTree.modus_ponens [] _ _ mk box_d4
   -- Step 5: Compose
@@ -535,7 +538,8 @@ def perpetuity4 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.sometimes.diamond.
   -- Modal K: □(△¬φ → ¬¬△¬φ) → (□△¬φ → □¬¬△¬φ)
   have mk_dni : ⊢[fc] (φ.neg.always.imp φ.neg.always.neg.neg).box.imp
                    (φ.neg.always.box.imp φ.neg.always.neg.neg.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.always φ.neg.always.neg.neg) (FrameClass.base_le fc)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.always φ.neg.always.neg.neg)
+        (FrameClass.base_le fc)
   -- Apply: □△¬φ → □¬¬△¬φ
   have box_dni_imp : ⊢[fc] φ.neg.always.box.imp φ.neg.always.neg.neg.box :=
     DerivationTree.modus_ponens [] _ _ mk_dni box_dni_always
@@ -695,7 +699,8 @@ P5 is semantically valid in task semantics. In any task model, if ◇▽φ holds
 then there exists a possible world ρ and time s where φ holds. By the S5 structure of
 possibility and time-invariance of worlds, this means φ is possible at all times in τ.
 -/
-noncomputable def persistence {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diamond.imp φ.diamond.always := by
+noncomputable def persistence {fc : FrameClass}
+    (φ : Formula) : ⊢[fc] φ.diamond.imp φ.diamond.always := by
   -- Goal: ◇φ → △◇φ
   -- Expanded: ◇φ → H◇φ ∧ ◇φ ∧ G◇φ
   --
@@ -808,7 +813,8 @@ P5 is semantically valid in task semantics:
 2. Temporal homogeneity ensures time-invariance of modal facts
 3. Therefore: ◇▽φ at t implies ◇φ at all times in any possible world
 -/
-noncomputable def perpetuity5 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.sometimes.diamond.imp φ.diamond.always :=
+noncomputable def perpetuity5 {fc : FrameClass}
+    (φ : Formula) : ⊢[fc] φ.sometimes.diamond.imp φ.diamond.always :=
   impTrans (perpetuity4 φ) (persistence φ)
 
 end FormalSystem.Theorems.Perpetuity

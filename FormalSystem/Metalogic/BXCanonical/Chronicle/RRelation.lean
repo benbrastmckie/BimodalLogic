@@ -1252,7 +1252,8 @@ private theorem neg_all_past_neg_to_some_past (fc : FrameClass) {M : Set Formula
   -- BX3' (right_mono_since): ⊢ H(¬¬α → α) → (P(¬¬α) → P(α))
   -- Build chain at Base level, then lift
   have h_P_mono : [] ⊢ (Formula.somePast α.neg.neg).imp (Formula.somePast α) :=
-    FormalSystem.Theorems.TemporalDerived.somePastMono (FormalSystem.Theorems.Propositional.doubleNegation α)
+    FormalSystem.Theorems.TemporalDerived.somePastMono
+        (FormalSystem.Theorems.Propositional.doubleNegation α)
   exact SetMaximalConsistent.mp_of_theorem h_mcs (liftBase fc h_P_mono) h_dne_P
 
 /-- In an MCS, `neg (allFuture (neg γ)) ∈ M` implies `someFuture γ ∈ M`.
@@ -1267,7 +1268,8 @@ private theorem neg_all_future_neg_to_some_future (fc : FrameClass) {M : Set For
       FormalSystem.Theorems.Propositional.doubleNegation (Formula.someFuture γ.neg.neg)
     exact SetMaximalConsistent.mp_of_theorem h_mcs h_dne h
   have h_F_mono : [] ⊢ (Formula.someFuture γ.neg.neg).imp (Formula.someFuture γ) :=
-    FormalSystem.Theorems.TemporalDerived.someFutureMono (FormalSystem.Theorems.Propositional.doubleNegation γ)
+    FormalSystem.Theorems.TemporalDerived.someFutureMono
+        (FormalSystem.Theorems.Propositional.doubleNegation γ)
   exact SetMaximalConsistent.mp_of_theorem h_mcs (liftBase fc h_F_mono) h_dne_F
 
 /-- F(H(¬α)) ∈ M and G(P(α)) ∈ M are contradictory in an MCS.
@@ -1278,7 +1280,8 @@ private theorem some_future_H_neg_G_P_absurd (fc : FrameClass) {M : Set Formula}
     (h_GP : Formula.allFuture (Formula.somePast α) ∈ M) : False := by
   -- ⊢ P(α) → ¬H(¬α): from P(α) → P(¬¬α) and DNI
   have h_P_to_Pnn : [] ⊢ (Formula.somePast α).imp (Formula.somePast α.neg.neg) :=
-    FormalSystem.Theorems.TemporalDerived.somePastMono (FormalSystem.Theorems.Combinators.notNotIntro α)
+    FormalSystem.Theorems.TemporalDerived.somePastMono
+        (FormalSystem.Theorems.Combinators.notNotIntro α)
   -- P(¬¬α) → P(¬¬α).neg.neg = ¬H(¬α) by DNI
   have h_dni_P : [] ⊢ (Formula.somePast α.neg.neg).imp (Formula.somePast α.neg.neg).neg.neg :=
     FormalSystem.Theorems.Combinators.notNotIntro (Formula.somePast α.neg.neg)
@@ -1313,7 +1316,8 @@ private theorem some_past_G_neg_H_F_absurd (fc : FrameClass) {M : Set Formula}
     (h_HF : Formula.allPast (Formula.someFuture γ) ∈ M) : False := by
   -- ⊢ F(γ) → ¬G(¬γ): from F(γ) → F(¬¬γ) and DNI
   have h_F_to_Fnn : [] ⊢ (Formula.someFuture γ).imp (Formula.someFuture γ.neg.neg) :=
-    FormalSystem.Theorems.TemporalDerived.someFutureMono (FormalSystem.Theorems.Combinators.notNotIntro γ)
+    FormalSystem.Theorems.TemporalDerived.someFutureMono
+        (FormalSystem.Theorems.Combinators.notNotIntro γ)
   have h_dni_F : [] ⊢ (Formula.someFuture γ.neg.neg).imp (Formula.someFuture γ.neg.neg).neg.neg :=
     FormalSystem.Theorems.Combinators.notNotIntro (Formula.someFuture γ.neg.neg)
   have h_F_to_neg_G : [] ⊢ (Formula.someFuture γ).imp

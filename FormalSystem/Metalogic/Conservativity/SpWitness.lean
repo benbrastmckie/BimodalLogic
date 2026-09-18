@@ -28,19 +28,19 @@ module uses is unavailable for that half (report §6.2).
 
 It is, however, no longer an open claim. It is discharged in
 `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean`, which builds the native
-(`TaskFrame`-free) semantics of `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean`, proves L⁻ soundness for TM⁻
-directly against it, and refutes the atomic instance on the disjoint sum `ℤ ⊕ ℝ` —
-`not_derivable_sp`, and its corollary `tmMinusCompleteBase_refuted : ¬ TMMinusCompleteBase`. Note the claim
-there is **schema-level**: `□(DF ⊤)` holds on every `MinusFrame`, so `Sp ⊤ ψ` is *not* refuted, and
-the universally quantified reading is false.
+(`TaskFrame`-free) semantics of `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean`, proves L⁻
+soundness for TM⁻ directly against it, and refutes the atomic instance on the disjoint sum `ℤ ⊕ ℝ` —
+`not_derivable_sp`, and its corollary `tmMinusCompleteBase_refuted : ¬ TMMinusCompleteBase`. Note
+the claim there is **schema-level**: `□(DF ⊤)` holds on every `MinusFrame`, so `Sp ⊤ ψ` is *not*
+refuted, and the universally quantified reading is false.
 
 ## The un-boxed sharpening (report §4.2)
 
 The *un-boxed* `DF φ ∨ DN ψ` is valid on every strict linear order whatsoever — `□` is what
 turns the dichotomy from a property of one history's local order into a frame-uniform one (a
-single shared `Duration` on which the whole frame's dichotomy is decided once). `minusValid_df_or_dn`
-below proves this un-boxed claim directly, since it costs nothing beyond dropping the `.box`/
-`box_iff` step from `minusValid_sp`'s own proof.
+single shared `Duration` on which the whole frame's dichotomy is decided once).
+`minusValid_df_or_dn` below proves this un-boxed claim directly, since it costs nothing beyond
+dropping the `.box`/ `box_iff` step from `minusValid_sp`'s own proof.
 
 ## Provenance
 

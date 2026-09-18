@@ -35,18 +35,19 @@ agree about `φ`. That is exactly the class `⊡` quantifies over, so a state-lo
 
 ## Which constructors are state-local, and why
 
-Read off `PlusTruthAt` (`Semantics/PlusLanguage/PlusTruth.lean`) clause by clause, at the **same** evaluation
-time on both sides:
+Read off `PlusTruthAt` (`Semantics/PlusLanguage/PlusTruth.lean`) clause by clause, at the **same**
+evaluation time on both sides:
 
-| Constructor | State-local? | Why |
-|---|---|---|
-| `atom p` | yes | `M.valuation (τ.state t) p` reads the state at `t` and nothing else |
-| `bot` | yes | constant |
-| `imp φ ψ` | yes if both are | pointwise |
-| `box φ` | yes, for arbitrary `φ` | `∀ σ : WorldHistory F, …` does not mention `τ` at all |
-| `stab φ` | yes, for arbitrary `φ` | the class `⟨τ⟩ₜ` is unchanged by replacing `τ` with any history agreeing at `t` (`stab_congr_sameState`) |
-| `untl ψ φ` | no | quantifies over `s > t`, where the two histories may diverge |
-| `snce ψ φ` | no | quantifies over `s < t`, likewise |
+* `atom p` — State-local?: yes; Why: `M.valuation (τ.state t) p` reads the state at `t` and nothing
+  else
+* `bot` — State-local?: yes; Why: constant
+* `imp φ ψ` — State-local?: yes if both are; Why: pointwise
+* `box φ` — State-local?: yes, for arbitrary `φ`; Why: `∀ σ : WorldHistory F, …` does not mention
+  `τ` at all
+* `stab φ` — State-local?: yes, for arbitrary `φ`; Why: the class `⟨τ⟩ₜ` is unchanged by replacing
+  `τ` with any history agreeing at `t` (`stab_congr_sameState`)
+* `untl ψ φ` — State-local?: no; Why: quantifies over `s > t`, where the two histories may diverge
+* `snce ψ φ` — State-local?: no; Why: quantifies over `s < t`, likewise
 
 `box` and `stab` are the two entries a reader is most likely to expect a recursive hypothesis on.
 They do not need one: `isPlusStateLocal_box` and `isPlusStateLocal_stab` are proved for an
@@ -70,10 +71,10 @@ turns on the outermost constructor, not on the whole subformula tree.
 ## The two exclusions live on one frame
 
 `not_isPlusStateLocal_someFuture` and `not_isPlusStateLocal_somePast` are both witnessed on the
-permissive frame `NF` over `ℤ` (`Semantics/PlusLanguage/PlusNonValidities.lean`), where every function `ℤ → ℕ`
-is a possible world and `natModel` makes each atom true at world state `0` and nowhere else. No
-second countermodel frame is built: two possible worlds agreeing at `0` and disagreeing away from
-`0` refute both.
+permissive frame `NF` over `ℤ` (`Semantics/PlusLanguage/PlusNonValidities.lean`), where every
+function `ℤ → ℕ` is a possible world and `natModel` makes each atom true at world state `0` and
+nowhere else. No second countermodel frame is built: two possible worlds agreeing at `0` and
+disagreeing away from `0` refute both.
 
 L⁺ has no time registers, so the L⋆ module's third exclusion — `not_isStateLocal_timeRecall` —
 has no counterpart here. Two exclusions are all the seven-constructor recursion needs.
@@ -94,15 +95,15 @@ difference between the nine-arm and seven-arm recursions. The transfer lives in 
 not here: `Metalogic/Conservativity/Plus/AxiomValidity.lean` imports this one, and an L⋆ import
 here would invert the L → L⁺ → L⋆ layering.
 
-**2. To `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`).** That lemma is a **different-times**
-statement: `τ(t) = σ(s)` transfers `⊡φ` from `(τ, t)` to `(σ, s)`, which is what the atomization
-route (`Metalogic/Conservativity/Plus/Atomization.lean`) consumes. This module's `stab` arm,
-`isPlusStateLocal_stab`, is its **same-time shadow**: one `t` on both sides. The two are related
-by `plusTruthAt_timeShift`, and share a common core — `stab_congr_sameState`, which
-`stab_state_only` is proved from and which `isPlusStateLocal_stab` is literally an instance of.
-The different-times shape does **not** generalize to this fragment: `box φ` at `t` and at `s` can
-differ. So the two face opposite ways: `stab_state_only` says `⊡φ` is state-local, this module
-says a state-local `φ` is already `⊡`-stable.
+**2. To `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`).** That lemma is a
+**different-times** statement: `τ(t) = σ(s)` transfers `⊡φ` from `(τ, t)` to `(σ, s)`, which is what
+the atomization route (`Metalogic/Conservativity/Plus/Atomization.lean`) consumes. This module's
+`stab` arm, `isPlusStateLocal_stab`, is its **same-time shadow**: one `t` on both sides. The two are
+related by `plusTruthAt_timeShift`, and share a common core — `stab_congr_sameState`, which
+`stab_state_only` is proved from and which `isPlusStateLocal_stab` is literally an instance of. The
+different-times shape does **not** generalize to this fragment: `box φ` at `t` and at `s` can
+differ. So the two face opposite ways: `stab_state_only` says `⊡φ` is state-local, this module says
+a state-local `φ` is already `⊡`-stable.
 
 **3. To `c_stab_state_only` (`Metalogic/Independence/CoarsenedModels.lean`).** That is the
 **coarsened port** of (2), and it is the one relation that is *not* covered by anything here.
@@ -122,7 +123,8 @@ here.
   `p → ⊡p` of its footnote (line 1119) is the `stateLocal_atom` instance of `stab_of_stateLocal`
 * `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `PlusTruthAt`, `stab_congr_state`,
   `stab_state_only`
-* `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` — the L⋆ twin this module mirrors arm for arm
+* `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` — the L⋆ twin this module mirrors arm
+  for arm
 * `FormalSystem/Semantics/StateLocalTransfer.lean` — `stateLocal_ofPlus_iff`
 * `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`
 
@@ -215,8 +217,8 @@ open FormalSystem.PlusLanguage
 **State-locality, semantically.** `φ` is state-local when, at every frame and model, any two
 possible worlds carrying the same world state at `t` agree about `φ` at `t`.
 
-L⁺ has no time registers, so this is `IsStateLocal` (`Semantics/StarLanguage/StarStateLocal.lean`) with the
-stored-time vector deleted and nothing else changed; the two are arm-for-arm comparable.
+L⁺ has no time registers, so this is `IsStateLocal` (`Semantics/StarLanguage/StarStateLocal.lean`)
+with the stored-time vector deleted and nothing else changed; the two are arm-for-arm comparable.
 -/
 def IsPlusStateLocal (φ : PlusFormula) : Prop :=
   ∀ (F : TaskFrame) (M : TaskModel F) (τ σ : WorldHistory F) (t : F.Duration),
@@ -282,10 +284,10 @@ theorem isPlusStateLocal_of_stateLocal :
 
 /-! ## The excluded constructors are excluded by theorem
 
-Each witness lives on `NF` with `natModel` (`Semantics/PlusLanguage/PlusNonValidities.lean`), and each uses a
-pair of possible worlds agreeing at time `0` and disagreeing away from it. Both are stated as
-negations of `IsPlusStateLocal`, the semantic property: the *syntactic* predicate is `False` on
-these constructors by definition, so its negation would be a vacuous claim.
+Each witness lives on `NF` with `natModel` (`Semantics/PlusLanguage/PlusNonValidities.lean`), and
+each uses a pair of possible worlds agreeing at time `0` and disagreeing away from it. Both are
+stated as negations of `IsPlusStateLocal`, the semantic property: the *syntactic* predicate is
+`False` on these constructors by definition, so its negation would be a vacuous claim.
 
 L⁺ has no time registers, so the L⋆ module's third exclusion — `not_isStateLocal_timeRecall` —
 does not arise here. Two exclusions are all the seven-constructor recursion needs. -/
@@ -370,9 +372,9 @@ theorem plusStateLocal_stab_iff {F : TaskFrame} {φ : PlusFormula} (hφ : φ.Sta
 /--
 **`φ ↔ ⊡φ` for state-local `φ`**, as a validity of L⁺.
 
-The companion facing the other way to `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`): that lemma
-says `⊡φ` depends on the world state alone, this one says a formula that already depends on the
-world state alone is `⊡`-stable.
+The companion facing the other way to `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`):
+that lemma says `⊡φ` depends on the world state alone, this one says a formula that already depends
+on the world state alone is `⊡`-stable.
 
 Paper: — (the formalization's own: the manuscript states no fragment-level `φ ↔ ⊡φ` for L⁺; the
 nearest paper-anchored statement is the atom-level `p → ⊡p` of line 1119, which this strictly

@@ -37,12 +37,13 @@ closure results below are single applications of its iff-shaped entry point
 The two corollaries below are the **closed** half of a four-part picture; the other half lives in
 `Metalogic/Independence/`, and the two halves are only intelligible together:
 
-| Class | Closed? | Where |
-|---|---|---|
-| `FrameClass.Sat FrameClass.Dense` | yes | `galoisClosed_sat_dense`, below |
-| `{F \| F.IsDiscrete}` (the paper's bare clause) | yes | `galoisClosed_isDiscrete`, below |
-| `FrameClass.Sat FrameClass.ZTime` | **no** | `LexIntWitness.lean`'s `sat_ztime_ssubset_mod_axiomSet` |
-| `FrameClass.Sat FrameClass.RTime` | **no** | `RationalWitness.lean`'s `sat_rtime_ssubset_mod_axiomSet` |
+* `FrameClass.Sat FrameClass.Dense` — Closed?: yes; Where: `galoisClosed_sat_dense`, below
+* `{F | F.IsDiscrete}` (the paper's bare clause) — Closed?: yes; Where: `galoisClosed_isDiscrete`,
+  below
+* `FrameClass.Sat FrameClass.ZTime` — Closed?: **no**; Where: `LexIntWitness.lean`'s
+  `sat_ztime_ssubset_mod_axiomSet`
+* `FrameClass.Sat FrameClass.RTime` — Closed?: **no**; Where: `RationalWitness.lean`'s
+  `sat_rtime_ssubset_mod_axiomSet`
 
 ### Why the Discrete row splits
 

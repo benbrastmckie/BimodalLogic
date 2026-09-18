@@ -354,14 +354,14 @@ mirrored closure hypothesis would be an unprovable side condition at every call 
 closure hypothesis there is nothing for a `root` parameter to constrain, so the predicate takes
 none.
 
-*Discharge.* Unlike `BFMCS.LimitFutureWitness` and `BFMCS.LimitGuardBelow`, this predicate is **not**
-discharged from a Dedekind axiom: `Axiom.prior_U_gap`'s antecedent `U(⊤, χ)` *is* the below-gap
-interval it would have to produce, `DerivedAxioms.priorSGap` consumes an above-gap interval and so yields
-only the necessity direction, and `Axiom.sep` lives entirely inside `K⁺`/`K⁻`. Its discharge is
-therefore deferred, and it has no source in the corpus — Reynolds reaches ℝ by the separability
-route instead (printed pp.177-178), and Burgess 1984 runs the completion argument only in the
-`F`/`G` fragment, where the gap witness is placed on the far side with no bound whatever and no
-guard to carry (printed pp.109-110).
+*Discharge.* Unlike `BFMCS.LimitFutureWitness` and `BFMCS.LimitGuardBelow`, this predicate is
+**not** discharged from a Dedekind axiom: `Axiom.prior_U_gap`'s antecedent `U(⊤, χ)` *is* the
+below-gap interval it would have to produce, `DerivedAxioms.priorSGap` consumes an above-gap
+interval and so yields only the necessity direction, and `Axiom.sep` lives entirely inside
+`K⁺`/`K⁻`. Its discharge is therefore deferred, and it has no source in the corpus — Reynolds
+reaches ℝ by the separability route instead (printed pp.177-178), and Burgess 1984 runs the
+completion argument only in the `F`/`G` fragment, where the gap witness is placed on the far side
+with no bound whatever and no guard to carry (printed pp.109-110).
 -/
 def BFMCS.LimitGuardEventual {fc : FrameClass} (B : BFMCS (fc := fc) Rat) : Prop :=
   ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ φ ψ : Formula,

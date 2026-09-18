@@ -91,7 +91,8 @@ theorem forward_plus_rtime (φ : Formula)
 TM⁺ theorem iff it is a TM theorem. Backward by the embedding of derivations, forward by
 soundness plus completeness.
 
-Paper: — (formalization-native; L⁺ is the ⊡-only fragment of the paper's `\BL^\star`, for which the paper supplies no logic)
+Paper: — (formalization-native; L⁺ is the ⊡-only fragment of the paper's `\BL^\star`, for which the
+paper supplies no logic)
 -/
 theorem plusDerivable_ofFormula_iff {fc : FrameClass} (engine : WeakCompleteness fc)
     (φ : Formula) : PlusDerivable fc [] (ofFormula φ) ↔ ProofSystem.Derivable fc [] φ :=
@@ -140,7 +141,8 @@ theorem plus_of_tmMinus_base (φ : MinusFormula) (h : MinusLanguage.Derivable Fr
   plus_of_tmMinus φ h
 
 /-- L⁻ ⊂ L⁺ backward at `.Dense`. -/
-theorem plus_of_tmMinus_dense (φ : MinusFormula) (h : MinusLanguage.Derivable FrameClass.Dense [] φ) :
+theorem plus_of_tmMinus_dense (φ : MinusFormula)
+    (h : MinusLanguage.Derivable FrameClass.Dense [] φ) :
     PlusDerivable FrameClass.Dense [] (ofFormula (tr φ)) :=
   plus_of_tmMinus φ h
 

@@ -102,7 +102,7 @@ Reynolds' §7 has two halves. **Lemma 10** (Sep's validity over real flows, prin
 `ValidRTime`. This module consumes `Axiom.sep`'s *derivability* side — the semantic
 reading of the axiom scheme at a structure — exactly as Phase 16 does for Prior-U and Prior-S.
 
-`Axiom.sep` (`ProofSystem/Axioms.lean:420`) is stated with `Formula.kPlus` / `Formula.kMinus`.
+`Axiom.sep` (`ProofSystem/Axioms.lean:422`) is stated with `Formula.kPlus` / `Formula.kMinus`.
 It is read here through **Phase 10.1's bridge**, cited by name: `Kamp.kPlus_formula_correct` and
 `Kamp.kMinus_formula_correct` (`Kamp/KPlusFaithful.lean:152`, `:170`), which identify
 `Formula.kPlus` / `Formula.kMinus` with `Kamp.kplusOpen` / `Kamp.kminusOpen` — the faithful

@@ -30,10 +30,10 @@ already not substitution-closed via `PlusAxiom.atom_stab`, and nothing here need
 - **The 53 TM⁺ mirror arms** are named `starValid_*` lemmas, proved **directly against
   `StarTruthAt` at arbitrary `StarFormula` metavariables**. The five closed uniformity schemata
   and the two seriality schemata are parameterless formulas, hence literally `ofPlus` images, and
-  transport along `starValidOnFrames_ofPlus` (`Semantics/StarLanguage/StarValidity.lean`); everything else is
-  a fresh proof. The order-theoretic content is never inlined: `prior_UZ`/`prior_SZ`/`z1` consume
-  `SoundnessLemmas/DiscreteOrder.lean` and `sep` consumes `SoundnessLemmas/Separability.lean`,
-  each at a `StarTruthAt` predicate.
+  transport along `starValidOnFrames_ofPlus` (`Semantics/StarLanguage/StarValidity.lean`);
+  everything else is a fresh proof. The order-theoretic content is never inlined:
+  `prior_UZ`/`prior_SZ`/`z1` consume `SoundnessLemmas/DiscreteOrder.lean` and `sep` consumes
+  `SoundnessLemmas/Separability.lean`, each at a `StarTruthAt` predicate.
 
   **No L⋆ atomization is used, and none can exist.** The TM⁺ arms of `plusAxiom_validIn_min` go
   through `Conservativity/Plus/Atomization.lean`, which rests on `stab_state_only` — the
@@ -46,15 +46,15 @@ already not substitution-closed via `PlusAxiom.atom_stab`, and nothing here need
   (`Iff.rfl`, or one `Function.update` identity); the four rigidity arms use forward and backward
   seriality; the two export arms are a six-line `constructor`.
 
-- **Most reflection arms reuse a validity arm; the rest have named duals.** Where a schema's temporal
-  dual *is* an instance of a constructor of this inductive — the ten `.iff` register schemata are
-  self-dual, the rigidity arms pair G↔H, the export arms pair U↔S, and the mirror block supplies
-  fifteen dual pairs — the reflection arm normalises `reflectTime` through the
+- **Most reflection arms reuse a validity arm; the rest have named duals.** Where a schema's
+  temporal dual *is* an instance of a constructor of this inductive — the ten `.iff` register
+  schemata are self-dual, the rigidity arms pair G↔H, the export arms pair U↔S, and the mirror block
+  supplies fifteen dual pairs — the reflection arm normalises `reflectTime` through the
   `StarFormula.reflect_time_*` family and applies the matching validity lemma at reflected
   arguments. Eleven schemata have **no** dual constructor (`discrete_propagate_fwd`/`_bwd`,
   `discrete_box_necessity`, `dense_indicator`, `density`, `z1`, `sep`, `modal_future`, `paste`,
-  `untl_paste`), exactly as at the L level, where `SoundnessLemmas/FrameClassVariants.lean`
-  carries a `*_reflect_time_valid` lemma for each; the corresponding `starValid_*_reflect_time` lemmas below
+  `untl_paste`), exactly as at the L level, where `SoundnessLemmas/FrameClassVariants.lean` carries
+  a `*_reflect_time_valid` lemma for each; the corresponding `starValid_*_reflect_time` lemmas below
   supply those duals. That is the reflection-closure invariant of `StarLanguage/Axioms.lean`,
   discharged.
 
@@ -668,56 +668,70 @@ order-theoretic content is **not** inlined: `prior_UZ`/`prior_SZ` consume
 `forall_gt_of_succ_step`/`forall_lt_of_pred_step`, each at
 `P := fun x => StarTruthAt M τ x v φ`.
 
-**Measured correction to this group's reflection-closure.** Three of the five uniformity schemata are
-*not* closed under `reflectTime` within the group — `reflectTime` exchanges `untl` and `snce`,
-so the dual of `U(⊤,⊥) → G(U(⊤,⊥))` is `S(⊤,⊥) → H(S(⊤,⊥))`, which is no member's statement —
-and neither `density`, `dense_indicator` nor `z1` has a past twin among the schemata. This
-mirrors the L level exactly, where `SoundnessLemmas.FrameClassVariants` carries a dedicated
-`*_reflect_time_valid` lemma for each. The named `*_reflect_time` lemmas below are those duals; the closed
-ones transport, `density` and `z1` are direct. -/
+**Measured correction to this group's reflection-closure.** Three of the five uniformity schemata
+are *not* closed under `reflectTime` within the group — `reflectTime` exchanges `untl` and `snce`,
+so the dual of `U(⊤,⊥) → G(U(⊤,⊥))` is `S(⊤,⊥) → H(S(⊤,⊥))`, which is no member's statement — and
+neither `density`, `dense_indicator` nor `z1` has a past twin among the schemata. This mirrors the L
+level exactly, where `SoundnessLemmas.FrameClassVariants` carries a dedicated `*_reflect_time_valid`
+lemma for each. The named `*_reflect_time` lemmas below are those duals; the closed ones transport,
+`density` and `z1` are direct. -/
 
 /-- `discrete_symm_fwd` over L⋆, by transport: the formula is closed. -/
 theorem starValid_discrete_symm_fwd :
-    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot))) :=
+    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot))) :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_symm_fwd)
 
 /-- `discrete_symm_bwd` over L⋆, by transport. -/
 theorem starValid_discrete_symm_bwd :
-    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))) :=
+    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))) :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_symm_bwd)
 
 /-- `discrete_propagate_fwd` over L⋆, by transport. -/
 theorem starValid_discrete_propagate_fwd :
-    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allFuture (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
+    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.allFuture
+        (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_propagate_fwd)
 
 /-- The temporal dual of `discrete_propagate_fwd`: `S(⊤,⊥) → H(S(⊤,⊥))`. Not an instance of any
 schema, so it is named here, mirroring
 `SoundnessLemmas.discrete_propagate_fwd_reflect_time_valid`. -/
 theorem starValid_discrete_propagate_fwd_reflect_time :
-    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allPast (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
+    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.allPast
+        (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
     (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_propagate_fwd)
 
 /-- `discrete_propagate_bwd` over L⋆, by transport. -/
 theorem starValid_discrete_propagate_bwd :
-    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allPast (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
+    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.allPast
+        (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_propagate_bwd)
 
 /-- The temporal dual of `discrete_propagate_bwd`: `S(⊤,⊥) → G(S(⊤,⊥))`. -/
 theorem starValid_discrete_propagate_bwd_reflect_time :
-    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allFuture (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
+    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.allFuture
+        (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
     (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_propagate_bwd)
 
 /-- `discrete_box_necessity` over L⋆, by transport. -/
 theorem starValid_discrete_box_necessity :
-    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.box (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
+    StarValid ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.box
+        (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_box_necessity)
 
 /-- The temporal dual of `discrete_box_necessity`: `S(⊤,⊥) → □(S(⊤,⊥))`. -/
 theorem starValid_discrete_box_necessity_reflect_time :
-    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.box (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
+    StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+        (StarFormula.box
+        (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
     (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_box_necessity)
 
@@ -743,12 +757,14 @@ theorem starValid_density_reflect_time (φ : StarFormula) :
 
 /-- The dense indicator over L⋆ at `.Dense`, by transport. -/
 theorem starValid_dense_indicator :
-    StarValidIn FrameClass.Dense (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).neg :=
+    StarValidIn FrameClass.Dense
+        (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).neg :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.dense_indicator)
 
 /-- The temporal dual of the dense indicator: `¬S(⊤,⊥)`, by transport. -/
 theorem starValid_dense_indicator_reflect_time :
-    StarValidIn FrameClass.Dense (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).neg :=
+    StarValidIn FrameClass.Dense
+        (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).neg :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_reflect_time_validIn_min PlusAxiom.dense_indicator)
 
 /-- Prior-UZ over L⋆ at `.ZTime`: the nearest `φ`-point above `t` witnesses `U(φ, ¬φ)`. -/
@@ -799,9 +815,9 @@ theorem starValid_z1_reflect_time (φ : StarFormula) :
 /-! ## Two `K±` clause lemmas, and the register-inertness of the `↓ⁱ`-free fragment
 
 `starKPlus_iff` and `starKMinus_iff` unfold the two Reynolds gap operators into the shape the
-Dedekind arms consume. They are declared here rather than in `Semantics/StarLanguage/StarTruth.lean` for the
-same reason `starTruth_iff_iff` above is: every consumer is in this directory. Relocating the
-whole `StarTruth.*_iff` family, together with a `star_truth_norm` simp set, is recorded as
+Dedekind arms consume. They are declared here rather than in `Semantics/StarLanguage/StarTruth.lean`
+for the same reason `starTruth_iff_iff` above is: every consumer is in this directory. Relocating
+the whole `StarTruth.*_iff` family, together with a `star_truth_norm` simp set, is recorded as
 deferred follow-up work, not done here.
 
 `recallFree_vector_irrelevant` is the semantic content of `RecallFree`
@@ -1108,8 +1124,8 @@ lemmas are the `StarValid` packagings the dispatch consumes.
 **Measured correction to this group's reflection-closure.** PS and US are not each other's duals.
 `reflectTime` fixes `⟐` and exchanges `untl`/`snce`, so the dual of PS is PS with the conjuncts
 exchanged (PS'), and the dual of US is SS — exactly as at the L⁺ level, where
-`Semantics/PlusLanguage/PlusPasting.lean` carries `paste_valid'` and `snce_dstab_valid` for precisely this
-reason. The two `*_reflect_time` lemmas below are those duals. -/
+`Semantics/PlusLanguage/PlusPasting.lean` carries `paste_valid'` and `snce_dstab_valid` for
+precisely this reason. The two `*_reflect_time` lemmas below are those duals. -/
 
 /-- PS as a `StarValid`. -/
 theorem starValid_paste {φ ψ : StarFormula} (hφ : StarIsPureFuture φ) (hψ : StarIsPurePast ψ) :

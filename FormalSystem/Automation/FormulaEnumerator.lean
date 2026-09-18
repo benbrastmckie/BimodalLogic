@@ -2030,6 +2030,7 @@ def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
 -- #eval (generateBimodalSlice defaultAtoms 2 2 [1, 2, 3, 4, 5]).1.length
 
 /-! Formula counts at complexity 4 and 5, and the presence of each derived operator in the
-enumeration, are pinned by `#guard` rows in `Tests/BimodalTest/Automation/NormalizationTest.lean`. -/
+enumeration, are pinned by `#guard` rows in `Tests/BimodalTest/Automation/NormalizationTest.lean`.
+-/
 
 end FormalSystem.Automation

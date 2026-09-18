@@ -275,8 +275,8 @@ theorem not_validOn_bot (F : TaskFrame) : ¬ F.ValidOn Formula.bot := by
 
 /--
 `cor:occurrence`'s closing clause restated in the shape this section consumes it: `H_F` has an
-inhabitant, so the `∀ τ : WorldHistory F` in `ValidOn` is a non-vacuous quantifier. Everything it rests
-on — the four axioms and the carrier's nonemptiness — is a field of the frame.
+inhabitant, so the `∀ τ : WorldHistory F` in `ValidOn` is a non-vacuous quantifier. Everything it
+rests on — the four axioms and the carrier's nonemptiness — is a field of the frame.
 
 This is a thin restatement of `PartialHistory.hF_nonempty`, kept here so the reason
 `not_validOn_bot` holds is legible next to the statement itself.
@@ -483,8 +483,8 @@ capturing the frame condition for the discreteness axioms DF/DP.
 is `TaskFrame.IsZTime` — `def:BX-z`'s narrowing to ℤ-time (`prop:archimedean`), *not*
 `def:frame-properties`' bare Discrete clause. Recording the narrowing in the tag's interpretation
 rather than in a binder list here is what keeps `soundness_ztime` from silently widening its
-frame class. The binder shape this definition used to have is recovered by `intro` followed by `sat_intro`,
-which destructures the `IsZTime` existential into the four instances.
+frame class. The binder shape this definition used to have is recovered by `intro` followed by
+`sat_intro`, which destructures the `IsZTime` existential into the four instances.
 
 **Notation**: `⊨_discrete φ`
 
@@ -597,7 +597,9 @@ does not carry; the composition path and the reason it is out of scope are recor
 `DurationClassification` module docstring.)
 
 **This is the target of `soundness_rtime`**, not `ValidComplete`, and retargeting it at the
-weaker predicate yields a refutable theorem. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
+weaker predicate yields a refutable theorem. See the `ValidComplete` caveat in
+`Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued
+in full.
 
 The placement of `RTime` above `Dense` is itself primary-source: Reynolds 1992 (printed
 p.168) includes in US/R "axioms for density and no end points: `K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`", and
@@ -613,9 +615,10 @@ pairwise commensurable (`TaskFrame.IsQTime`), which up to order-and-group isomor
 **`ValidOnFrames`, not `ValidIn`.** Like `ValidComplete`, this is validity at a frame predicate
 that no `FrameClass` tag denotes. There is no ℚ-time proof system to be sound for, because the
 class adds no new logic: `Metalogic/QTime.lean`'s `validQTime_iff_validDense` proves this predicate
-*equal* to `ValidDense`. The inclusion `ValidDense → ValidQTime` is `Validity.validQTime_of_validDense`
-below. The converse holds because the dense completeness engine already builds its countermodels
-over `ℚ` (`derivable_of_validQTime`, `Metalogic/BXCanonical/Completeness.lean`).
+*equal* to `ValidDense`. The inclusion `ValidDense → ValidQTime` is
+`Validity.validQTime_of_validDense` below. The converse holds because the dense completeness engine
+already builds its countermodels over `ℚ` (`derivable_of_validQTime`,
+`Metalogic/BXCanonical/Completeness.lean`).
 
 **Only weak completeness transfers.** Finite-context consequence completeness over ℚ-time follows
 the same way, but needs a consequence layer indexed by frame predicates rather than tags, and is not
@@ -654,7 +657,8 @@ existential `TaskFrame.IsZTime` that `Sat .ZTime` returns.
 
 The forward direction destructures that existential and passes the witnesses **positionally with
 `@`**, never with `haveI`: `F`'s and `M`'s types already carry instances, and re-introducing
-`SuccOrder`/`PredOrder` through the instance cache would break definitional equality against them. -/
+`SuccOrder`/`PredOrder` through the instance cache would break definitional equality against them.
+-/
 theorem validZTime_iff_validIn_ztime (φ : Formula) :
     ValidZTime φ ↔ ValidIn ProofSystem.FrameClass.ZTime φ := Iff.rfl
 

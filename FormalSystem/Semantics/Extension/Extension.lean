@@ -23,8 +23,8 @@ The chain, in order, is
 
 ## Paper Specification Reference
 
-Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the paper
-source — is the citation source of record.
+Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
+paper source — is the citation source of record.
 
 - `thm:extension` (verbatim): "Every partial history $\tau : X \to W$ over a task frame
   $\F = \tuple{W, \D, \Rightarrow}$ is extended by some possible world $\sigma \in H_{\F}$."
@@ -56,9 +56,9 @@ passes along is the frame `F`, never the axioms.
 The maximal-to-total direction is isolated as `isTotal_of_isMax`, the converse companion to
 `PartialHistoryOrder`'s `isMax_of_total`. That companion is exactly where `lem:step` is spent:
 maximality plus the ability to extend by one arbitrary duration forces the domain to be all of
-`D`. A total partial history *is* a world history, so the maximal partial history is a `WorldHistory F`
-element as it stands: the subtype pair `⟨μ, htot⟩`, with no promotion step and no convexity
-argument.
+`D`. A total partial history *is* a world history, so the maximal partial history is a
+`WorldHistory F` element as it stands: the subtype pair `⟨μ, htot⟩`, with no promotion step and no
+convexity argument.
 
 ## What the finite-carrier *Saturation* discharge costs, by contrast
 
@@ -86,10 +86,10 @@ threading them through this chain is now a projection rather than a hypothesis �
 restatement, exactly as the hypothesis-form discipline was designed to guarantee.
 
 The one argument the paper's ambient convention supplies silently is the world state, and the
-structure now carries it too: `FrameOver.worldNonempty` is a `Nonempty WorldState` field. `hF_nonempty`
-nonetheless continues to take `w` explicitly — **by choice, not by necessity** — so that a caller
-already holding a state passes it rather than discarding it, while a caller holding none passes
-`F.worldNonempty.some`.
+structure now carries it too: `FrameOver.worldNonempty` is a `Nonempty WorldState` field.
+`hF_nonempty` nonetheless continues to take `w` explicitly — **by choice, not by necessity** — so
+that a caller already holding a state passes it rather than discarding it, while a caller holding
+none passes `F.worldNonempty.some`.
 
 ## The one-point partial history, and what is *not* in this chain
 
@@ -201,8 +201,8 @@ theorem point_states (F : TaskFrame) (w : F.WorldState) (x : F.Duration) (t : F.
     (ht : (point F w x).domain t) : (point F w x).states t ht = w := rfl
 
 /--
-`cor:occurrence`, in **frame-intrinsic form**: every world state occurs at any prescribed time in some
-possible world.
+`cor:occurrence`, in **frame-intrinsic form**: every world state occurs at any prescribed time in
+some possible world.
 
 Recorded source (`cor:occurrence`, verbatim): "For any task frame
 $\F = \tuple{W, \D, \Rightarrow}$, world state $w \in W$, and time $x \in D$, there is a possible
@@ -225,8 +225,8 @@ theorem occurrence (F : TaskFrame) (w : F.WorldState) (x : F.Duration) :
 
 Recorded source (`cor:occurrence`, verbatim, closing clause): "…and so
 $H_{\F} \neq \emptyset$." This needs a world state to start from. The paper's ambient convention
-supplies one silently, and the frame now supplies one too — `FrameOver.worldNonempty` is a field — so
-the explicit argument `w` is retained here **by choice, not by necessity**: a caller already
+supplies one silently, and the frame now supplies one too — `FrameOver.worldNonempty` is a field —
+so the explicit argument `w` is retained here **by choice, not by necessity**: a caller already
 holding a state passes it, and a caller holding none passes `F.worldNonempty.some`.
 `Semantics/Validity.lean`'s `hF_nonempty_of_frameAxioms` is the second case, and reads literally
 `PartialHistory.hF_nonempty F F.worldNonempty.some`.

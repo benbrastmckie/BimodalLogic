@@ -242,8 +242,9 @@ built at the wrong MCS and still typecheck. -/
 /--
 **Root placement.** The chronicle bundle's evaluation family takes the value `A` at time `0`.
 
-`Chronicle.rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:513`) at `s = 0`,
-composed with `cantorBfmcsDense`'s `evalFamily := rootedCantorFmcsDense fc A h_mcs h_box 0`. Reynolds 1992, §9, printed p.189, *"`M₀ ⊨ A₀(0)`"*.
+`Chronicle.rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:514`) at `s = 0`,
+composed with `cantorBfmcsDense`'s `evalFamily := rootedCantorFmcsDense fc A h_mcs h_box 0`.
+Reynolds 1992, §9, printed p.189, *"`M₀ ⊨ A₀(0)`"*.
 -/
 theorem chronicle_eval_family_zero_eq_root {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -259,7 +260,7 @@ point of the rational flow.
 
 `chronicleMonadicStructureOf`'s `interp p q` is `p.val ∈ fam.mcs q`, `mkAtomMapFwd` is the
 identity on `predFormulas`, and `box_stable_in_rooted_cantor_fmcs_dense`
-(`ChronicleToCountermodelBasic.lean:531`) makes the box content constant along the flow. This
+(`ChronicleToCountermodelBasic.lean:532`) makes the box content constant along the flow. This
 is the dense counterpart of `box_stable_in_limit_f`'s role in
 `countermodel_discrete_reynolds_v2`.
 
@@ -307,12 +308,11 @@ the box-dense indicator `□(¬U(⊤,⊥))`, there is a task model **over the re
 
 The construction is the dense mirror of `countermodel_discrete_reynolds_v2`: one `ℝ`-flowed
 monadic structure per box-equivalence class of MCSs, assembled into the single task frame
-`multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx` whose world states are `FamIdx × ℝ`. Box quantification over
-the frame's world histories `H_F` — which comprises every family at every offset
-(`multiFamGen_total_eq_range`) — is what makes the modal dimension come
-out right, exactly as in the `ℤ` original: the monadic language never unfolds `□`, it reads it
-as an opaque unary predicate, and the S5 content is carried by the chronicle's box-equivalence
-instead.
+`multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx` whose world states are `FamIdx × ℝ`. Box
+quantification over the frame's world histories `H_F` — which comprises every family at every offset
+(`multiFamGen_total_eq_range`) — is what makes the modal dimension come out right, exactly as in the
+`ℤ` original: the monadic language never unfolds `□`, it reads it as an opaque unary predicate, and
+the S5 content is carried by the chronicle's box-equivalence instead.
 
 Note the hypothesis list: `hfc` and the chronicle's own three. No Dedekind-completeness side
 condition appears, because none is needed — the carrier is `ℝ`, and the lub property that

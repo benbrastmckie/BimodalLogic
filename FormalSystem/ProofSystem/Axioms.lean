@@ -16,11 +16,13 @@ under the Burgess-Xu (BX) axiom system with irreflexive temporal semantics (A2 g
 
 Three renderings appear in this file and they do **not** all order the arguments the same way.
 
-| Rendering | Order | Where it comes from |
-|---|---|---|
-| `untl(g, e)`, `snce(g, e)` | **guard** first, event second | the constructor's own argument order (`Syntax/Formula.lean`), matching `def:BL-semantics` |
-| `φ U ψ`, `φ S ψ` (infix) | **guard** first, event second | the paper's and the Typst manual's infix notation |
-| `U(e, g)`, `S(e, g)` (prefix) | **event** first, guard second | `Formula.prettyPrint`'s output and the `schema_string` field of `typst/generated/machine-appendix.jsonl` |
+* `untl(g, e)`, `snce(g, e)` — Order: **guard** first, event second; Where it comes from: the
+  constructor's own argument order (`Syntax/Formula.lean`), matching `def:BL-semantics`
+* `φ U ψ`, `φ S ψ` (infix) — Order: **guard** first, event second; Where it comes from: the paper's
+  and the Typst manual's infix notation
+* `U(e, g)`, `S(e, g)` (prefix) — Order: **event** first, guard second; Where it comes from:
+  `Formula.prettyPrint`'s output and the `schema_string` field of
+  `typst/generated/machine-appendix.jsonl`
 
 The prefix `U(·,·)` form is deliberately *not* the constructor order: it is keyed to what the
 printer emits, so quoting it keeps these docstrings comparable line-for-line with the machine
@@ -512,7 +514,8 @@ itself says "ℚ-time" only where `ℚ` and the dense class come apart, as in it
 expressive-completeness theorem does not extend to ℚ-time, although it holds over `ℝ`.
 
 **Soundness caveat.** The soundness theorem for this class must target `ValidRTime`, not the
-density-free `ValidComplete`. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
+density-free `ValidComplete`. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one
+place the `ValidComplete` / `ValidRTime` distinction is argued in full.
 
 **`ValidComplete` is a repository-only predicate, and answers to no paper system.** It is the
 density-free completeness binder: by `Semantics.complete_duration_discrete_or_dense` its models

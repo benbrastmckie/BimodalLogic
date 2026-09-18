@@ -75,7 +75,8 @@ through the non-dependent accessor `WorldHistory.state`. No clause carries a dom
 - Truth evaluation examples
 - The A-17 corollaries: history-independence of atom-free formulas, and the gap formula
 
-Truth *transport* between models — `TruthCorr`, the `TimeShift` family, `TruthIso`, `TruthAntiIso`, and `Truth.box_const` — is not here: it lives in `TruthTransport.lean`, which imports this module.
+Truth *transport* between models — `TruthCorr`, the `TimeShift` family, `TruthIso`, `TruthAntiIso`,
+and `Truth.box_const` — is not here: it lives in `TruthTransport.lean`, which imports this module.
 
 ## Simp-normal form
 
@@ -217,9 +218,9 @@ open-interval condition is the **first**. `def:BLplus-language` corroborates ind
 **Anchor provenance.** These clauses used to live under `def:BLplus-semantics`, a separate
 definition for the separate language `BL^+`. The paper's 2026-09 wave collapsed `BL^+` into `BL`
 and made the since/until clauses clauses of `def:BL-semantics` itself, deleting the old label —
-which `docs/reference/paper-definitions-of-record.md` now records `DANGLING`. The clause bodies quoted
-above are word-for-word what the live `def:BL-semantics` carries; only their home moved. The same
-wave moved the defined operators into `def:BLplus-language`'s own block (that anchor id is
+which `docs/reference/paper-definitions-of-record.md` now records `DANGLING`. The clause bodies
+quoted above are word-for-word what the live `def:BL-semantics` carries; only their home moved. The
+same wave moved the defined operators into `def:BLplus-language`'s own block (that anchor id is
 unchanged), retiring `def:BLplus-defined` likewise.
 
 Earlier revisions of this docstring quoted an argument-order **footnote** of the then-`BL^+`
@@ -467,8 +468,8 @@ equivalent but syntactically distinct normal forms, so tagging both makes `simp`
 was declared first and silently strand every proof written against the other — a failure that was
 reproduced, not hypothesised. The **collected `∀ s` form, `always_iff`, is the normal form** and
 is the one that carries the attribute. `always_iff_tri` is the three-conjunct introduction form
-that mirrors `MinusTruth.always_iff` and is the proof route to the collected form; it is deliberately
-plain, and must stay untagged by both `@[simp]` and `@[truth_norm]`. -/
+that mirrors `MinusTruth.always_iff` and is the proof route to the collected form; it is
+deliberately plain, and must stay untagged by both `@[simp]` and `@[truth_norm]`. -/
 
 /-- Truth of `△φ` (`Hφ ∧ (φ ∧ Gφ)`) in three-conjunct form: past, present, future.
 

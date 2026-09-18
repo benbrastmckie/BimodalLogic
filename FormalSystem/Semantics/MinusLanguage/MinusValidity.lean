@@ -17,8 +17,8 @@ native `MinusTruthAt` of `Semantics/MinusLanguage/MinusTruth.lean`.
 Each predicate here is a **binder-for-binder mirror** of its counterpart in
 `Semantics/Validity.lean`: `MinusValid` of `Valid`, `MinusValidDense` of `ValidDense`,
 `MinusValidZTime` of `ValidZTime`, `MinusValidRTime` of `ValidRTime`, and
-`MinusSemanticConsequence` of `SemanticConsequence`. Nothing changes but `Formula ↦ MinusFormula` and
-`TruthAt ↦ MinusTruthAt`; in particular the histories quantified over are the world histories
+`MinusSemanticConsequence` of `SemanticConsequence`. Nothing changes but `Formula ↦ MinusFormula`
+and `TruthAt ↦ MinusTruthAt`; in particular the histories quantified over are the world histories
 (`τ : WorldHistory F`, the paper's `H_F`), matching `def:logical-consequence`, and `Type` rather
 than `Type*` is used throughout for the same universe reason recorded on `Valid`.
 
@@ -45,8 +45,8 @@ since L⁻ has no `untl`. Do not "simplify" the target.
 
 ## Main Definitions
 
-- `MinusValid`, `MinusSemanticConsequence` — validity and consequence over the `FrameClass.Base` binder
-  set
+- `MinusValid`, `MinusSemanticConsequence` — validity and consequence over the `FrameClass.Base`
+  binder set
 - `MinusValidDense`, `MinusValidZTime`, `MinusValidRTime` — the three extension binder sets
 
 ## Main Results
@@ -59,7 +59,8 @@ since L⁻ has no `untl`. Do not "simplify" the target.
 
 * JPL paper `\S sub:Logic` — `def:BL-semantics`, `def:logical-consequence`
 * `FormalSystem/Semantics/Validity.lean` — the L predicates these mirror
-* `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` — the soundness theorems targeting these
+* `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` — the soundness theorems
+  targeting these
 
 ## Tags
 
@@ -84,10 +85,10 @@ def MinusSemanticConsequence (Γ : MinusLanguage.Context) (φ : MinusFormula) : 
 /-! ## `FrameClass`-indexed validity for the base language
 
 The same two-layer shape `Semantics/Validity.lean` gives the full language, mirrored here against
-`MinusTruthAt`. L needs its own predicates because it has its own truth recursion — `MinusTruthAt` is
-defined natively on `MinusFormula`'s six constructors per `def:BL-semantics`, not via `untl`/`snce` —
-but it shares one and the same `FrameClass.Sat`, so the frame classes the two languages are
-indexed by are literally the same classes and not two parallel copies. -/
+`MinusTruthAt`. L needs its own predicates because it has its own truth recursion — `MinusTruthAt`
+is defined natively on `MinusFormula`'s six constructors per `def:BL-semantics`, not via
+`untl`/`snce` — but it shares one and the same `FrameClass.Sat`, so the frame classes the two
+languages are indexed by are literally the same classes and not two parallel copies. -/
 
 /-- L⁻'s instance of the abstract point-truth class of `Semantics/ValidityLayer.lean`: truth at
 the point `(M, τ, t)` is `MinusTruthAt`. Every validity-layer theorem below delegates to the
@@ -126,9 +127,10 @@ worlds tau in H_F" are the world histories `τ : WorldHistory F`.
 
 Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `Valid` does.
 
-**`MinusValid` is `MinusValidIn` at the unconstrained class**, exactly as `Valid` is `ValidIn .Base`:
-`Sat FrameClass.Base` is `True`, so the tag attaches no frame condition. The pre-abbreviation
-binder shape is reachable through `MinusValid.of_forall` / `MinusValid.apply` below.
+**`MinusValid` is `MinusValidIn` at the unconstrained class**, exactly as `Valid` is
+`ValidIn .Base`: `Sat FrameClass.Base` is `True`, so the tag attaches no frame condition. The
+pre-abbreviation binder shape is reachable through `MinusValid.of_forall` / `MinusValid.apply`
+below.
 -/
 def MinusValid (φ : MinusFormula) : Prop :=
   MinusValidIn ProofSystem.FrameClass.Base φ
@@ -141,7 +143,8 @@ theorem MinusValid.of_forall {φ : MinusFormula}
     MinusValid φ :=
   GenericValid.of_forall (L := MinusFormula) (φ := φ) h
 
-/-- Eliminate `MinusValid` into its pre-abbreviation binder shape. The L⁻ mirror of `Valid.apply`. -/
+/-- Eliminate `MinusValid` into its pre-abbreviation binder shape. The L⁻ mirror of `Valid.apply`.
+-/
 theorem MinusValid.apply {φ : MinusFormula} (h : MinusValid φ) (F : TaskFrame) (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration) : MinusTruthAt M τ t φ :=
   GenericValid.apply (L := MinusFormula) (φ := φ) h F M τ t
@@ -175,8 +178,9 @@ added to the binder list, capturing the frame condition for L⁻'s discreteness 
 
 Binder-for-binder mirror of `Semantics.ValidZTime`, and like it now an abbreviation: the frame
 constraint is `FrameClass.Sat .ZTime`, i.e. `TaskFrame.IsZTime` — `def:BX-z`'s
-narrowing to ℤ-time (`prop:archimedean`). The binder shape this definition used to have is recovered by `intro` followed by `sat_intro`,
-which destructures the `IsZTime` existential into the four instances.
+narrowing to ℤ-time (`prop:archimedean`). The binder shape this definition used to have is recovered
+by `intro` followed by `sat_intro`, which destructures the `IsZTime` existential into the four
+instances.
 -/
 def MinusValidZTime (φ : MinusFormula) : Prop := MinusValidIn ProofSystem.FrameClass.ZTime φ
 
@@ -190,26 +194,28 @@ this is stated directly in the pre-abbreviation shape rather than as an abbrevia
 (`TaskFrame.IsZTime` bundles all four), so no `.of_forall`/`.apply` pair is needed —
 a value of this type already **is** the binder-shape statement.
 
-**Why this exists.** `Metalogic/Conservativity/MinusLanguageSoundness.lean`'s `minus_soundness_ztime_succ` is the
-single prerequisite CEF was missing (report §6.1): a discrete L⁻ soundness theorem that does not
-assume Archimedean structure, so it applies to the non-Archimedean carrier `ℚ ×ₗ ℤ`
-(`Semantics/LexCarrier.lean`) that `Metalogic/Conservativity/Z1Countermodel.lean`'s countermodel is built over.
+**Why this exists.** `Metalogic/Conservativity/MinusLanguageSoundness.lean`'s
+`minus_soundness_ztime_succ` is the single prerequisite CEF was missing (report §6.1): a discrete L⁻
+soundness theorem that does not assume Archimedean structure, so it applies to the non-Archimedean
+carrier `ℚ ×ₗ ℤ` (`Semantics/LexCarrier.lean`) that `Metalogic/Conservativity/Z1Countermodel.lean`'s
+countermodel is built over.
 -/
 def MinusValidZTimeSucc (φ : MinusFormula) : Prop :=
   ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration), MinusTruthAt M τ t φ
 
-/-- `MinusValid` weakens to `MinusValidZTimeSucc`, mirroring `MinusValidity.minusValid_implies_minusValidZTime`
-and its dense/RTime siblings.
+/-- `MinusValid` weakens to `MinusValidZTimeSucc`, mirroring
+`MinusValidity.minusValid_implies_minusValidZTime` and its dense/RTime siblings.
 
 **Documented exception to the transfer-theorem collapse.** Its three siblings are corollaries of
-`MinusValidIn.mono`, and every L⁻/L equivalence in `Metalogic/Conservativity/MinusLanguageSoundness.lean` is a
-corollary of `minusValidIn_iff_validIn_tr`. This one is neither, and cannot be made either:
-`MinusValidZTimeSucc` is **not** any `MinusValidIn fc` — no `FrameClass.Sat` variant bundles just
-`SuccOrder` + `PredOrder` without the two Archimedean conditions, which is exactly the weakening
+`MinusValidIn.mono`, and every L⁻/L equivalence in
+`Metalogic/Conservativity/MinusLanguageSoundness.lean` is a corollary of
+`minusValidIn_iff_validIn_tr`. This one is neither, and cannot be made either: `MinusValidZTimeSucc`
+is **not** any `MinusValidIn fc` — no `FrameClass.Sat` variant bundles just `SuccOrder` +
+`PredOrder` without the two Archimedean conditions, which is exactly the weakening
 `minus_soundness_ztime_succ` needs for the non-Archimedean carrier `ℚ ×ₗ ℤ`. Adding such a tag to
-`FrameClass` to make this a corollary would widen the proof side's class lattice to serve a
-semantic convenience. Leave it as a direct lambda. -/
+`FrameClass` to make this a corollary would widen the proof side's class lattice to serve a semantic
+convenience. Leave it as a direct lambda. -/
 theorem MinusValidity.minusValid_implies_minusValidZTimeSucc {φ : MinusFormula} (h : MinusValid φ) :
     MinusValidZTimeSucc φ :=
   fun F _ _ M τ t => h.apply F M τ t
@@ -244,17 +250,19 @@ Two members of the L family have no mirror here, both for the same reason: they 
 Those are `Validity.valid_implies_validComplete` and
 `Validity.validRTime_of_validComplete`. -/
 
-/-- `MinusValid` is `MinusValidIn` at the unconstrained class: `Sat .Base` is `True`. The L⁻ mirror of
-`Validity.valid_iff_validIn_base`. -/
+/-- `MinusValid` is `MinusValidIn` at the unconstrained class: `Sat .Base` is `True`. The L⁻ mirror
+of `Validity.valid_iff_validIn_base`. -/
 theorem minusValid_iff_minusValidIn_base (φ : MinusFormula) :
     MinusValid φ ↔ MinusValidIn ProofSystem.FrameClass.Base φ := Iff.rfl
 
 /-- Validity implies validity over dense orders. -/
-theorem minusValid_implies_minusValidDense {φ : MinusFormula} (h : MinusValid φ) : MinusValidDense φ :=
+theorem minusValid_implies_minusValidDense {φ : MinusFormula}
+    (h : MinusValid φ) : MinusValidDense φ :=
   MinusValidIn.mono (ProofSystem.FrameClass.base_le _) ((minusValid_iff_minusValidIn_base φ).mp h)
 
 /-- Validity implies validity over discrete orders. -/
-theorem minusValid_implies_minusValidZTime {φ : MinusFormula} (h : MinusValid φ) : MinusValidZTime φ :=
+theorem minusValid_implies_minusValidZTime {φ : MinusFormula}
+    (h : MinusValid φ) : MinusValidZTime φ :=
   MinusValidIn.mono (ProofSystem.FrameClass.base_le _) ((minusValid_iff_minusValidIn_base φ).mp h)
 
 /-- Validity implies validity over dense Dedekind-complete orders. -/
@@ -266,9 +274,10 @@ theorem minusValid_implies_minusValidRTime {φ : MinusFormula} (h : MinusValid �
 `Validity.valid_iff_empty_consequence`.
 
 **Documented exception to the transfer-theorem collapse.** `MinusSemanticConsequence` is an
-orthogonal `Prop` shape, not a `MinusValidIn` at any tag: it carries no `FrameClass` index, and mentions no `tr`. So neither
-`minusValidOnFrames_iff_validOnFrames_tr` nor `minusValidIn_iff_validIn_tr`
-(`Metalogic/Conservativity/MinusLanguageSoundness.lean`) can prove it, and this two-branch script stays. -/
+orthogonal `Prop` shape, not a `MinusValidIn` at any tag: it carries no `FrameClass` index, and
+mentions no `tr`. So neither `minusValidOnFrames_iff_validOnFrames_tr` nor
+`minusValidIn_iff_validIn_tr` (`Metalogic/Conservativity/MinusLanguageSoundness.lean`) can prove it,
+and this two-branch script stays. -/
 theorem minusValid_iff_empty_consequence (φ : MinusFormula) :
     MinusValid φ ↔ MinusSemanticConsequence [] φ := by
   constructor

@@ -86,7 +86,8 @@ theorem co_valid (φ : Formula) : ValidRTime (Formula.co φ) := by
   intro v htv
   by_contra hnv
   -- `A` collects the points at or after `t` at which `Hφ` still holds.
-  set A : Set F.Duration := {u : F.Duration | t ≤ u ∧ ∀ r : F.Duration, r < u → TruthAt M τ r φ} with hA
+  set A : Set F.Duration := {u : F.Duration | t ≤ u ∧ ∀ r : F.Duration,
+      r < u → TruthAt M τ r φ} with hA
   have htA : t ∈ A := ⟨le_refl t, hH⟩
   have hAbdd : BddAbove A := by
     refine ⟨v, ?_⟩

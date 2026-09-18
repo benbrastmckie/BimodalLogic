@@ -22,12 +22,11 @@ history agrees with it pointwise.
 
 `chainSat`'s `box` clause is `∀ q', chainSat v q' φ`, quantifying **both** coordinates and taking
 no time argument at all. That is not a simplification: it is what
-`Conservativity/MinusLanguageSoundness.lean`'s `minus_box_universal` establishes. `MinusTruthAt`'s box
-clause is history-blind by definition (it does not mention `τ`) and time-blind by
-`Semantics.Truth.box_const`, so `□φ` holds at one history-and-time exactly when `φ` holds at
-every history and every time. On a flow frame the world histories are *exactly* the
-translates (`multiFamGen_total_eq_range`), so "every history, every time" is "every point of
-`FamIdx × ↑D`".
+`Conservativity/MinusLanguageSoundness.lean`'s `minus_box_universal` establishes. `MinusTruthAt`'s
+box clause is history-blind by definition (it does not mention `τ`) and time-blind by
+`Semantics.Truth.box_const`, so `□φ` holds at one history-and-time exactly when `φ` holds at every
+history and every time. On a flow frame the world histories are *exactly* the translates
+(`multiFamGen_total_eq_range`), so "every history, every time" is "every point of `FamIdx × ↑D`".
 
 A `box` clause carrying a time argument would therefore be a mis-transcription, and would make L⁻
 over task frames look like a product logic with same-time alignment validities, which it is not.
@@ -44,10 +43,10 @@ an arbitrary temporal order), so no frame-building appears here either.
 It is **not** a completeness proof and does not approach one. The missing content is entirely on
 the other side: a canonical model built from base-language maximal-consistent sets, canonicity for
 the eleven Base axioms plus `DN`, bulldozing, and a countable-ℚ realization. None of that is here,
-no theorem in this module concludes in `TMMinusComplete _` or `Forward _`, and the standing prohibition
-in `Metalogic/Conservativity.lean` — never state a completeness or forward-conservativity theorem
-and discharge it with `sorry` — applies in full. The current four-row status is recorded in
-`Conservativity/TMCompletenessReduction.lean`'s module docstring.
+no theorem in this module concludes in `TMMinusComplete _` or `Forward _`, and the standing
+prohibition in `Metalogic/Conservativity.lean` — never state a completeness or
+forward-conservativity theorem and discharge it with `sorry` — applies in full. The current four-row
+status is recorded in `Conservativity/TMCompletenessReduction.lean`'s module docstring.
 
 In particular, the converse of `not_minusValidIn_of_not_chainSat` is **not** proved and is not
 available: nothing here says that a formula underivable in the system has a chain-model
@@ -61,15 +60,16 @@ refutation. That implication is the completeness direction itself.
   `chainSat` at the point `(f, w₀ + t)`
 - `not_minusValidIn_of_not_chainSat` — the transfer corollary: a chain-model refutation refutes
   `MinusValidIn fc` at every `fc` the flow frame satisfies
-- `not_minusValidDense_of_not_chainSat`, `not_minusValidRTime_of_not_chainSat` — its instantiations at
-  ℚ and at ℝ, so the transfer step is closed for both of the two open rows
+- `not_minusValidDense_of_not_chainSat`, `not_minusValidRTime_of_not_chainSat` — its instantiations
+  at ℚ and at ℝ, so the transfer step is closed for both of the two open rows
 
 ## References
 
 * `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — `multiFamTaskFrameGen`,
   `multiFamHistoryGen`, `multiFamGen_total_eq`, `multiFamGen_total_eq_range`
 * `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` — `minus_box_universal`
-* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the six `MinusTruthAt` clauses `chainSat` mirrors
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the six `MinusTruthAt` clauses `chainSat`
+  mirrors
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — the four-row status table
 
 ## Tags

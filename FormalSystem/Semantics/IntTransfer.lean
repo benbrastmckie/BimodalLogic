@@ -86,11 +86,11 @@ fibration language names something already here.
 But the construction does **not** generalize to a one-directional morphism, and the obstruction is
 identifiable to a single axiom. Read the field proofs:
 
-| obligation | what it uses | needs |
-|---|---|---|
-| reflection law | `map_neg` | a group hom |
-| `comp`, `serial`, `saturation` | `map_le_map_iff e.symm` in the `.mpr` direction | `e.symm` order-reflecting |
-| **`limit`** | `map_lt_map_iff e` **and** `map_lt_map_iff e.symm` | **both directions** |
+* reflection law — what it uses: `map_neg`; needs: a group hom
+* `comp`, `serial`, `saturation` — what it uses: `map_le_map_iff e.symm` in the `.mpr` direction;
+  needs: `e.symm` order-reflecting
+* **`limit`** — what it uses: `map_lt_map_iff e` **and** `map_lt_map_iff e.symm`; needs: **both
+  directions**
 
 *Limit* is the one that forces it. Its hypothesis is instantiated at `e x` — pushing a duration
 *forward* — while its witness is produced as `e.symm n`, pulling one *back*. A base change along a
@@ -208,8 +208,8 @@ def WorldHistory.map {F : FrameOver D} (τ : WorldHistory F.toTaskFrame) (e : �
 Pull a history back along `e` from the transported frame to the original.
 
 This is the direction `truthAt_map`'s `box` case needs: `□` quantifies over histories of the
-*ambient* frame, so the forward direction is handed a `PartialHistory (FrameOver.map F e).toTaskFrame` and must
-produce a `PartialHistory F`.
+*ambient* frame, so the forward direction is handed a
+`PartialHistory (FrameOver.map F e).toTaskFrame` and must produce a `PartialHistory F`.
 -/
 def PartialHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
     (σ' : PartialHistory (FrameOver.map F e).toTaskFrame) : PartialHistory F.toTaskFrame where
@@ -280,8 +280,8 @@ def alignedCorr {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskF
   bwd := fun σ' => ⟨WorldHistory.comap e σ', aligned_comap e σ'⟩
 
 /--
-**Truth transfers across the frame transport.** For aligned world histories `σ` and `σ'`, `φ` holds at
-`t` in `M` along `σ` exactly when it holds at `e t` in `M.map e` along `σ'`.
+**Truth transfers across the frame transport.** For aligned world histories `σ` and `σ'`, `φ` holds
+at `t` in `M` along `σ` exactly when it holds at `e t` in `M.map e` along `σ'`.
 
 This is `Truth.truthAt_of_truthCorr` at the instance `alignedCorr e M`; the six-case induction
 lives there, generalised over both histories and the time exactly as this theorem's statement is.

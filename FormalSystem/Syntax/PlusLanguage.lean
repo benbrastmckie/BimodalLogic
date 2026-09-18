@@ -39,8 +39,8 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
 
 - `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `PlusTruthAt`
 - `FormalSystem/Semantics/PlusLanguage/PlusValidity.lean` — `PlusValidIn`, semantic conservativity
-- `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean`, `PlusNonValidities.lean` — the pasting validities
-  and the refutations that bound the axiom set
+- `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean`, `PlusNonValidities.lean` — the pasting
+  validities and the refutations that bound the axiom set
 - `FormalSystem/Metalogic/Conservativity/Plus.lean` — soundness of TM⁺ at all four frame
   classes and proof-theoretic conservativity over TM in both directions
 

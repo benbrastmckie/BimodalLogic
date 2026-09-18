@@ -561,14 +561,14 @@ line naming the two columns; the four wider Kamp tables were rewritten as lists 
 
 ---
 
-### Phase 11: `longLine` (3 of 4) -- rest of `FormalSystem` [NOT STARTED]
+### Phase 11: `longLine` (3 of 4) -- rest of `FormalSystem` [COMPLETED]
 
 **Goal**: Reflow the remaining `FormalSystem` lines, including `MintBound/Register.lean` (65) and
 `Metalogic/Conservativity.lean` (29).
 
 **Tasks**:
-- [ ] Reflow the flagged lines, run the per-file sweep to zero across all of `FormalSystem/`, and
-      build the touched modules.
+- [x] Reflow the flagged lines, run the per-file sweep to zero across all of `FormalSystem/`, and
+      build the touched modules. *(deviation: altered — not split into 11.1/11.2 despite ~600 lines: the reflow helper made the whole slice one bounded pass)*
 
 **Timing**: 2 hours
 
@@ -581,6 +581,17 @@ directory into 11.1 and 11.2 if it has more than about 350.
 
 **Files to modify**:
 - The remaining `FormalSystem/**` files flagged by the sweep - reflow
+
+**Phase 11 notes**: 132 files (plus `FormalSystem.lean` and `scripts/CheckInitImportsMain.lean`).
+Tables: every table whose header matched one with an over-long row was converted, so a docstring
+never mixes a table and a list of the same shape; 2-column tables became `* A — B` lists, wider
+ones `* A — H2: B; H3: C` lists (33 tables). The code-break ranking was improved to prefer the
+shallowest break (an application argument at depth 0 before a comma inside a list, and never a
+tail under 15 columns). Hand fixes: two interpolated `IO.println` strings (a `let` plus a string
+gap), one heading, one archived-report path. The first per-file check failed in
+`Plus/AxiomValidity.lean`: a continuation of `| arm => exact f ...` was indented less than the
+`exact`, which the tactic parser rejects; those five were re-indented past the `exact`. 13
+citations re-pointed. All 138 touched files then elaborate with `longLine` on and no warning.
 
 **Verification**:
 - The per-file `longLine` sweep of all of `FormalSystem/` reports 0.

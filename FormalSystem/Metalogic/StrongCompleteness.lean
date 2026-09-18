@@ -183,7 +183,8 @@ keep their names, because neither collides with anything and renaming them would
 
 ## Tags
 
-completeness · consequence-completeness · strong-completeness · compactness · frame-class · cor:tm-completeness
+completeness · consequence-completeness · strong-completeness · compactness · frame-class ·
+cor:tm-completeness
 -/
 
 namespace FormalSystem.Metalogic
@@ -219,8 +220,8 @@ drifted. The guard has not been dropped — it has moved somewhere it cannot dri
 condition is `FrameClass.Sat .RTime` (`Semantics/FrameClassValidity.lean`), the *same*
 expression `ValidRTime` and `soundness_in` are indexed by, so there is now one source of
 truth rather than two hand-copied lists. `soundness_rtime_consequence` remains as the
-non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by `intro` (the definitions unfold), followed by
-`sat_intro` where the proof consumes the frame condition.
+non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by `intro`
+(the definitions unfold), followed by `sat_intro` where the proof consumes the frame condition.
 -/
 def SemanticConsequenceRTime (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.RTime Γ φ
@@ -811,8 +812,8 @@ duplicate of a definition that already owns the `Γ ⊨ φ` notation.
 Genuine strong completeness over `Set Formula` premise sets remains open for this class; the
 vocabulary for it is `StrongCompletenessBase` / `CompactBase` in
 `FormalSystem/Metalogic/SetConsequence.lean`, and the one theorem about it is
-`strongCompleteness_of_compact` above, at `fc := .Base`. Nothing in this section is strong completeness:
-`Context` is `List Formula`. -/
+`strongCompleteness_of_compact` above, at `fc := .Base`. Nothing in this section is strong
+completeness: `Context` is `List Formula`. -/
 
 /--
 **Semantic deduction theorem for the base class.** `semantic_deduction_in` at `fc := .Base`.
@@ -903,8 +904,8 @@ Genuine strong completeness over `Set Formula` premise sets **holds** for this c
 `StrongCompletenessDense` and `CompactDense` (`FormalSystem/Metalogic/SetConsequence.lean`) are
 discharged by `strongCompletenessDense` and `compactDense` in
 `FormalSystem/Metalogic/Compactness.lean`, the first of them by instantiating the
-`strongCompleteness_of_compact` reduction above at `fc := .Dense`. Nothing in *this* section is strong
-completeness: `Context` is `List Formula`. -/
+`strongCompleteness_of_compact` reduction above at `fc := .Dense`. Nothing in *this* section is
+strong completeness: `Context` is `List Formula`. -/
 
 /--
 Semantic consequence over densely ordered carriers.
@@ -930,7 +931,8 @@ there "all carriers" is the class — see the Base section above.)
 **Where the binder guard now lives.** As for `SemanticConsequenceRTime` above: the
 hand-copied binder list has been replaced by `FrameClass.Sat .Dense`, the same expression
 `ValidDense` and `soundness_in` are indexed by, so the guard `soundness_dense_consequence` used
-to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is recovered by `intro` (the definitions unfold).
+to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is recovered
+by `intro` (the definitions unfold).
 -/
 def SemanticConsequenceDense (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.Dense Γ φ

@@ -89,7 +89,8 @@ coordinate is monotone under `<`, by `Prod.Lex.monotone_fst`). If `t.1 < 1`, the
 `s := (t.1, t.2 + 1)` is `> t` (same first coordinate, second coordinate strictly larger) and
 `s.1 = t.1 < 1`, so `p` fails there. -/
 theorem z1_gp_iff_p (p : Atom) (t : (z1D : Type)) :
-    MinusTruthAt z1TM z1τ t (MinusFormula.atom p).allFuture ↔ MinusTruthAt z1TM z1τ t (MinusFormula.atom p) := by
+    MinusTruthAt z1TM z1τ t (MinusFormula.atom p).allFuture ↔ MinusTruthAt z1TM z1τ t
+        (MinusFormula.atom p) := by
   rw [MinusTruth.future_iff, z1_atom_iff]
   constructor
   · intro h
@@ -120,7 +121,8 @@ noncomputable abbrev z1pt2 : (z1D : Type) := toLex ((0 : ℚ), (1 : ℤ))
 
 /-- `G(Gp → p)` is true at `(0, 0)`: immediate from `z1_gp_iff_p`. -/
 theorem z1_G_Gp_imp_p (p : Atom) :
-    MinusTruthAt z1TM z1τ z1pt ((MinusFormula.atom p).allFuture.imp (MinusFormula.atom p)).allFuture := by
+    MinusTruthAt z1TM z1τ z1pt
+        ((MinusFormula.atom p).allFuture.imp (MinusFormula.atom p)).allFuture := by
   rw [MinusTruth.future_iff]
   intro s _
   rw [MinusTruth.imp_iff]
@@ -184,7 +186,8 @@ Combined with `not_minus_derivable_z1`, this refutes the `.ZTime` row of Phase 4
 **`TM⁻_z` is not weakly complete over ℤ-time.** Stated as the negation of `TMMinusCompleteZTime`
 so the two phases visibly compose.
 -/
-theorem minusValidZTime_z1 (p : Atom) : MinusValidZTime (Conservativity.Z1 (MinusFormula.atom p)) := by
+theorem minusValidZTime_z1 (p : Atom) : MinusValidZTime
+    (Conservativity.Z1 (MinusFormula.atom p)) := by
   rw [minusValidZTime_iff_validZTime_tr]
   obtain ⟨d⟩ := Conservativity.z1_translate (MinusFormula.atom p)
   exact soundness_ztime_valid d

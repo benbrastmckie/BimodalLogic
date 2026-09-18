@@ -8,7 +8,7 @@ import Mathlib.Order.PrimeIdeal
 import Mathlib.Order.PrimeSeparator
 
 /-!
-# Proper, maximal and prime filters — the filter side of `Order/Ideal.lean` and `Order/PrimeIdeal.lean`
+# Proper, maximal and prime filters, dual to `Order/Ideal.lean` and `Order/PrimeIdeal.lean`
 
 Mathlib supplies `Order.PFilter` (`Order/PFilter.lean`) and `Order.PFilter.IsPrime`
 (`Order/PrimeIdeal.lean`), but the proper/maximal API and the Boolean-algebra section that
@@ -85,7 +85,8 @@ theorem coe_eq_univ_iff : (F : Set P) = Set.univ ↔ (F.dual : Set Pᵒᵈ) = Se
 class IsProper (F : PFilter P) : Prop where
   ne_univ : (F : Set P) ≠ Set.univ
 
-theorem isProper_of_notMem {p : P} (notMem : p ∉ F) : IsProper F :=        -- Ideal.isProper_of_notMem
+-- Ideal.isProper_of_notMem
+theorem isProper_of_notMem {p : P} (notMem : p ∉ F) : IsProper F :=
   ⟨fun hp ↦ by
     have := Set.mem_univ p
     rw [← hp] at this
@@ -110,7 +111,8 @@ theorem isMaximal_iff_dual : F.IsMaximal ↔ F.dual.IsMaximal := by
     exact { ne_univ := h.ne_univ, maximal_proper := fun G hG => h.maximal_proper (J := G.dual) hG }
 
 /-- `IsPrime` already implies `IsProper`: the complement is a (nonempty) ideal. -/
-instance (priority := 100) IsPrime.toIsProper [h : IsPrime F] : IsProper F :=   -- Ideal.IsPrime.toIsProper (there: a field)
+-- Ideal.IsPrime.toIsProper (there: a field)
+instance (priority := 100) IsPrime.toIsProper [h : IsPrime F] : IsProper F :=
   let ⟨_, hp⟩ := h.compl_ideal.Nonempty
   isProper_of_notMem hp
 
@@ -126,13 +128,16 @@ end Preorder
 section OrderBot
 variable [Preorder P] [OrderBot P] {F : PFilter P}
 
-theorem IsProper.bot_notMem (hF : IsProper F) : ⊥ ∉ F := fun h =>              -- Ideal.IsProper.top_notMem
+-- Ideal.IsProper.top_notMem
+theorem IsProper.bot_notMem (hF : IsProper F) : ⊥ ∉ F := fun h =>
   hF.ne_univ (Set.eq_univ_iff_forall.2 fun _ => mem_of_le bot_le h)
 
-theorem isProper_iff_bot_notMem : IsProper F ↔ ⊥ ∉ F :=                        -- Ideal.isProper_iff_top_notMem
+-- Ideal.isProper_iff_top_notMem
+theorem isProper_iff_bot_notMem : IsProper F ↔ ⊥ ∉ F :=
   ⟨IsProper.bot_notMem, isProper_of_notMem⟩
 
-theorem IsProper.exists_le_maximal (hF : F.IsProper) : ∃ G, F ≤ G ∧ G.IsMaximal := by  -- Ideal.IsProper.exists_le_maximal
+-- Ideal.IsProper.exists_le_maximal
+theorem IsProper.exists_le_maximal (hF : F.IsProper) : ∃ G, F ≤ G ∧ G.IsMaximal := by
   obtain ⟨J, hJ, hJm⟩ := (isProper_iff_dual.1 hF).exists_le_maximal
   exact ⟨⟨J⟩, hJ, isMaximal_iff_dual.2 hJm⟩
 
@@ -141,7 +146,8 @@ end OrderBot
 section DistribLattice
 variable [DistribLattice P] {F : PFilter P}
 
-instance (priority := 100) IsMaximal.isPrime [hF : IsMaximal F] : IsPrime F :=  -- Ideal.IsMaximal.isPrime
+-- Ideal.IsMaximal.isPrime
+instance (priority := 100) IsMaximal.isPrime [hF : IsMaximal F] : IsPrime F :=
   isPrime_iff_dual.2 (@Ideal.IsMaximal.isPrime Pᵒᵈ _ F.dual (isMaximal_iff_dual.1 hF))
 
 end DistribLattice
@@ -149,15 +155,18 @@ end DistribLattice
 section BooleanAlgebra
 variable [BooleanAlgebra P] {F : PFilter P} {x y : P}
 
-theorem IsProper.notMem_of_compl_mem (hF : IsProper F) (hxc : xᶜ ∈ F) : x ∉ F := fun hx =>  -- Ideal.IsProper.notMem_of_compl_mem
+-- Ideal.IsProper.notMem_of_compl_mem
+theorem IsProper.notMem_of_compl_mem (hF : IsProper F) (hxc : xᶜ ∈ F) : x ∉ F := fun hx =>
   hF.bot_notMem (by simpa using inf_mem hx hxc)
 
-theorem IsProper.notMem_or_compl_notMem (hF : IsProper F) : x ∉ F ∨ xᶜ ∉ F := by         -- Ideal.IsProper.notMem_or_compl_notMem
+-- Ideal.IsProper.notMem_or_compl_notMem
+theorem IsProper.notMem_or_compl_notMem (hF : IsProper F) : x ∉ F ∨ xᶜ ∉ F := by
   by_cases hx : x ∈ F
   · exact Or.inr fun hxc => hF.notMem_of_compl_mem hxc hx
   · exact Or.inl hx
 
-theorem IsPrime.mem_or_compl_mem (hF : IsPrime F) : x ∈ F ∨ xᶜ ∈ F := by                 -- Ideal.IsPrime.mem_or_compl_mem
+-- Ideal.IsPrime.mem_or_compl_mem
+theorem IsPrime.mem_or_compl_mem (hF : IsPrime F) : x ∈ F ∨ xᶜ ∈ F := by
   by_contra h
   push Not at h
   have : x ⊔ xᶜ ∈ hF.compl_ideal.toIdeal :=
@@ -165,7 +174,8 @@ theorem IsPrime.mem_or_compl_mem (hF : IsPrime F) : x ∈ F ∨ xᶜ ∈ F := by
   rw [Ideal.mem_toIdeal, sup_compl_eq_top] at this
   exact this top_mem
 
-theorem IsPrime.compl_mem_of_notMem (hF : IsPrime F) (hx : x ∉ F) : xᶜ ∈ F :=            -- Ideal.IsPrime.compl_mem_of_notMem
+-- Ideal.IsPrime.compl_mem_of_notMem
+theorem IsPrime.compl_mem_of_notMem (hF : IsPrime F) (hx : x ∉ F) : xᶜ ∈ F :=
   hF.mem_or_compl_mem.resolve_left hx
 
 theorem IsPrime.compl_notMem_of_mem (hF : IsPrime F) (hx : x ∈ F) : xᶜ ∉ F :=
@@ -177,7 +187,8 @@ theorem IsPrime.mem_iff_compl_notMem (hF : IsPrime F) : x ∈ F ↔ xᶜ ∉ F :
 theorem IsPrime.compl_mem_iff_notMem (hF : IsPrime F) : xᶜ ∈ F ↔ x ∉ F :=
   ⟨fun h hx => hF.compl_notMem_of_mem hx h, hF.compl_mem_of_notMem⟩
 
-theorem isPrime_of_mem_or_compl_mem [hF : IsProper F] (h : ∀ {x : P}, x ∈ F ∨ xᶜ ∈ F) :   -- Ideal.isPrime_of_mem_or_compl_mem
+-- Ideal.isPrime_of_mem_or_compl_mem
+theorem isPrime_of_mem_or_compl_mem [hF : IsProper F] (h : ∀ {x : P}, x ∈ F ∨ xᶜ ∈ F) :
     IsPrime F where
   compl_ideal :=
     { IsLowerSet := fun a b hab ha hb => ha (mem_of_le hab hb)
@@ -187,10 +198,12 @@ theorem isPrime_of_mem_or_compl_mem [hF : IsProper F] (h : ∀ {x : P}, x ∈ F 
             (by simpa [compl_sup] using inf_mem (h.resolve_left ha) (h.resolve_left hb)) hab,
           le_sup_left, le_sup_right⟩ }
 
-theorem isPrime_iff_mem_or_compl_mem [IsProper F] : IsPrime F ↔ ∀ {x : P}, x ∈ F ∨ xᶜ ∈ F :=  -- Ideal.isPrime_iff_mem_or_compl_mem
+-- Ideal.isPrime_iff_mem_or_compl_mem
+theorem isPrime_iff_mem_or_compl_mem [IsProper F] : IsPrime F ↔ ∀ {x : P}, x ∈ F ∨ xᶜ ∈ F :=
   ⟨fun h _ => h.mem_or_compl_mem, isPrime_of_mem_or_compl_mem⟩
 
-instance (priority := 100) IsPrime.isMaximal [hF : IsPrime F] : IsMaximal F where          -- Ideal.IsPrime.isMaximal
+-- Ideal.IsPrime.isMaximal
+instance (priority := 100) IsPrime.isMaximal [hF : IsPrime F] : IsMaximal F where
   ne_univ := hF.toIsProper.ne_univ
   maximal_proper := by
     intro G hFG

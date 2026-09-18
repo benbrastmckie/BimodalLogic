@@ -19,9 +19,9 @@ and the **strict** inclusion of the deterministic frames in it.
 `def:deterministic` is a condition on a frame, not on a temporal order, so no `FrameClass` tag
 denotes it and none can be added: the tags are the proof side's axiom-gating lattice
 (`ProofSystem/Axioms.lean`), and *Determined* is refuted at `.Base`
-(`Semantics/PlusLanguage/PlusNonValidities.lean`, `refute_determined`). The validity layer already anticipates
-exactly this: `ValidOnFrames` and `PlusValidOnFrames` are the primitives, indexed by a bare
-`TaskFrame → Prop`, and `ValidIn fc` / `PlusValidIn fc` are their instances at `fc.Sat`. The
+(`Semantics/PlusLanguage/PlusNonValidities.lean`, `refute_determined`). The validity layer already
+anticipates exactly this: `ValidOnFrames` and `PlusValidOnFrames` are the primitives, indexed by a
+bare `TaskFrame → Prop`, and `ValidIn fc` / `PlusValidIn fc` are their instances at `fc.Sat`. The
 notions below are the instances at `fun F => fc.Sat F ∧ F.Deterministic`, so nothing in the
 semantics is touched.
 
@@ -110,8 +110,8 @@ def PlusValidDeterminedIn (fc : FrameClass) (φ : PlusFormula) : Prop :=
 /-! ## The inclusion, and its strictness -/
 
 /-- Every deterministic frame validates every instance of *Determined*. This is 536's
-`determined_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) repackaged at the predicate
-`DeterminedValid`; the collapse itself is **not** re-derived here. -/
+`determined_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) repackaged at the
+predicate `DeterminedValid`; the collapse itself is **not** re-derived here. -/
 theorem deterministic_determinedValid {F : TaskFrame} (hD : F.Deterministic) :
     DeterminedValid F :=
   fun φ => Semantics.determined_of_deterministic hD φ

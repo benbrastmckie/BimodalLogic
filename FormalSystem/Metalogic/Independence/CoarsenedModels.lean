@@ -17,30 +17,30 @@ M, τ, t ⊨ ⊡φ   iff   M, σ, t ⊨ φ for every world history σ with π(σ
 ```
 
 for a map `π` on world states whose fibres the valuation cannot see. Taking `π` the identity
-recovers the standard semantics of `Semantics/PlusLanguage/PlusTruth.lean`; taking it strictly coarser makes
-`⟨τ⟩_t` a *union* of exact-state classes.
+recovers the standard semantics of `Semantics/PlusLanguage/PlusTruth.lean`; taking it strictly
+coarser makes `⟨τ⟩_t` a *union* of exact-state classes.
 
 ## Why a non-standard semantics is unavoidable here
 
 The two pasting axioms `paste` (PS) and `untl_paste` (US) are valid on **every** task frame
-(`Semantics/PlusLanguage/PlusPasting.lean`), because the splice of two world histories through a common state
-is again a world history — that is exactly what *Compositionality* buys. So no ordinary task
-model can witness their underivability, and the independence argument has to move to a semantics
-in which the splice is unavailable. Coarsening does precisely that: two histories in the same
-`π`-class at `t` may pass through *different* states there, and there is then no single state for
-a splice to pass through.
+(`Semantics/PlusLanguage/PlusPasting.lean`), because the splice of two world histories through a
+common state is again a world history — that is exactly what *Compositionality* buys. So no ordinary
+task model can witness their underivability, and the independence argument has to move to a
+semantics in which the splice is unavailable. Coarsening does precisely that: two histories in the
+same `π`-class at `t` may pass through *different* states there, and there is then no single state
+for a splice to pass through.
 
 ## What survives the coarsening, and what does not
 
-| Schema | Coarsened status | Why |
-|---|---|---|
-| every TM schema | valid | atomization: `⊡_π χ` is still a state formula, so `Atomization.lean`'s route applies verbatim |
-| SK `⊡(φ→ψ) → (⊡φ→⊡ψ)` | valid | universal-quantifier shape |
-| ST `⊡φ → φ` | valid | `π`-agreement is reflexive |
-| S4, S5 | valid | `π`-agreement is an equivalence |
-| MS `□φ → ⊡φ` | valid | the `π`-class is a subset of all world histories |
-| AS `p → ⊡p` | valid | the valuation is `π`-invariant by fiat (`atom_inv`) |
-| **PS, US** | **refutable** | `Metalogic/Independence/PastingIndependence.lean` |
+* every TM schema — Coarsened status: valid; Why: atomization: `⊡_π χ` is still a state formula, so
+  `Atomization.lean`'s route applies verbatim
+* SK `⊡(φ→ψ) → (⊡φ→⊡ψ)` — Coarsened status: valid; Why: universal-quantifier shape
+* ST `⊡φ → φ` — Coarsened status: valid; Why: `π`-agreement is reflexive
+* S4, S5 — Coarsened status: valid; Why: `π`-agreement is an equivalence
+* MS `□φ → ⊡φ` — Coarsened status: valid; Why: the `π`-class is a subset of all world histories
+* AS `p → ⊡p` — Coarsened status: valid; Why: the valuation is `π`-invariant by fiat (`atom_inv`)
+* **PS, US** — Coarsened status: **refutable**; Why:
+  `Metalogic/Independence/PastingIndependence.lean`
 
 That table *is* the independence argument: the naive system's every axiom and every rule
 preserves coarsened validity, and the two pasting schemata do not.
@@ -397,7 +397,8 @@ theorem cValid_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e φ
     (axiom_validIn ax h F trivial (K.atomModel e) τ t)
 
 /-- The reflection form, via `atomize_reflectTime` at the conjugated encoding. -/
-theorem cValid_reflect_time_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e.reflectTime φ))
+theorem cValid_reflect_time_of_tm (e : Encoding) (φ : PlusFormula)
+    (ax : Axiom (atomize e.reflectTime φ))
     (h : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime :=
   fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
@@ -421,8 +422,8 @@ theorem cValid_reflect_time_of_tm_deriv (e : Encoding) (φ : PlusFormula)
 
 /-! ## The six naive `⊡` schemata are coarsely valid
 
-Each is the corresponding definitional validity of `Semantics/PlusLanguage/PlusTruth.lean`, re-run against
-`SameUnder` in place of the state equation. AS is the one that consumes `atom_inv`. -/
+Each is the corresponding definitional validity of `Semantics/PlusLanguage/PlusTruth.lean`, re-run
+against `SameUnder` in place of the state equation. AS is the one that consumes `atom_inv`. -/
 
 /-- SK: the universal-quantifier shape of the coarsened `stab` clause. -/
 theorem cValid_stab_k (φ ψ : PlusFormula) :
@@ -563,11 +564,13 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
 /-- **The temporal dual of every naive TM⁺ schema admissible at `.Base` is coarsely valid.** The
 six `⊡` arms need no separate argument: `reflectTime` fixes `⊡`, so each of their duals is an
 instance of the same schema at reflected parameters. -/
-theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom.IsNaive ax)
+theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ)
+    (hn : PlusAxiom.IsNaive ax)
     (hb : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime := by
   cases ax with
   | prop_k a0 a1 a2 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.prop_k (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _
+        (Axiom.prop_k (A' a0) (A' a1) (A' a2)) (by trivial)
   | prop_s a0 a1 =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.prop_s (A' a0) (A' a1)) (by trivial)
   | ex_falso a0 =>
@@ -589,12 +592,14 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ) (h
   | serial_past =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _ DerivedAxioms.serialPast
   | left_mono_until_G a0 a1 a2 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.left_mono_until_G (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _
+        (Axiom.left_mono_until_G (A' a0) (A' a1) (A' a2)) (by trivial)
   | left_mono_since_H a0 a1 a2 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.leftMonoSinceH (A' a0) (A' a1) (A' a2))
   | right_mono_until a0 a1 a2 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.right_mono_until (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _
+        (Axiom.right_mono_until (A' a0) (A' a1) (A' a2)) (by trivial)
   | right_mono_since a0 a1 a2 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.rightMonoSince (A' a0) (A' a1) (A' a2))
@@ -603,20 +608,24 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ) (h
   | connect_past a0 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.connectPast (A' a0))
   | enrichment_until a0 a1 a2 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _
+        (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) (by trivial)
   | enrichment_since a0 a1 a2 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.enrichmentSince (A' a0) (A' a1) (A' a2))
   | self_accum_until a0 a1 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.self_accum_until (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _
+        (Axiom.self_accum_until (A' a0) (A' a1)) (by trivial)
   | self_accum_since a0 a1 =>
-    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.selfAccumSince (A' a0) (A' a1))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+        (DerivedAxioms.selfAccumSince (A' a0) (A' a1))
   | absorb_until a0 a1 =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.absorb_until (A' a0) (A' a1)) (by trivial)
   | absorb_since a0 a1 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.absorbSince (A' a0) (A' a1))
   | linear_until a0 a1 a2 a3 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.linear_until (A' a0) (A' a1) (A' a2) (A' a3)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _
+        (Axiom.linear_until (A' a0) (A' a1) (A' a2) (A' a3)) (by trivial)
   | linear_since a0 a1 a2 a3 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.linearSince (A' a0) (A' a1) (A' a2) (A' a3))
@@ -625,9 +634,11 @@ theorem naiveAxiom_cValid_reflect_time {φ : PlusFormula} (ax : PlusAxiom φ) (h
   | since_P a0 a1 =>
     exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.sinceP (A' a0) (A' a1))
   | temp_linearity a0 a1 =>
-    exact cValid_reflect_time_of_tm theEncoding _ (Axiom.temp_linearity (A' a0) (A' a1)) (by trivial)
+    exact cValid_reflect_time_of_tm theEncoding _
+        (Axiom.temp_linearity (A' a0) (A' a1)) (by trivial)
   | temp_linearity_past a0 a1 =>
-    exact cValid_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.tempLinearityPast (A' a0) (A' a1))
+    exact cValid_reflect_time_of_tm_deriv theEncoding _
+        (DerivedAxioms.tempLinearityPast (A' a0) (A' a1))
   | F_until_equiv a0 =>
     exact cValid_reflect_time_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) (by trivial)
   | P_since_equiv a0 =>
@@ -677,7 +688,8 @@ coarsely valid, and so is its temporal dual. Mirror of
 `Conservativity.plus_derivable_valid_and_reflect_time_validIn`, arm for arm; well-founded on the
 derivation's height for the same reason.
 -/
-theorem naive_cValid_and_reflect_time {φ : PlusFormula} (d : PlusDerivationTree FrameClass.Base [] φ)
+theorem naive_cValid_and_reflect_time {φ : PlusFormula}
+    (d : PlusDerivationTree FrameClass.Base [] φ)
     (hn : d.NaiveOnly) : CValid φ ∧ CValid φ.reflectTime := by
   match d, hn with
   | .axiom _ _ h_ax h_fc, hn =>

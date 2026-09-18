@@ -20,8 +20,8 @@ import FormalSystem.Automation.ProofStepExtractor
 import FormalSystem.Automation.Normalization
 import FormalSystem.Automation.InterestingnessMetrics
 import FormalSystem.Automation.PrefilterSoundness
--- DatasetGeneratorMain, DatasetValidatorMain, and ProofExtractorMain define `main` (lean_exe targets)
--- and must not be imported through the umbrella; use them only via `lake exe` commands.
+-- DatasetGeneratorMain, DatasetValidatorMain, and ProofExtractorMain define `main` (lean_exe
+-- targets) and must not be imported through the umbrella; use them only via `lake exe` commands.
 
 /-!
 # FormalSystem.Automation - Proof Automation

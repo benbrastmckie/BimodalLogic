@@ -73,12 +73,12 @@ load-bearing, and worth knowing before anyone "strengthens" that predicate.
 
 ## Why F° survives density where `natFrame` does not
 
-`natFrame` — the frame carrying the `⊡` non-validities in `Semantics/PlusLanguage/PlusNonValidities.lean` —
-relates every state to every state at every nonzero duration, so its cone at a state is the whole
-carrier and its *Limit* field needs a discrete carrier to hold at all. `F°`'s fibres are the
-bounded intervals `[w + d, w + 2d]`, whose width `d` shrinks linearly to `0`, so the cone shrinks
-in any order whatever and *Limit* holds over `ℝ`. The two frames are not interchangeable, and no
-result about one transfers to the other.
+`natFrame` — the frame carrying the `⊡` non-validities in
+`Semantics/PlusLanguage/PlusNonValidities.lean` — relates every state to every state at every
+nonzero duration, so its cone at a state is the whole carrier and its *Limit* field needs a discrete
+carrier to hold at all. `F°`'s fibres are the bounded intervals `[w + d, w + 2d]`, whose width `d`
+shrinks linearly to `0`, so the cone shrinks in any order whatever and *Limit* holds over `ℝ`. The
+two frames are not interchangeable, and no result about one transfers to the other.
 
 ## A `ℤ` carrier does not work
 
@@ -135,12 +135,14 @@ theorem fib_eq_Icc' (w d : ℝ) (h : d ≤ 0) :
   · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩) <;> exact ⟨by linarith, by linarith⟩
   · rintro ⟨h1, h2⟩; right; exact ⟨by linarith, by linarith⟩
 
-theorem isCompact_fib (w d : ℝ) : IsCompact (TaskFrame.Fib (D := realTemporalOrder) fzeroRel w d) := by
+theorem isCompact_fib (w d : ℝ) : IsCompact
+    (TaskFrame.Fib (D := realTemporalOrder) fzeroRel w d) := by
   rcases le_total 0 d with h | h
   · rw [fib_eq_Icc w d h]; exact isCompact_Icc
   · rw [fib_eq_Icc' w d h]; exact isCompact_Icc
 
-theorem isClosed_fib (w d : ℝ) : IsClosed (TaskFrame.Fib (D := realTemporalOrder) fzeroRel w d) := by
+theorem isClosed_fib (w d : ℝ) : IsClosed
+    (TaskFrame.Fib (D := realTemporalOrder) fzeroRel w d) := by
   rcases le_total 0 d with h | h
   · rw [fib_eq_Icc w d h]; exact isClosed_Icc
   · rw [fib_eq_Icc' w d h]; exact isClosed_Icc
@@ -216,9 +218,9 @@ theorem fzero_saturation : TaskFrame.Saturation (D := realTemporalOrder) fzeroRe
     · exact isClosed_fib w x
     · exact (isClosed_fib w x).inter (isClosed_fib v (-y))
 
-/-- **F° is a task frame.** All five axiom fields above; `@[reducible]` is load-bearing for exactly the
-reason recorded at `realTemporalOrder` — without it `F0.WorldState` does not reduce to `ℝ` and neither
-the order instances nor the state-set recursion can be stated. -/
+/-- **F° is a task frame.** All five axiom fields above; `@[reducible]` is load-bearing for exactly
+the reason recorded at `realTemporalOrder` — without it `F0.WorldState` does not reduce to `ℝ` and
+neither the order instances nor the state-set recursion can be stated. -/
 @[reducible] noncomputable def fzeroFrame : FrameOver realTemporalOrder where
   WorldState := ℝ
   PosRel w x u := fzeroRel w x u

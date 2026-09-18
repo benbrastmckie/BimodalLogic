@@ -10,10 +10,10 @@ import FormalSystem.Semantics.DurationClassification
 /-!
 # DF and DN semantic lemmas, and their past-duals
 
-The four semantic facts consumed by both `Metalogic/Conservativity/SpWitness.lean` (the (Sp) validity witness)
-and `Metalogic/Conservativity/MinusLanguageSoundness.lean`'s `minus_soundness_ztime_succ` — the shared
-mathematical core of the TM⁻-completeness task (report §4.1 Lemmas B and C, plus §6.1's
-past-dual obligation).
+The four semantic facts consumed by both `Metalogic/Conservativity/SpWitness.lean` (the (Sp)
+validity witness) and `Metalogic/Conservativity/MinusLanguageSoundness.lean`'s
+`minus_soundness_ztime_succ` — the shared mathematical core of the TM⁻-completeness task (report
+§4.1 Lemmas B and C, plus §6.1's past-dual obligation).
 
 ## The two axiom shapes, pinned
 
@@ -90,8 +90,8 @@ an L theorem across `tr`.** `tr` is exact only on `□, G, H, →, ⊥`; on `som
 `tr φ.someFuture` is `(Formula.allFuture (tr φ).neg).neg`, a different constructor tree from
 `Formula.someFuture (tr φ)` — recorded by proof as `tr_someFuture_ne`
 (`MinusLanguage/Translation.lean`). Both DF statements have `F⊤` and `F(Hφ)` in them, so the
-transfer theorems in `Metalogic/Conservativity/MinusLanguageSoundness.lean` do not reach them, and both proofs
-stay native. Do not delete either as a duplicate of an L result.
+transfer theorems in `Metalogic/Conservativity/MinusLanguageSoundness.lean` do not reach them, and
+both proofs stay native. Do not delete either as a duplicate of an L result.
 -/
 theorem df_valid_of_succOrder [SuccOrder F.Duration] [Nontrivial F.Duration]
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : MinusFormula) :
@@ -108,10 +108,10 @@ history and time.
 **Kept as a direct proof, deliberately.** DN mentions only `G` and `→`, on which `tr` *is* exact,
 so this statement is in principle `Metalogic/Soundness.lean`'s `density_valid` transported across
 `minusValidOnFrames_iff_validOnFrames_tr`. It is not derived that way, because the transport would
-require `Semantics/MinusLanguage/MinusSchemaValidity.lean` to import `Metalogic/Soundness.lean` — inverting the
-`Semantics/` → `Metalogic/` layering that the whole development rests on, to replace a five-line
-self-contained proof. The two statements agree; that they are proved independently is a feature
-here, not duplication to be collapsed.
+require `Semantics/MinusLanguage/MinusSchemaValidity.lean` to import `Metalogic/Soundness.lean` —
+inverting the `Semantics/` → `Metalogic/` layering that the whole development rests on, to replace a
+five-line self-contained proof. The two statements agree; that they are proved independently is a
+feature here, not duplication to be collapsed.
 
 Given `GGφ` at `t` and `t < s`, density supplies `t < r < s`; apply `GGφ` at `r` (giving `Gφ` at
 `r`) then at `s`.

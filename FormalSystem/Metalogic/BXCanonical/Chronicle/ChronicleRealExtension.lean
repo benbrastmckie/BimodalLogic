@@ -40,8 +40,8 @@ unselected real is information about the rationals *underneath* it:
   guard-free transport cannot have, and the `Refutations` section below says why. They are
   nevertheless *available*, at the cost of one further hypothesis on the rational bundle:
   `BFMCS.LimitGuardBelow`, which says a formula guarding an interval that abuts a gap from above
-  already guards an interval abutting it from below. With it, `toRealBundle_backward_until_unselected`
-  runs the guard down through the gap, and
+  already guards an interval abutting it from below. With it,
+  `toRealBundle_backward_until_unselected` runs the guard down through the gap, and
   `exists_rat_since_witness_below_of_limitGuardBelow` relocates the `snce` witness to a rational
   **below** the gap, where `limitMCSBelow_cofinal_below` can reach it.
 
@@ -121,12 +121,12 @@ would otherwise repeat.
    `snce` half adds nothing at all — it reads its guard straight off the predicate.
 3. **Its discharge has no source in the corpus.** It is not derivable from a Dedekind axiom:
    `Axiom.prior_U_gap`'s antecedent `U(⊤, χ)` *is* the below-gap interval it would have to produce,
-   `DerivedAxioms.priorSGap` consumes an above-gap interval and so yields only the necessity direction,
-   and `Axiom.sep` lives entirely inside `K⁺`/`K⁻`, which is the negation of "holds on an interval".
-   Reynolds reaches ℝ by the separability route instead (**printed pp.177-178**), and Burgess 1984's
-   completion argument stays in the `F`/`G` fragment, where the gap witness is placed on the far
-   side with no bound whatever and no guard to carry (**printed pp.109-110**). Its discharge is
-   therefore deferred to a phase that is gated on explicit authorization, and
+   `DerivedAxioms.priorSGap` consumes an above-gap interval and so yields only the necessity
+   direction, and `Axiom.sep` lives entirely inside `K⁺`/`K⁻`, which is the negation of "holds on an
+   interval". Reynolds reaches ℝ by the separability route instead (**printed pp.177-178**), and
+   Burgess 1984's completion argument stays in the `F`/`G` fragment, where the gap witness is placed
+   on the far side with no bound whatever and no guard to carry (**printed pp.109-110**). Its
+   discharge is therefore deferred to a phase that is gated on explicit authorization, and
    `cantor_bfmcs_dense_real_restricted_fuc` remains absent from this module until then.
 
 ### Refutation 3 — forward `untl`, at an *unselected* target
@@ -249,8 +249,8 @@ hypothesis that the chronicle bundle satisfies: `BFMCS.LimitGuardBelow`.
 
 - *Refutation 1.* `ψ` is true at every rational of `(g, 5)` and at **no** rational below `g`.
   That is a `ψ`-**right gap** at `g` in Reynolds' sense — the connective `γ⁻`, dual to the `γ⁺`
-  that marks left gaps (Reynolds 1992, printed p.175) — and `DerivedAxioms.priorSGap` excludes exactly
-  that configuration. (Independently, this family also violates the already-discharged
+  that marks left gaps (Reynolds 1992, printed p.175) — and `DerivedAxioms.priorSGap` excludes
+  exactly that configuration. (Independently, this family also violates the already-discharged
   `BFMCS.LimitFutureWitness`: `someFuture φ ∈ m q` for every rational `q < g`, hence in
   `limitSetBelow m g ⊆ limitMCSBelow m g`, yet `V(φ) = (0, g)` gives no rational `s > g` with
   `φ ∈ m s`.)
@@ -963,8 +963,9 @@ gap into one inside the guarded interval.
 
 *The proof.* Contrapositively, if `φ` failed at every rational of `(r, c)`, then `¬φ` would guard
 that whole interval, and the guard-reach lemma below a gap (`limitGuardBelow_of_priorS`, from
-`DerivedAxioms.priorSGap`, whence `hfc`) would push `¬φ` to an interval abutting `r` from *below* — where
-the cofinal hypothesis puts a `φ`-point. Maximal consistency at that point is the contradiction.
+`DerivedAxioms.priorSGap`, whence `hfc`) would push `¬φ` to an interval abutting `r` from *below* —
+where the cofinal hypothesis puts a `φ`-point. Maximal consistency at that point is the
+contradiction.
 
 *Provenance.* Burgess 1984 §2.7 (printed pp.109-110) places the gap witness on the far side with
 **no bound whatsoever**, licensed by `A7a` (Burgess 1984's

@@ -20,15 +20,15 @@ set_option autoImplicit false
 
 This module defines a frame notion for the tense-primitive base language L⁻ that is **not** a
 task frame, together with a truth recursion over it, the matching validity notion, and the
-order-reversal transfer lemma. Everything here is additive: `MinusTruthAt`, `MinusValid` and the whole
-`TaskFrame`-bound semantic stack are untouched and sit beside this layer.
+order-reversal transfer lemma. Everything here is additive: `MinusTruthAt`, `MinusValid` and the
+whole `TaskFrame`-bound semantic stack are untouched and sit beside this layer.
 
 ## Why a native frame notion is required
 
-`Semantics/MinusLanguage/MinusTruth.lean`'s `MinusTruthAt` evaluates at a `TaskModel F` for `F : TaskFrame`, and a
-`TaskFrame` carries its times in a `Duration : TemporalOrder` — a *nontrivial totally ordered
-abelian group*. That group hypothesis is not incidental packaging. It is exactly what
-`Semantics/DurationClassification.lean`'s `duration_dense_or_least_pos` consumes, and
+`Semantics/MinusLanguage/MinusTruth.lean`'s `MinusTruthAt` evaluates at a `TaskModel F` for
+`F : TaskFrame`, and a `TaskFrame` carries its times in a `Duration : TemporalOrder` — a *nontrivial
+totally ordered abelian group*. That group hypothesis is not incidental packaging. It is exactly
+what `Semantics/DurationClassification.lean`'s `duration_dense_or_least_pos` consumes, and
 `duration_dense_or_least_pos` is what makes `Metalogic/Conservativity/SpWitness.lean`'s
 `minusValid_sp` go through: on any ordered abelian group the order is either densely ordered or has
 a least positive element, so one of the two disjuncts of
@@ -65,9 +65,10 @@ semantics agree, and nothing downstream should assume they do.
 ## Converse closure and TR
 
 `no_min` and `past_lin` are fields rather than derived facts precisely so the class is closed
-under order reversal (`MinusFrame.reflect`). That closure is what makes `truth_reflectTime` available, and
-`truth_reflectTime` is what discharges the time-reflection *rule* `DerivationTree.time_reflection` in
-one line during native soundness — no reflection-strengthened simultaneous induction is needed.
+under order reversal (`MinusFrame.reflect`). That closure is what makes `truth_reflectTime`
+available, and `truth_reflectTime` is what discharges the time-reflection *rule*
+`DerivationTree.time_reflection` in one line during native soundness — no reflection-strengthened
+simultaneous induction is needed.
 
 ## Main Definitions
 
@@ -80,8 +81,8 @@ one line during native soundness — no reflection-strengthened simultaneous ind
 
 ## Main Results
 
-`MinusFrameTruth.*` — characterization lemmas mirroring `Semantics/MinusLanguage/MinusTruth.lean`'s `MinusTruth`
-namespace one for one:
+`MinusFrameTruth.*` — characterization lemmas mirroring `Semantics/MinusLanguage/MinusTruth.lean`'s
+`MinusTruth` namespace one for one:
 
 - `bot_false`, `imp_iff`, `box_iff`, `past_iff`, `future_iff` — the primitive clauses
 - `neg_iff`, `top_true`, `and_iff`, `or_iff` — the derived Boolean operators
@@ -96,7 +97,8 @@ time-reflected formula `φ.reflectTime`; the L⁻ analogue of the paper's `lem:t
 
 * JPL paper `\S sub:Logic` — `def:BL-language`, `def:BL-semantics` (which this deliberately
   departs from in its `□` clause; see above)
-* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the `TaskFrame`-bound recursion this sits beside
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the `TaskFrame`-bound recursion this sits
+  beside
 * `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` — the consumer: native L⁻ soundness
   and the two-fibre refutation of `(Sp)`
 
@@ -148,9 +150,9 @@ attribute [instance] MinusFrame.pointNonempty
 /--
 Rotate a trichotomy disjunction `r b c ∨ b = c ∨ r c b` into `r c b ∨ b = c ∨ r b c`.
 
-Used only by `MinusFrame.reflect`: reversing the order turns `fut_lin`'s conclusion into `past_lin`'s
-and vice versa, but the two disjunctions list their strict cases in opposite orders, so a rotation
-is needed to match the field shape.
+Used only by `MinusFrame.reflect`: reversing the order turns `fut_lin`'s conclusion into
+`past_lin`'s and vice versa, but the two disjunctions list their strict cases in opposite orders, so
+a rotation is needed to match the field shape.
 -/
 private theorem triRotate {α : Type} {r : α → α → Prop} {b c : α}
     (h : r b c ∨ b = c ∨ r c b) : r c b ∨ b = c ∨ r b c := by
@@ -165,8 +167,8 @@ Time reflection on a `MinusFrame` (the paper's `F⁻`): keep the points, invert 
 Not to be confused with `TaskFrame.reflect`, the reflection convention on task relations; the two
 live in different namespaces.
 
-The class of `MinusFrame`s is closed under this operation — `no_max` and `no_min` exchange roles, as do
-`fut_lin` and `past_lin` (modulo `triRotate`). That closure is exactly what makes the
+The class of `MinusFrame`s is closed under this operation — `no_max` and `no_min` exchange roles, as
+do `fut_lin` and `past_lin` (modulo `triRotate`). That closure is exactly what makes the
 time-reflection rule sound on the class, via `truth_reflectTime`.
 -/
 def MinusFrame.reflect (F : MinusFrame) : MinusFrame where
@@ -198,8 +200,8 @@ def MinusFrameTruth (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Poin
 Validity on the native L⁻ frame class: truth at every point of every `MinusFrame` under every
 valuation.
 
-This is the notion native L⁻ soundness (`Metalogic/minusFrameValid_of_derivation`) concludes, and the
-notion the two-fibre countermodel refutes for `(Sp)`.
+This is the notion native L⁻ soundness (`Metalogic/minusFrameValid_of_derivation`) concludes, and
+the notion the two-fibre countermodel refutes for `(Sp)`.
 -/
 def MinusFrameValid (φ : MinusFormula) : Prop :=
   ∀ (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point), MinusFrameTruth F V w φ
@@ -300,7 +302,8 @@ congruences, and the two temporal clauses trade places exactly as `MinusFormula.
 does. This one lemma is what makes the time-reflection rule sound on the native class, replacing
 the reflection-strengthened simultaneous induction used in the task-frame soundness proof.
 -/
-theorem truth_reflectTime (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point) (φ : MinusFormula) :
+theorem truth_reflectTime (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point)
+    (φ : MinusFormula) :
     MinusFrameTruth F.reflect V w φ ↔ MinusFrameTruth F V w φ.reflectTime := by
   induction φ generalizing w with
   | atom p => exact Iff.rfl

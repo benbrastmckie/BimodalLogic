@@ -45,7 +45,8 @@ contradiction (both B and ¬B), then ¬A holds.
 
 **Dependencies**: `DerivationTree.modus_ponens`, `deductionTheorem`
 -/
-def ni {fc : FrameClass} (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢[fc] B.neg) (h2 : (A :: Γ) ⊢[fc] B) : Γ ⊢[fc] A.neg := by
+def ni {fc : FrameClass} (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢[fc] B.neg)
+    (h2 : (A :: Γ) ⊢[fc] B) : Γ ⊢[fc] A.neg := by
   -- From h1 and h2, derive (A :: Γ) ⊢ ⊥
   -- ¬B = B → ⊥, so modus ponens gives ⊥
   have h_bot : (A :: Γ) ⊢[fc] Formula.bot :=
@@ -122,7 +123,8 @@ then from A ∨ B we can derive C.
 **Dependencies**: `deductionTheorem`, `DerivationTree.weakening`, `classicalMerge`,
                `bCombinator`, `DerivationTree.assumption`
 -/
-noncomputable def de {fc : FrameClass} (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢[fc] C) (h2 : (B :: Γ) ⊢[fc] C) :
+noncomputable def de {fc : FrameClass} (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢[fc] C)
+    (h2 : (B :: Γ) ⊢[fc] C) :
     ((A.or B) :: Γ) ⊢[fc] C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
   have ac : Γ ⊢[fc] A.imp C :=

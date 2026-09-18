@@ -17,23 +17,26 @@ permissive frame `natFrame` over `ℤ` (`Semantics/TaskFrame.lean`), where every
 `ℤ → ℕ` is a total history, so `⟨τ⟩_t` is as large as it can be; the valuation makes every atom
 true at world state `0` and nowhere else.
 
-| Name | Refuted schema | What it shows |
-|------|----------------|---------------|
-| `refute_stab_box` | `⊡p → □⊡p` | `⊡` does not collapse into `□` |
-| `refute_allFuture_stab` | `G⊡p → ⊡Gp` | the converse of GS fails, even for atoms |
-| `refute_stab_allFuture_past` | `⊡GPp → G⊡Pp` | GS (`stab_allFuture_valid`) genuinely needs its pure-future side condition |
-| `refute_determined` | `Fp → ⊡Fp` | *Determined* (paper line 1426) is refuted over a non-deterministic frame |
-| `refute_somePast_stab` | `P⊡p → ⊡Pp` | `⟨τ⟩_t` is not closed towards the past |
+* `refute_stab_box` — Refuted schema: `⊡p → □⊡p`; What it shows: `⊡` does not collapse into `□`
+* `refute_allFuture_stab` — Refuted schema: `G⊡p → ⊡Gp`; What it shows: the converse of GS fails,
+  even for atoms
+* `refute_stab_allFuture_past` — Refuted schema: `⊡GPp → G⊡Pp`; What it shows: GS
+  (`stab_allFuture_valid`) genuinely needs its pure-future side condition
+* `refute_determined` — Refuted schema: `Fp → ⊡Fp`; What it shows: *Determined* (paper line 1426) is
+  refuted over a non-deterministic frame
+* `refute_somePast_stab` — Refuted schema: `P⊡p → ⊡Pp`; What it shows: `⟨τ⟩_t` is not closed towards
+  the past
 
 On `refute_determined`: this module lands only the refutation over a non-deterministic frame
-(the second half of the paper's `app:deterministic` correspondence theorem, in the `natFrame` shape); validity of the *Determined*
-schema over deterministic frames is **not** formalized here, and no claim about the class of
-frames validating it is made.
+(the second half of the paper's `app:deterministic` correspondence theorem, in the `natFrame`
+shape); validity of the *Determined* schema over deterministic frames is **not** formalized here,
+and no claim about the class of frames validating it is made.
 
-On `refute_allFuture_stab` / `refute_stab_allFuture_past`: GS (`Semantics/PlusLanguage/PlusPasting.lean`,
-`stab_allFuture_valid`) is `⊡Gφ → G⊡φ` for **pure-future** `φ`. The second refutation shows the
-restriction is necessary — with `φ := Pp` the pasted history keeps `τ`'s past, not the
-witness's, and `Pp` flips — and the first shows the converse direction is simply wrong.
+On `refute_allFuture_stab` / `refute_stab_allFuture_past`: GS
+(`Semantics/PlusLanguage/PlusPasting.lean`, `stab_allFuture_valid`) is `⊡Gφ → G⊡φ` for
+**pure-future** `φ`. The second refutation shows the restriction is necessary — with `φ := Pp` the
+pasted history keeps `τ`'s past, not the witness's, and `Pp` flips — and the first shows the
+converse direction is simply wrong.
 
 `refute_somePast_stab` is the `⊡`-analogue of the single tense/modal interaction axiom of
 T×W / Ockhamist logic (Kamp's AK12 in Thomason 1984 §4; Reynolds 2003's HN), and it fails here
@@ -46,7 +49,8 @@ Transcription of Part D of the compiled stability-modal probes recorded with the
 
 ## References
 
-* JPL paper line 1426 (*Determined*), `app:deterministic` (whose second half is the non-deterministic refutation)
+* JPL paper line 1426 (*Determined*), `app:deterministic` (whose second half is the
+  non-deterministic refutation)
 * `FormalSystem/Semantics/TaskFrame.lean` — `natFrame`
 
 ## Tags
@@ -137,23 +141,23 @@ theorem refute_stab_allFuture_past (p : Atom) :
 *Determined* `Fp → ⊡Fp` is refuted over a non-deterministic frame: the **negative half** of
 `app:deterministic`, in the `natFrame` shape.
 
-The positive half **is** formalized, in `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — see
-`determined_of_deterministic`, which shows the schema valid on every frame satisfying
+The positive half **is** formalized, in `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` —
+see `determined_of_deterministic`, which shows the schema valid on every frame satisfying
 `TaskFrame.Deterministic` (`Semantics/FrameProperty.lean`). The two halves are the two sides of
-`app:deterministic` and cite each other; neither statement claims the other's converse, and in
-fact the converse of the positive half is false (a non-deterministic frame validating the schema
-is exhibited under `Metalogic/Independence/`).
+`app:deterministic` and cite each other; neither statement claims the other's converse, and in fact
+the converse of the positive half is false (a non-deterministic frame validating the schema is
+exhibited under `Metalogic/Independence/`).
 
 Two things the refutation depends on, recorded because both are easy to lose:
 
 * **The refuting instance is `Fp`, not an atom.** At an atom the schema `p → ⊡p` holds on *every*
-  frame (`stab_of_stateLocal` at `stateLocal_atom`, `Semantics/PlusLanguage/PlusStateLocal.lean`): an atom's
-  truth depends on the world state alone, which is exactly what `⊡` quantifies over. More is
-  true — `Fp` is refutable precisely *because* it lies outside the state-locality fragment
-  (`not_isPlusStateLocal_someFuture`), and every formula inside it satisfies the schema. So no uniform-substitution argument is
-  available here — a schema can be frame-valid at its atomic instances and refutable at a
-  genuinely temporal one, and it is. Every refutation in this family must exhibit a temporal
-  formula.
+  frame (`stab_of_stateLocal` at `stateLocal_atom`, `Semantics/PlusLanguage/PlusStateLocal.lean`):
+  an atom's truth depends on the world state alone, which is exactly what `⊡` quantifies over. More
+  is true — `Fp` is refutable precisely *because* it lies outside the state-locality fragment
+  (`not_isPlusStateLocal_someFuture`), and every formula inside it satisfies the schema. So no
+  uniform-substitution argument is available here — a schema can be frame-valid at its atomic
+  instances and refutable at a genuinely temporal one, and it is. Every refutation in this family
+  must exhibit a temporal formula.
 * **`NF`'s discreteness is a genuine hypothesis**, carried by `natFrame`'s `[SuccOrder D]` and
   `[NoMaxOrder D]` binders, not a convenience of the presentation. In a *dense* order the cone
   around a state is all of `W` and the frame's *Limit* field fails outright, so this particular

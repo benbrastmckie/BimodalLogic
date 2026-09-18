@@ -118,8 +118,9 @@ halves are assembled. The transfer
 `LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos : D ≃+o ℤ` needs exactly two
 inputs the `ValidZTime` bundle does not already supply:
 
-1. `Archimedean D` — which does **not** synthesize from `[IsSuccArchimedean D] [IsPredArchimedean D]`;
-   those are order-successor conditions, not the additive Archimedean property; and
+1. `Archimedean D` — which does **not** synthesize from
+   `[IsSuccArchimedean D] [IsPredArchimedean D]`; those are order-successor conditions, not the
+   additive Archimedean property; and
 2. an `IsLeast {y : D | 0 < y}` witness — which is what the successor structure is there to produce.
 
 **The recorded wrong turn**: `orderIsoIntOfLinearSuccPredArch` fits the `ValidZTime` bundle
@@ -332,8 +333,8 @@ Every nontrivial totally ordered abelian group is either densely ordered, or has
 strictly positive element. No least-upper-bound hypothesis, no Archimedean hypothesis — this is
 deliberately weaker in its assumptions than `complete_duration_discrete_or_dense` and
 `isLeast_pos_succ_zero` above, and is what lets the (Sp) validity argument
-(`Metalogic/Conservativity/SpWitness.lean`) apply to an arbitrary `TaskFrame.Duration` rather than only to a
-Dedekind-complete or successor-structured one.
+(`Metalogic/Conservativity/SpWitness.lean`) apply to an arbitrary `TaskFrame.Duration` rather than
+only to a Dedekind-complete or successor-structured one.
 
 **Proof idea**: if `D` is not densely ordered, some `a < b` has nothing strictly between them;
 set `d := b - a`. Then `0 < d` (from `a < b`), and `d` is a lower bound for the positive cone: if

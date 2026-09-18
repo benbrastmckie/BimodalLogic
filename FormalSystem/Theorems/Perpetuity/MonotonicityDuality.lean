@@ -147,7 +147,8 @@ Diamond monotonicity: from `⊢ A → B`, derive `⊢ ◇A → ◇B`.
 
 Derived via contraposition of boxMono applied to the negated implication.
 -/
-def diamondMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.diamond.imp B.diamond := by
+def diamondMono {fc : FrameClass} {A B : Formula}
+    (h : ⊢[fc] A.imp B) : ⊢[fc] A.diamond.imp B.diamond := by
   have contra : ⊢[fc] B.neg.imp A.neg := contraposition h
   have box_contra : ⊢[fc] B.neg.box.imp A.neg.box := boxMono contra
   exact contraposition box_contra
@@ -157,7 +158,8 @@ Future monotonicity: from `⊢ A → B`, derive `⊢ GA → GB`.
 
 Uses temporal K rule and future K distribution axiom.
 -/
-def futureMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.allFuture.imp B.allFuture := by
+def futureMono {fc : FrameClass} {A B : Formula}
+    (h : ⊢[fc] A.imp B) : ⊢[fc] A.allFuture.imp B.allFuture := by
   have g_h : ⊢[fc] (A.imp B).allFuture := DerivationTree.temporal_necessitation _ h
   have fk : ⊢[fc] (A.imp B).allFuture.imp (A.allFuture.imp B.allFuture) := futureKDist A B
   exact DerivationTree.modus_ponens [] _ _ fk g_h
@@ -167,7 +169,8 @@ Past monotonicity: from `⊢ A → B`, derive `⊢ HA → HB`.
 
 Derived via time reflection from future monotonicity.
 -/
-def pastMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.allPast.imp B.allPast := by
+def pastMono {fc : FrameClass} {A B : Formula}
+    (h : ⊢[fc] A.imp B) : ⊢[fc] A.allPast.imp B.allPast := by
   have h_swap : ⊢[fc] A.reflectTime.imp B.reflectTime := by
     have td : ⊢[fc] (A.imp B).reflectTime := DerivationTree.time_reflection (A.imp B) h
     exact td
@@ -344,7 +347,8 @@ So this is asking: `(always ((φ → ⊥) → ⊥)).neg → (always φ).neg`
 
 Use DNI on φ: `φ.always → φ.neg.neg.always` and contrapose.
 -/
-def temporalDualityNeg {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.sometimes.imp φ.always.neg := by
+def temporalDualityNeg {fc : FrameClass}
+    (φ : Formula) : ⊢[fc] φ.neg.sometimes.imp φ.always.neg := by
   -- Goal: φ.neg.sometimes → φ.always.neg
   -- Expand: (φ.neg).neg.always.neg → φ.always.neg
 
@@ -419,7 +423,8 @@ Strategy:
    Which is: `φ.always.neg → φ.neg.neg.always.neg`
 3. This matches our goal
 -/
-def temporalDualityNegRev {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.neg.imp φ.neg.sometimes := by
+def temporalDualityNegRev {fc : FrameClass}
+    (φ : Formula) : ⊢[fc] φ.always.neg.imp φ.neg.sometimes := by
   -- Goal: φ.always.neg → φ.neg.sometimes
   -- Expand: φ.always.neg → (φ.neg).neg.always.neg
 
@@ -442,7 +447,8 @@ Always monotonicity: from `⊢ A → B`, derive `⊢ △A → △B`.
 
 **Usage**: Essential for P6 derivation to lift modalDualityNeg through always.
 -/
-def alwaysMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.always.imp B.always := by
+def alwaysMono {fc : FrameClass} {A B : Formula}
+    (h : ⊢[fc] A.imp B) : ⊢[fc] A.always.imp B.always := by
   -- Step 1: Get monotonicity for each component
   have past_h : ⊢[fc] A.allPast.imp B.allPast := pastMono h
   have future_h : ⊢[fc] A.allFuture.imp B.allFuture := futureMono h
@@ -477,7 +483,8 @@ Proof:
 2. Chain with DNE: `¬¬B → ¬¬A → A`
 3. Prepend DNI: `B → ¬¬B → A`
 -/
-def doubleContrapose {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.neg.imp B.neg) : ⊢[fc] B.imp A := by
+def doubleContrapose {fc : FrameClass} {A B : Formula}
+    (h : ⊢[fc] A.neg.imp B.neg) : ⊢[fc] B.imp A := by
   have contra : ⊢[fc] B.neg.neg.imp A.neg.neg := contraposition h
   have dne_a : ⊢[fc] A.neg.neg.imp A := Propositional.doubleNegation A
   have chain : ⊢[fc] B.neg.neg.imp A := impTrans contra dne_a
@@ -501,7 +508,8 @@ Proof:
 3. `diamondMono` lifts step 2: `◇¬△φ → ◇▽¬φ`
 4. Compose steps 1 and 3
 -/
-def bridge1 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.box.neg.imp φ.neg.sometimes.diamond := by
+def bridge1 {fc : FrameClass}
+    (φ : Formula) : ⊢[fc] φ.always.box.neg.imp φ.neg.sometimes.diamond := by
   have md_rev : ⊢[fc] φ.always.box.neg.imp (φ.always).neg.diamond :=
     modalDualityNegRev φ.always
   have td_rev : ⊢[fc] φ.always.neg.imp φ.neg.sometimes :=
@@ -522,7 +530,8 @@ Proof:
 4. Observe: `¬¬△¬□φ = (¬▽□φ)` since `▽ψ = ¬△¬ψ`
 5. Compose steps 2 and 3
 -/
-def bridge2 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.diamond.always.imp φ.box.sometimes.neg := by
+def bridge2 {fc : FrameClass}
+    (φ : Formula) : ⊢[fc] φ.neg.diamond.always.imp φ.box.sometimes.neg := by
   have md : ⊢[fc] φ.neg.diamond.imp φ.box.neg := modalDualityNeg φ
   have am : ⊢[fc] φ.neg.diamond.always.imp φ.box.neg.always := alwaysMono md
   have dni_step : ⊢[fc] φ.box.neg.always.imp φ.box.neg.always.neg.neg :=

@@ -23,12 +23,19 @@ under the seven rules of TM. Its semantics is the paper's `($\Stability$)` claus
 **This file is the aggregator, and it holds no declarations.** It re-exports the four modules of
 the L⁺ metatheory:
 
-| Module | Contents |
-|--------|----------|
-| `Conservativity/Plus/Atomization.lean` | `Encoding`, `atomize`, `TaskModel.atomModel`, the transfer lemma `plusTruthAt_iff_atomize`, and `plusValidIn_of_tm` / `plusValidIn_reflect_time_of_tm` — TM schema soundness over L⁺ in one lemma |
-| `Conservativity/Plus/AxiomValidity.lean` | `plusAxiom_validIn_min`, `plusAxiom_reflect_time_validIn_min` — validity and reflection-validity of every `PlusAxiom` constructor, one arm each |
-| `Conservativity/Plus/PlusSoundness.lean` | `plus_derivable_valid_and_reflect_time_validIn`, `plus_soundness_validIn`, `plus_soundness_in`, the four rows — soundness of TM⁺ at every class, TR discharged semantically |
-| `Conservativity/Plus/Forward.lean` | `forward_plus`, `plusDerivable_ofFormula_iff`, `plus_of_tmMinus`, `tmFrag_iff_plus` — conservativity over TM in both directions |
+Each entry reads *Module* — *Contents*:
+
+* `Conservativity/Plus/Atomization.lean` — `Encoding`, `atomize`, `TaskModel.atomModel`, the
+  transfer lemma `plusTruthAt_iff_atomize`, and `plusValidIn_of_tm` /
+  `plusValidIn_reflect_time_of_tm` — TM schema soundness over L⁺ in one lemma
+* `Conservativity/Plus/AxiomValidity.lean` — `plusAxiom_validIn_min`,
+  `plusAxiom_reflect_time_validIn_min` — validity and reflection-validity of every `PlusAxiom`
+  constructor, one arm each
+* `Conservativity/Plus/PlusSoundness.lean` — `plus_derivable_valid_and_reflect_time_validIn`,
+  `plus_soundness_validIn`, `plus_soundness_in`, the four rows — soundness of TM⁺ at every class, TR
+  discharged semantically
+* `Conservativity/Plus/Forward.lean` — `forward_plus`, `plusDerivable_ofFormula_iff`,
+  `plus_of_tmMinus`, `tmFrag_iff_plus` — conservativity over TM in both directions
 
 ## The result, stated precisely
 

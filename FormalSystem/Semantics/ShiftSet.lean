@@ -31,8 +31,8 @@ precisely `TruthAt` transfer that a downstream Łoś lemma must be stated agains
   task model (`ShiftSet.model`) whose truth at the orbit history through `w` agrees with
   shift-set truth: `TruthAt S.model (S.hist w) t φ ↔ ShiftTruth S w t φ`.
 - `ShiftSet.reverse_repr` — every task model `M` over a frame `F` induces a shift set
-  (`ShiftSet.ofModel`) on the carrier `WorldHistory F` of total histories, whose shift-set truth agrees
-  with truth in `M`: `ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ t φ`.
+  (`ShiftSet.ofModel`) on the carrier `WorldHistory F` of total histories, whose shift-set truth
+  agrees with truth in `M`: `ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ t φ`.
 
 ## Four axioms in place of six frame fields
 
@@ -57,9 +57,9 @@ proper stabiliser. That is what the `sep` field is for — see its own docstring
 
 `#print axioms` on `reverse_repr` reports `Classical.choice`. Its sole provenance is
 `PartialHistory.hF_nonempty` (`FormalSystem/Semantics/Extension/Extension.lean`), which is
-Zorn-based, and which the reverse direction uses only to witness that the carrier `WorldHistory F` is
-nonempty. This is not a defect: choice is ordinary mathematics here, and the standard this
-module is held to forbids unproved placeholders, not `Classical.choice`.
+Zorn-based, and which the reverse direction uses only to witness that the carrier `WorldHistory F`
+is nonempty. This is not a defect: choice is ordinary mathematics here, and the standard this module
+is held to forbids unproved placeholders, not `Classical.choice`.
 
 ## Tags
 

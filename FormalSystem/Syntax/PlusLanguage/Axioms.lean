@@ -12,9 +12,10 @@ import FormalSystem.ProofSystem.Axioms
 
 The axiom system **TM⁺** for the language L⁺ (`PlusLanguage/Formula.lean`): the 29 TM schemata
 (`ProofSystem/Axioms.lean`) plus the 16 TM-derivable schemata kept primitive in TM⁺ (the
-time-reflection mirrors and modal 4/B, which TM derives in `FormalSystem.ProofSystem.DerivedAxioms`),
-all **re-declared with `PlusFormula` parameters**, plus eight schemata for the stability modal `⊡`.
-TL, CN and TS are stated as the paper states them, in lockstep with TM.
+time-reflection mirrors and modal 4/B, which TM derives in
+`FormalSystem.ProofSystem.DerivedAxioms`), all **re-declared with `PlusFormula` parameters**, plus
+eight schemata for the stability modal `⊡`. TL, CN and TS are stated as the paper states them, in
+lockstep with TM.
 
 ## Why the TM schemata are re-declared rather than embedded
 
@@ -30,16 +31,18 @@ arm: a TM derivation reaches them only through the primitive axioms and time ref
 
 ## The `⊡` schemata
 
-| Name | Schema | Validity |
-|------|--------|----------|
-| `stab_k` | `⊡(φ → ψ) → (⊡φ → ⊡ψ)` | universal-quantifier shape of the `stab` clause |
-| `stab_t` | `⊡φ → φ` | `Semantics/PlusLanguage/PlusTruth.lean`, `of_stab` |
-| `stab_4` | `⊡φ → ⊡⊡φ` | `stab_four` |
-| `stab_5` | `⟐φ → ⊡⟐φ` (as `¬⊡¬φ → ⊡¬⊡¬φ`) | `stab_five` |
-| `box_stab` | `□φ → ⊡φ` | `stab_of_box` (`⟨τ⟩_x ⊆ H_F`, paper line 1108) |
-| `atom_stab` | `p → ⊡p` for atoms | `stab_of_stateLocal` at `stateLocal_atom` (paper footnote, line 1119) |
-| `paste` | `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))`, `φ⁺` pure-future, `ψ⁻` pure-past | `Semantics/PlusLanguage/PlusPasting.lean`, `paste_valid` |
-| `untl_paste` | `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)`, `α⁻` pure-past, `φ⁺` pure-future | `untl_dstab_valid` |
+* `stab_k` — Schema: `⊡(φ → ψ) → (⊡φ → ⊡ψ)`; Validity: universal-quantifier shape of the `stab`
+  clause
+* `stab_t` — Schema: `⊡φ → φ`; Validity: `Semantics/PlusLanguage/PlusTruth.lean`, `of_stab`
+* `stab_4` — Schema: `⊡φ → ⊡⊡φ`; Validity: `stab_four`
+* `stab_5` — Schema: `⟐φ → ⊡⟐φ` (as `¬⊡¬φ → ⊡¬⊡¬φ`); Validity: `stab_five`
+* `box_stab` — Schema: `□φ → ⊡φ`; Validity: `stab_of_box` (`⟨τ⟩_x ⊆ H_F`, paper line 1108)
+* `atom_stab` — Schema: `p → ⊡p` for atoms; Validity: `stab_of_stateLocal` at `stateLocal_atom`
+  (paper footnote, line 1119)
+* `paste` — Schema: `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))`, `φ⁺` pure-future, `ψ⁻` pure-past; Validity:
+  `Semantics/PlusLanguage/PlusPasting.lean`, `paste_valid`
+* `untl_paste` — Schema: `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)`, `α⁻` pure-past, `φ⁺` pure-future; Validity:
+  `untl_dstab_valid`
 
 The first four say that the monomodal logic of `⊡` is S5 (paper footnote, line 1118: `⟨τ⟩_x`
 is an equivalence class of `σ ∼_x τ := σ(x) = τ(x)`), and the next two are the bridge principles
@@ -60,8 +63,8 @@ exchanges `IsPureFuture` and `IsPurePast`. `⊡`-necessitation is likewise a der
 
 **Refuted, hence absent.** `⊡φ → □⊡φ`, `G⊡p → ⊡Gp`, `⊡GPp → G⊡Pp`, *Determined* `φ → ⊡φ` (over
 non-deterministic frames), and `P⊡p → ⊡Pp` are all refuted in
-`Semantics/PlusLanguage/PlusNonValidities.lean`. In particular *Determined* must never be added here: it is
-refuted at `.Base`, so adding it would falsify TM⁺ soundness. A validity notion over the
+`Semantics/PlusLanguage/PlusNonValidities.lean`. In particular *Determined* must never be added
+here: it is refuted at `.Base`, so adding it would falsify TM⁺ soundness. A validity notion over the
 deterministic frames can be stated through `PlusValidOnFrames` without touching this inductive.
 
 **Open.** Completeness of TM⁺ over the all-histories semantics, and decidability of TM⁺, are
@@ -96,9 +99,9 @@ open FormalSystem.ProofSystem (FrameClass)
 open PlusFormula
 
 /--
-Axiom schemata of TM⁺ over `PlusFormula`: the 29 TM schemata and 16 TM-derivable schemata re-declared with `PlusFormula`
-parameters, then the eight `⊡` schemata. See the module docstring for the design and the axiom
-inventory.
+Axiom schemata of TM⁺ over `PlusFormula`: the 29 TM schemata and 16 TM-derivable schemata
+re-declared with `PlusFormula` parameters, then the eight `⊡` schemata. See the module docstring for
+the design and the axiom inventory.
 -/
 inductive PlusAxiom : PlusFormula → Type where
   -- Layer 1: Propositional (4)
@@ -115,7 +118,8 @@ inductive PlusAxiom : PlusFormula → Type where
   /-- Modal T: `□φ → φ` -/
   | modal_t (φ : PlusFormula) : PlusAxiom (PlusFormula.box φ |>.imp φ)
   /-- Modal 4: `□φ → □□φ` -/
-  | modal_4 (φ : PlusFormula) : PlusAxiom ((PlusFormula.box φ).imp (PlusFormula.box (PlusFormula.box φ)))
+  | modal_4 (φ : PlusFormula) : PlusAxiom
+      ((PlusFormula.box φ).imp (PlusFormula.box (PlusFormula.box φ)))
   /-- Modal B: `φ → □◇φ` -/
   | modal_b (φ : PlusFormula) : PlusAxiom (φ.imp (PlusFormula.box φ.diamond))
   /-- Modal 5 Collapse: `◇□φ → □φ` -/

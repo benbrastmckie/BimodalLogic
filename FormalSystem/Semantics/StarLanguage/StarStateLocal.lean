@@ -33,20 +33,23 @@ over, so a state-local `φ` is already `⊡`-stable — the headline `φ ↔ ⊡
 
 ## Which constructors are state-local, and why
 
-Read off `StarTruthAt` (`Semantics/StarLanguage/StarTruth.lean`) clause by clause, at the **same** evaluation
-time and the **same** register vector on both sides:
+Read off `StarTruthAt` (`Semantics/StarLanguage/StarTruth.lean`) clause by clause, at the **same**
+evaluation time and the **same** register vector on both sides:
 
-| Constructor | State-local? | Why |
-|---|---|---|
-| `atom p` | yes | `M.valuation (τ.state t) p` reads the state at `t` and nothing else |
-| `bot` | yes | constant |
-| `imp φ ψ` | yes if both are | pointwise |
-| `box φ` | yes, for arbitrary `φ` | `∀ σ : WorldHistory F, …` does not mention `τ` at all |
-| `stab φ` | yes, for arbitrary `φ` | the class `⟨τ⟩ₜ` is unchanged by replacing `τ` with any history agreeing at `t` (transitivity of the state equation) |
-| `untl ψ φ` | no | quantifies over `s > t`, where the two histories may diverge |
-| `snce ψ φ` | no | quantifies over `s < t`, likewise |
-| `timeStore i φ` | yes if `φ` is | evaluation stays at `t`, and both sides write the same `t` |
-| `timeRecall i φ` | no | moves evaluation to `vᵢ`, which the hypothesis at `t` does not constrain |
+* `atom p` — State-local?: yes; Why: `M.valuation (τ.state t) p` reads the state at `t` and nothing
+  else
+* `bot` — State-local?: yes; Why: constant
+* `imp φ ψ` — State-local?: yes if both are; Why: pointwise
+* `box φ` — State-local?: yes, for arbitrary `φ`; Why: `∀ σ : WorldHistory F, …` does not mention
+  `τ` at all
+* `stab φ` — State-local?: yes, for arbitrary `φ`; Why: the class `⟨τ⟩ₜ` is unchanged by replacing
+  `τ` with any history agreeing at `t` (transitivity of the state equation)
+* `untl ψ φ` — State-local?: no; Why: quantifies over `s > t`, where the two histories may diverge
+* `snce ψ φ` — State-local?: no; Why: quantifies over `s < t`, likewise
+* `timeStore i φ` — State-local?: yes if `φ` is; Why: evaluation stays at `t`, and both sides write
+  the same `t`
+* `timeRecall i φ` — State-local?: no; Why: moves evaluation to `vᵢ`, which the hypothesis at `t`
+  does not constrain
 
 `box` and `stab` are the two entries a reader is most likely to expect a recursive hypothesis on.
 They do not need one: `isStateLocal_box` and `isStateLocal_stab` are proved for an arbitrary
@@ -55,12 +58,13 @@ reading would give.
 
 ## Same-time, not different-times
 
-`stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`) is a **different-times** statement: `τ(t) = σ(s)`
-transfers `⊡φ` from `(τ, t)` to `(σ, s)`. That shape does **not** generalize to this fragment —
-`box φ` at `t` and at `s` can differ, and `timeStore i` writes a different time into the register
-on each side. The same-time shape used here (one `t`, one `v⃗`) is both provable for the fragment
-and exactly what the consumer needs: `settledDisj_iff` (`Semantics/StarLanguage/StarValidity.lean`) evaluates
-`φ` at the *single* time held in register `2`.
+`stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`) is a **different-times** statement:
+`τ(t) = σ(s)` transfers `⊡φ` from `(τ, t)` to `(σ, s)`. That shape does **not** generalize to this
+fragment — `box φ` at `t` and at `s` can differ, and `timeStore i` writes a different time into the
+register on each side. The same-time shape used here (one `t`, one `v⃗`) is both provable for the
+fragment and exactly what the consumer needs: `settledDisj_iff`
+(`Semantics/StarLanguage/StarValidity.lean`) evaluates `φ` at the *single* time held in register
+`2`.
 
 So this module is the companion facing the other way to `stab_state_only`: that lemma says `⊡φ`
 is state-local, this one says a state-local `φ` is already `⊡`-stable.
@@ -77,10 +81,10 @@ a nine-case induction with no side conditions.
 ## The three exclusions live on one frame
 
 `not_isStateLocal_someFuture`, `not_isStateLocal_somePast` and `not_isStateLocal_timeRecall` are
-all witnessed on the permissive frame `NF` over `ℤ` (`Semantics/PlusLanguage/PlusNonValidities.lean`), where
-every function `ℤ → ℕ` is a possible world and `natModel` makes each atom true at world state `0`
-and nowhere else. No second countermodel frame is built: two possible worlds agreeing at `0` and
-disagreeing away from `0` refute all three.
+all witnessed on the permissive frame `NF` over `ℤ`
+(`Semantics/PlusLanguage/PlusNonValidities.lean`), where every function `ℤ → ℕ` is a possible world
+and `natModel` makes each atom true at world state `0` and nowhere else. No second countermodel
+frame is built: two possible worlds agreeing at `0` and disagreeing away from `0` refute all three.
 
 ## References
 
@@ -349,9 +353,9 @@ theorem stateLocal_stab_iff {F : TaskFrame} {φ : StarFormula} (hφ : φ.StateLo
 /--
 **`φ ↔ ⊡φ` for state-local `φ`**, as a validity of L⋆.
 
-The companion facing the other way to `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`): that lemma
-says `⊡φ` depends on the world state alone, this one says a formula that already depends on the
-world state alone is `⊡`-stable.
+The companion facing the other way to `stab_state_only` (`Semantics/PlusLanguage/PlusTruth.lean`):
+that lemma says `⊡φ` depends on the world state alone, this one says a formula that already depends
+on the world state alone is `⊡`-stable.
 
 Paper: — (the formalization's own: the manuscript states no fragment-level `φ ↔ ⊡φ`, and the
 nearest paper-anchored statement is the atom-level `p → ⊡p` of `def:BLstar-semantics`'s footnote,

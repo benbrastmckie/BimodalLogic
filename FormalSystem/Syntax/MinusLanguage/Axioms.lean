@@ -42,79 +42,84 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
 
 **Introduction (`\S sec:Introduction`) — motivating, invalid principles:**
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `SP1` | none | Invalid-under-2D-semantics principle; not formalized (the Lean tree formalizes `TM⁻`, not the 2D-semantics counterexample). |
-| `SP2` | none | As above. |
+* `SP1` — Lean identifier: none; Notes: Invalid-under-2D-semantics principle; not formalized (the
+  Lean tree formalizes `TM⁻`, not the 2D-semantics counterexample).
+* `SP2` — Lean identifier: none; Notes: As above.
 
 **Necessarily Always (`\S sub:NecessarilyAlways`):**
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `TP1` | none | Trivial (Montagovian) perpetuity principle; no Lean counterpart. |
-| `TP2` | none | As above. |
+* `TP1` — Lean identifier: none; Notes: Trivial (Montagovian) perpetuity principle; no Lean
+  counterpart.
+* `TP2` — Lean identifier: none; Notes: As above.
 
 **Bimodal Logic (`\S sub:Logic`) — S5 modal group:**
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `MK` | `Axiom.modal_k` | |
-| `MT` | `Axiom.modal_t` | |
-| `M5` | `Axiom.modal_5` | |
-| `MP` | `MinusLanguage.DerivationTree.modus_ponens` | Rule, in `MinusLanguage/Derivation.lean`. |
-| `MN` | `MinusLanguage.DerivationTree.necessitation` | Rule, in `MinusLanguage/Derivation.lean`. |
+* `MK` — Lean identifier: `Axiom.modal_k`
+* `MT` — Lean identifier: `Axiom.modal_t`
+* `M5` — Lean identifier: `Axiom.modal_5`
+* `MP` — Lean identifier: `MinusLanguage.DerivationTree.modus_ponens`; Notes: Rule, in
+  `MinusLanguage/Derivation.lean`.
+* `MN` — Lean identifier: `MinusLanguage.DerivationTree.necessitation`; Notes: Rule, in
+  `MinusLanguage/Derivation.lean`.
 
 **Bimodal Logic (`\S sub:Logic`) — BX temporal group** (`BX` = Burgess–Xu tense system,
 `def:BX` in the paper):
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `TN` | `MinusLanguage.DerivationTree.temporal_necessitation` | Rule; content matches, paper key not quoted verbatim in the doc-comment. |
-| `TR` | `MinusLanguage.DerivationTree.time_reflection` | Rule. |
-| `TS` | `Axiom.temp_serial` | |
-| `TC` | `Axiom.temp_connect` | |
-| `TL` | `Axiom.temp_linearity` | Disjunct order/association is the paper's, transcribed verbatim (see the doc-comment above). |
-| `UE`, `UT`, `NP`, `NF`, `UI`, `UC`, `UF`, `UG`, `SU`, `NA`, `NB`, `CN` | none (under these names) | The Lean `BX` layer (`ProofSystem/Axioms.lean`'s until/since constructors: `serial_future`, `left_mono_until_G`, `enrichment_until`, ...) states the same system under descriptive names, with each past mirror explicit where the paper derives it by TR. The constructor-by-constructor naming audit is **closed**: the key-to-constructor-to-mirror table is in `docs/reference/axiom-reference.md` § Paper Key Correspondence (a textual correspondence, not a machine-checked equivalence). The audit was originally opened in `specs/archive/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md` §1.2. |
+* `TN` — Lean identifier: `MinusLanguage.DerivationTree.temporal_necessitation`; Notes: Rule;
+  content matches, paper key not quoted verbatim in the doc-comment.
+* `TR` — Lean identifier: `MinusLanguage.DerivationTree.time_reflection`; Notes: Rule.
+* `TS` — Lean identifier: `Axiom.temp_serial`
+* `TC` — Lean identifier: `Axiom.temp_connect`
+* `TL` — Lean identifier: `Axiom.temp_linearity`; Notes: Disjunct order/association is the paper's,
+  transcribed verbatim (see the doc-comment above).
+* `UE`, `UT`, `NP`, `NF`, `UI`, `UC`, `UF`, `UG`, `SU`, `NA`, `NB`, `CN` — Lean identifier: none
+  (under these names); Notes: The Lean `BX` layer (`ProofSystem/Axioms.lean`'s until/since
+  constructors: `serial_future`, `left_mono_until_G`, `enrichment_until`, ...) states the same
+  system under descriptive names, with each past mirror explicit where the paper derives it by TR.
+  The constructor-by-constructor naming audit is **closed**: the key-to-constructor-to-mirror table
+  is in `docs/reference/axiom-reference.md` § Paper Key Correspondence (a textual correspondence,
+  not a machine-checked equivalence). The audit was originally opened in §1.2 of the archived
+  report `01_definitional-review-and-closure.md`, under
+  `specs/archive/514_align_definitions_with_source_paper/reports/`.
 
 **Bimodal Logic (`\S sub:Logic`) — interaction and derived perpetuity principles:**
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `MF` | `Axiom.modal_future` | |
-| `P1` | `FormalSystem.Theorems.Perpetuity.perpetuity1` | |
-| `P2` | `FormalSystem.Theorems.Perpetuity.perpetuity2` | |
-| `TF` | `FormalSystem.Theorems.Combinators.temporalFutureDerived` | Derived, not primitive — matches the paper, where `TF` is likewise a derived theorem. |
-| `P3` | `FormalSystem.Theorems.Perpetuity.perpetuity3` | |
-| `P4` | `FormalSystem.Theorems.Perpetuity.perpetuity4` | |
-| `TK` | `Axiom.temp_k` | |
-| `T4` | `Axiom.temp_4` | |
-| `P5` | `FormalSystem.Theorems.Perpetuity.perpetuity5` | |
-| `P6` | `FormalSystem.Theorems.Perpetuity.perpetuity6` | |
+* `MF` — Lean identifier: `Axiom.modal_future`
+* `P1` — Lean identifier: `FormalSystem.Theorems.Perpetuity.perpetuity1`
+* `P2` — Lean identifier: `FormalSystem.Theorems.Perpetuity.perpetuity2`
+* `TF` — Lean identifier: `FormalSystem.Theorems.Combinators.temporalFutureDerived`; Notes: Derived,
+  not primitive — matches the paper, where `TF` is likewise a derived theorem.
+* `P3` — Lean identifier: `FormalSystem.Theorems.Perpetuity.perpetuity3`
+* `P4` — Lean identifier: `FormalSystem.Theorems.Perpetuity.perpetuity4`
+* `TK` — Lean identifier: `Axiom.temp_k`
+* `T4` — Lean identifier: `Axiom.temp_4`
+* `P5` — Lean identifier: `FormalSystem.Theorems.Perpetuity.perpetuity5`
+* `P6` — Lean identifier: `FormalSystem.Theorems.Perpetuity.perpetuity6`
 
 **Extensions (`\S sub:Extension`):**
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `DF` | `Axiom.df` | |
-| `DN` | `Axiom.dn` / `ProofSystem.Axiom.density` | |
-| `CO` | `Axiom.co` | See the CEC fidelity caveat below. |
-| `UZ` | `ProofSystem.Axiom.prior_UZ` | Doc-comment still says "Prior-UZ" (the paper's pre-rename display name); documentation lag, not a Lean defect. |
-| `Z1` | `ProofSystem.Axiom.z1` | |
-| `NN` | `ProofSystem.Axiom.dense_indicator` | |
-| `PU` | `ProofSystem.Axiom.prior_U_gap` | Doc-comment still says "Prior-U" (pre-rename display name); documentation lag. |
-| `SEP` | `ProofSystem.Axiom.sep` | Doc-comments across the Metalogic tree still say "Sep" (Reynolds' own historical name, distinct from the paper's two-letter key convention); out of scope to reconcile here. |
+* `DF` — Lean identifier: `Axiom.df`
+* `DN` — Lean identifier: `Axiom.dn` / `ProofSystem.Axiom.density`
+* `CO` — Lean identifier: `Axiom.co`; Notes: See the CEC fidelity caveat below.
+* `UZ` — Lean identifier: `ProofSystem.Axiom.prior_UZ`; Notes: Doc-comment still says "Prior-UZ"
+  (the paper's pre-rename display name); documentation lag, not a Lean defect.
+* `Z1` — Lean identifier: `ProofSystem.Axiom.z1`
+* `NN` — Lean identifier: `ProofSystem.Axiom.dense_indicator`
+* `PU` — Lean identifier: `ProofSystem.Axiom.prior_U_gap`; Notes: Doc-comment still says "Prior-U"
+  (pre-rename display name); documentation lag.
+* `SEP` — Lean identifier: `ProofSystem.Axiom.sep`; Notes: Doc-comments across the Metalogic tree
+  still say "Sep" (Reynolds' own historical name, distinct from the paper's two-letter key
+  convention); out of scope to reconcile here.
 
 **Appendix: Objective Modality (`\S app:ObjectiveModality`):**
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `Ref`, `Imp`, `LL`, `I1`–`I7`, `Fac`, `Ax`, `Ord`, `O-Ax`, `O-Nec`, `O-Tran`, `O-Comp`, `O-Conv`, `O-Meet`, `O-Rev`, `O-Cons` | none | No Lean counterpart at all (exhaustive grep, zero hits) — this appendix is not formalized. |
+* `Ref`, `Imp`, `LL`, `I1`–`I7`, `Fac`, `Ax`, `Ord`, `O-Ax`, `O-Nec`, `O-Tran`, `O-Comp`, `O-Conv`,
+  `O-Meet`, `O-Rev`, `O-Cons` — Lean identifier: none; Notes: No Lean counterpart at all (exhaustive
+  grep, zero hits) — this appendix is not formalized.
 
 **Appendix: Soundness and Completeness (`\S sub:Soundness...`):**
 
-| Paper key | Lean identifier | Notes |
-|---|---|---|
-| `P7`, `P8` | none | No Lean counterpart yet. |
+* `P7`, `P8` — Lean identifier: none; Notes: No Lean counterpart yet.
 
 ## Reuse of `ProofSystem.FrameClass`
 
@@ -144,7 +149,8 @@ while producing a `DerivationTree` (itself a `Type`). A `Prop`-valued inductive 
 
 ## References
 
-* JPL paper `\S sub:Logic` — the source of the keys MP/MN/MK/MT/M5/MF/TR/TS/TC/TL; TM⁻'s selection of them (with TK, T4) is this repository's own transposition, not a paper system
+* JPL paper `\S sub:Logic` — the source of the keys MP/MN/MK/MT/M5/MF/TR/TS/TC/TL; TM⁻'s selection
+  of them (with TK, T4) is this repository's own transposition, not a paper system
 * JPL paper `\S sub:Extension` — DF, DN, CO
 * `FormalSystem/ProofSystem/Axioms.lean` — the L (Burgess-Xu) counterpart
 -/

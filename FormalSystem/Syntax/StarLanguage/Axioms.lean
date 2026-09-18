@@ -25,17 +25,17 @@ arbitrary `φ`, and that rule (`StarLanguage/Derivation.lean`, `stabNecessitatio
 what an embedding-only route cannot reach.
 
 **Fifty-two of the 53 are schematic without any new side condition.** Each was proved valid, and
-reflection-valid, at arbitrary `StarFormula` metavariables — directly against `StarTruthAt`, never by
-transporting a TM⁺ instance and never by uniform substitution (see
+reflection-valid, at arbitrary `StarFormula` metavariables — directly against `StarTruthAt`, never
+by transporting a TM⁺ instance and never by uniform substitution (see
 `Metalogic/Conservativity/Star/StarAxiomValidity.lean`).
 
 ## The one exception, and the two mirrored side conditions
 
 `modal_future` (`□φ → □Gφ`) is **refuted** over `StarFormula` — see `refute_modal_future`
-(`Semantics/StarLanguage/StarNonValidities.lean`), which fails it already at `φ := ↓¹p → p` over a two-state
-frame. MF is the sole schema in the TM block whose soundness proof consumes time-shift
-homogeneity, and the L⋆ time-shift lemma shifts the stored-time vector along with the history, so
-a `↓ⁱ` can observe the shift. The gap is real, not an artefact.
+(`Semantics/StarLanguage/StarNonValidities.lean`), which fails it already at `φ := ↓¹p → p` over a
+two-state frame. MF is the sole schema in the TM block whose soundness proof consumes time-shift
+homogeneity, and the L⋆ time-shift lemma shifts the stored-time vector along with the history, so a
+`↓ⁱ` can observe the shift. The gap is real, not an artefact.
 
 It is carried here under an explicit `RecallFree` side condition
 (`StarLanguage/Formula.lean`) — the `↓ⁱ`-free fragment, which is exactly the fragment on which
@@ -68,20 +68,26 @@ Every entry is a validity of `StarTruthAt` over *every* task frame; most are def
 justifications are the two clauses of `def:BLstar-semantics`: `↑ⁱφ` at `(τ, x, v⃗)` is `φ` at
 `(τ, x, v⃗[i ↦ x])`, and `↓ⁱφ` at `(τ, x, v⃗)` is `φ` at `(τ, v⃗ᵢ, v⃗)`.
 
-| Constructor | Schema | Why |
-|---|---|---|
-| `store_recall_same` | `↑ⁱ↓ⁱφ ↔ ↑ⁱφ` | register `i` of `v⃗[i ↦ x]` is `x`, the time already being evaluated at |
-| `recall_store_same` | `↓ⁱ↑ⁱφ ↔ ↓ⁱφ` | writing `v⃗ᵢ` into register `i` leaves `v⃗` alone |
-| `recall_recall` | `↓ⁱ↓ʲφ ↔ ↓ʲφ` | `↓ⁱ` sets the time, `↓ʲ` immediately overrides it |
-| `store_store_comm` | `↑ⁱ↑ʲφ ↔ ↑ʲ↑ⁱφ` | both write the *same* time, so the updates commute |
-| `store_k` / `recall_k` | `↑ⁱ(φ→ψ) ↔ (↑ⁱφ → ↑ⁱψ)`, likewise `↓ⁱ` | both registers are *functional*: one point in, one point out |
-| `store_box` / `recall_box` | `↑ⁱ□φ ↔ □↑ⁱφ`, `↓ⁱ□φ ↔ □↓ⁱφ` | `□` moves the history, never the time or the vector |
-| `store_stab` | `↑ⁱ⊡φ ↔ ⊡↑ⁱφ` | `⊡`'s same-state condition is taken at the current time, which is exactly what `↑ⁱ` writes |
-| `store_atom` | `↑ⁱp ↔ p` for atoms | the atom clause does not read the vector |
-| `recall_rigid_future` / `future_rigid_recall` | `↓ⁱφ ↔ G↓ⁱφ`, as two implications | `↓ⁱφ`'s truth does not read the time of evaluation (⟶), and the frame is serial forward (⟵) |
-| `recall_rigid_past` / `past_rigid_recall` | `↓ⁱφ ↔ H↓ⁱφ`, as two implications | the same, backwards |
-| `recall_export_until` | `ψ U ↓ⁱφ ↔ (↓ⁱφ ∧ (ψ U ⊤))` | rigidity plus the `untl` clause |
-| `recall_export_since` | `ψ S ↓ⁱφ ↔ (↓ⁱφ ∧ (ψ S ⊤))` | the past mirror |
+* `store_recall_same` — Schema: `↑ⁱ↓ⁱφ ↔ ↑ⁱφ`; Why: register `i` of `v⃗[i ↦ x]` is `x`, the time
+  already being evaluated at
+* `recall_store_same` — Schema: `↓ⁱ↑ⁱφ ↔ ↓ⁱφ`; Why: writing `v⃗ᵢ` into register `i` leaves `v⃗`
+  alone
+* `recall_recall` — Schema: `↓ⁱ↓ʲφ ↔ ↓ʲφ`; Why: `↓ⁱ` sets the time, `↓ʲ` immediately overrides it
+* `store_store_comm` — Schema: `↑ⁱ↑ʲφ ↔ ↑ʲ↑ⁱφ`; Why: both write the *same* time, so the updates
+  commute
+* `store_k` / `recall_k` — Schema: `↑ⁱ(φ→ψ) ↔ (↑ⁱφ → ↑ⁱψ)`, likewise `↓ⁱ`; Why: both registers are
+  *functional*: one point in, one point out
+* `store_box` / `recall_box` — Schema: `↑ⁱ□φ ↔ □↑ⁱφ`, `↓ⁱ□φ ↔ □↓ⁱφ`; Why: `□` moves the history,
+  never the time or the vector
+* `store_stab` — Schema: `↑ⁱ⊡φ ↔ ⊡↑ⁱφ`; Why: `⊡`'s same-state condition is taken at the current
+  time, which is exactly what `↑ⁱ` writes
+* `store_atom` — Schema: `↑ⁱp ↔ p` for atoms; Why: the atom clause does not read the vector
+* `recall_rigid_future` / `future_rigid_recall` — Schema: `↓ⁱφ ↔ G↓ⁱφ`, as two implications; Why:
+  `↓ⁱφ`'s truth does not read the time of evaluation (⟶), and the frame is serial forward (⟵)
+* `recall_rigid_past` / `past_rigid_recall` — Schema: `↓ⁱφ ↔ H↓ⁱφ`, as two implications; Why: the
+  same, backwards
+* `recall_export_until` — Schema: `ψ U ↓ⁱφ ↔ (↓ⁱφ ∧ (ψ U ⊤))`; Why: rigidity plus the `untl` clause
+* `recall_export_since` — Schema: `ψ S ↓ⁱφ ↔ (↓ⁱφ ∧ (ψ S ⊤))`; Why: the past mirror
 
 **Deliberately absent, because refuted.** `↑ⁱ↓ⁱφ ↔ φ` (the correct law is `store_recall_same`);
 `↓ⁱ⊡φ ↔ ⊡↓ⁱφ` — this is `stab_state_only`'s documented failure inside a recall scope, which is
@@ -126,8 +132,8 @@ same inductive*:
   * `discrete_propagate_fwd`, `discrete_propagate_bwd`, `discrete_box_necessity`,
     `dense_indicator`, `density`, `z1` — arms whose dual is **not** an instance of any
     constructor of this inductive, exactly as at the L level. Each has a named
-    `starValid_*_reflect_time` lemma in `Conservativity/Star/StarAxiomValidity.lean`; the four closed
-    ones transport along `ofPlus`, and `density`/`z1` are direct.
+    `starValid_*_reflect_time` lemma in `Conservativity/Star/StarAxiomValidity.lean`; the four
+    closed ones transport along `ofPlus`, and `density`/`z1` are direct.
   * `prior_U_gap` ↔ `prior_S_gap` — a **dual pair**.
   * `sep` and `modal_future` — arms whose dual is again not a constructor instance:
     `starValid_sep_reflect_time` (through `SoundnessLemmas.sep_order_mirror`) and
@@ -346,19 +352,27 @@ inductive StarAxiom : StarFormula → Type where
   -- Layer 5: Uniformity (5)
   /-- `U(⊤,⊥) → S(⊤,⊥)`. Mirrors `PlusAxiom.discrete_symm_fwd`. -/
   | discrete_symm_fwd :
-      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))
+      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+          (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))
   /-- `S(⊤,⊥) → U(⊤,⊥)`. Mirrors `PlusAxiom.discrete_symm_bwd`. -/
   | discrete_symm_bwd :
-      StarAxiom ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))
+      StarAxiom ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+          (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))
   /-- `U(⊤,⊥) → G(U(⊤,⊥))`. Mirrors `PlusAxiom.discrete_propagate_fwd`. -/
   | discrete_propagate_fwd :
-      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allFuture (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))))
+      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+          (StarFormula.allFuture
+          (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))))
   /-- `U(⊤,⊥) → H(U(⊤,⊥))`. Mirrors `PlusAxiom.discrete_propagate_bwd`. -/
   | discrete_propagate_bwd :
-      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allPast (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))))
+      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+          (StarFormula.allPast
+          (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))))
   /-- `U(⊤,⊥) → □(U(⊤,⊥))`. Mirrors `PlusAxiom.discrete_box_necessity`. -/
   | discrete_box_necessity :
-      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.box (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))))
+      StarAxiom ((StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp
+          (StarFormula.box
+          (StarFormula.untl StarFormula.bot (StarFormula.bot.imp StarFormula.bot))))
   -- Layer 8: Density (2)
   /-- Density: `GGφ → Gφ`. Mirrors `PlusAxiom.density`; routed to `.Dense`. -/
   | density (φ : StarFormula) :
@@ -399,10 +413,10 @@ inductive StarAxiom : StarFormula → Type where
   `PlusAxiom` counterpart.
 
   MF is **refuted** over `StarFormula` at `φ := ↓¹p → p` (`refute_modal_future`,
-  `Semantics/StarLanguage/StarNonValidities.lean`): its soundness proof consumes time-shift homogeneity, and
-  the L⋆ time-shift lemma shifts the stored-time vector along with the history, which a `↓ⁱ` can
-  observe. `RecallFree` (`StarLanguage/Formula.lean`) is exactly the fragment on which the vector
-  is inert, and `refute_modal_future`'s witness is exactly a formula outside it.
+  `Semantics/StarLanguage/StarNonValidities.lean`): its soundness proof consumes time-shift
+  homogeneity, and the L⋆ time-shift lemma shifts the stored-time vector along with the history,
+  which a `↓ⁱ` can observe. `RecallFree` (`StarLanguage/Formula.lean`) is exactly the fragment on
+  which the vector is inert, and `refute_modal_future`'s witness is exactly a formula outside it.
 
   **The side condition is `RecallFree`, not register-freedom, and the difference is real.**
   `□↑¹p → □G↑¹p` is an instance of this arm and is *not* an `ofPlus` image

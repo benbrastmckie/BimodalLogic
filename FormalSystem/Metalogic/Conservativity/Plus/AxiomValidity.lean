@@ -31,13 +31,14 @@ mirror argument is used, since the TM axiom set is not mirror-closed.
   each is `plusValidIn_of_tm` (resp. `plusValidIn_reflect_time_of_tm`) applied to the landed L
   schema at the atomized parameters, under one fixed encoding. No schema is re-proved over
   `PlusTruthAt`.
-- **The six S5/bridge `⊡` arms** are the definitional validities of `Semantics/PlusLanguage/PlusTruth.lean`
-  (`of_stab`, `stab_four`, `stab_five`, `stab_of_box`; K is the universal-quantifier shape of the
-  `stab` clause) together with `stab_of_stateLocal` (`Semantics/PlusLanguage/PlusStateLocal.lean`), which
-  discharges AS at the atom instance `stateLocal_atom p` of the state-locality fragment. Their temporal duals are the same schemata
-  at reflected parameters, because `reflectTime` fixes `stab`.
-- **The two pasting arms** are the PS/US validities of `Semantics/PlusLanguage/PlusPasting.lean`; their
-  temporal duals are the past mirrors `paste'_plusValid` and `snce_paste_plusValid`, with the
+- **The six S5/bridge `⊡` arms** are the definitional validities of
+  `Semantics/PlusLanguage/PlusTruth.lean` (`of_stab`, `stab_four`, `stab_five`, `stab_of_box`; K is
+  the universal-quantifier shape of the `stab` clause) together with `stab_of_stateLocal`
+  (`Semantics/PlusLanguage/PlusStateLocal.lean`), which discharges AS at the atom instance
+  `stateLocal_atom p` of the state-locality fragment. Their temporal duals are the same schemata at
+  reflected parameters, because `reflectTime` fixes `stab`.
+- **The two pasting arms** are the PS/US validities of `Semantics/PlusLanguage/PlusPasting.lean`;
+  their temporal duals are the past mirrors `paste'_plusValid` and `snce_paste_plusValid`, with the
   purity side conditions exchanged by `IsPureFuture.reflectTime` / `IsPurePast.reflectTime`.
 
 ## References
@@ -180,12 +181,15 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.prop_k (A' a0) (A' a1) (A' a2)) le_rfl
   | prop_s a0 a1 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.prop_s (A' a0) (A' a1)) le_rfl
-  | ex_falso a0 => exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.ex_falso (A' a0)) le_rfl
+  | ex_falso a0 => exact plusValidIn_reflect_time_of_tm theEncoding _
+                     (Axiom.ex_falso (A' a0)) le_rfl
   | peirce a0 a1 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.peirce (A' a0) (A' a1)) le_rfl
   | modal_t a0 => exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.modal_t (A' a0)) le_rfl
-  | modal_4 a0 => exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.modal4 (A' a0))
-  | modal_b a0 => exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.modalB (A' a0))
+  | modal_4 a0 => exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+                    (DerivedAxioms.modal4 (A' a0))
+  | modal_b a0 => exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+                    (DerivedAxioms.modalB (A' a0))
   | modal_5_collapse a0 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.modal_5_collapse (A' a0)) le_rfl
   | modal_k_dist a0 a1 =>
@@ -215,14 +219,16 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.enrichmentSince (A' a0) (A' a1) (A' a2))
   | self_accum_until a0 a1 =>
-    exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.self_accum_until (A' a0) (A' a1)) le_rfl
+    exact plusValidIn_reflect_time_of_tm theEncoding _
+        (Axiom.self_accum_until (A' a0) (A' a1)) le_rfl
   | self_accum_since a0 a1 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.selfAccumSince (A' a0) (A' a1))
   | absorb_until a0 a1 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.absorb_until (A' a0) (A' a1)) le_rfl
   | absorb_since a0 a1 =>
-    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.absorbSince (A' a0) (A' a1))
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+        (DerivedAxioms.absorbSince (A' a0) (A' a1))
   | linear_until a0 a1 a2 a3 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _
       (Axiom.linear_until (A' a0) (A' a1) (A' a2) (A' a3)) le_rfl
@@ -254,7 +260,8 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
     exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_propagate_bwd le_rfl
   | discrete_box_necessity =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ Axiom.discrete_box_necessity le_rfl
-  | prior_UZ a0 => exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.prior_UZ (A' a0)) le_rfl
+  | prior_UZ a0 => exact plusValidIn_reflect_time_of_tm theEncoding _
+                     (Axiom.prior_UZ (A' a0)) le_rfl
   | prior_SZ a0 =>
     exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
       (DerivedAxioms.priorSZ le_rfl (A' a0))
@@ -265,7 +272,8 @@ theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ
   | prior_U_gap a0 =>
     exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.prior_U_gap (A' a0)) le_rfl
   | prior_S_gap a0 =>
-    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _ (DerivedAxioms.priorSGap le_rfl (A' a0))
+    exact plusValidIn_reflect_time_of_tm_deriv theEncoding _
+        (DerivedAxioms.priorSGap le_rfl (A' a0))
   | sep a0 => exact plusValidIn_reflect_time_of_tm theEncoding _ (Axiom.sep (A' a0)) le_rfl
   | stab_k a0 a1 =>
     exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)

@@ -65,8 +65,8 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - Time-shift invariance (MF, and TF through it): Uses `WorldHistory.timeShift` and
   `TimeShift.timeShift_preserves_truth` to relate truth at different times. TF is not a
   separate `Axiom` constructor — it is reached by time reflection, so its validity rides on
-  `mf_reflect_time_valid`, the reflection half of the same schema. See **The time-shift consumer set**
-  below for the full enumeration and why its size is load-bearing.
+  `mf_reflect_time_valid`, the reflection half of the same schema. See **The time-shift consumer
+  set** below for the full enumeration and why its size is load-bearing.
 - Classical logic helpers for conjunction extraction (TL)
 - Derivation-indexed induction for time-reflection soundness
 
@@ -85,10 +85,11 @@ argument at all.
 `WorldHistory.timeShift` — is consumed by exactly **one schema** of the TM axiom block, and by
 exactly **two declarations** in the whole soundness layer of this tree:
 
-| Declaration | File | What it establishes |
-|---|---|---|
-| `modal_future_valid` | `Metalogic/Soundness.lean` (below) | MF, `□φ → □Gφ`, is valid |
-| `mf_reflect_time_valid` | `Metalogic/SoundnessLemmas/FrameClassVariants.lean` | MF's temporal dual is valid — the `time_reflection` companion, and therefore what carries TF |
+* `modal_future_valid` — File: `Metalogic/Soundness.lean` (below); What it establishes: MF,
+  `□φ → □Gφ`, is valid
+* `mf_reflect_time_valid` — File: `Metalogic/SoundnessLemmas/FrameClassVariants.lean`; What it
+  establishes: MF's temporal dual is valid — the `time_reflection` companion, and therefore what
+  carries TF
 
 Both belong to the single constructor `Axiom.modal_future`; there is no separate TF constructor
 (`ProofSystem/Axioms.lean`). So the schema-level count is one and the declaration-level count is
@@ -118,13 +119,13 @@ every TM schema transfers and the whole block can be embedded. If it does not, M
 in the TM block — is at risk, and it must be checked rather than assumed.
 
 **The realized consequence.** L⋆ (`StarLanguage/Formula.lean`) is exactly the case where it does
-not. `starTruthAt_timeShift` (`Semantics/StarLanguage/StarTruth.lean`) shifts the stored-time vector along
-with the history, because `↓ⁱ` evaluates at a time in the unshifted frame of reference, so the
-shift argument no longer reaches MF's conclusion. The gap is real and not an artefact of the
-proof: `refute_modal_future` (`Semantics/StarLanguage/StarNonValidities.lean`) refutes MF over `StarFormula`
-already at `φ := ↓¹p → p`. That single fact is why `StarAxiom` (`StarLanguage/Axioms.lean`)
-re-declares the TM⁺ schema block directly over `StarFormula`, rather than
-re-declaring the TM schemata over `StarFormula` as `PlusAxiom` does over `PlusFormula` — a
+not. `starTruthAt_timeShift` (`Semantics/StarLanguage/StarTruth.lean`) shifts the stored-time vector
+along with the history, because `↓ⁱ` evaluates at a time in the unshifted frame of reference, so the
+shift argument no longer reaches MF's conclusion. The gap is real and not an artefact of the proof:
+`refute_modal_future` (`Semantics/StarLanguage/StarNonValidities.lean`) refutes MF over
+`StarFormula` already at `φ := ↓¹p → p`. That single fact is why `StarAxiom`
+(`StarLanguage/Axioms.lean`) re-declares the TM⁺ schema block directly over `StarFormula`, rather
+than re-declaring the TM schemata over `StarFormula` as `PlusAxiom` does over `PlusFormula` — a
 re-declared block would contain an unsound schema.
 
 Languages that *do* inherit MF get it by transfer through the two declarations above, never by
@@ -184,15 +185,14 @@ comes from `SoundnessLemmas`' well-founded descent on succ/pred chains, reached 
 
 The four theorems here are stated over `FormalSystem.Syntax.Formula`, the `untl`/`snce`-primitive
 language L. Their counterparts for the tense-primitive base language L⁻ live in
-`FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`: `minus_soundness`, `minus_soundness_dense`,
-`minus_soundness_ztime` and `minus_soundness_rtime`, each obtained by composing
-`Metalogic/Conservativity/Backward.lean`'s `translate` with the theorem of the same frame class below,
-then crossing the truth-transfer bridge `truthAt_tr` into the native L⁻ semantics of
+`FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`: `minus_soundness`,
+`minus_soundness_dense`, `minus_soundness_ztime` and `minus_soundness_rtime`, each obtained by
+composing `Metalogic/Conservativity/Backward.lean`'s `translate` with the theorem of the same frame
+class below, then crossing the truth-transfer bridge `truthAt_tr` into the native L⁻ semantics of
 `Semantics/MinusLanguage/MinusTruth.lean`. That module also carries the L⁻ consistency corollaries
 `minus_not_derivable_nil_bot` and `minus_not_derivable_nil_bot_ztime`, which mirror
-`not_derivable_nil_bot` and `not_derivable_nil_bot_ztime` below — and inherit their
-frame-class asymmetry, for the same reason: there is no dense or Dedekind-complete witness frame
-in the tree.
+`not_derivable_nil_bot` and `not_derivable_nil_bot_ztime` below — and inherit their frame-class
+asymmetry, for the same reason: there is no dense or Dedekind-complete witness frame in the tree.
 
 ## References
 
@@ -891,7 +891,9 @@ theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
 
 Soundness for `FrameClass.RTime`: Reynolds' axiomatization US/R for real flow.
 
-**The target is `ValidRTime`, NOT `ValidComplete`, and that is deliberate.** See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
+**The target is `ValidRTime`, NOT `ValidComplete`, and that is deliberate.** See the `ValidComplete`
+caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction
+is argued in full.
 -/
 
 /-! ### Semantic validity of the three Reynolds axioms
@@ -939,7 +941,8 @@ theorem prior_U_gap_valid (φ : Formula) :
   obtain ⟨h1, h2⟩ := h_ant
   obtain ⟨s0, hts0, -, hp0⟩ := h1
   obtain ⟨v, htv, hnpv⟩ := h2
-  set A : Set F.Duration := {u : F.Duration | t < u ∧ ∀ r : F.Duration, t < r → r < u → TruthAt M τ r φ} with hA
+  set A : Set F.Duration := {u : F.Duration | t < u ∧ ∀ r : F.Duration,
+      t < r → r < u → TruthAt M τ r φ} with hA
   have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
   have hAbdd : BddAbove A := by
     refine ⟨v, ?_⟩
@@ -977,8 +980,9 @@ that φ holds at every `r` strictly between `u` and `t` -- and the witness is `s
 
 The binder set provides only a least-upper-bound hypothesis, so
 `SoundnessLemmas.exists_isGLB_of_lub` is the bridge: it derives a greatest lower bound of `B` as
-the least upper bound of `B`'s lower-bound set, via `isLUB_lowerBounds`. This costs nothing extra in hypotheses, whereas the alternative
-negation route (`x ↦ -x` reverses the order) would drag in the additive group structure.
+the least upper bound of `B`'s lower-bound set, via `isLUB_lowerBounds`. This costs nothing extra in
+hypotheses, whereas the alternative negation route (`x ↦ -x` reverses the order) would drag in the
+additive group structure.
 
 The trichotomy branches in the final step run in the mirror order to the Prior-U case: for `r`
 between `w` and `t`, the case `r < s` is handled by the refuting witness and `s < r` by the
@@ -993,7 +997,8 @@ theorem prior_S_gap_valid (φ : Formula) :
   obtain ⟨h1, h2⟩ := h_ant
   obtain ⟨s0, hs0t, -, hp0⟩ := h1
   obtain ⟨v, hvt, hnpv⟩ := h2
-  set B : Set F.Duration := {u : F.Duration | u < t ∧ ∀ r : F.Duration, u < r → r < t → TruthAt M τ r φ} with hB
+  set B : Set F.Duration := {u : F.Duration | u < t ∧ ∀ r : F.Duration,
+      u < r → r < t → TruthAt M τ r φ} with hB
   have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
   have hBbdd : BddBelow B := by
     refine ⟨v, ?_⟩
@@ -1182,9 +1187,9 @@ theorem sep_reflect_time_valid (φ : Formula) :
       by_contra hc
       exact hns ⟨s, hus, fun w huw hws hw => hc ⟨w, huw, hws, hw⟩⟩
 
-/-- **Density axiom reflection-validity**: the reflection of `GGφ → Gφ` is `HHφ → Hφ`, valid on every densely
-ordered frame. Given a `¬φ` point `s < t`, density supplies `r` with `s < r < t`, and `r` then
-witnesses `P(¬Hφ)`, which is what the reflected antecedent forbids. -/
+/-- **Density axiom reflection-validity**: the reflection of `GGφ → Gφ` is `HHφ → Hφ`, valid on
+every densely ordered frame. Given a `¬φ` point `s < t`, density supplies `r` with `s < r < t`, and
+`r` then witnesses `P(¬Hφ)`, which is what the reflected antecedent forbids. -/
 theorem density_reflect_time_valid (φ : Formula) :
     ValidDense ((φ.allFuture.allFuture.imp φ.allFuture).reflectTime) := by
   intro F _ M τ t
@@ -1193,8 +1198,9 @@ theorem density_reflect_time_valid (φ : Formula) :
   obtain ⟨r, hsr, hrt⟩ := exists_between hst
   exact h_HH r hrt s hsr
 
-/-- **Dense-indicator axiom reflection-validity**: the reflection of `¬U(⊤,⊥)` is `¬S(⊤,⊥)`, the past density
-indicator. `S(⊤,⊥)` at `t` needs an `s < t` with `(s,t)` empty, which density refutes. -/
+/-- **Dense-indicator axiom reflection-validity**: the reflection of `¬U(⊤,⊥)` is `¬S(⊤,⊥)`, the
+past density indicator. `S(⊤,⊥)` at `t` needs an `s < t` with `(s,t)` empty, which density refutes.
+-/
 theorem dense_indicator_reflect_time_valid :
     ValidDense ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg.reflectTime) := by
   intro F _ M τ t
@@ -1504,8 +1510,8 @@ valid on all discrete frames.
 
 **Note on time_reflection**: this is `soundness_validIn` at `.ZTime`. The
 `time_reflection` case is handled inside `derivable_valid_and_reflect_time_validIn`, which carries
-validity and reflection-validity together at an arbitrary `fc`; the discrete reflection facts it needs
-(Prior-SZ for Prior-UZ and vice versa, `z1_past` for `z1`) enter through
+validity and reflection-validity together at an arbitrary `fc`; the discrete reflection facts it
+needs (Prior-SZ for Prior-UZ and vice versa, `z1_past` for `z1`) enter through
 `axiom_reflect_time_validIn_min`'s discrete arms.
 -/
 theorem soundness_ztime_valid {phi : Formula}
@@ -1564,7 +1570,9 @@ Dedekind-compatible derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at 
 on a dense Dedekind-complete frame, then `φ` is also true there.
 
 **The conclusion is stated over the `ValidRTime` binder set, NOT `ValidComplete`**; dropping
-the `[DenselyOrdered D]` binder here would make this theorem refutable. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
+the `[DenselyOrdered D]` binder here would make this theorem refutable. See the `ValidComplete`
+caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction
+is argued in full.
 
 Paper: `thm:TM-soundness`
 -/

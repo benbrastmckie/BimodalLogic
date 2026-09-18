@@ -85,8 +85,8 @@ namespace FormalSystem.Metalogic
 /-- **The frame condition survives `ShiftSet.ofModel`.**
 
 `ShiftSet.ofModel F M` is a shift set on `F.Duration`, but `(ShiftSet.ofModel F M).frame` is
-**not** `F`: its carrier is `WorldHistory F`, the total histories of `F`, so a `fc.Sat F` hypothesis does
-not land on it by `rfl` and the two frames are genuinely different objects. It does transport,
+**not** `F`: its carrier is `WorldHistory F`, the total histories of `F`, so a `fc.Sat F` hypothesis
+does not land on it by `rfl` and the two frames are genuinely different objects. It does transport,
 because every `FrameClass.Sat` clause constrains the *duration* order alone and `ofModel` leaves
 that order untouched — so case analysis on the tag closes all four branches with the hypothesis
 handed straight back.

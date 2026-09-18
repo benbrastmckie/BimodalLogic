@@ -21,9 +21,9 @@ components. The `axiom` case feeds in the two dispatch lemmas of
 ## Why the three empty-context rules are sound over register-containing formulas
 
 `StarValidIn` quantifies the stored-time vector **universally**, exactly as it quantifies the
-time and the possible world (`Semantics/StarLanguage/StarValidity.lean`): once `v⃗` is part of the point of
-evaluation, `def:frame-validity`'s "true at every model, possible world and time" reads "…and
-every stored-time vector". Both register clauses map a point to a point — `↑ⁱ` changes the
+time and the possible world (`Semantics/StarLanguage/StarValidity.lean`): once `v⃗` is part of the
+point of evaluation, `def:frame-validity`'s "true at every model, possible world and time" reads
+"…and every stored-time vector". Both register clauses map a point to a point — `↑ⁱ` changes the
 vector, `↓ⁱ` changes the time, neither escapes the frame — so `necessitation`,
 `temporal_necessitation` and `time_reflection` all preserve validity at a register-containing
 formula just as they do at a register-free one.

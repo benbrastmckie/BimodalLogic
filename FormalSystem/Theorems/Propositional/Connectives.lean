@@ -48,7 +48,8 @@ Proof:
 4. Compose with DNE to get Q
 -/
 @[tmLemma]
-def classicalMerge {fc : FrameClass} (P Q : Formula) : ⊢[fc] (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
+def classicalMerge {fc : FrameClass} (P Q : Formula) : ⊢[fc] (P.imp Q).imp
+    ((P.neg.imp Q).imp Q) := by
   -- Goal: (P → Q) → ((¬P → Q) → Q)
   -- This is case analysis on P using LEM.
   --
@@ -309,7 +310,8 @@ Contraposition (helper): From `⊢ A → B`, derive `⊢ ¬B → ¬A`.
 
 This is a convenience wrapper that applies contraposeImp via modus ponens.
 -/
-def contraposition {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] B.neg.imp A.neg := by
+def contraposition {fc : FrameClass} {A B : Formula}
+    (h : ⊢[fc] A.imp B) : ⊢[fc] B.neg.imp A.neg := by
   have cp : ⊢[fc] (A.imp B).imp (B.neg.imp A.neg) := contraposeImp A B
   exact DerivationTree.modus_ponens [] _ _ cp h
 
@@ -364,7 +366,8 @@ Direct application of iffIntro for negated formulas.
 
 **Dependencies**: iffIntro
 -/
-def iffNegIntro {fc : FrameClass} (A B : Formula) (h1 : ⊢[fc] A.neg.imp B.neg) (h2 : ⊢[fc] B.neg.imp A.neg) :
+def iffNegIntro {fc : FrameClass} (A B : Formula) (h1 : ⊢[fc] A.neg.imp B.neg)
+    (h2 : ⊢[fc] B.neg.imp A.neg) :
     ⊢[fc] (A.neg.imp B.neg).and (B.neg.imp A.neg) := by
   exact iffIntro A.neg B.neg h1 h2
 
@@ -518,22 +521,27 @@ def demorganConjNegBackward {fc : FrameClass} (A B : Formula) :
       simp
     -- Extract A from conjunction using andLeft
     have lce_inst : ⊢[fc] (A.and B).imp A := lceImp A B
-    have lce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc]
+    have lce_ctx : [(A.and B),
+        (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc]
         (A.and B).imp A :=
       DerivationTree.weakening [] _ _ lce_inst (List.nil_subset _)
-    have h_a : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc] A :=
+    have h_a : [(A.and B),
+        (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc] A :=
       DerivationTree.modus_ponens _ _ _ lce_ctx h_conj
     -- Extract B from conjunction using andRight
     have rce_inst : ⊢[fc] (A.and B).imp B := rceImp A B
-    have rce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc]
+    have rce_ctx : [(A.and B),
+        (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc]
         (A.and B).imp B :=
       DerivationTree.weakening [] _ _ rce_inst (List.nil_subset _)
-    have h_b : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc] B :=
+    have h_b : [(A.and B),
+        (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc] B :=
       DerivationTree.modus_ponens _ _ _ rce_ctx h_conj
     -- From A, derive ¬¬A using DNI (theoremApp1)
     have dni_inst : ⊢[fc] A.imp ((A.imp Formula.bot).imp Formula.bot) :=
       @theoremApp1 fc A Formula.bot
-    have dni_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc]
+    have dni_ctx : [(A.and B),
+        (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc]
         A.imp ((A.imp Formula.bot).imp Formula.bot) :=
       DerivationTree.weakening [] _ _ dni_inst (List.nil_subset _)
     have h_nna : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢[fc]

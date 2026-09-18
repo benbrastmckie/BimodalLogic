@@ -18,11 +18,11 @@ This module defines the language **L⁺** obtained from the until/since-primitiv
 φ, ψ ::= pᵢ | ⊥ | φ → ψ | □φ | φ U ψ | φ S ψ | ⊡φ
 ```
 
-The paper (`possible_worlds.tex`) introduces `⊡` in `def:BLstar-semantics`: `M,τ,x ⊨ ⊡φ` iff `M,σ,x ⊨ φ`
-for every possible world `σ ∈ ⟨τ⟩_x`, where `⟨τ⟩_x := {σ ∈ H_F | σ(x) = τ(x)}` (line 1108) is
-the set of worlds that share `τ`'s world state at `x`. The dual `⟐φ := ¬⊡¬φ` is line 1121
-(`dstab`), and the defined modals `Will := ⊡G`, `will := ⊡F`, `Could := ⟐G`, `could := ⟐F`
-are lines 1125-1129.
+The paper (`possible_worlds.tex`) introduces `⊡` in `def:BLstar-semantics`: `M,τ,x ⊨ ⊡φ` iff
+`M,σ,x ⊨ φ` for every possible world `σ ∈ ⟨τ⟩_x`, where `⟨τ⟩_x := {σ ∈ H_F | σ(x) = τ(x)}` (line
+1108) is the set of worlds that share `τ`'s world state at `x`. The dual `⟐φ := ¬⊡¬φ` is line 1121
+(`dstab`), and the defined modals `Will := ⊡G`, `will := ⊡F`, `Could := ⟐G`, `could := ⟐F` are lines
+1125-1129.
 
 **Scope.** L⁺ here is L plus `⊡` only, and it is therefore the **⊡-only fragment** of the
 manuscript's `\BL^\star` (`sub:Extension`), not a language the manuscript names. `\BL^\star`
@@ -66,8 +66,8 @@ by `rfl` — the `rfl` pins at the end of this file are what the proof-system em
 This mirrors the `MinusLanguage/ → Semantics/` prohibition recorded in
 `FormalSystem/MinusLanguage/Formula.lean`, and for the same reason: the proof system and its
 embedding are purely syntactic. The invariant is **directional** — the converse edge is
-permitted and used: `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` imports this module to define
-`PlusTruthAt` natively on the seven constructors.
+permitted and used: `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` imports this module to
+define `PlusTruthAt` natively on the seven constructors.
 
 ## References
 
@@ -100,7 +100,8 @@ inductive PlusFormula : Type where
   | untl : PlusFormula → PlusFormula → PlusFormula
   /-- Since, `φ S ψ`, guard first and event second, exactly as `Formula.snce`. -/
   | snce : PlusFormula → PlusFormula → PlusFormula
-  /-- The stability modal `⊡φ` (`def:BLstar-semantics`): `φ` holds in every world sharing the present
+  /-- The stability modal `⊡φ` (`def:BLstar-semantics`): `φ` holds in every world sharing the
+  present
       world state. -/
   | stab : PlusFormula → PlusFormula
   deriving Repr, DecidableEq, Countable
@@ -419,8 +420,10 @@ theorem ofFormula_reflectTime (φ : Formula) :
   | bot => rfl
   | imp _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih1, ih2]
   | box _ ih => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih]
-  | untl _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih1, ih2]
-  | snce _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula, PlusFormula.reflectTime, ih1, ih2]
+  | untl _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula,
+      PlusFormula.reflectTime, ih1, ih2]
+  | snce _ _ ih1 ih2 => simp only [Formula.reflectTime, ofFormula,
+      PlusFormula.reflectTime, ih1, ih2]
 
 /-- The embedding lifted to contexts. Definitionally `List.map ofFormula`. -/
 abbrev ofCtx (Γ : Context) : PlusContext := List.map ofFormula Γ
@@ -447,7 +450,8 @@ example (φ : Formula) : ofFormula φ.neg = (ofFormula φ).neg := rfl
 example (φ ψ : Formula) : ofFormula (φ.and ψ) = (ofFormula φ).and (ofFormula ψ) := rfl
 example (φ ψ : Formula) : ofFormula (φ.or ψ) = (ofFormula φ).or (ofFormula ψ) := rfl
 example (φ : Formula) : ofFormula φ.diamond = (ofFormula φ).diamond := rfl
-example (φ : Formula) : ofFormula (Formula.someFuture φ) = PlusFormula.someFuture (ofFormula φ) := rfl
+example (φ : Formula) : ofFormula (Formula.someFuture φ) = PlusFormula.someFuture
+    (ofFormula φ) := rfl
 example (φ : Formula) : ofFormula (Formula.somePast φ) = PlusFormula.somePast (ofFormula φ) := rfl
 example (φ : Formula) : ofFormula (Formula.allFuture φ) = PlusFormula.allFuture (ofFormula φ) := rfl
 example (φ : Formula) : ofFormula (Formula.allPast φ) = PlusFormula.allPast (ofFormula φ) := rfl

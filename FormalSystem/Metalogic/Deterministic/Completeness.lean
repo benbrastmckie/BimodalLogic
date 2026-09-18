@@ -177,9 +177,9 @@ theorem logicBetweenEqDeterministic (fc : FrameClass) (P : TaskFrame → Prop)
 
 Every nondeterministic TM⁺ completeness result — task-external, and open — must specialize to the
 theorems above when the frame is deterministic, because on such a frame `⊡` is pointwise the
-identity (`Semantics/PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`) and *Determined* is
-frame-valid. The row below records that specialization concretely: over the deterministic frames,
-L⁺-validity of `φ` and L-validity of its erasure are the same condition. -/
+identity (`Semantics/PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`) and
+*Determined* is frame-valid. The row below records that specialization concretely: over the
+deterministic frames, L⁺-validity of `φ` and L-validity of its erasure are the same condition. -/
 
 /-- The `⊡ = identity` row: over the deterministic frames of any class, TM⁺ + *Determined*
 derives exactly the formulas whose erasures TM derives. -/

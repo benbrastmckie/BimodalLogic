@@ -48,7 +48,7 @@ conventions, and `Formula.untl φ ψ` (`Table.lean:188`) follows Reynolds'.
 
 ## The bridge, and why its absence mattered
 
-`Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`), `DerivedAxioms.priorSGap` (`:387`) and
+`Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:379`), `DerivedAxioms.priorSGap` (`:387`) and
 `Axiom.sep` (`:390`) are all stated with `Formula.kPlus` / `Formula.kMinus`, while the whole
 Prop-level carrier apparatus — `kplus`, `HasDefinableINF`, `HasAttainedINF`, `HasDedekindINF`,
 `HasGuardedDedekindINF`, `HasDenseDedekindINF` and the eight `*Faithful*` modules — is stated with
@@ -147,7 +147,7 @@ truth condition**. These two lemmas are that bridge. -/
     which is `kplusOpen`, and which is Rabinovich's Definition (3) (PDF p.3).
 
     **This is the lemma the tree has never had.** `Axiom.prior_U_gap`
-    (`ProofSystem/Axioms.lean:377`) and `Axiom.sep` (`:390`) are stated with `Formula.kPlus`;
+    (`ProofSystem/Axioms.lean:379`) and `Axiom.sep` (`:390`) are stated with `Formula.kPlus`;
     before this lemma nothing in the tree could read their `K⁺` semantically. -/
 theorem kPlus_formula_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -169,7 +169,7 @@ theorem kPlus_formula_correct {sig : MonadicSignature}
 /-- **The bridge, mirrored: `Formula.kMinus` is `kminusOpen`.**
 
     `Formula.kMinus P` is `(snce P.neg ⊤).neg` (`Syntax/Formula.lean:193`), Reynolds' `¬S(⊤,¬P)`
-    (printed p.168). `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:387`) and `Axiom.sep`
+    (printed p.168). `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:389`) and `Axiom.sep`
     (`:390`) are stated with it. -/
 theorem kMinus_formula_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)

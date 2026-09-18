@@ -34,7 +34,7 @@ that import on its consumers' behalf. This is the sole recorded C24 exception, d
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/ForMathlib rows=subdirs cols=files-lines link=yes -->
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Order/`](Order/README.md) | 1 | 250 | Proper, maximal and prime filters (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`) |
+| [`Order/`](Order/README.md) | 1 | 263 | Proper, maximal and prime filters (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`) |
 <!-- END GENERATED -->
 
 ## Related Documentation

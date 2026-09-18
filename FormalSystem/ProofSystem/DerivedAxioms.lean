@@ -26,21 +26,21 @@ as its primary: the Base mirrors are `fc`-polymorphic, `priorSZ` is gated by
 
 ## Main Definitions
 
-| Derived | Primary (TR) |
-|---------|--------------|
-| `serialFutureImp` | `serial_future` (TS), by `prop_s` (not a mirror: the pre-paper form `⊤ → F⊤`) |
-| `serialPast` | `serial_future` (TS), then `prop_s` |
-| `leftMonoSinceH` | `left_mono_until_G` (UG) |
-| `rightMonoSince` | `right_mono_until` (UC) |
-| `connectPast` | `connect_future` (TC) |
-| `enrichmentSince` | `enrichment_until` (SU) |
-| `selfAccumSince` | `self_accum_until` (UF) |
-| `absorbSince` | `absorb_until` (UI) |
-| `sinceP` | `until_F` (UE) |
-| `pSinceEquiv` | `F_until_equiv` (UT) |
-| `discreteSymmBwd` | `discrete_symm_fwd` (NP) |
-| `priorSZ` | `prior_UZ` (UZ) |
-| `priorSGap` | `prior_U_gap` (PU) |
+Each entry reads *Derived* — *Primary (TR)*:
+
+* `serialFutureImp` — `serial_future` (TS), by `prop_s` (not a mirror: the pre-paper form `⊤ → F⊤`)
+* `serialPast` — `serial_future` (TS), then `prop_s`
+* `leftMonoSinceH` — `left_mono_until_G` (UG)
+* `rightMonoSince` — `right_mono_until` (UC)
+* `connectPast` — `connect_future` (TC)
+* `enrichmentSince` — `enrichment_until` (SU)
+* `selfAccumSince` — `self_accum_until` (UF)
+* `absorbSince` — `absorb_until` (UI)
+* `sinceP` — `until_F` (UE)
+* `pSinceEquiv` — `F_until_equiv` (UT)
+* `discreteSymmBwd` — `discrete_symm_fwd` (NP)
+* `priorSZ` — `prior_UZ` (UZ)
+* `priorSGap` — `prior_U_gap` (PU)
 
 For every `X` there is also a context-lifted form `XAt Γ … : Γ ⊢[fc] …`, obtained by
 weakening from the empty context.

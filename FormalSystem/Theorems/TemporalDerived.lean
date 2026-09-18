@@ -175,7 +175,8 @@ The propositional contrapositive of `F(¬ψ) → F(¬φ)` is `¬F(¬φ) → ¬F(
 private noncomputable def gContraToGK {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (ψ.neg.imp φ.neg).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
   impTrans
-    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) (FrameClass.base_le fc))
+    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top)
+        (FrameClass.base_le fc))
     (contraposeImp (Formula.someFuture ψ.neg) (Formula.someFuture φ.neg))
 
 /-- **Derived temp_k_dist**: `⊢ G(φ→ψ) → (Gφ → Gψ)`.
@@ -315,7 +316,8 @@ def connectPastThm {fc : FrameClass} (φ : Formula) :
 def gImpliesGId {fc : FrameClass} (a : Formula) :
     ⊢[fc] a.allFuture.imp (a.imp a).allFuture :=
   mp (DerivationTree.temporal_necessitation _ (identity a))
-     (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).allFuture a.allFuture) (FrameClass.base_le fc))
+     (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).allFuture a.allFuture)
+         (FrameClass.base_le fc))
 
 /-!
 ## BX10-Derived Theorems
@@ -364,7 +366,8 @@ def sinceImpP {fc : FrameClass} (φ ψ : Formula) :
 /-- Contrapositive: `⊢ (A → B) → (¬B → ¬A)`.
 Derived from bCombinator and theoremFlip. -/
 @[tmLemma]
-noncomputable def contrapositive {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.imp B).imp (B.neg.imp A.neg) :=
+noncomputable def contrapositive {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.imp B).imp
+    (B.neg.imp A.neg) :=
   mp bCombinator
     (theoremFlip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
 
@@ -380,13 +383,15 @@ private noncomputable def ctxThm {fc : FrameClass} {Γ : Context} {A : Formula}
 Since `A ∨ B = ¬A → B`, this is `(¬A → B) → (¬B → A)`, proved by
 contraposition of the hypothesis composed with DNE. -/
 @[tmLemma]
-noncomputable def formulaOrComm {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.or B).imp (B.or A) := by
+noncomputable def formulaOrComm {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.or B).imp
+    (B.or A) := by
   unfold Formula.or
   apply FormalSystem.Metalogic.Core.deductionTheorem [] (A.neg.imp B) (B.neg.imp A)
   apply FormalSystem.Metalogic.Core.deductionTheorem [A.neg.imp B] B.neg A
   have h1 : [B.neg, A.neg.imp B] ⊢[fc] A.neg.imp B := DerivationTree.assumption _ _ (by simp)
   have h2 : [B.neg, A.neg.imp B] ⊢[fc] B.neg := DerivationTree.assumption _ _ (by simp)
-  have h3 : [B.neg, A.neg.imp B] ⊢[fc] A.neg.neg := ctxMpLocal (ctxMpLocal (ctxThm bCombinator) h2) h1
+  have h3 : [B.neg,
+      A.neg.imp B] ⊢[fc] A.neg.neg := ctxMpLocal (ctxMpLocal (ctxThm bCombinator) h2) h1
   exact ctxMpLocal (ctxThm (FormalSystem.Theorems.Propositional.doubleNegation A)) h3
 
 /-!

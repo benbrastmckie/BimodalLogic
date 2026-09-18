@@ -65,8 +65,8 @@ the `foldr`-implication bridge between finite-context and empty-context derivabi
 pointwise currying lemma `truthAt_foldr_imp` with it, two *theorems* stated in this module's
 vocabulary live there rather than here: the strong-completeness reduction
 `strongCompleteness_of_compact` and the model-existence-to-compactness bridge
-`compact_of_modelExistence`. Both are generic in the `FrameClass`. Placing either in this module would be an import cycle;
-the reason is the same in both cases.
+`compact_of_modelExistence`. Both are generic in the `FrameClass`. Placing either in this module
+would be an import cycle; the reason is the same in both cases.
 -/
 
 namespace FormalSystem.Metalogic
@@ -206,10 +206,9 @@ derivable from the empty context at `fc`.
 
 This is the third member of the family, sitting below `StrongCompleteness` above and beside
 `Compact`, and it is the name the rest of the tree was missing. Every theorem in
-`Metalogic/StrongCompleteness.lean` and `Metalogic/Conservativity/TMCompletenessReduction.lean` that used to
-carry a longhand `engine : ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ` hypothesis now
-quotes this one name instead; the four hypotheses were the same predicate written out four
-times.
+`Metalogic/StrongCompleteness.lean` and `Metalogic/Conservativity/TMCompletenessReduction.lean` that
+used to carry a longhand `engine : ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ` hypothesis now
+quotes this one name instead; the four hypotheses were the same predicate written out four times.
 
 **The four `BXCanonical` engines inhabit it on the nose**, with no transport and no `rfl`
 lemma: `Valid`, `ValidDense`, `ValidZTime` and `ValidRTime` are all abbreviations over
@@ -264,13 +263,12 @@ needs no adapter: `intro F hF M τ t` introduces it and `h F hF M τ t` eliminat
 /-! ### `SatisfiableSet` binder-shape adapter
 
 The introduction side of `SatisfiableSet`: a single `fc`-indexed declaration where four
-tag-specific ones used to stand. It takes the frame condition in the single `fc.Sat F` slot; a site holding
-the four discrete instances flat reaches that slot through
-`TaskFrame.isZTime_of_instances` (`Semantics/FrameProperty.lean`). It serves every
-`SatisfiableSet` name stated at the end of this module (`SatisfiableBaseSet`,
-`SatisfiableDenseSet`, `SatisfiableZTimeSet`, `SatisfiableRTimeSet`) and is what both
-`Metalogic/DedekindNonCompactness.lean` and `Metalogic/DiscreteNonCompactness.lean` use at their
-introduction sites. -/
+tag-specific ones used to stand. It takes the frame condition in the single `fc.Sat F` slot; a site
+holding the four discrete instances flat reaches that slot through `TaskFrame.isZTime_of_instances`
+(`Semantics/FrameProperty.lean`). It serves every `SatisfiableSet` name stated at the end of this
+module (`SatisfiableBaseSet`, `SatisfiableDenseSet`, `SatisfiableZTimeSet`, `SatisfiableRTimeSet`)
+and is what both `Metalogic/DedekindNonCompactness.lean` and `Metalogic/DiscreteNonCompactness.lean`
+use at their introduction sites. -/
 
 /-- Build a `PointedModel` from the flat binder shape: a witness frame, its frame condition, and
 a model/history/time at which every member of `Γ` is true. A `def`, not a `theorem` —
@@ -281,12 +279,12 @@ def PointedModel.of {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : PointedModel fc Γ :=
   ⟨F, hF, M, τ, t, h⟩
 
-/-- Introduce `SatisfiableSet` at an arbitrary tag from the same flat binder shape — `PointedModel.of`
-wrapped in `Nonempty.intro`, retained under its original name because every introduction site in
-the tree calls it. This replaced the four
-`SatisfiableSet.{base,dense,discrete,dedekind}_of_forall` adapters: each of those was this lemma
-at a fixed tag with `fc.Sat F` unfolded to that class's frame condition, which is the only thing
-that made four copies look necessary. -/
+/-- Introduce `SatisfiableSet` at an arbitrary tag from the same flat binder shape —
+`PointedModel.of` wrapped in `Nonempty.intro`, retained under its original name because every
+introduction site in the tree calls it. This replaced the four
+`SatisfiableSet.{base,dense,discrete,dedekind}_of_forall` adapters: each of those was this lemma at
+a fixed tag with `fc.Sat F` unfolded to that class's frame condition, which is the only thing that
+made four copies look necessary. -/
 theorem SatisfiableSet.of_forall {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
     (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : SatisfiableSet fc Γ :=
@@ -535,8 +533,8 @@ every Dedekind-complete carrier. That witness is a *new* one: `DiscreteNonCompac
 carrier.
 
 Naming the row costs nothing beyond the four instantiations below: the binder-shape adapter it
-needs (`SatisfiableSet.of_forall`) is the generic, `fc`-indexed one above, so no new adapter and no new binder list is introduced
-here — and none is introduced for any other tag either.
+needs (`SatisfiableSet.of_forall`) is the generic, `fc`-indexed one above, so no new adapter and no
+new binder list is introduced here — and none is introduced for any other tag either.
 
 No import change is required: `DenselyOrdered` is already in scope via
 `SetSemanticConsequenceRTime` above.

@@ -200,7 +200,9 @@ order-and-group isomorphism. The dense-and-complete narrowing is `TaskFrame.IsRT
 
 **Reciprocal pointer for `ValidComplete`.** `Semantics/Validity.lean`'s `ValidComplete` is
 `ValidOnFrames` at *this* bare clause, not at `IsRTime` below, and is the one `Valid*` name
-that is not `ValidIn` at its apparent tag. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
+that is not `ValidIn` at its apparent tag. See the `ValidComplete` caveat in
+`Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued
+in full.
 -/
 def TaskFrame.IsComplete (F : TaskFrame) : Prop :=
   ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x
@@ -338,10 +340,10 @@ the past instances of this predicate are therefore already determined by the fut
 asserted about *every* state. Writing it with an unrestricted binder is what makes that visible.
 
 **Restricting `d` to `0 ≤ d` gives a strictly weaker predicate that does NOT support the bridge
-lemma.** `states_eq_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) applies this at the
-possibly negative duration `s - t`; under a `0 ≤ d` guard the frame `natFrame` over `ℤ` (which
-relates every state to every state at every nonzero duration in the past direction) would count
-as "deterministic" while refuting the collapse. The unrestricted binder is a correctness
+lemma.** `states_eq_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) applies this
+at the possibly negative duration `s - t`; under a `0 ≤ d` guard the frame `natFrame` over `ℤ`
+(which relates every state to every state at every nonzero duration in the past direction) would
+count as "deterministic" while refuting the collapse. The unrestricted binder is a correctness
 requirement, not fidelity to a particular phrasing.
 -/
 def Deterministic (F : TaskFrame) : Prop :=

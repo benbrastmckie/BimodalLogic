@@ -22,12 +22,12 @@ by composing two things this repository already has:
 ```
 
 The right-hand equality is the **truth-transfer bridge** `truthAt_tr`, proved here by induction on
-`MinusFormula`. It is a theorem, not a definition: `MinusTruthAt` is defined natively on `MinusFormula`
-(`Semantics/MinusLanguage/MinusTruth.lean`), so the bridge has to be earned. Four of its six cases are `Iff.rfl` or
-congruence; the `allPast` and `allFuture` cases are the two with content, and both are discharged
-by the existing `@[simp]` characterizations `Truth.past_iff` and `Truth.future_iff`, which unfold
-L's `untl`/`snce`-derived `H`/`G` abbreviations to exactly the quantifications `MinusTruthAt`
-states directly.
+`MinusFormula`. It is a theorem, not a definition: `MinusTruthAt` is defined natively on
+`MinusFormula` (`Semantics/MinusLanguage/MinusTruth.lean`), so the bridge has to be earned. Four of
+its six cases are `Iff.rfl` or congruence; the `allPast` and `allFuture` cases are the two with
+content, and both are discharged by the existing `@[simp]` characterizations `Truth.past_iff` and
+`Truth.future_iff`, which unfold L's `untl`/`snce`-derived `H`/`G` abbreviations to exactly the
+quantifications `MinusTruthAt` states directly.
 
 ## What composition certifies, and what it does not
 
@@ -46,10 +46,10 @@ valid by unfolding `MinusTruthAt`'s clauses and nothing else.
 ## The Dedekind target
 
 `minus_soundness_rtime` concludes at `MinusValidRTime`, **not** at a density-free
-`MinusValidComplete` — which is deliberately not defined. `Semantics/MinusLanguage/MinusValidity.lean`'s module
-docstring gives the L⁻-native refutation: `Axiom.dn` is admissible at `FrameClass.RTime` and is
-false on `ℤ`, which satisfies every remaining binder. This mirrors `soundness_rtime`'s own
-target on the L side.
+`MinusValidComplete` — which is deliberately not defined.
+`Semantics/MinusLanguage/MinusValidity.lean`'s module docstring gives the L⁻-native refutation:
+`Axiom.dn` is admissible at `FrameClass.RTime` and is false on `ℤ`, which satisfies every remaining
+binder. This mirrors `soundness_rtime`'s own target on the L side.
 
 ## Why there is no dense or Dedekind consistency corollary
 
@@ -86,8 +86,9 @@ consistency lemma in the tree yet"), and the L⁻ side inherits it exactly.
 * JPL paper `\S sub:Logic` — `thm:TM-soundness`, `def:BL-semantics`
 * `FormalSystem/Metalogic/Soundness.lean` — the four L soundness theorems composed with here
 * `FormalSystem/Metalogic/Conservativity/Backward.lean` — `translate`, the proof-theoretic half
-* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean`, `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` — the L⁻
-  semantics this is stated against
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean`,
+  `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` — the L⁻ semantics this is stated
+  against
 
 ## Tags
 
@@ -148,8 +149,8 @@ theorem truthAt_trCtx (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 Both are L⁻ mirrors of facts `Semantics/Truth.lean` already carries for L, and both are obtained
 by pushing the statement through `truthAt_tr` in each direction rather than by a fresh induction
 on `MinusFormula`. They are grouped here, immediately after the bridge, because that is the only
-reason they are cheap: `Semantics/MinusLanguage/MinusTruth.lean` cannot state either of them, since it sits below
-the translation in the import order.
+reason they are cheap: `Semantics/MinusLanguage/MinusTruth.lean` cannot state either of them, since
+it sits below the translation in the import order.
 -/
 
 /--
@@ -216,8 +217,8 @@ it is why `Semantics/Validity.lean` carries a `ValidOnFrames.mono` / `ValidIn.mo
 than one lemma. The tag-indexed theorem below is this one at `fc.Sat`; the reverse derivation does
 not exist.
 
-A **corollary of `truthAt_tr`, not a definitional identity** — see `minusValid_iff_valid_tr` below on
-why that distinction is load-bearing.
+A **corollary of `truthAt_tr`, not a definitional identity** — see `minusValid_iff_valid_tr` below
+on why that distinction is load-bearing.
 -/
 theorem minusValidOnFrames_iff_validOnFrames_tr (P : TaskFrame → Prop) (φ : MinusFormula) :
     MinusValidOnFrames P φ ↔ ValidOnFrames P (tr φ) := by
@@ -256,7 +257,8 @@ is `TruthAt`-equivalent to `ValidZTime` of the translation, with the four
 the single packed `Sat .ZTime F` hypothesis, so neither direction has to open it. Like
 `minusValid_iff_valid_tr`, a one-line corollary of `minusValidIn_iff_validIn_tr`.
 
-Consumed by `Metalogic/Conservativity/TMCompletenessReduction.lean`'s `tmMinusCompleteZTime_iff_forwardZTime`.
+Consumed by `Metalogic/Conservativity/TMCompletenessReduction.lean`'s
+`tmMinusCompleteZTime_iff_forwardZTime`.
 -/
 theorem minusValidZTime_iff_validZTime_tr (φ : MinusFormula) :
     MinusValidZTime φ ↔ ValidZTime (tr φ) :=
@@ -312,7 +314,8 @@ model, history and time at which every formula of `Γ` is true.
 
 `minus_soundness_in` at `fc = .Base`; `Sat .Base` is `True`, so the witness is `trivial`.
 
-Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness theorem)
+Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness
+theorem)
 -/
 theorem minus_soundness (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Base Γ φ)
@@ -327,7 +330,8 @@ theorem minus_soundness (Γ : MinusLanguage.Context) (φ : MinusFormula)
 `[DenselyOrdered D]` instance supplied as the `Sat .Dense` witness; the binder bundle is
 `soundness_dense`'s.
 
-Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness theorem)
+Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness
+theorem)
 -/
 theorem minus_soundness_dense (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Dense Γ φ)
@@ -342,7 +346,8 @@ theorem minus_soundness_dense (Γ : MinusLanguage.Context) (φ : MinusFormula)
 four order instances bundled into the `Sat .ZTime` witness; the binder bundle is
 `soundness_ztime`'s.
 
-Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness theorem)
+Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness
+theorem)
 -/
 theorem minus_soundness_ztime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
@@ -365,7 +370,8 @@ hypothesis `h_lub` in its original position.
 The `[DenselyOrdered D]` binder is load-bearing, not decorative — see the module docstring and
 `Semantics/MinusLanguage/MinusValidity.lean`.
 
-Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness theorem)
+Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ soundness
+theorem)
 -/
 theorem minus_soundness_rtime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.RTime Γ φ)
@@ -406,19 +412,20 @@ under `[SuccOrder] [PredOrder]` only, dropping `[IsSuccArchimedean] [IsPredArchi
 it applies to the non-Archimedean carrier `ℚ ×ₗ ℤ` (`Semantics/LexCarrier.lean`) the CEF
 countermodel is built over.
 
-**This is not a composition.** Unlike `minus_soundness`/`minus_soundness_dense`/`minus_soundness_ztime`/
-`minus_soundness_rtime` above, `minus_soundness_ztime_succ` cannot be obtained by translating and
-invoking `Soundness.soundness_ztime`, because that theorem's own binder bundle carries the very
-two Archimedean instances being dropped here. It is proved instead by induction on
+**This is not a composition.** Unlike
+`minus_soundness`/`minus_soundness_dense`/`minus_soundness_ztime`/ `minus_soundness_rtime` above,
+`minus_soundness_ztime_succ` cannot be obtained by translating and invoking
+`Soundness.soundness_ztime`, because that theorem's own binder bundle carries the very two
+Archimedean instances being dropped here. It is proved instead by induction on
 `MinusLanguage.DerivationTree FrameClass.ZTime`, directly against `MinusTruthAt`.
 
 The only genuinely new semantic content is `Semantics.MinusLanguage.MinusSchemaValidity`'s DF lemma
 (`df_valid_of_succOrder`) and its `PredOrder` past-dual (`reflectTime_df_valid_of_predOrder`),
-needed respectively for the `df` axiom leaf and for the `time_reflection` case's reflection component.
-Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any
+needed respectively for the `df` axiom leaf and for the `time_reflection` case's reflection
+component. Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any
 semantic argument at all**: `minus_derivable_valid_and_reflect_time_valid_zTimeSucc` re-derives each
-one (and its reflection) proof-theoretically, by composing `minus_soundness_valid` with the `TR` rule
-itself (`⊢[Base] φ ⟹ ⊢[Base] φ.reflectTime`), never touching `MinusTruthAt` directly for those
+one (and its reflection) proof-theoretically, by composing `minus_soundness_valid` with the `TR`
+rule itself (`⊢[Base] φ ⟹ ⊢[Base] φ.reflectTime`), never touching `MinusTruthAt` directly for those
 twelve. `dn`/`co` are eliminated structurally: `FrameClass.Dense` and `FrameClass.RTime` are each
 incomparable with `FrameClass.ZTime`, so their axiom leaves are unreachable under the `h_fc` side
 condition. -/
@@ -426,11 +433,11 @@ condition. -/
 /--
 Combined validity and reflection-validity, on `[SuccOrder] [PredOrder]` frames (no Archimedean
 binders), for L⁻ theorems (empty-context derivations) at `FrameClass.ZTime`. The companion
-`minus_soundness_ztime_succ`'s `time_reflection` case needs exactly the reflection half of this, as an
-external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_reflect_time_validIn`
+`minus_soundness_ztime_succ`'s `time_reflection` case needs exactly the reflection half of this, as
+an external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_reflect_time_validIn`
 (the L sibling this parallels), but over L⁻'s own 15-constructor `Axiom` rather than L's 29, and
-without the `FrameClass` parameter, since the binder-weakened `.ZTime` frames this is stated
-over are not a `FrameClass.Sat` variant.
+without the `FrameClass` parameter, since the binder-weakened `.ZTime` frames this is stated over
+are not a `FrameClass.Sat` variant.
 
 The `axiom` case's `by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base` split is the same
 device `Metalogic/Soundness.lean`'s `axiom_reflect_time_validIn_min` uses: it separates the twelve
@@ -543,7 +550,8 @@ The witness is `trivialFrame` over `Int`, exactly as in `not_derivable_nil_bot`.
 the bridge is invisible here because `tr MinusFormula.bot` is `Formula.bot` definitionally, so
 `TaskFrame.not_validOn_bot` applies unchanged.
 
-Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻ consistency corollary)
+Paper: — (formalization-native; the paper defines L⁻ (`def:BL-semantics`) but states no L⁻
+consistency corollary)
 -/
 theorem minus_not_derivable_nil_bot :
     ¬ MinusLanguage.Derivable FrameClass.Base ([] : MinusLanguage.Context) MinusFormula.bot := by
@@ -569,11 +577,11 @@ theorem minus_not_derivable_nil_bot_ztime :
 
 /-! ## Native spot checks
 
-Three L⁻ axiom schemes proved valid *directly* against `MinusTruthAt`, using nothing but its clauses.
-They are not consumed by anything above — their job is to stand as evidence that the L⁻ semantics
-carries content on its own, independently of the composition, and they are the guard against
-`MinusTruthAt` ever being redefined as `TruthAt ∘ tr` (under which these scripts would not go through
-as written).
+Three L⁻ axiom schemes proved valid *directly* against `MinusTruthAt`, using nothing but its
+clauses. They are not consumed by anything above — their job is to stand as evidence that the L⁻
+semantics carries content on its own, independently of the composition, and they are the guard
+against `MinusTruthAt` ever being redefined as `TruthAt ∘ tr` (under which these scripts would not
+go through as written).
 
 **Do not delete these as redundant now that `minusValidOnFrames_iff_validOnFrames_tr` and
 `minusValidIn_iff_validIn_tr` exist.** Those two are corollaries of the *theorem* `truthAt_tr`, not
@@ -586,7 +594,8 @@ carrying any information — and these three examples are what would fail first 
 the `H_F` reading of `def:BL-semantics`'s box clause. -/
 
 /-- TK — the temporal distribution scheme `G(φ → ψ) → (Gφ → Gψ)`. -/
-example (φ ψ : MinusFormula) : MinusValid ((φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)) := by
+example (φ ψ : MinusFormula) : MinusValid
+    ((φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)) := by
   refine MinusValid.of_forall ?_
   intro F M τ t hk hf s hs
   exact hk s hs (hf s hs)

@@ -54,7 +54,8 @@ file); proofs are unchanged.
 
 * JPL paper `possible_worlds.tex` lines 1108, 1114, 1118-1119, 1121
 * `FormalSystem/Semantics/Truth.lean` — the six L clauses being mirrored
-* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the sibling native recursion for the base language
+* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the sibling native recursion for the base
+  language
 
 ## Tags
 

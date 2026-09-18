@@ -177,7 +177,8 @@ theorem mk_lt_mk {f g : ∀ i, D i} : mk (φ := φ) f < mk g ↔ ∀ᶠ i in φ,
   · intro h
     refine ⟨mk_le_mk.mpr (h.mono (fun i hi => le_of_lt hi)), ?_⟩
     intro hle
-    exact not_eventually_false (h.and (mk_le_mk.mp hle)) (fun i hi => absurd hi.1 (not_lt_of_ge hi.2))
+    exact not_eventually_false (h.and (mk_le_mk.mp hle))
+        (fun i hi => absurd hi.1 (not_lt_of_ge hi.2))
 
 instance [∀ i, Nontrivial (D i)] : Nontrivial (UD φ D) := by
   refine ⟨mk (fun i => (exists_ne (0 : D i)).choose), mk 0, ?_⟩

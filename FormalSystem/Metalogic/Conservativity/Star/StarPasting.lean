@@ -12,15 +12,16 @@ import FormalSystem.Semantics.StarLanguage.StarValidity
 
 The semantic content the `paste` and `untl_paste` arms of `StarAxiom` consume
 (`StarLanguage/Axioms.lean`). Everything here is the L⋆ counterpart of
-`Semantics/PlusLanguage/PlusPasting.lean`'s pasting block, with the stored-time vector threaded through.
+`Semantics/PlusLanguage/PlusPasting.lean`'s pasting block, with the stored-time vector threaded
+through.
 
 ## What is reused rather than rebuilt
 
-`Semantics/PlusLanguage/PlusPasting.lean` is imported and consumed **read-only**. Its pasting construction —
-`paste`, `paste_agreeFrom`, `paste_agreeUpTo`, `AgreeFrom`, `AgreeUpTo`,
-`agreeFrom_mono`, `agreeUpTo_mono` — is formula-independent: it splices two histories at a
-time and says nothing about any language. Only the two *congruences* mention formulas, and those
-are what this module re-proves by induction on the L⋆ purity predicates.
+`Semantics/PlusLanguage/PlusPasting.lean` is imported and consumed **read-only**. Its pasting
+construction — `paste`, `paste_agreeFrom`, `paste_agreeUpTo`, `AgreeFrom`, `AgreeUpTo`,
+`agreeFrom_mono`, `agreeUpTo_mono` — is formula-independent: it splices two histories at a time and
+says nothing about any language. Only the two *congruences* mention formulas, and those are what
+this module re-proves by induction on the L⋆ purity predicates.
 
 ## The register vector, and why the motive quantifies over it
 
@@ -39,9 +40,9 @@ widening, independent of the one `RecallFree` carries for `modal_future`.
 
 PS and US are **not** each other's duals. `reflectTime` fixes `⟐` and exchanges `untl`/`snce`,
 so the dual of PS is PS with the conjuncts exchanged (`star_paste_valid'`) and the dual of US is
-SS (`star_snce_paste_valid`). This is the same shape `Semantics/PlusLanguage/PlusPasting.lean` has, and for
-the same reason; both duals are proved here so that the `paste`/`untl_paste` reflection arms of
-`starAxiom_reflect_time_validIn_min` have a lemma to land on.
+SS (`star_snce_paste_valid`). This is the same shape `Semantics/PlusLanguage/PlusPasting.lean` has,
+and for the same reason; both duals are proved here so that the `paste`/`untl_paste` reflection arms
+of `starAxiom_reflect_time_validIn_min` have a lemma to land on.
 
 ## Why this file lives here rather than under `Semantics/`
 
@@ -51,8 +52,8 @@ is this directory. The precedent is `Conservativity/Star/StarAxiomValidity.lean`
 
 ## References
 
-* `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` — the pasting construction reused read-only, and the
-  L⁺ congruences mirrored here
+* `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` — the pasting construction reused
+  read-only, and the L⁺ congruences mirrored here
 * `FormalSystem/StarLanguage/Formula.lean` — `StarIsPureFuture`, `StarIsPurePast`
 * JPL paper `possible_worlds.tex` — `def:BLstar-semantics`
 

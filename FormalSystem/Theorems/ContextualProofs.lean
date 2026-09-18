@@ -199,7 +199,8 @@ def boxToDiamondCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] A.
     (.assumption _ (Formula.box A) mem0)
 
 /-- K distribution: `[box(A -> B), box A] |- box B`. 2 assumption + 1 weakening + 1 axiom + 2 MP. -/
-def kDistCtx {fc : FrameClass} (A B : Formula) : [Formula.box (A.imp B), Formula.box A] ⊢[fc] Formula.box B :=
+def kDistCtx {fc : FrameClass} (A B : Formula) : [Formula.box (A.imp B),
+    Formula.box A] ⊢[fc] Formula.box B :=
   let ctx := [Formula.box (A.imp B), Formula.box A]
   let step1 :=
     .modus_ponens ctx (Formula.box (A.imp B)) ((Formula.box A).imp (Formula.box B))
@@ -262,7 +263,8 @@ def connectPastCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] A.someFuture.al
     (.assumption _ A mem0)
 
 /-- Box future in context: `[box A] |- G(box A)`. Uses temporalFutureDerived. -/
-def boxFutureCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] (Formula.box A).allFuture :=
+def boxFutureCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc]
+    (Formula.box A).allFuture :=
   .modus_ponens [Formula.box A] (Formula.box A) (Formula.box A).allFuture
     (weakenEmpty (temporalFutureDerived A))
     (.assumption _ (Formula.box A) mem0)
@@ -322,11 +324,13 @@ def boxElimCtxWeak {fc : FrameClass} (A B : Formula) : [B, Formula.box A] ⊢[fc
   weakenCons B (boxElimCtx A)
 
 /-- `[C, box(A -> B), box A] |- box B` -/
-def kDistCtxWeak {fc : FrameClass} (A B C : Formula) : [C, Formula.box (A.imp B), Formula.box A] ⊢[fc] Formula.box B :=
+def kDistCtxWeak {fc : FrameClass} (A B C : Formula) : [C, Formula.box (A.imp B),
+    Formula.box A] ⊢[fc] Formula.box B :=
   weakenCons C (kDistCtx A B)
 
 /-- `[B, box A] |- box(box A)` -/
-def box4CtxWeak {fc : FrameClass} (A B : Formula) : [B, Formula.box A] ⊢[fc] Formula.box (Formula.box A) :=
+def box4CtxWeak {fc : FrameClass} (A B : Formula) : [B,
+    Formula.box A] ⊢[fc] Formula.box (Formula.box A) :=
   weakenCons B (box4Ctx A)
 
 /-- `[B, A] |- box(diamond A)` -/
@@ -342,11 +346,13 @@ def connectPastCtxWeak {fc : FrameClass} (A B : Formula) : [B, A] ⊢[fc] A.some
   weakenCons B (connectPastCtx A)
 
 /-- `[C, U(psi, phi)] |- F(psi)` -/
-def untilFCtxWeak {fc : FrameClass} (phi psi C : Formula) : [C, Formula.untl phi psi] ⊢[fc] psi.someFuture :=
+def untilFCtxWeak {fc : FrameClass} (phi psi C : Formula) : [C,
+    Formula.untl phi psi] ⊢[fc] psi.someFuture :=
   weakenCons C (untilFCtx phi psi)
 
 /-- `[C, S(psi, phi)] |- P(psi)` -/
-def sincePCtxWeak {fc : FrameClass} (phi psi C : Formula) : [C, Formula.snce phi psi] ⊢[fc] psi.somePast :=
+def sincePCtxWeak {fc : FrameClass} (phi psi C : Formula) : [C,
+    Formula.snce phi psi] ⊢[fc] psi.somePast :=
   weakenCons C (sincePCtx phi psi)
 
 /-- `[B, A] |- A` -/
@@ -367,11 +373,13 @@ def boxPairCtxWeak {fc : FrameClass} (A B C : Formula) :
   weakenCons C (boxPairCtx A B)
 
 /-- `[B, box A] |- G(box A)` -/
-def boxFutureCtxWeak {fc : FrameClass} (A B : Formula) : [B, Formula.box A] ⊢[fc] (Formula.box A).allFuture :=
+def boxFutureCtxWeak {fc : FrameClass} (A B : Formula) : [B,
+    Formula.box A] ⊢[fc] (Formula.box A).allFuture :=
   weakenCons B (boxFutureCtx A)
 
 /-- `[B, box A] |- H(F(A))` -/
-def boxPastCtxWeak {fc : FrameClass} (A B : Formula) : [B, Formula.box A] ⊢[fc] A.someFuture.allPast :=
+def boxPastCtxWeak {fc : FrameClass} (A B : Formula) : [B,
+    Formula.box A] ⊢[fc] A.someFuture.allPast :=
   weakenCons B (boxPastCtx A)
 
 /-- `[B, A] |- F(top)` -/
@@ -399,11 +407,13 @@ def dniWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp A.neg.
   weakenEmpty (notNotIntro A)
 
 /-- `[psi] |- A -> G(P(A))` -/
-def connectFutureWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp A.somePast.allFuture :=
+def connectFutureWeakened {fc : FrameClass}
+    (A psi : Formula) : [psi] ⊢[fc] A.imp A.somePast.allFuture :=
   weakenEmpty (.axiom [] _ (Axiom.connect_future A) (FrameClass.base_le fc))
 
 /-- `[psi] |- A -> H(F(A))` -/
-def connectPastWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp A.someFuture.allPast :=
+def connectPastWeakened {fc : FrameClass}
+    (A psi : Formula) : [psi] ⊢[fc] A.imp A.someFuture.allPast :=
   weakenEmpty (DerivedAxioms.connectPast A)
 
 /-- `[psi] |- box(A) -> G(box(A))` -/
@@ -425,7 +435,8 @@ def modal4Weakened {fc : FrameClass} (A psi : Formula) :
   weakenEmpty (DerivedAxioms.modal4 A)
 
 /-- `[psi] |- A -> box(diamond(A))` -/
-def modalBWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp (Formula.box A.diamond) :=
+def modalBWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp
+    (Formula.box A.diamond) :=
   weakenEmpty (DerivedAxioms.modalB A)
 
 /-- `[psi] |- box(A -> B) -> (box A -> box B)` -/
@@ -447,19 +458,23 @@ def propSWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc] A.imp (B
   weakenEmpty (.axiom [] _ (Axiom.prop_s A B) (FrameClass.base_le fc))
 
 /-- `[psi] |- U(B, A) -> F(B)` -/
-def untilFWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc] (Formula.untl A B).imp B.someFuture :=
+def untilFWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc]
+    (Formula.untl A B).imp B.someFuture :=
   weakenEmpty (.axiom [] _ (Axiom.until_F A B) (FrameClass.base_le fc))
 
 /-- `[psi] |- S(B, A) -> P(B)` -/
-def sincePWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc] (Formula.snce A B).imp B.somePast :=
+def sincePWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc]
+    (Formula.snce A B).imp B.somePast :=
   weakenEmpty (DerivedAxioms.sinceP A B)
 
 /-- `[psi] |- top -> F(top)` -/
-def serialFutureWeakened {fc : FrameClass} (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.someFuture :=
+def serialFutureWeakened {fc : FrameClass}
+    (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.someFuture :=
   weakenEmpty (DerivedAxioms.serialFutureImp)
 
 /-- `[psi] |- top -> P(top)` -/
-def serialPastWeakened {fc : FrameClass} (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.somePast :=
+def serialPastWeakened {fc : FrameClass}
+    (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.somePast :=
   weakenEmpty (DerivedAxioms.serialPast)
 
 /-- `[psi] |- (A -> B -> C) -> (B -> A -> C)` -/
@@ -468,7 +483,8 @@ def theoremFlipWeakened {fc : FrameClass} {A B C : Formula} (psi : Formula) :
   weakenEmpty theoremFlip
 
 /-- `[psi] |- A -> (A -> B) -> B` -/
-def theoremApp1Weakened {fc : FrameClass} {A B : Formula} (psi : Formula) : [psi] ⊢[fc] A.imp ((A.imp B).imp B) :=
+def theoremApp1Weakened {fc : FrameClass} {A B : Formula} (psi : Formula) : [psi] ⊢[fc] A.imp
+    ((A.imp B).imp B) :=
   weakenEmpty theoremApp1
 
 end FormalSystem.Theorems.ContextualProofs

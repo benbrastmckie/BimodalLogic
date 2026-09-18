@@ -26,9 +26,9 @@ suppressing the world registers `↑_M`/`↓_M`; this component follows that pre
 
 `PlusFormula` must not grow store/recall constructors. The atomization route to TM⁺ soundness
 (`Metalogic/Conservativity/Plus/Atomization.lean`) rests on `stab_state_only`
-(`Semantics/PlusLanguage/PlusTruth.lean`): `⊡φ`'s truth depends on the world state alone, at any time. That
-invariant is **false inside a recall scope** — `⊡↓ⁱφ` reaches back to a time the register names,
-which the present world state does not determine — so adding the operators to `PlusFormula`
+(`Semantics/PlusLanguage/PlusTruth.lean`): `⊡φ`'s truth depends on the world state alone, at any
+time. That invariant is **false inside a recall scope** — `⊡↓ⁱφ` reaches back to a time the register
+names, which the present world state does not determine — so adding the operators to `PlusFormula`
 would silently invalidate a landed conservativity result. `StarFormula` is therefore a separate
 inductive with a constructor-to-constructor embedding `ofPlus`, exactly the landed
 `MinusFormula`/`PlusFormula` pattern.
@@ -458,10 +458,10 @@ transfer lemmas below — which say every embedded formula lies in each fragment
 the corresponding TM⁺ schema block reachable at its embedded instances.
 
 **Why `RecallFree` and not a register-free predicate.** MF (`□φ → □Gφ`) is refuted over L⋆ at
-`φ := ↓¹p → p` (`Semantics/StarLanguage/StarNonValidities.lean`, `refute_modal_future`), and the obstruction
-is the *recall* register alone: `↓ⁱ` reads at the time register `i` names, which the time-shift
-argument moves. `↑ⁱ` is harmless, so a register-free side condition would discard the sound
-instances at `↑ⁱ`-formulas — `□↑¹p → □G↑¹p` among them, and `↑¹p` is not an `ofPlus` image
+`φ := ↓¹p → p` (`Semantics/StarLanguage/StarNonValidities.lean`, `refute_modal_future`), and the
+obstruction is the *recall* register alone: `↓ⁱ` reads at the time register `i` names, which the
+time-shift argument moves. `↑ⁱ` is harmless, so a register-free side condition would discard the
+sound instances at `↑ⁱ`-formulas — `□↑¹p → □G↑¹p` among them, and `↑¹p` is not an `ofPlus` image
 (`ofPlus_ne_timeStore`). The widening past the embedded fragment is therefore proper, and the
 `example`s below pin both its lower and its upper boundary. -/
 
@@ -619,7 +619,8 @@ example (p : Atom) (ψ : PlusFormula) :
     ofPlus ψ ≠ StarFormula.timeStore 1 (.atom p) := ofPlus_ne_timeStore ψ 1 _
 
 /-- `↓¹p → p` is **not** `↓ⁱ`-free — and it is precisely `refute_modal_future`'s witness
-(`Semantics/StarLanguage/StarNonValidities.lean`). The side condition is exactly what excludes it. -/
+(`Semantics/StarLanguage/StarNonValidities.lean`). The side condition is exactly what excludes it.
+-/
 example (p : Atom) :
     ¬ RecallFree ((StarFormula.timeRecall 1 (.atom p)).imp (.atom p)) := by
   rintro (_ | _ | ⟨h, -⟩)

@@ -16,8 +16,8 @@ and Zorn's lemma over that order.
 
 ## Paper Specification Reference
 
-The order itself is the paper's, quoted verbatim from `docs/reference/paper-definitions-of-record.md`,
-anchor `def:world-history`:
+The order itself is the paper's, quoted verbatim from
+`docs/reference/paper-definitions-of-record.md`, anchor `def:world-history`:
 
 > `A partial history $\sigma$ \textit{extends} $\tau$ just in case
 > $\dom{\tau} \subseteq \dom{\sigma}$ and $\tau(x) = \sigma(x)$ for all $x \in \dom{\tau}$.`

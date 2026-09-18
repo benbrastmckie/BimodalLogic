@@ -35,12 +35,12 @@ discharged.
 
 ## Where the backward direction does the work
 
-`tmMinusCompleteBase_iff_forwardBase`'s **backward** direction (`ForwardBase → TMMinusCompleteBase`) is
-where `BXCanonical.completeness` — TM's completeness over *all* task frames, `cor:tm-completeness`
-row 1, machine-checked in this tree — actually does the work: it is the step that turns a
-L⁻-valid formula into a `⊢[Base] tr φ` derivation, which `ForwardBase` then pulls back across the
-translation. The **forward** direction (`TMMinusCompleteBase → ForwardBase`) is the easier composition,
-routing `⊢[Base] tr φ` through TM's own soundness to `Valid (tr φ)`, then across
+`tmMinusCompleteBase_iff_forwardBase`'s **backward** direction (`ForwardBase → TMMinusCompleteBase`)
+is where `BXCanonical.completeness` — TM's completeness over *all* task frames,
+`cor:tm-completeness` row 1, machine-checked in this tree — actually does the work: it is the step
+that turns a L⁻-valid formula into a `⊢[Base] tr φ` derivation, which `ForwardBase` then pulls back
+across the translation. The **forward** direction (`TMMinusCompleteBase → ForwardBase`) is the
+easier composition, routing `⊢[Base] tr φ` through TM's own soundness to `Valid (tr φ)`, then across
 `minusValid_iff_valid_tr` to `MinusValid φ`.
 
 ## Main Definitions
@@ -72,12 +72,13 @@ question — is TM⁻ (at that frame class) weakly complete for base-language va
 equivalently does forward conservativity hold there — and by `tmMinusComplete_iff_forward` the two
 readings never come apart. Two rows are closed, two are not.
 
-| Frame class | System | Status | Evidence |
-|---|---|---|---|
-| `.Base` | TM⁻ | **refuted** | `tmMinusCompleteBase_refuted` (`Conservativity/SpCountermodel.lean`), witnessed by `Sp` on the two-fibre `ℤ ⊕ ℝ` model |
-| `.ZTime` | TM⁻_z | **refuted** | `tmMinusCompleteZTime_refuted` (`Conservativity/Z1Countermodel.lean`), witnessed by `Z1` on `ℚ ×ₗ ℤ` |
-| `.Dense` | TM⁻_d | **open; expected complete, no obstruction found** | see below |
-| `.RTime` | TM⁻_dc | **open; obstruction named** | see below |
+* `.Base` — System: TM⁻; Status: **refuted**; Evidence: `tmMinusCompleteBase_refuted`
+  (`Conservativity/SpCountermodel.lean`), witnessed by `Sp` on the two-fibre `ℤ ⊕ ℝ` model
+* `.ZTime` — System: TM⁻_z; Status: **refuted**; Evidence: `tmMinusCompleteZTime_refuted`
+  (`Conservativity/Z1Countermodel.lean`), witnessed by `Z1` on `ℚ ×ₗ ℤ`
+* `.Dense` — System: TM⁻_d; Status: **open; expected complete, no obstruction found**; Evidence: see
+  below
+* `.RTime` — System: TM⁻_dc; Status: **open; obstruction named**; Evidence: see below
 
 Both closed rows are closed by a *dichotomy witness*: a schema valid over the class because the
 class splits into two subclasses that H/G can tell apart, while no single derivation covers both.
@@ -101,8 +102,8 @@ known shape is available. **This is evidence, not proof.** It rules out the two 
 exist in this tree; it says nothing about some third witness.
 
 **What a positive answer still needs**, at declaration granularity. The *transfer* half is already
-closed: `not_minusValidIn_of_not_chainSat` (`Conservativity/ChainBundleTruth.lean`) turns a chain-model
-refutation into a task-frame refutation at any tag the flow frame satisfies, with
+closed: `not_minusValidIn_of_not_chainSat` (`Conservativity/ChainBundleTruth.lean`) turns a
+chain-model refutation into a task-frame refutation at any tag the flow frame satisfies, with
 `not_minusValidDense_of_not_chainSat` the ℚ instantiation, and the frame construction it consumes
 (`multiFamTaskFrameGen`, `Metalogic/Algebraic/FlowFrame.lean`) was already generic. What is missing
 is the *canonical model*, all of it on the base-language side:
@@ -165,8 +166,8 @@ on *proving* one. `forward` is refuted at `.Base` and `.ZTime`, so a `sorry` the
 unsound placeholder rather than deferred debt; at `.Dense` and `.RTime` the statements are simply
 open, and a genuine proof of either would be welcome. What is forbidden at all four tags is
 asserting one without a proof — and, equally, reading the `.Dense` row above as though the expected
-answer had been established. It has not been. Every `TMMinusComplete` and `Forward` proposition in this
-module is a `def`, referenced as a statement and never the conclusion of a theorem.
+answer had been established. It has not been. Every `TMMinusComplete` and `Forward` proposition in
+this module is a `def`, referenced as a statement and never the conclusion of a theorem.
 
 ## References
 
@@ -220,18 +221,19 @@ def Forward (fc : FrameClass) : Prop :=
   ∀ φ : MinusFormula, ProofSystem.Derivable fc [] (tr φ) → MinusLanguage.Derivable fc [] φ
 
 /--
-**The reduction, generically.** `TMMinusComplete fc` and `Forward fc` are the same proposition, given
-a weak-completeness engine at `fc`.
+**The reduction, generically.** `TMMinusComplete fc` and `Forward fc` are the same proposition,
+given a weak-completeness engine at `fc`.
 
 Forward (`TMMinusComplete fc → Forward fc`): given `⊢[fc] tr φ`, `soundness_validIn`
 (`Metalogic/Soundness.lean`) gives `ValidIn fc (tr φ)`, and `minusValidIn_iff_validIn_tr`
-(`Metalogic/Conservativity/MinusLanguageSoundness.lean`) crosses to `MinusValidIn fc φ`; apply the hypothesis. This
-direction does not use the engine.
+(`Metalogic/Conservativity/MinusLanguageSoundness.lean`) crosses to `MinusValidIn fc φ`; apply the
+hypothesis. This direction does not use the engine.
 
-Backward (`Forward fc → TMMinusComplete fc`): given `MinusValidIn fc φ`, `minusValidIn_iff_validIn_tr` gives
-`ValidIn fc (tr φ)`, and the **engine** turns that into `⊢[fc] tr φ`; apply the hypothesis. This
-is where TM's completeness does the actual work, and it is the whole of the class-dependence —
-the reason `WeakCompleteness fc` is the hypothesis rather than anything stronger.
+Backward (`Forward fc → TMMinusComplete fc`): given `MinusValidIn fc φ`,
+`minusValidIn_iff_validIn_tr` gives `ValidIn fc (tr φ)`, and the **engine** turns that into
+`⊢[fc] tr φ`; apply the hypothesis. This is where TM's completeness does the actual work, and it is
+the whole of the class-dependence — the reason `WeakCompleteness fc` is the hypothesis rather than
+anything stronger.
 
 **The module's prohibition discipline is preserved, not weakened.** The conclusion here is an
 `Iff`, not either side of it: nothing below asserts `TMMinusComplete fc` and nothing asserts
@@ -250,9 +252,9 @@ theorem tmMinusComplete_iff_forward {fc : FrameClass} (engine : WeakCompleteness
 /-! ## `FrameClass.Base` -/
 
 /--
-**"TM⁻ is complete over task frames."** `TMMinusComplete` at `.Base`. `MinusValid` is `MinusValidIn .Base`
-definitionally (`Semantics/MinusLanguage/MinusValidity.lean`), so the statement is unchanged by the
-generalization. **Unasserted.**
+**"TM⁻ is complete over task frames."** `TMMinusComplete` at `.Base`. `MinusValid` is
+`MinusValidIn .Base` definitionally (`Semantics/MinusLanguage/MinusValidity.lean`), so the statement
+is unchanged by the generalization. **Unasserted.**
 -/
 def TMMinusCompleteBase : Prop := TMMinusComplete FrameClass.Base
 

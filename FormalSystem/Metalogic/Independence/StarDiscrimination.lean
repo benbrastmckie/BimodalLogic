@@ -57,7 +57,8 @@ dependence of its own.
   `cor:no-characterization`, `app:deterministic-future` and the footnote following it
 * `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` —
   `deterministic_not_plusDefinable`, `fzero_plusValidOn_iff_f1`
-* `FormalSystem/Semantics/StarLanguage/StarDeterminism.lean` — `sentDet_of_deterministic`, the half `F¹` uses
+* `FormalSystem/Semantics/StarLanguage/StarDeterminism.lean` — `sentDet_of_deterministic`, the half
+  `F¹` uses
 
 ## Tags
 

@@ -164,7 +164,8 @@ In S4, nested diamond-box-diamond collapses to simple diamond.
 
 **Dependencies**: Biconditional infrastructure (available via pairing pattern)
 -/
-def s4DiamondBoxDiamond {fc : FrameClass} (A : Formula) : ⊢[fc] iff (A.diamond.box.diamond) A.diamond := by
+def s4DiamondBoxDiamond {fc : FrameClass} (A : Formula) : ⊢[fc] iff
+    (A.diamond.box.diamond) A.diamond := by
   -- Goal: ◇□◇A ↔ ◇A
 
   -- Backward direction: ◇A → ◇□◇A
@@ -269,7 +270,8 @@ def s4DiamondBoxDiamond {fc : FrameClass} (A : Formula) : ⊢[fc] iff (A.diamond
   have step1 : ⊢[fc] (A.diamond.imp A.diamond.box.diamond).imp
     ((A.diamond.box.diamond.imp A.diamond).and (A.diamond.imp A.diamond.box.diamond)) :=
     DerivationTree.modus_ponens [] _ _ pair_forward_backward forward
-  have result : ⊢[fc] (A.diamond.box.diamond.imp A.diamond).and (A.diamond.imp A.diamond.box.diamond) :=
+  have result : ⊢[fc] (A.diamond.box.diamond.imp A.diamond).and
+      (A.diamond.imp A.diamond.box.diamond) :=
     DerivationTree.modus_ponens [] _ _ step1 backward
   exact result
 
@@ -382,7 +384,8 @@ noncomputable def s5DiamondConjDiamond {fc : FrameClass} (A B : Formula) :
     have dia_b_to_box_imp : ⊢[fc] B.diamond.imp (A.imp (A.and B.diamond)).box :=
       impTrans modal_5_b box_flipped
     -- Step 6: Apply kDistDiamond: □(A → (A ∧ ◇B)) → (◇A → ◇(A ∧ ◇B))
-    have k_dist : ⊢[fc] (A.imp (A.and B.diamond)).box.imp (A.diamond.imp (A.and B.diamond).diamond) :=
+    have k_dist : ⊢[fc] (A.imp (A.and B.diamond)).box.imp
+        (A.diamond.imp (A.and B.diamond).diamond) :=
       kDistDiamond A (A.and B.diamond)
     -- Step 7: Compose: ◇B → (◇A → ◇(A ∧ ◇B))
     have dia_b_to_imp : ⊢[fc] B.diamond.imp (A.diamond.imp (A.and B.diamond).diamond) :=
@@ -399,7 +402,8 @@ noncomputable def s5DiamondConjDiamond {fc : FrameClass} (A B : Formula) :
     have step1 : ⊢[fc] ((A.diamond.and B.diamond).imp B.diamond).imp
                     ((A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond)) :=
       DerivationTree.modus_ponens [] _ _ b_comp dia_b_to_imp
-    have conj_to_imp : ⊢[fc] (A.diamond.and B.diamond).imp (A.diamond.imp (A.and B.diamond).diamond) :=
+    have conj_to_imp : ⊢[fc] (A.diamond.and B.diamond).imp
+        (A.diamond.imp (A.and B.diamond).diamond) :=
       DerivationTree.modus_ponens [] _ _ step1 rce_conj
     -- Extract ◇A from conjunction: (◇A ∧ ◇B) → ◇A
     have lce_conj : ⊢[fc] (A.diamond.and B.diamond).imp A.diamond :=

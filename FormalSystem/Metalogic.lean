@@ -53,8 +53,8 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   `TMFrag fc φ := TM ⊢[fc] tr φ` is — sound (`tmFrag_sound`), complete at all four classes
   (`tmFrag_complete_*`), containing TM everywhere (`tmMinus_le_tmFrag`) and strictly at `.ZTime`
   (`tmMinus_lt_tmFrag_ztime`). Its consequence relation is compact at `.Base` and `.Dense`
-  (`minusCompactBase`, `minusCompactDense`, `Metalogic/Conservativity/FragmentCompactness.lean`); the
-  Discrete/Dedekind non-compactness witnesses lie outside `range tr` and do not transfer.
+  (`minusCompactBase`, `minusCompactDense`, `Metalogic/Conservativity/FragmentCompactness.lean`);
+  the Discrete/Dedekind non-compactness witnesses lie outside `range tr` and do not transfer.
 - **The stability extension L⁺ / TM⁺** (`Metalogic/Conservativity/Plus.lean`, over
   `FormalSystem/PlusLanguage/` and `Semantics/PlusLanguage/`): SORRY-FREE (axioms: exactly
   `propext`, `Classical.choice`, `Quot.sound`). Soundness of TM⁺ at every frame class
@@ -78,13 +78,14 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   `minus_soundness_ztime`, `minus_soundness_rtime`, plus the empty-context validity forms and the
   consistency corollaries `minus_not_derivable_nil_bot` / `minus_not_derivable_nil_bot_ztime`):
   SORRY-FREE (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Stated against the
-  **native** L⁻ semantics `MinusTruthAt` of `Semantics/MinusLanguage/MinusTruth.lean` — a six-clause recursion on
-  `MinusFormula`, not `TruthAt ∘ tr` — and obtained by composing `Conservativity.translate` with the
-  four theorems above across the truth-transfer bridge `Semantics.truthAt_tr`, which is proved by
-  induction in `Metalogic/Conservativity/MinusLanguageSoundness.lean`. `minus_soundness_rtime` carries
-  `ValidRTime`'s binder set and its validity form concludes at `MinusValidRTime`,
-  inheriting `soundness_rtime`'s target; a density-free `MinusValidComplete` is deliberately not
-  defined because it would be refutable
+  **native** L⁻ semantics `MinusTruthAt` of `Semantics/MinusLanguage/MinusTruth.lean` — a six-clause
+  recursion on `MinusFormula`, not `TruthAt ∘ tr` — and obtained by composing
+  `Conservativity.translate` with the four theorems above across the truth-transfer bridge
+  `Semantics.truthAt_tr`, which is proved by induction in
+  `Metalogic/Conservativity/MinusLanguageSoundness.lean`. `minus_soundness_rtime` carries
+  `ValidRTime`'s binder set and its validity form concludes at `MinusValidRTime`, inheriting
+  `soundness_rtime`'s target; a density-free `MinusValidComplete` is deliberately not defined
+  because it would be refutable
 - **Completeness** (`completeness`): SORRY-FREE (sorryAx-free; axioms: exactly `propext`,
   `Classical.choice`, `Quot.sound`). Its Base-frame discrete branch,
   `WeakCanonical.countermodel_discrete`, is proved in
@@ -166,9 +167,9 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   indistinguishable pair `F°` (a drift band over `ℝ`) and `F¹` (translation over `ℝ`), which
   validate exactly the same L⁺ formulas while differing in determinism. The same pair refutes the
   converse of the deterministic collapse `determined_of_deterministic`
-  (`Semantics/PlusLanguage/PlusDeterminism.lean`): validity of *Determined* holds on a class strictly larger
-  than the deterministic frames. Uniform substitution is unsound in this setting, so no proof
-  here argues by substitution.
+  (`Semantics/PlusLanguage/PlusDeterminism.lean`): validity of *Determined* holds on a class
+  strictly larger than the deterministic frames. Uniform substitution is unsound in this setting, so
+  no proof here argues by substitution.
 - **Expressive completeness (Kamp, Prior structures)** (`kampPriorExpressiveCompleteness`,
   `WeakCanonical/Kamp/KampPrior.lean`): SORRY-FREE (axioms: exactly `propext`,
   `Classical.choice`, `Quot.sound`). `{U, S}` is expressively complete relative to monadic
@@ -195,7 +196,8 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
 
 ### Key Components
 
-- **Algebraic/FlowFrame**: generic flow frame, four-axiom conformance, and the D-generic re-hosted truth lemma (core of countermodel)
+- **Algebraic/FlowFrame**: generic flow frame, four-axiom conformance, and the D-generic re-hosted
+  truth lemma (core of countermodel)
 - **BXCanonical/Chronicle/**: Burgess 1982 chronicle construction for dense case
 - **WeakCanonical/**: Reynolds/Doets pipeline for discrete case
 - **WeakCanonical/DenseModelSurgery/**, **WeakCanonical/RealModel/**: Reynolds Sections 6-8
@@ -240,13 +242,13 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
 
 Soundness, decidability, and the completeness theorems (`completeness_dense`,
 `completeness_ztime`, `completeness_rtime`, `consequence_completeness_rtime`) all use
-standard Lean axioms only: `propext`, `Classical.choice`, `Quot.sound`. The former `Lean.ofReduceBool`/`Lean.trustCompiler` dependency was eliminated
-by swapping the Syntax-layer `native_decide` sites to `rfl`/`decide` (see the Axiom Audit
-in `BXCanonical/Completeness.lean`). No `sorryAx` on any of these paths. The general
-Base-frame `completeness` is now on the same footing: its discrete branch
-`WeakCanonical.countermodel_discrete` is proved
-(`WeakCanonical/GroupModel/CountermodelBase.lean`), so `completeness` too depends on exactly
-those three axioms.
+standard Lean axioms only: `propext`, `Classical.choice`, `Quot.sound`. The former
+`Lean.ofReduceBool`/`Lean.trustCompiler` dependency was eliminated by swapping the Syntax-layer
+`native_decide` sites to `rfl`/`decide` (see the Axiom Audit in `BXCanonical/Completeness.lean`). No
+`sorryAx` on any of these paths. The general Base-frame `completeness` is now on the same footing:
+its discrete branch `WeakCanonical.countermodel_discrete` is proved
+(`WeakCanonical/GroupModel/CountermodelBase.lean`), so `completeness` too depends on exactly those
+three axioms.
 
 ## Module Structure
 

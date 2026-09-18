@@ -54,7 +54,8 @@ is total, so that X = D. ... The set of all possible worlds over F is denoted
 H_F." `multiFamGen_total_eq` characterizes the world histories of the flow frame: every
 `σ : WorldHistory` IS a flow line `multiFamHistoryGen f w₀`. Since the flow lines are
 world histories by construction, the frame's set of possible worlds H_F coincides exactly with
-the flow-line family — the internalization on which the total-history countermodel constructions rest.
+the flow-line family — the internalization on which the total-history countermodel constructions
+rest.
 
 **Derived, not cited**: the segment identity `w ⇒_{x+y} v ↔ [w,v]_x^y ≠ ∅`
 (`taskRel_add_iff_seg_nonempty`) is DERIVED here from the compositionality biconditional, the
@@ -250,7 +251,8 @@ theorem multiFamGen_comp_iff {FamIdx : Type} [Nonempty FamIdx] (w v : FamIdx × 
 /-- The positive-cone projection of `multiFamGen_comp_iff`: `def:frame#Compositionality`
 exactly as the paper states it, "for $x, y \geq 0$". The sign hypotheses are unused because
 the strong form holds for all durations. -/
-theorem multiFamGen_comp_iff_of_nonneg {FamIdx : Type} [Nonempty FamIdx] (w v : FamIdx × ↑D) (x y : ↑D)
+theorem multiFamGen_comp_iff_of_nonneg {FamIdx : Type} [Nonempty FamIdx]
+    (w v : FamIdx × ↑D) (x y : ↑D)
     (_ : 0 ≤ x) (_ : 0 ≤ y) :
     (multiFamTaskFrameGen D FamIdx).TaskRel w (x + y) v ↔
       ∃ u, (multiFamTaskFrameGen D FamIdx).TaskRel w x u ∧
@@ -300,8 +302,8 @@ theorem multiFamTaskFrameGen_deterministic {FamIdx : Type} [Nonempty FamIdx] :
 
 /-- *Saturation* (`def:frame#Saturation`) for the generic flow frame: every fiber is a
 singleton and every segment is an intersection of fibers, hence a subsingleton, so a
-`⊇`-directed family (`def:frame`'s opening clause) of nonempty fibers and segments meets the hypotheses of
-`sInter_nonempty_of_directed_subsingleton`. -/
+`⊇`-directed family (`def:frame`'s opening clause) of nonempty fibers and segments meets the
+hypotheses of `sInter_nonempty_of_directed_subsingleton`. -/
 theorem multiFamGen_saturation {FamIdx : Type} [Nonempty FamIdx] (S : Set (Set (FamIdx × ↑D)))
     (hdir : TaskFrame.DirectedFamily S)
     (hne : ∀ s ∈ S, s.Nonempty)
@@ -361,7 +363,8 @@ theorem multiFamTaskFrameGen_saturation {FamIdx : Type} [Nonempty FamIdx] :
 X = D." For the deterministic flow frame, every world history is a flow line: the
 state at time `0` fixes the family index and the offset, and `respects_task` propagates the
 clock to every other time. Since `multiFamHistoryGen` is itself a `WorldHistory`, this
-identifies the frame's world-history set H_F with the flow-line family — the internalization the total-history countermodels rest on. -/
+identifies the frame's world-history set H_F with the flow-line family — the internalization the
+total-history countermodels rest on. -/
 
 /-- Every world history of the generic flow frame is a flow line: `σ = multiFamHistoryGen f w₀`
 for the family index and offset read off from `σ` at time `0`. -/

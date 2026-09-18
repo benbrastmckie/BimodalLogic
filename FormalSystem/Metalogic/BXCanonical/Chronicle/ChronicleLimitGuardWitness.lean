@@ -100,8 +100,8 @@ If a rational family `m` satisfies Since coherence in both directions (unrestric
 
 The proof is the past mirror of Reynolds 1992's Theorem 3 argument (printed p.176), applied to the
 **guard** `ψ` rather than to a witness, which is what makes the Prior-S antecedent `S(⊤, ψ)`
-available. See the module docstring. `DerivedAxioms.priorSGap` is consumed at `ψ`, whence the hypothesis
-`hfc`.
+available. See the module docstring. `DerivedAxioms.priorSGap` is consumed at `ψ`, whence the
+hypothesis `hfc`.
 -/
 theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.RTime ≤ fc)
     (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))

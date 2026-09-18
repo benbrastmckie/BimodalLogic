@@ -50,10 +50,10 @@ Every declaration below except `nextConj` and `succIndicatorAt` is stated at
 `Axiom.dense_indicator`; a `{fc}`-uniform version — one taking no hypothesis relating `fc` to
 `FrameClass.ZTime` — would therefore make the dense system inconsistent. `succIndicatorAt` is
 not that version: it carries the guard `h : FrameClass.ZTime ≤ fc`, which `FrameClass.Dense`
-does not satisfy, so generalizing along `h` preserves the argument rather than defeating it. `unfoldForward`, `unfoldTableForward` and
-`noBlockingTriple` all consume `succIndicator`. `unfoldBackward` and `unfoldTableBackward` are
-stated at `FrameClass.Base` because that is the *weakest* class at which they hold; they lift to
-any `fc` through `Combinators.baseThm`.
+does not satisfy, so generalizing along `h` preserves the argument rather than defeating it.
+`unfoldForward`, `unfoldTableForward` and `noBlockingTriple` all consume `succIndicator`.
+`unfoldBackward` and `unfoldTableBackward` are stated at `FrameClass.Base` because that is the
+*weakest* class at which they hold; they lift to any `fc` through `Combinators.baseThm`.
 
 `FormalSystem.Metalogic.not_derivable_nil_bot_ztime` (`Metalogic/Soundness.lean`) is what
 makes these results non-vacuous: the `Discrete` system is consistent, so `⊢[Discrete]` is not

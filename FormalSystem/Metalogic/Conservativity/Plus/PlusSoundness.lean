@@ -20,7 +20,8 @@ structure of `PlusTruthAt`.
 **TR is discharged semantically, never proof-theoretically.** Mapping derivations to mirrored
 derivations would require the axiom set to be mirror-closed, which TM's is not (BX lists the
 future halves and obtains the past halves by TR); the companion recursion needs only
-per-schema reflection-validity, which `plusAxiom_reflect_time_validIn_min` supplies for every constructor.
+per-schema reflection-validity, which `plusAxiom_reflect_time_validIn_min` supplies for every
+constructor.
 
 ## Main Results
 
@@ -103,7 +104,8 @@ decreasing_by
 
 /-- **Soundness of TM⁺ at `fc`**, empty-context validity form.
 
-Paper: — (formalization-native; L⁺ is the ⊡-only fragment of the paper's `\BL^\star`, for which the paper supplies no logic)
+Paper: — (formalization-native; L⁺ is the ⊡-only fragment of the paper's `\BL^\star`, for which the
+paper supplies no logic)
 -/
 theorem plus_soundness_validIn {fc : FrameClass} {φ : PlusFormula}
     (h : PlusDerivable fc [] φ) : PlusValidIn fc φ :=
@@ -175,7 +177,8 @@ example {fc : FrameClass} {φ : PlusFormula} (d : ⊢⁺[fc] φ) :
   plus_soundness_validIn ⟨stabNecessitation d⟩
 
 /-- **TM⁺ is consistent at `.Base`**: `⊥` is not a theorem. (Consistency at the wider classes is
-not a corollary, since derivability lifts upward; each would need its own witness frame.) Witness: the trivial frame over `ℤ` with the all-false valuation, mirroring
+not a corollary, since derivability lifts upward; each would need its own witness frame.) Witness:
+the trivial frame over `ℤ` with the all-false valuation, mirroring
 `minus_not_derivable_nil_bot_ztime`. -/
 theorem plus_not_derivable_nil_bot :
     ¬ PlusDerivable FrameClass.Base [] PlusFormula.bot := by

@@ -20,10 +20,10 @@ shorthand for anything L can already say.
 Both live over `ℤ`, both realize **exactly the same atom profiles** along their world histories,
 and they differ only in *which* histories share a world state at a given time.
 
-| | frame | world histories | `⟨τ⟩₀` |
-|---|---|---|---|
-| `M₁` | `NF`, the permissive frame (`Semantics/TaskFrame.lean`, `natFrame`) | every `f : ℤ → ℕ` | every history agreeing with `τ` at `0` |
-| `M₂` | `multiFamTaskFrameGen`, the deterministic clock at family index `ℤ → ℕ` | the flow lines `t ↦ (g, w₀ + t)` | `{τ}` |
+* `M₁` — frame: `NF`, the permissive frame (`Semantics/TaskFrame.lean`, `natFrame`); world
+  histories: every `f : ℤ → ℕ`; `⟨τ⟩₀`: every history agreeing with `τ` at `0`
+* `M₂` — frame: `multiFamTaskFrameGen`, the deterministic clock at family index `ℤ → ℕ`; world
+  histories: the flow lines `t ↦ (g, w₀ + t)`; `⟨τ⟩₀`: `{τ}`
 
 The separating point is `(τ₁, 0)` against `(τ₂, 0)`, where both histories carry the profile
 "`p` at time `1` and nowhere else":
@@ -46,10 +46,10 @@ fields are the profile-matching constructions above.
 ## Why the separator has to be temporal
 
 An *atomic* separator is impossible: `p → ⊡p` is valid on every frame (the `stateLocal_atom`
-instance of `stab_of_stateLocal`, `Semantics/PlusLanguage/PlusStateLocal.lean`, the AS axiom), because an
-atom's truth depends on the world state alone — which is exactly what `⊡` quantifies over. So `⊡p ↔ p` everywhere and no atom can
-witness anything. `Fp` is the least temporal formula that can, which is why the statement is
-about `⊡Fp` and not about `⊡` at an arbitrary argument.
+instance of `stab_of_stateLocal`, `Semantics/PlusLanguage/PlusStateLocal.lean`, the AS axiom),
+because an atom's truth depends on the world state alone — which is exactly what `⊡` quantifies
+over. So `⊡p ↔ p` everywhere and no atom can witness anything. `Fp` is the least temporal formula
+that can, which is why the statement is about `⊡Fp` and not about `⊡` at an arbitrary argument.
 
 Note also that `□Fp` fails at **both** points (`box_someFuture_false_left`,
 `box_someFuture_false_right`): the separation is not one `□` could have made either, which is the
@@ -58,7 +58,8 @@ point — `⊡` sits strictly between the identity and `□`.
 ## References
 
 * JPL paper `def:BLstar-semantics` — the `⊡` clause whose expressive strength this bounds below
-* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`, reused verbatim
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`, reused
+  verbatim
 * `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` — the sibling
   elimination-by-indistinguishability result, on frames rather than formulas
 

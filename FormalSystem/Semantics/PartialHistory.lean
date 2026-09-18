@@ -158,7 +158,8 @@ The guarded form of task-respect, **derived** from the unconditional field.
 This is the shape `PartialHistory.respects_task` has historically carried. It is a projection, not a
 weakening: the unconditional field simply ignores the `s ≤ t` hypothesis.
 -/
-theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.domain s) (ht : τ.domain t)
+theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.domain s)
+    (ht : τ.domain t)
     (_hst : s ≤ t) : F.TaskRel (τ.states s hs) (t - s) (τ.states t ht) :=
   τ.respects_task s t hs ht
 
@@ -166,9 +167,10 @@ theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.dom
 Smart constructor: build a `PartialHistory` from a **guarded** task-respect proof.
 
 The unconditional `respects_task` field is discharged from the guarded proof plus
-`FrameOver.reflection`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
-and the reflection convention turns that into `TaskRel (states s) (-(s - t)) (states t)`, which is
-`TaskRel (states s) (t - s) (states t)` by `neg_sub`.
+`FrameOver.reflection`: when `t < s`, the guarded proof gives
+`TaskRel (states t) (s - t) (states s)`, and the reflection convention turns that into
+`TaskRel (states s) (-(s - t)) (states t)`, which is `TaskRel (states s) (t - s) (states t)` by
+`neg_sub`.
 
 **This is a proof-convenience constructor, not a compatibility shim.** It introduces no second
 history type, no second validity notion, and no alias of any API surface — it is one

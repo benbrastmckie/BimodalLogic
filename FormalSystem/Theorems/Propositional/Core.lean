@@ -435,7 +435,8 @@ Proof:
 3. DNE for A: `¬¬A → A`
 4. Compose all three using bCombinator
 -/
-def impOfNegImpNeg {fc : FrameClass} (Γ : Context) (A B : Formula) (h : Γ ⊢[fc] A.neg.imp B.neg) : Γ ⊢[fc] B.imp A := by
+def impOfNegImpNeg {fc : FrameClass} (Γ : Context) (A B : Formula)
+    (h : Γ ⊢[fc] A.neg.imp B.neg) : Γ ⊢[fc] B.imp A := by
   -- Strategy: B → ¬¬B → ¬¬A → A
 
   -- Step 1: DNI for B
@@ -476,7 +477,8 @@ def impOfNegImpNeg {fc : FrameClass} (Γ : Context) (A B : Formula) (h : Γ ⊢[
   -- Step 3: Compose B → ¬¬B → ¬¬A
   have b_comp1 : ⊢[fc] (B.neg.neg.imp A.neg.neg).imp ((B.imp B.neg.neg).imp (B.imp A.neg.neg)) :=
     @bCombinator fc B B.neg.neg A.neg.neg
-  have b_comp1_ctx : Γ ⊢[fc] (B.neg.neg.imp A.neg.neg).imp ((B.imp B.neg.neg).imp (B.imp A.neg.neg)) :=
+  have b_comp1_ctx : Γ ⊢[fc] (B.neg.neg.imp A.neg.neg).imp
+      ((B.imp B.neg.neg).imp (B.imp A.neg.neg)) :=
     DerivationTree.weakening [] Γ _ b_comp1 (by intro; simp)
   have step1 : Γ ⊢[fc] (B.imp B.neg.neg).imp (B.imp A.neg.neg) :=
     DerivationTree.modus_ponens Γ _ _ b_comp1_ctx contraposed

@@ -46,10 +46,11 @@ Three results, in increasing strength:
 `Det-pm` and the definability equivalence are **not manuscript text**. They are recorded in the
 PossibleWorlds repository's determinism-axiom-correspondence report
 (`reports/02_determinism-axiom-correspondence.md`, §4), whose §4.1 also records that a *single*
-sentence letter suffices for the converse direction. That report is the citation of record for them here: they are cited as a
-**report-level result pending paper integration**, never as manuscript text and never as a
-conjecture. What *is* manuscript text is `sent:det` and `app:deterministic-future`, which are
-results (1) and `Semantics/StarLanguage/StarNonValidities.lean` below.
+sentence letter suffices for the converse direction. That report is the citation of record for them
+here: they are cited as a **report-level result pending paper integration**, never as manuscript
+text and never as a conjecture. What *is* manuscript text is `sent:det` and
+`app:deterministic-future`, which are results (1) and
+`Semantics/StarLanguage/StarNonValidities.lean` below.
 
 ## The single sentence letter is not uniform substitution
 
@@ -98,8 +99,10 @@ correspondence-record-and-store-recall-recommendation report, §II.4's choice-as
   `lem:deterministic-singleton`, `def:BLstar-semantics`
 * The PossibleWorlds `02_determinism-axiom-correspondence.md` report, §4 — Theorem C,
   `Det-pm`, and the §4.1 single-letter note
-* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic`, the L⁺ collapse
-* `FormalSystem/Semantics/StarLanguage/StarNonValidities.lean` — `app:deterministic-future`'s negative half
+* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic`, the L⁺
+  collapse
+* `FormalSystem/Semantics/StarLanguage/StarNonValidities.lean` — `app:deterministic-future`'s
+  negative half
 
 ## Tags
 
@@ -121,8 +124,8 @@ variable {F : TaskFrame}
 their world state at a single time satisfy the same `StarFormula` at *every* time and *every*
 stored-time vector.
 
-This is the L⋆ twin of `stab_iff_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) and the
-engine both validity results below run on. It consumes the singleton bridge
+This is the L⋆ twin of `stab_iff_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`)
+and the engine both validity results below run on. It consumes the singleton bridge
 (`states_eq_of_deterministic`) rather than re-deriving the collapse, and transports along
 `star_truth_congr_ext` — the transport lemma that survives time registers because it fixes the
 vector on both sides.

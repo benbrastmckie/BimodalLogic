@@ -64,7 +64,8 @@ theorem exists_isGLB_of_lub {D : Type} [LinearOrder D]
 
 /-- Every positive element of a densely ordered ordered group has a positive "half": some `b > 0`
 with `b + b ≤ a`. Density supplies a `c` strictly between `0` and `a`; `min c (a - c)` works. -/
-private theorem exists_half_le {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+private theorem exists_half_le {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D]
     [DenselyOrdered D] (a : D) (ha : 0 < a) : ∃ b : D, 0 < b ∧ b + b ≤ a := by
   obtain ⟨c, hc0, hca⟩ := exists_between ha
   refine ⟨min c (a - c), lt_min hc0 (by simpa using hca), ?_⟩

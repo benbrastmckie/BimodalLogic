@@ -1972,7 +1972,8 @@ private theorem l27_a_event_list_α_mem_xi (fc : FrameClass) {A B C : Set Formul
   unfold l27AEventList
   apply List.mem_filterMap.mpr
   refine ⟨Formula.snce (Formula.and β' xi) α', hφ, ?_⟩
-  have h_ex : ∃ β'' ∈ B, ∃ α'' ∈ A, Formula.snce (Formula.and β' xi) α' = Formula.snce (Formula.and β'' xi)
+  have h_ex : ∃ β'' ∈ B, ∃ α'' ∈ A, Formula.snce (Formula.and β' xi) α' = Formula.snce
+      (Formula.and β'' xi)
       α'' :=
     ⟨β', hβ', α', hα', rfl⟩
   rw [dif_pos h_ex]

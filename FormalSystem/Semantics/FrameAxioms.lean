@@ -43,8 +43,8 @@ sole application site the paper names, never an inert structure field.
 
 ## Paper Specification Reference
 
-Anchors below are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
-paper source — is the citation source of record.
+Anchors below are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not
+the paper source — is the citation source of record.
 
 - *Compositionality* (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and
   only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."

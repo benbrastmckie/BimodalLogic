@@ -27,13 +27,12 @@ L⁻-valid on every task frame) this refutes TM⁻'s weak completeness over the 
 ## Why no task-frame refutation can exist
 
 `(Sp)` is valid on *every* task frame, so the refuting structure must lie outside the class. The
-route taken here is a native semantics: `Semantics/MinusLanguage/MinusFrame.lean` supplies a frame notion with no
-group structure on time, native L⁻ soundness for TM⁻ is proved directly against it
+route taken here is a native semantics: `Semantics/MinusLanguage/MinusFrame.lean` supplies a frame
+notion with no group structure on time, native L⁻ soundness for TM⁻ is proved directly against it
 (`minusFrameValid_of_derivation`), and the countermodel is an instance of that class. Note the
-contrast with the `TaskFrame`-bound stack: **TM is unsound** on the two-fibre structure below,
-so no composition through `tr` and L soundness is available. The soundness theorem in this
-module is about TM⁻ (`MinusLanguage.DerivationTree`), never about TM, and the two must not be
-blurred.
+contrast with the `TaskFrame`-bound stack: **TM is unsound** on the two-fibre structure below, so no
+composition through `tr` and L soundness is available. The soundness theorem in this module is about
+TM⁻ (`MinusLanguage.DerivationTree`), never about TM, and the two must not be blurred.
 
 ## Why the countermodel needs *two* order shapes
 
@@ -69,7 +68,8 @@ nothing is lost.
 
 ## Main Results
 
-- `minusFrameValid_of_axiom` — every TM⁻ axiom schema admissible at `FrameClass.Base` is `MinusFrameValid`
+- `minusFrameValid_of_axiom` — every TM⁻ axiom schema admissible at `FrameClass.Base` is
+  `MinusFrameValid`
 - `minusFrameValid_of_derivation` — **native L⁻ soundness**: every TM⁻ theorem is `MinusFrameValid`
 - `df_fails`, `dn_fails` — the two disjuncts fail, on the `ℝ` and `ℤ` fibres respectively
 - `sp_false` — `(Sp)` is false at every point of `twoFibre`
@@ -78,7 +78,8 @@ nothing is lost.
 
 ## References
 
-* `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean` — the native frame notion and `truth_reflectTime`
+* `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean` — the native frame notion and
+  `truth_reflectTime`
 * `FormalSystem/Metalogic/Conservativity/SpWitness.lean` — `Sp`, `minusValid_sp`, `sp_translate`
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — `TMMinusCompleteBase`
 * `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — the `.ZTime` mirror
@@ -152,17 +153,20 @@ theorem minusFrameValid_of_axiom {φ : MinusFormula} (ax : MinusLanguage.Axiom �
       exact ⟨w, hv, h⟩
   | temp_linearity φ ψ =>
       intro F V w h
-      rw [MinusFrameTruth.and_iff, MinusFrameTruth.someFuture_iff, MinusFrameTruth.someFuture_iff] at h
+      rw [MinusFrameTruth.and_iff, MinusFrameTruth.someFuture_iff,
+          MinusFrameTruth.someFuture_iff] at h
       obtain ⟨⟨s, hws, hφ⟩, ⟨u, hwu, hψ⟩⟩ := h
       rcases F.fut_lin hws hwu with hlt | heq | hgt
       · -- `s < u` : third disjunct, `F(φ ∧ Fψ)` at `s`
-        refine (MinusFrameTruth.or_iff _ _).mpr (Or.inr ((MinusFrameTruth.or_iff _ _).mpr (Or.inr ?_)))
+        refine (MinusFrameTruth.or_iff _ _).mpr
+            (Or.inr ((MinusFrameTruth.or_iff _ _).mpr (Or.inr ?_)))
         rw [MinusFrameTruth.someFuture_iff]
         refine ⟨s, hws, ?_⟩
         rw [MinusFrameTruth.and_iff, MinusFrameTruth.someFuture_iff]
         exact ⟨hφ, u, hlt, hψ⟩
       · -- `s = u` : second disjunct
-        refine (MinusFrameTruth.or_iff _ _).mpr (Or.inr ((MinusFrameTruth.or_iff _ _).mpr (Or.inl ?_)))
+        refine (MinusFrameTruth.or_iff _ _).mpr
+            (Or.inr ((MinusFrameTruth.or_iff _ _).mpr (Or.inl ?_)))
         rw [MinusFrameTruth.someFuture_iff]
         refine ⟨s, hws, ?_⟩
         rw [MinusFrameTruth.and_iff]
@@ -184,8 +188,8 @@ on the whole native L⁻ frame class.
 Recursion over all seven `MinusLanguage.DerivationTree` constructors. `assumption` is vacuous at
 the empty context; `modus_ponens`, `necessitation` and `temporal_necessitation` are immediate
 from the corresponding truth clauses (the last two because `MinusFrameValid` already quantifies over
-every point). `time_reflection` is one line via `Semantics.truth_reflectTime` at `F.reflect`, which is
-available precisely because the frame class is converse-closed. `weakening` routes through
+every point). `time_reflection` is one line via `Semantics.truth_reflectTime` at `F.reflect`, which
+is available precisely because the frame class is converse-closed. `weakening` routes through
 `DerivationTree.ofWeakeningNil`, with `height_ofWeakeningNil_lt` supplying termination.
 -/
 theorem minusFrameValid_of_derivation {φ : MinusFormula}
@@ -217,12 +221,16 @@ decreasing_by
 The cross-fibre cases are impossible (nothing on one fibre is below anything on the other in
 Mathlib's `Sum` order) and die by `simp_all`; the same-fibre cases are `lt_trichotomy`. -/
 private theorem sum_tri : ∀ (a b c : ℤ ⊕ ℝ), a < b → a < c → b < c ∨ b = c ∨ c < b := by
-  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all only [Sum.inl_lt_inl_iff, Sum.inl.injEq, Sum.not_inl_lt_inr, Sum.not_inr_lt_inl, Sum.inr_lt_inr_iff, Sum.inr.injEq] <;> exact lt_trichotomy _ _
+  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all only [Sum.inl_lt_inl_iff, Sum.inl.injEq,
+      Sum.not_inl_lt_inr, Sum.not_inr_lt_inl, Sum.inr_lt_inr_iff, Sum.inr.injEq]
+      <;> exact lt_trichotomy _ _
 
 /-- Backward trichotomy on `ℤ ⊕ ℝ`: two pasts of a point are comparable. The past mirror of
 `sum_tri`, proved the same way. -/
 private theorem sum_tri' : ∀ (a b c : ℤ ⊕ ℝ), b < a → c < a → b < c ∨ b = c ∨ c < b := by
-  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all only [Sum.inl_lt_inl_iff, Sum.inl.injEq, Sum.not_inr_lt_inl, Sum.not_inl_lt_inr, Sum.inr_lt_inr_iff, Sum.inr.injEq] <;> exact lt_trichotomy _ _
+  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all only [Sum.inl_lt_inl_iff, Sum.inl.injEq,
+      Sum.not_inr_lt_inl, Sum.not_inl_lt_inr, Sum.inr_lt_inr_iff, Sum.inr.injEq]
+      <;> exact lt_trichotomy _ _
 
 /--
 **The two-fibre frame.** `ℤ ⊕ ℝ` under Mathlib's disjoint-sum order: two incomparable copies of
@@ -283,7 +291,8 @@ theorem df_fails (a : Atom) :
           MinusFormula.top.someFuture).imp ((MinusFormula.atom a).allPast).someFuture) := by
   intro h
   have hante : MinusFrameTruth twoFibre twoV (Sum.inr 0)
-      ((((MinusFormula.atom a).allPast).and (MinusFormula.atom a)).and MinusFormula.top.someFuture) := by
+      ((((MinusFormula.atom a).allPast).and (MinusFormula.atom a)).and
+          MinusFormula.top.someFuture) := by
     rw [MinusFrameTruth.and_iff, MinusFrameTruth.and_iff, MinusFrameTruth.someFuture_iff]
     refine ⟨⟨?_, ?_⟩, ⟨Sum.inr 1, by simp, MinusFrameTruth.top_true⟩⟩
     · rw [MinusFrameTruth.past_iff]
@@ -367,14 +376,15 @@ every `MinusFrame` (its consequent follows from `no_max`), so `Sp ⊤ ψ` is not
 module docstring.
 -/
 theorem not_derivable_sp (a : Atom) :
-    ¬ MinusLanguage.Derivable FrameClass.Base [] (Sp (MinusFormula.atom a) (MinusFormula.atom a)) := by
+    ¬ MinusLanguage.Derivable FrameClass.Base []
+        (Sp (MinusFormula.atom a) (MinusFormula.atom a)) := by
   rintro ⟨d⟩
   exact sp_false a (Sum.inl 0) (minusFrameValid_of_derivation d twoFibre twoV (Sum.inl 0))
 
 /--
 **TM⁻ is not weakly complete over the task-frame class.** The negation of
-`TMCompletenessReduction`'s `TMMinusCompleteBase`, witnessed by `Sp p p`: `MinusValid (Sp p p)` holds
-(`SpWitness.minusValid_sp`) yet `Sp p p` is not TM⁻-derivable (`not_derivable_sp`).
+`TMCompletenessReduction`'s `TMMinusCompleteBase`, witnessed by `Sp p p`: `MinusValid (Sp p p)`
+holds (`SpWitness.minusValid_sp`) yet `Sp p p` is not TM⁻-derivable (`not_derivable_sp`).
 
 Mirrors `Z1Countermodel.tmMinusCompleteZTime_refuted` in shape. Only the **negation** is stated: per
 `Metalogic/Conservativity.lean`'s standing prohibition, forward conservativity is refuted, not

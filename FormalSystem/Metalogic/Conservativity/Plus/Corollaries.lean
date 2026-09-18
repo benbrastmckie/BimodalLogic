@@ -25,18 +25,18 @@ directory does not import the deterministic subtree (which itself imports TM⁺ 
 generic over the engine there, so the four named instances are the one composed row this module
 adds; nothing else in that list is restated.
 
-Likewise the *refuted* directions are cited, not restated: `Semantics/PlusLanguage/PlusNonValidities.lean`
-carries `refute_stab_box`, `refute_allFuture_stab`, `refute_stab_allFuture_past`,
-`refute_determined` and `refute_somePast_stab`, which between them bound the defined modals'
-logic from above.
+Likewise the *refuted* directions are cited, not restated:
+`Semantics/PlusLanguage/PlusNonValidities.lean` carries `refute_stab_box`, `refute_allFuture_stab`,
+`refute_stab_allFuture_past`, `refute_determined` and `refute_somePast_stab`, which between them
+bound the defined modals' logic from above.
 
 ## The defined modals
 
-| Notation | Reading | Row below |
-|---|---|---|
-| `Will φ = ⊡Gφ` | settled to hold always in the future | `willImpAllFuture`, `boxAllFutureImpWill` |
-| `will φ = ⊡Fφ` | settled to hold at some future time | `willImpWill` |
-| `could φ = ⟐Fφ` | possible, relative to the present state, at some future time | `someFutureCouldImpCouldSomeFuture` |
+* `Will φ = ⊡Gφ` — Reading: settled to hold always in the future; Row below: `willImpAllFuture`,
+  `boxAllFutureImpWill`
+* `will φ = ⊡Fφ` — Reading: settled to hold at some future time; Row below: `willImpWill`
+* `could φ = ⟐Fφ` — Reading: possible, relative to the present state, at some future time; Row
+  below: `someFutureCouldImpCouldSomeFuture`
 
 `willImpWill` is where the substitution transfer earns its keep a second time: `Gφ → Fφ` is a TM
 theorem (seriality plus `G`-distribution plus `F`-monotonicity), and

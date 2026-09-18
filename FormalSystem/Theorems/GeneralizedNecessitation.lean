@@ -64,7 +64,8 @@ private noncomputable def tempKDistLocal {fc : FrameClass} (φ ψ : Formula) :
   let G_contra := contraposition F_step
   -- Step 4: G(¬ψ→¬φ) → (Gφ → Gψ) via BX3 + contraposition
   let G_to_GK := impTrans
-    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) (FrameClass.base_le fc))
+    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top)
+        (FrameClass.base_le fc))
     (contraposeImp (Formula.someFuture ψ.neg) (Formula.someFuture φ.neg))
   -- Compose
   impTrans G_contra G_to_GK

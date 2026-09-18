@@ -12,7 +12,7 @@ accident: a module intended for Mathlib may not depend on this repository.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/ForMathlib/Order -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `PFilter.lean` | 250 | <!-- TODO: add description --> |
+| `PFilter.lean` | 263 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
 ## Key Definitions

@@ -496,7 +496,9 @@ def main (args : List String) : IO Unit := do
   IO.println s!"  Selected {instances.length} instances (target: 3 per tagged schema name)"
   -- Step 3: Check coverage
   let (covered, missing) := checkCoverage instances
-  IO.println s!"  Axiom coverage: {allAxiomNames.length - missing.length}/{allAxiomNames.length} constructors ({covered.length} schema names tagged)"
+  let nCovered := allAxiomNames.length - missing.length
+  IO.println s!"  Axiom coverage: {nCovered}/{allAxiomNames.length} constructors \
+    ({covered.length} schema names tagged)"
   if !missing.isEmpty then
     IO.println s!"  WARNING: Missing axioms: {missing}"
   -- Step 4: Tier distribution preview
@@ -579,7 +581,8 @@ def main (args : List String) : IO Unit := do
   IO.println s!"  Valid: {validCount}"
   IO.println s!"  Invalid: {invalidCount}"
   IO.println s!"  Timeout: {timeoutCount}"
-  IO.println s!"  Coverage: {allAxiomNames.length - missing.length}/{allAxiomNames.length} axiom constructors"
+  IO.println s!"  Coverage: {allAxiomNames.length - missing.length}/{allAxiomNames.length} \
+    axiom constructors"
   IO.println s!"  Axiom-matched: {axiomMatchCount} ({axiomMatchCount * 100 / instances.length}%)"
   IO.println ""
   IO.println "Done!"

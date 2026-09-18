@@ -51,8 +51,8 @@ below.
 that the histories are equal. That is weaker than `lem:deterministic-singleton`'s `⟨τ⟩_x = {τ}`,
 and it is free — it follows from `respects_task` at the pair `(t, s)` and determinism at the
 possibly negative duration `s - t`. It is also sufficient: `truth_congr_ext`
-(`Semantics/PlusLanguage/PlusTruth.lean`) already converts pointwise state agreement into agreement on every
-`PlusFormula`, the `stab` clause included, so nothing downstream needs the stronger form.
+(`Semantics/PlusLanguage/PlusTruth.lean`) already converts pointwise state agreement into agreement
+on every `PlusFormula`, the `stab` clause included, so nothing downstream needs the stronger form.
 
 Note where the unrestricted duration binder of `TaskFrame.Deterministic` is used: at `s - t`,
 which is negative whenever `s < t`. A determinism predicate guarded by `0 ≤ d` would not close
@@ -75,8 +75,8 @@ All four report `[propext]` only — in particular **no `Classical.choice`**.
 
 * JPL paper `def:deterministic`, `lem:deterministic-singleton`, `app:deterministic`
 * `FormalSystem/Semantics/FrameProperty.lean` — `TaskFrame.Deterministic`
-* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `refute_determined`, the negative half of
-  `app:deterministic`
+* `FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean` — `refute_determined`, the negative
+  half of `app:deterministic`
 
 ## Tags
 
@@ -131,10 +131,10 @@ theorem stab_iff_of_deterministic (hD : F.Deterministic) (M : TaskModel F)
 **`app:deterministic`, positive half.** *Determined* — `φ → ⊡φ` — is valid on every deterministic
 frame, at every instance, `φ` an arbitrary `PlusFormula`.
 
-The negative half is `refute_determined` (`Semantics/PlusLanguage/PlusNonValidities.lean`), which refutes the
-*same schema* over a non-deterministic frame. Note that the two halves do **not** compose into a
-characterization: the converse fails, and demonstrably so — see `Metalogic/Independence/`, where
-a non-deterministic frame validating this schema is exhibited.
+The negative half is `refute_determined` (`Semantics/PlusLanguage/PlusNonValidities.lean`), which
+refutes the *same schema* over a non-deterministic frame. Note that the two halves do **not**
+compose into a characterization: the converse fails, and demonstrably so — see
+`Metalogic/Independence/`, where a non-deterministic frame validating this schema is exhibited.
 -/
 theorem determined_of_deterministic (hD : F.Deterministic) (φ : PlusFormula) :
     F.PlusValidOn (.imp φ (.stab φ)) :=

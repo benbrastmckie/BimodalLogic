@@ -50,10 +50,12 @@ def main : IO UInt32 := do
     let env ← getEnv
     let graph := env.importGraph.transitiveClosure
     let noInitGraph :=
-      graph.filter (fun name imports => name.getRoot = `FormalSystem ∧ !imports.contains `FormalSystem.Init)
+      graph.filter
+          (fun name imports => name.getRoot = `FormalSystem ∧ !imports.contains `FormalSystem.Init)
     let diff := noInitGraph.keys.diff exceptions
     if diff.length > 0 then
-      IO.eprintln s!"error: {diff.length} module(s) do not (transitively) import `FormalSystem.Init`:"
+      IO.eprintln
+          s!"error: {diff.length} module(s) do not (transitively) import `FormalSystem.Init`:"
       for name in diff do
         IO.eprintln s!"  {name}"
     -- Deliberate deviation from the near-verbatim CSLib original, which returns the count.

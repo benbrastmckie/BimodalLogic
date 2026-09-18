@@ -15,8 +15,8 @@ correspondence at an arbitrary duration group, and `FwdRecPeriodicity.lean` supp
 `Walk`/`MinCyc` apparatus. This module joins them at `D = ℤ`, where the frame *is* a digraph:
 
 * `FrameOver.step F w u := F.TaskRel w 1 u` is the one-step relation;
-* every bi-infinite walk in `F.step` is a total history (`FrameOver.worldHistoryOfStepPath`), because
-  *Compositionality* plus the reflection law plus *Nullity* give `Rₙ = R₁ⁿ`
+* every bi-infinite walk in `F.step` is a total history (`FrameOver.worldHistoryOfStepPath`),
+  because *Compositionality* plus the reflection law plus *Nullity* give `Rₙ = R₁ⁿ`
   (`FrameOver.respects_of_isStepPath`);
 * every total history is a bi-infinite walk (`WorldHistory.isStepPath`).
 

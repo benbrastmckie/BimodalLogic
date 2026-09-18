@@ -29,7 +29,8 @@ open FormalSystem.Semantics
 
 Validity of reflected axioms, which is what lets time-reflection soundness run by derivation
 induction instead of formula induction: "valid φ → valid φ.reflectTime" is false for arbitrary
-formulas, but each axiom *schema* remains valid after reflection, and that is all a derivation needs.
+formulas, but each axiom *schema* remains valid after reflection, and that is all a derivation
+needs.
 
 **Self-Dual Axioms**: MT, M4, MB have the property that reflection preserves their schema form.
 **Transformed Axiom**: MF transforms to a different but still valid formula.
@@ -38,13 +39,15 @@ These are the delegation targets of `axiom_reflect_time_valid_general`'s one-lin
 -/
 
 /--
-Modal T axiom (MT) is self-dual under reflection: `box φ -> φ` reflects to `box(reflectTime φ) -> reflectTime φ`.
+Modal T axiom (MT) is self-dual under reflection: `box φ -> φ` reflects to
+`box(reflectTime φ) -> reflectTime φ`.
 
-Since `box(reflectTime φ) -> reflectTime φ` is still an instance of MT (just with reflected subformula),
-and MT is valid, this is immediate.
+Since `box(reflectTime φ) -> reflectTime φ` is still an instance of MT (just with reflected
+subformula), and MT is valid, this is immediate.
 
 **Proof**: The reflected form is `(box φ.reflectTime).imp φ.reflectTime`.
-At any triple (M, τ, t), if box φ.reflectTime holds, then φ.reflectTime holds at (M, τ, t) specifically.
+At any triple (M, τ, t), if box φ.reflectTime holds, then φ.reflectTime holds at (M, τ, t)
+specifically.
 -/
 theorem mt_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.box φ).imp φ).reflectTime := by
@@ -54,8 +57,8 @@ theorem mt_reflect_time_valid (φ : Formula) :
   exact h_box_swap_φ τ
 
 /--
-Modal 4 axiom (M4) is self-dual under reflection: `box φ -> box box φ` reflects to `box(reflectTime φ) -> box
-box(reflectTime φ)`.
+Modal 4 axiom (M4) is self-dual under reflection: `box φ -> box box φ` reflects to
+`box(reflectTime φ) -> box box(reflectTime φ)`.
 
 This is still M4, just applied to reflected formula.
 
@@ -71,14 +74,14 @@ theorem m4_reflect_time_valid (φ : Formula) :
   exact h_box_swap_φ ρ
 
 /--
-Modal B axiom (MB) is self-dual under reflection: `φ -> box diamond φ` reflects to `reflectTime φ -> box
-diamond(reflectTime φ)`.
+Modal B axiom (MB) is self-dual under reflection: `φ -> box diamond φ` reflects to
+`reflectTime φ -> box diamond(reflectTime φ)`.
 
 This is still MB, just applied to reflected formula.
 
-**Proof**: If φ.reflectTime holds at (M, τ, t), then for any world history σ at t, diamond(φ.reflectTime) holds
-at σ.
-The diamond means "there exists some world history where it holds". We have τ witnessing this.
+**Proof**: If φ.reflectTime holds at (M, τ, t), then for any world history σ at t,
+diamond(φ.reflectTime) holds at σ. The diamond means "there exists some world history where it
+holds". We have τ witnessing this.
 -/
 theorem mb_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.imp (Formula.box φ.diamond)).reflectTime := by
@@ -89,11 +92,12 @@ theorem mb_reflect_time_valid (φ : Formula) :
   exact h_all_not τ h_swap_φ
 
 /--
-Modal-Future axiom (MF) reflects to a valid formula: `box φ -> box Fφ` reflects to `box(reflectTime φ) -> box
-P(reflectTime φ)`.
+Modal-Future axiom (MF) reflects to a valid formula: `box φ -> box Fφ` reflects to
+`box(reflectTime φ) -> box P(reflectTime φ)`.
 
-The reflected form states: if reflectTime φ holds at all world histories at time t, then for all total
-histories σ at time t, P(reflectTime φ) holds at σ (i.e., reflectTime φ holds at all times s < t in σ).
+The reflected form states: if reflectTime φ holds at all world histories at time t, then for all
+total histories σ at time t, P(reflectTime φ) holds at σ (i.e., reflectTime φ holds at all times s <
+t in σ).
 
 **Proof Strategy**: Use `timeShift_preserves_truth` to bridge from time t to time s < t.
 The shifted history `σ.timeShift (s - t)` is again a `WorldHistory`; no shift-closure side
@@ -109,8 +113,8 @@ theorem mf_reflect_time_valid (φ : Formula) :
   have h_at_shifted := h_box_swap (σ.timeShift (s - t))
   exact (TimeShift.timeShift_preserves_truth M σ t s φ.reflectTime).mp h_at_shifted
 
-/-- Propositional K reflects to itself at reflected subformulas: reflection distributes over `imp`, and
-`TruthAt` at an implication is definitionally an arrow, so this is the K combinator. -/
+/-- Propositional K reflects to itself at reflected subformulas: reflection distributes over `imp`,
+and `TruthAt` at an implication is definitionally an arrow, so this is the K combinator. -/
 theorem prop_k_reflect_time_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
       ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))).reflectTime := by
@@ -124,8 +128,8 @@ theorem prop_s_reflect_time_valid (φ ψ : Formula) :
   exact h_a
 
 /-- Modal 5 collapse reflects to itself: `◇□φ → □φ` is self-dual under time reflection, since the
-reflection touches no modal operator. The `box`/`diamond` pair is the S5 collapse over world histories,
-which does not mention time at all. -/
+reflection touches no modal operator. The `box`/`diamond` pair is the S5 collapse over world
+histories, which does not mention time at all. -/
 theorem modal_5_collapse_reflect_time_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.box.diamond.imp φ.box).reflectTime := by
   intro F _ M τ t
@@ -145,8 +149,8 @@ theorem ex_falso_reflect_time_valid (φ : Formula) :
   exfalso
   exact h_bot
 
-/-- Peirce's law reflects to itself at reflected subformulas; the proof is the classical case split on
-whether the reflected antecedent holds. -/
+/-- Peirce's law reflects to itself at reflected subformulas; the proof is the classical case split
+on whether the reflected antecedent holds. -/
 theorem peirce_reflect_time_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base (((φ.imp ψ).imp φ).imp φ).reflectTime := by
   intro F _ M τ t
@@ -282,7 +286,8 @@ theorem enrichment_until_reflect_time_valid (φ ψ p : Formula) :
   intro h_imp
   exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
 
-/-- Since enrichment reflects to Until enrichment, mirror of `enrichment_until_reflect_time_valid`. -/
+/-- Since enrichment reflects to Until enrichment, mirror of `enrichment_until_reflect_time_valid`.
+-/
 theorem enrichment_since_reflect_time_valid (φ ψ p : Formula) :
     ValidIn FrameClass.Base (Formula.and p (Formula.snce φ ψ) |>.imp
         (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))).reflectTime := by
@@ -495,8 +500,8 @@ theorem discrete_symm_bwd_reflect_time_valid :
       _ = s := by rw [add_comm, sub_add_cancel]
   exact h_guard (c + (s - t)) h1 h2
 
-/-- Forward gap propagation reflects to past propagation: a gap of width `t - r` at `t` translates to
-a gap of the same width at every `u`, by shifting the witness. -/
+/-- Forward gap propagation reflects to past propagation: a gap of width `t - r` at `t` translates
+to a gap of the same width at every `u`, by shifting the witness. -/
 theorem discrete_propagate_fwd_reflect_time_valid :
     ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.allFuture
@@ -546,8 +551,8 @@ theorem discrete_box_necessity_reflect_time_valid :
 
 /-! ## Per-Axiom Validity of the Unreflected Schemas
 
-Validity of the unreflected axiom schemas at `FrameClass.Base`. The reflection arms below consume these
-at reflected arguments, which is why the temporal-linearity and until/since pairs come in both
+Validity of the unreflected axiom schemas at `FrameClass.Base`. The reflection arms below consume
+these at reflected arguments, which is why the temporal-linearity and until/since pairs come in both
 future- and past-directed forms.
 -/
 
@@ -559,7 +564,8 @@ The proof uses linearity of D (the `lt_trichotomy` from `LinearOrder`). Given wi
 s1 > t for φ and s2 > t for ψ, either s1 < s2 (take r = s1, giving F(φ ∧ F(ψ))),
 s1 = s2 (giving F(φ ∧ ψ)), or s2 < s1 (take r = s2, giving F(F(φ) ∧ ψ)).
 
-This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.temp_linearity_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`.
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.temp_linearity_valid`
+(`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`.
 -/
 theorem temp_linearity_validIn (φ ψ : Formula) :
     ValidIn FrameClass.Base (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
@@ -594,7 +600,8 @@ theorem temp_linearity_validIn (φ ψ : Formula) :
 `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is locally valid.
 Mirror of `temp_linearity_validIn` for the past direction.
 
-This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.temp_linearity_past_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.temp_linearity_past_valid`
+(`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
 theorem temp_linearity_past_validIn (φ ψ : Formula) :
     ValidIn FrameClass.Base (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
       (Formula.or (Formula.somePast (Formula.and φ ψ))
@@ -629,7 +636,8 @@ theorem temp_linearity_past_validIn (φ ψ : Formula) :
 If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, guard ⊤ = ¬⊥ is trivially
 satisfied).
 
-This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.F_until_equiv_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.F_until_equiv_valid`
+(`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
 theorem F_until_equiv_validIn (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.someFuture φ).imp
       (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
@@ -641,7 +649,8 @@ theorem F_until_equiv_validIn (φ : Formula) :
 /-- P-Since equivalence axiom validity (BX12'):
 `P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence.
 
-This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.P_since_equiv_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.P_since_equiv_valid`
+(`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
 theorem P_since_equiv_validIn (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.somePast φ).imp
       (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by

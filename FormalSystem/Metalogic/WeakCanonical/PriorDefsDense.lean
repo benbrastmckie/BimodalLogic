@@ -31,7 +31,7 @@ gaps. Note that this result does not hold for the original Prior axioms in the l
 `P`."*
 
 The object-level axioms already exist in this tree as `Axiom.prior_U_gap`
-(`ProofSystem/Axioms.lean:377`) and `DerivedAxioms.priorSGap` (`:387`), each of which carries an
+(`ProofSystem/Axioms.lean:379`) and `DerivedAxioms.priorSGap` (`:387`), each of which carries an
 explicit "THIS IS NOT `prior_UZ`/`prior_SZ`" caveat. `SemanticPriorU` / `SemanticPriorS` below are
 the semantic side of exactly those two axioms, read at an `OrderedMonadicStructure` in the same
 idiom `PriorDefs.lean` uses for the integer pair.
@@ -112,7 +112,7 @@ Read out: if `p` holds throughout some initial stretch above `t`, and `¬p` hold
 holds and `¬p` holds arbitrarily soon after `s` (the second disjunct is `K⁺(¬p)(s)`, i.e. `kplus`
 of `¬p`, `Kamp/PriorINF.lean:86`).
 
-This is the semantic side of `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`). It is **not**
+This is the semantic side of `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:379`). It is **not**
 `SemanticPriorUZ` (`PriorDefs.lean:28`) and does not imply it — see
 `semanticPriorU_not_implies_semanticPriorUZ`. `SemanticPriorUZ` asks for a *first* occurrence;
 Prior-U asks only for a point at which `p` stops holding **or** at which `¬p` accumulates from
@@ -134,7 +134,7 @@ abbrev SemanticPriorU {sig : MonadicSignature}
 mirror of `SemanticPriorU` in the past direction, with `K⁻` (`kminus`, `Kamp/PriorINF.lean`) in
 place of `K⁺`.
 
-This is the semantic side of `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:387`), and stands
+This is the semantic side of `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:389`), and stands
 to `SemanticPriorSZ` (`PriorDefs.lean:39`) exactly as `SemanticPriorU` stands to `SemanticPriorUZ`.
 -/
 abbrev SemanticPriorS {sig : MonadicSignature}

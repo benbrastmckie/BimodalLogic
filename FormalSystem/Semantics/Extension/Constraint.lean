@@ -20,8 +20,8 @@ deliberately **not** folded back in here.
 
 ## Paper Specification Reference
 
-Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the paper
-source — is the citation source of record.
+Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
+paper source — is the citation source of record.
 
 - `lem:constraint` (verbatim): "For any partial history $\tau : X \to W$ over a frame
   $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the constraints imposed on
@@ -34,8 +34,8 @@ source — is the citation source of record.
   \textit{$\supseteq$-directed} just in case $S \subseteq S_1 \cap S_2$ for some
   $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$". **Retired anchor**: this was the
   standalone `def:directed` until the paper's 2026-09 wave folded it inline into `def:frame` and
-  deleted the label, which `docs/reference/paper-definitions-of-record.md` now records `DANGLING`. The
-  condition itself is unchanged.
+  deleted the label, which `docs/reference/paper-definitions-of-record.md` now records `DANGLING`.
+  The condition itself is unchanged.
 - *Seriality* (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for
   some $u, v \in W$."
 - *Compositionality* (`def:frame#Compositionality`, verbatim): "$w \Rightarrow_{x + y} v$ if and
@@ -235,7 +235,8 @@ both summands positive because `t < z < s`. Interpolating at that split produces
 `τ(t) ⇒_{z-t} u` and `u ⇒_{s-z} τ(s)`; the reflection convention rewrites the second conjunct as
 `τ(s) ⇒_{-(s-z)} u`, which is exactly membership in `[τ(t), τ(s)]_{z-t}^{s-z}`.
 -/
-theorem nonempty_seg_of_interpolates {τ : PartialHistory F} {z t s : F.Duration} (ht : τ.domain t) (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
+theorem nonempty_seg_of_interpolates {τ : PartialHistory F} {z t s : F.Duration} (ht : τ.domain t)
+    (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
     (Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)).Nonempty := by
   have hrel : F.TaskRel (τ.states t ht) ((z - t) + (s - z)) (τ.states s hs) := by
     have h := τ.respects_task t s ht hs
@@ -266,7 +267,8 @@ The partial history's domain is nonempty by its `nonempty_domain` field. Any dom
 contributes: if `t` is not paired about `z` it contributes its own fiber, and if it is paired the
 witnessing pair straddles `z` and contributes a segment.
 -/
-theorem nonempty_Constraints (τ : PartialHistory F) (z : F.Duration) : (Constraints τ z).Nonempty := by
+theorem nonempty_Constraints (τ : PartialHistory F)
+    (z : F.Duration) : (Constraints τ z).Nonempty := by
   obtain ⟨t, ht⟩ := τ.nonempty_domain
   by_cases hp : IsPaired τ z t
   · rcases hp with ⟨htz, s, hs, hzs⟩ | ⟨hzt, s, hs, hsz⟩
@@ -275,8 +277,8 @@ theorem nonempty_Constraints (τ : PartialHistory F) (z : F.Duration) : (Constra
   · exact ⟨_, mem_Constraints.mpr (Or.inr ⟨t, ht, hp, rfl⟩)⟩
 
 /--
-The directedness step of the `⊇`-directed condition: any two constraints on `z` are jointly refined by a third
-constraint on `z`.
+The directedness step of the `⊇`-directed condition: any two constraints on `z` are jointly refined
+by a third constraint on `z`.
 
 The proof is a four-way case analysis on `def:constraints`' two clauses, and the `¬ IsPaired`
 side condition on fiber members is what makes two of the four cases collapse:

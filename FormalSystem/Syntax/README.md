@@ -10,10 +10,10 @@ Core syntactic definitions for TM bimodal logic formulas.
 | `Atom.lean` | 215 | `Atom`: Propositional atom type with decidable equality |
 | `BigConj.lean` | 55 | `bigConj`: Big conjunction over a list of formulas |
 | `Context.lean` | 210 | `Context`: Type alias for `List Formula` (proof contexts) |
-| `Formula.lean` | 793 | `Formula`: Inductive formula type with modal and temporal operators |
-| `MinusLanguage.lean` | 45 | Sibling aggregator for `MinusLanguage/` (the language L⁻) |
+| `Formula.lean` | 796 | `Formula`: Inductive formula type with modal and temporal operators |
+| `MinusLanguage.lean` | 47 | Sibling aggregator for `MinusLanguage/` (the language L⁻) |
 | `PlusLanguage.lean` | 54 | Sibling aggregator for `PlusLanguage/` (the language L⁺) |
-| `StarLanguage.lean` | 60 | Sibling aggregator for `StarLanguage/` (the language L⋆) |
+| `StarLanguage.lean` | 61 | Sibling aggregator for `StarLanguage/` (the language L⋆) |
 | `SubformulaClosure.lean` | 38 | Sibling aggregator for `SubformulaClosure/` |
 | `Subformulas.lean` | 235 | `subformulas`: Subformula relation and listing function |
 | `MinusLanguage/` | — | L⁻: `MinusFormula` with `allPast`/`allFuture` primitive in place of `untl`/`snce`, its axioms, proof system and the translation `tr` to L (6 files) |

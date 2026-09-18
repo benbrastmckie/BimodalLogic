@@ -66,8 +66,8 @@ safe direction, and "validity ⟹ frame condition" manufactures witnesses throug
 The paper's argument for the (⇐) direction opens by deriving that `⇒_0` is the identity, from
 *Limit* together with `lem:nullity`. In this tree that is the theorem
 `FrameOver.nullity_identity` — `∀ w u, TaskRel w 0 u ↔ w = u`, derived once from the `serial` and
-`limit` fields and available on every frame — so the paper's Step 1 is not transcribed here. The `x = 0` branch of
-`deterministic_of_singletonClasses` closes by `F.nullity_identity` outright.
+`limit` fields and available on every frame — so the paper's Step 1 is not transcribed here. The
+`x = 0` branch of `deterministic_of_singletonClasses` closes by `F.nullity_identity` outright.
 
 ## References
 

@@ -154,7 +154,7 @@ variable (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
 `K⁺A = ¬U(⊤,¬A)` and **not** `Kamp/PriorINF.lean`'s differently-defined `kplusFormula` — see that
 definition's name-collision warning.
 
-This is the syntactic side of `SemanticPriorU`; `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`)
+This is the syntactic side of `SemanticPriorU`; `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:379`)
 is the same scheme on the proof-theoretic side. -/
 def priorUFormula (p : Formula) : Formula :=
   .imp (.and (.untl p .top) (.untl .top p.neg))
