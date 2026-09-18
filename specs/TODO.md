@@ -91,7 +91,7 @@ next_project_number: 623
 
 ### Metalogic
 
-559 [RESEARCHING] — RESEARCH TASK, verdict-first -- report and sorry-free probe...
+559 [RESEARCHED] — RESEARCH TASK, verdict-first -- report and sorry-free probe...
   └─ 560 [NOT STARTED] — IMPLEMENTATION, rescoped on research task 559's report...
 568 [RESEARCHING] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
@@ -642,10 +642,11 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 ---
 
 ### 559. Nondeterministic canonical model tm star completeness
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
+- **Research**: [559_nondeterministic_canonical_model_tm_star_completeness/reports/01_nondeterministic-canonical-model.md]
 
 **Description**: RESEARCH TASK, verdict-first -- report and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/. GOAL: adapt the existing chronicle-based completeness constructions so that the canonical frame admits NONDETERMINISM (several total histories through one world state at one time), and thereby completely axiomatize TM⁺ -- the extended language with the stability modal ⊡ -- over the paper's all-histories semantics, at whichever frame class is easiest first, with a design the other classes build on. This is the problem research task 535 recorded as BLOCKED at all four classes; this task is the dedicated attack on it and replaces the one-dispatch Lifting-Lemma spike that task 537 formerly carried. Task 537 (deterministic completeness of TM⁺ + Determined, non-definability of ⊡, PS/US underivability) proceeds independently and is the baseline any construction here must specialize to; task 560 is the gated implementation of this task's verdict.
 

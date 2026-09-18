@@ -1,0 +1,14 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 4,
+  "summary": "TM+ (current axioms) proved incomplete over all-histories semantics at ZTime modulo in-repo transcription: LC+ := (dstab X p & stab G(p -> dstab X p)) -> dstab G p is ZTime-valid (compiled) and refuted in a paste-closed coarsened model on an infinite Z-frame (compiled), with soundness via CoarsenedModels + PS/US arms. Positive completeness >= full CTL* hardness; not implementable now. Task 560 description rescoped to plus_incomplete_ztime (4 phases).",
+  "artifacts": [
+    {"type": "report", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/01_nondeterministic-canonical-model.md", "summary": "Verdict-first research report with per-class table and 560 design."},
+    {"type": "probe", "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/01_limit-closure-probes.lean", "summary": "Sorry-free Mathlib-only probes (limit closure, pasting, countermodel, naming-rule unsoundness)."}
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "Plan task 559 closure / proceed to task 560 (rescoped) planning; user may confirm the rescope (non-blocking)."
+}
