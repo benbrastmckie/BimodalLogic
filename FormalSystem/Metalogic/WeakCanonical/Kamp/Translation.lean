@@ -288,34 +288,6 @@ An EF1 formula (single interval pattern with a free variable) is equivalent to
 the temporal formula produced by `translateEF1`. A VEF1 (disjunction of EF1s)
 is equivalent to the disjunction of the individual translations. -/
 
-/-- For any single EF formula (interval pattern with the free variable at position k
-    among n+1 witnesses), `translateEF1 n k alpha beta` is a temporal formula
-    that is equivalent to it on any ordered structure.
-
-    This is Rabinovich Proposition 3.5: every EF formula with one free variable
-    has an equivalent TL(U,S) formula. -/
-noncomputable def ef1ToTemporal
-    (n : Nat) (k : Fin (n + 1))
-    (alpha : Fin (n + 1) → TemporalPred)
-    (beta : Fin (n + 2) → TemporalPred) :
-    { A : Formula //
-      ∀ {sig : MonadicSignature}
-        (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-        (t : M.carrier),
-        TemporalTruth M atomMap t A ↔
-        ((alpha k).EvalAt M atomMap t ∧
-         BuildRightSpec M atomMap
-           ((List.finRange (n - k.val)).map fun i =>
-             let idx := k.val + 1 + i.val
-             (alpha ⟨idx, by omega⟩, beta ⟨idx, by omega⟩))
-           (beta ⟨n + 1, by omega⟩) t ∧
-         BuildLeftSpec M atomMap
-           ((List.finRange k.val).map fun i =>
-             let idx := k.val - 1 - i.val
-             (alpha ⟨idx, by omega⟩, beta ⟨idx + 1, by omega⟩))
-           (beta ⟨0, by omega⟩) t) } :=
-  ⟨translateEF1 n k alpha beta, fun M atomMap t => translateEF1_correct M atomMap n k alpha beta t⟩
-
 /-- `translateVEF1` correctness: the disjunction formula holds iff some disjunct holds. -/
 theorem translateVEF1_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
