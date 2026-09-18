@@ -11,12 +11,12 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,605,610,614,615,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,606,616,617 | 298,464,502,559,563,568,588,597,605,615,619 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,589,608,618 | 231,465,497,540,564,565,606,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,600 | 428,498,499,500,603,608 | algebraic-representation, decidability, frame-extensions, ... |
-| 5 | 410,501,607 | 125,429,600 | algebraic-representation, decidability, documentation |
-| 6 | 411 | 410 | decidability |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,610,614,615,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,605,616,617 | 298,464,502,559,563,568,588,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,589,606,618 | 231,465,497,540,564,565,605,615,616,619 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,608 | 428,498,499,500,606 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 410,501,600 | 125,429,603,608 | algebraic-representation, decidability, frame-extensions |
+| 6 | 411,607 | 410,600 | decidability, documentation |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
 | 9 | 482 | 412 | decidability |
@@ -332,7 +332,7 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 588
 
 **Description**: Reconcile the Burgess/Xu axiom provenance and add the paper's axiom-source footnote to FormalSystem/ProofSystem/Axioms.lean. The paper's footnote says CN is Burgess's A7a, but an existing note in Axioms.lean says A7a was removed as unsound; determine which claim is correct against Burgess and Xu, then copy the reconciled provenance into the axiom docstrings and docs/reference/paper-definitions-of-record.md. Follow-up recorded by the paper-vocabulary reconciliation (task 584).
 

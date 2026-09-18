@@ -143,7 +143,10 @@
       "description": "Reconcile the Burgess/Xu axiom provenance and add the paper's axiom-source footnote to FormalSystem/ProofSystem/Axioms.lean. The paper's footnote says CN is Burgess's A7a, but an existing note in Axioms.lean says A7a was removed as unsound; determine which claim is correct against Burgess and Xu, then copy the reconciled provenance into the axiom docstrings and docs/reference/paper-definitions-of-record.md. Follow-up recorded by the paper-vocabulary reconciliation (task 584).",
       "topic": "paper-refactor",
       "created": "2026-09-17T10:00:13Z",
-      "last_updated": "2026-09-17T10:00:13Z"
+      "last_updated": "2026-09-18T07:00:31Z",
+      "dependencies": [
+        588
+      ]
     },
     {
       "project_number": 604,
