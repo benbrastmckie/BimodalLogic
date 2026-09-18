@@ -1,0 +1,15 @@
+{
+  "dispatch_seq": 8,
+  "status": "researched",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md",
+      "summary": "Audits typst/FormalFoundations.typ against the current Lean tree and paper-definitions-of-record: identifiers and Some/All Past/Future labels already clean; finds a wrong axiom-count remark (22/5 vs. actual 11/4 constructors), pervasive TB->TS / TA->TC key mislabeling, and a structural TM vs TM^+ naming collision needing a plan-phase decision."
+    }
+  ],
+  "next_steps": "Run /plan 607 to create implementation plan",
+  "summary": "Research complete for task 607. Confirmed task 584's rename work (reflectTime/time_reflection/TimeReflection, Some/All Past/Future labels) is fully absorbed in typst/FormalFoundations.typ already. Found two remaining defect classes: (1) the 'Machine-Checked Status' remark at lines 1034-1045 states wrong axiom counts (twenty-two Since/Until constructors, five uniformity constructors) against the actual Lean source (11 future-direction BX-temporal constructors with derived-not-explicit past mirrors, 4 uniformity constructors with only NP's mirror derived); (2) the axiom keys TB/TA are used pervasively (7 sites each) where the current paper's keys are TS/TC. Also surfaced a larger structural question: the document's definition(\"TM\") block (BL-level, primitive tense operators) has no current paper counterpart at all -- the paper collapsed BL+ into BL and withdrew the H/G-primitive fragment, so this document's bare 'TM' should either be re-labelled as a repository-only construct (like MinusLanguage/TM- was on the Lean side by task 584) or the TM^+ family should be renamed to bare TM to match the paper's own def:TMplus. This is flagged as a decision for the plan phase, not resolved here."
+}

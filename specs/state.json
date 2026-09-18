@@ -125,19 +125,28 @@
     {
       "project_number": 607,
       "project_name": "resync_formalfoundations_typ_with_lean_tree",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "description": "Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary: audit every claim about the proof system, axiom counts, the TR (time reflection) rule, renamed identifiers (reflectTime, time_reflection, TimeReflection), and the Some/All Past/Future labels, and correct stale statements. Task 584 fixed the one remark that wrongly said there was no TR rule and that uniformity axiom counts don't match, but deferred a full resync.",
       "topic": "documentation",
       "created": "2026-09-17T10:00:31Z",
-      "last_updated": "2026-09-18T06:45:24Z",
+      "last_updated": "2026-09-18T15:07:42Z",
       "dependencies": [
         600,
         603,
         605,
         606,
         608
-      ]
+      ],
+      "session_id": "sess_1789728492_5b1bc4",
+      "artifacts": [
+        {
+          "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md",
+          "type": "report",
+          "summary": "Audits typst/FormalFoundations.typ against the current Lean tree and paper-definitions-of-record: identifiers and Some/All Past/Future labels already clean; finds a wrong axiom-count remark (22/5 vs. actual 11/4 constructors), pervasive TB->TS / TA->TC key mislabeling, and a structural TM vs TM^+ naming collision needing a plan-phase decision."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 606,

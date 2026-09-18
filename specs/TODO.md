@@ -72,7 +72,7 @@ next_project_number: 621
 
 ### Documentation
 
-607 [NOT STARTED] — Resync typst/FormalFoundations.typ with the current Lean tree...
+607 [RESEARCHED] — Resync typst/FormalFoundations.typ with the current Lean tree...
 610 [NOT STARTED] — Update remaining documentation references to lakefile.lean...
 614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
 
@@ -294,10 +294,11 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 607. Resync formalfoundations typ with lean tree
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: Task 600, Task 603, Task 605, Task 606, Task 608
+- **Research**: [607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md]
 
 **Description**: Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary: audit every claim about the proof system, axiom counts, the TR (time reflection) rule, renamed identifiers (reflectTime, time_reflection, TimeReflection), and the Some/All Past/Future labels, and correct stale statements. Task 584 fixed the one remark that wrongly said there was no TR rule and that uniformity axiom counts don't match, but deferred a full resync.
 
