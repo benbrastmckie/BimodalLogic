@@ -265,7 +265,7 @@ stating why `_f` was refused — never a bare keep.
 
 ---
 
-### Phase 4: Fix Carrier's Three Warnings, Then Delete Its Blanket [NOT STARTED]
+X
 
 **Goal**: Remove the last Ultraproduct blanket by fixing what it hides, with no warning baselined.
 

@@ -60,6 +60,24 @@ the `Nontrivial` and `DenselyOrdered` instances, and `exists_section` — the sa
 `ShiftSet.reverse_repr` already carries.
 -/
 
+-- `linter.unusedSectionVars` is suppressed for this whole file rather than at one declaration,
+-- and that is a measured decision rather than a shrug. Deleting the suppression was tried: the
+-- build reports exactly three warnings, every one naming `[∀ (i : I), IsOrderedAddMonoid (D i)]`,
+-- at `mem_evZero`, `mk_surjective` and `mk_zero`.
+-- Applying the `omit [...] in` form Lean prints at those three does NOT converge. Each `omit`
+-- narrows that lemma's signature, so the proofs using it stop mentioning the instance as well and
+-- the linter moves on to the next declaration and the next instance. With those three `omit`s in
+-- place the build reported six warnings -- the same three, now for `[(i : I) → LinearOrder (D i)]`,
+-- plus `mk_eq_mk`, `mk_le_mk` and `shU_mk` for `IsOrderedAddMonoid`. With six `omit`s it reported
+-- six further ones: `mk_eq_mk` and `shU_mk` for `LinearOrder`, plus `mk_lt_mk`, `shU_zero`,
+-- `shU_add` and `mk_max`. The `omit` route ends with an `omit` line above nearly every theorem
+-- here, which is noise, not a fix.
+-- The real fix is the one the linter's own message suggests first, and the one
+-- `scripts/warning-budget.txt` records for the same condition elsewhere in the tree: split the
+-- `variable` block below so `[∀ i, LinearOrder (D i)]` and `[∀ i, IsOrderedAddMonoid (D i)]` are
+-- in scope only for the order-dependent declarations. That is a restructuring of this file rather
+-- than a suppression decision, and it is left as its own change.
+-- Nothing is baselined in `scripts/warning-budget.txt` for this file; this comment is the record.
 set_option linter.unusedSectionVars false
 
 open Filter
