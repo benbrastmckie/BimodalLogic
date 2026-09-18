@@ -2,7 +2,14 @@
 """Stratify C17's dead-declaration census into disposition tiers.
 
 Replicates check-module-invariants.sh's C17 scan exactly (verified: same count),
-then annotates each flagged declaration with the evidence needed to triage it:
+then annotates each flagged declaration with the evidence needed to triage it.
+
+The six tiers below are the six filters C17 now applies itself: after those landed,
+this tool's SURVIVOR count and C17's printed headline are the same number, and a
+divergence between them is a defect in this tool (C17 is authoritative), not a
+rounding difference.
+
+Tiers:
 
   T0_parse_artifact   the C17 decl regex matched a line inside a comment -- not
                       a declaration at all
@@ -11,6 +18,9 @@ then annotates each flagged declaration with the evidence needed to triage it:
   T3_custom_simp      `@[<attr>]` for an attr declared via `register_simp_attr`
   T4_corpus_external  referenced from a file C17 does not scan (typst/**/*.typ,
                       scripts/*.sh -- notably the C2/C14 axiom baselines)
+  T5_examples         declared under FormalSystem/Examples/, whose contract is to
+                      be READ rather than called -- nothing calling it is the
+                      intended state, so a census row for it is never actionable
   SURVIVOR            no known false-positive mechanism applies
 
 Survivors additionally carry `boneyard_refs` (occurrences in FormalSystem/Boneyard,
@@ -29,6 +39,7 @@ DECL_RE = re.compile(
 TOKEN_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
 ATTR_INLINE_RE = re.compile(r"^((?:@\[[^\]]*\]\s*)+)")
 IMPORT_RE = re.compile(r"^import\s+([A-Za-z_][A-Za-z0-9_'.]*)")
+EXAMPLES_DIR = os.path.join("FormalSystem", "Examples") + os.sep
 
 
 def lean_files(base, skip_boneyard=True):
@@ -182,6 +193,8 @@ def main():
             tier = "T3_custom_simp"
         elif occ_ext.get(d["base"]):
             tier = "T4_corpus_external"
+        elif d["file"].startswith(EXAMPLES_DIR):
+            tier = "T5_examples"
         else:
             tier = "SURVIVOR"
         rows.append((tier, d["file"], d["line"], d["kind"], d["full"], d["attrs"],
@@ -192,8 +205,9 @@ def main():
         c = collections.Counter(r[0] for r in rows)
         print(f"C17 census: {len(rows)}")
         for k in ("T0_parse_artifact", "T1_instance", "T2_simp", "T3_custom_simp",
-                  "T4_corpus_external", "SURVIVOR"):
+                  "T4_corpus_external", "T5_examples", "SURVIVOR"):
             print(f"  {c.get(k, 0):5d}  {k}")
+        print(f"  {c.get('SURVIVOR', 0):5d}  == C17's printed headline")
         surv = [r for r in rows if r[0] == "SURVIVOR"]
         print(f"  of survivors: {sum(1 for r in surv if r[6] > 0)} referenced only from Boneyard/, "
               f"{sum(1 for r in surv if r[7])} in import-orphan modules")

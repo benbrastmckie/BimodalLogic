@@ -327,25 +327,32 @@ rule was taken.
 
 ---
 
-### Phase 4: C17 filter set, part 2 -- indirect-reachability exclusions and Boneyard sub-count [NOT STARTED]
+### Phase 4: C17 filter set, part 2 -- indirect-reachability exclusions and Boneyard sub-count [COMPLETED]
 
 **Goal**: Exclude the four classes reachable by a mechanism other than a name, exclude the
 directory whose contract is to be read rather than called, and split the "only consumer is
 archived" population out of the headline.
 
 **Tasks**:
-- [ ] Exclude `instance` declarations from C17's declaration scope (T1).
-- [ ] Exclude declarations carrying `simp` or any attribute registered via `register_simp_attr`,
+- [x] Exclude `instance` declarations from C17's declaration scope (T1). *(completed -- 79 excluded
+      tree-wide, of which 48 were flagged)*
+- [x] Exclude declarations carrying `simp` or any attribute registered via `register_simp_attr`,
       discovering the attribute names by scanning the tree for `register_simp_attr` rather than
       hardcoding `formula_unfold` / `formula_fold` / `truth_norm` / `swap_norm`, so a future simp
-      set is covered the day it is added (T2 + T3).
-- [ ] Exclude `FormalSystem/Examples/**` from C17's declaration scope (D5/F4), on the same
+      set is covered the day it is added (T2 + T3). *(completed -- attribute names are discovered,
+      not hardcoded; 364 excluded tree-wide, of which 157 were flagged)*
+- [x] Exclude `FormalSystem/Examples/**` from C17's declaration scope (D5/F4), on the same
       footing as smoke-test declarations: nothing calling them is the intended state.
-- [ ] Report "flagged in live code but referenced only from `Boneyard/`" as a separate sub-count
-      beneath the headline rather than folded into it.
-- [ ] Re-run and confirm the headline count and the sub-count.
-- [ ] Re-run `c17_triage.py` and confirm the tool and the script still agree; if they diverge,
-      the script is authoritative and the tool is corrected.
+      *(completed -- 36 excluded tree-wide, of which 21 were flagged)*
+- [x] Report "flagged in live code but referenced only from `Boneyard/`" as a separate sub-count
+      beneath the headline rather than folded into it. *(completed -- sub-count line reports 47;
+      the Boneyard side is comment-stripped, so an archived prose mention is not a consumer)*
+- [x] Re-run and confirm the headline count and the sub-count. *(completed -- 771 and 47, both
+      exactly as hypothesised)*
+- [x] Re-run `c17_triage.py` and confirm the tool and the script still agree; if they diverge,
+      the script is authoritative and the tool is corrected. *(completed -- they diverged, because
+      the tool had no tier for the new `Examples/` exclusion; the tool was corrected with a
+      `T5_examples` tier and its SURVIVOR count now equals C17's headline exactly)*
 
 **Timing**: 1.25 hours
 
@@ -370,6 +377,40 @@ difference.
   Boneyard-only sub-count.
 - C17 remains reporting-only: no `ENFORCE_C17` variable exists and `FAILURES` is untouched by it.
 - Harness exit code unchanged from the baseline.
+
+#### Phase Notes (measured at implementation time)
+
+Scope Hypothesis confirmed exactly, with no divergence to explain: 997 -> **771**, composed of
+683 `theorem` / 81 `def` / 6 `structure` / 1 `abbrev`, with a **47**-row Boneyard-only sub-count
+reported beneath it. Full harness exit 0; the only line differing from the Phase 3 run is C17's
+own.
+
+C17's new output, verbatim:
+
+```
+INFO  C17  771 of 10371 in-scope declaration(s) have zero other occurrences (dead-declaration scan, approximate; never affects FAILURES)
+            scope: 10850 real declaration(s) - 79 instance - 364 simp-set-attributed - 36 under FormalSystem/Examples/ = 10371
+            of those 771, 47 ARE referenced from FormalSystem/Boneyard/ -- the only consumer is archived, which is a
+            retirement decision about the archive, not a dead declaration
+```
+
+The exclusion counts on the `scope:` line are tree-wide, not flagged-only: 79 `instance`
+declarations exist in the live tree of which 48 were flagged, 364 carry a simp-set attribute of
+which 157 were flagged, and 36 sit under `FormalSystem/Examples/` of which 21 were flagged. Both
+numbers matter -- the flagged figure explains the census drop, the tree-wide figure is what the
+new denominator is built from.
+
+**The Boneyard sub-count is a breakdown of the headline, not a subtraction from it.** All 47 are
+inside the 771. Reporting them separately is what makes "the only consumer is archived" legible
+as its own case; folding them in would have said nothing, and subtracting them would have hidden
+a population that still needs a decision.
+
+**The tool was corrected, as the task anticipated.** `c17_triage.py` had no tier corresponding to
+the `Examples/` exclusion, so its SURVIVOR count stood at 792 against the script's 771. A
+`T5_examples` tier was added between T4 and SURVIVOR; the tool now reports
+T0 11 / T1 48 / T2 145 / T3 12 / T4 12 / T5 21 / SURVIVOR 771, and prints the survivor count a
+second time labelled as C17's headline so the two can never silently drift. `tools/c17_census.tsv`
+was regenerated against the corrected tiering.
 
 ---
 

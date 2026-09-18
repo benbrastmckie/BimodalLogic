@@ -2623,6 +2623,27 @@ def strip_comments(lines):
     return inside, code
 
 lean_files = live_lean_files("FormalSystem")
+
+# The simp sets are DISCOVERED, never hardcoded: every attribute registered with
+# `register_simp_attr` anywhere in the live tree joins the exclusion set the day
+# it is added, so a future simp set never has to be remembered here.
+simp_attr_re = re.compile(r"\s*register_simp_attr\s+([A-Za-z_][A-Za-z0-9_']*)")
+simp_attrs = {"simp"}
+for path in lean_files:
+    try:
+        for line in open(path, encoding="utf-8", errors="replace"):
+            m = simp_attr_re.match(line)
+            if m:
+                simp_attrs.add(m.group(1))
+    except OSError:
+        continue
+
+attr_inline_re = re.compile(r"^((?:@\[[^\]]*\]\s*)+)")
+attr_name_re = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
+EXAMPLES_DIR = os.path.join("FormalSystem", "Examples") + os.sep
+
+scanned = 0                      # every real declaration, before any exclusion
+skip_instance = skip_simp = skip_examples = 0
 declarations = []
 for path in lean_files:
     try:
@@ -2633,9 +2654,35 @@ for path in lean_files:
     for i in range(1, len(lines) + 1):
         if inside[i - 1]:
             continue
-        m = decl_re.match(code[i - 1].strip())
-        if m:
-            declarations.append((m.group(2).split(".")[-1], path, i))
+        line = code[i - 1].strip()
+        m = decl_re.match(line)
+        if not m:
+            continue
+        scanned += 1
+        # Attributes: the inline `@[...]` prefix on the declaration line itself,
+        # plus any attribute-only lines immediately above it.
+        attrs = ""
+        am = attr_inline_re.match(line)
+        if am:
+            attrs += am.group(1)
+        j = i - 2
+        while j >= 0 and code[j].strip().startswith("@[") and code[j].strip().endswith("]"):
+            attrs += " " + code[j].strip()
+            j -= 1
+        attr_names = set(attr_name_re.findall(attrs))
+        # The three indirect-reachability exclusions. Each names a mechanism that
+        # reaches a declaration WITHOUT mentioning it, which is exactly what a
+        # textual scan cannot see; see the header block above for what each costs.
+        if m.group(1) == "instance":
+            skip_instance += 1
+            continue
+        if attr_names & simp_attrs:
+            skip_simp += 1
+            continue
+        if path.startswith(EXAMPLES_DIR):
+            skip_examples += 1
+            continue
+        declarations.append((m.group(2).split(".")[-1], path, i))
 
 # Tests/ is not part of C17's declaration scope but IS a legitimate reference
 # site (tests routinely call library declarations by name), so it is included
@@ -2681,16 +2728,44 @@ for path in occurrence_files:
         for tok in set(token_re.findall(line)):
             occurrences.setdefault(tok, set()).add((path, i))
 
+# `Boneyard/` is excluded from every other walk in this script, so a declaration
+# whose ONLY remaining consumer is archived looks identical to one with no
+# consumer at all. It is not the same case: retiring it is a C11-waiver decision
+# about the archive, not a deletion. It is therefore reported as a sub-count
+# BENEATH the headline rather than folded into it or silently dropped. The
+# Boneyard side is comment-stripped, so an archived file that merely mentions a
+# name in prose does not count as its consumer.
+bone_occ = set()
+for root, dirs, files in os.walk(os.path.join("FormalSystem", "Boneyard")):
+    for f in files:
+        if not f.endswith(".lean"):
+            continue
+        try:
+            blines = open(os.path.join(root, f), encoding="utf-8",
+                          errors="replace").readlines()
+        except OSError:
+            continue
+        _, bcode = strip_comments(blines)
+        for bline in bcode:
+            bone_occ.update(token_re.findall(bline))
+
 dead = []
 for base, decl_file, decl_line in declarations:
     other = occurrences.get(base, set()) - {(decl_file, decl_line)}
     if not other:
         dead.append((base, decl_file, decl_line))
+bone_only = [d for d in dead if d[0] in bone_occ]
 
 if not dead:
     print("PASS  C17  zero dead declaration(s) (base-identifier token scan)")
 else:
-    print(f"INFO  C17  {len(dead)} of {len(declarations)} declaration(s) have zero other occurrences (dead-declaration scan, approximate; never affects FAILURES)")
+    print(f"INFO  C17  {len(dead)} of {len(declarations)} in-scope declaration(s) have zero other occurrences (dead-declaration scan, approximate; never affects FAILURES)")
+    print(f"            scope: {scanned} real declaration(s) "
+          f"- {skip_instance} instance - {skip_simp} simp-set-attributed "
+          f"- {skip_examples} under FormalSystem/Examples/ = {len(declarations)}")
+    print(f"            of those {len(dead)}, {len(bone_only)} ARE referenced from "
+          f"FormalSystem/Boneyard/ -- the only consumer is archived, which is a")
+    print( "            retirement decision about the archive, not a dead declaration")
     for base, f, l in dead[:20]:
         print(f"            {f}:{l}: {base}")
     if len(dead) > 20:
