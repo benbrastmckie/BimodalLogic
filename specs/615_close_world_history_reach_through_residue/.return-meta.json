@@ -1,30 +1,31 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-18T00:16:00Z",
+  "completed_at": "2026-09-18T00:42:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 9,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/615_close_world_history_reach_through_residue/plans/01_close-reach-through-residue.md",
-      "summary": "Six-phase plan closing the 36-site world-history reach-through residue: add the respects_task accessor, sweep 22 call sites in two territory-disjoint phases, fix two layer-crossing defects, delete the dead CoeOut instance, record the triage and hold the axiom gate."
+      "type": "summary",
+      "path": "specs/615_close_world_history_reach_through_residue/summaries/01_close-reach-through-residue-summary.md",
+      "summary": "Closed the world-history reach-through residue: added WorldHistory.respects_task, swept 22 call sites, fixed 2 layer-crossing defects, deleted the dead CoeOut instance, and triaged all 13 remaining sites."
     }
   ],
-  "next_steps": "Run /implement 615 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1789696399_5c64b8_615",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 3,
-    "dependency_waves": [[1], [2, 3], [4], [5], [6]]
+  "completion_data": {
+    "completion_summary": "Added the WorldHistory.respects_task accessor and rewrote all 22 hand-spelled dependent-projection call sites to use it, adjusting the four states_eq_state rewrite lines that lose their pattern as a result. Restated WorldHistory.path and PartialHistory.occurrence at the state layer, deleted the never-firing CoeOut (WorldHistory F) (PartialHistory F) instance, and recorded an explicit triage of the 4 remaining reach-throughs and 9 layer crossings. lake build FormalSystem passes with 2660 jobs and both gate theorems depend on exactly [propext, Classical.choice, Quot.sound].",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "When planning a large mechanical call-site sweep in which only a few sites need non-mechanical adjustment, split the sweep phases along the sub-tree boundary that isolates the non-mechanical edits rather than by even site count. In task 615 the 22-site sweep divided into 9 Semantics-layer sites (pure term-position drop-ins, zero judgment) and 13 Metalogic-layer sites (all four rw-line trims/deletions that lose their rewrite pattern after the substitution). The two phases then owned disjoint file territories and could be dispatched in parallel, and the phase carrying every judgment call was the only one needing careful per-file verification. The general shape: measure which sites carry the non-mechanical work, find the directory or module boundary that contains them, and make that boundary the phase boundary.",
-      "category": "PATTERN",
-      "source_artifact": "specs/615_close_world_history_reach_through_residue/plans/01_close-reach-through-residue.md",
-      "confidence": 0.65,
-      "suggested_keywords": ["phase-decomposition", "mechanical-sweep", "territory-contract", "parallel-phases", "call-site-refactor"]
-    }
-  ],
-  "dispatch_seq": 5
+  "metadata": {
+    "session_id": "sess_1789715023_576533",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 2
+  }
 }
