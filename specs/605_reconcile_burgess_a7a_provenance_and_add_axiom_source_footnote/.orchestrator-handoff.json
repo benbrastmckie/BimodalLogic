@@ -1,16 +1,1 @@
-{
-  "status": "planned",
-  "summary": "Created a 4-phase implementation plan for task 605. It edits only docstrings and docs: it corrects the linear_until A7a NOTE, tags the axioms with their Burgess/Xu sources, disambiguates Burgess 1984 A7a in three Chronicle files, and records the paper errata in paper-definitions-of-record.md.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/plans/01_burgess-a7a-provenance.md",
-      "summary": "4-phase docstring/doc-only plan reconciling Burgess A7a provenance."
-    }
-  ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": [],
-  "dispatch_seq": 5,
-  "next_action_hint": "implement"
-}
+{"status":"partial","summary":"Phases 1-3 done and committed (Axioms.lean provenance, Chronicle A7a disambiguation, reference docs). Phase 4 final gate was stopped by the harness for low system memory; the scoped build and paper-definitions check passed.","artifacts":[{"type":"summary","path":"specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/summaries/01_burgess-a7a-provenance-summary.md","summary":"Implementation summary, with the Phase 4 gate pending."}],"phases_completed":3,"phases_total":4,"blockers":["Phase 4 full lake build and lints stopped for low system memory; re-run when memory allows"],"dispatch_seq":6,"next_action_hint":"implement"}
