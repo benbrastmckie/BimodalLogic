@@ -104,7 +104,7 @@ next_project_number: 621
 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
-608 [RESEARCHED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
+608 [PLANNED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
 ## Tasks
 
@@ -283,11 +283,12 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 608. Decide and rename swapus swapminus families
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 606
 - **Research**: [608_decide_and_rename_swapus_swapminus_families/reports/01_swap-family-rename-decision.md]
+- **Plan**: [608_decide_and_rename_swapus_swapminus_families/plans/01_swap-family-rename.md]
 
 **Description**: Decide whether to rename the swapUS, swapMinus and *_swap_valid* identifier families to match the time-reflection vocabulary adopted in the TD->TR rename (swapTemporal -> reflectTime), and if so perform the rename via a map file with whole-word matching, keeping serialized dataset strings byte-stable. These families were explicitly left out of scope by task 584; see specs/584_reconcile_lean_tree_with_paper_vocabulary/rename-map.tsv and the record's 2026-09-17 section for the conventions used.
 
