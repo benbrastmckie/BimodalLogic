@@ -11,7 +11,7 @@ next_project_number: 624
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,610,614,623 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,597,604,610,614,623 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617 | 298,464,502,559,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -67,7 +67,6 @@ next_project_number: 624
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction...
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
-476 [RESEARCHED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 
@@ -880,125 +879,6 @@ ACCEPTANCE: one of outcomes (a)/(b)/(c) above is reached and recorded; `lake bui
 PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-3), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10e.
 
 POINTER REFRESH (2026-09-16 reorganization): `MintBound.lean` was split into the `MintBound/` directory (the monolithic `MintBound.lean` is now a 121-line aggregator). Line references above were re-confirmed against `MintBound/ClosureResidual.lean` (definition :836, in-tree refutation :889, carrying theorem :1139); "this file" in the text above now means that directory. The completed dependency numbers 434/483 were pruned from the dependency list; the blocked status and blockers are unchanged.
-
----
-
-### 476. Box faithful small model theorem
-- **Effort**: large
-- **Status**: [RESEARCHED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md]
-
-**Description**: THE BOX-FAITHFUL SMALL-MODEL THEOREM.
-
-CLASSIFICATION: OPEN MATHEMATICS. MULTI-MONTH. This is a genuine research problem in the same
-category as the audit's R4 "semantic FMP" entry. IT MAY NOT BE RE-DESCRIBED AS ENGINEERING, AND IT
-MAY NOT BE MERGED INTO THE BILASSO WIRING TASK OR THE CARRIER-NORMALIZATION TASK. Merging is
-precisely how a research problem gets hidden behind an engineering description, and this task
-exists partly to prevent that.
-
-DO NOT BEGIN before the BiLasso wiring task and the carrier-normalization task (task 475) are
-landed. Those two have standalone value; this one does not, and its cost is dominated by a problem
-a two-day literature check might refute outright.
-
-=== LITERATURE GATE -- RUN FIRST, AND IT IS EMPOWERED TO STOP THE TASK ===
-
-Acquire Gabbay, Kurucz, Wolter, Zakharyaschev, *Many-Dimensional Modal Logics* (2003) and read its
-temporal-products chapter. IF the two-dimensional `Until`/`Since` case is recorded there as
-undecidable or as lacking the finite model property, THIS TASK IS REFUTED and must be REPORTED AS
-SUCH rather than attempted. A negative result here is as valuable as a positive one and would
-redirect the whole decidability front.
-
-What is already firm from a prior search: products of THREE OR MORE modal logics are undecidable,
-with no logic between K x K x K and S5 x S5 x S5 decidable, and S5 x S5 x S5 lacks the finite model
-property. What is NOT settled: the two-dimensional case with `Until`/`Since`, which is what this
-logic is closest to. Note that TM is in any case NOT a full product -- its second dimension is the
-path space of a graph, not an arbitrary set of runs -- so a product-logic result would be evidence,
-not a decision.
-
-=== THE TARGET ===
-
-Build `cands : Formula -> List IntPresentation` and prove
-
-    not (ValidDiscrete phi) -> exists P in cands phi, exists w, SatAtState P w phi.neg
-
-This is the SINGLE remaining obligation for decidability of `ValidDiscrete`. Everything else is
-already compiled: given this hypothesis, `check`-over-`cands` is equivalent to `ValidDiscrete phi`
-and `decidable_of_iff` reads the `Decidable` instance off it. There is no bridge theorem, no
-transfer lemma, no enumeration over `Atom`, and no `Fin n`-from-`Finite` extraction anywhere in the
-assembly; `check_correct` is the FINAL step.
-
-=== THE CONSTRUCTION (the tractable part) ===
-
-Build `cands phi` from the CLOSURE-TYPE SPACE: subsets of `subformulaClosure phi` satisfying the
-local Hintikka conditions, with `step` given by `LocalCoherent`'s `untl`/`snce` unfolding clauses
-(`BiLasso/Annotation.lean` already states them, and they relate the label at `t` to the label at
-`t` plus-or-minus one only -- i.e. they ARE an adjacency relation), and the valuation read off the
-state by deciding atom membership. Every ingredient is `Finset`/`Bool` data with `DecidableEq`.
-Two real obligations, neither research-grade:
-
-  1. `fwd`/`bwd` SERIALITY OF THE TYPE GRAPH. Not free: a Hintikka type may have no locally
-     coherent successor, forcing an ITERATED PRUNING to a maximal serial subgraph. Standard,
-     bounded, fiddly.
-  2. INDEXING. `IntPresentation` demands `Fin card` specifically, so the type `Finset` must be
-     listed and indexed. Mechanical.
-
-Estimate for this part alone: two to four weeks.
-
-DO NOT instead try "bound `card` by some `presentationBound phi`, then enumerate the presentations
-up to that bound". That does not typecheck as stated: `IntPresentation.val : Atom -> Fin card ->
-Bool` is a function on the `Infinite` type `Atom`, so presentations of a given `card` are not a
-finite collection. Closing that would need a valuation-restriction lemma that is not in the tree.
-The formula-indexed candidate list sidesteps the problem rather than solving it.
-
-=== THE CRUX: BOX-FAITHFULNESS (the research part) ===
-
-The `box` clause of `TruthAt` quantifies universally over ALL total histories. Two landed facts
-make this a GLOBAL modality rather than a local one:
-
-  - `Truth.box_const` (`Semantics/Truth.lean`): box truth is independent of both the history and
-    the time. Its own docstring: "a model has one finite set of box facts, computed once."
-  - `Extension.occurrence` (`cor:occurrence`): every state occurs at every time in some total
-    history.
-
-That collapse is why `BoxOracleSound P bx` types `bx` as `Formula -> Bool` -- one `Bool` per
-formula, per model. It is also the obstruction:
-
-  The box facts of the SOURCE model M and of the TARGET presentation P are each global constants
-  of their own model, and they need not agree. P admits every path of its graph. The subgraph of
-  types realized in M still generates paths that M does not realize, and along such a path a
-  `box chi` true in M can fail. When it fails, the type-map image is no longer a `LocalCoherent`
-  annotation, and the transfer breaks.
-
-Restricting `cands phi` to realized-type subgraphs does NOT by itself close this: the subshift
-generated by the realized edges properly contains the realized paths. So the residue is a genuine
-BOX-FAITHFUL small-model theorem -- in effect a bounded-model property for LTL(Until, Since) over
-bi-infinite paths of a graph, PLUS a universal path quantifier over the whole structure.
-
-Is it true? Almost certainly -- the shape is the classical automata-theoretic bounded-model
-setting, and the analogous results (CTL*-style satisfiability, LTL with a universal modality) are
-decidable with finite/bounded model properties. Is it in reach? Not routinely. Neither Mathlib nor
-this tree carries omega-automata, Buchi complementation, or any language-inclusion machinery, so a
-Lean proof must be hand-rolled.
-
-=== WHAT TO REUSE ===
-
-`BiLasso/GoodCycle.lean`'s good-cycle argument, `cycleBound`, and `exists_annot_of_truth` are
-exactly the fulfilment machinery a hand-rolled proof would reuse. Be clear-eyed that they operate
-INSIDE a presentation, not across the model boundary, which is the whole difficulty.
-
-=== DO NOT PROMISE A CHOICE-FREE RESULT ===
-
-`wlem_of_spherical` (`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`) derives weak
-excluded middle from `Spherical R` at the finite carrier `Bool` over `D = ZZ`, from
-`[propext, Quot.sound]` alone. So NO finite-carrier frame with an arbitrarily shaped relation can
-be choice-free, on any route. The cost is already paid by `IntPresentation.toTaskFrame`. Any spec
-promising choice-freedom here is promising something proved impossible. Note the separate
-distinction: `instDecidableSatAtState` COMPUTES (kernel-evaluated `#guard`s prove it) while
-measuring `[propext, Classical.choice, Quot.sound]`. Computability and choice-freedom are different
-properties.
 
 ---
 
