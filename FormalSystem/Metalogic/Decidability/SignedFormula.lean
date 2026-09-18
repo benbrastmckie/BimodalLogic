@@ -277,10 +277,6 @@ def findContradiction (b : Branch) : Option Formula :=
     if sf.isPos ∧ b.hasNegAt sf.formula sf.label then some sf.formula
     else none
 
-/-- Check if branch has any contradiction (T(⊥) or complementary pair). -/
-def hasContradiction (b : Branch) : Bool :=
-  b.hasBotPos || b.findContradiction.isSome
-
 /-- Get all positive formulas in the branch. -/
 def positives (b : Branch) : List Formula :=
   b.filterMap fun sf => if sf.isPos then some sf.formula else none
@@ -291,9 +287,6 @@ def negatives (b : Branch) : List Formula :=
 
 /-- Extend branch with a signed formula. -/
 def extend (b : Branch) (sf : SignedFormula) : Branch := sf :: b
-
-/-- Extend branch with multiple signed formulas. -/
-def extendMany (b : Branch) (sfs : List SignedFormula) : Branch := sfs ++ b
 
 /-- Total complexity of all formulas in branch. -/
 def totalComplexity (b : Branch) : Nat :=
@@ -420,50 +413,6 @@ def somePastNegFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
     | .neg, .somePast _ => true
-    | _, _ => false
-
-/--
-Collect all F(U(event, guard)) formulas in the branch (negative Until formulas)
-where guard is NOT Formula.top (i.e., not someFuture).
-These are persistent formulas that must be propagated to every known future time.
--/
-def untlNegFormulas (b : Branch) : List SignedFormula :=
-  b.filter fun sf =>
-    match sf.sign, sf.formula with
-    | .neg, .untl guard _ => guard != Formula.top
-    | _, _ => false
-
-/--
-Collect all F(S(event, guard)) formulas in the branch (negative Since formulas)
-where guard is NOT Formula.top (i.e., not somePast).
-These are persistent formulas that must be propagated to every known past time.
--/
-def snceNegFormulas (b : Branch) : List SignedFormula :=
-  b.filter fun sf =>
-    match sf.sign, sf.formula with
-    | .neg, .snce guard _ => guard != Formula.top
-    | _, _ => false
-
-/--
-Collect all T(U(event, guard)) formulas in the branch (positive Until formulas)
-where guard is NOT Formula.top (i.e., not someFuture).
-These are consumable formulas that decompose via branching.
--/
-def untlPosFormulas (b : Branch) : List SignedFormula :=
-  b.filter fun sf =>
-    match sf.sign, sf.formula with
-    | .pos, .untl guard _ => guard != Formula.top
-    | _, _ => false
-
-/--
-Collect all T(S(event, guard)) formulas in the branch (positive Since formulas)
-where guard is NOT Formula.top (i.e., not somePast).
-These are consumable formulas that decompose via branching.
--/
-def sncePosFormulas (b : Branch) : List SignedFormula :=
-  b.filter fun sf =>
-    match sf.sign, sf.formula with
-    | .pos, .snce guard _ => guard != Formula.top
     | _, _ => false
 
 /--
@@ -595,17 +544,9 @@ def fulfill (tracker : EventualityTracker) (formula : Formula) (label : Label) :
     EventualityTracker :=
   { pending := tracker.pending.filter fun e => !(e.formula == formula && e.label == label) }
 
-/-- Check if there are any pending eventualities. -/
-def hasPending (tracker : EventualityTracker) : Bool :=
-  !tracker.pending.isEmpty
-
 /-- Get pending eventualities at a specific time index. -/
 def pendingAtTime (tracker : EventualityTracker) (t : TimeIndex) : List Eventuality :=
   tracker.pending.filter fun e => e.label.time == t
-
-/-- Check if an eventuality is fulfilled (no longer pending). -/
-def isFulfilled (tracker : EventualityTracker) (e : Eventuality) : Bool :=
-  !tracker.pending.any (· == e)
 
 end EventualityTracker
 
@@ -677,9 +618,6 @@ namespace TimeOrdering
 
 /-- Empty time ordering with no constraints. -/
 def empty : TimeOrdering := { constraints := [] }
-
-/-- Initial ordering: time 0 exists implicitly, no constraints needed. -/
-def initWithTime0 : TimeOrdering := empty
 
 /-- Add a future constraint: `t_new` is strictly after `t`. -/
 def addFuture (ord : TimeOrdering) (t t_new : TimeIndex) : TimeOrdering :=
@@ -896,14 +834,6 @@ namespace BlockingState
 /-- Empty blocking state. -/
 def empty : BlockingState := { blockedTimes := [] }
 
-/-- Record that a time has been blocked by an ancestor. -/
-def addBlocked (state : BlockingState) (t t_anc : TimeIndex) : BlockingState :=
-  { blockedTimes := (t, t_anc) :: state.blockedTimes }
-
-/-- Check if a time is already recorded as blocked. -/
-def isBlocked (state : BlockingState) (t : TimeIndex) : Bool :=
-  state.blockedTimes.any fun (blocked, _) => blocked == t
-
 end BlockingState
 
 /-!
@@ -1014,15 +944,6 @@ This bounds the size of the tableau and ensures termination.
 def subformulaClosure (b : Branch) : List Formula :=
   (b.flatMap (fun sf => Formula.subformulas sf.formula)).eraseDups
 
-/--
-Signed subformula closure: all signed versions of the subformula closure.
-
-This is the maximum set of signed formulas that can appear in the tableau.
--/
-def signedSubformulaClosure (b : Branch) : List SignedFormula :=
-  let subs := subformulaClosure b
-  subs.flatMap (fun φ => [SignedFormula.pos φ, SignedFormula.neg φ])
-
 /-!
 ## Complexity Measures for Termination
 -/
@@ -1041,13 +962,5 @@ def unexpandedComplexity (sf : SignedFormula) : Nat :=
   | .box _ => sf.formula.complexity
   | .untl _ _ => sf.formula.complexity
   | .snce _ _ => sf.formula.complexity
-
-/--
-Total unexpanded complexity of a branch.
-
-This decreases with each tableau expansion step, ensuring termination.
--/
-def branchUnexpandedComplexity (b : Branch) : Nat :=
-  b.foldl (fun acc sf => acc + unexpandedComplexity sf) 0
 
 end FormalSystem.Metalogic.Decidability
