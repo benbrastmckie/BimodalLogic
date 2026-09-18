@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "summary": "Paper axiom audit complete: 29 paper primitives, 16 derivable surplus constructors (12 BX TR-mirrors plus modal_4, modal_b, prior_SZ, prior_S_gap), none underivable. All derivation patterns compiled via lean_run_code. Report gives blast radius (~331 call sites, 6 exhaustive dispatchers) and an add-first/remove-last phasing.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/reports/01_paper-axiom-audit.md",
+      "summary": "Per-constructor classification table, frame-class check, prototyped derivations, blast radius, recommended phases."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "dispatch_seq": 1,
+  "next_action_hint": "plan"
+}
