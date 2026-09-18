@@ -1970,7 +1970,7 @@ private theorem l27_guard_snce_xi_val (fc : FrameClass) {A B C : Set Formula}
     (h_not_B : Formula.snce (Formula.and β' xi) α' ∉ B)
     (hβ' : β' ∈ B) (hα' : α' ∈ A) :
     (l27Guard fc h_dcs xi eta (Formula.snce (Formula.and β' xi) α') h_seed).val = β' := by
-  unfold l27Guard; simp only [h_not_B, ↓reduceDIte, Formula.snce.injEq, ↓existsAndEq, true_and]
+  unfold l27Guard; simp only [h_not_B, ↓reduceDIte, Formula.snce.injEq, ↓existsAndEq]
   split
   · next h =>
     have h_spec := Classical.choose_spec h

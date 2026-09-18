@@ -140,7 +140,7 @@ def posAnnot : Annot loopPresentation φPos where
   fwdLab_length := rfl
   label_sub := by
     intro L hL
-    simp only [List.singleton_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+    simp only [List.singleton_append, List.mem_cons, List.not_mem_nil,
       or_false] at hL
     have hLeq : L = posLabel := by rcases hL with h | h <;> exact h
     subst hLeq
@@ -274,7 +274,7 @@ def negAnnot : Annot loopPresentation φNeg where
   fwdLab_length := rfl
   label_sub := by
     intro L hL
-    simp only [List.singleton_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+    simp only [List.singleton_append, List.mem_cons, List.not_mem_nil,
       or_false] at hL
     have hLeq : L = negLabel := by rcases hL with h | h <;> exact h
     subst hLeq

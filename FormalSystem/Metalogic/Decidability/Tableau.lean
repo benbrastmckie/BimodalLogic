@@ -463,14 +463,14 @@ theorem mem_boxDiamondPersistence {branch : Branch} {w : WorldIndex} {t ft : Tim
     unfold Branch.boxPosAtWorldTime at hs
     refine ⟨s, List.mem_of_mem_filter hs, ?_⟩
     by_cases hc : branch.contains { s with label := { s.label with time := ft } } = true <;>
-      simp only [hc, if_true, if_false, reduceIte] at hsg
+      simp only [hc, if_true] at hsg
     · exact absurd hsg (by simp)
     · rw [← Option.some_inj.mp hsg]
   · obtain ⟨s, hs, hsg⟩ := List.mem_filterMap.mp h
     unfold Branch.diamondNegAtWorldTime at hs
     refine ⟨s, List.mem_of_mem_filter hs, ?_⟩
     by_cases hc : branch.contains { s with label := { s.label with time := ft } } = true <;>
-      simp only [hc, if_true, if_false, reduceIte] at hsg
+      simp only [hc, if_true] at hsg
     · exact absurd hsg (by simp)
     · rw [← Option.some_inj.mp hsg]
 
@@ -2990,8 +2990,8 @@ theorem isExpanded_of_findUnexpanded_none {b : Branch} {ord : TimeOrdering} {fc 
     (h : findUnexpanded b ord fc = none) {sf : SignedFormula} (hsf : sf ∈ b) :
     findApplicableRule sf b ord fc = none := by
   have hfind := List.find?_eq_none.mp h sf hsf
-  simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq,
-    Bool.not_eq_eq_eq_not, Bool.not_false, Bool.decide_eq_false, Bool.not_eq_false] at hfind
+  simp only [isExpanded, Option.isNone_iff_eq_none, decide_eq_true_eq,
+    ] at hfind
   simpa [isExpanded, Option.isNone_iff_eq_none] using hfind
 
 /--

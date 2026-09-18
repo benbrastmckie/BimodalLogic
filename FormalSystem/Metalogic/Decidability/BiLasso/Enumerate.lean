@@ -197,7 +197,7 @@ theorem mem_closureSubsets {φ : Formula} {X : Finset Formula} (h : X ⊆ subfor
   refine List.mem_map.mpr ⟨(Formula.subformulas φ).filter (fun a => decide (a ∈ X)), ?_, ?_⟩
   · exact List.mem_sublists.mpr List.filter_sublist
   · ext a
-    simp only [subformulaClosure, List.mem_toFinset, List.mem_filter, decide_eq_true_eq]
+    simp only [List.mem_toFinset, List.mem_filter, decide_eq_true_eq]
     constructor
     · exact fun hx => hx.2
     · intro hx

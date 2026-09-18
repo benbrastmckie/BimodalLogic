@@ -602,8 +602,8 @@ theorem sat_untl_pos (b : Branch) (timeOrd : TimeOrdering)
         witnessPresent .untlPos ⟨.pos, .untl guard event, ⟨w, t⟩⟩ b timeOrd = true := by
       by_contra hc
       rw [Bool.not_eq_true] at hc
-      simp only [isApplicable, asUntil?, hg', if_false, applyRule, ruleMintsFreshLabel,
-        ruleSelfGuarded, if_true, Option.isSome_some] at h
+      simp only [isApplicable, asUntil?, hg', applyRule, ruleMintsFreshLabel,
+        ruleSelfGuarded, if_true] at h
       exact absurd h (by simp [hc, htriv])
     simp only [witnessPresent, asUntil?, hg', Bool.false_eq_true, if_false, List.any_eq_true,
       Bool.or_eq_true, Bool.and_eq_true] at hwit
@@ -668,8 +668,8 @@ theorem sat_snce_pos (b : Branch) (timeOrd : TimeOrdering)
         witnessPresent .sncePos ⟨.pos, .snce guard event, ⟨w, t⟩⟩ b timeOrd = true := by
       by_contra hc
       rw [Bool.not_eq_true] at hc
-      simp only [isApplicable, asSince?, hg', if_false, applyRule, ruleMintsFreshLabel,
-        ruleSelfGuarded, if_true, Option.isSome_some] at h
+      simp only [isApplicable, asSince?, hg', applyRule, ruleMintsFreshLabel,
+        ruleSelfGuarded, if_true] at h
       exact absurd h (by simp [hc, htriv])
     simp only [witnessPresent, asSince?, hg', Bool.false_eq_true, if_false, List.any_eq_true,
       Bool.or_eq_true, Bool.and_eq_true] at hwit

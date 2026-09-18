@@ -99,7 +99,7 @@ private theorem exists_null_seq {D : Type} [AddCommGroup D] [LinearOrder D] [IsO
     intro n; induction n with
     | zero =>
       have hz : d 0 = a := rfl
-      simp [one_nsmul, hz]
+      simp [hz]
     | succ n ih =>
       have h2 : d (n+1) + d (n+1) ≤ d n := (hg _ (hpos n)).2
       calc (2^(n+1) : ℕ) • d (n+1) = (2^n : ℕ) • (d (n+1) + d (n+1)) := by
