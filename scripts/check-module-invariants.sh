@@ -82,6 +82,11 @@
 #       matched on COMMENT-MASKED text, so a suppression quoted in a docstring or
 #       commented out is not one. No companion allow-list: the reason lives at the
 #       site, where it moves with the code it covers
+#   C30 Zero blanket linter suppressions and zero unscoped heartbeat budgets: every live
+#       `set_option linter.X v` and every `set_option <...maxHeartbeats...> N` under
+#       FormalSystem/, Tests/ and scripts/ is declaration-scoped (`... in`), the one
+#       exception being the long-file baseline `set_option linter.style.longFile N`
+#       (N > 0). Comment-masked like C29; zero baseline, no allow-list
 #   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -639,6 +644,14 @@ ENFORCE_C28=${ENFORCE_C28:-1} # compiler-warning budget (enforced)
 # reason. NOTE: the scan's anti-silence guards -- an empty walk, or zero matched suppressions
 # anywhere -- exit 2, and exit 2 is NOT suppressed by ENFORCE_C29=0.
 ENFORCE_C29=${ENFORCE_C29:-1} # every linter suppression carries a reason (enforced)
+# C30 asserts that no live linter option or heartbeat budget is set for a whole file or section:
+# the only admissible form is the declaration-scoped `set_option ... in`, plus the long-file
+# baseline `set_option linter.style.longFile N`, which is a recorded length ceiling rather than a
+# suppression (the linter itself checks N stays tight). It ships ENFORCED from a zero baseline with
+# no allow-list, on the C29 precedent: the tree was brought to zero in the same change. NOTE: the
+# anti-silence guards -- an empty walk, or zero matched scoped `set_option ... in` anywhere --
+# exit 2, and exit 2 is NOT suppressed by ENFORCE_C30=0.
+ENFORCE_C30=${ENFORCE_C30:-1} # no blanket linter suppression or unscoped heartbeat budget (enforced)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
@@ -4142,6 +4155,154 @@ if [ "$C29_STATUS" -eq 2 ]; then
   # An untrustworthy scan is an error in EVERY mode.
   fail C29 "suppression scan could not be trusted (exit 2; not suppressed by ENFORCE_C29=0)"
 elif [ "$C29_STATUS" -ne 0 ] && [ "$ENFORCE_C29" -eq 1 ]; then
+  FAILURES=$((FAILURES + 1))
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C30: zero blanket linter suppressions and zero unscoped heartbeat budgets
+#
+# C29 makes every suppression carry a reason; it does not stop a reason-carrying suppression
+# from covering a whole file. A file-scoped `set_option linter.X false` silences every
+# declaration below it, including ones written long after the reason was, and a file- or
+# section-scoped `set_option maxHeartbeats N` hides which declaration is actually expensive.
+# Both were measured in the tree when Mathlib's standard linter set was adopted: one blanket
+# `linter.unusedSectionVars` suppression, fixed by splitting a `variable` block, and seven
+# unscoped budgets, of which a per-declaration measurement showed several covered declarations
+# that need no raised budget at all.
+#
+# RULE, on comment-masked text (the C27/C29 masker):
+#   (a) `set_option linter.<X> <v>` must end in `in`, except `linter.style.longFile <N>` with
+#       N > 0 -- Mathlib's in-source long-file baseline, a length ceiling the linter keeps tight.
+#       `linter.style.longFile 0` is a disable and is NOT excepted.
+#   (b) `set_option <...maxHeartbeats...> <N>` (including `synthInstance.maxHeartbeats`) must
+#       end in `in`.
+# The value is not inspected for (a): `set_option linter.X true` at file scope is as much a
+# file-wide policy decision as `false`, and the place for policy is lakefile.toml.
+#
+# ZERO BASELINE, NO ALLOW-LIST: a blanket form has no legitimate use the scoped form cannot
+# express. Runs regardless of --no-build (source text only). Anti-silence: an empty walk, or zero
+# matched scoped `set_option ... in` (the tree carries dozens), exits 2 in every mode.
+# ---------------------------------------------------------------------------
+python3 - <<'PYEOF'
+import os, re, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+from live_walk import live_files  # noqa: E402
+from lean_debug_artifacts import mask  # noqa: E402
+
+ROOTS = ("FormalSystem", "Tests", "scripts")
+SETOPT = re.compile(r"^\s*set_option\s+(\S+)\s+(\S+)(.*)$")
+
+
+def scan(text):
+    """(blanket, scoped): blanket is [(line, option, value)], scoped counts `... in` forms."""
+    blanket, scoped = [], 0
+    for idx, mline in enumerate(mask(text).split("\n")):
+        m = SETOPT.match(mline)
+        if not m:
+            continue
+        opt, val, rest = m.group(1), m.group(2), m.group(3).strip()
+        if rest == "in" or rest.startswith("in "):
+            scoped += 1
+            continue
+        if opt.startswith("linter."):
+            if opt == "linter.style.longFile" and val.isdigit() and int(val) > 0:
+                continue
+            blanket.append((idx + 1, opt, val))
+        elif "maxHeartbeats" in opt.split("."):
+            blanket.append((idx + 1, opt, val))
+    return blanket, scoped
+
+
+# Each fixture is (source, expected blanket list).
+_FIXTURES = [
+    # the blanket form this check exists for
+    ("set_option linter.style.show false\ntheorem t : True := trivial\n",
+     [(1, "linter.style.show", "false")]),
+    # declaration-scoped: allowed
+    ("-- linter.style.show: reason\nset_option linter.style.show false in\n"
+     "theorem t : True := trivial\n", []),
+    # the long-file baseline: allowed
+    ("set_option linter.style.longFile 1800\n", []),
+    # ... but a zero long-file limit is a disable
+    ("set_option linter.style.longFile 0\n", [(1, "linter.style.longFile", "0")]),
+    # a commented-out blanket form is not one
+    ("-- set_option linter.style.show false\ntheorem t : True := trivial\n", []),
+    # nor is one quoted in a docstring
+    ("/-- Never write `set_option linter.style.show false` here. -/\ndef x := 1\n", []),
+    # unscoped heartbeat budgets, both option names
+    ("set_option maxHeartbeats 400000\n", [(1, "maxHeartbeats", "400000")]),
+    ("set_option synthInstance.maxHeartbeats 40000\n",
+     [(1, "synthInstance.maxHeartbeats", "40000")]),
+    # scoped heartbeat budget with its reason after the `in`: allowed
+    ("set_option maxHeartbeats 400000 in\n-- reason\ntheorem t : True := trivial\n", []),
+    # a trailing comment after `in` is masked away, so still scoped
+    ("set_option maxHeartbeats 400000 in -- reason\ntheorem t : True := trivial\n", []),
+    # an unrelated option is out of scope
+    ("set_option autoImplicit false\n", []),
+    # a linter option set to true at file scope is still file-wide policy
+    ("set_option linter.unusedVariables true\n", [(1, "linter.unusedVariables", "true")]),
+]
+
+
+def c30_self_test():
+    bad = []
+    for k, (src, want) in enumerate(_FIXTURES):
+        got = scan(src)[0]
+        if got != want:
+            bad.append((k, want, got))
+    return bad
+
+
+bad = c30_self_test()
+if bad:
+    print(f"FAIL  C30  fixture self-test: {len(bad)} fixture(s) misjudged")
+    for k, want, got in bad:
+        print(f"            fixture {k}: expected {want}, got {got}")
+    sys.exit(1)
+
+hits, scoped, scanned = [], 0, 0
+for root in ROOTS:
+    for path in live_files(root, ".lean"):
+        try:
+            text = open(path, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        scanned += 1
+        if "set_option" not in text:        # exact pre-filter: every match contains it
+            continue
+        b, sc = scan(text)
+        scoped += sc
+        hits += [(path, ln, opt, val) for ln, opt, val in b]
+
+if scanned == 0:
+    print("FAIL  C30  the walk produced ZERO .lean files across "
+          f"{', '.join(ROOTS)} -- the scan cannot vouch for a tree it never read")
+    print("            (exit 2: an untrustworthy scan is an error in every mode)")
+    sys.exit(2)
+if scoped == 0:
+    print(f"FAIL  C30  ZERO scoped `set_option ... in` found in {scanned} live .lean file(s)")
+    print("            -- silence, not a pass: the tree carries dozens, so the matcher or the")
+    print("            masker stopped seeing them (exit 2 in every mode)")
+    sys.exit(2)
+if hits:
+    print(f"FAIL  C30  {len(hits)} blanket linter option(s) or unscoped heartbeat budget(s)")
+    for p, ln, opt, val in hits[:15]:
+        print(f"            {p}:{ln}: set_option {opt} {val}")
+    print("            scope it to the declaration that needs it (`set_option ... in`, with a C29")
+    print("            reason for a linter suppression, or a `--` reason after the `in` for a")
+    print("            heartbeat budget); project-wide linter policy belongs in lakefile.toml")
+    sys.exit(1)
+print(f"PASS  C30  zero blanket linter options and zero unscoped heartbeat budgets")
+print(f"            ({scanned} live .lean file(s) scanned, {scoped} scoped `set_option ... in`,")
+print(f"            {len(_FIXTURES)} fixture(s) green)")
+sys.exit(0)
+PYEOF
+C30_STATUS=$?
+if [ "$C30_STATUS" -eq 2 ]; then
+  # An untrustworthy scan is an error in EVERY mode.
+  fail C30 "blanket-suppression scan could not be trusted (exit 2; not suppressed by ENFORCE_C30=0)"
+elif [ "$C30_STATUS" -ne 0 ] && [ "$ENFORCE_C30" -eq 1 ]; then
   FAILURES=$((FAILURES + 1))
 fi
 echo

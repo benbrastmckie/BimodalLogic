@@ -661,25 +661,25 @@ evidence behind it.
 
 ---
 
-### Phase 15: Ratchet check C30 (blanket suppression and unscoped heartbeats) [NOT STARTED]
+### Phase 15: Ratchet check C30 (blanket suppression and unscoped heartbeats) [COMPLETED]
 
 **Goal**: Mechanically enforce zero blanket linter suppressions and zero unscoped heartbeat
 budgets from now on.
 
 **Tasks**:
-- [ ] Add C30 to `scripts/check-module-invariants.sh`. It reuses C29's `live_files` walk and the
+- [x] Add C30 to `scripts/check-module-invariants.sh`. It reuses C29's `live_files` walk and the
       `lean_debug_artifacts.mask` comment masker, starts from a zero baseline, and has no
       allow-list. It fails on:
       - (a) any masked `set_option linter.<X> <value>` without a trailing `in`, except
         `linter.style.longFile <N>`;
       - (b) any `set_option <...maxHeartbeats...> N` without a trailing `in`.
-- [ ] Keep the anti-silence guards: an empty walk exits 2, and so does zero matched scoped
+- [x] Keep the anti-silence guards: an empty walk exits 2, and so does zero matched scoped
       `set_option ... in` occurrences. Add fixture self-tests that match C29's pattern: a blanket
       form must fail, a scoped form must pass, a longFile baseline must pass, and a commented-out
       blanket form must pass.
-- [ ] Add an `ENFORCE_C30` toggle and a header entry, following the C28/C29 conventions, and add
+- [x] Add an `ENFORCE_C30` toggle and a header entry, following the C28/C29 conventions, and add
       a C30 row to `docs/development/MODULE_INVARIANTS.md`.
-- [ ] Run the harness. C30 must be green on the tree as it stands after Phases 2-4.
+- [x] Run the harness. C30 must be green on the tree as it stands after Phases 2-4.
 
 **Timing**: 1.5 hours
 
@@ -690,6 +690,12 @@ budgets from now on.
 **Files to modify**:
 - `scripts/check-module-invariants.sh` - C30 and its fixtures
 - `docs/development/MODULE_INVARIANTS.md` - C30 row
+
+**Phase 15 notes**: C30 added after C29 in `scripts/check-module-invariants.sh` with 12 fixtures,
+`ENFORCE_C30=1`, and a header entry; `longFile 0` is deliberately NOT excepted (it is a disable).
+It reports 591 live files, 108 scoped `set_option ... in`, zero hits. Probe: appending a blanket
+`set_option linter.style.show false` to `FormalSystem/Syntax/Atom.lean` made C30 FAIL naming the
+line; the file was restored byte-for-byte. MODULE_INVARIANTS.md has the C30 row.
 
 **Verification**:
 - `bash scripts/check-module-invariants.sh` shows C30 PASS, and its fixture self-tests pass.
