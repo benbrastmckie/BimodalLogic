@@ -11,8 +11,8 @@ next_project_number: 623
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,610,614,621 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617,622 | 298,464,502,559,563,568,597,621 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,610,614,622 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617 | 298,464,502,559,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -99,12 +99,11 @@ next_project_number: 623
 
 ### Paper Refactor
 
-621 [IMPLEMENTING] — Adopt uniform reflect naming for time reversal: the paper...
-  └─ 622 [NOT STARTED] — Align frame-class subscripts with the paper in...
+622 [NOT STARTED] — Align frame-class subscripts with the paper in...
 
 ### Codebase Cleanup
 
-597 [PLANNED] — Adopt Mathlib's standard linter set, following cslib's...
+597 [IMPLEMENTING] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
@@ -121,12 +120,13 @@ next_project_number: 623
 ---
 
 ### 621. Adopt uniform reflect naming for time reversal
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
 - **Research**: [621_adopt_uniform_reflect_naming_for_time_reversal/reports/01_uniform-reflect-naming.md]
 - **Plan**: [621_adopt_uniform_reflect_naming_for_time_reversal/plans/01_uniform-reflect-naming.md]
+- **Summary**: [621_adopt_uniform_reflect_naming_for_time_reversal/summaries/01_uniform-reflect-naming-summary.md]
 
 **Description**: Adopt uniform reflect naming for time reversal: the paper renamed lem:temporal-duality to lem:time-reflection. Update docs/reference/paper-definitions-of-record.md (retire the 'semantic lemma keeps its name' carve-out, record the new label), then apply the principle 'reflect names every operation reversing the time order on any object (formula, frame, history, truth lemma); swap survives only for non-time-reversal exchanges'. Rename MinusFrame.swap -> MinusFrame.reflect, truth_swap -> truth_reflectTime, swapUS -> a qualified reflect name (e.g. reflectTimeBoxOpaque, box subformulas treated as atoms). Classify by the same test the leftover families swap_norm, *_swap_of_tm*, cValid swaps, starValid_*_swap and rename those that denote time reflection. Keep serialized wire/mutation tags byte-stable. Update prose citing the temporal duality lemma, READMEs, typst citations; run check-paper-definitions.sh, check-module-invariants.sh, lake build
 
@@ -396,7 +396,7 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 
 ### 597. Adopt mathlib standard linter set
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 585

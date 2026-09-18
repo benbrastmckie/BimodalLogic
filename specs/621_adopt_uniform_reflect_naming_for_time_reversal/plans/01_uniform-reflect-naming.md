@@ -1,7 +1,7 @@
 # Implementation Plan: Task #621
 
 - **Task**: 621 - Adopt uniform reflect naming for time reversal
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/621_adopt_uniform_reflect_naming_for_time_reversal/reports/01_uniform-reflect-naming.md
