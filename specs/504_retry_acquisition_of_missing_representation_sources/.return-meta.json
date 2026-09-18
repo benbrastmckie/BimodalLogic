@@ -1,11 +1,49 @@
 {
-  "status": "in_progress",
-  "task_number": 504,
+  "status": "implemented",
   "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/504_retry_acquisition_of_missing_representation_sources/summaries/01_finalize-acquisition-record-blockers-summary.md",
+      "summary": "Execution summary: audited and confirmed the gehrke_jonsson_2004 registration, earned its verified_conversion fidelity label with a real page-image spot-check, recorded the seven confirmed-unacquirable sources durably in ~/Projects/Literature/SOURCES.md (R1-R7), logged the zotero-cli-cc write-bridge defect in specs/errors.json, and left the BimodalLogic working tree clean (committed per-phase)."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Verified and finalized the gehrke_jonsson_2004 literature registration with an earned fidelity label (real page-image spot-check, checksum-verified re-download), durably recorded the seven confirmed-unacquirable representation sources (R1-R7) in the corpus's SOURCES.md, and logged the zotero-cli-cc write-bridge dependency defect in specs/errors.json."
+  },
+  "modified_files": [
+    "specs/literature-index.json",
+    "specs/errors.json",
+    "specs/504_retry_acquisition_of_missing_representation_sources/plans/01_finalize-acquisition-record-blockers.md",
+    "specs/504_retry_acquisition_of_missing_representation_sources/summaries/01_finalize-acquisition-record-blockers-summary.md",
+    "specs/504_retry_acquisition_of_missing_representation_sources/progress/phase-1-progress.json",
+    "specs/504_retry_acquisition_of_missing_representation_sources/progress/phase-2-progress.json",
+    "specs/504_retry_acquisition_of_missing_representation_sources/progress/phase-3-progress.json",
+    "specs/504_retry_acquisition_of_missing_representation_sources/progress/phase-4-progress.json",
+    "specs/504_retry_acquisition_of_missing_representation_sources/progress/phase-5-progress.json"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a research/ingest dispatch registers a new literature-index entry but never commits it, a follow-up implementation task must independently re-verify the registration (entry field completeness, index parity, on-disk chunk counts, FTS retrievability) rather than trusting the prior report's self-reported figures. Concretely useful check sequence: jq entry-field presence -> jq .entries|length on both sub-index and global index -> ls chunk_*.md | wc -l -> literature-search.sh smoke test.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/504_retry_acquisition_of_missing_representation_sources/summaries/01_finalize-acquisition-record-blockers-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["literature-index", "fidelity-verification", "corpus-audit", "verified_conversion"]
+    },
+    {
+      "content": "To earn (not just assert) a verified_conversion fidelity label on a converted document, spot-check at least one theorem, one definition, and one section heading (with page numbers) against a freshly re-downloaded, checksum-compared source PDF using pdftotext/PyMuPDF text extraction -- a quality-gate pass alone (no rejection, no control-character repairs) is a weaker bar and should not by itself justify the label.",
+      "category": "PATTERN",
+      "source_artifact": "specs/504_retry_acquisition_of_missing_representation_sources/summaries/01_finalize-acquisition-record-blockers-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["fidelity-audit", "provenance_fidelity", "spot-check", "pdf-verification"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789728911_1b865e",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
   }
 }

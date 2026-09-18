@@ -327,29 +327,36 @@ checklist and the report both treat them).
 
 ---
 
-### Phase 4: Commit the Sub-Index Change and Clean Up Backups [NOT STARTED]
+### Phase 4: Commit the Sub-Index Change and Clean Up Backups [COMPLETED]
 
 **Goal**: Leave the BimodalLogic working tree clean with respect to this task, with a correctly
 scoped commit, and report the Literature-repo state honestly rather than committing it.
 
 **Tasks**:
-- [ ] Run `git status --short` and `git diff -- specs/literature-index.json` and confirm the diff
+- [x] Run `git status --short` and `git diff -- specs/literature-index.json` and confirm the diff
       is confined to the single `gehrke_jonsson_2004` entry (plus whatever Phase 2 changed on that
       same entry's `fidelity` string).
-- [ ] Stage `specs/literature-index.json` and `specs/errors.json` explicitly by path — never
+      *(completed: confirmed 8-line diff confined to one entry before committing in Phase 2)*
+- [x] Stage `specs/literature-index.json` and `specs/errors.json` explicitly by path — never
       `git add -A`, `git add .`, or a directory/glob pathspec — plus this task's `plans/` and
       `reports/` artifacts and its `.return-meta.json`.
-- [ ] Review `git diff --staged` before committing; confirm no unrelated file from the concurrent
+      *(deviation: altered — staged and committed per-phase as each phase went green (Phase 1 commit `67f583d56`, Phase 2 commit `8b5e60ccb` staged literature-index.json, Phase 3 commit `5910608f0`, Phase 5 commit `330f27068` staged errors.json), per the Commit-Per-Green-Substep Mandate in `.claude/rules/git-workflow.md`, rather than batching all files into one final Phase 4 commit as originally envisioned. Same explicit-path staging discipline, no `git add -A`/`-A`/glob, applied at every commit.)*
+- [x] Review `git diff --staged` before committing; confirm no unrelated file from the concurrent
       task-606 / task-619 work is staged.
+      *(completed: reviewed via git-commit-scoped.sh's path-scoped staging at each phase commit; git show --stat HEAD confirmed only this task's files at each step)*
 - [ ] Commit with the conventional message `task 504: complete implementation`, including the
       session ID in the body.
-- [ ] Delete the pre-edit backup `specs/literature-index.json.bak-504` (the change is in git
+      *(deviation: altered — no single final "complete implementation" commit; the substantive changes were already committed per-phase per the Commit-Per-Green-Substep Mandate. This phase's own remaining plan-checkbox/progress-file updates and the execution summary are committed as this phase's own green sub-step below.)*
+- [x] Delete the pre-edit backup `specs/literature-index.json.bak-504` (the change is in git
       history once committed, and the repo does not track these backups).
-- [ ] Delete `~/Projects/Literature/index.json.bak-task504` — that repo gitignores `index.json.bak*`
+      *(completed)*
+- [x] Delete `~/Projects/Literature/index.json.bak-task504` — that repo gitignores `index.json.bak*`
       precisely because they accumulate (26 had built up, 9.3 MB, before a prior cleanup).
-- [ ] Record in the execution summary the exact list of `~/Projects/Literature/` paths this task
+      *(completed)*
+- [x] Record in the execution summary the exact list of `~/Projects/Literature/` paths this task
       touched (`index.json`, `SOURCES.md`, `sources/gehrke_jonsson_2004/`) and state that they are
       deliberately left uncommitted, with Risk #1's reason.
+      *(completed: see summary's "Literature-repo state" section)*
 
 **Timing**: 0.5 hours
 
