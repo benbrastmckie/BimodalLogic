@@ -271,9 +271,6 @@ namespace TraceM
 /-- Get the current certificate. -/
 def getCert : TraceM ProofCertificate := get
 
-/-- Set the current certificate. -/
-def setCert (cert : ProofCertificate) : TraceM Unit := set cert
-
 /--
 Record a single trace event.
 
