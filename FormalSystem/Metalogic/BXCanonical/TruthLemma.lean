@@ -204,12 +204,6 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
 
 /-! ## Until/Since MCS Properties -/
 
-/--
-Strict part of BxLe: w is strictly below v in the canonical ordering.
--/
-def BxLt (w v : BXPoint) : Prop :=
-  BxLe w v ∧ ¬BxLe v w
-
 /-! ### Helper: F(ψ) from witness existence
 
 If ψ ∈ v and BxLe w v, then F(ψ) ∈ w (because G(¬ψ) ∉ w).
