@@ -13,6 +13,8 @@ literal families (`kvE2SepEpL`/`EpR`/`PtW`), the depth-2 gate `KvE2SepGate`, the
 order-type disjunction index (`KvE2SepSpikeOrderType`, `kvE2SepArr'`) and the rank
 `kvE2OrdRank` (Rabinovich Lemma 3.2(1), PDF p.3; §5 coincidence, PDF p.5). -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

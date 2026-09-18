@@ -12,6 +12,8 @@ Module H of the `SharedWitness` tower. The O4 assembly: `kvE2_sepBody_extract` (
 direction) and `kvE2_sepBody_holds_of_honest` (completeness direction), over the primed
 tie-reporting order bridge and value-sortedness. -/
 
+set_option linter.style.longFile 1900
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

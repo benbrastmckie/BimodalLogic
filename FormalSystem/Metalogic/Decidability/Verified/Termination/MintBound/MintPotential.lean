@@ -34,6 +34,8 @@ induction is not attempted here. The residual is therefore exactly one named hyp
 `WorldWitness C (seedBranch φ).worldFinset b`, and every result below carries it visibly in its
 statement rather than absorbing it. -/
 
+set_option linter.style.longFile 2000
+
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Syntax

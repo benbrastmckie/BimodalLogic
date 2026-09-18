@@ -58,6 +58,8 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 - **3-5 atoms**: Sufficient for non-trivial operator interactions
 -/
 
+set_option linter.style.longFile 2200
+
 set_option autoImplicit false
 
 namespace FormalSystem.Automation

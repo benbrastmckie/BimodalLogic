@@ -15,6 +15,8 @@ import Mathlib.Data.Fintype.Pigeonhole
 GHR93 Claim 1: continuation predicates, gap construction, and gap r-definability.
 -/
 
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

@@ -11,6 +11,8 @@ k=1 V-carrier kit: `bracketEndCharK0`/`_k1`, `bracketFromLists`, `bracketEndChar
 with its helper kit and soundness/completeness/correctness (`_sound`, `_complete`, `_correct`).
 Byte-identical relocation except 6 sanctioned `private ` removals. -/
 
+set_option linter.style.longFile 2300
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

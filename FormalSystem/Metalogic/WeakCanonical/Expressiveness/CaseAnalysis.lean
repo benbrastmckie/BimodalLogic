@@ -22,6 +22,8 @@ resting on sorried gap-detection lemmas; zero external call sites). The live
 and does not depend on the archived chain.
 -/
 
+set_option linter.style.longFile 2300
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

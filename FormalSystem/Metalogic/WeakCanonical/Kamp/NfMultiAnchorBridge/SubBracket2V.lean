@@ -38,6 +38,8 @@ This module is the faithful separate-bracket route for the k=2 gate. Source mapp
 `bracketFromLists_flatMap_subchain_below_pin` stays in this module (private): its only code
 consumers are the `_of_outer` closers here. -/
 
+set_option linter.style.longFile 2400
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

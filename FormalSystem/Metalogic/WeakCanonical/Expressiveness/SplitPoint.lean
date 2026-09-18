@@ -12,6 +12,8 @@ import FormalSystem.Metalogic.WeakCanonical.Expressiveness.DConsistencyTransport
 Split-point infrastructure: SplitPointProps and the main obtain_split_point_props theorem.
 -/
 
+set_option linter.style.longFile 5100
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

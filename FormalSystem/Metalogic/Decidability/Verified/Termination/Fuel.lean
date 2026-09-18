@@ -86,6 +86,8 @@ Outstanding, and deliberately not claimed anywhere below:
    which the current signature's default does not permit without an engine edit.
 -/
 
+set_option linter.style.longFile 2800
+
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Syntax

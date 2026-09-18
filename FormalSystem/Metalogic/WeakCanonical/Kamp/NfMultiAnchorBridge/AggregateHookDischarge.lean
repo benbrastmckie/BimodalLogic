@@ -109,6 +109,8 @@ exclusion type, never `TemporalPred.top`. G5 — every Cor 5.4 chain step below 
   verbatim into the Phase-1 adjudication record above.
 -/
 
+set_option linter.style.longFile 2300
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

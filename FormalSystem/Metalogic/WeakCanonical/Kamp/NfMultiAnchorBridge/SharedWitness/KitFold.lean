@@ -13,6 +13,8 @@ Module I of the `SharedWitness` tower. Per-σ kit application — bundles → so
 predicates `KvE2SepFragmentFrag` / `kvE2_sepFragment_realizable` and `kvE2_outer_fold`
 (Rabinovich Prop 4.3, PDF p.6). -/
 
+set_option linter.style.longFile 2000
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

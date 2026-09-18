@@ -39,6 +39,8 @@ by inserting new points into the domain.
 - [burgess1982]: "Axioms for tense logic II: Time periods", Section 2
 -/
 
+set_option linter.style.longFile 4000
+
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
 open FormalSystem.Syntax

@@ -71,6 +71,8 @@ Local definitions used for point insertion lemmas.
 - [burgess1982]: "Basic tense logic", Section 2, Lemmas 2.4-2.8
 -/
 
+set_option linter.style.longFile 3700
+
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
 open FormalSystem.Syntax

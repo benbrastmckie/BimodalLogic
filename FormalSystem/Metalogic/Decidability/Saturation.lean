@@ -32,6 +32,8 @@ The total complexity decreases with each expansion step.
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
+set_option linter.style.longFile 2100
+
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Syntax

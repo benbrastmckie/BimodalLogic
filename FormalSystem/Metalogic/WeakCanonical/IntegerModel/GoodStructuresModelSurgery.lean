@@ -86,6 +86,8 @@ and the docstring on
 - [reynolds1994], Theorem 5 (US expressive completeness, PriorExpressiveness.lean)
 -/
 
+set_option linter.style.longFile 2300
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

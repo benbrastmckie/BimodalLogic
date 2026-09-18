@@ -231,6 +231,8 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 task-frame · task-relation · def:frame · saturation · nullity
 -/
 
+set_option linter.style.longFile 2500
+
 namespace FormalSystem.Semantics
 
 /-!

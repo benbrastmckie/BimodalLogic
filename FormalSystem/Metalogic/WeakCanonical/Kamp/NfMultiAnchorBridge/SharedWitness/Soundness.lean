@@ -13,6 +13,8 @@ extract the shared witness `w` (the one `ptW` slot) and the per-σ segment-form 
 (Rabinovich Cor 5.4, PDF p.5). Carries `kvE2_sepHonest_hLR_absurd` and
 `kvE2SepHonestOrder'`. -/
 
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

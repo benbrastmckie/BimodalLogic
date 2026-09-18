@@ -109,7 +109,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
 | `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |
 | `SetConsequence.lean` | 590 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.Dedekind` row (`CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`, `ModelExistenceDedekind`) |
-| `Soundness.lean` | 1,644 | The soundness theorem itself |
+| `Soundness.lean` | 1,646 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,141 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
 <!-- END GENERATED -->
 
@@ -145,15 +145,15 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,414 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,095 | Chronicle completeness route; the wired entry point |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,103 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,858 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 21 | 6,037 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 4 | 1,837 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 80 | 52,064 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 80 | 52,076 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,609 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 18 | 4,992 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,424 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,021 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,067 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -183,7 +183,7 @@ Subdirectories:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Chronicle/` | 14 | 17,867 |
+| `Chronicle/` | 14 | 17,875 |
 | `Quasimodel/` | 5 | 1,676 |
 | `Filtration/` | 1 | 120 |
 <!-- END GENERATED -->
@@ -196,12 +196,12 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Kamp/` | 116 | 77,587 |
-| `EFGames/` | 8 | 11,791 |
-| `Expressiveness/` | 5 | 9,501 |
-| `DenseModelSurgery/` | 9 | 7,648 |
-| `RealModel/` | 7 | 6,671 |
-| `IntegerModel/` | 6 | 5,612 |
+| `Kamp/` | 116 | 77,613 |
+| `EFGames/` | 8 | 11,797 |
+| `Expressiveness/` | 5 | 9,507 |
+| `DenseModelSurgery/` | 9 | 7,650 |
+| `RealModel/` | 7 | 6,675 |
+| `IntegerModel/` | 6 | 5,614 |
 | `GroupModel/` | 6 | 3,361 |
 | `Separation/` | 3 | 926 |
 <!-- END GENERATED -->
@@ -217,7 +217,7 @@ sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
-| `NfMultiAnchorBridge/` | 47 | 41,338 |
+| `NfMultiAnchorBridge/` | 47 | 41,358 |
 | `EANegationFix/` | 7 | 3,227 |
 | `EANegationFixFaithful/` | 5 | 2,661 |
 <!-- END GENERATED -->

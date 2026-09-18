@@ -315,16 +315,16 @@ green (1,169 s); C28/C29 pass.
 
 ---
 
-### Phase 4: `longFile` in-source baselines [NOT STARTED]
+### Phase 4: `longFile` in-source baselines [COMPLETED]
 
 **Goal**: Make `longFile` fire and pass by baselining it inside each long file, not by splitting
 files.
 
 **Tasks**:
-- [ ] For each file over 1,500 lines, add `set_option linter.style.longFile N` near the top of the
+- [x] For each file over 1,500 lines, add `set_option linter.style.longFile N` near the top of the
       file. N is Mathlib's `candidate = (lines/100)*100 + 200`. The linter itself checks that N is
       tight. This form is a baseline, not a suppression, and the Phase 15 ratchet will allow it.
-- [ ] Delete the `style.longFile` temporary line, then do a guarded full build with `--wfail`.
+- [x] Delete the `style.longFile` temporary line, then do a guarded full build with `--wfail`.
 
 **Timing**: 1 hour
 
@@ -340,6 +340,12 @@ immediately before editing.
 **Files to modify**:
 - The long files (about 38) - one baseline line each
 - `lakefile.toml` - remove 1 temporary line
+
+**Phase 4 notes**: 38 files baselined (the set_option sits after each module docstring, since
+the header linter wants the docstring first). The accepted window for a baseline N is
+`N-200 <= lines < N`, so later phases that remove blank lines (Phase 6) or reflow long lines
+(Phases 9-12) must re-tighten N; the helper that inserted them recomputes N on re-run. The
+lakefile's `longFile = 1500` is now live. Full `--wfail` build green (1,219 s); C28/C29 pass.
 
 **Verification**:
 - `lake build --wfail` is green, and no `longFile` warning appears.

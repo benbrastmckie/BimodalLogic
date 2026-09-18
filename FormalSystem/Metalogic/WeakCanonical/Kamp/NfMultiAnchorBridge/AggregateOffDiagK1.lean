@@ -74,6 +74,8 @@ G5 — every bridge is a manual `constructor`/`intro`/`exact` step. FORBIDDEN
   and channel split restated in the Structure section above.
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

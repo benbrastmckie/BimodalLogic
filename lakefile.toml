@@ -22,8 +22,9 @@ defaultTargets = ["FormalSystem"]
 # docs/development/LEAN_STYLE_GUIDE.md for what is enabled and every permanent opt-out.
 [leanOptions]
 weak.linter.mathlibStandardSet = true
-# weak.linter.style.longFile = 1500 # TEMPORARY (staged enablement): uncommented once every long
-# file carries its in-source baseline; a TOML key cannot be set twice, so it is held off here.
+# A file over this limit carries an in-source baseline, `set_option linter.style.longFile N`,
+# after its module docstring; the linter itself checks that N stays tight.
+weak.linter.style.longFile = 1500
 # TEMPORARY (staged enablement): each line below holds one not-yet-clean class off while its
 # warnings are fixed; the line is deleted once that class reaches zero.
 weak.linter.style.longLine = false # TEMPORARY (staged enablement)

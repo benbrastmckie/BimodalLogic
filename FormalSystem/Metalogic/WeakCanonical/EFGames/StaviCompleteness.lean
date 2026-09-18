@@ -24,6 +24,8 @@ had zero code consumers, and the general Stavi result remains a documented
 open formalization target.
 -/
 
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

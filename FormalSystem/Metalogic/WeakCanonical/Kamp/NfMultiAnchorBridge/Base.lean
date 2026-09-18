@@ -38,6 +38,8 @@ Base plumbing (phases 1-7 of the original bridge): diagonal depth-0 atom layer,
 `nf_char2_*` kit, `NfZoneFlattenNavigable`, `aDiag`, `nfChar3EndpointTl`,
 `endChar0`, `seg`, off-diagonal formulas. Byte-identical relocation. -/
 
+set_option linter.style.longFile 2400
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

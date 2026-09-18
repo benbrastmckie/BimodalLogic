@@ -12,6 +12,8 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.TypeFormulas
 Gap detection formulas and Lemma 9 (both directions): the core EF game characterization.
 -/
 
+set_option linter.style.longFile 5200
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

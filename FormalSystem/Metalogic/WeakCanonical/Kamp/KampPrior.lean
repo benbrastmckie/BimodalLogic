@@ -59,6 +59,8 @@ are all sorry-free and reused directly.
 expressiveness · kamp · prior-structures · until · since
 -/
 
+set_option linter.style.longFile 2000
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

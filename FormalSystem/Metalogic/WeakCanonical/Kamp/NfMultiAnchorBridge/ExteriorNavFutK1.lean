@@ -79,6 +79,8 @@ No frozen file is touched.
   navigators).
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

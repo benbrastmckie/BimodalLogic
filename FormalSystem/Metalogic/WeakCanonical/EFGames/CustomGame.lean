@@ -12,6 +12,8 @@ import FormalSystem.Metalogic.WeakCanonical.EFGames.GapDetection
 Custom game G_{n;r}: definition, winning conditions, and strategy restriction.
 -/
 
+set_option linter.style.longFile 1900
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

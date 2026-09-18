@@ -50,6 +50,8 @@ an enumeration of `Rat x Formula x Formula x Bool`. Since both `Rat` and
 - [burgess1982]: "Axioms for tense logic II: Time periods", Section 2
 -/
 
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
 open FormalSystem.Syntax

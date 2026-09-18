@@ -89,6 +89,8 @@ An earlier revision of this module carried the minimality argument as a named hy
 | p.187, *"`M | (c,d) ≡ₖ X + R + Y`"* | `doets_lemma_1_4` (`OrderedSum.lean:46`) |
 -/
 
+set_option linter.style.longFile 2400
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery

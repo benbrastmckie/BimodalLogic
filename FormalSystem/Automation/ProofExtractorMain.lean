@@ -82,6 +82,8 @@ Source files for the 36 original theorems:
 - lake build passes with no regressions
 -/
 
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Automation.ProofExtractorMain
 
 open FormalSystem.Syntax

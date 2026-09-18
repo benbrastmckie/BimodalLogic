@@ -62,6 +62,8 @@ cannot be read off the branch:
   a `TableauClosed` stock, unconditionally.
 -/
 
+set_option linter.style.longFile 2000
+
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Syntax

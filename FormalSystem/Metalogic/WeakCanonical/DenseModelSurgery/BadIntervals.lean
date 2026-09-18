@@ -211,6 +211,8 @@ results are **not** to be described as discharged.
 - `SemanticPriorU` (`PriorDefsDense.lean:119`) — Reynolds' Prior-U, printed p.168
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
 open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical

@@ -35,6 +35,8 @@ The succ case proceeds in three sub-cases:
 - Translation.lean (translateEF1, translateEF1_correct)
 -/
 
+set_option linter.style.longFile 2000
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

@@ -152,6 +152,8 @@ very good"* for **finite** carriers, which is what the sentence says. It is not 
 finite non-degenerate case is subsumed. The lemma is landed because the source states it.
 -/
 
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax

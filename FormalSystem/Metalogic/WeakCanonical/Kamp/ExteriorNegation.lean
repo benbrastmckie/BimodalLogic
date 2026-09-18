@@ -88,6 +88,8 @@ if/when Phase 3 meets unbounded positive content (recorded for Phase 3's budget)
 
 Purely additive leaf module (H7 territory: this file + additive import wiring only). -/
 
+set_option linter.style.longFile 2000
+
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax

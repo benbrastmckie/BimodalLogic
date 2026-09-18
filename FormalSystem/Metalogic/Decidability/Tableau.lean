@@ -54,6 +54,8 @@ simplified tableau system that exploits the special properties of S5
 * Wu, M. Verified Decision Procedures for Modal Logics
 -/
 
+set_option linter.style.longFile 3200
+
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Syntax

@@ -46,6 +46,8 @@ The r-relation lemmas use:
 - [burgess1982]: "Axioms for tense logic II: Time periods", Lemmas 2.2-2.3
 -/
 
+set_option linter.style.longFile 1900
+
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
 
 open FormalSystem.Syntax

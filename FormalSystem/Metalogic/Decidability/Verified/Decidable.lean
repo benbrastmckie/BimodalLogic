@@ -124,6 +124,8 @@ this file.
   assembly will run on, and the exclusion of `serialityRule`/`timeLinearity`.
 -/
 
+set_option linter.style.longFile 3400
+
 namespace FormalSystem.Metalogic.Decidability.Verified
 
 open FormalSystem.Syntax

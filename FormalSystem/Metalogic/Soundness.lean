@@ -207,6 +207,8 @@ in the tree.
 soundness · frame-class · TM-plus · thm:TM-soundness
 -/
 
+set_option linter.style.longFile 1800
+
 namespace FormalSystem.Metalogic
 
 open FormalSystem.Syntax
