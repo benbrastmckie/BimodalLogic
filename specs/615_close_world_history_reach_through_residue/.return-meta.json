@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/615_close_world_history_reach_through_residue/reports/01_close-reach-through-residue.md",
+      "summary": "Re-measured the 28 reach-through and 8+1 layer-crossing sites against the live tree, machine-checked the WorldHistory.respects_task lemma and both defect fixes in a probe, and disposed of every triage site explicitly."
+    },
+    {
+      "type": "probe",
+      "path": "specs/615_close_world_history_reach_through_residue/probes/01_respects-task-residue.lean",
+      "summary": "Standalone Lean probe (lake env lean, exit 0): the new lemma, both defect restatements, two representative call-site rewrites, and the #print axioms gate."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789696399_5c64b8_615",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

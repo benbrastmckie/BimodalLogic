@@ -121,7 +121,7 @@ next_project_number: 620
 
 ### Semantics Refactor
 
-615 [RESEARCHING] — Close the residue of the possible-world index retarget. The...
+615 [RESEARCHED] — Close the residue of the possible-world index retarget. The...
 
 ## Tasks
 
@@ -238,10 +238,11 @@ CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of eve
 
 ### 615. Close world history reach through residue
 - **Effort**: small
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics-refactor
 - **Dependencies**: None
+- **Research**: [615_close_world_history_reach_through_residue/reports/01_close-reach-through-residue.md]
 
 **Description**: Close the residue of the possible-world index retarget. The seven-phase retarget itself was already executed by three earlier tasks in this topic; research against the current tree confirmed the surviving gap is 36 sites, not the ~600 the superseded description assumed (28 reach-throughs plus 8 layer crossings).
 
