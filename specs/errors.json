@@ -45,6 +45,26 @@
         "auto_recoverable": true
       },
       "fix_status": "unfixed"
+    },
+    {
+      "id": "err_20260918112510",
+      "timestamp": "2026-09-18T11:25:10Z",
+      "type": "dependency_defect",
+      "severity": "medium",
+      "message": "literature-ingest-online.sh Zotero create-item step fails with ONLINE_INGEST_ZOTERO_CREATE_FAILED, caused by TypeError: 'httpx.Timeout' object cannot be interpreted as an integer or float inside the zotero-cli-cc -> pyzotero -> httpx2/httpcore2 dependency chain. This is version-drift in the dependency, independent of any source's availability.",
+      "context": {
+        "command": "/literature",
+        "task": 504,
+        "script": "literature-ingest-online.sh",
+        "dependency_chain": "zotero-cli-cc -> pyzotero -> httpx2/httpcore2",
+        "observed_consequence": "Every new open-access ingest must bypass the Zotero write step; documents ingested that way carry zotero_key: null and zotero_path: null in the global Literature index. gehrke_jonsson_2004 (registered 2026-09-18) is the current example."
+      },
+      "recovery": {
+        "suggested_action": "meta task: pin or patch the zotero-cli-cc dependency versions (pyzotero/httpx2/httpcore2) to resolve the httpx.Timeout TypeError.",
+        "auto_recoverable": false,
+        "workaround": "Download and magic-byte-verify the PDF, feed it directly to the unmodified literature-ingest.sh (bypassing the Zotero write step), then patch the global index metadata by hand against an existing entry's schema. Manual, not automated."
+      },
+      "fix_status": "unfixed"
     }
   ]
 }

@@ -376,29 +376,35 @@ the staging scope must be reconsidered rather than committed blind.
 
 ---
 
-### Phase 5: Record the Zotero Write-Bridge Defect in `specs/errors.json` [NOT STARTED]
+### Phase 5: Record the Zotero Write-Bridge Defect in `specs/errors.json` [COMPLETED]
 
 **Goal**: Turn the research's Risk 1 from a note inside a soon-to-be-archived report into an entry
 `/errors` can read and turn into a fix task.
 
 **Tasks**:
-- [ ] Read the two existing entries in `specs/errors.json` and match their key set exactly:
+- [x] Read the two existing entries in `specs/errors.json` and match their key set exactly:
       `id`, `timestamp`, `type`, `severity`, `message`, `context`, `recovery`, `fix_status`.
-- [ ] Append one entry describing the defect: `literature-ingest-online.sh`'s Zotero `create-item`
+      *(completed)*
+- [x] Append one entry describing the defect: `literature-ingest-online.sh`'s Zotero `create-item`
       step fails with `ONLINE_INGEST_ZOTERO_CREATE_FAILED`, caused by `TypeError: 'httpx.Timeout'
       object cannot be interpreted as an integer or float` inside the
       `zotero-cli-cc` -> `pyzotero` -> `httpx2`/`httpcore2` dependency chain. Note that this is
       version-drift in the dependency, independent of any source's availability.
-- [ ] Record the observed consequence concretely: every new open-access ingest must bypass the
+      *(completed)*
+- [x] Record the observed consequence concretely: every new open-access ingest must bypass the
       Zotero write step, and documents ingested that way carry `zotero_key: null` /
       `zotero_path: null` — `gehrke_jonsson_2004` is the current example.
-- [ ] Record the known workaround in `recovery`: download and magic-byte-verify the PDF, feed it
+      *(completed)*
+- [x] Record the known workaround in `recovery`: download and magic-byte-verify the PDF, feed it
       directly to the unmodified `literature-ingest.sh`, then patch the index metadata by hand
       against an existing entry's schema. Mark `auto_recoverable` honestly — the workaround is
       manual, so this is not auto-recoverable.
-- [ ] Set `fix_status` to match the convention the existing entries use for unfixed items.
-- [ ] Suggest a `meta`-type fix (pin or patch the `zotero-cli-cc` dependency versions) in the
+      *(completed: recovery.auto_recoverable: false, recovery.workaround describes the manual bypass)*
+- [x] Set `fix_status` to match the convention the existing entries use for unfixed items.
+      *(completed: fix_status: "unfixed", matching both existing entries)*
+- [x] Suggest a `meta`-type fix (pin or patch the `zotero-cli-cc` dependency versions) in the
       `recovery.suggested_action` field.
+      *(completed)*
 
 **Timing**: 0.25 hours
 
