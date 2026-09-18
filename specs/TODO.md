@@ -58,7 +58,7 @@ next_project_number: 623
 
 ### Decidability
 
-464 [NOT STARTED] — Design and land gapPotential, the density coordinate of the...
+464 [RESEARCHED] — Design and land gapPotential, the density coordinate of the...
   └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired...
     └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
       └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
@@ -67,7 +67,7 @@ next_project_number: 623
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction...
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
-476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
+476 [RESEARCHING] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 
 ### Documentation
@@ -87,13 +87,13 @@ next_project_number: 623
 
 ### Incompleteness
 
-534 [NOT STARTED] — Research and, where feasible, establish in Lean whether the...
+534 [RESEARCHING] — Research and, where feasible, establish in Lean whether the...
 
 ### Metalogic
 
-559 [NOT STARTED] — RESEARCH TASK, verdict-first -- report and sorry-free probe...
-  └─ 560 [NOT STARTED] — GATED IMPLEMENTATION -- do not plan or dispatch until...
-568 [NOT STARTED] — Promote the alternative consequence relations into the...
+559 [RESEARCHING] — RESEARCH TASK, verdict-first -- report and sorry-free probe...
+  └─ 560 [NOT STARTED] — IMPLEMENTATION, rescoped on research task 559's report...
+568 [RESEARCHING] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -514,7 +514,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 568. C3 c4 consequence relations as library definitions
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -637,12 +637,12 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 - **Topic**: metalogic
 - **Dependencies**: Task 559
 
-**Description**: GATED IMPLEMENTATION -- do not plan or dispatch until research task 559 has reported; rescope this description on 559's verdict table and implementation design first, exactly as task 537 was rescoped on 535. GOAL: implement in Lean the completeness of TM⁺ (L plus the stability modal ⊡) over the paper's all-histories task-frame semantics, using the nondeterministic canonical model that 559 designs, at the frame class 559 selects first (ZTime expected: plus_completeness_ztime : PlusValidZTime φ → PlusDerivable FrameClass.ZTime [] φ), then extending class by class in the order 559's table justifies (Dense, then Base by re-running the three-way root-MCS split of BXCanonical/Completeness.lean's `completeness` with both nondeterministic engines and a PlusFormula mcs_mixed_case_absurd, then Dedekind if 559 finds a route). If 559 finds that additional ⊡-axioms or a naming rule are needed, add them to PlusAxiom / PlusDerivationTree under the landed discipline (closed inductive, minFrameClass arm, one soundness lemma per constructor in Conservativity/Plus/AxiomValidity.lean and PlusSoundness.lean, swap-validity arm for TD), re-establish plus_soundness at all four classes, and re-check that both conservativity directions in Conservativity/Plus/Forward.lean (forward_plus, plusDerivable_ofFormula_iff, plus_of_tmMinus, tmFrag_iff_plus) still hold -- a new constructor that breaks conservativity over TM is a defect, not a result. If 559's verdict is that only the BUNDLED semantics is reachable, this task implements bundled completeness under a distinct validity predicate (e.g. PlusValidBundled) and documents in PlusLanguage/README.md and the Metalogic README that it is a different semantics from the paper's, with the all-histories problem recorded as open; it must not present a bundled theorem as completeness over task frames. CONSISTENCY CHECKS: the deterministic completeness landed by task 537 must be recoverable as the ⊡ = id special case (states_eq_of_deterministic, Semantics/PlusDeterminism.lean), and the PS/US underivability record from 537 must be respected -- the canonical frame must realize pasting (Semantics/PlusPasting.lean's `paste`). HARD CONSTRAINTS: never state a completeness theorem and discharge it with sorry; each phase one agent run with lake build FormalSystem green and no new sorry at its end; keep C2/C3/C14 invariants green; no task numbers under FormalSystem/. DOCUMENTATION: Metalogic/Conservativity/Plus/README.md and Metalogic/README.md metatheory rows (this task edits the same rows 537 edits, which is why it is sequenced after 537). DEPENDENCIES: 559 (design and verdict), 537 (baseline results and shared file territory).
+**Description**: IMPLEMENTATION, rescoped on research task 559's report (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/01_nondeterministic-canonical-model.md, §2 and §5; probes/01_limit-closure-probes.lean). 559's verdict: the CURRENT TM⁺ axiom set is INCOMPLETE over the paper's all-histories semantics at ZTime, and completeness of any extension is open and at least as hard as full CTL* (Reynolds 2001: LC axiom + AA rule), so the former goal plus_completeness_ztime is withdrawn. GOAL: land the definite theorem plus_incomplete_ztime : PlusValidZTime lcPlus ∧ ¬ PlusDerivable FrameClass.ZTime [] lcPlus, where lcPlus := (⟐Xp ∧ ⊡G(p → ⟐Xp)) → ⟐Gp (X = untl bot), the stability transposition of Reynolds' limit-closure axiom. NO change to PlusAxiom/PlusDerivationTree, so plus_soundness_validIn, forward_plus and plusDerivable_ofFormula_iff are untouched. PHASES (one agent run each, lake build FormalSystem green, no new sorry): (1) Metalogic/Independence/PastedCoarseModels.lean: CoarseModel.PasteClosed (image-level splice at equal π-class), purity congruences for CTruthAt (probe pf_congr/pp_congr), PS/US arms and their reflected forms (probe ps_valid/us_valid), cValid_of_tm generalized to a frame class, and the soundness recursion PlusDerivable .ZTime [] φ → valid on every paste-closed coarse model over a ZTime frame (mirror naive_cValid_and_reflect_time). (2) LimitClosureCountermodel.lean: the frame cR on Option ℕ (none→all, a_j→none, a_j→a_m for m<j) as FrameOver intOrder via ofReflective (comp from relational powers, limit_of_succOrder, Saturation because every nonzero fibre/segment contains none and zero ones are singletons), CoarseModel with π := Option.isSome, PasteClosed, and ¬CTruthAt … lcPlus (transcribe probe Parts C, D, F). (3) Semantics/PlusLanguage/PlusLimitClosure.lean: lcPlus valid over every IsZTime frame by the dependent-choice limit of pastings (probe chain/limit_walk over WorldHistory with PlusPasting.paste; limit history via ofTotal of the diagonal; next_iff via SuccOrder). (4) Assemble plus_incomplete_ztime with axiom pin; update Metalogic/Conservativity/Plus/README.md and Metalogic/README.md rows: general TM⁺ completeness FALSE at ZTime for the current axioms, completeness of any extension OPEN (≥ full CTL*), and the TM⋆-over-TM⁺ conditional row's hypothesis refuted at ZTime. CONSISTENCY: under ⊡ = id lcPlus is the Z1 induction principle, derivable in TM⁺ + Determined (537), and the countermodel is nondeterministic. HARD CONSTRAINTS: never state a completeness theorem; no sorry; no task numbers under FormalSystem/; keep C2/C3/C14 invariants green. DEPENDENCIES: 559 (verdict), 537 (shared README rows).
 
 ---
 
 ### 559. Nondeterministic canonical model tm star completeness
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -680,7 +680,7 @@ GROUND TRUTH to read first: 535's report §3-4 and §7.3 with its probes; 533's 
 ---
 
 ### 534. Hg fragment finite axiomatizability
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: incompleteness
 - **Dependencies**: None
@@ -871,7 +871,7 @@ POINTER REFRESH (2026-09-16 reorganization): `MintBound.lean` was split into the
 
 ### 476. Box faithful small model theorem
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -1008,10 +1008,11 @@ Dependencies: 462, 463, 464 -- all three, so that the restatements are made agai
 ---
 
 ### 464. Gappotential density measure component
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [464_gappotential_density_measure_component/reports/01_gappotential-density-component.md]
 
 **Description**: Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.
 
