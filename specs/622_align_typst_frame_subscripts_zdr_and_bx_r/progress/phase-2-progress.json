@@ -1,0 +1,20 @@
+{
+  "phase": 2,
+  "phase_name": "Redefine BX_c/TM_c as BX_r/TM_r extending BX_d/TM_d",
+  "started_at": "2026-09-18T18:45:00Z",
+  "last_updated": "2026-09-18T19:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Update BX_c definition block -> BX_r extending BX_d", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 2, "description": "Rewrite TM-level Similarly sentence, drop CO-alone footnote", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 3, "description": "Update summary table row and caption for TM_r", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 4, "description": "Update TM-algebra definition (TM_r-algebra is a TM_d-algebra +)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 5, "description": "Update Algebraic soundness proposition Dur=RR clause", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 6, "description": "Relabel Per-class remark and representation remark _c->_r", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 7, "description": "Relabel mixed lines ~708, ~1053-1054 _c->_r", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 8, "description": "Recheck Dedekind/complete/{ZZ,RR}/RTime/Reynolds claims for R-time consistency", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Verified soundness_rtime in FormalSystem/Metalogic/Soundness.lean requires [DenselyOrdered F.Duration] plus a Dedekind-completeness (LUB) hypothesis, confirming R-time = dense AND Dedekind complete. Grep audit of Dedekind/complete/{ZZ,RR}/RTime/Reynolds found no non-minus claim admitting ZZ for TM_r/BX_r after the edits; line 578's '{ZZ, RR}' and line 699/753/770-786's TM-minus/generic-frame-property claims are out of scope (TM-minus family, or generic frame-property background feeding TM-minus decidability discussion) and were left unchanged."
+}

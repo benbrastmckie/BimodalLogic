@@ -160,46 +160,56 @@ After this phase, the only hits should be in the Naming provenance remark.
 
 ---
 
-### Phase 2: Redefine BX_c/TM_c as BX_r/TM_r extending BX_d/TM_d [NOT STARTED]
+### Phase 2: Redefine BX_c/TM_c as BX_r/TM_r extending BX_d/TM_d [COMPLETED]
 
 **Goal**: Replace the old complete-order system with the paper's dense-and-complete `BX_r`/`TM_r`,
 and bring every downstream claim into line with R-time (`Dur = RR`) semantics.
 
 **Tasks**:
-- [ ] Update the `#definition($"BX"_c$)` block:
+- [x] Update the `#definition($"BX"_c$)` block:
   - Rename it to `"BX"_r` everywhere in the block.
   - Change the title "*Complete Burgess--Xu Tense Logic*" to "*Dense and Complete Burgess--Xu Tense Logic*".
   - Change "extends BX to include all instances of" to "extends $"BX"_d$ to include all instances of".
   - Change "derived theorem of `"BX"_c`" to "derived theorem of `"BX"_r`", keeping the clause "from
     Prior-U and the base BX axioms".
   - Leave the `K^+`/`K^-` definitions and the Prior-U/Sep statements verbatim.
-- [ ] Rewrite the TM-level "Similarly" sentence as "`op("TM")_z`, `op("TM")_d`, and `op("TM")_r`
+  *(completed)*
+- [x] Rewrite the TM-level "Similarly" sentence as "`op("TM")_z`, `op("TM")_d`, and `op("TM")_r`
       extend `op("TM")` with the additional axioms that distinguish `"BX"_z`, `"BX"_d`, and `"BX"_r`
       respectively: `op("TM")_z` adds UZ and Z1, `op("TM")_d` adds DN and NN, and `op("TM")_r`
       extends `op("TM")_d` with Prior-U and Sep." Remove the CO-alone `#footnote[...]` from this
-      sentence.
-- [ ] Change the summary-table row to `[$op("TM")_r$], [Prior-U, Sep over $op("TM")_d$ (so DN, NN,
+      sentence. *(completed)*
+- [x] Change the summary-table row to `[$op("TM")_r$], [Prior-U, Sep over $op("TM")_d$ (so DN, NN,
       Prior-U, Sep); CO is a derived theorem, not a further axiom]`. Wording may vary, but the row
       must show the dependency on `TM_d`. Check whether the table caption or intro says "extensions
-      of TM" in a way that implies all three are flat extensions, and adjust it if so.
-- [ ] In the TM-algebra definition, change "a `op("TM")_c`-algebra additionally satisfies Prior-U and
+      of TM" in a way that implies all three are flat extensions, and adjust it if so. *(completed:
+      table row updated; caption "The three frame-class extensions of $op("TM")$" left as-is since
+      it remains literally true and the immediately preceding sentence already states the TM_d
+      dependency)*
+- [x] In the TM-algebra definition, change "a `op("TM")_c`-algebra additionally satisfies Prior-U and
       Sep" to "a `op("TM")_r`-algebra is a `op("TM")_d`-algebra that additionally satisfies Prior-U
       and Sep". The claim "All four classes are varieties" stays true because the classes are still
-      defined by equations.
-- [ ] In the Algebraic soundness proposition, change "a `op("TM")_c`-algebra when `Dur in {ZZ, RR}`"
+      defined by equations. *(completed)*
+- [x] In the Algebraic soundness proposition, change "a `op("TM")_c`-algebra when `Dur in {ZZ, RR}`"
       to "a `op("TM")_r`-algebra when `Dur` is dense and Dedekind complete (`Dur = RR`)". Check this
       against Lean: `soundness_rtime` requires the RTime class (`IsDense ∧ IsComplete`). Confirm by
-      reading its signature in `FormalSystem/Metalogic/Soundness.lean`.
-- [ ] In the Per-class remark (~1478), relabel `_c -> _r` only. Its content ("elementarily
-      equivalent to `RR`") is already right for R-time.
-- [ ] In the representation remark (~1565), relabel `_c -> _r` only (Reynolds 1992, `RR`-flows).
-- [ ] On the mixed lines ~708 and ~1053–1054, relabel `op("TM")_c -> op("TM")_r` only. Leave the TM⁻
-      tokens alone.
-- [ ] Recheck every other claim that cites the old complete class. Grep `FormalFoundations.typ` for
+      reading its signature in `FormalSystem/Metalogic/Soundness.lean`. *(completed: confirmed
+      `soundness_rtime` in FormalSystem/Metalogic/Soundness.lean:1569 requires
+      `[DenselyOrdered F.Duration]` plus a Dedekind-completeness/LUB hypothesis)*
+- [x] In the Per-class remark (~1478), relabel `_c -> _r` only. Its content ("elementarily
+      equivalent to `RR`") is already right for R-time. *(completed)*
+- [x] In the representation remark (~1565), relabel `_c -> _r` only (Reynolds 1992, `RR`-flows).
+      *(completed)*
+- [x] On the mixed lines ~708 and ~1053–1054, relabel `op("TM")_c -> op("TM")_r` only. Leave the TM⁻
+      tokens alone. *(completed)*
+- [x] Recheck every other claim that cites the old complete class. Grep `FormalFoundations.typ` for
       `Dedekind`, `complete`, `{ZZ, RR}`, `RTime`, `rtime`, and `Reynolds`. For each hit that
       concerns the non-minus TM/BX family, confirm it is consistent with an R-time-only class; any
       claim that still admits `ZZ` must be narrowed or corrected. TM⁻_c claims (the CO-axiomatized
-      TM⁻ extension) are out of scope because that system's semantics do not change.
+      TM⁻ extension) are out of scope because that system's semantics do not change. *(completed: no
+      non-minus claim admitting ZZ remains attached to TM_r/BX_r; the two remaining `{ZZ, RR}` hits
+      are line 578's Hölder-theorem background feeding the TM⁻ discussion and line 699's TM⁻_c
+      claim, both out of scope)*
 
 **Timing**: 1 hour
 

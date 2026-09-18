@@ -539,26 +539,26 @@ constrains is the points of evaluation, not the propositions.
   has an immediate successor.
 ]
 
-#definition($"BX"_c$)[
+#definition($"BX"_r$)[
   Let $K^+ phi.alt := not (not phi.alt #until top)$ and $K^- phi.alt := not (not phi.alt #since top)$,
   read *"$phi.alt$ recurs arbitrarily soon in the future"* and *"$phi.alt$ recurred arbitrarily
-  recently in the past"* respectively. The *Complete Burgess--Xu Tense Logic* $"BX"_c$
-  extends BX to include all instances of:
+  recently in the past"* respectively. The *Dense and Complete Burgess--Xu Tense Logic* $"BX"_r$
+  extends $"BX"_d$ to include all instances of:
   #items[
     + *Prior-U*: $(phi.alt #until top) and #somefuture not phi.alt arrow.r phi.alt #until (not phi.alt or K^+ not phi.alt)$.
     + *Sep*: $K^+ phi.alt and not K^+ (phi.alt and (not phi.alt #until phi.alt)) arrow.r K^+ (K^+ phi.alt and K^- phi.alt)$.
   ]
   Only the future/until direction of Prior-U is stated; its past/since direction follows by TR.
-  The following restates CO from TM⁻ below, and is a *derived theorem* of $"BX"_c$ from Prior-U
+  The following restates CO from TM⁻ below, and is a *derived theorem* of $"BX"_r$ from Prior-U
   and the base BX axioms, not a further axiom, so it may be omitted from the extension:
   #items[
     + *CO*: $#always (#somepast phi.alt arrow.r #somefuture #somepast phi.alt) arrow.r (#somepast phi.alt arrow.r #allfuture phi.alt)$.
   ]
 ]
 
-Similarly, $op("TM")_z$, $op("TM")_d$, and $op("TM")_c$ extend $op("TM")$ with the
-additional axioms that distinguish $"BX"_z$, $"BX"_d$, and $"BX"_c$ respectively: $op("TM")_z$
-adds UZ and Z1, $op("TM")_d$ adds DN and NN, and $op("TM")_c$ adds Prior-U and Sep.#footnote[Whether CO alone axiomatizes the same $#BL$-logic as Prior-U and Sep together is open.]
+Similarly, $op("TM")_z$, $op("TM")_d$, and $op("TM")_r$ extend $op("TM")$ with the
+additional axioms that distinguish $"BX"_z$, $"BX"_d$, and $"BX"_r$ respectively: $op("TM")_z$
+adds UZ and Z1, $op("TM")_d$ adds DN and NN, and $op("TM")_r$ extends $op("TM")_d$ with Prior-U and Sep.
 
 #figure(
   table(
@@ -566,7 +566,7 @@ adds UZ and Z1, $op("TM")_d$ adds DN and NN, and $op("TM")_c$ adds Prior-U and S
     table.hline(), table.header([*System*],[*Additional axioms*]), table.hline(),
     [$op("TM")_z$], [UZ, Z1 (backward induction; fail off the Archimedean discrete orders, hence exactly $ZZ$-time)],
     [$op("TM")_d$], [DN ($#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt$), NN ($not #Nxt top$)],
-    [$op("TM")_c$], [Prior-U, Sep; CO is a derived theorem, not a further axiom],
+    [$op("TM")_r$], [Prior-U, Sep over $op("TM")_d$ (so DN, NN, Prior-U, Sep); CO is a derived theorem, not a further axiom],
     table.hline(),
   ),
   caption: [The three frame-class extensions of $op("TM")$.],
@@ -705,7 +705,7 @@ $op("TM")^-_d$ either; its status is covered only by the headline above.
 At the $#BL$ level three positive results are machine-checked, each of the form
 $"Valid"_cal(C) phi.alt arrow.r "Derivable"_cal(C) phi.alt$. They are stated here in the
 development's own frame-class vocabulary. The paper attributes them to its systems
-$op("TM")_d$, $op("TM")_z$, $op("TM")_c$; that identification rests on a key-by-key
+$op("TM")_d$, $op("TM")_z$, $op("TM")_r$; that identification rests on a key-by-key
 textual correspondence, not a machine-checked equivalence, as @sec:construction records.
 
 #theorem("Weak completeness, dense class")[
@@ -1051,7 +1051,7 @@ No step of the base-class route carries `sorryAx`.
 #remark[
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `ZTime`,
   `RTime`. It is not silently identified with the paper's $op("TM")$, $op("TM")_d$,
-  $op("TM")_z$, $op("TM")_c$. The two axiomatizations line up key for key --- the paper states
+  $op("TM")_z$, $op("TM")_r$. The two axiomatizations line up key for key --- the paper states
   eleven primary Since/Until axioms in the future direction and derives their past mirrors by the
   rule TR, and the development states exactly the same *11* future-direction constructors
   (`FormalSystem.ProofSystem.Axioms`), with the past mirrors machine-checked as derived theorems
@@ -1240,8 +1240,9 @@ a point.
     + $#allfuture 1 = #allpast 1 = 1$ (TN and its mirror) and $square.stroked 1 = 1$ (MN).
   ]
   A *$op("TM")_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a
-  *$op("TM")_z$-algebra* additionally satisfies UZ and Z1; a *$op("TM")_c$-algebra*
-  additionally satisfies Prior-U and Sep, each read as an inequality in the same way. All four
+  *$op("TM")_z$-algebra* additionally satisfies UZ and Z1; a *$op("TM")_r$-algebra* is a
+  $op("TM")_d$-algebra that additionally satisfies Prior-U and Sep, each read as an inequality in
+  the same way. All four
   classes are varieties. The rule TR becomes closure of the class under the signature automorphism
   swapping $#until$ and $#since$ --- which holds because the defining set of inequalities is
   mirror-closed --- and is not itself an operation of the algebra: the reflection is not in the
@@ -1292,7 +1293,8 @@ a point.
 #proposition("Algebraic soundness")[
   For every task frame $#taskframe$, $op("Cm")(#taskframe)$ is a $op("TM")$-algebra; it is a
   $op("TM")_d$-algebra when $#Dur$ is dense, a $op("TM")_z$-algebra when $#Dur$ is a
-  $ZZ$-group, and a $op("TM")_c$-algebra when $#Dur in {ZZ, RR}$. For every shift set $S$,
+  $ZZ$-group, and a $op("TM")_r$-algebra when $#Dur$ is dense and Dedekind complete
+  ($#Dur = RR$). For every shift set $S$,
   $op("Cm")(S)$ is $square.stroked$-simple: $square.stroked X$ takes only the values $emptyset$ and
   $Omega$.
 ]
@@ -1475,7 +1477,7 @@ axiom above, which is first-order.
 
   *Per class.* If $A$ is a $op("TM")_d$-algebra, every $D_k$ is dense (and may be taken
   divisible). If $A$ is a $op("TM")_z$-algebra, every $D_k$ is a $ZZ$-group, elementarily
-  equivalent to $ZZ$. If $A$ is a $op("TM")_c$-algebra, every $D_k$ is a divisible ordered
+  equivalent to $ZZ$. If $A$ is a $op("TM")_r$-algebra, every $D_k$ is a divisible ordered
   abelian group, elementarily equivalent to $RR$.
 ]
 
@@ -1562,7 +1564,7 @@ axiom above, which is first-order.
 #proposition("ℤ-time and ℝ")[
   For $op("TM")_z$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum
   algebra has an ultrafilter, realized at no point of any model over $ZZ$, witnessed by
-  `discrete_consequence_not_compact`. For $op("TM")_c$ there is none over $RR$-flows
+  `discrete_consequence_not_compact`. For $op("TM")_r$ there is none over $RR$-flows
   @reynolds1992. What holds over $ZZ$-flows and $RR$-flows is the SP-representation of the
   Lindenbaum algebra --- `completeness_ztime` and `completeness_rtime_engine` --- which is
   weak completeness restated; what holds point-completely is the Representation theorem's per-class
