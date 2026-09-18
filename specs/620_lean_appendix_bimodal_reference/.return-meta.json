@@ -1,22 +1,30 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/620_lean_appendix_bimodal_reference/plans/01_lean-appendix-plan.md",
-      "summary": "6-phase plan (7.75h): skeleton+wiring, verified Lean snippet corpus, three serialized prose phases covering the nine primer topics, and a sync-check/SYNC-MAP final gate."
+      "type": "summary",
+      "path": "specs/620_lean_appendix_bimodal_reference/summaries/01_lean-appendix-summary.md",
+      "summary": "Implementation summary for the new Lean 4 appendix (typst/chapters/ax-lean-appendix.typ), covering all 6 completed plan phases, decisions, and the Check 2b unrelated-drift finding."
     }
   ],
-  "next_steps": "Run /implement 620 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 7.75,
-  "dependency_waves": [[1, 2], [3], [4], [5], [6]],
-  "memory_candidates": [],
+  "next_steps": "Task 620 implementation complete; ready for postflight status transition to [COMPLETED]",
+  "modified_files": [
+    "typst/chapters/ax-lean-appendix.typ",
+    "typst/BimodalReference.typ",
+    "typst/chapters/00-introduction.typ",
+    "typst/chapters/README.md",
+    "typst/sync-check-whitelist.txt",
+    "typst/SYNC-MAP.md",
+    "specs/620_lean_appendix_bimodal_reference/scratch/appendix_snippets.lean",
+    "specs/620_lean_appendix_bimodal_reference/plans/01_lean-appendix-plan.md",
+    "specs/620_lean_appendix_bimodal_reference/summaries/01_lean-appendix-summary.md",
+    "specs/620_lean_appendix_bimodal_reference/handoffs/phase-6-handoff-20260918T055714Z.md"
+  ],
   "metadata": {
-    "session_id": "sess_1789709144_d37ec5_620",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1789709144_d37ec5",
+    "agent_type": "typst-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "implement", "typst-implementation-agent"]
   },
-  "dispatch_seq": 2
+  "dispatch_seq": 3
 }

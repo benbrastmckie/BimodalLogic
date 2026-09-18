@@ -13,6 +13,7 @@ Chapter source files for the Bimodal Reference document (Typst version).
 | 04-metalogic.typ | Metalogic (soundness, completeness) chapter |
 | 05-theorems.typ | Key theorems chapter |
 | 06-notes.typ | Implementation notes and status |
+| ax-lean-appendix.typ | Back-matter appendix: Lean 4 primer, from basics to reading `FormalSystem/` |
 
 ## Related Documentation
 

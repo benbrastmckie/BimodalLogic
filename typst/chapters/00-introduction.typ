@@ -136,7 +136,7 @@ The book proceeds in two parts, matching the live document's own part divisions.
 + *Part I -- The Bimodal System.* Syntax (@sec:formulas); task-frame semantics; the Burgess-Xu proof system; frame classes and their extensions (@sec:frame-classes: Base, Dense, ZTime, RTime); the metalogic (@sec:metalogic, stating soundness and the completeness theorems in the strongest form each frame class admits); decidability in practice (the tableau procedure); the perpetuity theorems (@sec:perpetuity); and three positioning chapters closing out the part -- LTL-to-*TM* (@sec:ltl-to-tm), the Vlach/BL#super[⋆] tower (@ch:vlach-blstar), and the decidability frontier (@sec:decidability-frontier).
 + *Part II -- Applications.* Proof automation and the bounded proof-search engine, the dual-signal training-data pipeline (proof traces and countermodels, every output deterministically checkable), and dual-verification worked examples.
 
-Back matter closes the book: design notes and design-choice discussion (@sec:notes), and a machine-readable appendix cross-referencing every Lean declaration cited in the text.
+Back matter closes the book: design notes and design-choice discussion (@sec:notes), a from-basics Lean 4 primer for readers new to the proof assistant (@lean-appendix), and a machine-readable appendix cross-referencing every Lean declaration cited in the text.
 
 == How to Read This Book
 
@@ -148,6 +148,7 @@ The parts are ordered by logical dependency, but several shorter paths through t
 - *Applications.* Part II is self-contained given the spine and the decidability chapter: proof automation, the training-data pipeline, and dual verification each occupy one chapter.
 
 Formal claims are typeset with their Lean identifiers in fixed-width font (e.g. `perpetuity1`); each such identifier names a declaration in the live source, and the machine appendix indexes the full correspondence.
+A reader who has never opened a Lean file, and wants to go from one of these cited identifiers to the source declaration behind it, should start with @lean-appendix, which builds up from what Lean is to reading `FormalSystem/` itself.
 
 == Project Structure
 

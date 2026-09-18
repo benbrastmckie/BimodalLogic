@@ -220,6 +220,7 @@
 // ---- Back Matter ------------------------------------------------------------
 
 #include "chapters/06-notes.typ"
+#include "chapters/ax-lean-appendix.typ"
 #include "chapters/ax-machine-appendix.typ"
 
 // ============================================================================

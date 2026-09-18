@@ -515,3 +515,68 @@ generate it, following the same split between generated facts and hand-written p
 - Verified build-free: `scripts/typst-module-map.sh --json` runs with no `lake`/`lean`
   invocation, matching the same build-free contract `typst-status-counts.sh --json` already
   gives Check 2 for the scalar counts.
+
+## 2026-09-17 Addition — Lean 4 Appendix (`chapters/ax-lean-appendix.typ`)
+
+Added `typst/chapters/ax-lean-appendix.typ`, a from-basics Lean 4 primer for a reader who knows
+the *TM* mathematics but has never opened a Lean file: what Lean is, `Type` vs. `Prop` and
+dependent types, propositions-as-types and proof terms, inductive types (`Formula` and
+`DerivationTree` as the running examples), structures and classes, tactic proofs vs. term
+proofs, Mathlib naming/layout conventions, lake and project layout, and a closing guide to
+reading `FormalSystem/` source and trust-checking it (`#check`, `#print axioms`, the
+`Boneyard/`-is-archived convention). Included in `BimodalReference.typ`'s back matter, before
+`ax-machine-appendix.typ` (the machine appendix assumes the reader already knows what a Lean
+declaration is), and cross-referenced from `00-introduction.typ`'s Outline and "How to Read This
+Book" sections.
+
+**Snippet-verification method**: every didactic Lean example in the appendix, and every
+byte-exact `#leansrc` excerpt's source text, was collected and compiled first in
+`specs/620_lean_appendix_bimodal_reference/scratch/appendix_snippets.lean` — a file outside
+`FormalSystem/` and `Tests/`, run via `lake env lean` against the live library, never committed
+to the library or test tree. Zero errors, zero `sorry`, confirmed by a final `#print axioms`
+call showing only `[propext, Classical.choice, Quot.sound]` on `soundness`. `#leansrc` excerpts
+for `Derivable`, `Formula` (six constructors), `DerivationTree` (seven constructors), `Atom`,
+`TaskModel`, `soundness`, and `completeness` were re-diffed against the current source after
+writing the appendix prose, matching each declaration's live text exactly (docstrings elided;
+constructor/field lines byte-exact).
+
+**One live-source correction found during verification**: `docs/reference/tactic-reference.md`'s
+`apply_axiom MT φ` / `apply_axiom M4 φ` argument-passing examples do not elaborate against the
+current `FormalSystem/Automation/Tactics/UserTactics.lean` — `apply_axiom` is a zero-argument
+macro (`apply DerivationTree.axiom; refine ?_`) that leaves its `Axiom` and frame-class side
+goals open rather than searching for the matching schema itself, contrary to its own docstring.
+The appendix's tactic-mode example reflects the verified behavior (`apply_axiom` followed by
+`case h => exact Axiom.modal_t _` and `case h_fc => trivial`), not the doc's stale spelling; the
+doc file itself was left as-is (fixing seed-doc drift is this task's stated non-goal, per the
+implementation plan).
+
+**Seed docs used for framing only, not copied verbatim**: `docs/user-guide/tutorial.md` (heavily
+out of date: `import Logos`, string-valued `Formula.atom`, camelCase `modusPonens`,
+`DerivationTree` without the `FrameClass` parameter, wrong completeness theorem names) and
+`docs/user-guide/quickstart.md` (`.future`/`.past` naming, also stale) supplied narrative shape
+only, never quoted code. `docs/development/LEAN_STYLE_GUIDE.md`'s naming-convention rules are
+current and are cited directly in the "Mathlib Conventions" section, except its `Namespaces`
+example (`Logos.Syntax`), replaced in the appendix with the live `FormalSystem.*` namespace
+tree. `docs/reference/tactic-reference.md` is current apart from the `apply_axiom` argument
+spelling noted above.
+
+**New whitelist entries** (`typst/sync-check-whitelist.txt`, Check 1): generic Lean tooling
+illustrations (`/-! # Title ... -/`, `/-- ... -/`, `1 + 1 = 2`), type-signature illustrations
+(the `.Base`/`.Dense` anonymous-constructor shorthand, `FrameClass → Context → Formula → Type`,
+`Std.HashMap Formula _`, the combined soundness+completeness biconditional), the appendix's own
+didactic identifiers (`boxPImpP`, `dBoxP : ⊢ □p`, `h : Axiom _`), Lake/CLI command illustrations
+(`lake build FormalSystem`, `lake env lean FILE.lean`), `lakefile.toml`/`lean-toolchain` literal
+syntax and proper nouns (`[[require]]`, `srcDir = "Tests"`, `lean-toolchain`,
+`leanprover/lean4`, `elan`), the literal string `file:line` (named to state the no-file:line
+citation convention), and the `lean_declaration_file` MCP tool name. `#check` and `#print
+axioms`, written alone with no trailing placeholder name inside the backtick span, needed no
+whitelist entry — both literal-grep-match `FormalSystem/*.lean` directly.
+
+**Pre-existing, unrelated Check 2b finding**: `scripts/typst-sync-check.sh` Check 2b
+(`generated/automation-module-map.typ` freshness) fails independently of this addition —
+`ProofSearch/Core.lean`, `ProofSearch/Strategies.lean`, `SuccessPatterns.lean`, and
+`Tactics/Search.lean` have drifted since the generator introduced immediately above this entry
+was last run, with no working-tree changes to those files in this task's session. Regenerating
+`typst/generated/automation-module-map.typ` is outside this task's file scope (the Lean
+appendix) and was not attempted here; Check 1 (this task's actual concern) and Check 3 both pass
+cleanly.

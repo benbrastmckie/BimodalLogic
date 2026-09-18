@@ -137,3 +137,54 @@ app:topology-t1
 # any content change, on a directory this whitelist's other categories do
 # not cover. ---
 data/
+
+# --- Lean appendix (chapters/ax-lean-appendix.typ, 2026-09-17): generic Lean
+# tooling-command illustrations (placeholders, not literal Lean source or a
+# specific declaration citation). `#check` and `#print axioms` alone (no
+# trailing placeholder name inside the backtick span) literal-grep-match
+# FormalSystem/*.lean directly and need no entry here. ---
+/-! # Title ... -/
+/-- ... -/
+1 + 1 = 2
+
+# --- Lean appendix: type-signature illustrations, same category as the
+# existing "DerivationTree FrameClass.Base [] φ" entries above but using
+# the `.Base`/`.Dense` anonymous-constructor shorthand the appendix's prose
+# uses when contrasting frame classes ---
+DerivationTree .Base [] φ
+DerivationTree .Dense [] φ
+FrameClass → Context → Formula → Type
+Std.HashMap Formula _
+Valid φ ↔ Derivable FrameClass.Base [] φ
+
+# --- Lean appendix: appendix-local didactic identifiers, defined only in
+# ax-lean-appendix.typ's own example code blocks (verified against the
+# current toolchain in
+# specs/620_lean_appendix_bimodal_reference/scratch/appendix_snippets.lean),
+# never claimed as FormalSystem/ library declarations ---
+boxPImpP
+dBoxP : ⊢ □p
+h : Axiom _
+
+# --- Lean appendix: shell/CLI command illustrations (Lake commands, not
+# Lean identifiers) ---
+lake build FormalSystem
+lake env lean FILE.lean
+
+# --- Lean appendix: lakefile.toml / lean-toolchain literal syntax and
+# proper nouns (project config, not Lean identifiers -- the repo-root
+# lean-toolchain and lakefile.toml files themselves are real and current,
+# but Check 1 only greps FormalSystem/*.lean) ---
+[[require]]
+srcDir = "Tests"
+lean-toolchain
+leanprover/lean4
+elan
+
+# --- Lean appendix: the no-"file:line"-citations convention, named
+# literally so the appendix can state the rule it follows ---
+file:line
+
+# --- Lean appendix: lean-lsp MCP tool name (editor tooling, not a Lean
+# identifier) ---
+lean_declaration_file
