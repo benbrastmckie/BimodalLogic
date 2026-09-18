@@ -1,16 +1,16 @@
 {
-  "status": "researched",
-  "summary": "Paper axiom audit complete: 29 paper primitives, 16 derivable surplus constructors (12 BX TR-mirrors plus modal_4, modal_b, prior_SZ, prior_S_gap), none underivable. All derivation patterns compiled via lean_run_code. Report gives blast radius (~331 call sites, 6 exhaustive dispatchers) and an add-first/remove-last phasing.",
+  "status": "planned",
+  "summary": "Plan written: 10 sequential phases (~17h). Derived defs first (TR mirrors; modal_4/modal_b after Propositional.Core with temporalFutureDerived relocated), rewrite ~330 call sites in three phases, remove the 16 surplus constructors (atomic batch), restate TL/CN then TS verbatim with TM-plus lockstep (PlusAxiom.ofTM is rfl-shaped), regenerate appendix/docs, final gate. Lean Challenge Statements pin 19 derived defs.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/reports/01_paper-axiom-audit.md",
-      "summary": "Per-constructor classification table, frame-class check, prototyped derivations, blast radius, recommended phases."
+      "type": "plan",
+      "path": "specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/plans/01_paper-axiom-system.md",
+      "summary": "10-phase paper-axiom-system adoption plan with challenge statements for 19 derived definitions."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 10,
   "blockers": [],
-  "dispatch_seq": 1,
-  "next_action_hint": "plan"
+  "dispatch_seq": 2,
+  "next_action_hint": "implement"
 }

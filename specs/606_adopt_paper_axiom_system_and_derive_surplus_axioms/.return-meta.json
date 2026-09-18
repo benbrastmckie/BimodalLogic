@@ -1,1 +1,30 @@
-{"status":"researched","artifacts":[{"type":"report","path":"specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/reports/01_paper-axiom-audit.md","summary":"Audit of all 45 Axiom constructors vs the paper: 29 paper primitives, 16 derivable surplus (12 BX TR-mirrors + modal_4, modal_b, prior_SZ, prior_S_gap), 0 underivable; TR/K-T-5 derivations prototyped and compiled; blast radius and phased plan."}],"metadata":{"session_id":"sess_1789728492_5b1bc4_606","agent_type":"lean-research-agent","delegation_depth":1,"delegation_path":["orchestrator","research","lean-research-agent"]}}
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/plans/01_paper-axiom-system.md",
+      "summary": "10-phase add-first/remove-last plan: TR-derived mirror module, derived modal_4/modal_b, three call-site rewrite phases, removal of 16 surplus constructors, verbatim TL/CN and TS restatements with TM-plus lockstep, appendix/docs regeneration, final gate."
+    }
+  ],
+  "next_steps": "Run /implement 606 to execute the plan",
+  "phase_count": 10,
+  "estimated_hours": 17,
+  "dependency_waves": [[1],[2],[3],[4],[5],[6],[7],[8],[9],[10]],
+  "memory_candidates": [
+    {
+      "content": "When demoting a primitive axiom constructor to a derived theorem in a Lean Hilbert system with many call sites, use add-first/remove-last: (1) add derived defs with statements byte-identical to the constructor index plus context-lifted `XAt Gamma` wrappers, (2) rewrite all construction sites while the constructor still exists (build stays green per file), (3) delete the constructor and let exhaustive-match compile errors enumerate the dispatcher arms. Restating an axiom's formula breaks any rfl-shaped per-arm embedding into a sibling system (e.g. PlusAxiom.ofTM), forcing lockstep restatement of the twin.",
+      "category": "PATTERN",
+      "source_artifact": "specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/plans/01_paper-axiom-system.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["axiom-demotion", "derived-axioms", "add-first-remove-last", "lockstep-embedding", "time-reflection"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789728492_5b1bc4_606",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
+}

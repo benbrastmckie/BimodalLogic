@@ -93,7 +93,7 @@ next_project_number: 621
 
 ### Literature
 
-504 [NOT STARTED] — Retry acquisition of the standard modal-representation...
+504 [RESEARCHING] — Retry acquisition of the standard modal-representation...
 
 ### Metalogic
 
@@ -105,7 +105,7 @@ next_project_number: 621
 
 ### Paper Refactor
 
-606 [RESEARCHED] — Revise the primitive axiom system in...
+606 [PLANNED] — Revise the primitive axiom system in...
 
 ### Codebase Cleanup
 
@@ -311,11 +311,12 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 606. Adopt paper axiom system and derive surplus axioms
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 588, Task 605, Task 615, Task 619
 - **Research**: [606_adopt_paper_axiom_system_and_derive_surplus_axioms/reports/01_paper-axiom-audit.md]
+- **Plan**: [606_adopt_paper_axiom_system_and_derive_surplus_axioms/plans/01_paper-axiom-system.md]
 
 **Description**: Revise the primitive axiom system in FormalSystem/ProofSystem/Axioms.lean (the Axiom type index and the DerivationTree constructor set) to match the paper's axiom system exactly, and demote every current axiom that goes beyond the paper to a derived theorem. The paper is the JPL paper (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, read-only); cite it through docs/reference/paper-definitions-of-record.md by \label{} or \aitem{} key, never by line number. GOAL: the primitive axioms and rules are exactly the paper's (def:BX plus its modal and interaction axioms). Everything else currently primitive becomes a theorem with a DerivationTree proof, keeping its current name where possible so downstream code keeps compiling. KNOWN SURPLUS in the BX temporal group (see "Paper Key Correspondence" in docs/reference/axiom-reference.md): the explicitly stated past mirrors (serial_past, connect_past, temp_linearity_past, since_P, P_since_equiv, absorb_since, right_mono_since, self_accum_since, left_mono_since_H, enrichment_since, linear_since, discrete_symm_bwd), which the paper obtains through the TR time-reflection rule (DerivationTree.time_reflection, Formula.reflectTime). Derive each one by TR from its primary. Also restate temp_linearity (TL) and linear_until (CN) with the paper's disjunct order and grouping, keeping the old forms as derived lemmas if anything uses them. Note that discrete_propagate_bwd is the paper's NA itself, not a mirror of NF: it stays primitive, and consider renaming it to match. RESEARCH FIRST: audit the WHOLE Axiom type (all constructors, not only the temporal group) against the paper's full axiom list. Produce a table classifying every constructor as paper-primitive, derivable surplus (with a derivation sketch), or surplus with no known derivation. The last class must be reported, not silently kept or dropped. Also check whether any surplus axiom is needed per FrameClass (Base, Dense, ZTime, RTime) and whether TR is available in every frame class where a mirror is used. BLAST RADIUS to plan for: soundness (per-axiom validity cases shrink; keep the mirror validity lemmas as lemmas), completeness and canonical-model constructions that pattern-match on Axiom constructors, the decidability/tableau and proof-extraction code, Automation (apply_axiom, proof search, axiom tables), the lake exe machine_appendix JSONL and typst/generated/ counts (the axiom count drops from its current value), the dataset pipeline's serialized axiom names (keep existing serialized datasets byte-stable or version them explicitly), Tests/BimodalTest, and docs/reference/axiom-reference.md (turn the correspondence table into a statement of the primitive system plus its derived mirrors). ACCEPTANCE: lake build is green with no new sorry or axiom, all tests pass, and every former primitive is either a paper axiom or a proved theorem, with a lean_verify axiom check on the derived mirrors. Supersedes the earlier scope of this task, which only proved the two presentations equivalent without changing the primitive set.
 
