@@ -80,7 +80,7 @@ state only to itself.
 theorem states_add_of_looping {F : FrameOver D} {π : ↑D} (h : LoopingDuration F π)
     (τ : WorldHistory F) (x : ↑D) :
     τ.state (x + π) = τ.state x := by
-  have hr := τ.val.respects_task x (x + π) (τ.property x) (τ.property (x + π))
+  have hr := τ.respects_task x (x + π)
   have hd : x + π - x = π := by abel
   rw [hd] at hr
   exact (h.2 _ _).mp hr

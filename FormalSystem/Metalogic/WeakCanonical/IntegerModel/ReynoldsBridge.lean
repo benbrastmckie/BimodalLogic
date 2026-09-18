@@ -639,7 +639,7 @@ theorem zHistoryV2_total_eq (σ : WorldHistory zTaskFrameV2) :
   -- `zTaskFrameV2.WorldState` is `ℤ` but not syntactically so; `show ℤ from` forces the
   -- arithmetic to elaborate in `ℤ` where `omega` can see it.
   have h : (show ℤ from σ.state t) = (show ℤ from σ.state 0) + (t - 0) :=
-    (zTaskFrameV2_taskRel _ _ _).mp (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
+    (zTaskFrameV2_taskRel _ _ _).mp (σ.respects_task 0 t)
   show (show ℤ from σ.state t) = (show ℤ from σ.state 0) + t
   omega
 
@@ -829,7 +829,7 @@ theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
   obtain ⟨h₁, h₂⟩ : (σ.state 0).1 = (σ.state t).1 ∧
       (σ.state t).2 = (σ.state 0).2 + (t - 0) :=
     (Algebraic.multiFamGen_taskRel (D := intOrder) _ _ _).mp
-      (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
+      (σ.respects_task 0 t)
   refine Prod.ext h₁.symm ?_
   show (σ.state t).2 = (σ.state 0).2 + t
   rw [h₂, sub_zero]

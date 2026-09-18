@@ -153,7 +153,7 @@ by `respects_task` at `(0, t)`. -/
 theorem pTotal_states (σ : WorldHistory PF) (t : ℤ) :
     σ.state t = ((), (σ.state 0).2 + t) := by
   obtain ⟨_, h2⟩ := (FormalSystem.Metalogic.Algebraic.multiFamGen_taskRel (D := TemporalOrder.of ℤ) _ _ _).mp
-    (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
+    (σ.respects_task 0 t)
   refine Prod.ext rfl ?_
   show (σ.state t).2 = (σ.state 0).2 + t
   have h2' : (σ.state t).2 = (σ.state 0).2 + (t - 0) := h2

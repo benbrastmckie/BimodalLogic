@@ -153,14 +153,14 @@ theorem f1_total_eq_orbit (τ : WorldHistory F1) :
 /-- The pointwise form: a world history of `F¹` is `t ↦ τ(0) + t`. -/
 theorem f1_states_eq (τ : WorldHistory F1) (r : ↑realTemporalOrder) :
     τ.state r = τ.state 0 + r := by
-  have h := (f1_taskRel_iff _ _ _).mp (τ.val.respects_task 0 r (τ.property 0) (τ.property r))
+  have h := (f1_taskRel_iff _ _ _).mp (τ.respects_task 0 r)
   rw [sub_zero] at h
   exact h
 
 /-- The two-point form: a world history of `F¹` moves by exactly the elapsed duration. -/
 theorem f1_states_sub (τ : WorldHistory F1) (s r : ↑realTemporalOrder) :
     τ.state r = τ.state s + (r - s) := by
-  exact (f1_taskRel_iff _ _ _).mp (τ.val.respects_task s r (τ.property s) (τ.property r))
+  exact (f1_taskRel_iff _ _ _).mp (τ.respects_task s r)
 
 /--
 Two world histories of `F¹` agreeing at one time are **equal** — the `⟨τ⟩_x = {τ}` form of

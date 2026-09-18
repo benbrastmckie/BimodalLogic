@@ -333,9 +333,8 @@ theorem isTotal_iff_regionHistory (f : ι → D) (σ : WorldHistory (regionFrame
   have key : ∀ r : D, σ.state r = ((σ.state 0).1, r + (σ.state 0).2) := by
     intro r
     obtain ⟨h₁, h₂⟩ := (regionFrame_taskRel W ι D _ _ _).mp
-      (σ.val.respects_task 0 r (σ.property 0) (σ.property r))
+      (σ.respects_task 0 r)
     refine Prod.ext h₁.symm ?_
-    rw [WorldHistory.states_eq_state, WorldHistory.states_eq_state] at h₂
     rw [h₂]
     abel_nf
   exact ⟨(σ.state 0).1, (σ.state 0).2, WorldHistory.ext_state key⟩

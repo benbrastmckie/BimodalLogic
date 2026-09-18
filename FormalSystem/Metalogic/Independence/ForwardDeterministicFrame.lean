@@ -266,9 +266,9 @@ theorem states_eq_of_forwardDeterministic {F : TaskFrame} (hD : F.ForwardDetermi
     {τ σ : WorldHistory F} {x : F.Duration}
     (h : τ.state x = σ.state x) {y : F.Duration} (hxy : x ≤ y) :
     τ.state y = σ.state y := by
-  have hτr := τ.val.respects_task x y (τ.property x) (τ.property y)
-  have hσr := σ.val.respects_task x y (σ.property x) (σ.property y)
-  rw [WorldHistory.states_eq_state, h] at hτr
+  have hτr := τ.respects_task x y
+  have hσr := σ.respects_task x y
+  rw [h] at hτr
   exact hD (σ.state x) (y - x) (sub_nonneg.mpr hxy) hτr hσr
 
 /--

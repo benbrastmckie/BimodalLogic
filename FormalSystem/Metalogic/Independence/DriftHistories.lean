@@ -134,7 +134,7 @@ end BareFunction
 `(s, t)`, *is* the drift condition on the state function (through `f0_taskRel_iff`). -/
 theorem fzero_hist_rel (τ : WorldHistory F0) :
     ∀ s t : ℝ, fzeroRel (τ.state s) (t - s) (τ.state t) :=
-  fun s t => (f0_taskRel_iff _ _ _).mp (τ.val.respects_task s t (τ.property s) (τ.property t))
+  fun s t => (f0_taskRel_iff _ _ _).mp (τ.respects_task s t)
 
 /-- **(H1) for `F°`**: every world history is an order-isomorphism of `(ℝ, <)` onto `(ℝ, <)`. -/
 theorem fzero_orderFlow : OrderFlow F0 where

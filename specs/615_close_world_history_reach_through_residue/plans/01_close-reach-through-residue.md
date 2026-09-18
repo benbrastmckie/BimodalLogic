@@ -171,30 +171,30 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 own disjoint
 
 ---
 
-### Phase 3: Sweep the 13 Metalogic-layer call sites and the four `states_eq_state` lines [IN PROGRESS]
+### Phase 3: Sweep the 13 Metalogic-layer call sites and the four `states_eq_state` lines [COMPLETED]
 
 - **Goal:** Every hand-spelled dependent projection under `FormalSystem/Metalogic/` is replaced by
   the Phase 1 lemma, and the four rewrite lines that lose their pattern as a result are trimmed or
   deleted. This is the only non-mechanical part of the sweep.
 - **Tasks:**
-  - [ ] Apply the same substitution at:
-    - [ ] `Metalogic/Independence/PastingIndependence.lean:156`
-    - [ ] `Metalogic/Independence/ForwardDeterministicFrame.lean:269`, `:270`
-    - [ ] `Metalogic/Independence/DriftHistories.lean:137`
-    - [ ] `Metalogic/Independence/LoopingDuration.lean:83`
-    - [ ] `Metalogic/Independence/RealTranslationFrame.lean:156`, `:163`
-    - [ ] `Metalogic/Independence/CoNotPriorU.lean:371-372` (continuation line 372 folds away)
-    - [ ] `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:648`, `:838`
-    - [ ] `Metalogic/Algebraic/FlowFrame.lean:376`, `:381`
-    - [ ] `Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:336`
-  - [ ] Apply the four rewrite-line adjustments in the same edits:
-    - [ ] `ForwardDeterministicFrame.lean:271` — trim `rw [WorldHistory.states_eq_state, h] at hτr`
+  - [x] Apply the same substitution at:
+    - [x] `Metalogic/Independence/PastingIndependence.lean:156`
+    - [x] `Metalogic/Independence/ForwardDeterministicFrame.lean:269`, `:270`
+    - [x] `Metalogic/Independence/DriftHistories.lean:137`
+    - [x] `Metalogic/Independence/LoopingDuration.lean:83`
+    - [x] `Metalogic/Independence/RealTranslationFrame.lean:156`, `:163`
+    - [x] `Metalogic/Independence/CoNotPriorU.lean:371-372` (continuation line 372 folds away)
+    - [x] `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:648`, `:838`
+    - [x] `Metalogic/Algebraic/FlowFrame.lean:376`, `:381`
+    - [x] `Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:336`
+  - [x] Apply the four rewrite-line adjustments in the same edits:
+    - [x] `ForwardDeterministicFrame.lean:271` — trim `rw [WorldHistory.states_eq_state, h] at hτr`
           to `rw [h] at hτr` (probe-confirmed: the trimmed form is the one that elaborates)
-    - [ ] `FlowFrame.lean:377` — delete
-    - [ ] `FlowFrame.lean:382` — delete
-    - [ ] `RegionFrame.lean:338` — delete
-  - [ ] Build each touched module as it is edited, then commit that file as a green sub-step.
-  - [ ] Close with `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`.
+    - [x] `FlowFrame.lean:377` — delete
+    - [x] `FlowFrame.lean:382` — delete
+    - [x] `RegionFrame.lean:338` — delete
+  - [x] Build each touched module as it is edited, then commit that file as a green sub-step.
+  - [x] Close with `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`.
 - **Timing:** 50 minutes
 - **Depends on:** 1
 - **Verification Tier:** local

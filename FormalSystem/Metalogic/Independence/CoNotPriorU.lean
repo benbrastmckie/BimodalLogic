@@ -364,8 +364,7 @@ theorem clockRel_neg {a b : ClockState} {d : ℚ} (h : clockRel a d b) :
 theorem reflect_respects (τ : WorldHistory clockFrame) (s t : ℚ) :
     clockRel (cneg (τ.state (-s))) (t - s) (cneg (τ.state (-t))) := by
   have h2 := clockRel_neg (a := τ.state (-s)) (b := τ.state (-t)) (d := -t - -s)
-    ((clockFrame_taskRel _ _ _).mp (τ.val.respects_task (-s) (-t) (τ.property (-s))
-      (τ.property (-t))))
+    ((clockFrame_taskRel _ _ _).mp (τ.respects_task (-s) (-t)))
   have he : -(-t - -s) = t - s := by ring
   rwa [he] at h2
 

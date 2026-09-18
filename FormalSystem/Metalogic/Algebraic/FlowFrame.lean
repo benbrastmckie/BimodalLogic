@@ -373,13 +373,11 @@ theorem multiFamGen_total_eq {FamIdx : Type} [Nonempty FamIdx]
   show σ.state t = ((σ.state 0).1, (σ.state 0).2 + t)
   rcases le_total 0 t with _h0t | _ht0
   · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp
-      (σ.val.respects_task 0 t (σ.property 0) (σ.property t))
-    rw [WorldHistory.states_eq_state, WorldHistory.states_eq_state] at h₁ h₂
+      (σ.respects_task 0 t)
     refine Prod.ext h₁.symm ?_
     rw [h₂]; abel_nf
   · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp
-      (σ.val.respects_task t 0 (σ.property t) (σ.property 0))
-    rw [WorldHistory.states_eq_state, WorldHistory.states_eq_state] at h₁ h₂
+      (σ.respects_task t 0)
     refine Prod.ext h₁ ?_
     rw [h₂]; abel_nf
 
