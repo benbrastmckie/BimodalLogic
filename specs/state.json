@@ -9,7 +9,7 @@
     {
       "project_number": 622,
       "project_name": "align_typst_frame_subscripts_zdr_and_bx_r",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "description": "Align frame-class subscripts with the paper in typst/FormalFoundations.typ and typst/chapters/p2-decidability-practice.typ: rename BX_f/BX_d/BX_c and TM_f/TM_d/TM_c (and TM-minus variants where they track the paper) to the paper's z/d/r (def:BX-z, def:BX-d, def:BX-r). f->z is a pure relabel (BX + UZ + Z1). c->r is not: the document's BX_c is BX + PU + SEP (sound over Dedekind-complete orders including Z, so it does not prove DN), whereas the paper's BX_r and Lean's RTime extend BX_d (BX + DN + NN + PU + SEP, intended class R-time). Redefine BX_r as an extension of BX_d, recheck every claim citing TM_c/BX_c against R-time semantics, rewrite or drop the 'Naming provenance' remark and the footnote on whether CO alone axiomatizes the same logic, and update the decidability chapter's DF/CO non-theorem claims. Also investigate the flagged possible citation swap between the section 2 Soundness theorem and the section 5 Algebraic-soundness proposition. Gates: typst compile, typst-sync-check.sh, check-paper-definitions.sh",
       "topic": "paper-refactor",
@@ -17,7 +17,16 @@
         621
       ],
       "created": "2026-09-18T15:46:50Z",
-      "last_updated": "2026-09-18T15:46:50Z"
+      "last_updated": "2026-09-18T18:37:42Z",
+      "session_id": "sess_1789751834_287b73",
+      "artifacts": [
+        {
+          "path": "specs/622_align_typst_frame_subscripts_zdr_and_bx_r/reports/01_frame-subscript-alignment.md",
+          "type": "report",
+          "summary": "Full site inventory and redefinition plan for renaming typst BX_f/BX_d/BX_c and TM_f/TM_d/TM_c to the paper's z/d/r, redefining BX_r/TM_r to extend BX_d/TM_d, fixing the section 2/5 soundness citation swap, and updating the decidability chapter's DF/CO claims."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 621,
