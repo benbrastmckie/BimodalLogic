@@ -976,18 +976,6 @@ every φ ∈ GContent(A) (i.e., G(φ) ∈ A) must also be in B.
   BurgessR3Maximal maximality (over ClosedUnderDerivation) gives contradiction.
 -/
 
-/-- Helper: ⊢ φ → (β → (β ∧ φ)). Conjunction introduction curried. -/
-private noncomputable def conjIntroCurried (fc : FrameClass) (β φ : Formula) :
-    DerivationTree fc [] (φ.imp (β.imp (Formula.and β φ))) := by
-  have h1 : DerivationTree fc [β, φ] (Formula.and β φ) :=
-    DerivationTree.modus_ponens [β, φ] _ _
-      (DerivationTree.modus_ponens [β, φ] β _
-        (DerivationTree.weakening [] [β, φ] _
-          (pairing β φ) (List.nil_subset _))
-        (DerivationTree.assumption _ β (by simp)))
-      (DerivationTree.assumption _ φ (by simp))
-  exact deductionTheorem [] φ _ (deductionTheorem [φ] β _ h1)
-
 /-! ## Duality: HContent(C) ⊆ D implies GContent(D) ⊆ C
 
 Local proof of the duality theorem needed for Lemma 2.6 splitting.
@@ -1191,16 +1179,6 @@ private theorem F_mono_mcs (fc : FrameClass) {A : Set Formula}
   -- F(phi) and G(¬phi) are contradictory in MCS A
   exact Bundle.some_future_all_future_neg_absurd h_mcs phi h_F h_G_neg_phi
 
-/-- Helper: ⊢ (a ∧ b) → a (left conjunction elimination). -/
-private noncomputable def andLeftImpl (fc : FrameClass) (a b : Formula) :
-    DerivationTree fc [] ((Formula.and a b).imp a) :=
-  lceImp a b
-
-/-- Helper: ⊢ (a ∧ b) → b (right conjunction elimination). -/
-private noncomputable def andRightImpl (fc : FrameClass) (a b : Formula) :
-    DerivationTree fc [] ((Formula.and a b).imp b) :=
-  rceImp a b
-
 /-- **List-level cut** (derivation from implied context):
 If Γ ⊢ φ for each φ ∈ L, and L ⊢ ψ, then Γ ⊢ ψ.
 
@@ -1331,24 +1309,6 @@ private noncomputable def snceLeftMonoDeriv (fc : FrameClass) (φ ψ χ : Formul
     DerivationTree fc [] ((Formula.snce φ ψ).imp (Formula.snce χ ψ)) := by
   have h_H := FormalSystem.Theorems.pastNecessitation _ h_impl
   have h_ax := DerivationTree.axiom (fc := fc) [] _ (Axiom.left_mono_since_H φ χ ψ) trivial
-  exact DerivationTree.modus_ponens [] _ _ h_ax h_H
-
-/-- Derivation-level right_mono for Until: if ⊢ φ→ψ then ⊢ untl(χ,φ) → untl(χ,ψ).
-Uses BX3 (right_mono_until): G(φ→ψ) → untl(χ,φ) → untl(χ,ψ). -/
-private noncomputable def untlRightMonoDeriv (fc : FrameClass) (φ ψ χ : Formula)
-    (h_impl : DerivationTree fc [] (φ.imp ψ)) :
-    DerivationTree fc [] ((Formula.untl χ φ).imp (Formula.untl χ ψ)) := by
-  have h_G := DerivationTree.temporal_necessitation _ h_impl
-  have h_ax := DerivationTree.axiom (fc := fc) [] _ (Axiom.right_mono_until φ ψ χ) trivial
-  exact DerivationTree.modus_ponens [] _ _ h_ax h_G
-
-/-- Derivation-level right_mono for Since: if ⊢ φ→ψ then ⊢ snce(χ,φ) → snce(χ,ψ).
-Uses BX3' (right_mono_since): H(φ→ψ) → snce(χ,φ) → snce(χ,ψ). -/
-private noncomputable def snceRightMonoDeriv (fc : FrameClass) (φ ψ χ : Formula)
-    (h_impl : DerivationTree fc [] (φ.imp ψ)) :
-    DerivationTree fc [] ((Formula.snce χ φ).imp (Formula.snce χ ψ)) := by
-  have h_H := FormalSystem.Theorems.pastNecessitation _ h_impl
-  have h_ax := DerivationTree.axiom (fc := fc) [] _ (Axiom.right_mono_since φ ψ χ) trivial
   exact DerivationTree.modus_ponens [] _ _ h_ax h_H
 
 /-- BX13' (enrichment_since) at MCS level: If p ∈ C and snce(phi, psi) ∈ C,
