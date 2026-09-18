@@ -148,7 +148,7 @@ any obligation the induction re-expresses as a finite `∨` of flat blocks is re
 `VVecEA2`. -/
 
 /-- Finite-family disjunction of `VVecEA2` formulas: the `∨`-collapse over a list of flat
-    exists-forall blocks. `foldr` over the landed binary `VVecEA2.disj` (VecEAFormula.lean:282). -/
+    exists-forall blocks. `foldr` over the landed binary `VVecEA2.disj`. -/
 def VVecEA2.disjList (vs : List VVecEA2) : VVecEA2 :=
   vs.foldr VVecEA2.disj ⟨[]⟩
 
