@@ -1,5 +1,5 @@
 ---
-next_project_number: 623
+next_project_number: 624
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 623
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,610,614,623 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617 | 298,464,502,559,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -69,6 +69,7 @@ next_project_number: 623
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 476 [RESEARCHED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.  CLASSIFICATION: OPEN...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
+623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 
 ### Documentation
 
@@ -104,6 +105,16 @@ next_project_number: 623
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
 ## Tasks
+
+### 623. Decidable validztime quasimodel shiftset route
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route. Replaces abandoned task 476, whose IntPresentation small-model hypothesis is refuted (fmp_false; see specs/archive/476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md and evidence/fmp-hypothesis-is-false.lean). Certificate = a guess of which boxed subformulas are true plus finitely many annotated bi-lassos (eventually periodic paths), checked with the existing LocalCoherent and Fulfilling predicates with box values taken from the guess; model = a ShiftSet containing only those witness paths, so box-faithfulness is automatic. Reuse GoodCycle/Enumerate/Decide over subformula-set space rather than presentation states. Main new proofs: truth lemma for the ShiftSet model; compression of a history's subformula-set sequence into a bi-lasso. Also correct the Assembly.lean docstring and BiLasso README.md, which still call the refuted hypothesis open. Literature: Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 3.29, 5.30, 5.32, 11.7, 11.21. Estimated 3-6 weeks
+
+---
 
 ### 622. Align typst frame subscripts zdr and bx r
 - **Status**: [COMPLETED]

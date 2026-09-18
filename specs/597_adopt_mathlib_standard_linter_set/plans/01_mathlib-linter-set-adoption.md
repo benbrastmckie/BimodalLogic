@@ -260,7 +260,7 @@ inventory blocks in 5 READMEs were regenerated for the changed line counts.
 
 ---
 
-### Phase 3: Heartbeat-budget group (`setOption` + `style.maxHeartbeats`) [NOT STARTED]
+### Phase 3: Heartbeat-budget group (`setOption` + `style.maxHeartbeats`) [IN PROGRESS]
 
 **Goal**: Convert the 7 unscoped `maxHeartbeats` to declaration-scoped form, and bring every
 scoped site into Mathlib's comment-after-`in` form.

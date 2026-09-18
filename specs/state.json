@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 623,
+  "next_project_number": 624,
   "active_projects": [
+    {
+      "project_number": 623,
+      "project_name": "decidable_validztime_quasimodel_shiftset_route",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route. Replaces abandoned task 476, whose IntPresentation small-model hypothesis is refuted (fmp_false; see specs/archive/476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md and evidence/fmp-hypothesis-is-false.lean). Certificate = a guess of which boxed subformulas are true plus finitely many annotated bi-lassos (eventually periodic paths), checked with the existing LocalCoherent and Fulfilling predicates with box values taken from the guess; model = a ShiftSet containing only those witness paths, so box-faithfulness is automatic. Reuse GoodCycle/Enumerate/Decide over subformula-set space rather than presentation states. Main new proofs: truth lemma for the ShiftSet model; compression of a history's subformula-set sequence into a bi-lasso. Also correct the Assembly.lean docstring and BiLasso README.md, which still call the refuted hypothesis open. Literature: Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 3.29, 5.30, 5.32, 11.7, 11.21. Estimated 3-6 weeks",
+      "topic": "decidability",
+      "created": "2026-09-18T19:46:46Z",
+      "last_updated": "2026-09-18T19:46:46Z"
+    },
     {
       "project_number": 622,
       "project_name": "align_typst_frame_subscripts_zdr_and_bx_r",
