@@ -48,12 +48,12 @@ sub plays no role — so the depth-`k` surface is the frozen public decl itself.
 
 /-- **Depth-`k` possible zones** at exterior `x1`: the nine `ZoneSpec 4` specs an actual point
     can carry relative to `[x1, w, x, t]` with `x < w < t < x1`. Definitionally the frozen
-    `kvE2FutPossibleZones` (ExteriorNegation.lean:902) — pure geometry, depth-independent. -/
+    `kvE2FutPossibleZones` (ExteriorNegation.lean:904) — pure geometry, depth-independent. -/
 def kvEFutPossibleZones : List (ZoneSpec 4) := kvE2FutPossibleZones
 
 /-- **Depth-`k` zone-4 classification at exterior `x1`**: any point's `zoneHolds` spec over
     `[x1, w, x, t]` (with `x < w < t < x1`) is one of the nine possible zones. Reuses the frozen
-    public `kvE2_futZoneClass` (ExteriorNegation.lean:915) — the statement mentions no fold
+    public `kvE2_futZoneClass` (ExteriorNegation.lean:917) — the statement mentions no fold
     depth, so it is the depth-`k` fact verbatim. -/
 theorem kvE_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
@@ -65,7 +65,7 @@ theorem kvE_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidable
 
 /-! ## Syntactic order-admissibility (depth-`k`, fiber-navigated)
 
-The depth-`k` reformulation of the frozen `kvE2FutAdmissible` (ExteriorNegation.lean:983). The
+The depth-`k` reformulation of the frozen `kvE2FutAdmissible` (ExteriorNegation.lean:985). The
 frozen predicate reads quant bits through `nf0Assemble`, which is lossless ONLY at depth 0; at
 depth `k` every such read is replaced by the landed determinacy channel `kvESubBit`
 (ExteriorBracketK.lean:302) or the Phase-2 fiber navigation (`kvEFiber` — ExteriorFiberK.lean),
@@ -113,7 +113,7 @@ noncomputable def kvEFutAdmissible {sig : MonadicSignature} [Fintype sig.preds]
         decide (χ = χ'))
 
 /-- A realizer's fresh point carries `σ`'s atom-layer fresh profile (depth-0 read — the same
-    statement as the frozen `kvE2_futFreshProfile`, ExteriorNegation.lean:996, since `σ.1` is the
+    statement as the frozen `kvE2_futFreshProfile`, ExteriorNegation.lean:998, since `σ.1` is the
     depth-0 atom layer at every fold depth). The full depth-`k` endpoint profile is fiber-borne
     (`nfkProjFresh` on the self-zone fiber bucket) and is assembled downstream in Phase 3.2. -/
 theorem kvE_futFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -134,7 +134,7 @@ theorem kvE_futFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [Decida
 
 /-- **A realizer forces admissibility**: if some exterior `x1 > t` realizes `σ` over
     `[x1, w, x, t]` (with `x < w < t`), then `σ` is order-admissible. Mirrors the frozen
-    `kvE2_futRealizer_admissible` (ExteriorNegation.lean:1010) one fold-layer deeper: the atom
+    `kvE2_futRealizer_admissible` (ExteriorNegation.lean:1012) one fold-layer deeper: the atom
     channels (conjunct 1) are the same depth-0 reads; the quant channels (conjuncts 2-4) go
     through the landed `kvE_subBit_iff` / fold off-fiber clause instead of `nf0Assemble`. -/
 theorem kvE_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
@@ -229,7 +229,7 @@ theorem kvE_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## Generic model-side `D`-guarded `Until`-chain combinators (Cor 5.4 / Lemma 5.3 `O_n`)
 
 Depth-`k` faithful generalization of the frozen `kvE2FutChain`/`kvE2_futChainBuild`/
-`kvE2_futChainDestruct` (ExteriorNegation.lean:1108/1180/1435). The frozen versions HARDWIRE the
+`kvE2_futChainDestruct` (ExteriorNegation.lean:1110/1180/1435). The frozen versions HARDWIRE the
 per-visited-item content formula to `nfDepth0CharFormula` (the depth-0 profile pin, which is
 F2-DEAD at depth `k` — postmortem rule 3). Here the per-item rendering `itemF` and the
 model-side occurrence predicate `Q` are ABSTRACT parameters, with the chain's distinctness
@@ -240,7 +240,7 @@ through `kvEFiberPosOn P` (`itemF := P.existF 4` over fiber elements — G6). -/
 
 /-- Abstract `D`-guarded `Until` chain over a list of items, each rendered by `itemF` and visited
     in order, terminating in `endF`. The generalization of `kvE2FutChain`
-    (ExteriorNegation.lean:1108): `itemF` replaces the hardwired `nfDepth0CharFormula`. -/
+    (ExteriorNegation.lean:1110): `itemF` replaces the hardwired `nfDepth0CharFormula`. -/
 noncomputable def kvEFutChainG {α : Type}
     (itemF : α → Formula) (endF D : Formula) : List α → Formula
   | [] => Formula.untl D endF
@@ -249,7 +249,7 @@ noncomputable def kvEFutChainG {α : Type}
         D
         (formulaConjList [itemF a, kvEFutChainG itemF endF D rest])
 
-/-- **Chain construction** (generic port of `kvE2_futChainBuild`, ExteriorNegation.lean:1180):
+/-- **Chain construction** (generic port of `kvE2_futChainBuild`, ExteriorNegation.lean:1182):
     from a `D`-uniform gap `(t, x1)`, an endpoint `endF` at `x1`, one occurrence in `(s, x1)`
     for each item in a nodup list `L` (via `Q`), the fact that occurrences force `itemF`
     (`hQF`), and item distinctness at a shared point (`huniq`), SOME permutation of `L` carries
@@ -315,7 +315,7 @@ theorem kvE_futChainBuildG {sig : MonadicSignature} [Fintype sig.preds] [Decidab
       · exact hl'truth
 
 /-- **Chain destruction** (generic port of `kvE2_futChainDestruct`,
-    ExteriorNegation.lean:1435): a true `D`-guarded chain at `s` yields an endpoint `x1 > s`
+    ExteriorNegation.lean:1437): a true `D`-guarded chain at `s` yields an endpoint `x1 > s`
     satisfying `endF`, a `D`-uniform gap `(s, x1)` (given each visited item's `itemF` pointwise
     implies `D` via `himp`), and one `itemF`-occurrence in `(s, x1)` for every item in the
     chain's list. -/
@@ -363,7 +363,7 @@ theorem kvE_futChainDestructG {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-! ## The depth-`k` Future clause family (content via `kvEFiberPosOn P`, G6)
 
 The depth-`k` analogs of the frozen clause defs `kvE2FutGapD`/`RayD`/`RayForm`/`End`/`Chain`/
-`Pos`/`extNegFut` (ExteriorNegation.lean:1072–1140). Every content-bearing position renders
+`Pos`/`extNegFut` (ExteriorNegation.lean:1074–1140). Every content-bearing position renders
 `P.existF 4` over FULL fiber elements `s : NormalForm sig k 5` through `kvEFiberPosOn P`
 (postmortem rule 3 / guard G6) — never a marginal characteristic formula. The visited-item
 universe is swapped from the depth-0 profile universe (`kvE2FutGapList`/`RayList`) to the
@@ -486,7 +486,7 @@ theorem kvE_futItemShift_correct {sig : MonadicSignature} [Fintype sig.preds]
   exact exists_congr fun env => kvE_anchorBridge M env r s
 
 /-- **Gap/ray/self zone construction at exterior `x1`** (Future-named replica of the frozen
-    private `kvE2_futZone4_of_above`, ExteriorNegation.lean:311): a point `v > t` sits in the
+    private `kvE2_futZone4_of_above`, ExteriorNegation.lean:313): a point `v > t` sits in the
     zone-4 spec `Fin.cons p0 kvE2SepZFutT3` whose head coupling `p0` records `v`'s relation to
     the exterior anchor `x1`. -/
 theorem kvE_futZone4_of_above {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -560,7 +560,7 @@ theorem kvE_fiberZoneList_realized {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ## Soundness of the depth-`k` Future clause family (Cor 5.4(2), ⟹) -/
 
-/-- **Soundness** (depth-`k` analog of `kvE2_extNegFut_sound`, ExteriorNegation.lean:1243, one
+/-- **Soundness** (depth-`k` analog of `kvE2_extNegFut_sound`, ExteriorNegation.lean:1245, one
     fold-layer deeper): if the complement clause holds at `t` (with `x < w < t`), then NO exterior
     `x1 > t` realizes σ over `[x1, w, x, t]`. Content routed through the shifted channel: gap/ray/
     self obligations discharge via `kvE_fiberPosOnShift_correct` / `kvE_futItemShift_correct` +

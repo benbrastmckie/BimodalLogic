@@ -79,7 +79,7 @@ declaration and in the construction of the `epsTop` witness, and every §6 use o
 ## Retrospective subsumption
 
 This layer subsumes two past/future mirrors this tree already paid for by hand — the Lemma 7
-mirror at `BadIntervals.lean:968-1225` (258 lines) and `Kamp/Lemma53FaithfulPast.lean` (364
+mirror at `BadIntervals.lean:970-1225` (258 lines) and `Kamp/Lemma53FaithfulPast.lean` (364
 lines). **Neither is deleted, refactored or deprecated**; both stay landed exactly as they are,
 and every existing consumer is untouched. The point of recording the subsumption is forward
 looking: no later phase should derive a third mirror by hand when an instantiation at

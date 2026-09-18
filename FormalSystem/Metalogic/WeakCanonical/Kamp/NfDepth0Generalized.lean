@@ -325,7 +325,7 @@ PRESERVED & REUSABLE — DO NOT REMOVE. Sorry-free/axiom-free assets landed duri
 the v35 Phase 1 pass. Consumed by Route A′ (the revised zone-split from the
 Phase-0 regate decision): the `mpr` direction of `renameNF_eval_iff`
 and the `mergeNFSucc`/`mergeNF_succ_atom` merge definition below are reused to
-assemble the in-situ x=t collapse at `KampPrior.lean:391`. These look like generic
+assemble the in-situ x=t collapse at `KampPrior.lean:393`. These look like generic
 plumbing but are load-bearing for the live `completeness_ztime` chain.
 
 `renameNF f r` precomposes a normal form's atom/quant layers with an index map.
@@ -344,7 +344,7 @@ conclusive-negative, which is WHY the project pivoted to Route A′ rather than 
     which `skipFin`/`unskipFin` satisfy) survives — and that half is what Route A′ uses.
   • Strike 3: value-duplication — proved the *abstract* leaf is a non-theorem (its quant
     `←` direction would manufacture a model witness from arbitrary `Bool` data). This
-    obstruction DISSOLVES in situ at `KampPrior.lean:391`, where the model supplies the
+    obstruction DISSOLVES in situ at `KampPrior.lean:393`, where the model supplies the
     witness — exactly why depth-0 `merge_forward` is true. Hence Route A′. -/
 
 /-- Lift an index map over a freshly-bound (`Fin.cons`) variable at position 0. -/
@@ -604,7 +604,7 @@ lives in the compatible (duplicated) subspace where a bare bijection would not. 
 
     PRESERVED & REUSABLE (Route A′ — the revised zone-split from the Phase-0 regate decision):
     this definition + `mergeNF_succ_atom` are the directly-reused merge assets for the in-situ
-    x=t collapse at `KampPrior.lean:391`. DO NOT REMOVE as "unused": the consumer lands in a
+    x=t collapse at `KampPrior.lean:393`. DO NOT REMOVE as "unused": the consumer lands in a
     later dispatch. -/
 noncomputable def mergeNFSucc {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k n : Nat}
@@ -1772,7 +1772,7 @@ x=t arm is NOT separable from the Phase-11 crux. See the Phase 10 blocker in
 These three small generic helpers were originally defined in `KampPrior.lean`. They are relocated
 here — a module BOTH `KampPrior` and the multi-anchor bridge (`NfMultiAnchorBridge`, via
 `NfZoneFlattenNavigable`) already import — so the bridge no longer needs to `import KampPrior`. This
-breaks the import cycle that blocked wiring the bound-anchor converter into `KampPrior.lean:391`
+breaks the import cycle that blocked wiring the bound-anchor converter into `KampPrior.lean:393`
 . Both are unchanged; only their home module moved. -/
 
 /-- For arity 1, there are no order atoms: every `AtomKind sig 1` is a pred atom. -/

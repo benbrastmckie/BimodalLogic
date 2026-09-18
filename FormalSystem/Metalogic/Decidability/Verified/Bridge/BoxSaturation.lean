@@ -21,7 +21,7 @@ the reason `sat_box_pos` carries `maxHeartbeats 1600000`. Isolating them means a
 memory failure here cannot take down `Bridge/Valuation.lean` or anything else already green.
 
 * `sat_box_temporal` — `T(□φ) @ l` puts `T(G φ) @ l` and `T(H φ) @ l` on the branch. This is the
-  `boxTemporal` rule (`Tableau.lean:635`), sound by `boxToFuture`/`boxToPast`, and it is the
+  `boxTemporal` rule (`Tableau.lean:637`), sound by `boxToFuture`/`boxToPast`, and it is the
   lemma the Phase 7 handoff names as missing.
 * `sat_all_future_pos` / `sat_all_past_pos` — `T(G φ) @ (w,t)` puts `T(φ)` at every `t'` in
   `timeOrd.futureOf t`, and dually for `H`.
@@ -36,7 +36,7 @@ coordinates, and no strengthening of the saturation hypothesis will make it: `bo
 
 The engine nevertheless closes `□p → □Gp`, `□p → □□p`, `□p → G□p` and `□p → ¬◇F¬p`, and the
 mechanism is visible in `Tableau.lean`: the label-minting rules copy the box/diamond context to
-the label they mint (`boxDiamondPersistence`, `Tableau.lean:434`, which appears in the output of
+the label they mint (`boxDiamondPersistence`, `Tableau.lean:436`, which appears in the output of
 six rules). So "`T(□φ)` is present at every known label" is a **branch invariant established at
 rule-application time**, not a consequence of `findUnexpanded = none`. `BoxContextClosed` below
 names that invariant; discharging it is an induction over tableau construction, not over the rule
@@ -205,7 +205,7 @@ into the full grid, via one further application of `sat_box_pos` at each time.
 
 It is not a saturation fact. `boxPos` emits `T(φ)`, never `T(□φ)`, so no rule table argument can
 produce it. It is established when labels are *minted*: `boxDiamondPersistence`
-(`Tableau.lean:434`) copies the world's box/diamond context onto every freshly minted time, and
+(`Tableau.lean:436`) copies the world's box/diamond context onto every freshly minted time, and
 the world-minting rules copy it onto every freshly minted world. Discharging `BoxContextClosed`
 is therefore an induction over tableau construction.
 -/
@@ -229,7 +229,7 @@ theorem sat_box_all_labels (b : Branch) (timeOrd : TimeOrdering)
 /-! ## `BoxContextClosed` is the wrong invariant, and this is why
 
 `BoxContextClosed` was named as the residual on the strength of `boxDiamondPersistence`
-(`Tableau.lean:434`). Reading the six call sites settles that it is **not** what the construction
+(`Tableau.lean:436`). Reading the six call sites settles that it is **not** what the construction
 maintains, on two independent counts. Both are recorded below as theorems about the engine's own
 definitions rather than as prose.
 
@@ -238,14 +238,14 @@ definitions rather than as prose.
    `branch.boxPosAtWorldTime l.world l.time` — the `T(□B)` sitting at the *triggering* label, not
    at every label. A `T(□φ)` at a different world is not copied to the fresh time.
 2. *World-minting does not copy box formulas at all — it copies their contents.* `boxNeg` and
-   `diamondPos` (`Tableau.lean:535`) run `branch.boxPosFormulas.filterMap` with the arm
+   `diamondPos` (`Tableau.lean:537`) run `branch.boxPosFormulas.filterMap` with the arm
    `| .box inner => SignedFormula.pos inner { world := freshWorld, time := bsf.label.time }`, so
    the fresh world receives `T(B)`, never `T(□B)`. `BoxContextClosed` therefore fails at the
    first minted world whenever any `T(□φ)` is on the branch — which is exactly the case it was
    introduced to serve.
 
 Nor does saturation repair the gap: the fresh-label rules are suppressed by `witnessPresent`
-(`Tableau.lean:1670`), whose test for `boxNeg`/`diamondPos` is the *witness* alone — `F(ψ)` (resp.
+(`Tableau.lean:1672`), whose test for `boxNeg`/`diamondPos` is the *witness* alone — `F(ψ)` (resp.
 `T(ψ)`) at some known world. The auto-propagation outputs are outside the test, so a saturated
 branch is under no obligation to carry them.
 
@@ -410,7 +410,7 @@ theorem knownTime_trichotomy {b : Branch} {timeOrd : TimeOrdering}
 **`BoxTemporalSpread` is not a fact about saturated branches, and so is not available as a
 construction invariant either.** It was adopted on the strength of the world-minting copy
 (`boxNeg`/`diamondPos` copy `branch.allFuturePosAtTime l.time` and `branch.allPastPosAtTime
-l.time` onto the fresh world, `Tableau.lean:553-559`), and that reading of the copy is correct as
+l.time` onto the fresh world, `Tableau.lean:555-559`), and that reading of the copy is correct as
 far as it goes. What it misses is that the copy happens at **one** time — the *triggering* label's
 `l.time` — while the box formula it is supposed to serve does not stay at one time. The
 time-minting rules run `boxDiamondPersistence branch l.world l.time freshTime`, which relabels

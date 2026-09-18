@@ -588,7 +588,7 @@ theorem bracketEndChar_kv_step_gate {sig : MonadicSignature} [Fintype sig.preds]
 
 The engine that converts the successor carrier's fiber-existential fold bit into a genuine interval
 witness (and back). This is the general-`k` analog of the depth-1 `hzone'` fold biconditional inside
-`bracketEndChar_k1v_complete` (`CarrierK1V.lean:1655`), where the pointwise `efoldOfNf1` read is
+`bracketEndChar_k1v_complete` (`CarrierK1V.lean:1657`), where the pointwise `efoldOfNf1` read is
 replaced by the fiber-existential `igFoldBit`:
 
 `igFoldBit qnf zs χ = true ↔ ∃ u, zoneHolds M [w,x,t] zs u ∧ NfEvalNf M k 1 (fun _ => u) χ`.
@@ -672,7 +672,7 @@ theorem igFoldBit_realize_iff {sig : MonadicSignature} [Fintype sig.preds] [Deci
 
 /-! ## Phase 4b — reused depth-1 completeness machinery (private helpers + depth-`k` sort)
 
-The depth-1 completeness engine `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1629`) is built from
+The depth-1 completeness engine `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1631`) is built from
 several PRIVATE helpers that are DEPTH-AGNOSTIC (the arrangement insertion sort `k1v_sorted_insert`,
 generic over the point-type `α`; the bracket assembler `k1v_bracket_construct`, over
 `List TemporalPred`; the arity-3 endpoint 1-type extractors `k1v_extract_x_nf3`/`_t_nf3`/`_y_nf`,
@@ -689,7 +689,7 @@ open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extr
   FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
 
 /-- **Depth-`k` arrangement selection** (general-`k` analog of
-    `k1v_sorted_realization`, `CarrierK1V.lean:1447`). Every list of complete depth-`k` 1-types each
+    `k1v_sorted_realization`, `CarrierK1V.lean:1449`). Every list of complete depth-`k` 1-types each
     realized somewhere strictly inside `(a, b)` admits a simultaneous arrangement — a permutation
     tagged with realizing points in strictly increasing model order. Distinctness is automatic:
     distinct complete `k`-types exclude each other at any single point (`nf_eval_unique M k 1`).
@@ -732,7 +732,7 @@ theorem igk_sorted_realization {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 The completeness half of the k→k+1 step. From a genuine depth-`(k+1)` realizer at bracket witness
 `w`, the successor carrier `.holds` at the FIXED endpoints `(x, t)`. This is the general-`k`
-transcription of `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1629`) with three substitutions:
+transcription of `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1631`) with three substitutions:
 
 1. the pointwise depth-1 fold bit `(efoldOfNf1 qnf).2 (zs, χ)` → the fiber-existential
    `igFoldBit qnf zs χ`, its fold biconditional supplied by `igFoldBit_realize_iff` (Phase 4b);

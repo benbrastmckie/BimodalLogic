@@ -324,7 +324,7 @@ to atomic E[Σ] endpoint literals via Prop 3.5 (pp.5,7); this section realizes e
 routing in Lean. NO new literal machinery: every case below discharges an EXISTING literal
 family of the Part-I predicates. The char-semantics hypotheses `hcb`/`hck`
 are the abstract form of the concrete `nfDepth0CharFormula` correctness
-(`nfPred_correct`) that the k1v template consumed (`CarrierK1V.lean:1672`). Witness bounds
+(`nfPred_correct`) that the k1v template consumed (`CarrierK1V.lean:1674`). Witness bounds
 come from realized zone membership (the arity-4 zoneHolds cons-iff helper,
 `SubBracket2.lean:538`) and the honest realization's own order channel — never a chain
 (LITMUS). -/

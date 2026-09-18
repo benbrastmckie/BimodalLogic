@@ -125,7 +125,7 @@ theorem kvE_zoneHolds_of_atom {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-- **A realizer's fresh point carries σ's atom fresh profile** (past side): if σ's atom layer
     holds at `[x1, w, x, t]`, then the exterior anchor `x1` realizes the depth-0 fresh profile
     `nf0ProjFresh σ.1`. Reads the atom layer only, so it reduces to the reachable public
-    side-neutral `kvE2_futFreshProfile` (`ExteriorNegation.lean:996`) via the depth-1 atom
+    side-neutral `kvE2_futFreshProfile` (`ExteriorNegation.lean:998`) via the depth-1 atom
     carrier `⟨σ.1, fun _ => false⟩` (whose `.1` is σ's atom layer). Exposed for the Phase
     4.2/4.3 self-point identification. -/
 theorem kvE_pastFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]

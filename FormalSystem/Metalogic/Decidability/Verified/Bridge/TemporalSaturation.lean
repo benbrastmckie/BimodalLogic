@@ -96,7 +96,7 @@ theorem strictBefore_of_mem_pastOf {ord : TimeOrdering} {t t' : TimeIndex}
 after the until's own time in the branch's order.
 
 **The ordered-witness disjunct.** Suppression is `witnessPresent … || trivialEventWitnessed …`
-(`Tableau.lean:1956-1957`). The second disjunct fires on exactly one trigger shape,
+(`Tableau.lean:1958-1957`). The second disjunct fires on exactly one trigger shape,
 `untl ⊤ ⊤` (that is, `F ⊤`), and on it the test consults the *ordering* alone: an already-ordered
 strictly-later time discharges the obligation because `⊤` holds there, so no witness formula need
 be on the branch. On that shape the old conclusion — a `t'` at which the event or the guard is

@@ -1931,7 +1931,7 @@ some strictly-later (resp. strictly-earlier) time; the branch is not consulted.
 branch literally carries `T(⊤) @ (w, t')` — the semantic obligation "some future time satisfies
 the event" is discharged by an already-ordered time alone. Acting on that is
 satisfiability-preserving in both directions, by exactly the argument the existing witness guard
-already gives above (`Tableau.lean:1786-1787`: "do not duplicate an existing witness"), specialised
+already gives above (`Tableau.lean:1788-1787`: "do not duplicate an existing witness"), specialised
 here to an event formula that needs no witness to duplicate. The past-directed arms are the
 time-reversal mirror.
 

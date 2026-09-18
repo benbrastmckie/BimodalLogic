@@ -52,7 +52,7 @@ settled design, 347 adjudication verdict (b)).
    `bracketEndChar_kvE2Ext_holds_iff` (`holds ↔ interior holds ∧ bracketPast @ x ∧
    bracketFut @ t`).
 
-All per-side `_sound`/`_complete` lemmas (ExteriorNegation.lean:1243/:1484,
+All per-side `_sound`/`_complete` lemmas (ExteriorNegation.lean:1245/:1484,
 ExteriorNegationPast.lean:581/:855) are CALLED, never re-proved (H7: those files are
 read-only territory; the two small zone-coupling lifts they keep `private` are mirrored
 here file-locally, the sanctioned Phase-5/6 porting pattern).
@@ -94,7 +94,7 @@ private theorem temporal_truth_and_iff {sig : MonadicSignature} [Fintype sig.pre
 /-! ## The six per-side interior/boundary zone lists (the `hbits` index sets)
 
 Future side: the six at-or-below-`t` outer zones (Phase-4 `hbits` disjunction,
-ExteriorNegation.lean:1496-1498). Past side: the six at-or-above-`x` outer zones
+ExteriorNegation.lean:1498-1498). Past side: the six at-or-above-`x` outer zones
 (Phase-6 `hbits` disjunction, ExteriorNegationPast.lean:867-869). -/
 
 /-- The six at-or-below-`t` outer zone-3 constants (future-side `hbits` index set). -/
@@ -192,11 +192,11 @@ theorem kvE2_pastMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     exact ⟨⟨h1, h2⟩, fun zs hzs χ _ => h3 zs hzs χ⟩
 
 /-! ## Zone-4 / zone-3 coupling lifts (file-local mirrors of the private
-`kvE2_futZone4_below_iff` / `kvE2_pastZone4_above_iff`, ExteriorNegation.lean:344 /
+`kvE2_futZone4_below_iff` / `kvE2_pastZone4_above_iff`, ExteriorNegation.lean:346 /
 ExteriorNegationPast.lean:697 — the sanctioned Phase-5/6 private-mirror porting pattern) -/
 
 /-- An at-or-below-`t` zone-3 witness sits below any `x1 > t` (mirror of the private
-    ExteriorNegation.lean:332). -/
+    ExteriorNegation.lean:334). -/
 private theorem extBk_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
@@ -210,7 +210,7 @@ private theorem extBk_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Lift an at-or-below-`t` zone-3 fact to the corresponding zone-4 fact (coupling
     `(true, false)` to a fresh `x1 > t`), and back (mirror of the private
-    ExteriorNegation.lean:344). -/
+    ExteriorNegation.lean:346). -/
 private theorem extBk_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier) (htx1 : t < x1)

@@ -105,7 +105,7 @@ theorem kvE2_sepBody_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
     exact ⟨_, ⟨wo, hwo, rfl⟩, hvea⟩
 
 /-! ## O1b — non-vacuity (fresh analog of `kvE_subBracket2V_nonvacuous`,
-`SubBracket2V.lean:1425`; FM-vac discipline: the honest configuration must take the
+`SubBracket2V.lean:1427`; FM-vac discipline: the honest configuration must take the
 gate-true branch and produce a NON-empty disjunct list, so no later direction can close
 vacuously). -/
 
@@ -317,7 +317,7 @@ private theorem kvE2_sep_dropFresh_eq {sig : MonadicSignature} [Fintype sig.pred
     exact kvE2_sep_boolEq (h4.symm.trans h3)
 
 /-- **Arity-3 outer zone consistency** (fresh analog of the private arity-4
-    `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1270` — template only, new code):
+    `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1272` — template only, new code):
     a point realized in some zone relative to the honest `[w,x,t]` (with `x < w < t`)
     sits in one of the SEVEN consistent outer zones (Def 3.1, PDF pp.2-3). -/
 private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature} [Fintype sig.preds]
@@ -502,7 +502,7 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds]
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
 
 /-- **The depth-2 joint gate holds for an honest `qnf`** (the arity-3 lift of
-    `kvE_subBracket2V_gate_holds_of_honest`, `SubBracket2V.lean:1392`): from an honest
+    `kvE_subBracket2V_gate_holds_of_honest`, `SubBracket2V.lean:1394`): from an honest
     depth-2 realization at `[w,x,t]` under `x < w < t`, all four gate clauses hold —
     (i)/(ii) by realizing each positive sub and reading its atom layer against the model
     (Prop 4.2, PDF p.3); (iii) via the landed depth-1 fold decomposition

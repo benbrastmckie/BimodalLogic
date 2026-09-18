@@ -36,7 +36,7 @@ This module lands the **design-invariant determinacy core** of that channel:
    arity-1 shadow `χ`. At `k = 0` this is definitionally the frozen `kvE2FutAnyBit`
    (agreement lemma `kvE_futAnyBit_zero`).
 4. `kvE_futAnyBit_correct` — the depth-`k` honesty biconditional (the generalization of
-   `kvE2_futAnyBit_correct`, ExteriorNegation.lean:148): under realized `qnf`,
+   `kvE2_futAnyBit_correct`, ExteriorNegation.lean:150): under realized `qnf`,
    `(∃ v, zoneHolds … zs v ∧ NfEvalNf M k 1 (fun _ => v) χ) ↔ kvEFutAnyBit qnf zs χ`.
    This IS the depth-`k` `habove`/`hbelow` pin the Phase-2 bracket lemmas consume, in the
    exact `NormalForm sig k 1` / `NfEvalNf M k 1` shape the plan prescribes.
@@ -220,7 +220,7 @@ theorem nf_eval_projFreshD {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     (nf_eval_projFresh M env v σ hσ)
 
 /-- **Depth-`k` zone-fact bit** (the generalization of `kvE2FutAnyBit`,
-    ExteriorNegation.lean:102, to `qnf : NormalForm sig (k+2) 3` and depth-`k` profiles
+    ExteriorNegation.lean:104, to `qnf : NormalForm sig (k+2) 3` and depth-`k` profiles
     `χ : NormalForm sig k 1`): whether some positive sub of `qnf` sits in the outer zone
     `zs` of `[w,x,t]` with fresh depth-`k` shadow `χ`. Zone read off the atom layer
     (`nf0ZoneSpec`, lossless — depth-0-only losslessness used ONLY on the atom layer,
@@ -233,7 +233,7 @@ noncomputable def kvEFutAnyBit {sig : MonadicSignature} [Fintype sig.preds]
     decide (nf0ZoneSpec σ'.1 = zs) && decide (kvEProjFreshD σ' = χ)
 
 /-- **Depth-`k` zone-fact honesty** (the symbolic-`k` generalization of
-    `kvE2_futAnyBit_correct`, ExteriorNegation.lean:148 — Cor 5.4 zone-fact channel, one
+    `kvE2_futAnyBit_correct`, ExteriorNegation.lean:150 — Cor 5.4 zone-fact channel, one
     fold-layer deeper): under realized `qnf`, the syntactic bit reads the actual depth-`k`
     zone fact of `[w,x,t]`, for EVERY `zs`. This is the depth-`k` `habove`/`hbelow` pin in
     the exact `NormalForm sig k 1` / `NfEvalNf M k 1` shape the Phase-2 bracket lemmas
@@ -388,7 +388,7 @@ theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
 
 /-- At the k=2 rung (`k = 0` parameter) the depth-`k` fresh shadow is definitionally the
     frozen depth-0 fresh-profile read `nf0ProjFresh ∘ (·.1)` (the channel
-    `kvE2FutAnyBit` uses, ExteriorNegation.lean:102). -/
+    `kvE2FutAnyBit` uses, ExteriorNegation.lean:104). -/
 theorem kvE_projFreshD_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (σ : NormalForm sig 1 (n + 1)) :
@@ -402,7 +402,7 @@ theorem kvE_projFreshD_zero {sig : MonadicSignature} [Fintype sig.preds] [Decida
   | .order i j h => exact absurd (Subsingleton.elim i j) h
 
 /-- At the k=2 rung the depth-`k` zone-fact bit IS the frozen `kvE2FutAnyBit`
-    (ExteriorNegation.lean:102) — the new channel is not weaker than the green original. -/
+    (ExteriorNegation.lean:104) — the new channel is not weaker than the green original. -/
 theorem kvE_futAnyBit_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :
     kvEFutAnyBit (k := 0) qnf zs χ = kvE2FutAnyBit qnf zs χ := by
@@ -411,7 +411,7 @@ theorem kvE_futAnyBit_zero {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 
 /-- Sanity (plan Phase-2 task): at the k=2 rung the depth-`k` honesty lemma
     `kvE_futAnyBit_correct` yields exactly the frozen `kvE2_futAnyBit_correct`
-    (ExteriorNegation.lean:148) — interderivability of the new decl with the original. -/
+    (ExteriorNegation.lean:150) — interderivability of the new decl with the original. -/
 example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (qnf : NormalForm sig 2 3)

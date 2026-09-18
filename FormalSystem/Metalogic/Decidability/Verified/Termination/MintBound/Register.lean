@@ -68,7 +68,7 @@ already been here.
    the frame class. The cause in one line: `estimateBranchDifficulty` sums over the branch **list**
    and adds `b.length / 4`, confinement to `U` bounds only `b.toFinset`, and no `Nodup` invariant on
    a branch exists anywhere in the development — successors are built as raw `formulas ++ b` with no
-   `eraseDups` (`Tableau.lean:2233-2239`) and avoiding a `Nodup` side condition was a deliberate
+   `eraseDups` (`Tableau.lean:2235-2239`) and avoiding a `Nodup` side condition was a deliberate
    design goal (`BranchOrder.lean:275-290`). So a `U`-confined branch can be arbitrarily long, and
    `estimateBranchDifficulty_length_le` turns any difficulty bound into a bound on that length.
 

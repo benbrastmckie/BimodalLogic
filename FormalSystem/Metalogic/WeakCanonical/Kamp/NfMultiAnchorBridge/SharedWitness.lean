@@ -40,14 +40,14 @@ cited by PDF page):
   refined sub-interval (**Cor 5.4**, PDF p.5), keyed per arrangement by the position of
   each σ's fresh-witness slot.
 - `epL`/`epR`/`ptW` carry (i) `qnf.1`'s endpoint 1-types, (ii) each interior σ's
-  exterior/boundary `charBase` literals (per-σ `epL`/`epR` content, `SubBracket2V.lean:183-192`),
+  exterior/boundary `charBase` literals (per-σ `epL`/`epR` content, `SubBracket2V.lean:185-192`),
   and (iii) the σ-LEVEL navigation literals for the five non-interior outer placements —
   `Since`/`Until` `charK`-atom literals at the fixed endpoints (**Prop 3.5**, PDF p.3: the
   reconstruction rides the temporal evaluation point; LITMUS: no `x1 < e_i` literal).
 - Gate-failure branch `{ disjuncts := [] }` under the depth-2 gate: outer off-fiber falsity,
   outer seven-zone consistency (the joint witness self-zone `zAtW3` included — nine-zone
-  lesson one level up, `SubBracket2V.lean:160-166`), inner off-fiber for every positive σ,
-  and the inner NINE-zone consistency (verbatim `SubBracket2V.lean:1400-1408` pattern set,
+  lesson one level up, `SubBracket2V.lean:162-166`), inner off-fiber for every positive σ,
+  and the inner NINE-zone consistency (verbatim `SubBracket2V.lean:1402-1408` pattern set,
   including both witness self-zones `zAtX1`/`zAtW`) for left-interior positives.
 
 **Recorded scope decision (Phase 7).** Positive subs are classified by their OUTER zone

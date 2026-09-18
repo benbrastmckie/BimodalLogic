@@ -22,7 +22,7 @@ body built from the two landed discharge lemmas `bracketEndChar_kv_correct_prior
 BELOW
 `CarrierK1V` in the import order (they transitively import `CarrierK1V`, since
 `BracketEndCharCarrierV`
-is defined at `CarrierK1V.lean:365`). Filling `endIntervalStep` in place would invert the
+is defined at `CarrierK1V.lean:367`). Filling `endIntervalStep` in place would invert the
 `CarrierK1V ↔ ExteriorGateAssembleK` import edge (a cycle). The pre-planned contingency (research
 §9.1, plan Risk table) relocates the reshaped defs to this new leaf below `ExteriorGateAssembleK`.
 
@@ -286,7 +286,7 @@ theorem endInterval_step_correct {sig : MonadicSignature} [Fintype sig.preds]
     `endInterval_step_correct`: for every `k`, the recursion carrier
     `endIntervalPrior atomMap h_surj charF Pfam` satisfies the depth-cased obligation-carrying
     correctness motive `EndIntervalCorrectPrior`. The prose heading `endInterval_correct` at
-    `CarrierK1V.lean:2097` refers to this declaration's role; this is its realization on the
+    `CarrierK1V.lean:2099` refers to this declaration's role; this is its realization on the
     LIVE (relocated-leaf) path. Cross-reference: `endInterval_step_correct` (the proof),
     `endIntervalPrior` (the carrier), `EndIntervalCorrectPrior` (the motive).
     Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/

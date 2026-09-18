@@ -528,7 +528,7 @@ a working repair.
 **Obligation map — the density coordinate is a second, independent gap.** Even setting the σ-hit
 verdict aside, this predicate carrying only the `selfGuardPotential` disjunct is separately
 refutable at `.Dense` / `.RTime` by a `densityRule` vehicle: `densityRule` returns `.persistent`
-(`Tableau.lean:1385`), which `expandOnceUnblocked` maps to `.extended`, so
+(`Tableau.lean:1387`), which `expandOnceUnblocked` maps to `.extended`, so
 it is inside this predicate's scope, and it mints a fresh time while lying outside **both**
 `freshLabelRules` and `selfGuardRules` — no disjunct moves at all. The intended component is
 `gapPotential`, indexed by `U ×ˢ U` and gated on `denseRules`; it is a **named residual**,
@@ -743,7 +743,7 @@ than another disjunct fitted to the same ledger, and that nothing here is implem
 *The exposure the verdict does not cover.* `MintPaysForTimeAt` carrying only the
 `selfGuardPotential` disjunct is separately refutable at `.Dense` / `.RTime` by a `densityRule`
 vehicle, on grounds that have nothing to do with the σ-hit hazard. `densityRule` is inside the
-predicate's scope — it returns `.persistent` (`Tableau.lean:1385`), which `expandOnceUnblocked` maps
+predicate's scope — it returns `.persistent` (`Tableau.lean:1387`), which `expandOnceUnblocked` maps
 to `.extended` — and it mints a fresh time while sitting outside **both**
 `freshLabelRules` and `selfGuardRules`. So a `densityRule` step moves no disjunct of the predicate
 at all, at any `U`, independently of everything above. `freshTimeRules_incomparable_freshLabelRules`
@@ -752,10 +752,10 @@ is the census fact that puts it outside the first list; `selfGuardRules` exclude
 *The intended component, named so that its absence is legible.* `gapPotential`, indexed by `U ×ˢ U`
 rather than by `selfGuardRules ×ˢ U`. The index shape is forced by the rule's own argument:
 `densityRule` splits each *maximal unfilled gap* at most once, and a gap is a **pair**, so the
-ledger transcribes the rule's own `gapTargets` filter (`Tableau.lean:1364-1366`) —
+ledger transcribes the rule's own `gapTargets` filter (`Tableau.lean:1366-1366`) —
 `(timeOrd.futureOf t').isEmpty`, together with `t'` lying below no other future time of the trigger
 — rather than any per-rule discharge test. It is therefore quadratic in `|U|` where
-`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean:1593`), so it
+`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean:1595`), so it
 contributes nothing at `.Base` / `.ZTime`.
 
 *That it has to be a separate clause is not this development's invention.* In the mosaic

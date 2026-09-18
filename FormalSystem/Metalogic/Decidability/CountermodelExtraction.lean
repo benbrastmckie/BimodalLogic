@@ -517,7 +517,7 @@ formula is `F(event)`), `untlPos` otherwise — so in both cases suppression is 
 guard, and the witness's own label puts its time in `Branch.knownTimes`.
 
 **The second disjunct.** Suppression is now `witnessPresent … || trivialEventWitnessed …`
-(`Tableau.lean:1956-1957`). `trivialEventWitnessed` fires on exactly one shape,
+(`Tableau.lean:1958-1957`). `trivialEventWitnessed` fires on exactly one shape,
 `untl ⊤ ⊤` (that is, `F ⊤`), and on that shape it consults the *ordering* and not the branch: an
 already-ordered strictly-later time discharges the existential obligation because `⊤` holds
 there, with no witness formula needed. So on `F ⊤` the branch may carry no witness at all, and

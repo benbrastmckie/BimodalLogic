@@ -75,7 +75,7 @@ Outstanding, and deliberately not claimed anywhere below:
 
 1. **The branching arms.** Everything here covers `.extended` steps and the `NoSplit` invariant.
    `expandBranchWithFuel`'s `.split` / `.splitOrdered` arms fold over sub-branches and can report
-   `none` through `resolveOpenArm` (`Saturation.lean:661-664, :686-689`), which is a distinct
+   `none` through `resolveOpenArm` (`Saturation.lean:663-664, :686-689`), which is a distinct
    obligation from the step bound and from the budget guard.
 2. **`buildTableau_isSome` is false as an unconditional statement**, and this is a defect of the
    *statement*, not of the engine. `buildTableau` calls `expandBranchWithFuel` at the default
@@ -1518,7 +1518,7 @@ theorem expandBranchWithFuel_nil_isSome (fuel : Nat) (ord : TimeOrdering)
 
 The budget half of this residual is exactly as report 06 §4 describes, and the description is
 confirmed here: in both split arms `branchesUsed'` is a `let` bound **once, before** the fold
-(`Saturation.lean:646, :675`) and the *same* value reaches every sibling (`:654, :681`), while the
+(`Saturation.lean:648, :675`) and the *same* value reaches every sibling (`:654, :681`), while the
 fold's accumulator carries only the `Option` and no counter. Sibling usage is therefore not
 accumulated — the budget is **path-shaped**, and the linear invariant
 `branchesUsed + β * fuel ≤ maxBranches` is preserved by every arm. `splitBudget_preserved` below
@@ -1529,7 +1529,7 @@ is that preservation, with `β` a hypothesis on `branches.length` rather than th
 **But the budget is not the binding constraint in the split arms, and the fuel is.** This is new,
 and it corrects the residual's "orthogonal to the fuel figure" framing. Source:
 
-* `estimateBranchDifficulty` (`Saturation.lean:360-364`) is `1 + 3*tempCount + 2*modCount + len/4`,
+* `estimateBranchDifficulty` (`Saturation.lean:362-364`) is `1 + 3*tempCount + 2*modCount + len/4`,
   so it is **always ≥ 1** — no arm is ever starved to `0` by a zero difficulty.
 * `allocateFuelProportionally (fuel+1) branches` hands each arm
   `min (max 1 (fuel.succ * d / max 1 totalDifficulty)) fuel` — a **proportional share**, and the
@@ -1889,7 +1889,7 @@ uses of it is only the *branch* half: identification retires one time outright, 
 component of the measure strictly drops and the arm is discharged there.
 
 **`timeLinearity` is the only rule producing `.branchingOrdered`** — `applyRule`'s
-`.timeLinearity` case (`Tableau.lean:1513-1520`) is its sole construction site, and
+`.timeLinearity` case (`Tableau.lean:1515-1520`) is its sole construction site, and
 `findApplicableRule`'s own `.branchingOrdered` arm records the same fact ("the only rule that
 produces this constructor"). So the decrease theorem below covers every ordered split the engine
 can take. -/

@@ -53,7 +53,7 @@ open FormalSystem.ProofSystem
 open FormalSystem.Automation
 
 /--
-Cancellable `IO` mirror of `saturateBlocked` (Saturation.lean:495).
+Cancellable `IO` mirror of `saturateBlocked` (Saturation.lean:497).
 
 Continues expanding a blocked branch, rejecting steps that introduce new
 time constraints, until saturated or closed. Returns `none` only on abort
@@ -255,7 +255,7 @@ decreasing_by all_goals simp_wf
 
 
 /--
-Cancellable `IO` mirror of `buildTableau` (Saturation.lean:555).
+Cancellable `IO` mirror of `buildTableau` (Saturation.lean:557).
 
 Builds a complete tableau for `¬φ` using the two cancellable helpers; an
 observed abort surfaces as `none` (→ `.fuelExhausted` upstream).

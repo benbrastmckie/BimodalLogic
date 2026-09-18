@@ -92,7 +92,7 @@ variable (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
 
 Order-bit rows of `qnf.1` at env `[w, x, t]`. The exterior rows are the delivered
 `navDOrderRow` (`w < x < t`, ExteriorNavPastK1.lean:841) and `navROrderRow`
-(`x < t < w`, ExteriorNavFutK1.lean:1246). The three new rows below cover the point
+(`x < t < w`, ExteriorNavFutK1.lean:1248). The three new rows below cover the point
 and interior positions. Conjunct ORDER is load-bearing: `aggOdRowInt`'s conjuncts are
 exactly the six hypotheses of `bracketEndChar_kv_correct_one_prior` in order. -/
 
@@ -548,7 +548,7 @@ theorem aggOdZone3F_bot_eval_false (M : OrderedMonadicStructure sig)
 
 The point channels collapse (Lemma 3.2(2)) to the fixed-anchor arity-2 evaluation
 `NfEvalNf M 1 2 [x, t] sub_nf` — a TWO-PIN object. The delivered `agg2Past` carrier
-(AggregateHookDischarge.lean:492) already packages exactly the right fiber content
+(AggregateHookDischarge.lean:494) already packages exactly the right fiber content
 (endpoint packs at `x`/`t` + interior arrangement bracket + gate); the delivered
 correctness `agg2Past_holdsRight_iff` reads it ONE-FREE-VARIABLE (`∃ x < t` folded at
 `t`). Here we prove the POINTWISE 2-pin reading at the fixed pair `(x, t)` under the
@@ -1303,7 +1303,7 @@ theorem aggPop1_correct (M : OrderedMonadicStructure sig)
 classification (`aggOdRow*F`/`aggOdClassifyF`) stays unconsumed. The future arm
 reuses the SAME `x < t`-keyed dispatcher `CAggOd` through the BIJECTIVE index swap
 `aggOdSwap12` (the involution of `Fin 3` fixing the witness slot 0 and swapping the
-pin slots 1 ↔ 2), transported by `renameNF_eval_iff` (NfDepth0Generalized.lean:440
+pin slots 1 ↔ 2), transported by `renameNF_eval_iff` (NfDepth0Generalized.lean:442
 — the full bidirectional rename congruence, applicable exactly because the swap is
 a bijection, unlike the Phase-12 merge maps): at pins `(z0, z1) = (t, x)` with the
 flipped ambient `t < x`, `CAggOd.clause_iff` yields the population existential at

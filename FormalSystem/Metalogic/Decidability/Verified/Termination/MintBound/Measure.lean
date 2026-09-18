@@ -184,7 +184,7 @@ therefore change nothing, which is why `Saturation.lean` is deliberately left un
 over the branch **list** — `Branch` is `List SignedFormula` (`SignedFormula.lean:240`), not a
 finite set. Every confinement fact in this development, `∀ x ∈ b, x ∈ U` included, is a statement
 about `b.toFinset`, and **nothing in the repository asserts a branch is `Nodup`**: successors are
-built as raw `formulas ++ b` with no `eraseDups` (`Tableau.lean:2233-2239`), and avoiding a `Nodup`
+built as raw `formulas ++ b` with no `eraseDups` (`Tableau.lean:2235-2239`), and avoiding a `Nodup`
 side condition was a deliberate design goal (`BranchOrder.lean:275-290`). A `U`-confined branch may
 therefore be arbitrarily long, so no fixed `D` bounds `estimateBranchDifficulty` on it. The
 statement below is consequently **false at every `D`** at any `U` the engine fires on —
@@ -631,7 +631,7 @@ by the branch, and only `OrdTimesKnown` ties the two together.
 
 ### The obligation map
 
-`applyRule` (`Tableau.lean:630`) has **36** arms. Every one is accounted for here; the largest
+`applyRule` (`Tableau.lean:632`) has **36** arms. Every one is accounted for here; the largest
 emitted list anywhere is `2 + 4 * b.length`, so a successor `formulas ++ b` has length at most
 `2 + 5 * b.length` and `c = 5` suffices.
 
@@ -655,7 +655,7 @@ emitted list anywhere is `2 + 4 * b.length`, so a successor `formulas ++ b` has 
 * `.densityRule` 1338: `witness :: gProps`, so at most `1 + b.length`.
 * `.allFutureNeg` 760, `.allPastNeg` 800, `.someFuturePos` 831, `.somePastPos` 875:
   `witness :: gProps ++ fNegProps ++ modalProps`, where `modalProps` is
-  `boxDiamondPersistence` (`Tableau.lean:434-442`) and is itself two branch `filterMap`s
+  `boxDiamondPersistence` (`Tableau.lean:436-442`) and is itself two branch `filterMap`s
   concatenated — four branch-length terms in all, so at most `1 + 4 * b.length`.
 * the `.branching` arms of `.untlPos` 921, `.sncePos` 968, `.untlNeg` 1013, `.snceNeg` 1144:
   `[…] ++ autoProp` with `autoProp = gProps ++ fNegProps ++ modalProps`, so at most

@@ -127,7 +127,7 @@ import Mathlib.Data.List.Permutation
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndCharK1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
--- wiring this bridge into `KampPrior.lean:391`. The two symbols this file used from KampPrior
+-- wiring this bridge into `KampPrior.lean:393`. The two symbols this file used from KampPrior
 -- (`nfQuantClauseTl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
@@ -278,7 +278,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.BoundedFi
 -- exclusion theorem of the same class as `prior_makes_disjunct2_unreachable`, which would rot
 -- invisibly under `Kamp/Boneyard/`. Nothing in `EANegationFix/` is edited: `negFixOne`,
 -- `negFixOne_cover`, `negFixOne_iff` and the `ℤ` probe `NegFixGateProbe` stay live and consumed
--- (`NfMultiAnchorBridge/Base.lean:1416` cites them). The module contains no sorries and every
+-- (`NfMultiAnchorBridge/Base.lean:1418` cites them). The module contains no sorries and every
 -- declaration is axiom-clean. Cycle-free: it imports `Kamp.EANegationFix.NegFixOne`,
 -- `Kamp.EANegationFixFaithful.BoundedFixAnchoredFaithful` and `Kamp.VecEACombinators`, all already
 -- in this file's transitive closure above, plus `Mathlib.Data.Real.Basic` /
@@ -401,7 +401,7 @@ these three refuted routes (the Phase-11b projection lineage + the import-cycle 
   `TemporalPred`s, not depth-0 atomic brackets.
 - **(c) Do NOT** re-attempt an arity-1-collapse repair for the diagonal arm
   (`char_k1 (diagCollapse sub_nf)`). At depth `k+1` this is the documented **non-theorem**
-  (`NfDepth0Generalized.lean:1691-1719`; `liftIdx r` non-injective, `←` fails).
+  (`NfDepth0Generalized.lean:1693-1719`; `liftIdx r` non-injective, `←` fails).
 
 **Settled**: the diagonal collapse (`renameNF_eval_diag0`) is used **only at the depth-0
 atom layer**, where it is a proven iff. The depth-`(k+1)` quant layer goes through the

@@ -489,7 +489,7 @@ Reynolds' six sentences become six named lemmas; the last of them closes the con
 
 **The hypothesis Reynolds does not name.** His *"by lemma 6 begins with a point `q`"* is the third
 clause of Lemma 6, which in this tree is `reynolds_lemma6_right_endpoint`
-(`BadIntervals.lean:1281`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
+(`BadIntervals.lean:1283`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
 point at or above `t` is an `R`-point"* — because Reynolds' *"plainly impossible given `ρ`"* step
 inside it needs Lemma 6's **first** clause (*"in any bad interval both `R` and `L` hold
 throughout"*) at the boundary point, and the landed development declined to assume that silently.
@@ -805,7 +805,7 @@ maximal interval. The obstruction is exact and was measured, not guessed:
 * but `IsBadIntervalSurgery.interior` demands `ClassInteriorToBadInterval`, which carries `R`
   **and** `L` throughout its segment;
 * closing that gap is the implication `L → R` at a point where only `L` is known. The landed
-  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1346`) proves it, but only from a
+  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1348`) proves it, but only from a
   `ClassInteriorToLInterval` witness, and producing that witness at a merely-`L` point was exactly
   what was missing.
 

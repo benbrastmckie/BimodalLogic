@@ -83,12 +83,12 @@ def kvE2SepZWX1 : ZoneSpec 4 :=
   Fin.cons (true, false) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))))
 
 /-- Left-interior fresh-witness self-zone `v = x1` (with `x1 < w`); defeq to
-    `kvESubBracket2V`'s internal `zAtX1` (`SubBracket2V.lean:165`). -/
+    `kvESubBracket2V`'s internal `zAtX1` (`SubBracket2V.lean:167`). -/
 def kvE2SepZAtX1L : ZoneSpec 4 :=
   Fin.cons (false, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))))
 
 /-- Left-interior shared-witness self-zone `v = w` (with `x1 < w`); defeq to
-    `kvESubBracket2V`'s internal `zAtW` (`SubBracket2V.lean:166`). -/
+    `kvESubBracket2V`'s internal `zAtW` (`SubBracket2V.lean:168`). -/
 def kvE2SepZAtWL : ZoneSpec 4 :=
   Fin.cons (false, true) (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))))
 
@@ -121,7 +121,7 @@ lesson: NO `let`-buried internals — `rw`/`rfl` must see through every name) -/
 
 /-- Sub-level fold-bit read (Def 4.1, PDF p.5): `σ.2 ∘ nf0Assemble` at gate instance
     `j = 0`, the same consume-do-not-rebuild read as `kvESubBracket2V`
-    (`SubBracket2V.lean:145-146`), exposed at top level. -/
+    (`SubBracket2V.lean:147-146`), exposed at top level. -/
 def kvE2SepBits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) (χ : NormalForm sig 0 1) : Bool :=
   σ.2 (nf0Assemble zs χ σ.1)
@@ -274,7 +274,7 @@ def kvE2SepSlotRank {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
 
 /-- Left-interior fresh-witness point type: the `charK (nfkProjFresh σ)` E[Σ]-atom head
     (Lemma 5.1, PDF p.3 — an atom typing its OWN point only; no-nesting) PLUS σ's `zAtX1`
-    self-zone literals (nine-zone lesson, `SubBracket2V.lean:207-215` pattern). -/
+    self-zone literals (nine-zone lesson, `SubBracket2V.lean:209-215` pattern). -/
 noncomputable def kvE2SepPtX1L {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : TemporalPred :=

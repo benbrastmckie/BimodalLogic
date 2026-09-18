@@ -13,14 +13,14 @@ Builds the aggregate ∀-qnf population encoding for the `KampPrior.lean` `| 1 =
 discharges the three arm-correctness hooks (past / diagonal / future) as separate green citable
 lemmas at match arms k=0 (`sub_nf : NormalForm sig 1 2`) and k=1 (`sub_nf : NormalForm sig 2 2`),
 each concluding in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(`KampPrior.lean:1146`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:677`).
+(`KampPrior.lean:1148`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:679`).
 
 ## Phase-1 adjudication record (R1/R2/aggregation verdicts — BINDING)
 
 **R1 verdict (Route V confirmed; Route P refuted for interior-positive populations).** The
 literal P4/P5 `h_quant` binder pair `(quantEnd : TemporalPred) × (seg : BracketFormula 0)`
-(`nf_char2_past_formula_correct`, Base.lean:1262; `nf_char2_future_formula_correct`,
-Base.lean:1462) cannot host interior-POSITIVE population clauses: a `BracketFormula 0` has NO
+(`nf_char2_past_formula_correct`, Base.lean:1264; `nf_char2_future_formula_correct`,
+Base.lean:1464) cannot host interior-POSITIVE population clauses: a `BracketFormula 0` has NO
 point slots (`IntervalPattern.holds` at `n = 0` is purely the universal segment form,
 ExistsForallNF:106-112), so it can carry only universal-over-interval exclusions, and a closed
 `quantEnd` evaluated at the bound witness `x` cannot lay a SECOND witness strictly between `x`
@@ -28,19 +28,19 @@ and the origin `t` (the interior-zone existential `∃ v, x < v ∧ v < t ∧ �
 POINT slot — §5 bracket notation, Rabinovich 2014 PDF p.7). Any population `sub_nf` with a
 positive interior fiber therefore escapes the pair shape. The primary assembly (Route V) builds
 the arm at the `VVecEA2` level — interior-positive fibers occupy bracket WITNESS slots over
-arrangements, exactly the `bracketEndCharK1v` device (`CarrierK1V.lean:433`) one arity down —
+arrangements, exactly the `bracketEndCharK1v` device (`CarrierK1V.lean:435`) one arity down —
 and enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:451) /
 `VVecEA2.translateLeft_correct` (VecEATranslation.lean:549). The DoD binds only the
 skeleton-shaped conclusions, which Route V produces directly.
 
 **R2 verdict (A_diag_correct per-point hooks undischargeable; additive diag variant landed).**
-`A_diag_correct`'s hooks (Base.lean:765-773) demand, for a FIXED syntactic
+`A_diag_correct`'s hooks (Base.lean:767-773) demand, for a FIXED syntactic
 `pastEnd : NormalForm sig k 3 → TemporalPred`, the per-point biconditional
 `∀ w < t, (pastEnd qnf).EvalAt M atomMap w ↔ NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf`.
 This is the free-anchor obstruction machine-established by `endChar0_correct`'s counterexample
-record (Base.lean:1068-1079) and by the sorry-free refutation pair
+record (Base.lean:1070-1079) and by the sorry-free refutation pair
 `endCharN0_correct_world_local_obstruction` / `endCharN0_correct_infeasible`
-(Base.lean:1777/1811): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
+(Base.lean:1779/1811): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
 while the RHS constrains the predicate layer at the anchor position `t` (indices 1, 2 of the
 env `[w, t, t]`) — no choice of closed `pastEnd` can bridge this. The diag arms below therefore
 do NOT instantiate `A_diag_correct`; they land additive variants with the same skeleton-shaped
@@ -69,7 +69,7 @@ the order-consistent `ZoneSpec 2` values) with strictly fewer moving parts.
 ## The six target statements (Phase 1 freeze — shapes BINDING for Phases 2-5)
 
 Conclusion shapes copied verbatim from the `kampPrior_site_trichotomy` disjuncts
-(KampPrior.lean:677-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
+(KampPrior.lean:679-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
 under the Prior-guarded skeleton. Delivered by Phase 3 (k=0) and Phase 5 (k=1):
 
 ```
@@ -416,7 +416,7 @@ theorem aggBracket_construct {sig : MonadicSignature} [Fintype sig.preds] [Decid
 The "aggregate quantEnd/seg construction" at depth 0, past arm: a single `VVecEA2` whose
 Since-direction semantics `holdsRight` at the origin `t` is EXACTLY the past trichotomy
 disjunct `∃ x, x < t ∧ NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`. Built by the
-`kvBody` device one arity down (`bracketEndCharK1v`, CarrierK1V.lean:433, is the template):
+`kvBody` device one arity down (`bracketEndCharK1v`, CarrierK1V.lean:435, is the template):
 
 - fold bits `agg2Bit` read `sub_nf.2` POINTWISE through the depth-0 split kit (`nf0Assemble`
   — lossless at depth 1, `nf0_split_assemble`); every read of `sub_nf.2` goes through them;
@@ -1680,8 +1680,8 @@ end AggDiagK0
 /-! ## Phase 3 — k=0 hook discharge: the three arm lemmas (match arm k=0)
 
 The three green citable lemmas in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(KampPrior.lean:1146) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
-corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:677-684).
+(KampPrior.lean:1148) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
+corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:679-684).
 `h_UZ`/`h_SZ` are carried (unused — the k=0 aggregates need no Prior hypotheses, matching the
 k≤1 rungs `bracketEndChar_kv_correct_{zero,one}_prior`) so the statements slot directly under
 the Prior-guarded skeleton. These discharge the P4/P5 `h_quant` hooks and the `A_diag_correct`
@@ -1797,7 +1797,7 @@ end ArmLemmasK0
 At the diagonal seam (`x = t`) the k=1 population clause per `qnf : NormalForm sig 1 3` is
 `∃ w, NfEvalNf M 1 3 [w, t, t] qnf` — the env has DUPLICATED anchors (positions 1, 2 both
 `t`). The depth-lift of the diagonal rename congruence is blocked as an UNCONDITIONAL iff
-(NfDepth0Generalized.lean:1693-1719: a non-diagonal-invariant sub can have its collapse marked
+(NfDepth0Generalized.lean:1695-1719: a non-diagonal-invariant sub can have its collapse marked
 true), but the missing ingredient is exactly a per-`qnf` SYNTACTIC gate: qnf's atom row is a
 duplicate-collapse fixpoint AND every non-fixpoint arity-4 sub is unmarked. Under that gate the
 depth-1 evaluation at `[w, t, t]` collapses LOSSLESSLY to the depth-1 arity-2 evaluation of the
@@ -1864,7 +1864,7 @@ def aggCollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     (`E (f (r i)) = E i`), then `σ` IS a duplicate-collapse fixpoint: reassembling its collapse
     recovers `σ` exactly. Contrapositively, a non-fixpoint `σ` has NO realizer on such an env —
     the conditional ingredient that unblocks the depth-1 diagonal rename congruence
-    (NfDepth0Generalized.lean:1693-1719). -/
+    (NfDepth0Generalized.lean:1695-1719). -/
 theorem agg_rename_fixpoint_of_eval {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {a b : Nat}

@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 # Phase 1 GO/NO-GO GATE — navigated (depth-graded) flattening at `k = 1`
 
 This module is the **decisive go/no-go gate** for the bound-anchor zone converter
-(`KampPrior.lean:391`). It is **off the live import path** (nothing in the `completeness_ztime`
+(`KampPrior.lean:393`). It is **off the live import path** (nothing in the `completeness_ztime`
 chain imports it) and is **fully sorry-free**.
 
 ## The categorical distinction under test (vs. the refuted atomic D1)
@@ -193,7 +193,7 @@ new mathematics: it is exactly `exists_trichotomy_split` at boundary `c := t` wi
 `P x := NfEvalNf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`.
 
 The env convention `Fin.cons x (fun _ => t)` matches `exist_tl_fn_k_correct`
-(KampPrior.lean:334-344)
+(KampPrior.lean:336-344)
 verbatim, so the past/future arms (Phases 5/6) and the diagonal arm (Phase 3) consume these three
 disjuncts directly. The diagonal disjunct is `P t = NfEvalNf M (k+1) 2 (Fin.cons t (fun _ => t))
 sub_nf` (the two-value collision `[t, t]` collapsed by `renameNF_eval_diag0` + `char_k1` in Phase
@@ -225,7 +225,7 @@ The middle disjunct of `nf_zone_exists_trichotomy_k1` is the **diagonal** term
 **constant** environment `[t, t]` (both anchors collapse onto the fixed origin `t`). The goal is to
 characterize this by an arity-1 characteristic formula (`char_k1`) applied to a **value-duplication
 collapse** of `sub_nf`, per Obstruction 1: factor through `renameNF_eval_diag0`
-(NfDepth0Generalized.lean:1646) + `char_k1_correct`, NEVER per-variable projection.
+(NfDepth0Generalized.lean:1648) + `char_k1_correct`, NEVER per-variable projection.
 
 ### Collapse / expand maps (arity 2 ↔ 1)
 
@@ -276,7 +276,7 @@ theorem diagDup_eval_zero {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
 The plan's Phase-3 route ("`A_diag_correct` as a plain iff `TemporalTruth M t (char_k1 (collapse
 sub_nf)) ↔ NfEvalNf M (k+1) 2 [t,t] sub_nf`, assets only") is a **non-theorem for arbitrary
 `sub_nf`** at depth `k+1`. This is the depth-`≥1` diagonal crux flagged sorry-free in
-`NfDepth0Generalized.lean:1691-1719` ("at depth `k ≥ 1` the x=t arm is NOT separable from the
+`NfDepth0Generalized.lean:1693-1719` ("at depth `k ≥ 1` the x=t arm is NOT separable from the
 Phase-11 crux"), here re-derived directly for the constant-env `[t,t]` case.
 
 **Why the depth-0 base (`diagDup_eval_zero`) does not lift.** Unfolding

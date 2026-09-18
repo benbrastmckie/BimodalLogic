@@ -22,7 +22,7 @@ INPUTS**; this file only *applies* them.
    (`charBase = nfDepth0CharFormula atomMap h_surj`, `charK = fun χ => P.existF 0 χ`).
 2. **`bracketEndChar_kvE2_two_eq`** — an `rfl` bridge exposing the carrier (the delegation is
    definitional because `kvE2SepBody … : NormalForm sig 2 3 → VVecEA2` is *definitionally*
-   `BracketEndCharCarrierV sig 2`, `CarrierK1V.lean:365`).
+   `BracketEndCharCarrierV sig 2`, `CarrierK1V.lean:367`).
 3. **`bracketEndChar_kvE2_complete_two_prior`** — the ⇐ (completeness) half of
    the k=2 gate, UNCONDITIONAL (no interiority hypothesis); consumes the landed completeness engine
    `kvE2_sepBody_holds_of_honest`. Plus its two char-formula bridges `bracketEndChar_kvE2_hcb`/
@@ -106,7 +106,7 @@ bridges `hcb`/`hck` are built from `nf_depth0_char_formula_correct` (KampTransla
 
 /-- **⇐ completeness bridge for the char-base layer**: the standard-instantiation
     depth-0 characteristic formula is truth-equivalent to the arity-1 evaluation. Extracted from the
-    landed `nf_char2_atom_layer` proof (`Base.lean:58`), specialized to the plain arity-1 iff. -/
+    landed `nf_char2_atom_layer` proof (`Base.lean:60`), specialized to the plain arity-1 iff. -/
 theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

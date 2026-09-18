@@ -29,7 +29,7 @@ import Mathlib.Data.List.Permutation
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndCharK1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
--- wiring this bridge into `KampPrior.lean:391`. The two symbols this file used from KampPrior
+-- wiring this bridge into `KampPrior.lean:393`. The two symbols this file used from KampPrior
 -- (`nfQuantClauseTl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 
@@ -157,7 +157,7 @@ Rabinovich 2014 Cor 5.4, the single boundary `t` splits `∃ w` into the three o
 (`bracketBuildLeft` for the past, `bracketBuildRight` for the future), and the `w = t` point zone by
 the diagonal characteristic.
 
-Exactly as the arity-1 template `nfSuccCharFormula` (KampPrior.lean:107) is parametric over its
+Exactly as the arity-1 template `nfSuccCharFormula` (KampPrior.lean:109) is parametric over its
 depth-`k` existential converter `exist_tl_fn`, this arity-up converter is parametric over the three
 zone-endpoint **hooks** — the depth-`k` characteristic of `qnf` at the navigated point (the
 recursion
@@ -222,7 +222,7 @@ theorem nf_char2_diag_exist_tl_correct {sig : MonadicSignature} [Fintype sig.pre
 
 /-! ## Phase 3: assemble `nfChar2Formula` + `_correct` (Deliverable 1 COMPLETE)
 
-Mirrors the arity-1 template `nfSuccCharFormula` (KampPrior.lean:107) exactly, one arity up:
+Mirrors the arity-1 template `nfSuccCharFormula` (KampPrior.lean:109) exactly, one arity up:
 `nfChar2Formula sub_nf := formulaConjList (atom_part :: quant_clauses)`, where `atom_part` is the
 diagonal depth-0 atom characteristic (Phase 1's layer, generalized here to an arbitrary
 `sub_nf.1 : NormalForm sig 0 2` — the Phase-1-deferred order-atom / pred-agreement guard) and each
@@ -913,7 +913,7 @@ D2: the KampPrior-local `exist_tl_fn_k` is an arity-2 existential converter (a p
 genuine new construction, templated on `nfChar2DiagExistTl` / `nfChar2Formula`.
 
 `nfChar3EndpointTl` is the arity-3, `TemporalPred`-valued analog of the arity-1 template
-`nfSuccCharFormula` (KampPrior.lean:66) and the arity-2 diagonal `nfChar2Formula`
+`nfSuccCharFormula` (KampPrior.lean:68) and the arity-2 diagonal `nfChar2Formula`
 (:476): it assembles the endpoint characteristic of `q : NormalForm sig (k+1) 3` at a
 navigated witness `y` as `formulaConjList (atomPart :: quant_clauses)`, where each
 `quant_clause` wraps the depth-`k`, **arity-4** coupled inner converter `innerConv`
@@ -1791,7 +1791,7 @@ noncomputable def endChar {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     (k : Nat) : EndCharCarrier sig k :=
   fun qnf => endCharRec atomMap h_surj k qnf
 ```
-`EndCharCarrier sig k = NormalForm sig k 3 → TemporalPred` (Base.lean:1007) is **FROZEN and
+`EndCharCarrier sig k = NormalForm sig k 3 → TemporalPred` (Base.lean:1009) is **FROZEN and
 UNCHANGED**; `endChar` is exactly its arity-3 (`n = 3`) instance, so downstream assembly cites
 `endChar_correct` by name without modification. The carrier is not widened.
 
@@ -1843,7 +1843,7 @@ example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k 
 /-! ## Phase 3: arity-general depth-0 atom base `endCharN0` + `endCharN0_correct`
 
 The `k = 0` base of the arity-general navigated endpoint recursion (report 01 §5.5 target 1,
-§3.2 base case). Generalizes `nf3Locus0` / `endChar0` / `endChar0_correct` (Base.lean:982/995/1056)
+§3.2 base case). Generalizes `nf3Locus0` / `endChar0` / `endChar0_correct` (Base.lean:984/995/1056)
 from the fixed arity 3 to an arbitrary positive arity `n`. At `k = 0`,
 `NormalForm sig 0 n = AtomKind sig n → Bool` is a **finite pure atom layer** (no further recursion),
 so the base is closed sorry-free. `endCharN0` is exactly the `| 0, _, qnf => endCharN0 …` arm of the
@@ -1867,7 +1867,7 @@ base-case, no `NavResidual`, anchor layer certified by navigation) — is Phase 
   (FORBIDDEN) is referenced, and `EndCharCarrier` is not widened. -/
 
 /-- **Arity-general position-0 (navigated-witness `env 0`) locus projection** of an arity-`n`
-depth-0 NF. Generalizes `nf3Locus0` (Base.lean:982) from arity 3 to any positive arity `n`: fix the
+depth-0 NF. Generalizes `nf3Locus0` (Base.lean:984) from arity 3 to any positive arity `n`: fix the
 witness index `0` and read off the predicate assignment there. Order atoms are vacuous at arity 1
 (`Fin 1` is a subsingleton). The two-plus anchor loci (indices `1 … n-1`) and the order layer are
 certified by navigation in the full correctness (Phase 5's unconditional `endCharN0_correct`), not
@@ -1888,11 +1888,11 @@ witness. This is the `k = 0` base of the arity-general recursive primitive `endC
 reads locally. The anchor-position predicates (positions `1 … n-1`) and the order layer are
 certified
 by navigation in the full assembly (Phase 5's unconditional `endCharN0_correct`); `env 0` is a
-bracket witness, never a free anchor (G4). Generalizes `endChar0` (Base.lean:995) over `n`, reusing
+bracket witness, never a free anchor (G4). Generalizes `endChar0` (Base.lean:997) over `n`, reusing
 the depth-0 atom-literal conjunction `nfDepth0CharFormula` through the position-0 projection
 `nfNLocus0`. The `n = 0` arm is a total-function placeholder never consumed by the recursion (arity
 is always `≥ 3`); it carries no `[NeZero n]` obligation, matching the frozen `EndCharMotive`
-(Base.lean:1579) / `endCharRec` (Base.lean:1511) shape which is `{n : Nat}`-general without
+(Base.lean:1581) / `endCharRec` (Base.lean:1513) shape which is `{n : Nat}`-general without
 `NeZero`. -/
 noncomputable def endCharN0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -1902,7 +1902,7 @@ noncomputable def endCharN0 {sig : MonadicSignature} [Fintype sig.preds] [Decida
   | _ + 1, qnf => ⟨nfDepth0CharFormula atomMap h_surj (nfNLocus0 qnf)⟩
 
 /-- **`env 0`-locus correctness of `endCharN0`** (sorry-free leaf). Generalizes
-`endChar0_wlocus_correct` (Base.lean:1015) over `n`: the navigated base's `.EvalAt w` characterizes
+`endChar0_wlocus_correct` (Base.lean:1017) over `n`: the navigated base's `.EvalAt w` characterizes
 exactly the position-0 predicate layer of `qnf`, `∀ p, M.interp p w ↔ qnf (.pred p 0) = true`.
 Direct
 from `nf_depth0_char_formula_correct` through the position-0 projection `nfNLocus0`. This is the
@@ -2058,7 +2058,7 @@ theorem endCharN0_correct_infeasible :
 **REMOVED in v3 (Phase 4 interface reset)** — the single-anchor
 `navBrickForm`/`navBrickForm_correct`.
 Report 02 §Q3/§H4 established that `navBrickForm` (a structural copy of the diagonal converter
-`nfChar2DiagExistTl`, Base.lean:168) was applied to a genuinely *multi-anchor* target
+`nfChar2DiagExistTl`, Base.lean:170) was applied to a genuinely *multi-anchor* target
 `∃ w', NfEvalNf M k (n+1) (Fin.cons w' env) sub` where `env` holds `n` *distinct* anchors. A
 `Formula` evaluated at the single accessible anchor `env 0` provably CANNOT certify the anchor
 predicate layer at `env 1 … env (n-1)`, so its exterior hooks could close only under an inner
@@ -2069,7 +2069,7 @@ non-theorem (H4 refutation target 1).
 The faithful replacement is the **multi-anchor navigating converter** `navMultiAnchorForm` whose
 exterior hooks are **UNCONDITIONAL full-eval** biconditionals to the whole arity-`(n+1)`
 `NfEvalNf` — the `Formula`-valued generalization of the GREEN two-anchor
-`NfZoneFlattenNavigable`/`_correct` (Base.lean:667/687, full-eval hooks 692-697). Because the
+`NfZoneFlattenNavigable`/`_correct` (Base.lean:669/687, full-eval hooks 692-697). Because the
 anchor layer is discharged by navigation (nested `Since`/`Until` reaching each enclosing anchor)
 rather than assumed, no free-standing residual is needed. The interior slot is the β-segment `seg`
 (reports/02 §Q2/§S3), NOT `BracketFormula.trivial (rec sub)` and NOT `⊤`-with-no-segment. The def
@@ -2099,7 +2099,7 @@ theorem navMultiAnchorForm_correct
 - **G3** — the interior slot is the genuine non-trivial β-segment `seg` (reports/02 §Q2), never
   `TemporalPred.top`.
 - **G5** — manual `or_congr`/`exists_congr`/`and_congr_right` composition (mirroring
-  `nf_zone_flatten_navigable_correct`, Base.lean:700-706). No `simp`/`omega`/`aesop` shortcut.
+  `nf_zone_flatten_navigable_correct`, Base.lean:702-706). No `simp`/`omega`/`aesop` shortcut.
 - **FORBIDDEN `nf_char3_deeper_split` is NOT referenced** — the converter keeps `w'` a bracket
   witness and navigates, never growing the anchor set to `{y,x,t}`.
 -/
@@ -2109,7 +2109,7 @@ theorem navMultiAnchorForm_correct
 
 The preserved step-assembly skeleton — `atomPartN`, `nfEndpointTlGen`,
 `nf_endpoint_tl_gen_correct`
-— generalizes the arity-3 endpoint characteristic `nfChar3EndpointTl` (Base.lean:869) to
+— generalizes the arity-3 endpoint characteristic `nfChar3EndpointTl` (Base.lean:871) to
 arity-`n`
 and is agnostic to which converter fills `innerConv` (it takes it as a parameter). These land green
 and are carried forward UNCHANGED across the v3 interface reset (plan v3 Phase 3 preserved assets).
@@ -2133,7 +2133,7 @@ noncomputable def atomPartN {sig : MonadicSignature} [Fintype sig.preds] [Decida
   (endCharN0 atomMap h_surj q0).formula
 
 /-- **Arity-general endpoint characteristic builder**.
-Generalizes `nfChar3EndpointTl` (Base.lean:869) from the fixed arity 3 to an arbitrary arity `n`:
+Generalizes `nfChar3EndpointTl` (Base.lean:871) from the fixed arity 3 to an arbitrary arity `n`:
 the `TemporalPred` whose `.EvalAt` at the navigated witness `env 0` captures
 `NfEvalNf M (k+1) n env q`, assembled hook-parametrically from `atomPart` (the arity-`n` atom
 layer) and `innerConv` (the depth-`k`, arity-`(n+1)` coupled inner converter — the recursion hook
@@ -2150,7 +2150,7 @@ noncomputable def nfEndpointTlGen {sig : MonadicSignature} [Fintype sig.preds]
       (fun sub => nfQuantClauseTl (innerConv sub) (q.2 sub)))⟩
 
 /-- **Correctness of the arity-general endpoint characteristic**. The direct
-arity-`n` generalization of `nf_char3_endpoint_tl_correct` (Base.lean:885): under the atom-hook
+arity-`n` generalization of `nf_char3_endpoint_tl_correct` (Base.lean:887): under the atom-hook
 correctness `h_atom` and the inner-converter correctness `h_inner` (each arity-`(n+1)` sub's coupled
 `∃ w` on `Fin.cons w env` — the depth-`k` IH), the assembled endpoint's `.EvalAt (env 0)` holds iff
 `q` evaluates on the full arity-`n` env `env`. Assembled by matching `NfEvalNf M (k+1) n`'s own

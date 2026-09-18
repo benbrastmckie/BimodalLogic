@@ -187,7 +187,7 @@ def kvE2SepSlotLe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     `Since`/at-`x` `charK`-atom literals for the `zPastX3`/`zAtX3` outer classes (Prop
     3.5, PDF p.3 — navigation rides the `Since` evaluation point, LITMUS-clean); each
     interior σ's own x-type and exterior/boundary `charBase` literals
-    (`SubBracket2V.lean:183-187` pattern). -/
+    (`SubBracket2V.lean:185-187` pattern). -/
 noncomputable def kvE2SepEpL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) : TemporalPred :=
@@ -209,7 +209,7 @@ noncomputable def kvE2SepEpL {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
 /-- Joint right endpoint predicate at the fixed `t` (mirror of `kvE2SepEpL`: at-`t` and
     `Until` σ-level literals for `zAtT3`/`zFutT3`; per interior σ its t-type and
-    `zAtT4`/`zFutT4` literals, `SubBracket2V.lean:188-192` pattern). -/
+    `zAtT4`/`zFutT4` literals, `SubBracket2V.lean:190-192` pattern). -/
 noncomputable def kvE2SepEpR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) : TemporalPred :=
@@ -231,7 +231,7 @@ noncomputable def kvE2SepEpR {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
 /-- The ONE shared interior-witness point type (the object the SubBracket2V banner names):
     `charBase` of `qnf.1`'s w-coordinate 1-type (arity-3 analog of the per-σ `ptW`,
-    `SubBracket2V.lean:216-219`; Amendment F3 — a TYPE slot, never a `w = e 1` provider
+    `SubBracket2V.lean:218-219`; Amendment F3 — a TYPE slot, never a `w = e 1` provider
     equation); the σ-level `zAtW3` `charK`-atom literals; and EVERY interior σ's own
     w-type plus `v = w` self-zone literals (`zAtWL` for the left class, `zAtWR` mirrored). -/
 noncomputable def kvE2SepPtW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -350,14 +350,14 @@ noncomputable def kvE2SepDisjunct {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- The seven consistent OUTER zones under the bracket order `x < w < t` (Def 3.1,
     PDF pp.2-3), including the shared-witness self-zone `zAtW3` (nine-zone lesson one level
-    up: `SubBracket2V.lean:160-166`). -/
+    up: `SubBracket2V.lean:162-166`). -/
 def KvE2SepOuterConsistent (zs : ZoneSpec 3) : Prop :=
   zs = kvE2SepZPastX3 ∨ zs = kvE2SepZAtX3 ∨ zs = kvE2SepZXW3 ∨
     zs = kvE2SepZAtW3 ∨ zs = kvE2SepZWT3 ∨ zs = kvE2SepZAtT3 ∨ zs = kvE2SepZFutT3
 
 /-- The nine consistent INNER zones for a LEFT-interior σ (`x < x1 < w < t`) — the
     VERBATIM pattern set of `kvE_subBracket2V_gate_holds_of_honest`'s conclusion
-    (`SubBracket2V.lean:1400-1408`), including both witness self-zones `zAtX1`/`zAtW`,
+    (`SubBracket2V.lean:1402-1408`), including both witness self-zones `zAtX1`/`zAtW`,
     so the honest discharge consumes that landed lemma directly. -/
 def KvE2SepInnerConsistentL (zs : ZoneSpec 4) : Prop :=
   zs = Fin.cons (true, false) (Fin.cons (true, false)
@@ -404,13 +404,13 @@ def KvE2SepInnerConsistentR (zs : ZoneSpec 4) : Prop :=
   zs = Fin.cons (false, true) (Fin.cons (false, true)
       (Fin.cons (false, true) (fun _ => (false, true))))
 
-/-- **Depth-2 joint gate** (arity-3 lift of the per-σ gate `SubBracket2V.lean:232-234`):
+/-- **Depth-2 joint gate** (arity-3 lift of the per-σ gate `SubBracket2V.lean:234-234`):
     (i) OUTER off-fiber falsity — a sub whose atom-layer restriction to `[w,x,t]`
     disagrees with `qnf.1` is negative; (ii) OUTER seven-zone consistency — a positive
     sub's fresh witness sits in a consistent placement; (iii) INNER off-fiber falsity for
     every positive sub (its own depth-1 quant layer is on-fiber); (iv) INNER nine-zone
     consistency for LEFT-interior positives (the class the landed per-σ kit serves; the
-    exact syntactic clause the O4 `hgate` derivation needs, `SubBracket2V.lean:1872-1877`). -/
+    exact syntactic clause the O4 `hgate` derivation needs, `SubBracket2V.lean:1874-1877`). -/
 def KvE2SepGate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : Prop :=
   (∀ σ : NormalForm sig 1 4, nf0DropFresh σ.1 ≠ qnf.1 → qnf.2 σ = false) ∧

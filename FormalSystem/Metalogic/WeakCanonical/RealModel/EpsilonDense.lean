@@ -75,7 +75,7 @@ The discrete development's §10 Lemma 15 relativizes to the **closed** `[z,t]`, 
 the tree's `relativize` (`MonadicFO.lean:551`) implements, with `≤` guards and
 `OrderedMonadicStructure.subinterval` as its semantic counterpart. Reynolds' §8 `γ(z,t)`
 relativizes to the **open** `(z,t)`, matching `OrderedMonadicStructure.openSubinterval`
-(`GoodDense.lean:222`). `relativizeOpen` below is the open sibling: the same recursion with `<`
+(`GoodDense.lean:224`). `relativizeOpen` below is the open sibling: the same recursion with `<`
 guards. The two cannot be interchanged — the whole force of `ε` is that its inner interval
 excludes its endpoints, so that `ε(a,b)` says exactly *"`M | (a,b)` is very good"*.
 
@@ -218,7 +218,7 @@ exactly one of them (`nf_exists_unique`, `NormalForm.lean:293`), and `nfToSenten
 (`NormalForm.lean:861`) renders each as an honest `MonadicSentence`. The `NormalForm` layer is
 consumed as it stands; nothing here rebuilds it.
 
-The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:363`)
+The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:365`)
 carries does **not** bite here: that restriction is on the *Prior-expressiveness* route, which
 needs a normal-form-to-`U`/`S` translation at `n` free variables. This module stays inside the
 monadic language and uses only the `n = 0` case.

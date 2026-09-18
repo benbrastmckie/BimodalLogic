@@ -59,7 +59,7 @@ renders:
 
 **Lemma 13's hypotheses are strengthened, and the strengthening is real.** Reynolds states the
 lemma *"for any structure `M`"*. His one-line proof turns on *"clearly `M | E` is very good"*,
-and `veryGoodDense` (`GoodDense.lean:251`) — faithfully following his own §8 definition —
+and `veryGoodDense` (`GoodDense.lean:253`) — faithfully following his own §8 definition —
 demands that every open subinterval be **non-empty**. At a structure with an immediate successor
 pair `p ⋖ q` inside a class, `M | (p,q)` is empty, so `M | E` is *not* very good and the
 one-liner fails. Getting from *very good* to *good* is Lemma 11, which is stated for

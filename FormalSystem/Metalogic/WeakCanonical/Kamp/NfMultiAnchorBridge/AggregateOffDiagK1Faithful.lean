@@ -17,14 +17,14 @@ wire, as opposed to the mechanical restatement that makes up the rest of it.
 
 The re-base's inventory found that of the `SemanticPriorUZ` / `SemanticPriorSZ` hypothesis-binder
 sites across the live spine, only two *consume* the carrier rather than thread it:
-`AggregateOffDiagK1.lean:1288` (`aggPop1_correct`) and `:1381` (`aggPop1F_correct`). Both consume
+`AggregateOffDiagK1.lean:1290` (`aggPop1_correct`) and `:1381` (`aggPop1F_correct`). Both consume
 it the same way — `prior_hasAttainedINF` / `prior_hasAttainedSUP` feeding `aggOdPopFold_iff`
-(`AggregateOffDiagK1.lean:1226`). So the whole question of whether the spine is re-basable at all
+(`AggregateOffDiagK1.lean:1228`). So the whole question of whether the spine is re-basable at all
 reduces to: *what does `aggOdPopFold_iff` bottom out on?*
 
 **Answer, by inspection of its proof rather than by assumption**: `aggOdPopFold_iff` uses
 `h_INF` / `h_SUP` at exactly one step, the bit-false branch of its cons case
-(`AggregateOffDiagK1.lean:1253`), and that step is `VVecEA2.negFix_iff`. Its nil case, its
+(`AggregateOffDiagK1.lean:1255`), and that step is `VVecEA2.negFix_iff`. Its nil case, its
 `VVecEA2.conjFull_iff` cons rewrite, and its bit-true branch are all carrier-free.
 
 `VVecEA2.negFix_iff` is precisely what `VVecEA2.negFixFaithful_iff`
@@ -73,7 +73,7 @@ variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The biconditional population fold at the faithful carrier** — the faithful sibling of
-`aggOdPopFold_iff` (`AggregateOffDiagK1.lean:1226`), and the single genuine proof obligation of the
+`aggOdPopFold_iff` (`AggregateOffDiagK1.lean:1228`), and the single genuine proof obligation of the
 spine re-base.
 
 Folding `if bit qnf then D qnf else (D qnf).negFixFaithful` over a list with `conjFull` holds iff

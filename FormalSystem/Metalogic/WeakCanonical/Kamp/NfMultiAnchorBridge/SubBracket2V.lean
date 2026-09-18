@@ -578,7 +578,7 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
               (lt_trans (hpos e List.mem_cons_self) (ihbound y hy'))
 
 /-- **k-region arrangement build**. Folds `k1v_sorted_realization`
-    (`CarrierK1V.lean:1447`, reused verbatim) once per region: given boundary-linked, non-degenerate
+    (`CarrierK1V.lean:1449`, reused verbatim) once per region: given boundary-linked, non-degenerate
     anchors and per-region Nodup type lists each realized strictly interior, produces a
     point-tagged arrangement list `ps` mirroring the region skeleton (equal anchors), with
     per-region
