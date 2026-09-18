@@ -438,7 +438,7 @@ theorem blockDecomposition (sig : MonadicSignature) [Fintype sig.preds]
   have hx : g s = x :=
     StrictMono.orderIsoOfSurjective_self_symm_apply g hmono hsurj x
   -- The colouring at the image point evaluates `M.interp` at `g (f x) = x`.
-  show M.interp p x ↔ M.interp p (zPoint s.1.out s.2)
+  change M.interp p x ↔ M.interp p (zPoint s.1.out s.2)
   rw [show zPoint s.1.out s.2 = x from hx]
 
 end FormalSystem.Metalogic.WeakCanonical

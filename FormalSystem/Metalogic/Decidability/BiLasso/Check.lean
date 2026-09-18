@@ -245,7 +245,7 @@ theorem check_top_true :
     check flipPresentation 0 (Formula.imp Formula.bot Formula.bot) = true := by
   refine (check_correct _ _ _).mpr
     ⟨flipBiLasso.toWorldHistory, 0, ?_, ?_⟩
-  · show flipBiLasso.unroll 0 = 0
+  · change flipBiLasso.unroll 0 = 0
     decide
   · rw [Truth.imp_iff]
     exact fun h => h

@@ -82,7 +82,7 @@ def translationFrame (D : TemporalOrder) : FrameOver D :=
       (by
         intro w v x y _ _ h
         refine ⟨w + x, rfl, ?_⟩
-        show v = w + x + y
+        change v = w + x + y
         rw [show v = w + (x + y) from h]
         abel)
       (by
@@ -93,7 +93,7 @@ def translationFrame (D : TemporalOrder) : FrameOver D :=
     (by
       intro w x _
       refine ⟨⟨w + x, rfl⟩, ⟨w - x, ?_⟩⟩
-      show w = w - x + x
+      change w = w - x + x
       abel)
     (TaskFrame.limit_of_shift (D := ↑D) (fun w => w) (fun _ _ _ h => h)
       (by intro w u h; rw [show u = w + 0 from h, add_zero]))

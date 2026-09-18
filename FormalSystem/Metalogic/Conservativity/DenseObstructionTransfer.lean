@@ -200,7 +200,7 @@ noncomputable abbrev qτ : WorldHistory qF := multiFamHistoryGen () (0 : (qD : T
 clause reads the valuation at `qτ`'s state `((), 0 + t)`. -/
 theorem q_atom_iff (p : Atom) (t : (qD : Type)) :
     MinusTruthAt qTM qτ t (MinusFormula.atom p) ↔ (1 : ℚ) ≤ t := by
-  show qTM.valuation (qτ.state t) p ↔ _
+  change qTM.valuation (qτ.state t) p ↔ _
   simp [qTM, qτ, multiFamHistoryGen_state]
 
 /--

@@ -208,7 +208,7 @@ theorem goodGroupable_of_carrier_iso (sig : MonadicSignature) [Fintype sig.preds
   refine ⟨⟨fun p x => M.interp p (Φ.symm x)⟩, ?_⟩
   refine k_equiv_of_iso sig k M _ Φ ?_
   intro p x
-  show M.interp p x ↔ M.interp p (Φ.symm (Φ x))
+  change M.interp p x ↔ M.interp p (Φ.symm (Φ x))
   rw [OrderIso.symm_apply_apply]
 
 
@@ -351,7 +351,7 @@ private theorem glueMap_surjective (ψ : (I ×ₗ CondFiber) ≃o ℚ) :
   have heta : u = toLex ((ofLex u).1, (ofLex u).2) := rfl
   rcases sumLex_cases ((ofLex u).2) with ⟨q, hq⟩ | ⟨w, hw⟩
   · refine ⟨⟨(ofLex u).1, ⟨false, toLex (q, (ofLex y).2)⟩⟩, ?_⟩
-    show (toLex (ψ (toLex ((ofLex u).1,
+    change (toLex (ψ (toLex ((ofLex u).1,
         toLex (Sum.inl (ofLex (toLex (q, (ofLex y).2))).1))),
         (ofLex (toLex (q, (ofLex y).2))).2) : ℚ ×ₗ ℤ) = y
     have h1 : (ofLex (toLex (q, (ofLex y).2))).1 = q := rfl
@@ -361,12 +361,12 @@ private theorem glueMap_surjective (ψ : (I ×ₗ CondFiber) ≃o ℚ) :
   · rcases sumLex_cases w with ⟨un, hun⟩ | ⟨q, hq2⟩
     · have hun' : w = toLex (Sum.inl ()) := hun.trans rfl
       refine ⟨⟨(ofLex u).1, ⟨true, ⟨false, (ofLex y).2⟩⟩⟩, ?_⟩
-      show (toLex (ψ (toLex ((ofLex u).1, toLex (Sum.inr (toLex (Sum.inl ()))))),
+      change (toLex (ψ (toLex ((ofLex u).1, toLex (Sum.inr (toLex (Sum.inl ()))))),
         (ofLex y).2) : ℚ ×ₗ ℤ) = y
       rw [← hun', ← hw, ← heta, hψu]
       rfl
     · refine ⟨⟨(ofLex u).1, ⟨true, ⟨true, toLex (q, (ofLex y).2)⟩⟩⟩, ?_⟩
-      show (toLex (ψ (toLex ((ofLex u).1,
+      change (toLex (ψ (toLex ((ofLex u).1,
           toLex (Sum.inr (toLex (Sum.inr (ofLex (toLex (q, (ofLex y).2))).1))))),
           (ofLex (toLex (q, (ofLex y).2))).2) : ℚ ×ₗ ℤ) = y
       have h1 : (ofLex (toLex (q, (ofLex y).2))).1 = q := rfl

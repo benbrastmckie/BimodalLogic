@@ -309,7 +309,7 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
     (hk : kplusOpen M atomMap (vea.bracket.segmentTypes ⟨0, Nat.succ_pos n⟩).neg.formula z0) :
     vea.negFixFaithful.holds M atomMap z0 z1 := by
   refine VecEA2.negFixFaithful_of_bracket M atomMap vea z0 z1 ?_
-  show (negFixListFaithful (vea.bracket.segmentTypes ⟨0, Nat.succ_pos n⟩)
+  change (negFixListFaithful (vea.bracket.segmentTypes ⟨0, Nat.succ_pos n⟩)
     vea.bracket.foldPairs).holds M atomMap z0 z1
   rw [hpairs]
   simp only [negFixListFaithful]

@@ -422,14 +422,14 @@ citations re-pointed. Full `--wfail` build green (1,129 s); C20/C28/C29/C30 pass
 
 ---
 
-### Phase 7: `style.show` [NOT STARTED]
+### Phase 7: `style.show` [COMPLETED]
 
 **Goal**: Replace goal-changing uses of `show` with `change`, as the linter's message directs.
 
 **Tasks**:
-- [ ] Work file by file, starting with `RamseyFactorization.lean` (17). Apply the linter's
+- [x] Work file by file, starting with `RamseyFactorization.lean` (17). Apply the linter's
       suggested replacement, rebuild each file, and re-run the per-file `show` sweep.
-- [ ] Delete the `style.show` temporary line, then do a guarded full build with `--wfail`.
+- [x] Delete the `style.show` temporary line, then do a guarded full build with `--wfail`.
 
 **Timing**: 2 hours
 
@@ -444,6 +444,11 @@ last sub-phase.
 **Files to modify**:
 - The 59 `show` files named by the sweep
 - `lakefile.toml` - remove 1 temporary line
+
+**Phase 7 notes**: fresh sweep of the 62 files found 196 sites (under the 230 split threshold,
+so no 7.1/7.2 split). Each flagged `show` token was replaced by `change` at the exact reported
+column; all 62 files re-elaborate and the re-sweep reports 0. No line counts moved. Full
+`--wfail` build green (1,106 s); invariants pass.
 
 **Verification**:
 - The per-file `show` sweep reports 0, and `lake build --wfail` is green.

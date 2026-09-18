@@ -82,7 +82,7 @@ theorem star_truth_congr_agreeFrom (M : TaskModel F) {φ : StarFormula}
   induction hφ with
   | atom p =>
     intro τ σ t hag v
-    show M.valuation _ p ↔ M.valuation _ p
+    change M.valuation _ p ↔ M.valuation _ p
     rw [hag t le_rfl]
   | bot => intros; exact Iff.rfl
   | imp _ _ ihφ ihψ =>
@@ -114,7 +114,7 @@ theorem star_truth_congr_agreeUpTo (M : TaskModel F) {φ : StarFormula}
   induction hφ with
   | atom p =>
     intro τ σ t hag v
-    show M.valuation _ p ↔ M.valuation _ p
+    change M.valuation _ p ↔ M.valuation _ p
     rw [hag t le_rfl]
   | bot => intros; exact Iff.rfl
   | imp _ _ ihφ ihψ =>

@@ -67,13 +67,13 @@ variable (T : Type) [LinearOrder T] [Finite T]
 /-- The placement is non-negative: it is a `Nat`-cast. -/
 theorem finiteOrderEmbInt_nonneg (t : T) : 0 ≤ finiteOrderEmbInt T t := by
   letI : Fintype T := Fintype.ofFinite T
-  show (0 : ℤ) ≤ (((monoEquivOfFin T (k := Fintype.card T) rfl).symm t).val : ℤ)
+  change (0 : ℤ) ≤ (((monoEquivOfFin T (k := Fintype.card T) rfl).symm t).val : ℤ)
   exact Int.natCast_nonneg _
 
 /-- The placement stays strictly below the cardinality: `n` points at `0, …, n-1`. -/
 theorem finiteOrderEmbInt_lt_card (t : T) : finiteOrderEmbInt T t < (placedCount T : ℤ) := by
   letI : Fintype T := Fintype.ofFinite T
-  show ((((monoEquivOfFin T (k := Fintype.card T) rfl).symm t).val : ℤ)) < (placedCount T : ℤ)
+  change ((((monoEquivOfFin T (k := Fintype.card T) rfl).symm t).val : ℤ)) < (placedCount T : ℤ)
   exact_mod_cast ((monoEquivOfFin T (k := Fintype.card T) rfl).symm t).isLt
 
 /--
@@ -88,7 +88,7 @@ theorem exists_preimage_finiteOrderEmbInt {x : ℤ} (h0 : 0 ≤ x) (hn : x < (pl
   have hn' : x < (Fintype.card T : ℤ) := hn
   have hlt : x.toNat < Fintype.card T := by omega
   refine ⟨(monoEquivOfFin T (k := Fintype.card T) rfl) ⟨x.toNat, hlt⟩, ?_⟩
-  show ((((monoEquivOfFin T (k := Fintype.card T) rfl).symm
+  change ((((monoEquivOfFin T (k := Fintype.card T) rfl).symm
     ((monoEquivOfFin T (k := Fintype.card T) rfl) ⟨x.toNat, hlt⟩)).val : ℤ)) = x
   rw [OrderIso.symm_apply_apply]
   exact Int.toNat_of_nonneg h0

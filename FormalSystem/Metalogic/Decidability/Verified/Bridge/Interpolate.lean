@@ -391,7 +391,7 @@ Placement `n ↦ 2n`, point `r = 1`: the gap `(0, 2)` is `{1}`. Any `s > 1` has 
 theorem not_exists_gt_sameRegion_int :
     ∃ (f : ℕ → ℤ) (r : ℤ), (∀ i, f i ≠ r) ∧ ¬ ∃ s, r < s ∧ SameRegion f r s := by
   refine ⟨fun n => 2 * (n : ℤ), 1, fun i => ?_, ?_⟩
-  · show 2 * (i : ℤ) ≠ 1
+  · change 2 * (i : ℤ) ≠ 1
     omega
   rintro ⟨s, hs, hreg⟩
   have h := (hreg 1).2
@@ -472,7 +472,7 @@ theorem interpInvariant_atom (hRC : ∀ τ : WorldHistory F, RegionConstant f τ
     (p : Atom) :
     InterpInvariant f M (Formula.atom p) := by
   intro τ r r' hrr'
-  show M.valuation (τ.state r) p ↔ M.valuation (τ.state r') p
+  change M.valuation (τ.state r) p ↔ M.valuation (τ.state r') p
   rw [(hRC τ).state_congr hrr']
 
 /-- **Bottom case.** `⊥` is false everywhere, so it is in particular region-invariant. -/

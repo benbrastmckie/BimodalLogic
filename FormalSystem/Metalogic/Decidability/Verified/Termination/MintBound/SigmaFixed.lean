@@ -253,7 +253,7 @@ theorem sigmaFixesFormulasFrom_comp {σ : SignedFormula → SignedFormula} {src 
     SigmaFixesFormulasFrom (fun x => rhoSF src tgt (σ x)) n := by
   intro x hx
   have hfix := hσ x hx
-  show rhoSF src tgt (σ x) = x
+  change rhoSF src tgt (σ x) = x
   rw [hfix]
   exact rhoSF_eq_of_ne_src (Nat.ne_of_gt (Nat.lt_of_lt_of_le h hx))
 

@@ -179,14 +179,14 @@ def regionFrame (W _ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
       (by
         rintro s v x y _ _ ⟨h₁, h₂⟩
         refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
-        show v.2 = s.2 + x + y
+        change v.2 = s.2 + x + y
         rw [h₂]; abel)
       (by
         rintro s u v x y _ _ ⟨h₁, h₂⟩ ⟨h₃, h₄⟩
         exact ⟨h₁.trans h₃, by rw [h₄, h₂, add_assoc]⟩))
     (fun s x _ =>
       ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
-       ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩)
+       ⟨(s.1, s.2 - x), rfl, by change s.2 = s.2 - x + x; abel⟩⟩)
     (TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero])))
     (TaskFrame.saturation_of_fib_subsingleton (regionRel_fib_subsingleton W D))
@@ -231,7 +231,7 @@ theorem regionFrame_serial (W ι D : Type) [Nonempty W] [AddCommGroup D] [Linear
   intro s x _
   exact ⟨⟨(s.1, s.2 + x), (regionFrame_taskRel W ι D _ _ _).mpr ⟨rfl, rfl⟩⟩,
     ⟨(s.1, s.2 - x), (regionFrame_taskRel W ι D _ _ _).mpr
-      ⟨rfl, by show s.2 = s.2 - x + x; abel⟩⟩⟩
+      ⟨rfl, by change s.2 = s.2 - x + x; abel⟩⟩⟩
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
@@ -243,7 +243,7 @@ theorem regionFrame_interpolates (W ι D : Type) [Nonempty W] [AddCommGroup D] [
   obtain ⟨h₁, h₂⟩ := (regionFrame_taskRel W ι D _ _ _).mp h
   refine ⟨(s.1, s.2 + x), (regionFrame_taskRel W ι D _ _ _).mpr ⟨rfl, rfl⟩,
     (regionFrame_taskRel W ι D _ _ _).mpr ⟨h₁, ?_⟩⟩
-  show v.2 = s.2 + x + y
+  change v.2 = s.2 + x + y
   rw [h₂]; abel
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -292,7 +292,7 @@ def regionHistory (_f : ι → D) (w : W) (Δ : D) : WorldHistory (regionFrame W
   WorldHistory.ofTotal _ (fun r => (w, r + Δ)) (by
     intro s t
     refine (regionFrame_taskRel W ι D _ _ _).mpr ⟨rfl, ?_⟩
-    show t + Δ = s + Δ + (t - s)
+    change t + Δ = s + Δ + (t - s)
     abel)
 
 @[simp]
@@ -303,7 +303,7 @@ theorem regionHistory_state (f : ι → D) (w : W) (Δ : D) (r : D) :
 theorem timeShift_regionHistory (f : ι → D) (w : W) (Δ Δ' : D) :
     (regionHistory f w Δ).timeShift Δ' = regionHistory f w (Δ' + Δ) := by
   refine WorldHistory.ext_state fun r => ?_
-  show ((w, r + Δ' + Δ) : W × D) = (w, r + (Δ' + Δ))
+  change ((w, r + Δ' + Δ) : W × D) = (w, r + (Δ' + Δ))
   rw [add_assoc]
 
 /-! ### Totality is now sufficient

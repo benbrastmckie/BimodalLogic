@@ -156,7 +156,7 @@ theorem truth_along_annot (hbx : BoxOracleSound P bx) (A : Annot P φ)
     intro hmem t
     have hatom := (hloc t).1 p hmem
     rw [hatom]
-    show P.toModel.valuation (A.hist.state t) p ↔ _
+    change P.toModel.valuation (A.hist.state t) p ↔ _
     rw [A.hist_state t, P.toModel_valuation]
   | bot =>
     intro _ t

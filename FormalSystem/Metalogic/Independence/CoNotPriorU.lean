@@ -130,7 +130,7 @@ def ArcTime (t : ℚ) : Prop := ∃ n : ℤ, |(t : ℝ) - (n : ℝ)| < arcRadius
     rw [heq]
     exact hqlt
   · rintro ⟨n, hn⟩
-    show OnArc (cmk t)
+    change OnArc (cmk t)
     refine ⟨t - (n : ℚ), ?_, ?_⟩
     · rw [cmk_eq_cmk_iff]
       exact ⟨-n, by push_cast; ring⟩
@@ -342,7 +342,7 @@ def cneg (w : ClockState) : ClockState := -w
 
 /-- The arc is symmetric about `0`, so negation preserves the valuation. -/
 theorem onArc_neg (w : ClockState) : OnArc (cneg w) ↔ OnArc w := by
-  show OnArc (-w) ↔ OnArc w
+  change OnArc (-w) ↔ OnArc w
   constructor
   · rintro ⟨q, hq, hlt⟩
     refine ⟨-q, ?_, ?_⟩
@@ -356,7 +356,7 @@ theorem onArc_neg (w : ClockState) : OnArc (cneg w) ↔ OnArc w := by
 /-- Negation on the circle reverses durations: it is an automorphism of the clock relation. -/
 theorem clockRel_neg {a b : ClockState} {d : ℚ} (h : clockRel a d b) :
     clockRel (cneg a) (-d) (cneg b) := by
-  show cneg b = cneg a + cmk (-d)
+  change cneg b = cneg a + cmk (-d)
   have hb : b = a + cmk d := h
   simp only [cneg, hb, cmk_neg]
   abel
@@ -408,7 +408,7 @@ noncomputable def clockMirrorIso : TruthAntiIso clockModel clockModel where
   atom := by
     intro τ t _
     have hstates : τ.state (-(-t)) = τ.state t := τ.state_congr (neg_neg t)
-    show OnArc (τ.state t) ↔ OnArc (cneg (τ.state (-(-t))))
+    change OnArc (τ.state t) ↔ OnArc (cneg (τ.state (-(-t))))
     calc OnArc (τ.state t)
         ↔ OnArc (τ.state (-(-t))) := by rw [hstates]
       _ ↔ OnArc (cneg (τ.state (-(-t)))) := (onArc_neg _).symm
@@ -431,7 +431,7 @@ theorem truthAt_mirror (φ : Formula) :
   intro τ σ hrel t
   have hσeq : σ = reflect τ := by
     refine WorldHistory.ext_state fun r => ?_
-    show σ.state r = cneg (τ.state (-r))
+    change σ.state r = cneg (τ.state (-r))
     have hx := hrel (-r)
     rw [neg_neg] at hx
     exact hx

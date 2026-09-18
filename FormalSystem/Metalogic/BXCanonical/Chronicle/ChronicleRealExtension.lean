@@ -690,7 +690,7 @@ theorem BFMCS.toRealBundle_restricted_backward_until_since {fc : FrameClass}
   · intro t φ ψ hsub hwit
     have hwit' : ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
         ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r := hwit
-    show Formula.untl ψ φ ∈ realLimitMCS fam.mcs δ t
+    change Formula.untl ψ φ ∈ realLimitMCS fam.mcs δ t
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
     · obtain ⟨p, hp⟩ := hx
       exact toRealBundle_backward_until_selected B root h_rbuc fam hfam δ t φ ψ hsub p hp hwit'
@@ -700,7 +700,7 @@ theorem BFMCS.toRealBundle_restricted_backward_until_since {fc : FrameClass}
     have hwit' : ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
         ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r := hwit
     obtain ⟨s, hst, hφ, hguard⟩ := hwit'
-    show Formula.snce ψ φ ∈ realLimitMCS fam.mcs δ t
+    change Formula.snce ψ φ ∈ realLimitMCS fam.mcs δ t
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
     · obtain ⟨p, hp⟩ := hx
       by_cases hy : ∃ w : Rat, (w : ℝ) = s + δ
@@ -1144,7 +1144,7 @@ theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
   constructor
   · intro t φ ψ hsub hU
     have hU' : Formula.untl ψ φ ∈ realLimitMCS fam.mcs δ t := hU
-    show ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+    change ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
     · obtain ⟨p, hp⟩ := hx
@@ -1153,7 +1153,7 @@ theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
         (hSb fam hfam) (h_lga fam hfam) h_lge δ t φ ψ hsub hx hU'
   · intro t φ ψ hsub hS
     have hS' : Formula.snce ψ φ ∈ realLimitMCS fam.mcs δ t := hS
-    show ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
+    change ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
     · obtain ⟨p, hp⟩ := hx

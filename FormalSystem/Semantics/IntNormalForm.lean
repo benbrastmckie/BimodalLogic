@@ -487,7 +487,7 @@ theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Pr
 theorem ofStep_step {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) (w u : W) :
     (ofStep R₁ fwd bwd).step w u ↔ R₁ w u := by
-  show (ofStep R₁ fwd bwd).TaskRel w 1 u ↔ _
+  change (ofStep R₁ fwd bwd).TaskRel w 1 u ↔ _
   rw [ofStep_taskRel, ofStepRel_of_nonneg (zero_le_one : (0 : ℤ) ≤ 1)]
   exact iter_one R₁ w u
 

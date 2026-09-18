@@ -96,7 +96,7 @@ theorem refute_sentDet (p : Atom) :
   refine not_starValidOn_sentDet natModel (natHist fun _ => 0)
     (0 : ℤ) (1 : ℤ) (one_pos : (0 : ℤ) < 1)
     (natHist fun _ => 0) (natHist fun s => if s ≤ 0 then 0 else 1) rfl
-    (by show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp) ?_ ?_
+    (by change (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp) ?_ ?_
   · -- `τ` itself satisfies `p` at time `1`: `τ(1) = 0` and `|p| = {0}`.
     exact fun _ => (rfl : (0 : ℕ) = 0)
   · -- `σ` fails `p` at time `1`: `σ(1) = 1 ∉ |p|`.
@@ -143,7 +143,7 @@ theorem refute_modal_future (p : Atom) :
   have hC := hB (1 : ℤ) (one_pos : (0 : ℤ) < 1)
   have hp0 : StarTruthAt natModel (natHist fun s => if s ≤ 0 then 0 else 1)
       ((fun _ => (0 : ℤ)) 1) (fun _ => (0 : ℤ)) (StarFormula.atom p) :=
-    by show (if (0 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0; simp
+    by change (if (0 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0; simp
   have hval' : (if (1 : ℤ) ≤ 0 then (0 : ℕ) else 1) = 0 := hC hp0
   simp at hval'
 
@@ -187,7 +187,7 @@ theorem refute_erasure (p : Atom) :
       (fun _ => (0 : ℤ)) (StarFormula.allFuture (.atom p)) := by
     rw [StarTruth.allFuture_iff]
     intro s hs
-    show (if s ≤ 0 then (1 : ℕ) else 0) = 0
+    change (if s ≤ 0 then (1 : ℕ) else 0) = 0
     rw [if_neg (not_le.mpr hs)]
   have hval' : (if (0 : ℤ) ≤ 0 then (1 : ℕ) else 0) = 0 := hv hA
   simp at hval'

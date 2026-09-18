@@ -199,7 +199,7 @@ theorem monoInv_cons [NoMaxOrder M.carrier] [NoMaxOrder N.carrier]
   intro p hp q hq
   rcases List.mem_cons.mp hp with rfl | hp' <;> rcases List.mem_cons.mp hq with rfl | hq'
   · refine ⟨by simp, fun m hm => ?_⟩
-    show succ^[m] a = a ↔ succ^[m] b = b
+    change succ^[m] a = a ↔ succ^[m] b = b
     rw [succ_iterate_eq_self_iff, succ_iterate_eq_self_iff]
   · exact ⟨(horder q hq').1, fun m hm => (hdist q hq' m hm).1⟩
   · exact ⟨(horder p hp').2, fun m hm => (hdist p hp' m hm).2⟩
@@ -718,7 +718,7 @@ theorem kEquiv_monoDiscrete_minNoMax {sig : MonadicSignature} (k : ℕ)
   swap
   · simp at hq'
   refine ⟨by simp, fun m hm => ?_⟩
-  show succ^[m] mM = mM ↔ succ^[m] mN = mN
+  change succ^[m] mM = mM ↔ succ^[m] mN = mN
   rw [succ_iterate_eq_self_iff, succ_iterate_eq_self_iff]
 
 /-! ## Order duality, and the max-only variant -/

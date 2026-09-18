@@ -269,7 +269,7 @@ theorem isPlusStateLocal_of_stateLocal :
   induction φ with
   | atom p =>
     intro _ _ M τ σ t h
-    show M.valuation _ p ↔ M.valuation _ p
+    change M.valuation _ p ↔ M.valuation _ p
     rw [h]
   | bot => intro _ _ _ _ _ _ _; exact Iff.rfl
   | imp φ ψ ihφ ihψ =>
@@ -300,11 +300,11 @@ private def lateHist : WorldHistory NF := natHist (fun s => if s ≤ 0 then 0 el
 private def earlyHist : WorldHistory NF := natHist (fun s => if s < 0 then 1 else 0)
 
 private theorem zero_lateHist_same : zeroHist.state (0 : ℤ) = lateHist.state 0 := by
-  show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1)
+  change (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1)
   simp
 
 private theorem zero_earlyHist_same : zeroHist.state (0 : ℤ) = earlyHist.state 0 := by
-  show (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0)
+  change (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0)
   simp
 
 /--

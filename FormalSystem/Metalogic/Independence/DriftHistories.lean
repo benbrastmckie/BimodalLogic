@@ -155,7 +155,7 @@ noncomputable def driftTranslation (c : ℝ) : WorldHistory F0 :=
   WorldHistory.ofTotal F0 (fun t => t + c) <| by
     intro s t
     refine (f0_taskRel_iff _ _ _).mpr ?_
-    show fzeroRel (s + c) (t - s) (t + c)
+    change fzeroRel (s + c) (t - s) (t + c)
     rw [fzeroRel_iff]
     rcases le_total 0 (t - s) with h | h
     · left; constructor <;> linarith
@@ -170,7 +170,7 @@ No appeal to `thm:extension` or `cor:occurrence`, and hence no Zorn — see the 
 theorem fzero_stateOccurs : StateOccurs F0 := by
   intro w x
   refine ⟨driftTranslation (w - x), ?_⟩
-  show x + (w - x) = w
+  change x + (w - x) = w
   ring
 
 end FormalSystem.Metalogic.Independence

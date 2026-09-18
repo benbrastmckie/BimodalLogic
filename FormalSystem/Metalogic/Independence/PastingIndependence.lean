@@ -155,7 +155,7 @@ theorem pTotal_states (σ : WorldHistory PF) (t : ℤ) :
   obtain ⟨_, h2⟩ := (FormalSystem.Metalogic.Algebraic.multiFamGen_taskRel (D := TemporalOrder.of ℤ) _ _ _).mp
     (σ.respects_task 0 t)
   refine Prod.ext rfl ?_
-  show (σ.state t).2 = (σ.state 0).2 + t
+  change (σ.state t).2 = (σ.state 0).2 + t
   have h2' : (σ.state t).2 = (σ.state 0).2 + (t - 0) := h2
   rw [h2', sub_zero]
 
@@ -192,7 +192,7 @@ theorem dstab_psiMinus (p : Atom) :
   rw [CTruth.dstab_iff]
   have hback : -(1 : ℤ) < (0 : ℤ) := by decide
   refine ⟨pHist 1, ?_, (pHist_somePast_atom 1 0 p).mpr hback⟩
-  show ((-1 : ℤ) + 0).natAbs = ((1 : ℤ) + 0).natAbs
+  change ((-1 : ℤ) + 0).natAbs = ((1 : ℤ) + 0).natAbs
   decide
 
 /-- No world history of the model satisfies `Fp ∧ Pp`: on each flow line the atom holds at
@@ -234,7 +234,7 @@ theorem someFuture_dstab_phiPlus (p : Atom) :
   rw [CTruth.dstab_iff]
   have hahead : (2 : ℤ) < -(-3 : ℤ) := by decide
   refine ⟨pHist (-3), ?_, (pHist_someFuture_atom (-3) 2 p).mpr hahead⟩
-  show ((-1 : ℤ) + 2).natAbs = ((-3 : ℤ) + 2).natAbs
+  change ((-1 : ℤ) + 2).natAbs = ((-3 : ℤ) + 2).natAbs
   decide
 
 /-- The consequent fails: neither line of the class at time `0` admits a strictly intermediate

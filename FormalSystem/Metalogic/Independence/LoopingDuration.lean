@@ -106,7 +106,7 @@ noncomputable def loopingTruthIso {F : FrameOver D} (M : TaskModel F) {π : ↑D
   dur := OrderIso.addRight π
   hist := Equiv.refl _
   atom := fun τ t p => by
-    show M.valuation (τ.state t) p ↔ M.valuation (τ.state (t + π)) p
+    change M.valuation (τ.state t) p ↔ M.valuation (τ.state (t + π)) p
     rw [states_add_of_looping h τ t]
 
 /--
@@ -205,7 +205,7 @@ theorem co_true {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑
 
 /-- Duration `1` moves no point of the circle: `⟦1⟧ = 0`. -/
 theorem clockRel_one (w u : ClockState) : clockRel w 1 u ↔ u = w := by
-  show u = w + cmk 1 ↔ u = w
+  change u = w + cmk 1 ↔ u = w
   rw [cmk_one, add_zero]
 
 /-- The clock frame's circumference `1` is a looping duration. -/

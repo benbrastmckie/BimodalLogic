@@ -691,7 +691,7 @@ theorem placedOfWindow_unroll (P : IntPresentation) (win : List (Fin P.card)) (h
     have h := P.windowPath_shift win origin ((bi : ℤ) - origin) t
     rwa [show origin + ((bi : ℤ) - origin) = (bi : ℤ) by omega,
       show t + ((bi : ℤ) - origin) = t - (origin - (bi : ℤ)) by omega] at h
-  show BiLasso.unroll (P.lassoOfWindow win hne hadj hbij hbeq hfij hfeq)
+  change BiLasso.unroll (P.lassoOfWindow win hne hadj hbij hbeq hfij hfeq)
       (t - (origin - (bi : ℤ))) = _
   rw [BiLasso.unroll_def]
   simp only [lassoOfWindow_back, lassoOfWindow_mid, lassoOfWindow_fwd]
@@ -820,13 +820,13 @@ theorem extend_periodic (P : IntPresentation) (win : List (Fin P.card)) (hne : w
   · exact PlacedBiLasso.unroll_isStepPath _
   · intro k hk
     exact P.placedOfWindow_unroll_window win hne hadj origin hbij hbeq hfij hfeq hk
-  · show 0 < (P.windowBack win bi bj).length
+  · change 0 < (P.windowBack win bi bj).length
     rw [P.windowBack_length]; omega
-  · show (P.windowBack win bi bj).length ≤ P.card
+  · change (P.windowBack win bi bj).length ≤ P.card
     rw [P.windowBack_length]; omega
-  · show 0 < (P.windowFwd win fi fj).length
+  · change 0 < (P.windowFwd win fi fj).length
     rw [P.windowFwd_length]; omega
-  · show (P.windowFwd win fi fj).length ≤ P.card
+  · change (P.windowFwd win fi fj).length ≤ P.card
     rw [P.windowFwd_length]; omega
   · intro t ht
     exact PlacedBiLasso.unroll_sub_back_length _ ht

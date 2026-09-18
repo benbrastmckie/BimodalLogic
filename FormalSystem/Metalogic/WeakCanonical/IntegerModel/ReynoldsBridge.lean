@@ -540,7 +540,7 @@ noncomputable def zHistoryV2 (w₀ : ℤ) : WorldHistory zTaskFrameV2 :=
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
     (zHistoryV2 w₀).timeShift Δ = zHistoryV2 (w₀ + Δ) :=
   WorldHistory.ext_state fun t => by
-    show (w₀ + (t + Δ) : ℤ) = (w₀ + Δ) + t
+    change (w₀ + (t + Δ) : ℤ) = (w₀ + Δ) + t
     omega
 
 /--
@@ -640,7 +640,7 @@ theorem zHistoryV2_total_eq (σ : WorldHistory zTaskFrameV2) :
   -- arithmetic to elaborate in `ℤ` where `omega` can see it.
   have h : (show ℤ from σ.state t) = (show ℤ from σ.state 0) + (t - 0) :=
     (zTaskFrameV2_taskRel _ _ _).mp (σ.respects_task 0 t)
-  show (show ℤ from σ.state t) = (show ℤ from σ.state 0) + t
+  change (show ℤ from σ.state t) = (show ℤ from σ.state 0) + t
   omega
 
 /-- `zTaskFrameV2`'s world-history set `H_F` (`def:world-history`: "The set of all total world
@@ -813,7 +813,7 @@ theorem multiFamHistory_shift_eq {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) 
     (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)).timeShift Δ =
       multiFamHistory f (w₀ + Δ) :=
   WorldHistory.ext_state fun t => by
-    show ((f, w₀ + (t + Δ)) : FamIdx × ℤ) = (f, (w₀ + Δ) + t)
+    change ((f, w₀ + (t + Δ)) : FamIdx × ℤ) = (f, (w₀ + Δ) + t)
     congr 1; omega
 
 /-- Every world history of the multi-family frame is a family line.
@@ -831,7 +831,7 @@ theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
     (Algebraic.multiFamGen_taskRel (D := intOrder) _ _ _).mp
       (σ.respects_task 0 t)
   refine Prod.ext h₁.symm ?_
-  show (σ.state t).2 = (σ.state 0).2 + t
+  change (σ.state t).2 = (σ.state 0).2 + t
   rw [h₂, sub_zero]
 
 /-- The multi-family frame's set of possible worlds `H_F` (`def:world-history`: "The set of all

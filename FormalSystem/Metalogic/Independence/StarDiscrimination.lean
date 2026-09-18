@@ -85,7 +85,7 @@ noncomputable def driftLinear (a : ℝ) (h1 : 1 ≤ a) (h2 : a ≤ 2) : WorldHis
   WorldHistory.ofTotal F0 (fun t => a * t) <| by
     intro s t
     refine (f0_taskRel_iff _ _ _).mpr ?_
-    show fzeroRel (a * s) (t - s) (a * t)
+    change fzeroRel (a * s) (t - s) (a * t)
     rw [fzeroRel_iff]
     rcases le_total 0 (t - s) with h | h
     · left
@@ -126,11 +126,11 @@ theorem fzero_refutes_sentDet (p : Atom) :
     (by norm_num) (driftLinear 2 h2 h2') (driftLinear 1 h1 h1')
     rfl ?_ ?_ ?_
   · -- `τ(0) = 0 = σ(0)`, so `τ ∈ ⟨σ⟩₀`.
-    show (2 : ℝ) * (0 : ℝ) = (1 : ℝ) * (0 : ℝ)
+    change (2 : ℝ) * (0 : ℝ) = (1 : ℝ) * (0 : ℝ)
     ring
   · -- `σ` satisfies `p` at time `1`: `σ(1) = 2 ≥ 3/2`.
     refine fun _ => ?_
-    show (3 / 2 : ℝ) ≤ (2 : ℝ) * (1 : ℝ)
+    change (3 / 2 : ℝ) ≤ (2 : ℝ) * (1 : ℝ)
     norm_num
   · -- `τ` fails `p` at time `1`: `τ(1) = 1 < 3/2`.
     intro _ hval

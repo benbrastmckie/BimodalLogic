@@ -211,19 +211,19 @@ instance Sum.Lex.succOrder {α β : Type} [LinearOrder α] [LinearOrder β]
       intro x y
       match x, y with
       | Sum.inl a, Sum.inl a' =>
-        show toLex (Sum.inl (Order.succ a)) ≤ toLex (Sum.inl a') ↔
+        change toLex (Sum.inl (Order.succ a)) ≤ toLex (Sum.inl a') ↔
           toLex (Sum.inl a) < toLex (Sum.inl a')
         rw [Sum.Lex.inl_le_inl_iff, Sum.Lex.inl_lt_inl_iff, Order.succ_le_iff]
       | Sum.inl a, Sum.inr b' =>
-        show toLex (Sum.inl (Order.succ a)) ≤ toLex (Sum.inr b') ↔
+        change toLex (Sum.inl (Order.succ a)) ≤ toLex (Sum.inr b') ↔
           toLex (Sum.inl a) < toLex (Sum.inr b')
         exact iff_of_true (Sum.Lex.inl_le_inr _ _) (Sum.Lex.inl_lt_inr _ _)
       | Sum.inr b, Sum.inl a' =>
-        show toLex (Sum.inr (Order.succ b)) ≤ toLex (Sum.inl a') ↔
+        change toLex (Sum.inr (Order.succ b)) ≤ toLex (Sum.inl a') ↔
           toLex (Sum.inr b) < toLex (Sum.inl a')
         exact iff_of_false Sum.Lex.not_inr_le_inl Sum.Lex.not_inr_lt_inl
       | Sum.inr b, Sum.inr b' =>
-        show toLex (Sum.inr (Order.succ b)) ≤ toLex (Sum.inr b') ↔
+        change toLex (Sum.inr (Order.succ b)) ≤ toLex (Sum.inr b') ↔
           toLex (Sum.inr b) < toLex (Sum.inr b')
         rw [Sum.Lex.inr_le_inr_iff, Sum.Lex.inr_lt_inr_iff, Order.succ_le_iff])
 
@@ -240,19 +240,19 @@ instance Sum.Lex.predOrder {α β : Type} [LinearOrder α] [LinearOrder β]
       intro x y
       match x, y with
       | Sum.inl a, Sum.inl a' =>
-        show toLex (Sum.inl a') ≤ toLex (Sum.inl (Order.pred a)) ↔
+        change toLex (Sum.inl a') ≤ toLex (Sum.inl (Order.pred a)) ↔
           toLex (Sum.inl a') < toLex (Sum.inl a)
         rw [Sum.Lex.inl_le_inl_iff, Sum.Lex.inl_lt_inl_iff, Order.le_pred_iff]
       | Sum.inl a, Sum.inr b' =>
-        show toLex (Sum.inr b') ≤ toLex (Sum.inl (Order.pred a)) ↔
+        change toLex (Sum.inr b') ≤ toLex (Sum.inl (Order.pred a)) ↔
           toLex (Sum.inr b') < toLex (Sum.inl a)
         exact iff_of_false Sum.Lex.not_inr_le_inl Sum.Lex.not_inr_lt_inl
       | Sum.inr b, Sum.inl a' =>
-        show toLex (Sum.inl a') ≤ toLex (Sum.inr (Order.pred b)) ↔
+        change toLex (Sum.inl a') ≤ toLex (Sum.inr (Order.pred b)) ↔
           toLex (Sum.inl a') < toLex (Sum.inr b)
         exact iff_of_true (Sum.Lex.inl_le_inr _ _) (Sum.Lex.inl_lt_inr _ _)
       | Sum.inr b, Sum.inr b' =>
-        show toLex (Sum.inr b') ≤ toLex (Sum.inr (Order.pred b)) ↔
+        change toLex (Sum.inr b') ≤ toLex (Sum.inr (Order.pred b)) ↔
           toLex (Sum.inr b') < toLex (Sum.inr b)
         rw [Sum.Lex.inr_le_inr_iff, Sum.Lex.inr_lt_inr_iff, Order.le_pred_iff])
 
@@ -380,7 +380,7 @@ theorem kEquiv_colourStructure_anchored {ι : Type} (k : ℕ) {α β γ : ι}
     have horder : q.1 < aI ↔ q.2 < aJ := hinv.order_iff hq hanchor
     have heq : (aI = q.1) ↔ (aJ = q.2) :=
       hinv.dist_iff hanchor hq (m := 0) (pow_pos (by norm_num) d)
-    show cI q.1 = z ↔ cJ q.2 = z
+    change cI q.1 = z ↔ cJ q.2 = z
     rcases lt_trichotomy q.1 aI with hlt | hqe | hgt
     · rw [hIlt _ hlt, hJlt _ (horder.mp hlt)]
     · have h2 : aJ = q.2 := heq.mp hqe.symm
@@ -544,7 +544,7 @@ private theorem kEquiv_zFiber_segSum (sig : MonadicSignature) [Fintype sig.preds
     cases h with
     | left a b hij =>
       rename_i i j
-      show a.1 < b.1
+      change a.1 < b.1
       calc a.1 < W (i + 1) := a.2.2
         _ ≤ W j := hmono (by omega)
         _ ≤ b.1 := b.2.1
@@ -560,7 +560,7 @@ private theorem kEquiv_zFiber_segSum (sig : MonadicSignature) [Fintype sig.preds
   set s := (StrictMono.orderIsoOfSurjective g hgmono hgsurj).symm x with hs
   have hx : g s = x :=
     StrictMono.orderIsoOfSurjective_self_symm_apply g hgmono hgsurj x
-  show c p x ↔ c p s.2.1
+  change c p x ↔ c p s.2.1
   rw [show s.2.1 = x from hx]
 
 /-! ## Per-block inflation -/
@@ -713,12 +713,12 @@ theorem inflate_right (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq 
         have hmod2 : y % p < p := Int.emod_lt_of_pos y hp0
         refine ⟨⟨Sum.inr (toLex (q, y / p)),
           ⟨W 1 + y % p, by omega, by omega⟩⟩, ?_⟩
-        show (⟨true, toLex ((ofLex (toLex (q, y / p))).1,
+        change (⟨true, toLex ((ofLex (toLex (q, y / p))).1,
           (ofLex (toLex (q, y / p))).2 * p + (W 1 + y % p - W 1))⟩ :
             (orderedSum sig Bool
               (fun b => if b then qzFiber sig e else zFiber sig c)).carrier) = ⟨true, v⟩
         refine congrArg (Sigma.mk true) ?_
-        show toLex (q, y / p * p + (W 1 + y % p - W 1)) = v
+        change toLex (q, y / p * p + (W 1 + y % p - W 1)) = v
         rw [show y / p * p + (W 1 + y % p - W 1) = y from by
           have h2 := Int.mul_ediv_add_emod y p
           have hcomm : y / p * p = p * (y / p) := mul_comm _ _
@@ -735,7 +735,7 @@ theorem inflate_right (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq 
       have hmod : ((ofLex v).2 * p + (t.1 - W 1)) % p = t.1 - W 1 := by
         rw [add_comm, Int.add_mul_emod_self_right]
         exact Int.emod_eq_of_lt (by omega) (by omega)
-      show c p' t.1 ↔ c p' (W 1 + ((ofLex (toLex ((ofLex v).1,
+      change c p' t.1 ↔ c p' (W 1 + ((ofLex (toLex ((ofLex v).1,
         (ofLex v).2 * p + (t.1 - W 1)))).2 % p))
       have h0 : (ofLex (toLex ((ofLex v).1, (ofLex v).2 * p + (t.1 - W 1)))).2 =
           (ofLex v).2 * p + (t.1 - W 1) := rfl
@@ -890,12 +890,12 @@ theorem inflate_left (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq s
         have hmod2 : y % p < p := Int.emod_lt_of_pos y hp0
         refine ⟨⟨Sum.inl (toLex (q, y / p)),
           ⟨W (-2) + y % p, by omega, by omega⟩⟩, ?_⟩
-        show (⟨false, toLex ((ofLex (toLex (q, y / p))).1,
+        change (⟨false, toLex ((ofLex (toLex (q, y / p))).1,
           (ofLex (toLex (q, y / p))).2 * p + (W (-2) + y % p - W (-2)))⟩ :
             (orderedSum sig Bool
               (fun b => if b then zFiber sig c else qzFiber sig e)).carrier) = ⟨false, v⟩
         refine congrArg (Sigma.mk false) ?_
-        show toLex (q, y / p * p + (W (-2) + y % p - W (-2))) = v
+        change toLex (q, y / p * p + (W (-2) + y % p - W (-2))) = v
         rw [show y / p * p + (W (-2) + y % p - W (-2)) = y from by
           have h2 := Int.mul_ediv_add_emod y p
           have hcomm : y / p * p = p * (y / p) := mul_comm _ _
@@ -911,7 +911,7 @@ theorem inflate_left (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq s
       have hmod : ((ofLex v).2 * p + (t.1 - W (-2))) % p = t.1 - W (-2) := by
         rw [add_comm, Int.add_mul_emod_self_right]
         exact Int.emod_eq_of_lt (by omega) (by omega)
-      show c p' t.1 ↔ c p' (W (-2) + ((ofLex (toLex ((ofLex v).1,
+      change c p' t.1 ↔ c p' (W (-2) + ((ofLex (toLex ((ofLex v).1,
         (ofLex v).2 * p + (t.1 - W (-2))))).2 % p))
       have h0 : (ofLex (toLex ((ofLex v).1, (ofLex v).2 * p + (t.1 - W (-2))))).2 =
           (ofLex v).2 * p + (t.1 - W (-2)) := rfl

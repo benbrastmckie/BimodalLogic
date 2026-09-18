@@ -101,7 +101,7 @@ theorem refute_allFuture_stab (p : Atom) :
     intro y _ ρ hs
     exact hs.symm
   have hB := hv hA (natHist fun s => if s = 1 then 1 else 0)
-    (by show (0 : ℕ) = (if (0 : ℤ) = 1 then 1 else 0); simp)
+    (by change (0 : ℕ) = (if (0 : ℤ) = 1 then 1 else 0); simp)
   rw [allFuture_iff] at hB
   have hat := hB (1 : ℤ) (one_pos : (0 : ℤ) < 1)
   rw [atom_iff] at hat
@@ -124,7 +124,7 @@ theorem refute_stab_allFuture_past (p : Atom) :
   have hB := hv hA
   rw [allFuture_iff] at hB
   have hC := hB (1 : ℤ) (one_pos : (0 : ℤ) < 1) (natHist fun s => if s = 1 then 0 else 1)
-    (by show (0 : ℕ) = (if (1 : ℤ) = 1 then 0 else 1); simp)
+    (by change (0 : ℕ) = (if (1 : ℤ) = 1 then 0 else 1); simp)
   rw [somePast_iff] at hC
   obtain ⟨s, hs1, hat⟩ := hC
   rw [atom_iff] at hat
@@ -166,7 +166,7 @@ theorem refute_determined (p : Atom) :
   have hA : PlusTruthAt natModel (natHist fun _ => 0) 0 (someFuture (.atom p)) := by
     rw [someFuture_iff]; exact ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), (rfl : (0 : ℕ) = 0)⟩
   have hB := hv hA (natHist fun s => if s ≤ 0 then 0 else 1)
-    (by show (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp)
+    (by change (0 : ℕ) = (if (0 : ℤ) ≤ 0 then 0 else 1); simp)
   rw [someFuture_iff] at hB
   obtain ⟨s, hs, hat⟩ := hB
   rw [atom_iff] at hat
@@ -188,7 +188,7 @@ theorem refute_somePast_stab (p : Atom) :
     intro ρ hs
     exact hs.symm
   have hB := hv hA (natHist fun s => if s < 0 then 1 else 0)
-    (by show (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0); simp)
+    (by change (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0); simp)
   rw [somePast_iff] at hB
   obtain ⟨s, hs, hat⟩ := hB
   rw [atom_iff] at hat

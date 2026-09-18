@@ -254,9 +254,9 @@ theorem isQTime_rat (F : FrameOver (TemporalOrder.of ℚ)) : F.toTaskFrame.IsQTi
   refine ⟨fun n hn y => ⟨(y : ℚ) / n, ?_⟩, fun a b ha => ⟨((b : ℚ) / a).num, ((b : ℚ) / a).den,
     ((b : ℚ) / a).den_nz, ?_⟩⟩
   · have : (n : ℚ) ≠ 0 := by exact_mod_cast hn
-    show n • ((y : ℚ) / n) = y
+    change n • ((y : ℚ) / n) = y
     simp only [nsmul_eq_mul]; field_simp
-  · show (((b : ℚ) / a).den : ℤ) • (b : ℚ) = ((b : ℚ) / a).num • (a : ℚ)
+  · change (((b : ℚ) / a).den : ℤ) • (b : ℚ) = ((b : ℚ) / a).num • (a : ℚ)
     have ha' : (a : ℚ) ≠ 0 := ha
     have h := Rat.mul_den_eq_num ((b : ℚ) / a)
     simp only [zsmul_eq_mul, Int.cast_natCast]

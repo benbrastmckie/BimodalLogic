@@ -289,7 +289,7 @@ theorem star_truth_congr_ext (M : TaskModel F) (φ : StarFormula) :
       (∀ s, τ.state s = σ.state s) →
       (StarTruthAt M τ x v φ ↔ StarTruthAt M σ x v φ) := by
   induction φ with
-  | atom p => intro τ σ x v hs; show M.valuation _ p ↔ M.valuation _ p; rw [hs x]
+  | atom p => intro τ σ x v hs; change M.valuation _ p ↔ M.valuation _ p; rw [hs x]
   | bot => intros; exact Iff.rfl
   | imp φ ψ ihφ ihψ =>
     intro τ σ x v hs; exact Iff.imp (ihφ τ σ x v hs) (ihψ τ σ x v hs)

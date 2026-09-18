@@ -220,7 +220,7 @@ theorem c_truth_congr_ext (K : CoarseModel F) (φ : PlusFormula) :
   induction φ with
   | atom p =>
     intro τ σ t hs
-    show K.toModel.valuation _ p ↔ K.toModel.valuation _ p
+    change K.toModel.valuation _ p ↔ K.toModel.valuation _ p
     rw [hs t]
   | bot => intros; exact Iff.rfl
   | imp φ ψ ihφ ihψ => intro τ σ t hs; exact Iff.imp (ihφ τ σ t hs) (ihψ τ σ t hs)

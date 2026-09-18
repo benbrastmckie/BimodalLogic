@@ -310,7 +310,7 @@ theorem orientedGate_sigmaTimeStable :
       SigmaTimeStable (rhoSF (identifyOrient 0 2).1 (identifyOrient 0 2).2)
         (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1 := by
   refine ⟨?_, sigmaTimeStable_identifyOriented (by decide)⟩
-  show ∀ x ∈ orientedGateBranch, (orientedGateSigma x).label.time = x.label.time
+  change ∀ x ∈ orientedGateBranch, (orientedGateSigma x).label.time = x.label.time
   decide
 
 /-- **The engine fires the ACTIVE arm here**, at every frame class: the reported ordering is

@@ -130,7 +130,7 @@ theorem agreeUpTo_mono {τ σ : WorldHistory F} {t s : F.Duration} (hst : s ≤ 
 theorem paste_agreeFrom (ρ σ : WorldHistory F) (t : F.Duration)
     (hsame : ρ.state t = σ.state t) : AgreeFrom (paste ρ σ t hsame) σ t := by
   intro s hts
-  show pasteFun ρ σ t s = σ.state s
+  change pasteFun ρ σ t s = σ.state s
   unfold pasteFun
   by_cases h : s ≤ t
   · have : s = t := le_antisymm h hts
@@ -142,7 +142,7 @@ theorem paste_agreeFrom (ρ σ : WorldHistory F) (t : F.Duration)
 theorem paste_agreeUpTo (ρ σ : WorldHistory F) (t : F.Duration)
     (hsame : ρ.state t = σ.state t) : AgreeUpTo (paste ρ σ t hsame) ρ t := by
   intro s hst
-  show pasteFun ρ σ t s = ρ.state s
+  change pasteFun ρ σ t s = ρ.state s
   unfold pasteFun
   rw [if_pos hst]
 
@@ -155,7 +155,7 @@ theorem truth_congr_agreeFrom (M : TaskModel F) {φ : PlusFormula} (hφ : IsPure
   induction hφ with
   | atom p =>
     intro τ σ t hag
-    show M.valuation _ p ↔ M.valuation _ p
+    change M.valuation _ p ↔ M.valuation _ p
     rw [hag t le_rfl]
   | bot => intros; exact Iff.rfl
   | imp _ _ ihφ ihψ =>
@@ -180,7 +180,7 @@ theorem truth_congr_agreeUpTo (M : TaskModel F) {φ : PlusFormula} (hφ : IsPure
   induction hφ with
   | atom p =>
     intro τ σ t hag
-    show M.valuation _ p ↔ M.valuation _ p
+    change M.valuation _ p ↔ M.valuation _ p
     rw [hag t le_rfl]
   | bot => intros; exact Iff.rfl
   | imp _ _ ihφ ihψ =>

@@ -587,7 +587,7 @@ noncomputable def iooIsoIoo {a b c d : ℝ} (hab : a < b) (hcd : c < d) :
     linarith [h1, h2 ▸ h1]
   · intro y
     apply Subtype.ext
-    show c + ((a + (y.val - c) * ((b - a) / (d - c))) - a) * ((d - c) / (b - a)) = y.val
+    change c + ((a + (y.val - c) * ((b - a) / (d - c))) - a) * ((d - c) / (b - a)) = y.val
     have hba' : b - a ≠ 0 := ne_of_gt hba
     have hdc' : d - c ≠ 0 := ne_of_gt hdc
     field_simp
@@ -603,7 +603,7 @@ noncomputable def ioiIsoReal (a : ℝ) : Set.Ioi a ≃o ℝ := by
     simp only [Set.mem_Ioi]
     linarith
   · intro y
-    show Real.log (a + Real.exp y - a) = y
+    change Real.log (a + Real.exp y - a) = y
     rw [show a + Real.exp y - a = Real.exp y by ring, Real.log_exp]
 
 /-- `(-∞, b) ≃o ℝ`, by `x ↦ -log (b - x)`. -/
@@ -619,7 +619,7 @@ noncomputable def iioIsoReal (b : ℝ) : Set.Iio b ≃o ℝ := by
     simp only [Set.mem_Iio]
     linarith
   · intro y
-    show -Real.log (b - (b - Real.exp (-y))) = y
+    change -Real.log (b - (b - Real.exp (-y))) = y
     rw [show b - (b - Real.exp (-y)) = Real.exp (-y) by ring, Real.log_exp, neg_neg]
 
 /-- `ℝ ≃o (0,1)`, from Mathlib's `orderIsoIooNegOneOne` composed with an affine rescaling. -/
@@ -740,10 +740,10 @@ theorem exists_ioo_witness (sig : MonadicSignature) [Fintype sig.preds] [Decidab
               if h : x ∈ Set.Ioo c d then R₀.interp p (ψ.symm ⟨x, h⟩).val else False }, rfl, ?_⟩
   refine hR₀.trans (k_equiv_of_iso sig k _ _ ψ ?_)
   intro p x
-  show R₀.interp p x.val ↔
+  change R₀.interp p x.val ↔
     (if h : (ψ x).val ∈ Set.Ioo c d then R₀.interp p (ψ.symm ⟨(ψ x).val, h⟩).val else False)
   rw [dif_pos (ψ x).property]
-  show R₀.interp p x.val ↔ R₀.interp p (ψ.symm (ψ x)).val
+  change R₀.interp p x.val ↔ R₀.interp p (ψ.symm (ψ x)).val
   exact (iff_of_eq (congrArg (R₀.interp p)
     (congrArg Subtype.val (ψ.symm_apply_apply x)))).symm
 
@@ -1058,7 +1058,7 @@ theorem kEquiv_sum_realLine (sig : MonadicSignature) [Fintype sig.preds] [Decida
     fun _ => Subtype.ext rfl
   refine k_equiv_of_iso sig k _ _ (StrictMono.orderIsoOfRightInverse _ hstrict _ hright) ?_
   rintro p ⟨i, y⟩
-  show (blocks i).interp p y.val ↔ (blocks ⌊y.val⌋).interp p y.val
+  change (blocks i).interp p y.val ↔ (blocks ⌊y.val⌋).interp p y.val
   rw [hfloor i y]
 
 /-! ## Lemma 11
@@ -1467,7 +1467,7 @@ theorem kEquiv_singleton (sig : MonadicSignature) [Fintype sig.preds] [Decidable
     (fun x y _ => le_of_eq (congrArg e (Subsingleton.elim x y)))
     (fun x y _ => le_of_eq (congrArg e.symm (Subsingleton.elim x y)))) ?_
   intro p x
-  show M'.interp p x.val ↔ M.interp p a
+  change M'.interp p x.val ↔ M.interp p a
   rw [hL x]
   exact h p
 

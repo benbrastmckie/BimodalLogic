@@ -223,7 +223,7 @@ def PartialHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
     have := σ'.respects_task (e s) (e t) hs ht
     have h2 : (FrameOver.map F e).TaskRel (σ'.states (e s) hs) (e t - e s) (σ'.states (e t) ht) :=
       this
-    show F.TaskRel _ (t - s) _
+    change F.TaskRel _ (t - s) _
     have : e.symm (e t - e s) = t - s := by simp [map_sub]
     have h3 := (FrameOver.map_taskRel F e _ _ _).mp h2
     rw [this] at h3
@@ -274,7 +274,7 @@ def alignedCorr {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskF
   Rel := Aligned e
   atom := by
     intro σ σ' ha t p
-    show M.valuation (σ.state t) p ↔ M.valuation (σ'.state (e t)) p
+    change M.valuation (σ.state t) p ↔ M.valuation (σ'.state (e t)) p
     rw [ha (e t), e.symm_apply_apply]
   fwd := fun σ => ⟨σ.map e, aligned_map e σ⟩
   bwd := fun σ' => ⟨WorldHistory.comap e σ', aligned_comap e σ'⟩

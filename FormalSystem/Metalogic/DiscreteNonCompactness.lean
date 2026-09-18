@@ -180,7 +180,7 @@ def zModel : TaskModel (FrameOver.natFrame (D := ℤ)) where
 
 @[simp] theorem zTruth_atom (N : ℤ) (p : Atom) (t : ℤ) :
     TruthAt zModel (zHistory N) t (Formula.atom p) ↔ N < t := by
-  show ((if N < t then 1 else 0 : Nat) = 1) ↔ N < t
+  change ((if N < t then 1 else 0 : Nat) = 1) ↔ N < t
   constructor
   · intro h
     by_contra hc

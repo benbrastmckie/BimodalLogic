@@ -162,7 +162,7 @@ theorem cutSet_bddAbove_of (e : D ≃o ℚ) {x : R} {d₀ : D} (hd₀ : x < (d�
   rintro _ ⟨d, hd, rfl⟩
   have hlt : d < d₀ :=
     Subtype.coe_lt_coe.mp (lt_trans (show (d : R) < x from hd) hd₀)
-  show ((e d : ℚ) : ℝ) ≤ ((e d₀ : ℚ) : ℝ)
+  change ((e d : ℚ) : ℝ) ≤ ((e d₀ : ℚ) : ℝ)
   exact_mod_cast le_of_lt ((e.lt_iff_lt).mpr hlt)
 
 theorem cutSet_bddAbove (e : D ≃o ℚ)
@@ -180,7 +180,7 @@ theorem cutMap_le_of (e : D ≃o ℚ)
   rintro _ ⟨d, hd, rfl⟩
   have hlt : d < d₀ :=
     Subtype.coe_lt_coe.mp (lt_trans (show (d : R) < x from hd) hd₀)
-  show ((e d : ℚ) : ℝ) ≤ ((e d₀ : ℚ) : ℝ)
+  change ((e d : ℚ) : ℝ) ≤ ((e d₀ : ℚ) : ℝ)
   exact_mod_cast le_of_lt ((e.lt_iff_lt).mpr hlt)
 
 /-- If `d₀ ∈ D` lies below `x`, then `e d₀ ≤ cutMap e x`. -/
@@ -238,7 +238,7 @@ theorem cutMap_surjective (e : D ≃o ℚ)
   · -- `cutMap e u ≤ r`: every `d ∈ D` below `u` is strictly below some member of the pre-cut.
     refine csSup_le (cutSet_nonempty e hDd hmin u) ?_
     rintro _ ⟨d, hd, rfl⟩
-    show ((e d : ℚ) : ℝ) ≤ r
+    change ((e d : ℚ) : ℝ) ≤ r
     have hdu : (d : R) < u := hd
     have hnub : (d : R) ∉ upperBounds (preCut e r) := fun hmem =>
       absurd (hu.2 hmem) (not_le.mpr hdu)

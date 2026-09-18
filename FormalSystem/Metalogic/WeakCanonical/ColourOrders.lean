@@ -146,7 +146,7 @@ theorem colour_atom_agree {ι I J : Type} [LinearOrder I] [LinearOrder J]
   intro ak
   cases ak with
   | pred z i =>
-    show c (eI i) = z ↔ c' (eJ i) = z
+    change c (eI i) = z ↔ c' (eJ i) = z
     rw [hcol i]
   | order i j _ => exact hord i j
 

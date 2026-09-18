@@ -104,7 +104,7 @@ theorem truth_untl_succ (t : ℤ) (g e : Formula) :
       exact hguard r (by omega) h2
   · rintro (h | ⟨hg, s, hts, hse, hguard⟩)
     · refine ⟨t + 1, ?_, h, ?_⟩
-      · show @LT.lt ℤ _ t (t + 1)
+      · change @LT.lt ℤ _ t (t + 1)
         omega
       · intro r hr1 hr2
         have h1 : @LT.lt ℤ _ t r := hr1
@@ -114,7 +114,7 @@ theorem truth_untl_succ (t : ℤ) (g e : Formula) :
       replace hguard :
           ∀ r : ℤ, @LT.lt ℤ _ (t + 1) r → @LT.lt ℤ _ r s → TruthAt M τ r g := hguard
       refine ⟨s, ?_, hse, ?_⟩
-      · show @LT.lt ℤ _ t s
+      · change @LT.lt ℤ _ t s
         omega
       · intro r hr1 hr2
         have h1 : @LT.lt ℤ _ t r := hr1
@@ -148,7 +148,7 @@ theorem truth_snce_pred (t : ℤ) (g e : Formula) :
       exact hguard r h1 (by omega)
   · rintro (h | ⟨hg, s, hst, hse, hguard⟩)
     · refine ⟨t - 1, ?_, h, ?_⟩
-      · show @LT.lt ℤ _ (t - 1) t
+      · change @LT.lt ℤ _ (t - 1) t
         omega
       · intro r hr1 hr2
         have h1 : @LT.lt ℤ _ (t - 1) r := hr1
@@ -158,7 +158,7 @@ theorem truth_snce_pred (t : ℤ) (g e : Formula) :
       replace hguard :
           ∀ r : ℤ, @LT.lt ℤ _ s r → @LT.lt ℤ _ r (t - 1) → TruthAt M τ r g := hguard
       refine ⟨s, ?_, hse, ?_⟩
-      · show @LT.lt ℤ _ s t
+      · change @LT.lt ℤ _ s t
         omega
       · intro r hr1 hr2
         have h1 : @LT.lt ℤ _ s r := hr1

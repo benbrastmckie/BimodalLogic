@@ -108,7 +108,7 @@ def per (σ : ℤ → W) (m : ℤ) : ℤ → W := fun n => σ (n % m)
 theorem per_isWalk {σ : ℤ → W} (h : IsWalk R σ) {m : ℤ} (hm : 0 < m) (hc : σ m = σ 0) :
     IsWalk R (per σ m) := by
   intro n
-  show R (σ (n % m)) (σ ((n + 1) % m))
+  change R (σ (n % m)) (σ ((n + 1) % m))
   have hk0 : 0 ≤ n % m := Int.emod_nonneg n (ne_of_gt hm)
   have hk1 : n % m < m := Int.emod_lt_of_pos n hm
   have hstep : (n + 1) % m = (n % m + 1) % m := by
@@ -123,17 +123,17 @@ theorem per_isWalk {σ : ℤ → W} (h : IsWalk R σ) {m : ℤ} (hm : 0 < m) (hc
     exact h (n % m)
 
 theorem per_base (σ : ℤ → W) (m : ℤ) : per σ m 0 = σ 0 := by
-  show σ (0 % m) = σ 0
+  change σ (0 % m) = σ 0
   rw [Int.zero_emod]
 
 /-- `per σ m` is `m`-periodic, in Mathlib's `Function.Periodic` vocabulary. -/
 theorem per_period (σ : ℤ → W) (m : ℤ) : Function.Periodic (per σ m) m := by
   intro n
-  show σ ((n + m) % m) = σ (n % m)
+  change σ ((n + m) % m) = σ (n % m)
   rw [Int.add_emod_right]
 
 theorem per_val (σ : ℤ → W) {m n : ℤ} (h0 : 0 ≤ n) (h1 : n < m) : per σ m n = σ n := by
-  show σ (n % m) = σ n
+  change σ (n % m) = σ n
   rw [Int.emod_eq_of_lt h0 h1]
 
 /-- A **minimal closed walk** through `x`: length-minimal among all closed walks at `x`. -/
@@ -230,7 +230,7 @@ theorem minCyc_mem (hH : AllRec R) {x : W} (M : MinCyc R x) {θ : ℤ → W} (h�
         simp only [hγdef, if_pos (by omega : (-1 : ℤ) < 0),
           if_neg (by omega : ¬((-1 : ℤ) + 1 < 0))]
         have hj : per θ m (-1) = θ (m - 1) := by
-          show θ ((-1 : ℤ) % m) = θ (m - 1); rw [hneg1]
+          change θ ((-1 : ℤ) % m) = θ (m - 1); rw [hneg1]
         have hstep := hθ (m - 1)
         have e : m - 1 + 1 = m := by ring
         rw [e, hcyc] at hstep
@@ -243,7 +243,7 @@ theorem minCyc_mem (hH : AllRec R) {x : W} (M : MinCyc R x) {θ : ℤ → W} (h�
   have hval : γ (i - m) = θ i := by
     have hlt : i - m < 0 := by omega
     simp only [hγdef, if_pos hlt]
-    show θ ((i - m) % m) = θ i
+    change θ ((i - m) % m) = θ i
     rw [Int.sub_emod_right, Int.emod_eq_of_lt hi him]
   obtain ⟨k, hk0, hk⟩ := exists_nonneg_eq hH hγ (i - m)
   have hkw : γ k = M.walk k := by simp only [hγdef, if_neg (by omega : ¬(k < 0))]

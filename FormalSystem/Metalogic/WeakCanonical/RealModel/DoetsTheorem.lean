@@ -152,7 +152,7 @@ theorem exists_realFlow_witness (sig : MonadicSignature) [Fintype sig.preds]
             interp := fun p x => R₀.interp p (ψ.symm ⟨x, Set.mem_univ x⟩).val }, rfl, ?_⟩
   refine hR₀.trans (k_equiv_of_iso sig k _ _ ψ ?_)
   intro p x
-  show R₀.interp p x.val ↔ R₀.interp p (ψ.symm ⟨(ψ x).val, Set.mem_univ _⟩).val
+  change R₀.interp p x.val ↔ R₀.interp p (ψ.symm ⟨(ψ x).val, Set.mem_univ _⟩).val
   -- `⟨(ψ x).val, _⟩` is definitionally `ψ x`, but `rw` cannot see through the subtype
   -- coercion here; go through `congrArg` exactly as `exists_ioo_witness` does.
   exact (iff_of_eq (congrArg (R₀.interp p)
@@ -180,7 +180,7 @@ theorem goodDense_of_orderIso_real (sig : MonadicSignature) [Fintype sig.preds]
             interp := fun p x => M.interp p (f.symm x) }, ?_⟩
   refine k_equiv_of_iso sig k _ _ (f.trans univIsoReal.symm) ?_
   intro p x
-  show M.interp p x ↔ M.interp p (f.symm (f x))
+  change M.interp p x ↔ M.interp p (f.symm (f x))
   rw [f.symm_apply_apply]
 
 /--
@@ -196,7 +196,7 @@ theorem exists_realFlow_of_orderIso_real (sig : MonadicSignature) [Fintype sig.p
             interp := fun p x => M.interp p (f.symm x) }, rfl, ?_⟩
   refine k_equiv_of_iso sig k _ _ (f.trans univIsoReal.symm) ?_
   intro p x
-  show M.interp p x ↔ M.interp p (f.symm (f x))
+  change M.interp p x ↔ M.interp p (f.symm (f x))
   rw [f.symm_apply_apply]
 
 /-! ## Layer 3 — the `ℝ`-model transfer
@@ -1909,7 +1909,7 @@ theorem isShuffleMap_classColour (D1 : DoetsD1 sig M)
     have hlt₂ : E < e.symm s := Subtype.coe_lt_coe.mp hlt₁
     simpa using (OrderIso.lt_iff_lt e).mpr hlt₂
   · -- and its colour is `γ`
-    show classColour h k (e.symm (e E)).val = γ
+    change classColour h k (e.symm (e E)).val = γ
     rw [OrderIso.symm_apply_apply]
     exact classNF_eq_of_nfEvalNf k M _ z hznf
 
@@ -2107,7 +2107,7 @@ theorem goodDense_unionClasses (sig : MonadicSignature) [Fintype sig.preds]
       (fun i => (hNicc i).1) (fun i => (hNicc i).2.1) (fun i => (hNicc i).2.2.1)
       (fun i => (hNicc i).2.2.2.1) (hNone _ rfl) (fun i => (hNicc i).2.2.2.2))
   intro i
-  show KEquiv sig k ((M.openSubinterval sig c' d').restrictSet sig
+  change KEquiv sig k ((M.openSubinterval sig c' d').restrictSet sig
       {v : (M.openSubinterval sig c' d').carrier |
         (⟨h.cls v.val, hclsP v⟩ : h.ClassBetween c d) = i})
     (N (classColour h k (e.symm (e i)).val))

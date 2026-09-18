@@ -103,29 +103,29 @@ theorem f1_orderFlow : OrderFlow F1 where
     intro τ s t hst
     have hs := f1_states_eq τ s
     have ht := f1_states_eq τ t
-    show τ.state s < τ.state t
+    change τ.state s < τ.state t
     rw [hs, ht]
     linarith
   hits_future := by
     intro τ x v hv
     refine ⟨x + (v - τ.state x), ?_, ?_⟩
     · have : (0 : ℝ) < v - τ.state x := sub_pos.mpr hv
-      show x < x + (v - τ.state x)
+      change x < x + (v - τ.state x)
       linarith
     · have hx := f1_states_eq τ x
       have hc := f1_states_eq τ (x + (v - τ.state x))
-      show τ.state (x + (v - τ.state x)) = v
+      change τ.state (x + (v - τ.state x)) = v
       rw [hc]
       linarith [hx]
   hits_past := by
     intro τ x v hv
     refine ⟨x - (τ.state x - v), ?_, ?_⟩
     · have : (0 : ℝ) < τ.state x - v := sub_pos.mpr hv
-      show x - (τ.state x - v) < x
+      change x - (τ.state x - v) < x
       linarith
     · have hx := f1_states_eq τ x
       have hc := f1_states_eq τ (x - (τ.state x - v))
-      show τ.state (x - (τ.state x - v)) = v
+      change τ.state (x - (τ.state x - v)) = v
       rw [hc]
       linarith [hx]
 
@@ -134,7 +134,7 @@ theorem f1_orderFlow : OrderFlow F1 where
 theorem f1_stateOccurs : StateOccurs F1 := by
   intro w x
   refine ⟨oneShift.hist (w - x), ?_⟩
-  show w - x + x = w
+  change w - x + x = w
   ring
 
 /-! ## (T3) — a non-deterministic frame validating *Determined* -/

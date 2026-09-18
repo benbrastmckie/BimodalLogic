@@ -234,7 +234,7 @@ uniform-limit extension it would be false; see this module's docstring and
 -/
 theorem FMCS.toReal_at_rat {fc : FrameClass} (f : FMCS (fc := fc) Rat) (q : Rat) :
     (f.toReal).mcs (q : ℝ) = f.mcs q := by
-  show realLimitMCS f.mcs 0 (q : ℝ) = f.mcs q
+  change realLimitMCS f.mcs 0 (q : ℝ) = f.mcs q
   exact realLimitMCS_of_rat f.mcs 0 (q : ℝ) q (by rw [add_zero])
 
 end FormalSystem.Metalogic.Bundle

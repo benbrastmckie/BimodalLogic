@@ -173,23 +173,23 @@ def clockFrame : FrameOver (TemporalOrder.of ℚ) :=
       intro w d u
       constructor
       · rintro (rfl : u = _)
-        show w = w + cmk d + cmk (-d)
+        change w = w + cmk d + cmk (-d)
         rw [cmk_neg]; abel
       · rintro (hw : w = u + cmk (-d))
-        show u = w + cmk d
+        change u = w + cmk d
         rw [hw, cmk_neg]; abel)
     (TaskFrame.comp_of
       (by
         rintro w v x y _ _ (hv : v = w + cmk (x + y))
         refine ⟨w + cmk x, rfl, ?_⟩
-        show v = w + cmk x + cmk y
+        change v = w + cmk x + cmk y
         rw [hv, cmk_add, add_assoc])
       (by
         rintro w u v x y _ _ (hu : u = w + cmk x) (hv : v = u + cmk y)
-        show v = w + cmk (x + y)
+        change v = w + cmk (x + y)
         rw [hv, hu, cmk_add, add_assoc]))
     (fun w x _ =>
-      ⟨⟨w + cmk x, rfl⟩, ⟨w - cmk x, by show w = w - cmk x + cmk x; abel⟩⟩)
+      ⟨⟨w + cmk x, rfl⟩, ⟨w - cmk x, by change w = w - cmk x + cmk x; abel⟩⟩)
     clockRel_limit
     clockRel_saturation
 
@@ -213,7 +213,7 @@ def clockHistory : WorldHistory clockFrame :=
   WorldHistory.ofTotal clockFrame cmk (by
     intro s t
     refine (clockFrame_taskRel _ _ _).mpr ?_
-    show cmk t = cmk s + cmk (t - s)
+    change cmk t = cmk s + cmk (t - s)
     rw [← cmk_add]
     congr 1
     ring)

@@ -230,7 +230,7 @@ def shiftCorr (M : TaskModel F) (Δ : F.Duration) : TruthCorr M M where
   Rel := ShiftRel Δ
   atom := by
     intro ρ ρ' h t p
-    show M.valuation (ρ.state t) p ↔ M.valuation (ρ'.state (t + Δ)) p
+    change M.valuation (ρ.state t) p ↔ M.valuation (ρ'.state (t + Δ)) p
     rw [h t]
   fwd := fun ρ => ⟨ρ.timeShift (-Δ), shiftRel_timeShift_neg Δ ρ⟩
   bwd := fun ρ' => ⟨ρ'.timeShift Δ, shiftRel_timeShift Δ ρ'⟩

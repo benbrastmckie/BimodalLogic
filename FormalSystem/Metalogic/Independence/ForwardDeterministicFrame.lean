@@ -365,7 +365,7 @@ def fnZeroHist : WorldHistory FN :=
   WorldHistory.ofTotal FN (fun _ => 0) <| by
     intro s t
     refine (fn_taskRel_iff _ _ _).mpr ?_
-    show fnRel 0 (t - s) 0
+    change fnRel 0 (t - s) 0
     unfold fnRel
     rcases le_total s t with h | h
     · have h' : (0 : ℤ) ≤ t - s := sub_nonneg.mpr h
@@ -380,7 +380,7 @@ def fnRampHist : WorldHistory FN :=
   WorldHistory.ofTotal FN (fun n => (-n).toNat) <| by
     intro s t
     refine (fn_taskRel_iff _ _ _).mpr ?_
-    show fnRel ((-s).toNat) (t - s) ((-t).toNat)
+    change fnRel ((-s).toNat) (t - s) ((-t).toNat)
     unfold fnRel
     rcases le_total s t with h | h
     · have h' : (0 : ℤ) ≤ t - s := sub_nonneg.mpr h
@@ -391,7 +391,7 @@ def fnRampHist : WorldHistory FN :=
 /-- The two possible worlds agree at time `0`: both are at the absorbing state there. -/
 theorem fn_hists_state_eq_zero :
     fnZeroHist.state (0 : ℤ) = fnRampHist.state (0 : ℤ) := by
-  show (0 : ℕ) = ((-(0 : ℤ)).toNat)
+  change (0 : ℕ) = ((-(0 : ℤ)).toNat)
   norm_num
 
 /-- The model with `|p| = {3}` — a state the ramp world occupies at time `−3` and the constant
@@ -420,9 +420,9 @@ theorem fn_refutes_sentDet_somePast (p : Atom) :
     intro v
     rw [StarTruth.somePast_iff]
     refine ⟨(-3 : ℤ), ?_, ?_⟩
-    · show (-3 : ℤ) < (1 : ℤ)
+    · change (-3 : ℤ) < (1 : ℤ)
       omega
-    · show ((-(-3 : ℤ)).toNat) = 3
+    · change ((-(-3 : ℤ)).toNat) = 3
       decide
   · -- the constant world is never at state `3`, so `P p` fails for it at every time
     intro v h

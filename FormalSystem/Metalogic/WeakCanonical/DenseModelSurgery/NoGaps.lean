@@ -239,7 +239,7 @@ theorem temporalTruth_priorUFormula (t : M.carrier) (p : Formula) :
             (TemporalTruth M atomMap s p ∧
               ∀ u : M.carrier, s < u →
                 ∃ r : M.carrier, s < r ∧ r < u ∧ ¬ TemporalTruth M atomMap r p))) := by
-  show (TemporalTruth M atomMap t _ → TemporalTruth M atomMap t _) ↔ _
+  change (TemporalTruth M atomMap t _ → TemporalTruth M atomMap t _) ↔ _
   rw [Kamp.temporalTruth_and_iff, temporalTruth_untl_top, temporalTruth_someFuture_neg,
     temporalTruth_untl_stop]
   exact ⟨fun h h₁ h₂ => h ⟨h₁, h₂⟩, fun h ⟨h₁, h₂⟩ => h h₁ h₂⟩
@@ -326,7 +326,7 @@ theorem temporalTruth_priorSFormula (t : M.carrier) (p : Formula) :
             (TemporalTruth M atomMap s p ∧
               ∀ u : M.carrier, u < s →
                 ∃ r : M.carrier, u < r ∧ r < s ∧ ¬ TemporalTruth M atomMap r p))) := by
-  show (TemporalTruth M atomMap t _ → TemporalTruth M atomMap t _) ↔ _
+  change (TemporalTruth M atomMap t _ → TemporalTruth M atomMap t _) ↔ _
   rw [Kamp.temporalTruth_and_iff, temporalTruth_snce_top, temporalTruth_somePast_neg,
     temporalTruth_snce_stop]
   exact ⟨fun h h₁ h₂ => h ⟨h₁, h₂⟩, fun h ⟨h₁, h₂⟩ => h h₁ h₂⟩

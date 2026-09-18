@@ -639,11 +639,11 @@ theorem exists_countermodel_dense (D : Type) [AddCommGroup D] [LinearOrder D]
 
 /-- The cast `ℤ → ℚ` is strictly monotone. -/
 theorem strictMono_intCast_rat : StrictMono (fun z : ℤ => (z : ℚ)) :=
-  fun a c h => by show (a : ℚ) < (c : ℚ); exact_mod_cast h
+  fun a c h => by change (a : ℚ) < (c : ℚ); exact_mod_cast h
 
 /-- The cast `ℤ → ℝ` is strictly monotone. -/
 theorem strictMono_intCast_real : StrictMono (fun z : ℤ => (z : ℝ)) :=
-  fun a c h => by show (a : ℝ) < (c : ℝ); exact_mod_cast h
+  fun a c h => by change (a : ℝ) < (c : ℝ); exact_mod_cast h
 
 /-! ### Headline result, at `ℚ` -/
 

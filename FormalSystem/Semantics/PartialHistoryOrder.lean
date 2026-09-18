@@ -111,7 +111,7 @@ theorem timeShift_mono {τ σ : PartialHistory F} (Δ : F.Duration) (h : τ ≤ 
 theorem timeShift_timeShift_neg_domain_iff (τ : PartialHistory F) (Δ z : F.Duration) :
     ((τ.timeShift Δ).timeShift (-Δ)).domain z ↔ τ.domain z := by
   have h : z + -Δ + Δ = z := by rw [add_assoc, neg_add_cancel, add_zero]
-  show τ.domain (z + -Δ + Δ) ↔ τ.domain z
+  change τ.domain (z + -Δ + Δ) ↔ τ.domain z
   rw [h]
 
 /-- States are unchanged by shifting by `Δ` and then by `-Δ`. -/

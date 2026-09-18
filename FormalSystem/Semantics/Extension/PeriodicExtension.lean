@@ -242,7 +242,7 @@ theorem extend_periodic {F : FrameOver intOrder} [Finite F.WorldState]
   · -- Agreement on the window is extension.
     intro t ht
     obtain ⟨h1, h2⟩ := (hdom t).mp ht
-    show f t = τ.states t ht
+    change f t = τ.states t ht
     rw [hfmid t h1 h2, hg]
     exact dif_pos ht
   -- Both periodicities, from a revisit in each orbit.
@@ -254,13 +254,13 @@ theorem extend_periodic {F : FrameOver intOrder} [Finite F.WorldState]
     ?_, ?_⟩
   · -- Forward: past `b + i₁ + 1` the path repeats with period `j₁ - i₁`.
     intro x hx
-    show f (x + (j₁ - i₁)) = f x
+    change f (x + (j₁ - i₁)) = f x
     rw [hfgt _ (by omega), hfgt _ (by omega),
       show (x + (j₁ - i₁) - b).toNat = (x - b).toNat + (j₁.toNat - i₁.toNat) by omega]
     exact iterate_periodic sc (g b) heq₁ (by omega) (by omega)
   · -- Backward: before `a - i₀ - 1` the path repeats with period `j₀ - i₀`.
     intro x hx
-    show f (x - (j₀ - i₀)) = f x
+    change f (x - (j₀ - i₀)) = f x
     rw [hflt _ (by omega), hflt _ (by omega),
       show (a - (x - (j₀ - i₀))).toNat = (a - x).toNat + (j₀.toNat - i₀.toNat) by omega]
     exact iterate_periodic pr (g a) heq₀ (by omega) (by omega)
@@ -366,11 +366,11 @@ theorem exists_filler {F : FrameOver intOrder} (τ : PartialHistory F.toTaskFram
       exists_path_of_iter F.step (M - M').toNat _ _ hiter
     refine ⟨M, fun t => if t ≤ M' then w' t else p (t - M').toNat,
       hMmax, by omega, Or.inr hMS, ?_, ?_, ?_⟩
-    · show (if a ≤ M' then w' a else p (a - M').toNat) = τ.states a ha
+    · change (if a ≤ M' then w' a else p (a - M').toNat) = τ.states a ha
       rw [if_pos (by omega)]
       exact hw'a
     · intro t h1 h2
-      show F.step (if t ≤ M' then w' t else p (t - M').toNat)
+      change F.step (if t ≤ M' then w' t else p (t - M').toNat)
         (if t + 1 ≤ M' then w' (t + 1) else p (t + 1 - M').toNat)
       rcases lt_or_ge t M' with h3 | h3
       · rw [if_pos (by omega), if_pos (by omega)]
@@ -383,7 +383,7 @@ theorem exists_filler {F : FrameOver intOrder} (τ : PartialHistory F.toTaskFram
           show (t + 1 - M').toNat = (t - M').toNat + 1 by omega]
         exact hpadj _ (by omega)
     · intro t ht htS
-      show (if t ≤ M' then w' t else p (t - M').toNat) = τ.states t ht
+      change (if t ≤ M' then w' t else p (t - M').toNat) = τ.states t ht
       by_cases htM : t = M
       · subst htM
         rw [if_neg (by omega), hpn]

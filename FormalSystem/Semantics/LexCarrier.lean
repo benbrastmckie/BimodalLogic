@@ -148,7 +148,7 @@ argument needs, so a consumer never has to redo the coordinate bookkeeping.
 theorem isLeast_pos :
     IsLeast {x : α ×ₗ ℤ | 0 < x} (toLex ((0 : α), (1 : ℤ))) := by
   constructor
-  · show (0 : α ×ₗ ℤ) < toLex ((0 : α), (1 : ℤ))
+  · change (0 : α ×ₗ ℤ) < toLex ((0 : α), (1 : ℤ))
     rw [show (0 : α ×ₗ ℤ) = toLex ((0 : α), (0 : ℤ)) from rfl, Prod.Lex.toLex_lt_toLex]
     exact Or.inr ⟨rfl, by norm_num⟩
   · intro z hz
@@ -189,7 +189,7 @@ theorem not_isSuccArchimedean [Nontrivial α] : ¬ IsSuccArchimedean (α ×ₗ �
     | zero => simp
     | succ m ih =>
       rw [Function.iterate_succ_apply']
-      show (ofLex (lexSucc ((Order.succ)^[m] (toLex (a, (0 : ℤ)))))).1 = a
+      change (ofLex (lexSucc ((Order.succ)^[m] (toLex (a, (0 : ℤ)))))).1 = a
       simp only [lexSucc, ofLex_toLex]
       exact ih
   have hcontra := congrArg (fun x => (ofLex x).1) hn
@@ -211,7 +211,7 @@ theorem not_isPredArchimedean [Nontrivial α] : ¬ IsPredArchimedean (α ×ₗ �
     | zero => simp
     | succ m ih =>
       rw [Function.iterate_succ_apply']
-      show (ofLex (lexPred ((Order.pred)^[m] (toLex (b, (0 : ℤ)))))).1 = b
+      change (ofLex (lexPred ((Order.pred)^[m] (toLex (b, (0 : ℤ)))))).1 = b
       simp only [lexPred, ofLex_toLex]
       exact ih
   have hcontra := congrArg (fun x => (ofLex x).1) hn
@@ -240,7 +240,7 @@ theorem not_archimedean [Nontrivial α] : ¬ Archimedean (α ×ₗ ℤ) := by
             = m • (toLex ((0 : α), (1 : ℤ)) : α ×ₗ ℤ) + toLex ((0 : α), (1 : ℤ)) := by
           rw [succ_nsmul]
         rw [hstep]
-        show (ofLex (m • (toLex ((0 : α), (1 : ℤ)) : α ×ₗ ℤ))).1 + 0 = 0
+        change (ofLex (m • (toLex ((0 : α), (1 : ℤ)) : α ×ₗ ℤ))).1 + 0 = 0
         rw [ih, add_zero]
   obtain ⟨n, hn⟩ := h.arch (toLex (b - a, (0 : ℤ))) isLeast_pos.1
   rw [show (toLex (b - a, (0 : ℤ)) : α ×ₗ ℤ) = toLex (b - a, (0 : ℤ)) from rfl,

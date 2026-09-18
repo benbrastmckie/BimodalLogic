@@ -152,7 +152,7 @@ theorem shRel_comp (S : ShiftSet D) :
   · -- interpolation: the witness is `sh w x`, and it is the unique one
     intro h
     refine ⟨S.sh w x, rfl, ?_⟩
-    show v = S.sh (S.sh w x) y
+    change v = S.sh (S.sh w x) y
     rw [S.sh_add]; exact h
   · -- composition
     rintro ⟨u, rfl, rfl⟩
@@ -163,7 +163,7 @@ theorem shRel_comp (S : ShiftSet D) :
 theorem shRel_serial (S : ShiftSet D) : TaskFrame.Serial (fun w d u => u = S.sh w d) := by
   intro w x _
   refine ⟨⟨S.sh w x, rfl⟩, ⟨S.sh w (-x), ?_⟩⟩
-  show w = S.sh (S.sh w (-x)) x
+  change w = S.sh (S.sh w (-x)) x
   rw [S.sh_neg']
 
 /-- *Saturation*: the relation is functional, so Helper D applies verbatim — every fibre is a
@@ -368,7 +368,7 @@ theorem reverse_repr (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t 
     ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ t φ := by
   induction φ generalizing τ t with
   | atom p =>
-    show TruthAt M (WorldHistory.timeShift τ t) 0 (Formula.atom p) ↔ _
+    change TruthAt M (WorldHistory.timeShift τ t) 0 (Formula.atom p) ↔ _
     have := TimeShift.timeShift_preserves_truth M τ 0 t (Formula.atom p)
     rw [sub_zero] at this
     exact this
@@ -495,7 +495,7 @@ theorem sep_not_derivable :
     intro x hx
     obtain ⟨y, hy, hmemy⟩ := dyadic_approx x hx
     refine ⟨y, hy, ?_⟩
-    show ((1/3 : ℚ) : ℚ ⧸ DyadicGroup) = 0 + (QuotientAddGroup.mk y)
+    change ((1/3 : ℚ) : ℚ ⧸ DyadicGroup) = 0 + (QuotientAddGroup.mk y)
     rw [zero_add]
     exact (QuotientAddGroup.eq (s := DyadicGroup)).mpr
       (by have h := AddSubgroup.neg_mem DyadicGroup hmemy

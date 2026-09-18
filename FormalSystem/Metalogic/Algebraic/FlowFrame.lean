@@ -156,11 +156,11 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
       (fun w v x y _ _ h => by
         obtain ⟨h₁, h₂⟩ := h
         refine ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
-        show v.2 = w.2 + x + y
+        change v.2 = w.2 + x + y
         rw [h₂]; abel)
       (fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by rw [h4, h2, add_assoc]⟩))
     (fun w x _ =>
-      ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩)
+      ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by change w.2 = w.2 - x + x; abel⟩⟩)
     (TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero])))
     (TaskFrame.saturation_of_fib_subsingleton (flowRel_fib_subsingleton D FamIdx))
@@ -179,7 +179,7 @@ noncomputable def multiFamHistoryGen {FamIdx : Type} [Nonempty FamIdx] (f : FamI
     WorldHistory (multiFamTaskFrameGen D FamIdx) :=
   WorldHistory.ofTotal _ (fun t => (f, w₀ + t)) fun s t => by
     refine (multiFamGen_taskRel _ _ _).mpr ⟨rfl, ?_⟩
-    show w₀ + t = w₀ + s + (t - s)
+    change w₀ + t = w₀ + s + (t - s)
     abel
 
 /-- The state of `multiFamHistoryGen f w₀` at time `t` is `(f, w₀ + t)`, definitionally. -/
@@ -195,7 +195,7 @@ theorem multiFamHistoryGen_shift_eq {FamIdx : Type} [Nonempty FamIdx] (f : FamId
     (multiFamHistoryGen f w₀ : WorldHistory (multiFamTaskFrameGen D FamIdx)).timeShift Δ =
       multiFamHistoryGen f (w₀ + Δ) :=
   WorldHistory.ext_state fun t => by
-    show ((f, w₀ + (t + Δ)) : FamIdx × ↑D) = (f, w₀ + Δ + t)
+    change ((f, w₀ + (t + Δ)) : FamIdx × ↑D) = (f, w₀ + Δ + t)
     congr 1; abel
 
 /-! ## The derived segment identity
@@ -240,7 +240,7 @@ theorem multiFamGen_comp_iff {FamIdx : Type} [Nonempty FamIdx] (w v : FamIdx × 
   · rintro ⟨h₁, h₂⟩
     refine ⟨(w.1, w.2 + x), (multiFamGen_taskRel _ _ _).mpr ⟨rfl, rfl⟩,
       (multiFamGen_taskRel _ _ _).mpr ⟨h₁, ?_⟩⟩
-    show v.2 = w.2 + x + y
+    change v.2 = w.2 + x + y
     rw [h₂]; abel
   · rintro ⟨u, hu, hv⟩
     obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp hu
@@ -265,7 +265,7 @@ theorem multiFamGen_serial {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑D
       (∃ v, (multiFamTaskFrameGen D FamIdx).TaskRel v x w) :=
   ⟨⟨(w.1, w.2 + x), (multiFamGen_taskRel _ _ _).mpr ⟨rfl, rfl⟩⟩,
     ⟨(w.1, w.2 - x), (multiFamGen_taskRel _ _ _).mpr
-      ⟨rfl, by show w.2 = w.2 - x + x; abel⟩⟩⟩
+      ⟨rfl, by change w.2 = w.2 - x + x; abel⟩⟩⟩
 
 /-- *Limit* (`def:frame#Limit`) for the generic flow frame, discharged by
 `TaskFrame.limit_of_shift` with position function `Prod.snd`: the clock relation makes the
@@ -370,7 +370,7 @@ theorem multiFamGen_total_eq {FamIdx : Type} [Nonempty FamIdx]
     ∃ f w₀, σ = multiFamHistoryGen f w₀ := by
   refine ⟨(σ.state 0).1, (σ.state 0).2, WorldHistory.ext_state fun t => ?_⟩
   -- The state at any time is the state at time 0 advanced by the clock.
-  show σ.state t = ((σ.state 0).1, (σ.state 0).2 + t)
+  change σ.state t = ((σ.state 0).1, (σ.state 0).2 + t)
   rcases le_total 0 t with _h0t | _ht0
   · obtain ⟨h₁, h₂⟩ := (multiFamGen_taskRel _ _ _).mp
       (σ.respects_task 0 t)

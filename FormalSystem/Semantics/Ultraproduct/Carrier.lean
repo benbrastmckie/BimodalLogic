@@ -242,7 +242,7 @@ def shU (sh : ∀ i, Ω i → D i → Ω i) (w : UOmega φ Ω) (d : UD φ D) : U
 theorem shU_zero (sh : ∀ i, Ω i → D i → Ω i) (hz : ∀ i w, sh i w 0 = w) (w : UOmega φ Ω) :
     shU (φ := φ) (D := D) sh w 0 = w := by
   obtain ⟨f, rfl⟩ := omk_surjective w
-  show shU sh (omk f) (mk (0 : ∀ i, D i)) = omk f
+  change shU sh (omk f) (mk (0 : ∀ i, D i)) = omk f
   rw [shU_mk]
   exact omk_eq_omk.mpr (Eventually.of_forall fun i => hz i (f i))
 
@@ -254,7 +254,7 @@ theorem shU_add (sh : ∀ i, Ω i → D i → Ω i)
   | H x =>
     induction b using QuotientAddGroup.induction_on with
     | H y =>
-      show shU sh (shU sh (omk f) (mk x)) (mk y) = shU sh (omk f) (mk x + mk y)
+      change shU sh (shU sh (omk f) (mk x)) (mk y) = shU sh (omk f) (mk x + mk y)
       rw [shU_mk, shU_mk]
       exact omk_eq_omk.mpr (Eventually.of_forall fun i => ha i (f i) (x i) (y i))
 

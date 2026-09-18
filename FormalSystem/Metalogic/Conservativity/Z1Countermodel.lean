@@ -79,7 +79,7 @@ noncomputable abbrev z1τ : WorldHistory z1F := multiFamHistoryGen () (0 : (z1D 
 /-- `p` holds at `t` along `z1τ` iff `t`'s `ℚ`-coordinate is `≥ 1`. -/
 theorem z1_atom_iff (p : Atom) (t : (z1D : Type)) :
     MinusTruthAt z1TM z1τ t (MinusFormula.atom p) ↔ 1 ≤ (ofLex t).1 := by
-  show z1TM.valuation (z1τ.state t) p ↔ _
+  change z1TM.valuation (z1τ.state t) p ↔ _
   simp [z1TM, z1τ, multiFamHistoryGen_state]
 
 /-! ## `Gp ↔ p` pointwise -/
@@ -131,7 +131,7 @@ theorem z1_F_Gp (p : Atom) :
     MinusTruthAt z1TM z1τ z1pt (MinusFormula.atom p).allFuture.someFuture := by
   rw [MinusTruth.someFuture_iff]
   refine ⟨z1pt1, ?_, ?_⟩
-  · show z1pt < z1pt1
+  · change z1pt < z1pt1
     rw [Prod.Lex.lt_iff]
     exact Or.inl (show (0:ℚ) < 1 by norm_num)
   · rw [(z1_gp_iff_p p _), z1_atom_iff]
@@ -143,7 +143,7 @@ theorem z1_not_Gp (p : Atom) :
   rw [MinusTruth.future_iff]
   push Not
   refine ⟨z1pt2, ?_, ?_⟩
-  · show z1pt < z1pt2
+  · change z1pt < z1pt2
     rw [Prod.Lex.lt_iff]
     exact Or.inr ⟨rfl, show (0:ℤ) < 1 by norm_num⟩
   · rw [z1_atom_iff]

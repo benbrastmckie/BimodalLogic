@@ -238,7 +238,7 @@ theorem truth_congr_ext (M : TaskModel F) (φ : PlusFormula) :
     ∀ (τ σ : WorldHistory F) (t : F.Duration), (∀ s, τ.state s = σ.state s) →
       (PlusTruthAt M τ t φ ↔ PlusTruthAt M σ t φ) := by
   induction φ with
-  | atom p => intro τ σ t hs; show M.valuation _ p ↔ M.valuation _ p; rw [hs t]
+  | atom p => intro τ σ t hs; change M.valuation _ p ↔ M.valuation _ p; rw [hs t]
   | bot => intros; exact Iff.rfl
   | imp φ ψ ihφ ihψ => intro τ σ t hs; exact Iff.imp (ihφ τ σ t hs) (ihψ τ σ t hs)
   | box φ _ => intros; exact Iff.rfl

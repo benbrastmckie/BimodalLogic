@@ -270,7 +270,7 @@ theorem chronicleMonadic_box_interp_iff {fc : FrameClass} (N : Set Formula)
     (root ψ : Formula) (h_pred : Formula.box ψ ∈ root.predFormulas) (q : Rat) :
     (Chronicle.chronicleMonadicStructure fc N hN hbox root).interp
         (mkAtomMapFwd root (Formula.box ψ)) q ↔ Formula.box ψ ∈ N := by
-  show (mkAtomMapFwd root (Formula.box ψ)).val ∈
+  change (mkAtomMapFwd root (Formula.box ψ)).val ∈
     (Chronicle.cantorBfmcsDense fc N hN hbox).evalFamily.mcs q ↔ _
   rw [mkAtomMapFwd_on_predFormulas root (Formula.box ψ) h_pred]
   exact Chronicle.box_stable_in_rooted_cantor_fmcs_dense fc N hN hbox ψ 0 q
@@ -512,7 +512,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
     constructor
     · rintro ⟨s, hts, hψ₁, hguard⟩
       refine ⟨realFlowPoint (hR f) (w₀ + s), ?_, ?_, ?_⟩
-      · show (w₀ + t : ℝ) < w₀ + s
+      · change (w₀ + t : ℝ) < w₀ + s
         linarith
       · exact (ih₁ h_sub₁ f w₀ s).mp hψ₁
       · intro rc h_lt_rc h_rc_lt
@@ -531,7 +531,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
       · intro r htr hrs
         rw [ih₂ h_sub₂ f w₀ r]
         refine hguard _ (show (w₀ + t : ℝ) < w₀ + r by linarith) ?_
-        show (w₀ + r : ℝ) < sc.val
+        change (w₀ + r : ℝ) < sc.val
         linarith
   | snce ψ₂ ψ₁ ih₂ ih₁ =>
     have h_sub₁ : ψ₁ ∈ subformulaClosure φ := closure_snce_left φ ψ₁ ψ₂ h_sub
@@ -540,7 +540,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
     constructor
     · rintro ⟨s, hst, hψ₁, hguard⟩
       refine ⟨realFlowPoint (hR f) (w₀ + s), ?_, ?_, ?_⟩
-      · show (w₀ + s : ℝ) < w₀ + t
+      · change (w₀ + s : ℝ) < w₀ + t
         linarith
       · exact (ih₁ h_sub₁ f w₀ s).mp hψ₁
       · intro rc h_lt_rc h_rc_lt
@@ -559,7 +559,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
       · intro r hsr hrt
         rw [ih₂ h_sub₂ f w₀ r]
         refine hguard _ ?_ (show (w₀ + r : ℝ) < w₀ + t by linarith)
-        show (sc.val : ℝ) < w₀ + r
+        change (sc.val : ℝ) < w₀ + r
         linarith
 
 /-! ## The completeness engine for `FrameClass.RTime`

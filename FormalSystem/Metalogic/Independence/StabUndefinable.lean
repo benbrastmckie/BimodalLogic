@@ -128,7 +128,7 @@ noncomputable def stabCorr : TruthCorr natModel stabModel where
     refine ⟨stabHist (fun s => σ.state s) 0, ?_⟩
     intro t q
     refine Iff.trans (nf_atom_iff σ t q) (Iff.trans ?_ (sf_atom_iff _ t q).symm)
-    show natModel.valuation (σ.state t) q ↔
+    change natModel.valuation (σ.state t) q ↔
       stabModel.valuation ((fun s => σ.state s), (0 : ℤ) + t) q
     rw [zero_add]
     exact Iff.rfl
@@ -153,7 +153,7 @@ noncomputable def tauTwo : WorldHistory SF := stabHist oneProfile 0
 theorem tauOne_rel_tauTwo : stabCorr.Rel tauOne tauTwo := by
   intro t q
   refine Iff.trans (nf_atom_iff tauOne t q) (Iff.trans ?_ (sf_atom_iff tauTwo t q).symm)
-  show natModel.valuation (oneProfile t) q ↔ stabModel.valuation (oneProfile, (0 : ℤ) + t) q
+  change natModel.valuation (oneProfile t) q ↔ stabModel.valuation (oneProfile, (0 : ℤ) + t) q
   rw [zero_add]
   exact Iff.rfl
 
@@ -168,7 +168,7 @@ theorem someFuture_tauOne (p : Atom) :
 theorem not_stab_someFuture_tauOne (p : Atom) :
     ¬ PlusTruthAt natModel tauOne 0 (.stab (someFuture (.atom p))) := by
   intro h
-  have hB := h (natHist fun _ => 1) (by show oneProfile 0 = 1; simp [oneProfile])
+  have hB := h (natHist fun _ => 1) (by change oneProfile 0 = 1; simp [oneProfile])
   rw [PlusTruth.someFuture_iff] at hB
   obtain ⟨s, _, v⟩ := hB
   exact one_ne_zero (v : (1 : ℕ) = 0)
@@ -178,7 +178,7 @@ theorem someFuture_tauTwo (p : Atom) :
     PlusTruthAt stabModel tauTwo 0 (someFuture (.atom p)) := by
   rw [PlusTruth.someFuture_iff]
   refine ⟨(1 : ℤ), (one_pos : (0 : ℤ) < 1), ?_⟩
-  show oneProfile (0 + 1) = 0
+  change oneProfile (0 + 1) = 0
   norm_num [oneProfile]
 
 /-- `⊡Fp` **holds** at `(τ₂, 0)`: `SF` is deterministic, so `⊡` collapses onto its argument. -/

@@ -532,7 +532,7 @@ seed induction, and it is confining by kernel computation — seven formulas, ch
 def constCore : Finset Formula := closureIter 3 (∅ : Finset Formula)
 
 theorem confining_constCore : Confining constCore := by
-  show closureStep constCore ⊆ constCore
+  change closureStep constCore ⊆ constCore
   decide
 
 /-- Search for the first stable iterate, up to `fuel` rounds. -/

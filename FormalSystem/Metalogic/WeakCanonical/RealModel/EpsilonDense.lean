@@ -360,7 +360,7 @@ theorem relativizeOpenEnv_cons {n : Nat} (M : OrderedMonadicStructure sig) (lo h
       = relativizeOpenEnv M lo hi (Fin.cons x env_sub) := by
   funext j
   rcases Fin.eq_zero_or_eq_succ j with rfl | ⟨i, rfl⟩
-  · show x.val = _
+  · change x.val = _
     rw [show (0 : Fin (n + 1 + 2)) = (⟨0, by omega⟩ : Fin (n + 1 + 2)) from rfl]
     simp only [relativizeOpenEnv, dif_pos (by omega : (0 : Nat) < n + 1)]
     rfl
@@ -390,7 +390,7 @@ theorem cons_relativizeOpenEnv_lo {n : Nat} (M : OrderedMonadicStructure sig) (l
     (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (x : M.carrier)
     (h : n + 1 < n + 3) :
     (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier) ⟨n + 1, h⟩ = lo := by
-  show (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier)
+  change (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier)
       (Fin.succ (⟨n, by omega⟩ : Fin (n + 2))) = lo
   rw [Fin.cons_succ]
   exact relativizeOpenEnv_lo M lo hi env_sub _
@@ -401,7 +401,7 @@ theorem cons_relativizeOpenEnv_hi {n : Nat} (M : OrderedMonadicStructure sig) (l
     (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier) (x : M.carrier)
     (h : n + 2 < n + 3) :
     (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier) ⟨n + 2, h⟩ = hi := by
-  show (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier)
+  change (Fin.cons x (relativizeOpenEnv M lo hi env_sub) : Fin (n + 3) → M.carrier)
       (Fin.succ (⟨n + 1, by omega⟩ : Fin (n + 2))) = hi
   rw [Fin.cons_succ]
   exact relativizeOpenEnv_hi M lo hi env_sub _

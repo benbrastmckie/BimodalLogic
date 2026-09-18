@@ -211,7 +211,7 @@ noncomputable def BFMCS.toRealBundle {fc : FrameClass} (B : BFMCS (fc := fc) Rat
       (fun q => B.modal_forward fam hfam φ q (hall q) fam' hfam')
   modal_backward := by
     rintro G ⟨fam, hfam, δ, rfl⟩ φ t hall
-    show Formula.box φ ∈ realLimitMCS fam.mcs δ t
+    change Formula.box φ ∈ realLimitMCS fam.mcs δ t
     refine (box_mem_realLimitMCS_iff fam.mcs
       (fun s t ψ => box_stable_in_fmcs fam s t ψ) δ t φ).mpr ?_
     intro q
@@ -395,13 +395,13 @@ theorem BFMCS.toRealBundle_restricted_temporally_coherent {fc : FrameClass}
       have hlt : (p : ℝ) < (s : ℝ) := by exact_mod_cast hps
       rw [hp] at hlt
       refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
-      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      change φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
       rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
       exact hφs
     · rw [realLimitMCS_of_not_rat fam.mcs δ t hx] at hFφ'
       obtain ⟨s, hs, hφs⟩ := h_lfw fam hfam (t + δ) hx φ hdc hFφ'
       refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
-      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      change φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
       rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
       exact hφs
   · -- Past half: unconditional, because the extension limits from below.
@@ -414,7 +414,7 @@ theorem BFMCS.toRealBundle_restricted_temporally_coherent {fc : FrameClass}
       have hlt : (s : ℝ) < (p : ℝ) := by exact_mod_cast hsp
       rw [hp] at hlt
       refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
-      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      change φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
       rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
       exact hφs
     · rw [realLimitMCS_of_not_rat fam.mcs δ t hx] at hPφ'
@@ -423,7 +423,7 @@ theorem BFMCS.toRealBundle_restricted_temporally_coherent {fc : FrameClass}
       obtain ⟨s, hsp, hφs⟩ := hP p φ hdc hPp
       have hlt : (s : ℝ) < (p : ℝ) := by exact_mod_cast hsp
       refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
-      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      change φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
       rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
       exact hφs
 

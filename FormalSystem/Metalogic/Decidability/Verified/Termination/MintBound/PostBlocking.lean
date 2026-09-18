@@ -547,7 +547,7 @@ carries both of its conclusions. -/
 theorem labelFreeSaturatedExit_multSettledBranch
     (fc : FormalSystem.ProofSystem.FrameClass) :
     LabelFreeSaturatedExit multSettledBranch TimeOrdering.empty fc := by
-  show (expandOnceNoFresh multSettledBranch TimeOrdering.empty fc).1 = _
+  change (expandOnceNoFresh multSettledBranch TimeOrdering.empty fc).1 = _
   cases fc <;> rfl
 
 /-- **The second antecedent, at the same branch.** Discharged through the equivalence, from the

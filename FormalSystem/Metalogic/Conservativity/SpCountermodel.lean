@@ -291,7 +291,7 @@ theorem df_fails (a : Atom) :
       · simp at hlt
       · simp only [Sum.inr_lt_inr_iff] at hlt
         exact le_of_lt hlt
-    · show twoV (Sum.inr 0) a
+    · change twoV (Sum.inr 0) a
       exact le_refl 0
   have hcons := h hante
   rw [MinusFrameTruth.someFuture_iff] at hcons
@@ -327,7 +327,7 @@ theorem dn_fails (a : Atom) :
     · rw [MinusFrameTruth.future_iff]
       rintro (m | y) hm
       · simp only [Sum.inl_lt_inl_iff] at hn hm
-        show m ≠ 1
+        change m ≠ 1
         omega
       · simp at hm
     · simp at hn
