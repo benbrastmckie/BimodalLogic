@@ -263,13 +263,6 @@ def negQuot : LindenbaumAlg → LindenbaumAlg :=
     (fun _ _ h => Quotient.sound (provEquiv_neg_congr h))
 
 /--
-Lifted implication on the Lindenbaum algebra.
--/
-def impQuot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift₂ (fun φ ψ => toQuot (φ.imp ψ))
-    (fun _ _ _ _ h1 h2 => Quotient.sound (provEquiv_imp_congr h1 h2))
-
-/--
 Lifted conjunction on the Lindenbaum algebra.
 -/
 def andQuot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
