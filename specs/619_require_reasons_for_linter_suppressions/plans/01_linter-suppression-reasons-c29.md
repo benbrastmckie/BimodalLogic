@@ -1,11 +1,11 @@
 # Implementation Plan: Linter-Suppression Reason Requirement
 
 - **Task**: 619 - require_reasons_for_linter_suppressions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: 585 (burn-down; complete — its recorded Ultraproduct measurement is an input here)
 - **Research Inputs**: specs/619_require_reasons_for_linter_suppressions/reports/01_linter-suppression-reasons.md
-- **Artifacts**: plans/01_linter-suppression-reasons-c29.md (this file)
+- **Artifacts**: plans/01_linter-suppression-reasons-c29.md (this file), summaries/01_linter-suppression-reasons-c29-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -513,27 +513,27 @@ guide teaching the shape C29 rejects.
 
 ---
 
-### Phase 9: Final Gate and Summary [NOT STARTED]
+### Phase 9: Final Gate and Summary [COMPLETED]
 
 **Goal**: Prove the acceptance criteria hold across the whole repository, then record the outcome.
 
 **Tasks**:
-- [ ] Full `lake build` through the guard
+- [x] Full `lake build` through the guard
       (`bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build`); confirm green.
-- [ ] After the build completes (trace store quiescent), run the full harness:
+- [x] After the build completes (trace store quiescent), run the full harness:
       `bash scripts/check-module-invariants.sh`. Confirm `PASS C29` and `PASS C28`.
-- [ ] Diff C16's finding list against the Phase 1 capture; confirm no new findings are attributable
+- [x] Diff C16's finding list against the Phase 1 capture; confirm no new findings are attributable
       to this task.
-- [ ] `python3 scripts/warning-budget.py`: still `0 warning(s) across 0 file(s)`, and
+- [x] `python3 scripts/warning-budget.py`: still `0 warning(s) across 0 file(s)`, and
       `scripts/warning-budget.txt` unedited (`git diff --stat` over it is empty).
-- [ ] Final `grep -rn "set_option linter\." --include="*.lean" FormalSystem Tests scripts` and a
+- [x] Final `grep -rn "set_option linter\." --include="*.lean" FormalSystem Tests scripts` and a
       per-site read confirming every survivor has a reason naming its linter.
-- [ ] Write the implementation summary, including the Phase 7 negative-test evidence verbatim.
-- [ ] Record in the summary the coordination note for the sibling Mathlib-linter-set task: its
+- [x] Write the implementation summary, including the Phase 7 negative-test evidence verbatim.
+- [x] Record in the summary the coordination note for the sibling Mathlib-linter-set task: its
       item (4) drops from four file-scoped blankets to zero, so its shape ratchet needs its own
       anti-silence guard — or better, should fold into C29 rather than adding a C30, since both
       read the same matched set. Do not edit that task's state entry or description here.
-- [ ] Commit (`task 619: complete implementation`).
+- [x] Commit (`task 619: complete implementation`).
 
 **Timing**: 1.5 hours
 
@@ -558,15 +558,15 @@ guide teaching the shape C29 rejects.
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build` exits green.
-- [ ] `bash scripts/check-module-invariants.sh` passes, including the new `PASS C29`.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` passes identically for C29 (build-free
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 3600 -- build` exits green.
+- [x] `bash scripts/check-module-invariants.sh` passes, including the new `PASS C29`.
+- [x] `bash scripts/check-module-invariants.sh --no-build` passes identically for C29 (build-free
       by construction).
-- [ ] Negative test: injected bare suppression produces `FAIL C29` **and** a non-zero exit code.
-- [ ] Anti-silence test: empty walk produces exit 2, not suppressed by `ENFORCE_C29=0`.
-- [ ] `python3 scripts/warning-budget.py` reports `0 warning(s) across 0 file(s)`.
-- [ ] `git diff` over `scripts/warning-budget.txt` is empty (nothing baselined).
-- [ ] Every surviving `set_option linter.* false` has a reason comment naming its linter.
+- [x] Negative test: injected bare suppression produces `FAIL C29` **and** a non-zero exit code.
+- [x] Anti-silence test: empty walk produces exit 2, not suppressed by `ENFORCE_C29=0`.
+- [x] `python3 scripts/warning-budget.py` reports `0 warning(s) across 0 file(s)`.
+- [x] `git diff` over `scripts/warning-budget.txt` is empty (nothing baselined).
+- [x] Every surviving `set_option linter.* false` has a reason comment naming its linter.
 
 ## Artifacts & Outputs
 
