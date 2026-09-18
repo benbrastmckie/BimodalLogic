@@ -1,0 +1,60 @@
+{
+  "dispatch_seq": 1,
+  "status": "implemented",
+  "phase": "implement",
+  "phases_completed": 11,
+  "phases_total": 11,
+  "summary": "Task 588 was already complete when this dispatch started: the in-flight predecessor (dispatch_seq 11, session sess_1789696399_5c64b8) closed Phase 11 and committed everything as 4fb3b3a0a 'task 588: complete implementation' at 00:14:49, seven minutes after dispatch_seq 1 was generated at 00:07:27. This dispatch therefore verified rather than re-executed, and wrote none of the task's artifacts. Verification is green: a fresh full invariant harness run at the final tree exits 0 with ALL CHECKS PASSED and C17 printing '698 of 10279 in-scope declaration(s) have zero other occurrences'; the recorded census accounting reconciles (post-filter 771 -> 743 batch A -> 722 batch B -> 698 batch C) under independent re-measurement at the phase-7/8/9/10 closing commits; and the in-script C17 and tools/c17_triage.py agree exactly at 698. One previously unrecorded instrument defect was measured and is handed off, not fixed here.",
+  "verification": {
+    "verification_passed": true,
+    "harness_exit_code": 0,
+    "harness_verdict": "ALL CHECKS PASSED",
+    "c17_headline": 698,
+    "c17_denominator": 10279,
+    "c17_stratifier_agrees": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 11,
+    "axiom_count_baseline": 11,
+    "independent_recheck": "Census re-measured from throwaway git worktrees at beaeb452c (phase 7), 1d4ffcc6a (batch A), dbb4a9c74 (batch B) and ce64d6283 (batch C last deletion). Each worktree run reads exactly one higher than the in-tree number recorded by the predecessor (772/744/723/708 against 771/743/722/698). The delta is a single row, `def isOpen`, and it is fully explained: a worktree does not carry the gitignored .claude/, .opencode/, .opencode_OLD/ and .memory/ trees that C17's prose corpus sweeps. The recorded accounting is therefore correct as in-tree measurement, with no unexplained residue."
+  },
+  "blockers": [],
+  "artifacts": [
+    {
+      "path": "specs/588_triage_zero_occurrence_declarations/tools/final-harness.txt",
+      "type": "verification-output",
+      "summary": "Full invariant harness run at the final tree produced by this dispatch; exit 0, ALL CHECKS PASSED. Committed by the predecessor in 4fb3b3a0a."
+    }
+  ],
+  "artifacts_authored_by_predecessor": [
+    "specs/588_triage_zero_occurrence_declarations/summaries/02_c17-census-filter-and-triage-summary.md",
+    "specs/588_triage_zero_occurrence_declarations/followups.md",
+    "specs/588_triage_zero_occurrence_declarations/dispositions.md",
+    "specs/588_triage_zero_occurrence_declarations/plans/02_c17-census-filter-and-triage.md",
+    "specs/588_triage_zero_occurrence_declarations/.return-meta.json"
+  ],
+  "modified_files": [],
+  "commits": [],
+  "key_decisions": [
+    "Did not rewrite followups.md, dispositions.md, the summary or .return-meta.json. All four were already written, committed and internally consistent; overwriting them would have destroyed finished work in exchange for a second opinion nobody asked for.",
+    "Left the committed .return-meta.json as the authoritative return for this task even though it names the predecessor's session (sess_1789696399_5c64b8) and dispatch_seq 11. Its status ('implemented') and verification block are accurate, and postflight reads it correctly as-is.",
+    "Verified the recorded census accounting from git worktrees rather than trusting the numbers in the plan's phase notes, because the whole point of the task's final phase is that the drop reconciles line by line."
+  ],
+  "new_finding_handed_off": {
+    "title": "C17's prose corpus sweeps 1,156 gitignored agent-system markdown files, so its headline is not reproducible across deploys",
+    "evidence": "scripts/check-module-invariants.sh's prose_files() walks '.' for every *.md, excluding only .git, .lake, specs, Boneyard, build and __pycache__. Of the 1,322 prose files that reaches, 417 are under .claude/, 370 under .opencode/, 357 under .opencode_OLD/ and 12 under .memory/ -- agent-system deploy trees that are gitignored, regenerated on every extension reload, and about mathematics unrelated to this Lean library. Only about 166 are project documentation (docs/ 79, FormalSystem/**/README.md 60, Tests/ 10, data/ 5, root).",
+    "measured_impact": "Exactly one declaration is masked today: `def isOpen` at FormalSystem/Metalogic/Decidability/Closure.lean:134, whose only non-declaring occurrences are lines in .claude/context/project/math/topology/topological-spaces.md, .claude/context/project/math/topology/scott-topology.md and .claude/context/project/logic/domain/topological-foundations-domain.md, plus the identical .opencode/ and .opencode_OLD/ copies -- a coincidence of naming with point-set topology, not a reference. Excluding the four trees takes the flagged set 947 -> 948 and the headline 698 -> 699, removing nothing (the change is monotone, as narrowing an occurrence corpus must be).",
+    "proposed_action": "A small task against scripts/check-module-invariants.sh: exclude .claude/, .opencode/, .opencode_OLD/ and .memory/ from the prose corpus that C17, C19 and C23 share, re-baseline C17's headline to 699, and record the rule in the script header and docs/development/MODULE_INVARIANTS.md. Same class of change as the six filters this task landed, and it does not gate C17. NOT created here -- task creation is the orchestrator's.",
+    "why_not_fixed_here": "The task is closed and committed with its plan marked [COMPLETED] and its follow-up set (F1-F8) written. Reopening a closed task's artifacts to fold in a finding discovered after closure is worse than handing the finding to the orchestrator."
+  },
+  "next_action_hint": "none -- task 588 is completed in state.json and [COMPLETED] in TODO.md; no re-dispatch needed",
+  "metadata": {
+    "session_id": "sess_1789715023_576533",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "duplicate_dispatch": true,
+    "superseded_by": "dispatch_seq 11 (session sess_1789696399_5c64b8), commit 4fb3b3a0a",
+    "notes": "lean-lsp MCP server failed to connect this session (CONNECT_TIMEOUT after 30s). It was not needed: this dispatch proved no theorems and ran no proof-state queries, and verification went through the guarded harness and lake build via Bash instead."
+  }
+}
