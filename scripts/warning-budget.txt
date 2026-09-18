@@ -26,49 +26,5 @@
 # disposition linter.unusedTactic blocking fix or document via declaration-scoped `set_option ... in`
 # disposition linter.unusedVariables blocking rename to a `_`-prefixed binder; do not delete (arity)
 #
-# Baseline total: 7 warning(s) across 4 file(s).
+# Baseline total: 0 warning(s) across 0 file(s).
 
-# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
-# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
-# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
-# reintroduces the instances for the REST of its section, so the block's span exceeds the
-# declarations that actually need it. Per-declaration `omit` was iterated to its floor
-# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
-# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
-# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
-# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
-# on any count above the entry below, so this cannot grow silently.
-3 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean linter.unusedSectionVars
-# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
-# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
-# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
-# reintroduces the instances for the REST of its section, so the block's span exceeds the
-# declarations that actually need it. Per-declaration `omit` was iterated to its floor
-# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
-# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
-# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
-# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
-# on any count above the entry below, so this cannot grow silently.
-1 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean linter.unusedSectionVars
-# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
-# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
-# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
-# reintroduces the instances for the REST of its section, so the block's span exceeds the
-# declarations that actually need it. Per-declaration `omit` was iterated to its floor
-# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
-# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
-# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
-# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
-# on any count above the entry below, so this cannot grow silently.
-1 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean linter.unusedSectionVars
-# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
-# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
-# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
-# reintroduces the instances for the REST of its section, so the block's span exceeds the
-# declarations that actually need it. Per-declaration `omit` was iterated to its floor
-# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
-# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
-# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
-# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
-# on any count above the entry below, so this cannot grow silently.
-2 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean linter.unusedSectionVars

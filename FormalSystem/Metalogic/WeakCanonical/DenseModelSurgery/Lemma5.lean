@@ -816,6 +816,7 @@ theorem reynolds_lemma5_second {atomMap : Formula → sig.preds}
   intro q h₁ h₂
   exact hIcc q (by rwa [min_comm]) (by rwa [max_comm])
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179**, both statements. -/
 theorem reynolds_lemma5 {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

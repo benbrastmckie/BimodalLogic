@@ -625,6 +625,7 @@ section Lemma6
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — *"we first show that `L` holds wherever `R`
 does"*.**
 
@@ -955,6 +956,7 @@ theorem reynolds_lemma7_start (atomMap : Formula → sig.preds)
           (afterNotHoldsInClass_of_le hε M _ hw'c h ((hCspec w).mp hCw)))
   exact false_of_holds_throughout_class_from_bounded hε M h_prior_U hRs C hsb hnsb hin hout
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 7, printed p.181 — second statement, the *left end* half.**
 
 > *If a formula is true anywhere in a bad interval it is true arbitrarily close to each end of
@@ -1232,6 +1234,7 @@ theorem reynolds_lemma7_end (atomMap : Formula → sig.preds)
       · rw [max_eq_left h]; exact hw'
   exact false_of_holds_throughout_class_upto_bounded hε M h_prior_S hLs C has hnsa hin hout
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 7, printed p.181 — second statement, the *right end* half.** -/
 theorem reynolds_lemma7_close_to_right (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1248,6 +1251,7 @@ theorem reynolds_lemma7_close_to_right (atomMap : Formula → sig.preds)
   exact reynolds_lemma7_end atomMap h_surj hε M h_prior_U h_prior_S
     (Formula.imp A Formula.bot) hint ⟨x, hxc, fun q hq hxq => hcon q hq hxq⟩ hau hub hAu
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 7, printed pp.180-181 — both statements.**
 
 > *If a formula `B` is true for a while at the start of a `∼`-class in a bad interval then it
@@ -1475,6 +1479,7 @@ theorem exists_classInteriorToRInterval (atomMap : Formula → sig.preds)
     · exact hIccb q h h₂
   exact ⟨a, b, ⟨hat, htb, hna, hnb, hR⟩⟩
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — *"we first show that `L` holds wherever `R`
 does"*, with no interval hypothesis.**
 

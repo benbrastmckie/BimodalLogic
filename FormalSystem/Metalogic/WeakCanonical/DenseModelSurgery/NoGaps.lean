@@ -577,6 +577,7 @@ theorem countable_surgeredStructure (M : OrderedMonadicStructure sig)
     Countable (surgeredStructure M ε Q t).carrier :=
   Subtype.countable
 
+omit [IsDualClosed C] in
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`N` is densely ordered when `M` is** — printed p.181's *"the substructure of `M` whose
 domain is just `Q⁻ ∪ I ∪ Q⁺`"*, shown dense.

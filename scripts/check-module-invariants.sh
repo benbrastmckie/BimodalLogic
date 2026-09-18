@@ -3571,6 +3571,13 @@ echo
 # own .lake/build/lib/lean/**/*.trace store, which records each module's diagnostics and replays
 # them on a cache hit; that replay is also why `lake build --wfail` fails on a warm cache.
 #
+# The trace store must be QUIESCENT: a concurrent `lake build` rewrites it as it goes, so this
+# check can read a half-written store and report a count that is wrong. Observed as a spurious
+# `FAIL C28 ... above baseline` that did not reproduce once the build finished. The error is
+# always in the safe direction (a false FAIL, never a false PASS), and CI is unaffected because
+# lean-action completes before the --no-build invariants step. If C28 fails locally while a build
+# is running, re-run it after the build before hunting a regression.
+#
 # The scanner's anti-silence guards (no traces found, no trace carrying a `log` key, or a
 # non-zero recorded baseline against a zero observation) and its undispositioned-linter-class
 # guard both exit 2, and exit 2 is NOT suppressed by ENFORCE_C28=0. A measurement this harness

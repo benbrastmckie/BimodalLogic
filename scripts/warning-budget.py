@@ -37,6 +37,16 @@ Options:
   --build-log FILE    with --from-build, read this file instead of stdin
   --filter SUBSTR     with --list, restrict output to paths containing SUBSTR
 
+THE TRACE STORE MUST BE QUIESCENT. Do not run this while a `lake build` is in flight: a build
+rewrites `.lake/build/lib/lean/**/*.trace` as it goes, so a concurrent read can see a module's
+trace half-written or already invalidated and report a count that is wrong. Observed in practice
+as a spurious `FAIL C28 ... above baseline` that reproduced zero times once the build had
+finished. The error is always in the SAFE direction -- a partially-read store loses warnings from
+the BASELINE side of the comparison, never invents tolerance -- so it can produce a false FAIL
+but not a false PASS. CI is unaffected because lean-action completes before the `--no-build`
+invariants step runs. If a local run fails and a build was running, re-run it once the build is
+done before looking for a regression.
+
 Exit status:
   0  verified (or a successful --list/--update)
   1  a count exceeds its baseline entry, or a path/linter pair is absent from the baseline

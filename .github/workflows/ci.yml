@@ -26,18 +26,18 @@ jobs:
         with:
           build: true
           test: true
-          # NO --wfail here, deliberately. `--wfail` fails the build on ANY warning, and the
-          # tree's warning floor is 7, not 0: see the recorded reason in
-          # scripts/warning-budget.txt for the over-broad `variable` blocks in
-          # DenseModelSurgery/ that a per-declaration `omit` cannot remove. Adding --wfail today
-          # would make CI permanently red BY DESIGN -- exactly the property that rules out
-          # --iofail here (FormalSystem/MainResults.lean emits 54 deliberate `info:` messages as
-          # a documented invariant surface tied to C2/C14/C21) and that cslib's own CI records
-          # for its --wfail --iofail combination.
+          # Compiler warnings fail the build. This is the hard stop; C28 in the "Check module
+          # invariants" step below is the diagnostic half, reporting which file and which linter
+          # against scripts/warning-budget.txt and offering a reviewed escape hatch for the day
+          # an upstream deprecation lands mid-cycle. Both gates deliberately: --wfail catches
+          # anything the trace walk might miss, C28 says what and where and can absorb a
+          # justified exception without turning CI red.
           #
-          # The warning gate is C28 in the "Check module invariants" step below, which holds the
-          # line per file and per linter against a committed baseline and fails on anything NEW.
-          # Add --wfail here in the same change that takes the baseline to zero, not before.
+          # Deliberately NOT --iofail: that is --fail-level=info, and
+          # FormalSystem/MainResults.lean emits 54 deliberate `info:` messages (25 #check plus
+          # 29 #print axioms) as a documented invariant surface tied to C2/C14/C21. cslib's CI
+          # records its own --wfail --iofail combination as permanently red by design.
+          build-args: "--wfail"
           # The Batteries env_linter set (simpNF, docBlame, defsWithUnderscore,
           # structureInType, tacticDocs, unusedArguments) cannot be narrowed via lint-args --
           # runLinter's own CLI always runs every registered linter unconditionally, with no

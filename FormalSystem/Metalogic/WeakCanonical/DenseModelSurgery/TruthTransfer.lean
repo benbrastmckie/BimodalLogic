@@ -340,6 +340,7 @@ section Lemma7Wide
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [IsDualClosed C] in
 /-- **Lemma 7, first statement, start half, over the whole bad interval** — printed pp.180-181:
 *"If a formula `B` is true for a while at the start of a `∼`-class in a bad interval then it
 holds throughout the bad interval."* -/
@@ -353,6 +354,7 @@ theorem lemma7_start_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formul
   obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
   exact reynolds_lemma7_start atomMap h_surj hε M h_prior_U h_prior_S B hint.toR hstart hau hub
 
+omit [IsDualClosed C] in
 /-- **Lemma 7, first statement, end half, over the whole bad interval** — printed pp.180-181:
 *"Similarly at the end."* -/
 theorem lemma7_end_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formula → sig.preds)
@@ -365,6 +367,7 @@ theorem lemma7_end_wide (hS : IsBadIntervalSurgery M ε Q t) (atomMap : Formula 
   obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
   exact reynolds_lemma7_end atomMap h_surj hε M h_prior_U h_prior_S B hint hend hau hub
 
+omit [IsDualClosed C] in
 /-- **Lemma 7, second statement, left half, over the whole bad interval** — printed p.181: *"If
 a formula is true anywhere in a bad interval it is true arbitrarily close to each end of each
 class in the interval."* -/
@@ -381,6 +384,7 @@ theorem lemma7_close_left_wide (hS : IsBadIntervalSurgery M ε Q t)
   exact reynolds_lemma7_close_to_left atomMap h_surj hε M h_prior_U h_prior_S A hint.toR
     ⟨w, haw, hwb, hAw⟩ x hxc
 
+omit [IsDualClosed C] in
 /-- **Lemma 7, second statement, right half, over the whole bad interval** — printed p.181, the
 *"arbitrarily close to the end"* half that forward case 5 consumes by name. -/
 theorem lemma7_close_right_wide (hS : IsBadIntervalSurgery M ε Q t)
@@ -450,6 +454,7 @@ theorem untl_backward_of_between {atomMap : Formula → sig.preds} {A B : Formul
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 8, printed p.181 — the `U` case, forward direction.**
 
 > `(⇒)`: Consider then when `M ⊨ U(A,B)(t)` with `t ∈ N`. … There are several cases.
@@ -539,6 +544,7 @@ theorem reynolds_lemma8_untl_forward (atomMap : Formula → sig.preds)
     · -- **Forward case 6**: `t ∈ I` and `s ∈ Q⁺`.
       exact untl_forward_of_mem (Or.inl hsQ) ihA ihB hxs hA hB
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 8, printed p.182 — the `U` case, backward direction.**
 
 > `(⇐)`: Consider then when `N ⊨ U(A,B)(t)`. … Again there are several cases.

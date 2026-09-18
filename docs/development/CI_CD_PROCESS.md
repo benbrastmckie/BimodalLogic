@@ -45,7 +45,7 @@ with:
   test: true           # Run lake test
   lint: true           # Run lake lint
   use-mathlib-cache: true  # Download Mathlib cache
-  # (no build-args: --wfail -- see "Warning gate" below for why)
+  build-args: "--wfail"    # Compiler warnings fail the build
 ```
 
 ## CI Steps Explained
@@ -66,20 +66,23 @@ The build step compiles all Lean source files in the project:
 - Import resolution
 - Elaboration success
 
-**Warning gate.** Compiler warnings are gated by **C28** in the "Check module invariants" step,
-not by `--wfail` on this step. C28 measures the warning surface from Lake's own trace store and
-compares it per file and per linter against the committed baseline in
-`scripts/warning-budget.txt`; it fails on any new path/linter pair and on any count above its
-entry, and it is build-free so it runs under CI's `--no-build` invocation exactly as it does in a
-full local pass.
+**Warning gate — two gates, both live.**
 
-`--wfail` is **not** set, and adding it today would break CI rather than protect it: `--wfail`
-fails on *any* warning, and the tree's floor is 7, not 0. Those seven are `linter.unusedSectionVars`
-warnings in `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/`, where
-`variable [Fintype sig.preds] [DecidableEq sig.preds]` is re-declared several times per file so
-its span exceeds the declarations that need it; a per-declaration `omit` was iterated to its floor
-and then only shuffled which instance was provably unused. The baseline records that reason
-against each entry. Add `--wfail` in the same change that takes the baseline to zero.
+`--wfail` on this step is the hard stop: any compiler warning fails the build. C28 in the
+"Check module invariants" step is the diagnostic half — it measures the warning surface from
+Lake's own trace store and compares it per file and per linter against `scripts/warning-budget.txt`,
+so a failure says which file and which linter rather than just stopping. C28 is build-free by
+construction and therefore runs under CI's `--no-build` invariants invocation exactly as it does
+in a full local pass.
+
+The asymmetry is the point. If an upstream Mathlib deprecation lands mid-cycle and floods the
+tree, reverting the one `build-args` line above leaves C28 still holding the line on every other
+class, and the new class can be absorbed into the baseline with an explicit disposition and a
+recorded reason rather than by turning the gate off. Every non-zero baseline entry must carry a
+`#` reason line directly above it or the scanner exits 2.
+
+The baseline is currently **zero**: `scripts/warning-budget.txt` records no entries, so any new
+warning fails both gates.
 
 `--iofail` is rejected permanently, not merely deferred: it is `--fail-level=info`, and
 `FormalSystem/MainResults.lean` emits 54 deliberate `info:` messages (25 `#check` plus 29
@@ -342,7 +345,7 @@ The workflow outputs status variables for each step:
 | "unknown identifier" | Missing import | Add the required import |
 | "type mismatch" | Type error | Check types with `#check` |
 | "failed to synthesize" | Missing instance | Add instance or import |
-| `FAIL C28` above baseline | Unused variable, deprecated name, dead tactic | Fix it. For a dead
+| Warning (`--wfail`) or `FAIL C28` | Unused variable, deprecated name, dead tactic | Fix it. For a dead
 tactic that is load-bearing, a declaration-scoped `set_option linter.X false in` with a
 comment recording why is an accepted resolution |
 | `FAIL C28` | A file's warning count exceeds its `scripts/warning-budget.txt` baseline | Fix the warning; the baseline is a ceiling and may only decrease |
@@ -368,10 +371,10 @@ comment recording why is an accepted resolution |
 Before pushing, verify your changes locally:
 
 ```bash
-# Build the project (as CI does)
-lake build
+# Build the project (compiler warnings fail, exactly as CI does)
+lake build --wfail
 
-# Check the warning budget (C28's half of the invariants gate)
+# Check the warning budget (C28's half of the gate; needs a quiescent trace store)
 python3 scripts/warning-budget.py
 
 # Run tests
