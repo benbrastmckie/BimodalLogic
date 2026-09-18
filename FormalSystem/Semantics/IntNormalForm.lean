@@ -325,7 +325,7 @@ theorem worldHistoryOfStepPath.path (F : FrameOver intOrder) (f : ℤ → F.Worl
 theorem _root_.FormalSystem.Semantics.WorldHistory.isStepPath {F : FrameOver intOrder}
     (τ : WorldHistory F) : IsStepPath F τ.path := by
   intro n
-  have := τ.val.respects_task n (n + 1) (τ.property n) (τ.property (n + 1))
+  have := τ.respects_task n (n + 1)
   rwa [show n + 1 - n = (1 : ℤ) by omega] at this
 
 /--

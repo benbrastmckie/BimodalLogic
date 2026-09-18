@@ -241,7 +241,7 @@ Note the statement is equality of *histories*, not merely of states at each time
 theorem total_eq_orbit (S : ShiftSet D) (σ : WorldHistory S.frame) :
     σ = S.hist (σ.state 0) := by
   refine WorldHistory.ext_state fun r => ?_
-  have := (S.fibre_taskRel _ _ _).mp (σ.val.respects_task 0 r (σ.property 0) (σ.property r))
+  have := (S.fibre_taskRel _ _ _).mp (σ.respects_task 0 r)
   rw [sub_zero] at this
   exact this
 
@@ -332,7 +332,7 @@ theorem rev_sep {F : TaskFrame} (σ τ : WorldHistory F)
   refine ⟨y, hy, ?_⟩
   subst hEq
   have h2 : F.TaskRel (σ.state t) (t + y - t) (σ.state (t + y)) :=
-    σ.val.respects_task t (t + y) (σ.property t) (σ.property (t + y))
+    σ.respects_task t (t + y)
   rw [add_sub_cancel_left] at h2
   exact h2
 

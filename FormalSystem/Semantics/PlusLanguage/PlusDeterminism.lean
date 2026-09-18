@@ -105,9 +105,9 @@ theorem states_eq_of_deterministic (hD : F.Deterministic)
     (h : τ.state t = σ.state t) (s : F.Duration) :
     τ.state s = σ.state s := by
   have hτr : F.TaskRel (τ.state t) (s - t) (τ.state s) :=
-    τ.val.respects_task t s (τ.property t) (τ.property s)
+    τ.respects_task t s
   have hσr : F.TaskRel (σ.state t) (s - t) (σ.state s) :=
-    σ.val.respects_task t s (σ.property t) (σ.property s)
+    σ.respects_task t s
   rw [h] at hτr
   exact hD (σ.state t) (s - t) hτr hσr
 

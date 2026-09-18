@@ -82,8 +82,8 @@ by *Compositionality* through the shared state at `t`. -/
 theorem paste_rel_le_lt (ρ σ : WorldHistory F) (t : F.Duration)
     (hsame : ρ.state t = σ.state t) {s s' : F.Duration} (hs : s ≤ t) (hs' : ¬ s' ≤ t) :
     F.TaskRel (ρ.state s) (s' - s) (σ.state s') := by
-  have h1 : F.TaskRel (ρ.state s) (t - s) (ρ.state t) := ρ.val.respects_task s t _ _
-  have h2 : F.TaskRel (σ.state t) (s' - t) (σ.state s') := σ.val.respects_task t s' _ _
+  have h1 : F.TaskRel (ρ.state s) (t - s) (ρ.state t) := ρ.respects_task s t
+  have h2 : F.TaskRel (σ.state t) (s' - t) (σ.state s') := σ.respects_task t s'
   rw [hsame] at h1
   have heq : s' - s = (t - s) + (s' - t) := by
     rw [add_comm]; exact (sub_add_sub_cancel s' t s).symm
@@ -98,10 +98,10 @@ theorem paste_rel (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t 
   intro s s'
   unfold pasteFun
   by_cases hs : s ≤ t <;> by_cases hs' : s' ≤ t
-  · rw [if_pos hs, if_pos hs']; exact ρ.val.respects_task s s' _ _
+  · rw [if_pos hs, if_pos hs']; exact ρ.respects_task s s'
   · rw [if_pos hs, if_neg hs']; exact paste_rel_le_lt ρ σ t hsame hs hs'
   · rw [if_neg hs, if_pos hs', F.reflection, neg_sub]; exact paste_rel_le_lt ρ σ t hsame hs' hs
-  · rw [if_neg hs, if_neg hs']; exact σ.val.respects_task s s' _ _
+  · rw [if_neg hs, if_neg hs']; exact σ.respects_task s s'
 
 /-- **Pasting.** If `ρ(t) = σ(t)` then `ρ|(-∞,t] ⌢ σ|(t,∞)` is a world history. -/
 def paste (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t = σ.state t) :

@@ -138,20 +138,20 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 own disjoint
 
 ---
 
-### Phase 2: Sweep the 9 Semantics-layer call sites [NOT STARTED]
+### Phase 2: Sweep the 9 Semantics-layer call sites [COMPLETED]
 
 - **Goal:** Every hand-spelled dependent projection under `FormalSystem/Semantics/` is replaced by
   the Phase 1 lemma. This phase carries no `states_eq_state` adjustments; every edit is a
   term-position drop-in.
 - **Tasks:**
-  - [ ] Apply `τ.val.respects_task a b (τ.property a) (τ.property b)` -> `τ.respects_task a b` at:
-    - [ ] `FormalSystem/Semantics/IntNormalForm.lean:328`
-    - [ ] `FormalSystem/Semantics/ShiftSet.lean:244`, `:335`
-    - [ ] `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean:85`, `:86`, `:101`, `:104`
+  - [x] Apply `τ.val.respects_task a b (τ.property a) (τ.property b)` -> `τ.respects_task a b` at:
+    - [x] `FormalSystem/Semantics/IntNormalForm.lean:328`
+    - [x] `FormalSystem/Semantics/ShiftSet.lean:244`, `:335`
+    - [x] `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean:85`, `:86`, `:101`, `:104`
           (the `_ _` placeholder form — the two underscores simply disappear)
-    - [ ] `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean:108`, `:110`
-  - [ ] Build each touched module as it is edited, then commit that file as a green sub-step.
-  - [ ] Close with `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`.
+    - [x] `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean:108`, `:110`
+  - [x] Build each touched module as it is edited, then commit that file as a green sub-step.
+  - [x] Close with `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`.
 - **Timing:** 40 minutes
 - **Depends on:** 1
 - **Verification Tier:** local
@@ -171,7 +171,7 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 own disjoint
 
 ---
 
-### Phase 3: Sweep the 13 Metalogic-layer call sites and the four `states_eq_state` lines [NOT STARTED]
+### Phase 3: Sweep the 13 Metalogic-layer call sites and the four `states_eq_state` lines [IN PROGRESS]
 
 - **Goal:** Every hand-spelled dependent projection under `FormalSystem/Metalogic/` is replaced by
   the Phase 1 lemma, and the four rewrite lines that lose their pattern as a result are trimmed or
