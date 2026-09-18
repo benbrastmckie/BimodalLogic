@@ -63,19 +63,6 @@ structure EFPosition (sig : MonadicSignature) where
   /-- Selected elements from N -/
   selectedN : Fin round → N.carrier
 
-/--
-Duplicator wins a position if:
-1. Predicate agreement: for all predicates p and positions i,
-   M.interp p (selectedM i) ↔ N.interp p (selectedN i)
-2. Order agreement: for all positions i, j,
-   selectedM i < selectedM j ↔ selectedN i < selectedN j
--/
-def EfDuplicatorWins {sig : MonadicSignature} (pos : EFPosition sig) : Prop :=
-  (∀ (p : sig.preds) (i : Fin pos.round),
-    pos.M.interp p (pos.selectedM i) ↔ pos.N.interp p (pos.selectedN i)) ∧
-  (∀ (i j : Fin pos.round),
-    pos.selectedM i < pos.selectedM j ↔ pos.selectedN i < pos.selectedN j)
-
 /-! ## Depth Function
 
 The depth function f(n) from GHR93 Section 8. It governs the quantifier
