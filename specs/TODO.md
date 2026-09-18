@@ -11,9 +11,9 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,608,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,600,616,617 | 298,464,502,559,563,568,597,608 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,589,607,618 | 231,465,497,540,564,565,600,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,600,604,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,607,616,617 | 298,464,502,559,563,568,597,600 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -104,7 +104,6 @@ next_project_number: 621
 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
-608 [PLANNED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
 
 ## Tasks
 
@@ -283,12 +282,13 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 608. Decide and rename swapus swapminus families
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 606
 - **Research**: [608_decide_and_rename_swapus_swapminus_families/reports/01_swap-family-rename-decision.md]
 - **Plan**: [608_decide_and_rename_swapus_swapminus_families/plans/01_swap-family-rename.md]
+- **Summary**: [608_decide_and_rename_swapus_swapminus_families/summaries/01_swap-family-rename-summary.md]
 
 **Description**: Decide whether to rename the swapUS, swapMinus and *_swap_valid* identifier families to match the time-reflection vocabulary adopted in the TD->TR rename (swapTemporal -> reflectTime), and if so perform the rename via a map file with whole-word matching, keeping serialized dataset strings byte-stable. These families were explicitly left out of scope by task 584; see specs/584_reconcile_lean_tree_with_paper_vocabulary/rename-map.tsv and the record's 2026-09-17 section for the conventions used.
 

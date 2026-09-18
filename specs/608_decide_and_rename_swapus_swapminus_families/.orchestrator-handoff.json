@@ -1,13 +1,17 @@
 {
-  "status": "planned",
-  "summary": "Plan written: 3 phases (atomic identifier rename via map file, classified prose pass, record update + final gate), 3.5h. Split verdict: rename swapMinus and _swap_valid; keep swapUS and truth_swap.",
+  "status": "implemented",
+  "summary": "Renamed swapMinus -> MinusFormula.reflectTime and _swap_valid -> _reflect_time_valid (279 occurrences, 27 files) via map file; kept swapUS/truth_swap; reworded contrast prose; recorded verdict in paper-definitions-of-record.md. Full build, all exe roots, BimodalTest and all gate scripts green.",
   "artifacts": [
-    {"type": "plan", "path": "specs/608_decide_and_rename_swapus_swapminus_families/plans/01_swap-family-rename.md", "summary": "3-phase swap-family rename plan"}
+    {"type": "summary", "path": "specs/608_decide_and_rename_swapus_swapminus_families/summaries/01_swap-family-rename-summary.md", "summary": "Implementation summary for the swap-family rename"},
+    {"type": "other", "path": "specs/608_decide_and_rename_swapus_swapminus_families/rename-map.tsv", "summary": "Rename map with exclusions"},
+    {"type": "other", "path": "specs/608_decide_and_rename_swapus_swapminus_families/prose-ledger.md", "summary": "Classified prose ledger"}
   ],
-  "phases_completed": 0,
+  "phases_completed": 3,
   "phases_total": 3,
   "blockers": [],
-  "phase": "plan",
-  "next_action_hint": "implement",
-  "dispatch_seq": 5
+  "phase": "implement",
+  "plan_markers_verified": true,
+  "git_checkpoint": "6b2e6e614",
+  "next_action_hint": "complete",
+  "dispatch_seq": 6
 }

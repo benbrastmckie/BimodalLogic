@@ -1,7 +1,7 @@
 # Implementation Plan: Task #608
 
 - **Task**: 608 - Decide and rename the swapUS / swapMinus / *_swap_valid* families
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (the TD -> TR rename it extends is archived and landed)
 - **Research Inputs**: specs/608_decide_and_rename_swapus_swapminus_families/reports/01_swap-family-rename-decision.md
