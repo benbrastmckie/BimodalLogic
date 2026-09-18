@@ -76,6 +76,12 @@
 #       runs under --no-build exactly as it does in a full pass -- C16's
 #       env_linter is a declaration linter and never sees a compiler warning,
 #       so the two checks cover disjoint sets
+#   C29 Every live `set_option linter.* false` under FormalSystem/, Tests/ and
+#       scripts/ carries a `--` comment block directly above it -- above any
+#       stacked `set_option ... in` -- whose text names the linter it disables;
+#       matched on COMMENT-MASKED text, so a suppression quoted in a docstring or
+#       commented out is not one. No companion allow-list: the reason lives at the
+#       site, where it moves with the code it covers
 #   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -625,6 +631,14 @@ ENFORCE_C27=${ENFORCE_C27:-1} # live debug directives all allow-listed with exac
 # or a non-zero baseline entry carrying no reason -- are NOT suppressed by ENFORCE_C28=0 and
 # fail the harness in every mode.
 ENFORCE_C28=${ENFORCE_C28:-1} # compiler-warning budget (enforced)
+# C29 asserts that every live `set_option linter.* false` carries a reason comment at its site
+# naming the linter it suppresses. It ships ENFORCED with no soft window, on the C24/C25/C26/C27
+# precedent: the tree was brought to zero bare suppressions in the same change that added the
+# check, so a soft period would only be a window in which the invariant could regress unnoticed.
+# Never flip it to 0 to quiet a failure: delete the suppression and fix what it hid, or write the
+# reason. NOTE: the scan's anti-silence guards -- an empty walk, or zero matched suppressions
+# anywhere -- exit 2, and exit 2 is NOT suppressed by ENFORCE_C29=0.
+ENFORCE_C29=${ENFORCE_C29:-1} # every linter suppression carries a reason (enforced)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
@@ -3901,6 +3915,232 @@ else
   MSG="compiler-warning count above scripts/warning-budget.txt baseline"
   if [ "$ENFORCE_C28" -eq 1 ]; then fail C28 "$MSG"; else soft C28 "$MSG (report-only)"; fi
   printf '%s\n' "$WARNING_BUDGET_OUT" | head -8 | while IFS= read -r l; do note "$l"; done
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C29: every `set_option linter.* false` carries a reason naming its linter
+#
+# An undocumented suppression is indistinguishable from giving up. C28 gates the compiler-warning
+# COUNT, but a suppression removes the warning before it is ever counted, so a bare
+# `set_option linter.X false` reports a clean zero at every gate while hiding whatever it hides.
+# C29 closes that by requiring the evidence to live at the site: a `--` comment block directly
+# above the suppression, naming the linter it disables and what a deletion trial actually showed.
+#
+# The evidence for the rule is FormalSystem/.../Bridge/RegionFrame.lean's own history. A
+# `set_option linter.unusedVariables false in` was introduced for one declaration; commit
+# bcb8e110b later inserted `regionRel_fib_subsingleton` between the option and its target,
+# silently retargeting it; e18cd2271 then fixed the original target with a `_`-prefixed binder.
+# The suppression sat dead across two further commits with every gate green. A reason comment
+# naming the linter and the warning would have made the drift readable in the diff.
+#
+# NO COMPANION ALLOW-LIST, deliberately, unlike C27's. A reason in a central file goes stale
+# silently when the code it covers moves; a reason at the site moves with it and is re-read by
+# whoever next touches the declaration.
+#
+# SCOPE: live `.lean` under FormalSystem/, Tests/ AND scripts/, via the shared Boneyard-pruning
+# walk. Tests/ is in scope (unlike C27, where a probe is the point) -- an unreasoned suppression
+# does not belong anywhere. specs/ is out of scope: scratch files there are not the live tree.
+#
+# COMMENT-AWARE, reusing C27's masker rather than a second scanner: the match runs on MASKED
+# text, so `set_option linter.X false` quoted inside a docstring (the LEAN_STYLE_GUIDE snippet
+# shape) or commented out is not a suppression, and the masker's own fixture self-test runs first
+# exactly as it does for C27.
+#
+# THE UPWARD WALK is the part a naive "non-blank line immediately above" rule gets wrong. Lean
+# stacks `set_option ... in` lines, and the tree really does carry
+# `set_option maxHeartbeats 4000000 in` directly above a linter suppression
+# (Termination/MintBound/UntlSnceFree.lean). The rule therefore walks upward past contiguous
+# `set_option ... in` lines before it starts looking for the comment block. A docstring is NOT a
+# reason: it documents the declaration, not the suppression, and it is masked away.
+#
+# NAMING THE LINTER is required, not decorative. A suppression stack drifts onto declarations it
+# was never written for, and a reason that does not say which option it is justifying cannot be
+# checked against the option that is actually there.
+#
+# Runs regardless of --no-build: it reads source text and needs no oleans. The anti-silence
+# guards -- an empty walk, or zero matched suppressions anywhere -- exit 2, and exit 2 is NOT
+# suppressed by ENFORCE_C29=0: the tree has always carried suppressions, so a zero means the
+# matcher, the masker or the walk stopped seeing them, never that the invariant holds.
+# ---------------------------------------------------------------------------
+python3 - <<'PYEOF'
+import os, re, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+from live_walk import live_files  # noqa: E402
+from lean_debug_artifacts import mask, self_test  # noqa: E402
+
+ROOTS = ("FormalSystem", "Tests", "scripts")
+SUPPRESSION = re.compile(r"^\s*set_option\s+(linter\.[A-Za-z0-9_.']+)\s+false\b")
+STACKED = re.compile(r"^\s*set_option\s+\S+.*\bin\s*$")
+
+
+def scan(text):
+    """[(line, linter, verdict)] for every live `set_option linter.X false`.
+
+    verdict is 'ok', 'bare' (no comment block at the site) or 'unnamed' (a comment
+    block that never names the linter it is suppressing).
+    """
+    raw = text.split("\n")
+    masked = mask(text).split("\n")
+
+    def is_comment(j):
+        # A genuine line comment masks to whitespace; a `--` inside a string does not.
+        return raw[j].lstrip().startswith("--") and masked[j].strip() == ""
+
+    out = []
+    for idx, mline in enumerate(masked):
+        m = SUPPRESSION.match(mline)
+        if not m:
+            continue
+        linter = m.group(1)
+        j = idx - 1
+        while j >= 0 and STACKED.match(masked[j]):
+            j -= 1
+        block = []
+        while j >= 0 and is_comment(j):
+            block.append(raw[j].strip().lstrip("-").strip())
+            j -= 1
+        body = " ".join(reversed(block)).strip()
+        if not body:
+            out.append((idx + 1, linter, "bare"))
+        elif linter.split(".", 1)[1] not in body:
+            out.append((idx + 1, linter, "unnamed"))
+        else:
+            out.append((idx + 1, linter, "ok"))
+    return out
+
+
+# Each fixture is (source, expected scan()).  Every shape here is one a naive
+# "non-blank line immediately above" rule gets wrong in one direction or the other.
+_FIXTURES = [
+    ("set_option linter.unusedTactic false in\ntheorem t : True := trivial\n",
+     [(1, "linter.unusedTactic", "bare")]),
+    ("-- `linter.unusedTactic` is load-bearing: see the deletion trial.\n"
+     "set_option linter.unusedTactic false in\ntheorem t : True := trivial\n",
+     [(2, "linter.unusedTactic", "ok")]),
+    # a stacked `set_option ... in` must not hide the reason above it
+    ("-- `linter.unusedTactic` is load-bearing: see the deletion trial.\n"
+     "set_option maxHeartbeats 400 in\nset_option linter.unusedTactic false in\n"
+     "theorem t : True := trivial\n",
+     [(3, "linter.unusedTactic", "ok")]),
+    # a commented-out suppression is not a suppression
+    ("-- set_option linter.unusedTactic false in\ntheorem t : True := trivial\n", []),
+    # nor is one quoted inside a docstring or a module doc
+    ("/-- Write `set_option linter.unusedTactic false in` above it. -/\ndef x := 1\n", []),
+    ("/-!\nset_option linter.unusedTactic false\n-/\ndef x := 1\n", []),
+    # a docstring is documentation OF THE DECLARATION, never a reason for the suppression
+    ("/-- A docstring, not a reason. -/\nset_option linter.unusedTactic false in\n"
+     "theorem t : True := trivial\n",
+     [(2, "linter.unusedTactic", "bare")]),
+    # a comment block that never names the linter it suppresses
+    ("-- see the note above\nset_option linter.unusedTactic false in\n"
+     "theorem t : True := trivial\n",
+     [(2, "linter.unusedTactic", "unnamed")]),
+    # and one that names a DIFFERENT linter
+    ("-- `linter.unusedVariables` is unavoidable here.\n"
+     "set_option linter.unusedTactic false in\ntheorem t : True := trivial\n",
+     [(2, "linter.unusedTactic", "unnamed")]),
+    # file-scoped (no `in`) is in scope exactly as declaration-scoped is
+    ("-- `linter.unusedSectionVars` cannot be `omit`-ed at these declarations.\n"
+     "set_option linter.unusedSectionVars false\n",
+     [(2, "linter.unusedSectionVars", "ok")]),
+    # a blank line breaks the block: the reason must sit AT the site
+    ("-- `linter.unusedTactic` reason.\n\nset_option linter.unusedTactic false in\n"
+     "theorem t : True := trivial\n",
+     [(3, "linter.unusedTactic", "bare")]),
+    # only `false` is a suppression
+    ("set_option linter.unusedTactic true in\ntheorem t : True := trivial\n", []),
+    # a `--` inside a string is not a comment block
+    ('def s := "-- `linter.unusedTactic` reason"\nset_option linter.unusedTactic false in\n'
+     "theorem t : True := trivial\n",
+     [(2, "linter.unusedTactic", "bare")]),
+]
+
+
+def c29_self_test():
+    bad = []
+    for k, (src, want) in enumerate(_FIXTURES):
+        got = scan(src)
+        if got != want:
+            bad.append((k, want, got))
+    return bad
+
+
+failed = False
+
+st = self_test()
+if st:
+    print(f"FAIL  C29  comment-masker fixture self-test: {len(st)} fixture(s) miscounted")
+    for k, want, got in st:
+        print(f"            fixture {k}: expected {want}, got {got}")
+    print("            no verdict from this masker can be trusted until it is repaired")
+    sys.exit(1)
+
+bad = c29_self_test()
+if bad:
+    print(f"FAIL  C29  reason-rule fixture self-test: {len(bad)} fixture(s) misjudged")
+    for k, want, got in bad:
+        print(f"            fixture {k}: expected {want}, got {got}")
+    sys.exit(1)
+
+sites, scanned = [], 0
+for root in ROOTS:
+    for path in live_files(root, ".lean"):
+        try:
+            text = open(path, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        scanned += 1
+        if "linter." not in text:          # exact pre-filter: every match contains it
+            continue
+        for ln, linter, verdict in scan(text):
+            sites.append((path, ln, linter, verdict))
+
+if scanned == 0:
+    print("FAIL  C29  the walk produced ZERO .lean files across "
+          f"{', '.join(ROOTS)} -- the scan cannot vouch for a tree it never read")
+    print("            (exit 2: an untrustworthy scan is an error in every mode)")
+    sys.exit(2)
+if not sites:
+    print("FAIL  C29  ZERO `set_option linter.* false` occurrence(s) found in "
+          f"{scanned} live .lean file(s) -- silence, not a pass")
+    print("            the tree has always carried some; a zero here means the matcher, the")
+    print("            masker or the walk stopped seeing them, not that they were all removed")
+    print("            (exit 2: an untrustworthy scan is an error in every mode)")
+    sys.exit(2)
+
+bare = [s for s in sites if s[3] == "bare"]
+unnamed = [s for s in sites if s[3] == "unnamed"]
+
+if bare:
+    failed = True
+    print(f"FAIL  C29  {len(bare)} `set_option linter.* false` occurrence(s) carry no reason")
+    for p, ln, linter, _ in bare[:10]:
+        print(f"            {p}:{ln}: {linter}")
+    print("            put a `--` comment block directly above the suppression (above any")
+    print("            stacked `set_option ... in`) naming the linter and what a deletion")
+    print("            trial actually showed; model: MintBound/Invariants.lean")
+if unnamed:
+    failed = True
+    print(f"FAIL  C29  {len(unnamed)} reason comment(s) never name the linter being suppressed")
+    for p, ln, linter, _ in unnamed[:10]:
+        print(f"            {p}:{ln}: comment above does not mention `{linter}`")
+    print("            name the linter in the comment: a suppression stack drifts onto other")
+    print("            declarations, and an unnamed reason cannot be checked against its option")
+
+if not failed:
+    files = len({s[0] for s in sites})
+    print(f"PASS  C29  all {len(sites)} `set_option linter.* false` occurrence(s) in {files} file(s)")
+    print(f"            carry a reason naming their linter ({scanned} live .lean file(s) scanned,")
+    print(f"            {len(_FIXTURES)} reason-rule and {len(st) if st else 21} masker fixture(s) green)")
+sys.exit(1 if failed else 0)
+PYEOF
+C29_STATUS=$?
+if [ "$C29_STATUS" -eq 2 ]; then
+  # An untrustworthy scan is an error in EVERY mode.
+  fail C29 "suppression scan could not be trusted (exit 2; not suppressed by ENFORCE_C29=0)"
+elif [ "$C29_STATUS" -ne 0 ] && [ "$ENFORCE_C29" -eq 1 ]; then
+  FAILURES=$((FAILURES + 1))
 fi
 echo
 

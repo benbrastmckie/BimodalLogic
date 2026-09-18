@@ -366,37 +366,42 @@ actually showed.
 
 ---
 
-### Phase 6: Add the C29 Check [NOT STARTED]
+### Phase 6: Add the C29 Check [COMPLETED]
 
 **Goal**: Add a build-free invariant check that fails on any `set_option linter.* false` without a
 reason comment at its site.
 
 **Tasks**:
-- [ ] Re-confirm C29 is still the next free ID before writing (C28 highest at plan time).
-- [ ] Add the C29 block to `scripts/check-module-invariants.sh`, structurally following C27
+- [x] Re-confirm C29 is still the next free ID before writing (C28 highest at plan time).
+- [x] Add the C29 block to `scripts/check-module-invariants.sh`, structurally following C27
       (python3 heredoc, `ENFORCE_C29=${ENFORCE_C29:-1}`) and C28's exit-2 convention.
-- [ ] Scope: live `.lean` under `FormalSystem/`, `Tests/` **and** `scripts/`, via
+- [x] Scope: live `.lean` under `FormalSystem/`, `Tests/` **and** `scripts/`, via
       `live_walk.live_files`. `Tests/` is deliberately in scope (unlike C27) — a suppression does
       not belong anywhere unreasoned.
-- [ ] Pre-filter on `'linter.' in text` before masking (measured 2.07s to 0.11s; exact for this
+- [x] Pre-filter on `'linter.' in text` before masking (measured 2.07s to 0.11s; exact for this
       pattern since every match contains the literal `linter.`).
-- [ ] Match on **masked** text via `lean_debug_artifacts.mask`:
+- [x] Match on **masked** text via `lean_debug_artifacts.mask`:
       `^\s*set_option\s+(linter\.[A-Za-z0-9_.']+)\s+false\b`.
-- [ ] Reason rule: from the match line, walk upward past contiguous stacked `set_option … in`
+- [x] Reason rule: from the match line, walk upward past contiguous stacked `set_option … in`
       lines, then require the first remaining line to begin a contiguous block of `--` line
       comments with non-blank content, **and** require that block to name the matched linter.
-- [ ] Run `lean_debug_artifacts.self_test()` first and fail the check outright on a masker
+- [x] Run `lean_debug_artifacts.self_test()` first and fail the check outright on a masker
       regression, as C27 does.
-- [ ] Add a C29-specific fixture set covering: bare, documented, stacked-`set_option`,
+- [x] Add a C29-specific fixture set covering: bare, documented, stacked-`set_option`,
       commented-out, and docstring-mention shapes.
-- [ ] Anti-silence guard: zero matched suppressions anywhere exits **2** with a distinct message,
+- [x] Anti-silence guard: zero matched suppressions anywhere exits **2** with a distinct message,
       not suppressed by `ENFORCE_C29=0`.
-- [ ] Do **not** add C29 to the `--no-build` skip list; it is pure source text.
-- [ ] Do **not** create a companion allowlist file, and leave the header's "Companion files" block
+- [x] Do **not** add C29 to the `--no-build` skip list; it is pure source text.
+- [x] Do **not** create a companion allowlist file, and leave the header's "Companion files" block
       untouched.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm `PASS C29` reporting
-      the expected occurrence count, every one documented.
-- [ ] Commit once green.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm `PASS C29` reporting
+      the expected occurrence count, every one documented. *(deviation: altered — the scan reports
+      **7** occurrences in 6 files, not the hypothesised 6: Phase 4 retained `Carrier.lean`'s
+      blanket with a reason instead of deleting it, so 12 − 4 (Phase 2) − 1 (Phase 3) = 7. The
+      same `--no-build` pass also turned up a stale generated inventory block in three READMEs,
+      a downstream consequence of Phases 2–5's line-count changes; regenerated with
+      `--emit-inventory` in this phase's commit.)*
+- [x] Commit once green.
 
 **Timing**: 2 hours
 
