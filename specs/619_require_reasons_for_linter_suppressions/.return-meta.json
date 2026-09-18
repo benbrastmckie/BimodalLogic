@@ -1,0 +1,32 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/619_require_reasons_for_linter_suppressions/reports/01_linter-suppression-reasons.md",
+      "summary": "Full suppression inventory (12 live, 7 bare - one more than the task list), four empirical deletion trials with per-site dispositions, and the C29 check design (build-free, masker-backed, exit-2 anti-silence), prototyped against the tree."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789696399_5c64b8_619",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "dispatch_seq": 3,
+    "key_findings": [
+      "Tree has 12 live set_option linter.* false occurrences, 7 bare (not 10/6): the seventh is Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean:50.",
+      "Task description path for UntlSnceFree.lean is wrong: it is under Verified/Termination/MintBound/, not Verified/Bridge/.",
+      "RegionFrame.lean:128 hides nothing - git archaeology shows bcb8e110b inserted regionRel_fib_subsingleton between it and its target regionFrame, silently retargeting it, and e18cd2271 later fixed the original target with a _iota binder.",
+      "RegionFrame.lean:278 hides exactly one warning (f unused at :292:19); recommended fix is the rename f -> _f that warning-budget.txt's own disposition row prescribes, not a documented keep.",
+      "UntlSnceFree.lean:352 is load-bearing: replacing the assumption at :404 with skip fails the build with 2 unsolved goals at :389:26.",
+      "DependentUltraproductProbe.lean:50 hides zero warnings (build verified Built, not replayed).",
+      "Next free check ID is C29; a prototype matcher classifies all 12 occurrences correctly in 0.11s, build-free, with no companion allowlist needed."
+    ],
+    "verification": {
+      "trials_run": 4,
+      "tree_restored": "md5sum -c OK; git status --porcelain over FormalSystem/ Tests/ scripts/ docs/ empty",
+      "warning_budget_after": "0 warning(s) across 0 file(s), all at or below baseline",
+      "artifact_validation": "validate-artifact.sh report: PASS, 0 warnings"
+    }
+  }
+}
