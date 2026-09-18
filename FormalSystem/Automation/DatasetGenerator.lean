@@ -1018,12 +1018,6 @@ def DecideCache.empty (maxSize : Nat := 10000) : DecideCache :=
     evictions := 0
     maxSize := maxSize }
 
-/-- Compute the cache hit rate as a percentage (0-100). -/
-def DecideCache.hitRate (c : DecideCache) : Float :=
-  let total := c.hits + c.misses
-  if total == 0 then 0.0
-  else (c.hits.toFloat / total.toFloat) * 100.0
-
 /--
 Look up a key in the cache. Returns the cached `LabeledFormula` if found
 (cache hit), or `none` (cache miss). Updates hit/miss counters.
