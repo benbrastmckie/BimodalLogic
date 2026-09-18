@@ -152,6 +152,8 @@ theorem mem_filterMap_const_world {l : List SignedFormula}
   exact hF x g hxg
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **Only `boxNeg` and `diamondPos` leave the branch's worlds.** Every other rule emits at a
 world the branch already mentions: the propositional and temporal rules at the trigger's own
 world, the persistent-universal rules at a `knownWorlds` entry, the fresh-*time* rules at the
@@ -203,6 +205,8 @@ theorem applyRule_emitted_world_mem {rule : TableauRule} {sf : SignedFormula}
             | (rcases hg with hg | hg))
 
 set_option maxHeartbeats 1000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- `boxNeg` emits **only** at `Branch.nextWorld`: the witness and both auto-propagation blocks
 carry the fresh world. -/
 theorem applyRule_boxNeg_emitted_world {sf : SignedFormula} {b : Branch} {ord : TimeOrdering} :
@@ -228,6 +232,8 @@ theorem applyRule_boxNeg_emitted_world {sf : SignedFormula} {b : Branch} {ord : 
         | (rcases hg with hg | hg)
 
 set_option maxHeartbeats 1000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- The `diamondPos` mirror of `applyRule_boxNeg_emitted_world`. -/
 theorem applyRule_diamondPos_emitted_world {sf : SignedFormula} {b : Branch} {ord : TimeOrdering} :
     ∀ g ∈ (applyRule .diamondPos sf b ord).1.emitted, g.label.world = b.nextWorld := by
@@ -252,6 +258,8 @@ theorem applyRule_diamondPos_emitted_world {sf : SignedFormula} {b : Branch} {or
         | (rcases hg with hg | hg)
 
 set_option maxHeartbeats 1000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- If `boxNeg` emitted anything at all, the trigger had the shape the rule is keyed on. This is
 what turns "a new world appeared" into a statement about the *rule's own* witness. -/
 theorem applyRule_boxNeg_shape {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
@@ -265,6 +273,8 @@ theorem applyRule_boxNeg_shape {sf : SignedFormula} {b : Branch} {ord : TimeOrde
         | exact ⟨_, rfl, rfl⟩
 
 set_option maxHeartbeats 1000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- The `diamondPos` mirror of `applyRule_boxNeg_shape`. -/
 theorem applyRule_diamondPos_shape {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
     {g : SignedFormula} (hg : g ∈ (applyRule .diamondPos sf b ord).1.emitted) :
@@ -562,6 +572,8 @@ theorem resultBranch_sub {b nb : Branch} {res : RuleResult}
       List.not_mem_nil] at h
 
 set_option maxHeartbeats 1000000 in
+-- The proof reduces `applyRule` at the rule under analysis, stepping past the earlier arms of its
+-- 36-constructor match; that `whnf` work is past the default heartbeat budget.
 /-- **One rule application preserves the strengthened fresh-world discipline**, at every successor
 branch the result reports.
 
@@ -659,6 +671,8 @@ the guard is recoverable exactly where the fresh-world discipline needs it. The 
 linearity stages need no guard at all: they run one rule each, and neither is world-minting. -/
 
 set_option maxHeartbeats 1000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **The ordinary-rule pick carries its own guard, at the two world-minting rules.** -/
 theorem findApplicableRule_guard_mint {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass}
@@ -1265,6 +1279,8 @@ theorem findApplicableRule_guard_branching {sf : SignedFormula} {b : Branch} {or
   (repeat' split at hr) <;> simp_all [not_selfGuarded_of_fresh]
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **After a fresh-label rule fires, its own pair reports a witness** — non-branching shapes.
 
 The rule's emitted list is headed by the witness at the fresh label, and the second component
@@ -1298,6 +1314,8 @@ theorem applyRule_fresh_witness_nonbranching {rule : TableauRule} {sf : SignedFo
                | exact absurd hnb (by simp)))
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **After a fresh-label rule fires, its own pair reports a witness** — `.branching` shape, both
 arms.
 

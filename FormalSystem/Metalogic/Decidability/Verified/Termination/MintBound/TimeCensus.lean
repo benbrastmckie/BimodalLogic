@@ -319,6 +319,8 @@ theorem fst_mem_of_mem_trichotomyCandidates {ord : TimeOrdering} {t : TimeIndex}
   exact ht0
 
 set_option maxHeartbeats 1000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **`orderTrichotomy` emits at the common predecessor and at its own trigger, and at nothing
 else.** The split's three arms are `[T(d) @ (w, t₀), sf]` for the three `temp_linearity` disjuncts
 `d`, so every emission is either `sf` itself — on the branch by hypothesis — or sits at `t₀`, which
@@ -514,6 +516,8 @@ The nine minting rules split two ways, and the split is not cosmetic:
   the disjunction directly. That is why they get their own lemmas rather than joining the group. -/
 
 set_option maxHeartbeats 2000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **The six consumable minting rules emit only at `Branch.nextTime`.** The exact time-coordinate
 analogue of `applyRule_boxNeg_emitted_world` / `applyRule_diamondPos_emitted_world`, grouped
 because all six share one arm shape: a witness at `freshLabel`, auto-propagation blocks relabelled
@@ -557,6 +561,8 @@ theorem applyRule_emitted_nextTime_of_freshLabel {rule : TableauRule} {sf : Sign
             | (rcases hg with hg | hg))
 
 set_option maxHeartbeats 2000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **The three self-guarded minting rules, at the honest disjunction.**
 
 `untlNeg` and `snceNeg` re-include their trigger `sf` in **every** arm — that is what

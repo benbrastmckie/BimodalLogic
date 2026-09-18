@@ -77,6 +77,8 @@ private theorem mem_iff_contains' (b : Branch) (sf : SignedFormula) :
 /-! ## The branching propositional rule -/
 
 set_option maxHeartbeats 1600000 in
+-- The proof unfolds `findApplicableRule` across the whole `allRulesForFC` table, so every
+-- `applyRule` arm reduces; that `whnf` work is past the default heartbeat budget.
 /--
 **`impPos` saturation.** `T(ψ → χ)` at a label on a saturated branch puts `F(ψ)` or `T(χ)` at that
 same label.

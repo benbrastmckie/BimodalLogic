@@ -361,8 +361,10 @@ theorem time_mem_of_emitted_nil {b : Branch} {r : RuleResult × TimeOrdering}
 -- This is the `MintBound/Invariants.lean` pattern (a tactic kept for its failure), not the
 -- `Termination/SubformulaProperty.lean` one (a `done` kept as a closer for a goal `refine` left
 -- open).
-set_option maxHeartbeats 4000000 in
 set_option linter.unusedTactic false in
+set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **The time sweep on the `untl`/`snce`-free fragment, without `OrdTimesKnown`.**
 
 `applyRule_emitted_time_mem` with `haux : OrdTimesKnown b ord` replaced by

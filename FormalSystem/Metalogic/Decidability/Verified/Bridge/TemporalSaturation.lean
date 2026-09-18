@@ -30,16 +30,15 @@ mints a fresh time and is therefore suppressed only when `witnessPresent` finds 
 
 They live here rather than in `CountermodelExtraction.lean` for the reason `Bridge/
 PropSaturation.lean` gives for `sat_imp_pos`: both unfold `applyRule` and so force the whole
-`allRulesForFC` table to reduce, which is why they carry a raised heartbeat budget. Isolating
-them keeps that budget off the engine file.
+`allRulesForFC` table to reduce. Isolating them keeps that cost off the engine file. (Both now
+elaborate within the default heartbeat budget, measured at under 5,000 heartbeats each, so they
+carry no raised budget.)
 
 **Note on `mem_knownTimes_of_mem`.** The membership `t' ∈ b.knownTimes` is still derived from the
 witness formula's own label, not from `futureOf`: `futureOf` is a closure over the *ordering*
 constraints and can name a time no branch formula mentions, so the two facts are independent and
 both are reported.
 -/
-
-set_option maxHeartbeats 1600000
 
 namespace FormalSystem.Metalogic.Decidability.Verified.Bridge
 

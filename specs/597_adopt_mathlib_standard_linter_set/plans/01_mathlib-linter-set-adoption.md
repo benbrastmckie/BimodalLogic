@@ -260,26 +260,26 @@ inventory blocks in 5 READMEs were regenerated for the changed line counts.
 
 ---
 
-### Phase 3: Heartbeat-budget group (`setOption` + `style.maxHeartbeats`) [IN PROGRESS]
+### Phase 3: Heartbeat-budget group (`setOption` + `style.maxHeartbeats`) [COMPLETED]
 
 **Goal**: Convert the 7 unscoped `maxHeartbeats` to declaration-scoped form, and bring every
 scoped site into Mathlib's comment-after-`in` form.
 
 **Tasks**:
-- [ ] Convert each unscoped site by trial, one declaration at a time: remove the budget and build.
+- [x] Convert each unscoped site by trial, one declaration at a time: remove the budget and build.
       Add `set_option maxHeartbeats N in` with a trailing `--` reason only on declarations that
       actually need it. Choose N with `count_heartbeats in`. Do not copy a budget blindly onto
-      every declaration. The sites are:
+      every declaration. *(deviation: altered — measured every declaration in one pass with `#count_heartbeats in` under `set_option Elab.async false` (without it, async proofs report only the header cost) instead of remove-and-rebuild trials)* The sites are:
       - `Termination/SubformulaProperty.lean`: 5 sections (lines 470, 595, 690, 801 and 1165),
         covering about 37 theorems;
       - `Verified/Bridge/TemporalSaturation.lean:42`: file-scoped, 6 declarations;
       - `Decidability/Tableau.lean:2387`: `section ProgressLemmas`.
-- [ ] Rewrite about 31 scoped sites whose reason sits above the docstring. Move the reason into a
+- [x] Rewrite about 31 scoped sites whose reason sits above the docstring. Move the reason into a
       `--` comment placed after the `in` and before the declaration. Mathlib requires this
       placement: a docstring does not count, and a comment above the `set_option` does not count.
       Most of these sites are in `Termination/MintBound/*`, `Bridge/{Prop,Box}Saturation`,
       `CountermodelExtraction` (lines 507 and 593) and `TemporalOrder` (lines 197 and 200).
-- [ ] Delete the `style.setOption` and `style.maxHeartbeats` temporary lines, then do a guarded
+- [x] Delete the `style.setOption` and `style.maxHeartbeats` temporary lines, then do a guarded
       full build with `--wfail`.
 
 **Timing**: 2 hours
@@ -298,6 +298,16 @@ result with the per-file sweep's warning list.
   `**/Verified/Bridge/TemporalSaturation.lean`, `**/Decidability/Tableau.lean` - scope the budgets
 - The files with scoped sites listed by the sweep - move the reason comment
 - `lakefile.toml` - remove 2 temporary lines
+
+**Phase 3 notes**: measured (thousands of heartbeats as `maxHeartbeats` counts them):
+SubformulaProperty — all 36 rule lemmas are over the default (34 at 0.86-0.90M, `serialityRule`
+and `timeLinearity` at 2.09M), budgeted 1,200,000 and 3,000,000 per declaration; Tableau
+`ProgressLemmas` — 5 of 28 over (three `applyRule` sweeps at ~0.77M -> 1,600,000, two
+`findApplicableRule` picks at ~0.22M -> 400,000), the other 23 need no budget; TemporalSaturation
+— all 6 under 5,000, so its file-wide budget was simply deleted (its docstring claim updated).
+The 32 scoped sites got a reason comment after the `in`; `UntlSnceFree.lean` swapped its two
+prefixes so C29's reason block stays adjacent to the linter suppression. Full `--wfail` build
+green (1,169 s); C28/C29 pass.
 
 **Verification**:
 - A grep for `set_option maxHeartbeats [0-9]+\s*$` (no trailing `in`) returns 0 hits.

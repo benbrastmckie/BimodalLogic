@@ -33,8 +33,6 @@ weak.linter.unusedDecidableInType = false # TEMPORARY (staged enablement)
 weak.linter.hashCommand = false # TEMPORARY (staged enablement)
 weak.linter.style.show = false # TEMPORARY (staged enablement)
 weak.linter.flexible = false # TEMPORARY (staged enablement)
-weak.linter.style.maxHeartbeats = false # TEMPORARY (staged enablement)
-weak.linter.style.setOption = false # TEMPORARY (staged enablement)
 
 [[require]]
 name = "mathlib"

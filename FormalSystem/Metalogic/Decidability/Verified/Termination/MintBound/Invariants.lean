@@ -167,6 +167,8 @@ theorem time_ne_nextTime {b : Branch} {sf : SignedFormula} (h : sf ∈ b) :
     sf.label.time ≠ b.nextTime := fun hc => not_mem_of_time_nextTime hc h
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **Every rule except `densityRule` preserves ordering irreflexivity.**
 
 `applyRule` mints a fresh time at exactly nine sites, all of the shape
@@ -415,6 +417,8 @@ theorem irreflOrd_density_newOrd {b : Branch} {ord : TimeOrdering} {t t' : TimeI
     (ne_nextTime_of_mem_futureOf haux hmem)
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **`applyRule` preserves ordering irreflexivity, with no rule excluded and no frame-class
 restriction.** The `densityRule` case, the one `applyRule_irreflOrd_of_ne_density` leaves out, is
 closed by `irreflOrd_density_newOrd` from the auxiliary invariant. -/
@@ -539,6 +543,8 @@ def nonBranchingResultBranch (b : Branch) : RuleResult → Option Branch
   | _ => none
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **`applyRule` preserves `OrdTimesLeMaxTime` at the non-branching result shapes.**
 
 The branching shapes (`.branching`, `.branchingOrdered`) are handled at engine level, where the
@@ -796,6 +802,8 @@ private theorem pick_splitOrdered' {b : Branch} {bs : List (Branch × TimeOrderi
 -- `denseIndicatorClosure`, `densityRule`, `z1Rule`).
 set_option linter.unusedTactic false in
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- `timeLinearity` is the ONLY rule that can produce an ordered split. -/
 theorem applyRule_branchingOrdered_rule (rule : TableauRule) (sf : SignedFormula) (b : Branch)
     (ord : TimeOrdering) (bs : List (Branch × TimeOrdering))

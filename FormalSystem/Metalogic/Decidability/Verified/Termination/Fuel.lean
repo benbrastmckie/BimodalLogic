@@ -1721,6 +1721,8 @@ theorem branching_arms_new_of_guard {b : Branch} {bss : List (List SignedFormula
   exact ⟨x, hx, not_mem_of_contains_false (by simpa using hxc)⟩
 
 set_option maxHeartbeats 1600000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- Cases 2 and 3: the guard bypasses. A rule that is self-guarded or mints a fresh label and
 still reports `.branching` emits, on every arm, at `branch.nextTime` — a time no formula on the
 branch carries. The 36-rule case analysis leaves exactly the four live rules (`.untlNeg`,
@@ -2012,6 +2014,8 @@ theorem splitOrderedMeasure_lt_of_timeLinearity (sf : SignedFormula) (b : Branch
   · exact Prod.Lex.left _ _ (knownTimes_card_lt_identifyTime hmu hms hsu)
 
 set_option maxHeartbeats 1600000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **Split arity, attempted.** Every `.branching` result of every rule has at most three arms. -/
 theorem applyRule_branching_arity_le (rule : TableauRule) (sf : SignedFormula) (b : Branch)
     (ord : TimeOrdering) (bss : List (List SignedFormula))

@@ -2383,8 +2383,9 @@ unreachable.
 section ProgressLemmas
 
 -- The three `applyRule`-level sweeps each analyse 36 constructors; measured at roughly 80 s of
--- elaboration, which is above the default heartbeat budget but not the wall-clock budget.
-set_option maxHeartbeats 2000000
+-- elaboration, which is above the default heartbeat budget but not the wall-clock budget. Each of
+-- them, and the two `findApplicableRule` picks, carries its own declaration-scoped budget; the
+-- rest of the section elaborates within the default.
 
 /-- A `.persistent` result is never empty.
 
@@ -2405,6 +2406,8 @@ theorem applyRule_persistent_ne_nil
     | (simp_all; done)
     | (subst h; simp_all)
 
+set_option maxHeartbeats 1600000 in
+-- The sweep analyses all 36 `applyRule` constructors: about 0.77M heartbeats measured.
 /-- A `.linear` result of a fresh-label rule is never empty.
 
 All eight `ruleMintsFreshLabel` constructors return a syntactic cons whose head is the witness
@@ -2426,6 +2429,8 @@ theorem applyRule_fresh_linear_ne_nil
     | (simp_all; done)
     | (subst h; simp_all)
 
+set_option maxHeartbeats 1600000 in
+-- The sweep analyses all 36 `applyRule` constructors: about 0.77M heartbeats measured.
 /-- Every arm of a `.branching` result of a fresh-label rule is non-empty.
 
 The two branching fresh-label rules return `.branching [branch1 ++ autoProp, branch2 ++ autoProp]`
@@ -2446,6 +2451,8 @@ theorem applyRule_fresh_branching_ne_nil
     | (simp_all; done)
     | (subst h; simp_all)
 
+set_option maxHeartbeats 400000 in
+-- Reduces `findApplicableRule` over the rule table: about 0.22M heartbeats measured.
 /-- The ordinary-rule pick never returns an empty extension.
 
 Three details are load-bearing and were each found by measurement:
@@ -2773,6 +2780,8 @@ theorem applyRule_persistent_adds_new
   exists_of_ne_nil_of_forall_not_mem (applyRule_persistent_ne_nil h)
     (applyRule_persistent_not_mem h)
 
+set_option maxHeartbeats 1600000 in
+-- The sweep analyses all 36 `applyRule` constructors: about 0.77M heartbeats measured.
 /-- A fresh-label `.linear` step contributes its witness, which is off-branch by freshness.
 
 All eight fresh-label constructors return `witness :: …` with the witness at
@@ -2811,6 +2820,8 @@ theorem findApplicableSerialRule_adds_new
   subst hres
   exact applyRule_persistent_adds_new (by rw [hA])
 
+set_option maxHeartbeats 400000 in
+-- Reduces `findApplicableRule` over the rule table: about 0.22M heartbeats measured.
 /-- The ordinary-rule pick contributes a formula the branch did not already carry.
 
 Three sources, one per guard: the non-fresh `.linear` arm's `fs.all branch.contains = false`,

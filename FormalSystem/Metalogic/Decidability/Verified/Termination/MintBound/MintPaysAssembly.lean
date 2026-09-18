@@ -179,6 +179,8 @@ their ACTIVE guard, and the four-bucket partition of all thirty-six constructors
 new mathematics; each is an inversion of an engine definition that is already frozen. -/
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **None of the six witness-guarded minting rules ever reports `.persistent`.**
 
 The six are `freshLabelRules ∩ freshTimeRules` — `allFutureNeg`, `allPastNeg`, `someFuturePos`,

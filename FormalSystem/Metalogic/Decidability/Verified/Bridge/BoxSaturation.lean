@@ -77,6 +77,8 @@ private theorem mem_iff_contains (b : Branch) (sf : SignedFormula) :
 /-! ## The modal-temporal interaction rule -/
 
 set_option maxHeartbeats 1600000 in
+-- The proof unfolds `findApplicableRule` across the whole `allRulesForFC` table, so every
+-- `applyRule` arm reduces; that `whnf` work is past the default heartbeat budget.
 /--
 **Box-temporal saturation.** `T(□φ)` at a label on a saturated branch puts `T(G φ)` and `T(H φ)`
 at that same label.
@@ -107,6 +109,8 @@ theorem sat_box_temporal (b : Branch) (timeOrd : TimeOrdering)
 /-! ## The temporal universals -/
 
 set_option maxHeartbeats 1600000 in
+-- The proof unfolds `findApplicableRule` across the whole `allRulesForFC` table, so every
+-- `applyRule` arm reduces; that `whnf` work is past the default heartbeat budget.
 /--
 **`G` positive saturation.** `T(G φ) @ (w,t)` on a saturated branch puts `T(φ)` at `(w, t')` for
 every `t'` the ordering records as future of `t`.
@@ -142,6 +146,8 @@ theorem sat_all_future_pos (b : Branch) (timeOrd : TimeOrdering)
     simp [hfm] at h
 
 set_option maxHeartbeats 1600000 in
+-- The proof unfolds `findApplicableRule` across the whole `allRulesForFC` table, so every
+-- `applyRule` arm reduces; that `whnf` work is past the default heartbeat budget.
 /-- **`H` positive saturation**, the mirror image of `sat_all_future_pos`. -/
 theorem sat_all_past_pos (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)

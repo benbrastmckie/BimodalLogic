@@ -193,11 +193,14 @@ example (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nont
     (TemporalOrder.of D).addCommGroup = (inferInstance : AddCommGroup D) := rfl
 example : TemporalOrder.of ℤ = intOrder := rfl
 
--- Instance synthesis through the projections is cheap, not merely successful.
 set_option synthInstance.maxHeartbeats 2000 in
+-- Instance synthesis through the projections is cheap, not merely successful: a deliberately
+-- low ceiling that fails if it is not.
 example (D : TemporalOrder) (x y : ↑D) : x + y = y + x := add_comm x y
 
 set_option synthInstance.maxHeartbeats 2000 in
+-- Instance synthesis through the projections is cheap, not merely successful: a deliberately
+-- low ceiling that fails if it is not.
 example (x y : ↑intOrder) : x + y = y + x := add_comm x y
 
 end Examples

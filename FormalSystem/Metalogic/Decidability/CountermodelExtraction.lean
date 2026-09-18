@@ -505,6 +505,8 @@ theorem sat_box_neg (b : Branch) (timeOrd : TimeOrdering)
   exact ⟨w', hw', (contains_iff_mem b _).mp hcont⟩
 
 set_option maxHeartbeats 800000 in
+-- The proof unfolds `findApplicableRule` across the whole `allRulesForFC` table, so every
+-- `applyRule` arm reduces; that `whnf` work is past the default heartbeat budget.
 /--
 **Until positive saturation**: if `T(U(event, guard))` at `(w, t)` is on a saturated branch,
 some known time carries the event witness, or carries the guard together with the Until itself —
@@ -591,6 +593,8 @@ theorem sat_untl_pos (b : Branch) (timeOrd : TimeOrdering)
       exact Or.inl ⟨t', mem_knownTimes_of_mem hmemG, Or.inr ⟨hmemG, hmemU⟩⟩
 
 set_option maxHeartbeats 800000 in
+-- The proof unfolds `findApplicableRule` across the whole `allRulesForFC` table, so every
+-- `applyRule` arm reduces; that `whnf` work is past the default heartbeat budget.
 /-- **Since positive saturation**: past-directed mirror of `sat_untl_pos`, ordered-witness
 disjunct included. There the trigger shape is `P ⊤` (`snce ⊤ ⊤`) and the ordering fact is
 `timeOrd.pastOf t ≠ []`. -/

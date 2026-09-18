@@ -30,6 +30,8 @@ def branchingResultBranches (b : Branch) : RuleResult → List Branch
   | _ => []
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **`applyRule` preserves `OrdTimesLeMaxTime` at the `.branching` result shape**, for every arm.
 
 The `.branchingOrdered` shape is deliberately not covered here: its per-arm orderings live in the
@@ -445,6 +447,8 @@ theorem ordTimesKnown_density_cons {b : Branch} {ord : TimeOrdering} {t t' : Tim
   · exact ordTimesKnown_mono haux sub_append p hp
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **`applyRule` preserves `OrdTimesKnown` at the non-branching result shapes** — the strong
 analogue of `applyRule_ordTimes_nonbranching`, proved by the same tactic skeleton with the three
 `_cons` lemmas swapped for their strong forms.
@@ -539,6 +543,8 @@ statement threaded through `OrdTimesLeMaxTime` therefore cannot become a run inv
 many result shapes it covers. -/
 
 set_option maxHeartbeats 4000000 in
+-- `repeat' split` case-splits every arm of the 36-constructor `applyRule` match; elaborating
+-- all of them is past the default heartbeat budget.
 /-- **`applyRule` preserves `OrdTimesKnown` at the `.branching` result shape**, for every arm —
 the strong analogue of `applyRule_ordTimes_branching`.
 
@@ -797,6 +803,8 @@ theorem witnessPresent_branch_mono {rule : TableauRule} {sf : SignedFormula}
                   · exact Or.inr ⟨contains_mono hsub h1, contains_mono hsub h2⟩))
 
 set_option maxHeartbeats 4000000 in
+-- `first` tries the reachability-monotonicity lemmas on every arm of the 36-constructor x
+-- 2-sign `witnessPresent` split; that is past the default heartbeat budget.
 /-- **`witnessPresent` is monotone in the ordering.** Only the `futureOf` / `pastOf` searches
 depend on the ordering, and both are monotone in the constraint list by the landed `futureOf_mono`
 and `pastOf_mono`. The `knownWorlds` arms do not mention the ordering at all.
