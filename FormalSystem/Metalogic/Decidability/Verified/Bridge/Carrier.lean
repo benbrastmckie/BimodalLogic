@@ -50,14 +50,15 @@ Each arm reproduces exactly the extra binders its validity predicate adds to `Va
 |---|---|---|
 | `.Base` | `Valid` | none |
 | `.Dense` | `ValidDense` | `[DenselyOrdered D]` |
-| `.ZTime` | `ValidZTime` | `[SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D]` |
+| `.ZTime` | `ValidZTime` | `[SuccOrder D] [PredOrder D]`, both `Is{Succ,Pred}Archimedean D` |
 | `.RTime` | `ValidRTime` | `[DenselyOrdered D]` and the explicit lub `Prop` binder |
 
 The `AddCommGroup` / `LinearOrder` / `IsOrderedAddMonoid` / `Nontrivial` binders are shared by all
 four predicates, so they sit on the class head rather than in `FrameConditionFor`.
 
 `.RTime` targets **`ValidRTime`, not `ValidComplete`** — this matters and is not a
-simplification opportunity. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
+simplification opportunity. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one
+place the `ValidComplete` / `ValidRTime` distinction is argued in full.
 
 ## The four carriers
 

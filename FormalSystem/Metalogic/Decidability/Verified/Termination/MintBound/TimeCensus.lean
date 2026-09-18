@@ -19,7 +19,8 @@ time-minting are two different properties:
 
 * `boxNeg` and `diamondPos` are in `ruleMintsFreshLabel` and mint **no time**. Both emit at
   `Branch.nextWorld` while carrying the trigger's own time (their witness) or a branch formula's own
-  time (their `boxPosFormulas` / `diamondNegFormulas` propagation blocks). Fresh *world*, known time.
+  time (their `boxPosFormulas` / `diamondNegFormulas` propagation blocks). Fresh *world*, known
+  time.
 * `densityRule` mints a time and is deliberately **absent** from `ruleMintsFreshLabel`: it carries
   its own `existingIntermediates`-style gap guard (the maximal-target filter on
   `TimeOrdering.futureOf`) instead of a witness test, so re-guarding it would have been redundant.

@@ -60,14 +60,14 @@ merge target `t₁` restricted to a time the branch already knows.
 the converse fails at every nonempty `U` by `universeClosed_identify_retime_false`, so the two are
 genuinely not interchangeable.
 
-**What the repair does and does not fix, stated precisely.** It repairs clause **2**, which as stated
-was satisfiable only at `U = ∅` and is now dischargeable at `U = signedUniverse C L` from a closure
-condition on the label set (`timeMergeClosed_identifyTime_signedUniverse`). It does **not** touch
-clause 1, which is carried verbatim and has an independent defect in its label coordinate:
-`universeClosedAt_fresh_world_escapes` refutes this very predicate at a concrete `signedUniverse C L`.
-So `UniverseClosedAt` is not satisfiable at an arbitrary `signedUniverse C L` either.
-`universeClosedAt_signedUniverse_of_headroom` is what it takes — the two stock conditions, the label
-closure condition, and one named residual for clause 1's label coordinate. -/
+**What the repair does and does not fix, stated precisely.** It repairs clause **2**, which as
+stated was satisfiable only at `U = ∅` and is now dischargeable at `U = signedUniverse C L` from a
+closure condition on the label set (`timeMergeClosed_identifyTime_signedUniverse`). It does **not**
+touch clause 1, which is carried verbatim and has an independent defect in its label coordinate:
+`universeClosedAt_fresh_world_escapes` refutes this very predicate at a concrete
+`signedUniverse C L`. So `UniverseClosedAt` is not satisfiable at an arbitrary `signedUniverse C L`
+either. `universeClosedAt_signedUniverse_of_headroom` is what it takes — the two stock conditions,
+the label closure condition, and one named residual for clause 1's label coordinate. -/
 def UniverseClosedAt (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula) : Prop :=
   (∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), (∀ x ∈ b, x ∈ U) →
       ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb, x ∈ U) ∧
@@ -324,8 +324,8 @@ member's world with another's time. -/
 world and another member's time.
 
 This is exactly the reduction of `UniverseClosedAt`'s clause 2 at `U = signedUniverse C L`, and
-`timeMergeClosed_identifyTime_signedUniverse` is the reduction. It is used **once** in that proof, at
-the retimed case, which is the check that it is neither stronger nor weaker than needed.
+`timeMergeClosed_identifyTime_signedUniverse` is the reduction. It is used **once** in that proof,
+at the retimed case, which is the check that it is neither stronger nor weaker than needed.
 
 Satisfiable and non-vacuous: `timeMergeClosed_product` exhibits a whole family satisfying it, and
 `timeMergeClosed_iff_product` shows the family is *all* of them — a `TimeMergeClosed` label set is
@@ -415,8 +415,8 @@ theorem timeMergeClosed_concrete_nonempty :
 /-! ### Clause 1's label dimension is refuted at a fixed finite `signedUniverse C L`
 
 Clause 2 was the residual's *fatal* defect and `UniverseClosedAt` repairs it. Clause 1 has a second,
-**independent** defect, and this subsection settles it rather than assuming either way. The verdict is
-that clause 1 is refutable at a fixed finite `signedUniverse C L` — so `UniverseClosedAt` is not
+**independent** defect, and this subsection settles it rather than assuming either way. The verdict
+is that clause 1 is refutable at a fixed finite `signedUniverse C L` — so `UniverseClosedAt` is not
 satisfiable at an arbitrary `signedUniverse C L` either, and the repair of clause 2 does not rescue
 it. Both predicates carry clause 1 verbatim, so one witness refutes both.
 
@@ -427,15 +427,16 @@ confined to `signedUniverse C L` whose worlds exhaust `L`'s worlds has a `boxNeg
 label is outside `L` by construction. `freshWorldBranch` below is the minimal such configuration:
 one formula, `F(□p)` at `⟨0, 0⟩`, and `L = {⟨0, 0⟩}`.
 
-**Why blocking does not save it.** Clause 1 quantifies over **every** tracker `tr` and every ordering
-`ord`, and the witness below is proved at every one of them. `blocking_fires_of_card_lt` would need
-an `allEventualitiesFulfilledOrDuplicated` guard that clause 1's caller never gets to supply.
+**Why blocking does not save it.** Clause 1 quantifies over **every** tracker `tr` and every
+ordering `ord`, and the witness below is proved at every one of them. `blocking_fires_of_card_lt`
+would need an `allEventualitiesFulfilledOrDuplicated` guard that clause 1's caller never gets to
+supply.
 
 **Why no closure condition on `L` repairs it, unlike clause 2.** `freshWorldHeadroom_not_universal`
 is the general statement: for **no** nonempty finite `L` whatsoever does every `L`-confined branch
 have its next world already in `L`. Each enlargement of `L` raises the reachable `maxWorld` by at
-least as much as it adds, so the gap re-opens. The repair therefore cannot live in `L` — it has to be
-a **branch-side headroom** hypothesis, which is what `FreshWorldHeadroom` below states and what
+least as much as it adds, so the gap re-opens. The repair therefore cannot live in `L` — it has to
+be a **branch-side headroom** hypothesis, which is what `FreshWorldHeadroom` below states and what
 register entry 11 records. -/
 
 section FreshWorldRefutation
@@ -538,8 +539,8 @@ frame class and every tracker — emits `F(p)` at world `1`, whose label is not 
 `freshWorldLabels = {⟨0,0⟩}`.
 
 Since `UniverseClosed` and `UniverseClosedAt` carry clause 1 **verbatim**, this refutes the first
-conjunct of both. It is therefore not a defect the clause-2 repair addresses, and no strengthening of
-`TimeMergeClosed` bears on it: `freshWorldHeadroom_not_universal` shows the obstruction cannot be
+conjunct of both. It is therefore not a defect the clause-2 repair addresses, and no strengthening
+of `TimeMergeClosed` bears on it: `freshWorldHeadroom_not_universal` shows the obstruction cannot be
 moved into `L` at all. -/
 theorem universeClosed_fresh_world_escapes (fc : FormalSystem.ProofSystem.FrameClass) :
     ¬ (∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker),
@@ -560,9 +561,9 @@ theorem universeClosed_fresh_world_escapes (fc : FormalSystem.ProofSystem.FrameC
   simp [freshWorldLabels, SignedFormula.neg, Label.initial] at hlab
 
 /-- **The repaired predicate is refuted at the same universe**, because it carries clause 1
-unchanged. `UniverseClosedAt` is the repair of clause **2** only, and this is the statement that says
-so plainly rather than letting a reader infer that the repair made the whole residual satisfiable at
-every `signedUniverse C L`. -/
+unchanged. `UniverseClosedAt` is the repair of clause **2** only, and this is the statement that
+says so plainly rather than letting a reader infer that the repair made the whole residual
+satisfiable at every `signedUniverse C L`. -/
 theorem universeClosedAt_fresh_world_escapes (fc : FormalSystem.ProofSystem.FrameClass) :
     ¬ UniverseClosedAt fc (signedUniverse freshWorldStock freshWorldLabels) :=
   fun h => universeClosed_fresh_world_escapes fc h.1
@@ -623,8 +624,9 @@ refutation above is not a defect of the whole clause — it is confined to one c
 analogue, and `expandOnceUnblocked_split_mem` is it. The `.splitOrdered` and `.saturated` shapes are
 vacuous here because `unorderedSuccessorBranches` is `[]` on both. -/
 
-/-- The `.split` counterpart of `Fuel.lean`'s `pick_split`, which is `private` there. Same statement,
-same proof; it is restated because the three-stage destructuring below has to consume it. -/
+/-- The `.split` counterpart of `Fuel.lean`'s `pick_split`, which is `private` there. Same
+statement, same proof; it is restated because the three-stage destructuring below has to consume it.
+-/
 private theorem pick_split' {b : Branch} {bs : List Branch}
     {ord : TimeOrdering} {pick : Option (TableauRule × RuleResult × TimeOrdering)}
     (h : (match pick with
@@ -652,8 +654,8 @@ private theorem pick_split' {b : Branch} {bs : List Branch}
 
 The missing analogue of `expandOnceUnblocked_extended_mem`, and it needs **no new per-rule case
 analysis**. `RuleResult.emitted` is defined on all five result shapes and sends `.branching bss` to
-`bss.flatten`, so `applyRule_subformula_closed` — which is stated over `emitted` — already covers the
-branching arms. What was missing is only the pick-stage destructuring, which is
+`bss.flatten`, so `applyRule_subformula_closed` — which is stated over `emitted` — already covers
+the branching arms. What was missing is only the pick-stage destructuring, which is
 `expandOnceUnblocked_extended_mem`'s own three-stage `rcases` with `pick_result_mem` (which handles
 only `.linear`/`.persistent`) replaced by `applyRule_subformula_closed` directly.
 
@@ -732,12 +734,12 @@ theorem unorderedSuccessor_formula_mem {C : Finset Formula} {b : Branch} {ord : 
 
 Phase order in this section: the formula dimension is **proved** above; the label dimension is
 **refuted** as a property of a fixed finite `L` (`universeClosed_fresh_world_escapes`) and cannot be
-repaired by any condition on `L` (`freshWorldHeadroom_not_universal`). What remains is to say exactly
-how much of the label dimension is available and what the residue costs. That is done here, in the
-style `StepLengthGrowth`'s docstring uses for its own obligation map: per rule shape, which lemma
-supplies it, and which piece is absent. Read this together with section C11, which spends the time
-analogue once it lands and settles that the obstruction is the world coordinate's refutation rather
-than any absent lemma.
+repaired by any condition on `L` (`freshWorldHeadroom_not_universal`). What remains is to say
+exactly how much of the label dimension is available and what the residue costs. That is done here,
+in the style `StepLengthGrowth`'s docstring uses for its own obligation map: per rule shape, which
+lemma supplies it, and which piece is absent. Read this together with section C11, which spends the
+time analogue once it lands and settles that the obstruction is the world coordinate's refutation
+rather than any absent lemma.
 
 **The world coordinate is fully accounted for.** `applyRule_emitted_world_dichotomy` below is the
 complete statement: every emitted formula sits either at a world the branch already has or at
@@ -764,12 +766,12 @@ site, so nothing new reaches the terminus.
 `UnorderedSuccessorLabelClosed` below is nevertheless **still a named residual**, for the reason
 recorded on its own docstring: the world half of the label dimension is refuted at a fixed finite
 `L` (`universeClosed_fresh_world_escapes`) and no condition on `L` repairs it
-(`freshWorldHeadroom_not_universal`). The time accounting that was missing has landed; the world-side
-obstruction is what remains, and it was never the missing lemma.
+(`freshWorldHeadroom_not_universal`). The time accounting that was missing has landed; the
+world-side obstruction is what remains, and it was never the missing lemma.
 
-**What is delivered, then**: clause 1 at `signedUniverse C L` reduced to the label dimension **alone**
-(`unorderedSuccessor_confined_signedUniverse_of_headroom`), with the formula dimension discharged
-outright. -/
+**What is delivered, then**: clause 1 at `signedUniverse C L` reduced to the label dimension
+**alone** (`unorderedSuccessor_confined_signedUniverse_of_headroom`), with the formula dimension
+discharged outright. -/
 
 /-- **The world dichotomy, complete.** Every formula a rule emits sits either at a world the branch
 already carries or at `Branch.nextWorld` — there is no third case.
@@ -792,9 +794,9 @@ theorem applyRule_emitted_world_dichotomy {rule : TableauRule} {sf : SignedFormu
 
 /-- **Clause 1's label dimension, as a named residual.**
 
-Exactly the label half of `UniverseClosedAt`'s first conjunct, separated out because the formula half
-is proved (`unorderedSuccessor_formula_mem`) and this half is not. It is a hypothesis, it is named,
-and nothing in this file assumes it.
+Exactly the label half of `UniverseClosedAt`'s first conjunct, separated out because the formula
+half is proved (`unorderedSuccessor_formula_mem`) and this half is not. It is a hypothesis, it is
+named, and nothing in this file assumes it.
 
 **The obligation map.** What discharging this needs, per coordinate:
 
@@ -809,22 +811,23 @@ the way `TimeMergeClosed` was for clause 2.
 was **no** `applyRule_emitted_time_mem`, that the rule *list* was unsettled, and that supplying the
 analogue was a 36-arm accounting owned elsewhere. That is no longer the state of the file:
 `applyRule_emitted_time_mem`, `applyRule_emitted_time_dichotomy` and the engine-level
-`unorderedSuccessor_time_dichotomy` have landed, and `freshTimeRules` is the census the old paragraph
-said no statement supplied. `freshTimeRules_incomparable_freshLabelRules` decides that the census is
-incomparable with `ruleMintsFreshLabel` in **both** directions, which is the precise content the old
-paragraph gestured at when it observed that `densityRule` and the `untlNeg` / `snceNeg` active arms
-mint times while sitting outside the witness-guarded list. One hypothesis comes with the analogue,
-`OrdTimesKnown b ord`, and `applyRule_emitted_time_mem_ordTimesKnown_needed` decides that it is not
-removable; `ordTimesKnown_empty` and `expandOnceUnblocked_ordTimesKnown` supply it at every consuming
-site, so it is not new currency.
+`unorderedSuccessor_time_dichotomy` have landed, and `freshTimeRules` is the census the old
+paragraph said no statement supplied. `freshTimeRules_incomparable_freshLabelRules` decides that the
+census is incomparable with `ruleMintsFreshLabel` in **both** directions, which is the precise
+content the old paragraph gestured at when it observed that `densityRule` and the `untlNeg` /
+`snceNeg` active arms mint times while sitting outside the witness-guarded list. One hypothesis
+comes with the analogue, `OrdTimesKnown b ord`, and
+`applyRule_emitted_time_mem_ordTimesKnown_needed` decides that it is not removable;
+`ordTimesKnown_empty` and `expandOnceUnblocked_ordTimesKnown` supply it at every consuming site, so
+it is not new currency.
 
 *Both coordinates together are still not this residual, and that is now proved rather than pending.*
 Section C11 spends the completed accounting: `unorderedSuccessor_label_mem_of_headroom` proves the
 label dimension outright from the branch-side rectangle `FreshLabelHeadroom`, and
-`unorderedSuccessorLabelClosedOrd_of_headroom` reduces the residual to that rectangle holding at every
-`L`-confined branch. The reduction is complete and the residual nevertheless survives, because
-`freshLabelHeadroom_not_universal` refutes the rectangle at every nonempty finite `L`. The obstruction
-was always the *world* coordinate's refutation (`universeClosed_fresh_world_escapes`,
+`unorderedSuccessorLabelClosedOrd_of_headroom` reduces the residual to that rectangle holding at
+every `L`-confined branch. The reduction is complete and the residual nevertheless survives, because
+`freshLabelHeadroom_not_universal` refutes the rectangle at every nonempty finite `L`. The
+obstruction was always the *world* coordinate's refutation (`universeClosed_fresh_world_escapes`,
 `freshWorldHeadroom_not_universal`), never the missing time lemma. Two structural facts are worth
 carrying away: a label is a **pair**, so per-coordinate dichotomies leave four quadrants rather than
 two; and confinement of `b` covers none of the four, because it constrains the pairs `b` carries and
@@ -871,18 +874,18 @@ the emitted `F(p)` sits at world `1`.
 
 **The bracket this docstring used to state is false, and section C11 proves it false.** An earlier
 version said the residual "holds at every `L` for which the engine never fires", and bracketed it as
-*refutable at some `signedUniverse C L`, satisfiable at others*, so that the composite above would be
-genuinely conditional without being vacuous. Neither half survives:
-`unorderedSuccessorLabelClosed_nonempty_false` refutes the residual at **every** nonempty finite `L`,
-at every frame class, and `unorderedSuccessorLabelClosed_empty` proves it at `∅`. Its satisfiability
-set is therefore exactly `{∅}` — so the "engine never fires" class is not a substantive class of
-label sets, it is the one-element class `{∅}`. And `signedUniverse C ∅ = ∅`, so at the only `L` where
-the hypothesis is available the universe is empty and every consumer of it is a true conditional with
-no reach. Register entries 11 and 21 carry the consequence for the nine theorems that take this
-predicate as a hypothesis.
+*refutable at some `signedUniverse C L`, satisfiable at others*, so that the composite above would
+be genuinely conditional without being vacuous. Neither half survives:
+`unorderedSuccessorLabelClosed_nonempty_false` refutes the residual at **every** nonempty finite
+`L`, at every frame class, and `unorderedSuccessorLabelClosed_empty` proves it at `∅`. Its
+satisfiability set is therefore exactly `{∅}` — so the "engine never fires" class is not a
+substantive class of label sets, it is the one-element class `{∅}`. And `signedUniverse C ∅ = ∅`, so
+at the only `L` where the hypothesis is available the universe is empty and every consumer of it is
+a true conditional with no reach. Register entries 11 and 21 carry the consequence for the nine
+theorems that take this predicate as a hypothesis.
 
-The statement and proof below are unchanged and are **not** withdrawn: the single witness is what the
-sections between here and C11 cite, and `UnorderedSuccessorLabelClosedOrd` — needed to state the
+The statement and proof below are unchanged and are **not** withdrawn: the single witness is what
+the sections between here and C11 cite, and `UnorderedSuccessorLabelClosedOrd` — needed to state the
 generalized form — is not defined until C11, so the general form could not be stated here. -/
 theorem unorderedSuccessorLabelClosed_not_universal
     (fc : FormalSystem.ProofSystem.FrameClass) :
@@ -1041,11 +1044,12 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget_at
 What the section has established, assembled. `UniverseClosedAt fc (signedUniverse C L)` follows from
 three conditions plus one named residual, and each of the four is where it belongs:
 
-| Conjunct | Discharged by | Cost |
-|----------|---------------|------|
-| clause 1, formula coordinate | `unorderedSuccessor_formula_mem` | `TableauClosed C`, `TrichStock C` — both already `Fuel.lean`'s currency |
-| clause 1, label coordinate | -- | `UnorderedSuccessorLabelClosed fc L`, a **named residual** with its obligation map on its own docstring |
-| clause 2 | `timeMergeClosed_identifyTime_signedUniverse` | `TimeMergeClosed L` — satisfiable, `timeMergeClosed_product` |
+* **Clause 1, formula coordinate** — discharged by `unorderedSuccessor_formula_mem`, at the cost
+  of `TableauClosed C` and `TrichStock C`, both already `Fuel.lean`'s currency.
+* **Clause 1, label coordinate** — not discharged: it costs `UnorderedSuccessorLabelClosed fc L`,
+  a **named residual** with its obligation map on its own docstring.
+* **Clause 2** — discharged by `timeMergeClosed_identifyTime_signedUniverse`, at the cost of
+  `TimeMergeClosed L`, which is satisfiable (`timeMergeClosed_product`).
 
 So of the residual's two conjuncts, **clause 2 is paid outright** and clause 1 is reduced from two
 coordinates to one. That is the accounting the terminus corollary below inherits, and its docstring

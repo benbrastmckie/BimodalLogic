@@ -18,13 +18,14 @@ constructive presentation. This module supplies it.
 
 An `IntPresentation` is a finite directed graph on `Fin card` together with a `Bool`-valued
 valuation, and it maps into the semantics through the ℤ-frame normal form: `FrameOver.ofStep`
-(`Semantics/IntNormalForm.lean`) turns the bi-serial step relation into a `FrameOver intOrder` with every
-field discharged, so nothing is re-discharged by hand here.
+(`Semantics/IntNormalForm.lean`) turns the bi-serial step relation into a `FrameOver intOrder` with
+every field discharged, so nothing is re-discharged by hand here.
 
 ## Main Definitions
 
 - `IntPresentation` — the structure: `card`, `card_pos`, `step`, `val`, `fwd`, `bwd`
-- `IntPresentation.toFiniteFibre` — the `FiniteFrameOver intOrder` it presents, built through `ofStep`
+- `IntPresentation.toFiniteFibre` — the `FiniteFrameOver intOrder` it presents, built through
+  `ofStep`
 - `IntPresentation.toModel` — that frame equipped with the presentation's valuation
 
 ## Main Results
@@ -126,8 +127,8 @@ of arbitrary shape, and *Limit* through `TaskFrame.limit_of_succOrder`.
 already fields of the structure. The definition below is literally
 `FrameOver.ofStep P.stepRel P.fwd P.bwd` and adds nothing: the four `def:frame` axioms cost one
 obligation here, not four, however non-permissive the relation's shape. That pricing is specific to
-ℤ (`ofStep` is stated at `FrameOver intOrder`, and `limit_of_succOrder` needs the successor structure); a
-frame left polymorphic in its duration type pays each axiom by hand. See
+ℤ (`ofStep` is stated at `FrameOver intOrder`, and `limit_of_succOrder` needs the successor
+structure); a frame left polymorphic in its duration type pays each axiom by hand. See
 `Semantics/IntNormalForm.lean` for the seven-field source table and the ℤ-versus-polymorphic
 contrast.
 -/

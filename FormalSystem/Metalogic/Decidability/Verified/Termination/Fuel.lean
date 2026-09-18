@@ -86,7 +86,7 @@ Outstanding, and deliberately not claimed anywhere below:
    which the current signature's default does not permit without an engine edit.
 -/
 
-set_option linter.style.longFile 2800
+set_option linter.style.longFile 2900
 
 namespace FormalSystem.Metalogic.Decidability
 
@@ -149,10 +149,10 @@ The figure is *stated* here; the theorem that expansion cannot exhaust it
 content of the name.** `chain_le_soundFuel'` earns it exactly — with no slack — under a hypothesis
 `hL` on the *label* count, and a label is a world *and* a time, so `hL` is reachable from T2 only
 while the run stays in one world. For the general case, where `boxNeg`/`diamondPos` have minted
-worlds, the figure is `worldFuel'` (this file, §4.3e), which is `soundFuel' φ * (|S| + soundFuel' φ)`
-— to a `+1` at the engine's singleton seed, the *square* of this one. `soundFuel'` is kept because
-it remains the true and quadratically-exponentially better bound whenever the world count is one,
-which for a modal-operator-free `φ` it always is.
+worlds, the figure is `worldFuel'` (this file, §4.3e), which is
+`soundFuel' φ * (|S| + soundFuel' φ)` — to a `+1` at the engine's singleton seed, the *square* of
+this one. `soundFuel'` is kept because it remains the true and quadratically-exponentially better
+bound whenever the world count is one, which for a modal-operator-free `φ` it always is.
 
 **Measured headroom — an empirical witness, not a second bound.** Nothing in this paragraph
 weakens, strengthens, or reinterprets the figure above; it records what one concrete formula
@@ -348,13 +348,15 @@ theorem expandOnceUnblocked_extended_mem {C : Finset Formula} {b nb : Branch}
           rcases hp with hp | hp <;> exact absurd hp (by simp)
         · rw [hlin] at hp
           simp only at hp
-          refine pick_result_mem (ord := ord) (r := r) hC hb htrich (List.mem_of_find?_eq_some hlin) ?_
+          refine pick_result_mem (ord := ord)
+              (r := r) hC hb htrich (List.mem_of_find?_eq_some hlin) ?_
           rcases hp with hp | hp
           · exact Or.inl (findApplicableLinearityRule_applyRule_eq hp)
           · exact Or.inr (findApplicableLinearityRule_applyRule_eq hp)
       · rw [hser] at hp
         simp only at hp
-        refine pick_result_mem (ord := ord) (r := r) hC hb htrich (List.mem_of_find?_eq_some hser) ?_
+        refine pick_result_mem (ord := ord)
+            (r := r) hC hb htrich (List.mem_of_find?_eq_some hser) ?_
         rcases hp with hp | hp
         · exact Or.inl (findApplicableSerialRule_applyRule_eq hp)
         · exact Or.inr (findApplicableSerialRule_applyRule_eq hp)
@@ -1315,9 +1317,9 @@ theorem chain_le_worlds_bounded {C : Finset Formula} {S : Finset WorldIndex}
 
 `WorldWitness` is an invariant rather than a theorem, so it ships with executable rows, on the
 same principle as the duality probes: an unevaluated hypothesis is not evidence. Rows in
-`Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean` run the engine's *actual* guard,
-`witnessPresent`, and check the one property the whole world bound rests on — that its modal arms
-ignore the world they are asked about.
+`Tests/BimodalTest/Metalogic/Decidability/Verified/TerminationProbes.lean` run the engine's *actual*
+guard, `witnessPresent`, and check the one property the whole world bound rests on — that its modal
+arms ignore the world they are asked about.
 -/
 
 section WorldProbes
@@ -1738,7 +1740,11 @@ theorem applyRule_branching_arms_fresh (rule : TableauRule) (sf : SignedFormula)
   cases sf with
   | mk sign formula label =>
   cases rule <;> simp only [ruleSelfGuarded, ruleMintsFreshLabel] at hg <;>
-    simp only [applyRule] at h <;> (repeat' split at h) <;> (try simp_all only [Bool.false_eq_true, or_self, or_true, reduceCtorEq, List.cons_append, implies_true, imp_false, forall_const, beq_iff_eq, List.append_assoc, Formula.imp.injEq, and_true, List.nil_append, RuleResult.branching.injEq, or_false, gt_iff_lt, Bool.and_eq_true, List.isEmpty_iff, decide_eq_true_eq, not_and, not_lt, and_imp])
+    simp only [applyRule] at h <;> (repeat' split at h) <;> (try simp_all only [Bool.false_eq_true,
+        or_self, or_true, reduceCtorEq, List.cons_append, implies_true, imp_false, forall_const,
+        beq_iff_eq, List.append_assoc, Formula.imp.injEq, and_true, List.nil_append,
+        RuleResult.branching.injEq, or_false, gt_iff_lt, Bool.and_eq_true, List.isEmpty_iff,
+        decide_eq_true_eq, not_and, not_lt, and_imp])
   all_goals
     subst h
     intro fs hfs
@@ -1853,11 +1859,11 @@ first two carry the branch **unchanged**, and the third *identifies two times*, 
 merge signed formulas and so cannot increase `toFinset.card` either. (Arm 3 is oriented: it retires
 the smaller numeral, which is what keeps `Branch.maxTime` from falling. The orientation is
 invisible to this lemma's content — a merge cannot grow the branch whichever way round it runs —
-but it is why the arm reads `min`/`max` rather than `t₂`/`t₁`.) `findApplicableRule` adds no output-presence guard on
-this constructor and says in its own comment why one is impossible: "the arms of an ordered split
-are replacement branches, so 'the branch already contains this arm's output' is trivially true of
-every arm that adds no formula, which is every arm of the only rule that produces this
-constructor."
+but it is why the arm reads `min`/`max` rather than `t₂`/`t₁`.) `findApplicableRule` adds no
+output-presence guard on this constructor and says in its own comment why one is impossible: "the
+arms of an ordered split are replacement branches, so 'the branch already contains this arm's
+output' is trivially true of every arm that adds no formula, which is every arm of the only rule
+that produces this constructor."
 
 **Consequence.** There is no `.splitOrdered` analogue of `expandOnceUnblocked_card_lt`, and there
 cannot be one: branch cardinality is constant (or decreasing) across an ordered split. What makes
@@ -1889,7 +1895,7 @@ uses of it is only the *branch* half: identification retires one time outright, 
 component of the measure strictly drops and the arm is discharged there.
 
 **`timeLinearity` is the only rule producing `.branchingOrdered`** — `applyRule`'s
-`.timeLinearity` case (`Tableau.lean:1515-1520`) is its sole construction site, and
+`.timeLinearity` case (`Tableau.lean:1517-1520`) is its sole construction site, and
 `findApplicableRule`'s own `.branchingOrdered` arm records the same fact ("the only rule that
 produces this constructor"). So the decrease theorem below covers every ordered split the engine
 can take. -/
@@ -2028,7 +2034,19 @@ theorem applyRule_branching_arity_le (rule : TableauRule) (sf : SignedFormula) (
     cases rule <;>
       simp only [applyRule] at h <;>
       (repeat' split at h) <;>
-      (try simp_all only [reduceCtorEq, implies_true, imp_false, forall_const, RuleResult.branching.injEq, List.isEmpty_iff, List.filterMap_eq_nil_iff, ite_eq_left_iff, Bool.not_eq_true, Bool.not_eq_false, not_forall, List.cons_append, List.filter_eq_nil_iff, List.mem_cons, List.not_mem_nil, or_false, Bool.not_eq_eq_eq_not, Bool.not_true, forall_eq_or_imp, forall_eq, not_and, Formula.box.injEq, beq_iff_eq, List.append_assoc, Formula.imp.injEq, and_true, List.nil_append, gt_iff_lt, Bool.and_eq_true, decide_eq_true_eq, not_lt, and_imp, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none, List.any_cons, List.any_nil, Bool.or_false, Bool.not_or, List.contains_eq_mem, List.any_filter, List.find?_flatMap, List.find?_map, Function.comp_apply, List.find?_filterMap, Option.map_bind, List.findSome?_eq_none_iff, List.mem_filter, bne_iff_ne, ne_eq, decide_eq_false_iff_not, Option.bind_eq_none_iff, Option.map_eq_none_iff, List.map_cons, List.map_nil, List.any_eq_false, Decidable.not_not, Formula.untl.injEq, true_and]) <;>
+      (try simp_all only [reduceCtorEq, implies_true, imp_false, forall_const,
+          RuleResult.branching.injEq, List.isEmpty_iff, List.filterMap_eq_nil_iff, ite_eq_left_iff,
+          Bool.not_eq_true, Bool.not_eq_false, not_forall, List.cons_append, List.filter_eq_nil_iff,
+          List.mem_cons, List.not_mem_nil, or_false, Bool.not_eq_eq_eq_not, Bool.not_true,
+          forall_eq_or_imp, forall_eq, not_and, Formula.box.injEq, beq_iff_eq, List.append_assoc,
+          Formula.imp.injEq, and_true, List.nil_append, gt_iff_lt, Bool.and_eq_true,
+          decide_eq_true_eq, not_lt, and_imp, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none,
+          List.any_cons, List.any_nil, Bool.or_false, Bool.not_or, List.contains_eq_mem,
+          List.any_filter, List.find?_flatMap, List.find?_map, Function.comp_apply,
+          List.find?_filterMap, Option.map_bind, List.findSome?_eq_none_iff, List.mem_filter,
+          bne_iff_ne, ne_eq, decide_eq_false_iff_not, Option.bind_eq_none_iff,
+          Option.map_eq_none_iff, List.map_cons, List.map_nil, List.any_eq_false, Decidable.not_not,
+          Formula.untl.injEq, true_and]) <;>
       (try subst h) <;>
       (try simp)
 
@@ -2159,8 +2177,9 @@ bounds the arity and `D` bounds any single arm's difficulty.
 `modalCount`) are `private` to `Saturation.lean`, so a finer bound in terms of per-formula
 complexity cannot be *stated* from this file without changing their visibility — a change to an
 existing declaration, which this addition deliberately does not make. `D` is therefore the
-interface: a caller that can bound one arm's difficulty gets the total, and `estimateBranchDifficulty`
-is monotone enough in branch content that such a bound follows from a universe bound.
+interface: a caller that can bound one arm's difficulty gets the total, and
+`estimateBranchDifficulty` is monotone enough in branch content that such a bound follows from a
+universe bound.
 -/
 theorem totalDifficulty_le (branches : List Branch) (D : Nat)
     (hD : ∀ b ∈ branches, estimateBranchDifficulty b ≤ D) :
@@ -2570,8 +2589,8 @@ into the figure**, because a figure that hid them would let a later dispatch cla
 that assumes itself:
 
 * `WorldWitness` (`hww`) — an *invariant*, not a theorem (see its docstring: deriving it is a
-  36-case induction over `applyRule`). `chain_le_worldFuel'` carries it, as `chain_le_worlds_bounded`
-  does.
+  36-case induction over `applyRule`). `chain_le_worldFuel'` carries it, as
+  `chain_le_worlds_bounded` does.
 * `NoSplit` — the branching arms are still confined, not discharged.
 * `maxBranches` — **quantified**, never the engine default. `buildTableau_isSome` at the default
   `50000` is false at any fuel whatsoever, and nothing here reopens it.
@@ -2592,7 +2611,8 @@ def worldFuel' (φ : Formula) (s : Nat) : Nat :=
 **The figure is the chain bound, exactly.** Not an estimate: with
 `c := |subformulaClosure φ|` and `m := 2 ^ (2 * c)`,
 
-    2 * c * ((s + 2 * c * m) * m) = (2 * c * m) * (s + 2 * c * m) = soundFuel' φ * (s + soundFuel' φ)
+    2 * c * ((s + 2 * c * m) * m) = (2 * c * m) * (s + 2 * c * m) = soundFuel' φ * (s + soundFuel'
+    φ)
 
 by associativity and commutativity alone. This is what lets `chain_le_worldFuel'` consume
 `chain_le_worlds_bounded` with no arithmetic slack.

@@ -676,8 +676,8 @@ strengthening exists for.
 
 `expandOnceUnblocked_splitOrdered_shape` supplies the exact three-arm list together with the
 trigger. Arms 1-2 keep the branch literally and add one edge between the incomparable pair, closed
-by `ordTimesKnown_splitOrdered_arms12` from the trigger alone; arm 3 is `ordTimesKnown_identifyTime`,
-which needs neither the trigger nor `IrreflOrd`. -/
+by `ordTimesKnown_splitOrdered_arms12` from the trigger alone; arm 3 is
+`ordTimesKnown_identifyTime`, which needs neither the trigger nor `IrreflOrd`. -/
 theorem expandOnceUnblocked_splitOrdered_ordTimesKnown
     {b : Branch} {bs : List (Branch × TimeOrdering)} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}

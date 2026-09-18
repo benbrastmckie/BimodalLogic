@@ -37,7 +37,7 @@ Agreement on `dom τ` therefore says nothing whatever about truth at times outsi
 `Past` / `Future` are exactly the connectives that look there. A certificate that pins a history
 on `[a, b]` leaves every temporal claim reaching outside `[a, b]` completely open.
 
-## Limit 3 — no scan bound is computable from the lasso, and path periodicity is not truth periodicity
+## Limit 3 — no computable scan bound; path periodicity is not truth periodicity
 
 The declaration `no_formula_independent_scan_bound` exhibits, for **every** integer `N`, a formula
 whose earliest witness after `t = -1` lies beyond `N` — on **one fixed** bi-lasso, with

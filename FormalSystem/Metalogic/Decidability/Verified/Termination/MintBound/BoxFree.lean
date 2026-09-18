@@ -96,9 +96,9 @@ theorem isApplicable_diamondPos_false_of_boxFree {sf : SignedFormula}
     cases sign <;>
       simp_all [isApplicable, asDiamond_eq_none_of_boxFree h]
 
-/-- **The first stage cannot pick a world-minting rule on a `boxFree` trigger.** The world-coordinate
-counterpart of `findApplicableRule_not_mintsFreshTime`, and the fact `pick_stage_source_noWorldMint`
-threads to the successor.
+/-- **The first stage cannot pick a world-minting rule on a `boxFree` trigger.** The
+world-coordinate counterpart of `findApplicableRule_not_mintsFreshTime`, and the fact
+`pick_stage_source_noWorldMint` threads to the successor.
 
 The conclusion is stated as the pair of inequalities `applyRule_emitted_world_mem` asks for, rather
 than as a `ruleMintsFreshLabel` fact, because that lemma's hypotheses are the authoritative census:
@@ -219,8 +219,8 @@ hypothesis. That closure is precisely what no condition on `L` could ever buy �
 `freshWorldHeadroom_not_universal` refutes every such attempt — and it is why the replacement route
 has to restrict the stock.
 
-Routed through `pick_branches_eq` and `pick_stage_source_noWorldMint`, so the three-stage pick is not
-destructured a second time. Carries no frame-class restriction and no `OrdTimesKnown`. -/
+Routed through `pick_branches_eq` and `pick_stage_source_noWorldMint`, so the three-stage pick is
+not destructured a second time. Carries no frame-class restriction and no `OrdTimesKnown`. -/
 theorem unorderedSuccessor_worldFinset_subset {b : Branch} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
     (hfree : ∀ x ∈ b, boxFree x.formula = true) :
@@ -259,10 +259,10 @@ unordered successor of an `L`-confined `boxFree`, `untl`/`snce`-free branch sits
 separately: `unorderedSuccessor_worldFinset_subset` puts the successor's world among `b`'s worlds,
 `unorderedSuccessor_knownTimes_subset` puts its time among `b`'s times. Confinement of `b` then
 supplies a formula `y ∈ b` carrying that world and a formula `z ∈ b` carrying that time, each at a
-label in `L` — but `y` and `z` are in general *different* formulas, so `⟨y.label.world, z.label.time⟩`
-is a quadrant confinement alone does not reach. That cross-product gap is exactly the one register
-entry 21 warns about, and `TimeMergeClosed L` is exactly what closes it:
-`timeMergeClosed_iff_product` characterizes a time-merge-closed label set as precisely a full
+label in `L` — but `y` and `z` are in general *different* formulas, so
+`⟨y.label.world, z.label.time⟩` is a quadrant confinement alone does not reach. That cross-product
+gap is exactly the one register entry 21 warns about, and `TimeMergeClosed L` is exactly what closes
+it: `timeMergeClosed_iff_product` characterizes a time-merge-closed label set as precisely a full
 rectangle of worlds against times, which is the cross-product closure a pair-valued label needs. No
 further hypothesis is required, and a reader who expects to have to re-derive the worry can stop
 here.
@@ -271,9 +271,9 @@ here.
 in the chain, where it discharges `UniverseClosedAt`'s clause 2.
 
 `OrdTimesKnown b ord` is inherited from `unorderedSuccessor_knownTimes_subset` and through it from
-`applyRule_emitted_time_mem`, where `applyRule_emitted_time_mem_ordTimesKnown_needed` shows it is not
-removable. It is the one hypothesis here that the world coordinate does not need — see the section
-note on the asymmetry — and it is the reason this composite cannot be stated at
+`applyRule_emitted_time_mem`, where `applyRule_emitted_time_mem_ordTimesKnown_needed` shows it is
+not removable. It is the one hypothesis here that the world coordinate does not need — see the
+section note on the asymmetry — and it is the reason this composite cannot be stated at
 `UniverseClosedAt`'s clause 1, which carries no such hypothesis. -/
 theorem unorderedSuccessor_label_mem_of_propositional {L : Finset Label} {b : Branch}
     {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
@@ -332,8 +332,8 @@ before by `unorderedSuccessor_formula_mem` from `hC`/`hT`, and the label coordin
 `unorderedSuccessor_label_mem_of_propositional` from the two syntactic conditions and
 `TimeMergeClosed L`. Nothing here is assumed that cannot be exhibited — contrast the `_of_headroom`
 original, whose `hlab` is false at every nonempty `L`, and the C11 sibling
-`unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom`, whose `FreshLabelHeadroom L b` is
-refutable as a universally quantified condition.
+`unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom`, whose `FreshLabelHeadroom L b`
+is refutable as a universally quantified condition.
 
 The `_of_headroom` original is retained byte-identical and is what the landed terminus chain
 consumes; this is an additional declaration stated beside it, exactly as
@@ -392,10 +392,10 @@ theorem unorderedSuccessor_confined_signedUniverse_of_propositional_ordFree {C :
 /-- **`UniverseClosedAt fc (signedUniverse C L)` with no residual and no frame-class restriction.**
 
 The theorem section D4's boundary block recorded as *not stateable*. Its hypotheses are two stock
-conditions (`TableauClosed C`, `TrichStock C`), the label-set closure condition (`TimeMergeClosed L`,
-satisfied by every rectangle — `timeMergeClosed_product`), and the two syntactic shape conditions on
-the stock. There is **no** `UnorderedSuccessorLabelClosed`, **no** `OrdTimesKnown`, and **no**
-frame-class hypothesis.
+conditions (`TableauClosed C`, `TrichStock C`), the label-set closure condition
+(`TimeMergeClosed L`, satisfied by every rectangle — `timeMergeClosed_product`), and the two
+syntactic shape conditions on the stock. There is **no** `UnorderedSuccessorLabelClosed`, **no**
+`OrdTimesKnown`, and **no** frame-class hypothesis.
 
 Assembled exactly as `universeClosedAt_signedUniverse_of_headroom` is: a two-component anonymous
 constructor whose clause 2 is `timeMergeClosed_identifyTime_signedUniverse hL`, unchanged and taking
@@ -419,8 +419,8 @@ What is *not* hit is anything that takes only the syntactic condition:
 `mintPaysForTime_of_untlSnceFree` chain take no `TableauClosed` and are non-vacuous. The collision
 is between stock *closure* and stock *shape*, and it is located at exactly one field.
 
-What this does **not** do is restate the terminus. The `_at` / `_selfGuarded` / `_fixed` families and
-`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_*` are untouched, and removing their
+What this does **not** do is restate the terminus. The `_at` / `_selfGuarded` / `_fixed` families
+and `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_*` are untouched, and removing their
 `hlab` is separate, downstream work. See the boundary block below. -/
 theorem universeClosedAt_signedUniverse_of_propositional {C : Finset Formula} {L : Finset Label}
     {fc : FormalSystem.ProofSystem.FrameClass}
@@ -436,13 +436,13 @@ argued, and in one field: `TableauClosed.serialFuture` demands `Formula.top.some
 engine's outputs contains it — and `Formula.someFuture ⊤` unfolds to `Formula.untl ⊤ ⊤`, which
 `untlSnceFree` rejects by its `untl` arm.
 
-**What this decides, and what it does not.** Every theorem in this file carrying *both* hypotheses is
-therefore vacuously true, whatever else its signature says. That is four declarations:
+**What this decides, and what it does not.** Every theorem in this file carrying *both* hypotheses
+is therefore vacuously true, whatever else its signature says. That is four declarations:
 `unorderedSuccessor_confined_signedUniverse_of_propositional` and its `ordFree` sibling,
 `universeClosedAt_signedUniverse_of_propositional`, and section D3's
-`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` — the last of which register
-entry 21 already records as vacuous through `hlab`, and which is now vacuous twice over and for
-independent reasons.
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` — the last of which
+register entry 21 already records as vacuous through `hlab`, and which is now vacuous twice over and
+for independent reasons.
 
 Nothing carrying only the syntactic condition is affected, and that is most of the machinery:
 section D3's `applyRule_emitted_time_mem_of_untlSnceFree`,
@@ -499,8 +499,8 @@ branch-level freeness follows in one line, and hands over nothing whatever about
 **One correction to the superseded block's own reasoning, recorded because it was load-bearing.**
 That block conjectured Route 1 would need the pick to be constrained — the linearity stage yielding
 `.branchingOrdered`, the seriality stage emitting at the trigger's label, and so on. None of that is
-needed. The five exclusions are local to `applyRule`'s arms, no rule set is restricted, and `boxFree`
-plays no part in the time coordinate at all: it is what closes the **world** coordinate
+needed. The five exclusions are local to `applyRule`'s arms, no rule set is restricted, and
+`boxFree` plays no part in the time coordinate at all: it is what closes the **world** coordinate
 (`unorderedSuccessor_worldFinset_subset`), and the restricted sweep carries one syntactic hypothesis
 rather than two.
 

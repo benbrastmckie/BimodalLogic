@@ -157,11 +157,11 @@ rather than assumed (`derivedTmax_spec`).
 **One of the four is refutable, and has a repaired sibling.** `DifficultyBounded fc U D` is false at
 **every** `D` whenever `U` contains a formula the engine fires on, because
 `estimateBranchDifficulty` sums over the branch *list* and confinement to `U` bounds only its
-`toFinset`. The witness is `difficultyBounded_multiplicity_false`; register entry 9 below records the
-cause; and the docstring on `DifficultyBounded` itself corrects the older, wrong explanation that
-blamed `Saturation.lean`'s `private` markers. This theorem is therefore a true conditional whose
-antecedent no caller can supply. The usable form is `buildTableauAt_isSome_of_lengthBudget` (and
-`buildTableauAt_isSome_at_seed_lengthBudget`), which is this statement with the difficulty
+`toFinset`. The witness is `difficultyBounded_multiplicity_false`; register entry 9 below records
+the cause; and the docstring on `DifficultyBounded` itself corrects the older, wrong explanation
+that blamed `Saturation.lean`'s `private` markers. This theorem is therefore a true conditional
+whose antecedent no caller can supply. The usable form is `buildTableauAt_isSome_of_lengthBudget`
+(and `buildTableauAt_isSome_at_seed_lengthBudget`), which is this statement with the difficulty
 hypothesis exchanged for the branch-**length** hypothesis `StepLengthBounded fc U L` that
 `difficultyBounded_of_stepLengthBounded` shows is sufficient. Nothing below is withdrawn: the
 statement and proof here are unchanged, and the sibling is additive.
@@ -218,8 +218,8 @@ own statement with `estimateBranchDifficulty _ ≤ D` weakened to `_.length ≤ 
 `DifficultyBounded fc U (difficultyCeiling U L)` under `UniverseClosed`
 (`difficultyBounded_of_stepLengthBounded`), and it is satisfiable — `StepLengthGrowth` reduces it to
 a finite case analysis over `applyRule`'s 36 arms. So the siblings below are the landed termini with
-one hypothesis exchanged and `D` read off as `difficultyCeiling U L`; each is a single application of
-the landed theorem, with no new induction and no change to `stepDecreases_budgetPotential`.
+one hypothesis exchanged and `D` read off as `difficultyCeiling U L`; each is a single application
+of the landed theorem, with no new induction and no change to `stepDecreases_budgetPotential`.
 
 **What changed is the *shape* of one residual, and only that.** `UniverseClosed`,
 `MintPaysForTime`, `PostBlockingSettles` and `β ≥ 3` are carried across unaltered and are still

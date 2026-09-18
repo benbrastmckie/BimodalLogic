@@ -277,10 +277,11 @@ theorem labelFreeSaturatedExit_not_of_saturateBlocked_inr
 /-! ### The settlement lemma
 
 The mathematical content of the repair: the two relocated antecedents really do force the
-conclusion. Everything below is proved from the frozen files' **public** interface — `saturateBlocked`,
-`expandOnceNoFresh`, `findApplicableRule`, `isExpanded`, `findUnexpandedUnblockedWith`,
-`blockedTimes` and `ruleMintsFreshLabel` are all public `def`s, and `private` blocks name resolution
-rather than unfolding (register entry 9's observation, used here in the direction where it helps).
+conclusion. Everything below is proved from the frozen files' **public** interface —
+`saturateBlocked`, `expandOnceNoFresh`, `findApplicableRule`, `isExpanded`,
+`findUnexpandedUnblockedWith`, `blockedTimes` and `ruleMintsFreshLabel` are all public `def`s, and
+`private` blocks name resolution rather than unfolding (register entry 9's observation, used here in
+the direction where it helps).
 -/
 
 /-- **`findApplicableRule` never reports `.notApplicable`.** Its own body maps that constructor to
@@ -389,8 +390,8 @@ theorem postBlockingSettlesAt_settlement
 /-- **The repaired residual is not a residual at all: it is a theorem.**
 
 `PostBlockingSettlesAt fc` holds outright, for every frame class, with no hypothesis and no witness
-class. This is the honest resolution of `PostBlockingSettles`'s open question: the settlement test is
-decided by the **branch** — whether the label-free pass ran to completion on it, and whether any
+class. This is the honest resolution of `PostBlockingSettles`'s open question: the settlement test
+is decided by the **branch** — whether the label-free pass ran to completion on it, and whether any
 label-minting work is left at an unblocked time — and not by the fuel. Neither fact follows from
 `saturateBlocked`'s exit equation, which is why the literal predicate is false and why this one is
 true. -/
@@ -410,8 +411,8 @@ Both sites hold exactly one fact about the output pair — the exit equation —
 `labelFreeSaturatedExit_not_of_saturateBlocked_inr` shows that equation does not carry
 `LabelFreeSaturatedExit`. The remaining question is whether a bridge could carry the two antecedents
 as an *extra hypothesis* instead. It can, syntactically, and the hypothesis it would carry is
-`PostBlockingExitSettled` below — which is **refuted**. So the only bridge shape that typechecks is a
-weakening dressed as a repair, and the gate rejects it. That is the finding, stated as a theorem
+`PostBlockingExitSettled` below — which is **refuted**. So the only bridge shape that typechecks is
+a weakening dressed as a repair, and the gate rejects it. That is the finding, stated as a theorem
 rather than as a judgement call.
 -/
 
@@ -442,10 +443,10 @@ restated against it.
 The repair is not thereby worthless: `postBlockingSettlesAt_holds` says the relocated statement is
 **true outright**, which is what identifies where the real residual lives. It is not a settlement
 question at all. It is the conjunction of a *fuel-adequacy* fact — that the pass ran to label-free
-saturation rather than being truncated — and a *label-minting* fact about the branch the run reaches,
-and neither is available from `saturateBlocked`'s exit equation because both are false at the
-`fuel = 0` exit. Any admissible repair must therefore restrict the residual's quantification from
-"every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces; that is named here and
+saturation rather than being truncated — and a *label-minting* fact about the branch the run
+reaches, and neither is available from `saturateBlocked`'s exit equation because both are false at
+the `fuel = 0` exit. Any admissible repair must therefore restrict the residual's quantification
+from "every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces; that is named here and
 deliberately left unattempted. -/
 theorem postBlockingExitSettled_false (fc : FormalSystem.ProofSystem.FrameClass) :
     ¬ PostBlockingExitSettled fc :=
@@ -637,17 +638,17 @@ its antecedent is genuinely satisfiable at figures the engine reaches — see th
 subsection below.
 
 **But the narrowing is incomplete, and the predicate is REFUTED at the terminus's own fuel figure.**
-`postBlockingSettlesRun_terminusFuel_false` decides it in the negative at `.Base`, for every value of
-every parameter, and `postBlockingSettlesRun_false_dense` / `postBlockingSettlesRun_false_rtime` do
-the same at two further classes. The defect is a *second* over-quantification: this predicate
+`postBlockingSettlesRun_terminusFuel_false` decides it in the negative at `.Base`, for every value
+of every parameter, and `postBlockingSettlesRun_false_dense` / `postBlockingSettlesRun_false_rtime`
+do the same at two further classes. The defect is a *second* over-quantification: this predicate
 restricts `(ob, oOrd, fuel)` but leaves `expandBranchWithFuel`'s `EventualityTracker` argument
 universally quantified, and that argument is the only input the engine's blocked-set computation and
 the settlement test's recomputed `armTracker` do not share. Nothing is withdrawn on that account —
 this definition is retained verbatim, as everything in this file is — but it is a **false**
 hypothesis at those three classes. The nine termini that carried it were vacuous there for exactly
 that reason and have been retired; see the retirement record below, the verdict subsection, and
-register entries 24 and 25. The completion of the narrowing is
-`PostBlockingSettlesSeedRun`, which is carried as a hypothesis and is **not** shown true. -/
+register entries 24 and 25. The completion of the narrowing is `PostBlockingSettlesSeedRun`, which
+is carried as a hypothesis and is **not** shown true. -/
 def PostBlockingSettlesRun (fc : FormalSystem.ProofSystem.FrameClass) (fuel : Nat) : Prop :=
   ∀ (b ob : Branch) (ord oOrd : TimeOrdering) (tr : EventualityTracker) (ap oAp : AppliedSet)
     (mb bu : Nat) (satBr : Branch) (satOrd : TimeOrdering),
@@ -846,11 +847,11 @@ theorem multBranch_one_length_lt_multSettledBranch :
 
 /-! #### The verdict on the narrowed residual: **FALSE**, at the terminus's own fuel figure
 
-`PostBlockingSettlesRun`'s narrowing restricted `(ob, oOrd, fuel)` to a pair some `expandBranchWithFuel` call at
-this same fuel returned open. It did **not** restrict the run's other inputs, and one of them is not
-inert: the `EventualityTracker` argument `tr`. The two blocked-set computations that the residual
-needs to agree — `blockedTimes b ord fc tracker'` inside `expandOnceUnblocked`, where
-`tracker' = fulfillEventualities b (registerEventualities b tr)`, and
+`PostBlockingSettlesRun`'s narrowing restricted `(ob, oOrd, fuel)` to a pair some
+`expandBranchWithFuel` call at this same fuel returned open. It did **not** restrict the run's other
+inputs, and one of them is not inert: the `EventualityTracker` argument `tr`. The two blocked-set
+computations that the residual needs to agree — `blockedTimes b ord fc tracker'` inside
+`expandOnceUnblocked`, where `tracker' = fulfillEventualities b (registerEventualities b tr)`, and
 `blockedTimes satBr satOrd fc (armTracker satBr)`, where `armTracker` re-seeds from
 `EventualityTracker.empty` — share their branch, their ordering and their frame class, and differ in
 **exactly** the tracker seed.
@@ -858,13 +859,13 @@ needs to agree — `blockedTimes b ord fc tracker'` inside `expandOnceUnblocked`
 Blocking is *monotone in pending entries at the ancestor*: `isTemporallyBlockedSaturated` conjoins
 `allEventualitiesFulfilledOrDuplicated`, which asks that every eventuality pending at `t` have some
 pending entry with the same event formula and the same `isUntil` flag at the ancestor time. Adding a
-pending entry at the ancestor therefore makes blocking fire *more* often, so a doctored `tr` yields a
-**strictly larger** blocked set than the settlement test's recomputed `armTracker`: the engine skips
-a time the settlement test still inspects. Two further facts make the exploit reachable —
+pending entry at the ancestor therefore makes blocking fire *more* often, so a doctored `tr` yields
+a **strictly larger** blocked set than the settlement test's recomputed `armTracker`: the engine
+skips a time the settlement test still inspects. Two further facts make the exploit reachable —
 `fulfillEventualities` discharges a pending entry only when its event formula occurs positively at
 the entry's own **world** at some other time, so an entry parked at an otherwise-unused world is
-never discharged; and `Branch.timeType`'s subset test ignores the world component, so the subset half
-of blocking is satisfied across worlds while fulfillment, which is world-sensitive, is not.
+never discharged; and `Branch.timeType`'s subset test ignores the world component, so the subset
+half of blocking is satisfied across worlds while fulfillment, which is world-sensitive, is not.
 
 **The predicate as written quantifies over `tr`, so the predicate as written is false.** This is
 stated in the same voice as register entry 22's `fuel = 0` degeneracy, and it is not softened to a
@@ -1094,14 +1095,14 @@ Refuting at one frame class already refutes the predicate, so what follows compl
 not the verdict.
 
 `.Dense` and `.RTime` are covered: the same three `rfl` obligations go through unchanged there,
-because none of the rules those classes add is applicable to the witness. `.ZTime` is **not** covered
-by this witness, and the reason is recorded here rather than left implicit: at that class `priorUZ`
-and `priorSZ` remain applicable to `T(⊤ untl ⊤)` and `T(⊤ snce ⊤)` at `⟨0,0⟩`, `⟨0,1⟩`, `⟨1,0⟩` and
-`⟨1,1⟩`, so `expandOnceNoFresh` reports `.extended` rather than `.saturated` and the first obligation
-fails. Adding those rules' conclusions to the witness would close it; that is mechanical and is left
-undone deliberately, because the predicate is already refuted and a fourth class buys nothing beyond
-tidiness. A future reader who wants it can re-run the measurement from the two rule names and the
-four labels named here without re-deriving anything. -/
+because none of the rules those classes add is applicable to the witness. `.ZTime` is **not**
+covered by this witness, and the reason is recorded here rather than left implicit: at that class
+`priorUZ` and `priorSZ` remain applicable to `T(⊤ untl ⊤)` and `T(⊤ snce ⊤)` at `⟨0,0⟩`, `⟨0,1⟩`,
+`⟨1,0⟩` and `⟨1,1⟩`, so `expandOnceNoFresh` reports `.extended` rather than `.saturated` and the
+first obligation fails. Adding those rules' conclusions to the witness would close it; that is
+mechanical and is left undone deliberately, because the predicate is already refuted and a fourth
+class buys nothing beyond tidiness. A future reader who wants it can re-run the measurement from the
+two rule names and the four labels named here without re-deriving anything. -/
 
 /-- The label-free pass is saturated on the witness at `.Dense`. -/
 theorem pbrWitness_expandOnceNoFresh_saturated_dense :
@@ -1171,8 +1172,8 @@ expandBranchWithFuel [F φ @ initial] fuel TimeOrdering.empty fc (maxBranches :=
 ```
 
 which supplies `ord`, `tracker`, `applied` and `branchesUsed` at `TimeOrdering.empty`,
-`EventualityTracker.empty`, `{}` and `0`. Quantifying over those four was over-quantification, in the
-same sense and for the same reason that quantifying over `(ob, oOrd, fuel)` was: generality the
+`EventualityTracker.empty`, `{}` and `0`. Quantifying over those four was over-quantification, in
+the same sense and for the same reason that quantifying over `(ob, oOrd, fuel)` was: generality the
 consuming site never asked for, bought at the price of admitting inputs no run produces.
 
 `PostBlockingSettlesSeedRun` fixes exactly those four and leaves everything else quantified. The
@@ -1204,10 +1205,9 @@ so it can do label-free work at a *blocked* time, and the formulas it adds can b
 `isSubsetBlocked` (or `timeSaturated` at the ancestor) and thereby **unblock** a time carrying
 label-minting work that `expandOnceNoFresh` itself skips. The settlement test on `satBr` would then
 report it, with no doctored tracker anywhere. That route needs no over-quantification at all and was
-not probed. Any future claim that this predicate holds must gate on it first; the cheapest probe is a
-sweep reporting, for engine exits `ob`, whether
-`blockedTimes satBr satOrd fc (armTracker satBr)` ever loses a time that
-`blockedTimes ob oOrd fc (armTracker ob)` held. -/
+not probed. Any future claim that this predicate holds must gate on it first; the cheapest probe is
+a sweep reporting, for engine exits `ob`, whether `blockedTimes satBr satOrd fc (armTracker satBr)`
+ever loses a time that `blockedTimes ob oOrd fc (armTracker ob)` held. -/
 def PostBlockingSettlesSeedRun (fc : FormalSystem.ProofSystem.FrameClass) (fuel : Nat) : Prop :=
   ∀ (b ob : Branch) (oOrd : TimeOrdering) (oAp : AppliedSet) (mb : Nat)
     (satBr : Branch) (satOrd : TimeOrdering),

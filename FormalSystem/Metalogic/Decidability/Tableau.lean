@@ -546,9 +546,9 @@ here only because both source lists are restricted to modal formulas: `T(□A)` 
 it, and a claim universal over the world histories *is* time-invariant, because `timeShift` maps
 world histories to world histories.
 
-So a consumer needs to see the `□`/`◇` shape to invoke that time-invariance at all. This lemma supplies
-it: everything emitted is either a positive `□` formula or a negative `◇` formula, `◇` in its
-`¬□¬` encoding.
+So a consumer needs to see the `□`/`◇` shape to invoke that time-invariance at all. This lemma
+supplies it: everything emitted is either a positive `□` formula or a negative `◇` formula, `◇` in
+its `¬□¬` encoding.
 
 Stated here for the same reason as its two companions: `boxDiamondPersistence` is `private` and
 so is opaque outside this module. Like them, it is `Prop`-valued and additive.
@@ -1031,11 +1031,12 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         --
         -- WHY IT IS GONE. It was UNSOUND, independently of both deleted copy blocks and of the
         -- ACTIVE arm's deleted self-propagation. For `a < c`, `¬U(e,g)@a` licenses only
-        -- `¬e@c ∨ ∃z ∈ (a,c). ¬g@z` (`TruthAt`'s `untl` clause in `Semantics/Truth.lean`) — the guard failure lies
-        -- STRICTLY BETWEEN `a` and `c`. This arm placed it AT `c`, and additionally re-asserted
-        -- `¬U(e,g)@c`. Over `ℤ` with `e` true exactly at `3` and `g` false exactly at `1`,
-        -- `¬U(e,g)@0` holds while `e@3` and `g@3` are both true, so BOTH emitted arms fail on a
-        -- satisfiable branch. Pinned live by `UntlSnceCopyProbe` row B4 for as long as it stood.
+        -- `¬e@c ∨ ∃z ∈ (a,c). ¬g@z` (`TruthAt`'s `untl` clause in `Semantics/Truth.lean`) — the
+        -- guard failure lies STRICTLY BETWEEN `a` and `c`. This arm placed it AT `c`, and
+        -- additionally re-asserted `¬U(e,g)@c`. Over `ℤ` with `e` true exactly at `3` and `g` false
+        -- exactly at `1`, `¬U(e,g)@0` holds while `e@3` and `g@3` are both true, so BOTH emitted
+        -- arms fail on a satisfiable branch. Pinned live by `UntlSnceCopyProbe` row B4 for as long
+        -- as it stood.
         --
         -- WHY RETIREMENT AND NOT REPAIR. A sound arm must mint an INTERPOLANT strictly inside
         -- the open interval, and no termination bound for that is available in this tree. The
@@ -1053,8 +1054,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         -- direction is UNDER-closing, and it costs the `TableauConformance` rows that closed
         -- through it. Those rows are re-pinned to their regressed values with this same note
         -- attached and are NOT to be quietly restored. Authorized by the user as rank 2 of
-        -- the until-tableau design research report (`05_until-tableau-design-research.md`) §6, on the verification in
-        -- `reports/06_rank1-design-verification.md` §8 ("Item (ii) — REFUTE as specified").
+        -- the until-tableau design research report (`05_until-tableau-design-research.md`) §6, on
+        -- the verification in `reports/06_rank1-design-verification.md` §8 ("Item (ii) — REFUTE as
+        -- specified").
         --
         -- WHAT IT BUYS. `RuleSound carrierBase .untlNeg` becomes provable. `RuleSound` is per
         -- rule over BOTH arms, so the ACTIVE arm's repair could yield no theorem while this arm
@@ -1118,10 +1120,10 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           -- was UNSOUND, independently of the deleted `untlNegProps` block above: this is the
           -- arm re-asserting its OWN negative Until at the time it just minted, not a copy of
           -- some other one. `¬U(e,g)@A` licenses, at a chosen `C > A`, exactly the classical
-          -- split `¬e@C ∨ ¬g@C` (`TruthAt`'s `untl` clause in `Semantics/Truth.lean`); it does NOT license
-          -- `¬U(e,g)@C`, because `U` is interval-relative along a single history and the
-          -- interval `(C,·)` is a *sub*-interval of `(A,·)` — the very reason the guard could
-          -- fail below `C` while `U(e,g)@C` is true.
+          -- split `¬e@C ∨ ¬g@C` (`TruthAt`'s `untl` clause in `Semantics/Truth.lean`); it does NOT
+          -- license `¬U(e,g)@C`, because `U` is interval-relative along a single history and the
+          -- interval `(C,·)` is a *sub*-interval of `(A,·)` — the very reason the guard could fail
+          -- below `C` while `U(e,g)@C` is true.
           --
           -- Refutation, over `D = ℚ` with `V(q,e) ⟺ q > 0` and `V(q,g) ⟺ q ∉ {1/n : n ≥ 1}`:
           -- `¬U(e,g)@0` holds, since every `s > 0` has some `1/n ∈ (0,s)` where the guard
@@ -1488,9 +1490,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   -- Seriality: `T(F ⊤)` and `T(P ⊤)` at this label, filtered against the branch.
   -- Persistent and self-suppressing: once both are present the rule reports `.notApplicable`,
   -- so it cannot re-fire at a label it has already served. Soundness is immediate from
-  -- `Axiom.serial_future` / `DerivedAxioms.serialPast`: both have antecedent `⊤`, so their consequents
-  -- hold at every label of every model, and adding them preserves satisfiability in both
-  -- directions.
+  -- `Axiom.serial_future` / `DerivedAxioms.serialPast`: both have antecedent `⊤`, so their
+  -- consequents hold at every label of every model, and adding them preserves satisfiability in
+  -- both directions.
   | .serialityRule, _, _ =>
       let outs := [SignedFormula.pos (Formula.someFuture Formula.top) l,
                    SignedFormula.pos (Formula.somePast Formula.top) l].filter
@@ -1923,15 +1925,15 @@ witness formula needed at all?
 The only event this fires on is the syntactic constant `⊤` (`Formula.top`,
 `FormalSystem/Syntax/Formula.lean:118`), reached through the two derived existential temporal
 operators: `F ⊤` is `untl ⊤ ⊤` and `P ⊤` is `snce ⊤ ⊤` (`Formula.someFuture` / `Formula.somePast`,
-`Formula.lean:131` / `Formula.lean:141`). On such a trigger the test is *purely* that the ordering already has
-some strictly-later (resp. strictly-earlier) time; the branch is not consulted.
+`Formula.lean:131` / `Formula.lean:141`). On such a trigger the test is *purely* that the ordering
+already has some strictly-later (resp. strictly-earlier) time; the branch is not consulted.
 
 **Soundness.** `⊤` is true at every label of every model. So if the ordering already puts some
 `t' ∈ timeOrd.futureOf l.time`, that `t'` *is* a witness for `T(F ⊤) @ (w, t)` whether or not the
 branch literally carries `T(⊤) @ (w, t')` — the semantic obligation "some future time satisfies
 the event" is discharged by an already-ordered time alone. Acting on that is
 satisfiability-preserving in both directions, by exactly the argument the existing witness guard
-already gives above (`Tableau.lean:1788-1787`: "do not duplicate an existing witness"), specialised
+already gives above (`Tableau.lean:1790-1787`: "do not duplicate an existing witness"), specialised
 here to an event formula that needs no witness to duplicate. The past-directed arms are the
 time-reversal mirror.
 
@@ -2475,7 +2477,10 @@ theorem findApplicableRule_extending_ne_nil
     (unfold findApplicableRule at h
      obtain ⟨r, _, hr⟩ := List.exists_of_findSome?_eq_some h
      repeat' split at hr)
-  all_goals simp_all only [Bool.or_eq_true, Prod.mk.eta, List.all_eq_true, List.any_eq_true, reduceCtorEq, not_or, Bool.not_eq_true, Option.some.injEq, Prod.mk.injEq, RuleResult.linear.injEq, ne_eq, not_forall, false_and, and_false, not_exists, not_and, RuleResult.persistent.injEq]
+  all_goals simp_all only [Bool.or_eq_true, Prod.mk.eta, List.all_eq_true, List.any_eq_true,
+      reduceCtorEq, not_or, Bool.not_eq_true, Option.some.injEq, Prod.mk.injEq,
+      RuleResult.linear.injEq, ne_eq, not_forall, false_and, and_false, not_exists, not_and,
+      RuleResult.persistent.injEq]
   all_goals first
     | exact applyRule_fresh_linear_ne_nil (by assumption) (congrArg Prod.fst (by assumption))
     | exact applyRule_persistent_ne_nil (congrArg Prod.fst (by assumption))
@@ -2542,7 +2547,8 @@ theorem findApplicableLinearityRule_not_linear
   -- section records the same obstacle).
   rcases hc : firstIncomparablePair b ord with _ | pr <;> rw [hc] at h <;> simp at h
 
-/-- The linearity stage never reports `.persistent`; see `findApplicableLinearityRule_not_linear`. -/
+/-- The linearity stage never reports `.persistent`; see `findApplicableLinearityRule_not_linear`.
+-/
 theorem findApplicableLinearityRule_not_persistent
     {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
     {rule : TableauRule} {ord' : TimeOrdering} {fs : List SignedFormula}
@@ -2764,7 +2770,13 @@ theorem applyRule_persistent_not_mem
   all_goals (try (injection h with h))
   all_goals first
     | (simp_all [contains_eq_false_iff]; done)
-    | (subst h; simp_all only [List.isEmpty_iff, List.filterMap_eq_nil_iff, ite_eq_left_iff, Bool.not_eq_true, contains_eq_false_iff, reduceCtorEq, imp_false, Decidable.not_not, not_forall, List.mem_filterMap, Option.ite_none_left_eq_some, Option.some.injEq, forall_exists_index, and_imp, List.filter_eq_nil_iff, List.mem_cons, List.not_mem_nil, or_false, Bool.not_eq_eq_eq_not, Bool.not_true, forall_eq_or_imp, forall_eq, not_and, List.mem_filter, not_false_eq_true, implies_true, List.contains_eq_mem, Bool.and_eq_true, beq_iff_eq, bne_iff_ne, ne_eq])
+    | (subst h; simp_all only [List.isEmpty_iff, List.filterMap_eq_nil_iff, ite_eq_left_iff,
+        Bool.not_eq_true, contains_eq_false_iff, reduceCtorEq, imp_false, Decidable.not_not,
+        not_forall, List.mem_filterMap, Option.ite_none_left_eq_some, Option.some.injEq,
+        forall_exists_index, and_imp, List.filter_eq_nil_iff, List.mem_cons, List.not_mem_nil,
+        or_false, Bool.not_eq_eq_eq_not, Bool.not_true, forall_eq_or_imp, forall_eq, not_and,
+        List.mem_filter, not_false_eq_true, implies_true, List.contains_eq_mem, Bool.and_eq_true,
+        beq_iff_eq, bne_iff_ne, ne_eq])
   all_goals first
     | (rintro g x hx hnm rfl; exact hnm)
     | (refine ⟨not_mem_of_time_nextTime rfl, ?_⟩
@@ -2817,7 +2829,8 @@ theorem findApplicableSerialRule_adds_new
   rcases hA : applyRule TableauRule.serialityRule sf b ord with ⟨res, o⟩
   rw [hA] at h
   simp only at h
-  cases res <;> simp only [Option.some.injEq, Prod.mk.injEq, reduceCtorEq, false_and, and_false, RuleResult.persistent.injEq] at h
+  cases res <;> simp only [Option.some.injEq, Prod.mk.injEq, reduceCtorEq, false_and, and_false,
+      RuleResult.persistent.injEq] at h
   obtain ⟨-, hres, -⟩ := h
   subst hres
   exact applyRule_persistent_adds_new (by rw [hA])
@@ -2838,7 +2851,10 @@ theorem findApplicableRule_extending_adds_new
     (unfold findApplicableRule at h
      obtain ⟨r, _, hr⟩ := List.exists_of_findSome?_eq_some h
      repeat' split at hr)
-  all_goals simp_all only [Bool.or_eq_true, Prod.mk.eta, List.all_eq_true, List.any_eq_true, reduceCtorEq, not_or, Bool.not_eq_true, Option.some.injEq, Prod.mk.injEq, RuleResult.linear.injEq, not_forall, false_and, and_false, not_exists, not_and, RuleResult.persistent.injEq]
+  all_goals simp_all only [Bool.or_eq_true, Prod.mk.eta, List.all_eq_true, List.any_eq_true,
+      reduceCtorEq, not_or, Bool.not_eq_true, Option.some.injEq, Prod.mk.injEq,
+      RuleResult.linear.injEq, not_forall, false_and, and_false, not_exists, not_and,
+      RuleResult.persistent.injEq]
   all_goals first
     | exact applyRule_fresh_linear_adds_new (by assumption) (congrArg Prod.fst (by assumption))
     | exact applyRule_persistent_adds_new (congrArg Prod.fst (by assumption))

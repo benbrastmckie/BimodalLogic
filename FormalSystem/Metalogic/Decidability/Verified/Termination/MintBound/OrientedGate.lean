@@ -317,7 +317,8 @@ theorem orientedGate_sigmaTimeStable :
 `orientedGateNewOrd` and `orientedGateSucc` is one of the two unordered successors. `untlNeg` is a
 `carrierBase` rule, so this is not a frame-class accident. The mirror of `gate_step_fires`. -/
 theorem orientedGate_step_fires (fc : FormalSystem.ProofSystem.FrameClass) :
-    (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).2.constraints
+    (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+        EventualityTracker.empty).2.constraints
         = orientedGateNewOrd.constraints ∧
       orientedGateSucc ∈ unorderedSuccessorBranches
         (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).1 := by
@@ -547,10 +548,10 @@ The `incomparableB ord (t₁, t₂)` side condition is not a new hypothesis. It 
 consuming site from `firstIncomparablePair_spec`, whose last two conjuncts are literally
 `incomparableB`'s two clauses, and at the engine's own orientation from
 `incomparableB_of_firstIncomparablePair_oriented`. `IrreflOrd` is likewise the run invariant's own
-first conjunct — and it is *necessary*, not convenient: `witnessPresent_identifyTime_unconditional_false`
-(register entry 5) refutes the `IrreflOrd`-free form for the sibling predicate, and the reason
-carries over verbatim, since `TimeOrdering.identifyTime` drops a pre-existing self-loop whose two
-endpoints rename together. -/
+first conjunct — and it is *necessary*, not convenient:
+`witnessPresent_identifyTime_unconditional_false` (register entry 5) refutes the `IrreflOrd`-free
+form for the sibling predicate, and the reason carries over verbatim, since
+`TimeOrdering.identifyTime` drops a pre-existing self-loop whose two endpoints rename together. -/
 
 /-- **A discharged self-guard survives the identification arm, renamed.**
 

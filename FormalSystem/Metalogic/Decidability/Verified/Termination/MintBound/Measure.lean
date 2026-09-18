@@ -184,7 +184,7 @@ therefore change nothing, which is why `Saturation.lean` is deliberately left un
 over the branch **list** — `Branch` is `List SignedFormula` (`SignedFormula.lean:240`), not a
 finite set. Every confinement fact in this development, `∀ x ∈ b, x ∈ U` included, is a statement
 about `b.toFinset`, and **nothing in the repository asserts a branch is `Nodup`**: successors are
-built as raw `formulas ++ b` with no `eraseDups` (`Tableau.lean:2235-2239`), and avoiding a `Nodup`
+built as raw `formulas ++ b` with no `eraseDups` (`Tableau.lean:2237-2239`), and avoiding a `Nodup`
 side condition was a deliberate design goal (`BranchOrder.lean:275-290`). A `U`-confined branch may
 therefore be arbitrarily long, so no fixed `D` bounds `estimateBranchDifficulty` on it. The
 statement below is consequently **false at every `D`** at any `U` the engine fires on —
@@ -271,9 +271,9 @@ def MintPaysForTime (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset Signe
 
 /-! ### `UniverseClosed`'s identification clause is refutable, at every nonempty `U`
 
-The same shape of defect that `difficultyBounded_multiplicity_false` records for `DifficultyBounded`,
-in a different coordinate. There the quantifier that went unconstrained was the branch's *length*;
-here it is the identification's **merge target**.
+The same shape of defect that `difficultyBounded_multiplicity_false` records for
+`DifficultyBounded`, in a different coordinate. There the quantifier that went unconstrained was the
+branch's *length*; here it is the identification's **merge target**.
 
 Clause 2 reads `∀ (b : Branch) (t₁ t₂ : TimeIndex), (∀ x ∈ b, x ∈ U) → ∀ x ∈ b.identifyTime t₂ t₁,
 x ∈ U`, and `t₁` — the time everything is merged *into* — ranges over all of `TimeIndex` with
@@ -539,7 +539,8 @@ of `4`, `DifficultyBounded fc U D` and `StepLengthBounded fc U L` are the same h
 So the residual carries **no** information about the shapes of the formulas on a branch beyond what
 confinement to `U` already gives. Everything it asks for is a bound on how *long* a successor branch
 can get, and that is a statement this file can make about the engine on its own — which is what
-`StepLengthGrowth` below does. The visibility of `temporalCount`/`modalCount` never entered into it. -/
+`StepLengthGrowth` below does. The visibility of `temporalCount`/`modalCount` never entered into it.
+-/
 
 /-- **The residual's real content: successors of `U`-confined branches have bounded length.**
 
@@ -564,13 +565,14 @@ no extra hypothesis is required: by `expandOnceUnblocked_splitOrdered_shape` the
 hypothesis and arm 3 by the identification clause. That the identification clause was introduced for
 this shape is why it is stated about `Branch.identifyTime` rather than about the engine step.
 
-**Correction, recorded rather than glossed.** That second conjunct is **false at every nonempty `U`**
-(`universeClosed_identify_retime_false`), so this theorem is a true conditional whose closure
+**Correction, recorded rather than glossed.** That second conjunct is **false at every nonempty
+`U`** (`universeClosed_identify_retime_false`), so this theorem is a true conditional whose closure
 antecedent no caller can supply. The cause is that the conjunct quantifies the merge *target* `t₁`
 over all of `TimeIndex`, whereas this proof only ever needs it at the trigger's own `t₁` — which
 `firstIncomparablePair_spec` puts in `b.knownTimes`. `difficultyBounded_of_stepLengthBounded_at` is
 the same statement at the repaired `UniverseClosedAt`, and it is the usable one. This theorem's
-statement and proof are unchanged; the sibling is additive. Register entry 10 records the refutation. -/
+statement and proof are unchanged; the sibling is additive. Register entry 10 records the
+refutation. -/
 theorem difficultyBounded_of_stepLengthBounded {fc : FormalSystem.ProofSystem.FrameClass}
     {U : Finset SignedFormula} {L : Nat}
     (hL : StepLengthBounded fc U L) (hUcl : UniverseClosed fc U) :
@@ -748,9 +750,9 @@ insensitive to the duplication:
 * `findUnexpandedUnblockedWith` is a `List.find?`, so it short-circuits on the head, which is `sf₀`.
 * `findApplicableRule` consults `allRulesForFC fc`, whose first three entries are the Dedekind rules
   and whose next two are `.negPos`/`.negNeg`; all five are inapplicable to a `.neg`-signed
-  implication between atoms, so `.impNeg` — third in `allRules` — is the first rule to fire, at every
-  frame class. Its `fs.all branch.contains` guard passes because `T p` is not among the copies of
-  `sf₀`.
+  implication between atoms, so `.impNeg` — third in `allRules` — is the first rule to fire, at
+  every frame class. Its `fs.all branch.contains` guard passes because `T p` is not among the copies
+  of `sf₀`.
 
 None of this is a `decide` on a fixed `n`: `findApplicableRule_multWitness` holds for any branch not
 already carrying `T p`, and `expandOnceUnblocked_multBranch` for any `n ≥ 1`. -/
@@ -828,11 +830,11 @@ theorem multWitness_mem_multUniverse : multWitness ∈ multUniverse := by simp [
 
 private theorem pos_ne_multWitness : SignedFormula.pos mfp Label.initial ≠ multWitness := by decide
 
-/-- **`.impNeg` is the rule the engine picks at `multWitness`, at every frame class and on any branch
-not already carrying `T p`.** The five rules ahead of it in `allRulesForFC fc` — the three Dedekind
-rules, then `.negPos` and `.negNeg` — are all inapplicable to a `.neg`-signed implication between
-atoms, and the frame-class-dependent rules are all `.pos`-gated, which is why the two `Dedekind ≤ fc`
-branches close by the same argument. -/
+/-- **`.impNeg` is the rule the engine picks at `multWitness`, at every frame class and on any
+branch not already carrying `T p`.** The five rules ahead of it in `allRulesForFC fc` — the three
+Dedekind rules, then `.negPos` and `.negNeg` — are all inapplicable to a `.neg`-signed implication
+between atoms, and the frame-class-dependent rules are all `.pos`-gated, which is why the two
+`Dedekind ≤ fc` branches close by the same argument. -/
 theorem findApplicableRule_multWitness (b : Branch)
     (hnot : SignedFormula.pos mfp Label.initial ∉ b)
     (fc : FormalSystem.ProofSystem.FrameClass) :
@@ -884,8 +886,8 @@ on, and hence why `buildTableauAt_isSome_of_lengthBudget` is a repair rather tha
 repaired hypothesis is `StepLengthBounded`, and `stepLengthBounded_of_difficultyBounded` shows the
 exchange loses nothing that was ever available.
 
-Note where the refutation does **not** come from. It is not about formula complexity — the witness is
-an implication between two atoms, with zero temporal and zero modal operators, so both of
+Note where the refutation does **not** come from. It is not about formula complexity — the witness
+is an implication between two atoms, with zero temporal and zero modal operators, so both of
 `estimateBranchDifficulty`'s weighted counters are `0` on it. The entire refutation runs through the
 `b.length / 4` term. Making `temporalCount` and `modalCount` public in `Saturation.lean` would leave
 every step of this argument intact. -/

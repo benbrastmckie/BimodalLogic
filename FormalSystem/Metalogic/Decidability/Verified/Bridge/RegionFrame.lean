@@ -77,11 +77,11 @@ model to be trivial. The argument is short enough to state exactly:
 
 Let `τ` be a world history and `r ≠ r'`. Every `timeShift τ Δ` is again a world history, and its
 state at `r` is `τ.state (r + Δ)`. Region-constancy of *that* history at `r, r'` says: if `r` and
-`r'` are region-mates then `τ.state (r + Δ) = τ.state (r' + Δ)`. Since `ι` is finite, only finitely many
-`Δ` place a point of `f` between `r + Δ` and `r' + Δ`; choosing any other `Δ` makes the two
+`r'` are region-mates then `τ.state (r + Δ) = τ.state (r' + Δ)`. Since `ι` is finite, only finitely
+many `Δ` place a point of `f` between `r + Δ` and `r' + Δ`; choosing any other `Δ` makes the two
 region-mates and forces `τ.state (r + Δ) = τ.state (r' + Δ)` for cofinitely many `Δ`, hence
-`τ.state` constant. A history with constant states cannot separate two times, so no branch
-asserting `T(p) @ t₁` and `F(p) @ t₂` in one world could be satisfied.
+`τ.state` constant. A history with constant states cannot separate two times, so no branch asserting
+`T(p) @ t₁` and `F(p) @ t₂` in one world could be satisfied.
 
 Under the deterministic re-host the situation is sharper still: **no** history is region-constant,
 the base history included. `not_regionConstant_regionHistory` proves this for every offset, and
@@ -389,8 +389,8 @@ end BoxUniversal
 /-! ## Reduction to the base histories
 
 The nonzero offsets carry no independent semantic content: every world history is a time-shift of
-a base history, so every truth value in the model is a truth value at some `regionHistory f w 0`. `truthAt_box_iff_base`
-is the form the truth lemma's `box` case consumes.
+a base history, so every truth value in the model is a truth value at some `regionHistory f w 0`.
+`truthAt_box_iff_base` is the form the truth lemma's `box` case consumes.
 -/
 
 section BaseReduction
@@ -486,7 +486,8 @@ One placed point at `0 : ℚ`; `-1/2` and `-2` are region-mates (both strictly b
 placed point), but the `Δ = 1` history reads their states off the distinct times `1/2` and `-1`.
 -/
 theorem not_regionConstant_regionHistory_one :
-    ¬ RegionConstant (fun _ : Fin 1 => (0 : ℚ)) (regionHistory (W := Unit) (fun _ : Fin 1 => (0 : ℚ)) () 1) := by
+    ¬ RegionConstant (fun _ : Fin 1 => (0 : ℚ))
+        (regionHistory (W := Unit) (fun _ : Fin 1 => (0 : ℚ)) () 1) := by
   refine not_regionConstant_regionHistory _ _ _ (-1/2) (-2) (by norm_num) ?_
   intro i
   constructor

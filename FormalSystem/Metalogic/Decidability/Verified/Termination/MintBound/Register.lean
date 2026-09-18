@@ -8,8 +8,8 @@ import FormalSystem.Metalogic.Decidability.Verified.Termination.Fuel
 
 /-! # C9. The do-not-re-attempt register
 
-Twenty-five statements that look like the natural next lemma and are **not** available. Each is cited
-by declaration name and, where one exists, by refuting witness — never by an issue number or a
+Twenty-five statements that look like the natural next lemma and are **not** available. Each is
+cited by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
 
@@ -64,52 +64,55 @@ already been here.
    enlarges rather than replaces the landed one.
 
 9. **`DifficultyBounded fc U D` at any `D`, for a `U` the engine fires on.** Refuted, not merely
-   unproved, by `difficultyBounded_multiplicity_false`, which is universally quantified in `D` and in
-   the frame class. The cause in one line: `estimateBranchDifficulty` sums over the branch **list**
-   and adds `b.length / 4`, confinement to `U` bounds only `b.toFinset`, and no `Nodup` invariant on
-   a branch exists anywhere in the development — successors are built as raw `formulas ++ b` with no
-   `eraseDups` (`Tableau.lean:2235-2239`) and avoiding a `Nodup` side condition was a deliberate
-   design goal (`BranchOrder.lean:275-290`). So a `U`-confined branch can be arbitrarily long, and
-   `estimateBranchDifficulty_length_le` turns any difficulty bound into a bound on that length.
+   unproved, by `difficultyBounded_multiplicity_false`, which is universally quantified in `D` and
+   in the frame class. The cause in one line: `estimateBranchDifficulty` sums over the branch
+   **list** and adds `b.length / 4`, confinement to `U` bounds only `b.toFinset`, and no `Nodup`
+   invariant on a branch exists anywhere in the development — successors are built as raw
+   `formulas ++ b` with no `eraseDups` (`Tableau.lean:2237-2239`) and avoiding a `Nodup` side
+   condition was a deliberate design goal (`BranchOrder.lean:275-290`). So a `U`-confined branch can
+   be arbitrarily long, and `estimateBranchDifficulty_length_le` turns any difficulty bound into a
+   bound on that length.
 
    **Widening `temporalCount`/`modalCount` does not revive it.** A reader who reaches for
    `Saturation.lean` on the strength of an older version of `DifficultyBounded`'s own docstring has
    already been here: `private` blocks name resolution, not unfolding, so a bound is statable and
-   provable from this file with the markers exactly as they are — `estimateBranchDifficulty_length_le`
-   and `estimateBranchDifficulty_le_of_subperm` are the demonstrations. And the refuting witness is
-   an implication between two atoms, on which both counters are `0`, so the refutation never touches
-   them. `Saturation.lean` is deliberately not edited.
+   provable from this file with the markers exactly as they are —
+   `estimateBranchDifficulty_length_le` and `estimateBranchDifficulty_le_of_subperm` are the
+   demonstrations. And the refuting witness is an implication between two atoms, on which both
+   counters are `0`, so the refutation never touches them. `Saturation.lean` is deliberately not
+   edited.
 
    The settled repair is `StepLengthBounded`, which is equivalent to the difficulty bound up to a
-   factor of `4` (`difficultyBounded_of_stepLengthBounded`, `stepLengthBounded_of_difficultyBounded`)
-   and is satisfiable; `buildTableauAt_isSome_of_lengthBudget` and
-   `buildTableauAt_isSome_at_seed_lengthBudget` are the termini stated at it, and
-   `difficultyBoundedAt_ceiling` reduces the length-hypothesis form to the rule-local
-   `StepLengthGrowth`, whose full obligation map is recorded on its own docstring.
+   factor of `4` (`difficultyBounded_of_stepLengthBounded`,
+   `stepLengthBounded_of_difficultyBounded`) and is satisfiable;
+   `buildTableauAt_isSome_of_lengthBudget` and `buildTableauAt_isSome_at_seed_lengthBudget` are the
+   termini stated at it, and `difficultyBoundedAt_ceiling` reduces the length-hypothesis form to the
+   rule-local `StepLengthGrowth`, whose full obligation map is recorded on its own docstring.
 
 10. **Clause 2 of `UniverseClosed fc U`, at any nonempty `U`.** Refuted, not merely unproved, by
-    `universeClosed_identify_retime_false`, which is universally quantified in `U` and takes no frame
-    class at all. The cause in one line: the conjunct quantifies the identification's merge **target**
-    `t₁` over all of `TimeIndex` with nothing tying it to the branch, so a `Finset` universe would
-    have to contain a distinct retiming of one of its own members at every one of infinitely many
-    times. `universeClosed_identify_empty` shows it *does* hold at `U = ∅`, so its satisfiability set
-    is exactly `{∅}` — satisfiable only where the terminus it guards is vacuous, since
-    `signedUniverse C L` is empty only when `C` or `L` is. `universeClosed_nonempty_false` is the
-    residual-level corollary.
+    `universeClosed_identify_retime_false`, which is universally quantified in `U` and takes no
+    frame class at all. The cause in one line: the conjunct quantifies the identification's merge
+    **target** `t₁` over all of `TimeIndex` with nothing tying it to the branch, so a `Finset`
+    universe would have to contain a distinct retiming of one of its own members at every one of
+    infinitely many times. `universeClosed_identify_empty` shows it *does* hold at `U = ∅`, so its
+    satisfiability set is exactly `{∅}` — satisfiable only where the terminus it guards is vacuous,
+    since `signedUniverse C L` is empty only when `C` or `L` is. `universeClosed_nonempty_false` is
+    the residual-level corollary.
 
     **The settled repair is `UniverseClosedAt`**, which restricts `t₁` — and only `t₁` — to
-    `b.knownTimes`, and `universeClosedAt_of_universeClosed` records the direction: the new hypothesis
-    is *weaker*, so every theorem restated against it is a strengthening. The restriction leaks no new
-    hypothesis into the terminus, because both consuming sites reach `t₁` through
+    `b.knownTimes`, and `universeClosedAt_of_universeClosed` records the direction: the new
+    hypothesis is *weaker*, so every theorem restated against it is a strengthening. The restriction
+    leaks no new hypothesis into the terminus, because both consuming sites reach `t₁` through
     `expandOnceUnblocked_splitOrdered_shape` and `firstIncomparablePair_spec` already returns
     `t₁ ∈ b.knownTimes`; `universeClosedAt_identify_at_trigger` is that bridge.
-    `buildTableauAt_isSome_of_lengthBudget_at` and its siblings are the termini stated at the repaired
-    shape, and `timeMergeClosed_identifyTime_signedUniverse` discharges the repaired clause at
-    `U = signedUniverse C L` under `TimeMergeClosed L`. `UniverseClosed` itself is retained verbatim,
-    because the landed terminus is stated against it and nothing in this file is withdrawn.
+    `buildTableauAt_isSome_of_lengthBudget_at` and its siblings are the termini stated at the
+    repaired shape, and `timeMergeClosed_identifyTime_signedUniverse` discharges the repaired clause
+    at `U = signedUniverse C L` under `TimeMergeClosed L`. `UniverseClosed` itself is retained
+    verbatim, because the landed terminus is stated against it and nothing in this file is
+    withdrawn.
 
-11. **Clause 1 of `UniverseClosed`/`UniverseClosedAt` at a fixed finite `signedUniverse C L`, and any
-    repair of it phrased as a condition on `L`.** Both are refuted.
+11. **Clause 1 of `UniverseClosed`/`UniverseClosedAt` at a fixed finite `signedUniverse C L`, and
+    any repair of it phrased as a condition on `L`.** Both are refuted.
 
     *The clause*: `universeClosed_fresh_world_escapes` exhibits `C = {□p, p}`, `L = {⟨0,0⟩}` and the
     one-formula branch `[F(□p)@⟨0,0⟩]`, whose step — `.boxNeg`, at **every** frame class and every
@@ -128,18 +131,18 @@ already been here.
     coordinates, whereas `boxNeg` moves it *past* them. The repair therefore has to be branch-side,
     and the residue is carried as the named residual `UnorderedSuccessorLabelClosed`, whose
     per-coordinate obligation map is on its own docstring. What is **not** refuted, and is proved
-    outright, is clause 1's *formula* coordinate: `unorderedSuccessor_formula_mem`, for both unordered
-    successor shapes.
+    outright, is clause 1's *formula* coordinate: `unorderedSuccessor_formula_mem`, for both
+    unordered successor shapes.
 
     *And the label coordinate is not open either — it is refuted outright.* Section C11 reduces the
     residual to the branch-side rectangle `FreshLabelHeadroom`
     (`unorderedSuccessorLabelClosedOrd_of_headroom`) with both coordinates fully accounted for, and
-    `freshLabelHeadroom_not_universal` refutes that rectangle at every nonempty finite `L` by the same
-    `maxWorld` argument. That much refutes the *reduction's antecedent*. The residual **itself** is
-    refuted one step further on, at the same generality:
+    `freshLabelHeadroom_not_universal` refutes that rectangle at every nonempty finite `L` by the
+    same `maxWorld` argument. That much refutes the *reduction's antecedent*. The residual
+    **itself** is refuted one step further on, at the same generality:
     `unorderedSuccessorLabelClosed_nonempty_false` and
-    `unorderedSuccessorLabelClosedOrd_nonempty_false` are false at every nonempty finite `L`, at every
-    frame class, and `unorderedSuccessorLabelClosed_empty` holds at `∅` — so the residual's
+    `unorderedSuccessorLabelClosedOrd_nonempty_false` are false at every nonempty finite `L`, at
+    every frame class, and `unorderedSuccessorLabelClosed_empty` holds at `∅` — so the residual's
     satisfiability set is exactly `{∅}`. Entry 21 carries the consequence for the theorems that
     assume it.
 
@@ -148,11 +151,11 @@ already been here.
     theorem assuming them weaker than it needs to be, and that is the defect.
     `timeMergeClosed_identifyTime_signedUniverse`'s proof is the evidence: it constrains only `t₁`,
     and the source time `t₂` is never used to build a label — only ever tested against — so a
-    hypothesis about it would sit unused. Constraining `t₂` *instead* of `t₁` does not even repair the
-    refutation, since `universeClosed_identify_retime_false` instantiates at
+    hypothesis about it would sit unused. Constraining `t₂` *instead* of `t₁` does not even repair
+    the refutation, since `universeClosed_identify_retime_false` instantiates at
     `t₂ = x.label.time`, which is a known time of its witness branch already; the pigeonhole runs on
-    `t₁`. A reader who constrains both has needlessly weakened `UniverseClosedAt`; one who constrains
-    only `t₂` has not repaired anything.
+    `t₁`. A reader who constrains both has needlessly weakened `UniverseClosedAt`; one who
+    constrains only `t₂` has not repaired anything.
 
 13. **"Not in `ruleMintsFreshLabel`" read as "introduces no time".** Refuted in **both** directions
     by `freshTimeRules_incomparable_freshLabelRules`: `boxNeg` and `diamondPos` are witness-guarded
@@ -167,11 +170,11 @@ already been here.
 14. **`MintPaysForTime fc U Tmax` as literally stated.** Refuted, not merely unproved, by
     `mintPaysForTime_untlNeg_false`, which is universally quantified in the frame class **and** in
     `Tmax`. The cause in one line: `untlNeg` is in `freshTimeRules` and not in `freshLabelRules`, so
-    firing it mints a time while moving no pair of `mintPotential`'s index set `freshLabelRules ×ˢ U`
-    — disjunct 1 fails because a known time was added, disjunct 2 fails because the potential is
-    unchanged, and `mintTimeBudget` actually rises. `mintPaysForTime_empty` shows it does hold at
-    `U = ∅`, so as with `UniverseClosed` its satisfiability set is where the terminus it guards is
-    vacuous.
+    firing it mints a time while moving no pair of `mintPotential`'s index set
+    `freshLabelRules ×ˢ U` — disjunct 1 fails because a known time was added, disjunct 2 fails
+    because the potential is unchanged, and `mintTimeBudget` actually rises. `mintPaysForTime_empty`
+    shows it does hold at `U = ∅`, so as with `UniverseClosed` its satisfiability set is where the
+    terminus it guards is vacuous.
 
     **Neither obvious repair is available**, and both are closed off by decided statements rather
     than by argument. *Re-indexing the potential on `freshTimeRules`*:
@@ -202,20 +205,21 @@ already been here.
     Consequently the **σ-hit hypothesis of `mintPotential_lt_of_mint` is false**, not merely
     undischarged: `rhoSF_time_ne_src` shows the renaming's image omits the retired time entirely,
     and `mint_not_in_rhoSF_image` turns that into the statement that nothing minted at the re-issued
-    time lies in σ's image. The **live-times reformulation does not escape it**: that variant filters
-    additionally on the formula's time being a fixed point of `σ`, and `rho_src_ne_src` shows the
-    re-issued time is not one. The obstruction is intrinsic to identification-plus-`maxTime`.
+    time lies in σ's image. The **live-times reformulation does not escape it**: that variant
+    filters additionally on the formula's time being a fixed point of `σ`, and `rho_src_ne_src`
+    shows the re-issued time is not one. The obstruction is intrinsic to
+    identification-plus-`maxTime`.
 
 16. **An unconditional `applyRule_emitted_time_mem`, without `OrdTimesKnown`.** Refuted by
     `applyRule_emitted_time_mem_ordTimesKnown_needed`. A reader who notices that
     `applyRule_emitted_world_mem` needs no run invariant and removes the hypothesis from its time
     twin has already been here: four rules — `allFuturePos`, `allPastPos`, `someFutureNeg`,
-    `somePastNeg` — propagate to every time in `TimeOrdering.futureOf` / `pastOf` of the trigger, and
-    nothing in `applyRule` ties an ordering time to the branch. The witness is one branch carrying
-    `T(G p)` at the initial label with the ordering asserting `0 < 5`. Their world counterparts have
-    no such freedom because all four emit at `l.world`; the asymmetry is real, and it is why
-    `mem_knownTimes_of_mem_futureOf` / `_pastOf` exist. The hypothesis costs nothing at the consuming
-    sites — `expandOnceUnblocked_ordTimesKnown` supplies it.
+    `somePastNeg` — propagate to every time in `TimeOrdering.futureOf` / `pastOf` of the trigger,
+    and nothing in `applyRule` ties an ordering time to the branch. The witness is one branch
+    carrying `T(G p)` at the initial label with the ordering asserting `0 < 5`. Their world
+    counterparts have no such freedom because all four emit at `l.world`; the asymmetry is real, and
+    it is why `mem_knownTimes_of_mem_futureOf` / `_pastOf` exist. The hypothesis costs nothing at
+    the consuming sites — `expandOnceUnblocked_ordTimesKnown` supplies it.
 
     *A syntactically restricted form does exist, and it does not weaken this entry.*
     `applyRule_emitted_time_mem_of_untlSnceFree` (section D3) is the same sweep with
@@ -226,15 +230,15 @@ already been here.
     above fails the syntactic condition outright, since its branch carries `T(G p)` and
     `Formula.allFuture p` is an `untl` node.
 
-    *Why it works, so that the boundary is not mistaken for luck.* `haux` is consumed at exactly five
-    rule arms and by exactly three closer families, and every one of the five is shape-gated by the
-    syntactic condition: `.allFuturePos` and `.allPastPos` through the raw `Formula.allFuture` /
+    *Why it works, so that the boundary is not mistaken for luck.* `haux` is consumed at exactly
+    five rule arms and by exactly three closer families, and every one of the five is shape-gated by
+    the syntactic condition: `.allFuturePos` and `.allPastPos` through the raw `Formula.allFuture` /
     `Formula.allPast` constructor patterns, `.someFutureNeg` and `.somePastNeg` through the
     `asSomeFuture?` / `asSomePast?` views, and `.orderTrichotomy` through its `fires` guard's demand
     that the branch carry a `Formula.someFuture`-headed disjunct. The first four are gated by the
-    *trigger's* shape; the fifth by what the *branch* carries, which is why the restricted form takes
-    a branch-level hypothesis rather than a trigger-level one. `boxFree` plays no part: it closes the
-    world coordinate, not this one.
+    *trigger's* shape; the fifth by what the *branch* carries, which is why the restricted form
+    takes a branch-level hypothesis rather than a trigger-level one. `boxFree` plays no part: it
+    closes the world coordinate, not this one.
 
     *What this buys downstream.* `unorderedSuccessor_knownTimes_subset_of_untlSnceFree` and, through
     it, `universeClosedAt_signedUniverse_of_propositional` — `UniverseClosedAt` at
@@ -251,14 +255,14 @@ already been here.
     because a refutation has to be stated about something; none of it is offered as a repair.
 
     *What the design gets right, so that a reader does not re-attempt it by fixing the wrong thing.*
-    It is a **second** ledger with its own defect notion rather than a widening of `mintPotential`'s,
-    so entry 14's `witnessPresent_eq_false_of_not_freshLabel` route does not touch it — the
-    catch-all polarity of `selfGuardDischarged` is `true`, making out-of-range columns permanently
-    *cured* and contributing `0`, the mirror image of the polarity that kills the re-indexing route.
-    It is stated against `ord.futureOf` / `ord.pastOf` emptiness and never against `ord.timeCount`,
-    so `TimeOrdering.identifyTime` lowering the cap does not reach it. And it is not inert:
-    `selfGuardPotential_lt_at_gate_with_id` decides that at the very step that refutes it the
-    potential **does** fall, `4` to `3`, under `σ = id`.
+    It is a **second** ledger with its own defect notion rather than a widening of
+    `mintPotential`'s, so entry 14's `witnessPresent_eq_false_of_not_freshLabel` route does not
+    touch it — the catch-all polarity of `selfGuardDischarged` is `true`, making out-of-range
+    columns permanently *cured* and contributing `0`, the mirror image of the polarity that kills
+    the re-indexing route. It is stated against `ord.futureOf` / `ord.pastOf` emptiness and never
+    against `ord.timeCount`, so `TimeOrdering.identifyTime` lowering the cap does not reach it. And
+    it is not inert: `selfGuardPotential_lt_at_gate_with_id` decides that at the very step that
+    refutes it the potential **does** fall, `4` to `3`, under `σ = id`.
 
     *What refutes it.* Entry 15's σ-hit obligation, inherited in a weakened **time-hit** form and
     still false. `selfGuardPotential`'s columns are indexed by the σ-image's *time*, not by the
@@ -280,7 +284,8 @@ already been here.
     before and after, so both of disjunct 2's conjuncts are false; and `selfGuardPotential` is `3`
     before and after, so disjunct 3's `3 < 3` is false. `gate_is_reissue_hazard` decides all seven
     preconditions separately, so the failure is attributable to the arm rather than to a violated
-    hypothesis, and the `σ = id` measurement above locates it at σ rather than at the ledger's shape.
+    hypothesis, and the `σ = id` measurement above locates it at σ rather than at the ledger's
+    shape.
 
     **So no reshaping of this component is the repair.** The obstruction is intrinsic to
     identification-plus-`maxTime` — the same wall entry 15's live-times reformulation hits — and it
@@ -351,20 +356,21 @@ already been here.
     counterexample (`b = [f₀, f₇]`, `ord = ⟨[(5, 7)]⟩`). The repair therefore holds
     `Branch.nextTime`, `Branch.maxTime`, `Branch.identifyTime` and `TimeOrdering.identifyTime`
     **byte-unchanged** and goes to the call site instead; under that constraint `Decidable.lean`'s
-    exposure collapses from 102 references to one docstring paragraph, and the nine `branch.nextTime`
-    mint sites in `Tableau.lean` need no edit at all, since a monotone `maxTime` makes `nextTime`
-    monotone for free at every one of them.
+    exposure collapses from 102 references to one docstring paragraph, and the nine
+    `branch.nextTime` mint sites in `Tableau.lean` need no edit at all, since a monotone `maxTime`
+    makes `nextTime` monotone for free at every one of them.
 
     *What survived, checked and not assumed.* `OrdTimesKnown` (entries 7 and 16) by
-    `ordTimesKnown_identifyTime_oriented`; the run invariant by `runInvariant_identifyTime_oriented`;
-    `UniverseClosedAt`'s clause 2 (entries 10-12) by `universeClosedAt_identify_at_trigger_oriented`
-    and `timeMergeClosed_identifyTime_oriented`, discharging the clause **as it stands** — no
-    both-times constraint was added, so entry 12's finding is untouched; the `.splitOrdered`
-    measure's first component by `knownTimes_card_lt_at_arm3_oriented`. The one lemma that needed
-    genuinely new content is `incomparableB_symm`, whose proof needed the backward half of the
-    reachability duality (`orderDual_backward`) because `orderDual_holds` states it forwards only.
-    `ordTimes_identifyTime_arm3_false` was re-checked and is still **true**: the orientation does not
-    accidentally rescue the refuted `OrdTimesLeMaxTime`, and entry 7 stands as written.
+    `ordTimesKnown_identifyTime_oriented`; the run invariant by
+    `runInvariant_identifyTime_oriented`; `UniverseClosedAt`'s clause 2 (entries 10-12) by
+    `universeClosedAt_identify_at_trigger_oriented` and `timeMergeClosed_identifyTime_oriented`,
+    discharging the clause **as it stands** — no both-times constraint was added, so entry 12's
+    finding is untouched; the `.splitOrdered` measure's first component by
+    `knownTimes_card_lt_at_arm3_oriented`. The one lemma that needed genuinely new content is
+    `incomparableB_symm`, whose proof needed the backward half of the reachability duality
+    (`orderDual_backward`) because `orderDual_holds` states it forwards only.
+    `ordTimes_identifyTime_arm3_false` was re-checked and is still **true**: the orientation does
+    not accidentally rescue the refuted `OrdTimesLeMaxTime`, and entry 7 stands as written.
 
     *And what this does **not** do — read this before treating entry 14 as reopened.* It does not
     supply the missing fourth measure component, and it does not make `MintPaysForTime` true. Entry
@@ -395,8 +401,8 @@ already been here.
     and said so; this entry is its resolution.
 
     *Route 1, closed: `MintPaysForTimeAt → MintPaysForTimeStable`.* Not available, and the reason is
-    not fixable by proof effort. The two predicates' third disjuncts differ: `MintPaysForTimeAt`'s is
-    the bare `selfGuardPotential` drop, `MintPaysForTimeStable`'s pairs that drop with a
+    not fixable by proof effort. The two predicates' third disjuncts differ: `MintPaysForTimeAt`'s
+    is the bare `selfGuardPotential` drop, `MintPaysForTimeStable`'s pairs that drop with a
     **combined-budget** non-increase, `mintTimeBudget + selfGuardPotential`. The pairing is forced —
     see route 2 — so the implication does not hold and is not claimed.
     `mintPaysForTimeStable_of_mintPaysForTime` is proved directly from disjuncts 1 and 2 instead.
@@ -506,17 +512,17 @@ already been here.
     `pick_stage_source_rule` is that threading, `pickBranches_mintPays` is the four-bucket case
     split it enables, and `mintPaysForTimeFixed_of_not_dense` is the discharge, at an arbitrary
     universe under the single hypothesis `¬ (FrameClass.Dense ≤ fc)`;
-    `mintPaysForTimeFixed_signedUniverse_of_not_dense` is its `signedUniverse C L` form, for **every**
-    stock `C` including one carrying `untl` and `snce` — the case this entry calls the hard one, and
-    the case section D3's syntactic fragment excludes. **(b)** The density coordinate, exactly as
-    entry 19 describes it and untouched by any of this, is what remains. The frame-class hypothesis
-    excludes `densityRule` rather than paying for it; a discharge at `.Dense` and `.RTime` still
-    needs `gapPotential`, which remains implemented nowhere and assumed by nothing.
+    `mintPaysForTimeFixed_signedUniverse_of_not_dense` is its `signedUniverse C L` form, for
+    **every** stock `C` including one carrying `untl` and `snce` — the case this entry calls the
+    hard one, and the case section D3's syntactic fragment excludes. **(b)** The density coordinate,
+    exactly as entry 19 describes it and untouched by any of this, is what remains. The frame-class
+    hypothesis excludes `densityRule` rather than paying for it; a discharge at `.Dense` and
+    `.RTime` still needs `gapPotential`, which remains implemented nowhere and assumed by nothing.
 
     *And the scope of (a), stated so it is not overread.* Landing the assembly makes **no** terminus
     in this file non-vacuous, and no artifact should claim otherwise. The nine `hlab` carriers stay
-    vacuous at every nonempty `L` by `unorderedSuccessorLabelClosed_nonempty_false`, whatever happens
-    to `hmint`; and every `hlab`-free `hmint`-carrying terminus stays conditioned on
+    vacuous at every nonempty `L` by `unorderedSuccessorLabelClosed_nonempty_false`, whatever
+    happens to `hmint`; and every `hlab`-free `hmint`-carrying terminus stays conditioned on
     `UniverseClosedAt` plus `DifficultyBounded` or `StepLengthBounded` plus `PostBlockingSettles` or
     `PostBlockingSettlesRun`, three of which entries 9, 11 and 22 refute. What (a) delivers is that
     one named residual of the four is now a theorem at a nonempty universe off `.Dense`, and that
@@ -552,9 +558,9 @@ already been here.
     *Why the residual survives it.* Because the reduced antecedent is refutable:
     `freshLabelHeadroom_not_universal` proves that for **no** nonempty finite `L` does every
     `L`-confined branch carry the rectangle, by the same `maxWorld` argument as entry 11 —
-    `freshWorldHeadroom_of_freshLabelHeadroom` is the one line that transports it. The obstruction is
-    the world coordinate's refutation, and it was never the missing time lemma. A reader who reaches
-    for the time analogue expecting the residual to close has already been here.
+    `freshWorldHeadroom_of_freshLabelHeadroom` is the one line that transports it. The obstruction
+    is the world coordinate's refutation, and it was never the missing time lemma. A reader who
+    reaches for the time analogue expecting the residual to close has already been here.
 
     *And the residual is not merely un-discharged — it is FALSE, at every nonempty finite `L`.* This
     is stronger than the paragraph above, which refutes only the *reduced antecedent* and so leaves
@@ -605,10 +611,11 @@ already been here.
     *The rectangle is not an over-approximation that a sharper proof would shrink.* A label is a
     **pair** and the two dichotomies are per-coordinate, so four quadrants have to be covered.
     Confinement of `b` covers none of them: `∀ x ∈ b, x.label ∈ L` constrains the pairs `b` carries,
-    not their cross product, so `⟨w, t⟩` for a `w` and a `t` that `b` carries on *different* formulas
-    is not thereby in `L`. `FreshWorldHeadroom` covers one quadrant, which is why it alone was never
-    going to be enough even with both dichotomies in hand. The same rectangle shape appears on the
-    clause-2 side as `timeMergeClosed_iff_product`, arrived at from the opposite direction.
+    not their cross product, so `⟨w, t⟩` for a `w` and a `t` that `b` carries on *different*
+    formulas is not thereby in `L`. `FreshWorldHeadroom` covers one quadrant, which is why it alone
+    was never going to be enough even with both dichotomies in hand. The same rectangle shape
+    appears on the clause-2 side as `timeMergeClosed_iff_product`, arrived at from the opposite
+    direction.
 
     *What is not withdrawn.* Nothing. `UnorderedSuccessorLabelClosed`,
     `unorderedSuccessor_confined_signedUniverse_of_headroom` and the terminus chain that consumes
@@ -618,8 +625,8 @@ already been here.
     `unorderedSuccessorLabelClosedOrd_not_universal` confirming that adding `OrdTimesKnown` does not
     weaken it into vacuity.
 
-    *The `L`-side replacement route, how far it reaches, and where it stops.* Section D4 supplies the
-    replacement this entry calls for, and it reaches further than C11 did without reaching a
+    *The `L`-side replacement route, how far it reaches, and where it stops.* Section D4 supplies
+    the replacement this entry calls for, and it reaches further than C11 did without reaching a
     terminus. The world coordinate — the one `freshWorldHeadroom_not_universal` proves no condition
     on a finite `L` can ever close — is closed outright on a `boxFree` branch
     (`unorderedSuccessor_worldFinset_subset`), and joined with D3's time coordinate and the
@@ -634,8 +641,8 @@ already been here.
     `applyRule_emitted_time_mem_ordTimesKnown_needed` proves is not removable from
     `applyRule_emitted_time_mem` — while `UniverseClosedAt`'s clause 1 quantifies `ord` freely and
     offers no such hypothesis. It named two routes past the mismatch and recorded the first of them,
-    removing `OrdTimesKnown` on this fragment, as **unattempted**. It has since been attempted and it
-    works: `applyRule_emitted_time_mem_of_untlSnceFree` trades the run invariant for branch-level
+    removing `OrdTimesKnown` on this fragment, as **unattempted**. It has since been attempted and
+    it works: `applyRule_emitted_time_mem_of_untlSnceFree` trades the run invariant for branch-level
     `untl`/`snce`-freeness (entry 16 records why, arm by arm), and
     `universeClosedAt_signedUniverse_of_propositional` is `UniverseClosedAt fc (signedUniverse C L)`
     with **no** `UnorderedSuccessorLabelClosed`, **no** `OrdTimesKnown` and **no** frame-class
@@ -671,15 +678,15 @@ already been here.
     Neither is attempted and neither is refuted.
 
     *And the narrowing is forced.* D4's replacement reaches only the purely propositional fragment,
-    because `boxFree` and `untlSnceFree` together exclude `□`, `untl` and `snce`. That is not a proof
-    weakness: `freshWorldHeadroom_not_universal` refutes every `L`-side alternative, so the only
-    available handle is the stock, and both world-minting rules are gated on a `.box` node. A reader
-    who wants the replacement at the modal fragment is asking for something the world coordinate's
-    refutation rules out.
+    because `boxFree` and `untlSnceFree` together exclude `□`, `untl` and `snce`. That is not a
+    proof weakness: `freshWorldHeadroom_not_universal` refutes every `L`-side alternative, so the
+    only available handle is the stock, and both world-minting rules are gated on a `.box` node. A
+    reader who wants the replacement at the modal fragment is asking for something the world
+    coordinate's refutation rules out.
 
-22. **`PostBlockingSettles fc` as literally stated.** Refuted, not merely unproved, by two witnesses,
-    both universally quantified in the frame class: `postBlockingSettles_fuel_zero_false` at the
-    `fuel = 0` arm, and `postBlockingSettles_fuel_gap_false` at a nonzero one.
+22. **`PostBlockingSettles fc` as literally stated.** Refuted, not merely unproved, by two
+    witnesses, both universally quantified in the frame class: `postBlockingSettles_fuel_zero_false`
+    at the `fuel = 0` arm, and `postBlockingSettles_fuel_gap_false` at a nonzero one.
 
     *The cause in one line.* `expandOnceNoFresh` **skips** any candidate whose applicable rule mints
     a fresh label or lengthens the ordering constraints — its `pick` returns `none` and the search
@@ -693,21 +700,21 @@ already been here.
     quantified in `fuel`: `saturateBlocked freshWorldBranch fuel TimeOrdering.empty fc` returns the
     branch unchanged while the saturation test reports outstanding work on it. The fuel-universal
     step is `saturateBlocked_eq_self_of_noFresh_saturated`, two cases and no induction — from
-    `fuel + 1` the pass reaches its `(.saturated, _)` arm before any guard. The witness is the landed
-    `freshWorldBranch = [F(□p)@⟨0,0⟩]` reused from entry 11's refutation; `.boxNeg` mints a fresh
-    **world**, so it trips `expandOnceNoFresh`'s *first* rejection test. Entry 13 records why there
-    are two rejection tests and why a time-minting witness would refute the predicate the same way
-    through the second.
+    `fuel + 1` the pass reaches its `(.saturated, _)` arm before any guard. The witness is the
+    landed `freshWorldBranch = [F(□p)@⟨0,0⟩]` reused from entry 11's refutation; `.boxNeg` mints a
+    fresh **world**, so it trips `expandOnceNoFresh`'s *first* rejection test. Entry 13 records why
+    there are two rejection tests and why a time-minting witness would refute the predicate the same
+    way through the second.
 
     *The `fuel = 0` arm is not a technicality, and the reader who wants to "just require `fuel > 0`"
     should read this sentence.* At `fuel = 0` the pass hands its input back untested, so the
-    predicate's hypothesis is satisfied at **every** branch whatsoever and the predicate then asserts
-    that every branch is blocking-aware saturated. That arm is reachable at every top-level fuel
-    figure, because the pass recurses with the fuel decremented.
+    predicate's hypothesis is satisfied at **every** branch whatsoever and the predicate then
+    asserts that every branch is blocking-aware saturated. That arm is reachable at every top-level
+    fuel figure, because the pass recurses with the fuel decremented.
 
     *What the settlement question actually reduces to*, proved rather than asserted:
-    `postBlockingSettlesAt_settlement` shows that `expandOnceNoFresh` reporting `.saturated`, plus no
-    label-minting work at an unblocked time (`NoUnblockedFreshWork`), forces the conclusion. The
+    `postBlockingSettlesAt_settlement` shows that `expandOnceNoFresh` reporting `.saturated`, plus
+    no label-minting work at an unblocked time (`NoUnblockedFreshWork`), forces the conclusion. The
     inversion it runs on is `expandOnceNoFresh_saturated_imp`, which needs
     `findApplicableRule_result_ne_notApplicable` to kill `expandOnceNoFresh`'s *second* route to
     `.saturated` — its `.notApplicable` arm, which returns the picked ordering rather than the
@@ -716,8 +723,8 @@ already been here.
 23. **`PostBlockingSettlesAt`, and every repair of entry 22 that relocates conditions onto the
     post-blocking pass's output branch.** Not open: closed, and closed twice over.
 
-    *The design, so a reader does not re-attempt it by fixing the wrong part.* Add the two conditions
-    the settlement argument actually uses as antecedents on the output branch —
+    *The design, so a reader does not re-attempt it by fixing the wrong part.* Add the two
+    conditions the settlement argument actually uses as antecedents on the output branch —
     `LabelFreeSaturatedExit` (the pass ran to label-free saturation rather than being truncated) and
     `NoUnblockedFreshWork` (no label-minting work at an unblocked time) — leaving the conclusion
     verbatim. `postBlockingSettlesAt_of_postBlockingSettles` fixes the direction in the register's
@@ -746,14 +753,14 @@ already been here.
     "the repaired predicate is proved" as "the residual is discharged" has the situation backwards.
 
     *What the design does buy, so the record is not only negative.* The residual's content is now
-    located exactly: it is a **fuel-adequacy** fact about the pass plus a **label-minting** fact about
-    the branch it reaches, and neither is a settlement question. `LabelFreeUniverseAt` with
+    located exactly: it is a **fuel-adequacy** fact about the pass plus a **label-minting** fact
+    about the branch it reaches, and neither is a settlement question. `LabelFreeUniverseAt` with
     `noUnblockedFreshWork_of_labelFreeUniverseAt` is the one direction the equivalence does not
     collapse — a branch-independent sufficient condition, checkable from the universe and the
     ordering without looking at the branch. It has to be stated at a fixed ordering rather than at a
     universe alone, and that is forced rather than conservative: `orderTrichotomy` is in
-    `allRulesForFC`, is applicable to *every* signed formula, and lengthens the ordering exactly when
-    the ordering carries an incomparable pair. And the discharge is not at a vacuous boundary —
+    `allRulesForFC`, is applicable to *every* signed formula, and lengthens the ordering exactly
+    when the ordering carries an incomparable pair. And the discharge is not at a vacuous boundary —
     `saturateBlocked_multBranch_one_run` decides that the pass itself produces the three-formula
     branch `multSettledBranch` at every frame class and every positive fuel, and
     `postBlockingSettlesAt_labelFree` is the settlement delivered there.
@@ -802,14 +809,14 @@ already been here.
 
     *The consequence for the termini, and the corrected count.* **Nine** termini were stated against
     the narrowed residual, not six. The six-count was an undercount twice over: it read one terminus
-    plus its five named siblings off a single sentence three sections up, and it silently assumed all
-    of them stood at `mintAwareFuelAt …` when four stood at the un-`At` `mintAwareFuel …`. All nine have been
-    retired as vacuous, by the same discipline this entry states for itself — the record is corrected
-    and kept rather than deleted. Section C12's retirement record names each of the nine, gives the
-    refutation that reaches it, and carries the frame-class split. The removal was cost-free: a
-    whole-environment reverse-dependency scan found zero dependents of the nine outside the nine
-    themselves, and `FormalSystem.Metalogic.Decidability.decide` reaches no constant of this file at
-    all.
+    plus its five named siblings off a single sentence three sections up, and it silently assumed
+    all of them stood at `mintAwareFuelAt …` when four stood at the un-`At` `mintAwareFuel …`. All
+    nine have been retired as vacuous, by the same discipline this entry states for itself — the
+    record is corrected and kept rather than deleted. Section C12's retirement record names each of
+    the nine, gives the refutation that reaches it, and carries the frame-class split. The removal
+    was cost-free: a whole-environment reverse-dependency scan found zero dependents of the nine
+    outside the nine themselves, and `FormalSystem.Metalogic.Decidability.decide` reaches no
+    constant of this file at all.
 
     *What is established about it.* It is not refuted by either witness that kills the unrestricted
     form (entry 22), and it is not vacuous: `postBlockingRunProbe`'s `#guard_msgs`-checked
@@ -838,65 +845,67 @@ already been here.
     mistaken for a *safe* one either. `postBlockingSettlesRun_terminusFuel_false` refutes the
     predicate at `.Base` at the terminus's own figure `mintAwareFuelAt U.card Tmax mintBudget D β`,
     for **all** parameter values: that figure is always at least one (`one_le_mintAwareFuelAt`, off
-    `mintPathBound`'s trailing `+ 1` through `fuelFigure_pos`), and `postBlockingSettlesRun_false_succ`
-    refutes it at every positive fuel. **Both** fuel figures are covered, not only the `At` one:
-    `one_le_mintAwareFuel` and `postBlockingSettlesRun_mintAwareFuel_false` land the identical verdict
-    at the un-`At` `mintAwareFuel …`, by the identical route. That is not tidiness — it is the figure
-    four of the nine retired termini were actually stated at, so without it the vacuity claim reached
-    only half of them. `postBlockingSettlesRun_false_dense` and
-    `postBlockingSettlesRun_false_rtime` land the same verdict at two further classes. All of it is a
-    kernel proof — no `sorry`, and no axiom beyond `propext`, `Classical.choice`, `Quot.sound`.
+    `mintPathBound`'s trailing `+ 1` through `fuelFigure_pos`), and
+    `postBlockingSettlesRun_false_succ` refutes it at every positive fuel. **Both** fuel figures are
+    covered, not only the `At` one: `one_le_mintAwareFuel` and
+    `postBlockingSettlesRun_mintAwareFuel_false` land the identical verdict at the un-`At`
+    `mintAwareFuel …`, by the identical route. That is not tidiness — it is the figure four of the
+    nine retired termini were actually stated at, so without it the vacuity claim reached only half
+    of them. `postBlockingSettlesRun_false_dense` and `postBlockingSettlesRun_false_rtime` land the
+    same verdict at two further classes. All of it is a kernel proof — no `sorry`, and no axiom
+    beyond `propext`, `Classical.choice`, `Quot.sound`.
 
     *The mechanism: entry 24's narrowing was **incomplete**.* It restricted `(ob, oOrd, fuel)` to
     run-produced pairs and left `expandBranchWithFuel`'s `EventualityTracker` argument universally
     quantified. That argument is the **only** input the engine's blocked-set computation and the
-    settlement test's recomputed `armTracker` do not share, and it is not inert. Blocking is monotone
-    in pending entries at the ancestor — `isTemporallyBlockedSaturated` conjoins
+    settlement test's recomputed `armTracker` do not share, and it is not inert. Blocking is
+    monotone in pending entries at the ancestor — `isTemporallyBlockedSaturated` conjoins
     `allEventualitiesFulfilledOrDuplicated`, which asks for a pending entry with the same event
     formula and the same `isUntil` flag at the ancestor time — so a doctored tracker yields a
     **strictly larger** blocked set than `armTracker`, and the engine skips a time the settlement
-    test still inspects. `pbrDoctoredTracker` parks one `q`-eventuality at an unused world, where the
-    world-sensitive `fulfillEventualities` never discharges it while the world-blind subset half of
-    blocking is still satisfied. `pbrWitnessBranch` is the engine's own open exit from
+    test still inspects. `pbrDoctoredTracker` parks one `q`-eventuality at an unused world, where
+    the world-sensitive `fulfillEventualities` never discharges it while the world-blind subset half
+    of blocking is still satisfied. `pbrWitnessBranch` is the engine's own open exit from
     `seedBranch (p → q)`, augmented, carrying `T(p untl q)@⟨9,4⟩` — a formula `untlPos` mints a time
-    for, so `expandOnceNoFresh` skips it and `saturateBlocked_eq_self_of_noFresh_saturated` hands the
-    branch back at **every** fuel.
+    for, so `expandOnceNoFresh` skips it and `saturateBlocked_eq_self_of_noFresh_saturated` hands
+    the branch back at **every** fuel.
 
     *Why the refutation is cheap where entry 24 records the positive direction as prohibitive.* The
-    doctored run returns the witness at its **first** step, so `rw [expandBranchWithFuel]` unfolds the
-    equation lemma exactly once and the `.saturated` arm closes the goal; no engine step is
+    doctored run returns the witness at its **first** step, so `rw [expandBranchWithFuel]` unfolds
+    the equation lemma exactly once and the `.saturated` arm closes the goal; no engine step is
     transcribed. That is what converts what entry 24 calls a measurement into a theorem, and it
-    generalises: a kernel *refutation* about a well-founded-recursive engine function is cheap exactly
-    when the witness is returned before the first recursive call, even where a kernel *proof* about
-    the same function is not.
+    generalises: a kernel *refutation* about a well-founded-recursive engine function is cheap
+    exactly when the witness is returned before the first recursive call, even where a kernel
+    *proof* about the same function is not.
 
     *What this does NOT say.* It is not a claim that any engine run ever threads such a tracker —
     `buildTableauAt` does not. The predicate **as written** quantifies over the tracker, so the
     predicate as written is false. This is the same form of statement entry 22 makes about the
-    `fuel = 0` degeneracy, and it is not to be softened to a caveat: the finding is that the narrowing
-    was incomplete, and the completion is named next.
+    `fuel = 0` degeneracy, and it is not to be softened to a caveat: the finding is that the
+    narrowing was incomplete, and the completion is named next.
 
-    *The named next narrowing, and why it is NOT claimed true.* `PostBlockingSettlesSeedRun` fixes the
-    four arguments `buildTableauAt` always supplies at their defaults — `ord := TimeOrdering.empty`,
-    `tr := EventualityTracker.empty`, `ap := {}`, `bu := 0` — and leaves the rest quantified.
-    `buildTableauAt_isSome_of_settlesSeedRun` shows the bridge survives verbatim, and
-    `buildTableauAt_isSome_of_budget_fixed_seedRun` is the representative terminus restated against
-    it. That narrowing kills *this* witness (checked: at the empty tracker the same branch's
-    `expandOnceUnblocked` reports `.extended`, not `.saturated`, and a genuine run from it reaches an
-    exit whose settlement test passes), and it is **not** thereby true. A second, structurally
-    independent refutation route against it is **unprobed**: `saturateBlocked` may *extend* `ob`, and
-    `expandOnceNoFresh` ignores blocking entirely, so it can do label-free work at a *blocked* time,
-    and the formulas it adds can break `isSubsetBlocked` (or `timeSaturated` at the ancestor) and
-    thereby **unblock** a time carrying label-minting work that `expandOnceNoFresh` itself skips; the
-    settlement test on `satBr` would then report it, with no doctored tracker anywhere. Any future
-    claim that `PostBlockingSettlesSeedRun` holds must gate on that route first. The cheapest probe:
-    for engine exits `ob`, does `blockedTimes satBr satOrd fc (armTracker satBr)` ever lose a time
-    that `blockedTimes ob oOrd fc (armTracker ob)` held?
+    *The named next narrowing, and why it is NOT claimed true.* `PostBlockingSettlesSeedRun` fixes
+    the four arguments `buildTableauAt` always supplies at their defaults —
+    `ord := TimeOrdering.empty`, `tr := EventualityTracker.empty`, `ap := {}`, `bu := 0` — and
+    leaves the rest quantified. `buildTableauAt_isSome_of_settlesSeedRun` shows the bridge survives
+    verbatim, and `buildTableauAt_isSome_of_budget_fixed_seedRun` is the representative terminus
+    restated against it. That narrowing kills *this* witness (checked: at the empty tracker the same
+    branch's `expandOnceUnblocked` reports `.extended`, not `.saturated`, and a genuine run from it
+    reaches an exit whose settlement test passes), and it is **not** thereby true. A second,
+    structurally independent refutation route against it is **unprobed**: `saturateBlocked` may
+    *extend* `ob`, and `expandOnceNoFresh` ignores blocking entirely, so it can do label-free work
+    at a *blocked* time, and the formulas it adds can break `isSubsetBlocked` (or `timeSaturated` at
+    the ancestor) and thereby **unblock** a time carrying label-minting work that
+    `expandOnceNoFresh` itself skips; the settlement test on `satBr` would then report it, with no
+    doctored tracker anywhere. Any future claim that `PostBlockingSettlesSeedRun` holds must gate on
+    that route first. The cheapest probe: for engine exits `ob`, does
+    `blockedTimes satBr satOrd fc (armTracker satBr)` ever lose a time that
+    `blockedTimes ob oOrd fc (armTracker ob)` held?
 
-    *Do not re-attempt.* The unrestricted `PostBlockingSettles` (entry 22, refuted); the output-branch
-    bridge `PostBlockingExitSettled` (entry 23, refuted); an `ArmSettlement` discharge of the entry
-    point's post-blocking arm, which is strictly too weak because `resolveOpenArm` tests
-    `findClosure satBr` before its saturation test and `buildTableauAt` does not; and
+    *Do not re-attempt.* The unrestricted `PostBlockingSettles` (entry 22, refuted); the
+    output-branch bridge `PostBlockingExitSettled` (entry 23, refuted); an `ArmSettlement` discharge
+    of the entry point's post-blocking arm, which is strictly too weak because `resolveOpenArm`
+    tests `findClosure satBr` before its saturation test and `buildTableauAt` does not; and
     `PostBlockingSettlesRun` itself in the positive direction, at any positive figure. What remains
     open is a fact about the **witness**, not about the verdict: at `.ZTime` the witness leaves
     `priorUZ` and `priorSZ` applicable at `⟨0,0⟩`, `⟨0,1⟩`, `⟨1,0⟩` and `⟨1,1⟩`, so its first
@@ -904,12 +913,12 @@ already been here.
     one frame class already refutes the predicate.
 
     *That `.ZTime` caveat does not apply uniformly across the retired termini, and must not be read
-    as though it did.* Eight of the nine carried `PostBlockingSettlesRun` and inherit exactly the gap
-    just named: established vacuous at `.Base`, `.Dense` and `.RTime`, undecided here at `.ZTime` —
-    where undecided still means undelivered, and where they had no dependent either. The ninth,
-    `buildTableauAt_isSome_of_budget_of_run`, is not one of them. It carried the **unrestricted**
-    `PostBlockingSettles`, which `postBlockingSettles_fuel_zero_false` refutes at every frame class,
-    so it was unconditionally vacuous at **all four**. It sat inside what read as a uniform block and
-    was not uniform with it.
+    as though it did.* Eight of the nine carried `PostBlockingSettlesRun` and inherit exactly the
+    gap just named: established vacuous at `.Base`, `.Dense` and `.RTime`, undecided here at
+    `.ZTime` — where undecided still means undelivered, and where they had no dependent either. The
+    ninth, `buildTableauAt_isSome_of_budget_of_run`, is not one of them. It carried the
+    **unrestricted** `PostBlockingSettles`, which `postBlockingSettles_fuel_zero_false` refutes at
+    every frame class, so it was unconditionally vacuous at **all four**. It sat inside what read as
+    a uniform block and was not uniform with it.
     -/
 

@@ -242,9 +242,10 @@ time. Four are gated by the *trigger*: `.allFuturePos` and `.allPastPos` match t
 `Formula.allFuture` / `Formula.allPast` shape, whose head is an `untl` / `snce` node, and
 `.someFutureNeg` / `.somePastNeg` consult `asSomeFuture?` / `asSomePast?`, which the view lemmas
 above already return `none` for. The fifth is gated by the *branch*: `.orderTrichotomy`'s `fires`
-guard demands `branch.contains (SignedFormula.neg d l0)` for one of three `Formula.someFuture`-headed
-disjuncts, and an `untl`/`snce`-free branch carries no `untl`-headed formula at all. That asymmetry
-is why the restricted sweep takes a branch-level hypothesis rather than a trigger-level one.
+guard demands `branch.contains (SignedFormula.neg d l0)` for one of three
+`Formula.someFuture`-headed disjuncts, and an `untl`/`snce`-free branch carries no `untl`-headed
+formula at all. That asymmetry is why the restricted sweep takes a branch-level hypothesis rather
+than a trigger-level one.
 
 Each exclusion concludes `emitted = []` rather than the weaker "every emission is at a known time":
 on this fragment the four propagation arms and the trichotomy arm do not merely emit safely, they

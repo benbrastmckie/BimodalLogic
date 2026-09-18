@@ -129,7 +129,8 @@ this is its first arm. On it, all three disjuncts fail on decided numbers:
 * disjunct 2 — `mintPotential` is `8·18 = 144` before **and** after, by `mintPotential_flatSigma`,
   which is a general fact and not a measurement at this configuration;
 * disjunct 3 — `selfGuardPotential` is `12` before and `12` after: the step's only new edge is
-  `(1, 3)`, time `1`'s future was already non-empty, and no formula of the universe sits at time `3`.
+  `(1, 3)`, time `1`'s future was already non-empty, and no formula of the universe sits at time
+  `3`.
 
 The four frame classes are decided separately, and `Tmax` is universally quantified because
 disjunct 1 fails at its first conjunct and disjunct 2 fails by an identity, neither of which
@@ -162,16 +163,16 @@ where disjunct 2 needs it to constrain σ's *formulas* — so the repair is to s
 the coordinate the obligation lives at, and nowhere else. Nothing else about the predicate changes:
 the three disjuncts are the same three, in the same order, with the same conjuncts.
 
-**The repair is free at the arm, which is the whole reason it is available.** `rhoSF src tgt` renames
-one time and leaves every other formula strictly alone, so `rhoSF_eq_of_ne_src` is the same one-line
-fact as `rhoSF_time_eq_of_ne_src` with the conclusion strengthened from "same time" to "same
-formula". Every lemma of the σ layer transcribes across that strengthening with no new content:
-`sigmaFixed_identifyOriented` is `sigmaTimeStable_identifyOriented`'s proof verbatim,
+**The repair is free at the arm, which is the whole reason it is available.** `rhoSF src tgt`
+renames one time and leaves every other formula strictly alone, so `rhoSF_eq_of_ne_src` is the same
+one-line fact as `rhoSF_time_eq_of_ne_src` with the conclusion strengthened from "same time" to
+"same formula". Every lemma of the σ layer transcribes across that strengthening with no new
+content: `sigmaFixed_identifyOriented` is `sigmaTimeStable_identifyOriented`'s proof verbatim,
 `sigmaFormulaFixed_identifyOriented` is `sigmaTimeFixed_identifyOriented`'s, and the watermark
 lemmas are `sigmaFixesFrom_*`'s. That the strengthening costs nothing at the one step that changes σ
 is a fact about `rhoSF`, not a coincidence, and it is why the repair does not have to be paid for
-anywhere downstream: **no figure changes** — `mintPathBoundAt`, `mintAwareFuelAt` and `derivedTmaxAt`
-are reused unaltered, unlike the fourth component, which cost a coefficient.
+anywhere downstream: **no figure changes** — `mintPathBoundAt`, `mintAwareFuelAt` and
+`derivedTmaxAt` are reused unaltered, unlike the fourth component, which cost a coefficient.
 
 **What is bought.** `sigma_formula_hit_of_sigmaFixed` discharges
 `mintPotential_lt_of_mint`'s obligation from confinement alone — the trigger witnesses its own hit,

@@ -143,11 +143,13 @@ theorem mintPaysForTime_untlNeg_false (fc : FormalSystem.ProofSystem.FrameClass)
       | exact absurd h3 (by decide)
 
 /-- **The satisfiability boundary: `U = ∅`.** Confinement forces the branch empty, the engine has
-nothing to pick in any of its three stages and reports `.saturated`, and `unorderedSuccessorBranches`
-of a `.saturated` result is `[]`. So the whole statement is vacuous there.
+nothing to pick in any of its three stages and reports `.saturated`, and
+`unorderedSuccessorBranches` of a `.saturated` result is `[]`. So the whole statement is vacuous
+there.
 
 The same shape as `universeClosed_identify_empty`: the residual is satisfiable exactly where the
-terminus it guards has nothing to say, since `signedUniverse C L` is empty only when `C` or `L` is. -/
+terminus it guards has nothing to say, since `signedUniverse C L` is empty only when `C` or `L` is.
+-/
 theorem mintPaysForTime_empty (fc : FormalSystem.ProofSystem.FrameClass) (Tmax : Nat) :
     MintPaysForTime fc ∅ Tmax := by
   intro _ b ord tr _ hconf nb hnb
@@ -167,17 +169,17 @@ substituted for it.
 moves exactly when it does.
 
 *The disjunct-1 repair is out too, and this is the one that had to be tested.* The obvious
-remaining narrowing is to drop disjunct 1's first conjunct — `nb.knownTimes.card ≤ b.knownTimes.card`
-is exactly what a minting step falsifies, and `knownTimes_card_le_succ_of_unorderedSuccessor` shows
-the true bound is one larger — leaving the ordering-rank conjunct as disjunct 1's whole content.
-That does not work: `splitOrderedRank Tmax b ord` is
-`b.knownTimes.card * (Tmax² + 1) + (incompPairs b ord).card`, the second summand is bounded by
-`Tmax²` (`incompPairs_card_le` plus the carried time bound), and the base `Tmax² + 1` is *one more*
-than that bound by construction. So one extra known time raises the rank by at least `1` no matter
-what the incomparable-pair count does — `splitOrderedRank_lt_of_knownTimes_lt`. The rank conjunct
-therefore fails at **every** time-minting step, not just at the refuting one, and
-`mintPaysForTime_rank_repair_false` decides the weakened predicate false at the same configuration
-that refuted the original.
+remaining narrowing is to drop disjunct 1's first conjunct —
+`nb.knownTimes.card ≤ b.knownTimes.card` is exactly what a minting step falsifies, and
+`knownTimes_card_le_succ_of_unorderedSuccessor` shows the true bound is one larger — leaving the
+ordering-rank conjunct as disjunct 1's whole content. That does not work:
+`splitOrderedRank Tmax b ord` is `b.knownTimes.card * (Tmax² + 1) + (incompPairs b ord).card`, the
+second summand is bounded by `Tmax²` (`incompPairs_card_le` plus the carried time bound), and the
+base `Tmax² + 1` is *one more* than that bound by construction. So one extra known time raises the
+rank by at least `1` no matter what the incomparable-pair count does —
+`splitOrderedRank_lt_of_knownTimes_lt`. The rank conjunct therefore fails at **every** time-minting
+step, not just at the refuting one, and `mintPaysForTime_rank_repair_false` decides the weakened
+predicate false at the same configuration that refuted the original.
 
 *What is actually missing.* A fourth measure component that pays for the three self-guarded minting
 rules. Each has its own termination argument, and none of them is `mintPotential`:
@@ -325,7 +327,8 @@ That reformulation filters additionally on the formula's time being a fixed poin
 condition does, and defeating one defeats the other. The obstruction is intrinsic to
 identification-plus-`maxTime`, not to this measure's shape. -/
 
-/-- The renaming never fixes the time it retires. One line, and the whole σ-hit story rests on it. -/
+/-- The renaming never fixes the time it retires. One line, and the whole σ-hit story rests on it.
+-/
 theorem rho_src_ne_src {src tgt : TimeIndex} (h : tgt ≠ src) : rho src tgt src ≠ src := by
   simp [rho, h]
 
@@ -528,7 +531,7 @@ a working repair.
 **Obligation map — the density coordinate is a second, independent gap.** Even setting the σ-hit
 verdict aside, this predicate carrying only the `selfGuardPotential` disjunct is separately
 refutable at `.Dense` / `.RTime` by a `densityRule` vehicle: `densityRule` returns `.persistent`
-(`Tableau.lean:1387`), which `expandOnceUnblocked` maps to `.extended`, so
+(`Tableau.lean:1389`), which `expandOnceUnblocked` maps to `.extended`, so
 it is inside this predicate's scope, and it mints a fresh time while lying outside **both**
 `freshLabelRules` and `selfGuardRules` — no disjunct moves at all. The intended component is
 `gapPotential`, indexed by `U ×ˢ U` and gated on `denseRules`; it is a **named residual**,
@@ -743,19 +746,20 @@ than another disjunct fitted to the same ledger, and that nothing here is implem
 *The exposure the verdict does not cover.* `MintPaysForTimeAt` carrying only the
 `selfGuardPotential` disjunct is separately refutable at `.Dense` / `.RTime` by a `densityRule`
 vehicle, on grounds that have nothing to do with the σ-hit hazard. `densityRule` is inside the
-predicate's scope — it returns `.persistent` (`Tableau.lean:1387`), which `expandOnceUnblocked` maps
+predicate's scope — it returns `.persistent` (`Tableau.lean:1389`), which `expandOnceUnblocked` maps
 to `.extended` — and it mints a fresh time while sitting outside **both**
 `freshLabelRules` and `selfGuardRules`. So a `densityRule` step moves no disjunct of the predicate
 at all, at any `U`, independently of everything above. `freshTimeRules_incomparable_freshLabelRules`
-is the census fact that puts it outside the first list; `selfGuardRules` excludes it by construction.
+is the census fact that puts it outside the first list; `selfGuardRules` excludes it by
+construction.
 
 *The intended component, named so that its absence is legible.* `gapPotential`, indexed by `U ×ˢ U`
 rather than by `selfGuardRules ×ˢ U`. The index shape is forced by the rule's own argument:
 `densityRule` splits each *maximal unfilled gap* at most once, and a gap is a **pair**, so the
-ledger transcribes the rule's own `gapTargets` filter (`Tableau.lean:1366-1366`) —
+ledger transcribes the rule's own `gapTargets` filter (`Tableau.lean:1368-1366`) —
 `(timeOrd.futureOf t').isEmpty`, together with `t'` lying below no other future time of the trigger
 — rather than any per-rule discharge test. It is therefore quadratic in `|U|` where
-`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean:1595`), so it
+`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean:1597`), so it
 contributes nothing at `.Base` / `.ZTime`.
 
 *That it has to be a separate clause is not this development's invention.* In the mosaic

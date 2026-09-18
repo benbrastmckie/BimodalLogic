@@ -109,7 +109,8 @@ open FormalSystem.Metalogic.Decidability
 
 section Placed
 
-variable {ι : Type*} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {ι : Type*} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D]
 
 /-- The region code of a placed point. Its region is the singleton `{f i}`. -/
 def placedCode (f : ι → D) (i : ι) : Set ι × Set ι := regionCode f (f i)
@@ -145,7 +146,8 @@ end Placed
 
 section Valuation
 
-variable {ι : Type*} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {ι : Type*} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D]
 
 open Classical in
 /--
@@ -369,7 +371,8 @@ theorem not_leftCopy_gapAdequate (p : Atom) :
       (regionHistory refutePlacement () (0 : ℚ)) (0 : ℚ) (Formula.allFuture (Formula.atom p)) := by
   intro h
   have h1 : TruthAt (regionModel refutePlacement refutePlacedVal
-      (leftCopyGap refutePlacement refutePlacedVal False)) (regionHistory refutePlacement () (0 : ℚ)) (1 : ℚ)
+      (leftCopyGap refutePlacement refutePlacedVal False)) (regionHistory refutePlacement ()
+          (0 : ℚ)) (1 : ℚ)
       (Formula.atom p) := by
     by_contra hc
     exact h ⟨1, by norm_num, hc, fun _ _ _ => id⟩
@@ -403,7 +406,8 @@ theorem not_rightCopy_gapAdequate (p : Atom) :
       (regionHistory refutePlacement () (0 : ℚ)) (0 : ℚ) (Formula.allPast (Formula.atom p)) := by
   intro h
   have h1 : TruthAt (regionModel refutePlacement refutePlacedVal
-      (rightCopyGap refutePlacement refutePlacedVal False)) (regionHistory refutePlacement () (0 : ℚ)) (-1 : ℚ)
+      (rightCopyGap refutePlacement refutePlacedVal False)) (regionHistory refutePlacement ()
+          (0 : ℚ)) (-1 : ℚ)
       (Formula.atom p) := by
     by_contra hc
     exact h ⟨-1, by norm_num, hc, fun _ _ _ => id⟩
@@ -558,10 +562,10 @@ atom clause. `GapAdequate` constrains the policy at *atoms* only, on the stated 
 every compound formula the value is fixed by the induction". That ground is false for `□`.
 
 `truthAt_box_iff_base` makes `□` the universal modality over **every point of every base
-history**, gaps included, and `regionHistory` is defined at every point — so a branch fact `T(□χ)` with
-`χ` compound is a demand on the gap points' *induced* values, which the atom policy alone must
-already satisfy. Take `χ := p → q`. A branch may carry `T(□p)` and `T(□(p → q))` and no `T(□q)`,
-no `T(G q)` and no `T(H q)` anywhere — the engine never emits `T(□q)`, since `boxPos` copies a box
+history**, gaps included, and `regionHistory` is defined at every point — so a branch fact `T(□χ)`
+with `χ` compound is a demand on the gap points' *induced* values, which the atom policy alone must
+already satisfy. Take `χ := p → q`. A branch may carry `T(□p)` and `T(□(p → q))` and no `T(□q)`, no
+`T(G q)` and no `T(H q)` anywhere — the engine never emits `T(□q)`, since `boxPos` copies a box
 formula's *content* and no rule closes the box context under modus ponens. At any gap point
 `branchGapVal` then makes `p` true (third disjunct, via `T(□p)`) and `q` false (no disjunct
 applies), so `p → q` is **false** there and `□(p → q)` is false at every point of the model, while

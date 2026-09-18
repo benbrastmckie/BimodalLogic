@@ -492,14 +492,14 @@ Full `--wfail` build green on the second run (1,215 s); invariants pass.
 
 ---
 
-### Phase 9: `longLine` (1 of 4) -- `Metalogic/Decidability` [NOT STARTED]
+### Phase 9: `longLine` (1 of 4) -- `Metalogic/Decidability` [COMPLETED]
 
 **Goal**: Reflow lines over 100 characters in the Decidability subtree.
 
 **Tasks**:
-- [ ] Reflow every flagged line so that it has no semantic change: break at binders, `→` or
+- [x] Reflow every flagged line so that it has no semantic change: break at binders, `→` or
       tactic separators, following LEAN_STYLE_GUIDE.md's existing 100-character guidance.
-- [ ] Confirm zero `longLine` warnings in this subtree with a per-file sweep using
+- [x] Confirm zero `longLine` warnings in this subtree with a per-file sweep using
       `-Dweak.linter.style.longLine=true`, and build the touched modules. The lakefile line stays
       until Phase 12.
 
@@ -515,6 +515,14 @@ and 9.2.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/**` - reflow
+
+**Phase 9 notes**: 35 files. A reflow helper re-wraps comment and docstring prose
+paragraph-aware (lists, tables, fences and headings are left alone), hoists a trailing `--`
+comment above its code line, and breaks code lines inside brackets / between binders / before
+`<;>` / after `:=`, continuing 4 columns deeper. A whitespace-insensitive diff check confirms no
+token changed. Six lines were rewritten by hand (5 markdown table rows, 1 heading). Follow-on:
+`Fuel.lean` longFile 2800 -> 2900; 11 citations re-pointed. All 38 touched files elaborate with
+the lakefile options plus `longLine` on and report no warning at all.
 
 **Verification**:
 - The per-file `longLine` sweep of this subtree reports 0, and the touched modules build.

@@ -191,8 +191,8 @@ theorem exists_bounded_iter {W : Type} [Finite W] (R : W → W → Prop) (P : W 
     · obtain ⟨m, hmn, hm⟩ := exists_lt_iter_of_card_le R hn (by omega)
       exact ih m hmn u hm hu
 
-/-- The same bound, phrased for the one-step relation of a `FrameOver intOrder` with finite carrier —
-the form `mem_HF_iff_adjacent` hands to a search over a finite step-graph. -/
+/-- The same bound, phrased for the one-step relation of a `FrameOver intOrder` with finite carrier
+— the form `mem_HF_iff_adjacent` hands to a search over a finite step-graph. -/
 theorem exists_bounded_iter_step (F : FrameOver intOrder) [Finite F.WorldState]
     (P : F.WorldState → Prop) (w : F.WorldState)
     (h : ∃ n u, iter F.step n w u ∧ P u) :

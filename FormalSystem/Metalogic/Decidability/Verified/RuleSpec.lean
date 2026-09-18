@@ -66,11 +66,11 @@ Two consequences of that reading are deliberate:
 ## The two rules scheduled outside `allRulesForFC`
 
 `serialityRule` and `timeLinearity` are both `.Base` rules in the soundness sense — `serial_future`
-(with its TR mirror `serial_past`) and `temp_linearity` are base axioms — but both are deliberately **absent** from
-`allRulesForFC`, because each is keyed on something other than a formula's shape (`serialityRule`
-on the label, `timeLinearity` on the branch's time structure), so no position in a per-formula
-priority list is correct for them. They are scheduled instead as the second and third stages of
-`expandOnce` (see `serialityRules` / `linearityRules` in `Tableau.lean`).
+(with its TR mirror `serial_past`) and `temp_linearity` are base axioms — but both are deliberately
+**absent** from `allRulesForFC`, because each is keyed on something other than a formula's shape
+(`serialityRule` on the label, `timeLinearity` on the branch's time structure), so no position in a
+per-formula priority list is correct for them. They are scheduled instead as the second and third
+stages of `expandOnce` (see `serialityRules` / `linearityRules` in `Tableau.lean`).
 
 GATE 2 therefore needs an explicit exclusion clause for both. Without it the `by decide` gate
 fails, and it fails confusingly: the two rules are `.Base`-gated and so satisfy

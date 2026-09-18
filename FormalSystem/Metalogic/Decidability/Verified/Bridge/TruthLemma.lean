@@ -46,11 +46,12 @@ form exists at all: `TruthAt … (box φ)` is a universal over the world histori
 value at `r` and at `r'` needed the induction hypothesis at every world history simultaneously.
 Here the case consumes `truthAt_box_iff` instead — truth of `box φ` does not depend on the
 evaluation point at all — and uses **no** induction hypothesis. The atom case needs
-atomic region-invariance of `τ` against `M` only, and the `untl`/`snce` cases were already single-history arguments
-in Phase 6: every witness, guard point and replacement witness they manipulate lives in the one
-history being quantified over. They are reproduced here against the weaker hypothesis, unchanged
-in structure; the region lemmas they run on (`sameRegion_convex`, `placed_ne_of_sameRegion_ne`,
-`exists_gt_sameRegion`, `exists_lt_sameRegion`) are consumed from `Interpolate.lean` verbatim.
+atomic region-invariance of `τ` against `M` only, and the `untl`/`snce` cases were already
+single-history arguments in Phase 6: every witness, guard point and replacement witness they
+manipulate lives in the one history being quantified over. They are reproduced here against the
+weaker hypothesis, unchanged in structure; the region lemmas they run on (`sameRegion_convex`,
+`placed_ne_of_sameRegion_ne`, `exists_gt_sameRegion`, `exists_lt_sameRegion`) are consumed from
+`Interpolate.lean` verbatim.
 
 `interpInvariantAt_of_interpInvariant` records that this form is genuinely weaker: the global
 statement implies it pointwise, so nothing proved in Phase 6 is lost.
@@ -325,8 +326,9 @@ end Invariance
 
 /-! ## The countermodel's invariance, instantiated
 
-The two hypotheses of `interpInvariantAt` discharged against the objects of `Bridge/RegionFrame.lean`,
-for an arbitrary carrier and then at each of the three dense carriers the Phase 6 route serves.
+The two hypotheses of `interpInvariantAt` discharged against the objects of
+`Bridge/RegionFrame.lean`, for an arbitrary carrier and then at each of the three dense carriers the
+Phase 6 route serves.
 -/
 
 section Countermodel

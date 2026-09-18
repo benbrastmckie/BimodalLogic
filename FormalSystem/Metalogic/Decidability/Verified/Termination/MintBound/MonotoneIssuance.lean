@@ -34,8 +34,8 @@ same two engine steps from the same witness:
 
 | | `maxTime` trajectory | retired index | re-issued? |
 |---|---|---|---|
-| current arm (`identifyTime t₂ t₁`) | `2 → 1 → 1 → 2` | `2` | **yes** (`reuse_driven_through_engine`) |
-| oriented arm (`identifyTime (min) (max)`) | `2 → 2 → 2 → 3` | `0` | **no** |
+| current (`identifyTime t₂ t₁`) | `2 → 1 → 1 → 2` | `2` | **yes** (`reuse_driven_through_engine`) |
+| oriented (`identifyTime (min) (max)`) | `2 → 2 → 2 → 3` | `0` | **no** |
 
 `oriented_arm_is_not_inert` decides both rows side by side. Without that pairing the gate could not
 distinguish "the mechanism prevents the reuse" from "the configuration stopped applying" — the same
@@ -288,8 +288,8 @@ theorem retired_lt_nextTime_oriented {b : Branch} (ord : TimeOrdering) {t₁ t�
     _ < b.nextTime := Nat.lt_succ_self _
     _ ≤ _ := nextTime_le_identifyTime_oriented b ord t₁ t₂
 
-/-- The ordered split's three arms as they read under the orientation. Arms 1 and 2 are byte-for-byte
-what `applyRule .timeLinearity` already produces; only the third differs.
+/-- The ordered split's three arms as they read under the orientation. Arms 1 and 2 are
+byte-for-byte what `applyRule .timeLinearity` already produces; only the third differs.
 
 Stated here so run-level monotonicity is provable **before** `Tableau.lean` is edited, and so the
 edit that lands in the engine has a named referent to be checked against rather than being its own

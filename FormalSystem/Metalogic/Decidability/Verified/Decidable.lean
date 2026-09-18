@@ -393,7 +393,8 @@ the base family be proved once at `carrierBase` and reused verbatim at `.Dense`,
 `.RTime`, and it is why no frame-class carrier property needs declaring until a rule actually
 consumes it. -/
 theorem RuleSound.mono {C C' : CarrierProp} {r : TableauRule}
-    (hle : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D], C' D → C D)
+    (hle : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D],
+        C' D → C D)
     (h : RuleSound C r) : RuleSound C' r := by
   intro D _ _ _ _ hC F M hist tv b sf ord hmem hst hord
   exact h D (hle D hC) F M hist tv b sf ord hmem hst hord
@@ -2366,8 +2367,9 @@ duplicated Mathlib.
 
 **On the import edge.** `FormalSystem.Metalogic.Soundness` remains refused, and this is *not*
 that edge. `FrameClassVariants` is a different module with a different import closure —
-`FrameClassVariants → {Semantics.Validity, ProofSystem.Derivation, ProofSystem.Axioms}` — and nothing anywhere in it imports `Decidability`, so there is no cycle.
-The cost is a heavier build edge, not a cycle.
+`FrameClassVariants → {Semantics.Validity, ProofSystem.Derivation, ProofSystem.Axioms}` — and
+nothing anywhere in it imports `Decidability`, so there is no cycle. The cost is a heavier build
+edge, not a cycle.
 
 **Why `carrierZTime` is an `Exists` and not a conjunction of classes.** `CarrierProp` returns
 `Prop`, and `DenselyOrdered` is `Prop`-valued, so `carrierDense` could be written outright.
@@ -2396,9 +2398,9 @@ def carrierZTime : CarrierProp := fun D =>
 
 `ValidZTime` states truth at the inert carrier `Set.univ`, which is exactly what the
 rule-soundness proofs below evaluate against, so this is `ValidZTime` applied at `.ZTime` and
-at the frame this tree carries. It is kept as a named step so the three `.ZTime` call sites read the same as they
-did when a carrier transport was still needed; it disappears with `TruthAt`'s set parameter
-itself.
+at the frame this tree carries. It is kept as a named step so the three `.ZTime` call sites read the
+same as they did when a carrier transport was still needed; it disappears with `TruthAt`'s set
+parameter itself.
 
 The four discreteness instances are bound on `D` and handed to `FrameClass.ZTime.Sat`
 **positionally**, exactly as `TaskFrame.isZTime_of_instances` and `sat_intro` do:
@@ -3038,8 +3040,8 @@ temporal formulas too, and no such argument is in the tree.
 **The verdict measurement, and its limit.** `Tests/BimodalTest/CrossWorldPropagationProbe.lean`
 runs the full decision procedure on the three shapes that would expose an unsound group-3 copy as
 a wrong *verdict* — `(¬F p) → □(¬F p)`, `(G p) → □(G p)` and `(¬P p) → □(¬P p)`, each invalid
-because some *other* world history may have a future (resp. past) `p` while `τ` has none. All three report
-`false`, the correct answer, alongside a `true` control and a `false` control. That probe was
+because some *other* world history may have a future (resp. past) `p` while `τ` has none. All three
+report `false`, the correct answer, alongside a `true` control and a `false` control. That probe was
 explicit that it measured verdicts and not steps, and it was right to be.
 
 **The step has now been measured, and it is unsound.**

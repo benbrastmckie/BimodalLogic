@@ -304,7 +304,8 @@ example : flipBiLasso.unroll (-2) = 0 := by decide
 
 /-- The `coherent` field asserts the presentation's own adjacency, not a tautology: the constant
 path fails it over `flipPresentation`, because `step w w = false` there. -/
-example : ¬ (∀ i : Fin ([(0 : Fin 2)].length + 1 + ([] : List (Fin 2)).length + [(0 : Fin 2)].length),
+example : ¬ (∀ i : Fin
+    ([(0 : Fin 2)].length + 1 + ([] : List (Fin 2)).length + [(0 : Fin 2)].length),
     flipPresentation.step
         (BiLasso.unrollOf flipPresentation [0] [] [0]
           (BiLasso.windowTime flipPresentation [0] i))

@@ -27,12 +27,12 @@ exhibits a world history whose closure formula `prev⁵ w` has truth set exactly
 at `0` recurs at no earlier time.
 
 **Shifting the history does not rescue anchoring**, and it is worth saying why, because it looks
-as though it should. `Semantics.TimeShift.timeShift_preserves_truth` (`Semantics/TruthTransport.lean`)
-moves truth along a time shift, and `WorldHistory.timeShift` of a world history is again a world
-history. But the decision procedure enumerates *lassos*, not histories: `timeShift τ i` is a
-perfectly good world history and is simply not the `unroll` of any enumerated `BiLasso` whose
-origin sits where the shift put it. So the extra degree of freedom has to live in the *consumer* — hence the `∃ i` in
-the window below.
+as though it should. `Semantics.TimeShift.timeShift_preserves_truth`
+(`Semantics/TruthTransport.lean`) moves truth along a time shift, and `WorldHistory.timeShift` of a
+world history is again a world history. But the decision procedure enumerates *lassos*, not
+histories: `timeShift τ i` is a perfectly good world history and is simply not the `unroll` of any
+enumerated `BiLasso` whose origin sits where the shift put it. So the extra degree of freedom has to
+live in the *consumer* — hence the `∃ i` in the window below.
 
 The concurrent effective-periodic-extension work makes the same degree of freedom structural, by
 carrying an explicit `origin` alongside the lasso. The two are the same freedom expressed twice;
@@ -45,7 +45,7 @@ Three walks in the realised-datum graph of `Realized.lean`, laid end to end:
 | lasso times | segment | source |
 |---|---|---|
 | `[-nb, -1]` | `back` | the good **backward** cycle, read outward from time `-1` |
-| `[0, nm)` | `mid` | the shortened walk from the backward cycle's base, *through the point of interest*, to the forward cycle's base |
+| `[0, nm)` | `mid` | shortened walk: backward base → *point of interest* → forward base |
 | `[nm, nm + nf)` | `fwd` | the good **forward** cycle |
 
 The mid walk is shortened in **two pieces** — base-to-point and point-to-base — precisely so that

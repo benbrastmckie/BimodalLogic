@@ -245,7 +245,7 @@ definitions rather than as prose.
    introduced to serve.
 
 Nor does saturation repair the gap: the fresh-label rules are suppressed by `witnessPresent`
-(`Tableau.lean:1672`), whose test for `boxNeg`/`diamondPos` is the *witness* alone — `F(ψ)` (resp.
+(`Tableau.lean:1674`), whose test for `boxNeg`/`diamondPos` is the *witness* alone — `F(ψ)` (resp.
 `T(ψ)`) at some known world. The auto-propagation outputs are outside the test, so a saturated
 branch is under no obligation to carry them.
 

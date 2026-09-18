@@ -457,9 +457,10 @@ of at most seven alternatives, elaborates in about four seconds. Two rules of th
 they bind any later phase that extends this file:
 
 1. **One rule, one declaration.** Never `cases rule <;> …` across families.
-2. **Never a bare `simp_all` or `simp` here.** Always `simp_all only [..., SignedFormula.pos, SignedFormula.neg, reduceCtorEq]`/`simp only [...]` with
-   the case's own lemma list. A bare `simp` in a closer alternative is retried on every open goal
-   of the case, and that is where the memory goes.
+2. **Never a bare `simp_all` or `simp` here.** Always
+   `simp_all only [..., SignedFormula.pos, SignedFormula.neg, reduceCtorEq]`/`simp only [...]` with
+   the case's own lemma list. A bare `simp` in a closer alternative is retried on every open goal of
+   the case, and that is where the memory goes.
 -/
 
 section Propositional
@@ -480,7 +481,8 @@ theorem applyRule_andPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     | split at hg
     | simp only [apply_ite Prod.fst] at hg
   all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asAnd?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos, reduceCtorEq])
+  all_goals (try simp_all only [asAnd?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
+      SignedFormula.pos, reduceCtorEq])
   all_goals (try (repeat' rcases hg with hg | hg))
   all_goals first
     | exact hC.and_left hsf
@@ -532,7 +534,8 @@ theorem applyRule_orNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) :
     | split at hg
     | simp only [apply_ite Prod.fst] at hg
   all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asOr?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.neg, reduceCtorEq])
+  all_goals (try simp_all only [asOr?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
+      SignedFormula.neg, reduceCtorEq])
   all_goals (try (repeat' rcases hg with hg | hg))
   all_goals first
     | exact hC.or_left hsf
@@ -566,7 +569,8 @@ theorem applyRule_impNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     | split at hg
     | simp only [apply_ite Prod.fst] at hg
   all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos, SignedFormula.neg, reduceCtorEq])
+  all_goals (try simp_all only [List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos,
+      SignedFormula.neg, reduceCtorEq])
   all_goals (try (repeat' rcases hg with hg | hg))
   all_goals first
     | exact hC.imp_left hsf
@@ -582,7 +586,8 @@ theorem applyRule_negPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     | split at hg
     | simp only [apply_ite Prod.fst] at hg
   all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.neg, reduceCtorEq])
+  all_goals (try simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
+      SignedFormula.neg, reduceCtorEq])
   all_goals (try (repeat' rcases hg with hg | hg))
   all_goals exact hC.neg_inner hsf
 
@@ -596,7 +601,8 @@ theorem applyRule_negNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C) 
     | split at hg
     | simp only [apply_ite Prod.fst] at hg
   all_goals (try simp only [RuleResult.emitted] at hg)
-  all_goals (try simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false, SignedFormula.pos, reduceCtorEq])
+  all_goals (try simp_all only [asNeg?_eq_iff, List.mem_cons, List.not_mem_nil, or_false,
+      SignedFormula.pos, reduceCtorEq])
   all_goals (try (repeat' rcases hg with hg | hg))
   all_goals exact hC.neg_inner hsf
 

@@ -40,10 +40,11 @@ lemma with both budget conjuncts exact.
 
 **What this retires, and what it generalizes.** Register entry 20's item (a), the engine-level
 assembly, is the last non-density obstruction to the mint predicate itself, and it is retired here;
-entry 20's paragraph is amended in place to say so. `mintPaysForTimeFixed_signedUniverse_of_not_dense`
-generalizes section D3's `mintPaysForTimeFixed_signedUniverse_untlSnceFree` off its syntactic
-fragment onto arbitrary `C` — the case entry 20 itself calls the hard one, and the case
-`mintPaysForTime_untlNeg_false` refutes the *unrepaired* predicate at. Neither D3's discharge nor
+entry 20's paragraph is amended in place to say so.
+`mintPaysForTimeFixed_signedUniverse_of_not_dense` generalizes section D3's
+`mintPaysForTimeFixed_signedUniverse_untlSnceFree` off its syntactic fragment onto arbitrary `C` —
+the case entry 20 itself calls the hard one, and the case `mintPaysForTime_untlNeg_false` refutes
+the *unrepaired* predicate at. Neither D3's discharge nor
 `mintPaysForTimeFixed_signedUniverse_empty` is deleted or altered; both are superseded in prose
 only, and D3's remains the statement to reach for at `.Dense` and `.RTime`, where this section is
 silent. The discharge here is satisfiable rather than vacuous: `signedUniverse_nonempty` makes the
@@ -52,7 +53,8 @@ universe nonempty as soon as `C` and `L` are, and the hypothesis discharged is a
 **And now the part that must not be omitted: this makes NO terminus in this file non-vacuous.**
 Landing it unlocks nothing downstream, and saying otherwise would reproduce exactly the failure mode
 register entry 21 documents for
-`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`. Both halves of that, named:
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`. Both halves of that,
+named:
 
 * *The nine `hlab` carriers stay vacuous.* Nine statements in this file carry
   `hlab : UnorderedSuccessorLabelClosed fc L` as a live hypothesis, and every one of them is a true
@@ -61,11 +63,11 @@ register entry 21 documents for
   `{∅}`. Removing `hmint` from such a statement changes nothing about its reach — and this section
   removes `hmint` from none of them in any case, because it restates no terminus at all.
 * *The `hlab`-free `hmint`-carrying termini stay conditioned elsewhere.* Each of them still requires
-  `UniverseClosedAt fc U`, plus `DifficultyBounded` or `StepLengthBounded`, plus `PostBlockingSettles`
-  or `PostBlockingSettlesRun`. Three of those are refuted outright — `DifficultyBounded` by register
-  entry 9, clause 1 of `UniverseClosed`/`UniverseClosedAt` at a fixed finite `signedUniverse C L` by
-  entry 11, and `PostBlockingSettles` by entry 22. A discharged mint residual does not touch any of
-  them.
+  `UniverseClosedAt fc U`, plus `DifficultyBounded` or `StepLengthBounded`, plus
+  `PostBlockingSettles` or `PostBlockingSettlesRun`. Three of those are refuted outright —
+  `DifficultyBounded` by register entry 9, clause 1 of `UniverseClosed`/`UniverseClosedAt` at a
+  fixed finite `signedUniverse C L` by entry 11, and `PostBlockingSettles` by entry 22. A discharged
+  mint residual does not touch any of them.
 
 So the honest reading of this section is: one named residual of the four is now a theorem at a
 nonempty universe off `.Dense`, and the count of *satisfiable* residual conditions blocking any

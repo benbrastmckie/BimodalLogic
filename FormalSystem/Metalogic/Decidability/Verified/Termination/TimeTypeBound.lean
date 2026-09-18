@@ -1798,9 +1798,11 @@ theorem subConfining_imp {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubCon
           injection hshape with h1 _
         have hψeq : ψ = a := by injection h1 with h2 _
         have hχeq : χ = Formula.imp b Formula.bot := by injection h1 with _ h3
-        have hca : Carries B₃ a := (hcψ0.mono hs₃).sub (by rw [← hψeq]; exact self_mem_subformulasFinset ψ)
+        have hca : Carries B₃ a :=
+            (hcψ0.mono hs₃).sub (by rw [← hψeq]; exact self_mem_subformulasFinset ψ)
         have hcb : Carries B₃ b :=
-          (hcχ0.mono hs₃).sub (by rw [hχeq, subformulasFinset_imp]; simp [self_mem_subformulasFinset])
+          (hcχ0.mono hs₃).sub (by rw [hχeq,
+              subformulasFinset_imp]; simp [self_mem_subformulasFinset])
         obtain ⟨M, hM, hs, hmem⟩ := exists_confining_conjEmissions hB₃ hca hcb
         refine ⟨M, hM, hs, ?_⟩
         intro a' b' hab

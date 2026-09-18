@@ -63,7 +63,8 @@ def ofLen (u : List α) : ℕ → List (List α)
 def upTo (u : List α) (n : ℕ) : List (List α) :=
   (List.range (n + 1)).flatMap (ofLen u)
 
-theorem length_of_mem_ofLen {u : List α} : ∀ {k : ℕ} {l : List α}, l ∈ ofLen u k → l.length = k := by
+theorem length_of_mem_ofLen {u : List α} : ∀ {k : ℕ}
+    {l : List α}, l ∈ ofLen u k → l.length = k := by
   intro k
   induction k with
   | zero => intro l hl; simp only [ofLen, List.mem_singleton] at hl; simp [hl]

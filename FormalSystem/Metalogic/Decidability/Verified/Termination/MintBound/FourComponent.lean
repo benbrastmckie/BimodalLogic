@@ -15,24 +15,25 @@ sense — the original plus one weighted summand.
 **Two things had to change from the plan-time design, and both are findings rather than choices.**
 
 *The state's budget clause is the mint budget **plus** the fourth component.* A self-guarded mint
-necessarily raises `mintTimeBudget`: it adds a time to `knownTimes` and leaves `mintPotential` alone,
-because `untlNeg` and `snceNeg` are not in `freshLabelRules`. So `BudgetState` cannot survive the very
-step the fourth component exists to pay for, and no weight fixes that — the failure is in the state
-predicate, not in the measure. `BudgetStateAt` carries `mintTimeBudget + selfGuardPotential ≤ Tmax`
-instead, and the arithmetic works because the mint spends exactly one unit of the fourth component
-to buy the one unit of mint budget it consumes. That is the component *funding* the budget rather
-than sitting beside it, and it is why the repaired predicate's third disjunct has to be a **pair**.
+necessarily raises `mintTimeBudget`: it adds a time to `knownTimes` and leaves `mintPotential`
+alone, because `untlNeg` and `snceNeg` are not in `freshLabelRules`. So `BudgetState` cannot survive
+the very step the fourth component exists to pay for, and no weight fixes that — the failure is in
+the state predicate, not in the measure. `BudgetStateAt` carries
+`mintTimeBudget + selfGuardPotential ≤ Tmax` instead, and the arithmetic works because the mint
+spends exactly one unit of the fourth component to buy the one unit of mint budget it consumes. That
+is the component *funding* the budget rather than sitting beside it, and it is why the repaired
+predicate's third disjunct has to be a **pair**.
 
 *The third disjunct is a pair, mirroring disjunct 2.* Disjunct 2 pairs a `mintPotential` drop with a
-`mintTimeBudget` non-increase; disjunct 3 pairs a `selfGuardPotential` drop with a **combined**-budget
-non-increase. Without the second conjunct `extensionAllowance` is unbounded above at the step — it
-carries a factor of `|U|` per unit of mint budget — and the measure does not fall. This is why
-`MintPaysForTimeAt → MintPaysForTimeStable` is unavailable and is not claimed.
+`mintTimeBudget` non-increase; disjunct 3 pairs a `selfGuardPotential` drop with a
+**combined**-budget non-increase. Without the second conjunct `extensionAllowance` is unbounded
+above at the step — it carries a factor of `|U|` per unit of mint budget — and the measure does not
+fall. This is why `MintPaysForTimeAt → MintPaysForTimeStable` is unavailable and is not claimed.
 
 *The weight is `2·(Tmax² + 1) + |U|`, not `2·(Tmax² + 1)`.* The extra `|U|` is exactly what pays for
 `extensionAllowance`'s rise across a step that spends combined budget. The plan-time figure was read
-off `splitOrderedRank`'s rise alone and did not account for the allowance; the correction is recorded
-here rather than absorbed.
+off `splitOrderedRank`'s rise alone and did not account for the allowance; the correction is
+recorded here rather than absorbed.
 
 Neither change touches a landed declaration, and neither is a new hypothesis on any caller:
 `BudgetStateAt`'s clause is a *strengthening* of `BudgetState`'s, discharged at the seed by choosing
@@ -197,16 +198,16 @@ theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : N
 /-- **The measure drops at `.extended` and at every arm of a `.split`, at the four-component
 measure.**
 
-`budgetPotential_step_unordered` re-proved against `MintPaysForTimeStable`. Disjuncts 1 and 2 are the
-landed cases with the fourth component along for the ride — it cannot rise, since an unordered step
-only grows the ordering (`expandOnceUnblocked_ord_mono`). Disjunct 3 is the new case and the one the
-whole task is about: the self-guarded mint pays for itself.
+`budgetPotential_step_unordered` re-proved against `MintPaysForTimeStable`. Disjuncts 1 and 2 are
+the landed cases with the fourth component along for the ride — it cannot rise, since an unordered
+step only grows the ordering (`expandOnceUnblocked_ord_mono`). Disjunct 3 is the new case and the
+one the whole task is about: the self-guarded mint pays for itself.
 
 *The disjunct-3 arithmetic, in one line.* The combined-budget conjunct caps the rise in
 `extensionAllowance` at `|U|` per unit of self-guard drop and the rise in `splitOrderedRank` at
 `(Tmax² + 1)` per unit plus one incomparable-pair range; the weight `2·(Tmax² + 1) + |U|` pays for
-all of it and leaves `(Tmax² + 1) − Tmax² = 1` over, and `hgrow` supplies one more. So the drop is by
-at least two.
+all of it and leaves `(Tmax² + 1) − Tmax² = 1` over, and `hgrow` supplies one more. So the drop is
+by at least two.
 
 `hstab` is the repaired predicate's own added hypothesis, threaded through unchanged; it is
 discharged at the seed by `sigmaTimeFixed_id` and at the identification arm by

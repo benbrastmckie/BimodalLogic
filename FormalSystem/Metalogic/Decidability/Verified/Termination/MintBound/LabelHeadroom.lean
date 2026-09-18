@@ -23,18 +23,19 @@ dimension of every unordered successor follows from a branch-side headroom condi
 residual's discharge, and no lemma could have: clause 1 is *refuted* at a fixed finite
 `signedUniverse C L` (`universeClosed_fresh_world_escapes`), and no condition on `L` repairs it
 (`freshWorldHeadroom_not_universal`). So the residual survives — but it survives for a proved reason
-rather than for a missing lemma, and that is the difference this section makes. The honest bracket is
-stated as `freshLabelHeadroom_not_universal`.
+rather than for a missing lemma, and that is the difference this section makes. The honest bracket
+is stated as `freshLabelHeadroom_not_universal`.
 
 **The rectangle, and why the world condition alone was never enough.** A label is a *pair*. The two
 dichotomies are per-coordinate: a successor's worlds lie in `b.worldFinset ∪ {b.nextWorld}` and its
-times lie in `b.knownTimes ∪ {b.nextTime}`, but nothing correlates the two, so four quadrants have to
-be covered rather than two. `FreshWorldHeadroom` covers one of them. Confinement of `b` covers *not
-even one*: `∀ x ∈ b, x.label ∈ L` says the pairs `b` actually carries are in `L`, which does not put
-`⟨w, t⟩` in `L` for a `w` and a `t` that `b` carries on different formulas. `FreshLabelHeadroom` is
-the rectangle the two dichotomies actually license, and `freshWorldHeadroom_of_freshLabelHeadroom`
-records that it is the strictly stronger of the two. This is the same rectangle shape
-`timeMergeClosed_iff_product` found on the clause-2 side, arrived at from the opposite direction. -/
+times lie in `b.knownTimes ∪ {b.nextTime}`, but nothing correlates the two, so four quadrants have
+to be covered rather than two. `FreshWorldHeadroom` covers one of them. Confinement of `b` covers
+*not even one*: `∀ x ∈ b, x.label ∈ L` says the pairs `b` actually carries are in `L`, which does
+not put `⟨w, t⟩` in `L` for a `w` and a `t` that `b` carries on different formulas.
+`FreshLabelHeadroom` is the rectangle the two dichotomies actually license, and
+`freshWorldHeadroom_of_freshLabelHeadroom` records that it is the strictly stronger of the two. This
+is the same rectangle shape `timeMergeClosed_iff_product` found on the clause-2 side, arrived at
+from the opposite direction. -/
 
 namespace FormalSystem.Metalogic.Decidability
 
@@ -46,10 +47,10 @@ open FormalSystem.Syntax
 The exact counterpart of `unorderedSuccessor_time_dichotomy`, assembled the same way and through the
 same invariant-agnostic machinery — `pick_branches_eq`, `pick_stage_source`, `resultBranch_sub` — so
 the three-stage pick is not destructured a second time. It carries **no** auxiliary hypothesis where
-its time twin carries `OrdTimesKnown b ord`: `applyRule_emitted_world_dichotomy` needs nothing, since
-no rule propagates a world through the `TimeOrdering` the way four of them propagate times through
-`futureOf` / `pastOf`. See `applyRule_emitted_time_mem_ordTimesKnown_needed` for why the asymmetry is
-real rather than an artifact of the proof. -/
+its time twin carries `OrdTimesKnown b ord`: `applyRule_emitted_world_dichotomy` needs nothing,
+since no rule propagates a world through the `TimeOrdering` the way four of them propagate times
+through `futureOf` / `pastOf`. See `applyRule_emitted_time_mem_ordTimesKnown_needed` for why the
+asymmetry is real rather than an artifact of the proof. -/
 private theorem pickBranches_world_dichotomy {b : Branch} {ord : TimeOrdering}
     {p : Option (TableauRule × RuleResult × TimeOrdering)}
     (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)) :
@@ -190,9 +191,9 @@ theorem unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed
     (h : UnorderedSuccessorLabelClosed fc L) : UnorderedSuccessorLabelClosedOrd fc L :=
   fun b ord tr _ hbl => h b ord tr hbl
 
-/-- **The reduction, complete.** The residual follows from branch-side headroom on every `L`-confined
-branch. No coordinate is left unaccounted, and no hypothesis, placeholder or unfinished step stands
-the two.
+/-- **The reduction, complete.** The residual follows from branch-side headroom on every
+`L`-confined branch. No coordinate is left unaccounted, and no hypothesis, placeholder or unfinished
+step stands the two.
 
 This is what section D1's arrival makes provable. Read together with
 `freshLabelHeadroom_not_universal` it is also the *end* of the line: the antecedent is refutable at
@@ -325,11 +326,13 @@ attribute [local simp] iaAt_ug iaAt_sg iaAt_sep iaAt_np iaAt_nn iaAt_in iaAt_ap 
 /-- **`.boxNeg` is the rule the engine picks at the witness, at every frame class and every label.**
 Exactly `findApplicableRule_freshWorldWitness`'s argument with `l` free: the nine rules ahead of
 `.boxNeg` are inapplicable to a `.neg`-signed box regardless of where it sits, and the Dense and
-Discrete blocks are *appended* after the base rules by `allRulesForFC`, so neither can pre-empt it. -/
+Discrete blocks are *appended* after the base rules by `allRulesForFC`, so neither can pre-empt it.
+-/
 theorem findApplicableRule_freshWorldWitnessAt
     (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
     findApplicableRule (freshWorldWitnessAt l) (freshWorldBranchAt l) TimeOrdering.empty fc
-      = some (TableauRule.boxNeg, RuleResult.linear (freshWorldEmittedAt l), TimeOrdering.empty) := by
+      = some (TableauRule.boxNeg, RuleResult.linear (freshWorldEmittedAt l),
+          TimeOrdering.empty) := by
   simp only [findApplicableRule, allRulesForFC, allRules, rTimeRules]
   by_cases hd : FormalSystem.ProofSystem.FrameClass.RTime ≤ fc
   · simp [hd, List.findSome?]
