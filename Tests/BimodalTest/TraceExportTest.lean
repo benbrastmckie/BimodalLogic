@@ -52,7 +52,7 @@ def checkJsonObject (s : String) (key : String) (label : String) : IO Bool := do
     IO.println s!"FAIL {label}: does not start with curly-brace (got: {trimmed.take 30})" ;
         return false
   if not (trimmed.endsWith "}") then
-    IO.println s!"FAIL {label}: does not end with curly-brace (got: ...{trimmed.takeRight 30})" ;
+    IO.println s!"FAIL {label}: does not end with curly-brace (got: ...{trimmed.takeEnd 30})" ;
         return false
   -- The key should appear as `"key":` in the string
   let keyPattern := "\"" ++ key ++ "\":"
@@ -94,7 +94,7 @@ def runTraceExportTests : IO Bool := do
     IO.println "PASS Test 5: frame class is 'Base'"
     passed := passed + 1
   else
-    IO.println s!"FAIL Test 5: frame class not 'Base' (got: ...{s0.takeRight 100})"
+    IO.println s!"FAIL Test 5: frame class not 'Base' (got: ...{s0.takeEnd 100})"
     failed := failed + 1
 
   -- Test 6: decideWithTrace result on a valid formula

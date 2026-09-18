@@ -84,16 +84,16 @@ example : ⊢ ((Formula.atomS "p").box).imp (((Formula.atomS "p").box).neg.imp (
 -/
 
 /-- Test EFQ type signature: ¬A → (A → B) -/
-example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := negImp A B
+example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := impOfNeg A B
 
 /-- Test EFQ with atomic formulas -/
 example : ⊢ (Formula.atomS "p").neg.imp ((Formula.atomS "p").imp (Formula.atomS "q")) :=
-  negImp (Formula.atomS "p") (Formula.atomS "q")
+  impOfNeg (Formula.atomS "p") (Formula.atomS "q")
 
 /-- Test EFQ with complex formula -/
 example : ⊢ ((Formula.atomS "p").diamond).neg.imp
     (((Formula.atomS "p").diamond).imp (Formula.atomS "q")) :=
-  negImp (Formula.atomS "p").diamond (Formula.atomS "q")
+  impOfNeg (Formula.atomS "p").diamond (Formula.atomS "q")
 
 /-!
 ## Left Disjunction Introduction Tests
@@ -185,7 +185,7 @@ example : [(Formula.atomS "p").and ((Formula.atomS "q").box)] ⊢ (Formula.atomS
 
 /-- Test: RAA and EFQ are duals (via theoremFlip) -/
 example (A B : Formula) : ⊢ A.imp (A.neg.imp B) := impNegImp A B
-example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := negImp A B
+example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := impOfNeg A B
 
 /--
 Test: Conjunction elimination combined with disjunction introduction.

@@ -229,7 +229,7 @@ example (h : Formula.imp (Formula.atomS "p") (Formula.atomS "q") = Formula.imp (
   assumption_search
 
 /-- Test 22: assumption_search with multiple assumptions -/
-example (h1 : String) (h2 : Nat) (h3 : Bool) : Bool := by
+example (_h1 : String) (_h2 : Nat) (h3 : Bool) : Bool := by
   assumption_search
 
 /-- Test 23: assumption_search with formulas -/
@@ -314,7 +314,7 @@ Tests for assumption_search with various context types.
 -/
 
 /-- Test 44: assumption_search with multiple matching Nat assumptions -/
-example (h1 : Nat) (h2 : Nat) : Nat := by
+example (h1 : Nat) (_h2 : Nat) : Nat := by
   assumption_search
 
 /-- Test 45: assumption_search with DerivationTree type -/
@@ -346,7 +346,7 @@ example : DerivationTree FrameClass.Base []
   FormalSystem.Theorems.Combinators.temporalFutureDerived _
 
 /-- Test 50: assumption_search with long context -/
-example (a b c d _ : Nat) : Nat := by
+example (a _b _c _d _ : Nat) : Nat := by
   assumption_search
 
 /-!

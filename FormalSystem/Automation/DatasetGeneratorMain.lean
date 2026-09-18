@@ -1273,7 +1273,7 @@ def main (args : List String) : IO Unit := do
     let lines := content.splitOn "\n"
     for line in lines do
       if line.take 7 == "VmPeak:" || line.take 6 == "VmRSS:" then
-        IO.println s!"[mem] {line.trimLeft}"
+        IO.println s!"[mem] {line.trimAsciiStart}"
   | .error _ => pure ()  -- Not on Linux; skip
 
   -- Step 5: Print statistics (for this run's portion only)

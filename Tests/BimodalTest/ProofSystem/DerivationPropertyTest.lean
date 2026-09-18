@@ -79,7 +79,7 @@ def weakening_property (Γ Δ : Context) (φ : Formula)
 /-!
 Test: Weakening construction is always possible.
 -/
-example : ∀ (Γ Δ : Context) (φ : Formula) (d : Γ ⊢ φ) (h : Γ ⊆ Δ),
+example : ∀ (Γ Δ : Context) (φ : Formula) (_d : Γ ⊢ φ) (_h : Γ ⊆ Δ),
     Nonempty (Δ ⊢ φ) := by
   intro Γ Δ φ d h
   exact ⟨DerivationTree.weakening Γ Δ φ d h⟩
@@ -102,14 +102,14 @@ Every derivation tree has a finite height (by construction).
 /-!
 Property: Axiom derivations have height 0.
 -/
-def axiom_height_zero (Γ : Context) (φ : Formula) (h : Axiom φ) :
+theorem axiom_height_zero (Γ : Context) (φ : Formula) (h : Axiom φ) :
     (DerivationTree.axiom (fc := h.minFrameClass) Γ φ h (le_refl _)).height = 0 := by
   rfl
 
 /-!
 Property: Assumption derivations have height 0.
 -/
-def assumption_height_zero (Γ : Context) (φ : Formula) (h : φ ∈ Γ) :
+theorem assumption_height_zero (Γ : Context) (φ : Formula) (h : φ ∈ Γ) :
     (DerivationTree.assumption (fc := FrameClass.Base) Γ φ h).height = 0 := by
   rfl
 
@@ -148,7 +148,7 @@ Property: Modus ponens increases height.
 
 The height of (Γ ⊢ ψ) via MP is greater than both premises.
 -/
-def mp_height_property (Γ : Context) (φ ψ : Formula)
+theorem mp_height_property (Γ : Context) (φ ψ : Formula)
     (d1 : Γ ⊢ φ.imp ψ) (d2 : Γ ⊢ φ) :
     d1.height < (DerivationTree.modus_ponens Γ φ ψ d1 d2).height ∧
     d2.height < (DerivationTree.modus_ponens Γ φ ψ d1 d2).height := by
@@ -161,14 +161,14 @@ def mp_height_property (Γ : Context) (φ ψ : Formula)
 /-!
 Property: Necessitation increases height by 1.
 -/
-def necessitation_height_property (φ : Formula) (d : ⊢ φ) :
+theorem necessitation_height_property (φ : Formula) (d : ⊢ φ) :
     (DerivationTree.necessitation φ d).height = d.height + 1 :=
   DerivationTree.necessitation_height_succ d
 
 /-!
 Property: Temporal necessitation increases height by 1.
 -/
-def temporal_necessitation_height_property (φ : Formula) (d : ⊢ φ) :
+theorem temporal_necessitation_height_property (φ : Formula) (d : ⊢ φ) :
     (DerivationTree.temporal_necessitation φ d).height = d.height + 1 :=
   DerivationTree.temporal_necessitation_height_succ d
 

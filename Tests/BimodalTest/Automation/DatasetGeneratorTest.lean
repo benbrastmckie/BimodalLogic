@@ -519,7 +519,7 @@ section SmokeTests
 -- Test 8: Edge cases — vacuously valid and boundary formulas
 #eval show IO Unit from do
   let p := Formula.atom ⟨"p", none⟩
-  let q := Formula.atom ⟨"q", none⟩
+  let _q := Formula.atom ⟨"q", none⟩
   -- bot → bot: vacuously valid (both sides always false), should NOT be caught as invalid
   let e1 := structuralInvalidPrefilter (.imp .bot .bot)
   IO.println s!"[test] ⊥ → ⊥: {repr e1} (expected: none — vacuously valid)"

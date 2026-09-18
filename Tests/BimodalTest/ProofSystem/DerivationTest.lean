@@ -227,7 +227,7 @@ def modal_4_theorem (φ : Formula) : ⊢ ((φ.box).imp (φ.box.box)) :=
 
 -- Test: Generalized Modal K (derived theorem)
 -- If Γ ⊢ φ then □Γ ⊢ □φ
-example (p : Formula) : [(Formula.atomS "p").box] ⊢ (Formula.atomS "p").box := by
+example (_p : Formula) : [(Formula.atomS "p").box] ⊢ (Formula.atomS "p").box := by
   -- We start with [p] ⊢ p (assumption)
   have d : [Formula.atomS "p"] ⊢ Formula.atomS "p" := by
     apply DerivationTree.assumption
@@ -240,7 +240,7 @@ example (p : Formula) : [(Formula.atomS "p").box] ⊢ (Formula.atomS "p").box :=
 
 -- Test: Generalized Temporal K (derived theorem)
 -- If Γ ⊢ φ then FΓ ⊢ Fφ
-example (p : Formula) : [(Formula.atomS "p").allFuture] ⊢ (Formula.atomS "p").allFuture := by
+example (_p : Formula) : [(Formula.atomS "p").allFuture] ⊢ (Formula.atomS "p").allFuture := by
   -- We start with [p] ⊢ p (assumption)
   have d : [Formula.atomS "p"] ⊢ Formula.atomS "p" := by
     apply DerivationTree.assumption

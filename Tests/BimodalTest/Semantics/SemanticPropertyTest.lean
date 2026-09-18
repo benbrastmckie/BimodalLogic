@@ -50,7 +50,7 @@ Property: Frame nullity holds for all frames.
 For any frame F and world w, TaskRel w 0 w.
 This is enforced by the `FrameOver` structure.
 -/
-def frame_nullity_property (F : FrameOver intOrder) (w : F.WorldState) :
+theorem frame_nullity_property (F : FrameOver intOrder) (w : F.WorldState) :
     F.TaskRel w 0 w :=
   F.nullity w
 
@@ -70,7 +70,7 @@ This is enforced by the `FrameOver` structure.
 -- NOTE (Task 365): `compositionality` was replaced by `forward_comp`, which is restricted to
 -- non-negative durations (`0 ≤ x`, `0 ≤ y`) — the unrestricted mixed-sign law is no longer a
 -- frame property. Added the non-negativity hypotheses to match the current structure.
-def frame_compositionality_property (F : FrameOver intOrder)
+theorem frame_compositionality_property (F : FrameOver intOrder)
     (w u v : F.WorldState) (x y : Int) (hx : 0 ≤ x) (hy : 0 ≤ y)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v :=

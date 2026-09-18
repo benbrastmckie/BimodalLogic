@@ -123,16 +123,16 @@ def mk_weakening_deriv (Γ Δ : Context) (φ : Formula)
 -- ============================================================
 
 /-- Verify soundness of derivation -/
-def verify_soundness (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
+theorem verify_soundness (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
     Γ ⊨ φ :=
   soundness_in Γ φ d
 
 /-- Verify validity of theorem -/
-def verify_validity (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : ⊨ φ :=
+theorem verify_validity (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : ⊨ φ :=
   Validity.valid_iff_empty_consequence φ |>.mpr (soundness_in [] φ d)
 
 /-- Verify workflow: derivation → soundness → validity -/
-def verify_workflow (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : True := by
+theorem verify_workflow (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : True := by
   have _valid : ⊨ φ := verify_validity φ d
   trivial
 
@@ -149,7 +149,7 @@ def assert_valid (φ : Formula) : Prop :=
   Valid φ
 
 /-- Assert soundness holds -/
-def assert_sound (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) : Prop :=
+def assert_sound (Γ : Context) (φ : Formula) (_d : DerivationTree FrameClass.Base Γ φ) : Prop :=
   Γ ⊨ φ
 
 end BimodalTest.Integration.Helpers

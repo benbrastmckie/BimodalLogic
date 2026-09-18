@@ -94,7 +94,7 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- â–
   let mut allWithinLimit := true
 
   for limit in limits do
-    let (found, _, _, stats, visits) := iddfsSearch [] formula 20 limit
+    let (_found, _, _, _stats, visits) := iddfsSearch [] formula 20 limit
     let withinLimit := visits â‰¤ limit
     if !withinLimit then
       allWithinLimit := false

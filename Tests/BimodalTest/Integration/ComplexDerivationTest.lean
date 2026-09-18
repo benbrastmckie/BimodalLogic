@@ -129,7 +129,7 @@ example : True := by
   
   -- Step 5: Apply modus ponens to get p
   have h_sub' : Γ ⊆ Γ' := by
-    simp only [Γ, Γ', List.subset_def, List.mem_cons, List.mem_singleton, List.not_mem_nil]
+    simp only [Γ, Γ', List.subset_def, List.mem_cons, List.not_mem_nil]
     tauto
   let d5 : Γ' ⊢ (p.box.imp p) :=
     DerivationTree.weakening Γ Γ' (p.box.imp p) d3 h_sub'
@@ -391,7 +391,7 @@ example : True := by
   -- Weaken to [p, q] ⊢ p
   let Γ2 := [p, q]
   have h1 : Γ1 ⊆ Γ2 := by
-    simp only [Γ1, Γ2, List.subset_def, List.mem_cons, List.mem_singleton, List.not_mem_nil]
+    simp only [Γ1, Γ2, List.subset_def, List.mem_cons, List.not_mem_nil]
     tauto
   let d2 : Γ2 ⊢ p :=
     DerivationTree.weakening Γ1 Γ2 p d1 h1
@@ -399,7 +399,7 @@ example : True := by
   -- Weaken to [p, q, r] ⊢ p
   let Γ3 := [p, q, r]
   have h2 : Γ2 ⊆ Γ3 := by
-    simp only [Γ2, Γ3, List.subset_def, List.mem_cons, List.mem_singleton, List.not_mem_nil]
+    simp only [Γ2, Γ3, List.subset_def, List.mem_cons, List.not_mem_nil]
     tauto
   let d3 : Γ3 ⊢ p :=
     DerivationTree.weakening Γ2 Γ3 p d2 h2

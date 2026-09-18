@@ -46,8 +46,7 @@ example : Formula.atomS "r" ∉ [Formula.atomS "p", Formula.atomS "q"] := by
 
 -- Test: Subset - empty is subset of any
 example (Γ : Context) : [] ⊆ Γ := by
-  intro x
-  intro h
+  intro x h
   contradiction
 
 -- Test: Subset - self is subset of self

@@ -381,6 +381,23 @@ def main(argv: "list[str]") -> int:
             "into the baseline with a routine --update."
         )
 
+    # `pending` marks a class nobody has read yet. It is explicitly temporary: the gate may not
+    # ship enforced while any row still reads it. Enforced mechanically here rather than left to
+    # a manual grep, because the grep form that suggests itself -- `grep -c pending <file>` --
+    # can never reach 0: the file's own header legend has to explain what `pending` means, so the
+    # bare word is always present and the check would pass vacuously forever. That is precisely
+    # the silent-success failure this gate exists to prevent. The honest textual equivalent is
+    # `grep -c '^# disposition .* pending ' scripts/warning-budget.txt`.
+    pending = sorted(k for k in observed_classes
+                     if disp.get(k, ("blocking", ""))[0] == "pending")
+    if pending:
+        die(
+            "linter class(es) still marked `pending` in " + BASELINE_NAME + ": "
+            + ", ".join(pending)
+            + ". A pending class has not been read by anyone. Read it, decide blocking or "
+            "advisory, and record the reason in its disposition row."
+        )
+
     failures = []
     for key, c in sorted(counts.items()):
         klass = key[1]
