@@ -160,9 +160,6 @@ it is never read back out to drive a computation. -/
   toFrameOver := P.toFibre
   finite_world := inferInstanceAs (Finite (Fin P.card))
 
-/-- The presented finite frame as a total-space value. -/
-@[reducible] def toFiniteFrame : FiniteTaskFrame := P.toFiniteFibre.toFiniteTaskFrame
-
 /-- The presented frame's world states are `Fin card`, definitionally. -/
 theorem worldState_eq : P.toTaskFrame.WorldState = Fin P.card := rfl
 
