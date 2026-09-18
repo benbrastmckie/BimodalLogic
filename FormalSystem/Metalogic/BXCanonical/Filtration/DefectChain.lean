@@ -63,12 +63,6 @@ private noncomputable def sinceDefectDecidable (w : BXPoint) :
 
 attribute [local instance] untilDefectDecidable sinceDefectDecidable
 
-/-- A formula is an Until-defect at BXPoint w relative to Sigma if it is
-    an Until formula in Sigma present at w whose goal (right operand) is absent. -/
-def IsUntilDefect (w : BXPoint) (Sigma : Finset Formula) (f : Formula) : Prop :=
-  f ∈ Sigma ∧ f ∈ w.formulas ∧
-  ∃ φ ψ : Formula, f = Formula.untl φ ψ ∧ ψ ∉ w.formulas
-
 /-- Count of Until-defects at w relative to Sigma. -/
 noncomputable def sigmaDefectCount (w : BXPoint) (Sigma : Finset Formula) : Nat :=
   (Sigma.filter (fun f =>
@@ -108,12 +102,6 @@ theorem defect_step_self_accum {w : BXPoint} {φ ψ : Formula}
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_until
 
 /-! ## Since Defect Properties (Mirror) -/
-
-/-- Count of Since-defects at w relative to Sigma. -/
-noncomputable def sigmaSinceDefectCount (w : BXPoint) (Sigma : Finset Formula) : Nat :=
-  (Sigma.filter (fun f =>
-    f ∈ w.formulas ∧
-    ∃ φ ψ : Formula, f = Formula.snce φ ψ ∧ ψ ∉ w.formulas)).card
 
 /-- If φ S ψ ∈ w, then P(ψ) ∈ w (from BX10': eventuality extraction). -/
 theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
