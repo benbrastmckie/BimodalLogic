@@ -109,18 +109,6 @@ def muPred {sig : MonadicSignature} {n : Nat} (i : Fin n) :
     MonadicFormula (muSig sig) n :=
   .atom (.inr ()) i
 
-/-- Mu-relativized existential: ∃x. mu(x) ∧ φ(x).
-    Variable 0 is the bound variable, others shift up. -/
-def muEx {sig : MonadicSignature} {n : Nat}
-    (φ : MonadicFormula (muSig sig) (n + 1)) : MonadicFormula (muSig sig) n :=
-  .ex (.and (muPred ⟨0, by omega⟩) φ)
-
-/-- Mu-relativized universal: ∀x. mu(x) → φ(x).
-    Encoded as ∀x. ¬(mu(x) ∧ ¬φ(x)). -/
-def muAll {sig : MonadicSignature} {n : Nat}
-    (φ : MonadicFormula (muSig sig) (n + 1)) : MonadicFormula (muSig sig) n :=
-  .all (.not (.and (muPred ⟨0, by omega⟩) (.not φ)))
-
 /-- GHR93 FO table for U'(A,B), mu-relativized, taking pre-lifted arguments.
     Arguments are the sub-formula translations at various De Bruijn depths.
     ∃s. t < s ∧ [body] ∧ [fail] ∧ [init] -/
@@ -1508,34 +1496,6 @@ private noncomputable def nfExistSf
       else
         .base .bot
 
-/-- Build the full StaviFormula for a depth-(k+1) 1-variable NormalForm.
-
-    Conjunction of:
-    1. Atom literals for predicates at t (matching nf.1)
-    2. For each sub_nf with nf.2 sub_nf = true: nfExistSf sub_nf
-    3. For each sub_nf with nf.2 sub_nf = false: ¬ nfExistSf sub_nf -/
-private noncomputable def nfSuccSf
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (k : Nat)
-    (char_k : NormalForm sig k 1 → StaviFormula)
-    (nf : NormalForm sig (k + 1) 1) : StaviFormula :=
-  let atoms := nf.1
-  let quant := nf.2
-  -- Part 1: atom literals for predicates at t
-  let atom_lits := (Fintype.elems (α := AtomKind sig 1)).val.toList.map fun ak =>
-    atomKindToSfLiteral atomMap h_surj ak (atoms ak)
-  let atom_part := sfConjList atom_lits
-  -- Part 2: quantifier constraints
-  let all_sub_nfs := (Fintype.elems (α := NormalForm sig k 2)).val.toList
-  let quant_formulas := all_sub_nfs.map fun sub_nf =>
-    let ef := nfExistSf atomMap h_surj k char_k atoms sub_nf
-    if quant sub_nf then ef else .neg ef
-  let quant_part := sfConjList quant_formulas
-  -- Full formula: atom part AND quantifier part
-  .conj atom_part quant_part
-
 /-! ## GHR93 Bridge: 2-Var NF Determined by Interval Data
 
 The core bridge lemma for the backward direction of the existence characterization.
@@ -1564,19 +1524,6 @@ noncomputable def intervalNfTypes {sig : MonadicSignature} [Fintype sig.preds]
     Finset (NormalForm sig k 1) :=
   @Finset.filter _ (fun nf_u =>
     ∃ u : M.carrier, lo < u ∧ u < hi ∧ NfEvalNf M k 1 (fun _ => u) nf_u)
-    (fun _ => Classical.dec _) Finset.univ
-
-/-- The set of depth-k 2-var NF types (u, hi) realized by points u in the open interval (lo, hi).
-    This is a RICHER invariant than intervalNfTypes: the 2-var NF encodes both
-    u's 1-var NF AND u's relationship to hi (ordering + quantifier structure).
-    This additional information captures the spatial arrangement within the interval,
-    enabling the bridge lemma's sub-interval matching. -/
-noncomputable def interval2varNfTypes {sig : MonadicSignature} [Fintype sig.preds]
-    [DecidableEq sig.preds]
-    (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
-    Finset (NormalForm sig k 2) :=
-  @Finset.filter _ (fun nf2 =>
-    ∃ u : M.carrier, lo < u ∧ u < hi ∧ NfEvalNf M k 2 (Fin.cons u (fun _ => hi)) nf2)
     (fun _ => Classical.dec _) Finset.univ
 
 /-- Depth-(k+1) 1-var NF equality implies depth-k 1-var NF equality.
