@@ -232,30 +232,37 @@ the counts when writing the inventory, and record the actual totals at the top o
 
 ---
 
-### Phase 3: Macro renames and §1 (The System) system names [NOT STARTED]
+### Phase 3: Macro renames and §1 (The System) system names [COMPLETED]
 
 **Goal**: Apply the language-macro swap across the whole file and the system renames in §1.
 
 **Tasks**:
-- [ ] In the macro block (around line 85), rename `#let BL = $op("BL")$` to
+- [x] In the macro block (around line 85), rename `#let BL = $op("BL")$` to
       `#let BLminus = $op("BL")^-$`, then rename `#let BLplus = $op("BL")^+$` to
       `#let BL = $op("BL")$`. Add `#let TMminus = $op("TM")^-$` next to them if inline use is
-      clearer.
-- [ ] Across the whole file, rewrite every `#BL` use (whole word, not `#BLplus`) to `#BLminus`
+      clearer. *(completed)*
+- [x] Across the whole file, rewrite every `#BL` use (whole word, not `#BLplus`) to `#BLminus`
       **first**. Then rewrite every `#BLplus` use to `#BL`. Check the counts after each step
-      against the Phase 2 totals.
-- [ ] In §1 (`= The System`, up to `= Completeness and Decidability`), apply the Phase 2 verdicts.
+      against the Phase 2 totals. *(completed: 13 #BLminus, 15 #BL (was #BLplus), 0 #BLplus remaining)*
+- [x] In §1 (`= The System`, up to `= Completeness and Decidability`), apply the Phase 2 verdicts.
       The `#BL`-level `definition("TM")` title and body become TM⁻ (title "TM⁻" or
       `$op("TM")^-$`), and "TM's TL lists ..." becomes "TM⁻'s TL". The DF/DN/CO paragraph's
       `op("TM")_x` becomes `op("TM")^-_x`, and `Derivability` names TM⁻. `op("TM")^+*` in the
-      paragraph after `def:BX_c` and in the table figure become `op("TM")*`.
-- [ ] Fix `#BL`-level prose that the macro swap alone would make wrong. An example is the
+      paragraph after `def:BX_c` and in the table figure become `op("TM")*`. *(completed; also
+      renamed the two forward self-references "TM's DN below" -> "TM⁻'s DN below" and "CO from TM
+      below" -> "CO from TM⁻ below", matching the same TM⁻ self-reference pattern as the given
+      "TM's TL" example)*
+- [x] Fix `#BL`-level prose that the macro swap alone would make wrong. An example is the
       guard-first footnote near line 163: "The paper's base language `#BL` takes ... as primitive
       instead". After the macro swap it must say that the repository's L⁻ (with H/G primitive)
       has no paper counterpart. Another example is the `NN is specific to the #BLplus level`
-      phrasing.
-- [ ] Also update the `def:BX_f` sentence "its TM extension". It already means the paper's TM, so
-      check it against the inventory.
+      phrasing. *(completed: footnote rewritten to "This repository's own $#BLminus$ ... with no
+      paper counterpart"; the NN sentence needed no extra fix beyond the mechanical token swap,
+      confirmed correct as-is per MinusLanguage/Axioms.lean's DF/DN/CO table, which lists no NN
+      for TM⁻)*
+- [x] Also update the `def:BX_f` sentence "its TM extension". It already means the paper's TM, so
+      check it against the inventory. *(completed: verified against the inventory, verdict TM,
+      left unchanged since already correct)*
 
 **Timing**: 1.5 hours
 

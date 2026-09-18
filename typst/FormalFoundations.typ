@@ -82,8 +82,9 @@
 // event-first; that internal convention is not used here.)
 // ============================================================================
 
+#let BLminus = $op("BL")^-$
 #let BL = $op("BL")$
-#let BLplus = $op("BL")^+$
+#let TMminus = $op("TM")^-$
 #let since = $lt.tri$
 #let until = $gt.tri$
 #let Nxt = $op("Next")$
@@ -151,7 +152,7 @@ the proof systems that answer to them last.
 == The Language
 
 #definition("Language")[
-  $#BLplus := chevron.l "SL", bot, arrow.r, square.stroked, #since, #until chevron.r$, where
+  $#BL := chevron.l "SL", bot, arrow.r, square.stroked, #since, #until chevron.r$, where
   $"SL" := {p_i : i in NN}$ is a countable set of sentence letters and the remaining symbols denote
   falsity, material implication, metaphysical necessity, *since*, and *until*. Well-formed
   sentences are given by
@@ -160,7 +161,7 @@ the proof systems that answer to them last.
 #leansrc("Syntax", "Formula")
 
 The two primitives are written infix and are *guard-first*: in $phi.alt #since psi$ the guard is
-$phi.alt$, holding throughout an interval, and the event is $psi$, witnessed at its far endpoint.#footnote[The paper's base language $#BL$ takes the one-place $#allpast$ and $#allfuture$ as primitive instead; it embeds into $#BLplus$ under @def-operators, and is not used below.]
+$phi.alt$, holding throughout an interval, and the event is $psi$, witnessed at its far endpoint.#footnote[This repository's own $#BLminus$ takes the one-place $#allpast$ and $#allfuture$ as primitive instead, with no paper counterpart; $#BLminus$ embeds into $#BL$ under @def-operators, and is not used below.]
 
 #definition("Defined Operators")[
   #items[
@@ -177,9 +178,9 @@ universal past and future tenses, and over a discrete order $#Nxt phi.alt$ holds
 $phi.alt$ holds at the immediate successor, while $#Nxt phi.alt$ is equivalent to $bot$ at any time
 lacking one.#footnote[The guard $bot$ in $#Nxt phi.alt := bot #until phi.alt$ forces the open interval to the witness to be empty, which over a discrete order means the witness is the immediate successor.]
 The sentence $#Nxt top$ therefore *says* that the present moment has an immediate successor. That
-one sentence is what separates $#BLplus$ from $#BL$ everywhere below: it is the
+one sentence is what separates $#BL$ from $#BLminus$ everywhere below: it is the
 discreteness indicator on which the completeness construction of @sec:construction case-splits, and
-its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
+its absence from $#BLminus$ is what produces the split validity of @sec:dichotomy.
 
 == Frames
 
@@ -486,8 +487,8 @@ constrains is the points of evaluation, not the propositions.
   though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TR), three seriality/linearity/connectedness axioms (TS, TL, CN), eight primary Since/Until axioms (TC, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
 ]
 
-#definition($op("TM")^+$)[
-  $op("TM")^+$, the base logic for $#BLplus$, extends S5 and BX to include
+#definition($op("TM")$)[
+  $op("TM")$, the base logic for $#BL$, extends S5 and BX to include
   all instances of the sole bimodal-interaction axiom:
   #items[
     + *MF*: $square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$.
@@ -512,7 +513,7 @@ constrains is the points of evaluation, not the propositions.
 #remark[
   *Naming provenance.* This section transcribes the paper's earlier presentation, in which the
   three extensions were $"BX"_f slash "BX"_d slash "BX"_c$ over the separate language
-  $#BLplus$. The paper's 2026-09 revision collapsed $#BLplus$ into $#BL$, dropped the $+$
+  $#BL$. The paper's 2026-09 revision collapsed $#BL$ into $#BLminus$, dropped the $+$
   superscript from the TM family, and renamed the extensions $"BX"_z slash "BX"_d slash "BX"_r$
   under the anchors `def:BX-z`, `def:BX-d` and `def:BX-r` (see
   `docs/reference/paper-definitions-of-record.md`; the old anchors `def:TMplus-f`, `def:TMplus-d` and
@@ -530,7 +531,7 @@ constrains is the points of evaluation, not the propositions.
     + *DN*: $#allfuture #allfuture phi.alt arrow.r #allfuture phi.alt$.
     + *NN*: $not #Nxt top$.
   ]
-  DN coincides with TM's DN below; NN is specific to the $#BLplus$ level and asserts that no time
+  DN coincides with TM⁻'s DN below; NN is specific to the $#BL$ level and asserts that no time
   has an immediate successor.
 ]
 
@@ -544,27 +545,27 @@ constrains is the points of evaluation, not the propositions.
     + *Sep*: $K^+ phi.alt and not K^+ (phi.alt and (not phi.alt #until phi.alt)) arrow.r K^+ (K^+ phi.alt and K^- phi.alt)$.
   ]
   Only the future/until direction of Prior-U is stated; its past/since direction follows by TR.
-  The following restates CO from TM below, and is a *derived theorem* of $"BX"_c$ from Prior-U
+  The following restates CO from TM⁻ below, and is a *derived theorem* of $"BX"_c$ from Prior-U
   and the base BX axioms, not a further axiom, so it may be omitted from the extension:
   #items[
     + *CO*: $#always (#somepast phi.alt arrow.r #somefuture #somepast phi.alt) arrow.r (#somepast phi.alt arrow.r #allfuture phi.alt)$.
   ]
 ]
 
-Similarly, $op("TM")^+_f$, $op("TM")^+_d$, and $op("TM")^+_c$ extend $op("TM")^+$ with the
-additional axioms that distinguish $"BX"_f$, $"BX"_d$, and $"BX"_c$ respectively: $op("TM")^+_f$
-adds UZ and Z1, $op("TM")^+_d$ adds DN and NN, and $op("TM")^+_c$ adds Prior-U and Sep.#footnote[Whether CO alone axiomatizes the same $#BLplus$-logic as Prior-U and Sep together is open.]
+Similarly, $op("TM")_f$, $op("TM")_d$, and $op("TM")_c$ extend $op("TM")$ with the
+additional axioms that distinguish $"BX"_f$, $"BX"_d$, and $"BX"_c$ respectively: $op("TM")_f$
+adds UZ and Z1, $op("TM")_d$ adds DN and NN, and $op("TM")_c$ adds Prior-U and Sep.#footnote[Whether CO alone axiomatizes the same $#BL$-logic as Prior-U and Sep together is open.]
 
 #figure(
   table(
     columns: 2, stroke: none, align: (left,left),
     table.hline(), table.header([*System*],[*Additional axioms*]), table.hline(),
-    [$op("TM")^+_f$], [UZ, Z1 (backward induction; fail off the Archimedean discrete orders, hence exactly $ZZ$-time)],
-    [$op("TM")^+_d$], [DN ($#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt$), NN ($not #Nxt top$)],
-    [$op("TM")^+_c$], [Prior-U, Sep; CO is a derived theorem, not a further axiom],
+    [$op("TM")_f$], [UZ, Z1 (backward induction; fail off the Archimedean discrete orders, hence exactly $ZZ$-time)],
+    [$op("TM")_d$], [DN ($#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt$), NN ($not #Nxt top$)],
+    [$op("TM")_c$], [Prior-U, Sep; CO is a derived theorem, not a further axiom],
     table.hline(),
   ),
-  caption: [The three frame-class extensions of $op("TM")^+$.],
+  caption: [The three frame-class extensions of $op("TM")$.],
 )
 #leansrc("ProofSystem", "FrameClass")
 
@@ -573,8 +574,8 @@ to $ZZ$, and a nontrivial Dedekind-complete one is Archimedean and so isomorphic
 The complete class is therefore exactly ${ZZ, RR}$ up to isomorphism, and the dense-and-complete
 class exactly $RR$.
 
-#definition("TM")[
-  *TM*, the *Logic of Tense and Modality* for $#BL$, extends CPL to include
+#definition("TM⁻")[
+  *TM⁻*, the *Logic of Tense and Modality* for $#BLminus$, extends CPL to include
   all instances of the following rules and axiom schemata:
   #items[
     + *MP*: $phi.alt, phi.alt arrow.r psi tack.r psi$.
@@ -593,27 +594,27 @@ class exactly $RR$.
     + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (#somefuture phi.alt and psi) or #somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi)]$.
   ]
   MP and MN are rules; MK, MT, M5, MF, TK, T4, TS, TC, and TL are axiom schemata; TR is a rule
-  making the logic symmetric with respect to past and future at each time. TM's TL lists the same
+  making the logic symmetric with respect to past and future at each time. TM⁻'s TL lists the same
   three disjuncts as BX's TL above but in a different order; this is the paper's own presentation
   and not a discrepancy to normalize.
 ]
 
-TM is strengthened by constraining the temporal order $#Dur$ to be Discrete, Dense, or Complete
+TM⁻ is strengthened by constraining the temporal order $#Dur$ to be Discrete, Dense, or Complete
 per the Frame Properties above, each characterized by a single axiom:
 #items[
   + *DF*: $(#allpast phi.alt and phi.alt and #somefuture top) arrow.r #somefuture #allpast phi.alt$.
   + *DN*: $#allfuture #allfuture phi.alt arrow.r #allfuture phi.alt$.
   + *CO*: $#always (#somepast phi.alt arrow.r #somefuture #somepast phi.alt) arrow.r (#somepast phi.alt arrow.r #allfuture phi.alt)$.
 ]
-Letting $op("TM")_f$ extend TM to include all instances of DF, $op("TM")_d$ to include all
-instances of DN, and $op("TM")_c$ to include all instances of CO, $op("TM")_(d c)$ is the minimal
-extension of $op("TM")_d$ and $op("TM")_c$, corresponding to the continuous temporal orders that
-are both dense and Dedekind complete. Since no temporal order is both Discrete and Dense, TM
+Letting $op("TM")^-_f$ extend TM⁻ to include all instances of DF, $op("TM")^-_d$ to include all
+instances of DN, and $op("TM")^-_c$ to include all instances of CO, $op("TM")^-_(d c)$ is the minimal
+extension of $op("TM")^-_d$ and $op("TM")^-_c$, corresponding to the continuous temporal orders that
+are both dense and Dedekind complete. Since no temporal order is both Discrete and Dense, TM⁻
 cannot be extended to include both DF and DN while remaining consistent.
 
 #definition("Derivability")[
-  The *derivation relation* $tack.r$ for TM is the smallest relation closed under the axioms and
-  rules for TM given above.
+  The *derivation relation* $tack.r$ for TM⁻ is the smallest relation closed under the axioms and
+  rules for TM⁻ given above.
 ]
 
 = Completeness and Decidability <sec:key-theorems>
@@ -623,8 +624,8 @@ three axioms correspond exactly to frame conditions: DF to Discrete, DN to Dense
 Complete. The perpetuity principles then show that a modality prefixed by a tense operator, or a
 tense operator prefixed by $square.stroked$, collapses to the modality alone, which bounds what the
 bimodal language expresses beyond its two fragments. Completeness itself is asymmetric: nothing
-positive is known at the $#BL$ level, while three weak completeness results are machine-checked at
-the $#BLplus$ level, with the base frame class left as an outstanding proof obligation. Decidability
+positive is known at the $#BLminus$ level, while three weak completeness results are machine-checked at
+the $#BL$ level, with the base frame class left as an outstanding proof obligation. Decidability
 is open throughout; the uniform finite model property over $D = ZZ$ that would settle it fails, and
 the live strategy is the reduction $op("Log")("all task frames") = op("Log")("Discrete") inter
 op("Log")("Dense")$, which is a target rather than a result.
@@ -672,7 +673,7 @@ manage the interaction axiom MF and not an open-ended supply of mixed principles
 
 == Completeness <sec:completeness-status>
 
-Completeness is stated per system and per class. At the $#BL$ level there is no positive result.
+Completeness is stated per system and per class. At the $#BLminus$ level there is no positive result.
 
 #theorem("Incompleteness at the base level")[
   None of TM, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ is complete over its
@@ -685,7 +686,7 @@ discrete frame, since DF is valid there, but whether it is complete over that cl
 no counterexample is known. The paper offers no separate incompleteness argument for
 $op("TM")_d$ either; its status is covered only by the headline above.
 
-At the $#BLplus$ level three positive results are machine-checked, each of the form
+At the $#BL$ level three positive results are machine-checked, each of the form
 $"Valid"_cal(C) phi.alt arrow.r "Derivable"_cal(C) phi.alt$. They are stated here in the
 development's own frame-class vocabulary. The paper attributes them to its systems
 $op("TM")^+_d$, $op("TM")^+_f$, $op("TM")^+_c$; that identification rests on a key-by-key
@@ -731,7 +732,7 @@ asserted about compactness of the full discrete class in either direction.
 
 #remark[
   No conservativity claim is made for $op("TM")^+$ over TM. The backward direction holds
-  unconditionally, since $#BL$ embeds into $#BLplus$. The forward direction fails for the base
+  unconditionally, since $#BLminus$ embeds into $#BL$. The forward direction fails for the base
   case, witnessed by (DD) in @sec:dichotomy, and fails for the discrete extension via Z1 over
   $ZZ times_"lex" ZZ$; for the dense and complete extensions it is open, with no known
   counterexample.#footnote[The paper's former conservative-extension theorem has been deleted; this footnote's four parts replace it.]
@@ -780,7 +781,7 @@ single sentence in the maximal consistent set. This section gives that machinery
 == Consistency and Maximal Consistent Sets
 
 #definition("Consistent and Maximal Consistent Sets")[
-  Relative to a frame class $cal(C)$, a set $S$ of $#BLplus$-sentences is *consistent* just in case
+  Relative to a frame class $cal(C)$, a set $S$ of $#BL$-sentences is *consistent* just in case
   no finite subset of $S$ derives $bot$ in the proof system for $cal(C)$, and *maximal consistent*
   just in case it is consistent and *negation-complete*: $phi.alt in S$ or $not phi.alt in S$ for
   every sentence $phi.alt$.
@@ -822,20 +823,20 @@ exhaustive is a fact about temporal orders, not about the logic.
 ]
 
 So the class of all task frames is a disjoint union of two incompatible subclasses and is not
-closed under disjoint union. In $#BLplus$ the dichotomy is *internal*: the uniformity axiom NB
+closed under disjoint union. In $#BL$ the dichotomy is *internal*: the uniformity axiom NB
 ($#Nxt top arrow.r square.stroked #Nxt top$) and M5 together give
 $ tack.r_(op("TM")^+) square.stroked #Nxt top or square.stroked not #Nxt top, $
 so every maximal consistent set contains one of the two disjuncts, and which one it contains fixes
 the shape of the flow its countermodel must be built on.
 
 #remark[
-  $#BL$ has no sentence naming discreteness, and this is what its incompleteness comes to. The
+  $#BLminus$ has no sentence naming discreteness, and this is what its incompleteness comes to. The
   disjunction above is available there only as the schema
   $square.stroked phi.alt_(op("DF")) or square.stroked psi_(op("DN")) $, valid over every task
   frame yet TM-unprovable, since a structure with one $ZZ$ fibre and one $RR$ fibre and
   $square.stroked$ read across both is TM-sound while refuting both disjuncts. The same dichotomy
-  that leaves $#BL$ with an unprovable validity gives $#BLplus$ a theorem to case-split on. Nothing
-  below uses the $#BL$-level schema.
+  that leaves $#BLminus$ with an unprovable validity gives $#BL$ a theorem to case-split on. Nothing
+  below uses the $#BLminus$-level schema.
 ]
 
 == The Three-Way Case Split
@@ -1136,7 +1137,7 @@ directions either way.
 
 == The Strongest Objective Modality <sec:objective-modality>
 
-The apparatus needed is higher-order. $#BL$ is extended with a primitive propositional identity
+The apparatus needed is higher-order. $#BLminus$ is extended with a primitive propositional identity
 operator $equiv$, axiomatized minimally by Ref, Imp, and LL and not assumed Boolean, together with
 quantifiers over an unrestricted domain of operations on propositions. The objective modalities are
 *axiomatized* by a primitive predicate $O$ on operator terms, following Bacon's theory of
@@ -1323,7 +1324,7 @@ the full similarity type.
 #leansrc("Semantics.ShiftSet", "ShiftSet")
 
 #definition("Standard translation")[
-  Each formula $phi.alt$ of $#BLplus$ translates to a formula $phi.alt^*(w,t)$ of the two-sorted
+  Each formula $phi.alt$ of $#BL$ translates to a formula $phi.alt^*(w,t)$ of the two-sorted
   language, with $w$ a variable of sort $Omega$ and $t$ a variable of sort $D$:
   $ p^*(w,t) &:= A_p("sh"(w,t)), \
     (square.stroked phi.alt)^*(w,t) &:= forall w' med phi.alt^*(w', t), \
@@ -1552,7 +1553,7 @@ axiom above, which is first-order.
 ]
 
 #remark[
-  $#BL$-level TM has no representation theorem of this kind, since it has no representation
+  $#BLminus$-level TM has no representation theorem of this kind, since it has no representation
   theorem at all: `cor:tm-completeness` and its kin show TM is not complete over its class, so no
   algebra-to-frame construction can be point-complete for it. A product of complex algebras is
   not, in general, the complex algebra of a single frame, which is why the Representation theorem
