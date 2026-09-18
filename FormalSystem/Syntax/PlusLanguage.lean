@@ -23,7 +23,7 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
 - `PlusLanguage.Formula` — `PlusFormula`, the derived operators (with `Formula`'s right-hand
   sides), `reflectTime`, the purity predicates `IsPureFuture`/`IsPurePast`, and the embedding
   `ofFormula`
-- `PlusLanguage.Axioms` — `PlusAxiom`, the closed inductive of TM⁺ schemata: the 45 TM
+- `PlusLanguage.Axioms` — `PlusAxiom`, the closed inductive of TM⁺ schemata: the 45 TM-shaped
   schemata re-declared over `PlusFormula`, plus the eight `⊡` schemata (S5 for `⊡`, `□φ → ⊡φ`,
   `p → ⊡p` for atoms, and the two pasting schemata with purity side conditions); `minFrameClass`
 - `PlusLanguage.Derivation` — `PlusDerivationTree`, `PlusDerivable`, `⊢⁺[fc]` notation, the

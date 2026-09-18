@@ -206,7 +206,7 @@ recently in the past".
 
 Same name-collision caveat as `kPlus`: do not confuse with `Metalogic`'s `kminusFormula`.
 
-Used to state `Axiom.prior_S_gap` and `Axiom.sep`.
+Used to state `DerivedAxioms.priorSGap` and `Axiom.sep`.
 -/
 def kMinus (φ : Formula) : Formula := (Formula.snce φ.neg Formula.top).neg
 
@@ -479,7 +479,7 @@ The four constituent operators are `Formula.allPast` (H), `Formula.someFuture` (
 
 **This is an abbreviation, not an `Axiom` constructor.** This repository's official
 Dedekind-class axiom basis remains the Reynolds triple `Axiom.prior_U_gap` /
-`Axiom.prior_S_gap` / `Axiom.sep`; CO is a *derived* object over that basis. See
+`DerivedAxioms.priorSGap` / `Axiom.sep`; CO is a *derived* object over that basis. See
 `FormalSystem/Theorems/DedekindDerived.lean` (proof-theoretic side) and
 `FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean` (`co_valid`, the semantic side).
 The converse direction — CO deriving the Reynolds gap axioms — **fails**, and the failure is

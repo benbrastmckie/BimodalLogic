@@ -64,7 +64,7 @@ theorem prior_SZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.ZTime ≤ 
     (x : Rat) (hx : x ∈ LimitDom fc A h_mcs) (ψ : Formula) :
     Formula.imp (Formula.somePast ψ) (Formula.snce ψ.neg ψ) ∈ LimitF fc A h_mcs x :=
   theorem_in_mcs (limit_c0 fc A h_mcs x hx)
-    (DerivedAxioms.prior_SZ h_fc ψ)
+    (DerivedAxioms.priorSZ h_fc ψ)
 
 /-! ## ChronicleAsPriorModel -/
 

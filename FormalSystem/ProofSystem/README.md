@@ -9,40 +9,46 @@ TM logic variants (Base, Dense, Discrete, Dedekind), along with derived facts an
 
 | File | Lines | Description |
 |------|------:|-------------|
-| `Axioms.lean` | 625 | `Axiom` inductive type: 45 constructors organized into nine layers |
-| `Derivation.lean` | 386 | `DerivationTree` inductive type: 7 inference rules as constructors |
-| `Derivable.lean` | 228 | `Derivable`: Prop-valued derivability wrapper for classical reasoning |
-| `LinearityDerivedFacts.lean` | 88 | Derived consequences of `temp_linearity`; non-derivability analysis |
+| `Axioms.lean` | 621 | `Axiom` inductive type: 29 constructors (the paper's primitive schemata) in nine layers |
+| `DerivedAxioms.lean` | 244 | The time-reflection mirrors, derived by the TR rule (`DerivedAxioms` namespace) |
+| `Derivation.lean` | 418 | `DerivationTree` inductive type: 7 inference rules as constructors |
+| `Derivable.lean` | 196 | `Derivable`: Prop-valued derivability wrapper for classical reasoning |
+| `LinearityDerivedFacts.lean` | 74 | Derived consequences of `temp_linearity`; non-derivability analysis |
 
 ## Axiom System
 
-### Schema Count vs. Constructor Count
+### Primitive Axioms and Derived Schemata
 
-The `Axiom` inductive type has **45 constructors** organized into **nine layers**.
-The 45 constructors correspond to **specific formula instances** within a smaller
-set of schema families:
+The `Axiom` inductive type has **29 constructors** organized into **nine layers**: exactly the
+paper's primitive axiom schemata (`def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`), with
+TL, CN and TS stated verbatim.
 
-| Layer | Schemas | Constructors | Description |
-|-------|--------:|------------:|-------------|
-| 1. Propositional | 4 | 4 | Classical: K, S, EFQ, Peirce |
-| 2. S5 Modal | 5 | 5 | T, 4, B, 5-collapse, K-distribution |
-| 3. BX Temporal | ~9 | 18 | Burgess-Xu Until/Since axioms (paired G/H) |
-| 3b. Additional BX Temporal | 2 | 4 | `temp_linearity`, `temp_linearity_past`, `F_until_equiv`, `P_since_equiv` |
-| 4. Interaction | 1 | 1 | MF: `□φ → □Gφ` (TF is now derived) |
-| 5. Uniformity | 5 | 5 | Discrete uniformity (valid on all ordered abelian groups) |
-| 6. Prior | 2 | 2 | Prior-UZ/SZ (discrete well-ordering) |
-| 7. Z1 | 1 | 1 | IsSuccArchimedean characteristic axiom |
-| 8. Density | 2 | 2 | `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`) (dense-only) |
-| 9. Reynolds Dedekind | 3 | 3 | `prior_U_gap`, `prior_S_gap`, `sep` (Dedekind-only) |
-| **Total** | | **45** | |
+| Layer | Constructors | Description |
+|-------|------------:|-------------|
+| 1. Propositional | 4 | Classical: K, S, EFQ, Peirce |
+| 2. S5 Modal | 3 | MT, M5 (5-collapse), MK (K-distribution) |
+| 3. BX Temporal | 9 | Burgess-Xu Until/Since axioms, future direction |
+| 3b. Additional BX Temporal | 2 | `temp_linearity` (TL), `F_until_equiv` (UT) |
+| 4. Interaction | 1 | MF: `□φ → □Gφ` (TF is derived) |
+| 5. Uniformity | 4 | NP, NF, NA, NB (valid on all ordered abelian groups) |
+| 6. Prior | 1 | Prior-UZ (discrete well-ordering) |
+| 7. Z1 | 1 | IsSuccArchimedean characteristic axiom |
+| 8. Density | 2 | `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`) (dense-only) |
+| 9. Reynolds Dedekind | 2 | `prior_U_gap`, `sep` (Dedekind-only) |
+| **Total** | **29** | |
 
-**Frame classification**: 37 Base constructors, 2 Dense-only (`density`, `dense_indicator`),
-3 Discrete-only (`prior_UZ`, `prior_SZ`, `z1`), 3 Dedekind-only (`prior_U_gap`, `prior_S_gap`,
-`sep`) — see `Axiom.minFrameClass` in `Axioms.lean`. Cumulatively (`Dense ≤ Dedekind`): Base 37,
-Dense 39, Discrete 40, Dedekind 42.
+**Frame classification**: 23 Base constructors, 2 Dense-only (`density`, `dense_indicator`),
+2 Discrete-only (`prior_UZ`, `z1`), 2 Dedekind-only (`prior_U_gap`, `sep`) — see
+`Axiom.minFrameClass` in `Axioms.lean`. Cumulatively (`Dense ≤ Dedekind`): Base 23,
+Dense 25, Discrete 25, Dedekind 27.
 
-**Note**: the `Axiom` inductive type has 45 constructors rather than one per logical schema
-because paired temporal operators (G/H, F/P, Until/Since) each generate separate constructors.
+**Derived schemata**: every past mirror (`serialPast`, `leftMonoSinceH`, …, `sinceP`,
+`pSinceEquiv`, `discreteSymmBwd`, `priorSZ`, `priorSGap`) is proved by one application of
+`time_reflection` in `DerivedAxioms.lean`, which also holds `serialFutureImp` (the pre-paper
+`⊤ → F⊤`); `modal4`, `modalB`, the linearity mirrors `tempLinearityPast`/`linearSince` and the
+pre-paper forms `tempLinearityLegacy`, `linearUntilLegacy` are in `../Theorems/Combinators.lean`.
+Each is the lowerCamelCase form of the former constructor name, in the `DerivedAxioms`
+namespace, with a context-lifted `…At Γ` form.
 
 ### Frame Class Coverage
 

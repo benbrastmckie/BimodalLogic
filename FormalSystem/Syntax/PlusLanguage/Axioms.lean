@@ -10,9 +10,11 @@ import FormalSystem.ProofSystem.Axioms
 /-!
 # `PlusAxiom` — the axiom schemata of TM⁺ over `PlusFormula`
 
-The axiom system **TM⁺** for the language L⁺ (`PlusLanguage/Formula.lean`): the 45 schemata of
-TM (`ProofSystem/Axioms.lean`) **re-declared with `PlusFormula` parameters**, plus eight
-schemata for the stability modal `⊡`.
+The axiom system **TM⁺** for the language L⁺ (`PlusLanguage/Formula.lean`): the 29 TM schemata
+(`ProofSystem/Axioms.lean`) plus the 16 TM-derivable schemata kept primitive in TM⁺ (the
+time-reflection mirrors and modal 4/B, which TM derives in `FormalSystem.ProofSystem.DerivedAxioms`),
+all **re-declared with `PlusFormula` parameters**, plus eight schemata for the stability modal `⊡`.
+TL, CN and TS are stated as the paper states them, in lockstep with TM.
 
 ## Why the TM schemata are re-declared rather than embedded
 
@@ -22,8 +24,9 @@ schema must range over all of `PlusFormula`. The re-declaration is mechanical: c
 constructor, the same name, the same parameter list, the same statement through the derived
 operators of `PlusLanguage/Formula.lean`, whose right-hand sides are `Formula`'s verbatim. The
 function `PlusAxiom.ofTM` (`PlusLanguage/Derivation.lean`) sends each `Axiom` instance to the
-re-declared twin at the embedded parameters; every one of its 45 arms is `rfl`-shaped, so any
-drift between the two inductives fails to typecheck there.
+re-declared twin at the embedded parameters; every one of its 29 arms is `rfl`-shaped, so any
+drift between the two inductives fails to typecheck there. (The 16 TM-derivable schemata have no
+arm: a TM derivation reaches them only through the primitive axioms and time reflection.)
 
 ## The `⊡` schemata
 
@@ -81,7 +84,7 @@ unchanged.
 
 ## References
 
-* `FormalSystem/ProofSystem/Axioms.lean` — the 45 TM schemata, with their [burgess1982] / [xu1988] /
+* `FormalSystem/ProofSystem/Axioms.lean` — the 29 TM schemata, with their [burgess1982] / [xu1988] /
   [reynolds1992] provenance; the docstrings there are authoritative for each schema's reading
 * JPL paper `possible_worlds.tex` lines 1108, 1114, 1118-1119, 1121
 -/
@@ -93,7 +96,7 @@ open FormalSystem.ProofSystem (FrameClass)
 open PlusFormula
 
 /--
-Axiom schemata of TM⁺ over `PlusFormula`: the 45 TM schemata re-declared with `PlusFormula`
+Axiom schemata of TM⁺ over `PlusFormula`: the 29 TM schemata and 16 TM-derivable schemata re-declared with `PlusFormula`
 parameters, then the eight `⊡` schemata. See the module docstring for the design and the axiom
 inventory.
 -/

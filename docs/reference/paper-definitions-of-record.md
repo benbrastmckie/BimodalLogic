@@ -130,12 +130,15 @@ existed.
 
 **Constructor naming audit: closed.** The open note in `FormalSystem/Syntax/MinusLanguage/Axioms.lean`
 has been replaced. The paper-key → primary constructor → explicit mirror table is now in
-`docs/reference/axiom-reference.md` § Paper Key Correspondence. The verdict is *same system,
-explicit mirrors*: the paper's 11 non-uniformity axioms appear as 11 pairs and its 4 uniformity
-axioms as 5 constructors, and TR is a rule on both sides. Two quirks are recorded there. First,
-`temp_linearity`'s disjuncts are a reordering of TL's. Second, `discrete_propagate_bwd` is NA
-itself, not a mirror. This correspondence is textual, with `simp` spot checks. A machine-checked
-`derivable_iff` is a follow-up. The same closure corrected
+`docs/reference/axiom-reference.md` § Paper Key Correspondence. The verdict, originally *same
+system, explicit mirrors*, has since become *same primitive system*: `inductive Axiom` now has
+exactly the paper's 29 schemata (CPL as K/S/EFQ/Peirce, MK, MT, M5, the 11 BX temporal schemata,
+NP/NF/NA/NB, MF, DN, NN, UZ, Z1, PU, SEP), with TL, CN and TS stated verbatim (3-way disjunctions
+right-associated). Every former surplus constructor -- the TR mirrors, modal 4 and B, and the
+past forms of UZ and PU -- is a machine-checked derived theorem in
+`FormalSystem.ProofSystem.DerivedAxioms`, so the textual correspondence and the follow-up it
+called for are both superseded. `discrete_propagate_bwd` remains NA itself, not a mirror.
+The same closure corrected
 `typst/FormalFoundations.typ`'s remark that the development "has no TR rule" and that the
 uniformity layer "does not even match in count". Both claims were wrong.
 

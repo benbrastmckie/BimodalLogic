@@ -79,7 +79,7 @@ Layer 0 is four modules, not two. Both `ForMathlib` and `PlusLanguage` are easy 
 | Module | Role | Constraint |
 |--------|------|------------|
 | `Syntax/` | `Formula` (six constructors), atoms, contexts, subformula closure | — |
-| `ProofSystem/` | 45 axiom constructors, 7 inference rules, `DerivationTree`, `FrameClass` | imports only `Syntax` |
+| `ProofSystem/` | 29 axiom constructors (the paper's primitive schemata; mirrors derived in `DerivedAxioms`), 7 inference rules, `DerivationTree`, `FrameClass` | imports only `Syntax` |
 | `ForMathlib/` | Mathlib-shaped proper/maximal/prime **filter** API | imports **nothing** from `FormalSystem.*` — it is intended for upstreaming |
 | `PlusLanguage/` | `PlusFormula` (**L⁺** = L plus the stability modal `⊡`), `PlusAxiom`, `PlusDerivationTree`, `ofFormula` | a second object language beside `Formula` |
 

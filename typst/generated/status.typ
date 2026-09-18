@@ -5,18 +5,18 @@
 //   scripts/typst-status-counts.sh
 //
 // Reproduces the SYNC-MAP.md Phase 1 ground-truth-counts methodology.
-// Stamped from live source at commit 7fdf029e6 (2026-09-07).
+// Stamped from live source at commit 8ce53d8af (2026-09-18).
 // ============================================================================
 
-#let stamp-commit = "7fdf029e6"
-#let stamp-date = "2026-09-07"
+#let stamp-commit = "8ce53d8af"
+#let stamp-date = "2026-09-18"
 
-#let axiom-count = 45
+#let axiom-count = 29
 #let rule-count = 7
-#let base-count = 37
+#let base-count = 23
 #let dense-only-count = 2
-#let ztime-only-count = 3
-#let rtime-only-count = 3
+#let ztime-only-count = 2
+#let rtime-only-count = 2
 
 #let sorry-total = 4
 #let sorry-total-excl-boneyard = 0
@@ -38,8 +38,8 @@
 
 #let axiom-report-table = (
   ("FormalSystem.Metalogic.BXCanonical.completeness", "BXCanonical/Completeness.lean", "propext, Classical.choice, Quot.sound", "no"),
-  ("FormalSystem.Metalogic.BXCanonical.completeness_dense", "BXCanonical/Completeness.lean", "propext, Classical.choice, Quot.sound", "no"),
-  ("FormalSystem.Metalogic.BXCanonical.completeness_ztime", "BXCanonical/Completeness.lean", "propext, Classical.choice, Quot.sound", "no"),
+  ("FormalSystem.Metalogic.BXCanonical.derivable_of_validDense", "?", "propext, Classical.choice, Quot.sound", "no"),
+  ("FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime", "?", "propext, Classical.choice, Quot.sound", "no"),
   ("FormalSystem.Metalogic.BXCanonical.completeness_rtime_engine", "BXCanonical/CompletenessDedekind.lean", "propext, Classical.choice, Quot.sound", "no"),
   ("FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense", "BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean", "propext, Classical.choice, Quot.sound", "no"),
 )

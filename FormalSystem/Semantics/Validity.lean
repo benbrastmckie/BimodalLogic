@@ -570,7 +570,7 @@ line up.
 **Source.** Reynolds 1992 (printed p.169) observes that the Prior axioms enforce only a
 *definably* Dedekind-complete model: "there may be gaps in the order but ... you wouldn't know
 that just looking at the behaviour of temporal formulas". So no single axiom characterises this
-class; `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep` are the definable-gap proxy.
+class; `Axiom.prior_U_gap` / `DerivedAxioms.priorSGap` / `Axiom.sep` are the definable-gap proxy.
 -/
 def ValidComplete (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsComplete φ
 

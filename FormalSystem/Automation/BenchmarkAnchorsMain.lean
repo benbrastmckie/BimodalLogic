@@ -13,7 +13,9 @@ import FormalSystem.ProofSystem.Axioms
 /-!
 # Benchmark Anchors: Axiom Instance Generator for BMLogic-Bench
 
-This module generates concrete formula instances of all 45 BX axiom schemata
+This module generates concrete formula instances of every BX schema, each tagged by name:
+the 29 primitive axioms and the 16 derived schemata of `FormalSystem.ProofSystem.DerivedAxioms`
+(45 names in all)
 with varied substitutions, labels them via the decision procedure, and exports
 them as JSONL records for the BMLogic-Bench benchmark.
 
@@ -42,7 +44,7 @@ axioms are excluded since the benchmark uses FrameClass.Base throughout.
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`
 - `DataExport.lean`: JSON serialization primitives
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`, JSON serialization methods
-- `Axioms.lean`: All 45 BX axiom constructors
+- `Axioms.lean`: The 29 primitive BX axiom constructors (`DerivedAxioms`: the 16 derived schemata)
 -/
 
 set_option autoImplicit false
@@ -310,7 +312,7 @@ def generateAllInstances : List TaggedFormula :=
 ## Axiom Coverage Verification
 -/
 
--- NOTE: `allAxiomNames` (the canonical 45-name list) moved to
+-- NOTE: `allAxiomNames` (the canonical 29-name list) moved to
 -- `FormalSystem.Automation.AxiomNames` so that `MachineAppendixMain.lean` can
 -- share it (this module declares a root-level `main` and cannot be imported
 -- by another executable). Resolved here via the parent namespace.
@@ -471,7 +473,7 @@ Main entry point for the benchmark_anchors executable.
 Pipeline:
 1. Generate all axiom instances from the substitution vocabulary
 2. Select top-3 lowest-complexity instances per constructor (126 records)
-3. Check coverage of all 45 axiom constructors
+3. Check coverage of all 29 primitive axiom constructors (`allAxiomNames`)
 4. Label each instance via `matchAxiom` (direct axiom proof), falling back to
    `labelFormula`/`decideAuto` if `matchAxiom` fails
 5. Write JSONL output file with `axiom_name` preserved
@@ -494,11 +496,11 @@ def main (args : List String) : IO Unit := do
   -- Step 2: Select top-3 per constructor
   IO.println "Selecting top-3 lowest-complexity per constructor..."
   let instances := selectTopInstances allInstances 3
-  IO.println s!"  Selected {instances.length} instances (target: 135 = 45 x 3)"
+  IO.println s!"  Selected {instances.length} instances (target: 3 per tagged schema name)"
 
   -- Step 3: Check coverage
   let (covered, missing) := checkCoverage instances
-  IO.println s!"  Axiom coverage: {covered.length}/45 constructors"
+  IO.println s!"  Axiom coverage: {allAxiomNames.length - missing.length}/{allAxiomNames.length} constructors ({covered.length} schema names tagged)"
   if !missing.isEmpty then
     IO.println s!"  WARNING: Missing axioms: {missing}"
 
@@ -556,7 +558,7 @@ def main (args : List String) : IO Unit := do
     let nameValid := nameRecords.filter (fun (_, lf) => lf.label == .valid) |>.length
     constructorCounts := constructorCounts ++ [(name, nameValid, nameRecords.length)]
   let constructorsWithValid := constructorCounts.filter (fun (_, v, _) => v > 0) |>.length
-  IO.println s!"  Constructors with valid instances: {constructorsWithValid}/45"
+  IO.println s!"  Constructors with valid instances: {constructorsWithValid}/{allAxiomNames.length}"
 
   -- Step 7: Ensure output directory exists
   let outFilePath : System.FilePath := ⟨outputPath⟩
@@ -587,7 +589,7 @@ def main (args : List String) : IO Unit := do
   IO.println s!"  Valid: {validCount}"
   IO.println s!"  Invalid: {invalidCount}"
   IO.println s!"  Timeout: {timeoutCount}"
-  IO.println s!"  Coverage: {covered.length}/45 axiom constructors"
+  IO.println s!"  Coverage: {allAxiomNames.length - missing.length}/{allAxiomNames.length} axiom constructors"
   IO.println s!"  Axiom-matched: {axiomMatchCount} ({axiomMatchCount * 100 / instances.length}%)"
   IO.println ""
   IO.println "Done!"

@@ -11,6 +11,7 @@
 
 
 The proof system for *TM* is the *Burgess-Xu (BX) axiom system*: a Hilbert-style calculus over the Since/Until language of @sec:formulas, with *#axiom-count axiom constructors* organized into nine layers and *#rule-count inference rules*.
+The axiom constructors are exactly the paper's primitive schemata; every past mirror, and the S5 schemata 4 and B, are derived theorems (`DerivedAxioms`).
 Derivations are parameterized by a *frame class* (`Base`, `Dense`, `ZTime`, or `RTime`), which gates the frame-dependent axiom layers.
 The system is deliberately fine-grained at the constructor level; @sec:paper-contrast records the deferred tense-primitive subsystem and the intended presentation choices of the axiomatization.
 
@@ -20,7 +21,7 @@ The #axiom-count axiom schemata are the constructors of the inductive family `Ax
 Throughout, $phi.alt #snce psi$ and $phi.alt #untl psi$ are the guard-first infix primitives of @sec:formulas: the *guard* $phi.alt$ holds at all strictly intermediate times and the *event* $psi$ at the witness time.
 Derived operators: $P phi.alt = top #snce phi.alt$, $F phi.alt = top #untl phi.alt$, $H phi.alt = not P not phi.alt$, $G phi.alt = not F not phi.alt$, and $top = bot arrow.r bot$.
 Alongside its structural name (BX1, BX2G, ...), each temporal schema carries a *short name* (TB, UG, UC, TA, ...) shown in the tables below; the short names are the citation form used when an axiom is invoked individually, and the extended systems of the metalogic chapter are picked out by which short-named axioms they add.
-Past mirrors (primed rows) are the time-reflection images of their future counterparts and carry no separate short name.
+Past mirrors (primed rows) are the time-reflection images of their future counterparts, carry no separate short name, and are *derived theorems* rather than axiom constructors: each is proved by one application of the TR rule to its primary.
 
 === Layer 1: Propositional (4)
 
@@ -43,7 +44,7 @@ Past mirrors (primed rows) are the time-reflection images of their future counte
 
 Together with modus ponens, these four schemata axiomatize classical propositional logic (K and S give the implicational fragment; EFQ and Peirce restore classical negation over the primitive $bot$).
 
-=== Layer 2: S5 Modal (5)
+=== Layer 2: S5 Modal (3 primitive; M4 and MB derived)
 
 #figure(
   table(
@@ -54,8 +55,8 @@ Together with modus ponens, these four schemata axiomatize classical proposition
     table.header([*Name*], [*Lean Constructor*], [*Schema*]),
     table.hline(),
     [MT], [`Axiom.modal_t`], [$square.stroked phi.alt arrow.r phi.alt$],
-    [M4], [`Axiom.modal_4`], [$square.stroked phi.alt arrow.r square.stroked square.stroked phi.alt$],
-    [MB], [`Axiom.modal_b`], [$phi.alt arrow.r square.stroked diamond.stroked phi.alt$],
+    [M4], [`DerivedAxioms.modal4`], [$square.stroked phi.alt arrow.r square.stroked square.stroked phi.alt$],
+    [MB], [`DerivedAxioms.modalB`], [$phi.alt arrow.r square.stroked diamond.stroked phi.alt$],
     [M5], [`Axiom.modal_5_collapse`], [$diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$],
     [MK], [`Axiom.modal_k_dist`], [$square.stroked (phi.alt arrow.r psi) arrow.r (square.stroked phi.alt arrow.r square.stroked psi)$],
     table.hline(),
@@ -64,11 +65,12 @@ Together with modus ponens, these four schemata axiomatize classical proposition
 )
 
 The metaphysical necessity operator $square.stroked$ is S5: it quantifies over all possible worlds at the current time.
+The primitive schemata are MT, M5 and MK (the paper's `def:S5`); M4 and MB are derived from them (`DerivedAxioms.modal4`, `DerivedAxioms.modalB`).
 
-=== Layer 3: BX Temporal (22)
+=== Layer 3: BX Temporal (11 primitive; mirrors derived by TR)
 
 The temporal core consists of eleven schemata in future/past mirror pairs, following Burgess @burgess1982axioms @burgess1984basic and Xu @xu1988until for Until/Since logic on linear orders.
-The primed names denote past mirrors.
+The primed names denote past mirrors, which are derived by the TR rule rather than primitive.
 
 #{
   show figure: set block(breakable: true)
@@ -80,31 +82,31 @@ The primed names denote past mirrors.
     table.hline(),
     table.header([*Name*], [*Short*], [*Lean Constructor*], [*Schema*]),
     table.hline(),
-    [BX1], [TB], [`Axiom.serial_future`], [$top arrow.r F top$],
-    [BX1$'$], [], [`Axiom.serial_past`], [$top arrow.r P top$],
+    [BX1], [TB], [`Axiom.serial_future`], [$F top$],
+    [BX1$'$], [], [`DerivedAxioms.serialPast`], [$top arrow.r P top$],
     [BX2G], [UG], [`Axiom.left_mono_until_G`], [$G(phi.alt arrow.r chi) arrow.r ((phi.alt #untl psi) arrow.r (chi #untl psi))$],
-    [BX2H], [], [`Axiom.left_mono_since_H`], [$H(phi.alt arrow.r chi) arrow.r ((phi.alt #snce psi) arrow.r (chi #snce psi))$],
+    [BX2H], [], [`DerivedAxioms.leftMonoSinceH`], [$H(phi.alt arrow.r chi) arrow.r ((phi.alt #snce psi) arrow.r (chi #snce psi))$],
     [BX3], [UC], [`Axiom.right_mono_until`], [$G(phi.alt arrow.r psi) arrow.r ((chi #untl phi.alt) arrow.r (chi #untl psi))$],
-    [BX3$'$], [], [`Axiom.right_mono_since`], [$H(phi.alt arrow.r psi) arrow.r ((chi #snce phi.alt) arrow.r (chi #snce psi))$],
+    [BX3$'$], [], [`DerivedAxioms.rightMonoSince`], [$H(phi.alt arrow.r psi) arrow.r ((chi #snce phi.alt) arrow.r (chi #snce psi))$],
     [BX4], [TA], [`Axiom.connect_future`], [$phi.alt arrow.r G P phi.alt$],
-    [BX4$'$], [], [`Axiom.connect_past`], [$phi.alt arrow.r H F phi.alt$],
+    [BX4$'$], [], [`DerivedAxioms.connectPast`], [$phi.alt arrow.r H F phi.alt$],
     [BX5], [UF], [`Axiom.self_accum_until`], [$(phi.alt #untl psi) arrow.r ((phi.alt and (phi.alt #untl psi)) #untl psi)$],
-    [BX5$'$], [], [`Axiom.self_accum_since`], [$(phi.alt #snce psi) arrow.r ((phi.alt and (phi.alt #snce psi)) #snce psi)$],
+    [BX5$'$], [], [`DerivedAxioms.selfAccumSince`], [$(phi.alt #snce psi) arrow.r ((phi.alt and (phi.alt #snce psi)) #snce psi)$],
     [BX6], [UI], [`Axiom.absorb_until`], [$(phi.alt #untl (phi.alt and (phi.alt #untl psi))) arrow.r (phi.alt #untl psi)$],
-    [BX6$'$], [], [`Axiom.absorb_since`], [$(phi.alt #snce (phi.alt and (phi.alt #snce psi))) arrow.r (phi.alt #snce psi)$],
-    [BX7], [CN], [`Axiom.linear_until`], [$(phi.alt #untl psi) and (chi #untl theta) arrow.r ((phi.alt and chi) #untl (psi and theta)) or ((phi.alt and chi) #untl (psi and chi)) or ((phi.alt and chi) #untl (phi.alt and theta))$],
-    [BX7$'$], [], [`Axiom.linear_since`], [$(phi.alt #snce psi) and (chi #snce theta) arrow.r ((phi.alt and chi) #snce (psi and theta)) or ((phi.alt and chi) #snce (psi and chi)) or ((phi.alt and chi) #snce (phi.alt and theta))$],
+    [BX6$'$], [], [`DerivedAxioms.absorbSince`], [$(phi.alt #snce (phi.alt and (phi.alt #snce psi))) arrow.r (phi.alt #snce psi)$],
+    [BX7], [CN], [`Axiom.linear_until`], [$(phi.alt #untl psi) and (chi #untl theta) arrow.r ((phi.alt and chi) #untl (psi and theta)) or (((phi.alt and chi) #untl (psi and chi)) or ((phi.alt and chi) #untl (phi.alt and theta)))$],
+    [BX7$'$], [], [`DerivedAxioms.linearSince`], [$(phi.alt #snce psi) and (chi #snce theta) arrow.r ((phi.alt and chi) #snce (psi and theta)) or ((phi.alt and chi) #snce (psi and chi)) or ((phi.alt and chi) #snce (phi.alt and theta))$],
     [BX10], [UE], [`Axiom.until_F`], [$(phi.alt #untl psi) arrow.r F psi$],
-    [BX10$'$], [], [`Axiom.since_P`], [$(phi.alt #snce psi) arrow.r P psi$],
-    [BX11], [TL], [`Axiom.temp_linearity`], [$F phi.alt and F psi arrow.r F(phi.alt and psi) or F(phi.alt and F psi) or F(F phi.alt and psi)$],
-    [BX11$'$], [], [`Axiom.temp_linearity_past`], [$P phi.alt and P psi arrow.r P(phi.alt and psi) or P(phi.alt and P psi) or P(P phi.alt and psi)$],
+    [BX10$'$], [], [`DerivedAxioms.sinceP`], [$(phi.alt #snce psi) arrow.r P psi$],
+    [BX11], [TL], [`Axiom.temp_linearity`], [$F phi.alt and F psi arrow.r F(F phi.alt and psi) or (F(phi.alt and psi) or F(phi.alt and F psi))$],
+    [BX11$'$], [], [`DerivedAxioms.tempLinearityPast`], [$P phi.alt and P psi arrow.r P(phi.alt and psi) or P(phi.alt and P psi) or P(P phi.alt and psi)$],
     [BX12], [UT], [`Axiom.F_until_equiv`], [$F phi.alt arrow.r (top #untl phi.alt)$],
-    [BX12$'$], [], [`Axiom.P_since_equiv`], [$P phi.alt arrow.r (top #snce phi.alt)$],
+    [BX12$'$], [], [`DerivedAxioms.pSinceEquiv`], [$P phi.alt arrow.r (top #snce phi.alt)$],
     [BX13], [SU], [`Axiom.enrichment_until`], [$p and (phi.alt #untl psi) arrow.r (phi.alt #untl (psi and (phi.alt #snce p)))$],
-    [BX13$'$], [], [`Axiom.enrichment_since`], [$p and (phi.alt #snce psi) arrow.r (phi.alt #snce (psi and (phi.alt #untl p)))$],
+    [BX13$'$], [], [`DerivedAxioms.enrichmentSince`], [$p and (phi.alt #snce psi) arrow.r (phi.alt #snce (psi and (phi.alt #untl p)))$],
     table.hline(),
   ),
-  caption: [BX temporal layer. Gaps in the structural numbering (BX2, BX8, BX9, BX14) mark schemata of Burgess @burgess1982axioms that were removed as unsound or unnecessary under the strict-witness/open-guard semantics; see the source comments in `ProofSystem/Axioms.lean`. TB is stated as $top arrow.r F top$, trivially interderivable with the bare $F top$ form of the seriality axiom.],
+  caption: [BX temporal layer. Gaps in the structural numbering (BX2, BX8, BX9, BX14) mark schemata of Burgess @burgess1982axioms that were removed as unsound or unnecessary under the strict-witness/open-guard semantics; see the source comments in `ProofSystem/Axioms.lean`. TB, TL and CN are stated as the paper states them, with 3-way disjunctions right-associated; their pre-paper forms ($top arrow.r F top$, and TL and CN in the former disjunct order and grouping) are derived (`DerivedAxioms.serialFutureImp`, `DerivedAxioms.tempLinearityLegacy`, `DerivedAxioms.linearUntilLegacy`). The primed rows are derived by TR.],
   )
 }
 
@@ -136,7 +138,7 @@ Highlights of the layer:
 MF is the sole bimodal interaction axiom: necessary truths remain necessary in the future.
 Its companion TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is *derived* (see @sec:derived-axioms).
 
-=== Layer 5: Uniformity (5)
+=== Layer 5: Uniformity (4)
 
 The uniformity axioms concern the discreteness witness $bot #untl top$ ("there is an immediate successor": the guard interval to the witness is empty).
 They encode the *uniformity of discreteness* in ordered abelian groups --- by translation invariance, a gap at one point exists at every point and in every accessible world --- and are therefore valid on *all* frames (frame class `Base`).
@@ -150,18 +152,18 @@ They encode the *uniformity of discreteness* in ordered abelian groups --- by tr
     table.header([*Short*], [*Lean Constructor*], [*Schema*]),
     table.hline(),
     [NP], [`Axiom.discrete_symm_fwd`], [$(bot #untl top) arrow.r (bot #snce top)$],
-    [], [`Axiom.discrete_symm_bwd`], [$(bot #snce top) arrow.r (bot #untl top)$],
+    [], [`DerivedAxioms.discreteSymmBwd`], [$(bot #snce top) arrow.r (bot #untl top)$],
     [NF], [`Axiom.discrete_propagate_fwd`], [$(bot #untl top) arrow.r G(bot #untl top)$],
     [NA], [`Axiom.discrete_propagate_bwd`], [$(bot #untl top) arrow.r H(bot #untl top)$],
     [NB], [`Axiom.discrete_box_necessity`], [$(bot #untl top) arrow.r square.stroked (bot #untl top)$],
     table.hline(),
   ),
-  caption: [`discrete_symm_bwd` is the converse of NP, obtainable via time reflection, and carries no separate short name.],
+  caption: [`discrete_symm_bwd` is the converse of NP, derived by time reflection, and carries no separate short name.],
 )
 
-=== Layers 6--7: Prior and Z1 (3, discrete-only)
+=== Layers 6--7: Prior and Z1 (2, discrete-only)
 
-Valid on discrete linear orders (frame class `ZTime`), these axioms encode well-ordering for definable sets.
+Valid on discrete linear orders (frame class `ZTime`), these axioms encode well-ordering for definable sets. Prior-SZ is the TR mirror of Prior-UZ, derived at every frame class that admits UZ.
 
 #figure(
   table(
@@ -172,7 +174,7 @@ Valid on discrete linear orders (frame class `ZTime`), these axioms encode well-
     table.header([*Name*], [*Short*], [*Lean Constructor*], [*Schema*]),
     table.hline(),
     [Prior-UZ], [UZ], [`Axiom.prior_UZ`], [$F phi.alt arrow.r (not phi.alt #untl phi.alt)$],
-    [Prior-SZ], [], [`Axiom.prior_SZ`], [$P phi.alt arrow.r (not phi.alt #snce phi.alt)$],
+    [Prior-SZ], [], [`DerivedAxioms.priorSZ`], [$P phi.alt arrow.r (not phi.alt #snce phi.alt)$],
     [Z1], [Z1], [`Axiom.z1`], [$G(G phi.alt arrow.r phi.alt) arrow.r (F G phi.alt arrow.r G phi.alt)$],
     table.hline(),
   ),
@@ -203,9 +205,9 @@ Valid on densely ordered frames (frame class `Dense`).
 On a dense order no point has an immediate successor, so the discreteness witness $bot #untl top$ is false everywhere (DI, the Burgess density axiom for Until/Since @burgess1982axioms).
 DI is included alongside DN because the density schema alone provably fails to derive it.
 
-=== Layer 9: Reynolds Dedekind (3, Dedekind-only)
+=== Layer 9: Reynolds Dedekind (2, Dedekind-only)
 
-Valid on the RTime frame class (dense-and-complete, real-flow orders), these axioms are Reynolds' definable-gap-freeness triple for Until/Since over the reals @reynolds1992.
+Valid on the RTime frame class (dense-and-complete, real-flow orders), these axioms are Reynolds' definable-gap-freeness triple for Until/Since over the reals @reynolds1992, less the past form of Prior-U, which is derived.
 They are stated with the recurrence abbreviations
 $ K^+ phi.alt := not (not phi.alt #untl top), quad quad K^- phi.alt := not (not phi.alt #snce top), $
 where $K^+ phi.alt$ says that $phi.alt$ recurs arbitrarily soon in the future and $K^- phi.alt$ that it recurred arbitrarily recently in the past.
@@ -219,11 +221,11 @@ where $K^+ phi.alt$ says that $phi.alt$ recurs arbitrarily soon in the future an
     table.header([*Short*], [*Lean Constructor*], [*Schema*]),
     table.hline(),
     [Prior-U], [`Axiom.prior_U_gap`], [$(phi.alt #untl top) and F not phi.alt arrow.r (phi.alt #untl (not phi.alt or K^+ not phi.alt))$],
-    [], [`Axiom.prior_S_gap`], [$(phi.alt #snce top) and P not phi.alt arrow.r (phi.alt #snce (not phi.alt or K^- not phi.alt))$],
+    [], [`DerivedAxioms.priorSGap`], [$(phi.alt #snce top) and P not phi.alt arrow.r (phi.alt #snce (not phi.alt or K^- not phi.alt))$],
     [Sep], [`Axiom.sep`], [$K^+ phi.alt and not K^+ (phi.alt and (not phi.alt #untl phi.alt)) arrow.r K^+ (K^+ phi.alt and K^- phi.alt)$],
     table.hline(),
   ),
-  caption: [Only the future/until direction of Prior-U is axiomatic; its past mirror `prior_S_gap` is the time-reflection image. These axioms enforce *definable* Dedekind completeness --- no temporal formula characterizes completeness outright.],
+  caption: [Only the future/until direction of Prior-U is axiomatic; its past mirror `prior_S_gap` is the time-reflection image, derived. These axioms enforce *definable* Dedekind completeness --- no temporal formula characterizes completeness outright.],
 )
 
 Prior-U says a bounded region where $phi.alt$ has held throughout acquires a definable upper endpoint; Sep is Reynolds' separation axiom, semantically backed by the separability of the reals.
@@ -236,7 +238,7 @@ Derivations are parameterized by a frame class, making frame-dependent reasoning
 #definition("Frame Class")[
   The type `FrameClass` has four values: `Base`, `Dense`, `ZTime`, and `RTime`, partially ordered with `Base` below every other class, `RTime` above `Dense`, and `ZTime` incomparable with both `Dense` and `RTime`:
   $ "Base" lt.eq "Dense" lt.eq "RTime", quad quad "Base" lt.eq "ZTime". $
-  Each axiom constructor is assigned a minimum frame class by `Axiom.minFrameClass`: the #base-count axioms of layers 1--5 are `Base`; Prior-UZ, Prior-SZ, and Z1 (#ztime-only-count axioms) are `ZTime`; DN and DI (#dense-only-count axioms) are `Dense`; Prior-U, its past mirror, and Sep (#rtime-only-count axioms) are `RTime`.
+  Each axiom constructor is assigned a minimum frame class by `Axiom.minFrameClass`: the #base-count axioms of layers 1--5 are `Base`; Prior-UZ and Z1 (#ztime-only-count axioms) are `ZTime`; DN and DI (#dense-only-count axioms) are `Dense`; Prior-U and Sep (#rtime-only-count axioms) are `RTime`. The derived mirrors Prior-SZ and Prior-S are theorems at the class of their primaries.
 ]
 
 The axiom rule of the proof system admits an axiom into a derivation at frame class `fc` only when its minimum frame class is at most `fc`.
@@ -368,9 +370,9 @@ The full system presented here is the book's object of study throughout.
 Several presentation choices of the axiomatization are *design facts*, intended rather than incidental:
 
 - *CPL is spelled out*: classical propositional logic is often subsumed in a single phrase; this axiomatization lists its four Hilbert schemata (Layer 1) explicitly, so that derivations are fully constructor-level.
-- *S5 is closed under theorems*: M4 and MB appear alongside MT, M5, MK --- derivable in S5 but convenient as primitives.
+- *S5 is the paper's*: the primitives are MT, M5 and MK; M4 and MB are derived theorems (`DerivedAxioms.modal4`, `DerivedAxioms.modalB`).
 - *Since/Until is the temporal engine*: with the two-place primitives, TK and T4 become derived theorems, and TB, TA, TL live inside the BX layer (@sec:derived-axioms).
-- *Past mirrors are primed constructors*: past duals are generable by the TR rule alone, but the primed mirror constructors (BX1$'$--BX13$'$) are included as primitives, which makes derivations at non-empty contexts more direct.
+- *Past mirrors are derived*: past duals are generated by the TR rule alone, so the primed mirrors (BX1$'$--BX13$'$) are derived theorems with context-lifted forms (`DerivedAxioms`), not axiom constructors, exactly as in the paper.
 - *Frame-class axioms are gated structurally*: the extensions *TM*#sub[f], *TM*#sub[d], and *TM*#sub[c] are the `ZTime`, `Dense`, and `RTime` frame classes of @sec:frame-classes rather than separately axiomatized systems.
 
 == Notation

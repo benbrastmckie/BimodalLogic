@@ -219,7 +219,7 @@ elab "modal_4_tactic" : tactic => do
         | .app (.const ``Formula.box _) (.app (.const ``Formula.box _) innerFormula2) =>
 
           if ← isDefEq innerFormula innerFormula2 then
-            let axiomProof ← mkAppM ``Axiom.modal_4 #[innerFormula]
+            let axiomProof ← mkAppM ``DerivedAxioms.modal4 #[innerFormula]
             let proof ← mkAppM ``Derivable.axiom #[axiomProof]
             goal.assign proof
           else
@@ -246,7 +246,7 @@ elab "modal_4_tactic" : tactic => do
 2. **Definitional Equality Check**: `isDefEq innerFormula innerFormula2` ensures both
    `φ` instances are the same formula.
 
-3. **Proof Term Construction**: Builds `Derivable.axiom (Axiom.modal_4 φ)` to close goal.
+3. **Proof Term Construction**: Builds `DerivedAxioms.modal4 φ` (a derived theorem; modal 4 is not a primitive axiom) to close goal.
 
 4. **Error Messages**: Each pattern match level provides specific error message for debugging.
 
@@ -317,7 +317,7 @@ partial def modalSearch (goal : MVarId) (depth : Nat) : TacticM Unit := do
     catch _ =>
       try
         -- Try applying axiom M4
-        let proof ← mkAppM ``Derivable.axiom #[← mkAppM ``Axiom.modal_4 #[← inferType goalType]]
+        let proof ← mkAppM ``DerivedAxioms.modal4 #[← inferType goalType]
         goal.assign proof
       catch _ =>
         -- Try modus ponens (creates subgoals)
@@ -382,14 +382,12 @@ theorem perpetuity2 (φ : Formula) : Derivable [] (eventually φ).imp (diamond �
 @[aesop safe [TMLogic]]
 theorem modal_4_derivable (φ : Formula) : Derivable [] (Formula.box φ).imp
   (Formula.box (Formula.box φ)) := by
-  apply Derivable.axiom
-  exact Axiom.modal_4 φ
+  exact DerivedAxioms.modal4 φ
 
 @[aesop safe [TMLogic]]
 theorem modal_b_derivable (φ : Formula) : Derivable [] φ.imp (Formula.box (diamond φ)) :=
   by
-  apply Derivable.axiom
-  exact Axiom.modal_b φ
+  exact DerivedAxioms.modalB φ
 ```
 
 ### Historical: the `tm_auto` Tactic (Retired)
@@ -623,8 +621,8 @@ macro "modal_reasoning" : tactic =>
   `(tactic|
     repeat (first
       | apply_axiom Axiom.modal_t
-      | apply_axiom Axiom.modal_4
-      | apply_axiom Axiom.modal_b
+      | exact DerivedAxioms.modal4 _
+      | exact DerivedAxioms.modalB _
       | apply Derivable.modus_ponens <;> assumption))
 ```
 

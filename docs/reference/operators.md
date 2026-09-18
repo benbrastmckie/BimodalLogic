@@ -157,7 +157,7 @@ Reynolds's gap operators, used to state the Dedekind-layer axioms.
 **Formal Definition**: `K⁺φ := ¬U(¬φ, ⊤)`, `K⁻φ := ¬S(¬φ, ⊤)`
 **LEAN Code**: `Formula.kPlus`, `Formula.kMinus`
 **Meaning**: "φ holds arbitrarily soon" / "φ held arbitrarily recently"
-**Used by**: `Axiom.prior_U_gap`, `Axiom.prior_S_gap`, `Axiom.sep`
+**Used by**: `Axiom.prior_U_gap`, `DerivedAxioms.priorSGap` (derived by TR from PU), `Axiom.sep`
 
 ---
 

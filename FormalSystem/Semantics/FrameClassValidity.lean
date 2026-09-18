@@ -87,14 +87,14 @@ is what keeps the constraint and the tag from drifting apart.
 Per-constructor anchors:
 
 * `.Base ↦ True`. The unconstrained class: `def:logical-consequence` quantifies over all models
-  with no frame-side restriction, and `Axiom.minFrameClass` sends 37 of the 45 axiom constructors
+  with no frame-side restriction, and `Axiom.minFrameClass` sends 23 of the 29 axiom constructors
   here.
 * `.Dense ↦ TaskFrame.IsDense`. `def:frame-properties`' Dense clause. `Axiom.density` (`GGφ → Gφ`)
   and `Axiom.dense_indicator` (`¬(⊥ U ⊤)`) carry `.Dense`.
 * `.ZTime ↦ TaskFrame.IsZTime`, **not** `TaskFrame.IsDiscrete`. `def:BX-z`'s closing
   sentence narrows the discrete class over which BX_z and TM_z are sound and complete to exactly
   the frames over ℤ-time — `UZ` and `Z1` fail over every discrete order that is not Archimedean —
-  and it is that narrowed class `Axiom.prior_UZ`, `Axiom.prior_SZ` and `Axiom.z1` are sound over.
+  and it is that narrowed class `Axiom.prior_UZ`, `DerivedAxioms.priorSZ` and `Axiom.z1` are sound over.
   Interpreting `.ZTime` by the bare Discrete clause would silently widen the class under
   `soundness_ztime`.
 * `.RTime ↦ TaskFrame.IsRTime`, **not** `TaskFrame.IsComplete`. `FrameClass.RTime` sits

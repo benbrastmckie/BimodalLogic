@@ -21,7 +21,7 @@ that every CO instance is valid on dense Dedekind-complete flows, i.e.
 ## Why this file exists
 
 This repository's official Dedekind-class axiom basis is the Reynolds triple
-`Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep`; CO is **not** an `Axiom`
+`Axiom.prior_U_gap` / `DerivedAxioms.priorSGap` / `Axiom.sep`; CO is **not** an `Axiom`
 constructor here. `co_valid` is therefore not a soundness case — nothing in the soundness
 induction consumes it. It is an *independent semantic check* on the formalization: the
 proof-theoretic companion `FormalSystem.Theorems.DedekindDerived.coDerived` derives CO from
@@ -68,7 +68,7 @@ is carried here only for chain consistency with the rest of the `ValidRTime` cha
 because the mathematics needs it.
 
 **Status of CO in this repository.** CO is a derived object, not a primitive: the official
-Dedekind-class basis remains `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep`, and the
+Dedekind-class basis remains `Axiom.prior_U_gap` / `DerivedAxioms.priorSGap` / `Axiom.sep`, and the
 Hilbert-side companion is `FormalSystem.Theorems.DedekindDerived.coDerived`. See
 `Formula.co` for the source citation and the operator-resolution warning.
 -/

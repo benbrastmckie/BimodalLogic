@@ -61,7 +61,7 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
     Formula.snce (Formula.bot.imp Formula.bot) ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.somePast ψ).imp
     (Formula.snce (Formula.bot.imp Formula.bot) ψ)) :=
-    (DerivedAxioms.P_since_equiv ψ)
+    (DerivedAxioms.pSinceEquiv ψ)
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## BX6 at MCS level: absorption -/
@@ -84,7 +84,7 @@ theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
   have h_ax : DerivationTree FrameClass.Base []
       ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp
     (Formula.snce φ ψ)) :=
-    (DerivedAxioms.absorb_since φ ψ)
+    (DerivedAxioms.absorbSince φ ψ)
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## Delegation: Realization.lean sorry closure

@@ -133,7 +133,7 @@ private def propositionalBase : List AxiomInstance :=
 /-- The S5 modal layer, grounding the four `□`/`◇` rules. The universal propagation those rules
 perform across all known worlds is exactly the content of reflexivity, transitivity, symmetry
 and the S5 collapse together with `K`. Transitivity (4) and symmetry (B) are derived theorems of
-MT, M5 and MK (`FormalSystem.ProofSystem.DerivedAxioms.modal_4`/`modal_b`), so the primitive
+MT, M5 and MK (`FormalSystem.ProofSystem.DerivedAxioms.modal4`/`modal_b`), so the primitive
 grounding set is MT, M5 and MK. -/
 private def s5Base : List AxiomInstance :=
   [⟨_, .modal_t pA⟩, ⟨_, .modal_5_collapse pA⟩, ⟨_, .modal_k_dist pA qA⟩]
@@ -238,11 +238,11 @@ def ruleAxioms : TableauRule → List AxiomInstance
   | .untlPos => [⟨_, .until_F pA qA⟩, ⟨_, .self_accum_until pA qA⟩]
   | .untlNeg => []
   -- The Since rule is grounded, via the time-reflection rule TR, in the Until primaries: its
-  -- axioms BX10'/BX5' are the derived TR mirrors `DerivedAxioms.since_P`/`self_accum_since`.
+  -- axioms BX10'/BX5' are the derived TR mirrors `DerivedAxioms.sinceP`/`self_accum_since`.
   | .sncePos => [⟨_, .until_F pA qA⟩, ⟨_, .self_accum_until pA qA⟩]
   | .snceNeg => []
   -- Order trichotomy (1): the three branches ARE the three `temp_linearity` disjuncts, in the
-  -- order of the derived `DerivedAxioms.temp_linearity_legacy` (the primitive axiom states the
+  -- order of the derived `DerivedAxioms.tempLinearityLegacy` (the primitive axiom states the
   -- paper's TL, whose disjuncts are the same three rotated). That identity is settled design,
   -- and it is what makes the eventual admissibility lemma a one-liner.
   | .orderTrichotomy => [⟨_, .temp_linearity pA qA⟩]
@@ -251,17 +251,17 @@ def ruleAxioms : TableauRule → List AxiomInstance
   | .densityRule => [⟨_, .density pA⟩]
   -- Discrete (3)
   | .priorUZ => [⟨_, .prior_UZ pA⟩]
-  -- Grounded via TR in UZ (`DerivedAxioms.prior_SZ` is its mirror).
+  -- Grounded via TR in UZ (`DerivedAxioms.priorSZ` is its mirror).
   | .priorSZ => [⟨_, .prior_UZ pA⟩]
   | .z1Rule => [⟨_, .z1 pA⟩]
   -- Dedekind (3). NOT `prior_UZ`/`prior_SZ`: those are the integer well-ordering axioms at
   -- `.ZTime`, and the similarity of the names is a known trap.
   | .priorUGap => [⟨_, .prior_U_gap pA⟩]
-  -- Grounded via TR in PU (`DerivedAxioms.prior_S_gap` is its mirror).
+  -- Grounded via TR in PU (`DerivedAxioms.priorSGap` is its mirror).
   | .priorSGap => [⟨_, .prior_U_gap pA⟩]
   | .sepRule => [⟨_, .sep pA⟩]
   -- Scheduled outside `allRulesForFC` (2)
-  -- Past seriality is the TR mirror of TS (`DerivedAxioms.serial_past`).
+  -- Past seriality is the TR mirror of TS (`DerivedAxioms.serialPast`).
   | .serialityRule => [⟨_, .serial_future⟩]
   | .timeLinearity => [⟨_, .temp_linearity pA qA⟩]
 

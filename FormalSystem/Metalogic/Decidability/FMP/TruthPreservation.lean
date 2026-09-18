@@ -207,7 +207,7 @@ theorem mcs_box_box {phi : Formula} {S : ClosureMCSBundle phi fc}
     ψ.box.box ∈ S.carrier := by
   -- Modal 4 axiom: □ψ → □□ψ
   have h_modal_4_thm : [] ⊢[fc] (ψ.box).imp (ψ.box.box) :=
-    (DerivedAxioms.modal_4 (fc := fc) ψ)
+    (DerivedAxioms.modal4 (fc := fc) ψ)
   have h_deriv : [ψ.box] ⊢[fc] ψ.box.box := by
     have h_axiom : [ψ.box] ⊢[fc] (ψ.box).imp (ψ.box.box) :=
       DerivationTree.weakening [] _ _ h_modal_4_thm (by intro; simp)

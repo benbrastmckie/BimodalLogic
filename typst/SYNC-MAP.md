@@ -60,7 +60,7 @@ Every chapter file included by `BimodalReference.typ` formerly carried a
 | `00-introduction.typ` | ✓/◇ mixed | Project-structure claims ✓; book-map/roadmap paragraphs ◇ |
 | `01-syntax.typ` | ✓ | Formula type, primitives, derived operators all Lean-anchored, sorry-free |
 | `02-semantics.typ` | ✓ | Task frames, truth conditions Lean-anchored, sorry-free |
-| `03-proof-theory.typ` | ✓ | 42-constructor axiom system, 7 rules, Lean-anchored, sorry-free |
+| `03-proof-theory.typ` | ✓ | 29-constructor axiom system (the paper's primitive schemata; mirrors and M4/MB derived), 7 rules, Lean-anchored, sorry-free |
 | `04-metalogic.typ` | ⧖ | Soundness/deduction/Lindenbaum ✓, but completeness carries the 43-sorry chain |
 | `05-theorems.typ` | ✓ | Perpetuity P1-P6 and theorem libraries, sorry-free |
 | `06-notes.typ` | ⧖ | Reports the same completeness/decidability sorry-status as 04; discrepancy notes are ✓ (Lean-vs-paper facts) |

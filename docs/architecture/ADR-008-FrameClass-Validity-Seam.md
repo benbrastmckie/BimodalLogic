@@ -31,7 +31,7 @@ rejected ones, so that the rationale does not have to live in a module docstring
 ### Rejected: relocate `inductive FrameClass` into a shared low-level module
 
 This would remove the `Semantics -> ProofSystem` import edge entirely. It would also move a
-namespace carrying 45 axiom constructors, along with every `DerivationTree` / `Derivable`
+namespace carrying the axiom constructors (29 since the primitive set was aligned with the paper), along with every `DerivationTree` / `Derivable`
 signature that names them, into a module below both layers. The edge it removes is a single
 import of `ProofSystem/Axioms.lean`, which itself imports only `Syntax/Formula.lean`; the churn
 it creates touches the whole proof side. Rejected on cost.

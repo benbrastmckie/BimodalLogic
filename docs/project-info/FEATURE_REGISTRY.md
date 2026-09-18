@@ -17,7 +17,8 @@ For implementation status by module, see [implementation-status.md](implementati
   linear temporal logic, including syntax, proof system, semantics, soundness, and completeness.
 - **Key Files**:
   - `FormalSystem/Syntax/Formula.lean` - Formula type with all operators
-  - `FormalSystem/ProofSystem/Axioms.lean` - 45 axiom constructors in four layers
+  - `FormalSystem/ProofSystem/Axioms.lean` - 29 axiom constructors in four layers
+  - `FormalSystem/ProofSystem/DerivedAxioms.lean` - TR-derived mirror schemata
     (Base 37 / Dense 2 / ZTime 3 / RTime 3, per `Axiom.minFrameClass`)
   - `FormalSystem/ProofSystem/Derivation.lean` - `DerivationTree`, 7 inference rules
   - `FormalSystem/Metalogic/Soundness.lean` - Soundness theorem (proved)

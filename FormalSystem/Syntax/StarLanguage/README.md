@@ -47,7 +47,7 @@ formalization-native system, built to the shape of `PlusAxiom`/`PlusDerivationTr
 two are structurally comparable and the L⁺ ⊂ L⋆ questions can be *stated*.
 
 The one structural decision worth naming here is that `StarAxiom` **re-declares** the TM⁺
-schemata over `StarFormula` rather than embedding them, exactly as `PlusAxiom` re-declares the 45
+schemata over `StarFormula` rather than embedding them, exactly as `PlusAxiom` re-declares the 45 TM-shaped
 TM schemata over `PlusFormula`. Fifty-two of the 53 are valid at arbitrary `StarFormula`
 metavariables, each proved individually; `paste` and `untl_paste` carry L⋆ counterparts of the
 purity conditions their `PlusAxiom` mirrors already carry.

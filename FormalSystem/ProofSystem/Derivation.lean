@@ -388,7 +388,7 @@ example (p q : Formula) : [p.imp q, p] ⊢ q := by
 Example: Modal 5 collapse axiom is a theorem.
 
 `⊢ ◇□φ → □φ` for any formula φ. (Modal 4 and B are derived theorems; see
-`FormalSystem.ProofSystem.DerivedAxioms.modal_4`.)
+`FormalSystem.ProofSystem.DerivedAxioms.modal4`.)
 -/
 example (φ : Formula) : ⊢ φ.box.diamond.imp φ.box :=
   .axiom _ _ (Axiom.modal_5_collapse _) trivial

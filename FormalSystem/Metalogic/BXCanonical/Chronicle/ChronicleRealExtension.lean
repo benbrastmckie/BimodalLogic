@@ -121,7 +121,7 @@ would otherwise repeat.
    `snce` half adds nothing at all — it reads its guard straight off the predicate.
 3. **Its discharge has no source in the corpus.** It is not derivable from a Dedekind axiom:
    `Axiom.prior_U_gap`'s antecedent `U(⊤, χ)` *is* the below-gap interval it would have to produce,
-   `Axiom.prior_S_gap` consumes an above-gap interval and so yields only the necessity direction,
+   `DerivedAxioms.priorSGap` consumes an above-gap interval and so yields only the necessity direction,
    and `Axiom.sep` lives entirely inside `K⁺`/`K⁻`, which is the negation of "holds on an interval".
    Reynolds reaches ℝ by the separability route instead (**printed pp.177-178**), and Burgess 1984's
    completion argument stays in the `F`/`G` fragment, where the gap witness is placed on the far
@@ -249,7 +249,7 @@ hypothesis that the chronicle bundle satisfies: `BFMCS.LimitGuardBelow`.
 
 - *Refutation 1.* `ψ` is true at every rational of `(g, 5)` and at **no** rational below `g`.
   That is a `ψ`-**right gap** at `g` in Reynolds' sense — the connective `γ⁻`, dual to the `γ⁺`
-  that marks left gaps (Reynolds 1992, printed p.175) — and `Axiom.prior_S_gap` excludes exactly
+  that marks left gaps (Reynolds 1992, printed p.175) — and `DerivedAxioms.priorSGap` excludes exactly
   that configuration. (Independently, this family also violates the already-discharged
   `BFMCS.LimitFutureWitness`: `someFuture φ ∈ m q` for every rational `q < g`, hence in
   `limitSetBelow m g ⊆ limitMCSBelow m g`, yet `V(φ) = (0, g)` gives no rational `s > g` with
@@ -565,7 +565,7 @@ Both selection cases go through, and neither needs the target to be selected:
 
 This is the step the earlier refutation of the guard-free transport turns on. Descending from an
 `snce` witness does leave the interval that the *real* guard covers — but the guarded interval
-does not stop at the gap, because a `ψ`-right gap there is exactly what `Axiom.prior_S_gap`
+does not stop at the gap, because a `ψ`-right gap there is exactly what `DerivedAxioms.priorSGap`
 forbids (Reynolds 1992's `γ⁻` and *right gaps*, printed p.175). Placing the new witness strictly
 between two existing rational points is Burgess 1982 I's own construction step (printed
 pp.372-373, where the interpolated point is `z = (x + y)/2`).
@@ -664,7 +664,7 @@ theorem toRealBundle_backward_since_unselected {fc : FrameClass} (B : BFMCS (fc 
 The guard-free form of this statement is false — see the `Refutations` section of this module's
 docstring. The single added hypothesis `BFMCS.LimitGuardBelow` is what excludes both refuting
 families, and it is not an extra assumption in practice: the chronicle bundle discharges it from
-`Axiom.prior_S_gap`.
+`DerivedAxioms.priorSGap`.
 
 Four cases, on the selection of the target's shifted coordinate `T := t + δ` and (for `snce`) of
 the witness's `S := s + δ`:
@@ -859,7 +859,7 @@ instance `cantor_bfmcs_dense_restricted_buc` and the guard-reach discharge
 
 The transport's guard-free form is refuted (see this module's `Refutations` section); what makes
 the instance nonetheless available is that the chronicle bundle *does* satisfy
-`BFMCS.LimitGuardBelow`, discharged from `Axiom.prior_S_gap`. As with
+`BFMCS.LimitGuardBelow`, discharged from `DerivedAxioms.priorSGap`. As with
 `cantor_bfmcs_dense_real_restricted_tc`, the `hfc : FrameClass.RTime ≤ fc` hypothesis comes
 from the gap discharge and is threaded rather than discharged here.
 -/
@@ -963,7 +963,7 @@ gap into one inside the guarded interval.
 
 *The proof.* Contrapositively, if `φ` failed at every rational of `(r, c)`, then `¬φ` would guard
 that whole interval, and the guard-reach lemma below a gap (`limitGuardBelow_of_priorS`, from
-`Axiom.prior_S_gap`, whence `hfc`) would push `¬φ` to an interval abutting `r` from *below* — where
+`DerivedAxioms.priorSGap`, whence `hfc`) would push `¬φ` to an interval abutting `r` from *below* — where
 the cofinal hypothesis puts a `φ`-point. Maximal consistency at that point is the contradiction.
 
 *Provenance.* Burgess 1984 §2.7 (printed pp.109-110) places the gap witness on the far side with

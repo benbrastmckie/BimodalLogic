@@ -93,25 +93,25 @@ example : Axiom ((Formula.atomS "p").box.box.imp (Formula.atomS "p").box) :=
 -- ============================================================
 
 -- Test: Modal 4 on atom
-example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := DerivedAxioms.modal_4
+example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := DerivedAxioms.modal4
     (Formula.atomS "p")
 
 -- Test: Modal 4 on implication
 example : ⊢ (((Formula.atomS "p").imp (Formula.atomS "q")).box.imp
     ((Formula.atomS "p").imp (Formula.atomS "q")).box.box) :=
-  DerivedAxioms.modal_4 ((Formula.atomS "p").imp (Formula.atomS "q"))
+  DerivedAxioms.modal4 ((Formula.atomS "p").imp (Formula.atomS "q"))
 
 -- ============================================================
 -- Modal B Derived-Theorem Tests: φ → □◇φ (derived from MT, M5)
 -- ============================================================
 
 -- Test: Modal B on atom
-example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p").diamond.box) := DerivedAxioms.modal_b
+example : ⊢ ((Formula.atomS "p").imp (Formula.atomS "p").diamond.box) := DerivedAxioms.modalB
     (Formula.atomS "p")
 
 -- Test: Modal B on box formula
 example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.diamond.box) :=
-  DerivedAxioms.modal_b (Formula.atomS "p").box
+  DerivedAxioms.modalB (Formula.atomS "p").box
 
 -- ============================================================
 -- Modal 5 Collapse Tests: ◇□φ → □φ

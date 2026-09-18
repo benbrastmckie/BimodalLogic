@@ -759,7 +759,7 @@ Clause 1 is `chronicleMonadicStructureOf`'s carrier. Clause 3 is this part. The 
 Reynolds' own one-sentence justification, *"Because it says so in `Γ`, all the substitution
 instances of the other axioms hold everywhere"*, executed in Lean:
 
-1. `Axiom.prior_U_gap`, `Axiom.prior_S_gap` and `Axiom.sep` each have
+1. `Axiom.prior_U_gap`, `DerivedAxioms.priorSGap` and `Axiom.sep` each have
    `minFrameClass = FrameClass.RTime` (`Axioms.lean:524-526`), so under
    `hfc : FrameClass.RTime ≤ fc` every substitution instance is a `DerivationTree fc []`
    theorem;
@@ -858,7 +858,7 @@ theorem chronicleMonadic_semanticPriorU {fc : FrameClass} (hfc : FrameClass.RTim
     · exact Or.inl h_ps
 
 /-- **The bridge structure satisfies Prior-S** — Reynolds §4 Corollary 1 clause 3, second
-conjunct. The past mirror of `chronicleMonadic_semanticPriorU`, at `Axiom.prior_S_gap` and
+conjunct. The past mirror of `chronicleMonadic_semanticPriorU`, at `DerivedAxioms.priorSGap` and
 `kMinus_formula_correct`. -/
 theorem chronicleMonadic_semanticPriorS {fc : FrameClass} (hfc : FrameClass.RTime ≤ fc)
     (B : BFMCS (fc := fc) Rat) (root : Formula)
@@ -883,7 +883,7 @@ theorem chronicleMonadic_semanticPriorS {fc : FrameClass} (hfc : FrameClass.RTim
   have h_thm : Formula.snce (chronicleEff root p) (Formula.or (chronicleEff root p).neg
       (Formula.kMinus (chronicleEff root p).neg)) ∈ fam.mcs t :=
     SetMaximalConsistent.mp_of_theorem (fam.is_mcs t)
-      (DerivedAxioms.prior_S_gap hfc (chronicleEff root p))
+      (DerivedAxioms.priorSGap hfc (chronicleEff root p))
       h_ant_mcs
   have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
       (Formula.snce p (Formula.or p.neg (Formula.kMinus p.neg))) := by

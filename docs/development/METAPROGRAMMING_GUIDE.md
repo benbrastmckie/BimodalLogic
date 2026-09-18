@@ -354,10 +354,10 @@ Construct specific axiom instances:
 let mt_proof ← mkAppM ``Axiom.modal_t #[φ]
 
 -- Modal axiom M4: `□φ → □□φ`
-let m4_proof ← mkAppM ``Axiom.modal_4 #[φ]
+let m4_proof ← mkAppM ``DerivedAxioms.modal4 #[φ]
 
 -- Modal axiom MB: `φ → □◇φ`
-let mb_proof ← mkAppM ``Axiom.modal_b #[φ]
+let mb_proof ← mkAppM ``DerivedAxioms.modalB #[φ]
 
 -- Temporal axiom T4: `Fφ → FFφ`
 let t4_proof ← mkAppM ``Axiom.temporal_4 #[φ]
@@ -616,7 +616,7 @@ example (P : Formula) : [] ⊢ (Formula.box P).imp P := by
   apply_axiom Axiom.modal_t
 
 example (P : Formula) : [] ⊢ (Formula.box P).imp (Formula.box (Formula.box P)) := by
-  apply_axiom Axiom.modal_4
+  exact DerivedAxioms.modal4 _
 ```
 -/
 macro "apply_axiom" ax:ident : tactic =>

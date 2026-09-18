@@ -59,7 +59,7 @@ Unselectedness of `r` is used exactly **once**, to exclude `(w : ℝ) = r`. Ther
 `by_contra`: the argument is a direct two-case split on whether `P(¬ψ)` holds at `t`, and the
 first case needs no axiom at all.
 
-`Axiom.prior_S_gap` (`ProofSystem/Axioms.lean`) has `minFrameClass = .RTime`, so both theorems
+`DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean`) has `minFrameClass = .RTime`, so both theorems
 below carry `(hfc : FrameClass.RTime ≤ fc)`. The axiom was present in the tree and proved sound
 (`Metalogic/Soundness.lean`) but was **consumed nowhere on the completeness route** before this
 module; `Axiom.prior_U_gap` alone was in use, by `ChronicleLimitGapWitness.lean`.
@@ -100,7 +100,7 @@ If a rational family `m` satisfies Since coherence in both directions (unrestric
 
 The proof is the past mirror of Reynolds 1992's Theorem 3 argument (printed p.176), applied to the
 **guard** `ψ` rather than to a witness, which is what makes the Prior-S antecedent `S(⊤, ψ)`
-available. See the module docstring. `Axiom.prior_S_gap` is consumed at `ψ`, whence the hypothesis
+available. See the module docstring. `DerivedAxioms.priorSGap` is consumed at `ψ`, whence the hypothesis
 `hfc`.
 -/
 theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.RTime ≤ fc)
@@ -140,7 +140,7 @@ theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.RTime ≤ 
     have hand : Formula.and (Formula.snce ψ Formula.top) ψ.neg.somePast ∈ m t :=
       conj_mcs fc (hm t) _ _ hA1 hcase
     have himp := theorem_in_mcs (hm t)
-      (DerivedAxioms.prior_S_gap hfc ψ)
+      (DerivedAxioms.priorSGap hfc ψ)
     have hcons : Formula.snce ψ (Formula.or ψ.neg (Formula.kMinus ψ.neg)) ∈ m t :=
       SetMaximalConsistent.implication_property (hm t) himp hand
     -- Prior-S's consequent, read backwards: a rational `w < t` carrying `¬ψ ∨ K⁻(¬ψ)`, with

@@ -154,13 +154,13 @@ inductive TableauRule : Type where
   | priorUGap
   /-- Dedekind: Prior-S (gap form). Past dual of `priorUGap`: from
       `T(S(⊤,φ) ∧ P(¬φ))` add `T(S(¬φ ∨ K⁻(¬φ), φ))`.
-      Tableau counterpart of `Axiom.prior_S_gap`. NOT `priorSZ`. -/
+      Tableau counterpart of `DerivedAxioms.priorSGap`. NOT `priorSZ`. -/
   | priorSGap
   /-- Dedekind: separation. From `T(K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)))` add
       `T(K⁺(K⁺φ ∧ K⁻φ))`. Tableau counterpart of `Axiom.sep`. -/
   | sepRule
   /-- Seriality (BX1/BX1'). At any label, add `T(F ⊤)` and `T(P ⊤)` — the tableau images of
-      `Axiom.serial_future` and `Axiom.serial_past` (`Axioms.lean:113, 117`). Persistent, and
+      `Axiom.serial_future` and `DerivedAxioms.serialPast` (`Axioms.lean:113, 117`). Persistent, and
       self-suppressing once both are on the branch at that label.
 
       Base rule in the soundness sense — both are base axioms, so it is sound for every frame
@@ -1447,7 +1447,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               else (.notApplicable, timeOrd)
           | _ => (.notApplicable, timeOrd)
       | none => (.notApplicable, timeOrd)
-  -- Dedekind: Prior-S (gap form), `Axiom.prior_S_gap`. Past dual of `priorUGap`.
+  -- Dedekind: Prior-S (gap form), `DerivedAxioms.priorSGap`. Past dual of `priorUGap`.
   | .priorSGap, .pos, χ =>
       match asAnd? χ with
       | some (a, b) =>
@@ -1486,7 +1486,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   -- Seriality: `T(F ⊤)` and `T(P ⊤)` at this label, filtered against the branch.
   -- Persistent and self-suppressing: once both are present the rule reports `.notApplicable`,
   -- so it cannot re-fire at a label it has already served. Soundness is immediate from
-  -- `Axiom.serial_future` / `Axiom.serial_past`: both have antecedent `⊤`, so their consequents
+  -- `Axiom.serial_future` / `DerivedAxioms.serialPast`: both have antecedent `⊤`, so their consequents
   -- hold at every label of every model, and adding them preserves satisfiability in both
   -- directions.
   | .serialityRule, _, _ =>
@@ -1634,7 +1634,7 @@ def zTimeRules : List TableauRule := [
 /--
 Dedekind-specific rules (R6), included only when fc >= .RTime.
 
-The tableau counterparts of `Axiom.prior_U_gap`, `Axiom.prior_S_gap` and `Axiom.sep`
+The tableau counterparts of `Axiom.prior_U_gap`, `DerivedAxioms.priorSGap` and `Axiom.sep`
 (`Axioms.lean:377,387,398`) — the three axioms whose gap/separation content no other rule
 touches, and the reason `Discrete ≰ Dedekind` is the correct gating rather than a defect:
 the Dedekind terminus consumes `ValidRTime`, so its arm is base + dense + dedekind

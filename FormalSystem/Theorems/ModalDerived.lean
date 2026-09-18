@@ -211,9 +211,9 @@ noncomputable def hDneTheorem (phi : Formula) :
   exact DerivationTree.modus_ponens [] _ _ h_K h_H_dne
 
 /-- Past analog of the `connect_past` axiom: ⊢ φ → H(F(φ)).
-Applied directly as an axiom instance; `Axiom.connect_past` is the constructor. -/
+Applied directly as an axiom instance; `DerivedAxioms.connectPast` is the constructor. -/
 noncomputable def pastTempA (psi : Formula) :
     [] ⊢ psi.imp psi.someFuture.allPast :=
-  (DerivedAxioms.connect_past psi)
+  (DerivedAxioms.connectPast psi)
 
 end FormalSystem.Theorems.ModalDerived

@@ -35,7 +35,7 @@ mirror that `ofTM` and the soundness recursion rely on.
 ## Backward conservativity
 
 `PlusAxiom.ofTM` sends every TM axiom instance to its re-declared TM⁺ twin at the embedded
-parameters; each of its 45 arms is `rfl`-shaped because the derived operators of
+parameters; each of its 29 arms is `rfl`-shaped because the derived operators of
 `PlusLanguage/Formula.lean` carry `Formula`'s right-hand sides verbatim, and
 `minFrameClass_ofTM` records that the frame class is preserved. `PlusDerivationTree.ofTM`
 then lifts derivations, and `plusDerivable_of_derivable` is the `Prop`-level statement:

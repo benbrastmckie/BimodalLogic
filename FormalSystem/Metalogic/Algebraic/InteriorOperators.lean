@@ -134,7 +134,7 @@ theorem box_idempotent (a : LindenbaumAlg) : boxQuot (boxQuot a) = boxQuot a := 
   change ProvEquiv φ.box.box φ.box
   constructor
   · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ.box) trivial⟩
-  · exact ⟨(DerivedAxioms.modal_4 φ)⟩
+  · exact ⟨(DerivedAxioms.modal4 φ)⟩
 
 /--
 Box is an interior operator on the Lindenbaum algebra.

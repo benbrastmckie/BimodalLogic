@@ -75,7 +75,7 @@ conventions. **Neither carries a `¬F` conjunct at the point of evaluation.**
   object-level source-exact spelling, `(untl ⊤ φ.neg).neg`, carrying the **name-collision
   warning at `Formula.lean:163-179`** which says of `kplusFormula` below that *"substituting one
   for the other silently transcribes a different axiom"*. `Axiom.prior_U_gap`
-  (`ProofSystem/Axioms.lean:377`), `Axiom.prior_S_gap` (`:387`) and `Axiom.sep` (`:390`) are
+  (`ProofSystem/Axioms.lean:377`), `DerivedAxioms.priorSGap` (`:387`) and `Axiom.sep` (`:390`) are
   stated with these.
 * `kplusOpen` / `kminusOpen` (`Kamp/KPlusFaithful.lean`) — their `Prop`-level reading, together
   with the bridge lemmas `kPlus_formula_correct` / `kMinus_formula_correct`. `kplusOpen` is

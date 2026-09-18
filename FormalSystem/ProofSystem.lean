@@ -14,21 +14,23 @@ import FormalSystem.ProofSystem.LinearityDerivedFacts
 # FormalSystem.ProofSystem - TM Proof System
 
 Aggregates all proof system components for bimodal logic TM (Tense and Modality).
-Provides the Hilbert-style axiom system with 45 axiom schemata and derivation
-trees with 7 inference rules.
+Provides the Hilbert-style axiom system with 29 axiom schemata (the paper's primitive
+system) and derivation trees with 7 inference rules.
 
 ## Submodules
 
-- `Axioms`: 45 TM axiom constructors organized into base (37), dense (2), discrete (3), and
-  Dedekind (3) layers
+- `Axioms`: 29 TM axiom constructors organized into base (23), dense (2), discrete (2), and
+  Dedekind (2) layers
   - Propositional: K, S, EFQ (ex falso), Peirce
-  - Modal S5: MT (reflexivity), M4 (transitivity), MB (symmetry), M5 (collapse), MK (distribution)
-  - Temporal: TK (distribution), T4 (transitivity), TT-F/TT-P (reflexivity), TC
-  (present-past-future), TL (perpetuity), Lin (linearity)
-  - Modal-Temporal: MF (modal-future), TF (temporal-future)
-  - Dense Extension: DN (density)
-  - Discrete Extension: DF (discreteness), F-seriality, P-seriality
-  - Reynolds Dedekind: prior_U_gap, prior_S_gap, sep
+  - Modal S5: MT (reflexivity), M5 (collapse), MK (distribution)
+  - Temporal (BX, future direction): TS, UG, UC, TC, SU, UF, UI, CN, UE, TL, UT
+  - Modal-Temporal: MF
+  - Uniformity: NP, NF, NA, NB
+  - Discrete: UZ, Z1; Dense: DN, NN; Reynolds Dedekind: PU, SEP
+
+- `DerivedAxioms`: the schemata the paper does not take as primitive, as derived theorems —
+  the time-reflection mirrors (by the TR rule) and, in `Theorems/Combinators.lean`, modal 4
+  and B and the pre-paper forms of TL, CN and TS
 
 - `Derivation`: Derivation tree type `Γ ⊢ φ` with 7 inference rules
   - axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
@@ -44,9 +46,9 @@ trees with 7 inference rules.
 | Category | Axioms | Description |
 |----------|--------|-------------|
 | Propositional | K, S, EFQ, Peirce | Classical propositional logic basis |
-| Modal S5 | MT, M4, MB, MK | Reflexive, transitive, symmetric accessibility |
-| Temporal | TK, T4, TC, TL | Future/past with transitivity and recurrence |
-| Interaction | MF, TF | Modal-temporal connection axioms |
+| Modal S5 | MT, M5, MK | S5 necessity (4 and B derived) |
+| Temporal | TS, UG, UC, TC, SU, UF, UI, CN, UE, TL, UT | Burgess-Xu Until/Since, future direction |
+| Interaction | MF | Modal-temporal connection axiom (TF derived) |
 
 ## Inference Rules
 

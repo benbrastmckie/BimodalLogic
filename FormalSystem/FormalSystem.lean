@@ -35,7 +35,7 @@ with linear temporal logic.
   nothing from `FormalSystem.*`; the import direction is strictly `Mathlib → ForMathlib → FormalSystem`
 - `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
   plus derived operators and context types
-- `FormalSystem.ProofSystem`: Hilbert-style proof system with 45 axiom schemata
+- `FormalSystem.ProofSystem`: Hilbert-style proof system with 29 axiom schemata
 (base/dense/discrete)
 and 7 inference rules
 - `FormalSystem.MinusLanguage`: The tense-primitive base language L⁻ (`H`/`G` primitive) with

@@ -601,7 +601,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
   -- Seriality: ⊤ → F(⊤) is a theorem, where F(⊤) = ¬G(¬⊤) = ¬G(neg_top)
   have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.someFuture (Formula.bot.imp Formula.bot))) :=
-    DerivedAxioms.serial_future_imp
+    DerivedAxioms.serialFutureImp
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
@@ -656,7 +656,7 @@ theorem h_content_set_consistent (x : ReflCanDomain) :
     SetMaximalConsistent.implication_property h_mcs h3 h_H_bot
   have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.somePast (Formula.bot.imp Formula.bot))) :=
-    DerivedAxioms.serial_past
+    DerivedAxioms.serialPast
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
@@ -711,7 +711,7 @@ theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
     | inr h => exact h
   -- modal_b on ¬φ: ⊢ ¬φ → □◇(¬φ)
   have h_mb : [] ⊢ (Formula.neg φ).imp (Formula.box (Formula.neg φ).diamond) :=
-    (DerivedAxioms.modal_b (Formula.neg φ))
+    (DerivedAxioms.modalB (Formula.neg φ))
   have h_box_dia : Formula.box (Formula.neg φ).diamond ∈ x.val :=
     h_mcs_x.mp_of_theorem h_mb h_neg_phi
   -- canS5R x y: ◇(¬φ) ∈ y.val
@@ -752,7 +752,7 @@ theorem canS5R_trans {x y z : ReflCanDomain}
   -- From modal 4: □φ → □□φ
   have h_box_box_phi_x : Formula.box (Formula.box φ) ∈ x.val := by
     have h_4 : [] ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
-      (DerivedAxioms.modal_4 φ)
+      (DerivedAxioms.modal4 φ)
     have h_4_in : (Formula.box φ).imp (Formula.box (Formula.box φ)) ∈ x.val :=
       theorem_in_mcs h_mcs_x h_4
     exact h_mcs_x.implication_property h_4_in h_box_phi_x

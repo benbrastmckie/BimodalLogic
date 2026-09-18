@@ -114,7 +114,7 @@ example : True := by
   
   -- Step 2: Derive Modal 4 axiom
   let d2 : ⊢ (p.box.imp p.box.box) :=
-    (DerivedAxioms.modal_4 p)
+    (DerivedAxioms.modal4 p)
   
   -- Step 3: Weaken to non-empty context
   let Γ := [q]
@@ -221,7 +221,7 @@ example : True := by
   
   -- Step 1: □p → □□p using Modal 4
   let ax1 : Γ ⊢ (p.box.imp p.box.box) :=
-    (DerivedAxioms.modal_4At Γ p)
+    (DerivedAxioms.modal4At Γ p)
   let ass : Γ ⊢ p.box :=
     DerivationTree.assumption Γ p.box (List.Mem.head _)
   let d1 : Γ ⊢ p.box.box :=
@@ -229,7 +229,7 @@ example : True := by
   
   -- Step 2: □□p → □□□p using Modal 4
   let ax2 : Γ ⊢ (p.box.box.imp p.box.box.box) :=
-    (DerivedAxioms.modal_4At Γ p.box)
+    (DerivedAxioms.modal4At Γ p.box)
   let d2 : Γ ⊢ p.box.box.box :=
     DerivationTree.modus_ponens Γ p.box.box p.box.box.box ax2 d1
   

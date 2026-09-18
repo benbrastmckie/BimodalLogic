@@ -136,7 +136,7 @@ reusable: `DoetsD1`/`DoetsD2` and `doets_theorem_dense`
 abstract too. The gap is one level down: **every existing discharge of the semantic side conditions
 those suppliers need consumes an axiom the base language cannot express.**
 `chronicleMonadic_semanticPriorU` consumes `Axiom.prior_U_gap`, `chronicleMonadic_semanticPriorS`
-consumes `Axiom.prior_S_gap`, and `chronicleMonadic_semanticSep` consumes `Axiom.sep` (all in
+consumes `DerivedAxioms.priorSGap`, and `chronicleMonadic_semanticSep` consumes `Axiom.sep` (all in
 `Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean`); D1 needs the first two and D2 needs
 all three. None of those three axioms is expressible in `MinusFormula`, which has six constructors —
 `atom`, `bot`, `imp`, `box`, `allPast`, `allFuture` — and no `untl`, `snce`, `kPlus` or `kMinus`.

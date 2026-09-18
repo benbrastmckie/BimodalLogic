@@ -119,6 +119,9 @@ structure DatasetMetadata where
   stats : BatchStats
   /-- Frame class used for decision procedure. -/
   frameClass : String := "Base"
+  /-- Primitive axiom system the proofs are over (see `DatasetGeneratorMain.DatasetMetadata`):
+  `"paper-29"`, in which the time-reflection mirrors and modal 4/B are derived theorems. -/
+  axiomSystem : String := "paper-29"
   deriving Repr
 
 /--
@@ -130,6 +133,7 @@ def DatasetMetadata.toJson (m : DatasetMetadata) : String :=
   ++ ", \"config\": " ++ EnumConfig.toJson m.config
   ++ ", \"statistics\": " ++ BatchStats.toJson m.stats
   ++ ", \"frameClass\": \"" ++ escapeJsonString m.frameClass ++ "\""
+  ++ ", \"axiomSystem\": \"" ++ escapeJsonString m.axiomSystem ++ "\""
   ++ "}"
 
 /-!

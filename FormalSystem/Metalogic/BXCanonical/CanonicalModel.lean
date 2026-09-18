@@ -382,7 +382,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula)
         rw [int_chain_zero]; exact h_box_neg
       · -- t < 0: use H propagation (Box → Box Box → H Box via modal_4 + boxToPast)
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ M₀ :=
-          SetMaximalConsistent.mp_of_theorem h₀ (DerivedAxioms.modal_4 (Formula.box φ).neg)
+          SetMaximalConsistent.mp_of_theorem h₀ (DerivedAxioms.modal4 (Formula.box φ).neg)
             h_box_neg
         have h_H := SetMaximalConsistent.mp_of_theorem h₀
           (boxToPast (Formula.box (Formula.box φ).neg)) h_box_box_neg
@@ -405,7 +405,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula)
     · -- t < 0: use H propagation (modal_4: □φ → □□φ, boxToPast: □(□φ) → H(□φ))
       have h_box_box : Formula.box (Formula.box φ) ∈ M₀ :=
         SetMaximalConsistent.mp_of_theorem h₀
-          (DerivedAxioms.modal_4 φ) h_box_M0
+          (DerivedAxioms.modal4 φ) h_box_M0
       have h_H := SetMaximalConsistent.mp_of_theorem h₀ (boxToPast (Formula.box φ)) h_box_box
       exact int_chain_backward_H M₀ h₀ 0 t (Formula.box φ) h_neg h_H
 
@@ -438,7 +438,7 @@ theorem g_content_fc_consistent {fc : FrameClass} {M : Set Formula}
     theorem_in_mcs h_mcs (identity Formula.bot)
   have h_F_top : Formula.someFuture (Formula.bot.imp Formula.bot) ∈ M :=
     SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivedAxioms.serial_future_imp) h_top
+      (DerivedAxioms.serialFutureImp) h_top
   have h_seed := forward_temporal_witness_seed_consistent M h_mcs _ h_F_top
   have h_sub : GContent M ⊆ ForwardTemporalWitnessSeed M (Formula.bot.imp Formula.bot) :=
     g_content_subset_forward_temporal_witness_seed M _
@@ -454,7 +454,7 @@ theorem h_content_fc_consistent {fc : FrameClass} {M : Set Formula}
     theorem_in_mcs h_mcs (identity Formula.bot)
   have h_P_top : Formula.somePast (Formula.bot.imp Formula.bot) ∈ M :=
     SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivedAxioms.serial_past) h_top
+      (DerivedAxioms.serialPast) h_top
   have h_seed := past_temporal_witness_seed_consistent M h_mcs _ h_P_top
   have h_sub : HContent M ⊆ PastTemporalWitnessSeed M (Formula.bot.imp Formula.bot) :=
     h_content_subset_past_temporal_witness_seed M _
@@ -752,7 +752,7 @@ theorem box_stable_in_int_chain_fc {fc : FrameClass}
         exact int_chain_fc_forward_G M₀ h₀ 0 t (Formula.box (Formula.box φ).neg) h_pos h_G
       · rw [int_chain_fc_zero]; exact h_box_neg
       · have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ M₀ :=
-          SetMaximalConsistent.mp_of_theorem h₀ (DerivedAxioms.modal_4 (Formula.box φ).neg)
+          SetMaximalConsistent.mp_of_theorem h₀ (DerivedAxioms.modal4 (Formula.box φ).neg)
             h_box_neg
         have h_H := SetMaximalConsistent.mp_of_theorem h₀ (Chronicle.liftBase fc
               (boxToPast (Formula.box (Formula.box φ).neg))) h_box_box_neg
@@ -770,7 +770,7 @@ theorem box_stable_in_int_chain_fc {fc : FrameClass}
     · rw [int_chain_fc_zero]; exact h_box_M0
     · have h_box_box : Formula.box (Formula.box φ) ∈ M₀ :=
         SetMaximalConsistent.mp_of_theorem h₀
-          (DerivedAxioms.modal_4 φ) h_box_M0
+          (DerivedAxioms.modal4 φ) h_box_M0
       have h_H := SetMaximalConsistent.mp_of_theorem h₀
         (Chronicle.liftBase fc (boxToPast (Formula.box φ))) h_box_box
       exact int_chain_fc_backward_H M₀ h₀ 0 t (Formula.box φ) h_neg h_H

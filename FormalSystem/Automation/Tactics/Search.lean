@@ -160,15 +160,15 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
   return result.isSome
 
 /--
-Try to close the goal with a frame-class-gated derived theorem (`DerivedAxioms.prior_SZ`, the
-time-reflection mirror of the ZTime axiom UZ, or `DerivedAxioms.prior_S_gap`, the mirror of the
+Try to close the goal with a frame-class-gated derived theorem (`DerivedAxioms.priorSZ`, the
+time-reflection mirror of the ZTime axiom UZ, or `DerivedAxioms.priorSGap`, the mirror of the
 RTime axiom PU). The gate hypothesis (`ZTime ≤ fc` / `RTime ≤ fc`) is discharged by `decide`,
 so the match fails at frame classes where the mirror is not a theorem.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
 def tryGatedDerivedMatch (goal : MVarId) : TacticM Bool := do
-  for lemmaName in [``DerivedAxioms.prior_SZ, ``DerivedAxioms.prior_S_gap] do
+  for lemmaName in [``DerivedAxioms.priorSZ, ``DerivedAxioms.priorSGap] do
     let result ← observing? do
       setGoals [goal]
       let newGoals ← goal.apply (← mkConstWithFreshMVarLevels lemmaName)

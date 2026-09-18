@@ -323,8 +323,8 @@ Axiom constructor that matches the formula pattern. Now that Axiom is a Type
 - Uses a decomposition approach (like matchesAxiom) to handle derived operators
 -/
 def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
-  -- Decompose into implication (every axiom this matcher covers -- 42 of the tree's
-  -- 45 -- is an implication or a negation)
+  -- Decompose into implication (every axiom this matcher covers -- 27 of the tree's
+  -- 29 -- is an implication or a negation, except TS, `F⊤`, matched separately below)
   match φ with
   | .imp lhs rhs =>
       -- ex_falso: ⊥ → φ
@@ -581,7 +581,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
       (match lhs, rhs with
            | .box phi, .box (.box phi') =>
                if phi = phi' then
-                 some ⟨_, DerivedAxioms.modal_4 phi⟩
+                 some ⟨_, DerivedAxioms.modal4 phi⟩
                else none
            | _, _ => none)
 
@@ -589,27 +589,27 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
       <|> (match lhs, rhs with
            | phi, .box (.diamond phi') =>
                if phi = phi' then
-                 some ⟨_, DerivedAxioms.modal_b phi⟩
+                 some ⟨_, DerivedAxioms.modalB phi⟩
                else none
            | _, _ => none)
 
       -- serial_past: ⊤ → P(⊤)
       <|> (match lhs, rhs with
            | .imp .bot .bot, .somePast (.imp .bot .bot) =>
-               some ⟨_, DerivedAxioms.serial_past⟩
+               some ⟨_, DerivedAxioms.serialPast⟩
            | _, _ => none)
 
       -- discrete_symm_bwd: S(⊤,⊥) → U(⊤,⊥)
       <|> (match lhs, rhs with
            | .snce .bot (.imp .bot .bot), .untl .bot (.imp .bot .bot) =>
-               some ⟨_, DerivedAxioms.discrete_symm_bwd⟩
+               some ⟨_, DerivedAxioms.discreteSymmBwd⟩
            | _, _ => none)
 
       -- connect_past (BX4'): φ → H(F(φ))
       <|> (match lhs, rhs with
            | phi, .allPast (.someFuture phi') =>
                if phi = phi' then
-                 some ⟨_, DerivedAxioms.connect_past phi⟩
+                 some ⟨_, DerivedAxioms.connectPast phi⟩
                else none
            | _, _ => none)
 
@@ -617,7 +617,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
       <|> (match lhs, rhs with
            | .somePast phi, .snce (.imp .bot .bot) phi' =>
                if phi = phi' then
-                 some ⟨_, DerivedAxioms.P_since_equiv phi⟩
+                 some ⟨_, DerivedAxioms.pSinceEquiv phi⟩
                else none
            | _, _ => none)
 
@@ -625,7 +625,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
       <|> (match lhs, rhs with
            | .snce phi psi, .snce (.and phi' (.snce phi'' psi'')) psi' =>
                if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ psi' = psi'' then
-                 some ⟨_, DerivedAxioms.self_accum_since phi psi⟩
+                 some ⟨_, DerivedAxioms.selfAccumSince phi psi⟩
                else none
            | _, _ => none)
 
@@ -633,7 +633,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
       <|> (match lhs, rhs with
            | .snce phi'' (.and phi (.snce phi' psi)), .snce phi''' psi' =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
-                 some ⟨_, DerivedAxioms.absorb_since phi psi⟩
+                 some ⟨_, DerivedAxioms.absorbSince phi psi⟩
                else none
            | _, _ => none)
 
@@ -641,7 +641,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
       <|> (match lhs, rhs with
            | .snce _phi psi, .somePast psi' =>
                if psi = psi' then
-                 some ⟨_, DerivedAxioms.since_P _phi psi⟩
+                 some ⟨_, DerivedAxioms.sinceP _phi psi⟩
                else none
            | _, _ => none)
 
@@ -653,7 +653,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                  (.somePast (.and (.somePast phi''') psi'''))) =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
                   psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
-                 some ⟨_, DerivedAxioms.temp_linearity_past phi psi⟩
+                 some ⟨_, DerivedAxioms.tempLinearityPast phi psi⟩
                else none
            | _, _ => none)
 
@@ -662,7 +662,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
            | .allPast (.imp phi chi),
              .imp (.snce phi' psi) (.snce chi' psi') =>
                if phi = phi' ∧ chi = chi' ∧ psi = psi' then
-                 some ⟨_, DerivedAxioms.left_mono_since_H phi chi psi⟩
+                 some ⟨_, DerivedAxioms.leftMonoSinceH phi chi psi⟩
                else none
            | _, _ => none)
 
@@ -671,7 +671,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
            | .allPast (.imp phi psi),
              .imp (.snce chi phi') (.snce chi' psi') =>
                if phi = phi' ∧ psi = psi' ∧ chi = chi' then
-                 some ⟨_, DerivedAxioms.right_mono_since phi psi chi⟩
+                 some ⟨_, DerivedAxioms.rightMonoSince phi psi chi⟩
                else none
            | _, _ => none)
 
@@ -680,7 +680,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
            | .and pp (.snce phi psi),
              .snce phi'' (.and psi' (.untl phi' pp')) =>
                if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
-                 some ⟨_, DerivedAxioms.enrichment_since phi psi pp⟩
+                 some ⟨_, DerivedAxioms.enrichmentSince phi psi pp⟩
                else none
            | _, _ => none)
 
@@ -694,7 +694,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                   theta = theta' ∧ theta' = theta'' ∧
                   phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
                   chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
-                 some ⟨_, DerivedAxioms.linear_since phi psi chi theta⟩
+                 some ⟨_, DerivedAxioms.linearSince phi psi chi theta⟩
                else none
            | _, _ => none)
       -- temp_linearity_legacy: F(φ)∧F(ψ) → F(φ∧ψ) ∨ (F(φ∧F(ψ)) ∨ F(F(φ)∧ψ))
@@ -705,7 +705,7 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                  (.someFuture (.and (.someFuture phi''') psi'''))) =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
                   psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
-                 some ⟨_, DerivedAxioms.temp_linearity_legacy phi psi⟩
+                 some ⟨_, DerivedAxioms.tempLinearityLegacy phi psi⟩
                else none
            | _, _ => none)
 
@@ -719,13 +719,13 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                   theta = theta' ∧ theta' = theta'' ∧
                   phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
                   chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
-                 some ⟨_, DerivedAxioms.linear_until_legacy phi psi chi theta⟩
+                 some ⟨_, DerivedAxioms.linearUntilLegacy phi psi chi theta⟩
                else none
            | _, _ => none)
       -- serial_future_imp: ⊤ → F(⊤) (the pre-paper statement of TS)
       <|> (match lhs, rhs with
            | .imp .bot .bot, .someFuture (.imp .bot .bot) =>
-               some ⟨_, DerivedAxioms.serial_future_imp⟩
+               some ⟨_, DerivedAxioms.serialFutureImp⟩
            | _, _ => none)
   | _ => none
 
@@ -740,7 +740,7 @@ def matchMirror (φ : Formula) : Option (⊢ φ) :=
 
 /--
 Match the time-reflection mirror of the ZTime axiom UZ, `P(φ) → S(¬φ, φ)`
-(`DerivedAxioms.prior_SZ`), returning its derivation at `FrameClass.ZTime`, the least frame
+(`DerivedAxioms.priorSZ`), returning its derivation at `FrameClass.ZTime`, the least frame
 class at which it is a theorem. Used by the tableau's negated-axiom closure check.
 -/
 def matchPriorSZ (φ : Formula) : Option (⊢[FrameClass.ZTime] φ) :=
@@ -749,20 +749,20 @@ def matchPriorSZ (φ : Formula) : Option (⊢[FrameClass.ZTime] φ) :=
       if h : phi1 = phi2 ∧ phi2 = phi3 then
         some (by
           obtain ⟨rfl, rfl⟩ := h
-          exact DerivedAxioms.prior_SZ le_rfl phi1)
+          exact DerivedAxioms.priorSZ le_rfl phi1)
       else none
   | _ => none
 
 /--
-Check if a formula matches any of the 42 TM axiom schemata this matcher covers.
+Check if a formula matches any of the TM axiom schemata this matcher covers, primitive or
+derived.
 
-The tree has 45 axiom constructors; `matchAxiom` covers 42 of them, omitting
-the three Layer-9 Reynolds Dedekind axioms (`prior_U_gap`, `prior_S_gap`, `sep`). See
+The tree has 29 axiom constructors; `matchAxiom` covers 27 of them, omitting the two Layer-9
+Reynolds Dedekind axioms (`prior_U_gap`, `sep`), and `matchMirror` covers the base-class derived
+schemata (time-reflection mirrors, modal 4 and B, and the pre-paper forms of TL, CN and TS). See
 `FormalSystem.ProofSystem.Axiom` for the full nine-layer inventory.
 
-Delegates to `matchAxiom` and returns `true` on match, `false` otherwise.
-Covers all axiom constructors: propositional (4), modal (5), BX temporal (22),
-interaction (1), uniformity (5), prior (2), Z1 (1), density (2).
+Returns `true` on a match from either matcher, `false` otherwise.
 -/
 def matchesAxiom (φ : Formula) : Bool :=
   (matchAxiom φ).isSome || (matchMirror φ).isSome

@@ -20,7 +20,7 @@ headline result is `coDerived`: the paper's **CO** principle
 
 is a *theorem* of this repository's Dedekind class, derived from the retained Reynolds basis.
 No `Axiom.co` constructor is added; the official Dedekind-class basis remains
-`Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep`.
+`Axiom.prior_U_gap` / `DerivedAxioms.priorSGap` / `Axiom.sep`.
 
 ## Scaffolding
 
@@ -251,14 +251,14 @@ noncomputable def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
     DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
   let hPast : Γ ⊢[fc] P := DerivationTree.assumption _ _ (List.Mem.head _)
   let hAccum : Γ ⊢[fc] Formula.snce G1 ψ.neg :=
-    ctxMp (thmIn (DerivedAxioms.self_accum_since Formula.top ψ.neg)) hPast
+    ctxMp (thmIn (DerivedAxioms.selfAccumSince Formula.top ψ.neg)) hPast
   let hSplit : Γ ⊢[fc]
       Formula.or
         (Formula.or
           (Formula.snce (Formula.and G1 ψ) (Formula.and ψ.neg E))
           (Formula.snce (Formula.and G1 ψ) (Formula.and ψ.neg ψ)))
         (Formula.snce (Formula.and G1 ψ) (Formula.and G1 E)) :=
-    ctxMp (thmIn (DerivedAxioms.linear_since G1 ψ.neg ψ E)) (andIntro hAccum hSnce)
+    ctxMp (thmIn (DerivedAxioms.linearSince G1 ψ.neg ψ E)) (andIntro hAccum hSnce)
   let hBot : Γ ⊢[fc] Formula.bot :=
     orElimBot hSplit
       (thmIn (deductionTheorem [] _ Formula.bot
@@ -339,10 +339,10 @@ pinned. The formula is character-for-character the same under both. The `△` is
 `Formula.co`.
 
 **CO is derived here, not primitive.** No `Axiom.co` constructor exists; the official
-Dedekind-class basis remains `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep`.
+Dedekind-class basis remains `Axiom.prior_U_gap` / `DerivedAxioms.priorSGap` / `Axiom.sep`.
 
 **Axiom footprint** (verified against the finished derivation, not assumed): the *only*
-non-base axiom consumed is `Axiom.prior_U_gap`. Neither `Axiom.prior_S_gap` nor `Axiom.sep` is
+non-base axiom consumed is `Axiom.prior_U_gap`. Neither `DerivedAxioms.priorSGap` nor `Axiom.sep` is
 used, and neither is `Axiom.density` nor `Axiom.dense_indicator` — so the derivation in fact
 goes through at any `fc` admitting Prior-U. (This is exact, not an estimate: every other
 `DerivationTree.axiom` node in this file is discharged by `FrameClass.base_le`, and every

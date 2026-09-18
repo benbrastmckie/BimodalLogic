@@ -104,7 +104,7 @@ def succIndicatorAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) :
     ⊢[fc] Formula.next Formula.top := by
   have h1 : ⊢[fc] Formula.someFuture Formula.top :=
     DerivationTree.modus_ponens _ Formula.top _
-      (DerivedAxioms.serial_future_impAt _) topThm
+      (DerivedAxioms.serialFutureImpAt _) topThm
   have h2 : ⊢[fc] Formula.untl Formula.top.neg Formula.top :=
     DerivationTree.modus_ponens _ _ _
       (DerivationTree.axiom _ _ (Axiom.prior_UZ Formula.top) h) h1
@@ -151,7 +151,7 @@ def unfoldForward (e g : Formula) :
         (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.bot))).or
         (Formula.untl (Formula.and G' Formula.bot) (Formula.and G' Formula.top)) :=
     DerivationTree.modus_ponens _ _ _
-      (DerivedAxioms.linear_until_legacyAt _ G' e Formula.bot Formula.top) h4
+      (DerivedAxioms.linearUntilLegacyAt _ G' e Formula.bot Formula.top) h4
   -- Disjunct 1: `U(e ∧ ⊤, G' ∧ ⊥)` collapses to `X e`.
   have d1 : Γ ⊢[FrameClass.ZTime]
       (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.top)).imp C := by
@@ -237,7 +237,7 @@ def nextConj {fc : FrameClass} (A B : Formula) :
   have h4 : Γ ⊢[fc] D := DerivationTree.assumption Γ D (by simp [hΓ])
   have h5 : Γ ⊢[fc] (E1.or E2).or E3 :=
     DerivationTree.modus_ponens Γ _ _
-      (DerivedAxioms.linear_until_legacyAt Γ Formula.bot A Formula.bot B) h4
+      (DerivedAxioms.linearUntilLegacyAt Γ Formula.bot A Formula.bot B) h4
   have kill : ∀ (Δ : Context) (E : Formula), (⊢[fc] E.imp Formula.bot) →
       (Δ ⊢[fc] (Formula.untl W E).imp T) := by
     intro Δ E hE

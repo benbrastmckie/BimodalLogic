@@ -302,7 +302,7 @@ some interval abutting `r` from below.
 *The reading.* This says exactly that the `ψ`-region has no definable **right gap** at `r`, in
 Reynolds' sense: `γ⁻(ψ)` would hold at a point whose `ψ`-stretch runs down to a gap below which
 `¬ψ` is arbitrarily recently true (Reynolds 1992, printed p.175). Prior's Since axiom in gap form,
-`Axiom.prior_S_gap` — `S(⊤,ψ) ∧ P(¬ψ) → S(¬ψ ∨ K⁻(¬ψ), ψ)` — excludes precisely that
+`DerivedAxioms.priorSGap` — `S(⊤,ψ) ∧ P(¬ψ) → S(¬ψ ∨ K⁻(¬ψ), ψ)` — excludes precisely that
 configuration. Applying it to the **guard** `ψ` rather than to a witness is what makes the
 antecedent `S(⊤, ψ)` free: the hypothesis of this predicate supplies `ψ` uninterruptedly on a whole
 interval abutting `r`. The discharge is therefore **`fc`-conditional**, requiring
@@ -356,7 +356,7 @@ none.
 
 *Discharge.* Unlike `BFMCS.LimitFutureWitness` and `BFMCS.LimitGuardBelow`, this predicate is **not**
 discharged from a Dedekind axiom: `Axiom.prior_U_gap`'s antecedent `U(⊤, χ)` *is* the below-gap
-interval it would have to produce, `Axiom.prior_S_gap` consumes an above-gap interval and so yields
+interval it would have to produce, `DerivedAxioms.priorSGap` consumes an above-gap interval and so yields
 only the necessity direction, and `Axiom.sep` lives entirely inside `K⁺`/`K⁻`. Its discharge is
 therefore deferred, and it has no source in the corpus — Reynolds reaches ℝ by the separability
 route instead (printed pp.177-178), and Burgess 1984 runs the completion argument only in the

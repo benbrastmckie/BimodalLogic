@@ -328,7 +328,7 @@ theorem limitdom_semantic_prior_SZ {fc : FrameClass} (A : Set Formula)
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
     exact absurd h_bot (SetMaximalConsistent.bot_not_mem (limit_c0 fc A h_mcs z hz))
   have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
-    (DerivedAxioms.prior_SZ h_fc eff_ψ)
+    (DerivedAxioms.priorSZ h_fc eff_ψ)
   have h_since : Formula.snce eff_ψ.neg eff_ψ ∈ LimitF fc A h_mcs t.val :=
     (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_P_eff
   obtain ⟨s', hs', hst', h_eff_s', h_guard⟩ :=

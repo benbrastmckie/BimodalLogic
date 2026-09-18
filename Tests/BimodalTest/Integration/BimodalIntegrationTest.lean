@@ -159,7 +159,7 @@ example : True := by
   
   -- Step 3: □Fp → □□Fp using Modal 4
   let ax3 : Γ ⊢ ((p.allFuture.box).imp ((p.allFuture.box).box)) :=
-    (DerivedAxioms.modal_4At Γ p.allFuture)
+    (DerivedAxioms.modal4At Γ p.allFuture)
   let d3 : Γ ⊢ ((p.allFuture.box).box) :=
     DerivationTree.modus_ponens Γ (p.allFuture.box)
       ((p.allFuture.box).box) ax3 d2
@@ -436,7 +436,7 @@ example : True := by
   
   -- Step 2: □Fp → □□Fp
   let ax2 : Γ ⊢ ((p.allFuture.box).imp ((p.allFuture.box).box)) :=
-    (DerivedAxioms.modal_4At Γ p.allFuture)
+    (DerivedAxioms.modal4At Γ p.allFuture)
   let d2 : Γ ⊢ ((p.allFuture.box).box) :=
     DerivationTree.modus_ponens Γ (p.allFuture.box)
       ((p.allFuture.box).box) ax2 d1

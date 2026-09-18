@@ -76,7 +76,7 @@ Source files for the 36 original theorems:
   temporal_necessitation (991, 9.8%), time_reflection (63, 0.6%),
   necessitation (49, 0.5%)
 - Temporal rule coverage: 1103/10063 = 11.0% (target: >= 10%)
-- 31 of 45 axiom names present (up from 13)
+- 31 axiom names present (up from 13), counted against the axiom set of the time
 - 5 of 7 inference rules present (assumption/weakening absent since
   all registered theorems derive from empty context)
 - lake build passes with no regressions
@@ -707,11 +707,11 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX1: serial_future: ⊤ → F(⊤)
   mkEntry "serial_future_axiom"
-    (DerivedAxioms.serial_future_imp (fc := .Base)),
+    (DerivedAxioms.serialFutureImp (fc := .Base)),
 
   -- BX1': serial_past: ⊤ → P(⊤)
   mkEntry "serial_past_axiom"
-    (DerivedAxioms.serial_past (fc := .Base)),
+    (DerivedAxioms.serialPast (fc := .Base)),
 
   -- BX2G: left_mono_until_G: G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
   mkEntry "left_mono_until_G_axiom"
@@ -719,7 +719,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX2H: left_mono_since_H: H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
   mkEntry "left_mono_since_H_axiom"
-    (DerivedAxioms.left_mono_since_H (fc := .Base) p q r),
+    (DerivedAxioms.leftMonoSinceH (fc := .Base) p q r),
 
   -- BX3: right_mono_until: G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
   mkEntry "right_mono_until_axiom"
@@ -727,7 +727,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX3': right_mono_since: H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
   mkEntry "right_mono_since_axiom"
-    (DerivedAxioms.right_mono_since (fc := .Base) p q r),
+    (DerivedAxioms.rightMonoSince (fc := .Base) p q r),
 
   -- BX5: self_accum_until: U(ψ,φ) → U(ψ, φ ∧ U(ψ,φ))
   mkEntry "self_accum_until_axiom"
@@ -735,7 +735,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX5': self_accum_since: S(ψ,φ) → S(ψ, φ ∧ S(ψ,φ))
   mkEntry "self_accum_since_axiom"
-    (DerivedAxioms.self_accum_since (fc := .Base) p q),
+    (DerivedAxioms.selfAccumSince (fc := .Base) p q),
 
   -- BX6: absorb_until: U(φ ∧ U(ψ,φ), φ) → U(ψ,φ)
   mkEntry "absorb_until_axiom"
@@ -743,23 +743,23 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX6': absorb_since: S(φ ∧ S(ψ,φ), φ) → S(ψ,φ)
   mkEntry "absorb_since_axiom"
-    (DerivedAxioms.absorb_since (fc := .Base) p q),
+    (DerivedAxioms.absorbSince (fc := .Base) p q),
 
   -- BX7: linear_until: U(ψ,φ) ∧ U(θ,χ) → ...
   mkEntry "linear_until_axiom"
-    (DerivedAxioms.linear_until_legacy (fc := .Base) p q r s),
+    (DerivedAxioms.linearUntilLegacy (fc := .Base) p q r s),
 
   -- BX7': linear_since: S(ψ,φ) ∧ S(θ,χ) → ...
   mkEntry "linear_since_axiom"
-    (DerivedAxioms.linear_since (fc := .Base) p q r s),
+    (DerivedAxioms.linearSince (fc := .Base) p q r s),
 
   -- BX11: temp_linearity: F(φ) ∧ F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
   mkEntry "temp_linearity_axiom"
-    (DerivedAxioms.temp_linearity_legacy (fc := .Base) p q),
+    (DerivedAxioms.tempLinearityLegacy (fc := .Base) p q),
 
   -- BX11': temp_linearity_past: P(φ) ∧ P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
   mkEntry "temp_linearity_past_axiom"
-    (DerivedAxioms.temp_linearity_past (fc := .Base) p q),
+    (DerivedAxioms.tempLinearityPast (fc := .Base) p q),
 
   -- BX12: F_until_equiv: F(φ) → U(φ, ⊤)
   mkEntry "F_until_equiv_axiom"
@@ -767,7 +767,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX12': P_since_equiv: P(φ) → S(φ, ⊤)
   mkEntry "P_since_equiv_axiom"
-    (DerivedAxioms.P_since_equiv (fc := .Base) p),
+    (DerivedAxioms.pSinceEquiv (fc := .Base) p),
 
   -- BX13: enrichment_until: p ∧ U(ψ,φ) → U(ψ ∧ S(p,φ), φ)
   mkEntry "enrichment_until_axiom"
@@ -775,7 +775,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX13': enrichment_since: p ∧ S(ψ,φ) → S(ψ ∧ U(p,φ), φ)
   mkEntry "enrichment_since_axiom"
-    (DerivedAxioms.enrichment_since (fc := .Base) p q r),
+    (DerivedAxioms.enrichmentSince (fc := .Base) p q r),
 
   -- ============================================================
   -- MULTI-INSTANTIATION VARIANTS: Existing theorems with
@@ -897,21 +897,21 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "self_accum_until_axiom_qr"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until q r) trivial),
   mkEntry "self_accum_since_axiom_qr"
-    (DerivedAxioms.self_accum_since (fc := .Base) q r),
+    (DerivedAxioms.selfAccumSince (fc := .Base) q r),
   mkEntry "absorb_until_axiom_qr"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until q r) trivial),
   mkEntry "absorb_since_axiom_qr"
-    (DerivedAxioms.absorb_since (fc := .Base) q r),
+    (DerivedAxioms.absorbSince (fc := .Base) q r),
   mkEntry "temp_linearity_axiom_qr"
-    (DerivedAxioms.temp_linearity_legacy (fc := .Base) q r),
+    (DerivedAxioms.tempLinearityLegacy (fc := .Base) q r),
   mkEntry "F_until_equiv_axiom_q"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv q) trivial),
   mkEntry "P_since_equiv_axiom_q"
-    (DerivedAxioms.P_since_equiv (fc := .Base) q),
+    (DerivedAxioms.pSinceEquiv (fc := .Base) q),
   mkEntry "enrichment_until_axiom_qrs"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_until q r s) trivial),
   mkEntry "enrichment_since_axiom_qrs"
-    (DerivedAxioms.enrichment_since (fc := .Base) q r s),
+    (DerivedAxioms.enrichmentSince (fc := .Base) q r s),
 
   -- ============================================================
   -- G-WRAPPED MULTI-INSTANTIATION: Selected entries with
@@ -957,10 +957,10 @@ def theoremRegistry : List TheoremEntry := [
   -- G-wrapped axiom instantiation variants (50% temporal ratio: 1/2)
   mkEntry "G_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G_serial_past_axiom"
     (DerivationTree.temporal_necessitation _
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G_self_accum_until_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until p q) trivial)),
@@ -969,7 +969,7 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial)),
   mkEntry "G_temp_linearity_axiom"
     (DerivationTree.temporal_necessitation _
-      (DerivedAxioms.temp_linearity_legacy (fc := .Base) p q)),
+      (DerivedAxioms.tempLinearityLegacy (fc := .Base) p q)),
   mkEntry "G_F_until_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial)),
@@ -978,11 +978,11 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "H_serial_future_axiom"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
-        (DerivedAxioms.serial_future_imp (fc := .Base)))),
+        (DerivedAxioms.serialFutureImp (fc := .Base)))),
   mkEntry "H_serial_past_axiom"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
-        (DerivedAxioms.serial_past (fc := .Base)))),
+        (DerivedAxioms.serialPast (fc := .Base)))),
   mkEntry "H_self_accum_until_axiom"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
@@ -996,11 +996,11 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "GG_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivedAxioms.serial_future_imp (fc := .Base)))),
+        (DerivedAxioms.serialFutureImp (fc := .Base)))),
   mkEntry "GG_serial_past_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivedAxioms.serial_past (fc := .Base)))),
+        (DerivedAxioms.serialPast (fc := .Base)))),
   mkEntry "GG_F_until_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
@@ -1008,19 +1008,19 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "GG_P_since_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivedAxioms.P_since_equiv (fc := .Base) p))),
+        (DerivedAxioms.pSinceEquiv (fc := .Base) p))),
 
   -- GGG-wrapped single-step axiom instantiations (3 temporal steps, 4 total: 75%)
   mkEntry "GGG_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.temporal_necessitation _
-          (DerivedAxioms.serial_future_imp (fc := .Base))))),
+          (DerivedAxioms.serialFutureImp (fc := .Base))))),
   mkEntry "GGG_serial_past_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.temporal_necessitation _
-          (DerivedAxioms.serial_past (fc := .Base))))),
+          (DerivedAxioms.serialPast (fc := .Base))))),
 
   -- ============================================================
   -- DEEP TEMPORAL CHAINS: Using wrapG for efficient N-layer wrapping
@@ -1039,9 +1039,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G4_box_to_present"       (wrapG 4 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G4_mb_diamond"           (wrapG 4 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G4_serial_future"        (wrapG 4
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G4_serial_past"          (wrapG 4
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G4_identity"             (wrapG 4 (@identity .Base p)),
 
   -- Depth 6 (6 temporal / 7 total = 86%)
@@ -1055,9 +1055,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G6_box_to_present"       (wrapG 6 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G6_mb_diamond"           (wrapG 6 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G6_serial_future"        (wrapG 6
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G6_serial_past"          (wrapG 6
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G6_identity"             (wrapG 6 (@identity .Base p)),
 
   -- Depth 8 (8 temporal / 9 total = 89%)
@@ -1071,9 +1071,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G8_box_to_present"       (wrapG 8 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G8_mb_diamond"           (wrapG 8 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G8_serial_future"        (wrapG 8
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G8_serial_past"          (wrapG 8
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G8_identity"             (wrapG 8 (@identity .Base p)),
 
   -- Depth 10 (10 temporal / 11 total = 91%)
@@ -1089,9 +1089,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G10_box_to_present"      (wrapG 10 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G10_mb_diamond"          (wrapG 10 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G10_serial_future"       (wrapG 10
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G10_serial_past"         (wrapG 10
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G10_identity"            (wrapG 10 (@identity .Base p)),
 
   -- Depth 12 (12 temporal / 13 total = 92%)
@@ -1106,9 +1106,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G12_box_to_present"      (wrapG 12 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G12_mb_diamond"          (wrapG 12 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G12_serial_future"       (wrapG 12
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G12_serial_past"         (wrapG 12
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G12_identity"            (wrapG 12 (@identity .Base p)),
 
   -- Depth 15 (15 temporal / 16 total = 94%)
@@ -1117,9 +1117,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G15_connect_past"        (wrapG 15
       (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G15_serial_future"       (wrapG 15
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G15_serial_past"         (wrapG 15
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G15_identity"            (wrapG 15 (@identity .Base p)),
   mkEntry "G15_box_to_present"      (wrapG 15 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
 
@@ -1129,9 +1129,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G20_connect_past"        (wrapG 20
       (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G20_serial_future"       (wrapG 20
-      (DerivedAxioms.serial_future_imp (fc := .Base))),
+      (DerivedAxioms.serialFutureImp (fc := .Base))),
   mkEntry "G20_serial_past"         (wrapG 20
-      (DerivedAxioms.serial_past (fc := .Base))),
+      (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G20_identity"            (wrapG 20 (@identity .Base p)),
   mkEntry "G20_box_to_present"      (wrapG 20 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
 
@@ -1199,7 +1199,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "discrete_symm_fwd_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial),
   mkEntryAt "discrete_symm_bwd_axiom" .ZTime
-    (DerivedAxioms.discrete_symm_bwd (fc := .ZTime)),
+    (DerivedAxioms.discreteSymmBwd (fc := .ZTime)),
   mkEntryAt "discrete_propagate_fwd_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_fwd trivial),
   mkEntryAt "discrete_propagate_bwd_axiom" .ZTime
@@ -1213,9 +1213,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "prior_UZ_axiom_q" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.prior_UZ q) trivial),
   mkEntryAt "prior_SZ_axiom" .ZTime
-    (DerivedAxioms.prior_SZ (fc := .ZTime) trivial p),
+    (DerivedAxioms.priorSZ (fc := .ZTime) trivial p),
   mkEntryAt "prior_SZ_axiom_q" .ZTime
-    (DerivedAxioms.prior_SZ (fc := .ZTime) trivial q),
+    (DerivedAxioms.priorSZ (fc := .ZTime) trivial q),
 
   -- Z1 Axiom (Discrete): G(G(φ) → φ) → (F(G(φ)) → G(φ))
   mkEntryAt "z1_axiom" .ZTime
@@ -1255,7 +1255,7 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_symm_fwd trivial)),
   mkEntryAt "G_discrete_symm_bwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
-      (DerivedAxioms.discrete_symm_bwd (fc := .ZTime))),
+      (DerivedAxioms.discreteSymmBwd (fc := .ZTime))),
   mkEntryAt "G_discrete_propagate_fwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_fwd trivial)),
@@ -1272,7 +1272,7 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.prior_UZ p) trivial)),
   mkEntryAt "G_prior_SZ_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
-      (DerivedAxioms.prior_SZ (fc := .ZTime) trivial p)),
+      (DerivedAxioms.priorSZ (fc := .ZTime) trivial p)),
 
   -- G-wrapped Z1 (Discrete)
   mkEntryAt "G_z1_axiom" .ZTime

@@ -392,6 +392,11 @@ structure DatasetMetadata where
   frameClassName : String := "Base"
   /-- Generation mode used: "exhaustive", "proofFirst", or "hybrid". -/
   generationMode : String := "exhaustive"
+  /-- Primitive axiom system the proofs are over. `"paper-29"` is the 29-schema system of
+  `ProofSystem/Axioms.lean`, in which the time-reflection mirrors and modal 4/B are derived:
+  their proof steps serialize as `time_reflection` over a primitive axiom, never under the old
+  mirror axiom names carried by datasets generated when those mirrors were constructors. -/
+  axiomSystem : String := "paper-29"
   deriving Repr, Inhabited
 
 /--
@@ -447,6 +452,7 @@ def datasetMetadataToJson (m : DatasetMetadata) : String :=
   ++ "  \"decision_method_distribution\": " ++ methodDistStr ++ ",\n"
   ++ "  \"frame_class\": \"" ++ escapeJsonString m.frameClassName ++ "\",\n"
   ++ "  \"generation_mode\": \"" ++ escapeJsonString m.generationMode ++ "\",\n"
+  ++ "  \"axiom_system\": \"" ++ escapeJsonString m.axiomSystem ++ "\",\n"
   ++ "  \"representations\": [\n"
   ++
       "    {\"field\": \"formula_str\", \"format\": \"human-readable\", \"description\": \

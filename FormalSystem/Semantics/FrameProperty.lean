@@ -149,7 +149,7 @@ where this predicate's name comes from; the conclusion is unchanged, and is rest
 tree's own voice rather than quoted.)
 
 **It is this predicate, not `TaskFrame.IsDiscrete`, that `FrameClass.ZTime` admits axioms
-for.** `Axiom.prior_UZ`, `Axiom.prior_SZ` and `Axiom.z1` all carry `.ZTime` as their
+for.** `Axiom.prior_UZ`, `DerivedAxioms.priorSZ` and `Axiom.z1` all carry `.ZTime` as their
 `minFrameClass`, and by the narrowing above they are sound over `ℤ`-time rather than over every
 frame satisfying `def:frame-properties`' bare Discrete clause. Interpreting `FrameClass.ZTime`
 by `IsDiscrete` would silently widen the class under `soundness_ztime` — the defect that the

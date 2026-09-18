@@ -901,7 +901,7 @@ two obligations, consumed at different call sites.
 
 The Dedekind soundness chain is sorry-free end to end: both Prior gap lemmas, both Sep lemmas,
 and — since the collapse onto `soundness_in` — the single `axiom_validIn_min` /
-`axiom_swap_validIn_min` pair below, whose arms cover all 45 axiom constructors once rather
+`axiom_swap_validIn_min` pair below, whose arms cover all 29 axiom constructors once rather
 than once per frame class.
 -/
 
@@ -1208,7 +1208,7 @@ site changes.
 
 The two `*_min` leaf lemmas below state each axiom's validity at *its own* `minFrameClass`, which
 is where the per-axiom validity lemmas already live. `ValidIn.mono` then lifts them to any wider
-`fc`, which is what replaces the four hand-written 45-arm dispatchers. -/
+`fc`, which is what replaces the four hand-written per-axiom dispatchers. -/
 
 /-- Uniform per-axiom validity at the axiom's own minimum frame class. -/
 theorem axiom_validIn_min {φ : Formula} (ax : Axiom φ) : ValidIn ax.minFrameClass φ := by
@@ -1369,7 +1369,7 @@ theorem soundness_validIn {fc : FrameClass} {φ : Formula}
 /-! ## Per-class corollaries of `soundness_in`
 
 Each theorem below is a single application of `soundness_in` / `soundness_validIn` /
-`axiom_validIn` at one class; none carries its own induction or 45-arm axiom dispatch. The class
+`axiom_validIn` at one class; none carries its own induction or per-axiom dispatch. The class
 condition travels as that class's `FrameClass.Sat` witness rather than as a binder list:
 `trivial` at `.Base`, the `DenselyOrdered` instance at `.Dense`, the four order instances at
 `.ZTime`, and the density-plus-LUB pair at `.RTime`.

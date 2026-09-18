@@ -160,7 +160,7 @@ example (φ ψ : Formula) : ⊢ φ.imp (ψ.imp (φ.and ψ)) := pairing φ ψ
 example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by
   -- □p → □□p by Modal 4
   have h1 : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").box.box :=
-    (DerivedAxioms.modal_4 (Formula.atomS "p"))
+    (DerivedAxioms.modal4 (Formula.atomS "p"))
   -- □□p → □p trivially (by Modal T applied to □p)
   have h2 : ⊢ (Formula.atomS "p").box.box.imp (Formula.atomS "p").box :=
     DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atomS "p").box) trivial

@@ -85,7 +85,7 @@ Six theorems connecting modal and temporal operators:
 | Component | Status | Details |
 |-----------|--------|---------|
 | **Syntax** | Complete | Formula, Context, derived operators |
-| **Proof System** | Complete | 45 axiom constructors (Base 37 / Dense 2 / ZTime 3 / RTime 3), 7 inference rules |
+| **Proof System** | Complete | 29 axiom constructors (Base 23 / Dense 2 / ZTime 2 / RTime 2), 7 inference rules |
 | **Semantics** | Complete | TaskFrame, TaskModel, Truth, Validity |
 | **Metalogic** | **Complete** | Soundness, Completeness, Deduction theorem |
 | **Automation** | Partial | Core tactics working |

@@ -728,7 +728,7 @@ def s5DiamondBox {fc : FrameClass} (A : Formula) : ⊢[fc] iff (A.box.diamond) A
 
     -- modal_4: □φ → □□φ, so with φ = A: □A → □□A
     have modal_4_a : ⊢[fc] A.box.imp A.box.box :=
-      (DerivedAxioms.modal_4 A)
+      (DerivedAxioms.modal4 A)
     -- tBoxToDiamond: □B → ◇B, so with B = □A: □□A → ◇□A
     have box_box_to_diamond : ⊢[fc] A.box.box.imp A.box.diamond :=
       tBoxToDiamond A.box

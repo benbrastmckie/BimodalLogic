@@ -1,7 +1,7 @@
 # Implementation Plan: Task #606
 
 - **Task**: 606 - Adopt the paper axiom system and derive the surplus axioms
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 17 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/reports/01_paper-axiom-audit.md
@@ -168,18 +168,18 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 3: Rewrite call sites in Theorems and Metalogic proof code [IN PROGRESS]
+### Phase 3: Rewrite call sites in Theorems and Metalogic proof code [COMPLETED]
 
 **Goal**: Replace every `Axiom.<surplus>` construction in theorem and metalogic proof code with the derived definitions, while the constructors still exist.
 
 **Tasks**:
-- [ ] Rewrite `DerivationTree.axiom (fc := _)? Γ _ (Axiom.X args) h` into `DerivedAxioms.X args` (with Γ = `[]`) or `DerivedAxioms.XAt Γ args`.
+- [x] Rewrite `DerivationTree.axiom (fc := _)? Γ _ (Axiom.X args) h` into `DerivedAxioms.X args` (with Γ = `[]`) or `DerivedAxioms.XAt Γ args`.
   - Drop `h`, except for `prior_SZ` and `prior_S_gap`, where `h` (definitionally `ZTime ≤ fc` / `RTime ≤ fc`) becomes the gate argument.
   - Work through `Theorems/` (`ContextualProofs`, `TemporalDerived`, `DedekindDerived`, `ModalS4`, `ModalS5`, `ModalDerived`, `Perpetuity/Principles`).
   - Then `Metalogic/BXCanonical/**` (Chronicle/*, CanonicalModel, CanonicalChain, Frame, Quasimodel/Construction, Filtration/DefectChain).
   - Then `Metalogic/WeakCanonical/**`, `Metalogic/Bundle/**`, `Decidability/FMP/TruthPreservation.lean`, `Deterministic/Collapse.lean`, `Algebraic/InteriorOperators.lean`, `Conservativity/TMCompletenessReduction.lean` and `SoundnessLemmas/CoValidity.lean`.
-- [ ] For `Theorems/Perpetuity/Helpers.lean`'s `applyAxiomTo (axiom_proof : Axiom _)`, switch callers that pass `modal_4` or `modal_b` to a derivation-taking variant. Add `applyDerivTo` if none exists.
-- [ ] Build each module after it is edited, and commit per green sub-step.
+- [x] For `Theorems/Perpetuity/Helpers.lean`'s `applyAxiomTo (axiom_proof : Axiom _)`, switch callers that pass `modal_4` or `modal_b` to a derivation-taking variant. Add `applyDerivTo` if none exists. *(deviation: skipped — no caller passes `modal_4`/`modal_b`)*
+- [x] Build each module after it is edited, and commit per green sub-step. *(deviation: altered — one mechanical rewrite of 136 sites (incl. the Tests sites planned for phase 5), one guarded build, one commit)*
 
 **Timing**: 2 hours
 
@@ -363,27 +363,27 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 9: Machine appendix, generated counts, dataset versioning and docs [NOT STARTED]
+### Phase 9: Machine appendix, generated counts, dataset versioning and docs [COMPLETED]
 
 **Goal**: Make every generated and documentary artifact describe the 29-schema primitive system plus its derived mirrors.
 
 **Tasks**:
-- [ ] Machine appendix:
+- [x] Machine appendix:
   - Check that `Automation/AxiomNames.lean`'s `allAxiomNames` has 29 entries.
-  - Update the `MachineAppendixMain` entries so that derived mirrors appear as derived theorems, if the appendix lists theorems.
+  - Update the `MachineAppendixMain` entries so that derived mirrors appear as derived theorems, if the appendix lists theorems. *(the appendix lists axioms, rules and derived operators, not theorems: the 16 surplus entries were removed and the count assertion set to 29; no theorem rows added)*
   - Regenerate `typst/generated/machine-appendix.{jsonl,typ}` via `lake exe machine_appendix` and `typst/generated/status.typ` via `scripts/typst-status-counts.sh`.
-- [ ] Dataset versioning: add an explicit axiom-system version field (value `paper-29`) to the generator and extractor metadata output (`DatasetGenerator`, `ProofStepExtractor`/`ProofExtractorMain`, `DataExport` as applicable).
+- [x] Dataset versioning: add an explicit axiom-system version field (value `paper-29`) to the generator and extractor metadata output (`DatasetGenerator`, `ProofStepExtractor`/`ProofExtractorMain`, `DataExport` as applicable).
   - Record that mirror steps now serialize as `time_reflection` over a primary.
-  - Do not rewrite existing `data/*.jsonl`.
-- [ ] Rewrite `docs/reference/axiom-reference.md`:
+  - Do not rewrite existing `data/*.jsonl`. *(`axiom_system: "paper-29"` added to `DatasetGeneratorMain` metadata JSON and `axiomSystem` to `DatasetAssembly` metadata; `ProofExtractorMain` emits no metadata file, its `allAxiomNames` docstring records the serialization change)*
+- [x] Rewrite `docs/reference/axiom-reference.md`:
   - The primitive system: 29 schemata keyed by `\aitem` / `\label` (MK … SEP, `def:S5`, `def:BX`, `def:BX-z`, `def:BX-d`, `def:BX-r`).
   - A "Derived mirrors" table listing each derived definition with its primary and derivation (TR, or K/T/5).
   - Correct the NA row: the constructor keeps its name and is the paper's NA.
   - The TL, CN and TS verbatim restatements, with their legacy definitions.
-- [ ] Update the module docstrings in `ProofSystem/Axioms.lean` (layer counts, the NA docstring, the source table) and `Syntax/PlusLanguage/Axioms.lean`. The old wording ("the 45 TM schemata re-declared") becomes "the 29 TM schemata plus 16 TM-derivable schemata kept primitive in TM⁺".
-- [ ] Update `typst/chapters/03-proof-theory.typ` and `typst/SYNC-MAP.md` where they state the constructor count or list mirrors as primitive. Update `docs/reference/paper-definitions-of-record.md`'s correspondence note, which claims a `derivable_iff` follow-up, to point at the new state.
-- [ ] Fix any stale docstring mentions of the removed constructors that phases 3 to 8 left behind.
-- [ ] Run `bash .claude/scripts/check-task-references.sh`, or the repo lint, to confirm that no deliverable cites a task number.
+- [x] Update the module docstrings in `ProofSystem/Axioms.lean` (layer counts, the NA docstring, the source table) and `Syntax/PlusLanguage/Axioms.lean`. The old wording ("the 45 TM schemata re-declared") becomes "the 29 TM schemata plus 16 TM-derivable schemata kept primitive in TM⁺".
+- [x] Update `typst/chapters/03-proof-theory.typ` and `typst/SYNC-MAP.md` where they state the constructor count or list mirrors as primitive. Update `docs/reference/paper-definitions-of-record.md`'s correspondence note, which claims a `derivable_iff` follow-up, to point at the new state.
+- [x] Fix any stale docstring mentions of the removed constructors that phases 3 to 8 left behind.
+- [x] Run `bash .claude/scripts/check-task-references.sh`, or the repo lint, to confirm that no deliverable cites a task number. *(addition: `scripts/check-module-invariants.sh` C14 now treats 29 as the axiom count and 45 as stale; ~25 docs/README count claims updated; `typst/generated/automation-module-map.typ` regenerated (pre-existing drift); `typst-sync-check.sh` PASS; manual compiles)*
 
 **Timing**: 1.5 hours
 
@@ -404,16 +404,18 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 10: Final gate [NOT STARTED]
+**Deviation (naming, all phases)**: the derived definitions are named in lowerCamelCase (`sinceP`, `modal4`, `priorSZ`, `tempLinearityLegacy`, `serialFutureImp`, ... with `…At` lifts), not with the former snake_case constructor names used in the Challenge Statements. The repository's enforced invariants (`check-module-invariants.sh` C16 `defsWithUnderscore`, C26 snake_case `def` scan) reject snake_case `def`s, and `scripts/nolint-attribute-allowlist.txt` explicitly makes "I do not want to rename this" inadmissible. Statements are unchanged; every call site was rewritten, so no downstream code depends on the old names. *(deviation: altered — names only)*
+
+### Phase 10: Final gate [COMPLETED]
 
 **Goal**: Run the complete repository gate and certify the acceptance criteria.
 
 **Tasks**:
-- [ ] Run a full `lake build`, detached, including `BimodalTest` and every `lean_exe`.
-- [ ] Run the test suite, following the repo's test invocation (`lake build BimodalTest` or `lake test`, whichever the repo defines).
-- [ ] Run `lean_verify` on all 19 derived definitions, and on `soundness_validIn` plus the completeness headline theorems, to confirm their axiom footprint is unchanged.
-- [ ] Recount sorry and axiom declarations, and diff against the phase 1 baseline. It must show no increase.
-- [ ] Confirm the `Axiom` constructor count is 29, and that each of the 16 removed names resolves to a `DerivedAxioms` definition.
+- [x] Run a full `lake build`, detached, including `BimodalTest` and every `lean_exe`. *(green: FormalSystem, BimodalTest, all 13 lean_exe targets, 4219 jobs)*
+- [x] Run the test suite, following the repo's test invocation (`lake build BimodalTest` or `lake test`, whichever the repo defines). *(BimodalTest builds green incl. TableauConformance, TacticsTest, LemmaDBTest; `check-module-invariants.sh` ALL CHECKS PASSED; `typst-sync-check.sh` PASS)*
+- [x] Run `lean_verify` on all 19 derived definitions, and on `soundness_validIn` plus the completeness headline theorems, to confirm their axiom footprint is unchanged. *(all 19: `[propext]` only; soundness_validIn / completeness / completeness_rtime / sound_of_isValid unchanged at `[propext, Classical.choice, Quot.sound]`)*
+- [x] Recount sorry and axiom declarations, and diff against the phase 1 baseline. It must show no increase. *(0 non-Boneyard sorries, 0 `axiom` declarations: equal to baseline)*
+- [x] Confirm the `Axiom` constructor count is 29, and that each of the 16 removed names resolves to a `DerivedAxioms` definition. *(29; each removed name resolves to a lowerCamelCase `DerivedAxioms` definition)*
 
 **Timing**: 1 hour
 
@@ -523,13 +525,13 @@ Notes on these statements:
 
 ## Testing & Validation
 
-- [ ] A full `lake build` is green: `FormalSystem`, `BimodalTest` and all `lean_exe` targets.
-- [ ] No sorry or axiom declaration is added relative to the phase 1 baseline.
-- [ ] `lean_verify` is clean on all 19 derived definitions.
-- [ ] `inductive Axiom` has exactly 29 constructors, and TL, CN and TS match `sub:Logic`'s `\aitem{TL}`, `\aitem{CN}` and `\aitem{TS}` up to the right-associated 3-way disjunction.
-- [ ] `modal_search` and the automation tests still close their former mirror goals.
-- [ ] The machine appendix and `status.typ` are regenerated, and the axiom count reads 29.
-- [ ] `docs/reference/axiom-reference.md` states the primitive system plus the derived-mirror table.
+- [x] A full `lake build` is green: `FormalSystem`, `BimodalTest` and all `lean_exe` targets.
+- [x] No sorry or axiom declaration is added relative to the phase 1 baseline.
+- [x] `lean_verify` is clean on all 19 derived definitions.
+- [x] `inductive Axiom` has exactly 29 constructors, and TL, CN and TS match `sub:Logic`'s `\aitem{TL}`, `\aitem{CN}` and `\aitem{TS}` up to the right-associated 3-way disjunction.
+- [x] `modal_search` and the automation tests still close their former mirror goals.
+- [x] The machine appendix and `status.typ` are regenerated, and the axiom count reads 29.
+- [x] `docs/reference/axiom-reference.md` states the primitive system plus the derived-mirror table.
 
 ## Artifacts & Outputs
 

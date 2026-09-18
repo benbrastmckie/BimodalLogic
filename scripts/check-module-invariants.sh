@@ -1408,7 +1408,7 @@ echo
 # C2 and C3 assert facts about the TREE; nothing asserted that `docs/` agrees
 # with them. It has two halves:
 #
-#   (i)  a content scan for STALE literals -- an axiom count that is not 45, or a
+#   (i)  a content scan for STALE literals -- an axiom count that is not 29, or a
 #        table row documenting a non-zero sorry count. This half is cheap and
 #        always runs. Its scope is docs/ + README.md + FormalSystem/**/*.lean:
 #        the .lean half was added because C14's markdown-only scope is exactly
@@ -1427,9 +1427,11 @@ echo
 # ---------------------------------------------------------------------------
 C14_FAIL=0
 
-# (i) stale axiom counts. 45 is the constructor count of `inductive Axiom`, per
-# `Axiom.minFrameClass`. 42 is the figure in the stale `Axioms.lean` docstring,
-# which omits the RTime (Dedekind-complete) layer; 21, 14 and 44 are older figures still.
+# (i) stale axiom counts. 29 is the constructor count of `inductive Axiom`, per
+# `Axiom.minFrameClass` -- exactly the paper's primitive schemata. 45 is the figure from before
+# the time-reflection mirrors and modal 4/B became derived theorems (`DerivedAxioms`); 42 is
+# the figure in an older `Axioms.lean` docstring, which omitted the RTime (Dedekind-complete)
+# layer; 21, 14 and 44 are older figures still.
 # Scope note: `FormalSystem` is scanned for `*.lean` only, and Boneyard/ is excluded --
 # archived modules are not documentation and are allowed to carry historical figures.
 #
@@ -1438,7 +1440,7 @@ C14_FAIL=0
 # `\b`) alongside `axiom`/`constructor`, and an optional single interposed word (e.g.
 # "21 TM axiom schemas") is now tolerated between the count and the terminal word.
 STALE_AXIOMS=$(grep -rniE --include='*.md' \
-  '\b(14|21|42|44)[[:space:]]+([A-Za-z⁺+]+[[:space:]]+)?(axiom|constructor|schema)' \
+  '\b(14|21|42|44|45)[[:space:]]+([A-Za-z⁺+]+[[:space:]]+)?(axiom|constructor|schema)' \
   docs README.md 2>/dev/null || true)
 # The trailing `grep -i axiom` is a PRECISION guard, not a weakening: `.lean` sources
 # carry constructor counts for types other than `Axiom` (e.g. `EnrichedFormula`'s 21
@@ -1455,7 +1457,7 @@ STALE_AXIOMS=$(grep -rniE --include='*.md' \
 # distinguishes the two in every case checked at widening time (verified: neither
 # guard removes either of this phase's two genuine stale-count fixes).
 STALE_AXIOMS_LEAN=$(grep -rniE --include='*.lean' \
-  '\b(14|21|42|44)[[:space:]]+([A-Za-z⁺+]+[[:space:]]+)?(axiom|constructor|schema)' \
+  '\b(14|21|42|44|45)[[:space:]]+([A-Za-z⁺+]+[[:space:]]+)?(axiom|constructor|schema)' \
   FormalSystem 2>/dev/null \
   | grep -v '/Boneyard/' | grep -i 'axiom' | grep -v -i 'covers' || true)
 STALE_AXIOMS=$(printf '%s\n%s' "$STALE_AXIOMS" "$STALE_AXIOMS_LEAN" | grep -c . >/dev/null \
@@ -1477,7 +1479,7 @@ else
     | while IFS= read -r l; do note "$l"; done
   [ "$STALE_SORRY_COUNT" -gt 0 ] && printf '%s\n' "$STALE_SORRIES" | head -10 \
     | while IFS= read -r l; do note "$l"; done
-  note "the tree is the authority: C3 asserts zero sorries, Axiom.minFrameClass gives 45 axioms"
+  note "the tree is the authority: C3 asserts zero sorries, Axiom.minFrameClass gives 29 axioms"
 fi
 
 # (ii) #print axioms for the theorems C2 does not cover.

@@ -183,13 +183,11 @@ example (φ : Formula) : ⊢ (φ.box.imp φ) := by
 
 -- M4: `□φ → □□φ` (transitivity)
 example (φ : Formula) : ⊢ (φ.box.imp φ.box.box) := by
-  apply DerivationTree.axiom
-  apply Axiom.modal_4
+  exact DerivedAxioms.modal4 _
 
 -- MB: `φ → □◇φ` (symmetry)
 example (φ : Formula) : ⊢ (φ.imp (diamond φ).box) := by
-  apply DerivationTree.axiom
-  apply Axiom.modal_b
+  exact DerivedAxioms.modalB _
 ```
 
 ### Inference Rules

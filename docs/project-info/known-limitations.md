@@ -367,7 +367,7 @@ outstanding work.
 
 Despite limitations, the following are fully functional:
 
-- ✅ All 45 axiom constructors (Base 37 / Dense 2 / ZTime 3 / RTime 3)
+- ✅ All 29 axiom constructors (Base 23 / Dense 2 / ZTime 2 / RTime 2)
 - ✅ All 7 inference rules
 - ✅ Full soundness proof
 - ✅ Task frame semantics

@@ -63,7 +63,7 @@ This table is the subsystem's axiom map: it records, for each of the twelve, whe
   caption: none,
 )
 
-The full system additionally includes M4 (`Axiom.modal_4`) and MB (`Axiom.modal_b`) as primitive S5 axioms (derivable from the core but convenient in Hilbert-style derivations), the full Burgess-Xu Since/Until layer with primed past mirrors, and the frame-class layers (uniformity, Prior, Z1, density, Reynolds Dedekind) that gate the extended systems.
+The full system additionally derives M4 (`DerivedAxioms.modal4`) and MB (`DerivedAxioms.modalB`) from the S5 core, and has the full Burgess-Xu Since/Until layer, whose primed past mirrors are derived by the TR rule, and the frame-class layers (uniformity, Prior, Z1, density, Reynolds Dedekind) that gate the extended systems.
 TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is derived as `temporalFutureDerived` (`Theorems/Combinators.lean`) from MF, MT, and M4.
 
 === Completeness

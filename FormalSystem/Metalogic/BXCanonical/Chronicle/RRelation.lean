@@ -107,7 +107,7 @@ theorem since_implies_P_in_mcs (fc : FrameClass) {A : Set Formula}
     (h_since : Formula.snce γ δ ∈ A) :
     Formula.somePast δ ∈ A := by
   have h_P : DerivationTree fc [] ((Formula.snce γ δ).imp (Formula.somePast δ)) :=
-    (DerivedAxioms.since_P γ δ)
+    (DerivedAxioms.sinceP γ δ)
   exact SetMaximalConsistent.mp_of_theorem h_mcs h_P h_since
 
 /-! ## Lemma 2.3: r-Relation Properties -/
@@ -541,7 +541,7 @@ theorem burgessRSince_absorption (fc : FrameClass) {A D C : Set Formula}
   -- Step 4: BX6' → (β S γ) ∈ A
   have h_bx6' : DerivationTree fc []
       ((Formula.snce β (Formula.and β (Formula.snce β γ))).imp (Formula.snce β γ)) :=
-    (DerivedAxioms.absorb_since β γ)
+    (DerivedAxioms.absorbSince β γ)
   exact SetMaximalConsistent.mp_of_theorem h_mcs_A h_bx6' h3
 
 /--
@@ -678,12 +678,12 @@ theorem c4'_hard_case_H_neg_delta (fc : FrameClass) {A : Set Formula}
       (SetMaximalConsistent.implication_property h_mcs h_dist h_H_ps) h_Hγ
   -- BX2H: H(top -> gamma) -> (delta S top -> delta S gamma)
   have h_ax := theorem_in_mcs h_mcs
-    (DerivedAxioms.left_mono_since_H top γ δ)
+    (DerivedAxioms.leftMonoSinceH top γ δ)
   have h_mono : (Formula.snce top δ).imp (Formula.snce γ δ) ∈ A :=
     SetMaximalConsistent.implication_property h_mcs h_ax h_H_top_gamma
   have h_neg_top_since := mcs_contrapositive_mem fc h_mcs h_mono h_neg_since
   have h_bx12' := theorem_in_mcs h_mcs
-    (DerivedAxioms.P_since_equiv δ)
+    (DerivedAxioms.pSinceEquiv δ)
   have h_neg_P := mcs_contrapositive_mem fc h_mcs h_bx12' h_neg_top_since
   -- ¬P(δ) → H(¬δ) via duality conversion
   exact FormalSystem.Metalogic.Bundle.neg_some_past_to_all_past_neg h_mcs δ h_neg_P
@@ -949,7 +949,7 @@ theorem untl_conj_guard (fc : FrameClass) {A : Set Formula}
   have h_conj : Formula.and (Formula.untl β₁ γ) (Formula.untl β₂ γ) ∈ A :=
     dcs_conj_closed (mcs_is_dcs h_mcs) h1 h2
   have h_bx7 := theorem_in_mcs h_mcs
-    (DerivedAxioms.linear_until_legacy β₁ γ β₂ γ)
+    (DerivedAxioms.linearUntilLegacy β₁ γ β₂ γ)
   have h_disj := SetMaximalConsistent.implication_property h_mcs h_bx7 h_conj
   set guard := Formula.and β₁ β₂
   set D1 := Formula.untl guard (Formula.and γ γ)
@@ -995,7 +995,7 @@ theorem snce_conj_guard (fc : FrameClass) {A : Set Formula}
   have h_conj : Formula.and (Formula.snce β₁ γ) (Formula.snce β₂ γ) ∈ A :=
     dcs_conj_closed (mcs_is_dcs h_mcs) h1 h2
   have h_bx7' := theorem_in_mcs h_mcs
-    (DerivedAxioms.linear_since β₁ γ β₂ γ)
+    (DerivedAxioms.linearSince β₁ γ β₂ γ)
   have h_disj := SetMaximalConsistent.implication_property h_mcs h_bx7' h_conj
   set guard := Formula.and β₁ β₂
   set D1 := Formula.snce guard (Formula.and γ γ)
@@ -1006,7 +1006,7 @@ theorem snce_conj_guard (fc : FrameClass) {A : Set Formula}
       DerivationTree fc [] ((Formula.snce guard e).imp target) := by
     intro e h_e_imp
     have h_H := FormalSystem.Theorems.pastNecessitation _ h_e_imp
-    have h_bx3' := (DerivedAxioms.right_mono_since (fc := fc) e γ guard)
+    have h_bx3' := (DerivedAxioms.rightMonoSince (fc := fc) e γ guard)
     exact DerivationTree.modus_ponens [] _ _ h_bx3' h_H
   have h_D1_impl := theorem_in_mcs h_mcs
     (mk_thm _ ((FormalSystem.Theorems.Propositional.lceImp γ γ)))
@@ -1083,7 +1083,7 @@ theorem snce_left_mono_H (fc : FrameClass) {A : Set Formula}
     (h_snce : Formula.snce β₁ γ ∈ A) :
     Formula.snce β₂ γ ∈ A := by
   have h_ax := theorem_in_mcs h_mcs
-    (DerivedAxioms.left_mono_since_H β₁ β₂ γ)
+    (DerivedAxioms.leftMonoSinceH β₁ β₂ γ)
   have h_step := SetMaximalConsistent.implication_property h_mcs h_ax h_H_impl
   exact SetMaximalConsistent.implication_property h_mcs h_step h_snce
 
@@ -1419,11 +1419,11 @@ theorem burgessRSince_implies_burgessR (fc : FrameClass) {A C : Set Formula}
       -- burgessRSince gives snce(β, G(¬γ)) ∈ C (with G(¬γ) ∈ A)
       have h_snce : Formula.snce β (γ.neg.allFuture) ∈ C := h_burgessRSince _ h_G
       -- BX10': snce(β, G(¬γ)) → P(G(¬γ)), so P(G(¬γ)) ∈ C
-      have h_ax10' := (DerivedAxioms.since_P (fc := fc) β γ.neg.allFuture)
+      have h_ax10' := (DerivedAxioms.sinceP (fc := fc) β γ.neg.allFuture)
       have h_P : Formula.somePast (γ.neg.allFuture) ∈ C :=
         SetMaximalConsistent.mp_of_theorem h_mcs_C h_ax10' h_snce
       -- BX4': γ → H(F(γ)), so H(F(γ)) ∈ C
-      have h_bx4' := (DerivedAxioms.connect_past (fc := fc) γ)
+      have h_bx4' := (DerivedAxioms.connectPast (fc := fc) γ)
       have h_HF : Formula.allPast (Formula.someFuture γ) ∈ C :=
         SetMaximalConsistent.mp_of_theorem h_mcs_C h_bx4' hγ
       -- P(G(¬γ)) and H(F(γ)) are contradictory in MCS C
@@ -1443,7 +1443,7 @@ theorem burgessRSince_implies_burgessR (fc : FrameClass) {A C : Set Formula}
   have h_conj : Formula.and γ (Formula.snce β (Formula.untl β γ).neg) ∈ C :=
     dcs_conj_closed (mcs_is_dcs h_mcs_C) hγ h_snce
   -- Apply A3b: γ ∧ snce(β, ¬untl(β,γ)) → snce(β, ¬untl(β,γ) ∧ untl(β,γ))
-  have h_a3b := (DerivedAxioms.enrichment_since (fc := fc) β (Formula.untl β γ).neg γ)
+  have h_a3b := (DerivedAxioms.enrichmentSince (fc := fc) β (Formula.untl β γ).neg γ)
   have h_enriched : Formula.snce β ((Formula.untl β γ).neg.and (Formula.untl β γ)) ∈ C :=
     SetMaximalConsistent.mp_of_theorem h_mcs_C h_a3b h_conj
   -- BX10': snce(β, X) → P(X), so P(¬untl(β,γ) ∧ untl(β,γ)) ∈ C
@@ -1664,7 +1664,7 @@ theorem burgessR3Maximal_from_g_content_sub (fc : FrameClass) {A C : Set Formula
     have h_P := P_mem_of_g_content_sub fc h_mcs_A h_gc α hα
     -- P(alpha) -> S(top, alpha) by P_since_equiv
     have h_bx12' : DerivationTree fc [] ((Formula.somePast α).imp (Formula.snce top α)) :=
-      (DerivedAxioms.P_since_equiv α)
+      (DerivedAxioms.pSinceEquiv α)
     exact SetMaximalConsistent.mp_of_theorem h_mcs_C h_bx12' h_P
   -- Apply burgessR3Maximal_exists_from_seed
   exact burgessR3Maximal_exists_from_seed fc A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A

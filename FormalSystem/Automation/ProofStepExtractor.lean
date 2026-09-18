@@ -19,7 +19,7 @@ BimodalHarness AlphaZero-style training pipeline.
 
 ## Main Definitions
 
-- `Axiom.toName`: Maps all 45 axiom constructors to string names
+- `Axiom.toName`: Maps all 29 axiom constructors to string names
 - `ProofStep`: Structure containing (context, goal, rule, axiom_name, subgoals)
 - `ProofStep.toJson`: JSON serialization matching the `ProofStepRecord` schema
 - `extractStepSequence`: Recursive tree walker emitting ordered proof steps
@@ -29,7 +29,7 @@ BimodalHarness AlphaZero-style training pipeline.
 ## Design
 
 The 52-action space consists of:
-- 45 axiom constructors (via `Axiom.toName`)
+- 29 axiom constructors (via `Axiom.toName`)
 - 7 inference rules (axiom, assumption, modus_ponens, necessitation,
   temporal_necessitation, time_reflection, weakening)
 
@@ -40,7 +40,7 @@ and what subgoals remain.
 ## References
 
 - `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and constructors
-- `FormalSystem.ProofSystem.Axioms` — `Axiom` inductive with 45 constructors
+- `FormalSystem.ProofSystem.Axioms` — `Axiom` inductive with 29 constructors
 - `FormalSystem.Automation.DataExport` — JSON serialization helpers
 -/
 
@@ -53,7 +53,7 @@ open FormalSystem.Automation.DataExport
 /-!
 ## Axiom Name Mapping
 
-Maps all 45 axiom constructors to their string names for the action space.
+Maps all 29 axiom constructors to their string names for the action space.
 -/
 
 /--

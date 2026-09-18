@@ -21,9 +21,9 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 527 |
-| Live lines of code | 162,823 |
-| Live comment lines | 96,993 |
+| Live `.lean` files | 528 |
+| Live lines of code | 163,010 |
+| Live comment lines | 97,202 |
 | Archived `.lean` files | 169 |
 | Archived lines | 91,983 |
 <!-- END GENERATED -->
@@ -115,7 +115,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── MinusLanguage/            # L⁻ = the tense-primitive (H/G) language, and its logic TM⁻
 │   ├── PlusLanguage/             # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
 │   ├── Syntax/                   # Formula types, atoms, contexts
-│   ├── ProofSystem/              # Axioms (45 constructors, nine layers), derivation trees
+│   ├── ProofSystem/              # Axioms (29 constructors, nine layers), derivation trees
 │   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, PartialHistory, TaskModel, validity
 │   ├── Metalogic/                # Soundness, completeness, decidability
 │   │   ├── Core/                 # MCS theory, deduction theorem
@@ -196,7 +196,7 @@ graph TD
 | **Dense** | 39 | `GGφ → Gφ` (`density`), `¬U(⊤,⊥)` (`dense_indicator`) | ℚ | `soundness_dense` | `completeness_dense` |
 | **RTime** | 42 | the two Dense axioms plus Reynolds' `prior_U_gap`, `prior_S_gap`, `sep` | ℝ | `soundness_rtime` | `completeness_rtime` |
 
-`inductive Axiom` has **45 constructors in nine layers** (`FormalSystem/ProofSystem/Axioms.lean`). The 37 Base constructors are propositional (4), S5 modal (5), Burgess-Xu temporal (18), an additional Burgess-Xu temporal layer (4), modal-temporal interaction (1), and uniformity (5). The remaining eight are the class-specific extensions: density (2), Prior-UZ/SZ (2) and Z1 (1) for the ZTime class, and Reynolds' Dedekind axioms (3).
+`inductive Axiom` has **29 constructors in nine layers** (`FormalSystem/ProofSystem/Axioms.lean`): exactly the paper's primitive axiom schemata. The 23 Base constructors are propositional (4), S5 modal (3: MT, M5, MK), Burgess-Xu temporal (9), an additional Burgess-Xu temporal layer (2: TL, UT), modal-temporal interaction (1), and uniformity (4). The remaining six are the class-specific extensions: density (2), Prior-UZ (1) and Z1 (1) for the ZTime class, and Reynolds' Dedekind axioms (2: PU, SEP). The past mirrors, obtained by the time-reflection rule TR, and the S5 schemata 4 and B are derived theorems (`FormalSystem.ProofSystem.DerivedAxioms`).
 
 The Dense and ZTime logics are independent extensions — neither subsumes the other. RTime extends **Dense**: `Axiom.minFrameClass` places `density` and `dense_indicator` below `FrameClass.RTime`, because Reynolds' own axiomatization of real flow contains them. ZTime and RTime are likewise incomparable, and `RTime ≰ Dense`.
 
@@ -347,7 +347,7 @@ doc-gen4 reference for every declaration in `FormalSystem`, rebuilt on every pus
 
 ### Reference
 
-- [Axiom Reference](docs/reference/axiom-reference.md) — complete axiom schemas for all 45 constructors
+- [Axiom Reference](docs/reference/axiom-reference.md) — complete axiom schemas for all 29 constructors and the derived schemata
 - [Operator Reference](docs/reference/operators.md) — formal operator definitions
 - [Tactic Reference](docs/reference/tactic-reference.md) — custom proof tactics
 - [Specification Document](latex/BimodalReference.pdf) — full formal specification

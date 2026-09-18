@@ -127,7 +127,7 @@ primitive schemata.
 
 29 constructors organized into nine layers:
 - **Propositional** (4): Classical propositional tautologies
-- **S5 Modal** (3): MT, M5 and MK (4 and B are derived, `DerivedAxioms.modal_4`/`modal_b`)
+- **S5 Modal** (3): MT, M5 and MK (4 and B are derived, `DerivedAxioms.modal4`/`modal_b`)
 - **BX Temporal** (11): Burgess-Xu axioms for Until/Since on linear orders, future direction;
   the past mirrors are derived by TR (`DerivedAxioms`)
 - **Interaction** (1): Modal-temporal interaction axiom (MF; TF derived)
@@ -170,7 +170,7 @@ inductive Axiom : Formula → Type where
   -- See Theorems/TemporalDerived.lean for temporalKDistDerived and temporal4Derived.
   /-- Serial future: `F(⊤)` (future seriality; Burgess 1982 §1.6, No Last Element), the
   paper's TS verbatim. Under irreflexive semantics, every time point has a strict future.
-  The former statement `⊤ → F(⊤)` is the derived `DerivedAxioms.serial_future_imp`. -/
+  The former statement `⊤ → F(⊤)` is the derived `DerivedAxioms.serialFutureImp`. -/
   | serial_future :
     Axiom (Formula.someFuture (Formula.bot.imp Formula.bot))
   /-- BX2G: Guard monotonicity of Until under G (Burgess A2a, Xu axiom (1)):
@@ -231,7 +231,7 @@ inductive Axiom : Formula → Type where
   All three disjuncts share the fixed guard `φ∧χ` (Burgess's `q ∧ s`); only the events vary.
   Stated as the paper's CN (`sub:Logic`) verbatim: the disjuncts in the paper's order, the
   3-way disjunction right-associated `A ∨ (B ∨ C)`. The former left-associated form
-  `(A ∨ B) ∨ C` is the derived `DerivedAxioms.linear_until_legacy`.
+  `(A ∨ B) ∨ C` is the derived `DerivedAxioms.linearUntilLegacy`.
   If two Until formulas hold simultaneously, their witnesses are linearly ordered.
   The three disjuncts correspond to: witnesses coincide, first comes first, second comes first.
   Sound under this tree's strict/open-guard semantics: see `linear_until_valid`. -/
@@ -269,7 +269,7 @@ inductive Axiom : Formula → Type where
   `F(φ) ∧ F(ψ) → F(F(φ) ∧ ψ) ∨ (F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)))`.
   Stated as the paper's TL (`sub:Logic`) verbatim, with the 3-way disjunction right-associated.
   The former disjunct order `F(φ ∧ ψ) ∨ (F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ))` is the derived
-  `DerivedAxioms.temp_linearity_legacy`.
+  `DerivedAxioms.tempLinearityLegacy`.
   Future witnesses are linearly ordered. Uses linearity of the underlying temporal order.
   This axiom is NOT derivable from BX1-BX10 (see LinearityDerivedFacts.lean counterexample). -/
   | temp_linearity (φ ψ : Formula) :
@@ -567,16 +567,16 @@ example : ¬(FrameClass.ZTime ≤ FrameClass.Dense) := by decide
 Minimum frame class for each axiom constructor.
 
 This is the single source of truth for axiom-frame-class compatibility:
-- Base (37 axioms): valid on all linear temporal orders
+- Base (23 axioms): valid on all linear temporal orders
 - Dense (2 axioms: density, dense_indicator): valid on densely ordered frames
-- ZTime (3 axioms: prior_UZ, prior_SZ, z1): valid on discrete frames
-- RTime (3 axioms: prior_U_gap, prior_S_gap, sep): valid on dense
-  Dedekind-complete frames
+- ZTime (2 axioms: prior_UZ, z1): valid on discrete frames
+- RTime (2 axioms: prior_U_gap, sep): valid on dense Dedekind-complete frames
 
-Total: 45 axiom constructors.
+Total: 29 axiom constructors. (The TR mirrors `prior_SZ` and `prior_S_gap` are derived at the
+frame class of their primaries, `DerivedAxioms.priorSZ` / `DerivedAxioms.priorSGap`.)
 
 Since `Dense ≤ RTime`, a `DerivationTree FrameClass.RTime` admits the Base axioms,
-the two Dense axioms, and the three Reynolds axioms — but not the ZTime ones
+the two Dense axioms, and the two Reynolds axioms — but not the ZTime ones
 (`ZTime` and `RTime` are incomparable).
 
 The constraint `ax.minFrameClass ≤ fc` in DerivationTree's axiom constructor

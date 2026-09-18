@@ -11,7 +11,7 @@ import FormalSystem.Metalogic.Soundness
 # Atomization — TM schema soundness over L⁺ in one lemma
 
 The TM schemata of TM⁺ (`PlusLanguage/Axioms.lean`) range over all of `PlusFormula`, so their
-instances may contain `⊡`. Rather than re-proving all 45 schemata over `PlusTruthAt`, this
+instances may contain `⊡`. Rather than re-proving all 45 TM-shaped schemata over `PlusTruthAt`, this
 module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_swap_validIn_min`
 (`Metalogic/Soundness.lean`) through **atomization**:
 

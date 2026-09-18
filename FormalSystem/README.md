@@ -90,28 +90,31 @@ before cross-referencing either against the paper.
 
 ### Axiom System
 
-The axiom system uses the `Axiom` inductive type with **45 constructors** organized into nine layers:
+The axiom system uses the `Axiom` inductive type with **29 constructors** organized into nine layers:
+exactly the paper's primitive axiom schemata.
 
 | Layer | Constructors | Frame Class | Description |
 |-------|------------:|-------------|-------------|
 | 1. Propositional | 4 | Base | K, S, EFQ, Peirce |
-| 2. S5 Modal | 5 | Base | T, 4, B, 5-collapse, K-distribution |
-| 3. BX Temporal | 18 | Base | Burgess-Xu Until/Since axioms (paired G/H forms) |
-| 3b. Additional BX Temporal | 4 | Base | `temp_linearity`, `temp_linearity_past`, `F_until_equiv`, `P_since_equiv` |
-| 4. Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is now derived |
-| 5. Uniformity | 5 | Base | Discrete uniformity (valid on all ordered abelian groups) |
-| 6. Prior | 2 | Discrete | Prior-UZ/SZ for discrete well-ordering |
+| 2. S5 Modal | 3 | Base | MT, M5 (5-collapse), MK (K-distribution); 4 and B derived |
+| 3. BX Temporal | 9 | Base | Burgess-Xu Until/Since axioms, future direction |
+| 3b. Additional BX Temporal | 2 | Base | `temp_linearity` (TL), `F_until_equiv` (UT) |
+| 4. Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is derived |
+| 5. Uniformity | 4 | Base | NP, NF, NA, NB (valid on all ordered abelian groups) |
+| 6. Prior | 1 | Discrete | Prior-UZ for discrete well-ordering |
 | 7. Z1 | 1 | Discrete | IsSuccArchimedean characteristic axiom |
 | 8. Density | 2 | Dense | `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`) |
-| 9. Reynolds Dedekind | 3 | Dedekind | `prior_U_gap`, `prior_S_gap`, `sep` — definable-gap-freeness for real flow |
-| **Total** | **45** | | |
+| 9. Reynolds Dedekind | 2 | Dedekind | `prior_U_gap`, `sep` — definable-gap-freeness for real flow |
+| **Total** | **29** | | |
 
-**Schema vs. constructor count**: The 45 constructors implement a smaller set of logical schemas —
-G-monotonicity and H-monotonicity, for instance, count as one schema with two constructors. The
-`Axiom` inductive type represents all paired temporal forms explicitly.
+**Derived schemata**: every past mirror is obtained from its future primary by the
+time-reflection rule TR and proved as a theorem in `ProofSystem/DerivedAxioms.lean` (the
+linearity mirrors, modal 4 and B, and the pre-paper forms of TL, CN and TS are in
+`Theorems/Combinators.lean`), under the lowerCamelCase form of its former constructor name in the `DerivedAxioms`
+namespace.
 
-**Frame classification**: 37 Base constructors (valid on all linear orders), 3 Discrete-only, 2 Dense-only,
-3 Dedekind-only. Cumulatively (`Dense ≤ Dedekind`): Base 37, Dense 39, Discrete 40, Dedekind 42.
+**Frame classification**: 23 Base constructors (valid on all linear orders), 2 Discrete-only, 2 Dense-only,
+2 Dedekind-only. Cumulatively (`Dense ≤ Dedekind`): Base 23, Dense 25, Discrete 25, Dedekind 27.
 
 See [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean) for the complete definition.
 
@@ -241,14 +244,14 @@ invariant check allowlists it by name (check C8).
 | File | Lines | Description |
 |------|------:|-------------|
 | `../FormalSystem.lean` | 50 | Repository-root Lake root module for `lean_lib FormalSystem` |
-| `Automation.lean` | 100 | Re-export for Automation submodule |
+| `Automation.lean` | 101 | Re-export for Automation submodule |
 | `Examples.lean` | 33 | Re-export for Examples submodule |
 | `ForMathlib.lean` | 29 | Re-export for ForMathlib submodule (Mathlib-shaped extensions intended for upstreaming) |
 | `FormalSystem.lean` | 118 | Library aggregator: imports all submodules for unified access |
 | `Init.lean` | 27 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
 | `MainResults.lean` | 254 | <!-- TODO: add description --> |
 | `Metalogic.lean` | 262 | Re-export for Metalogic submodule |
-| `ProofSystem.lean` | 90 | Re-export for ProofSystem submodule |
+| `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
 | `Semantics.lean` | 280 | Re-export for Semantics submodule |
 | `Syntax.lean` | 91 | Re-export for Syntax submodule |
 | `Theorems.lean` | 90 | Re-export for Theorems submodule |
@@ -260,8 +263,8 @@ invariant check allowlists it by name (check C8).
 |--------|------|-------------|
 | ForMathlib | `ForMathlib.lean` | Mathlib-shaped extensions intended for upstreaming (proper/maximal/prime-filter API of `Order.PFilter`, `Order.PrimeFilter`); imports nothing from `FormalSystem.*` |
 | Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure; also parents the L⁻/L⁺/L⋆ language family (see `Syntax/README.md`) |
-| ProofSystem | `ProofSystem.lean` | 45 axiom constructors, 7 inference rules, derivation trees |
-| PlusLanguage | `Syntax/PlusLanguage.lean` | `PlusFormula` (L plus `⊡`), `PlusAxiom` (the 45 TM schemata over `PlusFormula` plus the `⊡` schemata), `PlusDerivationTree`, the embedding `ofFormula` and backward conservativity |
+| ProofSystem | `ProofSystem.lean` | 29 axiom constructors, 7 inference rules, derivation trees, TR-derived mirrors |
+| PlusLanguage | `Syntax/PlusLanguage.lean` | `PlusFormula` (L plus `⊡`), `PlusAxiom` (the 29 TM schemata and 16 TM-derivable schemata over `PlusFormula`, plus the `⊡` schemata), `PlusDerivationTree`, the embedding `ofFormula` and backward conservativity |
 
 ### Layer 1 — Semantics
 
@@ -316,7 +319,7 @@ invariant check allowlists it by name (check C8).
 
 - **Formulas**: `Syntax/Formula.lean` - Inductive formula type
 - **Contexts**: `Syntax/Context.lean` - Proof context lists
-- **Axioms**: `ProofSystem/Axioms.lean` - TM axiom constructors (45)
+- **Axioms**: `ProofSystem/Axioms.lean` - TM axiom constructors (29); derived schemata in `ProofSystem/DerivedAxioms.lean`
 - **Derivation Trees**: `ProofSystem/Derivation.lean` - DerivationTree type
 - **Task Frames**: `Semantics/TaskFrame.lean` - Task frame structure
 - **Models**: `Semantics/TaskModel.lean` - Models with valuation
@@ -354,7 +357,7 @@ single ledger. The table below is per *layer*, and is not a second copy of it.
 | Layer | Component | Status |
 |-------|-----------|--------|
 | 0 | Syntax | Complete |
-| 0 | ProofSystem | Complete (45 axiom constructors, 7 rules) |
+| 0 | ProofSystem | Complete (29 axiom constructors, 7 rules) |
 | 1 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
 | 2 | Metalogic | Soundness, weak and finite-context completeness, and the deduction theorem for all four frame classes; decidability **sound direction only** |
 | 3 | Theorems | Complete (P1-P6 perpetuity principles, S4/S5 modal) |

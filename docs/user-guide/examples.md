@@ -62,15 +62,14 @@ example : ⊢ (□"p" → "p") := by
 ```lean
 /-- Prove the transitivity axiom M4: necessity iterates -/
 example (P : Formula) : ⊢ (P.box.imp P.box.box) := by
-  apply DerivationTree.axiom
-  apply Axiom.modal_4
+  exact DerivedAxioms.modal4 _
 
 /-- Chain of necessities -/
 example (P : Formula) : [P.box] ⊢ P.box.box.box := by
   apply DerivationTree.modusPonens
-  · apply DerivationTree.axiom; apply Axiom.modal_4
+  · exact DerivedAxioms.modal4At _ _
   · apply DerivationTree.modusPonens
-    · apply DerivationTree.axiom; apply Axiom.modal_4
+    · exact DerivedAxioms.modal4At _ _
     · apply DerivationTree.assumption; simp
 ```
 
@@ -79,13 +78,12 @@ example (P : Formula) : [P.box] ⊢ P.box.box.box := by
 ```lean
 /-- Prove the symmetry axiom MB: actuality implies necessary possibility -/
 example (P : Formula) : ⊢ (P.imp (diamond P).box) := by
-  apply DerivationTree.axiom
-  apply Axiom.modal_b
+  exact DerivedAxioms.modalB _
 
 /-- Using the axiom to derive a fact -/
 example (P : Formula) : [P] ⊢ (diamond P).box := by
   apply DerivationTree.modusPonens
-  · apply DerivationTree.axiom; apply Axiom.modal_b
+  · exact DerivedAxioms.modalBAt _ _
   · apply DerivationTree.assumption; simp
 ```
 
@@ -109,7 +107,7 @@ example (P : Formula) : [P] ⊢ diamond P := by
 theorem box_idempotent (P : Formula) :
   (⊢ P.box.imp P.box.box) ∧ (⊢ P.box.box.imp P.box) := by
   constructor
-  · apply DerivationTree.axiom; apply Axiom.modal_4
+  · exact DerivedAxioms.modal4At _ _
   · -- `□□φ → □φ` is derivable using MT on `□φ`
     sorry
 
@@ -575,7 +573,7 @@ example (P Q : Formula) : ⊢ (P.imp Q).box.imp (P.box.imp Q.box) :=
   DerivationTree.axiom [] _ (Axiom.modal_k_dist P Q)
 ```
 
-**Explanation**: Modal K distribution is one of the 45 TM axiom constructors. It's applied directly via `DerivationTree.axiom` with the `Axiom.modal_k_dist` constructor. This axiom states that if something is necessarily true as an implication, then the necessity of the antecedent implies the necessity of the consequent.
+**Explanation**: Modal K distribution is one of the 29 TM axiom constructors. It's applied directly via `DerivationTree.axiom` with the `Axiom.modal_k_dist` constructor. This axiom states that if something is necessarily true as an implication, then the necessity of the antecedent implies the necessity of the consequent.
 </details>
 
 ---
@@ -653,7 +651,7 @@ example (P : Formula) : ⊢ P.box.imp P.diamond := by
   -- For S5: □P → P and P → □◇P give □P → □◇P, then T: □◇P → ◇P
 
   have t_axiom : ⊢ P.box.imp P := DerivationTree.axiom [] _ (Axiom.modal_t P)
-  have b_axiom : ⊢ P.imp P.diamond.box := DerivationTree.axiom [] _ (Axiom.modal_b P)
+  have b_axiom : ⊢ P.imp P.diamond.box := DerivedAxioms.modalB P
   have t_on_diamond : ⊢ P.diamond.box.imp P.diamond :=
     DerivationTree.axiom [] _ (Axiom.modal_t P.diamond)
 
@@ -878,7 +876,7 @@ example (P : Formula) : ⊢ P.box.always.imp P.box := by
 example (P : Formula) : ⊢ P.box.imp P.box.always := by
   -- □□P → always □P by P1 pattern
   -- But we need □P → □□P first (axiom 4)
-  have modal_4 : ⊢ P.box.imp P.box.box := DerivationTree.axiom [] _ (Axiom.modal_4 P)
+  have modal_4 : ⊢ P.box.imp P.box.box := DerivedAxioms.modal4 P
 
   -- Then □□P → always □P by P1
   have int1 : ⊢ P.box.box.imp P.box.allPast := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
@@ -896,7 +894,7 @@ noncomputable example (P : Formula) : ⊢ P.box.always.iff P.box := by
     exact impTrans andLeft temp_t
 
   have bwd : ⊢ P.box.imp P.box.always := by
-    have modal_4 : ⊢ P.box.imp P.box.box := DerivationTree.axiom [] _ (Axiom.modal_4 P)
+    have modal_4 : ⊢ P.box.imp P.box.box := DerivedAxioms.modal4 P
     have int1 : ⊢ P.box.box.imp P.box.allPast := DerivationTree.axiom [] _ (Axiom.int_1 P.box)
     have int2 : ⊢ P.box.box.imp P.box.allFuture := DerivationTree.axiom [] _ (Axiom.int_2 P.box)
     have p1 : ⊢ P.box.box.imp P.box.always := combineImpConj int1 int2

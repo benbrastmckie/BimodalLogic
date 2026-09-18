@@ -94,7 +94,7 @@ other parameter name is silently ignored.
 
 **Limitations**:
 - Depth- and visit-bounded: a failure means "not found within the bounds", never "not derivable"
-- Its axiom matcher covers 42 of the tree's 45 schemata; the three Layer-9 Reynolds Dedekind
+- Its axiom matcher covers 27 of the tree's 29 schemata; the two Layer-9 Reynolds Dedekind
   axioms (`prior_U_gap`, `prior_S_gap`, `sep`) are outside its list
 - Cannot discharge goals needing forward modus ponens from a context hypothesis
 

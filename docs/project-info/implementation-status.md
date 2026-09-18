@@ -29,11 +29,11 @@ Module-by-module implementation status for the Bimodal TM logic library.
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| `Axioms.lean` | ✅ | 45 axiom constructors (Base 37 / Dense 2 / ZTime 3 / RTime 3) |
+| `Axioms.lean` | ✅ | 29 axiom constructors (Base 23 / Dense 2 / ZTime 2 / RTime 2) |
 | `Derivation.lean` | ✅ | DerivationTree type |
 
 **Features**:
-- All 45 axiom constructors organized into base (37), dense (2), ZTime (3), and RTime (3) layers
+- All 29 axiom constructors organized into base (23), dense (2), ZTime (2), and RTime (2) layers
 - 7 inference rule constructors
 - Computable height function
 
@@ -76,7 +76,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Metalogic/WeakCanonical/Kamp/` | ✅ | `kampPriorExpressiveCompleteness` -- `{U, S}` expressively complete relative to monadic first-order logic **for Prior structures**, sorry-free (`propext`, `Classical.choice`, `Quot.sound`); load-bearing via `uSExpressivelyCompleteOverPrior` |
 
 **Soundness** (✅):
-- Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ`, over all 45 axiom
+- Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ`, over all 29 axiom
   constructors (Base 37 / Dense 2 / ZTime 3 / RTime 3, per `Axiom.minFrameClass` in
   `FormalSystem/ProofSystem/Axioms.lean`)
 - Base-language soundness (`minus_soundness` and its dense / ZTime / RTime siblings,

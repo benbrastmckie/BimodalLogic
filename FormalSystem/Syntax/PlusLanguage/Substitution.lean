@@ -67,7 +67,7 @@ this module keeps that invariant.
 ## References
 
 * `FormalSystem/PlusLanguage/Derivation.lean` — `PlusAxiom.ofTM`, the `σ = atom` special case
-* `FormalSystem/ProofSystem/Axioms.lean` — the 45 TM schemata whose arms are mirrored here
+* `FormalSystem/ProofSystem/Axioms.lean` — the 29 TM schemata whose arms are mirrored here
 
 ## Tags
 

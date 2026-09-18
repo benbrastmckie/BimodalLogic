@@ -455,7 +455,7 @@ theorem g_content_subset_implies_h_content_reverse
   exact some_past_all_past_neg_absurd h_mcs' (Formula.neg phi) h_P_neg_M' h_H_nn
 
 /-- If HContent(M) ⊆ M', then GContent(M') ⊆ M.
-Uses `ModalDerived.pastTempA` (the `Axiom.connect_past` instance): φ → H(F(φ)). -/
+Uses `ModalDerived.pastTempA` (the `DerivedAxioms.connectPast` instance): φ → H(F(φ)). -/
 theorem h_content_subset_implies_g_content_reverse
     (M M' : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')

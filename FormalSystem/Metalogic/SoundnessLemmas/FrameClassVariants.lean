@@ -15,7 +15,7 @@ import Mathlib.Order.SuccPred.Archimedean
 
 Per-axiom validity and swap-validity for the base frame class, stated without density
 constraints, together with the discrete-specific axioms. The two `Per-Axiom` sections below
-hold the individual schema lemmas; `axiom_swap_valid_general` dispatches over all 45 axiom
+hold the individual schema lemmas; `axiom_swap_valid_general` dispatches over all 29 axiom
 constructors and delegates to them.
 -/
 

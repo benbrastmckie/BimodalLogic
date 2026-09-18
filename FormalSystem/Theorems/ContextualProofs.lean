@@ -176,13 +176,13 @@ def boxElimCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] A :=
 /-- Box 4: `[box A] |- box(box A)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
 def box4Ctx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] Formula.box (Formula.box A) :=
   .modus_ponens [Formula.box A] (Formula.box A) (Formula.box (Formula.box A))
-    (weakenEmpty (DerivedAxioms.modal_4 A))
+    (weakenEmpty (DerivedAxioms.modal4 A))
     (.assumption _ (Formula.box A) mem0)
 
 /-- Box B: `[A] |- box(diamond A)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
 def boxBCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] Formula.box A.diamond :=
   .modus_ponens [A] A (Formula.box A.diamond)
-    (weakenEmpty (DerivedAxioms.modal_b A))
+    (weakenEmpty (DerivedAxioms.modalB A))
     (.assumption _ A mem0)
 
 /-- Box to diamond: `[box A] |- diamond A`.
@@ -192,7 +192,7 @@ def boxToDiamondCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] A.
     impTrans
       (impTrans
         (DerivationTree.axiom [] _ (Axiom.modal_t A) (FrameClass.base_le fc))
-        (DerivedAxioms.modal_b A))
+        (DerivedAxioms.modalB A))
       (DerivationTree.axiom [] _ (Axiom.modal_t A.diamond) (FrameClass.base_le fc))
   .modus_ponens [Formula.box A] (Formula.box A) A.diamond
     (weakenEmpty thm)
@@ -225,7 +225,7 @@ def boxPairCtx {fc : FrameClass} (A B : Formula) :
     Uses modal_b at ◇A. -/
 def diamond5Ctx {fc : FrameClass} (A : Formula) : [A.diamond] ⊢[fc] Formula.box A.diamond.diamond :=
   .modus_ponens [A.diamond] A.diamond (Formula.box A.diamond.diamond)
-    (weakenEmpty (DerivedAxioms.modal_b A.diamond))
+    (weakenEmpty (DerivedAxioms.modalB A.diamond))
     (.assumption _ A.diamond mem0)
 
 /-- Box to future: `[box A] |- G(A)`. Uses MF + T composition. -/
@@ -258,7 +258,7 @@ def connectFutureCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] A.somePast.al
 /-- Connect past in context: `[A] |- H(F(A))`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
 def connectPastCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] A.someFuture.allPast :=
   .modus_ponens [A] A A.someFuture.allPast
-    (weakenEmpty (DerivedAxioms.connect_past A))
+    (weakenEmpty (DerivedAxioms.connectPast A))
     (.assumption _ A mem0)
 
 /-- Box future in context: `[box A] |- G(box A)`. Uses temporalFutureDerived. -/
@@ -271,7 +271,7 @@ def boxFutureCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] (Form
 def boxPastCtx {fc : FrameClass} (A : Formula) : [Formula.box A] ⊢[fc] A.someFuture.allPast :=
   let thm := impTrans
     (DerivationTree.axiom [] _ (Axiom.modal_t A) (FrameClass.base_le fc))
-    (DerivedAxioms.connect_past A)
+    (DerivedAxioms.connectPast A)
   .modus_ponens [Formula.box A] (Formula.box A) A.someFuture.allPast
     (weakenEmpty thm)
     (.assumption _ (Formula.box A) mem0)
@@ -287,7 +287,7 @@ def untilFCtx {fc : FrameClass} (phi psi : Formula) : [Formula.untl phi psi] ⊢
   `[S(psi, phi)] |- P(psi)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
 def sincePCtx {fc : FrameClass} (phi psi : Formula) : [Formula.snce phi psi] ⊢[fc] psi.somePast :=
   .modus_ponens [Formula.snce phi psi] (Formula.snce phi psi) psi.somePast
-    (weakenEmpty (DerivedAxioms.since_P phi psi))
+    (weakenEmpty (DerivedAxioms.sinceP phi psi))
     (.assumption _ (Formula.snce phi psi) mem0)
 
 /-- Serial future in context: `[A] |- F(top)`. 2 weakening + 1 axiom + identity steps + 1 MP. -/
@@ -295,7 +295,7 @@ def serialFutureCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] Formula.top.so
   let top_ctx : DerivationTree fc [A] Formula.top :=
     weakenEmpty (identity Formula.bot)
   let sf_ctx : DerivationTree fc [A] (Formula.top.imp Formula.top.someFuture) :=
-    weakenEmpty (DerivedAxioms.serial_future_imp)
+    weakenEmpty (DerivedAxioms.serialFutureImp)
   .modus_ponens [A] Formula.top Formula.top.someFuture sf_ctx top_ctx
 
 /-!
@@ -404,7 +404,7 @@ def connectFutureWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.
 
 /-- `[psi] |- A -> H(F(A))` -/
 def connectPastWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp A.someFuture.allPast :=
-  weakenEmpty (DerivedAxioms.connect_past A)
+  weakenEmpty (DerivedAxioms.connectPast A)
 
 /-- `[psi] |- box(A) -> G(box(A))` -/
 def tempFutureWeakened {fc : FrameClass} (A psi : Formula) :
@@ -422,11 +422,11 @@ def modalTWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] (Formula.
 /-- `[psi] |- box(A) -> box(box(A))` -/
 def modal4Weakened {fc : FrameClass} (A psi : Formula) :
     [psi] ⊢[fc] (Formula.box A).imp (Formula.box (Formula.box A)) :=
-  weakenEmpty (DerivedAxioms.modal_4 A)
+  weakenEmpty (DerivedAxioms.modal4 A)
 
 /-- `[psi] |- A -> box(diamond(A))` -/
 def modalBWeakened {fc : FrameClass} (A psi : Formula) : [psi] ⊢[fc] A.imp (Formula.box A.diamond) :=
-  weakenEmpty (DerivedAxioms.modal_b A)
+  weakenEmpty (DerivedAxioms.modalB A)
 
 /-- `[psi] |- box(A -> B) -> (box A -> box B)` -/
 def modalKDistWeakened {fc : FrameClass} (A B psi : Formula) :
@@ -452,15 +452,15 @@ def untilFWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc] (Formul
 
 /-- `[psi] |- S(B, A) -> P(B)` -/
 def sincePWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc] (Formula.snce A B).imp B.somePast :=
-  weakenEmpty (DerivedAxioms.since_P A B)
+  weakenEmpty (DerivedAxioms.sinceP A B)
 
 /-- `[psi] |- top -> F(top)` -/
 def serialFutureWeakened {fc : FrameClass} (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.someFuture :=
-  weakenEmpty (DerivedAxioms.serial_future_imp)
+  weakenEmpty (DerivedAxioms.serialFutureImp)
 
 /-- `[psi] |- top -> P(top)` -/
 def serialPastWeakened {fc : FrameClass} (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.somePast :=
-  weakenEmpty (DerivedAxioms.serial_past)
+  weakenEmpty (DerivedAxioms.serialPast)
 
 /-- `[psi] |- (A -> B -> C) -> (B -> A -> C)` -/
 def theoremFlipWeakened {fc : FrameClass} {A B C : Formula} (psi : Formula) :

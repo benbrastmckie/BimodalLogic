@@ -36,7 +36,7 @@ The sibling aggregator is `FormalSystem/Syntax/PlusLanguage.lean`.
 ## Why the TM schemata are re-declared
 
 An embedding constructor `Axiom φ → PlusAxiom (ofFormula φ)` would yield only `⊡`-free instances;
-TM⁺ needs, for instance, MF at `⊡p` (`□⊡p → □G⊡p`). So the 45 schemata range over all of
+TM⁺ needs, for instance, MF at `⊡p` (`□⊡p → □G⊡p`). So the 45 TM-shaped schemata (29 TM axioms, 16 TM-derivable) range over all of
 `PlusFormula`, and `PlusAxiom.ofTM` is a *function* used only for the backward bridge — each
 of its arms is `rfl`-shaped, so any drift between the two inductives fails to typecheck there.
 

@@ -90,7 +90,7 @@ Test 4: Modal 4 axiom is valid.
 Verifies that `□φ → □□φ` is valid via soundness.
 -/
 example (φ : Formula) : [] ⊨ ((φ.box).imp (φ.box.box)) := by
-  let deriv := (DerivedAxioms.modal_4 (fc := FrameClass.Base) φ)
+  let deriv := (DerivedAxioms.modal4 (fc := FrameClass.Base) φ)
   exact soundness_in [] _ deriv
 
 /--
@@ -99,7 +99,7 @@ Test 5: Modal B axiom is valid.
 Verifies that `φ → □◇φ` is valid via soundness.
 -/
 example (φ : Formula) : [] ⊨ (φ.imp (φ.diamond.box)) := by
-  let deriv := (DerivedAxioms.modal_b (fc := FrameClass.Base) φ)
+  let deriv := (DerivedAxioms.modalB (fc := FrameClass.Base) φ)
   exact soundness_in [] _ deriv
 
 /--
@@ -328,7 +328,7 @@ Demonstrates: Derivation → Soundness → Validity for transitivity axiom.
 -/
 example : True := by
   let proof : ⊢ ((Formula.atomS "q").box.imp (Formula.atomS "q").box.box) :=
-    (DerivedAxioms.modal_4 (fc := FrameClass.Base) (Formula.atomS "q"))
+    (DerivedAxioms.modal4 (fc := FrameClass.Base) (Formula.atomS "q"))
   
   let valid_from_soundness : [] ⊨ ((Formula.atomS "q").box.imp (Formula.atomS "q").box.box) :=
     soundness_in [] _ proof
@@ -560,7 +560,7 @@ Test 38: Modal B soundness with concrete formula.
 Verify p → □◇p is sound.
 -/
 example : [] ⊨ ((Formula.atomS "p").imp ((Formula.atomS "p").diamond.box)) := by
-  let deriv := (DerivedAxioms.modal_b (fc := FrameClass.Base) (Formula.atomS "p"))
+  let deriv := (DerivedAxioms.modalB (fc := FrameClass.Base) (Formula.atomS "p"))
   exact soundness_in [] _ deriv
 
 /--

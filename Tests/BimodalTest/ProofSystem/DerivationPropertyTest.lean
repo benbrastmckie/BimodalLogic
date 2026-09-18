@@ -133,7 +133,7 @@ example (φ : Formula) : ⊢ (φ.box.imp φ) :=
 Test: Modal 4 axiom is derivable.
 -/
 example (φ : Formula) : ⊢ (φ.box.imp φ.box.box) :=
-  (DerivedAxioms.modal_4 φ)
+  (DerivedAxioms.modal4 φ)
 
 /-!
 Test: Temporal 4 axiom is derivable.

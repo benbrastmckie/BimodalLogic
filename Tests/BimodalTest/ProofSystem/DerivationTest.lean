@@ -45,11 +45,11 @@ example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
 -- Test: Modal 4 is derivable from any context
 example : [Formula.atomS "q"] ⊢ (Formula.box (Formula.atomS "p")).imp
     (Formula.box (Formula.box (Formula.atomS "p"))) :=
-  (DerivedAxioms.modal_4At _ _)
+  (DerivedAxioms.modal4At _ _)
 
 -- Test: Modal B is derivable
 example : ⊢ (Formula.atomS "p").imp (Formula.box (Formula.atomS "p").diamond) :=
-  (DerivedAxioms.modal_bAt _ _)
+  (DerivedAxioms.modalBAt _ _)
 
 -- Test: Temporal 4 is derivable (now a derived theorem, no longer an axiom constructor)
 noncomputable example : ⊢ (Formula.allFuture (Formula.atomS "p")).imp
@@ -62,7 +62,7 @@ example : ⊢ (Formula.atomS "p").imp (Formula.allFuture (Formula.atomS "p").som
 
 -- Test: connect_past is derivable (φ → H(F(φ)), BX4')
 example : ⊢ (Formula.atomS "p").imp (Formula.allPast (Formula.atomS "p").someFuture) :=
-  (DerivedAxioms.connect_pastAt _ _)
+  (DerivedAxioms.connectPastAt _ _)
 
 -- Test: Modal-Future is derivable
 example : ⊢ (Formula.box (Formula.atomS "p")).imp
@@ -219,7 +219,7 @@ def modal_t_theorem (φ : Formula) : ⊢ (φ.box.imp φ) :=
 
 -- Example: S5 modal logic - □φ → □□φ is a theorem
 def modal_4_theorem (φ : Formula) : ⊢ ((φ.box).imp (φ.box.box)) :=
-  (DerivedAxioms.modal_4At _ _)
+  (DerivedAxioms.modal4At _ _)
 
 -- ============================================================
 -- Generalized Necessitation Rule Tests

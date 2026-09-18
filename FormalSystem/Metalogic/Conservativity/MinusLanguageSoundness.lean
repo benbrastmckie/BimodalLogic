@@ -428,7 +428,7 @@ Combined validity and swap-validity, on `[SuccOrder] [PredOrder]` frames (no Arc
 binders), for L⁻ theorems (empty-context derivations) at `FrameClass.ZTime`. The companion
 `minus_soundness_ztime_succ`'s `time_reflection` case needs exactly the swap half of this, as an
 external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_swap_validIn` (the
-L sibling this parallels), but over L⁻'s own 15-constructor `Axiom` rather than L's 45, and
+L sibling this parallels), but over L⁻'s own 15-constructor `Axiom` rather than L's 29, and
 without the `FrameClass` parameter, since the binder-weakened `.ZTime` frames this is stated
 over are not a `FrameClass.Sat` variant.
 
