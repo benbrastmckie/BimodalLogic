@@ -1,7 +1,7 @@
 # Implementation Plan: Triage the zero-occurrence declarations C17 reports
 
 - **Task**: 588 - Triage the zero-occurrence declarations C17 reports
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13.5 hours
 - **Dependencies**: 585 (warning burn-down, completed), 591 (Automation export-name consolidation, archived), 594 (in-library smoke-test relocation, archived) -- all three have landed, so the census is measurable against a settled tree
 - **Research Inputs**: `specs/588_triage_zero_occurrence_declarations/reports/02_c17-zero-occurrence-triage.md`; `specs/588_triage_zero_occurrence_declarations/reports/01_dead-declaration-triage.md`
@@ -145,24 +145,26 @@ previous phase invalidates.
 
 ---
 
-### Phase 1: Baseline capture and census re-verification [NOT STARTED]
+### Phase 1: Baseline capture and census re-verification [COMPLETED]
 
 **Goal**: Establish the measured before-state that every later phase's accounting is diffed
 against, and confirm the research census still reproduces on the current tree.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh` and save the complete output to
-      `specs/588_triage_zero_occurrence_declarations/tools/baseline-harness.txt`.
-- [ ] Record, from that output: C17's headline count and its scanned-declaration denominator;
+- [x] Run `bash scripts/check-module-invariants.sh` and save the complete output to
+      `specs/588_triage_zero_occurrence_declarations/tools/baseline-harness.txt`. *(completed -- exit 0, ALL CHECKS PASSED)*
+- [x] Record, from that output: C17's headline count and its scanned-declaration denominator;
       C19's and C23's counts and pass/fail state; C2, C6, C14, C15, C21 and C28 states; the
-      overall `FAILURES` total and exit code.
-- [ ] Run `python3 specs/588_triage_zero_occurrence_declarations/tools/c17_triage.py --summary`
+      overall `FAILURES` total and exit code. *(completed -- C17 does not print a denominator, so it
+      was measured directly with C17's own regex: 11,046 matched lines, 10,850 real, 196 phantom)*
+- [x] Run `python3 specs/588_triage_zero_occurrence_declarations/tools/c17_triage.py --summary`
       and confirm the tier table still matches the research report
-      (T0 11, T1 48, T2 145, T3 12, T4 12, SURVIVOR 792 of 1,020).
-- [ ] If the census has moved, regenerate `tools/c17_census.tsv` and record the delta and its
+      (T0 11, T1 48, T2 145, T3 12, T4 12, SURVIVOR 792 of 1,020). *(completed -- exact match)*
+- [x] If the census has moved, regenerate `tools/c17_census.tsv` and record the delta and its
       cause in the baseline file before proceeding. Do not proceed on an unexplained delta.
-- [ ] Confirm dependencies 591 and 594 have landed (both are under `specs/archive/`), since both
-      change C17 occurrence counts.
+      *(completed -- census has not moved; no regeneration needed)*
+- [x] Confirm dependencies 591 and 594 have landed (both are under `specs/archive/`), since both
+      change C17 occurrence counts. *(completed -- both present under specs/archive/)*
 
 **Timing**: 0.75 hours
 
