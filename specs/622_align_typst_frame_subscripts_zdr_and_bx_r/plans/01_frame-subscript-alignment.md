@@ -1,7 +1,7 @@
 # Implementation Plan: Task #622
 
 - **Task**: 622 - Align typst frame-class subscripts (z/d/r) and BX_r with the paper
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (task 607's TM/TM⁻ resync already landed)
 - **Research Inputs**: specs/622_align_typst_frame_subscripts_zdr_and_bx_r/reports/01_frame-subscript-alignment.md
