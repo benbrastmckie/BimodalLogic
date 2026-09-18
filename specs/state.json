@@ -251,13 +251,13 @@
     {
       "project_number": 600,
       "project_name": "rename_dense_extension_qtime",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Investigate why the dense frame-class extension is named Dense (FrameClass constructors Base | Dense | ZTime | RTime in FormalSystem/ProofSystem/Axioms.lean, and derived names such as detCompletenessDense, derivable_of_validDetDense, cantorBfmcsDense) instead of QTime, which would match ZTime and RTime. Research first: check whether the class is really the theory of Q (e.g. canonical/completeness constructions over ℚ, and whether every dense temporal order validates exactly the same formulas so QTime is accurate) or deliberately named for the density axiom over arbitrary dense orders, and check how the paper (PossibleWorlds JPL/possible_worlds.tex) and docs name it. If there is good reason, rename Dense to QTime systematically (constructor, IsDense-style predicates, theorem/def names, file and module names, docstrings, tests, docs), keeping the naming scheme uniform and elegant; otherwise record the rationale in the relevant docstring and close without renaming. Coordinate with other in-flight renaming/nesting tasks",
       "topic": "frame-extensions",
       "created": "2026-09-16T18:32:40Z",
-      "last_updated": "2026-09-18T06:58:21Z",
-      "session_id": "sess_1789584086_2b6633",
+      "last_updated": "2026-09-18T15:00:45Z",
+      "session_id": "sess_1789728492_5b1bc4",
       "artifacts": [
         {
           "path": "specs/600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md",
@@ -268,6 +268,11 @@
           "path": "specs/600_rename_dense_extension_qtime/plans/01_dense-naming-rationale.md",
           "type": "plan",
           "summary": "2-phase docstring-only plan: record why FrameClass.Dense is not renamed QTime (canonical paragraph on FrameClass, pointer on IsDense), then full lake build + lints."
+        },
+        {
+          "path": "specs/600_rename_dense_extension_qtime/summaries/01_dense-rationale-qtime-predicate-summary.md",
+          "type": "summary",
+          "summary": "Kept FrameClass.Dense; recorded the Dense-not-QTime rationale on FrameClass citing validQTime_iff_validDense, with pointers on IsDense, FrameClassValidity and theorem-index."
         }
       ],
       "next_artifact_number": 2,
@@ -275,7 +280,8 @@
         603,
         606,
         608
-      ]
+      ],
+      "completion_summary": "FrameClass.Dense keeps its name; the FrameClass docstring now explains why (non-categorical class, Dense <= RTime, paper d/z/r naming, Kamp) and cites the machine-checked validQTime_iff_validDense. The QTime predicate, validity and equivalence already delivered by task 603 were verified in place; the ratIso and strong-completeness phases were excluded per the 603 report."
     },
     {
       "project_number": 597,

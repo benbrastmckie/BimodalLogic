@@ -11,8 +11,8 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,600,604,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,607,616,617 | 298,464,502,559,563,568,597,600 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,607,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617 | 298,464,502,559,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -72,9 +72,9 @@ next_project_number: 621
 
 ### Documentation
 
+607 [NOT STARTED] — Resync typst/FormalFoundations.typ with the current Lean tree...
 610 [NOT STARTED] — Update remaining documentation references to lakefile.lean...
 614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
-607 [NOT STARTED] — Resync typst/FormalFoundations.typ with the current Lean tree...
 
 ### Formula Refactor
 
@@ -85,7 +85,6 @@ next_project_number: 621
 
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
-600 [PLANNED] — Investigate why the dense frame-class extension is named...
 
 ### Incompleteness
 
@@ -354,12 +353,13 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 600. Rename dense extension qtime
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: frame-extensions
 - **Dependencies**: Task 603, Task 606, Task 608
 - **Research**: [600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md]
 - **Plan**: [600_rename_dense_extension_qtime/plans/01_dense-naming-rationale.md]
+- **Summary**: [600_rename_dense_extension_qtime/summaries/01_dense-rationale-qtime-predicate-summary.md]
 
 **Description**: Investigate why the dense frame-class extension is named Dense (FrameClass constructors Base | Dense | ZTime | RTime in FormalSystem/ProofSystem/Axioms.lean, and derived names such as detCompletenessDense, derivable_of_validDetDense, cantorBfmcsDense) instead of QTime, which would match ZTime and RTime. Research first: check whether the class is really the theory of Q (e.g. canonical/completeness constructions over ℚ, and whether every dense temporal order validates exactly the same formulas so QTime is accurate) or deliberately named for the density axiom over arbitrary dense orders, and check how the paper (PossibleWorlds JPL/possible_worlds.tex) and docs name it. If there is good reason, rename Dense to QTime systematically (constructor, IsDense-style predicates, theorem/def names, file and module names, docstrings, tests, docs), keeping the naming scheme uniform and elegant; otherwise record the rationale in the relevant docstring and close without renaming. Coordinate with other in-flight renaming/nesting tasks
 
