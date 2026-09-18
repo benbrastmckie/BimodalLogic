@@ -265,23 +265,23 @@ stating why `_f` was refused — never a bare keep.
 
 ---
 
-X
+### Phase 4: Fix Carrier's Three Warnings, Then Delete Its Blanket [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Remove the last Ultraproduct blanket by fixing what it hides, with no warning baselined.
 
 **Tasks**:
-- [ ] Comment out `FormalSystem/Semantics/Ultraproduct/Carrier.lean:63` and build
+- [x] Comment out `FormalSystem/Semantics/Ultraproduct/Carrier.lean:63` and build
       `FormalSystem.Semantics.Ultraproduct.Carrier` through the guard. Read the **current** line
       numbers and the exact `omit [...] in` text Lean prints for each of the three
       `unusedSectionVars` warnings (recorded at lines 85, 267, 271 during the burn-down).
-- [ ] Apply the printed `omit [...] in` form verbatim at each of the three declarations.
-- [ ] Delete the file-scoped blanket at line 63.
-- [ ] Build `Carrier` plus its enumerated direct dependents (at minimum `Los`,
+- [ ] Apply the printed `omit [...] in` form verbatim at each of the three declarations. *(deviation: altered — applied, measured, then reverted: the fix does not converge; see the Reasoned Exclusions table below)*
+- [ ] Delete the file-scoped blanket at line 63. *(deviation: skipped — this phase's own documented fallback was taken instead: the blanket is KEPT, with an in-source reason comment naming the trial's three warnings and both measured cascade rounds)*
+- [x] Build `Carrier` plus its enumerated direct dependents (at minimum `Los`,
       `ShiftSetProduct`, `BimodalTest.Semantics.DependentUltraproductProbe`, plus anything else
       importing `FormalSystem.Semantics.Ultraproduct.Carrier`) through the guard; confirm *Built*,
       zero warnings.
-- [ ] Re-run `python3 scripts/warning-budget.py` after the build completes: still zero.
-- [ ] Commit once green.
+- [x] Re-run `python3 scripts/warning-budget.py` after the build completes: still zero.
+- [x] Commit once green.
 
 **Timing**: 1.5 hours
 
@@ -297,8 +297,20 @@ confirm from the trial build's own output at implementation time. If a fourth wa
 one resists the `omit` fix, keep the blanket with an in-source comment naming each unfixable
 warning verbatim — never delete it by moving a warning into the budget.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Deleting `Carrier.lean`'s file-scoped `linter.unusedSectionVars` blanket | The `omit [...] in` fix the tree's own disposition row prescribes does not reach a fixpoint on this file: each `omit` narrows that lemma's signature, so its consumers stop mentioning the instance too and the linter moves on to the next declaration and the next instance. The route ends with an `omit` line above nearly every theorem in the file. The real fix is the `variable`-block split the linter's own message suggests first — a restructuring of `Carrier.lean`, not a suppression decision, and outside this plan's scope. | Trial (blanket commented out): exactly 3 warnings, all naming `[∀ (i : I), IsOrderedAddMonoid (D i)]`, at `mem_evZero`, `mk_surjective`, `mk_zero`. Round 2 (those three `omit`s applied): 6 warnings — the same three, now for `[(i : I) → LinearOrder (D i)]`, plus `mk_eq_mk`, `mk_le_mk`, `shU_mk`. Round 3 (six `omit`s applied): 6 further — `mk_eq_mk` and `shU_mk` for `LinearOrder`, plus `mk_lt_mk`, `shU_zero`, `shU_add`, `mk_max`. |
+
+The suppression is retained but is no longer bare: an 18-line `--` comment above it names the
+linter, the trial's three warnings and both cascade rounds. Nothing was added to
+`scripts/warning-budget.txt`, and `warning-budget.py` still reports zero. The task's acceptance
+criterion is zero **bare** suppressions, which this satisfies; the consequence for the sibling
+Mathlib-linter-set task is that its file-scoped blanket count drops from four to one, not to zero.
+
 **Files to modify**:
-- `FormalSystem/Semantics/Ultraproduct/Carrier.lean` - three `omit [...] in` insertions, blanket deleted
+- `FormalSystem/Semantics/Ultraproduct/Carrier.lean` - reason comment above the retained blanket
 
 **Verification**:
 - `Carrier` and every enumerated dependent build with zero warnings.
