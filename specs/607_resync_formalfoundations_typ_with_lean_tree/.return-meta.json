@@ -1,27 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md",
-      "summary": "Audits typst/FormalFoundations.typ against the current Lean tree and paper-definitions-of-record: renamed identifiers and Some/All Past/Future labels are already clean; finds a wrong axiom-count remark (claims 22/5 constructors where Lean has 11/4), a pervasive TB->TS and TA->TC key mislabeling (7 sites each), and a structural naming collision between this document's TM (BL-level, no current paper counterpart) and TM^+ (which is what the current paper actually calls plain TM)."
+      "type": "plan",
+      "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/plans/01_formalfoundations-resync-plan.md",
+      "summary": "6-phase resync plan: TB/TA->TS/TC and count-remark fix, TM/BL site inventory, TM^+->TM and BL-level TM->TM-minus renames, provenance remarks, full gates incl. #leansrc existence check."
     }
   ],
-  "next_steps": "Run /plan 607 to create implementation plan",
+  "next_steps": "Run /implement 607 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 7,
+  "dependency_waves": [[1,2],[3],[4],[5],[6]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1789728492_5b1bc4_607",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   },
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic, docs/reference/paper-definitions-of-record.md's 'Language correspondence (2026-09-08)' section (mid-file, inside the drift-correction log) is the authoritative, permanent record of how repository object-language names (L, TM, L-, TM-, L+, TM+, L*) map onto the paper's manuscript systems (only two: BL-collapsed-language and its stability extension). Key fact: the paper withdrew its H/G-primitive tense fragment entirely; the repository's L-/TM- (FormalSystem/Syntax/MinusLanguage/) has NO paper counterpart and must never be described as a direct paper transcription. docs/reference/axiom-reference.md's 'Paper Key Correspondence' table and FormalSystem/ProofSystem/Axioms.lean's module docstring are the ground truth for axiom constructor counts (29 total: 19 core + 4 uniformity + 1 prior + 1 Z1 + 2 density + 2 Reynolds Dedekind) -- prose elsewhere (e.g. typst/FormalFoundations.typ) should be checked against these two files directly rather than trusted or re-derived from older prose.",
-      "category": "PATTERN",
-      "source_artifact": "specs/607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["paper-definitions-of-record", "axiom-reference", "TM vocabulary", "language correspondence", "BX axiom keys"]
-    }
-  ],
-  "dispatch_seq": 8
+  "dispatch_seq": 9
 }
