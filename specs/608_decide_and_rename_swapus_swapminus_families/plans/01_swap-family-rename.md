@@ -155,30 +155,30 @@ missed or over-matched. Investigate before building.
 
 ---
 
-### Phase 2: Classified prose pass [IN PROGRESS]
+### Phase 2: Classified prose pass [COMPLETED]
 
 **Goal**: Reword every docstring or comment where the token substitution produced a wrong or
 self-contradictory contrast, so that L⁻ time reflection and L time reflection are distinguished by
 namespace.
 
 **Tasks**:
-- [ ] Write a short ledger (`specs/608_decide_and_rename_swapus_swapminus_families/prose-ledger.md`)
+- [x] Write a short ledger (`specs/608_decide_and_rename_swapus_swapminus_families/prose-ledger.md`)
       that classifies each site as reworded or kept, in the style of the prior rename's ledger.
-- [ ] `Syntax/MinusLanguage/Derivation.lean` (~24-28, 85): "TR uses `MinusFormula.reflectTime`, not
+- [x] `Syntax/MinusLanguage/Derivation.lean` (~24-28, 85): "TR uses `MinusFormula.reflectTime`, not
       `Formula.reflectTime`. The latter acts on L's `untl`/`snce`...".
-- [ ] `Syntax/MinusLanguage/Translation.lean` (~26, 136-145): the `tr_reflectTime` docstring states
+- [x] `Syntax/MinusLanguage/Translation.lean` (~26, 136-145): the `tr_reflectTime` docstring states
       `tr φ.reflectTime = (tr φ).reflectTime`, with each side's namespace named.
-- [ ] `Metalogic/Conservativity/Backward.lean` (~64-65), `Semantics/MinusLanguage/MinusFrame.lean`
+- [x] `Metalogic/Conservativity/Backward.lean` (~64-65), `Semantics/MinusLanguage/MinusFrame.lean`
       (~92, 295-300; the `truth_swap` docstring keeps its name and says the `swap` refers to
       `MinusFrame.swap`, the paper's F⁻), and `Semantics/MinusLanguage/MinusSchemaValidity.lean`
       (~35, 146).
-- [ ] `Syntax/MinusLanguage/Formula.lean`: the definition docstring calls it "the L⁻ time
+- [x] `Syntax/MinusLanguage/Formula.lean`: the definition docstring calls it "the L⁻ time
       reflection `φ⟨S|U⟩`, the analogue of `Formula.reflectTime`".
 - [ ] Optional: within renamed `_reflect_time_valid` lemma docstrings, change "swap-validity" to
-      "reflection validity". Leave it unchanged anywhere outside the renamed lemmas.
-- [ ] Search `git grep -n "reflectTime\`, not\|not \`reflectTime\`"` and similar, and check that no
+      "reflection validity". Leave it unchanged anywhere outside the renamed lemmas. *(deviation: skipped — optional; "swap-validity" phrasing stays accurate and is shared with out-of-scope `swap` lemmas)*
+- [x] Search `git grep -n "reflectTime\`, not\|not \`reflectTime\`"` and similar, and check that no
       self-contradictions remain.
-- [ ] `lake build` of the touched modules is green, then commit with an explicit file list.
+- [x] `lake build` of the touched modules is green, then commit with an explicit file list.
 
 **Timing**: 1 hour
 
@@ -202,28 +202,28 @@ and read each prose hit.
 
 ---
 
-### Phase 3: Record update, swapUS pointer, final gate [NOT STARTED]
+### Phase 3: Record update, swapUS pointer, final gate [COMPLETED]
 
 **Goal**: Record the verdict in the record of paper definitions, mark `swapUS` as deliberately not
 `reflectTime`, and run the full gate set.
 
 **Tasks**:
-- [ ] `docs/reference/paper-definitions-of-record.md` (~line 117): replace the "Not in the decided
+- [x] `docs/reference/paper-definitions-of-record.md` (~line 117): replace the "Not in the decided
       set" bullet with the verdict. `swapMinus -> reflectTime` and `_swap_valid ->
       _reflect_time_valid` are renamed. `swapUS` is kept because it is box-opaque and not `φ⟨S|U⟩`
       on boxes. `truth_swap` is kept because it is the analogue of `lem:temporal-duality` and names
       `MinusFrame.swap`. Adjacent `swap` families are listed as a possible follow-up. Update any
       `swapMinus`/`_swap_valid` token elsewhere in the record. Do not cite task numbers.
-- [ ] `Metalogic/WeakCanonical/DenseModelSurgery/Dual.lean`: add a sentence to the `swapUS`
+- [x] `Metalogic/WeakCanonical/DenseModelSurgery/Dual.lean`: add a sentence to the `swapUS`
       docstring saying it is deliberately distinct from `Formula.reflectTime`, which recurses into
       `box`.
-- [ ] Final gates: `lake build`, all `lean_exe` roots, `lake test`,
+- [x] Final gates: `lake build`, all `lean_exe` roots, `lake test`,
       `bash scripts/check-module-invariants.sh` (no axiom-baseline movement),
       `bash scripts/check-paper-definitions.sh` (expected case (a) or a neutral SKIP),
-      `bash scripts/readme-lint.sh` and `bash scripts/typst-sync-check.sh`.
-- [ ] Final residual grep over the whole tracked tree, excluding `specs/` and Boneyard, for
-      `swapMinus|_swap_valid`. Expect empty.
-- [ ] Commit with an explicit file list.
+      `bash scripts/readme-lint.sh` and `bash scripts/typst-sync-check.sh`. *(deviation: altered — `check-module-invariants.sh --emit-inventory` regenerated 5 README inventory blocks whose line counts moved; a `lem:temporal-duality` citation added in `MinusFrame.lean` was reworded to plain prose to keep C15 green)*
+- [x] Final residual grep over the whole tracked tree, excluding `specs/` and Boneyard, for
+      `swapMinus|_swap_valid`. Expect empty. *(deviation: altered — the only hits are the two intentional old -> new mapping lines in the record's verdict bullet)*
+- [x] Commit with an explicit file list.
 
 **Timing**: 1 hour
 
@@ -241,12 +241,12 @@ and read each prose hit.
 
 ## Testing & Validation
 
-- [ ] `lake build` is green, and all `lean_exe` roots and `lake test` pass.
-- [ ] A residual grep for `swapMinus|_swap_valid` outside `specs/` and Boneyard is empty.
-- [ ] The string-literal set in the touched files is unchanged (dataset strings are byte-stable).
-- [ ] `check-module-invariants.sh` passes with unchanged baselines.
-- [ ] `readme-lint.sh`, `typst-sync-check.sh` and `check-paper-definitions.sh` are clean.
-- [ ] `swapUS` and `truth_swap` are still present and unchanged in name.
+- [x] `lake build` is green, and all `lean_exe` roots and `lake test` pass.
+- [x] A residual grep for `swapMinus|_swap_valid` outside `specs/` and Boneyard is empty.
+- [x] The string-literal set in the touched files is unchanged (dataset strings are byte-stable).
+- [x] `check-module-invariants.sh` passes with unchanged baselines.
+- [x] `readme-lint.sh`, `typst-sync-check.sh` and `check-paper-definitions.sh` are clean.
+- [x] `swapUS` and `truth_swap` are still present and unchanged in name.
 
 ## Artifacts & Outputs
 

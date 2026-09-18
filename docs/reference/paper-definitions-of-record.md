@@ -116,8 +116,29 @@ existed.
      *not* a claim about the paper's `def:BX`. The one exception is `MachineAppendixMain.lean`,
      whose rule `name`/`conclusion` strings follow the live constructor names, because the typst
      machine appendix is recounted against them.
-   - **Not in the decided set.** `swapUS`, `swapMinus`, `truth_swap` and the `*_swap_valid*`
-     soundness-lemma families are left as-is. Renaming them is a possible follow-up.
+   - **The `swap`-named families, decided by the same test.** Each family was judged by whether
+     it denotes the paper's time reflection `φ⟨S|U⟩` (rule TR, `thm:TR-valid`).
+     - `swapMinus` → `MinusFormula.reflectTime` (**renamed**). It is time reflection on L⁻, box
+       included, and TM⁻'s TR transforms by it. Compounds follow the substring rule:
+       `reflectTime_involution`, `reflectTime_neg` and the other push-through lemmas,
+       `reflectTime_df_valid_of_predOrder`, and `tr_reflectTime : tr φ.reflectTime =
+       (tr φ).reflectTime`, which intertwines it with `Formula.reflectTime`.
+     - `*_swap_valid*` → `*_reflect_time_valid*` (**renamed**). Every member concludes validity of
+       `φ.reflectTime` for an axiom or derivation, which is `thm:TR-valid` restricted to axioms
+       (e.g. `axiom_reflect_time_validIn_min`, `derivable_valid_and_reflect_time_validIn`).
+     - `swapUS` (**kept**). It leaves `.box φ` opaque on purpose, because `TemporalTruth` reads
+       box-subformulas as atoms, so it is not `φ⟨S|U⟩` on boxes and must not share the
+       `reflectTime` name. Its docstring says so.
+     - `truth_swap` (**kept**). It is the L⁻ analogue of `lem:temporal-duality`, whose name the
+       paper keeps (see the carve-out above), and its `swap` names the frame operation
+       `MinusFrame.swap` (the paper's `F⁻`), not a formula operation.
+     - The serialized mutation-family tags `"modal_swap"`, `"temporal_swap"` and `"derived_swap"`
+       are a different concept and stay byte-stable. No renamed substring occurs in any string
+       literal.
+     - Adjacent `swap`-named identifiers (the `swap_norm` simp attribute, `*_swap_of_tm*`, the
+       `cValid` swaps, `starValid_*_swap`) are outside this decision. Several mix the
+       `Encoding.swap` conjugation or state mirror schemata explicitly, so each needs its own
+       classification. Renaming them is a possible follow-up.
    - **`FormalSystem/Boneyard/**`** is an archive that is not built, and it is untouched.
    - Benchmark output labels (`"Temporal duality"` in `DerivationBenchmark.lean`,
      `docs/project-info/performance-targets.md`) and the migration pattern data in

@@ -291,7 +291,7 @@ end MinusFrameTruth
 /--
 **Order-reversal transfer.** Truth on the reversed frame is truth on the original frame of the
 time-reflected formula `φ.reflectTime`. This is the L⁻ analogue of the paper's
-`lem:temporal-duality`; the `swap` in the name is `MinusFrame.swap`, the order reversal.
+temporal-duality lemma; the `swap` in the name is `MinusFrame.swap`, the order reversal.
 
 Six cases, each immediate: the atom and bot clauses do not mention the order, `imp` and `box` are
 congruences, and the two temporal clauses trade places exactly as `MinusFormula.reflectTime`

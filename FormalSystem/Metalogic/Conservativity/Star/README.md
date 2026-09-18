@@ -25,7 +25,7 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
 | File | Lines | Description |
 |------|------:|-------------|
 | `Forward.lean` | 228 | Conservativity: `forward_star` and `starDerivable_ofFormula_iff` over TM, unconditional in both directions at all four classes; the conditional pair `starConservative_of_plusComplete` / `plusIncomplete_of_starNonconservative` over TM⁺. |
-| `StarAxiomValidity.lean` | 1,458 | The two dispatch lemmas, one arm per `StarAxiom` constructor and no wildcard, plus the sixteen named register-schema validities they dispatch to. |
+| `StarAxiomValidity.lean` | 1,459 | The two dispatch lemmas, one arm per `StarAxiom` constructor and no wildcard, plus the sixteen named register-schema validities they dispatch to. |
 | `StarPasting.lean` | 231 | The two L⋆ purity congruences and PS / US over `StarFormula`, reusing `Semantics/PlusLanguage/PlusPasting.lean`'s formula-independent construction read-only. |
 | `StarSoundness.lean` | 178 | Soundness of TM⋆ at every frame class, by the companion recursion carrying validity and swap-validity, plus the four rows and consistency at `.Base`. |
 <!-- END GENERATED -->

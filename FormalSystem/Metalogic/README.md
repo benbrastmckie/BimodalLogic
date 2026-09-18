@@ -109,7 +109,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
 | `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |
 | `SetConsequence.lean` | 590 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.Dedekind` row (`CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`, `ModelExistenceDedekind`) |
-| `Soundness.lean` | 1,643 | The soundness theorem itself |
+| `Soundness.lean` | 1,644 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,141 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
 <!-- END GENERATED -->
 
@@ -147,13 +147,13 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,414 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,095 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,856 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 21 | 6,034 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`Conservativity/`](Conservativity/README.md) | 21 | 6,037 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 4 | 1,837 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 80 | 51,927 | Tableau decision procedure and countermodel extraction |
-| [`Deterministic/`](Deterministic/README.md) | 7 | 1,608 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
+| [`Deterministic/`](Deterministic/README.md) | 7 | 1,609 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 18 | 4,992 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,424 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,019 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,020 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -199,7 +199,7 @@ dominates everything else in the repository:
 | `Kamp/` | 116 | 77,587 |
 | `EFGames/` | 8 | 11,791 |
 | `Expressiveness/` | 5 | 9,501 |
-| `DenseModelSurgery/` | 9 | 7,645 |
+| `DenseModelSurgery/` | 9 | 7,646 |
 | `RealModel/` | 7 | 6,671 |
 | `IntegerModel/` | 6 | 5,612 |
 | `GroupModel/` | 6 | 3,362 |

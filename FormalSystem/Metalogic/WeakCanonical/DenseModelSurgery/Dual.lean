@@ -178,7 +178,8 @@ theorem eval_dualize {M : OrderedMonadicStructure sig} :
 
 `.box φ` is left **opaque**, which is required rather than optional: `TemporalTruth` reads a
 box-subformula through `atomMap (.box φ)` as an atom of the signature, so recursing into it
-would change which atom is being read. -/
+would change which atom is being read. It is therefore deliberately distinct from the time
+reflection `Formula.reflectTime`, which recurses into `box`, and does not share its name. -/
 def swapUS : Formula → Formula
   | .atom a => .atom a
   | .bot => .bot
