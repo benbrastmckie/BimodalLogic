@@ -3,7 +3,7 @@
 Supporting lemmas for the TM soundness theorem.
 
 This directory contains the auxiliary results needed for the main soundness proof:
-the per-axiom validity and swap-validity lemmas, and the order-theoretic input to the
+the per-axiom validity and reflection-validity lemmas, and the order-theoretic input to the
 Dedekind-class separability axiom.
 
 ## Modules
@@ -13,14 +13,14 @@ Dedekind-class separability axiom.
 |------|-------|-------------|
 | `CoValidity.lean` | 112 | `co_valid`: semantic validity of the paper's CO principle `△(Hφ → F Hφ) → (Hφ → Gφ)` on dense Dedekind-complete flows. Not a soundness case — CO is a derived theorem here, not an `Axiom` constructor |
 | `DiscreteOrder.lean` | 175 | The order cores of the four discrete-frame validity proofs — `exists_nearest_gt`, `exists_nearest_lt` and their duals — stated over an abstract predicate `P : D → Prop`, mentioning neither `Formula` nor `TruthAt` |
-| `FrameClassVariants.lean` | 803 | The per-axiom swap-validity and validity lemmas at `FrameClass.Base`, the 29-arm dispatcher `axiom_reflect_time_valid_general` that delegates to them one line per arm, and the four discrete Prior/z1 lemmas at `ValidDiscrete`; consumed by `Metalogic/Soundness.lean`'s `axiom_reflect_time_validIn_min` |
+| `FrameClassVariants.lean` | 803 | The per-axiom reflection-validity and validity lemmas at `FrameClass.Base`, the 29-arm dispatcher `axiom_reflect_time_valid_general` that delegates to them one line per arm, and the four discrete Prior/z1 lemmas at `ValidDiscrete`; consumed by `Metalogic/Soundness.lean`'s `axiom_reflect_time_validIn_min` |
 | `Separability.lean` | 334 | Separability of dense Dedekind-complete duration groups and the order-theoretic core of the Sep axiom (Reynolds 1992, §7 lemma 10) |
 <!-- END GENERATED -->
 
 ## Key Results
 
 - Validity of each individual axiom schema on its required frame class
-- Swap-validity of each axiom schema, the input to the `time_reflection` soundness case
+- Reflection-validity of each axiom schema, the input to the `time_reflection` soundness case
 - Monotonicity lemmas for temporal operators
 
 ## Dependencies

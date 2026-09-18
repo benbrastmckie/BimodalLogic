@@ -123,7 +123,7 @@ See [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean) for the complete definiti
 - **Modus Ponens**: From `⊢ φ → ψ` and `⊢ φ`, derive `⊢ ψ`
 - **Necessitation**: From `⊢ φ`, derive `⊢ □φ`
 - **Temporal Necessitation**: From `⊢ φ`, derive `⊢ Gφ`
-- **Time Reflection**: From `⊢ φ`, derive `⊢ swap(φ)` (swap H/G, P/F)
+- **Time Reflection**: From `⊢ φ`, derive `⊢ φ.reflectTime` (reflecting past and future: H↔G, P↔F, S↔U)
 - **Axiom**: Any axiom instance is derivable
 - **Assumption**: Hypotheses in context are derivable
 - **Weakening**: Derivations extend to larger contexts

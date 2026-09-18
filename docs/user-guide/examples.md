@@ -421,7 +421,7 @@ example (P : Formula) : ¬consistent [P.box, diamond (neg P)] := by
 ### Time Reflection Example
 
 ```lean
-/-- Time reflection: swapping allPast and allFuture preserves provability -/
+/-- Time reflection: reflecting past and future preserves provability -/
 example (P : Formula) (h : ⊢ P) : ⊢ (reflectTime P) := by
   apply DerivationTree.timeReflection
   exact h

@@ -636,10 +636,10 @@ example : Testable (∀ φ : Formula, φ.complexity ≥ 1) := by
 }
 ```
 
-### Example 2: Temporal Swap Involution
+### Example 2: Time Reflection Involution
 
 ```lean
--- Property: Swapping temporal operators twice gives original
+-- Property: reflecting time twice gives the original formula
 example : Testable (∀ φ : Formula, φ.reflectTime.reflectTime = φ) := by
   infer_instance
 

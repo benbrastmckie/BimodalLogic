@@ -52,7 +52,7 @@ Properties asserting equivalence:
 Properties that are preserved by transformations:
 
 ```lean
--- Swap temporal is involution
+-- Time reflection is an involution
 #test ∀ φ : Formula, φ.reflect_time.reflect_time = φ
 ```
 

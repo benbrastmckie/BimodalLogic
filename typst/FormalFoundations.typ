@@ -1244,7 +1244,7 @@ a point.
   additionally satisfies Prior-U and Sep, each read as an inequality in the same way. All four
   classes are varieties. The rule TR becomes closure of the class under the signature automorphism
   swapping $#until$ and $#since$ --- which holds because the defining set of inequalities is
-  mirror-closed --- and is not itself an operation of the algebra: the swap is not in the
+  mirror-closed --- and is not itself an operation of the algebra: the reflection is not in the
   signature.
 ]
 

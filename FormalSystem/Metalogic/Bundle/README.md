@@ -44,9 +44,9 @@ soundness (derivability implies standard-validity), we get a full characterizati
 the future form and obtain the past form by `Formula.reflectTime` +
 `DerivationTree.time_reflection` + `Formula.reflect_time_involution`; do not write the mirror
 by hand. `Algebraic/FlowFrame.lean`'s `pastTfDeriv` is the reference implementation: it proves
-a future-side syntactic theorem generically in its argument formula, applies it at the *swapped*
+a future-side syntactic theorem generically in its argument formula, applies it at the *reflected*
 argument, dualizes the whole derivation with `DerivationTree.time_reflection`, then uses
-`reflect_time_involution` (plus the `reflect_time_*` simp set) to fold the double-swap back to
+`reflect_time_involution` (plus the `reflect_time_*` simp set) to fold the double reflection back to
 the original formula.
 
 **Worked example**: `WitnessSeed.lean`'s `allFutureBotImpNegDeriv` /
@@ -60,7 +60,7 @@ second hand derivation through `pastNecessitation`/`pastKDist`.
 **The boundary the technique does not cross**: the rule applies to *closed* syntactic facts
 (`⊢[fc] φ`, no free context) — a `Formula.reflectTime`-image of a provable formula is provable,
 full stop. It does **not** apply directly to a statement relative to a fixed, arbitrary MCS `M`
-(or a fixed `FMCS` family), because swapping the *formula* without also transporting `M` itself
+(or a fixed `FMCS` family), because reflecting the *formula* without also transporting `M` itself
 (via `Formula.reflectTime '' M`, together with a proof that the image of an MCS is again an MCS)
 proves a fact about a *different* set, not about `M`. Four mirror pairs surveyed during this
 discipline's rollout — `TemporalContent.lean`'s `f_content_iff_not_neg_in_g_content` /

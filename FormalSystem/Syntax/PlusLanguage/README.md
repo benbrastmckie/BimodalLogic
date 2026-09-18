@@ -70,7 +70,7 @@ is how L⁺ acquires its semantics.
 
 Neither dispatch lemma has a wildcard arm. Adding a constructor therefore means one constructor
 line, one `minFrameClass` arm, and one arm in each dispatch lemma (a validity proof and a
-swap-validity proof, typically a `PlusValid` from `Semantics/`); every other module —
+reflection-validity proof, typically a `PlusValid` from `Semantics/`); every other module —
 `PlusDerivationTree`, `ofTM`, the soundness recursion, the conservativity theorems — refers to
 `PlusAxiom` only through `minFrameClass` and the two lifted forms `plusAxiom_validIn` /
 `plusAxiom_reflect_time_validIn`, and recompiles unchanged. A schema valid only over a restricted

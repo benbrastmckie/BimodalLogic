@@ -50,7 +50,7 @@ def always (φ : Formula) : Formula := (Formula.allPast φ).and (φ.and (Formula
 -- 'sometimes' is dual of 'always': φ holds at some time (past, present, or future)
 def sometimes (φ : Formula) : Formula := neg (always (neg φ))
 
--- Time reflection: swap allPast and allFuture operators
+-- Time reflection: reflect past and future (allPast ↔ allFuture, snce ↔ untl)
 def reflectTime : Formula → Formula
   | Formula.atom p => Formula.atom p
   | Formula.bot => Formula.bot

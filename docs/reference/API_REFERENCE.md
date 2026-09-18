@@ -78,7 +78,7 @@ complexity (p.imp q) = 1 + complexity p + complexity q
 
 ##### `reflectTime : Formula → Formula`
 
-Swap temporal operators (past ↔ future) in a formula. Used in the time reflection inference rule (TR).
+Reflect time in a formula (past ↔ future). Used in the time reflection inference rule (TR).
 
 **Theorem**: `reflect_time_involution` - Applying twice gives identity.
 
@@ -347,7 +347,7 @@ inductive DerivationTree : Context → Formula → Prop where
 | `modus_ponens` | From `φ → ψ` and `φ`, derive `ψ` |
 | `modal_k` | From `□Γ ⊢ φ`, derive `Γ ⊢ □φ` |
 | `temporal_k` | From `GΓ ⊢ φ`, derive `Γ ⊢ Gφ` |
-| `temporal_dual` | From `⊢ φ`, derive `⊢ swap(φ)` |
+| `temporal_dual` | From `⊢ φ`, derive `⊢ φ.reflectTime` |
 
 ---
 

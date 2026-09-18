@@ -35,7 +35,7 @@ The proof proceeds by induction on the derivation structure:
 - *Modus ponens*: Validity preserved under implication elimination
 - *Necessitation*: Valid formulas become necessarily valid
 - *Temporal necessitation*: Valid formulas become always-future valid
-- *Temporal duality*: Past-future swap preserves validity
+- *Time reflection*: reflecting past and future preserves validity
 - *Weakening*: Adding premises preserves semantic consequence
 
 The axiom validity lemmas live in `Metalogic/SoundnessLemmas/` (with `CoValidity.lean`, `DiscreteOrder.lean`, `Separability.lean`, and `FrameClassVariants.lean`), and the frame-condition semantics for the Base/Dense/ZTime classes is developed in `Semantics/FrameProperty.lean` and `Semantics/FrameClassValidity.lean` (the RTime class's semantic side lives in `WeakCanonical/RealModel/`, per @sec:frame-classes).

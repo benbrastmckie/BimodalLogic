@@ -146,7 +146,7 @@ Because $P$, $F$, $H$, and $G$ are `def` abbreviations rather than constructors,
 
 The `reflectTime` function exchanges past and future operators.
 
-#definition("Temporal Swap")[
+#definition("Time Reflection")[
   The function $chevron.l S chevron.r : "Formula" arrow.r "Formula"$ is defined by recursion on the primitive constructors (`Syntax/Formula.lean`):
   $
     chevron.l S chevron.r p &= p \

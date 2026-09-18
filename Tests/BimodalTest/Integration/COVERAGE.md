@@ -20,7 +20,7 @@
 | Nested temporal operators | ✓ | ComplexDerivationTest.lean | Tests 6-7 |
 | Mixed modal-temporal | ✓ | ComplexDerivationTest.lean | Tests 8-9 |
 | Context transformations | ✓ | ComplexDerivationTest.lean | Test 10 |
-| Temporal duality soundness | ✓ | TemporalIntegrationTest.lean | Tests 12-13 |
+| Time reflection soundness | ✓ | TemporalIntegrationTest.lean | Tests 12-13 |
 | Consistency | ✗ | - | - |
 | Completeness | ✗ | - | - |
 

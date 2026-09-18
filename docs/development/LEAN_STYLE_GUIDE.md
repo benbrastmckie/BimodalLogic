@@ -920,9 +920,9 @@ When proving properties about formulas, distinguish between syntactic and semant
 
 **Syntactic Properties** (operate on formula structure):
 - Derivations, proof trees, formula transformations
-- Involution properties (φ.swap.swap = φ)
+- Involution properties (φ.reflectTime.reflectTime = φ)
 - Can use structural induction and rewriting
-- Example: `swap_past_future_involution` (Formula.lean)
+- Example: `reflect_time_involution` (Formula.lean)
 
 **Semantic Properties** (quantify over models):
 - Validity, satisfiability, truth in models
@@ -930,18 +930,33 @@ When proving properties about formulas, distinguish between syntactic and semant
 - Require semantic analysis and counterexample testing
 - Example: `ValidIn` (Semantics/Validity.lean)
 
-**Key Lesson**: The involution property `φ.swap.swap = φ` (syntactic) does NOT imply
-`ValidIn fc φ.swap ↔ ValidIn fc φ` (semantic) because swap exchanges past and future
+**Key Lesson**: The involution property `φ.reflectTime.reflectTime = φ` (syntactic) does NOT imply
+`ValidIn fc φ.reflectTime ↔ ValidIn fc φ` (semantic) because time reflection exchanges past and future
 quantification, which are not equivalent in general models.
 
 **Counterexample**: φ = allPast(atom "p") in a model where p is true at all future times
-but false at some past time. Then `ValidIn fc φ.swap` holds (p always true in future) but
+but false at some past time. Then `ValidIn fc φ.reflectTime` holds (p always true in future) but
 `ValidIn fc φ` does not (p not always true in past).
 
 **Derivable vs Valid**: Properties true for derivable formulas may be false for arbitrary
-valid formulas. The theorem `ValidIn fc φ.swap → ValidIn fc φ` is false for arbitrary formulas
+valid formulas. The theorem `ValidIn fc φ.reflectTime → ValidIn fc φ` is false for arbitrary formulas
 but true for derivable formulas (due to time_reflection rule). Always check whether a
 theorem requires derivability as a precondition.
+
+### Time-reversal naming
+
+`reflect` names every operation that reverses time order, whatever object it acts on: a formula
+(`Formula.reflectTime`), a frame (`MinusFrame.reflect`, the paper's `F⁻`), a history, or a truth
+lemma (`truth_reflectTime`, after the paper's `lem:time-reflection`). In camelCase definitions
+use `reflectTime` (or `reflect` for a frame); in snake_case lemma names use `reflect_time`
+(`axiom_reflect_time_validIn_min`, `starValid_sep_reflect_time`, the `reflect_time_norm` simp
+set). A variant that deliberately differs from full time reflection says how in a qualifier
+(`reflectTimeBoxOpaque` leaves box subformulas as atoms).
+
+`swap` is reserved for exchanges that are not time reversal: `Equiv.swap`/`Prod.swap`, index
+transpositions, argument exchanges such as `contraSwap`, and the `trySwap*` mutators, which
+exchange operators within one time direction. Serialized tags (`"temporal_swap"`,
+`"temporal_duality"`, and their count fields) stay byte-stable regardless of this rule.
 
 **Circular Dependencies**: When proving soundness-related theorems, be aware of circular
 dependencies between derivability and validity. The time_reflection soundness case requires
