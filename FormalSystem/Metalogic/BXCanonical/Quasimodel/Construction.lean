@@ -357,12 +357,6 @@ noncomputable def QuasimodelChain.last {Sigma : Finset Formula} {φ ψ : Formula
     (c : QuasimodelChain Sigma φ ψ) : HintikkaPoint Sigma :=
   c.points.getLast c.nonempty
 
-/-- The chain has reached its witness when the target's right-hand side
-    appears at the last point. -/
-def QuasimodelChain.witnessReached {Sigma : Finset Formula} {φ ψ : Formula}
-    (c : QuasimodelChain Sigma φ ψ) : Prop :=
-  ψ ∈ c.last.formulas
-
 /-- The chain's length as a natural number. -/
 def QuasimodelChain.length {Sigma : Finset Formula} {φ ψ : Formula}
     (c : QuasimodelChain Sigma φ ψ) : Nat :=
