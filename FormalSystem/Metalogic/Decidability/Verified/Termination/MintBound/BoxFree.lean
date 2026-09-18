@@ -72,7 +72,7 @@ half of the census that is *not* visible from `isApplicable`'s own pattern match
 stated separately. -/
 theorem asDiamond_eq_none_of_boxFree {φ : Formula} (h : boxFree φ = true) :
     asDiamond? φ = none := by
-  cases φ <;> simp_all [asDiamond?, boxFree]
+  cases φ <;> simp_all only [boxFree, asDiamond?, Bool.and_eq_true, Bool.false_eq_true]
   rename_i a b
   cases a <;> simp_all [boxFree]
 

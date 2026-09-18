@@ -392,16 +392,16 @@ theorem ofFormula_injective : Function.Injective ofFormula := by
   | atom a => cases ψ <;> simp_all [ofFormula]
   | bot => cases ψ <;> simp_all [ofFormula]
   | imp φ₁ φ₂ ih₁ ih₂ =>
-    cases ψ <;> simp [ofFormula] at h
+    cases ψ <;> simp only [ofFormula, reduceCtorEq, PlusFormula.imp.injEq] at h
     rw [ih₁ h.1, ih₂ h.2]
   | box φ ih =>
-    cases ψ <;> simp [ofFormula] at h
+    cases ψ <;> simp only [ofFormula, reduceCtorEq, PlusFormula.box.injEq] at h
     rw [ih h]
   | untl φ₁ φ₂ ih₁ ih₂ =>
-    cases ψ <;> simp [ofFormula] at h
+    cases ψ <;> simp only [ofFormula, reduceCtorEq, PlusFormula.untl.injEq] at h
     rw [ih₁ h.1, ih₂ h.2]
   | snce φ₁ φ₂ ih₁ ih₂ =>
-    cases ψ <;> simp [ofFormula] at h
+    cases ψ <;> simp only [ofFormula, reduceCtorEq, PlusFormula.snce.injEq] at h
     rw [ih₁ h.1, ih₂ h.2]
 
 /-- Nothing in the range of `ofFormula` is a top-level `stab`. The L⁺ mirror of

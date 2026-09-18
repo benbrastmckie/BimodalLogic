@@ -144,12 +144,12 @@ theorem gap_point_agreement_of_cases {sig : MonadicSignature}
   intro i
   simp only [gameTuple]
   by_cases hi0 : i.val = 0
-  · simp [hi0]; exact hgp_x
+  · simp only [hi0, ↓reduceDIte]; exact hgp_x
   · by_cases hi_b : i.val = n + 1
-    · simp [hi_b]; exact hgp_b
+    · simp only [hi_b, Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceDIte]; exact hgp_b
     · by_cases hi_y : i.val = n + 2
-      · simp [hi_y]; exact hgp_y
-      · simp [hi0, hi_b, hi_y]; exact hgp_sel ⟨i.val - 1, by omega⟩
+      · simp only [hi_y, Nat.add_eq_zero_iff, OfNat.ofNat_ne_zero, and_false, ↓reduceDIte, Nat.add_left_cancel_iff, OfNat.ofNat_ne_one]; exact hgp_y
+      · simp only [hi0, ↓reduceDIte, hi_b, hi_y]; exact hgp_sel ⟨i.val - 1, by omega⟩
 
 /-- Helper lemma for FormulaAgreement proofs: dispatch a 4-way case split
     over gameTuple indices. Given agreement facts for x (index 0),
@@ -178,12 +178,12 @@ theorem formula_agreement_of_cases {sig : MonadicSignature}
   intro i A hA
   simp only [gameTuple]
   by_cases hi0 : i.val = 0
-  · simp [hi0]; exact hform_x A hA
+  · simp only [hi0, ↓reduceDIte]; exact hform_x A hA
   · by_cases hi_b : i.val = n + 1
-    · simp [hi_b]; exact hform_b A hA
+    · simp only [hi_b, Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceDIte]; exact hform_b A hA
     · by_cases hi_y : i.val = n + 2
-      · simp [hi_y]; exact hform_y A hA
-      · simp [hi0, hi_b, hi_y]
+      · simp only [hi_y, Nat.add_eq_zero_iff, OfNat.ofNat_ne_zero, and_false, ↓reduceDIte, Nat.add_left_cancel_iff, OfNat.ofNat_ne_one]; exact hform_y A hA
+      · simp only [hi0, ↓reduceDIte, hi_b, hi_y]
         exact hform_sel ⟨i.val - 1, by omega⟩ A hA
 
 /-! ## Component E: order_reverse -/

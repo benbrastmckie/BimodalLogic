@@ -216,7 +216,7 @@ theorem trans_of_valid (h : branchOrderValid b ord = true)
   simp only [Bool.or_eq_true, Bool.not_eq_true', Bool.and_eq_false_imp] at e₃
   rcases e₃ with hbad | hgood
   · rw [h₁₂] at hbad
-    simp at hbad
+    simp only [forall_const] at hbad
     rw [h₂₃] at hbad
     exact absurd hbad (by simp)
   · exact hgood

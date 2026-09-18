@@ -686,7 +686,7 @@ theorem findApplicableRule_guard_mint {sf : SignedFormula} {b : Branch} {ord : T
   obtain ⟨rule, -, hr⟩ := List.exists_of_findSome?_eq_some h
   rcases hm with rfl | rfl <;>
     (repeat' split at hr) <;>
-    simp_all [ruleMintsFreshLabel]
+    simp_all only [ruleMintsFreshLabel, Bool.or_eq_true, Prod.mk.eta, List.all_eq_true, List.any_eq_true, reduceCtorEq, not_or, Bool.not_eq_true, Option.some.injEq, Prod.mk.injEq, not_forall, Bool.true_eq_false, not_exists, not_and]
   all_goals first
     | (rcases applyRule_boxNeg_result sf b ord with h' | ⟨fs', h'⟩ <;> simp_all)
     | (rcases applyRule_diamondPos_result sf b ord with h' | ⟨fs', h'⟩ <;> simp_all)

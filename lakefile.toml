@@ -30,7 +30,6 @@ weak.linter.style.longFile = 1500
 weak.linter.style.longLine = false # TEMPORARY (staged enablement)
 weak.linter.unusedFintypeInType = false # TEMPORARY (staged enablement)
 weak.linter.unusedDecidableInType = false # TEMPORARY (staged enablement)
-weak.linter.flexible = false # TEMPORARY (staged enablement)
 
 [[require]]
 name = "mathlib"

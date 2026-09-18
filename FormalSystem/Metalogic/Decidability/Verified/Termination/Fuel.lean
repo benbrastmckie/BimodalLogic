@@ -1102,7 +1102,7 @@ theorem incompPairs_mono {b : Branch} {ord ord' : TimeOrdering}
 /-- `addFuture` only ever prepends a constraint. -/
 theorem addFuture_constraints_mono (ord : TimeOrdering) (t t' : TimeIndex) :
     ∀ q ∈ ord.constraints, q ∈ (ord.addFuture t t').constraints := by
-  intro q hq; simp [TimeOrdering.addFuture]; exact Or.inr hq
+  intro q hq; simp only [TimeOrdering.addFuture, List.mem_cons]; exact Or.inr hq
 
 /--
 **The measure's second component strictly drops at both `addFuture` arms.**
@@ -1738,7 +1738,7 @@ theorem applyRule_branching_arms_fresh (rule : TableauRule) (sf : SignedFormula)
   cases sf with
   | mk sign formula label =>
   cases rule <;> simp only [ruleSelfGuarded, ruleMintsFreshLabel] at hg <;>
-    simp only [applyRule] at h <;> (repeat' split at h) <;> (try simp_all)
+    simp only [applyRule] at h <;> (repeat' split at h) <;> (try simp_all only [Bool.false_eq_true, or_self, or_true, reduceCtorEq, List.cons_append, implies_true, imp_false, forall_const, beq_iff_eq, List.append_assoc, Formula.imp.injEq, and_true, List.nil_append, RuleResult.branching.injEq, or_false, gt_iff_lt, Bool.and_eq_true, List.isEmpty_iff, decide_eq_true_eq, not_and, not_lt, and_imp])
   all_goals
     subst h
     intro fs hfs
@@ -2028,7 +2028,7 @@ theorem applyRule_branching_arity_le (rule : TableauRule) (sf : SignedFormula) (
     cases rule <;>
       simp only [applyRule] at h <;>
       (repeat' split at h) <;>
-      (try simp_all) <;>
+      (try simp_all only [reduceCtorEq, implies_true, imp_false, forall_const, RuleResult.branching.injEq, List.isEmpty_iff, List.filterMap_eq_nil_iff, ite_eq_left_iff, Bool.not_eq_true, Bool.not_eq_false, not_forall, List.cons_append, List.filter_eq_nil_iff, List.mem_cons, List.not_mem_nil, or_false, Bool.not_eq_eq_eq_not, Bool.not_true, forall_eq_or_imp, forall_eq, not_and, Formula.box.injEq, beq_iff_eq, List.append_assoc, Formula.imp.injEq, and_true, List.nil_append, gt_iff_lt, Bool.and_eq_true, decide_eq_true_eq, not_lt, and_imp, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none, List.any_cons, List.any_nil, Bool.or_false, Bool.not_or, List.contains_eq_mem, List.any_filter, List.find?_flatMap, List.find?_map, Function.comp_apply, List.find?_filterMap, Option.map_bind, List.findSome?_eq_none_iff, List.mem_filter, bne_iff_ne, ne_eq, decide_eq_false_iff_not, Option.bind_eq_none_iff, Option.map_eq_none_iff, List.map_cons, List.map_nil, List.any_eq_false, Decidable.not_not, Formula.untl.injEq, true_and]) <;>
       (try subst h) <;>
       (try simp)
 

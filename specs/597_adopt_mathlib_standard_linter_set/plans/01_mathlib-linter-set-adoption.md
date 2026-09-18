@@ -455,16 +455,16 @@ column; all 62 files re-elaborate and the re-sweep reports 0. No line counts mov
 
 ---
 
-### Phase 8: `flexible` [NOT STARTED]
+### Phase 8: `flexible` [COMPLETED]
 
 **Goal**: Replace non-terminal flexible tactics (`simp`, and similar) that are followed by rigid
 tactics. The fixes are `simp only [...]` using the list from `simp?`, or merging into `simpa`.
 
 **Tasks**:
-- [ ] Fix, in order, `Termination/Fuel.lean` (33), `Decidability/Tableau.lean` (17),
+- [x] Fix, in order, `Termination/Fuel.lean` (33), `Decidability/Tableau.lean` (17),
       `EFGameTactics.lean` (8), then the other 6 files. Get each `simp only` list from `simp?` at
       that site, and rebuild each file before moving to the next.
-- [ ] Delete the `flexible` temporary line, then do a guarded full build with `--wfail`.
+- [x] Delete the `flexible` temporary line, then do a guarded full build with `--wfail`.
 
 **Timing**: 2 hours
 
@@ -478,6 +478,14 @@ completely because of the concurrent rebuild, so its count of 33 is a floor.
 **Files to modify**:
 - The 9 `flexible` files named by the sweep
 - `lakefile.toml` - remove 1 temporary line
+
+**Phase 8 notes**: the 88 warnings were 34 distinct tactic sites. Each flagged `simp`/`simp_all`
+was turned into its `?` form, the file elaborated with `--json`, and the site replaced by
+`simp only [...]` / `simp_all only [...]` carrying the UNION of the lemma lists every goal
+reported (sites under `<;>`/`all_goals` see many goals). The first full build then failed on 9
+`linter.unusedSimpArgs` warnings (a union member unused in every goal); those arguments were
+removed. Per-file checks now run with the lakefile's full option set, not one linter at a time.
+Full `--wfail` build green on the second run (1,215 s); invariants pass.
 
 **Verification**:
 - The per-file `flexible` sweep reports 0, and `lake build --wfail` is green.

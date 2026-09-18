@@ -345,19 +345,19 @@ theorem ofPlus_injective : Function.Injective ofPlus := by
   | atom a => cases ψ <;> simp_all [ofPlus]
   | bot => cases ψ <;> simp_all [ofPlus]
   | imp φ₁ φ₂ ih₁ ih₂ =>
-    cases ψ <;> simp [ofPlus] at h
+    cases ψ <;> simp only [ofPlus, reduceCtorEq, StarFormula.imp.injEq] at h
     rw [ih₁ h.1, ih₂ h.2]
   | box φ ih =>
-    cases ψ <;> simp [ofPlus] at h
+    cases ψ <;> simp only [ofPlus, reduceCtorEq, StarFormula.box.injEq] at h
     rw [ih h]
   | untl φ₁ φ₂ ih₁ ih₂ =>
-    cases ψ <;> simp [ofPlus] at h
+    cases ψ <;> simp only [ofPlus, reduceCtorEq, StarFormula.untl.injEq] at h
     rw [ih₁ h.1, ih₂ h.2]
   | snce φ₁ φ₂ ih₁ ih₂ =>
-    cases ψ <;> simp [ofPlus] at h
+    cases ψ <;> simp only [ofPlus, reduceCtorEq, StarFormula.snce.injEq] at h
     rw [ih₁ h.1, ih₂ h.2]
   | stab φ ih =>
-    cases ψ <;> simp [ofPlus] at h
+    cases ψ <;> simp only [ofPlus, reduceCtorEq, StarFormula.stab.injEq] at h
     rw [ih h]
 
 /-- Nothing in the range of `ofPlus` is a top-level `timeStore`. -/

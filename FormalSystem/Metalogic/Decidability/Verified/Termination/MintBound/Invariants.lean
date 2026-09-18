@@ -267,7 +267,7 @@ theorem mem_directFutureOf_iff' (ord : TimeOrdering) (a b : TimeIndex) :
   constructor
   · rintro ⟨⟨x, y⟩, hxy, hres⟩
     by_cases hx : x = a
-    · subst hx; simp at hres; subst hres; exact hxy
+    · subst hx; simp only [BEq.rfl, ↓reduceIte, Option.some.injEq] at hres; subst hres; exact hxy
     · simp [hx] at hres
   · intro h; exact ⟨(a, b), h, by simp⟩
 
@@ -278,7 +278,7 @@ theorem mem_directPastOf_iff' (ord : TimeOrdering) (a b : TimeIndex) :
   constructor
   · rintro ⟨⟨x, y⟩, hxy, hres⟩
     by_cases hy : y = b
-    · subst hy; simp at hres; subst hres; exact hxy
+    · subst hy; simp only [BEq.rfl, ↓reduceIte, Option.some.injEq] at hres; subst hres; exact hxy
     · simp [hy] at hres
   · intro h; exact ⟨(a, b), h, by simp⟩
 

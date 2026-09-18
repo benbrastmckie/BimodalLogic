@@ -2475,7 +2475,7 @@ theorem findApplicableRule_extending_ne_nil
     (unfold findApplicableRule at h
      obtain ⟨r, _, hr⟩ := List.exists_of_findSome?_eq_some h
      repeat' split at hr)
-  all_goals simp_all
+  all_goals simp_all only [Bool.or_eq_true, Prod.mk.eta, List.all_eq_true, List.any_eq_true, reduceCtorEq, not_or, Bool.not_eq_true, Option.some.injEq, Prod.mk.injEq, RuleResult.linear.injEq, ne_eq, not_forall, false_and, and_false, not_exists, not_and, RuleResult.persistent.injEq]
   all_goals first
     | exact applyRule_fresh_linear_ne_nil (by assumption) (congrArg Prod.fst (by assumption))
     | exact applyRule_persistent_ne_nil (congrArg Prod.fst (by assumption))
@@ -2497,7 +2497,7 @@ theorem findApplicableSerialRule_ne_nil
                     (fun f => !b.contains f)).isEmpty = true
   · simp only [hE, if_pos] at h; simp at h
   · simp only [hE, if_false, Bool.false_eq_true] at h
-    simp at h
+    simp only [Option.some.injEq, Prod.mk.injEq, RuleResult.persistent.injEq] at h
     obtain ⟨-, hres, -⟩ := h
     rw [← hres]
     simpa using hE
@@ -2764,7 +2764,7 @@ theorem applyRule_persistent_not_mem
   all_goals (try (injection h with h))
   all_goals first
     | (simp_all [contains_eq_false_iff]; done)
-    | (subst h; simp_all [contains_eq_false_iff])
+    | (subst h; simp_all only [List.isEmpty_iff, List.filterMap_eq_nil_iff, ite_eq_left_iff, Bool.not_eq_true, contains_eq_false_iff, reduceCtorEq, imp_false, Decidable.not_not, not_forall, List.mem_filterMap, Option.ite_none_left_eq_some, Option.some.injEq, forall_exists_index, and_imp, List.filter_eq_nil_iff, List.mem_cons, List.not_mem_nil, or_false, Bool.not_eq_eq_eq_not, Bool.not_true, forall_eq_or_imp, forall_eq, not_and, List.mem_filter, not_false_eq_true, implies_true, List.contains_eq_mem, Bool.and_eq_true, beq_iff_eq, bne_iff_ne, ne_eq])
   all_goals first
     | (rintro g x hx hnm rfl; exact hnm)
     | (refine ⟨not_mem_of_time_nextTime rfl, ?_⟩
@@ -2817,7 +2817,7 @@ theorem findApplicableSerialRule_adds_new
   rcases hA : applyRule TableauRule.serialityRule sf b ord with ⟨res, o⟩
   rw [hA] at h
   simp only at h
-  cases res <;> simp at h
+  cases res <;> simp only [Option.some.injEq, Prod.mk.injEq, reduceCtorEq, false_and, and_false, RuleResult.persistent.injEq] at h
   obtain ⟨-, hres, -⟩ := h
   subst hres
   exact applyRule_persistent_adds_new (by rw [hA])
@@ -2838,7 +2838,7 @@ theorem findApplicableRule_extending_adds_new
     (unfold findApplicableRule at h
      obtain ⟨r, _, hr⟩ := List.exists_of_findSome?_eq_some h
      repeat' split at hr)
-  all_goals simp_all
+  all_goals simp_all only [Bool.or_eq_true, Prod.mk.eta, List.all_eq_true, List.any_eq_true, reduceCtorEq, not_or, Bool.not_eq_true, Option.some.injEq, Prod.mk.injEq, RuleResult.linear.injEq, not_forall, false_and, and_false, not_exists, not_and, RuleResult.persistent.injEq]
   all_goals first
     | exact applyRule_fresh_linear_adds_new (by assumption) (congrArg Prod.fst (by assumption))
     | exact applyRule_persistent_adds_new (congrArg Prod.fst (by assumption))

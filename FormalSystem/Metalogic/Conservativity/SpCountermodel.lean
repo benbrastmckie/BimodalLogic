@@ -217,12 +217,12 @@ decreasing_by
 The cross-fibre cases are impossible (nothing on one fibre is below anything on the other in
 Mathlib's `Sum` order) and die by `simp_all`; the same-fibre cases are `lt_trichotomy`. -/
 private theorem sum_tri : ∀ (a b c : ℤ ⊕ ℝ), a < b → a < c → b < c ∨ b = c ∨ c < b := by
-  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all <;> exact lt_trichotomy _ _
+  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all only [Sum.inl_lt_inl_iff, Sum.inl.injEq, Sum.not_inl_lt_inr, Sum.not_inr_lt_inl, Sum.inr_lt_inr_iff, Sum.inr.injEq] <;> exact lt_trichotomy _ _
 
 /-- Backward trichotomy on `ℤ ⊕ ℝ`: two pasts of a point are comparable. The past mirror of
 `sum_tri`, proved the same way. -/
 private theorem sum_tri' : ∀ (a b c : ℤ ⊕ ℝ), b < a → c < a → b < c ∨ b = c ∨ c < b := by
-  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all <;> exact lt_trichotomy _ _
+  rintro (m | x) (n | y) (k | z) h1 h2 <;> simp_all only [Sum.inl_lt_inl_iff, Sum.inl.injEq, Sum.not_inr_lt_inl, Sum.not_inl_lt_inr, Sum.inr_lt_inr_iff, Sum.inr.injEq] <;> exact lt_trichotomy _ _
 
 /--
 **The two-fibre frame.** `ℤ ⊕ ℝ` under Mathlib's disjoint-sum order: two incomparable copies of

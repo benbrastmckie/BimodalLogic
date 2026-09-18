@@ -1219,12 +1219,12 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "weakened_assume_p"
     (DerivationTree.weakening (fc := .Base) [p] [p, q] p
       (DerivationTree.assumption (fc := .Base) [p] p (by simp [p]))
-      (by intro x hx; simp [p, q] at hx ⊢; exact Or.inl hx)),
+      (by intro x hx; simp only [p, List.mem_cons, List.not_mem_nil, or_false, q] at hx ⊢; exact Or.inl hx)),
   -- Weakening: [q] ⊢ q  implies  [p, q] ⊢ q
   mkEntry "weakened_assume_q"
     (DerivationTree.weakening (fc := .Base) [q] [p, q] q
       (DerivationTree.assumption (fc := .Base) [q] q (by simp [q]))
-      (by intro x hx; simp [p, q] at hx ⊢; exact Or.inr hx)),
+      (by intro x hx; simp only [q, List.mem_cons, List.not_mem_nil, or_false, p] at hx ⊢; exact Or.inr hx)),
   -- Weakening of axiom: [] ⊢ prop_k p q r  implies  [p] ⊢ prop_k p q r
   mkEntry "weakened_prop_k"
     (DerivationTree.weakening (fc := .Base) [] [p] _
