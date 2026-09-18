@@ -71,18 +71,4 @@ namespace FormalSystem.ProofSystem
 
 open FormalSystem.Syntax
 
-/--
-The temporal linearity axiom as a derivation from the empty context.
-
-This provides a convenient way to use the linearity axiom in proofs.
-The `temp_linearity` axiom is a base axiom (valid on all linear orders),
-so it is available at any frame class via `trivial`.
--/
-noncomputable def temporalLinearityDerivation (φ ψ : Formula) :
-    [] ⊢ (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
-      (Formula.or (Formula.someFuture (Formula.and φ ψ))
-        (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
-          (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))))) :=
-  DerivationTree.axiom [] _ (Axiom.temp_linearity φ ψ) trivial
-
 end FormalSystem.ProofSystem
