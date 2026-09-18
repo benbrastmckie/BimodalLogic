@@ -1025,25 +1025,4 @@ landed names are `KampFaithfulExpressiveCompleteness` (the obligation type,
 inhabitant), composed into `uSExpressivelyCompleteOverDensePrior`, which is what
 is used here. -/
 
-/-- **Expressive completeness at the chronicle bridge** — `uSExpressivelyCompleteOverDensePrior`
-with its two hypotheses discharged by Part 7.
-
-For every monadic formula `psi` of one free variable over the finite signature `mkSigFrom root`
-there is a temporal formula `A` true at exactly the points where `psi` is satisfied, *in the
-chronicle structure itself*. This is the form Reynolds' §6 Lemma 2 applies to `rhoFormula ε`. -/
-noncomputable def chronicleMonadicExpressiveCompleteness {fc : FrameClass}
-    (hfc : FrameClass.RTime ≤ fc)
-    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula)
-    (psi : MonadicFormula (mkSigFrom root) 1) :
-    { F : Formula //
-      ∀ t : (chronicleMonadicStructure fc A h_mcs h_box_dense root).carrier,
-        eval (chronicleMonadicStructure fc A h_mcs h_box_dense root) (fun _ => t) psi ↔
-        TemporalTruth (chronicleMonadicStructure fc A h_mcs h_box_dense root)
-          (mkAtomMapFwd root) t F } :=
-  let H := uSExpressivelyCompleteOverDensePrior (mkAtomMapFwd root)
-    (mkAtomMapFwd_surj root) psi
-  let hpack := chronicleIsDensePriorSepStructure hfc A h_mcs h_box_dense root
-  ⟨H.val, fun t => H.property _ hpack.priorU hpack.priorS t⟩
-
 end FormalSystem.Metalogic.BXCanonical.Chronicle
