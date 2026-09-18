@@ -1,16 +1,1 @@
-{
-  "status": "researched",
-  "dispatch_seq": 1,
-  "phases_completed": 0,
-  "phases_total": 0,
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/621_adopt_uniform_reflect_naming_for_time_reversal/reports/01_uniform-reflect-naming.md",
-      "summary": "Classifies every swap-named identifier by the time-reversal test: 8 families (~250 occurrences, 15 Lean files) to rename to reflect names, exchange-sense swaps and wire tags kept; record edits incl. required lem:time-reflection KNOWN-ANCHORS row; prose inventory and 3-phase plan."
-    }
-  ],
-  "summary": "Classifies every swap-named identifier by the time-reversal test: 8 families (~250 occurrences, 15 Lean files) to rename to reflect names, exchange-sense swaps and wire tags kept; record edits incl. required lem:time-reflection KNOWN-ANCHORS row; prose inventory and 3-phase plan.",
-  "blockers": [],
-  "phase": "research"
-}
+{"status":"planned","summary":"Plan written: 5 phases, 4.5h, 4 waves (record -> atomic rename batch -> Lean prose || non-Lean prose -> gates).","artifacts":[{"type":"plan","path":"specs/621_adopt_uniform_reflect_naming_for_time_reversal/plans/01_uniform-reflect-naming.md","summary":"Uniform reflect naming implementation plan"}],"phases_completed":0,"phases_total":5,"blockers":[],"phase":"plan","dispatch_seq":2,"next_action_hint":"implement"}
