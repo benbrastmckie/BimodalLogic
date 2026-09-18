@@ -230,19 +230,19 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 5: Rewrite the validity transfers, Star embeddings and tests [NOT STARTED]
+### Phase 5: Rewrite the validity transfers, Star embeddings and tests [COMPLETED]
 
 **Goal**: Replace the per-axiom validity-transfer arms that consume TM surplus constructors, and move the test suite onto the derived definitions.
 
 **Tasks**:
-- [ ] `Conservativity/Plus/Atomization.lean`: next to `plusValidIn_of_tm` and `plusValidIn_swap_of_tm` (which take `(ax : Axiom _)`), add derivation-taking variants via `soundness_validIn` / `derivable_valid_and_swap_validIn`. Use them in the mirror arms of `Conservativity/Plus/AxiomValidity.lean` (32 sites).
-- [ ] `Independence/CoarsenedModels.lean`: apply the same fix to `cValid_of_tm` and `cValid_swap_of_tm` (28 sites).
-- [ ] `Syntax/StarLanguage/Axioms.lean` (about line 700 onward) and `Conservativity/Star/StarAxiomValidity.lean`: rewrite the TM-derivation constructions to the derived definitions.
-- [ ] `Tests/BimodalTest/**`, 48 sites:
+- [x] `Conservativity/Plus/Atomization.lean`: next to `plusValidIn_of_tm` and `plusValidIn_swap_of_tm` (which take `(ax : Axiom _)`), add derivation-taking variants via `soundness_validIn` / `derivable_valid_and_swap_validIn`. Use them in the mirror arms of `Conservativity/Plus/AxiomValidity.lean` (32 sites).
+- [x] `Independence/CoarsenedModels.lean`: apply the same fix to `cValid_of_tm` and `cValid_swap_of_tm` (28 sites).
+- [x] `Syntax/StarLanguage/Axioms.lean` (about line 700 onward) and `Conservativity/Star/StarAxiomValidity.lean`: rewrite the TM-derivation constructions to the derived definitions. *(no qualified TM `Axiom.<surplus>` sites there: the planning-time hits were `StarAxiom` constructors, which are out of scope)*
+- [x] `Tests/BimodalTest/**`, 48 sites: *(done in phase 3 by the same rewrite; AxiomsTest modal_4/modal_b examples converted)*
   - Rewrite constructor uses to the derived definitions.
   - Keep `modal_search` examples unchanged when they still close.
   - In `AxiomsTest.lean`, convert per-constructor tests on surplus axioms into tests on the derived definitions.
-- [ ] After this phase, grep for `Axiom\.(surplus)\b` across `FormalSystem/` and `Tests/` (excluding Boneyard and docstrings). It must return only `Axioms.lean`, the dispatchers listed in phase 6 and `MachineAppendixMain.lean`.
+- [x] After this phase, grep for `Axiom\.(surplus)\b` across `FormalSystem/` and `Tests/` (excluding Boneyard and docstrings). It must return only `Axioms.lean`, the dispatchers listed in phase 6 and `MachineAppendixMain.lean`.
 
 **Timing**: 2 hours
 

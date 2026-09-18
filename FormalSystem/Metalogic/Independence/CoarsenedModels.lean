@@ -404,6 +404,21 @@ theorem cValid_swap_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize
       rw [atomize_reflectTime]
       exact axiom_swap_validIn ax h F trivial (K.atomModel e) τ t)
 
+/-- The derivation-taking form of `cValid_of_tm`, for base-class TM theorems (in particular the
+derived schemata of `FormalSystem.ProofSystem.DerivedAxioms`). -/
+theorem cValid_of_tm_deriv (e : Encoding) (φ : PlusFormula)
+    (d : DerivationTree FrameClass.Base [] (atomize e φ)) : CValid φ :=
+  fun F K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
+    (soundness_validIn d F trivial (K.atomModel e) τ t)
+
+/-- The derivation-taking form of `cValid_swap_of_tm`. -/
+theorem cValid_swap_of_tm_deriv (e : Encoding) (φ : PlusFormula)
+    (d : DerivationTree FrameClass.Base [] (atomize e.swap φ)) : CValid φ.reflectTime :=
+  fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
+    (by
+      rw [atomize_reflectTime]
+      exact (derivable_valid_and_swap_validIn d).2 F trivial (K.atomModel e) τ t)
+
 /-! ## The six naive `⊡` schemata are coarsely valid
 
 Each is the corresponding definitional validity of `Semantics/PlusLanguage/PlusTruth.lean`, re-run against
@@ -465,9 +480,9 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | modal_t a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.modal_t (A a0)) (by trivial)
   | modal_4 a0 =>
-    exact cValid_of_tm theEncoding _ (Axiom.modal_4 (A a0)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.modal_4 (A a0))
   | modal_b a0 =>
-    exact cValid_of_tm theEncoding _ (Axiom.modal_b (A a0)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.modal_b (A a0))
   | modal_5_collapse a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.modal_5_collapse (A a0)) (by trivial)
   | modal_k_dist a0 a1 =>
@@ -475,53 +490,53 @@ theorem naiveAxiom_cValid {φ : PlusFormula} (ax : PlusAxiom φ) (hn : PlusAxiom
   | serial_future =>
     exact cValid_of_tm theEncoding _ (Axiom.serial_future) (by trivial)
   | serial_past =>
-    exact cValid_of_tm theEncoding _ (Axiom.serial_past) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ DerivedAxioms.serial_past
   | left_mono_until_G a0 a1 a2 =>
     exact cValid_of_tm theEncoding _ (Axiom.left_mono_until_G (A a0) (A a1) (A a2)) (by trivial)
   | left_mono_since_H a0 a1 a2 =>
-    exact cValid_of_tm theEncoding _ (Axiom.left_mono_since_H (A a0) (A a1) (A a2)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.left_mono_since_H (A a0) (A a1) (A a2))
   | right_mono_until a0 a1 a2 =>
     exact cValid_of_tm theEncoding _ (Axiom.right_mono_until (A a0) (A a1) (A a2)) (by trivial)
   | right_mono_since a0 a1 a2 =>
-    exact cValid_of_tm theEncoding _ (Axiom.right_mono_since (A a0) (A a1) (A a2)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.right_mono_since (A a0) (A a1) (A a2))
   | connect_future a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.connect_future (A a0)) (by trivial)
   | connect_past a0 =>
-    exact cValid_of_tm theEncoding _ (Axiom.connect_past (A a0)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.connect_past (A a0))
   | enrichment_until a0 a1 a2 =>
     exact cValid_of_tm theEncoding _ (Axiom.enrichment_until (A a0) (A a1) (A a2)) (by trivial)
   | enrichment_since a0 a1 a2 =>
-    exact cValid_of_tm theEncoding _ (Axiom.enrichment_since (A a0) (A a1) (A a2)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.enrichment_since (A a0) (A a1) (A a2))
   | self_accum_until a0 a1 =>
     exact cValid_of_tm theEncoding _ (Axiom.self_accum_until (A a0) (A a1)) (by trivial)
   | self_accum_since a0 a1 =>
-    exact cValid_of_tm theEncoding _ (Axiom.self_accum_since (A a0) (A a1)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.self_accum_since (A a0) (A a1))
   | absorb_until a0 a1 =>
     exact cValid_of_tm theEncoding _ (Axiom.absorb_until (A a0) (A a1)) (by trivial)
   | absorb_since a0 a1 =>
-    exact cValid_of_tm theEncoding _ (Axiom.absorb_since (A a0) (A a1)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.absorb_since (A a0) (A a1))
   | linear_until a0 a1 a2 a3 =>
     exact cValid_of_tm theEncoding _ (Axiom.linear_until (A a0) (A a1) (A a2) (A a3)) (by trivial)
   | linear_since a0 a1 a2 a3 =>
-    exact cValid_of_tm theEncoding _ (Axiom.linear_since (A a0) (A a1) (A a2) (A a3)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.linear_since (A a0) (A a1) (A a2) (A a3))
   | until_F a0 a1 =>
     exact cValid_of_tm theEncoding _ (Axiom.until_F (A a0) (A a1)) (by trivial)
   | since_P a0 a1 =>
-    exact cValid_of_tm theEncoding _ (Axiom.since_P (A a0) (A a1)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.since_P (A a0) (A a1))
   | temp_linearity a0 a1 =>
     exact cValid_of_tm theEncoding _ (Axiom.temp_linearity (A a0) (A a1)) (by trivial)
   | temp_linearity_past a0 a1 =>
-    exact cValid_of_tm theEncoding _ (Axiom.temp_linearity_past (A a0) (A a1)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.temp_linearity_past (A a0) (A a1))
   | F_until_equiv a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.F_until_equiv (A a0)) (by trivial)
   | P_since_equiv a0 =>
-    exact cValid_of_tm theEncoding _ (Axiom.P_since_equiv (A a0)) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ (DerivedAxioms.P_since_equiv (A a0))
   | modal_future a0 =>
     exact cValid_of_tm theEncoding _ (Axiom.modal_future (A a0)) (by trivial)
   | discrete_symm_fwd =>
     exact cValid_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
   | discrete_symm_bwd =>
-    exact cValid_of_tm theEncoding _ (Axiom.discrete_symm_bwd) (by trivial)
+    exact cValid_of_tm_deriv theEncoding _ DerivedAxioms.discrete_symm_bwd
   | discrete_propagate_fwd =>
     exact cValid_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
   | discrete_propagate_bwd =>
@@ -562,9 +577,9 @@ theorem naiveAxiom_cValid_swap {φ : PlusFormula} (ax : PlusAxiom φ) (hn : Plus
   | modal_t a0 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.modal_t (A' a0)) (by trivial)
   | modal_4 a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.modal_4 (A' a0)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.modal_4 (A' a0))
   | modal_b a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.modal_b (A' a0)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.modal_b (A' a0))
   | modal_5_collapse a0 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.modal_5_collapse (A' a0)) (by trivial)
   | modal_k_dist a0 a1 =>
@@ -572,53 +587,57 @@ theorem naiveAxiom_cValid_swap {φ : PlusFormula} (ax : PlusAxiom φ) (hn : Plus
   | serial_future =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.serial_future) (by trivial)
   | serial_past =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.serial_past) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ DerivedAxioms.serial_past
   | left_mono_until_G a0 a1 a2 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.left_mono_until_G (A' a0) (A' a1) (A' a2)) (by trivial)
   | left_mono_since_H a0 a1 a2 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.left_mono_since_H (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.left_mono_since_H (A' a0) (A' a1) (A' a2))
   | right_mono_until a0 a1 a2 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.right_mono_until (A' a0) (A' a1) (A' a2)) (by trivial)
   | right_mono_since a0 a1 a2 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.right_mono_since (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.right_mono_since (A' a0) (A' a1) (A' a2))
   | connect_future a0 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.connect_future (A' a0)) (by trivial)
   | connect_past a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.connect_past (A' a0)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.connect_past (A' a0))
   | enrichment_until a0 a1 a2 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) (by trivial)
   | enrichment_since a0 a1 a2 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.enrichment_since (A' a0) (A' a1) (A' a2)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.enrichment_since (A' a0) (A' a1) (A' a2))
   | self_accum_until a0 a1 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.self_accum_until (A' a0) (A' a1)) (by trivial)
   | self_accum_since a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.self_accum_since (A' a0) (A' a1)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.self_accum_since (A' a0) (A' a1))
   | absorb_until a0 a1 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.absorb_until (A' a0) (A' a1)) (by trivial)
   | absorb_since a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.absorb_since (A' a0) (A' a1)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.absorb_since (A' a0) (A' a1))
   | linear_until a0 a1 a2 a3 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.linear_until (A' a0) (A' a1) (A' a2) (A' a3)) (by trivial)
   | linear_since a0 a1 a2 a3 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.linear_since (A' a0) (A' a1) (A' a2) (A' a3)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.linear_since (A' a0) (A' a1) (A' a2) (A' a3))
   | until_F a0 a1 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.until_F (A' a0) (A' a1)) (by trivial)
   | since_P a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.since_P (A' a0) (A' a1)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.since_P (A' a0) (A' a1))
   | temp_linearity a0 a1 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.temp_linearity (A' a0) (A' a1)) (by trivial)
   | temp_linearity_past a0 a1 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.temp_linearity_past (A' a0) (A' a1)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.temp_linearity_past (A' a0) (A' a1))
   | F_until_equiv a0 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) (by trivial)
   | P_since_equiv a0 =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.P_since_equiv (A' a0)) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ (DerivedAxioms.P_since_equiv (A' a0))
   | modal_future a0 =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.modal_future (A' a0)) (by trivial)
   | discrete_symm_fwd =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.discrete_symm_fwd) (by trivial)
   | discrete_symm_bwd =>
-    exact cValid_swap_of_tm theEncoding _ (Axiom.discrete_symm_bwd) (by trivial)
+    exact cValid_swap_of_tm_deriv theEncoding _ DerivedAxioms.discrete_symm_bwd
   | discrete_propagate_fwd =>
     exact cValid_swap_of_tm theEncoding _ (Axiom.discrete_propagate_fwd) (by trivial)
   | discrete_propagate_bwd =>

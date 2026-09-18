@@ -41,7 +41,8 @@ inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_swap_of_tm` its s
 - `plusTruthAt_iff_atomize` — the transfer lemma
 - `atomize_reflectTime` — `atomize e φ.reflectTime = (atomize e.swap φ).reflectTime`
 - `plusValidIn_of_tm`, `plusValidIn_swap_of_tm` — the two helpers the dispatch lemmas of
-  `Conservativity/Plus/AxiomValidity.lean` consume
+  `Conservativity/Plus/AxiomValidity.lean` consume, with derivation-taking forms
+  `plusValidIn_of_tm_deriv`, `plusValidIn_swap_of_tm_deriv` for the TM-derived schemata
 
 ## References
 
@@ -222,6 +223,29 @@ theorem plusValidIn_swap_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormul
       (by
         rw [atomize_reflectTime]
         exact axiom_swap_validIn ax h F hF (M.atomModel e) τ t)
+
+/--
+**TM theorem soundness over L⁺.** The derivation-taking form of `plusValidIn_of_tm`: if the
+atomization of `φ` is a TM theorem at `fc` (for instance a derived schema such as a
+time-reflection mirror, see `FormalSystem.ProofSystem.DerivedAxioms`), then `φ` is
+`PlusValidIn fc`.
+-/
+theorem plusValidIn_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
+    (d : DerivationTree fc [] (atomize e φ)) : PlusValidIn fc φ :=
+  fun F hF M τ t =>
+    (plusTruthAt_iff_atomize M e φ τ t).mpr
+      (soundness_validIn d F hF (M.atomModel e) τ t)
+
+/--
+**TM theorem swap-soundness over L⁺.** The derivation-taking form of `plusValidIn_swap_of_tm`.
+-/
+theorem plusValidIn_swap_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
+    (d : DerivationTree fc [] (atomize e.swap φ)) : PlusValidIn fc φ.reflectTime :=
+  fun F hF M τ t =>
+    (plusTruthAt_iff_atomize M e φ.reflectTime τ t).mpr
+      (by
+        rw [atomize_reflectTime]
+        exact (derivable_valid_and_swap_validIn d).2 F hF (M.atomModel e) τ t)
 
 /-! ## Acceptance test
 

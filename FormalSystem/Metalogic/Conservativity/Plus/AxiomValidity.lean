@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.Conservativity.Plus.Atomization
 import FormalSystem.Semantics.PlusLanguage.PlusPasting
 import FormalSystem.Semantics.PlusLanguage.PlusStateLocal
 import FormalSystem.Syntax.PlusLanguage.Axioms
+import FormalSystem.Theorems.Combinators
 
 /-!
 # Validity and swap-validity of every TM⁺ axiom schema
@@ -74,56 +75,63 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | ex_falso a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.ex_falso (A a0)) le_rfl
   | peirce a0 a1 => exact plusValidIn_of_tm theEncoding _ (Axiom.peirce (A a0) (A a1)) le_rfl
   | modal_t a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.modal_t (A a0)) le_rfl
-  | modal_4 a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.modal_4 (A a0)) le_rfl
-  | modal_b a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.modal_b (A a0)) le_rfl
+  | modal_4 a0 => exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.modal_4 (A a0))
+  | modal_b a0 => exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.modal_b (A a0))
   | modal_5_collapse a0 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.modal_5_collapse (A a0)) le_rfl
   | modal_k_dist a0 a1 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.modal_k_dist (A a0) (A a1)) le_rfl
   | serial_future => exact plusValidIn_of_tm theEncoding _ Axiom.serial_future le_rfl
-  | serial_past => exact plusValidIn_of_tm theEncoding _ Axiom.serial_past le_rfl
+  | serial_past => exact plusValidIn_of_tm_deriv theEncoding _ DerivedAxioms.serial_past
   | left_mono_until_G a0 a1 a2 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.left_mono_until_G (A a0) (A a1) (A a2)) le_rfl
   | left_mono_since_H a0 a1 a2 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.left_mono_since_H (A a0) (A a1) (A a2)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.left_mono_since_H (A a0) (A a1) (A a2))
   | right_mono_until a0 a1 a2 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.right_mono_until (A a0) (A a1) (A a2)) le_rfl
   | right_mono_since a0 a1 a2 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.right_mono_since (A a0) (A a1) (A a2)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.right_mono_since (A a0) (A a1) (A a2))
   | connect_future a0 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.connect_future (A a0)) le_rfl
-  | connect_past a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.connect_past (A a0)) le_rfl
+  | connect_past a0 =>
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.connect_past (A a0))
   | enrichment_until a0 a1 a2 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.enrichment_until (A a0) (A a1) (A a2)) le_rfl
   | enrichment_since a0 a1 a2 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.enrichment_since (A a0) (A a1) (A a2)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.enrichment_since (A a0) (A a1) (A a2))
   | self_accum_until a0 a1 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.self_accum_until (A a0) (A a1)) le_rfl
   | self_accum_since a0 a1 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.self_accum_since (A a0) (A a1)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.self_accum_since (A a0) (A a1))
   | absorb_until a0 a1 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.absorb_until (A a0) (A a1)) le_rfl
   | absorb_since a0 a1 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.absorb_since (A a0) (A a1)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.absorb_since (A a0) (A a1))
   | linear_until a0 a1 a2 a3 =>
     exact plusValidIn_of_tm theEncoding _
       (Axiom.linear_until (A a0) (A a1) (A a2) (A a3)) le_rfl
   | linear_since a0 a1 a2 a3 =>
-    exact plusValidIn_of_tm theEncoding _
-      (Axiom.linear_since (A a0) (A a1) (A a2) (A a3)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.linear_since (A a0) (A a1) (A a2) (A a3))
   | until_F a0 a1 => exact plusValidIn_of_tm theEncoding _ (Axiom.until_F (A a0) (A a1)) le_rfl
-  | since_P a0 a1 => exact plusValidIn_of_tm theEncoding _ (Axiom.since_P (A a0) (A a1)) le_rfl
+  | since_P a0 a1 =>
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.since_P (A a0) (A a1))
   | temp_linearity a0 a1 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.temp_linearity (A a0) (A a1)) le_rfl
   | temp_linearity_past a0 a1 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.temp_linearity_past (A a0) (A a1)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.temp_linearity_past (A a0) (A a1))
   | F_until_equiv a0 =>
     exact plusValidIn_of_tm theEncoding _ (Axiom.F_until_equiv (A a0)) le_rfl
   | P_since_equiv a0 =>
-    exact plusValidIn_of_tm theEncoding _ (Axiom.P_since_equiv (A a0)) le_rfl
+    exact plusValidIn_of_tm_deriv theEncoding _ (DerivedAxioms.P_since_equiv (A a0))
   | modal_future a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.modal_future (A a0)) le_rfl
   | discrete_symm_fwd => exact plusValidIn_of_tm theEncoding _ Axiom.discrete_symm_fwd le_rfl
-  | discrete_symm_bwd => exact plusValidIn_of_tm theEncoding _ Axiom.discrete_symm_bwd le_rfl
+  | discrete_symm_bwd => exact plusValidIn_of_tm_deriv theEncoding _ DerivedAxioms.discrete_symm_bwd
   | discrete_propagate_fwd =>
     exact plusValidIn_of_tm theEncoding _ Axiom.discrete_propagate_fwd le_rfl
   | discrete_propagate_bwd =>
@@ -131,12 +139,16 @@ theorem plusAxiom_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | discrete_box_necessity =>
     exact plusValidIn_of_tm theEncoding _ Axiom.discrete_box_necessity le_rfl
   | prior_UZ a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.prior_UZ (A a0)) le_rfl
-  | prior_SZ a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.prior_SZ (A a0)) le_rfl
+  | prior_SZ a0 =>
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.prior_SZ le_rfl (A a0))
   | z1 a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.z1 (A a0)) le_rfl
   | density a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.density (A a0)) le_rfl
   | dense_indicator => exact plusValidIn_of_tm theEncoding _ Axiom.dense_indicator le_rfl
   | prior_U_gap a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.prior_U_gap (A a0)) le_rfl
-  | prior_S_gap a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.prior_S_gap (A a0)) le_rfl
+  | prior_S_gap a0 =>
+    exact plusValidIn_of_tm_deriv theEncoding _
+      (DerivedAxioms.prior_S_gap le_rfl (A a0))
   | sep a0 => exact plusValidIn_of_tm theEncoding _ (Axiom.sep (A a0)) le_rfl
   | stab_k a0 a1 =>
     exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)
@@ -171,69 +183,70 @@ theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | peirce a0 a1 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.peirce (A' a0) (A' a1)) le_rfl
   | modal_t a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.modal_t (A' a0)) le_rfl
-  | modal_4 a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.modal_4 (A' a0)) le_rfl
-  | modal_b a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.modal_b (A' a0)) le_rfl
+  | modal_4 a0 => exact plusValidIn_swap_of_tm_deriv theEncoding _ (DerivedAxioms.modal_4 (A' a0))
+  | modal_b a0 => exact plusValidIn_swap_of_tm_deriv theEncoding _ (DerivedAxioms.modal_b (A' a0))
   | modal_5_collapse a0 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.modal_5_collapse (A' a0)) le_rfl
   | modal_k_dist a0 a1 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.modal_k_dist (A' a0) (A' a1)) le_rfl
   | serial_future => exact plusValidIn_swap_of_tm theEncoding _ Axiom.serial_future le_rfl
-  | serial_past => exact plusValidIn_swap_of_tm theEncoding _ Axiom.serial_past le_rfl
+  | serial_past => exact plusValidIn_swap_of_tm_deriv theEncoding _ DerivedAxioms.serial_past
   | left_mono_until_G a0 a1 a2 =>
     exact plusValidIn_swap_of_tm theEncoding _
       (Axiom.left_mono_until_G (A' a0) (A' a1) (A' a2)) le_rfl
   | left_mono_since_H a0 a1 a2 =>
-    exact plusValidIn_swap_of_tm theEncoding _
-      (Axiom.left_mono_since_H (A' a0) (A' a1) (A' a2)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.left_mono_since_H (A' a0) (A' a1) (A' a2))
   | right_mono_until a0 a1 a2 =>
     exact plusValidIn_swap_of_tm theEncoding _
       (Axiom.right_mono_until (A' a0) (A' a1) (A' a2)) le_rfl
   | right_mono_since a0 a1 a2 =>
-    exact plusValidIn_swap_of_tm theEncoding _
-      (Axiom.right_mono_since (A' a0) (A' a1) (A' a2)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.right_mono_since (A' a0) (A' a1) (A' a2))
   | connect_future a0 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.connect_future (A' a0)) le_rfl
   | connect_past a0 =>
-    exact plusValidIn_swap_of_tm theEncoding _ (Axiom.connect_past (A' a0)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _ (DerivedAxioms.connect_past (A' a0))
   | enrichment_until a0 a1 a2 =>
     exact plusValidIn_swap_of_tm theEncoding _
       (Axiom.enrichment_until (A' a0) (A' a1) (A' a2)) le_rfl
   | enrichment_since a0 a1 a2 =>
-    exact plusValidIn_swap_of_tm theEncoding _
-      (Axiom.enrichment_since (A' a0) (A' a1) (A' a2)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.enrichment_since (A' a0) (A' a1) (A' a2))
   | self_accum_until a0 a1 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.self_accum_until (A' a0) (A' a1)) le_rfl
   | self_accum_since a0 a1 =>
-    exact plusValidIn_swap_of_tm theEncoding _ (Axiom.self_accum_since (A' a0) (A' a1)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.self_accum_since (A' a0) (A' a1))
   | absorb_until a0 a1 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.absorb_until (A' a0) (A' a1)) le_rfl
   | absorb_since a0 a1 =>
-    exact plusValidIn_swap_of_tm theEncoding _ (Axiom.absorb_since (A' a0) (A' a1)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _ (DerivedAxioms.absorb_since (A' a0) (A' a1))
   | linear_until a0 a1 a2 a3 =>
     exact plusValidIn_swap_of_tm theEncoding _
       (Axiom.linear_until (A' a0) (A' a1) (A' a2) (A' a3)) le_rfl
   | linear_since a0 a1 a2 a3 =>
-    exact plusValidIn_swap_of_tm theEncoding _
-      (Axiom.linear_since (A' a0) (A' a1) (A' a2) (A' a3)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.linear_since (A' a0) (A' a1) (A' a2) (A' a3))
   | until_F a0 a1 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.until_F (A' a0) (A' a1)) le_rfl
   | since_P a0 a1 =>
-    exact plusValidIn_swap_of_tm theEncoding _ (Axiom.since_P (A' a0) (A' a1)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _ (DerivedAxioms.since_P (A' a0) (A' a1))
   | temp_linearity a0 a1 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.temp_linearity (A' a0) (A' a1)) le_rfl
   | temp_linearity_past a0 a1 =>
-    exact plusValidIn_swap_of_tm theEncoding _
-      (Axiom.temp_linearity_past (A' a0) (A' a1)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.temp_linearity_past (A' a0) (A' a1))
   | F_until_equiv a0 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.F_until_equiv (A' a0)) le_rfl
   | P_since_equiv a0 =>
-    exact plusValidIn_swap_of_tm theEncoding _ (Axiom.P_since_equiv (A' a0)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _ (DerivedAxioms.P_since_equiv (A' a0))
   | modal_future a0 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.modal_future (A' a0)) le_rfl
   | discrete_symm_fwd =>
     exact plusValidIn_swap_of_tm theEncoding _ Axiom.discrete_symm_fwd le_rfl
   | discrete_symm_bwd =>
-    exact plusValidIn_swap_of_tm theEncoding _ Axiom.discrete_symm_bwd le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _ DerivedAxioms.discrete_symm_bwd
   | discrete_propagate_fwd =>
     exact plusValidIn_swap_of_tm theEncoding _ Axiom.discrete_propagate_fwd le_rfl
   | discrete_propagate_bwd =>
@@ -241,7 +254,9 @@ theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | discrete_box_necessity =>
     exact plusValidIn_swap_of_tm theEncoding _ Axiom.discrete_box_necessity le_rfl
   | prior_UZ a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.prior_UZ (A' a0)) le_rfl
-  | prior_SZ a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.prior_SZ (A' a0)) le_rfl
+  | prior_SZ a0 =>
+    exact plusValidIn_swap_of_tm_deriv theEncoding _
+      (DerivedAxioms.prior_SZ le_rfl (A' a0))
   | z1 a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.z1 (A' a0)) le_rfl
   | density a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.density (A' a0)) le_rfl
   | dense_indicator =>
@@ -249,7 +264,7 @@ theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
   | prior_U_gap a0 =>
     exact plusValidIn_swap_of_tm theEncoding _ (Axiom.prior_U_gap (A' a0)) le_rfl
   | prior_S_gap a0 =>
-    exact plusValidIn_swap_of_tm theEncoding _ (Axiom.prior_S_gap (A' a0)) le_rfl
+    exact plusValidIn_swap_of_tm_deriv theEncoding _ (DerivedAxioms.prior_S_gap le_rfl (A' a0))
   | sep a0 => exact plusValidIn_swap_of_tm theEncoding _ (Axiom.sep (A' a0)) le_rfl
   | stab_k a0 a1 =>
     exact fun _ _ M τ t h1 h2 σ hs => h1 σ hs (h2 σ hs)
