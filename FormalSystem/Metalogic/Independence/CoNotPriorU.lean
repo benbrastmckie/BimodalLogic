@@ -201,10 +201,6 @@ def priorUGapFormula (φ : Formula) : Formula :=
   (Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
     (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg)))
 
-/-- The transcription **is** the axiom's formula: `Axiom.prior_U_gap` elaborates at it directly,
-which is the acceptance test for the transcription being character-for-character. -/
-def priorUGapFormulaIsAxiom (φ : Formula) : Axiom (priorUGapFormula φ) := Axiom.prior_U_gap φ
-
 /-! ## The three membership facts -/
 
 /-- **Membership fact 1**: `U(⊤, p)` holds at time `0` — witness `s = 1/4`, which is inside the
