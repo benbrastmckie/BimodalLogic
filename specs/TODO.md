@@ -93,7 +93,7 @@ next_project_number: 623
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- report and sorry-free probe...
   └─ 560 [NOT STARTED] — IMPLEMENTATION, rescoped on research task 559's report...
-568 [RESEARCHING] — Promote the alternative consequence relations into the...
+568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -514,10 +514,11 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 568. C3 c4 consequence relations as library definitions
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
+- **Research**: [568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md]
 
 **Description**: Promote the alternative consequence relations into the library, from `specs/553_decide_convex_history_layer_collapse/probes/02_alternative-consequence.lean` and `specs/553_decide_convex_history_layer_collapse/probes/03_axiom-survival.lean`. This is the task the author's own reframing most directly asks for: it is what makes C3 and C4 things this repository HAS rather than things a probe file mentions.
 

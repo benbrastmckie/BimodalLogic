@@ -1519,15 +1519,23 @@
     {
       "project_number": 568,
       "project_name": "c3_c4_consequence_relations_as_library_definitions",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Promote the alternative consequence relations into the library, from `specs/553_decide_convex_history_layer_collapse/probes/02_alternative-consequence.lean` and `specs/553_decide_convex_history_layer_collapse/probes/03_axiom-survival.lean`. This is the task the author's own reframing most directly asks for: it is what makes C3 and C4 things this repository HAS rather than things a probe file mentions.\n\nTHE FOUR RELATIONS (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 3.1). C1 (current, and the paper's `def:logical-consequence`): total index, box over `H_F`, tenses over all of `D`. C2: any convex index, box over `H_F`, tenses over all of `D` -- DIAGNOSTIC ONLY, and strictly worse than both C1 and C3, since it invalidates `modal_t`; do not promote it as a candidate semantics. C3 (the paper's footnote at possible_worlds.tex line 1102): index any convex `tau` with `x` in `dom tau`, box over the convex histories whose domain contains `x`, tenses and evaluation time restricted to `dom tau`. C4: C3 with the index restricted to closed bounded interval domains -- the domain shape of `Beh(F)(l)`'s sections up to translation.\n\nDELIVER: `TruthAtConvex` (a local recursion written BESIDE the library's `TruthAt`, never a modification of it), `ValidC3`, `ValidC4`; the germ theorems `germ_untl_false`, `c3_box_untl_unsat`, `c3_box_snce_unsat`, `c3_valid_imp_germ_valid`, `c3_nec`; the shift-invariance lemma `truthC3_timeShift`; the separations `valid_C1_someFuture_top`, `refute_C3_someFuture_top`, `refute_C3_somePast_top`, `refute_C4_someFuture_top`; the containment `validC3_imp_validC4`; and the section 4.1 axiom-survival table as theorems, INCLUDING the six machine-checked failures (`serial_future`, `serial_past`, `discrete_symm_fwd`, `discrete_symm_bwd`, `discrete_propagate_fwd`, `discrete_box_necessity`).\n\nCLOSE THE FOUR GAPS section 4.1 leaves open: `discrete_propagate_bwd` and `z1` are CONDITIONAL; `prior_U_gap`, `prior_S_gap` and `sep` are UNRESOLVED. The RTime layer is genuine work -- `K+` is itself a restricted `U`/`S` formula whose endpoint behaviour was never checked.\n\nWORKING DEFAULT ON THE BOX-RANGE DESIGN CHOICE, revisable by the author and recorded here so it is not settled by accident: keep the footnote's own reading as the PRIMARY C3 -- box ranging over ALL convex histories through `x`, one-point germs included -- and add the cut-back variant (interval sections of some minimum length, or those whose domain contains `dom tau`) as a NAMED ALTERNATIVE. Rationale: the footnote is the definition of record, and the germ result is more interesting stated than avoided. If the author overrides this, the override changes what the completeness sequel is about, so it must be recorded here BEFORE that sequel starts.\n\nWHAT C3 IS, for docstrings (`specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 4.2): TM's S5 modal layer over a bounded-interval tense logic. Every axiom failure is an EXISTENCE ASSERTION about the temporal order, and boundedness is exactly what makes existence assertions fail. `modal_future` SURVIVES, because C3 is time-uniform -- `truthC3_timeShift` is the C3 analogue of `app:auto_existence`. Do NOT claim that C3 equals Burgess-Xu-without-seriality plus S5; that is a completeness question and it belongs to the sequel task.\n\nCONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. C1 -- the library's own `TruthAt` and `ConsequenceOnFrames` -- must be left semantically unchanged by this task.",
       "topic": "metalogic",
       "dependencies": [],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-09-18T19:19:03Z",
+      "last_updated": "2026-09-18T19:44:59Z",
       "priority": "high",
-      "session_id": "sess_1789758953_24f7fc_568"
+      "session_id": "sess_1789758953_24f7fc",
+      "artifacts": [
+        {
+          "path": "specs/568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md",
+          "type": "report",
+          "summary": "C3/C4 library-promotion research report with verified gap closures and phasing."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 570,

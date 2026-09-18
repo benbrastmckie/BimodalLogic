@@ -1,0 +1,13 @@
+{
+  "status": "researched",
+  "dispatch_seq": 5,
+  "phase": "research",
+  "summary": "Research complete. Gap proofs for discrete_propagate_bwd, z1, prior_U_gap, sep all machine-checked sorry-free via LSP (no lake build); C3 != C4 separated by F-top -> F G-bot; probes must be ported to PartialHistory/IsConvex and the 29-constructor Axiom set.",
+  "artifacts": [
+    {"type": "report", "path": "specs/568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md", "summary": "C3/C4 library-promotion research report with verified gap closures and phasing."}
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "plan"
+}
