@@ -414,19 +414,25 @@ was regenerated against the corrected tiering.
 
 ---
 
-### Phase 5: Propagate the comment-aware declaration regex to C19 and C23 [NOT STARTED]
+### Phase 5: Propagate the comment-aware declaration regex to C19 and C23 [COMPLETED]
 
 **Goal**: Remove the same phantom declarations from the other two checks that inherit the
 comment-blind regex, without moving either check's verdict.
 
 **Tasks**:
-- [ ] Record C19's and C23's exact counts and pass/fail state from `baseline-harness.txt`.
-- [ ] Apply the same comment-stripping and block-comment skipping to C19's and C23's declaration
-      regex sites.
-- [ ] Re-run the harness. Confirm each check's *verdict* is unchanged and only its denominator
-      moved.
-- [ ] If either verdict changes, stop and investigate before proceeding -- C23 is gated by
-      `ENFORCE_C23`, so a flip is a real regression, not a new baseline.
+- [x] Record C19's and C23's exact counts and pass/fail state from `baseline-harness.txt`.
+      *(completed -- C19 unrefined 9902/11043 = 89.67%, refined 10212/11043 = 92.47% PASS; all
+      three C23 assertions PASS with zero findings each; C23 prints no denominator)*
+- [x] Apply the same comment-stripping and block-comment skipping to C19's and C23's declaration
+      regex sites. *(completed -- `strip_comments` is now shared by C17, C19 and the C16/C23
+      block; C23's own ad-hoc tracker was replaced by it)*
+- [x] Re-run the harness. Confirm each check's *verdict* is unchanged and only its denominator
+      moved. *(completed -- C19 denominator 11,043 -> 10,850, verdict still PASS; C16 dupNamespace
+      and all three C23 lines byte-identical)*
+- [x] If either verdict changes, stop and investigate before proceeding -- C23 is gated by
+      `ENFORCE_C23`, so a flip is a real regression, not a new baseline. *(completed -- no verdict
+      changed, so this branch was not taken; the equivalence was additionally measured in
+      isolation BEFORE the edit landed, see Phase Notes)*
 
 **Timing**: 1 hour
 
@@ -444,6 +450,34 @@ check's pass/fail verdict changes. Confirm by a before/after diff of both checks
 **Verification**:
 - C19 and C23 verdicts identical to the baseline; denominators reduced.
 - Harness exit code unchanged.
+
+#### Phase Notes (measured at implementation time)
+
+Scope Hypothesis confirmed: 193 phantom declarations leave C19's denominator (11,043 -> 10,850)
+and no verdict moves. Full harness exit 0; the only two lines differing from the Phase 4 run are
+C19's own pair. Coverage RISES rather than falls, as it must -- a declaration-shaped line inside a
+comment is never credited as documented, so removing 193 of them from the denominator raises both
+figures: unrefined 89.67% -> 91.25%, refined 92.47% -> **93.79%**, still clearing the 90% floor by
+a wider margin than before.
+
+Two findings that refine the plan's own description of this phase, both verified by direct read:
+
+1. **C23's declaration scan already had a comment tracker**; it was not comment-blind. It counted
+   `/-` and `-/` per line and skipped a `--` prefix. What it could not do was handle a trailing
+   comment or a declaration sharing a line with a closed block comment, so it was strictly weaker
+   than C17's pass rather than absent. It has been replaced by the shared `strip_comments` helper,
+   so the three checks now agree by construction on what counts as code instead of carrying three
+   definitions that can drift.
+2. **C23 prints no denominator**, so "only its denominator moved" is vacuous for C23 -- the check
+   reports finding counts (all zero) and nothing else. The observable claim for C23 is the
+   stronger one actually verified: its output is byte-identical. The C16 `dupNamespace` scan in
+   the same Python block shares that regex site and was comment-blind; it is fixed here too, and
+   its output is likewise byte-identical.
+
+The equivalence was measured BEFORE the edit landed, not only after: the block was extracted and
+run standalone under both the old tracker and the new pass, and diffed. Both variants -- with the
+`lemma` test reading the raw line and reading the stripped line -- produced identical output. That
+is what made this safe to apply to an `ENFORCE_C23`-gated check.
 
 ---
 

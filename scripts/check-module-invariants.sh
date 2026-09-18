@@ -2288,6 +2288,30 @@ def live_lean_files(base):
                 out.append(os.path.join(root, f))
     return sorted(out)
 
+def strip_comments(lines):
+    """(started-inside-a-block-comment, comment-stripped text) per line.
+
+    The same helper C17 uses. A declaration-shaped line inside a `/- ... -/`
+    block or after a `--` is not a declaration: before this, 196 such phantoms
+    were counted tree-wide, inflating every denominator built from this regex.
+    """
+    depth, inside, code = 0, [], []
+    for raw in lines:
+        inside.append(depth > 0)
+        out, i, n = [], 0, len(raw)
+        while i < n:
+            if depth == 0 and raw.startswith("--", i):
+                break
+            if raw.startswith("/-", i):
+                depth += 1; i += 2; continue
+            if depth > 0 and raw.startswith("-/", i):
+                depth -= 1; i += 2; continue
+            if depth == 0:
+                out.append(raw[i])
+            i += 1
+        code.append("".join(out))
+    return inside, code
+
 ns_open_re = re.compile(r"^namespace\s+([A-Za-z_][A-Za-z0-9_'.]*)")
 section_re = re.compile(r"^section(?:\s+[A-Za-z_][A-Za-z0-9_']*)?\s*$")
 end_re = re.compile(r"^end(?:\s+([A-Za-z_][A-Za-z0-9_'.]*))?\s*$")
@@ -2307,10 +2331,14 @@ for path in live_lean_files("FormalSystem"):
     except OSError:
         continue
     n_lines = len(lines)
+    inside_c, code = strip_comments(lines)
     i = 0
     while i < n_lines:
         raw = lines[i]
-        line = raw.strip()
+        if inside_c[i]:
+            i += 1
+            continue
+        line = code[i].strip()
         m = ns_open_re.match(line)
         if m:
             segs = m.group(1).split(".")
@@ -2411,16 +2439,20 @@ for path in live_lean_files("FormalSystem"):
         lines = open(path, encoding="utf-8", errors="replace").readlines()
     except OSError:
         continue
+    # This loop used to carry its own comment tracker: a per-line `/-`/`-/`
+    # count plus a `--` prefix test. That handled a whole-line comment but not
+    # a trailing one, and not a declaration sharing a line with a closed block
+    # comment. It is replaced by the shared `strip_comments` pass above, which
+    # C17, C19 and this scan now all use -- one definition of "is this line
+    # really code", rather than three that can drift apart. Verified before
+    # adoption: all three C23 assertions and the dupNamespace line above print
+    # byte-identical output under the old tracker and the new pass.
+    inside_c, code = strip_comments(lines)
     for i, raw in enumerate(lines, 1):
-        opens = raw.count("/-"); closes = raw.count("-/")
-        in_comment = depth > 0
-        depth += opens - closes
-        if depth < 0:
-            depth = 0
-        if in_comment:
+        if inside_c[i - 1]:
             continue
-        line = raw.strip()
-        if line.startswith("--"):
+        line = code[i - 1].strip()
+        if not line:
             continue
         m = ns_open_re.match(line)
         if m:
@@ -2434,7 +2466,7 @@ for path in live_lean_files("FormalSystem"):
                 if n:
                     stack = stack[:-n] if n <= len(stack) else []
             continue
-        if LEMMA.match(raw):
+        if LEMMA.match(code[i - 1]):
             lemmas.append((path, i))
         m = DECL2.match(line)
         if m:
@@ -2964,6 +2996,30 @@ decl_re = re.compile(
     r"(?:private\s+|protected\s+|noncomputable\s+|scoped\s+|local\s+|mutual\s+)*"
     r"(theorem|lemma|def|structure|inductive|class|abbrev|instance)\s+[A-Za-z_]"
 )
+def strip_comments(lines):
+    """(started-inside-a-block-comment, comment-stripped text) per line.
+
+    The same helper C17 uses. A declaration-shaped line inside a `/- ... -/`
+    block or after a `--` is not a declaration: before this, 196 such phantoms
+    were counted tree-wide, inflating every denominator built from this regex.
+    """
+    depth, inside, code = 0, [], []
+    for raw in lines:
+        inside.append(depth > 0)
+        out, i, n = [], 0, len(raw)
+        while i < n:
+            if depth == 0 and raw.startswith("--", i):
+                break
+            if raw.startswith("/-", i):
+                depth += 1; i += 2; continue
+            if depth > 0 and raw.startswith("-/", i):
+                depth -= 1; i += 2; continue
+            if depth == 0:
+                out.append(raw[i])
+            i += 1
+        code.append("".join(out))
+    return inside, code
+
 boundary_re = re.compile(r"^(namespace|section|end)\b")
 
 total = 0
@@ -2983,9 +3039,12 @@ for path in live_lean_files("FormalSystem"):
     for m in re.finditer(r"/-!.*?-/", text, re.DOTALL):
         section_end_lines.add(text.count("\n", 0, m.end()) + 1)
 
+    inside_c, code = strip_comments(lines)
     decl_lines = {}
-    for i, raw in enumerate(lines, 1):
-        if decl_re.match(raw.strip()):
+    for i in range(1, n + 1):
+        if inside_c[i - 1]:
+            continue
+        if decl_re.match(code[i - 1].strip()):
             decl_lines[i] = any((i - k) in doc_ends for k in (1, 2, 3))
 
     active = False
