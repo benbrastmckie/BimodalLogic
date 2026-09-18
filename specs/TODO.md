@@ -93,7 +93,7 @@ next_project_number: 621
 
 ### Literature
 
-504 [PLANNED] — Retry acquisition of the standard modal-representation...
+504 [IMPLEMENTING] — Retry acquisition of the standard modal-representation...
 
 ### Metalogic
 
@@ -680,7 +680,7 @@ ORDERING NOTE (codebase-cleanup reorganization, 2026-09-16): this layout pass fo
 ---
 
 ### 504. Retry acquisition of missing representation sources
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None

@@ -1,0 +1,17 @@
+{
+  "phase": 1,
+  "phase_name": "Audit the gehrke_jonsson_2004 Registration",
+  "started_at": "2026-09-18T00:00:00Z",
+  "last_updated": "2026-09-18T00:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Confirm sub-index entry has all six fields, no empty values", "status": "done", "files_touched": [], "note": "All 6 fields present and non-empty: doc_id, reason, added, source, citation_rule, fidelity."},
+    {"id": 2, "description": "Confirm sub-index parses as JSON and entries length is 69", "status": "done", "files_touched": [], "note": "jq parses cleanly; entries length = 69, matches expected."},
+    {"id": 3, "description": "Confirm global index parent entry metadata; zotero_key null expected", "status": "done", "files_touched": [], "note": "Parent entry has title, authors, year, venue, doi, provenance_fidelity: verified_conversion. zotero_key: null and zotero_path: null confirmed, expected (Phase 5 defect)."},
+    {"id": 4, "description": "Confirm chunk entries in global index match on-disk chunk count", "status": "done", "files_touched": [], "note": "Global index: 1 parent + 62 chunk entries = 63 total for doc_id gehrke_jonsson_2004. On-disk: 62 chunk_*.md files. Match confirmed."},
+    {"id": 5, "description": "Run literature-search.sh and confirm gehrke_jonsson_2004 in results", "status": "done", "files_touched": [], "note": "literature-search.sh 'bounded distributive lattice' returns gehrke_jonsson_2004 as top-ranked result (provenance_fidelity: verified_conversion)."},
+    {"id": 6, "description": "Record any discrepancy for Phase 2, or record none found", "status": "done", "files_touched": [], "note": "No discrepancies found. All observed values match the research report's figures exactly (69 sub-index entries, 62 chunks on disk, 63 global-index entries, search retrieval works)."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

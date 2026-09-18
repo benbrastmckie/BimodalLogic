@@ -1,7 +1,7 @@
 # Implementation Plan: Finalize Representation-Source Acquisition and Record Blockers
 
 - **Task**: 504 - retry_acquisition_of_missing_representation_sources
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md`
@@ -127,25 +127,31 @@ is read-only, Phase 3 writes only `~/Projects/Literature/SOURCES.md`, Phase 5 wr
 
 ---
 
-### Phase 1: Audit the `gehrke_jonsson_2004` Registration [NOT STARTED]
+### Phase 1: Audit the `gehrke_jonsson_2004` Registration [COMPLETED]
 
 **Goal**: Confirm, by direct inspection rather than by trusting the research report, that the
 acquired source is completely and correctly registered in both indices and is retrievable — and
 produce the exact list of anything that is not, for Phase 2 to act on.
 
 **Tasks**:
-- [ ] Read the `gehrke_jonsson_2004` entry in `specs/literature-index.json` and confirm it carries
+- [x] Read the `gehrke_jonsson_2004` entry in `specs/literature-index.json` and confirm it carries
       all six fields present on the `gehrke_vosmaer_2011_view-of-canonical-extension` entry
       (`doc_id`, `reason`, `added`, `source`, `citation_rule`, `fidelity`), with no empty values.
-- [ ] Confirm `specs/literature-index.json` parses as JSON and that `.entries | length` is 69.
-- [ ] Confirm the global `~/Projects/Literature/index.json` parent entry carries real metadata
+      *(completed: all 6 fields present and non-empty)*
+- [x] Confirm `specs/literature-index.json` parses as JSON and that `.entries | length` is 69.
+      *(completed: 69 confirmed)*
+- [x] Confirm the global `~/Projects/Literature/index.json` parent entry carries real metadata
       (`title`, `authors`, `year`, `venue`, `doi`, `provenance_fidelity`) and note that
       `zotero_key` is `null` — this is expected, and its cause is the defect Phase 5 records.
-- [ ] Confirm the chunk entries exist in the global index for this `doc_id` and that the on-disk
+      *(completed: all fields present; zotero_key/zotero_path both null as expected)*
+- [x] Confirm the chunk entries exist in the global index for this `doc_id` and that the on-disk
       chunk count in `~/Projects/Literature/sources/gehrke_jonsson_2004/` matches.
-- [ ] Run `bash .claude/scripts/literature-search.sh "bounded distributive lattice"` and confirm
+      *(completed: 62 chunk entries in global index + 1 parent = 63; 62 chunk_*.md files on disk — match)*
+- [x] Run `bash .claude/scripts/literature-search.sh "bounded distributive lattice"` and confirm
       `gehrke_jonsson_2004` is among the results.
-- [ ] Record any discrepancy found as a concrete item for Phase 2; if none, record that explicitly.
+      *(completed: returned as top-ranked result)*
+- [x] Record any discrepancy found as a concrete item for Phase 2; if none, record that explicitly.
+      *(completed: no discrepancies found; all observed values match research report's figures exactly)*
 
 **Timing**: 0.5 hours
 

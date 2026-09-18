@@ -1,33 +1,11 @@
 {
-  "status": "planned",
+  "status": "in_progress",
   "task_number": 504,
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/504_retry_acquisition_of_missing_representation_sources/plans/01_finalize-acquisition-record-blockers.md",
-      "summary": "5-phase plan finalizing the representation-source acquisition: audit the gehrke_jonsson_2004 registration, spot-check and reconcile its conversion-fidelity label, record the seven confirmed blockers durably in ~/Projects/Literature/SOURCES.md, log the Zotero write-bridge dependency defect, and land a scoped commit."
-    }
-  ],
-  "phase_count": 5,
-  "estimated_hours": 3.25,
-  "dependency_waves": [[1, 3, 5], [2], [4]],
-  "user_decision": {
-    "question": "Sambin & Vaccaro 1988 'Topology and duality in modal logic' is free-to-read at the publisher (Unpaywall is_oa: true, oa_status: bronze) but ScienceDirect returns HTTP 403 to a non-browser fetch, so it is blocked by an anti-bot/TDM control rather than a paywall. SOURCES.md's policy says 'no paywall circumvention' but also treats anti-bot-walled free items (W11/W13/W16) as the cheapest acquisitions; Playwright is available in this session. Should a browser-driven fetch be authorized for this item?",
-    "options": [
-      "Record it as not acquired (plan Phase 3, entry R1) and leave acquisition to a human with a real browser or institutional access",
-      "Authorize a Playwright-driven fetch of the free-to-read publisher copy and ingest it as an eighth source",
-      "Authorize a Playwright-driven fetch as a general policy for any Unpaywall-bronze item this pipeline's curl tooling cannot reach"
-    ],
-    "recommended": "Record it as not acquired (plan Phase 3, entry R1) and leave acquisition to a human with a real browser or institutional access",
-    "blocking": false
-  },
-  "memory_candidates": [],
-  "next_steps": "Run /implement 504 to execute the plan",
+  "dispatch_seq": 4,
   "metadata": {
-    "session_id": "sess_1789728911_1b865e_504",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 2
+    "session_id": "sess_1789728911_1b865e",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
