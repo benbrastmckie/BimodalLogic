@@ -912,6 +912,7 @@ theorem noMaxOrder_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOr
   obtain ⟨hax, hxd⟩ := h.classStrictlyBetween_of_between hae hed hnae hned x hx
   exact ⟨lt_trans hca hax, hxd⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **`I` has order type `ℚ`** — Reynolds 1992, printed p.187:
 

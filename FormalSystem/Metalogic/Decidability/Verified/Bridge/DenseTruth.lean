@@ -381,6 +381,7 @@ theorem gt_of_branchRank_lt_cutIndex (hOR : OrderReflecting b ord f) {r : D}
   · exact absurd (isPlacedCode_of_eq heq) hr
   · exact absurd (cutIndex_le_branchRank hOR hgt) (not_le.mpr hrk)
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- **Region-mates read the same label.** This is what replaces `upperRay_of_gt`: at `ℤ` the fact
 that everything above a ray point reads the ray's label was derived from `RayOnly`/`RaySplit`; here

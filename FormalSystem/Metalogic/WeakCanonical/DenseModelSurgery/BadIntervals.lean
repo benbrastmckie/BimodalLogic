@@ -472,6 +472,7 @@ theorem leftEnd_iff_exists_not_notLeftEnd {ε : MonadicFormula sig 2}
     intro u huc huw
     exact hwn ⟨u, contemp_trans hε M (contemp_symm hε M hwc) huc, huw⟩
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — third paragraph.**
 
 > *Its not hard to use the previous result to show that throughout the bad interval all classes
@@ -857,6 +858,7 @@ theorem afterNotHoldsInClassTemporal_spec (atomMap : Formula → sig.preds)
   rw [afterNotHoldsInClassFormula_eval]
   simp only [eval_temporalToMonadic]
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 7, printed pp.180-181 — first statement, the *start* half.**
 
 > *If a formula `B` is true for a while at the start of a `∼`-class in a bad interval then it
@@ -1148,6 +1150,7 @@ theorem beforeNotHoldsInClassTemporal_spec (atomMap : Formula → sig.preds)
   rw [beforeNotHoldsInClassFormula_eval]
   simp only [eval_temporalToMonadic]
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 7, printed p.180 — first statement, the *end* half.**
 
 > *… Similarly at the end.*

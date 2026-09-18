@@ -780,6 +780,7 @@ theorem classModelsTemporal_spec (atomMap : Formula → sig.preds)
     (relativizeToClass ε φ)).property M h_prior_U h_prior_S t).symm.trans
       (eval_relativizeToClass M ε φ t)
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — second statement.**
 
 > *Furthermore, each pair of the `∼`-classes in a maximal interval of `R` are elementarily

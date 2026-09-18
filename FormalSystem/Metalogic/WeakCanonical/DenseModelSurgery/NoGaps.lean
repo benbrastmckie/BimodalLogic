@@ -546,6 +546,7 @@ inferred point-adjacency from Lemma 4 directly and concluded the opposite; that 
 not go through, and the source of the missing premise is Lemma 6's first clause, which
 `IsBadIntervalSurgery.interior` already supplies at every point of `Q₀`. -/
 
+omit [IsDualClosed C] in
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` has no last point**: a class-mate of `t` strictly above any given point of the class.
 
@@ -558,6 +559,7 @@ theorem exists_contemp_gt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
     exists_contemp_gt hε M (endsInGapOnRight_of_mem hS (hS.mem_of_contemp_base hε hx))
   exact ⟨w, hxw, contemp_trans hε M hx hcw⟩
 
+omit [IsDualClosed C] in
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`I` has no first point** — the mirror of `exists_contemp_gt_of_mem`, through
 `endsInGapOnLeft_of_mem` and `λ`'s second conjunct (`exists_contemp_lt`). -/
