@@ -1,7 +1,7 @@
 # Implementation Plan: Task #606
 
 - **Task**: 606 - Adopt the paper axiom system and derive the surplus axioms
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/606_adopt_paper_axiom_system_and_derive_surplus_axioms/reports/01_paper-axiom-audit.md
@@ -102,19 +102,19 @@ Not consulted: no `roadmap_path` in the delegation context.
 
 The phases are deliberately sequential. They all share one Lake build tree, and the call-site rewrites touch modules that import each other.
 
-### Phase 1: TR-derived mirror module [NOT STARTED]
+### Phase 1: TR-derived mirror module [COMPLETED]
 
 **Goal**: Add `FormalSystem/ProofSystem/DerivedAxioms.lean`. It holds the 14 TR-derived definitions for the 12 Base mirrors plus `prior_SZ` and `prior_S_gap`, each proved by `time_reflection` from its primary. The existing constructors stay in place.
 
 **Tasks**:
-- [ ] Record a baseline census of the `sorry` count and the `axiom` declaration count in `FormalSystem/` and `Tests/`, excluding Boneyard. Write it to the task's progress notes for the final comparison.
-- [ ] Create the module in namespace `FormalSystem.ProofSystem.DerivedAxioms`, importing only `ProofSystem.Derivation` and `Syntax.Formula`.
-- [ ] For each mirror, write `def X {fc : FrameClass} (args) : ⊢[fc] <exact current constructor formula>`. The body applies `time_reflection` to the primary's axiom instance at `reflectTime`d arguments (with `FrameClass.base_le fc`), then `simpa [...]`, following the report's Tactic Survey.
+- [x] Record a baseline census of the `sorry` count and the `axiom` declaration count in `FormalSystem/` and `Tests/`, excluding Boneyard. Write it to the task's progress notes for the final comparison. *(completed: baseline = 0 non-Boneyard sorries (census total 160, all under Boneyard), 0 `axiom` declarations; baseline full `lake build` green, 2660 jobs)*
+- [x] Create the module in namespace `FormalSystem.ProofSystem.DerivedAxioms`, importing only `ProofSystem.Derivation` and `Syntax.Formula`. *(deviation: altered — also imports the leaf `Automation.LemmaDB` so the defs can carry `@[tmLemma]`)*
+- [x] For each mirror, write `def X {fc : FrameClass} (args) : ⊢[fc] <exact current constructor formula>`. The body applies `time_reflection` to the primary's axiom instance at `reflectTime`d arguments (with `FrameClass.base_le fc`), then `simpa [...]`, following the report's Tactic Survey.
   - `discrete_symm_bwd` is the bare term `time_reflection _ (axiom … discrete_symm_fwd …)`.
   - `prior_SZ` takes `(h : FrameClass.ZTime ≤ fc)` and `prior_S_gap` takes `(h : FrameClass.RTime ≤ fc)`. Pass `h` through as the primary's `h_fc`.
-- [ ] For each, add a context-lifted helper `XAt (Γ : Context) … : Γ ⊢[fc] …` via `DerivationTree.weakening [] Γ _ d (List.nil_subset Γ)`, so that non-empty-context call sites rewrite one-to-one. Tag the definitions `@[tmLemma]` where `Combinators` does the same for similar lemmas, so the lemma DB and search see them.
-- [ ] Re-export from `FormalSystem/ProofSystem.lean`.
-- [ ] Run `lean_verify` on each of the 14 defs. Expect nothing beyond `propext`, `Classical.choice` and `Quot.sound`.
+- [x] For each, add a context-lifted helper `XAt (Γ : Context) … : Γ ⊢[fc] …` via `DerivationTree.weakening [] Γ _ d (List.nil_subset Γ)`, so that non-empty-context call sites rewrite one-to-one. Tag the definitions `@[tmLemma]` where `Combinators` does the same for similar lemmas, so the lemma DB and search see them.
+- [x] Re-export from `FormalSystem/ProofSystem.lean`.
+- [x] Run `lean_verify` on each of the 14 defs. Expect nothing beyond `propext`, `Classical.choice` and `Quot.sound`. *(completed: all 14 depend on `[propext]` only; each def's type checked equal to its constructor's index)*
 
 **Timing**: 1.5 hours
 

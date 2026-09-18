@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.ProofSystem.Axioms
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.ProofSystem.Derivable
+import FormalSystem.ProofSystem.DerivedAxioms
 import FormalSystem.ProofSystem.LinearityDerivedFacts
 
 /-!
