@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "phase": "research",
+  "summary": "Retried acquisition of 8 standard representation-theorem sources; recovered Gehrke & Jonsson 2004 (mscand.dk migrated to journals.msp.org) and confirmed, with new source-specific evidence, that the other 7 remain genuinely unacquirable via this pipeline.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md",
+      "summary": "Retry-acquisition report: 1 of 8 sources newly acquired and registered in specs/literature-index.json; 7 confirmed unacquirable with evidence (paywall, bronze-OA-but-403, authenticated-only mirror, or absent from author homepage)."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": []
+}

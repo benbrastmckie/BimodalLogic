@@ -1,0 +1,40 @@
+{
+  "status": "researched",
+  "task_number": 504,
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1789728911_1b865e_504",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md",
+      "summary": "Retried acquisition of 8 standard representation-theorem sources left unacquired by the prior representation-literature research report; recovered Gehrke & Jonsson 2004 (mscand.dk migrated to journals.msp.org) and confirmed, with new source-specific evidence, that the other 7 remain genuinely unacquirable via this pipeline (paywall, bronze-OA-but-403, authenticated-only mirror, or absent from author homepage)."
+    }
+  ],
+  "findings_count": 8,
+  "memory_candidates": [
+    {
+      "content": "When an OJS-hosted journal article's old download URL 404s (e.g. an mscand.dk-style host), the journal may have migrated OJS platforms. Follow the article's `view` URL (not `download`) to find the redirect target, then read the new host's `<meta name=\"citation_pdf_url\">` tag for a working, often unauthenticated, PDF endpoint. This recovered a source (Gehrke & Jonsson 2004, Math. Scand. 94) that a prior research pass had marked not-acquired due to a stale download URL.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["literature acquisition", "OJS migration", "citation_pdf_url", "mscand.dk", "open access PDF discovery"]
+    },
+    {
+      "content": "literature-ingest-online.sh's automated Zotero-write (create-item) path can fail with ONLINE_INGEST_ZOTERO_CREATE_FAILED due to a zotero-cli-cc/pyzotero/httpx2 dependency bug (`TypeError: 'httpx.Timeout' object cannot be interpreted as an integer or float`), independent of source availability. Workaround: once the PDF is downloaded and magic-byte-verified, bypass the bridge's Zotero step and feed the file directly to the unmodified literature-ingest.sh (convert/chunk/index), then hand-patch index.json/specs/literature-index.json metadata to match the schema of existing entries. The document has no zotero_key/zotero_path in this case.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["zotero-cli-cc", "literature-ingest-online.sh", "httpx2 bug", "manual ingest bypass", "ONLINE_INGEST_ZOTERO_CREATE_FAILED"]
+    },
+    {
+      "content": "Unpaywall's oa_status: \"bronze\" classification (is_oa: true but best_oa_location.url_for_pdf is null) means the publisher currently allows free reading on its own page, but there is no stable, directly downloadable PDF URL, and a non-browser curl fetch of the derived PDF endpoint (e.g. ScienceDirect's /pii/<id>/pdf pattern) returns HTTP 403 (bot/TDM challenge). Treat bronze differently from gold/green/hybrid OA when planning automated literature acquisition: it is not machine-acquirable via this pipeline's curl-based tooling even though it is nominally free-to-read.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["unpaywall", "bronze open access", "ScienceDirect 403", "TDM policy", "acquisition blockers"]
+    }
+  ],
+  "next_steps": "Run /plan 504 to decide whether any further action is warranted (e.g. patching the zotero-cli-cc dependency, or accepting the remaining 7 sources as permanently unacquired via this pipeline), or fold the acquired gehrke_jonsson_2004 source directly into a revision of the representation section."
+}
