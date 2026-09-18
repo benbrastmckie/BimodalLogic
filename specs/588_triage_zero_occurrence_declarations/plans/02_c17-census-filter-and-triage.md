@@ -1,7 +1,7 @@
 # Implementation Plan: Triage the zero-occurrence declarations C17 reports
 
 - **Task**: 588 - Triage the zero-occurrence declarations C17 reports
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13.5 hours
 - **Dependencies**: 585 (warning burn-down, completed), 591 (Automation export-name consolidation, archived), 594 (in-library smoke-test relocation, archived) -- all three have landed, so the census is measurable against a settled tree
 - **Research Inputs**: `specs/588_triage_zero_occurrence_declarations/reports/02_c17-zero-occurrence-triage.md`; `specs/588_triage_zero_occurrence_declarations/reports/01_dead-declaration-triage.md`
@@ -853,21 +853,31 @@ already names `VVecEA2.disj`, so the brittle line number was dropped rather than
 
 ---
 
-### Phase 10: Deletion batch C -- `def` survivors outside `Metalogic/` [IN PROGRESS]
+### Phase 10: Deletion batch C -- `def` survivors outside `Metalogic/` [COMPLETED]
 
 **Goal**: Finish the `def` cluster: `Automation/`, `Syntax/`, `Semantics/`, `ProofSystem/`,
 `Theorems/`.
 
 **Tasks**:
-- [ ] Regenerate the census and take the current non-`Metalogic/` `def` survivor list.
-- [ ] Run the same name diff against the script and the Typst chapters; abort on any hit.
-- [ ] Treat `Automation/ContrastiveGeneratorMain.lean` and `Automation/DatasetGenerator.lean`
+- [x] Regenerate the census and take the current non-`Metalogic/` `def` survivor list.
+- [x] Run the same name diff against the script and the Typst chapters; abort on any hit.
+- [x] Treat `Automation/ContrastiveGeneratorMain.lean` and `Automation/DatasetGenerator.lean`
       with extra care: they sit next to `lean_exe` roots that `lake build` does not elaborate, so
       C25 (exe-root compilation) is the check that will catch a break there -- run the full
       harness, never `lake build` alone, before committing either file.
-- [ ] Exclude Boneyard-only-referenced names, as in Phase 9.
-- [ ] Delete file by file, committing each file's green state.
-- [ ] After the batch: `lake build`, `lake build BimodalTest`, full harness.
+- [x] Exclude Boneyard-only-referenced names, as in Phase 9. *(deviation: altered -- the one
+      remaining `def` survivor, `freshBase` in `FormalSystem/Syntax/Atom.lean`, carries 14
+      `Boneyard/` references and was excluded on exactly this rule; it is Cluster B's single
+      `def` member, so the `def` cluster is closed with it deliberately left in place.)*
+- [x] Delete file by file, committing each file's green state.
+- [x] After the batch: `lake build`, `lake build BimodalTest`, full harness. *(deviation: altered
+      -- the batch did not terminate after one pass. Each deletion removed the only occurrence of
+      further declarations, so the census had to be re-run after every sub-batch until it
+      converged. Three extra sub-batches were needed beyond the file-by-file pass: 10.15 (four
+      cascade-exposed `def`s in `Automation/`), 10.16 (the whole dead parallel-enumeration section
+      in `FormulaEnumerator.lean`), and 10.17 (four cascade-exposed `def`s under `Metalogic/`,
+      which reopened territory Phases 8 and 9 had already closed). The cluster is closed on the
+      census having converged, not on a single pass having finished.)*
 
 **Timing**: 1.5 hours
 
@@ -892,26 +902,34 @@ Syntax 4, and one each in `Semantics/TaskModel.lean`, `ProofSystem/LinearityDeri
 
 ---
 
-### Phase 11: Final accounting, follow-up proposals, and summary [NOT STARTED]
+### Phase 11: Final accounting, follow-up proposals, and summary [COMPLETED]
 
 **Goal**: Close the task with the accounting the description requires and a written handoff for
 every cluster this task deliberately did not execute.
 
 **Tasks**:
-- [ ] Run the full invariant harness one final time and diff every check against
-      `baseline-harness.txt`.
-- [ ] Produce the line-by-line accounting of C17's total drop: baseline 1,020 -> filter effect
+- [x] Run the full invariant harness one final time and diff every check against
+      `baseline-harness.txt`. *(exit 0; per-check verdict multiset identical apart from Phase 2's
+      intended new `INFO C6` line)*
+- [x] Produce the line-by-line accounting of C17's total drop: baseline 1,020 -> filter effect
       (per filter class) -> deletion effect (per batch) -> final headline, with the sum reconciled
-      exactly.
-- [ ] Write `specs/588_triage_zero_occurrence_declarations/followups.md` with one ready-to-run
+      exactly. *(in the summary's Verification section; residue zero: 1,020 - 249 = 771,
+      771 - 80 + 7 = 698)*
+- [x] Write `specs/588_triage_zero_occurrence_declarations/followups.md` with one ready-to-run
       `/task "..."` proposal per contentious cluster, each carrying its evidence: the
       Boneyard-only retirement cluster (47), the `theorem` survivor clusters grouped by file, the
       `@[simp]` unused-simp-lemma population (145), the disposition of the BiLasso orphan-module
       subtree (~77 declarations outside the build graph), and the
-      `indirect-reachability.md` agent-context note.
-- [ ] Confirm the disposition table (Phase 7) has no row left in an undecided state, and update
-      any row whose disposition changed during execution.
-- [ ] Write the execution summary under
+      `indirect-reachability.md` agent-context note. *(deviation: altered -- eight proposals
+      written rather than the five named. The BiLasso subtree was re-measured at 75 declarations
+      across 1,348 lines rather than the plan's estimated ~77, and three proposals were added
+      that the plan could not have anticipated: F5 for the `abbrev`, F6 for the `structure` and
+      `inductive` survivors, and F8 for C17's instability under deletion.)*
+- [x] Confirm the disposition table (Phase 7) has no row left in an undecided state, and update
+      any row whose disposition changed during execution. *(no undecided row in either view; an
+      `Execution Outcome` section records the cluster-by-cluster movement, the new `inductive`
+      cluster, and the two `structure`s deleted against Cluster C's standing disposition)*
+- [x] Write the execution summary under
       `specs/588_triage_zero_occurrence_declarations/summaries/02_*-summary.md`.
 
 **Timing**: 1.25 hours
@@ -944,18 +962,20 @@ reads as a decision rather than an oversight.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 after every deletion file and at the end of every deletion batch.
-- [ ] `lake build BimodalTest` exits 0 at the end of every deletion batch.
-- [ ] `bash scripts/check-module-invariants.sh` exits with the same code as the Phase 1 baseline,
-      with C2 and C14 axiom baselines unmoved, C15 paper anchors unbroken, and C21 intact.
-- [ ] C6 still passes, with the manifest unchanged and its new declaration-count INFO line
-      populated.
-- [ ] C19 and C23 verdicts unchanged from the baseline; only their denominators moved.
-- [ ] C17 remains reporting-only: no `ENFORCE_C17` variable exists, and C17 never contributes to
+- [x] `lake build` exits 0 after every deletion file and at the end of every deletion batch.
+- [x] `lake build BimodalTest` exits 0 at the end of every deletion batch.
+- [x] `bash scripts/check-module-invariants.sh` exits with the same code as the Phase 1 baseline
+      (0), with C2 and C14 axiom baselines unmoved, C15 paper anchors unbroken, and C21 intact.
+- [x] C6 still passes, with the manifest unchanged and its new declaration-count INFO line
+      populated (`15 manifested module(s) carry 128 declaration(s) across 3104 line(s)`).
+- [x] C19 and C23 verdicts unchanged from the baseline; only their denominators moved
+      (C19 refined 92.47% -> 93.74%, denominator 11,043 -> 10,758).
+- [x] C17 remains reporting-only: no `ENFORCE_C17` variable exists, and C17 never contributes to
       `FAILURES`.
-- [ ] `c17_triage.py` and the in-script C17 agree exactly after the filter changes.
-- [ ] Zero `sorry` and zero new axioms introduced (C3 and C14 unchanged).
-- [ ] Every one of the post-filter survivors appears in exactly one disposition row.
+- [x] `c17_triage.py` and the in-script C17 agree exactly after the filter changes (both 698).
+- [x] Zero `sorry` and zero new axioms introduced (C3 ZERO; live `axiom` count identical at 11
+      between `c2148141a` and `HEAD`; the full Lean diff adds zero declarations of any kind).
+- [x] Every one of the post-filter survivors appears in exactly one disposition row.
 
 ## Artifacts & Outputs
 

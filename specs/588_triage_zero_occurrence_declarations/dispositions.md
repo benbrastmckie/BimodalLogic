@@ -31,6 +31,12 @@ works from the fresh run.
 | F. Remaining `theorem` survivors | 631 | `theorem` | `follow-up` |
 | **Total** | **771** | | |
 
+**This table is the pre-execution snapshot.** It is retained as the historical record of what
+was decided and on what evidence. For the post-execution partition -- which clusters were
+executed, which rows moved, and the four declarations that entered Cluster C during execution --
+see [Execution Outcome](#execution-outcome) at the end of this file. No row is left undecided in
+either view.
+
 ---
 
 ## Cluster A -- `def` survivors: `delete-in-this-task`
@@ -283,3 +289,67 @@ with the failure recorded as its evidence, never forced through and never silent
 | B -- other `Metalogic/` subtrees | 26 | -- | -- | not yet run |
 | C -- outside `Metalogic/` | 19 | -- | -- | not yet run |
 
+---
+
+## Execution Outcome
+
+Recorded at the close of Phase 11, against the tree at commit `e462cf3e2`. Every count here was
+regenerated, not carried forward.
+
+### What executed
+
+**Cluster A executed in full: all 80 members deleted.** Verified by set difference between this
+file's source snapshot (`tools/c17_census.tsv`, 771 survivor rows) and a freshly regenerated
+census: 80 survivor rows are gone, every one of them a `def`, which is exactly Cluster A's
+membership. Nothing else in the snapshot was touched.
+
+Three batches, each committed per file with `lake build`, `lake build BimodalTest` and the full
+invariant harness green: Phase 8 (`Metalogic/Decidability/`, 35 rows), Phase 9 (the remaining
+`Metalogic/` subtrees, 26 rows), Phase 10 (everything outside `Metalogic/`, 20 rows) -- 81 rows
+planned, 80 executed, the one exclusion being `freshBase`.
+
+### The one deliberate exclusion
+
+`freshBase` in `FormalSystem/Syntax/Atom.lean` was the single `def` member of Cluster B, not
+Cluster A: it carries 14 `Boneyard/` references, so its only consumer is archived. Retiring it
+is a C11-waiver decision about the archive rather than a deletion, and it is carried into
+`followups.md` as F1. It is now C17's only remaining `def` survivor, which is the intended
+end state rather than an unfinished one.
+
+### Rows that moved during execution
+
+Deleting a declaration removes occurrences of everything it referenced, so the deletion batches
+exposed declarations that had not been flagged when this table was written. Seven such
+declarations survive and are now in the census; twelve more were themselves dead and were
+deleted in the same task, so they appear in no census.
+
+| Cluster | Snapshot | Now | What changed |
+|---|---:|---:|---|
+| A. `def`, no consumer | 80 | 0 | All 80 deleted. Cluster closed. |
+| B. Boneyard-only | 47 | 47 | Unchanged. Still 46 `theorem` + `freshBase`. |
+| C. `structure` | 6 | 8 | `BatchDecisionResult` and `EFPosition` entered during execution. |
+| C'. `inductive` (new) | 0 | 2 | `BranchStatus` and `SemanticCountermodelResult` entered during execution. The snapshot had no `inductive` survivors, so this cluster did not exist; it inherits Cluster C's `keep-with-reason` rationale and its audit proposal. |
+| D. `abbrev` | 1 | 1 | Unchanged. `FiniteTaskModel`. |
+| E. import-orphan `theorem` | 6 | 6 | Unchanged. |
+| F. remaining `theorem` | 631 | 634 | `mcs_filtration_equiv_equivalence`, `densePriorAtomMap_surj` and `densePrior_target_hypotheses_inhabited` entered during execution. |
+| **Total** | **771** | **698** | |
+
+Two declarations that entered during execution were deleted rather than kept, against Cluster
+C's standing `keep-with-reason` disposition: `ParallelEnumConfig` and `LevelComplete` in
+`FormalSystem/Automation/FormulaEnumerator.lean`. **This is a considered departure, not an
+oversight.** Cluster C's rationale is that a zero-occurrence count on a `structure` is *weak
+evidence* because the type name need never be written. Here the evidence was direct and did not
+depend on the token count: their only consumer, `enumerateLevelParallel`, had just been deleted,
+and the `/-! ## Two-Phase Parallel Enumeration and Pipeline Overlap` section header they lived
+under described a subsystem with no remaining members. The whole section was removed as a unit
+(commit `99ce8d32d`). The four declarations that newly entered Clusters C and C' were *not*
+treated this way, because for those the direct evidence is absent; they are carried into
+`followups.md` as F6, which records this precedent so the distinction is available rather than
+rediscovered.
+
+### Final partition
+
+C17's headline is **698**, partitioned with no residue: 47 Boneyard-only + 8 `structure` + 2
+`inductive` + 1 `abbrev` + 6 import-orphan `theorem` + 634 remaining `theorem` = 698. Every one
+of the six clusters is either executed (A) or carries a follow-up proposal in `followups.md`
+(B -> F1, F -> F2, E -> F3, D -> F5, C and C' -> F6).
