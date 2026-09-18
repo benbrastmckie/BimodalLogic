@@ -11,7 +11,7 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,607,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617 | 298,464,502,559,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -72,7 +72,6 @@ next_project_number: 621
 
 ### Documentation
 
-607 [PLANNED] — Resync typst/FormalFoundations.typ with the current Lean tree...
 610 [NOT STARTED] — Update remaining documentation references to lakefile.lean...
 614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
 
@@ -294,12 +293,13 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 607. Resync formalfoundations typ with lean tree
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: Task 600, Task 603, Task 605, Task 606, Task 608
 - **Research**: [607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md]
 - **Plan**: [607_resync_formalfoundations_typ_with_lean_tree/plans/01_formalfoundations-resync-plan.md]
+- **Summary**: [607_resync_formalfoundations_typ_with_lean_tree/summaries/01_formalfoundations-resync-summary.md]
 
 **Description**: Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary: audit every claim about the proof system, axiom counts, the TR (time reflection) rule, renamed identifiers (reflectTime, time_reflection, TimeReflection), and the Some/All Past/Future labels, and correct stale statements. Task 584 fixed the one remark that wrongly said there was no TR rule and that uniformity axiom counts don't match, but deferred a full resync.
 

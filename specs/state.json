@@ -125,12 +125,12 @@
     {
       "project_number": 607,
       "project_name": "resync_formalfoundations_typ_with_lean_tree",
-      "status": "planned",
+      "status": "completed",
       "task_type": "general",
       "description": "Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary: audit every claim about the proof system, axiom counts, the TR (time reflection) rule, renamed identifiers (reflectTime, time_reflection, TimeReflection), and the Some/All Past/Future labels, and correct stale statements. Task 584 fixed the one remark that wrongly said there was no TR rule and that uniformity axiom counts don't match, but deferred a full resync.",
       "topic": "documentation",
       "created": "2026-09-17T10:00:31Z",
-      "last_updated": "2026-09-18T15:11:20Z",
+      "last_updated": "2026-09-18T15:39:29Z",
       "dependencies": [
         600,
         603,
@@ -149,9 +149,15 @@
           "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/plans/01_formalfoundations-resync-plan.md",
           "type": "plan",
           "summary": "6-phase resync plan for typst/FormalFoundations.typ (7h est.)."
+        },
+        {
+          "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/summaries/01_formalfoundations-resync-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the FormalFoundations.typ resync."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Resynced typst/FormalFoundations.typ across all 6 plan phases: corrected the axiom-key (TB/TA->TS/TC) and constructor-count errors, renamed the document's TM/TM^+/BL/BLplus vocabulary to the codebase's already-settled TM/TM- naming via a 98-row classification inventory, added provenance remarks, and fixed 11 stale #leansrc citations discovered during the gate pass. All gates (typst compile, typst-sync-check.sh, check-paper-definitions.sh, #leansrc existence check, residual greps) pass."
     },
     {
       "project_number": 606,

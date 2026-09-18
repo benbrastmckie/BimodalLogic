@@ -1,7 +1,7 @@
 # Implementation Plan: Task #607
 
 - **Task**: 607 - Resync typst/FormalFoundations.typ with the current Lean tree and paper vocabulary
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None (task 584, which deferred this work, is complete)
 - **Research Inputs**: specs/607_resync_formalfoundations_typ_with_lean_tree/reports/01_formalfoundations-typst-resync.md
