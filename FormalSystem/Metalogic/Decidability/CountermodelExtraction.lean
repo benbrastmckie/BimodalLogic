@@ -142,16 +142,6 @@ def extractCountermodelSimple (φ : Formula) (b : Branch)
     : SimpleCountermodel :=
   extractSimpleCountermodel φ b
 
-/--
-Extract countermodel from an expanded tableau with an open branch.
--/
-def extractCountermodelFromTableau (φ : Formula) (tableau : ExpandedTableau)
-    (_fc : FrameClass := .Base) : Option SimpleCountermodel :=
-  match tableau with
-  | .allClosed _ => none  -- No countermodel, formula is valid
-  | .hasOpen openBranch _ord _fc hSaturated =>
-      some (extractCountermodelSimple φ openBranch hSaturated)
-
 /-!
 ## Semantic Countermodel
 
@@ -205,13 +195,6 @@ def isTimeOrderedBefore (ord : TimeOrdering) (t1 t2 : TimeIndex)
 termination_by fuel
 
 /--
-Check whether `t1` is strictly after `t2` in the temporal ordering.
--/
-def isTimeOrderedAfter (ord : TimeOrdering) (t1 t2 : TimeIndex)
-    (fuel : Nat := 50) : Bool :=
-  isTimeOrderedBefore ord t2 t1 fuel
-
-/--
 Collect all times in the model that are strictly after `t` (transitive closure).
 -/
 def futureTimes (ord : TimeOrdering) (t : TimeIndex)
@@ -224,15 +207,6 @@ Collect all times in the model that are strictly before `t` (transitive closure)
 def pastTimes (ord : TimeOrdering) (t : TimeIndex)
     (allTimes : List TimeIndex) : List TimeIndex :=
   allTimes.filter fun t' => isTimeOrderedBefore ord t' t
-
-/--
-Collect all times strictly between `t1` and `t2` (exclusive on both ends).
-A time `t` is between `t1` and `t2` if `t1 < t` and `t < t2`.
--/
-def timesBetween (ord : TimeOrdering) (t1 t2 : TimeIndex)
-    (allTimes : List TimeIndex) : List TimeIndex :=
-  allTimes.filter fun t =>
-    isTimeOrderedBefore ord t1 t && isTimeOrderedBefore ord t t2
 
 /-!
 ### Semantic Countermodel Extraction
@@ -925,34 +899,5 @@ def findCountermodel (φ : Formula) (fuel : Nat := 1000)
   | some (.allClosed _) => .valid
   | some (.hasOpen openBranch _ord _fc hSat) =>
       .found (extractCountermodelSimple φ openBranch hSat)
-
-/--
-Try to find a semantic countermodel for a formula.
-Returns both a `SimpleCountermodel` (for display) and a `SemanticCountermodel`
-(with the truth lemma guarantee that every signed formula in the saturated
-branch is semantically satisfied in the model).
--/
-def findSemanticCountermodel (φ : Formula) (fuel : Nat := 1000)
-    (fc : FrameClass := .Base) : SemanticCountermodelResult φ :=
-  match buildTableau φ fuel fc with
-  | none => .failed "Tableau construction timeout"
-  | some (.allClosed _) => .valid
-  | some (.hasOpen openBranch ord _fc hSat) =>
-      let simple := extractCountermodelSimple φ openBranch hSat
-      let semantic := extractSemanticCountermodel φ openBranch ord
-      .found simple semantic
-
-/--
-Extract both simple and semantic countermodels from an expanded tableau.
-Returns `none` if the formula is valid (all branches closed).
--/
-def extractCountermodelsFromTableau (φ : Formula) (tableau : ExpandedTableau)
-    : Option (SimpleCountermodel × SemanticCountermodel) :=
-  match tableau with
-  | .allClosed _ => none
-  | .hasOpen openBranch ord _fc hSaturated =>
-      let simple := extractCountermodelSimple φ openBranch hSaturated
-      let semantic := extractSemanticCountermodel φ openBranch ord
-      some (simple, semantic)
 
 end FormalSystem.Metalogic.Decidability
