@@ -371,12 +371,6 @@ def batchSearchWithLearning
     ([], patternDb)
   (results, finalDb)
 
-/--
-Get pattern learning statistics from a database.
--/
-def patternStats (db : PatternDatabase) : String :=
-  db.statistics
-
 /-!
 ## Proof Search Examples (Documentation)
 
