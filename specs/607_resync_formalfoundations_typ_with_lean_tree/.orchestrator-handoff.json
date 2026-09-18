@@ -1,20 +1,21 @@
 {
-  "status": "planned",
-  "task_number": 607,
-  "phase": "plan",
-  "session_id": "sess_1789728492_5b1bc4_607",
-  "dispatch_seq": 9,
-  "phases_completed": 0,
-  "phases_total": 6,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 10,
+  "summary": "Resynced typst/FormalFoundations.typ across all 6 plan phases: corrected the axiom-key and constructor-count errors, renamed the TM/TM^+/BL/BLplus vocabulary to the codebase's settled TM/TM- naming, added provenance remarks, and fixed 11 stale #leansrc citations found during the gate pass. All gates pass.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/plans/01_formalfoundations-resync-plan.md",
-      "summary": "6-phase resync plan for typst/FormalFoundations.typ (7h est.)."
+      "type": "summary",
+      "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/summaries/01_formalfoundations-resync-summary.md",
+      "summary": "Implementation summary for the FormalFoundations.typ resync."
+    },
+    {
+      "type": "working",
+      "path": "specs/607_resync_formalfoundations_typ_with_lean_tree/working/tm-site-inventory.tsv",
+      "summary": "98-row TM/BL site classification inventory driving the phases 3-5 renames."
     }
   ],
-  "next_action": "implement",
-  "notes": "TM/TM^+ naming decided per the repo's permanent Language correspondence: TM^+ -> TM, BL-level TM -> TM-minus; f/d/c subscripts left out of scope (not a pure relabel).",
-  "summary": "Created 6-phase, 7h plan to resync typst/FormalFoundations.typ (key renames, count-remark fix, TM/TM-minus naming alignment, gates).",
+  "phases_completed": 6,
+  "phases_total": 6,
   "blockers": []
 }
