@@ -12,8 +12,8 @@ import FormalSystem.Syntax.StarLanguage
 
 `TM⋆ ⊢⋆[fc] φ ⟹ StarValidIn fc φ`, for every `fc`, by the same companion recursion TM⁺ and TM
 soundness use (`Conservativity/Plus/PlusSoundness.lean`,
-`plus_derivable_valid_and_swap_validIn`): the recursion carries **both** `StarValidIn fc φ` and
-`StarValidIn fc φ.reflectTime`, so that the `time_reflection` case exchanges the two
+`plus_derivable_valid_and_reflect_time_validIn`): the recursion carries **both** `StarValidIn fc φ`
+and `StarValidIn fc φ.reflectTime`, so that the `time_reflection` case exchanges the two
 components. The `axiom` case feeds in the two dispatch lemmas of
 `Conservativity/Star/StarAxiomValidity.lean`; everything else is the clause structure of
 `StarTruthAt`.
@@ -30,12 +30,12 @@ formula just as they do at a register-free one.
 
 **No argument here uses uniform substitution**, and none is available: TM⁺ is already not
 substitution-closed (`PlusAxiom.atom_stab`), and TR is discharged semantically through
-`starAxiom_swap_validIn_min` rather than by mapping derivations to mirrored derivations, which
-would require an axiom set that is mirror-closed as a *set of instances*.
+`starAxiom_reflect_time_validIn_min` rather than by mapping derivations to mirrored derivations,
+which would require an axiom set that is mirror-closed as a *set of instances*.
 
 ## Main Results
 
-- `star_derivable_valid_and_swap_validIn` — the companion recursion
+- `star_derivable_valid_and_reflect_time_validIn` — the companion recursion
 - `star_soundness_validIn` — `StarDerivable fc [] φ → StarValidIn fc φ`
 - `star_soundness_valid` / `_dense` / `_ztime` / `_rtime` — the four rows
 - `star_not_derivable_nil_bot` — consistency of TM⋆ at `.Base`
@@ -66,33 +66,33 @@ open FormalSystem.Metalogic
 /-! ## The companion recursion -/
 
 /-- **The companion recursion.** A TM⋆ theorem at `fc` is `StarValidIn fc`, and so is its
-temporal dual. Mirror of `plus_derivable_valid_and_swap_validIn`, arm for arm; well-founded on
-the derivation's height because the `weakening` case re-targets to the empty context without a
+temporal dual. Mirror of `plus_derivable_valid_and_reflect_time_validIn`, arm for arm; well-founded
+on the derivation's height because the `weakening` case re-targets to the empty context without a
 structural descent. -/
-theorem star_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : StarFormula}
+theorem star_derivable_valid_and_reflect_time_validIn {fc : FrameClass} {φ : StarFormula}
     (d : StarDerivationTree fc [] φ) : StarValidIn fc φ ∧ StarValidIn fc φ.reflectTime := by
   match d with
   | .axiom _ _ h_ax h_fc =>
-    exact ⟨starAxiom_validIn h_ax h_fc, starAxiom_swap_validIn h_ax h_fc⟩
+    exact ⟨starAxiom_validIn h_ax h_fc, starAxiom_reflect_time_validIn h_ax h_fc⟩
   | .assumption _ _ h_mem =>
     exact absurd h_mem List.not_mem_nil
   | .modus_ponens _ psi' _ d1 d2 =>
-    have h1 := star_derivable_valid_and_swap_validIn d1
-    have h2 := star_derivable_valid_and_swap_validIn d2
+    have h1 := star_derivable_valid_and_reflect_time_validIn d1
+    have h2 := star_derivable_valid_and_reflect_time_validIn d2
     constructor
     · intro F hF M τ x v
       exact (h1.1 F hF M τ x v) (h2.1 F hF M τ x v)
     · intro F hF M τ x v
       exact (h1.2 F hF M τ x v) (h2.2 F hF M τ x v)
   | .necessitation psi' d' =>
-    have h := star_derivable_valid_and_swap_validIn d'
+    have h := star_derivable_valid_and_reflect_time_validIn d'
     constructor
     · intro F hF M τ x v σ
       exact h.1 F hF M σ x v
     · intro F hF M τ x v σ
       exact h.2 F hF M σ x v
   | .temporal_necessitation psi' d' =>
-    have h := star_derivable_valid_and_swap_validIn d'
+    have h := star_derivable_valid_and_reflect_time_validIn d'
     constructor
     · intro F hF M τ x v
       rw [StarTruth.allFuture_iff]
@@ -103,13 +103,13 @@ theorem star_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : StarFormul
       intro s _
       exact h.2 F hF M τ s v
   | .time_reflection psi' d' =>
-    have h := star_derivable_valid_and_swap_validIn d'
+    have h := star_derivable_valid_and_reflect_time_validIn d'
     refine ⟨h.2, ?_⟩
     rw [StarFormula.reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub =>
     have h_term := StarDerivationTree.height_ofWeakeningNil_lt d' h_sub
-    exact star_derivable_valid_and_swap_validIn (d'.ofWeakeningNil h_sub)
+    exact star_derivable_valid_and_reflect_time_validIn (d'.ofWeakeningNil h_sub)
 termination_by d.height
 decreasing_by
   all_goals first
@@ -124,7 +124,7 @@ Paper: — (formalization-native; the manuscript supplies no proof system for `\
 -/
 theorem star_soundness_validIn {fc : FrameClass} {φ : StarFormula}
     (h : StarDerivable fc [] φ) : StarValidIn fc φ :=
-  h.elim fun d => (star_derivable_valid_and_swap_validIn d).1
+  h.elim fun d => (star_derivable_valid_and_reflect_time_validIn d).1
 
 /-! ## The four rows -/
 

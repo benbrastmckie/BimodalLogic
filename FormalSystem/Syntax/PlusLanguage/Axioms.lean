@@ -77,7 +77,7 @@ valid over every task frame and is routed to `.Base`.
 
 `PlusAxiom` is a **closed** inductive. Exactly three declarations pattern-match on its
 constructors: `PlusAxiom.minFrameClass` below, and the two dispatch lemmas
-`plusAxiom_validIn_min` / `plusAxiom_swap_validIn_min`
+`plusAxiom_validIn_min` / `plusAxiom_reflect_time_validIn_min`
 (`Metalogic/Conservativity/Plus/AxiomValidity.lean`). Adding a constructor means one constructor
 line, one `minFrameClass` arm and one arm in each dispatch lemma; every other file recompiles
 unchanged.

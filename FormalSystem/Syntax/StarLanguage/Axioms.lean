@@ -159,7 +159,7 @@ site rather than 53 inline `rfl`s scattered across consumers.
 
 `StarAxiom` is a **closed** inductive. Exactly three declarations pattern-match on its
 constructors: `StarAxiom.minFrameClass` below, and the two dispatch lemmas
-`starAxiom_validIn_min` / `starAxiom_swap_validIn_min`
+`starAxiom_validIn_min` / `starAxiom_reflect_time_validIn_min`
 (`Metalogic/Conservativity/Star/StarAxiomValidity.lean`), neither of which carries a wildcard
 arm. Adding a constructor means one constructor line, one `minFrameClass` arm, one arm in each
 dispatch lemma, and one row in the swap-closure list above. The absence of a wildcard is a

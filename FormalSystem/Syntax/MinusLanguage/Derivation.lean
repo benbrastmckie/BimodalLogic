@@ -21,11 +21,11 @@ case per rule and no bookkeeping.
 3. `modus_ponens` — **MP**
 4. `necessitation` — **MN**, empty context only
 5. `temporal_necessitation` — `⊢ φ ⟹ ⊢ Gφ`, empty context only
-6. `time_reflection` — **TR**, empty context only, via **`swapMinus`**
+6. `time_reflection` — **TR**, empty context only, via **`reflectTime`**
 7. `weakening`
 
-**TR uses `swapMinus`, not `reflectTime`.** `reflectTime` acts on L's `untl`/`snce`; the L⁻
-side has no such constructors. The two are intertwined by `MinusLanguage.tr_swapMinus`.
+**TR uses `reflectTime`, not `reflectTime`.** `reflectTime` acts on L's `untl`/`snce`; the L⁻
+side has no such constructors. The two are intertwined by `MinusLanguage.tr_reflectTime`.
 
 ## Fidelity note: `temporal_necessitation` is not a strengthening
 
@@ -82,9 +82,9 @@ inductive DerivationTree (fc : FrameClass) : Context → MinusFormula → Type w
       fidelity note in the module docstring and `temporalNecessitationDerivable`. -/
   | temporal_necessitation (φ : MinusFormula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.allFuture
-  /-- **TR**: from `⊢ φ`, conclude `⊢ φ⟨P|F⟩`, i.e. `⊢ swapMinus φ`. Theorems only. -/
+  /-- **TR**: from `⊢ φ`, conclude `⊢ φ⟨P|F⟩`, i.e. `⊢ reflectTime φ`. Theorems only. -/
   | time_reflection (φ : MinusFormula)
-      (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.swapMinus
+      (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.reflectTime
   /-- Weakening: from `Γ ⊢ φ` and `Γ ⊆ Δ`, conclude `Δ ⊢ φ`. -/
   | weakening (Γ Δ : Context) (φ : MinusFormula)
       (d : DerivationTree fc Γ φ)

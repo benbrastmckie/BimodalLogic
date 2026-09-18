@@ -56,10 +56,10 @@ purity conditions their `PlusAxiom` mirrors already carry.
 (`refute_modal_future`, `Semantics/StarLanguage/StarNonValidities.lean`). MF is the only schema in the TM
 block whose soundness proof consumes time-shift homogeneity — audited, and recorded in the
 `Metalogic/Soundness.lean` module docstring's *The time-shift consumer set* section, which is the
-authority: one schema, two declarations (`modal_future_valid` and `mf_swap_valid`, the latter
-carrying TF, which is not a separate `Axiom` constructor) — and the L⋆ time-shift lemma shifts
-the stored-time vector with the history, which a `↓ⁱ` can observe. It is therefore carried alone
-under a `RecallFree` (`↓ⁱ`-free) side condition. That fragment is **strictly wider** than the
+authority: one schema, two declarations (`modal_future_valid` and `mf_reflect_time_valid`, the
+latter carrying TF, which is not a separate `Axiom` constructor) — and the L⋆ time-shift lemma
+shifts the stored-time vector with the history, which a `↓ⁱ` can observe. It is therefore carried
+alone under a `RecallFree` (`↓ⁱ`-free) side condition. That fragment is **strictly wider** than the
 embedded one: `□↑¹p → □G↑¹p` is an instance, and `↑¹p` is not an `ofPlus` image
 (`ofPlus_ne_timeStore`). The embedding survives as the derived function `StarAxiom.ofPlusAxiom`
 (`Embedding.lean`), which adds nothing to TM⋆.
@@ -95,7 +95,7 @@ of the permitted import edge:
 | `FormalSystem/Semantics/StarLanguage/StarValidity.lean` | `TaskFrame.StarValidOn`, `StarValidOnFrames`, `StarValidIn`, `StarValid`; `starValidOn_ofPlus`; `settledDisj`, `sentDet`, `sentDet_unfold`, `not_starValidOn_sentDet` |
 | `FormalSystem/Semantics/StarLanguage/StarDeterminism.lean` | `star_congr_of_deterministic`, `sentDet_of_deterministic`, `detPM`, `detPM_unfold`, `detPM_of_deterministic`, `deterministic_of_detPM`, `deterministic_starDefinable` |
 | `FormalSystem/Semantics/StarLanguage/StarNonValidities.lean` | `refute_sentDet`, `not_starValid_sentDet`; `mfWitness` and `refute_modal_future` (MF is not an L⋆ schema); `storeG_recall_valid` with `refute_erasure` (register erasure is not a conservativity translation) |
-| `FormalSystem/Metalogic/Conservativity/Star/` | TM⋆'s metatheory: `starAxiom_validIn_min`, `starAxiom_swap_validIn_min`, `star_soundness_validIn`, `starDerivable_ofFormula_iff`, `starConservative_of_plusComplete`, `plusIncomplete_of_starNonconservative` |
+| `FormalSystem/Metalogic/Conservativity/Star/` | TM⋆'s metatheory: `starAxiom_validIn_min`, `starAxiom_reflect_time_validIn_min`, `star_soundness_validIn`, `starDerivable_ofFormula_iff`, `starConservative_of_plusComplete`, `plusIncomplete_of_starNonconservative` |
 | `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | `StarFormula.StateLocal` (syntactic) and `IsStateLocal` (semantic); `isStateLocal_box`, `isStateLocal_stab`, `isStateLocal_of_stateLocal`; `not_isStateLocal_someFuture`, `not_isStateLocal_somePast`, `not_isStateLocal_timeRecall`; `stateLocal_stab_iff`, `stateLocal_starValid_iff_stab` |
 | `FormalSystem/Metalogic/Independence/StarDiscrimination.lean` | `driftLinear`, `fzero_refutes_sentDet`, `f1_sentDet`, `sentDet_discriminates`, `star_discriminates_where_plus_cannot` |
 | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | `fnRel`, `FN`, `fn_forwardDeterministic`, `fn_not_deterministic`, `states_eq_of_forwardDeterministic`, `fn_sentDet_stateLocal`, `fn_separates`, `fn_refutes_sentDet_somePast`, `fn_sentDet_bounds` |

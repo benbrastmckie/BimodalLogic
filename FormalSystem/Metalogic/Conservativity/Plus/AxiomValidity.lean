@@ -17,7 +17,7 @@ The two dispatch lemmas of TM⁺ soundness, one arm per `PlusAxiom` constructor 
 arm — so that a constructor added to `PlusAxiom` fails the build here until its arm is supplied:
 
 - `plusAxiom_validIn_min` — every schema is valid at its own `minFrameClass`;
-- `plusAxiom_swap_validIn_min` — every schema's temporal dual is valid at its own
+- `plusAxiom_reflect_time_validIn_min` — every schema's temporal dual is valid at its own
   `minFrameClass`.
 
 The second is what makes the `time_reflection` rule sound **semantically**
@@ -42,8 +42,8 @@ mirror argument is used, since the TM axiom set is not mirror-closed.
 
 ## References
 
-* `FormalSystem/Metalogic/Soundness.lean` — `axiom_validIn_min`, `axiom_swap_validIn_min`, the
-  L lemmas being transferred, and the dispatch shape being mirrored
+* `FormalSystem/Metalogic/Soundness.lean` — `axiom_validIn_min`, `axiom_reflect_time_validIn_min`,
+  the L lemmas being transferred, and the dispatch shape being mirrored
 -/
 
 namespace FormalSystem.Metalogic.Conservativity
@@ -173,7 +173,7 @@ theorem plusAxiom_validIn {φ : PlusFormula} {fc : FrameClass} (ax : PlusAxiom �
 
 /-- **Every TM⁺ schema's temporal dual is valid at its own minimum frame class.** One arm per
 constructor; the semantic input to the `time_reflection` case of soundness. -/
-theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
+theorem plusAxiom_reflect_time_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
     PlusValidIn ax.minFrameClass φ.reflectTime := by
   cases ax with
   | prop_k a0 a1 a2 =>
@@ -289,8 +289,8 @@ theorem plusAxiom_swap_validIn_min {φ : PlusFormula} (ax : PlusAxiom φ) :
     exact snce_paste_plusValid h0.reflectTime h1.reflectTime
 
 /-- Swap-validity of a TM⁺ schema at any class admitting it. -/
-theorem plusAxiom_swap_validIn {φ : PlusFormula} {fc : FrameClass} (ax : PlusAxiom φ)
+theorem plusAxiom_reflect_time_validIn {φ : PlusFormula} {fc : FrameClass} (ax : PlusAxiom φ)
     (h : ax.minFrameClass ≤ fc) : PlusValidIn fc φ.reflectTime :=
-  PlusValidIn.mono h (plusAxiom_swap_validIn_min ax)
+  PlusValidIn.mono h (plusAxiom_reflect_time_validIn_min ax)
 
 end FormalSystem.Metalogic.Conservativity

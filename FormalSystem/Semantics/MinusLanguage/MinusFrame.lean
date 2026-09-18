@@ -292,12 +292,12 @@ end MinusFrameTruth
 swapped formula.
 
 Six cases, each immediate: the atom and bot clauses do not mention the order, `imp` and `box` are
-congruences, and the two temporal clauses trade places exactly as `MinusFormula.swapMinus` does. This
+congruences, and the two temporal clauses trade places exactly as `MinusFormula.reflectTime` does. This
 one lemma is what makes the time-reflection rule sound on the native class, replacing the
 swap-strengthened simultaneous induction used in the task-frame soundness proof.
 -/
 theorem truth_swap (F : MinusFrame) (V : F.Point → Atom → Prop) (w : F.Point) (φ : MinusFormula) :
-    MinusFrameTruth F.swap V w φ ↔ MinusFrameTruth F V w φ.swapMinus := by
+    MinusFrameTruth F.swap V w φ ↔ MinusFrameTruth F V w φ.reflectTime := by
   induction φ generalizing w with
   | atom p => exact Iff.rfl
   | bot => exact Iff.rfl

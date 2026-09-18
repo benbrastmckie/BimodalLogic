@@ -11,7 +11,7 @@ import FormalSystem.Syntax.PlusLanguage
 # Soundness of TM⁺ at every frame class
 
 `TM⁺ ⊢[fc] φ ⟹ PlusValidIn fc φ`, for every `fc`, by the same companion recursion the L
-soundness theorem uses (`Metalogic/Soundness.lean`, `derivable_valid_and_swap_validIn`):
+soundness theorem uses (`Metalogic/Soundness.lean`, `derivable_valid_and_reflect_time_validIn`):
 the recursion carries **both** `PlusValidIn fc φ` and `PlusValidIn fc φ.reflectTime`, so that
 the `time_reflection` case simply exchanges the two components. The `axiom` case feeds in the
 two dispatch lemmas of `Conservativity/Plus/AxiomValidity.lean`; everything else is the clause
@@ -20,19 +20,19 @@ structure of `PlusTruthAt`.
 **TR is discharged semantically, never proof-theoretically.** Mapping derivations to mirrored
 derivations would require the axiom set to be mirror-closed, which TM's is not (BX lists the
 future halves and obtains the past halves by TR); the companion recursion needs only
-per-schema swap-validity, which `plusAxiom_swap_validIn_min` supplies for every constructor.
+per-schema swap-validity, which `plusAxiom_reflect_time_validIn_min` supplies for every constructor.
 
 ## Main Results
 
-- `plus_derivable_valid_and_swap_validIn` — the companion recursion
+- `plus_derivable_valid_and_reflect_time_validIn` — the companion recursion
 - `plus_soundness_validIn` — `PlusDerivable fc [] φ → PlusValidIn fc φ`
 - `plus_soundness_in` — the context form, by induction on the derivation
 - `plus_soundness_base/dense/discrete/dedekind`, `plus_soundness_valid` — the per-class rows
 
 ## References
 
-* `FormalSystem/Metalogic/Soundness.lean` — `derivable_valid_and_swap_validIn`, `soundness_in`,
-  the theorems mirrored arm for arm
+* `FormalSystem/Metalogic/Soundness.lean` — `derivable_valid_and_reflect_time_validIn`,
+  `soundness_in`, the theorems mirrored arm for arm
 
 ## Tags
 
@@ -49,33 +49,33 @@ open FormalSystem.Semantics
 open FormalSystem.Metalogic
 
 /-- **The companion recursion.** A TM⁺ theorem at `fc` is `PlusValidIn fc`, and so is its
-temporal dual. Mirror of `derivable_valid_and_swap_validIn`, arm for arm; well-founded on the
-derivation's height because the `weakening` case re-targets to the empty context without a
+temporal dual. Mirror of `derivable_valid_and_reflect_time_validIn`, arm for arm; well-founded on
+the derivation's height because the `weakening` case re-targets to the empty context without a
 structural descent. -/
-theorem plus_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : PlusFormula}
+theorem plus_derivable_valid_and_reflect_time_validIn {fc : FrameClass} {φ : PlusFormula}
     (d : PlusDerivationTree fc [] φ) : PlusValidIn fc φ ∧ PlusValidIn fc φ.reflectTime := by
   match d with
   | .axiom _ _ h_ax h_fc =>
-    exact ⟨plusAxiom_validIn h_ax h_fc, plusAxiom_swap_validIn h_ax h_fc⟩
+    exact ⟨plusAxiom_validIn h_ax h_fc, plusAxiom_reflect_time_validIn h_ax h_fc⟩
   | .assumption _ _ h_mem =>
     exact absurd h_mem List.not_mem_nil
   | .modus_ponens _ psi' _ d1 d2 =>
-    have h1 := plus_derivable_valid_and_swap_validIn d1
-    have h2 := plus_derivable_valid_and_swap_validIn d2
+    have h1 := plus_derivable_valid_and_reflect_time_validIn d1
+    have h2 := plus_derivable_valid_and_reflect_time_validIn d2
     constructor
     · intro F hF M τ t
       exact (h1.1 F hF M τ t) (h2.1 F hF M τ t)
     · intro F hF M τ t
       exact (h1.2 F hF M τ t) (h2.2 F hF M τ t)
   | .necessitation psi' d' =>
-    have h := plus_derivable_valid_and_swap_validIn d'
+    have h := plus_derivable_valid_and_reflect_time_validIn d'
     constructor
     · intro F hF M τ t σ
       exact h.1 F hF M σ t
     · intro F hF M τ t σ
       exact h.2 F hF M σ t
   | .temporal_necessitation psi' d' =>
-    have h := plus_derivable_valid_and_swap_validIn d'
+    have h := plus_derivable_valid_and_reflect_time_validIn d'
     constructor
     · intro F hF M τ t
       rw [PlusTruth.allFuture_iff]
@@ -86,13 +86,13 @@ theorem plus_derivable_valid_and_swap_validIn {fc : FrameClass} {φ : PlusFormul
       intro s _
       exact h.2 F hF M τ s
   | .time_reflection psi' d' =>
-    have h := plus_derivable_valid_and_swap_validIn d'
+    have h := plus_derivable_valid_and_reflect_time_validIn d'
     refine ⟨h.2, ?_⟩
     rw [reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub =>
     have h_term := PlusDerivationTree.height_ofWeakeningNil_lt d' h_sub
-    exact plus_derivable_valid_and_swap_validIn (d'.ofWeakeningNil h_sub)
+    exact plus_derivable_valid_and_reflect_time_validIn (d'.ofWeakeningNil h_sub)
 termination_by d.height
 decreasing_by
   all_goals first
@@ -107,7 +107,7 @@ Paper: — (formalization-native; L⁺ is the ⊡-only fragment of the paper's `
 -/
 theorem plus_soundness_validIn {fc : FrameClass} {φ : PlusFormula}
     (h : PlusDerivable fc [] φ) : PlusValidIn fc φ :=
-  h.elim fun d => (plus_derivable_valid_and_swap_validIn d).1
+  h.elim fun d => (plus_derivable_valid_and_reflect_time_validIn d).1
 
 /-- **Soundness of TM⁺ at `fc`**, context form: a derivation of `φ` from `Γ` makes `φ` true at
 every model over a frame satisfying `fc`, every world history and every time at which all of `Γ`
@@ -133,7 +133,7 @@ theorem plus_soundness_in {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula
     intro s _
     exact ih τ s (by simp)
   | time_reflection φ' d' _ih =>
-    exact (plus_derivable_valid_and_swap_validIn d').2 F hF M τ t
+    exact (plus_derivable_valid_and_reflect_time_validIn d').2 F hF M τ t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 

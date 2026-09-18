@@ -32,7 +32,7 @@ association is checked by elaboration against `MinusLanguage/Axioms.lean`'s own 
   via `DurationClassification.isLeast_pos_succ_zero`.
 - `dn_valid_of_denselyOrdered` — **Lemma C**: if `F.Duration` is densely ordered, DN is true
   everywhere.
-- `swapMinus_df_valid_of_predOrder` — **the past-dual of Lemma B**: `swapMinus (Axiom.df φ)` —
+- `reflectTime_df_valid_of_predOrder` — **the past-dual of Lemma B**: `reflectTime (Axiom.df φ)` —
   `(Gφ ∧ φ ∧ P⊤) → P(Gφ)` — is true everywhere under `[PredOrder F.Duration]`.
 
 ## References
@@ -143,7 +143,7 @@ private theorem isGreatest_neg_pred_zero {D : Type} [AddCommGroup D] [LinearOrde
   ⟨Order.pred_lt (0 : D), fun _ hy => Order.le_pred_of_lt hy⟩
 
 /--
-**The past-dual of Lemma B.** Under `[PredOrder F.Duration]`, `swapMinus (Axiom.df φ)` — which
+**The past-dual of Lemma B.** Under `[PredOrder F.Duration]`, `reflectTime (Axiom.df φ)` — which
 unfolds to `(Gφ ∧ φ ∧ P⊤) → P(Gφ)`, the `H`/`G` and `F`/`P` interchange of DF — is true at every
 model, history and time.
 
@@ -152,7 +152,7 @@ The `Order.pred` mirror of `df_valid_of_isLeast_pos`: witness `P(Gφ)` at `s := 
 `≤ d`, while `s < u` forces `d < u - t`, contradicting `d`'s maximality among negative elements),
 so `Gφ` (future of `t`) or `φ` itself (at `u = t`) supplies `φ(u)`.
 -/
-theorem swapMinus_df_valid_of_predOrder [PredOrder F.Duration] [Nontrivial F.Duration]
+theorem reflectTime_df_valid_of_predOrder [PredOrder F.Duration] [Nontrivial F.Duration]
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : MinusFormula) :
     MinusTruthAt M τ t
       (((φ.allFuture.and φ).and MinusFormula.top.somePast).imp φ.allFuture.somePast) := by

@@ -17,7 +17,7 @@ arm** — so that a constructor added to `StarAxiom` fails the build here until 
 supplied:
 
 - `starAxiom_validIn_min` — every schema is valid at its own `minFrameClass`;
-- `starAxiom_swap_validIn_min` — every schema's temporal dual is valid at its own
+- `starAxiom_reflect_time_validIn_min` — every schema's temporal dual is valid at its own
   `minFrameClass`.
 
 The second is what makes the `time_reflection` rule sound **semantically**
@@ -54,7 +54,7 @@ already not substitution-closed via `PlusAxiom.atom_stab`, and nothing here need
   arguments. Eleven schemata have **no** dual constructor (`discrete_propagate_fwd`/`_bwd`,
   `discrete_box_necessity`, `dense_indicator`, `density`, `z1`, `sep`, `modal_future`, `paste`,
   `untl_paste`), exactly as at the L level, where `SoundnessLemmas/FrameClassVariants.lean`
-  carries a `*_swap_valid` lemma for each; the corresponding `starValid_*_swap` lemmas below
+  carries a `*_reflect_time_valid` lemma for each; the corresponding `starValid_*_swap` lemmas below
   supply those duals. That is the swap-closure invariant of `StarLanguage/Axioms.lean`,
   discharged.
 
@@ -660,7 +660,7 @@ theorem starValid_P_since_equiv (φ : StarFormula) :
 
 The five uniformity schemata are **closed** formulas, hence literally `ofPlus` images: their
 validity and their swap-validity both transport along `starValidOnFrames_ofPlus` from
-`plusAxiom_validIn_min` / `plusAxiom_swap_validIn_min`, with no L⋆ argument at all.
+`plusAxiom_validIn_min` / `plusAxiom_reflect_time_validIn_min`, with no L⋆ argument at all.
 
 `density`, `z1`, `prior_UZ` and `prior_SZ` carry a metavariable and are proved directly. The
 order-theoretic content is **not** inlined: `prior_UZ`/`prior_SZ` consume
@@ -673,8 +673,8 @@ order-theoretic content is **not** inlined: `prior_UZ`/`prior_SZ` consume
 so the dual of `U(⊤,⊥) → G(U(⊤,⊥))` is `S(⊤,⊥) → H(S(⊤,⊥))`, which is no member's statement —
 and neither `density`, `dense_indicator` nor `z1` has a past twin among the schemata. This
 mirrors the L level exactly, where `SoundnessLemmas.FrameClassVariants` carries a dedicated
-`*_swap_valid` lemma for each. The named `*_swap` lemmas below are those duals; the closed ones
-transport, `density` and `z1` are direct. -/
+`*_reflect_time_valid` lemma for each. The named `*_swap` lemmas below are those duals; the closed
+ones transport, `density` and `z1` are direct. -/
 
 /-- `discrete_symm_fwd` over L⋆, by transport: the formula is closed. -/
 theorem starValid_discrete_symm_fwd :
@@ -692,11 +692,12 @@ theorem starValid_discrete_propagate_fwd :
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.discrete_propagate_fwd)
 
 /-- The temporal dual of `discrete_propagate_fwd`: `S(⊤,⊥) → H(S(⊤,⊥))`. Not an instance of any
-schema, so it is named here, mirroring `SoundnessLemmas.discrete_propagate_fwd_swap_valid`. -/
+schema, so it is named here, mirroring
+`SoundnessLemmas.discrete_propagate_fwd_reflect_time_valid`. -/
 theorem starValid_discrete_propagate_fwd_swap :
     StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allPast (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
-    (plusAxiom_swap_validIn_min PlusAxiom.discrete_propagate_fwd)
+    (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_propagate_fwd)
 
 /-- `discrete_propagate_bwd` over L⋆, by transport. -/
 theorem starValid_discrete_propagate_bwd :
@@ -707,7 +708,7 @@ theorem starValid_discrete_propagate_bwd :
 theorem starValid_discrete_propagate_bwd_swap :
     StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.allFuture (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
-    (plusAxiom_swap_validIn_min PlusAxiom.discrete_propagate_bwd)
+    (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_propagate_bwd)
 
 /-- `discrete_box_necessity` over L⋆, by transport. -/
 theorem starValid_discrete_box_necessity :
@@ -718,7 +719,7 @@ theorem starValid_discrete_box_necessity :
 theorem starValid_discrete_box_necessity_swap :
     StarValid ((StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).imp (StarFormula.box (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)))) :=
   (starValidOnFrames_ofPlus _ _).mpr
-    (plusAxiom_swap_validIn_min PlusAxiom.discrete_box_necessity)
+    (plusAxiom_reflect_time_validIn_min PlusAxiom.discrete_box_necessity)
 
 /-- Density over L⋆ at `.Dense`: `GGφ → Gφ`. -/
 theorem starValid_density (φ : StarFormula) :
@@ -731,7 +732,7 @@ theorem starValid_density (φ : StarFormula) :
 
 /-- The temporal dual of `starValid_density`: `HHφ → Hφ`, again at `.Dense`. There is no
 `density_past` schema, so this dual is named here rather than dispatched to a sibling
-constructor — mirroring `Metalogic/Soundness.lean`'s `density_swap_valid`. -/
+constructor — mirroring `Metalogic/Soundness.lean`'s `density_reflect_time_valid`. -/
 theorem starValid_density_swap (φ : StarFormula) :
     StarValidIn FrameClass.Dense ((φ.allPast.allPast).imp φ.allPast) := by
   refine fun F h_dense M τ t v => ?_
@@ -748,7 +749,7 @@ theorem starValid_dense_indicator :
 /-- The temporal dual of the dense indicator: `¬S(⊤,⊥)`, by transport. -/
 theorem starValid_dense_indicator_swap :
     StarValidIn FrameClass.Dense (StarFormula.snce StarFormula.bot (StarFormula.bot.imp StarFormula.bot)).neg :=
-  (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_swap_validIn_min PlusAxiom.dense_indicator)
+  (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_reflect_time_validIn_min PlusAxiom.dense_indicator)
 
 /-- Prior-UZ over L⋆ at `.ZTime`: the nearest `φ`-point above `t` witnesses `U(φ, ¬φ)`. -/
 theorem starValid_prior_UZ (φ : StarFormula) :
@@ -1015,7 +1016,7 @@ theorem starValid_sep (φ : StarFormula) :
 /-- **The temporal dual of Sep**, at `.RTime`. Sep has no past twin among the schemata, so the
 dual is named here; the order-theoretic core is `SoundnessLemmas.sep_order_mirror`, which is
 `sep_order` instantiated at `Dᵒᵈ`, so the nested-interval argument is written once. Mirrors
-`Metalogic/Soundness.lean`'s `sep_swap_valid`. -/
+`Metalogic/Soundness.lean`'s `sep_reflect_time_valid`. -/
 theorem starValid_sep_swap (φ : StarFormula) :
     StarValidIn FrameClass.RTime
       (((StarFormula.and (StarFormula.kPlus φ)
@@ -1227,7 +1228,7 @@ theorem starAxiom_validIn {φ : StarFormula} {fc : FrameClass} (ax : StarAxiom �
 constructor; the semantic input to the `time_reflection` case of soundness. Each register arm
 normalises `reflectTime` and lands on the matching validity lemma — the swap-closure invariant
 of `StarLanguage/Axioms.lean`, discharged constructor by constructor. -/
-theorem starAxiom_swap_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
+theorem starAxiom_reflect_time_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
     StarValidIn ax.minFrameClass φ.reflectTime := by
   cases ax with
   | prop_k φ ψ χ =>
@@ -1451,8 +1452,8 @@ theorem starAxiom_swap_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
     exact starValid_recall_export_until i φ.reflectTime ψ.reflectTime
 
 /-- Swap-validity of a TM⋆ schema at any class admitting it. -/
-theorem starAxiom_swap_validIn {φ : StarFormula} {fc : FrameClass} (ax : StarAxiom φ)
+theorem starAxiom_reflect_time_validIn {φ : StarFormula} {fc : FrameClass} (ax : StarAxiom φ)
     (h : ax.minFrameClass ≤ fc) : StarValidIn fc φ.reflectTime :=
-  StarValidIn.mono h (starAxiom_swap_validIn_min ax)
+  StarValidIn.mono h (starAxiom_reflect_time_validIn_min ax)
 
 end FormalSystem.Metalogic.Conservativity

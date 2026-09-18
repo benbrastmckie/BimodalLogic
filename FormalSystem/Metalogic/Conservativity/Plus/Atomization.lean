@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Soundness
 
 The TM schemata of TM⁺ (`PlusLanguage/Axioms.lean`) range over all of `PlusFormula`, so their
 instances may contain `⊡`. Rather than re-proving all 45 TM-shaped schemata over `PlusTruthAt`, this
-module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_swap_validIn_min`
+module transfers the landed L validity lemmas `axiom_validIn_min` / `axiom_reflect_time_validIn_min`
 (`Metalogic/Soundness.lean`) through **atomization**:
 
 1. `⊡χ` depends on the world state alone (`Semantics.stab_state_only`), so it behaves like a
@@ -46,7 +46,7 @@ inherited. `plusValidIn_of_tm` packages this, and `plusValidIn_swap_of_tm` its s
 
 ## References
 
-* `FormalSystem/Metalogic/Soundness.lean` — `axiom_validIn`, `axiom_swap_validIn`
+* `FormalSystem/Metalogic/Soundness.lean` — `axiom_validIn`, `axiom_reflect_time_validIn`
 * `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `stab_state_only`
 -/
 
@@ -212,7 +212,7 @@ theorem plusValidIn_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
 /--
 **TM schema swap-soundness over L⁺.** If the atomization of `φ` **under the conjugated
 encoding** is a TM axiom instance admissible at `fc`, then `φ.reflectTime` is
-`PlusValidIn fc`: `axiom_swap_validIn` on the atomized model, with `atomize_reflectTime`
+`PlusValidIn fc`: `axiom_reflect_time_validIn` on the atomized model, with `atomize_reflectTime`
 rewriting the target.
 -/
 theorem plusValidIn_swap_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormula)
@@ -222,7 +222,7 @@ theorem plusValidIn_swap_of_tm {fc : FrameClass} (e : Encoding) (φ : PlusFormul
     (plusTruthAt_iff_atomize M e φ.reflectTime τ t).mpr
       (by
         rw [atomize_reflectTime]
-        exact axiom_swap_validIn ax h F hF (M.atomModel e) τ t)
+        exact axiom_reflect_time_validIn ax h F hF (M.atomModel e) τ t)
 
 /--
 **TM theorem soundness over L⁺.** The derivation-taking form of `plusValidIn_of_tm`: if the
@@ -245,7 +245,7 @@ theorem plusValidIn_swap_of_tm_deriv {fc : FrameClass} (e : Encoding) (φ : Plus
     (plusTruthAt_iff_atomize M e φ.reflectTime τ t).mpr
       (by
         rw [atomize_reflectTime]
-        exact (derivable_valid_and_swap_validIn d).2 F hF (M.atomModel e) τ t)
+        exact (derivable_valid_and_reflect_time_validIn d).2 F hF (M.atomModel e) τ t)
 
 /-! ## Acceptance test
 

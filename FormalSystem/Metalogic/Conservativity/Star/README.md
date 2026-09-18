@@ -32,8 +32,8 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
 
 ## Key Results
 
-- `starAxiom_validIn_min` / `starAxiom_swap_validIn_min` — every schema and every temporal dual is
-  valid at its own minimum frame class, one named `starValid_*` lemma per constructor and no
+- `starAxiom_validIn_min` / `starAxiom_reflect_time_validIn_min` — every schema and every temporal
+  dual is valid at its own minimum frame class, one named `starValid_*` lemma per constructor and no
   wildcard arm. Every schematic arm is a **fresh direct proof against `StarTruthAt`** at
   arbitrary metavariables; only the closed (parameterless) schemata transport along
   `starValidOnFrames_ofPlus`. **No L⋆ atomization is used, and none can exist** (neither `↓ⁱχ`

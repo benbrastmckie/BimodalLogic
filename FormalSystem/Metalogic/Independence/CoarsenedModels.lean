@@ -402,7 +402,7 @@ theorem cValid_swap_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize
   fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
       rw [atomize_reflectTime]
-      exact axiom_swap_validIn ax h F trivial (K.atomModel e) τ t)
+      exact axiom_reflect_time_validIn ax h F trivial (K.atomModel e) τ t)
 
 /-- The derivation-taking form of `cValid_of_tm`, for base-class TM theorems (in particular the
 derived schemata of `FormalSystem.ProofSystem.DerivedAxioms`). -/
@@ -417,7 +417,7 @@ theorem cValid_swap_of_tm_deriv (e : Encoding) (φ : PlusFormula)
   fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
       rw [atomize_reflectTime]
-      exact (derivable_valid_and_swap_validIn d).2 F trivial (K.atomModel e) τ t)
+      exact (derivable_valid_and_reflect_time_validIn d).2 F trivial (K.atomModel e) τ t)
 
 /-! ## The six naive `⊡` schemata are coarsely valid
 
@@ -674,7 +674,7 @@ theorem naiveOnly_ofWeakeningNil {fc : FrameClass} {Γ' : PlusContext} {φ : Plu
 /--
 **The companion recursion for naive soundness.** A naive-only theorem of TM⁺ at `.Base` is
 coarsely valid, and so is its temporal dual. Mirror of
-`Conservativity.plus_derivable_valid_and_swap_validIn`, arm for arm; well-founded on the
+`Conservativity.plus_derivable_valid_and_reflect_time_validIn`, arm for arm; well-founded on the
 derivation's height for the same reason.
 -/
 theorem naive_cValid_and_swap {φ : PlusFormula} (d : PlusDerivationTree FrameClass.Base [] φ)

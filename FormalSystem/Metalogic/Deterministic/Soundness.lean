@@ -25,10 +25,11 @@ completeness over the *deterministic* frames is exactly what forces the two logi
 ## Method
 
 The same companion recursion TM and TM⁺ soundness use
-(`Metalogic/Conservativity/Plus/PlusSoundness.lean`, `plus_derivable_valid_and_swap_validIn`):
-carry both `PlusValidDeterminedIn fc φ` and `PlusValidDeterminedIn fc φ.reflectTime`, so the
-`time_reflection` case exchanges the two components. TR is discharged **semantically**, never by
-mapping derivations to mirrored derivations — the axiom set is not mirror-closed.
+(`Metalogic/Conservativity/Plus/PlusSoundness.lean`,
+`plus_derivable_valid_and_reflect_time_validIn`): carry both `PlusValidDeterminedIn fc φ` and
+`PlusValidDeterminedIn fc φ.reflectTime`, so the `time_reflection` case exchanges the two
+components. TR is discharged **semantically**, never by mapping derivations to mirrored derivations
+— the axiom set is not mirror-closed.
 
 The two axiom arms:
 
@@ -41,7 +42,7 @@ The two axiom arms:
 
 ## Main Results
 
-- `det_derivable_valid_and_swap_validDeterminedIn` — the companion recursion
+- `det_derivable_valid_and_reflect_time_validDeterminedIn` — the companion recursion
 - `detSoundness` — `DetDerivable fc [] φ → PlusValidDeterminedIn fc φ`
 - `detSoundnessDet` — its specialization to the deterministic frames
 - `detSoundnessIn` — the context form
@@ -82,10 +83,10 @@ theorem detAxiom_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax : De
 /-- The temporal dual of every extended-system axiom instance is likewise valid over the
 *Determined*-valid frames. The `determined` arm needs no separate argument: `reflectTime` fixes
 `⊡`, so the dual of `φ → ⊡φ` is `φ' → ⊡φ'` at `φ' = φ.reflectTime`. -/
-theorem detAxiom_swap_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax : DetAxiom φ)
-    (h : ax.minFrameClass ≤ fc) : PlusValidDeterminedIn fc φ.reflectTime := by
+theorem detAxiom_reflect_time_validDeterminedIn {φ : PlusFormula} {fc : FrameClass}
+    (ax : DetAxiom φ) (h : ax.minFrameClass ≤ fc) : PlusValidDeterminedIn fc φ.reflectTime := by
   cases ax with
-  | ofPlus hp => exact PlusValidIn.toDetermined (plusAxiom_swap_validIn hp h)
+  | ofPlus hp => exact PlusValidIn.toDetermined (plusAxiom_reflect_time_validIn hp h)
   | determined ψ =>
     refine PlusValidDeterminedIn.of_forall ?_
     intro F _ hDV M τ t
@@ -95,19 +96,19 @@ theorem detAxiom_swap_validDeterminedIn {φ : PlusFormula} {fc : FrameClass} (ax
 
 /-- **The companion recursion.** An extended-system theorem at `fc` is valid over the
 *Determined*-valid frames of `fc`, and so is its temporal dual. Mirror of
-`plus_derivable_valid_and_swap_validIn`, arm for arm; well-founded on the derivation's height
-because the `weakening` case re-targets to the empty context without a structural descent. -/
-theorem det_derivable_valid_and_swap_validDeterminedIn {fc : FrameClass} {φ : PlusFormula}
+`plus_derivable_valid_and_reflect_time_validIn`, arm for arm; well-founded on the derivation's
+height because the `weakening` case re-targets to the empty context without a structural descent. -/
+theorem det_derivable_valid_and_reflect_time_validDeterminedIn {fc : FrameClass} {φ : PlusFormula}
     (d : DetDerivationTree fc [] φ) :
     PlusValidDeterminedIn fc φ ∧ PlusValidDeterminedIn fc φ.reflectTime := by
   match d with
   | .axiom _ _ h_ax h_fc =>
-    exact ⟨detAxiom_validDeterminedIn h_ax h_fc, detAxiom_swap_validDeterminedIn h_ax h_fc⟩
+    exact ⟨detAxiom_validDeterminedIn h_ax h_fc, detAxiom_reflect_time_validDeterminedIn h_ax h_fc⟩
   | .assumption _ _ h_mem =>
     exact absurd h_mem List.not_mem_nil
   | .modus_ponens _ psi' _ d1 d2 =>
-    have h1 := det_derivable_valid_and_swap_validDeterminedIn d1
-    have h2 := det_derivable_valid_and_swap_validDeterminedIn d2
+    have h1 := det_derivable_valid_and_reflect_time_validDeterminedIn d1
+    have h2 := det_derivable_valid_and_reflect_time_validDeterminedIn d2
     constructor
     · refine PlusValidDeterminedIn.of_forall ?_
       intro F hF hDV M τ t
@@ -116,7 +117,7 @@ theorem det_derivable_valid_and_swap_validDeterminedIn {fc : FrameClass} {φ : P
       intro F hF hDV M τ t
       exact (h1.2.apply F hF hDV M τ t) (h2.2.apply F hF hDV M τ t)
   | .necessitation psi' d' =>
-    have h := det_derivable_valid_and_swap_validDeterminedIn d'
+    have h := det_derivable_valid_and_reflect_time_validDeterminedIn d'
     constructor
     · refine PlusValidDeterminedIn.of_forall ?_
       intro F hF hDV M τ t σ
@@ -125,7 +126,7 @@ theorem det_derivable_valid_and_swap_validDeterminedIn {fc : FrameClass} {φ : P
       intro F hF hDV M τ t σ
       exact h.2.apply F hF hDV M σ t
   | .temporal_necessitation psi' d' =>
-    have h := det_derivable_valid_and_swap_validDeterminedIn d'
+    have h := det_derivable_valid_and_reflect_time_validDeterminedIn d'
     constructor
     · refine PlusValidDeterminedIn.of_forall ?_
       intro F hF hDV M τ t
@@ -138,13 +139,13 @@ theorem det_derivable_valid_and_swap_validDeterminedIn {fc : FrameClass} {φ : P
       intro s _
       exact h.2.apply F hF hDV M τ s
   | .time_reflection psi' d' =>
-    have h := det_derivable_valid_and_swap_validDeterminedIn d'
+    have h := det_derivable_valid_and_reflect_time_validDeterminedIn d'
     refine ⟨h.2, ?_⟩
     rw [reflect_time_involution]
     exact h.1
   | .weakening Gamma' _ _ d' h_sub =>
     have h_term := DetDerivationTree.height_ofWeakeningNil_lt d' h_sub
-    exact det_derivable_valid_and_swap_validDeterminedIn (d'.ofWeakeningNil h_sub)
+    exact det_derivable_valid_and_reflect_time_validDeterminedIn (d'.ofWeakeningNil h_sub)
 termination_by d.height
 decreasing_by
   all_goals first
@@ -166,7 +167,7 @@ Paper: `app:deterministic`
 -/
 theorem detSoundness {fc : FrameClass} {φ : PlusFormula} (h : DetDerivable fc [] φ) :
     PlusValidDeterminedIn fc φ :=
-  h.elim fun d => (det_derivable_valid_and_swap_validDeterminedIn d).1
+  h.elim fun d => (det_derivable_valid_and_reflect_time_validDeterminedIn d).1
 
 /-- Soundness specialized to the deterministic frames, via the inclusion
 `deterministic_determinedValid`. This is the direction the completeness theorem pairs with. -/
@@ -196,7 +197,7 @@ theorem detSoundnessIn {fc : FrameClass} (Γ : PlusContext) (φ : PlusFormula)
     intro s _
     exact ih τ s (by simp)
   | time_reflection φ' d' _ih =>
-    exact ((det_derivable_valid_and_swap_validDeterminedIn d').2).apply F hF hDV M τ t
+    exact ((det_derivable_valid_and_reflect_time_validDeterminedIn d').2).apply F hF hDV M τ t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 

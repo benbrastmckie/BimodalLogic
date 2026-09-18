@@ -28,13 +28,13 @@ substance of the backward conservativity bridge in
 - `MinusFormula.neg`, `top`, `and`, `or`, `iff`: derived Boolean operators
 - `MinusFormula.somePast` (P), `MinusFormula.someFuture` (F): derived existential temporal operators
 - `MinusFormula.always` (△): `Hφ ∧ φ ∧ Gφ`, mirroring `Formula.always`
-- `MinusFormula.swapMinus`: the past/future interchange used by TM⁻'s **TR** rule
+- `MinusFormula.reflectTime`: the past/future interchange used by TM⁻'s **TR** rule
 
 ## Main Results
 
 - `DecidableEq MinusFormula`, `Repr MinusFormula`, `Countable MinusFormula`
-- `swapMinus_involution`: `swapMinus` is an involution
-- `swapMinus` push-through lemmas for every derived operator
+- `reflectTime_involution`: `reflectTime` is an involution
+- `reflectTime` push-through lemmas for every derived operator
 
 ## Polarity Warning
 
@@ -137,60 +137,61 @@ Interchange the two universal temporal operators `H` and `G` throughout a formul
 This is the L⁻-side analogue of `Formula.reflectTime` and is what TM⁻'s **TR** rule
 ("if `⊢ φ` then `⊢ φ⟨P|F⟩`") transforms by. Note that on the L side the corresponding
 operation swaps the *primitive* `untl`/`snce`; the commutation of the two is
-`MinusLanguage.tr_swapMinus`.
+`MinusLanguage.tr_reflectTime`.
 -/
-def swapMinus : MinusFormula → MinusFormula
+def reflectTime : MinusFormula → MinusFormula
   | atom a => atom a
   | bot => bot
-  | imp φ ψ => imp φ.swapMinus ψ.swapMinus
-  | box φ => box φ.swapMinus
-  | allPast φ => allFuture φ.swapMinus
-  | allFuture φ => allPast φ.swapMinus
+  | imp φ ψ => imp φ.reflectTime ψ.reflectTime
+  | box φ => box φ.reflectTime
+  | allPast φ => allFuture φ.reflectTime
+  | allFuture φ => allPast φ.reflectTime
 
-/-- `swapMinus` is an involution. -/
-theorem swapMinus_involution (φ : MinusFormula) : φ.swapMinus.swapMinus = φ := by
-  induction φ <;> simp_all [swapMinus]
+/-- `reflectTime` is an involution. -/
+theorem reflectTime_involution (φ : MinusFormula) : φ.reflectTime.reflectTime = φ := by
+  induction φ <;> simp_all [reflectTime]
 
-/-! ### `swapMinus` push-through lemmas for the derived operators
+/-! ### `reflectTime` push-through lemmas for the derived operators
 
 These are the L⁻-side counterparts of `Formula.reflect_time_neg`,
 `Formula.reflect_time_some_future`, and friends. They are `@[simp]` so that the TR case of
-the Phase 8 recursion and the axiom-discharge table can normalise a `swapMinus` of a derived
+the Phase 8 recursion and the axiom-discharge table can normalise a `reflectTime` of a derived
 operator without unfolding to primitives by hand. -/
 
-@[simp] theorem swapMinus_top : top.swapMinus = top := rfl
+@[simp] theorem reflectTime_top : top.reflectTime = top := rfl
 
-@[simp] theorem swapMinus_neg (φ : MinusFormula) : φ.neg.swapMinus = φ.swapMinus.neg := rfl
+@[simp] theorem reflectTime_neg (φ : MinusFormula) : φ.neg.reflectTime = φ.reflectTime.neg := rfl
 
-@[simp] theorem swapMinus_and (φ ψ : MinusFormula) :
-    (φ.and ψ).swapMinus = φ.swapMinus.and ψ.swapMinus := rfl
+@[simp] theorem reflectTime_and (φ ψ : MinusFormula) :
+    (φ.and ψ).reflectTime = φ.reflectTime.and ψ.reflectTime := rfl
 
-@[simp] theorem swapMinus_or (φ ψ : MinusFormula) :
-    (φ.or ψ).swapMinus = φ.swapMinus.or ψ.swapMinus := rfl
+@[simp] theorem reflectTime_or (φ ψ : MinusFormula) :
+    (φ.or ψ).reflectTime = φ.reflectTime.or ψ.reflectTime := rfl
 
-@[simp] theorem swapMinus_iff (φ ψ : MinusFormula) :
-    (φ.iff ψ).swapMinus = φ.swapMinus.iff ψ.swapMinus := rfl
+@[simp] theorem reflectTime_iff (φ ψ : MinusFormula) :
+    (φ.iff ψ).reflectTime = φ.reflectTime.iff ψ.reflectTime := rfl
 
-@[simp] theorem swapMinus_diamond (φ : MinusFormula) :
-    φ.diamond.swapMinus = φ.swapMinus.diamond := rfl
+@[simp] theorem reflectTime_diamond (φ : MinusFormula) :
+    φ.diamond.reflectTime = φ.reflectTime.diamond := rfl
 
-/-- `swapMinus` exchanges the existential past and future: `swap(Pφ) = F(swap φ)`. -/
-@[simp] theorem swapMinus_somePast (φ : MinusFormula) :
-    φ.somePast.swapMinus = φ.swapMinus.someFuture := rfl
+/-- `reflectTime` exchanges the existential past and future: `swap(Pφ) = F(swap φ)`. -/
+@[simp] theorem reflectTime_somePast (φ : MinusFormula) :
+    φ.somePast.reflectTime = φ.reflectTime.someFuture := rfl
 
-/-- `swapMinus` exchanges the existential future and past: `swap(Fφ) = P(swap φ)`. -/
-@[simp] theorem swapMinus_someFuture (φ : MinusFormula) :
-    φ.someFuture.swapMinus = φ.swapMinus.somePast := rfl
+/-- `reflectTime` exchanges the existential future and past: `swap(Fφ) = P(swap φ)`. -/
+@[simp] theorem reflectTime_someFuture (φ : MinusFormula) :
+    φ.someFuture.reflectTime = φ.reflectTime.somePast := rfl
 
-/-- `swapMinus` fixes `△` up to the swap of its argument: `swap(△φ) = △(swap φ)`.
+/-- `reflectTime` fixes `△` up to the swap of its argument: `swap(△φ) = △(swap φ)`.
 
 `always φ = Hφ ∧ (φ ∧ Gφ)`, and swapping turns that into `Gφ' ∧ (φ' ∧ Hφ')` with
 `φ' = swap φ` — the same three conjuncts in the *reverse* order, so this is **not** `rfl`.
 It is nonetheless true because `△` is symmetric in H and G once the conjunction is
 reassociated; the statement below is therefore about `always` up to that reordering and is
 proved by the explicit unfolding. -/
-theorem swapMinus_always (φ : MinusFormula) :
-    φ.always.swapMinus = φ.swapMinus.allFuture.and (φ.swapMinus.and φ.swapMinus.allPast) := rfl
+theorem reflectTime_always (φ : MinusFormula) :
+    φ.always.reflectTime =
+      φ.reflectTime.allFuture.and (φ.reflectTime.and φ.reflectTime.allPast) := rfl
 
 /-! ### Atom injectivity -/
 

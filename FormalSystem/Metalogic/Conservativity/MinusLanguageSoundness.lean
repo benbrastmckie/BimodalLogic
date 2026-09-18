@@ -413,35 +413,35 @@ two Archimedean instances being dropped here. It is proved instead by induction 
 `MinusLanguage.DerivationTree FrameClass.ZTime`, directly against `MinusTruthAt`.
 
 The only genuinely new semantic content is `Semantics.MinusLanguage.MinusSchemaValidity`'s DF lemma
-(`df_valid_of_succOrder`) and its `PredOrder` past-dual (`swapMinus_df_valid_of_predOrder`), needed
-respectively for the `df` axiom leaf and for the `time_reflection` case's swap component.
+(`df_valid_of_succOrder`) and its `PredOrder` past-dual (`reflectTime_df_valid_of_predOrder`),
+needed respectively for the `df` axiom leaf and for the `time_reflection` case's swap component.
 Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any
-semantic argument at all**: `minus_derivable_valid_and_swap_valid_zTimeSucc` re-derives each one
-(and its swap) proof-theoretically, by composing `minus_soundness_valid` with the `TR` rule itself
-(`⊢[Base] φ ⟹ ⊢[Base] φ.swapMinus`), never touching `MinusTruthAt` directly for those twelve. `dn`/`co`
-are eliminated structurally: `FrameClass.Dense` and `FrameClass.RTime` are each incomparable
-with `FrameClass.ZTime`, so their axiom leaves are unreachable under the `h_fc` side
+semantic argument at all**: `minus_derivable_valid_and_reflect_time_valid_zTimeSucc` re-derives each
+one (and its swap) proof-theoretically, by composing `minus_soundness_valid` with the `TR` rule
+itself (`⊢[Base] φ ⟹ ⊢[Base] φ.reflectTime`), never touching `MinusTruthAt` directly for those
+twelve. `dn`/`co` are eliminated structurally: `FrameClass.Dense` and `FrameClass.RTime` are each
+incomparable with `FrameClass.ZTime`, so their axiom leaves are unreachable under the `h_fc` side
 condition. -/
 
 /--
 Combined validity and swap-validity, on `[SuccOrder] [PredOrder]` frames (no Archimedean
 binders), for L⁻ theorems (empty-context derivations) at `FrameClass.ZTime`. The companion
 `minus_soundness_ztime_succ`'s `time_reflection` case needs exactly the swap half of this, as an
-external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_swap_validIn` (the
-L sibling this parallels), but over L⁻'s own 15-constructor `Axiom` rather than L's 29, and
+external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_reflect_time_validIn`
+(the L sibling this parallels), but over L⁻'s own 15-constructor `Axiom` rather than L's 29, and
 without the `FrameClass` parameter, since the binder-weakened `.ZTime` frames this is stated
 over are not a `FrameClass.Sat` variant.
 
 The `axiom` case's `by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base` split is the same
-device `Metalogic/Soundness.lean`'s `axiom_swap_validIn_min` uses: it separates the twelve
+device `Metalogic/Soundness.lean`'s `axiom_reflect_time_validIn_min` uses: it separates the twelve
 instance-free (`.Base`-classed)
 axioms — whose validity **and swap-validity** both come for free via `minus_soundness_valid`
 composed with the `TR` proof rule — from the three that are not, without enumerating the twelve
 constructors by name.
 -/
-private theorem minus_derivable_valid_and_swap_valid_zTimeSucc {φ : MinusFormula}
+private theorem minus_derivable_valid_and_reflect_time_valid_zTimeSucc {φ : MinusFormula}
     (d : MinusLanguage.DerivationTree FrameClass.ZTime [] φ) :
-    MinusValidZTimeSucc φ ∧ MinusValidZTimeSucc φ.swapMinus := by
+    MinusValidZTimeSucc φ ∧ MinusValidZTimeSucc φ.reflectTime := by
   match d with
   | .axiom _ _ h_ax h_fc =>
     by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base
@@ -452,30 +452,30 @@ private theorem minus_derivable_valid_and_swap_valid_zTimeSucc {φ : MinusFormul
     · cases h_ax with
       | df ψ =>
           exact ⟨fun F _ _ M τ t => df_valid_of_succOrder M τ t ψ,
-                 fun F _ _ M τ t => swapMinus_df_valid_of_predOrder M τ t ψ.swapMinus⟩
+                 fun F _ _ M τ t => reflectTime_df_valid_of_predOrder M τ t ψ.reflectTime⟩
       | dn _ => exact absurd h_fc (show ¬ (FrameClass.Dense ≤ FrameClass.ZTime) by decide)
       | co _ => exact absurd h_fc (show ¬ (FrameClass.RTime ≤ FrameClass.ZTime) by decide)
       | _ => exact absurd trivial hbase
   | .assumption _ _ h_mem => exact absurd h_mem (by simp)
   | .modus_ponens _ ψ' _ d1 d2 =>
-    obtain ⟨h1_valid, h1_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d1
-    obtain ⟨h2_valid, h2_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d2
+    obtain ⟨h1_valid, h1_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d1
+    obtain ⟨h2_valid, h2_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d2
     exact ⟨fun F _ _ M τ t => h1_valid F M τ t (h2_valid F M τ t),
            fun F _ _ M τ t => h1_swap F M τ t (h2_swap F M τ t)⟩
   | .necessitation _ d' =>
-    obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
+    obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d'
     exact ⟨fun F _ _ M _τ t σ => h_valid F M σ t,
            fun F _ _ M _τ t σ => h_swap F M σ t⟩
   | .temporal_necessitation _ d' =>
-    obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
+    obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d'
     exact ⟨fun F _ _ M τ t s _hs => h_valid F M τ s,
            fun F _ _ M τ t s _hs => h_swap F M τ s⟩
   | .time_reflection _ d' =>
-    obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_swap_valid_zTimeSucc d'
-    exact ⟨h_swap, by rw [MinusFormula.swapMinus_involution]; exact h_valid⟩
+    obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d'
+    exact ⟨h_swap, by rw [MinusFormula.reflectTime_involution]; exact h_valid⟩
   | .weakening Γ' _ _ d' h_sub =>
     have h_term := MinusLanguage.DerivationTree.height_ofWeakeningNil_lt d' h_sub
-    exact minus_derivable_valid_and_swap_valid_zTimeSucc (d'.ofWeakeningNil h_sub)
+    exact minus_derivable_valid_and_reflect_time_valid_zTimeSucc (d'.ofWeakeningNil h_sub)
 termination_by d.height
 decreasing_by
   all_goals first
@@ -490,7 +490,8 @@ on any `TaskFrame` carrying `[SuccOrder] [PredOrder]`, with **no** `IsSuccArchim
 
 By induction on `d`, directly against `MinusTruthAt` (see the module docstring above for why this
 cannot be a composition). The `axiom` case's `by_cases` split and the `time_reflection` case's
-call into `minus_derivable_valid_and_swap_valid_zTimeSucc` mirror that lemma's own proof exactly.
+call into `minus_derivable_valid_and_reflect_time_valid_zTimeSucc` mirror that lemma's own proof
+exactly.
 -/
 theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
@@ -519,7 +520,7 @@ theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormu
     intro s _hts
     exact ih τ s (by simp)
   | time_reflection φ' d' _ih =>
-    exact (minus_derivable_valid_and_swap_valid_zTimeSucc d').2 F M τ t
+    exact (minus_derivable_valid_and_reflect_time_valid_zTimeSucc d').2 F M τ t
   | weakening Γ' Δ' φ' d' h_sub ih =>
     exact ih τ t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 

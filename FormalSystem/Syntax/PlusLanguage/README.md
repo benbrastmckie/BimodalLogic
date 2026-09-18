@@ -66,16 +66,16 @@ is how L⁺ acquires its semantics.
 
 1. `PlusAxiom.minFrameClass` (`Axioms.lean`);
 2. `plusAxiom_validIn_min` (`FormalSystem/Metalogic/Conservativity/Plus/AxiomValidity.lean`);
-3. `plusAxiom_swap_validIn_min` (same file).
+3. `plusAxiom_reflect_time_validIn_min` (same file).
 
 Neither dispatch lemma has a wildcard arm. Adding a constructor therefore means one constructor
 line, one `minFrameClass` arm, and one arm in each dispatch lemma (a validity proof and a
 swap-validity proof, typically a `PlusValid` from `Semantics/`); every other module —
 `PlusDerivationTree`, `ofTM`, the soundness recursion, the conservativity theorems — refers to
 `PlusAxiom` only through `minFrameClass` and the two lifted forms `plusAxiom_validIn` /
-`plusAxiom_swap_validIn`, and recompiles unchanged. A schema valid only over a restricted frame
-class no `FrameClass` tag denotes (for instance *Determined* `φ → ⊡φ`, refuted at `.Base`) must
-**not** be added here; state its validity through `PlusValidOnFrames` over that predicate
+`plusAxiom_reflect_time_validIn`, and recompiles unchanged. A schema valid only over a restricted
+frame class no `FrameClass` tag denotes (for instance *Determined* `φ → ⊡φ`, refuted at `.Base`)
+must **not** be added here; state its validity through `PlusValidOnFrames` over that predicate
 instead.
 
 ## Related Documentation

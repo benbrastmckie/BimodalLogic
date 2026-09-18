@@ -1,7 +1,7 @@
 # Implementation Plan: Task #608
 
 - **Task**: 608 - Decide and rename the swapUS / swapMinus / *_swap_valid* families
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (the TD -> TR rename it extends is archived and landed)
 - **Research Inputs**: specs/608_decide_and_rename_swapus_swapminus_families/reports/01_swap-family-rename-decision.md
@@ -102,29 +102,29 @@ No ROADMAP.md consulted (no roadmap_path in this dispatch).
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Map file and atomic identifier rename [NOT STARTED]
+### Phase 1: Map file and atomic identifier rename [COMPLETED]
 
 **Goal**: Write the rename map, then apply both rename rows as whole-token substitutions across
 every affected file in one batch, so the build goes from green to green.
 
 **Tasks**:
-- [ ] Write `specs/608_decide_and_rename_swapus_swapminus_families/rename-map.tsv` exactly as
+- [x] Write `specs/608_decide_and_rename_swapus_swapminus_families/rename-map.tsv` exactly as
       recommended in report 01, with both rename rows and the full EXCLUSIONS block (`swapUS`,
       `truth_swap`, `MinusFrame.swap`, wire tags, adjacent families, Boneyard), each with its reason.
-- [ ] Snapshot the set of string literals in the affected files, using a grep of `"[^"]*"` into the
+- [x] Snapshot the set of string literals in the affected files, using a grep of `"[^"]*"` into the
       scratchpad, for the byte-stability check.
-- [ ] Write a small substitution script in the scratchpad. For each token matching
+- [x] Write a small substitution script in the scratchpad. For each token matching
       `[A-Za-z0-9_.']+` that contains a map substring, outside string literals, it replaces the
       substring and prints a per-file count. Run it over `git ls-files` results that match
       `swapMinus|_swap_valid`, excluding `specs/`, `FormalSystem/Boneyard/` and
       `docs/reference/paper-definitions-of-record.md`. The record is handled in Phase 3.
-- [ ] Residual grep: `git grep -nE "swapMinus|_swap_valid" -- FormalSystem Tests ':!FormalSystem/Boneyard'`
+- [x] Residual grep: `git grep -nE "swapMinus|_swap_valid" -- FormalSystem Tests ':!FormalSystem/Boneyard'`
       returns empty.
-- [ ] Collision/sanity check: `MinusFormula.reflectTime` has exactly one definition, and
+- [x] Collision/sanity check: `MinusFormula.reflectTime` has exactly one definition, and
       `tr_reflectTime` and `reflectTime_involution` (MinusFormula) resolve.
-- [ ] Re-diff the string-literal snapshot: no change.
-- [ ] Line-length check (>100 chars) over touched files, then rewrap any offenders.
-- [ ] `lake build`, the `lean_exe` roots, and BimodalTest (`lake test`) are all green. Commit with
+- [x] Re-diff the string-literal snapshot: no change.
+- [x] Line-length check (>100 chars) over touched files, then rewrap any offenders. *(deviation: altered — pre-existing long markdown table rows left as-is; only newly-long prose/code lines rewrapped)*
+- [x] `lake build`, the `lean_exe` roots, and BimodalTest (`lake test`) are all green. *(deviation: altered — BimodalTest verified by building the test library target, which is what `lake test` compiles)* Commit with
       an explicit file list.
 
 **Timing**: 1.5 hours

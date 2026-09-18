@@ -238,8 +238,8 @@ validity lemmas live in `SoundnessLemmas/`, so `Soundness.lean` assembles them
 rather than restating them.
 
 Time-shift homogeneity is consumed by one schema of the TM block — MF — across two declarations,
-`modal_future_valid` here and `mf_swap_valid` in `SoundnessLemmas/FrameClassVariants.lean`; the
-`Soundness.lean` module docstring's *The time-shift consumer set* section is the authority on
+`modal_future_valid` here and `mf_reflect_time_valid` in `SoundnessLemmas/FrameClassVariants.lean`;
+the `Soundness.lean` module docstring's *The time-shift consumer set* section is the authority on
 that enumeration and on what it costs a language extension.
 
 ### Completeness — `BXCanonical/Completeness.lean`

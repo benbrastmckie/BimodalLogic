@@ -21,7 +21,7 @@ withdrew its H/G fragment, so L⁻ and TM⁻ answer to no paper system. It exist
 
 ## Modules
 
-- `MinusLanguage.Formula` — `MinusFormula`, derived operators, `swapMinus`
+- `MinusLanguage.Formula` — `MinusFormula`, derived operators, `reflectTime`
 - `MinusLanguage.Axioms` — `MinusLanguage.Axiom` (TM⁻'s schemata plus DF/DN/CO) and its
   `minFrameClass`, routed through the *existing* `ProofSystem.FrameClass`
 - `MinusLanguage.Derivation` — `MinusLanguage.DerivationTree`, `Derivable`, `⊢⁻[fc]` notation

@@ -1,0 +1,10 @@
+# old_substring	new_substring	scope/notes
+swapMinus	reflectTime	all identifier tokens incl. compounds (MinusFormula.swapMinus, swapMinus_involution, swapMinus_{top,neg,and,or,iff,diamond,always,someFuture,somePast}, swapMinus_df_valid_of_predOrder, tr_swapMinus)
+_swap_valid	_reflect_time_valid	all *_swap_valid* soundness lemmas (validIn, validIn_min, validDeterminedIn, valid_general, valid_zTimeSucc variants)
+# EXCLUSIONS
+swapUS	(kept)	box-opaque U/S exchange, not reflectTime (Dual.lean docstring: opacity is required)
+truth_swap	(kept)	L⁻ analogue of lem:temporal-duality (paper keeps the name); names MinusFrame.swap
+MinusFrame.swap	(kept)	frame order reversal (paper's F⁻), not a formula operation
+"modal_swap"/"temporal_swap"/"derived_swap"	(kept)	contrastive mutation-family wire tags, unrelated concept
+swap_norm, *_swap_of_tm*, *cValid*swap, starValid_*_swap	(kept)	out of the decided set; possible follow-up
+FormalSystem/Boneyard/**	(kept)	archive (0 hits anyway)
