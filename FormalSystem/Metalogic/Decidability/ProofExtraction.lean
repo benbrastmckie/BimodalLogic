@@ -54,13 +54,6 @@ open FormalSystem.Theorems.Combinators
 -/
 
 /--
-Build a proof of bot -> phi (via ex_falso).
-This is used when we have a contradiction in the branch.
--/
-def proofFromBot (phi : Formula) : DerivationTree .Base [] (Formula.bot.imp phi) :=
-  DerivationTree.axiom [] _ (Axiom.ex_falso phi) trivial
-
-/--
 Build a proof of phi from an axiom witness.
 
 **Why `FrameClass.Base` is essential here**: the extraction pipeline emits `Base` derivation
@@ -338,20 +331,6 @@ def findProofCombined (phi : Formula) (searchDepth : Nat := 10)
 /-!
 ## Proof Verification
 -/
-
-/--
-Verify that a proof term is well-formed (type-checks).
-This is automatically enforced by Lean's type system, but we provide
-this function for documentation and potential runtime checks.
--/
-def verifyProof (_phi : Formula) (_proof : DerivationTree .Base [] _phi) : Bool :=
-  true  -- Type system ensures well-formedness
-
-/--
-Get the height of a proof (number of inference steps).
--/
-def proofHeight {phi : Formula} (proof : DerivationTree .Base [] phi) : Nat :=
-  proof.height
 
 /-!
 ## Statistics
