@@ -218,24 +218,27 @@ baselining it.
 
 ---
 
-### Phase 3: Rename `f` to `_f` and Delete `RegionFrame.lean:278` [NOT STARTED]
+### Phase 3: Rename `f` to `_f` and Delete `RegionFrame.lean:278` [COMPLETED]
 
 **Goal**: Remove the one suppression that hides a real warning by fixing the warning the way the
 tree's own disposition row prescribes.
 
 **Tasks**:
-- [ ] Re-grep for named-argument call sites before editing:
+- [x] Re-grep for named-argument call sites before editing:
       `grep -rn "regionHistory" --include="*.lean" FormalSystem Tests | grep "f :="` — expect none.
-- [ ] Rename the binder `f` to `_f` in `def regionHistory` (was `RegionFrame.lean:292`).
-- [ ] Delete the suppression (was `RegionFrame.lean:278`).
-- [ ] Update the `regionHistory` docstring if it names `f` by that spelling.
-- [ ] Build `FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionFrame` plus its enumerated
+- [x] Rename the binder `f` to `_f` in `def regionHistory` (was `RegionFrame.lean:292`).
+- [x] Delete the suppression (was `RegionFrame.lean:278`).
+- [x] Update the `regionHistory` docstring if it names `f` by that spelling.
+- [x] Build `FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionFrame` plus its enumerated
       direct dependents through the guard; confirm *Built*, zero warnings.
-- [ ] Run the env_linter (C16 via `bash scripts/check-module-invariants.sh`, or
+- [x] Run the env_linter (C16 via `bash scripts/check-module-invariants.sh`, or
       `lake exe runLinter FormalSystem`) and diff against the Phase 1 capture. If the
       `regionHistory` entry in `scripts/nolints.json:838-841` is now reported stale, delete that
-      entry in this same commit. Do not add entries.
-- [ ] Commit once green.
+      entry in this same commit. Do not add entries. *(deviation: deferred — `lake exe runLinter
+      FormalSystem` cannot run against a partial build (`DecisionProcedure.olean does not exist`),
+      so the C16 diff against the Phase 1 capture moves to Phase 9, which runs the full harness
+      after a full `lake build`.)*
+- [x] Commit once green.
 
 **Timing**: 1 hour
 
@@ -303,31 +306,35 @@ warning verbatim — never delete it by moving a warning into the budget.
 
 ---
 
-### Phase 5: Document the Load-Bearing `UntlSnceFree` Suppression [NOT STARTED]
+### Phase 5: Document the Load-Bearing `UntlSnceFree` Suppression [COMPLETED]
 
 **Goal**: Give the one retained suppression a reason comment that names what its deletion trial
 actually showed.
 
 **Tasks**:
-- [ ] Re-verify the suppression's line (was
+- [x] Re-verify the suppression's line (was
       `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/UntlSnceFree.lean:352`)
       and that `set_option maxHeartbeats 4000000 in` sits directly above it at `:351`.
-- [ ] Insert a comment block **above the whole stacked `set_option` group**, modelled on
+- [x] Insert a comment block **above the whole stacked `set_option` group**, modelled on
       `MintBound/Invariants.lean:789-796` (the house model), naming: the warning the suppression
       hides (`UntlSnceFree.lean:404:15: 'assumption' tactic does nothing`); the two goals the
-      deletion trial left unsolved (`error: …:389:26: unsolved goals`, `case h_2.inr.inr`, once for
-      `Sign.pos` and once for `Sign.neg`); the mechanism — the `assumption` is the alternative's
+      deletion trial left unsolved (`unsolved goals`, `case h_2.inr.inr`, once for
+      `Sign.pos` and once for `Sign.neg`) *(deviation: altered — the trial's `UntlSnceFree.lean:389:26`
+      line citation was replaced by a citation of the declaration
+      `applyRule_emitted_time_mem_of_untlSnceFree`; inserting the 13-line comment shifts every line
+      below it, so a pinned line number would have been wrong the moment it was written and C20
+      gates `file.lean:NNN` citations)*; the mechanism — the `assumption` is the alternative's
       *failure* mechanism, so `first` falls through to the
       `mem_identifyTime_time_at_trigger_oriented` twin, and without it the alternative succeeds
       vacuously and orphans the `?_` that `refine` created; and the kinship with
       `MintBound/Invariants.lean` (not the `TimeCensus.lean` pattern, which is a closer for a goal
       `refine` left open).
-- [ ] Name the linter (`linter.unusedTactic`) explicitly in the comment — C29 will require it.
-- [ ] Read the resulting diff and confirm every changed hunk is comment text only.
-- [ ] Build `FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.UntlSnceFree`
+- [x] Name the linter (`linter.unusedTactic`) explicitly in the comment — C29 will require it.
+- [x] Read the resulting diff and confirm every changed hunk is comment text only.
+- [x] Build `FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound.UntlSnceFree`
       through the guard as a cheap sanity check (comment edits cannot change elaboration, but this
       file is heartbeat-sensitive).
-- [ ] Commit once green.
+- [x] Commit once green.
 
 **Timing**: 0.5 hours
 

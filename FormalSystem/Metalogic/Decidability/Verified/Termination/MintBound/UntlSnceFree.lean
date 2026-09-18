@@ -348,6 +348,19 @@ theorem time_mem_of_emitted_nil {b : Branch} {r : RuleResult × TimeOrdering}
     (h : r.1.emitted = []) : ∀ g ∈ r.1.emitted, g.label.time ∈ b.knownTimes := by
   rw [h]; simp
 
+-- `linter.unusedTactic` fires on the `assumption` at the end of the
+-- `mem_identifyTime_time_at_trigger` alternative below and calls it dead. It is NOT dead: it is
+-- the alternative's *failure* mechanism. The `refine mem_identifyTime_time_at_trigger (ord := ord)
+-- ?_ hg` above it leaves a `?_` that only `assumption` can discharge; where nothing in context
+-- closes it, the `assumption` fails, the whole alternative fails, and `first` falls through to the
+-- `mem_identifyTime_time_at_trigger_oriented` twin that follows. Without it the alternative
+-- succeeds vacuously and orphans the goal `refine` created.
+-- Deleting it was tried: replacing that `assumption` with `skip` fails the build with `unsolved
+-- goals` reported at `applyRule_emitted_time_mem_of_untlSnceFree` below, twice over -- the same
+-- `case h_2.inr.inr`, once for `Sign.pos` and once for `Sign.neg`.
+-- This is the `MintBound/Invariants.lean` pattern (a tactic kept for its failure), not the
+-- `Termination/SubformulaProperty.lean` one (a `done` kept as a closer for a goal `refine` left
+-- open).
 set_option maxHeartbeats 4000000 in
 set_option linter.unusedTactic false in
 /-- **The time sweep on the `untl`/`snce`-free fragment, without `OrdTimesKnown`.**
