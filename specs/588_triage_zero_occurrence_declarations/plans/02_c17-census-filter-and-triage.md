@@ -769,22 +769,24 @@ that is the unit the phase gates on.
 
 ---
 
-### Phase 9: Deletion batch B -- `def` survivors under the remaining `Metalogic/` subtrees [NOT STARTED]
+### Phase 9: Deletion batch B -- `def` survivors under the remaining `Metalogic/` subtrees [COMPLETED]
 
 **Goal**: Same execution, for `WeakCanonical/`, `BXCanonical/`, `Independence/` and
 `Algebraic/`.
 
 **Tasks**:
-- [ ] Regenerate the census and take the current `def` survivor list under
-      `FormalSystem/Metalogic/{WeakCanonical,BXCanonical,Independence,Algebraic}/**`.
-- [ ] Run the same `check-module-invariants.sh` / `typst/chapters/*.typ` name diff and abort on
-      any hit.
-- [ ] Exclude any name whose only references are in `Boneyard/` -- those belong to the
-      retire-to-Boneyard disposition, not to this batch.
-- [ ] Delete file by file, committing each file's green state.
-- [ ] After each file: `lake build`. After the batch: `lake build`, `lake build BimodalTest`,
-      full harness.
-- [ ] Extend the per-line accounting record.
+- [x] Regenerate the census and take the current `def` survivor list under
+      `FormalSystem/Metalogic/{WeakCanonical,BXCanonical,Independence,Algebraic}/**`. *(completed --
+      26 rows across 16 files, regenerated before every file)*
+- [x] Run the same `check-module-invariants.sh` / `typst/chapters/*.typ` name diff and abort on
+      any hit. *(completed -- zero hits)*
+- [x] Exclude any name whose only references are in `Boneyard/` -- those belong to the
+      retire-to-Boneyard disposition, not to this batch. *(completed -- the `$7==0` predicate
+      excludes them by construction; no batch B row had archived consumers)*
+- [x] Delete file by file, committing each file's green state. *(completed -- 16 commits)*
+- [x] After each file: `lake build`. After the batch: `lake build`, `lake build BimodalTest`,
+      full harness. *(completed -- all green; harness exit 0, ALL CHECKS PASSED)*
+- [x] Extend the per-line accounting record. *(completed -- see Phase Notes)*
 
 **Timing**: 1.5 hours
 
@@ -807,9 +809,51 @@ Algebraic 1), the largest single files being
 - Same gate set as Phase 8, all green.
 - C17's headline drop matches the deletion count line for line.
 
+#### Phase Notes (measured at implementation time)
+
+Scope Hypothesis confirmed: **26** `def` survivors (WeakCanonical 14, BXCanonical 10,
+Independence 1, Algebraic 1), across 16 files, **203 lines** removed. Full harness **exit 0, ALL
+CHECKS PASSED**; C2/C14 baselines unmoved, C15 anchors intact, C21 and C25 green, C3 sorry
+inventory still zero.
+
+Per-line accounting, same shape as batch A:
+
+```
+  743   headline before the batch
+ - 26   deleted
+ +  5   newly flagged by cascade
+ -----
+  722   headline after the batch          (verified against C17's own printed number)
+```
+
+The five cascade rows are `atomKindToSfLiteral` (`def`), `PredicateAccessible` (`def`),
+`EFPosition` (`structure`), and `densePriorAtomMap_surj` / `densePrior_target_hypotheses_inhabited`
+(`theorem`). All five are in `Metalogic/WeakCanonical/`, i.e. this batch's own territory, so they
+are carried into the Phase 11 accounting rather than chased within the batch -- the plan runs each
+batch once, and the census is monotone under the process.
+
+**One genuine defect in my tooling, caught by the tooling.** The batch aborted at file 5 with
+`REFUSED: ...Construction.lean:362 is not `witnessReached``. The runner was passing only the
+*base identifier* (the last dot-segment, which is what the census keys on) while the deletion
+helper compares against the **full declared name** on the source line -- and
+`QuasimodelChain.witnessReached` is dotted. The helper refused rather than deleting something it
+could not positively identify, which is exactly the behaviour a deletion tool should have: it
+failed closed, on a name mismatch, before touching the file. The working tree was clean at the
+abort, so nothing had to be rolled back. The runner was corrected to pass the full name, the batch
+was resumed, and the already-committed files were skipped automatically by the
+regenerate-per-file logic. `VEF.toVBracketFormula`, later in the same batch, is the second dotted
+name and went through cleanly on the fix.
+
+**The self-repair added after batch A worked.** The runner regenerated the inventory blocks and
+committed them without intervention (`14 insertions, 14 deletions` across the two READMEs), and
+its structural pass caught the one remaining gate failure -- a C20 line citation in
+`NavigatedSpine.lean` pointing at `VecEAFormula.lean:282`, blank after the deletion -- *before*
+the expensive full harness rather than after it. Repaired the same way as batch A's: the prose
+already names `VVecEA2.disj`, so the brittle line number was dropped rather than renumbered.
+
 ---
 
-### Phase 10: Deletion batch C -- `def` survivors outside `Metalogic/` [NOT STARTED]
+### Phase 10: Deletion batch C -- `def` survivors outside `Metalogic/` [IN PROGRESS]
 
 **Goal**: Finish the `def` cluster: `Automation/`, `Syntax/`, `Semantics/`, `ProofSystem/`,
 `Theorems/`.
