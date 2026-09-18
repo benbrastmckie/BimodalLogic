@@ -512,16 +512,20 @@ constrains is the points of evaluation, not the propositions.
 
 #remark[
   *Naming provenance.* This section transcribes the paper's earlier presentation, in which the
-  three extensions were $"BX"_f slash "BX"_d slash "BX"_c$ over the separate language
-  $#BL$. The paper's 2026-09 revision collapsed $#BL$ into $#BLminus$, dropped the $+$
+  three extensions were $"BX"_f slash "BX"_d slash "BX"_c$ over the separate language written
+  $"BL"^+$. The paper's 2026-09 revision collapsed that $"BL"^+$ into bare "BL", dropped the $+$
   superscript from the TM family, and renamed the extensions $"BX"_z slash "BX"_d slash "BX"_r$
   under the anchors `def:BX-z`, `def:BX-d` and `def:BX-r` (see
   `docs/reference/paper-definitions-of-record.md`; the old anchors `def:TMplus-f`, `def:TMplus-d` and
-  `def:TMplus-c` are recorded there as `DANGLING`). The subscripts used throughout this section are therefore the
-  paper's old ones, read $f arrow.r z$ and $c arrow.r r$; the mathematics is unchanged. Two
-  presentational differences also follow from that revision and are *not* transcribed here: the
-  live definitions cite the Extensions section for their axioms rather than displaying them, and
-  $"BX"_r$ is presented as an extension of $"BX"_d$ rather than of BX.
+  `def:TMplus-c` are recorded there as `DANGLING`). This document's $#BL$ and $op("TM")$ macros
+  follow that same current convention, without the $+$ superscript, in line with `def:TMplus`. The
+  subscripts used throughout this section are nonetheless still the paper's *old* ones, read
+  $f arrow.r z$ and $c arrow.r r$; the mathematics is unchanged. The $c arrow.r r$ reading is not a
+  pure relabel: the paper's current $"BX"_r$ extends $"BX"_d$, while this section's $"BX"_c$
+  extends BX directly. Two further presentational differences also follow from the paper's
+  revision and are *not* transcribed here: the live definitions cite the Extensions section for
+  their axioms rather than displaying them, and $"BX"_r$ is presented as an extension of
+  $"BX"_d$ rather than of BX.
 ]
 
 #definition($"BX"_d$)[
@@ -595,8 +599,9 @@ class exactly $RR$.
   ]
   MP and MN are rules; MK, MT, M5, MF, TK, T4, TS, TC, and TL are axiom schemata; TR is a rule
   making the logic symmetric with respect to past and future at each time. TM⁻'s TL lists the same
-  three disjuncts as BX's TL above but in a different order; this is the paper's own presentation
-  and not a discrepancy to normalize.
+  three disjuncts as BX's TL above but in a different order; this is this document's own
+  historical presentation, carried over unchanged from before TM⁻ was distinguished from TM, and
+  not a discrepancy to normalize.
 ]
 
 TM⁻ is strengthened by constraining the temporal order $#Dur$ to be Discrete, Dense, or Complete
@@ -615,6 +620,17 @@ cannot be extended to include both DF and DN while remaining consistent.
 #definition("Derivability")[
   The *derivation relation* $tack.r$ for TM⁻ is the smallest relation closed under the axioms and
   rules for TM⁻ given above.
+]
+
+#remark[
+  *TM⁻ has no paper counterpart.* TM⁻, over the base language $#BLminus$ with $H$/$G$ primitive,
+  is this repository's own transposition of the paper's tense-and-modality logic to the
+  Past/Future fragment; the paper names no such system, because the H/G fragment was withdrawn
+  from the manuscript. Of TM⁻'s eleven schemata, TK and T4 are not paper keys at all, while TS, TC
+  and TL are shared with BX above (the same seriality, connectedness, and linearity axioms,
+  restated for TM⁻'s own derivation relation). See
+  `FormalSystem/Syntax/MinusLanguage/Axioms.lean` and `docs/reference/paper-definitions-of-record.md`
+  § "Language correspondence" for the full accounting.
 ]
 
 = Completeness and Decidability <sec:key-theorems>

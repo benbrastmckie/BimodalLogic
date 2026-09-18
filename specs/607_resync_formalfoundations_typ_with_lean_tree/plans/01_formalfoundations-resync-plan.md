@@ -331,29 +331,39 @@ it.
 
 ---
 
-### Phase 5: Provenance remarks and narrative consistency [NOT STARTED]
+### Phase 5: Provenance remarks and narrative consistency [COMPLETED]
 
 **Goal**: Make the document state its naming scheme explicitly and read consistently after the
 renames.
 
 **Tasks**:
-- [ ] Add a provenance remark right after the TM⁻ definition block. It should say that TM⁻ over
+- [x] Add a provenance remark right after the TM⁻ definition block. It should say that TM⁻ over
       L⁻ (H/G primitive) is this repository's own transposition, and that it has no paper
       counterpart because the H/G fragment was withdrawn. It should also say that its keys TK and
       T4 are not paper keys, while TS, TC and TL are shared with BX. Cite
       `FormalSystem/Syntax/MinusLanguage/Axioms.lean` and
       `docs/reference/paper-definitions-of-record.md` § "Language correspondence". Follow the
       memory's rule: paper anchors in comments must not be backticked. In remark prose, backtick
-      only spans that `typst-sync-check.sh` can resolve.
-- [ ] Update the existing "Naming provenance" remark. It should say that the TM family is now
+      only spans that `typst-sync-check.sh` can resolve. *(completed)*
+- [x] Update the existing "Naming provenance" remark. It should say that the TM family is now
       written without the `+` superscript, in line with `def:TMplus`, and that the `f/d/c`
       subscripts are still the paper's old ones. Keep the `f -> z`, `c -> r` reading note, and
-      add that `c -> r` is not a pure relabel (`BX_r` extends `BX_d`).
-- [ ] Update the file header comments (lines 1-20) and any `// ...` maintainer comments that name
-      TM/TM^+/BL/BL+.
-- [ ] Read through the section-opening paragraphs of §1-§5 and the abstract for sentences that the
+      add that `c -> r` is not a pure relabel (`BX_r` extends `BX_d`). *(completed; also rewrote
+      the remark's opening sentence, which used to render the paper's old symbol via the now
+      collapsed `#BLplus` macro -- there is no macro that can render a `+`-superscripted language
+      symbol post-rename, so the historical "BL^+" symbol is now written as literal math
+      `$"BL"^+$` instead of a macro call)*
+- [x] Update the file header comments (lines 1-20) and any `// ...` maintainer comments that name
+      TM/TM^+/BL/BL+. *(completed: no maintainer comment beyond the three already-correct title/
+      abstract-adjacent "TM" mentions needed a change; verified with a full-file comment-line grep)*
+- [x] Read through the section-opening paragraphs of §1-§5 and the abstract for sentences that the
       renames made inconsistent. An example is "Completeness itself is asymmetric: nothing
-      positive is known at the L⁻ level, ...".
+      positive is known at the L⁻ level, ...". *(completed: that exact sentence was already
+      correctly resolved by Phase 4's mechanical macro rename; also fixed a narrative
+      inconsistency found in §1's TM⁻ block -- "TM⁻'s TL ... this is the paper's own presentation"
+      no longer made sense once TM⁻ was established to have no paper counterpart, reworded to
+      "this document's own historical presentation, carried over unchanged from before TM⁻ was
+      distinguished from TM")*
 
 **Timing**: 1 hour
 
