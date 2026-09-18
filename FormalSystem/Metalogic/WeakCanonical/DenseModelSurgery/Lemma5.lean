@@ -202,7 +202,7 @@ def temporalToMonadic (atomMap : Formula → sig.preds) (A : Formula) : MonadicF
 
 /-! ## A one-free-variable formula at an arbitrary variable
 
-`rhoAt` (`Lemma34.lean:352`) is this operation specialized to `ρ`. `atVar` is the same
+`rhoAt` (`Lemma34.lean`) is this operation specialized to `ρ`. `atVar` is the same
 `MonadicFormula.rename` step for an arbitrary payload, which is what lets the auxiliary formulas
 below be parametric in what they assert of the witness point. `rhoAt` is left in place. -/
 

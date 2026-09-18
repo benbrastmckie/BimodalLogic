@@ -611,13 +611,16 @@ ENFORCE_C26=${ENFORCE_C26:-1} # no snake_case def/abbrev, no unlisted nolint att
 # suite, or add a reasoned entry.
 ENFORCE_C27=${ENFORCE_C27:-1} # live debug directives all allow-listed with exact counts (enforced)
 # C28 asserts that no file's compiler-warning count exceeds its scripts/warning-budget.txt
-# baseline. It ships REPORT-ONLY while the burn-down that introduced it is in progress, following
-# the pattern MODULE_INVARIANTS.md's "Adding a Check" documents for ENFORCE_C16_ROOTS and
-# C8/C9/C10: compute and print from the outset, gate the exit code behind the flag, flip the
-# default to 1 once the count reaches zero. NOTE: the scanner's exit-2 conditions -- an
-# untrustworthy measurement, or an observed linter class with no disposition row -- are NOT
-# suppressed by ENFORCE_C28=0 and fail the harness in every mode.
-ENFORCE_C28=${ENFORCE_C28:-0} # compiler-warning budget (report-only during burn-down)
+# baseline. It shipped report-only during the burn-down that introduced it and is now ENFORCED,
+# following the pattern MODULE_INVARIANTS.md's "Adding a Check" documents for ENFORCE_C16_ROOTS
+# and C8/C9/C10: compute and print from the outset, gate the exit code behind the flag, flip the
+# default to 1 once the count reaches its floor. The floor is 7, not 0: see the recorded reason
+# in scripts/warning-budget.txt for why DenseModelSurgery/'s residual section-variable warnings
+# need a `variable`-block refactor rather than another `omit`. NOTE: the scanner's exit-2
+# conditions -- an untrustworthy measurement, an observed linter class with no disposition row,
+# or a non-zero baseline entry carrying no reason -- are NOT suppressed by ENFORCE_C28=0 and
+# fail the harness in every mode.
+ENFORCE_C28=${ENFORCE_C28:-1} # compiler-warning budget (enforced)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module

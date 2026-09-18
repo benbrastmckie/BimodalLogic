@@ -26,6 +26,18 @@ jobs:
         with:
           build: true
           test: true
+          # NO --wfail here, deliberately. `--wfail` fails the build on ANY warning, and the
+          # tree's warning floor is 7, not 0: see the recorded reason in
+          # scripts/warning-budget.txt for the over-broad `variable` blocks in
+          # DenseModelSurgery/ that a per-declaration `omit` cannot remove. Adding --wfail today
+          # would make CI permanently red BY DESIGN -- exactly the property that rules out
+          # --iofail here (FormalSystem/MainResults.lean emits 54 deliberate `info:` messages as
+          # a documented invariant surface tied to C2/C14/C21) and that cslib's own CI records
+          # for its --wfail --iofail combination.
+          #
+          # The warning gate is C28 in the "Check module invariants" step below, which holds the
+          # line per file and per linter against a committed baseline and fails on anything NEW.
+          # Add --wfail here in the same change that takes the baseline to zero, not before.
           # The Batteries env_linter set (simpNF, docBlame, defsWithUnderscore,
           # structureInType, tacticDocs, unusedArguments) cannot be narrowed via lint-args --
           # runLinter's own CLI always runs every registered linter unconditionally, with no

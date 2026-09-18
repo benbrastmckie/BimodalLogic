@@ -45,7 +45,7 @@ with:
   test: true           # Run lake test
   lint: true           # Run lake lint
   use-mathlib-cache: true  # Download Mathlib cache
-  build-args: "--wfail"    # Treat warnings as failures
+  # (no build-args: --wfail -- see "Warning gate" below for why)
 ```
 
 ## CI Steps Explained
@@ -66,7 +66,26 @@ The build step compiles all Lean source files in the project:
 - Import resolution
 - Elaboration success
 
-**With `--wfail`**: Compiler warnings are treated as errors, ensuring clean code.
+**Warning gate.** Compiler warnings are gated by **C28** in the "Check module invariants" step,
+not by `--wfail` on this step. C28 measures the warning surface from Lake's own trace store and
+compares it per file and per linter against the committed baseline in
+`scripts/warning-budget.txt`; it fails on any new path/linter pair and on any count above its
+entry, and it is build-free so it runs under CI's `--no-build` invocation exactly as it does in a
+full local pass.
+
+`--wfail` is **not** set, and adding it today would break CI rather than protect it: `--wfail`
+fails on *any* warning, and the tree's floor is 7, not 0. Those seven are `linter.unusedSectionVars`
+warnings in `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/`, where
+`variable [Fintype sig.preds] [DecidableEq sig.preds]` is re-declared several times per file so
+its span exceeds the declarations that need it; a per-declaration `omit` was iterated to its floor
+and then only shuffled which instance was provably unused. The baseline records that reason
+against each entry. Add `--wfail` in the same change that takes the baseline to zero.
+
+`--iofail` is rejected permanently, not merely deferred: it is `--fail-level=info`, and
+`FormalSystem/MainResults.lean` emits 54 deliberate `info:` messages (25 `#check` plus 29
+`#print axioms`) as a documented invariant surface that C2, C14 and C21 all read. cslib's CI
+records its own `--wfail --iofail` combination as permanently red by design; that precedent is
+not copyable here.
 
 ### Test Step
 
@@ -250,6 +269,13 @@ cost. Three checks are consequently not run in CI at all:
 **Upgrade path**: drop `--no-build` from the `Check module invariants` step's command (a
 one-line edit) once the added ~2 minutes is judged worth the coverage.
 
+**C28 is deliberately not on that list.** The compiler-warning budget was built build-free for
+exactly this reason: it reads Lake's own `.lake/build/lib/lean/**/*.trace` store, which records
+each module's diagnostics and replays them on a cache hit, so it runs identically under
+`--no-build` and in a full pass. A C28 that shelled out to `lake` would have joined C2, C6 and
+C24 above — present in the script, absent from CI — which is the failure this design avoids
+rather than a property it happens to have.
+
 `readme-lint.sh`'s Check 4 (README date freshness) is also distorted in CI specifically: it
 calls `git log -1 -- "$dir"`, and under `actions/checkout@v4`'s default `fetch-depth: 1`, every
 directory resolves to the same single commit (the checkout commit itself), so CI's Check 4
@@ -316,7 +342,10 @@ The workflow outputs status variables for each step:
 | "unknown identifier" | Missing import | Add the required import |
 | "type mismatch" | Type error | Check types with `#check` |
 | "failed to synthesize" | Missing instance | Add instance or import |
-| Warning (with --wfail) | Unused variable, etc. | Address the warning |
+| `FAIL C28` above baseline | Unused variable, deprecated name, dead tactic | Fix it. For a dead
+tactic that is load-bearing, a declaration-scoped `set_option linter.X false in` with a
+comment recording why is an accepted resolution |
+| `FAIL C28` | A file's warning count exceeds its `scripts/warning-budget.txt` baseline | Fix the warning; the baseline is a ceiling and may only decrease |
 
 ### Test Failures
 
@@ -339,8 +368,11 @@ The workflow outputs status variables for each step:
 Before pushing, verify your changes locally:
 
 ```bash
-# Build the project
-lake build --wfail
+# Build the project (as CI does)
+lake build
+
+# Check the warning budget (C28's half of the invariants gate)
+python3 scripts/warning-budget.py
 
 # Run tests
 lake test

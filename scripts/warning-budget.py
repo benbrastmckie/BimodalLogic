@@ -209,10 +209,18 @@ def scan_build_log(text: str, root: str) -> Counter:
     return counts
 
 
-def parse_baseline(path: str) -> "tuple[dict, dict]":
-    """Returns (entries {(path, linter): count}, dispositions {linter: (value, reason)})."""
+def parse_baseline(path: str) -> "tuple[dict, dict, dict]":
+    """Returns (entries, dispositions, per-entry reasons).
+
+    A `#` comment line directly above an entry is that entry's reason, following the same
+    convention scripts/debug-artifact-allowlist.txt uses for C27. Every NON-ZERO entry must
+    carry one: a residual warning nobody explained is indistinguishable from one nobody noticed,
+    and absorbing warnings silently is the exact failure this ratchet exists to prevent.
+    """
     entries: dict = {}
     disp: dict = {}
+    reasons: dict = {}
+    prev_comment = None
     try:
         with open(path, encoding="utf-8") as fh:
             raw = fh.read()
@@ -229,16 +237,23 @@ def parse_baseline(path: str) -> "tuple[dict, dict]":
                 )
             disp[parts[0]] = (parts[1], parts[2] if len(parts) > 2 else "")
             continue
-        if not s or s.startswith("#"):
+        if not s:
+            prev_comment = None
+            continue
+        if s.startswith("#"):
+            prev_comment = s.lstrip("#").strip()
             continue
         parts = s.split()
         if len(parts) != 3 or not parts[0].isdigit():
             die(f"{path}:{n}: malformed entry `{s}` (want `<count> <path> <linter>`)")
         entries[(parts[1], parts[2])] = int(parts[0])
-    return entries, disp
+        if prev_comment:
+            reasons[(parts[1], parts[2])] = prev_comment
+        prev_comment = None
+    return entries, disp, reasons
 
 
-def render(counts: Counter, disp: dict) -> str:
+def render(counts: Counter, disp: dict, reasons: "dict | None" = None) -> str:
     out = [HEADER]
     for klass in sorted(disp):
         value, reason = disp[klass]
@@ -248,8 +263,14 @@ def render(counts: Counter, disp: dict) -> str:
     out.append("#")
     out.append(f"# Baseline total: {total} warning(s) across {files} file(s).")
     out.append("")
+    reasons = reasons or {}
     for (p, k), c in sorted(counts.items()):
+        r = reasons.get((p, k))
+        if r:
+            out.append(f"# {r}")
         out.append(f"{c} {p} {k}")
+        if r:
+            out.append("")
     return "\n".join(out) + "\n"
 
 
@@ -340,9 +361,9 @@ def main(argv: "list[str]") -> int:
     observed_classes = {k for _p, k in counts}
 
     if args.update:
-        _old_entries, disp = ({}, dict(SEED_DISPOSITIONS))
+        _old_entries, disp, reasons = ({}, dict(SEED_DISPOSITIONS), {})
         if os.path.exists(baseline_path):
-            _old_entries, disp = parse_baseline(baseline_path)
+            _old_entries, disp, reasons = parse_baseline(baseline_path)
             for k in observed_classes:
                 disp.setdefault(k, SEED_DISPOSITIONS.get(
                     k, ("pending", "NOT YET ANALYSED - no disposition recorded")))
@@ -350,7 +371,7 @@ def main(argv: "list[str]") -> int:
         if missing:
             die("observed linter class(es) with no disposition row: " + ", ".join(missing))
         with open(baseline_path, "w", encoding="utf-8") as fh:
-            fh.write(render(counts, disp))
+            fh.write(render(counts, disp, reasons))
         print(f"warning-budget: wrote {baseline_path} -- {total} warning(s) across "
               f"{len(files)} file(s)")
         return 0
@@ -358,7 +379,7 @@ def main(argv: "list[str]") -> int:
     # Default: verify.
     if not os.path.exists(baseline_path):
         die(f"{baseline_path} does not exist; run --update to create it")
-    entries, disp = parse_baseline(baseline_path)
+    entries, disp, reasons = parse_baseline(baseline_path)
 
     # Anti-silence guard 3: a non-zero recorded baseline against a zero observation means the
     # scan is measuring nothing (wrong tree, wiped cache, changed schema) -- not that the
@@ -396,6 +417,17 @@ def main(argv: "list[str]") -> int:
             + ", ".join(pending)
             + ". A pending class has not been read by anyone. Read it, decide blocking or "
             "advisory, and record the reason in its disposition row."
+        )
+
+    unexplained = sorted(k for k, v in entries.items() if v > 0 and not reasons.get(k))
+    if unexplained:
+        lines = "\n".join(f"    {p}  {k}  (baseline {entries[(p, k)]})" for p, k in unexplained)
+        die(
+            f"{len(unexplained)} non-zero baseline entr(y/ies) in {BASELINE_NAME} carry no "
+            f"reason:\n{lines}\n"
+            "Every warning this baseline tolerates must say WHY, on a `#` line directly above "
+            "it, the same way scripts/debug-artifact-allowlist.txt does for C27. A residual "
+            "warning nobody explained is indistinguishable from one nobody noticed."
         )
 
     failures = []

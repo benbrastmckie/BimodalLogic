@@ -19,71 +19,56 @@
 
 # disposition deprecated blocking forward-compat debt; becomes a build error at the next bump
 # disposition introMerge advisory style suggestion; fixed where it reads better, tolerated where not
-# disposition linter.defProp pending NOT YET ANALYSED - the test-library read sets this row
+# disposition linter.defProp blocking read at all 10 sites: every one is a Prop-valued test helper and no dependent unfolds any of them definitionally (each is only ever applied as a term), so def -> theorem changes no downstream proof; converted rather than tolerated
 # disposition linter.unreachableTactic blocking fix or document via declaration-scoped `set_option ... in`
 # disposition linter.unusedSectionVars blocking fix per declaration with the `omit [...] in` form Lean prints
 # disposition linter.unusedSimpArgs blocking dead simp argument; safe to delete (no `<-` caveat in tree)
 # disposition linter.unusedTactic blocking fix or document via declaration-scoped `set_option ... in`
 # disposition linter.unusedVariables blocking rename to a `_`-prefixed binder; do not delete (arity)
 #
-# Baseline total: 273 warning(s) across 47 file(s).
+# Baseline total: 7 warning(s) across 4 file(s).
 
-1 FormalSystem/Automation/DatasetGeneratorMain.lean deprecated
-1 FormalSystem/Metalogic/Algebraic/FlowFrame.lean linter.unusedSectionVars
-1 FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean linter.unusedSimpArgs
-1 FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean introMerge
-1 FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean linter.unusedSimpArgs
-2 FormalSystem/Metalogic/Decidability/BiLasso/Examples.lean linter.unusedSimpArgs
-1 FormalSystem/Metalogic/Decidability/CancellableExpansion.lean linter.unusedVariables
-4 FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean linter.unusedSimpArgs
-1 FormalSystem/Metalogic/Decidability/FMP/FMP.lean introMerge
-1 FormalSystem/Metalogic/Decidability/Saturation.lean linter.unusedVariables
-9 FormalSystem/Metalogic/Decidability/Tableau.lean linter.unusedSimpArgs
-5 FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean linter.unusedSectionVars
-4 FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean linter.unusedSectionVars
-8 FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean linter.unusedVariables
-1 FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean linter.unusedVariables
-3 FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean linter.unusedSectionVars
-4 FormalSystem/Metalogic/Decidability/Verified/Decidable.lean linter.unusedSectionVars
-1 FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean linter.unreachableTactic
-1 FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean linter.unusedTactic
-3 FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean linter.unreachableTactic
-8 FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean linter.unusedSimpArgs
-4 FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/MintPotential.lean linter.unusedTactic
-1 FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/OrientedGate.lean linter.unusedVariables
-2 FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean linter.unusedSimpArgs
-1 FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/TimeCensus.lean linter.unusedTactic
-5 FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean linter.unreachableTactic
-54 FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean linter.unusedSimpArgs
-19 FormalSystem/Metalogic/Decidability/Verified/Termination/SubformulaProperty.lean linter.unusedTactic
-2 FormalSystem/Metalogic/Soundness.lean introMerge
-8 FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean introMerge
-1 FormalSystem/Metalogic/SoundnessLemmas/Separability.lean linter.unusedSimpArgs
-14 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean linter.unusedSectionVars
-5 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean linter.unusedSectionVars
-2 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean linter.unusedSimpArgs
-4 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean linter.unusedSectionVars
-6 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean linter.unusedSectionVars
-4 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean linter.unusedVariables
-3 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Singletons.lean linter.unusedSectionVars
-3 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean linter.unusedSectionVars
-9 FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean linter.unusedSectionVars
-5 FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean linter.unusedVariables
-1 FormalSystem/Metalogic/WeakCanonical/RealModel/ShuffleReal.lean linter.unusedSectionVars
-1 FormalSystem/Semantics/Correspondence/FwdRecBridge.lean introMerge
-3 FormalSystem/Semantics/LexCarrier.lean linter.unusedSectionVars
-1 FormalSystem/Semantics/PartialHistoryOrder.lean linter.unusedVariables
-20 FormalSystem/Semantics/TaskFrame.lean linter.unusedSectionVars
-1 Tests/BimodalTest/Automation/DatasetGeneratorTest.lean linter.unusedVariables
-2 Tests/BimodalTest/Automation/ProofSearchTest.lean linter.unusedVariables
-6 Tests/BimodalTest/Automation/TacticsTest.lean linter.unusedVariables
-3 Tests/BimodalTest/Integration/ComplexDerivationTest.lean linter.unusedSimpArgs
-3 Tests/BimodalTest/Integration/Helpers.lean linter.defProp
-1 Tests/BimodalTest/Integration/Helpers.lean linter.unusedVariables
-5 Tests/BimodalTest/ProofSystem/DerivationPropertyTest.lean linter.defProp
-2 Tests/BimodalTest/ProofSystem/DerivationPropertyTest.lean linter.unusedVariables
-2 Tests/BimodalTest/ProofSystem/DerivationTest.lean linter.unusedVariables
-2 Tests/BimodalTest/Semantics/SemanticPropertyTest.lean linter.defProp
-1 Tests/BimodalTest/Syntax/ContextTest.lean introMerge
-4 Tests/BimodalTest/Theorems/PropositionalTest.lean deprecated
-2 Tests/BimodalTest/TraceExportTest.lean deprecated
+# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
+# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
+# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
+# reintroduces the instances for the REST of its section, so the block's span exceeds the
+# declarations that actually need it. Per-declaration `omit` was iterated to its floor
+# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
+# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
+# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
+# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
+# on any count above the entry below, so this cannot grow silently.
+3 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/BadIntervals.lean linter.unusedSectionVars
+# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
+# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
+# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
+# reintroduces the instances for the REST of its section, so the block's span exceeds the
+# declarations that actually need it. Per-declaration `omit` was iterated to its floor
+# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
+# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
+# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
+# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
+# on any count above the entry below, so this cannot grow silently.
+1 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean linter.unusedSectionVars
+# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
+# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
+# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
+# reintroduces the instances for the REST of its section, so the block's span exceeds the
+# declarations that actually need it. Per-declaration `omit` was iterated to its floor
+# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
+# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
+# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
+# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
+# on any count above the entry below, so this cannot grow silently.
+1 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean linter.unusedSectionVars
+# DELIBERATE RESIDUAL. Cause established, not guessed: DenseModelSurgery/ re-declares
+# `variable [Fintype sig.preds] [DecidableEq sig.preds]` several times per file (7x in
+# BadIntervals, 5x NoGaps, 4x Lemma5, 3x TruthTransfer), and each re-declaration
+# reintroduces the instances for the REST of its section, so the block's span exceeds the
+# declarations that actually need it. Per-declaration `omit` was iterated to its floor
+# (348 -> 47 -> 10 -> 8 -> 7) and then only shuffled which instance is provably-unused --
+# NoGaps went UP on one wave, TruthTransfer resurfaced on the next. The fix is to narrow
+# the `variable` blocks, a structural refactor of a proof-heavy directory that the task
+# which introduced this gate did not own. C28 still fails on any NEW path/linter pair and
+# on any count above the entry below, so this cannot grow silently.
+2 FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/TruthTransfer.lean linter.unusedSectionVars
