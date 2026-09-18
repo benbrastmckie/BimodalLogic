@@ -11,8 +11,8 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,597,604,605,610,614,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,606,616,617 | 298,464,502,559,563,568,597,605,619 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,597,604,610,614,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,606,616,617 | 298,464,502,559,563,568,597,619 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,608,618 | 231,465,497,540,564,565,606,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,600 | 428,498,499,500,608 | algebraic-representation, decidability, frame-extensions, ... |
 | 5 | 410,501,607 | 125,429,600 | algebraic-representation, decidability, documentation |
@@ -105,8 +105,7 @@ next_project_number: 621
 
 ### Paper Refactor
 
-605 [IMPLEMENTING] — Reconcile the Burgess/Xu axiom provenance and add the paper's...
-  └─ 606 [NOT STARTED] — Revise the primitive axiom system in...
+606 [NOT STARTED] — Revise the primitive axiom system in...
 
 ### Codebase Cleanup
 
@@ -322,7 +321,7 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 ---
 
 ### 605. Reconcile burgess a7a provenance and add axiom source footnote
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 588

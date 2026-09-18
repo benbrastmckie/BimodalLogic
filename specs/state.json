@@ -138,12 +138,12 @@
     {
       "project_number": 605,
       "project_name": "reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Reconcile the Burgess/Xu axiom provenance and add the paper's axiom-source footnote to FormalSystem/ProofSystem/Axioms.lean. The paper's footnote says CN is Burgess's A7a, but an existing note in Axioms.lean says A7a was removed as unsound; determine which claim is correct against Burgess and Xu, then copy the reconciled provenance into the axiom docstrings and docs/reference/paper-definitions-of-record.md. Follow-up recorded by the paper-vocabulary reconciliation (task 584).",
       "topic": "paper-refactor",
       "created": "2026-09-17T10:00:13Z",
-      "last_updated": "2026-09-18T07:50:55Z",
+      "last_updated": "2026-09-18T08:38:17Z",
       "dependencies": [
         588
       ],
@@ -162,10 +162,11 @@
         {
           "path": "specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/summaries/01_burgess-a7a-provenance-summary.md",
           "type": "summary",
-          "summary": "Implementation summary, with the Phase 4 gate pending."
+          "summary": "Implementation summary for the Burgess A7a provenance reconciliation; all gates pass."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Corrected the linear_until A7a NOTE (CN is Burgess 1982 A7a and is sound), tagged the axiom docstrings with Burgess/Xu sources, disambiguated Burgess 1984 A7a in the Chronicle files, and recorded the reconciliation and paper errata in the reference docs. The full lake build and module-invariants check pass."
     },
     {
       "project_number": 604,
