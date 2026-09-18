@@ -1,7 +1,7 @@
 # Implementation Plan: Task #621
 
 - **Task**: 621 - Adopt uniform reflect naming for time reversal
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/621_adopt_uniform_reflect_naming_for_time_reversal/reports/01_uniform-reflect-naming.md
@@ -105,19 +105,19 @@ Phases within the same wave can execute in parallel. Phases 3 and 4 touch disjoi
 Phase 3 covers `*.lean` comments and docstrings only, and Phase 4 covers `*.md`/`*.typ` and the
 test-comment files listed there.
 
-### Phase 1: Paper-definitions record update [NOT STARTED]
+### Phase 1: Paper-definitions record update [COMPLETED]
 
 **Goal**: Withdraw the carve-out, record the paper's label rename, and register
 `lem:time-reflection` as a known anchor, so that later citations keep C15 green.
 
 **Tasks**:
-- [ ] In `docs/reference/paper-definitions-of-record.md`, replace the "**The semantic lemma keeps its name.**" bullet (around l.108-110). The new note should say that the paper renamed `lem:temporal-duality` to `lem:time-reflection`, so the carve-out is withdrawn.
-- [ ] Flip the `swapUS` (kept) bullet (around l.128-131) and the `truth_swap` (kept) bullet (around l.132-135) to "renamed". Also record `MinusFrame.swap` → `MinusFrame.reflect`.
-- [ ] Replace the "Adjacent `swap`-named identifiers ... possible follow-up" paragraph (around l.138-141) with the full table-B old→new map and the section-C keep-list, including the rationale for keeping each wire tag
-- [ ] Add a "(since renamed `lem:time-reflection`)" parenthetical to the historical `lem:temporal-duality` note (around l.338), matching the `thm:TD-valid` style
-- [ ] Add a dated section: "Label rename absorption (2026-09-18): `lem:temporal-duality` → `lem:time-reflection`, prose only, no re-pin (case b)". Mention the lemma's added claims (that `F⁻` is a task frame, and that `τ ↦ τ⁻` is a bijection).
-- [ ] Add a KNOWN-ANCHORS row `lem:time-reflection|LIVE-UNPINNED|...`. Add a `lem:temporal-duality|DANGLING|...` row only if a tree site outside the record keeps the old label. By default none does, so omit it.
-- [ ] Record the deferred `mirror`/`dual`/`AntiIso` follow-up in one line
+- [x] In `docs/reference/paper-definitions-of-record.md`, replace the "**The semantic lemma keeps its name.**" bullet (around l.108-110). The new note should say that the paper renamed `lem:temporal-duality` to `lem:time-reflection`, so the carve-out is withdrawn.
+- [x] Flip the `swapUS` (kept) bullet (around l.128-131) and the `truth_swap` (kept) bullet (around l.132-135) to "renamed". Also record `MinusFrame.swap` → `MinusFrame.reflect`.
+- [x] Replace the "Adjacent `swap`-named identifiers ... possible follow-up" paragraph (around l.138-141) with the full table-B old→new map and the section-C keep-list, including the rationale for keeping each wire tag
+- [x] Add a "(since renamed `lem:time-reflection`)" parenthetical to the historical `lem:temporal-duality` note (around l.338), matching the `thm:TD-valid` style
+- [x] Add a dated section: "Label rename absorption (2026-09-18): `lem:temporal-duality` → `lem:time-reflection`, prose only, no re-pin (case b)". Mention the lemma's added claims (that `F⁻` is a task frame, and that `τ ↦ τ⁻` is a bijection).
+- [x] Add a KNOWN-ANCHORS row `lem:time-reflection|LIVE-UNPINNED|...`. Add a `lem:temporal-duality|DANGLING|...` row only if a tree site outside the record keeps the old label. By default none does, so omit it.
+- [x] Record the deferred `mirror`/`dual`/`AntiIso` follow-up in one line
 
 **Timing**: 0.75 hours
 
@@ -135,25 +135,25 @@ test-comment files listed there.
 
 ---
 
-### Phase 2: Identifier renames (atomic batch) [NOT STARTED]
+### Phase 2: Identifier renames (atomic batch) [COMPLETED]
 
 **Goal**: Rename every table-B identifier family across `FormalSystem/`. Statements do not
 change, and the build is green at the end of the batch.
 
 **Tasks**:
-- [ ] Take a durable pre-batch checkpoint with `bash .claude/scripts/git-snapshot.sh 621 --no-revert` (not the reverting default)
-- [ ] `swap_norm` → `reflect_time_norm`: change `Automation/TruthNormAttr.lean:57` and every user in the same step: `Syntax/Formula.lean` (section header around l.706-715), `Metalogic/Soundness.lean`, `Metalogic/SoundnessLemmas/FrameClassVariants.lean` (13 uses), and the prose mention in `Semantics/TruthTransport.lean`
-- [ ] `Encoding.swap` → `Encoding.reflectTime`. The def is at `Metalogic/Conservativity/Plus/Atomization.lean:83`. Change the `e.swap`/`theEncoding.swap` uses, scoped to `Atomization.lean`, `Plus/AxiomValidity.lean` and `Independence/CoarsenedModels.lean`.
-- [ ] `plusValidIn_swap_of_tm{,_deriv}` → `plusValidIn_reflect_time_of_tm{,_deriv}` in `Atomization.lean`, `Plus/AxiomValidity.lean`, `Conservativity/Plus.lean` and `Metalogic/Soundness.lean` (prose)
-- [ ] `cValid_swap_of_tm{,_deriv}`, `naiveAxiom_cValid_swap` and `naive_cValid_and_swap` → the `reflect_time` forms, in `Independence/CoarsenedModels.lean`
-- [ ] Rename the 10 `starValid_*_swap` names to `starValid_*_reflect_time` in `Conservativity/Star/StarAxiomValidity.lean`, and update the prose in `Syntax/StarLanguage/Axioms.lean`
-- [ ] `swapUS`/`swapUS_involutive` → `reflectTimeBoxOpaque`/`reflectTimeBoxOpaque_involutive` in `DenseModelSurgery/{Dual,Lemma5,TruthTransfer,NoGaps}.lean`. The docstring should say that box subformulas are treated as atoms.
-- [ ] `MinusFrame.swap` → `MinusFrame.reflect` and `truth_swap` → `truth_reflectTime`. Edit `Semantics/MinusLanguage/MinusFrame.lean` and `Conservativity/SpCountermodel.lean` (`F.swap` and the use around l.204). Update the prose mentions in `Semantics.lean` and `Conservativity.lean`. The new `MinusFrame.reflect` docstring should say that it is the paper's `F⁻` and that it is distinct from `TaskFrame.reflect`.
-- [ ] `swap_next_all_future_eq` → `reflect_time_next_all_future_eq` in `Theorems/DiscreteUnfolding.lean`
-- [ ] Optional: rename local hypothesis names (`h_swap`, `tf_swap`, ...) only where this clears a whole file of time-reversal `swap`s. Otherwise leave them, since they are not API.
-- [ ] Run `lake build` (guarded/detached) and fix any residual breakage
-- [ ] Run the regression grep: `grep -rnwE 'swapUS|swapUS_involutive|truth_swap|swap_norm|MinusFrame\.swap|Encoding\.swap|plusValidIn_swap_of_tm[a-z_]*|cValid_swap_of_tm[a-z_]*|naiveAxiom_cValid_swap|naive_cValid_and_swap|starValid_[a-z0-9_]+_swap|swap_next_all_future_eq' FormalSystem Tests --exclude-dir=Boneyard`. It must return nothing.
-- [ ] Check byte stability: `git diff` shows no change to any line in `Automation/ContrastiveGeneratorMain.lean` or any other string literal that carries a wire tag
+- [x] Take a durable pre-batch checkpoint with `bash .claude/scripts/git-snapshot.sh 621 --no-revert` (not the reverting default)
+- [x] `swap_norm` → `reflect_time_norm`: change `Automation/TruthNormAttr.lean:57` and every user in the same step: `Syntax/Formula.lean` (section header around l.706-715), `Metalogic/Soundness.lean`, `Metalogic/SoundnessLemmas/FrameClassVariants.lean` (13 uses), and the prose mention in `Semantics/TruthTransport.lean`
+- [x] `Encoding.swap` → `Encoding.reflectTime`. The def is at `Metalogic/Conservativity/Plus/Atomization.lean:83`. Change the `e.swap`/`theEncoding.swap` uses, scoped to `Atomization.lean`, `Plus/AxiomValidity.lean` and `Independence/CoarsenedModels.lean`.
+- [x] `plusValidIn_swap_of_tm{,_deriv}` → `plusValidIn_reflect_time_of_tm{,_deriv}` in `Atomization.lean`, `Plus/AxiomValidity.lean`, `Conservativity/Plus.lean` and `Metalogic/Soundness.lean` (prose)
+- [x] `cValid_swap_of_tm{,_deriv}`, `naiveAxiom_cValid_swap` and `naive_cValid_and_swap` → the `reflect_time` forms, in `Independence/CoarsenedModels.lean`
+- [x] Rename the 10 `starValid_*_swap` names to `starValid_*_reflect_time` in `Conservativity/Star/StarAxiomValidity.lean`, and update the prose in `Syntax/StarLanguage/Axioms.lean`
+- [x] `swapUS`/`swapUS_involutive` → `reflectTimeBoxOpaque`/`reflectTimeBoxOpaque_involutive` in `DenseModelSurgery/{Dual,Lemma5,TruthTransfer,NoGaps}.lean`. The docstring should say that box subformulas are treated as atoms.
+- [x] `MinusFrame.swap` → `MinusFrame.reflect` and `truth_swap` → `truth_reflectTime`. Edit `Semantics/MinusLanguage/MinusFrame.lean` and `Conservativity/SpCountermodel.lean` (`F.swap` and the use around l.204). Update the prose mentions in `Semantics.lean` and `Conservativity.lean`. The new `MinusFrame.reflect` docstring should say that it is the paper's `F⁻` and that it is distinct from `TaskFrame.reflect`.
+- [x] `swap_next_all_future_eq` → `reflect_time_next_all_future_eq` in `Theorems/DiscreteUnfolding.lean`
+- [x] Optional: rename local hypothesis names (`h_swap`, `tf_swap`, ...) only where this clears a whole file of time-reversal `swap`s. Otherwise leave them, since they are not API.
+- [x] Run `lake build` (guarded/detached) and fix any residual breakage
+- [x] Run the regression grep: `grep -rnwE 'swapUS|swapUS_involutive|truth_swap|swap_norm|MinusFrame\.swap|Encoding\.swap|plusValidIn_swap_of_tm[a-z_]*|cValid_swap_of_tm[a-z_]*|naiveAxiom_cValid_swap|naive_cValid_and_swap|starValid_[a-z0-9_]+_swap|swap_next_all_future_eq' FormalSystem Tests --exclude-dir=Boneyard`. It must return nothing.
+- [x] Check byte stability: `git diff` shows no change to any line in `Automation/ContrastiveGeneratorMain.lean` or any other string literal that carries a wire tag
 
 **Timing**: 1.5 hours
 
@@ -176,26 +176,26 @@ change, and the build is green at the end of the batch.
 
 ---
 
-### Phase 3: Lean prose sweep [NOT STARTED]
+### Phase 3: Lean prose sweep [COMPLETED]
 
 **Goal**: Reword the Lean docstrings and comments where "swap" or "temporal duality" names time
 reflection. Leave exchange-sense uses alone.
 
 **Tasks**:
-- [ ] `Semantics/MinusLanguage/MinusFrame.lean`:
+- [x] `Semantics/MinusLanguage/MinusFrame.lean`:
   - Reword l.65-70.
   - Delete the justification at l.92-94 ("`swap` in its name is the frame operation").
   - At l.168 and l.292-299, cite `lem:time-reflection`. The KNOWN-ANCHORS row from Phase 1 is required for this.
   - Change "swap-strengthened" to "reflection-strengthened".
   - In "`no_max`/`no_min` swap roles", change "swap" to "exchange".
-- [ ] `Metalogic/SoundnessLemmas/FrameClassVariants.lean` (the densest file):
+- [x] `Metalogic/SoundnessLemmas/FrameClassVariants.lean` (the densest file):
   - "swap-validity" becomes "reflection-validity".
   - "swapped axioms" becomes "reflected axioms".
   - "temporal-duality soundness" becomes "time-reflection soundness".
   - The `swap φ` notation in comments becomes `φ.reflectTime`.
-- [ ] Apply the same test to the remaining files in the inventory: `Syntax/Formula.lean`, `Metalogic/Soundness.lean` (l.71, l.202), `Syntax/MinusLanguage/Formula.lean:179-190`, `Syntax/StarLanguage/{Formula,Axioms}.lean`, `Conservativity/Plus/{Atomization,AxiomValidity,PlusSoundness}.lean`, `Conservativity/{Plus,Star}.lean`, `Conservativity/Star/{StarAxiomValidity,StarPasting}.lean`, `Conservativity/MinusLanguageSoundness.lean:417-438`, `Conservativity/SpCountermodel.lean:187`, `Deterministic/Soundness.lean:36-40`, `Semantics/Truth.lean:131`, `SoundnessLemmas.lean:25`, `Bundle/WitnessSeed.lean:168`, `Algebraic/LindenbaumQuotient.lean:336`, `Core/MCSProperties.lean:291-295`, `Theorems/Perpetuity.lean:54-55`, `Perpetuity/{Principles,Helpers}.lean`, `GeneralizedNecessitation.lean:116-124`, `ProofSystem/Derivation.lean:149`, `Syntax/PlusLanguage/Substitution.lean:40,124`, `Automation/FormulaEnumerator.lean:991`
-- [ ] Leave the exchange-sense files on the research keep-list untouched (Propositional/{Core,Connectives}, MixedSum, TemporalGate, Kamp/EFGames/MintBound, BXCanonical, and the others listed)
-- [ ] Test comment blocks: `Tests/BimodalTest/Syntax/FormulaPropertyTest.lean:20-117`, `Integration/ProofSystemSemanticsTest.lean:25,265`, `ProofSystem/DerivationTest.lean:166-172`, `Automation/TacticsTest.lean:374`. Do not touch the `"Temporal duality"` benchmark label in `DerivationBenchmark.lean`.
+- [x] Apply the same test to the remaining files in the inventory: `Syntax/Formula.lean`, `Metalogic/Soundness.lean` (l.71, l.202), `Syntax/MinusLanguage/Formula.lean:179-190`, `Syntax/StarLanguage/{Formula,Axioms}.lean`, `Conservativity/Plus/{Atomization,AxiomValidity,PlusSoundness}.lean`, `Conservativity/{Plus,Star}.lean`, `Conservativity/Star/{StarAxiomValidity,StarPasting}.lean`, `Conservativity/MinusLanguageSoundness.lean:417-438`, `Conservativity/SpCountermodel.lean:187`, `Deterministic/Soundness.lean:36-40`, `Semantics/Truth.lean:131`, `SoundnessLemmas.lean:25`, `Bundle/WitnessSeed.lean:168`, `Algebraic/LindenbaumQuotient.lean:336`, `Core/MCSProperties.lean:291-295`, `Theorems/Perpetuity.lean:54-55`, `Perpetuity/{Principles,Helpers}.lean`, `GeneralizedNecessitation.lean:116-124`, `ProofSystem/Derivation.lean:149`, `Syntax/PlusLanguage/Substitution.lean:40,124`, `Automation/FormulaEnumerator.lean:991`
+- [x] Leave the exchange-sense files on the research keep-list untouched (Propositional/{Core,Connectives}, MixedSum, TemporalGate, Kamp/EFGames/MintBound, BXCanonical, and the others listed)
+- [x] Test comment blocks: `Tests/BimodalTest/Syntax/FormulaPropertyTest.lean:20-117`, `Integration/ProofSystemSemanticsTest.lean:25,265`, `ProofSystem/DerivationTest.lean:166-172`, `Automation/TacticsTest.lean:374`. Do not touch the `"Temporal duality"` benchmark label in `DerivationBenchmark.lean`.
 
 **Timing**: 1 hour
 
@@ -216,30 +216,30 @@ reflection. Leave exchange-sense uses alone.
 
 ---
 
-### Phase 4: READMEs, docs, typst, and style-guide rule [NOT STARTED]
+### Phase 4: READMEs, docs, typst, and style-guide rule [COMPLETED]
 
 **Goal**: Bring the non-Lean prose in line with the new names and the principle, and make the
 naming rule durable in the style guide.
 
 **Tasks**:
-- [ ] READMEs:
+- [x] READMEs:
   - `FormalSystem/ProofSystem/README.md:72`: change `⊢ swap(φ)` to `⊢ φ.reflectTime`.
   - `Metalogic/SoundnessLemmas/README.md:6,16,23`: change "swap-validity".
   - `Metalogic/Bundle/README.md:47-63`.
   - `Syntax/PlusLanguage/README.md:73`.
   - `Semantics/MinusLanguage/README.md:17`: change `truth_swap` to `truth_reflectTime`.
   - `Automation/README.md:82`: change `swap_norm` to `reflect_time_norm`.
-- [ ] Docs:
+- [x] Docs:
   - `docs/development/LEAN_STYLE_GUIDE.md:923-942`: fix the stale `φ.swap`/`swap_past_future_involution` example, and add a "Time-reversal naming" rule. The rule says `reflect`/`reflectTime`/`reflect_time` covers every operation that reverses time order, and `swap` is only for exchanges.
   - `docs/development/PROPERTY_TESTING_GUIDE.md:639-642`.
   - `docs/user-guide/examples.md:424`.
   - `docs/user-guide/architecture.md:53`.
   - Leave `docs/project-info/performance-targets.md` (the benchmark labels) and `CONTRIBUTING.md:166` (an example branch name) as they are.
-- [ ] `Tests/BimodalTest/Integration/COVERAGE.md:23`: change "Temporal duality soundness" to the time-reflection wording
-- [ ] Typst:
+- [x] `Tests/BimodalTest/Integration/COVERAGE.md:23`: change "Temporal duality soundness" to the time-reflection wording
+- [x] Typst:
   - `typst/chapters/04-metalogic.typ:38`: change "*Temporal duality*: Past-future swap preserves validity" to "*Time reflection*: reflecting past and future preserves validity".
   - `typst/FormalFoundations.typ:1247`: classify "the swap is not in the algebra". If it means time reflection, reword it to "reflection".
-- [ ] Check that no typst file cites a renamed Lean identifier: `grep -rnwE 'truth_swap|swapUS|swap_norm' typst` must be empty
+- [x] Check that no typst file cites a renamed Lean identifier: `grep -rnwE 'truth_swap|swapUS|swap_norm' typst` must be empty
 
 **Timing**: 0.75 hours
 
@@ -260,18 +260,18 @@ naming rule durable in the style guide.
 
 ---
 
-### Phase 5: Final gates and regression sweep [NOT STARTED]
+### Phase 5: Final gates and regression sweep [COMPLETED]
 
 **Goal**: Confirm that the whole task is green and the renames are complete.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh`. Expected result: exit 0, case (b).
-- [ ] Run `bash scripts/check-module-invariants.sh`. Also run it with `--emit-inventory` and update the README inventories if any line counts moved.
-- [ ] Run `bash scripts/readme-lint.sh` and `bash scripts/typst-sync-check.sh`
-- [ ] Run a full `lake build` (guarded/detached) and require zero errors
-- [ ] Run the Phase 2 regression grep over `FormalSystem Tests docs typst README.md`, excluding the record. It must return empty.
-- [ ] Byte-stability check: `git diff <pre-task-sha> -- FormalSystem/Automation/ContrastiveGeneratorMain.lean` shows no wire-tag changes. Also run `grep -rn '"[^"]*reflect_time[^"]*"' FormalSystem`, which must return no new literals.
-- [ ] Check that no deliverable outside `specs/**` mentions a task number (`scripts/check-task-references.sh` or equivalent)
+- [x] Run `bash scripts/check-paper-definitions.sh`. Expected result: exit 0, case (b).
+- [x] Run `bash scripts/check-module-invariants.sh`. Also run it with `--emit-inventory` and update the README inventories if any line counts moved.
+- [x] Run `bash scripts/readme-lint.sh` and `bash scripts/typst-sync-check.sh`
+- [x] Run a full `lake build` (guarded/detached) and require zero errors
+- [x] Run the Phase 2 regression grep over `FormalSystem Tests docs typst README.md`, excluding the record. It must return empty.
+- [x] Byte-stability check: `git diff <pre-task-sha> -- FormalSystem/Automation/ContrastiveGeneratorMain.lean` shows no wire-tag changes. Also run `grep -rn '"[^"]*reflect_time[^"]*"' FormalSystem`, which must return no new literals.
+- [x] Check that no deliverable outside `specs/**` mentions a task number (`scripts/check-task-references.sh` or equivalent)
 
 **Timing**: 0.5 hours
 
