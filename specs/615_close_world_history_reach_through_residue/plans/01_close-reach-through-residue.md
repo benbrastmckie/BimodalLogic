@@ -262,19 +262,19 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 own disjoint
 
 ---
 
-### Phase 5: Delete the never-firing `CoeOut` instance [NOT STARTED]
+### Phase 5: Delete the never-firing `CoeOut` instance [COMPLETED]
 
 - **Goal:** The one-line instance that exists to make subtype crossings invisible — and measurably
   never makes one invisible — is removed, so the codebase stops carrying a false signal that
   crossings are implicit.
 - **Tasks:**
-  - [ ] Re-confirm deadness immediately before deleting: no `↑τ` or `(τ : PartialHistory F)`
+  - [x] Re-confirm deadness immediately before deleting: no `↑τ` or `(τ : PartialHistory F)`
         ascription of a world history anywhere in the tree, and all nine layer crossings are spelled
         with an explicit `.val` or `.property`.
-  - [ ] Delete `instance : CoeOut (WorldHistory F) (PartialHistory F) := ⟨Subtype.val⟩` and its
+  - [x] Delete `instance : CoeOut (WorldHistory F) (PartialHistory F) := ⟨Subtype.val⟩` and its
         docstring at `FormalSystem/Semantics/PartialHistory.lean:412-413`.
-  - [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`
-  - [ ] Commit as its own single-purpose commit, so a revert is a one-line revert.
+  - [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`
+  - [x] Commit as its own single-purpose commit, so a revert is a one-line revert.
   - [ ] **If the build fails**: revert this commit, leave the instance in place, and record the
         finding in the summary as a reasoned exclusion. Do NOT chase the elaboration failure — it
         would mean an implicit crossing exists that grep cannot see, which is the flat-structure

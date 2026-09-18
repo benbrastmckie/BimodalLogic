@@ -409,9 +409,6 @@ namespace WorldHistory
 
 variable {F : TaskFrame}
 
-/-- A world history *is* a partial history: forget the totality proof. -/
-instance : CoeOut (WorldHistory F) (PartialHistory F) := ⟨Subtype.val⟩
-
 /--
 The state of a world history at a time — the paper's `τ(x)`, read with no domain proof.
 
