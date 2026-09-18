@@ -140,7 +140,7 @@ theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.RTime ≤ 
     have hand : Formula.and (Formula.snce ψ Formula.top) ψ.neg.somePast ∈ m t :=
       conj_mcs fc (hm t) _ _ hA1 hcase
     have himp := theorem_in_mcs (hm t)
-      (DerivationTree.axiom [] _ (Axiom.prior_S_gap ψ) hfc)
+      (DerivedAxioms.prior_S_gap hfc ψ)
     have hcons : Formula.snce ψ (Formula.or ψ.neg (Formula.kMinus ψ.neg)) ∈ m t :=
       SetMaximalConsistent.implication_property (hm t) himp hand
     -- Prior-S's consequent, read backwards: a rational `w < t` carrying `¬ψ ∨ K⁻(¬ψ)`, with

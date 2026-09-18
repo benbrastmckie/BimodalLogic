@@ -307,7 +307,7 @@ The present is always in the future of the past.
 -/
 def connectPastThm {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.imp (φ.someFuture.allPast) :=
-  DerivationTree.axiom [] _ (Axiom.connect_past φ) (FrameClass.base_le fc)
+  (DerivedAxioms.connect_past φ)
 
 /--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
@@ -338,7 +338,7 @@ Direct from BX10' axiom.
 -/
 def sinceImpliesSomePast {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.snce φ ψ).imp (Formula.somePast ψ) :=
-  DerivationTree.axiom [] _ (Axiom.since_P φ ψ) (FrameClass.base_le fc)
+  (DerivedAxioms.since_P φ ψ)
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Until implies eventuality of its endpoint.
@@ -355,7 +355,7 @@ Mirror of untilImpF.
 -/
 def sinceImpP {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (Formula.snce φ ψ).imp (Formula.somePast ψ) :=
-  DerivationTree.axiom [] _ (Axiom.since_P φ ψ) (FrameClass.base_le fc)
+  (DerivedAxioms.since_P φ ψ)
 
 /-!
 ## Propositional Helpers for Until/Since Derivations
@@ -428,7 +428,7 @@ Direct from BX3' (right_mono_since) with χ := ⊤:
 -/
 def pMono {fc : FrameClass} (φ ψ : Formula) :
     ⊢[fc] (φ.imp ψ).allPast.imp (φ.somePast.imp ψ.somePast) :=
-  DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ Formula.top) (FrameClass.base_le fc)
+  (DerivedAxioms.right_mono_since φ ψ Formula.top)
 
 /--
 `⊢ φ → ψ` yields `⊢ P(φ) → P(ψ)`: P is monotone under a theorem.
@@ -488,7 +488,7 @@ Direct from BX2H (left_mono_since_H).
 -/
 def sinceMonoGuard {fc : FrameClass} (φ χ ψ : Formula) :
     ⊢[fc] (φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ)) :=
-  DerivationTree.axiom [] _ (Axiom.left_mono_since_H φ χ ψ) (FrameClass.base_le fc)
+  (DerivedAxioms.left_mono_since_H φ χ ψ)
 
 /--
 `⊢ G(φ → ψ) → ((φ U χ) → (ψ U χ))`: Event monotonicity of Until under G.
@@ -506,7 +506,7 @@ Direct from BX3' (right_mono_since).
 -/
 def sinceMonoEvent {fc : FrameClass} (φ ψ χ : Formula) :
     ⊢[fc] (φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ)) :=
-  DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ χ) (FrameClass.base_le fc)
+  (DerivedAxioms.right_mono_since φ ψ χ)
 
 end UntilSinceStructural
 

@@ -164,7 +164,7 @@ Test 12: apply_axiom works for Modal 4.
 The apply_axiom macro should apply the Modal 4 axiom.
 -/
 example : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p").box.box) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_4 (Formula.atomS "p")) trivial
+  exact (DerivedAxioms.modal_4At _ (Formula.atomS "p"))
 
 /--
 Test 13: apply_axiom works for Modal B.
@@ -172,7 +172,7 @@ Test 13: apply_axiom works for Modal B.
 The apply_axiom macro should apply the Modal B axiom.
 -/
 example : ⊢ ((Formula.atomS "p").imp ((Formula.atomS "p").diamond.box)) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_b (Formula.atomS "p")) trivial
+  exact (DerivedAxioms.modal_bAt _ (Formula.atomS "p"))
 
 /--
 Test 14: apply_axiom works for Temporal 4.
@@ -247,7 +247,7 @@ Test 21: the Modal 4 axiom applies.
 `Axiom.modal_4` discharges the goal directly.
 -/
 example (p : Formula) : ⊢ (p.box.imp p.box.box) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
+  exact (DerivedAxioms.modal_4At _ _)
 
 /--
 Test 22: the Modal B axiom applies.
@@ -255,7 +255,7 @@ Test 22: the Modal B axiom applies.
 `Axiom.modal_b` discharges the goal directly.
 -/
 example (p : Formula) : ⊢ (p.imp p.diamond.box) := by
-  exact DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
+  exact (DerivedAxioms.modal_bAt _ _)
 
 /--
 Test 23: temp_4_tactic applies Temporal 4 axiom.
@@ -344,7 +344,7 @@ Test 31: the Modal 4 axiom produces sound derivations.
 Specific tactic applications should be valid via soundness.
 -/
 example (p : Formula) : [] ⊨ (p.box.imp p.box.box) := by
-  have deriv : ⊢ (p.box.imp p.box.box) := DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
+  have deriv : ⊢ (p.box.imp p.box.box) := (DerivedAxioms.modal_4At _ _)
   exact soundness_in [] _ deriv
 
 /--
@@ -353,7 +353,7 @@ Test 32: the Modal B axiom produces sound derivations.
 Specific tactic applications should be valid via soundness.
 -/
 example (p : Formula) : [] ⊨ (p.imp p.diamond.box) := by
-  have deriv : ⊢ (p.imp p.diamond.box) := DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
+  have deriv : ⊢ (p.imp p.diamond.box) := (DerivedAxioms.modal_bAt _ _)
   exact soundness_in [] _ deriv
 
 /--

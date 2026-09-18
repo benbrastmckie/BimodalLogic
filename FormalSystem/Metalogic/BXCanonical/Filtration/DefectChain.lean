@@ -107,16 +107,14 @@ theorem defect_step_self_accum {w : BXPoint} {φ ψ : Formula}
 theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
     (h_since : Formula.snce φ ψ ∈ w.formulas) :
     Formula.somePast ψ ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
-      trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := (DerivedAxioms.since_P φ ψ)
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_since
 
 /-- If φ S ψ ∈ w, then H(F(φ S ψ)) ∈ w (from BX4': temporal connectedness). -/
 theorem since_defect_step_connect {w : BXPoint} {φ ψ : Formula}
     (h_since : Formula.snce φ ψ ∈ w.formulas) :
     Formula.allPast (Formula.someFuture (Formula.snce φ ψ)) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
-      (Axiom.connect_past (Formula.snce φ ψ)) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := (DerivedAxioms.connect_past (Formula.snce φ ψ))
   exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_since
 
 end FormalSystem.Metalogic.BXCanonical.Filtration

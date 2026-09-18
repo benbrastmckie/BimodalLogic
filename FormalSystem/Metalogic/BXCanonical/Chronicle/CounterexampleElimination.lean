@@ -307,7 +307,7 @@ theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula
     intro γ hγ
     -- BX4': γ → H(F(γ))
     have h_ax_cp : DerivationTree fc [] (γ.imp (Formula.allPast (Formula.someFuture γ))) :=
-      DerivationTree.axiom [] _ (Axiom.connect_past γ) trivial
+      (DerivedAxioms.connect_past γ)
     have h_HF : Formula.allPast (Formula.someFuture γ) ∈ C :=
       SetMaximalConsistent.mp_of_theorem h_mcs_C h_ax_cp hγ
     -- H(F(γ)) ∈ C → F(γ) ∈ HContent(C) ⊆ A
@@ -330,7 +330,7 @@ theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula
       exact SetMaximalConsistent.neg_excludes h_mcs_A α h_neg_A hα
     -- P(α) → S(⊤, α) by P_since_equiv
     have h_bx12' : DerivationTree fc [] ((Formula.somePast α).imp (Formula.snce top α)) :=
-      DerivationTree.axiom [] _ (Axiom.P_since_equiv α) trivial
+      (DerivedAxioms.P_since_equiv α)
     exact SetMaximalConsistent.mp_of_theorem h_mcs_C h_bx12' h_P
   exact burgessR3Maximal_exists_from_seed fc A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A
 
@@ -409,7 +409,7 @@ theorem eliminate_C5'_counterexample {fc : FrameClass} {χ : Chronicle}
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_P_η : Formula.somePast ce.η ∈ χ.f ce.x := by
     have h_ax : DerivationTree fc [] ((Formula.snce ce.ξ ce.η).imp (Formula.somePast ce.η)) :=
-      DerivationTree.axiom [] _ (Axiom.since_P ce.ξ ce.η) trivial
+      (DerivedAxioms.since_P ce.ξ ce.η)
     exact SetMaximalConsistent.mp_of_theorem h_mcs_x h_ax ce.since_mem
   have h_seed := past_temporal_witness_seed_consistent (χ.f ce.x) h_mcs_x ce.η h_P_η
   obtain ⟨C, h_sup, h_C_mcs⟩ := set_lindenbaum _ h_seed
@@ -3667,7 +3667,7 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
           have h_bx6' : DerivationTree fc []
             ((Formula.snce pc.ξ (Formula.and pc.ξ (Formula.snce pc.ξ pc.η))).imp
               (Formula.snce pc.ξ pc.η)) :=
-            DerivationTree.axiom [] _ (Axiom.absorb_since pc.ξ pc.η) trivial
+            (DerivedAxioms.absorb_since pc.ξ pc.η)
           have h_bx6'_in := theorem_in_mcs h_mcs_w h_bx6'
           have h_snce_eta := SetMaximalConsistent.implication_property h_mcs_w h_bx6'_in h_snce_conj
           -- Now snce(ξ,η) ∈ f(w) contradicts neg(snce(ξ,η)) ∈ f(w)

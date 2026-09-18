@@ -87,7 +87,7 @@ noncomputable def s4DiamondBoxConj {fc : FrameClass} (A B : Formula) :
     DerivationTree.modus_ponens [] _ _ (@theoremFlip fc A B.box (A.and B.box)) pair
   -- Step 3: Apply modal_4 to get □B → □□B
   have modal_4_b : ⊢[fc] B.box.imp B.box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 B) (FrameClass.base_le fc)
+    (DerivedAxioms.modal_4 B)
   -- Step 4: Apply boxMono to flipped to get □□B → □(A → (A ∧ □B))
   have box_flipped : ⊢[fc] B.box.box.imp (A.imp (A.and B.box)).box :=
     boxMono flipped
@@ -150,7 +150,7 @@ def s4BoxDiamondBox {fc : FrameClass} (A : Formula) : ⊢[fc] A.box.imp ((A.box.
   -- modal_b gives: A → □◇A
   -- Apply to □A: □A → □◇□A
   have modal_b_inst : ⊢[fc] A.box.imp (A.box.diamond).box :=
-    DerivationTree.axiom [] _ (Axiom.modal_b A.box) (FrameClass.base_le fc)
+    (DerivedAxioms.modal_b A.box)
   exact modal_b_inst
 
 /--
@@ -189,7 +189,7 @@ def s4DiamondBoxDiamond {fc : FrameClass} (A : Formula) : ⊢[fc] iff (A.diamond
 
     -- Use modal_4 first: □◇A → □□◇A
     have modal_4_diamond : ⊢[fc] A.diamond.box.imp (A.diamond.box.box) :=
-      DerivationTree.axiom [] _ (Axiom.modal_4 A.diamond) (FrameClass.base_le fc)
+      (DerivedAxioms.modal_4 A.diamond)
     -- Then tBoxToDiamond on □◇A: □□◇A → ◇□◇A
     have box_box_diamond_to_diamond_box_diamond :
       ⊢[fc] (A.diamond.box.box).imp (A.diamond.box.diamond) :=

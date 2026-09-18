@@ -883,7 +883,7 @@ theorem chronicleMonadic_semanticPriorS {fc : FrameClass} (hfc : FrameClass.RTim
   have h_thm : Formula.snce (chronicleEff root p) (Formula.or (chronicleEff root p).neg
       (Formula.kMinus (chronicleEff root p).neg)) ∈ fam.mcs t :=
     SetMaximalConsistent.mp_of_theorem (fam.is_mcs t)
-      (DerivationTree.axiom [] _ (Axiom.prior_S_gap (chronicleEff root p)) hfc)
+      (DerivedAxioms.prior_S_gap hfc (chronicleEff root p))
       h_ant_mcs
   have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
       (Formula.snce p (Formula.or p.neg (Formula.kMinus p.neg))) := by

@@ -214,6 +214,6 @@ noncomputable def hDneTheorem (phi : Formula) :
 Applied directly as an axiom instance; `Axiom.connect_past` is the constructor. -/
 noncomputable def pastTempA (psi : Formula) :
     [] ⊢ psi.imp psi.someFuture.allPast :=
-  DerivationTree.axiom [] _ (Axiom.connect_past psi) trivial
+  (DerivedAxioms.connect_past psi)
 
 end FormalSystem.Theorems.ModalDerived

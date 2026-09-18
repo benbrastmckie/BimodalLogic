@@ -193,7 +193,7 @@ theorem h_content_set_consistent {S : Set Formula}
     SetMaximalConsistent.implication_property h_mcs h3 h_H_bot
   have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.somePast (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ Axiom.serial_past trivial
+    DerivedAxioms.serial_past
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial
@@ -505,7 +505,7 @@ theorem bx_modal_witness (w : BXPoint) (ψ : Formula)
       -- □χ ∈ w → □□χ ∈ w (modal_4) → □χ ∈ bc → □χ ∈ M
       have h_m4 : DerivationTree FrameClass.Base []
           ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
-        DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
+        (DerivedAxioms.modal_4 χ)
       have h_box_box := SetMaximalConsistent.mp_of_theorem w.is_mcs h_m4 h_box
       -- □□χ ∈ w means □χ ∈ bc (since bc = {ψ | □ψ ∈ w})
       have h_in_bc : Formula.box χ ∈ bc := h_box_box
@@ -709,8 +709,7 @@ theorem bx_since_eventuality_resolution
     ∃ v : BXPoint, BxLe v w ∧ ψ ∈ v.formulas := by
   -- By BX10': P(ψ) ∈ w
   have h_P_psi : Formula.somePast ψ ∈ w.formulas := by
-    have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
-        (Axiom.since_P φ ψ) trivial
+    have h_ax : DerivationTree FrameClass.Base [] _ := (DerivedAxioms.since_P φ ψ)
     exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h_since
   -- By bx_backward_witness: get v with BxLe v w and ψ ∈ v
   exact bx_backward_witness w ψ h_P_psi

@@ -205,7 +205,7 @@ theorem self_accum_since_mcs (fc : FrameClass) {A : Set Formula}
     Formula.snce (Formula.and γ (Formula.snce γ β)) β ∈ A := by
   have h_ax : DerivationTree fc [] ((Formula.snce γ β).imp
       (Formula.snce (Formula.and γ (Formula.snce γ β)) β)) :=
-    DerivationTree.axiom [] _ (Axiom.self_accum_since γ β) trivial
+    (DerivedAxioms.self_accum_since γ β)
   exact SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_since
 
 /-- BX4 at MCS level: φ ∈ A implies G(P(φ)) ∈ A. -/
@@ -271,7 +271,7 @@ theorem linear_since_mcs (fc : FrameClass) {A : Set Formula}
     Formula.snce (Formula.and φ χ) (Formula.and ψ χ) ∈ A ∨
     Formula.snce (Formula.and φ χ) (Formula.and φ θ) ∈ A := by
   have h_conj := conj_mcs fc h_mcs _ _ h_s1 h_s2
-  have h_bx7 := DerivationTree.axiom (fc := fc) [] _ (Axiom.linear_since φ ψ χ θ) trivial
+  have h_bx7 := (DerivedAxioms.linear_since (fc := fc) φ ψ χ θ)
   have h_disj := SetMaximalConsistent.mp_of_theorem h_mcs h_bx7 h_conj
   rcases or_elim_mcs fc h_mcs h_disj with h12 | h3
   · rcases or_elim_mcs fc h_mcs h12 with h1 | h2
@@ -410,17 +410,17 @@ theorem H_implies_P_mcs (fc : FrameClass) {A : Set Formula}
     theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_P_top : Formula.somePast top ∈ A :=
     SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivationTree.axiom [] _ Axiom.serial_past trivial) h_top_in
+      (DerivedAxioms.serial_past) h_top_in
   have h_TST : Formula.snce top top ∈ A :=
     SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivationTree.axiom [] _ (Axiom.P_since_equiv top) trivial) h_P_top
+      (DerivedAxioms.P_since_equiv top) h_P_top
   have h_TSα : Formula.snce top α ∈ A := by
     have h1 := SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivationTree.axiom [] _ (Axiom.right_mono_since top α top) trivial)
+      (DerivedAxioms.right_mono_since top α top)
       h_H_top_α
     exact SetMaximalConsistent.implication_property h_mcs h1 h_TST
   exact SetMaximalConsistent.mp_of_theorem h_mcs
-    (DerivationTree.axiom [] _ (Axiom.since_P top α) trivial) h_TSα
+    (DerivedAxioms.since_P top α) h_TSα
 
 /-- G-propagation seed consistency. -/
 theorem g_propagation_seed_consistent (fc : FrameClass) {A : Set Formula}
@@ -699,7 +699,7 @@ theorem xu_lemma_2_3_since_top (fc : FrameClass) {A B C : Set Formula}
     SetMaximalConsistent.mp_of_theorem h_mcs_A h_bx4 h_alpha
   -- BX12': P(alpha) → snce(top, alpha) (theorem)
   have h_bx12' : DerivationTree fc [] (alpha.somePast.imp (Formula.snce top alpha)) :=
-    DerivationTree.axiom [] _ (Axiom.P_since_equiv alpha) trivial
+    (DerivedAxioms.P_since_equiv alpha)
   -- G(P(alpha) → snce(top, alpha)) via temporal necessitation
   have h_G_impl : (alpha.somePast.imp (Formula.snce top alpha)).allFuture ∈ A :=
     theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_bx12')
@@ -766,7 +766,7 @@ theorem xu_lemma_2_3_until_top (fc : FrameClass) {A B C : Set Formula}
   -- Step 2: Derive H(untl(top, gamma)) ∈ C from gamma ∈ C
   -- BX4': gamma → H(F(gamma))
   have h_bx4' : DerivationTree fc [] (gamma.imp (gamma.someFuture.allPast)) :=
-    DerivationTree.axiom [] _ (Axiom.connect_past gamma) trivial
+    (DerivedAxioms.connect_past gamma)
   have h_H_F_gamma : gamma.someFuture.allPast ∈ C :=
     SetMaximalConsistent.mp_of_theorem h_mcs_C h_bx4' h_gamma
   -- BX12: F(gamma) → untl(top, gamma) (theorem)
@@ -999,7 +999,7 @@ private theorem h_content_sub_imp_g_content_sub' (fc : FrameClass) {A B : Set Fo
     · exact absurd h h_not
     · exact h
   have h_ax : DerivationTree fc [] (ψ.neg.imp (ψ.neg.someFuture.allPast)) :=
-    DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg) trivial
+    (DerivedAxioms.connect_past ψ.neg)
   have h_HF : Formula.allPast (Formula.someFuture ψ.neg) ∈ B :=
     SetMaximalConsistent.mp_of_theorem h_mcs_B h_ax h_neg_ψ
   have h_F_neg_ψ_A : Formula.someFuture ψ.neg ∈ A := h_hBA h_HF
@@ -1116,7 +1116,7 @@ private theorem right_mono_since_mcs (fc : FrameClass) {C : Set Formula}
     Formula.snce φ χ ∈ C := by
   have h_H_impl : Formula.allPast (ψ.imp χ) ∈ C :=
     theorem_in_mcs h_mcs (FormalSystem.Theorems.pastNecessitation _ h_impl)
-  have h_bx3' := DerivationTree.axiom (fc := fc) [] _ (Axiom.right_mono_since ψ χ φ) trivial
+  have h_bx3' := (DerivedAxioms.right_mono_since (fc := fc) ψ χ φ)
   exact SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.mp_of_theorem h_mcs h_bx3' h_H_impl) h_snce
 
@@ -1308,7 +1308,7 @@ private noncomputable def snceLeftMonoDeriv (fc : FrameClass) (φ ψ χ : Formul
     (h_impl : DerivationTree fc [] (φ.imp χ)) :
     DerivationTree fc [] ((Formula.snce φ ψ).imp (Formula.snce χ ψ)) := by
   have h_H := FormalSystem.Theorems.pastNecessitation _ h_impl
-  have h_ax := DerivationTree.axiom (fc := fc) [] _ (Axiom.left_mono_since_H φ χ ψ) trivial
+  have h_ax := (DerivedAxioms.left_mono_since_H (fc := fc) φ χ ψ)
   exact DerivationTree.modus_ponens [] _ _ h_ax h_H
 
 /-- BX13' (enrichment_since) at MCS level: If p ∈ C and snce(phi, psi) ∈ C,
@@ -1319,7 +1319,7 @@ private theorem enrichment_since_mcs (fc : FrameClass) {C : Set Formula}
     (h_snce : Formula.snce phi psi ∈ C) :
     Formula.snce phi (Formula.and psi (Formula.untl phi p)) ∈ C := by
   have h_conj := conj_mcs fc h_mcs p (Formula.snce phi psi) h_p h_snce
-  have h_bx13 := DerivationTree.axiom (fc := fc) [] _ (Axiom.enrichment_since phi psi p) trivial
+  have h_bx13 := (DerivedAxioms.enrichment_since (fc := fc) phi psi p)
   exact SetMaximalConsistent.mp_of_theorem h_mcs h_bx13 h_conj
 
 /-- BX10' (since_P) at MCS level: If snce(phi, psi) ∈ C, then P(psi) ∈ C. -/
@@ -1687,8 +1687,7 @@ theorem xu_lemma_3_2_1_since (fc : FrameClass) {A B C : Set Formula}
   have h_event_impl : DerivationTree fc [] (alpha''.imp alpha') := rceImp alpha alpha'
   have h_H_event : DerivationTree fc [] (alpha''.imp alpha').allPast :=
     FormalSystem.Theorems.pastNecessitation _ h_event_impl
-  have h_bx3'_ax := DerivationTree.axiom (fc := fc) [] _
-      (Axiom.right_mono_since alpha'' alpha' beta'') trivial
+  have h_bx3'_ax := (DerivedAxioms.right_mono_since (fc := fc) alpha'' alpha' beta'')
   -- ⊢ snce(beta'', alpha'') → snce(beta'', alpha')
   have h_event_mono : DerivationTree fc []
       ((Formula.snce beta'' alpha'').imp (Formula.snce beta'' alpha')) :=
@@ -1728,8 +1727,7 @@ theorem xu_lemma_3_2_1_since (fc : FrameClass) {A B C : Set Formula}
       have h_ev : DerivationTree fc [] (alpha''.imp alpha) := lceImp alpha alpha'
       have h_H_ev : DerivationTree fc [] (alpha''.imp alpha).allPast :=
         FormalSystem.Theorems.pastNecessitation _ h_ev
-      have h_bx3'_ev := DerivationTree.axiom (fc := fc) [] _
-          (Axiom.right_mono_since alpha'' alpha beta'') trivial
+      have h_bx3'_ev := (DerivedAxioms.right_mono_since (fc := fc) alpha'' alpha beta'')
       have h_ev_mono : DerivationTree fc []
           ((Formula.snce beta'' alpha'').imp (Formula.snce beta'' alpha)) :=
         DerivationTree.modus_ponens [] _ _ h_bx3'_ev h_H_ev
@@ -3377,8 +3375,7 @@ theorem until_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
       rw [hφ_eq]
       have h_proj := listConjImpliesElem fc alpha_list α hα_list
       have h_H_proj := FormalSystem.Theorems.pastNecessitation _ h_proj
-      have h_bx3' := DerivationTree.axiom (fc := fc) [] _ (Axiom.right_mono_since α_star α γ)
-          trivial
+      have h_bx3' := (DerivedAxioms.right_mono_since (fc := fc) α_star α γ)
       have h_snce_mono : DerivationTree fc [] ((Formula.snce γ α_star).imp (Formula.snce γ α)) :=
         mp h_H_proj h_bx3'
       exact Or.inr ⟨impTrans (rceImp β (Formula.snce γ α_star)) h_snce_mono⟩

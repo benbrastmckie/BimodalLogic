@@ -209,7 +209,7 @@ def diamond4 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diamond.diamond.imp �
 
   -- Step 1: M4 for ¬φ: □¬φ → □□¬φ
   have m4_neg : ⊢[fc] φ.neg.box.imp φ.neg.box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg) (FrameClass.base_le fc)
+    (DerivedAxioms.modal_4 φ.neg)
   -- Step 2: Contrapose M4: ¬□□¬φ → ¬□¬φ
   -- This is: φ.neg.box.box.neg → φ.neg.box.neg
   have m4_contraposed : ⊢[fc] φ.neg.box.box.neg.imp φ.neg.box.neg :=
@@ -234,7 +234,7 @@ def diamond4 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diamond.diamond.imp �
     contraposition distributed
   -- Step 7: Use M4 on □¬φ: □□¬φ → □□□¬φ
   have m4_twice : ⊢[fc] φ.neg.box.box.imp φ.neg.box.box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg.box) (FrameClass.base_le fc)
+    (DerivedAxioms.modal_4 φ.neg.box)
   -- Step 8: Contrapose: ¬□□□¬φ → ¬□□¬φ
   have m4_twice_neg : ⊢[fc] φ.neg.box.box.box.neg.imp φ.neg.box.box.neg :=
     contraposition m4_twice
@@ -281,7 +281,7 @@ Derived from MB + diamond4 + MK distribution:
 def modal5 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.diamond.imp φ.diamond.box := by
   -- Step 1: MB on ◇φ
   have mb_dia : ⊢[fc] φ.diamond.imp φ.diamond.diamond.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_b φ.diamond) (FrameClass.base_le fc)
+    (DerivedAxioms.modal_b φ.diamond)
   -- Step 2: diamond4 for φ
   have d4 : ⊢[fc] φ.diamond.diamond.imp φ.diamond := diamond4 φ
   -- Step 3: Necessitate d4 using modal_k with empty context
@@ -565,7 +565,7 @@ This is used as a foundation for the persistence lemma.
 -/
 @[tmLemma]
 def mbDiamond {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.imp (φ.diamond.box) :=
-  DerivationTree.axiom [] _ (Axiom.modal_b φ) (FrameClass.base_le fc)
+  (DerivedAxioms.modal_b φ)
 
 /--
 Helper lemma: Apply TF axiom to boxed diamond.

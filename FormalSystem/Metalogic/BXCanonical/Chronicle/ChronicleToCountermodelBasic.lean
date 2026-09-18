@@ -123,7 +123,7 @@ theorem limit_dom_no_min (fc : FrameClass) (A : Set Formula)
     theorem_in_mcs h_mcs_x (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_P_top : Formula.somePast (Formula.bot.imp Formula.bot) ∈ LimitF fc A h_mcs x :=
     SetMaximalConsistent.mp_of_theorem h_mcs_x
-      (DerivationTree.axiom [] _ Axiom.serial_past trivial) h_top
+      (DerivedAxioms.serial_past) h_top
   obtain ⟨y, hy, hyx, _⟩ := limit_P_resolution fc A h_mcs x hx _ h_P_top
   exact ⟨y, hy, hyx⟩
 
@@ -348,8 +348,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
         rw [limit_f_zero]; exact h_neg_box_A
       · -- x < 0: use H propagation
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ A :=
-          SetMaximalConsistent.mp_of_theorem h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)
-                trivial)
+          SetMaximalConsistent.mp_of_theorem h_mcs (DerivedAxioms.modal_4 (Formula.box φ).neg)
             h_box_neg
         have h_H := SetMaximalConsistent.mp_of_theorem h_mcs
           (liftBase fc (boxToPast (Formula.box (Formula.box φ).neg)))
@@ -375,7 +374,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
     · -- x < 0: use H propagation (modal_4: □φ → □□φ, boxToPast: □(□φ) → H(□φ))
       have h_box_box : Formula.box (Formula.box φ) ∈ A :=
         SetMaximalConsistent.mp_of_theorem h_mcs
-          (DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial) h_box_A
+          (DerivedAxioms.modal_4 φ) h_box_A
       have h_H := SetMaximalConsistent.mp_of_theorem h_mcs
         (liftBase fc (boxToPast (Formula.box φ))) h_box_box
       rw [← limit_f_zero fc A h_mcs] at h_H
@@ -440,7 +439,7 @@ theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula)
   -- H(□(F'T)) ∈ N (from □(F'T) → □□(F'T) → H(□(F'T)))
   have h_box_box : Formula.box (Formula.box nextTop.neg) ∈ N :=
     SetMaximalConsistent.mp_of_theorem h_N
-      (DerivationTree.axiom [] _ (Axiom.modal_4 nextTop.neg) trivial)
+      (DerivedAxioms.modal_4 nextTop.neg)
       h_box_dense
   have h_H_box : Formula.allPast (Formula.box nextTop.neg) ∈ N :=
     SetMaximalConsistent.mp_of_theorem h_N
@@ -1180,7 +1179,7 @@ theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula)
   -- H(□(U(T,bot))) ∈ N (from □(U(T,bot)) → □□(U(T,bot)) → H(□(U(T,bot))))
   have h_box_box : Formula.box (Formula.box nextTop) ∈ N :=
     SetMaximalConsistent.mp_of_theorem h_N
-      (DerivationTree.axiom [] _ (Axiom.modal_4 nextTop) trivial)
+      (DerivedAxioms.modal_4 nextTop)
       h_box_discrete
   have h_H_box : Formula.allPast (Formula.box nextTop) ∈ N :=
     SetMaximalConsistent.mp_of_theorem h_N (liftBase fc (boxToPast (Formula.box nextTop))) h_box_box

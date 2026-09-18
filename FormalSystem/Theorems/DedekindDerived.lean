@@ -251,16 +251,14 @@ noncomputable def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
     DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
   let hPast : Γ ⊢[fc] P := DerivationTree.assumption _ _ (List.Mem.head _)
   let hAccum : Γ ⊢[fc] Formula.snce G1 ψ.neg :=
-    ctxMp (thmIn (DerivationTree.axiom [] _ (Axiom.self_accum_since Formula.top ψ.neg)
-      (FrameClass.base_le fc))) hPast
+    ctxMp (thmIn (DerivedAxioms.self_accum_since Formula.top ψ.neg)) hPast
   let hSplit : Γ ⊢[fc]
       Formula.or
         (Formula.or
           (Formula.snce (Formula.and G1 ψ) (Formula.and ψ.neg E))
           (Formula.snce (Formula.and G1 ψ) (Formula.and ψ.neg ψ)))
         (Formula.snce (Formula.and G1 ψ) (Formula.and G1 E)) :=
-    ctxMp (thmIn (DerivationTree.axiom [] _ (Axiom.linear_since G1 ψ.neg ψ E)
-      (FrameClass.base_le fc))) (andIntro hAccum hSnce)
+    ctxMp (thmIn (DerivedAxioms.linear_since G1 ψ.neg ψ E)) (andIntro hAccum hSnce)
   let hBot : Γ ⊢[fc] Formula.bot :=
     orElimBot hSplit
       (thmIn (deductionTheorem [] _ Formula.bot

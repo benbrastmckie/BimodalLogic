@@ -168,7 +168,7 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 3: Rewrite call sites in Theorems and Metalogic proof code [NOT STARTED]
+### Phase 3: Rewrite call sites in Theorems and Metalogic proof code [IN PROGRESS]
 
 **Goal**: Replace every `Axiom.<surplus>` construction in theorem and metalogic proof code with the derived definitions, while the constructors still exist.
 

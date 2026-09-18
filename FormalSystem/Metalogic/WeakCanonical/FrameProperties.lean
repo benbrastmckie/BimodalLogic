@@ -48,7 +48,7 @@ ReflCanDomain uses fc := .Base. -/
 theorem prior_SZ_in_frame {fc : FrameClass} (h_fc : FrameClass.ZTime ≤ fc)
     (x : ReflCanDomain fc) (psi : Formula) :
     Formula.imp (Formula.somePast psi) (Formula.snce psi.neg psi) ∈ x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_SZ psi) h_fc)
+  theorem_in_mcs x.property (DerivedAxioms.prior_SZ h_fc psi)
 
 /-! ## Seriality (No Endpoints) -/
 
@@ -62,6 +62,6 @@ theorem serial_future_in_frame (x : ReflCanDomain) :
 theorem serial_past_in_frame (x : ReflCanDomain) :
     Formula.imp (Formula.bot.imp Formula.bot) (Formula.somePast (Formula.bot.imp Formula.bot)) ∈
         x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ Axiom.serial_past trivial)
+  theorem_in_mcs x.property (DerivedAxioms.serial_past)
 
 end FormalSystem.Metalogic.WeakCanonical

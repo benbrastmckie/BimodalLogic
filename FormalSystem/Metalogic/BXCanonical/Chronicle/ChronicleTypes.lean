@@ -208,7 +208,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
     constructor
     · intro h_box
       have h_m4 : DerivationTree fc [] ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
-        DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
+        (DerivedAxioms.modal_4 χ)
       have h_box_box := SetMaximalConsistent.mp_of_theorem h_mcs h_m4 h_box
       exact h_bc_sub h_box_box
     · intro h_box_M

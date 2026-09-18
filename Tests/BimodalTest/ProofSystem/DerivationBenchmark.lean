@@ -94,11 +94,11 @@ def mkModalT : DerivationTree .Base [] ((Formula.box p).imp p) :=
 
 /-- Simple axiom derivation: Modal 4 -/
 def mkModal4 : DerivationTree .Base [] ((Formula.box p).imp (Formula.box (Formula.box p))) :=
-  DerivationTree.axiom [] _ (Axiom.modal_4 p) (by decide)
+  (DerivedAxioms.modal_4 p)
 
 /-- Simple axiom derivation: Modal B -/
 def mkModalB : DerivationTree .Base [] (p.imp (Formula.box p.diamond)) :=
-  DerivationTree.axiom [] _ (Axiom.modal_b p) (by decide)
+  (DerivedAxioms.modal_b p)
 
 /-- Simple axiom derivation: Modal-Future (`□p → □Gp`) -/
 def mkModalFuture :
