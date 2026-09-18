@@ -1,7 +1,7 @@
 # Implementation Plan: Task #605
 
 - **Task**: 605 - Reconcile Burgess A7a provenance and add axiom-source footnote
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (the research's dependency on 588 is informational only; no code from it is needed)
 - **Research Inputs**: specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/reports/01_burgess-a7a-provenance.md
@@ -214,18 +214,18 @@ axiom.
 
 ---
 
-### Phase 4: Final gate [PARTIAL]
+### Phase 4: Final gate [COMPLETED]
 
-**Status note**: the full `lake build` and the task-reference/module-invariants lint run were both stopped by the harness because the system was low on memory, not because of a failure. They were not restarted, as the harness instructed. `scripts/check-paper-definitions.sh` passed, and the scoped build of Axioms plus the three Chronicle modules passed (1755 jobs, no warnings in those modules).
+**Status note**: re-run on resume. The full `lake build` passed (2660 jobs), and `scripts/check-module-invariants.sh` reported ALL CHECKS PASSED. An earlier invariants run failed only because another session was editing `Carrier.lean` and `check-module-invariants.sh` at the same moment; once the tree was quiet it passed cleanly.
 
 **Goal**: Run the full gate set over the combined change.
 
 **Tasks**:
-- [ ] `lake build` (full) is green, with no new warnings in touched modules.
-- [ ] `bash .claude/scripts/check-task-references.sh` is clean on all changed files.
-- [ ] `bash scripts/check-paper-definitions.sh` and `bash scripts/check-module-invariants.sh`
-      pass. *(paper-definitions passed; module-invariants not run — stopped for low memory)*
-- [ ] `git diff --stat` lists only the six planned files.
+- [x] `lake build` (full) is green, with no new warnings in touched modules. *(2660 jobs; C28 warning baseline check passes)*
+- [x] `bash .claude/scripts/check-task-references.sh` is clean on all changed files. *(deviation: altered — the script scans only agent-system trees, so the same shared `TASK_PATTERN`/`PHASE_PATTERN` library was run directly on the six files: zero hits. Invariants C9/C9D also pass)*
+- [x] `bash scripts/check-paper-definitions.sh` and `bash scripts/check-module-invariants.sh`
+      pass.
+- [x] `git diff --stat` lists only the six planned files. *(the three phase commits touch exactly those six files)*
 
 **Timing**: 30 minutes
 
@@ -248,10 +248,10 @@ absent. The Goals list names existing constructors only to say whose documentati
 
 ## Testing & Validation
 
-- [ ] `lake build` is green (full).
-- [ ] Every quoted Burgess formula matches Burgess 1982 §1.3 in `U(event, guard)` order.
-- [ ] No constructor signature, proof, or statement changed (diff audit).
-- [ ] Task-reference lint, paper-definitions check, and module-invariants check pass.
+- [x] `lake build` is green (full).
+- [x] Every quoted Burgess formula matches Burgess 1982 §1.3 in `U(event, guard)` order.
+- [x] No constructor signature, proof, or statement changed (diff audit). *(code with comments stripped is identical before and after, in all four Lean files)*
+- [x] Task-reference lint, paper-definitions check, and module-invariants check pass.
 
 ## Artifacts & Outputs
 
