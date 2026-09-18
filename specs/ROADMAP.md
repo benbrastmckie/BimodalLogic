@@ -187,6 +187,19 @@ dataset/training-infrastructure cluster (298 top-of-cluster, 296, 282, 257, 231,
       own report 01, machine-checked: no linearly ordered abelian group has order type `ℤ+ℤ`) and
       superseded — its own report 02 recommended the k-equivalence route 477-479 actually used.
       Also proposed for abandonment; see the same report.
+- [ ] **Strong completeness over ℚ-time — OPEN (author directive, 2026-09-18).** Weak
+      completeness over ℚ-time is DONE: `derivable_of_validQTime`, and
+      `validQTime_iff_validDense` (`Metalogic/QTime.lean`) shows ℚ-time validity is exactly
+      Dense validity. Strong completeness does *not* carry over. Dense strong completeness uses
+      compactness, and compactness goes through ultrapowers of ℚ, which are dense but no longer
+      ℚ-time. So `Γ ⊨_{ℚ-time} φ → Γ ⊢_Dense φ` for `Γ : Set Formula` needs its own proof. One
+      option is a Löwenheim–Skolem-style descent from a countermodel over some dense carrier to a
+      countable one. That alone is not enough: a countable dense ordered group need not be ℚ
+      (for example `ℚ ×ₗ ℚ`), and Cantor's theorem gives only an order isomorphism, not a group
+      one, so reaching ℚ itself needs a further argument. Unlike Discrete and Dedekind, this
+      is not known to be impossible, because ℚ-time is not ruled out by the non-compactness
+      witnesses above. Background: task 603's report and task 600's plan (phase 4, excluded with
+      reasons).
 
 **Strong-completeness terminology** (settled 2026-07-27, authority: `StrongCompleteness.lean`'s
 module docstring): "strong completeness" names consequence from possibly-infinite premise sets

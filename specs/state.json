@@ -4,8 +4,31 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 621,
+  "next_project_number": 623,
   "active_projects": [
+    {
+      "project_number": 622,
+      "project_name": "align_typst_frame_subscripts_zdr_and_bx_r",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Align frame-class subscripts with the paper in typst/FormalFoundations.typ and typst/chapters/p2-decidability-practice.typ: rename BX_f/BX_d/BX_c and TM_f/TM_d/TM_c (and TM-minus variants where they track the paper) to the paper's z/d/r (def:BX-z, def:BX-d, def:BX-r). f->z is a pure relabel (BX + UZ + Z1). c->r is not: the document's BX_c is BX + PU + SEP (sound over Dedekind-complete orders including Z, so it does not prove DN), whereas the paper's BX_r and Lean's RTime extend BX_d (BX + DN + NN + PU + SEP, intended class R-time). Redefine BX_r as an extension of BX_d, recheck every claim citing TM_c/BX_c against R-time semantics, rewrite or drop the 'Naming provenance' remark and the footnote on whether CO alone axiomatizes the same logic, and update the decidability chapter's DF/CO non-theorem claims. Also investigate the flagged possible citation swap between the section 2 Soundness theorem and the section 5 Algebraic-soundness proposition. Gates: typst compile, typst-sync-check.sh, check-paper-definitions.sh",
+      "topic": "paper-refactor",
+      "dependencies": [
+        621
+      ],
+      "created": "2026-09-18T15:46:50Z",
+      "last_updated": "2026-09-18T15:46:50Z"
+    },
+    {
+      "project_number": 621,
+      "project_name": "adopt_uniform_reflect_naming_for_time_reversal",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Adopt uniform reflect naming for time reversal: the paper renamed lem:temporal-duality to lem:time-reflection. Update docs/reference/paper-definitions-of-record.md (retire the 'semantic lemma keeps its name' carve-out, record the new label), then apply the principle 'reflect names every operation reversing the time order on any object (formula, frame, history, truth lemma); swap survives only for non-time-reversal exchanges'. Rename MinusFrame.swap -> MinusFrame.reflect, truth_swap -> truth_reflectTime, swapUS -> a qualified reflect name (e.g. reflectTimeBoxOpaque, box subformulas treated as atoms). Classify by the same test the leftover families swap_norm, *_swap_of_tm*, cValid swaps, starValid_*_swap and rename those that denote time reflection. Keep serialized wire/mutation tags byte-stable. Update prose citing the temporal duality lemma, READMEs, typst citations; run check-paper-definitions.sh, check-module-invariants.sh, lake build",
+      "topic": "paper-refactor",
+      "created": "2026-09-18T15:46:50Z",
+      "last_updated": "2026-09-18T15:46:50Z"
+    },
     {
       "project_number": 620,
       "project_name": "lean_appendix_bimodal_reference",
