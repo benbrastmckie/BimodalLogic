@@ -336,16 +336,6 @@ def tryAssumptionMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := 
 -/
 
 /--
-Extract antecedent formula from an implication expression.
-Given `φ.imp ψ`, returns `some φ`.
--/
-def extractImplicationAntecedent (formula : Expr) : MetaM (Option Expr) := do
-  match formula with
-  | .app (.app (.const ``Formula.imp _) antecedent) _consequent =>
-    return some antecedent
-  | _ => return none
-
-/--
 Check if a formula expression is an implication with the given consequent.
 Given formula `φ → ψ` and target `ψ`, returns `some φ`.
 -/
