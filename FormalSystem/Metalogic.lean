@@ -17,6 +17,7 @@ import FormalSystem.Metalogic.WeakCanonical
 import FormalSystem.Metalogic.Conservativity
 import FormalSystem.Metalogic.Algebraic
 import FormalSystem.Metalogic.Deterministic
+import FormalSystem.Metalogic.QTime
 
 /-!
 # Bimodal Metalogic
@@ -91,6 +92,9 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   `ℚ ×ₗ ℤ`, off `companionChronicle`
 - **Completeness (dense)** (`completeness_dense`): SORRY-FREE (sorryAx-free; axioms: exactly
   `propext`, `Classical.choice`, `Quot.sound`)
+- **ℚ-time validity equals dense validity** (`validQTime_iff_validDense`, `Metalogic/QTime.lean`):
+  SORRY-FREE. The ℚ-time class `TaskFrame.IsQTime` is strictly inside the dense class but
+  validates the same formulas, because the dense countermodels are built over `ℚ`.
 - **Completeness (discrete)** (`completeness_ztime`): SORRY-FREE (sorryAx-free; axioms:
   exactly `propext`, `Classical.choice`, `Quot.sound`)
 - **Completeness (Dedekind)** (`completeness_rtime`): SORRY-FREE (sorryAx-free; axioms:

@@ -135,7 +135,7 @@ Phases within the same wave can execute in parallel.
   that set-based strong completeness over ℚ-time is open (ultrapowers of ℚ are non-Archimedean).
 - [x] `Validity.lean`: `theorem validQTime_of_validDense {φ} (h : ValidDense φ) : ValidQTime φ :=
   ValidOnFrames.mono (fun F hF => TaskFrame.isDense_of_isQTime hF) h` (adjust if `ValidDense`
-  must first be unfolded via `validDense_iff_validIn_dense`).
+  must first be unfolded via `validDense_iff_validIn_dense`). *(deviation: altered — placed in `namespace Validity` beside `validRTime_of_validComplete`, per local convention; full name `Validity.validQTime_of_validDense`)*
 - [x] `Completeness.lean`: `theorem isQTime_rat (F : FrameOver (TemporalOrder.of ℚ)) :
   F.toTaskFrame.IsQTime` (verified proof).
 - [x] `Completeness.lean`: `theorem derivable_of_validQTime (φ) : ValidQTime φ → Derivable
@@ -163,20 +163,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: validQTime_iff_validDense [NOT STARTED]
+### Phase 3: validQTime_iff_validDense [COMPLETED]
 
 **Goal**: Close the loop: ℚ-time validity equals dense validity.
 
 **Tasks**:
-- [ ] Check whether `Completeness.lean` transitively imports `Metalogic/Soundness.lean`
+- [x] Check whether `Completeness.lean` transitively imports `Metalogic/Soundness.lean`
   (`soundness_dense_valid`). If yes, the iff may go at the end of `Completeness.lean`; otherwise
   (expected) create `FormalSystem/Metalogic/QTime.lean` importing
   `FormalSystem.Metalogic.BXCanonical.Completeness` and `FormalSystem.Metalogic.Soundness`,
   with a module docstring summarizing the ℚ-time class, the iff, and open questions.
-- [ ] Prove `theorem validQTime_iff_validDense (φ) : ValidQTime φ ↔ ValidDense φ` as
+- [x] Prove `theorem validQTime_iff_validDense (φ) : ValidQTime φ ↔ ValidDense φ` as
   forward direction: `obtain ⟨d⟩ := derivable_of_validQTime φ h; exact soundness_dense_valid d`;
   backward direction: `validQTime_of_validDense` (as in the report Appendix).
-- [ ] If a new file was created, add `import FormalSystem.Metalogic.QTime` to
+- [x] If a new file was created, add `import FormalSystem.Metalogic.QTime` to
   `FormalSystem/Metalogic.lean` and a one-line mention in its module docstring.
 
 **Timing**: 45 minutes
