@@ -386,27 +386,4 @@ theorem denseTestPsi_eval (t : denseWindowFlow.carrier) :
       ∃ x : denseWindowFlow.carrier, t < x ∧ denseWindowFlow.interp () x :=
   Iff.rfl
 
-/-- **Anti-vacuity, the instantiation.** The conditional theorem produces an actual
-`{ A : Formula // … }` at the dense window flow for the non-trivial `denseTestPsi`, with the
-hypotheses discharged from `densePrior_target_hypotheses_inhabited` rather than assumed.
-
-**Sorry-free**, and stated parametrically in `H` rather than applying
-`kampFaithfulExpressiveCompleteness` internally: it consumes
-`uSExpressivelyCompleteOverDensePriorOfFaithful` rather than
-`uSExpressivelyCompleteOverDensePrior`, so what it exhibits is independent of *how* the
-expressive-completeness obligation is met. That was originally a way of staying honest while the
-obligation was open; now that `kampFaithfulExpressiveCompleteness` proves it, the parametric form
-is simply the stronger statement. It shows the target's conclusion is *reachable* at a dense
-structure, and that the route from the hypotheses to the carrier actually fires there. -/
-noncomputable def uSExpressivelyCompleteOverDensePriorAtDenseWindow
-    (H : KampFaithfulExpressiveCompleteness densePriorAtomMap densePriorAtomMap_surj) :
-    { A : Formula //
-      ∀ t : denseWindowFlow.carrier,
-        eval denseWindowFlow (fun _ => t) denseTestPsi ↔
-        TemporalTruth denseWindowFlow densePriorAtomMap t A } :=
-  let R := uSExpressivelyCompleteOverDensePriorOfFaithful densePriorAtomMap
-    densePriorAtomMap_surj H denseTestPsi
-  ⟨R.val, fun t => R.property denseWindowFlow
-    semanticPriorU_of_dense_window semanticPriorS_of_dense_window t⟩
-
 end FormalSystem.Metalogic.WeakCanonical
