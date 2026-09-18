@@ -1226,37 +1226,9 @@ def buildTableauAuto (φ : Formula) (fc : FrameClass := .Base) : Option Expanded
 ## Saturation Properties
 -/
 
-/--
-Check if a branch is fully saturated (all formulas expanded).
--/
-def isSaturated (b : Branch) (fc : FrameClass := .Base) : Bool :=
-  (findUnexpanded b (fc := fc)).isNone
-
-/--
-A saturated branch contains only atomic signed formulas
-(atoms, bot, or modal/temporal operators that can't be further expanded).
--/
-def isAtomicBranch (b : Branch) (fc : FrameClass := .Base) : Bool :=
-  b.all fun sf =>
-    match sf.formula with
-    | .atom _ => true
-    | .bot => true
-    | _ => isExpanded sf b (fc := fc)
-
 /-!
 ## Termination Measure
 -/
-
-/--
-Termination measure for branch expansion.
-Sum of unexpanded complexities decreases with each rule application.
--/
-def expansionMeasure (b : Branch) (fc : FrameClass := .Base) : Nat :=
-  b.foldl (fun acc sf =>
-    if isExpanded sf b (fc := fc) then acc
-    else acc + sf.formula.complexity) 0
-
--- Note: expansion_decreases_measure theorem was archived (required technical proof)
 
 /-!
 ## Tableau Statistics
