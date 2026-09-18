@@ -111,23 +111,23 @@ next_project_number: 620
 
 ### Codebase Cleanup
 
-588 [PLANNED] — Triage the 1,029 declarations C17 reports as having zero...
+588 [IMPLEMENTING] — Triage the 1,029 declarations C17 reports as having zero...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
-619 [PLANNED] — Every linter suppression in the tree must carry a recorded...
+619 [IMPLEMENTING] — Every linter suppression in the tree must carry a recorded...
 
 ### Semantics Refactor
 
-615 [PLANNED] — Close the residue of the possible-world index retarget. The...
+615 [IMPLEMENTING] — Close the residue of the possible-world index retarget. The...
 
 ## Tasks
 
 ### 619. Require reasons for linter suppressions
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 585
@@ -240,7 +240,7 @@ CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of eve
 
 ### 615. Close world history reach through residue
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics-refactor
 - **Dependencies**: None
@@ -401,7 +401,7 @@ ORDERING NOTE: this is the terminal task of the codebase-cleanup topic because e
 
 ### 588. Triage zero occurrence declarations
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 585, Task 591, Task 594
