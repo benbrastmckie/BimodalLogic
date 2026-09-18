@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "summary": "Positive verdict at all four classes: TMFrag_Base = TM- + (Sp/DD); TMFrag_Dense = TM-_d; TMFrag_ZTime = TM-_z + Z1; TMFrag_RTime = TM-_r, via Burgess 1984 s2.5-2.7, Venema 2001 Thm 3.3, and a universal-modality reduction (MF+TR+S5 make box universal). Paper's negative footnote is not supportable; machine-checkable now: soundness TM- + Sigma <= TMFrag and conditional completeness.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/534_hg_fragment_finite_axiomatizability/reports/01_hg-fragment-axiomatizability.md",
+      "summary": "Positive verdict at all four classes: TMFrag_Base = TM- + (Sp/DD); TMFrag_Dense = TM-_d; TMFrag_ZTime = TM-_z + Z1; TMFrag_RTime = TM-_r, via Burgess 1984 s2.5-2.7, Venema 2001 Thm 3.3, and a universal-modality reduction (MF+TR+S5 make box universal). Paper's negative footnote is not supportable; machine-checkable now: soundness TM- + Sigma <= TMFrag and conditional completeness."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "dispatch_seq": 3,
+  "next_action_hint": "plan: soundness via TMMinusExt Hilbert system + conditional completeness; report positive verdict to paper so footnote is reworded"
+}

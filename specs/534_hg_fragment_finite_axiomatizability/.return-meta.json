@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/534_hg_fragment_finite_axiomatizability/reports/01_hg-fragment-axiomatizability.md",
+      "summary": "Positive verdict at all four classes: TMFrag_Base = TM- + (Sp/DD); TMFrag_Dense = TM-_d; TMFrag_ZTime = TM-_z + Z1; TMFrag_RTime = TM-_r, via Burgess 1984 s2.5-2.7, Venema 2001 Thm 3.3, and a universal-modality reduction (MF+TR+S5 make box universal). Paper's negative footnote is not supportable; machine-checkable now: soundness TM- + Sigma <= TMFrag and conditional completeness."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789758953_24f7fc_534",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ]
+  }
+}
