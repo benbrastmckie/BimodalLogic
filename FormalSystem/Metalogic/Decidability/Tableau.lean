@@ -2952,21 +2952,6 @@ def expandOnceUnblockedWithApplied (b : Branch) (timeOrd : TimeOrdering := TimeO
   let (result, newOrd) := expandOnceUnblocked b timeOrd fc tracker
   (result, newOrd, [])
 
-/--
-Count of unexpanded formulas in a branch (termination measure).
--/
-def countUnexpanded (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
-    (fc : FrameClass := .Base) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf b timeOrd fc) |>.length
-
-/--
-Total unexpanded complexity (alternative termination measure).
--/
-def totalUnexpandedComplexity (b : Branch) (timeOrd : TimeOrdering := TimeOrdering.empty)
-    (fc : FrameClass := .Base) : Nat :=
-  b.filter (fun sf => ¬isExpanded sf b timeOrd fc)
-  |>.foldl (fun acc sf => acc + sf.complexity) 0
-
 /-!
 ## What Saturation Says About Every Rule
 
