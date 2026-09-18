@@ -1,0 +1,12 @@
+{
+  "status": "researched",
+  "summary": "Split verdict: rename swapMinus->reflectTime and _swap_valid->_reflect_time_valid (TR-sense); keep swapUS (box-opaque, not reflectTime) and truth_swap (lem:temporal-duality analogue); no serialized strings affected.",
+  "artifacts": [
+    {"type": "report", "path": "specs/608_decide_and_rename_swapus_swapminus_families/reports/01_swap-family-rename-decision.md", "summary": "Inventory, per-family verdict, proposed rename-map.tsv, and 3-phase outline (token rename, classified prose pass, record update)."}
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "dispatch_seq": 4,
+  "next_action_hint": "Plan: phase 1 atomic token rename via rename-map.tsv; phase 2 classified prose rewording (Derivation.lean:27 contrast); phase 3 record + README updates and gates."
+}

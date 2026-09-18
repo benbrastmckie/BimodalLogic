@@ -1,0 +1,12 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {"type": "report", "path": "specs/608_decide_and_rename_swapus_swapminus_families/reports/01_swap-family-rename-decision.md", "summary": "Split verdict: rename swapMinus->reflectTime and _swap_valid->_reflect_time_valid (TR-sense); keep swapUS (box-opaque, not reflectTime) and truth_swap (lem:temporal-duality analogue); no serialized strings affected."}
+  ],
+  "metadata": {
+    "session_id": "sess_1789728492_5b1bc4_608",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
