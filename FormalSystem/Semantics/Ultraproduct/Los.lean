@@ -44,8 +44,6 @@ and `imp` are mechanical, and even `bot` is not `Iff.rfl` (it needs `φ.NeBot`, 
 through `exists_section` and through `Carrier.lean`'s `LinearOrder` instance.
 -/
 
-set_option linter.unusedSectionVars false
-
 open Filter FormalSystem.Syntax
 open FormalSystem.Semantics.ShiftSet (ShiftTruth)
 

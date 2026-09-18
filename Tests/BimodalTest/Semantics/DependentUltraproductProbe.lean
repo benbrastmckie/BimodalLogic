@@ -47,8 +47,6 @@ No definition, no theorem, no instance. Anything that constructs is scope that b
 grows a `def` again, the promotion has been undone.
 -/
 
-set_option linter.unusedSectionVars false
-
 open FormalSystem.Semantics FormalSystem.Semantics.Ultraproduct
 
 namespace BimodalTest.DependentUltraproductProbe

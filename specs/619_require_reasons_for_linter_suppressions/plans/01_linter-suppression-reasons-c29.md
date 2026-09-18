@@ -134,21 +134,21 @@ re-enters `RegionFrame.lean`, so it must not run concurrently with Phase 2.
 
 ---
 
-### Phase 1: Capture Pre-Edit Baselines [NOT STARTED]
+### Phase 1: Capture Pre-Edit Baselines [COMPLETED]
 
 **Goal**: Record the tree's exact starting state so every later measurement is a diff, not an
 absolute judgement — specifically the already-red C16 inherited from the burn-down.
 
 **Tasks**:
-- [ ] Confirm the working tree is clean over `FormalSystem/ Tests/ scripts/ docs/`
+- [x] Confirm the working tree is clean over `FormalSystem/ Tests/ scripts/ docs/`
       (`git status --porcelain`).
-- [ ] Re-grep the inventory: `grep -rn "set_option linter\." --include="*.lean" FormalSystem Tests scripts`.
+- [x] Re-grep the inventory: `grep -rn "set_option linter\." --include="*.lean" FormalSystem Tests scripts`.
       Expect 12 occurrences at the lines recorded in the report; record any drift.
-- [ ] Run the full invariant harness (`bash scripts/check-module-invariants.sh`) and save its
-      output to the task scratch. Record C16's exact finding list and C28's line verbatim.
-- [ ] Run `python3 scripts/warning-budget.py` and record the result (expected:
+- [x] Run the full invariant harness (`bash scripts/check-module-invariants.sh`) and save its
+      output to the task scratch. Record C16's exact finding list and C28's line verbatim. *(deviation: altered — C16 is GREEN on the clean tree, not red as the Risks row assumed; baseline is `PASS C16 ... has no un-nolisted finding` plus the pre-existing `TODO C16 161 finding(s) across 10 of 14 non-FormalSystem lakefile root(s)` which is not-yet-enforced)*
+- [x] Run `python3 scripts/warning-budget.py` and record the result (expected:
       `0 warning(s) across 0 file(s)`).
-- [ ] Confirm C28 is the highest live check ID
+- [x] Confirm C28 is the highest live check ID
       (`grep -oE '\bC[0-9]+\b' scripts/check-module-invariants.sh | sort -uV | tail`), so C29 is free.
 
 **Timing**: 0.5 hours
@@ -171,27 +171,27 @@ differs, before any edit.
 
 ---
 
-### Phase 2: Delete the Four Zero-Warning Suppressions [NOT STARTED]
+### Phase 2: Delete the Four Zero-Warning Suppressions [COMPLETED]
 
 **Goal**: Remove the four suppressions measured to hide nothing, with no other source change.
 
 **Tasks**:
-- [ ] Delete `FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:128`
+- [x] Delete `FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:128`
       (`set_option linter.unusedVariables false in`) — Trial 1: zero warnings.
-- [ ] Delete `FormalSystem/Semantics/Ultraproduct/Los.lean:47` (file-scoped) — burn-down: 0.
-- [ ] Delete `FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean:60` (file-scoped) —
+- [x] Delete `FormalSystem/Semantics/Ultraproduct/Los.lean:47` (file-scoped) — burn-down: 0.
+- [x] Delete `FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean:60` (file-scoped) —
       burn-down: 0.
-- [ ] Delete `Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean:50` (file-scoped) —
+- [x] Delete `Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean:50` (file-scoped) —
       Trial 4: zero warnings.
-- [ ] Build each touched module through the guard and confirm **zero** new warnings:
+- [x] Build each touched module through the guard and confirm **zero** new warnings:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionFrame
       FormalSystem.Semantics.Ultraproduct.Los FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
       BimodalTest.Semantics.DependentUltraproductProbe`
-- [ ] Confirm each module reports *Built* rather than replayed; a replay proves nothing about a
+- [x] Confirm each module reports *Built* rather than replayed; a replay proves nothing about a
       just-edited file.
-- [ ] Re-run `python3 scripts/warning-budget.py` after the build completes: still zero.
-- [ ] Commit (`task 619 phase 2: …`) once green.
+- [x] Re-run `python3 scripts/warning-budget.py` after the build completes: still zero.
+- [x] Commit (`task 619 phase 2: …`) once green.
 
 **Timing**: 1.5 hours
 

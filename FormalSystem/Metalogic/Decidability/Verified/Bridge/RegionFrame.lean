@@ -125,7 +125,6 @@ open FormalSystem.Metalogic.Decidability
 
 section Frame
 
-set_option linter.unusedVariables false in
 /-- Every fibre (`def:task-relation`, *Fiber* clause) of the region clock relation is a
 subsingleton: the clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. Stated on the bare
 relation, and **above** `regionFrame`, so that the frame's own *Saturation* field can discharge

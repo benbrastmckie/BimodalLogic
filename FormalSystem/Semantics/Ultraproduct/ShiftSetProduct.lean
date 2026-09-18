@@ -57,8 +57,6 @@ through `exists_section` and through `Carrier.lean`'s `LinearOrder` instance; `p
 the `Quotient.liftOn` well-definedness proof for `A`.
 -/
 
-set_option linter.unusedSectionVars false
-
 open Filter
 
 namespace FormalSystem.Semantics.Ultraproduct
