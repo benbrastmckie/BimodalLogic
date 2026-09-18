@@ -124,12 +124,6 @@ def canonicalize (φ : Formula) : Formula :=
   applyAtomMap m φ
 
 /--
-Check if a formula is in canonical form (i.e., canonicalize is idempotent on it).
--/
-def isCanonical (φ : Formula) : Bool :=
-  canonicalize φ == φ
-
-/--
 Canonicalize and deduplicate a list of formulas.
 
 Returns only the canonical representatives, preserving the order of first
