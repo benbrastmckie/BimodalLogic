@@ -1,22 +1,14 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-18T07:12:12Z",
+  "completed_at": "2026-09-18T07:42:49Z",
+  "verification": {"verification_passed": true, "sorry_count": 0, "vacuous_count": 0, "axiom_count": 14, "build_passed": true},
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/603_investigate_qtime_frame_predicate/plans/01_qtime-frame-predicate.md",
-      "summary": "4-phase plan: IsQTime + isDense bridge in FrameProperty.lean, ValidQTime + ℚ completeness engine, validQTime_iff_validDense in new Metalogic/QTime.lean, tests and full build."
-    }
+    {"type": "summary", "path": "specs/603_investigate_qtime_frame_predicate/summaries/01_qtime-frame-predicate-summary.md", "summary": "IsQTime predicate, ValidQTime, and validQTime_iff_validDense implemented sorry-free with standard axioms."}
   ],
-  "next_steps": "Run /implement 603 to execute the plan",
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1789714964_200d88_603",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3,
-    "dependency_waves": [[1], [2], [3], [4]]
+  "completion_data": {
+    "completion_summary": "Added the intrinsic ℚ-time frame predicate TaskFrame.IsQTime (divisible + pairwise commensurable) with isDense_of_isQTime, ValidQTime, isQTime_rat, derivable_of_validQTime, and proved validQTime_iff_validDense in the new Metalogic/QTime.lean; derivable_of_validDense now routes through the ℚ-time engine. Full build and invariant checks green, standard axioms only.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 2
+  "metadata": {"session_id": "sess_1789714964_200d88", "agent_type": "lean-implementation-agent", "delegation_depth": 1, "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"], "compliance_check": "passed", "phases_completed": 4, "phases_total": 4}
 }
