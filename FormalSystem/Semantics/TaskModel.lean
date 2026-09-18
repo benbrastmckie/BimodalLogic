@@ -75,15 +75,6 @@ Simple model where all atoms are true everywhere.
 def allTrue : TaskModel F where
   valuation := fun _ _ => True
 
-/--
-Model where specific atoms have specific truth values.
-
-Helper function to construct models for testing.
-Takes a list of atom base names (without fresh indices) for backward compatibility.
--/
-def fromList (trueAtoms : List String) : TaskModel F where
-  valuation := fun _ p => p.base ∈ trueAtoms ∧ p.freshIndex.isNone
-
 end TaskModel
 
 /-!
