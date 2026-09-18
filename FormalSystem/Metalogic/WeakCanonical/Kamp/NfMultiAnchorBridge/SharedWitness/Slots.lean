@@ -344,13 +344,6 @@ noncomputable def kvE2SepSlotsL {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2SepPos qnf).flatMap kvE2SepSlotsLFor
 
-/-- Canonical joint RIGHT slot list (between the shared `w` and `t`). Stays over
-    `kvE2SepPos` (see `kvE2SepSlotsL` — deliberate choice). -/
-noncomputable def kvE2SepSlotsR {sig : MonadicSignature} [Fintype sig.preds]
-    [DecidableEq sig.preds]
-    (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
-  (kvE2SepPos qnf).flatMap kvE2SepSlotsRFor
-
 /-! ## Foundation — the full per-individual-slot family (`Fin N`)
 
 Model-independent scaffolding for the per-slot value-rank carrier (plan Phase 6: "the FULL slot
