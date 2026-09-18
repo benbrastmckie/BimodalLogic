@@ -11,7 +11,7 @@ next_project_number: 621
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,597,604,606,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,534,559,563,568,597,604,606,610,614 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,540,560,564,565,567,570,608,616,617 | 298,464,502,559,563,568,597,606 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,600,618 | 231,465,497,540,564,565,608,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,607 | 428,498,499,500,600 | algebraic-representation, decidability, documentation, ... |
@@ -90,10 +90,6 @@ next_project_number: 621
 ### Incompleteness
 
 534 [NOT STARTED] — Research and, where feasible, establish in Lean whether the...
-
-### Literature
-
-504 [IMPLEMENTING] — Retry acquisition of the standard modal-representation...
 
 ### Metalogic
 
@@ -680,12 +676,13 @@ ORDERING NOTE (codebase-cleanup reorganization, 2026-09-16): this layout pass fo
 ---
 
 ### 504. Retry acquisition of missing representation sources
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
 - **Research**: [504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md]
 - **Plan**: [504_retry_acquisition_of_missing_representation_sources/plans/01_finalize-acquisition-record-blockers.md]
+- **Summary**: [504_retry_acquisition_of_missing_representation_sources/summaries/01_finalize-acquisition-record-blockers-summary.md]
 
 **Description**: Retry acquisition of the standard modal-representation sources that the representation-section literature research could not obtain because Semantic Scholar (literature-discover.sh Tier 3) was rate-limited (HTTP 429) for the whole session: Sambin & Vaccaro 1988 "Topology and duality in modal logic"; S. K. Thomason 1972 "Semantic analysis of tense logics" and 1975 "Categories of frames for modal logic"; Goldblatt 1976 "Metamathematics of modal logic" I-II; Fine 1975 "Some connections between elementary and modal logic"; Gehrke & Jonsson 2004 "Bounded distributive lattice expansions" (mscand.dk URLs 404; proxy gehrke_vosmaer_2011 already ingested); Gabbay & Shehtman "Products of modal logics I"; Marx & Venema 1997 "Multi-dimensional modal logic" (Zotero metadata only, no PDF). Use /literature "<title>" or literature-discover.sh once Tier 3 recovers (or after the S2_API_KEY / multi-provider fallback lands in the literature extension), ingest what is open-access or in Zotero, record paywalled items honestly as not acquired, and register every acquired doc in specs/literature-index.json with reason and citation_rule fields following the existing entries. Evidence and the full standard-sources checklist are in specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md sections 2.2-2.3
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Finalize Representation-Source Acquisition and Record Blockers
 
 - **Task**: 504 - retry_acquisition_of_missing_representation_sources
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/504_retry_acquisition_of_missing_representation_sources/reports/01_retry-acquisition-representation-sources.md`
