@@ -315,25 +315,25 @@ system under descriptive constructor names, and states each past mirror explicit
 paper obtains it by the time reflection metarule TR. "Mirror" means the constructor is the exact
 `Formula.reflectTime` image of its partner.
 
-| Paper key | Paper schema | Lean primary constructor | Lean mirror (paper derives it by TR) |
-|---|---|---|---|
-| TN | if ⊢φ then ⊢Gφ | `DerivationTree.temporal_necessitation` (rule) | none |
-| TR | if ⊢φ then ⊢φ⟨S\|U⟩ | `DerivationTree.time_reflection` (rule, `reflectTime`) | none |
-| TS | F⊤ | `serial_future` (⊤→F⊤) | `serial_past` |
-| TC | φ → GPφ | `connect_future` | `connect_past` |
-| TL | Fφ∧Fψ → F(Fφ∧ψ) ∨ F(φ∧ψ) ∨ F(φ∧Fψ) | `temp_linearity` (disjuncts ordered F(φ∧ψ) ∨ (F(φ∧Fψ) ∨ F(Fφ∧ψ)), a reordering of the paper's) | `temp_linearity_past` |
-| UE | (φUψ) → Fψ | `until_F` | `since_P` |
-| UT | Fφ → (⊤Uφ) | `F_until_equiv` | `P_since_equiv` |
-| UI | φU(φ∧(φUψ)) → φUψ | `absorb_until` | `absorb_since` |
-| UC | G(φ→ψ) → (χUφ → χUψ) | `right_mono_until` | `right_mono_since` |
-| UF | (φUψ) → (φ∧(φUψ))Uψ | `self_accum_until` | `self_accum_since` |
-| UG | G(φ→χ) → (φUψ → χUψ) | `left_mono_until_G` | `left_mono_since_H` |
-| SU | θ∧(φUψ) → φU(ψ∧(φSθ)) | `enrichment_until` | `enrichment_since` |
-| CN | (φUψ ∧ χUθ) → three-way disjunction | `linear_until` (left-associated `(A∨B)∨C`) | `linear_since` |
-| NP | X⊤ → Y⊤ | `discrete_symm_fwd` | `discrete_symm_bwd` |
-| NF | X⊤ → GX⊤ | `discrete_propagate_fwd` | none |
-| NA | X⊤ → HX⊤ | `discrete_propagate_bwd` (the name suggests a mirror, but it is NA itself) | none |
-| NB | X⊤ → □X⊤ | `discrete_box_necessity` | none |
+| Paper key | Paper schema | Lean primary constructor | Lean mirror (paper derives it by TR) | Burgess / Xu source |
+|---|---|---|---|---|
+| TN | if ⊢φ then ⊢Gφ | `DerivationTree.temporal_necessitation` (rule) | none | Burgess 1982 rule TG (G half) |
+| TR | if ⊢φ then ⊢φ⟨S\|U⟩ | `DerivationTree.time_reflection` (rule, `reflectTime`) | none | — |
+| TS | F⊤ | `serial_future` (⊤→F⊤) | `serial_past` | Burgess 1982 §1.6, No Last Element |
+| TC | φ → GPφ | `connect_future` | `connect_past` | original |
+| TL | Fφ∧Fψ → F(Fφ∧ψ) ∨ F(φ∧ψ) ∨ F(φ∧Fψ) | `temp_linearity` (disjuncts ordered F(φ∧ψ) ∨ (F(φ∧Fψ) ∨ F(Fφ∧ψ)), a reordering of the paper's) | `temp_linearity_past` | Burgess 1984 §0.3 A2a/A2b (verbatim); nearest Xu (13) |
+| UE | (φUψ) → Fψ | `until_F` | `since_P` | not in Burgess 1982; follows from UG with new guard ⊤, plus TN |
+| UT | Fφ → (⊤Uφ) | `F_until_equiv` | `P_since_equiv` | original |
+| UI | φU(φ∧(φUψ)) → φUψ | `absorb_until` | `absorb_since` | Burgess 1982 A6a/A6b; Xu (9) |
+| UC | G(φ→ψ) → (χUφ → χUψ) | `right_mono_until` | `right_mono_since` | Burgess 1982 A1a/A1b; Xu (1)/(2) |
+| UF | (φUψ) → (φ∧(φUψ))Uψ | `self_accum_until` | `self_accum_since` | Burgess 1982 A5a/A5b; Xu (7)/(8) |
+| UG | G(φ→χ) → (φUψ → χUψ) | `left_mono_until_G` | `left_mono_since_H` | Burgess 1982 A2a/A2b; Xu (1)/(2) |
+| SU | θ∧(φUψ) → φU(ψ∧(φSθ)) | `enrichment_until` | `enrichment_since` | Burgess 1982 A3a/A3b; Xu (3)/(4) |
+| CN | (φUψ ∧ χUθ) → three-way disjunction | `linear_until` (left-associated `(A∨B)∨C`) | `linear_since` | Burgess 1982 A7a/A7b; Xu (10)/(11) |
+| NP | X⊤ → Y⊤ | `discrete_symm_fwd` | `discrete_symm_bwd` | original |
+| NF | X⊤ → GX⊤ | `discrete_propagate_fwd` | none | original |
+| NA | X⊤ → HX⊤ | `discrete_propagate_bwd` (the name suggests a mirror, but it is NA itself) | none | original |
+| NB | X⊤ → □X⊤ | `discrete_box_necessity` | none | original |
 
 The counts reconcile: the paper's 11 non-uniformity temporal axioms appear as 11 pairs (22
 constructors), and its 4 uniformity axioms as 5 constructors (NP's mirror is explicit), giving
@@ -341,6 +341,13 @@ the tree's 27. Every Lean constructor is a paper axiom instance or a TR image of
 Lean rule, so the two presentations derive the same theorems at the empty context. This is a
 textual correspondence, checked by inspection and by `simp` spot checks on representative
 mirror pairs; it is **not** a machine-checked `derivable_iff` theorem.
+
+The "Burgess / Xu source" column cites Burgess 1982 ("Axioms for tense logic I: Since and
+Until", §1.3 unless noted), Burgess 1984 ("Basic Tense Logic") and Xu 1988 formula numbers. The
+two Burgess papers number their axioms independently: Burgess 1982 A7a is CN, while Burgess 1984
+A7a is an unrelated Dedekind-completeness axiom. Burgess 1982 A4a/A4b is the one pair of his
+that BX omits. The same map, with the reasoning behind the CN (A7a) attribution, is in
+`FormalSystem/ProofSystem/Axioms.lean`'s module docstring, § Axiom Sources.
 
 ## Axiom Application Examples
 

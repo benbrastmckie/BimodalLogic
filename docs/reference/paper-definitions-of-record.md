@@ -143,13 +143,36 @@ uniformity layer "does not even match in count". Both claims were wrong.
 now reads as this repository's own transposition, consistent with "Language correspondence
 (2026-09-08)" above.
 
-**Open opportunity: `def:BX`'s Burgess/Xu provenance footnote.** The paper now attributes TN, TS,
+**`def:BX`'s Burgess/Xu provenance footnote: closed.** The paper attributes TN, TS,
 UC/UG/SU/UF/UI (A1a/A2a/A3a/A5a/A6a), CN (A7a, with Xu) and TL (in spirit, Xu's V₃) to Burgess and
-Xu, and marks TC/UT/NP/NF/NA/NB as original. Of these attributions only SU (`enrichment_until`,
-"Burgess A3a, Xu (3)") has a counterpart in `ProofSystem/Axioms.lean`. **Caution for whoever folds
-it in:** the `linear_until` region of `Axioms.lean` carries a NOTE saying Burgess's A7a was
-*removed as unsound under open guard*, while the footnote says CN *is* A7a. The two claims must be
-reconciled (fixed-event vs. per-witness events), not copied verbatim.
+Xu, and marks TC/UT/NP/NF/NA/NB as original. The apparent contradiction with the tree is resolved
+in the paper's favour: **CN is Burgess 1982 A7a**, and it is sound. Burgess 1982 §1.2 uses the same
+strict/open-guard semantics as this tree (the guard holds on `x < z < y`), and the tree proves A7a
+valid under it (`linear_until_valid` in `FormalSystem/Metalogic/Soundness.lean`). The old NOTE in
+`ProofSystem/Axioms.lean` that called A7a "removed as unsound under open guard" was about a
+different formula. A former constructor pair, `linear_until_a7a`/`linear_since_a7a`, copied
+Burgess's `U(event, guard)` argument positions into the guard-first `untl` without swapping them,
+so A7a's fixed guard `q∧s` became a fixed event. That fixed-event variant is unsound and was
+removed, but the defect was in the transcription, not in A7a. The NOTE now says so. The full
+reconciled map is in `FormalSystem/ProofSystem/Axioms.lean`'s module docstring, § Axiom Sources,
+and in `docs/reference/axiom-reference.md` § Paper Key Correspondence. Each attributed
+constructor's docstring also carries its Burgess/Xu tag. On Xu, the precise statement is this:
+Xu 1988 prints A7a as his formula (10), with mirror (11), and places it in the axiom set Σ₄, which
+is complete for the class 𝒞₄ of linear frames. On its own, (10) defines the first-order interval
+condition (10)*, not linearity itself. The footnote's "defining linear frames" is directionally
+right but loose. Burgess 1984's A7a is a different axiom (Dedekind completeness,
+`Fp ∧ FG¬p → F(HFp ∧ G¬p)`), and the three Chronicle files that cite it now say so.
+
+**Paper footnote errata (outside this repository).** Two items in the `def:BX` footnote are wrong
+against the sources. They are recorded here, and the paper source is not edited from this
+repository. The quoted footnote block below is left exactly as the paper prints it.
+
+1. *UE's derivation.* The footnote says UE follows from UC with ψ = ⊤. It follows from **UG** with
+   the new guard χ = ⊤, plus TN for `G(φ → ⊤)`: UG gives `(φUψ) → (⊤Uψ)`, and `⊤Uψ` is `Fψ`.
+   UC with ψ = ⊤ gives `(χUφ) → (χU⊤)`, which is not UE.
+2. *TL's source.* Xu 1988 has no frame class `𝖵₃`; his classes are 𝒞₀-𝒞₅. TL is verbatim Burgess
+   1984 §0.3 axiom A2a (mirror A2b), and the nearest Xu formula is (13), `Fp → G(p ∨ Fp ∨ Pp)`
+   (§4, Theorem 4.3).
 
 **`cor:tm-completeness`'s new *Determined* sentence is backed by the tree.** It reads: each system
 "extended to include *Determined* ... sound over the task frames in its class validating
