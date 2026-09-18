@@ -428,6 +428,20 @@ bundled `state`. -/
 theorem states_eq_state (τ : WorldHistory F) (t : F.Duration) (h : τ.val.domain t) :
     τ.val.states t h = τ.state t := rfl
 
+/--
+**The `respects_task` obligation read at the bundled `state` accessor.**
+
+`PartialHistory.respects_task` takes a domain witness at each endpoint; totality supplies both, so
+at the world-history layer the obligation is the bare relation between two states. This is the sole
+sanctioned replacement for hand-spelling `τ.val.respects_task s t (τ.property s) (τ.property t)`:
+no consumer of a world history needs to open the subtype to use it.
+
+Not `@[simp]` — it proves a relation, not an equation.
+-/
+theorem respects_task (τ : WorldHistory F) (s t : F.Duration) :
+    F.TaskRel (τ.state s) (t - s) (τ.state t) :=
+  τ.val.respects_task s t (τ.property s) (τ.property t)
+
 /-- Two world histories are equal when their underlying partial histories are. -/
 @[ext]
 theorem ext {τ σ : WorldHistory F} (h : τ.val = σ.val) : τ = σ :=

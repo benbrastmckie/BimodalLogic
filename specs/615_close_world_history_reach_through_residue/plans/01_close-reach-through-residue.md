@@ -107,26 +107,26 @@ completed or newly opened by this plan.
 Phases within the same wave can execute in parallel. Phases 2 and 3 own disjoint file sets
 (`FormalSystem/Semantics/**` vs `FormalSystem/Metalogic/**`) and may be dispatched together.
 
-### Phase 1: Add the world-history `respects_task` accessor [NOT STARTED]
+### Phase 1: Add the world-history `respects_task` accessor [COMPLETED]
 
 - **Goal:** The single lemma that 22 call sites need exists in the library, in the exact form the
   research probe elaborated, and the tree still builds.
 - **Tasks:**
-  - [ ] Confirm no name collision before writing: `grep -rn "WorldHistory.respects_task" FormalSystem/`
+  - [x] Confirm no name collision before writing: `grep -rn "WorldHistory.respects_task" FormalSystem/`
         returns nothing, and `namespace WorldHistory` is opened only at `PartialHistory.lean:408`.
-  - [ ] Insert the lemma into `FormalSystem/Semantics/PartialHistory.lean` immediately after
+  - [x] Insert the lemma into `FormalSystem/Semantics/PartialHistory.lean` immediately after
         `states_eq_state` (currently ends `:429`), inside the existing `namespace WorldHistory`:
         ```lean
         theorem respects_task (τ : WorldHistory F) (s t : F.Duration) :
             F.TaskRel (τ.state s) (t - s) (τ.state t) :=
           τ.val.respects_task s t (τ.property s) (τ.property t)
         ```
-  - [ ] Give it a docstring naming it as the `respects_task` obligation read at the bundled `state`
+  - [x] Give it a docstring naming it as the `respects_task` obligation read at the bundled `state`
         accessor, and recording that it is the sole sanctioned replacement for hand-spelling the
         dependent projection.
-  - [ ] Do NOT mark it `@[simp]` — it proves a relation, not an equation.
-  - [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`
-  - [ ] Commit.
+  - [x] Do NOT mark it `@[simp]` — it proves a relation, not an equation.
+  - [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`
+  - [x] Commit.
 - **Timing:** 20 minutes
 - **Depends on:** none
 - **Verification Tier:** full
