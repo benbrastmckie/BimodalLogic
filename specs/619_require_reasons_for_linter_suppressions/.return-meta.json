@@ -1,32 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/619_require_reasons_for_linter_suppressions/reports/01_linter-suppression-reasons.md",
-      "summary": "Full suppression inventory (12 live, 7 bare - one more than the task list), four empirical deletion trials with per-site dispositions, and the C29 check design (build-free, masker-backed, exit-2 anti-silence), prototyped against the tree."
+      "type": "plan",
+      "path": "specs/619_require_reasons_for_linter_suppressions/plans/01_linter-suppression-reasons-c29.md",
+      "summary": "Nine-phase plan disposing of all seven bare linter suppressions on trial evidence, adding the build-free C29 invariant check with its negative test, and documenting both."
     }
   ],
   "metadata": {
     "session_id": "sess_1789696399_5c64b8_619",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "dispatch_seq": 3,
-    "key_findings": [
-      "Tree has 12 live set_option linter.* false occurrences, 7 bare (not 10/6): the seventh is Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean:50.",
-      "Task description path for UntlSnceFree.lean is wrong: it is under Verified/Termination/MintBound/, not Verified/Bridge/.",
-      "RegionFrame.lean:128 hides nothing - git archaeology shows bcb8e110b inserted regionRel_fib_subsingleton between it and its target regionFrame, silently retargeting it, and e18cd2271 later fixed the original target with a _iota binder.",
-      "RegionFrame.lean:278 hides exactly one warning (f unused at :292:19); recommended fix is the rename f -> _f that warning-budget.txt's own disposition row prescribes, not a documented keep.",
-      "UntlSnceFree.lean:352 is load-bearing: replacing the assumption at :404 with skip fails the build with 2 unsolved goals at :389:26.",
-      "DependentUltraproductProbe.lean:50 hides zero warnings (build verified Built, not replayed).",
-      "Next free check ID is C29; a prototype matcher classifies all 12 occurrences correctly in 0.11s, build-free, with no companion allowlist needed."
-    ],
-    "verification": {
-      "trials_run": 4,
-      "tree_restored": "md5sum -c OK; git status --porcelain over FormalSystem/ Tests/ scripts/ docs/ empty",
-      "warning_budget_after": "0 warning(s) across 0 file(s), all at or below baseline",
-      "artifact_validation": "validate-artifact.sh report: PASS, 0 warnings"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 10,
+    "dependency_waves": [[1], [2, 5], [3, 4], [6], [7], [8], [9]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Lean's `set_option ... in` binds only to the immediately following declaration, so inserting a new declaration between the option line and its intended target silently RETARGETS the option onto the newcomer. Observed live in BimodalLogic: a `set_option linter.unusedVariables false in` introduced above `def regionFrame` was retargeted by a later commit that inserted a theorem between them, then rendered doubly dead when the original target was separately fixed with a `_`-prefixed binder. It sat dead across two further commits with every gate green, because no gate can observe a suppression that suppresses nothing. Two durable consequences: (1) a suppression with no reason attached cannot be noticed going stale, which is the argument for requiring an in-source reason at the site; (2) any textual check that looks for a comment 'immediately above' a suppression must first walk upward past contiguous stacked `set_option ... in` lines, or it misclassifies every suppression that has acquired a `maxHeartbeats` neighbour.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/619_require_reasons_for_linter_suppressions/plans/01_linter-suppression-reasons-c29.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["set_option", "linter-suppression", "retargeting", "lean4", "stale-suppression", "invariant-check"]
     }
-  }
+  ],
+  "next_steps": "Run /implement 619 to execute the plan",
+  "dispatch_seq": 6
 }

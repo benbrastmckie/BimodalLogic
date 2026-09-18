@@ -117,7 +117,7 @@ next_project_number: 620
 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
   └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
-619 [PLANNING] — Every linter suppression in the tree must carry a recorded...
+619 [PLANNED] — Every linter suppression in the tree must carry a recorded...
 
 ### Semantics Refactor
 
@@ -127,11 +127,12 @@ next_project_number: 620
 
 ### 619. Require reasons for linter suppressions
 - **Effort**: medium
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 585
 - **Research**: [619_require_reasons_for_linter_suppressions/reports/01_linter-suppression-reasons.md]
+- **Plan**: [619_require_reasons_for_linter_suppressions/plans/01_linter-suppression-reasons-c29.md]
 
 **Description**: Every linter suppression in the tree must carry a recorded reason, and a check must keep it that way. An audit performed during the compiler-warning burn-down found 10 declaration- and file-scoped `set_option linter.* false` suppressions in the live tree, of which SIX are bare -- no comment above them, nothing in the surrounding docstring, no rationale anywhere. An undocumented suppression is indistinguishable from giving up, and the new C28 warning gate will report a clean zero while they sit there.
 
