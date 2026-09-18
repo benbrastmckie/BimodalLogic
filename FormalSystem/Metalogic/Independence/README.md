@@ -56,7 +56,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | File | Lines | Description |
 |------|-------|-------------|
 | `ClockFrame.lean` | 223 | The periodic clock frame: temporal order `D = ℚ`, world-state carrier the rational circle `W = ℚ ⧸ ℤ`, task relation the deterministic translation flow. All `TaskFrame` obligations discharged, with a reference world history. |
-| `CoNotPriorU.lean` | 532 | The symmetric irrational arc valuation on the clock frame, the refutation of `Axiom.prior_U_gap` in that model, and the two independence statements. |
+| `CoNotPriorU.lean` | 528 | The symmetric irrational arc valuation on the clock frame, the refutation of `Axiom.prior_U_gap` in that model, and the two independence statements. |
 | `CoarsenedModels.lean` | 723 | The non-standard semantics the pasting-independence argument runs on: `CoarseModel`, `SameUnder`, `CTruthAt`; the three structural ports (`c_truth_congr_ext`, `cTruthAt_timeShift`, `c_stab_state_only`); the atomization transfer; the six naive `⊡` validities; and naive soundness `naive_cValid`. |
 | `DeterminismUndefinable.lean` | 189 | The instantiation at `F°`/`F¹`: (T3) `determined_valid_on_non_deterministic`, (T4) `fzero_plusValidOn_iff_f1`, and `deterministic_not_plusDefinable`. |
 | `DriftFrame.lean` | 250 | `F°`, the drift band `x ≤ u - w ≤ 2x` over `ℝ`, with all six `FrameOver` axioms (`limit` and `saturation` included) and `fzero_not_deterministic`. |
