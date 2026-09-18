@@ -1,30 +1,35 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-18T00:39:00-07:00",
+  "completed_at": "2026-09-18T02:08:00-07:00",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 11,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/619_require_reasons_for_linter_suppressions/plans/01_linter-suppression-reasons-c29.md",
-      "summary": "Nine-phase plan disposing of all seven bare linter suppressions on trial evidence, adding the build-free C29 invariant check with its negative test, and documenting both."
+      "type": "summary",
+      "path": "specs/619_require_reasons_for_linter_suppressions/summaries/01_linter-suppression-reasons-c29-summary.md",
+      "summary": "Every linter suppression in the live tree now carries a site-local reason naming its linter, enforced by the new build-free C29 invariant check."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1789696399_5c64b8_619",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 10,
-    "dependency_waves": [[1], [2, 5], [3, 4], [6], [7], [8], [9]]
+  "completion_data": {
+    "completion_summary": "Reduced the tree's 12 `set_option linter.* false` occurrences to 7, eliminating all 7 bare ones: five deleted after deletion trials measured they hid nothing, one removed by renaming `regionHistory`'s unused binder to `_f`, and two kept with in-source reason comments naming what their deletion trials showed. Added check C29 to scripts/check-module-invariants.sh -- build-free, comment-masked, `Tests/`-inclusive, with an upward walk past stacked `set_option ... in` lines, a 13-fixture self-test, and exit-2 anti-silence guards not suppressed by ENFORCE_C29=0 -- plus its MODULE_INVARIANTS.md row and a LEAN_STYLE_GUIDE.md rewrite of the snippet that modelled the shape C29 rejects. Negative-tested three ways; `lake build` green at 2660 jobs, full harness ALL CHECKS PASSED, warning budget unedited at zero.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "Lean's `set_option ... in` binds only to the immediately following declaration, so inserting a new declaration between the option line and its intended target silently RETARGETS the option onto the newcomer. Observed live in BimodalLogic: a `set_option linter.unusedVariables false in` introduced above `def regionFrame` was retargeted by a later commit that inserted a theorem between them, then rendered doubly dead when the original target was separately fixed with a `_`-prefixed binder. It sat dead across two further commits with every gate green, because no gate can observe a suppression that suppresses nothing. Two durable consequences: (1) a suppression with no reason attached cannot be noticed going stale, which is the argument for requiring an in-source reason at the site; (2) any textual check that looks for a comment 'immediately above' a suppression must first walk upward past contiguous stacked `set_option ... in` lines, or it misclassifies every suppression that has acquired a `maxHeartbeats` neighbour.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/619_require_reasons_for_linter_suppressions/plans/01_linter-suppression-reasons-c29.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["set_option", "linter-suppression", "retargeting", "lean4", "stale-suppression", "invariant-check"]
+  "metadata": {
+    "session_id": "sess_1789717075_038883",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "phases_completed": 9,
+    "phases_total": 9,
+    "phase_markers": {
+      "4": "COMPLETED WITH EXCLUSIONS"
     }
-  ],
-  "next_steps": "Run /implement 619 to execute the plan",
-  "dispatch_seq": 6
+  }
 }
