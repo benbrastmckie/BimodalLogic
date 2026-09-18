@@ -561,34 +561,37 @@ Two things the plan did not anticipate, both resolved rather than deferred:
 
 ---
 
-### Phase 7: Cluster disposition table for all post-filter survivors [NOT STARTED]
+### Phase 7: Cluster disposition table for all post-filter survivors [COMPLETED]
 
 **Goal**: Deliver the classification the task asks for -- a recorded disposition for every
 post-filter survivor, at cluster granularity, before any deletion happens.
 
 **Tasks**:
-- [ ] Regenerate the census from the post-filter script and group the survivors by
-      (kind, directory cluster).
-- [ ] Write `specs/588_triage_zero_occurrence_declarations/dispositions.md` with one row per
+- [x] Regenerate the census from the post-filter script and group the survivors by
+      (kind, directory cluster). *(completed)*
+- [x] Write `specs/588_triage_zero_occurrence_declarations/dispositions.md` with one row per
       cluster: cluster, member count, kind, evidence, disposition
       (`delete-in-this-task` / `retire-to-Boneyard` / `keep-with-reason` / `follow-up`),
-      and rationale.
-- [ ] Assign `delete-in-this-task` to the `def` survivors only, split into the three batches
-      Phases 8-10 execute.
-- [ ] Assign `retire-to-Boneyard` + `follow-up` to the 47 Boneyard-only-referenced survivors
+      and rationale. *(completed -- six clusters, A through F)*
+- [x] Assign `delete-in-this-task` to the `def` survivors only, split into the three batches
+      Phases 8-10 execute. *(completed -- 80 of the 81 `def` survivors; the 81st, `freshBase`, is
+      Boneyard-referenced and belongs to the retirement cluster, not this one)*
+- [x] Assign `retire-to-Boneyard` + `follow-up` to the 47 Boneyard-only-referenced survivors
       (largest cluster: 10 in `Syntax/SubformulaClosure/TemporalFormulas.lean`, then 5 in
       `WeakCanonical/Separation/Defs.lean`, 4 in `Algebraic/LindenbaumQuotient.lean`) -- "the
       only consumer is archived" is a retirement decision with its own C11 waiver consequences,
-      not a deletion.
-- [ ] Assign `follow-up` to the `theorem` survivors, grouped by file cluster largest-first
+      not a deletion. *(completed -- the three named clusters reproduce exactly: 10, 5, 4)*
+- [x] Assign `follow-up` to the `theorem` survivors, grouped by file cluster largest-first
       (`Syntax/SubformulaClosure/TemporalFormulas.lean` 18, `BXCanonical/Chronicle/RRelation.lean`
       16, `BXCanonical/Chronicle/ChronicleConstruction.lean` 16, `Conservativity/Plus/Forward.lean`
-      12, then the 11-row files).
-- [ ] Assign `keep-with-reason` to the `structure` survivors (constructors and projections are
+      12, then the 11-row files). *(completed -- grouped largest-first; the plan's per-file numbers
+      are pre-split totals, see Phase Notes)*
+- [x] Assign `keep-with-reason` to the `structure` survivors (constructors and projections are
       reached by pattern matching, which no textual scan sees) and to the six orphan-module
-      survivors already covered by Phase 2's C6 reconciliation.
-- [ ] Confirm every post-filter survivor is accounted for in exactly one cluster; the row counts
-      must sum to the headline.
+      survivors already covered by Phase 2's C6 reconciliation. *(completed -- clusters C and E)*
+- [x] Confirm every post-filter survivor is accounted for in exactly one cluster; the row counts
+      must sum to the headline. *(completed -- 80 + 47 + 6 + 1 + 6 + 631 = 771, computed from the
+      census rather than asserted)*
 
 **Timing**: 1.5 hours
 
@@ -608,6 +611,46 @@ counts; the sum must equal C17's printed headline exactly.
 **Verification**:
 - Disposition rows sum to the post-filter headline count.
 - Every row carries a disposition and a rationale; no row is left blank or "TBD".
+
+#### Phase Notes (measured at implementation time)
+
+Scope Hypothesis confirmed: 771 survivors composing as 683 `theorem` / 81 `def` / 6 `structure` /
+1 `abbrev`, of which 47 are Boneyard-only-referenced and 6 sit in manifested orphan modules.
+
+The six clusters **partition** the 771 -- each survivor is in exactly one, and the sum is computed
+from the census file rather than asserted:
+
+| Cluster | Members | Disposition |
+|---|---:|---|
+| A. `def`, no live or archived consumer | 80 | `delete-in-this-task` |
+| B. Referenced only from `Boneyard/` (46 `theorem` + 1 `def`) | 47 | `retire-to-Boneyard` + `follow-up` |
+| C. `structure` | 6 | `keep-with-reason` |
+| D. `abbrev` | 1 | `follow-up` |
+| E. `theorem` in manifested import-orphan modules | 6 | `keep-with-reason` |
+| F. Remaining `theorem` | 631 | `follow-up` |
+| **Total** | **771** | |
+
+Three points where the measured partition is finer than the plan's prose, each recorded so the
+arithmetic is checkable rather than merely plausible:
+
+1. **The `def` cluster is 80, not 81.** `freshBase` (`FormalSystem/Syntax/Atom.lean`) is the one
+   `def` survivor with archived consumers -- 14 comment-stripped occurrences under `Boneyard/`.
+   It belongs to cluster B on the same rule as every other row there, so the deletion batches
+   sum to 80 and Phase 10 must exclude it, exactly as that phase's own task list already says.
+2. **The plan's per-file `theorem` counts are pre-split totals.** `TemporalFormulas.lean` shows
+   18 `theorem` survivors, but 10 of them are Boneyard-referenced and sit in cluster B, leaving 8
+   in cluster F. Likewise `ChronicleConstruction.lean` is 16 total, 1 Boneyard-referenced, 15 in
+   F. The plan's numbers are right about the census; the table splits them because the two
+   halves have different dispositions.
+3. **The `abbrev` needed a disposition the plan did not assign**, and it gets its own cluster
+   rather than being quietly folded into another. `FiniteTaskModel` is a reducible alias sitting
+   beside a sibling alias that IS used; whether the library wants to offer both spellings is an
+   API question, not a dead-code question, and it is outside this task's `def`-only deletion
+   scope.
+
+Cluster F is 631 rows across 189 files: 275 rows concentrated in 31 files carrying six or more
+each, and the remaining 356 scattered one to five at a time across 158 files. That shape is why
+the follow-ups are proposed per file cluster rather than as one undifferentiated backlog.
 
 ---
 
