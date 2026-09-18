@@ -11,10 +11,10 @@ next_project_number: 620
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,585,603,604,605,606,607,608,610,614,615 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,560,564,565,567,570,588,597,600,616,617,619 | 298,464,502,559,563,568,585,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,540,566,618 | 231,465,497,564,565,588,597,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,589 | 428,498,499,500,540 | algebraic-representation, decidability, metalogic, ... |
+| 1 | 127,128,178,257,298,464,476,481,502,504,534,559,563,568,588,597,603,604,605,606,607,608,610,614,615,619 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,560,564,565,567,570,600,616,617 | 298,464,502,559,563,568,588,597,603 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -111,14 +111,13 @@ next_project_number: 620
 
 ### Codebase Cleanup
 
-585 [IMPLEMENTING] — lake build exits 0 with 316 warnings across 47 live files,...
-  └─ 588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
-    └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
-      └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
-  └─ 597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
-    └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
-  └─ 619 [NOT STARTED] — Every linter suppression in the tree must carry a recorded...
+588 [NOT STARTED] — Triage the 1,029 declarations C17 reports as having zero...
+  └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
+    └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
+597 [NOT STARTED] — Adopt Mathlib's standard linter set, following cslib's...
+  └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the... (see above)
 608 [NOT STARTED] — Decide whether to rename the swapUS, swapMinus and swapvalid...
+619 [NOT STARTED] — Every linter suppression in the tree must carry a recorded...
 
 ### Semantics Refactor
 
@@ -426,12 +425,13 @@ DISPUTED READING TO RESOLVE, NOT ASSUME: the two task descriptions disagreed on 
 
 ### 585. Burn down compiler warnings and add gate
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 583, Task 584
 - **Research**: [585_burn_down_compiler_warnings_and_add_gate/reports/02_warning-gate-design-remeasure.md]
 - **Plan**: [585_burn_down_compiler_warnings_and_add_gate/plans/02_warning-burndown-and-c28-gate.md]
+- **Summary**: [585_burn_down_compiler_warnings_and_add_gate/summaries/02_warning-burndown-and-c28-gate-summary.md]
 
 **Description**: `lake build` exits 0 with 316 warnings across 47 live files, and nothing gates them: C16 runs the Batteries `env_linter` (a declaration linter) which does not see Lean compiler warnings. The two sets are disjoint -- this is a real hole, not a redundancy.
 
