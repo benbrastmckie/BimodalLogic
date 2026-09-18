@@ -55,7 +55,7 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `AxiomNames.lean` | 57 | The canonical 45 `ProofSystem.Axiom` constructor names in `Axioms.lean` source order, extracted into a leaf module |
 | `BenchmarkAnchorsMain.lean` | 593 | Benchmark anchor formulas: ground-truth valid/invalid formula pairs |
 | `BenchmarkOracleMain.lean` | 370 | Batch oracle: reads formula JSON, runs decision procedure, outputs JSONL labels |
-| `ContrastiveGeneratorMain.lean` | 1,173 | Formula mutator: systematic mutation for dataset augmentation |
+| `ContrastiveGeneratorMain.lean` | 1,126 | Formula mutator: systematic mutation for dataset augmentation |
 | `DataExport.lean` | 396 | Core data export: JSONL serialization for formula-label pairs |
 | `DatasetAssembly.lean` | 350 | Dataset assembly: structured JSON dataset with metadata and train/eval split |
 | `DatasetGenerator.lean` | 1,737 | Dataset generator: runs `decide` on enumerated formulas, extracts proof traces |
@@ -63,8 +63,8 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `DatasetValidatorMain.lean` | 604 | Dataset validator: conformance tests, diversity metrics, feasibility gate |
 | `EnrichedCountermodel.lean` | 223 | Enriched countermodel extraction for dataset negative examples |
 | `EnumBenchmarkMain.lean` | 227 | Enumeration benchmark: performance testing for formula enumeration |
-| `FormulaEnumerator.lean` | 2,267 | Formula enumerator: depth-bounded enumeration of all TM formulas |
-| `ForwardProofGenerator.lean` | 378 | Forward-chaining proof generation: applies the productive inference rules from axiom instances to build a pool of `(formula, DerivationTree)` pairs |
+| `FormulaEnumerator.lean` | 2,178 | Formula enumerator: depth-bounded enumeration of all TM formulas |
+| `ForwardProofGenerator.lean` | 353 | Forward-chaining proof generation: applies the productive inference rules from axiom instances to build a pool of `(formula, DerivationTree)` pairs |
 | `InterestingnessMetrics.lean` | 584 | Deterministic three-tier interestingness scoring for theorems and derivations |
 | `LemmaDB.lean` | 48 | Declares the `@[tmLemma]` label attribute the `modal_search` tactic family uses to enumerate derived theorems |
 | `MachineAppendixMain.lean` | 500 | Exports the complete TM axiomatization — 45 schemata, 7 rules, derived-operator definitions — as the JSONL machine appendix shipped with BimodalReference |

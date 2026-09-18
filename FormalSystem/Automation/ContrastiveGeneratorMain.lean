@@ -684,28 +684,6 @@ def filterContrastive (pairs : List ContrastivePair) : List ContrastivePair :=
     && p.originalLabel != .timeout
     && p.mutated.complexity >= 3
 
-/--
-Generate contrastive pairs for a batch of labeled formulas with progress reporting.
-
-Processes each labeled formula, generates mutations, classifies them, and
-filters for truly contrastive pairs. Reports progress every 50 formulas.
--/
-def generateBatchContrastive (labeledFormulas : List LabeledFormula)
-    : IO (List ContrastivePair) := do
-  let total := labeledFormulas.length
-  let mut allPairs : List ContrastivePair := []
-  let mut count : Nat := 0
-  for lf in labeledFormulas do
-    let pairs ← generateContrastivePairs lf
-    let contrastive := filterContrastive pairs
-    allPairs := allPairs ++ contrastive
-    count := count + 1
-    if count % 50 == 0 then
-      IO.println
-          s!"  Contrastive progress: {count}/{total} formulas processed, {allPairs.length} pairs \
-              found"
-  return allPairs
-
 /-!
 ## JSON Serialization
 -/
@@ -1036,31 +1014,6 @@ def printContrastiveStats (stats : ContrastiveBatchStats) : IO Unit := do
   IO.println s!"  derived_swap: {stats.derivedSwapCount}"
   IO.println s!"  structural_flip: {stats.structuralFlipCount}"
   IO.println s!"  conjunct_removal: {stats.conjunctRemovalCount}"
-
-/--
-Write per-mutation-family yield statistics to a JSON summary file.
--/
-def writeYieldSummary (stats : ContrastiveBatchStats) (path : System.FilePath) : IO Unit := do
-  let handle ← IO.FS.Handle.mk path .write
-  let json := "{\"total_mutations\": " ++ toString stats.totalMutations
-    ++ ", \"contrastive_count\": " ++ toString stats.contrastiveCount
-    ++ ", \"yield_rate\": " ++ toString stats.yieldRate
-    ++ ", \"families\": {"
-    ++ "\"atom_sub\": " ++ toString stats.atomSubBotCount
-    ++ ", \"modal_swap\": " ++ toString stats.modalSwapCount
-    ++ ", \"global_weakening\": " ++ toString
-        (stats.allFutureToSomeCount + stats.allPastToSomeCount)
-    ++ ", \"subformula_deletion\": " ++ toString stats.subformulaDeletionCount
-    ++ ", \"modal_depth_reduction\": " ++ toString stats.modalReductionCount
-    ++ ", \"temporal_depth_reduction\": " ++ toString stats.temporalReductionCount
-    -- The "temporal_duality" wire tag is byte-stable across the time-reflection rename.
-    ++ ", \"temporal_duality\": " ++ toString stats.timeReflectionCount
-    ++ ", \"temporal_swap\": " ++ toString stats.temporalSwapCount
-    ++ ", \"derived_swap\": " ++ toString stats.derivedSwapCount
-    ++ ", \"structural_flip\": " ++ toString stats.structuralFlipCount
-    ++ ", \"conjunct_removal\": " ++ toString stats.conjunctRemovalCount
-    ++ "}}"
-  handle.putStrLn json
 
 end FormalSystem.Automation.ContrastiveGeneratorMain
 
