@@ -1247,7 +1247,7 @@
     {
       "project_number": 615,
       "project_name": "close_world_history_reach_through_residue",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Close the residue of the possible-world index retarget. The seven-phase retarget itself was already executed by three earlier tasks in this topic; research against the current tree confirmed the surviving gap is 36 sites, not the ~600 the superseded description assumed (28 reach-throughs plus 8 layer crossings).\n\nREQUIRED WORK:\n\n(1) Add `WorldHistory.respects_task` -- a three-line lemma, already machine-checked in the probe at `specs/archive/569_retarget_semantics_to_possible_world_index/probes/01_possible-world-spike.lean`. This single lemma is what 22 of the 28 reach-through sites need; rewrite those 22 call sites to use it instead of reaching through the subtype.\n\n(2) Fix the two layer-crossing defects at `FormalSystem/Automation/IntNormalForm.lean:282` and `FormalSystem/Metalogic/Extension.lean:219`.\n\n(3) Triage the remaining 6 reach-throughs and 8 layer crossings, disposing of each explicitly.\n\nOUT OF SCOPE (deliberately, each needing its own justification rather than inheriting one from the superseded description):\n- The `PossibleWorld` rename (503 binders plus the namespace). Blocked on settling whether H_F or the time-shift quotient W_F owns the name \"possible world\" -- `possible_worlds.tex:1046` makes them different objects and `:1050` licenses both names.\n- Converting `WorldHistory` from a subtype to a flat structure. Research found this is a real net win (the `CoeOut` instance never fires, `WorldHistory.ext` has zero call sites, `states_eq_state` goes away) at the cost of a ~6-line `toPartialHistory` bridge for the Extension Theorem -- but it relocates bridging rather than removing it, so it belongs in its own task.\n\nVERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_iff_validInt` and `truthAt_map` still returns exactly `[propext, Classical.choice, Quot.sound]` with no `sorryAx`.",
       "topic": "semantics-refactor",
@@ -1255,16 +1255,21 @@
       "effort": "small",
       "dependencies": [],
       "created": "2026-09-17T22:46:34Z",
-      "last_updated": "2026-09-18T02:05:36Z",
+      "last_updated": "2026-09-18T02:13:29Z",
       "artifacts": [
         {
           "path": "specs/615_close_world_history_reach_through_residue/reports/01_close-reach-through-residue.md",
           "type": "report",
           "summary": "Re-measured the 28 reach-through and 8+1 layer-crossing sites against the live tree, machine-checked the WorldHistory.respects_task lemma and both defect fixes in a probe, and disposed of every triage site explicitly."
+        },
+        {
+          "path": "specs/615_close_world_history_reach_through_residue/plans/01_close-reach-through-residue.md",
+          "type": "plan",
+          "summary": "Six-phase plan closing the 36-site world-history reach-through residue: add the respects_task accessor, sweep 22 call sites in two territory-disjoint phases, fix two layer-crossing defects, delete the dead CoeOut instance, record the triage and hold the axiom gate."
         }
       ],
       "next_artifact_number": 2,
-      "session_id": "sess_1789696399_5c64b8_615"
+      "session_id": "sess_1789696399_5c64b8"
     },
     {
       "project_number": 619,

@@ -1,21 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/615_close_world_history_reach_through_residue/reports/01_close-reach-through-residue.md",
-      "summary": "Re-measured the 28 reach-through and 8+1 layer-crossing sites against the live tree, machine-checked the WorldHistory.respects_task lemma and both defect fixes in a probe, and disposed of every triage site explicitly."
-    },
-    {
-      "type": "probe",
-      "path": "specs/615_close_world_history_reach_through_residue/probes/01_respects-task-residue.lean",
-      "summary": "Standalone Lean probe (lake env lean, exit 0): the new lemma, both defect restatements, two representative call-site rewrites, and the #print axioms gate."
+      "type": "plan",
+      "path": "specs/615_close_world_history_reach_through_residue/plans/01_close-reach-through-residue.md",
+      "summary": "Six-phase plan closing the 36-site world-history reach-through residue: add the respects_task accessor, sweep 22 call sites in two territory-disjoint phases, fix two layer-crossing defects, delete the dead CoeOut instance, record the triage and hold the axiom gate."
     }
   ],
+  "next_steps": "Run /implement 615 to execute the plan",
   "metadata": {
     "session_id": "sess_1789696399_5c64b8_615",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 3,
+    "dependency_waves": [[1], [2, 3], [4], [5], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When planning a large mechanical call-site sweep in which only a few sites need non-mechanical adjustment, split the sweep phases along the sub-tree boundary that isolates the non-mechanical edits rather than by even site count. In task 615 the 22-site sweep divided into 9 Semantics-layer sites (pure term-position drop-ins, zero judgment) and 13 Metalogic-layer sites (all four rw-line trims/deletions that lose their rewrite pattern after the substitution). The two phases then owned disjoint file territories and could be dispatched in parallel, and the phase carrying every judgment call was the only one needing careful per-file verification. The general shape: measure which sites carry the non-mechanical work, find the directory or module boundary that contains them, and make that boundary the phase boundary.",
+      "category": "PATTERN",
+      "source_artifact": "specs/615_close_world_history_reach_through_residue/plans/01_close-reach-through-residue.md",
+      "confidence": 0.65,
+      "suggested_keywords": ["phase-decomposition", "mechanical-sweep", "territory-contract", "parallel-phases", "call-site-refactor"]
+    }
+  ],
+  "dispatch_seq": 5
 }
