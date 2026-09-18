@@ -11,7 +11,8 @@
 #   C3  ZERO structural `sorry`, asserted BY CONTENT (never by line number)
 #   C4  Every `import FormalSystem.*` / `import BimodalTest.*` resolves to a real file
 #   C5  Every module-shaped `FormalSystem.*` path in non-specs markdown resolves
-#   C6  Known-unreachable live modules still compile (rot guard)
+#   C6  Known-unreachable live modules still compile (rot guard); also reports how
+#       many declarations and lines those modules carry outside the build graph
 #   C7  Live inventory (informational, never asserted)
 #   C8  Aggregator convention: sibling `X.lean` beside `X/`, no `X/X.lean`
 #       Walked parents: FormalSystem/, FormalSystem/Metalogic/, FormalSystem/Syntax/,
@@ -34,8 +35,11 @@
 #       finding beyond scripts/nolints.json's grandfathered baseline; dupNamespace
 #       reported via a live textual (namespace-nesting) approximation, never gated
 #   C17 Dead-declaration scan: base identifiers with zero occurrences outside their
-#       own declaring line, across FormalSystem/ + Tests/ + repo-wide markdown
-#       (REPORTED, not gated)
+#       own declaring line, across FormalSystem/ + Tests/ + repo-wide markdown +
+#       typst/**/*.typ + scripts/*.sh. Comment-aware, and excludes three classes
+#       reachable without naming them (`instance`, simp-set-attributed,
+#       FormalSystem/Examples/); Boneyard-only-referenced rows are split out as a
+#       sub-count (REPORTED, never gated -- see the full counting rule at the check)
 #   C18 Duplicated prose across README.md, FormalSystem/README.md,
 #       FormalSystem/Metalogic/README.md and FormalSystem/Metalogic.lean, at two
 #       granularities: whole paragraphs, and sentences of 15+ words
@@ -2577,25 +2581,90 @@ echo
 # mapping supersedes the review's label: C17 = D-16 (this check), C18 = E-13
 # (paragraph duplication, below).
 #
-# For each declaration in non-Boneyard FormalSystem/**/*.lean, the BASE
-# identifier (the last dot-segment of its name -- e.g. `c0` for `Chronicle.c0`,
-# matching how dot notation and an `open` namespace actually reference it) is
-# tokenised and counted across every `.lean` file in FormalSystem/ and Tests/
-# plus every `.md` file in the repo (excluding .git/.lake/specs/Boneyard/
-# build/__pycache__, the same scope C5 already uses for markdown). A
-# declaration whose base identifier occurs nowhere else -- not even on another
-# line of its own file -- is reported as a candidate dead declaration.
+# For each declaration in scope (below) in non-Boneyard FormalSystem/**/*.lean,
+# the BASE identifier (the last dot-segment of its name -- e.g. `c0` for
+# `Chronicle.c0`, matching how dot notation and an `open` namespace actually
+# reference it) is tokenised and counted across the occurrence corpus (below).
+# A declaration whose base identifier occurs nowhere else -- not even on
+# another line of its own file -- is reported as a candidate dead declaration.
 #
-# This is reporting-only and deliberately approximate, same spirit as C16's
-# dupNamespace check: it is blind to attribute/simp-set-driven indirect usage
-# (a theorem tagged `@[formula_unfold]` and consumed only via `simp only
-# [formula_unfold]` elsewhere is textually "dead" by this scan but is not
-# actually unused), to `to_additive`-generated names, and to same-named
-# declarations in different namespaces (a shared base name like `mk` or
-# `toString` will never register as dead, which is the safe direction of
-# error for a census that must never gate). No ENFORCE_C17 flag -- reporting-
-# only per the delegation, and an unused enforcement flag invites a later
-# unreviewed flip.
+# --- THE COUNTING RULE ------------------------------------------------------
+#
+# The census was triaged once, in full, rather than being left to grow: it had
+# reached four figures and had never been read. That triage found that only
+# about a fifth of it was explicable by any known false-positive mechanism, and
+# it produced the six filters below. They exist so the number this check prints
+# is the number that MATTERS -- a row that survives them is a row a reader can
+# actually act on.
+#
+# DECLARATION SCOPE excludes three classes, each reachable by a mechanism that
+# does not mention the declaration's name, which is precisely what a textual
+# scan cannot see:
+#
+#   1. `instance` declarations -- found by typeclass resolution, never by name.
+#   2. Declarations carrying `simp` or any attribute registered via
+#      `register_simp_attr` -- reached through a simp set. The attribute names
+#      are DISCOVERED by scanning the tree for `register_simp_attr`, never
+#      hardcoded, so a simp set added tomorrow is covered the day it lands.
+#   3. Declarations under FormalSystem/Examples/ -- their contract is to be
+#      READ, not called. Nothing calling them is the intended state, so a
+#      census row for one is never actionable.
+#
+# The DECLARATION REGEX is comment-aware (see `strip_comments`), which is the
+# fourth filter and the only one that fixes a mis-parse rather than a
+# mis-classification: a wrapped prose line such as `lemma premises. -/` is not
+# a declaration. Nearly two hundred such phantoms were being counted, inflating
+# both the census and the denominator it is read against. C19 and the C16
+# dupNamespace scan share the same helper for the same reason.
+#
+# The OCCURRENCE CORPUS is every `.lean` file in FormalSystem/ and Tests/, every
+# `.md` file in the repo (excluding .git/.lake/specs/Boneyard/build/__pycache__,
+# the same scope C5 already uses for markdown), and -- the fifth filter -- every
+# `typst/**/*.typ` and `scripts/*.sh` file. Twelve declarations were reported
+# dead solely because their only reference lived in one of those two corpora;
+# seven of the twelve are the axiom baselines THIS SCRIPT pins in its own C2 and
+# C14 heredocs, so acting on that report would have broken the gates it sits
+# beside.
+#
+# The corpus is widened here and deliberately NEVER narrowed. Restricting it to
+# code (stripping comments from the occurrence side, dropping markdown) was
+# measured and rejected: it roughly doubles the census, because several hundred
+# declarations are referenced only from prose. Reporting a documented-but-
+# uncalled declaration as dead is less actionable, not more.
+#
+# The sixth filter is a SPLIT, not an exclusion. `Boneyard/` is excluded from
+# every other walk in this script, so a declaration whose only remaining
+# consumer is archived looks identical to one with no consumer at all. It is
+# not the same case: retiring it is a decision about the archive with its own
+# C11 waiver consequences, not a deletion. Those rows are counted in the
+# headline and ALSO reported as a sub-count beneath it.
+#
+# --- WHAT THIS CHECK STILL CANNOT SEE ---------------------------------------
+#
+# Reporting-only and deliberately approximate, same spirit as C16's
+# dupNamespace check. Blind spots that remain, stated so they are not
+# rediscovered as surprises:
+#
+#   - `to_additive`-generated names.
+#   - Same-named declarations in different namespaces: a shared base name like
+#     `mk` or `toString` can never register as dead. For a census that must
+#     never gate, under-reporting is the safe direction of error -- which is
+#     also the reasoning behind the two exclusions below.
+#   - ACCEPTED BLIND SPOT, from filter 1: a genuinely unused `instance` is now
+#     invisible here. Accepted on the same under-report-rather-than-over-report
+#     ground.
+#   - ACCEPTED BLIND SPOT, from filter 2: a genuinely unused simp lemma is now
+#     invisible here too, and that population is not small -- roughly a hundred
+#     and fifty rows left the census through this filter when it landed. It is
+#     NOT silently absorbed: it is handed off to the unused-simp-lemma
+#     burn-down effort, which owns it. Neither effort should assume the other
+#     covers it. A simp lemma is reached by a mechanism this scan structurally
+#     cannot observe, so the right instrument is one that reads the simp set,
+#     not a token count.
+#
+# No ENFORCE_C17 flag -- reporting-only per the delegation, and an unused
+# enforcement flag invites a later unreviewed flip. A textual census with a
+# known false-positive rate must never affect the exit code.
 # ---------------------------------------------------------------------------
 python3 - <<'PYEOF'
 import os, re

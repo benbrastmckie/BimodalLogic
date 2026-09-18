@@ -481,25 +481,34 @@ is what made this safe to apply to an `ENFORCE_C23`-gated check.
 
 ---
 
-### Phase 6: Document the new counting rules and record the simp-set handoff [NOT STARTED]
+### Phase 6: Document the new counting rules and record the simp-set handoff [COMPLETED]
 
 **Goal**: Make the new counting rule readable where a future reader will look for it, and hand
 the `@[simp]` population off explicitly instead of absorbing it silently.
 
 **Tasks**:
-- [ ] Update C17's header comment block in `scripts/check-module-invariants.sh` to state the six
+- [x] Update C17's header comment block in `scripts/check-module-invariants.sh` to state the six
       filters, the widened corpus, the Boneyard-only sub-count, and the retained
-      reporting-only-never-gating status.
-- [ ] Update the C17 row (and the C6 row, for Phase 2's added count) in
+      reporting-only-never-gating status. *(completed -- header rewritten with a
+      `THE COUNTING RULE` section naming all six filters and a
+      `WHAT THIS CHECK STILL CANNOT SEE` section; the top-of-file check summary was updated to
+      match, for C17 and for C6's Phase 2 addition)*
+- [x] Update the C17 row (and the C6 row, for Phase 2's added count) in
       `docs/development/MODULE_INVARIANTS.md`'s "What It Checks" table, in the style of the
-      surrounding rows: what it checks and why it exists.
-- [ ] Record the two accepted blind spots explicitly: excluded `instance` rows may hide a
+      surrounding rows: what it checks and why it exists. *(completed -- C6's row extended;
+      **C17 had no row at all**, so one was written and inserted, see Phase Notes)*
+- [x] Record the two accepted blind spots explicitly: excluded `instance` rows may hide a
       genuinely unused instance, and excluded `@[simp]` rows (145 at measurement time) may hide
-      genuinely unused simp lemmas.
-- [ ] Record the handoff: the 145-row `@[simp]` population belongs to the unused-simp burn-down
-      effort, not to this census, so neither effort assumes the other covers it.
-- [ ] Record why the corpus was widened but never narrowed (a code-only corpus reports 1,827
-      against 1,009; 818 declarations are held alive by prose alone).
+      genuinely unused simp lemmas. *(completed -- both recorded in the script header under
+      `ACCEPTED BLIND SPOT` and in the docs row)*
+- [x] Record the handoff: the 145-row `@[simp]` population belongs to the unused-simp burn-down
+      effort, not to this census, so neither effort assumes the other covers it. *(completed --
+      recorded in both places, with the reason the right instrument reads the simp set rather
+      than counting tokens)*
+- [x] Record why the corpus was widened but never narrowed (a code-only corpus reports 1,827
+      against 1,009; 818 declarations are held alive by prose alone). *(completed -- the
+      counterfactual was RE-MEASURED against the current filter set rather than quoting the
+      pre-filter research figure, see Phase Notes)*
 
 **Timing**: 0.75 hours
 
@@ -517,6 +526,38 @@ the `@[simp]` population off explicitly instead of absorbing it silently.
   verified changes.
 - C9/C9D (task-number citations) still pass -- no task numbers introduced in `docs/` or
   `FormalSystem/`.
+
+#### Phase Notes (measured at implementation time)
+
+All three verification criteria hold, and the first two were checked mechanically rather than by
+eye:
+
+- **No executable line moved.** `git diff` over `scripts/check-module-invariants.sh`, filtered to
+  changed lines that are not comments, is empty.
+- **Harness output identical.** Full harness exit 0, and a diff of every `PASS`/`FAIL`/`INFO`/
+  `TODO` line against the Phase 5 run is empty. (The plan's caveat "apart from Phase 2's and
+  Phase 4's changes" is not needed: those landed in earlier phases, so they are already in the
+  Phase 5 baseline this is diffed against.)
+- **C9 and C9D still pass**, along with C5, C12, C13, C14 and C15 -- all of which scan `docs/`
+  and any of which a new table row could have broken.
+
+Two things the plan did not anticipate, both resolved rather than deferred:
+
+1. **C17 had no row in `MODULE_INVARIANTS.md` to update.** The "What It Checks" table documents
+   the gating checks; the reporting-only ones (C17 through C23) were never added to it. The task
+   said "update the C17 row", so a row was written and inserted, in the style of the surrounding
+   ones. This is a small widening of the task, taken because leaving the new counting rule
+   documented only inside the script would have missed the reader the phase exists to serve.
+   The remaining reporting-only checks are still absent from the table; that is pre-existing and
+   is left alone rather than expanded into here.
+2. **The corpus-narrowing counterfactual was re-measured, not quoted.** The plan cites 1,827
+   against 1,009, which was measured at research time BEFORE any filter landed. Re-measured
+   against the current filter set: a code-only corpus (comments stripped from the occurrence
+   side, markdown dropped) reports **1,525** against the current **771** -- 754 declarations are
+   held alive by prose alone. The conclusion is unchanged and if anything sharper: narrowing the
+   corpus would roughly double the census with rows that are documented rather than dead. The
+   script header states the shape of this finding rather than a bare number, so it cannot go
+   stale the way a pinned count would.
 
 ---
 
