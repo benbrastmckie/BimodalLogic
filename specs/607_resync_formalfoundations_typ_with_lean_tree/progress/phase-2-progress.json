@@ -1,0 +1,17 @@
+{
+  "phase": 2,
+  "phase_name": "Classification inventory of TM / BL sites",
+  "started_at": "2026-09-18T00:20:00Z",
+  "last_updated": "2026-09-18T01:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Enumerate TM/BL patterns in FormalFoundations.typ, including comment lines", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Write inventory to working/tm-site-inventory.tsv with line/section/pattern/excerpt/verdict/reason columns", "status": "done", "files_touched": ["specs/607_resync_formalfoundations_typ_with_lean_tree/working/tm-site-inventory.tsv"]},
+    {"id": 3, "description": "Apply default classification rules and flag exceptions in reason", "status": "done", "files_touched": ["specs/607_resync_formalfoundations_typ_with_lean_tree/working/tm-site-inventory.tsv"]},
+    {"id": 4, "description": "Check theorem-level sites against #leansrc targets (Soundness, Algebraic soundness, Conservativity.lean docstring)", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [
+    {"approach": "Cross-referenced FormalSystem/Metalogic/Soundness.lean, Conservativity/MinusLanguageSoundness.lean, Conservativity.lean docstring, ProofSystem/Axioms.lean, MinusLanguage/Axioms.lean to disambiguate every DF/DN/CO vs UZ/Z1/DN/NN/PU/SEP theorem-level site", "result": "succeeded", "reason": "Confirmed DF/DN/CO belong exclusively to TM- (MinusLanguage), matching the plan's default rule; discovered two apparent #leansrc citation-target defects (lines 635 and 1275 in the working TSV) that are out of this plan's explicit renaming scope and recorded as follow-ups instead of fixed"}
+  ],
+  "handoff_count": 0
+}

@@ -176,30 +176,41 @@ file and must run in sequence.
 
 ---
 
-### Phase 2: Classification inventory of TM / BL sites [NOT STARTED]
+### Phase 2: Classification inventory of TM / BL sites [COMPLETED]
 
 **Goal**: Before any rename, decide for every ambiguous system or language reference whether it
 means the `#BL`-level system (TM⁻/L⁻) or the Until/Since system (TM/L), and why.
 
 **Tasks**:
-- [ ] Enumerate these patterns in `typst/FormalFoundations.typ`, including comment lines:
+- [x] Enumerate these patterns in `typst/FormalFoundations.typ`, including comment lines:
       whole-word `TM` in prose, `op("TM")_` (no `^+`), `op("TM")^+`, `#BL` (not `#BLplus`),
       `#BLplus`, `"BL"`, `TM^+` or `TM+` in comments, and the header and title strings.
-- [ ] Write the inventory to
+      *(completed: 98 distinct matched lines, union of all patterns)*
+- [x] Write the inventory to
       `specs/607_resync_formalfoundations_typ_with_lean_tree/working/tm-site-inventory.tsv`. Use the
       columns `line`, `section`, `pattern`, `excerpt`, `verdict` (`TM`, `TMminus`, `L`, `Lminus`,
-      `keep`) and `reason`.
-- [ ] Apply these default rules, and flag any exception in `reason`:
+      `keep`) and `reason`. *(completed: 98 rows, one per matched line; a handful of lines that
+      mix a TM occurrence and a TM^+ occurrence in a deliberate contrast sentence use a compound
+      verdict, e.g. `TM+TMminus`, documented in the row's reason)*
+- [x] Apply these default rules, and flag any exception in `reason`:
       - Sites in the `#BL`-level `definition("TM")` block and the DF/DN/CO paragraph after it,
         `Derivability`, §2's `#BL`-level results (Soundness for the `_f/_d/_c/_(d c)` family,
         Incompleteness at the base level, Decidability, Failure of a uniform FMP), and
         §Contingency's `op("TM")_f/d/c` get verdict `TMminus`.
       - Sites for `op("TM")^+*` and for the paper's TM in the title, abstract and §Representation
-        ("TM-algebra") get verdict `TM`.
-- [ ] For each theorem-level site, check the attribution against the `#leansrc` target it cites.
+        ("TM-algebra") get verdict `TM`. *(completed)*
+- [x] For each theorem-level site, check the attribution against the `#leansrc` target it cites.
       For example, `Metalogic.Soundness.soundness` is over which formula type? Also check
       `FormalSystem/Metalogic/Conservativity.lean`'s docstring, which maps the two families of
-      names.
+      names. *(completed: Metalogic.Soundness.soundness/soundness_dense/soundness_ztime/soundness_rtime
+      confirmed over `Formula` (until/since-primitive, paper TM) per Soundness.lean:185's own
+      docstring; Conservativity.lean's "System names, and how they map onto the paper" docstring
+      confirmed the plan's TM/TM⁻ naming decision verbatim. Two apparent pre-existing #leansrc
+      citation-target defects were found in the process (line 635's Soundness theorem citing the
+      Formula-level family instead of `minus_soundness*`, and line 1275's Algebraic-soundness
+      proposition citing `minus_soundness*` under a stale module path instead of the Formula-level
+      family) -- both out of this plan's explicit renaming scope, left untouched, and recorded as
+      follow-ups in the TSV and the implementation summary rather than fixed)*
 
 **Timing**: 1 hour
 
