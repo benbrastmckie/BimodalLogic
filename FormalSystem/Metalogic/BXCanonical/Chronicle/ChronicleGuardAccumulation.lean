@@ -22,7 +22,9 @@ this argument:
   *accumulation behaviour* this invariant constrains. Burgess places points; he never asks where
   the placements converge, and nothing in his §2.10 bounds it.
 * **ADAPTED-FROM: Burgess 1984 §2.7, printed pp.109-110.** The A7a far-side witness placement
-  runs the completion argument in the `F`/`G` fragment, where the gap witness is placed on the far
+  (Burgess 1984's Dedekind-completeness axiom `Fp ∧ FG¬p → F(HFp ∧ G¬p)`, not the Burgess
+  1982 Until-linearity axiom of the same number) runs the completion argument in the `F`/`G`
+  fragment, where the gap witness is placed on the far
   side with no bound whatever and **no guard to carry**. The presence of a guard is exactly what
   makes the question below non-trivial, so this is an analogy and not a source.
 

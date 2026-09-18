@@ -29,7 +29,8 @@ construction places sits strictly between two points already present (`z = x + y
 `g(x,y)` that his chronicle carries never has to survive one. Passing to the reals is exactly
 where that datum is lost, which is the structural root of this obligation. Burgess 1984 runs the
 completion route only in the `F`/`G` fragment and reaches for his continuity axiom `A7a` at the
-analogous step (**printed pp.109-110**).
+analogous step (**printed pp.109-110**). That is Burgess 1984's Dedekind-completeness axiom
+`Fp ∧ FG¬p → F(HFp ∧ G¬p)`, not the Burgess 1982 Until-linearity axiom of the same number.
 
 ## The argument
 

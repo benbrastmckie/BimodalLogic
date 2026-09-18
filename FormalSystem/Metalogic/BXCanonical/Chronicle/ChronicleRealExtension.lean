@@ -967,7 +967,9 @@ that whole interval, and the guard-reach lemma below a gap (`limitGuardBelow_of_
 the cofinal hypothesis puts a `φ`-point. Maximal consistency at that point is the contradiction.
 
 *Provenance.* Burgess 1984 §2.7 (printed pp.109-110) places the gap witness on the far side with
-**no bound whatsoever**, licensed by `A7a`; no bound is needed there because `F`/`G` carries no
+**no bound whatsoever**, licensed by `A7a` (Burgess 1984's
+Dedekind-completeness axiom `Fp ∧ FG¬p → F(HFp ∧ G¬p)`, not the Burgess 1982 Until-linearity
+axiom of the same number); no bound is needed there because `F`/`G` carries no
 guard. Here the bound is precisely what makes the guard interval finite, and it is bought with the
 Since-side gap axiom rather than assumed.
 -/
