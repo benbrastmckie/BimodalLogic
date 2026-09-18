@@ -384,11 +384,6 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -- Ground axioms (0-parameter)
       -------------------------------------------------------------------
 
-      -- serial_future: ⊤ → F(⊤)
-      <|> (match lhs, rhs with
-           | .imp .bot .bot, .someFuture (.imp .bot .bot) =>
-               some ⟨_, Axiom.serial_future⟩
-           | _, _ => none)
 
       -- discrete_symm_fwd: U(⊤,⊥) → S(⊤,⊥)
       <|> (match lhs, rhs with
@@ -566,6 +561,8 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
+  -- serial_future (TS, the paper's `F(⊤)`): the one primitive schema that is not an implication
+  | .someFuture (.imp .bot .bot) => some ⟨_, Axiom.serial_future⟩
   | _ => none
 
 /--
@@ -724,6 +721,11 @@ def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
                   chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
                  some ⟨_, DerivedAxioms.linear_until_legacy phi psi chi theta⟩
                else none
+           | _, _ => none)
+      -- serial_future_imp: ⊤ → F(⊤) (the pre-paper statement of TS)
+      <|> (match lhs, rhs with
+           | .imp .bot .bot, .someFuture (.imp .bot .bot) =>
+               some ⟨_, DerivedAxioms.serial_future_imp⟩
            | _, _ => none)
   | _ => none
 

@@ -338,7 +338,7 @@ noncomputable def ztimeNextTop : ⊢[FrameClass.ZTime] Chronicle.nextTop :=
   -- Steps 2-3: F(⊤) from seriality + MP
   let h_ft : ⊢[FrameClass.ZTime] Chronicle.topFormula.someFuture :=
     DerivationTree.modus_ponens [] _ _
-      (DerivationTree.axiom [] _ Axiom.serial_future (FrameClass.base_le _)) h_top
+      (DerivedAxioms.serial_future_imp) h_top
   -- Steps 4-5: U(¬⊤, ⊤) from prior_UZ + MP
   let h_ut_negT : ⊢[FrameClass.ZTime]
       (Formula.untl Chronicle.topFormula.neg Chronicle.topFormula) :=

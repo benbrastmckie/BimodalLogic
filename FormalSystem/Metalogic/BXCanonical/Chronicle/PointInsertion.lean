@@ -381,7 +381,7 @@ theorem G_implies_F_mcs (fc : FrameClass) {A : Set Formula}
     theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_F_top : Formula.someFuture top ∈ A :=
     SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivationTree.axiom [] _ Axiom.serial_future trivial) h_top_in
+      (DerivedAxioms.serial_future_imp) h_top_in
   have h_TUT : Formula.untl top top ∈ A :=
     SetMaximalConsistent.mp_of_theorem h_mcs
       (DerivationTree.axiom [] _ (Axiom.F_until_equiv top) trivial) h_F_top

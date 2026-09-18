@@ -37,7 +37,7 @@ is a single `DerivationTree.axiom` or a single named theorem.
 | TK | `Theorems.TemporalDerived.gDistribution` | yes |
 | T4 | `Theorems.TemporalDerived.gTransitivity` | yes |
 | DN | `Axiom.density` | yes |
-| TS | `Axiom.serial_future` + MP | **no** — `F`-bridge |
+| TS | `Axiom.serial_future` | **no** — `F`-bridge |
 | TC | `Axiom.connect_future` | **no** — `P`-bridge under `G` |
 | TL | `Axiom.temp_linearity` (via `DerivedAxioms.temp_linearity_legacy`) | **no** — `F`-bridge *and* a disjunct reshuffle |
 | DF | `Theorems.DiscreteUnfolding.dfSchema` | **no** — `F`-bridge on both sides |
@@ -218,13 +218,12 @@ def dischargeTemp4 {fc : FrameClass} (a : MinusFormula) :
     ⊢[fc] tr (a.allFuture.imp a.allFuture.allFuture) :=
   gTransitivity (tr a)
 
-/-- **TS** (`F⊤`). `Axiom.serial_future` gives `⊤ → F⊤`; modus ponens on `⊤` gives `F⊤`; the
-`F`-bridge converts that to the `¬G¬⊤` shape `tr` produces. -/
+/-- **TS** (`F⊤`). `Axiom.serial_future` is the paper's `F⊤` verbatim; the `F`-bridge converts
+it to the `¬G¬⊤` shape `tr` produces. -/
 def dischargeTempSerial {fc : FrameClass} :
     ⊢[fc] tr MinusFormula.top.someFuture :=
   let serial : ⊢[fc] Formula.top.someFuture :=
-    mp topThm
-      (DerivationTree.axiom [] _ ProofSystem.Axiom.serial_future (FrameClass.base_le fc))
+    DerivationTree.axiom [] _ ProofSystem.Axiom.serial_future (FrameClass.base_le fc)
   mp serial (fImpNotGNot Formula.top)
 
 /-- **TC** (`φ → G P φ`). `Axiom.connect_future` gives `A → G(P A)`; the `P`-bridge, pushed

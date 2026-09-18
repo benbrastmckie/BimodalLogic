@@ -103,7 +103,7 @@ theorem limit_dom_no_max (fc : FrameClass) (A : Set Formula)
     theorem_in_mcs h_mcs_x (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_F_top : Formula.someFuture (Formula.bot.imp Formula.bot) ∈ LimitF fc A h_mcs x :=
     SetMaximalConsistent.mp_of_theorem h_mcs_x
-      (DerivationTree.axiom [] _ Axiom.serial_future trivial) h_top
+      (DerivedAxioms.serial_future_imp) h_top
   obtain ⟨y, hy, hxy, _⟩ := limit_F_resolution fc A h_mcs x hx _ h_F_top
   exact ⟨y, hy, hxy⟩
 

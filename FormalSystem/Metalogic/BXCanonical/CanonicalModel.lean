@@ -438,7 +438,7 @@ theorem g_content_fc_consistent {fc : FrameClass} {M : Set Formula}
     theorem_in_mcs h_mcs (identity Formula.bot)
   have h_F_top : Formula.someFuture (Formula.bot.imp Formula.bot) ∈ M :=
     SetMaximalConsistent.mp_of_theorem h_mcs
-      (DerivationTree.axiom [] _ Axiom.serial_future trivial) h_top
+      (DerivedAxioms.serial_future_imp) h_top
   have h_seed := forward_temporal_witness_seed_consistent M h_mcs _ h_F_top
   have h_sub : GContent M ⊆ ForwardTemporalWitnessSeed M (Formula.bot.imp Formula.bot) :=
     g_content_subset_forward_temporal_witness_seed M _

@@ -601,7 +601,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
   -- Seriality: ⊤ → F(⊤) is a theorem, where F(⊤) = ¬G(¬⊤) = ¬G(neg_top)
   have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.someFuture (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ Axiom.serial_future trivial
+    DerivedAxioms.serial_future_imp
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=
     DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot) trivial

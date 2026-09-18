@@ -28,7 +28,8 @@ as its primary: the Base mirrors are `fc`-polymorphic, `prior_SZ` is gated by
 
 | Derived | Primary (TR) |
 |---------|--------------|
-| `serial_past` | `serial_future` (TS) |
+| `serial_future_imp` | `serial_future` (TS), by `prop_s` (not a mirror: the pre-paper form `⊤ → F⊤`) |
+| `serial_past` | `serial_future` (TS), then `prop_s` |
 | `left_mono_since_H` | `left_mono_until_G` (UG) |
 | `right_mono_since` | `right_mono_until` (UC) |
 | `connect_past` | `connect_future` (TC) |
@@ -71,11 +72,23 @@ private def baseAx {fc : FrameClass} {φ : Formula} (a : Axiom φ)
 
 /-! ## Base mirrors -/
 
-/-- `⊤ → P⊤`: TR of TS (`serial_future`). -/
+/-- `⊤ → F⊤`: the former statement of TS, from the paper's `F⊤` by `prop_s` and MP. -/
+@[tmLemma] def serial_future_imp {fc : FrameClass} :
+    ⊢[fc] (Formula.bot.imp Formula.bot).imp
+      (Formula.someFuture (Formula.bot.imp Formula.bot)) :=
+  DerivationTree.modus_ponens [] _ _
+    (baseAx (Axiom.prop_s (Formula.someFuture (Formula.bot.imp Formula.bot))
+      (Formula.bot.imp Formula.bot)) rfl)
+    (baseAx Axiom.serial_future rfl)
+
+/-- `⊤ → P⊤`: TR of TS (`serial_future`), then `prop_s` and MP. -/
 @[tmLemma] def serial_past {fc : FrameClass} :
     ⊢[fc] (Formula.bot.imp Formula.bot).imp (Formula.somePast (Formula.bot.imp Formula.bot)) :=
-  ofReflect (baseAx Axiom.serial_future rfl)
-    (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top])
+  DerivationTree.modus_ponens [] _ _
+    (baseAx (Axiom.prop_s (Formula.somePast (Formula.bot.imp Formula.bot))
+      (Formula.bot.imp Formula.bot)) rfl)
+    (ofReflect (baseAx Axiom.serial_future rfl)
+      (by simp [Formula.reflectTime, Formula.someFuture, Formula.somePast, Formula.top]))
 
 /-- `H(φ→χ) → ((φ S ψ) → (χ S ψ))`: TR of UG (`left_mono_until_G`). -/
 @[tmLemma] def left_mono_since_H {fc : FrameClass} (φ χ ψ : Formula) :
@@ -158,6 +171,12 @@ def prior_S_gap {fc : FrameClass} (h : FrameClass.RTime ≤ fc) (φ : Formula) :
       Formula.reflect_time_involution])
 
 /-! ## Context-lifted forms -/
+
+/-- Context-lifted `serial_future_imp`. -/
+def serial_future_impAt {fc : FrameClass} (Γ : Context) :
+    Γ ⊢[fc] (Formula.bot.imp Formula.bot).imp
+      (Formula.someFuture (Formula.bot.imp Formula.bot)) :=
+  lift Γ serial_future_imp
 
 /-- Context-lifted `serial_past`. -/
 def serial_pastAt {fc : FrameClass} (Γ : Context) :

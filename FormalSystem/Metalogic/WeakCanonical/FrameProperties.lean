@@ -56,7 +56,7 @@ theorem prior_SZ_in_frame {fc : FrameClass} (h_fc : FrameClass.ZTime ≤ fc)
 theorem serial_future_in_frame (x : ReflCanDomain) :
     Formula.imp (Formula.bot.imp Formula.bot) (Formula.someFuture (Formula.bot.imp Formula.bot)) ∈
         x.val :=
-  theorem_in_mcs x.property (DerivationTree.axiom [] _ Axiom.serial_future trivial)
+  theorem_in_mcs x.property (DerivedAxioms.serial_future_imp)
 
 /-- BX1' serial_past: ⊤ → P(⊤) is a theorem. -/
 theorem serial_past_in_frame (x : ReflCanDomain) :

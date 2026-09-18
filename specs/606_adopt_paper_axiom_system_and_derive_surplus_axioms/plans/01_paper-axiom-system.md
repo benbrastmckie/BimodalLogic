@@ -334,16 +334,16 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 8: Restate TS as bare F⊤ [NOT STARTED]
+### Phase 8: Restate TS as bare F⊤ [COMPLETED]
 
 **Goal**: State `serial_future` as the paper's `F⊤`, keeping `⊤ → F⊤` as the derived `serial_future_imp`.
 
 **Tasks**:
-- [ ] Change the `serial_future` index to `Formula.someFuture (Formula.bot.imp Formula.bot)`, and re-prove its validity and swap validity.
-- [ ] Add `DerivedAxioms.serial_future_imp {fc} : ⊢[fc] ⊤ → F⊤`, obtained by `prop_s` plus MP on the new axiom.
-- [ ] Re-derive `DerivedAxioms.serial_past`, keeping its current `⊤ → P⊤` statement, by TR of TS followed by `prop_s`.
-- [ ] Apply the same TM⁺ lockstep restatement as in phase 7.
-- [ ] Rewrite the qualified `Axiom.serial_future` sites to `serial_future_imp`/`…At`.
+- [x] Change the `serial_future` index to `Formula.someFuture (Formula.bot.imp Formula.bot)`, and re-prove its validity and swap validity.
+- [x] Add `DerivedAxioms.serial_future_imp {fc} : ⊢[fc] ⊤ → F⊤`, obtained by `prop_s` plus MP on the new axiom.
+- [x] Re-derive `DerivedAxioms.serial_past`, keeping its current `⊤ → P⊤` statement, by TR of TS followed by `prop_s`.
+- [x] Apply the same TM⁺ lockstep restatement as in phase 7. *(TM⁺ and TM⋆ restated; new Star lemmas `starValid_serial_future_imp`, `starValid_serial_past_bare` for the swap arms; `matchAxiom` gained a top-level `F⊤` arm and `⊤ → F⊤` moved to `mirrorCandidate`; the TM⁻ TS discharge simplified to use the bare axiom)*
+- [x] Rewrite the qualified `Axiom.serial_future` sites to `serial_future_imp`/`…At`.
 
 **Timing**: 1.5 hours
 

@@ -156,7 +156,7 @@ theorem g_content_set_consistent {S : Set Formula}
   -- Seriality: ⊤ → F(⊤) is derivable, where F(⊤) = ¬G(¬⊤)
   have h_serial : DerivationTree FrameClass.Base [] ((Formula.bot.imp Formula.bot).imp
     (Formula.someFuture (Formula.bot.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ Axiom.serial_future trivial
+    DerivedAxioms.serial_future_imp
   have h_serial_in := theorem_in_mcs h_mcs h_serial
   -- ⊤ = ⊥→⊥ is derivable, hence in S
   have h_top : DerivationTree FrameClass.Base [] (Formula.bot.imp Formula.bot) :=

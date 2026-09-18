@@ -248,10 +248,9 @@ inductive StarAxiom : StarFormula → Type where
   | atom_stab (p : Atom) :
       StarAxiom ((StarFormula.atom p).imp (StarFormula.stab (StarFormula.atom p)))
   -- Layer 3: BX Temporal — seriality, monotonicity, connection (8)
-  /-- Serial future: `⊤ → F(⊤)`. Mirrors `PlusAxiom.serial_future`. -/
+  /-- Serial future: `F(⊤)` (the paper's TS). Mirrors `PlusAxiom.serial_future`. -/
   | serial_future :
-      StarAxiom ((StarFormula.bot.imp StarFormula.bot).imp
-        (StarFormula.someFuture (StarFormula.bot.imp StarFormula.bot)))
+      StarAxiom (StarFormula.someFuture (StarFormula.bot.imp StarFormula.bot))
   /-- Serial past: `⊤ → P(⊤)`. Mirrors `PlusAxiom.serial_past`. -/
   | serial_past :
       StarAxiom ((StarFormula.bot.imp StarFormula.bot).imp

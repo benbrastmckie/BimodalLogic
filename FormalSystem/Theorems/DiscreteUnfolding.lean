@@ -104,7 +104,7 @@ def succIndicatorAt {fc : FrameClass} (h : FrameClass.ZTime ≤ fc) :
     ⊢[fc] Formula.next Formula.top := by
   have h1 : ⊢[fc] Formula.someFuture Formula.top :=
     DerivationTree.modus_ponens _ Formula.top _
-      (DerivationTree.axiom _ _ Axiom.serial_future (FrameClass.base_le fc)) topThm
+      (DerivedAxioms.serial_future_impAt _) topThm
   have h2 : ⊢[fc] Formula.untl Formula.top.neg Formula.top :=
     DerivationTree.modus_ponens _ _ _
       (DerivationTree.axiom _ _ (Axiom.prior_UZ Formula.top) h) h1

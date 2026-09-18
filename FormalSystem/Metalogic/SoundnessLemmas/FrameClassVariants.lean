@@ -181,6 +181,12 @@ theorem serial_future_swap_valid :
   obtain ⟨s, hst⟩ := exists_lt t
   exact ⟨s, hst, fun h => h⟩
 
+/-- The paper's TS, `F⊤`, swaps to `P⊤`: `serial_future_swap_valid` at the trivially true
+antecedent. -/
+theorem serial_future_paper_swap_valid :
+    ValidIn FrameClass.Base (Formula.someFuture (Formula.bot.imp Formula.bot)).reflectTime :=
+  fun F hF M τ t => (serial_future_swap_valid F hF M τ t) id
+
 /-- Past seriality swaps to future seriality: `⊤ → P⊤` becomes `⊤ → F⊤`, witnessed by
 `exists_gt`. -/
 theorem serial_past_swap_valid :
@@ -700,7 +706,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   | ex_falso ψ => exact ex_falso_swap_valid ψ
   | peirce ψ χ => exact peirce_swap_valid ψ χ
   | modal_k_dist ψ χ => exact modal_k_dist_swap_valid ψ χ
-  | serial_future => exact serial_future_swap_valid
+  | serial_future => exact serial_future_paper_swap_valid
   | left_mono_until_G φ χ ψ => exact left_mono_until_G_swap_valid φ χ ψ
   | right_mono_until φ ψ χ => exact right_mono_until_swap_valid φ ψ χ
   | connect_future φ => exact connect_future_swap_valid φ

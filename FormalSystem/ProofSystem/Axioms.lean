@@ -168,10 +168,11 @@ inductive Axiom : Formula → Type where
   -- rule TR, see `FormalSystem.ProofSystem.DerivedAxioms`)
   -- Note: temp_k_dist and temp_4 are now derived theorems.
   -- See Theorems/TemporalDerived.lean for temporalKDistDerived and temporal4Derived.
-  /-- Serial future: `⊤ → F(⊤)` (future seriality; Burgess 1982 §1.6, No Last Element).
-  Under irreflexive semantics, every time point has a strict future. -/
+  /-- Serial future: `F(⊤)` (future seriality; Burgess 1982 §1.6, No Last Element), the
+  paper's TS verbatim. Under irreflexive semantics, every time point has a strict future.
+  The former statement `⊤ → F(⊤)` is the derived `DerivedAxioms.serial_future_imp`. -/
   | serial_future :
-    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.someFuture (Formula.bot.imp Formula.bot)))
+    Axiom (Formula.someFuture (Formula.bot.imp Formula.bot))
   /-- BX2G: Guard monotonicity of Until under G (Burgess A2a, Xu axiom (1)):
   Burgess: `G(p ⊃ q) ⊃ (U(r, p) ⊃ U(r, q))`.
   In this tree's guard-first order (untl(guard, event)):

@@ -121,10 +121,9 @@ inductive PlusAxiom : PlusFormula → Type where
   | modal_k_dist (φ ψ : PlusFormula) :
       PlusAxiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
   -- Layer 3: BX Temporal (22)
-  /-- Serial future: `⊤ → F(⊤)` -/
+  /-- Serial future: `F(⊤)` (the paper's TS verbatim) -/
   | serial_future :
-    PlusAxiom ((PlusFormula.bot.imp PlusFormula.bot).imp
-      (PlusFormula.someFuture (PlusFormula.bot.imp PlusFormula.bot)))
+    PlusAxiom (PlusFormula.someFuture (PlusFormula.bot.imp PlusFormula.bot))
   /-- Serial past: `⊤ → P(⊤)` -/
   | serial_past :
     PlusAxiom ((PlusFormula.bot.imp PlusFormula.bot).imp

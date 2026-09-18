@@ -295,7 +295,7 @@ def serialFutureCtx {fc : FrameClass} (A : Formula) : [A] ⊢[fc] Formula.top.so
   let top_ctx : DerivationTree fc [A] Formula.top :=
     weakenEmpty (identity Formula.bot)
   let sf_ctx : DerivationTree fc [A] (Formula.top.imp Formula.top.someFuture) :=
-    weakenEmpty (.axiom [] _ Axiom.serial_future (FrameClass.base_le fc))
+    weakenEmpty (DerivedAxioms.serial_future_imp)
   .modus_ponens [A] Formula.top Formula.top.someFuture sf_ctx top_ctx
 
 /-!
@@ -456,7 +456,7 @@ def sincePWeakened {fc : FrameClass} (A B psi : Formula) : [psi] ⊢[fc] (Formul
 
 /-- `[psi] |- top -> F(top)` -/
 def serialFutureWeakened {fc : FrameClass} (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.someFuture :=
-  weakenEmpty (.axiom [] _ Axiom.serial_future (FrameClass.base_le fc))
+  weakenEmpty (DerivedAxioms.serial_future_imp)
 
 /-- `[psi] |- top -> P(top)` -/
 def serialPastWeakened {fc : FrameClass} (psi : Formula) : [psi] ⊢[fc] Formula.top.imp Formula.top.somePast :=

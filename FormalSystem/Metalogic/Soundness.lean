@@ -329,6 +329,11 @@ theorem serial_future_axiom_valid :
   obtain ⟨s, hts⟩ := exists_gt t
   exact ⟨s, hts, id⟩
 
+/-- The paper's TS, `F(⊤)` (`Axiom.serial_future`), is valid: `serial_future_axiom_valid` at the
+trivially true antecedent. -/
+theorem serial_future_paper_valid : ⊨ (Formula.someFuture (Formula.bot.imp Formula.bot)) :=
+  Valid.of_forall fun F M τ t => (serial_future_axiom_valid.apply F M τ t) id
+
 /-- Serial past axiom is valid on nontrivial orders: `⊤ → P(⊤)`.
 For any time t in a nontrivial ordered group, there exists s < t. -/
 theorem serial_past_axiom_valid :
@@ -1215,7 +1220,7 @@ theorem axiom_validIn_min {φ : Formula} (ax : Axiom φ) : ValidIn ax.minFrameCl
   | ex_falso a0 => exact ex_falso_valid a0
   | peirce a0 a1 => exact peirce_valid a0 a1
   | modal_k_dist a0 a1 => exact modal_k_dist_valid a0 a1
-  | serial_future => exact serial_future_axiom_valid
+  | serial_future => exact serial_future_paper_valid
   | left_mono_until_G a0 a1 a2 => exact left_mono_until_G_valid a0 a1 a2
   | right_mono_until a0 a1 a2 => exact right_mono_until_valid a0 a1 a2
   | connect_future a0 => exact connect_future_valid a0

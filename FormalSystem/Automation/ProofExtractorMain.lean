@@ -707,7 +707,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- BX1: serial_future: ⊤ → F(⊤)
   mkEntry "serial_future_axiom"
-    (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial),
+    (DerivedAxioms.serial_future_imp (fc := .Base)),
 
   -- BX1': serial_past: ⊤ → P(⊤)
   mkEntry "serial_past_axiom"
@@ -957,7 +957,7 @@ def theoremRegistry : List TheoremEntry := [
   -- G-wrapped axiom instantiation variants (50% temporal ratio: 1/2)
   mkEntry "G_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G_serial_past_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivedAxioms.serial_past (fc := .Base))),
@@ -978,7 +978,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "H_serial_future_axiom"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial))),
+        (DerivedAxioms.serial_future_imp (fc := .Base)))),
   mkEntry "H_serial_past_axiom"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
@@ -996,7 +996,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "GG_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
-        (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial))),
+        (DerivedAxioms.serial_future_imp (fc := .Base)))),
   mkEntry "GG_serial_past_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
@@ -1015,7 +1015,7 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.temporal_necessitation _
-          (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)))),
+          (DerivedAxioms.serial_future_imp (fc := .Base))))),
   mkEntry "GGG_serial_past_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
@@ -1039,7 +1039,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G4_box_to_present"       (wrapG 4 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G4_mb_diamond"           (wrapG 4 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G4_serial_future"        (wrapG 4
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G4_serial_past"          (wrapG 4
       (DerivedAxioms.serial_past (fc := .Base))),
   mkEntry "G4_identity"             (wrapG 4 (@identity .Base p)),
@@ -1055,7 +1055,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G6_box_to_present"       (wrapG 6 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G6_mb_diamond"           (wrapG 6 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G6_serial_future"        (wrapG 6
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G6_serial_past"          (wrapG 6
       (DerivedAxioms.serial_past (fc := .Base))),
   mkEntry "G6_identity"             (wrapG 6 (@identity .Base p)),
@@ -1071,7 +1071,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G8_box_to_present"       (wrapG 8 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G8_mb_diamond"           (wrapG 8 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G8_serial_future"        (wrapG 8
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G8_serial_past"          (wrapG 8
       (DerivedAxioms.serial_past (fc := .Base))),
   mkEntry "G8_identity"             (wrapG 8 (@identity .Base p)),
@@ -1089,7 +1089,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G10_box_to_present"      (wrapG 10 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G10_mb_diamond"          (wrapG 10 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G10_serial_future"       (wrapG 10
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G10_serial_past"         (wrapG 10
       (DerivedAxioms.serial_past (fc := .Base))),
   mkEntry "G10_identity"            (wrapG 10 (@identity .Base p)),
@@ -1106,7 +1106,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G12_box_to_present"      (wrapG 12 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
   mkEntry "G12_mb_diamond"          (wrapG 12 (FormalSystem.Theorems.Perpetuity.mbDiamond p)),
   mkEntry "G12_serial_future"       (wrapG 12
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G12_serial_past"         (wrapG 12
       (DerivedAxioms.serial_past (fc := .Base))),
   mkEntry "G12_identity"            (wrapG 12 (@identity .Base p)),
@@ -1117,7 +1117,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G15_connect_past"        (wrapG 15
       (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G15_serial_future"       (wrapG 15
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G15_serial_past"         (wrapG 15
       (DerivedAxioms.serial_past (fc := .Base))),
   mkEntry "G15_identity"            (wrapG 15 (@identity .Base p)),
@@ -1129,7 +1129,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G20_connect_past"        (wrapG 20
       (FormalSystem.Theorems.TemporalDerived.connectPastThm p)),
   mkEntry "G20_serial_future"       (wrapG 20
-      (DerivationTree.axiom (fc := .Base) [] _ Axiom.serial_future trivial)),
+      (DerivedAxioms.serial_future_imp (fc := .Base))),
   mkEntry "G20_serial_past"         (wrapG 20
       (DerivedAxioms.serial_past (fc := .Base))),
   mkEntry "G20_identity"            (wrapG 20 (@identity .Base p)),

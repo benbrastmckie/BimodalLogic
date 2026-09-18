@@ -129,7 +129,7 @@ noncomputable def allFutureImpSomeFuture (φ : Formula) :
   have hTop : ⊢[fc] Formula.top := FormalSystem.Theorems.Combinators.topThm
   have hFTop : ⊢[fc] Formula.top.someFuture :=
     DerivationTree.modus_ponens [] _ _
-      (DerivationTree.axiom [] _ Axiom.serial_future (FrameClass.base_le fc)) hTop
+      (DerivedAxioms.serial_future_imp) hTop
   have hMono : ⊢[fc] (Formula.top.imp φ).allFuture.imp
       (Formula.top.someFuture.imp φ.someFuture) :=
     FormalSystem.Theorems.TemporalDerived.fMono Formula.top φ

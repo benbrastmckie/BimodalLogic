@@ -342,15 +342,28 @@ seriality schemata are closed formulas, hence literally `ofPlus` images, and tra
 /-- Serial future over L⋆. The formula is closed, so it *is* an `ofPlus` image and the L⁺
 validity transports along `starValidOnFrames_ofPlus`. -/
 theorem starValid_serial_future :
+    StarValid (StarFormula.someFuture (StarFormula.bot.imp StarFormula.bot)) :=
+  (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.serial_future)
+
+/-- `⊤ → F(⊤)` over L⋆: `starValid_serial_future` under a trivially true antecedent. The
+time reflection of `serial_past`. -/
+theorem starValid_serial_future_imp :
     StarValid ((StarFormula.bot.imp StarFormula.bot).imp
       (StarFormula.someFuture (StarFormula.bot.imp StarFormula.bot))) :=
-  (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.serial_future)
+  StarValid.of_forall fun F M τ t v => fun _ => starValid_serial_future.apply F M τ t v
 
 /-- Serial past over L⋆, likewise by transport. -/
 theorem starValid_serial_past :
     StarValid ((StarFormula.bot.imp StarFormula.bot).imp
       (StarFormula.somePast (StarFormula.bot.imp StarFormula.bot))) :=
   (starValidOnFrames_ofPlus _ _).mpr (plusAxiom_validIn_min PlusAxiom.serial_past)
+
+/-- `P(⊤)` over L⋆: `starValid_serial_past` at the true antecedent `⊤`. The time reflection of
+the paper's TS. -/
+theorem starValid_serial_past_bare :
+    StarValid (StarFormula.somePast (StarFormula.bot.imp StarFormula.bot)) :=
+  StarValid.of_forall fun F M τ t v =>
+    starValid_serial_past.apply F M τ t v (fun h => h)
 
 /-- BX2G over L⋆: the guard of an `until` may be weakened under `G`. -/
 theorem starValid_left_mono_until_G (φ χ ψ : StarFormula) :
@@ -1264,10 +1277,10 @@ theorem starAxiom_swap_validIn_min {φ : StarFormula} (ax : StarAxiom φ) :
     exact starValid_atom_stab p
   | serial_future =>
     simp only [StarFormula.reflectTime, StarFormula.reflect_time_some_future]
-    exact starValid_serial_past
+    exact starValid_serial_past_bare
   | serial_past =>
     simp only [StarFormula.reflectTime, StarFormula.reflect_time_some_past]
-    exact starValid_serial_future
+    exact starValid_serial_future_imp
   | left_mono_until_G φ χ ψ =>
     simp only [StarFormula.reflectTime, StarFormula.reflect_time_all_future]
     exact starValid_left_mono_since_H φ.reflectTime χ.reflectTime ψ.reflectTime
