@@ -98,8 +98,8 @@ theorem saturateBlocked_eq_self_of_noFresh_saturated
 
 /-- The witness branch is open: one `.neg`-signed box between atoms closes nothing, at every frame
 class. `checkBotPos` and `checkContradiction` do not read the frame class at all, and
-`checkAxiomNeg`'s `matchAxiom` does not recognise `□p` as an axiom instance, so the
-`witness.minFrameClass ≤ fc` test is never reached. -/
+`checkAxiomNeg`'s matchers (`matchAxiom`, `matchMirror`, `matchPriorSZ`) do not recognise `□p` as
+an axiom or derived-schema instance, so no frame-class test is ever reached. -/
 theorem findClosure_freshWorldBranch (fc : FormalSystem.ProofSystem.FrameClass) :
     findClosure freshWorldBranch fc = none := rfl
 

@@ -195,7 +195,7 @@ old one. -/
         match cr with
         | .contradiction _ l => (1, l.world, l.time)
         | .botPos l => (2, l.world, l.time)
-        | .axiomNeg _ _ l => (3, l.world, l.time)
+        | .axiomNeg _ _ _ l => (3, l.world, l.time)
 
 /-! ## Part 4 — what the engine therefore answers, before and after
 

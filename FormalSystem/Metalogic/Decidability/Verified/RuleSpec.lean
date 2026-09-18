@@ -56,11 +56,17 @@ Two consequences of that reading are deliberate:
   can never be right anywhere else.
 * `untlNeg` / `snceNeg` likewise carry the empty list: the Reynolds co-decomposition they
   perform is not the image of any single BX axiom.
+* The past-directed rules (`sncePos`, `priorSZ`, `priorSGap`, and the past half of
+  `serialityRule`) are **grounded via TR**: their axioms are time-reflection mirrors, which are
+  derived theorems rather than primitive `Axiom` constructors (see
+  `FormalSystem.ProofSystem.DerivedAxioms`), so each rule names the future-directed primary that
+  the mirror reflects. A mirror has the same minimal frame class as its primary, so every gate
+  below reads the same frame class it read before.
 
 ## The two rules scheduled outside `allRulesForFC`
 
 `serialityRule` and `timeLinearity` are both `.Base` rules in the soundness sense — `serial_future`
-/ `serial_past` and `temp_linearity` are base axioms — but both are deliberately **absent** from
+(with its TR mirror `serial_past`) and `temp_linearity` are base axioms — but both are deliberately **absent** from
 `allRulesForFC`, because each is keyed on something other than a formula's shape (`serialityRule`
 on the label, `timeLinearity` on the branch's time structure), so no position in a per-formula
 priority list is correct for them. They are scheduled instead as the second and third stages of
@@ -126,10 +132,11 @@ private def propositionalBase : List AxiomInstance :=
 
 /-- The S5 modal layer, grounding the four `□`/`◇` rules. The universal propagation those rules
 perform across all known worlds is exactly the content of reflexivity, transitivity, symmetry
-and the S5 collapse together with `K`. -/
+and the S5 collapse together with `K`. Transitivity (4) and symmetry (B) are derived theorems of
+MT, M5 and MK (`FormalSystem.ProofSystem.DerivedAxioms.modal_4`/`modal_b`), so the primitive
+grounding set is MT, M5 and MK. -/
 private def s5Base : List AxiomInstance :=
-  [⟨_, .modal_t pA⟩, ⟨_, .modal_4 pA⟩, ⟨_, .modal_b pA⟩, ⟨_, .modal_5_collapse pA⟩,
-   ⟨_, .modal_k_dist pA qA⟩]
+  [⟨_, .modal_t pA⟩, ⟨_, .modal_5_collapse pA⟩, ⟨_, .modal_k_dist pA qA⟩]
 
 /-!
 ## The rule specification
@@ -230,7 +237,9 @@ def ruleAxioms : TableauRule → List AxiomInstance
   -- The negative rules perform a Reynolds co-decomposition that is no single axiom's image.
   | .untlPos => [⟨_, .until_F pA qA⟩, ⟨_, .self_accum_until pA qA⟩]
   | .untlNeg => []
-  | .sncePos => [⟨_, .since_P pA qA⟩, ⟨_, .self_accum_since pA qA⟩]
+  -- The Since rule is grounded, via the time-reflection rule TR, in the Until primaries: its
+  -- axioms BX10'/BX5' are the derived TR mirrors `DerivedAxioms.since_P`/`self_accum_since`.
+  | .sncePos => [⟨_, .until_F pA qA⟩, ⟨_, .self_accum_until pA qA⟩]
   | .snceNeg => []
   -- Order trichotomy (1): the three branches ARE the three `temp_linearity` disjuncts. That
   -- identity is settled design, and it is what makes the eventual admissibility lemma a
@@ -241,15 +250,18 @@ def ruleAxioms : TableauRule → List AxiomInstance
   | .densityRule => [⟨_, .density pA⟩]
   -- Discrete (3)
   | .priorUZ => [⟨_, .prior_UZ pA⟩]
-  | .priorSZ => [⟨_, .prior_SZ pA⟩]
+  -- Grounded via TR in UZ (`DerivedAxioms.prior_SZ` is its mirror).
+  | .priorSZ => [⟨_, .prior_UZ pA⟩]
   | .z1Rule => [⟨_, .z1 pA⟩]
   -- Dedekind (3). NOT `prior_UZ`/`prior_SZ`: those are the integer well-ordering axioms at
   -- `.ZTime`, and the similarity of the names is a known trap.
   | .priorUGap => [⟨_, .prior_U_gap pA⟩]
-  | .priorSGap => [⟨_, .prior_S_gap pA⟩]
+  -- Grounded via TR in PU (`DerivedAxioms.prior_S_gap` is its mirror).
+  | .priorSGap => [⟨_, .prior_U_gap pA⟩]
   | .sepRule => [⟨_, .sep pA⟩]
   -- Scheduled outside `allRulesForFC` (2)
-  | .serialityRule => [⟨_, .serial_future⟩, ⟨_, .serial_past⟩]
+  -- Past seriality is the TR mirror of TS (`DerivedAxioms.serial_past`).
+  | .serialityRule => [⟨_, .serial_future⟩]
   | .timeLinearity => [⟨_, .temp_linearity pA qA⟩]
 
 /-!

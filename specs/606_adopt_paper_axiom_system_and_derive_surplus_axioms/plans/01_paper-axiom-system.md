@@ -198,19 +198,19 @@ The phases are deliberately sequential. They all share one Lake build tree, and 
 
 ---
 
-### Phase 4: Rewrite Automation, the decision procedure and the dataset executables [NOT STARTED]
+### Phase 4: Rewrite Automation, the decision procedure and the dataset executables [COMPLETED]
 
 **Goal**: Move the "axiom-as-data" consumers off the surplus constructors.
 
 **Tasks**:
-- [ ] `Automation/ProofSearch/Core.lean`: move the surplus patterns out of `matchAxiom : Formula → Option (Sigma Axiom)` into `matchDerived` (around line 1044), returning the derived definitions.
-- [ ] `Automation/Tactics/Search.lean`: remove the surplus names from the ``Axiom.X`` list for `modal_search`. Add a parallel list of derived-definition names tried with `exact` (or `apply`), so that `modal_search` still closes the mirror goals in `Tests/`.
-- [ ] `Automation/FormulaEnumerator.lean`: drop the surplus seeds, or seed from the derived definitions' formulas.
-- [ ] `Automation/ProofExtractorMain.lean` (about 30 sites): replace the constructors with derived definitions. If it emits axiom names into JSONL, keep the output keyed by formula, and note in phase 9 how mirror steps now serialize.
-- [ ] `Metalogic/Decidability/Verified/RuleSpec.lean`: in `ruleAxioms`, replace `since_P`, `self_accum_since`, `prior_SZ`, `prior_S_gap` and `serial_past` with their TR primaries. Check that the `by decide` gates still close, and document "grounded via TR" in the docstring.
-- [ ] `Metalogic/Decidability/Tableau.lean`: rewrite its surplus uses.
-- [ ] `Decidability/ProofExtraction.lean`: check the callers of `proofFromAxiom` for surplus arguments.
-- [ ] Build each module, then build the executables with `lake build dataset_generator proof_extractor benchmark_anchors`.
+- [x] `Automation/ProofSearch/Core.lean`: move the surplus patterns out of `matchAxiom : Formula → Option (Sigma Axiom)` into `matchDerived` (around line 1044), returning the derived definitions. *(deviation: altered — mirror arms moved into new `mirrorCandidate`/`matchMirror`, which `matchDerived` tries first and `matchesAxiom` ORs in; `prior_SZ` gets its own ZTime-valued `matchPriorSZ`)*
+- [x] `Automation/Tactics/Search.lean`: remove the surplus names from the ``Axiom.X`` list for `modal_search`. Add a parallel list of derived-definition names tried with `exact` (or `apply`), so that `modal_search` still closes the mirror goals in `Tests/`. *(deviation: altered — the Base mirrors are already `@[tmLemma]` and are reached by `tryLemmaMatch`; only the gated `prior_SZ`/`prior_S_gap` needed a new strategy, `tryGatedDerivedMatch`)*
+- [x] `Automation/FormulaEnumerator.lean`: drop the surplus seeds, or seed from the derived definitions' formulas. *(mirror seeds dropped; schema indices compacted to the 29 primitives, `pickSchemaIdx` and `ProofFirstTests` updated)*
+- [x] `Automation/ProofExtractorMain.lean` (about 30 sites): replace the constructors with derived definitions. If it emits axiom names into JSONL, keep the output keyed by formula, and note in phase 9 how mirror steps now serialize.
+- [x] `Metalogic/Decidability/Verified/RuleSpec.lean`: in `ruleAxioms`, replace `since_P`, `self_accum_since`, `prior_SZ`, `prior_S_gap` and `serial_past` with their TR primaries. Check that the `by decide` gates still close, and document "grounded via TR" in the docstring.
+- [x] `Metalogic/Decidability/Tableau.lean`: rewrite its surplus uses. *(only comments mention mirrors; addition: `Closure.lean`'s `ClosureReason.axiomNeg` now carries a derivation at its least frame class instead of an `Axiom` witness, and `checkAxiomNeg` also closes on negated derived schemata — without this `TableauConformance` regressed on BX11'/BX10'/BX7')*
+- [x] `Decidability/ProofExtraction.lean`: check the callers of `proofFromAxiom` for surplus arguments.
+- [x] Build each module, then build the executables with `lake build dataset_generator proof_extractor benchmark_anchors`.
 
 **Timing**: 2 hours
 

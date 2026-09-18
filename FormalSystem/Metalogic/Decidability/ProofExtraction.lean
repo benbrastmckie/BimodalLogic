@@ -87,10 +87,10 @@ the original goal. The full tableau-to-proof extraction combines these.
 def extractFromClosureReason (reason : ClosureReason) :
     Option (Sigma fun phi : Formula => DerivationTree .Base [] phi) :=
   match reason with
-  | .axiomNeg phi ax _ =>
+  | .axiomNeg phi fc₀ d _ =>
       -- The axiom itself is provable (only if base-compatible)
-      if h_fc : ax.minFrameClass <= FrameClass.Base then
-        some ⟨phi, proofFromAxiom phi ax h_fc⟩
+      if h_fc : fc₀ <= FrameClass.Base then
+        some ⟨phi, d.lift h_fc⟩
       else
         none
   | .contradiction _ _ =>
@@ -278,10 +278,10 @@ def extractProof (phi : Formula) (tableau : ExpandedTableau)
       -- Strategy 3: Closure-based extraction
       let axiomProofs := closedBranches.filterMap fun cb =>
         match cb.reason with
-        | .axiomNeg psi ax _ =>
+        | .axiomNeg psi fc₀ d _ =>
             if h : phi = psi then
-              if h_fc : ax.minFrameClass <= FrameClass.Base then
-                some (h ▸ DerivationTree.axiom [] psi ax h_fc)
+              if h_fc : fc₀ <= FrameClass.Base then
+                some (h ▸ d.lift h_fc)
               else none
             else none
         | _ => none

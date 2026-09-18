@@ -1274,7 +1274,9 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
 
 /-! ## Axiom Instantiation with Witness -/
 
-/-- Build a random axiom witness for a given schema index. -/
+/-- Build a random axiom witness for a given schema index. Indices range over the 29
+primitive schemata (0-22 Base, 23-24 ZTime, 25-26 Dense, 27-28 RTime); the derived
+schemata (time-reflection mirrors, modal 4 and B) are not primitive and have no index. -/
 def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
     (Option (Σ φ, Axiom φ)) := do
   match idx with
@@ -1299,133 +1301,76 @@ def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
     return some ⟨_, Axiom.modal_t φ⟩
   | 5 => do
     let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.modal_4 φ⟩
-  | 6 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.modal_b φ⟩
-  | 7 => do
-    let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.modal_5_collapse φ⟩
-  | 8 => do
+  | 6 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.modal_k_dist φ ψ⟩
-  | 9 => return some ⟨_, Axiom.serial_future⟩
-  | 10 => return some ⟨_, Axiom.serial_past⟩
-  | 11 => do
+  | 7 => return some ⟨_, Axiom.serial_future⟩
+  | 8 => do
     let φ ← randomSubFormula atoms maxParamSize
     let χ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.left_mono_until_G φ χ ψ⟩
-  | 12 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let χ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.left_mono_since_H φ χ ψ⟩
-  | 13 => do
+  | 9 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     let χ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.right_mono_until φ ψ χ⟩
-  | 14 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    let χ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.right_mono_since φ ψ χ⟩
-  | 15 => do
+  | 10 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.connect_future φ⟩
-  | 16 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.connect_past φ⟩
-  | 17 => do
+  | 11 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     let p ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.enrichment_until φ ψ p⟩
-  | 18 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    let p ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.enrichment_since φ ψ p⟩
-  | 19 => do
+  | 12 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.self_accum_until φ ψ⟩
-  | 20 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.self_accum_since φ ψ⟩
-  | 21 => do
+  | 13 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.absorb_until φ ψ⟩
-  | 22 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.absorb_since φ ψ⟩
-  | 23 => do
+  | 14 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     let χ ← randomSubFormula atoms maxParamSize
     let θ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.linear_until φ ψ χ θ⟩
-  | 24 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    let χ ← randomSubFormula atoms maxParamSize
-    let θ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.linear_since φ ψ χ θ⟩
-  | 25 => do
+  | 15 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.until_F φ ψ⟩
-  | 26 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.since_P φ ψ⟩
-  | 27 => do
+  | 16 => do
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.temp_linearity φ ψ⟩
-  | 28 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    let ψ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.temp_linearity_past φ ψ⟩
-  | 29 => do
+  | 17 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.F_until_equiv φ⟩
-  | 30 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.P_since_equiv φ⟩
-  | 31 => do
+  | 18 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.modal_future φ⟩
-  | 32 => return some ⟨_, Axiom.discrete_symm_fwd⟩
-  | 33 => return some ⟨_, Axiom.discrete_symm_bwd⟩
-  | 34 => return some ⟨_, Axiom.discrete_propagate_fwd⟩
-  | 35 => return some ⟨_, Axiom.discrete_propagate_bwd⟩
-  | 36 => return some ⟨_, Axiom.discrete_box_necessity⟩
-  | 37 => do
+  | 19 => return some ⟨_, Axiom.discrete_symm_fwd⟩
+  | 20 => return some ⟨_, Axiom.discrete_propagate_fwd⟩
+  | 21 => return some ⟨_, Axiom.discrete_propagate_bwd⟩
+  | 22 => return some ⟨_, Axiom.discrete_box_necessity⟩
+  | 23 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.prior_UZ φ⟩
-  | 38 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.prior_SZ φ⟩
-  | 39 => do
+  | 24 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.z1 φ⟩
-  | 40 => do
+  | 25 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.density φ⟩
-  | 41 => return some ⟨_, Axiom.dense_indicator⟩
-  | 42 => do
+  | 26 => return some ⟨_, Axiom.dense_indicator⟩
+  | 27 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.prior_U_gap φ⟩
-  | 43 => do
-    let φ ← randomSubFormula atoms maxParamSize
-    return some ⟨_, Axiom.prior_S_gap φ⟩
-  | 44 => do
+  | 28 => do
     let φ ← randomSubFormula atoms maxParamSize
     return some ⟨_, Axiom.sep φ⟩
   | _ => return none
@@ -1434,12 +1379,12 @@ def mkAxiomAtIdx (atoms : List Atom) (maxParamSize : Nat) (idx : Nat) : IO
 def pickSchemaIdx (_atoms : List Atom) (_maxParamSize : Nat) (fc : FrameClass) : IO Nat := do
   let allowed :=
     match fc with
-    | .Base => List.range 37  -- indices 0-36 are Base
-    | .Dense => (List.range 37) ++ [40, 41]
-    | .ZTime => (List.range 37) ++ [37, 38, 39]
-    -- `Dedekind` sits strictly above `Dense`, so it admits the Base and Dense schemas,
-    -- plus its own three Reynolds schemas at indices 42-44.
-    | .RTime => (List.range 37) ++ [40, 41, 42, 43, 44]
+    | .Base => List.range 23  -- indices 0-22 are Base
+    | .Dense => (List.range 23) ++ [25, 26]
+    | .ZTime => (List.range 23) ++ [23, 24]
+    -- `RTime` sits strictly above `Dense`, so it admits the Base and Dense schemas,
+    -- plus its own two Reynolds schemas (PU, SEP) at indices 27-28.
+    | .RTime => (List.range 23) ++ [25, 26, 27, 28]
   let idx ← IO.rand 0 (allowed.length - 1)
   match allowed[idx]? with
   | some i => return i

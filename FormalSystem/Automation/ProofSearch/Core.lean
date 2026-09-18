@@ -362,27 +362,11 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- modal_4: □φ → □□φ
-      <|> (match lhs, rhs with
-           | .box phi, .box (.box phi') =>
-               if phi = phi' then
-                 some ⟨_, Axiom.modal_4 phi⟩
-               else none
-           | _, _ => none)
-
       -- modal_future: □φ → □(Gφ)
       <|> (match lhs, rhs with
            | .box phi, .box (.allFuture phi') =>
                if phi = phi' then
                  some ⟨_, Axiom.modal_future phi⟩
-               else none
-           | _, _ => none)
-
-      -- modal_b: φ → □◇φ
-      <|> (match lhs, rhs with
-           | phi, .box (.diamond phi') =>
-               if phi = phi' then
-                 some ⟨_, Axiom.modal_b phi⟩
                else none
            | _, _ => none)
 
@@ -406,22 +390,10 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                some ⟨_, Axiom.serial_future⟩
            | _, _ => none)
 
-      -- serial_past: ⊤ → P(⊤)
-      <|> (match lhs, rhs with
-           | .imp .bot .bot, .somePast (.imp .bot .bot) =>
-               some ⟨_, Axiom.serial_past⟩
-           | _, _ => none)
-
       -- discrete_symm_fwd: U(⊤,⊥) → S(⊤,⊥)
       <|> (match lhs, rhs with
            | .untl .bot (.imp .bot .bot), .snce .bot (.imp .bot .bot) =>
                some ⟨_, Axiom.discrete_symm_fwd⟩
-           | _, _ => none)
-
-      -- discrete_symm_bwd: S(⊤,⊥) → U(⊤,⊥)
-      <|> (match lhs, rhs with
-           | .snce .bot (.imp .bot .bot), .untl .bot (.imp .bot .bot) =>
-               some ⟨_, Axiom.discrete_symm_bwd⟩
            | _, _ => none)
 
       -- discrete_propagate_fwd: U(⊤,⊥) → G(U(⊤,⊥))
@@ -460,27 +432,11 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- connect_past (BX4'): φ → H(F(φ))
-      <|> (match lhs, rhs with
-           | phi, .allPast (.someFuture phi') =>
-               if phi = phi' then
-                 some ⟨_, Axiom.connect_past phi⟩
-               else none
-           | _, _ => none)
-
       -- F_until_equiv (BX12): F(φ) → U(φ, ⊤)
       <|> (match lhs, rhs with
            | .someFuture phi, .untl (.imp .bot .bot) phi' =>
                if phi = phi' then
                  some ⟨_, Axiom.F_until_equiv phi⟩
-               else none
-           | _, _ => none)
-
-      -- P_since_equiv (BX12'): P(φ) → S(φ, ⊤)
-      <|> (match lhs, rhs with
-           | .somePast phi, .snce (.imp .bot .bot) phi' =>
-               if phi = phi' then
-                 some ⟨_, Axiom.P_since_equiv phi⟩
                else none
            | _, _ => none)
 
@@ -513,14 +469,6 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- self_accum_since (BX5'): S(ψ,φ) → S(ψ, φ∧S(ψ,φ))
-      <|> (match lhs, rhs with
-           | .snce phi psi, .snce (.and phi' (.snce phi'' psi'')) psi' =>
-               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ psi' = psi'' then
-                 some ⟨_, Axiom.self_accum_since phi psi⟩
-               else none
-           | _, _ => none)
-
       -- absorb_until (BX6): U(φ∧U(ψ,φ), φ) → U(ψ,φ)
       <|> (match lhs, rhs with
            | .untl phi'' (.and phi (.untl phi' psi)), .untl phi''' psi' =>
@@ -529,27 +477,11 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- absorb_since (BX6'): S(φ∧S(ψ,φ), φ) → S(ψ,φ)
-      <|> (match lhs, rhs with
-           | .snce phi'' (.and phi (.snce phi' psi)), .snce phi''' psi' =>
-               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
-                 some ⟨_, Axiom.absorb_since phi psi⟩
-               else none
-           | _, _ => none)
-
       -- until_F (BX10): U(ψ,φ) → F(ψ)
       <|> (match lhs, rhs with
            | .untl _phi psi, .someFuture psi' =>
                if psi = psi' then
                  some ⟨_, Axiom.until_F _phi psi⟩
-               else none
-           | _, _ => none)
-
-      -- since_P (BX10'): S(ψ,φ) → P(ψ)
-      <|> (match lhs, rhs with
-           | .snce _phi psi, .somePast psi' =>
-               if psi = psi' then
-                 some ⟨_, Axiom.since_P _phi psi⟩
                else none
            | _, _ => none)
 
@@ -565,31 +497,11 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- temp_linearity_past (BX11'): P(φ)∧P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
-      <|> (match lhs, rhs with
-           | .and (.somePast phi) (.somePast psi),
-             .or (.somePast (.and phi' psi'))
-               (.or (.somePast (.and phi'' (.somePast psi'')))
-                 (.somePast (.and (.somePast phi''') psi'''))) =>
-               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
-                  psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
-                 some ⟨_, Axiom.temp_linearity_past phi psi⟩
-               else none
-           | _, _ => none)
-
       -- prior_UZ: F(φ) → U(φ, ¬φ)
       <|> (match lhs, rhs with
            | .someFuture phi1, .untl (.neg phi3) phi2 =>
                if phi1 = phi2 ∧ phi2 = phi3 then
                  some ⟨_, Axiom.prior_UZ phi1⟩
-               else none
-           | _, _ => none)
-
-      -- prior_SZ: P(φ) → S(φ, ¬φ)
-      <|> (match lhs, rhs with
-           | .somePast phi1, .snce (.neg phi3) phi2 =>
-               if phi1 = phi2 ∧ phi2 = phi3 then
-                 some ⟨_, Axiom.prior_SZ phi1⟩
                else none
            | _, _ => none)
 
@@ -606,15 +518,6 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- left_mono_since_H (BX2H): H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
-      <|> (match lhs, rhs with
-           | .allPast (.imp phi chi),
-             .imp (.snce phi' psi) (.snce chi' psi') =>
-               if phi = phi' ∧ chi = chi' ∧ psi = psi' then
-                 some ⟨_, Axiom.left_mono_since_H phi chi psi⟩
-               else none
-           | _, _ => none)
-
       -- right_mono_until (BX3): G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
       <|> (match lhs, rhs with
            | .allFuture (.imp phi psi),
@@ -624,30 +527,12 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- right_mono_since (BX3'): H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
-      <|> (match lhs, rhs with
-           | .allPast (.imp phi psi),
-             .imp (.snce chi phi') (.snce chi' psi') =>
-               if phi = phi' ∧ psi = psi' ∧ chi = chi' then
-                 some ⟨_, Axiom.right_mono_since phi psi chi⟩
-               else none
-           | _, _ => none)
-
       -- enrichment_until (BX13): p∧U(ψ,φ) → U(ψ∧S(p,φ), φ)
       <|> (match lhs, rhs with
            | .and pp (.untl phi psi),
              .untl phi'' (.and psi' (.snce phi' pp')) =>
                if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
                  some ⟨_, Axiom.enrichment_until phi psi pp⟩
-               else none
-           | _, _ => none)
-
-      -- enrichment_since (BX13'): p∧S(ψ,φ) → S(ψ∧U(p,φ), φ)
-      <|> (match lhs, rhs with
-           | .and pp (.snce phi psi),
-             .snce phi'' (.and psi' (.untl phi' pp')) =>
-               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
-                 some ⟨_, Axiom.enrichment_since phi psi pp⟩
                else none
            | _, _ => none)
 
@@ -669,20 +554,6 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- linear_since (BX7'): S(ψ,φ)∧S(θ,χ) → S(ψ∧θ,φ∧χ) ∨ S(ψ∧χ,φ∧χ) ∨ S(φ∧θ,φ∧χ)
-      <|> (match lhs, rhs with
-           | .and (.snce phi psi) (.snce chi theta),
-             .or (.or (.snce (.and phi' chi') (.and psi' theta'))
-                      (.snce (.and phi'' chi''') (.and psi'' chi'')))
-                 (.snce (.and phi''''' chi'''') (.and phi'''' theta'')) =>
-               if psi = psi' ∧ psi' = psi'' ∧
-                  theta = theta' ∧ theta' = theta'' ∧
-                  phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
-                  chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
-                 some ⟨_, Axiom.linear_since phi psi chi theta⟩
-               else none
-           | _, _ => none)
-
       -------------------------------------------------------------------
       -- prop_s must be LAST (very general: φ → (ψ → φ))
       -------------------------------------------------------------------
@@ -698,6 +569,164 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
   | _ => none
 
 /--
+Candidate derived-theorem instance for the schemata that the paper's axiom system
+does not take as primitive: the time-reflection mirrors of the BX temporal axioms and the S5
+schemata 4 and B (see `FormalSystem.ProofSystem.DerivedAxioms`). Each arm returns the
+derived theorem at the matched arguments; `matchMirror` checks the formula identity.
+
+`prior_SZ` (the TR mirror of the ZTime axiom UZ) is not listed: this engine searches the base
+frame class, where it is not a theorem.
+-/
+def mirrorCandidate (φ : Formula) : Option (Σ ψ, ⊢ ψ) :=
+  match φ with
+  | .imp lhs rhs =>
+      -- modal_4: □φ → □□φ
+      (match lhs, rhs with
+           | .box phi, .box (.box phi') =>
+               if phi = phi' then
+                 some ⟨_, DerivedAxioms.modal_4 phi⟩
+               else none
+           | _, _ => none)
+
+      -- modal_b: φ → □◇φ
+      <|> (match lhs, rhs with
+           | phi, .box (.diamond phi') =>
+               if phi = phi' then
+                 some ⟨_, DerivedAxioms.modal_b phi⟩
+               else none
+           | _, _ => none)
+
+      -- serial_past: ⊤ → P(⊤)
+      <|> (match lhs, rhs with
+           | .imp .bot .bot, .somePast (.imp .bot .bot) =>
+               some ⟨_, DerivedAxioms.serial_past⟩
+           | _, _ => none)
+
+      -- discrete_symm_bwd: S(⊤,⊥) → U(⊤,⊥)
+      <|> (match lhs, rhs with
+           | .snce .bot (.imp .bot .bot), .untl .bot (.imp .bot .bot) =>
+               some ⟨_, DerivedAxioms.discrete_symm_bwd⟩
+           | _, _ => none)
+
+      -- connect_past (BX4'): φ → H(F(φ))
+      <|> (match lhs, rhs with
+           | phi, .allPast (.someFuture phi') =>
+               if phi = phi' then
+                 some ⟨_, DerivedAxioms.connect_past phi⟩
+               else none
+           | _, _ => none)
+
+      -- P_since_equiv (BX12'): P(φ) → S(φ, ⊤)
+      <|> (match lhs, rhs with
+           | .somePast phi, .snce (.imp .bot .bot) phi' =>
+               if phi = phi' then
+                 some ⟨_, DerivedAxioms.P_since_equiv phi⟩
+               else none
+           | _, _ => none)
+
+      -- self_accum_since (BX5'): S(ψ,φ) → S(ψ, φ∧S(ψ,φ))
+      <|> (match lhs, rhs with
+           | .snce phi psi, .snce (.and phi' (.snce phi'' psi'')) psi' =>
+               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ psi' = psi'' then
+                 some ⟨_, DerivedAxioms.self_accum_since phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- absorb_since (BX6'): S(φ∧S(ψ,φ), φ) → S(ψ,φ)
+      <|> (match lhs, rhs with
+           | .snce phi'' (.and phi (.snce phi' psi)), .snce phi''' psi' =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
+                 some ⟨_, DerivedAxioms.absorb_since phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- since_P (BX10'): S(ψ,φ) → P(ψ)
+      <|> (match lhs, rhs with
+           | .snce _phi psi, .somePast psi' =>
+               if psi = psi' then
+                 some ⟨_, DerivedAxioms.since_P _phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- temp_linearity_past (BX11'): P(φ)∧P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
+      <|> (match lhs, rhs with
+           | .and (.somePast phi) (.somePast psi),
+             .or (.somePast (.and phi' psi'))
+               (.or (.somePast (.and phi'' (.somePast psi'')))
+                 (.somePast (.and (.somePast phi''') psi'''))) =>
+               if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧
+                  psi = psi' ∧ psi' = psi'' ∧ psi'' = psi''' then
+                 some ⟨_, DerivedAxioms.temp_linearity_past phi psi⟩
+               else none
+           | _, _ => none)
+
+      -- left_mono_since_H (BX2H): H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
+      <|> (match lhs, rhs with
+           | .allPast (.imp phi chi),
+             .imp (.snce phi' psi) (.snce chi' psi') =>
+               if phi = phi' ∧ chi = chi' ∧ psi = psi' then
+                 some ⟨_, DerivedAxioms.left_mono_since_H phi chi psi⟩
+               else none
+           | _, _ => none)
+
+      -- right_mono_since (BX3'): H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
+      <|> (match lhs, rhs with
+           | .allPast (.imp phi psi),
+             .imp (.snce chi phi') (.snce chi' psi') =>
+               if phi = phi' ∧ psi = psi' ∧ chi = chi' then
+                 some ⟨_, DerivedAxioms.right_mono_since phi psi chi⟩
+               else none
+           | _, _ => none)
+
+      -- enrichment_since (BX13'): p∧S(ψ,φ) → S(ψ∧U(p,φ), φ)
+      <|> (match lhs, rhs with
+           | .and pp (.snce phi psi),
+             .snce phi'' (.and psi' (.untl phi' pp')) =>
+               if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
+                 some ⟨_, DerivedAxioms.enrichment_since phi psi pp⟩
+               else none
+           | _, _ => none)
+
+      -- linear_since (BX7'): S(ψ,φ)∧S(θ,χ) → S(ψ∧θ,φ∧χ) ∨ S(ψ∧χ,φ∧χ) ∨ S(φ∧θ,φ∧χ)
+      <|> (match lhs, rhs with
+           | .and (.snce phi psi) (.snce chi theta),
+             .or (.or (.snce (.and phi' chi') (.and psi' theta'))
+                      (.snce (.and phi'' chi''') (.and psi'' chi'')))
+                 (.snce (.and phi''''' chi'''') (.and phi'''' theta'')) =>
+               if psi = psi' ∧ psi' = psi'' ∧
+                  theta = theta' ∧ theta' = theta'' ∧
+                  phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
+                  chi = chi' ∧ chi' = chi'' ∧ chi'' = chi''' ∧ chi''' = chi'''' then
+                 some ⟨_, DerivedAxioms.linear_since phi psi chi theta⟩
+               else none
+           | _, _ => none)
+  | _ => none
+
+/--
+Match a formula against the derived schemata of `mirrorCandidate`, returning a base-class
+derivation of exactly `φ` on success.
+-/
+def matchMirror (φ : Formula) : Option (⊢ φ) :=
+  match mirrorCandidate φ with
+  | some ⟨ψ, d⟩ => if h : ψ = φ then some (h ▸ d) else none
+  | none => none
+
+/--
+Match the time-reflection mirror of the ZTime axiom UZ, `P(φ) → S(¬φ, φ)`
+(`DerivedAxioms.prior_SZ`), returning its derivation at `FrameClass.ZTime`, the least frame
+class at which it is a theorem. Used by the tableau's negated-axiom closure check.
+-/
+def matchPriorSZ (φ : Formula) : Option (⊢[FrameClass.ZTime] φ) :=
+  match φ with
+  | .imp (.somePast phi1) (.snce (.neg phi3) phi2) =>
+      if h : phi1 = phi2 ∧ phi2 = phi3 then
+        some (by
+          obtain ⟨rfl, rfl⟩ := h
+          exact DerivedAxioms.prior_SZ le_rfl phi1)
+      else none
+  | _ => none
+
+/--
 Check if a formula matches any of the 42 TM axiom schemata this matcher covers.
 
 The tree has 45 axiom constructors; `matchAxiom` covers 42 of them, omitting
@@ -709,7 +738,7 @@ Covers all axiom constructors: propositional (4), modal (5), BX temporal (22),
 interaction (1), uniformity (5), prior (2), Z1 (1), density (2).
 -/
 def matchesAxiom (φ : Formula) : Bool :=
-  (matchAxiom φ).isSome
+  (matchAxiom φ).isSome || (matchMirror φ).isSome
 
 /--
 Find all implications `ψ → φ` in context where the consequent matches the goal.
@@ -1042,6 +1071,7 @@ Currently handles (unambiguous head shapes, checked in order):
 - notNotIntro: `φ → ¬¬φ` -- double negation introduction
 -/
 def matchDerived (φ : Formula) : Option (⊢ φ) :=
+  matchMirror φ <|>
   match φ with
   | .imp lhs rhs =>
       -- TF (temporalFutureDerived): □φ → G(□φ) -- before boxToFuture (more specific)

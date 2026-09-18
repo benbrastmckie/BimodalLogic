@@ -51,15 +51,20 @@ Witness for why a branch is closed.
 Each constructor provides evidence of the contradiction:
 - `contradiction`: Both T(φ) and F(φ) are present
 - `botPos`: T(⊥) is present (asserting falsum is true)
-- `axiomNeg`: F(axiom) is present (negating a valid axiom)
+- `axiomNeg`: F(axiom) is present (negating a valid axiom). The axiom is carried as a
+  derivation at its least frame class, so the check covers both primitive axiom instances and
+  the derived schemata (time-reflection mirrors, modal 4 and B) that the paper's axiom system
+  does not take as primitive.
 -/
 inductive ClosureReason : Type where
   /-- Branch contains both T(φ) and F(φ) at the same label. -/
   | contradiction (φ : Formula) (label : Label)
   /-- Branch contains T(⊥) at some label. -/
   | botPos (label : Label)
-  /-- Branch contains F(φ) where φ is an axiom instance, at some label. -/
-  | axiomNeg (φ : Formula) (witness : Axiom φ) (label : Label)
+  /-- Branch contains F(φ) where φ is an axiom (or derived-schema) instance, at some label;
+  `witness` derives `φ` at frame class `fc₀`. -/
+  | axiomNeg (φ : Formula) (fc₀ : FrameClass) (witness : DerivationTree fc₀ [] φ)
+      (label : Label)
   deriving Repr
 
 namespace ClosureReason
@@ -68,7 +73,7 @@ namespace ClosureReason
 def describe : ClosureReason → String
   | contradiction φ l => s!"Contradiction on formula: {repr φ} at world {l.world}, time {l.time}"
   | botPos l => s!"Bottom asserted true (T(⊥)) at world {l.world}, time {l.time}"
-  | axiomNeg φ _ l => s!"Negated axiom: {repr φ} at world {l.world}, time {l.time}"
+  | axiomNeg φ _ _ l => s!"Negated axiom: {repr φ} at world {l.world}, time {l.time}"
 
 end ClosureReason
 
@@ -97,21 +102,29 @@ def checkContradiction (b : Branch) : Option ClosureReason :=
 
 /--
 Check if a branch contains F(axiom) for some axiom instance.
-Uses matchAxiom from ProofSearch to identify axiom patterns.
+Uses `matchAxiom` from ProofSearch to identify primitive axiom patterns, then `matchMirror`
+(base-class derived schemata) and `matchPriorSZ` (the ZTime mirror of UZ).
 -/
 def checkAxiomNeg (b : Branch) (fc : FrameClass := .Base) : Option ClosureReason :=
   b.findSome? fun sf =>
     if sf.isNeg then
-      match matchAxiom sf.formula with
+      (match matchAxiom sf.formula with
       | some ⟨φ, witness⟩ =>
           if sf.formula = φ then
             if witness.minFrameClass ≤ fc then
-              some (.axiomNeg φ witness sf.label)
+              some (.axiomNeg φ witness.minFrameClass (.axiom [] φ witness le_rfl) sf.label)
             else
               none
           else
             none
-      | none => none
+      | none => none)
+      <|> (match matchMirror sf.formula with
+      | some d => some (.axiomNeg sf.formula .Base d sf.label)
+      | none => none)
+      <|> (match matchPriorSZ sf.formula with
+      | some d => if FrameClass.ZTime ≤ fc then some (.axiomNeg sf.formula .ZTime d sf.label)
+          else none
+      | none => none)
     else
       none
 

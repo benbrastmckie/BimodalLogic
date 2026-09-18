@@ -92,61 +92,48 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       | some g => pure g
       | none => throwError "no axiom goal found"
 
-    -- Try each axiom constructor this list carries (42 of the tree's 45; the three
-    -- Layer-9 Reynolds Dedekind axioms prior_U_gap/prior_S_gap/sep are not listed)
+    -- Try each axiom constructor this list carries (all primitive schemata except the
+    -- RTime axioms prior_U_gap/sep). The derived schemata (time-reflection mirrors, modal 4
+    -- and B) are `@[tmLemma]` theorems reached by `tryLemmaMatch`; the frame-class-gated
+    -- mirror `prior_SZ` is tried by `tryGatedDerivedMatch`.
     let axiomCtors : List Name := [
       -- Layer 1: Propositional (4)
       ``Axiom.prop_k,       -- (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
       ``Axiom.prop_s,       -- φ → (ψ → φ)
       ``Axiom.ex_falso,     -- ⊥ → φ
       ``Axiom.peirce,       -- ((φ → ψ) → φ) → φ
-      -- Layer 2: S5 Modal (5)
+      -- Layer 2: S5 Modal (3)
       ``Axiom.modal_t,      -- □φ → φ
-      ``Axiom.modal_4,      -- □φ → □□φ
-      ``Axiom.modal_b,      -- φ → □◇φ
       ``Axiom.modal_5_collapse, -- ◇□φ → □φ
       ``Axiom.modal_k_dist, -- □(φ → ψ) → (□φ → □ψ)
-      -- Layer 3: BX Temporal — seriality (2)
+      -- Layer 3: BX Temporal — seriality (1)
       ``Axiom.serial_future,  -- ⊤ → F(⊤)
-      ``Axiom.serial_past,    -- ⊤ → P(⊤)
       -- Layer 3: BX Temporal — monotonicity (4)
       ``Axiom.left_mono_until_G,  -- G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
-      ``Axiom.left_mono_since_H,  -- H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
       ``Axiom.right_mono_until,   -- G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
-      ``Axiom.right_mono_since,   -- H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
       -- Layer 3: BX Temporal — connectedness (2)
       ``Axiom.connect_future, -- φ → G(P(φ))
-      ``Axiom.connect_past,   -- φ → H(F(φ))
       -- Layer 3: BX Temporal — enrichment (2)
       ``Axiom.enrichment_until, -- p ∧ U(ψ,φ) → U(ψ ∧ S(p,φ), φ)
-      ``Axiom.enrichment_since, -- p ∧ S(ψ,φ) → S(ψ ∧ U(p,φ), φ)
       -- Layer 3: BX Temporal — accumulation & absorption (4)
       ``Axiom.self_accum_until,  -- U(ψ,φ) → U(ψ, φ ∧ U(ψ,φ))
-      ``Axiom.self_accum_since,  -- S(ψ,φ) → S(ψ, φ ∧ S(ψ,φ))
       ``Axiom.absorb_until,      -- U(φ ∧ U(ψ,φ), φ) → U(ψ,φ)
-      ``Axiom.absorb_since,      -- S(φ ∧ S(ψ,φ), φ) → S(ψ,φ)
       -- Layer 3: BX Temporal — linearity (2)
       ``Axiom.linear_until,  -- U(ψ,φ) ∧ U(θ,χ) → disjunction
-      ``Axiom.linear_since,  -- S(ψ,φ) ∧ S(θ,χ) → disjunction
       -- Layer 3: BX Temporal — eventuality (2)
       ``Axiom.until_F,   -- U(ψ,φ) → F(ψ)
-      ``Axiom.since_P,   -- S(ψ,φ) → P(ψ)
       -- Layer 3b: BX Temporal — additional (4)
       ``Axiom.temp_linearity,      -- F(φ) ∧ F(ψ) → disjunction
-      ``Axiom.temp_linearity_past, -- P(φ) ∧ P(ψ) → disjunction
       ``Axiom.F_until_equiv,       -- F(φ) → U(φ, ⊤)
-      ``Axiom.P_since_equiv,       -- P(φ) → S(φ, ⊤)
       -- Layer 4: Modal-Temporal Interaction (1)
       ``Axiom.modal_future,  -- □φ → □(Gφ)
       -- Layer 5: Uniformity — discrete structure (5)
       ``Axiom.discrete_symm_fwd,       -- U(⊤,⊥) → S(⊤,⊥)
-      ``Axiom.discrete_symm_bwd,       -- S(⊤,⊥) → U(⊤,⊥)
       ``Axiom.discrete_propagate_fwd,   -- U(⊤,⊥) → G(U(⊤,⊥))
       ``Axiom.discrete_propagate_bwd,   -- U(⊤,⊥) → H(U(⊤,⊥))
       ``Axiom.discrete_box_necessity,   -- U(⊤,⊥) → □(U(⊤,⊥))
       -- Layer 6: Prior axioms — discrete (3)
       ``Axiom.prior_UZ,  -- F(φ) → U(φ, ¬φ)
-      ``Axiom.prior_SZ,  -- P(φ) → S(φ, ¬φ)
       ``Axiom.z1,         -- G(Gφ→φ) → (FGφ→Gφ)
       -- Layer 8: Density (2)
       ``Axiom.density,         -- GGφ → Gφ
@@ -171,6 +158,28 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
     throwError "no axiom matched"
 
   return result.isSome
+
+/--
+Try to close the goal with a frame-class-gated derived theorem (`DerivedAxioms.prior_SZ`, the
+time-reflection mirror of the ZTime axiom UZ, or `DerivedAxioms.prior_S_gap`, the mirror of the
+RTime axiom PU). The gate hypothesis (`ZTime ≤ fc` / `RTime ≤ fc`) is discharged by `decide`,
+so the match fails at frame classes where the mirror is not a theorem.
+
+**Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
+-/
+def tryGatedDerivedMatch (goal : MVarId) : TacticM Bool := do
+  for lemmaName in [``DerivedAxioms.prior_SZ, ``DerivedAxioms.prior_S_gap] do
+    let result ← observing? do
+      setGoals [goal]
+      let newGoals ← goal.apply (← mkConstWithFreshMVarLevels lemmaName)
+      for g in newGoals do
+        if ← g.isAssigned then continue
+        setGoals [g]
+        evalTactic (← `(tactic| first | trivial | decide))
+        unless (← getGoals).isEmpty do throwError "gate not discharged"
+      setGoals []
+    if result.isSome then return true
+  return false
 
 /--
 Try to prove the goal by applying derived-theorem lemmas from an explicit
@@ -617,6 +626,10 @@ partial def searchProof (counter : IO.Ref Nat) (goal : MVarId) (depth : Nat) : T
 
   -- Strategy 1: Try axiom matching (cheapest)
   if ← tryAxiomMatch goal ctx formula then
+    return true
+
+  -- Strategy 1a: frame-class-gated derived theorems (`prior_SZ`, `prior_S_gap`)
+  if ← tryGatedDerivedMatch goal then
     return true
 
   -- Strategy 1b: Try lemma database matching (backward chaining through premises)

@@ -112,7 +112,7 @@ def closureReasonToJsonString (reason : ClosureReason) : String :=
       "{\"kind\": \"bot_pos\"" ++
       ", \"world\": " ++ toString l.world ++
       ", \"time\": " ++ toString l.time ++ "}"
-  | .axiomNeg φ _ l =>
+  | .axiomNeg φ _ _ l =>
       "{\"kind\": \"axiom_neg\"" ++
       ", \"formula\": " ++ φ.toJson ++
       ", \"world\": " ++ toString l.world ++

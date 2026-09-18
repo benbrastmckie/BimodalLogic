@@ -33,12 +33,12 @@ private def q : Formula := .atomS "q"
 private def r : Formula := .atomS "r"
 private def atoms : List Atom := [Atom.mkBase "p", Atom.mkBase "q", Atom.mkBase "r"]
 
-/-! ## Test 1: All 42 axiom schemata produce witnesses -/
+/-! ## Test 1: All 29 primitive axiom schemata produce witnesses -/
 
 #eval do
-  IO.println "=== Test 1: Axiom instantiation covers all 42 schemata ==="
+  IO.println "=== Test 1: Axiom instantiation covers all 29 primitive schemata ==="
   let mut failed := 0
-  for idx in List.range 42 do
+  for idx in List.range 29 do
     let result ← mkAxiomAtIdx atoms 2 idx
     match result with
     | some _ => pure ()
@@ -47,7 +47,7 @@ private def atoms : List Atom := [Atom.mkBase "p", Atom.mkBase "q", Atom.mkBase 
       failed := failed + 1
   if failed > 0 then
     throw (IO.userError s!"Test 1: {failed} schemata failed")
-  IO.println "  [PASS] All 42 schemata produce witnesses"
+  IO.println "  [PASS] All 29 primitive schemata produce witnesses"
 
 /-! ## Test 2: Pool dedup shortest-wins -/
 
