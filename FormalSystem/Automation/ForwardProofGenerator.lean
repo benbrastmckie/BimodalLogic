@@ -183,28 +183,6 @@ inductive Layer where
   | ReynoldsDedekind
   deriving Inhabited, Repr, BEq
 
-/-- Map a schema index to its layer. -/
-def schemaLayer (idx : Nat) : Layer :=
-  match idx with
-  | 0 | 1 | 2 | 3 => .Propositional
-  | 4 | 5 | 6 | 7 | 8 => .Modal
-  | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 |
-      28 | 29 | 30 => .BX
-  | 31 => .Interaction
-  | 32 | 33 | 34 | 35 | 36 => .Uniformity
-  | 37 | 38 => .Prior
-  | 39 => .Z1
-  | 40 | 41 => .Density
-  | 42 | 43 | 44 => .ReynoldsDedekind
-  | _ => .Propositional
-
-/-- Pick a random schema name (for diversity tracking). Respects the frame class filter. -/
-def randomAxiomSchema (cfg : ForwardConfig) : IO String := do
-  let idx ← pickSchemaIdx cfg.atoms cfg.maxParamSize cfg.frameClass
-  match schemaNames[idx]? with
-  | some name => return name
-  | none => return "unknown"
-
 /--
 Instantiate a random axiom schema and wrap the result in a `DerivationTree`
 witness (height 0).
