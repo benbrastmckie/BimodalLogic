@@ -644,6 +644,7 @@ section Mirror
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`TemporalTruth` is invariant along a structure isomorphism.**
 
 `eval_iso` (`Dual.lean:351`) with `table_correctness` (`Table.lean:254`) on both sides. This is
@@ -681,6 +682,7 @@ def surgeredDualIso (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2
   map_lt _ _ := Iff.rfl
   map_interp _ _ := Iff.rfl
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Bad points are bad points in the dual**, with `R` and `L` exchanged — printed p.179's
 *"`R ∨ L`"* is symmetric in its two disjuncts, which is why the notion survives duality
 unchanged. -/
@@ -689,6 +691,7 @@ theorem isBadPoint_dual (ε : MonadicFormula sig 2) (u : M.carrier) :
   (or_congr (endsInGapOnRight_dual (M := M) ε u) (endsInGapOnLeft_dual (M := M) ε u)).trans
     Or.comm
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The interiority package transports**, with the two bounds exchanged.
 
 `ClassInteriorToBadInterval` asks for `R` *and* `L` throughout, so it is symmetric under the

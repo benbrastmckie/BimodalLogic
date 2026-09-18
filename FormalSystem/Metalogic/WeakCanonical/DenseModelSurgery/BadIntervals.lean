@@ -352,6 +352,7 @@ theorem notLeftEndFormula_eval (M : OrderedMonadicStructure sig) (ε : MonadicFo
     eval M (fun _ => t) (notLeftEndFormula ε) ↔ NotLeftEnd M ε t := by
   simp only [notLeftEndFormula, NotLeftEnd, eval, eval_epsAt, Fin.cons_zero, b2_one]
 
+omit [IsDualClosed C] in
 /-- **`B` is upward closed in a class** — *"`B` is true continuously in any class from just after
 the left hand end point up until the gap"* (printed p.180). -/
 theorem notLeftEnd_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
@@ -392,6 +393,7 @@ The second paragraph of the Lemma 6 proof, printed p.180. Reynolds' reason is th
 its right hand end point"*, and a class with a right hand end point does not end in a gap on the
 right. No temporal formula and no Prior axiom is involved: this is pure class calculus. -/
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — second paragraph.**
 
 > *In fact we can not have a class beginning just after a point `r` of `M`. Since the class can
@@ -450,6 +452,7 @@ section Transfer
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [IsDualClosed C] [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **A class includes its left hand end point iff `¬B` holds somewhere in it.**
 
 One direction of Reynolds' *"use the previous result"* step: it is what lets Lemma 5 be applied
@@ -509,6 +512,7 @@ section Lemma6Core
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — final paragraph.**
 
 > *Let `B` be a temporal formula true at times which are not left hand end points of their
@@ -680,6 +684,7 @@ theorem endsInGapOnLeft_of_endsInGapOnRight (atomMap : Formula → sig.preds)
     exact not_endsInGapOnRight_of_immediatePredecessor hε M hzt hnz hall
       (hint.rThroughout z haz (le_trans hzt.le hint.lt_right.le))
 
+omit [IsDualClosed C] in
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — *"bad points only occur in non-singleton bad
 intervals"*, right-hand half.**
@@ -700,6 +705,7 @@ end Lemma6
 Two one-line consequences of convexity, used repeatedly below: a class-mate of `t` cannot escape
 past a point outside `t`'s class on either side. -/
 
+omit [IsDualClosed C] in
 /-- Every class-mate of `t` lies strictly above a point below `t` that is outside `t`'s class. -/
 theorem lt_of_classMate {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {a t s : M.carrier} (hat : a < t)
@@ -709,6 +715,7 @@ theorem lt_of_classMate {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn
   exact hna (contemp_trans hε M hts
     (contemp_of_between hε M hcon hat.le (contemp_symm hε M hts)))
 
+omit [IsDualClosed C] in
 /-- Every class-mate of `t` lies strictly below a point above `t` that is outside `t`'s class. -/
 theorem classMate_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t b s : M.carrier} (htb : t < b)
@@ -734,6 +741,7 @@ contained in the class either, since `s₁` would be *"the first point after the
 `ρ(s)`'s third conjunct forbids. `hout` then supplies a `P`-failure at or below the resulting point
 of `(s, s₁)`, where Prior-U's stretch says `P` holds. -/
 
+omit [IsDualClosed C] in
 /-- **The gap-crossing contradiction, from `s` onwards and bounded.**
 
 Strictly weaker in both hypothesis slots than `false_of_holds_throughout_class_bounded`
@@ -805,6 +813,7 @@ theorem afterNotHoldsInClassFormula_eval (M : OrderedMonadicStructure sig)
   simp only [afterNotHoldsInClassFormula, AfterNotHoldsInClass, eval, eval_epsAt, eval_atVar,
     Fin.cons_zero, b2_one]
 
+omit [IsDualClosed C] in
 /-- **`C` is upward closed in a class** — *"then true for a while at the end"* (printed p.180). -/
 theorem afterNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
@@ -983,6 +992,7 @@ two-sided in its two points (its `hIcc` runs over `[min t t', max t t']`), and i
 `R`, which by Lemma 6 holds throughout a bad interval alongside `L`. That is why the hypothesis
 package below carries both. -/
 
+omit [IsDualClosed C] in
 /-- **`λ` is a property of the `∼`-class**, the mirror of `endsInGapOnRight_congr`
 (`Lemma34.lean:242`). Reynolds uses it silently on both sides. -/
 theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
@@ -1013,6 +1023,7 @@ theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivD
             (contemp_of_between hε M hqy hyp.le (contemp_symm hε M hpq))
   exact ⟨main htu, main (contemp_symm hε M htu)⟩
 
+omit [IsDualClosed C] in
 /-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:265`):
 `λ(t)`'s second conjunct at `z := t`, with reflexivity. -/
 theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
@@ -1101,6 +1112,7 @@ theorem beforeNotHoldsInClassFormula_eval (M : OrderedMonadicStructure sig)
   simp only [beforeNotHoldsInClassFormula, BeforeNotHoldsInClass, eval, eval_epsAt, eval_atVar,
     Fin.cons_zero, b2_one]
 
+omit [IsDualClosed C] in
 /-- **`C'` is downward closed in a class** — the mirror of `afterNotHoldsInClass_of_le`. -/
 theorem beforeNotHoldsInClass_of_le {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (P : M.carrier → Prop) {t u : M.carrier}
@@ -1278,6 +1290,7 @@ Reynolds' *"plainly impossible given `ρ`"* step — the elimination of Prior-U'
 stretch* disjunct — needs `R` at the boundary point, which is Lemma 6's own first clause. It is
 therefore taken as the hypothesis `hbadR` rather than silently assumed. -/
 
+omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 6, printed p.180 — third clause.**
 
 > *Any bad interval, if bounded, has excluded end points in `M` (neither `R` nor `L` holds at
@@ -1423,6 +1436,7 @@ one-symbol defect in the source that blocked it, and for the repaired reading th
 
 With the producer in hand, both halves of Lemma 6's first clause become hypothesis-free. -/
 
+omit [IsDualClosed C] in
 /-- **The interval witness, produced.** Wherever `R` holds, `t`'s class lies in the interior of a
 maximal interval of `R`: there are `a < t < b` outside `t`'s class with `R` throughout `[a, b]`.
 

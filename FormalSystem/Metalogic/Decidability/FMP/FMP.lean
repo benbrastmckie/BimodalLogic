@@ -80,8 +80,7 @@ theorem exists_mcs_with_negation (phi : Formula)
   -- Now phi.neg is consistent (its negation is not derivable from [])
   -- So {phi.neg} is set-consistent
   have h_singleton_cons : SetConsistent (fc := fc) {phi.neg} := by
-    intro L hL
-    intro ⟨d_bot⟩
+    intro L hL ⟨d_bot⟩
     -- L ⊆ {phi.neg} means L is either [] or [phi.neg]
     -- From L ⊢ ⊥, we can derive phi.neg.neg (= phi.neg → ⊥)
     by_cases h_neg_in_L : phi.neg ∈ L

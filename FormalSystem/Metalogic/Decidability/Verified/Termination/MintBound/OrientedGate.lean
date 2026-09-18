@@ -913,7 +913,7 @@ theorem sigmaFixesFrom_id (n : TimeIndex) : SigmaFixesFrom id n := fun _ _ => rf
 /-- A single renaming retires nothing above the index it retires. -/
 theorem sigmaFixesFrom_rhoSF {src tgt n : TimeIndex} (h : src < n) :
     SigmaFixesFrom (rhoSF src tgt) n :=
-  fun x hx => rhoSF_time_eq_of_ne_src (Nat.ne_of_gt (Nat.lt_of_lt_of_le h hx))
+  fun _x hx => rhoSF_time_eq_of_ne_src (Nat.ne_of_gt (Nat.lt_of_lt_of_le h hx))
 
 /-- …and post-composing another one keeps the watermark, provided the new retired index is below
 it. This is the induction step of the run-level provenance argument, and it is where

@@ -173,7 +173,7 @@ noncomputable def chainSup (c : Set (PartialHistory F)) (hc : IsChain (· ≤ ·
 /-- Every member of a chain is below the chain union. -/
 theorem le_chainSup {c : Set (PartialHistory F)} (hc : IsChain (· ≤ ·) c) (hne : c.Nonempty)
     {σ : PartialHistory F} (hσ : σ ∈ c) : σ ≤ chainSup c hc hne :=
-  ⟨fun t ht => ⟨σ, hσ, ht⟩,
+  ⟨fun _t ht => ⟨σ, hσ, ht⟩,
    fun _t ht =>
      chain_states_agree hc (Classical.choose_spec (⟨σ, hσ, ht⟩ :
          ∃ σ' ∈ c, σ'.domain _t)).1 hσ _t _ ht⟩

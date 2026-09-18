@@ -181,6 +181,7 @@ the proof that any two shuffle colourings over a common palette give `≡ₖ` co
 restated here under Doets' numbering, which is how the rest of this file refers to it.
 -/
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **Doets 1987, 3.1.8** — *the mixing lemma*:
 

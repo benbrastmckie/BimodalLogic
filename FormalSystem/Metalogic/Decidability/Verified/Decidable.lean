@@ -983,6 +983,7 @@ theorem mem_constraints_of_mem_directPastOf {ord : TimeOrdering} {x y : TimeInde
   · next hax => rw [Option.some.injEq] at hq; subst hq; subst hax; exact hp
   · exact absurd hq (by simp)
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in
 /-- A forward path of at least one edge is a strict increase. The `n + 1` in the statement is
 what carries the *strictness*: the empty path joins a time to itself and says nothing. -/
 theorem lt_of_pathN_directFutureOf {ord : TimeOrdering} {tv : TimeIndex → D}
@@ -1002,6 +1003,7 @@ theorem lt_of_pathN_directFutureOf {ord : TimeOrdering} {tv : TimeIndex → D}
     obtain ⟨c, hc, hp⟩ := h
     exact lt_trans (hor _ (mem_constraints_of_mem_directFutureOf hc)) (ih c t' hp)
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in
 /-- A backward path of at least one edge is a strict decrease. The past mirror of
 `lt_of_pathN_directFutureOf`; only the orientation of the edge lemma differs. -/
 theorem lt_of_pathN_directPastOf {ord : TimeOrdering} {tv : TimeIndex → D}
@@ -1135,6 +1137,7 @@ earlier in this file for why membership was chosen over the numeric bound, and `
 for the implication between them. The four fresh-time existentials are proved against it.
 -/
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in
 /-- **The gap, proved.** If `ord` already records `b.nextTime` as lying *before* `t`, then the
 edge `allFutureNeg` conses on closes a cycle, and the successor's `ordResp` obligation has no
 solution at all — not for the `tv` it was handed, and not for any `tv` it might re-choose. -/
@@ -1147,6 +1150,7 @@ theorem addFuture_nextTime_cycle_unsatisfiable (b : Branch) (t : TimeIndex) :
   have h2 : tv b.nextTime < tv t := h (b.nextTime, t) (by simp [TimeOrdering.addFuture])
   exact absurd h1 (lt_asymm h2)
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] [Nontrivial D] in
 /-- The past mirror. `addPast ord t tNew` conses `(tNew, t)`, so the cycle is closed by an `ord`
 that already records `b.nextTime` as lying *after* `t`. -/
 theorem addPast_nextTime_cycle_unsatisfiable (b : Branch) (t : TimeIndex) :

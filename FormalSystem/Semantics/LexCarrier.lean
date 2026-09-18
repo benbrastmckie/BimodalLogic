@@ -101,6 +101,7 @@ example (α : Type) [AddCommGroup α] [LinearOrder α] [IsOrderedAddMonoid α] :
 /-- Advance only the discrete (second) component. -/
 private def lexSucc (p : α ×ₗ ℤ) : α ×ₗ ℤ := toLex ((ofLex p).1, (ofLex p).2 + 1)
 
+omit [AddCommGroup α] [IsOrderedAddMonoid α] in
 private theorem lexSucc_le_iff {a b : α ×ₗ ℤ} : lexSucc a ≤ b ↔ a < b := by
   simp only [lexSucc, Prod.Lex.le_iff', Prod.Lex.lt_iff', ofLex_toLex]
   refine ⟨fun ⟨h1, h2⟩ => ⟨h1, fun heq => Int.lt_iff_add_one_le.mpr (h2 heq)⟩,
@@ -113,6 +114,7 @@ instance instSuccOrder : SuccOrder (α ×ₗ ℤ) := SuccOrder.ofSuccLeIff lexSu
 /-- Retreat only the discrete (second) component. -/
 private def lexPred (p : α ×ₗ ℤ) : α ×ₗ ℤ := toLex ((ofLex p).1, (ofLex p).2 - 1)
 
+omit [AddCommGroup α] [IsOrderedAddMonoid α] in
 private theorem le_lexPred_iff {a b : α ×ₗ ℤ} : a ≤ lexPred b ↔ a < b := by
   simp only [lexPred, Prod.Lex.le_iff', Prod.Lex.lt_iff', ofLex_toLex]
   refine ⟨fun ⟨h1, h2⟩ => ⟨h1, fun heq => Int.lt_iff_add_one_le.mpr (by
@@ -133,6 +135,7 @@ instance instPredOrder : PredOrder (α ×ₗ ℤ) where
 
 /-! ## The least strictly positive element -/
 
+omit [IsOrderedAddMonoid α] in
 /--
 **`toLex (0, 1)` is the least strictly positive element of `α ×ₗ ℤ`.**
 

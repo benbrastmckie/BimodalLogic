@@ -151,6 +151,7 @@ section Bridge
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 **A placed point's rank is strictly below the cut index of anything above it.**
@@ -182,6 +183,7 @@ theorem branchRank_lt_cutIndex (hV : branchOrderValid b ord = true) (hOF : Order
     rw [irrefl_of_valid hV (timeAt_mem b i)] at this
     exact absurd this (by simp)
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 **The cut index is monotone in the carrier point.**
@@ -199,6 +201,7 @@ theorem cutIndex_mono {r s : D} (hrs : r < s) :
   simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk ⊢
   exact lt_trans hk hrs
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 **A placed point above a region has rank at least that region's cut index.**
@@ -553,11 +556,13 @@ variable [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 variable [AddCommGroup E] [LinearOrder E] [IsOrderedAddMonoid E]
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] [AddCommGroup E] [IsOrderedAddMonoid E] in
 /-- Order faithfulness transports along a strictly monotone map. -/
 theorem orderFaithful_comp {g : D → E} (hg : StrictMono g) (hOF : OrderFaithful b ord f) :
     OrderFaithful b ord (g ∘ f) := fun i j hij => hg (hOF i j hij)
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] [AddCommGroup E] [IsOrderedAddMonoid E] in
 /-- Order reflection transports along a strictly monotone map. -/
 theorem orderReflecting_comp {g : D → E} (hg : StrictMono g) (hOR : OrderReflecting b ord f) :

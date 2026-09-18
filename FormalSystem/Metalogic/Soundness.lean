@@ -424,7 +424,7 @@ theorem temp_linearity_past_valid (φ ψ : Formula) :
   obtain ⟨s2, hs2t, h_psi_s2⟩ := h_P_psi
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
   · -- s1 < s2: third disjunct P(P(φ) ∧ ψ)
-    intro _; intro _
+    intro _ _
     exact ⟨s2, hs2t, fun h_imp => h_imp ⟨s1, h_lt, h_phi_s1⟩ h_psi_s2⟩
   · -- s1 = s2: first disjunct P(φ ∧ ψ)
     subst h_eq
@@ -432,8 +432,7 @@ theorem temp_linearity_past_valid (φ ψ : Formula) :
     exfalso
     exact h_neg_first ⟨s1, hs1t, fun h_imp => h_imp h_phi_s1 h_psi_s2⟩
   · -- s2 < s1: second disjunct P(φ ∧ P(ψ))
-    intro _
-    intro h_neg_second
+    intro _ h_neg_second
     exfalso
     exact h_neg_second ⟨s1, hs1t, fun h_imp => h_imp h_phi_s1 ⟨s2, h_gt, h_psi_s2⟩⟩
 

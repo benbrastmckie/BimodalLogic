@@ -165,7 +165,7 @@ the carrier `D`. The carrier stays ambient here rather than becoming a `(D : Tem
 binder because the very same `D` is consumed as a bare type by `FrameConditionFor fc D` and by
 `TemporalCarrier` in `Carrier.lean`, which are deliberately left over raw carriers.
 -/
-def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
+def regionFrame (W _ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     FrameOver (TemporalOrder.of D) :=
   FrameOver.ofReflective (W × D) (fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d)

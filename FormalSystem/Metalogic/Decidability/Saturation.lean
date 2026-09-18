@@ -1162,7 +1162,7 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
   match expandBranchWithFuel initialBranch fuel TimeOrdering.empty fc with
   | none => none  -- Out of fuel
   | some (.inl closedBr) => some (.allClosed [closedBr])
-  | some (.inr (openBr, ord, appliedSet)) =>
+  | some (.inr (openBr, ord, _appliedSet)) =>
       -- Use applied-set-aware saturation check
       -- Applied-set-**free** saturation, at the tableau's own frame class (R5). Both changes
       -- from the previous `findUnexpandedWithApplied … (applied := appliedSet)` are deliberate:

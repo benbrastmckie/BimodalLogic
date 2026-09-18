@@ -199,11 +199,13 @@ noncomputable def stateLabel (b : Branch) (ord : TimeOrdering) (f : BranchTime b
 
 variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- A point in the image of the placement carries a placed region code. -/
 theorem isPlacedCode_of_eq {r : D} {i : BranchTime b} (hi : f i = r) :
     IsPlacedCode f (regionCode f r) := ⟨i, by rw [placedCode, hi]⟩
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- …and conversely, so `IsPlacedCode` and "is in the image" are the same test. -/
 theorem exists_eq_of_isPlacedCode {r : D}
@@ -216,6 +218,7 @@ theorem exists_eq_of_isPlacedCode {r : D}
   simp only [regionCode, Set.mem_setOf_eq, lt_irrefl, false_iff, not_lt] at h1 h2
   exact le_antisymm h2 h1
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 theorem stateTime_placed (hf : Function.Injective f) (w : WorldIndex) {r : D}
     {i : BranchTime b} (hi : f i = r) : stateTime b ord f w r = timeAt b i := by
@@ -458,6 +461,7 @@ def Stepped (C : Type) [LinearOrder C] : Prop :=
   (∀ r : C, ∃ s : C, r < s ∧ ∀ u : C, r < u → ¬ u < s) ∧
   (∀ r : C, ∃ s : C, s < r ∧ ∀ u : C, u < r → ¬ s < u)
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 **Contiguity, in the form the induction consumes it.** A carrier point strictly between two

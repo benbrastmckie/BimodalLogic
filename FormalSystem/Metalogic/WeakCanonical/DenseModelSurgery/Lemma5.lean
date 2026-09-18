@@ -322,6 +322,7 @@ theorem holdsSomewhereInClassFormula_eval (M : OrderedMonadicStructure sig)
   simp only [holdsSomewhereInClassFormula, HoldsSomewhereInClass, eval, eval_epsAt, eval_atVar,
     Fin.cons_zero, e2_one]
 
+omit [IsDualClosed C] in
 /-- *"`A` occurs somewhere in their `∼`-class"* is a property of the class, which is the whole
 point of building `B` this way. -/
 theorem holdsSomewhereInClass_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
@@ -398,6 +399,7 @@ work its `exists_gt_notContemp_holds` call did: `ρ(s)`'s third conjunct — *"t
 after the class"* — already guarantees a point of `(s,b)` outside the class as soon as `b` itself
 is outside it, so no appeal to Lemma 3 is needed and Prior-S drops out of the hypotheses. -/
 
+omit [IsDualClosed C] in
 /-- **The gap-crossing contradiction, bounded.**
 
 `P` holds throughout `s`'s class, and fails at every point of `(s,b)` outside that class, where
@@ -453,6 +455,7 @@ class has no last point), so the boundary point Prior-U returns must lie at or b
 inside the class it would have to be a point where `¬B` fails, or one after which `B` accumulates,
 and both are excluded by class-invariance. -/
 
+omit [IsDualClosed C] in
 /-- **`B` stays false for a while after `s`'s class.**
 
 The bound `b` is beyond the class, and `B` is false throughout `(s,b)`. -/
@@ -734,6 +737,7 @@ def ClassModels (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
     (t : M.carrier) (φ : MonadicFormula sig 0) : Prop :=
   evalOn M (ContempEquivDense M ε t) Fin.elim0 φ
 
+omit [IsDualClosed C] in
 /-- Modelling `φ` is a property of the class, not of the point — the classes of two class-mates are
 the same set, so the relativized satisfaction relations coincide. -/
 theorem classModels_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)

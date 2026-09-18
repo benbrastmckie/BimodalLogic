@@ -114,15 +114,13 @@ theorem mf_swap_valid (φ : Formula) :
 theorem prop_k_swap_valid (φ ψ χ : Formula) :
     ValidIn FrameClass.Base
       ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))).reflectTime := by
-  intro F _ M τ t
-  intro h_abc h_ab h_a
+  intro F _ M τ t h_abc h_ab h_a
   exact h_abc h_a (h_ab h_a)
 
 /-- Propositional S swaps to itself at swapped subformulas: the K combinator of the pair. -/
 theorem prop_s_swap_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base (φ.imp (ψ.imp φ)).reflectTime := by
-  intro F _ M τ t
-  intro h_a _
+  intro F _ M τ t h_a _
   exact h_a
 
 /-- Modal 5 collapse swaps to itself: `◇□φ → □φ` is self-dual under the temporal swap, since the
@@ -143,8 +141,7 @@ theorem modal_5_collapse_swap_valid (φ : Formula) :
 /-- Ex falso swaps to itself at a swapped consequent. -/
 theorem ex_falso_swap_valid (φ : Formula) :
     ValidIn FrameClass.Base (Formula.bot.imp φ).reflectTime := by
-  intro F _ M τ t
-  intro h_bot
+  intro F _ M τ t h_bot
   exfalso
   exact h_bot
 
@@ -168,8 +165,7 @@ theorem peirce_swap_valid (φ ψ : Formula) :
 subformulas. -/
 theorem modal_k_dist_swap_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base ((φ.imp ψ).box.imp (φ.box.imp ψ.box)).reflectTime := by
-  intro F _ M τ t
-  intro h_box_imp h_box_psi σ
+  intro F _ M τ t h_box_imp h_box_psi σ
   exact h_box_imp σ (h_box_psi σ)
 
 /-- Future seriality swaps to past seriality: `⊤ → F⊤` becomes `⊤ → P⊤`, witnessed by
@@ -578,14 +574,14 @@ theorem temp_linearity_validIn (φ ψ : Formula) :
     exact h_conj (fun _ ⟨s, hts, h_psi⟩ => absurd h_psi (h_no s hts))
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
   · -- s1 < s2: take r = s1, giving F(φ ∧ F(ψ))
-    intro _; intro h_neg_second; exfalso; apply h_neg_second
+    intro _ h_neg_second; exfalso; apply h_neg_second
     exact ⟨s1, hts1, fun h_imp => h_imp h_φs1 ⟨s2, h_lt, h_ψs2⟩⟩
   · -- s1 = s2: giving F(φ ∧ ψ)
     subst h_eq
     intro h_neg_first; exfalso; apply h_neg_first
     exact ⟨s1, hts1, fun h_imp => h_imp h_φs1 h_ψs2⟩
   · -- s2 < s1: take r = s2, giving F(F(φ) ∧ ψ)
-    intro _; intro _
+    intro _ _
     exact ⟨s2, hts2, fun h_imp => h_imp ⟨s1, h_gt, h_φs1⟩ h_ψs2⟩
 
 /-- Past temporal linearity axiom validity (BX11'):
@@ -612,14 +608,14 @@ theorem temp_linearity_past_validIn (φ ψ : Formula) :
     exact h_conj (fun _ ⟨s, hst, h_psi⟩ => absurd h_psi (h_no s hst))
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
   · -- s1 < s2: take r = s2, giving P(P(φ) ∧ ψ)
-    intro _; intro _
+    intro _ _
     exact ⟨s2, hs2t, fun h_imp => h_imp ⟨s1, h_lt, h_φs1⟩ h_ψs2⟩
   · -- s1 = s2: giving P(φ ∧ ψ)
     subst h_eq
     intro h_neg_first; exfalso; apply h_neg_first
     exact ⟨s1, hs1t, fun h_imp => h_imp h_φs1 h_ψs2⟩
   · -- s1 > s2: take r = s1, giving P(φ ∧ P(ψ))
-    intro _; intro h_neg_second; exfalso; apply h_neg_second
+    intro _ h_neg_second; exfalso; apply h_neg_second
     exact ⟨s1, hs1t, fun h_imp => h_imp h_φs1 ⟨s2, h_gt, h_ψs2⟩⟩
 
 /-- F-Until equivalence axiom validity (BX12):

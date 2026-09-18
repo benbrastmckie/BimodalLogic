@@ -613,6 +613,7 @@ private def pastTfDeriv (φ : Formula) :
   rw [h_eq] at h_dual
   exact h_dual
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- `□φ` at time `t` implies `□φ` at every time `s`, for any FMCS family.
 

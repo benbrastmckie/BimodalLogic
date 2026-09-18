@@ -244,6 +244,7 @@ section ClosedIntervals
 
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 
+omit [IsDualClosed C] in
 /-- **A class bounded strictly above has a right hand end point** — printed p.184's *"the classes
 must be closed intervals"*, right-hand half.
 
@@ -271,6 +272,7 @@ theorem exists_rightEndPoint (hε : IsContempEquivDenseOn ε C) [InStructureClas
   obtain ⟨c, htc, hcz, hntc, -⟩ := hdense t z htz hnz
   exact hntc (hbetween c htc hcz)
 
+omit [IsDualClosed C] in
 /-- **Density transports to the order dual.** The one transport `exists_leftEndPoint` needs beyond
 what `Dual.lean` already supplies. -/
 theorem quotientDenselyOrdered_dual (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
@@ -460,6 +462,13 @@ theorem kplusOpen_classLeftEnd (hε : IsContempEquivDenseOn ε C) [InStructureCl
     exact hnms (contemp_of_between hε M hms.le (not_lt.mp hcon) hml)
   exact ⟨l, hcl, hls, (hC l).mpr hlend⟩
 
+-- `linter.unusedSectionVars` reports `[IsDualClosed C]` unused here, but its own suggested
+-- remedy is unwritable at this declaration: the section variable `C` is SHADOWED by this
+-- theorem's own `{C : Formula}` binder, so the linter prints the section-level one as the
+-- inaccessible `C✝` and `omit [IsDualClosed C✝] in` is not valid source. The alternatives are
+-- to rename the local binder -- which changes this theorem's named-argument API for every
+-- caller -- or to suppress at declaration scope, which is what is done here.
+set_option linter.unusedSectionVars false in
 /-- **`K⁺C ∧ K⁻C` forces a singleton class** — printed p.184's *"but clearly `e` must be in a
 class of its own"*.
 

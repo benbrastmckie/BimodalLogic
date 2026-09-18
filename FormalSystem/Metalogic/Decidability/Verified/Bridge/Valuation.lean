@@ -117,10 +117,12 @@ def placedCode (f : ι → D) (i : ι) : Set ι × Set ι := regionCode f (f i)
 /-- A code is *placed* when some placed point carries it, and a *gap* code otherwise. -/
 def IsPlacedCode (f : ι → D) (c : Set ι × Set ι) : Prop := ∃ i, placedCode f i = c
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 theorem isPlacedCode_placedCode (f : ι → D) (i : ι) : IsPlacedCode f (placedCode f i) :=
   ⟨i, rfl⟩
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /--
 Distinct placed points have distinct codes.
@@ -167,6 +169,7 @@ theorem regionValuation_placed {f : ι → D} (hf : Function.Injective f)
   have hchoose : hex.choose = i := placedCode_injective hf hex.choose_spec
   rw [regionValuation, dif_pos hex, hchoose]
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- At a gap code the valuation is exactly the parameter. -/
 theorem regionValuation_gap {f : ι → D} {c : Set ι × Set ι} (hc : ¬ IsPlacedCode f c)

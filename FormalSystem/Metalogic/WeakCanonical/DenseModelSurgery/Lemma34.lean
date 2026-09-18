@@ -262,6 +262,7 @@ section ForAWhile
 variable {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
   (M : OrderedMonadicStructure sig) [InStructureClass C M]
 
+omit [InStructureClass C M] in
 include hε in
 /-- **The class has no last point**, in the form the proofs use: `ρ(t)`'s *second* conjunct,
 instantiated at `z := t` and combined with reflexivity, produces a class-mate strictly above `t`.
@@ -451,7 +452,7 @@ theorem classBeginsAtGapStartFormula_eval (M : OrderedMonadicStructure sig)
     (ε : MonadicFormula sig 2) (t : M.carrier) :
     eval M (fun _ => t) (classBeginsAtGapStartFormula ε) ↔ ClassBeginsAtGapStart M ε t := by
   simp only [classBeginsAtGapStartFormula, ClassBeginsAtGapStart, eval, eval_imp, eval_epsAt,
-    eval_rhoAt, Fin.cons_zero, c2_one, c3_one, c3_two, c4_one, c4_two, c4_three, and_imp]
+    eval_rhoAt, Fin.cons_zero, c2_one, c3_one, c3_two, c4_one, c4_two]
 
 section BTemporal
 
@@ -495,6 +496,7 @@ section LeftEnd
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **A point at which `¬R` accumulates from below begins its own class.**
 
 *"Suppose, for contradiction, that `s` is this first point of `R` so that
@@ -549,6 +551,7 @@ theorem exists_gt_notContemp_holds (atomMap : Formula → sig.preds)
       · exact hs
       · exact hbelow q h (lt_of_le_of_lt hqu hus')
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Reynolds 1992, printed p.178**: *"Thus `R ∧ K⁻(¬R)` does not hold at the left hand end of any
 of these classes."*
 
@@ -836,6 +839,7 @@ theorem firstClassTemporal_spec (atomMap : Formula → sig.preds)
   ((uSExpressivelyCompleteOverDensePrior atomMap h_surj (firstClassFormula ε)).property
     M h_prior_U h_prior_S t).symm.trans (firstClassFormula_eval M ε t)
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Being a first-class point is a property of the class**, which is what licenses Reynolds'
 *"this formula holding up to a gap"* — it holds at every point of the class, not merely at the one
 it was verified at. -/
@@ -860,6 +864,7 @@ theorem isFirstClassPoint_congr {ε : MonadicFormula sig 2} (hε : IsContempEqui
     (contemp_of_between hε M hle hzt.le (contemp_symm hε M htt'))).mp
       ((endsInGapOnRight_congr hε M htt').mp h.1))
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Reynolds 1992, printed p.179**: *"no immediately subsequent classes satisfy this"*.
 
 Beyond the class, with `R` still holding throughout below, Lemma 4's formula fails: `t` itself is a

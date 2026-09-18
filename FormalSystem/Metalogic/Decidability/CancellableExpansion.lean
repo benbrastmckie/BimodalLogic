@@ -269,7 +269,7 @@ def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
   match ← expandBranchWithFuelCancellable abortRef initialBranch fuel TimeOrdering.empty fc with
   | none => return none  -- out of fuel or aborted
   | some (.inl closedBr) => return some (.allClosed [closedBr])
-  | some (.inr (openBr, ord, appliedSet)) =>
+  | some (.inr (openBr, ord, _appliedSet)) =>
       match h : findUnexpanded openBr (timeOrd := ord) (fc := fc) with
       | none => return some (.hasOpen openBr ord fc h)
       | some _ =>

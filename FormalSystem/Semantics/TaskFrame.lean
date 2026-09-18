@@ -371,6 +371,7 @@ fibers for every duration `x ∈ D`, so no sign proviso is carried here.
 -/
 def Fib {W : Type} (R : W → D → W → Prop) (w : W) (x : D) : Set W := {u | R w x u}
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [LinearOrder D] in
 @[simp]
 theorem mem_Fib {W : Type} {R : W → D → W → Prop} {w u : W} {x : D} :
@@ -393,11 +394,13 @@ membership at every radius).
 def cone {W : Type} (R : W → D → W → Prop) (w : W) (x : D) : Set W :=
   {u | ∃ y, |y| < x ∧ u ∈ Fib R w y}
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 @[simp]
 theorem mem_cone {W : Type} {R : W → D → W → Prop} {w u : W} {x : D} :
     u ∈ cone R w x ↔ ∃ y, |y| < x ∧ R w y u := Iff.rfl
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /-- Cones are monotone in the radius. Free sanity lemma for the apparatus; no discharge
 obligation rides on it. -/
@@ -419,6 +422,7 @@ carried by `IsSegment` below rather than in this definition's type.
 def Seg {W : Type} (R : W → D → W → Prop) (w v : W) (x y : D) : Set W :=
   Fib R w x ∩ Fib R v (-y)
 
+omit [Nontrivial D] in
 omit [LinearOrder D] [IsOrderedAddMonoid D] in
 @[simp]
 theorem mem_Seg {W : Type} {R : W → D → W → Prop} {w v u : W} {x y : D} :
@@ -591,6 +595,7 @@ The `0 ≤ x`, `0 ≤ y` provisos are `def:frame`'s blanket condition on its axi
 def Compositional {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ w v x y, 0 ≤ x → 0 ≤ y → (R w (x + y) v ↔ ∃ u, R w x u ∧ R u y v)
 
+omit [IsOrderedAddMonoid D] [Nontrivial D] in
 /--
 Assemble the biconditional *Compositionality* axiom from its two halves: the interpolation
 direction (`Interpolates`, the `→`) and the composition direction (the `←`, which is the shape
@@ -606,11 +611,13 @@ theorem comp_of {W : Type} {R : W → D → W → Prop} (hint : Interpolates R)
   fun w v x y hx hy =>
     ⟨hint w v x y hx hy, fun ⟨u, h1, h2⟩ => hfwd w u v x y hx hy h1 h2⟩
 
+omit [IsOrderedAddMonoid D] [Nontrivial D] in
 /-- The composition (`←`) half of `Compositional`: the shape `FrameOver.forward_comp` records. -/
 theorem forward_of_comp {W : Type} {R : W → D → W → Prop} (h : Compositional R) :
     ∀ w u v x y, 0 ≤ x → 0 ≤ y → R w x u → R u y v → R w (x + y) v :=
   fun w u v x y hx hy h1 h2 => (h w v x y hx hy).mpr ⟨u, h1, h2⟩
 
+omit [IsOrderedAddMonoid D] [Nontrivial D] in
 /-- The interpolation (`→`) half of `Compositional`, as the predicate of record. -/
 theorem interpolates_of_comp {W : Type} {R : W → D → W → Prop} (h : Compositional R) :
     Interpolates R :=
@@ -1099,6 +1106,7 @@ apply verbatim to a frame's `TaskRel` whether or not the axiom is carried as str
 simply *Limit*, and the helpers are named accordingly.)
 -/
 
+omit [Nontrivial D] in
 /--
 *Limit* holds automatically over a duration type with a successor operation.
 
@@ -1336,6 +1344,7 @@ theorem sInter_nonempty_of_directed_of_minimal {W : Type} {S : Set (Set W)}
   obtain ⟨x, hx⟩ := hne Sstar hStarMem
   exact ⟨x, fun T hT => hsub T hT hx⟩
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 **Every relation on a finite carrier satisfies *Saturation***.
@@ -1381,6 +1390,7 @@ theorem saturation_of_finite {W : Type} [Finite W] (R : W → D → W → Prop) 
 
 /-! ### Helper A — the total class on a subsingleton carrier -/
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for
@@ -1389,6 +1399,7 @@ some $u, v \in W$") for a total relation: the state itself witnesses both conjun
 theorem serial_of_total {W : Type} {R : W → D → W → Prop} (htot : ∀ w x u, R w x u) :
     Serial R := fun w _ _ => ⟨⟨w, htot _ _ _⟩, ⟨w, htot _ _ _⟩⟩
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
@@ -1398,6 +1409,7 @@ $u \in W$") for a total relation: interpolate through the source state.
 theorem interpolates_of_total {W : Type} {R : W → D → W → Prop} (htot : ∀ w x u, R w x u) :
     Interpolates R := fun w _ _ _ _ _ _ => ⟨w, htot _ _ _, htot _ _ _⟩
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") on a
@@ -1408,6 +1420,7 @@ theorem limit_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → W →
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w :=
   fun _ _ _ => Subsingleton.elim _ _
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
@@ -1429,12 +1442,14 @@ theorem saturation_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → 
 
 /-! ### Helper B — the permissive class `R w d u ↔ (d ≠ 0 ∨ w = u)` -/
 
+omit [Nontrivial D] in
 omit [LinearOrder D] [IsOrderedAddMonoid D] in
 /-- Zero-duration fibers of a permissive relation are singletons. -/
 theorem Fib.permissive_zero {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) (w : W) : Fib R w 0 = {w} := by
   ext u; simp [Fib, hR, eq_comm]
 
+omit [Nontrivial D] in
 omit [LinearOrder D] [IsOrderedAddMonoid D] in
 /-- Nonzero-duration fibers of a permissive relation are the whole carrier. -/
 theorem Fib.permissive_ne {W : Type} {R : W → D → W → Prop}
@@ -1442,6 +1457,7 @@ theorem Fib.permissive_ne {W : Type} {R : W → D → W → Prop}
     Fib R w x = Set.univ := by
   ext u; simp [Fib, hR, hx]
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 *Seriality* for a permissive relation: the state itself is both an `x`-successor and an
@@ -1451,6 +1467,7 @@ theorem serial_of_permissive {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Serial R := fun w x _ =>
   ⟨⟨w, (hR w x w).mpr (Or.inr rfl)⟩, ⟨w, (hR w x w).mpr (Or.inr rfl)⟩⟩
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 The interpolation half of *Compositionality* for a permissive relation.
@@ -1584,18 +1601,21 @@ theorem saturation_of_permissive {W : Type} {R : W → D → W → Prop}
 
 /-! ### Helper C — the equality class `R w d u ↔ w = u` -/
 
+omit [Nontrivial D] in
 omit [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] in
 /-- Every fiber of an equality relation is the singleton of its base point. -/
 theorem Fib.eq_singleton {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ w = u) (w : W) (x : D) : Fib R w x = {w} := by
   ext u; simp [Fib, hR, eq_comm]
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /-- *Seriality* for an equality relation: the state is its own successor and predecessor. -/
 theorem serial_of_eq {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ w = u) : Serial R := fun w x _ =>
   ⟨⟨w, (hR w x w).mpr rfl⟩, ⟨w, (hR w x w).mpr rfl⟩⟩
 
+omit [Nontrivial D] in
 omit [IsOrderedAddMonoid D] in
 /--
 The interpolation half of *Compositionality* for an equality relation: interpolate through the

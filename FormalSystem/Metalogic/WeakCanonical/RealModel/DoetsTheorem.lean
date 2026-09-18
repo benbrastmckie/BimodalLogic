@@ -681,6 +681,7 @@ structure IsConvexEquiv (M : OrderedMonadicStructure sig) (ε : MonadicFormula s
   convex : ∀ a b c : M.carrier, a ≤ b → b ≤ c →
     ContempEquivDense M ε a c → ContempEquivDense M ε a b
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Reynolds' `ε` gives `IsConvexEquiv` at every countable dense flow — the two clauses of
 `IsContempEquivDenseCD` read at one structure.
 
@@ -702,6 +703,7 @@ namespace IsConvexEquiv
 
 variable {ε : MonadicFormula sig 2} {M : OrderedMonadicStructure sig}
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`ContempLtPt` is `∼`-invariant in both arguments** — the well-definedness fact the quotient
 order rests on, and the only place convexity is used essentially.
 
@@ -741,6 +743,7 @@ abbrev ClassQuot (h : IsConvexEquiv M ε) : Type := Quotient h.setoid
 /-- The class of a point. -/
 abbrev cls (h : IsConvexEquiv M ε) (x : M.carrier) : h.ClassQuot := Quotient.mk h.setoid x
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 theorem cls_eq_cls_iff (h : IsConvexEquiv M ε) {a b : M.carrier} :
     h.cls a = h.cls b ↔ ContempEquivDense M ε a b := Quotient.eq
 
@@ -794,6 +797,7 @@ noncomputable instance instLinearOrderClassQuot (h : IsConvexEquiv M ε) :
 theorem cls_lt_cls (h : IsConvexEquiv M ε) {a b : M.carrier} :
     h.cls a < h.cls b ↔ ContempLtPt M ε a b := Iff.rfl
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **A point strictly inside `(c,d)` and inequivalent to both ends has its whole class inside** —
 convexity again, and the workhorse of every density argument below. -/
 theorem classStrictlyBetween_of_between (h : IsConvexEquiv M ε) {c d e : M.carrier}
@@ -818,6 +822,7 @@ def ClassStrictlyBetweenQ (h : IsConvexEquiv M ε) (c d : M.carrier) : h.ClassQu
     propext ⟨fun hh x hx => hh x (h.equiv.trans hab hx),
       fun hh x hx => hh x (h.equiv.trans (h.equiv.symm hab) hx)⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 @[simp] theorem classStrictlyBetweenQ_cls (h : IsConvexEquiv M ε) {c d e : M.carrier} :
     h.ClassStrictlyBetweenQ c d (h.cls e) ↔ ClassStrictlyBetween M ε c d e := Iff.rfl
 
@@ -826,11 +831,13 @@ as an ordered type: the classes strictly inside `(c,d)`, ordered as a subtype of
 abbrev ClassBetween (h : IsConvexEquiv M ε) (c d : M.carrier) : Type :=
   {A : h.ClassQuot // h.ClassStrictlyBetweenQ c d A}
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- A class strictly between `c` and `d` has its representative strictly between them. -/
 theorem lt_of_classStrictlyBetween (h : IsConvexEquiv M ε) {c d e : M.carrier}
     (hbet : ClassStrictlyBetween M ε c d e) : c < e ∧ e < d :=
   hbet e (h.equiv.refl e)
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- A class strictly between `c` and `d` is distinct from `c`'s class and from `d`'s. -/
 theorem not_contempEquiv_ends (h : IsConvexEquiv M ε) {c d e : M.carrier}
     (hbet : ClassStrictlyBetween M ε c d e) :
@@ -1369,6 +1376,7 @@ theorem exists_min_of_kEquiv (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStruc
   exact (eval_hasMinSent sig N).mp
     ((eval_transfer_of_kEquiv sig k _ hdepth h).mp ((eval_hasMinSent sig M).mpr hM))
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- A normal form travels across `≡ₖ`: `k`-equivalence *is* equality of `k`-types, and the `k`-type
 is the normal-form decision function. -/
 theorem nfEvalNf_of_kEquiv (k : Nat) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
@@ -1752,6 +1760,7 @@ theorem classNF_eq_of_nfEvalNf (k : Nat) (M : OrderedMonadicStructure sig)
     classNF sig k M ε x = nf :=
   nf_eval_unique _ k 0 Fin.elim0 _ nf (classNF_spec k M ε x) hnf
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Equivalent points have **the same** class structure — not merely isomorphic ones: the two
 carriers are cut out by the same set. -/
 theorem contempClassStructure_congr {ε : MonadicFormula sig 2}

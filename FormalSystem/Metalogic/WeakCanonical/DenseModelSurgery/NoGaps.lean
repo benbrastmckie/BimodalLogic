@@ -443,6 +443,7 @@ def surgerySubintervalIso (M : OrderedMonadicStructure sig) (ε : MonadicFormula
   map_lt _ _ := Iff.rfl
   map_interp _ _ := Iff.rfl
 
+omit [IsDualClosed C] in
 /-- **A class is convex, as a set of points**: anything between two members of `t`'s class is in
 `t`'s class. Clause (ii) of `IsContempEquivDense` with the base point moved to `t`. -/
 theorem contemp_of_mem_class_interval (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] {x y z : M.carrier}
@@ -509,6 +510,7 @@ def surgeryBase (M : OrderedMonadicStructure sig) (ε : MonadicFormula sig 2)
     (surgeredStructure M ε Q t).carrier :=
   ⟨t, Or.inr h⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`R` holds throughout the bad interval in `M`** — Lemma 6's first clause, in the form the
 interiority witnesses already carry. -/
 theorem endsInGapOnRight_of_mem (hS : IsBadIntervalSurgery M ε Q t) {u : M.carrier} (hu : Q u) :
@@ -516,6 +518,7 @@ theorem endsInGapOnRight_of_mem (hS : IsBadIntervalSurgery M ε Q t) {u : M.carr
   obtain ⟨a, b, _, _, hint⟩ := hS.interior u u hu hu
   exact hint.toR.rThroughout u hint.toR.left_lt.le hint.toR.lt_right.le
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`L` holds throughout the bad interval in `M`** — Lemma 6's first clause, `L` half, in the
 form the interiority witnesses already carry.
 
@@ -562,6 +565,7 @@ theorem exists_contemp_lt_of_mem (hS : IsBadIntervalSurgery M ε Q t)
     exists_contemp_lt hε M (endsInGapOnLeft_of_mem hS (hS.mem_of_contemp_base hε hx))
   exact ⟨w, hwx, contemp_trans hε M hx hcw⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`N` is countable when `M` is** — the domain of `N` is a subtype of `M`'s. -/
 theorem countable_surgeredStructure (M : OrderedMonadicStructure sig)
     (ε : MonadicFormula sig 2) (Q : M.carrier → Prop) (t : M.carrier) [Countable M.carrier] :
@@ -650,6 +654,7 @@ instance instIsSurgeryClosedCountableDense : IsSurgeryClosed (CountableDense sig
   haveI : DenselyOrdered M.carrier := hM.2
   exact ⟨countable_surgeredStructure M ε Q t, denselyOrdered_surgeredStructure hS hε⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **A stretch of bad points above `t` lies inside `Q₀`** — maximality of the bad interval,
 used twice below. -/
 theorem mem_of_badStretch (hS : IsBadIntervalSurgery M ε Q t) {r : M.carrier} (htr : t < r)
@@ -928,6 +933,7 @@ section Discharge
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [IsDualClosed C] [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- The bad-connected component is a bad interval: non-empty, bad throughout, convex, and
 saturated. All four are read straight off `Btw`'s case structure. -/
 theorem badComp_isBadInterval (atomMap : Formula → sig.preds)

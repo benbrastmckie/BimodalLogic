@@ -126,8 +126,7 @@ theorem density_schema_iff_fwdRec (F : FrameOver intOrder) :
   constructor
   · intro h
     exact (validOn_atomic_density_iff_fwdRec F.toTaskFrame).mp fun p => h (Formula.atom p)
-  · intro hF φ
-    intro M τ t
+  · intro hF φ M τ t
     exact density_of_hist_periodic F.toTaskFrame (hist_periodic F hF) φ M τ t
 
 /--
