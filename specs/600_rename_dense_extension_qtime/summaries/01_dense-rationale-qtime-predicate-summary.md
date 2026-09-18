@@ -59,10 +59,11 @@ sorry-free, by task 603's implementation. This run verified it in place and did 
 
 ## Verification
 
-- Build: see final metadata (full `lake build` via the build guard)
+- Build: Success (full `lake build`, 2661 jobs; a first run hit transient olean-write races from a concurrent invariants run and was rerun clean)
+- `scripts/check-module-invariants.sh`: all groups PASS after regenerating the README inventory block (comment-line count)
 - Sorry count: 0 in touched files (the changes are docstrings only)
 - Vacuous count: 0
-- Axiom count: unchanged (no Lean declarations added)
+- Axiom count: 15 `^axiom` lines, unchanged (no Lean declarations added)
 - `lean_verify` `Metalogic.validQTime_iff_validDense`: `[propext, Classical.choice, Quot.sound]`
 - Task-reference check: no task-number citations in the changed deliverables (manual diff grep; the
   repository lint's path scope does not cover `FormalSystem/`)
