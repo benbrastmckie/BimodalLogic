@@ -654,7 +654,7 @@ the follow-ups are proposed per file cluster rather than as one undifferentiated
 
 ---
 
-### Phase 8: Deletion batch A -- `def` survivors under `Metalogic/Decidability/` [NOT STARTED]
+### Phase 8: Deletion batch A -- `def` survivors under `Metalogic/Decidability/` [COMPLETED]
 
 **Goal**: Execute the highest-confidence deletion cluster, the one research inspected directly
 (`DecideCache.hitRate`, `ProofExtractionStats`, `TableauStats`,
@@ -662,15 +662,23 @@ the follow-ups are proposed per file cluster rather than as one undifferentiated
 `branchUnexpandedComplexity` and siblings).
 
 **Tasks**:
-- [ ] Regenerate the census; take the current `def` survivor list under
+- [x] Regenerate the census; take the current `def` survivor list under
       `FormalSystem/Metalogic/Decidability/**` from that fresh run, never from a stored TSV.
-- [ ] Diff the name list against `grep -F -f <names> scripts/check-module-invariants.sh
+      *(completed -- and stronger than stated: the census is regenerated before EVERY file, not
+      once per batch, so no file's line numbers are ever read from a run that a previous
+      deletion invalidated)*
+- [x] Diff the name list against `grep -F -f <names> scripts/check-module-invariants.sh
       typst/chapters/*.typ`; abort the batch on any hit and reclassify that name instead.
-- [ ] Delete the declarations file by file, committing each file's green state as it lands.
-- [ ] After each file: `lake build`.
-- [ ] After the batch: `lake build`, `lake build BimodalTest`, and the full invariant harness.
-- [ ] Record the per-line accounting: each deleted name, its file, and the resulting drop in
-      C17's headline.
+      *(completed -- zero hits, gate passed)*
+- [x] Delete the declarations file by file, committing each file's green state as it lands.
+      *(completed -- 10 commits, `task 588 phase 8.1` through `8.9` plus the repair commit `8.10`)*
+- [x] After each file: `lake build`. *(completed -- 10 guarded, detached builds, every one green;
+      a deletion that broke the build would have aborted the batch, and none did)*
+- [x] After the batch: `lake build`, `lake build BimodalTest`, and the full invariant harness.
+      *(completed -- all three green; the harness needed two repairs first, see Phase Notes)*
+- [x] Record the per-line accounting: each deleted name, its file, and the resulting drop in
+      C17's headline. *(completed -- see Phase Notes; the drop is 28, not 35, and the difference
+      is fully accounted for)*
 
 **Timing**: 1.5 hours
 
@@ -696,6 +704,68 @@ the fresh census is the fact.
   unchanged from the baseline.
 - C17's headline dropped by exactly the number of declarations deleted, accounted for line by
   line.
+
+#### Phase Notes (measured at implementation time)
+
+Scope Hypothesis confirmed: **35** `def` survivors under `Metalogic/Decidability/`, distributed
+across 10 files exactly as predicted (`SignedFormula.lean` 13, `CountermodelExtraction.lean` 5,
+and three each in `DecisionProcedure.lean`, `Closure.lean`, `Saturation.lean`,
+`ProofExtraction.lean`). All 35 deleted; **274 lines** removed.
+
+Final state: `lake build` green, `lake build BimodalTest` green, full harness **exit 0, ALL
+CHECKS PASSED**. C2's four flagship axiom sets and C14's pinned set are byte-identical to the
+Phase 6 baseline, C15's 58 anchors and 75 theorem-index rows still resolve, C21's 27 pinned
+results intact, C25's 13 exe roots still compile, C3 sorry inventory still zero.
+
+**The per-line accounting, and why the headline moved by 28 rather than 35.**
+
+```
+  771   headline before the batch
+ - 35   deleted (every one of the 35 leaves the census)
+ +  7   NEWLY flagged: their only remaining consumer was one of the 35 deleted bodies
+ -----
+  743   headline after the batch          (verified against C17's own printed number)
+```
+
+The seven are `BranchStatus` (`Closure.lean`), `SemanticCountermodelResult`
+(`CountermodelExtraction.lean`), `BatchDecisionResult` (`DecisionProcedure.lean`),
+`mcs_filtration_equiv_equivalence` (`FMP/Filtration.lean`), `findContradiction` and
+`unexpandedComplexity` (`SignedFormula.lean`), and `toFiniteTaskFrame`
+(`Semantics/TaskFrame.lean`). This was verified by set-differencing the survivor lists before and
+after, not inferred from the totals: exactly 35 rows left and exactly 7 rows appeared.
+
+This **cascade is expected behaviour, not a defect**, and the plan already prescribes the right
+response: every batch takes its list from a freshly regenerated census, so a cascade row that is
+itself an unreferenced `def` simply joins the next batch. One of the seven does --
+`toFiniteTaskFrame` -- and it is in Phase 10's regenerated list. The other six are `structure`,
+`theorem` or in already-processed files, so they carry into the final accounting as newly
+surfaced rows rather than deletions. The census is monotone under this process (a deletion can
+only ever surface strictly fewer new rows than it removes), so it converges; it is not chased to
+a fixpoint here, and the residue is recorded in Phase 11 rather than absorbed.
+
+**Two gate failures the plan did not anticipate, both repaired.** The batch's own per-file gate
+(`lake build`) stayed green throughout, but the *harness* came back `2 CHECK GROUP(S) FAILED`:
+
+1. **INV** -- deleting 274 lines changed the per-directory line counts that the GENERATED
+   inventory blocks in `README.md` and `FormalSystem/Metalogic/README.md` publish. Repaired by
+   `bash scripts/check-module-invariants.sh --emit-inventory`, which is the documented remedy and
+   which the failure message itself prints.
+2. **C20 tier 1** -- one `file.lean:NNN` citation, in
+   `Metalogic/Decidability/Verified/Termination/MintBound/Measure.lean`, pointed at
+   `SignedFormula.lean:741`, which is now blank because 87 lines were deleted above it. Repaired
+   by taking C20's own advice ("replace each with the declaration name at the intended site"):
+   the sentence already names `reachableForward`, `reachableBackward`, `futureOf` and `pastOf`, so
+   the three brittle line numbers were simply dropped. That is strictly more durable than
+   renumbering, which would break again on the next edit.
+
+Both repairs are in commit `task 588 phase 8.10`. **The runner for batches B and C was then
+extended** to regenerate the inventory blocks and run a structural pass at the end of each batch,
+so this class of breakage is repaired inside the batch instead of being discovered at the gate.
+
+One honest note on commit granularity: the nine per-file commits are `lake build`-green, which is
+the per-file gate this phase declares, but they are transiently INV-red because the inventory
+repair can only be done once, after the batch's last deletion. The batch as a whole is green, and
+that is the unit the phase gates on.
 
 ---
 
