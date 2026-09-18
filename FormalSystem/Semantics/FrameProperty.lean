@@ -116,6 +116,11 @@ where `x < y`, there exists `z ∈ D` where `x < z < y`".
 That is Mathlib's `DenselyOrdered` on the frame's duration carrier on the nose, so the clause is
 recorded by naming that class rather than by restating its body — `DenselyOrdered.dense` is the
 recorded sentence.
+
+Being a bare paper clause that is not narrowed to a carrier, it keeps the paper's name rather than
+a carrier name. Its ℚ-time narrowing is `TaskFrame.IsQTime`, whose validity coincides with dense
+validity (`Metalogic.validQTime_iff_validDense`). The full naming argument is on
+`ProofSystem.FrameClass`.
 -/
 abbrev TaskFrame.IsDense (F : TaskFrame) : Prop := DenselyOrdered F.Duration
 

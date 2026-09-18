@@ -494,6 +494,23 @@ the tree's density axiom, and an `RTime` derivation must be allowed to use it. M
 `RTime` a fresh incomparable leaf would render `density` and `dense_indicator`
 inadmissible in `DerivationTree .RTime` and so could not host Reynolds' system at all.
 
+**Why this class is named `Dense` and not `QTime`.** `ZTime` and `RTime` are named for their
+carriers because their classes are categorical: up to order-and-group isomorphism, a `ZTime`
+frame's durations are `ℤ` (`Semantics.intIso`), and an `RTime` frame's are `ℝ` (the paragraph
+above). The dense class is not categorical. It contains `ℚ`, `ℝ`, `ℚ ×ₗ ℚ` and more, and it cannot
+be narrowed to `ℚ`: `Dense ≤ RTime` requires every `ℝ`-frame to satisfy `Sat .Dense`. Its *logic*
+is nevertheless the logic of ℚ-time, and that is machine-checked rather than asserted:
+`Metalogic.validQTime_iff_validDense` proves that validity over the repository-only ℚ-time class
+`Semantics.TaskFrame.IsQTime` (divisible and pairwise commensurable durations) coincides with
+`ValidDense`, because the dense completeness countermodels are built over `ℚ`
+(`Metalogic.BXCanonical.derivable_of_validQTime`). This is a theorem about the class, not its
+definition, and it is stated for validity only: set-based strong completeness over ℚ-time is open.
+ℚ-time is a predicate with its own validity notion (`Semantics.ValidQTime`), not a fifth tag. The
+name also follows the paper: `def:frame-properties`' Dense clause and `def:BX-d`, so that
+`Dense` / `ZTime` / `RTime` track the paper's subscripts d / z / r in TM_d, TM_z, TM_r. The paper
+itself says "ℚ-time" only where `ℚ` and the dense class come apart, as in its remark that Kamp's
+expressive-completeness theorem does not extend to ℚ-time, although it holds over `ℝ`.
+
 **Soundness caveat.** The soundness theorem for this class must target `ValidRTime`, not the
 density-free `ValidComplete`. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidRTime` distinction is argued in full.
 

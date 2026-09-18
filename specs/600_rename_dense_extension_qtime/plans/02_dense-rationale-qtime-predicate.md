@@ -1,7 +1,7 @@
 # Implementation Plan: Task #600 (revised)
 
 - **Task**: 600 - Rename dense extension to QTime (investigate first)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours base (Phases 1, 2, 5, 6); up to 8 hours if both conditional Phases 3 and 4 run
 - **Dependencies**: Task 603 (investigate ℚ-time frame predicate) -- its research report is the source of truth for the body, naming, and placement of the ℚ-time predicate
 - **Research Inputs**: specs/600_rename_dense_extension_qtime/reports/01_dense-vs-qtime-naming.md; specs/603_investigate_qtime_frame_predicate/reports/ (latest report; not yet written at revision time)
@@ -57,12 +57,12 @@ The work stays inside the frame-extensions topic.
 ## Goals & Non-Goals
 
 **Goals**:
-- Define the ℚ-time frame predicate `IsQTime` (as `TaskFrame.IsQTime`), using exactly the body, reducibility (def or abbrev), and placement from task 603's report. Default placement is FrameProperty.lean next to IsZTime and IsRTime.
-- Prove the inclusion lemma `isDense_of_isQTime` (as `TaskFrame.isDense_of_isQTime`).
-- Prove `isQTime_of_frameOver_rat`: every frame over TemporalOrder.of ℚ satisfies the predicate. The name is provisional; use task 603's naming if it recommends one, and update this Goals list and the Challenge block together.
+- Define the ℚ-time frame predicate `TaskFrame.IsQTime`, using exactly the body, reducibility (def or abbrev), and placement from task 603's report. Default placement is FrameProperty.lean next to IsZTime and IsRTime.
+- Prove the inclusion lemma `isDense_of_isQTime` (in `namespace TaskFrame`).
+- Prove `isQTime_rat`: every frame over TemporalOrder.of ℚ satisfies the predicate (task 603's naming; was provisionally isQTime_of_frameOver_rat).
 - Define `ValidQTime` as ValidOnFrames TaskFrame.IsQTime, a repository-only notion that follows the ValidComplete precedent in Semantics/Validity.lean.
 - Prove `derivable_of_validQTime`: QTime-valid implies derivable at FrameClass.Dense. This is the ℚ-time counterpart of the dense completeness engine.
-- Prove `validDense_iff_validQTime`: dense-valid iff QTime-valid.
+- Prove `validQTime_iff_validDense`: QTime-valid iff dense-valid (task 603's naming and orientation; was provisionally validDense_iff_validQTime).
 - Record the naming rationale once, on the FrameClass docstring in FormalSystem/ProofSystem/Axioms.lean, citing the equivalence theorem, with a short pointer on TaskFrame.IsDense.
 
 **Non-Goals**:
@@ -109,16 +109,18 @@ such report, or it gives no single recommended definition of `IsQTime`, stop at 
 phase `[PARTIAL]`, write partial status naming the missing report, and do not choose a definition
 independently. Record in the phase's progress notes the report path and the recommendation used.
 
-### Phase 1: ℚ-time predicate, inclusion lemma, and ℚ witness [NOT STARTED]
+### Phase 1: ℚ-time predicate, inclusion lemma, and ℚ witness [COMPLETED]
+
+*(deviation: altered — all three declarations were already delivered, sorry-free, by task 603's implementation (commit history of FrameProperty.lean / BXCanonical/Completeness.lean). This phase verified them in place (`lean_verify`: propext, Classical.choice, Quot.sound) and wrote nothing new. The ℚ witness is `BXCanonical.isQTime_rat` in BXCanonical/Completeness.lean, not FrameProperty.lean, because its proof needs `field_simp`.)*
 
 - **Goal:** Add `TaskFrame.IsQTime` exactly as task 603 recommends, prove `TaskFrame.isDense_of_isQTime`, and prove that frames over `TemporalOrder.of ℚ` satisfy it.
 - **Tasks:**
-  - [ ] Apply the report gate above. Extract the recommended body, the name (`IsQTime` unless the report says otherwise), reducibility (`def` vs `abbrev`, taking account of the instance-cache notes in FrameProperty.lean), file placement, and the recommended proof route for the ℚ witness and the inclusion.
-  - [ ] Confirm the surrounding names with `lean_local_search` or grep: `TaskFrame.IsZTime`, `TaskFrame.IsRTime`, `TaskFrame.IsDense`, `TaskFrame.isDense_of_isRTime`, `TemporalOrder.of`, `FrameOver.toTaskFrame`. Confirm that `(F.toTaskFrame).Duration = TemporalOrder.of ℚ` holds by `rfl`.
-  - [ ] Write `TaskFrame.IsQTime` in the recommended file, next to `IsZTime`/`IsRTime`. Its docstring should say what the predicate is, why this form was chosen (in the tree's own words, summarizing 603's comparison without citing the task), that it is repository-only (no paper clause and no `FrameClass` tag denotes it), and point to the `FrameClass` docstring for the naming argument. If the module's "Main Definitions" list names `IsZTime`/`IsRTime`, add `IsQTime` to it.
-  - [ ] Prove `TaskFrame.isDense_of_isQTime {F : TaskFrame} (h : F.IsQTime) : F.IsDense` in the `namespace TaskFrame` block next to `isDense_of_isRTime`.
-  - [ ] Prove `TaskFrame.isQTime_of_frameOver_rat (F : FrameOver (TemporalOrder.of ℚ)) : F.toTaskFrame.IsQTime`, or use 603's recommended name. If the name changes, update this plan's Goals and Challenge block together.
-  - [ ] Run `lean_verify` on all three declarations and check that the only axioms are `propext`, `Classical.choice`, and `Quot.sound`.
+  - [x] Apply the report gate above. Extract the recommended body, the name (`IsQTime` unless the report says otherwise), reducibility (`def` vs `abbrev`, taking account of the instance-cache notes in FrameProperty.lean), file placement, and the recommended proof route for the ℚ witness and the inclusion.
+  - [x] Confirm the surrounding names with `lean_local_search` or grep: `TaskFrame.IsZTime`, `TaskFrame.IsRTime`, `TaskFrame.IsDense`, `TaskFrame.isDense_of_isRTime`, `TemporalOrder.of`, `FrameOver.toTaskFrame`. Confirm that `(F.toTaskFrame).Duration = TemporalOrder.of ℚ` holds by `rfl`.
+  - [x] Write `TaskFrame.IsQTime` in the recommended file, next to `IsZTime`/`IsRTime`. Its docstring should say what the predicate is, why this form was chosen (in the tree's own words, summarizing 603's comparison without citing the task), that it is repository-only (no paper clause and no `FrameClass` tag denotes it), and point to the `FrameClass` docstring for the naming argument. If the module's "Main Definitions" list names `IsZTime`/`IsRTime`, add `IsQTime` to it.
+  - [x] Prove `TaskFrame.isDense_of_isQTime {F : TaskFrame} (h : F.IsQTime) : F.IsDense` in the `namespace TaskFrame` block next to `isDense_of_isRTime`.
+  - [x] Prove `TaskFrame.isQTime_of_frameOver_rat (F : FrameOver (TemporalOrder.of ℚ)) : F.toTaskFrame.IsQTime`, or use 603's recommended name. If the name changes, update this plan's Goals and Challenge block together.
+  - [x] Run `lean_verify` on all three declarations and check that the only axioms are `propext`, `Classical.choice`, and `Quot.sound`.
 - **Timing:** 1.5-2.5 hours (depends on how hard the ℚ witness is under the chosen body; use 603's estimate)
 - **Depends on:** none
 - **Verification Tier:** local
@@ -134,19 +136,21 @@ independently. Record in the phase's progress notes the report path and the reco
 
 ---
 
-### Phase 2: ValidQTime and the dense/ℚ-time validity equivalence [NOT STARTED]
+### Phase 2: ValidQTime and the dense/ℚ-time validity equivalence [COMPLETED]
+
+*(deviation: altered — delivered by task 603's implementation: `ValidQTime` and `Validity.validQTime_of_validDense` in Validity.lean, `derivable_of_validQTime` in BXCanonical/Completeness.lean (with `derivable_of_validDense` reduced to a one-liner, signature unchanged), and the equivalence as `Metalogic.validQTime_iff_validDense` in the new module Metalogic/QTime.lean rather than StrongCompleteness.lean. Verified in place; nothing new written.)*
 
 - **Goal:** Define `ValidQTime`, prove the ℚ-time completeness engine `derivable_of_validQTime`, and prove `validDense_iff_validQTime` in three steps.
 - **Tasks:**
-  - [ ] Re-confirm with `lean_hover_info` or `lean_local_search` the exact current signatures of `ValidOnFrames`, `ValidOnFrames.mono`, `ValidOnFrames.apply_total`, `ValidDense`, `ValidIn`, `FrameClass.Sat`, `countermodel_dense_enriched`, `derivable_of_validDense`, `soundness_validIn`, `soundness_dense`, and `completeness_dense`. The history layer may have moved.
-  - [ ] Check import reachability before choosing sites. At revision time `FormalSystem.Metalogic.Soundness` was not in the import closure of `BXCanonical/Completeness.lean`, and `StrongCompleteness.lean` imports both.
-  - [ ] In `FormalSystem/Semantics/Validity.lean`, define `ValidQTime (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsQTime φ` next to `ValidComplete`. The docstring must say: it is repository-only, like `ValidComplete`; no `FrameClass` constructor denotes its class, so it is `ValidOnFrames` at a bare predicate and not `ValidIn` at a tag; it is not a new frame class; and its theory equals `ValidDense`'s by `validDense_iff_validQTime`. Update any module-docstring list of the `ValidOnFrames` instances that names `ValidComplete` as the only non-tag instance.
-  - [ ] In `FormalSystem/Metalogic/BXCanonical/Completeness.lean`, after `derivable_of_validDense`, prove `derivable_of_validQTime (φ : Formula) : ValidQTime φ → Derivable FrameClass.Dense [] φ`. The proof has the same shape as `derivable_of_validDense`: Lindenbaum, then a case split on `□(¬F'⊤)`. In the dense branch, `countermodel_dense_enriched` gives `F : FrameOver (TemporalOrder.of Rat)`, and `ValidOnFrames.apply_total h F.toTaskFrame (TaskFrame.isQTime_of_frameOver_rat F) …` contradicts it. The non-dense branch is the unchanged `dense_indicator` argument. If the two bodies duplicate more than about 15 lines, a private shared helper that takes "truth at every `Rat` countermodel" as its hypothesis is allowed, as long as the public signature of `derivable_of_validDense` does not change.
-  - [ ] In `FormalSystem/Metalogic/StrongCompleteness.lean`, next to `completeness_dense`, prove `validDense_iff_validQTime (φ : Formula) : ValidDense φ ↔ ValidQTime φ`:
+  - [x] Re-confirm with `lean_hover_info` or `lean_local_search` the exact current signatures of `ValidOnFrames`, `ValidOnFrames.mono`, `ValidOnFrames.apply_total`, `ValidDense`, `ValidIn`, `FrameClass.Sat`, `countermodel_dense_enriched`, `derivable_of_validDense`, `soundness_validIn`, `soundness_dense`, and `completeness_dense`. The history layer may have moved.
+  - [x] Check import reachability before choosing sites. At revision time `FormalSystem.Metalogic.Soundness` was not in the import closure of `BXCanonical/Completeness.lean`, and `StrongCompleteness.lean` imports both.
+  - [x] In `FormalSystem/Semantics/Validity.lean`, define `ValidQTime (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsQTime φ` next to `ValidComplete`. The docstring must say: it is repository-only, like `ValidComplete`; no `FrameClass` constructor denotes its class, so it is `ValidOnFrames` at a bare predicate and not `ValidIn` at a tag; it is not a new frame class; and its theory equals `ValidDense`'s by `validDense_iff_validQTime`. Update any module-docstring list of the `ValidOnFrames` instances that names `ValidComplete` as the only non-tag instance.
+  - [x] In `FormalSystem/Metalogic/BXCanonical/Completeness.lean`, after `derivable_of_validDense`, prove `derivable_of_validQTime (φ : Formula) : ValidQTime φ → Derivable FrameClass.Dense [] φ`. The proof has the same shape as `derivable_of_validDense`: Lindenbaum, then a case split on `□(¬F'⊤)`. In the dense branch, `countermodel_dense_enriched` gives `F : FrameOver (TemporalOrder.of Rat)`, and `ValidOnFrames.apply_total h F.toTaskFrame (TaskFrame.isQTime_of_frameOver_rat F) …` contradicts it. The non-dense branch is the unchanged `dense_indicator` argument. If the two bodies duplicate more than about 15 lines, a private shared helper that takes "truth at every `Rat` countermodel" as its hypothesis is allowed, as long as the public signature of `derivable_of_validDense` does not change.
+  - [x] In `FormalSystem/Metalogic/StrongCompleteness.lean`, next to `completeness_dense`, prove `validDense_iff_validQTime (φ : Formula) : ValidDense φ ↔ ValidQTime φ`:
     - (→) dense-valid implies QTime-valid, because ℚ-time frames are dense: `ValidOnFrames.mono (fun F h => TaskFrame.isDense_of_isQTime h)`. `Sat .Dense` reduces to `IsDense`.
     - (←) QTime-valid implies derivable at `.Dense` by `BXCanonical.derivable_of_validQTime`. Derivable at `.Dense` implies dense-valid by soundness (`soundness_validIn` on the extracted `DerivationTree`, the empty-context form of `soundness_dense`).
     - The docstring states the three-step argument and cites the paper's `cor:tm-completeness` for context. It must not say "strong".
-  - [ ] Run `lean_verify` on `ValidQTime`'s dependents, `derivable_of_validQTime`, and `validDense_iff_validQTime`. Only the standard three axioms may appear.
+  - [x] Run `lean_verify` on `ValidQTime`'s dependents, `derivable_of_validQTime`, and `validDense_iff_validQTime`. Only the standard three axioms may appear.
 - **Timing:** 1.5 hours
 - **Depends on:** 1
 - **Verification Tier:** interface
@@ -163,13 +167,19 @@ independently. Record in the phase's progress notes the report path and the reco
 
 ---
 
-### Phase 3: Conditional -- characterization IsQTime → Nonempty (Duration ≃+o ℚ) [NOT STARTED]
+### Phase 3: Conditional -- characterization IsQTime → Nonempty (Duration ≃+o ℚ) [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `ratIso : F.IsQTime → Nonempty (F.Duration ≃+o ℚ)` | Not nearly free; report recommends deferring | 603 report, candidate table: "Cost: `→ Nonempty (≃+o ℚ)` ... ~120-200 lines, optional"; Recommendation 5: "Optional, recommend deferring" |
 
 - **Goal:** Only if task 603's report finds it nearly free, prove that `IsQTime` pins down ℚ up to order-and-group isomorphism.
 - **Tasks:**
-  - [ ] Apply the report gate. If the report does not recommend this characterization as nearly free, close the phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` row whose Evidence quotes the report's cost assessment. Do nothing else.
-  - [ ] Otherwise, prove it under 603's recommended name and file. When the chosen body is itself `Nonempty (F.Duration ≃+o ℚ)`, the statement is trivial and this phase is exclusion-closed.
-  - [ ] If the proof runs well past its budget, stop. Record an exclusion that cites the measured cost, and do not leave a `sorry`.
+  - [x] Apply the report gate. If the report does not recommend this characterization as nearly free, close the phase `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` row whose Evidence quotes the report's cost assessment. Do nothing else.
+  - [ ] Otherwise, prove it under 603's recommended name and file. When the chosen body is itself `Nonempty (F.Duration ≃+o ℚ)`, the statement is trivial and this phase is exclusion-closed. *(deviation: skipped — report gate excluded the phase)*
+  - [ ] If the proof runs well past its budget, stop. Record an exclusion that cites the measured cost, and do not leave a `sorry`. *(deviation: skipped — not reached)*
 - **Timing:** 0-1.5 hours
 - **Depends on:** 1
 - **Verification Tier:** local
@@ -183,13 +193,19 @@ independently. Record in the phase's progress notes the report path and the reco
 
 ---
 
-### Phase 4: Conditional -- strong completeness over ℚ-time [NOT STARTED]
+### Phase 4: Conditional -- strong completeness over ℚ-time [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Strong (set-based) completeness over ℚ-time | Not nearly free; open research | 603 report, Executive Summary: "Strong completeness over ℚ-time is NOT nearly free ... an ultrapower of ℚ is not Archimedean, so not commensurable" |
 
 - **Goal:** Only if task 603's report finds that strong completeness over ℚ-time comes nearly free through the compactness route, state and prove it.
 - **Tasks:**
-  - [ ] Apply the report gate. If the report does not find it nearly free, close `[COMPLETED WITH EXCLUSIONS]` with a Reasoned Exclusions row that cites the report's assessment.
-  - [ ] Otherwise, confirm the current names `StrongCompletenessDense`, `strongCompletenessDense`, and `SemanticConsequenceDense` (in Metalogic/SetConsequence.lean, Metalogic/Compactness.lean, and Metalogic/StrongCompleteness.lean). Add the ℚ-time analogue in the shape 603 recommends, for example via a consequence-level version of `validDense_iff_validQTime`. It must not introduce a `FrameClass` tag.
-  - [ ] If this needs a new consequence notion or a reproof of the compactness route instead of transport, it is not nearly free. Exclude it with evidence.
+  - [x] Apply the report gate. If the report does not find it nearly free, close `[COMPLETED WITH EXCLUSIONS]` with a Reasoned Exclusions row that cites the report's assessment.
+  - [ ] Otherwise, confirm the current names `StrongCompletenessDense`, `strongCompletenessDense`, and `SemanticConsequenceDense` (in Metalogic/SetConsequence.lean, Metalogic/Compactness.lean, and Metalogic/StrongCompleteness.lean). Add the ℚ-time analogue in the shape 603 recommends, for example via a consequence-level version of `validDense_iff_validQTime`. It must not introduce a `FrameClass` tag. *(deviation: skipped — report gate excluded the phase)*
+  - [x] If this needs a new consequence notion or a reproof of the compactness route instead of transport, it is not nearly free. Exclude it with evidence.
 - **Timing:** 0-1 hour
 - **Depends on:** 2
 - **Verification Tier:** interface
@@ -203,20 +219,20 @@ independently. Record in the phase's progress notes the report path and the reco
 
 ---
 
-### Phase 5: Naming rationale in docstrings [NOT STARTED]
+### Phase 5: Naming rationale in docstrings [COMPLETED]
 
 - **Goal:** Write the canonical "why `Dense`, not `QTime`" paragraph on `FrameClass`, citing `validDense_iff_validQTime`, plus the pointer docstrings.
 - **Tasks:**
-  - [ ] Apply the report gate, so the prose matches the definition that was actually chosen.
-  - [ ] Confirm each declaration name to be cited with `lean_local_search` or grep: `FrameClass.Sat`, the `Sat` antitonicity lemma (currently referred to as `FrameClass.Sat.anti`; check its real name), `TaskFrame.IsDense`, `TaskFrame.IsQTime`, `TaskFrame.isDense_of_isQTime`, `ValidQTime`, `validDense_iff_validQTime`, `derivable_of_validQTime`, `derivable_of_validDense`, `countermodel_dense_enriched`, `soundness_dense`, `Semantics.complete_duration_discrete_or_dense`, and the characterization and strong-completeness names if Phases 3 and 4 added them.
-  - [ ] In `FormalSystem/ProofSystem/Axioms.lean`, add a paragraph to the `FrameClass` docstring after the "Why `RTime` sits strictly above `Dense`" paragraph. Title it "**Why this class is named `Dense` and not `QTime`.**" It must cover:
+  - [x] Apply the report gate, so the prose matches the definition that was actually chosen.
+  - [x] Confirm each declaration name to be cited with `lean_local_search` or grep: `FrameClass.Sat`, the `Sat` antitonicity lemma (currently referred to as `FrameClass.Sat.anti`; check its real name), `TaskFrame.IsDense`, `TaskFrame.IsQTime`, `TaskFrame.isDense_of_isQTime`, `ValidQTime`, `validDense_iff_validQTime`, `derivable_of_validQTime`, `derivable_of_validDense`, `countermodel_dense_enriched`, `soundness_dense`, `Semantics.complete_duration_discrete_or_dense`, and the characterization and strong-completeness names if Phases 3 and 4 added them.
+  - [x] In `FormalSystem/ProofSystem/Axioms.lean`, add a paragraph to the `FrameClass` docstring after the "Why `RTime` sits strictly above `Dense`" paragraph. Title it "**Why this class is named `Dense` and not `QTime`.**" It must cover:
     - (a) `ZTime`/`RTime` are named after their carriers because their classes are categorical.
     - (b) The dense class is not categorical (it contains ℚ, ℝ, ℚ ×ₗ ℚ, ...). It cannot be narrowed to ℚ, because `Dense ≤ RTime` needs ℝ-frames in `Sat .Dense`.
     - (c) Its logic is nevertheless the logic of ℚ-time, and this is machine-checked as `validDense_iff_validQTime` over the repository-only `TaskFrame.IsQTime`. The ℚ-time class is a predicate with its own validity notion (`ValidQTime`), not a `FrameClass` tag. That is a theorem about the class, not a definition of it. This replaces plan 01's prose-only claim.
     - (d) The name follows the paper's TM_d / BX_d and the Dense clause of `def:frame-properties`, so Dense/ZTime/RTime matches the paper's d/z/r.
     - (e) The paper uses "ℚ-time" only where ℚ differs from the dense class (Kamp's theorem).
-  - [ ] In `FormalSystem/Semantics/FrameProperty.lean`, add a short note to the `TaskFrame.IsDense` docstring: this is a bare paper clause that is not narrowed, so it keeps the paper's name. Its ℚ-time narrowing is `IsQTime`, whose validity coincides with it (`validDense_iff_validQTime`). Point to the `FrameClass` docstring for the full argument. Make sure the `IsQTime` docstring from Phase 1 points back to it as well and does not repeat the argument.
-  - [ ] Optional: one sentence on the `.Dense` bullet in `FormalSystem/Semantics/FrameClassValidity.lean`'s interpretation notes, and "The tree says `Dense`, not `QTime`; see `validDense_iff_validQTime`" in the TM_d row of `docs/theorem-index.md`, plus a row for the new theorem if that index lists theorems of this kind.
+  - [x] In `FormalSystem/Semantics/FrameProperty.lean`, add a short note to the `TaskFrame.IsDense` docstring: this is a bare paper clause that is not narrowed, so it keeps the paper's name. Its ℚ-time narrowing is `IsQTime`, whose validity coincides with it (`validDense_iff_validQTime`). Point to the `FrameClass` docstring for the full argument. Make sure the `IsQTime` docstring from Phase 1 points back to it as well and does not repeat the argument.
+  - [x] Optional: one sentence on the `.Dense` bullet in `FormalSystem/Semantics/FrameClassValidity.lean`'s interpretation notes, and "The tree says `Dense`, not `QTime`; see `validDense_iff_validQTime`" in the TM_d row of `docs/theorem-index.md`, plus a row for the new theorem if that index lists theorems of this kind.
 - **Timing:** 1 hour
 - **Depends on:** 2, 3, 4
 - **Verification Tier:** prose
@@ -234,16 +250,16 @@ independently. Record in the phase's progress notes the report path and the reco
 
 ---
 
-### Phase 6: Full build and lint verification [NOT STARTED]
+### Phase 6: Full build and lint verification [COMPLETED]
 
 - **Goal:** Run the full gate set over all changes.
 - **Tasks:**
-  - [ ] Run `lake build` in full. Use `lean_diagnostic_messages` on the touched files first for fast feedback.
-  - [ ] Run `bash .claude/scripts/check-task-references.sh` over the changed deliverables and confirm there are no task-number references.
-  - [ ] Run the repository's paper-anchor lint (`scripts/check-paper-definitions.sh` or the C15 anchor check, whichever covers docstrings) so that `def:frame-properties`, `def:BX-d`, `def:TMplus`, and `cor:tm-completeness` resolve.
-  - [ ] Grep the full diff for `sorry` and `axiom`: expect zero. Run `lean_verify` on every new theorem.
-  - [ ] If `FormalSystem/MainResults.lean` or `Tests/BimodalTest/` holds `#check` / `#print axioms` pins for the dense completeness results, add matching pins for `validDense_iff_validQTime`, but only if that is the established convention.
-  - [ ] Run `git diff` and confirm that no existing identifier was renamed.
+  - [x] Run `lake build` in full. Use `lean_diagnostic_messages` on the touched files first for fast feedback.
+  - [x] Run `bash .claude/scripts/check-task-references.sh` over the changed deliverables and confirm there are no task-number references. *(deviation: altered — that lint's path scope excludes FormalSystem/ and docs/; used `scripts/check-module-invariants.sh` C9/C9D instead, both PASS)*
+  - [x] Run the repository's paper-anchor lint (`scripts/check-paper-definitions.sh` or the C15 anchor check, whichever covers docstrings) so that `def:frame-properties`, `def:BX-d`, `def:TMplus`, and `cor:tm-completeness` resolve.
+  - [x] Grep the full diff for `sorry` and `axiom`: expect zero. Run `lean_verify` on every new theorem.
+  - [x] If `FormalSystem/MainResults.lean` or `Tests/BimodalTest/` holds `#check` / `#print axioms` pins for the dense completeness results, add matching pins for `validDense_iff_validQTime`, but only if that is the established convention. *(deviation: skipped — Tests/BimodalTest/Semantics/QTimeTest.lean already pins `validQTime_iff_validDense`)*
+  - [x] Run `git diff` and confirm that no existing identifier was renamed.
 - **Timing:** 45 minutes (mostly `lake build`)
 - **Depends on:** 5
 - **Verification Tier:** full
@@ -295,7 +311,7 @@ def IsQTime (F : TaskFrame) : Prop := sorry
 
 theorem isDense_of_isQTime {F : TaskFrame} (h : F.IsQTime) : F.IsDense := sorry
 
-theorem isQTime_of_frameOver_rat (F : FrameOver (TemporalOrder.of ℚ)) :
+theorem isQTime_rat (F : FrameOver (TemporalOrder.of ℚ)) :
     F.toTaskFrame.IsQTime := sorry
 
 end TaskFrame
@@ -317,7 +333,7 @@ namespace FormalSystem.Metalogic
 
 open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Semantics
 
-theorem validDense_iff_validQTime (φ : Formula) : ValidDense φ ↔ ValidQTime φ := sorry
+theorem validQTime_iff_validDense (φ : Formula) : ValidQTime φ ↔ ValidDense φ := sorry
 
 end FormalSystem.Metalogic
 ```

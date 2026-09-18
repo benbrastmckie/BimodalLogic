@@ -91,6 +91,7 @@ Per-constructor anchors:
   here.
 * `.Dense ↦ TaskFrame.IsDense`. `def:frame-properties`' Dense clause. `Axiom.density` (`GGφ → Gφ`)
   and `Axiom.dense_indicator` (`¬(⊥ U ⊤)`) carry `.Dense`.
+  The tag keeps the paper's name, not `QTime`; see `FrameClass` for why.
 * `.ZTime ↦ TaskFrame.IsZTime`, **not** `TaskFrame.IsDiscrete`. `def:BX-z`'s closing
   sentence narrows the discrete class over which BX_z and TM_z are sound and complete to exactly
   the frames over ℤ-time — `UZ` and `Z1` fail over every discrete order that is not Archimedean —
