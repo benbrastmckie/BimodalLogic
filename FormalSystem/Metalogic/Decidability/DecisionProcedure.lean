@@ -413,24 +413,6 @@ structure BatchDecisionResult where
   totalCount : Nat
   deriving Repr, Inhabited
 
-/--
-Decide a batch of formulas, collecting statistics.
--/
-def decideBatch (formulas : List Formula) (fuel : Nat := 1000)
-    (fc : FrameClass := .Base) : BatchDecisionResult :=
-  formulas.foldl (fun acc φ =>
-    let result := decide φ 10 fuel fc
-    { acc with
-      validCount := acc.validCount + (if result.isValid then 1 else 0)
-      invalidCount := acc.invalidCount + (if result.isInvalid then 1 else 0)
-      timeoutCount := acc.timeoutCount + (if result.isUndecided then 1 else 0)
-      extractionFailedCount :=
-        acc.extractionFailedCount + (if result.isExtractionFailed then 1 else 0)
-      totalCount := acc.totalCount + 1
-    }
-  ) { validCount := 0, invalidCount := 0, timeoutCount := 0, extractionFailedCount := 0,
-      totalCount := 0 }
-
 /-!
 ## Integration with Proof Search
 -/
@@ -469,12 +451,6 @@ def isTautology (φ : Formula) (fc : FrameClass := .Base) : Bool := isValid φ f
 Check if a formula is a contradiction (negation is valid).
 -/
 def isContradiction (φ : Formula) (fc : FrameClass := .Base) : Bool := isValid φ.neg fc
-
-/--
-Check if a formula is contingent (neither valid nor contradictory).
--/
-def isContingent (φ : Formula) (fc : FrameClass := .Base) : Bool :=
-  ¬isValid φ fc ∧ ¬isContradiction φ fc
 
 /-!
 ## Display Functions
@@ -571,15 +547,5 @@ def decideWithTrace (φ : Formula) (fuel : Nat := 500)
       -- Open saturated branch found: formula is invalid (countermodel)
       let finalized := finalizeCertificate tracedCert .countermodel tracedCert.trace
       .success finalized
-
-/--
-Adaptive trace-instrumented decision procedure.
-
-Uses `soundFuel` (from subformula closure cardinality) as the fuel bound,
-combined with a depth proportional to formula complexity.
--/
-def decideAutoWithTrace (φ : Formula) (fc : FrameClass := .Base) : TraceResult :=
-  let fuel := soundFuel φ
-  decideWithTrace φ fuel fc
 
 end FormalSystem.Metalogic.Decidability
