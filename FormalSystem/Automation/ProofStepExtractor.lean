@@ -232,7 +232,6 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       frameClass := fcStr
     }
     ([step], startIndex + 1)
-
   | .assumption Γ φ _ =>
     let step : ProofStep := {
       theoremName := thmName
@@ -246,7 +245,6 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
       frameClass := fcStr
     }
     ([step], startIndex + 1)
-
   | .modus_ponens Γ φ ψ d1 d2 =>
     let step : ProofStep := {
       theoremName := thmName
@@ -262,7 +260,6 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
     let (steps1, idx1) := extractStepSequence thmName fcStr (startIndex + 1) d1
     let (steps2, idx2) := extractStepSequence thmName fcStr idx1 d2
     ([step] ++ steps1 ++ steps2, idx2)
-
   | .necessitation φ d =>
     let step : ProofStep := {
       theoremName := thmName
@@ -277,7 +274,6 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
     }
     let (steps, idx) := extractStepSequence thmName fcStr (startIndex + 1) d
     ([step] ++ steps, idx)
-
   | .temporal_necessitation φ d =>
     let step : ProofStep := {
       theoremName := thmName
@@ -292,7 +288,6 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
     }
     let (steps, idx) := extractStepSequence thmName fcStr (startIndex + 1) d
     ([step] ++ steps, idx)
-
   | .time_reflection φ d =>
     let step : ProofStep := {
       theoremName := thmName
@@ -308,7 +303,6 @@ def extractStepSequence {fc : FrameClass} {Γ : Context} {φ : Formula}
     }
     let (steps, idx) := extractStepSequence thmName fcStr (startIndex + 1) d
     ([step] ++ steps, idx)
-
   | .weakening _Γ Δ φ d _ =>
     let step : ProofStep := {
       theoremName := thmName

@@ -116,31 +116,24 @@ def mkAssumption2 : DerivationTree .Base [p, q] p :=
 def runSimpleBenchmarks : IO (List DerivationBenchmarkResult) := do
   IO.println "=== Simple Derivation Benchmarks ==="
   let mut results := []
-
   let r1 ← runBenchmark "Axiom (Modal T)" (fun _ => mkModalT)
   printResult r1
   results := results ++ [r1]
-
   let r2 ← runBenchmark "Axiom (Modal 4)" (fun _ => mkModal4)
   printResult r2
   results := results ++ [r2]
-
   let r3 ← runBenchmark "Axiom (Modal B)" (fun _ => mkModalB)
   printResult r3
   results := results ++ [r3]
-
   let r4 ← runBenchmark "Axiom (Modal-Future)" (fun _ => mkModalFuture)
   printResult r4
   results := results ++ [r4]
-
   let r5 ← runBenchmark "Assumption (single)" (fun _ => mkAssumption)
   printResult r5
   results := results ++ [r5]
-
   let r6 ← runBenchmark "Assumption (multiple)" (fun _ => mkAssumption2)
   printResult r6
   results := results ++ [r6]
-
   return results
 
 /-!
@@ -173,15 +166,12 @@ def mkMP2 : DerivationTree .Base ctxMP2 r :=
 def runMPChainBenchmarks : IO (List DerivationBenchmarkResult) := do
   IO.println "\n=== Modus Ponens Chain Benchmarks ==="
   let mut results := []
-
   let r1 ← runBenchmark "MP depth 1" (fun _ => mkMP1)
   printResult r1
   results := results ++ [r1]
-
   let r2 ← runBenchmark "MP depth 2" (fun _ => mkMP2)
   printResult r2
   results := results ++ [r2]
-
   return results
 
 /-!
@@ -213,23 +203,18 @@ def mkDoubleNecessitation :
 def runModalRuleBenchmarks : IO (List DerivationBenchmarkResult) := do
   IO.println "\n=== Modal/Temporal Rule Benchmarks ==="
   let mut results := []
-
   let r1 ← runBenchmark "Necessitation (modal)" (fun _ => mkNecessitation)
   printResult r1
   results := results ++ [r1]
-
   let r2 ← runBenchmark "Necessitation (temporal)" (fun _ => mkTemporalNecessitation)
   printResult r2
   results := results ++ [r2]
-
   let r3 ← runBenchmark "Temporal duality" (fun _ => mkTimeReflection)
   printResult r3
   results := results ++ [r3]
-
   let r4 ← runBenchmark "Double necessitation" (fun _ => mkDoubleNecessitation)
   printResult r4
   results := results ++ [r4]
-
   return results
 
 /-!
@@ -253,15 +238,12 @@ def mkWeak2 : DerivationTree .Base [q, r, p] p :=
 def runWeakeningBenchmarks : IO (List DerivationBenchmarkResult) := do
   IO.println "\n=== Weakening Benchmarks ==="
   let mut results := []
-
   let r1 ← runBenchmark "Weakening (+1 formula)" (fun _ => mkWeak1)
   printResult r1
   results := results ++ [r1]
-
   let r2 ← runBenchmark "Weakening (+2 formulas)" (fun _ => mkWeak2)
   printResult r2
   results := results ++ [r2]
-
   return results
 
 /-!
@@ -280,11 +262,9 @@ def mkCombined1 : DerivationTree .Base [(Formula.box p)] p :=
 def runCombinedBenchmarks : IO (List DerivationBenchmarkResult) := do
   IO.println "\n=== Combined Derivation Benchmarks ==="
   let mut results := []
-
   let r1 ← runBenchmark "MP with axiom (□p ⊢ p)" (fun _ => mkCombined1)
   printResult r1
   results := results ++ [r1]
-
   return results
 
 /-!
@@ -296,24 +276,17 @@ def runAllDerivationBenchmarks : IO Unit := do
   IO.println "╔══════════════════════════════════════════════════╗"
   IO.println "║     Derivation Tree Benchmark Suite              ║"
   IO.println "╚══════════════════════════════════════════════════╝\n"
-
   let mut allResults := []
-
   let simple ← runSimpleBenchmarks
   allResults := allResults ++ simple
-
   let mpChain ← runMPChainBenchmarks
   allResults := allResults ++ mpChain
-
   let modalRules ← runModalRuleBenchmarks
   allResults := allResults ++ modalRules
-
   let weakening ← runWeakeningBenchmarks
   allResults := allResults ++ weakening
-
   let combined ← runCombinedBenchmarks
   allResults := allResults ++ combined
-
   -- Summary
   IO.println "\n═══════════════════════════════════════════════════"
   IO.println "                    SUMMARY"
@@ -346,22 +319,16 @@ def allResultsToJson (results : List DerivationBenchmarkResult) : String :=
 /-- Run benchmarks and output JSON. -/
 def runBenchmarksJson : IO Unit := do
   let mut allResults := []
-
   let simple ← runSimpleBenchmarks
   allResults := allResults ++ simple
-
   let mpChain ← runMPChainBenchmarks
   allResults := allResults ++ mpChain
-
   let modalRules ← runModalRuleBenchmarks
   allResults := allResults ++ modalRules
-
   let weakening ← runWeakeningBenchmarks
   allResults := allResults ++ weakening
-
   let combined ← runCombinedBenchmarks
   allResults := allResults ++ combined
-
   IO.println (allResultsToJson allResults)
 
 end BimodalTest.ProofSystem.Benchmark

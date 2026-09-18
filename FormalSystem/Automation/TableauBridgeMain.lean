@@ -200,12 +200,10 @@ partial def pSkipValue (st : PState) : Except String PState := do
 partial def pFormula (st : PState) : Except String (Formula × PState) := do
   let st := pSkipWS st
   let st ← pExpect '{' st
-
   let mut tag : String := ""
   let mut name : String := ""
   let mut subFormulas : List (String × Formula) := []
   let mut st := st
-
   while true do
     let st' := pSkipWS st
     match pPeek st' with
@@ -213,12 +211,10 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
       st := pAdvance st'
       break
     | _ => pure ()
-
     let (key, st') ← pString st
     let st' := pSkipWS st'
     let st' ← pExpect ':' st'
     let st' := pSkipWS st'
-
     if key == "tag" then
       let (val, st') ← pString st'
       tag := val
@@ -235,7 +231,6 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
     else
       let st' ← pSkipValue st'
       st := st'
-
     let st' := pSkipWS st
     match pPeek st' with
     | some ',' => st := pAdvance st'
@@ -243,12 +238,10 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
       st := pAdvance st'
       break
     | _ => throw s!"expected , or }} at pos {st'.pos}"
-
   let getField (fname : String) : Except String Formula :=
     match subFormulas.find? (fun (k, _) => k == fname) with
     | some (_, f) => .ok f
     | none => .error s!"missing field '{fname}' for tag '{tag}'"
-
   match tag with
   | "atom" => return (Formula.atomS name, st)
   | "bot" => return (Formula.bot, st)
@@ -359,12 +352,10 @@ partial def parseRequest (line : String) : Except String BridgeRequest := do
   let st := mkPState line
   let st := pSkipWS st
   let st ← pExpect '{' st
-
   let mut command : Option BridgeCommand := none
   let mut formula : Option Formula := none
   let mut frameClass : FrameClass := .Base
   let mut st := st
-
   while true do
     let st' := pSkipWS st
     match pPeek st' with
@@ -372,12 +363,10 @@ partial def parseRequest (line : String) : Except String BridgeRequest := do
       st := pAdvance st'
       break
     | _ => pure ()
-
     let (key, st') ← pString st
     let st' := pSkipWS st'
     let st' ← pExpect ':' st'
     let st' := pSkipWS st'
-
     if key == "command" then
       let (val, st') ← pString st'
       let cmd ← parseCommand val
@@ -397,7 +386,6 @@ partial def parseRequest (line : String) : Except String BridgeRequest := do
     else
       let st' ← pSkipValue st'
       st := st'
-
     let st' := pSkipWS st
     match pPeek st' with
     | some ',' => st := pAdvance st'
@@ -405,7 +393,6 @@ partial def parseRequest (line : String) : Except String BridgeRequest := do
       st := pAdvance st'
       break
     | _ => throw s!"expected , or }} at pos {st'.pos}"
-
   match command with
   | none => throw "missing 'command' field"
   | some cmd =>

@@ -57,7 +57,6 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
 -- Verify search correctly returns false for non-axiom formulas
 #eval do
   IO.println "=== Negative Search Tests ==="
-
   let nonAxioms := [
     (p.imp q, "p → q (random implication)"),
     (Formula.box p, "□p (just a box)"),
@@ -68,7 +67,6 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
     (p.imp (Formula.box q), "p → □q (not modal_b)"),
     ((p.imp q).imp (q.imp r), "(p→q) → (q→r) (not prop_k)")
   ]
-
   let mut passed := 0
   let mut failed := 0
   for (formula, desc) in nonAxioms do
@@ -80,19 +78,15 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
     else
       failed := failed + 1
       IO.println s!"✗ {desc}: should be rejected (matched={matched}, found={found})"
-
   IO.println s!"\nNegative tests: {passed} passed, {failed} failed"
 
 -- Visit limit enforcement tests
 #eval do
   IO.println "=== Visit Limit Enforcement Tests ==="
-
   -- Test that search terminates early with low visit limit
   let formula := Formula.atomS "x"  -- Non-derivable
-
   let limits := [1, 3, 5, 10, 20]
   let mut allWithinLimit := true
-
   for limit in limits do
     let (_found, _, _, _stats, visits) := iddfsSearch [] formula 20 limit
     let withinLimit := visits ≤ limit
@@ -101,7 +95,6 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
       IO.println s!"✗ Limit {limit}: visits={visits} EXCEEDED"
     else
       IO.println s!"✓ Limit {limit}: visits={visits}, within limit"
-
   if allWithinLimit then
     IO.println "✓ All visit limit tests passed"
   else
@@ -110,16 +103,13 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
 -- Depth limit enforcement tests
 #eval do
   IO.println "=== Depth Limit Enforcement Tests ==="
-
   -- Modal T should be found at depth >= 1
   let modalT := (Formula.box p).imp p
-
   let results := [
     (search [] modalT (.BoundedDFS 0) 100, (0 : Nat)),
     (search [] modalT (.BoundedDFS 1) 100, (1 : Nat)),
     (search [] modalT (.BoundedDFS 5) 100, (5 : Nat))
   ]
-
   IO.println "Modal T (should be found at depth >= 1):"
   for ((found, _, _, _, _), depth) in results do
     if depth == 0 then
@@ -136,15 +126,12 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
 -- Context-sensitive negative tests
 #eval do
   IO.println "=== Context-Sensitive Negative Tests ==="
-
   -- Formula not in context and not an axiom
   let (found1, _, _, _, _) := search [p, q] r (.IDDFS 5) 100
   IO.println s!"[p, q] ⊢ r: found={found1} (expected: false)"
-
   -- Formula that would need modus ponens (blocked by task 315)
   let (found2, _, _, _, _) := search [p.imp q] q (.IDDFS 5) 100
   IO.println s!"[p→q] ⊢ q: found={found2} (expected: false without p in context)"
-
   -- Check results
   if !found1 && !found2 then
     IO.println "✓ Context-sensitive tests passed"
@@ -154,28 +141,22 @@ example : matchesAxiom (Formula.box (Formula.allFuture p)) = false := rfl  -- �
 -- Search stats verification
 #eval do
   IO.println "=== Search Stats Verification ==="
-
   -- Search for axiom should have minimal visits
   let modalT := (Formula.box p).imp p
   let (found, _, _, stats, visits) := search [] modalT (.IDDFS 10) 1000
-
   IO.println s!"Modal T search: found={found}, visits={visits}"
   IO.println s!"  Stats: visited={stats.visited}, hits={stats.hits}, misses={stats.misses}"
-
   if found && visits == 1 then
     IO.println "✓ Axiom found with minimal visits"
   else if found then
     IO.println "⚠ Axiom found but with more visits than expected"
   else
     IO.println "✗ Axiom NOT found"
-
   -- Search for non-axiom should exhaust or hit limit
   let nonAxiom := Formula.atomS "x"
   let (foundNA, _, _, statsNA, visitsNA) := iddfsSearch [] nonAxiom 5 50
-
   IO.println s!"\nNon-axiom search: found={foundNA}, visits={visitsNA}"
   IO.println s!"  Stats: visited={statsNA.visited}"
-
   if !foundNA then
     IO.println "✓ Non-axiom correctly not found"
   else

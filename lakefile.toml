@@ -28,7 +28,6 @@ weak.linter.style.longFile = 1500
 # TEMPORARY (staged enablement): each line below holds one not-yet-clean class off while its
 # warnings are fixed; the line is deleted once that class reaches zero.
 weak.linter.style.longLine = false # TEMPORARY (staged enablement)
-weak.linter.style.emptyLine = false # TEMPORARY (staged enablement)
 weak.linter.unusedFintypeInType = false # TEMPORARY (staged enablement)
 weak.linter.unusedDecidableInType = false # TEMPORARY (staged enablement)
 weak.linter.style.show = false # TEMPORARY (staged enablement)

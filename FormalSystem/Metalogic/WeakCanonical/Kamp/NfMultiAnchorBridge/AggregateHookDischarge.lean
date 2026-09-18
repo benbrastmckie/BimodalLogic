@@ -13,7 +13,7 @@ Builds the aggregate ∀-qnf population encoding for the `KampPrior.lean` `| 1 =
 discharges the three arm-correctness hooks (past / diagonal / future) as separate green citable
 lemmas at match arms k=0 (`sub_nf : NormalForm sig 1 2`) and k=1 (`sub_nf : NormalForm sig 2 2`),
 each concluding in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(`KampPrior.lean:1148`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:679`).
+(`KampPrior.lean:1143`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:674`).
 
 ## Phase-1 adjudication record (R1/R2/aggregation verdicts — BINDING)
 
@@ -69,7 +69,7 @@ the order-consistent `ZoneSpec 2` values) with strictly fewer moving parts.
 ## The six target statements (Phase 1 freeze — shapes BINDING for Phases 2-5)
 
 Conclusion shapes copied verbatim from the `kampPrior_site_trichotomy` disjuncts
-(KampPrior.lean:679-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
+(KampPrior.lean:674-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
 under the Prior-guarded skeleton. Delivered by Phase 3 (k=0) and Phase 5 (k=1):
 
 ```
@@ -1680,8 +1680,8 @@ end AggDiagK0
 /-! ## Phase 3 — k=0 hook discharge: the three arm lemmas (match arm k=0)
 
 The three green citable lemmas in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(KampPrior.lean:1148) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
-corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:679-684).
+(KampPrior.lean:1143) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
+corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:674-684).
 `h_UZ`/`h_SZ` are carried (unused — the k=0 aggregates need no Prior hypotheses, matching the
 k≤1 rungs `bracketEndChar_kv_correct_{zero,one}_prior`) so the statements slot directly under
 the Prior-guarded skeleton. These discharge the P4/P5 `h_quant` hooks and the `A_diag_correct`

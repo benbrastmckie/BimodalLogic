@@ -255,32 +255,26 @@ noncomputable def generateAndExportDataset (config : EnumConfig) (outputPath : S
   IO.println "Enumerating formulas..."
   let formulas := enumerateUpToDepth config
   IO.println s!"  Generated {formulas.length} unique formulas"
-
   -- Step 2: Label
   IO.println s!"Labeling {formulas.length} formulas..."
   let labeled ← labelBatch formulas (parallelThreads := parallelThreads)
-
   -- Step 3: Compute stats
   let stats := computeBatchStats labeled
   IO.println ""
   IO.println (stats.display)
-
   -- Step 4: Build metadata
   let metadata : DatasetMetadata := {
     config := config
     stats := stats
   }
-
   -- Step 5: Export JSON
   IO.println ""
   IO.println "Assembling dataset JSON..."
   let jsonContent := exportDatasetJson metadata labeled
-
   -- Step 6: Write file
   IO.println s!"Writing to {outputPath}..."
   writeDataset outputPath jsonContent
   IO.println s!"  Wrote {labeled.length} formula records"
-
   -- Step 7: Summary
   IO.println ""
   IO.println "Dataset generation complete."
@@ -306,20 +300,16 @@ noncomputable def generateSplitDatasets (config : EnumConfig) (trainPath evalPat
   IO.println "Enumerating formulas..."
   let formulas := enumerateUpToDepth config
   IO.println s!"  Generated {formulas.length} unique formulas"
-
   -- Step 2: Label
   IO.println s!"Labeling {formulas.length} formulas..."
   let labeled ← labelBatch formulas (parallelThreads := parallelThreads)
-
   -- Step 3: Split
   let (train, eval) := splitDataset labeled trainRatio
   IO.println s!"  Train set: {train.length} formulas"
   IO.println s!"  Eval set: {eval.length} formulas"
-
   -- Step 4: Compute stats for each split
   let trainStats := computeBatchStats train
   let evalStats := computeBatchStats eval
-
   -- Step 5: Build metadata for each split
   let trainMetadata : DatasetMetadata := {
     config := config
@@ -329,18 +319,15 @@ noncomputable def generateSplitDatasets (config : EnumConfig) (trainPath evalPat
     config := config
     stats := evalStats
   }
-
   -- Step 6: Export and write
   IO.println ""
   IO.println "Assembling and writing datasets..."
   let trainJson := exportDatasetJson trainMetadata train
   writeDataset trainPath trainJson
   IO.println s!"  Train: wrote {train.length} records to {trainPath}"
-
   let evalJson := exportDatasetJson evalMetadata eval
   writeDataset evalPath evalJson
   IO.println s!"  Eval: wrote {eval.length} records to {evalPath}"
-
   -- Step 7: Summary
   IO.println ""
   IO.println "Train set statistics:"

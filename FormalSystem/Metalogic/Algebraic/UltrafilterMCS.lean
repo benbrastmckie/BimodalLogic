@@ -145,7 +145,6 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula}
         FormalSystem.Theorems.Propositional.contraposeImp φ ψ
       have d_neg_ψ_to_neg_φ : DerivationTree FrameClass.Base [] (ψ.neg.imp φ.neg) :=
         DerivationTree.modus_ponens [] _ _ d_contra d_imp
-
       -- Since ψ ∉ Γ and Γ is MCS...
       -- We need set-based negation completeness. Let's prove it directly.
       -- If ψ ∉ Γ, then insert ψ Γ is inconsistent.
@@ -177,7 +176,6 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula}
         · simp only [List.mem_cons]
           right
           exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-
       -- Weaken L ⊢ ⊥ to (ψ :: Γ') ⊢ ⊥
       have d_bot' : DerivationTree FrameClass.Base (ψ :: Γ') Formula.bot :=
         DerivationTree.weakening L (ψ :: Γ') Formula.bot d_bot h_L_sub
@@ -230,7 +228,6 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     push Not at h_incons
     obtain ⟨L, hL, hL_incons⟩ := h_incons
     have ⟨d_bot⟩ := FormalSystem.Metalogic.Core.inconsistent_derives_bot hL_incons
-
     -- Similar to above, extract the part without φ ∧ ψ
     let Γ' := L.filter (· ≠ φ.and ψ)
     have h_Γ'_sub : ∀ χ ∈ Γ', χ ∈ Γ := by
@@ -249,13 +246,11 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
       · simp [hχeq]
       · simp only [List.mem_cons]; right
         exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-
     -- Weaken and apply deduction theorem
     have d_bot' : DerivationTree FrameClass.Base ((φ.and ψ) :: Γ') Formula.bot :=
       DerivationTree.weakening L ((φ.and ψ) :: Γ') Formula.bot d_bot h_L_sub
     have d_neg : DerivationTree FrameClass.Base Γ' (φ.and ψ).neg :=
       FormalSystem.Metalogic.Core.deductionTheorem Γ' (φ.and ψ) Formula.bot d_bot'
-
     -- But from φ, ψ ∈ Γ, we can derive φ ∧ ψ
     -- Add φ and ψ to Γ' (they're in Γ)
     have d_neg' : DerivationTree FrameClass.Base (ψ :: φ :: Γ') (φ.and ψ).neg :=
@@ -293,7 +288,6 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     -- From φ ∧ ψ and ¬(φ ∧ ψ), derive ⊥
     have d_bot'' : DerivationTree FrameClass.Base (ψ :: φ :: Γ') Formula.bot :=
       DerivationTree.modus_ponens (ψ :: φ :: Γ') (φ.and ψ) Formula.bot d_neg' d_and
-
     -- But ψ :: φ :: Γ' ⊆ Γ
     have h_cons : Consistent (fc := FrameClass.Base) (ψ :: φ :: Γ') := by
       apply h_mcs.1 (ψ :: φ :: Γ')
@@ -328,7 +322,6 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
       push Not at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
       have ⟨d_bot⟩ := FormalSystem.Metalogic.Core.inconsistent_derives_bot hL_incons
-
       -- Extract Γ' = L.filter (· ≠ φ)
       let Γ' := L.filter (· ≠ φ)
       have h_Γ'_sub : ∀ χ ∈ Γ', χ ∈ Γ := by
@@ -347,12 +340,10 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
         · simp [hχeq]
         · simp only [List.mem_cons]; right
           exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-
       have d_bot' : DerivationTree FrameClass.Base (φ :: Γ') Formula.bot :=
         DerivationTree.weakening L (φ :: Γ') Formula.bot d_bot h_L_sub
       have d_neg : DerivationTree FrameClass.Base Γ' φ.neg :=
         FormalSystem.Metalogic.Core.deductionTheorem Γ' φ Formula.bot d_bot'
-
       -- Show ¬φ ∈ Γ by closure
       have h_neg_in : φ.neg ∈ Γ := by
         by_contra h_neg_not
@@ -363,7 +354,6 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
         push Not at h_incons'
         obtain ⟨L', hL', hL'_incons⟩ := h_incons'
         have ⟨d_bot'⟩ := FormalSystem.Metalogic.Core.inconsistent_derives_bot hL'_incons
-
         let Γ'' := L'.filter (· ≠ φ.neg)
         have h_Γ''_sub : ∀ χ ∈ Γ'', χ ∈ Γ := by
           intro χ hχ
@@ -380,12 +370,10 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           · simp [hχeq]
           · simp only [List.mem_cons]; right
             exact List.mem_filter.mpr ⟨hχ, by simp [hχeq]⟩
-
         have d_bot'' : DerivationTree FrameClass.Base (φ.neg :: Γ'') Formula.bot :=
           DerivationTree.weakening L' (φ.neg :: Γ'') Formula.bot d_bot' h_L'_sub
         have d_neg_neg : DerivationTree FrameClass.Base Γ'' φ.neg.neg :=
           FormalSystem.Metalogic.Core.deductionTheorem Γ'' φ.neg Formula.bot d_bot''
-
         -- From ¬¬φ derive φ (double negation elimination)
         have d_dne : DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
             FormalSystem.Theorems.Propositional.doubleNegation φ
@@ -393,7 +381,6 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           DerivationTree.weakening [] Γ'' _ d_dne (by simp)
         have d_φ : DerivationTree FrameClass.Base Γ'' φ :=
           DerivationTree.modus_ponens Γ'' φ.neg.neg φ d_dne' d_neg_neg
-
         -- Now we have Γ'' ⊢ ¬φ (from earlier, weaken d_neg)
         -- and Γ'' ⊢ φ, deriving ⊥
         -- Actually, d_neg is from Γ', not Γ''
@@ -410,7 +397,6 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           DerivationTree.weakening Γ'' (Γ'' ++ Γ') φ d_φ (by simp)
         have d_bot_combined : DerivationTree FrameClass.Base (Γ'' ++ Γ') Formula.bot :=
           DerivationTree.modus_ponens (Γ'' ++ Γ') φ Formula.bot d_neg_combined d_φ_combined
-
         -- But Γ'' ++ Γ' ⊆ Γ
         have h_combined_cons : Consistent (fc := FrameClass.Base) (Γ'' ++ Γ') := by
           apply h_mcs.1 (Γ'' ++ Γ')
@@ -420,7 +406,6 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           · exact h_Γ''_sub χ hχ''
           · exact h_Γ'_sub χ hχ'
         exact h_combined_cons ⟨d_bot_combined⟩
-
       use φ.neg, h_neg_in
       rfl
 

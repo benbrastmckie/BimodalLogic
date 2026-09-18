@@ -389,15 +389,15 @@ C28/C29 pass (C29 now 17 sites).
 
 ---
 
-### Phase 6: `emptyLine` [NOT STARTED]
+### Phase 6: `emptyLine` [COMPLETED]
 
 **Goal**: Remove the blank lines inside commands that the `emptyLine` linter flags.
 
 **Tasks**:
-- [ ] Fix the sites file by file, largest first: `ProofExtractorMain.lean` (158),
+- [x] Fix the sites file by file, largest first: `ProofExtractorMain.lean` (158),
       `ProofSearch/Core.lean` (48), `Tactics/Search.lean` (36), then the rest. After each file,
       re-run the per-file sweep for `emptyLine` and confirm zero.
-- [ ] Delete the `style.emptyLine` temporary line, then do a guarded full build with `--wfail`.
+- [x] Delete the `style.emptyLine` temporary line, then do a guarded full build with `--wfail`.
 
 **Timing**: 1.5 hours
 
@@ -410,6 +410,12 @@ C28/C29 pass (C29 now 17 sites).
 **Files to modify**:
 - The 31 `emptyLine` files named by the sweep
 - `lakefile.toml` - remove 1 temporary line
+
+**Phase 6 notes**: a fresh per-file sweep of the 33 files (line numbers had moved) reported 540
+sites, every one a genuinely blank line; all 540 were deleted mechanically (the linter already
+exempts string literals, docstrings and `where` fields) and the re-sweep reports 0. Follow-on:
+`ProofExtractorMain.lean`'s longFile baseline re-tightened 1800 -> 1700; 8 `file.lean:NNN`
+citations re-pointed. Full `--wfail` build green (1,129 s); C20/C28/C29/C30 pass.
 
 **Verification**:
 - The per-file `emptyLine` sweep reports 0, and `lake build --wfail` is green.

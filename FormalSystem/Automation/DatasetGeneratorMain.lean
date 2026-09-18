@@ -980,11 +980,9 @@ def main (args : List String) : IO Unit := do
   if cliArgs.resumeFrom > 0 then
     IO.println s!"Resume from: formula {cliArgs.resumeFrom}"
   IO.println ""
-
   -- Parse frame class
   let fc := parseFrameClass cliArgs.frameClass
   let fcName := frameClassName fc
-
   -- Parse generation mode and generate proof pool if needed
   let genMode : GenerationMode := match cliArgs.generationMode.toLower with
     | "prooffirst" => .proofFirst
@@ -1013,13 +1011,11 @@ def main (args : List String) : IO Unit := do
       let poolEndMs ← IO.monoMsNow
       IO.println s!"Proof pool generated: {p.size} theorems in {poolEndMs - poolStartMs}ms"
       pure (some p)
-
   -- Step 1: Determine checkpoint file path
   let checkpointPath : System.FilePath :=
     match cliArgs.checkpointFile with
     | some p => ⟨p⟩
     | none => ⟨cliArgs.output.replace ".jsonl" ".checkpoint"⟩
-
   -- Step 1b: Load formulas (from checkpoint or fresh enumeration)
   let params : EnumParams := {
     maxComplexity := cliArgs.maxComplexity
@@ -1048,7 +1044,6 @@ def main (args : List String) : IO Unit := do
   else do
     let formulas ← enumerateAndEnrich params cliArgs.includeDuals
     pure formulas
-
   -- Step 2: Ensure output directory exists
   let outputPath : System.FilePath := ⟨cliArgs.output⟩
   match outputPath.parent with
@@ -1057,7 +1052,6 @@ def main (args : List String) : IO Unit := do
     if !dirExists then
       IO.FS.createDirAll dir
   | none => pure ()
-
   -- Step 2b: Write checkpoint file on fresh runs
   if cliArgs.resumeFrom == 0 then do
     IO.println s!"Writing checkpoint file: {checkpointPath}..."
@@ -1065,7 +1059,6 @@ def main (args : List String) : IO Unit := do
     for φ in formulas' do
       cpHandle.putStrLn φ.toSExpr
     IO.println s!"  Wrote {formulas'.length} formulas to checkpoint"
-
   -- Step 3: Atom-permutation canonicalization and deduplication
   let formulasDeduped ← if cliArgs.skipDedup then do
     IO.println s!"Skipping atom-permutation deduplication (--skip-dedup)"
@@ -1078,7 +1071,6 @@ def main (args : List String) : IO Unit := do
         s!"Deduplicated {originalCount} -> {canonical.length} formulas \
             ({ratio / 100}.{ratio % 100 / 10}x reduction)"
     pure canonical
-
   -- Step 3b: Stratified sampling
   let formulasAfterSampling ← if cliArgs.stratifiedSample > 0 then do
     -- Exclude known timeout patterns
@@ -1103,12 +1095,10 @@ def main (args : List String) : IO Unit := do
     pure selected
   else
     pure formulasDeduped
-
   -- Step 3d: Skip already-labeled formulas when resuming
   let formulasToLabel := if cliArgs.resumeFrom > 0 then
     formulasAfterSampling.drop cliArgs.resumeFrom
   else formulasAfterSampling
-
   -- Step 4: Streaming label + write pipeline
   -- Label each formula, write JSONL line immediately, accumulate lightweight stats
   let totalFormulas := formulasAfterSampling.length
@@ -1137,7 +1127,6 @@ def main (args : List String) : IO Unit := do
   let mut totalTimeMs : Nat := 0
   let mut categoryCounts : List (GoalCategory × Nat) := []
   let mut methodCounts : List (String × Nat) := []
-
   if parallelMode then
     -- Parallel labeling with write serialization
     -- Process formulas in batches of `parallelThreads`, spawn each labeling
@@ -1251,11 +1240,9 @@ def main (args : List String) : IO Unit := do
         IO.println
             s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% \
                 timeout, {rate} formulas/sec, ETA: {etaStr}"
-
   -- Print cache statistics after labeling
   let finalCacheStats ← exportCache.atomically do return (← get)
   IO.println s!"[cache] {finalCacheStats.display}"
-
   -- Labeling completion line
   let labelEndMs ← IO.monoMsNow
   let labelElapsedMs := labelEndMs - startTime
@@ -1271,7 +1258,6 @@ def main (args : List String) : IO Unit := do
     IO.println
         s!"[label] Labeling complete: {count} formulas in {labelElapsedSecs}s ({finalRate} \
             formulas/sec)"
-
   -- Step 4b: Log peak memory usage (Linux /proc/self/status)
   let statusContent ← IO.FS.readFile ⟨"/proc/self/status"⟩ |>.toBaseIO
   match statusContent with
@@ -1298,7 +1284,6 @@ def main (args : List String) : IO Unit := do
           ({if labeledThisRun > 0 then timeoutCount * 100 / labeledThisRun else 0}%)"
   IO.println s!"  Avg decision time: {avgTimeMs}ms"
   IO.println ""
-
   -- Step 6: Write metadata from accumulators (no list scan needed)
   let modeStr := match params.samplingMode with
     | .exhaustive => "exhaustive"
@@ -1323,14 +1308,12 @@ def main (args : List String) : IO Unit := do
       s!"  Wrote {labeledThisRun} records to {cliArgs.output}{if cliArgs.resumeFrom > 0 then s!"
           (appended, total: {count})" else ""}"
   IO.println s!"  Wrote metadata file"
-
   -- Step 6b: Clean up checkpoint file on successful completion
   if cliArgs.resumeFrom == 0 || count == totalFormulas then do
     let cpExists ← checkpointPath.pathExists
     if cpExists then do
       IO.FS.removeFile checkpointPath
       IO.println s!"  Cleaned up checkpoint file: {checkpointPath}"
-
   -- Step 7: Feasibility checks
   IO.println ""
   IO.println "Feasibility Checks:"

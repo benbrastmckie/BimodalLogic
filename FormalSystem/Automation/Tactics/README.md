@@ -12,12 +12,12 @@ This subdirectory holds the tactic elaborators and the proof-search engine behin
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Automation/Tactics -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `Commands.lean` | 163 | The `modal_search` tactic: its `SearchConfig`, its two syntax forms, and the elaborators that run the search |
-| `Deduction.lean` | 182 | `deduction`, `deduction n` and `undischarge`: frame-class-polymorphic applications of `Metalogic.Core.deductionTheorem` to derivability goals |
+| `Commands.lean` | 160 | The `modal_search` tactic: its `SearchConfig`, its two syntax forms, and the elaborators that run the search |
+| `Deduction.lean` | 181 | `deduction`, `deduction n` and `undischarge`: frame-class-polymorphic applications of `Metalogic.Core.deductionTheorem` to derivability goals |
 | `Meta.lean` | 99 | Reusable `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding -- the third of the old `Helpers.lean` that `PropDecide.lean` and `Commands.lean` share |
 | `PropDecide.lean` | 158 | `propDecide`: reflective tautology tactic closing any derivability goal whose imp/bot skeleton is a propositional tautology, schematic in the reification environment |
-| `Search.lean` | 660 | The bounded proof-search engine: `searchProof` and its five strategies, working in `TacticM` because `Axiom` is `Prop`-valued and `DerivationTree` is not |
-| `UserTactics.lean` | 275 | The tactics a proof author writes by hand -- `apply_axiom`, `modal_t`, `assumption_search` -- and the `Formula` predicates and extractors that decide when they apply |
+| `Search.lean` | 624 | The bounded proof-search engine: `searchProof` and its five strategies, working in `TacticM` because `Axiom` is `Prop`-valued and `DerivationTree` is not |
+| `UserTactics.lean` | 273 | The tactics a proof author writes by hand -- `apply_axiom`, `modal_t`, `assumption_search` -- and the `Formula` predicates and extractors that decide when they apply |
 <!-- END GENERATED -->
 
 ## Key Definitions

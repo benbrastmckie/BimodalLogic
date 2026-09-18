@@ -187,7 +187,6 @@ Prints detailed results.
 def runConformanceTests : IO Bool := do
   IO.println "=== Conformance Tests ==="
   IO.println ""
-
   -- Test valid formulas
   IO.println "--- Known Valid Formulas ---"
   let mut validResults : List ConformanceResult := []
@@ -211,7 +210,6 @@ def runConformanceTests : IO Bool := do
       IO.println s!"  [FAIL] {φ.prettyPrint} — expected valid, got {repr labeled.label}"
   IO.println s!"  Valid tests: {validPassed} passed, {validFailed} failed"
   IO.println ""
-
   -- Test invalid formulas
   IO.println "--- Known Invalid Formulas ---"
   let mut invalidResults : List ConformanceResult := []
@@ -235,7 +233,6 @@ def runConformanceTests : IO Bool := do
       IO.println s!"  [FAIL] {φ.prettyPrint} — expected invalid, got {repr labeled.label}"
   IO.println s!"  Invalid tests: {invalidPassed} passed, {invalidFailed} failed"
   IO.println ""
-
   let allPassed := validFailed == 0 && invalidFailed == 0
   if allPassed then
     IO.println "Conformance tests: ALL PASSED"
@@ -534,22 +531,18 @@ def runFeasibilityGate (config : EnumConfig) (configName : String := "default")
     (parallelThreads : Nat := 0) : IO FeasibilityResult := do
   IO.println s!"=== Feasibility Gate ({configName}) ==="
   IO.println ""
-
   -- Step 1: Enumerate
   IO.println "Enumerating formulas..."
   let formulas := enumerateUpToDepth config
   IO.println s!"  Generated {formulas.length} unique formulas"
-
   -- Step 2: Label
   IO.println s!"Labeling {formulas.length} formulas..."
   let labeled ← labelBatch formulas (parallelThreads := parallelThreads)
-
   -- Step 3: Compute diversity
   let report := computeDiversityReport labeled
   IO.println ""
   IO.println (report.display)
   IO.println ""
-
   -- Step 4: Evaluate gate
   let result := evaluateGate report config.maxSize config.maxSize
   IO.println (result.display)
@@ -565,16 +558,13 @@ def runFullValidation (parallelThreads : Nat := 0) : IO Unit := do
   IO.println "  Dataset Validation Suite"
   IO.println "============================================"
   IO.println ""
-
   -- Part 1: Conformance tests
   let conformancePassed ← runConformanceTests
   IO.println ""
-
   -- Part 2: Feasibility gate on small config
   IO.println "--------------------------------------------"
   let smallResult ← runFeasibilityGate smallConfig "small (2,2,8,3-atoms)" parallelThreads
   IO.println ""
-
   -- Summary
   IO.println "============================================"
   IO.println "  Validation Summary"

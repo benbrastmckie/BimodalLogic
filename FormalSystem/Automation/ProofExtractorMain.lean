@@ -82,7 +82,7 @@ Source files for the 36 original theorems:
 - lake build passes with no regressions
 -/
 
-set_option linter.style.longFile 1800
+set_option linter.style.longFile 1700
 
 namespace FormalSystem.Automation.ProofExtractorMain
 
@@ -167,86 +167,63 @@ def theoremRegistry : List TheoremEntry := [
 
   -- identity : ⊢ A → A
   mkEntry "identity" (@identity .Base p),
-
   -- bCombinator : ⊢ (B → C) → (A → B) → (A → C)
   mkEntry "bCombinator" (@bCombinator .Base (A := p) (B := q) (C := r)),
-
   -- theoremFlip : ⊢ (A → B → C) → (B → A → C)
   mkEntry "theoremFlip" (@theoremFlip .Base (A := p) (B := q) (C := r)),
-
   -- theoremApp1 : ⊢ A → (A → B) → B
   mkEntry "theoremApp1" (@theoremApp1 .Base (A := p) (B := q)),
-
   -- theoremApp2 : ⊢ A → B → (A → B → C) → C
   mkEntry "theoremApp2" (@theoremApp2 .Base (A := p) (B := q) (C := r)),
-
   -- pairing : ⊢ A → B → A ∧ B
   mkEntry "pairing" (@pairing .Base p q),
-
   -- notNotIntro : ⊢ A → ¬¬A
   mkEntry "notNotIntro" (@notNotIntro .Base p),
-
   -- temporalFutureDerived : ⊢ □φ → G(□φ)
   mkEntry "temporalFutureDerived" (@temporalFutureDerived .Base p),
-
   -- ============================================================
   -- ModalS4.lean (2 entries)
   -- ============================================================
 
   -- s4BoxDiamondBox : ⊢ □◇□φ → □φ
   mkEntry "s4BoxDiamondBox" (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p),
-
   -- s4DiamondBoxDiamond : ⊢ ◇φ → ◇□◇φ
   mkEntry "s4DiamondBoxDiamond" (FormalSystem.Theorems.ModalS4.s4DiamondBoxDiamond p),
-
   -- ============================================================
   -- ModalS5.lean (6 entries)
   -- ============================================================
 
   -- tBoxToDiamond : ⊢ □A → ◇A
   mkEntry "tBoxToDiamond" (FormalSystem.Theorems.ModalS5.tBoxToDiamond p),
-
   -- boxContrapose : ⊢ □(A → B) → □(¬B → ¬A)
   mkEntry "boxContrapose" (FormalSystem.Theorems.ModalS5.boxContrapose p q),
-
   -- kDistDiamond : ⊢ □(A → B) → (◇A → ◇B)
   mkEntry "kDistDiamond" (FormalSystem.Theorems.ModalS5.kDistDiamond p q),
-
   -- tBoxConsistency : ⊢ □(A ∧ ¬A) → ⊥
   mkEntry "tBoxConsistency" (FormalSystem.Theorems.ModalS5.tBoxConsistency p),
-
   -- s5DiamondBox : ⊢ iff(◇□A, □A) = (◇□A → □A) ∧ (□A → ◇□A)
   mkEntry "s5DiamondBox" (FormalSystem.Theorems.ModalS5.s5DiamondBox p),
-
   -- s5DiamondBoxToTruth : ⊢ ◇□A → A
   mkEntry "s5DiamondBoxToTruth" (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p),
-
   -- ============================================================
   -- TemporalDerived.lean (7 entries)
   -- ============================================================
 
   -- connectFutureThm : ⊢ φ → G(P(φ))
   mkEntry "connectFutureThm" (FormalSystem.Theorems.TemporalDerived.connectFutureThm p),
-
   -- connectPastThm : ⊢ φ → H(F(φ))
   mkEntry "connectPastThm" (FormalSystem.Theorems.TemporalDerived.connectPastThm p),
-
   -- gImpliesGId : ⊢ G(φ) → G(G(φ) → G(φ))
   mkEntry "gImpliesGId" (FormalSystem.Theorems.TemporalDerived.gImpliesGId p),
-
   -- untilImpliesSomeFuture : ⊢ U(ψ,φ) → F(ψ)
   mkEntry "untilImpliesSomeFuture" (FormalSystem.Theorems.TemporalDerived.untilImpliesSomeFuture p
       q),
-
   -- sinceImpliesSomePast : ⊢ S(ψ,φ) → P(ψ)
   mkEntry "sinceImpliesSomePast" (FormalSystem.Theorems.TemporalDerived.sinceImpliesSomePast p q),
-
   -- untilImpF : ⊢ U(ψ,φ) → F(ψ)
   mkEntry "untilImpF" (FormalSystem.Theorems.TemporalDerived.untilImpF p q),
-
   -- sinceImpP : ⊢ S(ψ,φ) → P(ψ)
   mkEntry "sinceImpP" (FormalSystem.Theorems.TemporalDerived.sinceImpP p q),
-
   -- ============================================================
   -- TemporalDerived.lean - New Computable Theorems (8 entries)
   -- Categories B, E, C3-C4 of the temporal derived theorem expansion
@@ -254,77 +231,56 @@ def theoremRegistry : List TheoremEntry := [
 
   -- fMono : ⊢ G(φ → ψ) → (F φ → F ψ)
   mkEntry "fMono" (FormalSystem.Theorems.TemporalDerived.fMono p q),
-
   -- pMono : ⊢ H(φ → ψ) → (P φ → P ψ)
   mkEntry "pMono" (FormalSystem.Theorems.TemporalDerived.pMono p q),
-
   -- untilMonoGuard : ⊢ G(φ → χ) → ((ψ U φ) → (ψ U χ))
   mkEntry "untilMonoGuard" (FormalSystem.Theorems.TemporalDerived.untilMonoGuard p q r),
-
   -- sinceMonoGuard : ⊢ H(φ → χ) → ((ψ S φ) → (ψ S χ))
   mkEntry "sinceMonoGuard" (FormalSystem.Theorems.TemporalDerived.sinceMonoGuard p q r),
-
   -- untilMonoEvent : ⊢ G(φ → ψ) → ((φ U χ) → (ψ U χ))
   mkEntry "untilMonoEvent" (FormalSystem.Theorems.TemporalDerived.untilMonoEvent p q r),
-
   -- sinceMonoEvent : ⊢ H(φ → ψ) → ((φ S χ) → (ψ S χ))
   mkEntry "sinceMonoEvent" (FormalSystem.Theorems.TemporalDerived.sinceMonoEvent p q r),
-
   -- fNegG : ⊢ F(¬φ) → ¬(G φ)
   mkEntry "fNegG" (FormalSystem.Theorems.TemporalDerived.fNegG p),
-
   -- pNegH : ⊢ P(¬φ) → ¬(H φ)
   mkEntry "pNegH" (FormalSystem.Theorems.TemporalDerived.pNegH p),
-
   -- ============================================================
   -- Helpers.lean (3 entries)
   -- ============================================================
 
   -- boxToFuture : ⊢ □φ → G(φ)
   mkEntry "boxToFuture" (FormalSystem.Theorems.Perpetuity.boxToFuture p),
-
   -- boxToPast : ⊢ □φ → H(φ)
   mkEntry "boxToPast" (FormalSystem.Theorems.Perpetuity.boxToPast p),
-
   -- boxToPresent : ⊢ □φ → φ
   mkEntry "boxToPresent" (FormalSystem.Theorems.Perpetuity.boxToPresent p),
-
   -- ============================================================
   -- Principles.lean (10 entries)
   -- ============================================================
 
   -- perpetuity1 : ⊢ □φ → △φ (where △φ = H(φ) ∧ (φ ∧ G(φ)))
   mkEntry "perpetuity_1" (FormalSystem.Theorems.Perpetuity.perpetuity1 p),
-
   -- diamond4 : ⊢ ◇◇φ → ◇φ
   mkEntry "diamond4" (FormalSystem.Theorems.Perpetuity.diamond4 p),
-
   -- modal5 : ⊢ ◇φ → □◇φ
   mkEntry "modal5" (FormalSystem.Theorems.Perpetuity.modal5 p),
-
   -- perpetuity2 : ⊢ ◇△φ → ◇φ (where ◇△ = sometimes = ◇▽)
   mkEntry "perpetuity_2" (FormalSystem.Theorems.Perpetuity.perpetuity2 p),
-
   -- boxToBoxPast : ⊢ □φ → □(H(φ))
   mkEntry "boxToBoxPast" (FormalSystem.Theorems.Perpetuity.boxToBoxPast p),
-
   -- perpetuity3 : ⊢ □φ → □(△φ) (where △ = always)
   mkEntry "perpetuity3" (FormalSystem.Theorems.Perpetuity.perpetuity3 p),
-
   -- perpetuity4 : ⊢ ◇△φ → ◇φ
   mkEntry "perpetuity4" (FormalSystem.Theorems.Perpetuity.perpetuity4 p),
-
   -- mbDiamond : ⊢ φ → □◇φ (from modal_b)
   mkEntry "mbDiamond" (FormalSystem.Theorems.Perpetuity.mbDiamond p),
-
   -- boxDiamondToFutureBoxDiamond : ⊢ □◇φ → G(□◇φ)
   mkEntry "boxDiamondToFutureBoxDiamond"
     (FormalSystem.Theorems.Perpetuity.boxDiamondToFutureBoxDiamond p),
-
   -- boxDiamondToPastBoxDiamond : ⊢ □◇φ → H(□◇φ)
   mkEntry "boxDiamondToPastBoxDiamond"
     (FormalSystem.Theorems.Perpetuity.boxDiamondToPastBoxDiamond p),
-
   -- ============================================================
   -- G-WRAPPED: temporal_necessitation applied to all 36 theorems
   -- Each adds 1 temporal_necessitation step
@@ -347,13 +303,11 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (@notNotIntro .Base p)),
   mkEntry "G_temp_future_derived"
     (DerivationTree.temporal_necessitation _ (@temporalFutureDerived .Base p)),
-
   -- ModalS4 G-wrapped
   mkEntry "G_s4_box_diamond_box"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
   mkEntry "G_s4_diamond_box_diamond"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS4.s4DiamondBoxDiamond p)),
-
   -- ModalS5 G-wrapped
   mkEntry "G_t_box_to_diamond"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.tBoxToDiamond p)),
@@ -367,7 +321,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.s5DiamondBox p)),
   mkEntry "G_s5_diamond_box_to_truth"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p)),
-
   -- TemporalDerived G-wrapped
   mkEntry "G_connect_future_thm"
     (DerivationTree.temporal_necessitation _
@@ -387,7 +340,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpF p q)),
   mkEntry "G_since_imp_P"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpP p q)),
-
   -- New TemporalDerived G-wrapped
   mkEntry "G_F_mono"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.fMono p q)),
@@ -409,7 +361,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.fNegG p)),
   mkEntry "G_P_neg_H"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.pNegH p)),
-
   -- Helpers G-wrapped
   mkEntry "G_box_to_future"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToFuture p)),
@@ -417,7 +368,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToPast p)),
   mkEntry "G_box_to_present"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
-
   -- Principles G-wrapped
   mkEntry "G_perpetuity_1"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.perpetuity1 p)),
@@ -441,7 +391,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G_box_diamond_to_past_box_diamond"
     (DerivationTree.temporal_necessitation _
       (FormalSystem.Theorems.Perpetuity.boxDiamondToPastBoxDiamond p)),
-
   -- ============================================================
   -- H-WRAPPED: time_reflection ∘ temporal_necessitation
   -- Each adds 1 time_reflection + 1 temporal_necessitation step
@@ -474,7 +423,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "H_temp_future_derived"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (@temporalFutureDerived .Base p))),
-
   -- ModalS4 H-wrapped
   mkEntry "H_s4_box_diamond_box"
     (DerivationTree.time_reflection _
@@ -483,7 +431,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.ModalS4.s4DiamondBoxDiamond p))),
-
   -- ModalS5 H-wrapped
   mkEntry "H_t_box_to_diamond"
     (DerivationTree.time_reflection _
@@ -504,7 +451,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p))),
-
   -- TemporalDerived H-wrapped
   mkEntry "H_connect_future_thm"
     (DerivationTree.time_reflection _
@@ -534,7 +480,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.TemporalDerived.sinceImpP p q))),
-
   -- New TemporalDerived H-wrapped
   mkEntry "H_F_mono"
     (DerivationTree.time_reflection _
@@ -564,7 +509,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "H_P_neg_H"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.pNegH p))),
-
   -- Helpers H-wrapped
   mkEntry "H_box_to_future"
     (DerivationTree.time_reflection _
@@ -575,7 +519,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "H_box_to_present"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.boxToPresent p))),
-
   -- Principles H-wrapped
   mkEntry "H_perpetuity_1"
     (DerivationTree.time_reflection _
@@ -609,13 +552,11 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (FormalSystem.Theorems.Perpetuity.boxDiamondToPastBoxDiamond p))),
-
   -- ============================================================
   -- GG-DOUBLE-WRAPPED: Two temporal_necessitation layers
   -- Applied to ~12 smallest theorems (1-8 steps)
   -- Each adds 2 temporal_necessitation steps
   -- ============================================================
-
   mkEntry "GG_identity"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _ (@identity .Base p))),
@@ -659,13 +600,11 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
           (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth p))),
-
   -- ============================================================
   -- GGG-TRIPLE-WRAPPED: Three temporal_necessitation layers
   -- Applied to ~7 single-step theorems (1 step each)
   -- Each adds 3 temporal_necessitation steps (3/4 = 75% temporal)
   -- ============================================================
-
   mkEntry "GGG_s4_box_diamond_box"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
@@ -700,7 +639,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.mbDiamond p)))),
-
   -- ============================================================
   -- TEMPORAL AXIOM INSTANTIATIONS: Direct axiom entries for
   -- 18 Base-compatible temporal axioms not yet in dataset.
@@ -710,75 +648,57 @@ def theoremRegistry : List TheoremEntry := [
   -- BX1: serial_future: ⊤ → F(⊤)
   mkEntry "serial_future_axiom"
     (DerivedAxioms.serialFutureImp (fc := .Base)),
-
   -- BX1': serial_past: ⊤ → P(⊤)
   mkEntry "serial_past_axiom"
     (DerivedAxioms.serialPast (fc := .Base)),
-
   -- BX2G: left_mono_until_G: G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
   mkEntry "left_mono_until_G_axiom"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.left_mono_until_G p q r) trivial),
-
   -- BX2H: left_mono_since_H: H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
   mkEntry "left_mono_since_H_axiom"
     (DerivedAxioms.leftMonoSinceH (fc := .Base) p q r),
-
   -- BX3: right_mono_until: G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
   mkEntry "right_mono_until_axiom"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.right_mono_until p q r) trivial),
-
   -- BX3': right_mono_since: H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
   mkEntry "right_mono_since_axiom"
     (DerivedAxioms.rightMonoSince (fc := .Base) p q r),
-
   -- BX5: self_accum_until: U(ψ,φ) → U(ψ, φ ∧ U(ψ,φ))
   mkEntry "self_accum_until_axiom"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until p q) trivial),
-
   -- BX5': self_accum_since: S(ψ,φ) → S(ψ, φ ∧ S(ψ,φ))
   mkEntry "self_accum_since_axiom"
     (DerivedAxioms.selfAccumSince (fc := .Base) p q),
-
   -- BX6: absorb_until: U(φ ∧ U(ψ,φ), φ) → U(ψ,φ)
   mkEntry "absorb_until_axiom"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial),
-
   -- BX6': absorb_since: S(φ ∧ S(ψ,φ), φ) → S(ψ,φ)
   mkEntry "absorb_since_axiom"
     (DerivedAxioms.absorbSince (fc := .Base) p q),
-
   -- BX7: linear_until: U(ψ,φ) ∧ U(θ,χ) → ...
   mkEntry "linear_until_axiom"
     (DerivedAxioms.linearUntilLegacy (fc := .Base) p q r s),
-
   -- BX7': linear_since: S(ψ,φ) ∧ S(θ,χ) → ...
   mkEntry "linear_since_axiom"
     (DerivedAxioms.linearSince (fc := .Base) p q r s),
-
   -- BX11: temp_linearity: F(φ) ∧ F(ψ) → F(φ∧ψ) ∨ F(φ∧F(ψ)) ∨ F(F(φ)∧ψ)
   mkEntry "temp_linearity_axiom"
     (DerivedAxioms.tempLinearityLegacy (fc := .Base) p q),
-
   -- BX11': temp_linearity_past: P(φ) ∧ P(ψ) → P(φ∧ψ) ∨ P(φ∧P(ψ)) ∨ P(P(φ)∧ψ)
   mkEntry "temp_linearity_past_axiom"
     (DerivedAxioms.tempLinearityPast (fc := .Base) p q),
-
   -- BX12: F_until_equiv: F(φ) → U(φ, ⊤)
   mkEntry "F_until_equiv_axiom"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial),
-
   -- BX12': P_since_equiv: P(φ) → S(φ, ⊤)
   mkEntry "P_since_equiv_axiom"
     (DerivedAxioms.pSinceEquiv (fc := .Base) p),
-
   -- BX13: enrichment_until: p ∧ U(ψ,φ) → U(ψ ∧ S(p,φ), φ)
   mkEntry "enrichment_until_axiom"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_until p q r) trivial),
-
   -- BX13': enrichment_since: p ∧ S(ψ,φ) → S(ψ ∧ U(p,φ), φ)
   mkEntry "enrichment_since_axiom"
     (DerivedAxioms.enrichmentSince (fc := .Base) p q r),
-
   -- ============================================================
   -- MULTI-INSTANTIATION VARIANTS: Existing theorems with
   -- alternative formula parameters for dataset variety.
@@ -795,7 +715,6 @@ def theoremRegistry : List TheoremEntry := [
     (@identity .Base (p.and q)),
   mkEntry "identity_or"
     (@identity .Base (p.or q)),
-
   -- bCombinator with alternative atoms
   mkEntry "b_combinator_qrs"
     (@bCombinator .Base (A := q) (B := r) (C := s)),
@@ -803,29 +722,24 @@ def theoremRegistry : List TheoremEntry := [
     (@bCombinator .Base (A := r) (B := s) (C := p)),
   mkEntry "b_combinator_pqp"
     (@bCombinator .Base (A := p) (B := q) (C := p)),
-
   -- theoremFlip with alternative atoms
   mkEntry "theorem_flip_qrs"
     (@theoremFlip .Base (A := q) (B := r) (C := s)),
-
   -- theoremApp1 with alternative atoms
   mkEntry "theorem_app1_qr"
     (@theoremApp1 .Base (A := q) (B := r)),
   mkEntry "theorem_app1_rs"
     (@theoremApp1 .Base (A := r) (B := s)),
-
   -- pairing variants
   mkEntry "pairing_qr"
     (@pairing .Base q r),
   mkEntry "pairing_rs"
     (@pairing .Base r s),
-
   -- notNotIntro variants
   mkEntry "dni_q"
     (@notNotIntro .Base q),
   mkEntry "dni_imp"
     (@notNotIntro .Base (p.imp q)),
-
   -- Modal theorem variants with alternative atoms
   mkEntry "t_box_to_diamond_q"
     (FormalSystem.Theorems.ModalS5.tBoxToDiamond q),
@@ -833,68 +747,54 @@ def theoremRegistry : List TheoremEntry := [
     (FormalSystem.Theorems.ModalS5.tBoxToDiamond r),
   mkEntry "t_box_to_diamond_imp"
     (FormalSystem.Theorems.ModalS5.tBoxToDiamond (p.imp q)),
-
   mkEntry "box_contrapose_qr"
     (FormalSystem.Theorems.ModalS5.boxContrapose q r),
   mkEntry "box_contrapose_rs"
     (FormalSystem.Theorems.ModalS5.boxContrapose r s),
-
   mkEntry "k_dist_diamond_qr"
     (FormalSystem.Theorems.ModalS5.kDistDiamond q r),
   mkEntry "k_dist_diamond_rs"
     (FormalSystem.Theorems.ModalS5.kDistDiamond r s),
-
   mkEntry "t_box_consistency_q"
     (FormalSystem.Theorems.ModalS5.tBoxConsistency q),
-
   mkEntry "diamond_4_q"
     (FormalSystem.Theorems.Perpetuity.diamond4 q),
   mkEntry "diamond_4_r"
     (FormalSystem.Theorems.Perpetuity.diamond4 r),
-
   mkEntry "modal_5_q"
     (FormalSystem.Theorems.Perpetuity.modal5 q),
   mkEntry "modal_5_r"
     (FormalSystem.Theorems.Perpetuity.modal5 r),
-
   mkEntry "s5_diamond_box_to_truth_q"
     (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth q),
-
   mkEntry "mb_diamond_q"
     (FormalSystem.Theorems.Perpetuity.mbDiamond q),
   mkEntry "mb_diamond_r"
     (FormalSystem.Theorems.Perpetuity.mbDiamond r),
-
   -- Temporal theorem variants with alternative atoms
   mkEntry "connect_future_thm_q"
     (FormalSystem.Theorems.TemporalDerived.connectFutureThm q),
   mkEntry "connect_future_thm_r"
     (FormalSystem.Theorems.TemporalDerived.connectFutureThm r),
-
   mkEntry "connect_past_thm_q"
     (FormalSystem.Theorems.TemporalDerived.connectPastThm q),
   mkEntry "connect_past_thm_r"
     (FormalSystem.Theorems.TemporalDerived.connectPastThm r),
-
   mkEntry "G_implies_G_id_q"
     (FormalSystem.Theorems.TemporalDerived.gImpliesGId q),
-
   mkEntry "until_imp_F_qr"
     (FormalSystem.Theorems.TemporalDerived.untilImpF q r),
   mkEntry "since_imp_P_qr"
     (FormalSystem.Theorems.TemporalDerived.sinceImpP q r),
-
   mkEntry "box_to_future_q"
     (FormalSystem.Theorems.Perpetuity.boxToFuture q),
   mkEntry "box_to_past_q"
     (FormalSystem.Theorems.Perpetuity.boxToPast q),
-
   -- Perpetuity variants
   mkEntry "temp_future_derived_q"
     (@temporalFutureDerived .Base q),
   mkEntry "box_to_box_past_q"
     (FormalSystem.Theorems.Perpetuity.boxToBoxPast q),
-
   -- Additional temporal axiom instantiations with different formula params
   mkEntry "self_accum_until_axiom_qr"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.self_accum_until q r) trivial),
@@ -914,7 +814,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.enrichment_until q r s) trivial),
   mkEntry "enrichment_since_axiom_qrs"
     (DerivedAxioms.enrichmentSince (fc := .Base) q r s),
-
   -- ============================================================
   -- G-WRAPPED MULTI-INSTANTIATION: Selected entries with
   -- temporal_necessitation for temporal coverage boost
@@ -931,7 +830,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (@identity .Base (p.and q))),
   mkEntry "G_identity_or"
     (DerivationTree.temporal_necessitation _ (@identity .Base (p.or q))),
-
   -- G-wrapped modal variants
   mkEntry "G_t_box_to_diamond_q"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.tBoxToDiamond q)),
@@ -943,7 +841,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.Perpetuity.mbDiamond q)),
   mkEntry "G_s5_diamond_box_to_truth_q"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.ModalS5.s5DiamondBoxToTruth q)),
-
   -- G-wrapped temporal variants
   mkEntry "G_connect_future_thm_q"
     (DerivationTree.temporal_necessitation _
@@ -955,7 +852,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.untilImpF q r)),
   mkEntry "G_since_imp_P_qr"
     (DerivationTree.temporal_necessitation _ (FormalSystem.Theorems.TemporalDerived.sinceImpP q r)),
-
   -- G-wrapped axiom instantiation variants (50% temporal ratio: 1/2)
   mkEntry "G_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
@@ -975,7 +871,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G_F_until_equiv_axiom"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.F_until_equiv p) trivial)),
-
   -- H-wrapped axiom instantiation variants (2 temporal steps each)
   mkEntry "H_serial_future_axiom"
     (DerivationTree.time_reflection _
@@ -993,7 +888,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Base) [] _ (Axiom.absorb_until p q) trivial))),
-
   -- GG-wrapped small axiom instantiations (2 temporal steps, 3 total: 67%)
   mkEntry "GG_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
@@ -1011,7 +905,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
         (DerivedAxioms.pSinceEquiv (fc := .Base) p))),
-
   -- GGG-wrapped single-step axiom instantiations (3 temporal steps, 4 total: 75%)
   mkEntry "GGG_serial_future_axiom"
     (DerivationTree.temporal_necessitation _
@@ -1023,7 +916,6 @@ def theoremRegistry : List TheoremEntry := [
       (DerivationTree.temporal_necessitation _
         (DerivationTree.temporal_necessitation _
           (DerivedAxioms.serialPast (fc := .Base))))),
-
   -- ============================================================
   -- DEEP TEMPORAL CHAINS: Using wrapG for efficient N-layer wrapping
   -- of single-step theorems to maximize temporal rule coverage.
@@ -1045,7 +937,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G4_serial_past"          (wrapG 4
       (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G4_identity"             (wrapG 4 (@identity .Base p)),
-
   -- Depth 6 (6 temporal / 7 total = 86%)
   mkEntry "G6_s4_box_diamond_box"   (wrapG 6 (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
   mkEntry "G6_connect_future"       (wrapG 6
@@ -1061,7 +952,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G6_serial_past"          (wrapG 6
       (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G6_identity"             (wrapG 6 (@identity .Base p)),
-
   -- Depth 8 (8 temporal / 9 total = 89%)
   mkEntry "G8_s4_box_diamond_box"   (wrapG 8 (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
   mkEntry "G8_connect_future"       (wrapG 8
@@ -1077,7 +967,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G8_serial_past"          (wrapG 8
       (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G8_identity"             (wrapG 8 (@identity .Base p)),
-
   -- Depth 10 (10 temporal / 11 total = 91%)
   mkEntry "G10_s4_box_diamond_box"  (wrapG 10 (FormalSystem.Theorems.ModalS4.s4BoxDiamondBox p)),
   mkEntry "G10_connect_future"      (wrapG 10
@@ -1095,7 +984,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G10_serial_past"         (wrapG 10
       (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G10_identity"            (wrapG 10 (@identity .Base p)),
-
   -- Depth 12 (12 temporal / 13 total = 92%)
   mkEntry "G12_connect_future"      (wrapG 12
       (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
@@ -1112,7 +1000,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G12_serial_past"         (wrapG 12
       (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G12_identity"            (wrapG 12 (@identity .Base p)),
-
   -- Depth 15 (15 temporal / 16 total = 94%)
   mkEntry "G15_connect_future"      (wrapG 15
       (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
@@ -1124,7 +1011,6 @@ def theoremRegistry : List TheoremEntry := [
       (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G15_identity"            (wrapG 15 (@identity .Base p)),
   mkEntry "G15_box_to_present"      (wrapG 15 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
-
   -- Depth 20 (20 temporal / 21 total = 95%)
   mkEntry "G20_connect_future"      (wrapG 20
       (FormalSystem.Theorems.TemporalDerived.connectFutureThm p)),
@@ -1136,7 +1022,6 @@ def theoremRegistry : List TheoremEntry := [
       (DerivedAxioms.serialPast (fc := .Base))),
   mkEntry "G20_identity"            (wrapG 20 (@identity .Base p)),
   mkEntry "G20_box_to_present"      (wrapG 20 (FormalSystem.Theorems.Perpetuity.boxToPresent p)),
-
   -- Depth 4-8 with alternative atoms (q, r variants)
   mkEntry "G4_connect_future_q"     (wrapG 4
       (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
@@ -1158,7 +1043,6 @@ def theoremRegistry : List TheoremEntry := [
       (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
   mkEntry "G8_mb_diamond_q"         (wrapG 8 (FormalSystem.Theorems.Perpetuity.mbDiamond q)),
   mkEntry "G8_box_to_present_q"     (wrapG 8 (FormalSystem.Theorems.Perpetuity.boxToPresent q)),
-
   -- Depth 10-15 with alternative atoms
   mkEntry "G10_connect_future_q"    (wrapG 10
       (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
@@ -1172,7 +1056,6 @@ def theoremRegistry : List TheoremEntry := [
       (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
   mkEntry "G15_connect_past_q"      (wrapG 15
       (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
-
   -- Depth 20 with alternative atoms
   mkEntry "G20_connect_future_q"    (wrapG 20
       (FormalSystem.Theorems.TemporalDerived.connectFutureThm q)),
@@ -1180,7 +1063,6 @@ def theoremRegistry : List TheoremEntry := [
       (FormalSystem.Theorems.TemporalDerived.connectPastThm q)),
   mkEntry "G20_identity_q"          (wrapG 20 (@identity .Base q)),
   mkEntry "G20_box_to_present_q"    (wrapG 20 (FormalSystem.Theorems.Perpetuity.boxToPresent q)),
-
   -- ============================================================
   -- MISSING AXIOM COVERAGE: Direct axiom entries for the 11
   -- previously-uncovered axioms (1 peirce, 5 uniformity,
@@ -1194,7 +1076,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce q r) trivial),
   mkEntry "peirce_axiom_rs"
     (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce r s) trivial),
-
   -- Uniformity Axioms (Discrete frame class for semantic accuracy):
   -- These have minFrameClass = .Base (wildcard), but are semantically
   -- about discrete structures, so we use fc := .ZTime.
@@ -1208,7 +1089,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_propagate_bwd trivial),
   mkEntryAt "discrete_box_necessity_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_box_necessity trivial),
-
   -- Prior Axioms (Discrete): F(φ) → U(φ, ¬φ) and P(φ) → S(φ, ¬φ)
   mkEntryAt "prior_UZ_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.prior_UZ p) trivial),
@@ -1218,13 +1098,11 @@ def theoremRegistry : List TheoremEntry := [
     (DerivedAxioms.priorSZ (fc := .ZTime) trivial p),
   mkEntryAt "prior_SZ_axiom_q" .ZTime
     (DerivedAxioms.priorSZ (fc := .ZTime) trivial q),
-
   -- Z1 Axiom (Discrete): G(G(φ) → φ) → (F(G(φ)) → G(φ))
   mkEntryAt "z1_axiom" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 p) trivial),
   mkEntryAt "z1_axiom_q" .ZTime
     (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 q) trivial),
-
   -- Density Axioms (Dense): G(G(φ)) → G(φ) and ¬U(⊤,⊥)
   mkEntryAt "density_axiom" .Dense
     (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial),
@@ -1232,7 +1110,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density q) trivial),
   mkEntryAt "dense_indicator_axiom" .Dense
     (DerivationTree.axiom (fc := .Dense) [] _ Axiom.dense_indicator trivial),
-
   -- ============================================================
   -- G/H-WRAPPED VARIANTS of missing axioms for multi-step diversity
   -- ============================================================
@@ -1244,13 +1121,11 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G_peirce_axiom_qr"
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce q r) trivial)),
-
   -- H-wrapped peirce (time_reflection of temporal_necessitation)
   mkEntry "H_peirce_axiom"
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Base) [] _ (Axiom.peirce p q) trivial))),
-
   -- G-wrapped uniformity axioms (Discrete)
   mkEntryAt "G_discrete_symm_fwd_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
@@ -1267,7 +1142,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "G_discrete_box_necessity_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .ZTime) [] _ Axiom.discrete_box_necessity trivial)),
-
   -- G-wrapped Prior axioms (Discrete)
   mkEntryAt "G_prior_UZ_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
@@ -1275,12 +1149,10 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "G_prior_SZ_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivedAxioms.priorSZ (fc := .ZTime) trivial p)),
-
   -- G-wrapped Z1 (Discrete)
   mkEntryAt "G_z1_axiom" .ZTime
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 p) trivial)),
-
   -- G-wrapped density axioms (Dense)
   mkEntryAt "G_density_axiom" .Dense
     (DerivationTree.temporal_necessitation _
@@ -1288,7 +1160,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntryAt "G_dense_indicator_axiom" .Dense
     (DerivationTree.temporal_necessitation _
       (DerivationTree.axiom (fc := .Dense) [] _ Axiom.dense_indicator trivial)),
-
   -- H-wrapped non-Base axioms (selected)
   mkEntryAt "H_discrete_symm_fwd_axiom" .ZTime
     (DerivationTree.time_reflection _
@@ -1302,7 +1173,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.time_reflection _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .Dense) [] _ (Axiom.density p) trivial))),
-
   -- GG-wrapped missing axioms (selected, for depth variety)
   mkEntry "GG_peirce_axiom"
     (DerivationTree.temporal_necessitation _
@@ -1324,7 +1194,6 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_necessitation _
       (DerivationTree.temporal_necessitation _
         (DerivationTree.axiom (fc := .ZTime) [] _ (Axiom.z1 p) trivial))),
-
   -- ============================================================
   -- ASSUMPTION AND WEAKENING RULES: Entries with non-empty
   -- contexts to exercise the 2 missing inference rules.
@@ -1333,52 +1202,43 @@ def theoremRegistry : List TheoremEntry := [
   -- Assumption: [p] ⊢ p
   mkEntry "assume_p"
     (DerivationTree.assumption (fc := .Base) [p] p (by simp [p])),
-
   -- Assumption: [q] ⊢ q
   mkEntry "assume_q"
     (DerivationTree.assumption (fc := .Base) [q] q (by simp [q])),
-
   -- Assumption within modus ponens: [p, p → q] ⊢ q
   mkEntry "mp_from_assumptions"
     (DerivationTree.modus_ponens (fc := .Base) [p, p.imp q] p q
       (DerivationTree.assumption (fc := .Base) [p, p.imp q] (p.imp q) (by simp [p, q]))
       (DerivationTree.assumption (fc := .Base) [p, p.imp q] p (by simp [p, q]))),
-
   -- Assumption within modus ponens: [q, q → r] ⊢ r
   mkEntry "mp_from_assumptions_qr"
     (DerivationTree.modus_ponens (fc := .Base) [q, q.imp r] q r
       (DerivationTree.assumption (fc := .Base) [q, q.imp r] (q.imp r) (by simp [q, r]))
       (DerivationTree.assumption (fc := .Base) [q, q.imp r] q (by simp [q, r]))),
-
   -- Weakening: [p] ⊢ p  implies  [p, q] ⊢ p
   mkEntry "weakened_assume_p"
     (DerivationTree.weakening (fc := .Base) [p] [p, q] p
       (DerivationTree.assumption (fc := .Base) [p] p (by simp [p]))
       (by intro x hx; simp [p, q] at hx ⊢; exact Or.inl hx)),
-
   -- Weakening: [q] ⊢ q  implies  [p, q] ⊢ q
   mkEntry "weakened_assume_q"
     (DerivationTree.weakening (fc := .Base) [q] [p, q] q
       (DerivationTree.assumption (fc := .Base) [q] q (by simp [q]))
       (by intro x hx; simp [p, q] at hx ⊢; exact Or.inr hx)),
-
   -- Weakening of axiom: [] ⊢ prop_k p q r  implies  [p] ⊢ prop_k p q r
   mkEntry "weakened_prop_k"
     (DerivationTree.weakening (fc := .Base) [] [p] _
       (DerivationTree.axiom (fc := .Base) [] _ (Axiom.prop_k p q r) trivial)
       (by intro x hx; simp at hx)),
-
   -- Weakening of axiom: [] ⊢ identity  implies  [q] ⊢ identity
   mkEntry "weakened_identity"
     (DerivationTree.weakening (fc := .Base) [] [q] _
       (@identity .Base p)
       (by intro x hx; simp at hx)),
-
   -- ============================================================
   -- ContextualProofs.lean (contextual theorems)
   -- Category A: Propositional in context
   -- ============================================================
-
   mkEntry "ctx_identity" (identityInCtx p),
   mkEntry "ctx_mp" (mpInContext p q),
   mkEntry "ctx_mp_chain_2" (mpChain2 p q r),
@@ -1391,7 +1251,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_ldi" (ldiComputable p q),
   mkEntry "ctx_rdi" (rdiComputable p q),
   mkEntry "ctx_conj_intro" (conjIntroCtx p q),
-
   -- Multi-instantiation: Category A
   mkEntry "ctx_identity_q" (identityInCtx q),
   mkEntry "ctx_identity_r" (identityInCtx r),
@@ -1405,11 +1264,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_rdi_qr" (rdiComputable q r),
   mkEntry "ctx_conj_intro_qr" (conjIntroCtx q r),
   mkEntry "ctx_conj_intro_rs" (conjIntroCtx r s),
-
   -- ============================================================
   -- Category B: Modal in context
   -- ============================================================
-
   mkEntry "ctx_box_elim" (boxElimCtx p),
   mkEntry "ctx_box_4" (box4Ctx p),
   mkEntry "ctx_box_b" (boxBCtx p),
@@ -1418,7 +1275,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_box_pair" (boxPairCtx p q),
   mkEntry "ctx_diamond_5" (diamond5Ctx p),
   mkEntry "ctx_box_to_future" (boxToFutureCtx p),
-
   -- Multi-instantiation: Category B
   mkEntry "ctx_box_elim_q" (boxElimCtx q),
   mkEntry "ctx_box_4_q" (box4Ctx q),
@@ -1427,11 +1283,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_k_dist_qr" (kDistCtx q r),
   mkEntry "ctx_box_pair_qr" (boxPairCtx q r),
   mkEntry "ctx_box_to_future_q" (boxToFutureCtx q),
-
   -- ============================================================
   -- Category C: Temporal in context
   -- ============================================================
-
   mkEntry "ctx_temp_k" (tempKCtx p q),
   mkEntry "ctx_connect_future" (connectFutureCtx p),
   mkEntry "ctx_connect_past" (connectPastCtx p),
@@ -1440,7 +1294,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_until_F" (untilFCtx p q),
   mkEntry "ctx_since_P" (sincePCtx p q),
   mkEntry "ctx_serial_future" (serialFutureCtx p),
-
   -- Multi-instantiation: Category C
   mkEntry "ctx_temp_k_qr" (tempKCtx q r),
   mkEntry "ctx_connect_future_q" (connectFutureCtx q),
@@ -1450,11 +1303,9 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_until_F_qr" (untilFCtx q r),
   mkEntry "ctx_since_P_qr" (sincePCtx q r),
   mkEntry "ctx_serial_future_q" (serialFutureCtx q),
-
   -- ============================================================
   -- Weakening variants
   -- ============================================================
-
   mkEntry "ctx_mp_weak" (mpInContextWeak p q r),
   mkEntry "ctx_mp_chain_2_weak" (mpChain2Weak p q r s),
   mkEntry "ctx_ecq_weak" (ecqComputableWeak p q r),
@@ -1473,17 +1324,14 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_box_future_weak" (boxFutureCtxWeak p q),
   mkEntry "ctx_box_past_weak" (boxPastCtxWeak p q),
   mkEntry "ctx_serial_future_weak" (serialFutureCtxWeak p q),
-
   -- Weakening variants with alternative atoms
   mkEntry "ctx_mp_weak_qrs" (mpInContextWeak q r s),
   mkEntry "ctx_box_elim_weak_qr" (boxElimCtxWeak q r),
   mkEntry "ctx_k_dist_weak_qrs" (kDistCtxWeak q r s),
   mkEntry "ctx_identity_weak_qr" (identityInCtxWeak q r),
-
   -- ============================================================
   -- Pure weakening entries
   -- ============================================================
-
   mkEntry "ctx_pw_identity" (identityWeakened p q),
   mkEntry "ctx_pw_b_combinator" (@bCombinatorWeakened .Base (A := p) (B := q) (C := r) s),
   mkEntry "ctx_pw_dni" (dniWeakened p q),
@@ -1504,7 +1352,6 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "ctx_pw_serial_past" (serialPastWeakened p),
   mkEntry "ctx_pw_theorem_flip" (@theoremFlipWeakened .Base (A := p) (B := q) (C := r) s),
   mkEntry "ctx_pw_theorem_app1" (@theoremApp1Weakened .Base (A := p) (B := q) r),
-
   -- Pure weakening with alternative atoms
   mkEntry "ctx_pw_identity_qr" (identityWeakened q r),
   mkEntry "ctx_pw_dni_qr" (dniWeakened q r),
@@ -1675,24 +1522,19 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Registry size: {theoremRegistry.length} theorems"
   IO.println s!"Output: {outputPath}"
   IO.println ""
-
   -- Process the registry
   let (lines, allSteps, theoremCount, totalSteps) ← processRegistry theoremRegistry
-
   -- Ensure output directory exists
   let dir := System.FilePath.mk outputPath |>.parent
   if let some dirPath := dir then
     IO.FS.createDirAll dirPath
-
   -- Write JSONL output
   let handle ← IO.FS.Handle.mk (System.FilePath.mk outputPath) IO.FS.Mode.write
   for line in lines do
     handle.putStrLn line
-
   IO.println s!"Results:"
   IO.println s!"  Theorems processed: {theoremCount}/{theoremRegistry.length}"
   IO.println s!"  Total proof steps: {totalSteps}"
   IO.println s!"  Output written to: {outputPath}"
-
   -- Print coverage analysis
   printCoverage allSteps

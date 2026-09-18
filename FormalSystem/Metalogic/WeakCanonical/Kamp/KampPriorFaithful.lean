@@ -262,10 +262,8 @@ theorem nf_nvar_exist_all_depths_faithful
           exact ⟨env ⟨0, by omega⟩, by rw [← h_env_eq]; exact h_env⟩
         · intro ⟨x, hx⟩
           exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
-
     let exist_tl_fn_k : NormalForm sig k 2 → Formula :=
       fun sub_nf' => (ih_exist_1 sub_nf').choose
-
     have exist_tl_fn_k_correct : ∀ (sub_nf' : NormalForm sig k 2)
         (M : OrderedMonadicStructure sig)
         (h_INF : HasFaithfulDedekindINF M atomMap)
@@ -274,10 +272,8 @@ theorem nf_nvar_exist_all_depths_faithful
         TemporalTruth M atomMap t (exist_tl_fn_k sub_nf') ↔
         ∃ x : M.carrier, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf' :=
       fun sub_nf' => (ih_exist_1 sub_nf').choose_spec
-
     let char_k1 : NormalForm sig (k + 1) 1 → Formula :=
       fun nf' => nfSuccCharFormula atomMap h_surj exist_tl_fn_k nf'
-
     have char_k1_correct : ∀ (nf' : NormalForm sig (k + 1) 1)
         (M : OrderedMonadicStructure sig)
         (h_INF : HasFaithfulDedekindINF M atomMap)
@@ -290,7 +286,6 @@ theorem nf_nvar_exist_all_depths_faithful
           (fun sub_nf' M' h_INF' h_SUP' t' =>
             exist_tl_fn_k_correct sub_nf' M' h_INF' h_SUP' t')
           nf' M h_INF h_SUP t
-
     match n, hn, sub_nf with
     | 0, _, sub_nf =>
       ⟨char_k1 sub_nf, fun M h_INF h_SUP t => by
@@ -327,7 +322,7 @@ theorem nf_nvar_exist_all_depths_faithful
       absurd hn2 (by omega)
 
 /-- Convenience wrapper at the faithful carrier — the faithful sibling of
-`nfNvarExistAllDepthsFn` (`KampPrior.lean:551`). -/
+`nfNvarExistAllDepthsFn` (`KampPrior.lean:546`). -/
 noncomputable def nfNvarExistAllDepthsFnFaithful
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -336,7 +331,7 @@ noncomputable def nfNvarExistAllDepthsFnFaithful
   (nf_nvar_exist_all_depths_faithful atomMap h_surj k n hn sub_nf).choose
 
 /-- Correctness of the convenience wrapper at the faithful carrier — the faithful sibling of
-`nf_nvar_exist_all_depths_fn_correct` (`KampPrior.lean:559`). -/
+`nf_nvar_exist_all_depths_fn_correct` (`KampPrior.lean:554`). -/
 theorem nf_nvar_exist_all_depths_fn_correct_faithful
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -353,7 +348,7 @@ theorem nf_nvar_exist_all_depths_fn_correct_faithful
 /-! ## 4. NF-to-temporal translation and the main theorem -/
 
 /-- **Depth-`k` arity-1 NF characterizability at the faithful carrier** — the faithful sibling of
-`nfCharacterizableTemporalPrior` (`KampPrior.lean:591`). -/
+`nfCharacterizableTemporalPrior` (`KampPrior.lean:586`). -/
 noncomputable def nfCharacterizableTemporalPriorFaithful
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)

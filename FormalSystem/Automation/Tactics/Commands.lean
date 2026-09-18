@@ -94,7 +94,6 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 avoiding the Axiom Prop vs Type issue by constructing proof
 terms directly via `mkAppM` rather than returning proof witnesses.
 -/
-
 -- Simple syntax: just a number
 syntax "modal_search" (num)? : tactic
 
@@ -128,11 +127,9 @@ def applyParams (cfg : SearchConfig) (params : List (String × Nat)) : SearchCon
 def runModalSearch (cfg : SearchConfig) : TacticM Unit := do
   let goal ← getMainGoal
   let goalType ← goal.getType
-
   -- Validate goal type
   let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "modal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
-
   -- Attempt recursive proof search. `visitLimit` bounds total node visits via
   -- an `IO.Ref` counter threaded through `searchProof`.
   let counter ← IO.mkRef cfg.visitLimit

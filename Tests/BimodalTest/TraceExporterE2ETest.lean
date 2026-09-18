@@ -51,7 +51,6 @@ def runE2ETest : IO Bool := do
   IO.println "=== Trace Exporter E2E Smoke Test ==="
   let mut passed : Nat := 0
   let mut failed : Nat := 0
-
   -- Test 1: p → p is valid
   IO.println "  Running test 1..."
   let r1 := decideWithTrace (Formula.imp p p) 200
@@ -66,7 +65,6 @@ def runE2ETest : IO Bool := do
   | .failure f =>
     IO.println s!"FAIL Test 1: p → p returned failure: {repr f}"
     failed := failed + 1
-
   -- Test 2: p → q is invalid (countermodel)
   IO.println "  Running test 2..."
   let r2 := decideWithTrace (Formula.imp p q) 200
@@ -81,7 +79,6 @@ def runE2ETest : IO Bool := do
   | .failure f =>
     IO.println s!"FAIL Test 2: p → q returned failure: {repr f}"
     failed := failed + 1
-
   -- Test 3: □p → □p is valid (T axiom instance)
   IO.println "  Running test 3..."
   let r3 := decideWithTrace (Formula.imp (Formula.box p) (Formula.box p)) 300
@@ -96,7 +93,6 @@ def runE2ETest : IO Bool := do
   | .failure f =>
     IO.println s!"FAIL Test 3: □p → □p returned failure: {repr f}"
     failed := failed + 1
-
   -- Test 4: JSON serialization of e2e result is well-formed
   IO.println "  Running test 4..."
   let s4 := traceResultToJsonString r1
@@ -106,7 +102,6 @@ def runE2ETest : IO Bool := do
   else
     IO.println "FAIL Test 4: JSON serialization is malformed"
     failed := failed + 1
-
   -- Test 5: trace on a more complex formula is non-empty
   IO.println "  Running test 5..."
   match r3 with
@@ -118,7 +113,6 @@ def runE2ETest : IO Bool := do
       IO.println s!"FAIL Test 5: trace on □p → □p is empty"
       failed := failed + 1
   | _ => failed := failed + 1
-
   -- Test 6: fingerprint for □p → □p contains expected rules
   IO.println "  Running test 6..."
   match r3 with
@@ -133,7 +127,6 @@ def runE2ETest : IO Bool := do
       IO.println "FAIL Test 6: fingerprint missing expected rules"
       failed := failed + 1
   | _ => failed := failed + 1
-
   IO.println s!"\n=== E2E Smoke Test: {passed} passed, {failed} failed ==="
   return failed == 0
 

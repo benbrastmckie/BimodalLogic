@@ -65,30 +65,25 @@ def runTraceExportTests : IO Bool := do
   IO.println "=== TraceExport Round-Trip Tests ==="
   let mut passed : Nat := 0
   let mut failed : Nat := 0
-
   -- Test 1: empty certificate
   let cert0 := ProofCertificate.empty p
   let s0 := proofCertificateToJsonString cert0
   if ← checkJsonObject s0 "formula" "Test 1: empty certificate has 'formula' key" then
     passed := passed + 1
   else failed := failed + 1
-
   -- Test 2: empty certificate has 'outcome' key
   if ← checkJsonObject s0 "outcome" "Test 2: empty certificate has 'outcome' key" then
     passed := passed + 1
   else failed := failed + 1
-
   -- Test 3: empty certificate has 'trace' key
   if ← checkJsonObject s0 "trace" "Test 3: empty certificate has 'trace' key" then
     passed := passed + 1
   else failed := failed + 1
-
   -- Test 4: empty certificate has 'axiom_fingerprint' key
   if ← checkJsonObject s0 "axiom_fingerprint"
       "Test 4: empty certificate has 'axiom_fingerprint' key" then
     passed := passed + 1
   else failed := failed + 1
-
   -- Test 5: frame class names
   if s0.contains "\"frame_class\": \"Base\"" then
     IO.println "PASS Test 5: frame class is 'Base'"
@@ -96,7 +91,6 @@ def runTraceExportTests : IO Bool := do
   else
     IO.println s!"FAIL Test 5: frame class not 'Base' (got: ...{s0.takeEnd 100})"
     failed := failed + 1
-
   -- Test 6: decideWithTrace result on a valid formula
   let φ := Formula.imp p p  -- p → p is a tautology
   let r6 := decideWithTrace φ 100
@@ -117,7 +111,6 @@ def runTraceExportTests : IO Bool := do
   | .failure _ =>
       IO.println "FAIL Test 6: decideWithTrace on tautology should succeed"
       failed := failed + 1
-
   -- Test 7: TraceResult success
   let r7 := .success cert0
   let s7 := traceResultToJsonString r7
@@ -130,7 +123,6 @@ def runTraceExportTests : IO Bool := do
   else
     IO.println s!"FAIL Test 7b: status not 'success'"
     failed := failed + 1
-
   -- Test 8: TraceResult failure
   let r8 : TraceResult := .failure (.outOfFuel [] 0)
   let s8 := traceResultToJsonString r8
@@ -143,7 +135,6 @@ def runTraceExportTests : IO Bool := do
   else
     IO.println s!"FAIL Test 8b: failure_kind not 'out_of_fuel'"
     failed := failed + 1
-
   -- Test 9: axiom fingerprint is rendered as a JSON object
   if s0.contains "\"axiom_fingerprint\": {}" then
     IO.println "PASS Test 9: empty axiom_fingerprint renders as '{}'"
@@ -151,7 +142,6 @@ def runTraceExportTests : IO Bool := do
   else
     IO.println s!"FAIL Test 9: empty axiom_fingerprint not rendered as empty-object"
     failed := failed + 1
-
   -- Test 10: trace is a JSON array
   if s0.contains "\"trace\": []" then
     IO.println "PASS Test 10: empty trace renders as '[]'"
@@ -159,7 +149,6 @@ def runTraceExportTests : IO Bool := do
   else
     IO.println s!"FAIL Test 10: empty trace not rendered as '[]'"
     failed := failed + 1
-
   IO.println s!"\n=== Round-Trip Tests: {passed} passed, {failed} failed ==="
   return failed == 0
 

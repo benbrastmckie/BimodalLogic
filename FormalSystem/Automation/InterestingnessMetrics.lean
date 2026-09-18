@@ -496,7 +496,6 @@ def computeInterestingness (φ : Formula)
   let snt := semanticNonTriviality φ
   let od := operatorDiversity φ
   let ss := statementSimplicity φ
-
   -- Tier 2: Proof-structural metrics (0 if no proof data)
   let pdr := match pt with
     | some trace => proofDepthRatio trace φ
@@ -513,12 +512,10 @@ def computeInterestingness (φ : Formula)
   let pr := match rp with
     | some profile => proofRichness profile φ
     | none => 0
-
   -- SNT gate (multiplicative)
   let gate : Nat := if snt == 0 then 0
     else if snt == 1 then 500
     else 1000
-
   -- Normalize dimensions to 0-1000 scale
   let odNorm := min (od * 91) 1000
   let pdrNorm := min (pdr * 10) 1000
@@ -527,7 +524,6 @@ def computeInterestingness (φ : Formula)
   let iadNorm : Nat := if iad then 1000 else 0
   let ssNorm := min (ss * 10) 1000
   let prNorm := min (pr * 10) 1000
-
   -- Weighted sum
   let weightedSum := odNorm * weights.wOD + pdrNorm * weights.wPDR +
     prdNorm * weights.wPRD + aldNorm * weights.wALD +
@@ -535,13 +531,10 @@ def computeInterestingness (φ : Formula)
     prNorm * weights.wPR
   let totalWeight := weights.wOD + weights.wPDR + weights.wPRD +
     weights.wALD + weights.wIAD + weights.wSS + weights.wPR
-
   -- Composite score = gate * weightedSum / (1000 * totalWeight)
   let compositeScore := if totalWeight == 0 then 0
     else gate * weightedSum / (1000 * totalWeight)
-
   let tier := InterestingnessTier.fromScore compositeScore
-
   { compositeScore := compositeScore
   , tier := tier
   , sntGate := snt

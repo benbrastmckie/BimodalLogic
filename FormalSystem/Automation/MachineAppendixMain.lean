@@ -439,7 +439,6 @@ Exits nonzero with diagnostics on any coverage mismatch.
 -/
 def main (args : List String) : IO UInt32 := do
   let cfg := parseArgs args
-
   -- Coverage assertions (mirroring BenchmarkAnchorsMain.checkCoverage)
   let diags := coverageDiagnostics
   if !diags.isEmpty then
@@ -447,12 +446,10 @@ def main (args : List String) : IO UInt32 := do
     for d in diags do
       IO.eprintln s!"  - {d}"
     return 1
-
   -- Ensure output directory exists
   let outPath := System.FilePath.mk cfg.output
   if let some dir := outPath.parent then
     IO.FS.createDirAll dir
-
   -- Stream the artifact
   let handle ← IO.FS.Handle.mk outPath .write
   handle.putStrLn (metadataLine cfg allAxiomEntries.length allRuleEntries.length
@@ -464,7 +461,6 @@ def main (args : List String) : IO UInt32 := do
   for e in allDerivedOpEntries do
     handle.putStrLn e.toJsonLine
   handle.flush
-
   IO.println s!"machine_appendix: wrote {cfg.output} \
     ({allAxiomEntries.length} axioms, {allRuleEntries.length} rules, \
     {allDerivedOpEntries.length} derived operators; \

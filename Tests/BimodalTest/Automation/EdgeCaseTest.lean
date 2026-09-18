@@ -142,18 +142,15 @@ Test with contexts containing many formulas.
 
 #eval do
   IO.println "=== Large Context Tests ==="
-
   -- Context with 5 formulas
   let ctx5 := [p, q, r, s, p.imp q]
   let (found5, _, _, stats5, _) := search ctx5 p (.IDDFS 5) 100
   IO.println s!"Context size 5: found={found5}, visited={stats5.visited}"
-
   -- Context with 10 formulas
   let ctx10 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q, p.imp
       (q.imp p)]
   let (found10, _, _, stats10, _) := search ctx10 p (.IDDFS 5) 100
   IO.println s!"Context size 10: found={found10}, visited={stats10.visited}"
-
   -- Context with 15 formulas
   let ctx15 := [p, q, r, s, p.imp q, q.imp r, r.imp s, Formula.box p, Formula.allFuture q,
                 p.imp (q.imp p), Formula.box q, Formula.box r, Formula.allFuture p,
@@ -161,7 +158,6 @@ Test with contexts containing many formulas.
                     (Formula.allFuture (Formula.allFuture p))]
   let (found15, _, _, stats15, _) := search ctx15 p (.IDDFS 5) 100
   IO.println s!"Context size 15: found={found15}, visited={stats15.visited}"
-
   if found5 && found10 && found15 then
     IO.println "✓ All large context tests passed"
   else
@@ -181,7 +177,6 @@ Test with mixed modal/temporal/propositional operators.
 
 #eval do
   IO.println "=== Complex Formula Tests ==="
-
   -- Mixed modal and temporal
   let mixedFormulas := [
     ((Formula.box p).imp (Formula.allFuture (Formula.box p)), "□p → G□p (temporalFutureDerived)"),
@@ -189,7 +184,6 @@ Test with mixed modal/temporal/propositional operators.
     ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)),
         "□(p→q) → (□p → □q) (modal_k)")
   ]
-
   let mut passed := 0
   for (formula, desc) in mixedFormulas do
     let matched := matchesAxiom formula
@@ -213,23 +207,18 @@ Verify search respects depth limits.
 
 #eval do
   IO.println "=== Depth Limit Tests ==="
-
   -- Axioms should be found at depth 1
   let modalT := (Formula.box p).imp p
   let (found1, _, _, _, _) := search [] modalT (.BoundedDFS 1) 100
   let (found0, _, _, _, _) := search [] modalT (.BoundedDFS 0) 100
-
   IO.println s!"Modal T at depth 0: found={found0}"
   IO.println s!"Modal T at depth 1: found={found1}"
-
   -- Non-axiom should not be found at any reasonable depth
   let nonAxiom := Formula.atomS "nonexistent"
   let (foundNA1, _, _, _, _) := search [] nonAxiom (.BoundedDFS 1) 100
   let (foundNA5, _, _, _, _) := search [] nonAxiom (.BoundedDFS 5) 100
-
   IO.println s!"Non-axiom at depth 1: found={foundNA1}"
   IO.println s!"Non-axiom at depth 5: found={foundNA5}"
-
   if found1 && !foundNA1 && !foundNA5 then
     IO.println "✓ Depth limit tests passed"
   else
@@ -243,10 +232,8 @@ Verify search respects visit limits.
 
 #eval do
   IO.println "=== Visit Limit Tests ==="
-
   -- Search for non-axiom with various visit limits
   let nonAxiom := Formula.atomS "x"
-
   let limits := [1, 5, 10, 50, 100]
   for limit in limits do
     let (found, _, _, stats, visits) := iddfsSearch [] nonAxiom 10 limit
@@ -276,13 +263,11 @@ example : ⊢ (p.imp q).imp (r.imp (p.imp q)) := by modal_search
 
 #eval do
   IO.println "=== Special Pattern Tests ==="
-
   -- Formulas with self-referential structure
   let selfRef := [
     (p.imp (p.imp p), "p → (p → p)"),
     ((p.imp p).imp (p.imp (p.imp p)), "(p→p) → (p → (p→p))")
   ]
-
   let mut passed := 0
   for (formula, desc) in selfRef do
     let matched := matchesAxiom formula
@@ -302,14 +287,12 @@ Test with various atom names including longer names.
 
 #eval do
   IO.println "=== Atom Name Variation Tests ==="
-
   let atoms := [
     Formula.atomS "x",
     Formula.atomS "variable",
     Formula.atomS "longAtomName123",
     Formula.atomS "special_chars_allowed"
   ]
-
   let mut passed := 0
   for atom in atoms do
     -- Test prop_s with this atom

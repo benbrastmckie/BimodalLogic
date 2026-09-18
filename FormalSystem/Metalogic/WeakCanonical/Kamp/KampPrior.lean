@@ -446,11 +446,9 @@ theorem nf_nvar_exist_all_depths
           exact ⟨env ⟨0, by omega⟩, by rw [← h_env_eq]; exact h_env⟩
         · intro ⟨x, hx⟩
           exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
-
     -- Step 2: Build char at depth k+1 using ih_exist_1.
     let exist_tl_fn_k : NormalForm sig k 2 → Formula :=
       fun sub_nf' => (ih_exist_1 sub_nf').choose
-
     have exist_tl_fn_k_correct : ∀ (sub_nf' : NormalForm sig k 2)
         (M : OrderedMonadicStructure sig)
         (h_UZ : SemanticPriorUZ M atomMap)
@@ -459,11 +457,9 @@ theorem nf_nvar_exist_all_depths
         TemporalTruth M atomMap t (exist_tl_fn_k sub_nf') ↔
         ∃ x : M.carrier, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf' :=
       fun sub_nf' => (ih_exist_1 sub_nf').choose_spec
-
     -- char at depth k+1: for each nf' : NormalForm sig (k+1) 1, a temporal formula
     let char_k1 : NormalForm sig (k + 1) 1 → Formula :=
       fun nf' => nfSuccCharFormula atomMap h_surj exist_tl_fn_k nf'
-
     have char_k1_correct : ∀ (nf' : NormalForm sig (k + 1) 1)
         (M : OrderedMonadicStructure sig)
         (h_UZ : SemanticPriorUZ M atomMap)
@@ -476,7 +472,6 @@ theorem nf_nvar_exist_all_depths
           (fun sub_nf' M' h_UZ' h_SZ' t' =>
             exist_tl_fn_k_correct sub_nf' M' h_UZ' h_SZ' t')
           nf' M h_UZ h_SZ t
-
     -- Step 3: For n = 0, the result follows directly from char_k1.
     -- For n ≥ 1, we need to bootstrap to higher depths and use NF disjunction.
     -- The general case uses the monadic formula approach:

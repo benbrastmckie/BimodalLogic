@@ -276,29 +276,22 @@ def runAllBenchmarksTimed (config : BenchmarkConfig := {}) : IO Unit := do
   IO.println "╔══════════════════════════════════════════════════╗"
   IO.println "║     Proof Search Performance Benchmarks          ║"
   IO.println "╚══════════════════════════════════════════════════╝\n"
-
   let mut allResults := []
-
   -- Run each category
   let modalResults ← runBenchmarksTimed "Modal Axioms" modalBenchmarks config
   allResults := allResults ++ modalResults
   IO.println ""
-
   let temporalResults ← runBenchmarksTimed "Temporal Axioms" temporalBenchmarks config
   allResults := allResults ++ temporalResults
   IO.println ""
-
   let propResults ← runBenchmarksTimed "Propositional Axioms" propBenchmarks config
   allResults := allResults ++ propResults
   IO.println ""
-
   let mixedResults ← runBenchmarksTimed "Mixed Modal-Temporal" mixedBenchmarks config
   allResults := allResults ++ mixedResults
   IO.println ""
-
   let ctxResults ← runBenchmarksTimed "Context-Based" contextBenchmarks config
   allResults := allResults ++ ctxResults
-
   -- Summary with timing
   IO.println "\n═══════════════════════════════════════════════════"
   IO.println "                    SUMMARY"
@@ -316,7 +309,6 @@ def runAllBenchmarksTimed (config : BenchmarkConfig := {}) : IO Unit := do
 /-- Compare strategies with timing. -/
 def compareStrategiesTimed (benchmarks : List (String × Context × Formula)) : IO Unit := do
   IO.println "=== Strategy Comparison (Timed) ==="
-
   let strategies : List (String × SearchStrategy) := [
     ("BoundedDFS-5", .BoundedDFS 5),
     ("BoundedDFS-10", .BoundedDFS 10),
@@ -325,7 +317,6 @@ def compareStrategiesTimed (benchmarks : List (String × Context × Formula)) : 
     ("BestFirst-1000", .BestFirst 1000),
     ("BestFirst-10000", .BestFirst 10000)
   ]
-
   for (stratName, strat) in strategies do
     IO.println s!"\n--- {stratName} ---"
     let mut totalVisits := 0
@@ -351,13 +342,11 @@ Benchmarks that test pattern learning across multiple proof attempts.
 def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
     (config : BenchmarkConfig := {}) : IO Unit := do
   IO.println "=== Pattern Learning Benchmarks ==="
-
   -- First pass: no learning
   IO.println "\n--- First Pass (No Learning) ---"
   let mut db := PatternDatabase.empty
   let mut firstPassVisits := 0
   let mut firstPassFound := 0
-
   for (name, ctx, goal) in benchmarks do
     let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit
         config.weights db true
@@ -366,27 +355,22 @@ def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
       db := result.patternDb
     firstPassVisits := firstPassVisits + result.visits
     IO.println s!"{name}: found={result.found}, visits={result.visits}"
-
   IO.println
       s!"\nFirst pass total: {firstPassFound}/{benchmarks.length} found, {firstPassVisits} visits"
   IO.println s!"Patterns learned: {db.totalPatterns}"
-
   -- Second pass: with learned patterns
   IO.println "\n--- Second Pass (With Learning) ---"
   let mut secondPassVisits := 0
   let mut secondPassFound := 0
-
   for (name, ctx, goal) in benchmarks do
     let result := searchWithLearning ctx goal (.IDDFS config.maxDepth) config.visitLimit
         config.weights db false
     if result.found then secondPassFound := secondPassFound + 1
     secondPassVisits := secondPassVisits + result.visits
     IO.println s!"{name}: found={result.found}, visits={result.visits}"
-
   IO.println
       s!"\nSecond pass total: {secondPassFound}/{benchmarks.length} found, {secondPassVisits} \
           visits"
-
   -- Report improvement
   if firstPassVisits > 0 then
     let improvement := (firstPassVisits - secondPassVisits) * 100 / firstPassVisits
@@ -395,7 +379,6 @@ def runLearningBenchmarks (benchmarks : List (String × Context × Formula))
 /-- Compare IDDFS vs BestFirst on various formula types. -/
 def compareIDDFSvsBestFirst (config : BenchmarkConfig := {}) : IO Unit := do
   IO.println "=== IDDFS vs BestFirst Comparison ==="
-
   let benchmarkCategories := [
     ("Modal Axioms", modalBenchmarks),
     ("Temporal Axioms", temporalBenchmarks),
@@ -403,10 +386,8 @@ def compareIDDFSvsBestFirst (config : BenchmarkConfig := {}) : IO Unit := do
     ("Mixed Modal-Temporal", mixedBenchmarks),
     ("Context-Based", contextBenchmarks)
   ]
-
   for (category, benchmarks) in benchmarkCategories do
     IO.println s!"\n{category}:"
-
     -- IDDFS results
     let mut iddfsVisits := 0
     let mut iddfsFound := 0
@@ -415,7 +396,6 @@ def compareIDDFSvsBestFirst (config : BenchmarkConfig := {}) : IO Unit := do
           config.weights
       iddfsVisits := iddfsVisits + visits
       if found then iddfsFound := iddfsFound + 1
-
     -- BestFirst results
     let mut bfVisits := 0
     let mut bfFound := 0
@@ -424,10 +404,8 @@ def compareIDDFSvsBestFirst (config : BenchmarkConfig := {}) : IO Unit := do
           config.visitLimit config.weights
       bfVisits := bfVisits + visits
       if found then bfFound := bfFound + 1
-
     IO.println s!"  IDDFS:     {iddfsFound}/{benchmarks.length} found, {iddfsVisits} visits"
     IO.println s!"  BestFirst: {bfFound}/{benchmarks.length} found, {bfVisits} visits"
-
     -- Compare
     if iddfsFound == bfFound && iddfsVisits > 0 && bfVisits > 0 then
       if bfVisits < iddfsVisits then

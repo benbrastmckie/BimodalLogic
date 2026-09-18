@@ -107,7 +107,6 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
   let initHeuristic := patternAwareScore weights Γ φ patternDb .ModusPonens
   let initNode : SearchNode := { context := Γ, goal := φ, cost := 0, heuristic := initHeuristic }
   let initQueue := PriorityQueue.insert PriorityQueue.empty initNode
-
   -- Main search loop using fuel parameter for termination
   let rec searchLoop (queue : PriorityQueue) (cache : ProofCache) (visited : Visited)
                      (stats : SearchStats) (expansions : Nat) : (fuel : Nat) →
@@ -124,14 +123,12 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
               (false, cache, visited, stats, expansions)
           | some (node, queue') =>
               let key : CacheKey := (node.context, node.goal)
-
               -- Skip if already visited (doesn't count as expansion)
               if visited.contains key then
                 searchLoop queue' cache visited stats expansions fuel
               else
                 let visited' := visited.insert key
                 let stats' := {stats with visited := stats.visited + 1}
-
                 -- Check cache
                 match cache[key]? with
                 | some true =>
@@ -143,7 +140,6 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
                         expansions fuel
                 | none =>
                     let stats' := {stats' with misses := stats'.misses + 1}
-
                     -- Check if goal matches axiom
                     if matchesAxiom node.goal then
                       (true, cache.insert key true, visited', stats', expansions + 1)
@@ -159,7 +155,6 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
                         let h := patternAwareScore weights node.context ψ patternDb .ModusPonens
                         { context := node.context, goal := ψ, cost := node.cost + 1, heuristic := h
                             : SearchNode }
-
                       -- 2. Modal K rule: if goal is □ψ, add ψ with boxed context
                       let modalNodes := match node.goal with
                         | .box ψ =>
@@ -167,7 +162,6 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
                             let h := patternAwareScore weights ctx' ψ patternDb .ModalK
                             [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
                         | _ => []
-
                       -- 3. Temporal K rule: if goal is Gψ, add ψ with future context
                       let temporalNodes := match node.goal with
                         | .allFuture ψ =>
@@ -175,15 +169,12 @@ def bestFirstSearch (Γ : Context) (φ : Formula)
                             let h := patternAwareScore weights ctx' ψ patternDb .TemporalK
                             [{ context := ctx', goal := ψ, cost := node.cost + 1, heuristic := h }]
                         | _ => []
-
                       -- Add all successor nodes to queue
                       let allSuccessors := mpNodes ++ modalNodes ++ temporalNodes
                       let queue'' := allSuccessors.foldl PriorityQueue.insert queue'
-
                       -- Continue search
                       searchLoop queue'' (cache.insert key false) visited' stats' (expansions + 1)
                           fuel
-
   -- Use maxExpansions * 10 as fuel (allows for skipped visited nodes)
   searchLoop initQueue ProofCache.empty Visited.empty {} 0 (maxExpansions * 10)
 

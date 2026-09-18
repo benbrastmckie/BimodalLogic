@@ -95,7 +95,6 @@ Matches the goal against the 3-app pattern
 def runDeductionTactic : TacticM Unit := do
   let goal ← getMainGoal
   let goalType ← goal.getType
-
   match goalType with
   | .app (.app (.app (.const ``DerivationTree _) _fc) _context) _formula =>
     let newGoals ←

@@ -278,7 +278,6 @@ def forwardGenerate (cfg : ForwardConfig)
   let startMs ← IO.monoMsNow
   let mut pool : ProofPool cfg.frameClass :=
     { ProofPool.empty with cap := cfg.maxPoolSize }
-
   -- Phase 1: Seed pool with axiom instances
   let seedStart ← IO.monoMsNow
   let progressInterval := max 1 (cfg.seedCount / 10)
@@ -292,7 +291,6 @@ def forwardGenerate (cfg : ForwardConfig)
       IO.println
           s!"[proof-first] Seeding: {i + 1}/{cfg.seedCount}, pool size: {pool.size}, elapsed: \
               {elapsed - seedStart}ms"
-
   -- Phase 2: Cap ex_falso fraction
   let capStart ← IO.monoMsNow
   let exFalsoCount := pool.entries.foldl (fun acc σ =>
@@ -326,7 +324,6 @@ def forwardGenerate (cfg : ForwardConfig)
     pool := newPool
   let capEnd ← IO.monoMsNow
   IO.println s!"[proof-first] Ex-falso cap applied in {capEnd - capStart}ms, pool size: {pool.size}"
-
   -- Phase 3: Fixpoint closure under MP + unary rules
   let closureStart ← IO.monoMsNow
   for depth in List.range cfg.maxDepth do
@@ -345,7 +342,6 @@ def forwardGenerate (cfg : ForwardConfig)
     if growthRate < 1 then
       IO.println s!"[proof-first] Fixpoint converged at depth {depth}"
       break
-
   let endMs ← IO.monoMsNow
   IO.println s!"[proof-first] Generation complete: {pool.size} theorems in {endMs - startMs}ms"
   return pool.toList

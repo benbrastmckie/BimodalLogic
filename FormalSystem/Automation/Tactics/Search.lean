@@ -87,11 +87,9 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       match gType with
       | .app (.const ``Axiom _) _ => axiomGoal? := some g
       | _ => fcGoals := g :: fcGoals
-
     let axiomGoal ← match axiomGoal? with
       | some g => pure g
       | none => throwError "no axiom goal found"
-
     -- Try each axiom constructor this list carries (all primitive schemata except the
     -- RTime axioms prior_U_gap/sep). The derived schemata (time-reflection mirrors, modal 4
     -- and B) are `@[tmLemma]` theorems reached by `tryLemmaMatch`; the frame-class-gated
@@ -139,7 +137,6 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       ``Axiom.density,         -- GGφ → Gφ
       ``Axiom.dense_indicator  -- ¬U(⊤,⊥)
     ]
-
     for ctorName in axiomCtors do
       try
         let ctorExpr := mkConst ctorName
@@ -154,9 +151,7 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
           return ()  -- Found matching axiom
       catch _ =>
         continue
-
     throwError "no axiom matched"
-
   return result.isSome
 
 /--
@@ -327,7 +322,6 @@ def tryAssumptionMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := 
 
     -- Should have exactly one goal: prove `φ ∈ Γ`
     let [memGoal] := newGoals | throwError "expected single membership goal"
-
     setGoals [memGoal]
     -- Try to prove membership using simp (handles free variables)
     evalTactic (← `(tactic| simp))
@@ -337,7 +331,6 @@ def tryAssumptionMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := 
       return ()
     else
       throwError "simp did not close membership goal"
-
   return result.isSome
 
 /-!
@@ -390,7 +383,6 @@ def tryModusPonens (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId �
   for elem in ctxFormulas do
     if let some ant ← matchImplicationConsequent elem formula then
       candidates := ant :: candidates
-
   -- Try each candidate antecedent
   for antecedent in candidates do
     let success ← observing? do
@@ -401,31 +393,24 @@ def tryModusPonens (goal : MVarId) (fc ctx formula : Expr) (searchFn : MVarId �
       let antType ← mkAppM ``DerivationTree #[fc, ctx, antecedent]
       let impMVar ← mkFreshExprMVar impType
       let antMVar ← mkFreshExprMVar antType
-
       -- Build the modus ponens application
       let mpProof ← mkAppM ``DerivationTree.modus_ponens
           #[ctx, antecedent, formula, impMVar, antMVar]
       goal.assign mpProof
-
       -- Get the MVarIds for the subgoals
       let impGoal := impMVar.mvarId!
       let antGoal := antMVar.mvarId!
-
       -- Try to prove antecedent first (often in context)
       let antSuccess ← searchFn antGoal (depth - 1)
       if !antSuccess then
         throwError "could not prove antecedent"
-
       -- Then prove implication (often in context too)
       let impSuccess ← searchFn impGoal (depth - 1)
       if !impSuccess then
         throwError "could not prove implication"
-
       return ()
-
     if success.isSome then
       return true
-
   return false
 
 /-!
@@ -492,7 +477,6 @@ def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Na
 
   -- Build the unboxed context expression
   let unboxedCtxExpr ← buildContextExpr unboxedCtx
-
   let success ← observing? do
     setGoals [goal]
     -- Apply generalizedModalK
@@ -506,23 +490,18 @@ def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Na
     let baseFC := mkConst ``FrameClass.Base
     let subgoalType ← mkAppM ``DerivationTree #[baseFC, unboxedCtxExpr, innerFormula]
     let subgoalMVar ← mkFreshExprMVar subgoalType
-
     -- Build the proof: generalizedModalK unboxedCtx innerFormula subgoalMVar
     let proof ← mkAppM ``Theorems.generalizedModalK #[unboxedCtxExpr, innerFormula, subgoalMVar]
-
     -- Check that proof type matches goal type
     -- The result type is: (Context.map Formula.box unboxedCtx) ⊢ Formula.box innerFormula
     -- This should match ctx ⊢ formula
     goal.assign proof
-
     -- Now we need to prove the subgoal
     let subgoal := subgoalMVar.mvarId!
     let subSuccess ← searchFn subgoal (depth - 1)
     if !subSuccess then
       throwError "could not prove subgoal for modal K"
-
     return ()
-
   return success.isSome
 
 /--
@@ -550,7 +529,6 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
 
   -- Build the unfutured context expression
   let unfuturedCtxExpr ← buildContextExpr unfuturedCtx
-
   let success ← observing? do
     setGoals [goal]
     -- Apply generalizedTemporalK
@@ -562,22 +540,17 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
     let baseFC := mkConst ``FrameClass.Base
     let subgoalType ← mkAppM ``DerivationTree #[baseFC, unfuturedCtxExpr, innerFormula]
     let subgoalMVar ← mkFreshExprMVar subgoalType
-
     -- Build the proof: generalizedTemporalK unfuturedCtx innerFormula subgoalMVar
     let proof ← mkAppM ``Theorems.generalizedTemporalK
         #[unfuturedCtxExpr, innerFormula, subgoalMVar]
-
     -- Check that proof type matches goal type
     goal.assign proof
-
     -- Now we need to prove the subgoal
     let subgoal := subgoalMVar.mvarId!
     let subSuccess ← searchFn subgoal (depth - 1)
     if !subSuccess then
       throwError "could not prove subgoal for temporal K"
-
     return ()
-
   return success.isSome
 
 /-!
@@ -613,13 +586,11 @@ has the `MVarId → Nat → TacticM Bool` shape expected by the `try*` helpers'
 partial def searchProof (counter : IO.Ref Nat) (goal : MVarId) (depth : Nat) : TacticM Bool := do
   if depth = 0 then
     return false
-
   -- visitLimit abort: consume one node from the budget; stop if exhausted.
   let remaining ← counter.get
   if remaining == 0 then
     return false
   counter.set (remaining - 1)
-
   let goalType ← goal.getType
   let some (fc, ctx, formula) ← extractDerivationGoal goalType
     | return false  -- Not a DerivationTree goal
@@ -627,34 +598,27 @@ partial def searchProof (counter : IO.Ref Nat) (goal : MVarId) (depth : Nat) : T
   -- Strategy 1: Try axiom matching (cheapest)
   if ← tryAxiomMatch goal ctx formula then
     return true
-
   -- Strategy 1a: frame-class-gated derived theorems (`prior_SZ`, `prior_S_gap`)
   if ← tryGatedDerivedMatch goal then
     return true
-
   -- Strategy 1b: Try lemma database matching (backward chaining through premises)
   if ← tryLemmaMatch goal fc ctx formula (searchProof counter) depth then
     return true
-
   -- Strategy 2: Try assumption matching
   if ← tryAssumptionMatch goal ctx formula then
     return true
-
   -- Strategy 3: Try modus ponens decomposition (expensive)
   if depth > 1 then  -- Need at least 2 levels for modus ponens
     if ← tryModusPonens goal fc ctx formula (searchProof counter) depth then
       return true
-
   -- Strategy 4: Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
   if depth > 1 then
     if ← tryModalK goal fc ctx formula (searchProof counter) depth then
       return true
-
   -- Strategy 5: Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
   if depth > 1 then
     if ← tryTemporalK goal fc ctx formula (searchProof counter) depth then
       return true
-
   return false
 
 end FormalSystem.Automation

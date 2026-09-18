@@ -111,7 +111,6 @@ elab "assumption_search" : tactic => do
   let goal ← getMainGoal
   let goalType ← goal.getType
   let lctx ← getLCtx
-
   -- Iterate through local declarations
   for decl in lctx do
     if !decl.isImplementationDetail then
@@ -120,7 +119,6 @@ elab "assumption_search" : tactic => do
         -- Found a match! Assign the goal to this local hypothesis
         goal.assign (mkFVar decl.fvarId)
         return ()
-
   -- No matching assumption found
   throwError "assumption_search failed: no assumption matches goal {goalType}"
 

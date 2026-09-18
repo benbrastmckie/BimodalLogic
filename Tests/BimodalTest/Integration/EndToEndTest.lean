@@ -57,15 +57,12 @@ example : True := by
   -- Step 1: Syntactic derivation
   let proof : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
     DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atomS "p")) trivial
-
   -- Step 2: Apply soundness
   let valid_from_soundness : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
     soundness_in [] _ proof
-
   -- Step 3: Direct semantic validity
   let valid_direct : ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
     modal_t_valid (Formula.atomS "p")
-
   -- Both paths give the same result (validity)
   trivial
 

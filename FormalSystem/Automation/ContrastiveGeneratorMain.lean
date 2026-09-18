@@ -1083,7 +1083,6 @@ def main (args : List String) : IO Unit := do
           maxTemporalDepth={cfg.maxTemporalDepth}, maxFormulas={cfg.maxFormulas}"
   IO.println s!"Parallel threads: {cfg.parallelThreads}"
   IO.println s!"Output: {cfg.outputPath}"
-
   -- Step 1: Enumerate formulas
   IO.println "\n[Step 1] Enumerating formulas..."
   let params : EnumParams := {
@@ -1095,7 +1094,6 @@ def main (args : List String) : IO Unit := do
   }
   let formulas ← generateFormulas params
   IO.println s!"  Generated {formulas.length} formulas"
-
   -- Step 2: Label formulas
   IO.println "\n[Step 2] Labeling formulas with decision procedure..."
   let labeled ← labelBatch formulas (parallelThreads := cfg.parallelThreads)
@@ -1103,7 +1101,6 @@ def main (args : List String) : IO Unit := do
   let invalidCount := labeled.filter (·.label == .invalid) |>.length
   let timeoutCount := labeled.filter (·.label == .timeout) |>.length
   IO.println s!"  Valid: {validCount}, Invalid: {invalidCount}, Timeout: {timeoutCount}"
-
   -- Step 3: Generate contrastive pairs
   IO.println "\n[Step 3] Generating contrastive pairs..."
   let mut allPairsCount : Nat := 0
@@ -1115,11 +1112,9 @@ def main (args : List String) : IO Unit := do
     contrastivePairs := contrastivePairs ++ filtered
     if contrastivePairs.length % 100 == 0 && contrastivePairs.length > 0 then
       IO.println s!"  ... {contrastivePairs.length} contrastive pairs so far"
-
   -- Step 4: Export to JSONL
   IO.println s!"\n[Step 4] Exporting {contrastivePairs.length} contrastive pairs to JSONL..."
   writeContrastiveJSONL contrastivePairs cfg.outputPath
-
   -- Step 5: Print summary
   let stats := computeContrastiveStats allPairsCount contrastivePairs
   printContrastiveStats stats

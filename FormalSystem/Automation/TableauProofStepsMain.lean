@@ -562,44 +562,36 @@ partial def runFullPipeline (config : PipelineConfig) : IO Unit := do
           {config.wrapBatchSize}"
   IO.println s!"Output: {config.outputPath}"
   IO.println ""
-
   -- Strategy 1: Enumeration pipeline
   IO.println "--- Strategy 1: Enumeration ---"
   let (enumSteps, enumDist, validFormulas) ← runEnumerationPipeline config
   IO.println ""
-
   -- Build the hash set from enumeration steps for cross-source dedup
   let mut seenHashes : Std.HashSet UInt64 := {}
   if config.deduplicateSteps then
     for step in enumSteps do
       seenHashes := seenHashes.insert (hashProofStep step)
-
   -- Strategy 2: Axiom seeding pipeline
   IO.println "--- Strategy 2: Axiom Seeding ---"
   let (seedSteps, seedDist, seenHashes2) ← runAxiomSeedPipeline config seenHashes
   IO.println ""
-
   -- Strategy 3: Deep G^n wrapping pipeline
   -- Uses valid formulas identified during enumeration to avoid re-deciding
   IO.println "--- Strategy 3: Deep G^n Wrapping ---"
   IO.println s!"[wrap] Using {validFormulas.length} valid formulas from enumeration"
   let (wrapSteps, wrapDist, _) ← runDeepWrappingPipeline validFormulas config seenHashes2
   IO.println ""
-
   -- Combine all steps
   let allSteps := enumSteps ++ seedSteps ++ wrapSteps
   let combinedDist := mergeDistributions (mergeDistributions enumDist seedDist) wrapDist
-
   -- Write JSONL output
   IO.println "--- Writing Output ---"
   let lineCount ← writeProofStepsJSONL config.outputPath allSteps
   IO.println s!"[output] Wrote {lineCount} lines to {config.outputPath}"
-
   -- Write metadata
   let metadataPath := config.outputPath.replace ".jsonl" "_metadata.json"
   writeMetadataJSON metadataPath combinedDist config
   IO.println s!"[output] Wrote metadata to {metadataPath}"
-
   -- Print summary
   let pipelineEndMs ← IO.monoMsNow
   let totalSecs := (pipelineEndMs - pipelineStartMs) / 1000

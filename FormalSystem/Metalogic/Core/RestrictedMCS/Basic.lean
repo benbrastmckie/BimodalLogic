@@ -146,25 +146,19 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       subformulaClosure_subset_closureWithNeg phi h_psi_clos
     have h_neg_closneg : psi.neg ∈ closureWithNeg phi :=
       neg_mem_closureWithNeg phi psi h_psi_clos
-
     -- By maximality: since psi ∉ S and psi ∈ closureWithNeg, insert psi S is inconsistent
     have h_incons := h_mcs.2 psi h_psi_closneg h
-
     -- Now we need to show psi.neg ∈ S
     by_contra h_neg_not
-
     -- From h_incons: ¬SetConsistent (fc := fc) (insert psi S)
     unfold SetConsistent at h_incons
     push Not at h_incons
     obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
-
     -- L is inconsistent, so L ⊢ ⊥
     have h_bot : Derivable fc L Formula.bot := inconsistent_derives_bot h_L_incons
     obtain ⟨d_bot⟩ := h_bot
-
     -- Define Γ = L.filter (· ≠ psi)
     let Γ := L.filter (· ≠ psi)
-
     -- Show Γ ⊆ S
     have h_Γ_in_S : ∀ χ ∈ Γ, χ ∈ S := by
       intro χ hχ
@@ -176,7 +170,6 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       rcases h_L_sub with rfl | h_in_S
       · exact absurd rfl hχne
       · exact h_in_S
-
     -- L ⊆ psi :: Γ
     have h_L_sub_psiGamma : L ⊆ psi :: Γ := by
       intro χ hχ
@@ -185,31 +178,24 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       · simp only [List.mem_cons]
         right
         exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-
     -- Weaken derivation from L to psi :: Γ
     have d_bot' : DerivationTree fc (psi :: Γ) Formula.bot :=
       DerivationTree.weakening L (psi :: Γ) Formula.bot d_bot h_L_sub_psiGamma
-
     -- By deduction theorem, Γ ⊢ psi.neg
     have d_neg : DerivationTree fc Γ psi.neg :=
       deductionTheorem Γ psi Formula.bot d_bot'
-
     -- Since psi.neg ∉ S and psi.neg ∈ closureWithNeg, by maximality
     -- insert psi.neg S is inconsistent
     have h_incons_neg := h_mcs.2 psi.neg h_neg_closneg h_neg_not
-
     -- So there exists L' ⊆ insert psi.neg S with ¬Consistent L'
     unfold SetConsistent at h_incons_neg
     push Not at h_incons_neg
     obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons_neg
-
     -- L' is inconsistent, so L' ⊢ ⊥
     have h_bot'' : Derivable fc L' Formula.bot := inconsistent_derives_bot h_L'_incons
     obtain ⟨d_bot''⟩ := h_bot''
-
     -- Define Δ = L'.filter (· ≠ psi.neg)
     let Δ := L'.filter (· ≠ psi.neg)
-
     -- Show Δ ⊆ S
     have h_Δ_in_S : ∀ χ ∈ Δ, χ ∈ S := by
       intro χ hχ
@@ -221,7 +207,6 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       rcases h_L'_sub with rfl | h_in_S
       · exact absurd rfl hχne
       · exact h_in_S
-
     -- L' ⊆ psi.neg :: Δ
     have h_L'_sub_psiΔ : L' ⊆ psi.neg :: Δ := by
       intro χ hχ
@@ -230,15 +215,12 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       · simp only [List.mem_cons]
         right
         exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-
     -- Weaken derivation from L' to psi.neg :: Δ
     have d_bot''' : DerivationTree fc (psi.neg :: Δ) Formula.bot :=
       DerivationTree.weakening L' (psi.neg :: Δ) Formula.bot d_bot'' h_L'_sub_psiΔ
-
     -- By deduction theorem, Δ ⊢ psi.neg.neg
     have d_neg_neg : DerivationTree fc Δ psi.neg.neg :=
       deductionTheorem Δ psi.neg Formula.bot d_bot'''
-
     -- Combine Γ and Δ
     let ΓΔ := Γ ++ Δ
     have h_ΓΔ_in_S : ∀ χ ∈ ΓΔ, χ ∈ S := by
@@ -247,17 +229,14 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       rcases hχ with hχΓ | hχΔ
       · exact h_Γ_in_S χ hχΓ
       · exact h_Δ_in_S χ hχΔ
-
     -- Weaken both derivations to ΓΔ
     have d_neg' : DerivationTree fc ΓΔ psi.neg :=
       DerivationTree.weakening Γ ΓΔ _ d_neg (List.subset_append_left Γ Δ)
     have d_neg_neg' : DerivationTree fc ΓΔ psi.neg.neg :=
       DerivationTree.weakening Δ ΓΔ _ d_neg_neg (List.subset_append_right Γ Δ)
-
     -- Combine to get ⊥ from psi.neg and psi.neg.neg
     have d_bot_final : DerivationTree fc ΓΔ Formula.bot :=
       derivesBotFromPhiNegPhi d_neg' d_neg_neg'
-
     -- This contradicts consistency of S
     exact h_mcs.1.2 ΓΔ h_ΓΔ_in_S ⟨d_bot_final⟩
 

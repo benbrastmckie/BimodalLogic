@@ -189,10 +189,8 @@ example : True := by
   
   -- Derive using Temporal-Future axiom
   let d : ⊢ φ := temporalFutureDerived p
-
   -- Verify soundness
   have v : [] ⊨ φ := soundness_in [] φ d
-
   -- Verify semantic validity (TF soundness inherited from MF + T + Modal 4)
   have v_direct : [] ⊨ φ := soundness_in [] φ d
   
@@ -241,7 +239,6 @@ example : True := by
     DerivationTree.assumption Γ p.box (List.Mem.head _)
   let d1 : Γ ⊢ (p.box.allFuture) :=
     DerivationTree.modus_ponens Γ p.box (p.box.allFuture) ax1 ass
-
   -- Step 2: F□p → FF□p using Temporal 4
   let ax2 : Γ ⊢ ((p.box.allFuture).imp ((p.box.allFuture).allFuture)) :=
     DerivationTree.weakening [] Γ _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived p.box)

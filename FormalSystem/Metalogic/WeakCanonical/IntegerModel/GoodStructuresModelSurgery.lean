@@ -1425,7 +1425,6 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
     -- Use good_of_very_good_subinterval with c = x, d = y
     exact good_of_very_good_subinterval sig k M x y hxy hce x y
       (le_refl x) (le_refl y) hxy
-
   -- === Step 6: Class spread (Reynolds Lemma 9.1) ===
   -- For any temporal formula A, if A holds at some point of M,
   -- then A holds at some point of every ContempEquiv class.
@@ -1547,7 +1546,6 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
     intro v u
     rw [env2_eq]
     exact contemp_eq_body_correct sig k M v u
-
   -- Ordered spread above: if A at s' ∈ class(a) with s' ≤ t, and
   -- A at s with s > t and s ∉ class(a), then A at some w > t in class(a).
   have ordered_spread_above : ∀ (A : Formula) (t : M.carrier)
@@ -1684,7 +1682,6 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
             h_ce_y₀,
           lt_trans h_y₀_lt_c (Order.lt_succ_of_not_isMax (not_isMax c)),
           h_A_y₀⟩))
-
   -- Symmetric: ordered spread below.
   have ordered_spread_below : ∀ (A : Formula) (t : M.carrier)
       (h_t : ContempEquiv sig k M a t) (s : M.carrier)
@@ -1819,7 +1816,6 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
           (no_boundary_at_successor sig k M c) h_ce_y₀,
         lt_trans (Order.lt_succ_of_not_isMax (not_isMax c)) h_sc_lt_y₀,
         h_A_y₀⟩))
-
   -- === Step 7: Truth preservation (M ↔ N) by structural induction ===
   -- Both directions simultaneously; the imp case needs both.
   have truth_pres : ∀ (B : Formula) (t : M.carrier) (h_t : ContempEquiv sig k M a t),

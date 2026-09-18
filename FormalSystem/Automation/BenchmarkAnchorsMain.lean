@@ -483,27 +483,22 @@ def main (args : List String) : IO Unit := do
   let outputPath := match args with
     | "--output" :: path :: _ => path
     | _ => "data/axiom-instances.jsonl"
-
   IO.println "BMLogic-Bench Axiom Instance Generator"
   IO.println "======================================"
   IO.println ""
-
   -- Step 1: Generate all instances
   IO.println "Generating axiom instances..."
   let allInstances := generateAllInstances
   IO.println s!"  Generated {allInstances.length} unique instances (all arities)"
-
   -- Step 2: Select top-3 per constructor
   IO.println "Selecting top-3 lowest-complexity per constructor..."
   let instances := selectTopInstances allInstances 3
   IO.println s!"  Selected {instances.length} instances (target: 3 per tagged schema name)"
-
   -- Step 3: Check coverage
   let (covered, missing) := checkCoverage instances
   IO.println s!"  Axiom coverage: {allAxiomNames.length - missing.length}/{allAxiomNames.length} constructors ({covered.length} schema names tagged)"
   if !missing.isEmpty then
     IO.println s!"  WARNING: Missing axioms: {missing}"
-
   -- Step 4: Tier distribution preview
   let tierCounts := instances.foldl (fun (e, m, h, vh) tf =>
     let c := tf.formula.complexity
@@ -518,7 +513,6 @@ def main (args : List String) : IO Unit := do
   IO.println s!"    hard (7-9): {tierCounts.2.2.1}"
   IO.println s!"    very_hard (≥10): {tierCounts.2.2.2}"
   IO.println ""
-
   -- Step 5: Label instances via matchAxiom (direct axiom proof)
   IO.println "Labeling instances via axiom matching..."
   let mut labeled : List (TaggedFormula × LabeledFormula) := []
@@ -550,7 +544,6 @@ def main (args : List String) : IO Unit := do
   IO.println
       s!"  Labeling complete: {validCount} valid, {invalidCount} invalid, {timeoutCount} timeout"
   IO.println s!"  Axiom-matched: {axiomMatchCount}, Fallback: {fallbackCount}"
-
   -- Step 6: Per-constructor coverage summary
   let mut constructorCounts : List (String × Nat × Nat) := []  -- (name, valid, total)
   for name in allAxiomNames do
@@ -559,7 +552,6 @@ def main (args : List String) : IO Unit := do
     constructorCounts := constructorCounts ++ [(name, nameValid, nameRecords.length)]
   let constructorsWithValid := constructorCounts.filter (fun (_, v, _) => v > 0) |>.length
   IO.println s!"  Constructors with valid instances: {constructorsWithValid}/{allAxiomNames.length}"
-
   -- Step 7: Ensure output directory exists
   let outFilePath : System.FilePath := ⟨outputPath⟩
   match outFilePath.parent with
@@ -568,7 +560,6 @@ def main (args : List String) : IO Unit := do
     if !dirExists then
       IO.FS.createDirAll dir
   | none => pure ()
-
   -- Step 8: Write JSONL
   IO.println ""
   IO.println s!"Writing JSONL to {outputPath}..."
@@ -579,7 +570,6 @@ def main (args : List String) : IO Unit := do
     let line := taggedToJsonl writeIdx tf lf
     handle.putStrLn line
   IO.println s!"  Wrote {writeIdx} records"
-
   -- Step 9: Summary
   IO.println ""
   IO.println "Summary"

@@ -198,23 +198,19 @@ noncomputable example : [(Formula.atomS "p").and (Formula.atomS "q")] ⊢
   -- Step 1: Get [p ∧ q] ⊢ p from andLeft
   have h_p : [(Formula.atomS "p").and (Formula.atomS "q")] ⊢ (Formula.atomS "p") :=
     andLeft (Formula.atomS "p") (Formula.atomS "q")
-
   -- Step 2: Get [p] ⊢ p ∨ r from orInl
   have h_ldi : [Formula.atomS "p"] ⊢ (Formula.atomS "p").or (Formula.atomS "r") :=
     orInl (Formula.atomS "p") (Formula.atomS "r")
-
   -- Step 3: Apply deduction theorem: [p] ⊢ p ∨ r implies ⊢ p → (p ∨ r)
   have h_imp : [] ⊢ (Formula.atomS "p").imp ((Formula.atomS "p").or (Formula.atomS "r")) :=
     FormalSystem.Metalogic.Core.deductionTheorem [] (Formula.atomS "p")
       ((Formula.atomS "p").or (Formula.atomS "r")) h_ldi
-
   -- Step 4: Weaken to the context [p ∧ q]
   have h_imp_ctx : [(Formula.atomS "p").and (Formula.atomS "q")] ⊢
       (Formula.atomS "p").imp ((Formula.atomS "p").or (Formula.atomS "r")) :=
     DerivationTree.weakening [] [(Formula.atomS "p").and (Formula.atomS "q")]
       ((Formula.atomS "p").imp ((Formula.atomS "p").or (Formula.atomS "r")))
       h_imp (List.nil_subset _)
-
   -- Step 5: Apply modus ponens: [p ∧ q] ⊢ p and [p ∧ q] ⊢ p → (p ∨ r) gives [p ∧ q] ⊢ p ∨ r
   exact DerivationTree.modus_ponens
     [(Formula.atomS "p").and (Formula.atomS "q")]

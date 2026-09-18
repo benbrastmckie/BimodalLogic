@@ -162,12 +162,10 @@ partial def pSkipValue (st : PState) : Except String PState := do
 partial def pFormula (st : PState) : Except String (Formula × PState) := do
   let st := pSkipWS st
   let st ← pExpect '{' st
-
   let mut tag : String := ""
   let mut name : String := ""
   let mut subFormulas : List (String × Formula) := []
   let mut st := st
-
   while true do
     let st' := pSkipWS st
     match pPeek st' with
@@ -175,12 +173,10 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
       st := pAdvance st'
       break
     | _ => pure ()
-
     let (key, st') ← pString st
     let st' := pSkipWS st'
     let st' ← pExpect ':' st'
     let st' := pSkipWS st'
-
     if key == "tag" then
       let (val, st') ← pString st'
       tag := val
@@ -197,7 +193,6 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
     else
       let st' ← pSkipValue st'
       st := st'
-
     let st' := pSkipWS st
     match pPeek st' with
     | some ',' => st := pAdvance st'
@@ -205,12 +200,10 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
       st := pAdvance st'
       break
     | _ => throw s!"expected , or }} at pos {st'.pos}"
-
   let getField (fname : String) : Except String Formula :=
     match subFormulas.find? (fun (k, _) => k == fname) with
     | some (_, f) => .ok f
     | none => .error s!"missing field '{fname}' for tag '{tag}'"
-
   match tag with
   | "atom" => return (Formula.atomS name, st)
   | "bot" => return (Formula.bot, st)
@@ -278,17 +271,14 @@ def main (args : List String) : IO Unit := do
       | some p => outputPath := p; i := i + 2
       | none => i := i + 1
     | _ => i := i + 1
-
   IO.println "BMLogic-Bench Oracle Validator"
   IO.println "=============================="
   IO.println s!"Input:  {inputPath}"
   IO.println s!"Output: {outputPath}"
   IO.println ""
-
   let contents ← IO.FS.readFile ⟨inputPath⟩
   let lines := contents.splitOn "\n" |>.filter (· ≠ "")
   IO.println s!"Read {lines.length} candidate records"
-
   let outHandle ← IO.FS.Handle.mk ⟨outputPath⟩ .write
   let mut validCount : Nat := 0
   let mut invalidCount : Nat := 0
@@ -296,16 +286,13 @@ def main (args : List String) : IO Unit := do
   let mut parseErrors : Nat := 0
   let mut alreadyLabeled : Nat := 0
   let mut processed : Nat := 0
-
   for line in lines do
     processed := processed + 1
     if processed % 100 == 0 then
       IO.println s!"  Progress: {processed}/{lines.length}"
-
     let isUnlabeled := strContains line "\"unlabeled\""
     let hasTimeout := strContains line "\"label\": \"timeout\""
     let needsLabeling := isUnlabeled || hasTimeout
-
     if !needsLabeling then
       outHandle.putStrLn line
       if strContains line "\"label\": \"valid\"" then
@@ -329,7 +316,6 @@ def main (args : List String) : IO Unit := do
         let cmStr := match labeled.countermodel with
           | none => "null"
           | some cm => cm.toJson
-
         -- Extract id from the input line
         let idParts := line.splitOn "\"id\": \""
         let recordId := if idParts.length >= 2 then
@@ -337,7 +323,6 @@ def main (args : List String) : IO Unit := do
           | some rest => (rest.splitOn "\"").head?.getD ""
           | none => s!"oracle-{processed}"
         else s!"oracle-{processed}"
-
         let outputLine := "{\"id\": \""
           ++ escapeJsonString recordId
           ++ "\", \"split\": \"benchmark\""
@@ -351,12 +336,10 @@ def main (args : List String) : IO Unit := do
           ++ ", \"metrics\": " ++ labeled.metrics.toJson
           ++ "}"
         outHandle.putStrLn outputLine
-
         match labeled.label with
         | .valid => validCount := validCount + 1
         | .invalid => invalidCount := invalidCount + 1
         | .timeout => timeoutCount := timeoutCount + 1
-
   IO.println ""
   IO.println "Results"
   IO.println "======="
