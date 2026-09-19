@@ -2013,9 +2013,14 @@ echo
 #   a documentation nicety into a thousand-site refactor with real regression risk.
 #   They are still covered by tier 1.
 #
-# A citation whose filename resolves to several live files, or to none (an archived
-# path, say), is reported as unverifiable rather than failed: the check will not
-# guess which file was meant.
+# A citation whose filename resolves to several live files, or to none, is reported
+# as unverifiable rather than failed: the check will not guess which file was meant.
+# Neither is an expected steady state. An ambiguous basename is fixed by qualifying
+# the path until it is unique (`ProofSystem/Axioms.lean:NNN`, not `Axioms.lean:NNN`).
+# A file outside the live tree (anything under `Boneyard/`, or a Mathlib source) is
+# cited by its path WITHOUT a line number plus the declaration name or a quoted
+# comment marker; such a citation carries no `:NNN`, so C20 does not read it, and it
+# cannot rot when the archive or a Mathlib bump reflows the target.
 # ---------------------------------------------------------------------------
 export ENFORCE_C20
 python3 - <<'PYEOF'
@@ -2119,7 +2124,8 @@ else:
 
 if unverifiable:
     inf("%d citation(s) name a filename that is ambiguous or resolves to no live file "
-        "(not checkable, not failed)" % len(unverifiable))
+        "(not checkable, not failed; qualify the path, or cite a non-live target by name "
+        "without a line number)" % len(unverifiable))
     for p, i, ref, num, why in unverifiable[:5]:
         note("%s:%d  ->  %s:%s  (%s)" % (p, i, ref, num, why))
 

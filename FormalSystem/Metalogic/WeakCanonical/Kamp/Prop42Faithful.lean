@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53FaithfulPast
 # Proposition 4.2 at the faithful Dedekind carrier (Rabinovich, PDF p.6)
 
 This module is the terminus of the faithful re-base. It discharges the contentful Proposition 4.2
-target `Prop42Contentful` (`Prop42Contentful.lean:151`) from `HasFaithfulDedekindINF`
+target `Prop42Contentful` (`Prop42Contentful.lean:152`) from `HasFaithfulDedekindINF`
 (`KPlusFaithful.lean:322`) **alone**, where the landed `prop42_contentful_of_attained`
-(`Section5Correspondence.lean:185`) needs `HasAttainedINF` **and** `HasAttainedSUP`.
+(`Section5Correspondence.lean:187`) needs `HasAttainedINF` **and** `HasAttainedSUP`.
 
 ## Source correspondence
 
@@ -78,7 +78,7 @@ below close the three failure modes, rather than asserting their absence:
    different statement. Same template as `lemma53Faithful_perPoint_is_VACUOUS`
    (`Lemma53Faithful.lean:354`).
 2. **`⊤`-collapsed witness.** Closed upstream by `topVVec_contentful_forces_unsat`
-   (`Prop42Contentful.lean:229`): offering the all-`⊤` formula as `v'` does not discharge
+   (`Prop42Contentful.lean:230`): offering the all-`⊤` formula as `v'` does not discharge
    `Prop42Contentful`, it commits the offerer to `v` being unsatisfiable on every ordered pair.
 3. **Hollow witness — the `∃ v'` hides which formula was built.** This is the failure mode specific
    to *this* phase: `prop42_contentful_of_faithful` is silent about the witness, so a construction
@@ -170,7 +170,7 @@ theorem prop42_witness_exposes_negFixFaithful {sig : MonadicSignature}
     (`KPlusFaithful.lean:322`) alone: no `HasDedekindSUP`, no `HasDedekindINF`, no `HasAttained*`.
     That is Rabinovich's eq (5.2) dichotomy stated at the **source's own** `K⁺` (his Definition
     (3), PDF p.3) — three strengthening steps weaker than `prop42_contentful_of_attained`
-    (`Section5Correspondence.lean:185`) and one step weaker than
+    (`Section5Correspondence.lean:187`) and one step weaker than
     `prop42_contentful_of_dedekind` below, which is now its corollary.
 
     **What this carrier excludes** (honesty charter Rule 6). It forbids exactly those structures
@@ -223,7 +223,7 @@ theorem prop42_contentful_of_dedekind {sig : MonadicSignature}
     from the previous pin.
 
     This is the faithful sibling of the role `prop42_contentful_of_attained`
-    (`Section5Correspondence.lean:185`) plays for the attained chain: it is what stops the
+    (`Section5Correspondence.lean:187`) plays for the attained chain: it is what stops the
     correspondence rotting into a chain of definitions nothing inhabits. The final conjunct is the
     part that makes it a guard rather than a carrier fact — it names `Prop42Contentful` itself,
     so a future weakening of the negation chain that made the target unreachable would break this

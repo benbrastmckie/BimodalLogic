@@ -99,10 +99,10 @@ theorem kvE_futAdmissible_zoneMark {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## Helper 2: self-zone coincidence (general environment)
 
 The production generalization of the probe's `kvE_probe_selfZone_coincide`
-(ExteriorPinnedProbeK.lean:181, C8 ingredient (a)): there the env was pinned and the fresh
-witness free; here the env is FREE (the shape `kvE_fiberPosOnShift_correct` delivers) and the
-fresh witness is the known endpoint — the same index-0 coupling trichotomy pins the env's
-`x1`-slot to the witness. -/
+(`FormalSystem/Boneyard/Kamp/KampWeakCanonical/ProbeIterations/ExteriorPinnedProbeK.lean`, C8
+ingredient (a)): there the env was pinned and the fresh witness free; here the env is FREE (the
+shape `kvE_fiberPosOnShift_correct` delivers) and the fresh witness is the known endpoint — the same
+index-0 coupling trichotomy pins the env's `x1`-slot to the witness. -/
 
 /-- **Self-zone coincidence**: the self-zone head coupling `(false, false)`
     (`kvEFutSelfZone`, ExteriorNegationK.lean:70) forces fresh/slot-0 coincidence on any

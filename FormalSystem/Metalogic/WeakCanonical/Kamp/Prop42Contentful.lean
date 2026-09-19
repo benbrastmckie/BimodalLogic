@@ -72,10 +72,11 @@ uniqueness** |
 
 ### `INF` is the witness-pinning mechanism (PDF pp.10-11)
 
-The recorded obstruction (`Boneyard/NegationIndep.lean:341-345`) is that the bracket's witnesses
-are existential, so "the IH gives negation on a specific sub-interval `(r₀, z₁)` but the bracket
-witness `w₀` could be `> r₀`, giving a different sub-interval `(w₀, z₁)`" — the arrangement
-varies per model.
+The recorded obstruction (the "B.1 gap remains UNFIXABLE" note after `neg_2var_vec_ea_indep_correct`
+in `FormalSystem/Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`) is that the
+bracket's witnesses are existential, so "the IH gives negation on a specific sub-interval `(r₀, z₁)`
+but the bracket witness `w₀` could be `> r₀`, giving a different sub-interval `(w₀, z₁)`" — the
+arrangement varies per model.
 
 Rabinovich never faces this, because he never leaves the arrangement existential. Page 11 states
 the decomposition that dissolves it: for the interval `(z₀,z₁)` non-empty,
@@ -129,9 +130,9 @@ level, via the disjunct `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` (p.
 
 ## Scope
 
-The bracket case is **not** attempted here, and must not be attempted at the `BracketFormula`
-level without the `INF` anchors above — that route is ruled unfixable by two independent
-in-tree analyses (`Boneyard/NegationIndep.lean:346-364`) and is a three-strikes target.
+The bracket case is **not** attempted here, and must not be attempted at the `BracketFormula` level
+without the `INF` anchors above — that route is ruled unfixable by two independent in-tree analyses
+(the "PHASE 3 RESOLUTION" note in `Boneyard/.../NegationIndep.lean`) and is a three-strikes target.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
@@ -235,7 +236,7 @@ theorem topVVec_contentful_forces_unsat {sig : MonadicSignature}
   fun z0 z1 hlt => (h z0 z1 hlt).mp (topVVec_holds M atomMap z0 z1)
 
 /-- The `VecEA2` block asserting only `¬a(z0)`: Case 1a of `neg_vecEA2_indep`
-    (`Boneyard/NegationIndep.lean:193`), and the left half of Lemma 5.1's Case 1 (PDF p.9,
+    (`Boneyard/.../NegationIndep.lean`), and the left half of Lemma 5.1's Case 1 (PDF p.9,
     `¬α₀(z₀)`). -/
 def endpointLeftNegBlock (a : TemporalPred) : VecEA2 0 :=
   { endpointLeft := a.neg
@@ -243,7 +244,7 @@ def endpointLeftNegBlock (a : TemporalPred) : VecEA2 0 :=
     bracket := BracketFormula.trivial TemporalPred.top }
 
 /-- The `VecEA2` block asserting only `¬b(z1)`: Case 1b of `neg_vecEA2_indep`
-    (`Boneyard/NegationIndep.lean:196`). -/
+    (`Boneyard/.../NegationIndep.lean`). -/
 def endpointRightNegBlock (b : TemporalPred) : VecEA2 0 :=
   { endpointLeft := TemporalPred.top
     endpointRight := b.neg

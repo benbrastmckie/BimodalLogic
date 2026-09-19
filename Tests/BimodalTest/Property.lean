@@ -51,7 +51,6 @@ Property tests are configured with:
 
 * [Property Testing Guide](../../docs/Development/PROPERTY_TESTING_GUIDE.md)
 * [Plausible Framework](https://github.com/leanprover-community/plausible)
-* [Research Report](../../specs/174_property_based_testing/reports/research-001.md)
 -/
 
 namespace BimodalTest.Property

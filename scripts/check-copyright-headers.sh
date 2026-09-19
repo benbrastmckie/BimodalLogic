@@ -2,7 +2,7 @@
 # Copyright-header checker for this project's Lean sources.
 #
 # WHY THIS EXISTS: Mathlib's `linter.style.header` cannot see this project.
-# Its gate, `isInLibraryRoot` (Mathlib/Tactic/Linter/Header.lean:259-264), looks for
+# Its gate, `isInLibraryRoot` (Mathlib/Tactic/Linter/Header.lean), looks for
 # `<root>.lean` relative to the CWD and asks whether that file *directly* imports the
 # module being linted. This project's lakefile sets `srcDir := "FormalSystem"`, so the root
 # lives at `FormalSystem.lean` and `./FormalSystem.lean` does not exist -- the linter
@@ -11,7 +11,7 @@
 # module. Hence a text-based checker.
 #
 # The predicate below mirrors Mathlib's `copyrightHeaderChecks`
-# (Mathlib/Tactic/Linter/Header.lean:182-249), which is the check cslib CI enforces.
+# (Mathlib/Tactic/Linter/Header.lean), which is the check cslib CI enforces.
 #
 # Usage:
 #   check-copyright-headers.sh [ROOT ...]        # report counts + write bucket lists

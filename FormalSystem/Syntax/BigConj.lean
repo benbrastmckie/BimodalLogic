@@ -24,10 +24,6 @@ rather than added here, keeping Phase 1 self-contained and `DerivationTree`-free
 
 - `bigconj : List Formula → Formula`
 - `negBigconj : List Formula → Formula`
-
-## References
-
-- Teammate A findings (specs/098/reports/03_teammate-a-findings.md §3.2)
 -/
 
 namespace FormalSystem.Syntax

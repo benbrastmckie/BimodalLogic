@@ -186,26 +186,26 @@ Put `c20.py` in a scratch directory, never in the repo.
 
 ---
 
-### Phase 4: Non-live targets by name (Boneyard, Mathlib, specs/) and record the convention [IN PROGRESS]
+### Phase 4: Non-live targets by name (Boneyard, Mathlib, specs/) and record the convention [COMPLETED]
 
 **Goal**: Convert the 13 UNRESOLVED citations and the 3+1 broken `specs/` citations to name-based citations with no line numbers (option 3), and record the convention in C20.
 
 **Tasks**:
-- [ ] List the exact citing sites of the 11 Boneyard citations from the extracted C20 INFO output: `NegationIndep.lean` x8, `RefutationF2.lean` x2 and `ExteriorPinnedProbeK.lean` x1.
-- [ ] Rewrite each Boneyard citation per the report's replacement table. Use the full `FormalSystem/Boneyard/Kamp/KampWeakCanonical/...` path (no `:NNN`) at least once per citing file. `Boneyard/.../X.lean` is acceptable for later mentions in the same file. Anchor each citation to its declaration or its quoted comment-block marker:
+- [x] List the exact citing sites of the 11 Boneyard citations from the extracted C20 INFO output: `NegationIndep.lean` x8, `RefutationF2.lean` x2 and `ExteriorPinnedProbeK.lean` x1.
+- [x] Rewrite each Boneyard citation per the report's replacement table. Use the full `FormalSystem/Boneyard/Kamp/KampWeakCanonical/...` path (no `:NNN`) at least once per citing file. `Boneyard/.../X.lean` is acceptable for later mentions in the same file. Anchor each citation to its declaration or its quoted comment-block marker:
   - `neg_vecEA2_indep` Case 1a / Case 1b.
   - The "B.1 gap remains UNFIXABLE" and "PHASE 3 RESOLUTION" / "CORRECTION" notes after `neg_2var_vec_ea_indep_correct`.
   - `f2sub1`/`f2sub2` and `f2_carrier_eq`.
   - `kvE_probe_selfZone_coincide`.
   - Confirm each quoted marker and declaration name exists in the archived file with `grep`.
-- [ ] `scripts/check-copyright-headers.sh` (:5, :14): drop `:259-264` and `:182-249`. Keep `` `isInLibraryRoot` `` / `` `copyrightHeaderChecks` `` (Mathlib/Tactic/Linter/Header.lean).
-- [ ] `FormalSystem/Syntax/BigConj.lean` (~:30): drop the `specs/098` bullet, and drop the `## References` heading if it becomes empty.
-- [ ] `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean` (~:44): replace `(specs/305 report 40 ...)` with `(a genuine violation of the ≤2-free-variable cap, Lemma 3.2(2))`. Optionally, name-cite the extension-less `VecEADecomp:233/244` and `KampPrior:307` at ~:39-41.
-- [ ] `FormalSystem/Syntax/MinusLanguage/Axioms.lean` (~:81-83): drop the `specs/archive/514_...` sentence. The `docs/reference/axiom-reference.md` § Paper Key Correspondence citation just before it remains the durable anchor; confirm that section still exists.
-- [ ] `Tests/BimodalTest/Property.lean` (~:54): drop the dead `specs/174_.../research-001.md` bullet.
-- [ ] In the C20 header comment in `scripts/check-module-invariants.sh`, add the convention sentence: citations of files outside the live tree (`Boneyard/`, Mathlib) name the declaration and give the path without a line number, and C20 does not read them. Also reword the INFO message so it no longer implies that archived-path citations are expected to remain, for example by dropping "an archived path, say". Change comments and message strings only; do not change resolver logic.
-- [ ] Run a repo-wide `grep -rn 'specs/[0-9]' FormalSystem Tests --include=*.lean` and confirm that no live docstring still cites a `specs/` path. Leave any hits outside this task's scope for a follow-up, and note them in the summary.
-- [ ] Run the extracted C20.
+- [x] `scripts/check-copyright-headers.sh` (:5, :14): drop `:259-264` and `:182-249`. Keep `` `isInLibraryRoot` `` / `` `copyrightHeaderChecks` `` (Mathlib/Tactic/Linter/Header.lean).
+- [x] `FormalSystem/Syntax/BigConj.lean` (~:30): drop the `specs/098` bullet, and drop the `## References` heading if it becomes empty.
+- [x] `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean` (~:44): replace `(specs/305 report 40 ...)` with `(a genuine violation of the ≤2-free-variable cap, Lemma 3.2(2))`. Optionally, name-cite the extension-less `VecEADecomp:233/244` and `KampPrior:307` at ~:39-41.
+- [x] `FormalSystem/Syntax/MinusLanguage/Axioms.lean` (~:81-83): drop the `specs/archive/514_...` sentence. The `docs/reference/axiom-reference.md` § Paper Key Correspondence citation just before it remains the durable anchor; confirm that section still exists.
+- [x] `Tests/BimodalTest/Property.lean` (~:54): drop the dead `specs/174_.../research-001.md` bullet.
+- [x] In the C20 header comment in `scripts/check-module-invariants.sh`, add the convention sentence: citations of files outside the live tree (`Boneyard/`, Mathlib) name the declaration and give the path without a line number, and C20 does not read them. Also reword the INFO message so it no longer implies that archived-path citations are expected to remain, for example by dropping "an archived path, say". Change comments and message strings only; do not change resolver logic.
+- [x] Run a repo-wide `grep -rn 'specs/[0-9]' FormalSystem Tests --include=*.lean` and confirm that no live docstring still cites a `specs/` path. Leave any hits outside this task's scope for a follow-up, and note them in the summary.
+- [x] Run the extracted C20. *(deviation: altered — to preserve line counts where many modules cite a file, some Boneyard citations use a shorter anchor: NegFix uses `Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean` (no `FormalSystem/` prefix) with the "PHASE 3 RESOLUTION" marker only; CarrierK1V uses "(a genuine ≤2-free-variable-cap violation, Lemma 3.2(2))". Prop42Contentful (+1 line) and Section5Correspondence (+2 lines) grew; their 8 inbound citations in Prop42Faithful.lean, NfMultiAnchorBridge.lean and Section5Correspondence.lean were shifted mechanically via a difflib line map (same target line content). The optional extension-less `VecEADecomp:233/244`, `KampPrior:307` in CarrierK1V were not converted. The INFO message now also says how to fix a row)*
 
 **Timing**: 1 hour
 

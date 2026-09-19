@@ -31,11 +31,11 @@ companion `.md` conversion, which is corrupt (drops displayed equations, inverts
 **Carrier delta.** `BracketFormula.negFix_iff` is **INF-anchored**: it assumes
 `HasAttainedINF`/`HasAttainedSUP`, which is strictly stronger than Rabinovich's Dedekind
 completeness — stronger even than `HasDefinableINF`, machine-refuted as already too strong by
-`hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`). It is therefore **not** a refutation of
-the ruling that the model-*independent* Prop 4.2 backward direction is unfixable at this level
-(`Boneyard/NegationIndep.lean:346-364`); it **confirms** that ruling's diagnosis, since the
-anchors are precisely what make the direction go through. Do not cite it as license for a bare
-model-independent attempt.
+`hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`). It is therefore **not** a refutation of the
+ruling that the model-*independent* Prop 4.2 backward direction is unfixable at this level (the
+"PHASE 3 RESOLUTION" note in `Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`);
+it **confirms** that ruling's diagnosis, since the anchors are precisely what make the direction go
+through. Do not cite it as license for a bare model-independent attempt.
 
 The case gates:
 

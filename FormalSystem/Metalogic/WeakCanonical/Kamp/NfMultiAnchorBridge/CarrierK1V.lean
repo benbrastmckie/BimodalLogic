@@ -41,11 +41,11 @@ Phases R2/R3 lift it to depth `k` threading the depth-`k` arity-1 point characte
 KampPrior:307, the E[Σ]-atom) as endpoint/interval types.
 
 **G6 (the v3 carrier guard) vs. G2 (do NOT conflate).** G2 bars a *projection-based `VecEA2` tower*
-that introduces a **third free anchor** (specs/305 report 40 — a genuine ≤2-cap violation). This
-carrier is a *two-anchor* bracket where the `VecEA2` is the Prop-3.5 bracket-**witness** structure:
-`{x,t}` are FIXED endpoints (2, not a third free anchor) and `w` is a bracket witness, never a third
-anchor (G4). Free-variable count is structurally ≤2 by the carrier type itself (Lemma 3.2(2)). The
-`VecEA2` shape alone does not violate G2; a *third free anchor* would.
+that introduces a **third free anchor** (a genuine ≤2-free-variable-cap violation, Lemma 3.2(2)).
+This carrier is a *two-anchor* bracket where the `VecEA2` is the Prop-3.5 bracket-**witness**
+structure: `{x,t}` are FIXED endpoints (2, not a third free anchor) and `w` is a bracket witness,
+never a third anchor (G4). Free-variable count is structurally ≤2 by the carrier type itself (Lemma
+3.2(2)). The `VecEA2` shape alone does not violate G2; a *third free anchor* would.
 
 This phase installs the carrier TYPE (so the arity-4 obstruction cannot re-form) and states the
 fixed-endpoint correctness signature, mirroring `nf_3var_bracket_xyt_correct` (VecEADecomp:244). The

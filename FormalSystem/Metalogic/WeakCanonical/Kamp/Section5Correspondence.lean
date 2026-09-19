@@ -156,19 +156,21 @@ structure disjunct (2) and its `K⁻` dual are provably dead
 non-attained Dedekind-complete frame class — the `ℝ` example above, as a frame class — is the next
 fidelity milestone and is owned by neither module.
 
-**Standing prohibition.** `BracketFormula.negFix_iff` (`NegFix.lean:669`) is **INF-anchored** —
-it assumes `HasAttainedINF`/`HasAttainedSUP`. It is therefore **not** a refutation of the ruling
-that the model-*independent* Prop 4.2 backward direction is unfixable at the `BracketFormula`
-level (`Boneyard/NegationIndep.lean:346-364`, and the concurring independent analysis). It
-**confirms** that ruling's diagnosis: the anchors are what make the direction go through. Neither
-this module nor the theorem below is license for a further bare attempt.
+**Standing prohibition.** `BracketFormula.negFix_iff` (`NegFix.lean:669`) is **INF-anchored** — it
+assumes `HasAttainedINF`/`HasAttainedSUP`. It is therefore **not** a refutation of the ruling that
+the model-*independent* Prop 4.2 backward direction is unfixable at the `BracketFormula` level (the
+B.1 / "PHASE 3 RESOLUTION" note after `neg_2var_vec_ea_indep_correct` in
+`FormalSystem/Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`, and the
+concurring independent analysis). It **confirms** that ruling's diagnosis: the anchors are what make
+the direction go through. Neither this module nor the theorem below is license for a further bare
+attempt.
 
 ## Non-vacuity is compiler-checked
 
 `Prop42Contentful` hoists `∃ v'` outside `∀ z0 z1`, which is the whole content — see
 `Prop42Contentful.lean`'s module docstring for why both weaker orderings are vacuous. The
 all-`⊤` escape hatch is closed by `topVVec_contentful_forces_unsat`
-(`Prop42Contentful.lean:217`): offering `topVVec` as `v'` does not discharge the goal, it commits
+(`Prop42Contentful.lean:218`): offering `topVVec` as `v'` does not discharge the goal, it commits
 the offerer to `v` being unsatisfiable on every ordered pair. The corresponding negative check —
 that the all-`⊤` term does **not** typecheck against `Prop42Contentful` — is recorded verbatim in
 this phase's handoff.
@@ -186,9 +188,9 @@ open FormalSystem.Metalogic.WeakCanonical
     `v.negFix` (`VecEANegFix.lean:135`), the Prop 4.3 De Morgan fold, and the biconditional is
     `VVecEA2.negFix_iff` (`VecEANegFix.lean:164`).
 
-    This is the milestone the faithful path had been missing since the
-    `Boneyard/NegationIndep.lean:357-364` fallback. It is reached by **wiring** the already-landed
-    Section 5 transcription to the already-landed target statement — no new mathematics.
+    This is the milestone the faithful path had been missing since the "PHASE 3 RESOLUTION" fallback
+    in `Boneyard/.../NegationIndep.lean`. It is reached by **wiring** the already-landed Section 5
+    transcription to the already-landed target statement — no new mathematics.
 
     **Carrier, stated because the rule requires it.** This is Prop 4.2 *restricted to attained
     structures*, **not** Rabinovich's Prop 4.2 over all Dedekind complete chains. `HasAttainedINF`

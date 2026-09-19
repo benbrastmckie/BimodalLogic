@@ -78,9 +78,7 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
   system under descriptive names, with each past mirror explicit where the paper derives it by TR.
   The constructor-by-constructor naming audit is **closed**: the key-to-constructor-to-mirror table
   is in `docs/reference/axiom-reference.md` § Paper Key Correspondence (a textual correspondence,
-  not a machine-checked equivalence). The audit was originally opened in §1.2 of the archived
-  report `01_definitional-review-and-closure.md`, under
-  `specs/archive/514_align_definitions_with_source_paper/reports/`.
+  not a machine-checked equivalence).
 
 **Bimodal Logic (`\S sub:Logic`) — interaction and derived perpetuity principles:**
 

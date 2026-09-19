@@ -94,18 +94,18 @@ import Mathlib.Data.List.Permutation
 -- (Rabinovich 2014, Lemma 5.1 Case 1, PDF p.9) and the Section 5 dependency map. Same
 -- reasoning as the Prop42Vacuity edge below: an unreachable target protects and records
 -- nothing. Cycle-free: Prop42Contentful imports only `...Kamp.VecEAFormula`.
--- NOTE: `import ...Kamp.Prop42Vacuity` lands the import edge that makes the Prop 4.2 vacuity
--- guard REACHABLE from `FormalSystem.lean`, so CI compiles it. This edge is the whole
--- point of that file: a guard sitting in an unreachable directory protects nothing (that is
--- precisely how the same finding, recorded at `Boneyard/NegationIndep.lean:357-364`, went
--- unread). Prop42Vacuity proves that the conclusion the now-deleted `neg_2var_vec_ea` /
--- `NavigatedSpine.reflatten_neg_step` pair carried — the latter having re-exported the former
--- from this file's neighborhood — follows from NO hypotheses, and so carries no content about
--- negation. Cycle-free: Prop42Vacuity imports only
--- `...Kamp.VecEAFormula`, already in this file's transitive closure via EANegationClosure;
--- nothing in VecEAFormula's closure imports this file. It is a leaf: no declaration here or
--- downstream consumes `prop42_conclusion_is_vacuous`, so the edge is inert to the build
--- beyond forcing the guard to compile.
+-- NOTE: `import ...Kamp.Prop42Vacuity` lands the import edge that makes the Prop 4.2 vacuity guard
+-- REACHABLE from `FormalSystem.lean`, so CI compiles it. This edge is the whole point of that file:
+-- a guard sitting in an unreachable directory protects nothing (that is precisely how the same
+-- finding, recorded in the "PHASE 3 RESOLUTION" note after `neg_2var_vec_ea_indep_correct` in
+-- `FormalSystem/Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`, went unread).
+-- Prop42Vacuity proves that the conclusion the now-deleted `neg_2var_vec_ea` /
+-- `NavigatedSpine.reflatten_neg_step` pair carried — the latter having re-exported the former from
+-- this file's neighborhood — follows from NO hypotheses, and so carries no content about negation.
+-- Cycle-free: Prop42Vacuity imports only `...Kamp.VecEAFormula`, already in this file's transitive
+-- closure via EANegationClosure; nothing in VecEAFormula's closure imports this file. It is a leaf:
+-- no declaration here or downstream consumes `prop42_conclusion_is_vacuous`, so the edge is inert
+-- to the build beyond forcing the guard to compile.
 -- NOTE: `import ...Kamp.EANegationClosure` lands the import edge
 -- authorized by plan v6 (report 05 §d, verified on paper; compile-verified this dispatch).
 -- Cycle-free: only KampPrior imports this file, and EANegationClosure's transitive closure
@@ -331,8 +331,8 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixLis
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.VecEANegFixFaithful
 -- NOTE: `import ...Kamp.Prop42Faithful` lands the import edge for the TERMINUS OF THE FAITHFUL
 -- RE-BASE (Rabinovich 2014, Proposition 4.2, PDF p.6): `prop42_contentful_of_faithful`, which
--- discharges the SAME contentful target `Prop42Contentful` (`Prop42Contentful.lean:151`) that
--- `prop42_contentful_of_attained` (`Section5Correspondence.lean:185`) discharges, but from
+-- discharges the SAME contentful target `Prop42Contentful` (`Prop42Contentful.lean:152`) that
+-- `prop42_contentful_of_attained` (`Section5Correspondence.lean:187`) discharges, but from
 -- `HasFaithfulDedekindINF` ALONE where that one needs `HasAttainedINF` AND `HasAttainedSUP`. p.6
 -- states Prop 4.2 "over Dedekind complete chains" in the statement itself, which is the fidelity
 -- point the whole re-base turns on. Two corollaries record the consequence and preserve every
