@@ -11,7 +11,7 @@ next_project_number: 627
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,560,563,568,589,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,560,563,568,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617 | 298,464,502,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -102,10 +102,6 @@ next_project_number: 627
 
 624 [NOT STARTED] — RESEARCH TASK, verdict-first: what the translation product...
 625 [NOT STARTED] — Formalize the manuscript's open-future and open-past...
-
-### Codebase Cleanup
-
-589 [PLANNED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
 ## Tasks
 
@@ -490,12 +486,13 @@ ACCEPTANCE: linter set enabled; `lake build` green; warning count within the rec
 
 ### 589. Disambiguate basename citations
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 588, Task 540, Task 597, Task 584, Task 591, Task 596
 - **Research**: [589_disambiguate_basename_citations/reports/02_citation-resolution-map.md]
 - **Plan**: [589_disambiguate_basename_citations/plans/02_citation-resolution-plan.md]
+- **Summary**: [589_disambiguate_basename_citations/summaries/02_citation-resolution-summary.md]
 
 **Description**: C20 tier 1 verifies 1,012 `file.lean:NNN` citations land on a real, non-blank line. A further 35 are unverifiable and the check reports them and moves on. They are precisely the citations most likely to be silently wrong -- a basename ambiguous to the checker is ambiguous to a reader too, and none has ever had its line number checked.
 

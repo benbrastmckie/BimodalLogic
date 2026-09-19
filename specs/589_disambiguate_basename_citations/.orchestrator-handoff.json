@@ -1,1 +1,10 @@
-{"status":"planned","summary":"Plan: 5 phases (4 parallel comment-only clusters + final gate); qualify+correct 22 live citations, name-cite 16 non-live targets, record C20 convention; target C20 INFO 0, tier 1 1028, tier 2 0.","artifacts":[{"type":"plan","path":"specs/589_disambiguate_basename_citations/plans/02_citation-resolution-plan.md","summary":"5-phase comment-only citation repair plan"}],"phases_completed":0,"phases_total":5,"blockers":[],"dispatch_seq":5,"phase":"plan","next_action_hint":"implement"}
+{
+  "dispatch_seq": 6,
+  "task_number": 589,
+  "status": "implemented",
+  "phases_completed": 5,
+  "phases_total": 5,
+  "artifacts": [{"type": "summary", "path": "specs/589_disambiguate_basename_citations/summaries/02_citation-resolution-summary.md", "summary": "C20 INFO 0; tier 1 PASS 1031 (1006+22+3 from split companion lists); tier 2 PASS; invariants and lake build green."}],
+  "next_action": "postflight: mark task 589 completed",
+  "notes": "Comment-only edits across 20 files; committed per phase (9656aaa2a, 1005f133d, 658a806c7, d12040cc1). Follow-up candidate: tier-1.5 name-near-line check for remaining wrong-but-passing citations."
+}
