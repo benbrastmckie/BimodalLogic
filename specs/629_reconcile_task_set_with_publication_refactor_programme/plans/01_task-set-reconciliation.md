@@ -205,34 +205,36 @@ showing all nine with the expected dependency arrays.
 
 ---
 
-### Phase 3: Revise, merge and annotate existing tasks [NOT STARTED]
+### Phase 3: Revise, merge and annotate existing tasks [COMPLETED]
 
 **Goal**: Apply every existing-task disposition, adjusted for Phase 1 findings.
 
 **Tasks**:
-- [ ] 604: `dependencies += [B, C]`; append note: drop `migrate_schema_v2.py` and
+- [x] 604: `dependencies += [B, C]`; append note: drop `migrate_schema_v2.py` and
       `standardize_metadata.py` (deleted by B) from its inventory; write the Lean-executable
-      inventory against `BimodalTools.*` paths.
-- [ ] 614: `dependencies += [E]`; append note narrowing scope to the 42 README files outside
-      the five XLanguage READMEs E refreshes.
-- [ ] 177: `dependencies += [F, G]` (keeping 428, 429, 430); append note: kept separate from G
+      inventory against `BimodalTools.*` paths. *(completed: deps -> [631,632])*
+- [x] 614: `dependencies += [E]`; append note narrowing scope to the 42 README files outside
+      the five XLanguage READMEs E refreshes. *(completed: deps -> [634])*
+- [x] 177: `dependencies += [F, G]` (keeping 428, 429, 430); append note: kept separate from G
       (residual scope is drift re-audit plus Axiom Reference, not citation-form work).
-- [ ] 178: `dependencies += [F]`; append note: examples cite names F renames; C also edits
-      `Examples/BimodalProofs.lean` imports (covered transitively).
-- [ ] 429: append `file_scope` note accepting the post-E path
+      *(completed: deps -> [428,429,430,635,636])*
+- [x] 178: `dependencies += [F]`; append note: examples cite names F renames; C also edits
+      `Examples/BimodalProofs.lean` imports (covered transitively). *(completed: deps -> [635])*
+- [x] 429: append `file_scope` note accepting the post-E path
       `Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean` (add it to
-      `file_scope` alongside the current path); no edge.
-- [ ] 563, 564, 565, 566, 567, 616, 617, 618: append citation-convention note (adopt
+      `file_scope` alongside the current path); no edge. *(completed)*
+- [x] 563, 564, 565, 566, 567, 616, 617, 618: append citation-convention note (adopt
       `* [Author, *Title*][key]` against root `references.bib` once G lands; migrate if drafted
-      first). No edge.
-- [ ] 610: merge into B — confirm again no artifacts, then abandon via the `/task --abandon`
+      first). No edge. *(completed: all 8 descriptions annotated, no dependency edges added)*
+- [x] 610: merge into B — confirm again no artifacts, then abandon via the `/task --abandon`
       mechanics (archive entry with `status: "abandoned"`, reason "merged into task B's scope",
-      removed from `active_projects`), using `state-write.sh` for both files.
-- [ ] Skip any edit whose target task Phase 1 found terminal; for a dep on a now-completed task,
-      omit the edge and note it in the summary.
-- [ ] Use `+=` / append only; never reassign arrays wholesale except dependency arrays built as
-      `(.dependencies // []) + [...] | unique`.
-- [ ] Regenerate TODO.md; commit `task 629 phase 3: reconcile open tasks with programme`.
+      removed from `active_projects`), using `state-write.sh` for both files. *(completed)*
+- [x] Skip any edit whose target task Phase 1 found terminal; for a dep on a now-completed task,
+      omit the edge and note it in the summary. *(completed: none of the named tasks were terminal, per Phase 1's fresh re-verification, so no edge was omitted on this ground)*
+- [x] Use `+=` / append only; never reassign arrays wholesale except dependency arrays built as
+      `(.dependencies // []) + [...] | unique`. *(completed: jq helper functions `add_dep`/`add_scope` used throughout)*
+- [x] Regenerate TODO.md; commit `task 629 phase 3: reconcile open tasks with programme`.
+      *(completed; deviation recorded below on the validate-state.sh verification line)*
 
 **Timing**: 1 hour
 
@@ -250,7 +252,18 @@ abandonment (610); confirm by listing each task's post-edit `dependencies` and d
 
 **Verification**:
 - `validate-state.sh` passes on `specs/state.json` and `specs/archive/state.json`.
-- 610 absent from `active_projects`, present in archive with abandonment reason.
+  *(deviation: altered — both files fail `validate-state.sh` for reasons pre-existing and
+  independent of this task's writes. `specs/state.json` carries 10 pre-existing FAIL items
+  (unknown top-level/entry fields such as `blockers`, `parent_task`, `researched`) present
+  identically before Phase 2/3's writes — confirmed by running `validate-state.sh` against the
+  pre-task-629 commit; this task's own writes add only advisory WARN-level `file_scope`
+  coarseness items, no new FAIL. `specs/archive/state.json` errors on `validate-state.sh`
+  because that script assumes the live `active_projects` schema and the archive file uses
+  `completed_projects`/`archived_projects` instead — confirmed identical against the archive
+  file's pre-task-629 content. Both are tool/schema-scope limitations that predate and are
+  independent of this task; treated as no-blocker per the plan's own "file_scope advisories
+  reviewed, not blocking" posture.)*
+- 610 absent from `active_projects`, present in archive with abandonment reason. *(completed)*
 
 ---
 

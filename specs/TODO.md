@@ -11,14 +11,14 @@ next_project_number: 639
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626,628,629,630,631 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,629,630,631 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633 | 298,464,502,563,568,630 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,634 | 231,465,497,564,565,616,626,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,635 | 428,498,499,500,634 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 410,501,636 | 125,429,635 | algebraic-representation, decidability, publication-quality |
+| 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,626,631,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,614,635 | 428,498,499,500,634 | algebraic-representation, decidability, documentation, ... |
+| 5 | 178,410,501,636 | 125,429,635 | algebraic-representation, decidability, formula-refactor, ... |
 | 6 | 411,637 | 410,636 | decidability, publication-quality |
 | 7 | 430,638 | 411,637 | decidability, publication-quality |
-| 8 | 177,412 | 430 | decidability, formula-refactor |
+| 8 | 177,412 | 430,636 | decidability, formula-refactor |
 | 9 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -72,14 +72,13 @@ next_project_number: 639
 
 ### Documentation
 
-610 [NOT STARTED] — Update remaining documentation references to lakefile.lean...
-614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
 626 [NOT STARTED] — Repair drifted manuscript citations in the L+ files and pin...
+614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
 
 ### Formula Refactor
 
-178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
 177 [NOT STARTED] — Update README.md, docs/, and FormalSystem/ module-level...
+178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
 
 ### Frame Extensions
 
@@ -368,6 +367,8 @@ DEPENDENCIES. Task 563 (interval site and behavior presheaf), task 564 (the Shea
 
 CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.
 
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
+
 ---
 
 ### 617. Reflection clause converse frame naturality
@@ -393,6 +394,8 @@ PAPER ANCHOR. The Reflection clauses of `def:behavior-presheaf` and `app:preshea
 DEPENDENCY. Task 563, for `Beh(F)` and `Int(D)`.
 
 CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.
+
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
 
 ---
 
@@ -423,25 +426,19 @@ DEPENDENCY. Task 563, which introduces `Int(D)`. If 563 lands the optional twist
 
 CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of every phase.
 
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
+
 ---
 
 ### 614. Refresh stale readme date stamps across
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: documentation
-- **Dependencies**: None
+- **Dependencies**: Task 634
 
 **Description**: readme-lint.sh reports 47 of 60 FormalSystem/README.md files with a stale or missing date stamp (stamp predates the directory's last git-committed change), left behind by the recent Syntax/Semantics language-family nesting, Metalogic import-cycle repair, and WorldHistory retarget work. Advisory only (readme-lint.sh exits RESULT: PASS regardless), but the drift is now wide enough to warrant a single sweep. Update each listed README's date stamp to reflect its directory's current state, and add a date line to the 3 files currently missing one (Metalogic/Conservativity/Star/README.md, Metalogic/Decidability/Verified/Termination/MintBound/README.md, Syntax/StarLanguage/README.md). See specs/reviews/review-2026-09-17.md's Low Priority Issues section for the full 47-file list. Purely mechanical; re-verify with scripts/readme-lint.sh after.
 
----
-
-### 610. Replace remaining lakefile lean mentions in docs
-- **Status**: [NOT STARTED]
-- **Task Type**: markdown
-- **Topic**: documentation
-- **Dependencies**: None
-
-**Description**: Update remaining documentation references to lakefile.lean now that the project uses lakefile.toml (package renamed to BimodalLogic): docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333. Task 578 skipped these because concurrent tasks held uncommitted edits in them; re-grep the tree for any other lakefile.lean or Logos package-name mentions.
+Reconciliation note (task 629): narrows to the 42 README files outside the five XLanguage READMEs task 634 (language-extension directories) merges away and refreshes in its own commit (Syntax/PlusLanguage/README.md, Syntax/MinusLanguage/README.md, Syntax/StarLanguage/README.md, Semantics/PlusLanguage/README.md, Semantics/MinusLanguage/README.md). Depends on task 634 so this task's sweep runs after those five are gone from their pre-merge paths.
 
 ---
 
@@ -449,9 +446,11 @@ CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of eve
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
-- **Dependencies**: None
+- **Dependencies**: Task 631, Task 632
 
 **Description**: Add zstd-compressed .jsonl dataset support across the data pipeline so large datasets can live on disk as .jsonl.zst. data/bmlogic-c7.jsonl was compressed to data/bmlogic-c7.jsonl.zst to reclaim disk space (17G -> 153M; lossless, sha256 of decompressed stream 4079d0a6b4310d417ae91999abcd581e5ebd9dacd4e9f3c33d1d9b3aa55f2704 verified identical; restore with `zstd -d data/bmlogic-c7.jsonl.zst`). Consumers that hardcode data/bmlogic-c7.jsonl are currently broken. Research first: (1) inventory every reader/writer of .jsonl datasets -- Python scripts (validate_benchmark.py, validate_datasets.py, verify_benchmark.py, migrate_schema_v2.py, standardize_metadata.py, curate_benchmark.py, curate_very_hard_plus.py, finalize_benchmark.py, validate_c5_dataset.py), shell scripts (run_dataset_generation.sh, export-training-data.sh, typst-machine-appendix.sh, typst-sync-check.sh), Lean executables under FormalSystem/Automation/*Main.lean, lakefile.lean, Tests/BimodalTest/Automation/ProofFirstTests.lean, data/hf-dataset/ tooling, and path fields in data/*_metadata.json; (2) choose the Python approach, e.g. one shared open_dataset() helper transparently handling .jsonl and .jsonl.zst (zstandard package vs zstd subprocess) and how that dependency is provided; (3) decide how Lean executables handle compressed data given Lean has no native zstd (IO.Process pipe through zstd, or shell-wrapper streaming via stdin/stdout) and whether generators should write .jsonl.zst directly; (4) reconcile with the Hugging Face Hub storage migration (task 257). Then implement, keeping plain .jsonl working, and verify every updated consumer against data/bmlogic-c7.jsonl.zst
+
+Reconciliation note (task 629): depends on task 631 (deliverable hygiene, deletes migrate_schema_v2.py and standardize_metadata.py -- drop these two from this task's own script inventory step) and on task 632 (BimodalTools split -- write the Lean-executable inventory step against BimodalTools.* paths directly, avoiding a second rewrite).
 
 ---
 
@@ -515,6 +514,8 @@ DEPENDENCY NOTE, NOW DISCHARGED. The language-name sync has landed: the file is 
 
 CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase.
 
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
+
 ---
 
 ### 566. Possible worlds clause hf as limit
@@ -530,6 +531,8 @@ EXISTING HOOK, to be used rather than rebuilt: over `D = Z` this connects to `Fr
 DEPENDS on the interval-site/presheaf cluster and on the Totality clause, since the limit construction consumes Totality.
 
 CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.1.
+
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
 
 ---
 
@@ -548,6 +551,8 @@ RECORD explicitly, rather than leaving it implicit in the proof terms, which cla
 HARD CONSTRAINT. Leave `PartialHistory` and the Extension Theorem themselves untouched. This task CONSUMES `thm:extension`; it does not restate, strengthen or reprove it. lake build FormalSystem must be green with no new sorry at the end of every phase.
 
 Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.1.
+
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
 
 ---
 
@@ -570,6 +575,8 @@ DEPENDENCY NOTE, NOW DISCHARGED. This formerly waited on the language-name sync.
 
 CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` sections 5.1 and 5.2.
 
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
+
 ---
 
 ### 563. Formalize interval site and behavior presheaf
@@ -591,6 +598,8 @@ OPTIONAL, only if cheap: `BD+` and the twisted-arrow category with `lem:interval
 WHY THIS FIRST. It is the cheapest task on the categorical front -- the theorems already exist -- and it gates the Sheaf, Totality/Directed Gluing, Possible Worlds and Determinism clauses. Background and the full `app:Structure`-to-tree dictionary: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.1.
 
 CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase.
+
+Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
 
 ---
 
@@ -917,6 +926,8 @@ structural reason the anchor does, so weakening only the anchor buys nothing) --
 re-attempt it. This addendum names a recommendation; it does not narrow the task's own account of
 all three routes and their obligations above, which stands as written.
 
+Reconciliation note (task 629): task 634 (language-extension directories and probe tests) relocates this task's cited Tests/BimodalTest/TemporalWitnessProbe.lean to Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean (added to this task's file_scope above). No dependency edge in either direction: at execution time, check whether task 634 has landed and adjust the path accordingly.
+
 ---
 
 ### 428. Engine totality at a quantified branch budget
@@ -1191,7 +1202,7 @@ without depending on agent-system context at all.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 635
 
 **Description**: Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness and completeness on a concrete formula, plus decidability of the propositional fragment (genuinely complete today, per the soundness/completeness metatheory's axiom-clean status). Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.
 
@@ -1209,13 +1220,15 @@ propositional-fragment case (genuinely decidable today) rather than the full log
 decidability example remains gated on the decidability/tableau front (410-465,
 480-482) landing.
 
+Reconciliation note (task 629): depends on task 635 (Expressiveness extraction), which renames the Kamp-named results this task cites. Task 632 (BimodalTools split) also edits Examples/BimodalProofs.lean's imports; that overlap is covered transitively via task 635's own dependency chain (635 <- 634 <- {632,633}), so no separate edge to 632 is added here.
+
 ---
 
 ### 177. Update readme and module docstrings
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 428, Task 429, Task 430
+- **Dependencies**: Task 428, Task 429, Task 430, Task 635, Task 636
 
 **Description**: Update README.md, docs/, and FormalSystem/ module-level docstrings to their final post-refactor state, once the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. This is the final polish pass, distinct from and run after task 472's already-completed immediate correction pass. Explicitly excludes: every item task 472 already corrected (the Decidability.lean Status block, Verified/README.md, FMP/README.md, DecisionProcedure.lean's decideAuto docstring, Verified/Decidable.lean's Status docstring, WeakCanonical.lean, RealModel/ShuffleReal.lean, Soundness.lean, PriorExpressivenessDense.lean) and the two Kamp files task 473 already swept (Kamp/EANegationClosure.lean, NfMultiAnchorBridge/NavigatedSpine.lean). This task's residual content is: re-auditing all touched documentation for drift accumulated during the decidability chain's landing (472/473 audited a snapshot; the chain's remaining tasks will touch further files after 472/473 ran), and the Axiom Reference update the charter names as part of 177's original scope.
 
@@ -1223,6 +1236,8 @@ REALIGNMENT NOTE (task 468, 2026-08-25, verdict per specs/468_realign_task_progr
 
 === DEPENDENCY ADDED 2026-09-01 ===
 Task 530 (documentation single source of truth + theorem index, from specs/reviews/review-2026-09-01-lean-engineering.md) is the UN-GATED metalogic half of this charter and is now a dependency; this task remains the gated post-decidability-chain pass and its residual shrinks to re-auditing drift the decidability chain introduces plus the Axiom Reference update.
+
+Reconciliation note (task 629): gains dependencies on task 635 (Expressiveness extraction) and task 636 (docstring and citation normalisation), in addition to its existing 428/429/430 dependencies. Kept separate from task 636 rather than merged: this task's residual scope (re-auditing documentation drift the decidability chain introduces, plus the Axiom Reference update) is materially different from task 636's citation-form/bibliography normalisation work.
 
 ---
 

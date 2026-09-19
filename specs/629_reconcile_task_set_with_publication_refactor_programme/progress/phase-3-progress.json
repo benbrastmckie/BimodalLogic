@@ -1,0 +1,28 @@
+{
+  "phase": 3,
+  "phase_name": "Revise, merge and annotate existing tasks",
+  "started_at": "2026-09-19T10:15:00Z",
+  "last_updated": "2026-09-19T10:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "604 dependencies+=[631,632] and note", "status": "done", "files_touched": ["specs/state.json"]},
+    {"id": 2, "description": "614 dependencies+=[634] and note", "status": "done", "files_touched": ["specs/state.json"]},
+    {"id": 3, "description": "177 dependencies+=[635,636] and note", "status": "done", "files_touched": ["specs/state.json"]},
+    {"id": 4, "description": "178 dependencies+=[635] and note", "status": "done", "files_touched": ["specs/state.json"]},
+    {"id": 5, "description": "429 file_scope append post-E path", "status": "done", "files_touched": ["specs/state.json"]},
+    {"id": 6, "description": "563-567,616-618 citation-convention note", "status": "done", "files_touched": ["specs/state.json"]},
+    {"id": 7, "description": "610 merge into 631, abandon via archive mechanics", "status": "done", "files_touched": ["specs/state.json", "specs/archive/state.json"]},
+    {"id": 8, "description": "Regenerate TODO.md, commit phase 3", "status": "done", "files_touched": ["specs/TODO.md"]}
+  ],
+  "current_objective": 8,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.verification",
+      "description": "validate-state.sh passes on specs/state.json and specs/archive/state.json",
+      "type": "altered",
+      "reason": "Both files fail validate-state.sh for reasons pre-existing and independent of task 629's writes: state.json carries 10 pre-existing unknown-field FAIL items (confirmed identical against the pre-task-629 commit); archive/state.json uses a completed_projects/archived_projects schema validate-state.sh does not support at all (confirmed identical against the pre-task-629 archive content). Task 629's own writes add zero new FAIL items, only advisory file_scope-coarseness WARNs.",
+      "annotation": "*(deviation: altered — both files fail validate-state.sh for reasons pre-existing and independent of this task's writes ...)*"
+    }
+  ]
+}
