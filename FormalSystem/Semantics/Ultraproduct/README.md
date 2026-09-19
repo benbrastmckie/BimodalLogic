@@ -18,7 +18,7 @@ set quantifies over its own carrier, where `TruthAt` quantifies over possible wo
 | File | Lines | Description |
 |------|------:|-------------|
 | `Carrier.lean` | 302 | <!-- TODO: add description --> |
-| `IndexFilter.lean` | 97 | <!-- TODO: add description --> |
+| `IndexFilter.lean` | 99 | <!-- TODO: add description --> |
 | `Los.lean` | 160 | <!-- TODO: add description --> |
 | `ShiftSetProduct.lean` | 134 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
