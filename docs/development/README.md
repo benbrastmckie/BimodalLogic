@@ -42,6 +42,7 @@ Directory structure and documentation patterns:
 |----------|-------------|
 | [MODULE_ORGANIZATION.md](MODULE_ORGANIZATION.md) | Directory structure and namespace patterns |
 | [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md) | The scripted structural gate: what `scripts/check-module-invariants.sh` checks and how to extend it |
+| [PUBLICATION_REFACTOR.md](PUBLICATION_REFACTOR.md) | The dependency-ordered refactor programme to publication standard: convention map, target layout, templates, measurements, phases and follow-up split |
 | [DIRECTORY_README_STANDARD.md](DIRECTORY_README_STANDARD.md) | README documentation standard for directories |
 
 ## Contribution Workflow

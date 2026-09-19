@@ -338,7 +338,7 @@ the pair is expected to be present, so its disappearance is a finding.
 
 `scripts/measure-refactor-partitions.py` is the second sibling, with the same posture: not wired
 into the harness, run directly, its own exit code. It regenerates every structural count the
-publication refactor programme (`PUBLICATION_REFACTOR.md` in this directory) and ADR-011
+publication refactor programme ([PUBLICATION_REFACTOR.md](PUBLICATION_REFACTOR.md)) and ADR-011
 depend on, so that none of them is ever typed: the upward import edges through the layer table,
 the `Metalogic/WeakCanonical/` partition into the proposed `Metalogic/Expressiveness/` set and the
 residual, the Automation modules the library actually needs against the dataset tooling, and the

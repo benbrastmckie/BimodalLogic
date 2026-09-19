@@ -174,13 +174,14 @@ the script's output supersedes the report wherever they differ, and the differen
 
 ---
 
-### Phase 2: Programme document [NOT STARTED]
+### Phase 2: Programme document [COMPLETED]
 
 **Goal**: Land the refactor programme as a durable `docs/` record that the follow-up tasks
 and external readers can cite, satisfying the harness's markdown checks.
 
 **Tasks**:
-- [ ] Create `docs/development/PUBLICATION_REFACTOR.md` with these sections, in order:
+- [x] Create `docs/development/PUBLICATION_REFACTOR.md` with these sections, in order:
+      *(completed — convention map transcribed at 23 rows, the report's actual count, not 26)*
       1. **Purpose and status** (what "publication standard" means here: upstream
          `leanprover/cslib` and Mathlib surface; the fork `benbrastmckie/cslib` is a partial
          model only, because it tracks `specs/`, `.claude/`, `.memory/`).
@@ -222,12 +223,14 @@ and external readers can cite, satisfying the harness's markdown checks.
          - Phase 9 (optional, post-publication)
          Each description must be self-contained (no reference to this task's number) and
          name its acceptance checks.
-- [ ] Add a row for the document to `docs/development/README.md`'s table.
+- [x] Add a row for the document to `docs/development/README.md`'s table.
 - [ ] If any fully-qualified `FormalSystem/...` hypothetical path is unavoidable, add it to
       `scripts/markdown-slash-path-allowlist.txt` with a comment naming the programme phase
-      that makes it real.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build`; fix every C5/C12/C13/C18
-      finding before committing.
+      that makes it real. *(deviation: skipped — no hypothetical full path was needed; every
+      future path is written relative to the library root, so the allowlist stays empty)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build`; fix every C5/C12/C13/C18
+      finding before committing. *(completed — one C12 finding, `Logos/ProofChecker` matching
+      the pre-merge `Logos/` root pattern, reworded; exit 0 afterwards; `readme-lint.sh` PASS)*
 
 **Timing**: 2 hours
 
