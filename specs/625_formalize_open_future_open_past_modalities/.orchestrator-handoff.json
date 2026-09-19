@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 2,
+  "summary": "Research report written. The open-future/open-past relations already exist as AgreeUpTo/AgreeFrom in PlusPasting.lean; FrameOver.ofStep supplies the finite refutation frame with every TaskFrame field; two green probes compile the HN separating pair against the live PlusTruthAt and a full FrameOver.rev time reversal (rev rev = id by rfl). Recommendation: an extension language OpenFormula (L+ plus ofut/opast) in Semantics/OpenLanguage/ with one sibling aggregator, using the TruthClauses/ValidityLayer extension contracts; five phases proposed.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md",
+      "summary": "Research report: live-definition inventory, manuscript extraction, compiled probe results, argued design decision, module layout, phase decomposition, gate obligations."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/625_formalize_open_future_open_past_modalities/probes/01_sink-frame-hn-refutation.lean",
+      "summary": "Green probe: three-state frame via FrameOver.ofStep, HN-stab refutation against PlusTruthAt, NF fallback, open-future validity in pure and mixed form, open-not-stab witness."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/625_formalize_open_future_open_past_modalities/probes/02_frame-reversal.lean",
+      "summary": "Green probe: FrameOver.rev with all four axiom fields, rev rev = id by rfl, revHist, AgreeUpTo <-> AgreeFrom under reversal."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "Dispatch the plan phase; the report's Recommendations section carries the proposed module layout, statement names, and five-phase decomposition."
+}

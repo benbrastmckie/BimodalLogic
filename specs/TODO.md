@@ -100,7 +100,7 @@ next_project_number: 627
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-625 [RESEARCHING] — Formalize the manuscript's open-future and open-past...
+625 [RESEARCHED] — Formalize the manuscript's open-future and open-past...
 
 ## Tasks
 
@@ -121,10 +121,11 @@ CONSTRAINTS. Docstring and documentation edits only: no declaration, statement o
 ---
 
 ### 625. Formalize open future open past modalities
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md]
 
 **Description**: Formalize the manuscript's open-future and open-past modalities and machine-check, in the library, that the stability modal is NOT Ockhamist historical necessity while the open-future modality is.
 

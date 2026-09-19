@@ -20,14 +20,39 @@
     {
       "project_number": 625,
       "project_name": "formalize_open_future_open_past_modalities",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Formalize the manuscript's open-future and open-past modalities and machine-check, in the library, that the stability modal is NOT Ockhamist historical necessity while the open-future modality is.\n\nWHY. /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex distinguishes three restricted modals in its live text (subsection Restricted Modalities, the paragraphs introducing the stability clause and the items labelled Open Futures and Open Pasts, near lines 1153-1185): stability quantifies over <tau>_x = histories through the present world STATE at x; the open-future operator over |tau>_x = histories agreeing with tau at every y <= x; the open-past operator over <tau|_x = histories agreeing with tau at every y >= x. Only the first is formalized (PlusTruthAt). Two research rounds on completeness for the stability modal (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03 and 04) went wrong and were then corrected on exactly this point: branching-time (Ockhamist) necessity corresponds to the open-future operator, not to stability, so proof steps that rely on shared pasts do not transfer. Landing the distinction as library theorems stops it being rediscovered.\n\nALREADY PROVED, sorry-free, in a mirror of PlusTruthAt over an arbitrary ordered abelian group -- read before planning, the work is siting and restating against the live definitions, not discovery: specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/04_semantics-native-general-duration.lean section HN: hnStab (the Ockhamist axiom P alpha -> box P diamond alpha transposed to stability), hn_stab_refuted (it FAILS for stability on a three-state integer-time frame R3 with histories sigma3, rho3 that meet at the present state and share no past; R3_comp gives Compositionality), hn_open (the same principle HOLDS when the necessity ranges over |tau>_x), stab_imp_open (<tau>_x contains |tau>_x, so stability is the stronger necessity). NOTE the probe states hn_open semantically, with the open-future class written out as a hypothesis; it has no open-future constructor. Report 04 section 2 has the prose contrast with Ockhamist trees, bundled trees and T x W frames.\n\nDELIVER. (1) Definitions of the three history classes over the live WorldHistory / TaskFrame, with the inclusions |tau>_x subset <tau>_x subset H_F and <tau|_x subset <tau>_x, each class an equivalence class of an explicit relation. (2) Truth clauses for the open-future and open-past operators. DESIGN DECISION FOR THE PLAN, to be argued not assumed: either a small extension language with two new constructors (cost: a new truth recursion and every recursion over the formula type), or semantic operators on truth sets with no syntax (cost: the results cannot be stated as validities of formulas). Recommend the cheaper option that still lets (3) be stated as a validity and a refutation. Do NOT add constructors to PlusFormula, PlusAxiom or PlusDerivationTree. (3) The separating pair against the live semantics: the Ockhamist principle valid for the open-future operator over every task frame; its stability transposition refuted on a concrete frame that satisfies EVERY field of the live TaskFrame structure (the probe checks Compositionality only -- the remaining fields, Saturation included, are this task's work; a finite-state integer-time frame should get Saturation from the existing finite-fibre lemma). (4) The time-reversal mirror for the open-past operator via the repository's reflect machinery. (5) S5 for each operator and the strength ordering box => stability => open-future, with the failure of each converse witnessed.\n\nOUT OF SCOPE: any axiomatization or completeness claim for the new operators; the nomic operator; the world registers. Record those three as manuscript operators without a formalization in the module docstring.\n\nSITING. Under FormalSystem/Semantics/, below Truth.lean in the module layering so the existing assert_not_exists on the proof system still holds; one directory with one sibling aggregator; every module in the root closure (check-module-invariants C24). Docstrings cite manuscript LABELS or quotable phrases, never line numbers, and no task numbers.\n\nCONSTRAINTS: lake build FormalSystem green and no new sorry at the end of every phase; axiom pins on the headline theorems. DEPENDENCIES: none. Related, not blocking: 559 (completeness research), 624 (what the object languages can see of a task frame).",
       "topic": "semantics",
       "dependencies": [],
       "created": "2026-09-19T00:49:20Z",
-      "last_updated": "2026-09-19T03:26:05Z",
-      "session_id": "sess_1789788351_40a508_625"
+      "last_updated": "2026-09-19T03:51:20Z",
+      "session_id": "sess_1789788351_40a508",
+      "file_scope": [
+        "FormalSystem/FormalSystem.lean",
+        "FormalSystem/Semantics/Frames/README.md",
+        "FormalSystem/Semantics/OpenLanguage.lean",
+        "FormalSystem/Semantics/OpenLanguage/OpenClasses.lean",
+        "FormalSystem/Semantics/OpenLanguage/OpenFormula.lean",
+        "FormalSystem/Semantics/OpenLanguage/OpenOckhamist.lean",
+        "FormalSystem/Semantics/OpenLanguage/OpenReversal.lean",
+        "FormalSystem/Semantics/OpenLanguage/OpenTruth.lean",
+        "FormalSystem/Semantics/OpenLanguage/OpenValidity.lean",
+        "FormalSystem/Semantics/OpenLanguage/README.md",
+        "FormalSystem/Semantics/README.md",
+        "Tests/BimodalTest/Semantics/README.md",
+        "Tests/BimodalTest/Semantics/ValidityLayerTest.lean",
+        "docs/reference/paper-definitions-of-record.md",
+        "scripts/check-module-invariants.sh"
+      ],
+      "artifacts": [
+        {
+          "path": "specs/625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md",
+          "type": "report",
+          "summary": "Research report: live-definition inventory, manuscript extraction, compiled probe results, argued design decision, module layout, phase decomposition, gate obligations."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 624,

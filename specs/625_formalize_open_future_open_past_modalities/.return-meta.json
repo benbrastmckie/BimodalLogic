@@ -1,0 +1,54 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-19T03:26:29Z",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md",
+      "summary": "Sites the open-future/open-past modalities against the live WorldHistory/TaskFrame/PlusTruthAt definitions: AgreeUpTo/AgreeFrom already exist, FrameOver.ofStep gives the finite refutation frame with every field, the HN separating pair and a full FrameOver.rev time reversal are compiled in two green probes; argues for an extension language OpenFormula in Semantics/OpenLanguage/ and lays out a five-phase plan."
+    }
+  ],
+  "next_steps": "Run the plan phase: five phases (classes; formula+truth; validity+sink frame+HN pair; reversal+mirrors; wrap-up with C14 pins, README rows, ValidityLayerTest pins).",
+  "proposed_file_scope": [
+    "FormalSystem/Semantics/OpenLanguage.lean",
+    "FormalSystem/Semantics/OpenLanguage/README.md",
+    "FormalSystem/Semantics/OpenLanguage/OpenClasses.lean",
+    "FormalSystem/Semantics/OpenLanguage/OpenFormula.lean",
+    "FormalSystem/Semantics/OpenLanguage/OpenTruth.lean",
+    "FormalSystem/Semantics/OpenLanguage/OpenValidity.lean",
+    "FormalSystem/Semantics/OpenLanguage/OpenReversal.lean",
+    "FormalSystem/Semantics/OpenLanguage/OpenOckhamist.lean",
+    "FormalSystem/FormalSystem.lean",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Semantics/Frames/README.md",
+    "docs/reference/paper-definitions-of-record.md",
+    "scripts/check-module-invariants.sh",
+    "Tests/BimodalTest/Semantics/ValidityLayerTest.lean",
+    "Tests/BimodalTest/Semantics/README.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "A fully axiomatized finite ZTime task frame costs one call: FrameOver.ofStep (IntNormalForm.lean) discharges comp/serial/limit/saturation from a bi-serial one-step relation on a finite nonempty carrier. Declare the frame as an abbrev (a def leaves F.WorldState unreduced and every downstream statement fails), give a hand Fintype instance (no deriving handler), and build histories with worldHistoryOfStepPath from an IsStepPath proof.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/probes/01_sink-frame-hn-refutation.lean",
+      "confidence": 0.85,
+      "suggested_keywords": ["ofStep", "finite frame", "refutation", "abbrev", "IsStepPath", "task frame"]
+    },
+    {
+      "content": "TruthAntiIso carries only atom-level agreement and cannot transport a stab-like clause (needs state-level compatibility); L+ time_reflection soundness instead carries phi and phi.reflectTime together. A semantic time reversal FrameOver.rev (PosRel w x u := PosRel u x w) with all four axiom fields, rev rev = id by rfl, and AgreeUpTo <-> AgreeFrom under reversal compiles in ~80 lines and matches the manuscript's lem:time-reflection.",
+      "category": "PATTERN",
+      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/probes/02_frame-reversal.lean",
+      "confidence": 0.8,
+      "suggested_keywords": ["time reversal", "FrameOver.rev", "TruthAntiIso", "reflectTime", "lem:time-reflection"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789788351_40a508_625",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 840,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings_count": 9
+  }
+}
