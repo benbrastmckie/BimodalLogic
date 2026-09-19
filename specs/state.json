@@ -9,12 +9,12 @@
     {
       "project_number": 627,
       "project_name": "research_cslib_lean_engineering_refactor_plan",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Research https://github.com/benbrastmckie/cslib as a reference model for Lean engineering practice, and produce a systematic refactoring plan to bring this repository (BimodalLogic / FormalSystem) up to publication standard. Research first; the report should end in a phased, dependency-ordered refactor programme that can be split into follow-up tasks.\n\nSURVEY CSLIB FOR: (1) library/package layout and lakefile structure (lean_lib split, what is and is not in the default target, executables, test library); (2) namespace discipline and the file-path-to-namespace convention; (3) public API surface: what is exported, aggregator modules, private/protected usage, naming conventions; (4) module docstrings, declaration docstrings, and in-proof comment style; (5) citation and reference conventions (how papers are cited in docstrings, bibliography files, references section format); (6) license and copyright headers, CITATION/authors metadata; (7) linters, CI, style gates, and contribution/README conventions; (8) test organisation.\n\nCOMPARE AGAINST THIS REPO'S KNOWN STRUCTURAL ISSUES (from a file-tree review on 2026-09-19): (a) upward layering edges beyond the two documented in ORGANISATION.md -- Syntax/Formula.lean and Semantics/Truth.lean import Automation.TruthNormAttr; Metalogic/Algebraic/BooleanStructure.lean imports Automation.Tactics.PropDecide; Decidability imports ProofSearch.Core/Strategies, Normalization, DataExport; (b) 12 of 13 lean_exe targets are ML/dataset tooling rooted in FormalSystem.Automation, so `import FormalSystem` pulls training infrastructure -- candidate split into a separate lean_lib; (c) Metalogic/WeakCanonical/ is 132k lines (56% of Metalogic), 78k of it the Kamp expressive-completeness proof plus EFGames/Expressiveness, so the directory name misdescribes its content; ADR-006 declined a physical regroup because of the BXCanonical<->WeakCanonical directory cycle -- reassess in light of cslib practice; (d) ~25 live files over 1,700 lines with longFile exemptions (largest: EFGames/GapDetection.lean 5,092, Expressiveness/SplitPoint.lean 4,906); (e) Boneyard/ (169 files, 92k lines, all sorries) lives inside FormalSystem/ -- ADR-009 keeps it, but its rationale cites the LaTeX edition that latex/README.md marks frozen; (f) loose *Probe.lean and Trace* tests at the Tests/BimodalTest/ root instead of mirroring library directories; (g) non-deliverable content tracked or shipped: specs/, CLAUDE.md, .claude-extensions.json, personal absolute paths in docs, internal 'Logos'/'ProofChecker' naming in README/CITATION.cff/examples/tests, duplicate frozen LaTeX manual with tracked PDF, internal docs/research notes, one-off migration scripts in scripts/.\n\nDELIVER: a report mapping each cslib convention to its current state here (adopt / already matches / deliberately diverge, with reasons), a concrete target layout (directory tree + lakefile targets + namespace map), header/license/citation templates to adopt, and a phased refactor plan where every phase keeps `lake build` green and scripts/check-module-invariants.sh passing, with explicit handling of the existing ADRs (006, 009) -- either reaffirm or propose superseding ADRs. Identify which phases change paths or names that external readers would cite, so those land before publication. Do not modify FormalSystem/ or Tests/ in this task.",
       "topic": "publication-quality",
       "created": "2026-09-19T05:43:05Z",
-      "last_updated": "2026-09-19T06:40:50Z",
+      "last_updated": "2026-09-19T07:03:24Z",
       "session_id": "sess_1789799001_60286d",
       "artifacts": [
         {
@@ -26,9 +26,18 @@
           "path": "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
           "type": "plan",
           "summary": "4-phase plan: measurement tooling, programme document, ADR-010/011 drafts, full gate and summary"
+        },
+        {
+          "path": "specs/627_research_cslib_lean_engineering_refactor_plan/summaries/01_cslib-refactor-plan-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with reconciled measurements, discrepancies against the report, verification results and the follow-up task list."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Committed a leading-import graph library and a measurement script reproducing every structural count the refactor programme depends on (with a --check pre-move gate), landed the programme as docs/development/PUBLICATION_REFACTOR.md with nine paste-ready follow-ups, and wrote Proposed ADR-010 and ADR-011 cross-linked from ADR-009 and ADR-006. No FormalSystem/ or Tests/ file modified; both builds, the full invariant harness and the cycle check are green.",
+      "roadmap_items": [
+        "Phase 5: Publication and Documentation"
+      ]
     },
     {
       "project_number": 626,

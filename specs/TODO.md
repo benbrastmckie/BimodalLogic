@@ -11,7 +11,7 @@ next_project_number: 628
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626,627 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617 | 298,464,502,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -97,10 +97,6 @@ next_project_number: 628
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
-### Publication Quality
-
-627 [PLANNED] — Research https://github.com/benbrastmckie/cslib as a...
-
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
@@ -109,12 +105,13 @@ next_project_number: 628
 ## Tasks
 
 ### 627. Research cslib lean engineering refactor plan
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [627_research_cslib_lean_engineering_refactor_plan/reports/01_cslib-refactor-plan.md]
 - **Plan**: [627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md]
+- **Summary**: [627_research_cslib_lean_engineering_refactor_plan/summaries/01_cslib-refactor-plan-summary.md]
 
 **Description**: Research https://github.com/benbrastmckie/cslib as a reference model for Lean engineering practice, and produce a systematic refactoring plan to bring this repository (BimodalLogic / FormalSystem) up to publication standard. Research first; the report should end in a phased, dependency-ordered refactor programme that can be split into follow-up tasks.
 

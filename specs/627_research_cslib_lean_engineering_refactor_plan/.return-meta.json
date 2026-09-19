@@ -1,40 +1,108 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "started_at": "2026-09-19T06:41:38Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_grep_raw": 1,
+    "vacuous_review": "Single-line grep hit is FormalSystem/Examples/TemporalStructures.lean `int_domain_universal := trivial`: a pre-existing genuine proof of Set.univ membership (file last changed 2026-09-18, before this dispatch); no .lean file was touched by this task.",
+    "axiom_count": 12,
+    "axiom_count_baseline": 12,
+    "build_passed": true,
+    "build_detail": "lake build exit 0; lake build BimodalTest exit 0 (guarded, detached); bash scripts/check-module-invariants.sh ALL CHECKS PASSED exit 0; bash scripts/check-metalogic-cycles.sh exactly 1 cycle exit 0; scripts/readme-lint.sh PASS"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
-      "summary": "4-phase plan landing the cslib-referenced refactor programme durably: committed partition-measurement script, docs/development/PUBLICATION_REFACTOR.md, Proposed ADR-010/ADR-011, full gate; no FormalSystem/ or Tests/ edits."
+      "type": "summary",
+      "path": "specs/627_research_cslib_lean_engineering_refactor_plan/summaries/01_cslib-refactor-plan-summary.md",
+      "summary": "Implementation summary with reconciled measurements, discrepancies against the report, verification results and the follow-up task list."
+    },
+    {
+      "type": "implementation",
+      "path": "docs/development/PUBLICATION_REFACTOR.md",
+      "summary": "The nine-phase publication refactor programme with convention map, target layout, templates, measurements and paste-ready follow-ups."
+    },
+    {
+      "type": "implementation",
+      "path": "scripts/measure-refactor-partitions.py",
+      "summary": "Re-runnable structural measurements and the Expressiveness pre-move --check gate."
+    },
+    {
+      "type": "implementation",
+      "path": "docs/architecture/ADR-011-Extract-Expressiveness.md",
+      "summary": "Proposed ADR superseding ADR-006 for the measured 141-file Expressiveness subset."
+    },
+    {
+      "type": "implementation",
+      "path": "docs/architecture/ADR-010-Boneyard-At-Repository-Root.md",
+      "summary": "Proposed ADR moving the archive to the repository root while keeping ADR-009's retention."
     }
   ],
-  "next_steps": "Run /implement 627 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Committed a leading-import graph library and a measurement script reproducing every structural count the refactor programme depends on (with a --check pre-move gate), landed the programme as docs/development/PUBLICATION_REFACTOR.md with nine paste-ready follow-ups, and wrote Proposed ADR-010 and ADR-011 cross-linked from ADR-009 and ADR-006. No FormalSystem/ or Tests/ file modified; both builds, the full invariant harness and the cycle check are green.",
+    "roadmap_items": ["Phase 5: Publication and Documentation"]
+  },
+  "modified_files": [
+    "scripts/lib/import_graph.py",
+    "scripts/measure-refactor-partitions.py",
+    "docs/development/PUBLICATION_REFACTOR.md",
+    "docs/development/README.md",
+    "docs/development/MODULE_INVARIANTS.md",
+    "docs/architecture/ADR-010-Boneyard-At-Repository-Root.md",
+    "docs/architecture/ADR-011-Extract-Expressiveness.md",
+    "docs/architecture/README.md",
+    "docs/architecture/ADR-006-Metalogic-No-Physical-Regroup.md",
+    "docs/architecture/ADR-009-Boneyard-Retention.md",
+    "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
+    "specs/627_research_cslib_lean_engineering_refactor_plan/summaries/01_cslib-refactor-plan-summary.md",
+    "specs/627_research_cslib_lean_engineering_refactor_plan/handoffs/phase-1-handoff-20260919T0700Z.md",
+    "specs/627_research_cslib_lean_engineering_refactor_plan/handoffs/phase-3-handoff-20260919T0720Z.md",
+    "specs/627_research_cslib_lean_engineering_refactor_plan/handoffs/phase-2-handoff-20260919T0740Z.md"
+  ],
   "user_decision": {
-    "question": "How should specs/ (192 tracked task-management files) be handled for publication? The agent workflow commits provenance under specs/ during the nine follow-up refactor tasks, so untracking it at programme Phase 1 would strand those commits.",
+    "question": "How should specs/ (task-management provenance) be handled at the publication gate, before the v1.0.0 tag?",
     "options": [
-      "Untrack specs/ (with CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, immediately before the v1.0.0 tag",
-      "Keep specs/ tracked and published, as the benbrastmckie/cslib fork does",
-      "Move specs/ and agent files to a separate non-published branch or remote before publication"
+      "Untrack specs/ (plus CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the gate, adding them to .gitignore — history kept, published surface clean",
+      "Keep specs/ tracked and published",
+      "Move specs/ to a separate, unpublished branch at the gate"
     ],
-    "recommended": "Untrack specs/ (with CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, immediately before the v1.0.0 tag",
+    "recommended": "Untrack specs/ (plus CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the gate, adding them to .gitignore — history kept, published surface clean",
     "blocking": false
   },
   "memory_candidates": [
     {
-      "content": "In BimodalLogic, any markdown under docs/ or README.md that names a FormalSystem.X.Y module or FormalSystem/X/Y path which does not exist yet fails invariant checks C5 (dotted) and C12 (slash) in scripts/check-module-invariants.sh. When documenting a planned layout, write hypothetical names relative to the library root (Metalogic/Expressiveness/, Metalogic.Expressiveness.Kamp) so the FormalSystem-prefixed regexes do not match; for an unavoidable full slash path use scripts/markdown-slash-path-allowlist.txt (its header names deliberately hypothetical paths as the bar). Never add hypothetical modules to module-invariants-allowlist.txt (namespaces only). Also C9 flags specs/NNN_ paths and 'task N' under scripts/, README.md, FormalSystem/ and lakefile.toml: cite commit SHAs instead.",
-      "category": "PATTERN",
-      "source_artifact": "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
+      "content": "When writing docs/ prose about paths or modules that will exist only after a future refactor phase, write them relative to the library root (e.g. `Metalogic/Expressiveness/`, `Metalogic.Expressiveness.Kamp`) so the C5 (dotted `FormalSystem.*`) and C12 (slash `FormalSystem/`, `Tests/`, `Logos/`, `Bimodal/`) resolvers never see an unresolvable name; state the convention once at the top of the document. `Logos/ProofChecker` written with a slash trips C12's pre-merge-root pattern.",
+      "category": "TECHNIQUE",
+      "source_artifact": "docs/development/PUBLICATION_REFACTOR.md",
       "confidence": 0.85,
-      "suggested_keywords": ["check-module-invariants", "C5", "C12", "docs", "hypothetical-path", "allowlist"]
+      "suggested_keywords": ["check-module-invariants", "C5", "C12", "hypothetical-path", "docs", "refactor-programme"]
+    },
+    {
+      "content": "Parse only a Lean file's leading `import` block (after the copyright comment, stopping at the first non-import command) when building an import graph: a naive `grep '^import'` also matches usage examples inside module docstrings and produced a false self-cycle on the root aggregator; nine live files differ between the two readings. scripts/lib/import_graph.py is the shared implementation.",
+      "category": "PATTERN",
+      "source_artifact": "scripts/lib/import_graph.py",
+      "confidence": 0.8,
+      "suggested_keywords": ["import-graph", "lean4", "leading-imports", "closure", "measurement"]
     }
   ],
-  "metadata": {
-    "session_id": "sess_1789799001_60286d_627",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 6.5,
-    "dependency_waves": [[1], [2, 3], [4]]
+  "reflection": {
+    "what_worked": "Running the measurement script before writing any prose, and re-running it after, meant every count in the documents was copied from output rather than from the report; the four discrepancies were found by the script, not by a reader.",
+    "what_was_hard": "Keeping docs/ prose inside the gates: C12's Logos/ pre-merge pattern, C5's dotted-name resolver and C13's link resolver each constrain how a not-yet-existing path can be written, which is why the phase order was flipped to write the ADRs before the document that links them.",
+    "what_was_missed": "The first namespace audit compared against the file's module rather than the directory module and reported 35/430 instead of the report's 279/187; the report's Appendix had stated the directory-based definition and should have been followed from the start.",
+    "successes": "Four phases closed and committed with zero diffs under FormalSystem/ and Tests/, a green full harness with build, exactly one Metalogic cycle, and a --check gate that turns the programme's largest move into a measured precondition."
   },
-  "dispatch_seq": 2
+  "next_steps": "Create the nine follow-up tasks from docs/development/PUBLICATION_REFACTOR.md Section 9, starting with A (move tool + archive relocation).",
+  "metadata": {
+    "session_id": "sess_1789799001_60286d",
+    "agent_type": "lean-implementation-agent",
+    "duration_seconds": 1400,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 4,
+    "phases_total": 4,
+    "compliance_check": "skipped",
+    "compliance_note": "The plan's Lean Challenge Statements section declares no Lean identifiers; the Goals-section extractor would yield only `BXCanonical` (a directory name), so the theorem spot-check does not apply."
+  }
 }
