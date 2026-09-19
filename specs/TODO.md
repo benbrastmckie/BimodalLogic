@@ -1,5 +1,5 @@
 ---
-next_project_number: 627
+next_project_number: 628
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 627
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626,627 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617 | 298,464,502,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -97,12 +97,32 @@ next_project_number: 627
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
+### Publication Quality
+
+627 [NOT STARTED] — Research https://github.com/benbrastmckie/cslib as a...
+
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
 625 [RESEARCHED] — Formalize the manuscript's open-future and open-past...
 
 ## Tasks
+
+### 627. Research cslib lean engineering refactor plan
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Research https://github.com/benbrastmckie/cslib as a reference model for Lean engineering practice, and produce a systematic refactoring plan to bring this repository (BimodalLogic / FormalSystem) up to publication standard. Research first; the report should end in a phased, dependency-ordered refactor programme that can be split into follow-up tasks.
+
+SURVEY CSLIB FOR: (1) library/package layout and lakefile structure (lean_lib split, what is and is not in the default target, executables, test library); (2) namespace discipline and the file-path-to-namespace convention; (3) public API surface: what is exported, aggregator modules, private/protected usage, naming conventions; (4) module docstrings, declaration docstrings, and in-proof comment style; (5) citation and reference conventions (how papers are cited in docstrings, bibliography files, references section format); (6) license and copyright headers, CITATION/authors metadata; (7) linters, CI, style gates, and contribution/README conventions; (8) test organisation.
+
+COMPARE AGAINST THIS REPO'S KNOWN STRUCTURAL ISSUES (from a file-tree review on 2026-09-19): (a) upward layering edges beyond the two documented in ORGANISATION.md -- Syntax/Formula.lean and Semantics/Truth.lean import Automation.TruthNormAttr; Metalogic/Algebraic/BooleanStructure.lean imports Automation.Tactics.PropDecide; Decidability imports ProofSearch.Core/Strategies, Normalization, DataExport; (b) 12 of 13 lean_exe targets are ML/dataset tooling rooted in FormalSystem.Automation, so `import FormalSystem` pulls training infrastructure -- candidate split into a separate lean_lib; (c) Metalogic/WeakCanonical/ is 132k lines (56% of Metalogic), 78k of it the Kamp expressive-completeness proof plus EFGames/Expressiveness, so the directory name misdescribes its content; ADR-006 declined a physical regroup because of the BXCanonical<->WeakCanonical directory cycle -- reassess in light of cslib practice; (d) ~25 live files over 1,700 lines with longFile exemptions (largest: EFGames/GapDetection.lean 5,092, Expressiveness/SplitPoint.lean 4,906); (e) Boneyard/ (169 files, 92k lines, all sorries) lives inside FormalSystem/ -- ADR-009 keeps it, but its rationale cites the LaTeX edition that latex/README.md marks frozen; (f) loose *Probe.lean and Trace* tests at the Tests/BimodalTest/ root instead of mirroring library directories; (g) non-deliverable content tracked or shipped: specs/, CLAUDE.md, .claude-extensions.json, personal absolute paths in docs, internal 'Logos'/'ProofChecker' naming in README/CITATION.cff/examples/tests, duplicate frozen LaTeX manual with tracked PDF, internal docs/research notes, one-off migration scripts in scripts/.
+
+DELIVER: a report mapping each cslib convention to its current state here (adopt / already matches / deliberately diverge, with reasons), a concrete target layout (directory tree + lakefile targets + namespace map), header/license/citation templates to adopt, and a phased refactor plan where every phase keeps `lake build` green and scripts/check-module-invariants.sh passing, with explicit handling of the existing ADRs (006, 009) -- either reaffirm or propose superseding ADRs. Identify which phases change paths or names that external readers would cite, so those land before publication. Do not modify FormalSystem/ or Tests/ in this task.
+
+---
 
 ### 626. Repair lplus manuscript citations pin blstar semantics
 - **Status**: [NOT STARTED]
