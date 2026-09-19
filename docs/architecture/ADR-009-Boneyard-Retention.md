@@ -4,6 +4,10 @@
 
 **Accepted** - 2026-09-07
 
+Supersession of the archive's *location* clause and of the frozen-LaTeX rationale bullet is
+proposed by [ADR-010](ADR-010-Boneyard-At-Repository-Root.md) (Proposed); the retention decision
+is not revisited, and this record remains in force until that ADR is accepted.
+
 ## Context
 
 `FormalSystem/Boneyard/` holds 168 archived `.lean` files totalling 91,539 lines — roughly a

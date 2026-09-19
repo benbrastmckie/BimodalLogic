@@ -28,8 +28,13 @@ understand why the system is designed the way it is.
 | [ADR-007](ADR-007-Decidability-One-Directional.md) | Decidability Is One-Directional, and Says So | Accepted |
 | [ADR-008](ADR-008-FrameClass-Validity-Seam.md) | `FrameClass.Sat` Lives in `Semantics/`, and the Seam Stays There | Accepted |
 | [ADR-009](ADR-009-Boneyard-Retention.md) | The Archive Ships, and Says Why | Accepted |
+| [ADR-010](ADR-010-Boneyard-At-Repository-Root.md) | The Archive Moves to the Repository Root | Proposed |
+| [ADR-011](ADR-011-Extract-Expressiveness.md) | Extract the Expressiveness Development out of `WeakCanonical/` | Proposed |
 
-**Note**: ADR-002 and ADR-003 are reserved for future decisions or were superseded.
+**Note**: ADR-002 and ADR-003 are reserved for future decisions or were superseded. ADR-010 and
+ADR-011 are **Proposed**: each is accepted by the publication refactor programme phase that
+performs its move (`docs/development/PUBLICATION_REFACTOR.md`), and until then ADR-009 and
+ADR-006 respectively remain the decisions in force.
 
 **This directory is the one ADR convention in the repository.** There is no `docs/decisions/`;
 a second location for the same genre would recreate exactly the duplicate-authority problem ADRs
@@ -89,6 +94,23 @@ Records the decision to keep `FormalSystem/Boneyard/` rather than split or cut i
 unavailable (96 citing files outside the archive, including the published LaTeX), why splitting
 buys ~2% of the archive's lines at the cost of ADR-005's single-archive invariant, and the four
 obligations keeping it carries.
+
+### ADR-010: The Archive Moves to the Repository Root (Proposed)
+
+Keeps ADR-009's retention decision and moves the archive from under the library root to a
+root-level `Boneyard/`, module names `Boneyard.*`: root-level placement is what makes
+`lake exe mk_all --check` adoptable and keeps never-built modules out of the library namespace.
+Retires ADR-009's frozen-LaTeX rationale bullet, keeps C11 enforced as a recorded divergence
+from cslib, and names the B0/C11 changes and two new invariants.
+
+### ADR-011: Extract the Expressiveness Development out of `WeakCanonical/` (Proposed)
+
+Supersedes ADR-006 for the measured 141-file, `BXCanonical`-free expressiveness subset of
+`WeakCanonical/` only, moving it to a sibling `Metalogic/Expressiveness/`. Records the closure
+measurement and the command that re-runs it (`scripts/measure-refactor-partitions.py`), accepts
+the residual `BXCanonical` <-> `WeakCanonical` cycle with its count still asserted at 1, keeps
+the `Completeness/` regroup declined, and names the two main-results fully-qualified names that
+change.
 
 ## Creating New ADRs
 

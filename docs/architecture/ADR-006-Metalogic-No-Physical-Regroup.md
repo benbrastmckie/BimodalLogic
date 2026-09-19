@@ -4,6 +4,10 @@
 
 **Accepted** - 2026-09-07
 
+Supersession of the "no physical relocation" clause, for the expressiveness subset of
+`WeakCanonical/` only, is proposed by [ADR-011](ADR-011-Extract-Expressiveness.md) (Proposed);
+this record remains in force until that ADR is accepted.
+
 ## Context
 
 `FormalSystem/Metalogic/` carries three distinct routes to completeness — the Chronicle route

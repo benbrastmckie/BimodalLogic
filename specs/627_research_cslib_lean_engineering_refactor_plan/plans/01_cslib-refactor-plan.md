@@ -252,14 +252,14 @@ report's counts; confirm the row count while transcribing and adjust if rows mer
 
 ---
 
-### Phase 3: ADR-010 and ADR-011 (Proposed) [NOT STARTED]
+### Phase 3: ADR-010 and ADR-011 (Proposed) [COMPLETED]
 
 **Goal**: Record the two architectural decisions the programme depends on in the
 repository's one ADR location, as Proposed records that the follow-up tasks accept when
 their phases land.
 
 **Tasks**:
-- [ ] Create `docs/architecture/ADR-010-Boneyard-At-Repository-Root.md` following the
+- [x] Create `docs/architecture/ADR-010-Boneyard-At-Repository-Root.md` following the
       ADR-005/009 section shape (Status / Context / Decision / Consequences / Related):
       `**Proposed** - 2026-09-19`; keeps ADR-009's retention decision; moves the archive to
       the repository root citing cslib's "root-level placement is load-bearing" argument
@@ -270,7 +270,7 @@ their phases land.
       cosmetic"); names the B0/C11 changes (B0 pattern, C11 scan root, new invariants: no
       `Boneyard` in `lakefile.toml` or the root aggregator, no `import Boneyard.*` from live
       code).
-- [ ] Create `docs/architecture/ADR-011-Extract-Expressiveness.md`: `**Proposed** -
+- [x] Create `docs/architecture/ADR-011-Extract-Expressiveness.md`: `**Proposed** -
       2026-09-19`; supersedes ADR-006 for the Expressiveness set only; records the closure
       measurement and the command that re-runs it
       (`python3 scripts/measure-refactor-partitions.py weakcanonical-partition` / `--check`);
@@ -279,15 +279,17 @@ their phases land.
       states that the residual keeps the name `WeakCanonical`, which now describes it; keeps
       ADR-006's "no `Completeness/` regroup" declined; names the two `MainResults.lean`
       entries whose FQNs change and why that is the pre-publication argument.
-- [ ] Add both to the catalog table in `docs/architecture/README.md` (Status: Proposed) and
+- [x] Add both to the catalog table in `docs/architecture/README.md` (Status: Proposed) and
       add "ADR Details" paragraphs matching the existing entries' style.
-- [ ] In `ADR-006-Metalogic-No-Physical-Regroup.md` and `ADR-009-Boneyard-Retention.md`, add
+- [x] In `ADR-006-Metalogic-No-Physical-Regroup.md` and `ADR-009-Boneyard-Retention.md`, add
       one line under `## Status`: "Supersession of {clause} proposed by [ADR-0NN](...)
       (Proposed); this record remains in force until that ADR is accepted." Do not change
       `**Accepted**`.
-- [ ] Use relative target names (`Metalogic/Expressiveness/`, `Boneyard/` at root) per the
+- [x] Use relative target names (`Metalogic/Expressiveness/`, `Boneyard/` at root) per the
       Phase 2 convention; cite commit `220e94ea4` for the measurement, never the report path.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build`.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build`. *(completed — exit 0; Phase 3
+      executed before Phase 2 per the phase-closure contract's cheapest-closure-first rule, so
+      the ADRs name `PUBLICATION_REFACTOR.md` in backticks and Phase 2 links back to them)*
 
 **Timing**: 1.5 hours
 
