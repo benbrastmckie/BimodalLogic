@@ -1,23 +1,10 @@
 {
-  "status": "planned",
-  "summary": "4-phase plan to create programme tasks A-I, reconcile open tasks, and write the reconciliation summary with dependency graph; specs/ disposition proceeds on the untrack-at-gate default pending user confirmation.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/plans/01_task-set-reconciliation.md",
-      "summary": "4 sequential phases: fresh re-verification, create A-I, revise/merge existing tasks, graph check and reconciliation summary."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 3,
   "metadata": {
-    "session_id": "sess_1789805164_847aec_629",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3.5,
-    "dependency_waves": [[1], [2], [3], [4]]
-  },
-  "next_steps": "Run /implement 629 to execute the plan",
-  "memory_candidates": [],
-  "dispatch_seq": 2
+    "session_id": "sess_1789805164_847aec",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

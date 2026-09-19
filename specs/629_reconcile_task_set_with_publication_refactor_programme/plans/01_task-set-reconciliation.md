@@ -1,7 +1,7 @@
 # Implementation Plan: Task #629
 
 - **Task**: 629 - Reconcile task set with publication refactor programme
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md
@@ -113,24 +113,24 @@ Not consulted (no roadmap_path in dispatch). ROADMAP.md is not modified.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Fresh re-verification of collisions and inputs [NOT STARTED]
+### Phase 1: Fresh re-verification of collisions and inputs [COMPLETED]
 
 **Goal**: Confirm the report's premises still hold before any state write; produce a short
 verified-facts list (kept in the summary draft, not a separate report file).
 
 **Tasks**:
-- [ ] Read `next_project_number` and record it (expected 630).
-- [ ] For every task in the disposition list (626, 429, 614, 298, 296, 282, 604, 231, 257, 610,
+- [x] Read `next_project_number` and record it (expected 630). *(completed: confirmed 630)*
+- [x] For every task in the disposition list (626, 429, 614, 298, 296, 282, 604, 231, 257, 610,
       625, 177, 178, 563-567, 616-618, 410-412, 428-430, 464, 465, 481, 482, 534, 559, 125,
       497-502) record current status, `dependencies`, `file_scope`; note any that are now
-      terminal/archived (check `specs/archive/state.json` too).
-- [ ] Confirm 610 still has no `specs/610_*/` artifact directory (merge gate). If it now has
-      research/plan artifacts, stop and ask the user before merging.
-- [ ] Re-run `python3 scripts/measure-refactor-partitions.py --check` (read-only) and confirm
-      exit 0; confirm `.gitattributes` still 0 bytes (257 non-collision).
-- [ ] Extract Section 9's nine blockquote descriptions A-I verbatim from
+      terminal/archived (check `specs/archive/state.json` too). *(completed: none terminal/archived; all statuses match report)*
+- [x] Confirm 610 still has no `specs/610_*/` artifact directory (merge gate). If it now has
+      research/plan artifacts, stop and ask the user before merging. *(completed: no artifact dir, merge gate clear)*
+- [x] Re-run `python3 scripts/measure-refactor-partitions.py --check` (read-only) and confirm
+      exit 0; confirm `.gitattributes` still 0 bytes (257 non-collision). *(completed: exit 0, 0 bytes)*
+- [x] Extract Section 9's nine blockquote descriptions A-I verbatim from
       `docs/development/PUBLICATION_REFACTOR.md` (strip `> ` prefixes) into scratch files for
-      Phase 2 (scratchpad, not the repo).
+      Phase 2 (scratchpad, not the repo). *(completed: read directly from source for Phase 2 use)*
 
 **Timing**: 30 minutes
 
