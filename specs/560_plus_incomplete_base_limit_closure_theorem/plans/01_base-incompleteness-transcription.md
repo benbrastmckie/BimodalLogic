@@ -358,30 +358,30 @@ Parts A-C declaration list.
 
 ---
 
-### Phase 4: The paste-closed coarse model and the refutation [NOT STARTED]
+### Phase 4: The paste-closed coarse model and the refutation [COMPLETED]
 
 **Goal**: The coarse model on `EF` with `π` the Boolean component, its paste-closedness, the
 refutation of the formula, and the non-derivability half of the headline.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Independence/LimitClosureCountermodel.lean` importing
+- [x] Create `FormalSystem/Metalogic/Independence/LimitClosureCountermodel.lean` importing
   `PastedCoarseModels`, `LimitClosureFrame` and
   `FormalSystem.Semantics.PlusLanguage.PlusLimitClosure` (for `blc`; delete the probe's local copy
   of the definition).
-- [ ] Transcribe from probe 02 (Part D, lines 417-590): `evFalse` (eventually-false Boolean
+- [x] Transcribe from probe 02 (Part D, lines 417-590): `evFalse` (eventually-false Boolean
   sequences), `eR_budget`, `eR_evFalse_aux`, `eR_image_mem`, `mem_eR_image`, `hist_image_mem`,
   `exists_hist_of_evFalse`, the coarse model `eK` (every atom read on the `true` class, so
   `atom_inv` is a rewrite), `eK_pasteClosed_aux`, `eK_pasteClosed`, `blc_cRefuted`
   (`¬ CTruthAt eK τ t (blc p)` at every history and time), and
   `blc_not_plusDerivable_base : ¬ PlusDerivable FrameClass.Base [] (blc p)`.
-- [ ] Adjust names consumed from Phases 1 and 3 if either renamed anything.
-- [ ] Module docstring: the image of the histories of `EF` under `π` is exactly `evFalse`; splicing
+- [x] Adjust names consumed from Phases 1 and 3 if either renamed anything.
+- [x] Module docstring: the image of the histories of `EF` under `π` is exactly `evFalse`; splicing
   two eventually-false sequences at a common value is eventually false (paste-closed); the
   all-true-forever limit is missing (not closed), which is what refutes the consequent while the
   antecedent holds; consistency check that the countermodel is necessarily nondeterministic.
-- [ ] Register in `FormalSystem/Metalogic/Independence.lean`; `--emit-inventory`; description
+- [x] Register in `FormalSystem/Metalogic/Independence.lean`; `--emit-inventory`; description
   cell.
-- [ ] Build the module, then `FormalSystem`.
+- [x] Build the module, then `FormalSystem`.
 
 **Timing**: 2 hours
 

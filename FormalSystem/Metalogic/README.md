@@ -91,7 +91,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Core.lean` | 37 | `Core/` |
 | `Decidability.lean` | 168 | `Decidability/` |
 | `Deterministic.lean` | 25 | <!-- TODO: add description --> |
-| `Independence.lean` | 104 | `Independence/` |
+| `Independence.lean` | 108 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 144 | `WeakCanonical/` |
 <!-- END GENERATED -->
@@ -146,14 +146,14 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 |-----------|------:|------:|------|
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,402 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,119 | Chronicle completeness route; the wired entry point |
-| [`Bundle/`](Bundle/README.md) | 9 | 2,858 | Bundled families of MCSs and their coherence conditions |
+| [`Bundle/`](Bundle/README.md) | 9 | 2,864 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 21 | 6,116 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 4 | 1,817 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 80 | 52,220 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 80 | 52,241 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,610 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Independence/`](Independence/README.md) | 20 | 5,612 | Axiom-independence models |
+| [`Independence/`](Independence/README.md) | 21 | 5,887 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,537 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,556 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -199,9 +199,9 @@ dominates everything else in the repository:
 | `Kamp/` | 116 | 77,711 |
 | `EFGames/` | 8 | 11,800 |
 | `Expressiveness/` | 5 | 9,507 |
-| `DenseModelSurgery/` | 9 | 7,895 |
-| `RealModel/` | 7 | 6,774 |
-| `IntegerModel/` | 6 | 5,613 |
+| `DenseModelSurgery/` | 9 | 7,900 |
+| `RealModel/` | 7 | 6,777 |
+| `IntegerModel/` | 6 | 5,615 |
 | `GroupModel/` | 6 | 3,373 |
 | `Separation/` | 3 | 926 |
 <!-- END GENERATED -->

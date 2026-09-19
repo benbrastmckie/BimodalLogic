@@ -24,6 +24,7 @@ import FormalSystem.Metalogic.Independence.PastingIndependence
 import FormalSystem.Metalogic.Independence.StarDiscrimination
 import FormalSystem.Metalogic.Independence.ForwardDeterministicFrame
 import FormalSystem.Metalogic.Independence.LimitClosureFrame
+import FormalSystem.Metalogic.Independence.LimitClosureCountermodel
 
 /-!
 # Independence results
@@ -84,6 +85,9 @@ Galois-closed, in contrast with the paper's bare classes.
 * `Independence/LimitClosureFrame.lean` — `EF`, the budgeted digraph with a hub on
   `Option (Bool × ℕ)` over `ℤ`, with every `FrameOver` field discharged (*Saturation* by "contains
   the hub or is finite"), and the correspondence between its world histories and `eR`-walks.
+* `Independence/LimitClosureCountermodel.lean` — the coarse model `eK` on `EF`: the `π`-image of
+  its world histories is exactly the eventually-false sequences, which is paste-closed and not
+  closed; `blc_cRefuted` and `blc_not_plusDerivable_base`.
 
 ## The method
 
