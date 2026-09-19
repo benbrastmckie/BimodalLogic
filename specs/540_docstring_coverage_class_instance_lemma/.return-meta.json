@@ -1,18 +1,9 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {"type": "plan", "path": "specs/540_docstring_coverage_class_instance_lemma/plans/01_instance-docstring-coverage.md", "summary": "4-phase plan: C19 per-keyword reporting (counting rule unchanged), 20 instance docstrings across 10 Lean files in two parallel phases, final full gate."}
-  ],
-  "next_steps": "Run /implement 540 to execute the plan",
-  "phase_count": 4,
-  "estimated_hours": 2.5,
-  "dependency_waves": [[1, 2, 3], [4]],
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1789780926_3abf2e_540",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 2
+  "status": "implemented",
+  "started_at": "2026-09-18T18:27:27-07:00",
+  "completed_at": "2026-09-18T18:43:35-07:00",
+  "verification": {"verification_passed": true, "sorry_count": 0, "vacuous_count": 0, "axiom_count": 15, "build_passed": true},
+  "artifacts": [{"type": "summary", "path": "specs/540_docstring_coverage_class_instance_lemma/summaries/01_instance-docstring-coverage-summary.md", "summary": "C19 per-keyword reporting plus 20 instance docstrings; class 100%, instance 79/79, lemma n/a; aggregate 93.99%."}],
+  "completion_data": {"completion_summary": "C19 now prints per-keyword refined docstring coverage, and all 20 undocumented instances received real docstrings, bringing instance coverage to 79/79 (class 21/21, lemma n/a under C23) with the refined aggregate at 93.99% and C19's counting rule unchanged. Line citations shifted by the insertions were renumbered so C20 stays green.", "roadmap_items": []},
+  "metadata": {"session_id": "sess_1789780926_3abf2e", "agent_type": "lean-implementation-agent", "delegation_depth": 1, "delegation_path": ["orchestrator","implement","skill-lean-implementation"], "compliance_check": "skipped", "phases_completed": 4, "phases_total": 4, "notes": "C28 FAIL in check-module-invariants is pre-existing from concurrent task commit 92a66a17c (Independence/LimitClosureCountermodel.lean), not from this task."}
 }

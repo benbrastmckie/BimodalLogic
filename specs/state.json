@@ -1411,7 +1411,7 @@
     {
       "project_number": 540,
       "project_name": "docstring_coverage_class_instance_lemma",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "high",
@@ -1425,7 +1425,7 @@
         "scripts/check-module-invariants.sh"
       ],
       "created": "2026-09-04T08:00:00Z",
-      "last_updated": "2026-09-19T01:26:48Z",
+      "last_updated": "2026-09-19T01:44:05Z",
       "artifacts": [
         {
           "path": "specs/540_docstring_coverage_class_instance_lemma/reports/01_docstring-coverage-gaps.md",
@@ -1436,10 +1436,16 @@
           "path": "specs/540_docstring_coverage_class_instance_lemma/plans/01_instance-docstring-coverage.md",
           "type": "plan",
           "summary": "4-phase plan: C19 per-keyword reporting, 20 instance docstrings, final gate."
+        },
+        {
+          "path": "specs/540_docstring_coverage_class_instance_lemma/summaries/01_instance-docstring-coverage-summary.md",
+          "type": "summary",
+          "summary": "C19 per-keyword reporting plus 20 instance docstrings; all three categories at or above floor."
         }
       ],
       "session_id": "sess_1789780926_3abf2e",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "C19 now prints per-keyword refined docstring coverage, and all 20 undocumented instances received real docstrings, bringing instance coverage to 79/79 (class 21/21, lemma n/a under C23) with the refined aggregate at 93.99% and C19's counting rule unchanged. Line citations shifted by the insertions were renumbered so C20 stays green."
     },
     {
       "project_number": 543,

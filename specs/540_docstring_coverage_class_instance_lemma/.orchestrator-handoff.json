@@ -1,19 +1,18 @@
 {
-  "task_number": 540,
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "session_id": "sess_1789780926_3abf2e_540",
-  "phases_completed": 0,
+  "dispatch_seq": 3,
+  "status": "implemented",
+  "phases_completed": 4,
   "phases_total": 4,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/540_docstring_coverage_class_instance_lemma/plans/01_instance-docstring-coverage.md",
-      "summary": "4-phase plan: C19 per-keyword reporting, 20 instance docstrings, final gate."
+      "type": "summary",
+      "path": "specs/540_docstring_coverage_class_instance_lemma/summaries/01_instance-docstring-coverage-summary.md",
+      "summary": "C19 per-keyword reporting plus 20 instance docstrings; all three categories at or above floor."
     }
   ],
-  "summary": "Plan written. Only instance (74.7%) is below the floor; class is 100% and lemma has 0 declarations. C19 gains reporting-only per-keyword output so acceptance is observable.",
+  "summary": "All 4 phases complete. C19 per-keyword: class 21/21, instance 79/79, lemma n/a; aggregate 93.99%. Full lake build green; C19/C20/C23 pass. C28 fails only on a concurrent task's new file.",
+  "phase": "implement",
   "blockers": [],
-  "next_action_hint": "implement"
+  "next_action_hint": "postflight: mark task 540 completed",
+  "plan_markers_verified": true
 }

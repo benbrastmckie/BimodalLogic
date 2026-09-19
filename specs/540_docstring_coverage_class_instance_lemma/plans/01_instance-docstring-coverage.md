@@ -1,7 +1,7 @@
 # Implementation Plan: Task #540
 
 - **Task**: 540 - Docstring coverage for class, instance, and lemma declarations
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/540_docstring_coverage_class_instance_lemma/reports/01_docstring-coverage-gaps.md
