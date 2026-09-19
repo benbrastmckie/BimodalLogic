@@ -1628,6 +1628,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Independence.sat_rtime_ssubset_mod_axiomSet' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.sat_ztime_ssubset_mod_axiomSet' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.plus_incomplete_base' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.consequence_completeness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1747,6 +1748,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Independence.sat_rtime_ssubset_mod_axiomSet
 #print axioms FormalSystem.Metalogic.Independence.sat_ztime_ssubset_mod_axiomSet
 #print axioms FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable
+#print axioms FormalSystem.Metalogic.Independence.plus_incomplete_base
 #print axioms FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness
 #print axioms FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior
 #print axioms FormalSystem.Metalogic.consequence_completeness_rtime

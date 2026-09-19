@@ -406,38 +406,38 @@ Part D declaration list.
 
 ---
 
-### Phase 5: Assemble the headline and pin its axioms [NOT STARTED]
+### Phase 5: Assemble the headline and pin its axioms [COMPLETED]
 
 **Goal**: The headline theorem, its corollary, the C14 axiom pin and the theorem-index row.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Independence/PlusIncompleteness.lean` importing
+- [x] Create `FormalSystem/Metalogic/Independence/PlusIncompleteness.lean` importing
   `LimitClosureCountermodel` (which brings `PlusLimitClosure`), with:
   `plus_incomplete_base (p : Atom) : PlusValid (blc p) ∧ ¬ PlusDerivable FrameClass.Base [] (blc p)`
   as the pair of `blc_plusValid p` and `blc_not_plusDerivable_base p`; and
   `not_plus_complete_base : ¬ ∀ ψ : PlusFormula, PlusValidIn FrameClass.Base ψ → PlusDerivable FrameClass.Base [] ψ`
   (`PlusValid` unfolds to `PlusValidIn FrameClass.Base`, so this is the headline applied at any
   atom; it is verbatim the `hcomplete` hypothesis of `starConservative_of_plusComplete` at Base).
-- [ ] Module docstring: the statement in words; what is and is not shown (the CURRENT axiom set is
+- [x] Module docstring: the statement in words; what is and is not shown (the CURRENT axiom set is
   incomplete at Base; nothing is claimed about any extension, any other class, or conservativity
   of TM-star over TM+); the consistency check required by the task (under stability = identity the
   formula is a theorem of TM+ plus Determined by the landed deterministic completeness, and the
   countermodel is necessarily nondeterministic); the one-line reading (the coarsened countermodel
   is a dense, non-closed bundle: PS and US say paste-closed, MF says translation-closed, nothing
   says closed); attribution. No completeness theorem is stated.
-- [ ] Axiom pin: append
+- [x] Axiom pin: append
   `'FormalSystem.Metalogic.Independence.plus_incomplete_base' depends on axioms: [propext, Classical.choice, Quot.sound]`
   to the `C14BASE` heredoc and the matching
   `#print axioms FormalSystem.Metalogic.Independence.plus_incomplete_base` to the `C14LEAN`
   heredoc in `scripts/check-module-invariants.sh`, in the same relative position (after the
   existing Independence entries). Record the literal measured profile; if it differs from the
   expected one, stop and report rather than editing the expectation.
-- [ ] Add a `docs/theorem-index.md` row beside the existing Independence rows (class Base, tag
+- [x] Add a `docs/theorem-index.md` row beside the existing Independence rows (class Base, tag
   `pcq pinned:C14`), and correct the sentence near its deterministic-rows note that says general
-  TM+ completeness is open (full sweep is Phase 6; this one line travels with the row).
-- [ ] Register in `FormalSystem/Metalogic/Independence.lean`, adding the result to the numbered
+  TM+ completeness is open (full sweep is Phase 6; this one line travels with the row). *(deviation: altered — the closing "Completeness for TM-star" bullet of the same file also asserted TM+ completeness open at every class; corrected here too, since the plan assigns this file to Phase 5)*
+- [x] Register in `FormalSystem/Metalogic/Independence.lean`, adding the result to the numbered
   list of results in that aggregator's module docstring; `--emit-inventory`; description cell.
-- [ ] Build `FormalSystem`, then run the full `bash scripts/check-module-invariants.sh`.
+- [x] Build `FormalSystem`, then run the full `bash scripts/check-module-invariants.sh`.
 
 **Timing**: 1 hour
 

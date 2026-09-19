@@ -25,6 +25,7 @@ import FormalSystem.Metalogic.Independence.StarDiscrimination
 import FormalSystem.Metalogic.Independence.ForwardDeterministicFrame
 import FormalSystem.Metalogic.Independence.LimitClosureFrame
 import FormalSystem.Metalogic.Independence.LimitClosureCountermodel
+import FormalSystem.Metalogic.Independence.PlusIncompleteness
 
 /-!
 # Independence results
@@ -32,7 +33,7 @@ import FormalSystem.Metalogic.Independence.LimitClosureCountermodel
 Underivability results, established by exhibiting a model of the assumptions in which the target
 formula fails.
 
-Four results are carried here, over twelve modules — the opening sentence of this docstring used
+Five results are carried here — the opening sentence of this docstring used
 to say "the one result carried here", which stopped being true three witnesses ago:
 
 1. The paper's `CO` principle does not derive Reynolds' `Axiom.prior_U_gap` over the dense base.
@@ -45,6 +46,10 @@ to say "the one result carried here", which stopped being true three witnesses a
    the indistinguishable pair `F°`/`F¹` over `ℝ`. The same pair refutes the converse of the
    deterministic collapse (`Semantics/PlusLanguage/PlusDeterminism.lean`): `F°` validates
    *Determined* without being deterministic.
+5. The current axiom set of TM⁺ is **incomplete at `.Base`** (`plus_incomplete_base`): the
+   limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid over every task
+   frame and is refuted in a paste-closed coarsened-state model, for which TM⁺ is sound. Nothing
+   is claimed about extensions of the axiom set, or about the other frame classes.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes.
@@ -88,6 +93,8 @@ Galois-closed, in contrast with the paper's bare classes.
 * `Independence/LimitClosureCountermodel.lean` — the coarse model `eK` on `EF`: the `π`-image of
   its world histories is exactly the eventually-false sequences, which is paste-closed and not
   closed; `blc_cRefuted` and `blc_not_plusDerivable_base`.
+* `Independence/PlusIncompleteness.lean` — the assembly: `plus_incomplete_base` and
+  `not_plus_complete_base`.
 
 ## The method
 

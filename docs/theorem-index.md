@@ -102,9 +102,10 @@ the mapping.
 
 ### TM⁺ over the deterministic frames
 
-These are the `⊡ = identity` rows. **General (nondeterministic) TM⁺ completeness is open and is
-not stated anywhere in the tree**; the nearest literature results are Reynolds (2003) and
-Zanardo (1991). *Determined* axiomatizes the deterministic frames' logic without defining the
+These are the `⊡ = identity` rows. **General (nondeterministic) completeness of the current TM⁺
+axiom set is false at Base** (`plus_incomplete_base` above); completeness of any extension is
+open at every class and is not stated anywhere in the tree. The nearest literature results are
+Reynolds (2003) and Zanardo (1991). *Determined* axiomatizes the deterministic frames' logic without defining the
 class — see `deterministic_not_plusDefinable` above.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
@@ -151,6 +152,7 @@ class — see `deterministic_not_plusDefinable` above.
 | `app:complete` | `Sat .RTime ⊊ Mod (AxiomSet .RTime)` — the narrowing is not Galois-closed | `FormalSystem.Metalogic.Independence.sat_rtime_ssubset_mod_axiomSet` | `FormalSystem/Metalogic/Independence/RationalWitness.lean` | RTime | pcq pinned:C14 |
 | `app:discrete` | `Sat .ZTime ⊊ Mod (AxiomSet .ZTime)` — the narrowing is not Galois-closed | `FormalSystem.Metalogic.Independence.sat_ztime_ssubset_mod_axiomSet` | `FormalSystem/Metalogic/Independence/LexIntWitness.lean` | ZTime | pcq pinned:C14 |
 | `app:deterministic` | No set of `PlusFormula`s defines `TaskFrame.Deterministic` | `FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable` | `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` | — | pcq pinned:C14 |
+| — | The current TM⁺ axiom set is **incomplete** at Base: the limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid and is not a Base theorem | `FormalSystem.Metalogic.Independence.plus_incomplete_base` | `FormalSystem/Metalogic/Independence/PlusIncompleteness.lean` | Base | pcq pinned:C14 |
 | `def:BLstar-semantics` | No `Formula` of L is equivalent to `⊡Fp` over all task models — the stability modal is not L-definable | `FormalSystem.Metalogic.Independence.stabNotDefinable` | `FormalSystem/Metalogic/Independence/StabUndefinable.lean` | — | pcq |
 | — | Every formula of the syntactic **state-locality** fragment of L⋆ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isStateLocal_of_stateLocal` | `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | — | `[propext]` |
 | — | `φ ↔ ⊡φ` is valid for every state-local `φ` — the fragment-level strengthening of the atom-level `p → ⊡p` | `FormalSystem.Semantics.stateLocal_starValid_iff_stab` | `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | Base | pcq |
@@ -247,9 +249,11 @@ not read as an oversight:
   Conservativity of TM⋆ over TM⁺ is entangled with it rather than independent of it:
   `starConservative_of_plusComplete` settles that row *given* general TM⁺ completeness at the
   class, and `plusIncomplete_of_starNonconservative` shows the converse — a separating witness
-  for non-conservativity is, verbatim, a witness of TM⁺ incompleteness. So, modulo TM⋆ soundness,
-  the TM⋆/TM⁺ conservativity question cannot be settled either way without settling TM⁺
-  completeness, which is itself open at every class.
+  for non-conservativity is, verbatim, a witness of TM⁺ incompleteness. At Base the hypothesis of
+  the first is now **refuted** (`plus_incomplete_base`), so that conditional is vacuous there;
+  this does *not* decide conservativity at Base, since incompleteness yields no separating
+  witness. At Dense, ZTime and RTime the hypothesis is still open, as is completeness of any
+  extension of the TM⁺ axiom set at every class.
 
 ## Related documentation
 
