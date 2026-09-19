@@ -207,7 +207,13 @@ instance limitFilter_neBot (side : TemporalSide) (r : ℝ) : (limitFilter side r
     obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn hz
     exact hmem q hq2 hq1
 
+/-- `limitFilterBelow r` is proper. The named filter is a `def`, so instance search does not see
+through it to `limitFilter .below r`; this instance re-exports `limitFilter_neBot` under the
+name callers actually write. -/
 instance limitFilterBelow_neBot (r : ℝ) : (limitFilterBelow r).NeBot := limitFilter_neBot .below r
+/-- `limitFilterAbove r` is proper. The named filter is a `def`, so instance search does not see
+through it to `limitFilter .above r`; this instance re-exports `limitFilter_neBot` under the
+name callers actually write. -/
 instance limitFilterAbove_neBot (r : ℝ) : (limitFilterAbove r).NeBot := limitFilter_neBot .above r
 
 /-! ## The limit sets -/

@@ -75,6 +75,8 @@ def tailFilter (Γ : Set α) : Filter (Idx Γ) where
 theorem mem_tailFilter {Γ : Set α} {s : Set (Idx Γ)} :
     s ∈ tailFilter Γ ↔ ∃ L : Idx Γ, {L' : Idx Γ | ∀ ψ ∈ L.val, ψ ∈ L'.val} ⊆ s := Iff.rfl
 
+/-- The tail filter is proper: every basic tail set contains the index list that generates it.
+`idxUF` needs this instance to extend `tailFilter Γ` to an ultrafilter by `Ultrafilter.of`. -/
 instance tailFilter_neBot (Γ : Set α) : (tailFilter Γ).NeBot := by
   constructor
   intro h

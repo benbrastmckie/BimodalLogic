@@ -131,20 +131,20 @@ Phases within the same wave can run in parallel. Phases 1-3 touch disjoint files
 
 ---
 
-### Phase 3: WeakCanonical, Semantics and Bundle instance docstrings [IN PROGRESS]
+### Phase 3: WeakCanonical, Semantics and Bundle instance docstrings [COMPLETED]
 
 **Goal**: Document the remaining 12 undocumented instances (research items 1-2 and 11-20).
 
 **Tasks**:
-- [ ] Re-derive the undocumented instances in the target files.
-- [ ] `FormalSystem/Metalogic/Bundle/LimitMCS.lean`: give `limitFilterBelow_neBot` and `limitFilterAbove_neBot` a docstring each. The trap to state: the named filter does not syntactically match `limitFilter .below/.above r` for instance search.
-- [ ] `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean`: add docstrings to `instInStructureClassUnrestricted` and `instInStructureClassCountableDense`.
-- [ ] `FormalSystem/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean`: add a docstring to `ZIntervalStructure.intervalCarrierLinearOrder`.
-- [ ] `FormalSystem/Metalogic/WeakCanonical/RealModel/GoodDense.lean`: add a docstring to `RIntervalStructure.intervalCarrierLinearOrder` that states why it is noncomputable (style guide rule).
-- [ ] `FormalSystem/Metalogic/WeakCanonical/NormalForm.lean`: add a docstring to `atomKindDecEq`, reading the full body first. Add docstrings to `normalFormFintype` and `normalFormDecEq`, stating the trap that the two are built jointly by induction and cannot be derived separately.
-- [ ] `FormalSystem/Semantics/LexCarrier.lean`: add docstrings to `instSuccOrder` and `instPredOrder`. For `instPredOrder`, move the existing plain `/- ... -/` rationale above the new `/--` so that the docstring is the nearest block.
-- [ ] `FormalSystem/Semantics/Ultraproduct/IndexFilter.lean`: add a docstring to `tailFilter_neBot`.
-- [ ] Build the seven touched modules.
+- [x] Re-derive the undocumented instances in the target files.
+- [x] `FormalSystem/Metalogic/Bundle/LimitMCS.lean`: give `limitFilterBelow_neBot` and `limitFilterAbove_neBot` a docstring each. The trap to state: the named filter does not syntactically match `limitFilter .below/.above r` for instance search.
+- [x] `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean`: add docstrings to `instInStructureClassUnrestricted` and `instInStructureClassCountableDense`.
+- [x] `FormalSystem/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean`: add a docstring to `ZIntervalStructure.intervalCarrierLinearOrder`.
+- [x] `FormalSystem/Metalogic/WeakCanonical/RealModel/GoodDense.lean`: add a docstring to `RIntervalStructure.intervalCarrierLinearOrder` that states why it is noncomputable (style guide rule).
+- [x] `FormalSystem/Metalogic/WeakCanonical/NormalForm.lean`: add a docstring to `atomKindDecEq`, reading the full body first. Add docstrings to `normalFormFintype` and `normalFormDecEq`, stating the trap that the two are built jointly by induction and cannot be derived separately.
+- [x] `FormalSystem/Semantics/LexCarrier.lean`: add docstrings to `instSuccOrder` and `instPredOrder`. For `instPredOrder`, move the existing plain `/- ... -/` rationale above the new `/--` so that the docstring is the nearest block.
+- [x] `FormalSystem/Semantics/Ultraproduct/IndexFilter.lean`: add a docstring to `tailFilter_neBot`.
+- [x] Build the seven touched modules.
 
 **Timing**: 0.75 hours
 
@@ -169,7 +169,7 @@ Phases within the same wave can run in parallel. Phases 1-3 touch disjoint files
 
 ---
 
-### Phase 4: Final gate [NOT STARTED]
+### Phase 4: Final gate [IN PROGRESS]
 
 **Goal**: Confirm the acceptance criteria against C19's own output and run the full gate.
 

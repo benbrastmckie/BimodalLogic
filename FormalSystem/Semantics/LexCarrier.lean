@@ -107,6 +107,8 @@ private theorem lexSucc_le_iff {a b : α ×ₗ ℤ} : lexSucc a ≤ b ↔ a < b 
   refine ⟨fun ⟨h1, h2⟩ => ⟨h1, fun heq => Int.lt_iff_add_one_le.mpr (h2 heq)⟩,
     fun ⟨h1, h2⟩ => ⟨h1, fun heq => Int.lt_iff_add_one_le.mp (h2 heq)⟩⟩
 
+/-- The lexicographic carrier `α ×ₗ ℤ` has a successor that advances only the discrete `ℤ`
+component and leaves the `α` component unchanged. -/
 instance instSuccOrder : SuccOrder (α ×ₗ ℤ) := SuccOrder.ofSuccLeIff lexSucc lexSucc_le_iff
 
 /-! ## Predecessor -/
@@ -127,6 +129,9 @@ The dual of `SuccOrder.ofSuccLeIff` (`Mathlib/Order/SuccPred/Basic.lean`), built
 than through the `to_dual`-generated name: mirroring that constructor's own proof exactly,
 substituting `pred`/`le_pred_of_lt`/`min_of_le_pred` for `succ`/`succ_le_of_lt`/`max_of_succ_le`.
 -/
+
+/-- The lexicographic carrier `α ×ₗ ℤ` has a predecessor that retreats only the discrete `ℤ`
+component and leaves the `α` component unchanged. -/
 instance instPredOrder : PredOrder (α ×ₗ ℤ) where
   pred := lexPred
   pred_le _ := (le_lexPred_iff.1 le_rfl).le

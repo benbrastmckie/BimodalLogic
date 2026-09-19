@@ -66,6 +66,9 @@ inductive AtomKind (sig : MonadicSignature) (n : Nat) : Type where
   | pred (p : sig.preds) (i : Fin n) : AtomKind sig n
   | order (i j : Fin n) (h : i ≠ j) : AtomKind sig n
 
+/-- Equality of atoms is decidable, by comparing constructors and then their fields: `pred`
+atoms compare the predicate and the variable, `order` atoms compare both variables. The proof
+field `h : i ≠ j` of `order` is never compared, since it is a proposition. -/
 instance atomKindDecEq (sig : MonadicSignature) [DecidableEq sig.preds] (n : Nat) :
     DecidableEq (AtomKind sig n) := by
   intro a b
@@ -188,11 +191,17 @@ private def normalFormFintypeAndDecEq (sig : MonadicSignature)
            inferInstanceAs (DecidableEq ((AtomKind sig n → Bool) ×
                (NormalForm sig k (n + 1) → Bool)))⟩
 
+/-- `NormalForm sig k n` is a finite type. This is the first projection of
+`normalFormFintypeAndDecEq`; the `Fintype` and `DecidableEq` instances are built jointly by one
+induction on `k` and cannot be derived separately. -/
 instance normalFormFintype (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (k n : Nat) :
     Fintype (NormalForm sig k n) :=
   (normalFormFintypeAndDecEq sig k n).1
 
+/-- Equality of normal forms is decidable. This is the second projection of
+`normalFormFintypeAndDecEq`; the `Fintype` and `DecidableEq` instances are built jointly by one
+induction on `k` and cannot be derived separately. -/
 instance normalFormDecEq (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (k n : Nat) :
     DecidableEq (NormalForm sig k n) :=

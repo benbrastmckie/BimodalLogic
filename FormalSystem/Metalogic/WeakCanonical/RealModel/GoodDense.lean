@@ -198,6 +198,9 @@ def RIntervalStructure.intervalCarrier {sig : MonadicSignature} [Fintype sig.pre
     [DecidableEq sig.preds] (R : RIntervalStructure sig) : Type :=
   {x : ℝ // x ∈ R.carrierSet}
 
+/-- The interval carrier is linearly ordered as a subtype of `ℝ`, so its order is exactly the
+real order restricted to the interval. It is `noncomputable` because the subtype order inherits
+its decidability from `ℝ`'s order, which is classical. -/
 noncomputable instance RIntervalStructure.intervalCarrierLinearOrder {sig : MonadicSignature}
     [Fintype sig.preds] [DecidableEq sig.preds]
     (R : RIntervalStructure sig) : LinearOrder R.intervalCarrier :=

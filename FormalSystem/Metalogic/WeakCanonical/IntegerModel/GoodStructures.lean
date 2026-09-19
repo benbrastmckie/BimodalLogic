@@ -47,6 +47,8 @@ def ZIntervalStructure.intervalCarrier {sig : MonadicSignature} [Fintype sig.pre
     (Z : ZIntervalStructure sig) : Type :=
   {z : ℤ // Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·)}
 
+/-- The interval carrier is linearly ordered as a subtype of `ℤ`, so its order is exactly the
+integer order restricted to the interval. -/
 instance ZIntervalStructure.intervalCarrierLinearOrder {sig : MonadicSignature}
     [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) : LinearOrder Z.intervalCarrier :=

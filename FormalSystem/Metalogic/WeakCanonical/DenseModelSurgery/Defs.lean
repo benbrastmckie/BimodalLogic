@@ -255,10 +255,15 @@ theorem consumes. -/
 def CountableDense (sig : MonadicSignature) : OrderedMonadicStructure sig → Prop :=
   fun M => Countable M.carrier ∧ DenselyOrdered M.carrier
 
+/-- Every structure belongs to `UnrestrictedClass sig`, with no hypotheses. This is what lets
+§6's clauses at `C := UnrestrictedClass sig` resolve membership silently for any `M`. -/
 instance instInStructureClassUnrestricted {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) : InStructureClass (UnrestrictedClass sig) M :=
   ⟨trivial⟩
 
+/-- A structure belongs to `CountableDense sig` whenever its carrier has `Countable` and
+`DenselyOrdered` instances in scope. Membership is found only through those two instances: a
+bare proof of `CountableDense sig M` is not picked up by instance search. -/
 instance instInStructureClassCountableDense {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) [Countable M.carrier] [DenselyOrdered M.carrier] :
     InStructureClass (CountableDense sig) M :=
