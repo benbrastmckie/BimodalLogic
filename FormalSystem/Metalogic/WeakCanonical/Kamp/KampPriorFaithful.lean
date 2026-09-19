@@ -332,7 +332,7 @@ theorem nf_nvar_exist_all_depths_faithful
 /-- Convenience wrapper at the faithful carrier — the faithful sibling of
 `nfNvarExistAllDepthsFn` (`KampPrior.lean:557`). -/
 noncomputable def nfNvarExistAllDepthsFnFaithful
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k n : Nat) (hn : n ≤ 1) (sub_nf : NormalForm sig k (n + 1)) : Formula :=
@@ -341,7 +341,7 @@ noncomputable def nfNvarExistAllDepthsFnFaithful
 /-- Correctness of the convenience wrapper at the faithful carrier — the faithful sibling of
 `nf_nvar_exist_all_depths_fn_correct` (`KampPrior.lean:565`). -/
 theorem nf_nvar_exist_all_depths_fn_correct_faithful
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k n : Nat) (hn : n ≤ 1) (sub_nf : NormalForm sig k (n + 1))

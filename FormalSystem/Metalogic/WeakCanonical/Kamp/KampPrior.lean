@@ -559,7 +559,7 @@ theorem nf_nvar_exist_all_depths
 
 /-- Convenience wrapper: extract the formula from `nf_nvar_exist_all_depths`. -/
 noncomputable def nfNvarExistAllDepthsFn
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k n : Nat) (hn : n ≤ 1) (sub_nf : NormalForm sig k (n + 1)) : Formula :=
@@ -567,7 +567,7 @@ noncomputable def nfNvarExistAllDepthsFn
 
 /-- Correctness of the convenience wrapper. -/
 theorem nf_nvar_exist_all_depths_fn_correct
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k n : Nat) (hn : n ≤ 1) (sub_nf : NormalForm sig k (n + 1))

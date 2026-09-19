@@ -851,6 +851,102 @@ that nobody re-justifies. It also fails loudly — after a namespace rename, eve
 fully-qualified entry in a `nolints.json` silently stops matching and the whole category
 unmasks at once.
 
+### Lint-Suppression Policy (Mathlib's Standard Linter Set)
+
+This policy is modelled on cslib's `docs/lint-suppression-policy.md`. It covers the syntax
+linters that run during every `lake build`. The environment linters that `lake lint` runs (C16)
+are covered separately, above.
+
+**What is in force.** `lakefile.toml` sets these two options in a *package-level* `[leanOptions]`
+table:
+
+- `weak.linter.mathlibStandardSet = true` turns on every syntax linter in Mathlib's standard set.
+- `weak.linter.style.longFile = 1500` switches on the long-file linter, which does nothing at
+  its default limit of 0.
+
+Package level is deliberate: a `[[lean_lib]]` table's `leanOptions` do not reach the
+`[[lean_exe]]` roots, and package options reach every target. CI builds with `--wfail`, so any
+warning from the set fails the build. C28 then reports the file and the linter class that fired.
+
+**Permanent opt-outs.** There is exactly one:
+
+- `weak.linter.hashCommand = false` on the `BimodalTest` library only. The `#eval`, `#guard` and
+  `#check` probes in the test files are what those files are for, not development leftovers.
+  Lake appends a library's options after the package's, and the later entry wins, so the
+  library value overrides the package set.
+
+The library itself has no opt-out. Its 11 `#guard` smoke tests, which test compiled code in a way
+a kernel `decide` would not, each carry a declaration-scoped suppression with a reason, as
+described below. cslib's four other opt-outs (`pythonStyle`, `checkInitImports`,
+`allScriptsDocumented`, `unicodeLinter`) are not adopted, because none of those linters runs
+during the build at this Mathlib version.
+
+**Scoped, never blanket.** A linter may be switched off for exactly one declaration, and only in
+this form:
+
+```lean
+-- `linter.X`: <what the linter flags here, and what a deletion trial showed>
+set_option linter.X false in
+theorem foo ...
+```
+
+The comment must sit directly above the option and must name the linter; check C29 enforces
+this. A file-scoped or section-scoped `set_option linter.X ...` without `in` is forbidden, and so
+is a heartbeat budget without `in`. Check C30 enforces both, starting from a zero baseline with no
+allow-list. Project-wide linter policy belongs in `lakefile.toml`, not in a source file.
+
+**The long-file baseline.** A file over 1,500 lines carries
+`set_option linter.style.longFile N` directly after its module docstring. The header linter wants
+the docstring to come first. This line is a recorded length ceiling, not a suppression, and C30
+allows it. The linter accepts N only when `N - 200 <= lines < N`, so an edit that moves a long
+file's length out of that window must re-tighten N in the same change. `longFile 0` turns the
+linter off, so C30 rejects it. Long files are baselined, not split: splitting a file only to
+satisfy this linter is not a justification for the split.
+
+**Heartbeat budgets.** Scope a raised budget to the one declaration that needs it, and put the
+reason in a `--` comment *after* the `in`:
+
+```lean
+set_option maxHeartbeats 1200000 in
+-- `unfold applyRule` reduces the 36-arm match to this rule's arm: about 0.9M heartbeats measured.
+theorem applyRule_andPos_closed ...
+```
+
+Mathlib's linter does not count a comment above the `set_option` as the reason, and it does not
+count a docstring either. Measure the cost before choosing N: put `#count_heartbeats in` in front
+of the declaration, with `set_option Elab.async false` in effect. Without that option, a proof
+elaborated asynchronously reports only the cost of its header. When the budgets here were
+measured per declaration, several file-wide budgets turned out to cover declarations that need no
+raised budget at all.
+
+**Traps.**
+
+- *`open Classical`.* Write `open Classical in` on the declaration that needs it. Do not write
+  `set_option ... in open Classical`: that scopes the `open` itself, not the declaration. First
+  check whether the declaration needs `Classical` at all. Both of the file-wide
+  `open scoped Classical` lines removed here needed nothing.
+- *Unused `Fintype`/`DecidableEq` in a statement* (`unusedFintypeInType`,
+  `unusedDecidableInType`). These linters read only the *type* of a declaration.
+  - For an explicit binder: change `[Fintype X]` to `[Finite X]`, and drop `[DecidableEq X]`.
+  - For a section variable: put `omit [Fintype X] in` or `omit [DecidableEq X] in` above the
+    declaration. `omit … in` is not interchangeable with `set_option … false in`: the first
+    fixes the finding, the second hides it.
+  - If the proof still needs the instance, open it with `haveI := Fintype.ofFinite X` or
+    `haveI := Classical.decEq X`. In an equation-compiler definition, put it in each arm.
+  - A caller whose own instance was omitted may need `[Finite X]` to call a callee that now
+    asks for `Finite`.
+  - Because a flagged hypothesis is absent from the statement, nothing a caller sees depends on
+    which instance the proof uses.
+- *`simp` before a rigid tactic* (`flexible`). Replace it with the `simp only [...]` list that
+  `simp?` prints. Where the `simp` runs on several goals (after `<;>` or `all_goals`), take the
+  union of the lists every goal reports. Then delete any argument that `linter.unusedSimpArgs`
+  reports as unused in every goal.
+
+**Adopting another linter later.** Enable it in `lakefile.toml` together with a temporary
+`weak.linter.X = false` line. Take the class to zero, then delete that line in the same change.
+The temporary line keeps `--wfail` green at every intermediate commit, so the rollout never
+needs a non-zero C28 baseline.
+
 ### TM-Specific Naming Conventions
 
 The `tmNamingConventions` linter enforces:

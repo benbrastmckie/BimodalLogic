@@ -1662,7 +1662,7 @@ theorem nf_nvar_exist_depth0_tl
 
 /-- Convenience wrapper: extract just the formula. -/
 noncomputable def nfNvarExistDepth0TlFn
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Fintype sig.preds]
         (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1)) : Formula :=
@@ -1670,7 +1670,7 @@ noncomputable def nfNvarExistDepth0TlFn
 
 /-- Correctness of the convenience wrapper. -/
 theorem nf_nvar_exist_depth0_tl_fn_correct
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Fintype sig.preds]
         (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1))

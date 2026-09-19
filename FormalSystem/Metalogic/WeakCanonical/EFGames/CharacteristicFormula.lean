@@ -382,20 +382,20 @@ theorem x_t_formula_exists {sig : MonadicSignature} [Finite sig.preds]
     Properties (see x_t_depth and x_t_correct):
     - staviDepth (xTFormula ...) ≤ r
     - StaviTemporalTruthMu ... u (xTFormula ... t) ↔ RankType ... u = RankType ... t -/
-noncomputable def xTFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def xTFormula {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (r : Nat) (t : ExtendedCarrier M atomMap r) : StaviFormula :=
   Classical.choose (x_t_formula_exists M atomMap r t)
 
 /-- The characteristic formula has depth at most r. -/
-theorem x_t_depth {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem x_t_depth {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t : ExtendedCarrier M atomMap r} :
     staviDepth (xTFormula M atomMap r t) ≤ r :=
   (Classical.choose_spec (x_t_formula_exists M atomMap r t)).1
 
 /-- The characteristic formula correctly identifies positions with the same RankType. -/
-theorem x_t_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem x_t_correct {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t : ExtendedCarrier M atomMap r}
     (u : ExtendedCarrier M atomMap r) :
@@ -404,7 +404,7 @@ theorem x_t_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
   (Classical.choose_spec (x_t_formula_exists M atomMap r t)).2 u
 
 /-- The characteristic formula holds at its defining position. -/
-theorem x_t_self {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem x_t_self {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t : ExtendedCarrier M atomMap r} :
     StaviTemporalTruthMu M atomMap r t (xTFormula M atomMap r t) :=
@@ -412,7 +412,7 @@ theorem x_t_self {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.p
 
 /-- If the characteristic formula holds at u, then u and t agree on all
     depth-≤r StaviFormulas. -/
-theorem x_t_implies_agreement {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem x_t_implies_agreement {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t u : ExtendedCarrier M atomMap r}
     (h : StaviTemporalTruthMu M atomMap r u (xTFormula M atomMap r t))
@@ -512,20 +512,19 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Finite sig.preds]
     that holds at w iff w has the same rank-r type as some mu-point
     in the open interval (t, u). -/
 noncomputable def xIntervalFormula {sig : MonadicSignature} [Fintype sig.preds]
-    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (r : Nat) (t u : ExtendedCarrier M atomMap r) : StaviFormula :=
   Classical.choose (x_interval_formula_exists M atomMap r t u)
 
 /-- The interval type formula has depth at most r. -/
-theorem x_interval_depth {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem x_interval_depth {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t u : ExtendedCarrier M atomMap r} :
     staviDepth (xIntervalFormula M atomMap r t u) ≤ r :=
   (Classical.choose_spec (x_interval_formula_exists M atomMap r t u)).1
 
 /-- The interval type formula correctly identifies types realized in (t, u). -/
-theorem x_interval_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem x_interval_correct {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t u : ExtendedCarrier M atomMap r}
     (w : ExtendedCarrier M atomMap r) :
@@ -536,7 +535,7 @@ theorem x_interval_correct {sig : MonadicSignature} [Fintype sig.preds] [Decidab
   (Classical.choose_spec (x_interval_formula_exists M atomMap r t u)).2 w
 
 /-- Every mu-point in (t, u) satisfies the interval type formula. -/
-theorem x_interval_self {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem x_interval_self {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t u : ExtendedCarrier M atomMap r}
     {v : ExtendedCarrier M atomMap r}
@@ -599,7 +598,7 @@ theorem sf_snce_truth_mu {sig : MonadicSignature} [Finite sig.preds]
 /-- U(X_t, X_{(s,t)}) holds at s in N when t witnesses it.
     This is GHR93 Case II Step 3. -/
 theorem untl_type_holds_at_witness {sig : MonadicSignature} [Fintype sig.preds]
-    [DecidableEq sig.preds]
+   
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {s t : ExtendedCarrier M atomMap r}
     (hmu_t : MuHolds t) (hst : s < t) :
@@ -610,7 +609,7 @@ theorem untl_type_holds_at_witness {sig : MonadicSignature} [Fintype sig.preds]
     x_interval_self hmu_w hsw hwt⟩
 
 /-- The depth of U(X_t, X_{(s,t)}) is at most r + 2. -/
-theorem untl_type_depth {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem untl_type_depth {sig : MonadicSignature} [Fintype sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {s t : ExtendedCarrier M atomMap r} :
     staviDepth (sfUntl (xTFormula M atomMap r t)
@@ -619,7 +618,7 @@ theorem untl_type_depth {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
 
 /-- U(X_t, X_{(s,t)}) has depth ≤ r + 4 (needed for tau transfer at rank r+4). -/
 theorem untl_type_depth_le_r_plus_4 {sig : MonadicSignature} [Fintype sig.preds]
-    [DecidableEq sig.preds]
+   
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {s t : ExtendedCarrier M atomMap r} :
     staviDepth (sfUntl (xTFormula M atomMap r t)

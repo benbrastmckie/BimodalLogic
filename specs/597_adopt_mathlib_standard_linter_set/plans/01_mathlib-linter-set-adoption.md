@@ -1,7 +1,7 @@
 # Implementation Plan: Task #597
 
 - **Task**: 597 - Adopt Mathlib's standard linter set, following cslib's precedent
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 25 hours
 - **Dependencies**: Task 585 (compiler-warning burn-down + C28 gate) -- completed
 - **Research Inputs**: specs/597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md
@@ -781,13 +781,13 @@ line; the file was restored byte-for-byte. MODULE_INVARIANTS.md has the C30 row.
 
 ---
 
-### Phase 16: Policy documentation and final all-target gate [NOT STARTED]
+### Phase 16: Policy documentation and final all-target gate [COMPLETED]
 
 **Goal**: Document the policy, and confirm the acceptance criteria against the authoritative
 build.
 
 **Tasks**:
-- [ ] Add a lint-suppression policy section to `docs/development/LEAN_STYLE_GUIDE.md`, next to its
+- [x] Add a lint-suppression policy section to `docs/development/LEAN_STYLE_GUIDE.md`, next to its
       existing suppression guidance, citing cslib's `docs/lint-suppression-policy.md` as the
       model. It covers:
       - the linter set in force and every permanent lakefile opt-out, with its reason (the
@@ -797,10 +797,10 @@ build.
       - the longFile in-source baseline form;
       - Mathlib's comment-after-`in` rule for `maxHeartbeats`;
       - the `open Classical in` and `omit ... in` traps.
-- [ ] Update `docs/development/CI_CD_PROCESS.md` if it describes the lakefile options or the
+- [x] Update `docs/development/CI_CD_PROCESS.md` if it describes the lakefile options or the
       warning gate.
-- [ ] Confirm that `lakefile.toml` has no `TEMPORARY` lines left.
-- [ ] Do a guarded full build of all targets with `--wfail`. Then run
+- [x] Confirm that `lakefile.toml` has no `TEMPORARY` lines left.
+- [x] Do a guarded full build of all targets with `--wfail`. Then run
       `python3 scripts/warning-budget.py --from-build` against that build (the baseline total must
       stay at 0) and `bash scripts/check-module-invariants.sh` (C28, C29 and C30 must be green).
 
@@ -814,21 +814,35 @@ build.
 - `docs/development/LEAN_STYLE_GUIDE.md` - policy section
 - `docs/development/CI_CD_PROCESS.md` - only if it is affected
 
+**Phase 16 notes**: the policy section "Lint-Suppression Policy (Mathlib's Standard Linter Set)"
+was added to LEAN_STYLE_GUIDE.md, and CI_CD_PROCESS.md's warning-gate section got one paragraph
+pointing at it. The final full harness (not `--no-build`) found what the per-phase `--no-build`
+runs could not see: C16's `unusedArguments` reported 5 *definitions*
+(`xTFormula`, `xIntervalFormula`, `nfNvarExistAllDepthsFn`, `nfNvarExistAllDepthsFnFaithful`,
+`nfNvarExistDepth0TlFn`) whose `[DecidableEq sig.preds]` had become unused once Phase 14
+dropped it from the theorems they are built from. The binder was removed from the 5 definitions.
+That left 13 theorems about them with the instance unused in their statements, and the Phase 14
+helper fixed those in one more wave. After that: the all-target `--wfail` build is green;
+`warning-budget.py --from-build` reports 0 against the last full build log; `lake exe runLinter
+FormalSystem` passes; and the full `check-module-invariants.sh` passes ALL CHECKS, including
+C1/C2/C3/C16/C24/C25/C28/C29/C30. (C16's separate report on the non-FormalSystem roots, which is
+not enforced, reads 161 on both final runs.)
+
 **Verification**:
 - Every acceptance criterion from the Testing & Validation section below is met.
 
 ## Testing & Validation
 
-- [ ] `lakefile.toml` has a package-level `weak.linter.mathlibStandardSet = true` and
+- [x] `lakefile.toml` has a package-level `weak.linter.mathlibStandardSet = true` and
       `weak.linter.style.longFile = 1500`, and no `TEMPORARY` opt-out lines.
-- [ ] `lake build --wfail` is green for `FormalSystem`, `BimodalTest` and all 13 exe roots.
-- [ ] `warning-budget.py --from-build` reports that the baseline is still 0, with a disposition
+- [x] `lake build --wfail` is green for `FormalSystem`, `BimodalTest` and all 13 exe roots.
+- [x] `warning-budget.py --from-build` reports that the baseline is still 0, with a disposition
       row for every observed class.
-- [ ] Zero blanket `set_option linter.* false` and zero unscoped `maxHeartbeats`. C30 enforces
+- [x] Zero blanket `set_option linter.* false` and zero unscoped `maxHeartbeats`. C30 enforces
       both.
-- [ ] C30 is documented in MODULE_INVARIANTS.md, and the policy section in LEAN_STYLE_GUIDE.md
+- [x] C30 is documented in MODULE_INVARIANTS.md, and the policy section in LEAN_STYLE_GUIDE.md
       lists every permanent opt-out with its reason.
-- [ ] No `sorry` or new axioms are introduced (lint-only task).
+- [x] No `sorry` or new axioms are introduced (lint-only task).
 
 ## Artifacts & Outputs
 

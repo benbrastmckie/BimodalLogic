@@ -84,6 +84,13 @@ recorded reason rather than by turning the gate off. Every non-zero baseline ent
 The baseline is currently **zero**: `scripts/warning-budget.txt` records no entries, so any new
 warning fails both gates.
 
+The warnings these gates see include Mathlib's standard syntax-linter set, which `lakefile.toml`
+enables at package level (`weak.linter.mathlibStandardSet`, plus `weak.linter.style.longFile`).
+The set's only opt-out is `hashCommand` for the `BimodalTest` library. Every class in the set has
+a `blocking` disposition row in `scripts/warning-budget.txt`. The policy for scoped suppressions,
+long-file baselines and heartbeat budgets is in `LEAN_STYLE_GUIDE.md`, under "Lint-Suppression
+Policy". C30 forbids blanket linter options and unscoped heartbeat budgets.
+
 `--iofail` is rejected permanently, not merely deferred: it is `--fail-level=info`, and
 `FormalSystem/MainResults.lean` emits 54 deliberate `info:` messages (25 `#check` plus 29
 `#print axioms`) as a documented invariant surface that C2, C14 and C21 all read. cslib's CI
