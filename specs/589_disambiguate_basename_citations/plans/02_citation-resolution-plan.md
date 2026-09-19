@@ -1,7 +1,7 @@
 # Implementation Plan: Task #589
 
 - **Task**: 589 - Disambiguate the 35 basename citations C20 cannot verify (and absorb three broken `specs/` docstring citations)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None outstanding (predecessors 584, 585, 591, 595 completed; research re-measured against the current tree)
 - **Research Inputs**: specs/589_disambiguate_basename_citations/reports/02_citation-resolution-map.md
@@ -228,20 +228,20 @@ Put `c20.py` in a scratch directory, never in the repo.
 
 ---
 
-### Phase 5: Final gate [NOT STARTED]
+### Phase 5: Final gate [COMPLETED]
 
 **Goal**: Confirm the end state across the whole repository with the full gate set.
 
 **Tasks**:
-- [ ] Run the extracted C20 and confirm:
+- [x] Run the extracted C20 and confirm:
   - INFO rows are absent (0).
-  - Tier 1 reports `PASS ... all 1028 resolvable` (1006 + 22). Any deviation must be explained, for example by a citation that concurrent work added or removed.
+  - Tier 1 reports `PASS ... all 1028 resolvable` (1006 + 22). Any deviation must be explained, for example by a citation that concurrent work added or removed. *(deviation: result is 1031 = 1006 + 22 + 3: companion lists split into separately qualified citations add 4 regex matches (Tableau ~:1642 +2, TableauConformance ~:334 +1, ~:488 +1) and the `:159` companion form at Tableau ~:1928 removes 1)*
   - There are zero out-of-range or blank landings.
   - Tier 2 reports PASS with zero.
-- [ ] Run the full `bash scripts/check-module-invariants.sh`. It must have no new FAILs compared with the pre-task baseline.
-- [ ] Run `lake build`. It must pass; the edits are comment-only, but this is the final gate.
-- [ ] Run the repository's task-reference lint on the edited deliverables. Deliverable files must not cite task numbers.
-- [ ] Review the staged diff: only this task's explicit file list, with no task-560 working-tree files.
+- [x] Run the full `bash scripts/check-module-invariants.sh`. It must have no new FAILs compared with the pre-task baseline.
+- [x] Run `lake build`. It must pass; the edits are comment-only, but this is the final gate.
+- [x] Run the repository's task-reference lint on the edited deliverables. Deliverable files must not cite task numbers.
+- [x] Review the staged diff: only this task's explicit file list, with no task-560 working-tree files.
 
 **Timing**: 0.5 hours
 
@@ -257,12 +257,12 @@ Put `c20.py` in a scratch directory, never in the repo.
 
 ## Testing & Validation
 
-- [ ] C20 INFO is 0.
-- [ ] C20 tier 1 is PASS with 1028 resolvable citations, and zero out-of-range or blank landings.
-- [ ] C20 tier 2 is PASS with zero.
-- [ ] Every companion number C20 does not read has been verified by hand against its named declaration.
-- [ ] The full `check-module-invariants.sh` has no new FAILs, and `lake build` is green.
-- [ ] No `specs/` path citations remain in the four absorbed docstrings.
+- [x] C20 INFO is 0.
+- [x] C20 tier 1 is PASS with 1028 resolvable citations, and zero out-of-range or blank landings.
+- [x] C20 tier 2 is PASS with zero.
+- [x] Every companion number C20 does not read has been verified by hand against its named declaration.
+- [x] The full `check-module-invariants.sh` has no new FAILs, and `lake build` is green.
+- [x] No `specs/` path citations remain in the four absorbed docstrings.
 
 ## Artifacts & Outputs
 
