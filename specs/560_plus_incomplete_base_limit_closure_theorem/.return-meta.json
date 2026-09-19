@@ -1,31 +1,63 @@
 {
-  "status": "planned",
-  "started_at": "2026-09-19T01:15:00Z",
+  "status": "implemented",
+  "started_at": "2026-09-19T01:21:56Z",
+  "completed_at": "2026-09-19T02:30:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/560_plus_incomplete_base_limit_closure_theorem/plans/01_base-incompleteness-transcription.md",
-      "summary": "Six-phase plan (9h, four waves) transcribing the two sorry-free probes into five new modules, assembling plus_incomplete_base with a C14 axiom pin, and sweeping every README/docstring that says TM+ completeness is open; ZTime corollary excluded as a follow-up."
+      "type": "summary",
+      "path": "specs/560_plus_incomplete_base_limit_closure_theorem/summaries/01_base-incompleteness-transcription-summary.md",
+      "summary": "Landed plus_incomplete_base (TM+ incomplete at Base) in five new modules, pinned in C14, with the README/docstring status sweep; all six phases complete."
     }
   ],
-  "next_steps": "Run /implement 560 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1789779419_14e613_560",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 9,
-    "dependency_waves": [[1, 2, 3], [4], [5], [6]]
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 15,
+    "axiom_count_baseline": 15,
+    "build_passed": true
   },
-  "memory_candidates": [
-    {
-      "content": "Lean plan authoring against lean-challenge-snapshot.sh: (1) the tool forces EVERY declaration body in the plan's '## Lean Challenge Statements' block to sorry, including a def, so a challenge theorem that mentions a to-be-defined def is meaningless; write the defined term out in full in the challenge statement and note in the plan that the landed theorem is stated through the def (definitionally equal), so an advisory textual-drift verdict on that identifier is expected. (2) The Goals identifier set is extracted by a backtick regex over everything between the line '**Goals**:' and the next line starting with '**' plus a non-G character; any plain backticked identifier in that region (even PlusValid or a helper name) becomes a goal and causes an exit-71 identifier-set mismatch. Backtick only the challenge theorem names inside Goals; dotted names and paths do not match the regex. (3) Verify with 'lean-challenge-snapshot.sh N . --dry-run' (writes nothing) and type-check the block with bare lean against built oleans.",
-      "category": "PATTERN",
-      "source_artifact": "specs/560_plus_incomplete_base_limit_closure_theorem/plans/01_base-incompleteness-transcription.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lean-challenge-snapshot", "plan-format", "Goals regex", "challenge statements", "def body sorry", "lean4 planning"]
-    }
+  "completion_data": {
+    "completion_summary": "Proved plus_incomplete_base: the limit-closure formula blc is valid at Base (Zorn plus the Extension Theorem, via the general lemma PartialHistory.exists_maximal_of_chainClosed) and is not a Base theorem of TM+ (a paste-closed coarsened-state model on the frame EF over integer time, all FrameOver fields including Saturation discharged). Added not_plus_complete_base, the C14 axiom pin [propext, Classical.choice, Quot.sound], a theorem-index row, and swept every README row and docstring that said general TM+ completeness is open.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Independence/PastedCoarseModels.lean",
+    "FormalSystem/Semantics/PlusLanguage/PlusLimitClosure.lean",
+    "FormalSystem/Metalogic/Independence/LimitClosureFrame.lean",
+    "FormalSystem/Metalogic/Independence/LimitClosureCountermodel.lean",
+    "FormalSystem/Metalogic/Independence/PlusIncompleteness.lean",
+    "FormalSystem/Metalogic/Independence.lean",
+    "FormalSystem/Semantics/PlusLanguage.lean",
+    "scripts/check-module-invariants.sh",
+    "docs/theorem-index.md",
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Semantics/PlusLanguage/README.md",
+    "FormalSystem/Metalogic/Conservativity/README.md",
+    "FormalSystem/Metalogic/Conservativity/Plus/README.md",
+    "FormalSystem/Metalogic/Conservativity/Star/README.md",
+    "FormalSystem/Metalogic/Deterministic/README.md",
+    "FormalSystem/Syntax/StarLanguage/README.md",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/Conservativity.lean",
+    "FormalSystem/Metalogic/Deterministic.lean",
+    "FormalSystem/Metalogic/Conservativity/Plus.lean",
+    "FormalSystem/Metalogic/Conservativity/Plus/Forward.lean",
+    "FormalSystem/Metalogic/Conservativity/Star.lean",
+    "FormalSystem/Metalogic/Conservativity/Star/Forward.lean",
+    "FormalSystem/Metalogic/Deterministic/Completeness.lean"
   ],
-  "dispatch_seq": 2
+  "next_steps": "None required. Recommended follow-up task: ZTime corollary plus_incomplete_ztime (class-indexed coarse soundness with the three ZTime arms, plus FrameClass.ZTime.Sat EF).",
+  "metadata": {
+    "session_id": "sess_1789779419_14e613",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 6,
+    "phases_total": 6
+  }
 }

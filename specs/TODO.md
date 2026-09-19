@@ -11,7 +11,7 @@ next_project_number: 627
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,560,563,568,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617 | 298,464,502,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -93,7 +93,6 @@ next_project_number: 627
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-560 [IMPLEMENTING] — IMPLEMENTATION. Land the machine-checked theorem that the...
 568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -709,12 +708,13 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 ---
 
 ### 560. Plus incomplete base limit closure theorem
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [560_plus_incomplete_base_limit_closure_theorem/reports/01_base-incompleteness-transcription.md]
 - **Plan**: [560_plus_incomplete_base_limit_closure_theorem/plans/01_base-incompleteness-transcription.md]
+- **Summary**: [560_plus_incomplete_base_limit_closure_theorem/summaries/01_base-incompleteness-transcription-summary.md]
 
 **Description**: IMPLEMENTATION. Land the machine-checked theorem that the current TM+ axiom set is INCOMPLETE over the paper's all-histories task semantics at Base:
 

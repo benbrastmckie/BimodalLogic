@@ -1,17 +1,16 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phase": "plan",
-  "summary": "Plan round 01 written: six phases, 9 hours, waves [1,2,3] -> [4] -> [5] -> [6]. Phases 1-4 transcribe the two sorry-free probes into PastedCoarseModels, PlusLimitClosure, LimitClosureFrame and LimitClosureCountermodel; Phase 5 assembles plus_incomplete_base and not_plus_complete_base with the C14 axiom pin; Phase 6 sweeps the READMEs and docstrings that still say TM+ completeness is open. The optional ZTime corollary is a Non-Goal with a follow-up recommendation.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "All six plan phases completed: plus_incomplete_base and not_plus_complete_base landed in five new sorry-free modules, pinned in C14 with [propext, Classical.choice, Quot.sound], and the TM+ completeness status swept across READMEs and docstrings. Full lake build, BimodalTest and check-module-invariants.sh all green.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/560_plus_incomplete_base_limit_closure_theorem/plans/01_base-incompleteness-transcription.md",
-      "summary": "Six-phase transcription plan with Lean Challenge Statements for plus_incomplete_base and not_plus_complete_base (type-checked, snapshot dry-run exit 0); validate-artifact --strict passes."
+      "type": "summary",
+      "path": "specs/560_plus_incomplete_base_limit_closure_theorem/summaries/01_base-incompleteness-transcription-summary.md",
+      "summary": "Implementation summary for the Base incompleteness theorem of TM+."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 6,
-  "blockers": [],
-  "next_action_hint": "implement: Wave 1 is Phases 1, 2, 3 (disjoint new files; serialise the two Independence.lean import edits and the inventory regeneration). Builds detached through lake-build-guard.sh."
+  "blockers": []
 }
