@@ -87,10 +87,10 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Algebraic.lean` | 40 | `Algebraic/` |
 | `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Bundle.lean` | 47 | `Bundle/` |
-| `Conservativity.lean` | 385 | `Conservativity/` |
+| `Conservativity.lean` | 386 | `Conservativity/` |
 | `Core.lean` | 37 | `Core/` |
 | `Decidability.lean` | 168 | `Decidability/` |
-| `Deterministic.lean` | 25 | <!-- TODO: add description --> |
+| `Deterministic.lean` | 27 | <!-- TODO: add description --> |
 | `Independence.lean` | 115 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 144 | `WeakCanonical/` |
@@ -103,7 +103,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=loose filter=non-aggregators -->
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
-| `Conservativity.lean` | 385 | Conservativity of the extension |
+| `Conservativity.lean` | 386 | Conservativity of the extension |
 | `Compactness.lean` | 229 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
 | `DedekindNonCompactness.lean` | 532 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
@@ -145,15 +145,15 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,402 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,119 | Chronicle completeness route; the wired entry point |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,120 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,864 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 21 | 6,116 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`Conservativity/`](Conservativity/README.md) | 21 | 6,130 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 4 | 1,817 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 80 | 52,241 | Tableau decision procedure and countermodel extraction |
-| [`Deterministic/`](Deterministic/README.md) | 7 | 1,610 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
+| [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 22 | 5,975 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,556 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,559 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -171,7 +171,7 @@ Loose modules:
 | `CanonicalChain.lean` | 115 |
 | `CanonicalModel.lean` | 844 |
 | `Completeness.lean` | 497 |
-| `CompletenessDedekind.lean` | 614 |
+| `CompletenessDedekind.lean` | 615 |
 | `DiscreteCarrierProbe.lean` | 96 |
 | `Frame.lean` | 717 |
 | `OrderedSeedConsistency.lean` | 257 |
@@ -196,7 +196,7 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Kamp/` | 116 | 77,711 |
+| `Kamp/` | 116 | 77,714 |
 | `EFGames/` | 8 | 11,800 |
 | `Expressiveness/` | 5 | 9,507 |
 | `DenseModelSurgery/` | 9 | 7,900 |
@@ -273,8 +273,17 @@ what is landed and what is open, and the split is load-bearing enough to record 
 | the logic of the deterministic frames coincides with the logic of the *Determined*-valid frames | **landed** — `Deterministic/Completeness.lean` |
 | `⊡` is not definable in L | **landed** — `Independence/StabUndefinable.lean` |
 | the two pasting schemata are not derivable from the naive `⊡`-set | **landed** — `Independence/PastingIndependence.lean` |
-| **general (nondeterministic) TM⁺ completeness, at any class** | **OPEN** |
+| **completeness of the current TM⁺ axiom set at `.Base`** | **FALSE** — `Independence/PlusIncompleteness.lean`, `plus_incomplete_base` |
+| **completeness of any extension of the TM⁺ axiom set, at any class** | **OPEN** |
 | **TM⁺ decidability** | **OPEN** |
+
+The FALSE row is a theorem: the limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))`
+is valid over every task frame (`Semantics/PlusLanguage/PlusLimitClosure.lean`) and is refuted in a
+paste-closed coarsened-state model for which TM⁺ is sound
+(`Independence/PastedCoarseModels.lean`, `Independence/LimitClosureCountermodel.lean`). The
+one-line reading: the coarsened countermodel is a dense, non-closed bundle — PS and US say
+paste-closed, MF says translation-closed, nothing says closed. It concerns the axiom set as it
+stands, at `.Base`, and says nothing about any extension or any other class.
 
 The two open rows are stated nowhere in the tree and are never discharged with `sorry`. The
 nearest results in the literature are Reynolds (2003) on until/since completeness over the reals
@@ -299,14 +308,15 @@ arbitrary `φ` (`Semantics/StarLanguage/StarNonValidities.lean`, `refute_modal_f
 | consistency at `.Base` | **landed** — `Conservativity/Star/StarSoundness.lean` |
 | every TM⁺ theorem is a TM⋆ theorem at its embedding | **landed** — `StarLanguage/Embedding.lean` |
 | conservativity over **TM**, both directions, all four classes | **landed** — `Conservativity/Star/Forward.lean` |
-| conservativity over **TM⁺** | **CONDITIONAL** on general TM⁺ completeness, with an unconditional contrapositive — `Conservativity/Star/Forward.lean` |
+| conservativity over **TM⁺** | **CONDITIONAL** on general TM⁺ completeness, with an unconditional contrapositive — `Conservativity/Star/Forward.lean`. The hypothesis is **REFUTED at `.Base`** (`Independence/PlusIncompleteness.lean`, `not_plus_complete_base`), so the conditional is vacuous there and conservativity at `.Base` is undecided by this route; at the other three classes the hypothesis is open |
 | **TM⋆ completeness, at any class** | **OPEN** |
 
 The TM⋆ conservativity split is not an asymmetry of effort. Over TM the composition ends in a TM
 completeness engine and there are four of them; over TM⁺ it ends in a TM⁺ engine and there are
 none. Given TM⋆ soundness, a separating witness for non-conservativity over TM⁺ *is* a witness of
-TM⁺ incompleteness (`plusIncomplete_of_starNonconservative`), so that row cannot be settled
-either way without settling the open row above it.
+TM⁺ incompleteness (`plusIncomplete_of_starNonconservative`). The converse fails to help:
+TM⁺ *is* incomplete at `.Base`, and that refutes the conditional's hypothesis without producing a
+separating witness, so conservativity of TM⋆ over TM⁺ at `.Base` remains undecided.
 
 The TM⋆ completeness row is stated nowhere in the tree and is never discharged with `sorry`. Two
 obstructions are recorded in `Conservativity/Star/README.md`: the four TM engines build

@@ -18,8 +18,9 @@ TM⁺ ⊢ ofFormula φ  ⟹[plus_soundness_validIn]  PlusValidIn fc (ofFormula �
                    ⟹[WeakCompleteness fc engine]  TM ⊢ φ
 ```
 
-It needs TM⁺ **soundness** and TM **completeness** — never TM⁺ completeness, which remains
-open. Together with the backward direction `plusDerivable_of_derivable`
+It needs TM⁺ **soundness** and TM **completeness** — never TM⁺ completeness, which is false at
+`.Base` for the current axiom set (`Metalogic/Independence/PlusIncompleteness.lean`) and open for
+any extension. Together with the backward direction `plusDerivable_of_derivable`
 (`PlusLanguage/Derivation.lean`, by the constructor-to-constructor embedding of derivations),
 this gives `plusDerivable_ofFormula_iff`: **TM⁺ is a conservative extension of TM**, at every
 frame class carrying a completeness engine — that is, at all four.

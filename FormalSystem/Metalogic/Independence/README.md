@@ -3,7 +3,7 @@
 Underivability results, established by exhibiting a model of the assumptions in which the
 target formula fails.
 
-Five results are carried here:
+Eight results are carried here:
 
 1. The paper's `CO` principle does **not** derive Reynolds' `Axiom.prior_U_gap` over the dense
    base. The converse direction — Reynolds' triple *does* derive `CO` — is
@@ -27,6 +27,12 @@ Five results are carried here:
    **not** `Deterministic`, and `sent:det` is valid over it at every sentence letter. Replacing
    `\Future` by `always` closes the gap: `Det-pm` does define the deterministic frames
    (`Semantics/StarLanguage/StarDeterminism.lean`'s `deterministic_starDefinable`).
+8. **The current TM⁺ axiom set is incomplete at Base** (`PlusIncompleteness.lean`). The
+   limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` — the Burgess/Thomason
+   branch-extension pattern transposed to the stability modal — is valid over every task frame
+   (`Semantics/PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is
+   not a Base theorem of TM⁺. Completeness of any *extension* of the axiom set is open at every
+   class, and nothing is claimed at Dense, ZTime or RTime.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes — which are closed, by
@@ -38,6 +44,15 @@ state is again a world history; so no ordinary task model can witness their unde
 witness is a *coarsened-state* model (`CoarsenedModels.lean`), which interprets `⊡` over a
 quotient of the world states and thereby removes the common state a splice would need. Everything
 else about the argument is the usual four steps.
+
+Result 8 uses the same non-standard semantics with one hypothesis restored. A coarsened model is
+*paste-closed* (`PastedCoarseModels.lean`) when the splice exists at the level of `π`-images;
+then PS and US are coarsely valid too, and **all** of TM⁺ at Base is sound for it. The witness
+(`LimitClosureFrame.lean`, `LimitClosureCountermodel.lean`) has as `π`-images exactly the
+eventually-false Boolean sequences: closed under splicing, not closed under limits. In one line,
+the coarsened countermodel is a dense, non-closed bundle — PS and US say paste-closed, MF says
+translation-closed, nothing says closed. Under `⊡ = id` the formula is a tautology, hence a
+theorem of TM⁺ + *Determined*, so the countermodel is necessarily nondeterministic.
 
 Results 6 and 7 leave the language rather than the semantics: they are stated over **L⋆**
 (`FormalSystem/Syntax/StarLanguage/`), L⁺ plus the manuscript's time store/recall operators. The
@@ -111,6 +126,13 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 - `pasteNotNaiveDerivable`, `untlPasteNotNaiveDerivable` (`PastingIndependence.lean`) — PS and US
   are not naively derivable, both refuted in one coarsened model over `ℤ` whose coarsening
   identifies the offsets `w₀` and `-w₀`.
+- `not_plusDerivable_of_pcRefuted` (`PastedCoarseModels.lean`) — soundness of TM⁺ at Base for
+  paste-closed coarsened-state models, in the shape a refutation consumes.
+- `plus_incomplete_base`, `not_plus_complete_base` (`PlusIncompleteness.lean`) — the limit-closure
+  formula is valid and not a Base theorem of TM⁺; the hypothesis of
+  `starConservative_of_plusComplete` at Base, refuted. Halves: `blc_plusValid`
+  (`Semantics/PlusLanguage/PlusLimitClosure.lean`) and `blc_not_plusDerivable_base`
+  (`LimitClosureCountermodel.lean`).
 
 ## Dependencies
 

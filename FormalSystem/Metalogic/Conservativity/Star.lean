@@ -41,11 +41,13 @@ Each entry reads *Module* — *Contents*:
 `TM⋆ ⊢⋆[fc] ofPlus (ofFormula φ) ↔ TM ⊢[fc] φ` (`starDerivable_ofFormula_iff`). Adding the time
 registers proves no new theorem of the base language.
 
-**TM⋆ over TM⁺: a proved conditional pair, because TM⁺ completeness is open.** If TM⁺ is complete
-at `fc` then TM⋆ is conservative over it (`starConservative_of_plusComplete`); and,
-unconditionally, any separating witness for non-conservativity is a witness of TM⁺ incompleteness
-(`plusIncomplete_of_starNonconservative`). The question is therefore *equivalent modulo TM⋆
-soundness* to the tree's own recorded open problem, and no work on TM⋆ alone can decide it.
+**TM⋆ over TM⁺: a proved conditional pair.** If TM⁺ is complete at `fc` then TM⋆ is conservative
+over it (`starConservative_of_plusComplete`); and, unconditionally, any separating witness for
+non-conservativity is a witness of TM⁺ incompleteness (`plusIncomplete_of_starNonconservative`).
+At `.Base` the hypothesis of the first is **refuted** for the current axiom set
+(`Metalogic/Independence/PlusIncompleteness.lean`, `not_plus_complete_base`), so the conditional
+is vacuous there; that does *not* decide conservativity at `.Base`, because incompleteness yields
+no separating witness. At `.Dense`, `.ZTime` and `.RTime` the hypothesis is open.
 
 **TM⋆ completeness: OPEN, under two named obstructions.** See
 `Conservativity/Star/README.md`.

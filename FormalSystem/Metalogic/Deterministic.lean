@@ -21,5 +21,7 @@ own countermodel frames, the `⊡`-erasure and the semantic collapse, the extend
 TM⁺ + *Determined*, and the deterministic completeness theorem with the coincidence corollary.
 
 **General (nondeterministic) TM⁺ completeness is not here, and is not stated anywhere in this
-tree.** It is open; the nearest literature results are Reynolds (2003) and Zanardo (1991).
+tree.** For the current axiom set it is false at `.Base`
+(`Metalogic/Independence/PlusIncompleteness.lean`); for any extension it is open. The nearest
+literature results are Reynolds (2003) and Zanardo (1991).
 -/

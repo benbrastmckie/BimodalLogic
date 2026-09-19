@@ -23,7 +23,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 |--------|-------|
 | Live `.lean` files | 533 |
 | Live lines of code | 164,405 |
-| Live comment lines | 98,078 |
+| Live comment lines | 98,103 |
 | Archived `.lean` files | 169 |
 | Archived lines | 91,983 |
 <!-- END GENERATED -->
@@ -271,13 +271,17 @@ side conditions (`Semantics/PlusLanguage/PlusPasting.lean`); the five refutation
 
 **Open problems for TM⁺.**
 
-- **Completeness** of TM⁺ over the paper's all-histories semantics, at any class. The nearest
+- **Completeness** of TM⁺ over the paper's all-histories semantics. For the axiom set as it
+  stands this is **false at Base**: the limit-closure formula
+  `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid and is not a Base theorem
+  (`FormalSystem/Metalogic/Independence/PlusIncompleteness.lean`, `plus_incomplete_base`). What is
+  open, at every class, is whether some extension of the axiom set is complete. The nearest
   results in the literature are for Ockhamist branching time: Reynolds 2003 axiomatizes the
   complete-tree Ockhamist logic (F/P only, with an IRR-style rule and a long construction), and
   Zanardo 1991 axiomatizes the *bundled* Since/Until Ockhamist semantics with Burgess-Gabbay-style
   rules. Neither transfers directly: every completeness engine in this tree builds a
   deterministic countermodel, on which `⊡` is the identity. Nothing here asserts or approaches
-  TM⁺ completeness.
+  completeness of any extension of TM⁺.
 - **Decidability** of TM⁺. By the conservativity above it is no easier than decidability of
   TM, itself open for every class (next subsection); no result in either direction is claimed.
 

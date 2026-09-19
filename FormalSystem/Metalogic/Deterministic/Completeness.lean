@@ -45,7 +45,10 @@ about frames.
 ## Scope
 
 **General (nondeterministic) TM⁺ completeness is not stated here, at any class, and is not
-discharged with `sorry` anywhere in this tree.** It is open. The nearest results in the
+discharged with `sorry` anywhere in this tree.** For the current axiom set it is false at `.Base`
+(`Metalogic/Independence/PlusIncompleteness.lean`, whose refuting formula is a tautology under
+`⊡ = id` and so is consistent with the theorems here); for any extension of the axiom set it is
+open. The nearest results in the
 literature are Reynolds (2003) on until/since completeness over the reals and Zanardo (1991) on
 branching-time logics with an Ockhamist reading; neither settles the bundled all-histories
 semantics this development uses.
@@ -175,8 +178,10 @@ theorem logicBetweenEqDeterministic (fc : FrameClass) (P : TaskFrame → Prop)
 
 /-! ## The `⊡ = identity` special case
 
-Every nondeterministic TM⁺ completeness result — task-external, and open — must specialize to the
-theorems above when the frame is deterministic, because on such a frame `⊡` is pointwise the
+Any nondeterministic completeness result for an extension of TM⁺ — completeness is false at
+`.Base` for the current axiom set (`Metalogic/Independence/PlusIncompleteness.lean`) and open
+for any extension — must specialize to the theorems above when the frame is deterministic,
+because on such a frame `⊡` is pointwise the
 identity (`Semantics/PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`) and
 *Determined* is frame-valid. The row below records that specialization concretely: over the
 deterministic frames, L⁺-validity of `φ` and L-validity of its erasure are the same condition. -/

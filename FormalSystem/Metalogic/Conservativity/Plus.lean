@@ -56,8 +56,11 @@ open at `.Dense` and `.RTime` — `Metalogic/Conservativity.lean`).
 
 ## What is open, and is not promised here
 
-- **Completeness of TM⁺** over the all-histories semantics, at any class. The four TM
-  completeness engines build deterministic countermodels, on which `⊡` is the identity, so none
+- **Completeness of any extension of TM⁺** over the all-histories semantics, at any class. For
+  the axiom set as it stands, completeness is **false at `.Base`**
+  (`Metalogic/Independence/PlusIncompleteness.lean`, `plus_incomplete_base`); what is open is
+  whether some extension is complete. The four TM completeness engines build deterministic
+  countermodels, on which `⊡` is the identity, so none
   of them can refute a `¬⊡`-formula and none transfers; a canonical model on `⊡`-classes of
   maximal consistent sets faces a lifting obstruction the pasting schemata do not resolve for
   mixed past/future demands. Nothing in this tree asserts or approaches TM⁺ completeness.

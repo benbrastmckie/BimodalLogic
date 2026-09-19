@@ -63,7 +63,10 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   (`Semantics.plusValidIn_ofFormula_iff`); and **proof-theoretic conservativity of TM⁺ over TM
   in both directions at all four classes** (`plusDerivable_ofFormula_iff`) — the forward
   direction from TM⁺ soundness and the four completeness engines, needing no TM⁺ completeness.
-  TM⁺ completeness and decidability are open. One durable fact bears on any future attempt: the
+  Completeness of the current TM⁺ axiom set is **false at `.Base`**
+  (`Metalogic/Independence/PlusIncompleteness.lean`, `plus_incomplete_base`: the limit-closure
+  formula is valid and not derivable); completeness of any extension is open at every class, and
+  TM⁺ decidability is open. One durable fact bears on any future attempt at an extension: the
   countermodels of all four completeness engines are **deterministic** — `multiFamTaskFrameGen`
   (`Metalogic/Algebraic/FlowFrame.lean`) has `TaskRel p d q := p.1 = q.1 ∧ q.2 = p.2 + d`, and
   `zTaskFrameV2` (`Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean`) has `u = w + d` —

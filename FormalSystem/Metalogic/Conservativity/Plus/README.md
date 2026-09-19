@@ -12,12 +12,20 @@ instance), plus S5 for `⊡`, `□φ → ⊡φ`, `p → ⊡p` for atoms, and two
 pure-future / pure-past side conditions (`Semantics/PlusLanguage/PlusPasting.lean`). The five refutations in
 `Semantics/PlusLanguage/PlusNonValidities.lean` bound that set from above.
 
-**General TM⁺ completeness and TM⁺ decidability are open** and are not asserted anywhere. One
-durable fact bears on any attempt: the countermodels of all four completeness engines are
-*deterministic*, so on them `⊡` is the identity and none of the engines transfers to L⁺ as it
-stands. The nearest results in the literature are Reynolds (2003) on until/since completeness over
-the reals and Zanardo (1991) on branching-time logics with an Ockhamist reading; neither settles
-the all-histories semantics used here.
+**Completeness of the current TM⁺ axiom set is false at Base**
+(`Metalogic/Independence/PlusIncompleteness.lean`, `plus_incomplete_base`): the limit-closure
+formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid over every task frame
+(`Semantics/PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is not a
+Base theorem. **Completeness of any extension of the axiom set is open at every class, and TM⁺
+decidability is open**; neither is asserted anywhere. The one-line reading of the countermodel:
+it is a dense, non-closed bundle of histories — PS and US say the bundle is paste-closed, MF says
+it is translation-closed, and nothing in TM⁺ says it is closed.
+
+One durable fact bears on any attempt at a complete extension: the countermodels of all four
+completeness engines are *deterministic*, so on them `⊡` is the identity and none of the engines
+transfers to L⁺ as it stands. The nearest results in the literature are Reynolds (2003) on
+until/since completeness over the reals and Zanardo (1991) on branching-time logics with an
+Ockhamist reading; neither settles the all-histories semantics used here.
 
 What that same fact **does** yield is the deterministic row, which is landed: TM⁺ together with
 the *Determined* schema `φ → ⊡φ` is sound over the frames validating that schema and complete
@@ -34,7 +42,7 @@ does not define the deterministic frames, and no L⁺ formula set does
 | `Atomization.lean` | 265 | The `⊡`-as-fresh-atom transfer: `Encoding`, `atomize`, `TaskModel.atomModel`, `plusTruthAt_iff_atomize`, and the two helpers (and their derivation-taking forms) that carry the TM schemata over L⁺. |
 | `AxiomValidity.lean` | 304 | The two dispatch lemmas, one arm per `PlusAxiom` constructor and no wildcard: every schema and every temporal dual is valid at its own minimum frame class. |
 | `Corollaries.lean` | 195 | The composed fragment rows named per class and the derived logic of the defined modals `Will`/`will`/`could`. |
-| `Forward.lean` | 173 | Forward conservativity of TM⁺ over TM at every class with a completeness engine, the biconditional `plusDerivable_ofFormula_iff`, and the composed L⁻ ⊂ L⁺ rows. |
+| `Forward.lean` | 174 | Forward conservativity of TM⁺ over TM at every class with a completeness engine, the biconditional `plusDerivable_ofFormula_iff`, and the composed L⁻ ⊂ L⁺ rows. |
 | `PlusSoundness.lean` | 190 | Soundness of TM⁺ at every frame class, by the companion recursion carrying validity and reflection-validity, plus the per-class rows and consistency at `.Base`. |
 <!-- END GENERATED -->
 
@@ -61,21 +69,23 @@ does not define the deterministic frames, and no L⁺ formula set does
 | TM⁺ + *Determined* conservative over TM | **landed** | `Corollaries.lean` |
 | `⊡` is not L-definable | **landed** | `Metalogic/Independence/StabUndefinable.lean` |
 | the two pasting schemata are not derivable from the naive `⊡`-set | **landed** | `Metalogic/Independence/PastingIndependence.lean` |
-| **general (nondeterministic) TM⁺ completeness, any class** | **OPEN** — never stated, never sorried | — (Reynolds 2003, Zanardo 1991 are the nearest) |
+| **the current TM⁺ axiom set is complete at Base** | **FALSE** — `plus_incomplete_base`: the limit-closure formula is valid and not derivable | `Metalogic/Independence/PlusIncompleteness.lean` |
+| **some extension of the TM⁺ axiom set is complete, any class** | **OPEN** — never stated, never sorried | — (Reynolds 2003, Zanardo 1991 are the nearest) |
 | **TM⁺ decidability** | **OPEN** | — |
 | TM⋆ soundness, all four classes | **landed** | `../Star/StarSoundness.lean` |
 | TM⋆ conservative over TM, both directions, all four classes | **landed** | `../Star/Forward.lean` |
-| TM⋆ conservative over TM⁺ | **CONDITIONAL on general TM⁺ completeness** — `starConservative_of_plusComplete`, with the unconditional contrapositive `plusIncomplete_of_starNonconservative`: any separating witness *is* a witness of TM⁺ incompleteness | `../Star/Forward.lean` |
+| TM⋆ conservative over TM⁺ | **CONDITIONAL on general TM⁺ completeness, and the hypothesis is REFUTED at Base** (`not_plus_complete_base`) — `starConservative_of_plusComplete` is therefore vacuous at Base, and conservativity at Base is *not* thereby decided, since incompleteness yields no separating witness. The unconditional contrapositive `plusIncomplete_of_starNonconservative` (any separating witness *is* a witness of TM⁺ incompleteness) remains the only route from non-conservativity. At Dense, ZTime and RTime the hypothesis is still open | `../Star/Forward.lean` |
 | **TM⋆ completeness, any class** | **OPEN** — two obstructions named, never stated, never sorried | `../Star/README.md` |
 
-## The L⋆ rows sit on top of this open problem
+## The L⋆ rows sit on top of this problem
 
 The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆ (`../Star/`) inherit this
 directory's status exactly, and the inheritance is precise rather than approximate. TM⋆ over the
 **base** language is unconditional, because that composition ends in a *TM* completeness engine
-and TM has four. TM⋆ over **L⁺** ends in a TM⁺ engine, and there is none; given TM⋆ soundness the
-two questions coincide, so the row is stated as a conditional pair. Settling general TM⁺
-completeness settles it; nothing else will.
+and TM has four. TM⋆ over **L⁺** ends in a TM⁺ engine, and there is none, so the row is stated as a
+conditional pair. At Base the conditional's hypothesis is now refuted for the current axiom set,
+which leaves conservativity of TM⋆ over TM⁺ at Base undecided by this route: a complete extension
+of TM⁺ would settle it for that extension, and a separating witness would settle it negatively.
 
 ## Related Documentation
 

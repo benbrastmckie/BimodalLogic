@@ -37,18 +37,22 @@ theorem of the base language, at any of the four classes.
 
 ## Row 2 (conditional, with an unconditional contrapositive): TM⋆ over TM⁺
 
-The same composition one level up needs **TM⁺ completeness**, which is open at every class
-(`Conservativity/Plus/README.md`). So the L⁺ ⊂ L⋆ row is stated as a proved conditional pair
-rather than asserted or denied:
+The same composition one level up needs **TM⁺ completeness**, which no TM⁺ engine supplies: for
+the current axiom set it is false at `.Base`
+(`Metalogic/Independence/PlusIncompleteness.lean`), and for any extension it is open at every
+class (`Conservativity/Plus/README.md`). So the L⁺ ⊂ L⋆ row is stated as a proved conditional
+pair rather than asserted or denied:
 
 - `starConservative_of_plusComplete` — *if* TM⁺ is complete at `fc`, then TM⋆ proves no new L⁺
   theorem at `fc`;
 - `plusIncomplete_of_starNonconservative` — its contrapositive, unconditional: **any separating
   witness for non-conservativity is, verbatim, a witness of TM⁺ incompleteness.**
 
-The pair places the question *inside* the tree's own recorded open problem. That is a result, not
-a shortfall: it says the L⁺-conservativity question cannot be settled either way without settling
-TM⁺ completeness, so no amount of further work on TM⋆ alone will decide it.
+The pair ties the question to TM⁺ completeness in one direction: non-conservativity forces
+incompleteness. The converse is not available — TM⁺ is in fact incomplete at `.Base`
+(`Metalogic/Independence/PlusIncompleteness.lean`), and that refutes the first theorem's
+hypothesis there without producing a separating witness — so conservativity of TM⋆ over TM⁺
+remains undecided at every class.
 
 ## Why there is no syntactic route
 
@@ -167,7 +171,11 @@ theorem at `fc`: TM⋆ soundness sends the derivation to `StarValidIn fc (ofPlus
 `starValidOnFrames_ofPlus` reads that as `PlusValidIn fc φ`, and completeness returns a TM⁺
 derivation.
 
-The hypothesis is exactly general TM⁺ completeness at `fc`, which is open at every class.
+The hypothesis is exactly general TM⁺ completeness at `fc`. At `.Base` it is refuted for the
+current axiom set (`Metalogic/Independence/PlusIncompleteness.lean`, `not_plus_complete_base`),
+so this theorem is vacuous there; conservativity at `.Base` is not thereby decided, since
+incompleteness yields no separating witness. At `.Dense`, `.ZTime` and `.RTime` the hypothesis
+is open.
 
 Paper: — (formalization-native; the manuscript supplies no proof system for `\BL^\star`)
 -/

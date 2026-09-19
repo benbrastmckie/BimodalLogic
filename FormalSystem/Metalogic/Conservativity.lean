@@ -226,8 +226,9 @@ classes; both are rows in `docs/theorem-index.md`. What matters here is *why* th
 available: backward is the embedding of derivations, and forward is TM⁺ soundness plus the
 truth-transfer bridge plus the TM completeness engine — the very composition that fails for L⁻ ⊂ L
 because TM⁻ is incomplete. So `Forward⁺` holds everywhere, unlike `Forward`; the composed pair L⁻ ⊂
-L⁺ (`plus_of_tmMinus`) inherits this module's forward status unchanged. TM⁺ completeness and
-decidability are open and not asserted anywhere.
+L⁺ (`plus_of_tmMinus`) inherits this module's forward status unchanged. Completeness of the
+current TM⁺ axiom set is false at `.Base` (`Metalogic/Independence/PlusIncompleteness.lean`);
+completeness of any extension, and TM⁺ decidability, are open and not asserted anywhere.
 
 ## The register extension L⋆
 

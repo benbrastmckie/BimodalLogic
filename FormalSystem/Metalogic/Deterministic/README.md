@@ -17,10 +17,14 @@ and by `deterministic_not_plusDefinable` no L⁺ formula set defines the class a
 statement in this subtree is phrased over `TaskFrame.Deterministic` or over `DeterminedValid`,
 never as a correspondence between a schema and a frame condition.
 
-## General TM⁺ completeness is open
+## General TM⁺ completeness: false at Base for the current axioms, open for any extension
 
 Nothing here states general (nondeterministic) TM⁺ completeness, at any class, and nothing
-discharges it with `sorry`. The nearest results in the literature are Reynolds (2003) on
+discharges it with `sorry`. For the axiom set as it stands it is **false at Base**
+(`Metalogic/Independence/PlusIncompleteness.lean`, `plus_incomplete_base`); completeness of any
+extension of the axiom set is open at every class. The refuting formula is consistent with the
+theorems below: under `⊡ = id` it is a propositional tautology, hence a theorem of TM⁺ +
+*Determined*, and its countermodel is necessarily nondeterministic. The nearest results in the literature are Reynolds (2003) on
 until/since completeness over the reals and Zanardo (1991) on branching-time logics under an
 Ockhamist reading; neither settles the all-histories semantics used here. Any future
 nondeterministic result must specialize to the theorems below, because on a deterministic frame

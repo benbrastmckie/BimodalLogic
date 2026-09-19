@@ -470,7 +470,7 @@ Part D declaration list.
 
 ---
 
-### Phase 6: Status sweep of READMEs and docstrings [NOT STARTED]
+### Phase 6: Status sweep of READMEs and docstrings [IN PROGRESS]
 
 **Goal**: Every statement in the tree that general TM+ completeness is open is replaced by the
 three-part status: completeness of the current TM+ axioms is FALSE at Base

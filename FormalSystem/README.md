@@ -250,7 +250,7 @@ invariant check allowlists it by name (check C8).
 | `FormalSystem.lean` | 119 | Library aggregator: imports all submodules for unified access |
 | `Init.lean` | 26 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
 | `MainResults.lean` | 254 | <!-- TODO: add description --> |
-| `Metalogic.lean` | 264 | Re-export for Metalogic submodule |
+| `Metalogic.lean` | 267 | Re-export for Metalogic submodule |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
 | `Semantics.lean` | 286 | Re-export for Semantics submodule |
 | `Syntax.lean` | 91 | Re-export for Syntax submodule |

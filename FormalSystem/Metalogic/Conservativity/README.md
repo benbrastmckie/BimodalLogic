@@ -34,14 +34,14 @@ than deferred debt.
 | `Fragment.lean` | 192 | <!-- TODO: add description --> |
 | `FragmentCompactness.lean` | 152 | <!-- TODO: add description --> |
 | `MinusLanguageSoundness.lean` | 615 | <!-- TODO: add description --> |
-| `Plus.lean` | 73 | <!-- TODO: add description --> |
+| `Plus.lean` | 76 | <!-- TODO: add description --> |
 | `SpCountermodel.lean` | 400 | CEB's failing half: native L⁻ soundness for TM⁻ against `Semantics/MinusLanguage/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
 | `SpWitness.lean` | 138 | <!-- TODO: add description --> |
-| `Star.lean` | 58 | Aggregator for the L⋆ metatheory; holds no declarations. |
+| `Star.lean` | 60 | Aggregator for the L⋆ metatheory; holds no declarations. |
 | `TMCompletenessReduction.lean` | 311 | <!-- TODO: add description --> |
 | `Z1Countermodel.lean` | 201 | <!-- TODO: add description --> |
 | `Plus/` | — | <!-- TODO: add description --> |
-| `Star/` | — | The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆: axiom validity, soundness, conservativity over TM (unconditional) and over TM⁺ (a conditional pair), and the completeness OPEN record. |
+| `Star/` | — | The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆: axiom validity, soundness, conservativity over TM (unconditional) and over TM⁺ (a conditional pair, whose hypothesis is refuted at Base by `Metalogic/Independence/PlusIncompleteness.lean` and open elsewhere), and the completeness OPEN record. |
 <!-- END GENERATED -->
 
 ## Key Results

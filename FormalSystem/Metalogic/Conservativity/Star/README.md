@@ -24,7 +24,7 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Conservativity/Star -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `Forward.lean` | 228 | Conservativity: `forward_star` and `starDerivable_ofFormula_iff` over TM, unconditional in both directions at all four classes; the conditional pair `starConservative_of_plusComplete` / `plusIncomplete_of_starNonconservative` over TM⁺. |
+| `Forward.lean` | 236 | Conservativity: `forward_star` and `starDerivable_ofFormula_iff` over TM, unconditional in both directions at all four classes; the conditional pair `starConservative_of_plusComplete` / `plusIncomplete_of_starNonconservative` over TM⁺. |
 | `StarAxiomValidity.lean` | 1,475 | The two dispatch lemmas, one arm per `StarAxiom` constructor and no wildcard, plus the sixteen named register-schema validities they dispatch to. |
 | `StarPasting.lean` | 232 | The two L⋆ purity congruences and PS / US over `StarFormula`, reusing `Semantics/PlusLanguage/PlusPasting.lean`'s formula-independent construction read-only. |
 | `StarSoundness.lean` | 178 | Soundness of TM⋆ at every frame class, by the companion recursion carrying validity and reflection-validity, plus the four rows and consistency at `.Base`. |
@@ -53,21 +53,26 @@ function `StarAxiom.ofPlusAxiom` (`StarLanguage/Embedding.lean`), which adds not
 | TM⋆ consistent at `.Base` | **landed** | `StarSoundness.lean`, `star_not_derivable_nil_bot` |
 | every TM⁺ theorem is a TM⋆ theorem at its embedding | **landed** | `StarLanguage/Embedding.lean` |
 | TM⋆ conservative over TM, both directions, all four classes | **landed** | `Forward.lean` |
-| TM⋆ conservative over TM⁺ | **CONDITIONAL on general TM⁺ completeness**, with an unconditional contrapositive | `Forward.lean` |
+| TM⋆ conservative over TM⁺ | **CONDITIONAL on general TM⁺ completeness**, with an unconditional contrapositive; the hypothesis is **REFUTED at Base** (`Metalogic/Independence/PlusIncompleteness.lean`), open at the other three classes | `Forward.lean` |
 | **TM⋆ completeness, any class** | **OPEN** — never stated, never sorried; two obstructions named below | — |
 
 ## Why the TM⁺ row is conditional, and why that is a result
 
 The forward direction over TM runs *TM⋆ soundness → truth transfer → **TM** completeness engine*,
 and TM has engines at all four classes. One level up the same composition needs **TM⁺**
-completeness, which is open at every class (`../Plus/README.md`). Given TM⋆ soundness the two
-questions are the same question: a separating witness for non-conservativity is an L⁺ formula
+completeness, which is false at Base for the current axiom set and open at every class for any
+extension of it (`../Plus/README.md`). Given TM⋆ soundness the two questions are linked in one
+direction: a separating witness for non-conservativity is an L⁺ formula
 whose embedding is a TM⋆ theorem — hence, by soundness, `PlusValidIn fc` — while the formula
 itself is not a TM⁺ theorem, which is exactly a witness of TM⁺ incompleteness. That is
 `plusIncomplete_of_starNonconservative`, and it is unconditional.
 
-So the L⁺ ⊂ L⋆ question cannot be settled either way without settling TM⁺ completeness. Stating
-it as a conditional pair records that fact; asserting or denying conservativity would not.
+At Base the conditional's hypothesis is refuted (`not_plus_complete_base`), so
+`starConservative_of_plusComplete` is vacuous there. That does **not** decide conservativity of
+TM⋆ over TM⁺ at Base: incompleteness of TM⁺ yields no separating witness, and
+`plusIncomplete_of_starNonconservative` remains the only route from non-conservativity. At Dense,
+ZTime and RTime the hypothesis is still open. Stating the row as a conditional pair records
+exactly this; asserting or denying conservativity would not.
 
 **Both syntactic routes are closed, by machine-checked refutations.** Naive register erasure
 sends the `StarValid` formula `↑¹G↓¹p → p` (`storeG_recall_valid`) to `Gp → p`, refuted over `NF`
