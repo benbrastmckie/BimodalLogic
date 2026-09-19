@@ -1,0 +1,29 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Translation product is a live task frame at every FrameOver field and class (Saturation compiled); recurrence/transposition invisible to L, L+ and L* (L* settled); class validity equals validity over recurrence-free members at every tag; Limit idle beyond reflexivity of the zero task; coarse-model compatibility compiled; dense BLC countermodel scoped to the ordinal-budget colour structure's Saturation.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md",
+      "summary": "Verdict-first research report on what the translation product shows about the task semantics, with feature-by-language visibility table and recommendations for port, manuscript remark, and task 559."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean",
+      "summary": "Sorry-free probe against the live FormalSystem structures (53 declarations)."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/624_translation_product_task_semantics_visibility/probes/02_limit-idle-mirror.lean",
+      "summary": "Sorry-free Mathlib-only mirror: Limit is idle beyond reflexivity of the zero task."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Plan phase: scope the FormalSystem port (Recommendation 1 of the report) as the implementation deliverable; route Recommendation 3 to task 559 and section 2.4 to task 618."
+}

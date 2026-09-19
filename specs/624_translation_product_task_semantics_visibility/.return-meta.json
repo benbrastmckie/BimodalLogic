@@ -1,0 +1,54 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-19T03:26:31Z",
+  "completed_at": "2026-09-19T04:06:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md",
+      "summary": "Verdict-first report: the translation product is a live task frame at every FrameOver field and class (Saturation now compiled); recurrence and transposition are invisible to L, L+ and L* (L* settled); class validity equals validity over recurrence-free members; Limit is idle beyond reflexivity of the zero task; general history-lifting morphism notion; coarse-model compatibility; precise scoping of the dense BLC countermodel; recommendations for port, manuscript remark, and 559."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean",
+      "summary": "Sorry-free probe against the live FrameOver/WorldHistory/PlusTruthAt/StarTruthAt/CTruthAt: product frame with each field's hypothesis isolated, history lift/projection, L/L+/L* invariance, class-validity equality at every tag, frame-level non-reflection, HistMap/HistMorphism, clocked factorization, coarse-model lift and paste-closure transfer."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/624_translation_product_task_semantics_visibility/probes/02_limit-idle-mirror.lean",
+      "summary": "Sorry-free Mathlib-only mirror: fixing the zero task to equality changes no history or truth value (given reflexivity), and the clocked zero-fixed relation satisfies Limit; Limit is idle beyond reflexivity of the zero task."
+    }
+  ],
+  "next_steps": "Plan phase: decide on the port (Recommendation 1) as a lean4 implementation task; forward Recommendation 3 to task 559 and section 2.4 to task 618; the manuscript remark (Recommendation 2) is an author decision outside the repository.",
+  "partial_progress": {
+    "stage": "done",
+    "details": "Report and two compiled probes written; final metadata and handoff written"
+  },
+  "modified_files": [
+    "specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md",
+    "specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean",
+    "specs/624_translation_product_task_semantics_visibility/probes/02_limit-idle-mirror.lean"
+  ],
+  "memory_candidates": [
+    {
+      "content": "Class validity of L, L+ and L* over any FrameClass tag equals validity over the recurrence-free (clocked) members: every task frame is covered by its translation product F x D (same duration group), which is a task frame at every FrameOver field, with Limit needing only the zero task to be contained in the identity. Frame-by-frame validity is NOT reflected (clock-dependent valuations on the product are the abundant two-dimensional models).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["translation product", "clock frame", "recurrence", "invariance", "frame class validity", "PlusTruthAt", "StarTruthAt"]
+    },
+    {
+      "content": "The morphism notion under which PlusTruthAt is invariant is a history-lifting morphism: relation-level forth, history-level lift through every preimage state (for the stability clause), and onto histories (for box). Relation-level bounded morphisms lift one task, not a total history; the projection from the translation product is the canonical instance.",
+      "category": "PATTERN",
+      "source_artifact": "specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean",
+      "confidence": 0.85,
+      "suggested_keywords": ["HistMorphism", "bounded morphism", "truth invariance", "stability modal"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789788351_40a508_624",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

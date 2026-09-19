@@ -99,8 +99,8 @@ next_project_number: 627
 
 ### Semantics
 
-624 [NOT STARTED] — RESEARCH TASK, verdict-first: what the translation product...
-625 [NOT STARTED] — Formalize the manuscript's open-future and open-past...
+624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
+625 [RESEARCHING] — Formalize the manuscript's open-future and open-past...
 
 ## Tasks
 
@@ -121,7 +121,7 @@ CONSTRAINTS. Docstring and documentation edits only: no declaration, statement o
 ---
 
 ### 625. Formalize open future open past modalities
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -143,10 +143,11 @@ CONSTRAINTS: lake build FormalSystem green and no new sorry at the end of every 
 ---
 
 ### 624. Translation product task semantics visibility
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md]
 
 **Description**: RESEARCH TASK, verdict-first: what the translation product shows about the task semantics. Reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/; do not begin implementation here.
 
