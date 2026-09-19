@@ -1,28 +1,17 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 1,
-  "summary": "Regenerated every publication-refactor-programme measurement live (all matched the document), resolved the A/B ordering wrinkle with no dependency edge (per ADR-010's own no-dependency disclaimer), fully specified follow-up tasks A-I (dependencies, file_scope), and verified/resolved every collision named in the dispatch against 20+ open tasks' actual descriptions and file_scope.",
+  "status": "planned",
+  "summary": "Plan written: 4 phases (re-verify, create A-I, reconcile existing tasks incl. merging 610 into B, graph check + summary). specs/ disposition uses the untrack-at-gate default, recorded as pending user confirmation in H's description.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md",
-      "summary": "Full A-I follow-up task specification plus a per-task reconciliation table for every named collision, with the specs/ disposition flagged as a user decision."
+      "type": "plan",
+      "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/plans/01_task-set-reconciliation.md",
+      "summary": "4-phase task-set reconciliation plan, 3.5 hours."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 4,
   "blockers": [],
-  "user_decision": {
-    "question": "At the publication gate (task H, Phase 8), how should specs/ be disposed of: untrack it (default), keep it permanently published, or move it to an unpublished branch before the gate?",
-    "options": [
-      "Untrack specs/ (and CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, per PUBLICATION_REFACTOR.md Section 8",
-      "Keep specs/ tracked and published permanently",
-      "Move specs/ to a separate unpublished branch before the gate, preserving full provenance outside the published history"
-    ],
-    "recommended": "Untrack specs/ (and CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, per PUBLICATION_REFACTOR.md Section 8",
-    "blocking": false
-  },
-  "next_action_hint": "Run /plan 629 to turn the A-I specification and reconciliation table into concrete task-creation/task-revision steps against specs/state.json.",
-  "continuation_path": null
+  "phase": "plan",
+  "next_action_hint": "implement",
+  "dispatch_seq": 2
 }

@@ -1,45 +1,23 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "summary": "4-phase plan to create programme tasks A-I, reconcile open tasks, and write the reconciliation summary with dependency graph; specs/ disposition proceeds on the untrack-at-gate default pending user confirmation.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md",
-      "summary": "Full A-I follow-up task specification (dependencies, file_scope) plus a per-task reconciliation table for every collision named in the dispatch, with the A/B ordering wrinkle resolved (no dependency edge) and the specs/ disposition flagged as a user decision."
-    }
-  ],
-  "next_steps": "Run /plan 629 to turn the A-I task specification and the reconciliation table into concrete task-creation and task-revision steps against specs/state.json.",
-  "dispatch_seq": 1,
-  "user_decision": {
-    "question": "At the publication gate (task H, Phase 8), how should specs/ be disposed of: untrack it (default), keep it permanently published, or move it to an unpublished branch before the gate?",
-    "options": [
-      "Untrack specs/ (and CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, per PUBLICATION_REFACTOR.md Section 8",
-      "Keep specs/ tracked and published permanently",
-      "Move specs/ to a separate unpublished branch before the gate, preserving full provenance outside the published history"
-    ],
-    "recommended": "Untrack specs/ (and CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, per PUBLICATION_REFACTOR.md Section 8",
-    "blocking": false
-  },
-  "memory_candidates": [
-    {
-      "content": "When reconciling a large, document-driven task-set-creation programme (e.g. a publication refactor with Section 9 paste-ready follow-ups) against dozens of pre-existing open tasks, checking each named collision against the actual current file_scope/description text (not the summarizing dispatch prose) frequently resolves an apparent conflict as already moot (e.g. a file the new task 'untracks' turning out to already be empty and fully handled by the colliding task's completed phase) or as requiring only a scheduling note rather than a hard dependency edge (e.g. sequencing after in-flight partial-status tasks without literally blocking on them).",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["task-reconciliation", "dependency-graph", "collision-verification", "publication-refactor", "file_scope"]
-    },
-    {
-      "content": "An ADR's own prose can directly resolve a stated 'ordering wrinkle' in a companion programme document: ADR-010 explicitly disclaimed that the Boneyard-relocation decision 'does not depend on' the frozen-LaTeX-retirement phase, which settled whether two bundled follow-up tasks (A = phases 0+2, B = phase 1, with B nominally sitting between A's two halves per the document's stated 0->1->2 chain) needed a dependency edge. Cross-referencing the ADR against the phase document is worth doing before assuming the document's default linear order is load-bearing.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md",
-      "confidence": 0.6,
-      "suggested_keywords": ["ADR", "dependency-resolution", "programme-ordering", "publication-refactor"]
+      "type": "plan",
+      "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/plans/01_task-set-reconciliation.md",
+      "summary": "4 sequential phases: fresh re-verification, create A-I, revise/merge existing tasks, graph check and reconciliation summary."
     }
   ],
   "metadata": {
     "session_id": "sess_1789805164_847aec_629",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 24
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "next_steps": "Run /implement 629 to execute the plan",
+  "memory_candidates": [],
+  "dispatch_seq": 2
 }
