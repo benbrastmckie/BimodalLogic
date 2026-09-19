@@ -10,6 +10,7 @@ import FormalSystem.Semantics.PlusLanguage.PlusPasting
 import FormalSystem.Semantics.PlusLanguage.PlusNonValidities
 import FormalSystem.Semantics.PlusLanguage.PlusDeterminism
 import FormalSystem.Semantics.PlusLanguage.PlusStateLocal
+import FormalSystem.Semantics.PlusLanguage.PlusLimitClosure
 
 /-!
 # `FormalSystem.Semantics.PlusLanguage` — the semantics of L⁺
@@ -30,6 +31,8 @@ syntax and proof system live at `FormalSystem/Syntax/PlusLanguage/`. The declara
 - `PlusLanguage.PlusDeterminism` — `app:deterministic`'s positive half: the deterministic
   collapse `⊡φ ↔ φ`
 - `PlusLanguage.PlusStateLocal` — the state-locality fragment of L⁺ and its headline `φ ↔ ⊡φ`
+- `PlusLanguage.PlusLimitClosure` — the limit-closure formula `blc` and its validity at `.Base`,
+  through a general Zorn-plus-extension lemma for chain-closed properties of partial histories
 
 The cross-language bridges `Semantics/DeterministicBridge.lean` and
 `Semantics/StateLocalTransfer.lean` stay at the `Semantics/` root. This aggregator is imported by

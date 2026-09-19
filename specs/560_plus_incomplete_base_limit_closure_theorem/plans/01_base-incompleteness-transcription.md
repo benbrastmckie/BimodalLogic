@@ -241,40 +241,40 @@ added is recorded in the summary.
 
 ---
 
-### Phase 2: General maximality lemma and Base validity of the formula [NOT STARTED]
+### Phase 2: General maximality lemma and Base validity of the formula [COMPLETED]
 
 **Goal**: The Semantics-layer module defining the formula and proving it valid at Base through a
 general Zorn-plus-extension lemma.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/PlusLanguage/PlusLimitClosure.lean` importing
+- [x] Create `FormalSystem/Semantics/PlusLanguage/PlusLimitClosure.lean` importing
   `FormalSystem.Semantics.Extension.Extension` and
   `FormalSystem.Semantics.PlusLanguage.PlusPasting`, in `namespace FormalSystem.Semantics`.
-- [ ] Transcribe from probe 01: the general lemma `PartialHistory.exists_maximal_of_chainClosed`
+- [x] Transcribe from probe 01: the general lemma `PartialHistory.exists_maximal_of_chainClosed`
   (for a property of partial histories closed under `chainSup` of nonempty chains, every member
   lies below a maximal member, and that maximal member extends to a world history; proof:
   `zorn_le_nonempty₀` then `extension`), `restrictIic`, the structure `LCProp`
   (down-set, anchor, some p-point, recur-or-maximum), `lcProp_restrictIic`, `lcProp_chainSup`,
   `limit_history`, the definition `blc`, and `blc_plusValid : PlusValid (blc p)`.
-- [ ] State the general lemma for an arbitrary chain-closed property exactly as in the probe; the
+- [x] State the general lemma for an arbitrary chain-closed property exactly as in the probe; the
   docstring distinguishes it from the formula-set lemma of the same base name in
   `Metalogic/Core/MaximalConsistent.lean` and notes that the limit-closure schema instance is not
   stated.
-- [ ] Keep p-points in the dependent form `∃ hx : μ.domain x, P (μ.states x hx)` and rewrite along
+- [x] Keep p-points in the dependent form `∃ hx : μ.domain x, P (μ.states x hx)` and rewrite along
   `Extends.agree`, as the probe does.
-- [ ] Step 6 uses `PlusPasting.paste` at its current total-history signature; do not generalise
+- [x] Step 6 uses `PlusPasting.paste` at its current total-history signature; do not generalise
   it.
-- [ ] Module docstring: the six-step map (define the property; nonempty by restriction of the
+- [x] Module docstring: the six-step map (define the property; nonempty by restriction of the
   witness; chain-closed; Zorn plus extension; failure of `G(p → Fp)` at `f` bounds the maximal
   domain by `f`; one paste strictly extends, contradiction); attribution to Burgess and to
   Thomason 1984 for the untransposed formula; and the consistency check (under stability = identity
   the formula reduces to `(Fp ∧ G(p → Fp)) → (Fp ∧ G(p → Fp))`, a theorem of TM+ plus
   Determined).
-- [ ] Use `push Not`, not the deprecated `push_neg`.
-- [ ] Register in `FormalSystem/Semantics/PlusLanguage.lean` (import plus Modules bullet); run
+- [x] Use `push Not`, not the deprecated `push_neg`.
+- [x] Register in `FormalSystem/Semantics/PlusLanguage.lean` (import plus Modules bullet); run
   `--emit-inventory`; fill the description cell in
   `FormalSystem/Semantics/PlusLanguage/README.md`.
-- [ ] Build the module, then `FormalSystem`.
+- [x] Build the module, then `FormalSystem`.
 
 **Timing**: 1.5 hours
 
