@@ -687,7 +687,7 @@ DIFFERENT owners can carry the SAME base type `χ` in the same zone, so the FLAT
 type list is NOT `Nodup` (even though the SLOT list is — `kvE2_sepSlotsLOf_nodup`), and simply
 `dedup`-ing the flat list is WRONG: the eventual bracket needs ONE strictly-ordered point PER SLOT,
 so collapsing shared types would under-count the points. The correct packaging — mirroring the
-single-owner sound path (`SubBracket2V.lean:1988`, `k1v_bracket_construct3` fed `hndXU`/`hndUW`/
+single-owner sound path (`SubBracket2V.lean:1992`, `k1v_bracket_construct3` fed `hndXU`/`hndUW`/
 `hndWT` per single owner) — is PER-OWNER, PER-ZONE regions: each region's type list is a SINGLE
 owner's SINGLE-zone set `kvE2SepS σ zs`, which is a `filter` of the `Nodup` `Finset.univ.toList`
 and hence `Nodup`. This banks that `hnd` foundation. The remaining engine-inputs delta is the
@@ -698,7 +698,7 @@ of the `Nodup` universe list — so it is CONSUMED, not re-derived. -/
 /-! ### The joint engine inputs (cross-owner value→gap partition)
 
 The remaining Phase-1 deliverable: boundary-linked region lists `kvE2SepHonestRegionsL/R`
-feeding `k1v_sorted_realizationK` (SubBracket2V.lean:637-646), with the five preconditions
+feeding `k1v_sorted_realizationK` (SubBracket2V.lean:639-646), with the five preconditions
 `hpos`/`hlink`/`hnd`/`hreal`/`hbdry` bundled as `kvE2_sepHonest_engineInputs`.
 
 **Design (cycle-8 resolution, consumed not re-derived):**
@@ -1170,7 +1170,7 @@ theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ### Global monotone bracket witness (engine invocation + stitch)
 
-`kvE2_sepHonest_witnesses` invokes `k1v_sorted_realizationK` (SubBracket2V.lean:637) once per
+`kvE2_sepHonest_witnesses` invokes `k1v_sorted_realizationK` (SubBracket2V.lean:639) once per
 side on the Phase-1 region lists and stitches the two `interleaveK` chains around the single
 shared pivot `w` into the globally strictly monotone bracket witness chain, with per-side
 range bounds `x < · < w` (LEFT) and `w < · < t` (RIGHT). The full engine `Forall₂` data is
@@ -1282,7 +1282,7 @@ private theorem kvE2_sepForall₂_mem_left {α β : Type _} {R : α → β → P
     boundaries, the boundary-link `Chain'` transfers from the region list to the engine's
     point list. -/
 private theorem kvE2_sepForall₂_chain' {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     {M : OrderedMonadicStructure sig} {β γ : Type _}
     {R : (M.carrier × M.carrier × β) → (M.carrier × M.carrier × γ) → Prop}
     (hR : ∀ p r, R p r → p.1 = r.1 ∧ p.2.1 = r.2.1) :

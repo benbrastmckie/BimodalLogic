@@ -278,7 +278,7 @@ in the frozen file — replicated here, never imported, per postmortem rule / ri
 /-- **Generic minimal-witness pick**: from a nonempty list `l` each of whose elements has some
     `M`-witness under `P`, extract one element with a `≤`-minimal witness dominating a witness
     for every element of `l`. -/
-theorem kvE_minPick {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds] {α : Type}
+theorem kvE_minPick {sig : MonadicSignature} [Finite sig.preds] {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
       ∃ a₀, a₀ ∈ l ∧ ∃ r₀, P a₀ r₀ ∧ ∀ a ∈ l, ∃ r, P a r ∧ r₀ ≤ r := by

@@ -109,7 +109,7 @@ theorem stavi_depth_sf_disjList (l : List StaviFormula) (r : Nat)
 /-! ## Mu-Relativized Truth Semantics for Combinators -/
 
 /-- sfDisj has standard disjunction semantics under mu-relativized truth. -/
-theorem sf_disj_truth_mu {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem sf_disj_truth_mu {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t : ExtendedCarrier M atomMap r} (A B : StaviFormula) :
@@ -120,7 +120,7 @@ theorem sf_disj_truth_mu {sig : MonadicSignature} [Finite sig.preds] [DecidableE
   tauto
 
 /-- sfConjList has conjunction semantics under mu-relativized truth. -/
-theorem sf_conjList_truth_mu {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem sf_conjList_truth_mu {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t : ExtendedCarrier M atomMap r} (l : List StaviFormula) :
@@ -147,7 +147,7 @@ theorem sf_conjList_truth_mu {sig : MonadicSignature} [Finite sig.preds] [Decida
       exact ⟨h a (by simp), fun A hA => h A (List.mem_cons_of_mem a hA)⟩
 
 /-- sfDisjList has disjunction semantics under mu-relativized truth. -/
-theorem sf_disjList_truth_mu {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem sf_disjList_truth_mu {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t : ExtendedCarrier M atomMap r} (l : List StaviFormula) :
@@ -181,7 +181,7 @@ exists. This is immediate from the definition of RankType. -/
 
 /-- For two positions with different rank_types, there exists a StaviFormula
     of depth ≤ r that holds at one but not the other. -/
-theorem rank_type_separator {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem rank_type_separator {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t u : ExtendedCarrier M atomMap r}
@@ -296,13 +296,14 @@ X_t(u) holds iff u has the same rank-r type as t. -/
     The finiteness of NF profiles (Fintype on NormalForm) is the key ingredient:
     same NF profile implies same RankType (nf_profile_determines_rank_type),
     so the number of distinct rank_types is bounded by |NormalForm (muSig sig) (2*r) 1|. -/
-theorem x_t_formula_exists {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem x_t_formula_exists {sig : MonadicSignature} [Finite sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (r : Nat) (t : ExtendedCarrier M atomMap r) :
     ∃ A : StaviFormula, staviDepth A ≤ r ∧
       ∀ (u : ExtendedCarrier M atomMap r),
         StaviTemporalTruthMu M atomMap r u A ↔
         RankType M atomMap r u = RankType M atomMap r t := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   -- For each NF profile v, build a separator if there exists a position with that
   -- profile and different RankType. Otherwise use trivially-true ¬⊥.
@@ -429,7 +430,7 @@ some mu-point in (t, u). -/
 /-- Existence of the interval type formula. Same finiteness argument
     as x_t_formula_exists, applied to the finite set of types in (t, u). -/
 theorem x_interval_formula_exists {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (r : Nat) (t u : ExtendedCarrier M atomMap r) :
     ∃ A : StaviFormula, staviDepth A ≤ r ∧
@@ -438,6 +439,7 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Finite sig.preds]
         ∃ v : ExtendedCarrier M atomMap r,
           MuHolds v ∧ t < v ∧ v < u ∧
           RankType M atomMap r w = RankType M atomMap r v := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   -- For each NF profile v, if there exists a mu-point in (t, u) with that profile,
   -- include the xTFormula for a representative. Take the disjunction.
@@ -569,7 +571,7 @@ theorem sf_untl_depth_bound {B A : StaviFormula} {r : Nat}
   rw [sf_untl_depth]; omega
 
 /-- Mu-relativized truth of U(B, A). -/
-theorem sf_untl_truth_mu {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem sf_untl_truth_mu {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t : ExtendedCarrier M atomMap r} (B A : StaviFormula) :
@@ -581,7 +583,7 @@ theorem sf_untl_truth_mu {sig : MonadicSignature} [Finite sig.preds] [DecidableE
   simp [sfUntl, StaviTemporalTruthMu]
 
 /-- Mu-relativized truth of S(B, A). -/
-theorem sf_snce_truth_mu {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem sf_snce_truth_mu {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t : ExtendedCarrier M atomMap r} (B A : StaviFormula) :
@@ -627,7 +629,7 @@ theorem untl_type_depth_le_r_plus_4 {sig : MonadicSignature} [Fintype sig.preds]
     _ ≤ r + 4 := by omega
 
 /-- Extracting the Until witness. -/
-theorem untl_extract_witness {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem untl_extract_witness {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t : ExtendedCarrier M atomMap r}
     {B A : StaviFormula}
@@ -652,7 +654,7 @@ theorem untl_extract_witness {sig : MonadicSignature} [Finite sig.preds] [Decida
     - If z_b > z_canon: t < z_canon < z_b ≤ bound, so z_canon ∈ (t, bound].
       z_canon already has B(z_canon), MuHolds(z_canon), and A on (t, z_canon).
       So z_canon is itself a valid bounded witness. -/
-theorem untl_witness_bounded {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem untl_witness_bounded {sig : MonadicSignature} [Finite sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t bound : ExtendedCarrier M atomMap r}
     {B A : StaviFormula}
@@ -676,7 +678,7 @@ theorem untl_witness_bounded {sig : MonadicSignature} [Finite sig.preds] [Decida
     its mu-relativized truth is preserved by rankEmbed. This is a convenient
     specialization of rank_embed_stavi_truth_mu. -/
 theorem formula_transfer_rank_embed {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r')
     (t : ExtendedCarrier M atomMap r) (A : StaviFormula) :

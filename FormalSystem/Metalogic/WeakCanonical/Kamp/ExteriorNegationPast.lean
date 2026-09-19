@@ -78,7 +78,7 @@ private instance : Fintype (ZoneSpec 4) :=
 /-- Profiles realized by the same point coincide (file-local copy of the side-neutral
     `ExteriorNegation.lean` private lemma; dedupe deferred to Phase 7). -/
 private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ χ' : NormalForm sig 0 1)
     (h : NfEvalNf M 0 1 (fun _ => v) χ) (h' : NfEvalNf M 0 1 (fun _ => v) χ') :
     χ = χ' := by
@@ -93,7 +93,7 @@ private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
 
 /-- Every point realizes its depth-0 monadic characteristic (file-local copy, as above). -/
 private theorem nf_profile_exists {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (v : M.carrier) :
     ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
   ⟨nfCharacteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
@@ -580,7 +580,7 @@ noncomputable def kvE2ExtNegPast {sig : MonadicSignature} [Fintype sig.preds]
     over a nonempty list, pick an element whose witness is ≥ every element's (some)
     witness. -/
 private theorem kvE2_pastMaxPick {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] {α : Type}
+    {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
       ∃ a₀, a₀ ∈ l ∧ ∃ r₀, P a₀ r₀ ∧ ∀ a ∈ l, ∃ r, P a r ∧ r ≤ r₀ := by

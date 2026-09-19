@@ -303,6 +303,7 @@ section RightEnd
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the right-hand end point.**
 
@@ -325,6 +326,7 @@ theorem reynolds_lemma3_right [Finite sig.preds] (atomMap : Formula → sig.pred
     ∃ s : M.carrier, t < s ∧
       (∀ r : M.carrier, t < r → r < s → EndsInGapOnRight M ε r) ∧
       ¬ EndsInGapOnRight M ε s := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   have hspec : ∀ r : M.carrier,
       TemporalTruth M atomMap r (gapRightFormula atomMap h_surj ε) ↔ EndsInGapOnRight M ε r :=
@@ -517,6 +519,7 @@ theorem contemp_not_lt_of_kminus {ε : MonadicFormula sig 2} (hε : IsContempEqu
   have hvr' : ContempEquivDense M ε v r := contemp_of_between hε M hvr.le hrs.le hvs'
   exact hnr ((endsInGapOnRight_congr hε M (contemp_trans hε M hv hvr')).mp hs)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, printed p.178**: *"Thus there are other classes in this interval continuing on
 the other side of the gap which ends `s`'s. And for a while after the gap `R` continues to be true:
@@ -592,6 +595,7 @@ theorem classBeginsAtGapStart_of_contemp {ε : MonadicFormula sig 2} (hε : IsCo
     fun _ hv => contemp_not_lt_of_kminus hε M hs hk (contemp_trans hε M hst hv),
     hs, hk⟩
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **The gap-crossing contradiction**, isolated once.
 
@@ -646,6 +650,7 @@ theorem false_of_holds_throughout_class [Finite sig.preds] (atomMap : Formula �
   · exact hout r hsr hnr (fun q h₁ h₂ => hIcc₀ q h₁ (le_trans h₂ (le_trans hrs₁.le hge)))
       (hbelow r hsr hrs₁)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the third case is ruled out.**
 
@@ -672,6 +677,7 @@ theorem reynolds_lemma3_no_first_point [Finite sig.preds] (atomMap : Formula →
     {s : M.carrier} (hs : EndsInGapOnRight M ε s)
     (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧
       ¬ EndsInGapOnRight M ε r) : False :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   false_of_holds_throughout_class atomMap h_surj hε M h_prior_U h_prior_S hs
     (classBeginsAtGapStartTemporal atomMap h_surj ε)
@@ -682,6 +688,7 @@ theorem reynolds_lemma3_no_first_point [Finite sig.preds] (atomMap : Formula →
       not_classBeginsAtGapStart hε M hsu hnu hIcc
         ((classBeginsAtGapStartTemporal_spec atomMap h_surj ε M h_prior_U h_prior_S u).mp h))
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the left-hand end point.**
 
@@ -702,6 +709,7 @@ theorem reynolds_lemma3_left [Finite sig.preds] (atomMap : Formula → sig.preds
     ∃ s : M.carrier, s < t ∧
       (∀ r : M.carrier, s < r → r < t → EndsInGapOnRight M ε r) ∧
       ¬ EndsInGapOnRight M ε s := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   have hspec : ∀ r : M.carrier,
       TemporalTruth M atomMap r (gapRightFormula atomMap h_surj ε) ↔ EndsInGapOnRight M ε r :=
@@ -742,6 +750,7 @@ section Lemma3
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178.**
 
@@ -891,6 +900,7 @@ theorem not_isFirstClassPoint {ε : MonadicFormula sig 2} (hε : IsContempEquivD
   obtain ⟨z, htz, hzu, hnz⟩ := h2 t htu (fun hc => hnu (contemp_symm hε M hc))
   exact hnz (hIcc z htz.le hzu.le)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed pp.178-179 — there is no first class.**
 
@@ -910,6 +920,7 @@ theorem reynolds_lemma4_no_first_class [Finite sig.preds] (atomMap : Formula →
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ IsFirstClassPoint M ε t := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   intro h
   exact false_of_holds_throughout_class atomMap h_surj hε M h_prior_U h_prior_S h.1
@@ -919,6 +930,7 @@ theorem reynolds_lemma4_no_first_class [Finite sig.preds] (atomMap : Formula →
     (fun u htu hnu hIcc hP => not_isFirstClassPoint hε M htu hnu hIcc
       ((firstClassTemporal_spec atomMap h_surj ε M h_prior_U h_prior_S u).mp hP))
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed pp.178-179 — there is no last class.**
 
@@ -943,6 +955,7 @@ theorem reynolds_lemma4_no_last_class [Finite sig.preds] (atomMap : Formula → 
       ∀ q : M.carrier, t ≤ q → q ≤ u → EndsInGapOnRight M ε q :=
   exists_gt_notContemp_holds atomMap h_surj hε M h_prior_U h_prior_S ht
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed pp.178-179**, both halves.
 
@@ -1090,6 +1103,7 @@ section Lemma4ClosedMain
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed p.179, for the repaired display — there is no first
 class**, in the stronger sense the plain-English statement carries.
@@ -1105,6 +1119,7 @@ theorem reynolds_lemma4_no_first_class_closed [Finite sig.preds] (atomMap : Form
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ IsFirstClassPointClosed M ε t := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   intro h
   exact false_of_holds_throughout_class atomMap h_surj hε M h_prior_U h_prior_S h.1

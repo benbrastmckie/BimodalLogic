@@ -254,8 +254,8 @@ noncomputable def kvEFutChainG {α : Type}
     for each item in a nodup list `L` (via `Q`), the fact that occurrences force `itemF`
     (`hQF`), and item distinctness at a shared point (`huniq`), SOME permutation of `L` carries
     a true `D`-guarded chain at `s`. Min-witness sort via the shared `kvE_minPick`. -/
-theorem kvE_futChainBuildG {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
-    {α : Type} [DecidableEq α]
+theorem kvE_futChainBuildG {sig : MonadicSignature} [Finite sig.preds]
+    {α : Type}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) (t x1 : M.carrier)
     (Q : α → M.carrier → Prop)
@@ -268,6 +268,8 @@ theorem kvE_futChainBuildG {sig : MonadicSignature} [Finite sig.preds] [Decidabl
       (∀ a ∈ L, ∃ r : M.carrier, s < r ∧ r < x1 ∧ Q a r) →
       ∃ l : List α, l.Perm L ∧
         TemporalTruth M atomMap s (kvEFutChainG itemF endF D l) := by
+  haveI := Classical.decEq sig.preds
+  haveI := Classical.decEq α
   haveI := Fintype.ofFinite sig.preds
   intro n
   induction n with
@@ -320,7 +322,7 @@ theorem kvE_futChainBuildG {sig : MonadicSignature} [Finite sig.preds] [Decidabl
     satisfying `endF`, a `D`-uniform gap `(s, x1)` (given each visited item's `itemF` pointwise
     implies `D` via `himp`), and one `itemF`-occurrence in `(s, x1)` for every item in the
     chain's list. -/
-theorem kvE_futChainDestructG {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem kvE_futChainDestructG {sig : MonadicSignature} [Finite sig.preds]
     {α : Type}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) :

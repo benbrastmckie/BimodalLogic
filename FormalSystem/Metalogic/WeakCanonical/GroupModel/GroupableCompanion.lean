@@ -77,12 +77,13 @@ noncomputable def pairSum (sig : MonadicSignature) (X Y : OrderedMonadicStructur
 /-- **Both-sided per-block inflation**: a coloured `ℤ`-block is `≡ₖ` itself with suitably
 coloured copies of `ℚ ×ₗ ℤ` on both sides, composing the two one-sided absorptions through
 `doets_lemma_1_4`. -/
-theorem inflate_both (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem inflate_both (sig : MonadicSignature) [Finite sig.preds]
     (k : ℕ) (c : sig.preds → ℤ → Prop) :
     ∃ (eL eR : sig.preds → ℚ ×ₗ ℤ → Prop),
       KEquiv sig k (zFiber sig c)
         (pairSum sig (qzFiber sig eL)
           (pairSum sig (zFiber sig c) (qzFiber sig eR))) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨eR, hR⟩ := inflate_right sig k c
   obtain ⟨eL, hL⟩ := inflate_left sig k c

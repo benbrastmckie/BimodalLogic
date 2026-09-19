@@ -686,18 +686,18 @@ earlier phase commit was re-audited (0 wrong). All 71 touched files elaborate cl
 
 ---
 
-### Phase 14: `unusedDecidableInType` (fix, or bounded documented opt-out) [NOT STARTED]
+### Phase 14: `unusedDecidableInType` (fix, or bounded documented opt-out) [COMPLETED]
 
 **Goal**: Take `unusedDecidableInType` to zero, or record a documented permanent opt-out that has
 evidence behind it.
 
 **Tasks**:
-- [ ] Remove `[DecidableEq sig.preds]` (245) and the few other sites the same way as Phase 13,
+- [x] Remove `[DecidableEq sig.preds]` (245) and the few other sites the same way as Phase 13,
       building after each directory wave. Where a caller breaks on an instance mismatch
       (`Classical.decEq` against the specific instance), prefer keeping the hypothesis only on
       that declaration, with `set_option linter.unusedDecidableInType false in` and a C29 reason
       naming the caller that needs it.
-- [ ] **Bounded fallback, decided before the phase starts.** Revert this phase's unfinished
+- [ ] **Bounded fallback, decided before the phase starts.** *(deviation: skipped — not triggered: zero per-declaration exemptions were needed and the fix converged in one wave)* Revert this phase's unfinished
       Lean edits and use a permanent `weak.linter.unusedDecidableInType = false` in the lakefile,
       with a reason comment, if either of these happens:
       - more than about 15 declarations need a per-declaration exemption, or
@@ -706,7 +706,7 @@ evidence behind it.
       opt-out also goes into the policy section written in Phase 16. This is the "documented
       opt-out where a linter does not fit this project" that the task description allows for.
       It is not a bulk suppression.
-- [ ] Delete the temporary line (or convert it to the permanent documented opt-out), then do a
+- [x] Delete the temporary line (or convert it to the permanent documented opt-out), then do a
       guarded full build with `--wfail`.
 
 **Timing**: 2 hours
@@ -720,6 +720,17 @@ evidence behind it.
 **Files to modify**:
 - The same `MonadicSignature`-layer files as Phase 13
 - `lakefile.toml` - remove the temporary line, or make it permanent and documented
+
+**Phase 14 notes**: 249 sites in 53 files (247 `[DecidableEq sig.preds]`), fixed by the same
+helper as Phase 13: explicit binders dropped, section-variable ones `omit`-ed, and a proof that
+then failed got `haveI := Classical.decEq X` at its head (per arm in the two equation-compiler
+recursions). The one Pi-typed binder, `[∀ i, DecidableEq (α i)]` on
+`exists_piFinset_forall_iff`, is printed by the linter as `(i : ι) → …` and was removed by hand;
+its proof needed nothing. No instance-mismatch surfaced — expected, since a flagged hypothesis is
+by definition absent from the statement, so nothing a caller sees depends on which instance the
+proof uses. No `set_option ... false in` exemption; the fallback was not needed. `lakefile.toml`
+now carries no `TEMPORARY` line. All 70 touched files elaborate clean; full `--wfail` build
+green on the first run (1,286 s); invariants pass.
 
 **Verification**:
 - Either the per-file sweep reports 0, or the fallback is recorded with evidence. In both cases

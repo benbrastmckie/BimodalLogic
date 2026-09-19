@@ -16,7 +16,7 @@ The general-`k` mirror of the landed k=2 discharge `bracketEndChar_kvE2Ext_corre
 `kvEExtBracketPast` / `kvEExtBracketFut` (`ExteriorBracketAssembleK.lean`) via `enrichEndpoints`
 (the degenerate Rabinovich Lemma 7.6 p.14 adjacency at the shared free anchors `x, t`), discharging
 the `hexclExt` obligation that the interior gate `bracketEndChar_kv_step_sound`
-(`InteriorGateGeneralK.lean:1044`) carries outward.
+(`InteriorGateGeneralK.lean:1046`) carries outward.
 
 This is a purely additive leaf. Every composition input is landed sorry-free:
 - `bracketEndChar_kv_step_sound` / `bracketEndChar_kv_step_complete` (`InteriorGateGeneralK.lean`);
@@ -217,7 +217,7 @@ set_option maxHeartbeats 1600000 in
     composed gate `bracketEndCharKvExt` satisfies the gate biconditional under only the interior
     provider inventory (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl`, order bits) plus the bracket
     provider `Pbr`: the exterior-marked residue `hexclExt` of `bracketEndChar_kv_step_sound`
-    (`InteriorGateGeneralK.lean:1044`) is NOT an input obligation. It is discharged internally by
+    (`InteriorGateGeneralK.lean:1046`) is NOT an input obligation. It is discharged internally by
     the
     guard split `¬(x ≤ x1 ∧ x1 ≤ t) → x1 < x ∨ t < x1`, sending each strictly-exterior bit-false
     realizer to its side where `kvE_extBracketPast_sound` / `kvE_extBracketFut_sound` (D1/D2) refute

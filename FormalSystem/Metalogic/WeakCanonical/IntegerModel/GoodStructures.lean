@@ -94,7 +94,7 @@ The proof uses `nfCharacteristic` uniqueness: both structures satisfy the same
 characteristic normal form because the isomorphism preserves all atoms
 (predicates and order) and bijects witnesses at each quantifier level.
 -/
-theorem k_equiv_of_iso (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem k_equiv_of_iso (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat)
     (M N : OrderedMonadicStructure sig) (f : M.carrier ≃o N.carrier)
     (h_pred : ∀ (p : sig.preds) (x : M.carrier), M.interp p x ↔ N.interp p (f x)) :
@@ -252,7 +252,7 @@ private theorem succ_iterate_le {α : Type} [Preorder α] [SuccOrder α]
 In a succ-Archimedean linear order, every bounded interval [a, b] is finite.
 -/
 theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier]
     (a b : M.carrier) (hab : a ≤ b) :
@@ -281,7 +281,7 @@ Subinterval of a subinterval flattens: a nested subinterval is k-equivalent
 to the corresponding direct subinterval of M.
 -/
 theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Finite sig.preds]
-    [DecidableEq sig.preds] (k : Nat)
+    (k : Nat)
     (M : OrderedMonadicStructure sig) (a b : M.carrier)
     (c d : (M.subinterval sig a b).carrier) :
     KEquiv sig k ((M.subinterval sig a b).subinterval sig c d)

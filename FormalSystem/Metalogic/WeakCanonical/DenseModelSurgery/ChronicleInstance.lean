@@ -188,6 +188,7 @@ section NoWeakening
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- Theorem 4, right-hand end, at Reynolds' own unrestricted reading — the pre-parameterization
@@ -197,9 +198,11 @@ theorem no_gaps_dense_prior_unrestricted [Finite sig.preds] (atomMap : Formula �
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ EndsInGapOnRight M ε t :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   no_gaps_dense_prior atomMap h_surj hε h_prior_U h_prior_S t
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- Theorem 4, left-hand end, at Reynolds' own unrestricted reading — the pre-parameterization
@@ -209,9 +212,11 @@ theorem no_gaps_dense_prior_left_unrestricted [Finite sig.preds] (atomMap : Form
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ EndsInGapOnLeft M ε t :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   no_gaps_dense_prior_left atomMap h_surj hε h_prior_U h_prior_S t
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- Theorem 5 at Reynolds' own unrestricted reading — the pre-parameterization signature of
@@ -222,9 +227,11 @@ theorem reynolds_theorem5_unrestricted [Finite sig.preds] (atomMap : Formula →
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap)
     (hdense : QuotientDenselyOrdered M ε) :
     HasDenseSingletons M ε :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   reynolds_theorem5 atomMap h_surj hε h_prior_U h_prior_S h_sep hdense
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- D2 at Reynolds' own unrestricted reading — the pre-parameterization signature of
@@ -234,6 +241,7 @@ theorem dense_singletons_of_sep_unrestricted [Finite sig.preds] (atomMap : Formu
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap) :
     QuotientDenselyOrdered M ε → HasDenseSingletons M ε :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   dense_singletons_of_sep atomMap h_surj hε h_prior_U h_prior_S h_sep
 

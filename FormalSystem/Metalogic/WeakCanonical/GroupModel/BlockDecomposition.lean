@@ -391,7 +391,7 @@ transported, to an ordered sum of coloured copies of `ℤ` over a countable none
 order.
 -/
 theorem blockDecomposition (sig : MonadicSignature) [Finite sig.preds]
-    [DecidableEq sig.preds] (M : OrderedMonadicStructure sig) [Countable M.carrier]
+    (M : OrderedMonadicStructure sig) [Countable M.carrier]
     [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
     [NoMinOrder M.carrier] [Nonempty M.carrier] :
     ∃ (I : Type) (_ : LinearOrder I) (_ : Countable I) (_ : Nonempty I)

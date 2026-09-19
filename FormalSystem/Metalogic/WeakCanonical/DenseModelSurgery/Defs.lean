@@ -397,7 +397,7 @@ the free direction. `instInStructureClassCountableDense` turns the `[Countable _
 `[DenselyOrdered _]` binders of `IsContempEquivDenseCD`'s clauses into class membership.
 
 `IsContempEquivDenseCD` itself is untouched by the class parameterization, so `epsDense`'s witness
-(`RealModel/EpsilonDense.lean:1085`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
+(`RealModel/EpsilonDense.lean:1090`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
 are unaffected. -/
 theorem isContempEquivDenseCD_of_countableDense {sig : MonadicSignature}
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε (CountableDense sig)) :
@@ -595,6 +595,7 @@ theorem gapLeftFormula_spec (atomMap : Formula → sig.preds)
   ((uSExpressivelyCompleteOverDensePrior atomMap h_surj (lambdaFormula ε)).property
     M h_prior_U h_prior_S t).symm.trans (lambdaFormula_eval M ε t)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 2, printed p.177**:
 
@@ -616,10 +617,12 @@ theorem reynolds_lemma2 [Finite sig.preds] (atomMap : Formula → sig.preds)
     ∃ R : Formula, ∀ (M : OrderedMonadicStructure sig),
       SemanticPriorU M atomMap → SemanticPriorS M atomMap →
       ∀ t : M.carrier, TemporalTruth M atomMap t R ↔ EndsInGapOnRight M ε t :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   ⟨gapRightFormula atomMap h_surj ε,
     fun M hU hS t => gapRightFormula_spec atomMap h_surj ε M hU hS t⟩
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Lemma 2, dually `L`** — printed p.178, *"Dually `L`."* The statement is the mirror; see
 `lambdaFormula`'s docstring for what is and is not sourced. -/
@@ -629,10 +632,12 @@ theorem reynolds_lemma2_dual [Finite sig.preds] (atomMap : Formula → sig.preds
     ∃ L : Formula, ∀ (M : OrderedMonadicStructure sig),
       SemanticPriorU M atomMap → SemanticPriorS M atomMap →
       ∀ t : M.carrier, TemporalTruth M atomMap t L ↔ EndsInGapOnLeft M ε t :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   ⟨gapLeftFormula atomMap h_surj ε,
     fun M hU hS t => gapLeftFormula_spec atomMap h_surj ε M hU hS t⟩
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Lemma 2 with Reynolds' standing hypothesis in place.** Identical conclusion; the hypothesis
 is carried so that the declaration matches the printed statement literally. That it is discardable

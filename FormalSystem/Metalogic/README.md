@@ -153,7 +153,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,610 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 18 | 5,015 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,352 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,538 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -196,13 +196,13 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Kamp/` | 116 | 77,659 |
-| `EFGames/` | 8 | 11,799 |
+| `Kamp/` | 116 | 77,711 |
+| `EFGames/` | 8 | 11,801 |
 | `Expressiveness/` | 5 | 9,507 |
-| `DenseModelSurgery/` | 9 | 7,806 |
-| `RealModel/` | 7 | 6,740 |
+| `DenseModelSurgery/` | 9 | 7,895 |
+| `RealModel/` | 7 | 6,774 |
 | `IntegerModel/` | 6 | 5,613 |
-| `GroupModel/` | 6 | 3,369 |
+| `GroupModel/` | 6 | 3,373 |
 | `Separation/` | 3 | 926 |
 <!-- END GENERATED -->
 
@@ -217,7 +217,7 @@ sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
-| `NfMultiAnchorBridge/` | 47 | 41,395 |
+| `NfMultiAnchorBridge/` | 47 | 41,436 |
 | `EANegationFix/` | 7 | 3,227 |
 | `EANegationFixFaithful/` | 5 | 2,664 |
 <!-- END GENERATED -->

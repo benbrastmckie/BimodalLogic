@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNeg
 /-! # Depth-`k` Past-side exterior-negation converter — the reverse `_complete`
 
 The Past dual of `ExteriorConverterK.lean`: the reverse of the green `kvE_extNegPast_sound`
-(`ExteriorNegationPastK.lean:539`). Assuming the positive local-existence form `kvEPastPos` at
+(`ExteriorNegationPastK.lean:541`). Assuming the positive local-existence form `kvEPastPos` at
 the left anchor `x`, we destruct the Cor 5.4 `Since` chain to an exterior endpoint `x1 < x` and
 reconstruct `NfEvalNf M (k+1) 4 [x1,w,x,t] σ`, contradicting the carried non-realization
 hypothesis `hcl`.

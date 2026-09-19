@@ -332,10 +332,11 @@ noncomputable def pointSum (sig : MonadicSignature) (M : OrderedMonadicStructure
   orderedSum sig Bool (pointSumFamily sig M a S)
 
 /-- `M | {a} + −` preserves `k`-equivalence: one application of `doets_lemma_1_4` over `Bool`. -/
-theorem kEquiv_pointSum (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem kEquiv_pointSum (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (M : OrderedMonadicStructure sig) (a : M.carrier)
     {S S' : OrderedMonadicStructure sig} (h : KEquiv sig k S S') :
     KEquiv sig k (pointSum sig M a S) (pointSum sig M a S') :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   doets_lemma_1_4 sig k Bool _ _ (fun c => by
     simp only [pointSumFamily]
@@ -355,10 +356,11 @@ def OrderedMonadicStructure.halfOpenSubinterval (sig : MonadicSignature)
 
 /-- `M | [a,b) ≡_k M | {a} + M | (a,b)`: splitting off the left end point of a half-open block. -/
 theorem kEquiv_halfOpen_pointSum (sig : MonadicSignature) [Finite sig.preds]
-    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier)
+    (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier)
     (hab : a < b) :
     KEquiv sig k (M.halfOpenSubinterval sig a b)
       (pointSum sig M a (M.openSubinterval sig a b)) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   letI fam := pointSumFamily sig M a (M.openSubinterval sig a b)
   letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
@@ -444,7 +446,7 @@ def nonemptySent (sig : MonadicSignature) : MonadicSentence sig :=
     This is `doets_lemma_1_1` packaged at the sentence level, with the `KEquiv`-to-normal-form
     bridge done once instead of at each call site. -/
 theorem eval_transfer_of_kEquiv (sig : MonadicSignature) [Finite sig.preds]
-    [DecidableEq sig.preds] (k : Nat) (φ : MonadicSentence sig)
+    (k : Nat) (φ : MonadicSentence sig)
     (hdepth : φ.quantifierDepth ≤ k) {M N : OrderedMonadicStructure sig}
     (h : KEquiv sig k M N) :
     eval M Fin.elim0 φ ↔ eval N Fin.elim0 φ := by
@@ -471,7 +473,7 @@ theorem eval_nonemptySent (sig : MonadicSignature) (M : OrderedMonadicStructure 
   · rintro ⟨x⟩; exact ⟨x, lt_irrefl _⟩
 
 /-- Non-emptiness transfers across `k`-equivalence for `k ≥ 1`. -/
-theorem nonempty_of_kEquiv (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem nonempty_of_kEquiv (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (hk : 1 ≤ k) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
     [Nonempty M.carrier] : Nonempty N.carrier := by
   have hdepth : (nonemptySent sig).quantifierDepth ≤ k := by
@@ -480,7 +482,7 @@ theorem nonempty_of_kEquiv (sig : MonadicSignature) [Finite sig.preds] [Decidabl
     ((eval_transfer_of_kEquiv sig k _ hdepth h).mp ((eval_nonemptySent sig M).mpr ‹_›))
 
 /-- *"no right hand end point"* transfers across `k`-equivalence for `k ≥ 2`. -/
-theorem noMaxOrder_of_kEquiv (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem noMaxOrder_of_kEquiv (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
     [NoMaxOrder M.carrier] : NoMaxOrder N.carrier := by
   have hdepth : (hasMaxSent sig).quantifierDepth ≤ k := by
@@ -496,7 +498,7 @@ theorem noMaxOrder_of_kEquiv (sig : MonadicSignature) [Finite sig.preds] [Decida
   exact hx y hy
 
 /-- *"no left hand end point"* transfers across `k`-equivalence for `k ≥ 2`. -/
-theorem noMinOrder_of_kEquiv (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem noMinOrder_of_kEquiv (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig} (h : KEquiv sig k M N)
     [NoMinOrder M.carrier] : NoMinOrder N.carrier := by
   have hdepth : (hasMinSent sig).quantifierDepth ≤ k := by
@@ -906,12 +908,13 @@ theorem exists_blockOf {α : Type} [LinearOrder α] (spine : ℤ → α) (hmono 
 
 The `k`-equivalence is in fact an order isomorphism: every point lies in exactly one block.
 -/
-theorem kEquiv_sum_halfOpen (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem kEquiv_sum_halfOpen (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (M : OrderedMonadicStructure sig) (spine : ℤ → M.carrier)
     (hmono : StrictMono spine) (blockOf : M.carrier → ℤ)
     (hlo : ∀ x, spine (blockOf x) ≤ x) (hhi : ∀ x, x < spine (blockOf x + 1)) :
     KEquiv sig k M
       (orderedSum sig ℤ (fun i => M.halfOpenSubinterval sig (spine i) (spine (i + 1)))) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   letI fam := fun i : ℤ => M.halfOpenSubinterval sig (spine i) (spine (i + 1))
   -- `f` collapses a block element to the underlying point of `M`.
@@ -1175,10 +1178,11 @@ noncomputable def sumPoint (sig : MonadicSignature) (M : OrderedMonadicStructure
   orderedSum sig Bool (sumPointFamily sig M S b)
 
 /-- `− + M | {b}` preserves `k`-equivalence: one application of `doets_lemma_1_4` over `Bool`. -/
-theorem kEquiv_sumPoint (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem kEquiv_sumPoint (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (M : OrderedMonadicStructure sig) (b : M.carrier)
     {S S' : OrderedMonadicStructure sig} (h : KEquiv sig k S S') :
     KEquiv sig k (sumPoint sig M S b) (sumPoint sig M S' b) :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   doets_lemma_1_4 sig k Bool _ _ (fun c => by
     simp only [sumPointFamily]
@@ -1338,9 +1342,10 @@ def OrderedMonadicStructure.aboveSubinterval (sig : MonadicSignature)
 
 /-- Splitting the right hand end point off: if `b` is the greatest point of `M`, then
     `M ≡_k M | (←, b) + M | {b}`. -/
-theorem kEquiv_sumPoint_below (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem kEquiv_sumPoint_below (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (M : OrderedMonadicStructure sig) (b : M.carrier) (hmax : ∀ x : M.carrier, x ≤ b) :
     KEquiv sig k M (sumPoint sig M (M.belowSubinterval sig b) b) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   letI fam := sumPointFamily sig M (M.belowSubinterval sig b) b
   letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
@@ -1400,9 +1405,10 @@ theorem kEquiv_sumPoint_below (sig : MonadicSignature) [Finite sig.preds] [Decid
 
 /-- Splitting the left hand end point off: if `a` is the least point of `M`, then
     `M ≡_k M | {a} + M | (a, →)`. -/
-theorem kEquiv_pointSum_above (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem kEquiv_pointSum_above (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (M : OrderedMonadicStructure sig) (a : M.carrier) (hmin : ∀ x : M.carrier, a ≤ x) :
     KEquiv sig k M (pointSum sig M a (M.aboveSubinterval sig a)) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   letI fam := pointSumFamily sig M a (M.aboveSubinterval sig a)
   letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=
@@ -1463,10 +1469,11 @@ theorem kEquiv_pointSum_above (sig : MonadicSignature) [Finite sig.preds] [Decid
 /-- Any two singleton substructures agreeing on every predicate are `k`-equivalent, whatever
     ambient structures they are cut out of. This is what lets the split lemmas above be
     re-based from a substructure onto the original `M`. -/
-theorem kEquiv_singleton (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem kEquiv_singleton (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (M M' : OrderedMonadicStructure sig) (a : M.carrier) (a' : M'.carrier)
     (h : ∀ p, M'.interp p a' ↔ M.interp p a) :
     KEquiv sig k (M'.subinterval sig a' a') (M.subinterval sig a a) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   have hL : ∀ x : (M'.subinterval sig a' a').carrier, x.val = a' :=
     fun x => le_antisymm x.property.2 x.property.1
@@ -1491,13 +1498,14 @@ theorem kEquiv_singleton (sig : MonadicSignature) [Finite sig.preds] [DecidableE
 
 /-- Re-base a left adjunction: `M' | {a'} + S' ≡_k M | {a} + S` whenever the two singletons and
     the two tails match. Two applications of `doets_lemma_1_4` over `Bool` in one. -/
-theorem kEquiv_pointSum_base (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
+theorem kEquiv_pointSum_base (sig : MonadicSignature) [Finite sig.preds]
     (k : Nat) (M M' : OrderedMonadicStructure sig) (a : M.carrier) (a' : M'.carrier)
     (S S' : OrderedMonadicStructure sig)
     (hpt : KEquiv sig k (M'.subinterval sig a' a') (M.subinterval sig a a))
     (hS : KEquiv sig k S' S) :
     KEquiv sig k (pointSum sig M' a' S')
         (pointSum sig M a S) :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   doets_lemma_1_4 sig k Bool _ _ (fun c => by
     simp only [pointSumFamily]
@@ -1507,10 +1515,11 @@ theorem kEquiv_pointSum_base (sig : MonadicSignature) [Finite sig.preds] [Decida
 
 /-- `(M | (←,b)) | (a, →) ≡_k M | (a,b)`: the two ways of cutting out the open interval agree. -/
 theorem kEquiv_above_below_open (sig : MonadicSignature) [Finite sig.preds]
-    [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier)
+    (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier)
     (hab : a < b) :
     KEquiv sig k ((M.belowSubinterval sig b).aboveSubinterval sig ⟨a, hab⟩)
       (M.openSubinterval sig a b) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   let f : ((M.belowSubinterval sig b).aboveSubinterval sig ⟨a, hab⟩).carrier ≃
       (M.openSubinterval sig a b).carrier := {

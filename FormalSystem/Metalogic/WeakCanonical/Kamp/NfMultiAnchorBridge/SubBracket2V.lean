@@ -109,7 +109,7 @@ private def bracketFromLists3 (lXU : List TemporalPred) (ptX1 : TemporalPred)
     Rabinovich 2014 **Lemma 5.3** (md:137-152): each arrangement's fresh depth-`k` type splits its
     interval positionally; the first point of the `zXU` region is the below-anchor F_0 witness. -/
 private theorem bracketFromLists3_fChainPred_head_extract {sig : MonadicSignature}
-    [Finite sig.preds] [DecidableEq sig.preds]
+    [Finite sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (χ0 : TemporalPred) (lXU' lUW lWT : List TemporalPred)
     (ptX1 ptW segXU segUW segWT : TemporalPred)
@@ -324,7 +324,7 @@ noncomputable def kvESubChain2V {sig : MonadicSignature} [Fintype sig.preds]
     reconstruction; a pure forward read of the F_0 chain head (Rabinovich Cor 5.4 forward,
     md:154-157). -/
 private theorem bracketFromLists3_fChainPred_at_head {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (χ0 : TemporalPred) (lXU' lUW lWT : List TemporalPred)
     (ptX1 ptW segXU segUW segWT : TemporalPred)
@@ -399,7 +399,7 @@ private theorem kvE_subChain2V_hbelow_of_realized {sig : MonadicSignature} [Fint
     `VVecEA2` disjunction carries every arrangement (rule N5), so the arrangement selected here
     always names an existing disjunct. -/
 private theorem k1v_sorted_realization3 {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig)
     (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (S_XU S_UW S_WT : List (NormalForm sig 0 1))
@@ -415,6 +415,7 @@ private theorem k1v_sorted_realization3 {sig : MonadicSignature} [Finite sig.pre
       (∀ p ∈ psXU, (x < p.2 ∧ p.2 < x1) ∧ NfEvalNf M 0 1 (fun _ => p.2) p.1) ∧
       (∀ p ∈ psUW, (x1 < p.2 ∧ p.2 < w) ∧ NfEvalNf M 0 1 (fun _ => p.2) p.1) ∧
       (∀ p ∈ psWT, (w < p.2 ∧ p.2 < t) ∧ NfEvalNf M 0 1 (fun _ => p.2) p.1) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   -- Per-region insertion induction (Rabinovich Lemma 5.1 md:134-135), once per region.
   obtain ⟨psXU, hpermXU, hsortXU, hpropsXU⟩ :=
@@ -488,7 +489,7 @@ def interleaveK {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.pr
     is below EVERY region's lower anchor. Used to thread the strict-below invariant through the
     interleave stitch. -/
 private theorem k1v_stitch_lowers_ge {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
+    {M : OrderedMonadicStructure sig}
     {β : Type _} :
     ∀ (regs : List (M.carrier × M.carrier × List (β × M.carrier))) (b : M.carrier),
       (∀ e ∈ regs, e.1 < e.2.1) →
@@ -588,7 +589,7 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     Distinctness within each region is type-driven (`nf_eval_unique`, NormalForm:245), inside
     `k1v_sorted_realization` — NEVER across owners at an anchor (F3/F4 preserved). -/
 private theorem k1v_realizationK_build {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) :
     ∀ (regions : List (M.carrier × M.carrier × List (NormalForm sig 0 1))),
       (∀ r ∈ regions, r.1 < r.2.1) →
@@ -605,6 +606,7 @@ private theorem k1v_realizationK_build {sig : MonadicSignature} [Finite sig.pred
         (∀ p ∈ ps, p.1 < p.2.1) ∧
         (∀ p ∈ ps, (p.2.2.map Prod.snd).Pairwise (· < ·)) ∧
         (∀ p ∈ ps, ∀ q ∈ p.2.2, p.1 < q.2 ∧ q.2 < p.2.1) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   intro regions
   induction regions with
@@ -696,7 +698,7 @@ theorem k1v_sorted_realizationK {sig : MonadicSignature} [Fintype sig.preds] [De
     to the three-region list `[(x,x1,S_XU),(x1,w,S_UW),(w,t,S_WT)]`. Confirms the generalization is
     faithful — no behavioural drift from the proven three-region template. -/
 theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig)
     (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (S_XU S_UW S_WT : List (NormalForm sig 0 1))
@@ -710,6 +712,7 @@ theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature} [Finite sig.
       List.Perm (psWT.map Prod.fst) S_WT ∧
       (psXU.map Prod.snd ++ x1 :: psUW.map Prod.snd ++ w :: psWT.map Prod.snd).Pairwise
           (· < ·) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨ps, hf, hpw⟩ := k1v_sorted_realizationK M
     [(x, x1, S_XU), (x1, w, S_UW), (w, t, S_WT)]
@@ -756,7 +759,7 @@ theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature} [Finite sig.
     tuple assembled wholesale from `k1v_sorted_realization3`. Cite Rabinovich Lemma 5.3
     (md:137-152). -/
 private theorem k1v_bracket_construct3 {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lXU lUW lWT : List TemporalPred) (ptX1 ptW segXU segUW segWT : TemporalPred)
     (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
@@ -995,7 +998,7 @@ soundness pattern). Rabinovich Def 3.1 monotone enumeration (PDF p.4), §5 brack
     `(lXU ++ ptX1 :: lUW) ++ ptW :: lWT`; reassociated once to a per-segment single cons for the
     `getElem` navigation (Def 3.1 monotone enumeration, PDF p.4; §5 bracket PDF p.7). -/
 private theorem bracketFromLists3_extract {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lXU lUW lWT : List TemporalPred) (ptX1 ptW segXU segUW segWT : TemporalPred)
     (z0 z1 : M.carrier)
@@ -1428,7 +1431,7 @@ theorem kvE_subBracket2V_sound_of_parts {sig : MonadicSignature} [Fintype sig.pr
     coverage that lets any chosen pin serve as the below-bound for the whole preceding sub-chain
     block. -/
 private theorem bracketFromLists_flatMap_subchain_below_pin {sig : MonadicSignature}
-    [Finite sig.preds] [DecidableEq sig.preds] {α : Type*}
+    [Finite sig.preds] {α : Type*}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List α) (subChain pins : α → List TemporalPred)
     (ptW segL segR : TemporalPred) (lR : List TemporalPred)
@@ -1439,6 +1442,7 @@ private theorem bracketFromLists_flatMap_subchain_below_pin {sig : MonadicSignat
     ∃ w_outer q : M.carrier,
       x < q ∧ q < w_outer ∧ w_outer < t ∧ p0.EvalAt M atomMap q ∧
       (∀ fcp ∈ subChain a, ∃ u : M.carrier, x < u ∧ u < q ∧ fcp.EvalAt M atomMap u) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨pre, post, hl⟩ := List.append_of_mem ha
   set fB : α → List TemporalPred := fun b => subChain b ++ pins b with hfB

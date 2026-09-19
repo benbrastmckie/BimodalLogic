@@ -104,7 +104,7 @@ theorem nfPredAtPos_correct {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-! ## Depth-0 NF inconsistency -/
 
 theorem nf_depth0_pair_cycle_empty' {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] {m : Nat}
+    {m : Nat}
     (sub_nf : NormalForm sig 0 m)
     {i j : Fin m} (h_ne : i ≠ j)
     (h_ij : sub_nf (.order i j h_ne) = true)
@@ -325,7 +325,7 @@ PRESERVED & REUSABLE — DO NOT REMOVE. Sorry-free/axiom-free assets landed duri
 the v35 Phase 1 pass. Consumed by Route A′ (the revised zone-split from the
 Phase-0 regate decision): the `mpr` direction of `renameNF_eval_iff`
 and the `mergeNFSucc`/`mergeNF_succ_atom` merge definition below are reused to
-assemble the in-situ x=t collapse at `KampPrior.lean:398`. These look like generic
+assemble the in-situ x=t collapse at `KampPrior.lean:404`. These look like generic
 plumbing but are load-bearing for the live `completeness_ztime` chain.
 
 `renameNF f r` precomposes a normal form's atom/quant layers with an index map.
@@ -344,7 +344,7 @@ conclusive-negative, which is WHY the project pivoted to Route A′ rather than 
     which `skipFin`/`unskipFin` satisfy) survives — and that half is what Route A′ uses.
   • Strike 3: value-duplication — proved the *abstract* leaf is a non-theorem (its quant
     `←` direction would manufacture a model witness from arbitrary `Bool` data). This
-    obstruction DISSOLVES in situ at `KampPrior.lean:398`, where the model supplies the
+    obstruction DISSOLVES in situ at `KampPrior.lean:404`, where the model supplies the
     witness — exactly why depth-0 `merge_forward` is true. Hence Route A′. -/
 
 /-- Lift an index map over a freshly-bound (`Fin.cons`) variable at position 0. -/
@@ -604,7 +604,7 @@ lives in the compatible (duplicated) subspace where a bare bijection would not. 
 
     PRESERVED & REUSABLE (Route A′ — the revised zone-split from the Phase-0 regate decision):
     this definition + `mergeNF_succ_atom` are the directly-reused merge assets for the in-situ
-    x=t collapse at `KampPrior.lean:398`. DO NOT REMOVE as "unused": the consumer lands in a
+    x=t collapse at `KampPrior.lean:404`. DO NOT REMOVE as "unused": the consumer lands in a
     later dispatch. -/
 noncomputable def mergeNFSucc {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k n : Nat}
@@ -629,7 +629,7 @@ theorem mergeNF_succ_atom {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
 /-- If pts is strictly monotone and alpha holds at each pts r,
     then BuildRightSpec holds for chains starting from base. -/
 private theorem buildRight_top_of_mono {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] {n : Nat}
+    {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (alpha : Fin (n + 2) → TemporalPred)
     (pts : Fin (n + 2) → M.carrier)
@@ -669,7 +669,7 @@ private theorem buildRight_top_of_mono {sig : MonadicSignature} [Finite sig.pred
 
 /-- Symmetric for BuildLeftSpec. -/
 private theorem buildLeft_top_of_mono {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] {n : Nat}
+    {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (alpha : Fin (n + 2) → TemporalPred)
     (pts : Fin (n + 2) → M.carrier)
@@ -724,7 +724,7 @@ The merge case handles NF-equal positions by reducing arity. -/
     issue. The fix uses translateEF1 for the strict case instead of the
     IH-based Since/Until construction that can't capture cross-conditions. -/
 private theorem nf_nvar_exist_depth0_tl_succ
-    {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Finite sig.preds]
         (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 2))
@@ -736,6 +736,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
       TemporalTruth M atomMap t A ↔
       ∃ env : Fin (n + 1) → M.carrier,
         NfEvalNf M 0 (n + 2) (insertEnv env t) sub_nf := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   -- Check for pair cycle
   by_cases h_pair : ∃ (i j : Fin (n + 2)) (h : i ≠ j),
@@ -1626,7 +1627,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
 
 /-- At depth 0, the n-variable existential is TL-definable. -/
 theorem nf_nvar_exist_depth0_tl
-    {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Finite sig.preds]
         (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1)) :
@@ -1774,12 +1775,12 @@ x=t arm is NOT separable from the Phase-11 crux. See the Phase 10 blocker in
 These three small generic helpers were originally defined in `KampPrior.lean`. They are relocated
 here — a module BOTH `KampPrior` and the multi-anchor bridge (`NfMultiAnchorBridge`, via
 `NfZoneFlattenNavigable`) already import — so the bridge no longer needs to `import KampPrior`. This
-breaks the import cycle that blocked wiring the bound-anchor converter into `KampPrior.lean:398`
+breaks the import cycle that blocked wiring the bound-anchor converter into `KampPrior.lean:404`
 . Both are unchanged; only their home module moved. -/
 
 /-- For arity 1, there are no order atoms: every `AtomKind sig 1` is a pred atom. -/
 theorem atomKind_arity1_is_pred {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] (a : AtomKind sig 1) :
+    (a : AtomKind sig 1) :
     ∃ (p : sig.preds), a = .pred p ⟨0, by omega⟩ := by
   match a with
   | .pred p i =>
@@ -1802,7 +1803,7 @@ noncomputable def nfQuantClauseTl
 
 /-- Correctness of `nfQuantClauseTl`. -/
 theorem nf_quant_clause_tl_correct {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier)

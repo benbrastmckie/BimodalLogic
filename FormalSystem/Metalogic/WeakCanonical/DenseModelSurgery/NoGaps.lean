@@ -359,6 +359,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
   {Q : M.carrier → Prop} {t : M.carrier}
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Prior-U survives the surgery.** -/
 theorem surgeredSemanticPriorU [Finite sig.preds] (atomMap : Formula → sig.preds)
@@ -367,11 +368,13 @@ theorem surgeredSemanticPriorU [Finite sig.preds] (atomMap : Formula → sig.pre
     (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
     SemanticPriorU (surgeredStructure M ε Q t) atomMap := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   refine semanticPriorU_iff_forall.mpr fun x p => ?_
   refine (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS (priorUFormula p) x).mp ?_
   exact semanticPriorU_iff_forall.mp h_prior_U x.val p
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Prior-S survives the surgery.** -/
 theorem surgeredSemanticPriorS [Finite sig.preds] (atomMap : Formula → sig.preds)
@@ -380,6 +383,7 @@ theorem surgeredSemanticPriorS [Finite sig.preds] (atomMap : Formula → sig.pre
     (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
     SemanticPriorS (surgeredStructure M ε Q t) atomMap := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   refine semanticPriorS_iff_forall.mpr fun x p => ?_
   refine (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS (priorSFormula p) x).mp ?_
@@ -500,7 +504,7 @@ Reynolds' six sentences become six named lemmas; the last of them closes the con
 
 **The hypothesis Reynolds does not name.** His *"by lemma 6 begins with a point `q`"* is the third
 clause of Lemma 6, which in this tree is `reynolds_lemma6_right_endpoint`
-(`BadIntervals.lean:1315`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
+(`BadIntervals.lean:1327`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
 point at or above `t` is an `R`-point"* — because Reynolds' *"plainly impossible given `ρ`"* step
 inside it needs Lemma 6's **first** clause (*"in any bad interval both `R` and `L` hold
 throughout"*) at the boundary point, and the landed development declined to assume that silently.
@@ -691,6 +695,7 @@ variable (atomMap : Formula → sig.preds)
 
 include h_surj
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **"By lemma 8, `R` holds in `I` in `N`"** — printed p.182.
 
@@ -704,6 +709,7 @@ theorem reynolds_lemma9_R_in_N [Finite sig.preds] (hε : IsContempEquivDenseOn �
     (hS : IsBadIntervalSurgery M ε Q t) :
     EndsInGapOnRight (surgeredStructure M ε Q t) ε
       (surgeryBase M ε Q t ((hε.equiv M).refl t)) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   have hR : TemporalTruth M atomMap t (gapRightFormula atomMap h_surj ε) :=
     (gapRightFormula_spec atomMap h_surj ε M h_prior_U h_prior_S t).mpr
@@ -715,6 +721,7 @@ theorem reynolds_lemma9_R_in_N [Finite sig.preds] (hε : IsContempEquivDenseOn �
     (surgeredSemanticPriorS atomMap h_surj hε h_prior_U h_prior_S hS)
     (surgeryBase M ε Q t ((hε.equiv M).refl t))).mp hN
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **"`R` is true of this class so that it is bounded above amongst other things. Thus `Q⁺` is
 non-empty"** — printed p.182.
@@ -742,6 +749,7 @@ theorem exists_not_isBadPoint_gt (hS : IsBadIntervalSurgery M ε Q t) {y : M.car
   push Not at hcon
   exact hny (mem_of_badStretch hS hty fun z hz _ => hcon z hz)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 9, printed p.182.**
 
@@ -761,6 +769,7 @@ theorem reynolds_lemma9 [Finite sig.preds] (hε : IsContempEquivDenseOn ε C) [I
     (hS : IsBadIntervalSurgery M ε Q t)
     (hbadR : ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q) :
     False := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   -- The single site in §6 that needs the class-gated clauses at `N` rather than at `M`; the
   -- membership comes from the closure condition, never from a hypothesis at `N`.
@@ -825,7 +834,7 @@ maximal interval. The obstruction is exact and was measured, not guessed:
 * but `IsBadIntervalSurgery.interior` demands `ClassInteriorToBadInterval`, which carries `R`
   **and** `L` throughout its segment;
 * closing that gap is the implication `L → R` at a point where only `L` is known. The landed
-  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1382`) proves it, but only from a
+  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1396`) proves it, but only from a
   `ClassInteriorToLInterval` witness, and producing that witness at a merely-`L` point was exactly
   what was missing.
 
@@ -858,6 +867,7 @@ structure HasBadIntervalSurgery (M : OrderedMonadicStructure sig)
     ∃ Q : M.carrier → Prop, IsBadIntervalSurgery M ε Q t ∧
       ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Theorem 4, printed p.183 — the right-hand end.**
 
@@ -879,6 +889,7 @@ theorem no_gaps_dense_prior_of_hasBadIntervalSurgery [Finite sig.preds]
   obtain ⟨Q, hS, hbadR⟩ := hbi.exists_surgery t ht
   exact reynolds_lemma9 atomMap h_surj hε h_prior_U h_prior_S hS hbadR
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Theorem 4, the left-hand end** — *"the classes do not end at gaps"* covers both ends.
 
@@ -989,6 +1000,7 @@ theorem badComp_isBadInterval (atomMap : Formula → sig.preds)
       · exact ha q (Or.inr ⟨h, h₂⟩)
       · exact hsat q (minmax_of_btw (Or.inr ⟨h₁, h⟩)).1 (minmax_of_btw (Or.inr ⟨h₁, h⟩)).2
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Every point of the component satisfies `R`** — *"in any bad interval both `R` and `L` hold
 throughout"*, printed p.180. A component point is bad, so it satisfies `R` or `L`; in the `L` case
@@ -1000,11 +1012,13 @@ theorem badComp_right [Finite sig.preds] (atomMap : Formula → sig.preds)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t x : M.carrier} (hx : badComp M ε t x) :
     EndsInGapOnRight M ε x := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   rcases hx x (btw_self t x) with h | h
   · exact h
   · exact endsInGapOnRight_of_endsInGapOnLeft' atomMap h_surj hε M h_prior_U h_prior_S h
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **`HasBadIntervalSurgery` holds outright**, with `Q` the bad-connected component of `t`.
 
@@ -1023,6 +1037,7 @@ theorem hasBadIntervalSurgery [Finite sig.preds] (atomMap : Formula → sig.pred
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) :
     HasBadIntervalSurgery M ε := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   refine ⟨fun t ht => ⟨badComp M ε t, ⟨?_, ?_, ?_⟩, ?_⟩⟩
   · exact badComp_isBadInterval atomMap h_surj hε M h_prior_U h_prior_S ht
@@ -1078,6 +1093,7 @@ section Theorem4Unconditional
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Theorem 4, printed p.183 — the right-hand end.**
 
@@ -1100,6 +1116,7 @@ theorem no_gaps_dense_prior [Finite sig.preds] (atomMap : Formula → sig.preds)
   no_gaps_dense_prior_of_hasBadIntervalSurgery atomMap h_surj hε h_prior_U h_prior_S
     (StepD.hasBadIntervalSurgery atomMap h_surj hε M h_prior_U h_prior_S) t
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Theorem 4, the left-hand end**, with `HasBadIntervalSurgery` discharged — at the dual, by
 `StepD.hasBadIntervalSurgery` instantiated at `(dual M, dualize ε)`. The one input that did not

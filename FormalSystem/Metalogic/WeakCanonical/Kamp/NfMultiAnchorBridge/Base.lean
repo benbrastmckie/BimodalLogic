@@ -29,7 +29,7 @@ import Mathlib.Data.List.Permutation
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndCharK1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
--- wiring this bridge into `KampPrior.lean:398`. The two symbols this file used from KampPrior
+-- wiring this bridge into `KampPrior.lean:404`. The two symbols this file used from KampPrior
 -- (`nfQuantClauseTl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 
@@ -583,7 +583,7 @@ is peeled, and the anchor set of the outer formula stays exactly `{x, t}`:
 2. peeling a deeper witness `w` from the arity-4 coupled env `[w, y, x, t]` returns the arity-3
    zone env `[y, x, t]` — the coupled layer does NOT grow the anchor set (route (c) guard). -/
 theorem zoneEnv3_arity_invariant {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (y x t : M.carrier) :
     Fin.tail (zoneEnv3 y x t) = Fin.cons x (fun _ => t) ∧
     (∀ w : M.carrier,
@@ -622,7 +622,7 @@ Splits `∃ w, NfEvalNf M k 3 [w, x, t] q` into the five order zones of `w` rela
 (`w < x`, `w = x`, `x < w < t`, `w = t`, `t < w`), tolerating degenerate anchor orders. The coupled
 existential is split DIRECTLY on the full env `zoneEnv3 w x t` (route (a) guard), never projected.
 The open zones feed `bracketBuild*` and the point zones the diagonal collapse in Phase 5. -/
-theorem nf_char2_zone_split5 {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem nf_char2_zone_split5 {sig : MonadicSignature} [Finite sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (q : NormalForm sig k 3) (x t : M.carrier) :
     (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) q) ↔
@@ -643,7 +643,7 @@ the inner seven-zone split. The coupled `∃ w` is split DIRECTLY on the full ar
 `Fin.cons w (zoneEnv3 y x t)` (route (a) guard); the endpoint stays a `char[·] = q` obligation that
 Phase 5 navigates with `bracketBuild*` (route (b) guard), never arity-collapsed (route (c)
 guard). -/
-theorem nf_char3_deeper_split {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem nf_char3_deeper_split {sig : MonadicSignature} [Finite sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
     (q : NormalForm sig (k + 1) 3) :
     nfCharacteristic M (k + 1) 3 (zoneEnv3 y x t) = q ↔
@@ -1712,7 +1712,7 @@ the atom layer at the full env AND, per **arity-4** sub-NF `sub`, the coupled in
 `Fin.cons w' (zoneEnv3 w a b) = [w', w, a, b]` is arity 4 (`_ + 1 = 4`); this is the structural
 arity-4 quant layer the recursion step must characterize (the "brick-witness-collapse" seam,
 report 02 §4.1/§4.2). `w` stays the navigated witness, anchors `{a, b} ⊆ {x, t}` (G4). -/
-theorem nf_eval_nf_step_unfold {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem nf_eval_nf_step_unfold {sig : MonadicSignature} [Finite sig.preds]
     {k : Nat}
     (M : OrderedMonadicStructure sig) (w a b : M.carrier)
     (qnf : NormalForm sig (k + 1) 3) :
@@ -1982,7 +1982,7 @@ any change to `env` at positions `≥ 1`. This is because `(base qnf).EvalAt M a
 reads only the single world `env 0`. The consequent is refuted concretely by
 `endCharN0_correct_infeasible` below. -/
 theorem endCharN0_correct_world_local_obstruction {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (base : {n : Nat} → NormalForm sig 0 n → TemporalPred)
     (H : ∀ {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (env : Fin n → M.carrier),

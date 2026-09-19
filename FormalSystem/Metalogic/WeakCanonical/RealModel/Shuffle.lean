@@ -226,7 +226,7 @@ theorem reynolds_lemma13_left (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStruct
 The four printed forms are the four combinations of *bounded/unbounded* on each side; the content
 is that **whenever a class is bounded on a side, the bound is attained**, which is the two
 conclusions below. That the classes are intervals at all is Lemma 12's `simDense_convex`
-(`EpsilonDense.lean:202`), cited by Reynolds' own opening *"we know that the classes are
+(`EpsilonDense.lean:204`), cited by Reynolds' own opening *"we know that the classes are
 intervals"*.
 -/
 theorem reynolds_lemma13 (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)
@@ -259,11 +259,13 @@ def orderedSumReindexEquiv {I J : Type} [LinearOrder I] [LinearOrder J]
     (orderedSum sig I (fun i => m (e i))).carrier ≃ (orderedSum sig J m).carrier :=
   Equiv.sigmaCongrLeft (β := fun j => (m j).carrier) e.toEquiv
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Relabelling the index of a lexicographic sum preserves `≡ₖ`.** -/
 theorem kEquiv_orderedSum_reindex [Finite sig.preds] (k : Nat) {I J : Type}
     [LinearOrder I] [LinearOrder J] (e : I ≃o J) (m : J → OrderedMonadicStructure sig) :
     KEquiv sig k (orderedSum sig I (fun i => m (e i))) (orderedSum sig J m) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   letI instI : LinearOrder (orderedSum sig I (fun i => m (e i))).carrier :=
     (orderedSum sig I (fun i => m (e i))).carrierOrder
@@ -295,6 +297,7 @@ theorem kEquiv_orderedSum_reindex [Finite sig.preds] (k : Nat) {I J : Type}
             <;> [exact le_refl _; exact le_of_lt (hmono' _ _ h')]))
     (fun p x => by rcases x with ⟨i, c⟩; exact Iff.rfl)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Sums over order-isomorphic index sets are `≡ₖ`**, when matched summands are.
 
@@ -305,6 +308,7 @@ theorem kEquiv_orderedSum_of_orderIso [Finite sig.preds] (k : Nat) {I J : Type}
     [LinearOrder I] [LinearOrder J] (e : I ≃o J) (m : I → OrderedMonadicStructure sig)
     (m' : J → OrderedMonadicStructure sig) (h : ∀ i : I, KEquiv sig k (m i) (m' (e i))) :
     KEquiv sig k (orderedSum sig I m) (orderedSum sig J m') :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   (doets_lemma_1_4 sig k I m (fun i => m' (e i)) h).trans
     (kEquiv_orderedSum_reindex k e m')
@@ -335,6 +339,7 @@ noncomputable def shuffle {ι : Type}
     (N : ι → OrderedMonadicStructure sig) (π : ℚ → ι) : OrderedMonadicStructure sig :=
   orderedSum sig ℚ (fun q => N (π q))
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **The shuffle is a congruence for `≡ₖ` in its summands**: one application of
 `doets_lemma_1_4` over `ℚ`. -/
@@ -342,9 +347,11 @@ theorem kEquiv_shuffle_congr [Finite sig.preds] (k : Nat) {ι : Type}
     {N N' : ι → OrderedMonadicStructure sig} (π : ℚ → ι)
     (h : ∀ i : ι, KEquiv sig k (N i) (N' i)) :
     KEquiv sig k (shuffle N π) (shuffle N' π) :=
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   doets_lemma_1_4 sig k ℚ _ _ (fun q => h (π q))
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **The shuffle is well defined under colour-preserving reindexing of `ℚ`**: if an order
 automorphism `e` of `ℚ` carries `π'` to `π`, the two shuffles are isomorphic, hence `≡ₖ`.
@@ -361,6 +368,7 @@ theorem kEquiv_shuffle_congr_orderIso [Finite sig.preds] (k : Nat) {ι : Type}
   intro q
   rw [hcolour q]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **`Σ_{E∈I} M|E ≡ₖ Σ_{q∈ℚ} σ(q)`** — Reynolds 1992, §8, printed p.187, the shuffle step of
 Doets' theorem:
@@ -421,6 +429,7 @@ def OrderedMonadicStructure.restrictSet (sig : MonadicSignature)
   interp p x := M.interp p x.val
   carrierOrder := inferInstance
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /--
 **A structure is the lexicographic sum of its blocks** — the left-hand identity
@@ -437,6 +446,7 @@ theorem kEquiv_orderedSum_blocks [Finite sig.preds] (k : Nat)
     (hmono : ∀ x y : P.carrier, cls x < cls y → x < y) :
     KEquiv sig k P
       (orderedSum sig I (fun i => P.restrictSet sig {x : P.carrier | cls x = i})) := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   letI fam := fun i : I => P.restrictSet sig {x : P.carrier | cls x = i}
   -- `f` forgets the block label; it is strictly monotone by `hmono`.
@@ -461,6 +471,7 @@ theorem kEquiv_orderedSum_blocks [Finite sig.preds] (k : Nat)
   rintro p ⟨i, x⟩
   exact Iff.rfl
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /--
 **`M | (⋃ I) ≡ₖ Σ_{q∈ℚ} σ(q)`** — Reynolds 1992, §8, printed p.187, assembled: the block
@@ -496,6 +507,7 @@ theorem blocks_lt_of_monotone_cls {P : OrderedMonadicStructure sig} {I : Type} [
   by_contra hle
   exact absurd (hmono y x (not_lt.mp hle)) (not_le.mpr hlt)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Anti-vacuity for the block decomposition**: the singleton partition.
 

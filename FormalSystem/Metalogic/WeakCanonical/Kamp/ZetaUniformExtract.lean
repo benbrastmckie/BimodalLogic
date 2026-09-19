@@ -766,7 +766,7 @@ depth-`k` arity-2 normal form is expressed by a single temporal formula, uniform
 Prior structures: `TemporalTruth M g t A ↔ ∃ x, sub_nf(x, t)`. The formula is a function of
 `sub_nf`, `g`, and the base choice of names alone — no model input; every per-model premise of
 the uniform translate is discharged at the canonical expansion. -/
-theorem kampArm_zeta {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem kampArm_zeta {sig : MonadicSignature} [Finite sig.preds]
     (g : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, g (.atom a) = p)
     {k : Nat} (sub_nf : NormalForm sig k 2) :

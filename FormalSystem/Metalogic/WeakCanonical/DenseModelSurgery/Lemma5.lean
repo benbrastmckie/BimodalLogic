@@ -91,7 +91,7 @@ Reynolds' proof needs three things this tree did not have.
    with `R ∧ K⁻(¬R)` in the payload slot; it is **not** refactored to go through these — nothing is
    removed or renamed — and the relationship is recorded at `classBeginsWithFormula`'s docstring.
 
-3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:602`)
+3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:606`)
    asks for the auxiliary formula to fail at **every** point outside the class with `R` throughout
    in between. Lemma 5's `C` does not satisfy that, and cannot: with classes `C₀ ⊨ ¬B`, `C₁ ⊨ B`,
    `C₂ ⊨ ¬B` in a row, `C₂`'s left end point does carry `K⁻(B)`, so `C` is true again at `C₂`.
@@ -389,7 +389,7 @@ end Temporal
 
 /-! ## The bounded gap-crossing
 
-Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:602`) isolates Reynolds' recurring
+Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:606`) isolates Reynolds' recurring
 *"holds up to a gap and is false arbitrarily soon after the gap, contradicting Prior-U"* step, and
 requires the auxiliary formula to fail at **every** point outside the class reachable with `R`
 throughout. Reynolds' Lemma 5 supplies less: only *"false afterwards"*, on the stretch on which
@@ -501,6 +501,7 @@ section First
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — the first proof paragraph.**
@@ -532,6 +533,7 @@ theorem false_of_classInvariant_changes [Finite sig.preds] {atomMap : Formula �
     {t t' : M.carrier} (htt' : t < t')
     (hIcc : ∀ q : M.carrier, t ≤ q → q ≤ t' → EndsInGapOnRight M ε q)
     (hB : TemporalTruth M atomMap t B) (hnB : ¬ TemporalTruth M atomMap t' B) : False := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   have hRt : EndsInGapOnRight M ε t := hIcc t le_rfl htt'.le
   obtain ⟨y, hty, hcy⟩ := exists_contemp_gt hε M hRt
@@ -597,6 +599,7 @@ theorem false_of_classInvariant_changes [Finite sig.preds] {atomMap : Formula �
     obtain ⟨r, hsr, hrw, hBr⟩ := hkw s hsw
     exact hnBq r hsr (lt_of_lt_of_le hrw (le_trans hwu hub.le)) hBr
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — first statement.**
@@ -614,6 +617,7 @@ theorem reynolds_lemma5_first [Finite sig.preds] {atomMap : Formula → sig.pred
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q)
     (hA : ∃ w : M.carrier, ContempEquivDense M ε t w ∧ TemporalTruth M atomMap w A) :
     ∃ w : M.carrier, ContempEquivDense M ε t' w ∧ TemporalTruth M atomMap w A := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   by_contra hcon
   set B := holdsSomewhereInClassTemporal atomMap h_surj ε A with hBdef
@@ -787,6 +791,7 @@ theorem classModelsTemporal_spec (atomMap : Formula → sig.preds)
     (relativizeToClass ε φ)).property M h_prior_U h_prior_S t).symm.trans
       (eval_relativizeToClass M ε φ t)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — second statement.**
@@ -809,6 +814,7 @@ theorem reynolds_lemma5_second [Finite sig.preds] {atomMap : Formula → sig.pre
     (h_prior_S : SemanticPriorS M atomMap) (φ : MonadicFormula sig 0) {t t' : M.carrier}
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q) :
     ClassModels M ε t φ ↔ ClassModels M ε t' φ := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   have key : ∀ a c : M.carrier,
       (∀ q : M.carrier, min a c ≤ q → q ≤ max a c → EndsInGapOnRight M ε q) →
@@ -825,6 +831,7 @@ theorem reynolds_lemma5_second [Finite sig.preds] {atomMap : Formula → sig.pre
   intro q h₁ h₂
   exact hIcc q (by rwa [min_comm]) (by rwa [max_comm])
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179**, both statements. -/
@@ -864,6 +871,7 @@ section FirstLeft
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — the first statement over maximal intervals of
 `λ` rather than of `R`.**

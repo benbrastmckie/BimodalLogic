@@ -62,7 +62,7 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
    formulaConjList formula_conjList_iff)
 
 /-- **⇐ completeness bridge for the provider layer, at the faithful carrier** — the faithful
-sibling of `bracketEndChar_kvE2_hck` (`OuterGate.lean:131`), and the one place in this module where
+sibling of `bracketEndChar_kvE2_hck` (`OuterGate.lean:132`), and the one place in this module where
 the carrier is consumed rather than threaded.
 
 The original's proof body verbatim, with its single carrier-consuming step
@@ -89,7 +89,7 @@ theorem bracketEndChar_kvE2_hck_faithful {sig : MonadicSignature} [Fintype sig.p
     exact ⟨Fin.elim0, by rw [insertEnv_zero]; exact h⟩
 
 /-- **⇐ completeness half of the k=2 gate, at the faithful carrier** — the faithful sibling of
-`bracketEndChar_kvE2_complete_two_prior` (`OuterGate.lean:155`).
+`bracketEndChar_kvE2_complete_two_prior` (`OuterGate.lean:156`).
 
 The original's proof body verbatim: the bracket-range recovery of `x < w < t` from `qnf`'s own atom
 layer is unchanged (bracket range, NOT a chain), the landed honest-gate lemma
@@ -129,7 +129,7 @@ theorem bracketEndChar_kvE2_complete_two_prior_faithful {sig : MonadicSignature}
     (fun χ u => bracketEndChar_kvE2_hck_faithful atomMap P M h_INF h_SUP χ u)
 
 /-- **Assembled k=2 interior+boundary gate, at the faithful carrier** — the faithful sibling of
-`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:393`), and the declaration
+`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:394`), and the declaration
 `ExteriorBracket.lean`'s rung consumes.
 
 Same assembly as the original: ⇒ is the Phase-B/D soundness half over the pin-anchored fold, ⇐ is

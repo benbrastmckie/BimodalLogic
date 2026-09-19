@@ -119,7 +119,7 @@ noncomputable def kvE2FutAnyBit {sig : MonadicSignature} [Fintype sig.preds]
 /-- Monadic-profile evaluation unfolds to the per-predicate reading (the `AtomKind sig 1`
     order case is uninhabited). -/
 private theorem nf_eval_profile_iff {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ : NormalForm sig 0 1) :
     NfEvalNf M 0 1 (fun _ => v) χ ↔
       (∀ p : sig.preds, M.interp p v ↔ χ (.pred p 0) = true) := by
@@ -136,7 +136,7 @@ private theorem nf_eval_profile_iff {sig : MonadicSignature} [Finite sig.preds]
 
 /-- Profiles realized by the same point coincide. -/
 private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ χ' : NormalForm sig 0 1)
     (h : NfEvalNf M 0 1 (fun _ => v) χ) (h' : NfEvalNf M 0 1 (fun _ => v) χ') :
     χ = χ' := by
@@ -151,7 +151,7 @@ private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
 
 /-- Every point realizes its depth-0 monadic characteristic. -/
 private theorem nf_profile_exists {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (v : M.carrier) :
     ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
   ⟨nfCharacteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
@@ -456,7 +456,7 @@ private theorem kvE2_futCharZone3 {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Depth-0 characteristic-formula correctness in `nf_eval` form (a repackaging of
     `nf_depth0_char_formula_correct` via `nf_eval_profile_iff`). -/
-theorem nf_depth0_char_correct' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_depth0_char_correct' {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (χ : NormalForm sig 0 1) (u : M.carrier) :
@@ -1277,7 +1277,7 @@ noncomputable def kvE2ExtNegFut {sig : MonadicSignature} [Fintype sig.preds]
 /-- Minimal-witness selection: from per-element witnesses over a nonempty list, pick an
     element whose witness is ≤ every element's (some) witness. -/
 private theorem kvE2_futMinPick {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] {α : Type}
+    {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
       ∃ a₀, a₀ ∈ l ∧ ∃ r₀, P a₀ r₀ ∧ ∀ a ∈ l, ∃ r, P a r ∧ r₀ ≤ r := by
@@ -1473,7 +1473,7 @@ gate-level pins `(hxw, hwt, henv, hbelow)` PLUS the two syntactic σ-side hypoth
 No `zFutT3`-marking hypothesis is needed: Phase 3's if-gate hands admissibility for
 free (a true positive form certifies `kvE2FutAdmissible σ`, since the else-branch is
 `⊥`), and admissibility CONTAINS the zone marking. Statement shape confirmed against
-the Phase-8 ⇐ consumption site (OuterGate.lean:147 `bracketEndChar_kvE2_complete_two_prior`):
+the Phase-8 ⇐ consumption site (OuterGate.lean:148 `bracketEndChar_kvE2_complete_two_prior`):
 there `henv`/`hbelow` derive from realized qnf's atom layer and `kvE2_futAnyBit_correct`,
 `(hxw, hwt)` from qnf's order bits, and `hbase`/`hbits` are decidable σ-side facts. -/
 

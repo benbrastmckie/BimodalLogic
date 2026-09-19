@@ -13,7 +13,7 @@ Builds the aggregate ∀-qnf population encoding for the `KampPrior.lean` `| 1 =
 discharges the three arm-correctness hooks (past / diagonal / future) as separate green citable
 lemmas at match arms k=0 (`sub_nf : NormalForm sig 1 2`) and k=1 (`sub_nf : NormalForm sig 2 2`),
 each concluding in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(`KampPrior.lean:1148`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:679`).
+(`KampPrior.lean:1154`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:685`).
 
 ## Phase-1 adjudication record (R1/R2/aggregation verdicts — BINDING)
 
@@ -70,7 +70,7 @@ strictly fewer moving parts.
 ## The six target statements (Phase 1 freeze — shapes BINDING for Phases 2-5)
 
 Conclusion shapes copied verbatim from the `kampPrior_site_trichotomy` disjuncts
-(KampPrior.lean:679-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
+(KampPrior.lean:685-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
 under the Prior-guarded skeleton. Delivered by Phase 3 (k=0) and Phase 5 (k=1):
 
 ```
@@ -316,7 +316,7 @@ def aggBracket (l : List TemporalPred) (seg : TemporalPred) : BracketFormula l.l
 /-- **Extraction** for `aggBracket`: from its `holds` on `(z0, z1)`, every listed point type is
     realized strictly inside `(z0, z1)`, and every point of `(z0, z1)` either satisfies the
     uniform segment type or realizes some listed point type (the witness/gap classification). -/
-theorem aggBracket_extract {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem aggBracket_extract {sig : MonadicSignature} [Finite sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List TemporalPred) (seg : TemporalPred) (z0 z1 : M.carrier)
     (h : (aggBracket l seg).holds M atomMap z0 z1) :
@@ -375,7 +375,7 @@ theorem aggBracket_extract {sig : MonadicSignature} [Finite sig.preds] [Decidabl
     `(z0, z1)`, yields the bracket's `holds`. (The uniform exclusion segment holds at the
     witness points too — a point of a MARKED complete type satisfies every unmarked type's
     negation — so the caller may supply the segment on the whole interval.) -/
-theorem aggBracket_construct {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem aggBracket_construct {sig : MonadicSignature} [Finite sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List TemporalPred) (seg : TemporalPred) (z0 z1 : M.carrier)
     (us : List M.carrier) (hlen : us.length = l.length)
@@ -1681,8 +1681,8 @@ end AggDiagK0
 /-! ## Phase 3 — k=0 hook discharge: the three arm lemmas (match arm k=0)
 
 The three green citable lemmas in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(KampPrior.lean:1148) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
-corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:679-684).
+(KampPrior.lean:1154) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
+corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:685-684).
 `h_UZ`/`h_SZ` are carried (unused — the k=0 aggregates need no Prior hypotheses, matching the
 k≤1 rungs `bracketEndChar_kv_correct_{zero,one}_prior`) so the statements slot directly under
 the Prior-guarded skeleton. These discharge the P4/P5 `h_quant` hooks and the `A_diag_correct`
@@ -1798,7 +1798,7 @@ end ArmLemmasK0
 At the diagonal seam (`x = t`) the k=1 population clause per `qnf : NormalForm sig 1 3` is
 `∃ w, NfEvalNf M 1 3 [w, t, t] qnf` — the env has DUPLICATED anchors (positions 1, 2 both
 `t`). The depth-lift of the diagonal rename congruence is blocked as an UNCONDITIONAL iff
-(NfDepth0Generalized.lean:1697-1719: a non-diagonal-invariant sub can have its collapse marked
+(NfDepth0Generalized.lean:1698-1719: a non-diagonal-invariant sub can have its collapse marked
 true), but the missing ingredient is exactly a per-`qnf` SYNTACTIC gate: qnf's atom row is a
 duplicate-collapse fixpoint AND every non-fixpoint arity-4 sub is unmarked. Under that gate the
 depth-1 evaluation at `[w, t, t]` collapses LOSSLESSLY to the depth-1 arity-2 evaluation of the
@@ -1865,7 +1865,7 @@ def aggCollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     (`E (f (r i)) = E i`), then `σ` IS a duplicate-collapse fixpoint: reassembling its collapse
     recovers `σ` exactly. Contrapositively, a non-fixpoint `σ` has NO realizer on such an env —
     the conditional ingredient that unblocks the depth-1 diagonal rename congruence
-    (NfDepth0Generalized.lean:1697-1719). -/
+    (NfDepth0Generalized.lean:1698-1719). -/
 theorem agg_rename_fixpoint_of_eval {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {a b : Nat}

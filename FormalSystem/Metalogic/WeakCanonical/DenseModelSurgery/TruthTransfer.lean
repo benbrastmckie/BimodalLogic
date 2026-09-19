@@ -346,6 +346,7 @@ section Lemma7Wide
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Lemma 7, first statement, start half, over the whole bad interval** — printed pp.180-181:
@@ -359,10 +360,12 @@ theorem lemma7_start_wide [Finite sig.preds] (hS : IsBadIntervalSurgery M ε Q t
     (hstart : ∃ x : M.carrier, ContempEquivDense M ε p x ∧
       ∀ q : M.carrier, ContempEquivDense M ε p q → q < x → TemporalTruth M atomMap q B)
     {u : M.carrier} (hu : Q u) : TemporalTruth M atomMap u B := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
   exact reynolds_lemma7_start atomMap h_surj hε M h_prior_U h_prior_S B hint.toR hstart hau hub
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Lemma 7, first statement, end half, over the whole bad interval** — printed pp.180-181:
@@ -375,10 +378,12 @@ theorem lemma7_end_wide [Finite sig.preds] (hS : IsBadIntervalSurgery M ε Q t)
     (hend : ∃ x : M.carrier, ContempEquivDense M ε p x ∧
       ∀ q : M.carrier, ContempEquivDense M ε p q → x < q → TemporalTruth M atomMap q B)
     {u : M.carrier} (hu : Q u) : TemporalTruth M atomMap u B := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨a, b, hau, hub, hint⟩ := hS.interior p u hp hu
   exact reynolds_lemma7_end atomMap h_surj hε M h_prior_U h_prior_S B hint hend hau hub
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Lemma 7, second statement, left half, over the whole bad interval** — printed p.181: *"If
@@ -392,12 +397,14 @@ theorem lemma7_close_left_wide [Finite sig.preds] (hS : IsBadIntervalSurgery M �
     (hsome : ∃ w : M.carrier, Q w ∧ TemporalTruth M atomMap w A)
     {x : M.carrier} (hxc : ContempEquivDense M ε p x) :
     ∃ q : M.carrier, ContempEquivDense M ε p q ∧ q < x ∧ TemporalTruth M atomMap q A := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨w, hw, hAw⟩ := hsome
   obtain ⟨a, b, haw, hwb, hint⟩ := hS.interior p w hp hw
   exact reynolds_lemma7_close_to_left atomMap h_surj hε M h_prior_U h_prior_S A hint.toR
     ⟨w, haw, hwb, hAw⟩ x hxc
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Lemma 7, second statement, right half, over the whole bad interval** — printed p.181, the
@@ -410,6 +417,7 @@ theorem lemma7_close_right_wide [Finite sig.preds] (hS : IsBadIntervalSurgery M 
     (hsome : ∃ w : M.carrier, Q w ∧ TemporalTruth M atomMap w A)
     {x : M.carrier} (hxc : ContempEquivDense M ε p x) :
     ∃ q : M.carrier, ContempEquivDense M ε p q ∧ x < q ∧ TemporalTruth M atomMap q A := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨w, hw, hAw⟩ := hsome
   obtain ⟨a, b, haw, hwb, hint⟩ := hS.interior p w hp hw
@@ -470,6 +478,7 @@ theorem untl_backward_of_between {atomMap : Formula → sig.preds} {A B : Formul
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 8, printed p.181 — the `U` case, forward direction.**
@@ -561,6 +570,7 @@ theorem reynolds_lemma8_untl_forward [Finite sig.preds] (atomMap : Formula → s
     · -- **Forward case 6**: `t ∈ I` and `s ∈ Q⁺`.
       exact untl_forward_of_mem (Or.inl hsQ) ihA ihB hxs hA hB
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 8, printed p.182 — the `U` case, backward direction.**
@@ -775,6 +785,7 @@ theorem snce_mirror_ih (atomMap : Formula → sig.preds) {C : Formula}
     ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap y₀ C).symm.trans
       (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap y₀ (reflectTimeBoxOpaque C)).symm)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 8, printed p.181 — the `S` case, forward direction.**
 
@@ -802,6 +813,7 @@ theorem reynolds_lemma8_snce_forward [Finite sig.preds] (atomMap : Formula → s
     ((surgeredDualIso M ε Q t).toEquiv (d x))
     ((temporalTruth_dual' (M := M) atomMap x.val (.snce B A)).mpr h)
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 8, printed p.182 — the `S` case, backward direction.**
 
@@ -837,6 +849,7 @@ immediate."* — printed p.181.
 reading because `TemporalTruth` sends a box-subformula to `atomMap (.box φ)` rather than
 recursing — the same reason `reflectTimeBoxOpaque` leaves `.box` opaque. -/
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 8, printed pp.181-182.**
 

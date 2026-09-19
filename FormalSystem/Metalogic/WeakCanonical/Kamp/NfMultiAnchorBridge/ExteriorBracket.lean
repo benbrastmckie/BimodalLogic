@@ -75,7 +75,7 @@ private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
 /-- Classical conjunction reading of the encoded `Formula.and` (file-local; the encoding
     is `(φ.imp ψ.neg).neg`, so both directions are a double-negation shuffle). -/
 private theorem temporal_truth_and_iff {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (u : M.carrier) (φ ψ : Formula) :
     TemporalTruth M atomMap u (Formula.and φ ψ) ↔
@@ -659,7 +659,7 @@ def VVecEA2.enrichEndpoints (v : VVecEA2) (pL pR : Formula) : VVecEA2 :=
     endpoint enrichments hold at their anchors (the enrichments are disjunct-independent,
     so they factor out of the disjunction). -/
 theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v : VVecEA2) (pL pR : Formula) (z0 z1 : M.carrier) :
     (v.enrichEndpoints pL pR).holds M atomMap z0 z1 ↔
@@ -1085,7 +1085,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
     two adjacent exterior brackets conjoined at the anchors — satisfies the gate
     biconditional under the caller-owned provider inventory ONLY (`hfrag`, `hrealI`,
     `hrealB`, `hexcl`, order bits, `h_UZ`/`h_SZ`): the exterior-marked residue
-    `hexclExt` of `bracketEndChar_kvE2_correct_two_prior_frag` (OuterGate.lean:359) is
+    `hexclExt` of `bracketEndChar_kvE2_correct_two_prior_frag` (OuterGate.lean:360) is
     NOT an input obligation. It is discharged internally: the Phase-1 triage guard split
     sends each strictly-exterior bit-false realizer to its side, where the per-side
     bracket soundness (`kvE2_extBracketPast_sound` / `kvE2_extBracketFut_sound`) refutes

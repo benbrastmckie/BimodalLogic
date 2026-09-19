@@ -24,7 +24,7 @@ Reynolds pipeline needs about it.
 * `IsShuffleColouring S c` — `c` is a *shuffle colouring over the palette `S`*: it uses only
   colours of `S`, every colour of `S` occurs strictly inside every nonempty open interval, and
   the order is nonempty without endpoints. This is Reynolds' density condition (`IsShuffleMap`,
-  `RealModel/Shuffle.lean:325`) stated for an arbitrary index order.
+  `RealModel/Shuffle.lean:329`) stated for an arbitrary index order.
 
 ## Main result
 
@@ -73,7 +73,7 @@ noncomputable def kTypeColouring (sig : MonadicSignature) (k : Nat) {I : Type} [
 /--
 **`c` is a shuffle colouring over the palette `S`.**
 
-Reynolds' density condition (`IsShuffleMap`, `RealModel/Shuffle.lean:325`), stated for an
+Reynolds' density condition (`IsShuffleMap`, `RealModel/Shuffle.lean:329`), stated for an
 arbitrary index order rather than for `ℚ` or `ℝ` specifically. The endpoint and nonemptiness
 clauses are what let a new point be answered when it falls below, above, or outside the whole of
 a finite matched configuration.

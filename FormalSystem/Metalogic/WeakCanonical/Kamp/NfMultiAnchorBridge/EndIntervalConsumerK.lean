@@ -95,7 +95,7 @@ noncomputable def endIntervalPrior {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## Phase 3 — the 3-arm depth-cased obligation-carrying motive -/
 
 /-- **Obligation-carrying correctness motive** `EndIntervalCorrectPrior`. The
-    depth-cased `Prop` mirroring `InteriorGateAllK` (`InteriorGateGeneralK.lean:1240`), three arms:
+    depth-cased `Prop` mirroring `InteriorGateAllK` (`InteriorGateGeneralK.lean:1242`), three arms:
     - `0`: the clean, obligation-free depth-0 biconditional (`BracketCarrierCorrectVPrior` on the
       depth-0 carrier).
     - `1`: the interior-only depth-1 biconditional, carrying only the depth-0 char agreement `h0`
@@ -331,16 +331,16 @@ ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger f
 the 16-argument call site, `endInterval_step_correct` m+2 arm) |
 | 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (the `kvEDeepOnFiber` re-key:
 `kvEDeepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0
-DISCHARGED** by `kvE_hslicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:823`) through the
+DISCHARGED** by `kvE_hslicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:824`) through the
 `kvE_deepOnFiber_zero` adapter | general m: general-m realization recursion (re-keyed) |
 | 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored | hypothesis-side; **m = 0 DISCHARGED** by
-`kvE_hsliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1302`) through the
+`kvE_hsliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1303`) through the
 `kvE_deepOnFiber_zero` adapter | general m: general-m realization recursion (re-keyed) |
 | 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (BYTE-STABLE) | hypothesis-side; **m = 0
-DISCHARGED** by `kvE_hexclSlicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:770`) | general
+DISCHARGED** by `kvE_hexclSlicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:771`) | general
 m: general-m realization recursion |
 | 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (BYTE-STABLE) | hypothesis-side; **m = 0
-DISCHARGED** by `kvE_hexclSliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1243`) | general m:
+DISCHARGED** by `kvE_hexclSliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1244`) | general m:
 general-m realization recursion |
 | 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m =
 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: general-m

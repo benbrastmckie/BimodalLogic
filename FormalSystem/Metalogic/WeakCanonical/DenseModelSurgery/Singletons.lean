@@ -519,6 +519,7 @@ section Theorem5
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §7 Theorem 5, printed p.184.**
 
@@ -543,6 +544,7 @@ theorem reynolds_theorem5 [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap)
     (hdense : QuotientDenselyOrdered M ε) :
     HasDenseSingletons M ε := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   intro c d hcd hncd
   -- *"From the preceding theorem 4 we know that the `∼`-classes do not end at gaps."*
@@ -580,6 +582,7 @@ theorem reynolds_theorem5 [Finite sig.preds] (atomMap : Formula → sig.preds)
   exact ⟨e, lt_of_le_of_lt hcc'le hce, hed,
     isSingletonClass_of_kplus_kminus hε hC he.1 he.2⟩
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **D2, the second hypothesis of Doets' theorem** — Reynolds §8 Theorem 6, printed p.184:
 

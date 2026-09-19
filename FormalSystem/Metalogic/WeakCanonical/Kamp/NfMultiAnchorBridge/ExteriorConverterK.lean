@@ -8,7 +8,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNeg
 
 /-! # Depth-`k` Future-side exterior-negation converter — the reverse `_complete`
 
-The reverse direction of the green `kvE_extNegFut_sound` (`ExteriorNegationK.lean:533`): from the
+The reverse direction of the green `kvE_extNegFut_sound` (`ExteriorNegationK.lean:535`): from the
 complement clause holding at `t` it is the **producer** direction we reverse — assuming the
 positive local-existence form `kvEFutPos` at `t`, we reconstruct an exterior anchor `x1 > t`
 realizing `σ` over `[x1, w, x, t]`, contradicting the carried non-realization hypothesis `hcl`.
@@ -29,7 +29,7 @@ exterior provider:
   bare converse is false), and env-dependent at arity 5 (report 03 Deliverable 2), so it
   is carried, not discharged here.
 
-The depth-`k` chain destructor `kvE_futChainDestructG` (`ExteriorNegationK.lean:294`, the Cor 5.4
+The depth-`k` chain destructor `kvE_futChainDestructG` (`ExteriorNegationK.lean:296`, the Cor 5.4
 `Oₙ` re-anchoring engine, GREEN) drives the length-`n` recursion; the reconstruction reassembles
 `NfEvalNf M (k+1) 4 [x1,w,x,t] σ` via `nf_eval_nfk_iff_efold` (`NfEFold.lean:627`). Off-fiber
 falsity of `σ.2` comes from the admissibility conjunct 2. Purely additive NEW leaf module; no

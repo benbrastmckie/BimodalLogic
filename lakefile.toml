@@ -25,9 +25,6 @@ weak.linter.mathlibStandardSet = true
 # A file over this limit carries an in-source baseline, `set_option linter.style.longFile N`,
 # after its module docstring; the linter itself checks that N stays tight.
 weak.linter.style.longFile = 1500
-# TEMPORARY (staged enablement): each line below holds one not-yet-clean class off while its
-# warnings are fixed; the line is deleted once that class reaches zero.
-weak.linter.unusedDecidableInType = false # TEMPORARY (staged enablement)
 
 [[require]]
 name = "mathlib"

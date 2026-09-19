@@ -36,7 +36,7 @@ the UNCONDITIONAL k ≥ 2 soundness direction is REFUTED (a lossy carrier cannot
 sub realized a fiber). Therefore the deliverable is the **provider-guarded** shape: the target
 predicate is `BracketCarrierCorrectVPrior` (`PriorInterface.lean:60`) — the UZ/SZ-relativized,
 provider-conditional variant — mirroring the k=2 template `bracketEndChar_kvE2_sound_two_prior_frag`
-(`OuterGate.lean`) / `bracketEndChar_kvE2_complete_two_prior` (`OuterGate.lean:147`) and the
+(`OuterGate.lean`) / `bracketEndChar_kvE2_complete_two_prior` (`OuterGate.lean:148`) and the
 consumer's `EndIntervalCorrectPrior`. An unconditional general-`k` statement is a
 known dead end (F1) and MUST NOT be pursued.
 
@@ -67,7 +67,7 @@ UZ/SZ-relativized `BracketCarrierCorrectVPrior` (`PriorInterface.lean:60`) appli
 carrier `bracketEndCharKv`. This is the byte-quotable conclusion the consumer (the consumer-side
 reshape `endIntervalStepPrior` in `EndIntervalConsumerK.lean` / `EndIntervalCorrectPrior`)
 consumes, and the conclusion the k=2 template
-`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:359`) already delivers at `k = 2`
+`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:360`) already delivers at `k = 2`
 under
 its fragment/provider binders. Freezing it as a `def` (not a `theorem`) records the target without a
 proof obligation; the `∀ k` theorem is assembled in Phase 6.
@@ -123,7 +123,7 @@ theorem interiorGateTarget_one {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-! ## Phase 2 — depth-`k` provider / char-layer truth bridges
 
 The general-`k` analogs of the k=2 char-formula bridges `bracketEndChar_kvE2_hcb`
-(`OuterGate.lean:102`) and `_hck` (`OuterGate.lean:123`). The char-BASE bridge `_hcb` is already
+(`OuterGate.lean:102`) and `_hck` (`OuterGate.lean:124`). The char-BASE bridge `_hcb` is already
 depth-0-general (it is about `nfDepth0CharFormula`, independent of the fold depth), so it is
 consumed directly from `OuterGate.lean` — the atom-layer point-type bridge for the endpoint/pivot
 `E[Σ]` literals. The provider bridge `_hck` is generalized here from the hard-wired depth-1
@@ -135,7 +135,7 @@ the
 `insertEnv` collapse is pure `Fin 0` bookkeeping, not a fold step. -/
 
 /-- **Depth-`k` provider-layer truth bridge** (general-`k` analog of
-    `bracketEndChar_kvE2_hck`, `OuterGate.lean:123`). For a depth-`k` provider bundle
+    `bracketEndChar_kvE2_hck`, `OuterGate.lean:124`). For a depth-`k` provider bundle
     `P : ExistProviders sig atomMap k`, the depth-`k` existential provider formula `P.existF 0 χ` is
     truth-equivalent to the arity-1 depth-`k` evaluation, via `ExistProviders.correct` at `n = 0`
     and
@@ -166,12 +166,13 @@ theorem interiorGate_hck {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     characteristic formula is truth-equivalent to the arity-1 depth-0 evaluation. Depth-0 and
     fold-depth-independent, so it is the SAME bridge at every `k` — named here for the step proof's
     endpoint/witness base types (`xType`/`tType`/`ptW`, the depth-0 atom-layer projections). -/
-theorem interiorGate_hcb {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem interiorGate_hcb {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (M : OrderedMonadicStructure sig) (χ : NormalForm sig 0 1) (u : M.carrier) :
     TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ) ↔
       NfEvalNf M 0 1 (fun _ => u) χ :=
+  haveI := Classical.decEq sig.preds
   bracketEndChar_kvE2_hcb atomMap h_surj M χ u
 
 /-! ## Phase 3 — body-destructuring `holds_iff` at depth `k`
@@ -696,7 +697,7 @@ open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extr
     Same
     insertion induction as the depth-1 original, over the generic insert helper
     `k1v_sorted_insert`. -/
-theorem igk_sorted_realization {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem igk_sorted_realization {sig : MonadicSignature} [Finite sig.preds]
     {k : Nat}
     (M : OrderedMonadicStructure sig)
     (a b : M.carrier)
@@ -706,6 +707,7 @@ theorem igk_sorted_realization {sig : MonadicSignature} [Finite sig.preds] [Deci
       List.Perm (ps.map Prod.fst) S ∧
       (ps.map Prod.snd).Pairwise (· < ·) ∧
       ∀ p ∈ ps, (a < p.2 ∧ p.2 < b) ∧ NfEvalNf M k 1 (fun _ => p.2) p.1 := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   induction S with
   | nil => exact ⟨[], by simp, by simp, by simp⟩
@@ -740,7 +742,7 @@ transcription of `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1631`) with thr
 2. the depth-0 interior point type `char χ` → `charF k χ`, its realization supplied by
    `interiorGate_hck` (Phase 2) under the provider agreement `hcharK : charF k = fun χ => P.existF
    0 χ`
-   (the general-`k` analog of the k=2 template's `P`-parameterization, `OuterGate.lean:147`);
+   (the general-`k` analog of the k=2 template's `P`-parameterization, `OuterGate.lean:148`);
 3. the fixed endpoints' base 1-types stay depth-0 (`interiorGate_hcb`), the arity-3 extractors
    (`k1v_extract_*`) and the bracket assembler (`k1v_bracket_construct`) are reused verbatim.
 
@@ -1094,7 +1096,7 @@ true`)
 - `hexcl` (cone) + `hexclExt` (exterior): an UNMARKED sub (`qnf.2 σ = false`) is realized at NO `x1`
   — split at the fixed cone `x ≤ x1 ≤ t` (`hexcl`, dischargeable by the Phase-14 provider) and the
   strictly-exterior residue (`hexclExt`, the Rabinovich Prop-4.3 re-flatten / Lemma 7.6 adjacency
-  hand-off, `OuterGate.lean:312`; the exterior-bracket layer — a
+  hand-off, `OuterGate.lean:313`; the exterior-bracket layer — a
   NON-goal, threaded OUTWARD verbatim as the k=2 template does).
 
 Given those obligations, the reconstruction is direct and does NOT read the lossy fold bits: extract
@@ -1227,7 +1229,7 @@ The k→k+1 step biconditional `bracketEndChar_kv_step_correct` = ⟨sound (Phas
 at symbolic `k+1`. It carries the UNION of the two halves' hypotheses: the completeness half's
 provider agreement `hcharK` + `SemanticPriorUZ`/`SZ` (⇐), and the soundness half's provider
 realization/exclusion obligations `hreal`/`hexcl`/`hexclExt` (⇒). This mirrors the k=2 assembly
-`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:359`), which likewise carries
+`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:360`), which likewise carries
 `P`/`h_UZ`/`h_SZ`/`hrealI`/`hrealB`/`hexcl`/`hexclExt`.
 
 **Shape note (the Phase 6 ∀-`k` open frontier).** This step biconditional is provider-OBLIGATION

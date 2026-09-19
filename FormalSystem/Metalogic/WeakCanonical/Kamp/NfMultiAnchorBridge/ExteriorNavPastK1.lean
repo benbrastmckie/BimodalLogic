@@ -1066,6 +1066,7 @@ theorem CExtPast.correct (M : OrderedMonadicStructure sig)
 /-! ### 3-bot falsity for order-channel-inconsistent `σ` (arity-3
 `agg2_zone_consistent_*` falsity form) -/
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Eval-side 3-bot falsity**: if the order-channel row of `σ` does not match the
     channel pattern `w < x < t`, then NO exterior triple realizes `σ` — the atom layer
@@ -1074,6 +1075,7 @@ theorem navD_inconsistent_eval_false [Finite sig.preds] (M : OrderedMonadicStruc
     (σ : NormalForm sig 1 3) (hrow : ¬ navDOrderRow σ)
     (w x t : M.carrier) (hwx : w < x) (hxt : x < t) :
     ¬ NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   intro hnf
   obtain ⟨hatom, -, -, -⟩ := (extZoneFiber_k1 M w x t hwx hxt σ).mp hnf

@@ -81,7 +81,7 @@ per-index predicate exists iff every index has an admissible realizer. This is t
 core of the point-completion enumeration: the interior bracket witnesses each pick a completion from
 their own captured set, assembled into one tuple. -/
 theorem exists_piFinset_forall_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
-    {α : ι → Type*} [∀ i, DecidableEq (α i)] (t : ∀ i, Finset (α i)) (p : ∀ i, α i → Prop) :
+    {α : ι → Type*} (t : ∀ i, Finset (α i)) (p : ∀ i, α i → Prop) :
     (∃ f ∈ Fintype.piFinset t, ∀ i, p i (f i)) ↔ ∀ i, ∃ a ∈ t i, p i a := by
   constructor
   · rintro ⟨f, hf, hp⟩ i

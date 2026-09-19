@@ -668,7 +668,7 @@ private theorem k1v_zone_consistent {sig : MonadicSignature} [Fintype sig.preds]
     FIXED endpoints by `IntervalPattern.holds` monotonicity (never type-anchored — the
     refuted device of :1782-1796). -/
 private theorem k1v_bracket_extract {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x t : M.carrier)
@@ -793,7 +793,7 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Finite sig.preds]
     STRUCTURALLY by slot position; the monotone `ws` is the order-preservation that makes the
     structural (slot-position) bound faithful, never a formula literal (litmus PASS). -/
 theorem k1v_bracket_extract_mono {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x t : M.carrier)
@@ -842,7 +842,7 @@ theorem getElem_append3_mid {α : Type*} (A B C : List α) (j : Nat) (hj : j < B
     bound is carried structurally; the monotone block ordering is the faithful order-preservation
     that makes the pin's slot-position bound sound. -/
 private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds] {α : Type*}
+    {α : Type*}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List α) (head : α → TemporalPred) (tail : α → List TemporalPred)
     (ptW segL segR : TemporalPred) (lR : List TemporalPred)
@@ -926,7 +926,7 @@ private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} 
     bound is carried structurally by the pin's slot position, faithful under the order-preserving
     realization of the bracket's own interval decomposition. -/
 private theorem bracketFromLists_flatMap_first_pin_anchor {sig : MonadicSignature}
-    [Finite sig.preds] [DecidableEq sig.preds] {α : Type*}
+    [Finite sig.preds] {α : Type*}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List α) (head : α → TemporalPred) (tail : α → List TemporalPred)
     (ptW segL segR : TemporalPred) (lR : List TemporalPred)
@@ -1436,7 +1436,7 @@ private theorem k1v_extract_t_nf3 {sig : MonadicSignature} [Fintype sig.preds]
     trichotomy in model order — one step of the witness-insertion construction (template:
     `existsBounded_right`'s `n+1` append case, VecEAClosure:265; Lemma 3.4 PDF p.5). -/
 private theorem k1v_sorted_insert {α : Type _} {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig)
     (q : α × M.carrier) (ps : List (α × M.carrier))
     (hs : (ps.map Prod.snd).Pairwise (· < ·))
@@ -1482,7 +1482,7 @@ private theorem k1v_sorted_insert {α : Type _} {sig : MonadicSignature} [Finite
     names an existing disjunct; each realized point occupies a bracket WITNESS slot between the
     FIXED endpoints (§5 bracket `[α_0, …, α_n](z_0, z_1)`, PDF p.7; the witness joins the
     existential prefix, Lemma 3.4 PDF p.5). -/
-theorem k1v_sorted_realization {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem k1v_sorted_realization {sig : MonadicSignature} [Finite sig.preds]
     (M : OrderedMonadicStructure sig)
     (a b : M.carrier)
     (S : List (NormalForm sig 0 1)) (hnd : S.Nodup)
@@ -1524,7 +1524,7 @@ theorem k1v_sorted_realization {sig : MonadicSignature} [Finite sig.preds] [Deci
     (VecEAClosure:265; Lemma 3.4 PDF p.5) with the witness tuple assembled wholesale from the
     insertion-induction output of `k1v_sorted_realization`. -/
 private theorem k1v_bracket_construct {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x w t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -2155,7 +2155,7 @@ def VVecEA2.singleton {n : Nat} (vea : VecEA2 n) : VVecEA2 :=
 /-- The singleton embedding's `holds` unfolds to the wrapped `VecEA2`'s `holds`.
 Confirms `VVecEA2.singleton`'s `.holds` at the fixed endpoints is exactly the underlying bracket's
 `.holds` — the identity that threads `bracketEndChar_k0_correct` through the `k = 0` base below. -/
-theorem VVecEA2.singleton_holds {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem VVecEA2.singleton_holds {sig : MonadicSignature} [Finite sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     {n : Nat} (vea : VecEA2 n) (z0 z1 : M.carrier) :
     (VVecEA2.singleton vea).holds M atomMap z0 z1 ↔ vea.holds M atomMap z0 z1 := by

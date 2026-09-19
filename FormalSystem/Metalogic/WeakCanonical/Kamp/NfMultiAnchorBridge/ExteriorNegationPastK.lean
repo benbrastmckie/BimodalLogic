@@ -321,7 +321,7 @@ theorem kvE_pastRayZone_mem : kvEPastRayZone ∈ kvEPastPossibleZones :=
     builder (which walks the gap top-down) can sort chosen occurrences by maximal extraction.
     The shared `ExteriorFiberK.lean` only exposed the ascending `kvE_minPick` (future side); this
     is the additive Past-territory descending counterpart. -/
-theorem kvE_pastMaxPick {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem kvE_pastMaxPick {sig : MonadicSignature} [Finite sig.preds]
     {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
@@ -377,8 +377,8 @@ noncomputable def kvEPastChainG {α : Type}
     nodup list `L` (via `Q`), the fact that occurrences force `itemF` (`hQF`), and item
     distinctness at a shared point (`huniq`), SOME permutation of `L` carries a true `D`-guarded
     `Since` chain at `s`. Max-witness sort via `kvE_pastMaxPick`. -/
-theorem kvE_pastChainBuildG {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
-    {α : Type} [DecidableEq α]
+theorem kvE_pastChainBuildG {sig : MonadicSignature} [Finite sig.preds]
+    {α : Type}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) (x x1 : M.carrier)
     (Q : α → M.carrier → Prop)
@@ -391,6 +391,8 @@ theorem kvE_pastChainBuildG {sig : MonadicSignature} [Finite sig.preds] [Decidab
       (∀ a ∈ L, ∃ r : M.carrier, r < s ∧ x1 < r ∧ Q a r) →
       ∃ l : List α, l.Perm L ∧
         TemporalTruth M atomMap s (kvEPastChainG itemF endF D l) := by
+  haveI := Classical.decEq sig.preds
+  haveI := Classical.decEq α
   intro n
   induction n with
   | zero =>
@@ -441,7 +443,7 @@ theorem kvE_pastChainBuildG {sig : MonadicSignature} [Finite sig.preds] [Decidab
     `D`-guarded `Since` chain at `s` yields an endpoint `x1 < s` satisfying `endF`, a `D`-uniform
     gap `(x1, s)` (given each visited item's `itemF` pointwise implies `D`), and one
     `itemF`-occurrence in `(x1, s)` for every item in the chain's list. -/
-theorem kvE_pastChainDestructG {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem kvE_pastChainDestructG {sig : MonadicSignature} [Finite sig.preds]
     {α : Type}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) :
@@ -486,7 +488,7 @@ theorem kvE_pastChainDestructG {sig : MonadicSignature} [Finite sig.preds] [Deci
 
 The depth-`k` analogs of the frozen clause defs `kvE2PastGapD`/`RayD`/`RayForm`/`End`/`Chain`/
 `Pos`/`extNegPast` (`ExteriorNegationPast.lean:410-477`), symmetric with the Future depth-`k`
-family (`ExteriorNegationK.lean:356-415`). Every content-bearing position renders the FULL fiber
+family (`ExteriorNegationK.lean:358-415`). Every content-bearing position renders the FULL fiber
 element `s : NormalForm sig k 5` through the shared reindex bridge — `kvEFiberPosOnShift P`
 (disjunctions) or `P.existF 4 (renameNF rot5Fwd rot5Bwd s)` (per-item), which by
 `kvE_fiberPosOnShift_correct`/`kvE_anchorBridge` renders content with the visited point as the

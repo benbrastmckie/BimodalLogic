@@ -519,7 +519,7 @@ and remains the wire the landed `kampPriorExpressiveCompleteness` consumes.
 
 The emitted formula is the same function of `sub_nf`, `g` and the base naming as the original's;
 only the per-model premise discharge differs. -/
-theorem kampArm_zeta_faithful {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+theorem kampArm_zeta_faithful {sig : MonadicSignature} [Finite sig.preds]
     (g : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, g (.atom a) = p)
     {k : Nat} (sub_nf : NormalForm sig k 2) :
@@ -578,7 +578,7 @@ by `kampArm_zeta_faithful` instead, through `prior_hasAttainedINF` and
 `HasAttainedINF.toHasFaithfulDedekindINF`. Recorded so the re-base is machine-checked to be a
 weakening rather than a sideways move; `kampArm_zeta` itself is left untouched. -/
 theorem kampArm_zeta_faithful_covers_attained
-    {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Finite sig.preds]
     (g : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, g (.atom a) = p)
     {k : Nat} (sub_nf : NormalForm sig k 2) :

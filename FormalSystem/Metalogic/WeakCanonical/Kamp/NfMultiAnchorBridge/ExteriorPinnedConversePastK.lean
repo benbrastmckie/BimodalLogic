@@ -271,7 +271,7 @@ theorem kvE_pastAtomPinned_zero {sig : MonadicSignature} [Fintype sig.preds] [De
     profile-equal endpoint realizes by hypothesis; the zone channel changes only at index 0,
     where `x1 < x ≤ v` and `x1' < x ≤ v` render the SAME coupling `(false, true)`. -/
 theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds]
-    [DecidableEq sig.preds]
+   
     (M : OrderedMonadicStructure sig) (v x1 x1' w x t : M.carrier)
     (hvx : ¬ v < x) (hx1x : x1 < x) (hx1'x : x1' < x)
     (hchar : NfEvalNf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))
@@ -281,6 +281,7 @@ theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds
       (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) :
     NfEvalNf M 0 5
       (Fin.cons v (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))) s := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   obtain ⟨hz, hfr, htl⟩ := (nf_eval_nf0_cons_factor M
     (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) v s).mp hs
@@ -310,10 +311,10 @@ theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds
   | ⟨3, _⟩ => exact hz ⟨3, by omega⟩
 
 /-! ### Private zone bookkeeping (replica precedent: `kvE_pastZoneBelow` is `private` in
-ExteriorNegationPastK.lean:485 and cannot be imported) -/
+ExteriorNegationPastK.lean:487 and cannot be imported) -/
 
 /-- File-local replica of the private `kvE_pastZoneBelow`
-    (ExteriorNegationPastK.lean:485): a point strictly below `x` (with `x < w < t`)
+    (ExteriorNegationPastK.lean:487): a point strictly below `x` (with `x < w < t`)
     couples to `[x1, w, x, t]` as `zPastX3` below `w, x, t` and to `x1` by the given
     head pair. -/
 private theorem kvE_pastZone4_of_below {sig : MonadicSignature} [Fintype sig.preds]
@@ -460,7 +461,7 @@ theorem kvE_pastSliceUnique_zero {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ### Private navigation helpers for the slice-id (Past mirrors of the Future file's
 private `kvE_projFresh_zero`/`kvE_futGapItem_pinned_zero`/`kvE_futRayItem_pinned_zero`,
-ExteriorPinnedConverseK.lean:773-832; replication precedent as above) -/
+ExteriorPinnedConverseK.lean:774-832; replication precedent as above) -/
 
 /-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
     replicated per the established precedent, never imported): at depth 0 the prefix
@@ -533,14 +534,14 @@ private theorem kvE_pastRayItem_pinned_zero {sig : MonadicSignature} [Fintype si
 
 /-- **Past exterior-slice identification at m = 0** (Rabinovich Cor 5.4(2) ⇐ under the
     Def 7.13 segment discipline; verbatim mirror of `kvE_futSliceId_of_end_zero`,
-    ExteriorPinnedConverseK.lean:890 — UNBLOCKED by the Phase-4a conjunct-4 restoration): at
+    ExteriorPinnedConverseK.lean:891 — UNBLOCKED by the Phase-4a conjunct-4 restoration): at
     a destructor-selected exterior-past endpoint `x1 < x` carrying the endpoint/walk truths,
     under the level-up ambient, the endpoint's HONEST complete type σ★ is qnf-marked,
     pinned-realized at `[x1, w, x, t]`, and agrees with σ on the atom layer and on every
     Past exterior-zone marking. (σ★ := `nfCharacteristic M 1 4 [x1, w, x, t]`; item content
     in `hocc` is the raw shift-bridged form `P.existF 4 (renameNF rot5Fwd rot5Bwd s)`, the
     Past clause family's per-item convention — `kvEPastRayForm`,
-    ExteriorNegationPastK.lean:424.)
+    ExteriorNegationPastK.lean:426.)
 
     Proof route (the Future's five steps, machine-validated end-to-end as the Phase-4a gate
     probe): (1) totality + ambient marking of σ★; (2) atom layer via `kvE_pastAtomPinned_zero`

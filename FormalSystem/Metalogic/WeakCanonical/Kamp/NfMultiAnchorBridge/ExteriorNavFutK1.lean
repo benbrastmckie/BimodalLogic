@@ -1469,6 +1469,7 @@ theorem CExtFut.correct (M : OrderedMonadicStructure sig)
 
 /-! ### 3-bot falsity for order-channel-inconsistent `σ` (future channel) -/
 
+omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /-- **Eval-side 3-bot falsity (future channel)**: if the order-channel row of `σ` does
     not match the channel pattern `x < t < w`, then NO exterior triple realizes `σ` —
@@ -1477,6 +1478,7 @@ theorem navR_inconsistent_eval_false [Finite sig.preds] (M : OrderedMonadicStruc
     (σ : NormalForm sig 1 3) (hrow : ¬ navROrderRow σ)
     (w x t : M.carrier) (hxt : x < t) (htw : t < w) :
     ¬ NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+  haveI := Classical.decEq sig.preds
   haveI := Fintype.ofFinite sig.preds
   intro hnf
   obtain ⟨hatom, -, -, -⟩ := (extZoneFiberFut_k1 M w x t hxt htw σ).mp hnf

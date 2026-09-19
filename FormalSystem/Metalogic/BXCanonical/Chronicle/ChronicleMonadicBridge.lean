@@ -569,17 +569,17 @@ Part 4's `chronicleMonadic_truth_correspondence` is bounded by `subformulaClosur
 the closure an atom of `φ` need not be a predicate symbol of `mkSigFrom root`, so `TemporalTruth`
 cannot read it back as membership of `φ` itself. Reynolds' clause 3 needs *all* substitution
 instances, so this part removes the bound the only way it can be removed — by replacing `φ` on
-the MCS side with its **effective formula** `effectiveFormula` (`Transfer.lean:1007`), which
+the MCS side with its **effective formula** `effectiveFormula` (`Transfer.lean:1010`), which
 rewrites each atom and each box-subformula through the signature round trip and leaves the
 temporal skeleton alone.
 
-This is `chronicle_temporal_truth_effective` (`Transfer.lean:1028`) transposed from
+This is `chronicle_temporal_truth_effective` (`Transfer.lean:1032`) transposed from
 `ChronicleAsPriorModel` over an arbitrary domain to a `BFMCS` family over `ℚ`. The five cases are
 the ones Part 4 already discharges; only the atom and box cases change (they become `Iff.rfl`,
 since the effective formula is *defined* to be the round trip), and the Until/Since cases now
 draw on Part 5 rather than on the restricted hypotheses.
 
-**ADAPTED-FROM**: `FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1028`
+**ADAPTED-FROM**: `FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1032`
 (`chronicle_temporal_truth_effective`). No source: original work, like the rest of the bridge. -/
 
 /-- The chronicle bridge's effective-formula operator: `effectiveFormula` at this structure's own
