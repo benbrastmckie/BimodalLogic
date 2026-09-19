@@ -316,21 +316,26 @@ their phases land.
 
 ---
 
-### Phase 4: Full gate and summary [NOT STARTED]
+### Phase 4: Full gate and summary [COMPLETED]
 
 **Goal**: Prove the task's constraint held and the tree is green under the full harness,
 reconcile the programme document's numbers with the Phase 1 script, and write the summary.
 
 **Tasks**:
-- [ ] `git status --porcelain -- FormalSystem Tests` must be empty; `git diff --stat` must
-      list only `scripts/`, `docs/`, and (if used) the C12 allowlist.
-- [ ] Run `lake build` and `lake build BimodalTest` (expected no-op rebuild; both must exit 0).
-- [ ] Run the full `bash scripts/check-module-invariants.sh` (with build) and
+- [x] `git status --porcelain -- FormalSystem Tests` must be empty; `git diff --stat` must
+      list only `scripts/`, `docs/`, and (if used) the C12 allowlist. *(completed — this task's
+      diff is scripts/ + docs/ only; the two one-line `FormalSystem/**/README.md` edits shown by
+      git status were already dirty at dispatch start and were left unstaged)*
+- [x] Run `lake build` and `lake build BimodalTest` (expected no-op rebuild; both must exit 0).
+      *(completed — both exit 0, guarded and detached)*
+- [x] Run the full `bash scripts/check-module-invariants.sh` (with build) and
       `bash scripts/check-metalogic-cycles.sh` (must still report exactly 1 cycle).
-- [ ] Cross-check every count in `PUBLICATION_REFACTOR.md` and ADR-011 against
+      *(completed — ALL CHECKS PASSED; exactly 1 cycle)*
+- [x] Cross-check every count in `PUBLICATION_REFACTOR.md` and ADR-011 against
       `python3 scripts/measure-refactor-partitions.py` output; correct the documents to the
-      script, not the other way round.
-- [ ] Write `specs/627_research_cslib_lean_engineering_refactor_plan/summaries/01_cslib-refactor-plan-summary.md`
+      script, not the other way round. *(completed — re-measured JSON identical; no corrections
+      needed)*
+- [x] Write `specs/627_research_cslib_lean_engineering_refactor_plan/summaries/01_cslib-refactor-plan-summary.md`
       listing the artifacts, the reconciled counts, any discrepancy against the report, and
       the follow-up task list for the user to create.
 
