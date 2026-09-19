@@ -69,7 +69,7 @@ surface (g).
 | 7c | Module-size policy: split by dependency, never by line count | `longFile = 1500` with in-source baselines (stricter) | **Adopt the policy text**, keep the baselines; split only the two largest files, only along import-acyclic seams (Phase 9, optional) |
 | 8 | Flat test directory | Mirrored subdirectories plus 12 loose root files | **Deliberately diverge** (mirroring scales better here); relocate the loose files only (Phases 3, 5) |
 | e | Root-level `Boneyard/`, `#exit`, stale archived imports are cosmetic | `FormalSystem/Boneyard/`, `#exit` everywhere, C11 keeps imports resolvable | **Adopt the location** (Phase 2, ADR-010); **deliberately diverge** on C11 and keep it enforced |
-| g | Clean upstream surface (the fork is not a model here) | `specs/`, `CLAUDE.md`, `.claude-extensions.json`, personal paths, internal naming, frozen LaTeX PDF, research and training notes, one-off scripts | **Adopt upstream's surface** (Phase 1 and the publication gate) |
+| g | Clean upstream surface (the fork is not a model here) | `specs/`, `CLAUDE.md`, `.claude-extensions.json`, personal paths, internal naming, frozen LaTeX PDF, research and training notes, one-off scripts | **Adopt upstream's surface** (Phase 1 and the publication gate), **except `specs/`**, which stays published as the project's development record (Section 8) |
 
 ## 4. Target layout
 
@@ -112,9 +112,9 @@ BimodalLogic/
 Removed from the tracked deliverable at the publication gate: `latex/` (frozen edition and its
 PDF), `docs/research/`, `docs/training/` (moves with the dataset project or into the tooling
 library's README), the tracked paper PDF under `docs/papers/`, `CLAUDE.md`,
-`.claude-extensions.json`, `.syncprotect`, the empty `.gitattributes`, `specs/`, and the one-off
+`.claude-extensions.json`, `.syncprotect`, the empty `.gitattributes`, and the one-off
 scripts (`migrate_schema_v2.py`, `swap_untl_snce.py`, `standardize_metadata.py`,
-`add-copyright-headers.sh`).
+`add-copyright-headers.sh`). `specs/` is not removed: it stays tracked and published (Section 8).
 
 ### Lakefile target shape
 
@@ -296,7 +296,7 @@ release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
 ### Phase 1: Deliverable hygiene (no Lean change)
 
 - Untrack `CLAUDE.md`, `.claude-extensions.json`, `.syncprotect` and the empty
-  `.gitattributes` (add to `.gitignore`). **`specs/` is not untracked here** — see Section 8.
+  `.gitattributes` (add to `.gitignore`). **`specs/` is never untracked** — see Section 8.
 - Remove personal absolute paths from `docs/` and `typst/` (two `docs/` files and one typst file
   today). The `.lean` occurrences are docstring edits and wait for Phase 7.
 - Remove the one-off scripts; add `scripts/README.md` naming every remaining script.
@@ -438,16 +438,15 @@ Phases 3 and 4 are independent after Phase 2. Phase 4 precedes Phase 6 so the Ex
 move does not also carry attribute-edge churn. Phase 8's `mk_all --check` requires Phase 2.
 
 **Publication gate**: Phases 1-7 complete and Phase 8's root collapse done. Then, in one commit
-immediately before the release tag, untrack the remaining non-deliverable set — `specs/`,
-`CLAUDE.md`, `.claude-extensions.json`, `.syncprotect`, the empty `.gitattributes` — and add
-them to `.gitignore`. Then the maintainer creates the `v1.0.0` tag and updates `CITATION.cff`
+immediately before the release tag, untrack the remaining non-deliverable set — `CLAUDE.md`,
+`.claude-extensions.json`, `.syncprotect`, the empty `.gitattributes` — and add them to
+`.gitignore`. Then the maintainer creates the `v1.0.0` tag and updates `CITATION.cff`
 (`version`, `date-released`, later `doi`).
 
-`specs/` stays tracked *while the programme runs*, deliberately: the task workflow that executes
-the phases commits its provenance there (`.gitignore` already carves out the two provenance
-files it must keep), and untracking it mid-programme would break that workflow. Untracking at
-the gate, rather than deleting history, is enough for the published surface; keeping it on a
-separate, unpublished branch is the alternative if the provenance should survive publication.
+`specs/` stays tracked and is published with the deliverable, permanently. It is the
+project's development record: the task workflow commits its reports, plans, summaries and
+provenance there (`.gitignore` already carves out the two provenance files it must keep), and
+that record is kept public rather than untracked at the gate or moved to an unpublished branch.
 
 ## 9. Follow-up task split
 
@@ -531,8 +530,8 @@ provenance.
 > is empty; add CI steps for mk_all --check (as a harness check) and lint-style-action; add a
 > tag-triggered release workflow; adopt the module-size policy text; test whether
 > linter.style.header under --wfail makes check-copyright-headers.sh redundant. Then, at the
-> gate, untrack specs/, CLAUDE.md, .claude-extensions.json, .syncprotect and .gitattributes in
-> one commit and hand off to the maintainer for the v1.0.0 tag and the CITATION.cff update.
+> gate, untrack CLAUDE.md, .claude-extensions.json, .syncprotect and .gitattributes in one
+> commit (specs/ stays tracked and published) and hand off to the maintainer for the v1.0.0 tag and the CITATION.cff update.
 > Acceptance: mk_all --check green; C6 manifest empty; release workflow dry-run passes.
 
 **I — Post-publication (Phase 9, optional)**
