@@ -1,21 +1,21 @@
 {
   "status": "researched",
-  "started_at": "2026-09-18T23:22:07Z",
-  "completed_at": "2026-09-18T23:44:21Z",
+  "started_at": "2026-09-18T23:54:20Z",
+  "completed_at": "2026-09-19T00:13:58Z",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
-      "summary": "Round 03: truth is invariant under two-way bounded morphisms (compiled), so Gabbay IRR, a stronger clock naming rule and the semantic core of Reynolds' AA rule are all sound (compiled over Z; clock product at every class on paper); Reynolds 2003's LC_n schema transposed to stab is valid on every all-walks Z-model (compiled) and at Base on paper; Saturation is idle at ZTime and ZTime validity is decidable (paper, rests on recalled Rabin theorem); until-form LCU is ZTime-only; per-class table; ZTime-first engine recommendation with located two-sided-automaton obstruction; 560 rescope of report 02 unchanged; two follow-on tasks proposed."
+      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md",
+      "summary": "Round 04, semantics-first: line-numbered account of the manuscript's task semantics; contrast with Ockhamist trees, T x W, Kamp and neutral frames (stab is the same-state modality, not the past-sharing Ockhamist one; HN fails for stab, compiled); manuscript-vs-repo inventory (manuscript's commented-out TM+ matches PlusAxiom; its commented-out 'TM+ completeness remains open' is answered negatively by reports 01-02); native leads: all-histories semantics = closed bundles, canonical-frame obligation stated natively, sound state-naming rule; L and L+ are blind to state recurrence and to durations and Limit is idle given Nullity (compiled at every temporal order); revised per-class table; 560 rescope unchanged; follow-on tasks A, A', B, C."
     },
     {
       "type": "probe",
-      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/03_morphisms-clock-rule-lc-schema.lean",
-      "summary": "814-line sorry-free Mathlib-only probe (bare lean, exit 0): TwoWay/lift_walk/tw_invariance, clockR/clock_irr_sound/irr_sound, coneR/cone_twoWay/aa_expand, omega_limit/omega_chain/lcN_valid_full. Axioms: propext, Classical.choice, Quot.sound only."
+      "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/04_semantics-native-general-duration.lean",
+      "summary": "600-line sorry-free Mathlib-only probe over an arbitrary totally ordered abelian group (bare lean, exit 0): TD_shift, stab_state_only, state_name_sound, clock_hist_iff, clock_no_recurrence, clock_comp, clock_serial, clock_limit, clock_invariance, repar_invariance, hn_stab_refuted, hn_open. Axioms: propext, Classical.choice, Quot.sound at most."
     }
   ],
   "metadata": {
-    "session_id": "sess_1789773503_8e1220_559",
+    "session_id": "sess_1789775533_5d03a1_559",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]

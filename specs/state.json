@@ -1410,12 +1410,12 @@
       "session_id": "sess_1789758953_24f7fc",
       "artifacts": [
         {
-          "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md",
+          "path": "specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md",
           "type": "report",
-          "summary": "Verdict-first round-03 report: Q1-Q6 verdicts, per-class table, 560 and follow-on proposals."
+          "summary": "Verdict-first round-04 report: five deliverables of the user focus, revised per-class table, 560 and follow-on proposals."
         }
       ],
-      "next_artifact_number": 4
+      "next_artifact_number": 5
     },
     {
       "project_number": 560,

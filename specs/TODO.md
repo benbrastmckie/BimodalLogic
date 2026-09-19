@@ -6,7 +6,7 @@ next_project_number: 624
 
 ## Task Order
 
-*Updated 2026-09-18. Generated from state.json dependency graph.*
+*Updated 2026-09-19. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -657,7 +657,7 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
-- **Research**: [559_nondeterministic_canonical_model_tm_star_completeness/reports/03_axiomatizability-rules-engine.md]
+- **Research**: [559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md]
 
 **Description**: RESEARCH TASK, verdict-first -- reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/. Run further rounds with `/orchestrate 559 --research --lit`.
 
