@@ -205,9 +205,9 @@ changes. The new theorem is proved from scratch rather than by generalising eith
 
 ## Honest caveat, carried forward
 
-Every §6 lemma below Lemma 2 remains **conditional**. `IsContempEquivDense ε` together with
-Reynolds' Prior-U and Prior-S on `M` are hypotheses throughout, and the only `ε` this tree can
-currently exhibit satisfying them is the total relation `epsTop` (`Defs.lean:461`), for which
+Every §6 lemma below Lemma 2 remains **conditional**. `IsContempEquivDense ε` plus Reynolds' Prior-U
+and Prior-S on `M` are hypotheses throughout, and the only `ε` this tree can currently exhibit
+satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:671`), for which
 `EndsInGapOnRight` is empty (`not_endsInGapOnRight_epsTop`). Nothing below is discharged at a
 non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage. These
 results are **not** to be described as discharged.

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #589
 
 - **Task**: 589 - Disambiguate the 35 basename citations C20 cannot verify (and absorb three broken `specs/` docstring citations)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None outstanding (predecessors 584, 585, 591, 595 completed; research re-measured against the current tree)
 - **Research Inputs**: specs/589_disambiguate_basename_citations/reports/02_citation-resolution-map.md
@@ -78,17 +78,17 @@ awk '/^# C20: file.lean:NNN citations/{f=1} f&&/^python3 - <<.PYEOF.$/{g=1;next}
 ```
 Put `c20.py` in a scratch directory, never in the repo.
 
-### Phase 1: DenseModelSurgery cluster (8 citations) [NOT STARTED]
+### Phase 1: DenseModelSurgery cluster (8 citations) [COMPLETED]
 
 **Goal**: Resolve report rows 11-18: the 7 `Defs.lean` citations plus `Soundness.lean:1601`.
 
 **Tasks**:
-- [ ] Re-derive targets: `grep -n` for `def epsTop`, `theorem gapRightFormula_spec`, `def epsAt`, `def gapRightFormula`, `theorem rhoFormula_eval` in `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean`, and for `theorem sep_valid` in `FormalSystem/Metalogic/Soundness.lean`. Expected values: 671, 584, 197, 567, 540, 1065.
-- [ ] `BadIntervals.lean` (~:210): `Defs.lean:461` becomes `DenseModelSurgery/Defs.lean:<epsTop>`.
-- [ ] `Lemma34.lean` (~:17, ~:362, ~:469): qualify all three. `:197` keeps its number; `:384` and `:367` are corrected.
-- [ ] `Lemma5.lean` (~:108, ~:171): qualify and correct (`epsTop`, `rhoFormula_eval`).
-- [ ] `Singletons.lean` (~:101, ~:128): `Soundness.lean:1601` becomes `Metalogic/Soundness.lean:<sep_valid>`, and `Defs.lean:461` becomes `DenseModelSurgery/Defs.lean:<epsTop>`.
-- [ ] Run the extracted C20. None of these 8 appears in INFO, and tier 1 has no FAIL.
+- [x] Re-derive targets: `grep -n` for `def epsTop`, `theorem gapRightFormula_spec`, `def epsAt`, `def gapRightFormula`, `theorem rhoFormula_eval` in `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean`, and for `theorem sep_valid` in `FormalSystem/Metalogic/Soundness.lean`. Expected values: 671, 584, 197, 567, 540, 1065.
+- [x] `BadIntervals.lean` (~:210): `Defs.lean:461` becomes `DenseModelSurgery/Defs.lean:<epsTop>`.
+- [x] `Lemma34.lean` (~:17, ~:362, ~:469): qualify all three. `:197` keeps its number; `:384` and `:367` are corrected.
+- [x] `Lemma5.lean` (~:108, ~:171): qualify and correct (`epsTop`, `rhoFormula_eval`).
+- [x] `Singletons.lean` (~:101, ~:128): `Soundness.lean:1601` becomes `Metalogic/Soundness.lean:<sep_valid>`, and `Defs.lean:461` becomes `DenseModelSurgery/Defs.lean:<epsTop>`.
+- [x] Run the extracted C20. None of these 8 appears in INFO, and tier 1 has no FAIL. *(deviation: altered — to keep every edited file's line count unchanged (other files cite lines in these four), three sentences were minimally tightened during reflow: BadIntervals "together with" -> "plus", Lemma34 "where Reynolds transports it — namely at each application of" -> "where Reynolds does: at each use of", Lemma5 "Checked rather than asserted, exactly as" -> "Checked, not asserted, as"; the adjacent wrong-but-passing `ProofSystem/Axioms.lean:422` in Singletons was also corrected to 453 (`Axiom.sep`))*
 
 **Timing**: 0.5 hours
 

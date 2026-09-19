@@ -98,11 +98,11 @@ exactly one place — `classLeftEndFormula` — and nowhere else in this module.
 ## Where Sep comes from, and where it does not
 
 Reynolds' §7 has two halves. **Lemma 10** (Sep's validity over real flows, printed p.183) is
-**not re-derived here**: `sep_valid` (`Soundness.lean:1601`) is landed and already stated at
-`ValidRTime`. This module consumes `Axiom.sep`'s *derivability* side — the semantic
+**not re-derived here**: `sep_valid` (`Metalogic/Soundness.lean:1065`) is landed and already stated
+at `ValidRTime`. This module consumes `Axiom.sep`'s *derivability* side — the semantic
 reading of the axiom scheme at a structure — exactly as Phase 16 does for Prior-U and Prior-S.
 
-`Axiom.sep` (`ProofSystem/Axioms.lean:422`) is stated with `Formula.kPlus` / `Formula.kMinus`.
+`Axiom.sep` (`ProofSystem/Axioms.lean:453`) is stated with `Formula.kPlus` / `Formula.kMinus`.
 It is read here through **Phase 10.1's bridge**, cited by name: `Kamp.kPlus_formula_correct` and
 `Kamp.kMinus_formula_correct` (`Kamp/KPlusFaithful.lean:152`, `:170`), which identify
 `Formula.kPlus` / `Formula.kMinus` with `Kamp.kplusOpen` / `Kamp.kminusOpen` — the faithful
@@ -125,9 +125,9 @@ into a `SemanticSepOpen` argument. That application elaborates only if the two a
 
 Every §6 lemma below Lemma 2 remains **conditional**: `IsContempEquivDense ε` plus Reynolds'
 Prior-U / Prior-S on `M` are hypotheses, and the only `ε` this tree can currently exhibit
-satisfying them is the total relation `epsTop` (`Defs.lean:461`), for which `EndsInGapOnRight`
-is empty (`not_endsInGapOnRight_epsTop`). So the results below are not discharged at any
-non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage.
+satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:671`), for which
+`EndsInGapOnRight` is empty (`not_endsInGapOnRight_epsTop`). So the results below are not discharged
+at any non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage.
 
 **This module inherits that caveat unchanged and adds nothing to its discharge.** Theorem 5
 consumes Theorem 4, so it is conditional on everything Theorem 4 is conditional on, plus Sep and

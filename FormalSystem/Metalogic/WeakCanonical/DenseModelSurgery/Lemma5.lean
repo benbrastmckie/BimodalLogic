@@ -105,9 +105,9 @@ Reynolds' proof needs three things this tree did not have.
 
 Every §6 lemma below Lemma 2 remains **conditional**: `IsContempEquivDense ε` plus Reynolds'
 Prior-U / Prior-S on `M` are hypotheses, and the only `ε` this tree can currently exhibit
-satisfying them is the total relation `epsTop` (`Defs.lean:461`), for which `EndsInGapOnRight`
-is empty (`not_endsInGapOnRight_epsTop`). So the results below are not discharged at any
-non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage.
+satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:671`), for which
+`EndsInGapOnRight` is empty (`not_endsInGapOnRight_epsTop`). So the results below are not discharged
+at any non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage.
 
 ## References
 
@@ -168,7 +168,7 @@ private theorem consCons_one {α : Type*} {n : Nat} (a b : α) (env : Fin n → 
 /-- **The monadic image is correct**: `temporalAt atomMap i A` evaluates, at any environment, to
 `A`'s temporal truth at the point the environment assigns to `i`.
 
-Checked rather than asserted, exactly as `rhoFormula_eval` (`Defs.lean:340`) checks `ρ`. -/
+Checked, not asserted, as `rhoFormula_eval` (`DenseModelSurgery/Defs.lean:540`) checks `ρ`. -/
 @[simp] theorem eval_temporalAt (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) :
     ∀ (A : Formula) {n : Nat} (env : Fin n → M.carrier) (i : Fin n),
