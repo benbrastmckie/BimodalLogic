@@ -1,17 +1,29 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 1,
-  "summary": "Surveyed benbrastmckie/cslib (8 dimensions) against this repo with measured import-graph analysis; report maps each convention to adopt/matches/diverge, gives target layout, lakefile, namespace map, templates, and a 10-phase refactor programme with [CITE] phases (2-7) that must land before the v1.0.0 tag. Key finding: 104k of WeakCanonical's 132k lines are BXCanonical-free, so ADR-006 should be superseded; ADR-009 retention reaffirmed but location moves to repo root.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a 4-phase, 6.5-hour plan (waves [1],[2,3],[4]) that lands the cslib-referenced refactor programme durably (committed partition-measurement script, docs/development/PUBLICATION_REFACTOR.md, Proposed ADR-010/ADR-011, full gate) without touching FormalSystem/ or Tests/; programme Phases 0-9 become follow-up tasks.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/627_research_cslib_lean_engineering_refactor_plan/reports/01_cslib-refactor-plan.md",
-      "summary": "cslib-referenced publication refactor plan with measured WeakCanonical/Automation partitions and ADR-010/011 proposals"
+      "type": "plan",
+      "path": "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
+      "summary": "4-phase plan: measurement tooling, programme document, ADR-010/011 drafts, full gate and summary"
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 4,
   "blockers": [],
-  "next_action_hint": "plan"
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for the 4-phase plan; Phase 1 (measurement script) first, Phases 2 and 3 may run in parallel.",
+  "user_decision": {
+    "question": "How should specs/ (192 tracked task-management files) be handled for publication? The agent workflow commits provenance under specs/ during the nine follow-up refactor tasks, so untracking it at programme Phase 1 would strand those commits.",
+    "options": [
+      "Untrack specs/ (with CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, immediately before the v1.0.0 tag",
+      "Keep specs/ tracked and published, as the benbrastmckie/cslib fork does",
+      "Move specs/ and agent files to a separate non-published branch or remote before publication"
+    ],
+    "recommended": "Untrack specs/ (with CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, immediately before the v1.0.0 tag",
+    "blocking": false
+  }
 }

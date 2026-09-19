@@ -1,17 +1,40 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-19T06:23:45Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/627_research_cslib_lean_engineering_refactor_plan/reports/01_cslib-refactor-plan.md",
-      "summary": "cslib convention map (adopt/matches/diverge), target layout + lakefile + namespace map, header/citation templates, and a 10-phase (0-9) dependency-ordered refactor programme; measured that 141 files/104k lines of WeakCanonical have no BXCanonical dependency (supersede ADR-006 via ADR-011) and that Boneyard should move to repo root (ADR-010 supersedes ADR-009's location)."
+      "type": "plan",
+      "path": "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
+      "summary": "4-phase plan landing the cslib-referenced refactor programme durably: committed partition-measurement script, docs/development/PUBLICATION_REFACTOR.md, Proposed ADR-010/ADR-011, full gate; no FormalSystem/ or Tests/ edits."
+    }
+  ],
+  "next_steps": "Run /implement 627 to execute the plan",
+  "user_decision": {
+    "question": "How should specs/ (192 tracked task-management files) be handled for publication? The agent workflow commits provenance under specs/ during the nine follow-up refactor tasks, so untracking it at programme Phase 1 would strand those commits.",
+    "options": [
+      "Untrack specs/ (with CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, immediately before the v1.0.0 tag",
+      "Keep specs/ tracked and published, as the benbrastmckie/cslib fork does",
+      "Move specs/ and agent files to a separate non-published branch or remote before publication"
+    ],
+    "recommended": "Untrack specs/ (with CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit at the publication gate, immediately before the v1.0.0 tag",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, any markdown under docs/ or README.md that names a FormalSystem.X.Y module or FormalSystem/X/Y path which does not exist yet fails invariant checks C5 (dotted) and C12 (slash) in scripts/check-module-invariants.sh. When documenting a planned layout, write hypothetical names relative to the library root (Metalogic/Expressiveness/, Metalogic.Expressiveness.Kamp) so the FormalSystem-prefixed regexes do not match; for an unavoidable full slash path use scripts/markdown-slash-path-allowlist.txt (its header names deliberately hypothetical paths as the bar). Never add hypothetical modules to module-invariants-allowlist.txt (namespaces only). Also C9 flags specs/NNN_ paths and 'task N' under scripts/, README.md, FormalSystem/ and lakefile.toml: cite commit SHAs instead.",
+      "category": "PATTERN",
+      "source_artifact": "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-module-invariants", "C5", "C12", "docs", "hypothetical-path", "allowlist"]
     }
   ],
   "metadata": {
     "session_id": "sess_1789799001_60286d_627",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 6.5,
+    "dependency_waves": [[1], [2, 3], [4]]
+  },
+  "dispatch_seq": 2
 }

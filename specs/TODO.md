@@ -99,7 +99,7 @@ next_project_number: 628
 
 ### Publication Quality
 
-627 [RESEARCHED] — Research https://github.com/benbrastmckie/cslib as a...
+627 [PLANNED] — Research https://github.com/benbrastmckie/cslib as a...
 
 ### Semantics
 
@@ -109,11 +109,12 @@ next_project_number: 628
 ## Tasks
 
 ### 627. Research cslib lean engineering refactor plan
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [627_research_cslib_lean_engineering_refactor_plan/reports/01_cslib-refactor-plan.md]
+- **Plan**: [627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md]
 
 **Description**: Research https://github.com/benbrastmckie/cslib as a reference model for Lean engineering practice, and produce a systematic refactoring plan to bring this repository (BimodalLogic / FormalSystem) up to publication standard. Research first; the report should end in a phased, dependency-ordered refactor programme that can be split into follow-up tasks.
 
