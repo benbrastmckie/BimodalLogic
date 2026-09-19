@@ -1,7 +1,7 @@
 # Implementation Plan: Task #560
 
 - **Task**: 560 - plus_incomplete_base_limit_closure_theorem
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/560_plus_incomplete_base_limit_closure_theorem/reports/01_base-incompleteness-transcription.md
@@ -470,7 +470,7 @@ Part D declaration list.
 
 ---
 
-### Phase 6: Status sweep of READMEs and docstrings [IN PROGRESS]
+### Phase 6: Status sweep of READMEs and docstrings [COMPLETED]
 
 **Goal**: Every statement in the tree that general TM+ completeness is open is replaced by the
 three-part status: completeness of the current TM+ axioms is FALSE at Base
@@ -478,35 +478,35 @@ three-part status: completeness of the current TM+ axioms is FALSE at Base
 the hypothesis of the conditional TM-star-over-TM+ row is REFUTED at Base.
 
 **Tasks**:
-- [ ] Re-read each file immediately before editing (concurrent sessions are active in
+- [x] Re-read each file immediately before editing (concurrent sessions are active in
   `FormalSystem/Metalogic/README.md`).
-- [ ] `FormalSystem/Metalogic/Conservativity/Plus/README.md`: the "General TM+ completeness and
+- [x] `FormalSystem/Metalogic/Conservativity/Plus/README.md`: the "General TM+ completeness and
   TM+ decidability are open" paragraph and the status-table rows (completeness row, the
   conditional conservativity row, and the section "The L-star rows sit on top of this open
   problem"). Add the one-line reading: the coarsened countermodel is a dense, non-closed bundle;
   PS and US say paste-closed, MF says translation-closed, nothing says closed. TM+ decidability
   stays OPEN.
-- [ ] `FormalSystem/Metalogic/README.md`: the TM+ status table row and the sentence after it
+- [x] `FormalSystem/Metalogic/README.md`: the TM+ status table row and the sentence after it
   ("The two open rows are stated nowhere..."), and the TM-star table's conditional row.
-- [ ] Conditional-row wording, everywhere it appears: the hypothesis is refuted at Base, so
+- [x] Conditional-row wording, everywhere it appears: the hypothesis is refuted at Base, so
   `starConservative_of_plusComplete` is vacuous at Base; conservativity of TM-star over TM+ at
   Base is NOT thereby decided (incompleteness does not yield a separating witness);
   `plusIncomplete_of_starNonconservative` remains the only route from non-conservativity; at
   Dense, ZTime and RTime the hypothesis is still open.
-- [ ] Remaining census hits: `FormalSystem/Metalogic.lean` module docstring,
+- [x] Remaining census hits: `FormalSystem/Metalogic.lean` module docstring,
   `FormalSystem/Metalogic/Deterministic/README.md` (section heading "General TM+ completeness is
   open"), `FormalSystem/Metalogic/Deterministic/Completeness.lean` docstring,
   `FormalSystem/Metalogic/Conservativity/README.md` (the `Star/` row),
   `FormalSystem/Metalogic/Conservativity/Star/README.md`,
   `FormalSystem/Metalogic/Conservativity/Star.lean` and `Star/Forward.lean` docstrings (three
   places, including the docstring of `starConservative_of_plusComplete`),
-  `FormalSystem/Metalogic/Conservativity/Plus.lean` ("What is open" section).
-- [ ] In every `.lean` file touched here, edit comments and docstrings ONLY.
-- [ ] Hand-written prose in `FormalSystem/Metalogic/Independence/README.md`: add the result to
+  `FormalSystem/Metalogic/Conservativity/Plus.lean` ("What is open" section). *(deviation: altered — a wider census grep found further stale statements outside this list, all edited, comments/prose only: `FormalSystem/Metalogic/Deterministic.lean`, `FormalSystem/Metalogic/Conservativity.lean`, `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean`, a second passage in `Deterministic/Completeness.lean`, a second passage in `Star/Forward.lean`, the root `README.md` open-problems bullet, and the conditional row of `FormalSystem/Syntax/StarLanguage/README.md`)*
+- [x] In every `.lean` file touched here, edit comments and docstrings ONLY.
+- [x] Hand-written prose in `FormalSystem/Metalogic/Independence/README.md`: add the result to
   the narrative list of results (the generated table rows were added in earlier phases).
-- [ ] Re-run the census grep and confirm no remaining hit asserts that completeness of the
+- [x] Re-run the census grep and confirm no remaining hit asserts that completeness of the
   current axioms is open at Base.
-- [ ] Build `FormalSystem` (docstring edits still recompile their modules), then the full
+- [x] Build `FormalSystem` (docstring edits still recompile their modules), then the full
   invariants script and `bash scripts/readme-lint.sh`.
 
 **Timing**: 1.5 hours
@@ -578,22 +578,22 @@ theorem not_plus_complete_base :
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem` green at the close of every phase, run detached through
+- [x] `lake build FormalSystem` green at the close of every phase, run detached through
   `.claude/scripts/lake-build-guard.sh build`.
-- [ ] No `sorry` in any of the five new modules; C3 still finds exactly one structural `sorry`,
+- [x] No `sorry` in any of the five new modules; C3 still finds exactly one structural `sorry`,
   the pre-existing one.
-- [ ] `#print axioms` for `plus_incomplete_base`, `blc_plusValid`,
+- [x] `#print axioms` for `plus_incomplete_base`, `blc_plusValid`,
   `blc_not_plusDerivable_base`, `not_plusDerivable_of_pcRefuted`, `EF`:
   `[propext, Classical.choice, Quot.sound]`; the headline is pinned in both C14 heredocs.
-- [ ] Full `bash scripts/check-module-invariants.sh` green at the close of Phases 5 and 6
+- [x] Full `bash scripts/check-module-invariants.sh` green at the close of Phases 5 and 6
   (C2, C3, C14, C24 named by the task; also C16, C26, C27, C28 and the generated-inventory check,
   which new files can trip).
-- [ ] `PlusAxiom`, `PlusDerivationTree`, `plus_soundness_validIn`, `forward_plus`,
+- [x] `PlusAxiom`, `PlusDerivationTree`, `plus_soundness_validIn`, `forward_plus`,
   `plusDerivable_ofFormula_iff`, `CoarseModel` and `CoarsenedModels.lean` are unchanged
   (`git diff --stat` over the task's commits).
-- [ ] No completeness theorem is stated; no task number, probe namespace or `specs/` path appears
+- [x] No completeness theorem is stated; no task number, probe namespace or `specs/` path appears
   under `FormalSystem/`, `docs/` or `scripts/`.
-- [ ] The two probes still compile (they import only landed modules), as a regression check that
+- [x] The two probes still compile (they import only landed modules), as a regression check that
   no landed dependency was perturbed.
 
 ## Artifacts & Outputs
