@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-09-03T00:00:00Z",
+  "updated": "2026-09-18",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -382,12 +382,6 @@
       "citation_rule": "Cite by the chapter's own section numbering. Never cite md line numbers."
     },
     {
-      "doc_id": "reynolds_-_1992_-_an_axiomatization_for_until_and_since_over_the_reals_without_the_irr_rule",
-      "relevance": "discovered via online-ingest bridge",
-      "added": "2026-09-03",
-      "source": "discover"
-    },
-    {
       "doc_id": "wijesekera_-_1990_-_constructive_modal_logics_i",
       "relevance": "discovered via online-ingest bridge",
       "added": "2026-09-03",
@@ -424,6 +418,67 @@
       "source": "general-research (retry acquisition of missing representation sources)",
       "citation_rule": "Cite by the paper's own theorem/section numbers (e.g. Theorem 2.8, Section 3.3) plus Math. Scand. 94 (2004) page numbers. Never cite md line numbers.",
       "fidelity": "verified_conversion: re-downloaded PDF (journals.msp.org, HTTP 200, sha256 6dd101dc53a5368ae73046a72c328bec119d1f4b67fd307ac77493f2bd7315ff, byte-identical to the file actually converted) and spot-checked 3 items against page images: section heading 2.2 'Six topologies' (Math. Scand. p.18, chunk_0012), Definition 2.7 (p.18, chunk_0013), Theorem 2.8 statement + proof (p.18-19, chunk_0014) — all match verbatim modulo font ligature rendering (e.g. 'fi' rendered as a joined glyph)."
+    },
+    {
+      "doc_id": "reynolds_2001",
+      "reason": "Task 559 PRIMARY: Reynolds, An Axiomatization of Full Computation Tree Logic (JSL 2001). The closest published analogue of all-histories completeness at ZTime: bundled axioms + limit-closure axiom LC (sec 6, Lemma 5) + Auxiliary Atoms rule (sec 7, Lemma 6), completeness by filtration with a deterministic Rabin automaton and banning (sec 8-11, Theorem 3).",
+      "added": "2026-09-18",
+      "source": "task 559 literature preparation (all-histories completeness for the stability modal)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers."
+    },
+    {
+      "doc_id": "reynolds_2003_priors-ockhamist-logic-historical-necessity",
+      "reason": "Task 559 PRIMARY: Reynolds, An Axiomatization of Prior's Ockhamist Logic of Historical Necessity (AiML 4, 2003). The closest published analogue at Base (general linear flows, no next-time): an INFINITE limit-closure schema LC (one axiom per n>0), soundness by transfinite induction, the separating example box G(p -> dia F p) -> dia G(p -> F p), completeness via IRR rule + LC + finite labels (hues and colours). Extended abstract: the completeness proof is a sketch, not a full proof.",
+      "added": "2026-09-18",
+      "source": "task 559 literature preparation (all-histories completeness for the stability modal)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers.",
+      "hazard": "OCR CONVERSION (forced ocrmypdf, 2026-09-18) of the official AiML PostScript (http://www.aiml.net/volumes/volume4/Reynolds.ps), because the PostScript text layer drops every letter c. Prose is reliable; FORMULAS ARE NOT: box/diamond and subscripts are frequently lost or rendered as O, 0, <. Re-derive every formula from the surrounding prose and cross-check against reynolds_2002_axioms_for_branching_time before relying on it. The older global entry reynolds-2003-ockhamist is the corrupt no-c text-layer extract of the same paper: do not use it."
+    },
+    {
+      "doc_id": "reynolds_2002_axioms_for_branching_time",
+      "reason": "Task 559: Reynolds, Axioms for Branching Time (JLC 2002). Survey of why axiomatizing general branching-time / historical-necessity logics is hard: bundled vs full validity, the limit-closure problem, IRR-style rules, open problems. Orientation for choosing the target system and proof strategy.",
+      "added": "2026-09-18",
+      "source": "task 559 literature preparation (all-histories completeness for the stability modal)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers.",
+      "hazard": "no_source_pdf in the global index: conversion not verified against a PDF."
+    },
+    {
+      "doc_id": "thomason-1970-indeterminist-time",
+      "reason": "Task 559 background: Thomason, Indeterminist Time and Truth-Value Gaps (Theoria 1970). Origin of the histories-through-a-moment semantics that the stability modal transposes to world states.",
+      "added": "2026-09-18",
+      "source": "task 559 literature preparation (all-histories completeness for the stability modal)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers.",
+      "hazard": "no_source_pdf in the global index: conversion not verified against a PDF."
+    },
+    {
+      "doc_id": "rumberg-zanardo-2019-transition-structures",
+      "reason": "Task 559: Rumberg and Zanardo, First-Order Definability of Transition Structures (JoLLI 2019). Bundled trees vs complete trees and definability of the completeness (limit-closure) condition; relevant to whether limit closure is capturable by schemata or needs a rule.",
+      "added": "2026-09-18",
+      "source": "task 559 literature preparation (all-histories completeness for the stability modal)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers.",
+      "hazard": "no_source_pdf in the global index: conversion not verified against a PDF."
+    },
+    {
+      "doc_id": "emerson_and_halpern_-_1986_-_sometimes_and_not_never_revisited_on_branching_versus_linear_time_temporal_logic",
+      "reason": "Task 559: Emerson and Halpern, Sometimes and Not Never Revisited (JACM 1986). Defines CTL* and the fusion/suffix/limit closure conditions on path sets (R-generable structures); the source of the vocabulary for bundled vs limit-closed models that the ZTime all-walks semantics instantiates.",
+      "added": "2026-09-18",
+      "source": "task 559 literature preparation (all-histories completeness for the stability modal)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers.",
+      "hazard": "Ingested 2026-09-18 from the Zotero PDF; provenance_fidelity not yet stamped. Titles in the global index are chunk headings, not a bibliographic title."
+    },
+    {
+      "doc_id": "burgess_1982b",
+      "reason": "Task 560: Burgess, Axioms for Tense Logic II: Time Periods (1982). Companion to burgess_1982_i; Burgess-style tense axiomatics behind the Burgess/Thomason limit-closure formula that blc transposes to the stability modal. Period-based semantics, so background rather than a direct source for the point-based all-histories argument.",
+      "added": "2026-09-18",
+      "source": "/literature 560 discovery (Tier 1 local)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers."
+    },
+    {
+      "doc_id": "reynolds_1992",
+      "reason": "Task 560: Reynolds, An Axiomatization of Until and Since over the Reals without the IRR Rule (1992). Rule-free completeness over a dense Dedekind-complete flow; reference point for the OUT-OF-SCOPE Dense/RTime non-derivability question and for whether a closure condition needs a rule or a schema.",
+      "added": "2026-09-18",
+      "source": "/literature 560 discovery (Tier 1 local)",
+      "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers."
     }
   ]
 }
