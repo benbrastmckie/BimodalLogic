@@ -1,1 +1,18 @@
-{"status":"researched","artifacts":[{"type":"report","path":"specs/540_docstring_coverage_class_instance_lemma/reports/01_docstring-coverage-gaps.md","summary":"C19 re-measured per keyword: class 100%, lemma 0 decls (C23), instance 74.7% (20 undocumented, listed with draft docstrings); aggregate 93.78%; recommends reporting-only per-keyword C19 output + 20 instance docstrings."}],"metadata":{"session_id":"sess_1789780926_3abf2e_540","agent_type":"lean-research-agent","delegation_depth":1,"delegation_path":["orchestrator","research","lean-research-agent"]}}
+{
+  "status": "planned",
+  "artifacts": [
+    {"type": "plan", "path": "specs/540_docstring_coverage_class_instance_lemma/plans/01_instance-docstring-coverage.md", "summary": "4-phase plan: C19 per-keyword reporting (counting rule unchanged), 20 instance docstrings across 10 Lean files in two parallel phases, final full gate."}
+  ],
+  "next_steps": "Run /implement 540 to execute the plan",
+  "phase_count": 4,
+  "estimated_hours": 2.5,
+  "dependency_waves": [[1, 2, 3], [4]],
+  "memory_candidates": [],
+  "metadata": {
+    "session_id": "sess_1789780926_3abf2e_540",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
+}

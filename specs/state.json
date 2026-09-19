@@ -1411,7 +1411,7 @@
     {
       "project_number": 540,
       "project_name": "docstring_coverage_class_instance_lemma",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "codebase-cleanup",
       "priority": "high",
@@ -1425,12 +1425,17 @@
         "scripts/check-module-invariants.sh"
       ],
       "created": "2026-09-04T08:00:00Z",
-      "last_updated": "2026-09-19T01:24:55Z",
+      "last_updated": "2026-09-19T01:26:48Z",
       "artifacts": [
         {
           "path": "specs/540_docstring_coverage_class_instance_lemma/reports/01_docstring-coverage-gaps.md",
           "type": "report",
           "summary": "C19 re-measured per keyword: class 100%, lemma 0 decls (C23), instance 74.7% (20 undocumented, listed with draft docstrings); aggregate 93.78%; recommends reporting-only per-keyword C19 output + 20 instance docstrings."
+        },
+        {
+          "path": "specs/540_docstring_coverage_class_instance_lemma/plans/01_instance-docstring-coverage.md",
+          "type": "plan",
+          "summary": "4-phase plan: C19 per-keyword reporting, 20 instance docstrings, final gate."
         }
       ],
       "session_id": "sess_1789780926_3abf2e",

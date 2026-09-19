@@ -1,19 +1,19 @@
 {
   "task_number": 540,
-  "dispatch_seq": 1,
-  "phase": "research",
-  "status": "researched",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "session_id": "sess_1789780926_3abf2e_540",
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 4,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/540_docstring_coverage_class_instance_lemma/reports/01_docstring-coverage-gaps.md",
-      "summary": "C19 re-measured per keyword: class 100%, lemma 0 decls (C23), instance 74.7% (20 undocumented, listed with draft docstrings); aggregate 93.78%; recommends reporting-only per-keyword C19 output + 20 instance docstrings."
+      "type": "plan",
+      "path": "specs/540_docstring_coverage_class_instance_lemma/plans/01_instance-docstring-coverage.md",
+      "summary": "4-phase plan: C19 per-keyword reporting, 20 instance docstrings, final gate."
     }
   ],
-  "summary": "Only instance (74.7%, 20 undocumented) remains below floor; class already 100%, lemma has 0 declarations. C19 needs reporting-only per-keyword output to make acceptance observable.",
-  "session_id": "sess_1789780926_3abf2e_540",
+  "summary": "Plan written. Only instance (74.7%) is below the floor; class is 100% and lemma has 0 declarations. C19 gains reporting-only per-keyword output so acceptance is observable.",
   "blockers": [],
-  "next_action_hint": "plan"
+  "next_action_hint": "implement"
 }
