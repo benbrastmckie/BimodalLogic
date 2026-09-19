@@ -261,9 +261,11 @@ The two lemmas the temporal cases run on. Both are **false without density** —
 
 variable [Fintype ι]
 
+omit [Fintype ι] in
 /-- Below a point with some placed point strictly under it there is a greatest such placed point. -/
-theorem exists_greatest_placed_lt (f : ι → D) (r : D) (h₀ : ∃ i, f i < r) :
+theorem exists_greatest_placed_lt [Finite ι] (f : ι → D) (r : D) (h₀ : ∃ i, f i < r) :
     ∃ i, f i < r ∧ ∀ j, f j < r → f j ≤ f i := by
+  haveI := Fintype.ofFinite ι
   classical
   obtain ⟨i₀, hi₀⟩ := h₀
   have hne : (Finset.univ.filter (fun i : ι => f i < r)).Nonempty :=
@@ -273,9 +275,11 @@ theorem exists_greatest_placed_lt (f : ι → D) (r : D) (h₀ : ∃ i, f i < r)
   exact ⟨i, (Finset.mem_filter.mp hi).2,
     fun j hj => hmax j (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj⟩)⟩
 
+omit [Fintype ι] in
 /-- Above a point with some placed point strictly over it there is a least such placed point. -/
-theorem exists_least_placed_gt (f : ι → D) (r : D) (h₀ : ∃ i, r < f i) :
+theorem exists_least_placed_gt [Finite ι] (f : ι → D) (r : D) (h₀ : ∃ i, r < f i) :
     ∃ i, r < f i ∧ ∀ j, r < f j → f i ≤ f j := by
+  haveI := Fintype.ofFinite ι
   classical
   obtain ⟨i₀, hi₀⟩ := h₀
   have hne : (Finset.univ.filter (fun i : ι => r < f i)).Nonempty :=
@@ -285,13 +289,14 @@ theorem exists_least_placed_gt (f : ι → D) (r : D) (h₀ : ∃ i, r < f i) :
   exact ⟨i, (Finset.mem_filter.mp hi).2,
     fun j hj => hmin j (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj⟩)⟩
 
+omit [Fintype ι] in
 /--
 An open region has a member strictly above any of its members.
 
 Needs density: on `ℤ` the gap `(0, 2)` is the singleton `{1}` and the conclusion fails
 (`not_exists_gt_sameRegion_int`).
 -/
-theorem exists_gt_sameRegion [DenselyOrdered D] [NoMaxOrder D] {f : ι → D} {r : D}
+theorem exists_gt_sameRegion [Finite ι] [DenselyOrdered D] [NoMaxOrder D] {f : ι → D} {r : D}
     (hr : ∀ i, f i ≠ r) : ∃ s, r < s ∧ SameRegion f r s := by
   by_cases h : ∃ i, r < f i
   · obtain ⟨i, hi, hmin⟩ := exists_least_placed_gt f r h
@@ -318,12 +323,13 @@ theorem exists_gt_sameRegion [DenselyOrdered D] [NoMaxOrder D] {f : ι → D} {r
     exact ⟨s, hs, sameRegion_of_gap
       (fun k => ⟨fun _ => lt_trans (hlt k) hs, fun _ => hlt k⟩) hr hns⟩
 
+omit [Fintype ι] in
 /--
 An open region has a member strictly below any of its members.
 
 The mirror image of `exists_gt_sameRegion`, and equally dependent on density.
 -/
-theorem exists_lt_sameRegion [DenselyOrdered D] [NoMinOrder D] {f : ι → D} {r : D}
+theorem exists_lt_sameRegion [Finite ι] [DenselyOrdered D] [NoMinOrder D] {f : ι → D} {r : D}
     (hr : ∀ i, f i ≠ r) : ∃ s, s < r ∧ SameRegion f r s := by
   by_cases h : ∃ i, f i < r
   · obtain ⟨i, hi, hmax⟩ := exists_greatest_placed_lt f r h
@@ -349,6 +355,7 @@ theorem exists_lt_sameRegion [DenselyOrdered D] [NoMinOrder D] {f : ι → D} {r
         fun hk => absurd (lt_trans hk hs) (asymm (hgt k))⟩)
       hr hns⟩
 
+omit [Fintype ι] in
 /--
 The regions exhaust `D`: every point is a placed point, or below everything placed, or above
 everything placed, or in a gap with an identified pair of endpoints.
@@ -356,7 +363,7 @@ everything placed, or in a gap with an identified pair of endpoints.
 This is "never an island" at the level of the carrier — no point of `D` is outside the
 construction.
 -/
-theorem region_total (f : ι → D) (r : D) :
+theorem region_total [Finite ι] (f : ι → D) (r : D) :
     (∃ i, f i = r) ∨ (∀ i, r < f i) ∨ (∀ i, f i < r) ∨
       ∃ i j, (f i < r ∧ ∀ k, f k < r → f k ≤ f i) ∧ (r < f j ∧ ∀ k, r < f k → f j ≤ f k) := by
   by_cases hplaced : ∃ i, f i = r
@@ -517,8 +524,9 @@ by `exists_gt_sameRegion` / `exists_lt_sameRegion` when the original witness has
 
 variable [Fintype ι] [DenselyOrdered D]
 
+omit [Fintype ι] in
 /-- One direction of the `untl` case, for `r < r'`. The other follows by symmetry of the setup. -/
-private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
+private theorem untl_forward [Finite ι] [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.untl φ)) : TruthAt M τ r' (ψ.untl φ) := by
@@ -538,8 +546,9 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
       have hxreg : SameRegion f r' x := sameRegion_convex hs'reg hx.le hxs'.le
       exact (hψ τ x₀ x ((hx₀reg.symm.trans hrr').trans hxreg)).mp hψx₀
 
+omit [Fintype ι] in
 /-- The reverse direction of the `untl` case, for `r < r'`. -/
-private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
+private theorem untl_backward [Finite ι] [NoMaxOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.untl φ)) : TruthAt M τ r (ψ.untl φ) := by
@@ -559,6 +568,7 @@ private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hx.le hcase
     exact (hψ τ y x ((hyreg.symm.trans hrr'.symm).trans hxreg)).mp hψy
 
+omit [Fintype ι] in
 /--
 **Until case.** `U(φ, ψ)` is region-invariant when `φ` and `ψ` are, on a densely ordered carrier
 with no greatest element.
@@ -567,7 +577,7 @@ The open guard interval `(t, s)` is exactly what the region structure is for: an
 falls inside the region is pinned by `ψ`'s invariance, and any witness that has been overtaken is
 replaced by a fresh one inside the region.
 -/
-theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
+theorem interpInvariant_untl [Finite ι] [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
     InterpInvariant f M (Formula.untl ψ φ) := by
   intro τ r r' hrr'
@@ -576,8 +586,9 @@ theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
   · rw [heq]
   · exact ⟨untl_backward hψ hrr'.symm hgt, untl_forward hφ hψ hrr'.symm hgt⟩
 
+omit [Fintype ι] in
 /-- One direction of the `snce` case, for `r < r'`. -/
-private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
+private theorem snce_forward [Finite ι] [NoMinOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.snce φ)) : TruthAt M τ r' (ψ.snce φ) := by
@@ -597,8 +608,9 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hcase hxr'.le
     exact (hψ τ y x (hyreg.symm.trans hxreg)).mp hψy
 
+omit [Fintype ι] in
 /-- The reverse direction of the `snce` case, for `r < r'`. -/
-private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
+private theorem snce_backward [Finite ι] [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.snce φ)) : TruthAt M τ r (ψ.snce φ) := by
@@ -619,11 +631,12 @@ private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
         hs'reg.trans (sameRegion_convex hs'reg.symm hs'x.le hxr.le)
       exact (hψ τ y x ((hyreg.symm.trans hsreg.symm).trans hxreg)).mp hψy
 
+omit [Fintype ι] in
 /--
 **Since case.** The mirror image of `interpInvariant_untl`, on a densely ordered carrier with no
 least element.
 -/
-theorem interpInvariant_snce [NoMinOrder D] {φ ψ : Formula}
+theorem interpInvariant_snce [Finite ι] [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
     InterpInvariant f M (Formula.snce ψ φ) := by
   intro τ r r' hrr'
@@ -638,28 +651,33 @@ theorem interpInvariant_snce [NoMinOrder D] {φ ψ : Formula}
 `imp`/`bot` (`Syntax/Formula.lean`), so they need no cases of their own.
 -/
 
+omit [Fintype ι] in
 /-- **`F φ`.** `someFuture φ` is `U(φ, ⊤)`. -/
-theorem interpInvariant_someFuture [NoMaxOrder D] {φ : Formula}
+theorem interpInvariant_someFuture [Finite ι] [NoMaxOrder D] {φ : Formula}
     (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.someFuture :=
   interpInvariant_untl hφ interpInvariant_top
 
+omit [Fintype ι] in
 /-- **`P φ`.** `somePast φ` is `S(φ, ⊤)`. -/
-theorem interpInvariant_somePast [NoMinOrder D] {φ : Formula}
+theorem interpInvariant_somePast [Finite ι] [NoMinOrder D] {φ : Formula}
     (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.somePast :=
   interpInvariant_snce hφ interpInvariant_top
 
+omit [Fintype ι] in
 /-- **`G φ`.** `allFuture φ` is `¬ F ¬ φ`. -/
-theorem interpInvariant_allFuture [NoMaxOrder D] {φ : Formula}
+theorem interpInvariant_allFuture [Finite ι] [NoMaxOrder D] {φ : Formula}
     (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.allFuture :=
   interpInvariant_neg (interpInvariant_someFuture (interpInvariant_neg hφ))
 
+omit [Fintype ι] in
 /-- **`H φ`.** `allPast φ` is `¬ P ¬ φ`. -/
-theorem interpInvariant_allPast [NoMinOrder D] {φ : Formula}
+theorem interpInvariant_allPast [Finite ι] [NoMinOrder D] {φ : Formula}
     (hφ : InterpInvariant f M φ) : InterpInvariant f M φ.allPast :=
   interpInvariant_neg (interpInvariant_somePast (interpInvariant_neg hφ))
 
 /-! ### The assembled induction -/
 
+omit [Fintype ι] in
 /--
 **Interpolation invariance.** On a densely ordered carrier with no endpoints, truth of *every*
 formula is constant on each region cut out by the placement, provided every world history is
@@ -668,7 +686,7 @@ region-constant.
 This is the whole of stage 3 of the semantic bridge: it is what lets Phase 7's truth lemma read
 truth at an arbitrary point of the carrier off the branch time whose region that point is in.
 -/
-theorem interpInvariant [NoMaxOrder D] [NoMinOrder D]
+theorem interpInvariant [Finite ι] [NoMaxOrder D] [NoMinOrder D]
     (hRC : ∀ τ : WorldHistory F, RegionConstant f τ) (χ : Formula) :
     InterpInvariant f M χ := by
   induction χ with

@@ -118,7 +118,7 @@ noncomputable def kvE2FutAnyBit {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Monadic-profile evaluation unfolds to the per-predicate reading (the `AtomKind sig 1`
     order case is uninhabited). -/
-private theorem nf_eval_profile_iff {sig : MonadicSignature} [Fintype sig.preds]
+private theorem nf_eval_profile_iff {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ : NormalForm sig 0 1) :
     NfEvalNf M 0 1 (fun _ => v) χ ↔
@@ -135,7 +135,7 @@ private theorem nf_eval_profile_iff {sig : MonadicSignature} [Fintype sig.preds]
     | .order i j hij => exact absurd (Subsingleton.elim i j) hij
 
 /-- Profiles realized by the same point coincide. -/
-private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds]
+private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ χ' : NormalForm sig 0 1)
     (h : NfEvalNf M 0 1 (fun _ => v) χ) (h' : NfEvalNf M 0 1 (fun _ => v) χ') :
@@ -150,7 +150,7 @@ private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds]
   | .order i j hij => exact absurd (Subsingleton.elim i j) hij
 
 /-- Every point realizes its depth-0 monadic characteristic. -/
-private theorem nf_profile_exists {sig : MonadicSignature} [Fintype sig.preds]
+private theorem nf_profile_exists {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) :
     ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
@@ -1276,7 +1276,7 @@ noncomputable def kvE2ExtNegFut {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Minimal-witness selection: from per-element witnesses over a nonempty list, pick an
     element whose witness is ≤ every element's (some) witness. -/
-private theorem kvE2_futMinPick {sig : MonadicSignature} [Fintype sig.preds]
+private theorem kvE2_futMinPick {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →

@@ -390,7 +390,7 @@ countable discrete unbounded-both-ways monadic structure is order-isomorphic, pr
 transported, to an ordered sum of coloured copies of `ℤ` over a countable nonempty index
 order.
 -/
-theorem blockDecomposition (sig : MonadicSignature) [Fintype sig.preds]
+theorem blockDecomposition (sig : MonadicSignature) [Finite sig.preds]
     [DecidableEq sig.preds] (M : OrderedMonadicStructure sig) [Countable M.carrier]
     [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
     [NoMinOrder M.carrier] [Nonempty M.carrier] :

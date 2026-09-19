@@ -303,6 +303,7 @@ section RightEnd
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the right-hand end point.**
 
 If `R` holds at `t` and fails somewhere above `t`, then there is a point `s` of `M` with `R`
@@ -314,7 +315,7 @@ Reynolds' *"plainly impossible given `ρ`"* — the elimination of Prior-U's oth
 point of the `R`-stretch — is discharged here by `endsInGapOnRight_forAWhile`: at such a last point
 `R` would still hold, hence `R` would hold on a whole interval above it, contradicting the
 `K⁺(¬R)` clause that the disjunct asserts. -/
-theorem reynolds_lemma3_right (atomMap : Formula → sig.preds)
+theorem reynolds_lemma3_right [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -324,6 +325,7 @@ theorem reynolds_lemma3_right (atomMap : Formula → sig.preds)
     ∃ s : M.carrier, t < s ∧
       (∀ r : M.carrier, t < r → r < s → EndsInGapOnRight M ε r) ∧
       ¬ EndsInGapOnRight M ε s := by
+  haveI := Fintype.ofFinite sig.preds
   have hspec : ∀ r : M.carrier,
       TemporalTruth M atomMap r (gapRightFormula atomMap h_surj ε) ↔ EndsInGapOnRight M ε r :=
     fun r => gapRightFormula_spec atomMap h_surj ε M h_prior_U h_prior_S r
@@ -515,6 +517,7 @@ theorem contemp_not_lt_of_kminus {ε : MonadicFormula sig 2} (hε : IsContempEqu
   have hvr' : ContempEquivDense M ε v r := contemp_of_between hε M hvr.le hrs.le hvs'
   exact hnr ((endsInGapOnRight_congr hε M (contemp_trans hε M hv hvr')).mp hs)
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, printed p.178**: *"Thus there are other classes in this interval continuing on
 the other side of the gap which ends `s`'s. And for a while after the gap `R` continues to be true:
 we have not reached the end of the interval yet."*
@@ -526,7 +529,7 @@ the interval's excluded right end point `s'`, at which point either some point o
 lies outside the class — that one works — or `s'` is *"the first point after the class"*, which is
 exactly what `ρ`'s third conjunct forbids. That last branch is Reynolds' *"neither can it stretch
 to the end of the maximal interval of `R` as it would again not end at a gap"*. -/
-theorem exists_gt_notContemp_holds (atomMap : Formula → sig.preds)
+theorem exists_gt_notContemp_holds [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -589,6 +592,7 @@ theorem classBeginsAtGapStart_of_contemp {ε : MonadicFormula sig 2} (hε : IsCo
     fun _ hv => contemp_not_lt_of_kminus hε M hs hk (contemp_trans hε M hst hv),
     hs, hk⟩
 
+omit [Fintype sig.preds] in
 /-- **The gap-crossing contradiction**, isolated once.
 
 Reynolds runs the same argument at Lemma 3, at Lemma 4 and again at Lemmas 5 and 7: a formula that
@@ -606,7 +610,7 @@ which `ρ(s)`'s third conjunct forbids. The resulting point of `(s, s₁)` outsi
 
 Landed as a named, reusable theorem rather than repeated inline: Phases 20-21 (Lemmas 6 and 7)
 need exactly this step, and it is the one place where Prior-U meets the gap. -/
-theorem false_of_holds_throughout_class (atomMap : Formula → sig.preds)
+theorem false_of_holds_throughout_class [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -642,6 +646,7 @@ theorem false_of_holds_throughout_class (atomMap : Formula → sig.preds)
   · exact hout r hsr hnr (fun q h₁ h₂ => hIcc₀ q h₁ (le_trans h₂ (le_trans hrs₁.le hge)))
       (hbelow r hsr hrs₁)
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the third case is ruled out.**
 
 > *We must rule out the third case. … Suppose, for contradiction, that `s` is this first point of
@@ -659,7 +664,7 @@ class — and then `(s, s₁)` cannot be contained in the class either, since `s
 point after the class"*, which `ρ(s)`'s third conjunct forbids. The point of `(s, s₁)` outside the
 class then has `B` true (it is inside Prior-U's stretch) and `B` false (it is outside the class
 with `R` throughout below it). That is the contradiction. -/
-theorem reynolds_lemma3_no_first_point (atomMap : Formula → sig.preds)
+theorem reynolds_lemma3_no_first_point [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -667,6 +672,7 @@ theorem reynolds_lemma3_no_first_point (atomMap : Formula → sig.preds)
     {s : M.carrier} (hs : EndsInGapOnRight M ε s)
     (hk : ∀ u : M.carrier, u < s → ∃ r : M.carrier, u < r ∧ r < s ∧
       ¬ EndsInGapOnRight M ε r) : False :=
+  haveI := Fintype.ofFinite sig.preds
   false_of_holds_throughout_class atomMap h_surj hε M h_prior_U h_prior_S hs
     (classBeginsAtGapStartTemporal atomMap h_surj ε)
     (fun r hr =>
@@ -676,6 +682,7 @@ theorem reynolds_lemma3_no_first_point (atomMap : Formula → sig.preds)
       not_classBeginsAtGapStart hε M hsu hnu hIcc
         ((classBeginsAtGapStartTemporal_spec atomMap h_surj ε M h_prior_U h_prior_S u).mp h))
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178 — the left-hand end point.**
 
 If `R` holds at `t` and fails somewhere below `t`, then there is a point `s` of `M` with `R`
@@ -685,7 +692,7 @@ Prior-S is applied *"looking back from just after `t`"*, exactly as printed: at 
 `R`-stretch above `t`, which is what supplies the `S(⊤,R)` antecedent — `R` is not yet known to
 hold anywhere below `t`, so Prior-S could not be applied at `t` itself. Its third case,
 *"a first point of `R`"*, is closed by `reynolds_lemma3_no_first_point`. -/
-theorem reynolds_lemma3_left (atomMap : Formula → sig.preds)
+theorem reynolds_lemma3_left [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -695,6 +702,7 @@ theorem reynolds_lemma3_left (atomMap : Formula → sig.preds)
     ∃ s : M.carrier, s < t ∧
       (∀ r : M.carrier, s < r → r < t → EndsInGapOnRight M ε r) ∧
       ¬ EndsInGapOnRight M ε s := by
+  haveI := Fintype.ofFinite sig.preds
   have hspec : ∀ r : M.carrier,
       TemporalTruth M atomMap r (gapRightFormula atomMap h_surj ε) ↔ EndsInGapOnRight M ε r :=
     fun r => gapRightFormula_spec atomMap h_surj ε M h_prior_U h_prior_S r
@@ -734,6 +742,7 @@ section Lemma3
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 3, printed p.178.**
 
 > *The maximal intervals in which `R` holds are open intervals which, if bounded, have elements of
@@ -752,7 +761,7 @@ Stated at a point `t` of such an interval, in four parts, which together are the
 Parts 3 and 4 are what *"have elements of `M` as their (excluded) end points"* asserts: the
 bounding point `s` is an element of `M`, and `¬R` holds there, so it is excluded from the interval
 rather than being a gap. -/
-theorem reynolds_lemma3 (atomMap : Formula → sig.preds)
+theorem reynolds_lemma3 [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -882,6 +891,7 @@ theorem not_isFirstClassPoint {ε : MonadicFormula sig 2} (hε : IsContempEquivD
   obtain ⟨z, htz, hzu, hnz⟩ := h2 t htu (fun hc => hnu (contemp_symm hε M hc))
   exact hnz (hIcc z htz.le hzu.le)
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed pp.178-179 — there is no first class.**
 
 > *There is no last class and no first class in any maximal interval of `R`.*
@@ -894,12 +904,13 @@ theorem not_isFirstClassPoint {ε : MonadicFormula sig 2} (hε : IsContempEquivD
 The three sentences map to `isFirstClassPoint_congr` (*"holding up to a gap"*),
 `not_isFirstClassPoint` (*"no immediately subsequent classes satisfy this"*) and
 `false_of_holds_throughout_class` (*"this contradicts Prior-U"*) respectively. -/
-theorem reynolds_lemma4_no_first_class (atomMap : Formula → sig.preds)
+theorem reynolds_lemma4_no_first_class [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ IsFirstClassPoint M ε t := by
+  haveI := Fintype.ofFinite sig.preds
   intro h
   exact false_of_holds_throughout_class atomMap h_surj hε M h_prior_U h_prior_S h.1
     (firstClassTemporal atomMap h_surj ε)
@@ -908,6 +919,7 @@ theorem reynolds_lemma4_no_first_class (atomMap : Formula → sig.preds)
     (fun u htu hnu hIcc hP => not_isFirstClassPoint hε M htu hnu hIcc
       ((firstClassTemporal_spec atomMap h_surj ε M h_prior_U h_prior_S u).mp hP))
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed pp.178-179 — there is no last class.**
 
 > *The last class in a maximal interval of `R` wouldn't end in a gap.*
@@ -921,7 +933,7 @@ Reynolds' one-line proof is the argument already carried out in `exists_gt_notCo
 `reynolds_lemma3_right` puts *in `M`* — so the class would end at a point rather than at a gap,
 contradicting `ρ(t)`'s third conjunct. This declaration is that theorem restated under Lemma 4's
 name, not a second proof of it. -/
-theorem reynolds_lemma4_no_last_class (atomMap : Formula → sig.preds)
+theorem reynolds_lemma4_no_last_class [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -931,10 +943,11 @@ theorem reynolds_lemma4_no_last_class (atomMap : Formula → sig.preds)
       ∀ q : M.carrier, t ≤ q → q ≤ u → EndsInGapOnRight M ε q :=
   exists_gt_notContemp_holds atomMap h_surj hε M h_prior_U h_prior_S ht
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed pp.178-179**, both halves.
 
 > *There is no last class and no first class in any maximal interval of `R`.* -/
-theorem reynolds_lemma4 (atomMap : Formula → sig.preds)
+theorem reynolds_lemma4 [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
@@ -1077,6 +1090,7 @@ section Lemma4ClosedMain
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 4, printed p.179, for the repaired display — there is no first
 class**, in the stronger sense the plain-English statement carries.
 
@@ -1085,12 +1099,13 @@ rendering replaced by the repaired one: `isFirstClassPointClosed_congr` for *"ho
 gap"*, `not_isFirstClassPointClosed` for *"no immediately subsequent classes satisfy this"*, and
 `false_of_holds_throughout_class` for *"this contradicts Prior-U"*. Reynolds' argument is
 unchanged; only the formula it is run against is. -/
-theorem reynolds_lemma4_no_first_class_closed (atomMap : Formula → sig.preds)
+theorem reynolds_lemma4_no_first_class_closed [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ IsFirstClassPointClosed M ε t := by
+  haveI := Fintype.ofFinite sig.preds
   intro h
   exact false_of_holds_throughout_class atomMap h_surj hε M h_prior_U h_prior_S h.1
     (firstClassTemporalClosed atomMap h_surj ε)

@@ -28,11 +28,11 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
 `kvE2_sepHonestOrder_mem_arr'` (5B) is the carrier member; the remaining obligation to make the
 separated body hold is the realization of the honest disjunct's own bracket — the single
-337-owned `.holds`, produced by `kvE_subBracket2V_sound_of_parts` (SubBracket2V.lean:1292) over
+337-owned `.holds`, produced by `kvE_subBracket2V_sound_of_parts` (SubBracket2V.lean:1295) over
 the engine-precondition regions bundle (consecutive distinct-anchor intervals: `hpos`/`hlink` from
 the keystone-strict anchor family + `kvE2_ordRank_strictMono`, `hnd` per-zone base-type `Nodup`,
 `hreal` from the honest bundles `kvE2_sepHonestBundleL/R`) fed to `k1v_sorted_realizationK`
-(SubBracket2V.lean:635). That regions realization — including any meet-type folding for a foreign
+(SubBracket2V.lean:637). That regions realization — including any meet-type folding for a foreign
 base witness forced onto an anchor (report 06 R3) — is downstream territory, NOT a carrier change.
 Below is the complete, axiom-clean reduction taking that one `.holds` as the delegated step. -/
 
@@ -48,13 +48,13 @@ From a REALIZED joint disjunct of `kvE2SepBody`, extract the shared witness `w` 
 `ptW` slot at bracket position `|lL|`; `x < w < t` from the bracket's OWN range — FM-x1t:
 witness bounds ride the bracket's range/ordering, never a chain) and, per positive interior
 σ, the witness bundle `(x1_σ, hxx1, hx1t, hanchor, hbelow)` — the inputs the
-closer `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1027`) consumes. Positions are
+closer `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1030`) consumes. Positions are
 carried by the arrangement's slot INDICES (structural reads; LITMUS: no `x1 < e_i`
 relative-position literal anywhere). The shared-`w` pivot CONSUMES the Lemma 5.1 kit
 `BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`; D4 — the
 kit is never rebuilt). Templates (new N-slot code regardless):
-`kvE_sub2V_bounded_anchor_of_outer` (`SubBracket2V.lean:1184`, public) and the private
-`kvE_subBracket2V_extract` (`SubBracket2V.lean:764`, pattern only). Rabinovich 2014:
+`kvE_sub2V_bounded_anchor_of_outer` (`SubBracket2V.lean:1187`, public) and the private
+`kvE_subBracket2V_extract` (`SubBracket2V.lean:767`, pattern only). Rabinovich 2014:
 Def 3.1 monotone enumeration (PDF p.4), Lemma 5.1 (PDF p.3, PDF p.6, PDF p.8),
 Cor 5.4 (PDF p.5). -/
 
@@ -101,7 +101,7 @@ def KvE2SepBundleR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig
 
 /-- The `charK` E[Σ]-atom anchor head of a realized LEFT-interior fresh point type
     (Lemma 5.1, PDF p.3 — the atom predicates only of its own point; the
-    `kvE_subBracket2V_extract` head-projection pattern, `SubBracket2V.lean:800-802`). -/
+    `kvE_subBracket2V_extract` head-projection pattern, `SubBracket2V.lean:803-802`). -/
 theorem kvE2_sepPtX1L_anchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -126,7 +126,7 @@ theorem kvE2_sepPtX1R_anchor {sig : MonadicSignature} [Fintype sig.preds] [Decid
   exact h _ List.mem_cons_self
 
 /-- A left-interior bundle under `w < t` yields EXACTLY the
-    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1027`) input 5-tuple
+    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1030`) input 5-tuple
     `(x1, hxx1, hx1t, hanchor, hbelow)` — `x1 < t` rides `x1 < w < t`, the bracket's own
     ordering (FM-x1t; never a formula literal, LITMUS). -/
 theorem kvE2_sepBundleL_parts {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -169,7 +169,7 @@ def kvE2SepCastBracket {m n : Nat} (h : m = n) (bf : BracketFormula m) :
   segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩
 
 /-- The count cast preserves the bracket semantics. -/
-theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} [Fintype sig.preds]
+theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {m n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h : m = n) (bf : BracketFormula m) (z0 z1 : M.carrier) :
@@ -183,7 +183,7 @@ theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} [Fintype sig.preds]
     realizes its point type, and BOTH halves hold at it — CONSUMING the landed kit
     `BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`;
     D4: the kit is consumed for every shared-`w` pivot, never rebuilt). -/
-theorem kvE2_sepBracket_split_at {sig : MonadicSignature} [Fintype sig.preds]
+theorem kvE2_sepBracket_split_at {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (x t : M.carrier) (i : Fin (n + 1))
@@ -313,7 +313,7 @@ theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds]
 
 The mpr dual of `kvE2_sepDisjunct_extract`: assemble `(kvE2SepBracketN lL ptW lR segs).holds`
 from a per-slot witness list. The generic construction below is the N-slot lift of the landed
-k=3 template `k1v_bracket_construct3` (SubBracket2V.lean:722): a combined strictly-sorted
+k=3 template `k1v_bracket_construct3` (SubBracket2V.lean:725): a combined strictly-sorted
 witness list `usL ++ w :: usR` (pivot `w` at position `|usL|` — the SINGLE interior
 distinguished slot of the §5 bracket, PDF p.7), per-index point-type realizations on each
 side, `ptW` at the pivot, and the per-gap segment obligations in `holds_eq_succ`'s three
@@ -326,7 +326,7 @@ no `x1 < e_i` relative-position literal, no owner-to-owner chain). -/
     order; the three `beta` families are supplied in exactly `IntervalPattern.holds_eq_succ`'s
     gap shapes. -/
 -- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H).
-theorem kvE2_sepBracketN_construct {sig : MonadicSignature} [Fintype sig.preds]
+theorem kvE2_sepBracketN_construct {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL : List TemporalPred) (ptW : TemporalPred) (lR : List TemporalPred)
@@ -420,7 +420,7 @@ comparison is `.holds`-level, NOT syntactic (`formulaConjList [f]` is `f ∧ ⊤
     types and equal (bracket-relevant) segment types. The two brackets carry syntactically
     DIFFERENT length expressions; both sides are normalized to a common witness count via
     `IntervalPattern.holds_eq_succ`. -/
-private theorem kvE2_sepBracketN_holds_congr {sig : MonadicSignature} [Fintype sig.preds]
+private theorem kvE2_sepBracketN_holds_congr {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (aL bL aR bR : List TemporalPred) (ptW : TemporalPred)
@@ -1211,7 +1211,7 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature} [Fintype sig.preds]
       = (lL.map (kvE2SepSlotType charBase charK)).length
         + (lR.map (kvE2SepSlotType charBase charK)).length + 1 by omega)] at hbr
   obtain ⟨ws, hmono, hrange, hpt, -, -, -⟩ := hbr
-  -- Canonical point-type reads (defeq re-typing; template `SubBracket2V.lean:701-702`).
+  -- Canonical point-type reads (defeq re-typing; template `SubBracket2V.lean:703-702`).
   have hpt' : ∀ (i : Nat) (hi : i < (lL.map (kvE2SepSlotType charBase charK)).length
         + (lR.map (kvE2SepSlotType charBase charK)).length + 1),
       ((lL.map (kvE2SepSlotType charBase charK)
@@ -1336,10 +1336,10 @@ theorem kvE2_sepDisjunct_halves {sig : MonadicSignature} [Fintype sig.preds] [De
 /-! ## Phase 9 (O4) — carrier-side per-σ `hgate` derivation: the derivable core
 
 The `hgate` bundle the downstream closers consume (`kvE_subBracket2V_sound_of_parts`
-`SubBracket2V.lean:1027`, spec verbatim at `kvE_subBracket2V_correctness_pair`
+`SubBracket2V.lean:1030`, spec verbatim at `kvE_subBracket2V_correctness_pair`
 `:1868-1882`) has six conjuncts. The lemmas in this section derive the pieces the joint
 carrier's realized content DOES determine: the arity-4 nine-zone consistency (the N-point
-re-derivation of the private template `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1272`),
+re-derivation of the private template `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1275`),
 the inner off-fiber conjunct (gate clause (iii)), the inner nine-zone falsity clause (gate
 clause (iv)), and the refined-segment exclusion channel (Cor 5.4, PDF p.5: a bit-false
 1-type is excluded throughout every realized refined sub-interval). -/
@@ -1348,7 +1348,7 @@ clause (iv)), and the refined-segment exclusion channel (Cor 5.4, PDF p.5: a bit
     `x < x1 < w < t` is one of the NINE order-consistent inner zones
     `KvE2SepInnerConsistentL` (Def 3.1, PDF pp.2-3: disjunctions range only over consistent
     order types). Public arity-4 re-derivation of the PRIVATE template
-    `kvE_sub2V_zone_consistent` (`SubBracket2V.lean:1272`, template only); its
+    `kvE_sub2V_zone_consistent` (`SubBracket2V.lean:1275`, template only); its
     contrapositive discharges the inconsistent-zone cases of the `hgate`
     forward-zone conjunct. Prop 3.5 (PDF p.3) at each navigation literal: every case is a
     pure order-trichotomy read of the evaluation point `u` against the env — no
@@ -1462,7 +1462,7 @@ theorem kvE2_sep_zone4_consistent {sig : MonadicSignature} [Fintype sig.preds]
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
 
 /-- `hgate` conjunct — INNER OFF-FIBER falsity for a positive σ (spec conjunct at
-    `SubBracket2V.lean:1874`), read directly off joint gate clause (iii): the depth-2 gate
+    `SubBracket2V.lean:1878`), read directly off joint gate clause (iii): the depth-2 gate
     already carries this conjunct model-independently for EVERY positive sub. -/
 theorem kvE2_sepHgate_offFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (hg : KvE2SepGate qnf)
@@ -1472,7 +1472,7 @@ theorem kvE2_sepHgate_offFiber {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- Joint gate clause (iv) surfaced for the O4 pipeline: inner NINE-zone falsity for a
     left-interior positive σ. Combined with `kvE2_sep_zone4_consistent`'s contrapositive
-    this discharges the `hgate` forward-zone conjunct (`SubBracket2V.lean:1875-1877`) for
+    this discharges the `hgate` forward-zone conjunct (`SubBracket2V.lean:1879-1877`) for
     every INCONSISTENT zone pattern: no model point realizes such a zone, and its fold bit
     is `false`. -/
 theorem kvE2_sepHgate_innerNine {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1513,7 +1513,7 @@ biconditional endpoint/witness literals (`kvE2SepEpL`/`EpR`/`PtW`/`PtX1L` — co
 six at/exterior inner zones `zPastX4`/`zAtX4`/`zAtX1L`/`zAtWL`/`zAtT4`/`zFutT4` in BOTH
 directions) and σ's OWN slot channel (its `kvE2SepS`-enumerated bit-true 1-types realized
 at its `lXU`/`lUW`/`lWT` slots) determine five of the six `hgate` conjuncts
-(`SubBracket2V.lean:1870-1882`) at the extracted anchor. What fails is exactly the
+(`SubBracket2V.lean:1874-1882`) at the extracted anchor. What fails is exactly the
 forward-zone conjunct (`:1873-1877`) at a CROSS-σ slot point — the residue both prior
 handoffs flagged ("bracket points inside another σ's zone are not covered by segment
 exclusions; points sit between segments").
@@ -1596,7 +1596,7 @@ literal. Prohibited patches (chain splicing FM-merge, `x1 < e_i`, gate-modulo-as
 indicated route is **N2** (single-positive-sub fragment): with ONE interior positive there
 are no cross-σ slots — every left-list witness is σ's own bit-true 1-type or the
 literal-covered self-zones — so the residue vanishes; this is exactly the configuration
-the landed `kvE_subBracket2V_sound_of_outer` (`SubBracket2V.lean:1218`) +
+the landed `kvE_subBracket2V_sound_of_outer` (`SubBracket2V.lean:1221`) +
 `kvE_sub2V_bounded_anchor_of_outer` (`:1182`) already serve. The derivable core landed
 above remains live input to N2's per-σ gate work. This record is additive and inert. -/
 

@@ -613,7 +613,7 @@ def nfkZoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.pr
 /-- The atom layer of any depth-`k` evaluation holds at depth 0: if `NfEvalNf M k n env nf`
     then the atom assignment `nf.atomAssgn` is the depth-0 characteristic at `env`. Depth 0 is
     definitional (`nf.atomAssgn = nf`); depth `k+1` is the first conjunct of `NfEvalNf`. -/
-theorem nf_eval_nf_atom_layer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_eval_nf_atom_layer {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (nf : NormalForm sig k n)
     (h : NfEvalNf M k n env nf) :

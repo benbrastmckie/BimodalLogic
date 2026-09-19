@@ -359,24 +359,28 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
   {Q : M.carrier → Prop} {t : M.carrier}
 
+omit [Fintype sig.preds] in
 /-- **Prior-U survives the surgery.** -/
-theorem surgeredSemanticPriorU (atomMap : Formula → sig.preds)
+theorem surgeredSemanticPriorU [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
     SemanticPriorU (surgeredStructure M ε Q t) atomMap := by
+  haveI := Fintype.ofFinite sig.preds
   refine semanticPriorU_iff_forall.mpr fun x p => ?_
   refine (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS (priorUFormula p) x).mp ?_
   exact semanticPriorU_iff_forall.mp h_prior_U x.val p
 
+omit [Fintype sig.preds] in
 /-- **Prior-S survives the surgery.** -/
-theorem surgeredSemanticPriorS (atomMap : Formula → sig.preds)
+theorem surgeredSemanticPriorS [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (hS : IsBadIntervalSurgery M ε Q t) :
     SemanticPriorS (surgeredStructure M ε Q t) atomMap := by
+  haveI := Fintype.ofFinite sig.preds
   refine semanticPriorS_iff_forall.mpr fun x p => ?_
   refine (reynolds_lemma8 atomMap h_surj hε h_prior_U h_prior_S hS (priorSFormula p) x).mp ?_
   exact semanticPriorS_iff_forall.mp h_prior_S x.val p
@@ -496,7 +500,7 @@ Reynolds' six sentences become six named lemmas; the last of them closes the con
 
 **The hypothesis Reynolds does not name.** His *"by lemma 6 begins with a point `q`"* is the third
 clause of Lemma 6, which in this tree is `reynolds_lemma6_right_endpoint`
-(`BadIntervals.lean:1303`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
+(`BadIntervals.lean:1315`). That declaration carries an explicit hypothesis `hbadR` — *"every bad
 point at or above `t` is an `R`-point"* — because Reynolds' *"plainly impossible given `ρ`"* step
 inside it needs Lemma 6's **first** clause (*"in any bad interval both `R` and `L` hold
 throughout"*) at the boundary point, and the landed development declined to assume that silently.
@@ -687,17 +691,20 @@ variable (atomMap : Formula → sig.preds)
 
 include h_surj
 
+omit [Fintype sig.preds] in
 /-- **"By lemma 8, `R` holds in `I` in `N`"** — printed p.182.
 
 Three moves: `R` holds at `t` in `M` because `t` is in the bad interval (Lemma 6's first clause);
 Lemma 8 carries `R` to `t` in `N`; and Lemma 2 read **at `N`** — legitimate exactly because Lemma
 2 quantifies `∃ R` before `∀ N`, and because `N` is a Prior structure — turns that back into a
 statement about `∼_N`. -/
-theorem reynolds_lemma9_R_in_N (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+theorem reynolds_lemma9_R_in_N [Finite sig.preds] (hε : IsContempEquivDenseOn ε C)
+    [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (hS : IsBadIntervalSurgery M ε Q t) :
     EndsInGapOnRight (surgeredStructure M ε Q t) ε
       (surgeryBase M ε Q t ((hε.equiv M).refl t)) := by
+  haveI := Fintype.ofFinite sig.preds
   have hR : TemporalTruth M atomMap t (gapRightFormula atomMap h_surj ε) :=
     (gapRightFormula_spec atomMap h_surj ε M h_prior_U h_prior_S t).mpr
       (endsInGapOnRight_of_mem hS hS.mem)
@@ -708,13 +715,15 @@ theorem reynolds_lemma9_R_in_N (hε : IsContempEquivDenseOn ε C) [InStructureCl
     (surgeredSemanticPriorS atomMap h_surj hε h_prior_U h_prior_S hS)
     (surgeryBase M ε Q t ((hε.equiv M).refl t))).mp hN
 
+omit [Fintype sig.preds] in
 /-- **"`R` is true of this class so that it is bounded above amongst other things. Thus `Q⁺` is
 non-empty"** — printed p.182.
 
 The first conjunct of `EndsInGapOnRight` in `N` is *"the class does not extend forever to the
 right"*: some surviving point above `t` is outside the class. A surviving point outside the class
 is outside `Q₀`, since the only points of `Q₀` that survive are those of `I`. -/
-theorem reynolds_lemma9_exists_after (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+theorem reynolds_lemma9_exists_after [Finite sig.preds] (hε : IsContempEquivDenseOn ε C)
+    [InStructureClass C M]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (hS : IsBadIntervalSurgery M ε Q t) :
     ∃ y : M.carrier, t < y ∧ ¬ Q y := by
@@ -733,6 +742,7 @@ theorem exists_not_isBadPoint_gt (hS : IsBadIntervalSurgery M ε Q t) {y : M.car
   push Not at hcon
   exact hny (mem_of_badStretch hS hty fun z hz _ => hcon z hz)
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 9, printed p.182.**
 
 > **LEMMA 9** *In fact there can't have been any bad points anyway.*
@@ -745,12 +755,13 @@ The closing contradiction is the **third** conjunct of `EndsInGapOnRight` at `I`
 conjunct says there is no first point after the class, and `q` is exactly one. Reynolds' *"Thus
 the class ends just before `q`"* is that sentence, and his *"`R` can not have been true in this
 class after all"* is the `False` this returns. -/
-theorem reynolds_lemma9 (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
+theorem reynolds_lemma9 [Finite sig.preds] (hε : IsContempEquivDenseOn ε C) [InStructureClass C M]
     [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap) (h_prior_S : SemanticPriorS M atomMap)
     (hS : IsBadIntervalSurgery M ε Q t)
     (hbadR : ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q) :
     False := by
+  haveI := Fintype.ofFinite sig.preds
   -- The single site in §6 that needs the class-gated clauses at `N` rather than at `M`; the
   -- membership comes from the closure condition, never from a hypothesis at `N`.
   haveI : InStructureClass C (surgeredStructure M ε Q t) :=
@@ -814,7 +825,7 @@ maximal interval. The obstruction is exact and was measured, not guessed:
 * but `IsBadIntervalSurgery.interior` demands `ClassInteriorToBadInterval`, which carries `R`
   **and** `L` throughout its segment;
 * closing that gap is the implication `L → R` at a point where only `L` is known. The landed
-  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1368`) proves it, but only from a
+  `endsInGapOnRight_of_endsInGapOnLeft` (`BadIntervals.lean:1382`) proves it, but only from a
   `ClassInteriorToLInterval` witness, and producing that witness at a merely-`L` point was exactly
   what was missing.
 
@@ -847,6 +858,7 @@ structure HasBadIntervalSurgery (M : OrderedMonadicStructure sig)
     ∃ Q : M.carrier → Prop, IsBadIntervalSurgery M ε Q t ∧
       ∀ q : M.carrier, t ≤ q → IsBadPoint M ε q → EndsInGapOnRight M ε q
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Theorem 4, printed p.183 — the right-hand end.**
 
 > *Suppose that `∼` is a contemporaneous equivalence relation on a Prior structure `M`.*
@@ -857,7 +869,8 @@ This is **D1**, the first hypothesis of Doets' theorem, in its **hypothesised** 
 `HasBadIntervalSurgery` as an assumption. `no_gaps_dense_prior` below is the same statement with
 that assumption discharged by `hasBadIntervalSurgery`; this form is retained unweakened for
 callers that would rather supply their own surgery. -/
-theorem no_gaps_dense_prior_of_hasBadIntervalSurgery (atomMap : Formula → sig.preds)
+theorem no_gaps_dense_prior_of_hasBadIntervalSurgery [Finite sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap)
@@ -866,6 +879,7 @@ theorem no_gaps_dense_prior_of_hasBadIntervalSurgery (atomMap : Formula → sig.
   obtain ⟨Q, hS, hbadR⟩ := hbi.exists_surgery t ht
   exact reynolds_lemma9 atomMap h_surj hε h_prior_U h_prior_S hS hbadR
 
+omit [Fintype sig.preds] in
 /-- **Theorem 4, the left-hand end** — *"the classes do not end at gaps"* covers both ends.
 
 Obtained by instantiation at `(dual M, dualize ε)` through `Dual.lean`, not by a hand-written
@@ -875,7 +889,8 @@ carries `ε`, and `semanticPriorU_dual` / `semanticPriorS_dual` carry the Prior 
 input that does not transport for free.
 
 The **hypothesised** form, retained unweakened; `no_gaps_dense_prior_left` below discharges it. -/
-theorem no_gaps_dense_prior_left_of_hasBadIntervalSurgery (atomMap : Formula → sig.preds)
+theorem no_gaps_dense_prior_left_of_hasBadIntervalSurgery [Finite sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap)
@@ -974,20 +989,23 @@ theorem badComp_isBadInterval (atomMap : Formula → sig.preds)
       · exact ha q (Or.inr ⟨h, h₂⟩)
       · exact hsat q (minmax_of_btw (Or.inr ⟨h₁, h⟩)).1 (minmax_of_btw (Or.inr ⟨h₁, h⟩)).2
 
+omit [Fintype sig.preds] in
 /-- **Every point of the component satisfies `R`** — *"in any bad interval both `R` and `L` hold
 throughout"*, printed p.180. A component point is bad, so it satisfies `R` or `L`; in the `L` case
 `endsInGapOnRight_of_endsInGapOnLeft'` supplies `R`. This is the implication that was missing, and
 it is exactly Lemma 6's first clause in its hypothesis-free form. -/
-theorem badComp_right (atomMap : Formula → sig.preds)
+theorem badComp_right [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) {t x : M.carrier} (hx : badComp M ε t x) :
     EndsInGapOnRight M ε x := by
+  haveI := Fintype.ofFinite sig.preds
   rcases hx x (btw_self t x) with h | h
   · exact h
   · exact endsInGapOnRight_of_endsInGapOnLeft' atomMap h_surj hε M h_prior_U h_prior_S h
 
+omit [Fintype sig.preds] in
 /-- **`HasBadIntervalSurgery` holds outright**, with `Q` the bad-connected component of `t`.
 
 The `interior` field is the only real work. Given a component point `p` and a second arbitrary
@@ -999,12 +1017,13 @@ pulled back into the component by convexity.
 Note that the `left_out` and `right_out` branches are **not** symmetric in this rendering: the
 lower one needs the `contemp_trans` / `contemp_symm` wrapper and the upper one applies
 `contemp_of_between` directly. -/
-theorem hasBadIntervalSurgery (atomMap : Formula → sig.preds)
+theorem hasBadIntervalSurgery [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) :
     HasBadIntervalSurgery M ε := by
+  haveI := Fintype.ofFinite sig.preds
   refine ⟨fun t ht => ⟨badComp M ε t, ⟨?_, ?_, ?_⟩, ?_⟩⟩
   · exact badComp_isBadInterval atomMap h_surj hε M h_prior_U h_prior_S ht
   · intro q hq
@@ -1059,6 +1078,7 @@ section Theorem4Unconditional
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Theorem 4, printed p.183 — the right-hand end.**
 
 > *Suppose that `∼` is a contemporaneous equivalence relation on a Prior structure `M`.*
@@ -1071,7 +1091,7 @@ statement in its hypothesised form and is retained unweakened.
 
 **Still conditional**, and not on nothing: `IsContempEquivDense ε` and Prior-U/Prior-S remain
 hypotheses. See `## Conditionality after Theorem 4` below for exactly what that leaves standing. -/
-theorem no_gaps_dense_prior (atomMap : Formula → sig.preds)
+theorem no_gaps_dense_prior [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap)
@@ -1080,12 +1100,13 @@ theorem no_gaps_dense_prior (atomMap : Formula → sig.preds)
   no_gaps_dense_prior_of_hasBadIntervalSurgery atomMap h_surj hε h_prior_U h_prior_S
     (StepD.hasBadIntervalSurgery atomMap h_surj hε M h_prior_U h_prior_S) t
 
+omit [Fintype sig.preds] in
 /-- **Theorem 4, the left-hand end**, with `HasBadIntervalSurgery` discharged — at the dual, by
 `StepD.hasBadIntervalSurgery` instantiated at `(dual M, dualize ε)`. The one input that did not
 transport for free now needs no transporting: it is a theorem at every structure.
 
 `no_gaps_dense_prior_left_of_hasBadIntervalSurgery` above is retained unweakened. -/
-theorem no_gaps_dense_prior_left (atomMap : Formula → sig.preds)
+theorem no_gaps_dense_prior_left [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap)

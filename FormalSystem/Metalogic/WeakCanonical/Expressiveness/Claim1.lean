@@ -36,7 +36,7 @@ def baseCaseEmb : Fin 3 → Fin 4 := fun k =>
 
 /-- The M-side gameTuple for the 0-game at index k equals the M-side
     gameTuple for the 1-game (with constant selection) at the embedded index. -/
-theorem base_case_M_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem base_case_M_eq {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (x y : ExtendedCarrier M atomMap r) (b_sp : M.carrier) (b_resp : M.carrier)
     (k : Fin 3) :
@@ -58,7 +58,7 @@ theorem base_case_M_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
 /-- The N-side gameTuple for the 0-game at index k equals the N-side
     gameTuple for the 1-game at the embedded index, given that the
     selection a'_resp(0) equals extendPoint q. -/
-theorem base_case_N_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem base_case_N_eq {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (x' y' : ExtendedCarrier N atomMap r) (q : N.carrier) (p : N.carrier)
     (a'_resp : Fin 1 → ExtendedCarrier N atomMap r)
@@ -556,7 +556,7 @@ theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
     4. → in particular on staviTableMu A (depth ≤ r by stavi_table_mu_depth)
     5. → by stavi_table_mu_correct, same StaviTemporalTruthMu
     6. → by stavi_truth_mu_at_point, same StaviTemporalTruth -/
-theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
+theorem nf_determines_stavi_truth {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {p q : N.carrier}
@@ -609,7 +609,7 @@ theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
     The key insight: staviFoDepth A ≤ 2 * staviDepth A (by stavi_fo_depth_le_twice_depth),
     so staviDepth A ≤ r implies staviFoDepth A ≤ 2*r, and NF at depth 2*r
     captures the truth of staviTableMu A via doets_lemma_1_1. -/
-theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.preds]
+theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {p q : N.carrier}

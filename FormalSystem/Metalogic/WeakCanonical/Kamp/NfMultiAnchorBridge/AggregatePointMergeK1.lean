@@ -31,7 +31,7 @@ at the (1,2) merge (`aggExpand23`/`aggMerge32`). The probe below
 all-false probe qnf) and proves its clause iff, machine-confirming that
 
 - `renameNF` (NfDepth0Generalized.lean:375),
-- `renameNF_eval_diag0` (NfDepth0Generalized.lean:1648), and
+- `renameNF_eval_diag0` (NfDepth0Generalized.lean:1650), and
 - `agg_rename_fixpoint_of_eval` (AggregateHookDischarge.lean:1856)
 
 are rename-generic at position (0,1): all three are applied at the new rename pair

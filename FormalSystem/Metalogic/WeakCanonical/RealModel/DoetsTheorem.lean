@@ -39,7 +39,7 @@ Four layers, bottom-up:
 1. **`ℝ`-flow normalization** (`exists_realFlow_witness`). `goodDense` hands back *some* interval
    of `ℝ`. Reynolds' conclusion asks for *the* real line. For a structure with no end points the
    two are the same up to order isomorphism, and the normalization is the same argument
-   `exists_ioo_witness` (`GoodDense.lean:725`) already makes for bounded open intervals, with
+   `exists_ioo_witness` (`GoodDense.lean:727`) already makes for bounded open intervals, with
    `Set.univ` as the target instead of `(c,d)`.
 2. **`≅o ℝ ⇒ good`** (`goodDense_of_orderIso_real`). The converse direction: a structure whose
    flow is order-isomorphic to `ℝ` is good, with `Set.univ` as the witnessing interval. This is
@@ -74,9 +74,9 @@ Each entry reads *Printed source* — *Implementation*:
 
 * p.185, Theorem 6 statement — `doets_theorem_dense`
 * p.185, *"if `M` is good we are done"* — `exists_realFlow_witness`
-* p.186, Lemma 11 — `reynolds_lemma11_no_endpoints` (`GoodDense.lean:1128`)
+* p.186, Lemma 11 — `reynolds_lemma11_no_endpoints` (`GoodDense.lean:1131`)
 * p.187, Lemma 13 — `reynolds_lemma13` (`Shuffle.lean:232`)
-* p.187, *"`M | (⋃I) ≡ₖ Σ_{q∈ℚ} σ(q)`"* — `kEquiv_blocks_shuffle` (`Shuffle.lean:461`)
+* p.187, *"`M | (⋃I) ≡ₖ Σ_{q∈ℚ} σ(q)`"* — `kEquiv_blocks_shuffle` (`Shuffle.lean:473`)
 * p.188, *"`Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`"* — `kEquiv_shuffle_shuffleReal` (`ShuffleReal.lean:233`)
 * p.188, *"`R` is dense … Dedekind complete … countable dense subflow"* — `isRealLike_shuffleReal`
   (`ShuffleReal.lean:626`)
@@ -107,7 +107,7 @@ variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 Reynolds' conclusion is *"a temporal structure with flow of time the real numbers"*, not *"an
 interval of the real numbers"*. `goodDense` supplies the latter. For a structure with no end
-points the gap is closed by `exists_orderIso_ioo01_of_ordConnected` (`GoodDense.lean:656`),
+points the gap is closed by `exists_orderIso_ioo01_of_ordConnected` (`GoodDense.lean:658`),
 exactly as `exists_ioo_witness` closes it for a prescribed bounded open interval.
 -/
 
@@ -115,7 +115,7 @@ exactly as `exists_ioo_witness` closes it for a prescribed bounded open interval
 A `RIntervalStructure` whose flow is **all** of `ℝ`: the shape Reynolds' *"flow of time the real
 numbers"* asks for.
 
-`realLine` (`GoodDense.lean:1028`) is the same carrier set assembled from `ℤ`-indexed blocks;
+`realLine` (`GoodDense.lean:1031`) is the same carrier set assembled from `ℤ`-indexed blocks;
 this is the free-standing predicate on an already-built `RIntervalStructure`.
 -/
 def RIntervalStructure.IsRealFlow (R : RIntervalStructure sig) : Prop :=
@@ -127,7 +127,7 @@ def RIntervalStructure.IsRealFlow (R : RIntervalStructure sig) : Prop :=
 countable, dense and without end points"*).
 
 Statement source: Reynolds, as quoted. Proof: the same three-step normalization
-`exists_ioo_witness` (`GoodDense.lean:725`) makes — non-emptiness and both end-point conditions
+`exists_ioo_witness` (`GoodDense.lean:727`) makes — non-emptiness and both end-point conditions
 travel across `≡ₖ` at `k ≥ 2`, so `exists_orderIso_ioo01_of_ordConnected` applies to the
 witnessing interval — with `ℝ` itself as the destination rather than `(c,d)`.
 -/
@@ -289,7 +289,7 @@ theorem goodDense_shuffle (k : Nat) {S : Finset ι} (hγ : γ₁ ∈ S) (hσ : I
 **Anything `k`-equivalent to the `ℚ`-shuffle is good, with flow the real line.**
 
 This is the exact shape printed p.187's *"`M | (⋃ I) ≡ₖ Σ_{q∈ℚ} σ(q)`"* needs:
-`kEquiv_blocks_shuffle` (`Shuffle.lean:461`) supplies the left-hand `≡ₖ` and this lemma converts it
+`kEquiv_blocks_shuffle` (`Shuffle.lean:473`) supplies the left-hand `≡ₖ` and this lemma converts it
 into an `ℝ`-flowed witness in one step.
 -/
 theorem exists_realFlow_of_kEquiv_shuffle (k : Nat) {S : Finset ι} (hγ : γ₁ ∈ S)
@@ -465,7 +465,7 @@ Theorem 6's proof by contradiction:
 > So suppose that `M` is not good. Then `M` is not very good and so there are `a < b` in `M` with
 > `a ≁ b`.
 
-Both implications are Lemma 11 (`reynolds_lemma11_no_endpoints`, `GoodDense.lean:1128`) in
+Both implications are Lemma 11 (`reynolds_lemma11_no_endpoints`, `GoodDense.lean:1131`) in
 contrapositive form: applied at `M` itself for *"`M` is not very good"*, and applied at
 `M | (t,u)` for the step from *"`M | (t,u)` is not good"* to *"`t ≁ u`"* — the middle clause of
 `SimDense` (`EpsilonDense.lean:128`) asks for very-goodness of `M | (t,u)`, which at a countable
@@ -514,7 +514,7 @@ and the use the choice is put to, three sentences later:
 **Two rendering decisions, both stated rather than assumed.**
 
 *Reynolds' `G` is a set of sentences; this is a `Finset` of normal forms.* `gammaSentences`
-(`EpsilonDense.lean:239`) is literally `(goodNFs sig k).toList.map nfToSentence`, so the `γᵢ` and
+(`EpsilonDense.lean:242`) is literally `(goodNFs sig k).toList.map nfToSentence`, so the `γᵢ` and
 the elements of `goodNFs sig k` are the same data presented twice. The minimization is done at
 the normal-form level because that is where `Finset.card` is available without needing
 `nfToSentence` to be injective — and injectivity is not part of what the argument uses. The only
@@ -539,7 +539,7 @@ def ClassStrictlyBetween (M : OrderedMonadicStructure sig) (ε : MonadicFormula 
 
 /-- **`M | E`** — the substructure of `M` on the `∼`-class of `e`.
 
-`restrictSet` (`Shuffle.lean:410`) is the general set-shaped cut; the tree's other cuts are all
+`restrictSet` (`Shuffle.lean:418`) is the general set-shaped cut; the tree's other cuts are all
 interval-shaped, and a `∼`-class is given here as a set rather than by endpoints. That the classes
 *are* intervals is Lemma 13's content and is not needed to state this. -/
 def contempClassStructure (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
@@ -1050,9 +1050,9 @@ Printed p.188, the closing step of Theorem 6's proof:
 > and this latter has flow of time isomorphic to `ℝ` as required.
 
 **The displayed three-summand identity is two nested binary splits, and both are already landed.**
-`kEquiv_openSub_split` (`EpsilonDense.lean:859`) cuts an open interval at an interior point,
+`kEquiv_openSub_split` (`EpsilonDense.lean:865`) cuts an open interval at an interior point,
 putting that point at the head of the second block, and `goodDense_binSum_pointSum`
-(`EpsilonDense.lean:833`) is literally *"`X + M | {b} + Y` is good"* — the `R₁ + R₂ + R₃` step
+(`EpsilonDense.lean:838`) is literally *"`X + M | {b} + Y` is good"* — the `R₁ + R₂ + R₃` step
 Reynolds had already used once, for transitivity of `∼` (printed p.187), and where the seam
 closes up because `X` inherits its lack of a right end point across `≡ₖ`.
 
@@ -1366,29 +1366,35 @@ The two ends then pin the flow down completely: an order-connected set of reals 
 greatest element **is** the closed interval between them, with no residual choice. That is
 `ordConnected_eq_Icc`, and `isIccLike_of_carrierSet_eq_Icc` reads the five facts off it.
 
-`exists_ioo_witness` (`GoodDense.lean:725`) is the end-point-**free** case of this same
+`exists_ioo_witness` (`GoodDense.lean:727`) is the end-point-**free** case of this same
 normalization and `icoBlock` / `kEquiv_pointSum_icoBlock` the one-sided case; neither applies here,
 because Reynolds' summands are the ones that *do* have both ends.
 -/
 
 section IccNormalization
 
+omit [Fintype sig.preds] in
 /--
 *"has a right hand end point"* transfers across `≡ₖ` for `k ≥ 2` — the positive counterpart of
-`noMaxOrder_of_kEquiv` (`GoodDense.lean:481`), read off the same depth-`2` sentence `hasMaxSent`.
+`noMaxOrder_of_kEquiv` (`GoodDense.lean:483`), read off the same depth-`2` sentence `hasMaxSent`.
 -/
-theorem exists_max_of_kEquiv (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig}
+theorem exists_max_of_kEquiv [Finite sig.preds] (k : Nat) (hk : 2 ≤ k)
+    {M N : OrderedMonadicStructure sig}
     (h : KEquiv sig k M N) (hM : ∃ x : M.carrier, ∀ y : M.carrier, ¬ x < y) :
     ∃ x : N.carrier, ∀ y : N.carrier, ¬ x < y := by
+  haveI := Fintype.ofFinite sig.preds
   have hdepth : (hasMaxSent sig).quantifierDepth ≤ k := by
     simpa [hasMaxSent, MonadicFormula.quantifierDepth] using hk
   exact (eval_hasMaxSent sig N).mp
     ((eval_transfer_of_kEquiv sig k _ hdepth h).mp ((eval_hasMaxSent sig M).mpr hM))
 
+omit [Fintype sig.preds] in
 /-- *"has a left hand end point"* transfers across `≡ₖ` for `k ≥ 2`. -/
-theorem exists_min_of_kEquiv (k : Nat) (hk : 2 ≤ k) {M N : OrderedMonadicStructure sig}
+theorem exists_min_of_kEquiv [Finite sig.preds] (k : Nat) (hk : 2 ≤ k)
+    {M N : OrderedMonadicStructure sig}
     (h : KEquiv sig k M N) (hM : ∃ x : M.carrier, ∀ y : M.carrier, ¬ y < x) :
     ∃ x : N.carrier, ∀ y : N.carrier, ¬ y < x := by
+  haveI := Fintype.ofFinite sig.preds
   have hdepth : (hasMinSent sig).quantifierDepth ≤ k := by
     simpa [hasMinSent, MonadicFormula.quantifierDepth] using hk
   exact (eval_hasMinSent sig N).mp
@@ -1439,7 +1445,7 @@ separability is `exists_rat_btwn`.
 
 Membership is transported through `hR` by `Set.ext_iff` rather than by `rw`: the carrier's own type
 mentions `R.carrierSet`, so rewriting it breaks the motive (the same discipline as
-`kEquiv_pointSum_icoBlock`, `GoodDense.lean:958`).
+`kEquiv_pointSum_icoBlock`, `GoodDense.lean:961`).
 -/
 theorem isIccLike_of_carrierSet_eq_Icc (R : RIntervalStructure sig) {x y : ℝ} (hxy : x ≤ y)
     (hR : R.carrierSet = Set.Icc x y) : IsIccLike sig (R.toOrdered sig) := by
@@ -1584,6 +1590,7 @@ two; in Lean they are different types and the shuffle's block map consumes the s
 
 section ClassSummands
 
+omit [Fintype sig.preds] in
 /--
 **Cutting a set-shaped restriction down to an interval is cutting `M` down to that interval** —
 provided the interval lies inside the set, which for a `∼`-class is convexity (Lemma 12).
@@ -1591,11 +1598,12 @@ provided the interval lies inside the set, which for a `∼`-class is convexity 
 The dense analogue of `openSubOpenSubEquiv` (`EpsilonDense.lean:151`), for a `restrictSet` outer
 cut rather than an `openSubinterval` one.
 -/
-theorem kEquiv_restrictSet_openSub (k : Nat) (M : OrderedMonadicStructure sig)
+theorem kEquiv_restrictSet_openSub [Finite sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
     (s : Set M.carrier) (u v : {x : M.carrier // x ∈ s})
     (hconv : ∀ x : M.carrier, u.val < x → x < v.val → x ∈ s) :
     KEquiv sig k ((M.restrictSet sig s).openSubinterval sig u v)
       (M.openSubinterval sig u.val v.val) :=
+  haveI := Fintype.ofFinite sig.preds
   k_equiv_of_iso sig k _ _ (Equiv.toOrderIso
     { toFun := fun x => ⟨x.val.val, x.property.1, x.property.2⟩
       invFun := fun y => ⟨⟨y.val, hconv y.val y.property.1 y.property.2⟩,
@@ -1604,16 +1612,18 @@ theorem kEquiv_restrictSet_openSub (k : Nat) (M : OrderedMonadicStructure sig)
       right_inv := fun _ => rfl }
     (fun _ _ h => h) (fun _ _ h => h)) (fun _ _ => Iff.rfl)
 
+omit [Fintype sig.preds] in
 /--
 **A class lying inside `(c',d')` is the same structure whether cut from `M` or from `M | (c',d')`**
 — the identification the shuffle's block map needs, because the block map is *"the `∼`-class of"*
 read on `M | (c',d')` while the `γ`-palette is defined by classes cut from `M`.
 -/
-theorem kEquiv_openSub_restrictSet (k : Nat) (M : OrderedMonadicStructure sig)
+theorem kEquiv_openSub_restrictSet [Finite sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
     {c' d' : M.carrier} (s : Set M.carrier) (hsub : ∀ x ∈ s, c' < x ∧ x < d') :
     KEquiv sig k ((M.openSubinterval sig c' d').restrictSet sig
         {v : (M.openSubinterval sig c' d').carrier | v.val ∈ s})
       (M.restrictSet sig s) :=
+  haveI := Fintype.ofFinite sig.preds
   k_equiv_of_iso sig k _ _ (Equiv.toOrderIso
     { toFun := fun x => ⟨x.val.val, x.property⟩
       invFun := fun y => ⟨⟨y.val, (hsub y.val y.property).1, (hsub y.val y.property).2⟩,

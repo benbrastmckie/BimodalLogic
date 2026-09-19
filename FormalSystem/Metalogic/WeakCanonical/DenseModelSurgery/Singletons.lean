@@ -519,6 +519,7 @@ section Theorem5
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §7 Theorem 5, printed p.184.**
 
 > *Suppose that `M` is a Prior structure which also satisfies every substitution instance of axiom
@@ -535,13 +536,14 @@ Theorem 4 is *not* an extra hypothesis: the Prior pair that Theorem 4 needs is a
 **Still conditional**, and on exactly what Theorem 4 is conditional on plus Sep and density:
 `IsContempEquivDense ε` remains a hypothesis, and no non-trivial `ε` is available in this tree.
 See the module header's *"Honest caveat, carried forward"*. -/
-theorem reynolds_theorem5 (atomMap : Formula → sig.preds)
+theorem reynolds_theorem5 [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap)
     (hdense : QuotientDenselyOrdered M ε) :
     HasDenseSingletons M ε := by
+  haveI := Fintype.ofFinite sig.preds
   intro c d hcd hncd
   -- *"From the preceding theorem 4 we know that the `∼`-classes do not end at gaps."*
   have hgapR : ∀ t : M.carrier, ¬ EndsInGapOnRight M ε t :=
@@ -578,6 +580,7 @@ theorem reynolds_theorem5 (atomMap : Formula → sig.preds)
   exact ⟨e, lt_of_le_of_lt hcc'le hce, hed,
     isSingletonClass_of_kplus_kminus hε hC he.1 he.2⟩
 
+omit [Fintype sig.preds] in
 /-- **D2, the second hypothesis of Doets' theorem** — Reynolds §8 Theorem 6, printed p.184:
 
 > **D2)**: *if `M/∼` is densely ordered, then `M/∼` has a dense set of singletons.*
@@ -585,7 +588,7 @@ theorem reynolds_theorem5 (atomMap : Formula → sig.preds)
 `reynolds_theorem5` in the shape §8 consumes it: density of the quotient as an antecedent rather
 than as a standing hypothesis. The Sep hypothesis is Reynolds' *"`M` … also satisfies every
 substitution instance of axiom Sep"*, and the Prior pair is *"`M` is a Prior structure"*. -/
-theorem dense_singletons_of_sep (atomMap : Formula → sig.preds)
+theorem dense_singletons_of_sep [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDenseOn ε C) [InStructureClass C M] [IsSurgeryClosed C]
     (h_prior_U : SemanticPriorU M atomMap)

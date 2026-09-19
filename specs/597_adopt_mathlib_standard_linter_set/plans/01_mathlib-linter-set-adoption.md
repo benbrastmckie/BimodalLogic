@@ -638,21 +638,21 @@ invariants pass.
 
 ---
 
-### Phase 13: `unusedFintypeInType` [NOT STARTED]
+### Phase 13: `unusedFintypeInType` [COMPLETED]
 
 **Goal**: Remove `Fintype` hypotheses that the statement does not use in its type, supplying them
 in the proof instead with `classical` or `Fintype.ofFinite`. `Fintype` is a subsingleton, so
 downstream instance mismatches cannot occur.
 
 **Tasks**:
-- [ ] Fix `[Fintype sig.preds]` (244) and `[Fintype ι]` (28) across the `MonadicSignature` layer,
+- [x] Fix `[Fintype sig.preds]` (244) and `[Fintype ι]` (28) across the `MonadicSignature` layer,
       working in waves by directory: `Bridge/Interpolate.lean` first, then
       `WeakCanonical/Kamp/**`, `DenseModelSurgery/**` and `RealModel/**`. Build after each wave,
       and iterate to a fixpoint. Removing a hypothesis from one declaration can leave it unused in
       a caller, as the `omit` cascade in the burn-down work showed. Use `omit [...] in` only
       where the hypothesis is a section variable. It is not interchangeable with
-      `set_option ... false in`.
-- [ ] Delete the `unusedFintypeInType` temporary line, then do a guarded full build with
+      `set_option ... false in`. *(deviation: altered — no fixpoint iteration was needed: the linter reads only the statement, so every site was known up front; the one cascade was in PROOFS, where a caller whose own `Fintype` was omitted needed `[Finite X]` to call a callee, handled per file)*
+- [x] Delete the `unusedFintypeInType` temporary line, then do a guarded full build with
       `--wfail`.
 
 **Timing**: 2 hours
@@ -668,6 +668,18 @@ fixpoint iteration will show how many.
 - About 55 files under `WeakCanonical/Kamp/**`, `DenseModelSurgery/**`, `RealModel/**` and
   `Bridge/Interpolate.lean`
 - `lakefile.toml` - remove 1 temporary line
+
+**Phase 13 notes**: 274 sites in 55 files, all fixed mechanically. An explicit `[Fintype X]`
+binder became `[Finite X]`; a section-variable one got `omit [Fintype X] in` (117 declarations).
+Each file was then elaborated repeatedly: a flagged declaration that failed first gained a
+`[Finite X]` binder (section case), and only if still failing a
+`haveI := Fintype.ofFinite X` at the head of its proof (104 proofs; placed on its own line, and
+per arm for the two equation-compiler recursions in `KampPrior`/`KampPriorFaithful`). Lines the
+new binders pushed past 100 were reflowed. A citation re-pointing script had been run twice on the
+same diff and double-shifted 132 citations; it was replaced by an idempotent version that pairs
+each file's citations with its base-commit citations in order, the damage was undone, and every
+earlier phase commit was re-audited (0 wrong). All 71 touched files elaborate clean; full
+`--wfail` build green on the first run (1,268 s); invariants pass.
 
 **Verification**:
 - The per-file sweep reports 0, and `lake build --wfail` is green.

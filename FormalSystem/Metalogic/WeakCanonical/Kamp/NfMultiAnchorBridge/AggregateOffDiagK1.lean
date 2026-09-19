@@ -149,11 +149,13 @@ Each extracts the atom layer via the delivered fold engine `nf_eval_depth1_fold_
 (CarrierKv.lean:466) and reads the six order atoms (`AtomEval M env (.order i j _) =
 env i < env j`, definitionally). -/
 
+omit [Fintype sig.preds] in
 /-- A past-exterior realizer (`w < x`, ambient `x < t`) forces `navDOrderRow`. -/
-theorem aggOd_navDRow_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_navDRow_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hwx : w < x) (hxt : x < t)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     navDOrderRow σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold navDOrderRow
   exact ⟨(hlayer _).mp hwx, (hlayer _).mp (hwx.trans hxt), (hlayer _).mp hxt,
@@ -161,12 +163,14 @@ theorem aggOd_navDRow_of_eval (M : OrderedMonadicStructure sig)
     aggOd_bit_false (hlayer _) (lt_asymm (hwx.trans hxt)),
     aggOd_bit_false (hlayer _) (lt_asymm hxt)⟩
 
+omit [Fintype sig.preds] in
 /-- A coincident-left realizer (`w = x`, env `[x, x, t]`, ambient `x < t`) forces
     `aggOdRowPtX`. -/
-theorem aggOd_rowPtX_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowPtX_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t)
     (h : NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtX σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtX
   exact ⟨aggOd_bit_false (hlayer _) (lt_irrefl x),
@@ -176,11 +180,13 @@ theorem aggOd_rowPtX_of_eval (M : OrderedMonadicStructure sig)
     (hlayer _).mp hxt,
     aggOd_bit_false (hlayer _) (lt_asymm hxt)⟩
 
+omit [Fintype sig.preds] in
 /-- An interior realizer (`x < w < t`) forces `aggOdRowInt`. -/
-theorem aggOd_rowInt_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowInt_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowInt σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowInt
   exact ⟨(hlayer _).mp hxw, (hlayer _).mp hwt, (hlayer _).mp (hxw.trans hwt),
@@ -188,12 +194,14 @@ theorem aggOd_rowInt_of_eval (M : OrderedMonadicStructure sig)
     aggOd_bit_false (hlayer _) (lt_asymm hwt),
     aggOd_bit_false (hlayer _) (lt_asymm (hxw.trans hwt))⟩
 
+omit [Fintype sig.preds] in
 /-- A coincident-right realizer (`w = t`, env `[t, x, t]`, ambient `x < t`) forces
     `aggOdRowPtT`. -/
-theorem aggOd_rowPtT_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowPtT_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t)
     (h : NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtT σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtT
   exact ⟨aggOd_bit_false (hlayer _) (lt_irrefl t),
@@ -203,11 +211,13 @@ theorem aggOd_rowPtT_of_eval (M : OrderedMonadicStructure sig)
     (hlayer _).mp hxt,
     aggOd_bit_false (hlayer _) (lt_asymm hxt)⟩
 
+omit [Fintype sig.preds] in
 /-- A future-exterior realizer (`t < w`, ambient `x < t`) forces `navROrderRow`. -/
-theorem aggOd_navRRow_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_navRRow_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hxt : x < t) (htw : t < w)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     navROrderRow σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold navROrderRow
   exact ⟨(hlayer _).mp hxt, (hlayer _).mp (hxt.trans htw), (hlayer _).mp htw,
@@ -215,11 +225,12 @@ theorem aggOd_navRRow_of_eval (M : OrderedMonadicStructure sig)
     aggOd_bit_false (hlayer _) (lt_asymm htw),
     aggOd_bit_false (hlayer _) (lt_asymm hxt)⟩
 
+omit [Fintype sig.preds] in
 /-- **Routing totality** (Cor 5.4 "all order patterns", past arm): under the ambient
     `x < t`, every realizer of the k=1 population at `[w, x, t]` routes its `qnf` to
     exactly the row of the witness position — the five consistent order patterns of `w`
     against the pins. -/
-theorem aggOdZone3_route_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOdZone3_route_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hxt : x < t)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     (w < x ∧ navDOrderRow σ) ∨ (w = x ∧ aggOdRowPtX σ) ∨
@@ -313,10 +324,11 @@ theorem aggOdClassify_extFut (σ : NormalForm sig 1 3) (h : navROrderRow σ) :
     if_neg (fun hi => aggOd_row_clash hi.2.1 h.2.2.2.2.1),
     if_neg (fun hp => aggOd_row_clash h.2.2.1 hp.2.1), if_pos h]
 
+omit [Fintype sig.preds] in
 /-- **3-bot falsity**: a `qnf` classified `bot` (all five rows refuted) is unrealizable
     at EVERY witness position under the ambient `x < t` — the routing totality forces
     one of the five rows on any realizer. -/
-theorem aggOdZone3_bot_eval_false (M : OrderedMonadicStructure sig)
+theorem aggOdZone3_bot_eval_false [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3)
     (h1 : ¬ navDOrderRow σ) (h2 : ¬ aggOdRowPtX σ) (h3 : ¬ aggOdRowInt σ)
     (h4 : ¬ aggOdRowPtT σ) (h5 : ¬ navROrderRow σ)
@@ -384,12 +396,14 @@ def aggOdRowExtFutF (σ : NormalForm sig 1 3) : Prop :=
   σ.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false ∧
   σ.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false
 
+omit [Fintype sig.preds] in
 /-- Mirror eval-forcing: a `w < t` realizer under ambient `t < x` forces
     `aggOdRowExtPastF`. -/
-theorem aggOd_rowExtPastF_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowExtPastF_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hwt : w < t) (htx : t < x)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowExtPastF σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowExtPastF
   exact ⟨(hlayer _).mp hwt, (hlayer _).mp (hwt.trans htx), (hlayer _).mp htx,
@@ -397,12 +411,14 @@ theorem aggOd_rowExtPastF_of_eval (M : OrderedMonadicStructure sig)
     aggOd_bit_false (hlayer _) (lt_asymm (hwt.trans htx)),
     aggOd_bit_false (hlayer _) (lt_asymm htx)⟩
 
+omit [Fintype sig.preds] in
 /-- Mirror eval-forcing: a `w = t` realizer (env `[t, x, t]`) under ambient `t < x`
     forces `aggOdRowPtTF`. -/
-theorem aggOd_rowPtTF_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowPtTF_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (htx : t < x)
     (h : NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtTF σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtTF
   exact ⟨aggOd_bit_false (hlayer _) (lt_irrefl t),
@@ -412,11 +428,13 @@ theorem aggOd_rowPtTF_of_eval (M : OrderedMonadicStructure sig)
     (hlayer _).mp htx,
     aggOd_bit_false (hlayer _) (lt_asymm htx)⟩
 
+omit [Fintype sig.preds] in
 /-- Mirror eval-forcing: a `t < w < x` realizer forces `aggOdRowIntF`. -/
-theorem aggOd_rowIntF_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowIntF_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (htw : t < w) (hwx : w < x)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowIntF σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowIntF
   exact ⟨(hlayer _).mp htw, (hlayer _).mp hwx, (hlayer _).mp (htw.trans hwx),
@@ -424,12 +442,14 @@ theorem aggOd_rowIntF_of_eval (M : OrderedMonadicStructure sig)
     aggOd_bit_false (hlayer _) (lt_asymm hwx),
     aggOd_bit_false (hlayer _) (lt_asymm (htw.trans hwx))⟩
 
+omit [Fintype sig.preds] in
 /-- Mirror eval-forcing: a `w = x` realizer (env `[x, x, t]`) under ambient `t < x`
     forces `aggOdRowPtXF`. -/
-theorem aggOd_rowPtXF_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowPtXF_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (htx : t < x)
     (h : NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtXF σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtXF
   exact ⟨aggOd_bit_false (hlayer _) (lt_irrefl x),
@@ -439,11 +459,13 @@ theorem aggOd_rowPtXF_of_eval (M : OrderedMonadicStructure sig)
     (hlayer _).mp htx,
     aggOd_bit_false (hlayer _) (lt_asymm htx)⟩
 
+omit [Fintype sig.preds] in
 /-- Mirror eval-forcing: a `t < x < w` realizer forces `aggOdRowExtFutF`. -/
-theorem aggOd_rowExtFutF_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOd_rowExtFutF_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (htx : t < x) (hxw : x < w)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowExtFutF σ := by
+  haveI := Fintype.ofFinite sig.preds
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowExtFutF
   exact ⟨(hlayer _).mp hxw, (hlayer _).mp (htx.trans hxw), (hlayer _).mp htx,
@@ -507,10 +529,11 @@ theorem aggOdClassifyF_extFut (σ : NormalForm sig 1 3) (h : aggOdRowExtFutF σ)
     if_neg (fun hi => aggOd_row_clash hi.2.1 h.2.2.2.1),
     if_neg (fun hp => aggOd_row_clash h.1 hp.2.1), if_pos h]
 
+omit [Fintype sig.preds] in
 /-- **Mirror routing totality** (Cor 5.4, future arm): under the ambient `t < x`,
     every realizer of the k=1 population at `[w, x, t]` routes its `qnf` to exactly the
     mirror row of the witness position. -/
-theorem aggOdZone3F_route_of_eval (M : OrderedMonadicStructure sig)
+theorem aggOdZone3F_route_of_eval [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (htx : t < x)
     (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     (w < t ∧ aggOdRowExtPastF σ) ∨ (w = t ∧ aggOdRowPtTF σ) ∨
@@ -527,9 +550,10 @@ theorem aggOdZone3F_route_of_eval (M : OrderedMonadicStructure sig)
     · exact Or.inr (Or.inr (Or.inr (Or.inr
         ⟨hxw, aggOd_rowExtFutF_of_eval M σ w x t htx hxw h⟩)))
 
+omit [Fintype sig.preds] in
 /-- **Mirror 3-bot falsity**: a `qnf` with all five mirror rows refuted is
     unrealizable at every witness position under the ambient `t < x`. -/
-theorem aggOdZone3F_bot_eval_false (M : OrderedMonadicStructure sig)
+theorem aggOdZone3F_bot_eval_false [Finite sig.preds] (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3)
     (h1 : ¬ aggOdRowExtPastF σ) (h2 : ¬ aggOdRowPtTF σ) (h3 : ¬ aggOdRowIntF σ)
     (h4 : ¬ aggOdRowPtXF σ) (h5 : ¬ aggOdRowExtFutF σ)

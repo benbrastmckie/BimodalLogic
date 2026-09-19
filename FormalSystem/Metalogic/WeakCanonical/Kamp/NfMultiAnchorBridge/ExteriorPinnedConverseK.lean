@@ -273,7 +273,7 @@ theorem kvE_futPos_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- **Gap guard from a realizer**: a pinned exterior realizer of `σ` renders the gap
     disjunction `kvEFutGapD P σ` uniformly on `(t, x1)`. The `hD` step of
-    `kvE_extNegFut_sound` (ExteriorNegationK.lean:549), exposed as a public supply lemma. -/
+    `kvE_extNegFut_sound` (ExteriorNegationK.lean:550), exposed as a public supply lemma. -/
 theorem kvE_futGapD_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
@@ -295,7 +295,7 @@ theorem kvE_futGapD_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- **Endpoint description from a realizer**: a pinned exterior realizer of `σ` forces the
     endpoint truth `kvEFutEnd P σ` at `x1`. The `hend` step of `kvE_extNegFut_sound`
-    (ExteriorNegationK.lean:561), exposed as a public supply lemma. -/
+    (ExteriorNegationK.lean:562), exposed as a public supply lemma. -/
 theorem kvE_futEnd_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
@@ -354,7 +354,7 @@ theorem kvE_futEnd_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- **Per-item pinned gap occurrence from a realizer**: a pinned exterior realizer of `σ`
     places every gap-listed fiber element in `(t, x1)` under the shifted content channel.
-    The `hocc` step of `kvE_extNegFut_sound` (ExteriorNegationK.lean:607), rendered through
+    The `hocc` step of `kvE_extNegFut_sound` (ExteriorNegationK.lean:608), rendered through
     `kvE_futItemShift_correct` in exactly the §2.4 `hocc` shape. -/
 theorem kvE_futOcc_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
@@ -752,7 +752,7 @@ theorem kvE_futClause_sliceConstant {sig : MonadicSignature} [Fintype sig.preds]
     4-type is pinned to the characteristic (`nf_eval_unique`), which the profile-equal
     endpoint realizes by hypothesis; the zone channel changes only at index 0, where
     `v ≤ t < x1` and `v ≤ t < x1'` render the SAME coupling `(true, false)`. -/
-theorem kvE_futInteriorTransfer_zero {sig : MonadicSignature} [Fintype sig.preds]
+theorem kvE_futInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 x1' w x t : M.carrier)
     (hvt : ¬ t < v) (htx1 : t < x1) (htx1' : t < x1')
@@ -763,6 +763,7 @@ theorem kvE_futInteriorTransfer_zero {sig : MonadicSignature} [Fintype sig.preds
       (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) :
     NfEvalNf M 0 5
       (Fin.cons v (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))) s := by
+  haveI := Fintype.ofFinite sig.preds
   obtain ⟨hz, hfr, htl⟩ := (nf_eval_nf0_cons_factor M
     (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) v s).mp hs
   -- tail channel: the env restriction is x1's characteristic, realized at x1' by hypothesis

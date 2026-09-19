@@ -172,11 +172,13 @@ in `τ`, which is why the weakening costs nothing.
 
 variable [Fintype ι] [DenselyOrdered D]
 
+omit [Fintype ι] in
 /-- One direction of the `untl` case, for `r < r'`. -/
-private theorem untlAt_forward [NoMaxOrder D] {φ ψ : Formula}
+private theorem untlAt_forward [Finite ι] [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariantAt f M τ φ) (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.untl φ)) : TruthAt M τ r' (ψ.untl φ) := by
+  haveI := Fintype.ofFinite ι
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
   · exact ⟨s, hcase, hφs, fun x hx hxs => hg x (lt_trans hlt hx) hxs⟩
@@ -193,11 +195,13 @@ private theorem untlAt_forward [NoMaxOrder D] {φ ψ : Formula}
       have hxreg : SameRegion f r' x := sameRegion_convex hs'reg hx.le hxs'.le
       exact (hψ x₀ x ((hx₀reg.symm.trans hrr').trans hxreg)).mp hψx₀
 
+omit [Fintype ι] in
 /-- The reverse direction of the `untl` case, for `r < r'`. -/
-private theorem untlAt_backward [NoMaxOrder D] {φ ψ : Formula}
+private theorem untlAt_backward [Finite ι] [NoMaxOrder D] {φ ψ : Formula}
     (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.untl φ)) : TruthAt M τ r (ψ.untl φ) := by
+  haveI := Fintype.ofFinite ι
   obtain ⟨s, hr's, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hr's₁, hs₁reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
@@ -214,8 +218,9 @@ private theorem untlAt_backward [NoMaxOrder D] {φ ψ : Formula}
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hx.le hcase
     exact (hψ y x ((hyreg.symm.trans hrr'.symm).trans hxreg)).mp hψy
 
+omit [Fintype ι] in
 /-- **Until case**, per history. -/
-theorem interpInvariantAt_untl [NoMaxOrder D] {φ ψ : Formula}
+theorem interpInvariantAt_untl [Finite ι] [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariantAt f M τ φ) (hψ : InterpInvariantAt f M τ ψ) :
     InterpInvariantAt f M τ (Formula.untl ψ φ) := by
   intro r r' hrr'
@@ -224,11 +229,13 @@ theorem interpInvariantAt_untl [NoMaxOrder D] {φ ψ : Formula}
   · rw [heq]
   · exact ⟨untlAt_backward hψ hrr'.symm hgt, untlAt_forward hφ hψ hrr'.symm hgt⟩
 
+omit [Fintype ι] in
 /-- One direction of the `snce` case, for `r < r'`. -/
-private theorem snceAt_forward [NoMinOrder D] {φ ψ : Formula}
+private theorem snceAt_forward [Finite ι] [NoMinOrder D] {φ ψ : Formula}
     (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r (ψ.snce φ)) : TruthAt M τ r' (ψ.snce φ) := by
+  haveI := Fintype.ofFinite ι
   obtain ⟨s, hsr, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hs₁r, hs₁reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1
@@ -245,11 +252,13 @@ private theorem snceAt_forward [NoMinOrder D] {φ ψ : Formula}
     have hxreg : SameRegion f r x := sameRegion_convex hrr' hcase hxr'.le
     exact (hψ y x (hyreg.symm.trans hxreg)).mp hψy
 
+omit [Fintype ι] in
 /-- The reverse direction of the `snce` case, for `r < r'`. -/
-private theorem snceAt_backward [NoMinOrder D] {φ ψ : Formula}
+private theorem snceAt_backward [Finite ι] [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariantAt f M τ φ) (hψ : InterpInvariantAt f M τ ψ)
     {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
     (h : TruthAt M τ r' (ψ.snce φ)) : TruthAt M τ r (ψ.snce φ) := by
+  haveI := Fintype.ofFinite ι
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
   · exact ⟨s, hcase, hφs, fun x hsx hxr => hg x hsx (lt_trans hxr hlt)⟩
@@ -267,8 +276,9 @@ private theorem snceAt_backward [NoMinOrder D] {φ ψ : Formula}
         hs'reg.trans (sameRegion_convex hs'reg.symm hs'x.le hxr.le)
       exact (hψ y x ((hyreg.symm.trans hsreg.symm).trans hxreg)).mp hψy
 
+omit [Fintype ι] in
 /-- **Since case**, per history. -/
-theorem interpInvariantAt_snce [NoMinOrder D] {φ ψ : Formula}
+theorem interpInvariantAt_snce [Finite ι] [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariantAt f M τ φ) (hψ : InterpInvariantAt f M τ ψ) :
     InterpInvariantAt f M τ (Formula.snce ψ φ) := by
   intro r r' hrr'
@@ -279,28 +289,33 @@ theorem interpInvariantAt_snce [NoMinOrder D] {φ ψ : Formula}
 
 /-! ### The derived temporal operators -/
 
+omit [Fintype ι] in
 /-- **`F φ`.** -/
-theorem interpInvariantAt_someFuture [NoMaxOrder D] {φ : Formula}
+theorem interpInvariantAt_someFuture [Finite ι] [NoMaxOrder D] {φ : Formula}
     (hφ : InterpInvariantAt f M τ φ) : InterpInvariantAt f M τ φ.someFuture :=
   interpInvariantAt_untl hφ interpInvariantAt_top
 
+omit [Fintype ι] in
 /-- **`P φ`.** -/
-theorem interpInvariantAt_somePast [NoMinOrder D] {φ : Formula}
+theorem interpInvariantAt_somePast [Finite ι] [NoMinOrder D] {φ : Formula}
     (hφ : InterpInvariantAt f M τ φ) : InterpInvariantAt f M τ φ.somePast :=
   interpInvariantAt_snce hφ interpInvariantAt_top
 
+omit [Fintype ι] in
 /-- **`G φ`.** -/
-theorem interpInvariantAt_allFuture [NoMaxOrder D] {φ : Formula}
+theorem interpInvariantAt_allFuture [Finite ι] [NoMaxOrder D] {φ : Formula}
     (hφ : InterpInvariantAt f M τ φ) : InterpInvariantAt f M τ φ.allFuture :=
   interpInvariantAt_neg (interpInvariantAt_someFuture (interpInvariantAt_neg hφ))
 
+omit [Fintype ι] in
 /-- **`H φ`.** -/
-theorem interpInvariantAt_allPast [NoMinOrder D] {φ : Formula}
+theorem interpInvariantAt_allPast [Finite ι] [NoMinOrder D] {φ : Formula}
     (hφ : InterpInvariantAt f M τ φ) : InterpInvariantAt f M τ φ.allPast :=
   interpInvariantAt_neg (interpInvariantAt_somePast (interpInvariantAt_neg hφ))
 
 /-! ### The assembled induction -/
 
+omit [Fintype ι] in
 /--
 **Per-history interpolation invariance.** On a densely ordered carrier with no endpoints, truth of
 every formula in an *atomically region-invariant* history is constant on each region.
@@ -311,7 +326,7 @@ box case now instantiates against world histories, which `timeShift` preserves o
 Contrast the global `interpInvariant`, which additionally demands region-constancy of *every*
 world history — a demand this carrier cannot meet (`Bridge/RegionFrame.lean`, Consequence 3).
 -/
-theorem interpInvariantAt [NoMaxOrder D] [NoMinOrder D]
+theorem interpInvariantAt [Finite ι] [NoMaxOrder D] [NoMinOrder D]
     (hAI : AtomRegionInvariant f M τ) (χ : Formula) :
     InterpInvariantAt f M τ χ := by
   induction χ with
@@ -368,13 +383,14 @@ theorem atomRegionInvariant_regionHistory {f : ι → D} {M : TaskModel (regionF
     simp only [regionHistory_state, add_zero]
     exact hRV w r r' h p
 
+omit [Fintype ι] in
 /--
 **The countermodel is region-invariant at every base history.** The hypothesis of
 `interpInvariantAt` is discharged by construction: the model is region-valued (supplied by
 `Bridge/Valuation.lean`). The former second hypothesis, shift-closure of the admissible set, is
 gone with the retarget of the box clause to world histories.
 -/
-theorem interpInvariantAt_regionHistory {f : ι → D} {M : TaskModel (regionFrame W ι D)}
+theorem interpInvariantAt_regionHistory [Finite ι] {f : ι → D} {M : TaskModel (regionFrame W ι D)}
     (hRV : RegionValued f M) (w : W) (χ : Formula) :
     InterpInvariantAt f M (regionHistory f w (0 : D)) χ :=
   interpInvariantAt (atomRegionInvariant_regionHistory hRV w) χ

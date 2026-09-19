@@ -74,7 +74,7 @@ private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
 
 /-- Classical conjunction reading of the encoded `Formula.and` (file-local; the encoding
     is `(φ.imp ψ.neg).neg`, so both directions are a double-negation shuffle). -/
-private theorem temporal_truth_and_iff {sig : MonadicSignature} [Fintype sig.preds]
+private theorem temporal_truth_and_iff {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (u : M.carrier) (φ ψ : Formula) :
@@ -658,7 +658,7 @@ def VVecEA2.enrichEndpoints (v : VVecEA2) (pL pR : Formula) : VVecEA2 :=
 /-- Enrichment semantics: the enriched formula holds iff the original holds AND the two
     endpoint enrichments hold at their anchors (the enrichments are disjunct-independent,
     so they factor out of the disjunction). -/
-theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.preds]
+theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v : VVecEA2) (pL pR : Formula) (z0 z1 : M.carrier) :

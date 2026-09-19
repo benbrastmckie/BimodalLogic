@@ -94,7 +94,7 @@ The proof uses `nfCharacteristic` uniqueness: both structures satisfy the same
 characteristic normal form because the isomorphism preserves all atoms
 (predicates and order) and bijects witnesses at each quantifier level.
 -/
-theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+theorem k_equiv_of_iso (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
     (k : Nat)
     (M N : OrderedMonadicStructure sig) (f : M.carrier ≃o N.carrier)
     (h_pred : ∀ (p : sig.preds) (x : M.carrier), M.interp p x ↔ N.interp p (f x)) :
@@ -172,8 +172,9 @@ theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
 -/
 theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (k : Nat)
-    (M : OrderedMonadicStructure sig) [Fintype M.carrier] :
+    (M : OrderedMonadicStructure sig) [Finite M.carrier] :
     good sig k M := by
+  haveI := Fintype.ofFinite M.carrier
   -- Get cardinality
   set n := Fintype.card M.carrier with hn
   -- Build order isomorphism iso : Fin n ≃o M.carrier
@@ -250,7 +251,7 @@ private theorem succ_iterate_le {α : Type} [Preorder α] [SuccOrder α]
 /--
 In a succ-Archimedean linear order, every bounded interval [a, b] is finite.
 -/
-theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Fintype sig.preds]
+theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier]
@@ -279,7 +280,7 @@ theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Fintype
 Subinterval of a subinterval flattens: a nested subinterval is k-equivalent
 to the corresponding direct subinterval of M.
 -/
-theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Fintype sig.preds]
+theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Finite sig.preds]
     [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a b : M.carrier)
     (c d : (M.subinterval sig a b).carrier) :

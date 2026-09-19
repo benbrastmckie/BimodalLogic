@@ -44,7 +44,7 @@ needs restating rather than re-deriving. The derivable direction is recorded bel
 `ExistProvidersFaithful.toExistProviders` and
 `BracketCarrierCorrectVPriorFaithful.toBracketCarrierCorrectVPrior`, so the re-base is
 machine-checked to be a weakening of hypotheses and not a sideways move — the same discipline
-`kampArm_zeta_faithful_covers_attained` (`Kamp/ZetaUniformExtractFaithful.lean:576`) applies at the
+`kampArm_zeta_faithful_covers_attained` (`Kamp/ZetaUniformExtractFaithful.lean:577`) applies at the
 ζ wire.
 
 ## Nothing is removed and nothing is renamed

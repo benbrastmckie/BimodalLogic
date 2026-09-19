@@ -43,11 +43,12 @@ are k-equivalent.
 
 **Status**: Closed. Delegates to KEquivalenceFramework.sum_preservation.
 -/
-theorem doets_lemma_1_4 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+theorem doets_lemma_1_4 (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
     (k : Nat) (I : Type) [LinearOrder I]
     (m m' : I → OrderedMonadicStructure sig)
     (h_equiv : ∀ i, KEquiv sig k (m i) (m' i)) :
     KEquiv sig k (orderedSum sig I m) (orderedSum sig I m') :=
+  haveI := Fintype.ofFinite sig.preds
   KEquivalenceFramework.sum_preservation k I m m' h_equiv
 
 -- NOTE: `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k`

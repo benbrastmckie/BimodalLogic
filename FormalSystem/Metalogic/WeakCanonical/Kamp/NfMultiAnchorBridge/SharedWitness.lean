@@ -47,7 +47,7 @@ cited by PDF page):
 - Gate-failure branch `{ disjuncts := [] }` under the depth-2 gate: outer off-fiber falsity,
   outer seven-zone consistency (the joint witness self-zone `zAtW3` included — nine-zone
   lesson one level up, `SubBracket2V.lean:162-166`), inner off-fiber for every positive σ,
-  and the inner NINE-zone consistency (verbatim `SubBracket2V.lean:1402-1408` pattern set,
+  and the inner NINE-zone consistency (verbatim `SubBracket2V.lean:1405-1408` pattern set,
   including both witness self-zones `zAtX1`/`zAtW`) for left-interior positives.
 
 **Recorded scope decision (Phase 7).** Positive subs are classified by their OUTER zone

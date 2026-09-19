@@ -62,7 +62,7 @@ We need to bridge this to TemporalTruth ψ using classical logic.
 -/
 
 /-- TemporalTruth of ψ.neg is ¬TemporalTruth ψ. -/
-private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Fintype sig.preds]
+private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (ψ : Formula) :
@@ -70,7 +70,7 @@ private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Fintype sig.pre
   simp only [Formula.neg, TemporalTruth]
 
 /-- TemporalTruth of ψ.neg.neg is ¬¬TemporalTruth ψ, which is TemporalTruth ψ classically. -/
-private theorem temporal_truth_neg_neg_iff {sig : MonadicSignature} [Fintype sig.preds]
+private theorem temporal_truth_neg_neg_iff {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (ψ : Formula) :
@@ -91,7 +91,7 @@ The proof applies Prior-UZ with ψ = B.neg to find the first ¬B point s₀
 after t, then derives a contradiction at s₀ from the U' body condition:
 neither disjunct (B cofinal above s₀ / ¬B before s₀) can hold.
 -/
-theorem stavi_U_false_on_prior_UZ {sig : MonadicSignature} [Fintype sig.preds]
+theorem stavi_U_false_on_prior_UZ {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
@@ -144,7 +144,7 @@ satisfying semantic Prior-SZ.
 
 Mirror of `stavi_U_false_on_prior_UZ` in the past direction.
 -/
-theorem stavi_S_false_on_prior_SZ {sig : MonadicSignature} [Fintype sig.preds]
+theorem stavi_S_false_on_prior_SZ {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
@@ -212,7 +212,7 @@ structural induction on sf. The U'/S' cases use Prior-UZ/SZ to derive contradict
 
 Reference: Reynolds 1994, Theorem 5, p.123.
 -/
-theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
+theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)

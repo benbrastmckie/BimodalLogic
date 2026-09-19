@@ -696,7 +696,7 @@ open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extr
     Same
     insertion induction as the depth-1 original, over the generic insert helper
     `k1v_sorted_insert`. -/
-theorem igk_sorted_realization {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem igk_sorted_realization {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (M : OrderedMonadicStructure sig)
     (a b : M.carrier)
@@ -706,6 +706,7 @@ theorem igk_sorted_realization {sig : MonadicSignature} [Fintype sig.preds] [Dec
       List.Perm (ps.map Prod.fst) S ∧
       (ps.map Prod.snd).Pairwise (· < ·) ∧
       ∀ p ∈ ps, (a < p.2 ∧ p.2 < b) ∧ NfEvalNf M k 1 (fun _ => p.2) p.1 := by
+  haveI := Fintype.ofFinite sig.preds
   induction S with
   | nil => exact ⟨[], by simp, by simp, by simp⟩
   | cons χ S' ih =>

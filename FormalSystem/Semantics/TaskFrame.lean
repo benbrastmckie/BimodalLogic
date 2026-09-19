@@ -1206,10 +1206,11 @@ anywhere in this library; the infrastructure, not the one-line proof, is the cos
 gives a machine-checked consequence of *Limit* in the same cost bracket, is topology-free,
 and has direct bearing on the finite-model constructions.
 -/
-theorem exists_uniform_radius_of_finite {W : Type} [Fintype W]
+theorem exists_uniform_radius_of_finite {W : Type} [Finite W]
     (R : W → D → W → Prop)
     (hlim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
     (w : W) : ∃ x : D, 0 < x ∧ ∀ u y, |y| < x → R w y u → u = w := by
+  haveI := Fintype.ofFinite W
   classical
   -- A nontrivial ordered group has a positive element, used as the radius at `u = w`.
   obtain ⟨x₀, hx₀⟩ : ∃ x : D, 0 < x := by

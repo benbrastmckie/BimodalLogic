@@ -222,7 +222,7 @@ mark each original site. Chain: env bridge → trichotomy → `Formula.or` assem
     existential over `env : Fin 1` equals the single-anchor existential on
     `Fin.cons x (fun _ => t)` — the `h_env_eq` bridge (KampPrior:277-291) extracted as the
     named, reusable site lemma (the shape Phases 18-19 rewrite through). -/
-theorem kampPrior_site_env_bridge {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_site_env_bridge {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
@@ -250,7 +250,7 @@ theorem kampPrior_site_env_bridge {sig : MonadicSignature} [Fintype sig.preds]
     composed with `nf_zone_exists_trichotomy_k1` (NfZoneFlattenNavigable:188, consumed, not
     rebuilt). The three disjuncts are exactly the shapes `nf_char2_past_formula_correct` (P4),
     `A_diag_correct`, and `nf_char2_future_formula_correct` (P5) characterize. -/
-theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
@@ -259,6 +259,7 @@ theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Fintype sig.preds]
       (∃ x, x < t ∧ NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ∨
       (NfEvalNf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf) ∨
       (∃ x, t < x ∧ NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :=
+  haveI := Fintype.ofFinite sig.preds
   (kampPrior_site_env_bridge M k sub_nf t).trans
     (nf_zone_exists_trichotomy_k1 M k sub_nf t)
 
@@ -269,7 +270,7 @@ theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Fintype sig.preds]
     `temporal_truth_or` (Translation:64) + `or_congr` against the Phase-15 trichotomy split —
     the reusable citation point Phase 19 rewrites the arm through once the three arm formulas +
     correctness are supplied. -/
-theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (M : OrderedMonadicStructure sig) (k : Nat)
@@ -291,7 +292,7 @@ theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature} [Fintype si
     end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
     over the three landed k=0 arm lemmas. The first G3 green milestone: no obligations,
     no hooks — the arm formula is M-independent by construction. -/
-theorem kampPrior_case1_arm_k0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kampPrior_case1_arm_k0 {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 1 2) :
@@ -302,6 +303,7 @@ theorem kampPrior_case1_arm_k0 {sig : MonadicSignature} [Fintype sig.preds] [Dec
         (t : M.carrier),
         TemporalTruth M atomMap t A ↔
         ∃ env : Fin 1 → M.carrier, NfEvalNf M 1 2 (insertEnv env t) sub_nf := by
+  haveI := Fintype.ofFinite sig.preds
   refine ⟨Formula.or (kampArmPastK0 atomMap h_surj sub_nf)
     (Formula.or (kampArmDiagK0 atomMap h_surj sub_nf)
       (kampArmFutureK0 atomMap h_surj sub_nf)), ?_⟩
@@ -321,7 +323,7 @@ theorem kampPrior_case1_arm_k0 {sig : MonadicSignature} [Fintype sig.preds] [Dec
     at k=1: no gate, no provider obligations (Phase-15 corrected arm indexing — the k=1 arm's
     per-`qnf` population is depth 1, served unconditionally); the arm formula is M-independent
     by construction. -/
-theorem kampPrior_case1_arm_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kampPrior_case1_arm_k1 {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 2 2) :
@@ -332,6 +334,7 @@ theorem kampPrior_case1_arm_k1 {sig : MonadicSignature} [Fintype sig.preds] [Dec
         (t : M.carrier),
         TemporalTruth M atomMap t A ↔
         ∃ env : Fin 1 → M.carrier, NfEvalNf M 2 2 (insertEnv env t) sub_nf := by
+  haveI := Fintype.ofFinite sig.preds
   refine ⟨Formula.or (kampArmPastK1 atomMap h_surj sub_nf)
     (Formula.or (kampArmDiagK1 atomMap h_surj sub_nf)
       (kampArmFutureK1 atomMap h_surj sub_nf)), ?_⟩
@@ -367,7 +370,7 @@ This is the key construction for eliminating the critical-path sorry. -/
       to ∃ env satisfying atoms AND quantifiers. The quantifier layer involves
       (n+1)-variable existentials at depth k arity (n+2), available from IH. -/
 theorem nf_nvar_exist_all_depths
-    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     (k : Nat) → (n : Nat) → (hn : n ≤ 1) → (sub_nf : NormalForm sig k (n + 1)) →
@@ -379,10 +382,12 @@ theorem nf_nvar_exist_all_depths
           TemporalTruth M atomMap t A ↔
           ∃ env : Fin n → M.carrier, NfEvalNf M k (n + 1) (insertEnv env t) sub_nf
   | 0, n, _hn, sub_nf =>
+    haveI := Fintype.ofFinite sig.preds
     -- Depth 0: use nf_nvar_exist_depth0_tl (Phase 2, handles all arities)
     ⟨nfNvarExistDepth0TlFn atomMap h_surj n sub_nf,
       fun M _ _ t => nf_nvar_exist_depth0_tl_fn_correct atomMap h_surj n sub_nf M t⟩
   | k + 1, n, hn, sub_nf =>
+    haveI := Fintype.ofFinite sig.preds
     -- Depth k+1: the n-variable existential at arity (n+1) decomposes.
     -- NfEvalNf M (k+1) (n+1) (insertEnv env t) sub_nf =
     --   (∀ a, AtomEval M (insertEnv env t) a ↔ sub_nf.1 a) ∧
@@ -847,7 +852,7 @@ the Phase-15 verdict record above remains the authoritative narrative for them. 
     `∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf`. Definitional (`Iff.rfl`, structure eta) —
     the same unfolding P4's `hunf` (Base:1266-1271) uses in-proof, here landed as the NAMED
     per-`qnf` obligation the depth-ladder rungs below are matched against. -/
-theorem kampPrior_site_perQnf_seam {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_site_perQnf_seam {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (x t : M.carrier) :
@@ -1360,7 +1365,7 @@ contradiction). Arity-generic: the chain realizer is stated for every `BracketFo
     (below the suffix, carrying `α_i`, with `β_{i+1}` on the gap `(v, w' 0)`), the prepended
     family `Fin.cons v w'` witnesses the suffix `i, …, n`. Pure `Fin.cons` transfer — all
     chain content enters through the hypotheses. -/
-theorem kampPrior_fChain_realize_cons {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_fChain_realize_cons {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (x : Fin (n + 1) → M.carrier)
@@ -1461,7 +1466,7 @@ theorem kampPrior_fChain_realize_cons {sig : MonadicSignature} [Fintype sig.pred
     `x (i+1) ∈ (v, y)` and the segment type transfers by restriction — both branches keep the
     invariant `w a ≤ x (i+a)` (chunk 0015: "If y2 ≤ xn+1 then z = y2 … otherwise
     xn+1 ∈ (y1, y2) … z = xn+1"). No `simp`/`omega` bypass of the case-split. -/
-theorem kampPrior_fChain_realize_from {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_fChain_realize_from {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1))
@@ -1550,7 +1555,7 @@ theorem kampPrior_fChain_realize_from {sig : MonadicSignature} [Fintype sig.pred
     is produced with `w 0 = x 0`, every `w i` dominated by its bound (`w i ≤ x i`), the point
     types at the witnesses, the interior segment types on consecutive gaps, and the final
     Until residue beyond `w n`. Instantiates the suffix engine at `i = 0`, `d = n`. -/
-theorem kampPrior_fChain_realize {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_fChain_realize {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1))
@@ -1597,7 +1602,7 @@ theorem kampPrior_fChain_realize {sig : MonadicSignature} [Fintype sig.preds]
     `z := z1` by segment restriction) produces an actual within-bracket witness
     `z ∈ (z0, z1]` with `bf.holds z0 z` — the bounded resolution of the F-chain
     Until-unboundedness obstruction recorded at EANegation.lean. -/
-theorem kampPrior_fChain_realize_bracket {sig : MonadicSignature} [Fintype sig.preds]
+theorem kampPrior_fChain_realize_bracket {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (z0 z1 : M.carrier)

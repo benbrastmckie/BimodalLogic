@@ -531,11 +531,12 @@ private theorem exists_zFactorization (sig : MonadicSignature) [Fintype sig.pred
 
 /-! ## The block as a `ζ`-indexed sum of its segments -/
 
-private theorem kEquiv_zFiber_segSum (sig : MonadicSignature) [Fintype sig.preds]
+private theorem kEquiv_zFiber_segSum (sig : MonadicSignature) [Finite sig.preds]
     [DecidableEq sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop)
     (W : ℤ → ℤ) (hmono : Monotone W) (hcover : ∀ t : ℤ, ∃ z, W z ≤ t ∧ t < W (z + 1)) :
     KEquiv sig k (zFiber sig c)
       (orderedSum sig ℤ (fun z => segZ sig c (W z) (W (z + 1)))) := by
+  haveI := Fintype.ofFinite sig.preds
   set m : ℤ → OrderedMonadicStructure sig := fun z => segZ sig c (W z) (W (z + 1)) with hm
   set g : (orderedSum sig ℤ m).carrier → (zFiber sig c).carrier := fun s => s.2.1 with hg
   have hgmono : StrictMono g := by
@@ -572,11 +573,12 @@ coloured periodically by the word of one Ramsey segment of the block's upper tai
 mixing lemma reduces the comparison to the coloured index orders `ζ` versus
 `ζ ⊕ₗ (ℚ ×ₗ ζ)`, closed by `kEquiv_colourStructure_anchored`.
 -/
-theorem inflate_right (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+theorem inflate_right (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
     (k : ℕ) (c : sig.preds → ℤ → Prop) :
     ∃ e : sig.preds → ℚ ×ₗ ℤ → Prop,
       KEquiv sig k (zFiber sig c)
         (orderedSum sig Bool (fun b => if b then qzFiber sig e else zFiber sig c)) := by
+  haveI := Fintype.ofFinite sig.preds
   obtain ⟨F⟩ := exists_zFactorization sig k c
   obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, hstrict, _⟩ := F
   set p : ℤ := W 2 - W 1 with hp
@@ -748,11 +750,12 @@ theorem inflate_right (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq 
 suitably coloured copy of `ℚ ×ₗ ℤ` prepended below, at the same depth `k` — the `ω*`-mirror
 of `inflate_right`, tiled by the word of one Ramsey segment of the block's lower tail.
 -/
-theorem inflate_left (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+theorem inflate_left (sig : MonadicSignature) [Finite sig.preds] [DecidableEq sig.preds]
     (k : ℕ) (c : sig.preds → ℤ → Prop) :
     ∃ e : sig.preds → ℚ ×ₗ ℤ → Prop,
       KEquiv sig k (zFiber sig c)
         (orderedSum sig Bool (fun b => if b then zFiber sig c else qzFiber sig e)) := by
+  haveI := Fintype.ofFinite sig.preds
   obtain ⟨F⟩ := exists_zFactorization sig k c
   obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, _, hstrict⟩ := F
   set p : ℤ := W (-2 + 1) - W (-2) with hp

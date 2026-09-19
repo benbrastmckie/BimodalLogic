@@ -91,7 +91,7 @@ Reynolds' proof needs three things this tree did not have.
    with `R ∧ K⁻(¬R)` in the payload slot; it is **not** refactored to go through these — nothing is
    removed or renamed — and the relationship is recorded at `classBeginsWithFormula`'s docstring.
 
-3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:598`)
+3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:602`)
    asks for the auxiliary formula to fail at **every** point outside the class with `R` throughout
    in between. Lemma 5's `C` does not satisfy that, and cannot: with classes `C₀ ⊨ ¬B`, `C₁ ⊨ B`,
    `C₂ ⊨ ¬B` in a row, `C₂`'s left end point does carry `K⁻(B)`, so `C` is true again at `C₂`.
@@ -389,7 +389,7 @@ end Temporal
 
 /-! ## The bounded gap-crossing
 
-Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:598`) isolates Reynolds' recurring
+Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:602`) isolates Reynolds' recurring
 *"holds up to a gap and is false arbitrarily soon after the gap, contradicting Prior-U"* step, and
 requires the auxiliary formula to fail at **every** point outside the class reachable with `R`
 throughout. Reynolds' Lemma 5 supplies less: only *"false afterwards"*, on the stretch on which
@@ -501,6 +501,7 @@ section First
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — the first proof paragraph.**
 
@@ -521,7 +522,7 @@ throughout the closed segment `[t,t']`, which is what being in one maximal — h
 Reynolds' *"`¬B ∧ K⁻(B)`"* is `hnBs` together with `hkm` below; the tree's Prior-U
 (`PriorDefsDense.lean:119`) returns the `¬B` half directly and the `K⁻` half is read off the
 stretch it also returns, using `ρ` to supply the intermediate points. -/
-theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
+theorem false_of_classInvariant_changes [Finite sig.preds] {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
@@ -531,6 +532,7 @@ theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
     {t t' : M.carrier} (htt' : t < t')
     (hIcc : ∀ q : M.carrier, t ≤ q → q ≤ t' → EndsInGapOnRight M ε q)
     (hB : TemporalTruth M atomMap t B) (hnB : ¬ TemporalTruth M atomMap t' B) : False := by
+  haveI := Fintype.ofFinite sig.preds
   have hRt : EndsInGapOnRight M ε t := hIcc t le_rfl htt'.le
   obtain ⟨y, hty, hcy⟩ := exists_contemp_gt hε M hRt
   -- *"it continues for a while after `t`"*, then Prior-U.
@@ -595,6 +597,7 @@ theorem false_of_classInvariant_changes {atomMap : Formula → sig.preds}
     obtain ⟨r, hsr, hrw, hBr⟩ := hkw s hsw
     exact hnBq r hsr (lt_of_lt_of_le hrw (le_trans hwu hub.le)) hBr
 
+omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — first statement.**
 
@@ -603,7 +606,7 @@ omit [IsDualClosed C] in
 
 `B` is `holdsSomewhereInClassTemporal`, Reynolds' *"`B` which is true at points only if `A` occurs
 somewhere in their `∼`-class"*; *"by using `¬B` instead if necessary"* is the `t' < t` branch. -/
-theorem reynolds_lemma5_first {atomMap : Formula → sig.preds}
+theorem reynolds_lemma5_first [Finite sig.preds] {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
@@ -611,6 +614,7 @@ theorem reynolds_lemma5_first {atomMap : Formula → sig.preds}
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q)
     (hA : ∃ w : M.carrier, ContempEquivDense M ε t w ∧ TemporalTruth M atomMap w A) :
     ∃ w : M.carrier, ContempEquivDense M ε t' w ∧ TemporalTruth M atomMap w A := by
+  haveI := Fintype.ofFinite sig.preds
   by_contra hcon
   set B := holdsSomewhereInClassTemporal atomMap h_surj ε A with hBdef
   have hspec : ∀ x : M.carrier, TemporalTruth M atomMap x B ↔
@@ -783,6 +787,7 @@ theorem classModelsTemporal_spec (atomMap : Formula → sig.preds)
     (relativizeToClass ε φ)).property M h_prior_U h_prior_S t).symm.trans
       (eval_relativizeToClass M ε φ t)
 
+omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — second statement.**
 
@@ -797,13 +802,14 @@ named this way rather than through `M.subinterval`).
 interval"* is the appeal to `reynolds_lemma5_first` below, applied to the temporal equivalent of
 `φ'`; class-invariance of `ClassModels` is what turns *"holds somewhere in the class"* back into
 *"holds throughout the class"*. -/
-theorem reynolds_lemma5_second {atomMap : Formula → sig.preds}
+theorem reynolds_lemma5_second [Finite sig.preds] {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (φ : MonadicFormula sig 0) {t t' : M.carrier}
     (hIcc : ∀ q : M.carrier, min t t' ≤ q → q ≤ max t t' → EndsInGapOnRight M ε q) :
     ClassModels M ε t φ ↔ ClassModels M ε t' φ := by
+  haveI := Fintype.ofFinite sig.preds
   have key : ∀ a c : M.carrier,
       (∀ q : M.carrier, min a c ≤ q → q ≤ max a c → EndsInGapOnRight M ε q) →
       ClassModels M ε a φ → ClassModels M ε c φ := by
@@ -819,9 +825,10 @@ theorem reynolds_lemma5_second {atomMap : Formula → sig.preds}
   intro q h₁ h₂
   exact hIcc q (by rwa [min_comm]) (by rwa [max_comm])
 
+omit [Fintype sig.preds] in
 omit [IsDualClosed C] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179**, both statements. -/
-theorem reynolds_lemma5 {atomMap : Formula → sig.preds}
+theorem reynolds_lemma5 [Finite sig.preds] {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)
@@ -857,6 +864,7 @@ section FirstLeft
 
 variable [Fintype sig.preds] [DecidableEq sig.preds]
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 5, printed p.179 — the first statement over maximal intervals of
 `λ` rather than of `R`.**
 
@@ -868,7 +876,7 @@ header for what licenses it and for why it is not attributed to him.
 
 Proved by instantiating `reynolds_lemma5_first` at `(dual M, dualize ε)` and at
 `reflectTimeBoxOpaque A`. -/
-theorem reynolds_lemma5_first_left {atomMap : Formula → sig.preds}
+theorem reynolds_lemma5_first_left [Finite sig.preds] {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] (h_prior_U : SemanticPriorU M atomMap)

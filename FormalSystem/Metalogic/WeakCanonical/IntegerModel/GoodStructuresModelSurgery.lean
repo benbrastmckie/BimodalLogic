@@ -95,7 +95,7 @@ open FormalSystem.Syntax
 /-! ## Temporal Truth Helpers -/
 
 /-- TemporalTruth of ψ.neg is ¬(TemporalTruth of ψ). -/
-theorem temporal_truth_neg_iff_not {sig : MonadicSignature} [Fintype sig.preds]
+theorem temporal_truth_neg_iff_not {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (ψ : Formula) :
@@ -103,7 +103,7 @@ theorem temporal_truth_neg_iff_not {sig : MonadicSignature} [Fintype sig.preds]
   simp only [Formula.neg, TemporalTruth]
 
 /-- Double negation elimination for TemporalTruth. -/
-theorem temporal_truth_neg_neg_elim {sig : MonadicSignature} [Fintype sig.preds]
+theorem temporal_truth_neg_neg_elim {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (ψ : Formula)
@@ -123,7 +123,7 @@ This is a direct consequence of Prior-UZ: the first occurrence of ¬ψ after t
 provides the transition point, and in a discrete order, the point just before
 the first ¬ψ occurrence is a successor boundary.
 -/
-theorem prior_UZ_first_transition {sig : MonadicSignature} [Fintype sig.preds]
+theorem prior_UZ_first_transition {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
@@ -188,7 +188,7 @@ TemporalTruth c ψ and ¬TemporalTruth (Order.pred c) ψ.
 
 Symmetric to `prior_UZ_first_transition` using the past direction.
 -/
-theorem prior_SZ_last_transition {sig : MonadicSignature} [Fintype sig.preds]
+theorem prior_SZ_last_transition {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]

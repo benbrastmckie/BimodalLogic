@@ -102,7 +102,7 @@ unavailability as a claim about this module's own target.
 
 ## Domain restriction, inherited and stated
 
-`Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:365`) carries `hn : n ≤ 1`, excluding the
+`Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:368`) carries `hn : n ≤ 1`, excluding the
 arity-`n ≥ 2` arm, and `nfCharacterizableTemporalPrior` consumes it at `n = 1` only. The
 restriction is invisible in `kampPriorExpressiveCompleteness`' statement because arity-1 is all
 that statement ever needs. **It is inherited by everything here** and is not widened: the
@@ -175,7 +175,7 @@ replaced by `Kamp.HasFaithfulDedekindINF` / `Kamp.HasFaithfulDedekindSUP`
 the source's own `K⁺` rather than at this tree's `kplus`.
 
 Stated at `MonadicFormula sig 1`: the arity at which the existing chain closes, inheriting
-`Kamp.nf_nvar_exist_all_depths`' `hn : n ≤ 1` (`Kamp/KampPrior.lean:365`) rather than widening
+`Kamp.nf_nvar_exist_all_depths`' `hn : n ≤ 1` (`Kamp/KampPrior.lean:368`) rather than widening
 it. -/
 def KampFaithfulExpressiveCompleteness {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -248,7 +248,7 @@ each sorry-free:
    arms of `nf_nvar_exist_all_depths`.
 2. **The one substantive obligation above the wire** — `Kamp.aggOdPopFold_iff_faithful`
    (`Kamp/NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean:89`). `aggOdPopFold_iff`
-   (`AggregateOffDiagK1.lean:1228`) touches its carrier hypotheses at exactly one step, the
+   (`AggregateOffDiagK1.lean:1252`) touches its carrier hypotheses at exactly one step, the
    bit-false branch of its cons case (`:1253`), and that step is `VVecEA2.negFix_iff` — for which
    `VVecEA2.negFixFaithful_iff` is the faithful counterpart, needing `HasFaithfulDedekindINF`
    alone. Everything else in the spine turned out to be restatement.

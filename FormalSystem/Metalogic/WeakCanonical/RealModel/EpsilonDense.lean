@@ -79,7 +79,7 @@ relativizes to the **open** `(z,t)`, matching `OrderedMonadicStructure.openSubin
 guards. The two cannot be interchanged — the whole force of `ε` is that its inner interval
 excludes its endpoints, so that `ε(a,b)` says exactly *"`M | (a,b)` is very good"*.
 
-`relativizeAt` (`DenseModelSurgery/Lemma5.lean:674`) is a different operator again: it
+`relativizeAt` (`DenseModelSurgery/Lemma5.lean:678`) is a different operator again: it
 relativizes to an `ε`-**class**, cut out by a binary formula at a single parameter. Reynolds'
 `γ(z,t)` needs **two** parameters cutting out an interval, which is `relativizeOpen`'s job.
 
@@ -162,11 +162,14 @@ def openSubOpenSubEquiv (sig : MonadicSignature) (M : OrderedMonadicStructure si
   left_inv _ := rfl
   right_inv _ := rfl
 
+omit [Fintype sig.preds] in
 /-- `(M | (a,b)) | (z,w) ≡_k M | (z,w)`. -/
-theorem kEquiv_openSub_openSub (k : Nat) (M : OrderedMonadicStructure sig) (a b : M.carrier)
+theorem kEquiv_openSub_openSub [Finite sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
+    (a b : M.carrier)
     (z w : (M.openSubinterval sig a b).carrier) :
     KEquiv sig k ((M.openSubinterval sig a b).openSubinterval sig z w)
       (M.openSubinterval sig z.val w.val) :=
+  haveI := Fintype.ofFinite sig.preds
   k_equiv_of_iso sig k _ _
     (Equiv.toOrderIso (openSubOpenSubEquiv sig M a b z w) (fun _ _ h => h) (fun _ _ h => h))
     (fun _ _ => Iff.rfl)
@@ -218,7 +221,7 @@ exactly one of them (`nf_exists_unique`, `NormalForm.lean:293`), and `nfToSenten
 (`NormalForm.lean:861`) renders each as an honest `MonadicSentence`. The `NormalForm` layer is
 consumed as it stands; nothing here rebuilds it.
 
-The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:365`)
+The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:368`)
 carries does **not** bite here: that restriction is on the *Prior-expressiveness* route, which
 needs a normal-form-to-`U`/`S` translation at `n` free variables. This module stays inside the
 monadic language and uses only the `n = 0` case.
@@ -711,10 +714,12 @@ noncomputable def binSum (sig : MonadicSignature) (X Y : OrderedMonadicStructure
     OrderedMonadicStructure sig :=
   orderedSum sig Bool (binSumFamily sig X Y)
 
+omit [Fintype sig.preds] in
 /-- `+` preserves `k`-equivalence in both arguments: one application of `doets_lemma_1_4`. -/
-theorem kEquiv_binSum (k : Nat) {X X' Y Y' : OrderedMonadicStructure sig}
+theorem kEquiv_binSum [Finite sig.preds] (k : Nat) {X X' Y Y' : OrderedMonadicStructure sig}
     (hX : KEquiv sig k X X') (hY : KEquiv sig k Y Y') :
     KEquiv sig k (binSum sig X Y) (binSum sig X' Y') :=
+  haveI := Fintype.ofFinite sig.preds
   doets_lemma_1_4 sig k Bool _ _ (fun c => by
     simp only [binSumFamily]
     split
@@ -854,12 +859,15 @@ theorem goodDense_binSum_pointSum (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicSt
   exact ⟨catBlock sig R₁ (icoBlock sig M b R₂ 1 2) hoc,
     (kEquiv_binSum k hR₁ h2).trans (kEquiv_binSum_catBlock k R₁ _ hoc hsep)⟩
 
+omit [Fintype sig.preds] in
 /-- `M | (t,u) ≡_k M | (t,b) + M | [b,u)` for `t < b < u`: splitting the open interval at an
     interior point, with the point itself heading the second block. -/
-theorem kEquiv_openSub_split (k : Nat) (M : OrderedMonadicStructure sig) (t b u : M.carrier)
+theorem kEquiv_openSub_split [Finite sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
+    (t b u : M.carrier)
     (htb : t < b) (hbu : b < u) :
     KEquiv sig k (M.openSubinterval sig t u)
       (binSum sig (M.openSubinterval sig t b) (M.halfOpenSubinterval sig b u)) := by
+  haveI := Fintype.ofFinite sig.preds
   classical
   letI fam := binSumFamily sig (M.openSubinterval sig t b) (M.halfOpenSubinterval sig b u)
   letI inst_ord : LinearOrder (orderedSum sig Bool fam).carrier :=

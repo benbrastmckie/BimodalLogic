@@ -508,12 +508,13 @@ is fixed by sub_nf).
 
     The formula is constructed case-by-case on the order direction. -/
 theorem nf_2var_exist_depth0_tl
-    {sig : MonadicSignature} [Fintype sig.preds] (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) :
     ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
       TemporalTruth M atomMap t A ↔
       ∃ x : M.carrier, NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  haveI := Fintype.ofFinite sig.preds
   -- Case split on order booleans (these are fixed by sub_nf)
   match h_10 : sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
         h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with

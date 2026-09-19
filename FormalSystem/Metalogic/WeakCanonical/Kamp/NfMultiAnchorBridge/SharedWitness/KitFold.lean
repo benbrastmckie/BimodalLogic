@@ -27,13 +27,13 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 
 Thread the per-σ bundles produced by the hypothesis-free `kvE2_sepBody_extract` (Phase 2)
 through the `_parts` reducers into the closer `kvE_subBracket2V_sound_of_parts`
-(`SubBracket2V.lean:1292`, consume-only) to obtain each positive owner's `nf_eval`. This is a
+(`SubBracket2V.lean:1295`, consume-only) to obtain each positive owner's `nf_eval`. This is a
 kit APPLICATION, not a bit-proof: every `σ.2 (nf0Assemble … χ σ.1) = true` occurrence below
 is the *antecedent* of a per-owner `bit ⟹ witness` implication carried by that owner's OWN
 enumeration `σ.2` — self-owned, never a cross-σ goal (plan v4 Postmortem Constraints; the
 deleted plan-02 R3 stays deleted). `hgate` is the explicit outer-gate hypothesis threaded
 verbatim (the Amendment F3 pattern of `kvE_subBracket2V_sound_of_outer`,
-`SubBracket2V.lean:1483`) — never assumed, never discharged vacuously here; its carrier-side
+`SubBracket2V.lean:1487`) — never assumed, never discharged vacuously here; its carrier-side
 derivable pieces live in the Phase 9 (O4) section above and its assembly is downstream
 Rabinovich 2014: Notation 5.2 bracket bundles (pp.7-8), Cor 5.4
 bounded interior placement (p.9). -/
@@ -42,7 +42,7 @@ bounded interior placement (p.9). -/
     witness, under `w < t`, yields the owner's depth-1 `nf_eval` at env `[x1, w, x, t]` by
     feeding the EXACT `kvE_subBracket2V_sound_of_parts` input 5-tuple produced by
     `kvE2_sepBundleL_parts` into the closer, `hgate` threaded verbatim (Amendment F3 — the
-    `kvE_subBracket2V_sound_of_outer` composition pattern, `SubBracket2V.lean:1516-1517`).
+    `kvE_subBracket2V_sound_of_outer` composition pattern, `SubBracket2V.lean:1520-1517`).
     Instantiated at the standard `charBase = nfDepth0CharFormula atomMap h_surj`, under
     which the bundle's below-anchor witnesses unify with the closer's expected shapes with no
     coercion. Bounds ride the bracket's own ordering (FM-x1t; never a fresh-witness/slot
@@ -79,9 +79,9 @@ theorem kvE2_sepBundleL_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
 
 /-- **RIGHT-interior kit application** (Phase 3 — the plan-v4 MEDIUM-risk residual,
     discharged by the anticipated kit-application lemma). The landed closer
-    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1292`) does NOT serve this class
+    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1295`) does NOT serve this class
     directly — three signature facts, each read off HEAD source:
-    (a) its `hgate` conclusion opens with `a < w` (`SubBracket2V.lean:1307`), but
+    (a) its `hgate` conclusion opens with `a < w` (`SubBracket2V.lean:1310`), but
     `KvE2SepBundleR` supplies the anchor with `w < x1`, so a truthful gate can never be fed
     the right bundle's anchor;
     (b) `kvE2_sepBundleR_parts` (SW above) deliberately drops the below-clause — no `hbelow`
@@ -516,7 +516,7 @@ theorem kvE2_sepFragment_realizable {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **LEFT-interior parts closer at the PIN** (the continuation-inlining
     wrapper). Inlines `kvE_subBracket2V_sound_of_parts`'s continuation
-    (`SubBracket2V.lean:1326-1345`)
+    (`SubBracket2V.lean:1329-1345`)
     with the four gate conjuncts supplied AT the specific pin `x1` (`x < x1 < w`), NOT as a ∀-anchor
     over `(x,t)` (whose universal form is REFUTED, report §1). The gate producer
     (`kvE2_sepGateAtPin_fragL`) extracts `x1` from the body and derives the four conjuncts at THAT
@@ -628,7 +628,7 @@ theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     (`ExistsForallNF.lean:197-203`). Model-general (rides `M.carrier`'s `LinearOrder`); carries
     no fold/bracket content. This converts an arbitrary model point of an interior forward-zone
     into the region whose landed segment/witness channel closes it. Additive. -/
-theorem kvE2_sep_locate_witness {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_sep_locate_witness {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k : Nat}
     (ws : Fin (k + 1) → M.carrier)
     (v : M.carrier) :

@@ -404,7 +404,7 @@ above. -/
 /-! ### Inconsistency lemmas for 3-var order booleans -/
 
 /-- When both order(i,j) and order(j,i) are true, the existential is empty. -/
-private theorem nf_3var_order_contradiction {sig : MonadicSignature} [Fintype sig.preds]
+private theorem nf_3var_order_contradiction {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (ssn : NormalForm sig 0 3)
     (i j : Fin 3) (h_ij : i ≠ j)
@@ -812,7 +812,7 @@ When the order booleans force y = x or y = t (both orders false for that pair),
 the existential reduces to predicate checks without a temporal quantifier. -/
 
 /-- When y = t (both order(0,2) and order(2,0) are false), the witness is t itself. -/
-theorem nf_3var_eq_yt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_eq_yt {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     (ssn : NormalForm sig 0 3)
     (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
     (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
@@ -841,7 +841,7 @@ theorem nf_3var_eq_yt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
   · intro h_nf; exact ⟨t, h_nf⟩
 
 /-- When y = x (both order(0,1) and order(1,0) are false), the witness is x itself. -/
-theorem nf_3var_eq_yx {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_eq_yx {sig : MonadicSignature} [Finite sig.preds] [DecidableEq sig.preds]
     (ssn : NormalForm sig 0 3)
     (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
@@ -882,7 +882,7 @@ orderings use the zone-specific constructions above. -/
 
     This reduces the problem of expressing the 3-var existential to
     the 2-free-variable VecEA2 formalism, which is already sorry-free. -/
-theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature} [Fintype sig.preds]
+theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (ssn : NormalForm sig 0 3) (M : OrderedMonadicStructure sig) (x t : M.carrier) :
     (∃ y : M.carrier,

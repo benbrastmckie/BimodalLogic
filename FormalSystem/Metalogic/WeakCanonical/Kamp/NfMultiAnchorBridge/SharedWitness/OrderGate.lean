@@ -357,7 +357,7 @@ def KvE2SepOuterConsistent (zs : ZoneSpec 3) : Prop :=
 
 /-- The nine consistent INNER zones for a LEFT-interior σ (`x < x1 < w < t`) — the
     VERBATIM pattern set of `kvE_subBracket2V_gate_holds_of_honest`'s conclusion
-    (`SubBracket2V.lean:1402-1408`), including both witness self-zones `zAtX1`/`zAtW`,
+    (`SubBracket2V.lean:1405-1408`), including both witness self-zones `zAtX1`/`zAtW`,
     so the honest discharge consumes that landed lemma directly. -/
 def KvE2SepInnerConsistentL (zs : ZoneSpec 4) : Prop :=
   zs = Fin.cons (true, false) (Fin.cons (true, false)
@@ -410,7 +410,7 @@ def KvE2SepInnerConsistentR (zs : ZoneSpec 4) : Prop :=
     sub's fresh witness sits in a consistent placement; (iii) INNER off-fiber falsity for
     every positive sub (its own depth-1 quant layer is on-fiber); (iv) INNER nine-zone
     consistency for LEFT-interior positives (the class the landed per-σ kit serves; the
-    exact syntactic clause the O4 `hgate` derivation needs, `SubBracket2V.lean:1874-1877`). -/
+    exact syntactic clause the O4 `hgate` derivation needs, `SubBracket2V.lean:1878-1877`). -/
 def KvE2SepGate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : Prop :=
   (∀ σ : NormalForm sig 1 4, nf0DropFresh σ.1 ≠ qnf.1 → qnf.2 σ = false) ∧
@@ -993,7 +993,7 @@ noncomputable instance kvE2SepArr'Decidable {sig : MonadicSignature} [Fintype si
     consecutive `zipIdx` index `s, s+1, …` — all `< n` — is reachable in the cartesian rank×tag
     enumeration. Both `kvE2SepModelOrder` and `kvE2SepCoincidentOrder` are instances (`s = 0`,
     `n = |pos|`). -/
-private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} [Fintype sig.preds]
+private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] (n : ℕ)
     (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
     (gt : ℕ → List ℕ)
@@ -1029,7 +1029,7 @@ private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} [Fintype sig
     payload
     (`block.map …`) needs. -/
 -- Module-public (was file-private): consumed by later modules of the SharedWitness tower (D,F).
-theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature} [Fintype sig.preds]
+theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
     (enum : NormalForm sig 1 4 → List (List ℕ))

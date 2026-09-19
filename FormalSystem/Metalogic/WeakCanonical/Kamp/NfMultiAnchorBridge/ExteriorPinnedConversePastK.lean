@@ -270,7 +270,7 @@ theorem kvE_pastAtomPinned_zero {sig : MonadicSignature} [Fintype sig.preds] [De
     the tail 4-type is pinned to the characteristic (`nf_eval_unique`), which the
     profile-equal endpoint realizes by hypothesis; the zone channel changes only at index 0,
     where `x1 < x ≤ v` and `x1' < x ≤ v` render the SAME coupling `(false, true)`. -/
-theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Fintype sig.preds]
+theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 x1' w x t : M.carrier)
     (hvx : ¬ v < x) (hx1x : x1 < x) (hx1'x : x1' < x)
@@ -281,6 +281,7 @@ theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Fintype sig.pred
       (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) :
     NfEvalNf M 0 5
       (Fin.cons v (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))) s := by
+  haveI := Fintype.ofFinite sig.preds
   obtain ⟨hz, hfr, htl⟩ := (nf_eval_nf0_cons_factor M
     (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) v s).mp hs
   -- tail channel: the env restriction is x1's characteristic, realized at x1' by hypothesis
@@ -459,7 +460,7 @@ theorem kvE_pastSliceUnique_zero {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ### Private navigation helpers for the slice-id (Past mirrors of the Future file's
 private `kvE_projFresh_zero`/`kvE_futGapItem_pinned_zero`/`kvE_futRayItem_pinned_zero`,
-ExteriorPinnedConverseK.lean:772-832; replication precedent as above) -/
+ExteriorPinnedConverseK.lean:773-832; replication precedent as above) -/
 
 /-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
     replicated per the established precedent, never imported): at depth 0 the prefix
@@ -532,7 +533,7 @@ private theorem kvE_pastRayItem_pinned_zero {sig : MonadicSignature} [Fintype si
 
 /-- **Past exterior-slice identification at m = 0** (Rabinovich Cor 5.4(2) ⇐ under the
     Def 7.13 segment discipline; verbatim mirror of `kvE_futSliceId_of_end_zero`,
-    ExteriorPinnedConverseK.lean:889 — UNBLOCKED by the Phase-4a conjunct-4 restoration): at
+    ExteriorPinnedConverseK.lean:890 — UNBLOCKED by the Phase-4a conjunct-4 restoration): at
     a destructor-selected exterior-past endpoint `x1 < x` carrying the endpoint/walk truths,
     under the level-up ambient, the endpoint's HONEST complete type σ★ is qnf-marked,
     pinned-realized at `[x1, w, x, t]`, and agrees with σ on the atom layer and on every

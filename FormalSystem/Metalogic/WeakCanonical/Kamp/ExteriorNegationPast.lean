@@ -77,7 +77,7 @@ private instance : Fintype (ZoneSpec 4) :=
 
 /-- Profiles realized by the same point coincide (file-local copy of the side-neutral
     `ExteriorNegation.lean` private lemma; dedupe deferred to Phase 7). -/
-private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds]
+private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ χ' : NormalForm sig 0 1)
     (h : NfEvalNf M 0 1 (fun _ => v) χ) (h' : NfEvalNf M 0 1 (fun _ => v) χ') :
@@ -92,7 +92,7 @@ private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds]
   | .order i j hij => exact absurd (Subsingleton.elim i j) hij
 
 /-- Every point realizes its depth-0 monadic characteristic (file-local copy, as above). -/
-private theorem nf_profile_exists {sig : MonadicSignature} [Fintype sig.preds]
+private theorem nf_profile_exists {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) :
     ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
@@ -579,7 +579,7 @@ noncomputable def kvE2ExtNegPast {sig : MonadicSignature} [Fintype sig.preds]
 /-- Maximal-witness selection (mirror of `kvE2_futMinPick`): from per-element witnesses
     over a nonempty list, pick an element whose witness is ≥ every element's (some)
     witness. -/
-private theorem kvE2_pastMaxPick {sig : MonadicSignature} [Fintype sig.preds]
+private theorem kvE2_pastMaxPick {sig : MonadicSignature} [Finite sig.preds]
     [DecidableEq sig.preds] {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →

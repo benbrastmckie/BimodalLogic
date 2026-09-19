@@ -188,45 +188,53 @@ section NoWeakening
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 variable {M : OrderedMonadicStructure sig} {ε : MonadicFormula sig 2}
 
+omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- Theorem 4, right-hand end, at Reynolds' own unrestricted reading — the pre-parameterization
 signature of `no_gaps_dense_prior`, verbatim. -/
-theorem no_gaps_dense_prior_unrestricted (atomMap : Formula → sig.preds)
+theorem no_gaps_dense_prior_unrestricted [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ EndsInGapOnRight M ε t :=
+  haveI := Fintype.ofFinite sig.preds
   no_gaps_dense_prior atomMap h_surj hε h_prior_U h_prior_S t
 
+omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- Theorem 4, left-hand end, at Reynolds' own unrestricted reading — the pre-parameterization
 signature of `no_gaps_dense_prior_left`, verbatim. -/
-theorem no_gaps_dense_prior_left_unrestricted (atomMap : Formula → sig.preds)
+theorem no_gaps_dense_prior_left_unrestricted [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap)
     (t : M.carrier) : ¬ EndsInGapOnLeft M ε t :=
+  haveI := Fintype.ofFinite sig.preds
   no_gaps_dense_prior_left atomMap h_surj hε h_prior_U h_prior_S t
 
+omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- Theorem 5 at Reynolds' own unrestricted reading — the pre-parameterization signature of
 `reynolds_theorem5`, verbatim. -/
-theorem reynolds_theorem5_unrestricted (atomMap : Formula → sig.preds)
+theorem reynolds_theorem5_unrestricted [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap)
     (hdense : QuotientDenselyOrdered M ε) :
     HasDenseSingletons M ε :=
+  haveI := Fintype.ofFinite sig.preds
   reynolds_theorem5 atomMap h_surj hε h_prior_U h_prior_S h_sep hdense
 
+omit [Fintype sig.preds] in
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery in
 /-- D2 at Reynolds' own unrestricted reading — the pre-parameterization signature of
 `dense_singletons_of_sep`, verbatim. -/
-theorem dense_singletons_of_sep_unrestricted (atomMap : Formula → sig.preds)
+theorem dense_singletons_of_sep_unrestricted [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (hε : IsContempEquivDense ε) (h_prior_U : SemanticPriorU M atomMap)
     (h_prior_S : SemanticPriorS M atomMap) (h_sep : SemanticSepOpen M atomMap) :
     QuotientDenselyOrdered M ε → HasDenseSingletons M ε :=
+  haveI := Fintype.ofFinite sig.preds
   dense_singletons_of_sep atomMap h_surj hε h_prior_U h_prior_S h_sep
 
 end NoWeakening

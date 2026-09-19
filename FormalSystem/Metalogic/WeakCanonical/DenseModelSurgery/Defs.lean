@@ -129,7 +129,7 @@ not the `M` the formula was produced from.
 
 **No**, for two independent reasons, and the phase's charter asks that this be recorded rather
 than resolved by silently generalizing the landed definition. The landed `ContempEquiv`
-(`IntegerModel/GoodStructures.lean:729`) is untouched by this module.
+(`IntegerModel/GoodStructures.lean:730`) is untouched by this module.
 
 1. **Wrong kind of object.** `ContempEquiv sig k M a b` is `VeryGood sig k (M.subinterval sig
    (min a b) (max a b))` — a semantic relation with no defining monadic formula. Reynolds' §6
@@ -137,7 +137,7 @@ than resolved by silently generalizing the landed definition. The landed `Contem
    and there is nothing to quantify over in a `VeryGood` predicate. A formula-free relation cannot
    be fed to expressive completeness, which is what Lemma 2 is.
 2. **Its equivalence theorem is unavailable at a dense carrier.** `contemp_equiv_is_equiv`
-   (`GoodStructures.lean:749`) carries `[SuccOrder M.carrier]` and `[NoMaxOrder M.carrier]`.
+   (`GoodStructures.lean:750`) carries `[SuccOrder M.carrier]` and `[NoMaxOrder M.carrier]`.
    `false_of_succOrder_dense` below proves that these two together with `DenselyOrdered` are
    *contradictory*, so on the dense flows this development targets the landed clause-(i) theorem
    has no instance at all. This is machine-checked here rather than asserted.
@@ -171,7 +171,7 @@ If `a = Order.succ a` then `Order.succ a ≤ a`, making `a` a maximum, which `No
 Otherwise `a < Order.succ a`, and density supplies `c` strictly between, whence
 `Order.succ a ≤ c < Order.succ a`.
 
-Consequence for this module: `contemp_equiv_is_equiv` (`IntegerModel/GoodStructures.lean:749`),
+Consequence for this module: `contemp_equiv_is_equiv` (`IntegerModel/GoodStructures.lean:750`),
 which establishes clause (i) for the landed `ContempEquiv`, carries `[SuccOrder M.carrier]` and
 `[NoMaxOrder M.carrier]` and therefore has **no instance** on a densely ordered flow. The landed
 `ContempEquiv` is not reusable at the dense carrier; see the module header. -/
@@ -202,7 +202,7 @@ def epsAt {sig : MonadicSignature} {n : Nat} (ε : MonadicFormula sig 2) (i j : 
 `a ∼_M b  iff  M ⊨ ε(a, b)`.
 
 Free variable `0` of `ε` is `a`, free variable `1` is `b`. This is the §6 notion; it is *not* a
-dense sibling of the landed `ContempEquiv` (`IntegerModel/GoodStructures.lean:729`), which is a
+dense sibling of the landed `ContempEquiv` (`IntegerModel/GoodStructures.lean:730`), which is a
 `VeryGood`-based relation with no defining formula — see the module header. -/
 def ContempEquivDense {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
     (ε : MonadicFormula sig 2) (a b : M.carrier) : Prop :=
@@ -397,7 +397,7 @@ the free direction. `instInStructureClassCountableDense` turns the `[Countable _
 `[DenselyOrdered _]` binders of `IsContempEquivDenseCD`'s clauses into class membership.
 
 `IsContempEquivDenseCD` itself is untouched by the class parameterization, so `epsDense`'s witness
-(`RealModel/EpsilonDense.lean:1077`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
+(`RealModel/EpsilonDense.lean:1085`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
 are unaffected. -/
 theorem isContempEquivDenseCD_of_countableDense {sig : MonadicSignature}
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε (CountableDense sig)) :
@@ -595,6 +595,7 @@ theorem gapLeftFormula_spec (atomMap : Formula → sig.preds)
   ((uSExpressivelyCompleteOverDensePrior atomMap h_surj (lambdaFormula ε)).property
     M h_prior_U h_prior_S t).symm.trans (lambdaFormula_eval M ε t)
 
+omit [Fintype sig.preds] in
 /-- **Reynolds 1992, §6 Lemma 2, printed p.177**:
 
 > *Then there is an `US`-formula `R` which holds in any Prior structure `N` exactly at those
@@ -609,30 +610,34 @@ Reynolds' standing hypothesis *"Suppose that `ε` defines the contemporaneous eq
 the derivation is one application of expressive completeness to `ρ`, which is a monadic formula
 whatever `ε` is. `reynolds_lemma2_of_contemp` restates the result with the source's hypothesis in
 place, for consumers written against Reynolds' literal statement. -/
-theorem reynolds_lemma2 (atomMap : Formula → sig.preds)
+theorem reynolds_lemma2 [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ε : MonadicFormula sig 2) :
     ∃ R : Formula, ∀ (M : OrderedMonadicStructure sig),
       SemanticPriorU M atomMap → SemanticPriorS M atomMap →
       ∀ t : M.carrier, TemporalTruth M atomMap t R ↔ EndsInGapOnRight M ε t :=
+  haveI := Fintype.ofFinite sig.preds
   ⟨gapRightFormula atomMap h_surj ε,
     fun M hU hS t => gapRightFormula_spec atomMap h_surj ε M hU hS t⟩
 
+omit [Fintype sig.preds] in
 /-- **Lemma 2, dually `L`** — printed p.178, *"Dually `L`."* The statement is the mirror; see
 `lambdaFormula`'s docstring for what is and is not sourced. -/
-theorem reynolds_lemma2_dual (atomMap : Formula → sig.preds)
+theorem reynolds_lemma2_dual [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ε : MonadicFormula sig 2) :
     ∃ L : Formula, ∀ (M : OrderedMonadicStructure sig),
       SemanticPriorU M atomMap → SemanticPriorS M atomMap →
       ∀ t : M.carrier, TemporalTruth M atomMap t L ↔ EndsInGapOnLeft M ε t :=
+  haveI := Fintype.ofFinite sig.preds
   ⟨gapLeftFormula atomMap h_surj ε,
     fun M hU hS t => gapLeftFormula_spec atomMap h_surj ε M hU hS t⟩
 
+omit [Fintype sig.preds] in
 /-- **Lemma 2 with Reynolds' standing hypothesis in place.** Identical conclusion; the hypothesis
 is carried so that the declaration matches the printed statement literally. That it is discardable
 is itself worth recording: §6's use of `ε`-contemporaneity begins at Lemma 3, not here. -/
-theorem reynolds_lemma2_of_contemp (atomMap : Formula → sig.preds)
+theorem reynolds_lemma2_of_contemp [Finite sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ε : MonadicFormula sig 2) (_hε : IsContempEquivDense ε) :
     ∃ R : Formula, ∀ (M : OrderedMonadicStructure sig),

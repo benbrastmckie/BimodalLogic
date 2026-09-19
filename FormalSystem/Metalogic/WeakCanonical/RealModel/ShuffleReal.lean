@@ -109,7 +109,7 @@ theorem shuffleColourReal_irrational {ι : Type} (γ₁ : ι) (σ : ℚ → ι) 
   rw [shuffleColourReal, dif_neg hr]
 
 /-- **Reynolds' density condition, read at `ℝ`.** The `ℚ`-form is `IsShuffleMap`
-(`Shuffle.lean:321`); this is the same condition with the index order `ℝ`, and is what the
+(`Shuffle.lean:325`); this is the same condition with the index order `ℝ`, and is what the
 `ℝ`-shuffle's order-theoretic facts consume. -/
 def IsShuffleMapReal {ι : Type} (S : Finset ι) (π : ℝ → ι) : Prop :=
   (∀ r : ℝ, π r ∈ S) ∧
