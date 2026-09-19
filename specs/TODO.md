@@ -1,5 +1,5 @@
 ---
-next_project_number: 625
+next_project_number: 627
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 625
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,597,604,610,614,623,624 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,597,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617 | 298,464,502,559,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -74,6 +74,7 @@ next_project_number: 625
 
 610 [NOT STARTED] — Update remaining documentation references to lakefile.lean...
 614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
+626 [NOT STARTED] — Repair drifted manuscript citations in the L+ files and pin...
 
 ### Formula Refactor
 
@@ -100,6 +101,7 @@ next_project_number: 625
 ### Semantics
 
 624 [NOT STARTED] — RESEARCH TASK, verdict-first: what the translation product...
+625 [NOT STARTED] — Formalize the manuscript's open-future and open-past...
 
 ### Codebase Cleanup
 
@@ -108,6 +110,44 @@ next_project_number: 625
     └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
 ## Tasks
+
+### 626. Repair lplus manuscript citations pin blstar semantics
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Repair drifted manuscript citations in the L+ files and pin def:BLstar-semantics.
+
+WHAT IS WRONG (verified 2026-09-18). (a) FormalSystem/Syntax/PlusLanguage/Axioms.lean cites the manuscript by LINE NUMBER in about eight docstrings ("paper line 1108", "paper footnote, line 1118", "line 1119"); the manuscript /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex has moved, and the stability clause is now near line 1155 with its footnote near 1158-1161. FormalSystem/Semantics/PlusLanguage/PlusTruth.lean carries the same kind of citation. Line numbers will drift again; labels and quotable phrases will not. (b) docs/reference/paper-definitions-of-record.md records def:BLstar-semantics as LIVE-UNPINNED on the ground that the stability clause is quoted in this repository only in paraphrase. It has since been checked verbatim against the source: the clause "M,tau,x satisfies Stability phi iff M,sigma,x satisfies phi for all sigma in <tau>_x" appears in the subsection Restricted Modalities and again inside def:BLstar-semantics in the appendix, and it is PlusTruthAt's stab arm word for word, with StarTruthAt passing the register vector unchanged to sigma (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md section 3.2, items 3 and 4).
+
+DELIVER. (1) Replace every manuscript line-number citation in the two files by a label citation or a quotable phrase (def:BLstar-semantics; "the footnote to the Stability clause"); grep the rest of FormalSystem/Syntax/PlusLanguage, Semantics/PlusLanguage, Syntax/StarLanguage and Semantics/StarLanguage for the same pattern and fix what is found. (2) Pin def:BLstar-semantics in docs/reference/paper-definitions-of-record.md from the appendix block, following that file's existing row conventions, and update its KNOWN-ANCHORS row; keep the recorded exclusion of the world registers. (3) Add one docstring sentence at the stab_4 constructor: it is surplus to the manuscript's commented-out def:TM-stability, being derivable from SK, ST and the S5 schema, and is kept for convenience; say nothing stronger and do not remove the constructor. (4) Record, where the StarLanguage correspondence table already records the world registers as excluded, that the open-future, open-past and nomic operators of the subsection Restricted Modalities are manuscript operators without a formalization here (a separate task, 625, formalizes the first two; do not reference its number in any file outside specs/).
+
+CONSTRAINTS. Docstring and documentation edits only: no declaration, statement or proof changes. Run the repository's anchor gate (the C15 check in scripts/check-module-invariants.sh) and a guarded scoped build of the touched modules (bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- <Module>), detached, before completing. No task numbers in any file outside specs/. DEPENDENCIES: none.
+
+---
+
+### 625. Formalize open future open past modalities
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Formalize the manuscript's open-future and open-past modalities and machine-check, in the library, that the stability modal is NOT Ockhamist historical necessity while the open-future modality is.
+
+WHY. /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex distinguishes three restricted modals in its live text (subsection Restricted Modalities, the paragraphs introducing the stability clause and the items labelled Open Futures and Open Pasts, near lines 1153-1185): stability quantifies over <tau>_x = histories through the present world STATE at x; the open-future operator over |tau>_x = histories agreeing with tau at every y <= x; the open-past operator over <tau|_x = histories agreeing with tau at every y >= x. Only the first is formalized (PlusTruthAt). Two research rounds on completeness for the stability modal (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/03 and 04) went wrong and were then corrected on exactly this point: branching-time (Ockhamist) necessity corresponds to the open-future operator, not to stability, so proof steps that rely on shared pasts do not transfer. Landing the distinction as library theorems stops it being rediscovered.
+
+ALREADY PROVED, sorry-free, in a mirror of PlusTruthAt over an arbitrary ordered abelian group -- read before planning, the work is siting and restating against the live definitions, not discovery: specs/559_nondeterministic_canonical_model_tm_star_completeness/probes/04_semantics-native-general-duration.lean section HN: hnStab (the Ockhamist axiom P alpha -> box P diamond alpha transposed to stability), hn_stab_refuted (it FAILS for stability on a three-state integer-time frame R3 with histories sigma3, rho3 that meet at the present state and share no past; R3_comp gives Compositionality), hn_open (the same principle HOLDS when the necessity ranges over |tau>_x), stab_imp_open (<tau>_x contains |tau>_x, so stability is the stronger necessity). NOTE the probe states hn_open semantically, with the open-future class written out as a hypothesis; it has no open-future constructor. Report 04 section 2 has the prose contrast with Ockhamist trees, bundled trees and T x W frames.
+
+DELIVER. (1) Definitions of the three history classes over the live WorldHistory / TaskFrame, with the inclusions |tau>_x subset <tau>_x subset H_F and <tau|_x subset <tau>_x, each class an equivalence class of an explicit relation. (2) Truth clauses for the open-future and open-past operators. DESIGN DECISION FOR THE PLAN, to be argued not assumed: either a small extension language with two new constructors (cost: a new truth recursion and every recursion over the formula type), or semantic operators on truth sets with no syntax (cost: the results cannot be stated as validities of formulas). Recommend the cheaper option that still lets (3) be stated as a validity and a refutation. Do NOT add constructors to PlusFormula, PlusAxiom or PlusDerivationTree. (3) The separating pair against the live semantics: the Ockhamist principle valid for the open-future operator over every task frame; its stability transposition refuted on a concrete frame that satisfies EVERY field of the live TaskFrame structure (the probe checks Compositionality only -- the remaining fields, Saturation included, are this task's work; a finite-state integer-time frame should get Saturation from the existing finite-fibre lemma). (4) The time-reversal mirror for the open-past operator via the repository's reflect machinery. (5) S5 for each operator and the strength ordering box => stability => open-future, with the failure of each converse witnessed.
+
+OUT OF SCOPE: any axiomatization or completeness claim for the new operators; the nomic operator; the world registers. Record those three as manuscript operators without a formalization in the module docstring.
+
+SITING. Under FormalSystem/Semantics/, below Truth.lean in the module layering so the existing assert_not_exists on the proof system still holds; one directory with one sibling aggregator; every module in the root closure (check-module-invariants C24). Docstrings cite manuscript LABELS or quotable phrases, never line numbers, and no task numbers.
+
+CONSTRAINTS: lake build FormalSystem green and no new sorry at the end of every phase; axiom pins on the headline theorems. DEPENDENCIES: none. Related, not blocking: 559 (completeness research), 624 (what the object languages can see of a task frame).
+
+---
 
 ### 624. Translation product task semantics visibility
 - **Status**: [NOT STARTED]
