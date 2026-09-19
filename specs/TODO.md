@@ -93,7 +93,7 @@ next_project_number: 627
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-560 [NOT STARTED] — IMPLEMENTATION. Land the machine-checked theorem that the...
+560 [RESEARCHED] — IMPLEMENTATION. Land the machine-checked theorem that the...
 568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -712,10 +712,11 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 ---
 
 ### 560. Plus incomplete base limit closure theorem
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
+- **Research**: [560_plus_incomplete_base_limit_closure_theorem/reports/01_base-incompleteness-transcription.md]
 
 **Description**: IMPLEMENTATION. Land the machine-checked theorem that the current TM+ axiom set is INCOMPLETE over the paper's all-histories task semantics at Base:
 
