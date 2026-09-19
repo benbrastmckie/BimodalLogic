@@ -41,7 +41,8 @@ Tests are organized by tactic:
 ## References
 
 * [Tactics.lean](../../../Logos/Core/Automation/Tactics.lean) - Tactic implementations
-* [Commands.lean](../../../FormalSystem/Automation/Tactics/Commands.lean) - the `modal_search` tactic
+* [Commands.lean](../../../FormalSystem/Automation/Tactics/Commands.lean) - the `modal_search`
+  tactic
 * [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
 -/
 

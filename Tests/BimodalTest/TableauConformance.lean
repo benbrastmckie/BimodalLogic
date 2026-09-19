@@ -118,33 +118,61 @@ and they are green as recorded. They are listed below unchanged, and are **not**
 The four W rows are now re-recorded, with the attribution stated below rather than absorbed.
 
 * C4 row 1
-  - pinned: `C4 Fp->FFp         OPEN     target=OPEN            no density over an arbitrary linear order`
-  - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=OPEN    [DEFECT] no density over an arbitrary linear order`
+  - pinned:
+    `C4 Fp->FFp         OPEN     target=OPEN            no density over an arbitrary linear order`
+  - P0 pre-guard:
+    `C4 Fp->FFp         CLOSED   target=OPEN    [DEFECT] no density over an arbitrary linear order`
   - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
 * C4 row 2
-  - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] density: a time strictly between t and the witness`
-  - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          density: a time strictly between t and the witness`
+  - pinned:
+    `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] density: a time strictly between t and the
+    witness`
+  - P0 pre-guard:
+    `C4 Fp->FFp         CLOSED   target=CLOSED          density: a time strictly between t and the
+    witness`
   - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
 * C4 row 3
   - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidRTime includes density`
   - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          ValidRTime includes density`
   - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
 * W1 — `orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base linearityFuel`
-  - pinned: `info: total=true knownTimes=[9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (9, 3), (9, 5), (8, 9), (1, 8), (6, 8), (2, 6), (3, 5), (4, 0), (0, 3)...`
-  - P0 pre-guard: `info: total=true knownTimes=[7, 9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(7, 1), (7, 8), (9, 3), (9, 5), (7, 9), (8, 9), (1, 8), (6, 7), (2, 6), (3,...`
-  - recorded now: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
+  - pinned:
+    `info: total=true knownTimes=[9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (9, 3), (9, 5),
+    (8, 9), (1, 8), (6, 8), (2, 6), (3, 5), (4, 0), (0, 3)...`
+  - P0 pre-guard:
+    `info: total=true knownTimes=[7, 9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(7, 1), (7, 8), (9, 3),
+    (9, 5), (7, 9), (8, 9), (1, 8), (6, 7), (2, 6), (3,...`
+  - recorded now:
+    `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7,
+    5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
 * W3 — `orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base linearityFuel`
-  - pinned: `info: total=true knownTimes=[10, 3, 4, 7, 9, 8, 1, 0] constraints=[(7, 3), (7, 10), (9, 7), (8, 9), (1, 8), (3, 10), (4, 0), (0, 3), (0, 8), (0, 1)...`
-  - P0 pre-guard: `info: total=true knownTimes=[5, 11, 4, 10, 7, 9, 8, 1, 0] constraints=[(11, 4), (10, 5), (7, 10), (9, 7), (8, 9), (1, 8), (4, 0), (0, 10), (0, 8), ...`
-  - recorded now: `info: total=true knownTimes=[4, 8, 9, 2, 5, 6, 7, 1, 3, 0] constraints=[(8, 2), (8, 5), (6, 9), (8, 6), (7, 8), (1, 7), (5, 6), (2, 5), (4, 3), (3,...`
+  - pinned:
+    `info: total=true knownTimes=[10, 3, 4, 7, 9, 8, 1, 0] constraints=[(7, 3), (7, 10), (9, 7), (8,
+    9), (1, 8), (3, 10), (4, 0), (0, 3), (0, 8), (0, 1)...`
+  - P0 pre-guard:
+    `info: total=true knownTimes=[5, 11, 4, 10, 7, 9, 8, 1, 0] constraints=[(11, 4), (10, 5), (7,
+    10), (9, 7), (8, 9), (1, 8), (4, 0), (0, 10), (0, 8), ...`
+  - recorded now:
+    `info: total=true knownTimes=[4, 8, 9, 2, 5, 6, 7, 1, 3, 0] constraints=[(8, 2), (8, 5), (6, 9),
+    (8, 6), (7, 8), (1, 7), (5, 6), (2, 5), (4, 3), (3,...`
 * W6 — `orderProbe (im (F p) (F (F p))) FrameClass.Base`
-  - pinned: `info: total=true knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(3, 0), (5, 3), (5, 0), (2, 4), (3, 1), (1, 2), (0, 1)] incomparable=[]`
+  - pinned:
+    `info: total=true knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(3, 0), (5, 3), (5, 0), (2, 4), (3,
+    1), (1, 2), (0, 1)] incomparable=[]`
   - P0 pre-guard: `info: CLOSED`
-  - recorded now: `info: total=true knownTimes=[3, 4, 0, 2, 1] constraints=[(4, 0), (2, 3), (1, 2), (0, 1)] incomparable=[]`
+  - recorded now:
+    `info: total=true knownTimes=[3, 4, 0, 2, 1] constraints=[(4, 0), (2, 3), (1, 2), (0, 1)]
+    incomparable=[]`
 * W7 — `orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base 2000`
-  - pinned: `info: total=true knownTimes=[9, 7, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (6, 8), (6, 9), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6, 7), (2,...`
-  - P0 pre-guard: `info: total=true knownTimes=[9, 7, 5, 6, 3, 4, 8, 1, 2, 0] constraints=[(2, 1), (2, 8), (2, 9), (9, 6), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6,...`
-  - recorded now: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
+  - pinned:
+    `info: total=true knownTimes=[9, 7, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (6, 8), (6, 9),
+    (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6, 7), (2,...`
+  - P0 pre-guard:
+    `info: total=true knownTimes=[9, 7, 5, 6, 3, 4, 8, 1, 2, 0] constraints=[(2, 1), (2, 8), (2, 9),
+    (9, 6), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6,...`
+  - recorded now:
+    `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7,
+    5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
 
 **Attribution.** The four W-row moves belong to the 2026-08-10/11 engine window — the semantics
 refactor together with the tableau-engine work that rewrote `Decidability/Tableau.lean` and
@@ -911,8 +939,13 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base linearityFuel)
 
 -- W2. Two bare future eventualities: the same shape with no universal involved.
--- RE-BASELINED (guard): was `total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[]`;
--- now `total=true knownTimes=[4, 5, 6, 1, 2, 3, 0] constraints=[(6, 2), (6, 5), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- RE-BASELINED (guard): was
+-- `total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7),
+-- (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[]`;
+-- now
+-- `total=true knownTimes=[4, 5, 6, 1, 2, 3, 0] constraints=[(6, 2), (6, 5), (1, 6), (2, 5), (4, 3),
+-- (3, 0), (0, 2), (0, 1)] incomparable=[]`.
+-- Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: total=true knownTimes=[4, 5, 6, 1, 2, 3, 0] constraints=[(6, 2), (6, 5), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base linearityFuel)
@@ -923,8 +956,13 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base linearityFuel)
 
 -- W4. W1 with the conjuncts swapped: the order the eventualities appear in does not matter.
--- RE-BASELINED (guard): was `total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[]`;
--- now `total=true knownTimes=[4, 6, 7, 1, 5, 2, 3, 0] constraints=[(7, 2), (7, 5), (7, 6), (1, 7), (5, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- RE-BASELINED (guard): was
+-- `total=true knownTimes=[4, 7, 9, 8, 1, 6, 2, 3, 0] constraints=[(8, 3), (9, 2), (9, 6), (9, 7),
+-- (8, 9), (1, 8), (6, 7), (2, 6), (3, 9), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[]`;
+-- now
+-- `total=true knownTimes=[4, 6, 7, 1, 5, 2, 3, 0] constraints=[(7, 2), (7, 5), (7, 6), (1, 7), (5,
+-- 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[]`.
+-- Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: total=true knownTimes=[4, 6, 7, 1, 5, 2, 3, 0] constraints=[(7, 2), (7, 5), (7, 6), (1, 7), (5, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (nt p)) (F (G p)))) FrameClass.Base linearityFuel)
@@ -933,8 +971,13 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 -- seriality both known times were comparable and totality already held (`total=true`,
 -- `knownTimes=[0, 2, 1]`). `serialityRule` minted six further times that regressed the row to
 -- `false`; `timeLinearity` orders them and restores it. Still on `conformanceFuel`.
--- RE-BASELINED (guard): was `total=true knownTimes=[4, 5, 6, 8, 7, 1, 2, 3, 0] constraints=[(2, 4), (6, 4), (8, 3), (8, 5), (7, 8), (1, 7), (6, 2), (3, 5), (4, 0), (0, 3), (2, 0), (0, 1)] incomparable=[]`;
--- now `total=true knownTimes=[4, 5, 1, 3, 2, 0] constraints=[(1, 5), (4, 3), (3, 2), (2, 0), (0, 1)] incomparable=[]`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- RE-BASELINED (guard): was
+-- `total=true knownTimes=[4, 5, 6, 8, 7, 1, 2, 3, 0] constraints=[(2, 4), (6, 4), (8, 3), (8, 5),
+-- (7, 8), (1, 7), (6, 2), (3, 5), (4, 0), (0, 3), (2, 0), (0, 1)] incomparable=[]`;
+-- now
+-- `total=true knownTimes=[4, 5, 1, 3, 2, 0] constraints=[(1, 5), (4, 3), (3, 2), (2, 0), (0, 1)]
+-- incomparable=[]`.
+-- Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: total=true knownTimes=[4, 5, 1, 3, 2, 0] constraints=[(1, 5), (4, 3), (3, 2), (2, 0), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F p) (P q))) FrameClass.Base)

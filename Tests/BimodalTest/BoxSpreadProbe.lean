@@ -163,7 +163,8 @@ time domain leaves nothing for the grid to fail on. `spread` and `|W|` are unmov
 -- the same time the box sits at, so the failure is purely the later time-minting.
 -- Was `anchor=true grid=true`.
 -- RE-BASELINED (guard): was `"OPEN spread=false anchor=false grid=false |W|=2 |T|=7"`;
--- now `"OPEN spread=false anchor=false grid=true |W|=2 |T|=4"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- now `"OPEN spread=false anchor=false grid=true |W|=2 |T|=4"`. Owner: `trivialEventWitnessed` —
+-- see the Re-baseline record above.
 /-- info: "OPEN spread=false anchor=false grid=true |W|=2 |T|=4" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
@@ -172,7 +173,8 @@ time domain leaves nothing for the grid to fail on. `spread` and `|W|` are unmov
 -- Note this row is unmoved from A even though its `◇` argument is itself a `G`: that `T(G q)`
 -- never reached the minted world either.
 -- RE-BASELINED (guard): was `"OPEN spread=false anchor=false grid=false |W|=2 |T|=7"`;
--- now `"OPEN spread=false anchor=false grid=true |W|=2 |T|=4"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- now `"OPEN spread=false anchor=false grid=true |W|=2 |T|=4"`. Owner: `trivialEventWitnessed` —
+-- see the Re-baseline record above.
 /-- info: "OPEN spread=false anchor=false grid=true |W|=2 |T|=4" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)

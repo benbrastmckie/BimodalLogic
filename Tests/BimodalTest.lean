@@ -95,8 +95,9 @@ deliberately excluded, for two different reasons:
   `main` lives in the executable roots, not editing the tests.
 
 All three are tracked in `scripts/module-invariants-manifest.txt`, which
-compile-checks each one in isolation, so excluded code cannot rot unseen. A test module absent from both this file and that manifest is a gap in
-the gate; the invariant check fails on exactly that condition.
+compile-checks each one in isolation, so excluded code cannot rot unseen. A test module absent from
+both this file and that manifest is a gap in the gate; the invariant check fails on exactly that
+condition.
 
 ## Running Tests
 

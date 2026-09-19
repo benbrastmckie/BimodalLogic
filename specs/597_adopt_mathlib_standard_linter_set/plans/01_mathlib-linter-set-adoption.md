@@ -598,19 +598,19 @@ citations re-pointed. All 138 touched files then elaborate with `longLine` on an
 
 ---
 
-### Phase 12: `longLine` (4 of 4) -- `Tests/`, the `#guard_msgs` files, and enablement [NOT STARTED]
+### Phase 12: `longLine` (4 of 4) -- `Tests/`, the `#guard_msgs` files, and enablement [COMPLETED]
 
 **Goal**: Finish `longLine` in `Tests/`, fix the 5 `#guard_msgs` breakages, and turn the class on.
 
 **Tasks**:
-- [ ] Fix the 5 `#guard_msgs` files: `TableauConformance.lean` (around lines 910-936),
+- [x] Fix the 5 `#guard_msgs` files: `TableauConformance.lean` (around lines 910-936),
       `BoxSpreadProbe.lean`, `RegionGateProbe.lean`, `TemporalWitnessProbe.lean` and
       `RayRegionProbe.lean`. The preferred fix is to reflow the source line the warning points
       at. If the long line is the guarded output itself, use a per-command
       `set_option linter.style.longLine false in` with a C29 reason. Do not use
-      `#guard_msgs (drop warning)`, because it would also hide other warnings.
-- [ ] Reflow the rest of the `Tests/` lines.
-- [ ] Delete the `style.longLine` temporary line, then do a guarded full build with `--wfail`
+      `#guard_msgs (drop warning)`, because it would also hide other warnings. *(deviation: altered — no suppression needed: every captured long line was reflowable)*
+- [x] Reflow the rest of the `Tests/` lines.
+- [x] Delete the `style.longLine` temporary line, then do a guarded full build with `--wfail`
       across all targets.
 
 **Timing**: 1.5 hours
@@ -624,6 +624,14 @@ citations re-pointed. All 138 touched files then elaborate with `longLine` on an
 **Files to modify**:
 - `Tests/BimodalTest/**` - reflow and the `#guard_msgs` fixes
 - `lakefile.toml` - remove 1 temporary line
+
+**Phase 12 notes**: 13 test files. The `#guard_msgs` failures were not caused by the guarded
+output (the linter exempts `#guard_msgs` and its docstring) but by long lines the guard *captures*:
+a long `--` comment above a guard, and four long `s!` string lines inside `TemporalWitnessProbe`'s
+`report`/`probe4` bodies, which were split into further `++` pieces. No per-command suppression
+was needed. The only lines over 100 left in the tree are inside `#guard_msgs` docstrings, which
+the linter exempts. `longLine` temporary line deleted. Full `--wfail` build green (1,289 s);
+invariants pass.
 
 **Verification**:
 - `lake build --wfail` is green across all targets, and C28 and C29 pass.

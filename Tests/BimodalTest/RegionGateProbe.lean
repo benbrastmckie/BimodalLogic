@@ -126,13 +126,25 @@ re-baseline. That is no longer a risk, because the attribution below is stated r
 absorbed, so both are now re-recorded:
 
 * row C — `probe (.imp (andF (.box p) (dia q)) r) 200 .Dense`
-  - pinned, before this settlement: `info: "OPEN |W|=2 |T|=8 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 1, 1, 1, 1, 1, 1]]"`
-  - P0 pre-guard: `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
-  - recorded now: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
+  - pinned, before this settlement:
+    `info: "OPEN |W|=2 |T|=8 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3], [1,
+    1, 1, 1, 1, 1, 1, 1, 1]]"`
+  - P0 pre-guard:
+    `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
+  - recorded now:
+    `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0,
+    0, 0, 0, 0, 0]]"`
 * row H — `probe (.imp (andF (.box p) (dia (.allFuture q))) r) 200 .Dense`
-  - pinned, before this settlement: `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
-  - P0 pre-guard: `info: "OPEN |W|=2 |T|=9 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 0, 0, 0, 0, 0, 0, 0]]"`
-  - recorded now: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
+  - pinned, before this settlement:
+    `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
+  - P0 pre-guard:
+    `info: "OPEN |W|=2 |T|=9 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3], [1, 1, 1, 0, 0, 0, 0, 0, 0, 0]]"`
+  - recorded now:
+    `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0,
+    0, 0, 0, 0, 0]]"`
 
 Rows C and H now generate the *same* string. That is a measurement, not a copy-paste error: under
 `.Dense` the `◇(G q)` shape no longer forces mints that `◇q` does not.
@@ -321,8 +333,12 @@ consequence. -/
 
 -- A. The minimal witness: one box, one diamond, an unrelated consequent.
 -- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 3, 3, 3, 3]`.
--- RE-BASELINED (guard): was `"OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]"`;
--- now `"OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- RE-BASELINED (guard): was
+-- `"OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0,
+-- 0, 0, 0, 0, 0]]"`;
+-- now
+-- `"OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]"`.
+-- Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
@@ -332,8 +348,12 @@ consequence. -/
 -- reached the minted world only via the deleted copy, so the row now collapses to A's: no
 -- eligible label anywhere in world 1.
 -- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 1, 1, 1, 1]`.
--- RE-BASELINED (guard): was `"OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0]]"`;
--- now `"OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- RE-BASELINED (guard): was
+-- `"OPEN |W|=2 |T|=7 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0,
+-- 0, 0, 0, 0, 0]]"`;
+-- now
+-- `"OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]"`.
+-- Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |W|=2 |T|=4 total=true gate=false check=false cands=[[3, 3, 3, 3, 3], [0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)

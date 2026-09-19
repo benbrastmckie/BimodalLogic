@@ -353,7 +353,8 @@ section FoldTests
 private def pAtom : Atom := Atom.mkBase "p"
 private def qAtom : Atom := Atom.mkBase "q"
 
-#guard (Formula.imp (Formula.atom pAtom) Formula.bot).foldFormula == EnrichedFormula.neg (.atom pAtom)
+#guard (Formula.imp (Formula.atom pAtom) Formula.bot).foldFormula ==
+    EnrichedFormula.neg (.atom pAtom)
 #guard (Formula.imp Formula.bot Formula.bot).foldFormula == EnrichedFormula.top
 #guard (Formula.diamond (Formula.atom pAtom)).foldFormula == EnrichedFormula.diamond (.atom pAtom)
 #guard (Formula.and (Formula.atom pAtom) (Formula.atom qAtom)).foldFormula
@@ -361,9 +362,12 @@ private def qAtom : Atom := Atom.mkBase "q"
 -- Observed behaviour, pinned deliberately: `or` folds through its `imp` reading.
 #guard (Formula.or (Formula.atom pAtom) (Formula.atom qAtom)).foldFormula
   == EnrichedFormula.imp (EnrichedFormula.neg (.atom pAtom)) (.atom qAtom)
-#guard (Formula.someFuture (Formula.atom pAtom)).foldFormula == EnrichedFormula.some_future (.atom pAtom)
-#guard (Formula.somePast (Formula.atom pAtom)).foldFormula == EnrichedFormula.some_past (.atom pAtom)
-#guard (Formula.allFuture (Formula.atom pAtom)).foldFormula == EnrichedFormula.all_future (.atom pAtom)
+#guard (Formula.someFuture (Formula.atom pAtom)).foldFormula ==
+    EnrichedFormula.some_future (.atom pAtom)
+#guard (Formula.somePast (Formula.atom pAtom)).foldFormula ==
+    EnrichedFormula.some_past (.atom pAtom)
+#guard (Formula.allFuture (Formula.atom pAtom)).foldFormula ==
+    EnrichedFormula.all_future (.atom pAtom)
 #guard (Formula.allPast (Formula.atom pAtom)).foldFormula == EnrichedFormula.all_past (.atom pAtom)
 #guard (Formula.next (Formula.atom pAtom)).foldFormula == EnrichedFormula.next (.atom pAtom)
 #guard (Formula.prev (Formula.atom pAtom)).foldFormula == EnrichedFormula.prev (.atom pAtom)
@@ -383,11 +387,14 @@ private def qAtom : Atom := Atom.mkBase "q"
     Formula.prev (Formula.atom pAtom)
   ].all (fun f => f == EnrichedFormula.toPrimitive (Formula.foldFormula f))
 
-#guard (Formula.weakFuture (Formula.atom pAtom)).foldFormula == EnrichedFormula.weak_future (.atom pAtom)
-#guard (Formula.weakPast (Formula.atom pAtom)).foldFormula == EnrichedFormula.weak_past (.atom pAtom)
+#guard (Formula.weakFuture (Formula.atom pAtom)).foldFormula ==
+    EnrichedFormula.weak_future (.atom pAtom)
+#guard (Formula.weakPast (Formula.atom pAtom)).foldFormula ==
+    EnrichedFormula.weak_past (.atom pAtom)
 -- `always` and `sometimes` need `recognizeComposites`, hence `foldFormulaFull`.
 #guard (Formula.always (Formula.atom pAtom)).foldFormulaFull == EnrichedFormula.always (.atom pAtom)
-#guard (Formula.sometimes (Formula.atom pAtom)).foldFormulaFull == EnrichedFormula.sometimes (.atom pAtom)
+#guard (Formula.sometimes (Formula.atom pAtom)).foldFormulaFull ==
+    EnrichedFormula.sometimes (.atom pAtom)
 
 -- Full round-trip with composites, and the tags each one folds to.
 #guard [
@@ -485,9 +492,12 @@ example (φ : Formula) : sometimes φ = sometimes φ := by simp only [formula_un
 
 -- Test: the fold lemmas recover derived operators from primitive form
 -- These tests verify that the fold lemmas actually do work on primitive-form goals.
-example (φ : Formula) : φ.imp Formula.bot = φ.neg := by simp only [← FormalSystem.Automation.Normalization.neg_unfold]
-example (φ : Formula) : Formula.bot.untl φ = φ.next := by simp only [← FormalSystem.Automation.Normalization.next_unfold]
-example (φ : Formula) : Formula.bot.snce φ = φ.prev := by simp only [← FormalSystem.Automation.Normalization.prev_unfold]
+example (φ : Formula) : φ.imp Formula.bot = φ.neg := by simp only
+    [← FormalSystem.Automation.Normalization.neg_unfold]
+example (φ : Formula) : Formula.bot.untl φ = φ.next := by simp only
+    [← FormalSystem.Automation.Normalization.next_unfold]
+example (φ : Formula) : Formula.bot.snce φ = φ.prev := by simp only
+    [← FormalSystem.Automation.Normalization.prev_unfold]
 
 -- Test: fold lemmas work individually via rw
 example (φ ψ : Formula) :

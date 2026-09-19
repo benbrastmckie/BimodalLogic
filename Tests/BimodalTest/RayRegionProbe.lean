@@ -85,7 +85,9 @@ three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.
 corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
 row.
 
-**Re-baselined in this file** (guard-attributed): 4 row(s) at line(s) 161, 168, 186, 198 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+**Re-baselined in this file** (guard-attributed): 4 row(s) at line(s) 161, 168, 186, 198 — each
+carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own
+`RE-BASELINED (guard)` note with the old and new value.
 -/
 
 namespace BimodalTest.RayRegionProbe
@@ -156,14 +158,16 @@ is whether the upper ray's chosen label witnesses it.
 -- A. `F p → p`. Invalid; the open branch carries `T(F p)` at the root. The upper ray's chosen
 -- label is time 3, which carries the `untlPos` witness `T(p)`, so the self-demand is met.
 -- RE-BASELINED (guard): was `"OPEN |W|=1 |T|=6 check=true rayUp=true rayDn=true rays=[(3, 3)]"`;
--- now `"OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- now `"OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]"`. Owner:
+-- `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]" -/
 #guard_msgs in
 #eval probe (.imp (Formula.someFuture p) p)
 
 -- B. `P p → p`, the past-directed mirror.
 -- RE-BASELINED (guard): was `"OPEN |W|=1 |T|=7 check=true rayUp=true rayDn=true rays=[(3, 3)]"`;
--- now `"OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- now `"OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]"`. Owner:
+-- `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]" -/
 #guard_msgs in
 #eval probe (.imp (Formula.somePast p) p)
@@ -180,8 +184,10 @@ is whether the upper ray's chosen label witnesses it.
 -- no longer emitted (they were unsound; see `BoxNegPreservationProbe.lean` row 3). With no
 -- eligible label the region gate, and both ray self-demands with it, go false.
 -- Was `check=true rayUp=true rayDn=true rays=[(2, 2), (5, 5)]`. `|W|` and `|T|` are unmoved.
--- RE-BASELINED (guard): was `"OPEN |W|=2 |T|=7 check=false rayUp=false rayDn=false rays=[(2, 2), (0, 0)]"`;
--- now `"OPEN |W|=2 |T|=4 check=false rayUp=false rayDn=false rays=[(2, 2), (0, 0)]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- RE-BASELINED (guard): was
+-- `"OPEN |W|=2 |T|=7 check=false rayUp=false rayDn=false rays=[(2, 2), (0, 0)]"`; now
+-- `"OPEN |W|=2 |T|=4 check=false rayUp=false rayDn=false rays=[(2, 2), (0, 0)]"`. Owner:
+-- `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |W|=2 |T|=4 check=false rayUp=false rayDn=false rays=[(2, 2), (0, 0)]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r)
@@ -193,7 +199,8 @@ is whether the upper ray's chosen label witnesses it.
 
 -- F. Row A under `.Dense`: density does not change what the ray owes itself.
 -- RE-BASELINED (guard): was `"OPEN |W|=1 |T|=6 check=true rayUp=true rayDn=true rays=[(3, 3)]"`;
--- now `"OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
+-- now `"OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]"`. Owner:
+-- `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |W|=1 |T|=5 check=true rayUp=true rayDn=true rays=[(3, 3)]" -/
 #guard_msgs in
 #eval probe (.imp (Formula.someFuture p) p) 200 .Dense
