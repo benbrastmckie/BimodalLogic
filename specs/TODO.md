@@ -1,5 +1,5 @@
 ---
-next_project_number: 628
+next_project_number: 629
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 628
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,610,614,623,624,625,626,628 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617 | 298,464,502,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -101,8 +101,19 @@ next_project_number: 628
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
 625 [RESEARCHED] — Formalize the manuscript's open-future and open-past...
+628 [NOT STARTED] — Investigate expressive extensions that make recurrence and...
 
 ## Tasks
+
+### 628. Expressive extensions recurrence visibility
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Investigate expressive extensions that make recurrence and transposition visible: state nominals, state registers, propositional quantifiers, and a Prior-style proof-theoretic identification of world states. BACKGROUND: task 624's compiled probe (specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean; truth_invariance, plus_invariance, star_invariance, validIn/plusValidIn/starValidIn_iff_recurrenceFree) shows L, L+ and L-star cannot distinguish frames with recurrence (a history revisiting a state) or transposition (two histories through the same states in opposite orders): at every FrameClass tag, class validity equals validity over recurrence-free members, because the projection prodFrame F -> F is a history-lifting morphism and valuations are clock-independent. QUESTIONS: (Q1) NEGATIVE: verify by sorry-free probe that a pure same-state-at-any-time modality [≡]phi (all (sigma,s) with sigma(s) = tau(t)) is still invisible (projection is a bisimulation for ≡ via liftH_through), and that propositional quantifiers ranging only over clock-independent (lifted) propositions are invisible. (Q2) POSITIVE: extend L+ with state nominals (i true at (tau,t) iff tau(t) = V(i)) and/or a state register (down-arrow/@ binding world states); machine-check that recurrence-free frames validate not(i and (P i or F i)) while the full class does not, and give the analogous transposition formula; identify the minimal resource that breaks the invariance. (Q3) Check whether the universal modality A phi := box(H phi and phi and G phi) is definable in L (needs totality of world histories; check WorldHistory/ofTotal), and with it whether propositional quantifiers under standard (all state-sets) semantics define state atoms Atom(p) := E p and forall q (A(p -> q) or A(p -> not q)), hence recurrence and transposition. (Q4) Cost: axiomatizability/decidability of each extension (hybrid nominals + @ + naming rule vs second-order propositional tense logic over linear orders, MSO of Z/Q/R: Buchi, Shelah, Fine 1970, Kaminski-Tiomkin, Kremer), each claim tied to a held source or labelled recalled. (Q5) PRIOR: relate to Prior's construction of instants/worlds as maximal consistent propositions via propositional quantifiers (Past Present and Future; Papers on Time and Tense; Prior & Fine, Worlds, Times and Selves, incl. Fine's postscript) and to hybrid logic's naming rule (Blackburn, Arthur Prior and Hybrid Logic; Blackburn-de Rijke-Venema ch. 7); sketch whether a naming rule for state nominals lets a canonical model build world states directly as classes of named MCSs, and what that gives the completeness research (559), incl. the open question whether any naming rule is needed. Also assess fit with the manuscript's simulation metasemantics (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, lines 921-937, 1025-1030, 1764). HARD CONSTRAINTS: no theorem stated and discharged with sorry; every claimed invariance or visibility fact carries a sorry-free probe or the label UNVERIFIED; manuscript claims cite line numbers; literature claims tied to held sources or labelled recalled. DEPENDENCIES: none. Related, not blocking: 624 (visibility via translation product), 559 (completeness research), 625 (open-future/open-past modalities)
+
+---
 
 ### 627. Research cslib lean engineering refactor plan
 - **Status**: [COMPLETED]
