@@ -576,7 +576,8 @@ second construction. -/
 
 Contrapositive, four steps, no case split:
 
-1. `neg_consistent_of_not_derivable` (`Completeness.lean:72`) makes `{¬ψ}` `.RTime`-consistent.
+1. `neg_consistent_of_not_derivable` (`BXCanonical/Completeness.lean:77`) makes `{¬ψ}`
+   `.RTime`-consistent.
 2. `set_lindenbaum` extends it to a `.RTime`-MCS `M` with `¬ψ ∈ M`.
 3. `dedekind_box_dense_mem` supplies `□(¬U(⊤,⊥)) ∈ M` *unconditionally* — this is where the
    Dedekind route is simpler than the Base and Discrete ones: `FrameClass.Dense ≤

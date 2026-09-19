@@ -162,8 +162,8 @@ inductive TableauRule : Type where
       `T(K⁺(K⁺φ ∧ K⁻φ))`. Tableau counterpart of `Axiom.sep`. -/
   | sepRule
   /-- Seriality (BX1/BX1'). At any label, add `T(F ⊤)` and `T(P ⊤)` — the tableau images of
-      `Axiom.serial_future` and `DerivedAxioms.serialPast` (`Axioms.lean:113, 117`). Persistent, and
-      self-suppressing once both are on the branch at that label.
+      `Axiom.serial_future` (`ProofSystem/Axioms.lean:176`) and `DerivedAxioms.serialPast`.
+      Persistent, and self-suppressing once both are on the branch at that label.
 
       Base rule in the soundness sense — both are base axioms, so it is sound for every frame
       class — but deliberately **absent from `allRulesForFC`**. It is keyed on the *label*, not
@@ -1223,12 +1223,12 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   -- times that share a common past.
   --
   -- **Why the branches are syntactically the BX11 disjuncts.** `temp_linearity`
-  -- (`Axioms.lean:238`) is `F φ ∧ F ψ → F(φ ∧ ψ) ∨ F(φ ∧ F ψ) ∨ F(F φ ∧ ψ)`, and those three
-  -- disjuncts *are* the trichotomy on two future witnesses: they coincide, the φ-witness
-  -- comes first, or the ψ-witness comes first. Emitting them verbatim rather than as fresh
-  -- ordering constraints keeps the rule's admissibility obligation a single appeal to BX11
-  -- instead of a semantic argument about `TimeOrdering`, and it is the form the Phase 3
-  -- `RuleSpec` gate maps to `Axiom.temp_linearity`.
+  -- (`ProofSystem/Axioms.lean:277`) is `F φ ∧ F ψ → F(φ ∧ ψ) ∨ F(φ ∧ F ψ) ∨ F(F φ ∧ ψ)`, and those
+  -- three disjuncts *are* the trichotomy on two future witnesses: they coincide, the φ-witness
+  -- comes first, or the ψ-witness comes first. Emitting them verbatim rather than as fresh ordering
+  -- constraints keeps the rule's admissibility obligation a single appeal to BX11 instead of a
+  -- semantic argument about `TimeOrdering`, and it is the form the Phase 3 `RuleSpec` gate maps to
+  -- `Axiom.temp_linearity`.
   --
   -- **Why the trigger is a witness formula and not the eventuality.** The obvious trigger —
   -- `T(F φ)` with a partner `T(F ψ)` at the same label — never fires in practice, because
@@ -1639,10 +1639,10 @@ def zTimeRules : List TableauRule := [
 Dedekind-specific rules (R6), included only when fc >= .RTime.
 
 The tableau counterparts of `Axiom.prior_U_gap`, `DerivedAxioms.priorSGap` and `Axiom.sep`
-(`Axioms.lean:377,387,398`) — the three axioms whose gap/separation content no other rule
-touches, and the reason `Discrete ≰ Dedekind` is the correct gating rather than a defect:
-the Dedekind terminus consumes `ValidRTime`, so its arm is base + dense + dedekind
-and never includes the Discrete rules.
+(`ProofSystem/Axioms.lean:442`, `ProofSystem/DerivedAxioms.lean:165`, `ProofSystem/Axioms.lean:453`)
+— the three axioms whose gap/separation content no other rule touches, and the reason
+`Discrete ≰ Dedekind` is the correct gating rather than a defect: the Dedekind terminus consumes
+`ValidRTime`, so its arm is base + dense + dedekind and never includes the Discrete rules.
 -/
 def rTimeRules : List TableauRule := [
   .priorUGap, .priorSGap, .sepRule
@@ -1923,9 +1923,9 @@ Is this fresh-label rule's witness obligation discharged by the *validity of its
 witness formula needed at all?
 
 The only event this fires on is the syntactic constant `⊤` (`Formula.top`,
-`FormalSystem/Syntax/Formula.lean:118`), reached through the two derived existential temporal
-operators: `F ⊤` is `untl ⊤ ⊤` and `P ⊤` is `snce ⊤ ⊤` (`Formula.someFuture` / `Formula.somePast`,
-`Formula.lean:131` / `Formula.lean:141`). On such a trigger the test is *purely* that the ordering
+`Syntax/Formula.lean:136`), reached through the two derived existential temporal operators: `F ⊤` is
+`untl ⊤ ⊤` and `P ⊤` is `snce ⊤ ⊤` (`Formula.someFuture` / `Formula.somePast`,
+`Syntax/Formula.lean:149` / `:159`). On such a trigger the test is *purely* that the ordering
 already has some strictly-later (resp. strictly-earlier) time; the branch is not consulted.
 
 **Soundness.** `⊤` is true at every label of every model. So if the ordering already puts some

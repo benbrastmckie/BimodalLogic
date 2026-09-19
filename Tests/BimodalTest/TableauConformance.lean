@@ -329,10 +329,10 @@ def controlRows : List Row :=
   , { id := "C5 K_G",        formula := im (G (im p q)) (im (G p) (G q))
     , target := "CLOSED", note := "K axiom for G" }
   ]
-
 /-- The five seriality/dual probes carried over from the cslib tableau survey (03 §6).
-All five are valid here: `serial_future`/`serial_past` (`Axioms.lean:113,117`) are
-axioms of the system, so `F⊤` and `P⊤` are theorems and the rest follow.
+All five are valid here: `serial_future`/`serial_past` (`ProofSystem/Axioms.lean:176`,
+`ProofSystem/DerivedAxioms.lean:85`) are axioms of the system, so `F⊤` and `P⊤` are theorems and
+the rest follow.
 
 The engine used to answer OPEN on all five — the same failure mode the cslib survey recorded
 as its headline anti-lesson: a sorry-free, build-green tableau that answers OPEN on `F⊤`. The
@@ -483,9 +483,10 @@ def zTimeRows : List Row :=
     ++ serialityRows ++ seriesRows ++ counterexampleRows ++ untilSinceRows
     ++ zTimeExtraRows
 
-/-- The three Dedekind axiom instances. `allRulesForFC` now has a `rTimeRules` arm
-(`priorUGap`, `priorSGap`, `sepRule`), and all three close. `kPlus`/`kMinus` are Reynolds'
-`K⁺`/`K⁻` (`Formula.lean:180,193`), which those three rules are the only consumers of.
+/-- The three Dedekind axiom instances. `allRulesForFC` now has a `rTimeRules` arm (`priorUGap`,
+`priorSGap`, `sepRule`), and all three close. `kPlus`/`kMinus` are Reynolds' `K⁺`/`K⁻`
+(`Syntax/Formula.lean:198`, `Syntax/Formula.lean:211`), which those three rules are the only
+consumers of.
 
 Each rule triggers on its axiom's antecedent *conjunction* and adds the consequent
 persistently, so a row closes by contradiction between the added consequent and the negated

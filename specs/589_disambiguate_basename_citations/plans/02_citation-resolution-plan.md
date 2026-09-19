@@ -108,27 +108,27 @@ Put `c20.py` in a scratch directory, never in the repo.
 
 ---
 
-### Phase 2: Decidability, TableauConformance and CompletenessDedekind cluster (8 citations + collocated) [NOT STARTED]
+### Phase 2: Decidability, TableauConformance and CompletenessDedekind cluster (8 citations + collocated) [COMPLETED]
 
 **Goal**: Resolve report rows 5-10 and 21-22, fix the collocated `Formula.lean:118`, and fix the wrong-file companions.
 
 **Tasks**:
-- [ ] Re-derive targets with `grep -n`:
+- [x] Re-derive targets with `grep -n`:
   - In `FormalSystem/ProofSystem/Axioms.lean`: `| serial_future`, `| temp_linearity`, `| prior_U_gap`, `| sep`.
   - In `FormalSystem/ProofSystem/DerivedAxioms.lean`: `def serialPast`, `def priorSGap`.
   - In `FormalSystem/Syntax/Formula.lean`: `def top`, `def someFuture`, `def somePast`, `def kPlus`, `def kMinus`.
   - In `FormalSystem/Metalogic/BXCanonical/Completeness.lean`: `theorem neg_consistent_of_not_derivable`.
-- [ ] `CompletenessDedekind.lean` (~:579): `Completeness.lean:72` becomes `BXCanonical/Completeness.lean:<77>`. The old number lands on a blank line.
-- [ ] `Tableau.lean`, bottom-up:
+- [x] `CompletenessDedekind.lean` (~:579): `Completeness.lean:72` becomes `BXCanonical/Completeness.lean:<77>`. The old number lands on a blank line.
+- [x] `Tableau.lean`, bottom-up:
   - ~:1928: `Formula.lean:131`/`:141` become `Syntax/Formula.lean:<someFuture>`/`<somePast>`.
   - ~:1926: `FormalSystem/Syntax/Formula.lean:118` becomes `:<top>` (136).
   - ~:1642: `Axioms.lean:377,387,398` splits into `ProofSystem/Axioms.lean:<prior_U_gap>`, `ProofSystem/DerivedAxioms.lean:<priorSGap>` and `ProofSystem/Axioms.lean:<sep>`.
   - ~:1226: `Axioms.lean:238` becomes `ProofSystem/Axioms.lean:<temp_linearity>`.
   - ~:165: `Axioms.lean:113, 117` becomes `ProofSystem/Axioms.lean:<serial_future>` and `ProofSystem/DerivedAxioms.lean:<serialPast>`.
-- [ ] `Tests/BimodalTest/TableauConformance.lean`, bottom-up:
+- [x] `Tests/BimodalTest/TableauConformance.lean`, bottom-up:
   - ~:488: `Formula.lean:180,193` becomes `Syntax/Formula.lean:<kPlus>`, `:<kMinus>`.
   - ~:334: `Axioms.lean:113,117` gets the same split as Tableau ~:165.
-- [ ] Run the extracted C20.
+- [x] Run the extracted C20. *(deviation: altered — to keep Tableau.lean's line count fixed (it is cited from many modules), three sites were compacted: at ~:165 `DerivedAxioms.serialPast` is cited by name only (no path/line); at ~:1926 the prefix `FormalSystem/` was dropped (`Syntax/Formula.lean:136`, still unique); at ~:1928 the second citation is the companion form `:159`. TableauConformance.lean and CompletenessDedekind.lean each grew by one line (no inbound citations))*
 
 **Timing**: 0.75 hours
 
@@ -150,7 +150,7 @@ Put `c20.py` in a scratch directory, never in the repo.
 
 ---
 
-### Phase 3: ChronicleMonadicBridge and PriorINF cluster (6 citations + collocated) [NOT STARTED]
+### Phase 3: ChronicleMonadicBridge and PriorINF cluster (6 citations + collocated) [IN PROGRESS]
 
 **Goal**: Resolve report rows 1-4 and 19-20, including the 3 `Formula.lean:163-179` blank landings, and fix the collocated wrong-but-passing citations and the malformed empty slot.
 
@@ -186,7 +186,7 @@ Put `c20.py` in a scratch directory, never in the repo.
 
 ---
 
-### Phase 4: Non-live targets by name (Boneyard, Mathlib, specs/) and record the convention [NOT STARTED]
+### Phase 4: Non-live targets by name (Boneyard, Mathlib, specs/) and record the convention [IN PROGRESS]
 
 **Goal**: Convert the 13 UNRESOLVED citations and the 3+1 broken `specs/` citations to name-based citations with no line numbers (option 3), and record the convention in C20.
 
