@@ -300,39 +300,39 @@ list.
 
 ---
 
-### Phase 3: The countermodel frame over integer time [NOT STARTED]
+### Phase 3: The countermodel frame over integer time [COMPLETED]
 
 **Goal**: The frame eR on `Option (Bool × ℕ)` as a `FrameOver (TemporalOrder.of ℤ)` satisfying
 every field of the live `TaskFrame`, including Saturation, plus the walk API.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Independence/LimitClosureFrame.lean`, in
+- [x] Create `FormalSystem/Metalogic/Independence/LimitClosureFrame.lean`, in
   `namespace FormalSystem.Metalogic.Independence`, following the construction pattern of
   `ForwardDeterministicFrame.lean` (`fnRel`, `fnFrameOver`, `FN`, `fn_taskRel_iff`). Imports: what
   that file imports for the frame API, plus Mathlib finiteness lemmas as needed; do not import
   `CoarsenedModels` unless required.
-- [ ] Transcribe from probe 02 (lines 21-243): the carrier abbreviation, `eR` (the hub `none`
+- [x] Transcribe from probe 02 (lines 21-243): the carrier abbreviation, `eR` (the hub `none`
   reaches everything and is reached only from itself; between non-hub states the natural-number
   budget is non-increasing and strictly decreases on entering the `true` class), `eπ`,
   `eR_trans`, `eR_dense`, `eR_succ`, the two-sided `eRel` with `eRel_zero`, `eRel_pos`,
   `eRel_neg`, `eRel_reflection`, `eRel_serial`, `eRel_comp`, `eRel_limit` (via
   `TaskFrame.limit_of_succOrder (D := ℤ)`).
-- [ ] Saturation: `sInter_nonempty_of_directed_of_finite_mem` (local, frame-agnostic, stated next
+- [x] Saturation: `sInter_nonempty_of_directed_of_finite_mem` (local, frame-agnostic, stated next
   to a pointer to `sInter_nonempty_of_directed_of_minimal`), `eR_fwd_finite`,
   `eRel_fib_hub_or_finite`, `eRel_seg_hub_or_finite`, `eRel_saturation`. The argument: eR is
   transitive and dense so the n-step relation is eR for n ≥ 1; forward fibres of non-hub states are
   finite; every infinite fibre or segment contains the hub.
-- [ ] `@[reducible] def eFrameOver` and `@[reducible] def EF`, fields citing
+- [x] `@[reducible] def eFrameOver` and `@[reducible] def EF`, fields citing
   `TaskFrame.*_reflect_of_reflective`; `ef_taskRel_iff`.
-- [ ] Walks: reuse `FormalSystem.Semantics.Walk.IsWalk` at `eR` (default) or a local abbreviation
-  (fallback, see Risks); `isWalk_state`, `walk_lt`, `histOfWalk`.
-- [ ] Use the four `omega`-versus-carrier workarounds where times have type `EF.Duration`.
-- [ ] Module docstring: the frame in one paragraph, why the budget bounds future p-visits, that
+- [x] Walks: reuse `FormalSystem.Semantics.Walk.IsWalk` at `eR` (default) or a local abbreviation
+  (fallback, see Risks); `isWalk_state`, `walk_lt`, `histOfWalk`. *(completed: default taken, `Walk.IsWalk eR` reused via `Semantics/Correspondence/FwdRecPeriodicity.lean`; no fallback needed)*
+- [x] Use the four `omega`-versus-carrier workarounds where times have type `EF.Duration`.
+- [x] Module docstring: the frame in one paragraph, why the budget bounds future p-visits, that
   the frame is necessarily nondeterministic (the hub reaches every state), and the one-line
   reading (the countermodel it supports is a dense, non-closed bundle).
-- [ ] Register in `FormalSystem/Metalogic/Independence.lean`; `--emit-inventory`; description
+- [x] Register in `FormalSystem/Metalogic/Independence.lean`; `--emit-inventory`; description
   cell.
-- [ ] Build the module, then `FormalSystem`.
+- [x] Build the module, then `FormalSystem`.
 
 **Timing**: 1.5 hours
 

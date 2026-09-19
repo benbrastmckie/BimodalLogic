@@ -23,6 +23,7 @@ import FormalSystem.Metalogic.Independence.PastedCoarseModels
 import FormalSystem.Metalogic.Independence.PastingIndependence
 import FormalSystem.Metalogic.Independence.StarDiscrimination
 import FormalSystem.Metalogic.Independence.ForwardDeterministicFrame
+import FormalSystem.Metalogic.Independence.LimitClosureFrame
 
 /-!
 # Independence results
@@ -80,6 +81,9 @@ Galois-closed, in contrast with the paper's bare classes.
 * `Independence/PastedCoarseModels.lean` — `CoarseModel.PasteClosed` (the splice exists at the
   level of `π`-images), under which PS and US are coarsely valid, so that every `.Base` theorem
   of TM⁺ is valid on every paste-closed coarse model (`not_plusDerivable_of_pcRefuted`).
+* `Independence/LimitClosureFrame.lean` — `EF`, the budgeted digraph with a hub on
+  `Option (Bool × ℕ)` over `ℤ`, with every `FrameOver` field discharged (*Saturation* by "contains
+  the hub or is finite"), and the correspondence between its world histories and `eR`-walks.
 
 ## The method
 
