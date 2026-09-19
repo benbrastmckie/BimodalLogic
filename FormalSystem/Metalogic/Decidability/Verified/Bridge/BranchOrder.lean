@@ -291,6 +291,9 @@ defaults for those fields.
 def branchLT (b : Branch) (ord : TimeOrdering) (i j : BranchTime b) : Prop :=
   strictBefore ord (timeAt b i) (timeAt b j) = true ∨ (timeAt b i = timeAt b j ∧ i < j)
 
+/-- `branchLT` is decidable on every pair of indices: a `Bool` equality on `strictBefore`, or an
+equality of times together with a `Fin` comparison. `linearOrderOfSTO` needs this instance to
+package `branchLT` as a `LinearOrder`. -/
 instance instDecidableBranchLT (b : Branch) (ord : TimeOrdering) :
     DecidableRel (branchLT b ord) := fun i j => by
   unfold branchLT; infer_instance

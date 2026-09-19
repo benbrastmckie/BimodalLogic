@@ -137,6 +137,9 @@ def IsLasso (P : IntPresentation) (t : RawLasso P) : Prop :=
       P.step (BiLasso.unrollOf P t.1 t.2.1 t.2.2 (BiLasso.windowTime P t.1 i))
         (BiLasso.unrollOf P t.1 t.2.1 t.2.2 (BiLasso.windowTime P t.1 i + 1)) = true
 
+/-- `IsLasso` is decidable on every raw triple: two list non-emptiness tests and a `Bool` step
+check quantified over the finite window `Fin (...)`. This is what lets the enumeration filter
+raw triples down to genuine bi-lassos. -/
 instance instDecidableIsLasso (P : IntPresentation) : DecidablePred (IsLasso P) := by
   intro t
   dsimp only [IsLasso]

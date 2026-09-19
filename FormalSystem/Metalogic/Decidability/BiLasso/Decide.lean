@@ -307,6 +307,9 @@ def clauseAt (P : IntPresentation) (bx : Formula → Bool)
   | Formula.untl g e => (Formula.untl g e ∈ Lt ↔ (e ∈ Lp ∨ (g ∈ Lp ∧ Formula.untl g e ∈ Lp)))
   | Formula.snce g e => (Formula.snce g e ∈ Lt ↔ (e ∈ Lm ∨ (g ∈ Lm ∧ Formula.snce g e ∈ Lm)))
 
+/-- `clauseAt` is decidable at every formula: each constructor's clause is a Boolean combination of
+`Finset` memberships and `Bool` equalities. The instance unfolds `clauseAt` by cases on the
+formula, so it applies only to `clauseAt` itself, not to `LocalCoherent`'s unbounded form. -/
 instance instDecidableClauseAt (P : IntPresentation) (bx : Formula → Bool)
     (Lm Lt Lp : Finset Formula) (w : Fin P.card) :
     DecidablePred (clauseAt P bx Lm Lt Lp w) := by
@@ -322,6 +325,8 @@ def LocalCoherentAt (P : IntPresentation) (φ : Formula) (bx : Formula → Bool)
     ∀ ψ ∈ subformulaClosure φ,
       clauseAt P bx (A.label (t - 1)) (A.label t) (A.label (t + 1)) (A.lasso.unroll t) ψ
 
+/-- `LocalCoherentAt` is decidable at every position: its closure quantifier ranges over the
+`Finset` `subformulaClosure φ`, and each clause is decided by `instDecidableClauseAt`. -/
 instance instDecidableLocalCoherentAt (A : Annot P φ) :
     DecidablePred (LocalCoherentAt P φ bx A) := by
   intro t
@@ -486,10 +491,16 @@ def SnceOblB (A : Annot P φ) (t : ℤ) (g e : Formula) : Prop :=
   ∃ s ∈ Finset.Ico (min t 0 - A.nb) t,
     e ∈ A.label s ∧ ∀ r ∈ Finset.Ioo s t, g ∈ A.label r
 
+/-- The bounded forward obligation `UntlOblB` is decidable, because its witness ranges over the
+explicit finite interval `Finset.Ioc t (max t A.nm + A.nf)`. The unbounded `UntlObl` has no
+such instance; decide it through `UntlOblB` via `untlObl_iff_bounded`. -/
 instance instDecidableUntlOblB (A : Annot P φ) (t : ℤ) (g e : Formula) :
     Decidable (UntlOblB A t g e) := by
   dsimp only [UntlOblB]; infer_instance
 
+/-- The bounded backward obligation `SnceOblB` is decidable, because its witness ranges over the
+explicit finite interval `Finset.Ico (min t 0 - A.nb) t`. The unbounded `SnceObl` has no such
+instance; decide it through `SnceOblB` via `snceObl_iff_bounded`. -/
 instance instDecidableSnceOblB (A : Annot P φ) (t : ℤ) (g e : Formula) :
     Decidable (SnceOblB A t g e) := by
   dsimp only [SnceOblB]; infer_instance
@@ -698,6 +709,8 @@ def eventClauseAt (A : Annot P φ) (t : ℤ) : Formula → Prop
   | Formula.snce g e => Formula.snce g e ∈ A.label t → SnceOblB A t g e
   | _ => True
 
+/-- `eventClauseAt` is decidable at every formula: the `untl`/`snce` clauses are implications
+between a `Finset` membership and a bounded obligation, and every other clause is `True`. -/
 instance instDecidableEventClauseAt (A : Annot P φ) (t : ℤ) :
     DecidablePred (eventClauseAt A t) := by
   intro ψ
@@ -707,6 +720,8 @@ instance instDecidableEventClauseAt (A : Annot P φ) (t : ℤ) :
 def FulfilAt (A : Annot P φ) (t : ℤ) : Prop :=
   ∀ ψ ∈ subformulaClosure φ, eventClauseAt A t ψ
 
+/-- `FulfilAt` is decidable at every position: its closure quantifier ranges over the `Finset`
+`subformulaClosure φ`, and each clause is decided by `instDecidableEventClauseAt`. -/
 instance instDecidableFulfilAt (A : Annot P φ) : DecidablePred (FulfilAt A) := by
   intro t
   dsimp only [FulfilAt]

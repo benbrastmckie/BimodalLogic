@@ -100,17 +100,17 @@ Phases within the same wave can run in parallel. Phases 1-3 touch disjoint files
 
 ---
 
-### Phase 2: Decidability instance docstrings [NOT STARTED]
+### Phase 2: Decidability instance docstrings [COMPLETED]
 
 **Goal**: Document the 8 undocumented decidability instances (research items 3-10).
 
 **Tasks**:
-- [ ] Re-derive the undocumented instances in the target files. Line numbers may have drifted.
-- [ ] `FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean`: add docstrings to `instDecidableClauseAt`, `instDecidableLocalCoherentAt`, `instDecidableUntlOblB`, `instDecidableSnceOblB`, `instDecidableEventClauseAt`, and `instDecidableFulfilAt`. The `...OblB` docstrings state the trap: decidability comes from the explicit finite witness range, and the unbounded obligations are not covered.
-- [ ] `FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean`: add a docstring to `instDecidableIsLasso`.
-- [ ] `FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean`: add a docstring to `instDecidableBranchLT`.
-- [ ] Read each body before finalizing its wording, starting from the research drafts. Each `/--` must end within 3 lines above its `instance` line; an attribute line in between is allowed.
-- [ ] Build the three modules with `lake build <Module>` through the repository's build path.
+- [x] Re-derive the undocumented instances in the target files. Line numbers may have drifted.
+- [x] `FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean`: add docstrings to `instDecidableClauseAt`, `instDecidableLocalCoherentAt`, `instDecidableUntlOblB`, `instDecidableSnceOblB`, `instDecidableEventClauseAt`, and `instDecidableFulfilAt`. The `...OblB` docstrings state the trap: decidability comes from the explicit finite witness range, and the unbounded obligations are not covered.
+- [x] `FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean`: add a docstring to `instDecidableIsLasso`.
+- [x] `FormalSystem/Metalogic/Decidability/Verified/Bridge/BranchOrder.lean`: add a docstring to `instDecidableBranchLT`.
+- [x] Read each body before finalizing its wording, starting from the research drafts. Each `/--` must end within 3 lines above its `instance` line; an attribute line in between is allowed.
+- [x] Build the three modules with `lake build <Module>` through the repository's build path.
 
 **Timing**: 0.5 hours
 
@@ -131,7 +131,7 @@ Phases within the same wave can run in parallel. Phases 1-3 touch disjoint files
 
 ---
 
-### Phase 3: WeakCanonical, Semantics and Bundle instance docstrings [NOT STARTED]
+### Phase 3: WeakCanonical, Semantics and Bundle instance docstrings [IN PROGRESS]
 
 **Goal**: Document the remaining 12 undocumented instances (research items 1-2 and 11-20).
 
