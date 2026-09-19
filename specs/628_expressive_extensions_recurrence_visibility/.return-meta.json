@@ -1,0 +1,19 @@
+{
+  "status": "in_progress",
+  "started_at": "2026-09-19T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "probe_written",
+    "details": "Probe 01 written (NFormula/QFormula, invariance, definability, splice); compiling"
+  },
+  "metadata": {
+    "session_id": "sess_1789803694_489350_628",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ]
+  }
+}
