@@ -1,19 +1,40 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-09-19T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "probe_written",
-    "details": "Probe 01 written (NFormula/QFormula, invariance, definability, splice); compiling"
-  },
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md",
+      "summary": "Compiled answers to Q1-Q5: [≡] and lifted-quantifier invariance along history-lifting morphisms; one state register/nominal defines recurrence-freeness and the transposition formula via a compiled splice, refuted at every FrameClass tag; A definable in L, Atom(p) names a state, standard quantifiers see recurrence; cost landmarks held/recalled; Prior's world-propositions name states, naming rule sound but closure obstacle untouched."
+    }
+  ],
+  "next_steps": "Plan the port of probes/01_nominals-registers-quantifiers.lean into FormalSystem/Semantics/Extension/{HybridState,PropQuant}.lean plus Truth.univ_iff; decide whether 559 adopts state nominals as the naming ingredient of record.",
+  "proposed_file_scope": [
+    "FormalSystem/Semantics/Extension/HybridState.lean",
+    "FormalSystem/Semantics/Extension/PropQuant.lean",
+    "FormalSystem/Semantics/Truth.lean"
+  ],
+  "memory_candidates": [
+    {
+      "content": "Instance search does not see through TemporalOrder.of carriers: SuccOrder (trivialFrame (D := ℤ)).toTaskFrame.Duration.carrier and SuccOrder intOrder.carrier fail. Pass inferInstanceAs (SuccOrder ℤ) etc. explicitly (and import Mathlib.Data.Int.SuccPred), and chain Iff lemmas by hand where simp cannot match a lemma binder typed at the carrier against a goal typed at ℤ.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["TemporalOrder.of", "intOrder", "isZTime_of_instances", "instance search", "permissiveFrame", "lean4"]
+    },
+    {
+      "content": "What a history-lifting morphism (forth + history-level lift + onto) preserves: valuations pulled back, the history/time structure, and the same-state relation σ(s)=τ(t) at any time — so ⊡, [≡], U/S, □ and quantifiers over pulled-back propositions are all invariant; it does not preserve state identity, so a state nominal/register or a standard propositional quantifier (which manufactures {τ(s)}) is the minimal resource that sees recurrence and transposition.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/probes/01_nominals-registers-quantifiers.lean",
+      "confidence": 0.8,
+      "suggested_keywords": ["recurrence", "transposition", "nominal", "state register", "HistMorphism", "invariance", "propositional quantifier"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789803694_489350_628",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings_count": 5
   }
 }

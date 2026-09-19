@@ -1,4 +1,5 @@
-import Mathlib.Data.Real.Archimedean
+import Mathlib.Algebra.Order.Archimedean.Real.Basic
+import Mathlib.Data.Int.SuccPred
 import FormalSystem.Semantics.PlusLanguage.PlusValidity
 import FormalSystem.Semantics.Frames.Standard
 import FormalSystem.Semantics.Extension.Extension
@@ -340,8 +341,8 @@ theorem recF_defines (G : TaskFrame) (i : ℕ) :
     simp only [NFormula.recF, NTruth.neg_iff, NTruth.and_iff, NTruth.or_iff, NTruth.somePast_iff,
       NTruth.someFuture_iff, NTruth.reg_iff] at h1
     rcases lt_or_gt_of_ne hne with hlt | hgt
-    · exact h1 ⟨rfl, Or.inr ⟨t, hlt, hst.symm⟩⟩
-    · exact h1 ⟨rfl, Or.inl ⟨t, hgt, hst.symm⟩⟩
+    · exact h1 ⟨trivial, Or.inr ⟨t, hlt, hst.symm⟩⟩
+    · exact h1 ⟨trivial, Or.inl ⟨t, hgt, hst.symm⟩⟩
   · intro hG M τ t r; exact recF_valid hG M τ t r i
 
 /-- The same for the register-closed sentence: binder instead of assignment. -/
@@ -355,8 +356,8 @@ theorem bindRec_defines (G : TaskFrame) (i : ℕ) :
     simp only [NTruth.bind_iff, NFormula.recF, NTruth.neg_iff, NTruth.and_iff, NTruth.or_iff,
       NTruth.somePast_iff, NTruth.someFuture_iff, NTruth.reg_iff, Function.update_self] at h1
     rcases lt_or_gt_of_ne hne with hlt | hgt
-    · exact h1 ⟨rfl, Or.inr ⟨t, hlt, hst.symm⟩⟩
-    · exact h1 ⟨rfl, Or.inl ⟨t, hgt, hst.symm⟩⟩
+    · exact h1 ⟨trivial, Or.inr ⟨t, hlt, hst.symm⟩⟩
+    · exact h1 ⟨trivial, Or.inl ⟨t, hgt, hst.symm⟩⟩
   · intro hG M τ t r; exact bindRec_valid hG M τ t r i
 
 /-! #### Splicing two histories that meet at a time -/
@@ -382,10 +383,10 @@ theorem exists_splice (G : TaskFrame) (τ σ : WorldHistory G) (t : G.Duration)
     · show G.TaskRel (if x ≤ t then _ else _) _ (if y ≤ t then _ else _)
       rw [if_pos hx, if_pos hy]; exact τ.respects_task x y
     · show G.TaskRel (if x ≤ t then _ else _) _ (if y ≤ t then _ else _)
-      rw [if_pos hx, if_neg hy]; exact cross x y hx (le_of_not_le hy)
+      rw [if_pos hx, if_neg hy]; exact cross x y hx ((not_le.1 hy).le)
     · show G.TaskRel (if x ≤ t then _ else _) _ (if y ≤ t then _ else _)
       rw [if_neg hx, if_pos hy]
-      have h2 := (G.reflection _ _ _).1 (cross y x hy (le_of_not_le hx))
+      have h2 := (G.reflection _ _ _).1 (cross y x hy ((not_le.1 hx).le))
       rwa [neg_sub] at h2
     · show G.TaskRel (if x ≤ t then _ else _) _ (if y ≤ t then _ else _)
       rw [if_neg hx, if_neg hy]; exact σ.respects_task x y
@@ -448,7 +449,9 @@ theorem exists_sat_not_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass)
   | Dense => exact ⟨(FrameOver.trivialFrame (D := ℚ)).toTaskFrame,
       inferInstanceAs (DenselyOrdered ℚ), trivialFrame_not_recurrenceFree⟩
   | ZTime => exact ⟨(FrameOver.trivialFrame (D := ℤ)).toTaskFrame,
-      TaskFrame.isZTime_of_instances _, trivialFrame_not_recurrenceFree⟩
+      @TaskFrame.isZTime_of_instances _ (inferInstanceAs (SuccOrder ℤ))
+        (inferInstanceAs (PredOrder ℤ)) (inferInstanceAs (IsSuccArchimedean ℤ))
+        (inferInstanceAs (IsPredArchimedean ℤ)), trivialFrame_not_recurrenceFree⟩
   | RTime => exact ⟨(FrameOver.trivialFrame (D := ℝ)).toTaskFrame,
       ⟨inferInstanceAs (DenselyOrdered ℝ), fun s hne hbdd => ⟨sSup s, isLUB_csSup hne hbdd⟩⟩,
       trivialFrame_not_recurrenceFree⟩
@@ -489,14 +492,19 @@ theorem transF_not_validIn (fc : FormalSystem.ProofSystem.FrameClass) :
   · obtain ⟨M, r, hr⟩ := transF_refuted_of_recur τ hgt hst.symm
     exact hr (h G hG M τ t r)
 
+/-- The `ℤ` instances `permissiveFrame` asks for, named so that they can be passed through the
+`intOrder` carrier explicitly. -/
+abbrev zSucc : SuccOrder ℤ := inferInstance
+theorem zNoMax : NoMaxOrder ℤ := inferInstance
+
 /-- The permissive two-state frame over `ℤ`, in which every state assignment is a history. -/
-def permZ : FrameOver intOrder := permissiveFrame intOrder inferInstance inferInstance
+abbrev permZ : FrameOver intOrder := permissiveFrame intOrder zSucc zNoMax
 
 /-- Any function `ℤ → Bool` is a history of `permZ`. -/
 def permHist (f : ℤ → Bool) : WorldHistory permZ.toTaskFrame :=
   WorldHistory.ofTotal _ f (by
     intro s t
-    refine (permissiveFrame_taskRel _ _ _ _ _).2 ?_
+    refine (permissiveFrame_taskRel (D := intOrder) zSucc zNoMax _ _ _).2 ?_
     by_cases h : t - s = 0
     · right; rw [sub_eq_zero.1 h]
     · left; exact h)
@@ -505,14 +513,21 @@ def permHist (f : ℤ → Bool) : WorldHistory permZ.toTaskFrame :=
 `true, false` and the history `false, true` refute `¬(E(i ∧ F j) ∧ E(j ∧ F i))` on `permZ`. So the
 formula separates the recurrence-free frames from the full class even with `i ≠ j` enforced. -/
 theorem transF_refuted_distinct :
-    ∃ (M : TaskModel permZ.toTaskFrame) (τ : WorldHistory permZ.toTaskFrame) (t : ℤ)
-      (r : ℕ → permZ.WorldState), r 0 ≠ r 1 ∧ ¬ NTruthAt M τ t r (NFormula.transF 0 1) := by
-  refine ⟨⟨fun _ _ => False⟩, permHist (fun x => decide (x = 0)), 0, fun n => decide (n = 0),
-    by decide, ?_⟩
-  simp only [NFormula.transF, NTruth.neg_iff, NTruth.and_iff, NTruth.exist_iff,
-    NTruth.someFuture_iff, NTruth.reg_iff, not_not]
-  refine ⟨⟨permHist (fun x => decide (x = 0)), 0, by decide, 1, zero_lt_one, by decide⟩,
-    ⟨permHist (fun x => decide (x = 1)), 0, by decide, 1, zero_lt_one, by decide⟩⟩
+    ∃ (M : TaskModel permZ.toTaskFrame) (τ : WorldHistory permZ.toTaskFrame)
+      (t : permZ.toTaskFrame.Duration) (r : ℕ → permZ.WorldState),
+      r 0 ≠ r 1 ∧ ¬ NTruthAt M τ t r (NFormula.transF 0 1) := by
+  refine ⟨⟨fun _ _ => False⟩, permHist (fun x => decide (x = 0)), (0 : ℤ),
+    fun n => decide (n = 0), ?_, ?_⟩
+  · show (true : Bool) ≠ false
+    exact fun h => Bool.noConfusion h
+  · intro h
+    refine (NTruth.neg_iff _ _ _ _ _).1 h ((NTruth.and_iff _ _ _ _ _ _).2 ⟨?_, ?_⟩)
+    · exact (NTruth.exist_iff _ _ _ _ _).2 ⟨permHist (fun x => decide (x = 0)), (0 : ℤ),
+        (NTruth.and_iff _ _ _ _ _ _).2 ⟨rfl,
+          (NTruth.someFuture_iff _ _ _ _ _).2 ⟨(1 : ℤ), zero_lt_one, rfl⟩⟩⟩
+    · exact (NTruth.exist_iff _ _ _ _ _).2 ⟨permHist (fun x => decide (x = 1)), (0 : ℤ),
+        (NTruth.and_iff _ _ _ _ _ _).2 ⟨rfl,
+          (NTruth.someFuture_iff _ _ _ _ _).2 ⟨(1 : ℤ), zero_lt_one, rfl⟩⟩⟩
 
 end Nominals
 
