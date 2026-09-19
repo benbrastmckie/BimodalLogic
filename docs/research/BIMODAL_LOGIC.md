@@ -123,7 +123,7 @@ Bimodal follows the Kripke tradition:
 - Accessibility relations determine modal truth
 - Two formulas are equivalent iff true at same worlds
 
-**Reference**: See ["The Construction of Possible Worlds"](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf) (Brast-McKie, 2025) for the theoretical foundation.
+**Reference**: See ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, 2025) for the theoretical foundation.
 
 ### Additional References
 

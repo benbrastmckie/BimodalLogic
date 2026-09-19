@@ -111,10 +111,10 @@ BimodalLogic/
 
 Removed from the tracked deliverable at the publication gate: `latex/` (frozen edition and its
 PDF), `docs/research/`, `docs/training/` (moves with the dataset project or into the tooling
-library's README), the tracked paper PDF under `docs/papers/`, `CLAUDE.md`,
-`.claude-extensions.json`, `.syncprotect`, the empty `.gitattributes`, and the one-off
-scripts (`migrate_schema_v2.py`, `swap_untl_snce.py`, `standardize_metadata.py`,
-`add-copyright-headers.sh`). `specs/` is not removed: it stays tracked and published (Section 8).
+library's README), `CLAUDE.md`, `.claude-extensions.json`, `.syncprotect`, the empty
+`.gitattributes`, and the one-off scripts (`migrate_schema_v2.py`, `swap_untl_snce.py`,
+`standardize_metadata.py`, `add-copyright-headers.sh`). `specs/` is not removed: it stays
+tracked and published (Section 8).
 
 ### Lakefile target shape
 

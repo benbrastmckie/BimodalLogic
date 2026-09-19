@@ -117,7 +117,7 @@
     #v(0.3cm)
     #block(width: 80%)[
       #set align(left)
-      + #link("https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf")[_"The Construction of Possible Worlds"_], Brast-McKie, _Journal of Philosophical Logic_, forthcoming.
+      + #link("https://benbrastmckie.com/publications/possible_worlds.pdf")[_"The Construction of Possible Worlds"_], Brast-McKie, _Journal of Philosophical Logic_, forthcoming.
       + The #proofchecker Lean 4 repository, `FormalSystem/` -- ground truth for all formal claims.
     ]
     #v(1cm)
