@@ -552,7 +552,7 @@
     {
       "project_number": 589,
       "project_name": "disambiguate_basename_citations",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "C20 tier 1 verifies 1,012 `file.lean:NNN` citations land on a real, non-blank line. A further 35 are unverifiable and the check reports them and moves on. They are precisely the citations most likely to be silently wrong -- a basename ambiguous to the checker is ambiguous to a reader too, and none has ever had its line number checked.\n\n22 are AMBIGUOUS (basename resolves to 2+ live files): `Axioms.lean` x7, `Defs.lean` x7, `Formula.lean` x6, `Completeness.lean` x1, `Soundness.lean` x1. Fix by qualifying the path -- but note that is only half the job: once the path resolves, tier 1 checks the LINE, and these lines have never been checked. Expect some to be wrong; correct the number, not the prose. Exploitable structure: the 7 `DenseModelSurgery/` citations almost certainly all mean their own sibling `DenseModelSurgery/Defs.lean`, and `Defs.lean:461` recurs three times across three files.\n\n13 are UNRESOLVED and need ONE convention decision, not 13 edits: 11 cite files in `FormalSystem/Boneyard/` (`NegationIndep.lean` x8, `RefutationF2.lean` x2, `ExteriorPinnedProbeK.lean` x1 -- all real archived files, pruned from every C20 walker by name), and 2 cite `Mathlib/Tactic/Linter/Header.lean` from `check-copyright-headers.sh`, which are genuinely external and doing useful work. Options: a marker suffix C20 recognises; extending C20's resolver to check the archive for real; or dropping line numbers from archive citations in favour of declaration names. The third is most consistent with how this repository already thinks about citations -- C15 resolves paper anchors by name 'never by line number, ... which is what lets the lint survive reflowing', and commit `a16df671f` de-line-numbered citations for that reason. Evaluate it first.\n\nThe complete 35-row list is in the report; no re-measurement needed.\n\nVerify: C20's INFO count is 0 or exactly the intentionally-external set; tier 1's verified count rises by the number of newly-resolvable citations with still zero out-of-range or blank-line landings; tier 2 still zero.\n\nSee specs/reviews/review-2026-09-16.md, Finding M4.\n\nALSO ABSORB (codebase-cleanup reorganization, 2026-09-16) three broken `specs/` citations in live Lean docstrings, verified at reorganization time: `FormalSystem/Syntax/BigConj.lean:30` (`specs/098/reports/...` -- no such directory), `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:42` (`specs/305 report 40`), and `FormalSystem/Syntax/MinusLanguage/Axioms.lean:76` (`specs/archive/514_...` -- `specs/archive/` is gitignored). Replace each with a durable anchor (declaration name, ADR, or record under the home 595 settles) or drop it. Apply the same convention decision as the Boneyard citations.\nORDERING NOTE: this is the terminal task of the codebase-cleanup topic because every earlier rename/move/reflow shifts cited lines; re-measure the 35-row list if any predecessor has landed since the report.",
       "topic": "codebase-cleanup",
@@ -567,15 +567,15 @@
         596
       ],
       "created": "2026-09-16T07:10:01Z",
-      "last_updated": "2026-09-16T15:38:44Z",
+      "last_updated": "2026-09-19T01:48:13Z",
       "artifacts": [
         {
-          "path": "specs/589_disambiguate_basename_citations/reports/01_unverifiable-citation-inventory.md",
+          "path": "specs/589_disambiguate_basename_citations/reports/02_citation-resolution-map.md",
           "type": "report",
-          "summary": "All 35 citations C20 cannot verify, listed individually: 22 ambiguous basenames needing path qualification, 13 unresolved needing one convention decision."
+          "summary": "Citation resolution map: 22 qualify+correct, 16 de-line-numbered to declaration names; expected C20 INFO 0, tier 1 1006->1028, tier 2 0."
         }
       ],
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "file_scope": [
         "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean",
         "FormalSystem/Metalogic/Decidability/Tableau.lean",
@@ -583,7 +583,8 @@
         "FormalSystem/Metalogic/WeakCanonical/Kamp/",
         "Tests/BimodalTest/TableauConformance.lean",
         "scripts/check-module-invariants.sh"
-      ]
+      ],
+      "session_id": "sess_1789780926_3abf2e"
     },
     {
       "project_number": 534,

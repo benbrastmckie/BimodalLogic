@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "summary": "34 of 35 unverifiable citations point at the wrong line; recommend qualify+correct for the 22 live targets and declaration-name citations (no line numbers) for Boneyard, Mathlib and specs/ targets.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/589_disambiguate_basename_citations/reports/02_citation-resolution-map.md",
+      "summary": "Citation resolution map: 22 qualify+correct, 16 de-line-numbered to declaration names; expected C20 INFO 0, tier 1 1006->1028, tier 2 0."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "dispatch_seq": 4,
+  "phase": "research",
+  "next_action_hint": "plan"
+}

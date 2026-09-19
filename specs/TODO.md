@@ -105,7 +105,7 @@ next_project_number: 627
 
 ### Codebase Cleanup
 
-589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
+589 [RESEARCHED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
 ## Tasks
 
@@ -490,11 +490,11 @@ ACCEPTANCE: linter set enabled; `lake build` green; warning count within the rec
 
 ### 589. Disambiguate basename citations
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 588, Task 540, Task 597, Task 584, Task 591, Task 596
-- **Research**: [589_disambiguate_basename_citations/reports/01_unverifiable-citation-inventory.md]
+- **Research**: [589_disambiguate_basename_citations/reports/02_citation-resolution-map.md]
 
 **Description**: C20 tier 1 verifies 1,012 `file.lean:NNN` citations land on a real, non-blank line. A further 35 are unverifiable and the check reports them and moves on. They are precisely the citations most likely to be silently wrong -- a basename ambiguous to the checker is ambiguous to a reader too, and none has ever had its line number checked.
 
