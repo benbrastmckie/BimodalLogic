@@ -1,7 +1,7 @@
 # Implementation Plan: Task #629
 
 - **Task**: 629 - Reconcile task set with publication refactor programme
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md
@@ -267,23 +267,23 @@ abandonment (610); confirm by listing each task's post-edit `dependencies` and d
 
 ---
 
-### Phase 4: Graph verification and reconciliation summary [NOT STARTED]
+### Phase 4: Graph verification and reconciliation summary [COMPLETED]
 
 **Goal**: Prove the resulting graph is sound and write the reconciliation deliverable.
 
 **Tasks**:
-- [ ] jq check: every `dependencies` entry across `active_projects` refers to an existing active
-      or archived task; no self-edge; topological sort succeeds (no cycle).
-- [ ] Confirm the programme chain A,B -> C,D -> E -> F -> G -> H -> I plus E<-626, 604<-{B,C},
-      614<-E, 177<-{F,G}, 178<-F.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` to confirm no deliverable outside
-      `specs/` was touched (expected no new findings).
-- [ ] Write `specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md`:
+- [x] jq check: every `dependencies` entry across `active_projects` refers to an existing active
+      or archived task; no self-edge; topological sort succeeds (no cycle). *(completed: standalone Python DFS/topo check over all 58 active tasks — 0 self-edges, 0 dangling, 0 cycles)*
+- [x] Confirm the programme chain A,B -> C,D -> E -> F -> G -> H -> I plus E<-626, 604<-{B,C},
+      614<-E, 177<-{F,G}, 178<-F. *(completed: confirmed via jq query — 630,631 -> {632,633} -> 634(<-626) -> 635 -> 636 -> 637 -> 638; 604<-{631,632}; 614<-634; 177<-{635,636}; 178<-635)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` to confirm no deliverable outside
+      `specs/` was touched (expected no new findings). *(completed: PASS, 0 unexempted occurrences; also confirmed via `git diff --name-only <baseline>..HEAD | grep -v '^specs/'` returning empty)*
+- [x] Write `specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md`:
       table of every created/revised/merged/abandoned/no-action task with rationale; the
       resulting dependency graph (text/mermaid, programme tasks plus reconciled edges); the
       scheduling notes that are not edges; the specs/ disposition default pending confirmation;
-      Phase 1 divergences.
-- [ ] Commit `task 629: complete implementation` (summary plus any final state regen).
+      Phase 1 divergences. *(completed)*
+- [x] Commit `task 629: complete implementation` (summary plus any final state regen). *(completed)*
 
 **Timing**: 1 hour
 

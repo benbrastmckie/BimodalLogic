@@ -1923,6 +1923,18 @@
   ],
   "completed_projects": [
     {
+      "project_number": 610,
+      "project_name": "replace_remaining_lakefile_lean_mentions_in_docs",
+      "status": "abandoned",
+      "task_type": "markdown",
+      "description": "Update remaining documentation references to lakefile.lean now that the project uses lakefile.toml (package renamed to BimodalLogic): docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333. Task 578 skipped these because concurrent tasks held uncommitted edits in them; re-grep the tree for any other lakefile.lean or Logos package-name mentions.",
+      "topic": "documentation",
+      "created": "2026-09-17T10:01:00Z",
+      "last_updated": "2026-09-17T10:01:00Z",
+      "abandoned": "2026-09-19T08:43:20Z",
+      "abandon_reason": "merged into task 631 (deliverable_hygiene_excluding_specs) scope; task 631 absorbs this task's description verbatim in its own reconciliation note; part of the publication refactor programme reconciliation (task 629)"
+    },
+    {
       "project_number": 622,
       "project_name": "align_typst_frame_subscripts_zdr_and_bx_r",
       "status": "completed",
