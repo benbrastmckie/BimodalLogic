@@ -760,19 +760,19 @@ Reynolds' own one-sentence justification, *"Because it says so in `Γ`, all the 
 instances of the other axioms hold everywhere"*, executed in Lean:
 
 1. `Axiom.prior_U_gap`, `DerivedAxioms.priorSGap` and `Axiom.sep` each have
-   `minFrameClass = FrameClass.RTime` (`Axioms.lean:524-526`), so under
+   `minFrameClass = FrameClass.RTime` (`ProofSystem/Axioms.lean:606`, arms `:611-612`), so under
    `hfc : FrameClass.RTime ≤ fc` every substitution instance is a `DerivationTree fc []`
    theorem;
-2. `theorem_in_mcs` (`Core/MaximalConsistent.lean:491`) puts it in the family's MCS at *every*
+2. `theorem_in_mcs` (`Core/MaximalConsistent.lean:462`) puts it in the family's MCS at *every*
    rational — Reynolds' "hold everywhere";
 3. Part 6 reads it back semantically, and `kPlus_formula_correct` / `kMinus_formula_correct`
-   (`Kamp/KPlusFaithful.lean:152` / ) read the `K⁺` / `K⁻` the axioms are stated with.
+   (`Kamp/KPlusFaithful.lean:152` / `:174`) read the `K⁺` / `K⁻` the axioms are stated with.
 
 Step 3's bridge lemma is the one the plan names: `Axiom.prior_U_gap` is stated with
-`Formula.kPlus` (`Axioms.lean:377`; `Syntax/Formula.lean:181`), and `kPlus_formula_correct` is
-what reads it semantically. `kplusFormula` (`Kamp/PriorINF.lean:~93`) is **not** substituted for
-it — the two differ by a conjunct and the name-collision warning at `Formula.lean:163-179` says
-so.
+`Formula.kPlus` (`ProofSystem/Axioms.lean:442`; `Syntax/Formula.lean:198`), and
+`kPlus_formula_correct` is what reads it semantically. `kplusFormula` (`Kamp/PriorINF.lean:~93`)
+is **not** substituted for it — the two differ by a conjunct and the name-collision warning at
+`Syntax/Formula.lean:189` says so.
 
 Reynolds gives no argument beyond the quoted sentence, so the Lean execution of steps 1-3 is
 original glue on a sourced statement. -/
@@ -905,8 +905,8 @@ theorem chronicleMonadic_semanticPriorS {fc : FrameClass} (hfc : FrameClass.RTim
 *"all substitution instances of the axioms ... and Sep are valid in `M`"*.
 
 Same route as Prior-U and Prior-S. `Axiom.sep`'s soundness is already landed
-(`Axioms.lean:398`, `minFrameClass = Dedekind`); Reynolds' Lemma 10 (printed p.184) is **not**
-re-derived — this obtains Sep from the axiom's membership in the MCS, exactly as Corollary 1
+(`ProofSystem/Axioms.lean:453`, `minFrameClass = RTime`); Reynolds' Lemma 10 (printed p.184) is
+**not** re-derived — this obtains Sep from the axiom's membership in the MCS, exactly as Corollary 1
 does. -/
 theorem chronicleMonadic_semanticSep {fc : FrameClass} (hfc : FrameClass.RTime ≤ fc)
     (B : BFMCS (fc := fc) Rat) (root : Formula)

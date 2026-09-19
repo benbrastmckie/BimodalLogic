@@ -150,22 +150,22 @@ Put `c20.py` in a scratch directory, never in the repo.
 
 ---
 
-### Phase 3: ChronicleMonadicBridge and PriorINF cluster (6 citations + collocated) [IN PROGRESS]
+### Phase 3: ChronicleMonadicBridge and PriorINF cluster (6 citations + collocated) [COMPLETED]
 
 **Goal**: Resolve report rows 1-4 and 19-20, including the 3 `Formula.lean:163-179` blank landings, and fix the collocated wrong-but-passing citations and the malformed empty slot.
 
 **Tasks**:
-- [ ] Re-derive targets with `grep -n`: `def Axiom.minFrameClass`, `| prior_U_gap`, `| sep` (ProofSystem/Axioms.lean); `def priorSGap` (ProofSystem/DerivedAxioms.lean); `def kPlus`, `def kMinus`, `NAME-COLLISION WARNING` (Syntax/Formula.lean).
-- [ ] In `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean`, bottom-up:
+- [x] Re-derive targets with `grep -n`: `def Axiom.minFrameClass`, `| prior_U_gap`, `| sep` (ProofSystem/Axioms.lean); `def priorSGap` (ProofSystem/DerivedAxioms.lean); `def kPlus`, `def kMinus`, `NAME-COLLISION WARNING` (Syntax/Formula.lean).
+- [x] In `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean`, bottom-up:
   - ~:908: `Axioms.lean:398` becomes `ProofSystem/Axioms.lean:<sep>`. Optionally reword `Dedekind` to `RTime`.
   - ~:774: `Formula.lean:163-179` becomes `Syntax/Formula.lean:<warning line>`. Use a single line or a correct range.
   - ~:772: `Axioms.lean:377` becomes `ProofSystem/Axioms.lean:<prior_U_gap>`, and the collocated `Syntax/Formula.lean:181` becomes `:<kPlus>`.
   - ~:771: the malformed `` (`Kamp/KPlusFaithful.lean:152` / ) ``. Fill the empty slot with the intended target if the prose makes it clear. Otherwise drop the empty slot. Verify that `KPlusFaithful.lean:152` itself lands on its intended declaration.
   - ~:763: `Axioms.lean:524-526` becomes `ProofSystem/Axioms.lean:<minFrameClass>`, with the companion range pointing at the arms.
-- [ ] In `FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean`, bottom-up:
+- [x] In `FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean`, bottom-up:
   - ~:110 and ~:108: `Formula.lean:163-179` becomes `Syntax/Formula.lean:<warning>`, and the collocated `Syntax/Formula.lean:181` becomes `:<kPlus>`.
   - ~:74-78: `Formula.lean:163-179` becomes `Syntax/Formula.lean:<warning>`. The collocated `Formula.lean:181`/`:193` become `:<kPlus>`/`:<kMinus>`. `ProofSystem/Axioms.lean:379/387/390` become `ProofSystem/Axioms.lean:<prior_U_gap>`, `ProofSystem/DerivedAxioms.lean:<priorSGap>` and `ProofSystem/Axioms.lean:<sep>`.
-- [ ] Run the extracted C20.
+- [x] Run the extracted C20. *(deviation: altered — the empty slot was filled with `:174` (`kMinus_formula_correct`); `minFrameClass = Dedekind` reworded to `RTime`; the collocated wrong-but-passing `Core/MaximalConsistent.lean:491` was corrected to 462 (`theorem_in_mcs`); in PriorINF `DerivedAxioms.priorSGap` is cited by name only so the `:453` companion stays unambiguous; `Kamp/PriorINF.lean:~93` (not C20-read) left as is)*
 
 **Timing**: 0.75 hours
 

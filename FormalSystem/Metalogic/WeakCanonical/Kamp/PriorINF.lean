@@ -71,12 +71,12 @@ conventions. **Neither carries a `¬F` conjunct at the point of evaluation.**
 
 **Where the source-exact spellings live in this tree:**
 
-* `Formula.kPlus` / `Formula.kMinus` (`FormalSystem/Syntax/Formula.lean:181`, `:193`) — the
-  object-level source-exact spelling, `(untl ⊤ φ.neg).neg`, carrying the **name-collision
-  warning at `Formula.lean:163-179`** which says of `kplusFormula` below that *"substituting one
-  for the other silently transcribes a different axiom"*. `Axiom.prior_U_gap`
-  (`ProofSystem/Axioms.lean:379`), `DerivedAxioms.priorSGap` (`:387`) and `Axiom.sep` (`:390`) are
-  stated with these.
+* `Formula.kPlus` / `Formula.kMinus` (`FormalSystem/Syntax/Formula.lean:198`, `:211`) — the
+  object-level source-exact spelling, `(untl ⊤ φ.neg).neg`, carrying the **name-collision warning at
+  `Syntax/Formula.lean:189`** which says of `kplusFormula` below that *"substituting one for the
+  other silently transcribes a different axiom"*. `Axiom.prior_U_gap`
+  (`ProofSystem/Axioms.lean:442`), `DerivedAxioms.priorSGap` and `Axiom.sep` (`:453`) are stated
+  with these.
 * `kplusOpen` / `kminusOpen` (`Kamp/KPlusFaithful.lean`) — their `Prop`-level reading, together
   with the bridge lemmas `kPlus_formula_correct` / `kMinus_formula_correct`. `kplusOpen` is
   exactly `kplus` below **without** its first conjunct, and
@@ -106,8 +106,8 @@ and the shims relating the two; neither this file's statements nor its proofs ch
     *"`K+(F)` holds at a moment `t` iff `t = inf({t′ | t′ > t and F holds at t′})`"*) and
     Reynolds' (printed p.168: `K⁺A` for `¬U(⊤,¬A)`) are the second conjunct alone. The
     source-exact operator is `kplusOpen` (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of
-    `Formula.kPlus` (`Syntax/Formula.lean:181`); see the name-collision warning at
-    `Formula.lean:163-179` and this section's comment block above. `kplus` is strictly stronger,
+    `Formula.kPlus` (`Syntax/Formula.lean:198`); see the name-collision warning at
+    `Syntax/Formula.lean:189` and this section's comment block above. `kplus` is strictly stronger,
     and `kplus_iff_not_and_kplusOpen` states the difference exactly. -/
 def kplus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
