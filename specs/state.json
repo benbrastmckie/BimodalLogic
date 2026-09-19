@@ -4,8 +4,229 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 630,
+  "next_project_number": 639,
   "active_projects": [
+    {
+      "project_number": 630,
+      "project_name": "move_tool_and_boneyard_relocation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [],
+      "file_scope": [
+        "scripts/move-modules.py",
+        "FormalSystem/Boneyard/",
+        "Boneyard/README.md",
+        "scripts/check-module-invariants.sh",
+        "scripts/boneyard-import-waivers.txt",
+        "docs/architecture/ADR-010-Boneyard-At-Repository-Root.md",
+        "docs/architecture/ADR-009-Boneyard-Retention.md"
+      ],
+      "description": "Write scripts/move-modules.py (old-to-new module mapping plus optional namespace mapping; rewrites imports in FormalSystem/, Tests/ and the archive, dotted and slash paths in docs/, typst/ and the scripts/ manifests, namespace/open/FQN occurrences, the C2/C14 baselines and MainResults.lean; dry-run mode; ends by running check-module-invariants.sh --no-build). Then use it to move FormalSystem/Boneyard/ to a root-level Boneyard/ (module names Boneyard.*), update B0's search root and C11's scan root, add the two invariants ADR-010 names, and change ADR-010's status to Accepted with a pointer from ADR-009. Acceptance: lake build and lake build BimodalTest exit 0; check-module-invariants.sh green; no .olean under Boneyard/; the archive README's counts regenerate from the new location.\n\nReconciliation notes: no dependency edge to task 631 (deliverable hygiene): ADR-010 disclaims dependence on the frozen-LaTeX retirement Phase 1 performs, and Phase 1's own actions touch no path under FormalSystem/Boneyard/ -- either task may land first. Tasks 632 and 633 depend on this task, not on task 631.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 631,
+      "project_name": "deliverable_hygiene_excluding_specs",
+      "status": "not_started",
+      "task_type": "general",
+      "topic": "publication-quality",
+      "dependencies": [],
+      "file_scope": [
+        "CLAUDE.md",
+        ".claude-extensions.json",
+        ".syncprotect",
+        ".gitattributes",
+        ".gitignore",
+        "CONTRIBUTING.md",
+        "docs/research/",
+        "docs/training/",
+        "latex/",
+        "README.md",
+        "CITATION.cff",
+        "docs/",
+        "typst/",
+        "scripts/README.md",
+        "scripts/migrate_schema_v2.py",
+        "scripts/swap_untl_snce.py",
+        "scripts/standardize_metadata.py",
+        "scripts/add-copyright-headers.sh"
+      ],
+      "description": "Untrack CLAUDE.md, .claude-extensions.json, .syncprotect and the empty .gitattributes; remove personal absolute paths from docs/ and typst/; delete the one-off scripts (migrate_schema_v2.py, swap_untl_snce.py, standardize_metadata.py, add-copyright-headers.sh) and add scripts/README.md naming every remaining script; move CONTRIBUTING.md to the root; move docs/research/ and docs/training/ out of the deliverable; retire latex/ and its PDF with the C10/C12 references to it; rewrite Logos and ProofChecker naming in README.md, docs/ and CITATION.cff. Do not untrack specs/. Acceptance: check-module-invariants.sh and readme-lint.sh green; grep -rn 'home/benjamin' docs typst empty.\n\nReconciliation notes: no dependency edge to task 630 (see task 630's notes). Absorbs the scope of task 610 (grep-and-fix of stale lakefile.lean mentions in docs/), which is merged into this task and abandoned separately with that reason recorded. Task 604 depends on this task and on task 632 (its Lean-executable inventory step must exclude the two scripts this task deletes -- migrate_schema_v2.py, standardize_metadata.py -- and target BimodalTools.* paths directly).\n\nAbsorbed task 610 description (verbatim, task 610 is abandoned as merged into this task): \"Update remaining documentation references to lakefile.lean now that the project uses lakefile.toml (package renamed to BimodalLogic): docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333. Task 578 skipped these because concurrent tasks held uncommitted edits in them; re-grep the tree for any other lakefile.lean or Logos package-name mentions.\"",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 632,
+      "project_name": "bimodaltools_split",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        630
+      ],
+      "file_scope": [
+        "lakefile.toml",
+        "FormalSystem/Automation/",
+        "BimodalTools/",
+        "Tests/BimodalTest/Automation/",
+        "Tests/BimodalToolsTest/",
+        "FormalSystem/Examples/BimodalProofs.lean",
+        "scripts/"
+      ],
+      "description": "Create lean_lib BimodalTools (outside defaultTargets) and BimodalToolsTest; move the 25 tooling modules that python3 scripts/measure-refactor-partitions.py automation-partition lists (including Metalogic/Decidability/TraceExport.lean) and re-root the 12 lean_exe targets under BimodalTools.*; move the tooling tests it lists into BimodalToolsTest; make Examples/BimodalProofs.lean import specific Automation modules; decide SuccessPatterns' split; update the CI exe-root step, typst-module-map.sh and the automation-module-map generator. Acceptance: lake build writes no .olean under BimodalTools/; a new check asserts FormalSystem never imports BimodalTools; lake build BimodalToolsTest exits 0 in CI; harness green.\n\nReconciliation notes: depends on task 630 only. Dispatch after tasks 298, 296 and 282 land (all three currently edit FormalSystem/Automation/ in-flight) -- this is a scheduling recommendation, not a dependency edge, so this task's own dependency array does not block on their completion. Task 231's lake exe target names are unchanged by this split (no edge needed). Task 604 depends on this task (see task 631's notes).",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 633,
+      "project_name": "upward_edges_by_relocation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        630
+      ],
+      "file_scope": [
+        "FormalSystem/Init.lean",
+        "FormalSystem/Tactic/Attr.lean",
+        "FormalSystem/Automation/Tactics/PropDecide.lean",
+        "FormalSystem/Metalogic/Core/DeductionTheorem.lean",
+        "FormalSystem/Metalogic/Decidability/FMP/Periodicity.lean",
+        "ORGANISATION.md",
+        "scripts/check-metalogic-cycles.sh"
+      ],
+      "description": "Create Tactic/Attr.lean under the library root from Automation/{TruthNormAttr, NormalizationAttr,LemmaDB} and import it from Init.lean; move Tactics/PropDecide.lean to Metalogic/Decidability/Propositional/Tactic.lean; move Metalogic/Core/DeductionTheorem.lean to Theorems/ keeping its namespace; move Metalogic/Decidability/FMP/Periodicity.lean to Semantics/; cut ProofSearch.Core -> SuccessPatterns; rewrite ORGANISATION.md's layer table to the measured order and extend check-metalogic-cycles.sh into a layer-order assertion. Acceptance: measure-refactor-partitions.py upward-edges reports zero lines into Automation from Syntax, Semantics, ProofSystem and Theorems and zero Theorems -> Metalogic; harness green.\n\nReconciliation notes: depends on task 630 only. Verified file-disjoint from the decidability chain (tasks 410-412, 428-430, 464, 465, 481, 482), which lives entirely under Metalogic/Decidability/Verified/ (plus Saturation.lean, Correctness.lean, ProofExtraction.lean); no edge needed.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 634,
+      "project_name": "language_extension_directories_and_probe_tests",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        626,
+        632,
+        633
+      ],
+      "file_scope": [
+        "FormalSystem/Syntax/PlusLanguage/",
+        "FormalSystem/Syntax/MinusLanguage/",
+        "FormalSystem/Syntax/StarLanguage/",
+        "FormalSystem/Semantics/PlusLanguage/",
+        "FormalSystem/Semantics/MinusLanguage/",
+        "FormalSystem/Semantics/StarLanguage/",
+        "FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean",
+        "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean",
+        "FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean",
+        "FormalSystem/Metalogic/WeakCanonical/RealModel/ChronicleRealFlow.lean",
+        "Tests/BimodalTest/TemporalWitnessProbe.lean",
+        "Tests/BimodalTest/TableauConformance.lean"
+      ],
+      "description": "Merge Syntax/XLanguage/ and Semantics/XLanguage/ into XLanguage/ under the library root for Plus, Minus and Star (namespaces already match); move Metalogic/Conservativity/MinusLanguageSoundness.lean to MinusLanguage/Soundness.lean; settle the three files declaring a foreign Chronicle/Bundle namespace; move the 8 *Probe.lean files and TableauConformance.lean from the Tests/BimodalTest/ root into Tests/BimodalTest/Metalogic/Decidability/. Acceptance: measure-refactor-partitions.py namespace-audit shows only the recorded exceptions as unrelated; harness green.\n\nReconciliation notes: depends on tasks 632, 633 and 626. Task 626 edits Syntax/PlusLanguage/Axioms.lean and Semantics/PlusLanguage/PlusTruth.lean (both moved by this task) to replace manuscript line-number citations with label citations; 626 must land first so its fix travels with the file under the move tool rather than racing it. Task 429's file_scope includes Tests/BimodalTest/TemporalWitnessProbe.lean, one of the 8 files this task relocates -- no dependency edge in either direction (429 is open-ended mathematics with no fixed timeline); check 429's status live immediately before the move, and if 429 is actively in flight (uncommitted work), exclude TemporalWitnessProbe.lean from this pass and relocate it in a small follow-up once 429 lands. Task 614 lists 47 stale README date stamps; 5 of them (Syntax/PlusLanguage/README.md, Syntax/MinusLanguage/README.md, Syntax/StarLanguage/README.md, Semantics/PlusLanguage/README.md, Semantics/MinusLanguage/README.md) sit in directories this task merges away -- refresh the date stamp of the merged README as part of this task's own commit; task 614 narrows to the other 42 files and depends on this task.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 635,
+      "project_name": "expressiveness_extraction",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        634
+      ],
+      "file_scope": [
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/",
+        "FormalSystem/Metalogic/WeakCanonical/EFGames/",
+        "FormalSystem/Metalogic/WeakCanonical/Expressiveness/",
+        "FormalSystem/Metalogic/WeakCanonical/Separation/",
+        "FormalSystem/Metalogic/WeakCanonical/NormalForm/",
+        "FormalSystem/Metalogic/WeakCanonical/MonadicFO/",
+        "FormalSystem/Metalogic/WeakCanonical/StaviConnectives/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorDefs/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorDefsDense/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorExpressiveness/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorExpressivenessDense/",
+        "FormalSystem/Metalogic/WeakCanonical/Table/",
+        "FormalSystem/Metalogic/WeakCanonical/EFGameTactics/",
+        "typst/generated/",
+        "docs/theorem-index.md",
+        "FormalSystem/MainResults.lean",
+        "docs/architecture/ADR-011-Extract-Expressiveness.md",
+        "docs/architecture/ADR-006-Expressiveness-Ownership.md"
+      ],
+      "description": "Run python3 scripts/measure-refactor-partitions.py --check (must exit 0), then move the 141-file Expressiveness set out of Metalogic/WeakCanonical/ into Metalogic/Expressiveness/ with the namespace mapping WeakCanonical.X -> Expressiveness.X (WeakCanonical/Expressiveness/ becomes Expressiveness/GameTransfer/), in one scripted commit that also regenerates typst/generated, docs/theorem-index.md, the C2/C14 baselines and MainResults.lean; then in a second commit rename the 39 paper-numbered files to content names and delete declaration-free stubs. Change ADR-011's status to Accepted with a pointer from ADR-006. Acceptance: check-metalogic-cycles.sh reports exactly 1; residual WeakCanonical at 38 files; full harness (with build) green after each commit.\n\nReconciliation notes: depends on task 634. Task 412 cites Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean; this path is confirmed to stay in the residual 38-file set (it is not in the Expressiveness subtree moved here), so no citation drift results -- record this fact in this task's own docstring/PR notes so a reader of 412 does not have to re-derive it. Task 178 depends on this task (it cites Kamp-named results this task renames).",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 636,
+      "project_name": "docstring_and_citation_normalisation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        635
+      ],
+      "file_scope": [
+        "FormalSystem/",
+        "references.bib",
+        "typst/bibliography.bib",
+        "typst/",
+        "FormalSystem/Examples/",
+        "FormalSystem/Semantics/TaskFrame.lean",
+        "FormalSystem/Semantics/Truth.lean",
+        "Tests/"
+      ],
+      "description": "Convert every ## References entry in FormalSystem/**/*.lean to Mathlib's * [Author, *Title*][key] form resolving in the root references.bib; merge typst/bibliography.bib into it and point typst at the root file; fold ## Paper Specification Reference into ## References and remove ## Implementation Status; strip tooling notes, personal paths and Logos and ProofChecker wording from library docstrings, Examples/ and tests. Acceptance: C14, C15, C19 green; grep -rn 'home/benjamin' FormalSystem Tests empty; typst compiles.\n\nReconciliation notes: depends on task 635. Tasks 563, 564, 565, 566, 567, 616, 617 and 618 (the categorical-front new-file tasks) are unrelated mathematics with no dependency on this task's schedule; they should adopt this task's citation form (the * [Author, *Title*][key] form against the root references.bib) once it lands, or migrate to it if drafted first -- a convention note, not a blocking dependency. Task 177 stays a separate task (its residual scope is drift re-audit plus the Axiom Reference update, materially different from this task's citation-form normalisation) but depends on this task in addition to task 635.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 637,
+      "project_name": "ci_parity_root_collapse_publication_gate",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        636
+      ],
+      "file_scope": [
+        "FormalSystem/FormalSystem.lean",
+        "scripts/module-invariants-manifest.txt",
+        "ORGANISATION.md",
+        "scripts/check-copyright-headers.sh",
+        "specs/",
+        "CLAUDE.md",
+        ".claude-extensions.json",
+        ".syncprotect",
+        ".gitattributes"
+      ],
+      "description": "Collapse the root to one FormalSystem.lean generated by lake exe mk_all (absorbing FormalSystem/FormalSystem.lean); wire or archive every C6-manifested module until the manifest is empty; add CI steps for mk_all --check (as a harness check) and lint-style-action; add a tag-triggered release workflow; adopt the module-size policy text; test whether linter.style.header under --wfail makes check-copyright-headers.sh redundant. Then, at the gate, untrack specs/, CLAUDE.md, .claude-extensions.json, .syncprotect and .gitattributes in one commit and hand off to the maintainer for the v1.0.0 tag and the CITATION.cff update. Acceptance: mk_all --check green; C6 manifest empty; release workflow dry-run passes.\n\nReconciliation notes: depends on task 636. Task 625 edits FormalSystem/FormalSystem.lean directly to register its new OpenLanguage modules; no dependency edge in either direction -- 625 is active research work now, this task is programme-terminal (phase 8 of 9) and will very likely be dispatched long after 625 lands regardless, and mk_all's generation is automatic over whatever .lean files then exist under FormalSystem/. specs/ disposition at the gate commit: the default, absent a contrary instruction, is to untrack specs/ (and CLAUDE.md, .claude-extensions.json, .syncprotect, .gitattributes) in one commit immediately before the v1.0.0 tag, as scoped above; the two alternatives are keeping specs/ published permanently, or moving it to an unpublished branch before the gate. Confirm the disposition with the user before executing the gate commit.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
+    {
+      "project_number": 638,
+      "project_name": "post_publication_size_splits_and_module_system",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        637
+      ],
+      "file_scope": [
+        "FormalSystem/Metalogic/Expressiveness/EFGames/GapDetection.lean",
+        "FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean"
+      ],
+      "description": "Split EFGames/GapDetection.lean and the split-point file only along import-acyclic declaration families, keeping namespaces; evaluate adopting the Lean module system as its own programme. Acceptance: no fully-qualified name changes; harness green.\n\nReconciliation notes: depends on task 637. Optional, post-publication. The two named files are, at their post-move paths, FormalSystem/Metalogic/Expressiveness/EFGames/GapDetection.lean and FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-19T08:40:54Z"
+    },
     {
       "project_number": 629,
       "project_name": "reconcile_task_set_with_publication_refactor_programme",

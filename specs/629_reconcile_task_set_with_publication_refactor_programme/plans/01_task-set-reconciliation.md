@@ -151,37 +151,37 @@ confirm by jq query, and treat any divergence as an input to Phases 2-3 rather t
 
 ---
 
-### Phase 2: Create programme tasks A-I [NOT STARTED]
+### Phase 2: Create programme tasks A-I [COMPLETED]
 
 **Goal**: Add nine tasks to `specs/state.json` in one atomic `state-write.sh` call.
 
 **Tasks**:
-- [ ] Map letters to numbers: A..I = N..N+8 where N = fresh `next_project_number`.
-- [ ] Build each entry: `project_number`, `project_name` (slug from the table), `status:
+- [x] Map letters to numbers: A..I = N..N+8 where N = fresh `next_project_number`. *(completed: N=630, re-confirmed live at write time; A-I = 630-638)*
+- [x] Build each entry: `project_number`, `project_name` (slug from the table), `status:
       "not_started"`, `task_type` (A, C-I `lean4`; B `general`), `topic: "publication-quality"`,
       `description` = Section 9 text + a final "Reconciliation notes:" paragraph carrying the
       report's addendum for that letter, `file_scope` (from the report's A-I specification),
-      `dependencies` (resolved numbers), `created`/`last_updated` timestamps.
-- [ ] Addenda content to include:
+      `dependencies` (resolved numbers), `created`/`last_updated` timestamps. *(completed)*
+- [x] Addenda content to include: *(completed)*
   - A and B: "No dependency edge between A and B: ADR-010 disclaims dependence on the frozen
-    LaTeX retirement and Phase 1 touches no Boneyard path; either may land first."
+    LaTeX retirement and Phase 1 touches no Boneyard path; either may land first." *(completed)*
   - B: absorbs 610's scope (replace remaining `lakefile.lean` mentions in `docs/`; copy 610's
-    description body verbatim into the note); 604 is sequenced after B.
+    description body verbatim into the note); 604 is sequenced after B. *(completed: 610's description body appended verbatim as a final paragraph on task 631)*
   - C: dispatch after 298, 296, 282 land (scheduling note, not an edge); 231's exe names are
-    unchanged by C.
-  - D: file-disjoint from the decidability chain (verified).
+    unchanged by C. *(completed)*
+  - D: file-disjoint from the decidability chain (verified). *(completed)*
   - E: depends on 626 (moved files carry 626's citation fix); 429 relation (no edge; live check
     before moving `TemporalWitnessProbe.lean`, fallback small follow-up); refresh the 5 merged
-    XLanguage README date stamps in E's own commit (taken from 614).
-  - F: 412's cited `GroupModel/CountermodelBase.lean` stays in the residual set.
-  - G: categorical-front tasks 563-567, 616-618 adopt G's citation form (note only).
+    XLanguage README date stamps in E's own commit (taken from 614). *(completed)*
+  - F: 412's cited `GroupModel/CountermodelBase.lean` stays in the residual set. *(completed)*
+  - G: categorical-front tasks 563-567, 616-618 adopt G's citation form (note only). *(completed)*
   - H: 625 relation (no edge; mk_all regenerates whatever exists); specs/ disposition default
     pending user confirmation with the two alternatives named — confirm with the user before
-    the gate commit.
-- [ ] Prepend entries to `active_projects`, set `next_project_number = N+9`, with
-      `--regen-todo`.
-- [ ] Commit: `task 629 phase 2: create publication programme tasks A-I` (stage
-      `specs/state.json`, `specs/TODO.md` by explicit path after reviewing the diff).
+    the gate commit. *(completed)*
+- [x] Prepend entries to `active_projects`, set `next_project_number = N+9`, with
+      `--regen-todo`. *(completed: next_project_number 630 -> 639)*
+- [x] Commit: `task 629 phase 2: create publication programme tasks A-I` (stage
+      `specs/state.json`, `specs/TODO.md` by explicit path after reviewing the diff). *(completed)*
 
 **Timing**: 1 hour
 
