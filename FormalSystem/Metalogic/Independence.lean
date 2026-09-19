@@ -19,6 +19,7 @@ import FormalSystem.Metalogic.Independence.DeterminismUndefinable
 import FormalSystem.Metalogic.Independence.StabUndefinable
 import FormalSystem.Metalogic.Independence.NaiveSystem
 import FormalSystem.Metalogic.Independence.CoarsenedModels
+import FormalSystem.Metalogic.Independence.PastedCoarseModels
 import FormalSystem.Metalogic.Independence.PastingIndependence
 import FormalSystem.Metalogic.Independence.StarDiscrimination
 import FormalSystem.Metalogic.Independence.ForwardDeterministicFrame
@@ -76,6 +77,9 @@ Galois-closed, in contrast with the paper's bare classes.
   L⁺ truth depends only on the world state of evaluation.
 * `Independence/DeterminismUndefinable.lean` — the instantiation at `F°` and `F¹`, and
   `deterministic_not_plusDefinable`.
+* `Independence/PastedCoarseModels.lean` — `CoarseModel.PasteClosed` (the splice exists at the
+  level of `π`-images), under which PS and US are coarsely valid, so that every `.Base` theorem
+  of TM⁺ is valid on every paste-closed coarse model (`not_plusDerivable_of_pcRefuted`).
 
 ## The method
 

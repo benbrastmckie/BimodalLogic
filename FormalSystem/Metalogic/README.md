@@ -91,7 +91,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Core.lean` | 37 | `Core/` |
 | `Decidability.lean` | 168 | `Decidability/` |
 | `Deterministic.lean` | 25 | <!-- TODO: add description --> |
-| `Independence.lean` | 96 | `Independence/` |
+| `Independence.lean` | 100 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 144 | `WeakCanonical/` |
 <!-- END GENERATED -->
@@ -151,7 +151,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Core/`](Core/README.md) | 4 | 1,817 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 80 | 52,220 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,610 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Independence/`](Independence/README.md) | 18 | 5,015 | Axiom-independence models |
+| [`Independence/`](Independence/README.md) | 19 | 5,289 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,537 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->

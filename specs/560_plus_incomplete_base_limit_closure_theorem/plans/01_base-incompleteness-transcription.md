@@ -1,7 +1,7 @@
 # Implementation Plan: Task #560
 
 - **Task**: 560 - plus_incomplete_base_limit_closure_theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/560_plus_incomplete_base_limit_closure_theorem/reports/01_base-incompleteness-transcription.md
@@ -182,38 +182,38 @@ Standing rules for every phase: builds run detached through
 probe namespaces or `specs/` paths under `FormalSystem/`; commit each verified-green sub-step with
 explicit-path staging; never state a completeness theorem.
 
-### Phase 1: Paste-closed coarse soundness [NOT STARTED]
+### Phase 1: Paste-closed coarse soundness [COMPLETED]
 
 **Goal**: A new module proving that every Base theorem of TM+ is valid on every paste-closed
 coarse model, plus the refutation-to-non-derivability bridge.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Independence/PastedCoarseModels.lean` importing
+- [x] Create `FormalSystem/Metalogic/Independence/PastedCoarseModels.lean` importing
   `FormalSystem.Metalogic.Independence.CoarsenedModels`, in
   `namespace FormalSystem.Metalogic.Independence`, with the standard copyright header and a module
   docstring (what paste-closed means, that PS and US are exactly the two non-naive arms, that the
   recursion mirrors `naive_cValid_and_reflect_time`).
-- [ ] Transcribe from probe 02 (section "PC"): `CoarseModel.PasteClosed` (image-level splice at
+- [x] Transcribe from probe 02 (section "PC"): `CoarseModel.PasteClosed` (image-level splice at
   equal `π`-class, both clauses including `t`), the purity congruences `c_truth_congr_from` and
   `c_truth_congr_upTo` (the `π`-image versions of `truth_congr_agreeFrom` / `agreeUpTo`), the four
   arms `c_paste`, `c_paste'`, `c_untl_paste`, `c_snce_paste`, the validity notion `PCValid`, the
   axiom dispatch `plusAxiom_pcValid` (valid and reflect-time valid), the derivation recursion
   `plus_pcValid_and_reflect_time`, and `not_plusDerivable_of_pcRefuted`.
-- [ ] Make `PasteClosed` a `def` in the `CoarseModel` namespace (dot notation `K.PasteClosed`);
+- [x] Make `PasteClosed` a `def` in the `CoarseModel` namespace (dot notation `K.PasteClosed`);
   do not add a field to `CoarseModel`; do not edit `CoarsenedModels.lean`.
-- [ ] Replace the wildcard arm in `plusAxiom_pcValid` with the explicit two-arm `cases` in the
-  non-naive branch; reflected arms follow the `AxiomValidity.lean` normal form
+- [x] Replace the wildcard arm in `plusAxiom_pcValid` with the explicit two-arm `cases` in the
+  non-naive branch *(completed: two `case` arms, remaining arms closed by `all_goals exact absurd trivial hn`, no `| _` wildcard)*; reflected arms follow the `AxiomValidity.lean` normal form
   (`simp only [PlusFormula.reflectTime, reflect_time_dstab, reflect_time_and]`, then the primed
   lemma at the reflected hypotheses).
-- [ ] Copy the `termination_by` / `decreasing_by` block from `naive_cValid_and_reflect_time`
+- [x] Copy the `termination_by` / `decreasing_by` block from `naive_cValid_and_reflect_time`
   verbatim.
-- [ ] Docstring every declaration; 100-column; rename to repository naming conventions only where
+- [x] Docstring every declaration; 100-column; rename to repository naming conventions only where
   a linter demands it (record any rename in the summary, since Phase 4 consumes these names).
-- [ ] Register the module in `FormalSystem/Metalogic/Independence.lean` (import line plus a
+- [x] Register the module in `FormalSystem/Metalogic/Independence.lean` (import line plus a
   bullet in its module docstring) and run
   `bash scripts/check-module-invariants.sh --emit-inventory`; fill the description cell for the
   new row in `FormalSystem/Metalogic/Independence/README.md`.
-- [ ] Build `FormalSystem.Metalogic.Independence.PastedCoarseModels`, then `FormalSystem`.
+- [x] Build `FormalSystem.Metalogic.Independence.PastedCoarseModels`, then `FormalSystem`.
 
 **Timing**: 1.5 hours
 
