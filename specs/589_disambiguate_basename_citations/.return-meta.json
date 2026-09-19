@@ -1,16 +1,1 @@
-{
-  "status": "researched",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/589_disambiguate_basename_citations/reports/02_citation-resolution-map.md",
-      "summary": "Re-measured the 35 C20-unverifiable citations; 34 of 35 cited line numbers are wrong (3 land on blank lines once qualified). Per-citation resolution map for the 22 ambiguous ones, name-based rewrites for the 11 Boneyard + 2 Mathlib + 3 (+1 extra) specs/ citations under the recommended de-line-number convention; expected C20 end state INFO 0, tier 1 1028, tier 2 0."
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1789780926_3abf2e_589",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
-}
+{"status":"planned","artifacts":[{"type":"plan","path":"specs/589_disambiguate_basename_citations/plans/02_citation-resolution-plan.md","summary":"Plan: 5 phases (4 parallel comment-only clusters + final gate); qualify+correct 22 live citations, name-cite 16 non-live targets, record C20 convention; target C20 INFO 0, tier 1 1028, tier 2 0."}],"next_steps":"Run /implement 589 to execute the plan","phase_count":5,"estimated_hours":3.5,"dependency_waves":2,"memory_candidates":[],"metadata":{"session_id":"sess_1789780926_3abf2e_589","agent_type":"planner-agent","delegation_depth":1,"delegation_path":["orchestrator","plan","planner-agent"]},"dispatch_seq":5}
