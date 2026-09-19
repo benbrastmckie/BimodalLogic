@@ -1,10 +1,50 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md",
+      "summary": "Reconciliation of the publication refactor programme into the task set: nine new tasks (630-638) with dependencies and file_scope, five existing tasks revised, one task merged and abandoned, dependency graph verified acyclic."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Created nine follow-up tasks (630-638) for the publication refactor programme's phases A-I with full dependency graph and file_scope, revised five colliding open tasks (604, 614, 177, 178, 429), annotated eight categorical-front tasks with a citation-convention note, merged and abandoned task 610 into task 631, and verified the resulting 58-task dependency graph is acyclic with no dangling references."
+  },
+  "modified_files": [
+    "specs/state.json",
+    "specs/TODO.md",
+    "specs/archive/state.json",
+    "specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When reconciling a multi-task-creation programme document against an existing task set in specs/state.json, build the new task entries as a Python-generated JSON array (with a template-based description generator keyed by letter/number) and feed it to state-write.sh via --argjson-file, rather than trying to hand-author a large jq --argjson inline. This avoids both shell-escaping pitfalls in long prose descriptions and keeps the resolved task-number substitution (dependencies, cross-references) mechanically consistent.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["state-write.sh", "argjson-file", "task-creation", "jq", "programme-reconciliation"]
+    },
+    {
+      "content": "specs/archive/state.json is gitignored (specs/archive/ in .gitignore) but was tracked in git BEFORE the ignore rule was added, so git add on it now fails with 'paths are ignored by one of your .gitignore files' even for legitimate edits (e.g. the /task --abandon archival write). git-commit-scoped.sh has no override for this case and aborts the whole scoped commit without committing anything. The correct recovery is a small separate `git add -f specs/archive/state.json` plus a manual `git commit` for just that file (verified via `git diff --staged` first), not a retry of the scoped script.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["git-commit-scoped.sh", "gitignore", "specs/archive", "task-abandon", "git add -f"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789805164_847aec",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "user_decision": {
+    "question": "specs/ disposition at the publication gate (task 637): keep tracked during the programme then untrack at the gate (recommended default, already recorded on task 637's description), keep specs/ published permanently, or move it to an unpublished branch before the gate?",
+    "blocking": false,
+    "default": "keep specs/ tracked during the programme; untrack specs/, CLAUDE.md, .claude-extensions.json, .syncprotect and .gitattributes in one commit at the publication gate (task 637), immediately before the v1.0.0 tag",
+    "note": "Non-blocking: nothing before task 637 (the last programme task before the optional 638) acts on this choice, so no work is wasted if the user later picks an alternative. Recorded on task 637's own description; confirm with the user before task 637's gate commit executes."
   }
 }

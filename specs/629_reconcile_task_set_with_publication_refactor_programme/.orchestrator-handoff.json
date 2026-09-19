@@ -1,17 +1,25 @@
 {
-  "status": "planned",
-  "summary": "Plan written: 4 phases (re-verify, create A-I, reconcile existing tasks incl. merging 610 into B, graph check + summary). specs/ disposition uses the untrack-at-gate default, recorded as pending user confirmation in H's description.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Reconciled the publication refactor programme into the task set: created nine follow-up tasks (630-638, letters A-I) with dependencies and file_scope, revised five colliding open tasks, annotated eight categorical-front tasks, and merged/abandoned task 610. Dependency graph over all 58 active tasks verified acyclic with no dangling references.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md",
+      "summary": "Full task-by-task disposition table, dependency graph, and specs/ disposition default."
+    },
     {
       "type": "plan",
       "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/plans/01_task-set-reconciliation.md",
-      "summary": "4-phase task-set reconciliation plan, 3.5 hours."
+      "summary": "4-phase plan, all phases COMPLETED with per-task checkmarks and one recorded deviation."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 4,
   "phases_total": 4,
   "blockers": [],
-  "phase": "plan",
-  "next_action_hint": "implement",
-  "dispatch_seq": 2
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Task complete. Non-blocking user_decision pending on the specs/ disposition at the publication gate (task 637) -- see .return-meta.json's user_decision field.",
+  "git_checkpoint": "63aae8e98"
 }
