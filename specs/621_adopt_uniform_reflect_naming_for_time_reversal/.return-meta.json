@@ -1,5 +1,0 @@
-{"status":"implemented","started_at":"2026-09-18T17:47:00Z","completed_at":"2026-09-18T18:27:12+00:00",
-"verification":{"verification_passed":true,"sorry_count":0,"vacuous_count":0,"axiom_count":10,"build_passed":true},
-"artifacts":[{"type":"summary","path":"specs/621_adopt_uniform_reflect_naming_for_time_reversal/summaries/01_uniform-reflect-naming-summary.md","summary":"Uniform reflect naming for time reversal: record updated, 8 identifier families renamed, prose swept; all gates green."}],
-"completion_data":{"completion_summary":"Absorbed the paper's lem:temporal-duality -> lem:time-reflection rename and renamed every time-reversal swap identifier family (MinusFrame.reflect, truth_reflectTime, reflectTimeBoxOpaque, reflect_time_norm, Encoding.reflectTime, *_reflect_time_of_tm*, starValid_*_reflect_time, ...) plus prose across Lean, READMEs, docs and typst; wire tags unchanged, full build green.","roadmap_items":[]},
-"metadata":{"session_id":"sess_1789751834_287b73","agent_type":"lean-implementation-agent","delegation_depth":1,"delegation_path":["orchestrator","implement","skill-lean-implementation"],"compliance_check":"passed"}}

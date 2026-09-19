@@ -1,8 +1,0 @@
-{
-  "status": "implemented",
-  "dispatch_seq": 6,
-  "verification": {"verification_passed": true, "sorry_count": 0, "vacuous_count": 0, "axiom_count": 0, "build_passed": true},
-  "artifacts": [{"type": "summary", "path": "specs/589_disambiguate_basename_citations/summaries/02_citation-resolution-summary.md", "summary": "All 35 C20-unverifiable citations resolved: 22 qualified and line-corrected, 13 non-live plus 4 specs/ citations converted to name-based; C20 INFO 0, tier 1 1031, tier 2 0; convention recorded in C20 header."}],
-  "completion_data": {"completion_summary": "Qualified and line-corrected the 22 ambiguous file.lean:NNN citations (21 had wrong numbers, 3 would have landed on blank lines), converted Boneyard/Mathlib/specs citations to name-based anchors without line numbers, and recorded the convention in the C20 header. C20 now reports INFO 0, tier 1 PASS 1031, tier 2 PASS; full invariants and lake build green.", "roadmap_items": []},
-  "metadata": {"session_id": "sess_1789780926_3abf2e", "agent_type": "lean-implementation-agent", "delegation_depth": 1, "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"], "compliance_check": "skipped", "phases_completed": 5, "phases_total": 5}
-}

@@ -1,3 +1,0 @@
-{"task_number":621,"dispatch_seq":3,"phase":"implement","status":"implemented","phases_completed":5,"phases_total":5,
-"artifacts":[{"type":"summary","path":"specs/621_adopt_uniform_reflect_naming_for_time_reversal/summaries/01_uniform-reflect-naming-summary.md","summary":"Implementation summary: record update, identifier renames, prose sweep, gates."}],
-"summary":"All 5 phases complete; lake build, BimodalTest, check-paper-definitions, check-module-invariants, readme-lint, typst-sync-check green.","next_action":"postflight: mark task completed"}

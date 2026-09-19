@@ -1,6 +1,0 @@
-{"status":"implemented","started_at":"2026-09-18T07:51:19Z",
-"verification":{"verification_passed":true,"sorry_count":0,"vacuous_count":0,"axiom_count":0,"build_passed":true},
-"artifacts":[{"type":"summary","path":"specs/605_reconcile_burgess_a7a_provenance_and_add_axiom_source_footnote/summaries/01_burgess-a7a-provenance-summary.md","summary":"Burgess A7a provenance reconciled in Axioms.lean, the Chronicle files and the reference docs; full gate passed."}],
-"completion_data":{"completion_summary":"Corrected the linear_until A7a NOTE (CN is Burgess 1982 A7a and is sound), tagged the axiom docstrings with Burgess/Xu sources, disambiguated Burgess 1984 A7a in the Chronicle files, and recorded the reconciliation and paper errata in the reference docs. The full lake build and module-invariants check pass.","roadmap_items":[]},
-"metadata":{"session_id":"sess_1789714964_200d88","agent_type":"lean-implementation-agent","delegation_depth":1,"delegation_path":["orchestrator","implement","skill-lean-implementation"],"compliance_check":"skipped"},
-"dispatch_seq":7}
