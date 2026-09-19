@@ -1198,7 +1198,7 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     fun σ hσ _hz => hreal w hxw hwt hptW σ hσ⟩
 
 /-- **R1 interior-slice order-atom discharge** (report 01 §7 R1,
-    `NormalForm.lean:201-202`; Rabinovich Notation 5.2 strictly-interior witnesses).
+    `NormalForm.lean:210-211`; Rabinovich Notation 5.2 strictly-interior witnesses).
     A strictly-exterior `x1` (outside the closed cone `x ≤ x1 ≤ t`) falsifies any
     interior-marked σ (`nf0ZoneSpec σ.1 ∈ {kvE2SepZXW3, kvE2SepZWT3}`) directly
     from the depth-0 atom clause, with NO residue. Both interior zones assert BOTH

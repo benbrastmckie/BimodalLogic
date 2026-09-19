@@ -356,7 +356,7 @@ private theorem kvE2_sep_nfk_take_eval {sig : MonadicSignature} [Fintype sig.pre
     factors through its fresh depth-1 arity-1 projection at the witness point — the depth-1
     analog of `nf_eval_nf0_cons_factor`'s monadic channel (Def 4.1, PDF p.5: the E[Σ]-atom
     channel read at depth 1). The quant layer transports through `nfCharacteristic` +
-    `nf_eval_unique` (NormalForm.lean:215/245) and the prefix restriction. -/
+    `nf_eval_unique` (NormalForm.lean:224/254) and the prefix restriction. -/
 theorem kvE2_sepProjFresh_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (v : M.carrier)

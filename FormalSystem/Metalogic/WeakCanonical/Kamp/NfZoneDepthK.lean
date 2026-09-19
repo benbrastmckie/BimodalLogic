@@ -46,7 +46,7 @@ facts.
 
 At depth `k+1`, `NormalForm sig (k+1) 3 = (AtomKind sig 3 → Bool) × (NormalForm sig k 4 → Bool)`
 carries a **quant layer** `qnf.2 : NormalForm sig k 4 → Bool` whose semantics
-(`NfEvalNf`, NormalForm.lean:203-207) is
+(`NfEvalNf`, NormalForm.lean:212-216) is
 `∀ sub, (∃ w, NfEvalNf M k 4 (Fin.cons w [y,x,t]) sub) ↔ (qnf.2 sub = true)`.
 This condition couples `y`, `x`, `t` **simultaneously** through the shared quantified `w`; it
 does **not** factor through per-variable projections. Consequently the naive projection-based
@@ -178,7 +178,7 @@ chain) — exactly the endpoint machinery the flat reframing tried to avoid; it 
 ## References
 - [rabinovich2014] §5 (interval split), Cor 5.4 (`F_i` chain)
 - `VecEADecomp.lean:407-744` (depth-0 templates: `reconstruct_nf_3var`, `nf_3var_zone_*`)
-- `NormalForm.lean:134-207` (`NormalForm`, `NfEvalNf`, `AtomEval`)
+- `NormalForm.lean:137-216` (`NormalForm`, `NfEvalNf`, `AtomEval`)
 - plan v39 Phase 11; Phase 10 "Re-scoped on resume" note
 -/
 

@@ -39,7 +39,7 @@ Four layers, bottom-up:
 1. **`ℝ`-flow normalization** (`exists_realFlow_witness`). `goodDense` hands back *some* interval
    of `ℝ`. Reynolds' conclusion asks for *the* real line. For a structure with no end points the
    two are the same up to order isomorphism, and the normalization is the same argument
-   `exists_ioo_witness` (`GoodDense.lean:729`) already makes for bounded open intervals, with
+   `exists_ioo_witness` (`GoodDense.lean:732`) already makes for bounded open intervals, with
    `Set.univ` as the target instead of `(c,d)`.
 2. **`≅o ℝ ⇒ good`** (`goodDense_of_orderIso_real`). The converse direction: a structure whose
    flow is order-isomorphic to `ℝ` is good, with `Set.univ` as the witnessing interval. This is
@@ -74,7 +74,7 @@ Each entry reads *Printed source* — *Implementation*:
 
 * p.185, Theorem 6 statement — `doets_theorem_dense`
 * p.185, *"if `M` is good we are done"* — `exists_realFlow_witness`
-* p.186, Lemma 11 — `reynolds_lemma11_no_endpoints` (`GoodDense.lean:1134`)
+* p.186, Lemma 11 — `reynolds_lemma11_no_endpoints` (`GoodDense.lean:1137`)
 * p.187, Lemma 13 — `reynolds_lemma13` (`Shuffle.lean:232`)
 * p.187, *"`M | (⋃I) ≡ₖ Σ_{q∈ℚ} σ(q)`"* — `kEquiv_blocks_shuffle` (`Shuffle.lean:484`)
 * p.188, *"`Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`"* — `kEquiv_shuffle_shuffleReal` (`ShuffleReal.lean:233`)
@@ -107,7 +107,7 @@ variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 Reynolds' conclusion is *"a temporal structure with flow of time the real numbers"*, not *"an
 interval of the real numbers"*. `goodDense` supplies the latter. For a structure with no end
-points the gap is closed by `exists_orderIso_ioo01_of_ordConnected` (`GoodDense.lean:660`),
+points the gap is closed by `exists_orderIso_ioo01_of_ordConnected` (`GoodDense.lean:663`),
 exactly as `exists_ioo_witness` closes it for a prescribed bounded open interval.
 -/
 
@@ -115,7 +115,7 @@ exactly as `exists_ioo_witness` closes it for a prescribed bounded open interval
 A `RIntervalStructure` whose flow is **all** of `ℝ`: the shape Reynolds' *"flow of time the real
 numbers"* asks for.
 
-`realLine` (`GoodDense.lean:1034`) is the same carrier set assembled from `ℤ`-indexed blocks;
+`realLine` (`GoodDense.lean:1037`) is the same carrier set assembled from `ℤ`-indexed blocks;
 this is the free-standing predicate on an already-built `RIntervalStructure`.
 -/
 def RIntervalStructure.IsRealFlow (R : RIntervalStructure sig) : Prop :=
@@ -127,7 +127,7 @@ def RIntervalStructure.IsRealFlow (R : RIntervalStructure sig) : Prop :=
 countable, dense and without end points"*).
 
 Statement source: Reynolds, as quoted. Proof: the same three-step normalization
-`exists_ioo_witness` (`GoodDense.lean:729`) makes — non-emptiness and both end-point conditions
+`exists_ioo_witness` (`GoodDense.lean:732`) makes — non-emptiness and both end-point conditions
 travel across `≡ₖ` at `k ≥ 2`, so `exists_orderIso_ioo01_of_ordConnected` applies to the
 witnessing interval — with `ℝ` itself as the destination rather than `(c,d)`.
 -/
@@ -465,7 +465,7 @@ Theorem 6's proof by contradiction:
 > So suppose that `M` is not good. Then `M` is not very good and so there are `a < b` in `M` with
 > `a ≁ b`.
 
-Both implications are Lemma 11 (`reynolds_lemma11_no_endpoints`, `GoodDense.lean:1134`) in
+Both implications are Lemma 11 (`reynolds_lemma11_no_endpoints`, `GoodDense.lean:1137`) in
 contrapositive form: applied at `M` itself for *"`M` is not very good"*, and applied at
 `M | (t,u)` for the step from *"`M | (t,u)` is not good"* to *"`t ≁ u`"* — the middle clause of
 `SimDense` (`EpsilonDense.lean:128`) asks for very-goodness of `M | (t,u)`, which at a countable
@@ -1366,7 +1366,7 @@ The two ends then pin the flow down completely: an order-connected set of reals 
 greatest element **is** the closed interval between them, with no residual choice. That is
 `ordConnected_eq_Icc`, and `isIccLike_of_carrierSet_eq_Icc` reads the five facts off it.
 
-`exists_ioo_witness` (`GoodDense.lean:729`) is the end-point-**free** case of this same
+`exists_ioo_witness` (`GoodDense.lean:732`) is the end-point-**free** case of this same
 normalization and `icoBlock` / `kEquiv_pointSum_icoBlock` the one-sided case; neither applies here,
 because Reynolds' summands are the ones that *do* have both ends.
 -/
@@ -1377,7 +1377,7 @@ omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /--
 *"has a right hand end point"* transfers across `≡ₖ` for `k ≥ 2` — the positive counterpart of
-`noMaxOrder_of_kEquiv` (`GoodDense.lean:485`), read off the same depth-`2` sentence `hasMaxSent`.
+`noMaxOrder_of_kEquiv` (`GoodDense.lean:488`), read off the same depth-`2` sentence `hasMaxSent`.
 -/
 theorem exists_max_of_kEquiv [Finite sig.preds] (k : Nat) (hk : 2 ≤ k)
     {M N : OrderedMonadicStructure sig}
@@ -1449,7 +1449,7 @@ separability is `exists_rat_btwn`.
 
 Membership is transported through `hR` by `Set.ext_iff` rather than by `rw`: the carrier's own type
 mentions `R.carrierSet`, so rewriting it breaks the motive (the same discipline as
-`kEquiv_pointSum_icoBlock`, `GoodDense.lean:964`).
+`kEquiv_pointSum_icoBlock`, `GoodDense.lean:967`).
 -/
 theorem isIccLike_of_carrierSet_eq_Icc (R : RIntervalStructure sig) {x y : ℝ} (hxy : x ≤ y)
     (hR : R.carrierSet = Set.Icc x y) : IsIccLike sig (R.toOrdered sig) := by
@@ -1526,7 +1526,7 @@ theorem exists_iccLike_witness (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStruc
 **Reynolds' `γ₁`** (printed p.188, *"`γ₁` is only satisfied by one point structures"*): the flow of
 a one-point structure, with the flow itself exposed rather than hidden behind an existential.
 
-`goodDense_of_subsingleton` (`GoodDense.lean:297`) proves goodness of a one-point structure, but
+`goodDense_of_subsingleton` (`GoodDense.lean:300`) proves goodness of a one-point structure, but
 `hone` of `goodDense_shuffle` is a statement *about* `N γ₁`, so the shuffle needs the witness and
 not merely its existence. The construction is `goodDense_of_subsingleton`'s, at the degenerate
 interval `[0,0]`.

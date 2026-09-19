@@ -17,7 +17,7 @@ and this file only runs alongside it.
 
 ## Why a fold
 
-`NfEvalNf` (`NormalForm.lean:198-207`) grows environment arity `n → n+1` at every
+`NfEvalNf` (`NormalForm.lean:207-216`) grows environment arity `n → n+1` at every
 depth descent, coupling a fresh existential witness jointly to *all* fixed endpoints
 (the arity-4 residual that NO-GOed the k=1 gate). Rabinovich never grows arity
 with depth: a quantified witness `x_j` touches the rest of the formula through exactly
@@ -403,7 +403,7 @@ R3, not here. -/
       PDF p.4; the Lemma-3.4/Prop-3.5 objects the bracket machinery evaluates), quantifying only
       over `ZoneSpec n × NormalForm sig 0 1` — no `(n+1)`-ary object remains.
     - RHS, second conjunct: the explicit off-fiber falsity clause — subs whose env-restriction
-      is not `r` are forced false (via `nf_eval_unique`, NormalForm.lean:245).
+      is not `r` are forced false (via `nf_eval_unique`, NormalForm.lean:254).
 
     Stated at GENERAL `n`: the proof is index-structural, and 309-R3's inside-out iteration
     (Prop 4.3, PDF p.6) applies this same lemma at growing env arities. The gate corollary
@@ -500,7 +500,7 @@ noncomputable def efoldOfNf1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
     The atom layers coincide definitionally (`qnf.1 : AtomKind sig n → Bool` IS a
     `NormalForm sig 0 n`, and both atom conjuncts are `∀ a, AtomEval M env a ↔ · a = true`,
-    NormalForm.lean:201-204). The quant layers are bridged by `nf_quant_layer_fold_iff` with
+    NormalForm.lean:210-213). The quant layers are bridged by `nf_quant_layer_fold_iff` with
     `r := qnf.1` and `h_r :=` the shared atom layer.
 
     The off-fiber clause `∀ sub, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false` CANNOT be absorbed

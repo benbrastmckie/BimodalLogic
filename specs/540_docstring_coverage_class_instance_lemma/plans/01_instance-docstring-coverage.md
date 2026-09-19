@@ -169,15 +169,16 @@ Phases within the same wave can run in parallel. Phases 1-3 touch disjoint files
 
 ---
 
-### Phase 4: Final gate [IN PROGRESS]
+### Phase 4: Final gate [COMPLETED]
 
 **Goal**: Confirm the acceptance criteria against C19's own output and run the full gate.
 
 **Tasks**:
-- [ ] Run `lake build` for the full default targets.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and record the C19 per-keyword and aggregate lines.
-- [ ] Confirm that class, instance and lemma each read at least 90% or n/a, that the refined aggregate is at least 92.34% (expected about 93.96%), and that C23 PASSes.
-- [ ] Confirm that no new `sorry` or `axiom` appears, and that the C19 counting-rule code shows no diff beyond the reporting additions.
+- [x] Run `lake build` for the full default targets.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and record the C19 per-keyword and aggregate lines.
+- [x] Confirm that class, instance and lemma each read at least 90% or n/a, that the refined aggregate is at least 92.34% (expected about 93.96%), and that C23 PASSes.
+- [x] Confirm that no new `sorry` or `axiom` appears, and that the C19 counting-rule code shows no diff beyond the reporting additions.
+- [x] *(deviation: altered — added step: the inserted docstrings shifted 34 live `NormalForm.lean:NNN`/`GoodDense.lean:NNN` citations (9 failed C20 tier 1); each was renumbered by its insertion offset and asserted to land on its pre-edit text; C20 now passes)*
 
 **Timing**: 0.5 hours
 
@@ -199,11 +200,11 @@ None. This plan commits to no theorem statements; it adds documentation only.
 
 ## Testing & Validation
 
-- [ ] C19 per-keyword refined results: class 21/21, instance at least 72/79 (target 79/79), lemma n/a (0 declarations).
-- [ ] The C19 refined aggregate is at least 92.34%, with an expected value of about 93.96%.
-- [ ] The C19 per-declaration logic is unchanged: the aggregate lines are identical before and after the Phase 1 edit.
-- [ ] C23 PASSes.
-- [ ] `lake build` is green.
+- [x] C19 per-keyword refined results: class 21/21, instance at least 72/79 (target 79/79), lemma n/a (0 declarations).
+- [x] The C19 refined aggregate is at least 92.34%, with an expected value of about 93.96%.
+- [x] The C19 per-declaration logic is unchanged: the aggregate lines are identical before and after the Phase 1 edit.
+- [x] C23 PASSes.
+- [x] `lake build` is green.
 
 ## Artifacts & Outputs
 

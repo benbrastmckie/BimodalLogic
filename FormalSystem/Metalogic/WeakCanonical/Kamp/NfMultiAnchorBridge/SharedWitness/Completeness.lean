@@ -426,7 +426,7 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.p
 The design gate (report 06) dissolves the coinciding-anchor "fork": two DISTINCT positive owners
 provably CANNOT share a fresh anchor. `kvE2SepPos` is `Finset.univ.toList.filter` (`Nodup`,
 owners distinct normal forms) and each owner's anchor realizes it at the depth-1 environment
-`[x1, w, x, t]`; `nf_eval_unique` (NormalForm.lean:245) forces equal-anchor ⟹ equal-owner. Hence
+`[x1, w, x, t]`; `nf_eval_unique` (NormalForm.lean:254) forces equal-anchor ⟹ equal-owner. Hence
 the anchor family is INJECTIVE and strictly orderable — the value-rank owner-block layout is
 well-defined with no ties. This is the keystone every later phase depends on. -/
 

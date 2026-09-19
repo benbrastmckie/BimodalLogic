@@ -198,7 +198,7 @@ monadic-atom fold, PDF p.5); no arity-4 evaluation occurs:
   (order-conflict falsity; cf. `nf_depth0_pair_cycle_empty'`, NfDepth0Generalized:93).
 
 The gate Prop is decidable in principle (`normalFormFintype` / `normalFormDecEq`,
-NormalForm.lean:177/181); `Classical.dec` is used since the carrier is noncomputable anyway. -/
+NormalForm.lean:180/184); `Classical.dec` is used since the carrier is noncomputable anyway. -/
 noncomputable def bracketEndCharK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)

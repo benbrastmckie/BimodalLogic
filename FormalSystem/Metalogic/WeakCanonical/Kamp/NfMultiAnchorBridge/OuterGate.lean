@@ -210,7 +210,7 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
 
     NON-VACUITY NOTE (2026-07-11 — REPAIRED & REALIZABLE): the earlier VACUITY
     NOTE flagged the GLOBAL singleton demand (`kvE2SepPos qnf = [σ0]`) as unrealizable —
-    `nf_exists_unique` (NormalForm.lean:276) forces ≥3 positive bits on every realized `qnf` (335
+    `nf_exists_unique` (NormalForm.lean:285) forces ≥3 positive bits on every realized `qnf` (335
     report 07 Refutation 1). The interior-restriction repair SWAPPED the carrier list to the
     INTERIOR-restricted
     singleton `kvE2SepPosI` (SW:211, above; the at-point positives zAtX/zAtW/zAtT are excluded by

@@ -777,8 +777,8 @@ noncomputable def kampPriorExpressiveCompleteness
 **VERDICT RECORD (2026-07-11, session sess_1783796165_b5b482_309; house style of 13.0/13.3/13.35:
 machine-probe, verdict recorded either way, only green material landed).** Rabinovich Def 3.1
 (p.4) fixes the normal-form depth stratification this probe walks: `NormalForm sig (k+1) n` has
-quant-layer subs `NormalForm sig k (n+1)` (NormalForm.lean:134-136), and `NfEvalNf M (k+1) n`
-couples each sub through `∃ x, NfEvalNf M k (n+1) (Fin.cons x env) qnf` (NormalForm.lean:198-207)
+quant-layer subs `NormalForm sig k (n+1)` (NormalForm.lean:137-139), and `NfEvalNf M (k+1) n`
+couples each sub through `∃ x, NfEvalNf M k (n+1) (Fin.cons x env) qnf` (NormalForm.lean:207-216)
 — the depth of the per-sub obligation is ONE LESS than the depth of the form being evaluated.
 
 **The probed site** (the then-`| 1 =>` arm of the `nf_nvar_exist_all_depths` recursion —

@@ -13,7 +13,7 @@ The order-atom-only residue triage for the exterior-marked `hexclExt` obligation
 
 **Method** (Rabinovich 2014, Prop 4.3 re-flatten p.6-7 + Notation 5.2 interior bounding p.8;
 347 adjudication verdict (b)): a realized exterior witness's zone marking is FORCED by the
-depth-0 atom clause (`NormalForm.lean:201-202`) — the `SharedWitness.lean`
+depth-0 atom clause (`NormalForm.lean:210-211`) — the `SharedWitness.lean`
 transfer pattern run in reverse. Where the interior-slice lemma
 `kvE2_sepInterior_exterior_notRealizable` (SW:12627) reads zone-spec bits and derives order
 facts, the lemmas here read the TRUE order relations at a strictly-exterior `x1` and derive
@@ -67,7 +67,7 @@ private theorem kvE2_sep_zFutT3_apply (i : Fin 3) :
     whenever the fresh witness `x1` sits strictly below the env point `env3 i`.
     `(nf0ZoneSpec σ0 i).1` IS `σ0 (.order 0 i.succ _)` and `.2` IS
     `σ0 (.order i.succ 0 _)` (`NfEFold.lean:153-156`); the atom clause
-    (`NormalForm.lean:201-202`) makes each the mirror of the true order relation. -/
+    (`NormalForm.lean:210-211`) makes each the mirror of the true order relation. -/
 theorem kvE2_zoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 : M.carrier) (env3 : Fin 3 → M.carrier)
     (σ0 : NormalForm sig 0 4)

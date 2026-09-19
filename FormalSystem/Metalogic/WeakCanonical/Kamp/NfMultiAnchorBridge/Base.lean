@@ -1018,7 +1018,7 @@ Report 02 §4.3 flagged the depth-0 navigated base as the primary open sub-quest
 `nfNvarExistDepth0TlFn` (NfDepth0Generalized:1615) is **existential-at-origin**, not the
 **navigated-point** arity-3 characteristic the primitive needs. This dispatch confirms the risk
 BINDS
-structurally: at depth 0, `NfEvalNf M 0 3 (zoneEnv3 w a b) qnf` unfolds (NormalForm.lean:201) to
+structurally: at depth 0, `NfEvalNf M 0 3 (zoneEnv3 w a b) qnf` unfolds (NormalForm.lean:210) to
 the
 pure atom layer `∀ atom : AtomKind sig 3, AtomEval M (zoneEnv3 w a b) atom ↔ (qnf atom = true)`
 over
@@ -1180,7 +1180,7 @@ for *arbitrary* `a b : M.carrier`, with a strategic `sorry`. That biconditional 
 not
 merely hard: `endChar0`'s `.EvalAt w = TemporalTruth M atomMap w …` depends only on `M` and the
 navigated witness `w`, whereas the RHS `NfEvalNf M 0 3 (zoneEnv3 w a b) qnf` unfolds
-(NormalForm.lean:201) to `∀ atom, AtomEval M (zoneEnv3 w a b) atom ↔ qnf atom = true`, which also
+(NormalForm.lean:210) to `∀ atom, AtomEval M (zoneEnv3 w a b) atom ↔ qnf atom = true`, which also
 constrains the predicate layer at the anchor positions `a` (index 1: `AtomEval (.pred p 1) =
 M.interp p a`), `b` (index 2), and the order relations among `{w, a, b}` (`.order` atoms). Take
 `qnf`
@@ -1706,7 +1706,7 @@ theorem nf_char2_future_formula_correct {sig : MonadicSignature} [Fintype sig.pr
 
 The `k+1` unfolding of the navigated arity-3 evaluation `NfEvalNf M (k+1) 3 (zoneEnv3 w a b) qnf`,
 exposed as a citable equivalence for the recursion assembly (report 02 §1.4). Matches `NfEvalNf`'s
-own `succ` clause (NormalForm.lean:203-207) at arity `3` on the navigated env `zoneEnv3 w a b`:
+own `succ` clause (NormalForm.lean:212-216) at arity `3` on the navigated env `zoneEnv3 w a b`:
 the atom layer at the full env AND, per **arity-4** sub-NF `sub`, the coupled inner existential
 `∃ w', NfEvalNf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub`. The inner env
 `Fin.cons w' (zoneEnv3 w a b) = [w', w, a, b]` is arity 4 (`_ + 1 = 4`); this is the structural
@@ -1964,7 +1964,7 @@ layer `NfEvalNf M 0 n env qnf` for an ARBITRARY, universally-quantified `env : F
 By definition `TemporalPred.EvalAt tp t = TemporalTruth M atomMap t tp.formula`
 (`ExistsForallNF.lean`): the value depends only on the SINGLE world `t = env 0` (and `M`, and the
 formula) — it is completely independent of `env 1 … env (n-1)`. But the RHS reads
-`AtomEval M env (.pred p ⟨j⟩) = M.interp p (env j)` at every position `j` (`NormalForm.lean:113`).
+`AtomEval M env (.pred p ⟨j⟩) = M.interp p (env j)` at every position `j` (`NormalForm.lean:116`).
 Hence any world-local base forces `NfEvalNf M 0 n env qnf` to be invariant under changing `env`
 away from position `0` — which is false for `n ≥ 2` in any model with a non-constant predicate.
 The obstruction is intrinsic to `EvalAt` and holds for EVERY candidate base (not only the preserved

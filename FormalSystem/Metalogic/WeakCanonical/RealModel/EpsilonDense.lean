@@ -75,7 +75,7 @@ The discrete development's §10 Lemma 15 relativizes to the **closed** `[z,t]`, 
 the tree's `relativize` (`MonadicFO.lean:551`) implements, with `≤` guards and
 `OrderedMonadicStructure.subinterval` as its semantic counterpart. Reynolds' §8 `γ(z,t)`
 relativizes to the **open** `(z,t)`, matching `OrderedMonadicStructure.openSubinterval`
-(`GoodDense.lean:234`). `relativizeOpen` below is the open sibling: the same recursion with `<`
+(`GoodDense.lean:237`). `relativizeOpen` below is the open sibling: the same recursion with `<`
 guards. The two cannot be interchanged — the whole force of `ε` is that its inner interval
 excludes its endpoints, so that `ε(a,b)` says exactly *"`M | (a,b)` is very good"*.
 
@@ -218,9 +218,9 @@ sentences of quantifier depth `≤ k`. Any structure is a model of just one such
 (printed p.187).
 
 Reynolds' `γ`'s are exactly the tree's depth-`k` normal forms with no free variables: `NormalForm
-sig k 0` is a `Fintype` (`normalForm_card`, `NormalForm.lean:611`), every structure satisfies
-exactly one of them (`nf_exists_unique`, `NormalForm.lean:293`), and `nfToSentence`
-(`NormalForm.lean:861`) renders each as an honest `MonadicSentence`. The `NormalForm` layer is
+sig k 0` is a `Fintype` (`normalForm_card`, `NormalForm.lean:620`), every structure satisfies
+exactly one of them (`nf_exists_unique`, `NormalForm.lean:302`), and `nfToSentence`
+(`NormalForm.lean:870`) renders each as an honest `MonadicSentence`. The `NormalForm` layer is
 consumed as it stands; nothing here rebuilds it.
 
 The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:372`)
