@@ -1,17 +1,24 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "phases_completed": 16,
   "phases_total": 16,
+  "summary": "All 16 phases closed and committed. Mathlib standard linter set enabled at package level with longFile=1500; every class at zero, hashCommand opted out for BimodalTest only; C30 ratchet added and documented; LEAN_STYLE_GUIDE lint-suppression policy written. All-target --wfail build green; full check-module-invariants.sh ALL CHECKS PASSED (C1/C2/C3/C16/C24/C25/C28/C29/C30).",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/597_adopt_mathlib_standard_linter_set/summaries/01_mathlib-linter-set-adoption-summary.md",
+      "summary": "Implementation summary for the Mathlib standard linter set adoption (16 phases)."
+    },
     {
       "type": "plan",
       "path": "specs/597_adopt_mathlib_standard_linter_set/plans/01_mathlib-linter-set-adoption.md",
-      "summary": "16-phase staged enablement of mathlibStandardSet with temporary per-class opt-outs, per-class fix phases, C30 ratchet, and final --wfail gate."
+      "summary": "Plan with every phase [COMPLETED], per-phase notes and inline deviation annotations."
     }
   ],
-  "summary": "Plan written: package-level enable + temporary opt-outs (P1), trivial+Carrier (P2), heartbeats (P3), longFile in-source baselines (P4), hashCommand test-lib opt-out (P5), emptyLine/show/flexible (P6-8), longLine x4 incl. #guard_msgs (P9-12), Fintype/DecidableEq instance hyps with bounded documented fallback (P13-14), C30 ratchet (P15, parallel), policy docs + final gate (P16).",
   "blockers": [],
-  "next_action_hint": "implement",
-  "phase": "plan"
+  "plan_markers_verified": true,
+  "next_action_hint": "complete",
+  "git_checkpoint": "cb75fe89e"
 }

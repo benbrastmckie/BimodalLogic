@@ -11,9 +11,9 @@ next_project_number: 627
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,560,563,568,597,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,564,565,567,570,616,617 | 298,464,502,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,540,559,560,563,568,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,570,589,616,617 | 298,464,502,540,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -93,7 +93,7 @@ next_project_number: 627
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-560 [RESEARCHED] — IMPLEMENTATION. Land the machine-checked theorem that the...
+560 [PLANNING] — IMPLEMENTATION. Land the machine-checked theorem that the...
 568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -105,9 +105,8 @@ next_project_number: 627
 
 ### Codebase Cleanup
 
-597 [IMPLEMENTING] — Adopt Mathlib's standard linter set, following cslib's...
-  └─ 540 [NOT STARTED] — Close the three declaration categories that sit far below the...
-    └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
+540 [NOT STARTED] — Close the three declaration categories that sit far below the...
+  └─ 589 [NOT STARTED] — C20 tier 1 verifies 1,012 file.lean:NNN citations land on a...
 
 ## Tasks
 
@@ -472,12 +471,13 @@ VERIFY: `lake build FormalSystem` exits 0, and `#print axioms` on `validZTime_if
 
 ### 597. Adopt mathlib standard linter set
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: codebase-cleanup
 - **Dependencies**: Task 585
 - **Research**: [597_adopt_mathlib_standard_linter_set/reports/01_mathlib-linter-set-survey.md]
 - **Plan**: [597_adopt_mathlib_standard_linter_set/plans/01_mathlib-linter-set-adoption.md]
+- **Summary**: [597_adopt_mathlib_standard_linter_set/summaries/01_mathlib-linter-set-adoption-summary.md]
 
 **Description**: Adopt Mathlib's standard linter set, following cslib's precedent. MEASURED AT REORGANIZATION TIME (2026-09-16; re-measure before planning): `lakefile.lean` sets only `autoImplicit false` and `pp.unicode.fun`; cslib enables `weak.linter.mathlibStandardSet = true` in `[leanOptions]`. Against Mathlib defaults this tree has 692 lines over 100 characters in 154 files (`longLine`) and 37 files over 1,500 lines (`longFile`; largest `EFGames/GapDetection.lean` at 5,090). There are 4 file-scoped blanket `set_option linter.* false` suppressions (3 in `Semantics/Ultraproduct/`, 1 in a test) and 7 unscoped `set_option maxHeartbeats` (48 are already `in`-scoped).
 
@@ -712,7 +712,7 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 ---
 
 ### 560. Plus incomplete base limit closure theorem
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
