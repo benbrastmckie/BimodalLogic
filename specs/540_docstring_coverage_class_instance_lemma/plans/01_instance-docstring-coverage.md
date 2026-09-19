@@ -1,7 +1,7 @@
 # Implementation Plan: Task #540
 
 - **Task**: 540 - Docstring coverage for class, instance, and lemma declarations
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/540_docstring_coverage_class_instance_lemma/reports/01_docstring-coverage-gaps.md
@@ -70,17 +70,17 @@ No roadmap context was provided for this dispatch.
 
 Phases within the same wave can run in parallel. Phases 1-3 touch disjoint files: the script, the Decidability files, and the remaining Lean files.
 
-### Phase 1: C19 per-keyword reporting and header refresh [NOT STARTED]
+### Phase 1: C19 per-keyword reporting and header refresh [COMPLETED]
 
 **Goal**: Make per-keyword refined coverage observable in C19 output without changing any per-declaration verdict.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and save C19's two aggregate lines, unrefined and refined, as the baseline.
-- [ ] In C19's Python heredoc (around `scripts/check-module-invariants.sh:3028-3175`), keep a per-keyword tally of refined documented/total alongside the existing counters. The tally is keyed on the keyword the existing declaration regex already captures. Do not touch `decl_lines`, `doc_ends`, `section_end_lines`, or the `active` scope walk.
-- [ ] After the two existing aggregate lines, print one INFO line per keyword, at least for class, instance and lemma, and preferably for all keywords, in a stable order. Example: `INFO  C19  per-keyword (refined): instance 79/79 = 100.00%`. A zero-total keyword prints `n/a (0 declarations; C23 forbids lemma)` and never divides by zero.
-- [ ] Keep the change reporting-only: no `FAILURES` increment and no `ENFORCE_` flag.
-- [ ] Refresh C19's header comment. Replace the stale figures (10427 total, 89.37%/92.32%, and class 16.3% / instance 57.6% / lemma 55.6%) with a pointer to the new per-keyword output, or with current values labeled with their measurement date. Leave the counting-rule description untouched.
-- [ ] Re-run the check and diff the two aggregate lines against the baseline. They must be identical.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and save C19's two aggregate lines, unrefined and refined, as the baseline.
+- [x] In C19's Python heredoc (around `scripts/check-module-invariants.sh:3028-3175`), keep a per-keyword tally of refined documented/total alongside the existing counters. The tally is keyed on the keyword the existing declaration regex already captures. Do not touch `decl_lines`, `doc_ends`, `section_end_lines`, or the `active` scope walk.
+- [x] After the two existing aggregate lines, print one INFO line per keyword, at least for class, instance and lemma, and preferably for all keywords, in a stable order. Example: `INFO  C19  per-keyword (refined): instance 79/79 = 100.00%`. A zero-total keyword prints `n/a (0 declarations; C23 forbids lemma)` and never divides by zero.
+- [x] Keep the change reporting-only: no `FAILURES` increment and no `ENFORCE_` flag.
+- [x] Refresh C19's header comment. Replace the stale figures (10427 total, 89.37%/92.32%, and class 16.3% / instance 57.6% / lemma 55.6%) with a pointer to the new per-keyword output, or with current values labeled with their measurement date. Leave the counting-rule description untouched.
+- [x] Re-run the check and diff the two aggregate lines against the baseline. They must be identical. *(deviation: altered — a concurrent task added a file mid-phase, so the full-script baseline drifted; identity was instead verified by running the HEAD and edited C19 heredocs on the same tree snapshot: aggregate lines byte-identical, 10202/10876)*
 
 **Timing**: 0.75 hours
 

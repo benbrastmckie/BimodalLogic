@@ -3041,7 +3041,8 @@ echo
 #   (i)  UNREFINED (G-12 exactly as specified): a declaration counts as
 #        documented iff a `/-- ... -/` doc comment ends within the three lines
 #        immediately above it. Measured 89.37% (10427 total, 1108 undocumented)
-#        -- under the 90% floor.
+#        -- under the 90% floor -- when the refinement below was adopted; the
+#        check prints the current value on every run.
 #   (ii) REFINED (this check's reported figure): (i), OR the declaration falls
 #        within the scope of the nearest preceding `/-! ... -/` section
 #        comment. That scope begins immediately after the section comment's
@@ -3049,7 +3050,8 @@ echo
 #        opening, a `namespace`/`section`/`end` command, a declaration that is
 #        itself (i)-documented (the author explicitly labelled a new unit, so
 #        the ambient section's credit ends there), or end of file. Measured
-#        92.32% (9626 documented) -- clears the floor.
+#        92.32% (9626 documented) at adoption -- clears the floor. The
+#        current value is printed on every run.
 #
 # The refinement was authorized (not assumed) after the unrefined figure was
 # found under 90%: this blind spot was already documented as a KNOWN, ANTICIPATED
@@ -3068,11 +3070,13 @@ echo
 # WeakCanonical/GroupModel/MonoDiscrete.lean) was re-checked and found genuine:
 # the section header explicitly names every theorem in the batch it covers.
 #
-# Per-keyword rates worth carrying into a documentation follow-up task
-# regardless of the aggregate clearing the floor: class 16.3%, instance 57.6%,
-# lemma 55.6% (all measured against the unrefined figures; these three
-# categories are real, small-sample documentation gaps, not artifacts of either
-# heuristic).
+# The aggregate is dominated by `theorem`, so a category-level gap barely moves
+# it. The check therefore also prints one per-keyword INFO line (refined
+# figure) for every keyword in decl_re, in a fixed order. These lines are pure
+# reporting: they tally the same per-declaration verdicts the aggregate uses
+# and change none of them. A keyword with zero declarations prints n/a (live
+# `lemma` is forbidden by C23, so it always does). Read the current per-keyword
+# rates from the check's output rather than from this comment.
 #
 # Reporting-only: never increments FAILURES, no ENFORCE_C19 flag. No build
 # invocation; runs under --no-build like C17/C18.
@@ -3123,6 +3127,11 @@ boundary_re = re.compile(r"^(namespace|section|end)\b")
 total = 0
 documented_unrefined = 0
 documented_refined = 0
+# Per-keyword refined tally: reporting-only, keyed on the keyword decl_re
+# already captures. Never feeds back into any per-declaration verdict.
+KEYWORDS = ["class", "instance", "lemma", "theorem", "def", "abbrev", "structure", "inductive"]
+kw_total = {k: 0 for k in KEYWORDS}
+kw_refined = {k: 0 for k in KEYWORDS}
 
 for path in live_lean_files("FormalSystem"):
     text = open(path, encoding="utf-8", errors="replace").read()
@@ -3139,11 +3148,14 @@ for path in live_lean_files("FormalSystem"):
 
     inside_c, code = strip_comments(lines)
     decl_lines = {}
+    decl_kw = {}
     for i in range(1, n + 1):
         if inside_c[i - 1]:
             continue
-        if decl_re.match(code[i - 1].strip()):
+        m_decl = decl_re.match(code[i - 1].strip())
+        if m_decl:
             decl_lines[i] = any((i - k) in doc_ends for k in (1, 2, 3))
+            decl_kw[i] = m_decl.group(1)
 
     active = False
     for i in range(1, n + 1):
@@ -3155,12 +3167,15 @@ for path in live_lean_files("FormalSystem"):
             active = False
         if i in decl_lines:
             total += 1
+            kw_total[decl_kw[i]] += 1
             if decl_lines[i]:
                 documented_unrefined += 1
                 documented_refined += 1
+                kw_refined[decl_kw[i]] += 1
                 active = False
             elif active:
                 documented_refined += 1
+                kw_refined[decl_kw[i]] += 1
 
 pct_unrefined = 100.0 * documented_unrefined / total if total else 0.0
 pct_refined = 100.0 * documented_refined / total if total else 0.0
@@ -3171,6 +3186,14 @@ if pct_refined >= FLOOR:
     print(f"PASS  C19  docstring coverage (refined, /-! section credit): {documented_refined}/{total} = {pct_refined:.2f}% (floor: {FLOOR:.0f}%)")
 else:
     print(f"TODO  C19  docstring coverage (refined, /-! section credit): {documented_refined}/{total} = {pct_refined:.2f}% -- below the {FLOOR:.0f}% floor (never affects FAILURES)")
+for k in KEYWORDS:
+    if kw_total[k] == 0:
+        note = "; C23 forbids lemma" if k == "lemma" else ""
+        print(f"INFO  C19  per-keyword (refined): {k} n/a (0 declarations{note})")
+    else:
+        kp = 100.0 * kw_refined[k] / kw_total[k]
+        flag = "" if kp >= FLOOR else f" -- below the {FLOOR:.0f}% floor"
+        print(f"INFO  C19  per-keyword (refined): {k} {kw_refined[k]}/{kw_total[k]} = {kp:.2f}%{flag}")
 PYEOF
 echo
 
