@@ -11,8 +11,8 @@ next_project_number: 627
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,597,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,540,560,564,565,567,570,616,617 | 298,464,502,559,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,560,563,568,597,604,610,614,623,624,625,626 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,540,564,565,567,570,616,617 | 298,464,502,563,568,597 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,589,618 | 231,465,497,540,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -93,7 +93,7 @@ next_project_number: 627
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-  └─ 560 [NOT STARTED] — IMPLEMENTATION, rescoped on research task 559's report...
+560 [NOT STARTED] — IMPLEMENTATION. Land the machine-checked theorem that the...
 568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
@@ -176,6 +176,7 @@ DEPENDENCIES: none, deliberately. The inputs above are reports of 559, a standin
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md]
 
 **Description**: Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route. Replaces abandoned task 476, whose IntPresentation small-model hypothesis is refuted (fmp_false; see specs/archive/476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md and evidence/fmp-hypothesis-is-false.lean). Certificate = a guess of which boxed subformulas are true plus finitely many annotated bi-lassos (eventually periodic paths), checked with the existing LocalCoherent and Fulfilling predicates with box values taken from the guess; model = a ShiftSet containing only those witness paths, so box-faithfulness is automatic. Reuse GoodCycle/Enumerate/Decide over subformula-set space rather than presentation states. Main new proofs: truth lemma for the ShiftSet model; compression of a history's subformula-set sequence into a bi-lasso. Also correct the Assembly.lean docstring and BiLasso README.md, which still call the refuted hypothesis open. Literature: Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 3.29, 5.30, 5.32, 11.7, 11.21. Estimated 3-6 weeks
 
@@ -617,6 +618,7 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
+- **Research**: [567_determinism_clause_and_separatedness_asymmetry/reports/01_retiming-invariance-definability-findings.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Determinism clause -- `F` deterministic iff every restriction map of `Beh(F)` is injective -- and connect it to `states_eq_of_deterministic` in `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean`.
 
@@ -671,6 +673,7 @@ Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-co
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
+- **Research**: [564_sheaf_clause_gluing_and_starpasting_generalization/reports/01_finite-vs-directed-gluing-findings.md]
 
 **Description**: Prove `app:gluing` for two interval sections whose germs agree at the seam, plus the two restriction identities and uniqueness.
 
@@ -708,13 +711,38 @@ CONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end 
 
 ---
 
-### 560. Implement tm star completeness nondeterministic canonical model
+### 560. Plus incomplete base limit closure theorem
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 559
+- **Dependencies**: None
 
-**Description**: IMPLEMENTATION, rescoped on research task 559's report (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/01_nondeterministic-canonical-model.md, §2 and §5; probes/01_limit-closure-probes.lean). 559's verdict: the CURRENT TM⁺ axiom set is INCOMPLETE over the paper's all-histories semantics at ZTime, and completeness of any extension is open and at least as hard as full CTL* (Reynolds 2001: LC axiom + AA rule), so the former goal plus_completeness_ztime is withdrawn. GOAL: land the definite theorem plus_incomplete_ztime : PlusValidZTime lcPlus ∧ ¬ PlusDerivable FrameClass.ZTime [] lcPlus, where lcPlus := (⟐Xp ∧ ⊡G(p → ⟐Xp)) → ⟐Gp (X = untl bot), the stability transposition of Reynolds' limit-closure axiom. NO change to PlusAxiom/PlusDerivationTree, so plus_soundness_validIn, forward_plus and plusDerivable_ofFormula_iff are untouched. PHASES (one agent run each, lake build FormalSystem green, no new sorry): (1) Metalogic/Independence/PastedCoarseModels.lean: CoarseModel.PasteClosed (image-level splice at equal π-class), purity congruences for CTruthAt (probe pf_congr/pp_congr), PS/US arms and their reflected forms (probe ps_valid/us_valid), cValid_of_tm generalized to a frame class, and the soundness recursion PlusDerivable .ZTime [] φ → valid on every paste-closed coarse model over a ZTime frame (mirror naive_cValid_and_reflect_time). (2) LimitClosureCountermodel.lean: the frame cR on Option ℕ (none→all, a_j→none, a_j→a_m for m<j) as FrameOver intOrder via ofReflective (comp from relational powers, limit_of_succOrder, Saturation because every nonzero fibre/segment contains none and zero ones are singletons), CoarseModel with π := Option.isSome, PasteClosed, and ¬CTruthAt … lcPlus (transcribe probe Parts C, D, F). (3) Semantics/PlusLanguage/PlusLimitClosure.lean: lcPlus valid over every IsZTime frame by the dependent-choice limit of pastings (probe chain/limit_walk over WorldHistory with PlusPasting.paste; limit history via ofTotal of the diagonal; next_iff via SuccOrder). (4) Assemble plus_incomplete_ztime with axiom pin; update Metalogic/Conservativity/Plus/README.md and Metalogic/README.md rows: general TM⁺ completeness FALSE at ZTime for the current axioms, completeness of any extension OPEN (≥ full CTL*), and the TM⋆-over-TM⁺ conditional row's hypothesis refuted at ZTime. CONSISTENCY: under ⊡ = id lcPlus is the Z1 induction principle, derivable in TM⁺ + Determined (537), and the countermodel is nondeterministic. HARD CONSTRAINTS: never state a completeness theorem; no sorry; no task numbers under FormalSystem/; keep C2/C3/C14 invariants green. DEPENDENCIES: 559 (verdict), 537 (shared README rows).
+**Description**: IMPLEMENTATION. Land the machine-checked theorem that the current TM+ axiom set is INCOMPLETE over the paper's all-histories task semantics at Base:
+
+  plus_incomplete_base : PlusValid blc ∧ ¬ PlusDerivable FrameClass.Base [] blc
+
+where blc := (⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp)), p an atom: the Burgess/Thomason formula transposed to the stability modal. It contains no next-time operator, so one formula settles Base, and ZTime follows with one extra soundness lemma (Phase 5).
+
+RESCOPED 2026-09-19. This entry was first scoped on report 01 of research task 559 alone, with target plus_incomplete_ztime and the formula lcPlus. Reports 02, 03 and 04 of that task all recommend the Base theorem instead; lcPlus is Base-INVALID (report 01 section 2.5) and is demoted to an optional second witness. The former goal plus_completeness_* stays withdrawn: never state a completeness theorem here.
+
+READ FIRST, all under specs/559_nondeterministic_canonical_model_tm_star_completeness/: reports/02_review-base-incompleteness.md section 2 (the formula, the six-step validity argument, the countermodel, which steps are compiled and which are on paper) and Recommendations; reports/03_axiomatizability-rules-engine.md section 2.2 and Recommendation 1 (the refinement below); reports/04_semantics-first-task-frames.md section 4.1 (the one-line reading for the README); probes/02_review-base-limit-closure.lean (evFalse, evFalse_pasteClosed, blc_refuted, the frame eR with eR_trans, eR_dense, eR_succ, eR_from_hub, eR_image_eq, blc_refuted_coarse; limit_walkB and blc_valid_full for the integer-time mirror); probes/01_limit-closure-probes.lean (pf_congr, pp_congr, ps_valid, us_valid, ct_iff_image). The probes are a ℤ-specialised MIRROR of PlusTruthAt in which H_F is the set of bi-infinite walks; nothing in them is stated against the live PlusTruthAt, WorldHistory or CoarseModel. Transcribing them against the live definitions is this task.
+
+WHAT IS COMPILED AND WHAT IS NOT (report 02 section 2). Compiled in the mirror: the refutation of blc in a paste-closed coarsened model on the frame eR, end to end. ON PAPER ONLY, and therefore the real work here: (i) validity of blc at Base by Zorn plus the Extension Theorem; (ii) Saturation of eR.
+
+PHASES (one agent run each; lake build FormalSystem green and no new sorry at the end of each).
+(1) Metalogic/Independence/PastedCoarseModels.lean: CoarseModel.PasteClosed (image-level splice at equal π-class), purity congruences for CTruthAt, the PS and US arms and their reflected forms, and the soundness recursion PlusDerivable .Base [] φ → φ valid on every paste-closed coarse model (mirror naive_cValid_and_reflect_time in CoarsenedModels.lean). Base only: the landed cValid_of_tm suffices, no frame-class generalisation in this phase.
+(2) The countermodel: the frame eR on Option (Bool × ℕ) (none a hub with none → x for every x and only none → none into it; some (c,k) → some (c',k') iff k' ≤ k and (c' = true → k' < k), so the budget bounds future p-visits) as a FrameOver over integer time, satisfying EVERY field of the live TaskFrame. Saturation by report 02's argument: eR is transitive and dense so the n-step relation is eR for n ≥ 1; forward fibres of non-hub states are finite; every infinite fibre or segment contains none; close with the landed sInter_nonempty_of_directed_of_minimal. Then the CoarseModel with π the Bool component, PasteClosed, and ¬ CTruthAt … blc.
+(3) Semantics/PlusLanguage/: validity of blc at Base. REFINEMENT from report 03: do not prove it ad hoc. First prove a general lemma -- for a property Q of partial histories whose domain is a down-set, closed under unions of chains and nonempty, a Q-maximal partial history exists and extends to a world history (Zorn + Extension.lean's extension) -- then instantiate it with report 02's Q. The same lemma yields the limit-closure schema LC_n at Base (report 03 section 2.2) at no extra cost; state that instance only if it falls out, it is not a deliverable. Step 6 of the argument uses PlusPasting.paste with its CURRENT total-history signature; another task generalises paste off totality and is asked to keep that signature as a corollary.
+(4) Assemble plus_incomplete_base with an axiom pin. Update Metalogic/Conservativity/Plus/README.md (it currently says general TM+ completeness is open) and the Metalogic/README.md rows: completeness of the current TM+ axioms is FALSE at Base, completeness of any extension is OPEN at every class, and the conditional TM-star-over-TM+ row's hypothesis is refuted. Add the one-line reading: the coarsened countermodel is a dense, non-closed bundle -- PS and US say paste-closed, MF says translation-closed, nothing says closed.
+(5) OPTIONAL, separate phase, skip if it threatens the headline: the ZTime corollary plus_incomplete_ztime. Validity at ZTime is immediate from Base. Non-derivability at ZTime is STRONGER than at Base (ZTime has more axioms), so it needs the unwritten ZTime generalisation of cValid_of_tm; the countermodel already lives on an integer-time frame. lcPlus may be added here as a second witness.
+
+OUT OF SCOPE: Dense and RTime non-derivability (the dense saturated countermodel of report 02 section 3 is UNVERIFIED and is a research question); any new axiom, rule or constructor; the clock/translation product.
+
+CONSISTENCY CHECK to record in the module docstring: under ⊡ = id, blc is a theorem of TM+ + Determined (deterministic completeness, landed), and the countermodel is necessarily nondeterministic.
+
+HARD CONSTRAINTS: NO change to PlusAxiom or PlusDerivationTree, so plus_soundness_validIn, forward_plus and plusDerivable_ofFormula_iff are untouched; never state a completeness theorem; no sorry; no task numbers under FormalSystem/; keep the module invariants (C2/C3/C14/C24) green; builds detached through .claude/scripts/lake-build-guard.sh.
+
+DEPENDENCIES: none. The inputs are reports and probes that already exist. The former edge on research task 559 is REMOVED: that task is a standing research program that may never reach completed, and the edge made this task undispatchable (orchestrate stopped with no_eligible_stuck). The former soft dependency on 537 (shared README rows) is discharged: 537 is completed and archived.
 
 ---
 
