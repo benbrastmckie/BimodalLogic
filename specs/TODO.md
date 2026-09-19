@@ -11,7 +11,7 @@ next_project_number: 639
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,629,630,631 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,631 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633 | 298,464,502,563,568,630 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,626,631,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,614,635 | 428,498,499,500,634 | algebraic-representation, decidability, documentation, ... |
@@ -98,7 +98,6 @@ next_project_number: 639
 
 ### Publication Quality
 
-629 [IMPLEMENTING] — Turn the committed publication refactor programme into a...
 630 [NOT STARTED] — Write scripts/move-modules.py (old-to-new module mapping plus...
   └─ 632 [NOT STARTED] — Create leanlib BimodalTools (outside defaultTargets) and...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into...
@@ -229,12 +228,13 @@ Reconciliation notes: no dependency edge to task 631 (deliverable hygiene): ADR-
 ---
 
 ### 629. Reconcile task set with publication refactor programme
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md]
 - **Plan**: [629_reconcile_task_set_with_publication_refactor_programme/plans/01_task-set-reconciliation.md]
+- **Summary**: [629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md]
 
 **Description**: Turn the committed publication refactor programme into a coherent task set: create, revise, merge and abandon tasks so the refactor runs systematically without colliding with open work. SOURCE OF TRUTH: docs/development/PUBLICATION_REFACTOR.md (Section 7 phased programme, Section 8 dependency order and publication gate, Section 9 paste-ready follow-up descriptions A-I), ADR-010 and ADR-011 (both Proposed), and scripts/measure-refactor-partitions.py (regenerate every count; never copy numbers from the document). Grounding: task 627's report, plan and summary. DELIVER: (1) Create tasks A-I from Section 9 (A = Phases 0+2 move tool and Boneyard relocation; B = Phase 1 hygiene excluding specs/; C = Phase 3 BimodalTools split; D = Phase 4 upward edges; E = Phase 5 language directories and probe tests; F = Phase 6 Expressiveness extraction; G = Phase 7 docstring and citation normalisation; H = Phase 8 CI parity, root collapse and publication gate; I = Phase 9 optional post-publication), with dependencies encoding 0->1->2->{3,4}->5->6->7->8->9, and set file_scope for each. Resolve the A/B ordering wrinkle (A bundles Phases 0 and 2 but Phase 1 sits between them): either order A after B or record why the 1->2 edge is not real. (2) Reconcile every open task against the programme. Collisions identified at 627 closeout, each to be verified fresh before acting: E vs 626 (626 edits Syntax/PlusLanguage/Axioms.lean and Semantics/PlusLanguage/PlusTruth.lean, which E moves; 626 should land first and its citation work overlaps G); E vs 429 (429 file_scope includes Tests/BimodalTest/TemporalWitnessProbe.lean, which E moves); E vs 614 (README date stamps in directories E merges; sequence after E or absorb); C vs 298, 296, 282, 604, 231 (Automation/ file_scope and lean_exe/lakefile changes that C relocates into BimodalTools; decide per task whether it precedes C or is rewritten against BimodalTools paths); B vs 604 (B deletes migrate_schema_v2.py and standardize_metadata.py, which 604 inventories as dataset readers); B vs 257 (257 file_scope includes .gitattributes, which B untracks as empty; confirm whether 257 needs it for LFS); B vs 610 (same doc-cleanup class; candidate to merge into B); H vs 625 (625 registers modules in FormalSystem/FormalSystem.lean, which H replaces with an mk_all-generated root; 625 first); G vs 177 (both are the final documentation pass; 177 is gated on the decidability chain and cites Kamp/WeakCanonical paths F moves; merge into G or sequence after F and G); 178 after F (examples cite names F renames; C also edits Examples/BimodalProofs.lean imports); new-file tasks 563-567 and 616-618 should adopt G's citation form or be sequenced after G. Mostly independent, verify only: the decidability chain 410-412, 428-430, 464, 465, 481, 482 (lives in Metalogic/Decidability/Verified/, which no phase moves; D touches FMP/Periodicity.lean and DeductionTheorem nearby); 412 cites WeakCanonical/GroupModel/CountermodelBase.lean, which stays residual under F; 534, 559 (Kamp) and 125, 497-502 (Boneyard) are read-only references whose path citations go stale after A and F. For each open task decide: keep with new dependency edges, revise description/file_scope to post-move paths, merge into a programme task, or abandon with a recorded reason. (3) Record the specs/ disposition at the publication gate: current default is keep tracked during the programme and untrack at the gate (recommended, non-blocking); alternatives are keep published or move to an unpublished branch; confirm with the user. (4) Write a reconciliation report listing every created/revised/merged/abandoned task with its rationale, plus the resulting dependency graph. CONSTRAINTS: this is task-management work only; do not modify FormalSystem/, Tests/, docs/ or scripts/. Ask the user before abandoning or merging any task that has existing research or plan artifacts. No task numbers in any file outside specs/
 
