@@ -1,7 +1,7 @@
 # Implementation Plan: Task #627
 
 - **Task**: 627 - Research cslib as a Lean engineering reference model and produce a publication-standard refactor plan for BimodalLogic / FormalSystem
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/627_research_cslib_lean_engineering_refactor_plan/reports/01_cslib-refactor-plan.md
@@ -106,20 +106,20 @@ advances. Not modified.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Committed measurement tooling [NOT STARTED]
+### Phase 1: Committed measurement tooling [COMPLETED]
 
 **Goal**: Replace the report's lost scratchpad scripts with a committed, re-runnable
 measurement that reproduces every structural count the programme depends on and can serve
 as the pre-move gate for programme Phase 6.
 
 **Tasks**:
-- [ ] Create `scripts/lib/import_graph.py` (stdlib only), reusing `scripts/lib/live_walk.py`
+- [x] Create `scripts/lib/import_graph.py` (stdlib only), reusing `scripts/lib/live_walk.py`
       for Boneyard-excluding traversal. Provide: `module_of(path)` / `path_of(module)` for
       `FormalSystem.*` and `BimodalTest.*`; `leading_imports(path)` that parses ONLY the
       file's leading `import` block after the copyright comment (the report's Appendix
       documents why a naive `grep '^import'` yields a false self-cycle from docstring
       examples); `closure(module)` over `FormalSystem.*` imports; and a reverse-edge index.
-- [ ] Create `scripts/measure-refactor-partitions.py` with subcommands or flags producing,
+- [x] Create `scripts/measure-refactor-partitions.py` with subcommands or flags producing,
       as markdown tables on stdout (and `--json` for machine use):
       - `upward-edges`: every import from `Syntax/`, `Semantics/`, `ProofSystem/`,
         `Theorems/`, `Metalogic/` into `Automation.*`, plus `Theorems <-> Metalogic` edges
@@ -137,13 +137,17 @@ as the pre-move gate for programme Phase 6.
         equal-or-descendant / ancestor / unrelated (report: 279 / 187 / 24).
       - `--check`: exit non-zero if the Expressiveness set has any edge into the residual
         `WeakCanonical` set or into `BXCanonical`. This is programme Phase 6's gate.
-- [ ] Run each mode against the current tree; compare with the report's numbers; note every
+- [x] Run each mode against the current tree; compare with the report's numbers; note every
       discrepancy in the script's `--help` epilogue or a short header comment ("measured on
-      commit 220e94ea4: ...") without task numbers or `specs/` paths.
-- [ ] Catalogue the script in `docs/development/MODULE_INVARIANTS.md` next to
+      commit 220e94ea4: ...") without task numbers or `specs/` paths. *(completed — partition
+      141/104,087 vs 38/28,472, 150/29 by closure, 0 leaks, 9 library-needed Automation modules
+      and 279/187/24 namespaces all reproduce; discrepancies: 16 not 17 upward lines into
+      Automation, 11 not 12 attribute-only lines, 15 not 17 language-extension files among the
+      24 unrelated namespaces, C6 manifest has 15 entries not 26; recorded in the script header)*
+- [x] Catalogue the script in `docs/development/MODULE_INVARIANTS.md` next to
       `check-metalogic-cycles.sh` (same "not wired into the harness, run directly" posture).
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` (C9 covers `scripts/`; C12/C13
-      cover the MODULE_INVARIANTS.md edit).
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` (C9 covers `scripts/`; C12/C13
+      cover the MODULE_INVARIANTS.md edit). *(completed — exit 0, C9/C9D/C12/C13 PASS)*
 
 **Timing**: 2 hours
 

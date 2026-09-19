@@ -336,6 +336,28 @@ It exists because that count used to be prose in
 whenever someone needed to trust it, and it went stale. Zero cycles is a failure too, not a pass:
 the pair is expected to be present, so its disappearance is a finding.
 
+`scripts/measure-refactor-partitions.py` is the second sibling, with the same posture: not wired
+into the harness, run directly, its own exit code. It regenerates every structural count the
+publication refactor programme (`PUBLICATION_REFACTOR.md` in this directory) and ADR-011
+depend on, so that none of them is ever typed: the upward import edges through the layer table,
+the `Metalogic/WeakCanonical/` partition into the proposed `Metalogic/Expressiveness/` set and the
+residual, the Automation modules the library actually needs against the dataset tooling, and the
+namespace-versus-directory audit. It reads the tree through `scripts/lib/import_graph.py`, which
+parses only a file's *leading* `import` block — a naive `grep '^import'` also matches the usage
+examples inside module docstrings and manufactures a self-cycle on the root aggregator — and
+excludes the archive through `live_walk.py` exactly as the harness does.
+
+```bash
+python3 scripts/measure-refactor-partitions.py all          # every table, markdown
+python3 scripts/measure-refactor-partitions.py all --json   # the same, machine-readable
+python3 scripts/measure-refactor-partitions.py --check      # exit 1 if the Expressiveness set leaks
+```
+
+`--check` is the pre-move gate for the Expressiveness extraction: it passes only when the
+proposed set has no import edge into the residual `WeakCanonical` modules and none into
+`BXCanonical`. Never weaken it to make a move go through; if it fails, the edges it prints are
+the work.
+
 ## Related Documentation
 
 - [Metalogic architecture map](../../FormalSystem/Metalogic/README.md)
