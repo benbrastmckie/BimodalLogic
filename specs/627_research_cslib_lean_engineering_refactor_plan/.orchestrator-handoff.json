@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Surveyed benbrastmckie/cslib (8 dimensions) against this repo with measured import-graph analysis; report maps each convention to adopt/matches/diverge, gives target layout, lakefile, namespace map, templates, and a 10-phase refactor programme with [CITE] phases (2-7) that must land before the v1.0.0 tag. Key finding: 104k of WeakCanonical's 132k lines are BXCanonical-free, so ADR-006 should be superseded; ADR-009 retention reaffirmed but location moves to repo root.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/627_research_cslib_lean_engineering_refactor_plan/reports/01_cslib-refactor-plan.md",
+      "summary": "cslib-referenced publication refactor plan with measured WeakCanonical/Automation partitions and ADR-010/011 proposals"
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "plan"
+}
