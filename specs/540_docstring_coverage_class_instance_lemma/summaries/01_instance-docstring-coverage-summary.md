@@ -26,7 +26,7 @@ C19 now reports refined docstring coverage per keyword. Every one of the 79 live
   - `FormalSystem/Metalogic/WeakCanonical/NormalForm.lean` has 3. `atomKindDecEq` is documented plainly. The `normalFormFintype` and `normalFormDecEq` docstrings add a trap: the two instances are built jointly and cannot be derived separately.
   - `FormalSystem/Semantics/LexCarrier.lean` has 2, `instSuccOrder` and `instPredOrder`. The existing plain `/- -/` rationale now sits above the new `/--`.
   - `FormalSystem/Semantics/Ultraproduct/IndexFilter.lean`: `tailFilter_neBot`.
-- Citation shift, a consequence of the docstrings: 34 `NormalForm.lean:NNN` and `GoodDense.lean:NNN` line citations in 13 live WeakCanonical files were renumbered by the number of lines inserted above their targets. Every shifted citation was asserted to land on the same source text as before the edit.
+- Citation shift, a consequence of the docstrings: 34 `NormalForm.lean:NNN` and `GoodDense.lean:NNN` line citations in 14 live WeakCanonical files were renumbered by the number of lines inserted above their targets. Every shifted citation was asserted to land on the same source text as before the edit.
 
 ## Decisions
 
