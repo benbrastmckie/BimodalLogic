@@ -107,7 +107,7 @@ next_project_number: 642
             └─ 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
   └─ 633 [NOT STARTED] — Create Tactic/Attr.lean under the library root from...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into... (see above)
-639 [RESEARCHED] — Correct the factual and navigational defects in the root...
+639 [PLANNED] — Correct the factual and navigational defects in the root...
   └─ 640 [NOT STARTED] — Restructure the root README for a reader who arrives cold and...
   └─ 641 [NOT STARTED] — Provide one worked-example file that an outside reader can...
 
@@ -140,11 +140,12 @@ next_project_number: 642
 ---
 
 ### 639. Readme accuracy and entry point fixes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md]
+- **Plan**: [639_readme_accuracy_and_entry_point_fixes/plans/01_readme-accuracy-entry-points.md]
 
 **Description**: Correct the factual and navigational defects in the root README and its nearest siblings before the repository is shown to outside readers. (1) Axiom counts contradict each other: the Axiom Systems table and the mermaid graph give Base 37 / ZTime 40 / Dense 39 / RTime 42 and the L+ paragraph says "the 45 TM schemata", while the paragraph directly below says `inductive Axiom` has 29 constructors (23 Base + 2 Dense + 2 ZTime + 2 RTime), which is what Axioms.lean and harness check C22 confirm. Decide one counting convention (primitive constructors, with derived mirrors counted separately and labelled as derived), apply it to the table, the graph and the prose, and explain the 45 figure where PlusAxiom really does re-declare 45 schemata. The same stale counts appear in FormalSystem/README.md ("TM Base (37 constructor axioms)"), docs/reference/API_REFERENCE.md ("The 45 axiom constructors"), docs/user-guide/architecture.md, FormalSystem/Syntax/PlusLanguage/README.md, and the docstrings of Automation/BenchmarkAnchorsMain.lean and Metalogic/Independence/RationalWitness.lean. (2) The "Additional Axioms" column lists `P phi -> S(phi, not phi)` for ZTime and `prior_S_gap` for RTime as axioms although both are derived mirrors. (3) The Project Structure tree places MinusLanguage/ and PlusLanguage/ directly under FormalSystem/; they live under FormalSystem/Syntax/ (StarLanguage/ is omitted). (4) FormalSystem/MainResults.lean, the one-page kernel-audited list of headline theorems, is not linked from the README at all; the "Demo" link instead points at Examples/BimodalProofs.lean, whose header still cites `../ProofChecker/Theorems/Perpetuity.lean`. Link MainResults.lean at the top and fix that header. (5) The Reference list calls latex/BimodalReference.pdf the "full formal specification" while the top of the README says that edition is superseded and unsynced. (6) DONE before dispatch: the BimodalHarness links in README.md, docs/README.md and docs/training/PIPELINE.md were de-linked and marked as a private repository; restore the links if that repository is made public. (7) The BibTeX key is brastmckie2025construction with year 2026 and the Task Semantics section cites "(Brast-McKie, 2025)" while the header says forthcoming. (8) FormalSystem/README.md line 252 carries `<!-- TODO: add description -->` for MainResults.lean. Acceptance: check-module-invariants.sh --no-build and readme-lint.sh green; no count in any listed file disagrees with Axioms.lean; every README link resolves for an anonymous reader. Coordination: task 631 also edits README.md (Logos/ProofChecker naming, latex retirement); land this first, and item (5) becomes moot once 631 retires latex/.
 
