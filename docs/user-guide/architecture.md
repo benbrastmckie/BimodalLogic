@@ -1511,6 +1511,6 @@ This architecture provides a comprehensive foundation for developing a sophistic
 - [LEAN Style Guide](../development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../development/MODULE_ORGANIZATION.md) - Project structure
 - [Integration Guide](INTEGRATION.md) - Model-Checker integration
-- [Contributing](../development/CONTRIBUTING.md) - How to contribute
+- [Contributing](../../CONTRIBUTING.md) - How to contribute
 
 _Last updated: December 2025_

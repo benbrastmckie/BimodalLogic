@@ -50,7 +50,7 @@ Guidelines for contributing to the project:
 
 | Document | Description |
 |----------|-------------|
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guidelines and pull request workflow |
+| [CONTRIBUTING.md](../../CONTRIBUTING.md) | Contribution guidelines and pull request workflow |
 | [VERSIONING.md](VERSIONING.md) | Semantic versioning policy |
 
 ## Quality Assurance
@@ -65,7 +65,7 @@ Documentation quality and review processes:
 
 ### For New Contributors
 
-1. **[CONTRIBUTING.md](CONTRIBUTING.md)** - Start here for contribution workflow
+1. **[CONTRIBUTING.md](../../CONTRIBUTING.md)** - Start here for contribution workflow
 2. **[LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md)** - Coding conventions to follow
 3. **[TESTING_STANDARDS.md](TESTING_STANDARDS.md)** - Test requirements for PRs
 

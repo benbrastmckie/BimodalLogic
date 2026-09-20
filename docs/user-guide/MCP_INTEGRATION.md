@@ -57,4 +57,4 @@ lean_leansearch("Filter preserves membership")
 
 - The agent-system configuration under `.claude/` - Current AI development system
 - [Lean Style Guide](../development/LEAN_STYLE_GUIDE.md) - Lean 4 coding conventions
-- [Contributing Guide](../development/CONTRIBUTING.md) - Development workflow
+- [Contributing Guide](../../CONTRIBUTING.md) - Development workflow

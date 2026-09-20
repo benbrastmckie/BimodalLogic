@@ -305,17 +305,17 @@ the grep is load-bearing and not redundant with the gate.
 
 ---
 
-### Phase 5: Move `CONTRIBUTING.md` to the repository root [NOT STARTED]
+### Phase 5: Move `CONTRIBUTING.md` to the repository root [COMPLETED]
 
 **Goal**: `CONTRIBUTING.md` sits at the root beside `README.md`, `ORGANISATION.md`, `NOTATION.md`
 and `references.bib`, and every citer points at the new location.
 
 **Tasks**:
-- [ ] `git mv docs/development/CONTRIBUTING.md CONTRIBUTING.md`.
-- [ ] Fix relative links **inside** the moved file itself (its own links were written relative to `docs/development/` and all now resolve from the root).
-- [ ] Repoint the citers found by research: `README.md:362`, `docs/README.md:150,236,283`, `docs/development/README.md:54,69`, `docs/development/VERSIONING.md:316`, `docs/development/QUALITY_METRICS.md:287`, `docs/development/DIRECTORY_README_STANDARD.md:256`, `docs/installation/BASIC_INSTALLATION.md:193`, `docs/user-guide/MCP_INTEGRATION.md:60`, `docs/user-guide/architecture.md:1517`, `docs/user-guide/tutorial.md:436`, `docs/project-info/MAINTENANCE.md:672`.
-- [ ] Leave `docs/development/PUBLICATION_REFACTOR.md`'s mentions alone (programme text, not links to repair) and leave `specs/**` mentions alone (historical record, out of scope).
-- [ ] Re-grep for `CONTRIBUTING` outside `specs/` and confirm every remaining reference resolves.
+- [x] `git mv docs/development/CONTRIBUTING.md CONTRIBUTING.md`. *(completed)*
+- [x] Fix relative links **inside** the moved file itself (its own links were written relative to `docs/development/` and all now resolve from the root). *(completed)*
+- [x] Repoint the citers found by research: `README.md:362`, `docs/README.md:150,236,283`, `docs/development/README.md:54,69`, `docs/development/VERSIONING.md:316`, `docs/development/QUALITY_METRICS.md:287`, `docs/development/DIRECTORY_README_STANDARD.md:256`, `docs/installation/BASIC_INSTALLATION.md:193`, `docs/user-guide/MCP_INTEGRATION.md:60`, `docs/user-guide/architecture.md:1517`, `docs/user-guide/tutorial.md:436`, `docs/project-info/MAINTENANCE.md:672`. *(completed: MAINTENANCE.md:672 is a historical changelog entry, not a live link — left untouched)*
+- [x] Leave `docs/development/PUBLICATION_REFACTOR.md`'s mentions alone (programme text, not links to repair) and leave `specs/**` mentions alone (historical record, out of scope). *(completed)*
+- [x] Re-grep for `CONTRIBUTING` outside `specs/` and confirm every remaining reference resolves. *(completed)*
 
 **Timing**: 1 hour
 

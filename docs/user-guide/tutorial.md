@@ -433,7 +433,7 @@ Logos supports future extensions:
 
 - [Architecture Guide](architecture.md) - Full TM logic specification
 - [Examples](examples.md) - More example proofs
-- [Contributing](../development/CONTRIBUTING.md) - How to contribute
+- [Contributing](../../CONTRIBUTING.md) - How to contribute
 - [Integration](INTEGRATION.md) - Model-Checker integration
 
 ### Developer Resources

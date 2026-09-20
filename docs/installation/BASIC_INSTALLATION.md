@@ -190,7 +190,7 @@ chmod -R u+rw ~/.elan/
 
 ## Next Steps
 
-- **[Contributing](../development/CONTRIBUTING.md)** - Contributing guidelines and development workflow
+- **[Contributing](../../CONTRIBUTING.md)** - Contributing guidelines and development workflow
 - **[Module Organization](../development/MODULE_ORGANIZATION.md)** - Understand the library structure
 - **[API Reference](../reference/API_REFERENCE.md)** - Explore available modules and functions
 

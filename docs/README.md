@@ -128,7 +128,7 @@ Developer standards, conventions, and contribution workflow:
 - [README.md](development/README.md) - Directory overview and reading order
 - [BENCHMARKING_GUIDE.md](development/BENCHMARKING_GUIDE.md) - Performance benchmarking and profiling guide
 - [CI_CD_PROCESS.md](development/CI_CD_PROCESS.md) - Continuous integration and deployment pipeline
-- [CONTRIBUTING.md](development/CONTRIBUTING.md) - Contribution guidelines and workflow
+- [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution guidelines and workflow
 - [DIRECTORY_README_STANDARD.md](development/DIRECTORY_README_STANDARD.md) - Directory-level documentation standard
 - [DOC_QUALITY_CHECKLIST.md](development/DOC_QUALITY_CHECKLIST.md) - Documentation quality assurance checklist
 - [LEAN_STYLE_GUIDE.md](development/LEAN_STYLE_GUIDE.md) - Coding conventions and documentation requirements
@@ -203,7 +203,7 @@ same change.
 ### For Contributors
 
 1. [Implementation Status](project-info/implementation-status.md) - What's implemented
-2. [Contributing Guidelines](development/CONTRIBUTING.md) - How to contribute
+2. [Contributing Guidelines](../CONTRIBUTING.md) - How to contribute
 3. [Style Guide](development/LEAN_STYLE_GUIDE.md) - Coding standards
 4. [Maintenance Workflow](project-info/MAINTENANCE.md) - TODO and documentation procedures
 
@@ -243,7 +243,7 @@ same change.
 ### I want to contribute
 
 **Start with**:
-1. [Contributing Guide](development/CONTRIBUTING.md) - Contribution workflow
+1. [Contributing Guide](../CONTRIBUTING.md) - Contribution workflow
 2. [Implementation Status](project-info/implementation-status.md) - What's implemented
 3. [TODO.md](../specs/TODO.md) - Active tasks
 

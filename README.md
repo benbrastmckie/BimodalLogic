@@ -359,7 +359,7 @@ doc-gen4 reference for every declaration in `FormalSystem`, rebuilt on every pus
 ### User Guides
 
 - [Tutorial](docs/user-guide/tutorial.md) — introduction to writing bimodal proofs
-- [Contributing](docs/development/CONTRIBUTING.md) — contribution guidelines
+- [Contributing](CONTRIBUTING.md) — contribution guidelines
 
 ### Research
 

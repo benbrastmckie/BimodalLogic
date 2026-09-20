@@ -253,7 +253,7 @@ New examples should:
 - Follow [LEAN_STYLE_GUIDE.md](../docs/development/LEAN_STYLE_GUIDE.md)
 - Be accessible to learners (avoid overly complex proofs)
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution workflow.
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for contribution workflow.
 
 ## Related Documentation
 
