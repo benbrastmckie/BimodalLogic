@@ -1,0 +1,15 @@
+{
+  "phase": 1,
+  "phase_name": "Untrack agent-system configuration files",
+  "started_at": "2026-09-20T00:00:00Z",
+  "last_updated": "2026-09-20T00:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Confirm four files tracked and .gitattributes empty", "status": "not_started"},
+    {"id": 2, "description": "git rm --cached the three configs, git rm .gitattributes", "status": "not_started"},
+    {"id": 3, "description": "Add root-anchored .gitignore entries", "status": "not_started"},
+    {"id": 4, "description": "Confirm docs references need no edit", "status": "not_started"}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #631
 
 - **Task**: 631 - Deliverable hygiene excluding specs
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md
@@ -134,7 +134,7 @@ its citers). Phases 4-7 are serialised because they all edit `README.md` and/or 
 The ordering also follows the research recommendation to do the removals first so the later
 grep-driven phases scan a smaller tree.
 
-### Phase 1: Untrack agent-system configuration files [NOT STARTED]
+### Phase 1: Untrack agent-system configuration files [IN PROGRESS]
 
 **Goal**: `CLAUDE.md`, `.claude-extensions.json`, `.syncprotect` and the empty `.gitattributes`
 are no longer tracked, remain on local disk, and are ignored going forward.
