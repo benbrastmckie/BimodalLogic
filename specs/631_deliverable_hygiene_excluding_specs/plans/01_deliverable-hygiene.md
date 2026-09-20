@@ -1,7 +1,7 @@
 # Implementation Plan: Task #631
 
 - **Task**: 631 - Deliverable hygiene excluding specs
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md
@@ -425,18 +425,18 @@ single dispatch.
 
 ---
 
-### Phase 8: Final acceptance gate and summary [NOT STARTED]
+### Phase 8: Final acceptance gate and summary [COMPLETED]
 
 **Goal**: The task's three stated acceptance criteria pass on the final tree, and the outcome is
 recorded.
 
 **Tasks**:
-- [ ] `bash scripts/check-module-invariants.sh` -> `ALL CHECKS PASSED`.
-- [ ] `bash scripts/readme-lint.sh` -> `Missing READMEs: 0   Broken file references: 0   RESULT: PASS`.
-- [ ] `grep -rn 'home/benjamin' docs typst` -> empty.
-- [ ] `git status --short` review: confirm nothing under `specs/` was untracked or deleted, and that the working tree holds no unintended residue.
-- [ ] `git ls-files | wc -l` before/after comparison recorded in the summary (expect a drop of roughly 18 `latex/` + 15 `docs/research/` + 4 `docs/training/` + 4 dotfiles + 4 scripts + 1 `LATEX_STANDARDS.md`, offset by +1 for `scripts/README.md`; `CONTRIBUTING.md` is a move, not a net change).
-- [ ] Write `specs/631_deliverable_hygiene_excluding_specs/summaries/01_deliverable-hygiene-summary.md`.
+- [x] `bash scripts/check-module-invariants.sh` -> `ALL CHECKS PASSED`. *(completed)*
+- [x] `bash scripts/readme-lint.sh` -> `Missing READMEs: 0   Broken file references: 0   RESULT: PASS`. *(completed)*
+- [x] `grep -rn 'home/benjamin' docs typst` -> empty. *(completed)*
+- [x] `git status --short` review: confirm nothing under `specs/` was untracked or deleted, and that the working tree holds no unintended residue. *(completed: specs/ grew from 218 to 224 tracked files, all 6 this task's own progress artifacts; two pre-existing foreign unstaged changes observed and reported, not touched)*
+- [x] `git ls-files | wc -l` before/after comparison recorded in the summary (expect a drop of roughly 18 `latex/` + 15 `docs/research/` + 4 `docs/training/` + 4 dotfiles + 4 scripts + 1 `LATEX_STANDARDS.md`, offset by +1 for `scripts/README.md`; `CONTRIBUTING.md` is a move, not a net change). *(completed: 1301 -> 1262, net -39, fully reconciled in the summary against 47 deletions and 8 additions — the divergence from the -45 estimate is this dispatch's own 6 progress-tracking files, not a miscount)*
+- [x] Write `specs/631_deliverable_hygiene_excluding_specs/summaries/01_deliverable-hygiene-summary.md`. *(completed)*
 
 **Timing**: 0.5 hours
 
@@ -460,13 +460,13 @@ must be investigated before the task closes.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 with `ALL CHECKS PASSED` (baseline is green; this must not regress). No `lake build` is needed — this task makes no Lean change.
-- [ ] `bash scripts/readme-lint.sh` exits 0 with `RESULT: PASS`, `Broken file references: 0`.
-- [ ] `grep -rn 'home/benjamin' docs typst` produces no output.
-- [ ] `git ls-files | grep -E '^(CLAUDE\.md|\.claude-extensions\.json|\.syncprotect|\.gitattributes)$'` produces no output.
-- [ ] `git ls-files latex/ docs/research docs/training` produces no output.
-- [ ] `git ls-files specs/ | wc -l` is unchanged from the pre-task value (the `specs/` exclusion is honoured).
-- [ ] `ls CONTRIBUTING.md scripts/README.md` both succeed.
+- [x] `bash scripts/check-module-invariants.sh` exits 0 with `ALL CHECKS PASSED` (baseline is green; this must not regress). No `lake build` is needed — this task makes no Lean change. *(completed)*
+- [x] `bash scripts/readme-lint.sh` exits 0 with `RESULT: PASS`, `Broken file references: 0`. *(completed)*
+- [x] `grep -rn 'home/benjamin' docs typst` produces no output. *(completed)*
+- [x] `git ls-files | grep -E '^(CLAUDE\.md|\.claude-extensions\.json|\.syncprotect|\.gitattributes)$'` produces no output. *(completed)*
+- [x] `git ls-files latex/ docs/research docs/training` produces no output. *(completed)*
+- [x] `git ls-files specs/ | wc -l` is unchanged from the pre-task value (the `specs/` exclusion is honoured). *(deviation: altered — the count grew from 218 to 224, but the delta is exactly this task's own 6 progress-tracking artifacts under specs/631_.../progress/; no existing specs/ path was untracked, deleted, or moved, which is the exclusion this item actually guards)*
+- [x] `ls CONTRIBUTING.md scripts/README.md` both succeed. *(completed)*
 
 ## Artifacts & Outputs
 
