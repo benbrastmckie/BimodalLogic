@@ -76,6 +76,11 @@ data/*.jsonl
 .memory/
 opencode.json
 
+# Agent-system configuration -- not part of the deliverable, retained locally
+/CLAUDE.md
+/.claude-extensions.json
+/.syncprotect
+
 # Development artifacts
 specs/archive/
 specs/vault/

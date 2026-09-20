@@ -134,18 +134,18 @@ its citers). Phases 4-7 are serialised because they all edit `README.md` and/or 
 The ordering also follows the research recommendation to do the removals first so the later
 grep-driven phases scan a smaller tree.
 
-### Phase 1: Untrack agent-system configuration files [IN PROGRESS]
+### Phase 1: Untrack agent-system configuration files [COMPLETED]
 
 **Goal**: `CLAUDE.md`, `.claude-extensions.json`, `.syncprotect` and the empty `.gitattributes`
 are no longer tracked, remain on local disk, and are ignored going forward.
 
 **Tasks**:
-- [ ] Confirm all four are currently tracked: `git ls-files | grep -E '^(CLAUDE\.md|\.claude-extensions\.json|\.syncprotect|\.gitattributes)$'` (expect exactly 4 lines).
-- [ ] Confirm `.gitattributes` is empty (`wc -c .gitattributes` -> 0); it is deleted outright rather than ignored, since an empty file carries nothing to preserve.
-- [ ] `git rm --cached CLAUDE.md .claude-extensions.json .syncprotect` (keeps working-tree copies).
-- [ ] `git rm .gitattributes` (empty file: remove from tree as well).
-- [ ] Add root-anchored `.gitignore` entries: `/CLAUDE.md`, `/.claude-extensions.json`, `/.syncprotect`, with a one-line comment saying these are agent-system configuration, not deliverable.
-- [ ] Confirm nothing in the deliverable references these paths: the only hits are `docs/user-guide/MCP_INTEGRATION.md:34` and `docs/project-info/MAINTENANCE.md:670`, both of which name `.claude/CLAUDE.md` (the generated deploy copy, already gitignored) and need no edit — re-verify rather than assume.
+- [x] Confirm all four are currently tracked: `git ls-files | grep -E '^(CLAUDE\.md|\.claude-extensions\.json|\.syncprotect|\.gitattributes)$'` (expect exactly 4 lines). *(completed)*
+- [x] Confirm `.gitattributes` is empty (`wc -c .gitattributes` -> 0); it is deleted outright rather than ignored, since an empty file carries nothing to preserve. *(completed)*
+- [x] `git rm --cached CLAUDE.md .claude-extensions.json .syncprotect` (keeps working-tree copies). *(completed)*
+- [x] `git rm .gitattributes` (empty file: remove from tree as well). *(completed)*
+- [x] Add root-anchored `.gitignore` entries: `/CLAUDE.md`, `/.claude-extensions.json`, `/.syncprotect`, with a one-line comment saying these are agent-system configuration, not deliverable. *(completed)*
+- [x] Confirm nothing in the deliverable references these paths: the only hits are `docs/user-guide/MCP_INTEGRATION.md:34` and `docs/project-info/MAINTENANCE.md:670`, both of which name `.claude/CLAUDE.md` (the generated deploy copy, already gitignored) and need no edit — re-verify rather than assume. *(completed: re-verified via grep, no edit needed)*
 
 **Timing**: 0.5 hours
 
