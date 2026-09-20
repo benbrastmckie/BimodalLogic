@@ -22,12 +22,12 @@ lean --version
 lake --version
 ```
 
-#### Setup Logos
+#### Setup BimodalLogic
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Logos.git
-cd Logos
+git clone https://github.com/benbrastmckie/BimodalLogic.git
+cd BimodalLogic
 
 # Build the project
 lake build

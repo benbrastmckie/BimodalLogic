@@ -573,7 +573,7 @@ Used by the Python tensor converter. Single JSON object with metadata and formul
 
 ## BimodalHarness Integration
 
-[BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) is an AlphaZero-style Python training harness implementing the policy network, value network, and MCTS proof search engine for TM bimodal logic. The integration between the two repositories is **artifact-only**: BimodalHarness never calls Lean at runtime.
+BimodalHarness (a private repository, not yet released) is an AlphaZero-style Python training harness implementing the policy network, value network, and MCTS proof search engine for TM bimodal logic. The integration between the two repositories is **artifact-only**: BimodalHarness never calls Lean at runtime.
 
 ### Sync Mechanism
 

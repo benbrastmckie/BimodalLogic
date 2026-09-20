@@ -287,7 +287,7 @@ C24 above — present in the script, absent from CI — which is the failure thi
 rather than a property it happens to have.
 
 `readme-lint.sh`'s Check 4 (README date freshness) is also distorted in CI specifically: it
-calls `git log -1 -- "$dir"`, and under `actions/checkout@v4`'s default `fetch-depth: 1`, every
+calls `git log -1 -- "$dir"`, and under `actions/checkout@v5`'s default `fetch-depth: 1`, every
 directory resolves to the same single commit (the checkout commit itself), so CI's Check 4
 output will not match a local run against full history. This is accepted, not fixed — Check 4
 is informational only (see "Check README Health Step" above), and the workflow does not set

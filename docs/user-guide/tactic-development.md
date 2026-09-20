@@ -471,9 +471,7 @@ theorem temporal_k_forward (φ ψ : Formula) (h1 : Derivable Γ (Formula.allFutu
 
 - [Aesop Documentation](https://github.com/leanprover-community/aesop)
 - [Aesop Rule Sets](https://github.com/leanprover-community/aesop#rule-sets)
-- [LEAN 4 Metaprogramming - Aesop Chapter]
-  (https://leanprover-community.github.io/lean4-metaprogramming-book/main/
-  11_aesop.html)
+- [LEAN 4 Metaprogramming - Tactics Chapter](https://leanprover-community.github.io/lean4-metaprogramming-book/main/09_tactics.html)
 
 ## 4. Simp Lemma Design
 
@@ -582,11 +580,8 @@ Standard propositional simplifications (always safe):
 
 ### References
 
-- [How does Lean simp tactic work?]
-  (https://proofassistants.stackexchange.com/questions/2455/
-  how-does-lean-simp-tactic-work)
-- [Mathlib4 Simp Lemmas]
-  (https://leanprover-community.github.io/mathlib4_docs/Mathlib/Tactic/Simp/)
+- [How does Lean simp tactic work?](https://proofassistants.stackexchange.com/questions/2455/how-does-lean-simp-tactic-work)
+- [The Simplifier (Lean Language Reference)](https://lean-lang.org/doc/reference/latest/The-Simplifier/)
 
 ## 5. Syntax Macros
 

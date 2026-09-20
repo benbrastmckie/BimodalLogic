@@ -509,7 +509,7 @@ For theorem proving purposes, this is acceptable and idiomatic.
 
 ### Lean 4 Documentation
 - [Theorem Proving in Lean 4: Axioms and Computation](https://lean-lang.org/theorem_proving_in_lean4/axioms_and_computation.html)
-- [Classical Logic in Lean](https://lean-lang.org/theorem_proving_in_lean4/classical_logic.html)
+- [Classical Logic in Lean](https://lean-lang.org/theorem_proving_in_lean4/Propositions-and-Proofs/)
 
 ### Mathlib4 Examples
 - `Mathlib.Logic.Basic`: Classical logic utilities

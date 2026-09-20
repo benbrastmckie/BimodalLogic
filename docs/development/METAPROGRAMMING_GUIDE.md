@@ -699,12 +699,8 @@ elab "assumption_search" : tactic => do
 
 ### Official LEAN 4 Documentation
 
-- [Metaprogramming in Lean 4 - Overview]
-  (https://leanprover-community.github.io/lean4-metaprogramming-book/main/
-  02_overview.html)
-- [Metaprogramming in Lean 4 - Tactics Chapter]
-  (https://leanprover-community.github.io/lean4-metaprogramming-book/main/
-  09_tactics.html)
+- [Metaprogramming in Lean 4 - Overview](https://leanprover-community.github.io/lean4-metaprogramming-book/main/02_overview.html)
+- [Metaprogramming in Lean 4 - Tactics Chapter](https://leanprover-community.github.io/lean4-metaprogramming-book/main/09_tactics.html)
 - [LEAN 4 API Documentation](https://leanprover-community.github.io/mathlib4_docs/)
 
 ### ProofChecker Documentation
