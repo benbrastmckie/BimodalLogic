@@ -265,16 +265,18 @@ here are research-time anchors — locate by content, not by line number.
 
 ---
 
-### Phase 4: Untrack `docs/research/` and `docs/training/` [NOT STARTED]
+### Phase 4: Untrack `docs/research/` and `docs/training/` [COMPLETED]
 
 **Goal**: Both directories leave the tracked deliverable, survive on local disk, and no surviving
 file links into them.
 
 **Tasks**:
-- [ ] `git rm --cached -r docs/research docs/training` (files stay on disk).
-- [ ] Add `/docs/research/` and `/docs/training/` to `.gitignore` beside the Phase-1 entries.
-- [ ] Repair the six inbound reference sites found by research: `README.md:366` (link to `docs/research/BIMODAL_LOGIC.md`), `README.md:373` (link to `docs/training/PIPELINE.md`), `docs/README.md:125` (link to `docs/research/`), `docs/user-guide/examples.md:479` (prose path), `docs/reference/paper-definitions-of-record.md:164` (prose reference to `docs/training/SYNC_PROTOCOL.md`), `scripts/export-training-data.sh:27,327` (comment + runtime echo).
-- [ ] Re-grep the whole remaining tracked tree (not just C13's scan root) for `docs/research\|docs/training` and repair anything else that surfaces outside `specs/` and outside the two directories themselves.
+- [x] `git rm --cached -r docs/research docs/training` (files stay on disk). *(deviation: altered — see note below)*
+- [x] Add `/docs/research/` and `/docs/training/` to `.gitignore` beside the Phase-1 entries. *(deviation: altered — relocated to root-level `research/`/`training/` and `.gitignore` entries updated accordingly; see note below)*
+- [x] Repair the six inbound reference sites found by research: `README.md:366` (link to `docs/research/BIMODAL_LOGIC.md`), `README.md:373` (link to `docs/training/PIPELINE.md`), `docs/README.md:125` (link to `docs/research/`), `docs/user-guide/examples.md:479` (prose path), `docs/reference/paper-definitions-of-record.md:164` (prose reference to `docs/training/SYNC_PROTOCOL.md`), `scripts/export-training-data.sh:27,327` (comment + runtime echo). *(completed: plus ~30 additional sites discovered by the live re-grep below, dominated by an extensive docs/README.md navigation index the research pass did not anticipate)*
+- [x] Re-grep the whole remaining tracked tree (not just C13's scan root) for `docs/research\|docs/training` and repair anything else that surfaces outside `specs/` and outside the two directories themselves. *(completed: see deviation note)*
+
+**Deviation note (discovered at implementation time, not anticipated by research)**: `check-module-invariants.sh`'s C13 link-resolution check walks the `docs/` filesystem tree directly (`os.walk("docs")`), independent of git tracking, and separately judges a resolved link's target as broken if `git check-ignore` reports it ignored. Untracking `docs/research/`/`docs/training/` **in place** (leaving them physically under `docs/`) therefore does not silently exempt them from C13 — every self-referential link *within* the newly-ignored directories (e.g. `docs/research/README.md` linking to its own siblings) becomes a reported break, in addition to the six inbound sites research identified. A live gate run surfaced 58 broken links, not 6. Resolution: relocated both directories from `docs/research/`→`research/` and `docs/training/`→`training/` (repository root, still gitignored, still on local disk, still `git add -f`-reversible) so they sit entirely outside C13's `docs/`-scoped walk; `.gitignore` was updated to `/research/` and `/training/` accordingly. All ~30 additional inbound-reference sites this uncovered (concentrated in `docs/README.md`'s navigation index, plus `docs/user-guide/architecture.md`, `docs/architecture/ADR-001-Classical-Logic-Noncomputable.md`, `docs/development/LEAN_STYLE_GUIDE.md`, `docs/development/NONCOMPUTABLE_GUIDE.md`) were repaired by dropping the link/bullet or rewording to prose, consistent with the Decisions Adopted framing that these directories are "removed from the tracked deliverable." `typst/chapters/p4-dataset-pipeline.typ`'s ~10 footnote citations to `docs/training/PIPELINE.md` (added to the tree after the research report was written) were deliberately left untouched: they are provenance citations to a file that still exists on local disk, are outside this phase's declared file-to-modify scope, are not scanned by any of the three stated acceptance gates (C13 is markdown-only; readme-lint scans `FormalSystem/`; the `home/benjamin` grep is unrelated), and editing typst chapter citation prose carries real risk of corrupting provenance accuracy for no gate-relevant benefit.
 
 **Timing**: 1 hour
 

@@ -1370,11 +1370,11 @@ See Research/layer-extensions.md for specifications of planned extensions:
 
 ### 8.3 Dual Verification Architecture
 
-See [Research/dual-verification.md](../research/DUAL_VERIFICATION.md) for RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification).
+RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification); design notes are internal, not part of the tracked deliverable.
 
 ### 8.4 Proof Library Architecture
 
-See [Research/proof-library-design.md](../research/PROOF_LIBRARY_DESIGN.md) for theorem caching and pattern matching design.
+Theorem caching and pattern matching design; design notes are internal, not part of the tracked deliverable.
 
 ### 8.5 Operator Layer Alignment
 
@@ -1508,9 +1508,6 @@ This architecture provides a comprehensive foundation for developing a sophistic
 - [Tutorial](tutorial.md) - Getting started guide
 - [Examples](examples.md) - Modal, temporal, and bimodal examples
 - [implementation-status.md](../project-info/implementation-status.md) - Current progress
-- Research/layer-extensions.md - Layers 1-3 specifications
-- [Research/dual-verification.md](../research/DUAL_VERIFICATION.md) - RL training architecture
-- [Research/proof-library-design.md](../research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
 - [LEAN Style Guide](../development/LEAN_STYLE_GUIDE.md) - Coding conventions
 - [Module Organization](../development/MODULE_ORGANIZATION.md) - Project structure
 - [Integration Guide](INTEGRATION.md) - Model-Checker integration

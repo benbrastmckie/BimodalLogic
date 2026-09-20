@@ -160,8 +160,9 @@ existed.
    - **Serialized wire tags stay byte-stable.** These are the `"temporal_duality"` string literals in
      dataset/JSON output (`Automation/DataExport.lean`, `DatasetGenerator.lean`,
      `ProofStepExtractor.lean`, `ContrastiveGeneratorMain.lean`, `ProofExtractorMain.lean`), the
-     `"temporalDualityCount"` key in `ProofFirstBenchmark.lean`, and the rule-name list in
-     `docs/training/SYNC_PROTOCOL.md`. Each code site carries a comment saying so. These tags are
+     `"temporalDualityCount"` key in `ProofFirstBenchmark.lean`, and the rule-name list in the
+     training-pipeline sync protocol (internal, not part of the tracked deliverable). Each code
+     site carries a comment saying so. These tags are
      *not* a claim about the paper's `def:BX`. The one exception is `MachineAppendixMain.lean`,
      whose rule `name`/`conclusion` strings follow the live constructor names, because the typst
      machine appendix is recounted against them.

@@ -24,7 +24,7 @@
 # Schema gap notice:
 #   proof_extractor emits 8 fields per step; BimodalHarness load_proof_steps()
 #   expects 12 fields. A Python-side adapter in BimodalHarness is required.
-#   See docs/training/SYNC_PROTOCOL.md for details.
+#   See the training-pipeline sync protocol (internal, not part of the tracked deliverable).
 #
 # Examples:
 #   ./scripts/export-training-data.sh c5                # Export c5 dataset + proofs
@@ -324,5 +324,5 @@ echo ""
 echo "=== Export complete ==="
 if [ "$DRY_RUN" = false ]; then
     echo "  data/VERSION and JSONL files are ready for sync to BimodalHarness."
-    echo "  See docs/training/SYNC_PROTOCOL.md for sync instructions."
+    echo "  See the training-pipeline sync protocol (internal, not part of the tracked deliverable) for sync instructions."
 fi

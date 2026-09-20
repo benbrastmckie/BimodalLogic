@@ -81,6 +81,15 @@ opencode.json
 /.claude-extensions.json
 /.syncprotect
 
+# Internal research/training notes -- not part of the deliverable, retained locally.
+# Relocated out of docs/ (not just untracked in place) because check-module-invariants.sh's
+# C13 link-resolution scan walks the docs/ filesystem tree regardless of git tracking status,
+# so an ignored file left under docs/ still gets scanned as a link source/target and its
+# self-referential links would be reported broken; moving it outside docs/ removes it from
+# that scan's scope entirely while keeping it on local disk and reversible (`git add -f`).
+/research/
+/training/
+
 # Development artifacts
 specs/archive/
 specs/vault/

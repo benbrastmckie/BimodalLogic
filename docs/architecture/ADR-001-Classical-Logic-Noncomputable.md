@@ -260,8 +260,6 @@ Classical.propDecidable
 ### Internal Documentation
 
 - [NONCOMPUTABLE_GUIDE.md](../development/NONCOMPUTABLE_GUIDE.md) - Complete catalog and guidelines
-- [Noncomputable Research](../research/NONCOMPUTABLE.md) - Comprehensive explanation
-- [Deduction Theorem Necessity](../research/DEDUCTION_THEOREM_NECESSITY.md) - Detailed analysis
 
 ### External References
 

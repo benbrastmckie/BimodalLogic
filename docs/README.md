@@ -74,8 +74,6 @@ For documentation specific to the bimodal logic theory, see:
 | Implementation status | [Status](project-info/implementation-status.md) |
 | Known limitations | [Limitations](project-info/known-limitations.md) |
 
-**Theory research**: [research/BIMODAL_LOGIC.md](research/BIMODAL_LOGIC.md) - Bimodal logic foundations and theory
-
 ## Project-Wide Documentation
 
 This directory contains documentation applicable to **all theories**:
@@ -108,23 +106,6 @@ Project-wide user documentation:
 > for tutorials, examples, and architecture documentation.
 
 **Audience**: Users integrating ProofChecker with external tools
-
-### research/
-
-Project-wide research documents:
-
-- [README.md](research/README.md) - Research documentation overview
-- [BIMODAL_LOGIC.md](research/BIMODAL_LOGIC.md) - Bimodal Logic foundations
-- [NONCOMPUTABLE.md](research/NONCOMPUTABLE.md) - The `noncomputable` keyword: comprehensive analysis
-- [DEDUCTION_THEOREM_NECESSITY.md](research/DEDUCTION_THEOREM_NECESSITY.md) - Why the deduction theorem must be noncomputable
-- [DUAL_VERIFICATION.md](research/DUAL_VERIFICATION.md) - RL training architecture design
-- [PROOF_LIBRARY_DESIGN.md](research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
-- [PROPERTY_BASED_TESTING_LEAN4.md](research/PROPERTY_BASED_TESTING_LEAN4.md) - Property-based testing research
-- [competitive-landscape.md](research/competitive-landscape.md) - BMLogic-Bench competitive analysis (13-dimension matrix, 12 benchmarks)
-
-> **Theory-specific research**: See [docs/research/](research).
-
-**Audience**: Researchers, architects
 
 ### project-info/
 
@@ -210,16 +191,6 @@ Simulate the move and re-run `scripts/check-module-invariants.sh --no-build` bef
 one, and repoint every live referrer (Lean docstrings, scripts, other docs, typst comments) in the
 same change.
 
-### training/
-
-Training data pipeline documentation:
-
-- [README.md](training/README.md) - Directory overview and document index
-- [PIPELINE.md](training/PIPELINE.md) - Dual-signal training data pipeline reference (all 6 Lean modules, JSON schemas, BimodalHarness integration)
-- [PUBLISHING_GUIDE.md](training/PUBLISHING_GUIDE.md) - Consumer quick-start and maintainer workflow for Hugging Face Hub publishing
-
-**Audience**: ML researchers, contributors working on neural proof search
-
 ## Quick Links by Audience
 
 ### For New Users
@@ -243,11 +214,6 @@ Training data pipeline documentation:
 3. [Metaprogramming Guide](development/METAPROGRAMMING_GUIDE.md) - LEAN 4 tactics
 4. [Quality Metrics](development/QUALITY_METRICS.md) - Quality targets
 
-### For Researchers
-
-1. [Research Overview](research/README.md) - Research documentation index
-2. [Bimodal Logic](research/BIMODAL_LOGIC.md) - Theoretical foundations
-
 ### Quick Reference
 
 - [TM Operators](reference/operators.md) - Symbol notation guide
@@ -259,7 +225,6 @@ Training data pipeline documentation:
 **Start with**:
 1. [Project README](../README.md) - Project overview and motivations
 2. [Bimodal Architecture](user-guide/architecture.md) - The complete, verified system
-3. [Bimodal Logic](research/BIMODAL_LOGIC.md) - Theoretical foundations
 
 ### I want to write proofs
 
@@ -274,7 +239,6 @@ Training data pipeline documentation:
 **Start with**:
 1. [Integration Guide](user-guide/INTEGRATION.md) - Model-Checker integration
 2. [MCP Integration](user-guide/MCP_INTEGRATION.md) - MCP server integration
-3. [Dual Verification](research/DUAL_VERIFICATION.md) - Training architecture
 
 ### I want to contribute
 
@@ -396,9 +360,6 @@ Bimodal is a **propositional intensional logic** with:
 - **Interpretation**: Sentence letters are interpreted by sets of world-states
 - **Logical level**: Propositional (zeroth-order)
 
-For comparison with the planned Logos hyperintensional logic, see
-[bimodal-logic.md](research/BIMODAL_LOGIC.md).
-
 ## Documentation Organization
 
 Documentation is organized into four categories:
@@ -427,21 +388,6 @@ Reference materials for Bimodal logic:
 - [operators.md](reference/operators.md) - TM operator reference and Unicode notation
 
 **Audience**: All users
-
-### research/
-
-Research and design documents for Bimodal proof automation:
-
-- [README.md](research/README.md) - Research overview
-- [modal-temporal-proof-search.md](research/modal-temporal-proof-search.md) - Proof search architecture
-- [proof-search-automation.md](research/proof-search-automation.md) - Automation strategies
-- [temporal-logic-automation.md](research/temporal-logic-automation.md) - Temporal tactics
-- [leansearch-api-specification.md](research/leansearch-api-specification.md) - LeanSearch API
-- [leansearch-best-first-search.md](research/leansearch-best-first-search.md) - Best-first search
-- [leansearch-priority-queue.md](research/leansearch-priority-queue.md) - Priority queue design
-- [leansearch-proof-caching-memoization.md](research/leansearch-proof-caching-memoization.md) - Caching
-
-**Audience**: Researchers, contributors
 
 ### project-info/
 
@@ -478,7 +424,6 @@ Most-referenced documents:
 - [axiom-reference](reference/axiom-reference.md) - TM axiom schemas
 - [operators](reference/operators.md) - Operator reference
 - [tactic-registry](project-info/tactic-registry.md) - Tactic status
-- [research/](research/) - Proof search automation research
 
 **Project-Wide** (in [docs/](.)):
 - [STYLE_GUIDE](development/LEAN_STYLE_GUIDE.md) - Coding style
@@ -488,4 +433,3 @@ Most-referenced documents:
 
 - **Up**: [Bimodal/](../)
 - **Project Documentation**: [docs/](.)
-- **Theory Comparison**: [bimodal-logic.md](research/BIMODAL_LOGIC.md)

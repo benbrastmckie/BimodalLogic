@@ -83,10 +83,6 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../a
 - Line 259: `Classical.propDecidable` in helper theorem
 - Line 377: `Classical.propDecidable` in main theorem body
 
-**Research References**:
-- [NONCOMPUTABLE.md](../research/NONCOMPUTABLE.md)
-- [DEDUCTION_THEOREM_NECESSITY.md](../research/DEDUCTION_THEOREM_NECESSITY.md)
-
 ---
 
 ### Module: `FormalSystem/Theorems/`
@@ -384,9 +380,6 @@ Fix by adding `noncomputable` keyword before `def`.
 ## Related Documentation
 
 - **Architecture Decision**: [ADR-001-Classical-Logic-Noncomputable.md](../architecture/ADR-001-Classical-Logic-Noncomputable.md)
-- **Research Reports**:
-  - [Noncomputable Keyword Explanation](../research/NONCOMPUTABLE.md)
-  - [Deduction Theorem Necessity Analysis](../research/DEDUCTION_THEOREM_NECESSITY.md)
 - **Style Guide**: [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) (see "Noncomputable Patterns" section)
 - **Task Tracker**: [specs/TODO.md](../../specs/TODO.md)
 
