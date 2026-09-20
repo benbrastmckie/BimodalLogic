@@ -1,0 +1,33 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1789947599_745d6f_639",
+  "task_number": 639,
+  "dispatch_seq": 1,
+  "findings_count": 10,
+  "next_steps": "Run /plan 639 to create implementation plan",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md",
+      "summary": "Verifies all 8 dispatch-listed README defects against source ground truth (Axioms.lean, DerivedAxioms.lean, PlusLanguage/Axioms.lean, harness checks C14/C21/C22), confirms items 5 and part of item 6 already resolved by task 631, and derives the exact arithmetic reconciling the 29-primitive vs 45-total-with-mirrors axiom-count conventions plus recommended fixes per file."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "BimodalLogic's axiom system has two legitimate, non-contradictory counts: 29 primitive constructors of `inductive Axiom` (23 Base + 2 Dense + 2 ZTime + 2 RTime, per Axiom.minFrameClass) vs 45 total named schemata (29 primitives + 16 derived theorems in DerivedAxioms.lean, mostly TR past-mirrors) -- confirmed by FormalSystem/Automation/BenchmarkAnchorsMain.lean's own docstring ('29 primitive axioms and 16 derived schemata... 45 names in all'). The README's 37/40/39/42 per-class table figures are the 45-total convention partitioned by minimum frame class, where a derived mirror inherits its primitive's tier (e.g. RTime = 37 base + 2 dense + 3 RTime-tier[prior_U_gap, sep, and derived mirror prior_S_gap] = 42). When auditing or fixing axiom counts in this repo, always state which of the two conventions a number uses -- do not assume a discrepancy is an error without checking whether it's actually the other legitimate convention.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["axiom-count", "Axioms.lean", "DerivedAxioms", "PlusAxiom", "README-accuracy", "BimodalLogic"]
+    },
+    {
+      "content": "check-module-invariants.sh's C14 stale-axiom-count tripwire only matches the regex `\\b(14|21|42|44|45)[[:space:]]+([A-Za-z\\xe2\\x81\\xba+]+[[:space:]]+)?(axiom|constructor|schema)` -- i.e. digit-then-word order -- over docs/**/*.md, README.md, and FormalSystem/**/*.lean (excluding Boneyard/, and lines containing 'covers'). It is blind to table-cell-only numbers ('| **Base** | 37 |'), reversed phrasing ('Dense + 2 axioms = 39'), and any file outside its docs/README.md-or-.lean scope (e.g. FormalSystem/Syntax/PlusLanguage/README.md). A green C14 is not evidence that axiom counts are internally consistent -- cross-check against Axiom.minFrameClass / allAxiomNames directly instead of relying on this check alone.",
+      "category": "PATTERN",
+      "source_artifact": "specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-module-invariants", "C14", "stale-count-tripwire", "readme-lint", "BimodalLogic"]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Verified all 8 dispatch-listed README defects against source ground truth: confirmed the two axiom-count conventions (29 primitives vs 45 total incl. derived mirrors), derived the exact 37/40/39/42 arithmetic, confirmed items 5 and the tracked half of item 6 are already resolved by task 631, and located the stale Perpetuity.lean link, MainResults.lean missing README link, FormalSystem/README.md TODO, and BibTeX year/key mismatch.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md",
+      "summary": "Per-item verification and fix recommendations for all 8 README defects, plus two additional findings (FormalSystem/README.md Discrete/Dedekind staleness, API_REFERENCE.md's stale Axiom code block) and a C14 blind-spot risk note."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "continuation_path": null,
+  "next_action_hint": "Run /plan 639 to create the implementation plan from specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md."
+}
