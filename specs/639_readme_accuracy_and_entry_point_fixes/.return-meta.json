@@ -1,31 +1,9 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/639_readme_accuracy_and_entry_point_fixes/plans/01_readme-accuracy-entry-points.md",
-      "summary": "7-phase plan correcting axiom-count conventions, derived-mirror labelling, structure-tree nesting, entry-point links and citation consistency across README.md and seven sibling files."
-    }
-  ],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1789947599_745d6f_639",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 6.75,
-    "dependency_waves": 4
-  },
-  "memory_candidates": [],
-  "user_decision": {
-    "question": "The paper's BibTeX key is brastmckie2025construction but its year field reads 2026, and the paper is forthcoming. Which year should the key and the year field share?",
-    "options": [
-      "Set year = {2025} to match the existing brastmckie2025construction key, keeping note = {Forthcoming} — preserves any external citations of the key",
-      "Rename the key to brastmckie2026construction and keep year = {2026} — breaks existing citations of the old key but reflects an expected 2026 publication"
-    ],
-    "recommended": "Set year = {2025} to match the existing brastmckie2025construction key, keeping note = {Forthcoming} — preserves any external citations of the key",
-    "blocking": false
-  },
-  "next_steps": "Run /implement 639 to execute the plan",
-  "dispatch_seq": 2
+    "session_id": "sess_1789947599_745d6f",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

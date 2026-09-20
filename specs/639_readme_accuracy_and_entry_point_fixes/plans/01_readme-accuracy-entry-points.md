@@ -1,7 +1,7 @@
 # Implementation Plan: Task #639
 
 - **Task**: 639 - README accuracy and entry point fixes
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.75 hours
 - **Dependencies**: task 631 (README.md Logos/ProofChecker naming, latex/ retirement) — confirmed already landed
 - **Research Inputs**: specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md
@@ -138,28 +138,34 @@ deliberately serialized.
 
 ---
 
-### Phase 1: Canonical "Two axiom counts" reference [NOT STARTED]
+### Phase 1: Canonical "Two axiom counts" reference [COMPLETED]
 
 **Goal**: Write the 29-vs-45 derivation down exactly once, in the file every other phase will
 link to, so no later file has to restate the arithmetic.
 
 **Tasks**:
-- [ ] Re-derive the ground truth before writing anything: count `inductive Axiom` constructors in
+- [x] Re-derive the ground truth before writing anything: count `inductive Axiom` constructors in
       `FormalSystem/ProofSystem/Axioms.lean` and read `Axiom.minFrameClass`
       (`Axioms.lean:606-613`) for the per-class assignment; cross-check against
       `bash scripts/typst-status-counts.sh` output and check C22's reported name-list length.
-- [ ] Add a `## Two axiom counts` subsection to `docs/reference/axiom-reference.md` (place it
+      *(completed: confirmed 29/23/2/2/2 via direct count, `Axiom.minFrameClass` and
+      `typst-status-counts.sh`; confirmed the 16-derived/45-total figure by isolating
+      `axiom-reference.md`'s existing 19-row "Derived schemata" table minus its 3 legacy-alias
+      rows — `serialFutureImp`, `tempLinearityLegacy`, `linearUntilLegacy` — leaving exactly 16,
+      of which 14 are Base-tier and one each ZTime/RTime-tier; all figures agree with the plan)*
+- [x] Add a `## Two axiom counts` subsection to `docs/reference/axiom-reference.md` (place it
       immediately after `## Axiom Categories`, before `### Base Axiom Categories (23)`) stating:
       (a) the primitive convention — 29 constructors, 23 Base / 2 Dense / 2 ZTime / 2 RTime;
       (b) the total-names convention — 29 primitives + 16 `DerivedAxioms` theorems = 45 names;
       (c) the per-class partition under convention (b) with a derived mirror inheriting its
       primitive's tier: Base 37, Dense 39 (37+2), ZTime 40 (37+3), RTime 42 (39+3), and the
-      8 non-Base names enumerated by name.
-- [ ] Name, in that subsection, the three files that legitimately use convention (b) —
+      8 non-Base names enumerated by name. *(completed)*
+- [x] Name, in that subsection, the three files that legitimately use convention (b) —
       `FormalSystem/Automation/BenchmarkAnchorsMain.lean`,
       `FormalSystem/Syntax/PlusLanguage/README.md`, and this README's own secondary column — so a
-      future editor does not "correct" them to 29.
-- [ ] Re-read the written subsection and confirm no line matches C14's regex (see Verification).
+      future editor does not "correct" them to 29. *(completed)*
+- [x] Re-read the written subsection and confirm no line matches C14's regex (see Verification).
+      *(completed: grep returned no matches; `readme-lint.sh` PASS)*
 
 **Timing**: 0.75 hours
 

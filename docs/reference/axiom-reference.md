@@ -39,6 +39,46 @@ its minimum frame class is at most `fc`.
                Base
 ```
 
+## Two axiom counts
+
+Two different, both-legitimate conventions coexist across this repository's documentation, and
+any count that does not say which one it means is a defect. Both are anchored in
+`FormalSystem/ProofSystem/Axioms.lean`:
+
+- **(a) Primitive constructors** — the headline figure used throughout the rest of this
+  document. `inductive Axiom` declares exactly 29 constructors, partitioned by
+  `Axiom.minFrameClass` into 23 Base / 2 Dense / 2 ZTime / 2 RTime (the table above).
+- **(b) Total names, including derived mirrors** — 29 primitives plus the 16 theorems in
+  `FormalSystem.ProofSystem.DerivedAxioms` and `FormalSystem.Theorems.Combinators` that mirror a
+  primitive at that primitive's own least frame class (14 mirrors sit at Base; one, `priorSZ`,
+  sits at ZTime; one, `priorSGap`, sits at RTime), for 45 names in all (see
+  [Derived schemata](#derived-schemata) below for the full list; three further definitions there
+  — `serialFutureImp`, `tempLinearityLegacy`, `linearUntilLegacy` — are legacy aliases for an
+  already-counted name and are not separately counted in the 16).
+
+  Because a derived mirror inherits its primitive's tier, and because `Dense ≤ RTime` in the
+  frame-class order above, the per-class totals under convention (b) are:
+
+  | Layer | Primitives (a) | Derived mirrors | Total names (b) |
+  |-------|------|------|------|
+  | Base | 23 | 14 | 37 |
+  | Dense | 25 | 14 | 39 |
+  | ZTime | 25 | 15 | 40 |
+  | RTime | 27 | 15 | 42 |
+
+  (The Primitives column is cumulative down the order Base ≤ {Dense, ZTime}, Dense ≤ RTime. The
+  eight non-Base *names* under convention (b) are `prior_UZ`, `prior_SZ`, `z1`, `density`,
+  `dense_indicator`, `prior_U_gap`, `prior_S_gap`, `sep` — six primitives plus the two derived
+  mirrors `prior_SZ` and `prior_S_gap`, of `prior_UZ` and `prior_U_gap` respectively.)
+
+Convention (b)'s 45-names figure and its 37/39/40/42 partition are legitimate, on purpose,
+wherever prose is explicitly about the named-schema inventory rather than the `Axiom` type's own
+constructors: `FormalSystem/Automation/BenchmarkAnchorsMain.lean`'s header docstring,
+`FormalSystem/Syntax/PlusLanguage/README.md`'s `PlusAxiom` re-declaration total, and this
+repository's root `README.md`, which keeps an explicitly-labelled secondary column for it. A
+future editor should not "correct" those three sites to the convention-(a) figures — they mean
+convention (b) deliberately.
+
 ### Base Axiom Categories (23)
 
 | Category | Paper keys | Constructors |
