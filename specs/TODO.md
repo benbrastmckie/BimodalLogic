@@ -1,21 +1,21 @@
 ---
-next_project_number: 639
+next_project_number: 642
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-09-19. Generated from state.json dependency graph.*
+*Updated 2026-09-20. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,631 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633 | 298,464,502,563,568,630 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,631,639 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633,640,641 | 298,464,502,563,568,630,639 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,626,631,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,614,635 | 428,498,499,500,634 | algebraic-representation, decidability, documentation, ... |
-| 5 | 178,410,501,636 | 125,429,635 | algebraic-representation, decidability, formula-refactor, ... |
+| 5 | 178,410,501,636 | 125,429,635,641 | algebraic-representation, decidability, formula-refactor, ... |
 | 6 | 411,637 | 410,636 | decidability, publication-quality |
 | 7 | 430,638 | 411,637 | decidability, publication-quality |
 | 8 | 177,412 | 430,636 | decidability, formula-refactor |
@@ -108,6 +108,9 @@ next_project_number: 639
   └─ 633 [NOT STARTED] — Create Tactic/Attr.lean under the library root from...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into... (see above)
 631 [NOT STARTED] — Untrack CLAUDE.md, .claude-extensions.json, .syncprotect and...
+639 [NOT STARTED] — Correct the factual and navigational defects in the root...
+  └─ 640 [NOT STARTED] — Restructure the root README for a reader who arrives cold and...
+  └─ 641 [NOT STARTED] — Provide one worked-example file that an outside reader can...
 
 ### Semantics
 
@@ -116,6 +119,36 @@ next_project_number: 639
 628 [RESEARCHED] — Investigate expressive extensions that make recurrence and...
 
 ## Tasks
+
+### 641. Worked example walkthrough for outside readers
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: Task 639
+
+**Description**: Provide one worked-example file that an outside reader can open and follow end to end, ahead of the larger Examples expansion. Examples/BimodalProofs.lean, which the README advertises as the demo, is a list of one-line `example := perpetuityN _` applications and shows none of the metatheory. Add FormalSystem/Examples/Walkthrough.lean (name open) that, on concrete formulas: builds a DerivationTree by hand and again with the automation; applies `soundness` to obtain validity; applies `completeness` in the other direction; runs the tableau `isValid` procedure and uses `sound_of_isValid`; exhibits one frame-class-sensitive formula (derivable at Dense, not at Base or ZTime) using the existing independence results; and states one refutation such as notStrongCompletenessZTime with a sentence on what it means. Prose docstrings should carry a reader who knows modal logic but not this codebase. Do not cite Kamp-named declarations, so that the file is unaffected by the later Expressiveness rename. Wire it into the library aggregator, link it from the README as the demo, and keep it sorry-free with the standard three axioms. Acceptance: lake build green; harness green; `#print axioms` on each example shows exactly propext, Classical.choice, Quot.sound or fewer. Task 178 then extends this file rather than starting from BimodalProofs.lean.
+
+---
+
+### 640. Readme cold reader restructure
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: publication-quality
+- **Dependencies**: Task 639
+
+**Description**: Restructure the root README for a reader who arrives cold and gives it two minutes. The content is accurate and thorough but the first screen is background prose; the verified results, which are the point, start at line 166. (1) Put a short results summary directly under the opening paragraph: soundness and weak completeness at all four frame classes, strong completeness proved at Base and Dense and machine-refuted at ZTime and RTime, zero sorry and zero custom axioms in the live tree, the pinned axiom-set harness, with links to MainResults.lean and docs/theorem-index.md. (2) Move revision-history narration out of the README and into docs/reference/paper-definitions-of-record.md: the "Earlier revisions of this README described..." and "The axiom-basis question this README used to record as open..." paragraphs, and the aside about what the saturation footnote said before the 2026-09 revision. The README should state what is true now. (3) Add a short "How this repository is developed" section that explains, for a reader who opens specs/ or CLAUDE.md, that development is agent-assisted under a task system and that correctness rests on the Lean kernel plus the invariant harness, not on review of agent output; point to docs/development/MODULE_INVARIANTS.md. (4) Rename the Tags footer entry "TM-plus" to match current naming or drop the footer. (5) Keep the generated inventory block and every harness-checked anchor intact. Acceptance: the first 40 lines state what is proved and how to verify it; harness and readme-lint green; no paragraph describes a previous state of the README.
+
+---
+
+### 639. Readme accuracy and entry point fixes
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Correct the factual and navigational defects in the root README and its nearest siblings before the repository is shown to outside readers. (1) Axiom counts contradict each other: the Axiom Systems table and the mermaid graph give Base 37 / ZTime 40 / Dense 39 / RTime 42 and the L+ paragraph says "the 45 TM schemata", while the paragraph directly below says `inductive Axiom` has 29 constructors (23 Base + 2 Dense + 2 ZTime + 2 RTime), which is what Axioms.lean and harness check C22 confirm. Decide one counting convention (primitive constructors, with derived mirrors counted separately and labelled as derived), apply it to the table, the graph and the prose, and explain the 45 figure where PlusAxiom really does re-declare 45 schemata. The same stale counts appear in FormalSystem/README.md ("TM Base (37 constructor axioms)"), docs/reference/API_REFERENCE.md ("The 45 axiom constructors"), docs/user-guide/architecture.md, FormalSystem/Syntax/PlusLanguage/README.md, and the docstrings of Automation/BenchmarkAnchorsMain.lean and Metalogic/Independence/RationalWitness.lean. (2) The "Additional Axioms" column lists `P phi -> S(phi, not phi)` for ZTime and `prior_S_gap` for RTime as axioms although both are derived mirrors. (3) The Project Structure tree places MinusLanguage/ and PlusLanguage/ directly under FormalSystem/; they live under FormalSystem/Syntax/ (StarLanguage/ is omitted). (4) FormalSystem/MainResults.lean, the one-page kernel-audited list of headline theorems, is not linked from the README at all; the "Demo" link instead points at Examples/BimodalProofs.lean, whose header still cites `../ProofChecker/Theorems/Perpetuity.lean`. Link MainResults.lean at the top and fix that header. (5) The Reference list calls latex/BimodalReference.pdf the "full formal specification" while the top of the README says that edition is superseded and unsynced. (6) DONE before dispatch: the BimodalHarness links in README.md, docs/README.md and docs/training/PIPELINE.md were de-linked and marked as a private repository; restore the links if that repository is made public. (7) The BibTeX key is brastmckie2025construction with year 2026 and the Task Semantics section cites "(Brast-McKie, 2025)" while the header says forthcoming. (8) FormalSystem/README.md line 252 carries `<!-- TODO: add description -->` for MainResults.lean. Acceptance: check-module-invariants.sh --no-build and readme-lint.sh green; no count in any listed file disagrees with Axioms.lean; every README link resolves for an anonymous reader. Coordination: task 631 also edits README.md (Logos/ProofChecker naming, latex retirement); land this first, and item (5) becomes moot once 631 retires latex/.
+
+---
 
 ### 638. Post publication size splits and module system
 - **Status**: [NOT STARTED]
@@ -1202,7 +1235,7 @@ without depending on agent-system context at all.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 635
+- **Dependencies**: Task 635, Task 641
 
 **Description**: Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness and completeness on a concrete formula, plus decidability of the propositional fragment (genuinely complete today, per the soundness/completeness metatheory's axiom-clean status). Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.
 
