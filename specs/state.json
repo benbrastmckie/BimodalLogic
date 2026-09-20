@@ -29,7 +29,7 @@
     {
       "project_number": 631,
       "project_name": "deliverable_hygiene_excluding_specs",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "topic": "publication-quality",
       "dependencies": [],
@@ -55,13 +55,18 @@
       ],
       "description": "Untrack CLAUDE.md, .claude-extensions.json, .syncprotect and the empty .gitattributes; remove personal absolute paths from docs/ and typst/; delete the one-off scripts (migrate_schema_v2.py, swap_untl_snce.py, standardize_metadata.py, add-copyright-headers.sh) and add scripts/README.md naming every remaining script; move CONTRIBUTING.md to the root; move docs/research/ and docs/training/ out of the deliverable; retire latex/ and its PDF with the C10/C12 references to it; rewrite Logos and ProofChecker naming in README.md, docs/ and CITATION.cff. Do not untrack specs/. Acceptance: check-module-invariants.sh and readme-lint.sh green; grep -rn 'home/benjamin' docs typst empty.\n\nReconciliation notes: no dependency edge to task 630 (see task 630's notes). Absorbs the scope of task 610 (grep-and-fix of stale lakefile.lean mentions in docs/), which is merged into this task and abandoned separately with that reason recorded. Task 604 depends on this task and on task 632 (its Lean-executable inventory step must exclude the two scripts this task deletes -- migrate_schema_v2.py, standardize_metadata.py -- and target BimodalTools.* paths directly).\n\nAbsorbed task 610 description (verbatim, task 610 is abandoned as merged into this task): \"Update remaining documentation references to lakefile.lean now that the project uses lakefile.toml (package renamed to BimodalLogic): docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333. Task 578 skipped these because concurrent tasks held uncommitted edits in them; re-grep the tree for any other lakefile.lean or Logos package-name mentions.\"",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-20T21:46:25Z",
+      "last_updated": "2026-09-20T21:51:50Z",
       "session_id": "sess_1789937353_dcfd41",
       "artifacts": [
         {
           "path": "specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md",
           "type": "report",
           "summary": "Grounds task 631 in PUBLICATION_REFACTOR.md Phase 1/Follow-up B; identifies which files break check-module-invariants.sh (C13) and readme-lint.sh (Check 3) when latex/ is retired, flags the swap_untl_snce.py doc contradiction, scopes the real Logos/ProofChecker naming work after docs/research and docs/training removal, and flags the home/benjamin acceptance-grep self-reference in PUBLICATION_REFACTOR.md."
+        },
+        {
+          "path": "specs/631_deliverable_hygiene_excluding_specs/plans/01_deliverable-hygiene.md",
+          "type": "plan",
+          "summary": "8-phase deliverable-hygiene plan covering untracking, script cleanup, latex retirement, CONTRIBUTING relocation, path scrubbing and naming normalisation."
         }
       ],
       "next_artifact_number": 2
