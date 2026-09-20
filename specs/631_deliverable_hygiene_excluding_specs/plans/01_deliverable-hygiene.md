@@ -341,17 +341,17 @@ and treat C13 (`PASS C13`) as the closing authority on link resolution, not the 
 
 ---
 
-### Phase 6: Remove personal absolute paths from `docs/` and `typst/` [NOT STARTED]
+### Phase 6: Remove personal absolute paths from `docs/` and `typst/` [COMPLETED]
 
 **Goal**: `grep -rn 'home/benjamin' docs typst` returns nothing, with provenance meaning
 preserved where the path carried information.
 
 **Tasks**:
-- [ ] Re-run `grep -rn 'home/benjamin' docs typst` to get the live hit list (research found `typst/` already clean, and three files in `docs/`).
-- [ ] `docs/development/DOC_QUALITY_CHECKLIST.md` (3 hits): the literal `cd /home/benjamin/Projects/BimodalLogic` lines in example shell blocks — drop the `cd` line or replace with "from the repository root".
-- [ ] `docs/reference/paper-definitions-of-record.md` (5 hits): these name an unvendored external checkout (`/home/benjamin/Philosophy/Papers/PossibleWorlds/...`) as provenance. Genericise to `~/Philosophy/Papers/PossibleWorlds/...` or describe it as "the maintainer's local, unvendored checkout", **preserving** the repo name, commit hash and checksum that make the provenance verifiable.
-- [ ] `docs/development/PUBLICATION_REFACTOR.md` (4 hits): all four quote this task's own acceptance grep. Reword each to describe the check in prose per the Decisions Adopted section, so the acceptance command can genuinely return empty without losing the criterion's meaning.
-- [ ] Confirm `typst/` is still clean (a recent commit appears to have fixed it incidentally; do not assume).
+- [x] Re-run `grep -rn 'home/benjamin' docs typst` to get the live hit list (research found `typst/` already clean, and three files in `docs/`). *(completed)*
+- [x] `docs/development/DOC_QUALITY_CHECKLIST.md` (3 hits): the literal `cd /home/benjamin/Projects/BimodalLogic` lines in example shell blocks — drop the `cd` line or replace with "from the repository root". *(completed: dropped)*
+- [x] `docs/reference/paper-definitions-of-record.md` (5 hits, actually 6 live): these name an unvendored external checkout (`/home/benjamin/Philosophy/Papers/PossibleWorlds/...`) as provenance. Genericise to `~/Philosophy/Papers/PossibleWorlds/...` or describe it as "the maintainer's local, unvendored checkout", **preserving** the repo name, commit hash and checksum that make the provenance verifiable. *(completed: plus a matching tilde-expansion fix in `scripts/check-paper-definitions.sh`, since that script reads the `PAPER_PATH`/`PAPER_REPO_ROOT` sentinel comments as literal filesystem paths and bash does not tilde-expand a `~` held inside a variable value — verified `bash scripts/check-paper-definitions.sh` still resolves and passes after the change)*
+- [x] `docs/development/PUBLICATION_REFACTOR.md` (4 hits): all four quote this task's own acceptance grep. Reword each to describe the check in prose per the Decisions Adopted section, so the acceptance command can genuinely return empty without losing the criterion's meaning. *(completed)*
+- [x] Confirm `typst/` is still clean (a recent commit appears to have fixed it incidentally; do not assume). *(completed: confirmed clean)*
 
 **Timing**: 0.75 hours
 

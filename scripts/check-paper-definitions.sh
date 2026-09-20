@@ -95,6 +95,13 @@ RECORD_REPO_ROOT="$(record_field PAPER_REPO_ROOT)"
 PINNED_COMMIT="$(record_field PINNED_COMMIT)"
 PINNED_CHECKSUM="$(record_field FILE_CHECKSUM)"
 
+# The record's sentinels are written maintainer-generically as `~/...` so the checked-in record
+# file carries no absolute path under any specific home directory. Bash does not tilde-expand a
+# `~` held inside a variable's value the way it expands a literal `~` typed as a fresh shell word,
+# so that expansion must happen here explicitly.
+RECORD_PAPER_PATH="${RECORD_PAPER_PATH/#\~/$HOME}"
+RECORD_REPO_ROOT="${RECORD_REPO_ROOT/#\~/$HOME}"
+
 if [ -z "$PAPER" ]; then
   PAPER="${PAPER_TEX:-$RECORD_PAPER_PATH}"
 fi

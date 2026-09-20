@@ -140,7 +140,6 @@ These checks verify that all required documentation exists and is comprehensive.
 **Verification**:
 ```bash
 # Check for undocumented public definitions (requires LEAN lint)
-cd /home/benjamin/Projects/BimodalLogic
 lake lint | grep "docBlame\|docBlameThm"
 
 # Expected output: Zero docBlame warnings (100% docstring coverage)
@@ -235,7 +234,6 @@ These checks verify that documentation claims are accurate and verifiable.
 **Verification**:
 ```bash
 # Test status verification commands from implementation-status.md
-cd /home/benjamin/Projects/BimodalLogic
 
 # Example: Verify Soundness module sorry count
 grep -c "sorry" FormalSystem/Metalogic/Soundness.lean
@@ -265,7 +263,6 @@ verification commands.
 # (Manual process - requires LEAN environment)
 
 # For tactic-development.md examples:
-cd /home/benjamin/Projects/BimodalLogic
 # Copy code examples to temporary .lean file and run:
 # lake env lean temp_example.lean
 

@@ -1,7 +1,7 @@
 # Paper Definitions of Record
 
 This file is the pinned, verbatim record of the semantic definitions that this repository
-depends on from the JPL paper (`/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`).
+depends on from the JPL paper (`~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`).
 The paper is **read-only input** to this repository: it is never edited from here, and this file
 never restates, re-derives, or "improves" any definition it records — it only quotes what the
 paper currently says and detects when that text moves.
@@ -17,8 +17,8 @@ re-derives every hash below directly from the live paper file on every run.
 
 | Field | Value |
 |---|---|
-| Paper file | `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` |
-| Paper git repo root | `/home/benjamin/Philosophy/Papers/PossibleWorlds` |
+| Paper file | `~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` |
+| Paper git repo root | `~/Philosophy/Papers/PossibleWorlds` |
 | File path relative to repo root | `JPL/possible_worlds.tex` |
 | Base commit (`git HEAD` at recording time) | `eb5be99ea3f19a86c9891d7798e619890e36cd43` |
 | **File checksum at recording time (sha256, authoritative pin)** | `efe6fc74688aa5ee89b91957b3681771cdcbdfaacb6077040024c395c568cbbd` |
@@ -53,8 +53,8 @@ re-derives every hash below directly from the live paper file on every run.
 | Line count at that re-pin | 4529 |
 | Time-reflection wave re-pin (UTC) | 2026-09-17T09:19Z (14 entries re-hashed, `thm:M5-valid` retired, TD → TR absorbed with carve-outs; see "Drift correction and rename absorption (2026-09-17)" below) |
 
-<!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
-<!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
+<!-- PAPER_PATH: ~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
+<!-- PAPER_REPO_ROOT: ~/Philosophy/Papers/PossibleWorlds -->
 <!-- PINNED_COMMIT: a166fcbf2951482ecdccc643c7458ac92d67126c -->
 <!-- FILE_CHECKSUM: b4e45e2c5f771ee0d86be6c6e3a302cceb454771cd53475ed3628258083ddfa0 -->
 <!-- LINE_COUNT: 4529 -->
@@ -2101,7 +2101,8 @@ the passage has acquired a resolvable anchor upstream first.
 
 `scripts/check-paper-definitions.sh` now runs in `.github/workflows/ci.yml` as the step
 `Check paper definitions (scripts/check-paper-definitions.sh)`. CI still has no visibility into
-`/home/benjamin/Philosophy/Papers/`, a different repository that is not vendored, so on the runner
+the maintainer's local `~/Philosophy/Papers/` checkout, a different repository that is not
+vendored, so on the runner
 the script takes its **skip-and-report-neutral** path: it prints `SKIP (neutral): paper not found
 at ...` and exits 0 (see `docs/development/CI_CD_PROCESS.md`, "Wiring a New Check Script"). What CI
 does enforce is that the record stays parseable, since a missing record file is still exit 2. The
