@@ -1,0 +1,15 @@
+{
+  "status": "researched",
+  "task_number": 631,
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 0,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md",
+      "summary": "Grounds task 631 in PUBLICATION_REFACTOR.md Phase 1/Follow-up B; identifies which files break check-module-invariants.sh (C13) and readme-lint.sh (Check 3) when latex/ is retired, flags the swap_untl_snce.py doc contradiction, scopes the real Logos/ProofChecker naming work after docs/research and docs/training removal, and flags the home/benjamin acceptance-grep self-reference in PUBLICATION_REFACTOR.md."
+    }
+  ],
+  "next_steps": "Run /plan 631 to create implementation plan"
+}

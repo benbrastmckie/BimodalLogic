@@ -1,0 +1,33 @@
+{
+  "status": "researched",
+  "task_number": 631,
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1789937353_dcfd41_631",
+  "dispatch_seq": 2,
+  "findings_count": 9,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md",
+      "summary": "Grounds task 631 in PUBLICATION_REFACTOR.md Phase 1/Follow-up B; identifies which files break check-module-invariants.sh (C13) and readme-lint.sh (Check 3) when latex/ is retired, flags the swap_untl_snce.py doc contradiction, scopes the real Logos/ProofChecker naming work after docs/research and docs/training removal, and flags the home/benjamin acceptance-grep self-reference in PUBLICATION_REFACTOR.md."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, scripts/check-module-invariants.sh's C12 slash-path check only matches paths prefixed FormalSystem/, Tests/, Logos/, or Bimodal/ (see slash_re regex) and C10 only matches the nested pre-relocation pattern FormalSystem/(docs|latex|typst) -- neither fires on top-level latex/, typst/, or docs/ references. Broken links to a removed top-level directory from docs/ or root README.md are caught by C13 (relative markdown link resolution, scoped to docs/ + README.md only), and broken links from FormalSystem/**/README.md are caught by readme-lint.sh's Check 3 instead (default scan root FormalSystem/, excludes Boneyard/). When retiring a top-level asset directory, check both scan scopes separately -- C13 will not catch a broken FormalSystem/README.md link.",
+      "category": "PATTERN",
+      "source_artifact": "specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-module-invariants", "readme-lint", "C12", "C13", "broken-links", "BimodalLogic"]
+    },
+    {
+      "content": "A plan/programme document that quotes its own acceptance criterion verbatim in backticks (e.g. \"grep -rn 'home/benjamin' docs typst empty\") creates an unavoidable self-reference: running that exact grep over the tree that contains the document will always find the quoted criterion text itself, even after every real instance is fixed. Prefer describing such acceptance checks in prose (e.g. \"no absolute path under the invoking user's home directory\") rather than quoting the literal search string, or the acceptance command can never truly return empty while the document describing it remains in scope.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["acceptance-criteria", "self-reference", "grep", "documentation", "quine"]
+    }
+  ],
+  "next_steps": "Run /plan 631 to create implementation plan"
+}
