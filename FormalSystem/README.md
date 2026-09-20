@@ -4,7 +4,7 @@
 
 ## Reference Document
 
-For the complete formal specification, see **BimodalReference** ([tex](../latex/BimodalReference.tex) | [pdf](../latex/BimodalReference.pdf)).
+For the complete formal specification, see **BimodalReference** ([typst source](../typst/README.md)), built on demand with `typst compile`.
 
 This README provides an overview; BimodalReference contains the detailed specification of syntax, semantics, proof theory, and metalogic.
 

@@ -14,7 +14,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems ([slides](https://benbrastmckie.com/publications/pw_slides.pdf))
 
-**Bimodal Reference Manual**: [`typst/BimodalReference.typ`](typst/README.md) — the maintained two-part reference (formal *TM*, its Lean formalization, and the automated-reasoning tooling). Built on demand — `typst compile BimodalReference.typ build/BimodalReference.pdf` — rather than committed; `typst/SYNC-MAP.md` and `scripts/typst-sync-check.sh` keep its claims pinned to live source. A superseded LaTeX edition is retained at [`latex/BimodalReference.pdf`](latex/BimodalReference.pdf) and is **not** kept in sync.
+**Bimodal Reference Manual**: [`typst/BimodalReference.typ`](typst/README.md) — the maintained two-part reference (formal *TM*, its Lean formalization, and the automated-reasoning tooling). Built on demand — `typst compile BimodalReference.typ build/BimodalReference.pdf` — rather than committed; `typst/SYNC-MAP.md` and `scripts/typst-sync-check.sh` keep its claims pinned to live source. The superseded LaTeX edition has been retired; the typst manual above is the sole maintained reference.
 
 **Demo**: [BimodalProofs.lean](FormalSystem/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
@@ -354,7 +354,7 @@ doc-gen4 reference for every declaration in `FormalSystem`, rebuilt on every pus
 - [Axiom Reference](docs/reference/axiom-reference.md) — complete axiom schemas for all 29 constructors and the derived schemata
 - [Operator Reference](docs/reference/operators.md) — formal operator definitions
 - [Tactic Reference](docs/reference/tactic-reference.md) — custom proof tactics
-- [Specification Document](latex/BimodalReference.pdf) — full formal specification
+- [Specification Document](typst/README.md) — full formal specification (typst, built on demand)
 
 ### User Guides
 

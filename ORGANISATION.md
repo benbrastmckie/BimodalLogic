@@ -42,7 +42,7 @@ anything from it — the argument order of two constructors changed after most o
 | `docs/` | Prose documentation: architecture, reference, user guides, development standards |
 | `scripts/` | Repository invariant checks, inventory generation, release tooling |
 | `specs/` | Task-management artefacts; not part of the deliverable |
-| `typst/`, `latex/` | The paper sources |
+| `typst/` | The paper sources |
 
 ## Where to look next
 

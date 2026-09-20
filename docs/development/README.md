@@ -29,7 +29,6 @@ Hands-on guides for specific development tasks:
 | Document | Description |
 |----------|-------------|
 | [BENCHMARKING_GUIDE.md](BENCHMARKING_GUIDE.md) | Performance benchmarking standards and CI integration |
-| [LATEX_STANDARDS.md](LATEX_STANDARDS.md) | Frozen LaTeX edition (latex/): what it is and how to rebuild it |
 | [METAPROGRAMMING_GUIDE.md](METAPROGRAMMING_GUIDE.md) | Lean 4 metaprogramming fundamentals for tactics |
 | [NONCOMPUTABLE_GUIDE.md](NONCOMPUTABLE_GUIDE.md) | Handling noncomputable definitions and Classical logic |
 | [PROPERTY_TESTING_GUIDE.md](PROPERTY_TESTING_GUIDE.md) | Property-based testing patterns and Plausible usage |

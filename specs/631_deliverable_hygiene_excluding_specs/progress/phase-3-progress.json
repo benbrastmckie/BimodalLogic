@@ -1,0 +1,17 @@
+{
+  "phase": 3,
+  "phase_name": "Retire the frozen latex/ edition and repair its citers",
+  "started_at": "2026-09-20T00:55:00Z",
+  "last_updated": "2026-09-20T01:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Record pre-state and git rm -r latex/ plus LATEX_STANDARDS.md", "status": "done", "files_touched": ["docs/development/LATEX_STANDARDS.md"]},
+    {"id": 2, "description": "Fix README.md and FormalSystem/README.md gate-relevant links", "status": "done", "files_touched": ["README.md", "FormalSystem/README.md"]},
+    {"id": 3, "description": "Drop dangling LATEX_STANDARDS.md index entries", "status": "done", "files_touched": ["docs/development/README.md", "docs/README.md"]},
+    {"id": 4, "description": "Reframe typst/README.md and typst/SYNC-MAP.md to past-tense/removed-tree", "status": "done", "files_touched": ["typst/README.md", "typst/SYNC-MAP.md"]},
+    {"id": 5, "description": "Update ORGANISATION.md table row and CONTRIBUTING.md project-structure bullet", "status": "done", "files_touched": ["ORGANISATION.md", "docs/development/CONTRIBUTING.md"]},
+    {"id": 6, "description": "Re-verify Non-Goals sites untouched and both gates green", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

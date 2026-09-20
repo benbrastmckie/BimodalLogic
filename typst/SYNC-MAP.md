@@ -122,11 +122,11 @@ accurate 42-constructor presentation. Summary-level in `04-metalogic.typ`: per-f
 soundness/completeness variants are named, not proof-sketched. No dedicated frame-class
 chapter (deferred).
 
-### D3. latex/ mirror: declared divergence
+### D3. latex/ mirror: retired
 
-`latex/BimodalReference.tex` is NOT synced this pass. `typst/README.md` carries an
-explicit "latex mirror is stale as of 2026-07-06; typst is authoritative" note.
-Full latex sync is a suggested follow-up task.
+The LaTeX mirror was declared stale as of 2026-07-06 (`typst/README.md` carried the
+"latex mirror is stale; typst is authoritative" note) and has since been removed from the
+tracked tree entirely. This typst directory is now the sole maintained reference.
 
 ### D4. Other scope calls
 

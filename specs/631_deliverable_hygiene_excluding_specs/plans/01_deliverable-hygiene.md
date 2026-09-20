@@ -215,22 +215,22 @@ appear in the README.
 
 ---
 
-### Phase 3: Retire the frozen `latex/` edition and repair its citers [NOT STARTED]
+### Phase 3: Retire the frozen `latex/` edition and repair its citers [COMPLETED]
 
 **Goal**: `latex/` and its tracked PDF are out of the tree, no surviving markdown link dangles,
 and both acceptance gates stay green.
 
 **Tasks**:
-- [ ] Record the pre-state: `git ls-files latex/` (18 tracked files at research time; `latex/build/` is untracked and irrelevant).
-- [ ] `git rm -r latex/`.
-- [ ] `git rm docs/development/LATEX_STANDARDS.md` — its entire subject is the retired directory.
-- [ ] Fix `README.md:17` (prose + `[latex/BimodalReference.pdf](latex/BimodalReference.pdf)`) and `README.md:357` (`[Specification Document](latex/BimodalReference.pdf)`): point at the published paper URL or drop the entry; do not leave a relative link (C13 will fail).
-- [ ] Fix `FormalSystem/README.md:7` (`[tex](../latex/...)` / `[pdf](../latex/...)`) — readme-lint Check 3 scans this file.
-- [ ] Drop the now-dangling `LATEX_STANDARDS.md` entries at `docs/development/README.md:32` and `docs/README.md:153`.
-- [ ] Update `typst/README.md:188,191` and `typst/SYNC-MAP.md:125,127` ("D3. latex/ mirror: declared divergence") to past-tense / removed-tree framing.
-- [ ] Update `ORGANISATION.md:45`'s table row (`| typst/, latex/ | The paper sources |`) to name `typst/` alone.
-- [ ] Update `docs/development/CONTRIBUTING.md:143`'s project-structure bullet to drop `latex/` (the file itself moves in Phase 5; this is a content edit, not the move).
-- [ ] Leave untouched, per Non-Goals: ADR-009, ADR-010, `docs/development/MODULE_INVARIANTS.md:29`, `scripts/check-module-invariants.sh` comments, `FormalSystem/Boneyard/README.md:680`.
+- [x] Record the pre-state: `git ls-files latex/` (18 tracked files at research time; `latex/build/` is untracked and irrelevant). *(completed)*
+- [x] `git rm -r latex/`. *(completed)*
+- [x] `git rm docs/development/LATEX_STANDARDS.md` — its entire subject is the retired directory. *(completed)*
+- [x] Fix `README.md:17` (prose + `[latex/BimodalReference.pdf](latex/BimodalReference.pdf)`) and `README.md:357` (`[Specification Document](latex/BimodalReference.pdf)`): point at the published paper URL or drop the entry; do not leave a relative link (C13 will fail). *(completed: repointed to typst/README.md)*
+- [x] Fix `FormalSystem/README.md:7` (`[tex](../latex/...)` / `[pdf](../latex/...)`) — readme-lint Check 3 scans this file. *(completed)*
+- [x] Drop the now-dangling `LATEX_STANDARDS.md` entries at `docs/development/README.md:32` and `docs/README.md:153`. *(completed)*
+- [x] Update `typst/README.md:188,191` and `typst/SYNC-MAP.md:125,127` ("D3. latex/ mirror: declared divergence") to past-tense / removed-tree framing. *(completed)*
+- [x] Update `ORGANISATION.md:45`'s table row (`| typst/, latex/ | The paper sources |`) to name `typst/` alone. *(completed)*
+- [x] Update `docs/development/CONTRIBUTING.md:143`'s project-structure bullet to drop `latex/` (the file itself moves in Phase 5; this is a content edit, not the move). *(completed)*
+- [x] Leave untouched, per Non-Goals: ADR-009, ADR-010, `docs/development/MODULE_INVARIANTS.md:29`, `scripts/check-module-invariants.sh` comments, `FormalSystem/Boneyard/README.md:680`. *(completed: re-verified via grep, all five sites untouched)*
 
 **Timing**: 1.5 hours
 

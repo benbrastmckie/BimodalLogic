@@ -185,11 +185,12 @@ a result that one of those two artifacts has not yet established, the obligation
 
 ## Relationship to LaTeX Version
 
-This directory began as a parallel port of `latex/`.
-**As of 2026-07-06 the LaTeX mirror is stale and the Typst version is
+This directory began as a parallel port of a now-retired LaTeX edition.
+**As of 2026-07-06 the LaTeX mirror was declared stale and the Typst version
 authoritative**: the typst chapters were re-synchronized against the live Lean
-source, while `latex/BimodalReference.tex` still describes an older
-architecture. A full latex re-sync is a suggested follow-up task.
+source, while the LaTeX edition still described an older architecture. The
+LaTeX edition has since been removed from the tracked tree; this typst
+directory is now the sole maintained reference.
 
 ## Font Requirements
 
