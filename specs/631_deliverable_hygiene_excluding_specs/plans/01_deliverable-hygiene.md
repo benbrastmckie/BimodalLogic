@@ -173,18 +173,18 @@ instead of deleting it.
 
 ---
 
-### Phase 2: Delete one-off scripts and document the remainder [NOT STARTED]
+### Phase 2: Delete one-off scripts and document the remainder [COMPLETED]
 
 **Goal**: The four one-off scripts are gone, `scripts/README.md` names every surviving script,
 and no doc still promises a deleted script is retained.
 
 **Tasks**:
-- [ ] `git rm scripts/migrate_schema_v2.py scripts/swap_untl_snce.py scripts/standardize_metadata.py scripts/add-copyright-headers.sh`.
-- [ ] Re-grep for any surviving reference to the four names outside `specs/` (research found exactly one: `docs/reference/paper-definitions-of-record.md:195`); fix each hit found.
-- [ ] Edit `docs/reference/paper-definitions-of-record.md:195` so it no longer asserts `scripts/swap_untl_snce.py` is "kept for output and history stability" — restate the migration-pattern fact without promising the script's retention.
-- [ ] Check whether `scripts/check-copyright-headers.sh` documents `add-copyright-headers.sh` as its companion writer; if so, reword so the checker stands alone.
-- [ ] Author `scripts/README.md`: one line per surviving top-level script (name, one-sentence purpose, whether it is a gate/ratchet or a utility), plus a short section covering the `scripts/lib/` helper modules and the non-script data files (`*.txt` allowlists, `nolints.json`) so the directory listing is fully accounted for.
-- [ ] Verify `scripts/README.md` contains **no** task-number citation (C9 enforces zero task-number citations under `scripts/`).
+- [x] `git rm scripts/migrate_schema_v2.py scripts/swap_untl_snce.py scripts/standardize_metadata.py scripts/add-copyright-headers.sh`. *(completed)*
+- [x] Re-grep for any surviving reference to the four names outside `specs/` (research found exactly one: `docs/reference/paper-definitions-of-record.md:195`); fix each hit found. *(completed)*
+- [x] Edit `docs/reference/paper-definitions-of-record.md:195` so it no longer asserts `scripts/swap_untl_snce.py` is "kept for output and history stability" — restate the migration-pattern fact without promising the script's retention. *(completed)*
+- [x] Check whether `scripts/check-copyright-headers.sh` documents `add-copyright-headers.sh` as its companion writer; if so, reword so the checker stands alone. *(completed: no such reference found, no edit needed)*
+- [x] Author `scripts/README.md`: one line per surviving top-level script (name, one-sentence purpose, whether it is a gate/ratchet or a utility), plus a short section covering the `scripts/lib/` helper modules and the non-script data files (`*.txt` allowlists, `nolints.json`) so the directory listing is fully accounted for. *(completed)*
+- [x] Verify `scripts/README.md` contains **no** task-number citation (C9 enforces zero task-number citations under `scripts/`). *(completed)*
 
 **Timing**: 1.5 hours
 

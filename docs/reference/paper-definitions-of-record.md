@@ -191,8 +191,10 @@ existed.
        classified and renamed; see "Label rename absorption (2026-09-18)" above for the full map.
    - **`FormalSystem/Boneyard/**`** is an archive that is not built, and it is untouched.
    - Benchmark output labels (`"Temporal duality"` in `DerivationBenchmark.lean`,
-     `docs/project-info/performance-targets.md`) and the migration pattern data in
-     `scripts/swap_untl_snce.py` are kept for output and history stability.
+     `docs/project-info/performance-targets.md`) are kept for output and history stability. The
+     `untl`/`snce` rename's migration pattern data was recorded by a one-off migration script
+     (since deleted, its rename mapping preserved in git history) and is not part of the live
+     deliverable.
 3. **`\past`/`\future` labels "Past"/"Future" → "Some Past"/"Some Future"**, with `\Past`/`\Future`
    now "All Past"/"All Future" (`def:BLplus-language`). **Adopted.** The Lean names
    `somePast`/`someFuture`/`allPast`/`allFuture` already matched. The label sites in

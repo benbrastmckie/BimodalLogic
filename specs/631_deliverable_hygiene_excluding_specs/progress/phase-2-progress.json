@@ -1,0 +1,16 @@
+{
+  "phase": 2,
+  "phase_name": "Delete one-off scripts and document the remainder",
+  "started_at": "2026-09-20T00:35:00Z",
+  "last_updated": "2026-09-20T00:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "git rm the four one-off scripts", "status": "done", "files_touched": ["scripts/migrate_schema_v2.py", "scripts/swap_untl_snce.py", "scripts/standardize_metadata.py", "scripts/add-copyright-headers.sh"]},
+    {"id": 2, "description": "Re-grep and fix surviving references outside specs/", "status": "done", "files_touched": ["docs/reference/paper-definitions-of-record.md"]},
+    {"id": 3, "description": "Check check-copyright-headers.sh for companion reference", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Author scripts/README.md naming every surviving script and data file", "status": "done", "files_touched": ["scripts/README.md"]},
+    {"id": 5, "description": "Verify scripts/README.md has no task-number citation", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
