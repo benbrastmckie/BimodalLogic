@@ -1,6 +1,6 @@
-# Logos Tutorial
+# Bimodal Tutorial
 
-This tutorial guides you through using Logos, a LEAN 4 proof system for the bimodal logic TM (Tense and Modality).
+This tutorial guides you through using this repository, a LEAN 4 proof system for the bimodal logic TM (Tense and Modality).
 
 ## 1. Getting Started
 
@@ -39,7 +39,7 @@ lake test
 #### VS Code Setup
 
 1. Install the "lean4" extension from VS Code marketplace
-2. Open the Logos directory in VS Code
+2. Open the repository root in VS Code
 3. Wait for Lake to build dependencies
 4. You should see syntax highlighting and type information
 
@@ -48,10 +48,10 @@ lake test
 Create a new file `MyFirstProof.lean`:
 
 ```lean
-import Logos
+import FormalSystem
 
-open Logos.Syntax
-open Logos.ProofSystem
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem
 
 -- Define a simple formula: □p → p
 def my_formula : Formula := (Formula.atom "p").box.imp (Formula.atom "p")
@@ -260,7 +260,7 @@ def usesAxiom {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Bool
 
 ### Custom Tactics
 
-Logos provides custom tactics for common proof patterns:
+This repository provides custom tactics for common proof patterns:
 
 ```lean
 -- Apply modal axiom MT
@@ -421,7 +421,7 @@ only to consequence from a possibly-infinite `Γ : Set Formula` -- see
 
 ### Extension Layers
 
-Logos supports future extensions:
+The broader Logos project this system contributes to supports future extensions:
 
 - **Layer 1 (Explanatory)**: Counterfactual (□→), grounding (≤), causation (○→)
 - **Layer 2 (Epistemic)**: Belief, probability operators

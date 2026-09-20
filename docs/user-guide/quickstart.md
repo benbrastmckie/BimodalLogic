@@ -5,7 +5,7 @@ Get started with Bimodal proofs in under 10 minutes.
 ## Prerequisites
 
 - Lean 4 installed and configured
-- ProofChecker project cloned and built (`lake build`)
+- Repository cloned and built (`lake build`)
 - VS Code with lean4 extension (recommended)
 
 ## Your First Bimodal Proof

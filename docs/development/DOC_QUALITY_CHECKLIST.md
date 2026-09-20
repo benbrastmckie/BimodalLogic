@@ -273,7 +273,7 @@ verification commands.
 and tutorial.md should compile successfully.
 
 **Action if Failed**: Fix code examples to match current LEAN 4 syntax and
-Logos API.
+the FormalSystem API.
 
 ---
 

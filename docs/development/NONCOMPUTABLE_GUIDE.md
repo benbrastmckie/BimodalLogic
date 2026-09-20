@@ -8,7 +8,7 @@
 
 ## Overview
 
-This document catalogs all noncomputable definitions in the ProofChecker (Logos) codebase and explains **why** each one is noncomputable. Understanding noncomputability is crucial for maintaining the codebase and avoiding compilation errors.
+This document catalogs all noncomputable definitions in the ProofChecker codebase and explains **why** each one is noncomputable. Understanding noncomputability is crucial for maintaining the codebase and avoiding compilation errors.
 
 ### What Does `noncomputable` Mean?
 
@@ -39,7 +39,7 @@ For architectural rationale, see [ADR-001-Classical-Logic-Noncomputable.md](../a
 
 ### Summary Statistics
 
-- **Total Lean Files in Logos**: 53
+- **Total Lean Files**: 53
 - **Files with Explicit `noncomputable`**: 2
 - **Total Noncomputable Definitions**: 36
   - DeductionTheorem.lean: 2
@@ -390,7 +390,7 @@ Fix by adding `noncomputable` keyword before `def`.
 | Date | Author | Changes |
 |------|--------|---------|
 | 2025-12-28 | Claude | Initial comprehensive catalog |
-| | | - Audited all 53 Lean files in Logos |
+| | | - Audited all 53 Lean files |
 | | | - Documented 36 noncomputable definitions |
 | | | - Created dependency tree |
 | | | - Added contributor guidelines |

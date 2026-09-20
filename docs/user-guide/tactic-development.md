@@ -1,6 +1,6 @@
 # Tactic Development Guide
 
-This guide provides comprehensive instructions for developing custom tactics for the Logos proof automation system. For a complete registry of all tactics and their implementation status, see [tactic-registry.md](../project-info/tactic-registry.md).
+This guide provides comprehensive instructions for developing custom tactics for this repository's proof automation system. For a complete registry of all tactics and their implementation status, see [tactic-registry.md](../project-info/tactic-registry.md).
 
 ## Table of Contents
 
@@ -93,8 +93,8 @@ handling for the modal axiom MT (`□φ → φ`).
 
 ```lean
 import Lean.Elab.Tactic
-import Logos.ProofSystem.Axioms
-import Logos.ProofSystem.Derivation
+import FormalSystem.ProofSystem.Axioms
+import FormalSystem.ProofSystem.Derivation
 
 open Lean Elab Tactic Meta
 
@@ -333,7 +333,7 @@ elab "modal_search" depth:num : tactic => do
 ## 3. Aesop Integration
 
 Aesop is LEAN 4's general-purpose proof search automation tool. This section explains
-how to integrate Logos's TM logic axioms and lemmas with Aesop for automated
+how to integrate this system's TM logic axioms and lemmas with Aesop for automated
 proof construction.
 
 ### Aesop Rule Attribution
@@ -778,7 +778,7 @@ throwError "tactic failed"
 - [LEAN 4 Metaprogramming Book](https://leanprover-community.github.io/lean4-metaprogramming-book/)
 - [Aesop Documentation](https://github.com/leanprover-community/aesop)
 - [Mathlib4 Tactics](https://leanprover-community.github.io/mathlib4_docs/)
-- [Logos Architecture](architecture.md)
+- [TM Architecture](architecture.md)
 - [METAPROGRAMMING_GUIDE.md](../development/METAPROGRAMMING_GUIDE.md)
 - [TESTING_STANDARDS.md](../development/TESTING_STANDARDS.md)
 - [tactic-registry.md](../project-info/tactic-registry.md)

@@ -1,6 +1,6 @@
 # Tactic Registry
 
-This document tracks the status of all custom tactics developed for the Logos proof automation system.
+This document tracks the status of all custom tactics developed for this repository's proof automation system.
 
 ## Overview
 

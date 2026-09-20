@@ -1,8 +1,8 @@
-# Logos Examples
+# Bimodal Examples
 
-This document provides comprehensive examples of modal, temporal, and bimodal reasoning using Logos.
+This document provides comprehensive examples of modal, temporal, and bimodal reasoning using the TM implementation in this repository.
 
-**Canonical import path:** `import Logos.Examples` (or a specific module such as `Logos.Examples.ModalProofs`). Legacy `Archive.*` paths remain available for backward compatibility.
+**Canonical import path:** `import FormalSystem.Examples` (or a specific module such as `FormalSystem.Examples.BimodalProofs`).
 
 ## 1. Modal Logic Examples
 
@@ -12,7 +12,7 @@ The ProofSearch module provides automated proof discovery capabilities for modal
 See `FormalSystem/Automation/ProofSearch/` for the full API.
 
 ```lean
-import Logos.Core.Automation.ProofSearch
+import FormalSystem.Automation.ProofSearch
 
 /-- Automated proof of modal T axiom: □φ → φ -/
 example : Bool :=
@@ -137,7 +137,7 @@ Temporal formulas can be discovered automatically using proof search. Temporal f
 typically require higher search depths than modal formulas due to operator complexity.
 
 ```lean
-import Logos.Core.Automation.ProofSearch
+import FormalSystem.Automation.ProofSearch
 
 /-- Automated proof of temporal 4 axiom: Gφ → GGφ -/
 example : Bool :=
@@ -286,7 +286,7 @@ The perpetuity principles P1-P6 can be discovered automatically using proof sear
 Bimodal formulas require higher search depths due to modal-temporal interaction.
 
 ```lean
-import Logos.Core.Automation.ProofSearch
+import FormalSystem.Automation.ProofSearch
 
 /-- Automated discovery of P1: □φ → △φ -/
 example : Bool :=
@@ -448,7 +448,7 @@ example (P : Formula) : [P.box.box.box] ⊢ P := by
 
 ### ProofSearch API Reference
 
-The `Logos.Core.Automation.ProofSearch` module provides:
+The `FormalSystem.Automation.ProofSearch` module provides:
 
 - **`boundedSearch`**: Depth-bounded search with caching and statistics
   - Returns: `(Bool, ProofCache, Visited, SearchStats, Nat)`

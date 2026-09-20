@@ -709,5 +709,5 @@ Property-based testing with Plausible provides:
 
 **Resources**:
 - [Plausible Repository](https://github.com/leanprover-community/plausible)
-- [Logos Property Tests](../../Tests/BimodalTest/Property/)
+- [Bimodal Property Tests](../../Tests/BimodalTest/Property/)
 - Research Report

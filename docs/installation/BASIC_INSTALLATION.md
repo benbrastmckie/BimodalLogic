@@ -79,7 +79,7 @@ You should see version numbers for all three commands.
 # Navigate to your projects directory
 cd ~/Documents/Projects  # or wherever you keep projects
 
-# Clone ProofChecker
+# Clone the repository
 git clone https://github.com/benbrastmckie/BimodalLogic.git
 
 # Enter the project directory

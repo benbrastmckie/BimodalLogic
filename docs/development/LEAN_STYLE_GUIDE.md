@@ -91,14 +91,14 @@ theorem Soundness ...           -- UpperCamelCase for a theorem
 > layer.
 
 ### Namespaces
-- Match directory structure: `Logos.Syntax`, `Logos.ProofSystem`
+- Match directory structure: `FormalSystem.Syntax`, `FormalSystem.ProofSystem`
 - Use descriptive, hierarchical names
 - Open namespaces sparingly; prefer qualified names for clarity
 
 ```lean
 -- Good
-namespace Logos.Syntax
-namespace Logos.Semantics.TaskFrame
+namespace FormalSystem.Syntax
+namespace FormalSystem.Semantics.TaskFrame
 
 -- Avoid
 namespace Syntax                -- missing project prefix
@@ -251,7 +251,7 @@ theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := by
 
 ### Unicode Operator Notation
 
-Logos uses Unicode symbols for logical operators with prefix notation declarations. When using or defining notation, follow these guidelines:
+This repository uses Unicode symbols for logical operators with prefix notation declarations. When using or defining notation, follow these guidelines:
 
 **Available Notations**:
 ```lean
@@ -295,7 +295,7 @@ theorem perpetuity2 (φ : Formula) : ⊢ (sometimes φ → ◇φ) := by sorry  -
 ### Import Order
 1. Standard library imports
 2. Mathlib imports (when used)
-3. Project imports (Logos.*)
+3. Project imports (FormalSystem.*)
 4. Blank line between groups
 
 ```lean
@@ -304,9 +304,9 @@ import Init.Data.List
 import Mathlib.Order.Basic
 import Mathlib.Data.Set.Basic
 
-import Logos.Syntax.Formula
-import Logos.Syntax.Context
-import Logos.ProofSystem.Axioms
+import FormalSystem.Syntax.Formula
+import FormalSystem.Syntax.Context
+import FormalSystem.ProofSystem.Axioms
 ```
 
 ### Relative vs Absolute Imports
@@ -315,8 +315,8 @@ import Logos.ProofSystem.Axioms
 
 ```lean
 -- In FormalSystem/Semantics/Truth.lean
-import Logos.Syntax.Formula        -- absolute (different package)
-import Logos.Semantics.TaskFrame   -- relative would also work
+import FormalSystem.Syntax.Formula        -- absolute path
+import FormalSystem.Semantics.TaskFrame   -- also within FormalSystem
 ```
 
 ## 4. Documentation Requirements
@@ -348,7 +348,7 @@ constrained by a task relation that captures transitions between states.
 ## References
 
 * "Possible Worlds" paper - TM logic specification
-* Logos Architecture Guide - docs/user-guide/architecture.md
+* TM Architecture Guide - docs/user-guide/architecture.md
 -/
 ```
 
@@ -606,8 +606,8 @@ noncomputable def deductionTheorem (Γ : Context) (A B : Formula) : ... := ...
 
 **Error Message**:
 ```
-failed to compile definition, compiler IR check failed at 'Logos.Core.Theorems.my_function'. 
-Error: depends on declaration 'Logos.Core.Metalogic.deduction_theorem', which has no executable code; 
+failed to compile definition, compiler IR check failed at 'FormalSystem.Theorems.my_function'. 
+Error: depends on declaration 'FormalSystem.Metalogic.deduction_theorem', which has no executable code; 
 consider marking definition as 'noncomputable'
 ```
 
@@ -641,7 +641,7 @@ consider marking definition as 'noncomputable'
 
 4. **Verify build passes**:
    ```bash
-   lake build Logos.Core.Theorems.MyModule
+   lake build FormalSystem.Theorems.<YourModule>
    ```
 
 ### Common Scenarios
@@ -784,7 +784,7 @@ lake check-lint
 ### Linter Types
 
 **1. Syntax Linters** (run during compilation)
-- Enabled via `leanOptions` in `lakefile.lean`
+- Enabled via `leanOptions` in `lakefile.toml`
 - Check for unused variables, missing docs, deprecated patterns
 - Cannot be suppressed (compilation-time checks)
 
@@ -1059,4 +1059,4 @@ soundness itself, creating a circular dependency that must be resolved at the fi
 
 - [Mathlib4 Style Guide](https://leanprover-community.github.io/contribute/style.html)
 - [LEAN 4 Documentation](https://lean-lang.org/documentation/)
-- [Logos Architecture](../user-guide/architecture.md)
+- [TM Architecture](../user-guide/architecture.md)

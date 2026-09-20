@@ -1128,7 +1128,7 @@ Tests/BimodalTest/                         # Test suite
 └── Property/                              # Property-based tests
 
 docs/                                      # User documentation
-lakefile.lean                              # Lake build configuration
+lakefile.toml                              # Lake build configuration
 lean-toolchain                             # Lean version pinning
 ```
 
@@ -1166,7 +1166,7 @@ def verify_with_model_checker (Γ : Context) (φ : Formula) :
 
 #### Future Natural Language Interface
 
-Logos's primary interface is LEAN 4 code for direct theorem proving and verification. Future work may explore natural language interfaces for making formal verification more accessible to domain experts, potentially integrating with external natural language processing systems to translate informal reasoning into formal proofs.
+This system's primary interface is LEAN 4 code for direct theorem proving and verification. Future work may explore natural language interfaces for making formal verification more accessible to domain experts, potentially integrating with external natural language processing systems to translate informal reasoning into formal proofs.
 
 **Potential Interface Capabilities**:
 - Natural language theorem statement translation to Formula syntax
@@ -1174,7 +1174,7 @@ Logos's primary interface is LEAN 4 code for direct theorem proving and verifica
 - Plain language counterexample explanations from model-checker results
 - Domain-specific terminology mapping to formal operators
 
-**Note**: Such interfaces would be external tools consuming Logos's API, not core components of the verification architecture.
+**Note**: Such interfaces would be external tools consuming this system's API, not core components of the verification architecture.
 
 ```lean
 -- Example: Generic inference verification API
@@ -1351,7 +1351,7 @@ example (P Q : ExtendedFormula) :
 
 ## 8. Integration with Logos Architecture
 
-Logos implements the Logos formal language of thought. For philosophical foundations and research context, see METHODOLOGY.md.
+This system implements TM, a fragment of the Logos formal language of thought. For philosophical foundations and research context, see METHODOLOGY.md.
 
 ### Implementation Status
 
@@ -1378,23 +1378,23 @@ Theorem caching and pattern matching design; design notes are internal, not part
 
 ### 8.5 Operator Layer Alignment
 
-This section maps Logos operators to their Logos LEAN 4 implementations and underlying semantic systems.
+This section maps Logos operators to their TM LEAN 4 implementations and underlying semantic systems.
 
 **Core Layer (Layer 0) Operators**:
 
 **Boolean Operators** (Extensional Logic):
 - **Logos Operators**: `¬`, `∧`, `∨`, `→`, `↔`, `⊥`, `⊤`
-- **Logos Implementation**: Defined operators from `⊥` and `→` (Formula.imp, Formula.bot)
+- **TM Implementation**: Defined operators from `⊥` and `→` (Formula.imp, Formula.bot)
 - **Semantic System**: Classical propositional logic (base for TM)
 
 **Modal Operators** (Metaphysical Modality):
 - **Logos Operators**: `□` (necessity), `◇` (possibility)
-- **Logos Implementation**: `□`, `◇` with S5 axioms (MT, M4, MB, MK) in ProofSystem/Axioms.lean
+- **TM Implementation**: `□`, `◇` with S5 axioms (MT, M4, MB, MK) in ProofSystem/Axioms.lean
 - **Semantic System**: S5 modal logic component of TM with task frame semantics
 
 **Temporal Operators** (Linear Time):
 - **Logos Operators**: `H`, `P`, `G`, `F` (past/future operators), `△` (always), `▽` (sometimes)
-- **Logos Implementation**: `allPast`, `allFuture`, `somePast`, `someFuture`, `always`, `sometimes` in Syntax/Formula.lean
+- **TM Implementation**: `allPast`, `allFuture`, `somePast`, `someFuture`, `always`, `sometimes` in Syntax/Formula.lean
 - **Semantic System**: Linear temporal logic component of TM with bimodal interaction axioms (MF, TF)
 
 **Explanatory Extension (Layer 1) Operators** - Planned:
@@ -1499,7 +1499,7 @@ These extensions allow the proof-checker to reason about different time structur
 
 ---
 
-This architecture provides a comprehensive foundation for developing a sophisticated axiomatic proof system in LEAN implementing the layered operator approach. Layer 0 delivers the foundational bimodal logic TM (Tense and Modality) for Boolean, modal, and temporal reasoning with task semantics and partial metalogic implementation. Layers 1-3 provide a clear extension path for counterfactual/constitutive/causal operators (Explanatory), belief/probability/knowledge operators (Epistemic), and deontic/preference/normative operators (Normative). The architecture implements progressive operator extensibility as a core principle, enabling domain-specific operator combinations while maintaining mathematical rigor. Logos integrates seamlessly with the Model-Checker component to create a comprehensive dual verification architecture for training AI systems.
+This architecture provides a comprehensive foundation for developing a sophisticated axiomatic proof system in LEAN implementing the layered operator approach. Layer 0 delivers the foundational bimodal logic TM (Tense and Modality) for Boolean, modal, and temporal reasoning with task semantics and partial metalogic implementation. Layers 1-3 provide a clear extension path for counterfactual/constitutive/causal operators (Explanatory), belief/probability/knowledge operators (Epistemic), and deontic/preference/normative operators (Normative). The architecture implements progressive operator extensibility as a core principle, enabling domain-specific operator combinations while maintaining mathematical rigor. This system integrates seamlessly with the Model-Checker component to create a comprehensive dual verification architecture for training AI systems.
 
 ---
 

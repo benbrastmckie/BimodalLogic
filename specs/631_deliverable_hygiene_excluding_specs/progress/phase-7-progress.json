@@ -1,0 +1,21 @@
+{
+  "phase": 7,
+  "phase_name": "Normalise Logos/ProofChecker/lakefile.lean naming",
+  "started_at": "2026-09-20T02:50:00Z",
+  "last_updated": "2026-09-20T03:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Rewrite bucket (a) stale Lean-package usage to FormalSystem", "status": "done", "files_touched": ["docs/user-guide/examples.md", "docs/user-guide/tactic-development.md", "docs/user-guide/tutorial.md", "docs/development/LEAN_STYLE_GUIDE.md"]},
+    {"id": 2, "description": "Normalise bucket (c) literal-name misuse", "status": "done", "files_touched": ["docs/user-guide/troubleshooting.md", "docs/user-guide/quickstart.md", "docs/installation/BASIC_INSTALLATION.md"]},
+    {"id": 3, "description": "Fix bucket (c) self-referential Logos mentions in architecture.md", "status": "done", "files_touched": ["docs/user-guide/architecture.md"]},
+    {"id": 4, "description": "Prose Logos mentions in NONCOMPUTABLE_GUIDE, DOC_QUALITY_CHECKLIST, tactic-registry, PROPERTY_TESTING_GUIDE", "status": "done", "files_touched": ["docs/development/NONCOMPUTABLE_GUIDE.md", "docs/development/DOC_QUALITY_CHECKLIST.md", "docs/project-info/tactic-registry.md", "docs/development/PROPERTY_TESTING_GUIDE.md"]},
+    {"id": 5, "description": "Absorbed task-610: fix stale lakefile.lean mentions in the 4 named files", "status": "done", "files_touched": ["docs/user-guide/architecture.md", "docs/development/LEAN_STYLE_GUIDE.md", "docs/development/NAMING_CONVENTION_DEVIATION.md"]},
+    {"id": 6, "description": "Fix C5 regression from FormalSystem.Theorems.MyModule placeholder", "status": "done", "files_touched": ["docs/development/LEAN_STYLE_GUIDE.md"]},
+    {"id": 7, "description": "Confirm CITATION.cff clean, verify both gates green", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [
+    {"approach": "Rename lake build Logos.Core.Theorems.MyModule to FormalSystem.Theorems.MyModule", "result": "failed", "reason": "C5 flags capitalized-component dotted FormalSystem.* paths in markdown that don't resolve to real modules; MyModule is a placeholder, not a real module, so this broke C5"},
+    {"approach": "Use angle-bracket placeholder FormalSystem.Theorems.<YourModule>", "result": "success", "reason": "The <> breaks C5's identifier regex (requires [A-Z] immediately after the dot) while keeping the illustrative meaning"}
+  ],
+  "handoff_count": 0
+}

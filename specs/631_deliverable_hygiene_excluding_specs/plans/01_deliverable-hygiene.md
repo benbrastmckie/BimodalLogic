@@ -377,23 +377,23 @@ work from its output, not from this list, and repeat it after each file until em
 
 ---
 
-### Phase 7: Normalise `Logos`/`ProofChecker`/`lakefile.lean` naming [NOT STARTED]
+### Phase 7: Normalise `Logos`/`ProofChecker`/`lakefile.lean` naming [COMPLETED]
 
 **Goal**: Stale package-name usages in the surviving docs name the real artifacts
 (`FormalSystem`, `BimodalLogic`, `lakefile.toml`), while every legitimate external-project and
 role-name usage is preserved.
 
 **Tasks**:
-- [ ] Re-run the naming greps against the **post-removal** tree: `grep -rn 'Logos' README.md docs/` and `grep -rn 'ProofChecker' README.md docs/` (scope roughly halves once `docs/research/` is untracked).
-- [ ] Classify every hit into one of three buckets before editing anything:
+- [x] Re-run the naming greps against the **post-removal** tree: `grep -rn 'Logos' README.md docs/` and `grep -rn 'ProofChecker' README.md docs/` (scope roughly halves once `docs/research/` is untracked). *(completed: 68 Logos + 74 ProofChecker hits live)*
+- [x] Classify every hit into one of three buckets before editing anything:
       (a) **stale Lean-package usage** — `import Logos`, `Logos.ProofSystem`, `Logos.Core.Automation.ProofSearch`, `open Logos.Syntax` in `docs/user-guide/tutorial.md`, `tactic-development.md`, `examples.md` -> rewrite to `FormalSystem`;
       (b) **legitimate external-project reference** — "Logos Laboratories", "the broader Logos project", `https://logos-labs.ai/` -> **leave untouched**;
-      (c) **loose literal-name misuse** — e.g. `docs/user-guide/troubleshooting.md:53` "Ensure you're in the ProofChecker root directory", `docs/user-guide/quickstart.md:8` "ProofChecker project cloned and built" -> normalise to the repository name (`BimodalLogic`) or generic phrasing ("the repository root").
-- [ ] Leave `README.md`'s and `docs/README.md`'s deliberate `ProofChecker`-as-role-name framing intact (it matches the documented naming convention and `docs/README.md` already carries the disambiguation blockquote).
-- [ ] Leave `docs/development/PUBLICATION_REFACTOR.md`'s 5 self-referential mentions intact.
-- [ ] Absorbed task-610 scope: fix the stale `lakefile.lean` mentions at `docs/user-guide/architecture.md:1131`, `docs/development/LEAN_STYLE_GUIDE.md:790`, `docs/user-guide/troubleshooting.md:55`, `docs/development/NAMING_CONVENTION_DEVIATION.md:333`, then re-grep the whole tree for any other `lakefile.lean` or stale `Logos` package-name mention outside `specs/`.
-- [ ] Confirm `CITATION.cff` needs no edit (`grep -c 'Logos\|ProofChecker' CITATION.cff` -> 0; its `logos-labs.ai` email is bucket (b)).
-- [ ] Commit per file or per small file group; do **not** run a single tree-wide regex substitution.
+      (c) **loose literal-name misuse** — e.g. `docs/user-guide/troubleshooting.md:53` "Ensure you're in the ProofChecker root directory", `docs/user-guide/quickstart.md:8` "ProofChecker project cloned and built" -> normalise to the repository name (`BimodalLogic`) or generic phrasing ("the repository root"). *(completed: bucket (a) rewritten across examples.md, tactic-development.md, tutorial.md, LEAN_STYLE_GUIDE.md; bucket (c) fixed at the two named sites plus BASIC_INSTALLATION.md's matching "Clone ProofChecker" heading, which the same misuse class covers by direct extension since it precedes a `git clone .../BimodalLogic.git` command; `grep -rn 'import Logos\|Logos\.\(ProofSystem\|Core\|Syntax\)' README.md docs/` now empty)*
+- [x] Leave `README.md`'s and `docs/README.md`'s deliberate `ProofChecker`-as-role-name framing intact (it matches the documented naming convention and `docs/README.md` already carries the disambiguation blockquote). *(completed)*
+- [x] Leave `docs/development/PUBLICATION_REFACTOR.md`'s 5 self-referential mentions intact. *(completed)*
+- [x] Absorbed task-610 scope: fix the stale `lakefile.lean` mentions at `docs/user-guide/architecture.md:1131`, `docs/development/LEAN_STYLE_GUIDE.md:790`, `docs/user-guide/troubleshooting.md:55`, `docs/development/NAMING_CONVENTION_DEVIATION.md:333`, then re-grep the whole tree for any other `lakefile.lean` or stale `Logos` package-name mention outside `specs/`. *(completed — deviation note: the re-grep also surfaces `lake-manifest.json` (a Lake-generated dependency lockfile naming a THIRD PARTY dependency's own `lakefile.lean`, never hand-edited), `typst/chapters/ax-lean-appendix.typ:191` (generic prose contrasting Lake's two config formats, not an assertion this repo uses `lakefile.lean`), and 15 sites under `FormalSystem/Boneyard/**` (archived, non-live content explicitly out of scope per this plan's own Non-Goals and outside the declared `docs/` + `README.md` file set) — none is a live stale-naming defect in the scanned deliverable, so none was edited)*
+- [x] Confirm `CITATION.cff` needs no edit (`grep -c 'Logos\|ProofChecker' CITATION.cff` -> 0; its `logos-labs.ai` email is bucket (b)). *(completed: re-verified, 0)*
+- [x] Commit per file or per small file group; do **not** run a single tree-wide regex substitution. *(completed)*
 
 **Timing**: 2 hours
 

@@ -50,9 +50,9 @@ open FormalSystem.Automation
 **Cause**: Project not built or incorrect working directory.
 
 **Solution**:
-1. Ensure you're in the ProofChecker root directory
+1. Ensure you're in the repository root directory (`BimodalLogic/`)
 2. Build the project: `lake build`
-3. Check that `lakefile.lean` includes Bimodal as a module
+3. Check that `lakefile.toml` includes `FormalSystem` as a target
 
 ### 1.4 "import cycle detected"
 
