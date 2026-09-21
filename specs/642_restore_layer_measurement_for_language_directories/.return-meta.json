@@ -1,18 +1,86 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 20,
-  "started_at": "2026-09-21T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Implementation agent started; reading plan and scripts.",
-    "phases_completed": 0,
-    "phases_total": 6
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/642_restore_layer_measurement_for_language_directories/summaries/01_restore-layer-measurement-language-summary.md",
+      "summary": "Implementation summary: per-file layer table, fail-loud layer_of, restored 7-line allowlist, assertion C, six observed negative tests, document updates, acceptance criteria by command."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Layered the three language directories per file (30-row origin-keyed table) in scripts/measure-refactor-partitions.py, made layer_of raise for any unmatched module under FormalSystem/, restored the upward allowlist in scripts/check-metalogic-cycles.sh to the 7 measured MinusLanguage/AxiomDischarge -> Theorems lines, and added a named syntax-before-semantics assertion. All six failure directions were negative-tested by hand on the real tree, and ORGANISATION.md, docs/ARCHITECTURE.md and six further documents now state the measured order with the blind-spot note removed."
   },
+  "modified_files": [
+    "scripts/measure-refactor-partitions.py",
+    "scripts/check-metalogic-cycles.sh",
+    "ORGANISATION.md",
+    "docs/ARCHITECTURE.md",
+    "docs/development/MODULE_INVARIANTS.md",
+    "docs/development/PUBLICATION_REFACTOR.md",
+    "scripts/README.md",
+    "README.md",
+    "docs/development/MODULE_RELOCATION.md",
+    "FormalSystem/MinusLanguage/README.md",
+    "FormalSystem/PlusLanguage/README.md",
+    "FormalSystem/StarLanguage/README.md",
+    "FormalSystem/MinusLanguage.lean",
+    "FormalSystem/PlusLanguage.lean",
+    "FormalSystem/StarLanguage.lean",
+    "FormalSystem/README.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a layer/ownership lookup returns None for unmatched paths, a file move into an uncovered directory silently removes its edges from every measurement built on the lookup, and an equality-asserted allowlist then 'passes' on an empty set. Make the lookup raise for anything inside the library root that matches no row (return None only for genuinely external modules), add a stale-row report for the reverse drift, and add a non-vacuity guard to any assertion whose sets are derived from a table. A shortfall against an allowlist has two causes - the import was removed, or it stopped being measured - and the remediation hint should say so.",
+      "category": "PATTERN",
+      "source_artifact": "specs/642_restore_layer_measurement_for_language_directories/summaries/01_restore-layer-measurement-language-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "layer_of",
+        "fail-loud",
+        "allowlist",
+        "vacuous pass",
+        "import graph",
+        "measurement blind spot"
+      ]
+    },
+    {
+      "content": "In this repo, editing a module docstring in any FormalSystem .lean file changes line counts recorded in generated inventory blocks (README.md 'Live comment lines', FormalSystem/README.md per-file rows); check-module-invariants.sh INV goes red until `bash scripts/check-module-invariants.sh --emit-inventory` is run and the two READMEs are committed.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/642_restore_layer_measurement_for_language_directories/summaries/01_restore-layer-measurement-language-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": [
+        "inventory",
+        "emit-inventory",
+        "INV",
+        "docstring",
+        "check-module-invariants"
+      ]
+    },
+    {
+      "content": "Hand negative tests on real files in a shared working tree: run each as ONE shell invocation that saves the file with `cp -p` to a scratch dir (mtime preserved, so lake does not rebuild), edits, runs the gate capturing output and exit code, restores unconditionally, then confirms with `git diff --quiet -- <path>`. Never use git checkout/restore to revert (blocked by the destructive-git guard on a dirty tree); remove scratch files with rm.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/642_restore_layer_measurement_for_language_directories/summaries/01_restore-layer-measurement-language-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": [
+        "negative test",
+        "cp -p",
+        "restore",
+        "shared tree",
+        "destructive-git guard"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1790004043_997429",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 6,
+    "phases_total": 6
   }
 }

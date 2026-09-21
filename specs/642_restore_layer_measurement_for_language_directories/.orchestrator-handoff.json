@@ -1,17 +1,18 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 19,
-  "summary": "Six-phase, 5.5-hour plan written from the round-01 research. Phase 1 is a declared atomic batch over both scripts (per-file layer table keyed on pre-merge origin, fail-loud layer_of, stale-row report, allowlist restored from measured output) because either half alone leaves check-metalogic-cycles.sh red in CI. Phase 2 adds the named syntax-before-semantics assertion with a non-vacuity guard; Phase 3 runs six hand negative tests with save-and-restore; Phases 4 and 5 (parallel) update six repository documents, the three language READMEs and the three aggregator docstrings; Phase 6 re-runs the whole gate. The three aggregator .lean files are added beyond the task's recorded file_scope (docstring-only; measured rebuild about 30 modules).",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 20,
+  "summary": "All six phases completed. The three language directories are layered per file by pre-merge origin (13 at layer 0, 16 at layer 1, Soundness at 3); layer_of raises for any unmatched module under FormalSystem/ (504 modules, 0 None); the upward set measures exactly the expected 7 AxiomDischarge -> Theorems lines and the allowlist holds them - no other line surfaced, nothing was allowlisted silently. Assertion C (syntax before semantics, non-vacuity guarded) added; six failure directions observed to fail by hand and the tree restored. Eight documents, three language READMEs and three aggregator docstrings updated. Final gates: lake build 0, check-module-invariants ALL CHECKS PASSED (after regenerating two generated inventory blocks staled by the docstring edits), check-metalogic-cycles 3 PASS / exactly 1 cycle, readme-lint PASS, check-task-references PASS.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/642_restore_layer_measurement_for_language_directories/plans/01_restore-layer-measurement-language.md",
-      "summary": "Six-phase plan covering the layer table and fail-loud lookup, restored allowlist, third assertion, negative tests, document updates and final gate."
+      "type": "summary",
+      "path": "specs/642_restore_layer_measurement_for_language_directories/summaries/01_restore-layer-measurement-language-summary.md",
+      "summary": "Implementation summary with acceptance criteria by command and the negative-test observations."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 6,
   "blockers": [],
-  "next_action_hint": "Implement Phase 1 as one atomic commit over scripts/measure-refactor-partitions.py and scripts/check-metalogic-cycles.sh; if the measured upward set is anything other than the 7 AxiomDischarge lines, block and report rather than allowlist."
+  "plan_markers_verified": true,
+  "next_action_hint": "Run postflight for task 642. Follow-up candidate (pre-existing, out of scope): regenerate the stale weakcanonical/automation figures typed in measure-refactor-partitions.py's docstring."
 }

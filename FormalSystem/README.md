@@ -260,11 +260,11 @@ release version lives in `Version.lean`.
 | `Init.lean` | 32 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
 | `MainResults.lean` | 254 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
 | `Metalogic.lean` | 268 | Re-export for Metalogic submodule |
-| `MinusLanguage.lean` | 67 | <!-- TODO: add description --> |
-| `PlusLanguage.lean` | 80 | <!-- TODO: add description --> |
+| `MinusLanguage.lean` | 69 | <!-- TODO: add description --> |
+| `PlusLanguage.lean` | 82 | <!-- TODO: add description --> |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
 | `Semantics.lean` | 240 | Re-export for Semantics submodule |
-| `StarLanguage.lean` | 79 | <!-- TODO: add description --> |
+| `StarLanguage.lean` | 81 | <!-- TODO: add description --> |
 | `Syntax.lean` | 93 | Re-export for Syntax submodule |
 | `Tactic.lean` | 39 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |
 | `Theorems.lean` | 91 | Re-export for Theorems submodule |

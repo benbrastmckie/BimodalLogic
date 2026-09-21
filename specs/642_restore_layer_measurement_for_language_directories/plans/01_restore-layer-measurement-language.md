@@ -364,12 +364,15 @@ seventh hit is in scope for this phase.
       sentence with the check that now does (`scripts/check-metalogic-cycles.sh`, the
       syntax-before-semantics assertion, and the per-file table in
       `scripts/measure-refactor-partitions.py`); note that a new file in the directory needs a
-      row. Bump each `Last verified` stamp to the commit date. *(completed: stamps already read 2026-09-21, today's commit date, so no bump was needed)*- [x] `FormalSystem/MinusLanguage/README.md`: move `Soundness.lean` out of the semantic-modules
+      row. Bump each `Last verified` stamp to the commit date. *(completed: stamps already read 2026-09-21, today's commit date, so no bump was needed)*
+- [x] `FormalSystem/MinusLanguage/README.md`: move `Soundness.lean` out of the semantic-modules
       table into its own metalogic entry (layer 3, by origin and by its two `Metalogic` imports).
-      It appears in two tables; fix both consistently. *(deviation: altered — Soundness.lean moved out of the hand-written semantic-modules table into its own metalogic paragraph; the other table is the GENERATED per-file inventory, which lists every file alphabetically without classifying it and is not hand-edited)*- [x] `FormalSystem/MinusLanguage.lean`, `FormalSystem/PlusLanguage.lean`,
+      It appears in two tables; fix both consistently. *(deviation: altered — Soundness.lean moved out of the hand-written semantic-modules table into its own metalogic paragraph; the other table is the GENERATED per-file inventory, which lists every file alphabetically without classifying it and is not hand-edited)*
+- [x] `FormalSystem/MinusLanguage.lean`, `FormalSystem/PlusLanguage.lean`,
       `FormalSystem/StarLanguage.lean`: in the module docstring, replace "no mechanical check
       enforces it" with one sentence naming the script. Docstring text only; no import, no
-      declaration, nothing outside the `/-! ... -/` block. *(completed)*- [x] `lake build FormalSystem.MinusLanguage FormalSystem.PlusLanguage FormalSystem.StarLanguage`. *(completed: exit 0, 1384 jobs)*
+      declaration, nothing outside the `/-! ... -/` block. *(completed)*
+- [x] `lake build FormalSystem.MinusLanguage FormalSystem.PlusLanguage FormalSystem.StarLanguage`. *(completed: exit 0, 1384 jobs)*
 
 **Timing**: 0.75 hours
 
@@ -398,23 +401,23 @@ FormalSystem/MinusLanguage/README.md`.
 
 ---
 
-### Phase 6: Whole-gate re-verification [NOT STARTED]
+### Phase 6: Whole-gate re-verification [COMPLETED]
 
 **Goal**: Run the full gate set on the finished tree and check each acceptance criterion by
 command, not by reading.
 
 **Tasks**:
-- [ ] `lake build` (the aggregator docstring edits rebuild roughly 30 dependent modules).
-- [ ] `bash scripts/check-module-invariants.sh` — in particular C5, C9 and C12 against the new
-      prose, and C1.
-- [ ] `bash scripts/check-metalogic-cycles.sh` — three `PASS` lines, exactly 1 cycle, 7-line
-      allowlist.
-- [ ] `python3 scripts/measure-refactor-partitions.py upward-edges` and `--check`.
-- [ ] `bash scripts/readme-lint.sh`; `bash .claude/scripts/check-task-references.sh`;
-      `python3 scripts/warning-budget.py` if the harness does not already run it.
-- [ ] Re-run the no-`None` loop from Phase 1.
-- [ ] Write down each acceptance criterion with the command and the observed line that satisfies
-      it, for the summary. Fix forward any red gate in the phase that owns the file.
+- [x] `lake build` (the aggregator docstring edits rebuild roughly 30 dependent modules). *(completed: exit 0, 2663 jobs)*
+- [x] `bash scripts/check-module-invariants.sh` — in particular C5, C9 and C12 against the new
+      prose, and C1. *(completed: first run red on INV only: the three docstring edits added 6 comment lines, staling the generated inventory in README.md and FormalSystem/README.md; regenerated with --emit-inventory, second run ALL CHECKS PASSED)*
+- [x] `bash scripts/check-metalogic-cycles.sh` — three `PASS` lines, exactly 1 cycle, 7-line
+      allowlist. *(completed: three PASS lines, exit 0)*
+- [x] `python3 scripts/measure-refactor-partitions.py upward-edges` and `--check`. *(completed)*
+- [x] `bash scripts/readme-lint.sh`; `bash .claude/scripts/check-task-references.sh`;
+      `python3 scripts/warning-budget.py` if the harness does not already run it. *(completed: all green; warning-budget runs inside the harness)*
+- [x] Re-run the no-`None` loop from Phase 1. *(completed: 504 library modules, 0 None, 0 raised)*
+- [x] Write down each acceptance criterion with the command and the observed line that satisfies
+      it, for the summary. Fix forward any red gate in the phase that owns the file. *(completed)*
 
 **Timing**: 0.25 hours (plus build time)
 
@@ -431,18 +434,18 @@ command, not by reading.
 
 ## Testing & Validation
 
-- [ ] `python3 scripts/measure-refactor-partitions.py upward-edges` reports a non-empty measured
+- [x] `python3 scripts/measure-refactor-partitions.py upward-edges` reports a non-empty measured
       set for the three directories (7 lines, `MinusLanguage -> Theorems`) and no stale rows
-- [ ] `layer_of` neither raises nor returns `None` for any module under `FormalSystem/`, and
+- [x] `layer_of` neither raises nor returns `None` for any module under `FormalSystem/`, and
       returns `None` for `Mathlib.*`, `BimodalTest.*` and the root `FormalSystem`
-- [ ] `bash scripts/check-metalogic-cycles.sh` is green with a 7-line allowlist, exactly 1 cycle,
+- [x] `bash scripts/check-metalogic-cycles.sh` is green with a 7-line allowlist, exactly 1 cycle,
       and a third `PASS` line stating non-empty syntax and semantics sets
-- [ ] Negative tests observed to fail: surplus, shortfall, syntax-imports-semantics, unlisted
+- [x] Negative tests observed to fail: surplus, shortfall, syntax-imports-semantics, unlisted
       language-directory file, unknown top-level directory, stale row
-- [ ] Tree restored after the negative tests (`git status --short` clean of those paths)
-- [ ] `lake build`, `check-module-invariants.sh`, `readme-lint.sh`, `check-task-references.sh`
+- [x] Tree restored after the negative tests (`git status --short` clean of those paths)
+- [x] `lake build`, `check-module-invariants.sh`, `readme-lint.sh`, `check-task-references.sh`
       all green
-- [ ] No document still states an empty upward set or an unmeasured language directory
+- [x] No document still states an empty upward set or an unmeasured language directory
 
 ## Artifacts & Outputs
 
