@@ -11,11 +11,11 @@ next_project_number: 642
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,641 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633 | 298,464,502,563,568,630 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,626,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,614,635 | 428,498,499,500,634 | algebraic-representation, decidability, documentation, ... |
-| 5 | 178,410,501,636 | 125,429,635,641 | algebraic-representation, decidability, formula-refactor, ... |
+| 5 | 178,410,501,636 | 125,429,635 | algebraic-representation, decidability, formula-refactor, ... |
 | 6 | 411,637 | 410,636 | decidability, publication-quality |
 | 7 | 430,638 | 411,637 | decidability, publication-quality |
 | 8 | 177,412 | 430,636 | decidability, formula-refactor |
@@ -107,7 +107,6 @@ next_project_number: 642
             └─ 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
   └─ 633 [NOT STARTED] — Create Tactic/Attr.lean under the library root from...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into... (see above)
-641 [PLANNED] — Provide one worked-example file that an outside reader can...
 
 ### Semantics
 
@@ -118,12 +117,13 @@ next_project_number: 642
 ## Tasks
 
 ### 641. Worked example walkthrough for outside readers
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 639
 - **Research**: [641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md]
 - **Plan**: [641_worked_example_walkthrough_for_outside_readers/plans/01_worked-example-walkthrough.md]
+- **Summary**: [641_worked_example_walkthrough_for_outside_readers/summaries/01_worked-example-walkthrough-summary.md]
 
 **Description**: Provide one worked-example file that an outside reader can open and follow end to end, ahead of the larger Examples expansion. Examples/BimodalProofs.lean, which the README advertises as the demo, is a list of one-line `example := perpetuityN _` applications and shows none of the metatheory. Add FormalSystem/Examples/Walkthrough.lean (name open) that, on concrete formulas: builds a DerivationTree by hand and again with the automation; applies `soundness` to obtain validity; applies `completeness` in the other direction; runs the tableau `isValid` procedure and uses `sound_of_isValid`; exhibits one frame-class-sensitive formula (derivable at Dense, not at Base or ZTime) using the existing independence results; and states one refutation such as notStrongCompletenessZTime with a sentence on what it means. Prose docstrings should carry a reader who knows modal logic but not this codebase. Do not cite Kamp-named declarations, so that the file is unaffected by the later Expressiveness rename. Wire it into the library aggregator, link it from the README as the demo, and keep it sorry-free with the standard three axioms. Acceptance: lake build green; harness green; `#print axioms` on each example shows exactly propext, Classical.choice, Quot.sound or fewer. Task 178 then extends this file rather than starting from BimodalProofs.lean.
 
