@@ -493,25 +493,25 @@ Formula fidelity against `DerivedAxioms.priorSZ` / `priorSGap` was checked under
 
 ---
 
-### Phase 9: The named alternative box range and the aggregate table [NOT STARTED]
+### Phase 9: The named alternative box range and the aggregate table [COMPLETED]
 
 **Goal**: Deliver the cut-back variant as a named definition, and state the table as one theorem.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/ConvexTruthCut.lean`: `TruthAtConvexCut`, identical to the
+- [x] Create `FormalSystem/Semantics/ConvexTruthCut.lean`: `TruthAtConvexCut`, identical to the
       primary recursion except that the box ranges over convex histories whose domain contains
       the index's domain. One contrast theorem: a boxed seriality formula is satisfiable under the
       cut variant at a total index of `NF`, where `c3_box_untl_unsat` makes it unsatisfiable under
       the primary reading. If the contrast theorem needs the integer fixtures, place it in the
       `ConvexConsequence` cluster instead and keep the definition in `Semantics/`.
-- [ ] Docstring: the cut variant is index-dependent, so `truthC3_box_indep` fails for it and its
+- [x] Docstring: the cut variant is index-dependent, so `truthC3_box_indep` fails for it and its
       survival table is not the primary one's. State the working default and that an override
       changes what the completeness sequel is about.
-- [ ] Create `FormalSystem/Metalogic/ConvexConsequence/SurvivalTable.lean`: a Bool-valued
+- [x] Create `FormalSystem/Metalogic/ConvexConsequence/SurvivalTable.lean`: a Bool-valued
       `Axiom.failsC3` naming the four failing constructors, and the aggregate theorem that every
       other constructor is C3-valid on its minimum frame class, by cases over the 29 constructors,
       each case one of the row theorems.
-- [ ] Register both files and regenerate the root. Scoped builds.
+- [x] Register both files and regenerate the root. Scoped builds.
 
 **Timing**: 1.5 hours
 
@@ -521,6 +521,13 @@ Formula fidelity against `DerivedAxioms.priorSZ` / `priorSGap` was checked under
 
 **Scope Hypothesis**: The constructor count is 29 with four failing. Confirm with the `cases`
 goal list; an unmatched constructor is a missing row, to be reported, not closed by a wildcard.
+
+**Phase notes**: The scope hypothesis held: 29 constructors, four failing; both table proofs carry
+29 named cases and no wildcard (the only wildcard is in the Bool-valued `Axiom.failsC3` itself,
+which names its four `true` cases). The contrast theorem needs the integer fixtures, so it went
+to the cluster as the plan allowed, in its own file `ConvexConsequence/CutContrast.lean` (not
+listed under Files to modify). A second theorem, `c3_failure_table`, was added beside the
+planned survival half so that `Axiom.failsC3` is a verdict in both directions.
 
 **Files to modify**:
 - `FormalSystem/Semantics/ConvexTruthCut.lean` - new

@@ -24,6 +24,7 @@ import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Ultraproduct
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.ConvexTruth
+import FormalSystem.Semantics.ConvexTruthCut
 import FormalSystem.Semantics.DeterministicBridge
 import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.DurationClassification
@@ -125,6 +126,9 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   recursion written beside `TruthAt` at a partial-history index, with the box over the convex
   histories through the evaluation time and the tenses restricted to the index's domain;
   `ValidC3` / `ValidC4`, the germ theorems, and shift invariance `truthC3_timeShift`
+- `ConvexTruthCut`: `TruthAtConvexCut`, the named alternative to `ConvexTruth`'s box range — box
+  over the convex histories whose domain contains the index's domain. A definition only; the
+  primary reading stays the footnote's own
 - `StateLocalTransfer`: `stateLocal_ofPlus_iff` — the two state-locality fragments agree along
   `ofPlus`, as a **biconditional**, so the L⁺ fragment is exactly the `ofPlus`-preimage of the L⋆
   one. Its own module rather than either fragment's, so that the L⁺ conservativity route does not

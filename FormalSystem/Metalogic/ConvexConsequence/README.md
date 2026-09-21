@@ -19,7 +19,9 @@ system is claimed in this directory; that is a completeness question.
 | File | Lines | Description |
 |------|------:|-------------|
 | `AxiomSurvival.lean` | 398 | One theorem per base-class axiom of TM: C3-valid on every frame (`c3_*`) or refuted on the integer-time frame (`refute_C3_*`). The six failures — both seriality axioms, both discrete-symmetry axioms, forward gap propagation and gap necessity — are all existence assertions about the temporal order |
+| `CutContrast.lean` | 49 | The one contrast theorem for the named alternative box range: `□F⊤` is true at a total index under `TruthAtConvexCut` (`truthCut_box_someFuture_top`) and unsatisfiable under the primary range |
 | `FrameClassSurvival.lean` | 317 | The six frame-class axioms of TM each survive C3 on their own class: `c3_prior_UZ`, `c3_z1` (ℤ-time), `c3_density`, `c3_dense_indicator` (dense), `c3_prior_U_gap` (complete, no density needed), `c3_sep` (ℝ-time, reusing `SoundnessLemmas.sep_order`); class-level corollaries at `ValidC3In`; the endpoint behaviour of `K⁺` |
 | `Mirrors.lean` | 330 | One C3 theorem per past mirror TM derives by time reflection, stated at exactly the formula the derivation proves and proved by direct dualisation; mirror verdicts are not inherited, since C3 does not validate TM and a single frame has no semantic time reflection |
 | `Separations.lean` | 182 | The integer-time fixtures `NF`, `bdd`, `bdd01`, `totalNF`, and the separations: `F⊤` is C1-valid and refuted under C3 and C4; `lastPoint` (`F⊤ → F G⊥`) is C4-valid and refuted under C3, so the containment of C3 in C4 is strict |
+| `SurvivalTable.lean` | 129 | The table as one theorem over the 29 constructors of `Axiom`: `Axiom.failsC3` names the four failing constructors, `c3_survival_table` gives C3-validity of every other on its minimum frame class, `c3_failure_table` refutes the four; both by cases with no wildcard |
 <!-- END GENERATED -->
