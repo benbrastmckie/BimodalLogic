@@ -623,8 +623,8 @@ syntactic guard computable from `(branch, timeOrd)` expresses the semantic condi
 the copy would be sound. Both blocks were removed; do not reintroduce them, in guarded form or
 otherwise. Deleting them can only make branches *harder* to close, and the full conformance
 corpus is unchanged by the deletion while
-`Tests/BimodalTest/UntlSnceCopyProbe.lean` section C now returns a countermodel for an invalid
-`Until` implication where it previously exhausted its fuel.
+`Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean` section C now returns a
+countermodel for an invalid `Until` implication where it previously exhausted its fuel.
 
 **Still outstanding, deliberately.** The PASSIVE arms of `.untlNeg`/`.snceNeg` place the guard
 failure *at* the target time rather than strictly between, and re-assert the negative
@@ -962,7 +962,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         -- The block mapped a satisfiable branch to two unsatisfiable ones and made
         -- `RuleSound carrierBase .untlPos` false as stated. Same reason as the six group-3
         -- blocks removed from `boxNeg`/`diamondPos`, applied to the time axis.
-        -- Measured by `Tests/BimodalTest/UntlSnceCopyProbe.lean` section A.
+        -- Measured by `Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean` section A.
         -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
         let modalProps := boxDiamondPersistence branch l.world l.time freshTime
         let autoProp := gProps ++ fNegProps ++ modalProps
@@ -1003,7 +1003,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           | _ => none
         -- **No `snceNegProps` block here, and none may be reintroduced.** The exact time-reversal
         -- mirror of the `untlNegProps` deletion in `.untlPos` above; see that comment for the
-        -- argument and `Tests/BimodalTest/UntlSnceCopyProbe.lean` section A for the measurement.
+        -- argument and `Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean` section A
+        -- for the measurement.
         -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
         let modalProps := boxDiamondPersistence branch l.world l.time freshTime
         let autoProp := hProps ++ pNegProps ++ modalProps
@@ -1131,8 +1132,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           -- `U(e,g)@(1/n)` is true: take `s ∈ (1/n, 1/(n−1))`, where `e@s` holds and `(1/n,s)`
           -- contains no `1/m`. So branch 2 was unsatisfiable on a satisfiable branch, and
           -- branch 1 (`¬e@C`, with `e` true throughout `(0,∞)`) cannot rescue the arm.
-          -- Measured as fact by `Tests/BimodalTest/UntlSnceCopyProbe.lean` section D, rows
-          -- D1c/D1d — `true`/`[2,3]` before this deletion, `false`/`[2,2]` after.
+          -- Measured as fact by `Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean`
+          -- section D, rows D1c/D1d — `true`/`[2,3]` before this deletion, `false`/`[2,2]` after.
           --
           -- Deleting it removes an emission, so it can only make branches HARDER to close: the
           -- sole risk is under-closing, which the 29-row conformance corpus measures directly.

@@ -422,9 +422,9 @@ states it, so the history matters:
 * `GapAdequate` itself — **`gapAdequate_insufficient`**. `branchGapVal` satisfies `GapAdequate`
   (`branchGapVal_gapAdequate`) and still falsifies a branch fact: on `refuteBoxBranch`, carrying
   `T(□p)` and `T(□(p → q))` with no `T(□q)`/`T(G q)`/`T(H q)` anywhere, the gap points get `p`
-  true and `q` false, so `□(p → q)` is false in the model. `Tests/BimodalTest/BoxSpreadProbe.lean`
-  row D measures that the engine produces exactly this configuration on
-  `(□p ∧ □(p → q)) → r` at `.Base`.
+  true and `q` false, so `□(p → q)` is false in the model.
+  `Tests/BimodalTest/Metalogic/Decidability/BoxSpreadProbe.lean` row D measures that the engine
+  produces exactly this configuration on `(□p ∧ □(p → q)) → r` at `.Base`.
 
 The defect is structural, not a bad choice of policy. `GapAdequate` constrains `gapVal` at atoms
 only, on the ground that a compound formula's value at a gap point is fixed by the induction;
@@ -465,10 +465,10 @@ never unfolded.
   world at the box formula's own time") fails because `boxDiamondPersistence` relabels `T(□φ)`
   into every time the run later mints in that world, while the world-minting copy of
   `allFuturePosAtTime` happened once, at the triggering time — measured on
-  `(□p ∧ ◇q) → r`, see `Tests/BimodalTest/BoxSpreadProbe.lean`. `BoxAnchored` — one anchor time
-  per known world carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together — is the statement that survived
-  those two refutations, and `timeOrderTotal` sweeps the world's whole row from that single
-  anchor.
+  `(□p ∧ ◇q) → r`, see `Tests/BimodalTest/Metalogic/Decidability/BoxSpreadProbe.lean`. `BoxAnchored`
+  — one anchor time per known world carrying `T(φ)`, `T(Gφ)` and `T(Hφ)` together — is the statement
+  that survived those two refutations, and `timeOrderTotal` sweeps the world's whole row from that
+  single anchor.
 
   **What has changed since.** The world-minting copies of `allFuturePosAtTime`/`allPastPosAtTime`
   — the six group-3 blocks in `boxNeg` and `diamondPos` — have been **removed from the engine as

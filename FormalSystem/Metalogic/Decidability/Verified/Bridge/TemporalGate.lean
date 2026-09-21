@@ -16,12 +16,12 @@ carried as a hypothesis exactly as those three are, and discharged for the branc
 builds by sub-phase 7.3 rather than here.
 
 Every row below was **measured on the engine corpus before it was stated**, in
-`Tests/BimodalTest/TemporalWitnessProbe.lean`. That corpus was extended for the purpose: the six
-rows `Tests/BimodalTest/RayRegionProbe.lean` measures contain no genuine until at all — every
-until in them is guard-`⊤`, so the branching `untlPos`/`untlNeg` arms never fire — and four rows
-carrying genuine untils and sinces were added. Two candidate rows were **refuted** there and are
-absent here as a result; they are recorded in that file, and repeating them is a
-DO-NOT-RE-ATTEMPT.
+`Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean`. That corpus was extended for
+the purpose: the six rows `Tests/BimodalTest/Metalogic/Decidability/RayRegionProbe.lean` measures
+contain no genuine until at all — every until in them is guard-`⊤`, so the branching
+`untlPos`/`untlNeg` arms never fire — and four rows carrying genuine untils and sinces were added.
+Two candidate rows were **refuted** there and are absent here as a result; they are recorded in that
+file, and repeating them is a DO-NOT-RE-ATTEMPT.
 
 ## The rows, and what each is for
 
@@ -40,7 +40,7 @@ upper ray, and puts **nothing** strictly between consecutive placed points.
   rule's guard. It was measured `true` on **all twelve** corpus rows before the retirement; it is
   now `false` on the rows carrying a negative until with a known future time, because the arm was
   the only producer of `¬φ` at an existing future time. See the banner at the head of
-  `Tests/BimodalTest/TemporalWitnessProbe.lean`.
+  `Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean`.
 * `untlRaySelf` — a positive until asserted at its world's **upper-ray** label carries its event
   at that same label. Every carrier point above an upper-ray point is on the same ray and reads
   the same label, so the witness has nowhere else to be. This is `RayRegionProbe.lean`'s `rayUp`.
@@ -180,9 +180,10 @@ verbatim and `untlNegRay_low` below is recovered as its `j = 0` instance — thi
 that one rather than sitting beside it, which is why the gate is still ten rows. `untlNegFuture`
 (row 1) reaches only the known times *strictly after* the label, which is not all of them.
 
-Measured in this exact form (`Tests/BimodalTest/TemporalWitnessProbe.lean`, column `uNRU`) beside
-the `uRL` it strengthens, with the two reaches also reported separately: `true` on all eight rows
-the gate accepts, and its single `false` is the row on which `uRL` already fails. -/
+Measured in this exact form (`Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean`,
+column `uNRU`) beside the `uRL` it strengthens, with the two reaches also reported separately:
+`true` on all eight rows the gate accepts, and its single `false` is the row on which `uRL` already
+fails. -/
 def untlNegRegionUp (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
@@ -223,8 +224,8 @@ The `⊤` exemption sits *inside* the witness, not outside the row, and that pla
 content of the row on the `someFuture`/`somePast` fragment. `⊤` is never written on a branch, so a
 row exempting itself entirely when `ψ = ⊤` asserts nothing there — while the positive case still
 needs a witness, because `TruthAt … (untl ⊤ φ)` demands one. Measured in this exact form
-(`Tests/BimodalTest/TemporalWitnessProbe.lean`, column `uGW`) beside the weaker `gw` and `wit` it
-is the pointwise conjunction of. -/
+(`Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean`, column `uGW`) beside the
+weaker `gw` and `wit` it is the pointwise conjunction of. -/
 def untlPosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
@@ -310,9 +311,9 @@ below).
 
 This row does **not** subsume rows 3, 9 and 10 — its `self` disjunct is an escape they do not
 offer — so it is adopted beside them. Measured in this exact form
-(`Tests/BimodalTest/TemporalWitnessProbe.lean`, column `uPR`) beside `uRD` and beside the `self`
-disjunct alone: `true` on all eight rows the gate accepts, and the `self` column shows the
-disjunction is load-bearing rather than decorative. -/
+(`Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean`, column `uPR`) beside `uRD`
+and beside the `self` disjunct alone: `true` on all eight rows the gate accepts, and the `self`
+column shows the disjunction is load-bearing rather than decorative. -/
 def untlPosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with

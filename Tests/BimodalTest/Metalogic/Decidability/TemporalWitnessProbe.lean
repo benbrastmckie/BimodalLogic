@@ -9,15 +9,15 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 /-!
 # What the `untl`/`snce` cases actually demand of a saturated branch, measured before it is stated
 
-`Tests/BimodalTest/RayRegionProbe.lean` measured one candidate demand — the **ray self-demand**,
-`T(U(φ,ψ))` at a ray's chosen label needs `T(φ)` at that same label — and found it `true` on six
-engine rows. This file measures the rest of the bundle, and it exists because of a gap in that
-corpus: **not one of those six rows carries a genuine until.** `F p → p`, `P p → p`, `G p → p`
-and the three modal shapes produce only `untl ⊤ ·` and `snce ⊤ ·`, where the acting rules are
-`someFuturePos`/`someFutureNeg` (linear, and `sat_some_future_neg` already gives `F(φ)` at
-*every* known future time). The branching `untlPos`/`untlNeg` rules — the ones whose second arm
-is `T(guard) ∧ T(U)` resp. `F(guard) ∧ F(U)` — are never exercised. Any conclusion about them
-drawn from that corpus is a conclusion about a case the corpus does not contain.
+`Tests/BimodalTest/Metalogic/Decidability/RayRegionProbe.lean` measured one candidate demand — the
+**ray self-demand**, `T(U(φ,ψ))` at a ray's chosen label needs `T(φ)` at that same label — and found
+it `true` on six engine rows. This file measures the rest of the bundle, and it exists because of a
+gap in that corpus: **not one of those six rows carries a genuine until.** `F p → p`, `P p → p`, `G
+p → p` and the three modal shapes produce only `untl ⊤ ·` and `snce ⊤ ·`, where the acting rules are
+`someFuturePos`/`someFutureNeg` (linear, and `sat_some_future_neg` already gives `F(φ)` at *every*
+known future time). The branching `untlPos`/`untlNeg` rules — the ones whose second arm is `T(guard)
+∧ T(U)` resp. `F(guard) ∧ F(U)` — are never exercised. Any conclusion about them drawn from that
+corpus is a conclusion about a case the corpus does not contain.
 
 Rows H–L below are genuine untils and sinces (`U(p,q) → q`, `p → U(p,q)`, and mirrors), so the
 branching arms fire.
@@ -224,7 +224,7 @@ row.
 value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
 -/
 
-namespace BimodalTest.TemporalWitnessProbe
+namespace BimodalTest.Metalogic.Decidability.TemporalWitnessProbe
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -593,8 +593,8 @@ contain.
 -- The direction is the right one. `U(p,q) → U(q,p)` is invalid, and `OPEN` is the correct
 -- verdict; the copy had been re-asserting a negative until at every freshly minted time, which
 -- kept manufacturing new obligations and drove the search into its fuel bound. Compare
--- `Tests/BimodalTest/UntlSnceCopyProbe.lean` row C2, where the same deletion turned
--- `fuelExhausted` into a positively extracted countermodel on `U(p,q) → U(r,s)`.
+-- `Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean` row C2, where the same deletion
+-- turned `fuelExhausted` into a positively extracted countermodel on `U(p,q) → U(r,s)`.
 --
 -- Note that rows H, J and M — the other genuine-until rows — are **unchanged**, as is every
 -- other row in this file. `|T|=6` here matches H's table size.
@@ -1316,4 +1316,4 @@ def probe6 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 #guard_msgs in
 #eval "N " ++ probe6 (.imp p (.untl q p)) 200 .ZTime
 
-end BimodalTest.TemporalWitnessProbe
+end BimodalTest.Metalogic.Decidability.TemporalWitnessProbe

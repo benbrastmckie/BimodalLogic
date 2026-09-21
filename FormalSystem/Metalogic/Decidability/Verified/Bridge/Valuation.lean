@@ -83,9 +83,9 @@ induction. `□` breaks the ground: `truthAt_box_iff_base` makes `T(□χ)` a de
 every base history for a possibly **compound** `χ`, so the branch fact constrains the gap's
 *induced* values, which only the atom policy can supply. On the two-formula branch
 `refuteBoxBranch` — `T(□p)` and `T(□(p → q))`, with no `T(□q)`, `T(G q)` or `T(H q)` anywhere,
-a configuration the engine really produces (`Tests/BimodalTest/BoxSpreadProbe.lean`, row D) —
-`branchGapVal` makes `p` true and `q` false at every gap, so `□(p → q)` is false in the model the
-branch asserts it in.
+a configuration the engine really produces
+(`Tests/BimodalTest/Metalogic/Decidability/BoxSpreadProbe.lean`, row D) — `branchGapVal` makes `p`
+true and `q` false at every gap, so `□(p → q)` is false in the model the branch asserts it in.
 
 Condition 4, the `U`/`S` straddling guards, remains an obligation of the induction and not of the
 policy — that part of the previous reading survives. What does not survive is the idea that an
@@ -596,9 +596,9 @@ section BoxCompoundRefuted
 The refuting branch: `T(□p)` and `T(□(p → q))` at the single label `⟨0, 0⟩`, and nothing else.
 
 Deliberately a literal, not an engine run: the refutation is of the *interface*, so it must not
-depend on saturation, openness, or any rule firing. `Tests/BimodalTest/BoxSpreadProbe.lean` carries
-the companion row showing the engine does produce branches of this shape.
--/
+depend on saturation, openness, or any rule firing.
+`Tests/BimodalTest/Metalogic/Decidability/BoxSpreadProbe.lean` carries the companion row showing the
+engine does produce branches of this shape. -/
 def refuteBoxBranch (p q : Atom) : Branch :=
   [⟨.pos, Formula.box (Formula.atom p), ⟨0, 0⟩⟩,
    ⟨.pos, Formula.box ((Formula.atom p).imp (Formula.atom q)), ⟨0, 0⟩⟩]

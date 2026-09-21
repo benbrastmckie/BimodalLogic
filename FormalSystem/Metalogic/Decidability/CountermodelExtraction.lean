@@ -816,7 +816,7 @@ branch may perfectly well hold a future time with neither disjunct on it. The co
 longer follows and does not hold.
 
 Nothing consumed them. A grep across the project finds their names only in prose: two orientation
-comments in `Tests/BimodalTest/TemporalWitnessProbe.lean` and one in
+comments in `Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean` and one in
 `Verified/Bridge/TemporalGate.lean`, each contrasting the strength of these facts against the
 gate rows that superseded them. All three are updated in the same commit as this retirement.
 

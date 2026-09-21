@@ -89,7 +89,7 @@ BimodalLogic/
 │   ├── Syntax/                     # TM syntax only (Plus/Minus/Star moved out)
 │   ├── ProofSystem/
 │   ├── Semantics/                  # + Periodicity.lean (from Metalogic/Decidability/FMP/)
-│   ├── PlusLanguage/, MinusLanguage/, StarLanguage/   # Syntax/X + Semantics/X merged; semantics namespaces renamed to FormalSystem.XLanguage
+│   ├── PlusLanguage/, MinusLanguage/, StarLanguage/   # Syntax/X + Semantics/X merged; semantics namespaces renamed to match the syntax half
 │   ├── Theorems/                   # + DeductionTheorem.lean (from Metalogic/Core/)
 │   ├── Metalogic/
 │   │   ├── Core/ Bundle/ Algebraic/ BXCanonical/ SoundnessLemmas/ Conservativity/
@@ -392,7 +392,7 @@ on a shortfall as well as a surplus, so Phase 5 landing is a finding rather than
   but unrelated to a top-level `XLanguage/`, so a paths-only merge would move 14 files from the
   acceptable `ancestor` bucket into `unrelated`. The merge therefore carries a hand-edited
   `namespace`/`end` rename of those 16 modules (plus `Soundness.lean`) to the flat
-  `FormalSystem.XLanguage`, matching the syntax half.
+  `FormalSystem.{Plus,Minus,Star}Language`, matching the syntax half.
 - `MinusLanguage/AxiomDischarge.lean`'s imports of Theorems and Metalogic become ordinary
   downward edges from an extension language to the base logic.
 - Move `Metalogic/Conservativity/MinusLanguageSoundness.lean` to `MinusLanguage/Soundness.lean`.

@@ -423,8 +423,8 @@ engine on `(□p ∧ ◇q) → r` at `.Base` (fuel `200`) yields an OPEN saturat
 and 7 times on which `boxTemporalSpreadCheck` is `false` — note that the world here is minted at
 the *same* time as the box formula, so the failure is not the cross-time-mint case one would
 guess at; it is the persistence of `T(□φ)` into times minted later. `(□p ∧ ◇(G q)) → r` and
-`(□p ∧ ◇q) → r` at `.Dense` fail the same way. See `Tests/BimodalTest/BoxSpreadProbe.lean` for
-the rows.
+`(□p ∧ ◇q) → r` at `.Dense` fail the same way. See
+`Tests/BimodalTest/Metalogic/Decidability/BoxSpreadProbe.lean` for the rows.
 
 `boxAnchoredCheck` was `true`, and `boxGridCheck` `true`, on every one of those branches at the
 time that measurement was taken. That was the corrected invariant: what the fresh world needs is
@@ -488,10 +488,9 @@ theorem boxAnchored_of_boxTemporalSpread (b : Branch) (timeOrd : TimeOrdering)
 /-! ### The invariant and the grid in decidable form
 
 Stated as `Bool`-valued checks so the refutation is re-runnable against the engine's own output
-rather than only assertable in prose. `Tests/BimodalTest/BoxSpreadProbe.lean` holds the rows;
-they live there and not here because each row runs `buildTableau`, which is far too slow to sit
-on a library module's build path.
--/
+rather than only assertable in prose. `Tests/BimodalTest/Metalogic/Decidability/BoxSpreadProbe.lean`
+holds the rows; they live there and not here because each row runs `buildTableau`, which is far too
+slow to sit on a library module's build path. -/
 
 /-- `BoxTemporalSpread`, decidably. Measured **false** on engine output — see the refutation. -/
 def boxTemporalSpreadCheck (b : Branch) : Bool :=

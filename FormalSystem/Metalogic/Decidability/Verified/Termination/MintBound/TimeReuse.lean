@@ -759,7 +759,8 @@ rather than by `selfGuardRules ×ˢ U`. The index shape is forced by the rule's 
 ledger transcribes the rule's own `gapTargets` filter (`Tableau.lean:1368-1366`) —
 `(timeOrd.futureOf t').isEmpty`, together with `t'` lying below no other future time of the trigger
 — rather than any per-rule discharge test. It is therefore quadratic in `|U|` where
-`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean:1597`), so it
+`selfGuardPotential` is linear, and it is gated on `denseRules` (`Tableau.lean`,
+`allRulesForFC`), so it
 contributes nothing at `.Base` / `.ZTime`.
 
 *That it has to be a separate clause is not this development's invention.* In the mosaic

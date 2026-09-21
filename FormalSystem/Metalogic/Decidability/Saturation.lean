@@ -139,9 +139,9 @@ deleted the source of every consumable rule; the applied set existed only to pap
 The repair is therefore in the destructive arms, not the persistent ones: guard `.linear` and
 `.branching` the way `.persistent` already guards itself, stop deleting, and the applied set has
 nothing left to do. `findUnexpanded … = none` is then reachable, and it means exactly downward
-saturation, with no auxiliary invariant. `Tests/BimodalTest/TableauConformance.lean`'s
-`CertificateProbe` pins the result on the old witness: `◇p` now reports
-`fullySaturated=true applied=0 orphans=0`.
+saturation, with no auxiliary invariant.
+`Tests/BimodalTest/Metalogic/Decidability/TableauConformance.lean`'s `CertificateProbe` pins the
+result on the old witness: `◇p` now reports `fullySaturated=true applied=0 orphans=0`.
 
 **`AppliedRedundant` was refuted, not merely unproved.** The predicate below was believed true
 of the pipeline's output and was to be proved invariant under `expandBranchWithFuel`. Measured
@@ -200,9 +200,9 @@ as a regression signal afterwards.
 **This is a gate, not a theorem.** It is currently `false` on a family of open certificates —
 `¬(F(G p) ∧ F(¬p))`, `¬(F p ∧ F q)`, `¬(F(G p) ∧ F(G q))`, `¬(F(¬p) ∧ F(G p))` all saturate
 with two incomparable sibling times, unchanged at fuel 200 and 2000. Those rows are pinned in
-`Tests/BimodalTest/TableauConformance.lean` (`TimeOrderProbe`) with their current verdicts;
-the rule that makes them `true` is the order-level branching rule, and flipping them is its
-done-criterion.
+`Tests/BimodalTest/Metalogic/Decidability/TableauConformance.lean` (`TimeOrderProbe`) with their
+current verdicts; the rule that makes them `true` is the order-level branching rule, and flipping
+them is its done-criterion.
 
 **Why `orderTrichotomy` does not already deliver this.** `orderTrichotomy`'s branches are
 `temp_linearity` *formulas*, which mint fresh witness times rather than ordering the two

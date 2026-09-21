@@ -17,9 +17,9 @@ throughout in the past tense.
 
 ## The branch
 
-Row B of `Tests/BimodalTest/CrossWorldPropagationProbe.lean` is `(G p) → □(G p)`, which is
-**invalid** — some world history may carry a `¬p` somewhere in the future while `τ` has none.
-Negating it and applying `impNeg` gives the two-formula branch
+Row B of `Tests/BimodalTest/Metalogic/Decidability/CrossWorldPropagationProbe.lean` is `(G p) → □(G
+p)`, which is **invalid** — some world history may carry a `¬p` somewhere in the future while `τ`
+has none. Negating it and applying `impNeg` gives the two-formula branch
 
 ```
 T(G p)   @ (w₀, t₀)
@@ -73,12 +73,11 @@ The repair removes a wrong answer; it does not by itself supply a right one. On
 so far it does not positively refute the formula either, returning `.fuelExhausted` rather than
 `.invalid`-with-countermodel. Row 5's `false` is therefore still not a verdict of "invalid";
 what changed is that it is now honest ignorance rather than a failed extraction after a wrongly
-closed tableau. See `Tests/BimodalTest/BoxNegReachabilityProbe.lean` rows 9-12, which pin the
-`decide` constructor directly, and `Verified/Bridge/BoxSaturation.lean`'s `BoxAnchored` rationale
-for the side condition the deletion costs.
--/
+closed tableau. See `Tests/BimodalTest/Metalogic/Decidability/BoxNegReachabilityProbe.lean` rows
+9-12, which pin the `decide` constructor directly, and `Verified/Bridge/BoxSaturation.lean`'s
+`BoxAnchored` rationale for the side condition the deletion costs. -/
 
-namespace BimodalTest.BoxNegPreservationProbe
+namespace BimodalTest.Metalogic.Decidability.BoxNegPreservationProbe
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Decidability
@@ -150,4 +149,4 @@ two — `BoxNegReachabilityProbe.lean` rows 9-12 pin the constructor. -/
 #guard_msgs in
 #eval isValid ((Formula.allFuture p).imp ((Formula.allFuture p).box))
 
-end BimodalTest.BoxNegPreservationProbe
+end BimodalTest.Metalogic.Decidability.BoxNegPreservationProbe

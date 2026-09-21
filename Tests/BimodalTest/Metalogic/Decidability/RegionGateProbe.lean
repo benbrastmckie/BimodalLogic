@@ -183,7 +183,7 @@ them is new:
    to measure is unbroken.
 -/
 
-namespace BimodalTest.RegionGateProbe
+namespace BimodalTest.Metalogic.Decidability.RegionGateProbe
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -404,4 +404,4 @@ consequence. -/
 #guard_msgs in
 #eval probe (.imp (.imp (Formula.someFuture p) p) .bot) 200 .Dense
 
-end BimodalTest.RegionGateProbe
+end BimodalTest.Metalogic.Decidability.RegionGateProbe

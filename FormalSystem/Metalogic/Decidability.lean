@@ -91,8 +91,8 @@ Tableau-based decision procedure returning proof terms or countermodels.
   family `timeOrderTotal`/`boxAnchoredCheck`/`regionLabelCheck` belongs to, carrying the four
   demands the `untl`/`snce` cases make and the region gate does not: the negative spread in each
   direction and the two ray self-witnesses. Every row measured on an extended engine corpus
-  before being stated (`Tests/BimodalTest/TemporalWitnessProbe.lean`); two further candidates
-  were refuted there and are deliberately absent
+  before being stated (`Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean`); two
+  further candidates were refuted there and are deliberately absent
 - `Verified.Bridge.IntGaps`: the `ℤ` placement is contiguous, so a non-placed integer lies on one
   of the two rays and there is no interior gap — the reason the `ℤ` milestone is strictly easier
   than the `ℚ`/`ℝ` one

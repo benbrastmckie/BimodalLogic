@@ -203,7 +203,7 @@ which times get minted and which get identified away are both affected — and t
 verdict.
 -/
 
-namespace BimodalTest.TableauConformance
+namespace BimodalTest.Metalogic.Decidability.TableauConformance
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem (FrameClass)
@@ -999,4 +999,4 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 
 end TimeOrderProbe
 
-end BimodalTest.TableauConformance
+end BimodalTest.Metalogic.Decidability.TableauConformance

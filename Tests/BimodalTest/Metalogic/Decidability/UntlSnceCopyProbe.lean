@@ -11,9 +11,9 @@ import FormalSystem.Metalogic.Decidability.DecisionProcedure
 
 Two independent defects live in the `Until`/`Since` rules, and this file pins both as *facts*
 about what `applyRule` emits rather than as hand arguments about what it ought to emit. The
-conformance corpus (`Tests/BimodalTest/TableauConformance.lean`) cannot do this job: every one of
-its `Until`/`Since` rows targets `CLOSED`, so it gates the **under**-closing direction only and
-would not have caught either defect.
+conformance corpus (`Tests/BimodalTest/Metalogic/Decidability/TableauConformance.lean`) cannot do
+this job: every one of its `Until`/`Since` rows targets `CLOSED`, so it gates the **under**-closing
+direction only and would not have caught either defect.
 
 ## Defect 1 — the unconditional copy (`untlPos`, `sncePos`, and the ACTIVE arms)
 
@@ -138,7 +138,7 @@ row.
 its own `RE-BASELINED (guard)` note with the old and new value.
 -/
 
-namespace BimodalTest.UntlSnceCopyProbe
+namespace BimodalTest.Metalogic.Decidability.UntlSnceCopyProbe
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Decidability
@@ -900,4 +900,4 @@ them. -/
 #eval ([stepPassive 32 bBctl ordB, stepPassive 128 bBctl ordB],
        [stepPassive 32 bE ordB, stepPassive 128 bE ordB])
 
-end BimodalTest.UntlSnceCopyProbe
+end BimodalTest.Metalogic.Decidability.UntlSnceCopyProbe

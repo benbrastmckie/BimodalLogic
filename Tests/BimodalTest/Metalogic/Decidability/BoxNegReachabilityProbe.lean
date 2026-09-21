@@ -9,12 +9,11 @@ import FormalSystem.Metalogic.Decidability.DecisionProcedure
 /-!
 # The `boxNeg` counterexample branch WAS reachable — and the copy that spoiled it is now gone
 
-`Tests/BimodalTest/BoxNegPreservationProbe.lean` measured that `applyRule .boxNeg` mapped the
-satisfiable branch `T(G p) @ (w₀,t₀)`, `F(□(G p)) @ (w₀,t₀)` to an unsatisfiable one, refuting
-`RuleSound carrierBase .boxNeg` as stated. This file answered the question that left open —
-**does the engine ever present such a branch to `boxNeg`?** — and the answer was yes. That
-closed the last escape route, and the offending emission was subsequently deleted from the
-engine.
+`Tests/BimodalTest/Metalogic/Decidability/BoxNegPreservationProbe.lean` measured that `applyRule
+.boxNeg` mapped the satisfiable branch `T(G p) @ (w₀,t₀)`, `F(□(G p)) @ (w₀,t₀)` to an unsatisfiable
+one, refuting `RuleSound carrierBase .boxNeg` as stated. This file answered the question that left
+open — **does the engine ever present such a branch to `boxNeg`?** — and the answer was yes. That
+closed the last escape route, and the offending emission was subsequently deleted from the engine.
 
 **Everything below is written so the past tense describes the defect and the present tense
 describes the engine as it now stands.** Rows 1-5 are unmoved by the repair; rows 6-10 moved,
@@ -69,7 +68,7 @@ is recorded here rather than papered over. Row 10 exists precisely so that the d
 `.invalid` is loud.
 -/
 
-namespace BimodalTest.BoxNegReachabilityProbe
+namespace BimodalTest.Metalogic.Decidability.BoxNegReachabilityProbe
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Decidability
@@ -295,4 +294,4 @@ again be read apart: this `false` is row 10's constructor — `extractionFailed`
 #guard_msgs in
 #eval isValid (gp.imp gp.box)
 
-end BimodalTest.BoxNegReachabilityProbe
+end BimodalTest.Metalogic.Decidability.BoxNegReachabilityProbe

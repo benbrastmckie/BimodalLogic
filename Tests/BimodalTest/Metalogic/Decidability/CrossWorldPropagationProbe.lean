@@ -19,10 +19,11 @@ emits `.linear (witness :: boxProps ++ diaProps)`.
 The copy had no semantic justification. `G` is evaluated inside a single history, while the fresh
 world's witness history is chosen to falsify `□A` (resp. satisfy `◇A`) and for nothing else; a
 second history need not agree with the first about what holds at all later times.
-`Tests/BimodalTest/BoxNegPreservationProbe.lean` row 3 measured the consequence directly — the
-rule mapped a satisfiable branch to one carrying the same formula at the same label with opposite
-signs — and `Tests/BimodalTest/BoxNegReachabilityProbe.lean` showed the engine really did build
-that branch.
+`Tests/BimodalTest/Metalogic/Decidability/BoxNegPreservationProbe.lean` row 3 measured the
+consequence directly — the rule mapped a satisfiable branch to one carrying the same formula at the
+same label with opposite signs — and
+`Tests/BimodalTest/Metalogic/Decidability/BoxNegReachabilityProbe.lean` showed the engine really did
+build that branch.
 
 ## This file's original thesis was superseded, and how
 
@@ -82,7 +83,7 @@ the whole A-C family. They are pure additions: not one value pinned by rows A-F 
 same formula.
 -/
 
-namespace BimodalTest.CrossWorldPropagationProbe
+namespace BimodalTest.Metalogic.Decidability.CrossWorldPropagationProbe
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Decidability
@@ -197,4 +198,4 @@ silently. -/
       ((d.isValid, d.isInvalid, d.isFuelExhausted, d.isExtractionFailed, d.isUndecided),
        d.getCountermodel?.isSome)
 
-end BimodalTest.CrossWorldPropagationProbe
+end BimodalTest.Metalogic.Decidability.CrossWorldPropagationProbe

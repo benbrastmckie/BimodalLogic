@@ -82,12 +82,12 @@ and a branch that failed would not thereby be refuted:
 
 ## Measured before stated
 
-`Tests/BimodalTest/RegionGateProbe.lean` runs this gate's shape on branches the engine actually
-builds: nine rows, six shapes at `.Base` and three at `.Dense`, all reporting `true`, including
-the shape that refutes `GapAdequate`. It also pins a synthetic branch on which the gate is
-**false**, so `true` here is a measurement and not a tautology. That file is the reason this one
-exists in this form: three dispatches were spent on interfaces reasoned about in prose and proved
-about only afterwards, and each was wrong.
+`Tests/BimodalTest/Metalogic/Decidability/RegionGateProbe.lean` runs this gate's shape on branches
+the engine actually builds: nine rows, six shapes at `.Base` and three at `.Dense`, all reporting
+`true`, including the shape that refutes `GapAdequate`. It also pins a synthetic branch on which the
+gate is **false**, so `true` here is a measurement and not a tautology. That file is the reason this
+one exists in this form: three dispatches were spent on interfaces reasoned about in prose and
+proved about only afterwards, and each was wrong.
 
 ## What this file does not claim
 

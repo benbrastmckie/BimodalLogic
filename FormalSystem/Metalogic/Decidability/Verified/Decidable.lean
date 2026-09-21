@@ -1980,8 +1980,8 @@ theorem ruleSound_denseIndicatorClosure : RuleSound carrierBase .denseIndicatorC
 These two were blocked, and the obstruction was an unsound *engine* step rather than a missing
 proof: an `untlNegProps`/`snceNegProps` block copying every negative `Until`/`Since` at the
 trigger's time into the freshly minted time. The block has been deleted (see `applyRule`'s
-docstring for the prohibition, and `Tests/BimodalTest/UntlSnceCopyProbe.lean` for the
-measurement), and what remains is exactly the shape the four fresh-time existentials already
+docstring for the prohibition, and `Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean`
+for the measurement), and what remains is exactly the shape the four fresh-time existentials already
 discharge: a witness supplied by the source formula's truth condition, plus the `T(G·)`, `F(F·)`
 and `□`/`◇` families in the future direction (`T(H·)`, `F(P·)` and `□`/`◇` in the past).
 
@@ -2103,8 +2103,9 @@ guard failure at the *endpoint* `t'` rather than strictly inside `(l.time, t')` 
 repaired without an interpolant design this tree has no termination bound for. `RuleSound` is per
 rule over **both** arms, so none of the first two deletions moved the ledger on its own; the third
 one is what makes these statements true. `Tableau.lean`'s two arms carry the full argument, the
-refuting model and the authorization; `Tests/BimodalTest/UntlSnceCopyProbe.lean` sections B, E and
-F carry the measurements.
+refuting model and the authorization;
+`Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean` sections B, E and F carry the
+measurements.
 
 What survives is a single arm whose obligation is the classical split, and it is discharged the
 same way the four fresh-time existentials above are: a witness supplied by the source formula's
@@ -2866,12 +2867,13 @@ it had already been from `untlPos`/`sncePos`. (2) A *third* defect, found after 
 independent of it — the ACTIVE arm re-asserting its **own** `F(U(event,guard))` at the time it
 had just minted, refuted over a **dense** carrier where the copy needed a discrete one: also
 deleted, gated on the full conformance corpus, and measured by section D of
-`Tests/BimodalTest/UntlSnceCopyProbe.lean`. That made the ACTIVE arms sound. (3) Defect 2 below,
-the PASSIVE arms' endpoint co-decomposition: not repairable in place, so the PASSIVE arms were
-**retired** rather than fixed. `RuleSound` is per rule over **both** arms, so neither of the
-first two deletions moved the ledger on its own; the third is what made these statements true.
-See "`untlNeg` and `snceNeg` — provable once the PASSIVE arms are retired" above for the
-surviving single-arm proof, and `exists_gt_not_untl_disj` for the classical split it runs on.
+`Tests/BimodalTest/Metalogic/Decidability/UntlSnceCopyProbe.lean`. That made the ACTIVE arms sound.
+(3) Defect 2 below, the PASSIVE arms' endpoint co-decomposition: not repairable in place, so the
+PASSIVE arms were **retired** rather than fixed. `RuleSound` is per rule over **both** arms, so
+neither of the first two deletions moved the ledger on its own; the third is what made these
+statements true. See "`untlNeg` and `snceNeg` — provable once the PASSIVE arms are retired" above
+for the surviving single-arm proof, and `exists_gt_not_untl_disj` for the classical split it runs
+on.
 
 None of the three obstructions was the ordering gap this section's predecessors were about. That
 gap is closed too: `OrdWithin` is a hypothesis of `RuleSound`, and the four fresh-time
@@ -3016,7 +3018,8 @@ theorems above are therefore not merely newly proved but newly *true*.
   `RuleSound` by a reachability hypothesis dissolved once the premise both branches shared — that
   the engine does not build the refuting branch — was measured and found false.
 
-The probes that pin all of this are `Tests/BimodalTest/CrossWorldPropagationProbe.lean` (verdicts),
+The probes that pin all of this are
+`Tests/BimodalTest/Metalogic/Decidability/CrossWorldPropagationProbe.lean` (verdicts),
 `BoxNegPreservationProbe.lean` (the step), and `BoxNegReachabilityProbe.lean` (reachability).
 
 ## The historical record
@@ -3037,21 +3040,22 @@ Group 3 is not: `T(GB)` at one history says nothing *prima facie* about another 
 alone. Discharging it means showing the witness can always be chosen to satisfy the copied
 temporal formulas too, and no such argument is in the tree.
 
-**The verdict measurement, and its limit.** `Tests/BimodalTest/CrossWorldPropagationProbe.lean`
-runs the full decision procedure on the three shapes that would expose an unsound group-3 copy as
-a wrong *verdict* — `(¬F p) → □(¬F p)`, `(G p) → □(G p)` and `(¬P p) → □(¬P p)`, each invalid
-because some *other* world history may have a future (resp. past) `p` while `τ` has none. All three
-report `false`, the correct answer, alongside a `true` control and a `false` control. That probe was
-explicit that it measured verdicts and not steps, and it was right to be.
+**The verdict measurement, and its limit.**
+`Tests/BimodalTest/Metalogic/Decidability/CrossWorldPropagationProbe.lean` runs the full decision
+procedure on the three shapes that would expose an unsound group-3 copy as a wrong *verdict* — `(¬F
+p) → □(¬F p)`, `(G p) → □(G p)` and `(¬P p) → □(¬P p)`, each invalid because some *other* world
+history may have a future (resp. past) `p` while `τ` has none. All three report `false`, the correct
+answer, alongside a `true` control and a `false` control. That probe was explicit that it measured
+verdicts and not steps, and it was right to be.
 
 **The step has now been measured, and it is unsound.**
-`Tests/BimodalTest/BoxNegPreservationProbe.lean` applies `boxNeg` directly to the branch that
-verdict-row B negates into — `T(G p) @ (w₀,t₀)`, `F(□(G p)) @ (w₀,t₀)`, which is *satisfiable*
-exactly because `(G p) → □(G p)` is invalid — and pins what comes back. The rule emits exactly
-two formulas, both at the minted label `(w₁, t₀)`: the witness `F(G p)`, and `T(G p)` copied by
-group 3 from `w₀`. Same formula, same label, opposite signs. `SatAt` reads that pair as
-`TruthAt …` together with `¬ TruthAt …` at one point, so no choice of `hist` or `tv` satisfies
-the successor. A satisfiable branch has been mapped to an unsatisfiable one, and therefore
+`Tests/BimodalTest/Metalogic/Decidability/BoxNegPreservationProbe.lean` applies `boxNeg` directly to
+the branch that verdict-row B negates into — `T(G p) @ (w₀,t₀)`, `F(□(G p)) @ (w₀,t₀)`, which is
+*satisfiable* exactly because `(G p) → □(G p)` is invalid — and pins what comes back. The rule emits
+exactly two formulas, both at the minted label `(w₁, t₀)`: the witness `F(G p)`, and `T(G p)` copied
+by group 3 from `w₀`. Same formula, same label, opposite signs. `SatAt` reads that pair as `TruthAt
+…` together with `¬ TruthAt …` at one point, so no choice of `hist` or `tv` satisfies the successor.
+A satisfiable branch has been mapped to an unsatisfiable one, and therefore
 
 * `RuleSound carrierBase .boxNeg` is **false** — `ruleSound_boxNeg` is not unproved but
   unprovable, and `diamondPos` carries an identical `tempGProps` block; and
@@ -3059,10 +3063,10 @@ the successor. A satisfiable branch has been mapped to an unsatisfiable one, and
   because `boxNeg` and `diamondPos` are both members of `allRulesForFC` at every frame class.
 
 **The branch is reachable, and the escape that was hoped for is closed.**
-`Tests/BimodalTest/BoxNegReachabilityProbe.lean` measures what this section previously asserted
-in the other direction. The earlier text read that "no engine defect is claimed", on the ground
-that the engine never applies `boxNeg` to that branch because `T(G p)` is an `imp` whose
-propositional decomposition comes first. Three measurements refute it:
+`Tests/BimodalTest/Metalogic/Decidability/BoxNegReachabilityProbe.lean` measures what this section
+previously asserted in the other direction. The earlier text read that "no engine defect is
+claimed", on the ground that the engine never applies `boxNeg` to that branch because `T(G p)` is an
+`imp` whose propositional decomposition comes first. Three measurements refute it:
 
 * **Expansion is additive.** `expandOnceUnblocked` reads a `.linear` output as `formulas ++ b`,
   so decomposing `T(G p)` never removes it, and `tempGProps` filters the branch by *shape*, with

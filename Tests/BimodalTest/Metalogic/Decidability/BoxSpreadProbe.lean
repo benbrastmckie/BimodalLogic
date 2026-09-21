@@ -32,8 +32,8 @@ six group-3 temporal-copy blocks in `.boxNeg`/`.diamondPos` were the *only* rout
 `T(Gφ)`/`T(Hφ)` could reach a freshly minted world, and they were deleted as unsound — they
 copied temporal formulas verbatim across worlds, conflating "true along the history being built"
 with "true at this instant along every admissible history". See
-`Tests/BimodalTest/BoxNegPreservationProbe.lean` row 3 for the soundness measurement, and
-`Verified/Bridge/BoxSaturation.lean`'s `BoxAnchored` rationale for the consequence.
+`Tests/BimodalTest/Metalogic/Decidability/BoxNegPreservationProbe.lean` row 3 for the soundness
+measurement, and `Verified/Bridge/BoxSaturation.lean`'s `BoxAnchored` rationale for the consequence.
 
 So these rows now measure the *cost* of that repair rather than a choice between invariants: on
 a multi-world branch there is no longer any time at which a minted world carries `T(φ)`, `T(Gφ)`
@@ -122,7 +122,7 @@ a stable measurement rather than baselining against a moving one.
 was — those three conditions are the row's whole content. Only the size `|T|` moved.
 -/
 
-namespace BimodalTest.BoxSpreadProbe
+namespace BimodalTest.Metalogic.Decidability.BoxSpreadProbe
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -231,4 +231,4 @@ def gapProbe (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Str
 #guard_msgs in
 #eval gapProbe (.imp (andF (.box p) (.box (.imp p q))) r) 400 .Dense
 
-end BimodalTest.BoxSpreadProbe
+end BimodalTest.Metalogic.Decidability.BoxSpreadProbe

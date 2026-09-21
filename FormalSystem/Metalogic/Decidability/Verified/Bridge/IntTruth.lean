@@ -565,13 +565,13 @@ stop depending on each other, and neither has since needed anything the other pr
 
 ### The `⊤` trap, which governed the design and still does
 
-`Tests/BimodalTest/TemporalWitnessProbe.lean` refutes any row asking the branch to *assert* a
-guard on nine of twelve rows, **including rows with no genuine until in them**: the guard of a
-`someFuture` is `⊤` and the engine never writes `T(⊤)`. So `ψ = ⊤` splits off at every leaf and is
-discharged semantically — `⊤` is true at every point of every model. What the positive halves
-changed is *where* the exemption sits: rows 7 and 9 exempt `ψ = ⊤` from the **guard** only and
-keep the witness, because `TruthAt … (untl ⊤ φ)` still demands one. A row exempting itself
-entirely there asserts nothing on the whole `someFuture`/`somePast` fragment.
+`Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean` refutes any row asking the
+branch to *assert* a guard on nine of twelve rows, **including rows with no genuine until in them**:
+the guard of a `someFuture` is `⊤` and the engine never writes `T(⊤)`. So `ψ = ⊤` splits off at
+every leaf and is discharged semantically — `⊤` is true at every point of every model. What the
+positive halves changed is *where* the exemption sits: rows 7 and 9 exempt `ψ = ⊤` from the
+**guard** only and keep the witness, because `TruthAt … (untl ⊤ φ)` still demands one. A row
+exempting itself entirely there asserts nothing on the whole `someFuture`/`somePast` fragment.
 
 ### The negative case tree
 

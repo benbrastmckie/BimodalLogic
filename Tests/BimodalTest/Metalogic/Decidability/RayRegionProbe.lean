@@ -9,11 +9,11 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 /-!
 # Ray probes: what a region owes **itself**, and whether the branch already supplies it
 
-`Tests/BimodalTest/RegionGateProbe.lean` measured `regionLabelCheck` and found it `true` on nine
-branches the engine builds. That gate imports each region's demands from labels on the *other*
-side of it — `T(U(φ,ψ))` at rank `< j` contributes its guard, `F(U(φ,ψ))` at rank `< j` its
-subject, and dually for `snce`. No row of the gate asks about what a region's chosen label
-demands **of the region itself**.
+`Tests/BimodalTest/Metalogic/Decidability/RegionGateProbe.lean` measured `regionLabelCheck` and
+found it `true` on nine branches the engine builds. That gate imports each region's demands from
+labels on the *other* side of it — `T(U(φ,ψ))` at rank `< j` contributes its guard, `F(U(φ,ψ))` at
+rank `< j` its subject, and dually for `snce`. No row of the gate asks about what a region's chosen
+label demands **of the region itself**.
 
 That distinction is invisible while a region is a single point or a bounded gap and decisive on a
 **ray**, because a ray is an infinite region and every one of its points reads the same label:
@@ -90,7 +90,7 @@ carrying its own `RE-BASELINED (guard)` note with the old and new value.— each
 `RE-BASELINED (guard)` note with the old and new value.
 -/
 
-namespace BimodalTest.RayRegionProbe
+namespace BimodalTest.Metalogic.Decidability.RayRegionProbe
 
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
@@ -229,4 +229,4 @@ private def rayRefuteBranch : Branch :=
   s!"rayUp={rayUpOk rayRefuteBranch rayTimes} rayDn={rayDnOk rayRefuteBranch rayTimes} " ++
   s!"rays={rayLabels rayRefuteBranch rayTimes}"
 
-end BimodalTest.RayRegionProbe
+end BimodalTest.Metalogic.Decidability.RayRegionProbe
