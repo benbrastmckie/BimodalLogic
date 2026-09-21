@@ -11,10 +11,10 @@ next_project_number: 651
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,568,604,623,624,628,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,570,616,617,646,649 | 298,464,502,563,568,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,534,566,618,650 | 231,465,497,564,565,616,646,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,645 | 428,498,499,500,534 | algebraic-representation, decidability, metalogic, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,628,646,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,534,564,565,567,616,617,649 | 298,464,502,563,646,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,645,650 | 231,465,497,534,564,565,616,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -88,14 +88,13 @@ next_project_number: 651
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-568 [IMPLEMENTING] — Promote the alternative consequence relations into the...
-  └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-  └─ 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
+570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
+646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
 
-648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
+648 [RESEARCHING] — Fix the defects found in typst/BimodalReference.typ and its...
   └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
     └─ 650 [NOT STARTED] — Define-before-use audit of...
 
@@ -159,7 +158,7 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 ---
 
 ### 648. Fix reference book defects found in appendix review
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: reference-book
 - **Dependencies**: Task 647
@@ -576,12 +575,13 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 568. C3 c4 consequence relations as library definitions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 625
 - **Research**: [568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md]
 - **Plan**: [568_c3_c4_consequence_relations_as_library_definitions/plans/01_c3-c4-library-definitions.md]
+- **Summary**: [568_c3_c4_consequence_relations_as_library_definitions/summaries/01_c3-c4-library-definitions-summary.md]
 
 **Description**: Promote the alternative consequence relations into the library, from `specs/553_decide_convex_history_layer_collapse/probes/02_alternative-consequence.lean` and `specs/553_decide_convex_history_layer_collapse/probes/03_axiom-survival.lean`. This is the task the author's own reframing most directly asks for: it is what makes C3 and C4 things this repository HAS rather than things a probe file mentions.
 
