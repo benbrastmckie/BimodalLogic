@@ -245,34 +245,34 @@ and the violation set is empty today. Confirm from the `PASS` line, which must p
 
 ---
 
-### Phase 3: Hand negative tests on the real tree [NOT STARTED]
+### Phase 3: Hand negative tests on the real tree [COMPLETED]
 
 **Goal**: Observe every failure direction through the real scripts on real file edits, and leave
 the tree exactly as it was.
 
 **Tasks**:
-- [ ] Precondition: Phases 1-2 committed, and `git diff --quiet` holds for every file a test will
+- [x] Precondition: Phases 1-2 committed, and `git diff --quiet` holds for every file a test will
       touch. Run each test as one shell invocation: `cp -p` the file to the scratchpad, edit, run
       `bash scripts/check-metalogic-cycles.sh` (capturing output and exit code), restore the copy
-      unconditionally, then `git diff --quiet -- <path>`.
-- [ ] **Surplus + assertion C**: add `import FormalSystem.PlusLanguage.PlusTruth` to the leading
+      unconditionally, then `git diff --quiet -- <path>`. *(completed)*
+- [x] **Surplus + assertion C**: add `import FormalSystem.PlusLanguage.PlusTruth` to the leading
       import block of `FormalSystem/PlusLanguage/Formula.lean`. Expect a `SURPLUS` line from B, a
       `SYNTAX->SEMANTICS` line and `FAIL` from C, exit 1. (The line is an import cycle in Lean;
-      immaterial, since nothing is built while it is in place.)
-- [ ] **Shortfall**: delete `import FormalSystem.Theorems.TemporalDerived` from
+      immaterial, since nothing is built while it is in place.) *(completed: SURPLUS line from B, SYNTAX->SEMANTICS line and FAIL from C, exit 1)*
+- [x] **Shortfall**: delete `import FormalSystem.Theorems.TemporalDerived` from
       `FormalSystem/MinusLanguage/AxiomDischarge.lean`. Expect a `SHORTFALL` line, exit 1, and C
-      still passing.
-- [ ] **Fail-loud, file level**: create an empty `FormalSystem/PlusLanguage/Scratch.lean`; run
-      both scripts; expect the error to name the module and the per-file table. Remove with `rm`.
-- [ ] **Fail-loud, directory level**: create `FormalSystem/ScratchDir/Thing.lean`; expect the
-      error to name `LAYERS`. Remove with `rm -r`.
-- [ ] **Stale row**: add one bogus row to the per-file table; expect the stale-row failure; restore
-      the saved copy and confirm `git diff --quiet -- scripts/measure-refactor-partitions.py`.
-- [ ] Re-run `bash scripts/check-metalogic-cycles.sh` on the restored tree: exit 0, and
-      `git status --short` shows no path from this phase.
-- [ ] Record each test's command, the observed output lines and the exit code for the
+      still passing. *(completed: SHORTFALL line, exit 1, C still PASS)*
+- [x] **Fail-loud, file level**: create an empty `FormalSystem/PlusLanguage/Scratch.lean`; run
+      both scripts; expect the error to name the module and the per-file table. Remove with `rm`. *(completed: both scripts exit 1 naming LANGUAGE_FILE_LAYERS["PlusLanguage"] row Scratch)*
+- [x] **Fail-loud, directory level**: create `FormalSystem/ScratchDir/Thing.lean`; expect the
+      error to name `LAYERS`. Remove with `rm -r`. *(completed: both scripts exit 1 naming LAYERS row ScratchDir)*
+- [x] **Stale row**: add one bogus row to the per-file table; expect the stale-row failure; restore
+      the saved copy and confirm `git diff --quiet -- scripts/measure-refactor-partitions.py`. *(completed: STALE ROW line and FAIL, exit 1)*
+- [x] Re-run `bash scripts/check-metalogic-cycles.sh` on the restored tree: exit 0, and
+      `git status --short` shows no path from this phase. *(completed: three PASS lines, exit 0; no path from this phase in git status)*
+- [x] Record each test's command, the observed output lines and the exit code for the
       implementation summary. If a test does not fail as expected, that is a defect in Phase 1 or
-      2: fix it there, then repeat the whole phase.
+      2: fix it there, then repeat the whole phase. *(completed: no defect found; no script fix needed)*
 
 **Timing**: 0.75 hours
 
