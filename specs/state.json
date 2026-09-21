@@ -218,7 +218,7 @@
     {
       "project_number": 638,
       "project_name": "post_publication_size_splits_and_module_system",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -236,7 +236,16 @@
       ],
       "description": "Split EFGames/GapDetection.lean and the split-point file only along import-acyclic declaration families, keeping namespaces; evaluate adopting the Lean module system as its own programme. Acceptance: no fully-qualified name changes; harness green.\n\nReconciliation notes: depends on task 637. Optional, post-publication. The two named files are, at their post-move paths, FormalSystem/Metalogic/Expressiveness/EFGames/GapDetection.lean and FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean.",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T19:01:58Z"
+      "last_updated": "2026-09-21T19:25:28Z",
+      "session_id": "sess_1790018097_6c1579",
+      "artifacts": [
+        {
+          "path": "specs/638_post_publication_size_splits_and_module_system/reports/01_size-splits-module-system.md",
+          "type": "report",
+          "summary": "Seam analysis, verified split layout, per-check harness impact, and module-system evaluation."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 628,
