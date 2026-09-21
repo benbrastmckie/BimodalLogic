@@ -302,24 +302,24 @@ claim with `grep -rlw obtain_split_point_props FormalSystem Tests BimodalTools` 
 
 ---
 
-### Phase 4: Directory and policy documentation [NOT STARTED]
+### Phase 4: Directory and policy documentation [COMPLETED]
 
 **Goal**: Every prose surface that names the two files tells the truth about the new layout.
 
 **Tasks**:
-- [ ] `EFGames/README.md`: add rows for the three new modules; correct the `GapDetection.lean`
+- [x] `EFGames/README.md`: add rows for the three new modules; correct the `GapDetection.lean`
   row (lines, description); repair the rows research found stale (the archived
   `NFGameBridge.lean` row; `StaviCompleteness.lean` listed at 3,252 against an actual 1,665);
   re-derive every line count in the table with `wc -l` rather than trusting any number here;
-  adjust "Key Results" attribution; bump `Last verified`.
-- [ ] `GameTransfer/README.md`: add the `SplitPointProps.lean` row, new line counts, "Key Results"
+  adjust "Key Results" attribution; bump `Last verified`. *(deviation: altered — the gap-detection entry now names real declarations; the other three "Key Results" names (`ef_game_defs`, `characteristic_formula`, `stavi_completeness`) match no declaration either but were left, as out of this change's scope, and are listed as a follow-up. `Last verified` already read 2026-09-21.)*
+- [x] `GameTransfer/README.md`: add the `SplitPointProps.lean` row, new line counts, "Key Results"
   attribution (structure vs. theorem); bump `Last verified`.
-- [ ] `ORGANISATION.md` "Module size": `GapDetection.lean` leaves the over-4,500 list, with one
+- [x] `ORGANISATION.md` "Module size": `GapDetection.lean` leaves the over-4,500 list, with one
   sentence naming the seams that were found; `SplitPoint.lean` stays, with its new line count and
   the reason (one proof; its one seam, the property structure, has been taken).
-- [ ] `FormalSystem/README.md` and the root `README.md`: edit only if they name either file or a
-  line count that changed; otherwise leave untouched and record that in the summary.
-- [ ] All new prose: real paths only, no task numbers, no phase labels of any refactor programme
+- [x] `FormalSystem/README.md` and the root `README.md`: edit only if they name either file or a
+  line count that changed; otherwise leave untouched and record that in the summary. *(deviation: altered — neither names the files, but both carry a generated inventory block that the four new modules made stale (`FAIL INV` in `check-module-invariants.sh`), as does `FormalSystem/Metalogic/README.md`, which was outside `file_scope` and was union-added. All three were regenerated with `--emit-inventory`, not hand-edited. The `FormalSystem/` file count in `docs/development/MODULE_SYSTEM_EVALUATION.md` was corrected from 504 to 508 for the same reason.)*
+- [x] All new prose: real paths only, no task numbers, no phase labels of any refactor programme
   used as if they were durable anchors.
 
 **Timing**: 1 hour

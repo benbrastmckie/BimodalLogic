@@ -108,7 +108,7 @@ Counts as of 2026-09-21 on the toolchain above. Each is a snapshot; re-derive be
 
 | Item | Count | Why it matters |
 |------|-------|----------------|
-| `.lean` files under `FormalSystem/` | 504 | All must convert, bottom-up, for the library to be a module library |
+| `.lean` files under `FormalSystem/` | 508 | All must convert, bottom-up, for the library to be a module library |
 | `.lean` files under `Tests/` | 65 | May stay plain; must keep compiling against a module library |
 | `.lean` files under `BimodalTools/` | 27 | As for `Tests/` |
 | Top-level `private` declarations (`^private `) | 765 in `FormalSystem/`, 167 in `Tests/`, 62 in `BimodalTools/` | Meaning unchanged, but anything a test reaches into needs `import all` |
@@ -137,7 +137,7 @@ parser change needs a fixture that fails when the new forms are not recognised.
 
 ## Why defer
 
-- **All or nothing.** 504 files, one direction, no partial landing that leaves the library
+- **All or nothing.** 508 files, one direction, no partial landing that leaves the library
   coherent except a prefix of the import graph.
 - **No publication benefit.** No declaration name, namespace or module path changes, so nothing a
   paper or a downstream user cites is affected either way.

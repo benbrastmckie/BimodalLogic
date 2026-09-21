@@ -17,12 +17,15 @@ parent directory.
 | `CaseAnalysis.lean` | 2,178 | Cases I and II of the GHR93 inductive step (`ghr93_case_I`, `ghr93_case_II`) |
 | `ContinuationSets.lean` | 1,654 | Continuation-set vocabulary (`ContHolds`, `ContHoldsCross`, `ContinuationSetCross`) and the base-case M/N equalities |
 | `DConsistencyTransport.lean` | 755 | D-consistency transport and rank-down projection for the transfer argument |
-| `SplitPoint.lean` | 4,906 | Split-point construction (`SplitPointProps`, `obtain_split_point_props`) |
+| `SplitPoint.lean` | 4,799 | Split-point construction: the single theorem `obtain_split_point_props` |
+| `SplitPointProps.lean` | 132 | The `SplitPointProps` structure, stated apart from its construction so that `CaseAnalysis.lean` does not depend on the long proof |
 
 ## Key Results
 
-- `obtain_split_point_props` (`SplitPoint.lean`): obtains a split point with the properties the
-  transfer argument consumes.
+- `SplitPointProps` (`SplitPointProps.lean`): the bundle of split-point properties the transfer
+  argument consumes.
+- `obtain_split_point_props` (`SplitPoint.lean`): constructs a `SplitPointProps` witness. Its one
+  caller is `Metalogic/WeakCanonical/Transfer.lean`.
 - `ghr93_case_I`, `ghr93_case_II` (`CaseAnalysis.lean`): the two surviving cases of the GHR93
   inductive step.
 - `d_consistency_left`, `d_consistency_right`, `ghr93_duplicator_wins_rank_down`
@@ -47,7 +50,7 @@ directly. `CaseAnalysis.lean`'s own module docstring carries the same record.
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Metalogic.Expressiveness.EFGames`, `FormalSystem.Metalogic.WeakCanonical.NEquivalence`
-- **Imported by**: `FormalSystem.Metalogic.Expressiveness` (top level)
+- **Imported by**: `FormalSystem.Metalogic.Expressiveness` (top level), `FormalSystem.Metalogic.WeakCanonical.Transfer`
 
 ## Related Documentation
 

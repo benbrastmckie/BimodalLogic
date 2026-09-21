@@ -126,11 +126,20 @@ docstring; the linter keeps N tight, so the file's length is recorded rather tha
 baseline". A baseline is not a to-do item: splitting a file only to retire its baseline is
 exactly what this rule rules out.
 
-Two files are large enough to say so by name, both over 4,500 lines:
-`FormalSystem/Metalogic/Expressiveness/EFGames/GapDetection.lean` (5,094) and
-`FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean` (4,906). Each is a
-candidate for a split if a dependency seam is found in it, and for nothing otherwise. Re-derive
-the list with:
+One file is large enough to say so by name, at over 4,500 lines:
+`FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean` (4,799). It is a single
+proof, `obtain_split_point_props`. The one dependency seam it had has been taken: the
+`SplitPointProps` structure now lives in `GameTransfer/SplitPointProps.lean`, so that a module
+needing only the structure does not wait on the proof. What remains cannot be split without
+refactoring the proof itself, which is a different kind of change from the one this section
+describes.
+
+`FormalSystem/Metalogic/Expressiveness/EFGames/GapDetection.lean` was the other such file, at
+5,094 lines. Three seams were found in it and all were taken, leaving four modules: the formula
+definitions (`GapDetection.lean`), mu-relativized truth at actual points, which never used those
+definitions (`MuRelativizedTruth.lean`), and the two directions of GHR93 Lemma 9, which do not
+depend on each other (`GapDetectionLeft.lean`, `GapDetectionRight.lean`). Re-derive the list of
+longest files with:
 
 ```bash
 find FormalSystem -name '*.lean' -exec wc -l {} + | sort -rn | head

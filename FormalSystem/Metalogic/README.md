@@ -93,7 +93,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 167 | `Decidability/` |
 | `Deterministic.lean` | 27 | <!-- TODO: add description --> |
-| `Expressiveness.lean` | 74 | `Expressiveness/` |
+| `Expressiveness.lean` | 77 | `Expressiveness/` |
 | `Independence.lean` | 115 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 131 | `WeakCanonical/` |
@@ -152,10 +152,10 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 51,952 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,614 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Expressiveness/`](Expressiveness/README.md) | 139 | 104,108 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
+| [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 22 | 5,973 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,536 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,537 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the

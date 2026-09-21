@@ -237,6 +237,7 @@
         "FormalSystem/Metalogic/Expressiveness/GameTransfer/README.md",
         "FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean",
         "FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPointProps.lean",
+        "FormalSystem/Metalogic/README.md",
         "FormalSystem/Metalogic/WeakCanonical/Transfer.lean",
         "FormalSystem/README.md",
         "ORGANISATION.md",
