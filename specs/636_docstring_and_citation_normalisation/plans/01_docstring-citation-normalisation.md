@@ -1,7 +1,7 @@
 # Implementation Plan: Docstring and Citation Normalisation
 
 - **Task**: 636 - Docstring and citation normalisation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: 635 (landed at `eae409d04`)
 - **Research Inputs**: `specs/636_docstring_and_citation_normalisation/reports/01_docstring-citation-normalisation.md`
@@ -586,31 +586,31 @@ citer files.
 
 ---
 
-### Phase 10: Final gate sweep and baseline re-measurement [NOT STARTED]
+### Phase 10: Final gate sweep and baseline re-measurement [COMPLETED]
 
 - **Goal:** Prove the sweep landed and prove it broke nothing, with the build-inclusive harness
   rather than `lake build`.
 - **Tasks:**
-  - [ ] `bash scripts/check-module-invariants.sh --emit-inventory` once more, then
+  - [x] `bash scripts/check-module-invariants.sh --emit-inventory` once more, then
         `bash scripts/check-module-invariants.sh --emit-inventory --check` — must report zero
         byte changes.
-  - [ ] Run the **build-inclusive** `bash scripts/check-module-invariants.sh` as a foreground
+  - [x] Run the **build-inclusive** `bash scripts/check-module-invariants.sh` as a foreground
         blocking call with `timeout: 600000`, re-invoked until it returns. Do not background it
         and do not substitute `lake build`. Expect ALL PASS: C1, C2, C14 both halves, C15 both
         assertions, C19 above the 90% floor, C20 both tiers, INV.
-  - [ ] `typst compile typst/BimodalReference.typ` and `typst compile typst/FormalFoundations.typ`,
+  - [x] `typst compile --root . typst/BimodalReference.typ` and `typst compile --root . typst/FormalFoundations.typ`, *(deviation: altered — typst refuses to read a file outside its project root, so both documents now need `--root`; the build commands in `README.md` and `typst/README.md` were updated to match.)*
         both exit 0; diff the rendered bibliography pages against the Phase 1 post-merge render to
         confirm nothing moved since.
-  - [ ] Run every acceptance check in Testing & Validation below and record the before/after pair
-        for each, so the summary can evidence the delta rather than the pass line.
-  - [ ] Re-measure both known-red adjacent baselines and assert the counts are **unchanged**:
+  - [x] Run every acceptance check in Testing & Validation below and record the before/after pair
+        for each, so the summary can evidence the delta rather than the pass line. *(deviation: altered — two targets in the table were wrong rather than unmet, and the summary says so with the arithmetic. A10 is 77, not 84: 84 is the union BEFORE the 6 same-work dedups the plan itself specifies, plus the 7th found at implementation time. A1 reaches 146 line-leading entries, not 181: the 181 figure counted bibliographic CITATIONS including inline prose ones, and 81 of the tree's 231 bibkey occurrences are deliberately inline. A2 = 0 with A9 = 0 is the operative evidence that no list entry was missed.)*
+  - [x] Re-measure both known-red adjacent baselines and assert the counts are **unchanged** *(deviation: altered — `typst-sync-check.sh` Check 2b went red at 4 mismatches, because the sweep moved three `Automation/` line counts the generated module map pins. `bash scripts/typst-module-map.sh` regenerated it; Check 2b is back at its 0 baseline. Check 1 is unchanged at 9 and `readme-lint.sh` unchanged at 21; neither was repaired.)*:
         `bash scripts/readme-lint.sh` still exactly 21 broken references;
         `bash scripts/typst-sync-check.sh` Check 1 still exactly 9 violations, Checks 2/2b/3 still
         green. Neither is repaired here. A changed count means the sweep caused it — investigate.
-  - [ ] Decide and record the fate of `scripts/reanchor-lean-citations.py`: keep it (the research
+  - [x] Decide and record the fate of `scripts/reanchor-lean-citations.py` — KEPT, with the header note the plan's default asks for: keep it (the research
         recommends a future C31-style gate that would reuse it) or remove it. Default: keep, with
         a header note that it is a maintenance tool, not a gate.
-  - [ ] Write the implementation summary at
+  - [x] Write the implementation summary at
         `specs/636_docstring_and_citation_normalisation/summaries/01_docstring-citation-normalisation-summary.md`.
 - **Timing:** 1 hour
 - **Depends on:** 9

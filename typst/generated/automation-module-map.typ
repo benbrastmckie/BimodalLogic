@@ -11,13 +11,13 @@
 // ============================================================================
 
 #let automation-module-map = (
-  ("ProofSearch/Core.lean", 1279, true),
+  ("ProofSearch/Core.lean", 1280, true),
   ("ProofSearch/Strategies.lean", 386, true),
-  ("SuccessPatterns.lean", 417, true),
+  ("SuccessPatterns.lean", 419, true),
   ("Tactics/Commands.lean", 160, true),
-  ("Tactics/Deduction.lean", 181, true),
+  ("Tactics/Deduction.lean", 182, true),
   ("Tactics/Search.lean", 624, true),
   ("Tactics/UserTactics.lean", 274, true),
 )
 
-#let automation-module-total = 3321
+#let automation-module-total = 3325
