@@ -1573,6 +1573,16 @@ old definition carried no longer exists (see the `CO` / `TMP-CO` entry above).
 ```
 sha256: `650cb790801150df6a3d04a1356bb8c346b4e24694f381d8c5fbc7458da8f038`
 
+Note (2026-09-20, prose only, no re-pin): the root `README.md` used to describe the paper's
+complete-order system, under this entry's earlier name `def:TMplus-c`, as completeness
+*simpliciter* with models `{ℤ, ℝ}` and theory `Th(ℤ) ∩ Th(ℝ)`, concluding that no element of the
+tree's `FrameClass` picked the class out; it also recorded the corollary's axiom basis (BX_d vs.
+BX plus the Reynolds axioms) as an open question. Both claims are retired: the class this entry
+now names is dense-and-complete, matching `FrameClass.RTime` (`DenselyOrdered D` plus Dedekind
+completeness) exactly, and the axiom basis is settled by this entry's own text (BX_r extends
+**BX**$_d$ by `PU` and `SEP`). See `cor:tm-completeness` below (~line 1713) for the corollary text
+this entry's completeness axiom feeds.
+
 ### `def:TMplus` — TM+ base logic for BL+, and the four-part conservativity footnote
 
 ```latex

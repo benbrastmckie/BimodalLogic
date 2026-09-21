@@ -85,7 +85,7 @@ A **task frame** `F = (W, D, R)` consists of a **nonempty** set `W` of world-sta
 - ***Compositionality*** — `w ⇒_{x+y} v` **if and only if** `w ⇒_x u` and `u ⇒_y v` for some `u ∈ W`. Both directions are load bearing: the `←` half composes, the `→` half interpolates.
 - ***Seriality*** — for every `w` and every `x ≥ 0` there are `u, v ∈ W` with `w ⇒_x u` and `v ⇒_x w`.
 - ***Limit*** — `⋂_{x > 0} (w)_x = {w}`, where `(w)_x` is the cone of states reachable from `w` within duration `x`.
-- ***Saturation*** — `⋂ 𝒮 ≠ ∅` for every `⊇`-directed family `𝒮` of nonempty fibers and segments. In ball-space terms this is the condition `S₁ᵈ`, which the paper's footnote places as *at least as strong as* "spherically complete" (`S₁`) — the footnote said *strictly stronger* until the paper's 2026-09 revision withdrew the strictness claim.
+- ***Saturation*** — `⋂ 𝒮 ≠ ∅` for every `⊇`-directed family `𝒮` of nonempty fibers and segments. In ball-space terms this is the condition `S₁ᵈ`, which the paper's footnote places as *at least as strong as* "spherically complete" (`S₁`).
 
 Nullity (`w ⇒_0 w`) is **not** an axiom: it is derived, choice-free, from *Seriality* at `x = 0` together with *Limit*. In Lean, `structure FrameOver` (`FormalSystem/Semantics/TaskFrame.lean`) — the fibre over a temporal order, of which `TaskFrame` is the total space — has exactly the paper's fields: the nonempty world-state type, a primitive relation `PosRel` on the positive cone, and the four axioms. The two-sided `TaskRel` is *defined* from `PosRel` by the reflection convention, and the reflection law `TaskRel w d u ↔ TaskRel u (-d) w` is the theorem `reflection`, not a field. The zero-duration law `nullity_identity` (`TaskRel w 0 u ↔ w = u`) is a theorem, derived from `serial` and `limit`, not a field.
 
@@ -208,9 +208,7 @@ Dense ≤ RTime); counting every named schema instead, including the derived pas
 
 The Dense and ZTime logics are independent extensions — neither subsumes the other. RTime extends **Dense**: `Axiom.minFrameClass` places `density` and `dense_indicator` below `FrameClass.RTime`, because Reynolds' own axiomatization of real flow contains them. ZTime and RTime are likewise incomparable, and `RTime ≰ Dense`.
 
-**`FrameClass.RTime` is the paper's TM_r.** Under the paper's current text, `cor:tm-completeness` gives TM_r as weakly complete over `ℝ`-time — the dense and Dedekind-complete orders — which is exactly what `FrameClass.RTime` denotes: `DenselyOrdered D` plus Dedekind completeness. Earlier revisions of this README described the paper's complete-order system as completeness *simpliciter* with models `{ℤ, ℝ}` and theory `Th(ℤ) ∩ Th(ℝ)`, and concluded that no element of `FrameClass` picks the class out. That is stale on both counts: the `{ℤ, ℝ}` / `Th(ℤ) ∩ Th(ℝ)` footnote is commented out in the live `def:BX-r`, and the class the paper names is dense-and-complete, not complete-simpliciter.
-
-The axiom-basis question this README used to record as open is answered as well: `def:BX-r` bases BX_r on the **dense** logic BX_d extended by `TMP-PU` and `TMP-SEP`, so the density axioms are present on the paper's side too, and `completeness_rtime` proves the corollary's own statement rather than a stronger-premise variant. CO is derived rather than assumed on both sides.
+**`FrameClass.RTime` is the paper's TM_r.** Under the paper's current text, `cor:tm-completeness` gives TM_r as weakly complete over `ℝ`-time — the dense and Dedekind-complete orders — which is exactly what `FrameClass.RTime` denotes: `DenselyOrdered D` plus Dedekind completeness.
 
 `TM` and its extensions `TM_z`, `TM_d`, `TM_r` are the paper's own systems under the paper's own names; the languages and logics that carry a `⁻` or a `⁺` are this repository's, and are described against the paper in the table below. See [`FormalSystem/Metalogic/Conservativity.lean`](FormalSystem/Metalogic/Conservativity.lean) for the full mapping.
 

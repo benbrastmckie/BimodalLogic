@@ -170,7 +170,7 @@ count differs from one, stop and re-scope before editing.
 
 ---
 
-### Phase 2: Retire revision-history narration [NOT STARTED]
+### Phase 2: Retire revision-history narration [COMPLETED]
 
 **Goal**: Remove the three passages that describe a previous state of the README or of the
 paper's text, and record the two that have no existing counterpart in
@@ -178,7 +178,7 @@ paper's text, and record the two that have no existing counterpart in
 true now and narrates no history.
 
 **Tasks**:
-- [ ] Re-locate all three passages by content, not by line number (Phase 1's rename shifted
+- [x] Re-locate all three passages by content, not by line number (Phase 1's rename shifted
       nothing above them, but confirm anyway):
       - The saturation-footnote aside, in the *Saturation* bullet: the trailing clause
         "— the footnote said *strictly stronger* until the paper's 2026-09 revision withdrew the
@@ -186,15 +186,15 @@ true now and narrates no history.
       - The paragraph beginning "Earlier revisions of this README described the paper's
         complete-order system as completeness *simpliciter*…"
       - The paragraph beginning "The axiom-basis question this README used to record as open is
-        answered as well:…"
-- [ ] **Saturation aside — delete only.** This fact is already recorded, more precisely, at
+        answered as well:…" *(completed: all three located by content match)*
+- [x] **Saturation aside — delete only.** This fact is already recorded, more precisely, at
       `docs/reference/paper-definitions-of-record.md:969-980` (the `def:frame#Saturation`
       entry's "2026-09-07 wave" note). Do **not** copy it into the record a second time. End the
       bullet at "…which the paper's footnote places as *at least as strong as* 'spherically
       complete' (`S₁`)." A bare pointer to the record file for the definition's revision history
       is an acceptable optional addition — a pointer states where history lives, it does not
-      narrate it.
-- [ ] **Add the destination note in `docs/reference/paper-definitions-of-record.md` before
+      narrate it. *(completed: bullet now ends at "spherically complete (S₁)."; no pointer added)*
+- [x] **Add the destination note in `docs/reference/paper-definitions-of-record.md` before
       deleting from README**, so no fact is ever in flight. Append a short `Note:` to the
       `def:BX-r` entry (heading `### \`def:BX-r\` — the dense-and-complete Burgess–Xu tense logic
       BX_r …`, around line 1560), following the file's existing entry-level note convention (see
@@ -210,22 +210,27 @@ true now and narrates no history.
         point at the already-pinned entries for the current fact.
       - contain no task number (`.claude/rules/no-task-references-in-deliverables.md` applies —
         `docs/` is not `specs/`). "by this task" with no number, as the file already uses, is
-        fine.
+        fine. *(completed: note appended after the def:BX-r sha256 line, dated 2026-09-20, prose
+        only, no re-pin, points at cor:tm-completeness)*
 - [ ] If the note grows past a few sentences, prefer a new top-level dated section following the
       format of `### Language correspondence (2026-09-08): permanent, prose only, no re-pin`
       (line 265) instead of an entry-level note. Either placement leaves
-      `scripts/check-paper-definitions.sh`'s verdict unchanged.
-- [ ] Delete the two README paragraphs. The surrounding text must still read continuously: the
+      `scripts/check-paper-definitions.sh`'s verdict unchanged. *(deviation: skipped — the note
+      stayed short enough (6 sentences) to keep as an entry-level note; no top-level section
+      needed)*
+- [x] Delete the two README paragraphs. The surrounding text must still read continuously: the
       paragraph above them ("**`FrameClass.RTime` is the paper's TM_r.** Under the paper's
       current text, `cor:tm-completeness` gives TM_r as weakly complete over `ℝ`-time … which is
       exactly what `FrameClass.RTime` denotes: `DenselyOrdered D` plus Dedekind completeness.")
       is a complete, currently-true statement and stays; only the "Earlier revisions…" sentence
-      onward is removed.
-- [ ] Re-run the anchor census and diff against Phase 1's baseline. Expected delta: both
+      onward is removed. *(completed)*
+- [x] Re-run the anchor census and diff against Phase 1's baseline. Expected delta: both
       `def:BX-r` occurrences gone (the anchor leaves README entirely — this is expected, not a
       defect), one of two `cor:tm-completeness` occurrences gone (line 234's survives).
-- [ ] Re-run both gates. C15 must stay green.
-- [ ] Commit.
+      *(completed: delta matched exactly)*
+- [x] Re-run both gates. C15 must stay green. *(completed: both green, check-paper-definitions.sh
+      verdict unchanged — case (b), 42 recorded definitions unchanged)*
+- [x] Commit. *(completed)*
 
 **Timing**: 1 hour
 

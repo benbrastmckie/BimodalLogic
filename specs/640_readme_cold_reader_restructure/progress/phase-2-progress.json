@@ -1,0 +1,29 @@
+{
+  "phase": 2,
+  "phase_name": "Retire revision-history narration",
+  "started_at": "2026-09-20T17:42:00Z",
+  "last_updated": "2026-09-20T17:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-locate all three passages by content", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Delete saturation-footnote aside clause", "status": "done", "files_touched": ["README.md"]},
+    {"id": 3, "description": "Add destination note to def:BX-r entry in paper-definitions-of-record.md", "status": "done", "files_touched": ["docs/reference/paper-definitions-of-record.md"]},
+    {"id": 4, "description": "Delete the two Earlier-revisions/axiom-basis README paragraphs", "status": "done", "files_touched": ["README.md"]},
+    {"id": 5, "description": "Re-run anchor census diff and both gates, commit", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.4",
+      "description": "If the note grows past a few sentences, prefer a new top-level dated section instead of an entry-level note.",
+      "type": "skipped",
+      "reason": "The note stayed short (6 sentences), so the entry-level note convention was used as the default path; the top-level-section alternative was not needed.",
+      "annotation": "*(deviation: skipped — the note stayed short enough (6 sentences) to keep as an entry-level note; no top-level section needed)*"
+    }
+  ],
+  "notes": {
+    "anchor_census_after": "211:cor:tm-completeness, 231:def:BLplus-language, 231:def:TMplus, 232:cor:tm-completeness, 240:app:deterministic-future, 241:def:BLstar-semantics, 326:def:frame-properties",
+    "check_paper_definitions_verdict": "case (b): possible_worlds.tex checksum changed but all 42 recorded definitions unchanged -- pass (unchanged from Phase 1 baseline)"
+  }
+}
