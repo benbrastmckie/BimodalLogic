@@ -1,7 +1,7 @@
 # Implementation Plan: Fix Reference-Book Defects Found in Appendix Review
 
 - **Task**: 648 - Fix the defects found in `typst/BimodalReference.typ` and its surroundings during the accuracy-and-formatting review of `typst/chapters/ax-lean-appendix.typ`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: Task 647 (extend the Lean appendix) — landed, final commit `a171dc67e`
 - **Research Inputs**: `reports/01_fix-reference-book-defects.md`
@@ -518,24 +518,27 @@ records this round's changes.
 
 ---
 
-### Phase 9: Full acceptance gate and disposition summary [NOT STARTED]
+### Phase 9: Full acceptance gate and disposition summary [COMPLETED]
 
 **Goal**: Every acceptance criterion in the dispatch is demonstrated, with each of the nine items
 recorded as fixed, closed as not reproducing, or deferred with a reason.
 
 **Tasks**:
-- [ ] `typst compile --root .. BimodalReference.typ` — zero errors, zero warnings.
-- [ ] `bash scripts/typst-sync-check.sh` — PASS on all checks.
-- [ ] `lake build --wfail` — green.
-- [ ] `pdftotext -layout` render; confirm zero matches for `Chapter 1` followed by three or more
-      digits, and read every reference to either appendix.
-- [ ] Inspect the rendered pages of every chapter touched: introduction, decidability in practice,
-      proof automation, dataset pipeline, and both appendices.
-- [ ] Write the implementation summary with the item-by-item disposition, including the
+- [x] `typst compile --root .. BimodalReference.typ` — zero errors, zero warnings. *(confirmed)*
+- [x] `bash scripts/typst-sync-check.sh` — PASS on all checks. *(confirmed: all 4 checks green)*
+- [x] `lake build --wfail` — green. *(confirmed: full project, 2696 jobs, zero warnings)*
+- [x] `pdftotext -layout` render; confirm zero matches for `Chapter 1` followed by three or more
+      digits, and read every reference to either appendix. *(confirmed: 0 matches; both
+      references read "Appendix A"/"Appendix B")*
+- [x] Inspect the rendered pages of every chapter touched: introduction, decidability in practice,
+      proof automation, dataset pipeline, and both appendices. *(confirmed: pages 11, 51, 72, 81,
+      90, 120 rendered as images and visually inspected)*
+- [x] Write the implementation summary with the item-by-item disposition, including the
       not-reproducing closure for the bare machine-appendix reference sub-claim, the route taken
       for the appendix lettering, the chosen sans font family, and the residual manual-maintenance
-      risk of the ungenerated `tryAxiomMatch` list length.
-- [ ] Confirm no deliverable outside `specs/` carries a task number or a `specs/` path.
+      risk of the ungenerated `tryAxiomMatch` list length. *(completed)*
+- [x] Confirm no deliverable outside `specs/` carries a task number or a `specs/` path.
+      *(confirmed: zero new occurrences)*
 
 **Timing**: 1 hour
 
@@ -552,15 +555,15 @@ recorded as fixed, closed as not reproducing, or deferred with a reason.
 
 ## Testing & Validation
 
-- [ ] `typst compile --root .. BimodalReference.typ` from `typst/`: zero errors and zero warnings.
-- [ ] `bash scripts/typst-sync-check.sh`: PASS (Checks 1, 2, 2b, 3).
-- [ ] `lake build --wfail`: exit 0.
-- [ ] `pdftotext -layout` of the compiled PDF: zero matches for `Chapter 1` followed by three or
+- [x] `typst compile --root .. BimodalReference.typ` from `typst/`: zero errors and zero warnings.
+- [x] `bash scripts/typst-sync-check.sh`: PASS (Checks 1, 2, 2b, 3).
+- [x] `lake build --wfail`: exit 0.
+- [x] `pdftotext -layout` of the compiled PDF: zero matches for `Chapter 1` followed by three or
       more digits; every appendix reference reads correctly; every chapter reference still reads
       "Chapter N".
-- [ ] Rendered-page inspection of all six touched chapter/appendix files.
-- [ ] Lean diff confined to doc comments — no statement or proof line changed.
-- [ ] No task number and no `specs/` path in any file outside `specs/`.
+- [x] Rendered-page inspection of all six touched chapter/appendix files.
+- [x] Lean diff confined to doc comments — no statement or proof line changed.
+- [x] No task number and no `specs/` path in any file outside `specs/`.
 
 ## Artifacts & Outputs
 
