@@ -6,6 +6,9 @@
 #
 # Checks:
 #   B0  Boneyard exclusion self-test (the single archive must be found and excluded)
+#   B1  `Boneyard` appears in neither lakefile.toml nor the root aggregator
+#       FormalSystem.lean -- the archive is outside the build description
+#   B2  No live .lean under FormalSystem/ or Tests/ imports `Boneyard.*`
 #   C1  `lake build` exits 0
 #   C2  `#print axioms` for the four flagship theorems matches the recorded baseline
 #   C3  ZERO structural `sorry`, asserted BY CONTENT (never by line number)
@@ -701,6 +704,51 @@ if [ "$ALL_LEAN" -gt "$LIVE_LEAN" ]; then
   note "excluded $((ALL_LEAN - LIVE_LEAN)) archived .lean files ($ALL_LEAN total -> $LIVE_LEAN live)"
 else
   fail B0 "exclusion filter removed nothing; archived files are leaking into live counts"
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# B1: the archive is outside the build description
+#
+# B0 asserts the archive is excluded from the harness's own walks. B1 asserts
+# the stronger property the walks depend on: Lake never hears about the archive
+# at all. A `globs`/`lean_lib` entry or a root-aggregator import would put
+# archived files back into the build graph regardless of how carefully every
+# traversal filters them out, and the `#exit` in each archived file would then
+# be the only thing standing between the archive and the build.
+# ---------------------------------------------------------------------------
+B1_HITS=()
+for f in lakefile.toml FormalSystem.lean; do
+  [ -f "$f" ] || continue
+  while IFS= read -r l; do B1_HITS+=("$f:$l"); done < <(grep -n 'Boneyard' "$f")
+done
+if [ "${#B1_HITS[@]}" -eq 0 ]; then
+  pass B1 "no Boneyard reference in lakefile.toml or the root aggregator"
+else
+  fail B1 "${#B1_HITS[@]} Boneyard reference(s) in the build description"
+  for h in "${B1_HITS[@]}"; do note "$h"; done
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# B2: no live module imports the archive
+#
+# The converse direction to C11. C11 asks whether archived imports resolve; B2
+# asks whether anything LIVE depends on the archive. Matched on the import
+# keyword rather than the bare name so a docstring that merely cites an archived
+# path -- of which there are many, deliberately -- is not a failure.
+# ---------------------------------------------------------------------------
+B2_HITS=()
+while IFS= read -r l; do
+  [ -n "$l" ] && B2_HITS+=("$l")
+done < <(grep -rnE '^import[[:space:]]+Boneyard(\.|[[:space:]]*$)' \
+           FormalSystem Tests --include='*.lean' 2>/dev/null \
+           | grep -v '/Boneyard/')
+if [ "${#B2_HITS[@]}" -eq 0 ]; then
+  pass B2 "no live module under FormalSystem/ or Tests/ imports Boneyard.*"
+else
+  fail B2 "${#B2_HITS[@]} live import(s) of the archive"
+  for h in "${B2_HITS[@]}"; do note "$h"; done
 fi
 echo
 

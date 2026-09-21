@@ -307,7 +307,15 @@ they differ, and state the difference in the phase's completion note.
 
 ---
 
-### Phase 5: Add invariants B1 and B2 [NOT STARTED]
+### Phase 5: Add invariants B1 and B2 [COMPLETED]
+
+**Completion note**: B1 and B2 sit beside B0 and both report PASS. The full gate set (build tier
+included) ran green before this phase closed: 44 checks, zero FAIL, `ALL CHECKS PASSED`, exit 0,
+with `C1 lake build`, `C1 lake build BimodalTest` and `C11 539/169/8` all green on the pre-move
+tree. The first attempt at this run was killed by a system-wide low-memory reap while a sibling
+dispatch held a concurrent full build; the re-run against the warm cache completed normally. That
+kill was an environment event, not a gate result — no verdict was captured from it and none was
+inferred.
 
 **Goal**: The two invariants ADR-010 names, added while they are green on *both* sides of the move,
 so the atomic move batch carries less.
