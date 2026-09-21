@@ -203,4 +203,140 @@ direction alone for exactly that reason. Read a `true` as a theorem and a `false
 yet*.
 -/
 
+/-!
+## 5. Frame-class sensitivity
+
+Everything so far happened over `FrameClass.Base`, the weakest class, where time is constrained
+only by what the task semantics itself demands. TM is really a family of logics indexed by how
+much structure time is assumed to have, and the interesting phenomena live in the gaps between
+those classes. This section exhibits one formula that separates them.
+
+The formula is the density instance `GGp → Gp`: *if `p` holds at every time after every time
+after now, then `p` holds at every time after now*. Over densely ordered time this is valid —
+between now and any later point there is always an intermediate point, so any future time can
+be reached in two steps. Over discretely ordered time it is not: the instant immediately after
+now has no such intermediate, and the antecedent simply skips it.
+-/
+
+/-- The density instance `GGp → Gp`. -/
+def ggFml : Formula := pF.allFuture.allFuture.imp pF.allFuture
+
+/--
+`GGp → Gp`, derived over the class of dense frames.
+
+The side condition is `le_refl _` rather than `decide`: `Axiom.density`'s minimum frame class
+*is* `Dense`, so the gate is discharged by reflexivity of the frame-class order.
+-/
+def ggAtDense : DerivationTree FrameClass.Dense [] ggFml :=
+  DerivationTree.axiom [] _ (Axiom.density pF) (le_refl _)
+
+/-!
+This is where the frame-class gate on the `axiom` constructor earns its keep. `Axiom.density`
+records `Dense` as its minimum class, so `ggAtDense` type-checks at `Dense` and the very same
+constructor call is *not type-correct* at `Base` or at `ZTime` — there is no proof of
+`Dense ≤ Base` to supply, because there is none to be had. Frame-class sensitivity in this
+library is a typing phenomenon, not a convention the proofs agree to respect.
+
+That the axiom is unavailable at `Base` does not by itself show the formula is underivable
+there; some other derivation might reach it. Ruling that out is semantics' job, and the
+standard move is to exhibit a model.
+
+### One countermodel, two conclusions
+
+Take time to be the integers, and let `p` be true everywhere except at the single instant `1` —
+a blip. Standing at `0`, is `GGp` true? Take any time `s` after `0` and any time `r` after `s`;
+since both steps are strictly forward over the integers, `r` is at least `2`, so `r` is not the
+blip and `p` holds there. So `GGp` holds at `0`. Is `Gp` true at `0`? No: `1` is after `0` and
+`p` fails there. The implication is false at `0`, so `GGp → Gp` is not valid on this frame.
+
+The frame carrying this is `permissiveFrame` over `ℤ` — the frame that imposes no constraint
+beyond the ambient temporal order, so that any assignment of truth values along a history is
+realized. That matters twice over: because it is unconstrained it is a `Base` frame, and because
+its order is the integers it is also an integer-time frame. One countermodel therefore refutes
+the formula at both classes.
+-/
+
+/-- The integers, viewed as a temporal order. -/
+abbrev Dz : TemporalOrder := TemporalOrder.of ℤ
+
+/-- The integer carrier has a successor structure. -/
+noncomputable instance instSuccDz : SuccOrder Dz.carrier := inferInstanceAs (SuccOrder ℤ)
+
+/-- The integer carrier has no last moment. -/
+instance instNoMaxDz : NoMaxOrder Dz.carrier := inferInstanceAs (NoMaxOrder ℤ)
+
+/-- The blip assignment: `p` is true at every integer instant except `1`. -/
+noncomputable def blipF : Dz.carrier → Bool := fun t => decide (t ≠ (1 : ℤ))
+
+/--
+The permissive frame over the integers, on which the blip assignment is realized.
+
+An `abbrev` rather than a `def` so that `TaskFrame.isZTime_of_instances` can see through it to
+the underlying instances.
+-/
+noncomputable abbrev blipFrame : TaskFrame :=
+  (permissiveFrame Dz instSuccDz instNoMaxDz).toTaskFrame
+
+/--
+Two strictly forward steps from `0` land past `1`.
+
+Stated over plain `ℤ` on purpose, and applied to the carrier-typed goal by `exact`: `omega`
+silently ignores `<`/`≤` hypotheses whose type is `Dz.carrier` rather than `ℤ`, even under a
+type ascription, and then reports the goal as unprovable. Isolating the arithmetic here and
+letting definitional equality transport it across is what makes the step go through.
+-/
+theorem gapStep (s r : ℤ) (hs : 0 < s) (hr : s < r) : r ≠ 1 := by omega
+
+/-- The blip frame is an integer-time frame. -/
+theorem blipFrame_isZTime : blipFrame.IsZTime := TaskFrame.isZTime_of_instances _
+
+/-- The blip frame refutes `GGp → Gp`: the antecedent holds at `0` and the consequent fails. -/
+theorem blipRefutes : ¬ blipFrame.ValidOn ggFml := by
+  intro h
+  -- `GGp` holds at `0`: two strictly forward steps overshoot the blip.
+  have hgg : TruthAt (permissiveModel Dz instSuccDz instNoMaxDz)
+      (permissiveHist Dz instSuccDz instNoMaxDz blipF) ((0 : ℤ) : Dz.carrier)
+      pF.allFuture.allFuture := by
+    rw [Truth.future_iff]
+    intro s hs
+    rw [Truth.future_iff]
+    intro r hr
+    refine (permissive_realizes Dz instSuccDz instNoMaxDz blipF pAtom r).mpr ?_
+    simp only [blipF, decide_eq_true_eq]
+    exact gapStep s r hs hr
+  -- So the assumed validity forces `Gp` at `0` -- but `p` fails at the blip, one step on.
+  have hg := h (permissiveModel Dz instSuccDz instNoMaxDz)
+      (permissiveHist Dz instSuccDz instNoMaxDz blipF) ((0 : ℤ) : Dz.carrier) hgg
+  rw [Truth.future_iff] at hg
+  have hbad := (permissive_realizes Dz instSuccDz instNoMaxDz blipF pAtom ((1 : ℤ) : Dz.carrier)).mp
+    (hg ((1 : ℤ) : Dz.carrier) (by norm_num))
+  simp only [blipF, decide_eq_true_eq] at hbad
+  exact hbad rfl
+
+/-- `GGp → Gp` is not valid over the base class: the blip frame is a base frame. -/
+theorem notValidGg : ¬ Valid ggFml := fun h => blipRefutes (h _ trivial)
+
+/-- `GGp → Gp` is not valid over integer time either: the blip frame is an integer-time frame. -/
+theorem notValidZTimeGg : ¬ ValidZTime ggFml := fun h => blipRefutes (h _ blipFrame_isZTime)
+
+/-!
+Note how little separates those two. `notValidGg` discharges the base-class membership
+condition with `trivial`, because the base class constrains nothing; `notValidZTimeGg`
+discharges the integer-time condition with `blipFrame_isZTime`. Same frame, same refutation,
+two different certificates that it belongs to the class in question.
+
+Now soundness runs backwards. If the formula were derivable over a class it would be valid over
+that class; it is not valid, so it is not derivable. This is the standard use of soundness —
+not to certify theorems, but to refute would-be ones — and it is why an underivability claim in
+this library is always cashed out as a model.
+-/
+
+/-- Hence `GGp → Gp` is not derivable over the base class. -/
+theorem ggNotBase : ¬ Derivable FrameClass.Base [] ggFml :=
+  fun ⟨d⟩ => notValidGg (soundness_validIn d)
+
+/-- Hence `GGp → Gp` is not derivable over integer time either. -/
+theorem ggNotZTime : ¬ Derivable FrameClass.ZTime [] ggFml :=
+  fun ⟨d⟩ => notValidZTimeGg (soundness_validIn d)
+
 end FormalSystem.Examples.Walkthrough

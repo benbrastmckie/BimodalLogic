@@ -268,7 +268,7 @@ substitution in the phase notes.
 
 ---
 
-### Phase 4: Frame-class sensitivity, by one concrete countermodel [NOT STARTED]
+### Phase 4: Frame-class sensitivity, by one concrete countermodel [COMPLETED]
 
 **Goal**: The reader sees one formula that is derivable at `Dense` and refuted at both `Base` and
 `ZTime`, with the refutation carried by a countermodel concrete enough to picture.
