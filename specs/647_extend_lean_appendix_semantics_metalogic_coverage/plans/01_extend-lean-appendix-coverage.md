@@ -229,7 +229,7 @@ If a third span fails Check 1, prefer the source's own spelling over a third whi
 
 ---
 
-### Phase 2: Semantic structures in `lean-appendix-structures` [NOT STARTED]
+### Phase 2: Semantic structures in `lean-appendix-structures` [COMPLETED]
 
 **Goal**: Extend the existing structures section (item 1) so a reader meets the binder forms
 once, then instance-bracket fields and the `CoeSort` coercion on `TemporalOrder`, then

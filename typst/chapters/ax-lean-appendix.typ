@@ -5,10 +5,12 @@
 // A from-basics Lean 4 primer, scoped to exactly what a reader needs in order
 // to go from a formal claim cited in this book to the live declaration under
 // FormalSystem/ that backs it. Every Lean identifier cited here names a live
-// (non-Boneyard) declaration; every snippet is either a byte-exact #leansrc
-// excerpt or a didactic example, both verified against the current toolchain
-// in specs/620_lean_appendix_bimodal_reference/scratch/appendix_snippets.lean
-// before being written here. See ../SYNC-MAP.md for the dated entry.
+// (non-Boneyard) declaration. Snippets are of two kinds:
+//   - #leansrc excerpts: quoted from the live source, verbatim up to
+//     whitespace (docstrings omitted, lines re-broken to fit the text width).
+//   - didactic examples (no #leansrc line), compiled against the current
+//     toolchain with lake env lean before being written here.
+// See ../SYNC-MAP.md for the dated entry.
 // ============================================================================
 
 #import "../template.typ": *
@@ -17,29 +19,77 @@
 #pagebreak()
 #heading(numbering: none)[Appendix: Reading the Lean Formalization] <lean-appendix>
 
-This appendix is a self-contained primer on Lean 4, aimed at a reader who knows the mathematics of *TM* from Parts I and II but has never opened a Lean file.
-It builds up from what Lean is to reading `FormalSystem/` itself: the type theory that lets a proof assistant check mathematics by computation, how that theory represents the specific objects this book cites (`Formula`, `DerivationTree`, `Derivable`), the proof styles the codebase uses, the project's naming and file-layout conventions, and finally a worked guide to locating and trust-reading the declarations behind the book's soundness and completeness claims.
-Nine sections carry this arc, each self-contained enough to skip to directly from a citation elsewhere in the book.
+// --- Appendix-local formatting (scoped to this file by #include) ------------
+//
+// Section numbering. The appendix title is an unnumbered level-1 heading, and
+// an unnumbered heading does not step the heading counter, so without the two
+// lines below the sections would continue the preceding chapter's numbering.
+// They are numbered A.1, A.2, ... instead, which is also how @-references to
+// them render ("Section A.4").
+#counter(heading).update((..n) => (n.pos().first(), 0))
+#set heading(numbering: (..n) => "A." + numbering("1.1", ..n.pos().slice(1)))
+
+// Code blocks. 8pt fits 71 monospace columns in the text width, so no excerpt
+// below wraps. Explicit spacing keeps a block from running into the paragraph
+// after it (paragraph spacing is tight book-wide), and a snippet never splits
+// across a page break.
+// (Spacing is in pt because em inside this rule is the 8pt code size.)
+#show raw.where(block: true): set text(size: 8pt)
+#show raw.where(block: true): it => block(above: 11pt, below: 11pt, breakable: false, it)
+
+// Source labels. The template's leansrc line is kept on the same page as the
+// excerpt it introduces (call sites are unchanged).
+#let leansrc-line = leansrc
+#let leansrc(module, name) = block(sticky: true, above: 1em, below: 1em, leansrc-line(module, name))
+
+// Lists and tables. Same vertical rhythm as the template's items
+// environment, so neither runs into the paragraph that follows it.
+#show list: set block(above: 0.8em, below: 0.8em)
+#show figure: set block(above: 1em, below: 1em)
+
+This appendix is a self-contained primer on Lean 4, for a reader who knows the mathematics of *TM* from Part I but has never opened a Lean file.
+It builds up from what Lean is to reading `FormalSystem/` itself, in nine short sections, each self-contained enough to skip to directly from a citation elsewhere in the book.
+
+- *Foundations.* What a proof assistant checks (@lean-appendix-what-is-lean), the two universes `Type` and `Prop` (@lean-appendix-types-props), and propositions as types (@lean-appendix-props-as-types).
+- *Declarations.* Inductive types, with `Formula` and `DerivationTree` as the running examples (@lean-appendix-inductive), then structures and classes (@lean-appendix-structures).
+- *Proofs and style.* The two proof styles used throughout the codebase, tactic and term (@lean-appendix-tactics), and its naming and documentation conventions (@lean-appendix-conventions).
+- *The project.* The build tool and repository layout (@lean-appendix-lake), and a worked guide to locating and trust-reading the declarations behind the book's soundness and completeness results (@lean-appendix-reading-source).
+
+Code is displayed in two ways.
+A block introduced by a `>` line naming a module and declaration is an excerpt from the live source, with docstrings omitted and lines re-broken to fit the page.
+A block with no such line is a didactic example written for this appendix, and each one compiles against the current library.
 
 == What Lean Is <lean-appendix-what-is-lean>
 
-Lean 4 is a dependently typed functional programming language that doubles as an interactive proof assistant: the same expression language that defines ordinary data (numbers, lists, formulas) also states and proves theorems, because -- as @lean-appendix-props-as-types below makes precise -- a proof, in this system, *is* a piece of data of a particular type.
-A small trusted kernel type-checks every proof term against the theorem's stated type; everything else in the system, including the tactic framework that writes most proofs in practice, is untrusted elaboration machinery that merely has to produce a term the kernel accepts.
-This is what makes machine checking meaningful: the book's formal claims are not merely *stated* in a Lean-flavored notation, they are *type-checked* by that kernel against their declared types, and a claim that type-checks cannot be an unnoticed transcription error the way a claim in ordinary prose can be.
+Lean 4 is a dependently typed functional programming language that doubles as an interactive proof assistant.
+The same expression language that defines ordinary data (numbers, lists, formulas) also states and proves theorems, because a proof in this system is itself a piece of data of a particular type (@lean-appendix-props-as-types).
 
-Mathlib is the community mathematical library the project builds on (`lakefile.toml` pins a specific tagged revision -- @lean-appendix-lake below).
-`FormalSystem/` does not reprove general mathematics that Mathlib already has (orders, groups, `Nat`, `Finset`): it imports what it needs and formalizes only what is specific to *TM* -- the formula language, the proof system, task-frame semantics, and the metalogic connecting them.
-This is why the book pairs its formal claims with Lean identifiers rather than restating them: `soundness`, `completeness`, and every axiom and rule constructor are declarations a reader can open, inspect, and -- following @lean-appendix-reading-source -- check the kernel's own trust report on.
+Trust rests on a small *kernel* that type-checks every proof term against the theorem's stated type.
+Everything else, including the tactic framework that writes most proofs in practice, is untrusted elaboration machinery: it only has to produce a term the kernel accepts.
+This is what makes machine checking meaningful.
+The book's formal claims are not merely stated in a Lean-flavored notation.
+Each is type-checked by the kernel against its declared type, so a proof with a gap in it does not compile.
+What the kernel cannot check is that a Lean statement says what the surrounding prose claims it says.
+That comparison is the reader's, and making it possible is the purpose of this appendix.
+
+*Mathlib* is the community mathematical library the project builds on, and `lakefile.toml` pins it to a specific tagged revision (@lean-appendix-lake).
+`FormalSystem/` does not reprove general mathematics that Mathlib already has (orders, groups, `Nat`, `Finset`).
+It imports what it needs and formalizes only what is specific to *TM*: the formula language, the proof system, task-frame semantics, and the metalogic connecting them.
+This is why the book pairs its formal claims with Lean identifiers rather than restating them.
+`soundness`, `completeness`, and every axiom and rule constructor are declarations a reader can open, inspect, and audit with the kernel's own trust report (@lean-appendix-reading-source).
 
 == Types, Props, and Dependent Types <lean-appendix-types-props>
 
-Every Lean expression has a type, and types themselves are classified into two universes that matter for reading this codebase: `Type`, the universe of data, and `Prop`, the universe of propositions.
-`Formula` lives in `Type`: a formula is a piece of data you can pattern-match on, print, and compute with.
-A statement like `1 + 1 = 2` or `Valid φ` lives in `Prop`: propositions are also types (their inhabitants are proofs), but Lean treats `Prop` specially -- any two proofs of the same proposition are considered equal (*proof irrelevance*), because a proof's only job is to witness that its proposition holds, not to carry further information.
+Every Lean expression has a type, and types are themselves classified into universes.
+Two universes matter for reading this codebase: `Type`, the universe of data, and `Prop`, the universe of propositions.
 
-`FormalSystem/` puts both universes to work side by side on the *same* underlying idea, and the contrast is instructive.
-`DerivationTree fc Γ φ` (@lean-appendix-inductive) is declared in `Type`, not `Prop`, precisely because its *proof objects* carry information the codebase needs to compute with: a derivation's height, its case structure for induction in the metalogic, its shape for the decision procedure.
-`Derivable fc Γ φ` (`FormalSystem.ProofSystem.Derivable`) is the `Prop`-valued twin of the same idea, defined as `Nonempty (DerivationTree fc Γ φ)`: it asserts *that* a derivation exists without retaining *which* one, which is exactly what `simp` and `aesop`-style automation need, since they work with propositional goals and do not care which proof term eventually closes them.
+- *`Type`.* `Formula` lives here: a formula is a piece of data one can pattern-match on, print, and compute with.
+- *`Prop`.* A statement such as `1 + 1 = 2` or `Valid φ` lives here. Propositions are also types, whose inhabitants are their proofs, but Lean treats `Prop` specially: any two proofs of the same proposition are equal (*proof irrelevance*), because a proof's only job is to witness that its proposition holds.
+
+`FormalSystem/` puts both universes to work on the same underlying idea, derivability, and the contrast is instructive.
+`DerivationTree fc Γ φ` (@lean-appendix-inductive) is declared in `Type`, not `Prop`, because its inhabitants carry information the codebase computes with: a derivation has a height (`DerivationTree.height`), a case structure the metalogic inducts on, and a concrete shape the decision procedure returns as its certificate of validity.
+`Derivable fc Γ φ` is the `Prop`-valued twin.
+It asserts *that* a derivation exists without retaining *which* one:
 
 #leansrc("FormalSystem.ProofSystem", "Derivable")
 ```
@@ -47,36 +97,86 @@ def Derivable (fc : FrameClass) (G : Context) (p : Formula) : Prop :=
   Nonempty (DerivationTree fc G p)
 ```
 
-`DerivationTree` is also an example of a *dependent* type: its very type, `FrameClass → Context → Formula → Type`, takes ordinary *values* (a frame class, a context, a formula) as arguments, and the resulting type genuinely depends on which values were supplied -- `DerivationTree .Dense [] φ` and `DerivationTree .Base [] φ` are different types, not the same type decorated with different labels, because a value of the first type may use the density axiom and a value of the second may not.
-This is what lets the `fc` parameter enforce frame-class validity *structurally*: the `axiom` constructor's side condition `h.minFrameClass ≤ fc` (below) is a hypothesis inside the type, so a `DerivationTree fc` value simply cannot have been built from an incompatible axiom -- there is no separate validity check to run after the fact, because an ill-typed derivation cannot be constructed at all.
+The wrapper exists for automation: `simp` and similar tactics target `Prop`-valued goals, so a consistency argument or a quick lemma application states its goal with `Derivable`, while the metalogic, which needs the tree itself, works with `DerivationTree`.
+
+The `fc : FrameClass` argument should not be read as semantics entering a syntactic definition.
+`FrameClass` is a four-element tag (`Base`, `Dense`, `ZTime`, `RTime`) declared alongside the axioms in `FormalSystem.ProofSystem`, with no reference to frames, models, or truth.
+Its only role here is to select which axiom set a derivation may draw on, so that one inductive definition covers the base system and its three extensions.
+The tag is named for the class of frames its axiom set is meant to axiomatize, but it acquires that meaning only later, in the module `FormalSystem.Semantics.FrameClassValidity`, where `FrameClass.Sat` interprets each tag as a condition on task frames.
+Soundness and completeness are then what connect the two uses of the one index (@lean-appendix-reading-source).
+
+Both come with turnstile notation, which the source uses far more often than the spelled-out names:
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header(
+      [*Notation*], [*Unfolds to*], [*Universe*],
+    ),
+    table.hline(),
+    [`Γ ⊢ φ`], [`DerivationTree FrameClass.Base Γ φ`], [`Type`],
+    [`Γ ⊢[fc] φ`], [`DerivationTree fc Γ φ`], [`Type`],
+    [`G |-! p`], [`Derivable FrameClass.Base G p`], [`Prop`],
+    [`G |-![fc] p`], [`Derivable fc G p`], [`Prop`],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+In all four forms the context may be omitted: `⊢ φ` abbreviates a derivation from the empty context, that is, a theorem of the base system.
+
+`DerivationTree` is also an example of a *dependent* type.
+Its type, `FrameClass → Context → Formula → Type`, takes ordinary values (a frame class, a context, a formula) as arguments, and the resulting type depends on which values were supplied.
+`DerivationTree .Dense [] φ` and `DerivationTree .Base [] φ` are different types, not one type carrying two labels: a value of the first may use the density axiom, and a value of the second may not.
+
+This is how the `fc` parameter enforces frame-class discipline structurally.
+The `axiom` constructor carries the side condition `h.minFrameClass ≤ fc` as a hypothesis inside the type (@lean-appendix-inductive), so a `DerivationTree fc` value cannot have been built from an axiom its frame class does not license.
+There is no validity check to run after the fact, because an ill-formed derivation cannot be constructed at all.
 
 == Propositions as Types and Proof Terms <lean-appendix-props-as-types>
 
-The Curry-Howard correspondence reads a proposition as a type and a proof as a value (a *term*) of that type: proving `A → B` means writing a function from proofs of `A` to proofs of `B`, and proving `A ∧ B` means producing a pair of proofs.
-`FormalSystem/` puts this reading to work at two levels at once. At the meta level, an ordinary Lean `theorem` such as `soundness` (@lean-appendix-reading-source) is itself a proof term whose type is the stated implication, checked by the kernel exactly as sketched in @lean-appendix-what-is-lean.
-At the *object* level -- the level the book's own axiomatization operates at -- `DerivationTree fc Γ φ` reifies the same correspondence for *TM* itself: a term of this type is not a meta-level Lean proof of some Lean proposition, it is data encoding a derivation of `φ` from `Γ` in the object system, built from the same constructors *TM*'s Hilbert-style calculus specifies (axiom instances, modus ponens, the two necessitation rules, time reflection, weakening -- @lean-appendix-inductive lists all seven).
+The Curry-Howard correspondence reads a proposition as a type and a proof as a value (a *term*) of that type.
+Proving `A → B` means writing a function from proofs of `A` to proofs of `B`, and proving `A ∧ B` means producing a pair of proofs.
+`FormalSystem/` puts this reading to work at two levels.
 
-A term-mode proof simply writes down such a value directly, with no tactic block. The modal T axiom instance `⊢ □p → p` is:
+- *The meta level.* An ordinary Lean `theorem` such as `soundness` (@lean-appendix-reading-source) is a proof term whose type is the stated claim, checked by the kernel as described in @lean-appendix-what-is-lean.
+- *The object level.* `DerivationTree fc Γ φ` reifies the same correspondence for *TM* itself. A term of this type is not a Lean proof of a Lean proposition. It is data encoding a derivation of `φ` from `Γ` in the object system, built from constructors that mirror the rules of the Hilbert-style calculus (@lean-appendix-inductive lists all #rule-count).
 
-```
-def boxPImpP : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") :=
-  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atomS "p")) trivial
-```
-
-`DerivationTree.axiom` takes the context, the formula, an `Axiom` witness, and a proof that the axiom's `minFrameClass` is compatible with the ambient frame class; for `Axiom.modal_t`, that minimum is `FrameClass.Base` (the dependent-type discussion above's `h.minFrameClass ≤ fc` gate), so at `fc = .Base` the side condition is discharged by `trivial`.
-Derivations compose the way proof terms always do -- by applying one term to another. Given a hypothetical derivation `dBoxP : ⊢ □p`, `DerivationTree.modus_ponens` combines it with `boxPImpP` to build a derivation of `⊢ p`:
+A *term-mode* proof writes such a value down directly, with no tactic block.
+For an arbitrary formula `p`, the instance `⊢ □p → p` of the modal T axiom is:
 
 ```
-example (dBoxP : ⊢ (Formula.atomS "p").box) : ⊢ (Formula.atomS "p") :=
-  DerivationTree.modus_ponens [] (Formula.atomS "p").box (Formula.atomS "p") boxPImpP dBoxP
+def boxPImpP (p : Formula) : ⊢ p.box.imp p :=
+  DerivationTree.axiom [] _ (Axiom.modal_t p) trivial
 ```
 
-@lean-appendix-tactics contrasts this term-mode style with the tactic-mode proof of the same fact.
+`DerivationTree.axiom` takes four arguments: the context (here empty), the formula (here `_`, left for Lean to infer), an `Axiom` witness, and a proof of the frame-class side condition of @lean-appendix-types-props.
+For `Axiom.modal_t` the minimum frame class is `FrameClass.Base`, so at the base system the side condition is discharged by `trivial`.
+
+Derivations compose the way proof terms always do, by applying one term to another.
+Given a hypothetical derivation `dBoxP : ⊢ □p`, the `modus_ponens` constructor combines it with `boxPImpP` to build a derivation of `p`:
+
+```
+example (p : Formula) (dBoxP : ⊢ p.box) : ⊢ p :=
+  DerivationTree.modus_ponens [] p.box p (boxPImpP p) dBoxP
+```
+
+Passing from the tree to the bare fact of derivability is one step, because `Derivable` is defined by `Nonempty`: the anonymous-constructor brackets wrap the tree, and `Derivable.ofTree` is the same step by name.
+
+```
+example (p : Formula) : |-! p.box.imp p := ⟨boxPImpP p⟩
+```
+
+@lean-appendix-tactics sets this term-mode style beside a tactic-mode proof of the same fact.
 
 == Inductive Types: `Formula` and `DerivationTree` <lean-appendix-inductive>
 
-An inductive type is defined by an exhaustive list of constructors, each specifying how to build a value of the type (possibly from other values of the same type, which is what makes recursion and structural induction available for free).
-`Formula` (@sec:formulas) is the running example throughout this book, and it is declared with exactly the six primitive constructors the syntax chapter states:
+An *inductive type* is defined by an exhaustive list of constructors, each specifying one way to build a value of the type, possibly from other values of the same type.
+Recursion and structural induction over the type then come for free.
+`Formula` (@sec:formulas) is declared with exactly the six primitive constructors the syntax chapter states:
 
 #leansrc("FormalSystem.Syntax", "Formula")
 ```
@@ -90,44 +190,60 @@ inductive Formula : Type where
   deriving Repr, DecidableEq, BEq, Hashable, Countable
 ```
 
-Every other connective in the book is a `def` layered over these six, never a further constructor -- `neg`, `and`, `or`, `diamond`, `allFuture`, `allPast`, `someFuture`, `somePast`, `always`, `sometimes`, and the rest are ordinary functions computing a `Formula` from `Formula` arguments. The two temporal operators the book emphasizes are typical:
+Every other connective in the book is a `def` layered over these six, never a further constructor.
+`neg`, `and`, `or`, `diamond`, `allFuture`, `allPast`, `someFuture`, `somePast`, `always`, `sometimes`, and the rest are ordinary functions computing a `Formula` from `Formula` arguments.
+Dot notation keeps such definitions readable: `φ.neg` abbreviates `Formula.neg φ`, so operators chain left to right.
+The two temporal operators the book emphasizes are typical:
 
 #leansrc("FormalSystem.Syntax", "Formula.always")
 ```
-def always (φ : Formula) : Formula := φ.allPast.and (φ.and φ.allFuture)
+def always (φ : Formula) : Formula :=
+  φ.allPast.and (φ.and φ.allFuture)
+
 def sometimes (φ : Formula) : Formula := φ.neg.always.neg
 ```
 
-`DerivationTree fc Γ φ` (@sec:proof-theory) is the second running example: an inductive *family*, indexed by frame class, context, and formula, with #rule-count constructors -- one per inference rule of the Burgess-Xu system.
+`DerivationTree fc Γ φ` (@sec:proof-theory) is the second running example: an inductive *family*, indexed by frame class, context, and formula, with #rule-count constructors, one per inference rule of the Burgess-Xu system.
 Its constructor names are the rule names used throughout the metalogic chapters:
 
 #leansrc("FormalSystem.ProofSystem", "DerivationTree")
 ```
-inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
-  | axiom (Γ : Context) (φ : Formula) (h : Axiom φ) (h_fc : h.minFrameClass ≤ fc)
-      : DerivationTree fc Γ φ
-  | assumption (Γ : Context) (φ : Formula) (h : φ ∈ Γ) : DerivationTree fc Γ φ
+inductive DerivationTree (fc : FrameClass) :
+    Context → Formula → Type where
+  | axiom (Γ : Context) (φ : Formula)
+      (h : Axiom φ) (h_fc : h.minFrameClass ≤ fc) :
+      DerivationTree fc Γ φ
+  | assumption (Γ : Context) (φ : Formula)
+      (h : φ ∈ Γ) :
+      DerivationTree fc Γ φ
   | modus_ponens (Γ : Context) (φ ψ : Formula)
       (d1 : DerivationTree fc Γ (φ.imp ψ))
-      (d2 : DerivationTree fc Γ φ) : DerivationTree fc Γ ψ
+      (d2 : DerivationTree fc Γ φ) :
+      DerivationTree fc Γ ψ
   | necessitation (φ : Formula)
-      (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.box φ)
+      (d : DerivationTree fc [] φ) :
+      DerivationTree fc [] (Formula.box φ)
   | temporal_necessitation (φ : Formula)
-      (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.allFuture φ)
+      (d : DerivationTree fc [] φ) :
+      DerivationTree fc [] (Formula.allFuture φ)
   | time_reflection (φ : Formula)
-      (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.reflectTime
+      (d : DerivationTree fc [] φ) :
+      DerivationTree fc [] φ.reflectTime
   | weakening (Γ Δ : Context) (φ : Formula)
-      (d : DerivationTree fc Γ φ)
-      (h : Γ ⊆ Δ) : DerivationTree fc Δ φ
+      (d : DerivationTree fc Γ φ) (h : Γ ⊆ Δ) :
+      DerivationTree fc Δ φ
   deriving Repr
 ```
 
-Reading a constructor is reading an inference rule: `modus_ponens` takes two sub-derivations (of `φ.imp ψ` and of `φ`, both from the same `Γ` and `fc`) and returns a derivation of `ψ` -- exactly the rule's premises-then-conclusion shape, made literal as a function's argument-then-return-type shape.
-The two necessitation constructors and `time_reflection` all require their premise derivation to have the *empty* context, which is the constructor-level encoding of "only applies to theorems" from the proof-theory chapter's statement of the rule.
+Reading a constructor is reading an inference rule.
+Each one is laid out above as name and parameters, then premises, then conclusion: `modus_ponens` takes two sub-derivations, of `φ.imp ψ` and of `φ` from the same `Γ` and `fc`, and returns a derivation of `ψ`.
+The rule's premises-then-conclusion shape is made literal as a function's arguments-then-return-type shape.
+The two necessitation constructors and `time_reflection` require their premise to have the *empty* context `[]`, which is the constructor-level encoding of the proof-theory chapter's restriction of these rules to theorems.
 
 == Structures and Classes <lean-appendix-structures>
 
-A `structure` bundles named fields into a single value, and is Lean's tool for record types: `Atom`, the type underlying `Formula.atom`, is a minimal example with two fields:
+A `structure` bundles named fields into a single value: it is Lean's record type.
+`Atom`, the type underlying `Formula.atom`, is a minimal example with two fields:
 
 #leansrc("FormalSystem.Syntax", "Atom")
 ```
@@ -137,73 +253,256 @@ structure Atom where
   deriving Repr, DecidableEq, BEq, Hashable
 ```
 
-The semantic layer's `TaskModel` (@sec:truth) is a one-field structure parameterized by a `TaskFrame`, showing how a structure can depend on a value (here, the frame `F` it is a model *over*) exactly the way @lean-appendix-types-props described for `DerivationTree`:
+=== Three Kinds of Binder
 
-#leansrc("FormalSystem.Semantics", "TaskModel")
-```
-structure TaskModel (F :
-      TaskFrame) where
-  valuation : F.WorldState → Atom → Prop
-```
+Every signature from here on uses all three of Lean's argument brackets, so it is worth fixing them once.
+The brackets record *who supplies the argument*, not what kind of thing it is.
 
-`class`, by contrast, declares a structure *and* registers it for automatic inference: writing `[DecidableEq α]` as a hypothesis asks Lean's elaborator to find an instance rather than requiring the caller to supply one explicitly.
-`Formula`'s `deriving Repr, DecidableEq, BEq, Hashable, Countable` clause (@lean-appendix-inductive) auto-generates exactly such instances for `Formula`, so that anywhere a `DecidableEq Formula` instance is needed, `inferInstance` (or the `by infer_instance` tactic form) finds it without help:
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header(
+      [*Binder*], [*Written*], [*Supplied by*],
+    ),
+    table.hline(),
+    [explicit], [`(φ : Formula)`], [the caller, in order],
+    [implicit], [`{fc : FrameClass}`], [Lean, by unifying the other arguments],
+    [instance], [`[DecidableEq α]`], [instance synthesis],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+An implicit argument is one Lean can read off the rest of the call, so writing it out would be noise.
+A derived theorem later in this appendix takes its frame class implicitly, which is what lets a single proof term serve all four frame classes.
+Prefixing a name with `@` turns every implicit argument back into an explicit one, which is how `#check` is made to print a signature with nothing hidden.
+
+A `class` is a structure that is additionally registered for *instance inference*.
+Writing `[DecidableEq α]` in a signature asks Lean's elaborator to find an instance on its own, rather than requiring the caller to supply one.
+`Formula`'s `deriving Repr, DecidableEq, BEq, Hashable, Countable` clause (@lean-appendix-inductive) generates exactly such instances, so wherever a `DecidableEq Formula` instance is needed, `inferInstance` finds it without help:
 
 ```
 example : DecidableEq Formula := inferInstance
 ```
 
-This is why decidable-equality and hashing "just work" throughout `FormalSystem/` on formula-keyed sets and maps (`Finset Formula`, `Std.HashMap Formula _`) without a single hand-written `Decidable` instance for `Formula` anywhere in the codebase.
+This is why decidable equality and hashing simply work on formula-keyed collections (`Finset Formula` throughout `FormalSystem/`, `Std.HashMap Formula _` in the `BimodalTools` dataset generators) with no hand-written equality instance for `Formula` anywhere in the codebase.
+Square-bracketed instance arguments recur in the metalogic, where they state frame conditions: the dense soundness theorem of @lean-appendix-reading-source assumes `[DenselyOrdered F.Duration]`.
+
+=== Instance-Bracket Fields and the Duration Coercion
+
+A structure's *fields* can carry instance brackets too, and the semantic layer opens with the clearest case.
+`TemporalOrder` (@sec:truth) bundles a type of durations together with the four algebraic properties the mathematics demands of it:
+
+#leansrc("FormalSystem.Semantics", "TemporalOrder")
+```
+structure TemporalOrder where
+  carrier : Type
+  [addCommGroup : AddCommGroup carrier]
+  [linearOrder : LinearOrder carrier]
+  [isOrderedAddMonoid : IsOrderedAddMonoid carrier]
+  [nontrivial : Nontrivial carrier]
+
+instance : CoeSort TemporalOrder Type := ⟨TemporalOrder.carrier⟩
+
+attribute [instance] TemporalOrder.addCommGroup
+  TemporalOrder.linearOrder TemporalOrder.isOrderedAddMonoid
+  TemporalOrder.nontrivial
+```
+
+Only `carrier` is data.
+The other four fields are Mathlib classes, bracketed so that constructing a `TemporalOrder` finds them by synthesis instead of demanding them positionally.
+The two declarations after the structure are what make the bundle usable.
+
+- *The coercion.* `CoeSort` is a *coercion to a sort*, meaning a coercion whose target is a type rather than a value. It lets a `TemporalOrder` stand wherever Lean expects a type, which is why `(t : F.Duration)` elaborates at all when `F.Duration` is a structure.
+- *The re-export.* `attribute [instance]` registers the four bracketed fields with instance synthesis, so an abstract duration type carries its group and order structure wherever it travels.
+
+Both are visible the first time a reader runs `#check` on a declaration this appendix quotes.
+The source of `soundness` writes the time argument at `F.Duration`, and `#check` prints its type back as `F.Duration.carrier`, because the elaborated term has the coercion already applied.
+The two spellings name one type, before and after the coercion unfolds.
+The re-export is what makes `[DenselyOrdered F.Duration]` in `soundness_dense` meaningful, since that instance is sought at the carrier and needs `linearOrder` in scope to be found.
+
+=== Frames in Two Layers
+
+A task frame is assembled in two steps, and both steps are ordinary structures.
+`FrameOver D` is everything a frame contributes *over a fixed temporal order* `D`, which is the second way a structure can depend on a value: @lean-appendix-types-props made the same point about `DerivationTree`.
+
+#leansrc("FormalSystem.Semantics", "FrameOver")
+```
+structure FrameOver (D : TemporalOrder) where
+  WorldState : Type
+  [worldNonempty : Nonempty WorldState]
+  PosRel : WorldState → D.PositiveCone → WorldState → Prop
+  comp : TaskFrame.Compositional (TaskFrame.reflect PosRel)
+  serial : TaskFrame.Serial (TaskFrame.reflect PosRel)
+  limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧
+    TaskFrame.reflect PosRel w y u) → u = w
+  saturation : TaskFrame.Saturation (TaskFrame.reflect PosRel)
+
+attribute [instance] FrameOver.worldNonempty
+```
+
+`worldNonempty` is the same instance-bracket-field pattern one level down, re-exported by the same kind of `attribute` line.
+It is a field rather than a binder on the structure for a stated reason: a binder must be discharged at every mention of the type, whereas a field is discharged once per frame, at the site where that frame is built.
+
+The primitive relation `PosRel` is indexed by `D.PositiveCone`, the nonnegative durations, and the four axiom fields are stated over `TaskFrame.reflect PosRel` rather than over `PosRel` itself.
+That is the *reflection convention*, which the source spells `FrameOver.TaskRel := TaskFrame.reflect PosRel`: the two-sided relation every consumer speaks about is the primitive one extended to negative durations by running it backwards.
+
+#leansrc("FormalSystem.Semantics", "FrameOver.TaskRel")
+```
+def TaskRel (F : FrameOver D) :
+    F.WorldState → ↑D → F.WorldState → Prop :=
+  TaskFrame.reflect F.PosRel
+
+theorem reflection (F : FrameOver D) (w : F.WorldState)
+    (d : ↑D) (u : F.WorldState) :
+    F.TaskRel w d u ↔ F.TaskRel u (-d) w
+```
+
+Note which of these is which.
+`TaskRel` is a `def`, so reflection could have been imposed by fiat as an extra field.
+It is not: `reflection` is a *theorem*, derived from the `limit` and `serial` fields at zero and from the definitional content of `TaskFrame.reflect` elsewhere (@sec:frame-classes).
+The same holds of `nullity`, `eq_of_taskRel_zero` and `forward_comp`, which read like axioms of the mathematics and are proved rather than assumed.
+
+The outer layer packages a fibre with the order it sits over:
+
+#leansrc("FormalSystem.Semantics", "TaskFrame")
+```
+structure TaskFrame where
+  Duration : TemporalOrder
+  toFibre : FrameOver Duration
+
+@[reducible] def WorldState (F : TaskFrame) : Type :=
+  F.toFibre.WorldState
+
+@[reducible] def TaskRel (F : TaskFrame) :
+    F.WorldState → F.Duration → F.WorldState → Prop :=
+  F.toFibre.TaskRel
+```
+
+`F.Duration`, `F.WorldState` and `F.TaskRel` are the three accessors every later signature uses, and the last two are `@[reducible]` so that a proof about `F.toFibre` is definitionally a proof about `F`.
+This is the whole of the vocabulary `soundness` needs.
+Its binder list `(F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)` reads, in order, as a frame, a model over it, a history in that model, and a time in the frame's temporal order.
 
 == Tactic Proofs vs. Term Proofs <lean-appendix-tactics>
 
-Every Lean proof is, at the kernel level, a term -- but `by`-blocks let an author build that term *interactively*, one tactic at a time, against a displayed goal, rather than writing the finished term by hand.
-The `⊢ □p → p` example from @lean-appendix-props-as-types has both forms. The term-mode version there names the axiom directly; the tactic-mode version instead runs a proof-search or axiom-matching procedure and lets it find the term:
+Every Lean proof is, at the kernel level, a term.
+A `by` block lets an author build that term *interactively*, one tactic at a time against a displayed goal, rather than writing the finished term by hand.
+The `⊢ □p → p` example of @lean-appendix-props-as-types has both forms.
+The term-mode version there names the axiom directly, whereas the tactic-mode version runs a search procedure and lets it find the term:
 
 ```
-example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by
+example (p : Formula) : ⊢ p.box.imp p := by
   modal_search
 ```
 
-`modal_search` (`FormalSystem.Automation`, documented in full in the tactic reference alongside @sec:proof-automation) performs bounded proof search over the derivation rules and axiom schemata, up to a configurable depth and node-visit limit; it is the project's pedagogical entry point for "show this is derivable" goals, not infrastructure the metalogic itself is built on.
-`apply_axiom` is narrower and more literal: it is a zero-argument tactic macro expanding to `apply DerivationTree.axiom; refine ?_`, so it applies exactly the `axiom` constructor and leaves its `h : Axiom _` and `h_fc` side goals open for the caller to close by hand, rather than searching for the matching constructor itself:
+The project's tactics relevant to a first reading are these.
+
+- *`modal_search`* performs bounded proof search over the derivation rules and axiom schemata, up to a configurable depth and node-visit limit (@sec:proof-automation). It is the entry point for goals of the form "show this is derivable", not infrastructure the metalogic is built on.
+- *`apply_axiom`* is narrower and more literal. It is a zero-argument macro expanding to `apply DerivationTree.axiom; refine ?_`: it applies exactly the `axiom` constructor and leaves the two side goals, `h : Axiom _` and `h_fc`, for the caller to close.
+- *`propDecide`* decides propositional tautologies, and is used where a propositional pattern would otherwise be typed out by hand.
+
+The second of these, spelled out:
 
 ```
-example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by
+example (p : Formula) : ⊢ p.box.imp p := by
   apply_axiom
   case h => exact Axiom.modal_t _
   case h_fc => trivial
 ```
 
-Between these extremes, ordinary tactics compose the way they do in any Lean proof: `intro` introduces a hypothesis, `exact e` closes the goal with a term `e` you already have in hand (often the bridge back to a term-mode fragment like `boxPImpP` above), `apply f` unifies the goal's conclusion against `f`'s result type and leaves `f`'s remaining arguments as new goals, and `simp` rewrites using registered simplification lemmas.
-Term mode and tactic mode are not a stylistic fork with separate rules -- a tactic block is simply a way of writing a term, and the two are freely interchangeable at any point in a proof, including mid-term via `by`. The project favors term mode where a direct construction is short and self-documenting (most of `Theorems/`) and tactic mode where a repeated automatable pattern would otherwise be typed out by hand (`propDecide` for propositional tautologies, `modal_search` for schema instances).
+Between these extremes, ordinary tactics compose the way they do in any Lean proof.
 
-== Mathlib Conventions <lean-appendix-conventions>
+- `intro` introduces a hypothesis.
+- `exact e` closes the goal with a term `e` already in hand, and is the usual bridge back to a term-mode fragment such as `boxPImpP`.
+- `apply f` unifies the goal's conclusion against `f`'s result type and leaves `f`'s remaining arguments as new goals.
+- `simp` rewrites using registered simplification lemmas.
 
-`FormalSystem/`'s naming rules are Mathlib's, keyed on what a declaration *produces* rather than on which command declares it. A `def` that produces data uses lowerCamelCase (`reflectTime`, `allFuture`, `always`); a `def` that produces a `Prop` -- i.e. defines a predicate -- uses UpperCamelCase (`Derivable`, `TruthAt`), matching Mathlib's own `Function.Injective` and `IsCompact`; a `theorem` or `lemma` uses snake_case (`soundness`, `completeness`); and a tactic token is snake_case as well (`modal_t`, `apply_axiom`), following every built-in Lean tactic (`simp_all`, `push_neg`).
-Namespaces mirror the directory structure the library actually has -- `FormalSystem.Syntax`, `FormalSystem.ProofSystem`, `FormalSystem.Metalogic.BXCanonical` -- rather than an abbreviated or ad hoc scheme, and `open` is used sparingly in favor of qualified names where a name would otherwise be ambiguous.
+Term mode and tactic mode are not a stylistic fork with separate rules.
+A tactic block is simply a way of writing a term, and the two are interchangeable at any point in a proof, including mid-term via `by`.
+The project favors term mode where a direct construction is short and self-documenting, and tactic mode where a repeated automatable pattern would otherwise be written out by hand.
 
-A module typically opens with a docstring (`/-! # Title ... -/`) stating its main definitions, main results, and implementation notes, and each nontrivial declaration carries its own `/-- ... -/` docstring, as the excerpts throughout this appendix illustrate.
-`variable` blocks hoist repeated implicit or instance arguments (a frame `F`, a frame class `fc`) out of individual declaration signatures within a section, and Unicode notation -- `□`, `◇`, `⊢`, `Γ`, `φ`, `ψ` -- follows the same symbols the book's own mathematics uses, so a Lean declaration and its prose statement read as the same expression in two fonts rather than as a translation.
+== Naming and Documentation Conventions <lean-appendix-conventions>
+
+The naming rules of `FormalSystem/` are Mathlib's.
+They key on what a declaration *produces* rather than on which command declares it, so a name's capitalization already tells a reader what kind of thing it is:
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header(
+      [*Produces*], [*Case*], [*Examples*],
+    ),
+    table.hline(),
+    [data], [lowerCamelCase], [`reflectTime`, `always`],
+    [a `Prop` or a `Type`], [UpperCamelCase], [`TruthAt`, `Formula`],
+    [a proof], [snake_case], [`soundness`, `completeness`],
+    [a tactic], [snake_case], [`modal_search`, `apply_axiom`],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+Three consequences are worth knowing before searching the source.
+
+- *Derived theorems of TM are `def`s.* A result such as `perpetuity1` is mathematically a theorem, but its Lean type is `DerivationTree`-valued, hence data (@lean-appendix-types-props). Lean therefore requires `def` rather than `theorem`, and the name is lowerCamelCase. Most of `Theorems/` has this form.
+- *Constructors are named for what they encode.* The constructors of `Axiom` and `DerivationTree` carry the snake_case names of the axioms and rules themselves (`modal_t`, `modus_ponens`, `temporal_necessitation`). `modal_t` is, in addition, the name of a tactic that applies that axiom, so the constructor is always written qualified, as `Axiom.modal_t`.
+- *A few tactics are lowerCamelCase*, `propDecide` among them, against the general rule.
+
+Namespaces mirror the directory structure: the declarations of `Syntax/` live in `FormalSystem.Syntax`, and those of `Metalogic/BXCanonical/` in `FormalSystem.Metalogic.BXCanonical`.
+`open` is used sparingly, in favor of qualified names wherever a short name would be ambiguous.
+
+A module opens with a docstring (`/-! # Title ... -/`) stating its main definitions, main results, and implementation notes, and each nontrivial declaration carries its own `/-- ... -/` docstring.
+The excerpts in this appendix omit these for space, but in the source they are the first thing to read.
+`variable` blocks hoist repeated implicit or instance arguments (a frame `F`, a frame class `fc`) out of the individual signatures within a section.
+Unicode notation (`□`, `◇`, `⊢`, `Γ`, `φ`, `ψ`) follows the symbols the book's own mathematics uses, so that a Lean declaration and its prose statement read as the same expression in two fonts rather than as a translation.
 
 == Lake and Project Layout <lean-appendix-lake>
 
-Lake is Lean's build tool, configured declaratively by #link("https://toml.io")[`lakefile.toml`] rather than by a Lean-syntax `lakefile.lean`.
-The package is named `BimodalLogic`; its main library target is `FormalSystem`, and its test library is `BimodalTest` (`srcDir = "Tests"`).
-A `[[require]]` block pins Mathlib to a specific tagged revision, so the whole project builds against one frozen, reproducible mathematical library rather than a moving target.
-`lean-toolchain` at the repository root pins the Lean 4 release itself (currently a `leanprover/lean4` prerelease tag); `elan`, Lean's toolchain manager, reads this file and switches toolchains automatically per directory.
+*Lake* is Lean's build tool.
+The project configures it declaratively, in the #link("https://toml.io")[TOML] file `lakefile.toml`, rather than by a Lean-syntax `lakefile.lean`.
 
-Day-to-day commands: `lake build` compiles the whole library (or `lake build FormalSystem` for just the main library target); `lake env lean FILE.lean` runs the Lean elaborator on a standalone file *with* the project's dependencies and import path resolved, which is how this appendix's own didactic snippets were checked, in a scratch file outside `FormalSystem/` and `Tests/`; and `import FormalSystem` (or a specific submodule such as `import FormalSystem.Syntax.Formula`) brings the library into scope in any such file.
+- *Package and libraries.* The package is named `BimodalLogic`. Its main library, and its only default build target, is `FormalSystem`. The test library is `BimodalTest` (`srcDir = "Tests"`). The dataset and benchmark tooling of Part II is a separate library, `BimodalTools`, built only on request.
+- *Mathlib.* A `[[require]]` block pins Mathlib to a specific tagged revision, so the whole project builds against one frozen, reproducible mathematical library rather than a moving target.
+- *Toolchain.* `lean-toolchain` at the repository root pins the Lean 4 release itself, currently a `leanprover/lean4` prerelease tag. `elan`, Lean's toolchain manager, reads this file and switches toolchains automatically per directory.
 
-The directory tour in @lean-appendix-reading-source below maps each top-level directory under `FormalSystem/` to the chapter of this book whose formal claims it backs. For general Lean 4 reference beyond this appendix's scope, see the #link("https://leanprover.github.io/theorem_proving_in_lean4/")[Theorem Proving in Lean 4] book, the #link("https://lean-lang.org/documentation/")[Lean 4 documentation], and the #link("https://leanprover-community.github.io/mathlib4_docs/")[Mathlib4 docs].
+Three commands cover day-to-day reading.
+
+- `lake build` compiles the default target, which is the whole `FormalSystem` library, and `lake build FormalSystem` names the same target explicitly.
+- `lake env lean FILE.lean` runs the Lean elaborator on a standalone file with the project's dependencies and import path resolved. This is how this appendix's didactic snippets were checked, in a scratch file outside `FormalSystem/` and `Tests/`.
+- `import FormalSystem`, or a specific submodule such as `import FormalSystem.Syntax.Formula`, brings the library into scope in any such file.
+
+For general Lean 4 reference beyond this appendix's scope, see the #link("https://leanprover.github.io/theorem_proving_in_lean4/")[Theorem Proving in Lean 4] book, the #link("https://lean-lang.org/documentation/")[Lean 4 documentation], and the #link("https://leanprover-community.github.io/mathlib4_docs/")[Mathlib4 docs].
 
 == Reading `FormalSystem/` Source <lean-appendix-reading-source>
 
-`FormalSystem/` is organized so that each directory backs a recognizable stretch of this book: `Syntax/` defines `Formula` and its derived operators (@sec:formulas); `ProofSystem/` holds the #axiom-count axiom constructors and the #rule-count inference rules of the `DerivationTree` / `Derivable` machinery (@sec:proof-theory); `Semantics/` defines task frames, models, and truth conditions; `Metalogic/` proves soundness for every frame class and the completeness theorems (@sec:metalogic); `Theorems/` collects the derived-theorem library, including the perpetuity principles; and `Automation/` and `Examples/` hold the proof tactics and worked examples covered in Part II (@sec:proof-automation).
-`ForMathlib/` is a fifth, smaller directory: Mathlib-shaped extensions (the prime-filter API used in the algebraic route through completeness) written to be upstreamed, importing nothing from the rest of `FormalSystem/`.
-One directory is explicitly *not* live: `Boneyard/`, wherever it appears nested under another directory, holds archived material -- superseded constructions kept for historical reference -- and nothing this book cites resolves there.
+=== The Directory Tour
 
-Two worked walkthroughs connect the book's two central metatheoretic claims to their declarations. Soundness:
+`FormalSystem/` is organized so that each directory backs a recognizable stretch of this book.
+
+- `Syntax/` -- `Formula` and its derived operators (@sec:formulas).
+- `ProofSystem/` -- the #axiom-count axiom constructors of `Axiom`, and the #rule-count inference rules of the `DerivationTree` and `Derivable` machinery (@sec:proof-theory).
+- `Semantics/` -- task frames, models, histories, and truth conditions (@sec:truth).
+- `Metalogic/` -- soundness for every frame class, the completeness theorems, and the decision procedure (@sec:metalogic, @sec:decidability-practice).
+- `Theorems/` -- the derived-theorem library, including the perpetuity principles.
+- `Automation/`, `Examples/` -- the proof tactics and worked examples of Part II (@sec:proof-automation).
+- `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/` -- self-contained components for the neighboring object languages: the deferred tense-primitive subsystem of @sec:conservative-extension, and the extensions of *TM* surveyed in @ch:vlach-blstar.
+- `ForMathlib/` -- Mathlib-shaped extensions written to be upstreamed (the prime-filter API used in the algebraic route through completeness), importing nothing from the rest of `FormalSystem/`.
+- `Tactic/` -- the attributes and named `simp` sets the library registers, placed upstream of every other module.
+
+One file deserves a first visit: `FormalSystem/MainResults.lean` proves nothing, but lists the headline metatheory on one page and runs the two audit commands described below over each result.
+One directory is explicitly *not* live: `Boneyard/`, at the repository root and outside `FormalSystem/`, holds archived material, superseded constructions kept for historical reference.
+Nothing this book cites resolves there.
+
+=== Two Worked Statements
+
+Two walkthroughs connect the book's central metatheoretic results to their declarations.
+Soundness first:
 
 #leansrc("FormalSystem.Metalogic", "soundness")
 ```
@@ -215,8 +514,13 @@ theorem soundness (Γ : Context) (φ : Formula)
     TruthAt M τ t φ
 ```
 
-reads as: given a `FrameClass.Base` derivation `d` of `φ` from `Γ`, and *any* frame, model, history, and time at which every formula in `Γ` is true, `φ` is true there too. The hypotheses are universally quantified over the semantic side (`F`, `M`, `τ`, `t`) precisely because soundness must hold for every model, not some fixed one; `soundness_dense`, `soundness_ztime`, and `soundness_rtime` are the same statement specialized to the other three frame classes.
-Completeness runs the other direction, in `FormalSystem.Metalogic.BXCanonical`:
+Everything before the final colon is a hypothesis, and what follows it is the conclusion.
+The statement reads: given a `FrameClass.Base` derivation `d` of `φ` from `Γ`, and *any* frame, model, history, and time at which every formula in `Γ` is true, `φ` is true there too.
+The semantic parameters (`F`, `M`, `τ`, `t`) are universally quantified because soundness must hold for every model, not for some fixed one.
+`soundness_dense`, `soundness_ztime`, and `soundness_rtime` have the same shape for the other three frame classes.
+Each takes a derivation at its own frame class and adds the matching order-theoretic hypotheses on `F.Duration`, such as `[DenselyOrdered F.Duration]` in the dense case.
+
+Completeness runs in the other direction:
 
 #leansrc("FormalSystem.Metalogic.BXCanonical", "completeness")
 ```
@@ -224,8 +528,32 @@ theorem completeness (φ : Formula) :
     Valid φ → Derivable FrameClass.Base [] φ
 ```
 
-Every formula valid on all task frames is derivable in the base system -- the converse direction from soundness, proved by the canonical-model construction the metalogic chapter describes in prose. The two combine into the biconditional `Valid φ ↔ Derivable FrameClass.Base [] φ` that the metalogic chapter states as the headline result.
+Every formula valid on all task frames is derivable in the base system.
+Note the `Prop`-valued `Derivable` in the conclusion: the canonical-model argument shows that a derivation exists without constructing one, which is exactly what `Derivable` was introduced to express (@lean-appendix-types-props).
+Together with `soundness` at the empty context, this yields the biconditional `Valid φ ↔ Derivable FrameClass.Base [] φ`.
+This is the weak, premise-free form of completeness, and @sec:completeness-theorems states the strongest form each frame class admits.
 
-Trust-reading practice: `#check`, applied to a declaration name, shows that declaration's type without evaluating anything, useful for confirming a signature before reading the proof body; `#print axioms`, applied to a declaration name, lists every axiom the kernel actually depended on to produce that declaration's proof, which is how this book's `sorry`-tracking is verified rather than merely asserted -- the current count outside the archived `Boneyard/` material is #sorry-total-excl-boneyard.
-Every citation in this book gives a declaration *name*, never a `file:line` pair, because line numbers drift with routine edits while a name survives them (and a Lean editor's go-to-definition, or `lean_declaration_file`-style tooling, resolves a name to its current location instantly).
-For the complete name-by-name correspondence between every axiom, rule, and derived operator in the book and its `FormalSystem/` declaration, see @machine-appendix.
+=== Trust-Reading Practice
+
+Two commands let a reader audit a declaration without reading its proof.
+
+- `#check`, applied to a declaration name, shows that declaration's type without evaluating anything. It confirms that the statement is the one the book cites before any time is spent on the proof body.
+- `#print axioms`, applied to a declaration name, lists every axiom the kernel depended on in checking that declaration's proof.
+
+For the two theorems above, the second command reports:
+
+```
+'FormalSystem.Metalogic.soundness' depends on axioms:
+  [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.completeness' depends on axioms:
+  [propext, Classical.choice, Quot.sound]
+```
+
+These three are the standard axioms of classical reasoning in Lean and Mathlib: propositional extensionality, the axiom of choice, and the soundness of quotient types.
+What matters is what is absent.
+An unfinished proof is marked in Lean by the placeholder `sorry`, and any declaration depending on one reports the additional axiom `sorryAx`, however deep in its dependencies the gap lies.
+The book's count of `sorry` placeholders in live source, currently #sorry-total-excl-boneyard outside the archived `Boneyard/` material, is the source-level companion to this kernel-level check.
+
+Finally, every citation in this book gives a declaration *name*, never a `file:line` pair, because line numbers drift with routine edits while a name survives them.
+A Lean editor's go-to-definition, or `lean_declaration_file`-style tooling, resolves a name to its current location instantly.
+For the complete name-by-name correspondence between every axiom, rule, and derived operator in the book and its `FormalSystem/` declaration, see #link(<machine-appendix>)[the machine-readable appendix] that follows.
