@@ -1407,7 +1407,7 @@
     {
       "project_number": 639,
       "project_name": "readme_accuracy_and_entry_point_fixes",
-      "status": "planned",
+      "status": "completed",
       "task_type": "general",
       "topic": "publication-quality",
       "dependencies": [],
@@ -1422,7 +1422,7 @@
         "FormalSystem/Metalogic/Independence/RationalWitness.lean"
       ],
       "created": "2026-09-20T18:47:56Z",
-      "last_updated": "2026-09-20T23:54:42Z",
+      "last_updated": "2026-09-21T00:18:14Z",
       "description": "Correct the factual and navigational defects in the root README and its nearest siblings before the repository is shown to outside readers. (1) Axiom counts contradict each other: the Axiom Systems table and the mermaid graph give Base 37 / ZTime 40 / Dense 39 / RTime 42 and the L+ paragraph says \"the 45 TM schemata\", while the paragraph directly below says `inductive Axiom` has 29 constructors (23 Base + 2 Dense + 2 ZTime + 2 RTime), which is what Axioms.lean and harness check C22 confirm. Decide one counting convention (primitive constructors, with derived mirrors counted separately and labelled as derived), apply it to the table, the graph and the prose, and explain the 45 figure where PlusAxiom really does re-declare 45 schemata. The same stale counts appear in FormalSystem/README.md (\"TM Base (37 constructor axioms)\"), docs/reference/API_REFERENCE.md (\"The 45 axiom constructors\"), docs/user-guide/architecture.md, FormalSystem/Syntax/PlusLanguage/README.md, and the docstrings of Automation/BenchmarkAnchorsMain.lean and Metalogic/Independence/RationalWitness.lean. (2) The \"Additional Axioms\" column lists `P phi -> S(phi, not phi)` for ZTime and `prior_S_gap` for RTime as axioms although both are derived mirrors. (3) The Project Structure tree places MinusLanguage/ and PlusLanguage/ directly under FormalSystem/; they live under FormalSystem/Syntax/ (StarLanguage/ is omitted). (4) FormalSystem/MainResults.lean, the one-page kernel-audited list of headline theorems, is not linked from the README at all; the \"Demo\" link instead points at Examples/BimodalProofs.lean, whose header still cites `../ProofChecker/Theorems/Perpetuity.lean`. Link MainResults.lean at the top and fix that header. (5) The Reference list calls latex/BimodalReference.pdf the \"full formal specification\" while the top of the README says that edition is superseded and unsynced. (6) DONE before dispatch: the BimodalHarness links in README.md, docs/README.md and docs/training/PIPELINE.md were de-linked and marked as a private repository; restore the links if that repository is made public. (7) The BibTeX key is brastmckie2025construction with year 2026 and the Task Semantics section cites \"(Brast-McKie, 2025)\" while the header says forthcoming. (8) FormalSystem/README.md line 252 carries `<!-- TODO: add description -->` for MainResults.lean. Acceptance: check-module-invariants.sh --no-build and readme-lint.sh green; no count in any listed file disagrees with Axioms.lean; every README link resolves for an anonymous reader. Coordination: task 631 also edits README.md (Logos/ProofChecker naming, latex retirement); land this first, and item (5) becomes moot once 631 retires latex/.",
       "session_id": "sess_1789947599_745d6f",
       "artifacts": [
@@ -1437,7 +1437,8 @@
           "summary": "7-phase plan correcting axiom-count conventions, derived-mirror labelling, structure-tree nesting, entry-point links and citation consistency across README.md and seven sibling files."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Wrote a single canonical 'Two axiom counts' derivation in docs/reference/axiom-reference.md and swept README.md, FormalSystem/README.md, docs/reference/API_REFERENCE.md, docs/user-guide/architecture.md, two further docs/project-info files, and four Lean docstrings into agreement with it, while also fixing the Project Structure tree nesting, adding a MainResults.lean entry-point link, repairing five stale ../ProofChecker/ relative links, and aligning the paper citation year. check-module-invariants.sh --no-build and readme-lint.sh are both green."
     },
     {
       "project_number": 640,

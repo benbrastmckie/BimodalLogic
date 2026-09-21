@@ -6,13 +6,13 @@ next_project_number: 642
 
 ## Task Order
 
-*Updated 2026-09-20. Generated from state.json dependency graph.*
+*Updated 2026-09-21. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,639 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633,640,641 | 298,464,502,563,568,630,639 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,640,641 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633 | 298,464,502,563,568,630 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,626,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,614,635 | 428,498,499,500,634 | algebraic-representation, decidability, documentation, ... |
 | 5 | 178,410,501,636 | 125,429,635,641 | algebraic-representation, decidability, formula-refactor, ... |
@@ -107,9 +107,8 @@ next_project_number: 642
             └─ 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
   └─ 633 [NOT STARTED] — Create Tactic/Attr.lean under the library root from...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into... (see above)
-639 [PLANNED] — Correct the factual and navigational defects in the root...
-  └─ 640 [NOT STARTED] — Restructure the root README for a reader who arrives cold and...
-  └─ 641 [NOT STARTED] — Provide one worked-example file that an outside reader can...
+640 [NOT STARTED] — Restructure the root README for a reader who arrives cold and...
+641 [NOT STARTED] — Provide one worked-example file that an outside reader can...
 
 ### Semantics
 
@@ -140,7 +139,7 @@ next_project_number: 642
 ---
 
 ### 639. Readme accuracy and entry point fixes
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: None
