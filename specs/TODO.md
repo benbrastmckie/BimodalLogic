@@ -11,16 +11,16 @@ next_project_number: 651
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,628,646,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,534,564,565,567,616,617,649 | 298,464,502,563,646,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,645,650 | 231,465,497,534,564,565,616,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,628,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,646,649 | 298,464,502,563,628,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,534,566,618,650 | 231,465,497,564,565,616,646,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,645 | 428,498,499,500,534 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543,628,645 | formula-refactor |
+| 10 | 177 | 178,282,296,481,482,543,645 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -89,12 +89,12 @@ next_project_number: 651
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
+646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
 
 ### Reference Book
 
-648 [RESEARCHED] — Fix the defects found in typst/BimodalReference.typ and its...
+648 [PLANNING] — Fix the defects found in typst/BimodalReference.typ and its...
   └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
     └─ 650 [NOT STARTED] — Define-before-use audit of...
 
@@ -158,7 +158,7 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 ---
 
 ### 648. Fix reference book defects found in appendix review
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: reference-book
 - **Dependencies**: Task 647
@@ -233,7 +233,7 @@ ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors. scrip
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 568
+- **Dependencies**: Task 568, Task 628
 
 **Description**: Machine-check the two cheap MF-correspondence results, R1 and R2, split out of task 543 so that they are not held behind that task's ShiftSet-reconciliation dependency. Land real proofs; no sorry, no new axiom. SOURCE MATERIAL, outside this repository, read before starting: /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/03_worlds-topological-categorical-characterization.md (rigidity, section 4.3.6), /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/04_dense-correspondent-and-rigidity.md (the refinement and scope limits), and /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/05_lean-verification-and-formalization-program.md (THE ROADMAP: elaborated statements, effort estimates, Mathlib dependencies, and Appendix A.1's scratch elaboration of R1). Re-verify every claim those reports make about this tree before relying on it: they were checked against an earlier layout, and modules have since moved.
 
