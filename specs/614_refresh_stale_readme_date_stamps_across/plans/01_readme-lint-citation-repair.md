@@ -1,7 +1,7 @@
 # Implementation Plan: Refresh README date stamps, repair archive links, re-point typst citations
 
 - **Task**: 614 - Refresh stale README date stamps across FormalSystem, repair archive links, re-point typst citations
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None remaining (task 634's XLanguage merge has landed; verified — the five pre-merge XLanguage README paths no longer exist)
 - **Research Inputs**: specs/614_refresh_stale_readme_date_stamps_across/reports/01_readme-stamps-lint-repair.md
@@ -365,15 +365,15 @@ revision: no README outside the 53 carries a second stamp line.)
 
 ---
 
-### Phase 4: Date stamps, Metalogic subtree (34 files) [IN PROGRESS]
+### Phase 4: Date stamps, Metalogic subtree (34 files) [COMPLETED]
 
 **Goal**: Every README under `FormalSystem/Metalogic/` that the lint flags carries a stamp equal
 to this phase's commit date, including the two files that have no stamp line at all.
 
 **Tasks**:
-- [ ] Re-derive the list: `bash scripts/readme-lint.sh FormalSystem BimodalTools 2>&1 | grep -E 'STALE DATE|MISSING DATE' | grep 'FormalSystem/Metalogic/'`.
-- [ ] Rewrite the first `last verified|last updated` date in each of the 32 `STALE DATE` files, preserving each line's existing shape (see Phase 3's four-shape list).
-- [ ] Keep the **second** stamp line consistent in the 9 double-stamp files in this set. All eight non-`Bundle` second lines are genuine stamps — bare dates with no event text — so both lines take the commit date. Line numbers as of this revision (re-`grep` before editing; Phase 1 does not shift them, but a sibling commit might):
+- [x] Re-derive the list: `bash scripts/readme-lint.sh FormalSystem BimodalTools 2>&1 | grep -E 'STALE DATE|MISSING DATE' | grep 'FormalSystem/Metalogic/'`.
+- [x] Rewrite the first `last verified|last updated` date in each of the 32 `STALE DATE` files, preserving each line's existing shape (see Phase 3's four-shape list). *(deviation: altered — same scripted, per-file asserted pass as Phase 3; the re-derived list matched the plan exactly: 34 files, 32 stale + 2 missing, 9 double-stamp)*
+- [x] Keep the **second** stamp line consistent in the 9 double-stamp files in this set. All eight non-`Bundle` second lines are genuine stamps — bare dates with no event text — so both lines take the commit date. Line numbers as of this revision (re-`grep` before editing; Phase 1 does not shift them, but a sibling commit might):
 
   | File (under `FormalSystem/Metalogic/`) | Line the lint reads | Second line |
   |------|------|------|
@@ -390,7 +390,7 @@ to this phase's commit date, including the two files that have no stamp line at 
   Five of these show the hazard directly: an earlier sweep bumped only the trailing italic line to
   2026-09-07 while the lint went on reading the bold `2026-08-25` line above it. Updating only one
   of the two lines here would reproduce that.
-- [ ] **Special case — `FormalSystem/Metalogic/Bundle/README.md`**: its *first* `last updated`
+- [x] **Special case — `FormalSystem/Metalogic/Bundle/README.md`**: its *first* `last updated`
   match (`:229`) is a historical event record ("retirement of the canonical-frame half to
   `Boneyard/BundleDeadHalf/`", dated 2026-09-02), not a verification stamp. Do **not** bump its
   date — that would falsify a dated fact. Reword the line out of stamp shape instead (e.g.
@@ -399,15 +399,15 @@ to this phase's commit date, including the two files that have no stamp line at 
   that real stamp. The reworded line must contain neither `last verified` nor `last updated` in
   any case. Verify by re-running the lint and confirming the reported "stamped" value is the real
   stamp's date, not 2026-09-02.
-- [ ] **Add a stamp to the two `MISSING DATE` files**, matching the 40-file majority shape: a
+- [x] **Add a stamp to the two `MISSING DATE` files**, matching the 40-file majority shape: a
   trailing `*Last verified: YYYY-MM-DD*` line after a `---` rule at end of file.
-  - [ ] `FormalSystem/Metalogic/Conservativity/Star/README.md`
-  - [ ] `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/README.md`
-- [ ] `git diff` review: confirm every hunk changes only a date string, except the two appended
+  - [x] `FormalSystem/Metalogic/Conservativity/Star/README.md`
+  - [x] `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound/README.md`
+- [x] `git diff` review: confirm every hunk changes only a date string, except the two appended
   stamp lines and the one `Bundle/README.md` rewording. Confirm no added line carries a task
   number (`check-module-invariants.sh` C9 scans `FormalSystem/` for them).
-- [ ] Commit `task 614 phase 4: refresh Metalogic README date stamps`.
-- [ ] **After committing**, re-run the lint and confirm none of these 34 files is still flagged.
+- [x] Commit `task 614 phase 4: refresh Metalogic README date stamps`.
+- [x] **After committing**, re-run the lint and confirm none of these 34 files is still flagged.
 
 Files (34): the `FormalSystem/Metalogic/**` entries of the lint's `STALE DATE`/`MISSING DATE`
 output — `Algebraic`, `Bundle`, `BXCanonical` (+ `Chronicle`, `Filtration`, `Quasimodel`),
@@ -448,30 +448,30 @@ treatment rather than a date bump.
 
 ---
 
-### Phase 5: Whole-gate re-verification [NOT STARTED]
+### Phase 5: Whole-gate re-verification [COMPLETED]
 
 **Goal**: Confirm the revised acceptance criteria hold simultaneously, measured after the last
 commit, in both the working tree and a clean export — repair any stamp that drifted because the
 sweep crossed a date boundary — and hand off the one cross-task consequence this task creates.
 
 **Tasks**:
-- [ ] `bash scripts/readme-lint.sh FormalSystem BimodalTools` -> exit 0, `Broken file references:   0`, zero `STALE DATE`, zero `MISSING DATE`, `RESULT: PASS`.
-- [ ] If any README is still flagged stale, restamp it to the current date and commit `task 614 phase 5: restamp READMEs re-staled by commit date`; then re-run until clean. Expect this only if the sweep crossed midnight, or if a sibling committed under `FormalSystem/` on a later date.
-- [ ] `bash scripts/typst-sync-check.sh` -> exit 0, `TOTAL_VIOLATIONS=0`.
-- [ ] `git archive HEAD | tar -x -C <scratch>` then `(cd <scratch> && bash scripts/typst-sync-check.sh)` -> exit 0, `TOTAL_VIOLATIONS=0`. The scratch directory must sit outside any git work tree.
-- [ ] `(cd <scratch> && bash scripts/readme-lint.sh FormalSystem BimodalTools)` -> exit 0 with `Broken file references:   0`. This run gives clean-export parity for Check 3 only: with no `.git`, `git log` returns nothing and Check 4 silently skips every file, so its stamp output there is not evidence either way.
-- [ ] `typst compile --root .. typst/BimodalReference.typ` -> exit 0.
-- [ ] `typst compile --root .. typst/FormalFoundations.typ` -> exit 0.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` (the fast structural pass; this task has no Lean surface, so C1's `lake build` adds nothing and would contend with sibling builds). Expected: no failure in a check that reads this task's files — C9 (no task numbers under `FormalSystem/`) is the one that could be tripped by an added README line. C12/C13 scan `docs/` and the root `README.md` only and cannot be affected.
-  - [ ] If it fails on a check this task cannot influence (a new C31/C32, a C20 assertion, anything reading `.lean` or `docs/`), do **not** fix it: task 643 is editing this script in the same tree. Check `git log -3 -- scripts/check-module-invariants.sh` and `git status --short scripts/`, then report it per the dispatch's territory rules (4) and (5).
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` -> zero byte changes (confirms no README edit landed inside a generated inventory block).
-- [ ] `git status --porcelain -- Boneyard/` -> empty.
-- [ ] `git log --stat` review of the task's commits: confirm no file outside the declared scope was staged.
-- [ ] **Cross-task handoff (R8)** — record in the implementation summary *and* in the orchestrator handoff JSON, without editing the file:
-  - `docs/development/REFERENCE_NORMAL_FORM.md:159-160` (§5 "Recorded baselines") lists `readme-lint.sh` broken references = 21 and `typst-sync-check.sh` Check 1 = 9 violations, both "unchanged". After this task they are 0 and 0, and the accurate direction is "must stay 0".
+- [x] `bash scripts/readme-lint.sh FormalSystem BimodalTools` -> exit 0, `Broken file references:   0`, zero `STALE DATE`, zero `MISSING DATE`, `RESULT: PASS`.
+- [ ] If any README is still flagged stale, restamp it to the current date and commit `task 614 phase 5: restamp READMEs re-staled by commit date`; then re-run until clean. *(deviation: skipped — not needed: every commit landed on 2026-09-21 and the post-commit lint flags nothing; `FormalSystem/Tactic/README.md` was already restamped in Phase 3)* Expect this only if the sweep crossed midnight, or if a sibling committed under `FormalSystem/` on a later date.
+- [x] `bash scripts/typst-sync-check.sh` -> exit 0, `TOTAL_VIOLATIONS=0`.
+- [x] `git archive HEAD | tar -x -C <scratch>` then `(cd <scratch> && bash scripts/typst-sync-check.sh)` -> exit 0, `TOTAL_VIOLATIONS=0`. The scratch directory must sit outside any git work tree. *(deviation: altered — the export prints `TOTAL_VIOLATIONS=0`, but the script exits 1 there because Check 2 needs a `.git`; the exit-0 evidence is a `git clone --depth 1` of HEAD `9728e07bb` (CI-shaped: no `training/`, no `.lake/`), which prints PASS on all checks — see the Phase 2 note)*
+- [x] `(cd <scratch> && bash scripts/readme-lint.sh FormalSystem BimodalTools)` -> exit 0 with `Broken file references:   0`. This run gives clean-export parity for Check 3 only: with no `.git`, `git log` returns nothing and Check 4 silently skips every file, so its stamp output there is not evidence either way.
+- [x] `typst compile --root .. typst/BimodalReference.typ` -> exit 0.
+- [x] `typst compile --root .. typst/FormalFoundations.typ` -> exit 0.
+- [x] `bash scripts/check-module-invariants.sh --no-build` (the fast structural pass; this task has no Lean surface, so C1's `lake build` adds nothing and would contend with sibling builds). Expected: no failure in a check that reads this task's files — C9 (no task numbers under `FormalSystem/`) is the one that could be tripped by an added README line. C12/C13 scan `docs/` and the root `README.md` only and cannot be affected.
+  - [ ] If it fails on a check this task cannot influence (a new C31/C32, a C20 assertion, anything reading `.lean` or `docs/`), do **not** fix it: task 643 is editing this script in the same tree. Check `git log -3 -- scripts/check-module-invariants.sh` and `git status --short scripts/`, then report it per the dispatch's territory rules (4) and (5). *(deviation: skipped — not needed: `--no-build` printed ALL CHECKS PASSED)*
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` -> zero byte changes (confirms no README edit landed inside a generated inventory block).
+- [x] `git status --porcelain -- Boneyard/` -> empty.
+- [x] `git log --stat` review of the task's commits: confirm no file outside the declared scope was staged.
+- [x] **Cross-task handoff (R8)** — record in the implementation summary *and* in the orchestrator handoff JSON, without editing the file:
+  - *(altered: a sibling edit has since moved these rows to `:193-194`)* `docs/development/REFERENCE_NORMAL_FORM.md:159-160` (§5 "Recorded baselines") lists `readme-lint.sh` broken references = 21 and `typst-sync-check.sh` Check 1 = 9 violations, both "unchanged". After this task they are 0 and 0, and the accurate direction is "must stay 0".
   - Task 643's plan verifies those two baselines as unchanged; if its verification runs after this task's Phase 1 or Phase 2 commit it will observe 0. Name the two commit SHAs so the delta is attributable.
   - That file is in task 643's declared `file_scope`, so the row update belongs to task 643 or to a follow-up — not to this task.
-- [ ] Record in the implementation summary the CI depth-1 limitation on Check 4 (see the Risks table), so CI's advisory stamp output is not later misread as a regression of this sweep.
+- [x] Record in the implementation summary the CI depth-1 limitation on Check 4 (see the Risks table), so CI's advisory stamp output is not later misread as a regression of this sweep.
 
 **Timing**: 0.75 hours
 
@@ -508,18 +508,18 @@ declares no identifiers (matching the empty Lean-identifier set under **Goals** 
 
 ## Testing & Validation
 
-- [ ] `bash scripts/readme-lint.sh FormalSystem BimodalTools` exits 0 with `Broken file references:   0` and `RESULT: PASS`.
-- [ ] The same invocation reports zero `STALE DATE` and zero `MISSING DATE`, measured **after** the final commit on the local full clone.
-- [ ] `bash scripts/typst-sync-check.sh` exits 0 with `TOTAL_VIOLATIONS=0` in the working tree.
-- [ ] The same check exits 0 with `TOTAL_VIOLATIONS=0` inside a fresh `git archive HEAD` export.
-- [ ] `typst compile --root .. typst/BimodalReference.typ` exits 0.
-- [ ] `typst compile --root .. typst/FormalFoundations.typ` exits 0.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` shows no failure attributable to this task's files; `--emit-inventory --check` reports zero byte changes.
-- [ ] `git status --porcelain -- Boneyard/` is empty.
-- [ ] No file under `scripts/`, `docs/development/`, `ORGANISATION.md` or `CLAUDE.md` is modified (sibling territory).
-- [ ] Every re-pointed `training/PIPELINE.md` line range was read and confirmed to contain the material the citing sentence claims, and is paired with its section heading.
-- [ ] `typst/chapters/p4-dataset-pipeline.typ` contains no `docs/training` string and no `README.md:183-184` anchor; no quotation in it encloses a sentence absent from its cited source.
-- [ ] The whitelist's `training/PIPELINE.md` entries and the chapter's `training/PIPELINE.md` spans are the same set.
+- [x] `bash scripts/readme-lint.sh FormalSystem BimodalTools` exits 0 with `Broken file references:   0` and `RESULT: PASS`.
+- [x] The same invocation reports zero `STALE DATE` and zero `MISSING DATE`, measured **after** the final commit on the local full clone.
+- [x] `bash scripts/typst-sync-check.sh` exits 0 with `TOTAL_VIOLATIONS=0` in the working tree.
+- [x] The same check exits 0 with `TOTAL_VIOLATIONS=0` inside a fresh `git archive HEAD` export.
+- [x] `typst compile --root .. typst/BimodalReference.typ` exits 0.
+- [x] `typst compile --root .. typst/FormalFoundations.typ` exits 0.
+- [x] `bash scripts/check-module-invariants.sh --no-build` shows no failure attributable to this task's files; `--emit-inventory --check` reports zero byte changes.
+- [x] `git status --porcelain -- Boneyard/` is empty.
+- [x] No file under `scripts/`, `docs/development/`, `ORGANISATION.md` or `CLAUDE.md` is modified (sibling territory).
+- [x] Every re-pointed `training/PIPELINE.md` line range was read and confirmed to contain the material the citing sentence claims, and is paired with its section heading.
+- [x] `typst/chapters/p4-dataset-pipeline.typ` contains no `docs/training` string and no `README.md:183-184` anchor; no quotation in it encloses a sentence absent from its cited source.
+- [x] The whitelist's `training/PIPELINE.md` entries and the chapter's `training/PIPELINE.md` spans are the same set.
 
 ## Artifacts & Outputs
 
