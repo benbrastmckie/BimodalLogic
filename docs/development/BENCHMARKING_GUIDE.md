@@ -47,7 +47,7 @@ def timed {α : Type} (action : IO α) : IO (α × Nat) := do
 - Report `correct: true/false` in results
 
 Example validation pattern (illustrative; no semantic benchmark currently exists -- see
-`FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/README.md` for why the last one was retired):
+`Boneyard/SemanticBenchmarkToyEvaluator/README.md` for why the last one was retired):
 
 ```lean
 structure EvaluationBenchmarkResult where

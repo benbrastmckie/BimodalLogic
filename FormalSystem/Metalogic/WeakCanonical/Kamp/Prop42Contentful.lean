@@ -73,7 +73,7 @@ uniqueness** |
 ### `INF` is the witness-pinning mechanism (PDF pp.10-11)
 
 The recorded obstruction (the "B.1 gap remains UNFIXABLE" note after `neg_2var_vec_ea_indep_correct`
-in `FormalSystem/Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`) is that the
+in `Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`) is that the
 bracket's witnesses are existential, so "the IH gives negation on a specific sub-interval `(r₀, z₁)`
 but the bracket witness `w₀` could be `> r₀`, giving a different sub-interval `(w₀, z₁)`" — the
 arrangement varies per model.

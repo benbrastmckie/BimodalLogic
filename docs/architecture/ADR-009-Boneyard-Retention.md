@@ -10,7 +10,7 @@ is not revisited, and this record remains in force until that ADR is accepted.
 
 ## Context
 
-`FormalSystem/Boneyard/` holds 168 archived `.lean` files totalling 91,539 lines — roughly a
+`Boneyard/` holds 168 archived `.lean` files totalling 91,539 lines — roughly a
 quarter of the repository by line count, and the only place in the tree where a `sorry` appears
 in proof position. A reader encountering it for the first time reasonably asks two questions:
 does this code affect the results, and why is it here at all?
@@ -92,7 +92,7 @@ to:
 
 - The archive's size stops being a red flag and becomes what it is: a governed quarantine whose
   inertness is asserted by C1/C3/B0/C11 rather than promised.
-- `FormalSystem/Boneyard/README.md` becomes the sole surface stating any archive count, extending
+- `Boneyard/README.md` becomes the sole surface stating any archive count, extending
   ADR-005 decision 4 from a convention to a gate-enforced one. Other surfaces link rather than
   restate.
 - The inventory generator's markdown walk now includes the archive. Previously it pruned
@@ -107,7 +107,7 @@ to:
 ## Related
 
 - [ADR-005](ADR-005-Single-Boneyard.md) — one archive, excluded by directory name (B0, C11)
-- [`FormalSystem/Boneyard/README.md`](../../FormalSystem/Boneyard/README.md) — the archive's own
+- [`Boneyard/README.md`](../../Boneyard/README.md) — the archive's own
   framing, counts, taxonomy and provenance
 - `scripts/check-module-invariants.sh` — B0, C1, C3, C11, `--emit-inventory` / `INV`
 - `scripts/boneyard-import-waivers.txt` — the 49 recorded C11 waivers

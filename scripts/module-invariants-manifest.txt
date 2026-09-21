@@ -102,7 +102,7 @@ FormalSystem.Metalogic.Decidability.BiLasso.Agreement
 # so also runs that `#eval` -- in isolation, which keeps the harness from rotting.
 BimodalTest.ProofSystem.DerivationBenchmark
 # Its former sibling, the semantic-evaluation benchmark, was not repaired but retired to
-# FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/: it never called `TruthAt`, so it
+# Boneyard/SemanticBenchmarkToyEvaluator/: it never called `TruthAt`, so it
 # measured nothing the library defines. That directory's README records the measurement.
 
 # These two compile in isolation but cannot be imported by Tests/BimodalTest.lean:

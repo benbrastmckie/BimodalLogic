@@ -6,7 +6,7 @@
 
 ## Context
 
-Archived Lean code lived in **two** places: `FormalSystem/Boneyard/`, and a second archive nested
+Archived Lean code lived in **two** places: `Boneyard/`, and a second archive nested
 several levels down, inside the `Kamp/` subtree of `Metalogic/WeakCanonical/`.
 
 Every count of the tree's size is produced by a `find` filter that excludes the archive. A filter
@@ -21,7 +21,7 @@ every count in the repository at once.
 
 ## Decision
 
-1. **Consolidate.** The archives are merged into a single tree at `FormalSystem/Boneyard/`; the
+1. **Consolidate.** The archives are merged into a single tree at `Boneyard/`; the
    former `Kamp/Boneyard/` now lives at `Boneyard/Kamp/KampWeakCanonical/`.
 2. **Filter on the directory NAME, never a path prefix.** Every traversal in
    `scripts/check-module-invariants.sh` excludes `*/Boneyard/*` by name glob, so a second archive
@@ -32,7 +32,7 @@ every count in the repository at once.
    requiring the archived file count to be non-zero. A second archive reappearing fails the gate
    instead of silently splitting the counts again.
 4. **State the archive's own counts in exactly one place** —
-   [`FormalSystem/Boneyard/README.md`](../../FormalSystem/Boneyard/README.md). No other surface
+   [`Boneyard/README.md`](../../Boneyard/README.md). No other surface
    restates them.
 
 ## Consequences
@@ -42,7 +42,7 @@ every count in the repository at once.
 - The single-name-glob rule is what makes the generator correct by construction. It is
   implemented once, in `scripts/lib/live_walk.py`, and shared by the C4-C11 graph checks and the
   inventory generator, so those two can never disagree about what "live" means.
-- A future archive must be a subdirectory of `FormalSystem/Boneyard/`, not a new `Boneyard/`
+- A future archive must be a subdirectory of `Boneyard/`, not a new `Boneyard/`
   elsewhere. B0 enforces this.
 
 ## Related

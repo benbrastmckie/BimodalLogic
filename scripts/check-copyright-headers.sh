@@ -18,7 +18,7 @@
 #   check-copyright-headers.sh --strict [ROOT..] # additionally exit 1 if anything is wrong
 #   check-copyright-headers.sh --exclude GLOB    # skip paths matching GLOB (repeatable)
 #
-# --exclude exists because the 156 archived files under FormalSystem/Boneyard/ are
+# --exclude exists because the 156 archived files under Boneyard/ are
 # intentionally unheadered, so `--strict FormalSystem` could otherwise never exit 0.
 # The archive was two trees until it was consolidated; the glob below is a NAME glob,
 # not a path prefix, so it still catches a second archive if one ever reappears.

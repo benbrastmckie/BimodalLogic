@@ -29,7 +29,7 @@ file and line.
 | C8 | Every Lean-bearing subdirectory has exactly one sibling aggregator `X.lean` beside `X/` | One convention, checkable |
 | C9 | Zero task-number citations under `FormalSystem/` | Task numbers are renumbered by archival and mean nothing to a later reader |
 | C10 | Zero references to the pre-relocation `FormalSystem/{docs,latex,typst}` paths | `docs/`, `latex/` and `typst/` live at the project root |
-| C11 | Every `import` inside `FormalSystem/Boneyard/` resolves, or is waived | The archive is never compiled, so `lake build` cannot see its imports rot. 65 archived import lines were already dangling when the two archives were consolidated |
+| C11 | Every `import` inside `Boneyard/` resolves, or is waived | The archive is never compiled, so `lake build` cannot see its imports rot. 65 archived import lines were already dangling when the two archives were consolidated |
 | C12 | Every **slash-shaped** source path in `docs/` + `README.md` resolves | C5 matches only *dotted* module names, so the slash form of `FormalSystem/Metalogic/Bundle/BFMCS.lean` is invisible to it. A table naming six source files, four of which did not exist, survived a green gate on exactly this blind spot |
 | C13 | Every relative markdown link in `docs/` + `README.md` resolves | Nothing checked `docs/` links at all; 96 of them had rotted, several pointing outside the repository |
 | C14 | Documented axiom and sorry counts match the tree — in `docs/`, `README.md` **and** `FormalSystem/**/*.lean` docstrings — and the two headline theorems C2 does not cover match their axiom baseline | C2 and C3 assert facts about the *tree*; C14 is what asserts the *documentation* agrees with them. `docs/` had documented the axiom count as 21 against an actual 45, and the sorry count as 12 against an actual 0. The `.lean` half was added later: C14's original markdown-only scope is exactly why six docstrings claiming an axiom-constructor count of 42 survived a 42 → 45 change untouched, and widening it immediately surfaced seven further claims of an axiom count of 21, in Lean docstrings that no gate had ever seen |
@@ -90,7 +90,7 @@ C5 reports allowlist entries that no longer occur, so stale exemptions get prune
 
 An archived file is outside the import closure, so nothing compiles it and nothing
 notices when a module it imports is deleted or moved. C11 closes that hole: every
-`import FormalSystem.*` / `import BimodalTest.*` line under `FormalSystem/Boneyard/`
+`import FormalSystem.*` / `import BimodalTest.*` line under `Boneyard/`
 must resolve to a file on disk, or appear here.
 
 Entries are permanent records of imports that **cannot** be repaired — the target was

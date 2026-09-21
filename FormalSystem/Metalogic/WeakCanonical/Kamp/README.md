@@ -9,15 +9,15 @@ is wrong about the repository.
 
 `Kamp/` used to carry its own nested `Boneyard/`, the **second** archive directory in the
 repository. It no longer does: that archive was moved whole into
-[`FormalSystem/Boneyard/Kamp/KampWeakCanonical/`](../../../Boneyard/Kamp/KampWeakCanonical/README.md),
+[`Boneyard/Kamp/KampWeakCanonical/`](../../../Boneyard/Kamp/KampWeakCanonical/README.md),
 and the four Kamp-facing approach directories that sat at the top-level archive's root joined it
-under [`FormalSystem/Boneyard/Kamp/`](../../../Boneyard/Kamp/README.md). A `find` filter naming
+under [`Boneyard/Kamp/`](../../../Boneyard/Kamp/README.md). A `find` filter naming
 only the top-level `Boneyard` used to count the nested archive's lines as live, which is how
 several past counts of this repository came out wrong; B0 now asserts the archive directory count
 is exactly 1, so that cannot recur silently.
 
 Archive counts are stated in exactly one place,
-[`FormalSystem/Boneyard/README.md`](../../../Boneyard/README.md). Re-derive live counts with:
+[`Boneyard/README.md`](../../../Boneyard/README.md). Re-derive live counts with:
 
 ```bash
 bash scripts/check-module-invariants.sh   # B0 self-test + C7 live inventory

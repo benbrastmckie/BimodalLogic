@@ -98,7 +98,7 @@ import Mathlib.Data.List.Permutation
 -- REACHABLE from `FormalSystem.lean`, so CI compiles it. This edge is the whole point of that file:
 -- a guard sitting in an unreachable directory protects nothing (that is precisely how the same
 -- finding, recorded in the "PHASE 3 RESOLUTION" note after `neg_2var_vec_ea_indep_correct` in
--- `FormalSystem/Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`, went unread).
+-- `Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`, went unread).
 -- Prop42Vacuity proves that the conclusion the now-deleted `neg_2var_vec_ea` /
 -- `NavigatedSpine.reflatten_neg_step` pair carried — the latter having re-exported the former from
 -- this file's neighborhood — follows from NO hypotheses, and so carries no content about negation.

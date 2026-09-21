@@ -160,7 +160,7 @@ fidelity milestone and is owned by neither module.
 assumes `HasAttainedINF`/`HasAttainedSUP`. It is therefore **not** a refutation of the ruling that
 the model-*independent* Prop 4.2 backward direction is unfixable at the `BracketFormula` level (the
 B.1 / "PHASE 3 RESOLUTION" note after `neg_2var_vec_ea_indep_correct` in
-`FormalSystem/Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`, and the
+`Boneyard/Kamp/KampWeakCanonical/VecEANormalForm/NegationIndep.lean`, and the
 concurring independent analysis). It **confirms** that ruling's diagnosis: the anchors are what make
 the direction go through. Neither this module nor the theorem below is license for a further bare
 attempt.

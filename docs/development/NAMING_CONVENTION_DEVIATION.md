@@ -462,5 +462,5 @@ uniformity axioms about discreteness, not class-specific axioms, and keep their 
   settled state rather than a deviation from it
 - [`FormalSystem/ProofSystem/Derivation.lean`](../../FormalSystem/ProofSystem/Derivation.lean)
   — the `Type`-valued `DerivationTree` that forces `def` over `theorem`
-- [`FormalSystem/Boneyard/README.md`](../../FormalSystem/Boneyard/README.md) — the one tree
+- [`Boneyard/README.md`](../../Boneyard/README.md) — the one tree
   deliberately left un-migrated

@@ -190,7 +190,7 @@ existed.
      - Adjacent `swap`-named identifiers (the `swap_norm` simp attribute, `*_swap_of_tm*`, the
        `cValid` swaps, `starValid_*_swap`) were outside this decision. They have since been
        classified and renamed; see "Label rename absorption (2026-09-18)" above for the full map.
-   - **`FormalSystem/Boneyard/**`** is an archive that is not built, and it is untouched.
+   - **`Boneyard/**`** is an archive that is not built, and it is untouched.
    - Benchmark output labels (`"Temporal duality"` in `DerivationBenchmark.lean`,
      `docs/project-info/performance-targets.md`) are kept for output and history stability. The
      `untl`/`snce` rename's migration pattern data was recorded by a one-off migration script

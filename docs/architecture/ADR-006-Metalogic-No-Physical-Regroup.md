@@ -29,7 +29,7 @@ the sole reverse edge, and it now reaches the iterated-temporal syntax it needed
 `Syntax/SubformulaClosure/IteratedTemporal.lean` instead of through
 `Bundle/CanonicalTaskRelation.lean`. `Bundle → Core` remains, one-directionally, at 9 import
 lines across 5 files — down from 18 across 10, because six of `Bundle/`'s fifteen modules were
-retired to [`Boneyard/BundleDeadHalf/`](../../FormalSystem/Boneyard/BundleDeadHalf/README.md) in the same change.
+retired to [`Boneyard/BundleDeadHalf/`](../../Boneyard/BundleDeadHalf/README.md) in the same change.
 
 ### The cycle: `BXCanonical` <-> `WeakCanonical`
 

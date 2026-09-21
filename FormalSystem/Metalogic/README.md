@@ -11,7 +11,7 @@ Every count excludes the archive — see [Counting Live Files](#counting-live-fi
 
 ## Counting Live Files
 
-Archived code lives in exactly one place, [`FormalSystem/Boneyard/`](../Boneyard/README.md),
+Archived code lives in exactly one place, [`Boneyard/`](../Boneyard/README.md),
 which is also the single place its counts are stated — this page does not restate them. Check B0
 asserts the archive-directory count is exactly 1 and every traversal excludes it by directory
 **name**, not by path prefix; [ADR-005](../../docs/architecture/ADR-005-Single-Boneyard.md)
@@ -212,7 +212,7 @@ dominates everything else in the repository:
 
 `Kamp/` is the Kamp/Reynolds separation machinery: a large body of loose modules plus the
 sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work is in
-[`FormalSystem/Boneyard/Kamp/`](../Boneyard/Kamp/README.md).
+[`Boneyard/Kamp/`](../Boneyard/Kamp/README.md).
 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Under `Kamp/` | Files | Lines |

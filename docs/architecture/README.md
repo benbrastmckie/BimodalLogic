@@ -90,7 +90,7 @@ safe, and the two relocations that were considered and rejected on cost.
 
 ### ADR-009: The Archive Ships, and Says Why
 
-Records the decision to keep `FormalSystem/Boneyard/` rather than split or cut it: why cutting is
+Records the decision to keep `Boneyard/` rather than split or cut it: why cutting is
 unavailable (96 citing files outside the archive, including the published LaTeX), why splitting
 buys ~2% of the archive's lines at the cost of ADR-005's single-archive invariant, and the four
 obligations keeping it carries.

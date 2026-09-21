@@ -252,9 +252,9 @@ identified and deferred rather than folded in:
   positional is a dataset-format version bump with real downstream consumers
   (`DatasetGeneratorMain.lean`'s S-expression parser, the training-data pipeline,
   `typst/chapters/ax-machine-appendix.typ`'s shape table) and is orthogonal to argument order.
-- **Boneyard exclusion (D3)** — both archive trees, `FormalSystem/Boneyard/` and the former
+- **Boneyard exclusion (D3)** — both archive trees, `Boneyard/` and the former
   `Metalogic/WeakCanonical/Kamp/Boneyard/` (consolidated into
-  `FormalSystem/Boneyard/Kamp/KampWeakCanonical/` per ADR-005), were excluded entirely: **1,934
+  `Boneyard/Kamp/KampWeakCanonical/` per ADR-005), were excluded entirely: **1,934
   occurrences across 51 files**, none of which any compiler checks (0 of 379 built oleans lie
   under a Boneyard path, and no live module imports one). Rewriting unverifiable code is pure
   added risk, so instead each tree's `README.md` now carries a convention banner recording that

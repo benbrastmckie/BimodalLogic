@@ -30,8 +30,8 @@ Neither closes a cycle. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) draws both,
 relocations that were considered and rejected, and gives the commands that re-derive the graph
 from the tree rather than trusting the picture.
 
-`FormalSystem/Boneyard/` is outside the stack: it is the archive, it is not compiled, and no
-live module imports it. Read [its README](FormalSystem/Boneyard/README.md) before resurrecting
+`Boneyard/` is outside the stack: it is the archive, it is not compiled, and no
+live module imports it. Read [its README](Boneyard/README.md) before resurrecting
 anything from it — the argument order of two constructors changed after most of it was written.
 
 ## Everything else
@@ -64,7 +64,7 @@ The layering claims above are structural, so they are checkable rather than asse
 grep -rn '^import FormalSystem.ProofSystem' --include='*.lean' FormalSystem/Semantics/
 
 # no live module imports the archive, and nothing under it is built
-grep -rn '^import FormalSystem.Boneyard' --include='*.lean' FormalSystem/ Tests/
+grep -rn '^import Boneyard' --include='*.lean' FormalSystem/ Tests/
 find .lake/build -path '*Boneyard*' -name '*.olean'
 
 # the full structural check suite

@@ -161,12 +161,12 @@ This axiom ensures that if G(phi) is in MCS_t:
 5. The propagation continues inductively to all future times
 
 **Proven anchors** (both archived with the rest of the canonical-frame half of `Bundle/`; see
-`FormalSystem/Boneyard/BundleDeadHalf/README.md`):
+`Boneyard/BundleDeadHalf/README.md`):
 ```lean
--- FormalSystem/Boneyard/BundleDeadHalf/SuccRelation.lean (archived)
+-- Boneyard/BundleDeadHalf/SuccRelation.lean (archived)
 theorem Succ.g_persistence {u v : Set Formula} (h : Succ u v) : GContent u ⊆ v
 
--- FormalSystem/Boneyard/BundleDeadHalf/CanonicalFrame.lean (archived)
+-- Boneyard/BundleDeadHalf/CanonicalFrame.lean (archived)
 @[simp] lemma ExistsTask_def {M M' : Set Formula} : ExistsTask M M' = (GContent M ⊆ M')
 ```
 
@@ -295,7 +295,7 @@ check C2 of `scripts/check-module-invariants.sh`.
 | `FormalSystem/Metalogic/Bundle/BFMCS.lean` | 91 | BFMCS structure definition |
 | `FormalSystem/Metalogic/Bundle/WitnessSeed.lean` | 181, 290 | witness-seed consistency theorems |
 | `FormalSystem/Metalogic/Bundle/TemporalContent.lean` | 59, 69 | GContent/HContent definitions |
-| `FormalSystem/Boneyard/BundleDeadHalf/Construction.lean` | 112, 142 | Lindenbaum MCS construction (archived) |
+| `Boneyard/BundleDeadHalf/Construction.lean` | 112, 142 | Lindenbaum MCS construction (archived) |
 | `FormalSystem/Metalogic/BXCanonical/Completeness.lean` | 196, 255, 296 | the three Base/Dense/ZTime completeness theorems |
 
 ---

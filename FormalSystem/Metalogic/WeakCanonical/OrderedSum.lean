@@ -53,7 +53,7 @@ theorem doets_lemma_1_4 (sig : MonadicSignature) [Finite sig.preds]
   KEquivalenceFramework.sum_preservation k I m m' h_equiv
 
 -- NOTE: `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k`
--- were archived to FormalSystem/Boneyard/VacuousKEquiv.lean. They proved only
+-- were archived to Boneyard/VacuousKEquiv.lean. They proved only
 -- reflexivity (⟨M, rfl⟩) rather than genuine Z-interval equivalence.
 
 end FormalSystem.Metalogic.WeakCanonical

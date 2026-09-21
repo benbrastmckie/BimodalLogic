@@ -189,7 +189,7 @@ Aesop attributes exist anywhere in the tree, and that is deliberate.
   is itself archived. That directory's README records the validated `Nat.find` rewrite as the
   alternative to a verbatim resurrection.
 - `CanonicalTask_backward` and its family were retired by earlier work to
-  `FormalSystem/Boneyard/BundleDeadHalf/CanonicalTaskRelation.lean`. They are intentionally out
+  `Boneyard/BundleDeadHalf/CanonicalTaskRelation.lean`. They are intentionally out
   of scope for the Core consolidation and should not be re-opened here.
 
 ## Design Notes

@@ -45,7 +45,11 @@ carries an explicit bare-form audit line asserting a zero delta, because a passi
 total does not distinguish "left alone" from "rewritten twice".
 
 Exclusions: specs/ (the task-management record legitimately names old paths, and
-C5/C9/C10 all exclude it), .git/, .lake/, build/, __pycache__/.
+C5/C9/C10 all exclude it), .git/, .lake/, build/, __pycache__/, and this file
+itself -- its worked examples describe what a relocation does in general and are
+not citations of any particular tree location, so rewriting them turns the
+documentation into nonsense ("anchored on the full old prefix `X`, never the
+bare token `X`") while every real citation is rewritten correctly.
 """
 
 from __future__ import annotations
@@ -188,8 +192,13 @@ def walk_repo() -> list[str]:
     return out
 
 
+SELF_PATH = "scripts/move-modules.py"
+
+
 def classes_for(path: str) -> set[str]:
     """Which rewrite classes apply to this file, by extension and location."""
+    if path == SELF_PATH:
+        return set()
     ext = os.path.splitext(path)[1]
     applicable: set[str] = set()
     if ext == ".lean" and (path.startswith("FormalSystem/")

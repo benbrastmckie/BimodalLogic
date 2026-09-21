@@ -1,7 +1,7 @@
 # Archived import lines that C11 must not treat as repairable.
 #
 # C11 requires every `import FormalSystem.*` / `import BimodalTest.*` line inside
-# FormalSystem/Boneyard/ to resolve to a file on disk. An archived file is never
+# Boneyard/ to resolve to a file on disk. An archived file is never
 # compiled, so `lake build` cannot notice when its imports go stale; C11 is the
 # only thing standing between the archive and silent rot.
 #
@@ -31,8 +31,8 @@ FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 # exist, but four files named `Completeness.lean` do:
 #   FormalSystem/Metalogic/BXCanonical/Completeness.lean
 #   FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean
-#   FormalSystem/Boneyard/SupersededCompleteness/Completeness.lean
-#   FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean
+#   Boneyard/SupersededCompleteness/Completeness.lean
+#   Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean
 # The sole consumer is Boneyard/BundleSuccessorSeed/SuccExistence.lean:13, and
 # nothing in it identifies which of the four the import once named. Picking one
 # would invent history, so the line is waived rather than guessed.

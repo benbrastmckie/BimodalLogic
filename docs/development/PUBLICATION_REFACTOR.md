@@ -68,7 +68,7 @@ surface (g).
 | 7b | Top-level `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, PR-title check, tag-triggered release, `scripts/README.md` | `CONTRIBUTING.md` under `docs/development/`; no release workflow; no scripts README | **Adopt**: top-level `CONTRIBUTING.md`, a `scripts/README.md` naming every script, a tag-triggered release workflow; PR-title check optional for a single maintainer (Phases 1, 8) |
 | 7c | Module-size policy: split by dependency, never by line count | `longFile = 1500` with in-source baselines (stricter) | **Adopt the policy text**, keep the baselines; split only the two largest files, only along import-acyclic seams (Phase 9, optional) |
 | 8 | Flat test directory | Mirrored subdirectories plus 12 loose root files | **Deliberately diverge** (mirroring scales better here); relocate the loose files only (Phases 3, 5) |
-| e | Root-level `Boneyard/`, `#exit`, stale archived imports are cosmetic | `FormalSystem/Boneyard/`, `#exit` everywhere, C11 keeps imports resolvable | **Adopt the location** (Phase 2, ADR-010); **deliberately diverge** on C11 and keep it enforced |
+| e | Root-level `Boneyard/`, `#exit`, stale archived imports are cosmetic | `Boneyard/`, `#exit` everywhere, C11 keeps imports resolvable | **Adopt the location** (Phase 2, ADR-010); **deliberately diverge** on C11 and keep it enforced |
 | g | Clean upstream surface (the fork is not a model here) | `specs/`, `CLAUDE.md`, `.claude-extensions.json`, personal paths, internal naming, frozen LaTeX PDF, research and training notes, one-off scripts | **Adopt upstream's surface** (Phase 1 and the publication gate), **except `specs/`**, which stays published as the project's development record (Section 8) |
 
 ## 4. Target layout
@@ -170,7 +170,7 @@ it goes into `BimodalTools` for uniformity. C25 and C25N read roots from the lak
 | `Metalogic/WeakCanonical/{Kamp,EFGames,Separation,...}` (141 files) | `...Metalogic.WeakCanonical.*` | `Metalogic/Expressiveness/...` | `Metalogic.Expressiveness.*` | **yes, citeable; two main-results entries** |
 | `Metalogic/WeakCanonical/Expressiveness/*` | `...WeakCanonical.Expressiveness` | `Metalogic/Expressiveness/GameTransfer/*` | `...Expressiveness.GameTransfer` | yes |
 | `Automation/<tooling>`, `Metalogic/Decidability/TraceExport.lean` (25 modules) | `FormalSystem.Automation.*`, `...Decidability` | `BimodalTools/*` | `BimodalTools.*` | yes (tooling only, not library API) |
-| `FormalSystem/Boneyard/*` (169 files) | module names `FormalSystem.Boneyard.*` | `Boneyard/*` | `Boneyard.*` | module names only (never built) |
+| `Boneyard/*` (169 files) | module names `Boneyard.*` | `Boneyard/*` | `Boneyard.*` | module names only (never built) |
 | Three files declaring a foreign namespace (`BXCanonical/Chronicle/ChronicleRealExtension.lean` in `Metalogic.Bundle`; `WeakCanonical/{DenseModelSurgery/ChronicleInstance,RealModel/ChronicleRealFlow}.lean` in `BXCanonical.Chronicle`) | foreign | unchanged | record, or move the declarations | decide per file in Phase 5 |
 
 ## 5. Templates
@@ -312,7 +312,7 @@ release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
 ### Phase 2: Archive to the repository root — [CITE]
 
 - `git mv` the archive from under `FormalSystem/` to a root-level `Boneyard/`; module names
-  `FormalSystem.Boneyard.*` -> `Boneyard.*`. Rewrite the 538 archived imports and every citer
+  `Boneyard.*` -> `Boneyard.*`. Rewrite the 538 archived imports and every citer
   (48 live docstrings, 43 markdown files, the scripts, 5 typst files) with the Phase 0 tool.
 - Update B0's search root and C11's scan root; add the two new invariants ADR-010 names (no
   `Boneyard` in `lakefile.toml` or the root aggregator; no `import Boneyard.*` from live code).
@@ -460,7 +460,7 @@ provenance.
 > rewrites imports in FormalSystem/, Tests/ and the archive, dotted and slash paths in docs/,
 > typst/ and the scripts/ manifests, namespace/open/FQN occurrences, the C2/C14 baselines and
 > MainResults.lean; dry-run mode; ends by running check-module-invariants.sh --no-build). Then
-> use it to move FormalSystem/Boneyard/ to a root-level Boneyard/ (module names Boneyard.*),
+> use it to move Boneyard/ to a root-level Boneyard/ (module names Boneyard.*),
 > update B0's search root and C11's scan root, add the two invariants ADR-010 names, and change
 > ADR-010's status to Accepted with a pointer from ADR-009. Acceptance: lake build and lake build
 > BimodalTest exit 0; check-module-invariants.sh green; no .olean under Boneyard/; the archive

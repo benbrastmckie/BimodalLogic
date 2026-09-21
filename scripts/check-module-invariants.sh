@@ -23,7 +23,7 @@
 #   C9  Zero task-number citations under FormalSystem/, lakefile.toml, README.md,
 #       and scripts/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
-#   C11 Every import inside FormalSystem/Boneyard/ resolves, or is waived
+#   C11 Every import inside Boneyard/ resolves, or is waived
 #   C12 Every slash-shaped source path in docs/ + README.md resolves
 #   C13 Every relative markdown link in docs/ + README.md resolves
 #   C14 Documented axiom/sorry counts match the tree -- in docs/, README.md AND
@@ -94,7 +94,7 @@
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
 # Every filesystem traversal excludes the archive via `-not -path '*/Boneyard/*'`.
-# The archive was consolidated into a single tree at `FormalSystem/Boneyard/`; the
+# The archive was consolidated into a single tree at `Boneyard/`; the
 # former second archive at `Metalogic/WeakCanonical/Kamp/Boneyard/` (63 files /
 # 29,256 lines) now lives at `Boneyard/Kamp/KampWeakCanonical/`. B0 asserts the
 # directory count is exactly 1, so a second archive reappearing anywhere under
@@ -164,7 +164,7 @@ RUN_BUILD=1
 #                           subdirectory count, and the repository's
 #                           archive-directory count (the same figure B0 asserts).
 #                           Live-shaped rows would be a category error there: with
-#                           dir=FormalSystem/Boneyard the "live" and "archived"
+#                           dir=Boneyard the "live" and "archived"
 #                           sets are the same files, so the block would label
 #                           archived code as live.
 #   empty=skip|include      whether a subdirectory with no `.lean` members gets a
@@ -283,17 +283,25 @@ def is_archive_base(directory):
     Tested on the directory NAME, never a path prefix -- the same rule ADR-005
     fixed and B0 asserts. A scan rooted at the archive must not describe its
     contents as live: `live_files` only prunes subdirectories *named* Boneyard,
-    so with dir=FormalSystem/Boneyard it returns all 168 archived files and would
+    so with dir=Boneyard it returns all 168 archived files and would
     label every one of them live.
     """
     parts = os.path.normpath(directory).split(os.sep)
     return "Boneyard" in parts
 
 
-def archive_dir_count(root="FormalSystem"):
-    """Directories named `Boneyard` anywhere under `root` -- the figure B0 asserts."""
+def archive_dir_count(root="."):
+    """Directories named `Boneyard` anywhere under `root` -- the figure B0 asserts.
+
+    Rooted at the repository, not at `FormalSystem`: the archive sits at the
+    repository root now, so a walk from the library tree would find none of it
+    and the archive README's "Archive directories in the repository" row would
+    regenerate as 0 -- turning `INV --check` red for a reason that has nothing
+    to do with the inventory being stale.
+    """
     n = 0
     for _r, dirs, _f in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in (".lake", ".git")]
         n += sum(1 for d in dirs if d == "Boneyard")
     return n
 
@@ -689,21 +697,31 @@ echo
 # ---------------------------------------------------------------------------
 # B0: Boneyard exclusion self-test
 # ---------------------------------------------------------------------------
-mapfile -t BONEYARDS < <(find FormalSystem -type d -name Boneyard | sort)
-if [ "${#BONEYARDS[@]}" -eq 1 ]; then
-  pass B0 "Boneyard exclusion covers exactly 1 directory"
+mapfile -t BONEYARDS < <(find . -type d -name Boneyard \
+                           -not -path './.lake/*' -not -path './.git/*' | sort)
+if [ "${#BONEYARDS[@]}" -eq 1 ] && [ "${BONEYARDS[0]}" = "./Boneyard" ]; then
+  pass B0 "Boneyard exclusion covers exactly 1 directory, at the repository root"
   for b in "${BONEYARDS[@]}"; do note "$b"; done
 else
-  fail B0 "expected 1 Boneyard directory, found ${#BONEYARDS[@]}"
+  fail B0 "expected exactly 1 Boneyard directory at ./Boneyard, found ${#BONEYARDS[@]}"
   for b in "${BONEYARDS[@]}"; do note "$b"; done
 fi
-# Prove the exclusion is load-bearing: archived files must not be in the live set.
+# Prove the exclusion is load-bearing -- but in the opposite direction to the one
+# this check asserted while the archive lived under FormalSystem/. Back then it
+# compared the unfiltered and filtered walks of FormalSystem/ and required the
+# filter to remove something. With the archive at the repository root there is
+# nothing left under FormalSystem/ to remove, so that comparison would be a
+# tautology: it would pass while proving nothing, which is precisely the
+# silent-loss-of-scope failure B0 exists to catch. The assertion inverts instead
+# -- the archive must be non-empty where it now lives, AND the FormalSystem/ walk
+# must find nothing to exclude.
+ARCHIVE_LEAN=$(find Boneyard -name '*.lean' 2>/dev/null | wc -l)
 ALL_LEAN=$(find FormalSystem -name '*.lean' | wc -l)
 LIVE_LEAN=$(live_lean FormalSystem | wc -l)
-if [ "$ALL_LEAN" -gt "$LIVE_LEAN" ]; then
-  note "excluded $((ALL_LEAN - LIVE_LEAN)) archived .lean files ($ALL_LEAN total -> $LIVE_LEAN live)"
+if [ "$ARCHIVE_LEAN" -gt 0 ] && [ "$ALL_LEAN" -eq "$LIVE_LEAN" ]; then
+  note "archive holds $ARCHIVE_LEAN .lean files at ./Boneyard; the FormalSystem/ walk is archive-free ($ALL_LEAN total == $LIVE_LEAN live)"
 else
-  fail B0 "exclusion filter removed nothing; archived files are leaking into live counts"
+  fail B0 "expected a non-empty ./Boneyard and an archive-free FormalSystem/ walk (archive=$ARCHIVE_LEAN, all=$ALL_LEAN, live=$LIVE_LEAN)"
 fi
 echo
 
@@ -927,7 +945,7 @@ for root, dirs, files in os.walk("."):
         if f.endswith(".md"):
             md_files.append(os.path.relpath(os.path.join(root, f), "."))
 
-mod_re = re.compile(r"\b(?:FormalSystem|BimodalTest)(?:\.[A-Z][A-Za-z0-9_]*)+")
+mod_re = re.compile(r"\b(?:FormalSystem|BimodalTest|Boneyard)(?:\.[A-Z][A-Za-z0-9_]*)+")
 
 def resolves(m):
     base = "Tests" if m.split(".")[0] == "BimodalTest" else "."
@@ -1169,10 +1187,21 @@ else:
 # ENFORCE_C11 flag: the flags above exist for end-state invariants the tree does
 # not yet satisfy, and this one is satisfied at the moment it lands.
 #
-# The regex is C4's, verbatim. Do NOT widen it to a bare `^import`: archived
-# files carry block-comment continuation lines and fenced code blocks that begin
-# with the word `import`, which inflate a naive count by 31 lines and would
-# produce that many false failures.
+# C11 has its OWN import regex, deliberately not C4's. C4 matches
+# `FormalSystem|BimodalTest`, and archived modules are named `Boneyard.*` now;
+# reusing C4's pattern here would match none of them, so C11 would count zero
+# archived import lines and print PASS on an empty denominator while the archive
+# rotted unobserved. C4's own pattern is left alone on purpose: a LIVE file
+# importing `Boneyard.*` is B2's failure, not a C4 resolution question.
+#
+# Do NOT widen either regex to a bare `^import`: archived files carry
+# block-comment continuation lines and fenced code blocks that begin with the
+# word `import`, which inflate a naive count by 31 lines and would produce that
+# many false failures.
+arch_imp_re = re.compile(
+    r"^import\s+((?:FormalSystem|BimodalTest|Boneyard)(?:\.[A-Za-z0-9_]+)*)\s*$",
+    re.M)
+
 def archive_files(base):
     out = []
     for root, dirs, files in os.walk(base):
@@ -1181,14 +1210,10 @@ def archive_files(base):
                 out.append(os.path.join(root, f))
     return sorted(out)
 
-archive_roots = []
-for root, dirs, files in os.walk("FormalSystem"):
-    if os.path.basename(root) == "Boneyard":
-        archive_roots.append(root)
-        dirs[:] = []
-archive_lean = []
-for r in sorted(archive_roots):
-    archive_lean.extend(archive_files(r))
+# The archive is a single tree at the repository root (B0 asserts exactly that),
+# so the scan is rooted there directly rather than hunting for directories named
+# `Boneyard` under the library tree.
+archive_lean = archive_files("Boneyard") if os.path.isdir("Boneyard") else []
 
 waived, waiver_reasons = set(), {}
 if os.path.isfile(waivers_path):
@@ -1203,7 +1228,7 @@ arch_dangling, used_waiver, arch_imports = [], set(), 0
 for p in archive_lean:
     txt = open(p, encoding="utf-8", errors="replace").read()
     for i, line in enumerate(txt.splitlines(), 1):
-        m = imp_re.match(line + "\n")
+        m = arch_imp_re.match(line + "\n")
         if not m:
             continue
         arch_imports += 1
@@ -1367,7 +1392,16 @@ md_files.sort()
 # `Logos/` and `Bimodal/` are the two pre-merge tree roots. Neither resolves to
 # anything today, so any occurrence is by construction a defect -- which is exactly
 # why they are in the pattern.
-slash_re = re.compile(r"\b(?:FormalSystem|Tests|Logos|Bimodal)/[A-Za-z0-9_./-]+")
+#
+# `Boneyard` is in the alternation because the archive moved to the repository
+# root: the citations that used to read `FormalSystem/Boneyard/...` now read
+# `Boneyard/...`, and without widening the pattern they would simply stop
+# matching and fall out of gate scope entirely -- 40 of them, silently, with the
+# board still green. Widening and the move are therefore a single atomic change:
+# widened first, the bare `Boneyard/...` citations that already existed would be
+# pulled into scope while the archive still sat under `FormalSystem/`, where they
+# do not resolve.
+slash_re = re.compile(r"\b(?:FormalSystem|Boneyard|Tests|Logos|Bimodal)/[A-Za-z0-9_./-]+")
 
 def slash_resolves(p):
     return (os.path.exists(p) or os.path.isfile(p + ".lean")
@@ -1861,7 +1895,7 @@ echo
 #
 # SCOPE is deliberate: specs/** is excluded (task artifacts routinely quote anchors
 # that were live when they were written, and rewriting history is not the goal), and
-# FormalSystem/Boneyard/ is excluded (archived modules are frozen). What remains is
+# Boneyard/ is excluded (archived modules are frozen). What remains is
 # live, load-bearing scope: FormalSystem/ (non-Boneyard), Tests/, typst/, docs/,
 # and README.md.
 #
@@ -2922,7 +2956,7 @@ for path in occurrence_files:
 # Boneyard side is comment-stripped, so an archived file that merely mentions a
 # name in prose does not count as its consumer.
 bone_occ = set()
-for root, dirs, files in os.walk(os.path.join("FormalSystem", "Boneyard")):
+for root, dirs, files in os.walk("Boneyard"):
     for f in files:
         if not f.endswith(".lean"):
             continue
@@ -2950,7 +2984,7 @@ else:
           f"- {skip_instance} instance - {skip_simp} simp-set-attributed "
           f"- {skip_examples} under FormalSystem/Examples/ = {len(declarations)}")
     print(f"            of those {len(dead)}, {len(bone_only)} ARE referenced from "
-          f"FormalSystem/Boneyard/ -- the only consumer is archived, which is a")
+          f"Boneyard/ -- the only consumer is archived, which is a")
     print( "            retirement decision about the archive, not a dead declaration")
     for base, f, l in dead[:20]:
         print(f"            {f}:{l}: {base}")

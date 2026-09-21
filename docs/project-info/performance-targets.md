@@ -66,7 +66,7 @@ compiles, and so runs, it in isolation.
 There is currently no semantic-evaluation benchmark. The former suite advertised benchmarks for
 `FormalSystem.Semantics.Truth` but never called `TruthAt`; it timed a hand-written `Bool` toy
 evaluator instead, so its "Correctness: PASS" baselines checked nothing. It has been retired to
-`FormalSystem/Boneyard/SemanticBenchmarkToyEvaluator/`, whose README records what a real
+`Boneyard/SemanticBenchmarkToyEvaluator/`, whose README records what a real
 replacement would need.
 
 ## Optimization Recommendations

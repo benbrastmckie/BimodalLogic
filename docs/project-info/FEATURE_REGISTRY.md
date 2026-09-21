@@ -79,7 +79,7 @@ For implementation status by module, see [implementation-status.md](implementati
   invocation existed anywhere in the library or the test suite. Aesop's proof reconstruction
   does not work over `Type`-valued `DerivationTree` goals, which is why the tactic it was
   built for stopped using it in the first place.
-- **Key File**: `FormalSystem/Boneyard/RetiredTactics/AesopRules.lean` (archived, not compiled)
+- **Key File**: `Boneyard/RetiredTactics/AesopRules.lean` (archived, not compiled)
 
 ## Testing Features
 

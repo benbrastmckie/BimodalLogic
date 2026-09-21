@@ -673,7 +673,7 @@ construction under `BXCanonical/` carries the flagship results (`completeness`,
 `completeness_dense`, `completeness_ztime`); `WeakCanonical/` and `Algebraic/`
 are the two alternative routes. The former top-level `Metalogic/Completeness.lean`
 had no live importer and is archived under
-`FormalSystem/Boneyard/SupersededCompleteness/`.
+`Boneyard/SupersededCompleteness/`.
 
 **Main Theorems** -- four weak completeness results, one per frame class, all sorryAx-free at
 exactly `[propext, Classical.choice, Quot.sound]`:

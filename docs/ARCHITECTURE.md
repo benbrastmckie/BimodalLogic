@@ -98,7 +98,7 @@ records the decision.
 
 ## The archive
 
-Archived code lives in exactly one tree, `FormalSystem/Boneyard/`, and every traversal excludes
+Archived code lives in exactly one tree, `Boneyard/`, and every traversal excludes
 it by directory **name** rather than by path prefix. Check B0 asserts the count of such
 directories is 1. [ADR-005](architecture/ADR-005-Single-Boneyard.md) records why the name-glob
 rule is the load-bearing one.

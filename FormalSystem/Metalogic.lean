@@ -263,5 +263,5 @@ is no top-level `Completeness.lean` — it had no live importer and is archived 
 The per-directory file and line counts are not restated here. They are generated into
 `Metalogic/README.md` by `scripts/check-module-invariants.sh --emit-inventory`, and the `INV`
 check fails if they drift. There is exactly **one** archive in the tree,
-`FormalSystem/Boneyard/`, and B0 asserts that; every count excludes it by directory name.
+`Boneyard/`, and B0 asserts that; every count excludes it by directory name.
 -/

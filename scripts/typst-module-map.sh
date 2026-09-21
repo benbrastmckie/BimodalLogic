@@ -13,7 +13,7 @@
 #   FormalSystem/Automation/Tactics/*.lean
 #   FormalSystem/Automation/ProofSearch/*.lean
 #   FormalSystem/Automation/SuccessPatterns.lean
-# (never FormalSystem/Automation/Boneyard/ or FormalSystem/Boneyard/ -- there
+# (never FormalSystem/Automation/Boneyard/ or Boneyard/ -- there
 # is no Boneyard/ under either glob root today, but the exclusion is
 # asserted defensively below in case one is ever created). A renamed, added,
 # or removed module under these globs therefore changes the live

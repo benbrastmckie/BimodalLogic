@@ -43,7 +43,7 @@ Measured live contents: **19 loose modules and 8 subdirectories**.
 The aggregator for this directory is the sibling `Metalogic/WeakCanonical.lean`, not a self-named
 file inside it. Counts above are measured and exclude the archive. `Kamp/` used to carry its own
 local `Boneyard/`, which meant a filter naming only the top-level archive counted it as live;
-the two archives are now consolidated at [`FormalSystem/Boneyard/`](../../Boneyard/README.md) and
+the two archives are now consolidated at [`Boneyard/`](../../Boneyard/README.md) and
 B0 asserts the directory count is exactly 1. Run `scripts/check-module-invariants.sh` rather than
 an ad-hoc `find` to re-derive live counts.
 
@@ -79,7 +79,7 @@ ReflexiveCanonical.lean
 ```
 
 `ExpressiveCompleteness/` was consolidated into
-[`FormalSystem/Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness`](../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md)
+[`Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness`](../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md)
 and is no longer part of the live architecture.
 
 ## Dependencies

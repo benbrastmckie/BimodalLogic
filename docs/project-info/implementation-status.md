@@ -141,7 +141,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 - `modal_search` bounded best-first proof search
 
 **Retired**: the Aesop-based `TMLogic` rule set (`tm_auto` and related tactics) was archived to
-`FormalSystem/Boneyard/RetiredTactics/` -- Aesop's proof reconstruction does not work over
+`Boneyard/RetiredTactics/` -- Aesop's proof reconstruction does not work over
 `Type`-valued `DerivationTree` goals.
 
 ## Examples (✅ Complete)

@@ -160,7 +160,7 @@ example (p q : Formula) (h1 : ⊢ p.imp q) : ⊢ p.box.imp q.box := by
 There is **no** Aesop rule set for TM derivability goals, and adding one is not a small job.
 
 A `TMLogic` rule set existed and was retired to
-`FormalSystem/Boneyard/RetiredTactics/`. Two facts killed it. First, Aesop's proof
+`Boneyard/RetiredTactics/`. Two facts killed it. First, Aesop's proof
 reconstruction does not work over `DerivationTree`, which is `Type`-valued rather than
 `Prop`-valued — that is why the search tactics build proof terms in `TacticM` via `mkAppM`
 instead. Second, because the rules lived in a *dedicated* rule set rather than Aesop's default

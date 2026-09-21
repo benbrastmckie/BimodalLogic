@@ -363,7 +363,7 @@ repository and was retired: it had zero consumers, because rules in a dedicated 
 reachable only through an explicit `aesop (rule_sets := [TMLogic])` and no call site ever
 wrote one. The underlying obstacle is that Aesop's proof reconstruction does not work over
 `Type`-valued `DerivationTree` goals. Read
-`FormalSystem/Boneyard/RetiredTactics/README.md` before building another one.
+`Boneyard/RetiredTactics/README.md` before building another one.
 
 ```lean
 -- Declare custom rule set for TM logic
@@ -403,7 +403,7 @@ macro "tm_auto" : tactic =>
 ```
 
 This was retired: the rule set and its rules were archived to
-`FormalSystem/Boneyard/RetiredTactics/` once measurement showed rules in a dedicated Aesop rule
+`Boneyard/RetiredTactics/` once measurement showed rules in a dedicated Aesop rule
 set are reachable only through an explicit `aesop (rule_sets := [TMLogic])`, with no such call
 site anywhere in the library or tests, and Aesop's proof reconstruction does not work over
 `Type`-valued `DerivationTree` goals in general. `modal_search` (below) is the tactic that

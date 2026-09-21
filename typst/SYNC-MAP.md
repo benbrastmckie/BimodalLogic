@@ -19,9 +19,9 @@ Lean source ground truth: `FormalSystem/` (excluding `Boneyard/`).
 
 > **Archive consolidation note.** This document is a dated audit record and its historical
 > stamps are preserved as written. At the time several of them were taken, archived code lived in
-> **two** places: `FormalSystem/Boneyard/` and a second archive nested at
+> **two** places: `Boneyard/` and a second archive nested at
 > `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/`. Those are now one tree; the nested
-> archive is `FormalSystem/Boneyard/Kamp/KampWeakCanonical/`. Where a stamp below splits a count
+> archive is `Boneyard/Kamp/KampWeakCanonical/`. Where a stamp below splits a count
 > "around the nested archive", the split is what was true then and the path has been annotated,
 > not rewritten -- rewriting a dated measurement would falsify the record.
 Stamp: 2026-07-06, git commit `a883361bf`.
@@ -179,10 +179,10 @@ Command: Python comment-stripping scan over `FormalSystem/Metalogic/**/*.lean`
 | Algebraic/ | 3 |
 | BXCanonical/ | 4 (Chronicle/ChronicleToCountermodel.lean 3, Frame.lean 1) |
 | Bundle/ | 12 (SuccRelation 7, SuccExistence 3, UntilSinceCoherence 2) |
-| WeakCanonical/ | 24 (incl. 2 then in the nested `Kamp/Boneyard/` archive, since consolidated to `FormalSystem/Boneyard/Kamp/KampWeakCanonical/`; 22 excluding it) |
+| WeakCanonical/ | 24 (incl. 2 then in the nested `Kamp/Boneyard/` archive, since consolidated to `Boneyard/Kamp/KampWeakCanonical/`; 22 excluding it) |
 | Core/, ConservativeExtension/, Decidability/, Relational/, SoundnessLemmas/ | 0 |
 | Top-level .lean (Completeness, Soundness, Decidability; former DenseSoundness/DiscreteSoundness wrappers archived to Boneyard/SoundnessVariants/) | 0 |
-| **Total** | **43** (41 excluding the then-nested `WeakCanonical/Kamp/Boneyard/` archive, now `FormalSystem/Boneyard/Kamp/KampWeakCanonical/`) |
+| **Total** | **43** (41 excluding the then-nested `WeakCanonical/Kamp/Boneyard/` archive, now `Boneyard/Kamp/KampWeakCanonical/`) |
 
 Sorry-free confirmations (0 genuine sorries): `Metalogic/Soundness.lean`,
 the archived `Boneyard/SoundnessVariants/` wrappers, entire `Theorems/` tree (including
@@ -320,7 +320,7 @@ via `grep -rn --include='*.lean' -F <name> FormalSystem --exclude-dir=Boneyard`;
 file and directory paths checked against the filesystem; the deliberate historical
 references to `Boneyard/` and to the then-nested `WeakCanonical/Kamp/Boneyard/` archive
 resolved as existing paths at the time of this stamp -- that archive has since been
-consolidated into `FormalSystem/Boneyard/Kamp/KampWeakCanonical/`). Zero `stale` / `not-found` names remain in the revised text.
+consolidated into `Boneyard/Kamp/KampWeakCanonical/`). Zero `stale` / `not-found` names remain in the revised text.
 
 Count re-derivation at gate time: `inductive Axiom` constructor count = 42
 (`awk '/^inductive Axiom/,/deriving Repr/' ProofSystem/Axioms.lean | grep -c '^  | '`);
@@ -406,7 +406,7 @@ breakdown):
   forced by the paper's *Limit* axiom collapsing outright over a dense duration type, so there
   never was a per-class split to cite; `rabinovich_translate` lives only in the archive (at the
   time of this stamp `WeakCanonical/Kamp/Boneyard/`, since consolidated to
-  `FormalSystem/Boneyard/Kamp/KampWeakCanonical/TranslationEra/`), contradicting the chapter's own correct "a machine-checked
+  `Boneyard/Kamp/KampWeakCanonical/TranslationEra/`), contradicting the chapter's own correct "a machine-checked
   Kamp theorem is an open problem" sentence a few lines above — rewritten to state the
   Rabinovich-style translation as an archived, paper-side proof strategy.
 - *Whitelisted as expository or negative-resolution citations, never a dead Lean path* (8, each

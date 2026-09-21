@@ -102,7 +102,7 @@ pricing.
 
 Archived: the former `DenseFMP.lean`/`DiscreteFMP.lean` variant modules
 (`fmp_dense`, `fmp_discrete`) had no live importers and were moved to
-`FormalSystem/Boneyard/FMPVariants/`.
+`Boneyard/FMPVariants/`.
 
 ## Dependencies
 

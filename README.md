@@ -22,8 +22,6 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 | Live `.lean` files | 534 |
 | Live lines of code | 164,464 |
 | Live comment lines | 98,360 |
-| Archived `.lean` files | 169 |
-| Archived lines | 91,983 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -127,8 +125,8 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   │   └── SoundnessLemmas/      # per-axiom soundness lemmas
 │   ├── Theorems/                 # Derived theorems (perpetuity, combinators, propositional)
 │   ├── Automation/               # Proof search tactics & training data pipeline
-│   ├── Examples/                 # Pedagogical examples
-│   └── Boneyard/                 # ARCHIVE — retired approaches with the reason each failed;
+│   └── Examples/                 # Pedagogical examples
+├── Boneyard/                     # ARCHIVE — retired approaches with the reason each failed;
 │                                 #   not built, no .olean under any Boneyard path (see its README)
 ├── Tests/BimodalTest/            # Test suite (the BimodalTest library)
 ├── scripts/                      # Repository invariant checks and tooling

@@ -21,7 +21,7 @@
 #      edge targets -- `BXCanonical/Completeness.lean` importing the `WeakCanonical` aggregator is
 #      a real dependency of BXCanonical on WeakCanonical, and is counted.
 #   2. `Metalogic/Boneyard/` would be skipped if it existed. It does not today (the single
-#      archive is `FormalSystem/Boneyard/`, outside this subtree), but the guard is cheap and the
+#      archive is `Boneyard/`, outside this subtree), but the guard is cheap and the
 #      repository has had a nested archive before.
 #
 # NOT WIRED INTO check-module-invariants.sh, deliberately: that harness is the phase gate for the

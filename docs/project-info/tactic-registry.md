@@ -56,7 +56,7 @@ tactics; `modal_search` (below) subsumes this role.
 
 | Rule Set | Purpose | Status |
 |----------|---------|--------|
-| `TMLogic` | TM-specific automation rules | **Retired.** The rule set and its rules were archived to `FormalSystem/Boneyard/RetiredTactics/` on measurement: rules in a dedicated set are reachable only through an explicit `aesop (rule_sets := [TMLogic])`, and no such call site existed in the library or the tests. Aesop's proof reconstruction does not work over `Type`-valued `DerivationTree` goals. |
+| `TMLogic` | TM-specific automation rules | **Retired.** The rule set and its rules were archived to `Boneyard/RetiredTactics/` on measurement: rules in a dedicated set are reachable only through an explicit `aesop (rule_sets := [TMLogic])`, and no such call site existed in the library or the tests. Aesop's proof reconstruction does not work over `Type`-valued `DerivationTree` goals. |
 
 ### Registered Rules
 

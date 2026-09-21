@@ -29,7 +29,7 @@ sub `s` (idempotent expansion, chunk 0011:5 / chunk 0022:5), supplied by the can
 **Why full-fiber (F2 immunity)**: the marginal channels (`kvESubBit`, `kvEFutAnyBit`,
 `kvEProjFreshD` — ExteriorBracketK.lean) read a sub only through its zone spec and its depth-`k`
 arity-1 fresh shadow; the F2 counterexample pair (`f2sub1`/`f2sub2`,
-`FormalSystem/Boneyard/Kamp/KampWeakCanonical/TranslationEra/RefutationF2.lean`) agrees on BOTH
+`Boneyard/Kamp/KampWeakCanonical/TranslationEra/RefutationF2.lean`) agrees on BOTH
 channels yet differs at the full fiber element `e*` (`f2_estar_in_sub1`/`f2_estar_not_in_sub2`),
 which is why every marginal construction collapses (`f2_carrier_eq`, same file). The channel below
 indexes content by the full fiber element itself, so the pair separates — machine-checked in the
