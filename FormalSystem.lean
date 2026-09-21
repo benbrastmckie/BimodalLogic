@@ -406,6 +406,7 @@ import FormalSystem.MinusLanguage.Translation
 import FormalSystem.OpenLanguage
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenClasses
+import FormalSystem.OpenLanguage.OpenReversal
 import FormalSystem.OpenLanguage.OpenTruth
 import FormalSystem.OpenLanguage.OpenValidity
 import FormalSystem.PlusLanguage

@@ -34,6 +34,7 @@ transferred to `⊡` by mistake.
 |------|------:|-------------|
 | `Formula.lean` | 302 | `OpenFormula`, the derived operators (with `PlusFormula`'s right-hand sides), the duals `dofut` and `dopast`, `reflectTime` with `reflect_time_involution` and the `reflect_time_*` push-through lemmas, and the embedding `ofPlus` with `ofPlus_injective`, `ofPlus_reflectTime` and its `rfl` commutation pins |
 | `OpenClasses.lean` | 165 | The three history classes `stabClass`, `openFutureClass`, `openPastClass` (the stability, open-future and open-past classes of a world at a time); `sameState_equivalence`, `agreeUpTo_equivalence`, `agreeFrom_equivalence`; the inclusions, `openFutureClass_inter_openPastClass`, `openFutureClass_anti`, `openPastClass_mono`, and `paste_mem_openFutureClass_inter_openPastClass` |
+| `OpenReversal.lean` | 306 | The converse frame of `lem:time-reflection`: `FrameOver.rev` (all four frame axioms), `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, with `rev_taskRel`, `rev_taskRel_neg`, the three `rev_rev` by `rfl`, `rev_rev_hist` and `rev_surjective`; the class swaps `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff`; the transport theorem `openTruthAt_rev`; `openValidOn_rev_iff` and `openValid_reflectTime` |
 | `OpenTruth.lean` | 288 | `OpenTruthAt` — the nine-clause truth recursion, the last two clauses the manuscript's for the open-future and open-past operators; the `TruthEnv` and `StabClauses` instances; the `OpenTruth.*` clause lemmas (`ofut_iff`, `opast_iff`, `dofut_iff`, `dopast_iff`); `openTruthAt_ofPlus`; pointwise S5 (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the `opast` mirrors) and the ordering `stab_of_box`, `ofut_of_stab`, `opast_of_stab` |
 | `OpenValidity.lean` | 215 | `TaskFrame.OpenValidOn`, `OpenValidOnFrames`, `OpenValidIn`, `OpenValid` with `mono`, `of_forall`, `apply`, `of_not`; conservativity over L⁺ (`openValidOn_ofPlus_iff`, `openValidOnFrames_ofPlus_iff`, `openValidIn_ofPlus_iff`, `openValid_ofPlus_iff`); S5 as validities (`openValid_ofut_k`, `openValid_ofut_t`, `openValid_ofut_four`, `openValid_ofut_five` and the `opast` mirrors); the ordering `openValid_stab_of_box`, `openValid_ofut_of_stab`, `openValid_opast_of_stab` |
 <!-- END GENERATED -->
@@ -59,6 +60,8 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | footnote to the stability clause, "an equivalence class … the monomodal logic of `⊡` is also S5" | the same argument for the open-future and open-past classes: K, T, 4 and 5 for each of `▷` and `◁` | `openValid_ofut_k`, `openValid_ofut_t`, `openValid_ofut_four`, `openValid_ofut_five`, `openValid_opast_k`, `openValid_opast_t`, `openValid_opast_four`, `openValid_opast_five` (`OpenValidity.lean`) — **not stated in the manuscript**, which asserts S5 for `⊡` only |
 | footnote to the stability clause, "`⊡` is strictly weaker than `□`" | the strength ordering `□ ⟹ ⊡ ⟹ ▷` and `⊡ ⟹ ◁`, from the three inclusions | `openValid_stab_of_box`, `openValid_ofut_of_stab`, `openValid_opast_of_stab` (`OpenValidity.lean`) |
 | conservativity over L⁺ (no paper anchor) | an L⁺ formula is L^▷-valid iff it is L⁺-valid, at every frame class | `openTruthAt_ofPlus` (`OpenTruth.lean`), `openValidIn_ofPlus_iff`, `openValid_ofPlus_iff` (`OpenValidity.lean`) — **formalization-native** |
+| `lem:time-reflection` (the converse frame) | the converse relation, with the world `τ⁻(x) = τ(-x)` over the converse frame, a bijection between the worlds of the two frames | `FrameOver.rev`, `FrameOver.rev_taskRel_neg`, `TaskFrame.rev`, `WorldHistory.rev`, `WorldHistory.rev_rev_hist`, `WorldHistory.rev_surjective` (`OpenReversal.lean`) — built semantically for an arbitrary task frame, with all four axioms of `def:frame` discharged |
+| `lem:time-reflection` (truth and validity) | truth at a point is truth of the time reflection at the reflected point; validity is closed under time reflection | `openTruthAt_rev`, `openValidOn_rev_iff`, `openValid_reflectTime` (`OpenReversal.lean`) — the manuscript states the lemma for its base language; the extension to `⊡`, `▷` and `◁` through the class swaps `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff` is **formalization-native** |
 | `app:gluing` (two histories) | a world whose past is `τ`'s and whose future is `σ`'s, for `σ ∈ ⟨τ⟩_x` | `paste_mem_openFutureClass_inter_openPastClass`, over `paste` of `PlusLanguage/PlusPasting.lean` |
 
 ## Module Invariants
@@ -73,7 +76,7 @@ directory needs a row in that table.**
 ## References
 
 * JPL paper — `sub:RestrictedModalities`, `def:BLstar-semantics`, `def:world-history`,
-  `app:gluing`
+  `def:frame`, `def:frame-validity`, `lem:time-reflection`, `app:gluing`
 * `FormalSystem/PlusLanguage/README.md` — L⁺, the language this one extends
 * `FormalSystem/StarLanguage/README.md` — the sibling extension of L⁺ by the time registers
 

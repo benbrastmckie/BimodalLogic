@@ -390,39 +390,39 @@ positive half of deliverable (5).
 
 ---
 
-### Phase 5: Time reversal of frames, histories and truth [NOT STARTED]
+### Phase 5: Time reversal of frames, histories and truth [COMPLETED]
 
 **Goal**: Deliverable (4)'s machinery: the manuscript's converse frame of `lem:time-reflection`,
 built semantically, and the one transport theorem that turns every open-future validity into an
 open-past validity.
 
 **Tasks**:
-- [ ] Create `FormalSystem/OpenLanguage/OpenReversal.lean` importing `OpenValidity`. First
+- [x] Create `FormalSystem/OpenLanguage/OpenReversal.lean` importing `OpenValidity`. First
   `namespace FormalSystem.OpenLanguage`; declare the dot-notation targets either with a
   `_root_.FormalSystem.Semantics.` prefix or in a later `namespace FormalSystem.Semantics` block (the
   `PlusValidity.lean` precedent).
-- [ ] Port probe 02: `FrameOver.rev` (`PosRel w x u := F.PosRel u x w`; `comp` via
+- [x] Port probe 02: `FrameOver.rev` (`PosRel w x u := F.PosRel u x w`; `comp` via
   `F.comp v w y x` + `add_comm` with `show … reflect F.PosRel …` **before** `rw`; `serial` swaps the
   conjuncts; `limit` is `(F.limit u w h).symm`; `saturation` maps fibres and segments through
   `FrameOver.reflection` and reuses `F.saturation` on the same family). `rev_taskRel`
   (`Iff.rfl`), `rev_taskRel_neg` (the manuscript's `w ⇒⁻_x u := w ⇒_{-x} u`, by
   `FrameOver.reflection`), `rev_rev : F.rev.rev = F := rfl`.
-- [ ] `TaskFrame.rev F := ⟨F.Duration, F.toFibre.rev⟩` with `rev_rev` by `rfl`; `TaskModel.rev` (same
+- [x] `TaskFrame.rev F := ⟨F.Duration, F.toFibre.rev⟩` with `rev_rev` by `rfl`; `TaskModel.rev` (same
   valuation) with `rev_rev` by `rfl`; `WorldHistory.rev` via `WorldHistory.ofTotal` on
   `fun t => τ.state (-t)` (task obligation from `τ.respects_task (-t) (-s)` and `abel`);
   `rev_state`; `rev_rev_hist` by `WorldHistory.ext_state` + `neg_neg` (propositional, not `rfl`). If
-  cheap, package `τ ↦ τ.rev` as an `Equiv` — the manuscript's bijection `H_F → H_{F⁻}`.
-- [ ] Class swaps: `sameState_rev_iff`, `agreeUpTo_rev_iff : AgreeUpTo τ σ t ↔ AgreeFrom τ.rev σ.rev (-t)`,
+  cheap, package `τ ↦ τ.rev` as an `Equiv` — the manuscript's bijection `H_F → H_{F⁻}`. *(deviation: altered — the optional `Equiv` packaging was not built; the bijection is carried by `WorldHistory.rev_rev_hist` together with `WorldHistory.rev_surjective`, which is the form every case of `openTruthAt_rev` consumes)*
+- [x] Class swaps: `sameState_rev_iff`, `agreeUpTo_rev_iff : AgreeUpTo τ σ t ↔ AgreeFrom τ.rev σ.rev (-t)`,
   `agreeFrom_rev_iff` (`neg_le.mp`, `neg_le_neg`; `simpa` does **not** close `-t ≤ s ↔ -s ≤ t`;
   equalities under `rev F` need a `change` before `rwa [neg_neg]`).
-- [ ] `openTruthAt_rev : OpenTruthAt M τ t φ ↔ OpenTruthAt M.rev τ.rev (-t) φ.reflectTime`, nine
+- [x] `openTruthAt_rev : OpenTruthAt M τ t φ ↔ OpenTruthAt M.rev τ.rev (-t) φ.reflectTime`, nine
   cases: `box` uses surjectivity of `rev` on histories (`rev_rev_hist`), `untl`/`snce` negate the
   bounds as in `truthAt_of_truthAntiIso`, `stab` is `sameState_rev_iff`, `ofut`/`opast` are the
   agreement swaps.
-- [ ] `openValidOn_rev_iff : F.rev.OpenValidOn φ.reflectTime ↔ F.OpenValidOn φ`, then
+- [x] `openValidOn_rev_iff : F.rev.OpenValidOn φ.reflectTime ↔ F.OpenValidOn φ`, then
   `openValid_reflectTime : OpenValid φ → OpenValid φ.reflectTime` (every `TaskFrame` is `G.rev` for
   `G := F.rev`, by `rev_rev`).
-- [ ] Add `"OpenReversal": 1`, the aggregator import, the README row (citing `lem:time-reflection`);
+- [x] Add `"OpenReversal": 1`, the aggregator import, the README row (citing `lem:time-reflection`);
   regenerate the root.
 
 **Timing**: 2 hours

@@ -193,7 +193,7 @@ LANGUAGE_FILE_LAYERS = {
     },
     "OpenLanguage": {
         "Formula": 0,
-        "OpenClasses": 1, "OpenTruth": 1, "OpenValidity": 1,
+        "OpenClasses": 1, "OpenReversal": 1, "OpenTruth": 1, "OpenValidity": 1,
     },
 }
 

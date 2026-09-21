@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenClasses
+import FormalSystem.OpenLanguage.OpenReversal
 import FormalSystem.OpenLanguage.OpenTruth
 import FormalSystem.OpenLanguage.OpenValidity
 
@@ -50,6 +51,9 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.OpenValidity` — `TaskFrame.OpenValidOn`, `OpenValidOnFrames`, `OpenValidIn`,
   `OpenValid`; semantic conservativity of L^▷ over L⁺ at every frame class; S5 for `▷` and for
   `◁`, and the strength ordering `□ ⟹ ⊡ ⟹ ▷`, `⊡ ⟹ ◁`, as validities
+- `OpenLanguage.OpenReversal` — the converse frame of `lem:time-reflection` (`FrameOver.rev`,
+  `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`), the class swaps, the transport theorem
+  `openTruthAt_rev`, and `openValid_reflectTime`: validity is closed under time reflection
 
 ## Design decisions
 
