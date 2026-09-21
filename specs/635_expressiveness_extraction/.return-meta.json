@@ -1,30 +1,31 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-21T00:00:00Z",
+  "completed_at": "2026-09-21T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
-      "summary": "Seven-phase plan for the 141-file Expressiveness extraction: typst generator fix, scripted move plus file-granular bare-namespace rename, aggregator/README/ADR work, non-degenerate acceptance, then the paper-numbered renames and stub deletion as a second commit."
+      "type": "summary",
+      "path": "specs/635_expressiveness_extraction/summaries/01_expressiveness-extraction-move-summary.md",
+      "summary": "Extracted the 141-module Expressiveness development out of WeakCanonical/ into Metalogic/Expressiveness/, then renamed 12 paper-numbered modules and deleted 2 declaration-free stubs."
     }
   ],
-  "next_steps": "Run /implement 635 to execute the plan",
-  "phase_count": 7,
-  "estimated_hours": 9,
-  "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]],
-  "memory_candidates": [
-    {
-      "content": "A declaration-free Lean module is not automatically a deletable stub. In a large refactor, declaration-free files fall into two classes that a declaration census cannot distinguish: true stubs (kept only so existing imports still resolve) and sibling re-export aggregators for a same-named subdirectory, which C8-style module invariants require to exist and which downstream modules import directly. Classify by two signals instead of declaration count: (1) does the body carry a non-trivial import block naming the sibling subdirectory's leaves, and (2) does `grep -rn 'import <module>$'` find importers. In the BimodalLogic Expressiveness extraction, 4 of 179 modules were declaration-free; a research pass classed 3 as deletable stubs, but direct inspection showed 2 of the 4 were re-export aggregators (`Kamp/NfMultiAnchorBridge.lean`, `Kamp/EANegationFix.lean`), leaving only 2 genuinely deletable -- and both of those still needed their importers rewired to the modules they re-exported. Deleting an aggregator on a declaration-count signal alone breaks the build in a way that only surfaces after the move has already landed.",
-      "category": "PATTERN",
-      "source_artifact": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["declaration-free", "stub", "re-export-aggregator", "lean-refactor", "module-invariants", "safe-deletion"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1789955215_a3ad68_635",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Relocated the 141-module / 104,087-line expressiveness development from FormalSystem/Metalogic/WeakCanonical/ to FormalSystem/Metalogic/Expressiveness/ with the full WeakCanonical.X -> Expressiveness.X namespace rename, so Kamp.kampPriorExpressiveCompleteness and uSExpressivelyCompleteOverPrior no longer carry 'weak canonical' in their names (ADR-011, now Accepted). A second commit renamed 12 paper-numbered modules to content names and deleted 2 declaration-free stubs. Three commits, each green under the build-inclusive check-module-invariants.sh, with check-metalogic-cycles.sh at exactly 1 and the standing partition gate made non-degenerate.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 17
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "commits": ["5fcd97e0b", "bae5ac591", "17743588f"]
+  }
 }

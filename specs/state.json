@@ -273,7 +273,7 @@
     {
       "project_number": 635,
       "project_name": "expressiveness_extraction",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -301,7 +301,7 @@
       ],
       "description": "Run python3 scripts/measure-refactor-partitions.py --check (must exit 0), then move the 141-file Expressiveness set out of Metalogic/WeakCanonical/ into Metalogic/Expressiveness/ with the namespace mapping WeakCanonical.X -> Expressiveness.X (WeakCanonical/Expressiveness/ becomes Expressiveness/GameTransfer/), in one scripted commit that also regenerates typst/generated, docs/theorem-index.md, the C2/C14 baselines and MainResults.lean; then in a second commit rename the 39 paper-numbered files to content names and delete declaration-free stubs. Change ADR-011's status to Accepted with a pointer from ADR-006. Acceptance: check-metalogic-cycles.sh reports exactly 1; residual WeakCanonical at 38 files; full harness (with build) green after each commit.\n\nReconciliation notes: depends on task 634. Task 412 cites Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean; this path is confirmed to stay in the residual 38-file set (it is not in the Expressiveness subtree moved here), so no citation drift results -- record this fact in this task's own docstring/PR notes so a reader of 412 does not have to re-derive it. Task 178 depends on this task (it cites Kamp-named results this task renames).",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T09:40:04Z",
+      "last_updated": "2026-09-21T11:16:10Z",
       "session_id": "sess_1789955215_a3ad68",
       "artifacts": [
         {
@@ -313,9 +313,15 @@
           "path": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
           "type": "plan",
           "summary": "Seven-phase plan for the Expressiveness extraction, two mandated commits preserved, with enumerated rename list and evidenced exclusions."
+        },
+        {
+          "path": "specs/635_expressiveness_extraction/summaries/01_expressiveness-extraction-move-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary: what moved, the eight plan deviations, and the verification record."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Relocated the 141-module / 104,087-line expressiveness development from FormalSystem/Metalogic/WeakCanonical/ to FormalSystem/Metalogic/Expressiveness/ with the full WeakCanonical.X -> Expressiveness.X namespace rename, so Kamp.kampPriorExpressiveCompleteness and uSExpressivelyCompleteOverPrior no longer carry 'weak canonical' in their names (ADR-011, now Accepted). A second commit renamed 12 paper-numbered modules to content names and deleted 2 declaration-free stubs. Three commits, each green under the build-inclusive check-module-invariants.sh, with check-metalogic-cycles.sh at exactly 1 and the standing partition gate made non-degenerate."
     },
     {
       "project_number": 636,

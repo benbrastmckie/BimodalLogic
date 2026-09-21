@@ -1,16 +1,21 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 17,
-  "summary": "Authored a 7-phase, 9-hour plan for the 141-file Expressiveness extraction: a preparatory typst-generator anchoring fix, the scripted move plus a path-scoped file-granular bare-namespace rename, aggregator/README/ADR work with the two falsifiable prose sites protected by hand, non-degenerate count-based acceptance assertions, then the 12 paper-numbered renames and 2 stub deletions as the second commit. Plan validates strict.",
+  "task_number": 635,
+  "dispatch_seq": 18,
+  "status": "implemented",
+  "phases_completed": 7,
+  "phases_total": 7,
+  "session_id": "sess_1789955215_a3ad68",
+  "summary": "Extracted the 141-module Expressiveness development out of Metalogic/WeakCanonical/ into Metalogic/Expressiveness/ (commit bae5ac591), then renamed 12 paper-numbered modules to content names and deleted 2 declaration-free stubs (commit 17743588f), preceded by an independent typst generator fix (commit 5fcd97e0b). Build-inclusive check-module-invariants.sh green after each commit; check-metalogic-cycles.sh reports exactly 1; the standing partition gate was re-pointed and given an empty-set failure branch so it can no longer pass vacuously.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/635_expressiveness_extraction/summaries/01_expressiveness-extraction-move-summary.md",
+      "summary": "Full implementation summary: what moved, the eight plan deviations, and the verification record."
+    },
     {
       "type": "plan",
       "path": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
-      "summary": "Seven-phase plan for the Expressiveness extraction, two mandated commits preserved, with enumerated rename list and evidenced exclusions."
+      "summary": "Plan, with all 7 phases marked and deviations annotated inline on their checklist items."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 7,
-  "blockers": []
+  ]
 }
