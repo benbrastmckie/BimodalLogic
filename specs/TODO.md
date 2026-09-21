@@ -101,7 +101,7 @@ next_project_number: 645
   └─ 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
 642 [NOT STARTED] — Close the measurement blind spot the language-extension merge...
 643 [IMPLEMENTING] — Add the citation gates whose absence let defects survive to,...
-644 [PLANNING] — Harden scripts/move-modules.py against the failure modes it...
+644 [PLANNED] — Harden scripts/move-modules.py against the failure modes it...
 
 ### Semantics
 
@@ -112,11 +112,12 @@ next_project_number: 645
 ## Tasks
 
 ### 644. Harden move modules and record relocation method
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md]
+- **Plan**: [644_harden_move_modules_and_record_relocation_method/plans/01_harden-move-modules-relocation.md]
 
 **Description**: Harden scripts/move-modules.py against the failure modes it showed across five uses in the publication-refactor batch, and record the relocation method so the next move does not rediscover it. LOW PRIORITY: it pays off only if another scripted move happens. If none is planned, the documentation half (item 6) is still worth doing alone.
 

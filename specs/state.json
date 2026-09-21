@@ -18,15 +18,20 @@
       ],
       "description": "Harden scripts/move-modules.py against the failure modes it showed across five uses in the publication-refactor batch, and record the relocation method so the next move does not rediscover it. LOW PRIORITY: it pays off only if another scripted move happens. If none is planned, the documentation half (item 6) is still worth doing alone.\n\nWHAT WENT WRONG (each recorded in the named task's summary). (a) Historical-statement falsification, in EVERY move: the tool cannot tell a citation of a module's current location from a historical statement about its old one. It collapsed 'from X to Y' prose into 'from Y to Y' in ADR-010 and docs/development/PUBLICATION_REFACTOR.md (630), in a harness header comment it had just been given (632), in three merged READMEs (634), and in 17 Boneyard provenance READMEs plus typst/SYNC-MAP.md whose columns read 'Path before consolidation' and 'Live origin before archival' (635). It also rewrote its own docstring. Every instance was caught by hand review; none by a gate. The inverse error is real too: 635 found 10 stale PRESENT-tense citations the tool skipped, including the root README.md. (b) resolve_move prefers a directory over a same-named sibling file and would orphan Syntax/{X}Language.lean with its citations already rewritten (634; caught only by the dry run). Before 632 fixed it with resolve_move(), move_trees silently moved nothing for file-granular rows while reporting 236 rewrites. (c) --namespace-map is a repo-wide string rewrite: a bare prefix shared between moved and staying files (FormalSystem.Metalogic.WeakCanonical, FormalSystem.Automation, FormalSystem.Semantics) cannot be a map row, and nothing in the tool refuses one.\n\nDELIVER. (1) A --no-rewrite path list (file or glob), defaulting to Boneyard/**/README.md, typst/SYNC-MAP.md and docs/adr/**, whose files are reported but never rewritten. (2) A warning, promoted to a non-zero exit under --strict, whenever a rewrite makes the two sides of one sentence or one table row identical. (3) resolve_move exits non-zero when a mapping stem resolves to BOTH a directory and a file, naming both. (4) --namespace-map refuses a row whose old prefix is also declared by a file outside the move set, printing the offending files; add --namespace-paths to scope the rewrite to the moved files. (5) The report states files actually moved next to citations rewritten, and exits non-zero when rows were requested and zero files moved. (6) docs/development/MODULE_RELOCATION.md recording: the seven rewrite classes; the bare-form trap; resolve-map-recompute for relative links; assert-the-denominator (a re-rooted gate can PASS on a shrunken scan set); widen every gate's scan root BEFORE the move so each widening is a verifiable no-op; that re-rooting a gate to a top-level directory narrows what a path-shaped pattern can match; that exe roots sit outside every build closure so only the build-inclusive harness (C25) catches a broken one; that a namespace-audit simulation must precede any directory merge (634's paths-only merge would have moved 14 files INTO the unrelated bucket); and the historical-statement blind spot. There is no agent-system/ source store in this repository, so this belongs in docs/, not .claude/context/.\n\nACCEPTANCE. Each of (1)-(5) has a fixture test that fails before the change and passes after; a dry run reproducing task 635's move reports the 17 provenance READMEs as skipped; check-module-invariants.sh --no-build green. No task numbers in any file outside specs/. DEPENDENCIES: none.",
       "project_number": 644,
-      "status": "planning",
+      "status": "planned",
       "created": "2026-09-21T14:06:48Z",
-      "last_updated": "2026-09-21T15:07:44Z",
-      "session_id": "sess_1790002208_59de0b_644",
+      "last_updated": "2026-09-21T16:00:03Z",
+      "session_id": "sess_1790004043_997429",
       "artifacts": [
         {
           "path": "specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md",
           "type": "report",
           "summary": "Research report mapping all six deliverables to concrete evidence; corrects docs/adr/** to docs/architecture/ADR-*.md; flags missing scripts/ fixture-test infrastructure."
+        },
+        {
+          "path": "specs/644_harden_move_modules_and_record_relocation_method/plans/01_harden-move-modules-relocation.md",
+          "type": "plan",
+          "summary": "Revised plan (v2): 7 phases kept; corrects the move-set predicate for file-granular rows, re-keys the namespace refusal on actual class-4 effect, and moves the acceptance replay to the pre-move commit where the 17-README figure is exact."
         }
       ],
       "next_artifact_number": 2

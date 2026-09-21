@@ -1,12 +1,22 @@
 {
-  "status": "in_progress",
-  "artifacts": [],
-  "dispatch_seq": 6,
+  "status": "planned",
+  "dispatch_seq": 10,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/644_harden_move_modules_and_record_relocation_method/plans/01_harden-move-modules-relocation.md",
+      "summary": "Revised plan (v2): 7 phases kept; corrects the move-set predicate for file-granular rows, re-keys the namespace refusal on actual class-4 effect, and moves the acceptance replay to the pre-move commit where the 17-README figure is exact."
+    }
+  ],
+  "next_steps": "Run /orchestrate 644 --implement (or /implement 644) to execute the revised plan",
   "metadata": {
-    "session_id": "sess_1790002208_59de0b_644",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790004043_997429_644",
+    "agent_type": "reviser-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "task_number": 644
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "task_number": 644,
+    "phase_count": 7,
+    "estimated_hours": 10.5,
+    "reports_integrated": ["01_harden-move-modules-relocation.md"]
   }
 }
