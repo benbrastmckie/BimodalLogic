@@ -87,14 +87,14 @@ next_project_number: 650
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-568 [RESEARCHED] — Promote the alternative consequence relations into the...
+568 [PLANNING] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
   └─ 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
 
-647 [RESEARCHING] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
+647 [RESEARCHED] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
   └─ 648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
     └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
 
@@ -163,10 +163,11 @@ ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors, and z
 ---
 
 ### 647. Extend lean appendix semantics metalogic coverage
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: reference-book
 - **Dependencies**: None
+- **Research**: [647_extend_lean_appendix_semantics_metalogic_coverage/reports/01_extend-lean-appendix-coverage.md]
 
 **Description**: Extend typst/chapters/ax-lean-appendix.typ (the back-matter appendix "Reading the Lean Formalization" of typst/BimodalReference.typ) so that a reader can read the semantic layer, a derived theorem, the metalogic result map, and the decision procedure in Lean, and not only the syntax and proof system the appendix covers today. Keep its aim: the most systematic and accessible presentation for a reader who knows the mathematics of TM but has never opened a Lean file. Introduce each Lean concept once, on a real declaration from FormalSystem/, in dependency order, and reorganize existing sections where that serves the arc rather than appending at the end. The appendix explains how to READ the Lean. It cross-references the Part I chapters (02-semantics, p2-frame-classes, 04-metalogic, p2-decidability-practice, 05-theorems) for the mathematics instead of restating it.
 
@@ -545,7 +546,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 568. C3 c4 consequence relations as library definitions
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 625
