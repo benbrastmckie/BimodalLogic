@@ -53,4 +53,4 @@ There is no Aesop rule set. One existed and was retired; see
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

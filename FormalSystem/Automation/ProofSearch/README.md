@@ -33,4 +33,4 @@ Automation layer to find derivations up to a given depth bound.
 
 ---
 
-*Last verified: 2026-09-17*
+*Last verified: 2026-09-21*

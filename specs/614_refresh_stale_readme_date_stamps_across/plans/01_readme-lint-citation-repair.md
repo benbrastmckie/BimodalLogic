@@ -210,9 +210,9 @@ applied.
 
 ---
 
-### Phase 2: Typst citation repair [PARTIAL]
+### Phase 2: Typst citation repair [COMPLETED]
 
-**BLOCKER** (Phase 2) -- stopped under dispatch territory rule (5), 2026-09-21 ~09:06 PDT:
+**BLOCKER (RESOLVED 2026-09-21 ~11:00 PDT)** -- on resume the 21 foreign `.lean` edits were gone from the working tree (`git status` clean outside `specs/` and this task's two typst files), Check 2b was green again with no module-map regeneration by this task, and the phase was closed as commit `b3a095209`. Original record, kept for history -- stopped under dispatch territory rule (5), 2026-09-21 ~09:06 PDT:
 - **What was observed**: 21 tracked `.lean` files under `FormalSystem/` carry uncommitted modifications this dispatch did not make (mtimes 09:04-09:05, i.e. live), e.g. `Automation/ProofSearch/Strategies.lean`, `Automation/Tactics/Commands.lean`, `Semantics/Truth.lean`, `Tactic/Meta.lean`. None is in a declared sibling `file_scope` (644: three scripts/docs paths; 637: `FormalSystem/FormalSystem.lean` and root files). `git log` confirms no task-614 commit touches them. Also untracked: `docs/development/MODULE_RELOCATION.md` and modified `docs/development/README.md` (644 territory, expected).
 - **Effect on this phase**: `typst-sync-check.sh` Check 1 is `TOTAL_VIOLATIONS=0` in the working tree, but Check 2b is now red (`Strategies.lean` 386->403, `Commands.lean` 160->174, module total 3325->3356) purely from those foreign edits. It was green at the start of this phase. Regenerating `typst/generated/automation-module-map.typ` here would bake another agent's uncommitted line counts into a generated file, so it was NOT done.
 - **State left on disk (uncommitted, this task's own files only)**: `typst/chapters/p4-dataset-pipeline.typ` (11 asserted edits applied: 5 re-points, 4 de-cites, `README.md:183-184` dropped, quotation closed after "at runtime.", 211->223) and `typst/sync-check-whitelist.txt` (two appended blocks: six `training/PIPELINE.md` spans + `lakefile.lean`). Not yet run: both `typst compile` invocations, the commit, the `git archive HEAD` clean-export gate.
@@ -236,35 +236,35 @@ footnote edited below, read the target lines of **each** line-anchored span in i
 are both anchors the lint passes and the text falsifies.
 
 **Tasks**:
-- [ ] Re-derive the violation list: `bash scripts/typst-sync-check.sh 2>&1 | grep VIOLATION`.
-- [ ] Re-derive every line-anchored span in the chapter: `grep -n -o -E '`[^`]+:[0-9]+(-[0-9]+)?`' typst/chapters/p4-dataset-pipeline.typ`. Expect the nine `docs/training/PIPELINE.md` forms plus `README.md:183-184`.
-- [ ] Re-verify each proposed new line range against the live `training/PIPELINE.md` (701 lines) before writing it — quote the target line and confirm it says what the citing sentence claims.
-- [ ] **Re-point the live citations** in `typst/chapters/p4-dataset-pipeline.typ`, pairing each range with its section heading in the footnote text (the chapter's own existing style at lines 35 and 100):
-  - [ ] Bare `docs/training/PIPELINE.md` -> `training/PIPELINE.md` (lines 4 (the non-backticked comment), 22, 35, 113; line 35's "Module Reference section" anchor is the `## Module Reference` heading at `:54`, and that footnote already cites by heading, so it needs the path change only).
-  - [ ] Line 61, `:428-437` -> `training/PIPELINE.md:389-403`, "Executable Targets" (heading at `:389`, prose at `:391`, the two `[[lean_exe]]` blocks through the closing fence at `:403`).
-  - [ ] Line 30, `:42-44` -> `training/PIPELINE.md:230` ("Implemented, tested, and producing correct JSON output … Targeted for Tier 2 integration"). Name the enclosing section heading; find it by reading upward from `:230`.
-  - [ ] Line 30, same footnote: correct "211 lines per `BimodalTools/README.md`" to 223. Confirm first with `wc -l BimodalTools/EnrichedCountermodel.lean` and `BimodalTools/README.md:46`; if the two disagree at implementation time, cite the `wc -l` figure and drop the "per `BimodalTools/README.md`" attribution.
-  - [ ] Line 70 — three edits to one sentence and its footnote:
-    - [ ] `:14` -> `training/PIPELINE.md:576`, and `:612` -> `training/PIPELINE.md:578-592`, "Sync Mechanism" (heading at `:578`, code block closing at `:592`).
-    - [ ] **Drop `README.md:183-184`** and the "near-identical wording in both places" clause. `README.md` carries no such sentence anywhere; `README.md:389` mentions BimodalHarness but not this wording, so it is not a substitute anchor. The footnote cites `training/PIPELINE.md` only.
-    - [ ] **Close the quotation after "…never calls Lean at runtime."** That is where `training/PIPELINE.md:576` ends. State the following sentence ("it reads JSONL files exported by `lake exe dataset_generator` …") in the chapter's own voice, outside the quotation marks — the same treatment option A gives the orphaned footnotes. The Sync Mechanism citation supports it.
-- [ ] **De-cite the four orphaned footnotes** — the quoted sentences are the chapter's own canonical prose (see `training/PIPELINE.md:10` and `:676`, which record that this content was deliberately consolidated into the chapter):
-  - [ ] Line 28 (policy network, `:24-31`) — drop the quotation marks and the footnote pointer; state the sentence in the chapter's own voice.
-  - [ ] Line 29 (value network, `:33-40`) — same.
-  - [ ] Line 100 (Priority 1 recommendation, `:744-762`) — same.
-  - [ ] Line 93 (Tier-1 gate table caption, `:687-740`) — re-point to `training/PIPELINE.md:651-676`, "Feasibility Gate Results (Tier 1)" (heading at `:651`; `:676` is the line that delegates the table to the chapter), for the surviving configuration + conformance material, and state in the caption that the gate table itself is the chapter's own.
-- [ ] **Add a whitelist block** to `typst/sync-check-whitelist.txt` with a comment header in the style of the existing entries, explaining that `training/` is deliberately gitignored and absent from any checkout, and that these spans are therefore never resolved by the check. One exact-match entry per surviving backtick span. Derive the list from the edited chapter, not from this plan: `grep -o -E '`training/PIPELINE\.md[^`]*`' typst/chapters/p4-dataset-pipeline.typ | sort -u`. Expected, if the edits above are applied as written, six entries:
+- [x] Re-derive the violation list: `bash scripts/typst-sync-check.sh 2>&1 | grep VIOLATION`.
+- [x] Re-derive every line-anchored span in the chapter: `grep -n -o -E '`[^`]+:[0-9]+(-[0-9]+)?`' typst/chapters/p4-dataset-pipeline.typ`. Expect the nine `docs/training/PIPELINE.md` forms plus `README.md:183-184`.
+- [x] Re-verify each proposed new line range against the live `training/PIPELINE.md` (701 lines) before writing it — quote the target line and confirm it says what the citing sentence claims.
+- [x] **Re-point the live citations** in `typst/chapters/p4-dataset-pipeline.typ`, pairing each range with its section heading in the footnote text (the chapter's own existing style at lines 35 and 100):
+  - [x] Bare `docs/training/PIPELINE.md` -> `training/PIPELINE.md` (lines 4 (the non-backticked comment), 22, 35, 113; line 35's "Module Reference section" anchor is the `## Module Reference` heading at `:54`, and that footnote already cites by heading, so it needs the path change only).
+  - [x] Line 61, `:428-437` -> `training/PIPELINE.md:389-403`, "Executable Targets" (heading at `:389`, prose at `:391`, the two `[[lean_exe]]` blocks through the closing fence at `:403`).
+  - [x] Line 30, `:42-44` -> `training/PIPELINE.md:230` ("Implemented, tested, and producing correct JSON output … Targeted for Tier 2 integration"). Name the enclosing section heading; find it by reading upward from `:230`.
+  - [x] Line 30, same footnote: correct "211 lines per `BimodalTools/README.md`" to 223. Confirm first with `wc -l BimodalTools/EnrichedCountermodel.lean` and `BimodalTools/README.md:46`; if the two disagree at implementation time, cite the `wc -l` figure and drop the "per `BimodalTools/README.md`" attribution.
+  - [x] Line 70 — three edits to one sentence and its footnote:
+    - [x] `:14` -> `training/PIPELINE.md:576`, and `:612` -> `training/PIPELINE.md:578-592`, "Sync Mechanism" (heading at `:578`, code block closing at `:592`).
+    - [x] **Drop `README.md:183-184`** and the "near-identical wording in both places" clause. `README.md` carries no such sentence anywhere; `README.md:389` mentions BimodalHarness but not this wording, so it is not a substitute anchor. The footnote cites `training/PIPELINE.md` only.
+    - [x] **Close the quotation after "…never calls Lean at runtime."** That is where `training/PIPELINE.md:576` ends. State the following sentence ("it reads JSONL files exported by `lake exe dataset_generator` …") in the chapter's own voice, outside the quotation marks — the same treatment option A gives the orphaned footnotes. The Sync Mechanism citation supports it.
+- [x] **De-cite the four orphaned footnotes** — the quoted sentences are the chapter's own canonical prose (see `training/PIPELINE.md:10` and `:676`, which record that this content was deliberately consolidated into the chapter):
+  - [x] Line 28 (policy network, `:24-31`) — drop the quotation marks and the footnote pointer; state the sentence in the chapter's own voice.
+  - [x] Line 29 (value network, `:33-40`) — same.
+  - [x] Line 100 (Priority 1 recommendation, `:744-762`) — same.
+  - [x] Line 93 (Tier-1 gate table caption, `:687-740`) — re-point to `training/PIPELINE.md:651-676`, "Feasibility Gate Results (Tier 1)" (heading at `:651`; `:676` is the line that delegates the table to the chapter), for the surviving configuration + conformance material, and state in the caption that the gate table itself is the chapter's own.
+- [x] **Add a whitelist block** to `typst/sync-check-whitelist.txt` with a comment header in the style of the existing entries, explaining that `training/` is deliberately gitignored and absent from any checkout, and that these spans are therefore never resolved by the check. One exact-match entry per surviving backtick span. Derive the list from the edited chapter, not from this plan: `grep -o -E '`training/PIPELINE\.md[^`]*`' typst/chapters/p4-dataset-pipeline.typ | sort -u`. Expected, if the edits above are applied as written, six entries:
   - `training/PIPELINE.md`
   - `training/PIPELINE.md:230`
   - `training/PIPELINE.md:389-403`
   - `training/PIPELINE.md:576`
   - `training/PIPELINE.md:578-592`
   - `training/PIPELINE.md:651-676`
-- [ ] Add one further whitelist entry, `lakefile.lean`, under its own comment noting it is the deliberate negative reference at `typst/chapters/ax-lean-appendix.typ:191` (the repo has no `lakefile.lean`; it resolves locally only via `.lake/packages/mathlib/`). The existing `thm:BLplus-NextPrevious` block is the precedent for a negative-resolution entry.
-- [ ] Confirm `bash scripts/typst-sync-check.sh` prints `TOTAL_VIOLATIONS=0`, exit 0, and that Checks 2, 2b and 3 still report 0.
-- [ ] Confirm `typst compile --root .. typst/BimodalReference.typ` and `typst compile --root .. typst/FormalFoundations.typ` both exit 0.
-- [ ] Commit `task 614 phase 2: re-point and de-cite typst pipeline citations`. State in the commit body that `typst-sync-check.sh` Check 1 moves 9 -> 0 (see the task-643 risk row).
-- [ ] **After committing**, run the clean-export gate: `git archive HEAD | tar -x -C <scratch>` then `(cd <scratch> && bash scripts/typst-sync-check.sh)` — must print `TOTAL_VIOLATIONS=0`. Use a scratch directory outside any git work tree.
+- [x] Add one further whitelist entry, `lakefile.lean`, under its own comment noting it is the deliberate negative reference at `typst/chapters/ax-lean-appendix.typ:191` (the repo has no `lakefile.lean`; it resolves locally only via `.lake/packages/mathlib/`). The existing `thm:BLplus-NextPrevious` block is the precedent for a negative-resolution entry.
+- [x] Confirm `bash scripts/typst-sync-check.sh` prints `TOTAL_VIOLATIONS=0`, exit 0, and that Checks 2, 2b and 3 still report 0.
+- [x] Confirm `typst compile --root .. typst/BimodalReference.typ` and `typst compile --root .. typst/FormalFoundations.typ` both exit 0.
+- [x] Commit `task 614 phase 2: re-point and de-cite typst pipeline citations`. State in the commit body that `typst-sync-check.sh` Check 1 moves 9 -> 0 (see the task-643 risk row).
+- [x] **After committing**, run the clean-export gate: `git archive HEAD | tar -x -C <scratch>` then `(cd <scratch> && bash scripts/typst-sync-check.sh)` — must print `TOTAL_VIOLATIONS=0`. Use a scratch directory outside any git work tree. *(deviation: altered — the `git archive` export prints `TOTAL_VIOLATIONS=0` for Check 1 as required, but the script as a whole exits 1 there because Check 2's status-count regeneration calls `git` and an export has no `.git` (`fatal: not a git repository`, then a JSON decode traceback) — an artifact of the export form, independent of this task's edits. The gate was therefore additionally run in a `git clone --depth 1 file://…` of HEAD `b3a095209`, which mirrors CI's checkout (no `training/`, no `.lake/`, `.git` present): exit 0, `TOTAL_VIOLATIONS=0`, Checks 2, 2b, 3 all 0, `PASS (all 3 checks green)`)*
 
 **Timing**: 1.5 hours
 
@@ -305,7 +305,7 @@ diverged from this plan and the list must follow the chapter, not the plan.
 
 ---
 
-### Phase 3: Date stamps, non-Metalogic (19 files) [NOT STARTED]
+### Phase 3: Date stamps, non-Metalogic (19 files) [IN PROGRESS]
 
 **Goal**: Every README outside `FormalSystem/Metalogic/` that the lint flags carries a stamp equal
 to this phase's commit date.

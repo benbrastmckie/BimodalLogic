@@ -29,4 +29,4 @@ accident: a module intended for Mathlib may not depend on this repository.
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

@@ -89,4 +89,4 @@ Use `Derivable` from `Derivable.lean` for Prop-valued derivability.
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

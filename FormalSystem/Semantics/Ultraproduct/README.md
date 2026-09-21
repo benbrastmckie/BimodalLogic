@@ -38,4 +38,4 @@ set quantifies over its own carrier, where `TruthAt` quantifies over possible wo
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

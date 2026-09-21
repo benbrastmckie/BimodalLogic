@@ -62,4 +62,4 @@ The conventions inherited from `FormalSystem/Automation/README.md` still hold he
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
-*Last verified: 2026-09-20*
+*Last verified: 2026-09-21*

@@ -159,4 +159,4 @@ lake exe benchmark_oracle -- --input formulas.jsonl --output results.jsonl
 
 ---
 
-*Last verified: 2026-09-17*
+*Last verified: 2026-09-21*

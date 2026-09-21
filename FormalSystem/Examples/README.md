@@ -29,4 +29,4 @@ be audited, and the audits are asserted in `Tests/BimodalTest/WalkthroughAxioms.
 
 ---
 
-*Last verified: 2026-09-20*
+*Last verified: 2026-09-21*
