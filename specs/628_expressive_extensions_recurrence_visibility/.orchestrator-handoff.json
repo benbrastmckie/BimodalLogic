@@ -1,24 +1,19 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 1,
-  "summary": "Research report and a sorry-free probe (856 lines, exit 0) answering Q1-Q5: [≡] and lifted quantifiers are invariant along history-lifting morphisms; a single state register/nominal defines recurrence-freeness and the transposition formula (compiled splice), refuted at every FrameClass tag; A is definable in L, Atom(p) names a state under standard quantification; cost landmarks tied to held sources or labelled recalled; Prior/naming-rule assessment for 559.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 14,
+  "summary": "Plan written: nine sequential phases, 15 hours, porting the sorry-free research probe into the library as Semantics/HistoryMorphism.lean, Truth.box_always_iff, and two root-level object-language components (HybridLanguage: L+ with [≡], state registers and the binder; QuantLanguage: L with propositional quantifiers over an admissible family). 24 Lean challenge statements, type-checked against the live source modules at plan time. The plan re-sites the port away from the research-era Semantics/Extension/ paths, which predate the language-directory merge; the probe itself now compiles only against stale oleans and is treated as a mirror record of proofs.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md",
-      "summary": "Research report for Q1-Q5 with compiled evidence and held/recalled literature labels."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/628_expressive_extensions_recurrence_visibility/probes/01_nominals-registers-quantifiers.lean",
-      "summary": "Sorry-free probe: NFormula (L+ with [≡], state registers, binder) and QFormula (propositional quantifiers) with invariance, definability, splice and class-level refutations."
+      "type": "plan",
+      "path": "specs/628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md",
+      "summary": "Nine-phase implementation plan with Lean Challenge Statements for 24 theorems."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 9,
   "blockers": [],
   "plan_markers_verified": null,
   "continuation_path": null,
-  "next_action_hint": "Plan the port of the probe into FormalSystem/Semantics/Extension/{HybridState,PropQuant}.lean and Truth.univ_iff; keep the quotient-nominal caveat in docstrings."
+  "next_action_hint": "Refresh task 628's file_scope in specs/state.json from the plan's 'Artifacts & Outputs' section before dispatching implementation (the declared scope still names Semantics/Extension/{HybridState,PropQuant}.lean, which the plan does not touch; the real footprint is FormalSystem/HybridLanguage/, FormalSystem/QuantLanguage/, Semantics/HistoryMorphism.lean, Semantics/Truth.lean plus scripts/, Tests/ and docs/ registration files shared with every module-adding task). Then dispatch implement, Phase 1 first; Phase 1's Truth.lean edit triggers a near-full rebuild, so avoid running it concurrently with another build-heavy task."
 }

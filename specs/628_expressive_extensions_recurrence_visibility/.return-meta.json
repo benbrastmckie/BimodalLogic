@@ -1,40 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 14,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md",
-      "summary": "Compiled answers to Q1-Q5: [≡] and lifted-quantifier invariance along history-lifting morphisms; one state register/nominal defines recurrence-freeness and the transposition formula via a compiled splice, refuted at every FrameClass tag; A definable in L, Atom(p) names a state, standard quantifiers see recurrence; cost landmarks held/recalled; Prior's world-propositions name states, naming rule sound but closure obstacle untouched."
+      "type": "plan",
+      "path": "specs/628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md",
+      "summary": "Nine-phase sequential plan (15 hours) porting the research probe into Semantics/HistoryMorphism.lean, Truth.box_always_iff, and two root-level language components HybridLanguage/ and QuantLanguage/, with 24 type-checked Lean challenge statements."
     }
   ],
-  "next_steps": "Plan the port of probes/01_nominals-registers-quantifiers.lean into FormalSystem/Semantics/Extension/{HybridState,PropQuant}.lean plus Truth.univ_iff; decide whether 559 adopts state nominals as the naming ingredient of record.",
-  "proposed_file_scope": [
-    "FormalSystem/Semantics/Extension/HybridState.lean",
-    "FormalSystem/Semantics/Extension/PropQuant.lean",
-    "FormalSystem/Semantics/Truth.lean"
-  ],
+  "next_steps": "Run /implement 628 to execute the plan. Before dispatching implementation, refresh task 628's file_scope in specs/state.json from the plan's 'Artifacts & Outputs' section: the plan re-sites the port from Semantics/Extension/{HybridState,PropQuant}.lean (research-era paths, predating the language-directory merge) to FormalSystem/HybridLanguage/, FormalSystem/QuantLanguage/ and FormalSystem/Semantics/HistoryMorphism.lean, and also touches scripts/, Tests/ and docs/ registration files.",
   "memory_candidates": [
     {
-      "content": "Instance search does not see through TemporalOrder.of carriers: SuccOrder (trivialFrame (D := ℤ)).toTaskFrame.Duration.carrier and SuccOrder intOrder.carrier fail. Pass inferInstanceAs (SuccOrder ℤ) etc. explicitly (and import Mathlib.Data.Int.SuccPred), and chain Iff lemmas by hand where simp cannot match a lemma binder typed at the carrier against a goal typed at ℤ.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["TemporalOrder.of", "intOrder", "isZTime_of_instances", "instance search", "permissiveFrame", "lean4"]
-    },
-    {
-      "content": "What a history-lifting morphism (forth + history-level lift + onto) preserves: valuations pulled back, the history/time structure, and the same-state relation σ(s)=τ(t) at any time — so ⊡, [≡], U/S, □ and quantifiers over pulled-back propositions are all invariant; it does not preserve state identity, so a state nominal/register or a standard propositional quantifier (which manufactures {τ(s)}) is the minimal resource that sees recurrence and transposition.",
+      "content": "A research probe under specs/**/probes that was compiled with `lake env lean` can keep exiting 0 after the modules it imports are moved or renamed, because stale .olean files for the old module paths survive under .lake/build and `lake env lean` resolves imports from the olean search path, not from source. Before planning a port from a probe, check every `import` line against the source tree (ls the .lean path), re-type the statements against the live module paths, and type-check them afresh. Gate implementation phases on `lake build <target>` (which resolves imports from source), never on `lake env lean <file>` alone.",
       "category": "INSIGHT",
-      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/probes/01_nominals-registers-quantifiers.lean",
-      "confidence": 0.8,
-      "suggested_keywords": ["recurrence", "transposition", "nominal", "state register", "HistMorphism", "invariance", "propositional quantifier"]
+      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["stale olean", "lake env lean", "probe", "module move", "import path", "lean4"]
     }
   ],
   "metadata": {
-    "session_id": "sess_1789803694_489350_628",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1790018097_6c1579_628",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 15,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9]]
   }
 }
