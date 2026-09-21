@@ -168,34 +168,42 @@ before pruning — never prune on the report's word alone.
 
 ---
 
-### Phase 2: Appendix numbering and the reference show-rule [NOT STARTED]
+### Phase 2: Appendix numbering and the reference show-rule [COMPLETED]
 
 **Goal**: Item 1. No reference renders a run-together heading counter; both appendices carry a
 consistent "Appendix A"/"Appendix B" identity in prose references and the table of contents.
 
 **Tasks**:
-- [ ] Rewrite the `#show ref` rule in `typst/BimodalReference.typ` to read the heading's own
+- [x] Rewrite the `#show ref` rule in `typst/BimodalReference.typ` to read the heading's own
       `el.supplement` and `el.numbering` instead of hardcoding `"Chapter"` and `numbering("1", …)`,
       with an explicit `el.numbering == none` branch that falls back to the default rendering
-      rather than printing the raw counter.
-- [ ] Give the Lean appendix's title heading a real appendix identity: supplement `Appendix`,
+      rather than printing the raw counter. *(completed: renders `link(it.target)[#el.body]` for
+      the none case, and `#el.supplement~#numbering(el.numbering, ..counter(heading).at(...))`
+      otherwise)*
+- [x] Give the Lean appendix's title heading a real appendix identity: supplement `Appendix`,
       letter numbering, and the level-1 counter reset needed for it to render `A` rather than the
       accumulated chapter count. Confine the edit to the title heading and the adjacent
       appendix-local numbering block already present in that file; change nothing else there.
-- [ ] Apply the same treatment to `typst/chapters/ax-machine-appendix.typ`'s title heading so it
+      *(completed: `counter(heading).update(0)` + a `#show heading.where(level:1): set
+      heading(supplement: "Appendix")` override + letter-numbering function)*
+- [x] Apply the same treatment to `typst/chapters/ax-machine-appendix.typ`'s title heading so it
       renders `B`, and give its three unnumbered level-2 headings `B.n` numbering using the same
-      file-local pattern the Lean appendix established.
-- [ ] Confirm the Lean appendix's existing `A.n` section numbering still renders `A.1 …` unchanged
-      after the counter reset.
-- [ ] Update the one stale appendix-title link text in `typst/chapters/p4-dataset-pipeline.typ` to
+      file-local pattern the Lean appendix established. *(completed: no explicit counter reset
+      needed there -- the auto-increment from the Lean appendix's letter A carries it to B)*
+- [x] Confirm the Lean appendix's existing `A.n` section numbering still renders `A.1 …` unchanged
+      after the counter reset. *(completed: A.1 through A.14 render correctly in the TOC)*
+- [x] Update the one stale appendix-title link text in `typst/chapters/p4-dataset-pipeline.typ` to
       match the new machine-appendix title. Leave the Lean appendix's own `#link` to the machine
-      appendix alone — its text names no title.
-- [ ] Recompile, re-render with `pdftotext -layout`, and check the table-of-contents entries for
-      both appendices.
+      appendix alone — its text names no title. *(completed)*
+- [x] Recompile, re-render with `pdftotext -layout`, and check the table-of-contents entries for
+      both appendices. *(completed: TOC shows "A Reading the Lean Formalization" and "B The
+      Machine-Readable Axiomatization" with A.1-A.14 / B.1-B.3 subsections)*
 - [ ] If the letter numbering cannot be made to render cleanly without regressing the `A.n`
       sections or the TOC, fall back to literal `Appendix A: …` / `Appendix B: …` title text with
       `numbering: none` and a `#show ref` branch that renders an unnumbered level-1 heading by its
-      title; record which route was taken and why.
+      title; record which route was taken and why. *(not needed: the letter-numbering route
+      rendered cleanly, verified first in an isolated scratch reproduction before editing the real
+      files -- see phase-2-progress.json's approaches_tried)*
 
 **Timing**: 1.5 hours
 

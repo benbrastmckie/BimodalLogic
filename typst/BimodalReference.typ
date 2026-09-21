@@ -54,10 +54,22 @@
 // "Chapter N" rather than the bare heading text.
 #show heading.where(level: 1): set heading(supplement: "Chapter")
 
+// Reads the target heading's own supplement/numbering dynamically rather than
+// hardcoding "Chapter" and a fixed pattern, so it renders correctly for any
+// level-1 heading's own supplement (ordinary chapters: "Chapter"; the two
+// back-matter appendices: "Appendix", numbered by letter -- see their own
+// appendix-local numbering blocks). A level-1 heading with no numbering at
+// all (el.numbering == none) is rendered by its title rather than by
+// concatenating the raw shared heading counter, which was the source of the
+// "Chapter 1534"-style rendering bug this rule replaces.
 #show ref: it => {
   let el = it.element
   if el != none and el.func() == heading and el.level == 1 {
-    link(it.target)[Chapter~#numbering("1", ..counter(heading).at(el.location()))]
+    if el.numbering == none {
+      link(it.target)[#el.body]
+    } else {
+      link(it.target)[#el.supplement~#numbering(el.numbering, ..counter(heading).at(el.location()))]
+    }
   } else {
     it
   }

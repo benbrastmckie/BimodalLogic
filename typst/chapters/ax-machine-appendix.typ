@@ -14,7 +14,19 @@
 #import "../generated/machine-appendix.typ": axiom-table, rule-table, derived-op-table, stamp-commit, stamp-date, machine-axiom-count, machine-rule-count, machine-derived-op-count
 
 #pagebreak()
-#heading(numbering: none)[Appendix: The Machine-Readable Axiomatization] <machine-appendix>
+// Appendix identity, continuing the letter sequence the Lean appendix starts:
+// its counter reset left the level-1 counter at "A" (1), so this title's own
+// real numbering auto-increments it to letter "B" with no reset needed here.
+// The document-wide "Chapter" supplement was already overridden to
+// "Appendix" by the Lean appendix's show-set rule, which stays in effect.
+#set heading(numbering: (..n) => numbering("A", n.pos().first()))
+#heading[The Machine-Readable Axiomatization] <machine-appendix>
+
+// Section numbering. Same file-local pattern the Lean appendix establishes,
+// hardcoded to this file's own letter ("B."): the title's real numbering
+// above auto-resets the level-2 counter to 0, so the three sections below
+// number fresh at B.1, B.2, B.3.
+#set heading(numbering: (..n) => "B." + numbering("1.1", ..n.pos().slice(1)))
 
 This appendix ships the complete *TM* axiomatization in machine-readable form: the #machine-axiom-count axiom schemata, the #machine-rule-count inference rules of `DerivationTree`, and the #machine-derived-op-count derived-operator definitions.
 The raw artifact is a JSONL file committed alongside this book at `typst/generated/machine-appendix.jsonl`; the tables below are *rendered from that artifact* (via `scripts/typst-machine-appendix.sh`), never hand-copied.
@@ -56,7 +68,7 @@ records = [json.loads(line) for line in open("machine-appendix.jsonl")]
 Derived operators are exported as *kernel-computed unfoldings*: each definition below is the real Lean `def` applied to schematic atoms, so the right-hand sides are the exact primitive-basis formulas the proof system manipulates.
 Schematic metavariables (φ, ψ, χ, θ, p) are encoded as atoms with those base names.
 
-#heading(level: 2, numbering: none)[The Axiom Schemata #text(size: 10pt, weight: "regular")[(#machine-axiom-count constructors, `ProofSystem/Axioms.lean`)]]
+#heading(level: 2)[The Axiom Schemata #text(size: 10pt, weight: "regular")[(#machine-axiom-count constructors, `ProofSystem/Axioms.lean`)]]
 
 #[
 #show figure: set block(breakable: true)
@@ -82,7 +94,7 @@ Schematic metavariables (φ, ψ, χ, θ, p) are encoded as atoms with those base
 )
 ]
 
-#heading(level: 2, numbering: none)[The Inference Rules #text(size: 10pt, weight: "regular")[(#machine-rule-count constructors, `ProofSystem/Derivation.lean`)]]
+#heading(level: 2)[The Inference Rules #text(size: 10pt, weight: "regular")[(#machine-rule-count constructors, `ProofSystem/Derivation.lean`)]]
 
 #[
 #show figure: set block(breakable: true)
@@ -107,7 +119,7 @@ Schematic metavariables (φ, ψ, χ, θ, p) are encoded as atoms with those base
 )
 ]
 
-#heading(level: 2, numbering: none)[The Derived Operators #text(size: 10pt, weight: "regular")[(#machine-derived-op-count definitions, `Syntax/Formula.lean`)]]
+#heading(level: 2)[The Derived Operators #text(size: 10pt, weight: "regular")[(#machine-derived-op-count definitions, `Syntax/Formula.lean`)]]
 
 #[
 #show figure: set block(breakable: true)
