@@ -266,17 +266,18 @@ previous-state paragraph elsewhere in the file would widen this phase. Search fo
 
 ---
 
-### Phase 3: Cold-reader results summary in the first 40 lines [NOT STARTED]
+### Phase 3: Cold-reader results summary in the first 40 lines [COMPLETED]
 
 **Goal**: Put a short results summary directly under the opening paragraph, inside the first 40
 lines, without hand-editing or displacing the generated inventory block. This is the phase the
 acceptance bar turns on and the one with no line-budget slack.
 
 **Tasks**:
-- [ ] Re-derive the current line inventory before editing:
+- [x] Re-derive the current line inventory before editing:
       `grep -n '^## Operators' README.md` and `grep -n 'BEGIN GENERATED\|END GENERATED' README.md`.
-      The budget is whatever these report now, not the research baseline.
-- [ ] **Compress before adding.** The only compressible material above the `---` is: the three
+      The budget is whatever these report now, not the research baseline. *(completed: confirmed
+      unchanged from Phase 1 baseline — `## Operators` at 39, generated block at 23-31)*
+- [x] **Compress before adding.** The only compressible material above the `---` is: the three
       intro paragraphs (the opening paragraph, the "Whereas dynamical systems theory…" paragraph,
       and the "The repository implements the syntax…" paragraph) and the four link lines
       (**Paper**, **Bimodal Reference Manual**, **Main Results**, **Demo**). The badges are fixed;
@@ -286,7 +287,9 @@ acceptance bar turns on and the one with no line-budget slack.
         paragraphs into one, and/or
       - fold the **Main Results** and **Demo** link lines into the summary itself as its closing
         links, leaving **Paper** and **Bimodal Reference Manual** as the separate block.
-- [ ] Author the summary as a short paragraph or 4–6 tight bullets placed immediately under the
+      *(completed: did both — merged the two intro paragraphs, and folded Main Results + Demo
+      into the summary's closing sentences, reusing their exact bold labels and link targets)*
+- [x] Author the summary as a short paragraph or 4–6 tight bullets placed immediately under the
       opening paragraph. It must state:
       - soundness and weak completeness at **all four** frame classes — Base, Dense, ZTime, RTime;
       - strong completeness **proved** at Base and Dense (`strongCompletenessBase`,
@@ -300,14 +303,19 @@ acceptance bar turns on and the one with no line-budget slack.
       - the pinned axiom-set harness: `scripts/check-module-invariants.sh` pins the axiom sets of
         **105** declarations, and a change to any of them is a hard stop rather than a new
         baseline. Reuse the figure 105 exactly as the existing "Verifying the main theorems"
-        section states it (README ~line 415); do not re-derive it.
-- [ ] Link `FormalSystem/MainResults.lean` and `docs/theorem-index.md` from the summary. Both
+        section states it (README ~line 415); do not re-derive it. *(completed: authored as one
+        dense paragraph, "Results at a glance", covering all four required points)*
+- [x] Link `FormalSystem/MainResults.lean` and `docs/theorem-index.md` from the summary. Both
       already have a home in the file (the **Main Results** link line, and the "single ledger"
       pointer); reuse those exact targets and link texts rather than inventing new ones.
-- [ ] Introduce no new numeric axiom-count phrase (29/37/40/39/42/45 followed by a schema word) —
+      *(completed: reused the exact Main Results bold label/link text, and the "single ledger"
+      phrasing pointing at docs/theorem-index.md)*
+- [x] Introduce no new numeric axiom-count phrase (29/37/40/39/42/45 followed by a schema word) —
       C14's stale-count regex matches per line. "Zero sorry and zero custom axioms" and the
-      figure 105 are both safe.
-- [ ] Confirm the budget held, then re-run both gates and commit.
+      figure 105 are both safe. *(completed: only "105 declarations" used, matching the existing
+      safe phrasing at README ~line 415)*
+- [x] Confirm the budget held, then re-run both gates and commit. *(completed: `## Operators` now
+      at line 35, both gates green, generated block byte-identical)*
 
 **Timing**: 1.25 hours
 
