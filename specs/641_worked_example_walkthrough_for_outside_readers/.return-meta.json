@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md",
+      "summary": "Compiled-and-verified Lean shapes for all six walkthrough legs (hand derivation, modal_search, soundness_validIn, completeness_base, isValid + isValid_sound via plain by decide, Dense-derivable/Base-and-ZTime-underivable density instance via one blip countermodel), plus the full harness and wiring obligation list for adding a file under FormalSystem/Examples/."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789947599_745d6f_641",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
