@@ -64,8 +64,7 @@ unchanged, and `NaiveDerivable` is a predicate on the existing derivation trees
 ## References
 
 * `FormalSystem/PlusLanguage/Axioms.lean` — the docstring this result discharges
-* `FormalSystem/PlusLanguage/PlusPasting.lean` — the validity of PS and US on genuine
-  frames
+* `FormalSystem/PlusLanguage/PlusPasting.lean` — the validity of PS and US on genuine frames
 
 ## Tags
 

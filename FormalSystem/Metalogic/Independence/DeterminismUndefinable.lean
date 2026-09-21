@@ -81,8 +81,7 @@ module's own collapse theorems still report `[propext]` alone.
 ## References
 
 * JPL paper `cor:no-characterization`, `app:deterministic`, `app:drift`
-* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — the positive half whose converse
-  fails here
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — the positive half whose converse fails here
 
 ## Tags
 

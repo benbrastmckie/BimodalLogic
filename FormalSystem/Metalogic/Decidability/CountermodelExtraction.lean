@@ -47,7 +47,7 @@ been deleted too.
 
 ## References
 
-* [gore1999]
+* [R. Goré, *Tableau Methods for Modal and Temporal Logics*][gore1999]
 -/
 
 namespace FormalSystem.Metalogic.Decidability

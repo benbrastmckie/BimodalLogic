@@ -41,7 +41,7 @@ The proof uses the MCS-based filtration approach:
 
 ## References
 
-* [blackburn2002] (Ch 2.3)
+* [P. Blackburn, M. de Rijke and Y. Venema, *Modal Logic*][blackburn2002], (Ch 2.3)
 * Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
 -/
 

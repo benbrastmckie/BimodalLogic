@@ -93,8 +93,8 @@ carrier.
 ## References
 
 * JPL paper `app:drift`, `def:deterministic`, `cor:no-characterization`
-* `FormalSystem/Metalogic/Independence/RealTranslationFrame.lean` — `realTemporalOrder`, and `F°`'s
-  indistinguishable partner
+* `FormalSystem/Metalogic/Independence/RealTranslationFrame.lean` — `realTemporalOrder`, and
+  `F°`'s indistinguishable partner
 -/
 
 namespace FormalSystem.Metalogic.Independence

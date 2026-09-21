@@ -78,13 +78,12 @@ nothing is lost.
 
 ## References
 
-* `FormalSystem/MinusLanguage/MinusFrame.lean` — the native frame notion and
-  `truth_reflectTime`
+* `FormalSystem/MinusLanguage/MinusFrame.lean` — the native frame notion and `truth_reflectTime`
 * `FormalSystem/Metalogic/Conservativity/SpWitness.lean` — `Sp`, `minusValid_sp`, `sp_translate`
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — `TMMinusCompleteBase`
 * `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — the `.ZTime` mirror
-* `FormalSystem/MinusLanguage/Soundness.lean` — the `TaskFrame`-bound
-  soundness theorems this one deliberately does not route through
+* `FormalSystem/MinusLanguage/Soundness.lean` — the `TaskFrame`-bound soundness theorems this one
+  deliberately does not route through
 
 ## Tags
 

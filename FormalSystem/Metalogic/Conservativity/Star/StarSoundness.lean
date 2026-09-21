@@ -44,9 +44,8 @@ which would require an axiom set that is mirror-closed as a *set of instances*.
 
 * `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` — the theorems mirrored arm for
   arm
-* `FormalSystem/StarLanguage/StarValidity.lean` — `StarValidIn` and the
-  `StarValidOnFrames` form it instantiates, whose binders this recursion introduces and applies
-  directly
+* `FormalSystem/StarLanguage/StarValidity.lean` — `StarValidIn` and the `StarValidOnFrames` form
+  it instantiates, whose binders this recursion introduces and applies directly
 * JPL paper `possible_worlds.tex` — `def:frame-validity`, `def:BLstar-semantics`
 
 ## Tags

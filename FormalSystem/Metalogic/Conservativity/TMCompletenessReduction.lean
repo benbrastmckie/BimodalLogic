@@ -177,16 +177,16 @@ this module is a `def`, referenced as a statement and never the conclusion of a 
 * `FormalSystem/MinusLanguage/Soundness.lean` — `minusValid_iff_valid_tr`,
   `minusValidZTime_iff_validZTime_tr`
 * `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean`,
-  `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — the two closed rows'
-  refutations, `tmMinusCompleteBase_refuted` and `tmMinusCompleteZTime_refuted`
+  `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — the two closed rows' refutations,
+  `tmMinusCompleteBase_refuted` and `tmMinusCompleteZTime_refuted`
 * `FormalSystem/Metalogic/Conservativity/DenseObstructionTransfer.lean` — `spDerivableDense`,
   `spDerivableRTime`, `not_minusValidDense_z1`: neither closed row's witness transfers
 * `FormalSystem/Metalogic/Conservativity/ChainBundleTruth.lean` —
   `not_minusValidIn_of_not_chainSat` and its ℚ/ℝ instantiations, the transfer half of the
   canonical-model route
 * `FormalSystem/Metalogic/WeakCanonical/RealModel/DoetsTheorem.lean`,
-  `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean` — the Doets layer
-  and the L-only axiom consumption that is the `.RTime` row's named obstruction
+  `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean` — the Doets layer and
+  the L-only axiom consumption that is the `.RTime` row's named obstruction
 -/
 
 namespace FormalSystem.Metalogic

@@ -40,9 +40,8 @@ The closure MCS infrastructure connects to filtration as follows:
 
 ## References
 
-* RestrictedMCS.lean: Core restricted MCS construction
-* SubformulaClosure.lean: Subformula closure definitions
-* Implementation Plan v2 Phase 1
+* `FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean` — the core restricted-MCS construction
+* `FormalSystem/Syntax/SubformulaClosure.lean` — the subformula-closure definitions
 -/
 
 namespace FormalSystem.Metalogic.Decidability.FMP

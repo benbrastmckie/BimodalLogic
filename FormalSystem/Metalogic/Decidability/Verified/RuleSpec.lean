@@ -78,8 +78,9 @@ fails, and it fails confusingly: the two rules are `.Base`-gated and so satisfy
 
 ## References
 
-* Report 02 §8.1-8.3 (the gate proposal, and the diagnosis it responds to).
-* Report 04 §Q2.4 and report 05 (the constructor count and the two scheduled rules).
+* `FormalSystem/Metalogic/Decidability/Tableau.lean` — the tableau rules this specification pins
+* `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean` — the assembly that runs on
+  `mem_allRulesForFC_iff`
 -/
 
 namespace FormalSystem.Metalogic.Decidability.Verified

@@ -45,7 +45,6 @@ conclusion is unchanged. See `Metalogic/Conservativity.lean` for the full statem
 
 ## References
 
-* The TM⁻-completeness status report (`01_tm-completeness-status.md`), §6.1
 * `FormalSystem/Metalogic/Conservativity/Backward.lean` — `Z1`, `z1_translate` (the TM_z half)
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — `TMMinusCompleteZTime`
 -/

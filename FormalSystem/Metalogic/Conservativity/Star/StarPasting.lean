@@ -52,8 +52,8 @@ is this directory. The precedent is `Conservativity/Star/StarAxiomValidity.lean`
 
 ## References
 
-* `FormalSystem/PlusLanguage/PlusPasting.lean` — the pasting construction reused
-  read-only, and the L⁺ congruences mirrored here
+* `FormalSystem/PlusLanguage/PlusPasting.lean` — the pasting construction reused read-only, and
+  the L⁺ congruences mirrored here
 * `FormalSystem/StarLanguage/Formula.lean` — `StarIsPureFuture`, `StarIsPurePast`
 * JPL paper `possible_worlds.tex` — `def:BLstar-semantics`
 

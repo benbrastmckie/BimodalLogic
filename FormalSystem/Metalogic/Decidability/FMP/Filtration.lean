@@ -41,7 +41,7 @@ For TM bimodal logic, we use an MCS-based filtration approach:
 
 ## References
 
-* [blackburn2002] (Ch 2.3 Filtrations)
+* [P. Blackburn, M. de Rijke and Y. Venema, *Modal Logic*][blackburn2002], (Ch 2.3 Filtrations)
 * Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
 -/
 

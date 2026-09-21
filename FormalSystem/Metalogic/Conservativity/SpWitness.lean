@@ -60,8 +60,6 @@ section, which is the authority on that history.
 
 ## References
 
-* The TM⁻-completeness status report (`01_tm-completeness-status.md`),
-  §4.1, §4.2, §6.2
 * `FormalSystem/Metalogic/Conservativity.lean` — the CEB/CEF refutation record and the forward
   prohibition this module never approaches
 * `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` — CEB's failing half, discharged

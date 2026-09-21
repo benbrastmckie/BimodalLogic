@@ -50,8 +50,7 @@ classes here. Only the two positive rows are delivered; whether `MinusCompact .Z
 
 * `FormalSystem/Metalogic/SetConsequence.lean` — `SetConsequenceOnFrames`, `Compact`
 * `FormalSystem/Metalogic/Compactness.lean` — `compactBase`, `compactDense`
-* `FormalSystem/MinusLanguage/Soundness.lean` — `truthAt_tr`,
-  `minusValidIn_iff_validIn_tr`
+* `FormalSystem/MinusLanguage/Soundness.lean` — `truthAt_tr`, `minusValidIn_iff_validIn_tr`
 -/
 
 namespace FormalSystem.Metalogic.Conservativity

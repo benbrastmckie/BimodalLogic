@@ -39,7 +39,7 @@ The `FrameClass.Base` parameter structurally excludes axioms with
 ## References
 
 * Wu, M. Verified Decision Procedures for Modal Logics
-* [gore1999]
+* [R. Goré, *Tableau Methods for Modal and Temporal Logics*][gore1999]
 
 ## Tags
 

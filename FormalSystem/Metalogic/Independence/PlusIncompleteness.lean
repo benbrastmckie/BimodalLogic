@@ -53,9 +53,9 @@ is paste-closed, MF says it is translation-closed, and nothing in TM⁺ says it 
 
 ## References
 
-* Thomason, *Combinations of Tense and Modality* (1984), §4, formulas (19) (Burgess) and (20)
-  (Thomason) — the Ockhamist-valid, Kamp-invalid formulas of which `blc` is the transposition to
-  the stability modal
+* [R. H. Thomason, *Combinations of Tense and Modality*][thomason1984], §4, formulas (19)
+  (Burgess) and (20) (Thomason) — the Ockhamist-valid, Kamp-invalid formulas of which `blc` is
+  the transposition to the stability modal
 -/
 
 namespace FormalSystem.Metalogic.Independence

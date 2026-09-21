@@ -555,17 +555,17 @@ citer files.
 
 ---
 
-### Phase 9: Metalogic/Conservativity, Independence, Decidability [NOT STARTED]
+### Phase 9: Metalogic/Conservativity, Independence, Decidability [COMPLETED]
 
 - **Goal:** The last bulk file set; after this phase every `## References` block in the live trees
   is in normal form.
 - **Tasks:**
-  - [ ] Convert the `## References` blocks under `Metalogic/Conservativity/` (18),
+  - [x] Convert the `## References` blocks under `Metalogic/Conservativity/` (18),
         `Metalogic/Independence/` (16), `Metalogic/Decidability/` (16).
-  - [ ] Sweep any residual tooling notes, phase/report citations and "Design provenance:" entries
-        in this set under the same rules as Phase 7.
-  - [ ] Re-anchor, `--emit-inventory`, `--emit-inventory --check`.
-  - [ ] Final residual sweep across ALL live trees for anything the per-directory batches missed:
+  - [x] Sweep any residual tooling notes, phase/report citations and "Design provenance:" entries
+        in this set under the same rules as Phase 7. *(deviation: altered — the rule applied is that a citation to an artifact under `specs/` is task-management metadata and goes, while a citation to an EXTERNAL repository's report is a genuine citation of record and stays. So the `01_tm-completeness-status.md` bullets went (including the two in `MinusLanguage/` that Phase 6 had left, swept here), and the PossibleWorlds `02_determinism-axiom-correspondence.md` citations in `StarLanguage/StarDeterminism.lean` and `Metalogic/Independence/ForwardDeterministicFrame.lean` stayed. `MinusLanguage/Translation.lean`'s body prose was reworded so the removed bullet is not its antecedent. The named-work citations with no bibkey — Wu's *Verified Decision Procedures for Modal Logics* (7 sites) and Hughes & Cresswell (2) — were left as prose: authoring entries whose details cannot be verified from inside this repository is an explicit Non-Goal.)*
+  - [x] Re-anchor, `--emit-inventory`, `--emit-inventory --check`.
+  - [x] Final residual sweep across ALL live trees for anything the per-directory batches missed:
         remaining bare-form `- [bibkey],` entries, remaining markdown-link entries pointing at
         `.lean`/`.md`, remaining `## Paper Specification Reference` / `## Implementation Status`
         headings, remaining `Logos`/`ProofChecker`, remaining personal or `literature/` paths.

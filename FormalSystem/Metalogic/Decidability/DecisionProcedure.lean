@@ -40,7 +40,7 @@ The procedure decides whether a formula is valid, returning either:
 
 ## References
 
-* [gore1999]
+* [R. Goré, *Tableau Methods for Modal and Temporal Logics*][gore1999]
 * Wu, M. Verified Decision Procedures for Modal Logics
 
 ## Tags

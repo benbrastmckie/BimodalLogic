@@ -44,7 +44,7 @@ and these are not merely differently associated, they are *different constructor
 `Formula.someFuture` is a top-level `untl`, and by `tr_ne_untl` **no** formula in the range of
 `tr` is a top-level `untl`. So no choice of L⁻-side abbreviation could have made this exact.
 
-The consequence is that the research report's claim that TC discharges by an "exact syntactic
+The consequence is that the earlier claim that TC discharges by an "exact syntactic
 match" against `Axiom.connect_future`, and the analogous claim for TS, are **refuted**. Every
 TM⁻ axiom mentioning `F` or `P` needs the derivable equivalence `¬G¬ψ ↔ Fψ` instead, supplied
 once by `MinusLanguage/AxiomDischarge.lean`'s bridge lemmas. Axioms mentioning only `□`, `G`,
@@ -52,7 +52,6 @@ once by `MinusLanguage/AxiomDischarge.lean`'s bridge lemmas. Axioms mentioning o
 
 ## References
 
-* Research report §7 — the prototypes transcribed below
 * `FormalSystem/MinusLanguage/AxiomDischarge.lean` — where the `F`/`P` bridge is discharged
 -/
 

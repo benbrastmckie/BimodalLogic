@@ -119,9 +119,9 @@ this file.
 
 ## References
 
-* Report 02 §8.5 Track A (the `allClosed → valid` direction).
-* `Verified/RuleSpec.lean` — `mem_allRulesForFC_iff`, the single induction principle the
-  assembly will run on, and the exclusion of `serialityRule`/`timeLinearity`.
+* `FormalSystem/Metalogic/Decidability/Verified/RuleSpec.lean` — `mem_allRulesForFC_iff`, the
+  single induction principle the assembly will run on, and the exclusion of
+  `serialityRule`/`timeLinearity`.
 -/
 
 set_option linter.style.longFile 3400

@@ -31,10 +31,10 @@ remain valid.
 
 ## References
 
-* [libal2016]
+* [T. Libal and M. Volpe, *Certification of Prefixed Tableau Proofs for Modal Logic*][libal2016],
   (GandALF/EPTCS 226, pp. 257–271) — FPC schema.
-* `tableau_rule_firing_traces` — the rule-firing trace deliverable these
-  certificates feed (exported by `TraceExport.lean`).
+* `tableau_rule_firing_traces` — the rule-firing trace deliverable these certificates feed
+  (exported by `TraceExport.lean`).
 -/
 
 namespace FormalSystem.Metalogic.Decidability
