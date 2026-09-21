@@ -1,16 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/635_expressiveness_extraction/reports/01_expressiveness-extraction-move.md",
-      "summary": "Expressiveness extraction research: --check passes 141/38 at HEAD; post-move cycle count simulated at exactly 1; the bare FormalSystem.Metalogic.WeakCanonical namespace is shared by 29 moved and 28 residual files so no namespace-map prefix row is safe; typst/generated regeneration would zero a true archived sorry count (root cause and one-line fix identified); the '39 paper-numbered files' figure is not mechanically reproducible (26 under a strict re-derivation)."
+      "type": "plan",
+      "path": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
+      "summary": "Seven-phase plan for the 141-file Expressiveness extraction: typst generator fix, scripted move plus file-granular bare-namespace rename, aggregator/README/ADR work, non-degenerate acceptance, then the paper-numbered renames and stub deletion as a second commit."
+    }
+  ],
+  "next_steps": "Run /implement 635 to execute the plan",
+  "phase_count": 7,
+  "estimated_hours": 9,
+  "dependency_waves": [[1], [2], [3], [4], [5], [6], [7]],
+  "memory_candidates": [
+    {
+      "content": "A declaration-free Lean module is not automatically a deletable stub. In a large refactor, declaration-free files fall into two classes that a declaration census cannot distinguish: true stubs (kept only so existing imports still resolve) and sibling re-export aggregators for a same-named subdirectory, which C8-style module invariants require to exist and which downstream modules import directly. Classify by two signals instead of declaration count: (1) does the body carry a non-trivial import block naming the sibling subdirectory's leaves, and (2) does `grep -rn 'import <module>$'` find importers. In the BimodalLogic Expressiveness extraction, 4 of 179 modules were declaration-free; a research pass classed 3 as deletable stubs, but direct inspection showed 2 of the 4 were re-export aggregators (`Kamp/NfMultiAnchorBridge.lean`, `Kamp/EANegationFix.lean`), leaving only 2 genuinely deletable -- and both of those still needed their importers rewired to the modules they re-exported. Deleting an aggregator on a declaration-count signal alone breaks the build in a way that only surfaces after the move has already landed.",
+      "category": "PATTERN",
+      "source_artifact": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["declaration-free", "stub", "re-export-aggregator", "lean-refactor", "module-invariants", "safe-deletion"]
     }
   ],
   "metadata": {
     "session_id": "sess_1789955215_a3ad68_635",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 17
 }

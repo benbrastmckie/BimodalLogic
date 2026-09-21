@@ -1,18 +1,16 @@
 {
-  "task_number": 635,
-  "phase": "research",
-  "status": "researched",
-  "dispatch_seq": 16,
-  "session_id": "sess_1789955215_a3ad68_635",
-  "phases_completed": 0,
-  "phases_total": 0,
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 17,
+  "summary": "Authored a 7-phase, 9-hour plan for the 141-file Expressiveness extraction: a preparatory typst-generator anchoring fix, the scripted move plus a path-scoped file-granular bare-namespace rename, aggregator/README/ADR work with the two falsifiable prose sites protected by hand, non-degenerate count-based acceptance assertions, then the 12 paper-numbered renames and 2 stub deletions as the second commit. Plan validates strict.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/635_expressiveness_extraction/reports/01_expressiveness-extraction-move.md",
-      "summary": "Expressiveness extraction research: gate passes 141/38 at HEAD; post-move cycle count simulated at exactly 1 with Expressiveness a directory-level sink; the bare FormalSystem.Metalogic.WeakCanonical namespace is shared by 29 moved and 28 residual files so no namespace-map prefix row is safe; typst/generated regeneration would zero a true archived sorry count (root cause and one-line fix identified); the '39 paper-numbered files' figure is not mechanically reproducible."
+      "type": "plan",
+      "path": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
+      "summary": "Seven-phase plan for the Expressiveness extraction, two mandated commits preserved, with enumerated rename list and evidenced exclusions."
     }
   ],
-  "next_phase": "plan",
-  "notes": "Key inputs for planning: (1) narrow namespace map (Kamp, Separation only) plus a separate path-scoped step for 29 namespace/end pairs, 104 in-tree open lines, 10 outside open lines and 8 FQN citations; (2) fix scripts/typst-status-counts.sh line 120 to anchor the archive path at REPO_ROOT before regenerating typst/generated; (3) re-point measure-refactor-partitions.py's WEAK/EXPRESSIVENESS_SET or --check becomes vacuously green; (4) move WeakCanonical.lean's 14 moved-set imports into a new Metalogic/Expressiveness.lean and wire it into Metalogic.lean (C8/C6); (5) rewrite WeakCanonical/README.md's ~19 bare-form citations by hand (C5/C12/C13); (6) protect ADR-011:104 and ADR-006:40-43 from the from-X-to-Y prose collapse; (7) enumerate Phase 6.2's rename list explicitly and scope stub deletion to 3 files, not 4."
+  "phases_completed": 0,
+  "phases_total": 7,
+  "blockers": []
 }
