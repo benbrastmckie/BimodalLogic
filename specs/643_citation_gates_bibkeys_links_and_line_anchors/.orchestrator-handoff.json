@@ -1,0 +1,18 @@
+{
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 11,
+  "summary": "All 6 plan phases completed. C31 (bibkeys) and C32 (docstring links) ship enforced; C20 gained a declaration-span assertion, enforced against a recorded baseline. Its first run found 327 pre-existing wrong-declaration citations: 315 re-pointed by a new idempotent reanchor --by-name mode, 10 recorded. Build-inclusive harness exit 0 (ALL CHECKS PASSED); reanchor --selftest 5 probes green; --recompute twice gives 0 across 0. Residual name-less citations: 155 of 1028.",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/643_citation_gates_bibkeys_links_and_line_anchors/summaries/01_citation-gates-bibkeys-links-summary.md",
+      "summary": "Implementation summary with measured baselines, negative-test record, plan deviations and residual counts."
+    }
+  ],
+  "phases_completed": 6,
+  "phases_total": 6,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "next_action_hint": "Postflight: mark task completed. Plan deviations (baseline-enforced C20 assertion, --by-name mode, tree-wide repair) are recorded in the summary."
+}

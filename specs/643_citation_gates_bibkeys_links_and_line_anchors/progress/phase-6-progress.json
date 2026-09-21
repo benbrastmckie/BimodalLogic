@@ -1,0 +1,17 @@
+{
+  "phase": 6,
+  "phase_name": "Documentation rows, pointers, and full acceptance run",
+  "started_at": "2026-09-21T18:35:00Z",
+  "last_updated": "2026-09-21T19:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "MODULE_INVARIANTS.md rows (C20, C31, C32), baseline companion section, negative-test record; REFERENCE_NORMAL_FORM.md pointers, §4 correction, §5 baselines", "status": "done", "files_touched": ["docs/development/MODULE_INVARIANTS.md", "docs/development/REFERENCE_NORMAL_FORM.md"]},
+    {"id": 2, "description": "Build-inclusive harness, inventory check, tool selftest, recompute twice, readme-lint and typst-sync baselines", "status": "done", "files_touched": [], "note": "harness exit 0 ALL CHECKS PASSED; INV clean; selftest 5 probes green; recompute 0/0 twice; readme-lint 21; typst-sync 9 / 0 / 0 / 0"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [
+    {"task_id": "6.3", "description": "Extend the existing C20 row", "type": "altered", "reason": "MODULE_INVARIANTS.md had no C20 row; one was added covering all three assertions.", "annotation": "*(deviation: altered — C20 row added rather than extended)*"},
+    {"task_id": "6.5", "description": "Update MODULE_INVARIANTS.md's header check-list", "type": "altered", "reason": "That document has no header check list; only the harness header comment enumerates checks, and it was updated in Phases 1, 2 and 4.", "annotation": "*(deviation: altered — no header check list exists in MODULE_INVARIANTS.md)*"}
+  ],
+  "handoff_count": 0
+}

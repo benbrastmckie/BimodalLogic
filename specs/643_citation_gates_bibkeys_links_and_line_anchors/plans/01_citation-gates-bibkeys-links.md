@@ -439,43 +439,43 @@ scope.
 
 ---
 
-### Phase 6: Documentation rows, pointers, and full acceptance run [IN PROGRESS]
+### Phase 6: Documentation rows, pointers, and full acceptance run [COMPLETED]
 
 **Goal**: Land the `MODULE_INVARIANTS.md` rows and the `REFERENCE_NORMAL_FORM.md` pointer, and
 run the build-inclusive harness for the final acceptance evidence.
 
 **Tasks**:
 
-- [ ] Re-read `docs/development/MODULE_INVARIANTS.md` and
-      `docs/development/REFERENCE_NORMAL_FORM.md` immediately before editing.
-- [ ] Add `| C31 (enforced) | ... |` and `| C32 (enforced) | ... |` rows to
+- [x] Re-read `docs/development/MODULE_INVARIANTS.md` and
+      `docs/development/REFERENCE_NORMAL_FORM.md` immediately before editing. *(completed)*
+- [x] Add `| C31 (enforced) | ... |` and `| C32 (enforced) | ... |` rows to
       `MODULE_INVARIANTS.md`'s `## What It Checks` table, in that file's established
       what-it-checks / why-it-exists voice: name the historical evidence (the two bibkeys that
       dangled undetected, the 37 broken docstring links of which 16 were stale `Logos/Core/`
       paths), the `Boneyard/` exclusion, the `sub:`-out-of-scope note, and — for C32 — why the
-      path-shaped filter is load-bearing.
-- [ ] Extend the existing C20 row to describe the third (declaration-span) assertion and the
+      path-shaped filter is load-bearing. *(completed)*
+- [x] Extend the existing C20 row to describe the third (declaration-span) assertion and the
       residual `TODO` line, including why "the declaration at that line" is a *span* and not the
-      exact keyword line.
-- [ ] Add a paragraph to `MODULE_INVARIANTS.md`'s `## Adding a Check` section recording each new
+      exact keyword line. *(deviation: altered — MODULE_INVARIANTS.md had no C20 row to extend, so a C20 row covering all three assertions was added)*
+- [x] Add a paragraph to `MODULE_INVARIANTS.md`'s `## Adding a Check` section recording each new
       check's deliberate negative test — what was injected, that both the `FAIL` line and the
       non-zero exit were observed, and that the revert restored `PASS` and exit 0 — matching the
-      C15/C24/C25/C26 entries already there.
-- [ ] Update `MODULE_INVARIANTS.md`'s header check-list and the harness's own header comment so
-      both enumerate C31 and C32.
-- [ ] Add the pointer from `REFERENCE_NORMAL_FORM.md`: §2 "Bibliographic" gains "C31 gates this"
+      C15/C24/C25/C26 entries already there. *(completed)*
+- [x] Update `MODULE_INVARIANTS.md`'s header check-list and the harness's own header comment so
+      both enumerate C31 and C32. *(deviation: altered — MODULE_INVARIANTS.md carries no header check list; the harness's own header comment was updated in Phases 1, 2 and 4)*
+- [x] Add the pointer from `REFERENCE_NORMAL_FORM.md`: §2 "Bibliographic" gains "C31 gates this"
       beside its existing `comm` one-liner; §2 "Module cross-reference" and §4 gain the C20
       third-assertion and `--selftest` probe-3/4 references; §4's "The tool is not idempotent"
       paragraph is corrected to distinguish the Δ pass (not idempotent) from `--recompute`
-      (idempotent, now asserted by selftest 3).
-- [ ] Add rows to `REFERENCE_NORMAL_FORM.md` §5's recorded-baselines table: C31 (0 dangling, N
+      (idempotent, now asserted by selftest 3). *(completed)*
+- [x] Add rows to `REFERENCE_NORMAL_FORM.md` §5's recorded-baselines table: C31 (0 dangling, N
       advisory unused), C32 (0 broken, N filtered links), C20 third assertion (0 mismatched named
-      citations, N residual name-less).
-- [ ] Run `bash scripts/check-module-invariants.sh` (build-inclusive) and record the result.
-- [ ] Run `bash scripts/readme-lint.sh` and `bash scripts/typst-sync-check.sh`; confirm their
+      citations, N residual name-less). *(completed)*
+- [x] Run `bash scripts/check-module-invariants.sh` (build-inclusive) and record the result. *(completed: exit 0, ALL CHECKS PASSED; lake build 2651 jobs green)*
+- [x] Run `bash scripts/readme-lint.sh` and `bash scripts/typst-sync-check.sh`; confirm their
       recorded baselines (21 broken references; 9 Check-1 violations; 0 on Checks 2/2b/3) are
-      unchanged — this task must not move them in either direction.
-- [ ] Commit.
+      unchanged — this task must not move them in either direction. *(completed: 21 broken references; 9 Check-1 violations; 0 on Checks 2/2b/3 — all unchanged)*
+- [x] Commit. *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -512,24 +512,24 @@ own output in this phase — never copied forward from this plan or from the res
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0 after every phase.
-- [ ] `bash scripts/check-module-invariants.sh` (build-inclusive) exits 0 with `ALL CHECKS PASSED`
-      at the close.
-- [ ] C31 observed to FAIL (line **and** non-zero exit) on an injected dangling bibkey, and to PASS
-      again after revert.
-- [ ] C32 observed to FAIL (line **and** non-zero exit) on an injected broken relative link, and to
-      PASS again after revert.
-- [ ] C20's third assertion observed to FAIL (line **and** non-zero exit) on a citation retargeted
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0 after every phase. *(completed)*
+- [x] `bash scripts/check-module-invariants.sh` (build-inclusive) exits 0 with `ALL CHECKS PASSED`
+      at the close. *(completed)*
+- [x] C31 observed to FAIL (line **and** non-zero exit) on an injected dangling bibkey, and to PASS
+      again after revert. *(completed)*
+- [x] C32 observed to FAIL (line **and** non-zero exit) on an injected broken relative link, and to
+      PASS again after revert. *(completed)*
+- [x] C20's third assertion observed to FAIL (line **and** non-zero exit) on a citation retargeted
       into a different declaration's span — the double-shift shape tier 1 cannot see — and to PASS
-      again after revert.
-- [ ] `python3 scripts/reanchor-lean-citations.py --selftest` exits 0 with all four probes green;
-      probe 3's second `--recompute` reports 0 citation lines across 0 citer files.
-- [ ] C20 tier 1 still reports 1028 resolvable citations and 0 unverifiable.
-- [ ] Residual name-less citation count recorded — per file for the three named targets, and
-      tree-wide.
-- [ ] `readme-lint.sh` (21 broken references) and `typst-sync-check.sh` (9 Check-1 violations; 0 on
-      Checks 2/2b/3) baselines unchanged.
-- [ ] `--emit-inventory --check` reports zero byte changes.
+      again after revert. *(completed)*
+- [x] `python3 scripts/reanchor-lean-citations.py --selftest` exits 0 with all four probes green;
+      probe 3's second `--recompute` reports 0 citation lines across 0 citer files. *(completed)*
+- [x] C20 tier 1 still reports 1028 resolvable citations and 0 unverifiable. *(completed)*
+- [x] Residual name-less citation count recorded — per file for the three named targets, and
+      tree-wide. *(completed)*
+- [x] `readme-lint.sh` (21 broken references) and `typst-sync-check.sh` (9 Check-1 violations; 0 on
+      Checks 2/2b/3) baselines unchanged. *(completed)*
+- [x] `--emit-inventory --check` reports zero byte changes. *(completed)*
 
 ## Artifacts & Outputs
 
