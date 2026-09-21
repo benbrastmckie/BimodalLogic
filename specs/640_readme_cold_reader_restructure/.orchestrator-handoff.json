@@ -1,17 +1,17 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 640,
-  "phase": "plan",
-  "session_id": "sess_1789947599_745d6f_640",
-  "dispatch_seq": 5,
-  "phases_completed": 0,
+  "phase": "implement",
+  "session_id": "sess_1789947599_745d6f",
+  "dispatch_seq": 6,
+  "phases_completed": 5,
   "phases_total": 5,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/640_readme_cold_reader_restructure/plans/01_readme-cold-reader-restructure.md",
-      "summary": "Five-phase prose-only plan restructuring root README.md for a cold reader plus one dated note in paper-definitions-of-record.md."
+      "type": "summary",
+      "path": "specs/640_readme_cold_reader_restructure/summaries/01_readme-cold-reader-restructure-summary.md",
+      "summary": "Five-phase README restructure: results summary hoisted into the first 40 lines, revision-history narration retired to paper-definitions-of-record.md, new trust-model section added, Tags footer renamed, all acceptance criteria and both harness gates green."
     }
   ],
-  "next_steps": "Run /implement 640 to execute the plan"
+  "next_steps": "Implementation complete. All five plan phases COMPLETED and committed. Ready for postflight status transition to completed."
 }

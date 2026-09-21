@@ -1,11 +1,35 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 6,
-  "artifacts": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/640_readme_cold_reader_restructure/summaries/01_readme-cold-reader-restructure-summary.md",
+      "summary": "Five-phase README restructure: results summary hoisted into the first 40 lines, revision-history narration retired to paper-definitions-of-record.md, new trust-model section added, Tags footer renamed, all acceptance criteria and both harness gates green."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Restructured README.md so a cold reader learns what is proved (soundness/weak completeness at all four frame classes, strong completeness proved at Base/Dense and machine-refuted at ZTime/RTime, zero sorry/zero custom axioms, the 105-declaration axiom-set harness) within the first 40 lines (now line 35), retired three revision-history passages (two to a dated note in docs/reference/paper-definitions-of-record.md), added a 'How this repository is developed' trust-model section, and renamed the stale 'TM-plus' footer token. Full build (check-module-invariants.sh) and readme-lint.sh both pass; check-paper-definitions.sh verdict unchanged."
+  },
+  "modified_files": [
+    "README.md",
+    "docs/reference/paper-definitions-of-record.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a README's opening-lines budget has zero slack (a protected generated-content block plus fixed badges consuming the whole span), fold pre-existing bold-label link lines (e.g. '**Main Results**:', '**Demo**:') into the closing sentences of a new summary paragraph rather than presenting the summary as a bulleted list. A dense single-line paragraph costs 3 physical source lines (blank + text + blank) against the budget, versus 7-8 for an equivalent 4-6 bullet list with a lead-in line — the difference between landing comfortably under the limit and landing exactly at it.",
+      "category": "PATTERN",
+      "source_artifact": "specs/640_readme_cold_reader_restructure/summaries/01_readme-cold-reader-restructure-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["readme", "line-budget", "markdown-compression", "cold-reader", "documentation"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789947599_745d6f",
     "agent_type": "general-implementation-agent",
     "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "delegation_depth": 2
+    "delegation_depth": 2,
+    "phases_completed": 5,
+    "phases_total": 5
   }
 }
