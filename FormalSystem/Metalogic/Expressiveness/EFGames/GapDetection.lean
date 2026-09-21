@@ -40,8 +40,10 @@ left(S'(A,B), D)   = U(D and B and S'(A,B) and U'(top, B and D) and neg U'(D, B 
 
 ### References
 
-- [gabbay1994], Chapter 9, Definition 8.5
-- [gabbay1994] Lemma 9: Gap detection correctness
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Definition 8.5
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Lemma 9: Gap detection correctness
 -/
 
 /-- Helper: leftFormula for base (standard temporal) formulas.

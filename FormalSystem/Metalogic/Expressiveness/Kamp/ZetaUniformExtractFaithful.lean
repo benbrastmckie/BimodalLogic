@@ -12,13 +12,13 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.VecEANeg
 
 `ZetaUniformExtract.lean` runs the `M`-uniform `∨∃∀` extraction (Rabinovich 2014, Theorem 4.4,
 PDF p.6) on `HasAttainedINF` / `HasAttainedSUP` — the *attained originals*. This module re-bases
-that wire onto `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:322`,
+that wire onto `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:325`,
 `:339`), which are Rabinovich's eq (5.2) dichotomy (PDF p.8) at the source's own `K⁺`/`K⁻`.
 
 ## What the re-base actually cost, as measured
 
 `HasAttainedINF` is a *strictly stronger* carrier than `HasFaithfulDedekindINF`
-(`HasAttainedINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:384`, runs attained → faithful and
+(`HasAttainedINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:387`, runs attained → faithful and
 has no converse — `hasFaithfulDedekindINF_not_implies_hasDedekindINF`, `:693`). So this is not a
 free swap: it weakens a hypothesis the originals could have leaned on anywhere.
 
@@ -48,17 +48,19 @@ completeness carrier.
 
 ## References
 
-- [rabinovich2014]: Proposition 4.2 (closure under negation, PDF
-  p.6), Proposition 4.3 / Theorem 4.4 (PDF p.6), Definition 4.1 (PDF p.5), eq (5.2) (PDF p.8),
-  Definitions (2)/(3) for `K⁻`/`K⁺` (PDF p.3).
-- `EANegationFixFaithful/VecEANegFixFaithful.lean`: the faithful De Morgan fold.
-- `ZetaPriorTransfer.lean`: the attained transfers this module's §1 mirrors.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.2 (closure under
+  negation, PDF p.6), Proposition 4.3 / Theorem 4.4 (PDF p.6), Definition 4.1 (PDF p.5), eq (5.2)
+  (PDF p.8), Definitions (2)/(3) for `K⁻`/`K⁺` (PDF p.3).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFixFaithful/VecEANegFixFaithful.lean` —
+  the faithful De Morgan fold.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ZetaPriorTransfer.lean` — the attained transfers
+  this module's §1 mirrors.
 
 **No source for §1.** The canonical-expansion transfer lemmas below have no counterpart in
 Rabinovich or Reynolds. Rabinovich's Definition 4.1 introduces the expanded alphabet but states no
 transfer of a completeness property along it; this tree needs one because it instantiates the
 uniform translate at `canonExpand`. §1 is therefore original work, modelled on the landed
-`canonExpand_hasAttainedINF` (`ZetaPriorTransfer.lean:110`).
+`canonExpand_hasAttainedINF` (`ZetaPriorTransfer.lean:113`).
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -71,10 +73,10 @@ variable {sig : MonadicSignature} {F : Finset Formula}
 /-! ## 1. The faithful carrier transfers to the canonical expansion
 
 Mirror of `canonExpand_hasAttainedINF` / `canonExpand_hasAttainedSUP`
-(`ZetaPriorTransfer.lean:110`, `:124`) at the faithful carrier. Unlike those two, these do **not**
+(`ZetaPriorTransfer.lean:113`, `:124`) at the faithful carrier. Unlike those two, these do **not**
 route through a semantic Prior axiom: `HasFaithfulDedekindINF` mentions only the carrier, its
 order, and `TemporalTruth · P` for object-language formulas `P`. The canonical expansion inherits
-carrier and order verbatim and `temporal_truth_canonExpand` (`ESigmaCapture.lean:70`) transports
+carrier and order verbatim and `temporal_truth_canonExpand` (`ESigmaCapture.lean:71`) transports
 every truth occurrence, so the property transfers directly. **No source** — see the module header.
 -/
 
@@ -142,7 +144,7 @@ theorem canonExpand_hasFaithfulDedekindSUP
 
 /-- **Uniform arity-2 model-side engine, faithful.** `∃v'`-outside-`∀N` form of
 `prop42_efSat_negation_generalFin` at the eq (5.2) carrier, and **the only declaration in this
-module whose proof differs from its attained original** (`ZetaUniformExtract.lean:146`).
+module whose proof differs from its attained original** (`ZetaUniformExtract.lean:149`).
 
 Two changes, both at the single consuming step: the middle-bracket witness is
 `VVecEA2.negFixFaithful` in place of `VVecEA2.negFix`, and the correctness rewrite is
@@ -186,7 +188,7 @@ theorem prop42_efSat_negation_general_uniformFin_faithful
 
 /-- **Uniform `efSat_negation_pairFin`, faithful.** Composition of the faithful arity-2 engine
 with the carrier-free collapse bridge `vvecea2_collapse_bridge_uniformFin`, which is *reused*
-from `ZetaUniformExtract.lean:179` rather than re-based: it mentions no completeness carrier.
+from `ZetaUniformExtract.lean:182` rather than re-based: it mentions no completeness carrier.
 Proof body verbatim from `efSat_negation_pair_uniformFin` (`:320`). -/
 theorem efSat_negation_pair_uniformFin_faithful
     (atomMap : Formula → (sigE sig F).preds)
@@ -206,7 +208,7 @@ theorem efSat_negation_pair_uniformFin_faithful
   exact (hΦ N hName hNamed env henv).trans (hv' N hName h_INF h_SUP env henv)
 
 /-- **Uniform `efSat_negation_generalFin` (β), faithful.** Proof body verbatim from
-`efSat_negation_general_uniformFin` (`ZetaUniformExtract.lean:343`); `h_INF`/`h_SUP` occur only as
+`efSat_negation_general_uniformFin` (`ZetaUniformExtract.lean:346`); `h_INF`/`h_SUP` occur only as
 `intro`-bound hypotheses passed to the faithful pair and diagonal leaves. The diagonal leaf
 `efSat_negation_diagonal_uniformFin` is reused unchanged — it carries no completeness carrier. -/
 theorem efSat_negation_general_uniformFin_faithful
@@ -326,7 +328,7 @@ theorem efSat_negation_general_uniformFin_faithful
 /-! ## 4. Negation closure (γ), faithful -/
 
 /-- **Uniform `veeSat_negationFin` (γ), faithful.** Proof body verbatim from
-`veeSat_negation_uniformFin` (`ZetaUniformExtract.lean:462`); the carrier hypotheses are threaded
+`veeSat_negation_uniformFin` (`ZetaUniformExtract.lean:465`); the carrier hypotheses are threaded
 into the faithful β-negation and nowhere examined. -/
 theorem veeSat_negation_uniformFin_faithful
     (atomMap : Formula → (sigE sig F).preds)
@@ -379,7 +381,7 @@ theorem veeSat_negation_uniformFin_faithful
 per-formula `∨∃∀`-formula equivalent to it on strictly increasing environments of every `N`
 carrying the eq (5.2) dichotomy.
 
-Proof body verbatim from `translate_uniformFin` (`ZetaUniformExtract.lean:595`), including its
+Proof body verbatim from `translate_uniformFin` (`ZetaUniformExtract.lean:598`), including its
 `termination_by`/`decreasing_by`; the `∃`-closure assembly `ex_closure_translate_uniformFin`
 (`:512`) is reused unchanged — carrier-free. -/
 theorem translate_uniformFin_faithful
@@ -499,7 +501,7 @@ decreasing_by
 /-! ## 6. The ζ wire, faithful
 
 The terminal wire at the eq (5.2) carrier. Pipeline identical to `kampArm_zeta`
-(`ZetaUniformExtract.lean:769`) — Rabinovich Theorem 4.4's five steps — with step 4's carrier
+(`ZetaUniformExtract.lean:772`) — Rabinovich Theorem 4.4's five steps — with step 4's carrier
 premises supplied by §1's transfers instead of `ZetaPriorTransfer.lean`'s.
 -/
 
@@ -508,7 +510,7 @@ one-free-variable existential over a depth-`k` arity-2 normal form is expressed 
 temporal formula, uniformly over all structures carrying Rabinovich's eq (5.2) dichotomy at the
 source's own `K⁺`/`K⁻`.
 
-Faithful sibling of `kampArm_zeta` (`ZetaUniformExtract.lean:769`), which is pinned at
+Faithful sibling of `kampArm_zeta` (`ZetaUniformExtract.lean:772`), which is pinned at
 `SemanticPriorUZ`/`SemanticPriorSZ`. The two are **incomparable in hypothesis strength as
 stated** — this one is weaker at the carrier
 (`SemanticPriorUZ → HasAttainedINF → HasFaithfulDedekindINF`, via `prior_hasAttainedINF` and

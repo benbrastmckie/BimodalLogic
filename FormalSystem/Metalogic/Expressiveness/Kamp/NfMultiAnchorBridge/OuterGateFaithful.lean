@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.PriorInter
 
 `OuterGate.lean` states the k = 2 outer gate against `SemanticPriorUZ` / `SemanticPriorSZ`. This
 module restates it against `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`
-(`Kamp/KPlusFaithful.lean:322`, `:339`), consuming `PriorInterfaceFaithful.lean`'s
+(`Kamp/KPlusFaithful.lean:325`, `:339`), consuming `PriorInterfaceFaithful.lean`'s
 `ExistProvidersFaithful` in place of `ExistProviders`.
 
 `OuterGate.lean` sits on `SharedWitness.lean`, which mentions no completeness carrier at all, so —

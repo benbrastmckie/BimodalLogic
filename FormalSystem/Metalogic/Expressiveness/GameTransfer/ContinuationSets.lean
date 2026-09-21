@@ -92,7 +92,8 @@ The infimum of S_C determines the split point d.
 
 ### References
 
-- [gabbay1994], Chapter 9, Section 8, Claim 1
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Section 8, Claim 1
 -/
 
 /-- The continuation predicate C (Prop-level, GHR93 p.115).
@@ -444,7 +445,8 @@ The defining formula D witnesses GapDefinableOnRight:
 
 ### References
 
-- [gabbay1994], Chapter 9, Section 8, p.116
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Section 8, p.116
 -/
 
 /-- Above the gap, every carrier point is above some element of S_C,

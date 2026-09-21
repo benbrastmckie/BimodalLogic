@@ -10,7 +10,8 @@ import FormalSystem.Metalogic.Expressiveness.EFGames.CustomGame
 # GHR93 Proposition 7: Strategy Composition for EF Games
 
 ## References
-- [gabbay1994], Chapter 9, Proposition 7
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Proposition 7
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

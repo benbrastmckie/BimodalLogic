@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
 import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusBracketRendering
 -- NOTE: `import ...Kamp.KPlusBracketRendering` supplies `hasDefinableINF_excludes_kplus`
--- (`KPlusBracketRendering.lean:282`),
+-- (`KPlusBracketRendering.lean:281`),
 -- consumed by `hasDefinableINF_incompatible_with_kplus` below so that this module's strictness
 -- claim is machine-checked here rather than asserted in prose. Cycle-free: Lemma53 imports
 -- `...Kamp.VecEAFormula`, `...Kamp.PriorINF` and `...Kamp.EANegationFix.OnBuilder`, none of
@@ -20,10 +20,7 @@ This module lands **Rabinovich's actual eq (5.2) carrier** as a definition, toge
 compatibility shims from the carriers this tree already uses. It deliberately does **not**
 re-base anything onto it. Read the "What is DEFERRED" section before planning work here.
 
-Cite Rabinovich by **PDF page only**:
-`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
-The companion `.md` conversion is **corrupt** (it drops displayed equations and inverts `k ≠ m`
-to `k = m`) and is never ground truth. Everything below cites **PDF p.8**.
+Cite [rabinovich2014] by **PDF page only**. Everything below cites **PDF p.8**.
 
 ## Source correspondence (PDF p.8)
 
@@ -67,7 +64,7 @@ Rabinovich's Dedekind completeness  <  HasDedekindINF  <  HasDefinableINF  <  Ha
   of those three shapes. This is why the chain above puts it strictly to the right of Rabinovich's
   own hypothesis: it is a definability assumption the paper derives rather than assumes.
 * `HasDedekindINF` **admits** what `HasDefinableINF` forbids: `hasDefinableINF_excludes_kplus`
-  (`KPlusBracketRendering.lean:282`, axiom-clean) machine-proves that `HasDefinableINF` makes
+  (`KPlusBracketRendering.lean:281`, axiom-clean) machine-proves that `HasDefinableINF` makes
   `kplus M atomMap P z0` **impossible** whenever `P` occurs in `(z₀,z₁)` — i.e. it deletes the
   paper's disjunct (2). `HasDedekindINF` admits exactly that case, via its left disjunct.
   `hasDedekindINF_admits_kplus_shape` below records the delta as a machine-checked fact rather
@@ -80,7 +77,7 @@ deferred to a future dedicated complete-proof-system effort, not abandoned and n
 
 **Why deferred — this is fidelity-only work with zero operational value.** The live goal chain in
 this tree runs on **Prior structures**, where INF/SUP attainment holds outright
-(`prior_hasAttainedINF`, `PriorINF.lean:224`, from the UZ axiom). Nothing in this tree ever
+(`prior_hasAttainedINF`, `PriorINF.lean:226`, from the UZ axiom). Nothing in this tree ever
 evaluates against a non-attained Dedekind complete chain, so nothing downstream can observe the
 difference between `HasAttainedINF` and `HasDedekindINF`. `prior_hasDedekindINF` below closes
 that boundary: the faithful carrier is *available* on the live path whenever it is wanted.
@@ -88,7 +85,7 @@ that boundary: the faithful carrier is *available* on the live path whenever it 
 The deferred re-base, precisely:
 
 1. **Lemma 5.3 (p.8)** — `negChainOnFaithful` over `HasDedekindINF`, restoring the printed
-   **three**-disjunct `Oₙ₊₁`. The landed `negChainOn` (`EANegationFix/OnBuilder.lean:149`)
+   **three**-disjunct `Oₙ₊₁`. The landed `negChainOn` (`EANegationFix/OnBuilder.lean:150`)
    truncates it to two by dropping disjunct (2). The result type must be `VVecEA2`, not
    `VBracketFormula`: disjunct (2) conjoins the endpoint predicate `K⁺(P₁)` at `z₀`, which
    `VBracketFormula` cannot carry.
@@ -107,13 +104,14 @@ via the `NfMultiAnchorBridge` import edge) and **contains no sorries**.
 
 `Section5Correspondence.lean` (page-cited table + `prop42_contentful_of_attained`, sorry-free),
 `lemma53` sorry-free at the attained carrier, `hasDefinableINF_excludes_kplus`
-(`KPlusBracketRendering.lean:282`), the whole `EANegationFix/` tree, and `TemporalPred.disj` /
+(`KPlusBracketRendering.lean:281`), the whole `EANegationFix/` tree, and `TemporalPred.disj` /
 `TemporalPred.eval_at_disj` (`ExistsForallNF.lean`, `VecEAClosure.lean`) — the point-type
 primitive for eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))`.
 
 ## References
 
-- [rabinovich2014], *A Proof of Kamp's Theorem*, Lemma 5.3 and eq (5.2), PDF p.8
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*, Lemma
+  5.3 and eq (5.2), PDF p.8
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -130,9 +128,9 @@ open FormalSystem.Metalogic.Expressiveness
     * eq (5.2) verbatim: a first-occurrence point `r₀ ∈ (z₀,z₁)` with `¬P` on `(z₀,r₀)` and
       `P(r₀) ∨ K⁺(P)(r₀)`.
 
-    Contrast `HasDefinableINF` (`PriorINF.lean:108`), which is the **right disjunct alone**
+    Contrast `HasDefinableINF` (`PriorINF.lean:110`), which is the **right disjunct alone**
     (modulo `r₀ ≤ z₁` vs `r₀ < z₁`) and therefore forbids the left one outright — see
-    `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`) and
+    `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:281`) and
     `hasDedekindINF_admits_kplus_shape` below. -/
 structure HasDedekindINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop where
@@ -150,7 +148,7 @@ structure HasDedekindINF {sig : MonadicSignature}
 
     The left disjunct `kminus M atomMap P z1` is the mirror of the paper's `Subcase r₀ = z₀`:
     the last-occurrence supremum sits at the right endpoint `z₁`, which is exactly `K⁻(P)(z₁)`.
-    `kminus` is `PriorINF.lean:92`. -/
+    `kminus` is `PriorINF.lean:94`. -/
 structure HasDedekindSUP {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop where
   /-- The faithful disjunction, mirrored: the last-occurrence supremum is either at `z₁` (as
@@ -228,7 +226,7 @@ the precise statement of why the deferred work has zero operational value: on Pr
 faithful carrier is derivable from the attained one, so no consumer can tell them apart. -/
 
 /-- Prior structures satisfy the faithful `HasDedekindINF`, via `prior_hasAttainedINF`
-    (`PriorINF.lean:224`) and the shim. The `K⁺` disjuncts are never needed: the UZ axiom
+    (`PriorINF.lean:226`) and the shim. The `K⁺` disjuncts are never needed: the UZ axiom
     supplies an attained first occurrence outright. -/
 theorem prior_hasDedekindINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -248,7 +246,7 @@ theorem prior_hasDedekindSUP {sig : MonadicSignature}
 
 /-- **The left disjunct is reachable syntax, not dead syntax.**
 
-`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`) proves that under
+`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:281`) proves that under
     `HasDefinableINF`,
     `kplus M atomMap P z0` is **impossible** whenever `P` occurs in `(z₀,z₁)` — the landed carrier
     deletes the paper's disjunct (2) (PDF p.8). This theorem records the converse shape for

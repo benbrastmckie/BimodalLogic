@@ -51,9 +51,9 @@ Only the E[Σ] atom *vocabulary* is shared.
 
 ## References
 
-- [rabinovich2014], Definition 4.1 (p.5), collapse-to-atom note
-  (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
-- `NormalForm.lean`: `AtomKind`, `AtomEval`, `NormalForm`, `NfEvalNf`.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Definition 4.1 (p.5),
+  collapse-to-atom note (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
+* `NormalForm.lean`: `AtomKind`, `AtomEval`, `NormalForm`, `NfEvalNf`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

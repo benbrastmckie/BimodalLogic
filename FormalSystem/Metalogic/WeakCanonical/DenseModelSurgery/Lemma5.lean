@@ -114,7 +114,7 @@ at any non-trivial instance; the first live instance is due at the Lemma 9 / den
 - [reynolds1992], §6 Lemma 5, printed p.179
 - `Defs.lean` — `ρ`, `λ`, `EndsInGapOnRight`, `gapRightFormula`, Lemma 2
 - `Lemma34.lean` — Lemmas 3 and 4, `false_of_holds_throughout_class`, `exists_contemp_gt`
-- `SemanticPriorU` (`PriorDefsDense.lean:119`) — Reynolds' Prior-U, printed p.168
+- `SemanticPriorU` (`PriorDefsDense.lean:121`) — Reynolds' Prior-U, printed p.168
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
@@ -521,7 +521,7 @@ throughout the closed segment `[t,t']`, which is what being in one maximal — h
 `R`-interval amounts to for two of its points.
 
 Reynolds' *"`¬B ∧ K⁻(B)`"* is `hnBs` together with `hkm` below; the tree's Prior-U
-(`PriorDefsDense.lean:119`) returns the `¬B` half directly and the `K⁻` half is read off the
+(`PriorDefsDense.lean:121`) returns the `¬B` half directly and the `K⁻` half is read off the
 stretch it also returns, using `ρ` to supply the intermediate points. -/
 theorem false_of_classInvariant_changes [Finite sig.preds] {atomMap : Formula → sig.preds}
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -662,14 +662,14 @@ first part of the lemma, it can't be true somewhere and false elsewhere in the i
 **Rendering of "taken as substructures of `M`".** A `∼`-class is convex but need not be an
 interval with end points in `M` — Lemma 3 is precisely the statement that maximal `R`-intervals
 have *excluded* end points, and by `ρ` the classes inside them end in gaps. So `M.subinterval`
-(`MonadicFO.lean:215`), which needs two carrier points, cannot name a class. The induced
+(`MonadicFO.lean:216`), which needs two carrier points, cannot name a class. The induced
 substructure is therefore named the standard equivalent way, by **relativized satisfaction**:
 `evalOn M S` is `eval` with every quantifier restricted to `S`, and *"the class of `t` models
 `φ`"* is `evalOn` at `S = ContempEquivDense M ε t`. Reynolds' relativization step is then exactly
 the syntactic counterpart, `relativizeToClass`, and `eval_relativizeAt` is the theorem that the
 two agree. -/
 
-/-- **Satisfaction relativized to a subset `S` of the carrier** — `eval` (`MonadicFO.lean:306`)
+/-- **Satisfaction relativized to a subset `S` of the carrier** — `eval` (`MonadicFO.lean:307`)
 with both quantifiers restricted to `S`. This is the induced substructure's satisfaction relation,
 named without having to build the substructure. -/
 def evalOn (M : OrderedMonadicStructure sig) (S : M.carrier → Prop) :

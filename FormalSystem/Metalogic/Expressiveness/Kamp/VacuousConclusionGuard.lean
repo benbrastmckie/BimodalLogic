@@ -55,8 +55,7 @@ statement contentful; dropping either recovers the vacuous form. `neg_2var_vec_e
 (in `Boneyard/`, `NegationIndep.lean`) already has this shape structurally, and its forward
 direction `neg_2var_vec_ea_indep_correct` in the same file is contentful and proved.
 
-Cite Rabinovich by PDF page only. The companion `.md` conversion is corrupt (it drops
-displayed equations and inverts `k ≠ m` to `k = m`).
+Cite [rabinovich2014] by **PDF page only**.
 
 ## Why this file exists
 

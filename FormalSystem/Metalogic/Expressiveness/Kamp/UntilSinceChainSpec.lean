@@ -58,11 +58,14 @@ formulation.
 
 ## References
 
-- [rabinovich2014], Proposition 3.5 (p.5). Cited by PDF page; the
-  companion markdown transcription is corrupt.
-- `Translation.lean`: `translateEF1`, `translateEF1_correct`, `BuildRightSpec`, `BuildLeftSpec`.
-- `PerFormulaRender.lean`: `unaryToFormulaFin`, `unaryToFormulaFin_correct`.
-- `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 3.5 (p.5). Cited by
+  PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/Translation.lean` — `translateEF1`,
+  `translateEF1_correct`, `BuildRightSpec`, `BuildLeftSpec`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/PerFormulaRender.lean` — `unaryToFormulaFin`,
+  `unaryToFormulaFin_correct`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallFormula.lean` — `ExistsForallFormula`,
+  `efSat`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

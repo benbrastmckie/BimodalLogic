@@ -47,9 +47,11 @@ needs a not-q witness before u0 (contradicting minimality).
 
 ## References
 
-- [gabbay1994], Chapter 9, Section 3 (p. 95)
-- [blackburn2002], Definition 7.11 (gap-based picture)
-- [reynolds1994], Section 4 (p.122-124)
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Section 3 (p. 95)
+* [P. Blackburn, M. de Rijke and Y. Venema, *Modal Logic*][blackburn2002], Definition 7.11
+  (gap-based picture)
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Section 4 (p.122-124)
 -/
 namespace FormalSystem.Metalogic.Expressiveness
 

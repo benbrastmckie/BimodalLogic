@@ -152,7 +152,7 @@ what makes them cheap.
 
 - [reynolds1992], §6, printed pp.178-179 (Lemmas 3 and 4)
 - `Defs.lean` — `ρ`, `λ`, `EndsInGapOnRight`, `gapRightFormula`, Lemma 2
-- `SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean:119`, `:138`) — Reynolds' Prior-U and
+- `SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean:121`, `:138`) — Reynolds' Prior-U and
   Prior-S, printed p.168, in the semantic form the proofs below apply them in
 -/
 

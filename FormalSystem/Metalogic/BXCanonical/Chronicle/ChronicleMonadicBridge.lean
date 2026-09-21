@@ -766,7 +766,7 @@ instances of the other axioms hold everywhere"*, executed in Lean:
 2. `theorem_in_mcs` (`Core/MaximalConsistent.lean:462`) puts it in the family's MCS at *every*
    rational — Reynolds' "hold everywhere";
 3. Part 6 reads it back semantically, and `kPlus_formula_correct` / `kMinus_formula_correct`
-   (`Kamp/KPlusFaithful.lean:152` / `:174`) read the `K⁺` / `K⁻` the axioms are stated with.
+   (`Kamp/KPlusFaithful.lean:155` / `:174`) read the `K⁺` / `K⁻` the axioms are stated with.
 
 Step 3's bridge lemma is the one the plan names: `Axiom.prior_U_gap` is stated with
 `Formula.kPlus` (`ProofSystem/Axioms.lean:445`; `Syntax/Formula.lean:197`), and
@@ -1007,7 +1007,7 @@ theorem chronicleIsDensePriorSepStructure {fc : FrameClass} (hfc : FrameClass.RT
 
 /-! ### Anti-vacuity: the witness Phase 14's hypothesis wanted
 
-`uSExpressivelyCompleteOverDensePrior` (`Expressiveness/PriorExpressivenessDense.lean:302`) is
+`uSExpressivelyCompleteOverDensePrior` (`Expressiveness/PriorExpressivenessDense.lean:304`) is
 Reynolds §5 Theorem 3 relativized to the *dense* Prior hypotheses: its witness formula's
 correctness clause binds `SemanticPriorU M atomMap` and `SemanticPriorS M atomMap`. Until this
 part, the only structures known to satisfy that pair were Phase 9's `denseWindowFlow` and the
@@ -1021,7 +1021,7 @@ Phases 17-22 consume it in exactly this form.
 **Naming note.** The plan cites this development's expressive-completeness result as
 `kampDedekindExpressiveCompleteness`. **No declaration of that name exists in the tree.** The
 landed names are `KampFaithfulExpressiveCompleteness` (the obligation type,
-`PriorExpressivenessDense.lean:170`) and `kampFaithfulExpressiveCompletenessOpen` (its
+`PriorExpressivenessDense.lean:172`) and `kampFaithfulExpressiveCompletenessOpen` (its
 inhabitant), composed into `uSExpressivelyCompleteOverDensePrior`, which is what
 is used here. -/
 

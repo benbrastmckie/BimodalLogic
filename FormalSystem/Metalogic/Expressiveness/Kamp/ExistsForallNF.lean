@@ -36,7 +36,8 @@ key closure properties needed for the Kamp theorem proof.
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Section 3
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
+  Section 3
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

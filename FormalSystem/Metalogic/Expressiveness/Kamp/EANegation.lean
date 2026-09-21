@@ -29,8 +29,10 @@ unprovable at the `BracketFormula` level and superseded by `VVecEA2.negFix_iff`
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Section 5
-- [rabinovich2014], Lemma 5.3 (p.8), Corollary 5.4 (p.9), Lemma 5.1 (pp.7-11)
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
+  Section 5
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma 5.3 (p.8), Corollary 5.4
+  (p.9), Lemma 5.1 (pp.7-11)
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

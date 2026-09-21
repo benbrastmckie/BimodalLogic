@@ -45,8 +45,8 @@ and eq (5.3) of PDF p.10,
 > `INF^{¬β₁}(z₀,z,z₁) := z₀ < z < z₁ ∧ (∀y)^{<z}_{>z₀} β₁(y) ∧ (¬β₁(z) ∨ K⁺(¬β₁)(z))`,
 
 is eq (5.2) of PDF p.8 read at `P := ¬β₁` — the same formula the faithful carrier
-`HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) is stated from. Its three conjuncts appear
-here as: the `z₀ < r < z₁` of `VVecEA2.concatPin` (`VecEACombinators.lean:194`); the left block
+`HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`) is stated from. Its three conjuncts appear
+here as: the `z₀ < r < z₁` of `VVecEA2.concatPin` (`VecEACombinators.lean:192`); the left block
 `allSeg s0`; and the pin point type `infPinPoint s0`.
 
 ## The negation-chain discipline: which `K⁺` makes the split exhaustive
@@ -83,7 +83,7 @@ read at the left endpoint, never at the pin.
 **Which `K⁺`.** Rabinovich's `K⁺`, Definition (3), PDF p.3 — *"`K⁺(F)` holds at a moment `t` iff
 `t = inf({t′ | t′ > t and F holds at t′})`"* — and Reynolds' `K⁺A := ¬U(⊤,¬A)`, *"`A` will be
 true arbitrarily soon"* (printed p.168), say **nothing about whether `F` holds at `t` itself**.
-That is `kplusOpen` (`KPlusFaithful.lean:115`). This tree's `kplus` (`PriorINF.lean:86`) carries
+That is `kplusOpen` (`KPlusFaithful.lean:118`). This tree's `kplus` (`PriorINF.lean:88`) carries
 an extra first conjunct `¬F(t)` that is **this tree's addition, not the sources'**.
 
 **The tree's `kplus` would not make the split exhaustive**, and the failure is exactly at the
@@ -92,12 +92,12 @@ source's `K⁺(¬β₁)(z₀)` holds and Case 1 fires, while the tree's `kplus` 
 conjunct, and the infimum is not strictly inside `(z₀,z₁)` either, so neither Case 1 nor Case 3
 is available. A carrier stated at `kplus` must therefore print a *third* endpoint disjunct
 `¬β₁(z₀)` — and that is literally the shape of `HasDenseDedekindINF`
-(`DedekindINFDense.lean:222`), whose `first_occ` reads `P(z₀) ∨ kplus P z₀ ∨ (pin)`. The paper's
+(`DedekindINFDense.lean:224`), whose `first_occ` reads `P(z₀) ∨ kplus P z₀ ∨ (pin)`. The paper's
 three-case enumeration has no slot for that first disjunct, so a trichotomy carrier would force a
 proof branch Rabinovich never writes. `kplusOpen_not_implied_by_truth_at`
-(`KPlusFaithful.lean:274`) exhibits the gap concretely — `P(t)` alone does not give
+(`KPlusFaithful.lean:277`) exhibits the gap concretely — `P(t)` alone does not give
 `kplusOpen P t` — so the two operators are genuinely different and the choice between them is not
-cosmetic; and `hasFaithfulDedekindINF_survives_interval_witness` (`KPlusFaithful.lean:625`)
+cosmetic; and `hasFaithfulDedekindINF_survives_interval_witness` (`KPlusFaithful.lean:628`)
 exhibits a structure where the faithful carrier holds and the `kplus`-stated one fails.
 
 This is why `negFixOneFaithful_cover` below can be a two-arm `rcases` on
@@ -144,22 +144,20 @@ Nothing in `EANegationFix/` is deleted, weakened, or edited. `negFixOne`, `negFi
 `negFixOne_iff` and the `ℤ` gate probe `NegFixGateProbe` all stay live and stay consumed
 (`NfMultiAnchorBridge/Base.lean:1418` cites them); everything below is a pure addition, and the
 attained carriers reach the faithful statement through `HasAttainedINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:384`).
+(`KPlusFaithful.lean:387`).
 
 **ADAPTED-FROM.** Every statement below previously bound `HasDedekindINF`
-(`DedekindINF.lean:136`) and read the tree's `kplus` at the left endpoint. The one clause that
+(`DedekindINF.lean:134`) and read the tree's `kplus` at the left endpoint. The one clause that
 changed is the carrier and, with it, the endpoint operator: `HasDedekindINF →
 HasFaithfulDedekindINF`, and `kplus`/`kplusPred`/`kplusLeftBlock` → `kplusOpen`/`kplusOpenPred`/
 `kplusOpenLeftBlock` at the two places the endpoint operator is read (`negFixOneCase1` and the
 eq (5.3) pin type `infPinPoint`). This is a **hypothesis weakening** — `HasDedekindINF` implies
-`HasFaithfulDedekindINF` (`HasDedekindINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:366`) —
+`HasFaithfulDedekindINF` (`HasDedekindINF.toHasFaithfulDedekindINF`, `KPlusFaithful.lean:369`) —
 so every previous supplier still supplies, and no conclusion was weakened to buy it. Not one
 case of the cover was added, merged, or removed.
 
-Cite Rabinovich by **PDF page only**:
-`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
-Everything below cites **PDF pp.9-10**. The companion `.md` conversion is corrupt and is never
-ground truth.
+Cite [rabinovich2014] by **PDF page only**.
+Everything below cites **PDF pp.9-10**.
 
 ## Non-vacuity — what these statements exclude, and where the carrier is actually spent
 
@@ -217,15 +215,15 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-! ## The faithful carrier at `TemporalPred` level
 
-The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:171`). -/
+The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:168`). -/
 
 /-- First occurrence of a temporal predicate `P` in `(z₀,z₁)` on structures satisfying the
     **faithful** `HasDedekindINF` carrier: either the infimum sits at the left endpoint (as
     `K⁺(P)(z₀)`) or it is an eq (5.2) point strictly inside `(z₀,z₁)`.
 
-    Wraps `HasDedekindINF.first_occ` (`DedekindINF.lean:140`) to accept a `TemporalPred` directly,
+    Wraps `HasDedekindINF.first_occ` (`DedekindINF.lean:138`) to accept a `TemporalPred` directly,
     following the pattern of `HasAttainedINF.first_occ_tp` (`EANegationClosure.lean`) and
-    `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:171`). Unlike the attained version
+    `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:168`). Unlike the attained version
     the
     disjunction is preserved rather than collapsed: that is precisely the content the faithful
     carrier adds.
@@ -249,7 +247,7 @@ theorem HasDedekindINF.first_occ_tp {sig : MonadicSignature}
       fun y hy0 hy1 hPy => h_none y hy0 hy1 hPy, h_disj⟩
 
 /-- First occurrence of a temporal predicate `P` in `(z₀,z₁)` on structures satisfying
-    `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) — the same wrapper as
+    `HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`) — the same wrapper as
     `HasDedekindINF.first_occ_tp` above, at the source's `K⁺`.
 
     **This is the form Rabinovich's Lemma 5.1 case split reads.** Its left disjunct is
@@ -284,8 +282,8 @@ theorem HasFaithfulDedekindINF.first_occ_tp {sig : MonadicSignature}
 
 /-- The third conjunct of eq (5.3) (PDF p.10): the point type `¬β₁(z) ∨ K⁺(¬β₁)(z)` carried at the
     pin `r₀`. This is eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))` (PDF p.8) at `P₁ := ¬β₁`, built from
-    `TemporalPred.disj` (`ExistsForallNF.lean:87`) and `kplusOpenPred`
-    (`KPlusFaithfulRendering.lean:140`).
+    `TemporalPred.disj` (`ExistsForallNF.lean:88`) and `kplusOpenPred`
+    (`KPlusFaithfulRendering.lean:138`).
 
     ADAPTED-FROM the `kplusPred` spelling this definition previously carried. The `K⁺` printed in
     eq (5.3) is Rabinovich's own (Definition (3), PDF p.3), which is `kplusOpen`; the tree's
@@ -294,7 +292,7 @@ theorem HasFaithfulDedekindINF.first_occ_tp {sig : MonadicSignature}
     second alternative into its first. The re-spelling removes that.
 
     Note this **weakens** the point type, hence weakens the Case 3 disjuncts: every consumer that
-    supplied the old pin still supplies this one (`kplusOpen_of_kplus`, `KPlusFaithful.lean:214`),
+    supplied the old pin still supplies this one (`kplusOpen_of_kplus`, `KPlusFaithful.lean:217`),
     and `bracketOne_witness_le_infPin` below shows the weaker type still confines every witness,
     which is the only thing the soundness direction asks of it. -/
 noncomputable def infPinPoint (β : TemporalPred) : TemporalPred :=
@@ -310,7 +308,7 @@ theorem infPinPoint_holds {sig : MonadicSignature}
 
 /-- The second conjunct of eq (5.3) (PDF p.10): `(∀y)^{<z}_{>z₀} β₁(y)`, as a `VVecEA2` block with
     trivial endpoints. Built as `trivialTrue.conjEverywhere` so the interval quantifier is the one
-    `VVecEA2.conjEverywhere` already characterizes (`VecEACombinators.lean:110`). -/
+    `VVecEA2.conjEverywhere` already characterizes (`VecEACombinators.lean:108`). -/
 noncomputable def allSeg (s : TemporalPred) : VVecEA2 :=
   VVecEA2.trivialTrue.conjEverywhere s
 
@@ -361,7 +359,7 @@ at `z` together with the segment `β₂ = s1` on `(z,z₁)`, which is precisely 
 /-- Rabinovich's `Form₂` (PDF p.10): the `VVecEA2` equivalent of *"there is no `z ∈ (z₀,z₁)` such
     that `[α₁,β₂,α₂](z,z₁)`"*, i.e. no `p`-point above which `s1` holds throughout.
 
-    This is `negBoundedLeftFixAnchoredFaithful` (`BoundedFixAnchoredFaithful.lean:222`) at
+    This is `negBoundedLeftFixAnchoredFaithful` (`BoundedFixAnchoredFaithful.lean:220`) at
     `α := p` over `BracketFormula.trivial s1`; it is reused unchanged rather than re-derived. -/
 noncomputable def negFixOneTail (p s1 : TemporalPred) : VVecEA2 :=
   negBoundedLeftFixAnchoredFaithful p (BracketFormula.trivial s1)
@@ -388,7 +386,7 @@ theorem negFixOneTail_iff {sig : MonadicSignature}
     `¬[α₀,β₁…,β_{n-1},α_{n-1},βₙ,αₙ](z₀,z₁)` is equivalent to True."*
 
     A pure left-endpoint condition, carried by `kplusOpenLeftBlock`
-    (`KPlusFaithfulRendering.lean:304`).
+    (`KPlusFaithfulRendering.lean:302`).
     The other alternative of the paper's Case 1, `¬α₀(z₀)`, is unavailable at `α₀ = ⊤`.
 
     ADAPTED-FROM the `kplusLeftBlock` spelling this definition previously carried. `K⁺` here is
@@ -584,7 +582,7 @@ theorem negFixOneFaithful_cover {sig : MonadicSignature}
     · exact Or.inl ((TemporalPred.eval_at_neg' M atomMap s0 r0).mp h)
     -- The carrier's right disjunct still prints the tree's `kplus` at the pin (it is literally
     -- `HasDedekindINF`'s), while eq (5.3)'s pin type is now at the source's `K⁺`. Dropping the
-    -- extra conjunct is `kplusOpen_of_kplus` (`KPlusFaithful.lean:214`); this is a weakening, so
+    -- extra conjunct is `kplusOpen_of_kplus` (`KPlusFaithful.lean:217`); this is a weakening, so
     -- nothing is assumed here that the carrier did not already supply.
     · exact Or.inr (kplusOpen_of_kplus h)
   by_cases hQ : ∃ y : M.carrier, r0 < y ∧ y < z1 ∧ ¬s1.EvalAt M atomMap y
@@ -638,7 +636,7 @@ theorem negFixOneFaithful_cover {sig : MonadicSignature}
 
     ADAPTED-FROM the `HasDedekindINF` binder this theorem previously carried; the one clause that
     changed is the carrier. `HasDedekindINF` still reaches it, through
-    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`). -/
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:369`). -/
 theorem negFixOneFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasFaithfulDedekindINF M atomMap)
@@ -826,7 +824,7 @@ theorem negFixOneR_not_holds : ¬(negFixOne s0R pR s1R).holds MR atomMapR 0 10 :
     exact absurd h0 (by linarith)
 
 /-- **The faithful carrier's obligation IS discharged here, at the pinned predicate.** This is
-    `HasDedekindINF.first_occ` (`DedekindINF.lean:140`) read at `P := p`, `(z₀,z₁) = (0,10)`: the
+    `HasDedekindINF.first_occ` (`DedekindINF.lean:138`) read at `P := p`, `(z₀,z₁) = (0,10)`: the
     eq (5.2) point is `r₀ = 2`, reached through the `K⁺(P)(r₀)` alternative — the alternative
     `HasDefinableINF` forbids (`hasDefinableINF_excludes_kplus`, `KPlusBracketRendering.lean`) and
     `HasDedekindINF` admits.

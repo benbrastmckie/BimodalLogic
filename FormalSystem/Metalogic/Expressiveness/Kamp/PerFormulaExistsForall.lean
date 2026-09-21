@@ -39,10 +39,11 @@ segments | `efSatFin` |
 here touches `Finset.univ` at `UnaryType` |
 
 ## References
-- [rabinovich2014], Def 3.1 (p.4), Def 4.1 (p.5). Cited by PDF
-  page; the companion markdown transcription is corrupt.
-- `PerFormulaType.lean` (`UnaryTypeFin`, `partialHolds`, `IntervalTypeFin`,
-  `intervalHoldsFin`); `IntervalType.lean` (partial interval-type algebra).
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Def 3.1 (p.4), Def 4.1 (p.5).
+  Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/PerFormulaType.lean` — (`UnaryTypeFin`,
+  `partialHolds`, `IntervalTypeFin`, `intervalHoldsFin`); `IntervalType.lean` (partial
+  interval-type algebra).
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

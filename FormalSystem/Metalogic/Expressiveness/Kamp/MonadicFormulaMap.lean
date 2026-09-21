@@ -39,12 +39,14 @@ Off the live import path (imported by nothing on the spine); the completeness sp
 
 ## References
 
-- [rabinovich2014], Definition 4.1 (p.5), collapse-to-atom note
-  (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
-- `MonadicFormulaSubstitution.lean`: `MonadicFormula.rename` / `eval_rename` — the variable-side
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Definition 4.1 (p.5),
+  collapse-to-atom note (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/MonadicFormulaSubstitution.lean` —
+  `MonadicFormula.rename` / `eval_rename` — the variable-side
 naturality
   template mirrored here on the predicate side.
-- `ESigmaExpansion.lean`: `sigE`, `oldPred`, `canonExpand`, `atom_eval_old`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ESigmaExpansion.lean` — `sigE`, `oldPred`,
+  `canonExpand`, `atom_eval_old`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

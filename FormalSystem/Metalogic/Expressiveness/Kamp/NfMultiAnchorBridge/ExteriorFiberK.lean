@@ -143,7 +143,7 @@ theorem kvE_fiberPos_correct {sig : MonadicSignature} [Fintype sig.preds] [Decid
 Side-shared navigation scaffolding both clause layers (Future `ExteriorNegationK`, Past
 `ExteriorNegationPastK`) consume. Fiber elements `s : NormalForm sig k 5` are partitioned by
 their zone spec (`nfkZoneSpec s`, read off the atom layer via `nf0ZoneSpec` — Q4: atom layer
-`s.atomAssgn` only, NfEFold.lean:586-588) and their fresh profile (`nfkProjFresh s`,
+`s.atomAssgn` only, NfEFold.lean:587-588) and their fresh profile (`nfkProjFresh s`,
 CarrierKv.lean:82). Bucket honesty is tied to the landed determinacy core through
 `kvESubBit`/`kvE_subBit_iff` (ExteriorBracketK.lean:302/314) — MEMBERSHIP/NAVIGATION facts
 only, never content (guard G6): the CONTENT rendering of any bucket is always
@@ -160,7 +160,7 @@ specialization). After this phase `ExteriorFiberK.lean` is FROZEN for waves 3-5 
 
 /-- Under a realized `σ`, every positive fiber element sits on `σ`'s atom fiber
     (`nfkDropFresh s = σ.1`): the off-fiber clause of `nf_eval_nfk_iff_efold`
-    (NfEFold.lean:627) reports `σ.2 s = false` off-fiber, so a bit-true `s` cannot be off it.
+    (NfEFold.lean:628) reports `σ.2 s = false` off-fiber, so a bit-true `s` cannot be off it.
     Navigation-only (no content read). -/
 theorem kvE_fiber_dropFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
@@ -379,7 +379,7 @@ noncomputable def kvEFiberPosOnShift {sig : MonadicSignature} [Fintype sig.preds
 `_sound`/`_complete`
     reduce their content half to): the shifted channel holds at `p` IFF some listed fiber sub is
     realized with `p` as the FRESH (index-0) fold witness — EXACTLY σ's fold-layer shape
-    (`NfEvalEfoldK`, NfEFold.lean:608). The existential `env` is the faithful target: Rabinovich
+    (`NfEvalEfoldK`, NfEFold.lean:609). The existential `env` is the faithful target: Rabinovich
     Lemma 5.3 (chunk_0014) existentially quantifies the deeper rung's interior points `∃x1…∃xn`.
     Proven by rewriting through `kvE_fiberPosOn_correct` then the bridge `kvE_anchorBridge`. -/
 theorem kvE_fiberPosOnShift_correct {sig : MonadicSignature} [Fintype sig.preds]

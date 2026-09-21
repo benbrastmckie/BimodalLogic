@@ -29,7 +29,7 @@ import Mathlib.Data.List.Permutation
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndCharK1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
--- wiring this bridge into `KampPrior.lean:404`. The two symbols this file used from KampPrior
+-- wiring this bridge into `KampPrior.lean:405`. The two symbols this file used from KampPrior
 -- (`nfQuantClauseTl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 
@@ -157,7 +157,7 @@ Rabinovich 2014 Cor 5.4, the single boundary `t` splits `∃ w` into the three o
 (`bracketBuildLeft` for the past, `bracketBuildRight` for the future), and the `w = t` point zone by
 the diagonal characteristic.
 
-Exactly as the arity-1 template `nfSuccCharFormula` (KampPrior.lean:109) is parametric over its
+Exactly as the arity-1 template `nfSuccCharFormula` (KampPrior.lean:110) is parametric over its
 depth-`k` existential converter `exist_tl_fn`, this arity-up converter is parametric over the three
 zone-endpoint **hooks** — the depth-`k` characteristic of `qnf` at the navigated point (the
 recursion
@@ -222,7 +222,7 @@ theorem nf_char2_diag_exist_tl_correct {sig : MonadicSignature} [Fintype sig.pre
 
 /-! ## Phase 3: assemble `nfChar2Formula` + `_correct` (Deliverable 1 COMPLETE)
 
-Mirrors the arity-1 template `nfSuccCharFormula` (KampPrior.lean:109) exactly, one arity up:
+Mirrors the arity-1 template `nfSuccCharFormula` (KampPrior.lean:110) exactly, one arity up:
 `nfChar2Formula sub_nf := formulaConjList (atom_part :: quant_clauses)`, where `atom_part` is the
 diagonal depth-0 atom characteristic (Phase 1's layer, generalized here to an arbitrary
 `sub_nf.1 : NormalForm sig 0 2` — the Phase-1-deferred order-atom / pred-agreement guard) and each
@@ -331,7 +331,7 @@ is diagonal-only (it returns `⊥` whenever any order atom is true), so a NEW at
 for the endpoint of the Rabinovich Cor 5.4 `F_i` chain (md:154-157), where the bound witness `x`
 sits strictly in the past (resp. future) exterior of the origin `t`.
 
-Following the F_i chain architecture (`aPast seg pastEnd`, NfZoneFlattenNavigable.lean:335): the
+Following the F_i chain architecture (`aPast seg pastEnd`, NfZoneFlattenNavigable.lean:336): the
 outer `bracketBuildLeft` navigates from origin `t` back to the bound endpoint `z0 = x`, checking
 `pastEnd.EvalAt x` at the endpoint and the segment on `(x, t)`. The arity-2 atom layer at `[x, t]`
 therefore splits by LOCUS:
@@ -913,7 +913,7 @@ D2: the KampPrior-local `exist_tl_fn_k` is an arity-2 existential converter (a p
 genuine new construction, templated on `nfChar2DiagExistTl` / `nfChar2Formula`.
 
 `nfChar3EndpointTl` is the arity-3, `TemporalPred`-valued analog of the arity-1 template
-`nfSuccCharFormula` (KampPrior.lean:68) and the arity-2 diagonal `nfChar2Formula`
+`nfSuccCharFormula` (KampPrior.lean:69) and the arity-2 diagonal `nfChar2Formula`
 (:476): it assembles the endpoint characteristic of `q : NormalForm sig (k+1) 3` at a
 navigated witness `y` as `formulaConjList (atomPart :: quant_clauses)`, where each
 `quant_clause` wraps the depth-`k`, **arity-4** coupled inner converter `innerConv`
@@ -1018,7 +1018,7 @@ Report 02 §4.3 flagged the depth-0 navigated base as the primary open sub-quest
 `nfNvarExistDepth0TlFn` (NfDepth0Generalized:1615) is **existential-at-origin**, not the
 **navigated-point** arity-3 characteristic the primitive needs. This dispatch confirms the risk
 BINDS
-structurally: at depth 0, `NfEvalNf M 0 3 (zoneEnv3 w a b) qnf` unfolds (NormalForm.lean:210) to
+structurally: at depth 0, `NfEvalNf M 0 3 (zoneEnv3 w a b) qnf` unfolds (NormalForm.lean:212) to
 the
 pure atom layer `∀ atom : AtomKind sig 3, AtomEval M (zoneEnv3 w a b) atom ↔ (qnf atom = true)`
 over
@@ -1180,7 +1180,7 @@ for *arbitrary* `a b : M.carrier`, with a strategic `sorry`. That biconditional 
 not
 merely hard: `endChar0`'s `.EvalAt w = TemporalTruth M atomMap w …` depends only on `M` and the
 navigated witness `w`, whereas the RHS `NfEvalNf M 0 3 (zoneEnv3 w a b) qnf` unfolds
-(NormalForm.lean:210) to `∀ atom, AtomEval M (zoneEnv3 w a b) atom ↔ qnf atom = true`, which also
+(NormalForm.lean:212) to `∀ atom, AtomEval M (zoneEnv3 w a b) atom ↔ qnf atom = true`, which also
 constrains the predicate layer at the anchor positions `a` (index 1: `AtomEval (.pred p 1) =
 M.interp p a`), `b` (index 2), and the order relations among `{w, a, b}` (`.order` atoms). Take
 `qnf`
@@ -1706,7 +1706,7 @@ theorem nf_char2_future_formula_correct {sig : MonadicSignature} [Fintype sig.pr
 
 The `k+1` unfolding of the navigated arity-3 evaluation `NfEvalNf M (k+1) 3 (zoneEnv3 w a b) qnf`,
 exposed as a citable equivalence for the recursion assembly (report 02 §1.4). Matches `NfEvalNf`'s
-own `succ` clause (NormalForm.lean:212-216) at arity `3` on the navigated env `zoneEnv3 w a b`:
+own `succ` clause (NormalForm.lean:214-216) at arity `3` on the navigated env `zoneEnv3 w a b`:
 the atom layer at the full env AND, per **arity-4** sub-NF `sub`, the coupled inner existential
 `∃ w', NfEvalNf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub`. The inner env
 `Fin.cons w' (zoneEnv3 w a b) = [w', w, a, b]` is arity 4 (`_ + 1 = 4`); this is the structural
@@ -1964,7 +1964,7 @@ layer `NfEvalNf M 0 n env qnf` for an ARBITRARY, universally-quantified `env : F
 By definition `TemporalPred.EvalAt tp t = TemporalTruth M atomMap t tp.formula`
 (`ExistsForallNF.lean`): the value depends only on the SINGLE world `t = env 0` (and `M`, and the
 formula) — it is completely independent of `env 1 … env (n-1)`. But the RHS reads
-`AtomEval M env (.pred p ⟨j⟩) = M.interp p (env j)` at every position `j` (`NormalForm.lean:116`).
+`AtomEval M env (.pred p ⟨j⟩) = M.interp p (env j)` at every position `j` (`NormalForm.lean:118`).
 Hence any world-local base forces `NfEvalNf M 0 n env qnf` to be invariant under changing `env`
 away from position `0` — which is false for `n ≥ 2` in any model with a non-constant predicate.
 The obstruction is intrinsic to `EvalAt` and holds for EVERY candidate base (not only the preserved

@@ -29,7 +29,7 @@ This module is the faithful separate-bracket route for the k=2 gate. Source mapp
   reduction (md:78) → UNBUILT; the target shape is `Prop42Contentful.Prop42Contentful` (the
   declaration formerly cited here was vacuous and has been deleted — see `Prop42Vacuity`).
   **Lemma 3.4** V-exists-forall closure (md:84-85) → `VVecEA2.conjStruct`
-  (`VecEAClosure.lean:195`).
+  (`VecEAClosure.lean:196`).
 - **NOTE (outer-connector boundary)**: the shared-interior-witness conjunction (`∃ w, ⋀_σ ...`) —
   the outer quant-layer connector joining the per-σ halves — is the ONE unbuilt object.
   It is owned by the outer quant-layer connector; this module deliberately provides only the per-σ
@@ -99,8 +99,8 @@ private def bracketFromLists3 (lXU : List TemporalPred) (ptX1 : TemporalPred)
     first `zXU` arrangement type `χ0`, `= ⟨charBase χ⟩` at the k=2 gate), a `.holds` at the inner
     endpoints `(z0, z)` realizes the FIRST point type `χ0` at some `u ∈ (z0, z)`. This is the
     forward `fChainPred → (pointTypes 0)` datum (Cor 5.4 sidestepped — pure forward direction):
-    `bracket_implies_fChainPred` (`EANegation.lean:660`) yields `F_0(u)`; unfolding the F-chain
-    one step at index 0 via `fChainFrom_step` (`EANegation.lean:616`, never the base case since the
+    `bracket_implies_fChainPred` (`EANegation.lean:662`) yields `F_0(u)`; unfolding the F-chain
+    one step at index 0 via `fChainFrom_step` (`EANegation.lean:618`, never the base case since the
     `+ 1 + 1` arity keeps `0 < n`) extracts `(pointTypes 0).EvalAt u`; and `pointTypes 0 = χ0`
     holds by the head of the concatenated point list `(χ0 :: lXU') ++ ptX1 :: lUW ++ ptW :: lWT`
     (`bracketFromLists3` `:6741-6745`). At assembly the endpoints instantiate to give `x < u < q`

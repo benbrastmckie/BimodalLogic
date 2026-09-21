@@ -54,14 +54,18 @@ case, mirroring how `VeeExistsForallTranslation.lean` and `Prop43.lean` already 
 
 ## References
 
-- [rabinovich2014], Proposition 4.2 statement (p.6), proof and the
-  three-way chain split + Lemma 5.1 (p.7). Cited by PDF page; the companion markdown
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.2 statement (p.6),
+  proof and the three-way chain split + Lemma 5.1 (p.7). Cited by PDF page; the companion markdown
   transcription is corrupt.
-- `VeeExistsForallTranslation.lean`: `EndpointPinnedCapTrivial`, `prop42_veeSat_negation` (middle
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForallTranslation.lean` —
+  `EndpointPinnedCapTrivial`, `prop42_veeSat_negation` (middle
 piece).
-- `ExistsForallTranslation.lean`: `translateProp35`, `translateProp35_correct` (end pieces).
-- `ExistsForallLemmas.lean`: `gluedChain` family (backward gluing template).
-- `VecEAFormula.lean`: `VVecEA2`, `VecEA2`, `BracketFormula.trivial`, `VVecEA2.disj`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallTranslation.lean` — `translateProp35`,
+  `translateProp35_correct` (end pieces).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallLemmas.lean` — `gluedChain` family
+  (backward gluing template).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VecEAFormula.lean` — `VVecEA2`, `VecEA2`,
+  `BracketFormula.trivial`, `VVecEA2.disj`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

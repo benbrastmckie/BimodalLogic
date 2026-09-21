@@ -63,14 +63,16 @@ introduced; the axiom set is `[propext, Classical.choice, Quot.sound]`.
 
 ## References
 
-- [rabinovich2014], Definition 4.1 (p.5-6). Cited by PDF page; the
-  companion markdown transcription is corrupt.
-- `VeeExistsForallTranslation.lean`: `translateVeeProp42` / `translateVeeProp42_correct` (the
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Definition 4.1 (p.5-6). Cited by
+  PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForallTranslation.lean` —
+  `translateVeeProp42` / `translateVeeProp42_correct` (the
 forward
 bridge).
-- `BracketNegationClauses.lean`: `prop42_efSat_negation_general` (produces the `VVecEA2` this
+* `FormalSystem/Metalogic/Expressiveness/Kamp/BracketNegationClauses.lean` —
+  `prop42_efSat_negation_general` (produces the `VVecEA2` this
 lifts).
-- `VeeExistsForall.lean`: `veeSat`, `veeSat_append`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForall.lean` — `veeSat`, `veeSat_append`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

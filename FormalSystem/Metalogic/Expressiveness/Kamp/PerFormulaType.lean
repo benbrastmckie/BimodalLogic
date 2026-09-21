@@ -52,12 +52,12 @@ sig F M` |
 over `{a // a ∈ M}`, never over `UnaryType` |
 
 ## References
-- [rabinovich2014], Def 3.1 (p.4), Prop 3.5 (p.5), Def 4.1 (p.5).
-  Cited by PDF page; the companion markdown transcription is corrupt.
-- `ExistsForallFormula.lean` (`UnaryType`, `unaryHolds`, `unaryHolds_iff`, `IntervalType`,
-  `intervalHolds`); `NormalForm.lean` (`AtomKind`, `AtomEval`, `nfCharacteristic`,
-  `nf_characteristic_satisfies`); `InfAlphabetProbe.lean` (the Phase-1 gate, which imports this
-  module and keeps only the gate equivalence).
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Def 3.1 (p.4), Prop 3.5 (p.5), Def
+  4.1 (p.5). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallFormula.lean` — (`UnaryType`,
+  `unaryHolds`, `unaryHolds_iff`, `IntervalType`, `intervalHolds`); `NormalForm.lean` (`AtomKind`,
+  `AtomEval`, `nfCharacteristic`, `nf_characteristic_satisfies`); `InfAlphabetProbe.lean` (the
+  Phase-1 gate, which imports this module and keeps only the gate equivalence).
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

@@ -72,7 +72,7 @@ Printed pp.186-187, **Lemma 12** — statement and whole proof:
 ## `ADAPTED-FROM`: the closed-interval Lemma 15
 
 The discrete development's §10 Lemma 15 relativizes to the **closed** `[z,t]`, and that is what
-the tree's `relativize` (`MonadicFO.lean:551`) implements, with `≤` guards and
+the tree's `relativize` (`MonadicFO.lean:552`) implements, with `≤` guards and
 `OrderedMonadicStructure.subinterval` as its semantic counterpart. Reynolds' §8 `γ(z,t)`
 relativizes to the **open** `(z,t)`, matching `OrderedMonadicStructure.openSubinterval`
 (`GoodDense.lean:237`). `relativizeOpen` below is the open sibling: the same recursion with `<`
@@ -218,12 +218,12 @@ sentences of quantifier depth `≤ k`. Any structure is a model of just one such
 (printed p.187).
 
 Reynolds' `γ`'s are exactly the tree's depth-`k` normal forms with no free variables: `NormalForm
-sig k 0` is a `Fintype` (`normalForm_card`, `NormalForm.lean:620`), every structure satisfies
-exactly one of them (`nf_exists_unique`, `NormalForm.lean:302`), and `nfToSentence`
-(`NormalForm.lean:870`) renders each as an honest `MonadicSentence`. The `NormalForm` layer is
+sig k 0` is a `Fintype` (`normalForm_card`, `NormalForm.lean:622`), every structure satisfies
+exactly one of them (`nf_exists_unique`, `NormalForm.lean:304`), and `nfToSentence`
+(`NormalForm.lean:872`) renders each as an honest `MonadicSentence`. The `NormalForm` layer is
 consumed as it stands; nothing here rebuilds it.
 
-The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:372`)
+The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:373`)
 carries does **not** bite here: that restriction is on the *Prior-expressiveness* route, which
 needs a normal-form-to-`U`/`S` translation at `n` free variables. This module stays inside the
 monadic language and uses only the `n = 0` case.
@@ -293,7 +293,7 @@ theorem goodDense_iff_eval_gammaDisj (k : Nat) (M : OrderedMonadicStructure sig)
 *"Let `γ(z,t)` be the result of relativising the quantifiers of `⋁_{i ≤ s} γ_i` to `(z,t)`, where
 `z` and `t` are new variables"* (printed p.187).
 
-The variable layout copies `relativize` (`MonadicFO.lean:551`) exactly, so that the two operators
+The variable layout copies `relativize` (`MonadicFO.lean:552`) exactly, so that the two operators
 are drop-in siblings: in `relativizeOpen φ` for `φ : MonadicFormula sig n`, variables `0 … n-1`
 are `φ`'s own, variable `n` is the lower bound `z` and variable `n+1` is the upper bound `t`.
 The only change is `<` in place of `≤` in the two quantifier guards, matching
@@ -303,7 +303,7 @@ The only change is `<` in place of `≤` in the two quantifier guards, matching
 /--
 Relativize a monadic formula to the **open** subinterval `(var n, var (n+1))`.
 
-The open sibling of `relativize` (`MonadicFO.lean:551`); see this section's header for why the
+The open sibling of `relativize` (`MonadicFO.lean:552`); see this section's header for why the
 closed operator cannot be reused here.
 -/
 def relativizeOpen {sig : MonadicSignature} :
@@ -423,7 +423,7 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 **The open relativization is correct**: evaluating `relativizeOpen φ` in `M` with the two bounds
 in the fresh slots is evaluating `φ` in `M | (lo, hi)`.
 
-The open counterpart of `relativize_correct` (`MonadicFO.lean:648`).
+The open counterpart of `relativize_correct` (`MonadicFO.lean:649`).
 -/
 theorem relativizeOpen_correct {n : Nat} (M : OrderedMonadicStructure sig)
     (lo hi : M.carrier) (env_sub : Fin n → (M.openSubinterval sig lo hi).carrier)

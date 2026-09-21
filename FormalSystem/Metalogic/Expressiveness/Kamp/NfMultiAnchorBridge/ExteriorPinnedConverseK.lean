@@ -44,7 +44,7 @@ theorem kvE_futPinned_of_end {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
 (The report's `nf1_dropFresh` has no in-tree declaration; its faithful in-tree spelling is
 `nfkDropFresh σ = qnf.1` — `nfkDropFresh` drops the fresh slot from σ's atom layer,
-NfEFold.lean:578.)
+NfEFold.lean:579.)
 
 **This file (Phase 2)** proves the ATOM-LAYER half `kvE_futAtomPinned_zero`: under the §2.4
 hypotheses at `m := 0`, the endpoint's complete atomic profile is pinned —
@@ -1234,7 +1234,7 @@ theorem kvE_futSliceUnique_zero {sig : MonadicSignature} [Fintype sig.preds] [De
 
 The Phase-5 discharges of the carried exterior obligations that the realization recursion's
 `KampPrior.lean` arm and the depth-`k` exterior assembly consume through
-`EndIntervalCorrectPrior`'s `m + 2` arm (EndIntervalConsumerK.lean:139-164) at `m := 0`.
+`EndIntervalCorrectPrior`'s `m + 2` arm (EndIntervalConsumerK.lean:140-164) at `m := 0`.
 Statements are the 3b binder types at `k := 0`, signature-locked (copied verbatim from
 EndIntervalConsumerK), plus the AMBIENT interior obligation `hreal` — itself a carried binder
 of the same consumer arm, available verbatim at every consumption site — which the

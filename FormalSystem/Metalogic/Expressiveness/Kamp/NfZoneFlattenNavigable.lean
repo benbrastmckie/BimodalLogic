@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfDepth0Generalized
 # Phase 1 GO/NO-GO GATE — navigated (depth-graded) flattening at `k = 1`
 
 This module is the **decisive go/no-go gate** for the bound-anchor zone converter
-(`KampPrior.lean:404`). It is **off the live import path** (nothing in the `completeness_ztime`
+(`KampPrior.lean:405`). It is **off the live import path** (nothing in the `completeness_ztime`
 chain imports it) and is **fully sorry-free**.
 
 ## The categorical distinction under test (vs. the refuted atomic D1)
@@ -42,12 +42,13 @@ capability the atomic simplification lacked — the mechanism by which the bound
 express what the atomic flattening could not.
 
 ## References
-- `NfZoneDepthK1Probe.lean` (D1: atomic-bracket interior confinement — the refuted sibling).
-- `NfZoneNavProbe.lean` (Phase-16 free-anchor NO-GO: `x` free, unstatable under binding).
-- `VecEATranslation.lean:234` (`bracketBuildRight_correct`), `:503` (`bracketBuildLeft_correct`),
+* `NfZoneDepthK1Probe.lean` (D1: atomic-bracket interior confinement — the refuted sibling).
+* `NfZoneNavProbe.lean` (Phase-16 free-anchor NO-GO: `x` free, unstatable under binding).
+* `VecEATranslation.lean:235` (`bracketBuildRight_correct`), `:503` (`bracketBuildLeft_correct`),
   `:311` (`BracketFormula.trivial_holds`).
-- `reports/01_bound-anchor-verdict.md` §3 (outcome (a): navigated chain, `w` a bracket witness).
-- [rabinovich2014] "A Proof of Kamp's Theorem" Cor 5.4 (`md:154-157`).
+* `reports/01_bound-anchor-verdict.md` §3 (outcome (a): navigated chain, `w` a bracket witness).
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], "A Proof of Kamp's Theorem" Cor
+  5.4 (`md:154-157`).
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -193,7 +194,7 @@ new mathematics: it is exactly `exists_trichotomy_split` at boundary `c := t` wi
 `P x := NfEvalNf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`.
 
 The env convention `Fin.cons x (fun _ => t)` matches `exist_tl_fn_k_correct`
-(KampPrior.lean:343-344)
+(KampPrior.lean:344-344)
 verbatim, so the past/future arms (Phases 5/6) and the diagonal arm (Phase 3) consume these three
 disjuncts directly. The diagonal disjunct is `P t = NfEvalNf M (k+1) 2 (Fin.cons t (fun _ => t))
 sub_nf` (the two-value collision `[t, t]` collapsed by `renameNF_eval_diag0` + `char_k1` in Phase

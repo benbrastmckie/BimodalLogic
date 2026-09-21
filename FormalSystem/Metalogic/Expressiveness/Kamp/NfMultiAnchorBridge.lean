@@ -20,7 +20,7 @@ import Mathlib.Data.List.Permutation
 -- MIRROR of the faithful eq (5.2) primitives (Rabinovich 2014, PDF p.8, mirrored).
 -- `Lemma53Faithful` above is entirely future-directed; `kminus` (`PriorINF.lean`) was declared with
 -- no object-language spelling and no correctness lemma anywhere in the tree, so `HasDedekindSUP`
--- (`DedekindINF.lean:153`) could be stated but none of its content could be used. This module
+-- (`DedekindINF.lean:151`) could be stated but none of its content could be used. This module
 -- supplies `kminusFormula`/`kminus_formula_correct`, `kminusPred`/`kminusPred_eval`,
 -- `HasDedekindSUP.last_occ_tp`, the right-end chain primitives (`orderedPointsExist_combine_right`,
 -- `orderedPointsExist_combine_kminus`, `orderedPointsExist_widen_right`) and the SUP-side exclusion
@@ -37,8 +37,8 @@ import Mathlib.Data.List.Permutation
 -- NOTE: `import ...Kamp.Lemma53Faithful` lands the import edge for the FAITHFUL THREE-DISJUNCT
 -- LEMMA 5.3 (Rabinovich 2014, PDF p.8): `negChainOnFaithful` / `negChainOnFaithful_iff` and
 -- `lemma53Faithful`, which restore the paper's printed disjunct (2) `K⁺(P₁)(z₀) ∧ Oₙ(rest)` that
--- the landed `negChainOn` (`EANegationFix/OnBuilder.lean:179`) truncates away, over the faithful
--- `HasFaithfulDedekindINF` carrier (`KPlusFaithful.lean:322`) rather than `HasAttainedINF`.
+-- the landed `negChainOn` (`EANegationFix/OnBuilder.lean:180`) truncates away, over the faithful
+-- `HasFaithfulDedekindINF` carrier (`KPlusFaithful.lean:325`) rather than `HasAttainedINF`.
 -- The edge exists for the same reason as
 -- the `DedekindINF` edge below: parking it in `Kamp/Boneyard/` would put it under no glob and in
 -- no CI build, so the faithful transcription — and, worse, the two NON-VACUITY declarations that
@@ -53,10 +53,10 @@ import Mathlib.Data.List.Permutation
 -- boundary), and the machine-checked strictness delta against `HasDefinableINF`. **The deferral
 -- this NOTE used to record is now CLOSED**: Lemma 5.3 (`Lemma53Faithful` edge above), Lemma 5.1
 -- at one witness and in list form, and Prop 4.2 are all landed — and they are landed one step
--- BELOW this carrier, at `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`), which states
+-- BELOW this carrier, at `HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`), which states
 -- Rabinovich's eq (5.2) dichotomy at the SOURCE'S OWN `K⁺` (his Definition (3), PDF p.3) rather
 -- than at this tree's extra-conjunct `kplus`. `HasDedekindINF` remains landed, consumed and
--- supplied — `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`) is the edge
+-- supplied — `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:369`) is the edge
 -- that keeps every existing supplier working — but it is no longer the faithful chain's carrier.
 -- The whole re-base is still unobservable to every current consumer, because the live chain is
 -- Prior structures where attainment holds outright (`prior_makes_disjunct2_unreachable` proves
@@ -85,7 +85,7 @@ import Mathlib.Data.List.Permutation
 -- NOTE: `import ...Kamp.Lemma53` lands the import edge for the Lemma 5.3 transcription
 -- (Rabinovich 2014, PDF p.8): the printed Basis, the `K⁺` canonical-expansion atom, and
 -- `hasDefinableINF_excludes_kplus` — the machine-checked finding that `HasDefinableINF`
--- (`PriorINF.lean:108`) is too strong a carrier for eq (5.2) because it deletes the paper's
+-- (`PriorINF.lean:110`) is too strong a carrier for eq (5.2) because it deletes the paper's
 -- disjunct (2). That finding is the reason this edge matters: an unreachable refutation
 -- protects nothing, which is the lesson `Prop42Vacuity` exists to encode. Cycle-free: Lemma53
 -- imports only `...Kamp.VecEAFormula` and `...Kamp.PriorINF`, both already in this file's
@@ -127,7 +127,7 @@ import Mathlib.Data.List.Permutation
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndCharK1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
--- wiring this bridge into `KampPrior.lean:404`. The two symbols this file used from KampPrior
+-- wiring this bridge into `KampPrior.lean:405`. The two symbols this file used from KampPrior
 -- (`nfQuantClauseTl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.Base
@@ -332,8 +332,8 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.NegFixLi
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.VecEANegFixFaithful
 -- NOTE: `import ...Kamp.Prop42Faithful` lands the import edge for the TERMINUS OF THE FAITHFUL
 -- RE-BASE (Rabinovich 2014, Proposition 4.2, PDF p.6): `prop42_contentful_of_faithful`, which
--- discharges the SAME contentful target `Prop42Contentful` (`ContentfulWitness.lean:152`) that
--- `prop42_contentful_of_attained` (`Section5Correspondence.lean:187`) discharges, but from
+-- discharges the SAME contentful target `Prop42Contentful` (`ContentfulWitness.lean:151`) that
+-- `prop42_contentful_of_attained` (`Section5Correspondence.lean:186`) discharges, but from
 -- `HasFaithfulDedekindINF` ALONE where that one needs `HasAttainedINF` AND `HasAttainedSUP`. p.6
 -- states Prop 4.2 "over Dedekind complete chains" in the statement itself, which is the fidelity
 -- point the whole re-base turns on. Two corollaries record the consequence and preserve every
@@ -408,7 +408,6 @@ atom layer**, where it is a proven iff. The depth-`(k+1)` quant layer goes throu
 honest arity-3 navigated existential — **never** collapsed to arity 1.
 
 ## References
-- [rabinovich2014], "A Proof of Kamp's Theorem", Cor 5.4 (`F_i` chain).
-- The multi-anchor characteristic-formula bridge design and its blocker research: the deliverable
-  list, the phase split, and the three refuted routes above are transcribed from them verbatim.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Cor
+  5.4 (`F_i` chain).
 -/

@@ -43,9 +43,11 @@ The equivalence `normalFormEquivFin` provides the bijection between the inductiv
 
 ## References
 
-- [doets1989], Section 1, Lemma 1.1: `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- [doets1987], Definition 1.6.1 (n-characteristics)
-- Design provenance: the concrete NormalForm-evaluation design (Doets Lemma 1.1 / `KType`)
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Section 1,
+  Lemma 1.1
+* [K. Doets, *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order
+  and Intensional Logic*][doets1987], Definition 1.6.1 (n-characteristics)
+* Design provenance: the concrete NormalForm-evaluation design (Doets Lemma 1.1 / `KType`)
 -/
 namespace FormalSystem.Metalogic.Expressiveness
 

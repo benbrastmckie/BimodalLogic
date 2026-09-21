@@ -22,7 +22,8 @@ infrastructure (GHR93 expressive completeness proof).
 
 ## References
 
-- [gabbay1994], Chapter 9, Section 8
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Section 8
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

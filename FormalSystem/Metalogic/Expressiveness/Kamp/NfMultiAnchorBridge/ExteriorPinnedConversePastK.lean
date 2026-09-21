@@ -773,7 +773,7 @@ theorem kvE_pastSliceId_of_end_zero {sig : MonadicSignature} [Fintype sig.preds]
 Mirror of the Future-file Phase-5 section (`ExteriorPinnedConverseK.lean`): the m=0
 discharge of the carried `hexclSlicePast` obligation consumed by the realization recursion's
 `KampPrior.lean` arm and the depth-`k` exterior assembly through `EndIntervalCorrectPrior`'s
-`m + 2` arm (EndIntervalConsumerK.lean:151-157) at `m := 0`. Statement is the 3b binder
+`m + 2` arm (EndIntervalConsumerK.lean:152-157) at `m := 0`. Statement is the 3b binder
 type at `k := 0`, signature-locked, plus the ambient interior obligation `hreal` (report 02
 §3.4 last paragraph). The eliminated `kvE_hbrPast*_supply_zero` v1 targets stay eliminated
 (`kvE_futPinned_of_end_zero_refuted` is the Future-side machine refutation of the shared

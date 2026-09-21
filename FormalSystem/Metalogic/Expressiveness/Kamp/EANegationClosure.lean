@@ -43,7 +43,8 @@ Adapted to use `HasAttainedINF` instead of raw `SemanticPriorUZ`.
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Lemma 5.1 (pp.7-11), Corollary 5.4 (p.10)
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma
+  5.1 (pp.7-11), Corollary 5.4 (p.10)
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -627,7 +628,7 @@ Its negation decomposes via de Morgan:
 - Case 2+3: both endpoints hold, bracket fails — apply neg_interval_formula
 
 ### References
-- [rabinovich2014], Proposition 4.2 (p. 6)
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.2 (p. 6)
 -/
 
 /-- Wrap each bracket formula in a VBracketFormula with endpoint predicates to

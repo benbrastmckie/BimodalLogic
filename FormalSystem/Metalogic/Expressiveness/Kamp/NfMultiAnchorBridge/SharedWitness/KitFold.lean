@@ -228,7 +228,7 @@ theorem kvE2_sepBody_kit_sound {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 Reassemble `∃ w, NfEvalNf M 2 3 [w,x,t] qnf` from the per-σ realizations delivered by
 `kvE2_sepBody_kit_sound` (Phase 3). There is NO landed depth-2 quant-layer fold engine
-(`nf_quant_layer_fold_iff`, `NfEFold.lean:391`, folds depth-0 inner subs; the k=2 quant layer
+(`nf_quant_layer_fold_iff`, `NfEFold.lean:392`, folds depth-0 inner subs; the k=2 quant layer
 ranges over depth-1 subs), so this theorem IS the assembly: it derives the outer atom layer
 from the carrier's own endpoint/witness point types (`kvE2SepEpL`/`kvE2SepEpR`/`kvE2SepPtW`
 head conjuncts through `nfPred_correct`) plus the six outer order bits, zone-classifies the
@@ -625,7 +625,7 @@ theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     finite witness family `ws : Fin (k+1) → M.carrier`, any point `v` is EITHER one of the
     witnesses, OR below the first, OR strictly between two consecutive witnesses, OR above the
     last — exactly the four segment regions of `IntervalPattern.holds_eq_succ`
-    (`ExistsForallNF.lean:197-203`). Model-general (rides `M.carrier`'s `LinearOrder`); carries
+    (`ExistsForallNF.lean:198-203`). Model-general (rides `M.carrier`'s `LinearOrder`); carries
     no fold/bracket content. This converts an arbitrary model point of an interior forward-zone
     into the region whose landed segment/witness channel closes it. Additive. -/
 theorem kvE2_sep_locate_witness {sig : MonadicSignature} [Finite sig.preds]

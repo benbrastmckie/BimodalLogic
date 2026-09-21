@@ -59,13 +59,16 @@ over admissible completions — the same device the landed arity-2 `vvecea2_coll
 
 ## References
 
-- [rabinovich2014], Prop 4.3 ¬-case (PDF p.6), Prop 3.5 (p.5).
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Prop 4.3 ¬-case (PDF p.6), Prop
+  3.5 (p.5).
 Cited by
   PDF page; the companion markdown transcription is corrupt.
-- `EFSatNegation.lean`: `efSat_negation_pair`, `efSat_negation_demorgan`, `pairProject_swap_efSat`.
-- `LiftPair.lean`: `liftPairV`/`liftPairV_iff`, `liftSingleV`/`liftSingleV_iff`,
-  `liftSentence`/`liftSentence_iff`.
-- `ExistsForallTranslation.lean` / `PerFormulaRender.lean` / `Prop35VeeLift.lean`: the forward Prop
+* `FormalSystem/Metalogic/Expressiveness/Kamp/EFSatNegation.lean` — `efSat_negation_pair`,
+  `efSat_negation_demorgan`, `pairProject_swap_efSat`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/LiftPair.lean` — `liftPairV`/`liftPairV_iff`,
+  `liftSingleV`/`liftSingleV_iff`, `liftSentence`/`liftSentence_iff`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallTranslation.lean` — /
+  `PerFormulaRender.lean` / `Prop35VeeLift.lean`: the forward Prop
 3.5
   translation (`translateProp35_correct`, arity 1) — the reverse of which the arity-1 negation
   object

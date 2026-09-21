@@ -51,7 +51,7 @@ witness bounds ride the bracket's range/ordering, never a chain) and, per positi
 closer `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1033`) consumes. Positions are
 carried by the arrangement's slot INDICES (structural reads; LITMUS: no `x1 < e_i`
 relative-position literal anywhere). The shared-`w` pivot CONSUMES the Lemma 5.1 kit
-`BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`; D4 — the
+`BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:376/:412`; D4 — the
 kit is never rebuilt). Templates (new N-slot code regardless):
 `kvE_sub2V_bounded_anchor_of_outer` (`SubBracket2V.lean:1190`, public) and the private
 `kvE_subBracket2V_extract` (`SubBracket2V.lean:770`, pattern only). Rabinovich 2014:
@@ -181,7 +181,7 @@ theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} [Finite sig.preds]
     `A_i^-`/`A_i^+` decomposition at "which `i` the new point corresponds to", PDF p.8):
     from `holds` over `(x, t)`, the witness at index `i` is strictly inside `(x, t)`,
     realizes its point type, and BOTH halves hold at it — CONSUMING the landed kit
-    `BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`;
+    `BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:376/:412`;
     D4: the kit is consumed for every shared-`w` pivot, never rebuilt). -/
 theorem kvE2_sepBracket_split_at {sig : MonadicSignature} [Finite sig.preds]
     {n : Nat}

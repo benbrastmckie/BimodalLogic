@@ -68,15 +68,14 @@ No frozen file is touched.
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem": **Lemma 7.8(2)** TL(Until, K⁻) duality
-  (chunk_0022) — realized here by duplication (see the E6 decision above); Lemma 7.10 /
-  Prop 3.5 one-free-variable fold (chunks 0023, 0010); Lemma 7.6 gluing (chunk_0021).
-- Consumed by name (public Phase 13/14 assets): `ext3Mk`, `ext3_zoneHolds_cons_iff`,
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014]:
+  **Lemma 7.8(2)** TL(Until, K⁻) duality (chunk_0022) — realized here by duplication (see the E6
+  decision above); Lemma 7.10 / Prop 3.5 one-free-variable fold (chunks 0023, 0010); Lemma 7.6
+  gluing (chunk_0021).
+* Consumed by name: `ext3Mk`, `ext3_zoneHolds_cons_iff`,
   `agg2Ltz/agg2Eqz/agg2Gtz`, `k1v_bool_eq_false`, `nf_eval_depth1_fold_iff`,
   `nf0Assemble` + split-kit round-trips, `navLProjW`/`navDProjX`/`navDProjT`,
   `navLPastLit`, `navDFutLit`.
-- The negfix-refactor design for the exterior carriers, Phase 15 (E5 + E6 — the future-side
-  navigators).
 -/
 
 set_option linter.style.longFile 1700

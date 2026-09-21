@@ -45,14 +45,16 @@ to carry caps — that would be canonical-form machinery beyond Rabinovich.
 
 ## References
 
-- [rabinovich2014], Proposition 4.2 (p.6), proved Section 5 pp.7-11.
-  Cited by PDF page; the companion markdown transcription is corrupt.
-- `ExistsForallTranslation.lean`: `efPointTP`, `efIntervalTP` (rendering `UnaryType`s as
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.2 (p.6), proved
+  Section 5 pp.7-11. Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallTranslation.lean` — `efPointTP`,
+  `efIntervalTP` (rendering `UnaryType`s as
 `TemporalPred`s).
-- `VecEAFormula.lean`: `VecEA2`, `BracketFormula`, `VVecEA2`; `ExistsForallNF.lean`:
-  `IntervalPattern.holds`, `holds_eq_zero`, `holds_eq_succ`.
-- `Section5Correspondence.lean`: `prop42_contentful_of_attained`; `ContentfulWitness.lean`:
-  `Prop42Contentful`; `VecEANegFix.lean`: `VVecEA2.negFix`, `VVecEA2.negFix_iff`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VecEAFormula.lean` — `VecEA2`, `BracketFormula`,
+  `VVecEA2`; `ExistsForallNF.lean`: `IntervalPattern.holds`, `holds_eq_zero`, `holds_eq_succ`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/Section5Correspondence.lean` —
+  `prop42_contentful_of_attained`; `ContentfulWitness.lean`: `Prop42Contentful`;
+  `VecEANegFix.lean`: `VVecEA2.negFix`, `VVecEA2.negFix_iff`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

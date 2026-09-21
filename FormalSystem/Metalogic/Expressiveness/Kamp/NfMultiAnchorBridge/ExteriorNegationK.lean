@@ -22,7 +22,7 @@ and `kvE_futZoneClass` are therefore thin depth-`k` surfaces over the frozen `kv
 
 **What must be reformulated at depth `k`** (postmortem rule 1; guard G6): the admissibility
 predicate. The frozen `kvE2FutAdmissible` reads quant bits through `nf0Assemble`, which is
-lossless ONLY at depth 0 (NfEFold.lean:549-561). At depth `k` every such read is replaced by the
+lossless ONLY at depth 0 (NfEFold.lean:550-561). At depth `k` every such read is replaced by the
 landed determinacy-core channel `kvESubBit` (ExteriorBracketK.lean:302) / the Phase-2 fiber
 navigation (`kvEFiber`, `kvE_fiber_dropFresh` — ExteriorFiberK.lean), which reads σ's quant
 layer fiber-existentially at FULL arity. Admissibility bits are a NAVIGATION channel (G6:

@@ -70,13 +70,16 @@ discharged** — their discharge is the Phase-ζ concern. This module stays OFF 
 
 ## References
 
-- [rabinovich2014], Proposition 4.3 (p.6), Definition 3.1 (p.4).
-  Cited by PDF page; the companion markdown transcription is corrupt.
-- `LiftPair.lean`: `skelDisjunct`, `skelR`, `skelR_sat`, `charType`, `unaryHolds_charType`,
-  `intervalHolds_top` — the universally-satisfiable arity-`m+1` skeleton.
-- `VeeConj.lean`: `veeConj`, `veeConj_iff` (Lemma 3.4, ∧-part).
-- `VeeSatNegation.lean`: `veeSat_negation` (Prop 4.3, ¬-case).
-- `ExistsForallLemmas.lean`: `veeSat_exists` (Lemma 3.4, ∃-closure).
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.3 (p.6), Definition
+  3.1 (p.4). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/LiftPair.lean` — `skelDisjunct`, `skelR`,
+  `skelR_sat`, `charType`, `unaryHolds_charType`, `intervalHolds_top` — the
+  universally-satisfiable arity-`m+1` skeleton.
+* `VeeConj.lean`: `veeConj`, `veeConj_iff` (Lemma 3.4, ∧-part).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeSatNegation.lean` — `veeSat_negation` (Prop 4.3,
+  ¬-case).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallLemmas.lean` — `veeSat_exists` (Lemma
+  3.4, ∃-closure).
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

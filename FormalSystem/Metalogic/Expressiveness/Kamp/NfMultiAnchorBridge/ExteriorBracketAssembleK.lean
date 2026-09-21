@@ -40,7 +40,7 @@ base/fiber conjunct (`kvE2FutMarked`'s `decide (nf0DropFresh σ.1 = qnf.1)`,
 ExteriorBracket.lean/140) — the ⇐-side honesty obligation for off-fiber σ was then FALSE
 (ℤ-doppelgänger countermodel, plan v2 Phase-5 BLOCKER record). Off-fiber σ are unrealizable at
 the pinned anchors (the fiber-forcing kernel `nf_eval_nf_atom_layer` → `nf_eval_nf0_cons_factor`
-→ `nf_eval_unique`, NfEFold.lean:634-641), so narrowing is lossless for every consumer; the
+→ `nf_eval_unique`, NfEFold.lean:635-641), so narrowing is lossless for every consumer; the
 gate's ⇒-side refutes off-fiber σ internally via that kernel under a gate-derived atom-layer pin
 (`ExteriorGateAssembleK.lean`). Off-fiber exclusion is NOT D1/D2's job.
 

@@ -36,7 +36,7 @@ exercise the full `nf_eval_depth1_fold_iff` fold clause (CarrierKv.lean:466) ove
 `kvE2ExtNegFutSpike atomMap h_surj χmid χfr : Formula` — anchored at `t`,
 `Until`-navigated: the negation of the 2-link F-chain
 `U(χmid ∧ U(χfr ∧ ¬F⊤, χmid), χmid)` — Lemma 5.3's O_n / F-chain device (the landed
-`fChainFrom` shape, EANegation.lean:552) instantiated at chain length 2 over the one-sided
+`fChainFrom` shape, EANegation.lean:554) instantiated at chain length 2 over the one-sided
 interval `(t, ∞)`, with depth-0 characteristic guards (`nfDepth0CharFormula`). The
 formula is a fixed syntactic object in `(atomMap, h_surj, χmid, χfr)` — model-independent
 in exactly the sense of the landed gate formulas.
@@ -232,12 +232,12 @@ theorem kvE2_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- Base layer of the spike σ: `zFutT3` fresh-coupling bits, fresh profile `χfr`, and
     qnf's own base as the `[w,x,t]` restriction (env-compatible by construction — the
-    Def 3.1 channel assembly, `NfEFold.lean:180`). -/
+    Def 3.1 channel assembly, `NfEFold.lean:181`). -/
 def kvE2FutSpikeBase {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (χfr : NormalForm sig 0 1) : NormalForm sig 0 4 :=
   nf0Assemble kvE2SepZFutT3 χfr qnf.1
 
-/-- The spike σ is `zFutT3`-marked (round-trip 1, `NfEFold.lean:197`). -/
+/-- The spike σ is `zFutT3`-marked (round-trip 1, `NfEFold.lean:198`). -/
 theorem kvE2_futSpikeBase_zone {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (χfr : NormalForm sig 0 1) :
     nf0ZoneSpec (kvE2FutSpikeBase qnf χfr) = kvE2SepZFutT3 :=

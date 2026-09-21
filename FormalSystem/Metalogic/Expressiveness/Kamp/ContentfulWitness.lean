@@ -15,8 +15,7 @@ It then proves the fragment of that target which needs no `INF` machinery — th
 (de Morgan) cases — and records the Section 5 dependency chain the remaining bracket case
 consumes.
 
-Cite Rabinovich by **PDF page only**. The companion `.md` conversion is corrupt: it drops
-displayed equations and inverts `k ≠ m` to `k = m`.
+Cite [rabinovich2014] by **PDF page only**.
 
 ## The shape, and why the shape is the whole point
 

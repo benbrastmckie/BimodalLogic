@@ -14,15 +14,15 @@ import FormalSystem.Metalogic.Expressiveness.PriorDefsDense
 This module derives Rabinovich's eq (5.2) first-occurrence carrier from the **dense** Prior
 hypotheses `SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean`) — with **no** discreteness
 assumption and **no** attainment assumption. It is the dense sibling of `prior_hasDedekindINF`
-(`DedekindINF.lean:232`), which is a one-liner off `prior_hasAttainedINF` and therefore consumes
+(`DedekindINF.lean:230`), which is a one-liner off `prior_hasAttainedINF` and therefore consumes
 the *integer* hypothesis `SemanticPriorUZ`, refuted on every dense flow by
-`semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:272`).
+`semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:274`).
 
 `DedekindINF.lean` and `PriorINF.lean` are **read, not edited** by this module.
 
 ## The endpoint guard, and why it is not optional
 
-The target was originally the unguarded `HasDedekindINF` (`DedekindINF.lean:136`). **That
+The target was originally the unguarded `HasDedekindINF` (`DedekindINF.lean:134`). **That
 statement is false over a dense Prior structure**, and this module proves it false rather than
 leaving it to be discovered inside a later proof:
 `hasDedekindINF_fails_of_interval_witness` refutes it on *any* densely ordered flow carrying a
@@ -32,7 +32,7 @@ structure which satisfies `SemanticPriorU` and `SemanticPriorS` outright. Both d
 there for structural reasons:
 
 * the **left** disjunct `kplus M atomMap P z₀` is unavailable because `kplus`
-  (`PriorINF.lean:86`) demands `¬P(z₀)` as its first conjunct, and `P(z₀)` holds;
+  (`PriorINF.lean:88`) demands `¬P(z₀)` as its first conjunct, and `P(z₀)` holds;
 * the **right** disjunct demands a `P`-free interval `(z₀,r₀)`, which density forbids when `P`
   holds throughout `(z₀,z₁)`.
 
@@ -46,7 +46,7 @@ not.** Under his own Definition (3) — *"`K+(F)` holds at a moment `t` iff
 `t = inf({t′ | t′ > t and F holds at t′})`"*, PDF p.3 — the biconditional is a **definitional
 restatement**, true verbatim; and Reynolds' `K⁺A` for `¬U(⊤,¬A)` (printed p.168) is the same
 operator. **Neither source's `K⁺` carries a `¬A` conjunct at the point of evaluation.** What is
-true is that *this tree's* `kplus` (`PriorINF.lean:86`) does carry one, and so is strictly
+true is that *this tree's* `kplus` (`PriorINF.lean:88`) does carry one, and so is strictly
 stronger than the operator either paper defines; read through `kplus`, the left-to-right direction
 of the biconditional acquires a `¬P₁(z₀)` obligation the source's own `K⁺` never had. The tree's
 source-exact spellings are `Formula.kPlus` (`Syntax/Formula.lean:181`, with the name-collision
@@ -83,7 +83,7 @@ forms are interderivable (`HasDenseDedekindINF.toHasGuardedDedekindINF` and its 
 Consuming direction: `HasDedekindINF.toHasDenseDedekindINF` and
 `HasDedekindINF.toHasGuardedDedekindINF` show both are *implied* by the unguarded carrier, so
 every landed supplier of `HasDedekindINF` — and hence, via `HasAttainedINF.toHasDedekindINF` /
-`HasDefinableINF.toHasDedekindINF` (`DedekindINF.lean:172`, `:185`), the whole discrete pipeline —
+`HasDefinableINF.toHasDedekindINF` (`DedekindINF.lean:170`, `:185`), the whole discrete pipeline —
 supplies them too. A consumer re-based onto `HasDenseDedekindINF` therefore serves the discrete
 and the dense instance at once, at the cost of one extra case in its own proof — a case that is
 genuinely reachable on a dense flow (`denseWindow_endpoint_disjunct_forced` exhibits a point where
@@ -111,27 +111,29 @@ module's carriers remain landed, supplied and unedited.
 
 `hasGuardedDedekindINF_of_dense_window` / `hasGuardedDedekindSUP_of_dense_window` instantiate the
 two theorems at `denseWindowFlow`, whose Prior-U antecedent is genuinely reachable
-(`densePriorU_antecedent_reachable`, `PriorDefsDense.lean:392`). Both disjuncts of the conclusion
+(`densePriorU_antecedent_reachable`, `PriorDefsDense.lean:394`). Both disjuncts of the conclusion
 are reachable there: `denseWindow_kplus_at_zero` lands the **left** one at `z₀ = 0`, and
 `denseWindow_guardedINF_right_disjunct` lands the **right** one at `z₀ = -1`, so neither
 alternative is dead weight.
 
 ## References
 
-- [rabinovich2014], *A Proof of Kamp's Theorem*, Lemma 5.3 Case 2 and eq (5.2), **PDF p.8**
-  (cited by PDF page only: the `.md` conversion of this paper is corrupt). Verbatim:
-  `INF(z₀,r₀,z₁,P₁) := z₀ < r₀ < z₁ ∧ (∀y)^{<r₀}_{>z₀} ¬P₁(y) ∧ (P₁(r₀) ∨ K⁺(P₁)(r₀))`.
-- [reynolds1992], *An Axiomatization for Until and Since over the Reals without the IRR Rule*,
-  **Prior-U / Prior-S, printed p.168**: `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p),p)` and its mirror. The
-  derivations below instantiate Prior-U at `p := ¬P` — in words: *the guard says `¬P` holds at
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*, Lemma
+  5.3 Case 2 and eq (5.2), **PDF p.8** (cited by PDF page only: the `.md` conversion of this paper
+  is corrupt). Verbatim: `INF(z₀,r₀,z₁,P₁) := z₀ < r₀ < z₁ ∧ (∀y)^{<r₀}_{>z₀} ¬P₁(y) ∧ (P₁(r₀) ∨
+  K⁺(P₁)(r₀))`.
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*, **Prior-U / Prior-S, printed p.168**: `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p),p)` and its mirror.
+  The derivations below instantiate Prior-U at `p := ¬P` — in words: *the guard says `¬P` holds at
   `z₀`, failure of `K⁺(P)(z₀)` says `¬P` persists throughout some initial stretch above `z₀`
-  (Prior-U's first antecedent `U(⊤,¬P)`), and the occurrence of `P` inside `(z₀,z₁)` is
-  Prior-U's second antecedent `F¬¬P`; Prior-U's conclusion `U(P ∨ K⁺(P), ¬P)(z₀)` is then eq
-  (5.2) verbatim.*
-- The endpoint guard itself, the third disjunct `P(z₀)`, the trichotomy `HasDenseDedekindINF` and
+  (Prior-U's first antecedent `U(⊤,¬P)`), and the occurrence of `P` inside `(z₀,z₁)` is Prior-U's
+  second antecedent `F¬¬P`; Prior-U's conclusion `U(P ∨ K⁺(P), ¬P)(z₀)` is then eq (5.2)
+  verbatim.*
+* The endpoint guard itself, the third disjunct `P(z₀)`, the trichotomy `HasDenseDedekindINF` and
   the `hasDedekindINF_fails_*` exclusion family are **original glue** and appear in neither
   source. **What they are glue for** (honesty charter Rule 4, completed): they repair a
-  *formalization-level deviation in this tree*, namely that `kplus` (`PriorINF.lean:86`) carries
+  *formalization-level deviation in this tree*, namely that `kplus` (`PriorINF.lean:88`) carries
   a `¬P(t)` conjunct that Rabinovich's `K⁺` (PDF p.3, Definition (3)) and Reynolds' (printed
   p.168, `¬U(⊤,¬A)`) do not. They are **not** dense-case mathematical content, and they are not a
   correction to either source. The point is machine-checked at
@@ -150,9 +152,9 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-- **Rabinovich's eq (5.2) carrier with the endpoint guard** (PDF p.8).
 
-    Identical to `HasDedekindINF` (`DedekindINF.lean:136`) except for the added hypothesis
+    Identical to `HasDedekindINF` (`DedekindINF.lean:134`) except for the added hypothesis
     `¬P(z₀)`. That hypothesis is exactly what makes the paper's *"`r₀ = z₀` iff `K⁺(P₁)(z₀)`"*
-    true **when `K⁺` is read as this tree's `kplus`**: `kplus` (`PriorINF.lean:86`) carries
+    true **when `K⁺` is read as this tree's `kplus`**: `kplus` (`PriorINF.lean:88`) carries
     `¬P(z₀)` in its first conjunct — a conjunct neither Rabinovich's nor Reynolds' `K⁺` has, see
     this module's docstring correction — so without the guard the `r₀ = z₀` subcase with `P` true
     at `z₀` is expressible by neither disjunct; see `hasDedekindINF_fails_of_interval_witness`.
@@ -286,7 +288,7 @@ theorem HasGuardedDedekindSUP.toHasDenseDedekindSUP {sig : MonadicSignature}
 /-! ## Compatibility with the landed carriers
 
 The guarded carrier is *implied* by the unguarded one, so it can be consumed wherever the landed
-ones are supplied. Composed with `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`) and
+ones are supplied. Composed with `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:170`) and
 `HasDefinableINF.toHasDedekindINF` (`:185`), these give the guarded carrier on the whole discrete
 pipeline for free. -/
 
@@ -303,7 +305,7 @@ theorem HasDedekindSUP.toHasGuardedDedekindSUP {sig : MonadicSignature}
   last_occ P z0 z1 h_lt _ h_occ := h.last_occ P z0 z1 h_lt h_occ
 
 /-- `HasDedekindINF` implies the trichotomy: its own two disjuncts are the trichotomy's second
-    and third. Composed with the shims at `DedekindINF.lean:172`/`:185`, the whole discrete
+    and third. Composed with the shims at `DedekindINF.lean:170`/`:185`, the whole discrete
     pipeline supplies `HasDenseDedekindINF`, so a consumer re-based onto the trichotomy serves the
     discrete and the dense instance at once. -/
 theorem HasDedekindINF.toHasDenseDedekindINF {sig : MonadicSignature}
@@ -352,10 +354,10 @@ Rabinovich 2014, Lemma 5.3 Case 2 and eq (5.2), PDF p.8, obtained from Reynolds'
        `r₀ ≤ x < z₁`.
     6. Steps 4-5 are eq (5.2) verbatim — the right disjunct.
 
-    **This derivation does not route through `prior_hasAttainedINF` (`PriorINF.lean:230`) and
+    **This derivation does not route through `prior_hasAttainedINF` (`PriorINF.lean:232`) and
     therefore carries no discreteness.** That is the whole point: `prior_hasAttainedINF` consumes
     `SemanticPriorUZ`, which `semanticPriorUZ_fails_of_interval_witness`
-    (`PriorDefsDense.lean:272`) refutes on every densely ordered flow carrying a formula true
+    (`PriorDefsDense.lean:274`) refutes on every densely ordered flow carrying a formula true
     throughout an open interval. No attainment hypothesis and no completeness hypothesis on the
     flow is used here either. -/
 theorem prior_hasGuardedDedekindINF_dense {sig : MonadicSignature}
@@ -473,14 +475,14 @@ theorem prior_hasDenseDedekindSUP_dense {sig : MonadicSignature}
 
 /-! ## The exclusion lemma: the *unguarded* carrier is refutable on a dense flow
 
-The dense counterpart of `semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:272`),
+The dense counterpart of `semanticPriorUZ_fails_of_interval_witness` (`PriorDefsDense.lean:274`),
 and the reason the guard above is a hypothesis rather than an oversight. -/
 
 /-- **On a densely ordered flow, `HasDedekindINF` fails as soon as some formula holds at a point
     `z₀` and throughout an interval above it.**
 
     Both disjuncts of `HasDedekindINF.first_occ` are unavailable: the left one because `kplus`
-    (`PriorINF.lean:86`) demands `¬P(z₀)`, the right one because it demands a `P`-free interval
+    (`PriorINF.lean:88`) demands `¬P(z₀)`, the right one because it demands a `P`-free interval
     `(z₀,r₀)`, which density populates with points of `(z₀,z₁)` where `P` holds by hypothesis.
 
     This is Rabinovich's `r₀ = z₀` subcase with `P` true at `z₀` (PDF p.8). It names exactly which
@@ -524,7 +526,7 @@ theorem hasDedekindSUP_fails_of_interval_witness {sig : MonadicSignature}
 
 /-! ## The witnesses
 
-Instantiations at Phase 9's `denseWindowFlow` (`PriorDefsDense.lean:337`) — the real line with a
+Instantiations at Phase 9's `denseWindowFlow` (`PriorDefsDense.lean:339`) — the real line with a
 single predicate true exactly on `(0,1)`, which satisfies `SemanticPriorU` and `SemanticPriorS`
 outright and whose Prior-U antecedent is genuinely reachable. -/
 

@@ -453,32 +453,32 @@ citer files.
 
 ---
 
-### Phase 7: FormalSystem/Metalogic/Expressiveness/ [NOT STARTED]
+### Phase 7: FormalSystem/Metalogic/Expressiveness/ [COMPLETED]
 
 - **Goal:** The largest and most C20-exposed file set: 68 files, 10 of the 14 personal paths, and
   the five heaviest citation targets in the tree.
 - **Tasks:**
-  - [ ] Convert the 67 `## References` blocks under `FormalSystem/Metalogic/Expressiveness/` plus
-        `Metalogic/Expressiveness.lean`.
-  - [ ] Remove the 10 `~/Projects/Literature/sources/rabinovich_2014/…` personal paths (under
+  - [x] Convert the 67 `## References` blocks under `FormalSystem/Metalogic/Expressiveness/` plus
+        `Metalogic/Expressiveness.lean`. *(deviation: altered — this set also carries `### References` blocks inside declaration docstrings, which the plan's heading-level assumption missed; those were converted too.)*
+  - [x] Remove the 10 `~/Projects/Literature/sources/rabinovich_2014/…` personal paths (under
         `Kamp/`: `VecEACombinators`, `KMinusFaithfulRendering`, `KPlusFaithfulRendering`,
         `DedekindINF`, `ContentfulFaithfulBridge`, `Section5Correspondence`, and four under
         `EANegationFixFaithful/`). Each becomes the bib citation it stands in for —
         `* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], <locator>`.
-  - [ ] Remove the repo-relative `literature/…` pointers in this set (the
+  - [x] Remove the repo-relative `literature/…` pointers in this set (the
         `literature/Doets_1989_Monadic_Pi11_Theories.md` family). In most cases a
         `[doets1989], Section 1, Lemma 1.1` citation already precedes the path, making the path
         redundant — delete the path, keep the citation, convert the citation to the target form.
-  - [ ] Strip the "the companion markdown transcription is corrupt" tooling notes (20 occurrences
+  - [x] Strip the "the companion markdown transcription is corrupt" tooling notes (20 occurrences
         tree-wide, concentrated here). **Keep** the accompanying "Cited by PDF page" note — it is
-        substantive, telling a reader the locator convention.
-  - [ ] Strip the `plan v39 Phase 11` / `Report 01` / `negfix-refactor design … Phase 13/14a/16a`
+        substantive, telling a reader the locator convention. *(deviation: altered — two of them were KEPT, in `Kamp/EANegationFix/OnBuilder.lean` and `Kamp/Section5Correspondence.lean`, because each is the antecedent of a historical record about `chunk_00NN` citations that pointed into the corrupt conversion; deleting the clause would orphan the record.)*
+  - [x] Strip the `plan v39 Phase 11` / `Report 01` / `negfix-refactor design … Phase 13/14a/16a`
         task-history entries from `## References` blocks (the `NfZoneDepthK.lean` and
         `NfMultiAnchorBridge/` families). These are task-management metadata in a library
         docstring.
-  - [ ] `Metalogic/Expressiveness.lean:67,69` should already be settled by Phase 1's isolated
-        item; verify, do not re-decide.
-  - [ ] **Re-anchor is critical here.** This set contains the five heaviest C20 targets:
+  - [x] `Metalogic/Expressiveness.lean:67,69` should already be settled by Phase 1's isolated
+        item; verify, do not re-decide. *(verified: both re-pointed to `gabbay1994` in Phase 1 and unchanged since.)*
+  - [x] **Re-anchor is critical here.** *(deviation: altered — the re-anchor moved 430 citations across 66 citer files and then left 5 C20 failures, because four `Kamp/` modules cite lines INSIDE an edited leading docstring (`DedekindINF.lean:49-50`, `NegFixOneFaithful.lean:179`), which the plan's single-Δ model leaves unmoved by construction. They were re-located by content against HEAD and fixed by hand, and the tool now reports that class as `INSIDE` rather than passing over it silently.)* This set contains the five heaviest C20 targets:
         `Kamp/KPlusFaithful.lean` (72 citations into it), `Kamp/PriorINF.lean` (39),
         `Kamp/DedekindINF.lean` (38), `Kamp/KampPrior.lean` (30),
         `Kamp/KPlusFaithfulRendering.lean` (20). Run the tool once at the END of the phase over

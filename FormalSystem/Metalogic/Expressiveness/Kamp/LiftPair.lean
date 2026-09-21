@@ -38,13 +38,15 @@ all completions — exactly as `skelR` demonstrates end to end here.
 
 ## References
 
-- [rabinovich2014], Lemma 3.2(1) (p.4), Lemma 3.4 (p.5), Def 3.1
-  (p.4), Prop 4.3 ¬-case (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
-- `ConjInterleave.lean`: the landed both-directions merge `conjInterleave_iff` and its internal
-  `MergePair` / `mergedFormula` / sorted-union rank machinery reused by the lift.
-- `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`, `UnaryType`, `unaryHolds`,
-  `IntervalType`, `intervalHolds`.
-- `NormalForm.lean`: `nfCharacteristic` / `nf_characteristic_satisfies` (the characteristic type
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma 3.2(1) (p.4), Lemma 3.4
+  (p.5), Def 3.1 (p.4), Prop 4.3 ¬-case (p.6). Cited by PDF page; the companion markdown
+  transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ConjInterleave.lean` — the landed both-directions
+  merge `conjInterleave_iff` and its internal `MergePair` / `mergedFormula` / sorted-union rank
+  machinery reused by the lift.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallFormula.lean` — `ExistsForallFormula`,
+  `efSat`, `UnaryType`, `unaryHolds`, `IntervalType`, `intervalHolds`.
+* `NormalForm.lean`: `nfCharacteristic` / `nf_characteristic_satisfies` (the characteristic type
   of a point).
 
 OFF the live import path: nothing here is imported by `KampPrior.lean` or the completeness spine.

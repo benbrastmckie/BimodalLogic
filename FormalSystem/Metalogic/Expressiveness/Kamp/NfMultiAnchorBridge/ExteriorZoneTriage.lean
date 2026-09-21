@@ -13,7 +13,7 @@ The order-atom-only residue triage for the exterior-marked `hexclExt` obligation
 
 **Method** (Rabinovich 2014, Prop 4.3 re-flatten p.6-7 + Notation 5.2 interior bounding p.8;
 347 adjudication verdict (b)): a realized exterior witness's zone marking is FORCED by the
-depth-0 atom clause (`NormalForm.lean:210-211`) — the `SharedWitness.lean`
+depth-0 atom clause (`NormalForm.lean:212-211`) — the `SharedWitness.lean`
 transfer pattern run in reverse. Where the interior-slice lemma
 `kvE2_sepInterior_exterior_notRealizable` (SW:12627) reads zone-spec bits and derives order
 facts, the lemmas here read the TRUE order relations at a strictly-exterior `x1` and derive
@@ -33,7 +33,7 @@ consumes `kvE2_exterior_zone_triage` to split `hexclExt` per side.
 
 **R6 verification** (plan Risks): the guard split `¬ (x ≤ x1 ∧ x1 ≤ t) → x1 < x ∨ t < x1`
 needs a linear order on `M.carrier`; it is exposed as the instance
-`OrderedMonadicStructure.carrierOrder` (`MonadicFO.lean:103-109`), so `not_and_or` /
+`OrderedMonadicStructure.carrierOrder` (`MonadicFO.lean:104-109`), so `not_and_or` /
 `not_le` apply directly (used in `kvE2_exterior_zone_triage` below).
 
 Purely additive leaf module: imports SharedWitness for the zone constants; edits nothing
@@ -66,8 +66,8 @@ private theorem kvE2_sep_zFutT3_apply (i : Fin 3) :
     atom clause forces the fresh-coupling order-bit pair at index `i` to `(true, false)`
     whenever the fresh witness `x1` sits strictly below the env point `env3 i`.
     `(nf0ZoneSpec σ0 i).1` IS `σ0 (.order 0 i.succ _)` and `.2` IS
-    `σ0 (.order i.succ 0 _)` (`NfEFold.lean:153-156`); the atom clause
-    (`NormalForm.lean:210-211`) makes each the mirror of the true order relation. -/
+    `σ0 (.order i.succ 0 _)` (`NfEFold.lean:154-156`); the atom clause
+    (`NormalForm.lean:212-211`) makes each the mirror of the true order relation. -/
 theorem kvE2_zoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 : M.carrier) (env3 : Fin 3 → M.carrier)
     (σ0 : NormalForm sig 0 4)
@@ -153,7 +153,7 @@ theorem kvE2_exterior_zone_determination {sig : MonadicSignature} [Fintype sig.p
 /-- **Exterior triage** (the split Phase 8 consumes at the `hexclExt` discharge site,
     SW:12788 shape): a σ realized at a strictly-exterior `x1` lands in exactly one of the
     two genuine residue classes. The guard split `¬ (x ≤ x1 ∧ x1 ≤ t) → x1 < x ∨ t < x1`
-    rides the `LinearOrder M.carrier` instance (`MonadicFO.lean:103-109`, R6 verified). -/
+    rides the `LinearOrder M.carrier` instance (`MonadicFO.lean:104-109`, R6 verified). -/
 theorem kvE2_exterior_zone_triage {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)

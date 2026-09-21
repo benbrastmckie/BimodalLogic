@@ -52,7 +52,7 @@ relation"* and (ii) *"`∼_M` partitions `M` into intervals"* transport through
 
 The obstruction is **this tree's rendering, not Reynolds'**, and is recorded here as such.
 Reynolds' `M | [a,b]` is an *unordered* interval: the pair `(a,b)` is not presumed ordered and
-the interval is the same object either way round. `M.subinterval` (`MonadicFO.lean:215`) renders
+the interval is the same object either way round. `M.subinterval` (`MonadicFO.lean:216`) renders
 it as a `Subtype` over the predicate `min a b ≤ x ∧ x ≤ max a b`; under order reversal `min` and
 `max` exchange, and the dual's predicate is the *same two conjuncts in the opposite order*.
 
@@ -240,7 +240,7 @@ theorem temporalTruth_dual' {M : OrderedMonadicStructure sig} (atomMap : Formula
 
 /-! ## The Prior hypotheses
 
-`SemanticPriorU` and `SemanticPriorS` (`PriorDefsDense.lean:119`, `:138`) are exact mirrors of
+`SemanticPriorU` and `SemanticPriorS` (`PriorDefsDense.lean:121`, `:138`) are exact mirrors of
 one another and are both quantified over **all** formulas `p`, which is what makes the exchange
 go through: a Prior-S instance at `reflectTimeBoxOpaque p` is a Prior-U instance at `p` in the dual.
 -/

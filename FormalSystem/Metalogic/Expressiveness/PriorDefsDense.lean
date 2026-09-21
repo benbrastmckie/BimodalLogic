@@ -43,12 +43,12 @@ Unfolding the temporal operators with this tree's `TemporalTruth` (`Table.lean:1
   constructor's guard-first arguments);
 * `U(⊤,p)(t)` is therefore *"`p` holds throughout some initial stretch above `t`"*;
 * `F¬p(t)` is *"`¬p` somewhere above `t`"*;
-* `K⁺(A)(s)` is `kplus` (`Kamp/PriorINF.lean:86`): `¬A(s) ∧ ∀ u > s, ∃ r ∈ (s,u), A(r)`, so
+* `K⁺(A)(s)` is `kplus` (`Kamp/PriorINF.lean:88`): `¬A(s) ∧ ∀ u > s, ∃ r ∈ (s,u), A(r)`, so
   `K⁺(¬p)(s)` is `p(s) ∧ ∀ u > s, ∃ r ∈ (s,u), ¬p(r)`.
 
 The definitions below carry that unfolding literally, with the object-level negation read as
 metalevel negation (`TemporalTruth` interprets `Formula.neg` classically, so the two agree —
-`temporal_truth_neg`, `Kamp/Translation.lean:47`). Reading the negations metalevel keeps this
+`temporal_truth_neg`, `Kamp/Translation.lean:48`). Reading the negations metalevel keeps this
 module's imports at `PriorDefs.lean` and avoids an edge into the `Kamp/` subtree.
 
 ## What this carrier EXCLUDES (Rule 6)
@@ -94,8 +94,10 @@ valid in the canonical model (Reynolds §4 Corollary 1), not because their flow 
 
 ## References
 
-- [reynolds1992], Prior-U / Prior-S, printed p.168; the Prior-structure definition, printed p.176
-- Sibling integer hypotheses: `PriorDefs.lean` (`SemanticPriorUZ`, `SemanticPriorSZ`)
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], Prior-U / Prior-S, printed p.168; the Prior-structure definition, printed
+  p.176
+* Sibling integer hypotheses: `PriorDefs.lean` (`SemanticPriorUZ`, `SemanticPriorSZ`)
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness
@@ -110,7 +112,7 @@ every point and every formula.
 Read out: if `p` holds throughout some initial stretch above `t`, and `¬p` holds somewhere above
 `t`, then there is `s > t` with `p` throughout `(t,s)` such that at `s` either `¬p` holds, or `p`
 holds and `¬p` holds arbitrarily soon after `s` (the second disjunct is `K⁺(¬p)(s)`, i.e. `kplus`
-of `¬p`, `Kamp/PriorINF.lean:86`).
+of `¬p`, `Kamp/PriorINF.lean:88`).
 
 This is the semantic side of `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:382`). It is **not**
 `SemanticPriorUZ` (`PriorDefs.lean:28`) and does not imply it — see
@@ -368,9 +370,9 @@ theorem semanticPriorUZ_fails_on_dense :
 `SemanticPriorUZ`. The dense ray satisfies both dense hypotheses and refutes the integer one.
 
 Consequence for this development: every declaration pinned at `SemanticPriorUZ` /
-`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:357`),
-`prior_hasAttainedINF` (`Kamp/PriorINF.lean:230`), `prior_hasDedekindINF`
-(`Kamp/DedekindINF.lean:232`) and their consumers — has no dense instance obtained by reuse. -/
+`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`),
+`prior_hasAttainedINF` (`Kamp/PriorINF.lean:232`), `prior_hasDedekindINF`
+(`Kamp/DedekindINF.lean:230`) and their consumers — has no dense instance obtained by reuse. -/
 theorem semanticPriorU_not_implies_semanticPriorUZ :
     ∃ (M : OrderedMonadicStructure densePriorSig) (atomMap : Formula → densePriorSig.preds),
       SemanticPriorU M atomMap ∧ SemanticPriorS M atomMap ∧ ¬ SemanticPriorUZ M atomMap :=

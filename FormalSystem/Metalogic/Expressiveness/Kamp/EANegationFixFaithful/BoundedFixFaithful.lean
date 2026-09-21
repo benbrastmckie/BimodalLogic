@@ -30,8 +30,8 @@ sound but it is not free: recovering such an `r` is exactly what forces `HasAtta
 `negBoundedRightFix_iff` a second time, over and above the copy that Lemma 5.3 consumes. The module
 docstring at `EANegationFix/BoundedFix.lean:406-410` says so in as many words.
 
-`VVecEA2` (`VecEAFormula.lean:277`) is the type that **does** carry endpoint predicates:
-`VecEA2.holds` (`VecEAFormula.lean:268`) is
+`VVecEA2` (`VecEAFormula.lean:278`) is the type that **does** carry endpoint predicates:
+`VecEA2.holds` (`VecEAFormula.lean:269`) is
 `endpointLeft(z₀) ∧ endpointRight(z₁) ∧ bracket(z₀,z₁)`. At this type Rabinovich's `¬F₀(z₀)` is
 writable *as printed*, as a left-endpoint predicate on an otherwise trivial block. No first-`¬s`
 point has to be produced, so no attainment has to be assumed, and the disjunct is the paper's
@@ -49,19 +49,16 @@ The consequence for the carrier is the point of the exercise:
 Nothing in `EANegationFix/` is deleted, weakened, or edited. `negBoundedRightFix`,
 `negBoundedLeftFix` and their `_iff` lemmas stay live and stay consumed; everything below is a pure
 addition, and the attained carriers reach the faithful one through the landed shims
-`HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`),
-`HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`) and
-`HasAttainedSUP.toHasDedekindSUP` (`DedekindINF.lean:200`).
+`HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:170`),
+`HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:369`) and
+`HasAttainedSUP.toHasDedekindSUP` (`DedekindINF.lean:198`).
 
 `ADAPTED-FROM`: both `_iff` statements below were first pinned at `HasDedekindINF`. Re-basing
 `negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`) onto `HasFaithfulDedekindINF` moved the two
 carrier binders here, and nothing else: neither statement below opens the carrier, so there is no
 destructure to re-shape. The change is one clause per binder.
 
-Cite Rabinovich by **PDF page only**:
-`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
-Everything below cites **PDF p.9**. The companion `.md` conversion is corrupt and is never ground
-truth.
+Cite [rabinovich2014] by **PDF page only**. Everything below cites **PDF p.9**.
 
 ## Non-vacuity — what these statements exclude, and where the carrier is actually spent
 
@@ -91,7 +88,7 @@ sorry-free, axiom-clean and EXIT 0 exactly as a vacuous conclusion does.
 
 3. **What is NOT claimed.** No structure is exhibited here in which `K⁺(P)(z₀)` actually holds;
    that needs a formalized non-attained Dedekind-complete chain, which this tree does not build
-   (`DedekindINF.lean:49-50` states that absence explicitly). On Prior structures — the live goal
+   (`DedekindINF.lean:46-47` states that absence explicitly). On Prior structures — the live goal
    chain — attainment holds outright, so no current consumer can distinguish the faithful carrier
    from the attained one. What is established is that the faithful statements are provable with the
    weaker hypothesis, which is what the re-base needs and what the attained versions cannot supply.
@@ -180,7 +177,7 @@ noncomputable def rightFoldHead {n : Nat} (bf : BracketFormula n) : TemporalPred
 
     Disjuncts, exactly the two the paper prints:
     1. `¬F₀(z₀)` — as a left-endpoint predicate, needing no carrier;
-    2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:217`), the printed
+    2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:215`), the printed
        three-disjunct Lemma 5.3.
 
     Compare `negBoundedRightFix` (`EANegationFix/BoundedFix.lean:446`), which replaces disjunct (1)
@@ -199,7 +196,7 @@ noncomputable def negBoundedRightFixFaithful {n : Nat} (bf : BracketFormula n) :
     that changed is the carrier binder; the statement and the proof are otherwise unchanged. The
     swap is forced by `negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`), which now binds the
     faithful carrier, and it strictly weakens the hypothesis:
-    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`) runs one way only. -/
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:369`) runs one way only. -/
 theorem negBoundedRightFixFaithful_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasFaithfulDedekindINF M atomMap)
@@ -317,9 +314,9 @@ faithful statement is *derivable from the attained hypotheses* through the lande
 attained call sites lose nothing, while the converse direction is exactly what is not available. -/
 
 /-- The faithful Cor 5.4(1) is available wherever the attained one is: `HasAttainedINF` reaches
-    `HasDedekindINF` through `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`), and
+    `HasDedekindINF` through `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:170`), and
     `HasDedekindINF` reaches the faithful carrier through
-    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`). -/
+    `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:369`). -/
 theorem negBoundedRightFixFaithful_iff_of_attained {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasAttainedINF M atomMap)

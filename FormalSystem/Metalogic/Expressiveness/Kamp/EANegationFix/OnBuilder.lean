@@ -41,7 +41,7 @@ once, because nothing here names Rabinovich, a section, or a lemma number.
 
 **Carrier delta**: this file assumes `HasAttainedINF`, which is strictly stronger than the
 Dedekind completeness Rabinovich's Lemma 5.3 assumes — stronger even than `HasDefinableINF`,
-which `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`) machine-refutes as already
+which `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:281`) machine-refutes as already
 too
 strong. See the "Attained simplification" note directly below, and
 `Section5Correspondence.lean`'s docstring for the full exclusion.
@@ -56,7 +56,7 @@ vacuous and the pin disjunct is the plain `[¬P-segment, P-point]` prepend
 
 **This is a deviation from the paper, admitted here rather than hidden**: dropping the K+
 disjunct is exactly what makes the carrier too strong. It is sound on Prior structures
-(`prior_hasAttainedINF`, `PriorINF.lean:224`) and is the right thing at the live-path boundary,
+(`prior_hasAttainedINF`, `PriorINF.lean:226`) and is the right thing at the live-path boundary,
 but a result proved here is Lemma 5.3 *restricted to attained structures*, not Lemma 5.3.
 
 ## Base case
@@ -71,12 +71,13 @@ one pin disjunct whose tail is unsatisfiable-free — see `negChainOn_iff`.)
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Lemma 5.3, **PDF p.8**. Cite by page only: the
-  companion `.md` conversion is corrupt (it drops displayed equations — and Lemma 5.3 *is*
-  displayed equations — and inverts `k ≠ m` to `k = m`). The former `chunk_0014 md:3-41`
-  citation here pointed into that corrupt conversion and has been re-cited by page.
-- EANegation.lean: `neg_orderedPointsExist_is_vbracket` (existential form)
-- `Kamp/Section5Correspondence.lean`: the CI-protected Section 5 correspondence table
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma
+  5.3, **PDF p.8**. Cite by page only: the companion `.md` conversion is corrupt (it drops
+  displayed equations — and Lemma 5.3 *is* displayed equations — and inverts `k ≠ m` to `k = m`).
+  The former `chunk_0014 md:3-41` citation here pointed into that corrupt conversion and has been
+  re-cited by page.
+* EANegation.lean: `neg_orderedPointsExist_is_vbracket` (existential form)
+* `Kamp/Section5Correspondence.lean`: the CI-protected Section 5 correspondence table
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

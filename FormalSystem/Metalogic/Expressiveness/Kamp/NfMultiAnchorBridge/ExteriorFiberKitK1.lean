@@ -48,10 +48,10 @@ an env. G5 — every bridge below is a manual `constructor`/`intro`/`exact` step
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem": Lemma 3.2(2) split (chunk_0009, PDF p.4);
-  Def 7.13 multi-anchor `(z0,…,zk,∞)-∨→∃∀` conjunction form (chunk_0023) — the 7 zones ARE
-  the order-consistent witness positions of the three-anchor frame `w < x < t`.
-- The negfix-refactor design for the exterior carriers, Phase 13 (E1 — the zone-fiber kit).
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014]: Lemma
+  3.2(2) split (chunk_0009, PDF p.4); Def 7.13 multi-anchor `(z0,…,zk,∞)-∨→∃∀` conjunction form
+  (chunk_0023) — the 7 zones ARE the order-consistent witness positions of the three-anchor frame
+  `w < x < t`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

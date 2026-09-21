@@ -14,7 +14,7 @@ This module targets the `k`-generalized per-side exterior brackets
 the k=2 `habove`/`hbelow` hypothesis type `(χ : NormalForm sig 0 1)` at `NfEvalNf M 0 1`
 (ExteriorBracket.lean:463-466) becomes `NormalForm sig k 1` at `NfEvalNf M k 1`, with
 `nf_eval_unique M k` supplying determinacy and the Phase-1 bridge `nf_eval_nfk_iff_efold`
-(NfEFold.lean:627) supplying the fold characterization.
+(NfEFold.lean:628) supplying the fold characterization.
 
 This module lands the **design-invariant determinacy core** of that channel:
 
@@ -308,7 +308,7 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Deci
     atom fiber, in zone-4 spec `zs4`, with fresh depth-`k` projection `χ`. This is the
     depth-`k` replacement for the k=2 equational read `σ.2 (nf0Assemble zs4 χ σ.1)`
     (ExteriorBracket.lean:128-131): the depth-0 assembly is lossless ONLY at depth 0
-    (NfEFold.lean:549-561), so at depth `k` the read is existential over the full-arity
+    (NfEFold.lean:550-561), so at depth `k` the read is existential over the full-arity
     fiber — never through an assembled arity-1 re-encoding. -/
 noncomputable def kvESubBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}

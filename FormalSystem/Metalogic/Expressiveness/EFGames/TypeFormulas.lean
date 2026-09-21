@@ -30,7 +30,8 @@ two carrier types.
 
 ### References
 
-- [gabbay1994], Chapter 9, Theorem 6
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Theorem 6
 -/
 
 /-- If a gap is r-definable, then it is r'-definable for any r' ≥ r.
@@ -205,7 +206,8 @@ temporal formulas can be evaluated on it. We define:
 
 ### References
 
-- [gabbay1994], Chapter 9, Definitions 8.4, 8.8
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Definitions 8.4, 8.8
 -/
 
 /-- The extended structure M_r as an OrderedMonadicStructure.

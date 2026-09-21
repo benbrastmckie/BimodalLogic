@@ -104,7 +104,7 @@ reading of the axiom scheme at a structure — exactly as Phase 16 does for Prio
 
 `Axiom.sep` (`ProofSystem/Axioms.lean:456`) is stated with `Formula.kPlus` / `Formula.kMinus`.
 It is read here through **Phase 10.1's bridge**, cited by name: `Kamp.kPlus_formula_correct` and
-`Kamp.kMinus_formula_correct` (`Kamp/KPlusFaithful.lean:152`, `:170`), which identify
+`Kamp.kMinus_formula_correct` (`Kamp/KPlusFaithful.lean:155`, `:170`), which identify
 `Formula.kPlus` / `Formula.kMinus` with `Kamp.kplusOpen` / `Kamp.kminusOpen` — the faithful
 `Prop`-level readings, **not** this tree's stronger `kplus` / `kminus`, which carry an extra
 conjunct that is in neither Reynolds nor Rabinovich.
@@ -148,8 +148,8 @@ below as `quotientDenselyOrdered_epsTop_vacuous` rather than left to be rediscov
 - `NoGaps.lean` — Theorem 4 (D1), `no_gaps_dense_prior` / `no_gaps_dense_prior_left`
 - `Defs.lean` — `ContempEquivDense`, `IsContempEquivDense`, `EndsInGapOnRight` / `OnLeft`
 - `Dual.lean` — the order-duality transport used for the left-hand closed-interval lemma
-- `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:302`) — §5 Theorem 3
-- `Kamp.kplusOpen` / `Kamp.kminusOpen` (`Kamp/KPlusFaithful.lean:115`, `:126`) — Reynolds' `K⁺`/`K⁻`
+- `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:304`) — §5 Theorem 3
+- `Kamp.kplusOpen` / `Kamp.kminusOpen` (`Kamp/KPlusFaithful.lean:118`, `:126`) — Reynolds' `K⁺`/`K⁻`
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery

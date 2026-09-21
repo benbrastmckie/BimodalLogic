@@ -16,18 +16,16 @@ same disjunctive normal form, but with the two **endpoint predicates** `endpoint
 these two. This module closes exactly that gap; nothing else at this layer is rebuilt here.
 
 Already present at the `VVecEA2` layer and **reused, not reimplemented**: `disj`/`disj_holds`
-(`VecEAFormula.lean:288`/`:292`), `conjFull`/`conjFull_iff` (`VecEAConjFull.lean:498`/`:510`),
+(`VecEAFormula.lean:289`/`:292`), `conjFull`/`conjFull_iff` (`VecEAConjFull.lean:498`/`:510`),
 `trivialTrue` (`VecEAConjFull.lean:549`), `enrichEndpoints`
 (`NfMultiAnchorBridge/ExteriorBracket.lean:652`), `disjList`
 (`NfMultiAnchorBridge/NavigatedSpine.lean`), `singleton`
-(`NfMultiAnchorBridge/CarrierK1V.lean:2152`), `conjStruct` (`VecEAClosure.lean:222`), and
+(`NfMultiAnchorBridge/CarrierK1V.lean:2152`), `conjStruct` (`VecEAClosure.lean:223`), and
 `prependAllVec` (`KPlusFaithfulRendering.lean:100`).
 
 ## Source correspondence
 
-Cite Rabinovich by **PDF page only**:
-`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
-The companion `.md` conversion is corrupt and is never ground truth.
+Cite [rabinovich2014] by **PDF page only**.
 
 * **PDF p.6**, Propositions 4.2 and 4.3: the `∨∃⃗∀` fragment is closed under conjunction,
   disjunction and existential quantification. `conjEverywhere` is the conjunction-closure

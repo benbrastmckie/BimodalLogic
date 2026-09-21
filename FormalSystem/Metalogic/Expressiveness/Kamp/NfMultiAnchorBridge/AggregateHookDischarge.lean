@@ -13,7 +13,7 @@ Builds the aggregate ∀-qnf population encoding for the `KampPrior.lean` `| 1 =
 discharges the three arm-correctness hooks (past / diagonal / future) as separate green citable
 lemmas at match arms k=0 (`sub_nf : NormalForm sig 1 2`) and k=1 (`sub_nf : NormalForm sig 2 2`),
 each concluding in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(`KampPrior.lean:1154`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:685`).
+(`KampPrior.lean:1155`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:686`).
 
 ## Phase-1 adjudication record (R1/R2/aggregation verdicts — BINDING)
 
@@ -29,8 +29,8 @@ POINT slot — §5 bracket notation, Rabinovich 2014 PDF p.7). Any population `s
 positive interior fiber therefore escapes the pair shape. The primary assembly (Route V) builds
 the arm at the `VVecEA2` level — interior-positive fibers occupy bracket WITNESS slots over
 arrangements, exactly the `bracketEndCharK1v` device (`CarrierK1V.lean:435`) one arity down —
-and enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:451) /
-`VVecEA2.translateLeft_correct` (VecEATranslation.lean:549). The DoD binds only the
+and enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:452) /
+`VVecEA2.translateLeft_correct` (VecEATranslation.lean:550). The DoD binds only the
 skeleton-shaped conclusions, which Route V produces directly.
 
 **R2 verdict (A_diag_correct per-point hooks undischargeable; additive diag variant landed).**
@@ -49,7 +49,7 @@ sub_nf`), which is the shape downstream assembly consumes. The hooks are thereby
 the sense that binds (conclusion, not binder).
 
 **Aggregation verdict (plan deviation, recorded per R7).** The plan's Phase-2 aggregation
-combinator `VVecEA2.conjStruct` (VecEAClosure.lean:195) is ONE-directional (its `n1+1, n2+1`
+combinator `VVecEA2.conjStruct` (VecEAClosure.lean:196) is ONE-directional (its `n1+1, n2+1`
 case discards the second bracket's content — `conj_struct_holds` proves only `holds → holds →
 holds` of the conjunction, never the converse), and there is no Prop 4.2 negation closure to
 use: the declaration that once presented itself as one was MODEL-DEPENDENT (existential `∃ v'`,
@@ -70,7 +70,7 @@ strictly fewer moving parts.
 ## The six target statements (Phase 1 freeze — shapes BINDING for Phases 2-5)
 
 Conclusion shapes copied verbatim from the `kampPrior_site_trichotomy` disjuncts
-(KampPrior.lean:685-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
+(KampPrior.lean:686-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
 under the Prior-guarded skeleton. Delivered by Phase 3 (k=0) and Phase 5 (k=1):
 
 ```
@@ -102,12 +102,10 @@ exclusion type, never `TemporalPred.top`. G5 — every Cor 5.4 chain step below 
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem": Cor 5.4 (the all-order-patterns clause — the
-  population match IS its "for every order pattern" clause), Def 3.1 (order-zone channel),
-  Lemma 3.2(2) + §5 bracket notation (two-fixed-endpoint framing), Prop 3.5 (∃-witness →
-  Until/Since folding mechanism).
-- The aggregate quantEnd/hook-discharge design: the R1/R2/aggregation verdicts are transcribed
-  verbatim into the Phase-1 adjudication record above.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014]: Cor
+  5.4 (the all-order-patterns clause — the population match IS its "for every order pattern"
+  clause), Def 3.1 (order-zone channel), Lemma 3.2(2) + §5 bracket notation (two-fixed-endpoint
+  framing), Prop 3.5 (∃-witness → Until/Since folding mechanism).
 -/
 
 set_option linter.style.longFile 2300
@@ -1681,8 +1679,8 @@ end AggDiagK0
 /-! ## Phase 3 — k=0 hook discharge: the three arm lemmas (match arm k=0)
 
 The three green citable lemmas in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(KampPrior.lean:1154) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
-corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:685-684).
+(KampPrior.lean:1155) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
+corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:686-684).
 `h_UZ`/`h_SZ` are carried (unused — the k=0 aggregates need no Prior hypotheses, matching the
 k≤1 rungs `bracketEndChar_kv_correct_{zero,one}_prior`) so the statements slot directly under
 the Prior-guarded skeleton. These discharge the P4/P5 `h_quant` hooks and the `A_diag_correct`

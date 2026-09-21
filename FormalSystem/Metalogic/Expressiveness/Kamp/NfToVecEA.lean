@@ -27,7 +27,8 @@ decomposes by order direction.
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Section 5 (base case)
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
+  Section 5 (base case)
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

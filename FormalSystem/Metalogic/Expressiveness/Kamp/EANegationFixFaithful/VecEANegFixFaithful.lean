@@ -39,10 +39,10 @@ and, immediately below it, the De Morgan fold:
 
 The two-free-variable case those steps invoke is Proposition 4.2 itself — stated on the same page
 as holding **over Dedekind complete chains**, which is precisely the carrier this module's `_iff`
-lemmas are anchored to (via `HasFaithfulDedekindINF`, `KPlusFaithful.lean:322`) rather than the
+lemmas are anchored to (via `HasFaithfulDedekindINF`, `KPlusFaithful.lean:325`) rather than the
 strictly stronger attainment the landed chain assumes. Lemma 5.1's recursion, PDF **pp.10-11**,
 supplies the bracket leg and is consumed opaquely here through `negFixListFaithful_iff`
-(`NegFixListFaithful.lean:332`).
+(`NegFixListFaithful.lean:331`).
 
 ## What the migrated type buys at the lift
 
@@ -64,23 +64,23 @@ deleting the paper's limit case; that is the failure mode these two declarations
 
 ## Carrier discipline
 
-Every `_iff` lemma here assumes `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) and nothing
+Every `_iff` lemma here assumes `HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`) and nothing
 else — no `HasDedekindSUP`, no `HasAttained*`. That is Rabinovich's eq (5.2) dichotomy at the
 *source's* `K⁺`, one strengthening step weaker than the `HasDedekindINF` this module assumed
 before the re-base. The only shim used is `HasAttainedINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:384`, the direct composite landed with the faithful carrier), in the
+(`KPlusFaithful.lean:387`, the direct composite landed with the faithful carrier), in the
 attained → faithful direction, in `VVecEA2.negFixFaithful_iff_of_attained`. There is no use of a
 faithful → attained shim anywhere in this module; such a use would be a strengthening, not a lift.
 
 **ADAPTED-FROM**: the same declarations at the previous pin `HasDedekindINF`
-(`DedekindINF.lean:136`). Nothing was added, removed or renamed here; four hypothesis binders
+(`DedekindINF.lean:134`). Nothing was added, removed or renamed here; four hypothesis binders
 moved to the weaker carrier, the shim moved to the direct composite, and one indispensability
 artifact moved its `kplus` hypothesis to the `kplusOpen` the definition actually reads.
 
 ## References
 
-- [rabinovich2014], *A Proof of Kamp's Theorem*, Propositions 4.2 and 4.3, PDF p.6; Lemma 5.1,
-  PDF pp.10-11.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*,
+  Propositions 4.2 and 4.3, PDF p.6; Lemma 5.1, PDF pp.10-11.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -282,21 +282,21 @@ theorem VecEA2.negFixFaithful_of_bracket {sig : MonadicSignature}
 
 /-- **The limit gate survives the lift.** The disjunct the faithful recursion adds and the attained
     one cannot have — Case 1, `K⁺(¬β₁)(z₀)`, PDF p.9, carried by `kplusOpenLeftBlock`
-    (`KPlusFaithfulRendering.lean:304`) — still forces `vea.negFixFaithful` at the top of the chain.
+    (`KPlusFaithfulRendering.lean:302`) — still forces `vea.negFixFaithful` at the top of the chain.
 
     Carrier-free: the hypothesis is `kplusOpen` at `z₀` itself, not a carrier assumption that
     would produce it. The hypothesis is stated at the **source's** `K⁺` — Rabinovich's Definition
-    (3), PDF p.3 — because `kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:304`) is what Case 1's
+    (3), PDF p.3 — because `kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:302`) is what Case 1's
     disjunct actually reads. It previously bound the tree's `kplus`, one conjunct stronger; that
     version stayed true only via `kplusOpen_of_kplus`, and an indispensability artifact stated at
     a gate strictly stronger than the one the definition carries certifies less than it appears
     to. Re-pointed here for the same reason `negFixListFaithful_case1_is_indispensable`
-    (`NegFixListFaithful.lean:541`) was re-pointed: the two are comparable, so re-pointing
+    (`NegFixListFaithful.lean:540`) was re-pointed: the two are comparable, so re-pointing
     strengthens rather than duplicates. Every consumer holding the old `kplus` form recovers this
     one by `kplusOpen_of_kplus`.
 
     This is the Phase-8 counterpart of `negFixListFaithful_case1_is_indispensable`
-    (`NegFixListFaithful.lean:541`): that one shows the limit disjunct cannot be absorbed by its
+    (`NegFixListFaithful.lean:540`): that one shows the limit disjunct cannot be absorbed by its
     neighbours *inside* the recursion, this one shows it is not quietly discarded *by the lift*.
     Together they exclude the two ways a three-disjunct recursion degrades into a two-disjunct one
     without any statement in this module becoming false. -/
@@ -319,10 +319,10 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
 /-! ## Availability shim (attained → faithful, never the reverse) -/
 
 /-- The faithful fold is available wherever the attained one is, and needs only the INF half:
-    `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:384`) supplies the carrier, and
+    `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:387`) supplies the carrier, and
     `HasAttainedSUP` — which `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`) requires —
     is not needed at all. Mirrors `negFixListFaithful_iff_of_attained`
-    (`NegFixListFaithful.lean:573`).
+    (`NegFixListFaithful.lean:572`).
 
     The shim runs attained → faithful. No declaration in this module runs it in the opposite
     direction; a faithful → attained use would be a strengthening, not a lift. -/

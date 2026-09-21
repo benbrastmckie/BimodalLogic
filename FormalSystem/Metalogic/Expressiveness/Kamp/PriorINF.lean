@@ -40,8 +40,10 @@ holds outright, and the K+ disjunct is vacuous.
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Section 5, eq (5.2)
-- [rabinovich2014], Proposition 4.2 (negation closure uses INF/SUP)
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
+  Section 5, eq (5.2)
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.2 (negation closure
+  uses INF/SUP)
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -87,10 +89,10 @@ arithmetic and is retained: `(⊤ U ¬P)(t) = ∃ s > t, ∀ r ∈ (t,s), ¬P(r)
 `t`, not `F(¬P)` — so `¬(⊤ U ¬P)(t) = ∀ s > t, ∃ r ∈ (t,s), P(r)`, "`P` is dense above `t`".
 That last formula **is** the sources' `K⁺`. `kplus` conjoins `¬P(t)` to it. The extra conjunct is
 this tree's addition; it is not attributable to either paper, and it is what
-`hasDedekindINF_fails_of_interval_witness` (`Kamp/DedekindINFDense.lean:455`) turns on.
+`hasDedekindINF_fails_of_interval_witness` (`Kamp/DedekindINFDense.lean:457`) turns on.
 
 **`kplus` is not edited.** It is internally coherent with `kplusFormula` — `kplus_formula_correct`
-(`Kamp/KPlusBracketRendering.lean:162`) proves them equivalent — and the discrete pipeline depends
+(`Kamp/KPlusBracketRendering.lean:161`) proves them equivalent — and the discrete pipeline depends
 on both. The
 mismatch is external: the carrier apparatus built on `kplus` transcribes a different `K⁺` from the
 one the axioms are stated with. `Kamp/KPlusFaithful.lean` supplies the faithful carrier beside it

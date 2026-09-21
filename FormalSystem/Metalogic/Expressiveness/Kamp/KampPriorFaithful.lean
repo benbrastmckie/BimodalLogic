@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.ZetaUniformExtractFaithful
 # The `kampPriorExpressiveCompleteness` spine at the faithful eq (5.2) carrier
 
 The top of the expressive-completeness spine, restated with `SemanticPriorUZ` / `SemanticPriorSZ`
-replaced by `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:322` and
+replaced by `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP` (`Kamp/KPlusFaithful.lean:325` and
 its `Since`-dual) — Rabinovich 2014's eq (5.2), PDF p.8, at the source's own `K⁺` rather than at
 this tree's `kplus`.
 
@@ -31,15 +31,15 @@ kampPriorExpressiveCompleteness            (KampPrior.lean)
                  ├─ nf_nvar_exist_depth0_tl_fn_correct   — carrier-free
                  ├─ kampPrior_case1_arm_k0     (:288)  →  the three k = 0 arms
                  ├─ kampPrior_case1_arm_k1     (:318)  →  the three k = 1 arms
-                 └─ kampArm_zeta               (ZetaUniformExtract.lean:769)   [k ≥ 2]
+                 └─ kampArm_zeta               (ZetaUniformExtract.lean:772)   [k ≥ 2]
 ```
 
 The three leaves are all landed at the faithful carrier already: the six arm lemmas in
 `NfMultiAnchorBridge/ArmLemmasFaithful.lean`, and `kampArm_zeta_faithful`
-(`ZetaUniformExtractFaithful.lean:522`). Nothing below is a new proof — each declaration re-runs
+(`ZetaUniformExtractFaithful.lean:524`). Nothing below is a new proof — each declaration re-runs
 its attained original's body with faithful leaves substituted.
 
-`kampPrior_case1_trichotomy_assemble` (`KampPrior.lean:271`) needs no sibling: it takes the three
+`kampPrior_case1_trichotomy_assemble` (`KampPrior.lean:272`) needs no sibling: it takes the three
 disjunct biconditionals as plain hypotheses and mentions no carrier, so it is reused verbatim at
 both `k = 0` and `k = 1`.
 
@@ -67,7 +67,7 @@ statements correspond.
 never consumed: `VVecEA2.negFixFaithful_iff` needs `HasFaithfulDedekindINF` alone. It is bound so
 these statements stay shape-parallel with their attained originals and with the consuming
 obligation `KampFaithfulExpressiveCompleteness`
-(`Expressiveness/PriorExpressivenessDense.lean:169`).
+(`Expressiveness/PriorExpressivenessDense.lean:171`).
 
 ## Nothing is removed and nothing is renamed
 
@@ -94,7 +94,7 @@ open FormalSystem.Metalogic.Expressiveness.Separation
 /-! ## 1. The depth-`(k+1)` characteristic assembly -/
 
 /-- **Correctness of `nfSuccCharFormula` at the faithful carrier** — the faithful sibling of
-`nf_succ_char_formula_correct` (`KampPrior.lean:93`). Same formula, same proof; only the carrier
+`nf_succ_char_formula_correct` (`KampPrior.lean:94`). Same formula, same proof; only the carrier
 binders on `h_exist_correct` and on the conclusion move. -/
 theorem nf_succ_char_formula_correct_faithful
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -157,7 +157,7 @@ theorem nf_succ_char_formula_correct_faithful
 /-! ## 2. The two per-depth arm closures -/
 
 /-- **Ambient-`k = 0` arm closure at the faithful carrier** — the faithful sibling of
-`kampPrior_case1_arm_k0` (`KampPrior.lean:293`). The arm formula is literally the same
+`kampPrior_case1_arm_k0` (`KampPrior.lean:294`). The arm formula is literally the same
 `Formula.or` of the three `k = 0` arm formulas: those are `M`-independent by construction and
 unchanged by the re-base. -/
 theorem kampPrior_case1_arm_k0_faithful
@@ -187,7 +187,7 @@ theorem kampPrior_case1_arm_k0_faithful
     (kampArm_future_k0_correct_faithful atomMap h_surj sub_nf M h_INF h_SUP t)
 
 /-- **Ambient-`k = 1` arm closure at the faithful carrier** — the faithful sibling of
-`kampPrior_case1_arm_k1` (`KampPrior.lean:325`). Unlike the `k = 0` case the arm formula is a
+`kampPrior_case1_arm_k1` (`KampPrior.lean:326`). Unlike the `k = 0` case the arm formula is a
 **different term**: the two off-diagonal arms carry the `negFixFaithful` population fold. The
 diagonal arm formula `kampArmDiagK1` is unchanged. -/
 theorem kampPrior_case1_arm_k1_faithful
@@ -219,7 +219,7 @@ theorem kampPrior_case1_arm_k1_faithful
 /-! ## 3. The all-depth all-arity existential conversion -/
 
 /-- **All-depth all-arity existential conversion at the faithful carrier** — the faithful sibling
-of `nf_nvar_exist_all_depths` (`KampPrior.lean:372`). Structure identical to the original: `Nat`
+of `nf_nvar_exist_all_depths` (`KampPrior.lean:373`). Structure identical to the original: `Nat`
 recursion on the depth, the `n ≤ 1` domain restriction matched alongside `n` so the arity-`≥ 2` arm
 is discharged by the restriction rather than left open (`sorryAx` is tracked per-declaration, not
 per-path), and the `| 1 =>` arm split three ways — `k = 0`, `k = 1`, and the ζ wire for `k ≥ 2`. -/
@@ -330,7 +330,7 @@ theorem nf_nvar_exist_all_depths_faithful
       absurd hn2 (by omega)
 
 /-- Convenience wrapper at the faithful carrier — the faithful sibling of
-`nfNvarExistAllDepthsFn` (`KampPrior.lean:557`). -/
+`nfNvarExistAllDepthsFn` (`KampPrior.lean:558`). -/
 noncomputable def nfNvarExistAllDepthsFnFaithful
     {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
@@ -339,7 +339,7 @@ noncomputable def nfNvarExistAllDepthsFnFaithful
   (nf_nvar_exist_all_depths_faithful atomMap h_surj k n hn sub_nf).choose
 
 /-- Correctness of the convenience wrapper at the faithful carrier — the faithful sibling of
-`nf_nvar_exist_all_depths_fn_correct` (`KampPrior.lean:565`). -/
+`nf_nvar_exist_all_depths_fn_correct` (`KampPrior.lean:566`). -/
 theorem nf_nvar_exist_all_depths_fn_correct_faithful
     {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
@@ -356,7 +356,7 @@ theorem nf_nvar_exist_all_depths_fn_correct_faithful
 /-! ## 4. NF-to-temporal translation and the main theorem -/
 
 /-- **Depth-`k` arity-1 NF characterizability at the faithful carrier** — the faithful sibling of
-`nfCharacterizableTemporalPrior` (`KampPrior.lean:597`). -/
+`nfCharacterizableTemporalPrior` (`KampPrior.lean:598`). -/
 noncomputable def nfCharacterizableTemporalPriorFaithful
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -412,7 +412,7 @@ noncomputable def nfCharacterizableTemporalPriorFaithful
 
 /-- **`{U,S}` expressive completeness at the faithful eq (5.2) carrier** — the faithful sibling of
 `kampPriorExpressiveCompleteness` (`KampPrior.lean`), and the witness that discharges
-`KampFaithfulExpressiveCompleteness` (`Expressiveness/PriorExpressivenessDense.lean:169`).
+`KampFaithfulExpressiveCompleteness` (`Expressiveness/PriorExpressivenessDense.lean:171`).
 
 Proof structure identical to the original — set `k = quantifierDepth psi`, characterize each
 depth-`k` NF, take the disjunction over the NFs consistent with `psi`, and transfer along

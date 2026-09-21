@@ -22,7 +22,8 @@ from `VecEAFormula.lean` to the temporal translation machinery in
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Proposition 3.5
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
+  Proposition 3.5
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

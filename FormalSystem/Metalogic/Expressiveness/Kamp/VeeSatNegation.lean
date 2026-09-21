@@ -40,11 +40,13 @@ stays OFF the live import path.
 
 ## References
 
-- [rabinovich2014], Proposition 4.3 (p.6), Lemma 3.4 (p.5). Cited by
-  PDF page; the companion markdown transcription is corrupt.
-- `EFSatNegationGeneral.lean`: `efSat_negation_generalFin` (β at the `∨∃∀` type).
-- `VeeConj.lean`: `veeConjFin`, `veeConjFin_iff` (Lemma 3.4, ∧-part).
-- `VeeExistsForall.lean`: `VeeExistsForall`, `veeSatFin`, `veeSat_nil`.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.3 (p.6), Lemma 3.4
+  (p.5). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/EFSatNegationGeneral.lean` —
+  `efSat_negation_generalFin` (β at the `∨∃∀` type).
+* `VeeConj.lean`: `veeConjFin`, `veeConjFin_iff` (Lemma 3.4, ∧-part).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForall.lean` — `VeeExistsForall`,
+  `veeSatFin`, `veeSat_nil`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

@@ -37,6 +37,12 @@ REFUSALS. The tool refuses rather than guesses, and reports what it refused:
     describe it) -- rerun that file under `--exact`;
   * under `--exact`, a citation whose target line was deleted outright.
 
+It also reports, as `INSIDE`, a citation that points INTO an edited file's leading
+docstring. The single-Δ model shifts only what lies BELOW that docstring, so such a
+citation is left where it was -- which is wrong whenever the edit added or removed
+lines above it inside the docstring. Check those by hand, or rerun that one target
+under `--exact`.
+
 C20's RESOLVER QUIRK. C20 matches an *unqualified* citation (`Foo.lean:12`) on
 basename, and reports a citation whose basename is ambiguous, or names no live file,
 as `unverifiable` rather than failed. `unverifiable` is not a pass. This tool
@@ -196,8 +202,15 @@ def delta_map(old: list[str], new: list[str], path: str):
         )
 
     def f(n: int):
-        return n + delta if n > end else n
+        if n <= end:
+            # A citation INTO the edited docstring. The single-Δ model says nothing about
+            # it: the edit may have added or removed lines above it, inside the docstring.
+            # Report it rather than silently leaving it where it was.
+            f.inside.append(n)
+            return n
+        return n + delta
 
+    f.inside = []
     return f, "Δ=%+d below line %d" % (delta, end)
 
 
@@ -254,6 +267,7 @@ def reanchor(edited: list[str], rev: str, exact: bool, dry_run: bool, quiet: boo
     rewritten = 0
     touched: list[str] = []
     lost: list[str] = []
+    inside: list[str] = []
     for citer in citer_files():
         text = open(citer, encoding="utf-8", errors="replace").read()
         out_lines = []
@@ -266,7 +280,12 @@ def reanchor(edited: list[str], rev: str, exact: bool, dry_run: bool, quiet: boo
                 target = resolve(ref)
                 if target is None or target not in maps:
                     return m.group(0)
-                new_n = maps[target](int(num))
+                fn = maps[target]
+                new_n = fn(int(num))
+                if new_n == int(num) and getattr(fn, "inside", None) and int(num) in fn.inside:
+                    inside.append("%s:%d -> %s:%s (points INTO the edited docstring; the "
+                                  "single-Δ model leaves it unmoved -- check it by hand, or "
+                                  "rerun that target under --exact)" % (citer, lineno, ref, num))
                 if new_n is None:
                     lost.append("%s:%d -> %s:%s (target line was deleted)"
                                 % (citer, lineno, ref, num))
@@ -294,7 +313,9 @@ def reanchor(edited: list[str], rev: str, exact: bool, dry_run: bool, quiet: boo
         print("REFUSED %s -- %s" % (path, why), file=sys.stderr)
     for l in lost:
         print("LOST    %s" % l, file=sys.stderr)
-    return 1 if (refused or lost) else 0
+    for l in inside:
+        print("INSIDE  %s" % l, file=sys.stderr)
+    return 1 if (refused or lost or inside) else 0
 
 
 def selftest(rev: str) -> int:
@@ -322,6 +343,11 @@ def selftest(rev: str) -> int:
 
     print("== selftest 2: synthetic +3 on a heavily-cited file ==")
     target = "FormalSystem/Metalogic/Expressiveness/Kamp/KPlusFaithful.lean"
+    if clean:
+        # The probe measures a +3 shift against `rev`; if the file already differs from
+        # `rev` the measured Δ is that difference plus 3, and the probe means nothing.
+        print("  SKIP: working tree has modified .lean files; run on a clean tree")
+        return 0 if ok else 1
     if not os.path.exists(target):
         print("  SKIP: %s absent" % target)
         return 0 if ok else 1

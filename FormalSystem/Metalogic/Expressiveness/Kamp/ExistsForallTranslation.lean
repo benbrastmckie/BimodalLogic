@@ -47,14 +47,19 @@ biconditional against `efSat`, and lifts the result through `VeeExistsForall` (D
 
 ## References
 
-- [rabinovich2014], Proposition 3.5 (p.5), Definition 3.3 (p.4).
-  Cited by PDF page; the companion markdown transcription is corrupt.
-- `PerFormulaRender.lean`: `unaryToFormulaFin`, `unaryToFormulaFin_correct`.
-- `UntilSinceChainSpec.lean`: `buildRight_spec_iff_chain`, `buildLeft_spec_iff_chain`.
-- `Translation.lean`: `translateEF1`, `translateEF1_correct`.
-- `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`.
-- `VeeExistsForall.lean`: `VeeExistsForall`, `veeSat`.
-- `ExistsForallNF.lean`: `translateVEF1`, `translateVEF1_correct`.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 3.5 (p.5), Definition
+  3.3 (p.4). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/PerFormulaRender.lean` — `unaryToFormulaFin`,
+  `unaryToFormulaFin_correct`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/UntilSinceChainSpec.lean` —
+  `buildRight_spec_iff_chain`, `buildLeft_spec_iff_chain`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/Translation.lean` — `translateEF1`,
+  `translateEF1_correct`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallFormula.lean` — `ExistsForallFormula`,
+  `efSat`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForall.lean` — `VeeExistsForall`, `veeSat`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallNF.lean` — `translateVEF1`,
+  `translateVEF1_correct`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

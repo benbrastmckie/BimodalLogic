@@ -37,7 +37,8 @@ existence proof relies on:
 
 ## References
 
-- [gabbay1994], Chapter 9, Definition 8.8
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Definition 8.8
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

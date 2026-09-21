@@ -68,10 +68,9 @@ G5 — every bridge is a manual `constructor`/`intro`/`exact` step. FORBIDDEN
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Cor 5.4 (chunks 0014-0015); Lemma 3.2(2)
-  coincident-witness collapse (chunk_0009); Lemma 7.6 gluing (chunk_0021).
-- The negfix-refactor design for the exterior carriers, Phase 16a: the dispatcher convention
-  and channel split restated in the Structure section above.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Cor
+  5.4 (chunks 0014-0015); Lemma 3.2(2) coincident-witness collapse (chunk_0009); Lemma 7.6 gluing
+  (chunk_0021).
 -/
 
 set_option linter.style.longFile 1800
@@ -92,7 +91,7 @@ variable (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
 
 Order-bit rows of `qnf.1` at env `[w, x, t]`. The exterior rows are the delivered
 `navDOrderRow` (`w < x < t`, ExteriorNavPastK1.lean:841) and `navROrderRow`
-(`x < t < w`, ExteriorNavFutK1.lean:1248). The three new rows below cover the point
+(`x < t < w`, ExteriorNavFutK1.lean:1247). The three new rows below cover the point
 and interior positions. Conjunct ORDER is load-bearing: `aggOdRowInt`'s conjuncts are
 exactly the six hypotheses of `bracketEndChar_kv_correct_one_prior` in order. -/
 
@@ -596,7 +595,7 @@ theorem aggOdZone3F_bot_eval_false [Finite sig.preds] (M : OrderedMonadicStructu
 
 The point channels collapse (Lemma 3.2(2)) to the fixed-anchor arity-2 evaluation
 `NfEvalNf M 1 2 [x, t] sub_nf` — a TWO-PIN object. The delivered `agg2Past` carrier
-(AggregateHookDischarge.lean:495) already packages exactly the right fiber content
+(AggregateHookDischarge.lean:493) already packages exactly the right fiber content
 (endpoint packs at `x`/`t` + interior arrangement bracket + gate); the delivered
 correctness `agg2Past_holdsRight_iff` reads it ONE-FREE-VARIABLE (`∃ x < t` folded at
 `t`). Here we prove the POINTWISE 2-pin reading at the fixed pair `(x, t)` under the
@@ -1239,7 +1238,7 @@ over ALL `qnf : NormalForm sig 1 3` (Fintype at NormalForm.lean) of the per-qnf
 dispatcher `CAggOd qnf` on bit-true qnf and its Prop 4.2/4.3 De Morgan negation
 `(CAggOd qnf).negFix` on bit-false qnf, with `VVecEA2.trivialTrue` as the neutral
 element. `negFix_iff` is gated on attained INF/SUP; on Prior structures these are
-`prior_hasAttainedINF h_UZ` / `prior_hasAttainedSUP h_SZ` (PriorINF.lean:224/:269). -/
+`prior_hasAttainedINF h_UZ` / `prior_hasAttainedSUP h_SZ` (PriorINF.lean:226/:269). -/
 
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Pin bridge (Since direction): `holdsRight` at the origin `t` is the pointwise
@@ -1530,7 +1529,7 @@ noncomputable def kampArmPastK1 (sub_nf : NormalForm sig 2 2) : Formula :=
 
 /-- **k=1 past-arm hook discharge** (hook-discharge lemma 5/6): the past-arm formula
     realizes the past disjunct of `kampPrior_site_trichotomy` at match arm k=1.
-    Enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:451,
+    Enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:452,
     Route V — Phase-1 R1 verdict); pins bridged by `aggOd_holdsRight_iff_holds`;
     per-pin content = `conjFull_iff` + atom locus + `aggPop1_correct` + the
     definitional depth-(1+1) seam. Unlike k=0, the Prior hypotheses are USED
@@ -1560,7 +1559,7 @@ noncomputable def kampArmFutureK1 (sub_nf : NormalForm sig 2 2) : Formula :=
 /-- **k=1 future-arm hook discharge** (hook-discharge lemma 6/6): the future-arm
     formula realizes the future disjunct of `kampPrior_site_trichotomy` at match arm
     k=1. Enters the skeleton via `VVecEA2.translateLeft_correct`
-    (VecEATranslation.lean:549, Route V — dual); pins bridged by
+    (VecEATranslation.lean:550, Route V — dual); pins bridged by
     `aggOd_holdsLeft_iff_holds`; the population rides `aggPop1F_correct` (the
     `aggOdSwap12` transport of the SAME dispatcher — see the §10 decision record). -/
 theorem kampArm_future_k1_correct (sub_nf : NormalForm sig 2 2) :

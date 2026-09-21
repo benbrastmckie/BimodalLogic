@@ -63,10 +63,12 @@ forward direction does not:
 
 ## References
 
-- [rabinovich2014], Lemma 3.2 (p.4). Cited by PDF page; the
-  companion markdown transcription is corrupt.
-- `ExistsForallFormula.lean`: the Def 3.1 object `ExistsForallFormula` and its `efSat` semantics.
-- `VeeExistsForall.lean`: the disjunctive dual and Lemma 3.4 disjunction closure.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma 3.2 (p.4). Cited by PDF
+  page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallFormula.lean` — the Def 3.1 object
+  `ExistsForallFormula` and its `efSat` semantics.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForall.lean` — the disjunctive dual and
+  Lemma 3.4 disjunction closure.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

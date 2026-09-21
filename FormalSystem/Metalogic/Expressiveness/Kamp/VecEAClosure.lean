@@ -15,7 +15,8 @@ under disjunction, conjunction, and existential quantification.
 
 ## References
 
-- [rabinovich2014], Lemma 3.2 (pp. 3-4), Lemma 3.4 (p. 4)
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma 3.2 (pp. 3-4), Lemma 3.4 (p.
+  4)
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

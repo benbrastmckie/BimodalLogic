@@ -11,17 +11,14 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithful
 # The `HasFaithfulDedekindSUP` / Since mirror of the eq (5.2) primitives (Rabinovich, PDF p.8)
 
 `KPlusFaithfulRendering.lean` restores Rabinovich's printed three-disjunct `Oₙ₊₁` over the faithful
-`HasFaithfulDedekindINF` carrier (`KPlusFaithful.lean:322`). That module is entirely
+`HasFaithfulDedekindINF` carrier (`KPlusFaithful.lean:325`). That module is entirely
 **future/Until-directed**: it peels the *first* point type off the chain and pins it at the
 first-occurrence infimum. This module supplies the **past/Since-directed** primitives, which the
 tree did not have at all: `kminus` (`PriorINF.lean`) was declared with **no object-language
 spelling and no correctness lemma anywhere**, so the `HasDedekindSUP` carrier
-(`DedekindINF.lean:153`) could be stated but none of its content could be used.
+(`DedekindINF.lean:151`) could be stated but none of its content could be used.
 
-Cite Rabinovich by **PDF page only**:
-`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
-The companion `.md` conversion is corrupt (it drops the displayed equations — and Lemma 5.3 *is*
-displayed equations — and inverts `k ≠ m` to `k = m`) and is never ground truth.
+Cite [rabinovich2014] by **PDF page only**.
 
 ## Source correspondence: PDF p.8, mirrored
 
@@ -38,13 +35,13 @@ This is the Until/Since symmetry the paper itself relies on: p.8 proves the `Unt
 Corollary 5.4 immediately takes both directions. **No hypothesis absent from p.8 is introduced.**
 In particular `K⁻` needs nothing new: `Formula.snce` interprets Since natively
 (`Table.lean:198`), so `kminusFormula` below is the literal transcription of `¬P ∧ ¬(⊤ S ¬P)`,
-exactly as `kplusFormula` (`PriorINF.lean:93`) is `¬P ∧ ¬(⊤ U ¬P)`.
+exactly as `kplusFormula` (`PriorINF.lean:95`) is `¬P ∧ ¬(⊤ U ¬P)`.
 
 ## What this module lands
 
 * `kminusFormula` / `kminus_formula_correct` — `K⁻(P)` as an object-language formula, with the
   correctness lemma that was missing. Mirrors `kplusFormula` / `kplus_formula_correct`
-  (`KPlusBracketRendering.lean:162`).
+  (`KPlusBracketRendering.lean:161`).
 * `kminusPred` / `kminusPred_eval` — the same at `TemporalPred` level; mirrors
   `kplusPred` / `kplusPred_eval` (`KPlusFaithfulRendering.lean:81`, `:83`).
 * `kminusOpenPred` / `kminusOpenPred_eval` — the **sources'** `K⁻` at `TemporalPred` level, on
@@ -54,7 +51,7 @@ exactly as `kplusFormula` (`PriorINF.lean:93`) is `¬P ∧ ¬(⊤ U ¬P)`.
   (`EANegationFix/BoundedFix.lean:72`) and `HasAttainedINF.first_occ_tp`
   (`EANegationClosure.lean`).
 * `orderedPointsExist_combine_right` — the right-end mirror of `orderedPointsExist_combine`
-  (`EANegationFix/OnBuilder.lean:95`), which only ever combined at the left end.
+  (`EANegationFix/OnBuilder.lean:96`), which only ever combined at the left end.
 * `orderedPointsExist_combine_kminusOpen` / `orderedPointsExist_combine_kminus` /
   `orderedPointsExist_widen_right` — the duals of `orderedPointsExist_combine_kplusOpen` /
   `orderedPointsExist_combine_kplus` / `orderedPointsExist_widen_left`
@@ -62,14 +59,14 @@ exactly as `kplusFormula` (`PriorINF.lean:93`) is `¬P ∧ ¬(⊤ U ¬P)`.
 * `HasAttainedSUP.toHasDefinableSUP`, `hasDefinableSUP_excludes_kminus`,
   `prior_makes_faithful_kminus_disjunct_unreachable`, `prior_makes_kminus_disjunct_unreachable` —
   the SUP-side exclusion route at both `K⁻` spellings, mirroring
-  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:221`), `hasDefinableINF_excludes_kplus`
-(`KPlusBracketRendering.lean:290`) and the two INF-side exclusion theorems in
+  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:223`), `hasDefinableINF_excludes_kplus`
+(`KPlusBracketRendering.lean:289`) and the two INF-side exclusion theorems in
   `KPlusFaithfulRendering.lean`.
 
 ## ADAPTED-FROM: this module previously supplied only the `HasDedekindSUP` spelling
 
 **What changed, in one clause**: the boundary disjunct `K⁻(Pₙ)(z₁)` gained a second, source-exact
-spelling — `kminusOpen` (`KPlusFaithful.lean:128`), on `Formula.kMinus` — beside the tree's
+spelling — `kminusOpen` (`KPlusFaithful.lean:131`), on `Formula.kMinus` — beside the tree's
 `kminus` (`PriorINF.lean`), which carries an extra `¬P(z₁)` conjunct that neither Rabinovich
 2014 (`K⁻` Definition (2), PDF p.3) nor Reynolds 1992 (abbreviation table §1, printed p.168:
 `K⁻A` for `¬S(⊤,¬A)`) states.
@@ -84,8 +81,8 @@ re-based in place with the `kminus` versions derived from the `kminusOpen` ones.
 
 Nothing here deletes or weakens any landed declaration. Every declaration is an addition or a
 same-statement re-derivation, and the attained-carrier stack in `EANegationFix/` reaches the past
-carriers through the landed shims `HasAttainedSUP.toHasDedekindSUP` (`DedekindINF.lean:200`) and
-`HasAttainedSUP.toHasFaithfulDedekindSUP` (`KPlusFaithful.lean:390`).
+carriers through the landed shims `HasAttainedSUP.toHasDedekindSUP` (`DedekindINF.lean:198`) and
+`HasAttainedSUP.toHasFaithfulDedekindSUP` (`KPlusFaithful.lean:393`).
 
 ## What this carrier EXCLUDES — read this before citing anything below
 
@@ -101,12 +98,12 @@ a vacuous conclusion does. Mirroring the three statements made in `KPlusFaithful
    strengthening chain mirrors the INF side exactly:
    `Rabinovich's Dedekind completeness < HasDedekindSUP < HasDefinableSUP < HasAttainedSUP`.
    So this carrier is still strictly stronger than the paper's hypothesis, only much less so.
-   `HasFaithfulDedekindSUP` (`KPlusFaithful.lean:341`) sits one link below `HasDedekindSUP` on
-   that chain, and its own exclusion statement is at `KPlusFaithful.lean:336-339`.
+   `HasFaithfulDedekindSUP` (`KPlusFaithful.lean:344`) sits one link below `HasDedekindSUP` on
+   that chain, and its own exclusion statement is at `KPlusFaithful.lean:339-339`.
 2. **The `K⁻` boundary disjunct is provably dead on every Prior structure, at BOTH `K⁻`
    spellings.** `prior_makes_faithful_kminus_disjunct_unreachable` below proves it for the
    sources' `K⁻`, and `prior_makes_kminus_disjunct_unreachable` — kept, and now derived from it —
-   for the tree's `kminus`: `SemanticPriorSZ` gives `HasAttainedSUP` (`PriorINF.lean:275`), whose
+   for the tree's `kminus`: `SemanticPriorSZ` gives `HasAttainedSUP` (`PriorINF.lean:277`), whose
    attained last occurrence `r₀ < z₁` with `¬P` on `(r₀,z₁)` collides with `K⁻` asserting that
    `P` occurs in every interval below `z₁`. This is the exact mirror of what the two INF-side
    exclusion theorems establish for `K⁺(P)(z₀)`.
@@ -119,8 +116,8 @@ a vacuous conclusion does. Mirroring the three statements made in `KPlusFaithful
    so no live consumer can tell `HasAttainedSUP` and `HasDedekindSUP` apart — the same reason,
    and the same honest limitation, as the INF direction. Observability arrives only with a
    genuinely non-attained Dedekind-complete frame class, which this tree does not construct
-   (`DedekindINF.lean:49-50` states that absence explicitly).
-   `hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:266`) must **not** be cited against
+   (`DedekindINF.lean:46-47` states that absence explicitly).
+   `hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:264`) must **not** be cited against
    this: its proof is `Or.inl h_kplus` and its own docstring admits it exhibits no structure.
 -/
 
@@ -139,7 +136,7 @@ with `¬P(t)`, is exactly `K⁻(P)(t)`. -/
 
 /-- `K⁻(P)` is TL-definable: the formula `P.neg ∧ ¬(⊤ S P.neg)`.
 
-    Exact mirror of `kplusFormula` (`PriorINF.lean:93`), with `Formula.untl` replaced by
+    Exact mirror of `kplusFormula` (`PriorINF.lean:95`), with `Formula.untl` replaced by
     `Formula.snce`.
 
     Source correspondence: PDF p.8, mirrored — `K⁺(P₁)(z₀)` is asserted there to be *"an atomic
@@ -153,7 +150,7 @@ noncomputable def kminusFormula (P : Formula) : Formula :=
 
     This is the missing correctness lemma — `kminus` had none, so the `HasDedekindSUP` carrier
     could be stated but its left disjunct could not be used as syntax. Structural dual of
-`kplus_formula_correct` (`KPlusBracketRendering.lean:162`); no step of that proof needed adaptation
+`kplus_formula_correct` (`KPlusBracketRendering.lean:161`); no step of that proof needed adaptation
     beyond
     reversing the order comparisons.
 
@@ -201,7 +198,7 @@ theorem kminusPred_eval {sig : MonadicSignature}
 def kminusOpenPred (P : TemporalPred) : TemporalPred := ⟨Formula.kMinus P.formula⟩
 
 /-- `kminusOpenPred` evaluates to the sources' semantic `K⁻`, via the bridge lemma
-    `kMinus_formula_correct` (`KPlusFaithful.lean:174`). Mirror of `kplusOpenPred_eval`. -/
+    `kMinus_formula_correct` (`KPlusFaithful.lean:177`). Mirror of `kplusOpenPred_eval`. -/
 theorem kminusOpenPred_eval {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : TemporalPred) (t : M.carrier) :
@@ -214,7 +211,7 @@ theorem kminusOpenPred_eval {sig : MonadicSignature}
     **faithful** `HasDedekindSUP` carrier: either the supremum sits at the right endpoint (as
     `K⁻(P)(z₁)`) or it is a mirrored eq (5.2) point strictly inside `(z₀,z₁)`.
 
-    Wraps `HasDedekindSUP.last_occ` (`DedekindINF.lean:157`) to accept a `TemporalPred` directly,
+    Wraps `HasDedekindSUP.last_occ` (`DedekindINF.lean:155`) to accept a `TemporalPred` directly,
     following the pattern of `HasAttainedSUP.last_occ_tp` (`EANegationFix/BoundedFix.lean:72`) and
     `HasAttainedINF.first_occ_tp` (`EANegationClosure.lean`). Unlike those two, the disjunction
     is preserved rather than collapsed: that is precisely the content the faithful carrier adds.
@@ -237,7 +234,7 @@ theorem HasDedekindSUP.last_occ_tp {sig : MonadicSignature}
       fun y hy0 hy1 hPy => h_none y hy0 hy1 hPy, h_disj⟩
 
 /-- **The same wrapper at the faithful past carrier** (`HasFaithfulDedekindSUP`,
-    `KPlusFaithful.lean:341`): the supremum sits at the right endpoint — which, at the sources'
+    `KPlusFaithful.lean:344`): the supremum sits at the right endpoint — which, at the sources'
     `K⁻`, is exactly `kminusOpen P z₁` — or is a mirrored eq (5.2) point strictly inside
     `(z₀,z₁)`.
 
@@ -271,7 +268,7 @@ theorem HasFaithfulDedekindSUP.last_occ_tp {sig : MonadicSignature}
 
 /-! ## Chain primitives at the right end
 
-`orderedPointsExist_combine` (`EANegationFix/OnBuilder.lean:95`) only ever prepends a witness at
+`orderedPointsExist_combine` (`EANegationFix/OnBuilder.lean:96`) only ever prepends a witness at
 the *left* end, because the whole landed stack peels point types off the front of the list. The
 past direction pins the *last* point type at the supremum, so the right-end mirror is needed and
 does not exist. -/
@@ -279,7 +276,7 @@ does not exist. -/
 /-- Combine an initial chain with a last witness: if `Ps n` holds at `r ∈ (z₀,z₁)` and the chain
     for the first `n` predicates exists on `(z₀,r)`, the full chain exists on `(z₀,z₁)`.
 
-    Right-end mirror of `orderedPointsExist_combine` (`EANegationFix/OnBuilder.lean:95`). -/
+    Right-end mirror of `orderedPointsExist_combine` (`EANegationFix/OnBuilder.lean:96`). -/
 theorem orderedPointsExist_combine_right {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
     ∀ (n : Nat) (Ps : Fin (n + 1) → TemporalPred) (z0 z1 r : M.carrier),
@@ -375,7 +372,7 @@ theorem orderedPointsExist_combine_kminusOpen {sig : MonadicSignature}
 
 /-- **The mirrored boundary subcase at the tree's `kminus`.** Retained verbatim in statement, and
     now *derived* from the source-exact version above (`kminusOpen_of_kminus`,
-    `KPlusFaithful.lean:220`) rather than re-proved, so nothing is duplicated in substance.
+    `KPlusFaithful.lean:223`) rather than re-proved, so nothing is duplicated in substance.
 
     Kept because the mirrored eq (5.2)'s point condition still says `P(r₀) ∨ kminus P r₀` — the
     faithful past carrier's right disjunct is literally `HasDedekindSUP`'s — so a consumer still
@@ -389,7 +386,7 @@ theorem orderedPointsExist_combine_kminus {sig : MonadicSignature}
   orderedPointsExist_combine_kminusOpen M atomMap n Ps z0 z1 hlt (kminusOpen_of_kminus hk) h_init
 
 /-- Widening the right endpoint is free: a chain on `(z₀,r₀)` is a chain on `(z₀,z₁)` whenever
-`r₀ < z₁`. Dual of `orderedPointsExist_widen_left` (`KPlusFaithfulRendering.lean:169`); needed by
+`r₀ < z₁`. Dual of `orderedPointsExist_widen_left` (`KPlusFaithfulRendering.lean:167`); needed by
     the
     mirrored eq (5.2)'s `K⁻(P)(r₀)` alternative, where the witness produced at `r₀` must be
     reported back on the outer interval. -/
@@ -411,15 +408,15 @@ theorem orderedPointsExist_widen_right {sig : MonadicSignature}
 /-! ## Extended non-vacuity: the SUP-side exclusion, machine-checked
 
 The INF side records its exclusion as `hasDefinableINF_excludes_kplus`
-(`KPlusBracketRendering.lean:290`) and
-`prior_makes_disjunct2_unreachable` (`KPlusFaithfulRendering.lean:382`). The SUP side had
+(`KPlusBracketRendering.lean:289`) and
+`prior_makes_disjunct2_unreachable` (`KPlusFaithfulRendering.lean:380`). The SUP side had
 **neither**:
 `HasAttainedSUP.toHasDefinableSUP` and the `kminus` exclusion did not exist. Both are supplied
 here so the exclusion statement in this module's docstring is machine-checked rather than
 asserted. -/
 
 /-- `HasAttainedSUP` implies `HasDefinableSUP`. Mirror of `HasAttainedINF.toHasDefinableINF`
-    (`PriorINF.lean:221`); the attained last occurrence is the `P(r₀)` alternative of the
+    (`PriorINF.lean:223`); the attained last occurrence is the `P(r₀)` alternative of the
     disjunctive point condition, and `z₀ < r₀` weakens to `z₀ ≤ r₀`. -/
 theorem HasAttainedSUP.toHasDefinableSUP {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -431,7 +428,7 @@ theorem HasAttainedSUP.toHasDefinableSUP {sig : MonadicSignature}
 /-- **`HasDefinableSUP` is not the mirrored eq (5.2) carrier: it silently deletes the `K⁻`
     boundary disjunct.**
 
-Mirror of `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:290`). Assuming
+Mirror of `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:289`). Assuming
     `HasDefinableSUP`
     makes `K⁻(P)(z₁)` *unreachable* whenever `P` occurs in `(z₀,z₁)` — which is exactly the
     mirrored `Subcase r₀ = z₁`. The proof is immediate: `last_occ` hands back an `r₀ < z₁` with
@@ -453,7 +450,7 @@ theorem hasDefinableSUP_excludes_kminus {sig : MonadicSignature}
 
 /-- **On Prior structures, the `K⁻` boundary disjunct is unreachable — at the SOURCES' `K⁻`.**
 
-    `SemanticPriorSZ` gives `HasAttainedSUP` (`prior_hasAttainedSUP`, `PriorINF.lean:275`), whose
+    `SemanticPriorSZ` gives `HasAttainedSUP` (`prior_hasAttainedSUP`, `PriorINF.lean:277`), whose
     `last_occ` hands back an attained `r₀ < z₁` with `¬P` throughout `(r₀,z₁)`. The sources' `K⁻`
     says `P` occurs in *every* interval `(s,z₁)`; instantiate it at `s := r₀` and the two collide.
     No use is made of the tree's extra `¬P(z₁)` conjunct, which is why the weaker boundary
@@ -484,7 +481,7 @@ theorem prior_makes_faithful_kminus_disjunct_unreachable {sig : MonadicSignature
 /-- **On Prior structures, the `K⁻` boundary disjunct is unreachable — at the TREE's `kminus`.**
 
     Statement retained verbatim from before the re-base, and now *derived* from the source-exact
-    version above (`kminusOpen_of_kminus`, `KPlusFaithful.lean:220`) rather than routed through
+    version above (`kminusOpen_of_kminus`, `KPlusFaithful.lean:223`) rather than routed through
     `hasDefinableSUP_excludes_kminus`. That route remains available and unedited; deriving instead
     from the stronger exclusion keeps the two statements from drifting apart. -/
 theorem prior_makes_kminus_disjunct_unreachable {sig : MonadicSignature}

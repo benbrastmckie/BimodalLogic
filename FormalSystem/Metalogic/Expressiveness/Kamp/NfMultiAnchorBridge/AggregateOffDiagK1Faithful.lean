@@ -17,14 +17,14 @@ wire, as opposed to the mechanical restatement that makes up the rest of it.
 
 The re-base's inventory found that of the `SemanticPriorUZ` / `SemanticPriorSZ` hypothesis-binder
 sites across the live spine, only two *consume* the carrier rather than thread it:
-`AggregateOffDiagK1.lean:1338` (`aggPop1_correct`) and `:1381` (`aggPop1F_correct`). Both consume
+`AggregateOffDiagK1.lean:1337` (`aggPop1_correct`) and `:1381` (`aggPop1F_correct`). Both consume
 it the same way — `prior_hasAttainedINF` / `prior_hasAttainedSUP` feeding `aggOdPopFold_iff`
-(`AggregateOffDiagK1.lean:1276`). So the whole question of whether the spine is re-basable at all
+(`AggregateOffDiagK1.lean:1275`). So the whole question of whether the spine is re-basable at all
 reduces to: *what does `aggOdPopFold_iff` bottom out on?*
 
 **Answer, by inspection of its proof rather than by assumption**: `aggOdPopFold_iff` uses
 `h_INF` / `h_SUP` at exactly one step, the bit-false branch of its cons case
-(`AggregateOffDiagK1.lean:1303`), and that step is `VVecEA2.negFix_iff`. Its nil case, its
+(`AggregateOffDiagK1.lean:1302`), and that step is `VVecEA2.negFix_iff`. Its nil case, its
 `VVecEA2.conjFull_iff` cons rewrite, and its bit-true branch are all carrier-free.
 
 `VVecEA2.negFix_iff` is precisely what `VVecEA2.negFixFaithful_iff`
@@ -38,7 +38,7 @@ alternative, that it bottomed out on genuine attainment and the re-base was bloc
 `HasFaithfulDedekindINF` **alone**. `HasFaithfulDedekindSUP` is bound below as `_h_SUP` and never
 used, kept only so the statement stays shape-parallel with the attained original and with the
 consuming obligation `KampFaithfulExpressiveCompleteness`
-(`Expressiveness/PriorExpressivenessDense.lean:169`). Deleting it would strengthen the result;
+(`Expressiveness/PriorExpressivenessDense.lean:171`). Deleting it would strengthen the result;
 that decision is deliberately not taken here, matching `ZetaUniformExtractFaithful.lean`.
 
 ## The fold is over `negFixFaithful`, not over `negFix`
@@ -73,7 +73,7 @@ variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The biconditional population fold at the faithful carrier** — the faithful sibling of
-`aggOdPopFold_iff` (`AggregateOffDiagK1.lean:1276`), and the single genuine proof obligation of the
+`aggOdPopFold_iff` (`AggregateOffDiagK1.lean:1275`), and the single genuine proof obligation of the
 spine re-base.
 
 Folding `if bit qnf then D qnf else (D qnf).negFixFaithful` over a list with `conjFull` holds iff
@@ -125,12 +125,12 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 record: a consumer arriving with `HasAttainedINF` / `HasAttainedSUP` — as both
 `aggPop1_correct` and `aggPop1F_correct` do, via `prior_hasAttainedINF` / `prior_hasAttainedSUP` —
 can read off the faithful fold, through `HasAttainedINF.toHasFaithfulDedekindINF` /
-`HasAttainedSUP.toHasFaithfulDedekindSUP` (`KPlusFaithful.lean:384`, `:389`).
+`HasAttainedSUP.toHasFaithfulDedekindSUP` (`KPlusFaithful.lean:387`, `:389`).
 
 This machine-checks that the re-base is a weakening of hypotheses and not a sideways move.
 `aggOdPopFold_iff` itself is left untouched, and there is no converse: the faithful carrier does
 not yield `HasAttainedINF` (`hasFaithfulDedekindINF_not_implies_hasDedekindINF`,
-`KPlusFaithful.lean:695`).
+`KPlusFaithful.lean:698`).
 
 Note that the two folds are *different carrier terms* — this one negates with `negFixFaithful`,
 the original with `negFix` — so this is coverage of the attained hypothesis set, not an identity
@@ -149,7 +149,7 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The faithful fold is readable on any Prior structure.** The end-to-end record that the
 gate's answer reaches the two consuming sites: `SemanticPriorUZ` / `SemanticPriorSZ` route to the
 faithful carrier through `prior_hasAttainedINF` / `prior_hasAttainedSUP`
-(`Kamp/PriorINF.lean:230`, `:275`) composed with the `toHasFaithfulDedekind*` shims, so
+(`Kamp/PriorINF.lean:232`, `:275`) composed with the `toHasFaithfulDedekind*` shims, so
 `aggPop1_correct` and `aggPop1F_correct` have a faithful-carrier route available to them and are
 not the obstruction the gate was checking for. -/
 theorem aggOdPopFold_iff_faithful_on_prior (M : OrderedMonadicStructure sig)

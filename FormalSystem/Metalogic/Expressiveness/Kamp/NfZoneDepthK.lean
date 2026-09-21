@@ -46,7 +46,7 @@ facts.
 
 At depth `k+1`, `NormalForm sig (k+1) 3 = (AtomKind sig 3 → Bool) × (NormalForm sig k 4 → Bool)`
 carries a **quant layer** `qnf.2 : NormalForm sig k 4 → Bool` whose semantics
-(`NfEvalNf`, NormalForm.lean:212-216) is
+(`NfEvalNf`, NormalForm.lean:214-216) is
 `∀ sub, (∃ w, NfEvalNf M k 4 (Fin.cons w [y,x,t]) sub) ↔ (qnf.2 sub = true)`.
 This condition couples `y`, `x`, `t` **simultaneously** through the shared quantified `w`; it
 does **not** factor through per-variable projections. Consequently the naive projection-based
@@ -89,14 +89,14 @@ these declarations (all `[propext, Classical.choice, Quot.sound]`, off-path) now
 
 **Precise continuation point (the irreducible crux, next dispatch).** Convert each *open* zone of
 `nf_zone_exists_partition5` (`∃ y<x …`, `∃ x<y<t …`, `∃ y>t …`) into a temporal formula at the
-anchors via `bracketBuildLeft`/`bracketBuildRight` (`VecEATranslation.lean:273/50`, correctness
+anchors via `bracketBuildLeft`/`bracketBuildRight` (`VecEATranslation.lean:274/50`, correctness
 `:503/:234`, shape `∃ z, order ∧ endpoint.EvalAt z ∧ bracket.holds`). The obstruction the
 foundation now isolates: the endpoint/segment `TemporalPred`s must encode `char[y,x,t] = qnf`,
 whose **quant layer** (via `nf_characteristic_quant_succ`) is the coupled
 `∃ w, NfEvalNf M (k-1) 4 [w,y,x,t] sub`. This does not reduce to a point predicate at `y`; it
 must be resolved by an **inner `w`-zone split** (apply `exists_trichotomy_split` three times, with
 boundaries `y`, `x`, `t`), turning each `w`-zone into a depth-`(k-1)` IH temporal formula supplied
-by `nfNvarExistAllDepthsFn` (KampPrior.lean:410, correctness `:405`, gated on
+by `nfNvarExistAllDepthsFn` (KampPrior.lean:411, correctness `:405`, gated on
 `SemanticPriorUZ/SZ`). The nested (outer `y` / inner `w`) bracket assembly is Rabinovich's
 genuine Cor 5.4 `F_i` chain and is the ~400-700 line body scoped to the next dispatch. The x=t
 arm (`nf_zone_partition5`'s `y=t` point zone on the diagonal env `[t,x,t]`) is downstream of the
@@ -176,10 +176,10 @@ chain) — exactly the endpoint machinery the flat reframing tried to avoid; it 
 `BracketFormula.holds … x t` disjunction.
 
 ## References
-- [rabinovich2014] §5 (interval split), Cor 5.4 (`F_i` chain)
-- `VecEADecomp.lean:407-744` (depth-0 templates: `reconstruct_nf_3var`, `nf_3var_zone_*`)
-- `NormalForm.lean:137-216` (`NormalForm`, `NfEvalNf`, `AtomEval`)
-- plan v39 Phase 11; Phase 10 "Re-scoped on resume" note
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], §5 (interval split), Cor 5.4
+  (`F_i` chain)
+* `VecEADecomp.lean:407-744` (depth-0 templates: `reconstruct_nf_3var`, `nf_3var_zone_*`)
+* `NormalForm.lean:139-216` (`NormalForm`, `NfEvalNf`, `AtomEval`)
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -446,7 +446,7 @@ theorem nf_characteristic_atom_succ {sig : MonadicSignature}
     `∃ w, NfEvalNf M k (n+1) (Fin.cons w env) sub`. This is the genuine (non-projected)
     coupling: for the two-anchor env `[y,x,t]` the witness `w` and the whole configuration
     `[y,x,t]` are quantified together. It is the exact predicate the depth-`k` IH formula
-    (`nfNvarExistAllDepthsFn`, KampPrior.lean:410) internalizes as a temporal formula. -/
+    (`nfNvarExistAllDepthsFn`, KampPrior.lean:411) internalizes as a temporal formula. -/
 theorem nf_characteristic_quant_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (sub : NormalForm sig k (n + 1)) :

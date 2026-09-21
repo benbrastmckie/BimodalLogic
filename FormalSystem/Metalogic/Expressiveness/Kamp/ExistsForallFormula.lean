@@ -45,10 +45,11 @@ object's arity is capped by construction.
 
 ## References
 
-- [rabinovich2014], Definition 3.1 (p.4). Cited by PDF page; the
-  companion markdown transcription is corrupt.
-- `ESigmaExpansion.lean`: the E[Σ] alphabet `sigE` and canonical expansion `canonExpand`.
-- `NormalForm.lean`: `NormalForm`, `NfEvalNf`, `AtomKind`, `AtomEval`.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Definition 3.1 (p.4). Cited by PDF
+  page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ESigmaExpansion.lean` — the E[Σ] alphabet `sigE` and
+  canonical expansion `canonExpand`.
+* `NormalForm.lean`: `NormalForm`, `NfEvalNf`, `AtomKind`, `AtomEval`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

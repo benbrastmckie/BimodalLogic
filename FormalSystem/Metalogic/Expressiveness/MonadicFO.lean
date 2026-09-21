@@ -38,9 +38,10 @@ following Reynolds 1994 Section 6 and Doets 1987 Chapter 1. Constructors:
 for quantifier binding.
 
 ## References
-- [doets1989], Section 1 (k-types, finiteness): `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- [reynolds1994], Section 6 (monadic FO language):
-`literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Section 1
+  (k-types, finiteness)
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Section 6 (the monadic
+  first-order language)
 -/
 namespace FormalSystem.Metalogic.Expressiveness
 

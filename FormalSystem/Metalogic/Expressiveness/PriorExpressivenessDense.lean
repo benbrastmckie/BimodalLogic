@@ -14,9 +14,9 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KampPriorFaithful
 
 Reynolds 1992, §5 Theorem 3 (printed p.176), at the carrier the Dedekind route actually needs:
 expressive completeness of `{U,S}` over structures satisfying the **dense** Prior axioms
-`SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean:119`, `:138`), rather than the
+`SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean:121`, `:138`), rather than the
 *integer* axioms `SemanticPriorUZ` / `SemanticPriorSZ` (`PriorDefs.lean:28`, `:39`) at which
-`uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:357`) is pinned.
+`uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`) is pinned.
 
 **Theorem 3, verbatim** (printed p.176, read from the source PDF): *"The language with U and S
 is expressively complete for the class of Prior structures."* Its "Prior structure" is defined on
@@ -70,7 +70,7 @@ machine-checks that the dense hypotheses do not supply the integer ones:
 `semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean`) exhibits `denseRayFlow`
 satisfying `SemanticPriorU ∧ SemanticPriorS` and refuting `SemanticPriorUZ`. Its own docstring
 draws the consequence for exactly this module: *"every declaration pinned at `SemanticPriorUZ` /
-`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:357`) ... and
+`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`) ... and
 their consumers — has no dense instance obtained by reuse."* Re-exporting
 `uSExpressivelyCompleteOverPrior` at the dense hypotheses is therefore not merely unproved but
 **unavailable**, and `uSExpressivelyCompleteOverDensePrior_not_by_reuse` below restates that
@@ -88,7 +88,7 @@ unavailability as a claim about this module's own target.
   under `Kamp/NfMultiAnchorBridge/`, and the spine `Kamp/KampPriorFaithful.lean`.
 * `uSExpressivelyCompleteOverDensePriorOfFaithful` — **sorry-free**. The composition the plan
   chartered, discharged in full: the obligation plus `prior_hasFaithfulDedekindINF_dense` /
-  `prior_hasFaithfulDedekindSUP_dense` (Phase 10.1, `Kamp/KPlusFaithful.lean:476`, `:524`) gives
+  `prior_hasFaithfulDedekindSUP_dense` (Phase 10.1, `Kamp/KPlusFaithful.lean:479`, `:524`) gives
   the dense target. Every step of the intended composition that *can* be taken is taken here.
 * `uSExpressivelyCompleteOverDensePrior` — the plan-shaped target, obtained from the conditional
   by discharging the obligation. **This module is sorry-free**, as is the whole of
@@ -102,7 +102,7 @@ unavailability as a claim about this module's own target.
 
 ## Domain restriction, inherited and stated
 
-`Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:372`) carries `hn : n ≤ 1`, excluding the
+`Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:373`) carries `hn : n ≤ 1`, excluding the
 arity-`n ≥ 2` arm, and `nfCharacterizableTemporalPrior` consumes it at `n = 1` only. The
 restriction is invisible in `kampPriorExpressiveCompleteness`' statement because arity-1 is all
 that statement ever needs. **It is inherited by everything here** and is not widened: the
@@ -131,8 +131,10 @@ this tree could have transcribed even had the Stavi route been available.
 
 ## References
 
-- [reynolds1992], "Continuous Temporal Models", §5 Theorem 3, printed p.176
-- [rabinovich2014], "A Proof of Kamp's Theorem", §5, eq (5.2), PDF p.8
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], "Continuous Temporal Models", §5 Theorem 3, printed p.176
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], §5,
+  eq (5.2), PDF p.8
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness
@@ -171,11 +173,11 @@ target rests on, and the faithful sibling of `Kamp.kampPriorExpressiveCompletene
 
 Same shape as `kampPriorExpressiveCompleteness`, with `SemanticPriorUZ` / `SemanticPriorSZ`
 replaced by `Kamp.HasFaithfulDedekindINF` / `Kamp.HasFaithfulDedekindSUP`
-(`Kamp/KPlusFaithful.lean:322` and its `Since`-dual) — Rabinovich 2014's eq (5.2), PDF p.8, at
+(`Kamp/KPlusFaithful.lean:325` and its `Since`-dual) — Rabinovich 2014's eq (5.2), PDF p.8, at
 the source's own `K⁺` rather than at this tree's `kplus`.
 
 Stated at `MonadicFormula sig 1`: the arity at which the existing chain closes, inheriting
-`Kamp.nf_nvar_exist_all_depths`' `hn : n ≤ 1` (`Kamp/KampPrior.lean:372`) rather than widening
+`Kamp.nf_nvar_exist_all_depths`' `hn : n ≤ 1` (`Kamp/KampPrior.lean:373`) rather than widening
 it. -/
 def KampFaithfulExpressiveCompleteness {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -203,7 +205,7 @@ unconditional `uSExpressivelyCompleteOverDensePrior` is the obligation above. -/
 
 The composition: `SemanticPriorU` yields `Kamp.HasFaithfulDedekindINF` with no completeness or
 discreteness hypothesis on the flow (`Kamp.prior_hasFaithfulDedekindINF_dense`,
-`Kamp/KPlusFaithful.lean:476`), and `SemanticPriorS` yields the `Since`-dual
+`Kamp/KPlusFaithful.lean:479`), and `SemanticPriorS` yields the `Since`-dual
 (`Kamp.prior_hasFaithfulDedekindSUP_dense`, `:524`); feeding both to the obligation gives the
 dense target, with the *same* witness formula `A`.
 
@@ -242,13 +244,13 @@ spine (`Kamp/KampPrior.lean`) from `SemanticPriorUZ` / `SemanticPriorSZ` onto
 `Kamp.HasFaithfulDedekindINF` / `Kamp.HasFaithfulDedekindSUP`. The re-base landed in four rungs,
 each sorry-free:
 
-1. **The ζ wire** — `Kamp.kampArm_zeta_faithful` (`Kamp/ZetaUniformExtractFaithful.lean:522`),
+1. **The ζ wire** — `Kamp.kampArm_zeta_faithful` (`Kamp/ZetaUniformExtractFaithful.lean:524`),
    with the canonical-expansion transfers `Kamp.canonExpand_hasFaithfulDedekindINF` / `SUP` and
    the faithful uniform translate `Kamp.translate_uniformFin_faithful`. This serves the `k ≥ 2`
    arms of `nf_nvar_exist_all_depths`.
 2. **The one substantive obligation above the wire** — `Kamp.aggOdPopFold_iff_faithful`
    (`Kamp/NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean:89`). `aggOdPopFold_iff`
-   (`AggregateOffDiagK1.lean:1276`) touches its carrier hypotheses at exactly one step, the
+   (`AggregateOffDiagK1.lean:1275`) touches its carrier hypotheses at exactly one step, the
    bit-false branch of its cons case (`:1253`), and that step is `VVecEA2.negFix_iff` — for which
    `VVecEA2.negFixFaithful_iff` is the faithful counterpart, needing `HasFaithfulDedekindINF`
    alone. Everything else in the spine turned out to be restatement.
@@ -336,12 +338,12 @@ how the expressive-completeness obligation is met. A sorry-free
 `uSExpressivelyCompleteOverDensePrior` whose hypothesis no dense structure satisfies would
 reproduce the exact defect this whole block exists to repair, so
 the hypothesis pair is exhibited as inhabited at Phase 9's positive dense witness
-`denseWindowFlow` (`PriorDefsDense.lean:337`), and the conditional theorem is instantiated there
+`denseWindowFlow` (`PriorDefsDense.lean:339`), and the conditional theorem is instantiated there
 at a non-trivial `psi`. -/
 
-/-- `densePriorSig.preds` is `Unit` (`PriorDefsDense.lean:295`), hence finite.
+/-- `densePriorSig.preds` is `Unit` (`PriorDefsDense.lean:297`), hence finite.
 
-`MonadicSignature` deliberately carries no `Fintype` field (`MonadicFO.lean:61-63`) under the
+`MonadicSignature` deliberately carries no `Fintype` field (`MonadicFO.lean:62-63`) under the
 infinite-alphabet discipline, so the instance is supplied per-signature, as here. -/
 instance : Fintype densePriorSig.preds := inferInstanceAs (Fintype Unit)
 
@@ -359,7 +361,7 @@ at the dense window flow, and so does the faithful carrier the composition route
 neither the target's hypothesis pair nor the intermediate carrier is empty.
 
 The carrier facts are Phase 13's `Kamp.hasFaithfulDedekindINF_of_dense_window` and its dual
-(`Kamp/KPlusFaithful.lean:674`, `:678`); listing them alongside the Prior hypotheses records that
+(`Kamp/KPlusFaithful.lean:677`, `:678`); listing them alongside the Prior hypotheses records that
 `uSExpressivelyCompleteOverDensePriorOfFaithful`'s *internal* step is inhabited here too, not
 only its premise. -/
 theorem densePrior_target_hypotheses_inhabited :
@@ -374,7 +376,7 @@ theorem densePrior_target_hypotheses_inhabited :
 
 Quantifier depth 1, and it uses both the order and the predicate, so it is not equivalent to any
 quantifier-free formula and the expressive-completeness claim at it has content. Index `0` is the
-variable bound by `.ex` (by `eval`'s `Fin.cons x env` convention, `MonadicFO.lean:313`) and index
+variable bound by `.ex` (by `eval`'s `Fin.cons x env` convention, `MonadicFO.lean:314`) and index
 `1` is the free variable. -/
 def denseTestPsi : MonadicFormula densePriorSig 1 :=
   .ex (.and (.lt 1 0) (.atom () 0))

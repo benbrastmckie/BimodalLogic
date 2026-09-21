@@ -19,8 +19,7 @@ while every one of them was present and sorry-free. This module exists so that t
 finds the correspondence instead of re-deriving it, and it is CI-protected: it is reachable from
 `FormalSystem.lean`, so the table below cannot rot without breaking the build.
 
-Cite Rabinovich by **PDF page only**:
-`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
+Cite [rabinovich2014] by **PDF page only**.
 The companion `.md` conversion is **corrupt** — it drops displayed equations and inverts `k ≠ m`
 to `k = m`. Existing `chunk_00NN`-style citations (`OnBuilder.lean`, `NegFix.lean:12`) point
 into that corrupt conversion and should be re-cited by page as they are touched.
@@ -30,7 +29,7 @@ into that corrupt conversion and should be re-cited by page as they are touched.
 | Rabinovich (PDF page) | In-tree name | Location |
 |---|---|---|
 | Lemma 5.3 — `Oₙ` induction, all `βᵢ` = True (p.8) | `negChainOn_iff` |
-`EANegationFix/OnBuilder.lean:189` |
+`EANegationFix/OnBuilder.lean:190` |
 | Lemma 5.1 — bracket negation recursion (pp.9-10) | `BracketFormula.negFix_iff` |
 `EANegationFix/NegFix.lean:694` |
 | Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)` (p.9) | `negBoundedRightFix_iff` |
@@ -48,18 +47,18 @@ discharged by **wiring**, not by new transcription.
 ## The faithful re-base table — the same chain at the faithful eq (5.2) carrier
 
 Every row above assumes `HasAttainedINF`/`HasAttainedSUP`. The rows below are the mirror chain
-re-based onto `HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) and its `Since`-dual
+re-based onto `HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`) and its `Since`-dual
 `HasFaithfulDedekindSUP` (`:339`) — Rabinovich's own eq (5.2) dichotomy, PDF p.8, rather than this
 tree's `kplus`. **Nothing above was deleted, weakened or renamed to make room for them** — the
 attained stack in `EANegationFix/` stays live and consumed, and each faithful module mirrors its
 attained counterpart declaration for declaration.
 
 **Carrier note.** An earlier version of this table described the chain as re-based onto
-`HasDedekindINF` (`DedekindINF.lean:136`). That understated it by one carrier step: `HasDedekindINF`
+`HasDedekindINF` (`DedekindINF.lean:134`). That understated it by one carrier step: `HasDedekindINF`
 is the *previous* pin, retained unweakened at the terminus (see the last row), and every chain
 member below is in fact stated at the strictly weaker `HasFaithfulDedekindINF`. The two are
 comparable in one direction only — `HasDedekindINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:366`) — and `prop42_faithful_covers_what_dedekind_excludes`
+(`KPlusFaithful.lean:369`) — and `prop42_faithful_covers_what_dedekind_excludes`
 (`ContentfulFaithfulBridge.lean`) exhibits a structure inside the faithful carrier and outside the
 Dedekind
 one, so the gap is real rather than notational.
@@ -67,32 +66,32 @@ one, so the gap is real rather than notational.
 | Rabinovich (PDF page) | Faithful in-tree name | Location |
 |---|---|---|
 | Lemma 5.3 — printed **three**-disjunct `Oₙ₊₁`, disjunct (2) `K⁺(P₁)(z₀)` restored (p.8) |
-`negChainOnFaithful_iff` / `lemma53Faithful` | `KPlusFaithfulRendering.lean:365` / `:460` |
+`negChainOnFaithful_iff` / `lemma53Faithful` | `KPlusFaithfulRendering.lean:363` / `:460` |
 | Lemma 5.3 — the `Since` mirror, `K⁻` primitives (p.8) |
-`HasFaithfulDedekindSUP.last_occ_tp`, `kminusFormula` | `KMinusFaithfulRendering.lean:254` / `:147`
+`HasFaithfulDedekindSUP.last_occ_tp`, `kminusFormula` | `KMinusFaithfulRendering.lean:251` / `:147`
 |
 | Lemma 3.4 / Cor 5.4 plumbing — the `VVecEA2` combinators the faithful chain needs (pp.6, 9) |
-`VVecEA2.conjEverywhere_holds_iff`, `VVecEA2.concatPin_holds_iff` | `VecEACombinators.lean:116` /
+`VVecEA2.conjEverywhere_holds_iff`, `VVecEA2.concatPin_holds_iff` | `VecEACombinators.lean:114` /
 `:201` |
 | Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)`, and the Since mirror (p.9) |
 `negBoundedRightFixFaithful_iff` / `negBoundedLeftFixFaithful_iff` |
-`EANegationFixFaithful/BoundedFixFaithful.lean:202` / `:275` |
+`EANegationFixFaithful/BoundedFixFaithful.lean:199` / `:275` |
 | Cor 5.4 — the anchored bounded-fix mirrors (pp.9-10) |
 `negBoundedRightFixAnchoredFaithful_iff` / `negBoundedLeftFixAnchoredFaithful_iff` |
-`EANegationFixFaithful/BoundedFixAnchoredFaithful.lean:163` / `:246` |
+`EANegationFixFaithful/BoundedFixAnchoredFaithful.lean:161` / `:246` |
 | Lemma 5.1 — base case at `n = 1` (pp.9-10) | `negFixOneFaithful_iff` |
-`EANegationFixFaithful/NegFixOneFaithful.lean:640` |
+`EANegationFixFaithful/NegFixOneFaithful.lean:638` |
 | Lemma 5.1 — `Aᵢ`/`Bᵢ` split + closing induction (pp.10-11) | `negFixListFaithful_iff` |
-`EANegationFixFaithful/NegFixListFaithful.lean:391` |
+`EANegationFixFaithful/NegFixListFaithful.lean:390` |
 | Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFixFaithful_iff` |
 `EANegationFixFaithful/VecEANegFixFaithful.lean:244` |
 | **Prop 4.2 itself, at the faithful carrier (p.6)** | `prop42_contentful_of_faithful` |
-`ContentfulFaithfulBridge.lean:193` |
+`ContentfulFaithfulBridge.lean:192` |
 | Prop 4.2 at the **previous** pin, retained unweakened (p.6) | `prop42_contentful_of_dedekind` |
-`ContentfulFaithfulBridge.lean:209` |
+`ContentfulFaithfulBridge.lean:208` |
 
 Every entry is landed, sorry-free and axiom-clean. `prop42_contentful_of_faithful`
-(`ContentfulFaithfulBridge.lean:193`) is what they compose to: the **same** `Prop42Contentful`
+(`ContentfulFaithfulBridge.lean:192`) is what they compose to: the **same** `Prop42Contentful`
 target
 discharged below at `HasAttainedINF` + `HasAttainedSUP`, discharged there from
 `HasFaithfulDedekindINF` **alone**. `prop42_contentful_of_dedekind` (`:208`) is the chain's
@@ -135,16 +134,16 @@ cite the faithful one.
 
 Two in-tree, machine-checked facts pin this down:
 
-* `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`, axiom-clean) proves the
+* `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:281`, axiom-clean) proves the
 **weaker**
   `HasDefinableINF` is *already* too strong: it makes the paper's disjunct (2)
   `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` (p.8) unreachable whenever `P₁` occurs in `(z₀,z₁)`. Since
-  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:215`) shows `HasAttainedINF` implies
+  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:217`) shows `HasAttainedINF` implies
   `HasDefinableINF`, `HasAttainedINF` is *a fortiori* too strong.
 * `OnBuilder.lean` admits the deviation in its own docstring: "On Prior structures the INF
   is always attained (`HasAttainedINF`), so the K⁺ disjunct is vacuous". The whole
   `EANegationFix/` development is built on that simplification. It is sound on Prior structures
-  (`prior_hasAttainedINF`, `PriorINF.lean:224`) and is the right thing at the live-path
+  (`prior_hasAttainedINF`, `PriorINF.lean:226`) and is the right thing at the live-path
   boundary — but it is a **deviation from the paper**, not a transcription of it.
 
 Concretely, `HasAttainedINF` excludes structures where an infimum exists but is not attained:
@@ -175,7 +174,7 @@ attempt.
 `Prop42Contentful` hoists `∃ v'` outside `∀ z0 z1`, which is the whole content — see
 `ContentfulWitness.lean`'s module docstring for why both weaker orderings are vacuous. The
 all-`⊤` escape hatch is closed by `topVVec_contentful_forces_unsat`
-(`ContentfulWitness.lean:221`): offering `topVVec` as `v'` does not discharge the goal, it commits
+(`ContentfulWitness.lean:220`): offering `topVVec` as `v'` does not discharge the goal, it commits
 the offerer to `v` being unsatisfiable on every ordered pair. The corresponding negative check —
 that the all-`⊤` term does **not** typecheck against `Prop42Contentful` — is recorded verbatim in
 this phase's handoff.
@@ -200,7 +199,7 @@ open FormalSystem.Metalogic.Expressiveness
     **Carrier, stated because the rule requires it.** This is Prop 4.2 *restricted to attained
     structures*, **not** Rabinovich's Prop 4.2 over all Dedekind complete chains. `HasAttainedINF`
     is strictly stronger than the paper's Dedekind completeness — strictly stronger even than
-    `HasDefinableINF`, which `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`)
+    `HasDefinableINF`, which `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:281`)
     already
     machine-refutes as too strong. See this module's docstring for the full exclusion. Do not cite
     this theorem as Prop 4.2 simpliciter.

@@ -39,13 +39,16 @@ sentence (`r = 0`) is negated through the same engine+bridge at arity `0`/`2`.
 
 ## References
 
-- [rabinovich2014], Prop 4.3 ¬-case (PDF p.6), Def 4.1 (p.5-6). Cited
-  by PDF page; the companion markdown transcription is corrupt.
-- `ExistsForallLemmas.lean`: `augTarget_iff`, `pairProject`, `pairwiseProjections`, `conjSat`.
-- `BracketNegationClauses.lean`: `prop42_efSat_negation_general` (the arbitrary-pin `VVecEA2`
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Prop 4.3 ¬-case (PDF p.6), Def 4.1
+  (p.5-6). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallLemmas.lean` — `augTarget_iff`,
+  `pairProject`, `pairwiseProjections`, `conjSat`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/BracketNegationClauses.lean` —
+  `prop42_efSat_negation_general` (the arbitrary-pin `VVecEA2`
 engine).
-- `VVecEA2Collapse.lean`: `vvecea2_collapse_bridge` (the `VVecEA2 → VeeExistsForall` bridge).
-- `VeeExistsForall.lean`: `veeSat`, `veeSat_append`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VVecEA2Collapse.lean` — `vvecea2_collapse_bridge`
+  (the `VVecEA2 → VeeExistsForall` bridge).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForall.lean` — `veeSat`, `veeSat_append`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

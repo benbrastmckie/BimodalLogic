@@ -12,9 +12,9 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KMinusFaithfulRendering
 # Proposition 4.2 at the faithful Dedekind carrier (Rabinovich, PDF p.6)
 
 This module is the terminus of the faithful re-base. It discharges the contentful Proposition 4.2
-target `Prop42Contentful` (`ContentfulWitness.lean:152`) from `HasFaithfulDedekindINF`
-(`KPlusFaithful.lean:322`) **alone**, where the landed `prop42_contentful_of_attained`
-(`Section5Correspondence.lean:187`) needs `HasAttainedINF` **and** `HasAttainedSUP`.
+target `Prop42Contentful` (`ContentfulWitness.lean:151`) from `HasFaithfulDedekindINF`
+(`KPlusFaithful.lean:325`) **alone**, where the landed `prop42_contentful_of_attained`
+(`Section5Correspondence.lean:186`) needs `HasAttainedINF` **and** `HasAttainedSUP`.
 
 ## Source correspondence
 
@@ -48,7 +48,7 @@ HasDefinableINF  <  HasAttainedINF
 ```
 
 Three steps of that chain have been closed by the re-base; **one remains open**.
-`HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`) is still a hypothesis about the structure, not
+`HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`) is still a hypothesis about the structure, not
 a derivation from Dedekind completeness of the order. Closing the last step would mean deriving it
 from order completeness alone, which is not attempted anywhere in this tree. So this theorem is
 **not** Rabinovich's Proposition 4.2 simpliciter either, and must not be cited as such — it is
@@ -56,14 +56,14 @@ Proposition 4.2 one strengthening step away from the paper, where the attained v
 
 **What the newly closed step buys, machine-checked rather than argued.** The move from
 `HasDedekindINF` to `HasFaithfulDedekindINF` drops the extra `¬P(z₀)` conjunct that this tree's
-`kplus` (`PriorINF.lean:86`) carries and that neither Rabinovich's `K⁺` (Definition (3), PDF p.3)
+`kplus` (`PriorINF.lean:88`) carries and that neither Rabinovich's `K⁺` (Definition (3), PDF p.3)
 nor Reynolds' has. It is a **strict** weakening, and the gain is exhibited at a concrete structure
 by `prop42_faithful_covers_what_dedekind_excludes` below: `denseWindowFlow` is a dense Prior
 model satisfying the former and refuting the latter, so Proposition 4.2 is available there from
 the new carrier and unavailable from the old one.
 
 What the remaining gap costs is recorded concretely rather than as prose:
-`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:290`) machine-refutes the *weaker*
+`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:289`) machine-refutes the *weaker*
 `HasDefinableINF` as already too strong, so the steps closed here were not decorative.
 
 ## Non-vacuity: the three ways this statement could be hollow, each closed
@@ -76,9 +76,9 @@ below close the three failure modes, rather than asserting their absence:
    — `∃ v'` *inside* `∀ z₀ z₁` — from **no carrier hypothesis at all**. That it compiles is what
    makes it worthless, and it is the control showing `Prop42Contentful`'s hoisted `∃ v'` is a
    different statement. Same template as `lemma53Faithful_perPoint_is_VACUOUS`
-   (`KPlusFaithfulRendering.lean:354`).
+   (`KPlusFaithfulRendering.lean:352`).
 2. **`⊤`-collapsed witness.** Closed upstream by `topVVec_contentful_forces_unsat`
-   (`ContentfulWitness.lean:230`): offering the all-`⊤` formula as `v'` does not discharge
+   (`ContentfulWitness.lean:229`): offering the all-`⊤` formula as `v'` does not discharge
    `Prop42Contentful`, it commits the offerer to `v` being unsatisfiable on every ordered pair.
 3. **Hollow witness — the `∃ v'` hides which formula was built.** This is the failure mode specific
    to *this* phase: `prop42_contentful_of_faithful` is silent about the witness, so a construction
@@ -121,11 +121,10 @@ statement below — which is a genuine use, not a symmetric one.
 
 ## References
 
-- [rabinovich2014], *A Proof of Kamp's Theorem*, Proposition 4.2, PDF p.6 (statement and carrier);
-  Propositions 4.3 and Theorem 4.4, same page; Section 5, pp.7-11 (proof).
-- Cite by **PDF page only**:
-  `~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
-  The companion `.md` conversion is **corrupt** and is never ground truth.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*,
+  Proposition 4.2, PDF p.6 (statement and carrier); Propositions 4.3 and Theorem 4.4, same page;
+  Section 5, pp.7-11 (proof).
+* Cite [rabinovich2014] by **PDF page only**.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -168,10 +167,10 @@ theorem prop42_witness_exposes_negFixFaithful {sig : MonadicSignature}
     `v.negFixFaithful` and the biconditional is `VVecEA2.negFixFaithful_iff`.
 
     **Carrier, stated because the rule requires it.** This assumes `HasFaithfulDedekindINF`
-    (`KPlusFaithful.lean:322`) alone: no `HasDedekindSUP`, no `HasDedekindINF`, no `HasAttained*`.
+    (`KPlusFaithful.lean:325`) alone: no `HasDedekindSUP`, no `HasDedekindINF`, no `HasAttained*`.
     That is Rabinovich's eq (5.2) dichotomy stated at the **source's own** `K⁺` (his Definition
     (3), PDF p.3) — three strengthening steps weaker than `prop42_contentful_of_attained`
-    (`Section5Correspondence.lean:187`) and one step weaker than
+    (`Section5Correspondence.lean:186`) and one step weaker than
     `prop42_contentful_of_dedekind` below, which is now its corollary.
 
     **What this carrier excludes** (honesty charter Rule 6). It forbids exactly those structures
@@ -186,7 +185,7 @@ theorem prop42_witness_exposes_negFixFaithful {sig : MonadicSignature}
     that no *current* consumer can observe the gain.
 
     **ADAPTED-FROM**: `prop42_contentful_of_dedekind` (this module, previous pin `HasDedekindINF`,
-    `DedekindINF.lean:136`), with the carrier moved to the source-exact dichotomy. The previous
+    `DedekindINF.lean:134`), with the carrier moved to the source-exact dichotomy. The previous
     pin is retained below, unweakened, as a one-line corollary.
 
     Source correspondence: Rabinovich 2014, Proposition 4.2, PDF p.6; proved in Section 5,
@@ -198,13 +197,13 @@ theorem prop42_contentful_of_faithful {sig : MonadicSignature}
   ⟨v.negFixFaithful, prop42_witness_exposes_negFixFaithful M atomMap h_INF v⟩
 
 /-- **The previous pin, preserved and unweakened**: Proposition 4.2 from `HasDedekindINF`
-    (`DedekindINF.lean:136`) alone.
+    (`DedekindINF.lean:134`) alone.
 
     Retained rather than re-pointed. Its *name* asserts its carrier, and this tree's vocabulary
     distinguishes `HasDedekindINF` from `HasFaithfulDedekindINF` sharply (two separate structures,
     two separate shims); moving this binder to the faithful carrier would leave the name asserting
     something false. Since the two are comparable — `HasDedekindINF.toHasFaithfulDedekindINF`
-    (`KPlusFaithful.lean:366`) — retaining it costs one line and preserves every consumer.
+    (`KPlusFaithful.lean:369`) — retaining it costs one line and preserves every consumer.
 
     Source correspondence: Rabinovich 2014, Proposition 4.2, PDF p.6. -/
 theorem prop42_contentful_of_dedekind {sig : MonadicSignature}
@@ -216,15 +215,15 @@ theorem prop42_contentful_of_dedekind {sig : MonadicSignature}
 /-- **The guard, non-vacuous: the faithful carrier covers a structure the previous pin excludes.**
 
     `prop42_contentful_of_faithful` is a strict gain over `prop42_contentful_of_dedekind`, not a
-    renaming of it. `denseWindowFlow` (`PriorDefsDense.lean:337`) satisfies both dense Prior
+    renaming of it. `denseWindowFlow` (`PriorDefsDense.lean:339`) satisfies both dense Prior
     hypotheses, satisfies `HasFaithfulDedekindINF`
-    (`hasFaithfulDedekindINF_of_dense_window`, `KPlusFaithful.lean:674`) and **refutes**
-    `HasDedekindINF` (`hasDedekindINF_fails_on_dense_window`, `DedekindINFDense.lean:561`). So at
+    (`hasFaithfulDedekindINF_of_dense_window`, `KPlusFaithful.lean:677`) and **refutes**
+    `HasDedekindINF` (`hasDedekindINF_fails_on_dense_window`, `DedekindINFDense.lean:563`). So at
     that structure Proposition 4.2 is available from the faithful carrier and is **not** available
     from the previous pin.
 
     This is the faithful sibling of the role `prop42_contentful_of_attained`
-    (`Section5Correspondence.lean:187`) plays for the attained chain: it is what stops the
+    (`Section5Correspondence.lean:186`) plays for the attained chain: it is what stops the
     correspondence rotting into a chain of definitions nothing inhabits. The final conjunct is the
     part that makes it a guard rather than a carrier fact — it names `Prop42Contentful` itself,
     so a future weakening of the negation chain that made the target unreachable would break this
@@ -251,7 +250,7 @@ theorem prop42_faithful_covers_what_dedekind_excludes :
     HasAttainedINF` *and* `h_SUP : HasAttainedSUP`, because `VVecEA2.negFix_iff`
     (`EANegationFix/VecEANegFix.lean:183`) needs both. Routed through the faithful chain, the SUP
     half is not needed at all: `HasAttainedINF.toHasFaithfulDedekindINF`
-    (`KPlusFaithful.lean:384`, the direct composite) supplies the whole carrier.
+    (`KPlusFaithful.lean:387`, the direct composite) supplies the whole carrier.
 
     The shim runs attained → faithful only. A faithful → attained use would be a strengthening
     rather than a lift, and appears nowhere in this development. -/
@@ -268,7 +267,7 @@ carrier hypothesis at all** — one picks the empty disjunction when the right h
 the all-`⊤` formula when it is true. That it compiles is exactly what makes it worthless, and it is
 the control showing the hoisted `Prop42Contentful` discharged above is not the same statement.
 
-Same template as `lemma53Faithful_perPoint_is_VACUOUS` (`KPlusFaithfulRendering.lean:354`), re-run
+Same template as `lemma53Faithful_perPoint_is_VACUOUS` (`KPlusFaithfulRendering.lean:352`), re-run
 against
 the FINAL statement of the re-base rather than against Lemma 5.3. -/
 
@@ -296,17 +295,17 @@ carries what the faithful re-base was built to restore. -/
 
     For a single-disjunct input `v = ⟨[⟨n, vea⟩]⟩`, the witness `v.negFixFaithful` is forced by the
     `K⁺(¬β₁)(z₀)` condition alone — the disjunct the faithful recursion adds at Case 1 (PDF p.9),
-    carried by `kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:304`), and the one the attained
+    carried by `kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:302`), and the one the attained
     development
-    structurally cannot have (`negChainOn`, `EANegationFix/OnBuilder.lean:179`, truncates it away
+    structurally cannot have (`negChainOn`, `EANegationFix/OnBuilder.lean:180`, truncates it away
     on the grounds that on Prior structures the INF is always attained).
 
     Carrier-free: the hypothesis is `kplusOpen` at `z₀` itself — the **source's** `K⁺`,
     Rabinovich's Definition (3), PDF p.3 — not a carrier assumption that would produce it. It
     previously bound the tree's `kplus`, one conjunct stronger than the gate
-`kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:304`) actually reads; re-pointed here for the
+`kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:302`) actually reads; re-pointed here for the
     same
-    reason `negFixListFaithful_case1_is_indispensable` (`NegFixListFaithful.lean:541`) was, since
+    reason `negFixListFaithful_case1_is_indispensable` (`NegFixListFaithful.lean:540`) was, since
     an indispensability artifact stated at a strictly stronger gate certifies less than it
     appears to. Consumers holding the old `kplus` form recover this one by `kplusOpen_of_kplus`.
     This is the outer-fold counterpart of `VecEA2.negFixFaithful_carries_limit_gate`
@@ -339,8 +338,8 @@ in this tree actually inhabits, the gain is **not observable**. -/
     On a structure that is a Prior structure in the future direction (`SemanticPriorUZ`) and in the
     past direction (`SemanticPriorSZ`), the paper's disjunct (2) `K⁺(P)(z₀)` (PDF p.8) and its
     Since dual `K⁻(P)(z₁)` are **both** unreachable whenever `P` occurs strictly inside `(z₀,z₁)`.
-    The two halves are `prior_makes_disjunct2_unreachable` (`KPlusFaithfulRendering.lean:382`) and
-    `prior_makes_kminus_disjunct_unreachable` (`KMinusFaithfulRendering.lean:355`); this is their
+    The two halves are `prior_makes_disjunct2_unreachable` (`KPlusFaithfulRendering.lean:380`) and
+    `prior_makes_kminus_disjunct_unreachable` (`KMinusFaithfulRendering.lean:352`); this is their
     conjunction, stated once so that the cumulative claim has a single machine-checked home.
 
     **Consequence, and the honest scope of this task.** Every declaration landed across the
@@ -348,7 +347,7 @@ in this tree actually inhabits, the gain is **not observable**. -/
     Lemma 5.1 at `n = 1` and its recursion, the Prop 4.2/4.3 lift chain, and
     `prop42_contentful_of_dedekind` above — is strictly weaker in its hypotheses than the attained
     version it mirrors, and that strictness is machine-checked
-    (`hasDefinableINF_excludes_kplus`, `KPlusBracketRendering.lean:290`). But no consumer can *see*
+    (`hasDefinableINF_excludes_kplus`, `KPlusBracketRendering.lean:289`). But no consumer can *see*
     the
     difference, because every live consumer is a Prior structure and this theorem shows the
     restored disjuncts are dead there.

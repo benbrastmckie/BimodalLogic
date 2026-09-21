@@ -25,8 +25,9 @@ Core definitions for the separation theorem over integer time (GHR94 Chapter 10.
 
 ## References
 
-- [gabbay1994], Chapter 10, Section 10.2 (pp. 569-592)
-- Design provenance: the expressive-completeness proof for U/S over integer time
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 10, Section 10.2 (pp. 569-592)
+* Design provenance: the expressive-completeness proof for U/S over integer time
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Separation

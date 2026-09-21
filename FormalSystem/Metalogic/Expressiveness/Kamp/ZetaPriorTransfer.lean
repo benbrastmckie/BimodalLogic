@@ -40,12 +40,15 @@ landed `prior_hasAttainedINF`/`prior_hasAttainedSUP` (`PriorINF.lean`).
 
 ## References
 
-- [rabinovich2014], Definition 4.1 (p.5) — the canonical expansion.
-- `PriorDefs.lean`: `SemanticPriorUZ`, `SemanticPriorSZ`.
-- `ESigmaCapture.lean`: `temporal_truth_canonExpand` (the conservativity bridge).
-- `PriorINF.lean`: `HasAttainedINF`, `HasAttainedSUP`, `prior_hasAttainedINF`,
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Definition 4.1 (p.5) — the
+  canonical expansion.
+* `PriorDefs.lean`: `SemanticPriorUZ`, `SemanticPriorSZ`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ESigmaCapture.lean` — `temporal_truth_canonExpand`
+  (the conservativity bridge).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/PriorINF.lean` — `HasAttainedINF`, `HasAttainedSUP`,
+  `prior_hasAttainedINF`,
 `prior_hasAttainedSUP`.
-- `ESigmaExpansion.lean`: `canonExpand`, `oldPred`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ESigmaExpansion.lean` — `canonExpand`, `oldPred`.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

@@ -26,7 +26,7 @@ conversion, which is corrupt (drops displayed equations, inverts `k ≠ m` to `k
 **Carrier delta.** `VVecEA2.negFix_iff` assumes `HasAttainedINF`/`HasAttainedSUP` — strictly
 stronger than the Dedekind completeness Rabinovich's Prop 4.2 is claimed over, and stronger even
 than `HasDefinableINF`, machine-refuted as already too strong by `hasDefinableINF_excludes_kplus`
-(`KPlusBracketRendering.lean:282`). What is proved here is Prop 4.2 *restricted to attained
+(`KPlusBracketRendering.lean:281`). What is proved here is Prop 4.2 *restricted to attained
 structures*.
 
 Negation closure at the disjunction-of-`→∃∀` level (Rabinovich Prop 4.2 /

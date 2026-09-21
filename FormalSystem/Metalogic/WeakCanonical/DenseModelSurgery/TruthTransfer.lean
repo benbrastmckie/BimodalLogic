@@ -177,7 +177,7 @@ variable {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
 
 /-- **Restriction of an ordered monadic structure to a subset of its domain.**
 
-The general form of `OrderedMonadicStructure.subinterval` (`MonadicFO.lean:215`), which is this
+The general form of `OrderedMonadicStructure.subinterval` (`MonadicFO.lean:216`), which is this
 construction at `D x := a ≤ x ∧ x ≤ b`. Predicates are inherited pointwise and the order is the
 inherited `Subtype` order, so `M.interp p x.val` is *definitionally* the reading of `p` at `x` in
 the restriction — which is what makes Lemma 8's atomic and box cases `Iff.rfl`. -/

@@ -47,7 +47,7 @@ build that the constant-arity static route the NO-GO record (:8760-8825) certifi
   (`nfk_assemble` appears ONLY in the NO-GO prose at :8770; the other two are absent entirely).
 - `nf_eval_nf1_cons_factor` / `efold_of_nfk` / `nf_quant_layer_fold_k2_gate` — appear ONLY in the
   NO-GO prose (:8763-8792) as inert doc/decision records with 0 live `sorry`; NOT live paths.
-- The `EAtomDom` static arity-1 factorization (`NfEFold.lean:69`) is NOT consumed as a live path.
+- The `EAtomDom` static arity-1 factorization (`NfEFold.lean:70`) is NOT consumed as a live path.
 
 The audit root cause: Def 4.1 is the E[Σ] ALPHABET EXPANSION, not a fold; Rabinovich's
 actual fold (Prop 3.5 / Cor 5.4, md:87-94, md:154-157) is NAVIGATED over FLAT exists-forall blocks
@@ -135,7 +135,7 @@ RE-FLATTENING a depth-`(k+1)` obligation to a `∨` of FLAT exists-forall blocks
 alphabet with QUANTIFIER-FREE point types (**Lemma 5.1**, md:134-135) — never by nesting a depth-k
 characteristic. The Boolean halves the codebase genuinely had landed are the two positive ones:
 - **binary disjunction**: `VVecEA2.disj_holds` (VecEAFormula.lean);
-- **conjunction**: `VVecEA2.conj_holds_vvecEA2` (VecEAClosure.lean:238).
+- **conjunction**: `VVecEA2.conj_holds_vvecEA2` (VecEAClosure.lean:239).
 The **negation** half (Prop 4.2) was never landed and is OPEN: the declaration once cited here
 was vacuous and has been deleted. See `Prop42Vacuity`.
 

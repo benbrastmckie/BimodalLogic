@@ -63,9 +63,12 @@ content, over the whole tree, so the claim is re-derivable rather than maintaine
 All definitions are NON-VACUOUS (no `True`, `trivial`, or `Unit` bodies).
 
 ## References
-- [kamp1968], the original expressive-completeness theorem
-- [gabbay1994], Chapter 9, Section 3 — the Stavi connectives completing the
+* [J. A. W. Kamp, *Tense Logic and the Theory of Linear Order*][kamp1968], the original
+  expressive-completeness theorem
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 9, Section 3 — the Stavi connectives completing the
   Dedekind-incomplete case
-- [rabinovich2014], the separation-based modern proof
-- [gabbay1994], Chapter 10 — the separation property
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], the separation-based modern proof
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 10 — the separation property
 -/

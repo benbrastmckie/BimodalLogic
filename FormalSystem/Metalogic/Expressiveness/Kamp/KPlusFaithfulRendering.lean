@@ -13,9 +13,9 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
 # The faithful three-disjunct `Oₙ₊₁` over `HasFaithfulDedekindINF` (Rabinovich, PDF p.8)
 
 Rabinovich's **printed** inductive step for Lemma 5.3 has THREE disjuncts. The landed
-`negChainOn` (`EANegationFix/OnBuilder.lean:179`) truncates to TWO and assumes the strictly
+`negChainOn` (`EANegationFix/OnBuilder.lean:180`) truncates to TWO and assumes the strictly
 stronger `HasAttainedINF`. This module restores the third and carries the whole construction on
-`HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`), which states eq (5.2) verbatim **with the
+`HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`), which states eq (5.2) verbatim **with the
 sources' `K⁺`**.
 
 `Oₙ₊₁` for `P :: rest`, exactly as printed on p.8:
@@ -27,12 +27,12 @@ sources' `K⁺`**.
 with eq (5.2)
 `INF(z₀,r₀,z₁,P) := z₀ < r₀ < z₁ ∧ (∀y)^{<r₀}_{>z₀}¬P(y) ∧ (P(r₀) ∨ K⁺(P)(r₀))`.
 
-## ADAPTED-FROM: this module previously pinned `HasDedekindINF` (`DedekindINF.lean:136`)
+## ADAPTED-FROM: this module previously pinned `HasDedekindINF` (`DedekindINF.lean:134`)
 
 **What changed, in one clause**: disjunct (2)'s left conjunct moved from the tree's `kplus`
-(`PriorINF.lean:86`, which carries an extra `¬P(z₀)` conjunct that neither source states) to the
+(`PriorINF.lean:88`, which carries an extra `¬P(z₀)` conjunct that neither source states) to the
 sources' own `K⁺` — `Formula.kPlus` (`Syntax/Formula.lean:181`) at the object level, `kplusOpen`
-(`KPlusFaithful.lean:115`) at the `Prop` level. Nothing else about the transcription moved: the
+(`KPlusFaithful.lean:118`) at the `Prop` level. Nothing else about the transcription moved: the
 three printed disjuncts, the recursion on `(z₀,z₁)` in the boundary subcase, and eq (5.2)'s point
 condition `P(r₀) ∨ K⁺(P)(r₀)` — whose `K⁺` is *still* the tree's `kplus`, because
 `HasFaithfulDedekindINF`'s right disjunct is literally `HasDedekindINF`'s — are unchanged.
@@ -44,7 +44,7 @@ exact; at the tree's `kplus` it is strictly stronger, and the gap is precisely a
 `P` holds and also recurs arbitrarily soon above. Disjunct (2) is now gated on the exact proxy.
 
 **Nothing is weakened by this.** `HasDedekindINF.toHasFaithfulDedekindINF`
-(`KPlusFaithful.lean:366`) keeps every current supplier — the whole discrete/attained pipeline —
+(`KPlusFaithful.lean:369`) keeps every current supplier — the whole discrete/attained pipeline —
 and `negChainOnFaithful_iff` therefore proves *more* than it did: it now also covers structures
 on which `P` holds at `z₀` and recurs above it, which the previous carrier could not describe.
 
@@ -54,12 +54,10 @@ whole reason the faithful version cannot be spliced into the landed attained sta
 
 Nothing here is deleted from, or weakens, the attained-carrier transcription in `EANegationFix/`:
 these declarations are **additions**, and the attained versions reach them through the landed
-shims (`HasAttainedINF.toHasDedekindINF`, `DedekindINF.lean:172`).
+shims (`HasAttainedINF.toHasDedekindINF`, `DedekindINF.lean:170`).
 
-Cite Rabinovich by **PDF page only**:
-`~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf`.
-Everything below cites **PDF p.8**. The companion `.md` conversion is corrupt and is never
-ground truth.
+Cite [rabinovich2014] by **PDF page only**.
+Everything below cites **PDF p.8**.
 
 ## What this carrier EXCLUDES — read this before citing anything below
 
@@ -80,7 +78,7 @@ rather than as prose.
    `Rabinovich's Dedekind completeness < HasFaithfulDedekindINF < HasDedekindINF <
    HasDefinableINF < HasAttainedINF`,
    so this carrier is still stronger than the paper's hypothesis, but by one link less than the
-   carrier this module previously took. `KPlusFaithful.lean:314-320` states the exclusion in
+   carrier this module previously took. `KPlusFaithful.lean:317-320` states the exclusion in
    full, including what the faithful carrier **admits** that `HasDedekindINF` refuses.
 3. **Disjunct (2) is provably dead on every Prior structure, at BOTH `K⁺` spellings.**
    `prior_makes_faithful_disjunct2_unreachable` below proves it for the source-exact `K⁺` now
@@ -89,8 +87,8 @@ rather than as prose.
    content **is not yet reachable from any live consumer**: the live chain is Prior structures,
    where attainment holds outright. Observability arrives only with a genuinely non-attained
    Dedekind-complete frame class, which is not constructed anywhere in this tree
-   (`DedekindINF.lean:49-50` states that absence explicitly).
-   `hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:266`) must **not** be cited against
+   (`DedekindINF.lean:46-47` states that absence explicitly).
+   `hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:264`) must **not** be cited against
    this: its proof is `Or.inl h_kplus` and its own docstring admits it exhibits no structure.
 
    **Weakening the carrier did not weaken this exclusion** — that was the live risk, since
@@ -106,8 +104,8 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-! ## `K⁺(P)` as a `TemporalPred` -/
 
-/-- `K⁺(P)` as a point type. `kplusFormula` (`PriorINF.lean:93`) is the object-language
-    spelling; `kplus_formula_correct` (`KPlusBracketRendering.lean:162`) is its correctness lemma.
+/-- `K⁺(P)` as a point type. `kplusFormula` (`PriorINF.lean:95`) is the object-language
+    spelling; `kplus_formula_correct` (`KPlusBracketRendering.lean:161`) is its correctness lemma.
 
     Source correspondence: PDF p.8, *"K⁺(P₁)(z₀) is an atomic ... formula in the canonical
     expansion"*. The tree needs no canonical expansion: `K⁺` is outright TL-definable here. -/
@@ -124,9 +122,9 @@ theorem kplusPred_eval {sig : MonadicSignature}
 
     The object-language spelling needed no new formula: `Formula.kPlus`
     (`Syntax/Formula.lean:181`) has been in the tree all along, and `kPlus_formula_correct`
-    (`KPlusFaithful.lean:152`) is its correctness lemma against `kplusOpen`.
+    (`KPlusFaithful.lean:155`) is its correctness lemma against `kplusOpen`.
 
-    ADAPTED-FROM `kplusPred` above, which is pinned at `kplusFormula` (`PriorINF.lean:93`). What
+    ADAPTED-FROM `kplusPred` above, which is pinned at `kplusFormula` (`PriorINF.lean:95`). What
     changed: `kplusFormula` conjoins `¬P(t)`, and that conjunct is this tree's addition. Neither
     Rabinovich 2014 (`K⁺` definition, PDF p.3 — *"`K+(F)` … is an abbreviation for
     `¬((¬F)UntilTrue)`"*) nor Reynolds 1992 (abbreviation table §1, printed p.168 — `K⁺A` for
@@ -140,8 +138,8 @@ theorem kplusPred_eval {sig : MonadicSignature}
 def kplusOpenPred (P : TemporalPred) : TemporalPred := ⟨Formula.kPlus P.formula⟩
 
 /-- `kplusOpenPred` evaluates to the sources' semantic `K⁺`. Mirror of `kplusPred_eval`, routed
-    through the bridge lemma `kPlus_formula_correct` (`KPlusFaithful.lean:152`) rather than
-    through `kplus_formula_correct` (`KPlusBracketRendering.lean:162`). -/
+    through the bridge lemma `kPlus_formula_correct` (`KPlusFaithful.lean:155`) rather than
+    through `kplus_formula_correct` (`KPlusBracketRendering.lean:161`). -/
 theorem kplusOpenPred_eval {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : TemporalPred) (t : M.carrier) :
@@ -150,7 +148,7 @@ theorem kplusOpenPred_eval {sig : MonadicSignature}
 
 /-! ## The `VVecEA2`-level prepend
 
-`VBracketFormula.prependAll` (`EANegation.lean:312`) cannot be reused: the recursive `Oₙ` is now
+`VBracketFormula.prependAll` (`EANegation.lean:314`) cannot be reused: the recursive `Oₙ` is now
 a `VVecEA2` carrying its own `endpointLeft` **at `r₀`**, which must be absorbed into the point
 type at `r₀`. That absorption is the only new construction disjunct (3) needs. -/
 
@@ -237,7 +235,7 @@ theorem orderedPointsExist_combine_kplusOpen {sig : MonadicSignature}
 /-- **Disjunct (2), backward half, at the tree's `kplus`.** Retained verbatim in statement, and
     now *derived* from the source-exact version above rather than re-proved, so nothing is
     duplicated in substance: `kplus` is `kplusOpen` plus a conjunct this proof never reads
-    (`kplusOpen_of_kplus`, `KPlusFaithful.lean:214`).
+    (`kplusOpen_of_kplus`, `KPlusFaithful.lean:217`).
 
     Kept because eq (5.2)'s point condition still says `P(r₀) ∨ kplus P r₀` — the faithful
     carrier's right disjunct is literally `HasDedekindINF`'s — so `negChainOnFaithful_iff` still
@@ -299,7 +297,7 @@ theorem kplusLeftBlock_holds {sig : MonadicSignature}
     now uses, so its `Oₙ₊₁` carries Rabinovich's own *"`K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)`"*
     (PDF p.9) rather than a strictly stronger proxy of it.
 
-    `kplusLeftBlock` is **kept**: `NegFixOneFaithful.lean:269` and `NegFixListFaithful.lean:278`
+    `kplusLeftBlock` is **kept**: `NegFixOneFaithful.lean:267` and `NegFixListFaithful.lean:277`
     use it for Rabinovich's Lemma 5.1 Case 1 `K⁺(¬β₁)(z₀)`, which is re-based in its own phase. -/
 def kplusOpenLeftBlock (P : TemporalPred) : VVecEA2 :=
   ⟨[⟨0, { endpointLeft := kplusOpenPred P
@@ -327,7 +325,7 @@ theorem kplusOpenLeftBlock_holds {sig : MonadicSignature}
       3. `(∃r₀)^{<z₁}_{>z₀}(INF(z₀,r₀,z₁,P) ∧ Oₙ(rest, r₀, z₁))`
 
     Disjunct (3)'s point type at `r₀` is `P ∨ K⁺(P)` — eq (5.2)'s third conjunct, needing
-    `TemporalPred.disj` (`ExistsForallNF.lean:87`). Result type is `VVecEA2`, not
+    `TemporalPred.disj` (`ExistsForallNF.lean:88`). Result type is `VVecEA2`, not
     `VBracketFormula`: disjunct (2) conjoins an endpoint predicate at `z₀`.
 
     ADAPTED-FROM the `HasDedekindINF`-era spelling of this definition. What changed: **one
@@ -346,7 +344,7 @@ noncomputable def negChainOnFaithful : List TemporalPred → VVecEA2
 
 /-- **Lemma 5.3, faithful form (PDF pp.8-9), over `HasFaithfulDedekindINF`.**
 
-    Compare `negChainOn_iff` (`EANegationFix/OnBuilder.lean:189`), which proves the same shape
+    Compare `negChainOn_iff` (`EANegationFix/OnBuilder.lean:190`), which proves the same shape
     with TWO disjuncts under the strictly stronger `HasAttainedINF`.
 
     ADAPTED-FROM the `HasDedekindINF` pin. What changed: the carrier binder, and with it the type
@@ -449,13 +447,13 @@ theorem negChainOnFaithful_iff {sig : MonadicSignature}
 
 /-! ## `lemma53` with `HasAttainedINF` weakened to `HasFaithfulDedekindINF`
 
-This is `lemma53` (`KPlusBracketRendering.lean:432`) verbatim except for the carrier. `O` is hoisted
+This is `lemma53` (`KPlusBracketRendering.lean:431`) verbatim except for the carrier. `O` is hoisted
 out of
 `M`, `atomMap`, `z₀`, `z₁`, so it is a function of `P` alone — which is what "is equivalent to a
 `∨∃⃗∀` formula" means, and the whole content of the claim.
 
 ADAPTED-FROM the `HasDedekindINF` pin: the binder moved one link down the strengthening chain to
-`HasFaithfulDedekindINF` (`KPlusFaithful.lean:322`). Nothing else changed — the proof is the
+`HasFaithfulDedekindINF` (`KPlusFaithful.lean:325`). Nothing else changed — the proof is the
 landed one, and `HasDedekindINF.toHasFaithfulDedekindINF` keeps every previous supplier. -/
 
 theorem lemma53Faithful {sig : MonadicSignature} {n : Nat} (P : Fin n → TemporalPred) :
@@ -521,7 +519,7 @@ proved dead first, with the tree's spelling derived from it. -/
 
 /-- **On Prior structures, disjunct (2) is unreachable — at the SOURCES' `K⁺`.**
 
-    `SemanticPriorUZ` gives `HasAttainedINF` (`prior_hasAttainedINF`, `PriorINF.lean:230`), whose
+    `SemanticPriorUZ` gives `HasAttainedINF` (`prior_hasAttainedINF`, `PriorINF.lean:232`), whose
     `first_occ` hands back an attained `r₀ > z₀` with `¬P` throughout `(z₀,r₀)`. The sources' `K⁺`
     says `P` occurs in *every* interval `(z₀,s)`; instantiate it at `s := r₀` and the two collide.
     No use is made of the tree's extra `¬P(z₀)` conjunct, which is why the weaker gate is dead for
@@ -550,8 +548,8 @@ theorem prior_makes_faithful_disjunct2_unreachable {sig : MonadicSignature}
 /-- **On Prior structures, disjunct (2) is unreachable — at the TREE's `kplus`.**
 
     Statement retained verbatim from before the re-base, and now *derived* from the source-exact
-    version above (`kplusOpen_of_kplus`, `KPlusFaithful.lean:214`) rather than routed through
-`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:290`). The route through
+    version above (`kplusOpen_of_kplus`, `KPlusFaithful.lean:217`) rather than routed through
+`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:289`). The route through
     `HasDefinableINF`
     remains available and unedited; deriving instead from the stronger exclusion keeps the two
     statements from drifting apart. -/

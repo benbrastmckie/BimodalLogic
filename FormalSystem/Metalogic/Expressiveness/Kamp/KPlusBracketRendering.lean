@@ -18,8 +18,7 @@ case where `α₀`, `αₙ` and all `βᵢ` are equivalent to True:
 > **Lemma 5.3.** `¬∃x₁…∃xₙ (z₀ < x₁ < ⋯ < xₙ < z₁) ∧ ⋀ᵢ₌₁ⁿ Pᵢ(xᵢ)` is equivalent over Dedekind
 > complete chains to a `∨∃⃗∀` formula `Oₙ(P₁,…,Pₙ,z₀,z₁)`.
 
-Cite Rabinovich by **PDF page only**. The companion `.md` conversion is corrupt: it drops every
-displayed equation — and Lemma 5.3 *is* displayed equations — and inverts `k ≠ m` to `k = m`.
+Cite [rabinovich2014] by **PDF page only**.
 
 ## The printed proof (PDF p.8), verbatim in structure
 
@@ -57,7 +56,7 @@ Landed here, sorry-free:
   `βᵢ` instantiated to `⊤`), plus the characterization collapsing the vacuous segment clauses.
 * `kplus_formula_correct` — `K⁺(P₁)` as an **atom of the canonical expansion** (p.8: "`K⁺(P₁)(z₀)`
   is an atomic (and hence a `∨∃⃗∀`) formula in the canonical expansion"). `kplusFormula`
-  (`PriorINF.lean:87`) already had the right definition but carried **no correctness lemma and no
+  (`PriorINF.lean:89`) already had the right definition but carried **no correctness lemma and no
   reference anywhere in the tree**; the printed proof's disjuncts (2) and (3) both need it.
 * `lemma53_basis` — the printed Basis, `n = 1`.
 * `O_zero_correct` — the `n = 0` degenerate case.
@@ -75,7 +74,7 @@ open FormalSystem.Metalogic.Expressiveness
 /-! ## The `⊤` instantiation idiom
 
 Rabinovich instantiates unused slots to True. `TemporalPred.top` is the live spelling, matching
-`BracketFormula.trivial` (`VecEAFormula.lean:305`). -/
+`BracketFormula.trivial` (`VecEAFormula.lean:306`). -/
 
 /-- `⊤` holds at every point. This is what makes the "all `βᵢ` equivalent to True" instantiation
     of Notation 5.2 collapse to a bare witness-existence claim.
@@ -146,7 +145,7 @@ theorem allTopBracket_zero_holds {sig : MonadicSignature}
 The printed proof asserts: *"`K⁺(P₁)(z₀)` is an atomic (and hence a `∨∃⃗∀`) formula in the
 canonical expansion"*. Both disjunct (2) and eq (5.2)'s third conjunct depend on it.
 
-`kplusFormula` (`PriorINF.lean:87`) already spells this correctly as `¬P ∧ ¬(⊤ U ¬P)` — note
+`kplusFormula` (`PriorINF.lean:89`) already spells this correctly as `¬P ∧ ¬(⊤ U ¬P)` — note
 `Formula.untl target between`, so `untl ⊤ P.neg` at `t` reads "`∃s > t` with `¬P` throughout
 `(t,s)`", whose negation is `∀s > t, ∃r ∈ (t,s), P(r)`. But it carried **no correctness lemma and
 no reference anywhere in the tree**, so it was an advertised definition, not a usable one. This
@@ -261,7 +260,7 @@ eq (5.2). -/
 
 /-- **`HasDefinableINF` is not the eq (5.2) carrier: it silently deletes disjunct (2).**
 
-    Assuming `HasDefinableINF` (`PriorINF.lean:108`) makes the `K⁺(P₁)(z₀)` case *unreachable*
+    Assuming `HasDefinableINF` (`PriorINF.lean:110`) makes the `K⁺(P₁)(z₀)` case *unreachable*
     whenever `P₁` occurs in `(z₀,z₁)` — which is exactly the case p.8's disjunct (2)
     `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` exists to handle, and exactly the paper's
     `Subcase r₀ = z₀` (p.8: *"Note that `r₀ = z₀` iff `K⁺(P₁)(z₀)`"*).
@@ -301,7 +300,7 @@ theorem hasDefinableINF_excludes_kplus {sig : MonadicSignature}
 /-! ## The `allTopBracket` ↔ `chainAllTrue` bridge
 
 The inductive step does **not** need to be transcribed here: it is already in the tree, as
-`negChainOn_iff` (`EANegationFix/OnBuilder.lean:159`), which is Lemma 5.3 in fixed-formula form
+`negChainOn_iff` (`EANegationFix/OnBuilder.lean:160`), which is Lemma 5.3 in fixed-formula form
 over `List TemporalPred` and on the **attained** carrier. See
 `Kamp/Section5Correspondence.lean` for the full page-cited correspondence table — that guard
 exists because this transcription was re-planned from scratch more than once while present and
@@ -402,7 +401,7 @@ theorem negChainOn_holds_of_not_lt {sig : MonadicSignature}
     **STATUS: sorry-free, at the ATTAINED carrier.** `n = 0` and `n = 1` (the printed Basis) are
     discharged outright from `O_zero_correct` and `lemma53_basis`, neither of which touches the
     `INF` hypothesis. The `n ≥ 2` arm — the printed inductive step, whose disjuncts (2) and (3)
-    consume eq (5.2) — is discharged from `negChainOn_iff` (`EANegationFix/OnBuilder.lean:159`),
+    consume eq (5.2) — is discharged from `negChainOn_iff` (`EANegationFix/OnBuilder.lean:160`),
     which already transcribes exactly that induction, via the `allTopBracket` ↔ `chainAllTrue`
     bridge above.
 
@@ -423,13 +422,13 @@ theorem negChainOn_holds_of_not_lt {sig : MonadicSignature}
 
     Building the **faithful** carrier — the disjunction of the paper's two subcases,
     `K⁺(P₁)(z₀) ∨ (∃r₀ ∈ (z₀,z₁), …)` — is not done here, but it is done: the carrier is
-    `HasDedekindINF` (`DedekindINF.lean:136`) and the faithful Lemma 5.3 over it is
+    `HasDedekindINF` (`DedekindINF.lean:134`) and the faithful Lemma 5.3 over it is
     `lemma53Faithful` (`KPlusFaithfulRendering.lean`), which restores all three printed disjuncts.
     The two primitives an earlier version of this note recorded as missing both exist:
-    the witness-shifting prepend is `BracketFormula.prepend` (`EANegation.lean:93`), and
+    the witness-shifting prepend is `BracketFormula.prepend` (`EANegation.lean:95`), and
     `TemporalPred` disjunction — which disjunct (3)'s point type `P₁ ∨ K⁺(P₁)` needs — is
-    `TemporalPred.disj` (`ExistsForallNF.lean:87`), with `TemporalPred.eval_at_disj`
-    (`VecEAClosure.lean:49`).
+    `TemporalPred.disj` (`ExistsForallNF.lean:88`), with `TemporalPred.eval_at_disj`
+    (`VecEAClosure.lean:50`).
 
     Source correspondence: Rabinovich 2014, Lemma 5.3, PDF p.8; correspondence table in
     `Kamp/Section5Correspondence.lean`. -/

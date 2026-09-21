@@ -93,7 +93,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 169 | `Decidability/` |
 | `Deterministic.lean` | 27 | <!-- TODO: add description --> |
-| `Expressiveness.lean` | 71 | `Expressiveness/` |
+| `Expressiveness.lean` | 74 | `Expressiveness/` |
 | `Independence.lean` | 115 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 130 | `WeakCanonical/` |
@@ -154,7 +154,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 51,958 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Expressiveness/`](Expressiveness/README.md) | 139 | 104,097 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
+| [`Expressiveness/`](Expressiveness/README.md) | 139 | 104,171 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 22 | 5,975 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,511 | Kamp/Reynolds route, including all of `Kamp/` |
@@ -217,9 +217,9 @@ sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
-| `NfMultiAnchorBridge/` | 47 | 41,436 |
-| `EANegationFix/` | 7 | 3,230 |
-| `EANegationFixFaithful/` | 5 | 2,672 |
+| `NfMultiAnchorBridge/` | 47 | 41,433 |
+| `EANegationFix/` | 7 | 3,231 |
+| `EANegationFixFaithful/` | 5 | 2,664 |
 <!-- END GENERATED -->
 
 `Kamp/` alone is larger than every other directory in `Metalogic/` combined. Any

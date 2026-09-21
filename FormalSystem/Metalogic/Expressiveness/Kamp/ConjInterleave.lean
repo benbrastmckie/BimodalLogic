@@ -74,13 +74,15 @@ OFF the live import path: nothing here is imported by `KampPrior.lean` or the co
 
 ## References
 
-- [rabinovich2014], Lemma 3.2(1) (p.4), Lemma 3.4 (p.5), Definition
-  3.1 (p.4). Cited by PDF page; the companion markdown transcription is corrupt.
-- `ExistsForallFormula.lean`: the Def 3.1 object `ExistsForallFormula`, `efSat`, `UnaryType`,
-  `unaryHolds`.
-- `VeeExistsForall.lean`: the Def 3.3 object `VeeExistsForall`, `veeSat`, `veeSat_append`.
-- `NormalForm.lean`: `nf_eval_unique` (a point realizes at most one complete type).
-- `VecEAConjFull.lean`: `BracketFormula.conjFull` — the type-merge bookkeeping template.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma 3.2(1) (p.4), Lemma 3.4
+  (p.5), Definition 3.1 (p.4). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallFormula.lean` — the Def 3.1 object
+  `ExistsForallFormula`, `efSat`, `UnaryType`, `unaryHolds`.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VeeExistsForall.lean` — the Def 3.3 object
+  `VeeExistsForall`, `veeSat`, `veeSat_append`.
+* `NormalForm.lean`: `nf_eval_unique` (a point realizes at most one complete type).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/VecEAConjFull.lean` — `BracketFormula.conjFull` —
+  the type-merge bookkeeping template.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

@@ -14,7 +14,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithful
 `ExistProviders.correct` and `BracketCarrierCorrectVPrior` — against
 `SemanticPriorUZ` / `SemanticPriorSZ` (`Expressiveness/PriorDefs.lean`, `:33`). This module
 restates both against `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`
-(`Kamp/KPlusFaithful.lean:322`, `:339`), which are Rabinovich's eq (5.2) dichotomy (PDF p.8) at
+(`Kamp/KPlusFaithful.lean:325`, `:339`), which are Rabinovich's eq (5.2) dichotomy (PDF p.8) at
 the source's own `K⁺` / `K⁻` (his Definitions (2)/(3), PDF p.3).
 
 ## Why this module is the bottom rung of the spine re-base
@@ -28,10 +28,10 @@ above those. So re-basing here is what makes the rungs above it re-basable at al
 
 ## Direction of the swap, and why it is a strengthening rather than a swap
 
-`SemanticPriorUZ` implies `HasAttainedINF` (`prior_hasAttainedINF`, `Kamp/PriorINF.lean:230`),
+`SemanticPriorUZ` implies `HasAttainedINF` (`prior_hasAttainedINF`, `Kamp/PriorINF.lean:232`),
 which implies `HasFaithfulDedekindINF` (`HasAttainedINF.toHasFaithfulDedekindINF`,
-`KPlusFaithful.lean:384`); the composite has no converse
-(`hasFaithfulDedekindINF_not_implies_hasDedekindINF`, `KPlusFaithful.lean:695`). The faithful
+`KPlusFaithful.lean:387`); the composite has no converse
+(`hasFaithfulDedekindINF_not_implies_hasDedekindINF`, `KPlusFaithful.lean:698`). The faithful
 hypothesis is therefore strictly *weaker*, so:
 
 - a `ExistProvidersFaithful` bundle is a strictly *stronger* obligation on the provider than an
@@ -44,7 +44,7 @@ needs restating rather than re-deriving. The derivable direction is recorded bel
 `ExistProvidersFaithful.toExistProviders` and
 `BracketCarrierCorrectVPriorFaithful.toBracketCarrierCorrectVPrior`, so the re-base is
 machine-checked to be a weakening of hypotheses and not a sideways move — the same discipline
-`kampArm_zeta_faithful_covers_attained` (`Kamp/ZetaUniformExtractFaithful.lean:577`) applies at the
+`kampArm_zeta_faithful_covers_attained` (`Kamp/ZetaUniformExtractFaithful.lean:579`) applies at the
 ζ wire.
 
 ## Nothing is removed and nothing is renamed
@@ -65,7 +65,7 @@ plus the §5 bracket notation `[α_0, …, α_n](z_0, z_1)`, PDF p.7, for the tw
 framing; Prop 3.5, PDF p.5, for the ∃-witness → Until/Since folding mechanism; Cor 5.4, PDF
 p.7/p.9, for per-round provider threading), while the *choice of carrier* is original work
 answering `KampFaithfulExpressiveCompleteness`
-(`Expressiveness/PriorExpressivenessDense.lean:169`), which is stated at the faithful carrier.
+(`Expressiveness/PriorExpressivenessDense.lean:171`), which is stated at the faithful carrier.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp
@@ -103,9 +103,9 @@ structure ExistProvidersFaithful (sig : MonadicSignature) [Fintype sig.preds]
 
 /-- **A faithful provider bundle re-supplies the UZ/SZ one.** Every consumer that arrives holding
 `SemanticPriorUZ` / `SemanticPriorSZ` is served by an `ExistProvidersFaithful`, through
-`prior_hasAttainedINF` / `prior_hasAttainedSUP` (`Kamp/PriorINF.lean:230`, `:275`) composed with
+`prior_hasAttainedINF` / `prior_hasAttainedSUP` (`Kamp/PriorINF.lean:232`, `:275`) composed with
 `HasAttainedINF.toHasFaithfulDedekindINF` / `HasAttainedSUP.toHasFaithfulDedekindSUP`
-(`KPlusFaithful.lean:384`, `:389`). The `existF` field is carried across unchanged, so the
+(`KPlusFaithful.lean:387`, `:389`). The `existF` field is carried across unchanged, so the
 converter formula produced is literally the same one.
 
 This is the D11 coverage record: it machine-checks that the re-base weakens hypotheses rather than

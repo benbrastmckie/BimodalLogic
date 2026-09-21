@@ -198,7 +198,7 @@ monadic-atom fold, PDF p.5); no arity-4 evaluation occurs:
   (order-conflict falsity; cf. `nf_depth0_pair_cycle_empty'`, NfDepth0Generalized:93).
 
 The gate Prop is decidable in principle (`normalFormFintype` / `normalFormDecEq`,
-NormalForm.lean:180/184); `Classical.dec` is used since the carrier is noncomputable anyway. -/
+NormalForm.lean:182/184); `Classical.dec` is used since the carrier is noncomputable anyway. -/
 noncomputable def bracketEndCharK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -786,7 +786,7 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Finite sig.preds]
     `ws : Fin (lL.length + 1 + lR.length) → M.carrier` realizing the concatenated point-type list
     `lL ++ ptW :: lR` in order, every witness pinned in `(x, t)`. This exposes the monotone `ws`
     that lives inside `IntervalPattern.holds` (surfaced by `bracket_implies_fChainPred`
-    `EANegation.lean:670`) but that `k1v_bracket_extract`'s per-element existential discards — the
+    `EANegation.lean:672`) but that `k1v_bracket_extract`'s per-element existential discards — the
     ordering later phases need to place pin witnesses strictly ABOVE the interior sub-chain points.
 
     Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint point-insertion bound is carried

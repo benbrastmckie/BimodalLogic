@@ -225,7 +225,7 @@ noncomputable def RIntervalStructure.toOrdered (sig : MonadicSignature) [Fintype
 /-! ## Open subintervals
 
 Reynolds' §8 works throughout with `M | (t,u)`, the substructure on the **open** interval. The
-tree's `OrderedMonadicStructure.subinterval` (`MonadicFO.lean:215`) is the closed `M | [a,b]`,
+tree's `OrderedMonadicStructure.subinterval` (`MonadicFO.lean:216`) is the closed `M | [a,b]`,
 used by the discrete development; the open form is new here.
 -/
 

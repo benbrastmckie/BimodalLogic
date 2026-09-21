@@ -15,7 +15,7 @@ Reynolds 1992, *An Axiomatization for Until and Since over the Reals without the
 
 This module lands the §6 vocabulary at the **dense** instance and discharges **Lemma 2**, the
 first of §6's nine lemmas, by applying `uSExpressivelyCompleteOverDensePrior`
-(`PriorExpressivenessDense.lean:302`) to the monadic formula `ρ`.
+(`PriorExpressivenessDense.lean:304`) to the monadic formula `ρ`.
 
 ## The source, verbatim
 
@@ -150,9 +150,9 @@ introduced; `ContempEquivDense` is the §6 notion, parameterized by `ε`.
 
 - [reynolds1992], §6, printed pp.176-177 (the definitions and Lemma 2)
 - [reynolds1992], §5, printed p.176 (the uniformity remark)
-- `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:302`) — Reynolds §5
+- `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:304`) — Reynolds §5
   Theorem 3, the input to Lemma 2
-- `MonadicFormula.rename` / `eval_rename` (`Kamp/MonadicFormulaSubstitution.lean:109`) — the
+- `MonadicFormula.rename` / `eval_rename` (`Kamp/MonadicFormulaSubstitution.lean:112`) — the
 variable
   reindexing `ρ` and `λ` are assembled with
 -/
@@ -193,7 +193,7 @@ theorem false_of_succOrder_dense {α : Type*} [LinearOrder α] [SuccOrder α]
 
 /-- `ε` with its two free variables reindexed to `i` (the `x` slot) and `j` (the `y` slot).
 
-Built from the landed `MonadicFormula.rename` (`Kamp/MonadicFormulaSubstitution.lean:109`) rather
+Built from the landed `MonadicFormula.rename` (`Kamp/MonadicFormulaSubstitution.lean:112`) rather
 than a
 fresh substitution operator. -/
 def epsAt {sig : MonadicSignature} {n : Nat} (ε : MonadicFormula sig 2) (i j : Fin n) :
@@ -223,7 +223,7 @@ theorem eval_epsAt {sig : MonadicSignature} {n : Nat} (M : OrderedMonadicStructu
 /-! ## The three clauses
 
 Reynolds' bullets, printed p.176. Clause (ii), *"`∼_M` partitions `M` into intervals"*, is
-rendered as convexity of each class; clause (iii) uses `M.subinterval` (`MonadicFO.lean:215`) for
+rendered as convexity of each class; clause (iii) uses `M.subinterval` (`MonadicFO.lean:216`) for
 Reynolds' `M | [a,b]`, with `min`/`max` endpoints so that the clause is stated for every ordered
 pair without presupposing `a ≤ b` — the same convention the landed `ContempEquiv` uses. -/
 

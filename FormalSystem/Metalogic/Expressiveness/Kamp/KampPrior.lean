@@ -51,8 +51,9 @@ are all sorry-free and reused directly.
 
 ## References
 
-- [rabinovich2014], "A Proof of Kamp's Theorem", Sections 3-5
-- [reynolds1994], Theorem 5
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
+  Sections 3-5
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Theorem 5
 
 ## Tags
 
@@ -777,8 +778,8 @@ noncomputable def kampPriorExpressiveCompleteness
 **VERDICT RECORD (2026-07-11, session sess_1783796165_b5b482_309; house style of 13.0/13.3/13.35:
 machine-probe, verdict recorded either way, only green material landed).** Rabinovich Def 3.1
 (p.4) fixes the normal-form depth stratification this probe walks: `NormalForm sig (k+1) n` has
-quant-layer subs `NormalForm sig k (n+1)` (NormalForm.lean:137-139), and `NfEvalNf M (k+1) n`
-couples each sub through `∃ x, NfEvalNf M k (n+1) (Fin.cons x env) qnf` (NormalForm.lean:207-216)
+quant-layer subs `NormalForm sig k (n+1)` (NormalForm.lean:139-139), and `NfEvalNf M (k+1) n`
+couples each sub through `∃ x, NfEvalNf M k (n+1) (Fin.cons x env) qnf` (NormalForm.lean:209-216)
 — the depth of the per-sub obligation is ONE LESS than the depth of the form being evaluated.
 
 **The probed site** (the then-`| 1 =>` arm of the `nf_nvar_exist_all_depths` recursion —

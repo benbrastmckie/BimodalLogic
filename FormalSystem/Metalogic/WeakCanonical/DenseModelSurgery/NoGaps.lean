@@ -131,7 +131,7 @@ The subordinate clause is the whole argument, and it is a *formula-level* argume
 temporal formulas between `M` and `N` at every surviving point. A counterexample point for an
 instance in `N` is, by Lemma 8, a counterexample point for the same instance in `M`.
 
-The landed `SemanticPriorU` (`PriorDefsDense.lean:119`) is stated with explicit carrier
+The landed `SemanticPriorU` (`PriorDefsDense.lean:121`) is stated with explicit carrier
 quantifiers rather than as the truth of a formula, so the argument cannot be run on it directly:
 a semantic transfer would have to produce, from *"`p` holds at every point of `N` in `(t,s)`"*,
 the corresponding statement about every point of **`M`** in `(t,s)` — and the points of `Q₀ ∖ I`

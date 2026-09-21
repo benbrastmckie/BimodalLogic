@@ -22,7 +22,8 @@ Connects `IntStructure`/`IntTruth` (separation framework) with
 
 ## References
 
-- [gabbay1994] Chapter 10: Separation on integer time
+* [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
+  Computational Aspects*][gabbay1994], Chapter 10: Separation on integer time
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Separation

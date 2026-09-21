@@ -33,13 +33,16 @@ The proof bodies are the per-`N` Fin-layer proofs verbatim, re-entered after `in
 
 ## References
 
-- [rabinovich2014], Proposition 4.3 / Theorem 4.4 (p.6),
-  Definition 4.1 (p.5), collapse-to-atom note (p.6). Cited by PDF page; the companion markdown
-  transcription is corrupt.
-- `ESigmaCapture.lean`: `capTypeFin`, `capTypeFin_atomNamed` (the direct capture).
-- `MonadicFormulaSubstitution.lean`: `translate_correctFin`, `ex_closure_translateFin` (the per-`N`
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Proposition 4.3 / Theorem 4.4
+  (p.6), Definition 4.1 (p.5), collapse-to-atom note (p.6). Cited by PDF page; the companion
+  markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ESigmaCapture.lean` — `capTypeFin`,
+  `capTypeFin_atomNamed` (the direct capture).
+* `FormalSystem/Metalogic/Expressiveness/Kamp/MonadicFormulaSubstitution.lean` —
+  `translate_correctFin`, `ex_closure_translateFin` (the per-`N`
 forms).
-- `EFSatNegationGeneral.lean` / `VeeSatNegation.lean`: the per-`N` negation stack.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/EFSatNegationGeneral.lean` — /
+  `VeeSatNegation.lean`: the per-`N` negation stack.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

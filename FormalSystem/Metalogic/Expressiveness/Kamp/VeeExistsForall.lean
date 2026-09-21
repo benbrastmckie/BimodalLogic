@@ -25,9 +25,10 @@ of Phase 4 and are not yet proved.
 
 ## References
 
-- [rabinovich2014], Definition 3.3 (p.4), Lemma 3.4 (p.5). Cited by
-  PDF page; the companion markdown transcription is corrupt.
-- `ExistsForallFormula.lean`: the Def 3.1 object and its `efSat` semantics.
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Definition 3.3 (p.4), Lemma 3.4
+  (p.5). Cited by PDF page; the companion markdown transcription is corrupt.
+* `FormalSystem/Metalogic/Expressiveness/Kamp/ExistsForallFormula.lean` — the Def 3.1 object and
+  its `efSat` semantics.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness

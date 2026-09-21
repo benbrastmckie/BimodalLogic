@@ -220,7 +220,7 @@ results are **not** to be described as discharged.
 - `Lemma34.lean` — Lemmas 3 and 4, the class calculus, `false_of_holds_throughout_class`
 - `Lemma5.lean` — Lemma 5, `false_of_holds_throughout_class_bounded`, `exists_bound_notHolds`,
   `temporalToMonadic`, `relativizeAt`
-- `SemanticPriorU` (`PriorDefsDense.lean:119`) — Reynolds' Prior-U, printed p.168
+- `SemanticPriorU` (`PriorDefsDense.lean:121`) — Reynolds' Prior-U, printed p.168
 -/
 
 set_option linter.style.longFile 1700
