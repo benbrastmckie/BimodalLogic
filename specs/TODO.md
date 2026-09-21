@@ -94,7 +94,7 @@ next_project_number: 645
 ### Publication Quality
 
 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
-642 [RESEARCHING] — Close the measurement blind spot the language-extension merge...
+642 [RESEARCHED] — Close the measurement blind spot the language-extension merge...
 
 ### Semantics
 
@@ -147,10 +147,11 @@ ACCEPTANCE. All checks green on the current tree; each seen to fail on an inject
 ---
 
 ### 642. Restore layer measurement for language directories
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: None
+- **Research**: [642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md]
 
 **Description**: Close the measurement blind spot the language-extension merge (task 634) opened. FormalSystem/PlusLanguage/, FormalSystem/MinusLanguage/ and FormalSystem/StarLanguage/ are absent from the LAYERS table in scripts/measure-refactor-partitions.py, so layer_of returns None for them and every import into and out of those directories is invisible to the upward-edge measurement.
 

@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 18,
+  "summary": "Measured every candidate layering for FormalSystem/{Plus,Minus,Star}Language/. No single per-directory layer is consistent (L=0/1/2/3 give 23/9/5/3 upward lines). Recommended a per-file sub-layer keyed on each file's pre-merge directory (13 files at 0, 16 at 1, MinusLanguage/Soundness at 3); prototyped on the live import graph it measures exactly the 7 AxiomDischarge -> Theorems lines and nothing else. Fail-loud layer_of also needs rows for MainResults and Version.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
+      "summary": "Layering decision with measured alternatives, the 30-row origin table, prototype results for surplus/shortfall/unmapped cases, and the seven document groups that record the stale measurement."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "Plan the implementation: extend LAYERS and layer_of, restore the 7-line allowlist, add the syntax-before-semantics assertion, run the hand negative tests, update the documents."
+}

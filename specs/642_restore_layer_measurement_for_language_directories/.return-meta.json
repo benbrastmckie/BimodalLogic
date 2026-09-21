@@ -1,0 +1,49 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
+      "summary": "Layering decision for the three language directories with measured alternatives, the 30-row per-file origin table, prototype results, and the full list of documents recording the stale measurement."
+    }
+  ],
+  "dispatch_seq": 18,
+  "next_steps": "Run /plan 642 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1790004043_997429_642",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 420,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  },
+  "proposed_file_scope": [
+    "scripts/measure-refactor-partitions.py",
+    "scripts/check-metalogic-cycles.sh",
+    "scripts/README.md",
+    "ORGANISATION.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/development/MODULE_INVARIANTS.md",
+    "docs/development/PUBLICATION_REFACTOR.md",
+    "FormalSystem/MinusLanguage/README.md",
+    "FormalSystem/PlusLanguage/README.md",
+    "FormalSystem/StarLanguage/README.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a directory merge moves files out of a measured layer table, an equality-asserted allowlist can empty because the edges stopped being measured rather than because they turned downward. Before accepting an emptied allowlist, enumerate the modules for which the layer lookup returns no value. A lookup that returns None for an unknown path makes this failure silent; raising for any path under the library root, and returning None only for foreign modules, makes the next new directory fail loudly instead.",
+      "category": "PATTERN",
+      "source_artifact": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["layer table", "allowlist", "vacuous pass", "import graph", "fail loudly", "measurement blind spot"]
+    },
+    {
+      "content": "To classify files in a merged directory without inviting a gerrymandered result, key each file on the directory it occupied before the merge, read from the merge commit's rename table (git show -M --name-status <commit>). A content judgement can be tuned until an inconvenient edge disappears; an origin rule cannot. Test a proposed single per-directory layer by measuring the upward set at every candidate value: if every value gives a non-empty set, the directory genuinely spans layers.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["git rename table", "directory merge", "layering", "classification rule", "upward edges"]
+    }
+  ]
+}
