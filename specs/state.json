@@ -260,9 +260,15 @@
           "path": "specs/634_language_extension_directories_and_probe_tests/plans/01_language-extension-directory-merge.md",
           "type": "plan",
           "summary": "6-phase linear plan for the Phase 5 language-extension directory merge, carrying a measured namespace rename as declared scope, an atomic-batch merge phase, and the test-root probe relocation."
+        },
+        {
+          "path": "specs/634_language_extension_directories_and_probe_tests/summaries/01_language-extension-directory-merge-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the language-extension directory merge."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Landed PUBLICATION_REFACTOR.md Phase 5: Syntax/{Plus,Minus,Star}Language/ and Semantics/{Plus,Minus,Star}Language/ merged into three self-contained root-level components, MinusLanguageSoundness.lean relocated to MinusLanguage/Soundness.lean, 241 declarations renamed out of FormalSystem.Semantics into flat FormalSystem.{X}Language, the 9 loose test-root files moved to Tests/BimodalTest/Metalogic/Decidability/, and all three Chronicle files settled as recorded exceptions. lake build and lake build BimodalTest green, check-module-invariants.sh ALL CHECKS PASSED, namespace-audit unrelated bucket down from 24 to 8 with every member carrying a docstring record."
     },
     {
       "project_number": 635,

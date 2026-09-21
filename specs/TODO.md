@@ -203,6 +203,7 @@ Reconciliation notes: depends on task 634. Task 412 cites Metalogic/WeakCanonica
 - **Dependencies**: Task 626, Task 632, Task 633
 - **Research**: [634_language_extension_directories_and_probe_tests/reports/01_language-extension-directories-probes.md]
 - **Plan**: [634_language_extension_directories_and_probe_tests/plans/01_language-extension-directory-merge.md]
+- **Summary**: [634_language_extension_directories_and_probe_tests/summaries/01_language-extension-directory-merge-summary.md]
 
 **Description**: Merge Syntax/XLanguage/ and Semantics/XLanguage/ into XLanguage/ under the library root for Plus, Minus and Star (namespaces already match); move Metalogic/Conservativity/MinusLanguageSoundness.lean to MinusLanguage/Soundness.lean; settle the three files declaring a foreign Chronicle/Bundle namespace; move the 8 *Probe.lean files and TableauConformance.lean from the Tests/BimodalTest/ root into Tests/BimodalTest/Metalogic/Decidability/. Acceptance: measure-refactor-partitions.py namespace-audit shows only the recorded exceptions as unrelated; harness green.
 
