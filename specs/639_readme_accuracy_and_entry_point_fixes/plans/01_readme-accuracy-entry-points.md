@@ -252,29 +252,32 @@ outside those ranges as in-scope for this phase too.
 
 ---
 
-### Phase 3: README.md navigation, structure tree and citation [NOT STARTED]
+### Phase 3: README.md navigation, structure tree and citation [COMPLETED]
 
 **Goal**: Close dispatch items (3), (4) and (7) on README.md — correct directory nesting, a
 top-matter `MainResults.lean` entry point, and one citation convention.
 
 **Tasks**:
-- [ ] Project Structure tree (item 3): move `MinusLanguage/` and `PlusLanguage/` from direct
+- [x] Project Structure tree (item 3): move `MinusLanguage/` and `PlusLanguage/` from direct
       children of `FormalSystem/` to children of `Syntax/`, and add the missing `StarLanguage/`
       alongside them. Keep the box-drawing characters and comment-column alignment consistent with
-      the surrounding tree.
-- [ ] Confirm the tree's `ProofSystem/` comment ("Axioms (29 constructors, nine layers)") still
-      agrees with Phase 2's convention; leave it if so.
-- [ ] Main Results link (item 4): add a `**Main Results**:
+      the surrounding tree. *(completed: comment column verified at 35 for all three new lines,
+      matching the rest of the tree; all three paths confirmed to exist with `test -d`)*
+- [x] Confirm the tree's `ProofSystem/` comment ("Axioms (29 constructors, nine layers)") still
+      agrees with Phase 2's convention; leave it if so. *(completed: agrees, left unchanged)*
+- [x] Main Results link (item 4): add a `**Main Results**:
       [MainResults.lean](FormalSystem/MainResults.lean)` line to the top matter alongside the
       existing Paper / Bimodal Reference Manual / Demo lines (README.md:15-19), with a one-line
       description drawn from `MainResults.lean`'s own header. Keep the existing Demo link — it is
-      a complementary artifact, not a replacement.
-- [ ] Citation (item 7): change README.md:103's "(Brast-McKie, 2025)" to the same "forthcoming"
+      a complementary artifact, not a replacement. *(completed)*
+- [x] Citation (item 7): change README.md:103's "(Brast-McKie, 2025)" to the same "forthcoming"
       phrasing used at README.md:15. Set the BibTeX `year` field (README.md:430-437) to `{2025}`
       to match the `brastmckie2025construction` key, leaving `note = {Forthcoming}` in place.
       Leave the separate `@software{brastmckie2026bimodallogic}` entry untouched — its 2026 is
-      the software's own year, not the paper's.
-- [ ] Sweep the whole README for any other in-text year citation of the paper and align it.
+      the software's own year, not the paper's. *(completed)*
+- [x] Sweep the whole README for any other in-text year citation of the paper and align it.
+      *(completed: `grep -n "Brast-McKie" README.md` shows exactly the top-matter and in-text
+      "forthcoming" citations plus the two BibTeX `author` fields; no other year citation found)*
 
 **Timing**: 0.75 hours
 

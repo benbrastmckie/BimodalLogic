@@ -16,6 +16,8 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 **Bimodal Reference Manual**: [`typst/BimodalReference.typ`](typst/README.md) — the maintained two-part reference (formal *TM*, its Lean formalization, and the automated-reasoning tooling). Built on demand — `typst compile BimodalReference.typ build/BimodalReference.pdf` — rather than committed; `typst/SYNC-MAP.md` and `scripts/typst-sync-check.sh` keep its claims pinned to live source. The superseded LaTeX edition has been retired; the typst manual above is the sole maintained reference.
 
+**Main Results**: [MainResults.lean](FormalSystem/MainResults.lean) — one page listing the headline soundness/completeness metatheory with the kernel's own `#print axioms` audit beside each result
+
 **Demo**: [BimodalProofs.lean](FormalSystem/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
@@ -100,7 +102,7 @@ A **task model** `M = (F, I)` extends a task frame `F` with an interpretation fu
 
 Relative to a history, any duration `x` may be referred to as the *time* after `x` duration from the origin (the additive unit `0` in `D`) in that history.
 
-The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, 2025), providing resources for modeling non-deterministic dynamical systems.
+The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, forthcoming), providing resources for modeling non-deterministic dynamical systems.
 
 ---
 
@@ -112,9 +114,10 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 ├── FormalSystem.lean             # Lake root module for the FormalSystem library
 ├── FormalSystem/                 # TM bimodal logic library (live file and line counts: see the table above)
 │   ├── FormalSystem.lean         # library aggregator
-│   ├── MinusLanguage/            # L⁻ = the tense-primitive (H/G) language, and its logic TM⁻
-│   ├── PlusLanguage/             # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
 │   ├── Syntax/                   # Formula types, atoms, contexts
+│   │   ├── MinusLanguage/        # L⁻ = the tense-primitive (H/G) language, and its logic TM⁻
+│   │   ├── PlusLanguage/         # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
+│   │   └── StarLanguage/         # L⋆ = L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ
 │   ├── ProofSystem/              # Axioms (29 constructors, nine layers), derivation trees
 │   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, PartialHistory, TaskModel, validity
 │   ├── Metalogic/                # Soundness, completeness, decidability
@@ -437,7 +440,7 @@ If you use this project in your research, please cite:
   author    = {Brast-McKie, Benjamin},
   journal   = {Journal of Philosophical Logic},
   publisher = {Springer},
-  year      = {2026},
+  year      = {2025},
   note      = {Forthcoming},
   url       = {https://benbrastmckie.com/publications/possible_worlds.pdf}
 }
