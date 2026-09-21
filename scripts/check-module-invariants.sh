@@ -2593,7 +2593,7 @@ fi
 # roots reach is counted once per root, so this is a per-root sum, not a count of distinct
 # declarations. The table this replaces read 179 across fifteen roots and predated the
 # `BimodalTools` / `BimodalToolsTest` library split. Two movements since are worth naming,
-# because neither is new debt: `BimodalTools` went from 0 to 14 when the mutation engine and the
+# because neither is new debt: `BimodalTools` went from 1 to 14 when the mutation engine and the
 # proof-first pipeline were split out of their `*Main` roots into library modules the aggregator
 # imports, and `BimodalTest` stands at 80 because three test modules that had been outside
 # every root -- and so invisible to this sweep -- were wired in. Findings that were always there

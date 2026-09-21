@@ -1,24 +1,29 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 12,
-  "summary": "Revised the 10-phase plan in place (version 2, 13h). Phase 1's measurement was blind: a warm lake build replays trace logs and never re-runs the root-gated header linter, so it would have reported zero and skipped the burndown. Replaced with a scratch-CWD probe verified on three files. New invariant renumbered C31 -> C33 (task 643 claims C31/C32); Phases 5-6 gated on 643.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 15,
+  "summary": "All 10 plan phases [COMPLETED]. Root collapsed to a mk_all-generated FormalSystem.lean; C6 manifest empty; C33 + mk_all --check + lint-style CI steps; --wfail on tooling; release.yml + CHANGELOG.md + Version.lean; policy text. Full gate set green at the final state. Maintainer-only residue: v1.0.0 tag, first remote run of release.yml, CITATION date confirmation.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/637_ci_parity_root_collapse_publication_gate/plans/01_ci-parity-root-collapse.md",
-      "summary": "Revised implementation plan, version 2, 10 phases"
+      "type": "summary",
+      "path": "specs/637_ci_parity_root_collapse_publication_gate/summaries/01_ci-parity-root-collapse-summary.md",
+      "summary": "Implementation summary with plan deviations, the lint-style-action decision, and the maintainer handoff"
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 10,
   "phases_total": 10,
   "blockers": [],
-  "next_action_hint": "Implement. Phases 1-4, 8, 9 are free of task 643's territory; Phases 5-6 must wait until scripts/check-module-invariants.sh carries no uncommitted hunks from 643.",
-  "decisions_made": [
-    "Header-linter gate is the probe sweep, never a warm lake build --wfail",
-    "FormalSystem/Tactic/Attr.lean is not a finding and stays untouched",
-    "Generated-root invariant takes the next free check ID, expected C33"
-  ],
+  "plan_markers_verified": true,
+  "sorry_inventory": [],
   "continuation_path": null,
-  "sorry_inventory": []
+  "next_action_hint": "Postflight to completed. Relay the non-blocking user_decision (lint-style-action wrapper vs direct lint-style step).",
+  "user_decision": {
+    "question": "The task names leanprover-community/lint-style-action, but its check mode cannot go green here: its no-ignored-files guard fails on 37 tracked paths (the specs/ provenance files kept tracked by two .gitignore negation patterns, plus 5 force-tracked specs/archive files). Which should CI run?",
+    "options": [
+      "Keep the direct `lake exe lint-style` CI step (wired and green now) — same linters, reuses the warm cache, leaves the specs/ tracking policy untouched",
+      "Restructure .gitignore and untrack the 5 specs/archive files so the lint-style-action wrapper itself can run, then swap it in as its own job"
+    ],
+    "recommended": "Keep the direct `lake exe lint-style` CI step (wired and green now) — same linters, reuses the warm cache, leaves the specs/ tracking policy untouched",
+    "blocking": false
+  }
 }
