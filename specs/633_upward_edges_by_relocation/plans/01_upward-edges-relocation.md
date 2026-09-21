@@ -1,7 +1,7 @@
 # Implementation Plan: Remove the upward edges by relocation
 
 - **Task**: 633 - Remove the upward edges by relocation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: 630 (landed at `b1ab4bf3a`); 632 (landed at `b1ab4bf3a`)
 - **Research Inputs**: `specs/633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md`
