@@ -35,7 +35,7 @@ This is the Until/Since symmetry the paper itself relies on: p.8 proves the `Unt
 Corollary 5.4 immediately takes both directions. **No hypothesis absent from p.8 is introduced.**
 In particular `K⁻` needs nothing new: `Formula.snce` interprets Since natively
 (`Table.lean:198`), so `kminusFormula` below is the literal transcription of `¬P ∧ ¬(⊤ S ¬P)`,
-exactly as `kplusFormula` (`PriorINF.lean:95`) is `¬P ∧ ¬(⊤ U ¬P)`.
+exactly as `kplusFormula` (`PriorINF.lean:94`) is `¬P ∧ ¬(⊤ U ¬P)`.
 
 ## What this module lands
 
@@ -59,7 +59,7 @@ exactly as `kplusFormula` (`PriorINF.lean:95`) is `¬P ∧ ¬(⊤ U ¬P)`.
 * `HasAttainedSUP.toHasDefinableSUP`, `hasDefinableSUP_excludes_kminus`,
   `prior_makes_faithful_kminus_disjunct_unreachable`, `prior_makes_kminus_disjunct_unreachable` —
   the SUP-side exclusion route at both `K⁻` spellings, mirroring
-  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:223`), `hasDefinableINF_excludes_kplus`
+  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:222`), `hasDefinableINF_excludes_kplus`
 (`KPlusBracketRendering.lean:289`) and the two INF-side exclusion theorems in
   `KPlusFaithfulRendering.lean`.
 
@@ -103,7 +103,7 @@ a vacuous conclusion does. Mirroring the three statements made in `KPlusFaithful
 2. **The `K⁻` boundary disjunct is provably dead on every Prior structure, at BOTH `K⁻`
    spellings.** `prior_makes_faithful_kminus_disjunct_unreachable` below proves it for the
    sources' `K⁻`, and `prior_makes_kminus_disjunct_unreachable` — kept, and now derived from it —
-   for the tree's `kminus`: `SemanticPriorSZ` gives `HasAttainedSUP` (`PriorINF.lean:277`), whose
+   for the tree's `kminus`: `SemanticPriorSZ` gives `HasAttainedSUP` (`PriorINF.lean:276`), whose
    attained last occurrence `r₀ < z₁` with `¬P` on `(r₀,z₁)` collides with `K⁻` asserting that
    `P` occurs in every interval below `z₁`. This is the exact mirror of what the two INF-side
    exclusion theorems establish for `K⁺(P)(z₀)`.
@@ -136,7 +136,7 @@ with `¬P(t)`, is exactly `K⁻(P)(t)`. -/
 
 /-- `K⁻(P)` is TL-definable: the formula `P.neg ∧ ¬(⊤ S P.neg)`.
 
-    Exact mirror of `kplusFormula` (`PriorINF.lean:95`), with `Formula.untl` replaced by
+    Exact mirror of `kplusFormula` (`PriorINF.lean:94`), with `Formula.untl` replaced by
     `Formula.snce`.
 
     Source correspondence: PDF p.8, mirrored — `K⁺(P₁)(z₀)` is asserted there to be *"an atomic
@@ -416,7 +416,7 @@ here so the exclusion statement in this module's docstring is machine-checked ra
 asserted. -/
 
 /-- `HasAttainedSUP` implies `HasDefinableSUP`. Mirror of `HasAttainedINF.toHasDefinableINF`
-    (`PriorINF.lean:223`); the attained last occurrence is the `P(r₀)` alternative of the
+    (`PriorINF.lean:222`); the attained last occurrence is the `P(r₀)` alternative of the
     disjunctive point condition, and `z₀ < r₀` weakens to `z₀ ≤ r₀`. -/
 theorem HasAttainedSUP.toHasDefinableSUP {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -450,7 +450,7 @@ theorem hasDefinableSUP_excludes_kminus {sig : MonadicSignature}
 
 /-- **On Prior structures, the `K⁻` boundary disjunct is unreachable — at the SOURCES' `K⁻`.**
 
-    `SemanticPriorSZ` gives `HasAttainedSUP` (`prior_hasAttainedSUP`, `PriorINF.lean:277`), whose
+    `SemanticPriorSZ` gives `HasAttainedSUP` (`prior_hasAttainedSUP`, `PriorINF.lean:276`), whose
     `last_occ` hands back an attained `r₀ < z₁` with `¬P` throughout `(r₀,z₁)`. The sources' `K⁻`
     says `P` occurs in *every* interval `(s,z₁)`; instantiate it at `s := r₀` and the two collide.
     No use is made of the tree's extra `¬P(z₁)` conjunct, which is why the weaker boundary

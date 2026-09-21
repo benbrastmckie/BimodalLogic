@@ -20,8 +20,9 @@ interface for higher-level modules.
 
 ## References
 
-- [burgess1984]: "Basic tense logic" (canonical model construction)
-- Design provenance: signature weakening to the chain-member guard (v5)
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984] — canonical model
+  construction
+* Design provenance: signature weakening to the chain-member guard (v5)
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Quasimodel

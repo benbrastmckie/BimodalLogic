@@ -169,7 +169,6 @@ theorem realLimitMCS_forward_G (m : Rat → Set Formula)
 
 /--
 **Backward `H` coherence of the extension**, by the mirrored four-case split:
-
 - selected → selected: the rational family's own `backward_H` (case H3, no lemma by design);
 - selected → unselected: `limitSetBelow_backward_H_rat_source` (H1), whose hypothesis is the
   non-strict `t ≤ (q : ℝ)`, so the strict order here is passed through `le_of_lt`; the

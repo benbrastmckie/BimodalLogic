@@ -48,8 +48,11 @@ hypothesis the whole Dedekind route rests on.
 
 ## References
 
-- [reynolds1992], §1, printed p.169 (definably-Dedekind-complete scoping).
-- [reynolds1992], printed p.168 (US/R's density axioms, this tree's `Axiom.dense_indicator`).
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §1, printed p.169 (definably-Dedekind-complete scoping).
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], printed p.168 (US/R's density axioms, this tree's
+  `Axiom.dense_indicator`).
 
 ## Tags
 
@@ -242,7 +245,7 @@ built at the wrong MCS and still typecheck. -/
 /--
 **Root placement.** The chronicle bundle's evaluation family takes the value `A` at time `0`.
 
-`Chronicle.rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:514`) at `s = 0`,
+`Chronicle.rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:515`) at `s = 0`,
 composed with `cantorBfmcsDense`'s `evalFamily := rootedCantorFmcsDense fc A h_mcs h_box 0`.
 Reynolds 1992, §9, printed p.189, *"`M₀ ⊨ A₀(0)`"*.
 -/
@@ -260,7 +263,7 @@ point of the rational flow.
 
 `chronicleMonadicStructureOf`'s `interp p q` is `p.val ∈ fam.mcs q`, `mkAtomMapFwd` is the
 identity on `predFormulas`, and `box_stable_in_rooted_cantor_fmcs_dense`
-(`ChronicleToCountermodelBasic.lean:532`) makes the box content constant along the flow. This
+(`ChronicleToCountermodelBasic.lean:533`) makes the box content constant along the flow. This
 is the dense counterpart of `box_stable_in_limit_f`'s role in
 `countermodel_discrete_reynolds_v2`.
 
@@ -576,7 +579,7 @@ second construction. -/
 
 Contrapositive, four steps, no case split:
 
-1. `neg_consistent_of_not_derivable` (`BXCanonical/Completeness.lean:77`) makes `{¬ψ}`
+1. `neg_consistent_of_not_derivable` (`BXCanonical/Completeness.lean:79`) makes `{¬ψ}`
    `.RTime`-consistent.
 2. `set_lindenbaum` extends it to a `.RTime`-MCS `M` with `¬ψ ∈ M`.
 3. `dedekind_box_dense_mem` supplies `□(¬U(⊤,⊥)) ∈ M` *unconditionally* — this is where the

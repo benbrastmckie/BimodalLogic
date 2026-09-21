@@ -41,7 +41,7 @@ The backward lemmas are proven by contraposition:
 
 ## References
 
-- Used by BXCanonical/CanonicalModel.lean and BXCanonical/Chronicle/
+* Used by BXCanonical/CanonicalModel.lean and BXCanonical/Chronicle/
 -/
 
 namespace FormalSystem.Metalogic.Bundle

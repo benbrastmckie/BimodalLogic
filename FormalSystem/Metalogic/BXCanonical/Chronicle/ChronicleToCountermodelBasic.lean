@@ -48,8 +48,9 @@ succ chain reaching any target element).
 
 ## References
 
-- [burgess1982]: "Axioms for tense logic II: Time periods"
-- Design provenance: the case-split completeness route
+* [J. P. Burgess, *Axioms for Tense Logic. I. "Since" and "Until"*][burgess1982], "Axioms for
+  tense logic II: Time periods"
+* Design provenance: the case-split completeness route
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle

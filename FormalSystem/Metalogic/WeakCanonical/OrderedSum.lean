@@ -27,9 +27,9 @@ building on definitions from NEquivalence.lean.
   account of the order in which the types occur. Do not revive it.
 
 ## References
-- [doets1989], Lemmas 1.4, 1.5: `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- [reynolds1994], Lemma 16 (uses Doets 1.4/1.5):
-`literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Lemmas 1.4, 1.5
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Lemma 16 (uses Doets
+  1.4/1.5)
 -/
 namespace FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.Expressiveness

@@ -41,8 +41,8 @@ For TM bimodal logic, we use an MCS-based filtration approach:
 
 ## References
 
-- [blackburn2002] (Ch 2.3 Filtrations)
-- Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
+* [blackburn2002] (Ch 2.3 Filtrations)
+* Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
 -/
 
 namespace FormalSystem.Metalogic.Decidability.FMP

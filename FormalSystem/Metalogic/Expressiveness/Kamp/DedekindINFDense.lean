@@ -32,7 +32,7 @@ structure which satisfies `SemanticPriorU` and `SemanticPriorS` outright. Both d
 there for structural reasons:
 
 * the **left** disjunct `kplus M atomMap P z₀` is unavailable because `kplus`
-  (`PriorINF.lean:88`) demands `¬P(z₀)` as its first conjunct, and `P(z₀)` holds;
+  (`PriorINF.lean:87`) demands `¬P(z₀)` as its first conjunct, and `P(z₀)` holds;
 * the **right** disjunct demands a `P`-free interval `(z₀,r₀)`, which density forbids when `P`
   holds throughout `(z₀,z₁)`.
 
@@ -46,7 +46,7 @@ not.** Under his own Definition (3) — *"`K+(F)` holds at a moment `t` iff
 `t = inf({t′ | t′ > t and F holds at t′})`"*, PDF p.3 — the biconditional is a **definitional
 restatement**, true verbatim; and Reynolds' `K⁺A` for `¬U(⊤,¬A)` (printed p.168) is the same
 operator. **Neither source's `K⁺` carries a `¬A` conjunct at the point of evaluation.** What is
-true is that *this tree's* `kplus` (`PriorINF.lean:88`) does carry one, and so is strictly
+true is that *this tree's* `kplus` (`PriorINF.lean:87`) does carry one, and so is strictly
 stronger than the operator either paper defines; read through `kplus`, the left-to-right direction
 of the biconditional acquires a `¬P₁(z₀)` obligation the source's own `K⁺` never had. The tree's
 source-exact spellings are `Formula.kPlus` (`Syntax/Formula.lean:181`, with the name-collision
@@ -118,13 +118,13 @@ alternative is dead weight.
 
 ## References
 
-* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*, Lemma
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma
   5.3 Case 2 and eq (5.2), **PDF p.8** (cited by PDF page only: the `.md` conversion of this paper
   is corrupt). Verbatim: `INF(z₀,r₀,z₁,P₁) := z₀ < r₀ < z₁ ∧ (∀y)^{<r₀}_{>z₀} ¬P₁(y) ∧ (P₁(r₀) ∨
   K⁺(P₁)(r₀))`.
 * [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
-  Rule*][reynolds1992], *An Axiomatization for Until and Since over the Reals without the IRR
-  Rule*, **Prior-U / Prior-S, printed p.168**: `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p),p)` and its mirror.
+  Rule*][reynolds1992], **Prior-U / Prior-S, printed p.168**:
+  `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p),p)` and its mirror.
   The derivations below instantiate Prior-U at `p := ¬P` — in words: *the guard says `¬P` holds at
   `z₀`, failure of `K⁺(P)(z₀)` says `¬P` persists throughout some initial stretch above `z₀`
   (Prior-U's first antecedent `U(⊤,¬P)`), and the occurrence of `P` inside `(z₀,z₁)` is Prior-U's
@@ -133,7 +133,7 @@ alternative is dead weight.
 * The endpoint guard itself, the third disjunct `P(z₀)`, the trichotomy `HasDenseDedekindINF` and
   the `hasDedekindINF_fails_*` exclusion family are **original glue** and appear in neither
   source. **What they are glue for** (honesty charter Rule 4, completed): they repair a
-  *formalization-level deviation in this tree*, namely that `kplus` (`PriorINF.lean:88`) carries
+  *formalization-level deviation in this tree*, namely that `kplus` (`PriorINF.lean:87`) carries
   a `¬P(t)` conjunct that Rabinovich's `K⁺` (PDF p.3, Definition (3)) and Reynolds' (printed
   p.168, `¬U(⊤,¬A)`) do not. They are **not** dense-case mathematical content, and they are not a
   correction to either source. The point is machine-checked at
@@ -154,7 +154,7 @@ open FormalSystem.Metalogic.Expressiveness
 
     Identical to `HasDedekindINF` (`DedekindINF.lean:134`) except for the added hypothesis
     `¬P(z₀)`. That hypothesis is exactly what makes the paper's *"`r₀ = z₀` iff `K⁺(P₁)(z₀)`"*
-    true **when `K⁺` is read as this tree's `kplus`**: `kplus` (`PriorINF.lean:88`) carries
+    true **when `K⁺` is read as this tree's `kplus`**: `kplus` (`PriorINF.lean:87`) carries
     `¬P(z₀)` in its first conjunct — a conjunct neither Rabinovich's nor Reynolds' `K⁺` has, see
     this module's docstring correction — so without the guard the `r₀ = z₀` subcase with `P` true
     at `z₀` is expressible by neither disjunct; see `hasDedekindINF_fails_of_interval_witness`.
@@ -354,7 +354,7 @@ Rabinovich 2014, Lemma 5.3 Case 2 and eq (5.2), PDF p.8, obtained from Reynolds'
        `r₀ ≤ x < z₁`.
     6. Steps 4-5 are eq (5.2) verbatim — the right disjunct.
 
-    **This derivation does not route through `prior_hasAttainedINF` (`PriorINF.lean:232`) and
+    **This derivation does not route through `prior_hasAttainedINF` (`PriorINF.lean:231`) and
     therefore carries no discreteness.** That is the whole point: `prior_hasAttainedINF` consumes
     `SemanticPriorUZ`, which `semanticPriorUZ_fails_of_interval_witness`
     (`PriorDefsDense.lean:274`) refutes on every densely ordered flow carrying a formula true
@@ -482,7 +482,7 @@ and the reason the guard above is a hypothesis rather than an oversight. -/
     `z₀` and throughout an interval above it.**
 
     Both disjuncts of `HasDedekindINF.first_occ` are unavailable: the left one because `kplus`
-    (`PriorINF.lean:88`) demands `¬P(z₀)`, the right one because it demands a `P`-free interval
+    (`PriorINF.lean:87`) demands `¬P(z₀)`, the right one because it demands a `P`-free interval
     `(z₀,r₀)`, which density populates with points of `(z₀,z₁)` where `P` holds by hypothesis.
 
     This is Rabinovich's `r₀ = z₀` subcase with `P` true at `z₀` (PDF p.8). It names exactly which

@@ -735,7 +735,6 @@ theorem buildTableauAt_isSome_of_settlesRun {phi : Formula} {fuel : Nat}
 /-! #### The termini restated at the narrowed residual — retired as vacuous
 
 **What stood here.** Nine theorems restated the landed termini against the narrowed residual:
-
 * `buildTableauAt_isSome_of_budget_run`
 * `buildTableauAt_isSome_of_budget_of_run`
 * `buildTableauAt_isSome_at_seed_run`

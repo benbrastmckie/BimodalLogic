@@ -25,8 +25,9 @@ subsets of a finite formula set that respect the BX truth conditions.
 
 ## References
 
-- [burgess1984]: "Basic tense logic"
-- [reynolds2001]: Section 2 (Hintikka structures for temporal logic)
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984]
+* [M. Reynolds, *An Axiomatization of Full Computation Tree Logic*][reynolds2001], Section 2
+  (Hintikka structures for temporal logic)
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Quasimodel

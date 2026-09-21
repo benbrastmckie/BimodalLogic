@@ -58,7 +58,6 @@ one added conjunct. The doubt recorded in earlier drafts of this comment block �
 paper uses the notation differently"* — was correct, and is resolved here.
 
 **What the sources define**, read verbatim from the corpus:
-
 * Rabinovich 2014, `K⁺` definition, PDF p.3: *"`K+(F)` (respectively, `K−(F)`) is an abbreviation
   for `¬((¬F)UntilTrue)` (respectively, `¬((¬F)SinceTrue)`)"*, and semantically in the same
   passage: *"(3) `K+(F)` holds at a moment `t` iff `t = inf({t′ | t′ > t and F holds at t′})`"*

@@ -28,8 +28,8 @@ second run applies the same Δ a second time and every citation ends up shifted 
 some other non-blank line. The default `--files` (every `.lean` changed vs `--base`)
 makes this easy to trip: after the first run the rewritten CITERS are changed too,
 so they join the target list. Always pass the batch's own edited files explicitly,
-and run once. To recover from a double run, restore the citation-only-changed citer
-files from `--base` and run again.
+and run once. To recover from a double run, use `--recompute`, which recomputes every
+citation from `--base` by content alignment and is idempotent.
 
 REFUSALS. The tool refuses rather than guesses, and reports what it refused:
   * a file whose leading `/-! … -/` block it cannot locate;
@@ -62,6 +62,9 @@ USAGE
 
     # show what would change, touch nothing
     python3 scripts/reanchor-lean-citations.py --dry-run
+
+    # repair a tree the Δ pass was run over twice (idempotent; safe to rerun)
+    python3 scripts/reanchor-lean-citations.py --recompute
 
     # no-op validation: a Δ=0 run over the whole tree must change zero bytes
     python3 scripts/reanchor-lean-citations.py --selftest
@@ -318,6 +321,74 @@ def reanchor(edited: list[str], rev: str, exact: bool, dry_run: bool, quiet: boo
     return 1 if (refused or lost or inside) else 0
 
 
+def recompute(rev: str, dry_run: bool) -> int:
+    """Recompute EVERY citation from `rev`, once, ignoring what the working tree holds.
+
+    This is the idempotent counterpart to the Δ pass, and the way to repair a tree the
+    Δ pass was run over twice. It aligns each citer file against its `rev` content with
+    difflib; for a line that differs from `rev` ONLY in its citation numbers, it takes
+    `rev`'s number and maps it through the target file's own `rev`->now line map. A line
+    carrying a real content edit is left alone, since there is no `rev` number to trust.
+    """
+    live = live_lean_files()
+    resolve = make_resolver(live)
+
+    maps: dict[str, dict[int, int]] = {}
+    for p in live:
+        o = old_content(rev, p)
+        if o is None:
+            continue
+        o = o.split("\n")
+        n = open(p, encoding="utf-8").read().split("\n")
+        if o == n:
+            continue
+        m: dict[int, int] = {}
+        for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(a=o, b=n, autojunk=False).get_opcodes():
+            if tag == "equal":
+                for k in range(i2 - i1):
+                    m[i1 + k + 1] = j1 + k + 1
+        maps[os.path.normpath(p)] = m
+
+    def strip_nums(l: str) -> str:
+        return CITE.sub(lambda m: m.group(1) + ":N", l)
+
+    fixed = touched = 0
+    for citer in citer_files():
+        o = old_content(rev, citer)
+        if o is None:
+            continue
+        o = o.split("\n")
+        n = open(citer, encoding="utf-8").read().split("\n")
+        out = list(n)
+        changed = False
+        for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(a=o, b=n, autojunk=False).get_opcodes():
+            if tag != "replace" or (i2 - i1) != (j2 - j1):
+                continue
+            for k in range(i2 - i1):
+                ol, nl = o[i1 + k], n[j1 + k]
+                if strip_nums(ol) != strip_nums(nl):
+                    continue
+                def redo(m: re.Match) -> str:
+                    ref, num = m.group(1), int(m.group(2))
+                    t = resolve(ref)
+                    if t is None or t not in maps:
+                        return m.group(0)
+                    want = maps[t].get(num)
+                    return m.group(0) if want is None else "%s:%d" % (ref, want)
+                rebuilt = CITE.sub(redo, ol)
+                if rebuilt != nl:
+                    out[j1 + k] = rebuilt
+                    changed = True
+                    fixed += 1
+        if changed:
+            touched += 1
+            if not dry_run:
+                open(citer, "w", encoding="utf-8").write("\n".join(out))
+    verb = "would recompute" if dry_run else "recomputed"
+    print("%s %d citation line(s) across %d citer file(s)" % (verb, fixed, touched))
+    return 0
+
+
 def selftest(rev: str) -> int:
     """Δ=0 over the whole tree must be a byte-exact no-op; a synthetic +3 must move
     exactly the citations into the edited file and nothing else."""
@@ -411,10 +482,16 @@ def main() -> int:
                     help="per-line difflib remap instead of the single-Δ model")
     ap.add_argument("--dry-run", action="store_true", help="report, change nothing")
     ap.add_argument("--selftest", action="store_true", help="run the validation probes and exit")
+    ap.add_argument("--recompute", action="store_true",
+                    help="recompute every citation from --base by content alignment; "
+                         "idempotent, and the way to repair a doubled Δ pass")
     args = ap.parse_args()
 
     if args.selftest:
         return selftest(args.base)
+
+    if args.recompute:
+        return recompute(args.base, args.dry_run)
 
     if args.files:
         edited = [os.path.normpath(f) for f in args.files]

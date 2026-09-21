@@ -31,11 +31,12 @@ concrete recursive normal form type from NormalForm.lean. This makes
 `k_equiv_monotone` to be proved via `nf_agreement_monotone`.
 
 ## References
-- [doets1989], Section 1 (k-types, finiteness): `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- [reynolds1994], Section 4 (k-equivalence framework):
-`literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
-- Design provenance: the Doets Lemma 1.1 NormalForm/KType redesign
-- Design provenance: the NEquivalence split — `KType` redesigned onto `NormalForm`,
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Section 1 (k-types,
+  finiteness)
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Section 4 (k-equivalence
+  framework)
+* Design provenance: the Doets Lemma 1.1 NormalForm/KType redesign
+* Design provenance: the NEquivalence split — `KType` redesigned onto `NormalForm`,
   closing `k_equiv_monotone`
 -/
 namespace FormalSystem.Metalogic.WeakCanonical

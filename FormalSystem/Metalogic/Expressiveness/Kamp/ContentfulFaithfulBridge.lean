@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KMinusFaithfulRendering
 # Proposition 4.2 at the faithful Dedekind carrier (Rabinovich, PDF p.6)
 
 This module is the terminus of the faithful re-base. It discharges the contentful Proposition 4.2
-target `Prop42Contentful` (`ContentfulWitness.lean:151`) from `HasFaithfulDedekindINF`
+target `Prop42Contentful` (`ContentfulWitness.lean:150`) from `HasFaithfulDedekindINF`
 (`KPlusFaithful.lean:325`) **alone**, where the landed `prop42_contentful_of_attained`
 (`Section5Correspondence.lean:186`) needs `HasAttainedINF` **and** `HasAttainedSUP`.
 
@@ -56,7 +56,7 @@ Proposition 4.2 one strengthening step away from the paper, where the attained v
 
 **What the newly closed step buys, machine-checked rather than argued.** The move from
 `HasDedekindINF` to `HasFaithfulDedekindINF` drops the extra `¬P(z₀)` conjunct that this tree's
-`kplus` (`PriorINF.lean:88`) carries and that neither Rabinovich's `K⁺` (Definition (3), PDF p.3)
+`kplus` (`PriorINF.lean:87`) carries and that neither Rabinovich's `K⁺` (Definition (3), PDF p.3)
 nor Reynolds' has. It is a **strict** weakening, and the gain is exhibited at a concrete structure
 by `prop42_faithful_covers_what_dedekind_excludes` below: `denseWindowFlow` is a dense Prior
 model satisfying the former and refuting the latter, so Proposition 4.2 is available there from
@@ -78,7 +78,7 @@ below close the three failure modes, rather than asserting their absence:
    different statement. Same template as `lemma53Faithful_perPoint_is_VACUOUS`
    (`KPlusFaithfulRendering.lean:352`).
 2. **`⊤`-collapsed witness.** Closed upstream by `topVVec_contentful_forces_unsat`
-   (`ContentfulWitness.lean:229`): offering the all-`⊤` formula as `v'` does not discharge
+   (`ContentfulWitness.lean:228`): offering the all-`⊤` formula as `v'` does not discharge
    `Prop42Contentful`, it commits the offerer to `v` being unsatisfiable on every ordered pair.
 3. **Hollow witness — the `∃ v'` hides which formula was built.** This is the failure mode specific
    to *this* phase: `prop42_contentful_of_faithful` is silent about the witness, so a construction
@@ -121,7 +121,7 @@ statement below — which is a genuine use, not a symmetric one.
 
 ## References
 
-* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*,
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
   Proposition 4.2, PDF p.6 (statement and carrier); Propositions 4.3 and Theorem 4.4, same page;
   Section 5, pp.7-11 (proof).
 * Cite [rabinovich2014] by **PDF page only**.

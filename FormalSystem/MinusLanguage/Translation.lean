@@ -34,7 +34,6 @@ name. For `allPast`/`allFuture` the target is L's *derived* `Formula.allPast`/
 
 `tr` commutes definitionally with `neg`, `and`, `or`, `iff`, `diamond` and `always`. It does
 **not** commute with `somePast`/`someFuture`:
-
 ```
 tr (MinusFormula.someFuture φ)  =  ¬ (Formula.allFuture (tr φ).neg)  =  ¬¬ F(¬¬ (tr φ))
 Formula.someFuture (tr φ)    =  U(⊤, tr φ)

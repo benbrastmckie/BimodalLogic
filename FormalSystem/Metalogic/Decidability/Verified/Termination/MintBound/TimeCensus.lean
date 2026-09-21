@@ -265,7 +265,6 @@ map: *there is no `applyRule_emitted_time_mem`, no statement bounding the times 
 `b.knownTimes` with the time-minting rules separated out.* This is that statement.
 
 **Which arm falls to which closer.** The twenty-seven non-minting constructors split five ways:
-
 * *The trigger's own time.* The propositional rules (`andPos` … `negNeg`), the modal-temporal
   bridge `boxTemporal`, the discrete rules `priorUZ` / `priorSZ` / `z1Rule`, the Dedekind rules
   `priorUGap` / `priorSGap` / `sepRule`, `serialityRule`, and `denseIndicatorClosure` all emit at

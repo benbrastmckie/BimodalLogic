@@ -36,7 +36,8 @@ by inserting new points into the domain.
 
 ## References
 
-- [burgess1982]: "Axioms for tense logic II: Time periods", Section 2
+* [J. P. Burgess, *Axioms for Tense Logic. I. "Since" and "Until"*][burgess1982], "Axioms for
+  tense logic II: Time periods", Section 2
 -/
 
 set_option linter.style.longFile 4000

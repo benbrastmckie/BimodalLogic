@@ -91,12 +91,12 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Bundle.lean` | 47 | `Bundle/` |
 | `Conservativity.lean` | 386 | `Conservativity/` |
 | `Core.lean` | 40 | `Core/` |
-| `Decidability.lean` | 169 | `Decidability/` |
+| `Decidability.lean` | 167 | `Decidability/` |
 | `Deterministic.lean` | 27 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 74 | `Expressiveness/` |
 | `Independence.lean` | 115 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
-| `WeakCanonical.lean` | 130 | `WeakCanonical/` |
+| `WeakCanonical.lean` | 131 | `WeakCanonical/` |
 <!-- END GENERATED -->
 
 The remaining loose files in `Metalogic/` are not aggregators — they have no same-named
@@ -113,7 +113,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |
 | `SetConsequence.lean` | 588 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.Dedekind` row (`CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`, `ModelExistenceDedekind`) |
 | `Soundness.lean` | 1,654 | The soundness theorem itself |
-| `StrongCompleteness.lean` | 1,143 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
+| `StrongCompleteness.lean` | 1,142 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
 <!-- END GENERATED -->
 
 Plus the directory's own root `Metalogic.lean`, which sits one level up, beside `Metalogic/`;
@@ -147,17 +147,17 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=subdirs cols=files-lines link=yes -->
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Algebraic/`](Algebraic/README.md) | 5 | 2,402 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,135 | Chronicle completeness route; the wired entry point |
-| [`Bundle/`](Bundle/README.md) | 9 | 2,864 | Bundled families of MCSs and their coherence conditions |
+| [`Algebraic/`](Algebraic/README.md) | 5 | 2,403 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,158 | Chronicle completeness route; the wired entry point |
+| [`Bundle/`](Bundle/README.md) | 9 | 2,863 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 20 | 5,515 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 79 | 51,958 | Tableau decision procedure and countermodel extraction |
-| [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Expressiveness/`](Expressiveness/README.md) | 139 | 104,171 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
+| [`Decidability/`](Decidability/README.md) | 79 | 51,953 | Tableau decision procedure and countermodel extraction |
+| [`Deterministic/`](Deterministic/README.md) | 7 | 1,614 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
+| [`Expressiveness/`](Expressiveness/README.md) | 139 | 104,168 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 22 | 5,975 | Axiom-independence models |
-| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,511 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,545 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -172,14 +172,14 @@ Loose modules:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical rows=loose desc=no -->
 | Module | Lines |
 |--------|------:|
-| `CanonicalChain.lean` | 115 |
+| `CanonicalChain.lean` | 116 |
 | `CanonicalModel.lean` | 844 |
-| `Completeness.lean` | 497 |
-| `CompletenessDedekind.lean` | 615 |
+| `Completeness.lean` | 499 |
+| `CompletenessDedekind.lean` | 618 |
 | `DiscreteCarrierProbe.lean` | 96 |
-| `Frame.lean` | 717 |
+| `Frame.lean` | 720 |
 | `OrderedSeedConsistency.lean` | 257 |
-| `TruthLemma.lean` | 292 |
+| `TruthLemma.lean` | 294 |
 <!-- END GENERATED -->
 
 Subdirectories:
@@ -187,8 +187,8 @@ Subdirectories:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Chronicle/` | 14 | 17,906 |
-| `Quasimodel/` | 5 | 1,676 |
+| `Chronicle/` | 14 | 17,913 |
+| `Quasimodel/` | 5 | 1,681 |
 | `Filtration/` | 1 | 120 |
 <!-- END GENERATED -->
 
@@ -200,10 +200,10 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `DenseModelSurgery/` | 9 | 7,916 |
-| `RealModel/` | 7 | 6,794 |
-| `IntegerModel/` | 6 | 5,617 |
-| `GroupModel/` | 6 | 3,373 |
+| `DenseModelSurgery/` | 9 | 7,935 |
+| `RealModel/` | 7 | 6,789 |
+| `IntegerModel/` | 6 | 5,621 |
+| `GroupModel/` | 6 | 3,379 |
 <!-- END GENERATED -->
 
 `GroupModel/` is where `theorem countermodel_discrete` — the Base-frame discrete branch of

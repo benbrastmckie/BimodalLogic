@@ -42,9 +42,9 @@ load-bearing re-hosted completeness engine, each at `D := ℚ ×ₗ ℤ`.
 
 ## References
 
-- Sibling probe at `D := ℝ`: `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`.
-- Target declarations: `FormalSystem/Metalogic/Algebraic/FlowFrame.lean`.
-- The obligation this carrier is proposed for: `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`.
+* Sibling probe at `D := ℝ`: `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`.
+* Target declarations: `FormalSystem/Metalogic/Algebraic/FlowFrame.lean`.
+* The obligation this carrier is proposed for: `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`.
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical

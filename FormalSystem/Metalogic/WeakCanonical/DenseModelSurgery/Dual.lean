@@ -37,7 +37,7 @@ def d (x : M.carrier) : (dual M).carrier := x
 
 which is the **identity function**, definitionally. This is deliberate and load-bearing: routing
 points through `OrderDual.toDual` instead reproduces the `.carrier`-unfolding mismatch that this
-tree already documents for `orderedSum` at `NEquivalence.lean:134`, and it is what forces the
+tree already documents for `orderedSum` at `NEquivalence.lean:135`, and it is what forces the
 binder cases of `eval_dualize` into `Fin.cons` bookkeeping. With `d` in place those cases are
 one-liners and the `lt` case of the transport is `Iff.rfl` — **order reversal is definitional**.
 
@@ -79,7 +79,7 @@ declaration and in the construction of the `epsTop` witness, and every §6 use o
 ## Retrospective subsumption
 
 This layer subsumes two past/future mirrors this tree already paid for by hand — the Lemma 7
-mirror at `BadIntervals.lean:1004-1225` (258 lines) and `Kamp/KMinusFaithfulRendering.lean` (364
+mirror at `BadIntervals.lean:1006-1225` (258 lines) and `Kamp/KMinusFaithfulRendering.lean` (364
 lines). **Neither is deleted, refactored or deprecated**; both stay landed exactly as they are,
 and every existing consumer is untouched. The point of recording the subsumption is forward
 looking: no later phase should derive a third mirror by hand when an instantiation at
@@ -96,8 +96,11 @@ witness arrives with Lemma 9 / Theorem 4.
 
 ## References
 
-- [reynolds1992], §6, printed p.178 (the duality convention, *"Dually we can define `λ(x)`"*).
-- [reynolds1992], §6 Lemma 6, printed p.180 (*"using mirror images of the above and previous
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §6, printed p.178 (the duality convention, *"Dually we can define
+  `λ(x)`"*).
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §6 Lemma 6, printed p.180 (*"using mirror images of the above and previous
   results"*).
 -/
 
@@ -113,7 +116,7 @@ variable {sig : MonadicSignature}
 interpretations, with the order reversed.
 
 Deliberately **not** `@[reducible]`: making it reducible lets the elaborator unfold `.carrier`
-during instance search and reproduces the diamond documented at `NEquivalence.lean:134`. -/
+during instance search and reproduces the diamond documented at `NEquivalence.lean:135`. -/
 def dual (M : OrderedMonadicStructure sig) : OrderedMonadicStructure sig where
   carrier := (M.carrier)ᵒᵈ
   interp p x := M.interp p (OrderDual.ofDual x)

@@ -97,7 +97,6 @@ Formally: for every temporal type `D`, at every model, world history and time wh
 formulas in `Γ` are true, formula `φ` is also true.
 
 **Definition of record — `def:logical-consequence`**, verbatim:
-
 > A conclusion phi is a *logical consequence* of a set of premises Gamma --- written
 > Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D,
 > if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
@@ -209,7 +208,6 @@ Charter §8's optional deliverable. Everything above quantifies over *all* frame
 adds the notion that holds a single frame fixed.
 
 **Definition of record — `def:frame-validity`**, verbatim:
-
 > A well-formed sentence phi of BL is *valid over a task frame* F = ⟨W, D, ⇒⟩ which we may write
 > |=_F phi if and only if M,tau,x |= phi for every model M = ⟨W, D, ⇒, |·|⟩ where
 > F = ⟨W, D, ⇒⟩, possible world tau in H_F, and time x in D.
@@ -339,7 +337,6 @@ Formally: for every temporal type `D`, every task frame `F` over `D`, every mode
 `(M, τ, t)`.
 
 **Definition of record — `def:logical-consequence`**, verbatim:
-
 > A conclusion phi is a *logical consequence* of a set of premises Gamma --- written
 > Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D,
 > if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is

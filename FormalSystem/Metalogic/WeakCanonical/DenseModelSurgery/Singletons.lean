@@ -125,7 +125,7 @@ into a `SemanticSepOpen` argument. That application elaborates only if the two a
 
 Every §6 lemma below Lemma 2 remains **conditional**: `IsContempEquivDense ε` plus Reynolds'
 Prior-U / Prior-S on `M` are hypotheses, and the only `ε` this tree can currently exhibit
-satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:671`), for which
+satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:672`), for which
 `EndsInGapOnRight` is empty (`not_endsInGapOnRight_epsTop`). So the results below are not discharged
 at any non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage.
 
@@ -142,14 +142,22 @@ below as `quotientDenselyOrdered_epsTop_vacuous` rather than left to be rediscov
 
 ## References
 
-- [reynolds1992], §7 Theorem 5, printed p.184 (statement and whole proof)
-- [reynolds1992], §7 Lemma 10, printed p.183 (Sep's validity over real flows — *not* re-derived)
-- [reynolds1992], §8 Theorem 6, printed p.184 (Doets' theorem, whose D2 this is)
-- `NoGaps.lean` — Theorem 4 (D1), `no_gaps_dense_prior` / `no_gaps_dense_prior_left`
-- `Defs.lean` — `ContempEquivDense`, `IsContempEquivDense`, `EndsInGapOnRight` / `OnLeft`
-- `Dual.lean` — the order-duality transport used for the left-hand closed-interval lemma
-- `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:304`) — §5 Theorem 3
-- `Kamp.kplusOpen` / `Kamp.kminusOpen` (`Kamp/KPlusFaithful.lean:118`, `:126`) — Reynolds' `K⁺`/`K⁻`
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §7 Theorem 5, printed p.184 (statement and whole proof)
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §7 Lemma 10, printed p.183 (Sep's validity over real flows — *not*
+  re-derived)
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §8 Theorem 6, printed p.184 (Doets' theorem, whose D2 this is)
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean` — Theorem 4 (D1),
+  `no_gaps_dense_prior` / `no_gaps_dense_prior_left`
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean` — `ContempEquivDense`,
+  `IsContempEquivDense`, `EndsInGapOnRight` / `OnLeft`
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Dual.lean` — the order-duality transport
+  used for the left-hand closed-interval lemma
+* `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:304`) — §5 Theorem 3
+* `Kamp.kplusOpen` / `Kamp.kminusOpen` (`Kamp/KPlusFaithful.lean:118`, `:126`) — Reynolds'
+  `K⁺`/`K⁻`
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery

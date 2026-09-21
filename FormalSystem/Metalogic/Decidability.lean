@@ -122,7 +122,6 @@ directory's decision-procedure results are different claims, and they are kept a
 the tableau contributes the derivation, not the soundness.
 
 **Proof system** — proved elsewhere, consumed here:
-
 - Soundness: `Metalogic.soundness` (`Soundness.lean`), `Γ ⊢[Base] φ → Γ ⊨ φ`, sorry-free, with
   `soundness_dense` and `soundness_ztime` the frame-class variants. Its corollary at the empty
   context is `decide_sound` (`Correctness.lean`), `⊢ φ → ⊨ φ`, which is what consumes the
@@ -138,7 +137,6 @@ the tableau contributes the derivation, not the soundness.
   `Decidability/`.
 
 **This directory's decision procedure**:
-
 - The rule half of `allClosed → valid` is proved: `ruleSound_of_mem_allRulesForFC`
   (`Verified/Decidable.lean`), sorry-free — every rule `allRulesForFC` can schedule at a frame
   class preserves satisfiability under that class's carrier property.

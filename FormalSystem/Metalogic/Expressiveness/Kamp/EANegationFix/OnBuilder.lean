@@ -56,7 +56,7 @@ vacuous and the pin disjunct is the plain `[¬P-segment, P-point]` prepend
 
 **This is a deviation from the paper, admitted here rather than hidden**: dropping the K+
 disjunct is exactly what makes the carrier too strong. It is sound on Prior structures
-(`prior_hasAttainedINF`, `PriorINF.lean:226`) and is the right thing at the live-path boundary,
+(`prior_hasAttainedINF`, `PriorINF.lean:225`) and is the right thing at the live-path boundary,
 but a result proved here is Lemma 5.3 *restricted to attained structures*, not Lemma 5.3.
 
 ## Base case

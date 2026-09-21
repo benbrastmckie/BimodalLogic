@@ -116,7 +116,7 @@ in the `Lemma7Wide` section below are the *only* new bridge, and they are pure r
 landed segment-bounded statements — no Prior axiom is applied in this module outside those four
 calls.
 
-## Relation to `truth_transfer` (`Transfer.lean:361`)
+## Relation to `truth_transfer` (`Transfer.lean:362`)
 
 `truth_transfer` does **not** transfer to Lemma 8 and is not used here. It is an
 Ehrenfeucht-Fraïssé argument: it moves an *existentially closed* temporal formula between two
@@ -683,7 +683,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`TemporalTruth` is invariant along a structure isomorphism.**
 
-`eval_iso` (`Dual.lean:358`) with `table_correctness` (`Table.lean:254`) on both sides. This is
+`eval_iso` (`Dual.lean:361`) with `table_correctness` (`Table.lean:254`) on both sides. This is
 the lemma `Dual.lean` stopped one step short of; it is stated for an arbitrary `StructIso`, so it
 is reusable for any later carrier transport. -/
 theorem temporalTruth_iso {M N : OrderedMonadicStructure sig} (e : StructIso M N)

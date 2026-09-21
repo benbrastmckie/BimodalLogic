@@ -24,7 +24,7 @@ lemmas below, reduces the number of *unbridged* spellings from two to zero.
   **the sources, exactly**.
 * `kplusOpen` (**this module**), `Prop` level, `∀ s > t, ∃ r ∈ (t,s), P(r)` — transcribes **the
   sources, exactly**; it is the semantic reading of `Formula.kPlus`.
-* `kplus` (`Kamp/PriorINF.lean:88`), `Prop` level, `¬P(t) ∧ ∀ s > t, ∃ r ∈ (t,s), P(r)` —
+* `kplus` (`Kamp/PriorINF.lean:87`), `Prop` level, `¬P(t) ∧ ∀ s > t, ∃ r ∈ (t,s), P(r)` —
   transcribes **neither source**: strictly stronger, by the added `¬P(t)`.
 * `kplusFormula` (`Kamp/PriorINF.lean:~93`), object level, `P.neg ∧ ¬(⊤ U P.neg)` — the
   object-level spelling of `kplus`, not of the sources' `K⁺`.
@@ -108,7 +108,7 @@ open FormalSystem.Metalogic.Expressiveness
     `t = inf({t′ | t′ > t and F holds at t′})`"*. Reynolds 1992, abbreviation table §1, printed
     p.168: `K⁺A` for `¬U(⊤,¬A)`, *"`A` will be true arbitrarily soon"*.
 
-    **This is `kplus` (`Kamp/PriorINF.lean:88`) minus its first conjunct**, and the first conjunct
+    **This is `kplus` (`Kamp/PriorINF.lean:87`) minus its first conjunct**, and the first conjunct
     `¬P(t)` is **this tree's addition, not the sources'**. Neither Rabinovich's nor Reynolds'
     `K⁺` says anything about whether `P` holds at the point of evaluation. `kplus` is therefore
     strictly stronger than the operator both papers define; `kplusOpen` is what they define.
@@ -617,7 +617,7 @@ theorem kminusOpen_of_interval_witness {sig : MonadicSignature}
 
     **So the refutation does not survive the conjunct-free antecedent.** The interval-witness
     refutation is a theorem about the extra `¬P(z₀)` conjunct that `kplus`
-    (`Kamp/PriorINF.lean:88`) carries and that neither Rabinovich's nor Reynolds' `K⁺` has. Under
+    (`Kamp/PriorINF.lean:87`) carries and that neither Rabinovich's nor Reynolds' `K⁺` has. Under
     the sources' `K⁺` there is no failure to refute: `P` is true arbitrarily soon after `z₀`, so
     the paper's `Subcase r₀ = z₀` fires and eq (5.2) is never needed.
 

@@ -185,7 +185,7 @@ over the branch **list** — `Branch` is `List SignedFormula` (`SignedFormula.le
 finite set. Every confinement fact in this development, `∀ x ∈ b, x ∈ U` included, is a statement
 about `b.toFinset`, and **nothing in the repository asserts a branch is `Nodup`**: successors are
 built as raw `formulas ++ b` with no `eraseDups` (`Tableau.lean:2237-2239`), and avoiding a `Nodup`
-side condition was a deliberate design goal (`BranchOrder.lean:275-290`). A `U`-confined branch may
+side condition was a deliberate design goal (`BranchOrder.lean:274-290`). A `U`-confined branch may
 therefore be arbitrarily long, so no fixed `D` bounds `estimateBranchDifficulty` on it. The
 statement below is consequently **false at every `D`** at any `U` the engine fires on —
 `difficultyBounded_multiplicity_false` is the refuting witness, and register entry 9 records it.

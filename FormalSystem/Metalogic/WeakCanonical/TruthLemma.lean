@@ -65,7 +65,7 @@ theorem G_forward_mcs (x : ReflCanDomain) (ψ : Formula)
 /--
 G-backward (sorry-free): If ∀y with TempRFwd x y, ψ ∈ y.val, then Gψ ∈ x.val.
 
-Follows the bx_G_backward pattern from BXCanonical/Frame.lean:267-316.
+Follows the bx_G_backward pattern from BXCanonical/Frame.lean:270-316.
 Uses g_content_closed_derivation from ReflexiveCanonical.lean.
 -/
 theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)

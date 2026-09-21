@@ -85,7 +85,7 @@ import Mathlib.Data.List.Permutation
 -- NOTE: `import ...Kamp.Lemma53` lands the import edge for the Lemma 5.3 transcription
 -- (Rabinovich 2014, PDF p.8): the printed Basis, the `K⁺` canonical-expansion atom, and
 -- `hasDefinableINF_excludes_kplus` — the machine-checked finding that `HasDefinableINF`
--- (`PriorINF.lean:110`) is too strong a carrier for eq (5.2) because it deletes the paper's
+-- (`PriorINF.lean:109`) is too strong a carrier for eq (5.2) because it deletes the paper's
 -- disjunct (2). That finding is the reason this edge matters: an unreachable refutation
 -- protects nothing, which is the lesson `Prop42Vacuity` exists to encode. Cycle-free: Lemma53
 -- imports only `...Kamp.VecEAFormula` and `...Kamp.PriorINF`, both already in this file's
@@ -332,7 +332,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.NegFixLi
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.VecEANegFixFaithful
 -- NOTE: `import ...Kamp.Prop42Faithful` lands the import edge for the TERMINUS OF THE FAITHFUL
 -- RE-BASE (Rabinovich 2014, Proposition 4.2, PDF p.6): `prop42_contentful_of_faithful`, which
--- discharges the SAME contentful target `Prop42Contentful` (`ContentfulWitness.lean:151`) that
+-- discharges the SAME contentful target `Prop42Contentful` (`ContentfulWitness.lean:150`) that
 -- `prop42_contentful_of_attained` (`Section5Correspondence.lean:186`) discharges, but from
 -- `HasFaithfulDedekindINF` ALONE where that one needs `HasAttainedINF` AND `HasAttainedSUP`. p.6
 -- states Prop 4.2 "over Dedekind complete chains" in the statement itself, which is the fidelity

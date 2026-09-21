@@ -56,7 +56,7 @@ Landed here, sorry-free:
   `βᵢ` instantiated to `⊤`), plus the characterization collapsing the vacuous segment clauses.
 * `kplus_formula_correct` — `K⁺(P₁)` as an **atom of the canonical expansion** (p.8: "`K⁺(P₁)(z₀)`
   is an atomic (and hence a `∨∃⃗∀`) formula in the canonical expansion"). `kplusFormula`
-  (`PriorINF.lean:89`) already had the right definition but carried **no correctness lemma and no
+  (`PriorINF.lean:88`) already had the right definition but carried **no correctness lemma and no
   reference anywhere in the tree**; the printed proof's disjuncts (2) and (3) both need it.
 * `lemma53_basis` — the printed Basis, `n = 1`.
 * `O_zero_correct` — the `n = 0` degenerate case.
@@ -145,7 +145,7 @@ theorem allTopBracket_zero_holds {sig : MonadicSignature}
 The printed proof asserts: *"`K⁺(P₁)(z₀)` is an atomic (and hence a `∨∃⃗∀`) formula in the
 canonical expansion"*. Both disjunct (2) and eq (5.2)'s third conjunct depend on it.
 
-`kplusFormula` (`PriorINF.lean:89`) already spells this correctly as `¬P ∧ ¬(⊤ U ¬P)` — note
+`kplusFormula` (`PriorINF.lean:88`) already spells this correctly as `¬P ∧ ¬(⊤ U ¬P)` — note
 `Formula.untl target between`, so `untl ⊤ P.neg` at `t` reads "`∃s > t` with `¬P` throughout
 `(t,s)`", whose negation is `∀s > t, ∃r ∈ (t,s), P(r)`. But it carried **no correctness lemma and
 no reference anywhere in the tree**, so it was an advertised definition, not a usable one. This
@@ -260,7 +260,7 @@ eq (5.2). -/
 
 /-- **`HasDefinableINF` is not the eq (5.2) carrier: it silently deletes disjunct (2).**
 
-    Assuming `HasDefinableINF` (`PriorINF.lean:110`) makes the `K⁺(P₁)(z₀)` case *unreachable*
+    Assuming `HasDefinableINF` (`PriorINF.lean:109`) makes the `K⁺(P₁)(z₀)` case *unreachable*
     whenever `P₁` occurs in `(z₀,z₁)` — which is exactly the case p.8's disjunct (2)
     `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` exists to handle, and exactly the paper's
     `Subcase r₀ = z₀` (p.8: *"Note that `r₀ = z₀` iff `K⁺(P₁)(z₀)`"*).

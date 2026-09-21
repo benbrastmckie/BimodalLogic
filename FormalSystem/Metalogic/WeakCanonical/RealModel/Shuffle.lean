@@ -83,10 +83,10 @@ tree depends on it — the main proof only ever needs one shuffle, produced from
 themselves by `kEquiv_shuffle_of_classIso`.
 
 ## References
-- [reynolds1992], §8, printed pp.186-187:
-  `literature/sources/reynolds_1992/sec04_7-separability.md`
-- [doets1989], Lemma 1.4 (sums preserve `≡ₖ`): consumed via `doets_lemma_1_4`
-  (`OrderedSum.lean:47`)
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §8, printed pp.186-187
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Lemma 1.4 (sums
+  preserve `≡ₖ`): consumed via `doets_lemma_1_4` (`OrderedSum.lean:47`)
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
@@ -98,7 +98,7 @@ variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-! ## Lemma 13: no class ends at a gap ⇒ every class is closed
 
-`EndsInGapOnRight` (`DenseModelSurgery/Defs.lean:307`) is stated in terms of
+`EndsInGapOnRight` (`DenseModelSurgery/Defs.lean:308`) is stated in terms of
 `ContempEquivDense M ε`; Phase 25's `contempEquivDense_epsDense_iff` identifies that with
 `SimDense` at Reynolds' own `ε`. The first two lemmas do that translation once, so the
 mathematics below is stated in `SimDense` alone.
@@ -219,14 +219,13 @@ theorem reynolds_lemma13_left (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStruct
 
 /--
 **Lemma 13**, assembled — Reynolds 1992, §8, printed p.187:
-
 > *For any structure `M`, if there are no `∼_M` classes ending at gaps then they are all closed
 > intervals, i.e. of forms `(-∞,+∞)`, `(-∞,b]`, `[b,+∞)` or `[b,b']`.*
 
 The four printed forms are the four combinations of *bounded/unbounded* on each side; the content
 is that **whenever a class is bounded on a side, the bound is attained**, which is the two
 conclusions below. That the classes are intervals at all is Lemma 12's `simDense_convex`
-(`EpsilonDense.lean:204`), cited by Reynolds' own opening *"we know that the classes are
+(`EpsilonDense.lean:203`), cited by Reynolds' own opening *"we know that the classes are
 intervals"*.
 -/
 theorem reynolds_lemma13 (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure sig)

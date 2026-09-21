@@ -56,7 +56,6 @@ variable {F : TaskFrame}
 
 /--
 **Validity of the paper's CO principle** on dense Dedekind-complete flows:
-
   `⊨_dc  △(Hφ → F(Hφ)) → (Hφ → Gφ)`.
 
 **Hypotheses actually consumed.** Only the least-upper-bound hypothesis `h_lub` and the linear

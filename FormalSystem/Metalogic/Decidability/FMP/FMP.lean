@@ -41,8 +41,8 @@ The proof uses the MCS-based filtration approach:
 
 ## References
 
-- [blackburn2002] (Ch 2.3)
-- Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
+* [blackburn2002] (Ch 2.3)
+* Hughes & Cresswell: A New Introduction to Modal Logic (Ch 6.2)
 -/
 
 namespace FormalSystem.Metalogic.Decidability.FMP

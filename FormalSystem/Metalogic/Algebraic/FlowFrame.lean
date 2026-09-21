@@ -25,7 +25,7 @@ The `ℤ` originals (`multiFamTaskFrame` and siblings, `ReynoldsBridge.lean`) ar
 the definitional `D := ℤ` specializations of these generic definitions by the `_int` lemmas in
 `ChronicleMonadicBridge.lean`, which imports this module.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 **Frame axioms (`def:frame`)**: "A *frame* is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$
 is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task
@@ -90,12 +90,13 @@ construction site in any inventory of sites that owe the structure a field.
 
 ## References
 
-* [TaskFrame.lean](../../Semantics/TaskFrame.lean) - frame structure, apparatus, Limit helpers
-* [ChronicleMonadicBridge.lean](../BXCanonical/Chronicle/ChronicleMonadicBridge.lean) -
-  the generic flow frame `multiFamTaskFrameGen` / `multiFamHistoryGen`
-* JPL Paper anchors `def:frame` (sub-anchors `def:frame#Compositionality`,
-  `def:frame#Seriality`, `def:frame#Limit`, `def:frame#Saturation`), `def:task-relation`,
-  `def:world-history` — cited by `\label` anchor, never by line number
+* `FormalSystem/Semantics/TaskFrame.lean` — frame structure, apparatus, Limit helpers
+* `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean` — the generic flow
+  frame `multiFamTaskFrameGen` / `multiFamHistoryGen`
+* JPL paper anchors `def:frame` (sub-anchors `def:frame#Compositionality`, `def:frame#Seriality`,
+  `def:frame#Limit`, `def:frame#Saturation`), `def:task-relation`, `def:world-history` — cited by
+  `\label` anchor, never by line number
+* JPL paper `def:directed` — the ⊇-directedness condition, folded inline into `def:frame`
 -/
 
 namespace FormalSystem.Metalogic.Algebraic

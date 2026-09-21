@@ -52,7 +52,6 @@ conjunct to flip, measured the same way.
 The plan left a choice open — index over the times occurring in `ord.constraints` **union**
 `b.knownTimes`, or over `b.knownTimes` alone. `b.knownTimes` alone is correct, and it is correct
 *because of* non-destructive expansion:
-
 Pre-2.5 the engine's destructive expansion could consume every formula sitting at a time, and
 that time then vanished from `knownTimes` even though `ord.constraints` still mentioned it. The
 measured symptom (report 04 §Q2.2) was `constraints = [(0,2),(0,1)]` with `knownTimes = [2,1]`:

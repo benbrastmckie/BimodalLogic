@@ -14,7 +14,7 @@ Reynolds 1992, *An Axiomatization for Until and Since over the Reals without the
 
 This module continues `Defs.lean` (§6 vocabulary, `ρ`, `λ`, Lemma 2) with the next two lemmas.
 Both are statements about the set where Reynolds' `R` holds; by `gapRightFormula_spec`
-(`DenseModelSurgery/Defs.lean:584`) that set is, in any Prior structure, exactly
+(`DenseModelSurgery/Defs.lean:585`) that set is, in any Prior structure, exactly
 `EndsInGapOnRight M ε`, so the whole development below is carried out on that semantic predicate
 and transported to the temporal formula `R` where Reynolds does: at each use of Prior-U and Prior-S.
 
@@ -78,8 +78,8 @@ Printed pp.178-179, **Lemma 4**:
 ## CORRECTION TO THE LOCAL CORPUS — Lemma 4's formula
 
 This is the **second** corpus defect found in §6; the first, `ρ`'s missing middle conjunct, is
-recorded in `Defs.lean`'s header. The pre-segmented chunk
-`~/Projects/Literature/sources/reynolds_1992/sec03_6-no-gaps-between-equivalence-classes.md`
+recorded in `Defs.lean`'s header. The pre-segmented chunk of
+the local markdown corpus for [reynolds1992] §3.6
 renders Lemma 4's displayed formula as
 
 ```
@@ -150,9 +150,11 @@ what makes them cheap.
 
 ## References
 
-- [reynolds1992], §6, printed pp.178-179 (Lemmas 3 and 4)
-- `Defs.lean` — `ρ`, `λ`, `EndsInGapOnRight`, `gapRightFormula`, Lemma 2
-- `SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean:121`, `:138`) — Reynolds' Prior-U and
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §6, printed pp.178-179 (Lemmas 3 and 4)
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean` — `ρ`, `λ`,
+  `EndsInGapOnRight`, `gapRightFormula`, Lemma 2
+* `SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean:121`, `:138`) — Reynolds' Prior-U and
   Prior-S, printed p.168, in the semantic form the proofs below apply them in
 -/
 
@@ -359,7 +361,7 @@ end RightEnd
 
 Reynolds' auxiliary formulas quantify over points and then assert `ρ` (equivalently `R`) of the
 bound variable. `rhoAt` places `ρ`'s single free variable at a chosen De Bruijn index, exactly as
-`epsAt` (`DenseModelSurgery/Defs.lean:197`) does for `ε`'s two. -/
+`epsAt` (`DenseModelSurgery/Defs.lean:198`) does for `ε`'s two. -/
 
 /-- `ρ` with its free variable reindexed to `i`. -/
 def rhoAt {n : Nat} (ε : MonadicFormula sig 2) (i : Fin n) : MonadicFormula sig n :=
@@ -466,7 +468,7 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 /-- **Lemma 3's `B`, as a temporal formula.** *"`B` exists by expressive completeness"* — this is
 that application, to `classBeginsAtGapStartFormula`.
 
-As with `gapRightFormula` (`DenseModelSurgery/Defs.lean:567`), `B` is produced before any structure
+As with `gapRightFormula` (`DenseModelSurgery/Defs.lean:568`), `B` is produced before any structure
 is supplied, so one `B` serves every Prior structure. -/
 noncomputable def classBeginsAtGapStartTemporal (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

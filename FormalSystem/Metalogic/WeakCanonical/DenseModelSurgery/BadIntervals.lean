@@ -156,8 +156,7 @@ The two §6 corpus defects recorded so far (`ρ`'s missing middle conjunct, unde
 Lemma 4's mangled display, under `Lemma34.lean`) both sit at **displayed** formulas. Lemmas 6
 and 7, and the *bad point* / *bad interval* definition, contain **no displayed formula at all** —
 they are pure running prose. Every sentence block-quoted above was read off the page images and
-agrees with
-`~/Projects/Literature/sources/reynolds_1992/sec03_6-no-gaps-between-equivalence-classes.md`
+agrees with the local markdown corpus for [reynolds1992] §3.6
 word for word, with one printer's typo preserved here and normalised there (*"Its not hard"* on
 the page; the corpus writes *"It's not hard"*). The §6 defect count therefore stands at **two**,
 and the standing warning continues to apply to displays specifically.
@@ -169,7 +168,7 @@ using either. The answer is **neither**, and the reason is visible in Reynolds' 
 *"`C` will be false for a while at the beginning of each class and then true for a while at the
 end"*.
 
-* `false_of_holds_throughout_class` (`Lemma34.lean:606`, Phase 18) requires the auxiliary formula
+* `false_of_holds_throughout_class` (`Lemma34.lean:608`, Phase 18) requires the auxiliary formula
   to hold **throughout** `s`'s class and to fail at **every** later point outside it. Reynolds'
   `C` fails both halves: it is false at the beginning of `s`'s own class, and it is true again
   near the end of every later class in the interval.
@@ -201,26 +200,29 @@ changes. The new theorem is proved from scratch rather than by generalising eith
   maximal-among-bad-intervals reading from it, so the rendering is checked rather than asserted.
 * *"the class includes its left hand end point"* is rendered as the existence of a class-mate `w`
   with no class-mate strictly below it, matching the `¬ v < w` idiom `ClassBeginsWith`
-  (`Lemma5.lean:278`) and `ClassBeginsAtGapStart` (`Lemma34.lean:439`) already use.
+  (`Lemma5.lean:281`) and `ClassBeginsAtGapStart` (`Lemma34.lean:441`) already use.
 
 ## Honest caveat, carried forward
 
 Every §6 lemma below Lemma 2 remains **conditional**. `IsContempEquivDense ε` plus Reynolds' Prior-U
 and Prior-S on `M` are hypotheses throughout, and the only `ε` this tree can currently exhibit
-satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:671`), for which
+satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:672`), for which
 `EndsInGapOnRight` is empty (`not_endsInGapOnRight_epsTop`). Nothing below is discharged at a
 non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage. These
 results are **not** to be described as discharged.
 
 ## References
 
-- [reynolds1992], §6 Lemmas 6 and 7, printed pp.179-181
-- `Defs.lean` — `ρ`, `λ`, `EndsInGapOnRight`, `EndsInGapOnLeft`, `gapRightFormula`,
-  `gapLeftFormula`, Lemma 2
-- `Lemma34.lean` — Lemmas 3 and 4, the class calculus, `false_of_holds_throughout_class`
-- `Lemma5.lean` — Lemma 5, `false_of_holds_throughout_class_bounded`, `exists_bound_notHolds`,
-  `temporalToMonadic`, `relativizeAt`
-- `SemanticPriorU` (`PriorDefsDense.lean:121`) — Reynolds' Prior-U, printed p.168
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §6 Lemmas 6 and 7, printed pp.179-181
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean` — `ρ`, `λ`,
+  `EndsInGapOnRight`, `EndsInGapOnLeft`, `gapRightFormula`, `gapLeftFormula`, Lemma 2
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean` — Lemmas 3 and 4, the
+  class calculus, `false_of_holds_throughout_class`
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma5.lean` — Lemma 5,
+  `false_of_holds_throughout_class_bounded`, `exists_bound_notHolds`, `temporalToMonadic`,
+  `relativizeAt`
+* `SemanticPriorU` (`PriorDefsDense.lean:121`) — Reynolds' Prior-U, printed p.168
 -/
 
 set_option linter.style.longFile 1700
@@ -756,7 +758,7 @@ theorem classMate_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε
 
 /-! ## The gap-crossing contradiction Lemma 7 actually licenses
 
-See the module header for why neither `false_of_holds_throughout_class` (`Lemma34.lean:606`) nor
+See the module header for why neither `false_of_holds_throughout_class` (`Lemma34.lean:608`) nor
 `false_of_holds_throughout_class_bounded` (`Lemma5.lean`) can be used here. Both slots are
 weakened:
 
@@ -1035,7 +1037,7 @@ package below carries both. -/
 
 omit [IsDualClosed C] in
 /-- **`λ` is a property of the `∼`-class**, the mirror of `endsInGapOnRight_congr`
-(`Lemma34.lean:243`). Reynolds uses it silently on both sides. -/
+(`Lemma34.lean:245`). Reynolds uses it silently on both sides. -/
 theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) : EndsInGapOnLeft M ε t ↔ EndsInGapOnLeft M ε u := by
@@ -1065,7 +1067,7 @@ theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivD
   exact ⟨main htu, main (contemp_symm hε M htu)⟩
 
 omit [IsDualClosed C] in
-/-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:266`):
+/-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:268`):
 `λ(t)`'s second conjunct at `z := t`, with reflexivity. -/
 theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier}
@@ -1337,7 +1339,7 @@ theorem reynolds_lemma7 [Finite sig.preds] (atomMap : Formula → sig.preds)
 /-! ## *"Any bad interval, if bounded, has excluded end points in `M`"*
 
 Printed p.180, the third clause of Lemma 6's statement. This is Lemma 3's argument
-(`reynolds_lemma3_right`, `Lemma34.lean:311`) run on `R ∨ L` in place of `R`: Prior-U applied to
+(`reynolds_lemma3_right`, `Lemma34.lean:313`) run on `R ∨ L` in place of `R`: Prior-U applied to
 the temporal formula `badPointFormula` produces a first non-bad point, which is an element of `M`
 excluded from the interval.
 

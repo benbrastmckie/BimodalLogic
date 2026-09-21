@@ -47,7 +47,8 @@ an enumeration of `Rat x Formula x Formula x Bool`. Since both `Rat` and
 
 ## References
 
-- [burgess1982]: "Axioms for tense logic II: Time periods", Section 2
+* [J. P. Burgess, *Axioms for Tense Logic. I. "Since" and "Until"*][burgess1982], "Axioms for
+  tense logic II: Time periods", Section 2
 -/
 
 set_option linter.style.longFile 1800

@@ -41,8 +41,10 @@ The following definitions were moved to
 
 ## References
 
-- [reynolds1994], Section 8, Theorem 15 (one-class theorem)
-- [doets1989], Theorem 1.1 (finite structures are good)
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Section 8, Theorem 15
+  (one-class theorem)
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Theorem 1.1 (finite
+  structures are good)
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical

@@ -123,8 +123,9 @@ at `.Base` reaches its discrete branch via `countermodel_discrete`
 All definitions are NON-VACUOUS (no `True`, `trivial`, or `Unit` bodies).
 
 ## References
-- [reynolds1994], Theorems 14-18
-- [doets1989], Section 1 (k-types, Lemmas 1.4, 1.5)
-- Design provenance: the chronicle → Reynolds completeness route for weak reflexive
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Theorems 14-18
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Section 1 (k-types,
+  Lemmas 1.4, 1.5)
+* Design provenance: the chronicle → Reynolds completeness route for weak reflexive
   completeness as a conservative extension (status and gating summarized above)
 -/

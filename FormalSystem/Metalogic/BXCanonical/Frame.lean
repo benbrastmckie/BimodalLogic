@@ -37,7 +37,10 @@ code consumers) was archived to `Boneyard/SorriedDeclExcisions/SingletonSorriedD
 
 ## References
 
-- [burgess1984], [goldblatt1992] (canonical model construction for tense logics)
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984] — the canonical-model construction for tense
+  logics
+* [R. Goldblatt, *Logics of Time and Computation*][goldblatt1992] — the same construction as
+  this presents it
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical
@@ -667,11 +670,11 @@ requires Until induction along the chain, which is structurally difficult
 without a deterministic successor relation.
 
 ### References
-- [burgess1984]: "Basic tense logic" (defect discharge)
-- [goldblatt1992]: "Logics of Time and Computation" (canonical model construction)
-- Design provenance: the `sigma_strict` ordering design, since retired to
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984] — defect discharge
+* [R. Goldblatt, *Logics of Time and Computation*][goldblatt1992] — canonical model construction
+* Design provenance: the `sigma_strict` ordering design, since retired to
   `Boneyard/FiltrationOrdering/SigmaOrdering.lean`
-- Design provenance: chain-member quantification for the guard condition (v5)
+* Design provenance: chain-member quantification for the guard condition (v5)
 -/
 
 /--

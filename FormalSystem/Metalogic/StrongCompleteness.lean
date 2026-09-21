@@ -651,7 +651,6 @@ an arbitrary finite context is derivable at `FrameClass.RTime`.
 **This is *not* strong completeness, and the gap is not one of degree.** Infinitary strong
 completeness — `Γ ⊨ φ → Γ ⊢ φ` for an arbitrary, possibly infinite `Γ : Set Formula` — is a
 *strictly different statement*, and three separate facts should be held apart:
-
 1. *This theorem is inter-derivable with weak completeness.* `Context` is `List Formula`, so
    every `Γ` here is finite, and the deduction theorem turns the finite-context form into the
    single-formula form and back. Nothing is gained over `completeness_rtime` beyond the

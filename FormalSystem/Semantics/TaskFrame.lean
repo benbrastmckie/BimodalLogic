@@ -1800,7 +1800,6 @@ That is a decision on counted evidence, not an omission, and this is its record 
 re-opened.
 
 **The measurement** (whole repository, `FormalSystem/` and `Tests/`, at the time of the count):
-
 * `trivialFrame` — Occurrences: 61; Explicit `(D := …)`: 33; of which **concrete**
   (`Int`/`ℤ`/`ℚ`/`ℤ ×ₗ ℤ`): 21; of which **abstract** (`D`/`↑D`): 12
 * `staticFrame` — Occurrences: 61; Explicit `(D := …)`: 43; of which **concrete**

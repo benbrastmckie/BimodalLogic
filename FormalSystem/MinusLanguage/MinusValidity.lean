@@ -27,7 +27,6 @@ than `Type*` is used throughout for the same universe reason recorded on `Valid`
 There is deliberately **no** density-free `MinusValidComplete`, and the soundness theorem for
 `FrameClass.RTime` targets `MinusValidRTime`. A density-free target would be
 **refutable**, and on the L⁻ side one axiom suffices to refute it:
-
 - `(MinusLanguage.Axiom.dn φ).minFrameClass = FrameClass.Dense` and
   `FrameClass.Dense ≤ FrameClass.RTime` (pinned by an `example` in
   `FormalSystem/MinusLanguage/Axioms.lean`), so `dn` — the density axiom `GGφ → Gφ` — is

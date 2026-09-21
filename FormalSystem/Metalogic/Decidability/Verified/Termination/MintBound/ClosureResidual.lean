@@ -799,7 +799,6 @@ half is proved (`unorderedSuccessor_formula_mem`) and this half is not. It is a 
 named, and nothing in this file assumes it.
 
 **The obligation map.** What discharging this needs, per coordinate:
-
 *The world coordinate — available.* `applyRule_emitted_world_dichotomy` is the complete accounting:
 every emission is at a world of `b` or at `Branch.nextWorld`. The first case is covered by
 `L`-confinement of `b`; the second is exactly what `FreshWorldHeadroom L b` supplies. Note the

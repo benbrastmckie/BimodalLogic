@@ -94,7 +94,6 @@ pins the arrangement without knowing where the witnesses are.
 
 Negating at a fixed `z` therefore turns the per-model existential arrangement into a
 **conjunction over a fixed split point** (p.11):
-
 ```
 (∃z)^{<z₁}_{>z₀}φ(z) ∧ ¬[α₀, β₁, …, βₙ₊₁, αₙ₊₁](z₀,z₁)
   ⇔  (∃z)^{<z₁}_{>z₀}(φ(z) ∧ ⋀ⁿᵢ₌₁ ¬Aᵢ ∧ ⋀ⁿ⁺¹ᵢ₌₁ ¬Bᵢ)

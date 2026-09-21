@@ -16,7 +16,7 @@ import Mathlib.Data.Int.SuccPred
 
 This module proves the soundness theorem for bimodal logic TM.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 **Perpetuity Principles (`cor:perpetuity-valid`)**:
 The JPL paper "The Construction of Possible Worlds" proves the perpetuity
@@ -196,10 +196,10 @@ asymmetry, for the same reason: there is no dense or Dedekind-complete witness f
 
 ## References
 
-* [architecture.md](../../docs/user-guide/architecture.md) - Soundness specification
-* [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
-* [Validity.lean](../../Semantics/Validity.lean) - Semantic validity
-* [SoundnessLemmas.lean](./SoundnessLemmas.lean) - Axiom validity and reflection preservation
+* `docs/user-guide/architecture.md` — Soundness specification
+* `FormalSystem/ProofSystem/Derivation.lean` — Derivability relation
+* `FormalSystem/Semantics/Validity.lean` — Semantic validity
+* `FormalSystem/Metalogic/SoundnessLemmas.lean` — Axiom validity and reflection preservation
 * JPL Paper `cor:perpetuity-valid` - Perpetuity principle validity proofs
 
 ## Tags

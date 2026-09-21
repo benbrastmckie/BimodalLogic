@@ -43,7 +43,8 @@ The r-relation lemmas use:
 
 ## References
 
-- [burgess1982]: "Axioms for tense logic II: Time periods", Lemmas 2.2-2.3
+* [J. P. Burgess, *Axioms for Tense Logic. I. "Since" and "Until"*][burgess1982], "Axioms for
+  tense logic II: Time periods", Lemmas 2.2-2.3
 -/
 
 set_option linter.style.longFile 1900

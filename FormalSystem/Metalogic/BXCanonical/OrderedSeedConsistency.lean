@@ -31,8 +31,8 @@ the remaining F-formulas in the seed.
 
 ## References
 
-- [burgess1984]: "Basic tense logic"
-- [goldblatt1992]: "Logics of Time and Computation"
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984]
+* [R. Goldblatt, *Logics of Time and Computation*][goldblatt1992]
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical

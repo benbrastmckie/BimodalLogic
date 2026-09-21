@@ -43,7 +43,7 @@ Unfolding the temporal operators with this tree's `TemporalTruth` (`Table.lean:1
   constructor's guard-first arguments);
 * `U(⊤,p)(t)` is therefore *"`p` holds throughout some initial stretch above `t`"*;
 * `F¬p(t)` is *"`¬p` somewhere above `t`"*;
-* `K⁺(A)(s)` is `kplus` (`Kamp/PriorINF.lean:88`): `¬A(s) ∧ ∀ u > s, ∃ r ∈ (s,u), A(r)`, so
+* `K⁺(A)(s)` is `kplus` (`Kamp/PriorINF.lean:87`): `¬A(s) ∧ ∀ u > s, ∃ r ∈ (s,u), A(r)`, so
   `K⁺(¬p)(s)` is `p(s) ∧ ∀ u > s, ∃ r ∈ (s,u), ¬p(r)`.
 
 The definitions below carry that unfolding literally, with the object-level negation read as
@@ -112,7 +112,7 @@ every point and every formula.
 Read out: if `p` holds throughout some initial stretch above `t`, and `¬p` holds somewhere above
 `t`, then there is `s > t` with `p` throughout `(t,s)` such that at `s` either `¬p` holds, or `p`
 holds and `¬p` holds arbitrarily soon after `s` (the second disjunct is `K⁺(¬p)(s)`, i.e. `kplus`
-of `¬p`, `Kamp/PriorINF.lean:88`).
+of `¬p`, `Kamp/PriorINF.lean:87`).
 
 This is the semantic side of `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:382`). It is **not**
 `SemanticPriorUZ` (`PriorDefs.lean:28`) and does not imply it — see
@@ -371,7 +371,7 @@ theorem semanticPriorUZ_fails_on_dense :
 
 Consequence for this development: every declaration pinned at `SemanticPriorUZ` /
 `SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`),
-`prior_hasAttainedINF` (`Kamp/PriorINF.lean:232`), `prior_hasDedekindINF`
+`prior_hasAttainedINF` (`Kamp/PriorINF.lean:231`), `prior_hasDedekindINF`
 (`Kamp/DedekindINF.lean:230`) and their consumers — has no dense instance obtained by reuse. -/
 theorem semanticPriorU_not_implies_semanticPriorUZ :
     ∃ (M : OrderedMonadicStructure densePriorSig) (atomMap : Formula → densePriorSig.preds),

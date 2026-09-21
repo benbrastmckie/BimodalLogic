@@ -51,7 +51,9 @@ is unavailable there. Its dense branch (`countermodel_dense_enriched`, on ℚ) a
 
 ## References
 
-- [burgess1984], [goldblatt1992] (completeness for tense logics)
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984] and
+  [R. Goldblatt, *Logics of Time and Computation*][goldblatt1992] — completeness for tense
+  logics)
 
 ## Tags
 

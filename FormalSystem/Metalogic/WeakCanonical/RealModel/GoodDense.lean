@@ -1603,7 +1603,6 @@ theorem noMinOrder_aboveSubinterval (sig : MonadicSignature) (M : OrderedMonadic
 
 /--
 **Lemma 11** ([8] lemma 6.4), Reynolds 1992 §8, printed pp.185-186:
-
 > *If `N` is countable and very good then it is good.*
 
 The four cases are the source's own: the degenerate structures, the end-point-free case (the

@@ -38,9 +38,11 @@ recommended resolution path (chain-based completeness).
 
 ## References
 
-- [verbrugge2004]: "Completeness by Construction" (realization technique)
-- [burgess1984]: One-step defect discharge
-- [reynolds2003]: Until axiomatization and completeness
+* [D. de Jongh, F. Veltman and R. Verbrugge, *Completeness by Construction for Tense Logics of
+  Linear Time*][verbrugge2004] — realization technique
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984], One-step defect discharge
+* [M. Reynolds, *An Axiomatization of Prior's Ockhamist Logic of Historical
+  Necessity*][reynolds2003], Until axiomatization and completeness
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
@@ -164,7 +166,7 @@ enriched seed lies in `w.formulas`, so `w.is_mcs.1` discharges any
 
 This matches the `h_neg_in = false` branch of
 `enriched_seed_consistent_until` above and the one-line proof of
-`chain_step_seed_consistent` in `Construction.lean:676-690`; it is the
+`chain_step_seed_consistent` in `Construction.lean:677-690`; it is the
 lifting lemma Phase 5's stricter seed (C.4) consumes for the
 `h.formulas ∪ GContent v.formulas` chunk. -/
 

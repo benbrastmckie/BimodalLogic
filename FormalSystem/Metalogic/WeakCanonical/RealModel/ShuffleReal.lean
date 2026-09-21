@@ -67,11 +67,14 @@ different* index sets. The engine underneath it is `BackAndForth.lean`'s `BackFo
 takes only the shuffle data `hγ` and `hσ` it was always a consequence of.
 
 ## References
-- [reynolds1992], §8, printed p.188:
-  `literature/sources/reynolds_1992/sec04_7-separability.md`
-- [doets1987], [doets1989], 3.1.8 (the mixing lemma):
-  `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- [doets1989], Lemma 1.4 (shared-index case): `doets_lemma_1_4` (`OrderedSum.lean`)
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §8, printed p.188
+* [K. Doets, *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order
+  and Intensional Logic*][doets1987] and
+  [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], 3.1.8 — the
+  mixing lemma
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Lemma 1.4
+  (shared-index case): `doets_lemma_1_4` (`OrderedSum.lean`)
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
@@ -109,7 +112,7 @@ theorem shuffleColourReal_irrational {ι : Type} (γ₁ : ι) (σ : ℚ → ι) 
   rw [shuffleColourReal, dif_neg hr]
 
 /-- **Reynolds' density condition, read at `ℝ`.** The `ℚ`-form is `IsShuffleMap`
-(`Shuffle.lean:329`); this is the same condition with the index order `ℝ`, and is what the
+(`Shuffle.lean:328`); this is the same condition with the index order `ℝ`, and is what the
 `ℝ`-shuffle's order-theoretic facts consume. -/
 def IsShuffleMapReal {ι : Type} (S : Finset ι) (π : ℝ → ι) : Prop :=
   (∀ r : ℝ, π r ∈ S) ∧
@@ -185,7 +188,6 @@ restated here under Doets' numbering, which is how the rest of this file refers 
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **Doets 1987, 3.1.8** — *the mixing lemma*:
-
 > if `(I, {i | m(i) ⊨ σ})_{σ∈Z} ≡ⁿ (J, {j | m'(j) ⊨ σ})_{σ∈Z}` then
 > `Σ_{i∈I} m(i) ≡ⁿ Σ_{j∈J} m'(j)`
 
@@ -263,7 +265,7 @@ each use.
 
 section OrderFacts
 
-/-! The four transfer lemmas are stated through `orderedSumPt` (`NEquivalence.lean:155`) rather
+/-! The four transfer lemmas are stated through `orderedSumPt` (`NEquivalence.lean:156`) rather
 than through an anonymous `⟨r, a⟩`. An anonymous sigma literal forces its expected type to weak
 head normal form, which unfolds `.carrier` to the raw `Sigma` type; typeclass search then finds
 Mathlib's *non-lexicographic* `Sigma.instLE` in preference to the structure's `carrierOrder`, and
@@ -342,7 +344,6 @@ theorem noMin_orderedSumReal (hne : ∀ r : ℝ, Nonempty (fam r).carrier) :
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **`R` is Dedekind complete** — Reynolds 1992, §8, printed p.188:
-
 > *`R` is also Dedekind complete: any subset bounded above intersects a last summand. Because
 > the `γᵢ`'s say so the summands themselves are closed intervals of the reals so the supremum of
 > the set exists in this class.*

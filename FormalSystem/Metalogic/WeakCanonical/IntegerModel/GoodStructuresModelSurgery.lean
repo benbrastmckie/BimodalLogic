@@ -82,8 +82,10 @@ and the docstring on
 
 ## References
 
-- [reynolds1994], Section 7, Lemmas 6-13, Theorem 14
-- [reynolds1994], Theorem 5 (US expressive completeness, PriorExpressiveness.lean)
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Section 7, Lemmas 6-13,
+  Theorem 14
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Theorem 5 (US expressive
+  completeness, PriorExpressiveness.lean)
 -/
 
 set_option linter.style.longFile 2300
@@ -417,13 +419,11 @@ theorem complement_pred_closed {T : Type} [LinearOrder T]
 /-! ### Reynolds Model Surgery Core
 
 **Reynolds Theorem 14** (Reynolds 1994, Section 7, Lemmas 6-13):
-
 Given a discrete Prior structure with atom-surjective atomMap (h_surj),
 if a ContempEquiv class is succ-closed, then it equals the whole carrier.
 Equivalently: class boundaries cannot occur at Dedekind gaps.
 
 **Proof sketch** (Reynolds' original argument):
-
 1. Construct rho(x) : MonadicFormula sig 1 encoding "right_gap_class"
    (x's ~M-class ends in a gap on the right). This is expressible because
    ~M is defined by a monadic FO formula epsilon(x,y) with TWO free

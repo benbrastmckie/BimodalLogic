@@ -21,7 +21,6 @@ carry.
 Every lemma below takes the repository's standard duration binders — `AddCommGroup D`,
 `LinearOrder D`, `IsOrderedAddMonoid D` (see `TemporalOrder`) — plus Dedekind completeness in the
 **explicit Prop-valued form** the semantics uses throughout:
-
   `h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`
 
 rather than a `ConditionallyCompleteLinearOrder D` instance. That choice is deliberate and is

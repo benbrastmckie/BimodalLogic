@@ -49,9 +49,11 @@ sorry-free) is a different theorem from the archived, `sorryAx`-tainted
 
 ## References
 
-- [reynolds1994], Theorem 18 (completeness pipeline via k-equivalence)
-- [doets1989], Theorem 1.1 (k-equivalence preserves bounded-depth sentences)
-- Design provenance: the strategy-B route for the Reynolds pipeline bridge
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Theorem 18 (completeness
+  pipeline via k-equivalence)
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Theorem 1.1
+  (k-equivalence preserves bounded-depth sentences)
+* Design provenance: the strategy-B route for the Reynolds pipeline bridge
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical

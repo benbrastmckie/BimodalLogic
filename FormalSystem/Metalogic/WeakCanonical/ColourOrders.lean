@@ -24,7 +24,7 @@ Reynolds pipeline needs about it.
 * `IsShuffleColouring S c` — `c` is a *shuffle colouring over the palette `S`*: it uses only
   colours of `S`, every colour of `S` occurs strictly inside every nonempty open interval, and
   the order is nonempty without endpoints. This is Reynolds' density condition (`IsShuffleMap`,
-  `RealModel/Shuffle.lean:329`) stated for an arbitrary index order.
+  `RealModel/Shuffle.lean:328`) stated for an arbitrary index order.
 
 ## Main result
 
@@ -39,8 +39,11 @@ Reynolds' *"another simple game argument"*, printed p.188.
 coloured-order hypothesis.
 
 ## References
-- [reynolds1992], §8, printed p.188: `literature/sources/reynolds_1992/sec04_7-separability.md`
-- [doets1987], [doets1989], 3.1.8: `literature/Doets_1989_Monadic_Pi11_Theories.md`
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §8, printed p.188
+* [K. Doets, *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order
+  and Intensional Logic*][doets1987] and
+  [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], 3.1.8
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
@@ -74,7 +77,7 @@ noncomputable def kTypeColouring (sig : MonadicSignature) (k : Nat) {I : Type} [
 /--
 **`c` is a shuffle colouring over the palette `S`.**
 
-Reynolds' density condition (`IsShuffleMap`, `RealModel/Shuffle.lean:329`), stated for an
+Reynolds' density condition (`IsShuffleMap`, `RealModel/Shuffle.lean:328`), stated for an
 arbitrary index order rather than for `ℚ` or `ℝ` specifically. The endpoint and nonemptiness
 clauses are what let a new point be answered when it falls below, above, or outside the whole of
 a finite matched configuration.

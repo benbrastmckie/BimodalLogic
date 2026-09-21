@@ -68,7 +68,8 @@ Local definitions used for point insertion lemmas.
 
 ## References
 
-- [burgess1982]: "Basic tense logic", Section 2, Lemmas 2.4-2.8
+* [J. P. Burgess, *Axioms for Tense Logic. I. "Since" and "Until"*][burgess1982], "Basic tense
+  logic", Section 2, Lemmas 2.4-2.8
 -/
 
 set_option linter.style.longFile 3700
@@ -1083,7 +1084,6 @@ holds) or there exists `beta₀ ∈ B` with `⊢ (beta₀∧eta) → phi`.
 So we obtain `beta₀ ∈ B`, `gamma₀ ∈ C` with `¬U(beta₀∧eta, gamma₀) ∈ A`.
 
 **Core BX5+BX7+BX13 chain** (adapted from Burgess 1982 p. 371):
-
 1. BX5 on `U(xi, eta)`: get `U(xi∧U(xi,eta), eta) ∈ A`
 2. BX5 on `U(beta₀, gamma₀)` (from burgessR3): get `U(beta₀∧U(beta₀,gamma₀), gamma₀) ∈ A`
 3. BX7 on these two enriched Until formulas → three-way disjunction D1∨D2∨D3

@@ -45,8 +45,9 @@ duality (`dualStructure`), transporting `BackForth` along the mirror involution 
 
 ## References
 
-- [doets1987], ch. 1, pp. 1-22 (1.0.2, 1.0.3).
-- `literature/Doets_1989_Monadic_Pi11_Theories.md`.
+* [K. Doets, *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order
+  and Intensional Logic*][doets1987], ch. 1, pp. 1-22 (1.0.2, 1.0.3).
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989]
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical

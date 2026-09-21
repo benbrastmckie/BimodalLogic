@@ -52,8 +52,8 @@ schema is the only shape that survives those three rules.
 ## References
 
 * `FormalSystem/PlusLanguage/Derivation.lean` — the seven-rule system mirrored here
-* `FormalSystem/PlusLanguage/PlusNonValidities.lean` — `refute_determined`, the reason for
-  the separate inductive
+* `FormalSystem/PlusLanguage/PlusNonValidities.lean` — `refute_determined`, the reason for the
+  separate inductive
 
 ## Tags
 

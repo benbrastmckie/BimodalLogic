@@ -28,8 +28,9 @@ with the defect-discharge property for Until/Since formulas.
 
 ## References
 
-- [burgess1984]: Defect-discharge construction for Until
-- [reynolds2001]: Formal treatment of quasimodel chains
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984], Defect-discharge construction for Until
+* [M. Reynolds, *An Axiomatization of Full Computation Tree Logic*][reynolds2001], Formal
+  treatment of quasimodel chains
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Quasimodel
@@ -817,7 +818,7 @@ predicate explicitly without having to re-derive it.
 initial witness `w0 : BXPoint` is the MCS starting point supplied by
 Frame.lean's Until/Since context (the point at which the eventuality
 resolution obligation is raised). Concretely, for
-`bx_until_eventuality_resolution` (Frame.lean:653) the starting point
+`bx_until_eventuality_resolution` (Frame.lean:656) the starting point
 is the MCS `w` at which `φ U ψ ∈ w.formulas` is witnessed, and
 `h0.formulas = sigmaSignature w Sigma` by construction, so the subset
 hypothesis `h0_sub` reduces to `sigma_signature_mem_witness` under

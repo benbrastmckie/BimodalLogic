@@ -79,7 +79,7 @@ artifact moved its `kplus` hypothesis to the `kplusOpen` the definition actually
 
 ## References
 
-* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*,
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014],
   Propositions 4.2 and 4.3, PDF p.6; Lemma 5.1, PDF pp.10-11.
 -/
 

@@ -40,8 +40,10 @@ The file also provides:
 - No-gaps theorem for integers (`no_gaps_int`)
 
 ## References
-- [reynolds1994], Theorem 18 (full completeness pipeline)
-- [doets1989], Theorem 1.1 (k-equivalence preserves bounded-depth sentences)
+* [M. Reynolds, *Axiomatising U and S over Integer Time*][reynolds1994], Theorem 18 (full
+  completeness pipeline)
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Theorem 1.1
+  (k-equivalence preserves bounded-depth sentences)
 -/
 namespace FormalSystem.Metalogic.WeakCanonical
 
@@ -341,7 +343,6 @@ theorem k_equiv_preserves_sentence {sig : MonadicSignature} [Finite sig.preds]
 
 /--
 **Truth Transfer Lemma** (Reynolds pipeline, Phase 5):
-
 Given k-equivalent ordered monadic structures M and N, if a temporal formula ψ
 is true at some point in M, then it is also true at some point in N.
 

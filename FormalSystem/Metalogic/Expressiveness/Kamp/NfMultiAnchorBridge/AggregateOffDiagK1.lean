@@ -1238,7 +1238,7 @@ over ALL `qnf : NormalForm sig 1 3` (Fintype at NormalForm.lean) of the per-qnf
 dispatcher `CAggOd qnf` on bit-true qnf and its Prop 4.2/4.3 De Morgan negation
 `(CAggOd qnf).negFix` on bit-false qnf, with `VVecEA2.trivialTrue` as the neutral
 element. `negFix_iff` is gated on attained INF/SUP; on Prior structures these are
-`prior_hasAttainedINF h_UZ` / `prior_hasAttainedSUP h_SZ` (PriorINF.lean:226/:269). -/
+`prior_hasAttainedINF h_UZ` / `prior_hasAttainedSUP h_SZ` (PriorINF.lean:225/:269). -/
 
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Pin bridge (Since direction): `holdsRight` at the origin `t` is the pointwise

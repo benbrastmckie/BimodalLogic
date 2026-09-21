@@ -138,12 +138,12 @@ Two in-tree, machine-checked facts pin this down:
 **weaker**
   `HasDefinableINF` is *already* too strong: it makes the paper's disjunct (2)
   `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` (p.8) unreachable whenever `P₁` occurs in `(z₀,z₁)`. Since
-  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:217`) shows `HasAttainedINF` implies
+  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:216`) shows `HasAttainedINF` implies
   `HasDefinableINF`, `HasAttainedINF` is *a fortiori* too strong.
 * `OnBuilder.lean` admits the deviation in its own docstring: "On Prior structures the INF
   is always attained (`HasAttainedINF`), so the K⁺ disjunct is vacuous". The whole
   `EANegationFix/` development is built on that simplification. It is sound on Prior structures
-  (`prior_hasAttainedINF`, `PriorINF.lean:226`) and is the right thing at the live-path
+  (`prior_hasAttainedINF`, `PriorINF.lean:225`) and is the right thing at the live-path
   boundary — but it is a **deviation from the paper**, not a transcription of it.
 
 Concretely, `HasAttainedINF` excludes structures where an infimum exists but is not attained:
@@ -174,7 +174,7 @@ attempt.
 `Prop42Contentful` hoists `∃ v'` outside `∀ z0 z1`, which is the whole content — see
 `ContentfulWitness.lean`'s module docstring for why both weaker orderings are vacuous. The
 all-`⊤` escape hatch is closed by `topVVec_contentful_forces_unsat`
-(`ContentfulWitness.lean:220`): offering `topVVec` as `v'` does not discharge the goal, it commits
+(`ContentfulWitness.lean:219`): offering `topVVec` as `v'` does not discharge the goal, it commits
 the offerer to `v` being unsatisfiable on every ordered pair. The corresponding negative check —
 that the all-`⊤` term does **not** typecheck against `Prop42Contentful` — is recorded verbatim in
 this phase's handoff.

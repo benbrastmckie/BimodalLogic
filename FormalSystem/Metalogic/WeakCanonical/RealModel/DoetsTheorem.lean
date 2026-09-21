@@ -75,9 +75,9 @@ Each entry reads *Printed source* — *Implementation*:
 * p.185, Theorem 6 statement — `doets_theorem_dense`
 * p.185, *"if `M` is good we are done"* — `exists_realFlow_witness`
 * p.186, Lemma 11 — `reynolds_lemma11_no_endpoints` (`GoodDense.lean:1137`)
-* p.187, Lemma 13 — `reynolds_lemma13` (`Shuffle.lean:232`)
-* p.187, *"`M | (⋃I) ≡ₖ Σ_{q∈ℚ} σ(q)`"* — `kEquiv_blocks_shuffle` (`Shuffle.lean:484`)
-* p.188, *"`Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`"* — `kEquiv_shuffle_shuffleReal` (`ShuffleReal.lean:233`)
+* p.187, Lemma 13 — `reynolds_lemma13` (`Shuffle.lean:231`)
+* p.187, *"`M | (⋃I) ≡ₖ Σ_{q∈ℚ} σ(q)`"* — `kEquiv_blocks_shuffle` (`Shuffle.lean:483`)
+* p.188, *"`Σ_{q∈ℚ} σ(q) ≡ₖ Σ_{r∈ℝ} σ*(r)`"* — `kEquiv_shuffle_shuffleReal` (`ShuffleReal.lean:235`)
 * p.188, *"`R` is dense … Dedekind complete … countable dense subflow"* — `isRealLike_shuffleReal`
   (`ShuffleReal.lean:626`)
 * p.188, *"so `R` is isomorphic to the reals"* — `nonempty_orderIso_real_shuffleReal`
@@ -289,7 +289,7 @@ theorem goodDense_shuffle (k : Nat) {S : Finset ι} (hγ : γ₁ ∈ S) (hσ : I
 **Anything `k`-equivalent to the `ℚ`-shuffle is good, with flow the real line.**
 
 This is the exact shape printed p.187's *"`M | (⋃ I) ≡ₖ Σ_{q∈ℚ} σ(q)`"* needs:
-`kEquiv_blocks_shuffle` (`Shuffle.lean:484`) supplies the left-hand `≡ₖ` and this lemma converts it
+`kEquiv_blocks_shuffle` (`Shuffle.lean:483`) supplies the left-hand `≡ₖ` and this lemma converts it
 into an `ℝ`-flowed witness in one step.
 -/
 theorem exists_realFlow_of_kEquiv_shuffle (k : Nat) {S : Finset ι} (hγ : γ₁ ∈ S)
@@ -468,7 +468,7 @@ Theorem 6's proof by contradiction:
 Both implications are Lemma 11 (`reynolds_lemma11_no_endpoints`, `GoodDense.lean:1137`) in
 contrapositive form: applied at `M` itself for *"`M` is not very good"*, and applied at
 `M | (t,u)` for the step from *"`M | (t,u)` is not good"* to *"`t ≁ u`"* — the middle clause of
-`SimDense` (`EpsilonDense.lean:128`) asks for very-goodness of `M | (t,u)`, which at a countable
+`SimDense` (`EpsilonDense.lean:127`) asks for very-goodness of `M | (t,u)`, which at a countable
 endpointless interval is goodness.
 
 Density of `M` is what supplies `veryGoodDense`'s non-emptiness clause and both end-point
@@ -514,7 +514,7 @@ and the use the choice is put to, three sentences later:
 **Two rendering decisions, both stated rather than assumed.**
 
 *Reynolds' `G` is a set of sentences; this is a `Finset` of normal forms.* `gammaSentences`
-(`EpsilonDense.lean:244`) is literally `(goodNFs sig k).toList.map nfToSentence`, so the `γᵢ` and
+(`EpsilonDense.lean:243`) is literally `(goodNFs sig k).toList.map nfToSentence`, so the `γᵢ` and
 the elements of `goodNFs sig k` are the same data presented twice. The minimization is done at
 the normal-form level because that is where `Finset.card` is available without needing
 `nfToSentence` to be injective — and injectivity is not part of what the argument uses. The only
@@ -539,7 +539,7 @@ def ClassStrictlyBetween (M : OrderedMonadicStructure sig) (ε : MonadicFormula 
 
 /-- **`M | E`** — the substructure of `M` on the `∼`-class of `e`.
 
-`restrictSet` (`Shuffle.lean:426`) is the general set-shaped cut; the tree's other cuts are all
+`restrictSet` (`Shuffle.lean:425`) is the general set-shaped cut; the tree's other cuts are all
 interval-shaped, and a `∼`-class is given here as a set rather than by endpoints. That the classes
 *are* intervals is Lemma 13's content and is not needed to state this. -/
 def contempClassStructure (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
@@ -923,7 +923,6 @@ theorem noMaxOrder_classBetween (h : IsConvexEquiv M ε) (hq : QuotientDenselyOr
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /--
 **`I` has order type `ℚ`** — Reynolds 1992, printed p.187:
-
 > Since we have density of `M / ∼`, the classes in `I = {E | E is a ∼-class strictly between c and
 > d}` have order type `ℚ`.
 
@@ -1050,9 +1049,9 @@ Printed p.188, the closing step of Theorem 6's proof:
 > and this latter has flow of time isomorphic to `ℝ` as required.
 
 **The displayed three-summand identity is two nested binary splits, and both are already landed.**
-`kEquiv_openSub_split` (`EpsilonDense.lean:870`) cuts an open interval at an interior point,
+`kEquiv_openSub_split` (`EpsilonDense.lean:869`) cuts an open interval at an interior point,
 putting that point at the head of the second block, and `goodDense_binSum_pointSum`
-(`EpsilonDense.lean:842`) is literally *"`X + M | {b} + Y` is good"* — the `R₁ + R₂ + R₃` step
+(`EpsilonDense.lean:841`) is literally *"`X + M | {b} + Y` is good"* — the `R₁ + R₂ + R₃` step
 Reynolds had already used once, for transitivity of `∼` (printed p.187), and where the seam
 closes up because `X` inherits its lack of a right end point across `≡ₖ`.
 
@@ -1600,7 +1599,7 @@ omit [Fintype sig.preds] in
 **Cutting a set-shaped restriction down to an interval is cutting `M` down to that interval** —
 provided the interval lies inside the set, which for a `∼`-class is convexity (Lemma 12).
 
-The dense analogue of `openSubOpenSubEquiv` (`EpsilonDense.lean:151`), for a `restrictSet` outer
+The dense analogue of `openSubOpenSubEquiv` (`EpsilonDense.lean:150`), for a `restrictSet` outer
 cut rather than an `openSubinterval` one.
 -/
 theorem kEquiv_restrictSet_openSub [Finite sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
@@ -1842,7 +1841,6 @@ theorem classNF_mem_gammaBetween (h : IsConvexEquiv M (epsDense sig k)) {a b x :
 
 /--
 **Reynolds' `σ` is a shuffle map** — printed p.187:
-
 > Also, by minimality of `G`, all the `γᵢ`'s in `G` are satisfied densely in `I`. … we can choose
 > `σ : ℚ → {N_γ | γ ∈ G}` appropriately.
 
@@ -2069,7 +2067,6 @@ end ShuffleStep
 
 /--
 **`M | ⋃I` is good** — Reynolds 1992, §8, printed pp.187-188, the shuffle step:
-
 > Since we have density of `M / ∼`, the classes in `I` have order type `ℚ`. Also, by minimality of
 > `G`, all the `γᵢ`'s in `G` are satisfied densely in `I`. … `M | (⋃ I) = Σ_{E ∈ I} M | E ≡ₖ
 > Σ_{q ∈ ℚ} σ(q)` … `Σ_{q ∈ ℚ} σ(q) ≡ₖ Σ_{r ∈ ℝ} σ*(r)` … `R` is isomorphic to the reals.

@@ -64,7 +64,7 @@ the pages the lemma is actually printed on.
 **Corpus fidelity.** Unlike Lemmas 3 and 4, Lemma 5 contains **no displayed formula**, which is
 where both previously-found §6 corpus defects sat (`ρ`'s missing middle conjunct, recorded under
 Phase 17; Lemma 4's mangled display, recorded under Phase 18). Its inline text in
-`~/Projects/Literature/sources/reynolds_1992/sec03_6-no-gaps-between-equivalence-classes.md`
+the local markdown corpus for [reynolds1992] §3.6
 checks out against the page image with one cosmetic difference: the corpus renders *"We get a
 formula `φ'` of one free variable"* where the page prints *"We get a formula `φ(x)` of one free
 variable"*. Plan v8 repeats the corpus' `φ'`. Nothing turns on it — both name the same
@@ -91,7 +91,7 @@ Reynolds' proof needs three things this tree did not have.
    with `R ∧ K⁻(¬R)` in the payload slot; it is **not** refactored to go through these — nothing is
    removed or renamed — and the relationship is recorded at `classBeginsWithFormula`'s docstring.
 
-3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:606`)
+3. **A bounded gap-crossing.** Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:608`)
    asks for the auxiliary formula to fail at **every** point outside the class with `R` throughout
    in between. Lemma 5's `C` does not satisfy that, and cannot: with classes `C₀ ⊨ ¬B`, `C₁ ⊨ B`,
    `C₂ ⊨ ¬B` in a row, `C₂`'s left end point does carry `K⁻(B)`, so `C` is true again at `C₂`.
@@ -105,16 +105,19 @@ Reynolds' proof needs three things this tree did not have.
 
 Every §6 lemma below Lemma 2 remains **conditional**: `IsContempEquivDense ε` plus Reynolds'
 Prior-U / Prior-S on `M` are hypotheses, and the only `ε` this tree can currently exhibit
-satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:671`), for which
+satisfying them is the total relation `epsTop` (`DenseModelSurgery/Defs.lean:672`), for which
 `EndsInGapOnRight` is empty (`not_endsInGapOnRight_epsTop`). So the results below are not discharged
 at any non-trivial instance; the first live instance is due at the Lemma 9 / dense-surgery stage.
 
 ## References
 
-- [reynolds1992], §6 Lemma 5, printed p.179
-- `Defs.lean` — `ρ`, `λ`, `EndsInGapOnRight`, `gapRightFormula`, Lemma 2
-- `Lemma34.lean` — Lemmas 3 and 4, `false_of_holds_throughout_class`, `exists_contemp_gt`
-- `SemanticPriorU` (`PriorDefsDense.lean:121`) — Reynolds' Prior-U, printed p.168
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §6 Lemma 5, printed p.179
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Defs.lean` — `ρ`, `λ`,
+  `EndsInGapOnRight`, `gapRightFormula`, Lemma 2
+* `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/Lemma34.lean` — Lemmas 3 and 4,
+  `false_of_holds_throughout_class`, `exists_contemp_gt`
+* `SemanticPriorU` (`PriorDefsDense.lean:121`) — Reynolds' Prior-U, printed p.168
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
@@ -168,7 +171,7 @@ private theorem consCons_one {α : Type*} {n : Nat} (a b : α) (env : Fin n → 
 /-- **The monadic image is correct**: `temporalAt atomMap i A` evaluates, at any environment, to
 `A`'s temporal truth at the point the environment assigns to `i`.
 
-Checked, not asserted, as `rhoFormula_eval` (`DenseModelSurgery/Defs.lean:540`) checks `ρ`. -/
+Checked, not asserted, as `rhoFormula_eval` (`DenseModelSurgery/Defs.lean:541`) checks `ρ`. -/
 @[simp] theorem eval_temporalAt (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) :
     ∀ (A : Formula) {n : Nat} (env : Fin n → M.carrier) (i : Fin n),
@@ -389,7 +392,7 @@ end Temporal
 
 /-! ## The bounded gap-crossing
 
-Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:606`) isolates Reynolds' recurring
+Phase 18's `false_of_holds_throughout_class` (`Lemma34.lean:608`) isolates Reynolds' recurring
 *"holds up to a gap and is false arbitrarily soon after the gap, contradicting Prior-U"* step, and
 requires the auxiliary formula to fail at **every** point outside the class reachable with `R`
 throughout. Reynolds' Lemma 5 supplies less: only *"false afterwards"*, on the stretch on which

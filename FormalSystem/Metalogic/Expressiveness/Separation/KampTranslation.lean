@@ -29,8 +29,7 @@ for details on the blocker and three identified approaches to resolve it.
 
 ## References
 
-* [J. A. W. Kamp, *Tense Logic and the Theory of Linear Order*][kamp1968], "Tense Logic and the
-  Theory of Linear Order"
+* [J. A. W. Kamp, *Tense Logic and the Theory of Linear Order*][kamp1968]
 * [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
   Computational Aspects*][gabbay1994], Chapter 10 (separation theorem)
 * [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Lemma 1.1 (normal

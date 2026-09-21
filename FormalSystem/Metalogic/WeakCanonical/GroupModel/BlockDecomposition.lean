@@ -45,8 +45,9 @@ sense of `GroupModel/GoodGroupable.lean`.
 
 ## References
 
-- [doets1987], ch. 3, pp. 36-57; ch. 7 step 9, p. 91.
-- `literature/Doets_1989_Monadic_Pi11_Theories.md` (Lemmas 1.4/1.5 environment).
+* [K. Doets, *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order
+  and Intensional Logic*][doets1987], ch. 3, pp. 36-57; ch. 7 step 9, p. 91.
+* (Lemmas 1.4/1.5 environment).
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical

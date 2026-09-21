@@ -505,33 +505,33 @@ citer files.
 
 ---
 
-### Phase 8: Metalogic/WeakCanonical, BXCanonical, Deterministic, Bundle, Algebraic, Soundness [NOT STARTED]
+### Phase 8: Metalogic/WeakCanonical, BXCanonical, Deterministic, Bundle, Algebraic, Soundness [COMPLETED]
 
 - **Goal:** The second Metalogic set, carrying the remaining 4 personal paths and the two
   highest-risk historical-record files.
 - **Tasks:**
-  - [ ] Convert the `## References` blocks under `Metalogic/WeakCanonical/` (23 +
+  - [x] Convert the `## References` blocks under `Metalogic/WeakCanonical/` (23 +
         `WeakCanonical.lean`), `Metalogic/BXCanonical/` (20), `Metalogic/Deterministic/` (7),
         `Metalogic/Bundle/` (2), `Metalogic/Algebraic/` (1).
-  - [ ] Remove the 4 `~/Projects/Literature/sources/reynolds_1992/…` personal paths under
+  - [x] Remove the 4 `~/Projects/Literature/sources/reynolds_1992/…` personal paths under *(deviation: altered — these four are not `## References` entries but prose inside CORRECTION records about the local markdown corpus's own rendering, so a `[reynolds1992], <locator>` citation would have lost the point. Each personal path became "the local markdown corpus for [reynolds1992] §3.6", which drops the machine-specific path and keeps the correction intact.)*
         `WeakCanonical/DenseModelSurgery/` (`BadIntervals`, `Lemma5`, `Lemma34`, `Defs`), each
         becoming `* [M. Reynolds, …][reynolds1992], <locator>`. Remove the 3 repo-relative
         `literature/sources/reynolds_1992/sec04_7-separability.md` pointers the same way.
-  - [ ] Fold the `## Paper Specification Reference` at `Metalogic/Algebraic/FlowFrame.lean:28`.
-  - [ ] `Metalogic/Soundness.lean` — the second-highest-risk file in the task. Fold its PSR
+  - [x] Fold the `## Paper Specification Reference` at `Metalogic/Algebraic/FlowFrame.lean:28`.
+  - [x] `Metalogic/Soundness.lean` — the second-highest-risk file in the task. Fold its PSR
         heading (`:19`) but **preserve verbatim** the recorded-history block stating that
         *"There is no `app:valid` anchor, and there never was: earlier revisions of this module
         cited `app:valid` at 'line 1984', which in the live paper is an unrelated `Ddef`… The
         citation and its line number were both bogus."* That text and
         `docs/reference/paper-definitions-of-record.md:2082`'s `app:valid` DANGLING row are a
         matched pair; deleting either half breaks the other's point.
-  - [ ] Also in `Soundness.lean`: its `## Implementation Notes` "Completed Proofs" list names the
+  - [x] Also in `Soundness.lean`: its `## Implementation Notes` "Completed Proofs" list names the
         C14/C21 pinned set, and its "**The time-shift consumer set**" section says "exactly **one
         schema** … exactly **two declarations**". Preserve every declaration name and every number
         verbatim.
-  - [ ] Repair the 2 `../../{ProofSystem/Derivation,Semantics/Validity}.lean` links from
-        `Metalogic/Soundness.lean` (one `../` too many) via the backticked conversion.
-  - [ ] Re-anchor, `--emit-inventory`, `--emit-inventory --check`.
+  - [x] Repair the 2 `../../{ProofSystem/Derivation,Semantics/Validity}.lean` links from
+        `Metalogic/Soundness.lean` (one `../` too many) via the backticked conversion. *(no such links remain in the file; the conversion pass had already replaced every markdown-link cross-reference in this set, and the tree-wide count of that form is 0.)*
+  - [x] Re-anchor, `--emit-inventory`, `--emit-inventory --check`. *(deviation: altered — a `--exact` rerun over files the FIRST pass had already re-anchored doubly shifted 13 citations, which C20 caught on only one of them. The fix generalises: the tool grew a `--recompute` mode that rebuilds every citation from the base revision by content alignment and IS idempotent, and it was used to repair the tree; `docs/development/REFERENCE_NORMAL_FORM.md` records it as the recovery route. A separate slip in a colon-tidying pass stripped the trailing colon from 232 `**Bold heading**:` and list lines, including `Soundness.lean`'s pinned "Completed Proofs" heading; every one was restored by diffing against HEAD, and both the `app:valid` history block and the count-bearing claims are byte-identical to HEAD.)*
 - **Timing:** 2 hours
 - **Depends on:** 7
 - **Verification Tier:** full

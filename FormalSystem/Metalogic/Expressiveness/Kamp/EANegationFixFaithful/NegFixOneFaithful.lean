@@ -83,7 +83,7 @@ read at the left endpoint, never at the pin.
 **Which `K⁺`.** Rabinovich's `K⁺`, Definition (3), PDF p.3 — *"`K⁺(F)` holds at a moment `t` iff
 `t = inf({t′ | t′ > t and F holds at t′})`"* — and Reynolds' `K⁺A := ¬U(⊤,¬A)`, *"`A` will be
 true arbitrarily soon"* (printed p.168), say **nothing about whether `F` holds at `t` itself**.
-That is `kplusOpen` (`KPlusFaithful.lean:118`). This tree's `kplus` (`PriorINF.lean:88`) carries
+That is `kplusOpen` (`KPlusFaithful.lean:118`). This tree's `kplus` (`PriorINF.lean:87`) carries
 an extra first conjunct `¬F(t)` that is **this tree's addition, not the sources'**.
 
 **The tree's `kplus` would not make the split exhaustive**, and the failure is exactly at the

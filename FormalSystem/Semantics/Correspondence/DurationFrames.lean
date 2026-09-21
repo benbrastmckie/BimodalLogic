@@ -32,7 +32,6 @@ stated below them.
 `TaskFrame.limit_of_permissive` carries `[SuccOrder D] [NoMaxOrder D]`, and neither is available
 for an arbitrary `TemporalOrder`. Both are supplied by the hypothesis under which the frame is
 *used* — that `D` is **not** densely ordered:
-
 * `NoMaxOrder D` is free from `Nontrivial` plus the ordered-group structure, via
   `TaskFrame.exists_pos_of_nontrivial` (`noMaxOrder_of_duration`);
 * `SuccOrder D` comes from `Semantics.duration_dense_or_least_pos`'s non-dense branch fed into

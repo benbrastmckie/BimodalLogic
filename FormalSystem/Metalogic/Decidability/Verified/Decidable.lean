@@ -2897,7 +2897,6 @@ whole of what `SatState` asks of an interpreting history, and `timeShift` preser
 *is* load-bearing is that the interpreting history be total; see the trap below.
 
 *Valuation*, on four atoms (`event = p`, `guard = q`, `e' = r`, `g' = s`):
-
 ```
 V(n,p) ⟺ n = 5     V(n,q) ⟺ n ≥ 1     V(n,r) ⟺ n ≥ 2     V(n,s) ⟺ n ≠ 1
 ```

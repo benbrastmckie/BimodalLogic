@@ -54,8 +54,10 @@ The carrier is used in full — never as an interval type — per the design rul
 
 ## References
 
-- [doets1987], ch. 7 (pp. 89-93); ch. 3 (pp. 36-57); ch. 1 (pp. 1-22).
-- [reynolds1992], §8 (printed p.185): the `good` vocabulary transposed in
+* [K. Doets, *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order
+  and Intensional Logic*][doets1987], ch. 7 (pp. 89-93); ch. 3 (pp. 36-57); ch. 1 (pp. 1-22).
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §8 (printed p.185): the `good` vocabulary transposed in
   `GroupModel/GoodGroupable.lean`.
 -/
 

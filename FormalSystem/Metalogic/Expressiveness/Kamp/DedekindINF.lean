@@ -77,7 +77,7 @@ deferred to a future dedicated complete-proof-system effort, not abandoned and n
 
 **Why deferred — this is fidelity-only work with zero operational value.** The live goal chain in
 this tree runs on **Prior structures**, where INF/SUP attainment holds outright
-(`prior_hasAttainedINF`, `PriorINF.lean:226`, from the UZ axiom). Nothing in this tree ever
+(`prior_hasAttainedINF`, `PriorINF.lean:225`, from the UZ axiom). Nothing in this tree ever
 evaluates against a non-attained Dedekind complete chain, so nothing downstream can observe the
 difference between `HasAttainedINF` and `HasDedekindINF`. `prior_hasDedekindINF` below closes
 that boundary: the faithful carrier is *available* on the live path whenever it is wanted.
@@ -110,7 +110,7 @@ primitive for eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))`.
 
 ## References
 
-* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], *A Proof of Kamp's Theorem*, Lemma
+* [A. Rabinovich, *A Proof of Kamp's Theorem*][rabinovich2014], Lemma
   5.3 and eq (5.2), PDF p.8
 -/
 
@@ -128,7 +128,7 @@ open FormalSystem.Metalogic.Expressiveness
     * eq (5.2) verbatim: a first-occurrence point `r₀ ∈ (z₀,z₁)` with `¬P` on `(z₀,r₀)` and
       `P(r₀) ∨ K⁺(P)(r₀)`.
 
-    Contrast `HasDefinableINF` (`PriorINF.lean:110`), which is the **right disjunct alone**
+    Contrast `HasDefinableINF` (`PriorINF.lean:109`), which is the **right disjunct alone**
     (modulo `r₀ ≤ z₁` vs `r₀ < z₁`) and therefore forbids the left one outright — see
     `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:281`) and
     `hasDedekindINF_admits_kplus_shape` below. -/
@@ -148,7 +148,7 @@ structure HasDedekindINF {sig : MonadicSignature}
 
     The left disjunct `kminus M atomMap P z1` is the mirror of the paper's `Subcase r₀ = z₀`:
     the last-occurrence supremum sits at the right endpoint `z₁`, which is exactly `K⁻(P)(z₁)`.
-    `kminus` is `PriorINF.lean:94`. -/
+    `kminus` is `PriorINF.lean:93`. -/
 structure HasDedekindSUP {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop where
   /-- The faithful disjunction, mirrored: the last-occurrence supremum is either at `z₁` (as
@@ -226,7 +226,7 @@ the precise statement of why the deferred work has zero operational value: on Pr
 faithful carrier is derivable from the attained one, so no consumer can tell them apart. -/
 
 /-- Prior structures satisfy the faithful `HasDedekindINF`, via `prior_hasAttainedINF`
-    (`PriorINF.lean:226`) and the shim. The `K⁺` disjuncts are never needed: the UZ axiom
+    (`PriorINF.lean:225`) and the shim. The `K⁺` disjuncts are never needed: the UZ axiom
     supplies an attained first occurrence outright. -/
 theorem prior_hasDedekindINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)

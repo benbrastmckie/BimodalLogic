@@ -19,7 +19,6 @@ truth clause unfolds to
 which mentions no atom: the valuation is never consulted, so `X⊤`'s frame-relative validity is a
 pure order condition on the frame's duration group. Two of them, in fact, and they are the
 *exact* order conditions:
-
 * `F ⊨ ¬X⊤` iff `F.Duration` is densely ordered — `validOn_neg_nextTop_iff`;
 * `F ⊨ X⊤` iff every point of `F.Duration` has an immediate successor —
   `validOn_nextTop_iff`, equivalently `F.IsDiscrete` by `validOn_nextTop_iff_isDiscrete`.

@@ -28,7 +28,7 @@ above those. So re-basing here is what makes the rungs above it re-basable at al
 
 ## Direction of the swap, and why it is a strengthening rather than a swap
 
-`SemanticPriorUZ` implies `HasAttainedINF` (`prior_hasAttainedINF`, `Kamp/PriorINF.lean:232`),
+`SemanticPriorUZ` implies `HasAttainedINF` (`prior_hasAttainedINF`, `Kamp/PriorINF.lean:231`),
 which implies `HasFaithfulDedekindINF` (`HasAttainedINF.toHasFaithfulDedekindINF`,
 `KPlusFaithful.lean:387`); the composite has no converse
 (`hasFaithfulDedekindINF_not_implies_hasDedekindINF`, `KPlusFaithful.lean:698`). The faithful
@@ -103,7 +103,7 @@ structure ExistProvidersFaithful (sig : MonadicSignature) [Fintype sig.preds]
 
 /-- **A faithful provider bundle re-supplies the UZ/SZ one.** Every consumer that arrives holding
 `SemanticPriorUZ` / `SemanticPriorSZ` is served by an `ExistProvidersFaithful`, through
-`prior_hasAttainedINF` / `prior_hasAttainedSUP` (`Kamp/PriorINF.lean:232`, `:275`) composed with
+`prior_hasAttainedINF` / `prior_hasAttainedSUP` (`Kamp/PriorINF.lean:231`, `:275`) composed with
 `HasAttainedINF.toHasFaithfulDedekindINF` / `HasAttainedSUP.toHasFaithfulDedekindSUP`
 (`KPlusFaithful.lean:387`, `:389`). The `existF` field is carried across unchanged, so the
 converter formula produced is literally the same one.

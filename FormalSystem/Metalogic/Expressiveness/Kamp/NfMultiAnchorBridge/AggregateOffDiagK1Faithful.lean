@@ -149,7 +149,7 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The faithful fold is readable on any Prior structure.** The end-to-end record that the
 gate's answer reaches the two consuming sites: `SemanticPriorUZ` / `SemanticPriorSZ` route to the
 faithful carrier through `prior_hasAttainedINF` / `prior_hasAttainedSUP`
-(`Kamp/PriorINF.lean:232`, `:275`) composed with the `toHasFaithfulDedekind*` shims, so
+(`Kamp/PriorINF.lean:231`, `:275`) composed with the `toHasFaithfulDedekind*` shims, so
 `aggPop1_correct` and `aggPop1F_correct` have a faithful-carrier route available to them and are
 not the obstruction the gate was checking for. -/
 theorem aggOdPopFold_iff_faithful_on_prior (M : OrderedMonadicStructure sig)

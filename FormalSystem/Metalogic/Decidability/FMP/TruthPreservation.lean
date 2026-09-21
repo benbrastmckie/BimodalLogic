@@ -40,7 +40,7 @@ additional work on modal/temporal MCS properties.
 
 ## References
 
-- [blackburn2002] (Ch 2.3)
+* [blackburn2002] (Ch 2.3)
 -/
 
 namespace FormalSystem.Metalogic.Decidability.FMP

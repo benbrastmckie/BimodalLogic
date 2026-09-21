@@ -519,7 +519,7 @@ provides the additional formula transfer needed for depth r+2 formulas.
 
 * [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
   Computational Aspects*][gabbay1994], Chapter 9, Lemma 10
-- Design note: the d-consistency restructure — when all game positions are
+* Design note: the d-consistency restructure — when all game positions are
   rank-embeddings the rank-r' winning condition reduces to the rank-r one, and
   the K⁻(¬D) argument supplies the residual depth-(r+2) formula transfer
 -/
@@ -1167,7 +1167,7 @@ obtain_split_point_props).
 
 * [D. M. Gabbay, I. Hodkinson and M. Reynolds, *Temporal Logic: Mathematical Foundations and
   Computational Aspects*][gabbay1994], Chapter 9, Theorem 6 proof
-- Design note (split-props analysis): [gabbay1994] gets d-consistency from defining `d`
+* Design note (split-props analysis): [gabbay1994] gets d-consistency from defining `d`
   as an infimum; here the caller constructs `d` and discharges consistency from
   the properties of its own construction (see `obtain_split_point_props`)
 -/

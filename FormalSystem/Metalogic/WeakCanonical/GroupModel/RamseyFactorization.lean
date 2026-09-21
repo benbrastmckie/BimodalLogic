@@ -45,8 +45,9 @@ by the invariant.
 
 ## References
 
-- [doets1987], ch. 1 (1.0.2/1.0.3, pp. 1-22) and ch. 7 (pp. 89-93).
-- `literature/Doets_1989_Monadic_Pi11_Theories.md`.
+* [K. Doets, *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order
+  and Intensional Logic*][doets1987], ch. 1 (1.0.2/1.0.3, pp. 1-22) and ch. 7 (pp. 89-93).
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989]
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical

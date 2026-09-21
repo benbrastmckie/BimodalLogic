@@ -17,12 +17,12 @@ orders: `M ≡ₖ N` **iff** Duplicator has a depth-`k` back-and-forth strategy 
 `NEquivalence.lean` already carries out both halves of this argument, but only *inside* the
 ordered-sum proof and only for a *shared* index set:
 
-* `BiCompat` (`NEquivalence.lean:194`) is a back-and-forth relation specialized to two ordered
-  sums over one index type, and `sum_nf_lift_gen` (`NEquivalence.lean:831`) converts it to
+* `BiCompat` (`NEquivalence.lean:195`) is a back-and-forth relation specialized to two ordered
+  sums over one index type, and `sum_nf_lift_gen` (`NEquivalence.lean:832`) converts it to
   normal-form agreement. Inspection of that proof shows the index structure is never used: the
   `_h_comp` argument is threaded through the induction and never consumed. The content is
   the generic EF lemma, wearing an ordered-sum costume.
-* `component_extend_fwd` / `component_extend_bwd` (`NEquivalence.lean:221`, `:242`) are the
+* `component_extend_fwd` / `component_extend_bwd` (`NEquivalence.lean:222`, `:242`) are the
   converse direction — normal-form agreement at depth `K+1` yields a matching witness with
   normal-form agreement at depth `K` — stated for a summand pair `ms j`, `ms' j` but proved
   using nothing about summands.
@@ -41,9 +41,9 @@ the other, so nothing can be phrased through a single `I`. `BackForth` is the re
 * `backForth_mono` — a strategy for a longer game restricts to a shorter one.
 
 ## References
-- [doets1989], Section 1 (n-characteristics and the game):
-  `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- Ehrenfeucht-Fraïssé: the standard equivalence of `≡ₖ` with the depth-`k` game
+* [K. Doets, *Monadic $\Pi^1_1$-Theories of $\Pi^1_1$-Properties*][doets1989], Section 1
+  (n-characteristics and the game)
+* Ehrenfeucht-Fraïssé: the standard equivalence of `≡ₖ` with the depth-`k` game
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
@@ -84,7 +84,7 @@ theorem atomKind_zero_isEmpty {sig : MonadicSignature} (a : AtomKind sig 0) : Fa
 
 /-! ## From a strategy to normal-form agreement
 
-This is `sum_nf_lift_gen` (`NEquivalence.lean:831`) with the ordered-sum specifics removed. The
+This is `sum_nf_lift_gen` (`NEquivalence.lean:832`) with the ordered-sum specifics removed. The
 induction is on the depth, with the number of variables generalized: each quantifier step spends
 one unit of depth and gains one variable.
 -/
@@ -133,7 +133,7 @@ theorem nfAgree_of_backForth (sig : MonadicSignature) :
 /-! ## From normal-form agreement to a strategy
 
 `extend_fwd` / `extend_bwd` restate `component_extend_fwd` / `component_extend_bwd`
-(`NEquivalence.lean:221`, `:242`) for an arbitrary pair of structures. The proofs are the
+(`NEquivalence.lean:222`, `:242`) for an arbitrary pair of structures. The proofs are the
 originals verbatim with `ms j`, `ms' j` replaced by `M`, `N`: they use only
 `nf_characteristic_satisfies`, `nf_eval_unique` and `nf_agreement_from_shared_nf`, none of
 which knows about summands.

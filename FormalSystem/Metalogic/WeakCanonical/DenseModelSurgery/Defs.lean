@@ -66,8 +66,7 @@ Printed p.177, **Lemma 2**:
 
 ## CORRECTION TO THE LOCAL CORPUS — `ρ` HAS THREE CONJUNCTS, NOT TWO
 
-The pre-segmented markdown chunk
-`~/Projects/Literature/sources/reynolds_1992/sec03_6-no-gaps-between-equivalence-classes.md`
+The pre-segmented markdown chunk of the local markdown corpus for [reynolds1992] §3.6
 renders `ρ` as a **two**-conjunct formula
 
 ```
@@ -148,11 +147,13 @@ introduced; `ContempEquivDense` is the §6 notion, parameterized by `ε`.
 
 ## References
 
-- [reynolds1992], §6, printed pp.176-177 (the definitions and Lemma 2)
-- [reynolds1992], §5, printed p.176 (the uniformity remark)
-- `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:304`) — Reynolds §5
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §6, printed pp.176-177 (the definitions and Lemma 2)
+* [M. Reynolds, *An Axiomatization for Until and Since over the Reals without the IRR
+  Rule*][reynolds1992], §5, printed p.176 (the uniformity remark)
+* `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:304`) — Reynolds §5
   Theorem 3, the input to Lemma 2
-- `MonadicFormula.rename` / `eval_rename` (`Kamp/MonadicFormulaSubstitution.lean:112`) — the
+* `MonadicFormula.rename` / `eval_rename` (`Kamp/MonadicFormulaSubstitution.lean:112`) — the
 variable
   reindexing `ρ` and `λ` are assembled with
 -/
@@ -289,7 +290,7 @@ printed p.176, all three clauses.
 
 Clause (i) is split into `refl` / `symm` / `trans` with the class restriction riding on `trans`
 alone. That is not a convenience: it is measured against the only `ε` §8 produces. `simDense_refl`
-(`RealModel/EpsilonDense.lean:136`), `simDense_symm`, `simDense_convex` and
+(`RealModel/EpsilonDense.lean:135`), `simDense_symm`, `simDense_convex` and
 `simDense_contemporary` carry **no** instance hypotheses, and `simDense_trans` is
 the sole one that does. Transitivity is exactly what fails away from a countable dense flow — the
 `(0,1]` counterexample in `EpsilonDense`'s module header. So `refl` and `symm` are left free of the
@@ -404,7 +405,7 @@ the free direction. `instInStructureClassCountableDense` turns the `[Countable _
 `[DenselyOrdered _]` binders of `IsContempEquivDenseCD`'s clauses into class membership.
 
 `IsContempEquivDenseCD` itself is untouched by the class parameterization, so `epsDense`'s witness
-(`RealModel/EpsilonDense.lean:1090`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
+(`RealModel/EpsilonDense.lean:1089`) and Doets' consumers (`RealModel/DoetsTheorem.lean,389`)
 are unaffected. -/
 theorem isContempEquivDenseCD_of_countableDense {sig : MonadicSignature}
     {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε (CountableDense sig)) :
@@ -421,7 +422,7 @@ hypotheses are exactly the gap: `IsContempEquivDenseCD` bundles clause (i) as a 
 recovered.
 
 For the one `ε` §8 produces both are available and neither is an extra assumption:
-`simDense_refl` (`RealModel/EpsilonDense.lean:136`) and `simDense_symm` carry no instance
+`simDense_refl` (`RealModel/EpsilonDense.lean:135`) and `simDense_symm` carry no instance
 hypotheses. So `epsDense` satisfies
 `IsContempEquivDenseOn (epsDense sig k) (CountableDense sig)` outright; assembling that witness
 belongs with `epsDense_isContempEquivDenseCD` in `EpsilonDense.lean` and is deliberately left to
