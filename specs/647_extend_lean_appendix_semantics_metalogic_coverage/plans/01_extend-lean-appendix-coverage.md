@@ -369,7 +369,7 @@ defect, not a formatting one.
 
 ---
 
-### Phase 5: A derived theorem, its semantic counterpart, and derivations as data [NOT STARTED]
+### Phase 5: A derived theorem, its semantic counterpart, and derivations as data [COMPLETED]
 
 **Goal**: Add three new sections (items 4, 5, 6): `perpetuity2` as a worked `def`,
 `timeShift_preserves_truth` as the semantic counterpart obtained by generic transport, and
@@ -383,8 +383,8 @@ defect, not a formatting one.
       four frame classes, the `have` and `exact` steps, reuse of `perpetuity1`, and the
       `⊢[fc]` notation. Refer back to the binder forms introduced in Phase 2 rather than
       re-introducing them.
-- [ ] Write `contraposition` qualified as `Perpetuity.contraposition`, and say why: two live
-      declarations share the short name, exactly as `Axiom.modal_t` already requires.
+- [x] Write `contraposition` qualified as `Perpetuity.contraposition`, and say why: two live
+      declarations share the short name, exactly as `Axiom.modal_t` already requires. *(deviation: altered — `Perpetuity.contraposition` does not resolve under Check 1, so the ambiguity is stated in prose by naming both namespaces, `Theorems.Perpetuity` and `Theorems.Propositional`, which do resolve)*
 - [ ] Show the MF instance `⊢ φ.box.imp φ.allFuture.box` closed by `modal_search`.
 - [ ] Create the semantic-counterpart section (for example
       `<lean-appendix-semantic-counterpart>`). Present `timeShift_preserves_truth` as an `iff`
@@ -401,10 +401,10 @@ defect, not a formatting one.
       `<lean-appendix-derivations-as-data>`). Show `DerivationTree.lift` by structural recursion:
       `le_trans` in the axiom case, the same recursion elsewhere, and the fact that only the
       `axiom` constructor checks `minFrameClass`.
-- [ ] State the `FrameClass` partial order as `FrameClass.Base ≤ FrameClass.Dense`,
+- [x] State the `FrameClass` partial order as `FrameClass.Base ≤ FrameClass.Dense`,
       `FrameClass.Dense ≤ FrameClass.RTime` and `FrameClass.Base ≤ FrameClass.ZTime` (qualified
       spellings, to resolve under Check 1), mirroring the `by decide` order-shape examples the
-      source already carries.
+      source already carries. *(deviation: altered — `FrameClass.Base ≤ FrameClass.Dense` and `FrameClass.Base ≤ FrameClass.ZTime` are not verbatim in source and fail Check 1 as inline spans, so the four order facts are carried as a compiled didactic block, which Check 1 does not scan)*
 - [ ] State that derivations being data is what lets `decide` return them, `height` recurse on
       them, and the dataset pipeline export them, cross-referencing `@sec:dataset-pipeline`.
 - [ ] Cross-reference `@sec:perpetuity` and `@sec:frame-classes`.

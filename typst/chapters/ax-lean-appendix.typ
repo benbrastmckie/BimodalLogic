@@ -277,7 +277,7 @@ The brackets record *who supplies the argument*, not what kind of thing it is.
 )
 
 An implicit argument is one Lean can read off the rest of the call, so writing it out would be noise.
-A derived theorem later in this appendix takes its frame class implicitly, which is what lets a single proof term serve all four frame classes.
+`perpetuity2` (@lean-appendix-derived-theorem) takes its frame class implicitly, which is what lets a single proof term serve all four frame classes.
 Prefixing a name with `@` turns every implicit argument back into an explicit one, which is how `#check` is made to print a signature with nothing hidden.
 
 A `class` is a structure that is additionally registered for *instance inference*.
@@ -597,6 +597,181 @@ Between these extremes, ordinary tactics compose the way they do in any Lean pro
 Term mode and tactic mode are not a stylistic fork with separate rules.
 A tactic block is simply a way of writing a term, and the two are interchangeable at any point in a proof, including mid-term via `by`.
 The project favors term mode where a direct construction is short and self-documenting, and tactic mode where a repeated automatable pattern would otherwise be written out by hand.
+
+== Reading a Derived Theorem <lean-appendix-derived-theorem>
+
+Everything so far has been vocabulary.
+This section reads one complete derived theorem of *TM* end to end.
+`perpetuity2` is the second perpetuity principle of @sec:perpetuity, that whatever is sometimes the case is possible.
+
+#leansrc("FormalSystem.Theorems.Perpetuity", "perpetuity2")
+```
+def perpetuity2 {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] φ.sometimes.imp φ.diamond := by
+  -- Goal: ⊢ ▽φ → ◇φ
+  -- Recall: ▽φ = sometimes φ = ¬(always ¬φ) = ¬(H¬φ ∧ ¬φ ∧ G¬φ)
+  -- Recall: ◇φ = diamond φ = ¬□¬φ = (φ.neg.box).neg
+  -- By P1 for ¬φ: □(¬φ) → △(¬φ) = □(¬φ) → always(¬φ)
+  -- By contraposition: ¬(always(¬φ)) → ¬(□(¬φ))
+  -- Which is: sometimes φ → diamond φ = ▽φ → ◇φ
+  have h1 : ⊢[fc] φ.neg.box.imp φ.neg.always := perpetuity1 φ.neg
+  -- Unfold: always (neg φ) = H(neg φ) ∧ neg φ ∧ G(neg φ)
+  -- So h1 : ⊢ (¬φ).box → (¬φ).always
+  -- We need: ⊢ ¬((¬φ).always) → ¬((¬φ).box)
+  -- Which is: ⊢ sometimes φ → diamond φ
+  exact contraposition h1
+```
+
+Read it a piece at a time.
+
+- *`def`, not `theorem`.* The declared type is `DerivationTree`-valued, hence data rather than a proposition, which is the rule @lean-appendix-conventions states for the whole of `Theorems/`.
+- *The implicit frame class.* `{fc : FrameClass}` is the implicit binder of @lean-appendix-structures. Nothing in the body mentions a particular frame class, so this one declaration is a derivation at *every* frame class rather than four parallel derivations.
+- *The type is the statement.* `⊢[fc] φ.sometimes.imp φ.diamond` is the turnstile notation of @lean-appendix-types-props, and it unfolds to a `DerivationTree` at `fc` from the empty context. A reader auditing this declaration audits that line and nothing else.
+- *`have` names an intermediate derivation.* `h1` is the first perpetuity principle at `φ.neg`, obtained by applying `perpetuity1` exactly as one applies any function.
+- *`exact` finishes with a term.* `contraposition h1` builds the goal's derivation from `h1`, and the tactic block exists only to let the two steps be named.
+
+The double-dash comment lines are the source author's own running commentary, kept here because they are what the source actually looks like.
+They work through the argument in the book's notation before the Lean lines do it in Lean's, which is the house style throughout `Theorems/`.
+
+One name in that body needs care.
+Two live declarations are called `contraposition` with identical statements, one in `Theorems.Perpetuity` and one in `Theorems.Propositional`, and the body above resolves to the first because that is its own namespace.
+Cited from outside, it has to be qualified by its namespace, exactly as `Axiom.modal_t` has to be (@lean-appendix-conventions).
+A short name that reads unambiguously inside one file is not therefore unambiguous in the library.
+
+The ingredient it reuses is shown by its statement alone, with its body omitted:
+
+#leansrc("FormalSystem.Theorems.Perpetuity", "perpetuity1")
+```
+def perpetuity1 {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] φ.box.imp φ.always
+```
+
+Not every derived theorem needs writing out at all.
+The instance of the *MF* axiom (`Axiom.modal_future`) is found by the search tactic of @lean-appendix-tactics:
+
+```
+example (φ : Formula) : ⊢ φ.box.imp φ.allFuture.box := by
+  modal_search
+```
+
+The term `modal_search` produces is the same kind of object as the one `perpetuity2` writes by hand, and the kernel checks both the same way.
+
+== The Semantic Counterpart <lean-appendix-semantic-counterpart>
+
+Every syntactic result has a semantic twin, and the twin is proved differently.
+The *MF* axiom is derivable, as just shown.
+It is also *valid*, and that is a separate theorem:
+
+#leansrc("FormalSystem.Metalogic", "modal_future_valid")
+```
+theorem modal_future_valid (φ : Formula) :
+    ⊨ ((φ.box).imp ((φ.allFuture).box))
+```
+
+Note `theorem` here against `def` above.
+This one really is `Prop`-valued, because validity is a proposition and not a piece of data.
+Its proof spends exactly one substantive fact, which is that shifting a history in time preserves truth:
+
+#leansrc("FormalSystem.Semantics.TimeShift", "timeShift_preserves_truth")
+```
+theorem timeShift_preserves_truth (M : TaskModel F)
+    (σ : WorldHistory F) (x y : F.Duration)
+    (φ : Formula) :
+    TruthAt M (σ.timeShift (y - x)) x φ ↔ TruthAt M σ y φ
+```
+
+The statement is an `↔` rather than a one-way implication, so it can be used in either direction without a second lemma.
+What is worth noticing is how it is *not* proved.
+There is no induction over `Formula` here, even though the claim is about every formula.
+Instead it is an instance of one generic transport lemma:
+
+#leansrc("FormalSystem.Semantics", "Truth.truthAt_of_truthCorr")
+```
+theorem truthAt_of_truthCorr {F F' : TaskFrame}
+    {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthCorr M M') (φ : Formula) :
+    ∀ (σ : WorldHistory F) (σ' : WorldHistory F'), I.Rel σ σ' →
+      ∀ t : F.Duration, TruthAt M σ t φ ↔ TruthAt M' σ' (I.dur t) φ
+```
+
+`TruthCorr M M'` bundles what it takes for two models to agree formula by formula, and the induction over `Formula` is done once, here.
+`shiftCorr` supplies that bundle for a shift, and `timeShift_preserves_truth` is the transport at `shiftCorr M (y - x)` followed by the arithmetic `x + (y - x) = y`.
+The design point generalizes past this one lemma.
+Where a library proves one transport lemma and then instantiates it, a reader has one induction to audit rather than one per result.
+
+Soundness is what makes the two routes agree.
+The derivation of *MF* and the validity of *MF* are independent facts until `soundness` (@lean-appendix-reading-source) says that every derivable formula is valid, and the *MF* case of that proof is precisely where `modal_future_valid`, and through it time-shift invariance, is spent.
+
+The two routes also differ in what they cost at the kernel.
+`#print axioms` on `perpetuity2` reports `[propext]` alone, while `timeShift_preserves_truth` reports `[propext, Quot.sound]` and the metalogic results of @lean-appendix-reading-source report all three of the standard classical axioms.
+The audit reports what a proof actually used rather than a fixed preamble, which is what makes it worth running.
+
+== Derivations Are Data <lean-appendix-derivations-as-data>
+
+@lean-appendix-types-props said that `DerivationTree` lives in `Type` rather than `Prop` because the codebase computes with derivations.
+This section shows one such computation.
+`lift` takes a derivation at one frame class and returns a derivation of the same formula at a larger one:
+
+#leansrc("FormalSystem.ProofSystem", "DerivationTree.lift")
+```
+def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
+    {Γ : Context} {φ : Formula} :
+    DerivationTree fc₁ Γ φ → DerivationTree fc₂ Γ φ
+  | .axiom Γ φ h h_fc => .axiom Γ φ h (le_trans h_fc h_le)
+  | .assumption Γ φ h => .assumption Γ φ h
+  | .modus_ponens Γ φ ψ d1 d2 =>
+      .modus_ponens Γ φ ψ (d1.lift h_le) (d2.lift h_le)
+  | .necessitation φ d => .necessitation φ (d.lift h_le)
+  | .temporal_necessitation φ d =>
+      .temporal_necessitation φ (d.lift h_le)
+  | .time_reflection φ d => .time_reflection φ (d.lift h_le)
+  | .weakening Γ Δ φ d h => .weakening Γ Δ φ (d.lift h_le) h
+```
+
+This is structural recursion again, now over derivations rather than over formulas, and with one clause per inference rule instead of one per connective.
+Six of the seven clauses are pure bookkeeping.
+They rebuild the same constructor around lifted sub-derivations and change nothing else.
+All of the work is in the first clause, and there is a reason it is the only one.
+The `axiom` constructor is the sole place a frame class is checked at all, through the side condition `h.minFrameClass ≤ fc` of @lean-appendix-types-props.
+Lifting therefore has to produce a new proof of that side condition, and `le_trans` produces it by composing the old one with `h_le`.
+Every other rule is frame-class agnostic, so there is nothing for the other six clauses to repair.
+
+The order `h_le` refers to is a genuine partial order on the four-element `FrameClass`:
+
+#leansrc("FormalSystem.ProofSystem", "FrameClass")
+```
+instance : LE FrameClass where
+  le a b := match a, b with
+    | .Base, _ => True
+    | .Dense, .Dense => True
+    | .Dense, .RTime => True
+    | .RTime, .RTime => True
+    | .ZTime, .ZTime => True
+    | _, _ => False
+```
+
+`FrameClass.Base` is below everything, `FrameClass.Dense` is below `FrameClass.RTime`, and `FrameClass.ZTime` is comparable only with itself.
+The order is a branch and not a chain, which is the proof-theoretic shadow of the dense-versus-discrete dichotomy of @sec:dichotomy.
+A `PartialOrder FrameClass` instance is registered, so `le_trans` above is Mathlib's, and a `DecidableRel` instance makes every closed order goal a `decide`:
+
+```
+example : FrameClass.Base ≤ FrameClass.Dense := by decide
+example : FrameClass.Base ≤ FrameClass.ZTime := by decide
+example : FrameClass.Dense ≤ FrameClass.RTime := by decide
+example : ¬(FrameClass.ZTime ≤ FrameClass.Dense) := by decide
+```
+
+Which is what makes `lift` pleasant to call.
+The side condition is discharged by the elaborator rather than by the caller:
+
+```
+example (φ : Formula) (d : ⊢ φ) : ⊢[FrameClass.Dense] φ :=
+  DerivationTree.lift (by decide) d
+```
+
+Step back and the reason for the `Type` declaration is visible.
+Because a derivation is data, the decision procedure of @lean-appendix-reading-source can *return* one as its certificate of validity, `DerivationTree.height` can recurse on one to give the deduction theorem its termination measure, and the dataset pipeline of @sec:dataset-pipeline can serialize one to disk.
+None of these is available for a `Prop`-valued derivability predicate, which by design remembers only *that* a derivation exists.
 
 == Naming and Documentation Conventions <lean-appendix-conventions>
 
