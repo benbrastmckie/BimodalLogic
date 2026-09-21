@@ -107,7 +107,7 @@ time-reflected formula `φ.reflectTime`; the L⁻ analogue of the paper's `lem:t
 frame · base-language · MinusFrame · universal-modality · order-reversal
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.MinusLanguage
 
 open FormalSystem.Syntax FormalSystem.MinusLanguage
 
@@ -313,4 +313,4 @@ theorem truth_reflectTime (F : MinusFrame) (V : F.Point → Atom → Prop) (w : 
   | allPast φ ih => exact forall_congr' fun v => imp_congr_right fun _ => ih v
   | allFuture φ ih => exact forall_congr' fun v => imp_congr_right fun _ => ih v
 
-end FormalSystem.Semantics
+end FormalSystem.MinusLanguage

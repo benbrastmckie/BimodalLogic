@@ -87,9 +87,10 @@ theorems of TM⁺ is therefore necessarily nondeterministic.
 plus-language · stability-modal · limit-closure · zorn
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.PlusLanguage
 
 open FormalSystem.Syntax
+open FormalSystem.Semantics
 open FormalSystem.PlusLanguage
 open FormalSystem.PlusLanguage.PlusFormula
 open PartialHistory
@@ -206,7 +207,7 @@ theorem limit_history (P : F.WorldState → Prop) (t : F.Duration) (w : F.WorldS
     ∃ τ : WorldHistory F, τ.state t = w ∧ (∃ s, t < s ∧ P (τ.state s)) ∧
       ∀ s, t < s → P (τ.state s) → ∃ s', s < s' ∧ P (τ.state s') := by
   obtain ⟨τ₀, hw₀, s₀, hs₀, hp₀⟩ := h1
-  obtain ⟨μ, _, hQ, hmax, τ, hτ⟩ := exists_maximal_of_chainClosed (LCProp P t w)
+  obtain ⟨μ, _, hQ, hmax, τ, hτ⟩ := PartialHistory.exists_maximal_of_chainClosed (LCProp P t w)
     (lcProp_chainSup P t w) (lcProp_restrictIic P t w τ₀ hw₀ s₀ hs₀ hp₀)
   have agree : ∀ x (hx : μ.domain x), τ.state x = μ.states x hx := fun x hx => hτ.agree x hx
   obtain ⟨ht, hw⟩ := hQ.anchor
@@ -283,4 +284,4 @@ theorem blc_plusValid (p : Atom) : PlusValid (blc p) := by
   obtain ⟨s', hs', hp'⟩ := hrec x hx hpx
   exact (someFuture_iff M τ x _).mpr ⟨s', hs', hp'⟩
 
-end FormalSystem.Semantics
+end FormalSystem.PlusLanguage

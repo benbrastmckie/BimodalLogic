@@ -170,10 +170,12 @@ theorem StateLocal.or {φ ψ : StarFormula} (hφ : φ.StateLocal) (hψ : ψ.Stat
 
 end FormalSystem.StarLanguage
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.StarLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.StarLanguage
+open FormalSystem.PlusLanguage
+open FormalSystem.Semantics
 
 /-! ## The semantic property -/
 
@@ -370,4 +372,4 @@ theorem stateLocal_starValid_iff_stab {φ : StarFormula} (hφ : φ.StateLocal) :
   rw [StarTruth.and_iff, StarTruth.imp_iff, StarTruth.imp_iff]
   exact ⟨hiff.mp, hiff.mpr⟩
 
-end FormalSystem.Semantics
+end FormalSystem.StarLanguage

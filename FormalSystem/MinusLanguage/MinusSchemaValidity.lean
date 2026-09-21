@@ -47,9 +47,10 @@ association is checked by elaboration against `MinusLanguage/Axioms.lean`'s own 
 validity · base-language · density · discreteness
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.MinusLanguage
 
 open FormalSystem.MinusLanguage
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -172,4 +173,4 @@ theorem reflectTime_df_valid_of_predOrder [PredOrder F.Duration] [Nontrivial F.D
   · rw [hut]; exact hφ
   · exact hGφ u hut
 
-end FormalSystem.Semantics
+end FormalSystem.MinusLanguage

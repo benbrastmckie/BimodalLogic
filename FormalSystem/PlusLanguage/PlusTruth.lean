@@ -63,11 +63,12 @@ file); proofs are unchanged.
 truth · plus-language · stability-modal
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.PlusLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.PlusLanguage.PlusFormula
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -336,4 +337,4 @@ theorem stab_state_only (M : TaskModel F) (τ σ : WorldHistory F) (t s : F.Dura
   rw [stab_congr_state M τ (σ.timeShift (s - t)) t hsame φ, plusTruthAt_timeShift,
     add_sub_cancel]
 
-end FormalSystem.Semantics
+end FormalSystem.PlusLanguage

@@ -58,12 +58,13 @@ Transcription of Part D of the compiled stability-modal probes recorded with the
 plus-language · refutation · stability-modal · upper-bound
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.PlusLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.PlusLanguage.PlusFormula
 open PlusTruth
+open FormalSystem.Semantics
 
 /-- The permissive frame over `ℤ`: every function `ℤ → ℕ` is a total history. -/
 abbrev NF : TaskFrame := FrameOver.natFrame (D := ℤ)
@@ -201,4 +202,4 @@ theorem refute_somePast_stab (p : Atom) :
   rw [if_pos hs'] at v'
   exact one_ne_zero v'
 
-end FormalSystem.Semantics
+end FormalSystem.PlusLanguage

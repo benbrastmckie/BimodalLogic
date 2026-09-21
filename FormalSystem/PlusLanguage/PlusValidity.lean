@@ -51,10 +51,12 @@ touching the semantics.
 validity · plus-language · conservativity · stability-modal
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.PlusLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
+
+open FormalSystem.Semantics
 
 /-! ## `FrameClass`-indexed validity for L⁺ -/
 
@@ -64,11 +66,26 @@ generic one through this single field. -/
 instance : PointTruth PlusFormula where
   sat M τ t φ := PlusTruthAt M τ t φ
 
+end FormalSystem.PlusLanguage
+
+namespace FormalSystem.Semantics
+
+open FormalSystem.PlusLanguage
+
 /-- `def:frame-validity` for L⁺: `φ` is valid over the frame `F` iff it is true at every model
 over `F`, every possible world `τ ∈ H_F`, and every time. The L⁺ mirror of
 `TaskFrame.ValidOn`. -/
 def TaskFrame.PlusValidOn (F : TaskFrame) (φ : PlusFormula) : Prop :=
   ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), PlusTruthAt M τ x φ
+
+end FormalSystem.Semantics
+
+namespace FormalSystem.PlusLanguage
+
+open FormalSystem.Syntax
+open FormalSystem.PlusLanguage
+open FormalSystem.Semantics
+
 
 /-- `φ` is valid on every frame satisfying `P`. **The primitive**: the L⁺ mirror of
 `ValidOnFrames`, indexed by a bare frame predicate rather than a `FrameClass` tag so that one
@@ -192,4 +209,4 @@ theorem plusValidIn_ofFormula_iff (fc : ProofSystem.FrameClass) (φ : Formula) :
 theorem plusValid_ofFormula_iff (φ : Formula) : PlusValid (ofFormula φ) ↔ Valid φ :=
   plusValidIn_ofFormula_iff ProofSystem.FrameClass.Base φ
 
-end FormalSystem.Semantics
+end FormalSystem.PlusLanguage

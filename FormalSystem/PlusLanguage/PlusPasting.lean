@@ -62,12 +62,13 @@ stability-modal probes recorded with the research on the `⊡` axiomatization; `
 plus-language · pasting · stability-modal
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.PlusLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.PlusLanguage.PlusFormula
 open PlusTruth
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -335,4 +336,4 @@ theorem stab_allFuture_plusValid {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusValid (.imp (.stab (allFuture φ)) (allFuture (.stab φ))) :=
   PlusValid.of_forall fun _ M τ t => stab_allFuture_valid M τ t hφ
 
-end FormalSystem.Semantics
+end FormalSystem.PlusLanguage

@@ -114,7 +114,7 @@ def PlusValidDeterminedIn (fc : FrameClass) (φ : PlusFormula) : Prop :=
 predicate `DeterminedValid`; the collapse itself is **not** re-derived here. -/
 theorem deterministic_determinedValid {F : TaskFrame} (hD : F.Deterministic) :
     DeterminedValid F :=
-  fun φ => Semantics.determined_of_deterministic hD φ
+  fun φ => PlusLanguage.determined_of_deterministic hD φ
 
 /-- The class inclusion at a `FrameClass` tag. -/
 theorem determinedSat_of_detSat {fc : FrameClass} {F : TaskFrame} (h : DetSat fc F) :

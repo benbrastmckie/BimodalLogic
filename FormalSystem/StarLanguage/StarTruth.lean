@@ -89,12 +89,13 @@ congruence does not let a `⊡`-formula be treated as a fresh state-valued atom 
 truth · star-language · store-recall · time-register
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.StarLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.StarLanguage
 open FormalSystem.StarLanguage.StarFormula
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -406,4 +407,4 @@ theorem starTruthAt_timeShift (M : TaskModel F) (φ : StarFormula) :
     intro σ t Δ v
     rw [StarTruth.timeRecall_iff, StarTruth.timeRecall_iff, ih σ (v i) Δ v]
 
-end FormalSystem.Semantics
+end FormalSystem.StarLanguage

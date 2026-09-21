@@ -84,9 +84,10 @@ about the converse; see `FormalSystem/MinusLanguage.lean`'s "Module Invariant" s
 truth · base-language · MinusTruthAt · def:BL-semantics
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.MinusLanguage
 
 open FormalSystem.MinusLanguage
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -220,4 +221,4 @@ The association mirrors `MinusFormula.always`, hence `Formula.always`. -/
 
 end MinusTruth
 
-end FormalSystem.Semantics
+end FormalSystem.MinusLanguage

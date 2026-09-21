@@ -207,10 +207,11 @@ theorem StateLocal.or {φ ψ : PlusFormula} (hφ : φ.StateLocal) (hψ : ψ.Stat
 
 end FormalSystem.PlusLanguage
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.PlusLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
+open FormalSystem.Semantics
 
 /-! ## The semantic property -/
 
@@ -407,4 +408,4 @@ theorem stab_of_stateLocal {F : TaskFrame} {φ : PlusFormula} (hφ : φ.StateLoc
     (h : PlusTruthAt M τ t φ) : PlusTruthAt M τ t (.stab φ) :=
   (plusStateLocal_stab_iff hφ M τ t).mp h
 
-end FormalSystem.Semantics
+end FormalSystem.PlusLanguage

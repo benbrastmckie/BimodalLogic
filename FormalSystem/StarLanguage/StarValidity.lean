@@ -61,11 +61,13 @@ stays free for a later world register.
 validity · star-language · sent:det · store-recall
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.StarLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.StarLanguage
+
+open FormalSystem.Semantics
 
 /-! ## `FrameClass`-indexed validity for L⋆ -/
 
@@ -81,12 +83,28 @@ abstraction covers both point shapes, `(τ, x)` and `(τ, x, v⃗)`. -/
 instance : PointTruth StarFormula where
   sat {F} M τ t φ := ∀ v : ℕ → F.Duration, StarTruthAt M τ t v φ
 
+end FormalSystem.StarLanguage
+
+namespace FormalSystem.Semantics
+
+open FormalSystem.StarLanguage
+
 /-- `def:frame-validity` for L⋆: `φ` is valid over the frame `F` iff it is true at every model
 over `F`, every possible world `τ ∈ H_F`, every time, and **every stored-time vector**. The L⋆
 mirror of `TaskFrame.PlusValidOn`. -/
 def TaskFrame.StarValidOn (F : TaskFrame) (φ : StarFormula) : Prop :=
   ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration) (v : ℕ → F.Duration),
     StarTruthAt M τ x v φ
+
+end FormalSystem.Semantics
+
+namespace FormalSystem.StarLanguage
+
+open FormalSystem.Syntax
+open FormalSystem.PlusLanguage
+open FormalSystem.StarLanguage
+open FormalSystem.Semantics
+
 
 /-- `φ` is valid on every frame satisfying `P`. **The primitive**, indexed by a bare frame
 predicate rather than a `FrameClass` tag — which is what lets validity over the deterministic
@@ -244,4 +262,4 @@ theorem not_starValidOn_sentDet {φ : StarFormula} (M : TaskModel F)
   · exact hA σ₁ hs₁ (hpos _)
   · exact hneg _ (hB σ₂ hs₂)
 
-end FormalSystem.Semantics
+end FormalSystem.StarLanguage

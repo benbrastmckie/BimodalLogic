@@ -41,6 +41,7 @@ elaborate is a build failure.
 namespace BimodalTest.Semantics.ValidityLayerTest
 
 open FormalSystem FormalSystem.Semantics
+open FormalSystem.MinusLanguage FormalSystem.PlusLanguage FormalSystem.StarLanguage
 
 /-! ## Smoke check: the generic layer elaborates -/
 
@@ -204,6 +205,7 @@ and is not required to supply `untl`, `snce` or the tenses in order to get it. -
 namespace FifthLanguage
 
 open FormalSystem FormalSystem.Semantics
+open FormalSystem.MinusLanguage FormalSystem.PlusLanguage FormalSystem.StarLanguage
 
 /-- A minimal fifth object language: propositional atoms, falsum, implication, and the modal box.
 No temporal operators, so it exercises the Boolean tier alone. -/

@@ -63,10 +63,10 @@ this proof.
 Recorded from `#print axioms` at the time of writing, and re-checkable by uncommenting:
 
 ```
-#print axioms FormalSystem.Semantics.states_eq_of_deterministic
-#print axioms FormalSystem.Semantics.stab_iff_of_deterministic
-#print axioms FormalSystem.Semantics.determined_of_deterministic
-#print axioms FormalSystem.Semantics.stab_biconditional_plusValidOn_of_deterministic
+#print axioms FormalSystem.PlusLanguage.states_eq_of_deterministic
+#print axioms FormalSystem.PlusLanguage.stab_iff_of_deterministic
+#print axioms FormalSystem.PlusLanguage.determined_of_deterministic
+#print axioms FormalSystem.PlusLanguage.stab_biconditional_plusValidOn_of_deterministic
 ```
 
 All four report `[propext]` only — in particular **no `Classical.choice`**.
@@ -83,9 +83,10 @@ All four report `[propext]` only — in particular **no `Classical.choice`**.
 plus-language · determinism · stability-modal · app:deterministic
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.PlusLanguage
 
 open FormalSystem.PlusLanguage
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -150,4 +151,4 @@ theorem stab_biconditional_plusValidOn_of_deterministic (hD : F.Deterministic)
   ⟨fun M τ t h => (stab_iff_of_deterministic hD M τ t φ).mp h,
    determined_of_deterministic hD φ⟩
 
-end FormalSystem.Semantics
+end FormalSystem.PlusLanguage

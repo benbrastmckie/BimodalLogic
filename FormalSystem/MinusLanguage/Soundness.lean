@@ -95,10 +95,11 @@ consistency lemma in the tree yet"), and the L⁻ side inherits it exactly.
 soundness · base-language · truth-transfer · def:BL-semantics
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.MinusLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.MinusLanguage
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -264,7 +265,7 @@ theorem minusValidZTime_iff_validZTime_tr (φ : MinusFormula) :
     MinusValidZTime φ ↔ ValidZTime (tr φ) :=
   minusValidIn_iff_validIn_tr ProofSystem.FrameClass.ZTime φ
 
-end FormalSystem.Semantics
+end FormalSystem.MinusLanguage
 
 namespace FormalSystem.Metalogic
 

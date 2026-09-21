@@ -75,11 +75,12 @@ translating formulas back down; it is obtained semantically
 star-language · non-validity · determinism · app:deterministic-future
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.StarLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.StarLanguage
+open FormalSystem.Semantics
 
 /--
 **`app:deterministic-future`, negative half.** `sent:det` is refuted over the non-deterministic
@@ -193,4 +194,4 @@ theorem refute_erasure (p : Atom) :
   have hval' : (if (0 : ℤ) ≤ 0 then (1 : ℕ) else 0) = 0 := hv hA
   simp at hval'
 
-end FormalSystem.Semantics
+end FormalSystem.StarLanguage

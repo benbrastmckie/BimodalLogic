@@ -1740,7 +1740,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.WeakCanonical.countermodel_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.notCompactZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.notCompactRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
-'FormalSystem.Semantics.truthAt_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.MinusLanguage.truthAt_tr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.minus_soundness' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.minus_soundness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.minus_soundness_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1766,7 +1766,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Conservativity.minusCompactDense' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.plus_soundness_validIn' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
-'FormalSystem.Semantics.plusValidIn_ofFormula_iff' depends on axioms: [propext]
+'FormalSystem.PlusLanguage.plusValidIn_ofFormula_iff' depends on axioms: [propext]
 'FormalSystem.Metalogic.Decidability.decide' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.galoisClosed_mod' depends on axioms: [propext]
 'FormalSystem.Semantics.galoisClosed_of_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1860,7 +1860,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.WeakCanonical.countermodel_discrete
 #print axioms FormalSystem.Metalogic.notCompactZTime
 #print axioms FormalSystem.Metalogic.notCompactRTime
-#print axioms FormalSystem.Semantics.truthAt_tr
+#print axioms FormalSystem.MinusLanguage.truthAt_tr
 #print axioms FormalSystem.Metalogic.minus_soundness
 #print axioms FormalSystem.Metalogic.minus_soundness_dense
 #print axioms FormalSystem.Metalogic.minus_soundness_ztime
@@ -1886,7 +1886,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Conservativity.minusCompactDense
 #print axioms FormalSystem.Metalogic.Conservativity.plus_soundness_validIn
 #print axioms FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff
-#print axioms FormalSystem.Semantics.plusValidIn_ofFormula_iff
+#print axioms FormalSystem.PlusLanguage.plusValidIn_ofFormula_iff
 #print axioms FormalSystem.Metalogic.Decidability.decide
 #print axioms FormalSystem.Semantics.galoisClosed_mod
 #print axioms FormalSystem.Semantics.galoisClosed_of_indicator

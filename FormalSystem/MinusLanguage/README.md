@@ -29,10 +29,10 @@ repository's metalogic is proved in.
 | `Derivation.lean` | 195 | `MinusLanguage.DerivationTree` — a constructor-for-constructor mirror of the primary `DerivationTree`, with the same 7 inference rules, over `MinusFormula` |
 | `Formula.lean` | 215 | `MinusFormula`, the tense-primitive base language, with `allPast`/`allFuture` as constructors rather than abbreviations |
 | `MinusFrame.lean` | 316 | `MinusFrame` — a native L⁻ frame notion not bound to `TaskFrame` (points with an unbounded, transitive, irreflexive, forward- and backward-linear strict order, no group structure), its truth recursion `MinusFrameTruth` with `□` as the universal modality, `MinusFrameValid`, the `MinusFrameTruth.*` characterization family, and the time-reflection transfer lemma `truth_reflectTime`; the frame class a countermodel to `(Sp)` lives on |
-| `MinusSchemaValidity.lean` | 175 | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/Conservativity/SpWitness.lean` and `minus_soundness_ztime_succ` |
-| `MinusTruth.lean` | 223 | `MinusTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `MinusFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
-| `MinusValidity.lean` | 293 | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidZTimeSucc`, `MinusValidRTime` — binder-for-binder base-language mirrors of Validity.lean |
-| `Soundness.lean` | 615 | The truth-transfer bridge `truthAt_tr`, and L⁻ soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
+| `MinusSchemaValidity.lean` | 176 | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/Conservativity/SpWitness.lean` and `minus_soundness_ztime_succ` |
+| `MinusTruth.lean` | 224 | `MinusTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `MinusFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
+| `MinusValidity.lean` | 308 | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidZTimeSucc`, `MinusValidRTime` — binder-for-binder base-language mirrors of Validity.lean |
+| `Soundness.lean` | 616 | The truth-transfer bridge `truthAt_tr`, and L⁻ soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
 | `Translation.lean` | 268 | `tr : MinusFormula → Formula` and `trCtx` — the translation into the primary language, sending each L⁻ primitive to the primary operator of the same name |
 <!-- END GENERATED -->
 

@@ -67,9 +67,10 @@ since L⁻ has no `untl`. Do not "simplify" the target.
 validity · base-language · frame-class
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.MinusLanguage
 
 open FormalSystem.MinusLanguage
+open FormalSystem.Semantics
 
 /--
 Semantic consequence in the base language: `φ` is true at every model, world history and time
@@ -96,6 +97,12 @@ generic one through this single field. -/
 instance : PointTruth MinusFormula where
   sat M τ t φ := MinusTruthAt M τ t φ
 
+end FormalSystem.MinusLanguage
+
+namespace FormalSystem.Semantics
+
+open FormalSystem.MinusLanguage
+
 /--
 `def:frame-validity` for the base language: `φ` is **valid over the frame `F`** iff it is true at
 every model over `F`, every possible world `τ ∈ H_F`, and every time `x ∈ D`.
@@ -106,6 +113,14 @@ applied to the full language's `Formula`. Both render `H_F` as `WorldHistory F`.
 -/
 def TaskFrame.MinusValidOn (F : TaskFrame) (φ : MinusFormula) : Prop :=
   ∀ (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration), MinusTruthAt M τ x φ
+
+end FormalSystem.Semantics
+
+namespace FormalSystem.MinusLanguage
+
+open FormalSystem.MinusLanguage
+open FormalSystem.Semantics
+
 
 /-- `φ` is valid on every frame satisfying `P`. The L⁻ mirror of `Semantics.ValidOnFrames`, and
 for the same reason: indexing the primitive by a bare frame predicate rather than by a
@@ -290,4 +305,4 @@ theorem minusValid_iff_empty_consequence (φ : MinusFormula) :
 
 end MinusValidity
 
-end FormalSystem.Semantics
+end FormalSystem.MinusLanguage

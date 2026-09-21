@@ -109,11 +109,12 @@ correspondence-record-and-store-recall-recommendation report, §II.4's choice-as
 determinism · star-language · sent:det · definability · app:deterministic-future
 -/
 
-namespace FormalSystem.Semantics
+namespace FormalSystem.StarLanguage
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
 open FormalSystem.StarLanguage
+open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
@@ -315,4 +316,4 @@ theorem deterministic_starDefinable (F : TaskFrame) :
     ⟨fun hD φ => detPM_of_deterministic hD φ,
       fun h => deterministic_of_detPM fun p => h (StarFormula.atom p)⟩⟩
 
-end FormalSystem.Semantics
+end FormalSystem.StarLanguage
