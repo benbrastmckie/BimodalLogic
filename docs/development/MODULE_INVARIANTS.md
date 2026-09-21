@@ -314,7 +314,7 @@ a check that could print a failure while handing the shell a `0`.
 
 C33 ships enforced on the same precedent, and was accepted only after deliberate negative tests
 in **both** directions, because a byte comparison can fail two unrelated ways. A stray
-`FormalSystem/_Scratch.lean` was added: `FAIL C33 … 1 module(s) not imported` naming
+module `_Scratch.lean` was added directly under the library directory: `FAIL C33 … 1 module(s) not imported` naming
 `FormalSystem._Scratch` **and** a script exit of 1 were observed, with
 `lake exe mk_all --lib FormalSystem --check` exiting 1 in the same state; the file was removed and
 the `PASS` and exit 0 re-observed. Then one blank line was appended to `FormalSystem.lean` by
