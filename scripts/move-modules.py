@@ -17,6 +17,12 @@ Inputs
                       namespace/open/FQN and axiom-baseline rewrite classes. A
                       relocation that changes no declaration's namespace needs
                       none.
+--no-rewrite GLOB     Repeatable. A path or glob whose files are walked and
+                      reported but NEVER written, by any class. Values add to the
+                      built-in defaults (the archive's provenance READMEs, the
+                      typst sync map and the architecture decision records),
+                      whose prose states where things USED to be; nothing clears
+                      the defaults.
 --dry-run             Report what would change; touch nothing.
 --no-verify           Skip the closing harness run (for composing several maps
                       into one commit).
@@ -46,7 +52,7 @@ total does not distinguish "left alone" from "rewritten twice".
 
 Exclusions: specs/ (the task-management record legitimately names old paths, and
 C5/C9/C10 all exclude it), .git/, .lake/, build/, __pycache__/, and this file
-itself -- its worked examples describe what a relocation does in general and are
+itself with its fixture tests -- its worked examples describe what a relocation does in general and are
 not citations of any particular tree location, so rewriting them turns the
 documentation into nonsense ("anchored on the full old prefix `X`, never the
 bare token `X`") while every real citation is rewritten correctly.
@@ -80,6 +86,13 @@ SCRIPT_DIR = "scripts"
 SCRIPT_EXT = {".sh", ".py", ".txt"}
 WORKFLOW_DIR = os.path.join(".github", "workflows")
 WORKFLOW_EXT = {".yml", ".yaml"}
+
+# Files whose prose records where a module USED to live. The tool cannot tell a
+# citation of a module's current location from a historical statement about its
+# old one, and in these files the historical reading is the common one: provenance
+# tables, "moved from X to Y" decision records. They are reported, never written.
+DEFAULT_NO_REWRITE = ("Boneyard/**/README.md", "typst/SYNC-MAP.md",
+                      "docs/architecture/ADR-*.md")
 
 # Module roots whose on-disk location is not the repository root. Both test libraries live
 # under Tests/ (`srcDir = "Tests"` in lakefile.toml); `FormalSystem` and `BimodalTools` are
@@ -184,6 +197,46 @@ def rel(path: str) -> str:
     return os.path.normpath(path).replace(os.sep, "/")
 
 
+def glob_to_regex(pattern: str) -> re.Pattern[str]:
+    """One explicit glob dialect, matched against a whole repo-relative path.
+
+    `**/` is zero or more directories, a bare `**` is anything, and `*` and `?`
+    never cross a `/`. Neither `fnmatch` (its `*` crosses `/`) nor
+    `PurePath.match` (whose `**` handling differs between versions) gives that.
+    """
+    out, i = [], 0
+    while i < len(pattern):
+        if pattern.startswith("**/", i):
+            out.append("(?:.*/)?")
+            i += 3
+        elif pattern.startswith("**", i):
+            out.append(".*")
+            i += 2
+        elif pattern[i] == "*":
+            out.append("[^/]*")
+            i += 1
+        elif pattern[i] == "?":
+            out.append("[^/]")
+            i += 1
+        else:
+            out.append(re.escape(pattern[i]))
+            i += 1
+    return re.compile("^" + "".join(out) + "$")
+
+
+def compile_globs(patterns: list[str]) -> list[re.Pattern[str]]:
+    """Translate each pattern, forgiving a leading `./` and native separators."""
+    out = []
+    for pattern in patterns:
+        pattern = pattern.replace(os.sep, "/")
+        out.append(glob_to_regex(pattern[2:] if pattern.startswith("./") else pattern))
+    return out
+
+
+def matches_any(path: str, patterns: list[re.Pattern[str]]) -> bool:
+    return any(p.match(path) for p in patterns)
+
+
 def walk_repo() -> list[str]:
     """Every tracked-shaped file in the repository, minus the exclusion set."""
     out = []
@@ -195,11 +248,15 @@ def walk_repo() -> list[str]:
 
 
 SELF_PATH = "scripts/move-modules.py"
+# The fixture tests name made-up modules under real roots, in map rows as well as
+# in file bodies; a rewrite would turn a fixture's `old -> new` row into
+# `new -> new`. Excluded for the same reason as this file.
+SELF_PATHS = {SELF_PATH, "scripts/test-move-modules.py"}
 
 
 def classes_for(path: str) -> set[str]:
     """Which rewrite classes apply to this file, by extension and location."""
-    if path == SELF_PATH:
+    if path in SELF_PATHS:
         return set()
     ext = os.path.splitext(path)[1]
     applicable: set[str] = set()
@@ -522,11 +579,32 @@ def run(args: argparse.Namespace) -> int:
     bare_files: set[str] = set()
     changed: list[tuple[str, str]] = []
 
+    no_rewrite = compile_globs(list(DEFAULT_NO_REWRITE)
+                               + (getattr(args, "no_rewrite", None) or []))
+    skip_matched = 0
+    skipped: list[tuple[str, int]] = []
+    skipped_moved: list[str] = []
+
     for path in walk_repo():
+        skip = matches_any(path, no_rewrite)
+        if skip:
+            skip_matched += 1
         if not classes_for(path) and path not in AXIOM_BASELINE_SITES:
             continue
         text = read_text(path)
         if text is None:
+            continue
+        if skip:
+            # What the rewrite WOULD do, on throwaway counters: the class counts
+            # below describe writes that happen, and none happens here. No class
+            # 7 either, and no bare-form accounting -- with nothing written a
+            # before/after delta is vacuous.
+            would = dict.fromkeys(counts, 0)
+            rewrite_text(path, text, mappings, would, {}, ns_mappings=ns_mappings)
+            if sum(would.values()):
+                skipped.append((path, sum(would.values())))
+            if path.endswith(".md") and map_repo_path(path, mappings) != path:
+                skipped_moved.append(path)
             continue
         # Class 7 runs FIRST, while the file is still at its old location: every
         # link target is resolved relative to where the file is now.
@@ -561,7 +639,8 @@ def run(args: argparse.Namespace) -> int:
     moved, move_failures, moved_files = move_trees(mappings, args.dry_run)
 
     report(args, mappings, ns_mappings, counts, files, changed, moved,
-           link_stats, bare_before, bare_after, len(bare_files), moved_files)
+           link_stats, bare_before, bare_after, len(bare_files), moved_files,
+           skip_matched, skipped, skipped_moved)
 
     if bare_before != bare_after:
         print("\nFAIL  bare-form citations were rewritten; every rule must be "
@@ -582,7 +661,9 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
            ns_mappings: list[NamespaceMapping], counts: dict[str, int],
            files: dict[str, set[str]], changed: list[tuple[str, str]],
            moved: list[str], link_stats: dict[str, int], bare_before: int,
-           bare_after: int, bare_file_count: int, moved_files: int) -> None:
+           bare_after: int, bare_file_count: int, moved_files: int,
+           skip_matched: int, skipped: list[tuple[str, int]],
+           skipped_moved: list[str]) -> None:
     mode = "DRY RUN" if args.dry_run else "APPLIED"
     print(f"=== move-modules ({mode}) ===")
     for mapping in mappings:
@@ -616,6 +697,15 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
     print(f"  audit    bare-form occurrences        {bare_before:>5} before, "
           f"{bare_after:>5} after, in {bare_file_count} file(s)")
     print(f"  files changed                         {len(changed):>5}")
+    print()
+    print(f"  {'skipped  --no-rewrite':<34} {skip_matched:>5} file(s) matched, "
+          f"{len(skipped)} would have been rewritten (review by hand)")
+    for path, would in skipped:
+        print(f"           {path}  ({would} occurrence(s))")
+    if skipped_moved:
+        print("  skipped AND moved: relative links not re-based")
+        for path in skipped_moved:
+            print(f"           {path}")
 
 
 def main(argv: list[str]) -> int:
@@ -626,6 +716,12 @@ def main(argv: list[str]) -> int:
                         help="file of `old.module -> new.module` lines")
     parser.add_argument("--namespace-map",
                         help="optional file of `Old.Ns -> New.Ns` lines")
+    parser.add_argument("--no-rewrite", action="append", metavar="PATH_OR_GLOB",
+                        help="repeatable; files that are reported but never "
+                             "written, by any class. Values ADD to the built-in "
+                             "defaults (" + ", ".join(DEFAULT_NO_REWRITE) + "); "
+                             "nothing clears the defaults. `**/` matches zero or "
+                             "more directories; `*` and `?` never cross a `/`")
     parser.add_argument("--dry-run", action="store_true",
                         help="report only; write nothing and move nothing")
     parser.add_argument("--no-verify", action="store_true",

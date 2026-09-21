@@ -496,49 +496,49 @@ zero files moved.
 
 ---
 
-### Phase 4: Deliverable (1) — the --no-rewrite path list [NOT STARTED]
+### Phase 4: Deliverable (1) — the --no-rewrite path list [COMPLETED]
 
 **Goal**: A repeatable `--no-rewrite` file/glob argument, plus the three built-in defaults, whose
 matching files are walked and reported but never written.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/move-modules.py` in full before editing.
-- [ ] Write the fixture tests first and observe red:
-  - [ ] A fixture containing `Boneyard/X/README.md` whose body carries a historical statement
+- [x] Re-read `scripts/move-modules.py` in full before editing. *(completed)*
+- [x] Write the fixture tests first and observe red: *(completed)*
+  - [x] A fixture containing `Boneyard/X/README.md` whose body carries a historical statement
         ("moved from `FormalSystem/Old` to `FormalSystem/New`") plus an ordinary citing file.
         Run in APPLY mode (not dry-run) and assert the Boneyard README is byte-identical
         afterwards, that it appears by path in the report's skipped listing, and that the ordinary
-        file WAS rewritten.
-  - [ ] Count honesty (D10): in the same fixture, assert the class 2/3 counts equal the ordinary
-        file's citations only, and that the skipped section carries the README's would-be count.
-  - [ ] Class 7 interaction (D8): a fixture whose map moves a directory containing a `README.md`
+        file WAS rewritten. *(completed)*
+  - [x] Count honesty (D10): in the same fixture, assert the class 2/3 counts equal the ordinary
+        file's citations only, and that the skipped section carries the README's would-be count. *(completed)*
+  - [x] Class 7 interaction (D8): a fixture whose map moves a directory containing a `README.md`
         that a user-supplied `--no-rewrite` glob matches and that holds a relative link. Assert
-        the file is moved, byte-identical, and listed under the "skipped AND moved" heading.
-  - [ ] Unit tests for the glob translator covering `Boneyard/**/README.md` (matching at depth 1
+        the file is moved, byte-identical, and listed under the "skipped AND moved" heading. *(completed)*
+  - [x] Unit tests for the glob translator covering `Boneyard/**/README.md` (matching at depth 1
         and deeper, and `Boneyard/README.md` at depth 0), `typst/SYNC-MAP.md` (exact),
         `docs/architecture/ADR-*.md` (matching `ADR-010-...md` but NOT `README.md` or
-        `BFMCS_ARCHITECTURE.md` in the same directory), and a `*` that must not cross a `/`.
-- [ ] Implement one explicit glob-to-regex translator: `**/` becomes `(?:.*/)?`, `*` becomes
+        `BFMCS_ARCHITECTURE.md` in the same directory), and a `*` that must not cross a `/`. *(completed)*
+- [x] Implement one explicit glob-to-regex translator: `**/` becomes `(?:.*/)?`, `*` becomes
       `[^/]*`, `?` becomes `[^/]`, everything else is escaped; anchor with `^...$` and match
       against the forward-slash repo-relative path `rel()` already produces. Do NOT use `fnmatch`
       (its `*` crosses `/`) or `PurePath.match` (inconsistent `**` handling across versions). Keep
-      the translator a standalone module-level function — Phase 6 reuses it verbatim.
-- [ ] Add `--no-rewrite` as `action="append"`, repeatable, taking a path or glob. Per Decision D3,
+      the translator a standalone module-level function — Phase 6 reuses it verbatim. *(completed)*
+- [x] Add `--no-rewrite` as `action="append"`, repeatable, taking a path or glob. Per Decision D3,
       supplied values ADD to the built-in default list `Boneyard/**/README.md`,
       `typst/SYNC-MAP.md`, `docs/architecture/ADR-*.md` (note: `docs/architecture/`, not the
       non-existent `docs/adr/`). Document the ADD semantics in the flag's help text. Read the
       flag with `getattr(args, "no_rewrite", None) or []` so a caller-built `Namespace` without it
-      still works.
-- [ ] In `run()`'s walk loop, still compute what the rewrite WOULD change for a matching file —
+      still works. *(completed)*
+- [x] In `run()`'s walk loop, still compute what the rewrite WOULD change for a matching file —
       with throwaway `counts`/`files` dicts (D10) and skipping class 7 (D8) — so the report can
       state the file count and how many carried would-be rewrites; never append it to `changed`,
-      so no write occurs.
-- [ ] Per Decision D4, exclude matching files from the bare-form audit accounting.
-- [ ] Add a skipped section to `report()`: total files matching, and every skipped path that
+      so no write occurs. *(completed)*
+- [x] Per Decision D4, exclude matching files from the bare-form audit accounting. *(completed)*
+- [x] Add a skipped section to `report()`: total files matching, and every skipped path that
       would have been rewritten listed by path with its would-be occurrence count; then the
-      "skipped AND moved" sub-list (D8), printed only when non-empty.
-- [ ] Re-run the whole fixture suite green, including Phases 1 and 3's tests.
+      "skipped AND moved" sub-list (D8), printed only when non-empty. *(completed)*
+- [x] Re-run the whole fixture suite green, including Phases 1 and 3's tests. *(deviation: altered — also added SELF_PATHS so scripts/test-move-modules.py is never a rewrite target, with its own test)*
 
 **Timing**: 1.5 hours
 

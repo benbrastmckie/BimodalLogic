@@ -87,7 +87,7 @@ def run_tool(**overrides) -> tuple[int, str, str]:
     map through `sys.exit(str)`, so SystemExit becomes a return code here.
     """
     options = {"module_map": None, "namespace_map": None, "dry_run": False,
-               "no_verify": True}
+               "no_verify": True, "no_rewrite": None}
     options.update(overrides)
     args = argparse.Namespace(**options)
     out, err = io.StringIO(), io.StringIO()
@@ -199,6 +199,135 @@ class MoveSetIntegrityTest(unittest.TestCase):
             self.assertEqual(rc, 0, err)
             self.assertRegex(
                 out, r"files moved\s+1 in 1 path\(s\), against 3 citation\(s\) rewritten")
+
+
+HISTORICAL_README = (
+    "Archived. Moved from `FormalSystem/Old` to `FormalSystem/New`; the module was\n"
+    "`FormalSystem.Old.M`. See Old/M.lean for the bare form.\n")
+
+NO_REWRITE_FILES = {
+    "FormalSystem/Old/M.lean": "namespace Old\nend Old\n",
+    "Boneyard/X/README.md": HISTORICAL_README,
+    "docs/x.md": "See `FormalSystem.Old.M` at `FormalSystem/Old/M.lean`.\n",
+}
+
+
+class NoRewriteTest(unittest.TestCase):
+    """Files on the --no-rewrite list are walked and reported, never written."""
+
+    def run_default(self) -> tuple[int, str, str]:
+        module_map = write_map(["FormalSystem.Old -> FormalSystem.New"])
+        return run_tool(module_map=module_map)
+
+    def test_default_list_file_is_byte_identical_after_apply(self) -> None:
+        with fixture_repo(NO_REWRITE_FILES):
+            rc, out, err = self.run_default()
+            self.assertEqual(rc, 0, err)
+            with open("Boneyard/X/README.md", encoding="utf-8") as handle:
+                self.assertEqual(handle.read(), HISTORICAL_README)
+            with open("docs/x.md", encoding="utf-8") as handle:
+                self.assertEqual(
+                    handle.read(),
+                    "See `FormalSystem.New.M` at `FormalSystem/New/M.lean`.\n")
+            self.assertRegex(out, r"skipped\s+--no-rewrite\s+1 file\(s\) matched, "
+                                  r"1 would have been rewritten")
+            self.assertRegex(out, r"Boneyard/X/README\.md\s+\(2 occurrence\(s\)\)")
+
+    def test_class_counts_exclude_skipped_files(self) -> None:
+        with fixture_repo(NO_REWRITE_FILES):
+            rc, out, err = self.run_default()
+            self.assertEqual(rc, 0, err)
+            self.assertEqual(class_count(out, "class 2  dotted citations"), 1)
+            self.assertEqual(class_count(out, "class 3  slash-path citations"), 1)
+            # D4: the skipped file's bare-form citation is outside the audit.
+            self.assertRegex(out, r"bare-form occurrences\s+0 before,\s+0 after")
+
+    def test_skipped_and_moved_file_keeps_its_links_and_is_listed(self) -> None:
+        readme = "Up: [other](../Other.lean), was `FormalSystem/Old`.\n"
+        files = {
+            "FormalSystem/Old/M.lean": "namespace Old\nend Old\n",
+            "FormalSystem/Old/README.md": readme,
+            "FormalSystem/Other.lean": "import FormalSystem.Old.M\n",
+        }
+        with fixture_repo(files):
+            module_map = write_map(["FormalSystem.Old -> FormalSystem.Deep.New"])
+            rc, out, err = run_tool(module_map=module_map,
+                                    no_rewrite=["FormalSystem/**/README.md"])
+            self.assertEqual(rc, 0, err)
+            with open("FormalSystem/Deep/New/README.md", encoding="utf-8") as handle:
+                self.assertEqual(handle.read(), readme)
+            self.assertIn("skipped AND moved", out)
+            section = out.split("skipped AND moved", 1)[1]
+            self.assertIn("FormalSystem/Old/README.md", section)
+            self.assertEqual(class_count(out, "class 7  relative links"), 0)
+
+    def test_skipped_and_moved_heading_absent_when_empty(self) -> None:
+        with fixture_repo(NO_REWRITE_FILES):
+            rc, out, err = self.run_default()
+            self.assertNotIn("skipped AND moved", out)
+
+
+    def test_tool_and_fixture_tests_are_never_rewrite_targets(self) -> None:
+        files = dict(NO_REWRITE_FILES)
+        body = 'ROW = "FormalSystem.Old -> FormalSystem.New"\n'
+        files["scripts/move-modules.py"] = body
+        files["scripts/test-move-modules.py"] = body
+        files["scripts/other.py"] = body
+        with fixture_repo(files):
+            rc, out, err = self.run_default()
+            self.assertEqual(rc, 0, err)
+            for name in ("scripts/move-modules.py", "scripts/test-move-modules.py"):
+                with open(name, encoding="utf-8") as handle:
+                    self.assertEqual(handle.read(), body)
+            with open("scripts/other.py", encoding="utf-8") as handle:
+                self.assertNotEqual(handle.read(), body)
+
+
+class GlobTranslatorTest(unittest.TestCase):
+    """The one glob dialect --no-rewrite and --namespace-paths share."""
+
+    def matches(self, pattern: str, path: str) -> bool:
+        return bool(move_modules.glob_to_regex(pattern).match(path))
+
+    def test_double_star_matches_zero_or_more_directories(self) -> None:
+        pattern = "Boneyard/**/README.md"
+        self.assertTrue(self.matches(pattern, "Boneyard/README.md"))
+        self.assertTrue(self.matches(pattern, "Boneyard/X/README.md"))
+        self.assertTrue(self.matches(pattern, "Boneyard/X/Y/Z/README.md"))
+        self.assertFalse(self.matches(pattern, "Boneyard/X/NOTES.md"))
+        self.assertFalse(self.matches(pattern, "Other/Boneyard/X/README.md"))
+
+    def test_literal_path_is_exact(self) -> None:
+        self.assertTrue(self.matches("typst/SYNC-MAP.md", "typst/SYNC-MAP.md"))
+        self.assertFalse(self.matches("typst/SYNC-MAP.md", "typst/SYNC-MAPxmd"))
+        self.assertFalse(self.matches("typst/SYNC-MAP.md", "typst/x/SYNC-MAP.md"))
+
+    def test_adr_glob_matches_adrs_only(self) -> None:
+        pattern = "docs/architecture/ADR-*.md"
+        self.assertTrue(self.matches(
+            pattern, "docs/architecture/ADR-010-Boneyard-At-Repository-Root.md"))
+        self.assertFalse(self.matches(pattern, "docs/architecture/README.md"))
+        self.assertFalse(self.matches(pattern, "docs/architecture/BFMCS_ARCHITECTURE.md"))
+
+    def test_single_star_and_question_mark_do_not_cross_a_slash(self) -> None:
+        self.assertFalse(self.matches("docs/*.md", "docs/architecture/README.md"))
+        self.assertTrue(self.matches("docs/*.md", "docs/README.md"))
+        self.assertFalse(self.matches("a?b", "a/b"))
+        self.assertTrue(self.matches("a?b", "axb"))
+
+    def test_default_list_is_exactly_three_entries(self) -> None:
+        self.assertEqual(
+            list(move_modules.DEFAULT_NO_REWRITE),
+            ["Boneyard/**/README.md", "typst/SYNC-MAP.md", "docs/architecture/ADR-*.md"])
+
+    def test_adr_glob_against_the_real_directory_listing(self) -> None:
+        directory = os.path.join(REPO_ROOT, "docs", "architecture")
+        names = sorted(os.listdir(directory))
+        matched = [n for n in names
+                   if self.matches("docs/architecture/ADR-*.md", "docs/architecture/" + n)]
+        self.assertEqual(matched, [n for n in names if n.startswith("ADR-")])
+        self.assertTrue(matched)
+        self.assertNotIn("README.md", matched)
 
 
 if __name__ == "__main__":
