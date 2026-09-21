@@ -138,7 +138,7 @@ The proof is by contraposition.
 If $phi.alt$ is not derivable, then ${not phi.alt}$ is consistent, and Lindenbaum's lemma extends it to an MCS $M$ containing $not phi.alt$.
 A countermodel for $phi.alt$ is then built from $M$ by a three-way case split on the discreteness indicator $bot #untl top$ ("there is an immediate successor"), exhaustive by the dichotomy of @sec:dichotomy:
 
-+ *Dense case* ($square.stroked not (bot #untl top) in M$): a countermodel is constructed on the rational timeline $QQ$ via the Burgess-style *chronicle construction* @burgess1982axioms.#footnote[`Metalogic/BXCanonical/Chronicle/`, entry point `countermodel_dense` in `ChronicleToCountermodelBasic.lean`, drawing on the D-parametric truth lemma in `Metalogic/Algebraic/`.]
++ *Dense case* ($square.stroked not (bot #untl top) in M$): a countermodel is constructed on the rational timeline $QQ$ via the Burgess-style *chronicle construction* @burgess1982.#footnote[`Metalogic/BXCanonical/Chronicle/`, entry point `countermodel_dense` in `ChronicleToCountermodelBasic.lean`, drawing on the D-parametric truth lemma in `Metalogic/Algebraic/`.]
 + *Discrete case* ($square.stroked (bot #untl top) in M$): a countermodel is constructed on the integer timeline $ZZ$ via the Reynolds/Doets pipeline @reynolds1992 @doets1987.#footnote[`Metalogic/WeakCanonical/`, transfer step in `WeakCanonical/Transfer.lean`.]
 + *Mixed case*: eliminated outright --- an MCS cannot be undecided about discreteness.#footnote[`mcs_mixed_case_absurd` in `Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean`.]
 
@@ -179,7 +179,7 @@ A countermodel for $phi.alt$ is then built from $M$ by a three-way case split on
 The construction rests on shared infrastructure:
 - *Bundled families of MCSs* (`Metalogic/Bundle/`): time-indexed families of maximal consistent sets with G/H coherence conditions, used by all completeness paths.
 - *Algebraic parametric completeness* (`Metalogic/Algebraic/`): a truth lemma parametric in the duration type $D$, which turns a coherent MCS family into a task model.
-- *Chronicles* (`Metalogic/BXCanonical/Chronicle/`): the Burgess @burgess1982axioms dense-order construction, filling in witnesses for Until/Since eventualities over $QQ$.
+- *Chronicles* (`Metalogic/BXCanonical/Chronicle/`): the Burgess @burgess1982 dense-order construction, filling in witnesses for Until/Since eventualities over $QQ$.
 - *Filtration and quasimodels* (`Metalogic/BXCanonical/Filtration/`, `Quasimodel/`): finitary approximations used in the canonical chain construction.
 
 == Decidability

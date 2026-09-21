@@ -20,7 +20,7 @@ Formulas are defined inductively with six primitive constructors, with *Since* a
 ]
 
 The two temporal primitives are written infix and are *guard-first*: in $#snceOp($phi.alt$, $psi$)$ the *guard* is $phi.alt$, holding at all times strictly between a past witness and now, and the *event* is $psi$, witnessed at that strictly past time.
-$#untlOp($phi.alt$, $psi$)$ is the future mirror: the guard $phi.alt$ holds at all times strictly between now and a future witness, at which the event $psi$ is true.#footnote[Part of the literature, following Burgess's axiomatization of Until and Since @burgess1982axioms, instead writes the two operators prefix and event-first: there $U(psi, phi.alt)$ has the event $psi$ first and the guard $phi.alt$ second. The infix guard-first form used here reads aloud directly --- "$phi.alt$ since $psi$", "$phi.alt$ until $psi$" --- with the guard in subject position.]
+$#untlOp($phi.alt$, $psi$)$ is the future mirror: the guard $phi.alt$ holds at all times strictly between now and a future witness, at which the event $psi$ is true.#footnote[Part of the literature, following Burgess's axiomatization of Until and Since @burgess1982, instead writes the two operators prefix and event-first: there $U(psi, phi.alt)$ has the event $psi$ first and the guard $phi.alt$ second. The infix guard-first form used here reads aloud directly --- "$phi.alt$ since $psi$", "$phi.alt$ until $psi$" --- with the guard in subject position.]
 
 // CONFIRM(lean): Formula.snce and Formula.untl (Syntax/Formula.lean) take arguments guard-first, matching def:BL-semantics
 #figure(

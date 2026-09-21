@@ -138,7 +138,7 @@
   decidability, interpolation, and finite axiomatizability are known open and are not treated here.
 
   This document reports what is machine-checked in `FormalSystem/`, following the presentation of
-  Brast-McKie's task-frame semantics @brastmckie2026possibleworlds, available at
+  Brast-McKie's task-frame semantics @brastmckie2026construction, available at
   #link("https://benbrastmckie.com/publications/possible_worlds.pdf")[benbrastmckie.com].
 ]
 
@@ -437,7 +437,7 @@ Its logic is correspondingly S5, and @sec:objective-modality takes up what else,
 By Occurrence $H_(#taskframe)$ is never empty, so frame validity is never vacuous and
 $#taskframe #notsatisfies bot$ for every frame. Fixing $H_(#taskframe)$ with the frame does not
 make $#taskframe$ a *general frame* in the sense of Blackburn, de Rijke, and Venema
-@blackburnderijkevenema2001: a general frame restricts the admissible valuations to a designated
+@blackburn2002: a general frame restricts the admissible valuations to a designated
 subalgebra, whereas here every $|p_i| subset.eq #worldstate$ is admissible. What the frame
 constrains is the points of evaluation, not the propositions.
 
@@ -758,7 +758,7 @@ asserted about compactness of the full discrete class in either direction.
 Each system is recursively axiomatized, so its theorems are recursively enumerable whatever its
 completeness status. Decidability needs the non-theorems recursively enumerable as well, and the
 standard route is a finite model property: every non-theorem fails in some effectively enumerable
-finite model @chagrovzakharyaschev1997 @goldblatt1992logics. The premise that a finite model
+finite model @chagrovzakharyaschev1997 @goldblatt1992. The premise that a finite model
 property over $D = ZZ$ delivers this uniformly is false, and is retracted with two witnesses.
 
 #proposition("Failure of a uniform finite model property over $ZZ$")[
@@ -944,7 +944,7 @@ The obligation the chain exists to discharge is *eventuality-filling*. A sentenc
 $phi.alt #until psi$ in a chronicle's set at $t$ is a promise that $psi$ holds at some later
 point of the domain with $phi.alt$ throughout the interval; a chronicle need not keep such a
 promise, and a countermodel must. Each step of the chain keeps one promise, and because every
-potential counterexample is enumerated, the limit keeps them all.#footnote[`limit_satisfies_c5_strong` and its Since mirror `limit_satisfies_c5'_strong`, in the same module. The construction is Burgess's @burgess1982axioms, whose $omega$-chain over $QQ$ is what makes density available: a new witness can always be inserted between two existing points.]
+potential counterexample is enumerated, the limit keeps them all.#footnote[`limit_satisfies_c5_strong` and its Since mirror `limit_satisfies_c5'_strong`, in the same module. The construction is Burgess's @burgess1982, whose $omega$-chain over $QQ$ is what makes density available: a new witness can always be inserted between two existing points.]
 
 The limit chronicle induces a bundled family over $QQ$ satisfying the coherence conditions of the
 previous subsection, and the truth lemma then gives a countermodel. This is `completeness_dense`.
@@ -960,7 +960,7 @@ unavailable and the argument runs the other way: build a structure first, then s
   when it is $k$-equivalent to a structure assembled from finitely many one-class pieces, and
   *very good* when that decomposition is uniform. The pipeline shows the chronicle's limit domain
   is good, extracts a $k$-equivalent interval of $ZZ$, and transfers satisfiability across the
-  $k$-equivalence.#footnote[The decomposition technique is Doets's @doets1987; the step-by-step k-equivalence argument for Until/Since is Reynolds's @reynolds1992, as developed in Gabbay, Hodkinson, and Reynolds @gabbayhodkinsonreynolds1994.]
+  $k$-equivalence.#footnote[The decomposition technique is Doets's @doets1987; the step-by-step k-equivalence argument for Until/Since is Reynolds's @reynolds1992, as developed in Gabbay, Hodkinson, and Reynolds @gabbay1994.]
 ]
 #leansrc("Metalogic.WeakCanonical", "one_class")
 #leansrc("Metalogic.WeakCanonical", "VeryGood")
@@ -1417,7 +1417,7 @@ axiom above, which is first-order.
   The map $eta(a) := {U : a in U}$ is an injective homomorphism from the
   $(square.stroked, F, P)$-reduct of $A$ into the relational complex algebra of
   $(op("Uf")(A), R_square.stroked, R_F, R_P)$ @jonssontarski1951 @jonssontarski1952
-  @blackburnderijkevenema2001.
+  @blackburn2002.
 ]#footnote[
   The 1951/1952 papers construct a *perfect extension* and contain no occurrence of
   "ultrafilter"; the ultrafilter-frame presentation above is the modern restatement, and the
@@ -1593,4 +1593,4 @@ axiom above, which is first-order.
   caption: [Lean status of the six proof steps, by ingredient.],
 )
 
-#bibliography("bibliography.bib")
+#bibliography("../references.bib")

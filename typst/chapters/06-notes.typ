@@ -102,7 +102,7 @@ The irreflexive tense operators (primitive) are distinguished from their reflexi
 - *Frame definability is real*: density ($G G phi.alt arrow.r G phi.alt$), discreteness (Prior/Z1), and seriality genuinely characterize frame classes, which is what makes the `Base`/`Dense`/`ZTime` frame-class parameter of the proof system meaningful.
   Under reflexive semantics all of these collapse to trivial validity.
 - *Four completeness targets*: the base, dense, ZTime, and RTime systems each get their own soundness statement (`soundness`, `soundness_dense`, `soundness_ztime`, `soundness_rtime`) and their own completeness theorem, each in the strongest form its frame class admits (@sec:metalogic).
-- *Irreflexivity is not modally definable* @blackburnderijkevenema2001: no axiom forces the canonical accessibility to be irreflexive.
+- *Irreflexivity is not modally definable* @blackburn2002: no axiom forces the canonical accessibility to be irreflexive.
   The construction compensates with fresh-atom machinery --- the structured `Atom` type exists precisely so that a fresh atom is available outside any finite set --- and with the chronicle/transfer constructions of the metalogic chapter rather than a naive canonical model.
 - *Seriality is axiomatic, not automatic*: BX1/BX1$'$ ($top arrow.r F top$, $top arrow.r P top$) require every time to have a strict successor and predecessor time, which holds in every nontrivial ordered abelian group of durations.
 
@@ -119,7 +119,7 @@ The irreflexive tense operators (primitive) are distinguished from their reflexi
 
 #remark("Prior's Tradition")[
   Arthur Prior established tense logic using *strict* semantics: $F$ and $P$ quantify over strictly future and strictly past times, and temporal axioms genuinely characterize frame properties.
-  This tradition continues through Burgess @burgess1982axioms @burgess1984basic, Xu @xu1988until, Goldblatt, van Benthem, and Blackburn-de Rijke-Venema @blackburnderijkevenema2001, and the BX axiom system places the implementation squarely within it.
+  This tradition continues through Burgess @burgess1982 @burgess1984, Xu @xu1988until, Goldblatt, van Benthem, and Blackburn-de Rijke-Venema @blackburn2002, and the BX axiom system places the implementation squarely within it.
 ]
 
 #remark("Computer Science Conventions")[

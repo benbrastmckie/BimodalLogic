@@ -14,14 +14,14 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems ([slides](https://benbrastmckie.com/publications/pw_slides.pdf))
 
-**Bimodal Reference Manual**: [`typst/BimodalReference.typ`](typst/README.md) — the maintained two-part reference (formal *TM*, its Lean formalization, and the automated-reasoning tooling). Built on demand — `typst compile BimodalReference.typ build/BimodalReference.pdf` — rather than committed; `typst/SYNC-MAP.md` and `scripts/typst-sync-check.sh` keep its claims pinned to live source. The superseded LaTeX edition has been retired; the typst manual above is the sole maintained reference.
+**Bimodal Reference Manual**: [`typst/BimodalReference.typ`](typst/README.md) — the maintained two-part reference (formal *TM*, its Lean formalization, and the automated-reasoning tooling). Built on demand — `typst compile --root .. BimodalReference.typ build/BimodalReference.pdf` — rather than committed; `typst/SYNC-MAP.md` and `scripts/typst-sync-check.sh` keep its claims pinned to live source. The superseded LaTeX edition has been retired; the typst manual above is the sole maintained reference.
 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
 | Live `.lean` files | 504 |
 | Live lines of code | 155,535 |
-| Live comment lines | 93,974 |
+| Live comment lines | 93,975 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`

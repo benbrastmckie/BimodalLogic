@@ -1,7 +1,7 @@
 # Implementation Plan: Docstring and Citation Normalisation
 
 - **Task**: 636 - Docstring and citation normalisation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: 635 (landed at `eae409d04`)
 - **Research Inputs**: `specs/636_docstring_and_citation_normalisation/reports/01_docstring-citation-normalisation.md`
@@ -131,36 +131,36 @@ citer files.
 
 ---
 
-### Phase 1: Merge bibliographies and re-point typst [NOT STARTED]
+### Phase 1: Merge bibliographies and re-point typst [COMPLETED]
 
 - **Goal:** One bibliography at the repo root serving both Lean docstrings and both typst
   documents, with every key a later phase will cite already present.
 - **Tasks:**
-  - [ ] Union `typst/bibliography.bib` (62 entries) into root `references.bib` (26 entries).
+  - [x] Union `typst/bibliography.bib` (62 entries) into root `references.bib` (26 entries).
         22 root-only keys and 58 typst-only keys carry over unchanged.
-  - [ ] Resolve the 4 colliding keys per the measured per-key direction, not "root wins":
+  - [x] Resolve the 4 colliding keys per the measured per-key direction, not "root wins":
         `kamp1968` take typst's `@phdthesis` + `school`, carry root's `note`;
         `doets1987` take typst's `@phdthesis`, carry root's `note`, drop `verify before print`;
         `reynolds1992` take typst's `@article` + `journal`, add root's `pages` and `note`;
         `rabinovich2014` take root's entry whole (it alone has pages and a doi).
-  - [ ] Deduplicate the 6 same-work-different-key pairs to root's lowercase `authorYYYY` style:
+  - [x] Deduplicate the 6 same-work-different-key pairs to root's lowercase `authorYYYY` style: *(deviation: altered — a 7th same-work pair was found at implementation time, `brastmckie2026possibleworlds` vs root's `brastmckie2026construction` (both "The Construction of Possible Worlds", Brast-McKie 2026). It was deduplicated on the same rule and its 2 `.typ` citation sites rewritten, so the merged file carries no duplicate work.)*
         `burgess1982axioms`→`burgess1982`, `burgess1984basic`→`burgess1984`,
         `gabbayhodkinsonreynolds1994`→`gabbay1994`, `prior1967pastpresentfuture`→`prior1967`,
         `goldblatt1992logics`→`goldblatt1992`, `blackburnderijkevenema2001`→`blackburn2002`
         (same book; keep the root key, keep whichever year field the surviving entry carries and
         note the 2001/2002 edition question in the entry's `note`).
-  - [ ] Do **not** collapse `venema1993`/`venema1993antiaxioms` or `xu1988`/`xu1988until` —
+  - [x] Do **not** collapse `venema1993`/`venema1993antiaxioms` or `xu1988`/`xu1988until` —
         confirmed different works.
-  - [ ] Rewrite the 18 `.typ` citation sites the dedup moves: `burgess1982axioms` 9,
+  - [x] Rewrite the 18 `.typ` citation sites the dedup moves (20 with the 7th pair's 2): `burgess1982axioms` 9,
         `blackburnderijkevenema2001` 4, `gabbayhodkinsonreynolds1994` 2, `burgess1984basic` 2,
         `goldblatt1992logics` 1, `prior1967pastpresentfuture` 0 (uncited).
-  - [ ] Strip the 15 `note = {verify before print}` maintainer markers on merge (a tooling note).
+  - [x] Strip the 15 `note = {verify before print}` maintainer markers on merge (a tooling note).
         Carry root's substantive `note` fields through: measured, typst's IEEE default does not
         render `note`, so internal commentary cannot leak into either PDF.
-  - [ ] Re-point `typst/FormalFoundations.typ:1596` and `typst/BimodalReference.typ:232` to
+  - [x] Re-point `typst/FormalFoundations.typ:1596` and `typst/BimodalReference.typ:232` to
         `#bibliography("../references.bib", …)`; update `typst/README.md:35,43,205`. Delete
         `typst/bibliography.bib` once both documents compile against the root file.
-  - [ ] **ISOLATED ITEM — user-overridable default.** The two dangling bibkeys at
+  - [x] **ISOLATED ITEM — user-overridable default.** The two dangling bibkeys at
         `FormalSystem/Metalogic/Expressiveness.lean:67,69` (`stavi1979`, `gabbay1980`) resolve to
         nothing in either bibliography. The user was asked and has not answered. **Default:
         re-point each to an existing, already-verified key for the same content** —
@@ -174,7 +174,7 @@ citer files.
         the existing keys do NOT cover the cited content, **leave both lines exactly as they are
         and report it** — do not invent an entry.
   - [ ] Update `docs/development/PUBLICATION_REFACTOR.md:476,597` (its own prose naming the typst
-        bibliography path) to past tense.
+        bibliography path) to past tense. *(deviation: deferred to Phase 10 for `:476`, skipped for `:597` — `:476` describes the whole of the refactor's Phase 7, of which only the bib merge has landed, so past-tensing it now would falsify the record; `:597` is inside a verbatim blockquote of the recorded task brief, which is a historical record and is preserved verbatim.)*
 - **Timing:** 1.5 hours
 - **Depends on:** none
 - **Verification Tier:** interface

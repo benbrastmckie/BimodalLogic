@@ -69,7 +69,7 @@ The primitive schemata are MT, M5 and MK (the paper's `def:S5`); M4 and MB are d
 
 === Layer 3: BX Temporal (11 primitive; mirrors derived by TR)
 
-The temporal core consists of eleven schemata in future/past mirror pairs, following Burgess @burgess1982axioms @burgess1984basic and Xu @xu1988until for Until/Since logic on linear orders.
+The temporal core consists of eleven schemata in future/past mirror pairs, following Burgess @burgess1982 @burgess1984 and Xu @xu1988until for Until/Since logic on linear orders.
 The primed names denote past mirrors, which are derived by the TR rule rather than primitive.
 
 #{
@@ -106,7 +106,7 @@ The primed names denote past mirrors, which are derived by the TR rule rather th
     [BX13$'$], [], [`DerivedAxioms.enrichmentSince`], [$p and (phi.alt #snce psi) arrow.r (phi.alt #snce (psi and (phi.alt #untl p)))$],
     table.hline(),
   ),
-  caption: [BX temporal layer. Gaps in the structural numbering (BX2, BX8, BX9, BX14) mark schemata of Burgess @burgess1982axioms that were removed as unsound or unnecessary under the strict-witness/open-guard semantics; see the source comments in `ProofSystem/Axioms.lean`. TB, TL and CN are stated as the paper states them, with 3-way disjunctions right-associated; their pre-paper forms ($top arrow.r F top$, and TL and CN in the former disjunct order and grouping) are derived (`DerivedAxioms.serialFutureImp`, `DerivedAxioms.tempLinearityLegacy`, `DerivedAxioms.linearUntilLegacy`). The primed rows are derived by TR.],
+  caption: [BX temporal layer. Gaps in the structural numbering (BX2, BX8, BX9, BX14) mark schemata of Burgess @burgess1982 that were removed as unsound or unnecessary under the strict-witness/open-guard semantics; see the source comments in `ProofSystem/Axioms.lean`. TB, TL and CN are stated as the paper states them, with 3-way disjunctions right-associated; their pre-paper forms ($top arrow.r F top$, and TL and CN in the former disjunct order and grouping) are derived (`DerivedAxioms.serialFutureImp`, `DerivedAxioms.tempLinearityLegacy`, `DerivedAxioms.linearUntilLegacy`). The primed rows are derived by TR.],
   )
 }
 
@@ -117,7 +117,7 @@ Highlights of the layer:
 - *Self-accumulation and absorption* (BX5/BX6 and mirrors) resolve Until-eventualities axiomatically: an eventuality enriches its own guard, and deferred eventualities collapse.
 - *Linearity* (BX7, BX11 and mirrors) orders witnesses linearly, as required on linear temporal orders.
 - *Eventuality bridges* (BX10, BX12 and mirrors) connect Until/Since to the derived $F$/$P$ operators.
-- *Enrichment* (BX13/BX13$'$, Burgess A3a/A3b @burgess1982axioms) carries information about the current point into the event of an Until/Since formula.
+- *Enrichment* (BX13/BX13$'$, Burgess A3a/A3b @burgess1982) carries information about the current point into the event of an Until/Since formula.
 
 === Layer 4: Modal-Temporal Interaction (1)
 
@@ -202,7 +202,7 @@ Valid on densely ordered frames (frame class `Dense`).
   caption: none,
 )
 
-On a dense order no point has an immediate successor, so the discreteness witness $bot #untl top$ is false everywhere (DI, the Burgess density axiom for Until/Since @burgess1982axioms).
+On a dense order no point has an immediate successor, so the discreteness witness $bot #untl top$ is false everywhere (DI, the Burgess density axiom for Until/Since @burgess1982).
 DI is included alongside DN because the density schema alone provably fails to derive it.
 
 === Layer 9: Reynolds Dedekind (2, Dedekind-only)

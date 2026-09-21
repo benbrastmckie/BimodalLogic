@@ -229,4 +229,4 @@
 
 #pagebreak()
 #heading(numbering: none)[References]
-#bibliography("bibliography.bib", style: "ieee")
+#bibliography("../references.bib", style: "ieee")

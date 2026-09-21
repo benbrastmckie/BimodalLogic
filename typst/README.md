@@ -6,18 +6,23 @@ automated-reasoning and training-data tooling.
 
 ## Building
 
+Both documents render their References section from the repository-root
+`references.bib`, which is the single bibliography shared with the Lean docstrings.
+Typst refuses to read a file outside its project root, so every invocation passes
+`--root ..` (or `--root .` when run from the repository root).
+
 ### Development (with live preview)
 
 ```bash
 cd typst
-typst watch BimodalReference.typ build/BimodalReference.pdf
+typst watch --root .. BimodalReference.typ build/BimodalReference.pdf
 ```
 
 ### Production build
 
 ```bash
 cd typst
-typst compile BimodalReference.typ build/BimodalReference.pdf
+typst compile --root .. BimodalReference.typ build/BimodalReference.pdf
 ```
 
 ## Book Structure
@@ -32,7 +37,8 @@ of book order):
 | II | Applications | Proof automation, the training-data pipeline, dual verification and worked examples |
 
 Back matter: `06-notes.typ` (implementation status and discrepancy notes) and the
-References section (rendered from `bibliography.bib`; only cited entries appear).
+References section (rendered from the repository-root `references.bib`; only cited
+entries appear).
 
 ## Directory Structure
 
@@ -40,7 +46,6 @@ References section (rendered from `bibliography.bib`; only cited entries appear)
 typst/
 ├── BimodalReference.typ           # Main document (two-part structure, front/back matter)
 ├── template.typ                   # Shared theorem environments, part-divider
-├── bibliography.bib                # Bibliography
 ├── SYNC-MAP.md                     # Dev-side claim-verification history (does not govern the PDF)
 ├── sync-check-whitelist.txt        # Whitelist for scripts/typst-sync-check.sh Check 1
 ├── notation/
@@ -202,7 +207,7 @@ back to similar fonts.
 This directory also hosts standalone research reports that are **not** chapters of
 `BimodalReference.typ` and are not `#include`d by it -- they import the book's
 `template.typ` and `notation/bimodal-notation.typ` so notation cannot drift, and cite
-the shared `bibliography.bib`, but compile to their own, separate PDF.
+the repository-root `references.bib`, but compile to their own, separate PDF.
 
 ### `FormalFoundations.typ`
 
@@ -212,5 +217,5 @@ representation theorem would require.
 
 ```bash
 cd typst
-typst compile FormalFoundations.typ build/FormalFoundations.pdf
+typst compile --root .. FormalFoundations.typ build/FormalFoundations.pdf
 ```

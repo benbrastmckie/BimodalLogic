@@ -64,7 +64,8 @@ All definitions are NON-VACUOUS (no `True`, `trivial`, or `Unit` bodies).
 
 ## References
 - [kamp1968], the original expressive-completeness theorem
-- [stavi1979], the Stavi connectives completing the Dedekind-incomplete case
+- [gabbay1994], Chapter 9, Section 3 — the Stavi connectives completing the
+  Dedekind-incomplete case
 - [rabinovich2014], the separation-based modern proof
-- [gabbay1980], the separation property
+- [gabbay1994], Chapter 10 — the separation property
 -/
