@@ -1,24 +1,18 @@
 {
+  "status": "planned",
   "task_number": 634,
-  "phase": "research",
-  "dispatch_seq": 13,
-  "status": "researched",
-  "phases_completed": 0,
-  "phases_total": 0,
+  "phase": "plan",
+  "dispatch_seq": 14,
   "session_id": "sess_1789955215_a3ad68_634",
-  "agent_type": "lean-research-agent",
+  "phases_completed": 0,
+  "phases_total": 6,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/634_language_extension_directories_and_probe_tests/reports/01_language-extension-directories-probes.md",
-      "summary": "Research report for the Phase 5 language-extension directory merge and test-root probe relocation."
+      "type": "plan",
+      "path": "specs/634_language_extension_directories_and_probe_tests/plans/01_language-extension-directory-merge.md",
+      "summary": "6-phase linear plan for the Phase 5 language-extension directory merge, carrying a measured namespace rename as declared scope, an atomic-batch merge phase, and the test-root probe relocation."
     }
   ],
-  "next_steps": [
-    "Plan must widen task 634 file_scope: the six XLanguage sibling aggregators, FormalSystem/{Syntax,Semantics,FormalSystem}.lean, the other 7 probe files, Tests/BimodalTest.lean, four scripts/ files, PUBLICATION_REFACTOR.md and ORGANISATION.md.",
-    "Plan must add a namespace-rename phase for the 16 Semantics/{X}Language files plus MinusLanguage/Soundness.lean; a paths-only merge cannot meet the acceptance criterion.",
-    "Plan must mark the scripted-move phase Commit Mode: atomic-batch (check-metalogic-cycles.sh is red between the git mv and the allowlist edit).",
-    "Plan must prohibit move-modules.py --namespace-map and require file-granular map rows."
-  ],
-  "notes": "Task 429 verified not_started with a clean Tests/ tree, so all 9 test-root files move in this pass and no follow-up task is needed. Operational note 3 is corrected: none of readme-lint's 21 broken ../Boneyard/ links sit in a language-extension README. readme-lint.sh and typst-sync-check.sh are pre-existing red and stay out of scope."
+  "next_steps": "Run /implement 634 to execute the plan",
+  "notes": "Scope change decided in-plan (not escalated): the task description's 'namespaces already match' premise is false for the 16 Semantics/{X}Language files, so the plan carries a file-granular namespace rename to FormalSystem.{X}Language. Phase 3 is Commit Mode: atomic-batch because check-metalogic-cycles.sh is red between the git mv and the ALLOWLIST edit. Phase 1 widens file_scope in specs/state.json before any tree change."
 }
