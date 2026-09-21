@@ -14,7 +14,7 @@
 // ============================================================================
 
 #import "../template.typ": *
-#import "../generated/status.typ": axiom-count, rule-count, sorry-total-excl-boneyard
+#import "../generated/status.typ": axiom-count, rule-count, sorry-total-excl-boneyard, lean-toolchain-pin, mathlib-tag, mathlib-rev, formalsystem-file-count, formalsystem-line-count, tests-file-count, tests-line-count, tools-file-count, tools-line-count
 
 #pagebreak()
 #heading(numbering: none)[Appendix: Reading the Lean Formalization] <lean-appendix>
@@ -47,13 +47,29 @@
 #show list: set block(above: 0.8em, below: 0.8em)
 #show figure: set block(above: 1em, below: 1em)
 
+// Scale figures. Every count below comes from generated/status.typ, which is
+// written by scripts/typst-status-counts.sh and diffed against a live
+// regeneration by Check 2 of scripts/typst-sync-check.sh. This helper only
+// punctuates them. It never computes one.
+#let figcount(n) = {
+  let s = str(n)
+  let parts = ()
+  let i = s.len()
+  while i > 3 {
+    parts.push(s.slice(i - 3, i))
+    i = i - 3
+  }
+  parts.push(s.slice(0, i))
+  parts.rev().join(",")
+}
+
 This appendix is a self-contained primer on Lean 4, for a reader who knows the mathematics of *TM* from Part I but has never opened a Lean file.
-It builds up from what Lean is to reading `FormalSystem/` itself, in nine short sections, each self-contained enough to skip to directly from a citation elsewhere in the book.
+It builds up from what Lean is to reading `FormalSystem/` itself, in fourteen short sections, each self-contained enough to skip to directly from a citation elsewhere in the book.
 
 - *Foundations.* What a proof assistant checks (@lean-appendix-what-is-lean), the two universes `Type` and `Prop` (@lean-appendix-types-props), and propositions as types (@lean-appendix-props-as-types).
-- *Declarations.* Inductive types, with `Formula` and `DerivationTree` as the running examples (@lean-appendix-inductive), then structures and classes (@lean-appendix-structures).
-- *Proofs and style.* The two proof styles used throughout the codebase, tactic and term (@lean-appendix-tactics), and its naming and documentation conventions (@lean-appendix-conventions).
-- *The project.* The build tool and repository layout (@lean-appendix-lake), and a worked guide to locating and trust-reading the declarations behind the book's soundness and completeness results (@lean-appendix-reading-source).
+- *Declarations.* Inductive types, with `Formula` and `DerivationTree` as the running examples (@lean-appendix-inductive), then structures and classes on the semantic layer (@lean-appendix-structures), dependent fields and subtypes on histories (@lean-appendix-dependent-fields), and definition by structural recursion on `TruthAt` (@lean-appendix-recursion).
+- *Proofs and style.* The two proof styles used throughout the codebase, tactic and term (@lean-appendix-tactics), a derived theorem of *TM* read end to end (@lean-appendix-derived-theorem), its semantic counterpart by transport (@lean-appendix-semantic-counterpart), what it buys to make derivations data (@lean-appendix-derivations-as-data), and the codebase's naming and documentation conventions (@lean-appendix-conventions).
+- *The project.* The build tool, the layer order and the four proof systems (@lean-appendix-lake), and a worked guide to locating, mapping and trust-reading the declarations behind the book's soundness, completeness and decidability results (@lean-appendix-reading-source).
 
 Code is displayed in two ways.
 A block introduced by a `>` line naming a module and declaration is an excerpt from the live source, with docstrings omitted and lines re-broken to fit the page.
@@ -818,13 +834,119 @@ The project configures it declaratively, in the #link("https://toml.io")[TOML] f
 
 - *Package and libraries.* The package is named `BimodalLogic`. Its main library, and its only default build target, is `FormalSystem`. The test library is `BimodalTest` (`srcDir = "Tests"`). The dataset and benchmark tooling of Part II is a separate library, `BimodalTools`, built only on request.
 - *Mathlib.* A `[[require]]` block pins Mathlib to a specific tagged revision, so the whole project builds against one frozen, reproducible mathematical library rather than a moving target.
-- *Toolchain.* `lean-toolchain` at the repository root pins the Lean 4 release itself, currently a `leanprover/lean4` prerelease tag. `elan`, Lean's toolchain manager, reads this file and switches toolchains automatically per directory.
+- *Toolchain.* `lean-toolchain` at the repository root pins the Lean 4 release itself. `elan`, Lean's toolchain manager, reads this file and switches toolchains automatically per directory.
 
 Three commands cover day-to-day reading.
 
 - `lake build` compiles the default target, which is the whole `FormalSystem` library, and `lake build FormalSystem` names the same target explicitly.
 - `lake env lean FILE.lean` runs the Lean elaborator on a standalone file with the project's dependencies and import path resolved. This is how this appendix's didactic snippets were checked, in a scratch file outside `FormalSystem/` and `Tests/`.
 - `import FormalSystem`, or a specific submodule such as `import FormalSystem.Syntax.Formula`, brings the library into scope in any such file.
+
+=== What Is Pinned, and How Much There Is
+
+The two pins and the three library sizes are the project's vital statistics.
+Every figure below is read from a generated file, regenerated from live source by a script and diffed against a fresh regeneration by the repository's own sync check, so none of them is typed by hand.
+
+#figure(
+  table(
+    columns: 2,
+    stroke: none,
+    align: (left, left),
+    table.hline(),
+    table.header([*Pin*], [*Value*]),
+    table.hline(),
+    [Lean toolchain], [#raw(lean-toolchain-pin)],
+    [Mathlib, requested tag], [#raw(mathlib-tag)],
+    [Mathlib, resolved commit], [#raw(mathlib-rev)],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+The tag and the commit are reported separately on purpose.
+The tag is what `lakefile.toml` asks for and the commit is what Lake actually fetched, and a tag that moved upstream would change the second while leaving the first alone.
+Mathlib has no version number of its own, since it tags releases to track the Lean release they build against, so the toolchain string and the Mathlib tag agreeing here is expected rather than a coincidence.
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, right, right),
+    table.hline(),
+    table.header([*Tree*], [*Files*], [*Lines*]),
+    table.hline(),
+    [`FormalSystem/`], [#figcount(formalsystem-file-count)], [#figcount(formalsystem-line-count)],
+    [`Tests/`], [#figcount(tests-file-count)], [#figcount(tests-line-count)],
+    [`BimodalTools/`], [#figcount(tools-file-count)], [#figcount(tools-line-count)],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+These are the three *live* trees.
+The archived `Boneyard/` is excluded from all three rows rather than folded into any of them, for the reason @lean-appendix-reading-source gives.
+The `FormalSystem/` file count is cross-checked against the generated library root, which carries exactly one `import` line per module, so a file added without regenerating that root is caught rather than silently mis-counted.
+
+=== The Layer Order
+
+`FormalSystem/` is not a flat collection of directories.
+Its modules are arranged in import layers, and no module imports from a layer above its own.
+
+#figure(
+  table(
+    columns: 2,
+    stroke: none,
+    align: (left, left),
+    table.hline(),
+    table.header([*Layer*], [*Directories*]),
+    table.hline(),
+    [0, foundation], [`ForMathlib/`, `Tactic/`, `Syntax/`, `ProofSystem/`, `PlusLanguage/`],
+    [1], [`Semantics/`],
+    [2], [`Metalogic/`],
+    [3], [`Theorems/`],
+    [4], [`Automation/`],
+    [5], [`Examples/`],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+Reading in that order is reading in dependency order, and it is the order this appendix's own sections follow.
+Two entries in layer 0 are worth a note.
+`ForMathlib/` imports nothing from the rest of the library at all, because it is written to be upstreamed into Mathlib unchanged.
+`Tactic/` holds only attribute and simp-set declarations, and it sits upstream of everything so that every module inherits them without importing anything else.
+
+=== Four Proof Systems
+
+The book studies *TM* alongside three neighboring object languages, and each is a self-contained component with its own formula type, axioms and derivation trees.
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header([*System*], [*Directory*], [*Language*]),
+    table.hline(),
+    [*TM*], [`Syntax/`, `ProofSystem/`], [the language of Part I],
+    [*TM*#super[−]], [`MinusLanguage/`], [tense primitives, @sec:conservative-extension],
+    [*TM*#super[+]], [`PlusLanguage/`], [one stability modal added, @ch:vlach-blstar],
+    [*TM*#super[⋆]], [`StarLanguage/`], [the wider extension of @ch:vlach-blstar],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+Each is developed over all four frame classes, using the same `FrameClass` index of @lean-appendix-types-props.
+There is a fifth component, `OpenLanguage/`, which carries a formula type, a truth definition and a validity notion but *no* proof system, so it appears in no row above.
+
+*TM*#super[+] is the one whose relationship to *TM* is settled at every frame class.
+Its soundness is `plus_soundness_base` and its three siblings, and conservativity over *TM* is `plusDerivable_ofFormula_iff` in the namespace `FormalSystem.Metalogic.Conservativity`, with a corollary per frame class.
+That result says a formula of *TM* is a theorem of *TM*#super[+] exactly when it is a theorem of *TM*, so the added modal proves nothing new in the old language.
+
+Two files with similar names hold different results, and conflating them is easy.
+`Metalogic/Conservativity/Plus.lean` aggregates the *TM*#super[+] result just described, which holds at all four frame classes.
+`Metalogic/Conservativity.lean` is about a different pair entirely, the *TM*#super[−] and *TM* bridge of @sec:conservative-extension, and its own module documentation is the place to read what is and is not established there.
 
 For general Lean 4 reference beyond this appendix's scope, see the #link("https://leanprover.github.io/theorem_proving_in_lean4/")[Theorem Proving in Lean 4] book, the #link("https://lean-lang.org/documentation/")[Lean 4 documentation], and the #link("https://leanprover-community.github.io/mathlib4_docs/")[Mathlib4 docs].
 
@@ -833,13 +955,14 @@ For general Lean 4 reference beyond this appendix's scope, see the #link("https:
 === The Directory Tour
 
 `FormalSystem/` is organized so that each directory backs a recognizable stretch of this book.
+@lean-appendix-lake gives the same directories in import order, which is the order to read them in.
 
-- `Syntax/` -- `Formula` and its derived operators (@sec:formulas).
-- `ProofSystem/` -- the #axiom-count axiom constructors of `Axiom`, and the #rule-count inference rules of the `DerivationTree` and `Derivable` machinery (@sec:proof-theory).
-- `Semantics/` -- task frames, models, histories, and truth conditions (@sec:truth).
-- `Metalogic/` -- soundness for every frame class, the completeness theorems, and the decision procedure (@sec:metalogic, @sec:decidability-practice).
-- `Theorems/` -- the derived-theorem library, including the perpetuity principles.
-- `Automation/`, `Examples/` -- the proof tactics and worked examples of Part II (@sec:proof-automation).
+- `Syntax/` -- `Formula` and its derived operators (@sec:formulas, @lean-appendix-inductive).
+- `ProofSystem/` -- the #axiom-count axiom constructors of `Axiom`, and the #rule-count inference rules of the `DerivationTree` and `Derivable` machinery (@sec:proof-theory), together with the `FrameClass` order and the functions on derivations of @lean-appendix-derivations-as-data.
+- `Semantics/` -- temporal orders, task frames, models, histories, and truth conditions (@sec:truth), which are the declarations @lean-appendix-structures through @lean-appendix-recursion read.
+- `Metalogic/` -- soundness and the completeness theorems at every frame class, the compactness results and their two refutations, the decision procedure, and the conservativity bridges (@sec:metalogic, @sec:decidability-practice). The result map below is the guide to it.
+- `Theorems/` -- the derived-theorem library, including the perpetuity principles read in @lean-appendix-derived-theorem.
+- `Automation/`, `Examples/` -- the proof tactics and worked examples of Part II (@sec:proof-automation), and the dataset pipeline of @sec:dataset-pipeline.
 - `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/` -- self-contained components for the neighboring object languages: the deferred tense-primitive subsystem of @sec:conservative-extension, and the extensions of *TM* surveyed in @ch:vlach-blstar.
 - `ForMathlib/` -- Mathlib-shaped extensions written to be upstreamed (the prime-filter API used in the algebraic route through completeness), importing nothing from the rest of `FormalSystem/`.
 - `Tactic/` -- the attributes and named `simp` sets the library registers, placed upstream of every other module.

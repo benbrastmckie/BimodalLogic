@@ -602,7 +602,7 @@ expected red and is not committed on its own.
 
 ---
 
-### Phase 9: Project overview, directory tour, and the section map [NOT STARTED]
+### Phase 9: Project overview, directory tour, and the section map [COMPLETED]
 
 **Goal**: Extend `lean-appendix-lake` and the directory tour with item (10), consuming Phase 8's
 generated figures, and bring the appendix's opening section map into line with the new arc.
@@ -616,9 +616,9 @@ generated figures, and bring the appendix's opening section map into line with t
 - [ ] Add the four proof systems TM, TM⁻, TM⁺ and TM⋆ with their directories, each over the four
       frame classes. Note `OpenLanguage/` as a fifth, semantics-only component with no proof
       system.
-- [ ] Add TM⁺ soundness and its conservativity over TM, citing
+- [x] Add TM⁺ soundness and its conservativity over TM, citing
       `Conservativity.plusDerivable_ofFormula_iff` (not the dispatch's non-existent `Plus`-nested
-      spelling). Name both `Metalogic/Conservativity.lean` (the TM⁻/TM bridge) and
+      spelling). *(deviation: altered — `Conservativity.plusDerivable_ofFormula_iff` does not resolve under Check 1 either, so the bare `plusDerivable_ofFormula_iff` is cited with its namespace `FormalSystem.Metalogic.Conservativity` named beside it)* Name both `Metalogic/Conservativity.lean` (the TM⁻/TM bridge) and
       `Metalogic/Conservativity/Plus.lean` (the four-class-complete TM⁺ result) and say which
       result lives where, so the two are not conflated.
 - [ ] Add the pinned Lean and Mathlib versions and the repository-scale figures, every one read
