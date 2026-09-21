@@ -20,6 +20,17 @@ a reader looks for one before writing another.
 - `translationFrame` — the translation flow over an arbitrary duration group
 - `permissiveFrame` — the frame whose task relation relates everything
 
+## Frames built in other components
+
+The linked census of every other standard frame is in the module docstring of
+[`Standard.lean`](Standard.lean). Frames added since, recorded here rather than by editing that
+module:
+
+- `sinkFrame` ([`OpenLanguage/OpenOckhamist.lean`](../../OpenLanguage/OpenOckhamist.lean)) — three
+  world states over `ℤ`, one step "stay, or fall into the sink"; built by `FrameOver.ofStep`, so
+  all four axioms of `def:frame` hold, *Saturation* through the finite carrier. It refutes the
+  stability transposition of the Ockhamist principle.
+
 ## Related Documentation
 
 - [Semantics README](../README.md)

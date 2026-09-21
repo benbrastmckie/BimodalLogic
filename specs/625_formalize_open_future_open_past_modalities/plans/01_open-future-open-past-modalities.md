@@ -446,33 +446,33 @@ open-past validity.
 
 ---
 
-### Phase 6: The Ockhamist separating pair [NOT STARTED]
+### Phase 6: The Ockhamist separating pair [COMPLETED]
 
 **Goal**: Deliverable (3): the principle valid for `▷` over every task frame, its stability
 transposition refuted on a frame with every `FrameOver` field discharged.
 
 **Tasks**:
-- [ ] Create `FormalSystem/OpenLanguage/OpenOckhamist.lean` importing `OpenReversal`,
+- [x] Create `FormalSystem/OpenLanguage/OpenOckhamist.lean` importing `OpenReversal`,
   `FormalSystem.Semantics.IntNormalForm`, `FormalSystem.PlusLanguage.PlusNonValidities`. Module
   docstring: on a tree "same moment" and "same past" coincide, on a task frame the present state
   fixes the alternatives and histories through a state share neither past nor future; the principle
   is Reynolds's interaction axiom and, given S5, equivalent to Thomason's AK12 — cite through
   existing `references.bib` keys only (C31), never an invented entry.
-- [ ] Formulas: `hnOpen`, `hnOpenMixed`, `hnStab`, with the bodies of the challenge preamble, and
+- [x] Formulas: `hnOpen`, `hnOpenMixed`, `hnStab`, with the bodies of the challenge preamble, and
   `hnStab_eq_ofPlus : hnStab p = ofPlus (…)` by `rfl`, so the refutation is visibly about an L⁺
   formula.
-- [ ] Validity: `hnOpen_openValid` (probe 01's `hn_open_pure`: the witness history is the original
+- [x] Validity: `hnOpen_openValid` (probe 01's `hn_open_pure`: the witness history is the original
   `σ`, agreement by `le_trans`), and `hnOpenMixed_openValid` either directly (probe 01's
   `hn_open_mixed`) or from `hnOpen_openValid` through `dofut → dstab`.
-- [ ] The frame: `SinkState` (`a | b | c`, hand `Fintype`, `Nonempty`), `abbrev sinkFrame :
+- [x] The frame: `SinkState` (`a | b | c`, hand `Fintype`, `Nonempty`), `abbrev sinkFrame :
   FrameOver intOrder := FrameOver.ofStep (fun x y => x = y ∨ y = SinkState.c) …`; step paths and
   `sinkHistA`, `sinkHistB` through `worldHistoryOfStepPath` (`a` resp. `b` before time 0, `c` from 0
   on); `sinkModel` with `p` true at `a` only.
-- [ ] Refutation: `hnStab_refuted_sinkFrame : ¬ sinkFrame.toTaskFrame.OpenValidOn (hnStab p)` (port
+- [x] Refutation: `hnStab_refuted_sinkFrame : ¬ sinkFrame.toTaskFrame.OpenValidOn (hnStab p)` (port
   probe 01's `hn_stab_refuted`, closing with `simp` on the constructor disequality);
   `not_openValid_hnStab`; and the L⁺-level `not_plusValid_hnStab` through `openValid_ofPlus_iff`.
-- [ ] Add `"OpenOckhamist": 1`, the aggregator import, the README rows; register `sinkFrame` in the
-  linked census of `FormalSystem/Semantics/Frames/README.md`; regenerate the root.
+- [x] Add `"OpenOckhamist": 1`, the aggregator import, the README rows; register `sinkFrame` in the
+  linked census of `FormalSystem/Semantics/Frames/README.md`; regenerate the root. *(deviation: altered — the linked census is in the module docstring of `Semantics/Frames/Standard.lean`, not in that README; editing an existing Lean module is a plan non-goal and would invalidate its importers' oleans, so the row landed in the README under a new subsection "Frames built in other components" that points at the census)*
 
 **Timing**: 1.5 hours
 
@@ -488,6 +488,7 @@ transposition refuted on a frame with every `FrameOver` field discharged.
 
 **Verification**:
 - `lake build FormalSystem.OpenLanguage.OpenOckhamist` green and warning-free
+- **Measured profiles (phase note)**: `hnOpen_openValid`, `hnOpenMixed_openValid`, `hnStab_refuted_sinkFrame`, `not_openValid_hnStab`, `openValid_reflectTime`, `openTruthAt_rev` are all `[propext, Classical.choice, Quot.sound]`; `openValid_ofPlus_iff` is `[propext]`. The expectation below that `hnOpen_openValid` would be `[propext]`-class was wrong: `dofut_iff` uses `by_contra`, as the inherited `dstab_iff` does. Pin the MEASURED values in Phase 8.
 - `#print axioms` on `hnOpen_openValid` and `hnStab_refuted_sinkFrame` recorded in the phase notes for
   Phase 8 (expected `[propext]`-class and `[propext, Classical.choice, Quot.sound]` respectively —
   the `ofStep` route inherits `Classical.choice` from `saturation_of_finite`)

@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenClasses
+import FormalSystem.OpenLanguage.OpenOckhamist
 import FormalSystem.OpenLanguage.OpenReversal
 import FormalSystem.OpenLanguage.OpenTruth
 import FormalSystem.OpenLanguage.OpenValidity
@@ -54,6 +55,10 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.OpenReversal` — the converse frame of `lem:time-reflection` (`FrameOver.rev`,
   `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`), the class swaps, the transport theorem
   `openTruthAt_rev`, and `openValid_reflectTime`: validity is closed under time reflection
+- `OpenLanguage.OpenOckhamist` — the separating pair: the Ockhamist principle `Pα → ▷P▷̂α` valid
+  over every task frame (`hnOpen_openValid`), and its stability transposition `Pp → ⊡P⟐p`
+  refuted on `sinkFrame`, a three-state integer-time frame satisfying every frame axiom
+  (`hnStab_refuted_sinkFrame`)
 
 ## Design decisions
 
