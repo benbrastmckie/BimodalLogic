@@ -97,6 +97,9 @@
 #       .lean docstring under FormalSystem/, BimodalTools/ and Tests/ resolves in the
 #       repository-root references.bib; bib entries cited by no .lean and no .typ file
 #       are REPORTED, never gated
+#   C32 Every relative markdown link inside a live .lean comment under FormalSystem/,
+#       BimodalTools/ and Tests/ resolves on disk relative to the citing file; a
+#       path-shaped target filter keeps inline mathematics (`[z_0, z_1](x, y)`) out
 #   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -680,6 +683,13 @@ ENFORCE_C30=${ENFORCE_C30:-1} # no blanket linter suppression or unscoped heartb
 # guards -- an unreadable references.bib, an empty walk, or zero `References` blocks found -- exit
 # 2, and exit 2 is NOT suppressed by ENFORCE_C31=0.
 ENFORCE_C31=${ENFORCE_C31:-1} # every References-block bibkey resolves in references.bib (enforced)
+# C32 asserts that every relative markdown link inside a live .lean comment resolves on disk,
+# relative to the citing file. The tree is clean the day the check lands (the broken links were
+# repaired by the docstring sweep that preceded it), so it ships ENFORCED with no soft window, on
+# the C31 precedent. Never flip it to 0 to quiet a failure: fix the path, or rewrite the link as
+# the normal form's backticked repository-relative path. NOTE: an empty walk exits 2, and exit 2
+# is NOT suppressed by ENFORCE_C32=0.
+ENFORCE_C32=${ENFORCE_C32:-1} # every relative markdown link in a .lean comment resolves (enforced)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
@@ -4721,6 +4731,207 @@ if [ "$C31_STATUS" -eq 2 ]; then
   # An untrustworthy scan is an error in EVERY mode.
   fail C31 "bibkey scan could not be trusted (exit 2; not suppressed by ENFORCE_C31=0)"
 elif [ "$C31_STATUS" -ne 0 ] && [ "$ENFORCE_C31" -eq 1 ]; then
+  FAILURES=$((FAILURES + 1))
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C32: every relative markdown link inside a .lean comment resolves on disk
+#
+# WHY THIS EXISTS: C13 resolves the relative markdown links of docs/ and README.md, and
+# scripts/readme-lint.sh reads README.md files only, so a `[text](path)` link written inside a
+# .lean docstring was read by nothing. 37 of them were broken when the docstrings were last
+# swept -- 16 of those stale `Logos/Core/...` paths from before the tree was renamed -- and every
+# target was resolvable, i.e. each was a rename nobody propagated, exactly the defect a gate
+# exists to catch.
+#
+# SCOPE: live .lean files under FormalSystem/, BimodalTools/ and Tests/, walked through
+# scripts/lib/live_walk.py so `Boneyard/` is excluded by the one shared definition of "live".
+# Only COMMENT text is read (`/-- -/`, `/-! -/`, plain `/- -/` and `--` line comments -- a link in
+# a line comment is still documentation), via `comments_only` in
+# scripts/lib/lean_debug_artifacts.py, the same scan C27/C29/C30 mask with; a bracket-paren pair
+# in code or in a string literal is not a link. The target is resolved relative to the CITING
+# FILE'S OWN DIRECTORY, which is what a markdown renderer does and is the depth a hand-written
+# `../../` gets wrong.
+#
+# THE PATH-SHAPED FILTER IS LOAD-BEARING, NOT POLISH. Measured when this check was written: the
+# bare link regex `\[..\]\(..\)` matches 82 times in live .lean comments, and 71 of those are
+# inline mathematics -- `[z_0, z_1](x, y)`, `s^[m-n] b`, `f[a](root)` -- almost all in the Kamp
+# expressiveness subtree. Without a filter this check's very first run is a wall of false
+# positives and it is never trusted again. So a match is treated as a link only when its target
+# (a) is a conservative path token -- ASCII word characters, `.`, `/`, `-`, with an optional
+# `#fragment`; no whitespace, no comma, no subscript -- AND (b) contains a `/` or ends in a
+# recognised file extension. `http://`, `https://`, `mailto:` and `#` targets are skipped and a
+# `#fragment` is stripped, as C13 does. Filtered, the tree carries 8 relative links, all
+# resolving. The raw, external and path-shaped counts are all printed, so a filter that has
+# drifted too tight (hiding real links) or too loose is visible in the PASS line itself.
+#
+# As in C13, a target that exists only because it is gitignored is reported BROKEN: it resolves
+# in a working copy and fails in a fresh clone or on CI.
+#
+# OUT OF SCOPE: the `sub:` paper-anchor prefix and every other paper anchor (C15's subject; this
+# check reads link targets, never anchors), and backticked repository-relative paths, which are
+# the normal form's module cross-reference and are not markdown links.
+#
+# No anti-silence guard on a ZERO link count: the normal form prefers the backticked path over a
+# markdown link, so zero is a legitimate end state. The fixtures carry the matcher's soundness
+# instead. An empty walk still exits 2 in every mode. Runs regardless of --no-build.
+# ---------------------------------------------------------------------------
+python3 - <<'PYEOF'
+import os, re, subprocess, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+from live_walk import live_files  # noqa: E402
+from lean_debug_artifacts import comments_only  # noqa: E402
+
+ROOTS = ("FormalSystem", "BimodalTools", "Tests")
+LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+EXTERNAL = ("http://", "https://", "mailto:", "#")
+PATH_TOKEN = re.compile(r"^[A-Za-z0-9_./-]+(?:#[A-Za-z0-9_.:-]*)?$")
+EXTS = (".lean", ".md", ".typ", ".bib", ".tex", ".txt", ".toml", ".json", ".py", ".sh",
+        ".yml", ".yaml", ".pdf")
+
+
+def path_shaped(target):
+    if not PATH_TOKEN.match(target):
+        return False
+    path = target.split("#")[0]
+    return "/" in path or path.endswith(EXTS)
+
+
+def links(text):
+    """(raw, external, [(line, target)]): the third is the path-shaped relative links."""
+    raw = ext = 0
+    out = []
+    for idx, line in enumerate(comments_only(text).split("\n"), 1):
+        for target in LINK.findall(line):
+            raw += 1
+            if target.startswith(EXTERNAL):
+                ext += 1
+            elif path_shaped(target):
+                out.append((idx, target))
+    return raw, ext, out
+
+
+def resolves(citer, target):
+    """(exists, normalised full path), relative to the citing file's own directory."""
+    path = target.split("#")[0]
+    full = path if path.startswith("/") else os.path.join(os.path.dirname(citer) or ".", path)
+    return os.path.exists(full), os.path.normpath(full)
+
+
+# Each fixture is (source, expected path-shaped links).
+_FIXTURES = [
+    # a sibling and a parent-relative link in a module docstring
+    ("/-!\nSee [Search](Search.lean) and [Meta](../../Tactic/Meta.lean).\n-/\n",
+     [(2, "Search.lean"), (2, "../../Tactic/Meta.lean")]),
+    # the stale pre-rename shape this check exists for is READ (resolving it is the caller's job)
+    ("/-- See [Formula](Logos/Core/Syntax/Formula.lean#L10). -/\ndef x := 1\n",
+     [(1, "Logos/Core/Syntax/Formula.lean#L10")]),
+    # a `--` line comment is documentation too
+    ("-- see [the guide](../docs/guide.md)\ndef x := 1\n", [(1, "../docs/guide.md")]),
+    # inline mathematics is not a link: comma, whitespace, subscript, or no path shape at all
+    ("/-- `φ[z_0, z_1](x, y)` and `s^[m-n] b` via [f](succ a), `[z₀,z₁](x)`, `g[a](root)`. -/\n"
+     "def y := 1\n", []),
+    # external targets and pure fragments are skipped, as C13 skips them
+    ("/-- [site](https://example.org/a.lean) [mail](mailto:a@b.c) [here](#usage) -/\ndef z := 1\n",
+     []),
+    # a bracket-paren pair in CODE is not a link
+    ("def f (xs : Array Nat) := xs[0](Foo/Bar.lean)\n", []),
+    # nor is one inside a string literal
+    ('def s := "[doc](Foo/Bar.lean)"\n', []),
+]
+
+
+def c32_self_test():
+    wrong = []
+    for k, (src, want) in enumerate(_FIXTURES):
+        got = links(src)[2]
+        if got != want:
+            wrong.append((k, want, got))
+    # Resolution is relative to the CITING FILE, not the repository root: the same target must
+    # resolve from one directory and fail from another.
+    here = os.path.join("scripts", "lib", "probe.lean")
+    for citer, target, want in ((here, "../check-module-invariants.sh", True),
+                                (here, "live_walk.py#L1", True),
+                                ("probe.lean", "../check-module-invariants.sh", False),
+                                (here, "Logos/Core/Syntax/Formula.lean", False)):
+        got = resolves(citer, target)[0]
+        if got != want:
+            wrong.append(("resolve %s from %s" % (target, citer), want, got))
+    return wrong
+
+
+wrong = c32_self_test()
+if wrong:
+    print(f"FAIL  C32  fixture self-test: {len(wrong)} fixture(s) misjudged")
+    for k, want, got in wrong:
+        print(f"            fixture {k}: expected {want}, got {got}")
+    sys.exit(1)
+
+raw = ext = scanned = 0
+broken, present = [], []
+for root in ROOTS:
+    for path in live_files(root, ".lean"):
+        try:
+            text = open(path, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        scanned += 1
+        if "](" not in text:                # exact pre-filter: every link contains it
+            continue
+        r, e, found = links(text)
+        raw += r
+        ext += e
+        for ln, target in found:
+            ok, full = resolves(path, target)
+            if ok:
+                present.append((path, ln, target, full))
+            else:
+                broken.append((path, ln, target))
+
+if scanned == 0:
+    print("FAIL  C32  the walk produced ZERO .lean files across "
+          f"{', '.join(ROOTS)} -- the scan cannot vouch for a tree it never read")
+    print("            (exit 2: an untrustworthy scan is an error in every mode)")
+    sys.exit(2)
+
+# Judge a present target by what git tracks, not by what happens to be on disk (C13's guard).
+if present:
+    try:
+        r = subprocess.run(["git", "check-ignore", "--stdin"], text=True, capture_output=True,
+                           input="\n".join(sorted({p[3] for p in present})) + "\n")
+        ignored = set(r.stdout.splitlines()) if r.returncode in (0, 1) else set()
+    except OSError:
+        ignored = set()
+    for path, ln, target, full in present:
+        if full in ignored:
+            broken.append((path, ln, target + "  (exists locally but is gitignored)"))
+
+total = len(present) + len([b for b in broken if "gitignored" not in b[2]])
+counts = (f"{raw} link-shaped match(es) in {scanned} live .lean file(s): {total} path-shaped "
+          f"relative, {ext} external, {raw - ext - total} not path-shaped (inline mathematics)")
+if broken:
+    print(f"FAIL  C32  {len(broken)} of {total} relative markdown link(s) in .lean comments "
+          "do not resolve")
+    for path, ln, target in sorted(broken)[:20]:
+        print(f"            {path}:{ln}: -> {target}")
+    if len(broken) > 20:
+        print(f"            ... and {len(broken) - 20} more")
+    print("            resolved relative to the citing file's own directory; prefer the normal")
+    print("            form's backticked repository-relative path, which has no depth to get wrong")
+    print(f"            ({counts})")
+    sys.exit(1)
+print(f"PASS  C32  all {total} relative markdown link(s) in .lean comments resolve, relative to "
+      "the citing file")
+print(f"            ({counts};")
+print(f"            {len(_FIXTURES) + 4} fixture(s) green)")
+sys.exit(0)
+PYEOF
+C32_STATUS=$?
+if [ "$C32_STATUS" -eq 2 ]; then
+  # An untrustworthy scan is an error in EVERY mode.
+  fail C32 "docstring-link scan could not be trusted (exit 2; not suppressed by ENFORCE_C32=0)"
+elif [ "$C32_STATUS" -ne 0 ] && [ "$ENFORCE_C32" -eq 1 ]; then
   FAILURES=$((FAILURES + 1))
 fi
 echo

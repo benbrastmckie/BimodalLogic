@@ -195,33 +195,33 @@ unioned in. Treat any divergence as a finding to record, not a number to force.
 
 ---
 
-### Phase 2: C32 — docstring markdown-link check [NOT STARTED]
+### Phase 2: C32 — docstring markdown-link check [COMPLETED]
 
 **Goal**: Every relative markdown link inside a `.lean` docstring resolves on disk relative to the
 citing file, gated, with the load-bearing path-shaped filter that keeps inline math notation out.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/check-module-invariants.sh` immediately before editing.
-- [ ] Add `ENFORCE_C32=${ENFORCE_C32:-1}` alongside `ENFORCE_C31`, same comment idiom.
-- [ ] Implement C32 as a `python3` heredoc block directly after C31, walking `.lean` files through
-      `live_walk.live_files`.
-- [ ] Restrict matching to **doc-comment regions** (`/--` … `-/`, `/-!` … `-/`), not whole-file
+- [x] Re-read `scripts/check-module-invariants.sh` immediately before editing. *(completed)*
+- [x] Add `ENFORCE_C32=${ENFORCE_C32:-1}` alongside `ENFORCE_C31`, same comment idiom. *(completed)*
+- [x] Implement C32 as a `python3` heredoc block directly after C31, walking `.lean` files through
+      `live_walk.live_files`. *(completed)*
+- [x] Restrict matching to **doc-comment regions** (`/--` … `-/`, `/-!` … `-/`), not whole-file
       text — a link in a `--` line comment is still documentation and is in scope; a bracket-paren
-      pair in code is not.
-- [ ] Apply the path-shaped filter before treating a match as a link: target must match a
+      pair in code is not. *(completed: comment text read through a new comments_only view added to scripts/lib/lean_debug_artifacts.py, the scan C27/C29/C30 already mask with)*
+- [x] Apply the path-shaped filter before treating a match as a link: target must match a
       conservative path-token grammar (word characters, `.`, `/`, `-`; no whitespace, no comma)
       **and** contain at least one `/` or end in a recognised extension. Skip
-      `http://`/`https://`/`mailto:`/`#` targets and strip any `#fragment`, as C13 already does.
-- [ ] Resolve the target relative to the **citing file's own directory**, and reuse C13's
+      `http://`/`https://`/`mailto:`/`#` targets and strip any `#fragment`, as C13 already does. *(completed)*
+- [x] Resolve the target relative to the **citing file's own directory**, and reuse C13's
       `git check-ignore` guard so a target that exists only because it is gitignored is reported
-      broken (resolves locally, fails on CI).
-- [ ] Header comment records: the 72-false-positive measurement, why the filter is load-bearing and
-      not polish, `Boneyard/` exclusion, and `sub:` anchors out of scope.
-- [ ] Deliberate negative test: inject a broken relative link (e.g. a stale `Logos/Core/...` path)
+      broken (resolves locally, fails on CI). *(completed)*
+- [x] Header comment records: the 72-false-positive measurement, why the filter is load-bearing and
+      not polish, `Boneyard/` exclusion, and `sub:` anchors out of scope. *(completed: measured 82 raw matches / 71 inline mathematics / 3 external / 8 path-shaped, against the research figure of 80 / 72 / 8)*
+- [x] Deliberate negative test: inject a broken relative link (e.g. a stale `Logos/Core/...` path)
       into one `.lean` docstring, observe `FAIL C32` **and** a non-zero script exit; revert;
-      observe `PASS C32` and exit 0.
-- [ ] Commit the green result.
+      observe `PASS C32` and exit 0. *(completed: Commands.lean -> Logos/Core/Automation/Commands.lean in Tactics/Search.lean gave FAIL C32 + exit 1; revert gave PASS + exit 0)*
+- [x] Commit the green result. *(completed)*
 
 **Timing**: 1.5 hours
 

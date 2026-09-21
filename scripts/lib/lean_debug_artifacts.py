@@ -24,10 +24,12 @@ DIRECTIVE = re.compile(r"(?:^\s*|\bin\s+)(#check|#eval|#print|#reduce)(?![A-Za-z
 DBG = re.compile(r"\b(?:dbg_trace|dbgTrace)\b")
 
 
-def mask(text):
+def mask(text, _comment_spans=None):
     """Return `text` with every comment, string and char literal replaced by spaces.
 
     Newlines are always preserved, so line numbers in the masked text match the source.
+    `_comment_spans`, when a list, additionally receives the `(start, end)` span of every
+    comment character run; it is how `comments_only` reads the same scan from the other side.
     """
     out = list(text)
     n = len(text)
@@ -39,30 +41,35 @@ def mask(text):
             if out[k] != "\n":
                 out[k] = " "
 
+    def blank_comment(a, b):
+        blank(a, b)
+        if _comment_spans is not None:
+            _comment_spans.append((a, b))
+
     while i < n:
         c = text[i]
         if depth > 0:
             if text.startswith("/-", i):
                 depth += 1
-                blank(i, i + 2)
+                blank_comment(i, i + 2)
                 i += 2
             elif text.startswith("-/", i):
                 depth -= 1
-                blank(i, i + 2)
+                blank_comment(i, i + 2)
                 i += 2
             else:
-                blank(i, i + 1)
+                blank_comment(i, i + 1)
                 i += 1
             continue
         if text.startswith("/-", i):
             depth = 1
-            blank(i, i + 2)
+            blank_comment(i, i + 2)
             i += 2
             continue
         if text.startswith("--", i):
             j = text.find("\n", i)
             j = n if j < 0 else j
-            blank(i, j)
+            blank_comment(i, j)
             i = j
             continue
         # Raw string r"..." / r#"..."#, only when `r` is not the tail of an identifier.
@@ -90,6 +97,21 @@ def mask(text):
                 i = m.end()
                 continue
         i += 1
+    return "".join(out)
+
+
+def comments_only(text):
+    """The inverse view of `mask`: every character OUTSIDE a comment replaced by a space.
+
+    Block comments (docstrings and module docs included) and `--` line comments survive; code,
+    string literals and character literals do not. Same scan as `mask`, so the two can never
+    disagree about where a comment starts, and line numbers are preserved the same way.
+    """
+    spans = []
+    mask(text, spans)
+    out = [c if c == "\n" else " " for c in text]
+    for a, b in spans:
+        out[a:b] = text[a:b]
     return "".join(out)
 
 
@@ -141,6 +163,11 @@ def self_test():
     _, hits = count_lines('/- a\nb -/\n\n#eval 1\n')
     if hits != [4]:
         failures.append(("line-number preservation", [4], hits))
+    # `comments_only` is the same scan read from the other side.
+    src = 'def s := "-- not a comment" -- a comment\n/-- doc /- nested -/ more -/\ndef x := 1\n'
+    want = (" " * 28 + "-- a comment\n/-- doc /- nested -/ more -/\n" + " " * 10 + "\n")
+    if comments_only(src) != want:
+        failures.append(("comments_only", want, comments_only(src)))
     return failures
 
 
