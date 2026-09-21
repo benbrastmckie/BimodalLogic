@@ -1,34 +1,8 @@
 {
-  "status": "planned",
-  "agent_type": "planner-agent",
-  "delegation_path": ["orchestrator", "plan", "planner-agent"],
-  "session_id": "sess_1790024508_6b72c3_648",
-  "dispatch_seq": 5,
-  "task_number": 648,
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/648_fix_reference_book_defects_found_in_appendix_review/plans/01_fix-reference-book-defects.md",
-      "summary": "Nine-phase plan covering all nine defect items plus the live typst-sync-check blocker, sequenced in five dependency waves with per-phase verification tiers and scope hypotheses."
-    }
-  ],
-  "phase_count": 9,
-  "estimated_hours": 8.5,
-  "dependency_waves": [[1, 3], [2, 4, 5, 7], [6], [8], [9]],
-  "metadata": {
-    "session_id": "sess_1790024508_6b72c3_648",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic, editing any .lean file -- even a docstring-only change -- shifts FormalSystem/ and Tests/ line counts, which typst/generated/status.typ records and scripts/typst-sync-check.sh Check 2 polices against a live regeneration. Any plan that mixes Lean edits with typst work must therefore place all Lean edits in a single phase and end that phase by re-running scripts/typst-status-counts.sh and committing the regenerated typst/generated/status.typ, or every later phase's sync-check verification fails for a reason unrelated to its own work. This is a real cross-domain phase-ordering constraint, not a cosmetic one.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/648_fix_reference_book_defects_found_in_appendix_review/plans/01_fix-reference-book-defects.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["typst-sync-check", "Check 2", "status.typ", "line counts", "phase ordering", "lean docstrings"]
-    }
-  ],
-  "next_steps": "Run /implement 648 to execute the plan"
+  "status": "in_progress",
+  "agent_type": "general-implementation-agent",
+  "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+  "session_id": "sess_1790024508_6b72c3",
+  "dispatch_seq": 6,
+  "task_number": 648
 }

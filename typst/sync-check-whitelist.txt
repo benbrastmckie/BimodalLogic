@@ -159,9 +159,10 @@ Valid φ ↔ Derivable FrameClass.Base [] φ
 
 # --- Lean appendix: appendix-local didactic identifiers, defined only in
 # ax-lean-appendix.typ's own example code blocks (verified against the
-# current toolchain in
-# specs/620_lean_appendix_bimodal_reference/scratch/appendix_snippets.lean),
-# never claimed as FormalSystem/ library declarations ---
+# current toolchain in a session scratch artifact, deliberately not named
+# by path here, since the previous entry's named path has since been
+# archived out of existence), never claimed as FormalSystem/ library
+# declarations ---
 boxPImpP
 dBoxP : ⊢ □p
 h : Axiom _
@@ -178,7 +179,6 @@ lake env lean FILE.lean
 [[require]]
 srcDir = "Tests"
 lean-toolchain
-leanprover/lean4
 elan
 
 # --- Lean appendix: the no-"file:line"-citations convention, named
@@ -223,3 +223,18 @@ lakefile.lean
 # not declaration citations ---
 searchDepth := 10
 tableauFuel := 1000
+
+# --- Lean appendix: editorial review TODO comments (`//`-prefixed Typst
+# line comments, not rendered prose), marking exposition gaps for a future
+# pass. The backtick spans inside them are generic Lean-syntax placeholders
+# and illustrative signatures, not citations of a specific FormalSystem/
+# declaration ---
+structure ... where
+name : Type
+{ base := ..., .. }
+[inst : DecidableEq α]
+⦃x : T⦄
+class inductive Nonempty (α : Sort u) : Prop
+Nonempty.intro : α → Nonempty α
+Nonempty Bool
+∀ w u, (∀ x, 0 < x → ∃ y, ...) → u = w

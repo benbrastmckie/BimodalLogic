@@ -1,7 +1,7 @@
 # Implementation Plan: Fix Reference-Book Defects Found in Appendix Review
 
 - **Task**: 648 - Fix the defects found in `typst/BimodalReference.typ` and its surroundings during the accuracy-and-formatting review of `typst/chapters/ax-lean-appendix.typ`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours
 - **Dependencies**: Task 647 (extend the Lean appendix) — landed, final commit `a171dc67e`
 - **Research Inputs**: `reports/01_fix-reference-book-defects.md`
@@ -115,30 +115,37 @@ this round was not dispatched with the roadmap flag.)
 Phases within the same wave can execute in parallel. Wave 2's Phase 4 additionally requires
 Phase 3; Phases 2, 5 and 7 require only Phase 1.
 
-### Phase 1: Re-verify baseline and clear the sync-check blocker [NOT STARTED]
+### Phase 1: Re-verify baseline and clear the sync-check blocker [COMPLETED]
 
 **Goal**: Establish the live baseline for every item and make `scripts/typst-sync-check.sh` PASS,
 so later phases' verification runs are meaningful; complete item 2's whitelist half.
 
 **Tasks**:
-- [ ] Record the baseline: `git status --porcelain` and `git diff -- typst/chapters/ax-lean-appendix.typ`,
+- [x] Record the baseline: `git status --porcelain` and `git diff -- typst/chapters/ax-lean-appendix.typ`,
       `bash scripts/typst-sync-check.sh`, and `typst compile --root .. BimodalReference.typ` from
-      `typst/` (capture the warning text verbatim).
-- [ ] Produce a `pdftotext -layout` render and record the baseline match count for
-      `grep -E "Chapter 1[0-9]{3,}"` (currently 2).
-- [ ] If the 5 Check-1 violations still reproduce, add a new category to
+      `typst/` (capture the warning text verbatim). *(completed: compile clean with the two
+      expected thmbox font warnings; ax-lean-appendix.typ diff confirmed static (mtime predates
+      this dispatch), not live foreign work)*
+- [x] Produce a `pdftotext -layout` render and record the baseline match count for
+      `grep -E "Chapter 1[0-9]{3,}"` (currently 2). *(completed: confirmed 2, both "Chapter 1534"
+      in 00-introduction.typ)*
+- [x] If the 5 Check-1 violations still reproduce, add a new category to
       `typst/sync-check-whitelist.txt` covering exactly those spans, following the existing
       "Lean appendix: generic Lean tooling illustrations" category's comment style: illustrative
       Lean syntax appearing in editorial comments, not declaration citations. If they no longer
-      reproduce, add nothing and record the closure.
-- [ ] Item 2 (whitelist half): remove the `specs/`-path citation from the "Lean appendix:
+      reproduce, add nothing and record the closure. *(completed: the diff had grown since
+      research/plan time — 9 Check-1 violations reproduced, not 5, all from the same class of
+      uncommitted `// TODO:` review comments; whitelisted all 9 current spans under a new
+      category, per the plan's own risk mitigation for exactly this growth scenario)*
+- [x] Item 2 (whitelist half): remove the `specs/`-path citation from the "Lean appendix:
       appendix-local didactic identifiers" category comment, reusing the phrasing SYNC-MAP.md's
       most recent entry already models (a session scratch artifact, deliberately not named by
-      path) rather than inventing new wording.
-- [ ] Re-confirm `leanprover/lean4` has zero occurrences in `typst/chapters/`, then prune that one
+      path) rather than inventing new wording. *(completed)*
+- [x] Re-confirm `leanprover/lean4` has zero occurrences in `typst/chapters/`, then prune that one
       whitelist entry. Leave every other entry in the category in place — all were confirmed still
-      in use.
-- [ ] Re-run `bash scripts/typst-sync-check.sh` and confirm PASS (Checks 1, 2, 2b, 3 all clean).
+      in use. *(completed: confirmed zero occurrences in typst/chapters/, pruned)*
+- [x] Re-run `bash scripts/typst-sync-check.sh` and confirm PASS (Checks 1, 2, 2b, 3 all clean).
+      *(completed: PASS, 0 violations, 827 candidates)*
 
 **Timing**: 0.75 hours
 
