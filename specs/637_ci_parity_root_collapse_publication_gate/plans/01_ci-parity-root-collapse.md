@@ -1,7 +1,7 @@
 # Implementation Plan: CI parity, root collapse and publication gate
 
 - **Task**: 637 - CI parity, root collapse and publication gate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: 636 (complete)
 - **Research Inputs**: specs/637_ci_parity_root_collapse_publication_gate/reports/01_ci-parity-root-collapse.md
@@ -204,7 +204,7 @@ forward if the gate is closed.
 
 ---
 
-### Phase 1: Clear the latent header-linter debt [NOT STARTED]
+### Phase 1: Clear the latent header-linter debt [COMPLETED]
 
 **Goal**: Reach zero `linter.style.header` findings across `FormalSystem/`, measured by the real
 linter under re-elaboration, so that the collapse in Phase 2 can land under CI's existing `--wfail`
@@ -234,43 +234,43 @@ there means the invocation is wrong (a missing `-D` option, a wrong `--root`), n
 clean.
 
 **Tasks**:
-- [ ] Confirm the blind spot once, so the phase notes record it as observed rather than asserted: on
+- [x] Confirm the blind spot once, so the phase notes record it as observed rather than asserted: on
       the untouched tree, `lake build --wfail` is green and re-elaborates nothing, while the probe on
       `FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFix/ConcatPin.lean` reports a finding.
-- [ ] Build the candidate list cheaply with a throwaway text pre-filter (scratchpad only, never
+- [x] Build the candidate list cheaply with a throwaway text pre-filter (scratchpad only, never
       committed): files whose first non-import command is not `/-!`, and files importing `Lean`,
       `Lean.Meta`, `Lean.Elab`, `Lean.Elab.Tactic`, `Std`, `Mathlib.Tactic` or any `Lake.*` module.
       The pre-filter only *nominates*; it is known to over-report (`Tactic/Attr.lean`).
-- [ ] Run the probe on every candidate and record the per-file verdicts. This is the authoritative
+- [x] Run the probe on every candidate and record the per-file verdicts. This is the authoritative
       finding list. Count **files**, not diagnostics — a docstring-position file emits one warning per
       command that precedes its docstring.
-- [ ] Fix each docstring-position finding by moving the module docstring to directly after the
+- [x] Fix each docstring-position finding by moving the module docstring to directly after the
       imports, above the offending command (`assert_not_exists`, `namespace`, `open`, or
       `set_option autoImplicit false`). Expected shapes: 6 files under `Semantics/` and
       `MinusLanguage/` with `assert_not_exists` first; 9 files, mostly under
       `Metalogic/Expressiveness/Kamp/EANegationFix/`, with `namespace` first; and
       `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` with `set_option autoImplicit false`
       first. Where a file carries a `set_option linter.style.longFile N` baseline "after its module
-      docstring", keep that relative order.
-- [ ] Fix each broad-import finding. Try **deleting** the `import Lean` line first: all five affected
+      docstring", keep that relative order. *(deviation: altered — the probe's 16 docstring-position files were 13 pure block moves, plus `WeakCanonical/RealModel/OrderIsoReal.lean` (its header prose was a plain `/-` comment *before* the imports; moved after them and promoted to `/-!`) and two files with no module docstring at all, `Automation/ProofSearch/Strategies.lean` and `Automation/Tactics/Commands.lean`, which were given one. The 13 moves preserve every line number outside the header region, so C20's line-anchored citations into the `EANegationFix/` files and `Semantics/Truth.lean` are untouched. Four generated README inventories were re-emitted for the changed line counts, two of them in task 614's declared territory — numeric cells only.)*
+- [x] Fix each broad-import finding. Try **deleting** the `import Lean` line first: all five affected
       files also import a `FormalSystem.*` module that reaches Mathlib, which already brings in most
       of `Lean`. If elaboration then fails, add the specific *leaf* modules the failing identifiers
       live in. Do **not** narrow to `Lean.Meta`, `Lean.Elab`, `Lean.Elab.Tactic` or `Std` — the same
       check rejects those. Only if no leaf set is workable, fall back to a suppression in the
       sanctioned form with a reason at the site (C29 requires the reason; C30 forbids the blanket
-      form), and record why in the phase notes.
-- [ ] Leave `FormalSystem/Tactic/Attr.lean` untouched. The probe reports nothing for it (it imports
+      form), and record why in the phase notes. *(completed — plain deletion sufficed in all five files; no leaf import and no suppression was needed)*
+- [x] Leave `FormalSystem/Tactic/Attr.lean` untouched. The probe reports nothing for it (it imports
       `Lean` alone, so the linter is never loaded), and its docstring records why it must stay that
       way. Re-confirm with the probe; do not edit.
-- [ ] `lake build --wfail` after the edits. The edited files and their dependents genuinely
+- [x] `lake build --wfail` after the edits. The edited files and their dependents genuinely
       re-elaborate here, so this build is meaningful for *them*; it proves the fixes compile, not that
       the tree is header-clean.
-- [ ] Re-run the probe on every fixed file and confirm silence.
-- [ ] Run the **full sweep** once — every `FormalSystem/**/*.lean`, not just the candidates — and
+- [x] Re-run the probe on every fixed file and confirm silence.
+- [x] Run the **full sweep** once — every `FormalSystem/**/*.lean`, not just the candidates — and
       confirm zero findings. This is the phase's exit gate and the only exhaustive evidence; it also
       catches whatever the pre-filter failed to nominate (duplicate imports, a malformed copyright
       block, `linter.directoryDependency`).
-- [ ] Confirm `git status --short` lists only the header-fix files, and that `FormalSystem.lean` and
+- [x] Confirm `git status --short` lists only the header-fix files, and that `FormalSystem.lean` and
       `FormalSystem/FormalSystem.lean` are untouched by this phase.
 
 **Timing**: 1.5 hours (dominated by the full sweep's CPU time, roughly one cold project build)
