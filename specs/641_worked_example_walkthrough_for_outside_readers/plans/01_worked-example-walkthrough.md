@@ -1,7 +1,7 @@
 # Implementation Plan: Task #641
 
 - **Task**: 641 - Worked example walkthrough for outside readers
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md
@@ -139,7 +139,7 @@ mid-plan may reorder 2/3/4 freely.
 
 ---
 
-### Phase 1: Module skeleton, formulas, and the two derivations [NOT STARTED]
+### Phase 1: Module skeleton, formulas, and the two derivations [COMPLETED]
 
 **Goal**: `FormalSystem/Examples/Walkthrough.lean` exists, is in the build graph, and carries the
 first leg: a derivation tree built by hand and the same theorem found by the automation.
