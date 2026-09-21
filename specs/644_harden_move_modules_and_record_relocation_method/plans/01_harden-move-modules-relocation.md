@@ -1,7 +1,7 @@
 # Implementation Plan: Harden move-modules and record relocation method
 
 - **Task**: 644 - Harden move-modules and record relocation method
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md

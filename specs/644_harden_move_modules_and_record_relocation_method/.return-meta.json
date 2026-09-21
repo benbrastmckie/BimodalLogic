@@ -1,22 +1,46 @@
 {
-  "status": "planned",
-  "dispatch_seq": 10,
+  "status": "implemented",
+  "dispatch_seq": 14,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/644_harden_move_modules_and_record_relocation_method/plans/01_harden-move-modules-relocation.md",
-      "summary": "Revised plan (v2): 7 phases kept; corrects the move-set predicate for file-granular rows, re-keys the namespace refusal on actual class-4 effect, and moves the acceptance replay to the pre-move commit where the 17-README figure is exact."
+      "type": "summary",
+      "path": "specs/644_harden_move_modules_and_record_relocation_method/summaries/01_harden-move-modules-relocation-summary.md",
+      "summary": "Implementation summary: five hardening changes to scripts/move-modules.py with red-before/green-after fixture tests, the pre-move replay result (17 provenance READMEs + 2 ADRs + SYNC-MAP skipped), the relocation playbook, and the harness caveat (INV red in the shared tree from a sibling's uncommitted edits)."
     }
   ],
-  "next_steps": "Run /orchestrate 644 --implement (or /implement 644) to execute the revised plan",
+  "completion_data": {
+    "completion_summary": "Hardened scripts/move-modules.py with --no-rewrite (three built-in defaults), an identical-sides warning with --strict, an ambiguous-stem refusal, a namespace-declaration refusal with --namespace-paths, and a moved-versus-rewritten report line with a zero-move non-zero exit; added the 28-test stdlib fixture harness scripts/test-move-modules.py including a history-gated replay that reports exactly the Expressiveness extraction's 17 provenance READMEs as skipped; and wrote docs/development/MODULE_RELOCATION.md. check-module-invariants.sh --no-build is red on INV only in the shared tree, caused by a concurrent sibling's uncommitted FormalSystem .lean edits; INV passes on an isolated export of HEAD plus this task's files."
+  },
+  "modified_files": [
+    "scripts/move-modules.py",
+    "scripts/test-move-modules.py",
+    "scripts/README.md",
+    "docs/development/MODULE_RELOCATION.md",
+    "docs/development/README.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a whole-repo gate harness is red in a working tree shared with concurrent agents, attribute the redness mechanically instead of arguing it: `git archive HEAD | tar -x -C $SCRATCH`, copy only your own working files over, `git init` + commit in the scratch copy, and run the gate there. Checks that depend on untracked build output (e.g. a warning budget reading .lake traces) will fail in the export for environmental reasons, so read the two runs together: a check is cleared if it passes in whichever environment it is measurable in.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/644_harden_move_modules_and_record_relocation_method/summaries/01_harden-move-modules-relocation-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["shared working tree", "concurrent agents", "git archive", "gate attribution", "isolated export", "harness red"]
+    },
+    {
+      "content": "Testing a hyphen-named, run-from-repo-root Python CLI in process: load it with importlib.util.spec_from_file_location (resolve the absolute path from __file__ before any chdir), build a disposable `git init` repo in tempfile.TemporaryDirectory, chdir in under try/finally, call the tool's run(argparse.Namespace(...)) under contextlib.redirect_stdout/stderr, and translate SystemExit into a return code. Keep every flag default in one run_tool helper and read new flags in the tool with getattr(args, name, default) so older caller-built Namespaces keep working. A historical replay can be tested the same way against `git archive <commit>` plus an empty .git directory, gated by unittest.skipUnless(git cat-file -e).",
+      "category": "PATTERN",
+      "source_artifact": "specs/644_harden_move_modules_and_record_relocation_method/summaries/01_harden-move-modules-relocation-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["unittest", "fixture repo", "importlib", "in-process CLI test", "git archive replay", "skipUnless"]
+    }
+  ],
   "metadata": {
-    "session_id": "sess_1790004043_997429_644",
-    "agent_type": "reviser-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "session_id": "sess_1790004043_997429",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
     "task_number": 644,
-    "phase_count": 7,
-    "estimated_hours": 10.5,
-    "reports_integrated": ["01_harden-move-modules-relocation.md"]
+    "phases_completed": 7,
+    "phases_total": 7
   }
 }
