@@ -513,7 +513,43 @@ is not mistaken for this task's regression.
 
 ---
 
-### Phase 8: Accept ADR-010, update ADR-009, and correct the stale prose [NOT STARTED]
+### Phase 8: Accept ADR-010, update ADR-009, and correct the stale prose [COMPLETED]
+
+**Completion note**: ADR-010 is **Accepted** (2026-09-20); ADR-009's status pointer now records
+that its location clause and frozen-LaTeX bullet are superseded, while its retention decision and
+four obligations stay in force. `MODULE_INVARIANTS.md`'s B0 and C11 rows describe the new scan
+roots, including B0's inverted load-bearing half and C11's own import regex.
+`PUBLICATION_REFACTOR.md` Phases 0 and 2 are marked DONE. `ci.yml`'s `--exclude '*/Boneyard/*'`
+is dropped, after verifying both forms exit 0 — it was genuinely a no-op, not a live filter.
+
+**Figures — measured, with the counting definition stated inline** (the Scope Hypothesis asked
+for confirmation, and three of the seven asserted figures were wrong):
+- ADR-009: 168 -> **169** archived files; 91,539 -> **91,983** archived lines; 536 -> **539**
+  import lines; 7 -> **8** waived; "49 recorded C11 waivers" -> **8**; "45 live `.lean` files"
+  -> **48**. The "168 of 646 files" ratio was re-expressed, since the two sides now live in
+  different trees: 169 archived against 534 live `.lean` under `FormalSystem/`.
+- ADR-010: "538 archived `import FormalSystem.*` lines ... are rewritten" was wrong in substance,
+  not only in its number — only the **178** lines naming the archive itself were rewritten; the
+  other **361** of 539 name live modules and were untouched. "48 live docstrings" is right as a
+  *file* count (47 under `FormalSystem/`, 1 under `Tests/`) and is now labelled as one. "43
+  markdown files" -> **45**. "5 typst files" is correct under the `.typ`-only definition (7 if
+  `typst/`'s own markdown is counted), so it stands, with the definition named.
+
+**Deviations**:
+- **The move tool corrupted six historical statements in ADR-010 and one in
+  `PUBLICATION_REFACTOR.md`**, collapsing "from `FormalSystem/Boneyard/` to `Boneyard/`" into
+  "from `Boneyard/` to `Boneyard/`" and similar tautologies in the gate-change table. All were
+  restored by hand. This is the tool's one irreducible blind spot: it cannot distinguish a
+  citation of a *current* location (rewrite) from a *historical* statement about the old one
+  (leave), and architectural records consist largely of the latter. Recorded here rather than
+  silently fixed, because any future use of the tool on a documented tree must hand-audit its
+  ADR diffs.
+- Two allowlist entries were added (`scripts/markdown-slash-path-allowlist.txt` for
+  `FormalSystem/Boneyard`, `scripts/module-invariants-allowlist.txt` for
+  `FormalSystem.Boneyard`), each with a recorded reason. Restoring the historical names made C12
+  and C5 red, correctly: those paths deliberately no longer resolve. An accepted record has to
+  say where the archive moved *from*, and the allowlists are the sanctioned mechanism for a
+  path that is intentionally unresolvable rather than stale.
 
 **Goal**: The architectural record matches the tree it describes.
 
@@ -569,18 +605,25 @@ format's cross-validation requirement are equal (both empty), as required.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0 at the end of Phases 5, 6 and 7.
-- [ ] `bash scripts/check-module-invariants.sh` (full, with build) exits 0 at the end of Phase 7.
-- [ ] `lake build` exits 0.
-- [ ] `lake build BimodalTest` exits 0.
-- [ ] `find . -type d -name Boneyard -not -path './.git/*' -not -path './.lake/*'` returns exactly
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0 at the end of Phases 5, 6 and 7.
+- [x] `bash scripts/check-module-invariants.sh` (full, with build) exits 0 at the end of Phase 7.
+- [x] `lake build` exits 0.
+- [x] `lake build BimodalTest` exits 0.
+- [x] `find . -type d -name Boneyard -not -path './.git/*' -not -path './.lake/*'` returns exactly
       `./Boneyard`.
-- [ ] `find .lake -path '*Boneyard*' -name '*.olean'` returns nothing.
-- [ ] C11 reports 539 import lines across 169 files, 8 waived (the carried, re-measured figures).
-- [ ] `--emit-inventory` regenerates and `INV --check` passes, with a non-zero archive-directory
+- [x] `find .lake -path '*Boneyard*' -name '*.olean'` returns nothing.
+- [x] C11 reports 539 import lines across 169 files, 8 waived (the carried, re-measured figures).
+- [x] `--emit-inventory` regenerates and `INV --check` passes, with a non-zero archive-directory
       count.
-- [ ] `git log --follow` on one archived file crosses the rename.
-- [ ] Zero task-number citations in `scripts/move-modules.py` and its `scripts/README.md` row (C9).
+- [x] `git log --follow` on one archived file crosses the rename.
+- [x] Zero task-number citations in `scripts/move-modules.py` and its `scripts/README.md` row (C9).
+
+
+All ticked against the final run: `lake build` exit 0, `lake build BimodalTest` exit 0, full
+harness `ALL CHECKS PASSED` (exit 0, zero gate failures), C11 at the carried 539 / 169 / 8, `INV`
+green with a non-zero archive-directory count, `./Boneyard` the only `Boneyard` directory, zero
+`.olean` beneath it, `git log --follow` crossing the rename, and zero task-number citations in
+`scripts/move-modules.py` or its `scripts/README.md` row.
 
 ## Artifacts & Outputs
 

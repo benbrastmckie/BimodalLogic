@@ -280,7 +280,7 @@ external reader would cite; every such phase lands before publication and before
 release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
 `bash scripts/check-module-invariants.sh` green, plus the phase-specific check named below.
 
-### Phase 0: Tooling for mechanical moves (no tree change)
+### Phase 0: Tooling for mechanical moves (no tree change) — DONE
 
 - Write `scripts/move-modules.py`: takes an `old.module -> new.module` mapping plus an optional
   namespace mapping, and in one pass rewrites `import` lines in `FormalSystem/`, `Tests/` and
@@ -309,11 +309,14 @@ release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
   publication. **Acceptance**: harness green; `scripts/readme-lint.sh` green; no absolute path
   under the maintainer's home directory remains in `docs/` or `typst/`. **ADR**: none.
 
-### Phase 2: Archive to the repository root — [CITE]
+### Phase 2: Archive to the repository root — [CITE] — DONE
 
 - `git mv` the archive from under `FormalSystem/` to a root-level `Boneyard/`; module names
-  `Boneyard.*` -> `Boneyard.*`. Rewrite the 538 archived imports and every citer
-  (48 live docstrings, 43 markdown files, the scripts, 5 typst files) with the Phase 0 tool.
+  `FormalSystem.Boneyard.*` -> `Boneyard.*`. Rewrite the 178 archived `import
+  FormalSystem.Boneyard.*` lines (of 539 archived import lines in total; the remaining 361 name
+  live modules and are untouched) and every citer — 48 live `.lean` files, 45 markdown files,
+  the scripts, 5 `.typ` files — with the Phase 0 tool. Landed as one commit of 225 renames plus
+  153 rewritten files, harness green.
 - Update B0's search root and C11's scan root; add the two new invariants ADR-010 names (no
   `Boneyard` in `lakefile.toml` or the root aggregator; no `import Boneyard.*` from live code).
 - Accept **ADR-010**; move ADR-009's status pointer accordingly.

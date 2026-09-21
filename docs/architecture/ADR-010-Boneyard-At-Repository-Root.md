@@ -2,17 +2,18 @@
 
 ## Status
 
-**Proposed** - 2026-09-19
+**Accepted** - 2026-09-20
 
 Supersedes the *location* clause of [ADR-009](ADR-009-Boneyard-Retention.md) and retires one of
 its three "why not cut" rationale bullets. ADR-009's retention decision, its four obligations
-and its "why not split" argument are untouched and remain in force. ADR-009 stays **Accepted**
-until this record is; the publication refactor programme's Boneyard phase
-(`docs/development/PUBLICATION_REFACTOR.md`) is what accepts it.
+and its "why not split" argument are untouched and remain in force; ADR-009 remains **Accepted**
+alongside this record, with its location clause now pointing here. The move was performed by the
+publication refactor programme's Boneyard phase (`docs/development/PUBLICATION_REFACTOR.md`),
+which is what accepted this record.
 
 ## Context
 
-ADR-009 decided that the archive ships. It did not decide *where*: `Boneyard/` was
+ADR-009 decided that the archive ships. It did not decide *where*: `FormalSystem/Boneyard/` was
 where the two archives happened to be consolidated under [ADR-005](ADR-005-Single-Boneyard.md),
 and the question of placement was never separately put.
 
@@ -24,7 +25,7 @@ under the library root. cslib's own archive README argues that this is exactly w
 is a sibling of `Cslib/` rather than a child: an archive under the library root would be demanded
 in the aggregator, and so pulled into the build, the linters and every census. The same holds
 here. With the archive under `FormalSystem/`, `mk_all --check` cannot be adopted at all; with it at
-the root, the check is one CI step. A root-level archive also keeps `Boneyard.*` out
+the root, the check is one CI step. A root-level archive also keeps `FormalSystem.Boneyard.*` out
 of the library's module namespace and out of generated API documentation, which currently lists
 169 modules that are never built.
 
@@ -33,8 +34,12 @@ depends on it" points at `latex/subfiles/04-Metalogic.tex`, and `latex/README.md
 whole LaTeX edition as a superseded reference edition that is not kept in sync with the Lean
 source. A rationale that rests on a document the repository has itself frozen is not a live
 rationale. The live justification is the maintained typst manual, which cites the archive from
-5 of its source files, together with the 48 live `.lean` docstrings, 43 markdown files and about
-a dozen scripts that name it. ADR-009's other two bullets stand unchanged.
+5 of its `.typ` source files, together with the 48 live `.lean` files that name it (47 under
+`FormalSystem/`, one under `Tests/`), 45 markdown files outside `specs/` and outside the archive,
+and 13 files under `scripts/`. Each figure is a *file* count, measured at the move; the
+definitions are given because the earlier drafts of this record disagreed with the tree by
+counting differently rather than by being out of date. ADR-009's other two bullets stand
+unchanged.
 
 ## Decision
 
@@ -42,15 +47,17 @@ a dozen scripts that name it. ADR-009's other two bullets stand unchanged.
    its four obligations (generated counts, durable provenance anchors, self-description, and
    machine-checked framing), is revisited. The archive still ships, and still says why.
 
-2. **The archive moves to the repository root**, from `Boneyard/` to `Boneyard/`,
+2. **The archive moves to the repository root**, from `FormalSystem/Boneyard/` to `Boneyard/`,
    as a sibling of `FormalSystem/`, `Tests/`, `docs/` and `typst/`. Its module names change from
-   `Boneyard.*` to `Boneyard.*`. Nothing under it is ever built, so this is a
+   `FormalSystem.Boneyard.*` to `Boneyard.*`. Nothing under it is ever built, so this is a
    change of module *name* only, never of a compiled artefact; the `#exit` guard at the top of
    every archived file is unchanged.
 
-3. **The move is scripted, never hand-edited.** The 538 archived `import FormalSystem.*` lines,
-   the 48 live docstrings, the 43 markdown files, the scripts and the typst sources are rewritten
-   by the programme's module-move tool in a single commit, and that commit ends with
+3. **The move is scripted, never hand-edited.** The 178 archived `import FormalSystem.Boneyard.*`
+   lines — of 539 archived import lines in total, the remaining 361 of which name *live* modules
+   and are therefore left untouched — together with the 48 live `.lean` files, the 45 markdown
+   files, the scripts and the typst sources, are rewritten by the programme's module-move tool
+   (`scripts/move-modules.py`) in a single commit, and that commit ends with
    `bash scripts/check-module-invariants.sh` green. This is the same answer ADR-006 asked for
    before any large relocation: one audited tool rather than a half-updated tree.
 
@@ -77,9 +84,9 @@ two invariants cslib's `check-boneyard-quarantine.sh` inspired:
 |---|---|---|
 | B0 | `find FormalSystem -type d -name Boneyard` must find exactly 1 directory | The same search over the whole repository (excluding `.lake/`, `.git/`) must find exactly 1, and it must be the root-level `Boneyard/` |
 | B0 (load-bearing half) | Archived `.lean` count under `FormalSystem/` is non-zero | Archived `.lean` count under `Boneyard/` is non-zero, and the live walk over `FormalSystem/` finds none |
-| C11 | Scans `Boneyard/**` for `import FormalSystem.*` / `import BimodalTest.*` | Scans `Boneyard/**`; the same resolution rule and the same waiver file |
+| C11 | Scans `FormalSystem/Boneyard/**` for `import FormalSystem.*` / `import BimodalTest.*` | Scans `Boneyard/**`; the same resolution rule and the same waiver file |
 | New | — | `Boneyard` appears nowhere in `lakefile.toml` and nowhere in the root aggregator `FormalSystem.lean` |
-| New | — | No live `.lean` file under `FormalSystem/` or `Tests/` imports `Boneyard.*` (today: zero live files import `Boneyard.*`, so this starts green) |
+| New | — | No live `.lean` file under `FormalSystem/` or `Tests/` imports `Boneyard.*` (at the time of the move: zero live files imported `FormalSystem.Boneyard.*`, so this started green) |
 
 `scripts/lib/live_walk.py` keeps filtering on the directory *name* (ADR-005's rule); the name
 does not change, so every traversal that uses it is correct before and after the move without

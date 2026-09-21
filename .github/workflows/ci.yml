@@ -105,8 +105,10 @@ jobs:
       - name: Check copyright headers (scripts/check-copyright-headers.sh --strict)
         run: |
           set -euo pipefail
-          echo "::group::bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem"
-          bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem
+          # No --exclude: the archive left FormalSystem/ entirely (ADR-010), so the former
+          # '*/Boneyard/*' exclusion no longer excludes anything from this scanned root.
+          echo "::group::bash scripts/check-copyright-headers.sh --strict FormalSystem"
+          bash scripts/check-copyright-headers.sh --strict FormalSystem
           echo "::endgroup::"
 
       - name: Check README health (scripts/readme-lint.sh)

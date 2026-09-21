@@ -4,13 +4,16 @@
 
 **Accepted** - 2026-09-07
 
-Supersession of the archive's *location* clause and of the frozen-LaTeX rationale bullet is
-proposed by [ADR-010](ADR-010-Boneyard-At-Repository-Root.md) (Proposed); the retention decision
-is not revisited, and this record remains in force until that ADR is accepted.
+The archive's *location* clause and the frozen-LaTeX rationale bullet are superseded by
+[ADR-010](ADR-010-Boneyard-At-Repository-Root.md) (Accepted, 2026-09-20), which moved the archive
+to the repository root: read every `FormalSystem/Boneyard/` in this record as the historical
+location, and `Boneyard/` for where the archive is now. The retention decision, the four
+obligations and the "why not split" argument are not revisited, and this record remains in
+force.
 
 ## Context
 
-`Boneyard/` holds 168 archived `.lean` files totalling 91,539 lines — roughly a
+`Boneyard/` holds 169 archived `.lean` files totalling 91,983 lines — roughly a
 quarter of the repository by line count, and the only place in the tree where a `sorry` appears
 in proof position. A reader encountering it for the first time reasonably asks two questions:
 does this code affect the results, and why is it here at all?
@@ -21,7 +24,7 @@ by construction, not by convention: `lakefile.toml`'s `lean_lib FormalSystem` ro
 `lake build` produces **zero** `.olean` files under any `Boneyard` path out of 546 built. Check
 **C3** independently asserts that the structural `sorry` count across the live tree is **zero**;
 check **B0** asserts that exactly one `Boneyard` directory exists and that excluding it removes a
-non-zero count (168 of 646 files). [ADR-005](ADR-005-Single-Boneyard.md) records why the
+non-zero count (169 archived files, against 534 live `.lean` files under `FormalSystem/`). [ADR-005](ADR-005-Single-Boneyard.md) records why the
 exclusion filters on the directory *name* rather than a path prefix, which is what makes those
 assertions robust against a second archive appearing.
 
@@ -45,10 +48,11 @@ from 96 files outside itself, and those citations are load-bearing rather than i
 - **The published prose depends on it.** `latex/subfiles/04-Metalogic.tex` cites the archive
   twice, at lines 383 and 389, in the course of explaining which completeness routes are current
   and which are historical record. Cutting the tree would leave the paper pointing at nothing.
-- **45 live `.lean` files name it in their docstrings**, usually to explain why a definition has
-  the shape it does — the alternative was tried, and where it went.
-- **Two gates already govern it.** C11 asserts that all 536 archived import lines in all 168
-  archived files resolve (7 waived in `scripts/boneyard-import-waivers.txt`); B0 asserts the
+- **48 live `.lean` files name it** (47 under `FormalSystem/`, one under `Tests/`), usually in a
+  docstring explaining why a definition has the shape it does — the alternative was tried, and
+  where it went.
+- **Two gates already govern it.** C11 asserts that all 539 archived import lines in all 169
+  archived files resolve (8 waived in `scripts/boneyard-import-waivers.txt`); B0 asserts the
   single-archive invariant. Both would have to be retired, and with them the only mechanism
   preventing the archive from silently rotting while it exists.
 
@@ -110,4 +114,4 @@ to:
 - [`Boneyard/README.md`](../../Boneyard/README.md) — the archive's own
   framing, counts, taxonomy and provenance
 - `scripts/check-module-invariants.sh` — B0, C1, C3, C11, `--emit-inventory` / `INV`
-- `scripts/boneyard-import-waivers.txt` — the 49 recorded C11 waivers
+- `scripts/boneyard-import-waivers.txt` — the 8 recorded C11 waivers

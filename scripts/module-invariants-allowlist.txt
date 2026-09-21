@@ -47,3 +47,8 @@ FormalSystem.PlusLanguage
 # `namespace FormalSystem.StarLanguage` -- Syntax/StarLanguage/Formula.lean; flat namespace,
 # read as a namespace at docs/theorem-index.md:45.
 FormalSystem.StarLanguage
+
+# `FormalSystem.Boneyard` -- the archive's PRE-ADR-010 module prefix, cited as history by
+# ADR-010 and by PUBLICATION_REFACTOR.md's Phase 2 record of the rename. Naming the old
+# prefix is the point; it resolves to nothing by construction after the move.
+FormalSystem.Boneyard

@@ -15,3 +15,9 @@
 # stale is a defect: fix it.
 
 # (empty)
+
+# `FormalSystem/Boneyard` -- the archive's PRE-ADR-010 location, cited as history by
+# ADR-009's status pointer and by ADR-010's Context, Decision and gate-change table. An
+# accepted record has to say where the archive moved FROM, and that path deliberately no
+# longer resolves. The current location, `Boneyard/`, is gated normally.
+FormalSystem/Boneyard
