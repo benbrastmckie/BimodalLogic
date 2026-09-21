@@ -69,10 +69,15 @@ USAGE
     # repair a tree the Δ pass was run over twice (idempotent; safe to rerun)
     python3 scripts/reanchor-lean-citations.py --recompute
 
+    # repair citations that NAME a declaration but land outside it (what C20's third
+    # assertion reports), by the declaration's name; idempotent; --files names TARGET files
+    python3 scripts/reanchor-lean-citations.py --by-name --files FormalSystem/Syntax/Formula.lean
+
     # validation probes: (1) a Δ=0 run over the whole tree changes zero bytes; (2) a
     # synthetic +3 moves exactly the citations it should; (3) a doubled Δ pass is repaired
     # by --recompute and a second --recompute is a no-op; (4) --recompute's one blind spot,
-    # a citer line content-edited in the same batch, is left un-repaired, by design
+    # a citer line content-edited in the same batch, is left un-repaired, by design; (5) a
+    # doubled Δ pass is ALSO repaired by --by-name, and a second --by-name is a no-op
     python3 scripts/reanchor-lean-citations.py --selftest
 """
 
@@ -85,6 +90,9 @@ import re
 import subprocess
 import sys
 import tempfile
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "lib"))
+import lean_citations  # noqa: E402
 
 # Mirrors C20's own citation pattern, scan roots and extensions exactly. Keep in
 # lockstep with scripts/check-module-invariants.sh; a divergence here means the tool
@@ -408,13 +416,88 @@ def recompute_counts(rev: str, dry_run: bool) -> tuple[int, int]:
     return fixed, touched
 
 
+def by_name(targets: list[str] | None, dry_run: bool, quiet: bool = False) -> tuple[int, int]:
+    """Re-point every NAMED citation that lands outside the declaration it names.
+
+    This is alignment by the cited declaration's NAME, where `recompute` aligns by the cited
+    line's content at `--base`. It repairs what no revision-relative pass can: a citation that
+    was already stale at `--base`. The reading of "named", of a declaration's span and of which
+    citations fail is scripts/lib/lean_citations.py -- the module C20's third assertion runs --
+    so this rewrites exactly the citations that assertion reports, and nothing else.
+
+    A failing citation is rewritten to the named declaration's own keyword line, and a
+    `:NNN-MMM` range keeps its length. It is idempotent by construction: a rewritten citation
+    lands inside the declaration it names, so it no longer fails and a second run has nothing
+    to do (`--selftest` probe 5). It refuses rather than guesses: a citation whose name chain
+    does not single out one declaration for it is reported as SKIPPED and left alone.
+
+    READ THE DIFF. The name is read from the sentence, and a sentence can put a declared name
+    directly before a citation of something else (``instances on `Foo` (`Foo.lean:12`)``). Such
+    a citation fails C20 and would be re-pointed here at `Foo`; the fix for it is to reword the
+    sentence so that it names what it cites, not to run this tool over it.
+
+    Returns (citations rewritten, citer files touched).
+    """
+    live = live_lean_files()
+    resolve = make_resolver(live)
+    want = None if targets is None else {os.path.normpath(t) for t in targets}
+    spans: dict[str, list] = {}
+    fixed = touched = 0
+    skipped: list[str] = []
+    for citer in citer_files():
+        text = open(citer, encoding="utf-8", errors="replace").read()
+        lines = text.split("\n")
+        out = list(lines)
+        changed = False
+        for idx, line in enumerate(lines):
+            group = -1
+            edits = []
+            for ref, num, s0, e0, is_cont, col in lean_citations.anchors_in(line, CITE):
+                group = group + 1 if is_cont else 0
+                target = resolve(ref)
+                if target is None or (want is not None and target not in want):
+                    continue
+                if target not in spans:
+                    spans[target] = lean_citations.decl_spans(
+                        open(target, encoding="utf-8", errors="replace").read().split("\n"))
+                verdict, chain, wanted = lean_citations.judge(
+                    lines, idx, col, num, group, spans[target], CITE)
+                if verdict != lean_citations.FAIL:
+                    continue
+                where = "%s:%d -> %s:%d (names %s)" % (citer, idx + 1, ref, num, "/".join(chain))
+                if wanted is None:
+                    skipped.append(where + ": the name chain singles out no declaration")
+                else:
+                    edits.append((s0, e0, num, wanted.line))
+            for s0, e0, num, new_n in sorted(edits, reverse=True):
+                tail = out[idx][e0:]
+                rng = re.match(r"-(\d+)\b", tail)
+                if rng and int(rng.group(1)) >= num:
+                    tail = "-%d" % (int(rng.group(1)) + new_n - num) + tail[rng.end():]
+                out[idx] = out[idx][:s0] + str(new_n) + tail
+                fixed += 1
+                changed = True
+        if changed:
+            touched += 1
+            if not dry_run:
+                open(citer, "w", encoding="utf-8").write("\n".join(out))
+    if not quiet:
+        verb = "would re-point" if dry_run else "re-pointed"
+        print("%s %d named citation(s) across %d citer file(s)" % (verb, fixed, touched))
+        for l in skipped:
+            print("SKIPPED %s" % l, file=sys.stderr)
+    return fixed, touched
+
+
 def selftest(rev: str) -> int:
-    """Four probes. (1) Δ=0 over the whole tree must be a byte-exact no-op. (2) A synthetic
+    """Five probes. (1) Δ=0 over the whole tree must be a byte-exact no-op. (2) A synthetic
     +3 must move exactly the citations into the edited file and nothing else. (3) The Δ pass
     run TWICE must produce the doubled shift, `--recompute` must repair it to exactly +3,
     and a second `--recompute` must be a no-op. (4) A citer line that was ALSO content-edited
     in the same batch must be left un-repaired by `--recompute` -- the documented limitation,
-    asserted so that it stays a stated behaviour and never becomes a silent one.
+    asserted so that it stays a stated behaviour and never becomes a silent one. (5) The same
+    doubled Δ pass, over a +40 edit, must be DETECTED by the declaration-span reading C20's
+    third assertion uses, repaired by `--by-name`, and leave a second `--by-name` nothing to do.
 
     Every probe snapshots what it will touch and restores it in a `finally`; all of them skip
     cleanly when the working tree carries modified .lean files."""
@@ -583,6 +666,37 @@ def selftest(rev: str) -> int:
     finally:
         restore()
 
+    print("== selftest 5: the Δ pass run twice over a +40 edit, then --by-name, twice ==")
+    try:
+        before_fail = by_name([target], dry_run=True, quiet=True)[0]
+        padded = orig.split("\n")
+        padded[end - 1:end - 1] = ["-- selftest padding"] * 40
+        open(target, "w", encoding="utf-8").write("\n".join(padded))
+        reanchor([target], rev, exact=False, dry_run=False, quiet=True)
+        reanchor([target], rev, exact=False, dry_run=False, quiet=True)
+        seen = by_name([target], dry_run=True, quiet=True)[0]
+        print("  after two Δ passes: %d named citation(s) land outside the declaration they "
+              "name (%d before the probe); C20 tier 1 sees none of them"
+              % (seen, before_fail))
+        if seen <= before_fail:
+            print("  FAIL: the double shift produced no named-citation failure to detect")
+            ok = False
+        fixed, touched = by_name([target], dry_run=False, quiet=True)
+        left = by_name([target], dry_run=True, quiet=True)[0]
+        print("  first --by-name: re-pointed %d citation(s) across %d citer file(s); %d still "
+              "failing" % (fixed, touched, left))
+        if fixed != seen or left != 0:
+            ok = False
+        fixed2, touched2 = by_name([target], dry_run=False, quiet=True)
+        print("  second --by-name: re-pointed %d citation(s) across %d citer file(s) "
+              "(0 across 0 = idempotent)" % (fixed2, touched2))
+        if (fixed2, touched2) != (0, 0):
+            ok = False
+        print("  (a shift smaller than the named declaration's span stays inside it and is "
+              "invisible to a span check; --recompute is the repair for those)")
+    finally:
+        restore()
+
     return 0 if ok else 1
 
 
@@ -598,6 +712,10 @@ def main() -> int:
     ap.add_argument("--recompute", action="store_true",
                     help="recompute every citation from --base by content alignment; "
                          "idempotent, and the way to repair a doubled Δ pass")
+    ap.add_argument("--by-name", action="store_true",
+                    help="re-point every named citation that lands outside the declaration "
+                         "it names (C20's third assertion); --files limits it to citations "
+                         "INTO those target files; idempotent")
     args = ap.parse_args()
 
     if args.selftest:
@@ -605,6 +723,10 @@ def main() -> int:
 
     if args.recompute:
         return recompute(args.base, args.dry_run)
+
+    if args.by_name:
+        by_name([os.path.normpath(f) for f in args.files] if args.files else None, args.dry_run)
+        return 0
 
     if args.files:
         edited = [os.path.normpath(f) for f in args.files]

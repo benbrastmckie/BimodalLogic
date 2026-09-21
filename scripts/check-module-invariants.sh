@@ -54,7 +54,10 @@
 #       section-comment credit (REPORTED, not gated; 90% floor, never fails)
 #   C20 file.lean:NNN citations: tier 1 gates any that is out of range or lands
 #       on a blank line (repo-wide); tier 2 reports any at all in
-#       publication-facing scope, gated by ENFORCE_C20=1
+#       publication-facing scope, gated by ENFORCE_C20=1; a third assertion gates any
+#       citation that NAMES a declaration but lands outside that declaration's span
+#       (the wrong-declaration defect a shifted citation produces and tier 1 cannot
+#       see), against a recorded baseline, and prints the name-less residual
 #   C21 Every declaration named in FormalSystem/MainResults.lean is axiom-pinned by
 #       C2 or C14 -- a subset assertion over the two existing baselines, NOT a third
 #       baseline
@@ -129,6 +132,7 @@
 #   scripts/nolint-attribute-allowlist.txt     reviewed in-source nolint attributes (C26)
 #   scripts/debug-artifact-allowlist.txt       allow-listed live debug directives (C27)
 #   scripts/warning-budget.txt                 per-file compiler-warning baseline (C28)
+#   scripts/c20-declaration-baseline.txt       recorded wrong-declaration citations still to repair (C20)
 #   references.bib                             the single bibliography every block-scoped key resolves in (C31)
 
 set -uo pipefail
@@ -583,6 +587,14 @@ ENFORCE_C16=${ENFORCE_C16:-1} # env_linter batch has no un-nolisted finding (enf
 # than file:line. The scope is clean, so this is enforced. Never flip it back to 0 to
 # quiet a new citation; remove the citation instead.
 ENFORCE_C20=${ENFORCE_C20:-1} # no file:line citations in publication scope (enforced)
+# C20's third assertion checks a NAMED file.lean:NNN citation against the span of the
+# declaration it names -- the wrong-declaration defect tier 1 cannot see. Its first run found
+# some three hundred citations already wrong; they are recorded in
+# scripts/c20-declaration-baseline.txt (the scripts/nolints.json model) and everything NOT on
+# that baseline is gated, so the assertion ships enforced while the debt is visible and shrinking
+# rather than either force-passed or blocking. Never flip it to 0, and never add a baseline key
+# to quiet a new failure: repair the citation with `reanchor-lean-citations.py --by-name`.
+ENFORCE_C20_DECL=${ENFORCE_C20_DECL:-1} # named citations land in the declaration they name (enforced)
 # C21 asserts that every result the main-results page advertises has its axiom set pinned by
 # one of the two baselines this script already carries. The scope is clean the day the page is
 # written, so this is enforced from the outset. Never flip it back to 0 to quiet a new name;
@@ -2194,12 +2206,55 @@ echo
 # cited by its path WITHOUT a line number plus the declaration name or a quoted
 # comment marker; such a citation carries no `:NNN`, so C20 does not read it, and it
 # cannot rot when the archive or a Mathlib bump reflows the target.
+#
+# THIRD ASSERTION (gated under ENFORCE_C20_DECL=1): the declaration-span cross-check.
+# Tier 1 detects a citation pointing at NOTHING. It cannot detect one pointing at the WRONG
+# declaration, and that is what a shifted citation almost always does: the re-anchoring tool was
+# once run twice over one batch, every citation into the batch moved by twice its delta, and tier
+# 1 PASSED, because a doubly shifted citation still lands on some non-blank line. So when the
+# citing sentence NAMES a declaration -- `` `foo` (`Bar.lean:12`) `` -- the cited line must fall
+# inside that declaration. The reading lives in scripts/lib/lean_citations.py, which
+# scripts/reanchor-lean-citations.py --by-name imports too, so the gate and its repair tool can
+# never disagree; this block passes it the SAME `CITE` and `resolve` tiers 1 and 2 use.
+#
+#   * "The declaration at that line" is a SPAN, not the keyword line: from the opening line of
+#     the declaration's own `/--` doc comment (walking back past `@[...]` lines, as C15's second
+#     assertion does) to the line before the next declaration's span. The exact-`theorem`-line
+#     reading was rejected on evidence: PriorExpressivenessDense.lean cites two lines of
+#     Kamp/KPlusFaithful.lean for two named theorems, where the first line is the closing `-/`
+#     of the first theorem's doc comment and the second is inside the second one's. Both are
+#     correct, and both are pinned below as a regression case that must keep resolving. (The
+#     line numbers are deliberately not written here: this file is a citer the re-anchoring
+#     tool reads, and a `file.lean:NNN` in a comment is a citation it would rewrite.)
+#   * A citation PASSES when any name in its sentence is declared in the target file with a span
+#     containing the line; FAILS when the names standing immediately before it resolve in the
+#     target file and none does; is UNVERIFIABLE (INFO, never failed, never guessed) when those
+#     names are declared nowhere in the target file -- an inductive constructor, a structure
+#     field, a local binder -- or only ambiguously; and is RESIDUAL when it carries no name.
+#   * THE BASELINE. The first run of this assertion found 300-odd named citations already
+#     pointing at the wrong declaration -- whole files whose citations sit a constant 12, 27 or
+#     35 lines above their targets, stale since before any tool re-anchored anything, and
+#     invisible to tier 1 throughout. They are recorded in scripts/c20-declaration-baseline.txt,
+#     one `citer|target|names` key per line, on the scripts/nolints.json precedent: the assertion
+#     gates every mismatch that is NOT on the baseline, so a new wrong citation -- above all a
+#     fresh double shift of citations that were right -- fails the day it appears, while the
+#     recorded debt is burned down by `reanchor-lean-citations.py --by-name`. The key carries no
+#     line number on purpose: a legitimate re-anchoring pass moves a baselined citation's number
+#     without making it any more wrong. A baseline key that no longer fails is reported for
+#     pruning. Never add a key to quiet a new failure: fix the number, name the declaration the
+#     line is actually in, or drop the line number and cite the name alone.
+#   * The residual -- citations carrying no name, which nothing but tier 1 can check -- is
+#     printed as a TODO line at every gate and never holds the gate hostage.
 # ---------------------------------------------------------------------------
-export ENFORCE_C20
+export ENFORCE_C20 ENFORCE_C20_DECL
 python3 - <<'PYEOF'
 import os, re, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+import lean_citations as lc  # noqa: E402
 
 ENFORCE = os.environ.get("ENFORCE_C20") == "1"
+ENFORCE_DECL = os.environ.get("ENFORCE_C20_DECL") == "1"
+DECL_BASELINE = os.path.join("scripts", "c20-declaration-baseline.txt")
 
 def pas(m): print("PASS  C20  %s" % m)
 def bad(m): print("FAIL  C20  %s" % m)
@@ -2319,6 +2374,112 @@ if pub:
         note("set ENFORCE_C20=1 to make this exit-code-affecting once the scope is clean")
 else:
     pas("tier 2: zero file.lean:NNN citations in publication-facing scope")
+
+# --- third assertion: a NAMED citation must land inside the declaration it names -------------
+lib_bad = lc.self_test()
+if lib_bad:
+    bad("declaration-span fixture self-test: %d fixture(s) misjudged" % len(lib_bad))
+    for k, want, got in lib_bad:
+        note("fixture %s: expected %s, got %s" % (k, want, got))
+    sys.exit(1)
+
+spans = {}
+verdicts = {lc.PASS: 0, lc.FAIL: 0, lc.UNVERIFIABLE: 0, lc.RESIDUAL: 0}
+conts = inside = 0
+mismatched, unnamed = [], []
+for p in files:
+    plines = open(p, encoding="utf-8", errors="replace").read().split("\n")
+    for idx, l in enumerate(plines):
+        group = -1
+        for ref, n, _s, _e, is_cont, col in lc.anchors_in(l, CITE):
+            group = group + 1 if is_cont else 0
+            target, _why = resolve(ref)
+            if target is None:
+                continue
+            if target not in spans:
+                if target not in cache:
+                    cache[target] = open(target, encoding="utf-8",
+                                         errors="replace").read().split("\n")
+                spans[target] = lc.decl_spans(cache[target])
+            verdict, chain, wanted = lc.judge(plines, idx, col, n, group, spans[target], CITE)
+            if is_cont:
+                conts += 1
+            else:
+                verdicts[verdict] += 1
+            if verdict == lc.PASS:
+                inside += 1
+            if verdict == lc.FAIL:
+                mismatched.append((p, idx + 1, ref, n, chain, wanted, target))
+            elif verdict == lc.UNVERIFIABLE and not is_cont:
+                unnamed.append((p, idx + 1, ref, n, chain))
+
+def key(p, target, chain):
+    return "%s|%s|%s" % (p.replace(os.sep, "/"), target.replace(os.sep, "/"), ",".join(chain))
+
+baseline = {}
+if os.path.isfile(DECL_BASELINE):
+    for bl in open(DECL_BASELINE, encoding="utf-8"):
+        bl = bl.strip()
+        if bl and not bl.startswith("#"):
+            baseline[bl] = baseline.get(bl, 0) + 1
+seen = {}
+new_fail = []
+for row in mismatched:
+    k = key(row[0], row[6], row[4])
+    seen[k] = seen.get(k, 0) + 1
+    if seen[k] > baseline.get(k, 0):
+        new_fail.append(row)
+stale = sorted(k for k in baseline if baseline[k] > seen.get(k, 0))
+on_baseline = len(mismatched) - len(new_fail)
+
+# The pinned regression case for the span definition (see the header): both must resolve.
+PIN_CITER = os.path.join("FormalSystem", "Metalogic", "Expressiveness", "PriorExpressivenessDense.lean")
+PIN_TARGET = os.path.join("FormalSystem", "Metalogic", "Expressiveness", "Kamp", "KPlusFaithful.lean")
+pin_bad = [r for r in mismatched if r[0] == PIN_CITER and r[6] == PIN_TARGET
+           and set(r[4]) & {"prior_hasFaithfulDedekindINF_dense", "prior_hasFaithfulDedekindSUP_dense"}]
+
+named = inside + len(mismatched)          # continuations included, unlike tier 1's total
+if new_fail or pin_bad:
+    msg = ("declaration span: %d named file.lean:NNN citation(s) land outside the declaration "
+           "they name and are not on %s" % (len(new_fail), DECL_BASELINE))
+    if ENFORCE_DECL:
+        bad(msg)
+        status = 1
+    else:
+        soft(msg + " (not enforced: ENFORCE_C20_DECL=0)")
+    for p, i, ref, n, chain, wanted, target in new_fail[:15]:
+        note("%s:%d  ->  %s:%d  names %s%s" % (
+            p, i, ref, n, "/".join("`%s`" % c for c in chain),
+            ", declared at line %d (span %d-%d)" % (wanted.line, wanted.start, wanted.end)
+            if wanted else ""))
+    if len(new_fail) > 15:
+        note("... and %d more" % (len(new_fail) - 15))
+    for r in pin_bad:
+        note("PINNED REGRESSION CASE no longer resolves: %s:%d -> %s:%d" % (r[0], r[1], r[2], r[3]))
+    note("fix the number (python3 scripts/reanchor-lean-citations.py --by-name --files <target>),")
+    note("or name the declaration the line is really in, or cite the name with no line number")
+else:
+    pas("declaration span: all %d named citation(s) land inside a declaration they name, or "
+        "are on the recorded baseline" % named)
+    note("(%d inside the named declaration's span, %d on %s; %d `:NNN` continuation(s) read)"
+         % (inside, on_baseline, DECL_BASELINE, conts))
+if on_baseline:
+    soft("declaration span: %d recorded mismatch(es) on %s still to repair with --by-name"
+         % (on_baseline, DECL_BASELINE))
+if stale:
+    inf("declaration span: %d baseline key(s) no longer fail; prune them from %s"
+        % (len(stale), DECL_BASELINE))
+    for k in stale[:10]:
+        note(k)
+if unnamed:
+    inf("declaration span: %d citation(s) name something the target file does not declare "
+        "(a constructor, a field, a binder) or declares ambiguously -- not checkable, not failed"
+        % len(unnamed))
+soft("declaration span: %d of %d file.lean:NNN citations carry no declaration name "
+     "(residual; only tier 1 can check them)" % (verdicts[lc.RESIDUAL], total))
+if os.environ.get("C20_DECL_PRINT_KEYS") == "1":
+    for row in sorted(mismatched):
+        print("KEY   " + key(row[0], row[6], row[4]))
 
 sys.exit(status)
 PYEOF
