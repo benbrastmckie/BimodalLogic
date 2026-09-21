@@ -189,7 +189,7 @@ first leg: a derivation tree built by hand and the same theorem found by the aut
 
 ---
 
-### Phase 2: Soundness out, completeness back [NOT STARTED]
+### Phase 2: Soundness out, completeness back [COMPLETED]
 
 **Goal**: The reader sees the tree turned into semantic validity and validity turned back into
 derivability, with the asymmetry between the two directions spelled out.

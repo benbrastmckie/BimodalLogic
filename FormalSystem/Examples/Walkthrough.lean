@@ -116,4 +116,49 @@ def boxedT : ⊢ tFml.box := DerivationTree.necessitation _ tByHand
 -/
 def tByAuto : ⊢ tFml := by modal_search
 
+/-!
+## 2. Soundness, outward
+
+Soundness is the direction that turns syntax into semantics. `soundness_validIn` takes a
+derivation tree from the empty context over a frame class and returns validity over that same
+class — `ValidIn fc φ`, meaning `φ` is true at every time of every history of every model
+whose frame satisfies the class. At the bottom class this is written `⊨ φ`.
+
+Nothing about the tree matters to the statement except that it exists and reaches `tFml`; the
+proof works by recursion over the constructors, showing each one preserves truth. The
+frame-class gate on the `axiom` constructor is exactly what makes that recursion go through:
+an axiom can only appear in a tree over a class where it is semantically valid.
+-/
+
+/-- Soundness carries the hand-built tree out to semantic validity: `⊨ □p → p`. -/
+theorem tValid : ⊨ tFml := soundness_validIn tByHand
+
+/-!
+## 3. Completeness, back
+
+Completeness runs the other way. `completeness_base` witnesses
+`WeakCompleteness FrameClass.Base`, which unfolds to
+`∀ ψ, ValidIn FrameClass.Base ψ → Derivable FrameClass.Base [] ψ`: every validity is derivable.
+Applied to the validity just obtained, it returns the formula to the proof system.
+
+Notice what the round trip does *not* do. Soundness consumed a `DerivationTree` — a piece of
+data. Completeness returns a `Derivable`, which is `Nonempty (DerivationTree …)` — the bare
+assertion that some tree exists, with no tree inside it to inspect. Going out and coming back
+therefore loses the derivation. This is not an oversight in how the statement was phrased: the
+completeness proof builds its derivation by a non-constructive canonical-model argument, and
+`Nonempty` is an honest record of what that argument delivers. A reader wanting a tree for a
+valid formula should reach for the decision procedure in the next section, which does return
+one.
+-/
+
+/-- Completeness carries the validity back to derivability — though not back to a tree. -/
+theorem tDerivable : Derivable FrameClass.Base [] tFml := completeness_base tFml tValid
+
+/-!
+The class-generic `soundness_validIn` used above is the empty-context form. The library also
+exposes a configuration-level `soundness`, which takes a frame, a model, a history and a time
+and hands back the truth of the formula *at that point*, for a reader who wants to watch truth
+evaluated somewhere concrete rather than quantified away; see `Metalogic/Soundness.lean`.
+-/
+
 end FormalSystem.Examples.Walkthrough
