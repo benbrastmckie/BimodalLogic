@@ -19,10 +19,12 @@ assumption lookup, modus-ponens decomposition, and the modal and temporal K rule
 the `modal_search` tactic in [`Commands.lean`](Commands.lean) runs.
 
 It works at the meta level in `TacticM`, constructing proof terms with `mkAppM` rather than
-returning proof witnesses. That is not a stylistic choice: `Axiom` is `Prop`-valued while
-`DerivationTree` is `Type`-valued, so a `find_axiom_witness : Formula → Option (Axiom φ)`
-cannot be written, and the same mismatch is why Aesop's proof reconstruction does not work over
-these goals.
+returning proof witnesses. That is not a stylistic choice: both `Axiom` and `DerivationTree` are
+`Type`-valued, not `Prop`-valued, and Aesop's proof reconstruction targets `Prop`-valued goals --
+it does not fire on `Type`-valued ones. This is why the search is hand-written at the meta level
+rather than delegated to Aesop: the retired `TMLogic` Aesop rule set
+(`Boneyard/RetiredTactics/README.md`) hit exactly this mismatch and, unreachable from any call
+site, was archived rather than fixed.
 
 This is the third of the three files that replaced the 1,210-line `Tactics/Helpers.lean`,
 alongside [`UserTactics.lean`](UserTactics.lean) and
@@ -61,8 +63,9 @@ Try to prove the goal by matching against axiom schemata.
 For each axiom pattern, attempts to construct `DerivationTree.axiom (Axiom.X ...)`
 and assign it to the goal. Returns true if successful.
 
-**Implementation**: Uses `mkAppM` to construct proof terms at the meta-level,
-which handles the Prop vs Type issue by working with expressions directly.
+**Implementation**: Uses `mkAppM` to construct proof terms at the meta-level, working with
+expressions directly rather than through Aesop, which does not fire on the `Type`-valued goals
+here (see the file docstring above).
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
@@ -560,8 +563,8 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
 Recursive proof search implementation.
 
 **Algorithm**:
-1. Check if goal matches any axiom schema `tryAxiomMatch` carries -- 42 of the
-   tree's 45
+1. Check if goal matches any axiom schema `tryAxiomMatch` carries -- 27 of the 29 axiom
+   schemata (`tryAxiomMatch`'s list omits the two Layer-9 Reynolds Dedekind axioms)
 1b. Check if goal matches any `@[tmLemma]` database lemma (with backward
     chaining through derivability premises)
 2. Check if goal is in assumptions

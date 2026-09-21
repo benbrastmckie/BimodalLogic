@@ -232,41 +232,52 @@ the post-change `pdftotext` grep.
 
 ---
 
-### Phase 3: Lean docstring corrections [NOT STARTED]
+### Phase 3: Lean docstring corrections [COMPLETED]
 
 **Goal**: Items 3, 5 and 6 on the Lean side. Three docstrings state machine-verified figures and
 the real reason the search runs in `TacticM`, and describe what the tactic macros actually do.
 
 **Tasks**:
-- [ ] Re-count from live source before editing: constructors of the `Axiom` inductive in
+- [x] Re-count from live source before editing: constructors of the `Axiom` inductive in
       `FormalSystem/ProofSystem/Axioms.lean`, and entries of `axiomCtors` in
       `FormalSystem/Automation/Tactics/Search.lean`. Confirm the omitted set by set difference.
-- [ ] `Search.lean` search docstring: replace the stale "42 of the tree's 45" with the same
+      *(completed: 29 constructors, 27 axiomCtors entries, omitted set {prior_U_gap, sep} --
+      matches the plan's stated figures exactly)*
+- [x] `Search.lean` search docstring: replace the stale "42 of the tree's 45" with the same
       "27 of the 29" framing `Commands.lean`'s `modal_search` docstring already uses, naming only
-      the two Layer-9 Reynolds Dedekind axioms.
-- [ ] `Search.lean` module docstring: remove the false `Axiom`-is-`Prop`-valued claim. State the
+      the two Layer-9 Reynolds Dedekind axioms. *(completed)*
+- [x] `Search.lean` module docstring: remove the false `Axiom`-is-`Prop`-valued claim. State the
       single true fact — `DerivationTree` is `Type`-valued, so Aesop-style proof reconstruction
       (which targets `Prop`-valued goals) does not apply, which is why the search is hand-written
       at the meta level — grounding the wording in the existing explanation in
-      `Boneyard/RetiredTactics/README.md` rather than inventing a new rationale.
-- [ ] `Commands.lean`: correct the "Axiom Prop vs Type issue" phrase in the `modal_search`
+      `Boneyard/RetiredTactics/README.md` rather than inventing a new rationale. *(completed; also
+      corrected the same claim in tryAxiomMatch's own doc comment in the same file, and in
+      FormalSystem/Automation/Tactics/README.md's auto-regenerated module inventory description,
+      both of which repeat the identical misconception)*
+- [x] `Commands.lean`: correct the "Axiom Prop vs Type issue" phrase in the `modal_search`
       docstring the same way. Leave its already-correct "27 of the 29" sentence untouched.
-- [ ] `FormalSystem/Automation/Tactics/UserTactics.lean`: rewrite the `apply_axiom` docstring to
+      *(completed)*
+- [x] `FormalSystem/Automation/Tactics/UserTactics.lean`: rewrite the `apply_axiom` docstring to
       describe the real behavior — apply the generic axiom constructor, leave the `h` and `h_fc`
       side goals open for the caller — and delete the stale "Supported Axioms" list, whose names
-      are not current `Axiom` constructors.
-- [ ] Rewrite `modal_t`'s docstring the same way, since its body is byte-identical to
-      `apply_axiom`'s, and replace its broken worked example.
-- [ ] Verify the replacement example by elaborating it with `lake env lean` in a scratch file
+      are not current `Axiom` constructors. *(completed)*
+- [x] Rewrite `modal_t`'s docstring the same way, since its body is byte-identical to
+      `apply_axiom`'s, and replace its broken worked example. *(completed)*
+- [x] Verify the replacement example by elaborating it with `lake env lean` in a scratch file
       outside `FormalSystem/` and `Tests/`; do not commit the scratch file. Confirm both the
-      previously-broken example fails and the replacement elaborates cleanly.
-- [ ] Confirm the diff touches only doc comments: read every hunk, and confirm no declaration,
-      statement or proof line changed.
-- [ ] `lake build --wfail` green.
-- [ ] Re-run `scripts/typst-status-counts.sh` and commit the regenerated `typst/generated/status.typ`
+      previously-broken example fails and the replacement elaborates cleanly. *(completed: both
+      original examples confirmed broken, both replacements confirmed clean, scratch files never
+      committed)*
+- [x] Confirm the diff touches only doc comments: read every hunk, and confirm no declaration,
+      statement or proof line changed. *(completed)*
+- [x] `lake build --wfail` green. *(completed: 707 jobs, zero warnings, scoped to the three
+      touched modules)*
+- [x] Re-run `scripts/typst-status-counts.sh` and commit the regenerated `typst/generated/status.typ`
       — these docstring edits move `FormalSystem/` line counts, which `typst-sync-check.sh` Check 2
-      polices.
-- [ ] Re-run `bash scripts/typst-sync-check.sh` and confirm Check 2 is clean again.
+      polices. *(completed; also regenerated automation-module-map.typ for Check 2b, which these
+      same edits moved)*
+- [x] Re-run `bash scripts/typst-sync-check.sh` and confirm Check 2 is clean again. *(completed:
+      full PASS on all checks)*
 
 **Timing**: 1.25 hours
 

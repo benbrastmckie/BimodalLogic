@@ -104,9 +104,10 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 5. Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
 6. Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
 
-**Implementation Note**: This tactic works at the meta-level in TacticM,
-avoiding the Axiom Prop vs Type issue by constructing proof
-terms directly via `mkAppM` rather than returning proof witnesses.
+**Implementation Note**: This tactic works at the meta-level in TacticM, constructing proof
+terms directly via `mkAppM` rather than returning proof witnesses. `Axiom` and `DerivationTree`
+are both `Type`-valued, not `Prop`-valued, which is why Aesop's proof reconstruction (which
+targets `Prop`-valued goals) does not apply here (see `Search.lean`'s file docstring).
 -/
 -- Simple syntax: just a number
 syntax "modal_search" (num)? : tactic

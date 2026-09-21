@@ -50,41 +50,47 @@ namespace FormalSystem.Automation
 -/
 
 /--
-`apply_axiom` tactic applies a TM axiom by matching the goal against axiom patterns.
+`apply_axiom` tactic applies the generic `DerivationTree.axiom` constructor to the goal, leaving
+the axiom witness and frame-class side condition as open goals for the caller to discharge.
 
-Attempts to unify the goal with each axiom schema and applies the matching axiom.
+It does not unify the goal with any axiom schema and does not infer which axiom applies: it
+expands to `apply DerivationTree.axiom; refine ?_`, which applies the constructor and leaves two
+goals, named `h : Axiom φ` (which axiom instance proves the goal formula) and
+`h_fc : h.minFrameClass ≤ fc` (that the chosen axiom's minimum frame class is compatible with the
+turnstile's own frame class). The caller closes both, typically with `exact Axiom.<name> ...` for
+`h` and `exact FrameClass.base_le _` (or an equivalent `≤` proof) for `h_fc`.
 
 **Example**:
 ```lean
-example : ⊢ (Formula.box p |>.imp p) := by
-  apply_axiom  -- Finds and applies Axiom.modal_t
+example (p : Formula) : ⊢ (Formula.box p |>.imp p) := by
+  apply_axiom
+  case h => exact Axiom.modal_t p
+  case h_fc => exact FrameClass.base_le _
 ```
 
-**Supported Axioms**:
-- `prop_k`, `prop_s` - Propositional axioms
-- `modal_t`, `modal_4`, `modal_b` - S5 modal axioms
-- `temp_4`, `temp_a`, `temp_l` - Temporal axioms
-- `modal_future` - Bimodal axiom
-- `temporalFutureDerived` - Derived from MF + T + Modal 4
-
-**Implementation**: Uses `refine` to let Lean infer formula parameters from the goal.
+**Implementation**: `apply DerivationTree.axiom; refine ?_` applies the constructor, leaving `h`
+and `h_fc` open. Named `case` tags (not bullet order) are needed to close them, since the
+`h_fc` goal's statement is not fully determined until `h` is assigned.
 -/
 macro "apply_axiom" : tactic =>
   `(tactic| (apply DerivationTree.axiom; refine ?_))
 
 /--
-`modal_t` tactic automatically applies modal T axiom (`□φ → φ`).
-
-Detects goals of form `Γ ⊢ φ` where `□φ ∈ Γ`, applies modal T axiom and modus ponens.
+`modal_t` tactic applies the generic `DerivationTree.axiom` constructor to the goal, identically
+to `apply_axiom` -- the two macros have byte-identical bodies. It does not detect a `□φ ∈ Γ`
+hypothesis or perform modus ponens; it leaves the same two open goals (`h : Axiom φ`,
+`h_fc : h.minFrameClass ≤ fc`) for the caller.
 
 **Example**:
 ```lean
-example (p : Formula) : [p.box] ⊢ p := by
-  modal_t  -- Applies: □p → p (from modal_t axiom)
-  assumption
+example (p : Formula) : ⊢ (Formula.box p |>.imp p) := by
+  modal_t
+  case h => exact Axiom.modal_t p
+  case h_fc => exact FrameClass.base_le _
 ```
 
-**Implementation**: Applies Axiom.modal_t directly.
+**Implementation**: See `apply_axiom` above; this macro is retained as a separate name for call
+sites that spell out `modal_t` specifically, not because its behavior differs.
 -/
 macro "modal_t" : tactic =>
   `(tactic| (apply DerivationTree.axiom; refine ?_))
