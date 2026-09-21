@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 2,
+  "summary": "Research complete: all six deliverables mapped to concrete evidence in scripts/move-modules.py and the four archived move-modules task summaries (630, 632, 634, 635); one factual correction found (docs/adr/** should be docs/architecture/ADR-*.md); no fixture-test infrastructure exists under scripts/ today and will need to be built.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md",
+      "summary": "Research report mapping all six deliverables to concrete evidence; corrects docs/adr/** to docs/architecture/ADR-*.md; flags missing scripts/ fixture-test infrastructure."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "continuation_path": null,
+  "next_action_hint": "Run /plan 644 (or /orchestrate 644 --plan) to create the implementation plan for the five hardening deliverables plus docs/development/MODULE_RELOCATION.md."
+}
