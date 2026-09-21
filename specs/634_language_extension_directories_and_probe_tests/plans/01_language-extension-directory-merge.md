@@ -1,7 +1,7 @@
 # Implementation Plan: Language-extension directories and probe tests
 
 - **Task**: 634 - Language-extension directories and probe tests
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: 626 (completed), 632 (completed), 633 (completed)
 - **Research Inputs**: specs/634_language_extension_directories_and_probe_tests/reports/01_language-extension-directories-probes.md
@@ -160,7 +160,7 @@ for why: shared working tree, not logical coupling).
 
 ---
 
-### Phase 1: Widen file_scope and correct the programme record [NOT STARTED]
+### Phase 1: Widen file_scope and correct the programme record [IN PROGRESS]
 
 **Goal**: Make the declared scope match the real work and fix the programme statements this task
 falsifies, before any file moves.

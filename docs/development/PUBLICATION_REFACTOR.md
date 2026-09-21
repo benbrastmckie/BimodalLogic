@@ -89,7 +89,7 @@ BimodalLogic/
 │   ├── Syntax/                     # TM syntax only (Plus/Minus/Star moved out)
 │   ├── ProofSystem/
 │   ├── Semantics/                  # + Periodicity.lean (from Metalogic/Decidability/FMP/)
-│   ├── PlusLanguage/, MinusLanguage/, StarLanguage/   # Syntax/X + Semantics/X merged; namespaces unchanged
+│   ├── PlusLanguage/, MinusLanguage/, StarLanguage/   # Syntax/X + Semantics/X merged; semantics namespaces renamed to FormalSystem.XLanguage
 │   ├── Theorems/                   # + DeductionTheorem.lean (from Metalogic/Core/)
 │   ├── Metalogic/
 │   │   ├── Core/ Bundle/ Algebraic/ BXCanonical/ SoundnessLemmas/ Conservativity/
@@ -162,7 +162,7 @@ it goes into `BimodalTools` for uniformity. C25 and C25N read roots from the lak
 
 | Current location | Current namespace | Target location | Target namespace | FQN churn |
 |---|---|---|---|---|
-| `Syntax/{Plus,Minus,Star}Language/*`, `Semantics/{Plus,Minus,Star}Language/*` (15 files) | `FormalSystem.{Plus,Minus,Star}Language` | `{Plus,Minus,Star}Language/*` | unchanged | none |
+| `Syntax/{Plus,Minus,Star}Language/*` (13 files), `Semantics/{Plus,Minus,Star}Language/*` (16 files), plus the 6 sibling aggregators and `Metalogic/Conservativity/MinusLanguageSoundness.lean` | syntax half: `FormalSystem.{Plus,Minus,Star}Language`; semantics half: `FormalSystem.Semantics` (except `PlusStateLocal.lean` and `StarStateLocal.lean`, already partly converted) | `{Plus,Minus,Star}Language/*` | `FormalSystem.{Plus,Minus,Star}Language` (flat) | syntax half none; semantics half **yes** — 241 declarations across 17 files, 25 direct importers gain an `open`, 0 short-name ambiguities, 0 external fully-qualified citations. The earlier "15 files / namespaces unchanged" entry was wrong on both counts: 15 was the size of the audit's *unrelated bucket*, not the file set, and the 16 semantics modules declare `FormalSystem.Semantics`, which is unrelated to a top-level `{X}Language/` path |
 | `Metalogic/Decidability/FMP/Periodicity.lean` | `FormalSystem.Semantics` | `Semantics/Periodicity.lean` | unchanged | none |
 | `Metalogic/Conservativity/MinusLanguageSoundness.lean` | `FormalSystem.Semantics` | `MinusLanguage/Soundness.lean` | `FormalSystem.MinusLanguage` | yes (small) |
 | `Automation/{TruthNormAttr,LemmaDB,NormalizationAttr}` | attribute names only | `Tactic/Attr.lean` | attribute names unchanged | none |
@@ -384,10 +384,15 @@ and the new layer order and exits 0. The 7 residual upward lines, all from
 merges move that file out of `Syntax/`. They are recorded in the script's allowlist, which fails
 on a shortfall as well as a surplus, so Phase 5 landing is a finding rather than a silent pass.
 
-### Phase 5: Language-extension directories and namespace/path agreement — [CITE] (paths only; FQNs unchanged for the 15 files)
+### Phase 5: Language-extension directories and namespace/path agreement — [CITE] (paths plus a bounded namespace rename of the semantics half)
 
 - Merge `Syntax/XLanguage/` and `Semantics/XLanguage/` into `XLanguage/` under the library root
-  for Plus, Minus and Star; namespaces already match.
+  for Plus, Minus and Star. The syntax half's namespaces already match; the semantics half does
+  **not** — its 16 modules declare `FormalSystem.Semantics`, an ancestor of `Semantics/XLanguage/`
+  but unrelated to a top-level `XLanguage/`, so a paths-only merge would move 14 files from the
+  acceptable `ancestor` bucket into `unrelated`. The merge therefore carries a hand-edited
+  `namespace`/`end` rename of those 16 modules (plus `Soundness.lean`) to the flat
+  `FormalSystem.XLanguage`, matching the syntax half.
 - `MinusLanguage/AxiomDischarge.lean`'s imports of Theorems and Metalogic become ordinary
   downward edges from an extension language to the base logic.
 - Move `Metalogic/Conservativity/MinusLanguageSoundness.lean` to `MinusLanguage/Soundness.lean`.
@@ -395,9 +400,14 @@ on a shortfall as well as a surplus, so Phase 5 landing is a finding rather than
 - Move the 8 loose Decidability probes and `TableauConformance.lean` into
   `Tests/BimodalTest/Metalogic/Decidability/`.
 - **Acceptance**: `namespace-audit` reports at most the recorded exceptions in the unrelated
-  bucket (`ForMathlib/Order/PFilter.lean`, the two exceptions Phase 4 recorded in their own
-  module docstrings — `Theorems/DeductionTheorem.lean` and `Tactic/Meta.lean` — and the decided
-  Chronicle files); no loose `.lean` at the test root except the `Property.lean` aggregator.
+  bucket (`ForMathlib/Order/PFilter.lean`; the two exceptions Phase 4 recorded in their own
+  module docstrings — `Theorems/DeductionTheorem.lean` and `Tactic/Meta.lean`;
+  `Semantics/FrameClassValidity.lean`, which declares `FormalSystem.ProofSystem` because it
+  duplicates a proof-system-side definition; `Metalogic/Decidability/BiLasso/Periodic.lean`,
+  which declares `…Decidability.Periodic` as one half of a split pair; and the decided Chronicle
+  files). No loose `.lean` at the test root except the two aggregator-shaped files
+  `Property.lean` and `WalkthroughAxioms.lean` — the latter is not a Decidability probe and has
+  no natural home in the destination directory.
   Additionally: moving `AxiomDischarge.lean` out of `Syntax/` empties the 7-line allowlist in
   `check-metalogic-cycles.sh`, which fails on that shortfall until the entries are deleted.
   **ADR**: none.
