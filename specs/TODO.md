@@ -11,11 +11,11 @@ next_project_number: 647
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,623,624,625,638,645,646 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,570,616,617,628 | 298,464,502,563,568,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625,638 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,568,616,617,628 | 298,464,502,563,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,570,618,646 | 231,465,497,564,565,568,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,534,543 | 428,498,499,500,646 | algebraic-representation, decidability, incompleteness, ... |
+| 5 | 410,501,645 | 125,429,534 | algebraic-representation, decidability, semantics |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
@@ -87,10 +87,10 @@ next_project_number: 647
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
+543 [NOT STARTED] — Machine-check the principal new results from the MF...
 568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
-543 [NOT STARTED] — Machine-check the principal new results from the MF...
+  └─ 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
 
 ### Publication Quality
 
@@ -109,7 +109,7 @@ next_project_number: 647
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 568
 
 **Description**: Machine-check the two cheap MF-correspondence results, R1 and R2, split out of task 543 so that they are not held behind that task's ShiftSet-reconciliation dependency. Land real proofs; no sorry, no new axiom. SOURCE MATERIAL, outside this repository, read before starting: /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/03_worlds-topological-categorical-characterization.md (rigidity, section 4.3.6), /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/04_dense-correspondent-and-rigidity.md (the refinement and scope limits), and /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/05_lean-verification-and-formalization-program.md (THE ROADMAP: elaborated statements, effort estimates, Mathlib dependencies, and Appendix A.1's scratch elaboration of R1). Re-verify every claim those reports make about this tree before relying on it: they were checked against an earlier layout, and modules have since moved.
 
@@ -127,7 +127,7 @@ CONSTRAINTS. The library root FormalSystem.lean is generated: regenerate it with
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: semantics
-- **Dependencies**: None
+- **Dependencies**: Task 534
 
 **Description**: Port the translation-product proof device from the task 624 probe into the library, as two modules with no new axioms and no sorry (about 450 lines, transcribed and restated against the live definitions, not rediscovered). SOURCE, read before planning: specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean (compiled, sorry-free, against the live tree) and specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md, Recommendation 1, which fixes the module layout and the declaration list.
 
@@ -450,7 +450,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 625
 - **Research**: [568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md]
 
 **Description**: Promote the alternative consequence relations into the library, from `specs/553_decide_convex_history_layer_collapse/probes/02_alternative-consequence.lean` and `specs/553_decide_convex_history_layer_collapse/probes/03_axiom-survival.lean`. This is the task the author's own reframing most directly asks for: it is what makes C3 and C4 things this repository HAS rather than things a probe file mentions.
@@ -643,7 +643,7 @@ HARD CONSTRAINTS: never state a completeness theorem and discharge it with sorry
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: incompleteness
-- **Dependencies**: None
+- **Dependencies**: Task 646
 - **Research**: [534_hg_fragment_finite_axiomatizability/reports/01_hg-fragment-axiomatizability.md]
 
 **Description**: Research and, where feasible, establish in Lean whether the H/G-fragment of TM is finitely axiomatizable natively in the tense-only language L⁻ (primitive tense operators H and G) -- Kamp/Burgess territory. THE OBJECT: TMFrag fc φ := TM ⊢_fc tr φ, the H/G-fragment of TM delivered by task 533 (Metalogic/Conservativity/Fragment.lean), which by the fragment completeness theorem is exactly Log_{H,G}(fc), the set of H/G-sentences valid over the frame class fc, for each of Base, Dense, Discrete, Dedekind. KNOWN: TM⁻ ⊊ TMFrag at Discrete (witness Z1, machine-checked: not_minus_derivable_z1, z1_translate) and at Base (witness the splitting schema (DD), formerly (Sp), refuted in source); by tmMinusComplete_iff_forward these gaps are exactly TM's semantic incompleteness. THE QUESTION: for each class fc, is there a FINITE set Σ_fc of H/G-schemas (or at least a recursive set) with TM⁻ + Σ_fc = TMFrag_fc? Candidates: (DD); Z1-type backward-induction schemas; the classical H/G axiomatizations of linear discrete/dense/complete flows of time (Burgess 1982 Axioms for tense logic I and II; Burgess 1984 handbook chapter; Kamp 1968; Gabbay-Hodkinson-Reynolds 1994; Prior), adapted to the bimodal setting where □ ranges over all world histories of a single task frame with the MF interaction axiom and every history shares one temporal order (so Log(all task frames) = Log(Discrete) ∩ Log(Dense) and (DD) is a split validity -- see the Halldén analysis in PossibleWorlds tasks 72 and 82, which record that completeness of TM⁻ + (DD) turns on whether TM⁻_f and TM⁻_d axiomatize their classes, both open). Consult the Literature/ corpus (burgess_1982, burgess_1982_ii, burgess_1982b, burgess_1984, venema_1993_since_until, venema_2001) via --lit and survey online sources. DELIVERABLES: a per-class verdict (finitely axiomatizable / recursively axiomatizable / open with the precise obstruction named), a candidate axiom set Σ_fc, and the machine-checked partial results that are honestly obtainable: soundness of TM⁻ + Σ_fc relative to TMFrag_fc (i.e. TM⁻ + Σ_fc ⊆ TMFrag_fc) and either a completeness proof (canonical model or filtration in the H/G language) or a separating H/G-validity showing TM⁻ + Σ_fc ⊊ TMFrag_fc. A negative or open verdict with evidence is a complete outcome. HARD CONSTRAINT: never state a completeness or conservativity theorem and discharge it with sorry. PAPER DEPENDENCY: the paper (PossibleWorlds, possible_worlds.tex, sub:Logic, the footnote following "TM⁻ owes its strength to since and until", currently commented out) waits on this task. The paper wants to assert that the Past/Future language admits no complete finite axiomatization of the fragment, and the footnote stays commented out until a negative verdict is established here. Note the claim must be non-FINITE-axiomatizability: the fragment is r.e. via TM⁻+, so a recursive axiomatization exists trivially. A positive or open verdict must also be reported back so the footnote can be reworded to match.
