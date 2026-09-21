@@ -498,13 +498,13 @@ the executable's own no-side-effect invocation).
 
 ---
 
-### Phase 5: Add the generated-root invariant (expected C33) and its CI step [NOT STARTED]
+### Phase 5: Add the generated-root invariant (expected C33) and its CI step [COMPLETED]
 
 **Goal**: Make the byte-currency of the generated root a durable, enforced, build-free invariant that
 CI's `--no-build` pass actually runs.
 
 **Tasks**:
-- [ ] **Start gate.** Task 643 declares `scripts/check-module-invariants.sh` and
+- [x] **Start gate.** Task 643 declares `scripts/check-module-invariants.sh` and
       `docs/development/MODULE_INVARIANTS.md` in its `file_scope`, was `implementing` at plan-revision
       time with uncommitted hunks in the script, and its plan adds `C31`, `C32`, their `ENFORCE_` flags
       and a third C20 assertion to exactly the regions this phase edits. Before editing, run
@@ -514,33 +514,33 @@ CI's `--no-build` pass actually runs.
       mark this phase `[BLOCKED]` with the reason and report, per `context/contracts/territory.md`.
       Nothing else in this phase is worth landing first — the CI step and the budget row both
       presuppose the check. Interleaving two agents' uncommitted hunks in one file cannot be staged
-      apart safely.
-- [ ] Once clear, re-read both files in full. Rebase this phase's design onto whatever 643 landed;
+      apart safely. *(completed — gate open: task 643 is `completed` and neither file carried uncommitted modifications.)*
+- [x] Once clear, re-read both files in full. Rebase this phase's design onto whatever 643 landed;
       stage only this task's hunks.
-- [ ] Derive the check ID rather than assuming it: take the highest `C<n>` that appears in the script
+- [x] Derive the check ID rather than assuming it: take the highest `C<n>` that appears in the script
       **or** in `specs/643_citation_gates_bibkeys_links_and_line_anchors/plans/*.md`, plus one. The
       expectation is `C33`. Use the derived ID everywhere this plan writes "C33", including the
       `ENFORCE_` variable name, the CI step name and the `MODULE_INVARIANTS.md` row.
-- [ ] Add check **C33** to `scripts/check-module-invariants.sh` as a build-free Python scanner: walk
+- [x] Add check **C33** to `scripts/check-module-invariants.sh` as a build-free Python scanner: walk
       every `.lean` file under `FormalSystem/`, sort, prefix each with `import ` and the dotted module
       path, join with newlines plus a trailing newline, and compare byte-for-byte against
       `FormalSystem.lean`. This is the same reasoning that made C28 a trace-scan rather than a `lake`
       call — a check that shells out to `lake` would join the documented "Known Not-in-CI Gaps" list
       alongside C2/C6/C24.
-- [ ] Ship C33 **enforced with no soft window**, on the C24/C25/C26 precedent: it is green the day it
+- [x] Ship C33 **enforced with no soft window**, on the C24/C25/C26 precedent: it is green the day it
       lands. Give it an `ENFORCE_C33` variable defaulting to `1` for consistency with its neighbours.
-- [ ] Write the check's header block in the file's established style: what it asserts, why the scanner
+- [x] Write the check's header block in the file's established style: what it asserts, why the scanner
       form was chosen over `lake exe mk_all --check`, and that `lake exe mk_all --lib FormalSystem
       --check` is the full-mode authoritative cross-check.
-- [ ] Run the deliberate negative test `MODULE_INVARIANTS.md`'s "Adding a Check" procedure requires:
+- [x] Run the deliberate negative test `MODULE_INVARIANTS.md`'s "Adding a Check" procedure requires:
       add a stray `.lean` file under `FormalSystem/`, observe `FAIL` **and** a non-zero script exit,
-      remove it, observe `PASS`. Record both observations.
-- [ ] Add the C33 row to `docs/development/MODULE_INVARIANTS.md` (643's territory — same protocol).
-- [ ] Add the CI step to `.github/workflows/ci.yml` following `CI_CD_PROCESS.md`'s "Wiring a New Check
+      remove it, observe `PASS`. Record both observations. *(completed, widened — observed `FAIL C33 … 1 module(s) not imported: FormalSystem._Scratch` with script exit 1 and `mk_all --check` exit 1; removal restored `PASS`/exit 0. A second negative test covered the other direction: one blank line appended to `FormalSystem.lean` gave `FAIL C33` (import set right, bytes differ), exit 1, agreeing with `mk_all --check`; `lake exe mk_all --lib FormalSystem` restored the file byte-identically (`cmp`). Both are recorded in `MODULE_INVARIANTS.md`.)*
+- [x] Add the C33 row to `docs/development/MODULE_INVARIANTS.md` (643's territory — same protocol).
+- [x] Add the CI step to `.github/workflows/ci.yml` following `CI_CD_PROCESS.md`'s "Wiring a New Check
       Script" convention: step `name:` carrying the exact invocation, `set -euo pipefail`,
       `::group::`/`::endgroup::` wrapping, appended directly before "Report results". The scanner is
-      pure `python3`, so it carries no cache-warm placement constraint of its own.
-- [ ] Add the step's row to `CI_CD_PROCESS.md`'s runtime budget table and **re-sum both columns** — the
+      pure `python3`, so it carries no cache-warm placement constraint of its own. *(deviation: altered — C33 lives inside `check-module-invariants.sh`, which CI's existing `--no-build` step already runs, so a second step re-running the scanner would be redundant. The step added instead runs the authoritative generator, `lake exe mk_all --lib FormalSystem --check`, which is what the task description's "CI steps for mk_all --check" names; it calls `lake`, so it sits after the lean-action step. Its extracted `run:` body executes green locally in full and minimal environments, 0.8s.)*
+- [x] Add the step's row to `CI_CD_PROCESS.md`'s runtime budget table and **re-sum both columns** — the
       table's own instruction requires it.
 
 **Timing**: 1.5 hours

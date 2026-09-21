@@ -11,7 +11,7 @@ The ProofChecker project uses GitHub Actions to automatically build, test, and l
 ```
 Push/PR → GitHub Actions → Build → Test → Lint → lean_exe roots →
   check-module-invariants.sh --no-build → check-copyright-headers.sh --strict →
-  readme-lint.sh → Results
+  readme-lint.sh → … → mk_all --lib FormalSystem --check → Results
 ```
 
 **Typical CI runtime**: 7-10 minutes (with Mathlib cache), plus roughly 40s for the three
@@ -259,7 +259,8 @@ run; "minimal env, extracted body" re-derives the exact `run:` body from the com
 | `Check README health (scripts/readme-lint.sh)` | 7.34s | 4.7s | _(pending)_ |
 | `Typst sync check (scripts/typst-sync-check.sh)` | 13.6s | 14.1s | _(pending)_ |
 | `Check paper definitions (scripts/check-paper-definitions.sh)` | 0.85s (paper present, full manifest walk; 0.03s on the unchanged-checksum fast path), measured 2026-09-17 | 0.02s (paper absent: the neutral-skip path CI takes) | _(pending)_ |
-| **Sum (added local delta)** | **~56.4s** | **~43.6s** | _(pending)_ |
+| `Check the generated library root (lake exe mk_all --lib FormalSystem --check)` | 0.84s (executable already built), measured 2026-09-21 | 0.82s | _(pending; the first run on a cold runner also compiles and links the `mk_all` executable, which the local figures exclude)_ |
+| **Sum (added local delta)** | **~57.2s** | **~44.4s** | _(pending)_ |
 
 A task that wires a new check step updates this table in the same change, adding its own row
 and re-summing.
@@ -278,6 +279,13 @@ cost. Three checks are consequently not run in CI at all:
 
 **Upgrade path**: drop `--no-build` from the `Check module invariants` step's command (a
 one-line edit) once the added ~2 minutes is judged worth the coverage.
+
+**C33 is deliberately not on that list either**, for the same reason as C28 below: it asserts
+that the generated library root `FormalSystem.lean` is byte-current, and it does so with a
+build-free python3 mirror of Mathlib's generator precisely so that the `--no-build` pass runs
+it. The generator itself runs too, as the separate `lake exe mk_all --lib FormalSystem --check`
+step, so a Mathlib bump that changes `mk_all`'s output is caught by the real tool rather than by
+a mirror that has silently drifted.
 
 **C28 is deliberately not on that list.** The compiler-warning budget was built build-free for
 exactly this reason: it reads Lake's own `.lake/build/lib/lean/**/*.trace` store, which records
@@ -401,6 +409,10 @@ bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' Formal
 
 # Check README health
 bash scripts/readme-lint.sh
+
+# Check the generated library root; after adding, moving or deleting a module under
+# FormalSystem/, regenerate it with the same command minus --check and commit the result
+lake exe mk_all --lib FormalSystem --check
 ```
 
 ## Branch Protection (Recommended)

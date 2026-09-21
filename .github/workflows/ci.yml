@@ -187,6 +187,21 @@ jobs:
           bash scripts/check-paper-definitions.sh
           echo "::endgroup::"
 
+      # The library root FormalSystem.lean is generated, never hand-edited. C33 in the "Check
+      # module invariants" step above already asserts it is byte-current, build-free, with a
+      # python3 mirror of the generator; this step runs the generator itself, so a Mathlib bump
+      # that changes mk_all's output is noticed here rather than by a drifted mirror. `--lib
+      # FormalSystem` is structural: a bare `mk_all` errors on the two `srcDir = "Tests"`
+      # libraries and would generate a BimodalTools.lean importing twelve `main`s. Calls `lake`,
+      # so it sits after the lean-action step and reuses its cache; the first run on a cold
+      # runner also compiles and links the small mk_all executable.
+      - name: Check the generated library root (lake exe mk_all --lib FormalSystem --check)
+        run: |
+          set -euo pipefail
+          echo "::group::lake exe mk_all --lib FormalSystem --check"
+          lake exe mk_all --lib FormalSystem --check
+          echo "::endgroup::"
+
       - name: Report results
         if: always()
         run: |
