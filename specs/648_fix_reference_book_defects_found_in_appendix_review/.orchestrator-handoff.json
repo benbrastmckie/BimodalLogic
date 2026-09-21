@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 4,
+  "summary": "Re-verified all 9 dispatch items against live source; 8 reproduce (with corrected true figures for item 3 and a corrected chapter/docstring split for item 6), 1 sub-claim (the @machine-appendix half of item 1) does not reproduce. Discovered a currently-failing scripts/typst-sync-check.sh (5 Check-1 violations from an uncommitted, out-of-scope diff to ax-lean-appendix.typ) with an in-scope whitelist-based remedy.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md",
+      "summary": "Item-by-item verified findings, elaboration evidence, and recommended fixes for all 9 dispatch items plus the newly discovered sync-check blocker."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "Run /plan 648 (or the orchestrator's plan phase) to turn the report's item-by-item recommendations into a phased implementation plan. Before implementing, re-verify the Live Working-Tree Caveat (git status/diff on typst/chapters/ax-lean-appendix.typ and a fresh scripts/typst-sync-check.sh run), since that file has an uncommitted, out-of-scope diff at research time.",
+  "continuation_path": null
+}

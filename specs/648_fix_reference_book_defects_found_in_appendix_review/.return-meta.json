@@ -1,0 +1,40 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1790024508_6b72c3_648",
+  "dispatch_seq": 4,
+  "task_number": 648,
+  "findings_count": 10,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md",
+      "summary": "Re-verified all 9 dispatch items against live source (8 reproduce, 1 sub-claim closed as not-reproducing), with elaboration-checked fixes for the apply_axiom/modal_t item and machine-counted true figures for the axiom-count item; discovered and documented a 10th, currently-failing scripts/typst-sync-check.sh blocker (5 Check-1 violations from an uncommitted, out-of-scope diff to ax-lean-appendix.typ) with an in-scope whitelist remedy."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In this repo's typst/ book, scripts/typst-sync-check.sh Check 1 (backtick-span resolution) scans // comments as well as prose, so illustrative Lean-syntax spans left in editorial TODO comments (e.g. `structure ... where`, `name : Type`) can silently fail the sync gate. The sanctioned remedy is a new category in typst/sync-check-whitelist.txt, following the existing 'generic Lean tooling illustrations' pattern, never editing the commented-out prose itself if the file is off-limits.",
+      "category": "PATTERN",
+      "source_artifact": "specs/648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["typst-sync-check", "Check 1", "whitelist", "backtick spans", "comments"]
+    },
+    {
+      "content": "Typst technique for supplement-aware #show ref on level-1 headings: rather than hardcoding a fixed supplement string (e.g. \"Chapter\") and a fixed numbering pattern in a document-wide show:ref rule, read the heading element's own el.supplement and el.numbering dynamically (link(it.target)[#el.supplement~#numbering(el.numbering, ..counter(heading).at(el.location()))]), guarded by `if el.numbering == none`. This lets one rule correctly render multiple heading kinds (chapters numbered \"1\", appendices numbered \"A\") that each set their own local supplement/numbering via #show heading.where(level:1): set heading(...) overrides, without branching on file or heading level.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["typst", "show ref", "heading numbering", "supplement", "appendix"]
+    },
+    {
+      "content": "In BimodalLogic's FormalSystem/Automation/Tactics/Search.lean, both `Axiom` and `DerivationTree` are Type-valued (not Prop-valued) -- there is no Prop/Type mismatch between them, contrary to docstrings that claimed one. The authoritative, correct explanation for why Aesop-style automation doesn't work on DerivationTree goals (and why the hand-written TacticM search exists) lives in Boneyard/RetiredTactics/README.md's write-up of the retired TMLogic Aesop rule set: Aesop's reconstruction targets Prop-valued goals (leaning on proof irrelevance), while DerivationTree goals are Type-valued data where the specific term matters.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["Axiom", "DerivationTree", "Type vs Prop", "Aesop", "Boneyard"]
+    }
+  ],
+  "next_steps": "Run /plan 648 to create implementation plan"
+}

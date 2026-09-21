@@ -94,14 +94,14 @@ next_project_number: 651
 
 ### Reference Book
 
-648 [RESEARCHING] — Fix the defects found in typst/BimodalReference.typ and its...
+648 [RESEARCHED] — Fix the defects found in typst/BimodalReference.typ and its...
   └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
     └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-628 [RESEARCHED] — Investigate expressive extensions that make recurrence and...
+628 [PLANNING] — Investigate expressive extensions that make recurrence and...
 645 [NOT STARTED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
@@ -158,10 +158,11 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 ---
 
 ### 648. Fix reference book defects found in appendix review
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: reference-book
 - **Dependencies**: Task 647
+- **Research**: [648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md]
 
 **Description**: Fix the defects found in typst/BimodalReference.typ and its surroundings during the accuracy-and-formatting review of typst/chapters/ax-lean-appendix.typ. All of them lie OUTSIDE that appendix file, which was the only file that review was allowed to touch. Re-verify each item against live source before acting: a finding that no longer reproduces is closed with a one-line note, never "fixed" anyway. Items are ordered by reader impact.
 
@@ -360,7 +361,7 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 630 and 632-636 landed). Depen
 ---
 
 ### 628. Expressive extensions recurrence visibility
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 625
