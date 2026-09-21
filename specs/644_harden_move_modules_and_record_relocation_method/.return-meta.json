@@ -1,40 +1,12 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "task_number": 644,
-  "session_id": "sess_1790002208_59de0b_644",
-  "dispatch_seq": 2,
-  "findings_count": 6,
-  "next_steps": "Run /plan 644 to create implementation plan",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md",
-      "summary": "Research report mapping all six deliverables (no-rewrite path list, identical-sides warning, resolve_move ambiguity, namespace-map scoping, report/exit-code gap, MODULE_RELOCATION.md) to concrete evidence in scripts/move-modules.py and the four archived task summaries (630, 632, 634, 635); corrects the docs/adr/** default path to docs/architecture/ADR-*.md; flags the missing scripts/ fixture-test infrastructure; identifies existing raw material for the relocation-method doc."
-    }
-  ],
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic, scripts/move-modules.py's run() only returns non-zero on move_failures or a bare-form audit mismatch -- never when citation rewrites (classes 1-5,7) succeeded but move_trees() moved zero files. This exact gap was task 632's original bug (236 rewrites reported, 0 files moved, exit 0) and is still present in the tool as of task 644's research pass.",
-      "category": "PATTERN",
-      "source_artifact": "specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["move-modules.py", "exit-code-gap", "resolve_move", "fixture-test", "BimodalLogic"]
-    },
-    {
-      "content": "In BimodalLogic this repository's ADR directory is docs/architecture/ADR-*.md, not docs/adr/ -- docs/adr/ does not exist. Any future task description or default path list referencing 'docs/adr/**' is factually wrong for this repo and should be corrected to docs/architecture/ADR-*.md.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["docs/architecture", "ADR", "path-correction", "BimodalLogic"]
-    },
-    {
-      "content": "In BimodalLogic, no scripts/*.py file has any fixture-test or pytest infrastructure as of task 644's research. A future harness for scripts/move-modules.py (or similar scripts/*.py hardening) needs to build one from scratch, most naturally a disposable tempfile.TemporaryDirectory() git repo (move-modules.py refuses to run without .git present and shells out to `git mv`), with run(argparse.Namespace(...)) invoked in-process and stdout captured via contextlib.redirect_stdout for report-text assertions.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["fixture-test", "scripts", "tempfile", "git-fixture", "BimodalLogic"]
-    }
-  ]
+  "status": "in_progress",
+  "artifacts": [],
+  "dispatch_seq": 6,
+  "metadata": {
+    "session_id": "sess_1790002208_59de0b_644",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "task_number": 644
+  }
 }
