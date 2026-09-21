@@ -11,17 +11,14 @@ import FormalSystem.Automation.ProofSearch.Core
 import FormalSystem.Automation.ProofSearch.Strategies
 import FormalSystem.Automation.SuccessPatterns
 import FormalSystem.Metalogic.WeakCanonical.EFGameTactics
-import FormalSystem.Automation.FormulaEnumerator
-import FormalSystem.Automation.DatasetGenerator
-import FormalSystem.Automation.DataExport
-import FormalSystem.Automation.EnrichedCountermodel
-import FormalSystem.Automation.DatasetAssembly
-import FormalSystem.Automation.ProofStepExtractor
 import FormalSystem.Automation.Normalization
-import FormalSystem.Automation.InterestingnessMetrics
-import FormalSystem.Automation.PrefilterSoundness
--- DatasetGeneratorMain, DatasetValidatorMain, and ProofExtractorMain define `main` (lean_exe
--- targets) and must not be imported through the umbrella; use them only via `lake exe` commands.
+-- This aggregator is LIBRARY-ONLY. It used to import eight tooling modules -- FormulaEnumerator,
+-- DatasetGenerator, DataExport, EnrichedCountermodel, DatasetAssembly, ProofStepExtractor,
+-- InterestingnessMetrics and PrefilterSoundness -- and was the single reason `lake build`
+-- compiled any of them. They now live in `lean_lib BimodalTools`, outside `defaultTargets`, and
+-- those eight import lines are gone: re-adding one would pull 14,750 lines of tooling back into
+-- the published library's build closure. Check `B3` fails on any `import BimodalTools.*` under
+-- `FormalSystem/`, this file included. Tooling reaches the library, never the other way round.
 
 /-!
 # FormalSystem.Automation - Proof Automation

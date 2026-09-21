@@ -415,7 +415,7 @@ forced.
 
 ---
 
-### Phase 6: Execute the move [NOT STARTED]
+### Phase 6: Execute the move [COMPLETED]
 
 **Goal**: The 25 modules and 8 tests are relocated, the exes are re-rooted, and the build is green
 again — in one commit, because the tree does not build at any intermediate point.
@@ -430,12 +430,16 @@ again — in one commit, because the tree does not build at any intermediate poi
       (`FormulaEnumerator`, `DatasetGenerator`, `DataExport`, `EnrichedCountermodel`,
       `DatasetAssembly`, `ProofStepExtractor`, `InterestingnessMetrics`, `PrefilterSoundness`).
       This is the edit that actually makes the split real.
-- [ ] Re-point the aggregator's importers at specific library modules:
+- [x] Re-point the aggregator's importers at specific library modules:
       `FormalSystem/Examples/BimodalProofs.lean` (named in the task description) **and**
       `FormalSystem/Examples/Walkthrough.lean` (not named, same fix required) and
       `Tests/BimodalTest/Integration/AutomationProofSystemTest.lean`.
       `FormalSystem/FormalSystem.lean` keeps importing the aggregator, which is library-only after
       the import deletion.
+      *(deviation: altered — each of the three needed `Automation.Tactics.Commands` as well, which
+      is where `modal_search`'s syntax is declared; `Tactics.UserTactics` alone left every
+      `modal_search` call site as `unknown tactic`. `Walkthrough` and the integration test
+      additionally take `ProofSearch.Core` and `ProofSearch.Strategies`.)*
 - [ ] Populate `BimodalTools.lean` with imports of the **13 non-`Main` modules** and **no `*Main`
       module** — each `*Main` declares a root-namespace `main` and importing two collides.
 - [ ] Re-root the 12 tooling `[[lean_exe]]` blocks in `lakefile.toml` to `BimodalTools.<X>Main`.
@@ -447,14 +451,36 @@ again — in one commit, because the tree does not build at any intermediate poi
       `namespace BimodalTools` / `end BimodalTools`: `AxiomNames`, `DatasetGenerator`,
       `FormulaEnumerator`, `ForwardProofGenerator`, `ProofFirstBenchmark`,
       `ProofFirstGeneratorMain`. `EnumBenchmarkMain` declares no namespace and needs nothing.
-- [ ] Add `open FormalSystem.Automation` to the modules that now need it: `DatasetGenerator`,
+- [x] Add `open FormalSystem.Automation` to the modules that now need it: `DatasetGenerator`,
       `FormulaEnumerator`, `ForwardProofGenerator`, `ProofFirstBenchmark`, `ProofStepExtractor`.
       (`BenchmarkAnchorsMain`, `DataExport`, `DatasetGeneratorMain` already carry it.) Drop the now-
       unused `SuccessPatterns` import from `ForwardProofGenerator`.
-- [ ] Hand-fix `scripts/measure-refactor-partitions.py`'s hardcoded
+      *(deviation: altered — the plan anticipated only the `open FormalSystem.Automation` direction.
+      The larger need was the OPPOSITE one, `open BimodalTools`, and the plan names none of it:
+      six modules were hand-edited out of `namespace FormalSystem.Automation`, so every unqualified
+      reference to their declarations from a file not itself inside `namespace BimodalTools` broke.
+      Added `open BimodalTools` at 13 sites across `EnumBenchmarkMain`, `DatasetGeneratorMain` (x2),
+      `BenchmarkAnchorsMain` (x2), `BenchmarkOracleMain` (x2), `ContrastiveGeneratorMain` (x2),
+      `Tests/BimodalTest/Automation/NormalizationTest.lean` and three moved tests. Three further
+      repairs of the same class: `open FormalSystem.Metalogic.Decidability` in `TraceExport` (it
+      left that enclosing namespace), `open FormalSystem.Automation` in `ProofFirstGeneratorMain`
+      (for `PatternKey`), and five stale `FormalSystem.Automation.*` FQNs there rewritten to
+      `BimodalTools.*` plus two in `NormalizationTest`. The four moved tests whose namespace did not
+      match their module name (`C5Smoke`, `Interestingness`, `ProofFirst`, and `FormulaMutatorTest`'s
+      bare `BimodalTest.Automation`) were renamed under `BimodalToolsTest.*` by hand, since the
+      module map could not reach them. NONE of this was visible until the 12 exe roots were built
+      individually: they sit outside every `lake build` closure, so `lake build`, `lake build
+      BimodalTools`, `lake build BimodalToolsTest` and `lake test` were ALL green while five of the
+      13 roots did not compile. C25 is what caught it.)*
+- [x] Hand-fix `scripts/measure-refactor-partitions.py`'s hardcoded
       `f"{LIB}.Metalogic.Decidability.TraceExport"` (around line 309), which rewrite class 2 will
       otherwise have turned into `BimodalTools.TraceExport` and which would append a phantom row to
       Phase 9's acceptance measurement. Either drop the append or guard it on the module existing.
+      *(deviation: altered — the predicted rewrite did NOT happen. The literal is an f-string,
+      `f"{LIB}.Metalogic.Decidability.TraceExport"`, whose source text begins `{LIB}` and so
+      matches no mapping. The phantom-row hazard was real regardless, for the other reason: the
+      append is unconditional. Guarded on `trace_export in g.modules` rather than dropped, so the
+      script keeps working on a pre-move tree.)*
 - [ ] Confirm `git diff --stat FormalSystem/Automation/` shows changes only to the staying library
       files — evidence the namespace map did not reach the library half.
 

@@ -4,7 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Automation
+-- Specific Automation modules rather than the aggregator: this suite exercises the tactic
+-- layer and the native search entry point, both of which stay in the library after the
+-- BimodalTools split.
+import FormalSystem.Automation.Tactics.UserTactics
+import FormalSystem.Automation.Tactics.Commands
+import FormalSystem.Automation.ProofSearch.Core
+import FormalSystem.Automation.ProofSearch.Strategies
 import FormalSystem.ProofSystem
 import FormalSystem.Semantics
 import FormalSystem.Metalogic

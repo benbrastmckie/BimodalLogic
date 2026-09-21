@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Automation.Normalization
-import FormalSystem.Automation.FormulaEnumerator
+import BimodalTools.FormulaEnumerator
 import FormalSystem.Metalogic.Decidability.DecisionProcedure
 
 /-!
@@ -240,8 +240,8 @@ No timeouts, confirming zero performance regression from normalization.
 -/
 
 #eval do
-  let config := FormalSystem.Automation.smallConfig
-  let formulas := FormalSystem.Automation.enumerateUpToDepth config
+  let config := BimodalTools.smallConfig
+  let formulas := BimodalTools.enumerateUpToDepth config
   let sample := formulas.take 50
   let counts := sample.foldl (fun (v, i, t) f =>
     let result := decide f
@@ -566,6 +566,9 @@ enumerator's own evaluation. A change in either count means the enumeration gram
 section EnumeratorCounts
 
 open FormalSystem.Automation
+-- The former `FormalSystem.Automation` namespace is now split across two libraries: the
+-- proof-automation half stayed, the dataset/benchmark half is in `BimodalTools`.
+open BimodalTools
 
 #guard (enumExactHelper defaultAtoms 2 2 4 {}).1.size == 7852
 #guard (enumExactHelper defaultAtoms 2 2 5 {}).1.size == 75914

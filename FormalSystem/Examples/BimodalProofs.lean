@@ -6,7 +6,11 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.ProofSystem.Derivation
-import FormalSystem.Automation
+-- Specific Automation modules, not the `FormalSystem.Automation` aggregator: this file needs
+-- only the user-facing tactics (`modal_search`), and naming them keeps `Examples/` out of the
+-- aggregator's import closure, where `measure-refactor-partitions.py` has to prune it.
+import FormalSystem.Automation.Tactics.UserTactics
+import FormalSystem.Automation.Tactics.Commands
 
 /-!
 # Bimodal Proof Examples

@@ -73,7 +73,7 @@ any count that does not say which one it means is a defect. Both are anchored in
 
 Convention (b)'s 45-names figure and its 37/39/40/42 partition are legitimate, on purpose,
 wherever prose is explicitly about the named-schema inventory rather than the `Axiom` type's own
-constructors: `FormalSystem/Automation/BenchmarkAnchorsMain.lean`'s header docstring,
+constructors: `BimodalTools/BenchmarkAnchorsMain.lean`'s header docstring,
 `FormalSystem/Syntax/PlusLanguage/README.md`'s `PlusAxiom` re-declaration total, and this
 repository's root `README.md`, which keeps an explicitly-labelled secondary column for it. A
 future editor should not "correct" those three sites to the convention-(a) figures — they mean

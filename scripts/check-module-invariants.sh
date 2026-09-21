@@ -3426,8 +3426,8 @@ echo
 # in source order), and requiring byte equality would fail on that cosmetic difference alone.
 # ---------------------------------------------------------------------------
 ENFORCE_C22=${ENFORCE_C22:-1} # the two allAxiomNames lists agree (enforced)
-C22_A="FormalSystem/Automation/AxiomNames.lean"
-C22_B="FormalSystem/Automation/ProofExtractorMain.lean"
+C22_A="BimodalTools/AxiomNames.lean"
+C22_B="BimodalTools/ProofExtractorMain.lean"
 if [ ! -f "$C22_A" ] || [ ! -f "$C22_B" ]; then
   fail C22 "one of the two allAxiomNames modules is missing"
 else
@@ -3529,7 +3529,7 @@ echo
 # covering it. That is the wrong mechanism; this check is the right one, and the
 # manifest must not gain an exe-root line.
 #
-# The gap was not hypothetical. FormalSystem/Automation/ProofExtractorMain.lean (then
+# The gap was not hypothetical. BimodalTools/ProofExtractorMain.lean (then
 # ProofStepExport.lean) -- the
 # `proof_extractor` root -- failed to elaborate for an extended period with three
 # `Application type mismatch` errors masking a further 873, and no gate anywhere in
@@ -3557,7 +3557,7 @@ echo
 #
 # Negative-tested per docs/development/MODULE_INVARIANTS.md's "Adding a Check"
 # mandate: a one-character break was introduced in
-# FormalSystem/Automation/TraceExporterMain.lean -- deliberately NOT ProofExtractorMain,
+# BimodalTools/TraceExporterMain.lean -- deliberately NOT ProofExtractorMain,
 # the module the same change repairs, since a failure there would prove nothing
 # about the gate -- `FAIL C25` was observed together with a non-zero script exit
 # (both, not just the printed line: `FAIL C25  1 of 13 lean_exe root module(s) do

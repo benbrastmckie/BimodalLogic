@@ -12,14 +12,14 @@
 #
 # One name per line; `#` starts a comment.
 
-# `namespace FormalSystem.Automation.Enriched` -- Automation/EnrichedCountermodel.lean:48
-FormalSystem.Automation.Enriched
+# `namespace BimodalTools.Enriched` -- Automation/EnrichedCountermodel.lean:48
+BimodalTools.Enriched
 
 # `structure PatternKey` in namespace FormalSystem.Automation -- Automation/SuccessPatterns.lean:101
 FormalSystem.Automation.PatternKey
 
-# `structure RuleProfile` in namespace FormalSystem.Automation.DataExport -- Automation/DataExport.lean:294
-FormalSystem.Automation.DataExport.RuleProfile
+# `structure RuleProfile` in namespace BimodalTools.DataExport -- Automation/DataExport.lean:294
+BimodalTools.DataExport.RuleProfile
 
 # `structure SimpleCountermodel` in namespace FormalSystem.Metalogic.Decidability
 # -- Metalogic/Decidability/CountermodelExtraction.lean:70
@@ -47,16 +47,6 @@ FormalSystem.PlusLanguage
 # `namespace FormalSystem.StarLanguage` -- Syntax/StarLanguage/Formula.lean; flat namespace,
 # read as a namespace at docs/theorem-index.md:45.
 FormalSystem.StarLanguage
-
-# TEMPORARY, SELF-DELETING. Not a namespace or declaration name like every other entry here,
-# and not a stale path either: it is a FORWARD reference. PUBLICATION_REFACTOR.md's Phase 3
-# section carries a fenced TOML block illustrating the post-split lakefile, in which the
-# `dataset_generator` exe root reads `BimodalTools.DatasetGeneratorMain`. C5 does not skip
-# fenced blocks, and the module does not exist yet because the harness widening that made C5
-# see `BimodalTools` at all deliberately lands BEFORE the move it guards.
-# DELETE THIS LINE in the same commit that relocates the tooling modules -- at that point the
-# path resolves for real and C5 will report the entry as stale.
-BimodalTools.DatasetGeneratorMain
 
 # `FormalSystem.Boneyard` -- the archive's PRE-ADR-010 module prefix, cited as history by
 # ADR-010 and by PUBLICATION_REFACTOR.md's Phase 2 record of the rename. Naming the old

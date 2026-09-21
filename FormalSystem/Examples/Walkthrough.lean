@@ -6,7 +6,13 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic
 import FormalSystem.Semantics
-import FormalSystem.Automation
+-- Specific Automation modules rather than the aggregator -- see the note in
+-- `Examples/BimodalProofs.lean`. This file runs `modal_search`, `modal_t` and the native
+-- `search` entry point.
+import FormalSystem.Automation.Tactics.UserTactics
+import FormalSystem.Automation.Tactics.Commands
+import FormalSystem.Automation.ProofSearch.Core
+import FormalSystem.Automation.ProofSearch.Strategies
 
 /-!
 # A Worked Walkthrough of TM

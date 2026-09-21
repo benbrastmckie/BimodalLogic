@@ -19,11 +19,12 @@
 # the root is reachable and C24 (`lake exe checkInitImports`) asserts that the
 # property holds tree-wide. Nothing belongs in this section.
 
-# --- Automation ------------------------------------------------------------
-# Benchmark harness. Its only importer is BimodalTest.Automation.ProofFirstTests,
-# which cannot be wired into the test root (see the Tests section below), so this
-# module stays outside the build graph too.
-FormalSystem.Automation.ProofFirstBenchmark
+# --- Tooling (BimodalTools) ------------------------------------------------
+# `BimodalTools.ProofFirstBenchmark` used to stand here. It no longer does: the
+# `BimodalTools.lean` aggregator imports all 13 non-`Main` tooling modules, so the
+# benchmark harness is reachable from a Lake target root and `lake build BimodalTools`
+# compiles it. C6 fails if an entry names a reachable module, so the line was deleted in
+# the same commit as the split rather than renamed to the new module path.
 
 # --- Metalogic -------------------------------------------------------------
 # Sibling aggregators for directories whose contents are reached directly rather
@@ -107,10 +108,10 @@ BimodalTest.ProofSystem.DerivationBenchmark
 
 # These two compile in isolation but cannot be imported by Tests/BimodalTest.lean:
 # each pulls in an executable root that defines `main`, colliding with the `main`
-# from FormalSystem.Automation.DatasetValidatorMain already in that environment. They stay
+# from BimodalTools.DatasetValidatorMain already in that environment. They stay
 # unwired and compile-checked here.
-BimodalTest.Automation.FormulaMutatorTest
-BimodalTest.Automation.ProofFirstTests
+BimodalToolsTest.FormulaMutatorTest
+BimodalToolsTest.ProofFirstTests
 
 # Axiom-profile evidence for the effective periodic extension result. Not imported by
 # Tests/BimodalTest.lean, and NOT unblocked by the bi-lasso re-export having landed: this

@@ -44,14 +44,8 @@ import BimodalTest.Automation.TacticsTest
 import BimodalTest.Automation.TacticsTest_Simple
 import BimodalTest.Automation.LemmaDBTest
 import BimodalTest.Automation.DeductionTest
-import BimodalTest.Automation.C5SmokeTest
-import BimodalTest.Automation.DatasetGeneratorTest
 import BimodalTest.Automation.NormalizationTest
 import BimodalTest.Automation.WeakeningSearchTest
-import BimodalTest.Automation.InterestingnessTest
-import BimodalTest.TraceCertificateTest
-import BimodalTest.TraceExportTest
-import BimodalTest.TraceExporterE2ETest
 import BimodalTest.Integration.Helpers
 import BimodalTest.Integration.EndToEndTest
 import BimodalTest.Integration.ProofSystemSemanticsTest

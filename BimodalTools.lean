@@ -4,6 +4,22 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import BimodalTools.AtomCanonicalization
+import BimodalTools.AxiomNames
+import BimodalTools.DataExport
+import BimodalTools.DatasetAssembly
+import BimodalTools.DatasetGenerator
+import BimodalTools.EnrichedCountermodel
+import BimodalTools.FormulaEnumerator
+import BimodalTools.ForwardProofGenerator
+import BimodalTools.InterestingnessMetrics
+import BimodalTools.PrefilterSoundness
+import BimodalTools.ProofFirstBenchmark
+import BimodalTools.ProofStepExtractor
+import BimodalTools.TraceExport
+-- The 12 `*Main` modules are deliberately absent: each declares a root-namespace `main`, so two
+-- of them cannot share one environment. They are reached through their `lean_exe` targets.
+
 /-!
 # BimodalTools - Tooling library root
 

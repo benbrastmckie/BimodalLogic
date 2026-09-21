@@ -1,0 +1,59 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+/-!
+# Axiom Names - Canonical 29-Constructor Name List
+
+The canonical list of all `FormalSystem.ProofSystem.Axiom` constructor names, in
+`Axioms.lean` source order.
+
+Extracted from `BenchmarkAnchorsMain.lean` into a leaf module so that
+multiple executables can share it: `BenchmarkAnchorsMain.lean` declares a
+root-level `main` (it is a `lean_exe` root), so importing it from another
+executable module would clash on `main`. Both `BenchmarkAnchorsMain.lean` and
+`MachineAppendixMain.lean` import this module and check their coverage
+against `allAxiomNames`.
+
+## Maintenance
+
+When a constructor is added to (or removed from) `inductive Axiom` in
+`ProofSystem/Axioms.lean`, this list MUST be updated in the same change.
+The mismatch is caught mechanically:
+- `lake exe machine_appendix` fails its coverage assertion, and
+- `scripts/typst-sync-check.sh` Check 3 recomputes the constructor count from
+  live source and compares it against the shipped machine appendix.
+-/
+
+namespace BimodalTools
+
+/-- All 29 axiom constructor names, in `Axioms.lean` source order. These are exactly the
+primitive schemata of the paper's axiom system; the time-reflection mirrors and modal 4/B are
+derived theorems in `FormalSystem.ProofSystem.DerivedAxioms`. -/
+def allAxiomNames : List String :=
+  [ "prop_k", "prop_s", "ex_falso", "peirce"
+  , "modal_t", "modal_5_collapse", "modal_k_dist"
+  , "serial_future"
+  , "left_mono_until_G"
+  , "right_mono_until"
+  , "connect_future"
+  , "enrichment_until"
+  , "self_accum_until"
+  , "absorb_until"
+  , "linear_until"
+  , "until_F"
+  , "temp_linearity"
+  , "F_until_equiv"
+  , "modal_future"
+  , "discrete_symm_fwd"
+  , "discrete_propagate_fwd", "discrete_propagate_bwd"
+  , "discrete_box_necessity"
+  , "prior_UZ"
+  , "z1"
+  , "density", "dense_indicator"
+  , "prior_U_gap", "sep"
+  ]
+
+end BimodalTools

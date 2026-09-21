@@ -306,7 +306,14 @@ def measure_automation(g):
     needed = sorted(needed)
     user_facing = sorted(m for m in automation if m in USER_FACING_TACTICS)
     tooling = sorted(m for m in automation if m not in set(needed) and m not in USER_FACING_TACTICS)
-    tooling.append(f"{LIB}.Metalogic.Decidability.TraceExport")
+    # TraceExport is tooling that never lived under Automation/, so the walk above cannot find
+    # it; it is added by hand. GUARDED ON EXISTENCE, and that guard is load-bearing rather than
+    # defensive: once the module is relocated out of `FormalSystem.` this append would otherwise
+    # put a phantom row into a partition that is supposed to be empty, and the line-count pass
+    # below would be counting a file that is no longer there.
+    trace_export = f"{LIB}.Metalogic.Decidability.TraceExport"
+    if trace_export in g.modules:
+        tooling.append(trace_export)
     tooling.sort()
     exe_roots = sorted(m for m in tooling if m.endswith("Main"))
     tests_importing_tooling = {}
