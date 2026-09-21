@@ -488,7 +488,7 @@ symmetry.
 
 ---
 
-### Phase 7: A name is not a proof, and the decision procedure's types [NOT STARTED]
+### Phase 7: A name is not a proof, and the decision procedure's types [COMPLETED]
 
 **Goal**: Extend the Trust-Reading Practice subsection with item (8) and add the decision
 procedure's types (item 9) with an honest established-versus-open split.

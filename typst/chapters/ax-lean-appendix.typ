@@ -1014,6 +1014,66 @@ Where the underlying proofs live is worth knowing before opening anything.
 The single hypothesis that the frame condition survives the ultraproduct is the whole of the class-dependence, and it is exactly what fails at the discrete and Dedekind classes.
 @sec:completeness-theorems states the strongest form each frame class admits, and @sec:metalogic sets the four results in their mathematical context.
 
+=== The Decision Procedure
+
+The results above are about derivability and truth.
+The decision procedure of @sec:decidability-practice is about *computing*, and its types say precisely how far the computation is trusted.
+Its return type has four constructors, which is one more than a naive reading of "decides" would suggest:
+
+#leansrc("FormalSystem.Metalogic.Decidability", "DecisionResult")
+```
+inductive DecisionResult (φ : Formula) : Type where
+  | valid (proof : ⊢ φ)
+  | invalid (counter : SimpleCountermodel)
+  | fuelExhausted
+  | extractionFailed
+  deriving Repr
+```
+
+The type is indexed by the formula, so a `DecisionResult φ` can only be a verdict about `φ`.
+
+- *`valid`* carries a derivation. This is @lean-appendix-derivations-as-data's payoff. A positive verdict is not a Boolean to be trusted but a proof term the kernel can re-check.
+- *`invalid`* carries a `SimpleCountermodel`, which is the refuting structure rather than a bare `false`.
+- *`fuelExhausted`* is the honest undecided case. The tableau ran out of budget before reaching any verdict.
+- *`extractionFailed`* is a fourth outcome kept deliberately distinct from the third. Every tableau branch closed, which is the tableau-level witness of validity, and only the reconstruction of a proof term failed. Folding it into `fuelExhausted` would have the procedure claim ignorance about formulas it had in fact settled.
+
+The entry point shows Lean's *optional parameters*:
+
+#leansrc("FormalSystem.Metalogic.Decidability", "decide")
+```
+def decide (φ : Formula) (searchDepth : Nat := 10)
+    (tableauFuel : Nat := 1000) (fc : FrameClass := .Base) :
+    DecisionResult φ
+```
+
+A `:=` inside a binder gives that argument a default.
+Three of the four arguments have one, so the two calls below are the same call:
+
+```
+example (φ : Formula) : DecisionResult φ := decide φ
+
+example (φ : Formula) : DecisionResult φ :=
+  decide φ 10 1000 .Base
+```
+
+A caller overrides `searchDepth := 10` or `tableauFuel := 1000` only when the defaults prove too small.
+This is the ordinary way a Lean API offers tuning without making every call site carry it.
+
+What the library proves about all this is narrower than the word *decide* suggests, and it is worth stating exactly.
+
+#leansrc("FormalSystem.Metalogic.Decidability", "sound_of_isValid")
+```
+theorem sound_of_isValid {φ : Formula}
+    (r : DecisionResult φ) (h : r.isValid = true) : ⊨ φ
+```
+
+- *Established.* A `valid` verdict is sound, by `decide_sound`, because it carries a `⊢ φ` and soundness applies. The `Bool`-level restatement `isValid φ fc = true → ⊨ φ` follows, which is the theorem above. On the tableau side, `ruleSound_of_mem_allRulesForFC` proves that every rule the scheduler can select preserves satisfiability at its frame class. A refuting verdict comes with the countermodel that justifies it.
+- *Open.* The converse `⊨ φ → isValid φ fc = true`, and with it the biconditional and a `Decidable (⊨ φ)` instance, is *not* proved. It needs `valid_iff_allClosed`, which in turn needs the termination side and the truth-lemma gate, and it must also account for the two rules scheduled outside `allRulesForFC`, namely `serialityRule` and `timeLinearity`.
+- *Open.* Totality against a formula-dependent budget is likewise open. While the fuel is a fixed argument rather than a bound computed from the formula, `fuelExhausted` remains a reachable outcome, which is why it is a constructor rather than an error.
+
+@sec:fmp-resolution and @sec:decidability-practice are where the book states these as open problems and says what would close them.
+The Lean side states no biconditional until one can be proved, which is the subject of the next subsection.
+
 === Trust-Reading Practice
 
 Two commands let a reader audit a declaration without reading its proof.
@@ -1034,6 +1094,24 @@ These three are the standard axioms of classical reasoning in Lean and Mathlib: 
 What matters is what is absent.
 An unfinished proof is marked in Lean by the placeholder `sorry`, and any declaration depending on one reports the additional axiom `sorryAx`, however deep in its dependencies the gap lies.
 The book's count of `sorry` placeholders in live source, currently #sorry-total-excl-boneyard outside the archived `Boneyard/` material, is the source-level companion to this kernel-level check.
+
+There is a second thing the kernel cannot check, and it is the reason both commands above are worth running.
+A declaration's *name* is written by its author and is checked by nobody.
+Only the statement is checked, so only the statement can be trusted, and a reader who audits the name has audited nothing.
+
+`FormalSystem/` records one instance of this in its own source, in the retirement note in `Metalogic/Decidability/Correctness.lean`.
+Two theorems once stood there whose names claimed a decidability result their proofs did not contain.
+The first was `validity_decidable (φ : Formula) : (⊨ φ) ∨ ¬(⊨ φ)`, proved by `exact Classical.em (⊨ φ)`.
+That is excluded middle at an arbitrary proposition.
+It holds of every predicate whatsoever, produces no procedure and no `Decidable` instance, and says nothing about validity, about tableaux, or about computation.
+The second was `validity_has_decision_procedure (φ : Formula) : ∃ decision : Bool, decision = true ↔ ⊨ φ`, proved by a case split on the truth value one is trying to compute.
+Its existential is witnessed by the answer rather than by anything that finds the answer, so it is the first theorem again with a `Bool` wrapped around it.
+
+Both statements type-check.
+Both are true.
+Neither is a decision procedure, and a reader who saw only the names would have concluded otherwise.
+`Decidable (⊨ φ)` is the statement that would carry the content, and the previous subsection is where the book says what is still owed before it can be proved.
+The declarations were retired rather than quietly deleted, so that the record of the defect survives in the place a reader would look.
 
 Finally, every citation in this book gives a declaration *name*, never a `file:line` pair, because line numbers drift with routine edits while a name survives them.
 A Lean editor's go-to-definition, or `lean_declaration_file`-style tooling, resolves a name to its current location instantly.
