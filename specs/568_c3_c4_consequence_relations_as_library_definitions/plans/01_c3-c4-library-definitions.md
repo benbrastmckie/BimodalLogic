@@ -411,19 +411,19 @@ unfolds to the same term. `lean_verify` on `c3_sep`, `c3_z1`, `c3_prior_U_gap`: 
 
 ---
 
-### Phase 7: Base-class past mirrors [NOT STARTED]
+### Phase 7: Base-class past mirrors [COMPLETED]
 
 **Goal**: One C3 theorem per base-class time-reflection mirror, proved by direct dualisation.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/ConvexConsequence/Mirrors.lean`; register and regenerate.
-- [ ] For each declaration in the "Base mirrors" section of
+- [x] Create `FormalSystem/Metalogic/ConvexConsequence/Mirrors.lean`; register and regenerate.
+- [x] For each declaration in the "Base mirrors" section of
       `FormalSystem/ProofSystem/DerivedAxioms.lean` not already covered by Phase 4, and for
       `linearSince` and `tempLinearityPast`, state the C3 validity of exactly the formula that
       declaration derives, and prove it by dualising the forward proof.
-- [ ] Module docstring: why mirror verdicts are not inherited (there is no semantic
+- [x] Module docstring: why mirror verdicts are not inherited (there is no semantic
       time-reflection soundness on a single frame).
-- [ ] Scoped build.
+- [x] Scoped build.
 
 **Timing**: 2 hours
 
@@ -435,6 +435,15 @@ unfolds to the same term. `lean_verify` on `c3_sep`, `c3_z1`, `c3_prior_U_gap`: 
 self-accumulation, absorption, since-P, P-since equivalence, and the two linearity mirrors.
 Confirm the list by reading `DerivedAxioms.lean` at implementation time; the file is the authority,
 not this count.
+
+**Phase notes**: The list was confirmed by reading `DerivedAxioms.lean`: ten mirrors, as
+estimated — `leftMonoSinceH`, `rightMonoSince`, `connectPast`, `enrichmentSince`,
+`selfAccumSince`, `absorbSince`, `sinceP`, `pSinceEquiv`, plus `linearSince` and
+`tempLinearityPast` from `Theorems/Combinators.lean`. `serialFutureImp`, `serialPast` and
+`discreteSymmBwd` are the failing rows already in `AxiomSurvival.lean`. Formula fidelity was
+checked mechanically, not only by reading: a scratch file unified each theorem's formula with
+its derivation's under `with_reducible`, all ten succeeding. The two linearity mirrors carry
+their derivations' own disjunct order and association.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/ConvexConsequence/Mirrors.lean` - new

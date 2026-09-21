@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.ConvexConsequence.Separations
 import FormalSystem.Metalogic.ConvexConsequence.AxiomSurvival
 import FormalSystem.Metalogic.ConvexConsequence.FrameClassSurvival
+import FormalSystem.Metalogic.ConvexConsequence.Mirrors
 
 /-!
 # FormalSystem.Metalogic.ConvexConsequence - The Logic of the Convex-Index Relations
@@ -28,6 +29,8 @@ question, and no completeness theorem for C3 is stated here.
   on the integer-time frame; the six failures are all existence assertions about the order
 - `FrameClassSurvival`: the six frame-class axioms each survive C3 on their own frame class,
   including the four verdicts an earlier survey left conditional or unresolved
+- `Mirrors`: one C3 theorem per past mirror TM derives by time reflection, each proved directly
+  because no mirror verdict is inherited from its forward row
 
 ## Tags
 
