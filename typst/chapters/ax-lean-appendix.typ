@@ -477,7 +477,88 @@ example (F : TaskFrame) (M : TaskModel F) (p : Atom) :
   {w | M.valuation w p}
 ```
 
-This is the reading @sec:truth uses, and it is why the atomic clause of `TruthAt` is just membership: an atom holds at a history and a time exactly when that history's state at that time lies in the set.
+This is the reading @sec:truth uses, and it is why the atomic clause of `TruthAt` (@lean-appendix-recursion) is just membership: an atom holds at a history and a time exactly when that history's state at that time lies in the set.
+
+== Definition by Structural Recursion <lean-appendix-recursion>
+
+@lean-appendix-inductive said that recursion over an inductive type comes for free.
+`TruthAt` is what that looks like in practice.
+It is defined by one clause per `Formula` constructor, each clause written as a pattern on the left of `=>` and the truth condition on the right:
+
+#leansrc("FormalSystem.Semantics", "TruthAt")
+```
+def TruthAt (M : TaskModel F)
+    (τ : WorldHistory F) (t : F.Duration) : Formula → Prop
+  | Formula.atom p => M.valuation (τ.state t) p
+  | Formula.bot => False
+  | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
+  | Formula.box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ
+  | Formula.untl ψ φ => ∃ s : F.Duration, t < s ∧ TruthAt M τ s φ ∧
+      ∀ r : F.Duration, t < r → r < s → TruthAt M τ r ψ
+  | Formula.snce ψ φ => ∃ s : F.Duration, s < t ∧ TruthAt M τ s φ ∧
+      ∀ r : F.Duration, s < r → r < t → TruthAt M τ r ψ
+```
+
+Three things about the shape are worth naming before the content.
+
+- *The clauses are exhaustive by construction.* `Formula` has exactly six constructors (@lean-appendix-inductive), so six clauses cover every formula. Lean checks this. A missing clause is a compile error, not a case that silently falls through.
+- *The recursion is structural.* Each recursive call is on a strict subformula, so Lean accepts the definition as terminating without being given a measure and without a `termination_by` clause.
+- *The definition is total.* There is no default case and no partiality, which is why `TruthAt` can be used as an ordinary mathematical function in every later proof.
+
+Reading the clauses, the first two are the base cases and the third is the standard treatment of implication.
+The remaining three carry the content of @sec:truth.
+
+- *`Formula.box`.* The clause quantifies over *all* world histories at the same time `t`, with no accessibility relation between them. Necessity in *TM* is truth in every history at the present moment.
+- *`Formula.untl` and `Formula.snce`.* Both bounds are *strict*. The until clause asks for a later `s` at which the event `φ` holds and at which the guard `ψ` has held strictly between, and the since clause is its mirror in the past.
+
+The argument order of the last two is easy to misread and worth stating outright.
+The first argument is the *guard* and the second is the *event*, as the pattern `Formula.untl ψ φ` shows.
+So `Formula.untl ψ φ` is the formula the book writes as $ψ$ until $φ$, with `ψ` the condition that must hold throughout and `φ` the condition that must eventually hold.
+
+=== Extending a Language by One Constructor
+
+L⁺ (@ch:vlach-blstar) adds a single stability modal to the language of *TM*, and both halves of that addition are visible in Lean as one extra line.
+The syntax gains a seventh constructor:
+
+#leansrc("FormalSystem.PlusLanguage", "PlusFormula")
+```
+inductive PlusFormula : Type where
+  | atom : Atom → PlusFormula
+  | bot : PlusFormula
+  | imp : PlusFormula → PlusFormula → PlusFormula
+  | box : PlusFormula → PlusFormula
+  | untl : PlusFormula → PlusFormula → PlusFormula
+  | snce : PlusFormula → PlusFormula → PlusFormula
+  | stab : PlusFormula → PlusFormula
+  deriving Repr, DecidableEq, Countable
+```
+
+The semantics gains a seventh clause, and nothing else changes:
+
+#leansrc("FormalSystem.PlusLanguage", "PlusTruthAt")
+```
+def PlusTruthAt (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) : PlusFormula → Prop
+  | .atom p => M.valuation (τ.state t) p
+  | .bot => False
+  | .imp φ ψ => PlusTruthAt M τ t φ → PlusTruthAt M τ t ψ
+  | .box φ => ∀ σ : WorldHistory F, PlusTruthAt M σ t φ
+  | .untl ψ φ => ∃ s : F.Duration, t < s ∧ PlusTruthAt M τ s φ ∧
+      ∀ r : F.Duration, t < r → r < s → PlusTruthAt M τ r ψ
+  | .snce ψ φ => ∃ s : F.Duration, s < t ∧ PlusTruthAt M τ s φ ∧
+      ∀ r : F.Duration, s < r → r < t → PlusTruthAt M τ r ψ
+  | .stab φ => ∀ σ : WorldHistory F, τ.state t = σ.state t →
+      PlusTruthAt M σ t φ
+```
+
+The `stab` clause quantifies over the histories that agree with `τ` on the *present world state*, where the box clause quantifies over all of them.
+That single restriction is the whole semantic content of the added modal.
+Setting the two definitions side by side also shows what a language extension costs in a formalization, namely one constructor, one clause, and a re-proof of every result that inducts over the language.
+
+The two definitions differ in one further respect, which is notation rather than content.
+`TruthAt` writes its patterns out as `Formula.atom p`, while `PlusTruthAt` writes `.atom p`.
+The leading dot is *anonymous constructor notation*: Lean already knows from the declared type which inductive is being matched, so the type's name may be dropped.
+The same dot appears in expressions, as in the `FrameClass.Base` argument written `.Base`, and a reader who has met it once will meet it constantly in `FormalSystem/`.
 
 == Tactic Proofs vs. Term Proofs <lean-appendix-tactics>
 

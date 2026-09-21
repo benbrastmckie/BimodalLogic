@@ -326,7 +326,7 @@ declaration at authoring time.
 
 ---
 
-### Phase 4: Definition by structural recursion [NOT STARTED]
+### Phase 4: Definition by structural recursion [COMPLETED]
 
 **Goal**: Add a new section (item 3) showing `TruthAt` clause by clause beside the `Formula`
 constructors, then `PlusFormula.stab` and its one added `PlusTruthAt` clause.
