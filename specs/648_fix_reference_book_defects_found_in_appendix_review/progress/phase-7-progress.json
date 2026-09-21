@@ -1,0 +1,25 @@
+{
+  "phase": 7,
+  "phase_name": "Template hygiene",
+  "started_at": "2026-09-22T01:00:00Z",
+  "last_updated": "2026-09-22T01:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Give #items/#item environment a hanging indent", "status": "done", "files_touched": ["typst/template.typ"]},
+    {"id": 2, "description": "Enumerate available fonts, set an available sans family on thmbox init and proof env", "status": "done", "files_touched": ["typst/template.typ"]},
+    {"id": 3, "description": "Recompile and confirm zero warnings", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Render and inspect wrapped item text and spot-check other call sites", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Record chosen font family in summary", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "Routed #item through Typst's native list() function instead of a manual block+dash, so it inherits the enclosing #items block's list styling (marker/indent/spacing)", "result": "success", "reason": "Verified via pdftotext and a rendered page image (page 72): wrapped lines now hang-indent under the marker, matching a reference native-markup list's spacing exactly; all 9 real call sites (all nested inside #items[...]) inherit correctly with no call-site changes needed."},
+    {"approach": "Chose 'Noto Sans' as the replacement sans font (plan's suggested default)", "result": "failed", "reason": "Noto Sans is a variable font; Typst warns 'variable fonts are not currently supported' for it, trading one warning for another. Switched to DejaVu Sans (a real static family with separate Regular/Bold/Oblique/BoldOblique files), which produces zero warnings."},
+    {"approach": "Found a fifth style dict (example-style, for the 'example' ported environment) not covered by the initial 4-dict font-override pass", "result": "success", "reason": "The compile still showed one residual 'unknown font family' warning after updating theorem-style/definition-style/axiom-style/remark-style; traced it to the ported-environments section (proposition/corollary/example/notation-env), where example-style was the one style dict missing the override. Added it."},
+    {"approach": "Explanatory // comments in template.typ using backtick-quoted Typst-syntax fragments (e.g. `list()`, `.with(...)`, `#set list(...)`)", "result": "failed", "reason": "Broke Check 1 (7 new violations) -- the CONSTRAINTS section requires every backticked span in typst/ to resolve, comments included, and generic Typst-API syntax fragments are not Lean identifiers. Reworded the comments to avoid backticks entirely rather than whitelisting generic Typst syntax."}
+  ],
+  "handoff_count": 0,
+  "notes": [
+    "Chosen font: DejaVu Sans, applied via a shared thmbox-sans-fonts constant threaded into all six style dicts (theorem-style, definition-style, axiom-style, remark-style, example-style) plus a direct .with(...) on the re-exported proof environment (which has no sans-fonts/title-fonts parameters of its own and never raised the warning, but is given the same treatment for consistency and future-proofing).",
+    "A concurrent build/edit hook appears to auto-regenerate typst/generated/status.typ on some trigger -- it freshened itself mid-phase (git diff showed it modified though this phase touched no Lean files), bringing sync-check Check 2 fully green for the first time since Phase 2. Included the freshened file in this phase's commit."
+  ]
+}

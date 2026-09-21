@@ -439,24 +439,28 @@ library root rather than against the report's list.
 
 ---
 
-### Phase 7: Template hygiene [NOT STARTED]
+### Phase 7: Template hygiene [COMPLETED]
 
 **Goal**: Item 9(a) and 9(b). Wrapped item lines hang correctly, and the build emits zero warnings.
 
 **Tasks**:
-- [ ] Give the item environment in `typst/template.typ` a hanging indent — either by adding the
+- [x] Give the item environment in `typst/template.typ` a hanging indent — either by adding the
       indent and hanging-indent treatment directly, or (simpler) by routing it through a native
       list item so it inherits the surrounding environment's list styling. No call-site changes
-      should be needed.
-- [ ] Enumerate available fonts with `typst fonts`, choose an available sans family, and set it on
+      should be needed. *(completed: `item(body) = list(body)`, verified no call-site changes
+      needed across all 9 real call sites)*
+- [x] Enumerate available fonts with `typst fonts`, choose an available sans family, and set it on
       the theorem-box title and sans font parameters in every environment style dictionary in
       `template.typ`, including the directly re-exported proof environment which currently has no
-      `.with(…)` at all.
-- [ ] Recompile and confirm the compile emits zero warnings.
-- [ ] Render and inspect a page containing wrapped item text (the Tactics subsection of the
+      `.with(…)` at all. *(completed: DejaVu Sans, not the initially-tried Noto Sans -- see
+      deviation note below)*
+- [x] Recompile and confirm the compile emits zero warnings. *(completed)*
+- [x] Render and inspect a page containing wrapped item text (the Tactics subsection of the
       automation chapter is the known case) and confirm the hanging indent; spot-check the other
-      item call sites across the chapters for regressions.
-- [ ] Record the chosen font family in the implementation summary.
+      item call sites across the chapters for regressions. *(completed: page 72 rendered and
+      inspected as an image, hanging indent confirmed correct and consistent)*
+- [x] Record the chosen font family in the implementation summary. *(recorded here and in
+      progress/phase-7-progress.json; will also appear in the final summary)*
 
 **Timing**: 1 hour
 

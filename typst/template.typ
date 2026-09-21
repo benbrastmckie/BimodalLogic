@@ -37,28 +37,49 @@
 // - Definitions: upright body, defined terms in italic (definition style)
 // - Remarks: upright body, less prominent (remark style)
 
+// thmbox's own default sans-fonts/title-fonts is ("New Computer Modern Sans",),
+// not installed in this build environment (only the serif "New Computer Modern"
+// and "New Computer Modern Math" are), which is what raised the two
+// "unknown font family" compile warnings. There is no installed sans
+// companion to New Computer Modern; "Noto Sans" is the closest-named match
+// but is a variable font, which Typst warns about separately ("variable
+// fonts are not currently supported"). "DejaVu Sans" is a real static family
+// (separate Regular/Bold/Oblique/BoldOblique files) with no such warning, so
+// it is used instead and applied uniformly below so every environment's
+// title bar and (where sans is enabled, the thmbox default) body font
+// resolve cleanly.
+#let thmbox-sans-fonts = ("DejaVu Sans",)
+
 #let theorem-style = (
   fill: none,
   stroke: none,
   bodyfmt: it => emph(it),  // Italic body per AMS plain style
+  sans-fonts: thmbox-sans-fonts,
+  title-fonts: thmbox-sans-fonts,
 )
 
 #let definition-style = (
   fill: none,
   stroke: none,
   // Upright body (thmbox default) per AMS definition style
+  sans-fonts: thmbox-sans-fonts,
+  title-fonts: thmbox-sans-fonts,
 )
 
 #let axiom-style = (
   fill: none,
   stroke: none,
   bodyfmt: it => emph(it),  // Italic body like theorems
+  sans-fonts: thmbox-sans-fonts,
+  title-fonts: thmbox-sans-fonts,
 )
 
 #let remark-style = (
   fill: none,
   stroke: none,
   // Upright body (thmbox default) per AMS remark style
+  sans-fonts: thmbox-sans-fonts,
+  title-fonts: thmbox-sans-fonts,
 )
 
 // ============================================================================
@@ -72,7 +93,13 @@
 #let lemma = thmbox.lemma.with(..theorem-style)
 #let axiom = thmbox.axiom.with(..axiom-style)
 #let remark = thmbox.remark.with(..remark-style)
-#let proof = thmbox.proof
+// proof (unlike the five above) is not built on thmbox's generic box
+// constructor and has no sans-fonts/title-fonts parameters of its own -- it
+// never raised either warning, and its rest-argument catch-all silently
+// absorbs these without using them -- but it is given the same partial-application
+// treatment for consistency with every other environment here and as a
+// guard against a future thmbox version adding such parameters to it.
+#let proof = thmbox.proof.with(sans-fonts: thmbox-sans-fonts, title-fonts: thmbox-sans-fonts)
 
 // ============================================================================
 // Ported Environments (from Logos manual template.typ:54-60,93-96,111-130,
@@ -84,6 +111,8 @@
   fill: none,
   stroke: none,
   // Upright body, matches remark-style
+  sans-fonts: thmbox-sans-fonts,
+  title-fonts: thmbox-sans-fonts,
 )
 
 #let proposition = thmbox.proposition.with(..theorem-style)
@@ -134,9 +163,12 @@
   #body
 ]
 
-#let item(body) = block(spacing: 0.65em)[
-  -- #body
-]
+// Routed through Typst's native list function rather than a manual block
+// plus a literal dash, so a wrapped line hangs indented to the body (aligned
+// under the marker's text, not back at the margin) and inherits whatever
+// marker/indent/spacing the enclosing items block's list styling above
+// establishes -- no call-site changes needed.
+#let item(body) = list(body)
 
 // --- Principles list environment (auto-labeled axiom/principle lists) ---
 
