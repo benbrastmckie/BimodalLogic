@@ -9,7 +9,6 @@ import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.Propositional.Connectives
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Modal S5 Theorems

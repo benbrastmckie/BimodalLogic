@@ -5,7 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Theorems.Propositional.Connectives
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Natural Deduction Rules: Negation Intro/Elim, Biconditional, Disjunction Elimination

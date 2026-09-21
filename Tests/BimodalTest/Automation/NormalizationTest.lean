@@ -232,7 +232,7 @@ Verify that `decide` with normalization wired in still produces correct results.
 `Formula`'s unfold and fold lemmas are exact `rfl` inverses of each other. While both families
 carried `@[simp]`, plain `simp` rewrote in a cycle and every `Formula` goal failed with
 `maximum recursion depth has been reached`. They now live in the dedicated `formula_unfold` /
-`formula_fold` simp sets declared in `FormalSystem/Automation/NormalizationAttr.lean`, so plain
+`formula_fold` simp sets declared in `FormalSystem/Tactic/Attr.lean`, so plain
 `simp` terminates again and each family is still reachable on demand.
 
 `Formula` is in scope here via the file-level `open FormalSystem.Syntax` above — `open
@@ -245,7 +245,8 @@ section SimpLoopRegression
 example (a : Formula) : a.neg = a.neg := by simp
 
 -- Both dedicated simp sets resolve across the module boundary. A silent `Unknown attribute`
--- or `Unknown identifier` here would mean the NormalizationAttr module split did not take.
+-- or `Unknown identifier` here would mean `Tactic/Attr.lean` is not reaching this file through
+-- `FormalSystem/Init.lean`.
 example (a : Formula) : a.neg = a.imp Formula.bot := by simp only [formula_unfold]
 
 example (a : Formula) : a.imp Formula.bot = a.neg := by simp only [formula_fold]

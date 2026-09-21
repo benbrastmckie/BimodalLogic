@@ -10,7 +10,6 @@ import FormalSystem.Theorems.Propositional.Reasoning
 import FormalSystem.Theorems.TemporalDerived
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.Perpetuity
-import FormalSystem.Automation.LemmaDB
 import Lean
 
 /-!
@@ -283,8 +282,8 @@ def tryLemmaMatchCore (lemmas : Array Name) (goal : MVarId) (fc _ctx formula : E
 
 /--
 Try to prove the goal by matching against the `@[tmLemma]` attribute
-database (see `FormalSystem.Automation.LemmaDB`), with backward chaining through
-lemma premises.
+database (see `FormalSystem.Tactic.Attr`, which declares the attribute), with
+backward chaining through lemma premises.
 
 Replaces the former `tryDerivedMatch` static 26-name list: the database is
 now populated by tagging theorems `@[tmLemma]` at their definition sites.

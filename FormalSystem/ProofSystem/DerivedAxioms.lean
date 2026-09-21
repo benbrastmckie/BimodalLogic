@@ -6,7 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Syntax.Formula
 import FormalSystem.ProofSystem.Derivation
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Derived Axioms: Time-Reflection Mirrors

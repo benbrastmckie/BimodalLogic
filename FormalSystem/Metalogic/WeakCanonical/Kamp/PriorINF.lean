@@ -71,7 +71,7 @@ conventions. **Neither carries a `¬F` conjunct at the point of evaluation.**
 
 **Where the source-exact spellings live in this tree:**
 
-* `Formula.kPlus` / `Formula.kMinus` (`FormalSystem/Syntax/Formula.lean:198`, `:211`) — the
+* `Formula.kPlus` / `Formula.kMinus` (`FormalSystem/Syntax/Formula.lean:197`, `:210`) — the
   object-level source-exact spelling, `(untl ⊤ φ.neg).neg`, carrying the **name-collision warning at
   `Syntax/Formula.lean:189`** which says of `kplusFormula` below that *"substituting one for the
   other silently transcribes a different axiom"*. `Axiom.prior_U_gap`
@@ -106,7 +106,7 @@ and the shims relating the two; neither this file's statements nor its proofs ch
     *"`K+(F)` holds at a moment `t` iff `t = inf({t′ | t′ > t and F holds at t′})`"*) and
     Reynolds' (printed p.168: `K⁺A` for `¬U(⊤,¬A)`) are the second conjunct alone. The
     source-exact operator is `kplusOpen` (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of
-    `Formula.kPlus` (`Syntax/Formula.lean:198`); see the name-collision warning at
+    `Formula.kPlus` (`Syntax/Formula.lean:197`); see the name-collision warning at
     `Syntax/Formula.lean:189` and this section's comment block above. `kplus` is strictly stronger,
     and `kplus_iff_not_and_kplusOpen` states the difference exactly. -/
 def kplus {sig : MonadicSignature}

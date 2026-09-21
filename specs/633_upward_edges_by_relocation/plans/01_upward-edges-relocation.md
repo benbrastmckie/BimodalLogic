@@ -1,7 +1,7 @@
 # Implementation Plan: Remove the upward edges by relocation
 
 - **Task**: 633 - Remove the upward edges by relocation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: 630 (landed at `b1ab4bf3a`); 632 (landed at `b1ab4bf3a`)
 - **Research Inputs**: `specs/633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md`
@@ -150,7 +150,7 @@ them in the listed order (1, 3, 4); true parallel execution requires separate wo
 
 ---
 
-### Phase 1: Create the Tactic/ layer and merge the attribute modules [NOT STARTED]
+### Phase 1: Create the Tactic/ layer and merge the attribute modules [COMPLETED]
 
 - **Goal:** Delete all 11 attribute-driven upward import lines by moving five attribute
   declarations to a single layer-0 module that `Init.lean` imports.

@@ -9,7 +9,6 @@ import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.Propositional.Connectives
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Temporal Derived Theorems from BX Axioms

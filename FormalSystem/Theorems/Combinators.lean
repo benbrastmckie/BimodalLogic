@@ -7,7 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.ProofSystem.DerivedAxioms
 import FormalSystem.Syntax.Formula
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Combinators - Propositional Reasoning Combinators

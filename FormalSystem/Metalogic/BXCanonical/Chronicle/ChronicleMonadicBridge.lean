@@ -769,7 +769,7 @@ instances of the other axioms hold everywhere"*, executed in Lean:
    (`Kamp/KPlusFaithful.lean:152` / `:174`) read the `K⁺` / `K⁻` the axioms are stated with.
 
 Step 3's bridge lemma is the one the plan names: `Axiom.prior_U_gap` is stated with
-`Formula.kPlus` (`ProofSystem/Axioms.lean:442`; `Syntax/Formula.lean:198`), and
+`Formula.kPlus` (`ProofSystem/Axioms.lean:442`; `Syntax/Formula.lean:197`), and
 `kPlus_formula_correct` is what reads it semantically. `kplusFormula` (`Kamp/PriorINF.lean:~93`)
 is **not** substituted for it — the two differ by a conjunct and the name-collision warning at
 `Syntax/Formula.lean:189` says so.

@@ -16,18 +16,18 @@ open Lean Core Elab Command
 
 Near-verbatim port of CSLib's `scripts/CheckInitImports.lean` (`Cslib` -> `FormalSystem`), with
 two deliberate deviations from the original, each documented at its site below: a constant exit
-status rather than the truncating count, and a differently-populated `exceptions` list. This repo
-has no local lint/tactic-attribute module analogous to `Cslib.Foundations.Lint.Basic` needing a
-circular-dependency exception -- `FormalSystem.Init`'s own two imports, `Mathlib.Init` and
-`Mathlib.Tactic.Common`, are rooted at `Mathlib`, not `FormalSystem`, so the
-`name.getRoot = `FormalSystem`` filter below already excludes them -- but it does have the
-`ForMathlib` upstreaming rule, which supplies the one non-self exception.
+status rather than the truncating count, and a differently-populated `exceptions` list. Like
+CSLib, this repo has a local tactic-attribute module needing a circular-dependency exception
+(`FormalSystem.Tactic.Attr`, the analogue of `Cslib.Foundations.Lint.Basic`); `FormalSystem.Init`'s
+two Mathlib imports are rooted at `Mathlib`, not `FormalSystem`, so the
+`name.getRoot = `FormalSystem`` filter below already excludes those. The `ForMathlib` upstreaming
+rule supplies the second exception.
 
 This script checks that all `FormalSystem` modules (transitively) import `FormalSystem.Init`.
 It is a *gate*: it is wired into `scripts/check-module-invariants.sh` as check C24, which runs it
 in build mode and fails the invariants harness when any module in the `FormalSystem` root closure
 lacks a transitive path to `FormalSystem.Init`. Every module in that closure now has one, reached
-from the eleven minimal elements of the internal import DAG rather than from 457 direct import
+from the eight minimal elements of the internal import DAG rather than from 457 direct import
 lines. Run standalone with `lake exe checkInitImports`.
 -/
 
@@ -42,6 +42,14 @@ def exceptions : List Name := [
   -- beside the directory rather than under it, carries the import instead, so every *consumer* of
   -- this module still reaches `FormalSystem.Init`.
   `FormalSystem.ForMathlib.Order.PFilter,
+  -- `FormalSystem/Tactic/Attr.lean` declares the library's attributes and named simp sets, and
+  -- `FormalSystem.Init` imports IT so that every module inherits them transitively. The reverse
+  -- edge -- `Tactic.Attr` importing `Init` -- would therefore close the cycle
+  -- `Init -> Tactic.Attr -> Init`. It imports `Lean` alone; `register_simp_attr` and
+  -- `register_label_attr` are core Lean commands and need nothing else. The sibling aggregator
+  -- `FormalSystem/Tactic.lean`, which sits beside the directory rather than under it, carries an
+  -- explicit `import FormalSystem.Init` so that it is not itself an exception.
+  `FormalSystem.Tactic.Attr,
 ]
 
 def main : IO UInt32 := do

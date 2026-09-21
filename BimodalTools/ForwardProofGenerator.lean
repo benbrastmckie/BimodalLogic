@@ -27,8 +27,8 @@ by construction.
 
 namespace BimodalTools
 
--- The library half of the former `FormalSystem.Automation` namespace stayed put (LemmaDB,
--- Normalization, SuccessPatterns, ProofSearch/, Tactics/). This module no longer sits
+-- The library half of the former `FormalSystem.Automation` namespace stayed put
+-- (Normalization, SuccessPatterns, ProofSearch/, Tactics/). This module no longer sits
 -- inside that namespace, so the names it uses from there must be opened explicitly.
 open FormalSystem.Automation
 

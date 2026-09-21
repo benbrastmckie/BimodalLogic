@@ -69,7 +69,7 @@ that a tactic was under test.
 predicates and extractors these tactics used -- **stayed live**: they carry genuine test
 coverage of their own in `Tests/BimodalTest/Automation/TacticsTest.lean`.
 
-### The `truth_simp` wrapper (`Automation/TruthNormAttr.lean`)
+### The `truth_simp` wrapper (declared beside the `truth_norm` simp set)
 
 | Tactic | Live invocations | Test invocations | Note |
 |---|---:|---:|---|

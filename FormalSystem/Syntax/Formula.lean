@@ -5,7 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Atom
-import FormalSystem.Automation.TruthNormAttr
 
 /-!
 # Formula - Syntax for Bimodal Logic TM

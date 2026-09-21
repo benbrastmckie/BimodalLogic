@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Automation.NormalizationAttr
 import FormalSystem.Syntax.Formula
 
 /-!
@@ -163,7 +162,7 @@ end UnfoldLemmas
 /-!
 ## Phase 1: The unfold and fold simp sets
 
-Both families are declared in `FormalSystem/Automation/NormalizationAttr.lean`, so adding an
+Both families are declared in `FormalSystem/Tactic/Attr.lean`, so adding an
 unfold lemma to the section above extends every `simp only [formula_unfold]` in the tree
 automatically. A caller wanting a *proper sub-list* -- unfolding only the propositional
 operators, say, or only the temporal ones -- names those lemmas individually, because
@@ -175,7 +174,7 @@ file's own examples.
 
 Neither family is in the **default** simp set. The two are exact `rfl` inverses of each other, so
 tagging both `@[simp]` made plain `simp` rewrite in a cycle until it hit `maximum recursion
-depth` on any `Formula` goal. See `NormalizationAttr.lean` for the full account.
+depth` on any `Formula` goal. See `FormalSystem/Tactic/Attr.lean` for the full account.
 -/
 
 

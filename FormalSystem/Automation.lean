@@ -45,8 +45,12 @@ export and benchmark modules this file used to import are now `lean_lib BimodalT
   - `PatternDatabase`: Records successful proof patterns
   - `PatternKey`: Formula structural features for pattern matching
   - `ProofStrategy`: Strategy types (Axiom, Assumption, ModusPonens, etc.)
-- `Normalization`, `NormalizationAttr`, `TruthNormAttr`, `LemmaDB`: normalization simp sets and
-  the derived-lemma database, reached directly rather than through this aggregator.
+- `Normalization`: the derived-operator unfold and fold lemmas, reached directly rather than
+  through this aggregator. The simp sets it tags them into, and the `@[tmLemma]` attribute the
+  derived-lemma database is built from, are declared in `FormalSystem/Tactic/Attr.lean` at
+  layer 0 and reach every module through `FormalSystem/Init.lean`. They used to be three modules
+  in this directory (`NormalizationAttr`, `TruthNormAttr`, `LemmaDB`), which is why `Syntax/`,
+  `Semantics/`, `ProofSystem/` and `Theorems/` each carried an upward import into `Automation/`.
 
 Not here any more: `FormulaEnumerator`, `DatasetGenerator`, `DataExport`, `EnrichedCountermodel`,
 `DatasetAssembly`, `ProofStepExtractor`, `InterestingnessMetrics` and `PrefilterSoundness`. Those

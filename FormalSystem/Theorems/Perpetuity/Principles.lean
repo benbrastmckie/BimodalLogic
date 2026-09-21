@@ -7,7 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Theorems.Perpetuity.Helpers
 import FormalSystem.Theorems.Propositional.Connectives
 import FormalSystem.Theorems.GeneralizedNecessitation
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Perpetuity Principles (P1-P5)

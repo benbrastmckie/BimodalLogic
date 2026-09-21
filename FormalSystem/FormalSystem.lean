@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 -- Re-export all Bimodal library modules
 import FormalSystem.ForMathlib
+import FormalSystem.Tactic
 import FormalSystem.Syntax
 import FormalSystem.ProofSystem
 import FormalSystem.Syntax.MinusLanguage
@@ -34,6 +35,9 @@ with linear temporal logic.
   proper/maximal/prime-filter API of `Order.PFilter` and the bundled `Order.PrimeFilter`). Imports
   nothing from `FormalSystem.*`; the import direction is strictly
   `Mathlib → ForMathlib → FormalSystem`
+- `FormalSystem.Tactic`: the layer-0 metaprogramming directory. `Tactic.Attr` declares every
+  attribute and named simp set the library uses; `FormalSystem/Init.lean` imports it, so every
+  module inherits them transitively. See `Tactic/README.md` for the attributes-only constraint
 - `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
   plus derived operators and context types
 - `FormalSystem.ProofSystem`: Hilbert-style proof system with 29 axiom schemata

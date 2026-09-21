@@ -7,7 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Syntax.Formula
-import FormalSystem.Automation.TruthNormAttr
 import FormalSystem.Semantics.TruthClauses
 
 -- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
@@ -109,9 +108,9 @@ of the same formula were each checked to converge on the normal form under bare 
 | `ST(φ,ψ)` | `strong_trigger_iff` | the `snce` clause with a nested `and` |
 
 All of the above are tagged into the `truth_norm` simp set declared in
-`FormalSystem/Automation/TruthNormAttr.lean`, alongside `TruthAt`'s own defining equations, so
-`simp only [truth_norm]` — or equivalently the `truth_simp` macro — opens the whole family at
-once.
+`FormalSystem/Tactic/Attr.lean`, alongside `TruthAt`'s own defining equations, so
+`simp only [truth_norm]` opens the whole family at once. (A `truth_simp` macro fronting that
+`simp only` once existed and was retired on measurement; see `Boneyard/RetiredTactics/README.md`.)
 
 **`always` has two forms, and only one may carry the attribute.** `always_iff` (the collected
 `∀ s` form) is the normal form and is the tagged one. `always_iff_tri` (the three-conjunct

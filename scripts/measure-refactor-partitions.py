@@ -47,7 +47,12 @@ Measured on commit 220e94ea4 (the tree the programme was written against):
                             Automation, 11 of them into the attribute-only
                             files TruthNormAttr and LemmaDB (the programme's
                             source analysis had said 17 and 12; the script is
-                            right); 4 Theorems files import
+                            right).  Those two files, and NormalizationAttr
+                            beside them, no longer exist: their five
+                            declarations were merged into
+                            FormalSystem/Tactic/Attr.lean, which Init.lean
+                            imports, and all 11 lines were deleted outright;
+                            4 Theorems files import
                             Metalogic.Core.DeductionTheorem; 29 Metalogic files
                             import Theorems across 47 lines
   weakcanonical-partition   Expressiveness 141 files / 104,087 lines,

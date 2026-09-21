@@ -5,7 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Theorems.Propositional.Core
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Derived Connective Reasoning: Classical Merge, Iff, Contraposition, and De Morgan Laws

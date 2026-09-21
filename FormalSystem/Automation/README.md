@@ -55,11 +55,8 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Automation -->
 | File | Lines | Description |
 |------|-------|-------------|
-| `LemmaDB.lean` | 48 | Declares the `@[tmLemma]` label attribute the `modal_search` tactic family uses to enumerate derived theorems |
-| `Normalization.lean` | 930 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
-| `NormalizationAttr.lean` | 44 | Declares the two simp sets `Normalization.lean` tags its unfold and fold lemmas with |
+| `Normalization.lean` | 929 | Bidirectional normalization for derived operators: the unfold direction reduces them to primitives, the fold direction restores them |
 | `SuccessPatterns.lean` | 417 | Successful proof patterns: heuristic patterns for guided proof search |
-| `TruthNormAttr.lean` | 58 | Declares the `truth_norm` and `reflect_time_norm` simp sets used by the truth layer's characterization lemmas |
 | `ProofSearch/` | — | Proof search engine: bounded derivation search (Core.lean, Strategies.lean) |
 | `Tactics/` | — | Tactic elaborators: `modal_search`, `apply_axiom`, `modal_t`, `assumption_search`, `deduction`, `undischarge`, `propDecide` (Commands.lean, UserTactics.lean, Deduction.lean, Meta.lean, PropDecide.lean, Search.lean) |
 <!-- END GENERATED -->

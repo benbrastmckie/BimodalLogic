@@ -7,7 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.Combinators
-import FormalSystem.Automation.LemmaDB
 
 /-!
 # Perpetuity Helper Lemmas

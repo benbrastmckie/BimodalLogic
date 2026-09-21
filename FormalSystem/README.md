@@ -248,16 +248,17 @@ invariant check allowlists it by name (check C8).
 | File | Lines | Description |
 |------|------:|-------------|
 | `../FormalSystem.lean` | 50 | Repository-root Lake root module for `lean_lib FormalSystem` |
-| `Automation.lean` | 107 | Re-export for Automation submodule |
+| `Automation.lean` | 111 | Re-export for Automation submodule |
 | `Examples.lean` | 36 | Re-export for Examples submodule |
 | `ForMathlib.lean` | 29 | Re-export for ForMathlib submodule (Mathlib-shaped extensions intended for upstreaming) |
-| `FormalSystem.lean` | 119 | Library aggregator: imports all submodules for unified access |
-| `Init.lean` | 26 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
+| `FormalSystem.lean` | 123 | Library aggregator: imports all submodules for unified access |
+| `Init.lean` | 32 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
 | `MainResults.lean` | 254 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
 | `Metalogic.lean` | 267 | Re-export for Metalogic submodule |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
 | `Semantics.lean` | 286 | Re-export for Semantics submodule |
 | `Syntax.lean` | 91 | Re-export for Syntax submodule |
+| `Tactic.lean` | 31 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |
 | `Theorems.lean` | 90 | Re-export for Theorems submodule |
 <!-- END GENERATED -->
 
@@ -266,6 +267,7 @@ invariant check allowlists it by name (check C8).
 | Module | File | Description |
 |--------|------|-------------|
 | ForMathlib | `ForMathlib.lean` | Mathlib-shaped extensions intended for upstreaming (proper/maximal/prime-filter API of `Order.PFilter`, `Order.PrimeFilter`); imports nothing from `FormalSystem.*` |
+| Tactic | `Tactic.lean` | Every attribute and named simp set the library uses (`Tactic/Attr.lean`, `Lean`-only). `Init.lean` imports it, so all of them reach every module transitively; see `Tactic/README.md` for the attributes-only constraint |
 | Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure; also parents the L⁻/L⁺/L⋆ language family (see `Syntax/README.md`) |
 | ProofSystem | `ProofSystem.lean` | 29 axiom constructors, 7 inference rules, derivation trees, TR-derived mirrors |
 | PlusLanguage | `Syntax/PlusLanguage.lean` | `PlusFormula` (L plus `⊡`), `PlusAxiom` (the 29 TM schemata and 16 TM-derivable schemata over `PlusFormula`, plus the `⊡` schemata), `PlusDerivationTree`, the embedding `ofFormula` and backward conservativity |
@@ -304,6 +306,7 @@ invariant check allowlists it by name (check C8).
 
 | Submodule | README | Description |
 |-----------|--------|-------------|
+| [Tactic/](Tactic/README.md) | Yes | Layer-0 metaprogramming: the library's attribute and simp-set declarations, imported by `Init.lean` on every module's behalf |
 | [Syntax/](Syntax/README.md) | Yes | Formula types, proof contexts, and the L / L⁻ / L⁺ / L⋆ language family |
 | [Syntax/MinusLanguage/](Syntax/MinusLanguage/README.md) | Yes | L⁻ — the tense-primitive variant, `H`/`G` primitive in place of `untl`/`snce` — and its logic TM⁻ |
 | [Syntax/PlusLanguage/](Syntax/PlusLanguage/README.md) | Yes | L⁺ — L plus the stability modal `⊡` (`stab`, "boxdot") — and its logic TM⁺ |
