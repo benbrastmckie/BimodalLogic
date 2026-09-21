@@ -529,16 +529,18 @@ reading `FormalSystem/` source and trust-checking it (`#check`, `#print axioms`,
 declaration is), and cross-referenced from `00-introduction.typ`'s Outline and "How to Read This
 Book" sections.
 
-**Snippet-verification method**: every didactic Lean example in the appendix, and every
-byte-exact `#leansrc` excerpt's source text, was collected and compiled first in
-`specs/620_lean_appendix_bimodal_reference/scratch/appendix_snippets.lean` — a file outside
-`FormalSystem/` and `Tests/`, run via `lake env lean` against the live library, never committed
-to the library or test tree. Zero errors, zero `sorry`, confirmed by a final `#print axioms`
+**Snippet-verification method** *(two claims in this paragraph are superseded by the
+2026-09-21 entry below: the `#leansrc` policy is verbatim up to whitespace with docstrings
+omitted and lines re-broken, never byte-exact, and the scratch file named here has since been
+archived and no longer exists at that path)*: every didactic Lean example in the appendix, and
+every `#leansrc` excerpt's source text, was collected and compiled first in a scratch file
+outside `FormalSystem/` and `Tests/`, run via `lake env lean` against the live library, never
+committed to the library or test tree. Zero errors, zero `sorry`, confirmed by a final `#print axioms`
 call showing only `[propext, Classical.choice, Quot.sound]` on `soundness`. `#leansrc` excerpts
 for `Derivable`, `Formula` (six constructors), `DerivationTree` (seven constructors), `Atom`,
 `TaskModel`, `soundness`, and `completeness` were re-diffed against the current source after
-writing the appendix prose, matching each declaration's live text exactly (docstrings elided;
-constructor/field lines byte-exact).
+writing the appendix prose, matching each declaration's live text token for token, with
+docstrings omitted and long lines re-broken at whitespace.
 
 **One live-source correction found during verification**: `docs/reference/tactic-reference.md`'s
 `apply_axiom MT φ` / `apply_axiom M4 φ` argument-passing examples do not elaborate against the
@@ -580,3 +582,87 @@ was last run, with no working-tree changes to those files in this task's session
 `typst/generated/automation-module-map.typ` is outside this task's file scope (the Lean
 appendix) and was not attempted here; Check 1 (this task's actual concern) and Check 3 both pass
 cleanly.
+
+## 2026-09-21 Addition — Lean Appendix Extended to Semantics, the Metalogic Map, and the Decision Procedure
+
+Extended `typst/chapters/ax-lean-appendix.typ` from nine sections to fourteen, so a reader can
+read the semantic layer, a derived theorem, the metalogic result map and the decision procedure
+in Lean, not only the syntax and proof system the appendix covered before. The new material is
+threaded into the existing arc in dependency order rather than appended, and every pre-existing
+`lean-appendix` and `lean-appendix-*` label is unchanged.
+
+**New coverage.** Five new sections and three extended in place:
+
+- `lean-appendix-structures` *(extended)* — the three binder forms introduced once, then
+  instance-bracket **fields** and the `CoeSort` coercion on `TemporalOrder` (which is what makes
+  `#check` print `F.Duration.carrier` where the source writes `F.Duration`, a gap the previous
+  soundness walkthrough left unexplained), then `FrameOver` and `TaskFrame` with the reflection
+  convention and the `F.Duration` / `F.WorldState` / `F.TaskRel` accessors.
+- `lean-appendix-dependent-fields` *(new)* — `PartialHistory`'s dependent `states` field,
+  `IsTotal` / `IsConvex` as predicates rather than structures, `WorldHistory` as a subtype with
+  `.val` / `.property`, `WorldHistory.state`, and `TaskModel`'s valuation read as a family of
+  sets of world states.
+- `lean-appendix-recursion` *(new)* — `TruthAt` clause by clause, the guard-first argument order
+  of `untl` / `snce` stated outright, and `PlusFormula` / `PlusTruthAt` as the worked example of
+  extending a language by one constructor, which also supplies the dot-pattern contrast.
+- `lean-appendix-derived-theorem` *(new)* — `perpetuity2` read line by line, including the
+  ambiguity of the short name `contraposition` between `Theorems.Perpetuity` and
+  `Theorems.Propositional`.
+- `lean-appendix-semantic-counterpart` *(new)* — `modal_future_valid` and
+  `timeShift_preserves_truth`, the latter obtained from the generic transport
+  `truthAt_of_truthCorr` at `shiftCorr` rather than by a bespoke induction.
+- `lean-appendix-derivations-as-data` *(new)* — `DerivationTree.lift`, the `FrameClass` `LE`
+  instance, and why only the `axiom` constructor checks `minFrameClass`.
+- `lean-appendix-lake` *(extended)* — the two version pins, the three live tree sizes, the
+  six-layer import order, and the four proof systems.
+- `lean-appendix-reading-source` *(extended)* — the metalogic result map as four four-row
+  tables, a decision-procedure subsection with an honest established-versus-open split, and
+  "a name is not a proof" added to Trust-Reading Practice.
+
+**`#leansrc` excerpt policy, stated once.** An excerpt is the live source **verbatim up to
+whitespace**, with docstrings omitted and long lines re-broken at whitespace to fit the
+appendix's 71-column, 8pt code budget. It is **not** byte-exact, and the 2026-09-17 entry above
+saying otherwise is superseded. The invariant that holds is the token sequence: re-breaking may
+move a line ending but may never add, drop or reorder a token.
+
+**Verification method.** All 39 excerpt segments across the file's 31 `#leansrc` blocks were
+machine-diffed against live source by tokenising each segment and requiring it to appear as a
+contiguous sublist of the source file's token stream with docstrings stripped. All 39 matched.
+Every didactic example was compiled first with `lake env lean` in one scratch file outside
+`FormalSystem/` and `Tests/`, never committed; that file is a session scratch artifact and is
+deliberately not named by path here, since the previous entry's named path has since been
+archived out of existence.
+
+**Generator and Check 2 extended together.** `scripts/typst-status-counts.sh` now emits three
+version pins (`lean-toolchain-pin`, `mathlib-tag`, `mathlib-rev`) and six per-tree scale figures
+(`formalsystem-file-count` / `-line-count`, `tests-*`, `tools-*`) in both the `--json` payload
+and the `status.typ` write path, all filesystem reads so `--json` stays build-free.
+`scripts/typst-sync-check.sh` Check 2 gained the six integer keys in `scalar_fields` and a new
+`string_fields` comparison path for the three pins, since the existing path matches `(\d+)`
+only. **A new `#let` in `status.typ` without a matching Check 2 key is a silent-drift bug**, so
+the two files must change in one commit. The pairing was proved by perturbation rather than by
+inspection: `formalsystem-line-count` set to a wrong value and `mathlib-tag` set to a wrong
+string each produced a named `VIOLATION` and FAIL, and restoring each returned PASS.
+
+A repo-wide `git ls-files` count was written and then deliberately removed. It changes on every
+commit that adds any file anywhere, so policing it under Check 2 would fail the sync check on
+work that never touched a cited figure. Repository scale is carried by the three per-tree Lean
+counts instead, and the archived `Boneyard/` is excluded from all three rather than folded into
+any of them.
+
+**New whitelist entries** (`typst/sync-check-whitelist.txt`, Check 1): two optional-parameter
+illustrations, `searchDepth := 10` and `tableauFuel := 1000`, under their own category comment.
+The source spells these as full binders (`(searchDepth : Nat := 10)`), so the abbreviated forms
+a caller elides have no literal match. Every other candidate span that failed Check 1 was
+re-expressed using the source's own spelling, or moved into a compiled didactic block, rather
+than whitelisted — Check 1 scans inline backticks only, not fenced code blocks.
+
+**Render inspection.** All 30 rendered appendix pages (88-117 of 126) were rendered with
+`pdftoppm` and inspected. No code line exceeds 71 columns anywhere in the file, no `#leansrc`
+label is orphaned from its block on any page, and no code block collides with the paragraphs
+around it. One finding was fixed: the Mathlib resolved-commit cell sat flush against the right
+margin with no slack, and the three pin values now render at 8pt. One finding is recorded and
+not fixed: a page that ends shortly before a large excerpt leaves visible trailing white space,
+because the file-local rule sets `breakable: false` on every code block so that no excerpt
+splits across a page. That is a deliberate trade-off of the existing formatting block and
+predates this addition.

@@ -1,11 +1,11 @@
 # Implementation Plan: Extend the Lean appendix to semantics, a derived theorem, the metalogic map, and the decision procedure
 
 - **Task**: 647 - extend_lean_appendix_semantics_metalogic_coverage
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: None upstream. Tasks 648 and 649 are ordered after this task and must not be pre-empted by it.
 - **Research Inputs**: specs/647_extend_lean_appendix_semantics_metalogic_coverage/reports/01_extend-lean-appendix-coverage.md
-- **Artifacts**: plans/01_extend-lean-appendix-coverage.md (this file)
+- **Artifacts**: plans/01_extend-lean-appendix-coverage.md (this file), summaries/01_extend-lean-appendix-coverage-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -654,7 +654,7 @@ list from `FormalSystem/README.md` at authoring time.
 
 ---
 
-### Phase 10: Render inspection, SYNC-MAP, and the acceptance sweep [NOT STARTED]
+### Phase 10: Render inspection, SYNC-MAP, and the acceptance sweep [COMPLETED]
 
 **Goal**: Inspect every rendered appendix page, update the dated `SYNC-MAP.md` entry, and run the
 full acceptance set.
@@ -673,9 +673,9 @@ full acceptance set.
 - [ ] Confirm every existing `lean-appendix` and `lean-appendix-*` label is byte-identical to its
       pre-task form, and that `@lean-appendix` still resolves from `00-introduction.typ`.
 - [ ] Confirm no task number and no `specs/` path appears in the file.
-- [ ] Rewrite the dated appendix entry in `typst/SYNC-MAP.md`: describe the new coverage, replace
+- [x] Rewrite the dated appendix entry in `typst/SYNC-MAP.md`: describe the new coverage, replace
       the stale "byte-exact" claim with the appendix's own stated policy (verbatim up to
-      whitespace, docstrings omitted, lines re-broken), and drop the archived scratch-file path.
+      whitespace, docstrings omitted, lines re-broken), and drop the archived scratch-file path. *(deviation: altered — `SYNC-MAP.md`'s own header states its dated entries are a historical record "retained as-is, not rewritten", so the 2026-09-17 entry keeps its text with a bracketed supersession note naming both stale claims, and the new coverage is described in a new dated 2026-09-21 entry)*
 - [ ] Run the four acceptance gates one final time and record each result verbatim in the
       implementation summary.
 
