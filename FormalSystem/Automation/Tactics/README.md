@@ -29,7 +29,7 @@ This subdirectory holds the tactic elaborators and the proof-search engine behin
 - `propDecide`: reflective tautology tactic, and the one genuinely load-bearing tactic here
 - `deduction` / `undischarge`: the deduction theorem in tactic form, for interactive
   `Type`-valued work. See `Deduction.lean`'s docstring for why they are not adopted inside
-  `Metalogic/Core/DeductionTheorem.lean`.
+  `Theorems/DeductionTheorem.lean`.
 - `apply_axiom`, `modal_t`: axiom-application macros
 - `assumption_search`: context lookup with an explicit failure message
 
@@ -39,7 +39,7 @@ There is no Aesop rule set. One existed and was retired; see
 ## Dependencies
 
 - **Imports from**: `FormalSystem.ProofSystem`, `FormalSystem.Theorems`,
-  `FormalSystem.Metalogic.Core.DeductionTheorem`. The `@[tmLemma]` attribute `Search.lean` reads
+  `FormalSystem.Theorems.DeductionTheorem`. The `@[tmLemma]` attribute `Search.lean` reads
   is declared in `FormalSystem.Tactic.Attr` and arrives through `FormalSystem.Init`, so there is
   no import line for it
 - **Used by**: `FormalSystem.Automation` (re-exported), and `Examples/`

@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Syntax.Context
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.ProofSystem.Axioms
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.Propositional.Connectives

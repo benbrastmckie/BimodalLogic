@@ -12,7 +12,7 @@ import FormalSystem.Theorems.TemporalDerived
 import FormalSystem.Theorems.DedekindDerived
 import FormalSystem.Theorems.DiscreteUnfolding
 import FormalSystem.Theorems.GeneralizedNecessitation
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 
 /-!
 # The axiom-discharge table: an L derivation of `tr` of every L⁻ axiom

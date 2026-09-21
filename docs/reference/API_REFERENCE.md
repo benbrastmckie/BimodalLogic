@@ -654,9 +654,9 @@ axiom may appear in the derivation only when `ax.minFrameClass ≤ fc`
 
 ---
 
-### DeductionTheorem (`FormalSystem.Metalogic.Core.DeductionTheorem`)
+### DeductionTheorem (`FormalSystem.Theorems.DeductionTheorem`)
 
-**Module**: `FormalSystem/Metalogic/Core/DeductionTheorem.lean`
+**Module**: `FormalSystem/Theorems/DeductionTheorem.lean`
 
 Deduction theorem for TM logic.
 

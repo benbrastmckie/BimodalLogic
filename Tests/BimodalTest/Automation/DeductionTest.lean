@@ -12,7 +12,7 @@ import FormalSystem.Automation.Tactics.Deduction
 Tests for the `deduction`, `deduction n`, and `undischarge` tactics defined in
 `FormalSystem/Automation/Tactics/Deduction.lean`, plus the term-level
 `deductionConverse` and Prop-level `Derivable.deduction` from
-`FormalSystem/Metalogic/Core/DeductionTheorem.lean`.
+`FormalSystem/Theorems/DeductionTheorem.lean`.
 
 ## Test Coverage
 

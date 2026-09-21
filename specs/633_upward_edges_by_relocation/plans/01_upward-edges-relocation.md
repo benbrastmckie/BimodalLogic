@@ -295,7 +295,7 @@ them in the listed order (1, 3, 4); true parallel execution requires separate wo
 
 ---
 
-### Phase 3: Move DeductionTheorem.lean to Theorems/ [NOT STARTED]
+### Phase 3: Move DeductionTheorem.lean to Theorems/ [COMPLETED]
 
 - **Goal:** Delete the 4 `Theorems -> Metalogic` lines by moving the one module all four of them
   import, keeping its namespace so the 51 fully-qualified call sites are untouched.

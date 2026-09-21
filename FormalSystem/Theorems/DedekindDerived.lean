@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ProofSystem.Derivation
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.TemporalDerived
 import FormalSystem.Theorems.Propositional.Core
 import FormalSystem.Theorems.Propositional.Connectives

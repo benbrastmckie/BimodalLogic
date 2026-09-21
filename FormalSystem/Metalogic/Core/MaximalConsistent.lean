@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.ProofSystem
 import FormalSystem.Semantics
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.Propositional.Core
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Order.Zorn
@@ -33,7 +33,7 @@ TM bimodal logic system. These are foundational for canonical model construction
 
 Core.MaximalConsistent depends on:
 - FormalSystem.ProofSystem (derivation trees)
-- FormalSystem.Metalogic.Core.DeductionTheorem (deduction theorem)
+- FormalSystem.Theorems.DeductionTheorem (deduction theorem)
 - Mathlib.Order.Zorn (Zorn's lemma)
 
 ## History

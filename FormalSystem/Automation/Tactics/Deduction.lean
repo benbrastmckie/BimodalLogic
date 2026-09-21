@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ProofSystem
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import Lean
 
 /-!
@@ -42,12 +42,12 @@ matches the established codebase practice for tactic elaborators. For
 The converse direction (`deductionConverse`) is computable; it is a term-level
 lemma, not a tactic, and can be used directly.
 
-## Adoption verdict: DECLINED for `Metalogic/Core/DeductionTheorem.lean`
+## Adoption verdict: DECLINED for `Theorems/DeductionTheorem.lean`
 
 These two tactics have **zero** invocations in the library and 16 in the test suite
 (`Tests/BimodalTest/Automation/DeductionTest.lean`: 14 `deduction`, 2 `undischarge`). A
 time-boxed trial asked whether they should be adopted in
-`Metalogic/Core/DeductionTheorem.lean`, the obvious candidate, since that file is where
+`Theorems/DeductionTheorem.lean`, the obvious candidate, since that file is where
 `Γ ⊢[fc] A.imp B` goals are densest. The answer is no, and the reason is stronger than the
 `noncomputable` cost recorded above.
 
@@ -74,7 +74,7 @@ this note rather than repeat the trial.
 
 ## References
 
-* [DeductionTheorem.lean](../../Metalogic/Core/DeductionTheorem.lean) — the theorem applied
+* [DeductionTheorem.lean](../../Theorems/DeductionTheorem.lean) — the theorem applied
 * [UserTactics.lean](./UserTactics.lean) — the tactic-elaborator infrastructure this follows
 -/
 

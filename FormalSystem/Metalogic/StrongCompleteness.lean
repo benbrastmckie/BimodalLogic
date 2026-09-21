@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Validity
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.BXCanonical.CompletenessDedekind
 import FormalSystem.Metalogic.SetConsequence
@@ -329,7 +329,7 @@ theorem soundness_setConsequence {fc : FrameClass} (Γ : Set Formula) (φ : Form
 /--
 Discharging an `imp`-fold into the context, generic in the frame class.
 
-Each step is one application of `deductionConverse` (`Metalogic/Core/DeductionTheorem.lean`),
+Each step is one application of `deductionConverse` (`Theorems/DeductionTheorem.lean`),
 followed by a weakening to permute the accumulated head formulas back into place: the converse
 direction pushes formulas onto the *front* of the context in reverse order, and
 `Derivable.weaken` is membership-based, so the permutation is free.

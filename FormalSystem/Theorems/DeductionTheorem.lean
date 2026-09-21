@@ -25,8 +25,23 @@ This module proves the deduction theorem for the TM logic Hilbert system.
 
 ## Overview
 
-The deduction theorem is moved into the Core layer as a foundational result needed
-by higher layers, particularly for MCS properties.
+The deduction theorem is a foundational result needed by higher layers, particularly for MCS
+properties.
+
+## Module/namespace exception, recorded
+
+This module is `FormalSystem.Theorems.DeductionTheorem` but declares
+`namespace FormalSystem.Metalogic.Core`. That is a deliberate, recorded deviation, and it is
+what `scripts/measure-refactor-partitions.py namespace-audit` reports as one `unrelated` row.
+
+The file used to live at `FormalSystem/Metalogic/Core/DeductionTheorem.lean`, which made it the
+single module all four `Theorems -> Metalogic` upward import lines pointed at. Its own imports
+(`ProofSystem.Derivation`, `ProofSystem.Derivable`, `Theorems.Combinators`) are all at or below
+the Theorems layer, so the file belongs here and the move deleted those four lines. The namespace
+did **not** move with it: 51 fully-qualified `FormalSystem.Metalogic.Core.deductionTheorem*`
+references sit across 13 files, and renaming them is churn disproportionate to the gain. A later
+FQN pass may rename the namespace; until then this docstring is the record, so the audit row is
+read as a decision rather than rediscovered as an oversight.
 
 ## Implementation Notes
 
@@ -40,8 +55,8 @@ We handle each case of the Derivable relation:
 
 ## References
 
-* [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
-* [Combinators.lean](../../Theorems/Combinators.lean) - Combinator infrastructure
+* [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
+* [Combinators.lean](Combinators.lean) - Combinator infrastructure
 -/
 
 namespace FormalSystem.Metalogic.Core

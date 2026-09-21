@@ -15,6 +15,7 @@ import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.DedekindDerived
 import FormalSystem.Theorems.DiscreteUnfolding
+import FormalSystem.Theorems.DeductionTheorem
 /-!
 # FormalSystem.Theorems - Key Theorems
 

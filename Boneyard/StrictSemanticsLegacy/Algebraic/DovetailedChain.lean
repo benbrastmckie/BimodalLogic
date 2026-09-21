@@ -5,7 +5,7 @@ import FormalSystem.Metalogic.Bundle.TemporalContent
 import FormalSystem.Metalogic.Bundle.WitnessSeed
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.TemporalDerived

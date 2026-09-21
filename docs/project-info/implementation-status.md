@@ -62,7 +62,6 @@ Module-by-module implementation status for the Bimodal TM logic library.
 |--------|--------|-------|
 | `Metalogic/SoundnessLemmas.lean` | ✅ | Bridge lemmas |
 | `Metalogic/Soundness.lean` | ✅ | Soundness theorem |
-| `Metalogic/Core/DeductionTheorem.lean` | ✅ | Deduction theorem |
 | `Metalogic/BXCanonical/Completeness.lean` | ✅ | `completeness`, `completeness_dense`, `completeness_ztime` -- all sorryAx-free |
 | `Metalogic/StrongCompleteness.lean` | ✅ | `completeness_rtime` and the four `consequence_completeness_*` theorems |
 | `Metalogic/Decidability/` | 🔶 | Decision procedure implemented; sound direction proved, completeness direction open |
@@ -120,6 +119,12 @@ Module-by-module implementation status for the Bimodal TM logic library.
 |--------|--------|-------|
 | `ModalS4.lean` | ✅ | All 4 theorems proven, sorry-free |
 | `ModalS5.lean` | ✅ | Modal 5 proven |
+
+### Deduction theorem (✅ Complete)
+
+| Module | Status | Notes |
+|--------|--------|-------|
+| `Theorems/DeductionTheorem.lean` | ✅ | Deduction theorem. Keeps `namespace FormalSystem.Metalogic.Core`, which is why its fully-qualified names still read `Metalogic.Core.deductionTheorem*` |
 
 ### Propositional (✅ Complete)
 

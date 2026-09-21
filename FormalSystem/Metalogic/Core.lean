@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Core.DeductionTheorem
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.Core.RestrictedMCS.Basic
@@ -18,7 +17,11 @@ depend on a particular construction.
 
 ## Contents
 
-- `DeductionTheorem` — the deduction theorem for the TM proof system
+- The deduction theorem is **not** here any more. `DeductionTheorem.lean` moved to
+  `FormalSystem/Theorems/DeductionTheorem.lean`, whose imports are all at or below the
+  Theorems layer; it kept `namespace FormalSystem.Metalogic.Core`, so every
+  `Metalogic.Core.deductionTheorem*` name still resolves. `MaximalConsistent` and
+  `MCSProperties` below import it directly, so it remains in this directory's closure
 - `MaximalConsistent` — maximal consistent sets and Lindenbaum extension
 - `MCSProperties` — closure properties of maximal consistent sets
 - `RestrictedMCS.Basic` — MCSs restricted to a finite formula set

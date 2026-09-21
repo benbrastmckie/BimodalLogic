@@ -259,7 +259,7 @@ invariant check allowlists it by name (check C8).
 | `Semantics.lean` | 286 | Re-export for Semantics submodule |
 | `Syntax.lean` | 91 | Re-export for Syntax submodule |
 | `Tactic.lean` | 31 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |
-| `Theorems.lean` | 90 | Re-export for Theorems submodule |
+| `Theorems.lean` | 91 | Re-export for Theorems submodule |
 <!-- END GENERATED -->
 
 ### Layer 0 — Foundation

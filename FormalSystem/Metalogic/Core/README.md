@@ -20,7 +20,6 @@ The Core modules provide essential infrastructure shared by both the `Bundle/` (
 |--------|---------|--------|
 | `../Core.lean` | Re-export module for the Core package. **Sibling aggregator**, at `FormalSystem/Metalogic/Core.lean` (37 lines) — not a file inside this directory | Complete |
 | `MaximalConsistent.lean` | Complete MCS theory with Lindenbaum | **Sorry-free** |
-| `DeductionTheorem.lean` | Deduction theorem infrastructure | **Sorry-free** |
 | `MCSProperties.lean` | Essential MCS lemmas | **Sorry-free** |
 | `RestrictedMCS/` | MCS restricted to subformula closure (1 file: `Basic.lean`) | **Sorry-free** |
 
@@ -29,14 +28,17 @@ The Core modules provide essential infrastructure shared by both the `Bundle/` (
 ```
                   MaximalConsistent.lean
                          │
-           ┌─────────────┼─────────────┐
-           │             │             │
-           v             v             v
-    DeductionTheorem  MCSProperties   (exports to
-           │             │             other modules)
-           │             │
-           v             v
+           ┌─────────────┴─────────────┐
+           │                           │
+           v                           v
+      MCSProperties              (exports to
+           │                      other modules)
+           │
+           v
      ../Core.lean (sibling aggregator)
+
+`MaximalConsistent.lean` and `MCSProperties.lean` both import the deduction theorem, which is
+no longer in this directory: it lives at `../../Theorems/DeductionTheorem.lean` (see below).
 ```
 
 The aggregator is `FormalSystem/Metalogic/Core.lean`, a **sibling** of this directory rather than
@@ -78,7 +80,14 @@ The four hand-rolled superset scaffolds the two Lindenbaum proofs used to carry
 (`ConsistentSupersets`, `self_mem_consistent_supersets`, `RestrictedConsistentSupersets`,
 `self_mem_restricted_consistent_supersets`) were their only consumers and have been deleted.
 
-### Deduction Theorem (`DeductionTheorem.lean`)
+### Deduction Theorem (moved to [`../../Theorems/DeductionTheorem.lean`](../../Theorems/DeductionTheorem.lean))
+
+The module moved out of this directory: its own imports (`ProofSystem.Derivation`,
+`ProofSystem.Derivable`, `Theorems.Combinators`) are all at or below the Theorems layer, and
+keeping it here was the sole reason four `Theorems/` files carried an upward import into
+`Metalogic/`. It kept `namespace FormalSystem.Metalogic.Core`, so every name below still reads
+`Metalogic.Core.*` and every consumer in this directory is unchanged. The interface is recorded
+here because this directory's modules are its principal consumers.
 
 ```lean
 theorem deduction_theorem {Gamma : Context} {A B : Formula}

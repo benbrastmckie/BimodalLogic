@@ -3,7 +3,7 @@ import Boneyard.BundleDeadHalf.CanonicalFrame
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import Boneyard.StrictSemanticsLegacy.Algebraic.RestrictedTruthLemma
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Semantics.TaskFrame

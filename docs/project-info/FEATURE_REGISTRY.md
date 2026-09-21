@@ -43,7 +43,7 @@ For implementation status by module, see [implementation-status.md](implementati
 
 - **Status**: Complete
 - **Description**: If `φ :: Γ ⊢ ψ` then `Γ ⊢ φ → ψ`.
-- **Key File**: `FormalSystem/Metalogic/Core/DeductionTheorem.lean`
+- **Key File**: `FormalSystem/Theorems/DeductionTheorem.lean`
 
 ### Propositional Theorems
 

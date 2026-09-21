@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.Combinators
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 
 /-!
 # Core Propositional Proof Combinators: LEM, negImp, botOfAndNeg, impNegImp, Disjunction Intro,

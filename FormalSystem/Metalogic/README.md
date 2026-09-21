@@ -88,7 +88,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Bundle.lean` | 47 | `Bundle/` |
 | `Conservativity.lean` | 386 | `Conservativity/` |
-| `Core.lean` | 37 | `Core/` |
+| `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 168 | `Decidability/` |
 | `Deterministic.lean` | 27 | <!-- TODO: add description --> |
 | `Independence.lean` | 115 | `Independence/` |
@@ -148,7 +148,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,120 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,864 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 21 | 6,130 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
-| [`Core/`](Core/README.md) | 4 | 1,817 | MCS machinery shared by all three routes |
+| [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 52,018 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 22 | 5,975 | Axiom-independence models |

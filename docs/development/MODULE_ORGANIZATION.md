@@ -363,7 +363,7 @@ The base language's **semantics** deliberately does not live here, so that the d
 * `FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness` -- BL soundness at Base/Dense/ZTime/RTime,
   by composition, plus the truth-transfer bridge `truthAt_tr`
 * `FormalSystem.Metalogic.SoundnessLemmas`
-* `FormalSystem.Metalogic.Core.DeductionTheorem`
+* `FormalSystem.Theorems.DeductionTheorem`
 * `FormalSystem.Metalogic.Core.MaximalConsistent` -- `SetConsistent`, `set_lindenbaum`
 * `FormalSystem.Metalogic.Bundle` -- FMCS / BFMCS bundle construction
 * `FormalSystem.Metalogic.BXCanonical` -- canonical model; the Base/Dense/ZTime

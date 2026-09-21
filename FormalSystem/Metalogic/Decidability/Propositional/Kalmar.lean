@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.Propositional.PropForm
 import FormalSystem.ProofSystem.Derivable
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Theorems.Propositional.Reasoning
 import FormalSystem.Theorems.Combinators
 

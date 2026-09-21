@@ -8,7 +8,7 @@ import FormalSystem.Metalogic.Bundle.BFMCS
 import Boneyard.BundleDeadHalf.ModalSaturation
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.Propositional.Core
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Core.DeductionTheorem
+import FormalSystem.Theorems.DeductionTheorem
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Theorems.ModalDerived
 import FormalSystem.Theorems.TemporalDerived

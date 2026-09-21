@@ -115,7 +115,7 @@ produce must be marked `noncomputable`. For `Prop`-valued derivability use
 `Derivable.deduction` instead, which carries no such marker; for the derivation tree itself use
 the `deductionTheorem` term form. Those two cover every use in the library, and
 `Tactics/Deduction.lean`'s docstring records why the tactic form is not adopted inside
-`Metalogic/Core/DeductionTheorem.lean` (it would be circular: every candidate site is one of
+`Theorems/DeductionTheorem.lean` (it would be circular: every candidate site is one of
 the cases the theorem itself dispatches to).
 
 ## Tactic Strategies

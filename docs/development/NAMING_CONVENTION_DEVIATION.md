@@ -36,7 +36,7 @@ to it — by one of four independent mechanisms:
    package by *importing* it, and a non-public declaration is not exported to an importing
    module. Probed directly: the environment of `import FormalSystem` contains exactly **zero**
    non-auto private declarations from `FormalSystem` modules. This is a visibility gap, not a
-   closure gap — `FormalSystem.Metalogic.Core.DeductionTheorem` is confirmed *inside* the linted
+   closure gap — `FormalSystem.Theorems.DeductionTheorem` is confirmed *inside* the linted
    closure and its `private def weaken_under_imp` was still absent from that environment. **This
    fourth route is an upstream property of how the linter observes a package, which Mathlib
    shares; it is not a decision by this repository, and it cannot be fixed by configuring
