@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenClasses
 
 /-!
@@ -31,6 +32,12 @@ steps that rely on shared pasts do not transfer to `⊡`. The component states t
 library theorems rather than leaving it to be rediscovered.
 
 ## Modules
+
+- `OpenLanguage.Formula` — `OpenFormula`, the derived operators (with `PlusFormula`'s right-hand
+  sides), the duals `dofut` and `dopast`, `reflectTime` (which exchanges `▷` and `◁`), and the
+  embedding `ofPlus`
+
+## Semantic modules
 
 - `OpenLanguage.OpenClasses` — the three history classes `⟨τ⟩_x`, `|τ⟩_x`, `⟨τ|_x`, each the
   equivalence class of an explicit relation, with the manuscript's inclusions, intersection and

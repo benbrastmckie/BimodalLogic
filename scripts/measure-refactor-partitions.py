@@ -192,6 +192,7 @@ LANGUAGE_FILE_LAYERS = {
         "StarValidity": 1,
     },
     "OpenLanguage": {
+        "Formula": 0,
         "OpenClasses": 1,
     },
 }

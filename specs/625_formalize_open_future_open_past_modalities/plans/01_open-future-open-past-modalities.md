@@ -263,26 +263,26 @@ other hard-coded tuple of the three directory names found there is added to this
 
 ---
 
-### Phase 2: The syntax of L^▷ [NOT STARTED]
+### Phase 2: The syntax of L^▷ [COMPLETED]
 
 **Goal**: `OpenFormula` as a layer-0 syntax file with the embedding of L⁺ and the time reflection.
 
 **Tasks**:
-- [ ] Create `FormalSystem/OpenLanguage/Formula.lean`, importing **only**
+- [x] Create `FormalSystem/OpenLanguage/Formula.lean`, importing **only**
   `FormalSystem.PlusLanguage.Formula` (nothing under `FormalSystem/Semantics/`, no `Open*` file —
   assertion C). Nine constructors in the challenge preamble's order, with docstrings;
   `deriving Repr, DecidableEq, Countable` as `PlusFormula` does.
-- [ ] Inside `namespace OpenFormula`, the derived operators **character for character** with
+- [x] Inside `namespace OpenFormula`, the derived operators **character for character** with
   `PlusFormula`'s right-hand sides (`top`, `neg`, `someFuture`, `somePast`, `allFuture`, `allPast`,
   `and`, `or`, `iff`, `diamond`, `always`, `sometimes`, `dstab`), so that the `TruthClauses` lemmas
   are inherited without `show`; plus `dofut φ := neg (.ofut (neg φ))` and `dopast`.
-- [ ] `ofPlus : PlusFormula → OpenFormula`, constructor to constructor; `ofPlus_injective`; the `rfl`
+- [x] `ofPlus : PlusFormula → OpenFormula`, constructor to constructor; `ofPlus_injective`; the `rfl`
   commutation pins of `ofPlus` with each derived operator.
-- [ ] `reflectTime` (swap `untl`/`snce` and `ofut`/`opast`; fix `atom`, `bot`, `stab`; distribute
+- [x] `reflectTime` (swap `untl`/`snce` and `ofut`/`opast`; fix `atom`, `bot`, `stab`; distribute
   through `imp`, `box`), `reflect_time_involution` (the tree's spelling), `ofPlus_reflectTime`, and
   `rfl`-level simp lemmas `reflect_time_somePast`, `reflect_time_someFuture`, `reflect_time_dofut`,
   `reflect_time_dopast`, `reflect_time_dstab`.
-- [ ] Add `"Formula": 0` to the `OpenLanguage` layer table, the import to the aggregator, the README
+- [x] Add `"Formula": 0` to the `OpenLanguage` layer table, the import to the aggregator, the README
   row; regenerate the root.
 
 **Timing**: 1 hour
