@@ -48,7 +48,9 @@ The two failing past rows, `serial_past` and `discrete_symm_bwd`, are not constr
 
 - Propositional: `c3_prop_k`, `c3_prop_s`, `c3_ex_falso`, `c3_peirce`
 - S5: `c3_modal_t`, `c3_modal_4`, `c3_modal_b`, `c3_modal_5_collapse`, `c3_modal_k_dist`
-- Tense: `c3_connect_future`, `c3_until_F`, `c3_F_until_equiv`
+- Tense: `c3_left_mono_until_G`, `c3_right_mono_until`, `c3_connect_future`,
+  `c3_enrichment_until`, `c3_self_accum_until`, `c3_absorb_until`, `c3_linear_until`,
+  `c3_until_F`, `c3_temp_linearity`, `c3_F_until_equiv`
 - Interaction and uniformity: `c3_modal_future`, `c3_discrete_propagate_bwd`
 - The six failures: `refute_C3_serial_future`, `refute_C3_serial_past`,
   `refute_C3_discrete_symm_fwd`, `refute_C3_discrete_symm_bwd`,
@@ -152,6 +154,119 @@ theorem c3_F_until_equiv (φ : Formula) :
     ValidC3 F ((Formula.someFuture φ).imp
       (Formula.untl (Formula.bot.imp Formula.bot) φ)) :=
   fun _M _τ _hτ _x _hx h => h
+
+/-! ## The Burgess–Xu block
+
+None of these seven rows consults convexity. Each needs only that the witnesses and guard points
+it moves between are *already* in the index's domain, which C3's own `untl` / `snce` clauses
+guarantee, and that the evaluation time is in the domain, which is C3's side condition. -/
+
+/-- `left_mono_until_G` survives C3: `G(φ → χ) → ((φ U ψ) → (χ U ψ))`. The restricted `G`
+reaches every guard point, because guard points are domain points by C3's own clause. -/
+theorem c3_left_mono_until_G (φ χ ψ : Formula) :
+    ValidC3 F ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
+  intro M τ _hτ x _hx hG h
+  rw [TruthAtConvex.allFuture_iff] at hG
+  obtain ⟨s, hs, hxs, hψ, hguard⟩ := h
+  exact ⟨s, hs, hxs, hψ, fun r hr hxr hrs => hG r hr hxr (hguard r hr hxr hrs)⟩
+
+/-- `right_mono_until` survives C3: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`. The restricted `G`
+reaches the witness, which is a domain point. -/
+theorem c3_right_mono_until (φ ψ χ : Formula) :
+    ValidC3 F ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))) := by
+  intro M τ _hτ x _hx hG h
+  rw [TruthAtConvex.allFuture_iff] at hG
+  obtain ⟨s, hs, hxs, hφ, hguard⟩ := h
+  exact ⟨s, hs, hxs, hG s hs hxs hφ, hguard⟩
+
+/-- `enrichment_until` survives C3: `p ∧ (φ U ψ) → φ U (ψ ∧ (φ S p))`. The since-witness is the
+evaluation time itself, available because it is in the domain. -/
+theorem c3_enrichment_until (φ ψ p : Formula) :
+    ValidC3 F ((Formula.and p (Formula.untl φ ψ)).imp
+      (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))) := by
+  intro M τ _hτ x hx h
+  obtain ⟨hp, s, hs, hxs, hψ, hguard⟩ := (TruthAtConvex.and_iff M τ x _ _).mp h
+  refine ⟨s, hs, hxs, (TruthAtConvex.and_iff M τ s _ _).mpr ⟨hψ, x, hx, hxs, hp, ?_⟩, hguard⟩
+  exact fun r hr hxr hrs => hguard r hr hxr hrs
+
+/-- `self_accum_until` survives C3: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`. At each guard point the
+original witness still lies ahead, in the domain. -/
+theorem c3_self_accum_until (φ ψ : Formula) :
+    ValidC3 F ((Formula.untl φ ψ).imp
+      (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)) := by
+  intro M τ _hτ x _hx h
+  obtain ⟨s, hs, hxs, hψ, hguard⟩ := h
+  refine ⟨s, hs, hxs, hψ, fun r hr hxr hrs => ?_⟩
+  exact (TruthAtConvex.and_iff M τ r _ _).mpr ⟨hguard r hr hxr hrs, s, hs, hrs, hψ,
+    fun r' hr' hrr' hr's => hguard r' hr' (lt_trans hxr hrr') hr's⟩
+
+/-- `absorb_until` survives C3: `(φ U (φ ∧ (φ U ψ))) → (φ U ψ)`. The two guarded stretches
+concatenate across the intermediate witness. -/
+theorem c3_absorb_until (φ ψ : Formula) :
+    ValidC3 F ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp
+      (Formula.untl φ ψ)) := by
+  intro M τ _hτ x _hx h
+  obtain ⟨s, _hs, hxs, hev, hguard⟩ := h
+  obtain ⟨hφs, s', hs', hss', hψ, hguard'⟩ := (TruthAtConvex.and_iff M τ s _ _).mp hev
+  refine ⟨s', hs', lt_trans hxs hss', hψ, fun r hr hxr hrs' => ?_⟩
+  rcases lt_trichotomy r s with h | h | h
+  · exact hguard r hr hxr h
+  · exact h ▸ hφs
+  · exact hguard' r hr h hrs'
+
+/-- `linear_until` survives C3: trichotomy on the two witnesses, both of which are domain
+points. -/
+theorem c3_linear_until (φ ψ χ θ : Formula) :
+    ValidC3 F ((Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)).imp
+      (Formula.or (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
+        (Formula.or (Formula.untl (Formula.and φ χ) (Formula.and ψ χ))
+          (Formula.untl (Formula.and φ χ) (Formula.and φ θ))))) := by
+  intro M τ _hτ x _hx h
+  obtain ⟨⟨s₁, hs₁, hxs₁, hψ, hg₁⟩, ⟨s₂, hs₂, hxs₂, hθ, hg₂⟩⟩ :=
+    (TruthAtConvex.and_iff M τ x _ _).mp h
+  -- `Formula.or a b` is `a.neg.imp b`: the goal is `¬A → ¬B → C`.
+  intro hA hB
+  rcases lt_trichotomy s₁ s₂ with hlt | heq | hgt
+  · refine absurd ?_ hB
+    exact ⟨s₁, hs₁, hxs₁, (TruthAtConvex.and_iff M τ s₁ _ _).mpr ⟨hψ, hg₂ s₁ hs₁ hxs₁ hlt⟩,
+      fun r hr hxr hrs => (TruthAtConvex.and_iff M τ r _ _).mpr
+        ⟨hg₁ r hr hxr hrs, hg₂ r hr hxr (lt_trans hrs hlt)⟩⟩
+  · subst heq
+    refine absurd ?_ hA
+    exact ⟨s₁, hs₁, hxs₁, (TruthAtConvex.and_iff M τ s₁ _ _).mpr ⟨hψ, hθ⟩,
+      fun r hr hxr hrs => (TruthAtConvex.and_iff M τ r _ _).mpr
+        ⟨hg₁ r hr hxr hrs, hg₂ r hr hxr hrs⟩⟩
+  · exact ⟨s₂, hs₂, hxs₂, (TruthAtConvex.and_iff M τ s₂ _ _).mpr ⟨hg₁ s₂ hs₂ hxs₂ hgt, hθ⟩,
+      fun r hr hxr hrs => (TruthAtConvex.and_iff M τ r _ _).mpr
+        ⟨hg₁ r hr hxr (lt_trans hrs hgt), hg₂ r hr hxr hrs⟩⟩
+
+/-- `temp_linearity` survives C3: trichotomy on the two `F`-witnesses, both of which are domain
+points. -/
+theorem c3_temp_linearity (φ ψ : Formula) :
+    ValidC3 F ((Formula.and (Formula.someFuture φ) (Formula.someFuture ψ)).imp
+      (Formula.or (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))
+        (Formula.or (Formula.someFuture (Formula.and φ ψ))
+          (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))))) := by
+  intro M τ _hτ x _hx h
+  obtain ⟨h₁, h₂⟩ := (TruthAtConvex.and_iff M τ x _ _).mp h
+  obtain ⟨s₁, hs₁, hxs₁, hφ⟩ := (TruthAtConvex.someFuture_iff M τ x φ).mp h₁
+  obtain ⟨s₂, hs₂, hxs₂, hψ⟩ := (TruthAtConvex.someFuture_iff M τ x ψ).mp h₂
+  -- `Formula.or a b` is `a.neg.imp b`: the goal is `¬A → ¬B → C`.
+  intro hA hB
+  rcases lt_trichotomy s₁ s₂ with hlt | heq | hgt
+  · exact (TruthAtConvex.someFuture_iff M τ x _).mpr ⟨s₁, hs₁, hxs₁,
+      (TruthAtConvex.and_iff M τ s₁ _ _).mpr
+        ⟨hφ, (TruthAtConvex.someFuture_iff M τ s₁ ψ).mpr ⟨s₂, hs₂, hlt, hψ⟩⟩⟩
+  · subst heq
+    refine absurd ?_ hB
+    exact (TruthAtConvex.someFuture_iff M τ x _).mpr ⟨s₁, hs₁, hxs₁,
+      (TruthAtConvex.and_iff M τ s₁ _ _).mpr ⟨hφ, hψ⟩⟩
+  · refine absurd ?_ hA
+    exact (TruthAtConvex.someFuture_iff M τ x _).mpr ⟨s₂, hs₂, hxs₂,
+      (TruthAtConvex.and_iff M τ s₂ _ _).mpr
+        ⟨(TruthAtConvex.someFuture_iff M τ s₂ φ).mpr ⟨s₁, hs₁, hgt, hφ⟩, hψ⟩⟩
+
+/-! ## Interaction and uniformity rows -/
 
 /--
 `modal_future` survives C3: `□φ → □(Gφ)`, TM's one modal/temporal interaction axiom, on an

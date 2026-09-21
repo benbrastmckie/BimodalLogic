@@ -322,19 +322,19 @@ declared here as `abbrev`s, since this is the first file to use them.
 
 ---
 
-### Phase 5: The argued-only Burgess-Xu block [NOT STARTED]
+### Phase 5: The argued-only Burgess-Xu block [COMPLETED]
 
 **Goal**: Find and land proofs for the seven tense rows that have never been machine-checked.
 
 **Tasks**:
-- [ ] `c3_left_mono_until_G` and `c3_right_mono_until`: the restricted `G` reaches every guard
+- [x] `c3_left_mono_until_G` and `c3_right_mono_until`: the restricted `G` reaches every guard
       point and the witness, because both lie in the domain by C3's own clause.
-- [ ] `c3_enrichment_until`: the since-witness is the evaluation time itself, available because it
+- [x] `c3_enrichment_until`: the since-witness is the evaluation time itself, available because it
       is in the domain.
-- [ ] `c3_self_accum_until` and `c3_absorb_until`: order arguments inside the domain.
-- [ ] `c3_linear_until` and `c3_temp_linearity`: trichotomy on two domain witnesses. These are the
+- [x] `c3_self_accum_until` and `c3_absorb_until`: order arguments inside the domain.
+- [x] `c3_linear_until` and `c3_temp_linearity`: trichotomy on two domain witnesses. These are the
       case-heavy ones; use `and_iff` and unfold `Formula.or` deliberately rather than by `simp`.
-- [ ] Scoped build.
+- [x] Scoped build.
 
 **Timing**: 2 hours
 
@@ -346,6 +346,11 @@ declared here as `abbrev`s, since this is the first file to use them.
 verdict and has no machine evidence behind it. If a row resists proof, first try to build a
 two-point or three-point integer countermodel through the LSP; if one exists, stop and mark the
 phase `[BLOCKED]` with the countermodel recorded.
+
+**Phase notes**: The scope hypothesis held. All seven rows survive, each proved directly; no
+countermodel search was needed. None of the seven proofs consults convexity of the index: each
+uses only that witnesses and guard points are domain points by C3's own clauses, and that the
+evaluation time is in the domain.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/ConvexConsequence/AxiomSurvival.lean` - seven theorems appended
