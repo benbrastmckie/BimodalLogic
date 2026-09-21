@@ -210,7 +210,16 @@ applied.
 
 ---
 
-### Phase 2: Typst citation repair [NOT STARTED]
+### Phase 2: Typst citation repair [PARTIAL]
+
+**BLOCKER** (Phase 2) -- stopped under dispatch territory rule (5), 2026-09-21 ~09:06 PDT:
+- **What was observed**: 21 tracked `.lean` files under `FormalSystem/` carry uncommitted modifications this dispatch did not make (mtimes 09:04-09:05, i.e. live), e.g. `Automation/ProofSearch/Strategies.lean`, `Automation/Tactics/Commands.lean`, `Semantics/Truth.lean`, `Tactic/Meta.lean`. None is in a declared sibling `file_scope` (644: three scripts/docs paths; 637: `FormalSystem/FormalSystem.lean` and root files). `git log` confirms no task-614 commit touches them. Also untracked: `docs/development/MODULE_RELOCATION.md` and modified `docs/development/README.md` (644 territory, expected).
+- **Effect on this phase**: `typst-sync-check.sh` Check 1 is `TOTAL_VIOLATIONS=0` in the working tree, but Check 2b is now red (`Strategies.lean` 386->403, `Commands.lean` 160->174, module total 3325->3356) purely from those foreign edits. It was green at the start of this phase. Regenerating `typst/generated/automation-module-map.typ` here would bake another agent's uncommitted line counts into a generated file, so it was NOT done.
+- **State left on disk (uncommitted, this task's own files only)**: `typst/chapters/p4-dataset-pipeline.typ` (11 asserted edits applied: 5 re-points, 4 de-cites, `README.md:183-184` dropped, quotation closed after "at runtime.", 211->223) and `typst/sync-check-whitelist.txt` (two appended blocks: six `training/PIPELINE.md` spans + `lakefile.lean`). Not yet run: both `typst compile` invocations, the commit, the `git archive HEAD` clean-export gate.
+- **Unusable evidence**: a guarded full `lake build` launched by this dispatch at ~09:03 exited 0 (2651 jobs), but it overlapped the foreign edits and may have elaborated a mix of sources. It is NOT evidence that HEAD or the current tree builds, and must not be cited for the `FormalSystem/README.md` stamp line's "`lake build` clean" claim.
+- **What is needed**: the orchestrator/user identifies the writer of the 21 `.lean` edits and lets it commit (with its own module-map regeneration) or otherwise settles them; then resume Phase 2 at "run both typst compiles".
+- **Not done, deliberately**: no commit of Phase 2, no edit/stage/revert of any foreign file, no `git-snapshot.sh`, no module-map regeneration.
+
 
 **Goal**: `typst-sync-check.sh` exits 0 with `TOTAL_VIOLATIONS=0` both in the working tree and in
 a clean `git archive HEAD` export, with no knowingly-false citation left in any footnote this
