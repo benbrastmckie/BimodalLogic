@@ -7,7 +7,7 @@ that exception is recorded rather than excused. It is drawn in the diagram below
 mentioned in passing, because a diagram that hides it misdescribes the build.
 
 The table here and the two tables in `scripts/measure-refactor-partitions.py` — `LAYERS` for the
-directories, `LANGUAGE_FILE_LAYERS` for the files of the four language directories — state the
+directories, `LANGUAGE_FILE_LAYERS` for the files of the six language directories — state the
 same order and must be changed together. [`ORGANISATION.md`](../ORGANISATION.md) carries the
 same table in signpost form.
 
@@ -80,8 +80,10 @@ layer 3. Each **file** therefore carries the layer of the directory it occupied 
 `MinusLanguage/Soundness.lean`, from `Metalogic/Conservativity/`, at layer 3. `OpenLanguage/` —
 L⁺ plus the open-future and open-past modals, semantic only — was created after the merge and is
 layered by the same table: a file with no origin directory takes the layer of the directory it
-would have occupied, so its syntax file is at layer 0 and its five semantic modules at layer 1,
-for 14 and 21 in all. The full table and
+would have occupied, so its syntax file is at layer 0 and its five semantic modules at layer 1.
+`HybridLanguage/` (L⁺ plus the same-state modality, state registers and the state binder) and
+`QuantLanguage/` (L plus propositional quantifiers), both semantic only, follow the same rule with
+one syntax file each and five and three semantic modules, for 16 and 29 in all. The full table and
 the reason origin rather than content is the rule are in
 [`ORGANISATION.md`](../ORGANISATION.md#the-extension-language-directories-are-layered-per-file).
 Under it `Metalogic → MinusLanguage` is downward and the three

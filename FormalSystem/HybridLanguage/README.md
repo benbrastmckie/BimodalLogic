@@ -70,6 +70,19 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | recurrence at every frame class (no paper anchor) | no frame class validates the recurrence formula; the recurrence-free members of every class do | `recF_not_validIn`, `recF_validOnFrames_recurrenceFree` (`HybridRecurrence.lean`), over `exists_sat_not_recurrenceFree` — **formalization-native** |
 | invisibility of the same-state modality (no paper anchor) | truth of a register-free formula is invariant along any history-lifting morphism, so `[≡]` cannot see recurrence or transposition | `regFree_invariance`, `ofPlus_invariance` (`HybridInvariance.lean`), over `HistMorphism` of `Semantics/HistoryMorphism.lean` — **formalization-native** |
 
+## Not formalized
+
+Nothing in this table is stated as a result anywhere in the component. Each row is a claim that
+was considered and left unproved, with the reason.
+
+| Item | Status |
+|---|---|
+| An axiomatization, soundness or completeness result for the language; any naming rule or pasting rule for state nominals, and the soundness of a pasting rule restricted to `⊡` | **Not formalized.** The component is semantic only. A state nominal names a point of a quotient, so the rules of hybrid logic for point nominals cannot be transcribed; which of them survive is an open design question, not a result |
+| Decidability or axiomatizability of L⁺ with state nominals, over any frame class | **Not formalized.** No claim is made |
+| The class-level form of `regFree_invariance`: class validity of a register-free formula equals validity over the recurrence-free members of the class | **Not formalized.** It needs, for every frame of a class, a history-lifting morphism onto it from a recurrence-free frame of the same class. The translation product of a frame supplies one, and it is not part of this component |
+| Invariance of the manuscript's **world** registers of `sub:Extension` along a history-lifting morphism | **Not formalized.** `FormalSystem/StarLanguage/` formalizes the time registers only, and no world register exists in this tree to state the claim about |
+| Definability of the frames free of *strong* transposition — two histories that pass through two states in opposite orders and agree outside an interval — by `(E(i ∧ F j) ∧ E(j ∧ F i)) → E(i ∧ j)` | **Not formalized.** `transF_defines` shows that the plain transposition formula defines recurrence-freeness; the strong form is not stated |
+
 ## Module Invariants
 
 **Syntax before semantics within this directory**, exactly as in the sibling language components.

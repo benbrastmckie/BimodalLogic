@@ -113,6 +113,8 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── PlusLanguage/             # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
 │   ├── StarLanguage/             # L⋆ = L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ, and its logic TM⋆
 │   ├── OpenLanguage/             # L^▷ = L⁺ plus the open-future modal ▷ and the open-past modal ◁ (semantic only)
+│   ├── HybridLanguage/           # L⁺ plus the same-state modality [≡], state registers and the state binder ↓ (semantic only)
+│   ├── QuantLanguage/            # L plus propositional quantifiers ∀p over an admissible family (semantic only)
 │   ├── ProofSystem/              # Axioms (29 constructors, nine layers), derivation trees
 │   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, PartialHistory, TaskModel, validity
 │   ├── Metalogic/                # Soundness, completeness, decidability
@@ -225,10 +227,10 @@ The Dense and ZTime logics are independent extensions — neither subsumes the o
 
 `TM` and its extensions `TM_z`, `TM_d`, `TM_r` are the paper's own systems under the paper's own names; the languages and logics that carry a `⁻`, a `⁺` or a `⋆` are this repository's, and are described against the paper in the table below. See [`FormalSystem/Metalogic/Conservativity.lean`](FormalSystem/Metalogic/Conservativity.lean) for the full mapping.
 
-### The five object languages, and how they map onto the paper
+### The seven object languages, and how they map onto the paper
 
-This tree carries five object languages. `L` is the paper's own language and `TM` the paper's own
-logic; the other four are this repository's, and the superscripts are Lean-only vocabulary.
+This tree carries seven object languages. `L` is the paper's own language and `TM` the paper's own
+logic; the other six are this repository's, and the superscripts are Lean-only vocabulary.
 
 | Language | Operators | Logic | Lean home |
 |---|---|---|---|
@@ -237,6 +239,8 @@ logic; the other four are this repository's, and the superscripts are Lean-only 
 | **L⁺** | L plus the stability modal ⊡ | **TM⁺** | `FormalSystem/PlusLanguage/`, `PlusFormula`, `⊢⁺[fc]` |
 | **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | **TM⋆** | `FormalSystem/StarLanguage/`, `StarFormula`, `⊢⋆[fc]`, the embedding `ofPlus` |
 | **L^▷** | L⁺ plus the open-future modal ▷ and the open-past modal ◁ | — (semantic only; no proof system) | `FormalSystem/OpenLanguage/`, `OpenFormula`, the embedding `ofPlus` |
+| **hybrid state language** | L⁺ plus the same-state modality [≡], state registers `i` and the state binder ↓ᵢ | — (semantic only; no proof system) | `FormalSystem/HybridLanguage/`, `HybridFormula`, the embedding `HybridFormula.ofPlus` |
+| **propositional-quantifier language** | L plus the propositional quantifier ∀p, relative to a family of admissible propositions | — (semantic only; no proof system) | `FormalSystem/QuantLanguage/`, `QuantFormula`, the embedding `QuantFormula.ofFormula` |
 
 The manuscript has exactly **two** languages: 𝓛 and 𝓛⋆, where 𝓛⋆ bundles ⊡ with both the
 time-store/recall and the world-store/recall families (the sentence defining `\BL^\star` in
@@ -270,6 +274,18 @@ time-store/recall and the world-store/recall families (the sentence defining `\B
   (`hnOpen_openValid`) and its stability transposition `Pp → ⊡P⟐p` is refuted on a finite frame
   satisfying all four frame axioms (`hnStab_refuted_sinkFrame`). See
   `FormalSystem/OpenLanguage/README.md`.
+- **The hybrid state language** and **the propositional-quantifier language** have no manuscript
+  counterpart. The manuscript observes that "nothing prevents a world state from occurring at many
+  times in a single history" and that histories may pass through the same world states in a
+  different order, "as in chess games which transpose move order"; it states no formula that
+  expresses either. Both languages are **semantic only**. What they are for: the base language, L⁺
+  and L⋆ cannot tell a frame with recurrence from one without, and neither can the same-state
+  modality (`regFree_invariance`) or propositional quantifiers over clock-independent propositions
+  (`lifted_invariance`); one state register can (`recF_defines`, `transF_defines`), and so can
+  propositional quantifiers over every set of world states (`qRec_defines`,
+  `standard_not_invariant`). A state register names a world state, which many (history, time)
+  pairs occupy, so results of hybrid logic for point nominals do not transfer. See
+  `FormalSystem/HybridLanguage/README.md` and `FormalSystem/QuantLanguage/README.md`.
 
 So results stated below about L⁺ and L⋆ are results about *fragments* of the manuscript's 𝓛⋆,
 and are described that way rather than by a paper name they do not have.

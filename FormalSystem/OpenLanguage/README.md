@@ -77,7 +77,7 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 |---|---|
 | An axiomatization, soundness or completeness result for `▷` and `◁` | **Excluded.** The manuscript gives none — "I will omit further consideration of the restricted modals" — and none is claimed here. The S5 laws and the ordering above are validities, not axioms of a proof system |
 | The nomic operator of `sub:RestrictedModalities`, over a four-place task relation indexed by world states | **Excluded.** No formalization in this tree |
-| The world registers `↑_M`, `↓_M` of `sub:Extension` | **Excluded.** `FormalSystem/StarLanguage/` formalizes the time registers only |
+| The world registers `↑_M`, `↓_M` of `sub:Extension` | **Excluded.** `FormalSystem/StarLanguage/` formalizes the time registers only. **State** registers, which the manuscript does not have, are formalized in `FormalSystem/HybridLanguage/`; the world registers stay excluded |
 
 ## Module Invariants
 

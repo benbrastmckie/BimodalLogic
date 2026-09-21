@@ -1,7 +1,7 @@
 # Implementation Plan: Task #628
 
 - **Task**: 628 - Expressive extensions that make recurrence and transposition visible (state nominals, state registers, propositional quantifiers)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: Task 625 (completed; supplies the root-level language-component pattern and `paste`'s consumer precedent). Related, not blocking: 645 (translation-product port), 559, 624.
 - **Research Inputs**: specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md; compiled probe specs/628_expressive_extensions_recurrence_visibility/probes/01_nominals-registers-quantifiers.lean
@@ -538,43 +538,43 @@ state nominal and so see recurrence.
 
 ---
 
-### Phase 9: Pins, tests, documentation sweep and the full gate [NOT STARTED]
+### Phase 9: Pins, tests, documentation sweep and the full gate [COMPLETED]
 
 **Goal**: Make the results durable and run every repository gate once.
 
 **Tasks**:
-- [ ] C14: append `regFree_invariance`, `recF_defines`, `transF_defines`, `lifted_invariance`,
+- [x] C14: append `regFree_invariance`, `recF_defines`, `transF_defines`, `lifted_invariance`,
   `qRec_defines`, `standard_not_invariant` (fully qualified) to **both** parallel lists in
   `scripts/check-module-invariants.sh` - the `#print axioms` block and the `C14_BASELINE`
   heredoc - in the same order, with the measured profiles.
-- [ ] `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`: `section LHybrid` with the four
+- [x] `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`: `section LHybrid` with the four
   `… = Generic… := rfl` validity pins and `LHybridOperators` / `LQuantOperators` sections with the
   derived-operator pins against `TruthClauses.*`, following `LOpen` / `LOpenOperators`.
-- [ ] New `Tests/BimodalTest/Semantics/HybridLanguageAxiomTest.lean` and
+- [x] New `Tests/BimodalTest/Semantics/HybridLanguageAxiomTest.lean` and
   `QuantLanguageAxiomTest.lean` with `#guard_msgs in #print axioms` blocks for the pinned
   theorems; import both from `Tests/BimodalTest.lean`; rows in
   `Tests/BimodalTest/Semantics/README.md`.
-- [ ] `docs/theorem-index.md`: a section per new language with one row per pinned theorem, and
+- [x] `docs/theorem-index.md`: a section per new language with one row per pinned theorem, and
   the `Paper: — (reason)` docstring line that index obliges.
-- [ ] `docs/reference/paper-definitions-of-record.md`: `KNOWN-ANCHORS` rows for any anchor the
-  new docstrings cite that has none yet.
-- [ ] `FormalSystem/StarLanguage/README.md` and `FormalSystem/OpenLanguage/README.md`: the rows
+- [x] `docs/reference/paper-definitions-of-record.md`: `KNOWN-ANCHORS` rows for any anchor the
+  new docstrings cite that has none yet. *(deviation: altered — no row was needed: every gated anchor the new docstrings cite (`def:BLstar-semantics`, `def:world-history`, `def:frame-validity`, `def:BL-semantics`, `cor:occurrence`, `app:gluing`) already has a row, C15 passes with 60 citations resolved, so the file is unedited)*
+- [x] `FormalSystem/StarLanguage/README.md` and `FormalSystem/OpenLanguage/README.md`: the rows
   that record the manuscript's registers of `sub:Extension` as excluded gain one sentence - state
   registers, which the manuscript does not have, are formalized in `FormalSystem/HybridLanguage/`;
   the world registers stay excluded.
-- [ ] Listing sweep: every prose listing of the object-language components gains the two new ones
+- [x] Listing sweep: every prose listing of the object-language components gains the two new ones
   (root `README.md` tree, the "five object languages" heading and table, `ORGANISATION.md`,
   `docs/ARCHITECTURE.md`, `docs/development/MODULE_ORGANIZATION.md`,
   `docs/development/MODULE_INVARIANTS.md`, the docstring and comments of
   `scripts/measure-refactor-partitions.py` and `scripts/check-metalogic-cycles.sh`,
   `FormalSystem/README.md`, `FormalSystem/Semantics/README.md`). Re-measure any layer figure
   before restating it; do not restate a figure that was not re-measured.
-- [ ] Each component README gets its final "Not formalized" table: report Appendix B items 1-7,
+- [x] Each component README gets its final "Not formalized" table: report Appendix B items 1-7,
   each with its reason; nothing uncompiled is stated as a result.
-- [ ] `bash scripts/typst-sync-check.sh`: if Check 2 reports count drift caused by the new
+- [x] `bash scripts/typst-sync-check.sh`: if Check 2 reports count drift caused by the new
   modules, regenerate `typst/generated/status.typ` with its generator; leave
-  `typst/chapters/**` untouched.
-- [ ] Full gates: `bash scripts/check-module-invariants.sh` (with build),
+  `typst/chapters/**` untouched. *(deviation: altered — `typst/generated/status.typ` was regenerated with `scripts/typst-status-counts.sh`, but a concurrent task-648 commit staged the regenerated file before this phase's commit; its committed counts, 537 and 69, are the correct live ones and the sync check passes)*
+- [x] Full gates: `bash scripts/check-module-invariants.sh` (with build),
   `bash scripts/check-metalogic-cycles.sh`, guarded `lake build FormalSystem BimodalTest`,
   `lake exe mk_all --lib FormalSystem --check`.
 
@@ -944,21 +944,21 @@ theorem standard_not_invariant {D : TemporalOrder} {F' F : FrameOver D}
 
 ## Testing & Validation
 
-- [ ] Guarded `lake build FormalSystem` green and zero `sorry` under the three new locations at
+- [x] Guarded `lake build FormalSystem` green and zero `sorry` under the three new locations at
   the end of **every** phase
-- [ ] All 24 challenge identifiers exist with the pinned statements (modulo the `abbrev`/`def`,
+- [x] All 24 challenge identifiers exist with the pinned statements (modulo the `abbrev`/`def`,
   dotted-validity and namespace differences the authoring note records)
-- [ ] `lean_verify` on every pinned theorem: standard axioms only (`propext`, `Classical.choice`,
+- [x] `lean_verify` on every pinned theorem: standard axioms only (`propext`, `Classical.choice`,
   `Quot.sound`), no `sorryAx`, no new axiom
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0: the upward allowlist unchanged, both new
+- [x] `bash scripts/check-metalogic-cycles.sh` exits 0: the upward allowlist unchanged, both new
   `Formula.lean` files at layer 0
-- [ ] `lake exe mk_all --lib FormalSystem --check` exits 0
-- [ ] `bash scripts/check-module-invariants.sh` exits 0, including the six new C14 pins
-- [ ] Guarded `lake build BimodalTest` green, including the `LHybrid` `rfl` pins and the two
+- [x] `lake exe mk_all --lib FormalSystem --check` exits 0
+- [x] `bash scripts/check-module-invariants.sh` exits 0, including the six new C14 pins
+- [x] Guarded `lake build BimodalTest` green, including the `LHybrid` `rfl` pins and the two
   axiom-profile tests
-- [ ] No task number and no manuscript line number in any file outside `specs/`
-- [ ] No new module imports a `FormalSystem.Semantics.PlusLanguage.*` path
-- [ ] `git diff --stat` over the task shows no edit to a pre-existing Lean module other than
+- [x] No task number and no manuscript line number in any file outside `specs/`
+- [x] No new module imports a `FormalSystem.Semantics.PlusLanguage.*` path
+- [x] `git diff --stat` over the task shows no edit to a pre-existing Lean module other than
   `Semantics/Truth.lean`, `Semantics.lean`, the generated root and the planned test files
 
 ## Artifacts & Outputs

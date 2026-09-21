@@ -61,8 +61,9 @@
 #   keep that from recurring:
 #
 #     * THE LANGUAGE DIRECTORIES ARE LAYERED PER FILE. `MinusLanguage/`, `PlusLanguage/` and
-#       `StarLanguage/` each hold syntax, proof system and semantics (`OpenLanguage/`, created
-#       after the merge, holds syntax and semantics only), so no single layer fits
+#       `StarLanguage/` each hold syntax, proof system and semantics (`OpenLanguage/`,
+#       `HybridLanguage/` and `QuantLanguage/`, created after the merge, hold syntax and
+#       semantics only), so no single layer fits
 #       them; `LANGUAGE_FILE_LAYERS` in the measurement script gives every file the layer of the
 #       directory it occupied before the merge (0, 1, or 3 for `MinusLanguage/Soundness.lean`).
 #     * THE LOOKUP FAILS LOUDLY. `layer_of` raises for any module under `FormalSystem/` that
@@ -331,7 +332,8 @@ if not violations:
 
 print(f"FAIL  syntax before semantics: {len(violations)} import line(s) from a language-directory "
       f"syntax module into a semantics module")
-print("      Inside MinusLanguage/, PlusLanguage/, StarLanguage/ and OpenLanguage/ the syntax and proof-system")
+print("      Inside MinusLanguage/, PlusLanguage/, StarLanguage/, OpenLanguage/, HybridLanguage/ and")
+print("      QuantLanguage/ the syntax and proof-system")
 print("      files must not import a semantics file of any language, nor anything under")
 print("      FormalSystem/Semantics/. Move the declaration that needs the import into a semantics")
 print("      file; or, if the source file really is a semantics file, reclassify it in")

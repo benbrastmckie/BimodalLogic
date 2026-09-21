@@ -21,7 +21,7 @@ The four measurements:
                            in ORGANISATION.md (Syntax/ProofSystem/ForMathlib/
                            Init/Tactic/Version=0, Semantics=1, Theorems=2,
                            Metalogic/Automation=3, Examples/MainResults=4, and
-                           the four language directories per file at 0, 1 or
+                           the six language directories per file at 0, 1 or
                            3), grouped by source and target directory, with the
                            Theorems <-> Metalogic pair and any stale per-file
                            row called out.
@@ -56,13 +56,15 @@ Measured on the tree as it stands after the language directories were layered:
                             rows.  scripts/check-metalogic-cycles.sh asserts
                             that the upward set EQUALS its recorded 7-line
                             allowlist.
-                            The four language directories (MinusLanguage/,
-                            PlusLanguage/, StarLanguage/, OpenLanguage/) are
+                            The six language directories (MinusLanguage/,
+                            PlusLanguage/, StarLanguage/, OpenLanguage/,
+                            HybridLanguage/, QuantLanguage/) are
                             layered PER FILE by LANGUAGE_FILE_LAYERS below,
                             keyed on each file's directory before the
-                            language-extension merge (OpenLanguage/, created
+                            language-extension merge (OpenLanguage/,
+                            HybridLanguage/ and QuantLanguage/, created
                             after it, on the directory each file would have
-                            occupied): 14 files at layer 0, 21 at layer 1, 1
+                            occupied): 16 files at layer 0, 29 at layer 1, 1
                             at layer 3.  One layer L for the first three
                             directories, before OpenLanguage/ existed, was
                             measured and
@@ -120,7 +122,7 @@ LIB = "FormalSystem"
 # EVERY module under `FormalSystem/` has a layer: a directory through its row here, the two
 # root-level single files `Version` (0: it imports only `Init`) and `MainResults`
 # (4: it audits every headline theorem, so it sits with Examples at the top) through their own
-# rows, and a file in one of the four language directories through LANGUAGE_FILE_LAYERS below.
+# rows, and a file in one of the six language directories through LANGUAGE_FILE_LAYERS below.
 # A module that matches no row is an ERROR, not a module "with no layer" -- see `layer_of`.
 # Only the bare root `FormalSystem` (it imports everything by construction) and modules outside
 # the library have no layer.
@@ -162,7 +164,8 @@ LAYERS = {
 #   from Metalogic/Conservativity/           -> 3   (`MinusLanguage/Soundness.lean` only; it
 #                                                    imports two Metalogic modules)
 #
-# A file created AFTER the merge (everything under `OpenLanguage/`) has no origin directory; it
+# A file created AFTER the merge (everything under `OpenLanguage/`, `HybridLanguage/` and
+# `QuantLanguage/`) has no origin directory; it
 # takes the layer of the directory it would have occupied before the merge: a syntax file
 # (`Syntax/<Lang>/`) takes 0, a semantic file (`Semantics/<Lang>/`) takes 1 -- which is what
 # assertion C of scripts/check-metalogic-cycles.sh already enforces.

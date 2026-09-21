@@ -216,6 +216,35 @@ this semantics that answers to Ockhamist historical necessity.
 | — | L^▷ validity is closed under time reflection, which exchanges `▷` with `◁` and fixes `⊡` | `FormalSystem.OpenLanguage.openValid_reflectTime` | `FormalSystem/OpenLanguage/OpenReversal.lean` | Base | pcq pinned:C14 |
 | — | The open-past mirror of the Ockhamist principle is valid | `FormalSystem.OpenLanguage.hnOpenMirror_openValid` | `FormalSystem/OpenLanguage/OpenOckhamist.lean` | Base | pcq pinned:C14 |
 
+### The hybrid state language — state registers and the same-state modality
+
+The hybrid state language is L⁺ plus the same-state modality `[≡]`, state registers and the state
+binder `↓` (`FormalSystem/HybridLanguage/`). A state nominal is a free register. It is **semantic
+only**: every row below is an invariance, a validity on a frame or a refutation, never a
+derivability result. The rows record what makes recurrence of world states visible: `[≡]` does
+not, one state register does. A history-lifting morphism and recurrence-freeness are those of
+`FormalSystem/Semantics/HistoryMorphism.lean`.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| — | Truth of every register-free formula, so of every L⁺ formula and every `[≡]φ`, is invariant along any history-lifting morphism | `FormalSystem.HybridLanguage.regFree_invariance` | `FormalSystem/HybridLanguage/HybridInvariance.lean` | — | [propext, Quot.sound] pinned:C14 |
+| — | The recurrence formula `¬(i ∧ (P i ∨ F i))` is valid on a frame iff no world history of the frame visits a world state twice | `FormalSystem.HybridLanguage.recF_defines` | `FormalSystem/HybridLanguage/HybridRecurrence.lean` | — | pcq pinned:C14 |
+| — | The transposition formula `¬(E(i ∧ F j) ∧ E(j ∧ F i))` is valid on a frame iff the frame is recurrence-free: any transposition forces a recurrence | `FormalSystem.HybridLanguage.transF_defines` | `FormalSystem/HybridLanguage/HybridTransposition.lean` | — | pcq pinned:C14 |
+
+### The propositional-quantifier language
+
+The propositional-quantifier language is the base language plus `∀p`, evaluated relative to a
+family of admissible propositions, sets of world states (`FormalSystem/QuantLanguage/`). It is
+**semantic only** and has no validity layer: every row is a frame-level result. The rows record
+the contrast the admissible family exists to state: quantifiers over the lifted propositions see
+no recurrence, quantifiers over every set of world states do.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| — | When `∀p` ranges over the preimages of state sets along a history-lifting morphism, truth at the pulled-back model equals standard truth at the image history | `FormalSystem.QuantLanguage.lifted_invariance` | `FormalSystem/QuantLanguage/QuantInvariance.lean` | — | [propext, Quot.sound] pinned:C14 |
+| — | Under the standard semantics `∀p (Atom(p) → ¬(p ∧ (P p ∨ F p)))` is valid on a frame iff the frame is recurrence-free | `FormalSystem.QuantLanguage.qRec_defines` | `FormalSystem/QuantLanguage/QuantRecurrence.lean` | — | pcq pinned:C14 |
+| — | Standard quantifier truth is not invariant along a history-lifting morphism from a recurrence-free frame onto a frame with recurrence | `FormalSystem.QuantLanguage.standard_not_invariant` | `FormalSystem/QuantLanguage/QuantRecurrence.lean` | — | pcq pinned:C14 |
+
 ### Base-language soundness
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |

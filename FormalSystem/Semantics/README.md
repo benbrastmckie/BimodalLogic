@@ -7,7 +7,10 @@ self-contained component at the library root — [`../MinusLanguage/`](../MinusL
 [`../PlusLanguage/`](../PlusLanguage/README.md), [`../StarLanguage/`](../StarLanguage/README.md) —
 carrying their syntax, their proof system and their semantics in one directory. A fourth,
 [`../OpenLanguage/`](../OpenLanguage/README.md), extends L⁺ by the open-future and open-past
-modals and is semantic only. What stays here
+modals and is semantic only. Two more semantic-only components,
+[`../HybridLanguage/`](../HybridLanguage/README.md) (L⁺ plus the same-state modality, state
+registers and the state binder) and [`../QuantLanguage/`](../QuantLanguage/README.md) (L plus
+propositional quantifiers), rest on `HistoryMorphism.lean` below. What stays here
 is L's own semantics, plus the two **cross-language bridges** that span two families and so
 belong to neither: `DeterministicBridge.lean` and `StateLocalTransfer.lean`.
 

@@ -8,6 +8,8 @@ import FormalSystem.Semantics.TruthClauses
 import FormalSystem.StarLanguage.StarValidity
 import FormalSystem.MinusLanguage.MinusValidity
 import FormalSystem.OpenLanguage.OpenValidity
+import FormalSystem.HybridLanguage.HybridValidity
+import FormalSystem.QuantLanguage.QuantTruth
 
 /-!
 # The abstract validity layer: definitional-coincidence regressions
@@ -128,6 +130,23 @@ example : OpenLanguage.OpenValid φ = GenericValid φ := rfl
 
 end LOpen
 
+/-! ### The hybrid state language — a second vector-pointed case
+
+L⁺ extended by the same-state modality, state registers and the state binder. Its point is
+`(τ, x, r⃗)` with `r⃗ : ℕ → WorldState` a register vector, folded into the instance's `sat` field
+as the innermost binder exactly as L⋆ folds in its stored-time vector. -/
+
+section LHybrid
+variable (F : TaskFrame) (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass)
+  (φ : HybridLanguage.HybridFormula)
+
+example : TaskFrame.HybridValidOn F φ = TaskFrame.GenericValidOn F φ := rfl
+example : HybridLanguage.HybridValidOnFrames P φ = GenericValidOnFrames P φ := rfl
+example : HybridLanguage.HybridValidIn fc φ = GenericValidIn fc φ := rfl
+example : HybridLanguage.HybridValid φ = GenericValid φ := rfl
+
+end LHybrid
+
 /-! ## The derived-operator coincidences, one group per object language
 
 Each language's own derived-operator `def`s are the same Łukasiewicz/`untl` encodings as the
@@ -225,6 +244,44 @@ example : OpenFormula.always φ = TruthClauses.always φ := rfl
 example : OpenFormula.dstab φ = TruthClauses.dstab φ := rfl
 
 end LOpenOperators
+
+section LHybridOperators
+open HybridLanguage
+variable (φ ψ : HybridFormula)
+
+example : HybridFormula.neg φ = TruthClauses.neg φ := rfl
+example : (HybridFormula.top : HybridFormula) = TruthClauses.top := rfl
+example : HybridFormula.and φ ψ = TruthClauses.and φ ψ := rfl
+example : HybridFormula.or φ ψ = TruthClauses.or φ ψ := rfl
+example : HybridFormula.diamond φ = TruthClauses.diamond φ := rfl
+example : HybridFormula.someFuture φ = TruthClauses.someFuture φ := rfl
+example : HybridFormula.somePast φ = TruthClauses.somePast φ := rfl
+example : HybridFormula.allFuture φ = TruthClauses.allFuture φ := rfl
+example : HybridFormula.allPast φ = TruthClauses.allPast φ := rfl
+example : HybridFormula.always φ = TruthClauses.always φ := rfl
+example : HybridFormula.dstab φ = TruthClauses.dstab φ := rfl
+
+end LHybridOperators
+
+/-! The propositional-quantifier language has no validity layer (its results are frame-level), so
+only its derived-operator coincidences are pinned. It sits on the `untl` tier: no `dstab`. -/
+
+section LQuantOperators
+open QuantLanguage
+variable (φ ψ : QuantFormula)
+
+example : QuantFormula.neg φ = TruthClauses.neg φ := rfl
+example : (QuantFormula.top : QuantFormula) = TruthClauses.top := rfl
+example : QuantFormula.and φ ψ = TruthClauses.and φ ψ := rfl
+example : QuantFormula.or φ ψ = TruthClauses.or φ ψ := rfl
+example : QuantFormula.diamond φ = TruthClauses.diamond φ := rfl
+example : QuantFormula.someFuture φ = TruthClauses.someFuture φ := rfl
+example : QuantFormula.somePast φ = TruthClauses.somePast φ := rfl
+example : QuantFormula.allFuture φ = TruthClauses.allFuture φ := rfl
+example : QuantFormula.allPast φ = TruthClauses.allPast φ := rfl
+example : QuantFormula.always φ = TruthClauses.always φ := rfl
+
+end LQuantOperators
 
 /-! ## A toy fifth language: the extension contract, exercised end to end
 

@@ -66,6 +66,19 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | `sub:WorldStates`, "taking world states to be strictly ordered prevents the same world state from occurring more than once in any history" | recurrence is what a world state admits and an instant does not | `qRec_valid`, `qRec_defines` (`QuantRecurrence.lean`): `∀p (Atom(p) → ¬(p ∧ (P p ∨ F p)))` is valid on a frame iff no world history visits a world state twice — the definability is **formalization-native** |
 | standard quantifiers are visible (no paper anchor) | standard quantifier truth is not invariant along a history-lifting morphism from a recurrence-free frame onto a frame with recurrence | `standard_not_invariant` (`QuantRecurrence.lean`), the contrast with `lifted_invariance` — **formalization-native** |
 
+## Not formalized
+
+Nothing in this table is stated as a result anywhere in the component. Each row is a claim that
+was considered and left unproved, with the reason.
+
+| Item | Status |
+|---|---|
+| An axiomatization, soundness or completeness result for the language under either semantics | **Not formalized.** The component is semantic only |
+| Decidability or axiomatizability of L with propositional quantifiers, over any frame class and under either semantics | **Not formalized.** No claim is made; in particular nothing is asserted about the relation to monadic second-order theories of linear orders |
+| A validity layer for the language | **Not formalized, by design.** Every result is frame-level, and the standard and clock-independent semantics would need two validity notions |
+| The quantified transposition sentence, with two quantified state names in place of the two registers of `HybridFormula.transF` | **Not formalized.** `qRec_defines` covers recurrence; the transposition analogue is not stated |
+| Definability of the same-state modality `[≡]` and the state binder `↓` of `FormalSystem/HybridLanguage/` from standard propositional quantifiers, and validity of `∃p (p ∧ Atom(p))` | **Not formalized.** `isAtom_iff` is the fact both would rest on |
+
 ## Module Invariants
 
 **Syntax before semantics within this directory**, exactly as in the sibling language components.
