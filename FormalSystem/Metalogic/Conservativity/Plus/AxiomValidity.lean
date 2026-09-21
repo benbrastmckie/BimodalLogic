@@ -5,9 +5,9 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Conservativity.Plus.Atomization
-import FormalSystem.Semantics.PlusLanguage.PlusPasting
-import FormalSystem.Semantics.PlusLanguage.PlusStateLocal
-import FormalSystem.Syntax.PlusLanguage.Axioms
+import FormalSystem.PlusLanguage.PlusPasting
+import FormalSystem.PlusLanguage.PlusStateLocal
+import FormalSystem.PlusLanguage.Axioms
 import FormalSystem.Theorems.Combinators
 
 /-!
@@ -32,12 +32,12 @@ mirror argument is used, since the TM axiom set is not mirror-closed.
   schema at the atomized parameters, under one fixed encoding. No schema is re-proved over
   `PlusTruthAt`.
 - **The six S5/bridge `⊡` arms** are the definitional validities of
-  `Semantics/PlusLanguage/PlusTruth.lean` (`of_stab`, `stab_four`, `stab_five`, `stab_of_box`; K is
+  `PlusLanguage/PlusTruth.lean` (`of_stab`, `stab_four`, `stab_five`, `stab_of_box`; K is
   the universal-quantifier shape of the `stab` clause) together with `stab_of_stateLocal`
-  (`Semantics/PlusLanguage/PlusStateLocal.lean`), which discharges AS at the atom instance
+  (`PlusLanguage/PlusStateLocal.lean`), which discharges AS at the atom instance
   `stateLocal_atom p` of the state-locality fragment. Their temporal duals are the same schemata at
   reflected parameters, because `reflectTime` fixes `stab`.
-- **The two pasting arms** are the PS/US validities of `Semantics/PlusLanguage/PlusPasting.lean`;
+- **The two pasting arms** are the PS/US validities of `PlusLanguage/PlusPasting.lean`;
   their temporal duals are the past mirrors `paste'_plusValid` and `snce_paste_plusValid`, with the
   purity side conditions exchanged by `IsPureFuture.reflectTime` / `IsPurePast.reflectTime`.
 

@@ -45,7 +45,7 @@ logically so. The bridge between the two is the coincidence corollary, not this 
 ## References
 
 * JPL paper `app:deterministic`, `lem:deterministic-singleton`
-* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — `stab_iff_of_deterministic`, consumed
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — `stab_iff_of_deterministic`, consumed
   here
 
 ## Tags

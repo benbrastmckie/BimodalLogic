@@ -42,24 +42,33 @@ same table in signpost form.
   Layer 0  Foundation    │  Syntax/      ProofSystem/       │             │
                          │  ForMathlib/  Init.lean          │             │
                          │  Tactic/                         │             │
-                         │                                  │             │
-                         │  Syntax/MinusLanguage/           │             │
-                         │    AxiomDischarge.lean ─────────────UPWARD ────┘
-                         └──────────────────────────────────┘   7 lines
+                         └──────────────────────────────────┘             │
+                                                                          │
+                         ┌──────────────────────────────────┐             │
+  Outside the stack      │  MinusLanguage/  PlusLanguage/   │  unmeasured ─┘
+                         │  StarLanguage/                   │   0 lines
+                         └──────────────────────────────────┘
 ```
 
-### The upward set: `Syntax/MinusLanguage/AxiomDischarge.lean → Theorems/*`
+### The upward set is empty — and what that now hides
 
-Seven import lines, all from one file, and the only genuinely upward set left in the library.
-The L⁻ axiom-discharge proofs apply derived object-logic theorems (`Combinators`,
-`DedekindDerived`, `DeductionTheorem`, `DiscreteUnfolding`, `GeneralizedNecessitation`,
-`Propositional.Core`, `TemporalDerived`), and the file sits under `Syntax/` at layer 0.
+The library has **zero** measured upward import lines. Seven used to run from
+`Syntax/MinusLanguage/AxiomDischarge.lean` to `Theorems/*`: the L⁻ axiom-discharge proofs apply
+derived object-logic theorems (`Combinators`, `DedekindDerived`, `DeductionTheorem`,
+`DiscreteUnfolding`, `GeneralizedNecessitation`, `Propositional.Core`, `TemporalDerived`), and
+the file sat under `Syntax/` at layer 0.
 
-They are **asserted, not trusted**: `bash scripts/check-metalogic-cycles.sh` fails if the upward
-set is anything other than exactly those seven lines, on a surplus and on a shortfall alike. The
-work that empties the allowlist is the `{Plus,Minus,Star}Language` directory merges in
-[`development/PUBLICATION_REFACTOR.md`](development/PUBLICATION_REFACTOR.md), which move
-`AxiomDischarge.lean` out of `Syntax/` entirely.
+The `{Plus,Minus,Star}Language` directory merges moved that file to
+`FormalSystem/MinusLanguage/AxiomDischarge.lean`, at the library root. **That did not turn the
+edges downward; it made them invisible.** The three language-extension directories sit outside
+the layer table, so `layer_of` returns `None` for them and every import into and out of them
+goes unmeasured — `Metalogic → MinusLanguage` and
+`Semantics/StateLocalTransfer.lean → PlusLanguage.PlusStateLocal` included. Read the empty
+allowlist as "nothing measured is upward", not as "nothing is upward".
+
+What remains is **asserted, not trusted**: `bash scripts/check-metalogic-cycles.sh` fails if the
+measured upward set is anything other than the recorded allowlist, on a surplus and on a
+shortfall alike.
 
 ### Not upward: `Semantics → ProofSystem`
 
@@ -97,7 +106,7 @@ Layer 0 is five entries, and three of them are easy to miss:
 
 | Module | Role | Constraint |
 |--------|------|------------|
-| `Syntax/` | `Formula` (six constructors), atoms, contexts, subformula closure; also parents the L⁻/L⁺/L⋆ language family (`Syntax/PlusLanguage/` and its siblings) | — |
+| `Syntax/` | `Formula` (six constructors), atoms, contexts, subformula closure. The L⁻/L⁺/L⋆ language family sits beside it at the library root (`PlusLanguage/` and its siblings), outside the layer table | — |
 | `ProofSystem/` | 29 axiom constructors (the paper's primitive schemata; mirrors derived in `DerivedAxioms`), 7 inference rules, `DerivationTree`, `FrameClass` | imports only `Syntax` |
 | `ForMathlib/` | Mathlib-shaped proper/maximal/prime **filter** API | imports **nothing** from `FormalSystem.*` — it is intended for upstreaming |
 | `Init.lean` | The library-wide preamble, modelled on `Mathlib.Init`: the linters and common tactics every module inherits, plus `Tactic.Attr` | check C24 asserts every module reaches it transitively |

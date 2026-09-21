@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusLanguage.PlusDeterminism
+import FormalSystem.PlusLanguage.PlusDeterminism
 import FormalSystem.Metalogic.Independence.DeterminismUndefinable
 
 /-!
@@ -19,7 +19,7 @@ and the **strict** inclusion of the deterministic frames in it.
 `def:deterministic` is a condition on a frame, not on a temporal order, so no `FrameClass` tag
 denotes it and none can be added: the tags are the proof side's axiom-gating lattice
 (`ProofSystem/Axioms.lean`), and *Determined* is refuted at `.Base`
-(`Semantics/PlusLanguage/PlusNonValidities.lean`, `refute_determined`). The validity layer already
+(`PlusLanguage/PlusNonValidities.lean`, `refute_determined`). The validity layer already
 anticipates exactly this: `ValidOnFrames` and `PlusValidOnFrames` are the primitives, indexed by a
 bare `TaskFrame → Prop`, and `ValidIn fc` / `PlusValidIn fc` are their instances at `fc.Sat`. The
 notions below are the instances at `fun F => fc.Sat F ∧ F.Deterministic`, so nothing in the
@@ -56,7 +56,7 @@ about frames.
 ## References
 
 * JPL paper `def:deterministic`, `app:deterministic`, `cor:no-characterization`
-* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — the landed collapse consumed here
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — the landed collapse consumed here
 * `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` — (T3), the strictness witness
 
 ## Tags
@@ -110,7 +110,7 @@ def PlusValidDeterminedIn (fc : FrameClass) (φ : PlusFormula) : Prop :=
 /-! ## The inclusion, and its strictness -/
 
 /-- Every deterministic frame validates every instance of *Determined*. This is 536's
-`determined_of_deterministic` (`Semantics/PlusLanguage/PlusDeterminism.lean`) repackaged at the
+`determined_of_deterministic` (`PlusLanguage/PlusDeterminism.lean`) repackaged at the
 predicate `DeterminedValid`; the collapse itself is **not** re-derived here. -/
 theorem deterministic_determinedValid {F : TaskFrame} (hD : F.Deterministic) :
     DeterminedValid F :=

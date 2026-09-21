@@ -11,14 +11,8 @@ Core syntactic definitions for TM bimodal logic formulas.
 | `BigConj.lean` | 51 | `bigConj`: Big conjunction over a list of formulas |
 | `Context.lean` | 210 | `Context`: Type alias for `List Formula` (proof contexts) |
 | `Formula.lean` | 795 | `Formula`: Inductive formula type with modal and temporal operators |
-| `MinusLanguage.lean` | 47 | Sibling aggregator for `MinusLanguage/` (the language L⁻) |
-| `PlusLanguage.lean` | 54 | Sibling aggregator for `PlusLanguage/` (the language L⁺) |
-| `StarLanguage.lean` | 61 | Sibling aggregator for `StarLanguage/` (the language L⋆) |
 | `SubformulaClosure.lean` | 38 | Sibling aggregator for `SubformulaClosure/` |
 | `Subformulas.lean` | 235 | `subformulas`: Subformula relation and listing function |
-| `MinusLanguage/` | — | L⁻: `MinusFormula` with `allPast`/`allFuture` primitive in place of `untl`/`snce`, its axioms, proof system and the translation `tr` to L (6 files) |
-| `PlusLanguage/` | — | L⁺: `PlusFormula` = L plus the stability modal `⊡` (`stab`, "boxdot"), its axioms, proof system, embedding and substitution (5 files) |
-| `StarLanguage/` | — | L⋆: `StarFormula` = L⁺ plus the time registers `↑ⁱ`/`↓ⁱ` (`timeStore`/`timeRecall`), its axioms, proof system and embedding (4 files) |
 | `SubformulaClosure/` | — | Subformula closure as `Finset` for BFMCS construction (4 files) |
 <!-- END GENERATED -->
 
@@ -31,15 +25,13 @@ notations over a shared `Formula`.
 | Directory | Language | Type | Constructors |
 |-----------|----------|------|--------------|
 | `Syntax/` (here) | L | `Formula` | `atom`, `bot`, `imp`, `box`, `untl`, `snce` (6) |
-| [`Syntax/MinusLanguage/`](MinusLanguage/README.md) | L⁻ | `MinusFormula` | `atom`, `bot`, `imp`, `box`, `allPast`, `allFuture` (6) |
-| [`Syntax/PlusLanguage/`](PlusLanguage/README.md) | L⁺ | `PlusFormula` | L's six **+ `stab`** (7) |
-| [`Syntax/StarLanguage/`](StarLanguage/README.md) | L⋆ | `StarFormula` | L⁺'s seven **+ `timeStore`, `timeRecall`** (9) |
+| [`MinusLanguage/`](../MinusLanguage/README.md) | L⁻ | `MinusFormula` | `atom`, `bot`, `imp`, `box`, `allPast`, `allFuture` (6) |
+| [`PlusLanguage/`](../PlusLanguage/README.md) | L⁺ | `PlusFormula` | L's six **+ `stab`** (7) |
+| [`StarLanguage/`](../StarLanguage/README.md) | L⋆ | `StarFormula` | L⁺'s seven **+ `timeStore`, `timeRecall`** (9) |
 
-The semantics of the three extensions sits in the parallel directories
-[`Semantics/MinusLanguage/`](../Semantics/MinusLanguage/README.md),
-[`Semantics/PlusLanguage/`](../Semantics/PlusLanguage/README.md) and
-[`Semantics/StarLanguage/`](../Semantics/StarLanguage/README.md); L's own semantics is at the
-`Semantics/` root.
+The three extension languages are **not** subdirectories of this one. Each is a self-contained
+component at the library root, carrying its syntax, its proof system and its semantics in one
+directory; L's own syntax is here and L's own semantics is at the `Semantics/` root.
 
 ### The chain, and the one that is not in it
 
@@ -51,7 +43,7 @@ comes with a constructor-to-constructor embedding (`PlusFormula.ofFormula`,
 (`allPast`/`allFuture`) as *primitive constructors* in place of L's `untl`/`snce`, so neither
 language's constructor set contains the other's. The two are related by a translation,
 `tr : MinusFormula → Formula`, in
-[`MinusLanguage/Translation.lean`](MinusLanguage/Translation.lean) — not by an embedding. L⁻ is
+[`MinusLanguage/Translation.lean`](../MinusLanguage/Translation.lean) — not by an embedding. L⁻ is
 the language in which the source paper states TM.
 
 Do not describe these four as "one extension hierarchy": three of them form a chain and the
@@ -61,28 +53,30 @@ fourth does not belong to it.
 
 **It already exists.** The **stability modal** `⊡` — the constructor `stab`, read "settled at
 the present world state" — is implemented in
-[`Syntax/PlusLanguage/`](PlusLanguage/README.md), and it is complete rather than partial:
+[`../PlusLanguage/`](../PlusLanguage/README.md), and it is complete rather than partial:
 `PlusFormula` with `stab`, the eight `⊡` axiom schemata in `PlusLanguage/Axioms.lean`, the
 `PlusDerivationTree` proof system, the embedding `ofFormula`, backward conservativity, and the
-`PlusTruthAt` semantics in `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean`. It carries no `sorry`.
+`PlusTruthAt` semantics in `FormalSystem/PlusLanguage/PlusTruth.lean`. It carries no `sorry`.
 
 `⊡` is also the sole operator L⁺ adds to L, so "L plus boxdot" and "L⁺" name the same language.
 It is carried forward unchanged into L⋆, whose own additions are the two hybrid time registers
 `↑ⁱ` (`timeStore`) and `↓ⁱ` (`timeRecall`).
 
-This section exists because `⊡` was previously built, sorry-free, in a directory that sat as a
-flat sibling of `Syntax/` with nothing pointing here — so a reader starting from the base
-language had no way to discover it and was at real risk of rebuilding it.
+This section exists because `⊡` was built, sorry-free, in a directory sitting as a flat sibling
+of `Syntax/` with nothing pointing here — so a reader starting from the base language had no way
+to discover it and was at real risk of rebuilding it. The language-extension merge restored that
+sibling arrangement deliberately, with this pointer in place.
 
-### Namespaces stay flat
+### Namespaces are flat, and so are the directories
 
-Nesting these directories under `Syntax/` did **not** change their namespaces: the declarations
-in `Syntax/MinusLanguage/` are still in `FormalSystem.MinusLanguage`, not
-`FormalSystem.Syntax.MinusLanguage`. Prose naming those namespaces is therefore correct as
-written even though the *module* paths are now `FormalSystem.Syntax.MinusLanguage.*`.
+Every declaration of the three extension languages lives in a flat `FormalSystem.{X}Language`
+namespace, and each language's module paths now match it: `FormalSystem.MinusLanguage.Formula`,
+`FormalSystem.MinusLanguage.MinusTruth`, and so on. Path and namespace agree, which is what the
+merge was for — before it, the semantic half sat at `FormalSystem.Semantics.{X}Language.*` while
+declaring `FormalSystem.Semantics`.
 
-`FormalSystem/Syntax.lean` also deliberately does not import the three nested aggregators, so a
-bare `import FormalSystem.Syntax` stays as cheap as it was before the move.
+`FormalSystem/Syntax.lean` deliberately does not import the three aggregators, so a bare
+`import FormalSystem.Syntax` stays as cheap as it was before.
 
 ## Key Definitions
 

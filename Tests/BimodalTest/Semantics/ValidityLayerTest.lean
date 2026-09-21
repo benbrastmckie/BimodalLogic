@@ -5,8 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TruthClauses
-import FormalSystem.Semantics.StarLanguage.StarValidity
-import FormalSystem.Semantics.MinusLanguage.MinusValidity
+import FormalSystem.StarLanguage.StarValidity
+import FormalSystem.MinusLanguage.MinusValidity
 
 /-!
 # The abstract validity layer: definitional-coincidence regressions

@@ -44,7 +44,7 @@ to say "the one result carried here", which stopped being true three witnesses a
 3. `Sat .ZTime ⊊ Mod (AxiomSet .ZTime)`, witnessed by the static frame over `ℤ ×ₗ ℤ`.
 4. `TaskFrame.Deterministic` is **not L⁺-definable** (`cor:no-characterization`), witnessed by
    the indistinguishable pair `F°`/`F¹` over `ℝ`. The same pair refutes the converse of the
-   deterministic collapse (`Semantics/PlusLanguage/PlusDeterminism.lean`): `F°` validates
+   deterministic collapse (`PlusLanguage/PlusDeterminism.lean`): `F°` validates
    *Determined* without being deterministic.
 5. The current axiom set of TM⁺ is **incomplete at `.Base`** (`plus_incomplete_base`): the
    limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid over every task

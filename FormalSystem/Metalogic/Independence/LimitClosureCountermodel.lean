@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Independence.PastedCoarseModels
 import FormalSystem.Metalogic.Independence.LimitClosureFrame
-import FormalSystem.Semantics.PlusLanguage.PlusLimitClosure
+import FormalSystem.PlusLanguage.PlusLimitClosure
 
 /-!
 # The limit-closure formula is not a `.Base` theorem of TM⁺
@@ -14,7 +14,7 @@ import FormalSystem.Semantics.PlusLanguage.PlusLimitClosure
 The coarsened-state model `eK` on the limit-closure frame `EF`
 (`Metalogic/Independence/LimitClosureFrame.lean`), with `π` the Boolean class component and every
 sentence letter read as the `true` class, is paste-closed and refutes the limit-closure formula
-`blc p` (`Semantics/PlusLanguage/PlusLimitClosure.lean`) at every history and time. By soundness
+`blc p` (`PlusLanguage/PlusLimitClosure.lean`) at every history and time. By soundness
 of TM⁺ for paste-closed coarse models (`Metalogic/Independence/PastedCoarseModels.lean`), `blc p`
 is not derivable at `.Base`.
 

@@ -44,7 +44,7 @@ a strictly intermediate time before its atom.
 
 ## Why the coarsening is what does the work
 
-On a genuine task frame PS and US are **valid** (`Semantics/PlusLanguage/PlusPasting.lean`): the
+On a genuine task frame PS and US are **valid** (`PlusLanguage/PlusPasting.lean`): the
 splice of two world histories through a common state is again a world history. Coarsening breaks
 exactly that, and nothing else — the two lines above pass through *different* states at time `0`, so
 there is no state for a splice to run through. Everything else about the model is ordinary.
@@ -64,7 +64,7 @@ unchanged, and `NaiveDerivable` is a predicate on the existing derivation trees
 ## References
 
 * `FormalSystem/PlusLanguage/Axioms.lean` — the docstring this result discharges
-* `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` — the validity of PS and US on genuine
+* `FormalSystem/PlusLanguage/PlusPasting.lean` — the validity of PS and US on genuine
   frames
 
 ## Tags

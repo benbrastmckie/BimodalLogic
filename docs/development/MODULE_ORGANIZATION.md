@@ -21,12 +21,10 @@ BimodalLogic/
 │   ├── Examples.lean           # Aggregates Examples/
 │   ├── Syntax/                 # Formula types, atoms, contexts, subformulas
 │   ├── ProofSystem/            # Axioms, derivation trees, inference rules
-│   ├── MinusLanguage/           # The tense-primitive second object language
-│   ├── PlusLanguage/           # L⁺: L plus the stability modal ⊡, and its logic TM⁺
-│   ├── Semantics/              # Task frame semantics, truth evaluation, extension
-│   │   ├── MinusLanguage/      # L⁻ truth, frames and validity (aggregator Semantics/MinusLanguage.lean)
-│   │   ├── PlusLanguage/       # L⁺ truth, validity, pasting, non-validities (aggregator Semantics/PlusLanguage.lean)
-│   │   └── StarLanguage/       # L⋆ truth, validity, determinism (aggregator Semantics/StarLanguage.lean)
+│   ├── MinusLanguage/          # L⁻: syntax, TM⁻, and its semantics, in one directory
+│   ├── PlusLanguage/           # L⁺: L plus the stability modal ⊡, TM⁺, and its semantics
+│   ├── StarLanguage/           # L⋆: L⁺ plus the time registers, TM⋆, and its semantics
+│   ├── Semantics/              # Task frame semantics for L, truth evaluation, extension
 │   ├── Metalogic/              # Soundness, completeness, decidability, independence
 │   ├── Theorems/               # Derived theorems (perpetuity, combinators, propositional)
 │   ├── Tactic/                 # Layer 0: Attr.lean (the library's attributes, imported by Init.lean), Meta.lean
@@ -86,27 +84,20 @@ a component of its own. Three pre-existing examples, all verifiable by `grep -n 
 |------|----------|
 | `Syntax/SubformulaClosure/Closure.lean` | `namespace FormalSystem.Syntax` (not `...Syntax.SubformulaClosure`) |
 | `Metalogic/Conservativity/Plus/Forward.lean` | `namespace FormalSystem.Metalogic.Conservativity` (not `...Conservativity.Plus`) |
-| `Syntax/MinusLanguage/Formula.lean` | `namespace FormalSystem.MinusLanguage` (not `...Syntax.MinusLanguage`) |
 
-The third case is the L⁻/L⁺/L⋆ language family, nested under `Syntax/` while deliberately
-keeping its flat `FormalSystem.MinusLanguage` / `.PlusLanguage` / `.StarLanguage` namespaces.
-Renaming them to match the new module depth was considered and rejected: it would have touched
-103 call sites and the `#print axioms` baseline in `scripts/check-module-invariants.sh`, for no
-gain.
+The L⁻/L⁺/L⋆ language family used to supply a third row here, and no longer does. Its syntax
+half sat under `Syntax/` while keeping a flat `FormalSystem.MinusLanguage` /
+`.PlusLanguage` / `.StarLanguage` namespace, and its **semantic** half was the larger half of
+the same mismatch: modules under `Semantics/{Minus,Plus,Star}Language/` whose every declaration
+kept the flat `namespace FormalSystem.Semantics`, sub-namespaces `MinusTruth`, `MinusValidity`,
+`PlusTruth` and `StarTruth` included.
 
-The language family's **semantic** modules follow the same rule one directory over: they are
-nested under `Semantics/MinusLanguage/`, `Semantics/PlusLanguage/` and `Semantics/StarLanguage/`
-(module `FormalSystem.Semantics.PlusLanguage.PlusTruth`, for instance) while every declaration
-keeps the flat `namespace FormalSystem.Semantics`, including the sub-namespaces `MinusTruth`,
-`MinusValidity`, `PlusTruth` and `StarTruth`. So the dotted name formed from
-`FormalSystem.Semantics` and `PlusTruth` now names only a namespace; the module is
-`FormalSystem.Semantics.PlusLanguage.PlusTruth`.
-
-**Consequence for documentation**: a dotted name like `FormalSystem.MinusLanguage` may be a
-namespace reading (correct as written) or a module-path reading (which must be
-`FormalSystem.Syntax.MinusLanguage`), and the two are textually indistinguishable. `C5` cannot
-tell them apart either, which is why `scripts/module-invariants-allowlist.txt` exists and why
-each of its entries records which reading it covers.
+The language-extension merge closed both halves at once. Each family now occupies one root-level
+directory — `FormalSystem/MinusLanguage/`, `FormalSystem/PlusLanguage/`,
+`FormalSystem/StarLanguage/` — and every declaration in it, semantic modules included, lives in
+the matching flat `FormalSystem.{X}Language` namespace. Path and namespace agree, so
+`FormalSystem.PlusLanguage.PlusTruth` reads the same whether taken as a module path or as a
+namespace.
 
 ### Nested Namespaces
 
@@ -198,27 +189,33 @@ Layer 1: ProofSystem (depends on Syntax), MinusLanguage (depends on Syntax),
 Layer 0: Syntax (no internal dependencies)
 ```
 
-**Where `MinusLanguage` sits.** It is a second object language parallel to
-`Syntax` + `ProofSystem`, not a layer of its own: `MinusLanguage.Formula` imports only
-`Syntax.Atom`, and the rest of `MinusLanguage/` imports only `Syntax` and itself. Nothing under
-`MinusLanguage/` imports `Semantics/` — that is the directory's standing module invariant, stated
-in `FormalSystem/Syntax/MinusLanguage.lean`.
-`PlusLanguage/` follows the same pattern and the same directional invariant (stated in
-`FormalSystem/Syntax/PlusLanguage.lean`): `Semantics/PlusLanguage/PlusTruth.lean` imports `PlusLanguage.Formula`,
-and nothing under `PlusLanguage/` imports `Semantics/`.
+**Where the language family sits.** `MinusLanguage/`, `PlusLanguage/` and `StarLanguage/` are
+object languages parallel to `Syntax` + `ProofSystem` + `Semantics`, not layers of their own.
+Each is self-contained: `MinusLanguage.Formula` imports only `Syntax.Atom`, the rest of the
+syntax half imports only `Syntax` and itself, and the semantic modules beside them import
+`Semantics/` to build their truth relations on top of it.
 
-The invariant is **directional**, and the converse edge is both permitted and used:
-`Semantics/MinusLanguage/MinusTruth.lean` imports `MinusLanguage.Formula` to define `MinusTruthAt` natively on
-`MinusFormula`, and `Metalogic/Conservativity/MinusLanguageSoundness.lean` composes that with `Translation` and
-`Conservativity`. So the one `Semantics → MinusLanguage` edge in the tree runs into a
-`Syntax.Atom`-only leaf and introduces no cycle.
+The old invariant was a *directory* separation — nothing under `Syntax/{X}Language/` imports
+`Semantics/`. The merge replaced it with a **file-level** ordering within each directory, stated
+in each family's aggregator docstring (`FormalSystem/MinusLanguage.lean` and its siblings):
+the syntax modules import nothing from `Semantics/`; the semantic modules beside them do, and
+that edge is what gives each language its meaning. `MinusLanguage/MinusTruth.lean` imports
+`MinusLanguage.Formula` to define `MinusTruthAt` natively on `MinusFormula`, and
+`MinusLanguage/Soundness.lean` composes that with `Translation` and `Conservativity`. The one
+`Semantics → MinusLanguage` edge in the tree runs into a `Syntax.Atom`-only leaf and introduces
+no cycle.
+
+No mechanical check enforces the file-level ordering. Before the merge, the directory boundary
+did; see `docs/ARCHITECTURE.md`'s note on what the layer table stops measuring.
 
 ### Dependency Rules
 
 1. **Syntax** has no internal dependencies.
 2. **ProofSystem** depends only on Syntax.
-3. **Semantics** depends on Syntax and ProofSystem, plus `MinusLanguage.Formula` (a
-   `Syntax.Atom`-only leaf) in `MinusTruth.lean` / `MinusValidity.lean`.
+3. **Semantics** depends on Syntax and ProofSystem. The three language-family directories
+   depend on Semantics in their semantic half; the two cross-language bridges
+   (`DeterministicBridge.lean`, `StateLocalTransfer.lean`) stay under `Semantics/` and depend on
+   them in turn.
 4. **Theorems** depends on Syntax and ProofSystem (and may use Semantics for transport lemmas where needed).
 5. **Metalogic** depends on Syntax, ProofSystem, Semantics, and Theorems infrastructure used in proofs.
 6. **Automation** (tactics, proof search) may depend on any module.
@@ -337,31 +334,31 @@ A **second object language**, tense-primitive (`H`/`G` are constructors rather t
 abbreviations), with its own axioms and proof system, related to the primary language by a
 translation. It is the language in which the source paper states TM.
 
-* `FormalSystem.Syntax.MinusLanguage.Formula` -- `MinusFormula`
-* `FormalSystem.Syntax.MinusLanguage.Axioms` -- a second `inductive Axiom`
-* `FormalSystem.Syntax.MinusLanguage.Derivation` -- the mirror proof system
-* `FormalSystem.Syntax.MinusLanguage.Translation` -- `tr : MinusFormula → Formula`
-* `FormalSystem.Syntax.MinusLanguage.AxiomDischarge`
+* `FormalSystem.MinusLanguage.Formula` -- `MinusFormula`
+* `FormalSystem.MinusLanguage.Axioms` -- a second `inductive Axiom`
+* `FormalSystem.MinusLanguage.Derivation` -- the mirror proof system
+* `FormalSystem.MinusLanguage.Translation` -- `tr : MinusFormula → Formula`
+* `FormalSystem.MinusLanguage.AxiomDischarge`
 
 The base language's **semantics** deliberately does not live here, so that the directory's
 `MinusLanguage/ → Semantics/` invariant stays literally true: see
-`FormalSystem.Semantics.MinusLanguage.MinusTruth`, `FormalSystem.Semantics.MinusLanguage.MinusValidity` and
-`FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness` below.
+`FormalSystem.MinusLanguage.MinusTruth`, `FormalSystem.MinusLanguage.MinusValidity` and
+`FormalSystem.MinusLanguage.Soundness` below.
 
 ### Semantics
 * `FormalSystem.Semantics.TaskFrame`
 * `FormalSystem.Semantics.PartialHistory`
 * `FormalSystem.Semantics.TaskModel`
 * `FormalSystem.Semantics.Truth`
-* `FormalSystem.Semantics.MinusLanguage.MinusTruth` -- `MinusTruthAt`, the native base-language truth recursion
+* `FormalSystem.MinusLanguage.MinusTruth` -- `MinusTruthAt`, the native base-language truth recursion
 * `FormalSystem.Semantics.Validity`
-* `FormalSystem.Semantics.MinusLanguage.MinusValidity` -- the base-language validity predicates
+* `FormalSystem.MinusLanguage.MinusValidity` -- the base-language validity predicates
 * `FormalSystem.Semantics.Extension` -- the Extension Theorem: every partial history
   extends to a total one
 
 ### Metalogic
 * `FormalSystem.Metalogic.Soundness`
-* `FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness` -- BL soundness at Base/Dense/ZTime/RTime,
+* `FormalSystem.MinusLanguage.Soundness` -- BL soundness at Base/Dense/ZTime/RTime,
   by composition, plus the truth-transfer bridge `truthAt_tr`
 * `FormalSystem.Metalogic.SoundnessLemmas`
 * `FormalSystem.Theorems.DeductionTheorem`

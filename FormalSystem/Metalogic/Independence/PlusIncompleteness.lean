@@ -16,7 +16,7 @@ blc p  :=  (⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))
 ```
 
 is valid over every task frame and is not a `.Base` theorem of TM⁺. The two halves are
-`blc_plusValid` (`Semantics/PlusLanguage/PlusLimitClosure.lean`: Zorn plus the Extension Theorem)
+`blc_plusValid` (`PlusLanguage/PlusLimitClosure.lean`: Zorn plus the Extension Theorem)
 and `blc_not_plusDerivable_base` (`Metalogic/Independence/LimitClosureCountermodel.lean`: a
 paste-closed coarsened-state model refuting it). This module only assembles them.
 

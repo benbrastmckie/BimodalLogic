@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness
+import FormalSystem.MinusLanguage.Soundness
 import FormalSystem.Metalogic.Algebraic.FlowFrame
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
 
@@ -67,8 +67,8 @@ refutation. That implication is the completeness direction itself.
 
 * `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — `multiFamTaskFrameGen`,
   `multiFamHistoryGen`, `multiFamGen_total_eq`, `multiFamGen_total_eq_range`
-* `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` — `minus_box_universal`
-* `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the six `MinusTruthAt` clauses `chainSat`
+* `FormalSystem/MinusLanguage/Soundness.lean` — `minus_box_universal`
+* `FormalSystem/MinusLanguage/MinusTruth.lean` — the six `MinusTruthAt` clauses `chainSat`
   mirrors
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — the four-row status table
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.PlusLanguage.PlusValidity
+import FormalSystem.PlusLanguage.PlusValidity
 import FormalSystem.Metalogic.Soundness
 
 /-!
@@ -48,7 +48,7 @@ encoding, `Encoding.reflectTime`).
 ## References
 
 * `FormalSystem/Metalogic/Soundness.lean` — `axiom_validIn`, `axiom_reflect_time_validIn`
-* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `stab_state_only`
+* `FormalSystem/PlusLanguage/PlusTruth.lean` — `stab_state_only`
 -/
 
 namespace FormalSystem.Metalogic.Conservativity

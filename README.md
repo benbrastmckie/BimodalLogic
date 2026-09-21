@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 508 |
-| Live lines of code | 155,489 |
-| Live comment lines | 93,919 |
+| Live `.lean` files | 505 |
+| Live lines of code | 155,486 |
+| Live comment lines | 93,854 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -230,10 +230,10 @@ logic; the other three are this repository's, and the superscripts are Lean-only
 
 | Language | Operators | Logic | Lean home |
 |---|---|---|---|
-| **L⁻** | ⊥, →, □, H, G | **TM⁻** | `FormalSystem/Syntax/MinusLanguage/`, `MinusFormula`, `⊢⁻[fc]` |
+| **L⁻** | ⊥, →, □, H, G | **TM⁻** | `FormalSystem/MinusLanguage/`, `MinusFormula`, `⊢⁻[fc]` |
 | **L** | ⊥, →, □, S, U | **TM** (TM_z, TM_d, TM_r) | `FormalSystem/Syntax/` + `ProofSystem/`, `Formula`, `⊢[fc]` |
-| **L⁺** | L plus the stability modal ⊡ | **TM⁺** | `FormalSystem/Syntax/PlusLanguage/`, `PlusFormula`, `⊢⁺[fc]` |
-| **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | — (semantic only; no proof system) | `FormalSystem/Syntax/StarLanguage/`, `StarFormula`, the embedding `ofPlus` |
+| **L⁺** | L plus the stability modal ⊡ | **TM⁺** | `FormalSystem/PlusLanguage/`, `PlusFormula`, `⊢⁺[fc]` |
+| **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | — (semantic only; no proof system) | `FormalSystem/StarLanguage/`, `StarFormula`, the embedding `ofPlus` |
 
 The manuscript has exactly **two** languages: 𝓛 and 𝓛⋆, where 𝓛⋆ bundles ⊡ with both the
 time-store/recall and the world-store/recall families (the sentence defining `\BL^\star` in
@@ -252,17 +252,17 @@ time-store/recall and the world-store/recall families (the sentence defining `\B
   its semantics interprets the manuscript's points `(τ, x, v⃗)` per `def:BLstar-semantics`. The
   world registers are not formalized here, and L⋆ carries **no proof system**: the manuscript
   supplies none, and every L⋆ result here is semantic. `StarAxiom`, `StarDerivationTree`,
-  `⊢⋆[fc]` and `TM⋆` are reserved, unbuilt names. See `FormalSystem/Syntax/StarLanguage/README.md` for
+  `⊢⋆[fc]` and `TM⋆` are reserved, unbuilt names. See `FormalSystem/StarLanguage/README.md` for
   the paper-label correspondence table.
 
 So results stated below about L⁺ and L⋆ are results about *fragments* of the manuscript's 𝓛⋆,
 and are described that way rather than by a paper name they do not have.
 
 Three of these sit beside L (`Formula`): the tense-primitive **L⁻**
-(`FormalSystem/Syntax/MinusLanguage/`, `MinusFormula`, related to L by the translation `tr`), the
-**stability extension L⁺** (`FormalSystem/Syntax/PlusLanguage/`, `PlusFormula` = L plus the stability
+(`FormalSystem/MinusLanguage/`, `MinusFormula`, related to L by the translation `tr`), the
+**stability extension L⁺** (`FormalSystem/PlusLanguage/`, `PlusFormula` = L plus the stability
 modal `⊡`, related to L by the embedding `ofFormula`), and the **time-register extension L⋆**
-(`FormalSystem/Syntax/StarLanguage/`, `StarFormula` = L⁺ plus `↑ⁱ`/`↓ⁱ`, related to L⁺ by the embedding
+(`FormalSystem/StarLanguage/`, `StarFormula` = L⁺ plus `↑ⁱ`/`↓ⁱ`, related to L⁺ by the embedding
 `ofPlus`). Every result below is sorry-free
 (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`) and holds at all four frame classes
 unless a class is named.
@@ -280,11 +280,11 @@ ledger. The five rows below are a highlights table, not a second copy of it.
 | Completeness and compactness | of the **H/G-fragment** `TMFrag fc φ := TM ⊢[fc] tr φ` (`tmFrag_iff_minusValidIn`), whose consequence relation is compact at Base and Dense (`minusCompactBase`, `minusCompactDense`); TM⁻ itself is incomplete, and `TM⁻ ⊊ TMFrag` at ZTime (`tmMinus_lt_tmFrag_ztime`) | **open**; compactness not attempted (see below) |
 
 The L⁻ side lives in `Metalogic/Conservativity/{Fragment,FragmentCompactness}.lean`; the L⁺ side
-in `Semantics/PlusLanguage/` and `Metalogic/Conservativity/Plus/`. TM⁺'s axioms are the 45 TM
+in `PlusLanguage/` and `Metalogic/Conservativity/Plus/`. TM⁺'s axioms are the 45 TM
 schemata re-declared over `PlusFormula` (so that, e.g., `□⊡p → □G⊡p` is an MF instance) plus S5
 for `⊡`, `□φ → ⊡φ`, `p → ⊡p` for atoms, and two **pasting** schemata with pure-future/pure-past
-side conditions (`Semantics/PlusLanguage/PlusPasting.lean`); the five refutations in
-`Semantics/PlusLanguage/PlusNonValidities.lean` bound the set from above.
+side conditions (`PlusLanguage/PlusPasting.lean`); the five refutations in
+`PlusLanguage/PlusNonValidities.lean` bound the set from above.
 
 **Open problems for TM⁺.**
 

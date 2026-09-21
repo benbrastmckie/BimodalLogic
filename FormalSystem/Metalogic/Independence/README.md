@@ -26,11 +26,11 @@ Eight results are carried here:
    frame `F^N` (`W = ℕ`, `D = ℤ`, the absorbing predecessor map) is forward-deterministic and
    **not** `Deterministic`, and `sent:det` is valid over it at every sentence letter. Replacing
    `\Future` by `always` closes the gap: `Det-pm` does define the deterministic frames
-   (`Semantics/StarLanguage/StarDeterminism.lean`'s `deterministic_starDefinable`).
+   (`StarLanguage/StarDeterminism.lean`'s `deterministic_starDefinable`).
 8. **The current TM⁺ axiom set is incomplete at Base** (`PlusIncompleteness.lean`). The
    limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` — the Burgess/Thomason
    branch-extension pattern transposed to the stability modal — is valid over every task frame
-   (`Semantics/PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is
+   (`PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is
    not a Base theorem of TM⁺. Completeness of any *extension* of the axiom set is open at every
    class, and nothing is claimed at Dense, ZTime or RTime.
 
@@ -39,7 +39,7 @@ Galois-closed, in contrast with the paper's bare classes — which are closed, b
 `Semantics/Correspondence/Indicator.lean`'s `galoisClosed_sat_dense` and `galoisClosed_isDiscrete`.
 
 Result 5 is the one that leaves the standard semantics. PS and US are valid on **every** task
-frame (`Semantics/PlusLanguage/PlusPasting.lean`), because the splice of two world histories through a common
+frame (`PlusLanguage/PlusPasting.lean`), because the splice of two world histories through a common
 state is again a world history; so no ordinary task model can witness their underivability. The
 witness is a *coarsened-state* model (`CoarsenedModels.lean`), which interprets `⊡` over a
 quotient of the world states and thereby removes the common state a splice would need. Everything
@@ -55,9 +55,9 @@ translation-closed, nothing says closed. Under `⊡ = id` the formula is a tauto
 theorem of TM⁺ + *Determined*, so the countermodel is necessarily nondeterministic.
 
 Results 6 and 7 leave the language rather than the semantics: they are stated over **L⋆**
-(`FormalSystem/Syntax/StarLanguage/`), L⁺ plus the manuscript's time store/recall operators. The
+(`FormalSystem/StarLanguage/`), L⁺ plus the manuscript's time store/recall operators. The
 paper-label correspondence table for that appendix — every `\label` mapped to a Lean name or to
-an explicit exclusion — lives in `FormalSystem/Syntax/StarLanguage/README.md`.
+an explicit exclusion — lives in `FormalSystem/StarLanguage/README.md`.
 
 Every result here follows the same four steps: build a concrete frame satisfying every
 structural axiom of the semantics; prove a truth-invariance lemma for it (a symmetry or
@@ -112,7 +112,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
   indistinguishable pair.
 - `determined_valid_on_non_deterministic` (`DeterminismUndefinable.lean`) — `F°` validates
   *Determined* without being deterministic, refuting the converse of `determined_of_deterministic`
-  (`Semantics/PlusLanguage/PlusDeterminism.lean`).
+  (`PlusLanguage/PlusDeterminism.lean`).
 - `plusTruthAt_iff_mem_satSet` (`StateSetTruth.lean`) — the state-set bridge, proved once against
   (H1)+(H2) and instantiated twice; `[propext]` alone.
 - `stabNotDefinable` (`StabUndefinable.lean`) — no `Formula` is equivalent to `⊡Fp` over all task
@@ -131,7 +131,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 - `plus_incomplete_base`, `not_plus_complete_base` (`PlusIncompleteness.lean`) — the limit-closure
   formula is valid and not a Base theorem of TM⁺; the hypothesis of
   `starConservative_of_plusComplete` at Base, refuted. Halves: `blc_plusValid`
-  (`Semantics/PlusLanguage/PlusLimitClosure.lean`) and `blc_not_plusDerivable_base`
+  (`PlusLanguage/PlusLimitClosure.lean`) and `blc_not_plusDerivable_base`
   (`LimitClosureCountermodel.lean`).
 
 ## Dependencies

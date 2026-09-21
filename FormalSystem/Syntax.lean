@@ -25,8 +25,10 @@ plus context types for proof assumptions.
 operations
 - `SubformulaClosure`: the subformula closure as a `Finset`, with nesting-depth measures,
   temporal classification and the iterated temporal operators
-- The L⁻ / L⁺ / L⋆ language family lives in the `MinusLanguage/`, `PlusLanguage/` and
-  `StarLanguage/` subdirectories; see `Syntax/README.md`'s `Language family` section. Those
+- The L⁻ / L⁺ / L⋆ language family no longer lives under this directory. Each is now a
+  self-contained component at the library root — `FormalSystem/MinusLanguage/`,
+  `FormalSystem/PlusLanguage/`, `FormalSystem/StarLanguage/` — holding its syntax, its proof
+  system and its semantics together; see `Syntax/README.md`'s `Language family` section. Their
   aggregators are deliberately NOT imported here, so a bare `import FormalSystem.Syntax` does
   not drag in their downstream dependencies.
 
@@ -45,8 +47,8 @@ The six constructors of `Formula`. `untl`/`snce` are **guard-first** — `untl g
 | `S` | snce | Since, `snce guard event` |
 
 `H`/`G`/`P`/`F` are **derived**, not primitive — a point worth stating explicitly, because
-`MinusLanguage/` (the language L⁻) takes `allPast`/`allFuture` as constructors *instead of*
-`untl`/`snce`, and the two must not be conflated.
+`FormalSystem/MinusLanguage/` (the language L⁻) takes `allPast`/`allFuture` as constructors
+*instead of* `untl`/`snce`, and the two must not be conflated.
 
 ## Derived Operators
 
@@ -87,5 +89,5 @@ def assumptions : Context := [Formula.atomS "p", Formula.atomS "q"]
 * [Formula.lean](Syntax/Formula.lean) - Formula type and operators
 * [Context.lean](Syntax/Context.lean) - Context type for proof assumptions
 * [README.md](Syntax/README.md) - the `Language family` section, mapping each operator delta
-  (including the stability modal `⊡`/`stab`, "boxdot") to its directory
+  (including the stability modal `⊡`/`stab`, "boxdot") to its root-level directory
 -/

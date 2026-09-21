@@ -624,7 +624,7 @@ cannot be extended to include both DF and DN while remaining consistent.
   from the manuscript. Of TM⁻'s eleven schemata, TK and T4 are not paper keys at all, while TS, TC
   and TL are shared with BX above (the same seriality, connectedness, and linearity axioms,
   restated for TM⁻'s own derivation relation). See
-  `FormalSystem/Syntax/MinusLanguage/Axioms.lean` and `docs/reference/paper-definitions-of-record.md`
+  `FormalSystem/MinusLanguage/Axioms.lean` and `docs/reference/paper-definitions-of-record.md`
   § "Language correspondence" for the full accounting.
 ]
 

@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Conservativity.Star.StarAxiomValidity
-import FormalSystem.Syntax.StarLanguage
+import FormalSystem.StarLanguage
 
 /-!
 # Soundness of TM⋆ at every frame class
@@ -21,7 +21,7 @@ components. The `axiom` case feeds in the two dispatch lemmas of
 ## Why the three empty-context rules are sound over register-containing formulas
 
 `StarValidIn` quantifies the stored-time vector **universally**, exactly as it quantifies the
-time and the possible world (`Semantics/StarLanguage/StarValidity.lean`): once `v⃗` is part of the
+time and the possible world (`StarLanguage/StarValidity.lean`): once `v⃗` is part of the
 point of evaluation, `def:frame-validity`'s "true at every model, possible world and time" reads
 "…and every stored-time vector". Both register clauses map a point to a point — `↑ⁱ` changes the
 vector, `↓ⁱ` changes the time, neither escapes the frame — so `necessitation`,
@@ -44,7 +44,7 @@ which would require an axiom set that is mirror-closed as a *set of instances*.
 
 * `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` — the theorems mirrored arm for
   arm
-* `FormalSystem/Semantics/StarLanguage/StarValidity.lean` — `StarValidIn` and the
+* `FormalSystem/StarLanguage/StarValidity.lean` — `StarValidIn` and the
   `StarValidOnFrames` form it instantiates, whose binders this recursion introduces and applies
   directly
 * JPL paper `possible_worlds.tex` — `def:frame-validity`, `def:BLstar-semantics`

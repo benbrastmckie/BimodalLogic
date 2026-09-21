@@ -1197,6 +1197,11 @@ for k in sorted(counts):
 # aggregators for the pre-existing `Semantics/Correspondence/`, `Semantics/Extension/`,
 # `Semantics/Frames/` and `Semantics/Ultraproduct/`, and surfaced the self-named
 # `Semantics/Extension/Extension.lean` allowlisted below.
+# The two paragraphs above are the history of how those parents joined, not the layout today:
+# the language-extension merge has since moved the whole family out to `FormalSystem/`s own
+# root as `MinusLanguage/`, `PlusLanguage/` and `StarLanguage/`. Both parents stay in the
+# tuple, because the re-scoping they brought with them is permanent -- every other
+# subdirectory beneath them still needs its sibling aggregator.
 # Allowlisted exception: `FormalSystem.lean` + `FormalSystem/FormalSystem.lean`.
 # That pair is the Lake `lean_lib FormalSystem` root (`srcDir := "."`,
 # `roots := #[`FormalSystem]`), so the self-named indirection is load-bearing, not a

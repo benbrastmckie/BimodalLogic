@@ -339,7 +339,7 @@ directory sits at a higher layer than its source) against the `LAYERS` table in
 that table in the repository, and reads the graph through `scripts/lib/import_graph.py`'s
 leading-import parser rather than assertion A's own regex. It asserts that set **equals** a
 recorded allowlist of 7 lines, all from
-`FormalSystem/Syntax/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`. Sibling aggregators are
+`FormalSystem/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`. Sibling aggregators are
 excluded as sources here too.
 
 ```bash

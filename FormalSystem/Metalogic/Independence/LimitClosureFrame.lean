@@ -12,7 +12,7 @@ import Mathlib.Data.Set.Card
 # The limit-closure frame `EF`: a budgeted digraph with a hub, over integer time
 
 The frame underneath the countermodel to the limit-closure formula
-(`Semantics/PlusLanguage/PlusLimitClosure.lean`). World states are `Option (Bool × ℕ)`:
+(`PlusLanguage/PlusLimitClosure.lean`). World states are `Option (Bool × ℕ)`:
 
 * `none` is a **hub**. It reaches every state, and only the hub reaches it.
 * `some (c, k)` carries a Boolean *class* `c` and a natural-number *budget* `k`. A step

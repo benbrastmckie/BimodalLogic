@@ -5,12 +5,12 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Extension.Extension
-import FormalSystem.Semantics.PlusLanguage.PlusDeterminism
+import FormalSystem.PlusLanguage.PlusDeterminism
 
 /-!
 # `lem:deterministic-singleton` as a biconditional — the (⇐) half via `thm:extension`
 
-`FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` carries the (⇒) half of
+`FormalSystem/PlusLanguage/PlusDeterminism.lean` carries the (⇒) half of
 `lem:deterministic-singleton`: on a deterministic frame, two possible worlds agreeing on their
 world state at one time agree at every time (`states_eq_of_deterministic`). This module adds the
 converse, and packages the two as one biconditional.
@@ -73,7 +73,7 @@ The paper's argument for the (⇐) direction opens by deriving that `⇒_0` is t
 
 * JPL paper `lem:deterministic-singleton` (the biconditional), `thm:extension` (and its Zorn
   footnote), `def:deterministic`, `lem:nullity`
-* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — the (⇒) half and its choice-free pin
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — the (⇒) half and its choice-free pin
 * `FormalSystem/Semantics/Extension/Extension.lean` — `thm:extension`
 
 ## Tags

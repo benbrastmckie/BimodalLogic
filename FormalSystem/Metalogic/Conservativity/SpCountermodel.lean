@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Conservativity.SpWitness
 import FormalSystem.Metalogic.Conservativity.TMCompletenessReduction
-import FormalSystem.Semantics.MinusLanguage.MinusFrame
+import FormalSystem.MinusLanguage.MinusFrame
 
 set_option autoImplicit false
 
@@ -27,7 +27,7 @@ L⁻-valid on every task frame) this refutes TM⁻'s weak completeness over the 
 ## Why no task-frame refutation can exist
 
 `(Sp)` is valid on *every* task frame, so the refuting structure must lie outside the class. The
-route taken here is a native semantics: `Semantics/MinusLanguage/MinusFrame.lean` supplies a frame
+route taken here is a native semantics: `MinusLanguage/MinusFrame.lean` supplies a frame
 notion with no group structure on time, native L⁻ soundness for TM⁻ is proved directly against it
 (`minusFrameValid_of_derivation`), and the countermodel is an instance of that class. Note the
 contrast with the `TaskFrame`-bound stack: **TM is unsound** on the two-fibre structure below, so no
@@ -78,12 +78,12 @@ nothing is lost.
 
 ## References
 
-* `FormalSystem/Semantics/MinusLanguage/MinusFrame.lean` — the native frame notion and
+* `FormalSystem/MinusLanguage/MinusFrame.lean` — the native frame notion and
   `truth_reflectTime`
 * `FormalSystem/Metalogic/Conservativity/SpWitness.lean` — `Sp`, `minusValid_sp`, `sp_translate`
 * `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean` — `TMMinusCompleteBase`
 * `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — the `.ZTime` mirror
-* `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` — the `TaskFrame`-bound
+* `FormalSystem/MinusLanguage/Soundness.lean` — the `TaskFrame`-bound
   soundness theorems this one deliberately does not route through
 
 ## Tags

@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Syntax.MinusLanguage.Derivation
-import FormalSystem.Syntax.PlusLanguage.Derivation
-import FormalSystem.Syntax.StarLanguage.Derivation
+import FormalSystem.MinusLanguage.Derivation
+import FormalSystem.PlusLanguage.Derivation
+import FormalSystem.StarLanguage.Derivation
 
 /-!
 # Language Derivation Tests
@@ -17,7 +17,7 @@ instance, a lift between frame classes or a rule application elaborates as state
 
 namespace BimodalTest.Syntax.LanguageDerivationTest
 
-/-! ## TM⁻ (`Syntax/MinusLanguage/Derivation.lean`) -/
+/-! ## TM⁻ (`MinusLanguage/Derivation.lean`) -/
 
 section MinusLanguage
 
@@ -49,7 +49,7 @@ example (φ : MinusFormula) : ⊢⁻[FrameClass.ZTime] φ.box.imp φ :=
 
 end MinusLanguage
 
-/-! ## TM⁺ (`Syntax/PlusLanguage/Derivation.lean`) -/
+/-! ## TM⁺ (`PlusLanguage/Derivation.lean`) -/
 
 section PlusLanguage
 
@@ -70,7 +70,7 @@ example (fc : FrameClass) (φ : PlusFormula) : ⊢⁺[fc] (PlusFormula.stab φ).
 
 end PlusLanguage
 
-/-! ## TM⋆ (`Syntax/StarLanguage/Derivation.lean`) -/
+/-! ## TM⋆ (`StarLanguage/Derivation.lean`) -/
 
 section StarLanguage
 

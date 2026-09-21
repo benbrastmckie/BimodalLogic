@@ -268,7 +268,7 @@ strong-completeness theorem is not misread as outstanding work.
 ### Description
 
 The bridge between TM⁻ (stated over the tense-primitive language L⁻,
-`FormalSystem/Syntax/MinusLanguage/`) and TM (the until/since-primitive system, which is the paper's
+`FormalSystem/MinusLanguage/`) and TM (the until/since-primitive system, which is the paper's
 own TM) is proved in the **backward** direction only:
 
 ```
@@ -293,9 +293,9 @@ semantics)" section of `FormalSystem/Metalogic.lean`.
   alone provable, in the tense-primitive one.
 - The base language now has a **semantics and a soundness theorem of its own**, so BL results
   no longer have to be routed through `tr` to be given meaning:
-  `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` defines `MinusTruthAt` natively on `MinusFormula`,
-  `FormalSystem/Semantics/MinusLanguage/MinusValidity.lean` carries the four BL validity predicates, and
-  `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` proves BL soundness at `FrameClass.Base`
+  `FormalSystem/MinusLanguage/MinusTruth.lean` defines `MinusTruthAt` natively on `MinusFormula`,
+  `FormalSystem/MinusLanguage/MinusValidity.lean` carries the four BL validity predicates, and
+  `FormalSystem/MinusLanguage/Soundness.lean` proves BL soundness at `FrameClass.Base`
   and its three extensions. **This does not change the limitation**: it is a fact about the
   proof systems, and the forward direction stays refuted.
 

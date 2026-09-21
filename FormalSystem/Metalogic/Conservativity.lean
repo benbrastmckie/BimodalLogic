@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Conservativity.Backward
-import FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness
+import FormalSystem.MinusLanguage.Soundness
 import FormalSystem.Metalogic.Conservativity.TMCompletenessReduction
 import FormalSystem.Metalogic.Conservativity.SpWitness
 import FormalSystem.Metalogic.Conservativity.Z1Countermodel
@@ -159,7 +159,7 @@ countermodel needs a structure where `□` sees differently-shaped time, which n
 `tr`: **TM is unsound on the two-fibre class**, so the `translate`-then-`soundness` route this
 module supplies is unavailable in principle for this half. What closed it instead is exactly what
 this section previously said was missing — a frame notion outside `TaskFrame`
-(`Semantics/MinusLanguage/MinusFrame.lean`'s `MinusFrame`: a nonempty point set with an unbounded,
+(`MinusLanguage/MinusFrame.lean`'s `MinusFrame`: a nonempty point set with an unbounded,
 transitive, irreflexive, forward- and backward-linear order and **no group structure**, with `□`
 read as the universal modality over the points) plus a *native*, non-composed L⁻ soundness theorem
 over it (`minusFrameValid_of_derivation`, by recursion on `MinusLanguage.DerivationTree`, with
@@ -254,8 +254,8 @@ merely unattempted here.
 ## What a machine-checked refutation would need — now row-dependent, not a single narrowing
 
 An L⁻-side semantics and an L⁻-side soundness theorem now exist tree-wide
-(`FormalSystem/Semantics/MinusLanguage/MinusTruth.lean`'s `MinusTruthAt`, and
-`FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`'s `minus_soundness` family), but
+(`FormalSystem/MinusLanguage/MinusTruth.lean`'s `MinusTruthAt`, and
+`FormalSystem/MinusLanguage/Soundness.lean`'s `minus_soundness` family), but
 what each row still needs beyond that differs, and reading it as one shared "countermodels alone"
 gap is no longer accurate for either row:
 
@@ -270,7 +270,7 @@ gap is no longer accurate for either row:
   merely documented.
 - **CEB (`FrameClass.Base`) — done, both halves machine-checked.** The missing prerequisite was
   a **frame notion outside `TaskFrame`** plus a **native** (non-composed) L⁻ soundness theorem
-  over it, and both are now landed: `Semantics/MinusLanguage/MinusFrame.lean` supplies
+  over it, and both are now landed: `MinusLanguage/MinusFrame.lean` supplies
   `MinusFrame`/`MinusFrameTruth`/ `MinusFrameValid` and the order-reversal transfer lemma
   `truth_reflectTime`, and `Metalogic/Conservativity/SpCountermodel.lean` supplies
   `minusFrameValid_of_derivation` together with the `ℤ ⊕ ℝ` countermodel. The TM half is
@@ -332,7 +332,7 @@ L⁻-validity over C  ⟸[minus_soundness…]  ⊢⁻[fc] φ  ⟶[translate]  �
 ```
 
 and this module is the middle arrow only. The left arrow is now built, in
-`FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean`, which is where the
+`FormalSystem/MinusLanguage/Soundness.lean`, which is where the
 `FormalSystem.Semantics` import lives; it composes `translate` with `Metalogic/Soundness.lean`'s
 four theorems across the truth-transfer bridge `truthAt_tr`. This module and everything under
 `FormalSystem/MinusLanguage/` remain semantics-free.
@@ -373,7 +373,7 @@ is an import cycle, because the aggregator imports every child. The chain the ch
 is `Backward ← MinusLanguageSoundness ← TMCompletenessReduction ← Z1Countermodel ← Fragment ←
 FragmentCompactness ← Plus/Forward`, with `SpWitness` hanging off `MinusLanguageSoundness`,
 `SpCountermodel` hanging off `SpWitness` and `TMCompletenessReduction` jointly (it also imports
-`Semantics/MinusLanguage/MinusFrame.lean`, which is outside this directory and reaches nothing in
+`MinusLanguage/MinusFrame.lean`, which is outside this directory and reaches nothing in
 `ProofSystem/`), and the `Plus/` chain `Atomization ← AxiomValidity ← PlusSoundness ← Forward`
 hanging off `Fragment`. The `Star/` chain `StarAxiomValidity ← StarSoundness ← Forward` hangs off
 the `Plus/` one at two points: `Star/StarAxiomValidity` imports `Plus/AxiomValidity` (for the two

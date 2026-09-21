@@ -33,9 +33,8 @@ than deferred debt.
 | `DenseObstructionTransfer.lean` | 283 | Machine-checked evidence that neither closed row's separating witness transfers to the dense classes: `Sp` is a theorem of both `TM⁻_d` and `TM⁻_dc` (`spDerivableDense`, `spDerivableRTime`), and `Z1` is refuted on the flow frame over ℚ (`not_minusValidDense_z1`) |
 | `Fragment.lean` | 192 | <!-- TODO: add description --> |
 | `FragmentCompactness.lean` | 152 | <!-- TODO: add description --> |
-| `MinusLanguageSoundness.lean` | 615 | <!-- TODO: add description --> |
 | `Plus.lean` | 76 | <!-- TODO: add description --> |
-| `SpCountermodel.lean` | 400 | CEB's failing half: native L⁻ soundness for TM⁻ against `Semantics/MinusLanguage/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
+| `SpCountermodel.lean` | 400 | CEB's failing half: native L⁻ soundness for TM⁻ against `MinusLanguage/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
 | `SpWitness.lean` | 138 | <!-- TODO: add description --> |
 | `Star.lean` | 60 | Aggregator for the L⋆ metatheory; holds no declarations. |
 | `TMCompletenessReduction.lean` | 311 | <!-- TODO: add description --> |

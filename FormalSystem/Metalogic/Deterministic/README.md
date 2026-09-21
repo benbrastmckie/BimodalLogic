@@ -28,7 +28,7 @@ theorems below: under `⊡ = id` it is a propositional tautology, hence a theore
 until/since completeness over the reals and Zanardo (1991) on branching-time logics under an
 Ockhamist reading; neither settles the all-histories semantics used here. Any future
 nondeterministic result must specialize to the theorems below, because on a deterministic frame
-`⊡` is pointwise the identity (`Semantics/PlusLanguage/PlusDeterminism.lean`,
+`⊡` is pointwise the identity (`PlusLanguage/PlusDeterminism.lean`,
 `stab_iff_of_deterministic`).
 
 ## Why the deterministic case falls out at all

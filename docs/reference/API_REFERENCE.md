@@ -829,13 +829,13 @@ theorem.
 and ZTime rows and **open** for the other two. This is a negative result recorded in the
 module docstring, not outstanding work.
 
-The tense-primitive source language is `FormalSystem/Syntax/MinusLanguage/` -- see the entry below.
+The tense-primitive source language is `FormalSystem/MinusLanguage/` -- see the entry below.
 
 ---
 
-### MinusLanguage (`FormalSystem.Syntax.MinusLanguage`)
+### MinusLanguage (`FormalSystem.MinusLanguage`)
 
-**Module**: `FormalSystem/Syntax/MinusLanguage/`
+**Module**: `FormalSystem/MinusLanguage/`
 
 A **second object language**, in which `H` (`allPast`) and `G` (`allFuture`) are primitive
 rather than derived:
@@ -858,8 +858,8 @@ directional; the converse edge is permitted and is what these three modules use:
 
 | File | What it carries |
 |------|-----------------|
-| `Semantics/MinusLanguage/MinusTruth.lean` | `MinusTruthAt`, a native six-clause recursion on `MinusFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `MinusTruth.*` characterization lemmas |
-| `Semantics/MinusLanguage/MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidRTime`; no density-free `MinusValidComplete`, which would be refutable |
+| `MinusLanguage/MinusTruth.lean` | `MinusTruthAt`, a native six-clause recursion on `MinusFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `MinusTruth.*` characterization lemmas |
+| `MinusLanguage/MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidRTime`; no density-free `MinusValidComplete`, which would be refutable |
 | `Metalogic/Conservativity/MinusLanguageSoundness.lean` | `truthAt_tr` (the bridge, proved by induction), `minus_soundness{,_dense,_discrete,_dedekind}` and their validity forms, and `minus_not_derivable_nil_bot{,_discrete}` |
 
 | Result | What it says |

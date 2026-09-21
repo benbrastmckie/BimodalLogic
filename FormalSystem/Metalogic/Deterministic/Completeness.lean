@@ -182,7 +182,7 @@ Any nondeterministic completeness result for an extension of TM⁺ — completen
 `.Base` for the current axiom set (`Metalogic/Independence/PlusIncompleteness.lean`) and open
 for any extension — must specialize to the theorems above when the frame is deterministic,
 because on such a frame `⊡` is pointwise the
-identity (`Semantics/PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`) and
+identity (`PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`) and
 *Determined* is frame-valid. The row below records that specialization concretely: over the
 deterministic frames, L⁺-validity of `φ` and L-validity of its erasure are the same condition. -/
 

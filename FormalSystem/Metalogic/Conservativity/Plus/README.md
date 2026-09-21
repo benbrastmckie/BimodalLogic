@@ -9,13 +9,13 @@ plus the truth-transfer bridge `plusValidIn_ofFormula_iff` plus that engine.
 
 TM⁺'s axioms are the 29 TM schemata and the 16 TM-derivable schemata re-declared over `PlusFormula` (so `□⊡p → □G⊡p` is an MF
 instance), plus S5 for `⊡`, `□φ → ⊡φ`, `p → ⊡p` for atoms, and two pasting schemata with
-pure-future / pure-past side conditions (`Semantics/PlusLanguage/PlusPasting.lean`). The five refutations in
-`Semantics/PlusLanguage/PlusNonValidities.lean` bound that set from above.
+pure-future / pure-past side conditions (`PlusLanguage/PlusPasting.lean`). The five refutations in
+`PlusLanguage/PlusNonValidities.lean` bound that set from above.
 
 **Completeness of the current TM⁺ axiom set is false at Base**
 (`Metalogic/Independence/PlusIncompleteness.lean`, `plus_incomplete_base`): the limit-closure
 formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid over every task frame
-(`Semantics/PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is not a
+(`PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is not a
 Base theorem. **Completeness of any extension of the axiom set is open at every class, and TM⁺
 decidability is open**; neither is asserted anywhere. The one-line reading of the countermodel:
 it is a dense, non-closed bundle of histories — PS and US say the bundle is paste-closed, MF says
@@ -90,9 +90,9 @@ of TM⁺ would settle it for that extension, and a separating witness would sett
 ## Related Documentation
 
 - [Conservativity README](../README.md)
-- [`FormalSystem/Syntax/PlusLanguage/`](../../../Syntax/PlusLanguage/README.md) — `PlusFormula`, `PlusAxiom`,
+- [`FormalSystem/PlusLanguage/`](../../../PlusLanguage/README.md) — `PlusFormula`, `PlusAxiom`,
   `PlusDerivationTree`, `ofFormula`
-- [`Semantics/PlusLanguage/PlusTruth.lean`](../../../Semantics/PlusLanguage/PlusTruth.lean) — the L⁺ truth recursion
+- [`PlusLanguage/PlusTruth.lean`](../../../PlusLanguage/PlusTruth.lean) — the L⁺ truth recursion
 - [`Metalogic/Deterministic/`](../../Deterministic.lean) — the deterministic metatheory: the
   narrowed engines, the `⊡`-erasure, TM⁺ + *Determined*, and its completeness
 - [`docs/theorem-index.md`](../../../../docs/theorem-index.md) — per-theorem status

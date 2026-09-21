@@ -9,13 +9,10 @@ import FormalSystem.ForMathlib
 import FormalSystem.Tactic
 import FormalSystem.Syntax
 import FormalSystem.ProofSystem
-import FormalSystem.Syntax.MinusLanguage
-import FormalSystem.Syntax.PlusLanguage
-import FormalSystem.Syntax.StarLanguage
+import FormalSystem.MinusLanguage
+import FormalSystem.PlusLanguage
+import FormalSystem.StarLanguage
 import FormalSystem.Semantics
-import FormalSystem.Semantics.MinusLanguage
-import FormalSystem.Semantics.PlusLanguage
-import FormalSystem.Semantics.StarLanguage
 import FormalSystem.Metalogic
 import FormalSystem.Theorems
 import FormalSystem.Automation
@@ -44,13 +41,25 @@ with linear temporal logic.
 (base/dense/discrete)
 and 7 inference rules
 - `FormalSystem.MinusLanguage`: The tense-primitive base language L⁻ (`H`/`G` primitive) with
-  TM's Hilbert system and the translation `tr : MinusFormula → Formula` into L, supporting the
-  backward conservativity bridge in `Metalogic/Conservativity/Backward.lean`. Imports nothing from
-  `Semantics/`
+  TM's Hilbert system, the translation `tr : MinusFormula → Formula` into L supporting the
+  backward conservativity bridge in `Metalogic/Conservativity/Backward.lean`, and L⁻'s own
+  semantics — the native recursion `MinusTruthAt`, the `MinusFrame` notion, the validity
+  predicates, and L⁻ soundness (`Soundness.lean`)
+- `FormalSystem.PlusLanguage`: The language L⁺ = L + the stability modal `⊡`
+  (`def:BLstar-semantics`), as a separate inductive `PlusFormula` with the embedding
+  `ofFormula : Formula → PlusFormula`, its Hilbert system TM⁺, and its semantics — `PlusTruthAt`,
+  the L⁺ validity predicates with semantic conservativity over L, history pasting, the
+  refutations bounding the axiom set, the deterministic collapse, and the state-locality fragment
 - `FormalSystem.StarLanguage`: The language L⋆ = L⁺ + the manuscript's time store/recall
   operators (`def:BLstar-semantics`), as a separate inductive `StarFormula` with the embedding
-  `ofPlus : PlusFormula → StarFormula`. Semantic-only: `StarAxiom`/`StarDerivationTree`/`TM⋆` are
-  reserved and unbuilt. Imports nothing from `Semantics/`
+  `ofPlus : PlusFormula → StarFormula`, its Hilbert system TM⋆, and its semantics — `StarTruthAt`
+  over the manuscript's points `(τ, x, v⃗)`, `sent:det`, both halves of
+  `app:deterministic-future`, and the state-locality fragment
+
+  These three language-family components sit at the **library root** rather than under `Syntax/`
+  and `Semantics/`: each is a self-contained object language, carrying its syntax, its proof
+  system and its semantics in one directory. Within each, the syntax modules still import nothing
+  from `Semantics/`; the semantic modules beside them do.
 - `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and
 validity
 - `FormalSystem.Metalogic`: Soundness, three completeness routes, and the tableau decision

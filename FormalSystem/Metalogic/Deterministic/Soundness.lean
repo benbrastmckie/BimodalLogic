@@ -51,7 +51,7 @@ The two axiom arms:
 ## References
 
 * `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` — the recursion mirrored here
-* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — `determined_of_deterministic`
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — `determined_of_deterministic`
 
 ## Tags
 

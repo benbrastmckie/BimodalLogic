@@ -251,13 +251,16 @@ invariant check allowlists it by name (check C8).
 | `Automation.lean` | 111 | Re-export for Automation submodule |
 | `Examples.lean` | 36 | Re-export for Examples submodule |
 | `ForMathlib.lean` | 29 | Re-export for ForMathlib submodule (Mathlib-shaped extensions intended for upstreaming) |
-| `FormalSystem.lean` | 123 | Library aggregator: imports all submodules for unified access |
+| `FormalSystem.lean` | 132 | Library aggregator: imports all submodules for unified access |
 | `Init.lean` | 32 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
 | `MainResults.lean` | 254 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
 | `Metalogic.lean` | 267 | Re-export for Metalogic submodule |
+| `MinusLanguage.lean` | 67 | <!-- TODO: add description --> |
+| `PlusLanguage.lean` | 80 | <!-- TODO: add description --> |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
-| `Semantics.lean` | 291 | Re-export for Semantics submodule |
-| `Syntax.lean` | 91 | Re-export for Syntax submodule |
+| `Semantics.lean` | 241 | Re-export for Semantics submodule |
+| `StarLanguage.lean` | 79 | <!-- TODO: add description --> |
+| `Syntax.lean` | 93 | Re-export for Syntax submodule |
 | `Tactic.lean` | 39 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |
 | `Theorems.lean` | 91 | Re-export for Theorems submodule |
 <!-- END GENERATED -->
@@ -268,9 +271,9 @@ invariant check allowlists it by name (check C8).
 |--------|------|-------------|
 | ForMathlib | `ForMathlib.lean` | Mathlib-shaped extensions intended for upstreaming (proper/maximal/prime-filter API of `Order.PFilter`, `Order.PrimeFilter`); imports nothing from `FormalSystem.*` |
 | Tactic | `Tactic.lean` | Every attribute and named simp set the library uses (`Tactic/Attr.lean`, `Lean`-only). `Init.lean` imports it, so all of them reach every module transitively; see `Tactic/README.md` for the attributes-only constraint |
-| Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure; also parents the L⁻/L⁺/L⋆ language family (see `Syntax/README.md`) |
+| Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure. The L⁻/L⁺/L⋆ language family sits beside it at the library root, not under it (see `Syntax/README.md`) |
 | ProofSystem | `ProofSystem.lean` | 29 axiom constructors, 7 inference rules, derivation trees, TR-derived mirrors |
-| PlusLanguage | `Syntax/PlusLanguage.lean` | `PlusFormula` (L plus `⊡`), `PlusAxiom` (the 29 TM schemata and 16 TM-derivable schemata over `PlusFormula`, plus the `⊡` schemata), `PlusDerivationTree`, the embedding `ofFormula` and backward conservativity |
+| PlusLanguage | `PlusLanguage.lean` | `PlusFormula` (L plus `⊡`), `PlusAxiom` (the 29 TM schemata and 16 TM-derivable schemata over `PlusFormula`, plus the `⊡` schemata), `PlusDerivationTree`, the embedding `ofFormula`, backward conservativity, and the L⁺ semantics |
 
 ### Layer 1 — Semantics
 
@@ -308,9 +311,9 @@ invariant check allowlists it by name (check C8).
 |-----------|--------|-------------|
 | [Tactic/](Tactic/README.md) | Yes | Layer-0 metaprogramming: the library's attribute and simp-set declarations, imported by `Init.lean` on every module's behalf |
 | [Syntax/](Syntax/README.md) | Yes | Formula types, proof contexts, and the L / L⁻ / L⁺ / L⋆ language family |
-| [Syntax/MinusLanguage/](Syntax/MinusLanguage/README.md) | Yes | L⁻ — the tense-primitive variant, `H`/`G` primitive in place of `untl`/`snce` — and its logic TM⁻ |
-| [Syntax/PlusLanguage/](Syntax/PlusLanguage/README.md) | Yes | L⁺ — L plus the stability modal `⊡` (`stab`, "boxdot") — and its logic TM⁺ |
-| [Syntax/StarLanguage/](Syntax/StarLanguage/README.md) | Yes | L⋆ — L⁺ plus the time registers `↑ⁱ`/`↓ⁱ` — and its logic TM⋆ |
+| [MinusLanguage/](MinusLanguage/README.md) | Yes | L⁻ — the tense-primitive variant, `H`/`G` primitive in place of `untl`/`snce` — its logic TM⁻, and its semantics |
+| [PlusLanguage/](PlusLanguage/README.md) | Yes | L⁺ — L plus the stability modal `⊡` (`stab`, "boxdot") — its logic TM⁺, and its semantics |
+| [StarLanguage/](StarLanguage/README.md) | Yes | L⋆ — L⁺ plus the time registers `↑ⁱ`/`↓ⁱ` — its logic TM⋆, and its semantics |
 | [ProofSystem/](ProofSystem/README.md) | Yes | Axioms and derivation trees |
 | [Semantics/](Semantics/README.md) | Yes | Task frame semantics |
 | [Metalogic/](Metalogic/README.md) | Yes | Soundness, completeness, decidability |
@@ -331,12 +334,12 @@ invariant check allowlists it by name (check C8).
 - **Task Frames**: `Semantics/TaskFrame.lean` - Task frame structure
 - **Models**: `Semantics/TaskModel.lean` - Models with valuation
 - **Truth**: `Semantics/Truth.lean` - Truth evaluation
-- **L⁻ truth**: `Semantics/MinusLanguage/MinusTruth.lean` - Native truth evaluation for the base language L⁻
+- **L⁻ truth**: `MinusLanguage/MinusTruth.lean` - Native truth evaluation for the base language L⁻
 - **Validity**: `Semantics/Validity.lean` - Semantic consequence
-- **L⁻ validity**: `Semantics/MinusLanguage/MinusValidity.lean` - Base-language validity predicates
+- **L⁻ validity**: `MinusLanguage/MinusValidity.lean` - Base-language validity predicates
 - **Soundness**: `Metalogic/Soundness.lean` - Soundness theorem
-- **L⁻ soundness**: `Metalogic/Conservativity/MinusLanguageSoundness.lean` - Soundness for L⁻, by composition
-- **L⁺ truth and validity**: `Semantics/PlusLanguage/PlusTruth.lean`, `Semantics/PlusLanguage/PlusValidity.lean` - Native truth evaluation and validity for L⁺
+- **L⁻ soundness**: `MinusLanguage/Soundness.lean` - Soundness for L⁻, by composition
+- **L⁺ truth and validity**: `PlusLanguage/PlusTruth.lean`, `PlusLanguage/PlusValidity.lean` - Native truth evaluation and validity for L⁺
 - **TM⁺ soundness and conservativity**: `Metalogic/Conservativity/Plus.lean` - Soundness of TM⁺ at every class, conservativity over TM in both directions
 - **Completeness**: `Metalogic/BXCanonical/Completeness.lean` - Canonical model
 - **Perpetuity**: `Theorems/Perpetuity.lean` - P1-P6 principles

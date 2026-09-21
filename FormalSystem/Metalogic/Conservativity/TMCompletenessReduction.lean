@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness
+import FormalSystem.MinusLanguage.Soundness
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.StrongCompleteness
 
@@ -174,7 +174,7 @@ this module is a `def`, referenced as a statement and never the conclusion of a 
 * `FormalSystem/Metalogic/Conservativity.lean` — the forward-conservativity prohibition this
   module strengthens
 * `FormalSystem/Metalogic/BXCanonical/Completeness.lean` — `completeness`, `completeness_ztime`
-* `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` — `minusValid_iff_valid_tr`,
+* `FormalSystem/MinusLanguage/Soundness.lean` — `minusValid_iff_valid_tr`,
   `minusValidZTime_iff_validZTime_tr`
 * `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean`,
   `FormalSystem/Metalogic/Conservativity/Z1Countermodel.lean` — the two closed rows'
@@ -253,7 +253,7 @@ theorem tmMinusComplete_iff_forward {fc : FrameClass} (engine : WeakCompleteness
 
 /--
 **"TM⁻ is complete over task frames."** `TMMinusComplete` at `.Base`. `MinusValid` is
-`MinusValidIn .Base` definitionally (`Semantics/MinusLanguage/MinusValidity.lean`), so the statement
+`MinusValidIn .Base` definitionally (`MinusLanguage/MinusValidity.lean`), so the statement
 is unchanged by the generalization. **Unasserted.**
 -/
 def TMMinusCompleteBase : Prop := TMMinusComplete FrameClass.Base

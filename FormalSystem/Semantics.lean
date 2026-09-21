@@ -39,15 +39,16 @@ polymorphic over temporal types.
 
 ## Submodules
 
-The L⁻/L⁺/L⋆ language-family modules (the `MinusLanguage.*`, `PlusLanguage.*` and
-`StarLanguage.*` entries below) live in the subdirectories `Semantics/MinusLanguage/`,
-`Semantics/PlusLanguage/` and `Semantics/StarLanguage/`. This file does **not** import them
-directly: they are aggregated by the sibling aggregators `Semantics/MinusLanguage.lean`,
-`Semantics/PlusLanguage.lean` and `Semantics/StarLanguage.lean`, which the root aggregator
-`FormalSystem/FormalSystem.lean` imports, mirroring `Syntax/`. This file still reaches much of
-L⁺ and L⋆ transitively, through `DeterministicBridge` and `StateLocalTransfer`. The
-subdirectories `Extension/`, `Ultraproduct/`, `Correspondence/` and `Frames/` are imported
-through their sibling aggregators `Semantics/Extension.lean` and so on.
+The L⁻/L⁺/L⋆ language-family semantics no longer lives under this directory. Each language is
+now a self-contained component at the library root — `FormalSystem/MinusLanguage/`,
+`FormalSystem/PlusLanguage/`, `FormalSystem/StarLanguage/` — carrying its syntax, its proof
+system and its semantics together, aggregated by `FormalSystem/MinusLanguage.lean` and its two
+siblings, which the root aggregator `FormalSystem/FormalSystem.lean` imports. This file does
+**not** import them directly, but still reaches much of L⁺ and L⋆ transitively, through
+`DeterministicBridge` and `StateLocalTransfer` — the two cross-language bridges, which stay here
+because each spans two families. The subdirectories `Extension/`, `Ultraproduct/`,
+`Correspondence/` and `Frames/` are imported through their sibling aggregators
+`Semantics/Extension.lean` and so on.
 
 - `TemporalOrder`: `def:temporal-order` reified — "a nontrivial totally ordered abelian
   group" as a structure rather than an unnamed four-binder list, with `CoeSort` to its
@@ -118,58 +119,7 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   tiered by which primitives a language has. L⁻ takes the tense-primitive tier, L⁺ and L⋆ the
   stability tier, and L⋆'s environment is its stored-time vector
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
-- `MinusLanguage.MinusTruth`: the same recursion for the tense-primitive base language —
-  `MinusTruthAt`, defined natively on `MinusFormula`'s six constructors per `def:BL-semantics` (H
-  and G quantify over strictly past/future times directly, not via `untl`/`snce`), plus the
-  `MinusTruth.*` clause and derived-operator characterization lemmas
-- `MinusLanguage.MinusFrame`: a native L⁻ frame notion *not* bound to `TaskFrame` — `MinusFrame`,
-  `MinusFrame.reflect`, `MinusFrameTruth` (with `□` read as the universal modality over the point
-  set) and `MinusFrameValid`, plus the `MinusFrameTruth.*` characterization family and the
-  order-reversal transfer lemma `truth_reflectTime`. Dropping the `Duration : TemporalOrder` group
-  structure is what frees the class from the dense-or-discrete dichotomy, which is what makes a
-  countermodel to `(Sp)` possible; see `Metalogic/Conservativity/SpCountermodel.lean`
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
-- `MinusLanguage.MinusValidity`: the base-language mirrors — `MinusValid`,
-  `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime` and `MinusValidRTime`, binder for
-  binder against `MinusTruthAt`; there is deliberately no density-free `MinusValidComplete`, which
-  would be refutable
-- `PlusLanguage.PlusTruth`: the truth recursion for the language L⁺ (L plus the stability modal `⊡`,
-  `FormalSystem/PlusLanguage/Formula.lean`) — `PlusTruthAt`, whose seventh clause is the paper's
-  `($\Stability$)` clause (`def:BLstar-semantics`); the `PlusTruth.*` clause lemmas, the S5
-  validities of `⊡`, and `stab_state_only` (`⊡φ` depends on the world state alone)
-- `PlusLanguage.PlusValidity`: the L⁺ mirrors of `Validity` — `PlusValidOnFrames` (the
-  frame-predicate primitive), `PlusValidIn`, `PlusValid` and the per-class abbreviations — plus the
-  truth-transfer bridge `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, the semantic
-  conservativity of L⁺ over L at every frame class
-- `PlusLanguage.PlusPasting`: the history-pasting lemma (`paste`: two total histories sharing a
-  state at `t` paste into a total history, by *Compositionality* and the reflection convention
-  alone), the purity congruences, and the pasting validities PS/US/FS/GS and their past mirrors —
-  the `⊡`/tense interaction principles the S5 axioms of `⊡` miss
-- `PlusLanguage.PlusNonValidities`: the five refutations on `natFrame` over `ℤ` (`⊡p → □⊡p`,
-  `G⊡p → ⊡Gp`, `⊡GPp → G⊡Pp`, *Determined* `Fp → ⊡Fp` over a non-deterministic frame, `P⊡p → ⊡Pp`),
-  which bound the axiom set from above
-- `PlusLanguage.PlusDeterminism`: `app:deterministic`'s **positive** half — the singleton bridge
-  `states_eq_of_deterministic` and the deterministic collapse `⊡φ ↔ φ`
-  (`determined_of_deterministic`, `stab_biconditional_plusValidOn_of_deterministic`), valid on
-  every frame satisfying `TaskFrame.Deterministic`, and choice-free
-- `PlusLanguage.PlusStateLocal`: the **state-locality** fragment of L⁺ — `PlusFormula.StateLocal`,
-  the syntactic predicate cut by structural recursion over all seven constructors (`atom`, `bot`,
-  `imp` propositionally; `box` and `stab` for an *arbitrary* argument; `untl`, `snce` excluded), and
-  `IsPlusStateLocal`, the semantic property it approximates: two possible worlds carrying the same
-  world state at `t` agree about `φ` at `t`. Carries the soundness induction
-  `isPlusStateLocal_of_stateLocal`, a non-preservation witness for each excluded constructor, and
-  the headline `φ ↔ ⊡φ` (`plusStateLocal_stab_iff`, `plusStateLocal_plusValid_iff_stab`) together
-  with its argument-shaped half `stab_of_stateLocal`, which is what discharges the AS arm of TM⁺
-  soundness and which strictly generalizes the atom-level `p → ⊡p` this tower used to carry
-- `StarLanguage.StarStateLocal`: the **state-locality** fragment of L⋆ — `StarFormula.StateLocal`,
-  the syntactic predicate cut by structural recursion (`atom`, `bot`, `imp`, `timeStore`
-  recursively; `box` and `stab` for an *arbitrary* argument; `untl`, `snce`, `timeRecall` excluded),
-  and `IsStateLocal`, the semantic property it approximates: two possible worlds carrying the same
-  world state at `t` agree about `φ` at `t`, under one and the same stored-time vector. Carries the
-  soundness induction `isStateLocal_of_stateLocal`, a non-preservation witness for each excluded
-  constructor, and the headline `φ ↔ ⊡φ` (`stateLocal_stab_iff`, `stateLocal_starValid_iff_stab`) —
-  the companion facing the other way to `stab_state_only`, which says `⊡φ` is state-local where this
-  says a state-local `φ` is already `⊡`-stable
 - `StateLocalTransfer`: `stateLocal_ofPlus_iff` — the two state-locality fragments agree along
   `ofPlus`, as a **biconditional**, so the L⁺ fragment is exactly the `ofPlus`-preimage of the L⋆
   one. Its own module rather than either fragment's, so that the L⁺ conservativity route does not

@@ -17,13 +17,13 @@ M, τ, t ⊨ ⊡φ   iff   M, σ, t ⊨ φ for every world history σ with π(σ
 ```
 
 for a map `π` on world states whose fibres the valuation cannot see. Taking `π` the identity
-recovers the standard semantics of `Semantics/PlusLanguage/PlusTruth.lean`; taking it strictly
+recovers the standard semantics of `PlusLanguage/PlusTruth.lean`; taking it strictly
 coarser makes `⟨τ⟩_t` a *union* of exact-state classes.
 
 ## Why a non-standard semantics is unavoidable here
 
 The two pasting axioms `paste` (PS) and `untl_paste` (US) are valid on **every** task frame
-(`Semantics/PlusLanguage/PlusPasting.lean`), because the splice of two world histories through a
+(`PlusLanguage/PlusPasting.lean`), because the splice of two world histories through a
 common state is again a world history — that is exactly what *Compositionality* buys. So no ordinary
 task model can witness their underivability, and the independence argument has to move to a
 semantics in which the splice is unavailable. Coarsening does precisely that: two histories in the
@@ -69,7 +69,7 @@ by its `π`-image `SameUnder`.
 
 ## References
 
-* `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — the standard recursion being varied
+* `FormalSystem/PlusLanguage/PlusTruth.lean` — the standard recursion being varied
 * `FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean` — the transfer being mirrored
 
 ## Tags
@@ -208,7 +208,7 @@ open CTruth
 
 /-! ## The three structural ports
 
-Each is the corresponding lemma of `Semantics/PlusLanguage/PlusTruth.lean` with the state equation
+Each is the corresponding lemma of `PlusLanguage/PlusTruth.lean` with the state equation
 replaced by `SameUnder`; only the `stab` case differs, and there only by an application of `K.π`
 to both sides of the state equation. -/
 
@@ -422,7 +422,7 @@ theorem cValid_reflect_time_of_tm_deriv (e : Encoding) (φ : PlusFormula)
 
 /-! ## The six naive `⊡` schemata are coarsely valid
 
-Each is the corresponding definitional validity of `Semantics/PlusLanguage/PlusTruth.lean`, re-run
+Each is the corresponding definitional validity of `PlusLanguage/PlusTruth.lean`, re-run
 against `SameUnder` in place of the state equation. AS is the one that consumes `atom_inv`. -/
 
 /-- SK: the universal-quantifier shape of the coarsened `stab` clause. -/

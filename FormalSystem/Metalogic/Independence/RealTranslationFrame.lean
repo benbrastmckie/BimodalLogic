@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.ShiftSet
-import FormalSystem.Semantics.PlusLanguage.PlusDeterminism
+import FormalSystem.PlusLanguage.PlusDeterminism
 import Mathlib.Data.Real.Basic
 
 /-!
@@ -85,7 +85,7 @@ statement. Only `oneShift.frame` is consumed. The valuation field is discharged 
 
 * JPL paper `def:deterministic`, `app:deterministic`, `cor:no-characterization`
 * `FormalSystem/Semantics/ShiftSet.lean` — `ShiftSet.fibre`, `ShiftSet.frame`, `total_eq_orbit`
-* `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean` — the collapse this frame instantiates
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — the collapse this frame instantiates
 * `FormalSystem/Semantics/Frames/Standard.lean` — `translationFrame`, the route not taken
 -/
 

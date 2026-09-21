@@ -4,7 +4,7 @@
 # TWO INDEPENDENT ASSERTIONS BEHIND ONE EXIT CODE:
 #
 #   A. FormalSystem/Metalogic/ contains exactly ONE directory-level import cycle.
-#   B. The library-wide UPWARD import set equals a recorded 7-line allowlist.
+#   B. The library-wide UPWARD import set equals a recorded allowlist, now empty.
 #
 # Neither subsumes the other: A is a single-subtree cycle claim, B is a whole-library layer-order
 # claim. The script exits 0 only when both hold, and prints the result of both before exiting.
@@ -49,10 +49,16 @@
 #   shortfall means the work that empties the allowlist has landed and this list is now stale,
 #   which someone should confirm rather than have silently absorbed.
 #
-#   The 7 allowlisted lines all come from FormalSystem/Syntax/MinusLanguage/AxiomDischarge.lean.
-#   THE WORK THAT EMPTIES THEM: docs/development/PUBLICATION_REFACTOR.md Phase 5, the
-#   {Plus,Minus,Star}Language directory merges, which move that file out of `Syntax/` entirely.
-#   Until then the lines are recorded, not excused.
+#   The allowlist is now EMPTY, and that is the landed end state rather than a not-yet-filled
+#   one. Its 7 entries all keyed on `Syntax/MinusLanguage/AxiomDischarge.lean`; the
+#   language-extension merge moved that file to `FormalSystem/MinusLanguage/AxiomDischarge.lean`,
+#   a top-level directory outside `LAYERS`, so `layer_of` returns None for it and it contributes
+#   no measured edge at all. Note what that costs: every import into and out of the three
+#   language-extension directories is now invisible to this measurement. See ORGANISATION.md's
+#   layer-table note.
+#
+#   THE WORK THAT EMPTIED THEM: docs/development/PUBLICATION_REFACTOR.md Phase 5, the
+#   {Plus,Minus,Star}Language directory merges.  A future entry is recorded, not excused.
 #
 # NOT WIRED INTO check-module-invariants.sh, deliberately: that harness is the phase gate for the
 # whole tree, and these are standalone structural assertions with their own exit code. Run it
@@ -153,23 +159,13 @@ _measure = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_measure)
 LAYERS, LIB, layer_of = _measure.LAYERS, _measure.LIB, _measure.layer_of
 
-# The recorded allowlist.  Owner of the work that empties it: PUBLICATION_REFACTOR.md
-# Phase 5 (the {Plus,Minus,Star}Language merges), which moves AxiomDischarge.lean out
-# of Syntax/.  Derived by running `measure-refactor-partitions.py upward-edges`, not
-# hand-copied from a plan.
-_DISCHARGE = f"{LIB}.Syntax.MinusLanguage.AxiomDischarge"
-ALLOWLIST = frozenset(
-    (_DISCHARGE, f"{LIB}.Theorems.{t}")
-    for t in (
-        "Combinators",
-        "DedekindDerived",
-        "DeductionTheorem",
-        "DiscreteUnfolding",
-        "GeneralizedNecessitation",
-        "Propositional.Core",
-        "TemporalDerived",
-    )
-)
+# The recorded allowlist, now EMPTY.  It held 7 entries, all keyed on
+# `FormalSystem.Syntax.MinusLanguage.AxiomDischarge`; PUBLICATION_REFACTOR.md Phase 5
+# (the {Plus,Minus,Star}Language merges) moved that module to
+# `FormalSystem.MinusLanguage.AxiomDischarge`, at the library root and outside `LAYERS`,
+# so it no longer contributes a measured upward edge.  Any future entry is derived by
+# running `measure-refactor-partitions.py upward-edges`, never hand-copied from a plan.
+ALLOWLIST = frozenset()
 
 g = ImportGraph()
 
@@ -202,8 +198,12 @@ for s, t in shortfall:
     print(f"SHORTFALL  {s} -> {t}")
 
 if not surplus and not shortfall:
-    print(f"PASS  upward import set is exactly the recorded {len(ALLOWLIST)} line(s), all from")
-    print(f"      {_DISCHARGE}")
+    if ALLOWLIST:
+        print(f"PASS  upward import set is exactly the recorded {len(ALLOWLIST)} line(s)")
+        for s_, t_ in sorted(ALLOWLIST):
+            print(f"      {s_} -> {t_}")
+    else:
+        print("PASS  zero upward import lines; the recorded allowlist is empty")
     sys.exit(0)
 
 print(f"FAIL  upward import set is not the recorded allowlist "
@@ -214,7 +214,7 @@ if surplus:
     print("      scripts/measure-refactor-partitions.py and ORGANISATION.md together.")
 if shortfall:
     print("      A shortfall is a finding, not a pass: it means an allowlisted line was removed")
-    print("      (PUBLICATION_REFACTOR.md Phase 5 is the work that does this). Confirm it landed")
+    print("      (PUBLICATION_REFACTOR.md Phase 5 did this once, emptying the list). Confirm it landed")
     print("      deliberately, then delete the entry from ALLOWLIST above.")
 sys.exit(1)
 PYEOF

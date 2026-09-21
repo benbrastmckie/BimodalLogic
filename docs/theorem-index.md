@@ -154,10 +154,10 @@ class — see `deterministic_not_plusDefinable` above.
 | `app:deterministic` | No set of `PlusFormula`s defines `TaskFrame.Deterministic` | `FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable` | `FormalSystem/Metalogic/Independence/DeterminismUndefinable.lean` | — | pcq pinned:C14 |
 | — | The current TM⁺ axiom set is **incomplete** at Base: the limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid and is not a Base theorem | `FormalSystem.Metalogic.Independence.plus_incomplete_base` | `FormalSystem/Metalogic/Independence/PlusIncompleteness.lean` | Base | pcq pinned:C14 |
 | `def:BLstar-semantics` | No `Formula` of L is equivalent to `⊡Fp` over all task models — the stability modal is not L-definable | `FormalSystem.Metalogic.Independence.stabNotDefinable` | `FormalSystem/Metalogic/Independence/StabUndefinable.lean` | — | pcq |
-| — | Every formula of the syntactic **state-locality** fragment of L⋆ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isStateLocal_of_stateLocal` | `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | — | `[propext]` |
-| — | `φ ↔ ⊡φ` is valid for every state-local `φ` — the fragment-level strengthening of the atom-level `p → ⊡p` | `FormalSystem.Semantics.stateLocal_starValid_iff_stab` | `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` | Base | pcq |
-| — | Every formula of the syntactic **state-locality** fragment of L⁺ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isPlusStateLocal_of_stateLocal` | `FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean` | — | `[propext]` |
-| — | `φ ↔ ⊡φ` is valid for every state-local `φ` of L⁺ — the fragment-level strengthening of the atom-level `p → ⊡p`, and the AS witness of TM⁺ soundness | `FormalSystem.Semantics.plusStateLocal_plusValid_iff_stab` | `FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean` | Base | pcq |
+| — | Every formula of the syntactic **state-locality** fragment of L⋆ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isStateLocal_of_stateLocal` | `FormalSystem/StarLanguage/StarStateLocal.lean` | — | `[propext]` |
+| — | `φ ↔ ⊡φ` is valid for every state-local `φ` — the fragment-level strengthening of the atom-level `p → ⊡p` | `FormalSystem.Semantics.stateLocal_starValid_iff_stab` | `FormalSystem/StarLanguage/StarStateLocal.lean` | Base | pcq |
+| — | Every formula of the syntactic **state-locality** fragment of L⁺ has the semantic property: possible worlds sharing a world state at `t` agree about it at `t` | `FormalSystem.Semantics.isPlusStateLocal_of_stateLocal` | `FormalSystem/PlusLanguage/PlusStateLocal.lean` | — | `[propext]` |
+| — | `φ ↔ ⊡φ` is valid for every state-local `φ` of L⁺ — the fragment-level strengthening of the atom-level `p → ⊡p`, and the AS witness of TM⁺ soundness | `FormalSystem.Semantics.plusStateLocal_plusValid_iff_stab` | `FormalSystem/PlusLanguage/PlusStateLocal.lean` | Base | pcq |
 | — | The two state-locality fragments agree along `ofPlus`, as a biconditional: the L⁺ fragment is exactly the `ofPlus`-preimage of the L⋆ one | `FormalSystem.Semantics.stateLocal_ofPlus_iff` | `FormalSystem/Semantics/StateLocalTransfer.lean` | — | `[]` |
 | — | `sent:det` is valid over the forward-deterministic `F^N` at **every** state-local instance, not only at sentence letters | `FormalSystem.Metalogic.Independence.fn_sentDet_stateLocal` | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | — | pcq |
 | — | The two-sided bound: valid at every state-local instance, refuted at `P p`, which lies outside the fragment | `FormalSystem.Metalogic.Independence.fn_sentDet_bounds` | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | — | pcq |
@@ -178,11 +178,11 @@ class — see `deterministic_not_plusDefinable` above.
 | — | Proof-theoretic conservativity of TM⁺ over TM, both directions, all four classes | `FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean` | — | pcq pinned:C14 |
 | — | Proof-theoretic conservativity of TM⁺ + *Determined* over TM, all four classes | `FormalSystem.Metalogic.Deterministic.detDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Deterministic/Completeness.lean` | — | pcq |
 | — | Soundness of TM⁺ at every frame class | `FormalSystem.Metalogic.Conservativity.plus_soundness_validIn` | `FormalSystem/Metalogic/Conservativity/Plus/PlusSoundness.lean` | — | pcq pinned:C14 |
-| — | Semantic conservativity of L⁺ over L | `FormalSystem.Semantics.plusValidIn_ofFormula_iff` | `FormalSystem/Semantics/PlusLanguage/PlusValidity.lean` | — | `[propext]` pinned:C14 |
+| — | Semantic conservativity of L⁺ over L | `FormalSystem.Semantics.plusValidIn_ofFormula_iff` | `FormalSystem/PlusLanguage/PlusValidity.lean` | — | `[propext]` pinned:C14 |
 
 ### TM⋆ over L⋆ — the store/recall language
 
-TM⋆ is TM⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/Syntax/StarLanguage/`). Its
+TM⋆ is TM⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/StarLanguage/`). Its
 axiom set re-declares the TM⁺ schemata directly over `StarFormula`, with `modal_future` alone
 under a `RecallFree` (`↓ⁱ`-free) side condition because it is refuted at arbitrary `φ` — see the
 refutations section below.
@@ -195,7 +195,7 @@ axiom set of the derivation machinery `StarAxiom` feeds.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
-| — | Derivation trees for TM⋆: the same seven rules as TM⁺ and TM, with `StarAxiom` in the `axiom` rule | `FormalSystem.StarLanguage.StarDerivationTree` | `FormalSystem/Syntax/StarLanguage/Derivation.lean` | — | `[propext]` pinned:C14 |
+| — | Derivation trees for TM⋆: the same seven rules as TM⁺ and TM, with `StarAxiom` in the `axiom` rule | `FormalSystem.StarLanguage.StarDerivationTree` | `FormalSystem/StarLanguage/Derivation.lean` | — | `[propext]` pinned:C14 |
 | — | Soundness of TM⋆ at every frame class | `FormalSystem.Metalogic.Conservativity.star_soundness_validIn` | `FormalSystem/Metalogic/Conservativity/Star/StarSoundness.lean` | — | pcq pinned:C14 |
 | — | Proof-theoretic conservativity of TM⋆ over TM, both directions, all four classes | `FormalSystem.Metalogic.Conservativity.starDerivable_ofFormula_iff` | `FormalSystem/Metalogic/Conservativity/Star/Forward.lean` | — | pcq pinned:C14 |
 | — | Conservativity of TM⋆ over TM⁺, **conditional** on general TM⁺ completeness at that class | `FormalSystem.Metalogic.Conservativity.starConservative_of_plusComplete` | `FormalSystem/Metalogic/Conservativity/Star/Forward.lean` | — | pcq pinned:C14 |
@@ -205,11 +205,11 @@ axiom set of the derivation machinery `StarAxiom` feeds.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
-| — | Soundness of TM⁻ against the native `MinusTruthAt` semantics | `FormalSystem.Metalogic.minus_soundness` | `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` | Base | pcq pinned:C14 |
-| — | TM⁻ soundness over the dense class | `FormalSystem.Metalogic.minus_soundness_dense` | `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` | Dense | pcq pinned:C14 |
-| — | TM⁻ soundness over ℤ-time | `FormalSystem.Metalogic.minus_soundness_ztime` | `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` | ZTime | pcq pinned:C14 |
-| — | TM⁻ soundness over the dense Dedekind-complete class | `FormalSystem.Metalogic.minus_soundness_rtime` | `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` | RTime | pcq pinned:C14 |
-| — | Consistency of TM⁻: `⊬ ⊥` | `FormalSystem.Metalogic.minus_not_derivable_nil_bot` | `FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean` | Base | pcq pinned:C14 |
+| — | Soundness of TM⁻ against the native `MinusTruthAt` semantics | `FormalSystem.Metalogic.minus_soundness` | `FormalSystem/MinusLanguage/Soundness.lean` | Base | pcq pinned:C14 |
+| — | TM⁻ soundness over the dense class | `FormalSystem.Metalogic.minus_soundness_dense` | `FormalSystem/MinusLanguage/Soundness.lean` | Dense | pcq pinned:C14 |
+| — | TM⁻ soundness over ℤ-time | `FormalSystem.Metalogic.minus_soundness_ztime` | `FormalSystem/MinusLanguage/Soundness.lean` | ZTime | pcq pinned:C14 |
+| — | TM⁻ soundness over the dense Dedekind-complete class | `FormalSystem.Metalogic.minus_soundness_rtime` | `FormalSystem/MinusLanguage/Soundness.lean` | RTime | pcq pinned:C14 |
+| — | Consistency of TM⁻: `⊬ ⊥` | `FormalSystem.Metalogic.minus_not_derivable_nil_bot` | `FormalSystem/MinusLanguage/Soundness.lean` | Base | pcq pinned:C14 |
 
 ### Expressiveness
 

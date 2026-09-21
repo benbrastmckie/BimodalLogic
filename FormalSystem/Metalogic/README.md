@@ -147,7 +147,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,402 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,120 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,864 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 21 | 6,130 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`Conservativity/`](Conservativity/README.md) | 20 | 5,515 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 51,945 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
@@ -262,7 +262,7 @@ unchanged. It is a hard stop, not a new baseline.
 
 ### The TM⁺ metatheory rows — `Conservativity/Plus/`, `Deterministic/`, `Independence/`
 
-TM⁺ is L plus the stability modal `⊡` (`FormalSystem/Syntax/PlusLanguage/`). Its metatheory splits into
+TM⁺ is L plus the stability modal `⊡` (`FormalSystem/PlusLanguage/`). Its metatheory splits into
 what is landed and what is open, and the split is load-bearing enough to record here:
 
 | Row | Status |
@@ -278,7 +278,7 @@ what is landed and what is open, and the split is load-bearing enough to record 
 | **TM⁺ decidability** | **OPEN** |
 
 The FALSE row is a theorem: the limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))`
-is valid over every task frame (`Semantics/PlusLanguage/PlusLimitClosure.lean`) and is refuted in a
+is valid over every task frame (`PlusLanguage/PlusLimitClosure.lean`) and is refuted in a
 paste-closed coarsened-state model for which TM⁺ is sound
 (`Independence/PastedCoarseModels.lean`, `Independence/LimitClosureCountermodel.lean`). The
 one-line reading: the coarsened countermodel is a dense, non-closed bundle — PS and US say
@@ -297,10 +297,10 @@ what a paper can use — is that the two classes have the same logic.
 
 ### The TM⋆ metatheory rows — `Conservativity/Star/`
 
-TM⋆ is L⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/Syntax/StarLanguage/`). Its
+TM⋆ is L⁺ plus the manuscript's time registers `↑ⁱ`/`↓ⁱ` (`FormalSystem/StarLanguage/`). Its
 axiom set re-declares the TM⁺ schemata directly over `StarFormula` rather than embedding them,
 with `modal_future` alone under a `RecallFree` (`↓ⁱ`-free) side condition — it is *refuted* at
-arbitrary `φ` (`Semantics/StarLanguage/StarNonValidities.lean`, `refute_modal_future`).
+arbitrary `φ` (`StarLanguage/StarNonValidities.lean`, `refute_modal_future`).
 
 | Row | Status |
 |-----|--------|

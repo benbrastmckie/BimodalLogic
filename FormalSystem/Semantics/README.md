@@ -2,6 +2,13 @@
 
 Task frame semantics for TM bimodal logic.
 
+The semantics of the three **extension languages** is not here. L⁻, L⁺ and L⋆ each live as a
+self-contained component at the library root — [`../MinusLanguage/`](../MinusLanguage/README.md),
+[`../PlusLanguage/`](../PlusLanguage/README.md), [`../StarLanguage/`](../StarLanguage/README.md) —
+carrying their syntax, their proof system and their semantics in one directory. What stays here
+is L's own semantics, plus the two **cross-language bridges** that span two families and so
+belong to neither: `DeterministicBridge.lean` and `StateLocalTransfer.lean`.
+
 ## Contents
 
 This table is ordered by the layering, not alphabetically, and carries no line counts, so it is
@@ -36,12 +43,6 @@ live file and subdirectory here, and no row for anything else.
 | Periodicity.lean | Pigeonhole, loop splicing and bounded reachability over a finite carrier, stated against `IntNormalForm.lean`'s `iter`/`IsStepPath`. **Not** `Correspondence/FwdRecPeriodicity.lean`: this module is the general finite-carrier toolkit the decision procedure's lasso search rests on, while that one is the forward-recurrence half of the frame-class Galois layer |
 | PartialHistory.lean | Partial histories on arbitrary nonempty subsets of the duration group, the `IsTotal`/`IsConvex` predicates, time shift, and `WorldHistory` — the world histories (the paper's possible worlds), with the `state` accessor |
 | PartialHistoryOrder.lean | The order structure on partial histories |
-| MinusLanguage.lean | Aggregator for `MinusLanguage/`; imported by the root aggregator `FormalSystem/FormalSystem.lean`, mirroring `Syntax/MinusLanguage.lean` |
-| [MinusLanguage/](MinusLanguage/README.md) | L⁻ semantics: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity` (4 files) — native truth for the tense-primitive base language, its `TaskFrame`-free frame notion, and its validity predicates |
-| PlusLanguage.lean | Aggregator for `PlusLanguage/`; imported by the root aggregator `FormalSystem/FormalSystem.lean`, mirroring `Syntax/PlusLanguage.lean` |
-| [PlusLanguage/](PlusLanguage/README.md) | L⁺ semantics: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal` (6 files) — the stability modal `⊡`'s truth, validity, pasting, refutations, deterministic collapse and state-locality |
-| StarLanguage.lean | Aggregator for `StarLanguage/`; imported by the root aggregator `FormalSystem/FormalSystem.lean`, mirroring `Syntax/StarLanguage.lean` |
-| [StarLanguage/](StarLanguage/README.md) | L⋆ semantics: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal` (5 files) — truth over `(τ, x, v⃗)`, `sent:det` in both halves, `Det-pm` and state-locality |
 | Extension.lean | Aggregator for `Extension/` |
 | Extension/ | Extension of partial histories: `Admissible`, `Constraint`, `Extension`, `PeriodicExtension`, `Step` (5 files) |
 | Ultraproduct.lean | Aggregator for `Ultraproduct/` |
