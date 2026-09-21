@@ -456,29 +456,29 @@ named states.
 
 ---
 
-### Phase 7: QuantLanguage scaffold, syntax and truth [NOT STARTED]
+### Phase 7: QuantLanguage scaffold, syntax and truth [COMPLETED]
 
 **Goal**: The second component, registered from its first commit, with truth relative to an
 admissible family and conservativity over L.
 
 **Tasks**:
-- [ ] `FormalSystem/QuantLanguage/Formula.lean` (layer 0, imports `FormalSystem.Syntax.Formula`
+- [x] `FormalSystem/QuantLanguage/Formula.lean` (layer 0, imports `FormalSystem.Syntax.Formula`
   only): seven-constructor `QuantFormula` with `all : Atom → QuantFormula → QuantFormula`;
   derived operators with `Formula`'s right-hand sides; `univ`, `exist`, `isAtom p q`, `qRec p q`,
   `ofFormula`, `ofFormula_injective`.
-- [ ] `FormalSystem/QuantLanguage/QuantTruth.lean` (layer 1): `TaskModel.updateAtom` (in
+- [x] `FormalSystem/QuantLanguage/QuantTruth.lean` (layer 1): `TaskModel.updateAtom` (in
   `namespace FormalSystem.Semantics`, housed here because this component is its only consumer)
   with `@[simp]` lemmas `updateAtom_valuation_self` and `updateAtom_valuation_of_ne`;
   `QuantTruthAt M τ t Adm`; instances `TruthEnv QuantFormula` with
   `Env F := Set (Set F.WorldState)` and `UntlClauses QuantFormula`; `namespace QuantTruth`:
   `atom_iff`, `all_iff`, `univ_iff`, `exist_iff`; `quantTruthAt_ofFormula` by induction (no `all`
   in the image, so `Adm` and `updateAtom` never fire).
-- [ ] Aggregator `FormalSystem/QuantLanguage.lean` and `FormalSystem/QuantLanguage/README.md`:
+- [x] Aggregator `FormalSystem/QuantLanguage.lean` and `FormalSystem/QuantLanguage/README.md`:
   grammar; **the admissible family is the design** - `Set.univ` is the standard semantics, the
   preimage family along a morphism is the clock-independent one, and both are one recursion at
   two arguments; letters denote sets of world states (`def:BL-semantics`); semantic only; no
   validity layer, and why; "Not formalized" list.
-- [ ] Layer rows `"QuantLanguage": {"Formula": 0, "QuantTruth": 1}`; root; inventory.
+- [x] Layer rows `"QuantLanguage": {"Formula": 0, "QuantTruth": 1}`; root; inventory.
 
 **Timing**: 2 hours
 

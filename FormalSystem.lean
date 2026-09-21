@@ -442,6 +442,9 @@ import FormalSystem.ProofSystem.Derivable
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.ProofSystem.DerivedAxioms
 import FormalSystem.ProofSystem.LinearityDerivedFacts
+import FormalSystem.QuantLanguage
+import FormalSystem.QuantLanguage.Formula
+import FormalSystem.QuantLanguage.QuantTruth
 import FormalSystem.Semantics
 import FormalSystem.Semantics.ConvexTruth
 import FormalSystem.Semantics.ConvexTruthCut
