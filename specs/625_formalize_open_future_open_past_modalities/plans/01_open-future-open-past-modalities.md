@@ -1,7 +1,7 @@
 # Implementation Plan: Task #625
 
 - **Task**: 625 - Formalize the manuscript's open-future and open-past modalities and machine-check that the stability modal is NOT Ockhamist historical necessity while the open-future modality is
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12.5 hours
 - **Dependencies**: 638 (completed; its module split and the earlier language-extension merge are the tree this plan targets). Related, not blocking: 559, 624
 - **Research Inputs**: specs/625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md; probes `probes/01_sink-frame-hn-refutation.lean` and `probes/02_frame-reversal.lean` (both re-compiled green at plan time against the relocated tree, see Research Integration)
@@ -547,21 +547,17 @@ of the strength ordering, including the incomparability of `▷` and `◁`.
 
 ---
 
-### Phase 8: Pins, tests, documentation sweep and the full gate [PARTIAL]
+### Phase 8: Pins, tests, documentation sweep and the full gate [COMPLETED]
 
-**PARTIAL — one residual item, everything else done and gated green.** Every task of this phase is
-complete in the working tree and every gate below passed (guarded full `lake build` exit 0;
-`lake build FormalSystem BimodalTest` exit 0, 2731 jobs; `check-module-invariants.sh` with build
-exit 0, 49 PASS / 0 FAIL; `check-metalogic-cycles.sh` exit 0; `mk_all --check` exit 0). The single
-residual is a **commit**, not work: the repository-root `README.md` carries this task's edits (the
-`OpenLanguage/` tree line, the L^▷ table row and mapping bullet, the regenerated totals) **together
-with another session's uncommitted TM⋆ rewrite of the same tree listing and language table**.
-`git-commit-scoped.sh` commits whole paths, so staging `README.md` would sweep that session's
-unreviewed hunks into this task's commit; it was left unstaged (under-stage, never over-stage).
-This fails condition 5 of the `[COMPLETED WITH EXCLUSIONS]` admission test ("no residual work"),
-so the phase is `[PARTIAL]` rather than exclusion-closed. **To close**: once the other session's
-`README.md` hunks are committed, run `git diff README.md`, confirm only this task's hunks remain,
-and commit `README.md` alone as `task 625 phase 8: repository README`.
+**Closure note.** This phase was held `[PARTIAL]` for one residual item that was a commit, not
+work: the repository-root `README.md` carried this task's edits together with hunks authored
+outside the run, and was left unstaged (under-stage, never over-stage). It was then committed whole
+at the author's explicit direction as 75a3baca8 (`task 625 phase 8: root README for the
+open-future/open-past language`); the commit message names the outside hunks it carries. Confirmed
+on closure: `git status --short README.md` is empty, `HEAD:README.md` contains the `OpenLanguage/`
+tree line, the "five object languages" heading, the `**L^▷**` table row and the mapping bullet, and
+no `.lean`, `lakefile.toml` or `lake-manifest.json` change landed after the gated build, which was
+re-run on closure anyway (guarded full `lake build` exit 0, 2674 jobs).
 
 **Goal**: Make the results durable: axiom pins, `rfl` coincidence pins, the listings that name the
 language components, and one full run of every repository gate.
@@ -590,7 +586,7 @@ language components, and one full run of every repository gate.
   figures), `docs/development/MODULE_INVARIANTS.md` (assertions B and C prose),
   `docs/development/MODULE_ORGANIZATION.md`, `docs/ARCHITECTURE.md`, `README.md` (tree and language
   table), `FormalSystem/README.md` (component tables), `FormalSystem/Semantics/README.md` (the
-  pointer line to the language components), `docs/theorem-index.md` if it indexes per language. *(deviation: altered — (1) the root `README.md` is edited but UNCOMMITTED, see the PARTIAL note above; (2) the scope-hypothesis grep added two documents the list did not name because they list the language components: `scripts/check-metalogic-cycles.sh` (comments and its assertion-C failure message) and `docs/README.md` (its pointer to the language table); `docs/development/PUBLICATION_REFACTOR.md` and `FormalSystem/Syntax/README.md` also matched and were left alone — the first is a historical record of the merge, the second a pre-existing stale statement about `Syntax/` subdirectories; (3) the measured "one layer for all three directories: 23 / 9 / 5 / 3" figures were NOT restated for four directories, because they were not re-measured; (4) `docs/theorem-index.md` does index per language, so a four-row L^▷ section was added, which obliged a `Paper: — (reason)` line in the docstring of each of the four pinned theorems)*
+  pointer line to the language components), `docs/theorem-index.md` if it indexes per language. *(deviation: altered — (1) the root `README.md` was committed separately and later than the rest of the sweep, as 75a3baca8, see the closure note above; (2) the scope-hypothesis grep added two documents the list did not name because they list the language components: `scripts/check-metalogic-cycles.sh` (comments and its assertion-C failure message) and `docs/README.md` (its pointer to the language table); `docs/development/PUBLICATION_REFACTOR.md` and `FormalSystem/Syntax/README.md` also matched and were left alone — the first is a historical record of the merge, the second a pre-existing stale statement about `Syntax/` subdirectories; (3) the measured "one layer for all three directories: 23 / 9 / 5 / 3" figures were NOT restated for four directories, because they were not re-measured; (4) `docs/theorem-index.md` does index per language, so a four-row L^▷ section was added, which obliged a `Paper: — (reason)` line in the docstring of each of the four pinned theorems)*
 - [x] Full gates: `bash scripts/check-module-invariants.sh` (with build),
   `bash scripts/check-metalogic-cycles.sh`, `lake build BimodalTest`,
   `lake exe mk_all --lib FormalSystem --check`.
