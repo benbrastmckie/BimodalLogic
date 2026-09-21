@@ -200,22 +200,22 @@ the scoped build and by grepping the new file's import block.
 
 ---
 
-### Phase 2: Shift invariance and the time-uniform box [NOT STARTED]
+### Phase 2: Shift invariance and the time-uniform box [COMPLETED]
 
 **Goal**: Prove that C3 truth is invariant under translating the index, and derive time uniformity
 of the box.
 
 **Tasks**:
-- [ ] Prove `truthC3_timeShift` by induction on the formula. Atom, bot and imp cases are direct.
+- [x] Prove `truthC3_timeShift` by induction on the formula. Atom, bot and imp cases are direct.
       The box case is the research probe's `truthC3_timeShift_box` argument, with
       `PartialHistory.isConvex_timeShift` supplying convexity of the shifted history in both
       directions.
-- [ ] Port the `untl` and `snce` cases from the archived probe 03. These were NOT re-run against
+- [x] Port the `untl` and `snce` cases from the archived probe 03. These were NOT re-run against
       the live tree; expect to adjust how domain membership of a shifted history unfolds.
-- [ ] Prove `c3_box_time_uniform` from it.
-- [ ] Docstring: this is the C3 analogue of `app:auto_existence`, and it is what settles
+- [x] Prove `c3_box_time_uniform` from it.
+- [x] Docstring: this is the C3 analogue of `app:auto_existence`, and it is what settles
       `modal_future`.
-- [ ] Scoped build.
+- [x] Scoped build.
 
 **Timing**: 1.5 hours
 

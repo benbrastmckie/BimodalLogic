@@ -377,4 +377,108 @@ theorem c3_valid_imp_germ_valid {φ : Formula} (h : ValidC3 F φ) (M : TaskModel
     TruthAtConvex M (PartialHistory.point F w x) x φ :=
   h M (PartialHistory.point F w x) (PartialHistory.point_isConvex F w x) x rfl
 
+/-! ## Shift invariance, and the time-uniform box -/
+
+/--
+**C3 truth is invariant under time translation of the index.**
+
+`TruthAtConvex M (σ.timeShift Δ) z φ ↔ TruthAtConvex M σ (z + Δ) φ`, for every formula, index,
+time and offset. The box case is the substantive one: the convex histories through `z` and the
+convex histories through `z + Δ` are exchanged by `PartialHistory.timeShift`, with
+`PartialHistory.isConvex_timeShift` carrying convexity across in both directions, so C3's box
+range translates along with everything else.
+
+This is the C3 analogue of `app:auto_existence` (the possible worlds are closed under
+translation). It is what makes C3 a time-uniform semantics even though its indices are bounded,
+and it is the lemma that settles `□φ → □Gφ`.
+-/
+theorem truthC3_timeShift (M : TaskModel F) (φ : Formula) :
+    ∀ (σ : PartialHistory F) (z Δ : F.Duration),
+      TruthAtConvex M (σ.timeShift Δ) z φ ↔ TruthAtConvex M σ (z + Δ) φ := by
+  induction φ with
+  | atom p => intro _ _ _; exact Iff.rfl
+  | bot => intro _ _ _; exact Iff.rfl
+  | imp φ ψ ihφ ihψ => intro σ z Δ; exact imp_congr (ihφ σ z Δ) (ihψ σ z Δ)
+  | box φ ih =>
+      intro σ z Δ
+      constructor
+      · intro h ρ hρc hρ
+        exact (ih ρ z Δ).mp (h (ρ.timeShift Δ) (PartialHistory.isConvex_timeShift hρc Δ) hρ)
+      · intro h ρ hρc hρ
+        have hdom : (ρ.timeShift (-Δ)).domain (z + Δ) := by
+          change ρ.domain (z + Δ + -Δ)
+          simpa using hρ
+        have hz := (ih ρ (z + Δ) (-Δ)).mp
+          (h _ (PartialHistory.isConvex_timeShift hρc (-Δ)) hdom)
+        simpa using hz
+  | untl ψ φ ihψ ihφ =>
+      intro σ z Δ
+      constructor
+      · rintro ⟨s, hs, hzs, hφ, hψ⟩
+        refine ⟨s + Δ, hs, add_lt_add_of_lt_of_le hzs (le_refl Δ), (ihφ σ s Δ).mp hφ, ?_⟩
+        intro r hr hzr hrs
+        have hback : r - Δ + Δ = r := sub_add_cancel r Δ
+        have hdom : (σ.timeShift Δ).domain (r - Δ) := by
+          change σ.domain (r - Δ + Δ); rw [hback]; exact hr
+        have h1 : z < r - Δ := by
+          have := hzr; rw [← hback] at this; exact lt_of_add_lt_add_right this
+        have h2 : r - Δ < s := by
+          have := hrs; rw [← hback] at this; exact lt_of_add_lt_add_right this
+        have := (ihψ σ (r - Δ) Δ).mp (hψ (r - Δ) hdom h1 h2)
+        rwa [hback] at this
+      · rintro ⟨s, hs, hzs, hφ, hψ⟩
+        have hback : s - Δ + Δ = s := sub_add_cancel s Δ
+        have hdom : (σ.timeShift Δ).domain (s - Δ) := by
+          change σ.domain (s - Δ + Δ); rw [hback]; exact hs
+        have h1 : z < s - Δ := by
+          have := hzs; rw [← hback] at this; exact lt_of_add_lt_add_right this
+        refine ⟨s - Δ, hdom, h1, (ihφ σ (s - Δ) Δ).mpr (by rw [hback]; exact hφ), ?_⟩
+        intro r hr hzr hrs
+        refine (ihψ σ r Δ).mpr (hψ (r + Δ) hr (add_lt_add_of_lt_of_le hzr (le_refl Δ)) ?_)
+        have := add_lt_add_of_lt_of_le hrs (le_refl Δ)
+        rwa [hback] at this
+  | snce ψ φ ihψ ihφ =>
+      intro σ z Δ
+      constructor
+      · rintro ⟨s, hs, hsz, hφ, hψ⟩
+        refine ⟨s + Δ, hs, add_lt_add_of_lt_of_le hsz (le_refl Δ), (ihφ σ s Δ).mp hφ, ?_⟩
+        intro r hr hsr hrz
+        have hback : r - Δ + Δ = r := sub_add_cancel r Δ
+        have hdom : (σ.timeShift Δ).domain (r - Δ) := by
+          change σ.domain (r - Δ + Δ); rw [hback]; exact hr
+        have h1 : s < r - Δ := by
+          have := hsr; rw [← hback] at this; exact lt_of_add_lt_add_right this
+        have h2 : r - Δ < z := by
+          have := hrz; rw [← hback] at this; exact lt_of_add_lt_add_right this
+        have := (ihψ σ (r - Δ) Δ).mp (hψ (r - Δ) hdom h1 h2)
+        rwa [hback] at this
+      · rintro ⟨s, hs, hsz, hφ, hψ⟩
+        have hback : s - Δ + Δ = s := sub_add_cancel s Δ
+        have hdom : (σ.timeShift Δ).domain (s - Δ) := by
+          change σ.domain (s - Δ + Δ); rw [hback]; exact hs
+        have h1 : s - Δ < z := by
+          have := hsz; rw [← hback] at this; exact lt_of_add_lt_add_right this
+        refine ⟨s - Δ, hdom, h1, (ihφ σ (s - Δ) Δ).mpr (by rw [hback]; exact hφ), ?_⟩
+        intro r hr hsr hrz
+        refine (ihψ σ r Δ).mpr (hψ (r + Δ) hr ?_ (add_lt_add_of_lt_of_le hrz (le_refl Δ)))
+        have := add_lt_add_of_lt_of_le hsr (le_refl Δ)
+        rwa [hback] at this
+
+/--
+**C3's box is time-uniform.** If `□φ` holds at `x` then it holds at every time `y` and every
+index, because the convex histories through `x` and through `y` are exchanged by
+`PartialHistory.timeShift` and `truthC3_timeShift` carries truth across.
+-/
+theorem c3_box_time_uniform (M : TaskModel F) (τ τ' : PartialHistory F) (x y : F.Duration)
+    (φ : Formula) (h : TruthAtConvex M τ x (Formula.box φ)) :
+    TruthAtConvex M τ' y (Formula.box φ) := by
+  intro ρ hρc hρ
+  have hxy : x + (y - x) = y := add_sub_cancel x y
+  have hdom : (ρ.timeShift (y - x)).domain x := by
+    change ρ.domain (x + (y - x))
+    rw [hxy]; exact hρ
+  have h2 := (truthC3_timeShift M φ ρ x (y - x)).mp
+    (h (ρ.timeShift (y - x)) (PartialHistory.isConvex_timeShift hρc (y - x)) hdom)
+  rwa [hxy] at h2
+
 end FormalSystem.Semantics
