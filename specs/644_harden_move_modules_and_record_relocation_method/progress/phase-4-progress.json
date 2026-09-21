@@ -1,22 +1,48 @@
 {
   "phase": 4,
   "phase_name": "Deliverable (1) — the --no-rewrite path list",
-  "started_at": "2026-09-21T09:46:00Z",
-  "last_updated": "2026-09-21T10:05:00Z",
+  "started_at": "2026-09-21T16:08:32Z",
+  "last_updated": "2026-09-21T16:10:30Z",
   "objectives": [
-    {"id": 1, "description": "Fixture and translator tests written first and observed RED", "status": "done", "files_touched": ["scripts/test-move-modules.py"],
-     "note": "RED (tool at HEAD): Ran 14 tests, FAILED (failures=3, errors=6). Failures: test_default_list_file_is_byte_identical_after_apply, test_class_counts_exclude_skipped_files, test_skipped_and_moved_file_keeps_its_links_and_is_listed. Errors: all six GlobTranslatorTest cases (AttributeError: no glob_to_regex / DEFAULT_NO_REWRITE). test_skipped_and_moved_heading_absent_when_empty is a negative, green before and after."},
-    {"id": 2, "description": "glob_to_regex translator, DEFAULT_NO_REWRITE, --no-rewrite flag with ADD semantics, throwaway-counter would-be computation, D4 bare-form exclusion, D8 class-7 suppression, skipped report section", "status": "done", "files_touched": ["scripts/move-modules.py"],
-     "note": "GREEN: Ran 14 tests, OK. Scope hypothesis confirmed against the real docs/architecture listing by test_adr_glob_against_the_real_directory_listing: 9 ADR files matched, none of the 4 non-ADR siblings."},
-    {"id": 3, "description": "Exclude scripts/test-move-modules.py from rewriting (SELF_PATHS)", "status": "done", "files_touched": ["scripts/move-modules.py", "scripts/test-move-modules.py"],
-     "note": "Addition beyond the plan. Observed red with the exclusion monkeypatched away (FAILED failures=1), green with it. Ran 15 tests, OK."}
+    {
+      "id": 1,
+      "description": "Fixture and translator tests written first and observed RED",
+      "status": "done",
+      "files_touched": [
+        "scripts/test-move-modules.py"
+      ],
+      "note": "RED (tool at HEAD): Ran 14 tests, FAILED (failures=3, errors=6). Failures: test_default_list_file_is_byte_identical_after_apply, test_class_counts_exclude_skipped_files, test_skipped_and_moved_file_keeps_its_links_and_is_listed. Errors: all six GlobTranslatorTest cases (AttributeError: no glob_to_regex / DEFAULT_NO_REWRITE). test_skipped_and_moved_heading_absent_when_empty is a negative, green before and after."
+    },
+    {
+      "id": 2,
+      "description": "glob_to_regex translator, DEFAULT_NO_REWRITE, --no-rewrite flag with ADD semantics, throwaway-counter would-be computation, D4 bare-form exclusion, D8 class-7 suppression, skipped report section",
+      "status": "done",
+      "files_touched": [
+        "scripts/move-modules.py"
+      ],
+      "note": "GREEN: Ran 14 tests, OK. Scope hypothesis confirmed against the real docs/architecture listing by test_adr_glob_against_the_real_directory_listing: 9 ADR files matched, none of the 4 non-ADR siblings."
+    },
+    {
+      "id": 3,
+      "description": "Exclude scripts/test-move-modules.py from rewriting (SELF_PATHS)",
+      "status": "done",
+      "files_touched": [
+        "scripts/move-modules.py",
+        "scripts/test-move-modules.py"
+      ],
+      "note": "Addition beyond the plan. Observed red with the exclusion monkeypatched away (FAILED failures=1), green with it. Ran 15 tests, OK."
+    }
   ],
   "current_objective": null,
   "approaches_tried": [],
   "deviations": [
-    {"task_id": "4.x", "description": "Exclude the fixture test file from the tool's own rewrite scope", "type": "altered",
-     "reason": "Not in the plan: the fixtures name made-up modules under real roots in map rows as well as file bodies, so a future move of a real prefix would rewrite a fixture row `old -> new` into `new -> new`; same rationale as the tool's existing self-exclusion.",
-     "annotation": "*(deviation: altered — also added SELF_PATHS so scripts/test-move-modules.py is never a rewrite target, with its own test)*"}
+    {
+      "task_id": "4.x",
+      "description": "Exclude the fixture test file from the tool's own rewrite scope",
+      "type": "altered",
+      "reason": "Not in the plan: the fixtures name made-up modules under real roots in map rows as well as file bodies, so a future move of a real prefix would rewrite a fixture row `old -> new` into `new -> new`; same rationale as the tool's existing self-exclusion.",
+      "annotation": "*(deviation: altered — also added SELF_PATHS so scripts/test-move-modules.py is never a rewrite target, with its own test)*"
+    }
   ],
   "handoff_count": 0
 }

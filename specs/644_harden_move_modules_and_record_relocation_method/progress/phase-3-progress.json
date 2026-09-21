@@ -1,14 +1,35 @@
 {
   "phase": 3,
   "phase_name": "Move-set integrity — resolve_move ambiguity and the zero-move exit",
-  "started_at": "2026-09-21T09:31:00Z",
-  "last_updated": "2026-09-21T09:45:00Z",
+  "started_at": "2026-09-21T16:07:27Z",
+  "last_updated": "2026-09-21T16:08:32Z",
   "objectives": [
-    {"id": 1, "description": "Fixture tests written first and observed RED against the unmodified tool", "status": "done", "files_touched": ["scripts/test-move-modules.py"],
-     "note": "RED (tool at HEAD, git diff empty): Ran 4 tests, FAILED (failures=3). test_stem_naming_directory_and_file_is_refused: AssertionError 0 == 0 (rc was 0: directory silently preferred). test_rows_requested_and_nothing_moved_is_a_failure: AssertionError 0 == 0 (rc 0 with 3 citations rewritten and 0 paths moved). test_report_states_moved_next_to_rewritten: regex 'files moved ...' not found in report."},
-    {"id": 2, "description": "AmbiguousStem exception, resolve_move refusal, up-front scan in run(), backstop in move_trees with D2 limits comment, actionable remedy text", "status": "done", "files_touched": ["scripts/move-modules.py"]},
-    {"id": 3, "description": "Moved-vs-rewritten report line and zero-move non-zero exit", "status": "done", "files_touched": ["scripts/move-modules.py"],
-     "note": "GREEN: Ran 4 tests, OK. The line reports actual FILES moved (subtree file count) and the path count, not only the number of rows."}
+    {
+      "id": 1,
+      "description": "Fixture tests written first and observed RED against the unmodified tool",
+      "status": "done",
+      "files_touched": [
+        "scripts/test-move-modules.py"
+      ],
+      "note": "RED (tool at HEAD, git diff empty): Ran 4 tests, FAILED (failures=3). test_stem_naming_directory_and_file_is_refused: AssertionError 0 == 0 (rc was 0: directory silently preferred). test_rows_requested_and_nothing_moved_is_a_failure: AssertionError 0 == 0 (rc 0 with 3 citations rewritten and 0 paths moved). test_report_states_moved_next_to_rewritten: regex 'files moved ...' not found in report."
+    },
+    {
+      "id": 2,
+      "description": "AmbiguousStem exception, resolve_move refusal, up-front scan in run(), backstop in move_trees with D2 limits comment, actionable remedy text",
+      "status": "done",
+      "files_touched": [
+        "scripts/move-modules.py"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Moved-vs-rewritten report line and zero-move non-zero exit",
+      "status": "done",
+      "files_touched": [
+        "scripts/move-modules.py"
+      ],
+      "note": "GREEN: Ran 4 tests, OK. The line reports actual FILES moved (subtree file count) and the path count, not only the number of rows."
+    }
   ],
   "current_objective": null,
   "approaches_tried": [],

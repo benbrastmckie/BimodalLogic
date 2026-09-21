@@ -803,21 +803,21 @@ is 16, which is why the replay does not run there.
 
 ## Testing & Validation
 
-- [ ] Each of deliverables (1)-(5) has at least one fixture test observed RED before its change
-      and GREEN after, with both outputs recorded in the progress file.
-- [ ] `python3 scripts/test-move-modules.py` exits 0 with every phase's tests in one run.
-- [ ] Negative tests (R2's already-identical line, D9's skipped-file rule, D6's
+- [x] Each of deliverables (1)-(5) has at least one fixture test observed RED before its change
+      and GREEN after, with both outputs recorded in the progress file. *(completed)*
+- [x] `python3 scripts/test-move-modules.py` exits 0 with every phase's tests in one run. *(completed)*
+- [x] Negative tests (R2's already-identical line, D9's skipped-file rule, D6's
       class-2-consumes-the-declaration shape, R6's no-flag namespace path) are green both before
-      and after their phase, proving no false positive or behavior regression.
-- [ ] The file-granular refusal test names only the staying file as an offender (D7).
-- [ ] A dry run of the archived Expressiveness-extraction maps against an export of that move's
+      and after their phase, proving no false positive or behavior regression. *(completed)*
+- [x] The file-granular refusal test names only the staying file as an offender (D7). *(completed)*
+- [x] A dry run of the archived Expressiveness-extraction maps against an export of that move's
       pre-move commit reports exactly that move's 17 provenance READMEs, two ADRs and
-      `typst/SYNC-MAP.md` as skipped, exits 0, and moves 13 paths.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` is green.
-- [ ] No task numbers in any file outside `specs/` (mechanically enforced by C9-DOCS for `docs/`
+      `typst/SYNC-MAP.md` as skipped, exits 0, and moves 13 paths. *(completed)*
+- [x] `bash scripts/check-module-invariants.sh --no-build` is green. *(deviation: altered — red on INV only in the shared tree, from a sibling's uncommitted FormalSystem edits; INV green on an isolated export of HEAD plus this task's files)*
+- [x] No task numbers in any file outside `specs/` (mechanically enforced by C9-DOCS for `docs/`
       and by the repository's write-time hook elsewhere); the replay test names a commit hash and
-      a glob, never an archived task directory.
-- [ ] `move-modules.py` was never run in apply mode against this repository.
+      a glob, never an archived task directory. *(completed)*
+- [x] `move-modules.py` was never run in apply mode against this repository. *(completed)*
 
 ## Artifacts & Outputs
 

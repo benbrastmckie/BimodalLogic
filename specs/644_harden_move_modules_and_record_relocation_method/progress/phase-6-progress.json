@@ -1,13 +1,27 @@
 {
   "phase": 6,
   "phase_name": "Deliverable (4) — namespace-map refusal and --namespace-paths",
-  "started_at": "2026-09-21T10:26:00Z",
-  "last_updated": "2026-09-21T10:50:00Z",
+  "started_at": "2026-09-21T16:11:59Z",
+  "last_updated": "2026-09-21T16:13:41Z",
   "objectives": [
-    {"id": 1, "description": "Refusal (file-granular shape), scoped, class-5-never-scoped, class-2-consumes and no-flag tests plus an in_move_set unit test written first", "status": "done", "files_touched": ["scripts/test-move-modules.py"],
-     "note": "RED (tool at HEAD): Ran 27 tests, FAILED (failures=3, errors=1). Failures: test_declaration_outside_the_move_set_is_refused, test_namespace_paths_scopes_class_four, test_class_five_baselines_are_never_scoped_out. Error: test_in_move_set_handles_both_row_granularities (no in_move_set). GREEN BEFORE the change: test_declaration_consumed_by_class_two_is_not_refused and test_unshared_namespace_without_scope_is_rewritten_everywhere."},
-    {"id": 2, "description": "in_move_set (D7), declaration collector in rewrite_text and refusal in run() before the write loop (D6), --namespace-paths scoping both rewrite passes, class 5 never scoped (D5), no-rewrite files never offenders, help and docstring", "status": "done", "files_touched": ["scripts/move-modules.py"],
-     "note": "GREEN: Ran 27 tests, OK. The refusal test names only Stay.lean:1, not the moved A.lean/B.lean, and asserts every file byte-unchanged in apply mode. Both before-green negatives still green."}
+    {
+      "id": 1,
+      "description": "Refusal (file-granular shape), scoped, class-5-never-scoped, class-2-consumes and no-flag tests plus an in_move_set unit test written first",
+      "status": "done",
+      "files_touched": [
+        "scripts/test-move-modules.py"
+      ],
+      "note": "RED (tool at HEAD): Ran 27 tests, FAILED (failures=3, errors=1). Failures: test_declaration_outside_the_move_set_is_refused, test_namespace_paths_scopes_class_four, test_class_five_baselines_are_never_scoped_out. Error: test_in_move_set_handles_both_row_granularities (no in_move_set). GREEN BEFORE the change: test_declaration_consumed_by_class_two_is_not_refused and test_unshared_namespace_without_scope_is_rewritten_everywhere."
+    },
+    {
+      "id": 2,
+      "description": "in_move_set (D7), declaration collector in rewrite_text and refusal in run() before the write loop (D6), --namespace-paths scoping both rewrite passes, class 5 never scoped (D5), no-rewrite files never offenders, help and docstring",
+      "status": "done",
+      "files_touched": [
+        "scripts/move-modules.py"
+      ],
+      "note": "GREEN: Ran 27 tests, OK. The refusal test names only Stay.lean:1, not the moved A.lean/B.lean, and asserts every file byte-unchanged in apply mode. Both before-green negatives still green."
+    }
   ],
   "current_objective": null,
   "approaches_tried": [],
