@@ -218,7 +218,7 @@
     {
       "project_number": 638,
       "project_name": "post_publication_size_splits_and_module_system",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -248,7 +248,7 @@
       ],
       "description": "Split EFGames/GapDetection.lean and the split-point file only along import-acyclic declaration families, keeping namespaces; evaluate adopting the Lean module system as its own programme. Acceptance: no fully-qualified name changes; harness green.\n\nReconciliation notes: depends on task 637. Optional, post-publication. The two named files are, at their post-move paths, FormalSystem/Metalogic/Expressiveness/EFGames/GapDetection.lean and FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean.",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T19:31:52Z",
+      "last_updated": "2026-09-21T20:08:18Z",
       "session_id": "sess_1790018097_6c1579",
       "artifacts": [
         {
@@ -260,9 +260,15 @@
           "path": "specs/638_post_publication_size_splits_and_module_system/plans/01_size-splits-module-system.md",
           "type": "plan",
           "summary": "Six-phase implementation plan for the two size splits and the module-system evaluation record."
+        },
+        {
+          "path": "specs/638_post_publication_size_splits_and_module_system/summaries/01_size-splits-module-system-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and plan deviations."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Split EFGames/GapDetection.lean (5,094 lines) into GapDetection, MuRelativizedTruth, GapDetectionLeft and GapDetectionRight, and extracted SplitPointProps from GameTransfer/SplitPoint.lean, moving every declaration verbatim inside the unchanged namespace; before/after #print axioms reports for all 17 public declarations are byte-identical. Recorded the Lean module-system evaluation in docs/development/MODULE_SYSTEM_EVALUATION.md (verdict: not now, own programme, decision record first). Full guarded build, mk_all --check, full-mode module invariants and readme-lint all pass."
     },
     {
       "project_number": 628,

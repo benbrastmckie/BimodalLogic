@@ -11,12 +11,12 @@ next_project_number: 647
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,638 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,625 | 298,464,502,563,638 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,568,618,628 | 231,465,497,564,565,616,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,570,646 | 428,498,499,500,568 | algebraic-representation, decidability, metalogic |
-| 5 | 410,501,534 | 125,429,646 | algebraic-representation, decidability, incompleteness |
-| 6 | 411,645 | 410,534 | decidability, semantics |
+| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,568,616,617,628 | 298,464,502,563,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,570,618,646 | 231,465,497,564,565,568,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,534,543 | 428,498,499,500,646 | algebraic-representation, decidability, incompleteness, ... |
+| 5 | 410,501,645 | 125,429,534 | algebraic-representation, decidability, semantics |
+| 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
 | 9 | 482 | 412 | decidability |
@@ -91,10 +91,6 @@ next_project_number: 647
 568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
   └─ 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
-
-### Publication Quality
-
-638 [PLANNED] — Split EFGames/GapDetection.lean and the split-point file only...
 
 ### Semantics
 
@@ -205,12 +201,13 @@ ACCEPTANCE. measure-refactor-partitions.py upward-edges reports a non-empty meas
 ---
 
 ### 638. Post publication size splits and module system
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 637
 - **Research**: [638_post_publication_size_splits_and_module_system/reports/01_size-splits-module-system.md]
 - **Plan**: [638_post_publication_size_splits_and_module_system/plans/01_size-splits-module-system.md]
+- **Summary**: [638_post_publication_size_splits_and_module_system/summaries/01_size-splits-module-system-summary.md]
 
 **Description**: Split EFGames/GapDetection.lean and the split-point file only along import-acyclic declaration families, keeping namespaces; evaluate adopting the Lean module system as its own programme. Acceptance: no fully-qualified name changes; harness green.
 
