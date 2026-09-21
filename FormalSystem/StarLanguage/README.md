@@ -114,9 +114,14 @@ beside them do, and that edge is what gives L⋆ its meaning:
 | `StarNonValidities.lean` | `refute_sentDet`, `not_starValid_sentDet`; `mfWitness` and `refute_modal_future` (MF is not an L⋆ schema); `storeG_recall_valid` with `refute_erasure` (register erasure is not a conservativity translation) |
 | `StarStateLocal.lean` | `StarFormula.StateLocal` (syntactic) and `IsStateLocal` (semantic); `isStateLocal_box`, `isStateLocal_stab`, `isStateLocal_of_stateLocal`; `not_isStateLocal_someFuture`, `not_isStateLocal_somePast`, `not_isStateLocal_timeRecall`; `stateLocal_stab_iff`, `stateLocal_starValid_iff_stab` |
 
-This ordering is prose, recorded in `FormalSystem/StarLanguage.lean`'s module docstring as the
-component's standing invariant. No mechanical check enforces it; before the merge, the directory
-boundary did.
+This ordering is recorded in `FormalSystem/StarLanguage.lean`'s module docstring as the
+component's standing invariant, and it is checked. Before the merge the directory boundary
+enforced it; now `bash scripts/check-metalogic-cycles.sh` does, in two ways. Every file here has
+a layer in the `LANGUAGE_FILE_LAYERS` table of `scripts/measure-refactor-partitions.py` — 0 for
+the syntax half, 1 for the semantic modules — and the script's syntax-before-semantics
+assertion fails if a layer-0 file of any language directory imports a layer-1 file of any of
+them, or anything under `FormalSystem/Semantics/`. **A new file in this directory needs a row in
+that table**; without one the check fails, naming the file.
 
 L⋆'s metatheory stays under `Metalogic/`:
 

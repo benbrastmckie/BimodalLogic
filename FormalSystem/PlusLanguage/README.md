@@ -81,9 +81,14 @@ The two cross-language bridges stay at the `Semantics/` root, because each spans
 `ofPlus`). `FormalSystem/Metalogic/Conservativity/Plus.lean` carries soundness of TM⁺ at all
 four classes and conservativity of TM⁺ over TM in both directions.
 
-This ordering is prose, recorded in `FormalSystem/PlusLanguage.lean`'s module docstring as the
-component's standing invariant. No mechanical check enforces it; before the merge, the directory
-boundary did.
+This ordering is recorded in `FormalSystem/PlusLanguage.lean`'s module docstring as the
+component's standing invariant, and it is checked. Before the merge the directory boundary
+enforced it; now `bash scripts/check-metalogic-cycles.sh` does, in two ways. Every file here has
+a layer in the `LANGUAGE_FILE_LAYERS` table of `scripts/measure-refactor-partitions.py` — 0 for
+the syntax half, 1 for the semantic modules — and the script's syntax-before-semantics
+assertion fails if a layer-0 file of any language directory imports a layer-1 file of any of
+them, or anything under `FormalSystem/Semantics/`. **A new file in this directory needs a row in
+that table**; without one the check fails, naming the file.
 
 ## Extension recipe: adding a `PlusAxiom` constructor
 

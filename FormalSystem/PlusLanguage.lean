@@ -76,5 +76,7 @@ This replaces the pre-merge invariant *"nothing under `FormalSystem/Syntax/PlusL
 imports anything from `FormalSystem/Semantics/`"*, which the directory merge falsifies by
 construction: the two halves now share one directory. The directional content survives — the
 syntax half is still a leaf with respect to `Semantics/` — but it is now a file-level property,
-not a directory-level one, and no mechanical check enforces it.
+not a directory-level one. `scripts/check-metalogic-cycles.sh` enforces it, reading each file's
+layer from the per-file table in `scripts/measure-refactor-partitions.py`; a new file in this
+directory needs a row there.
 -/

@@ -54,14 +54,24 @@ The semantic modules beside them do, and that edge is what gives L⁻ its meanin
 | `MinusFrame.lean` | a native L⁻ frame notion not bound to `TaskFrame`, with `MinusFrameTruth`, `MinusFrameValid` and the time-reflection transfer lemma |
 | `MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, and the Dense / Discrete / Dedekind-dense validity predicates |
 | `MinusSchemaValidity.lean` | the DF and DN semantic lemmas and DF's `PredOrder` past-dual |
-| `Soundness.lean` | the truth-transfer bridge `truthAt_tr`, and L⁻ soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
 
 `MinusTruth.lean` imports `Formula.lean` only — a leaf whose own sole import is
 `FormalSystem.Syntax.Atom` — so the edge introduces no cycle.
 
-This ordering is prose, recorded in `FormalSystem/MinusLanguage.lean`'s module docstring as the
-component's standing invariant. No mechanical check enforces it; before the merge, the
-directory boundary did.
+One file is neither half. `Soundness.lean` is a **metalogic** module: the truth-transfer bridge
+`truthAt_tr`, and L⁻ soundness at `FrameClass.Base` and its three extensions, by composition
+through `Conservativity.translate`. It came here from `Metalogic/Conservativity/`, it imports two
+`Metalogic/` modules, and it sits at layer 3 with `Metalogic/` rather than at layer 1 with the
+semantic modules above. The aggregator `FormalSystem/MinusLanguage.lean` does not import it.
+
+This ordering is recorded in `FormalSystem/MinusLanguage.lean`'s module docstring as the
+component's standing invariant, and it is checked. Before the merge the directory boundary
+enforced it; now `bash scripts/check-metalogic-cycles.sh` does, in two ways. Every file here has
+a layer in the `LANGUAGE_FILE_LAYERS` table of `scripts/measure-refactor-partitions.py` — 0 for
+the syntax half, 1 for the semantic modules, 3 for `Soundness.lean` — and the script's syntax-before-semantics
+assertion fails if a layer-0 file of any language directory imports a layer-1 file of any of
+them, or anything under `FormalSystem/Semantics/`. **A new file in this directory needs a row in
+that table**; without one the check fails, naming the file.
 
 ## Key Results
 

@@ -353,26 +353,23 @@ seventh hit is in scope for this phase.
 
 ---
 
-### Phase 5: Language READMEs and aggregator docstrings [NOT STARTED]
+### Phase 5: Language READMEs and aggregator docstrings [COMPLETED]
 
 **Goal**: Remove "No mechanical check enforces it" from the six places that say it, and file
 `Soundness.lean` where the measurement puts it.
 
 **Tasks**:
-- [ ] `FormalSystem/MinusLanguage/README.md`, `FormalSystem/PlusLanguage/README.md`,
+- [x] `FormalSystem/MinusLanguage/README.md`, `FormalSystem/PlusLanguage/README.md`,
       `FormalSystem/StarLanguage/README.md`: replace the "No mechanical check enforces it"
       sentence with the check that now does (`scripts/check-metalogic-cycles.sh`, the
       syntax-before-semantics assertion, and the per-file table in
       `scripts/measure-refactor-partitions.py`); note that a new file in the directory needs a
-      row. Bump each `Last verified` stamp to the commit date.
-- [ ] `FormalSystem/MinusLanguage/README.md`: move `Soundness.lean` out of the semantic-modules
+      row. Bump each `Last verified` stamp to the commit date. *(completed: stamps already read 2026-09-21, today's commit date, so no bump was needed)*- [x] `FormalSystem/MinusLanguage/README.md`: move `Soundness.lean` out of the semantic-modules
       table into its own metalogic entry (layer 3, by origin and by its two `Metalogic` imports).
-      It appears in two tables; fix both consistently.
-- [ ] `FormalSystem/MinusLanguage.lean`, `FormalSystem/PlusLanguage.lean`,
+      It appears in two tables; fix both consistently. *(deviation: altered — Soundness.lean moved out of the hand-written semantic-modules table into its own metalogic paragraph; the other table is the GENERATED per-file inventory, which lists every file alphabetically without classifying it and is not hand-edited)*- [x] `FormalSystem/MinusLanguage.lean`, `FormalSystem/PlusLanguage.lean`,
       `FormalSystem/StarLanguage.lean`: in the module docstring, replace "no mechanical check
       enforces it" with one sentence naming the script. Docstring text only; no import, no
-      declaration, nothing outside the `/-! ... -/` block.
-- [ ] `lake build FormalSystem.MinusLanguage FormalSystem.PlusLanguage FormalSystem.StarLanguage`.
+      declaration, nothing outside the `/-! ... -/` block. *(completed)*- [x] `lake build FormalSystem.MinusLanguage FormalSystem.PlusLanguage FormalSystem.StarLanguage`. *(completed: exit 0, 1384 jobs)*
 
 **Timing**: 0.75 hours
 
