@@ -1,33 +1,24 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "phase": "implement",
-  "dispatch_seq": 10,
-  "summary": "All 31 challenge theorems for the open-future/open-past language L^▷ are proved sorry-free in FormalSystem/OpenLanguage/ and every gate is green (full build, invariant harness 49 PASS / 0 FAIL). Phases 1-7 are complete; phase 8 is partial only because the root README.md, which also carries another session's uncommitted hunks, was deliberately left uncommitted.",
+  "dispatch_seq": 11,
+  "summary": "Phase 8 closed and task 625 complete: the root README.md residual is confirmed committed (75a3baca8) and clean, HEAD carries all five of this task README edits, no Lean or Lake file changed after the gated build, and the closing guarded full lake build exited 0 (2674 jobs) with sorry 0 and the axiom count unchanged at 14. All 8 plan phases are [COMPLETED].",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
-      "summary": "Implementation summary: seven phases complete, phase 8 partial pending one README.md commit; verification fully passed."
+      "summary": "Implementation summary, status [COMPLETED]: all eight phases, verification passed."
     },
     {
       "type": "handoff",
-      "path": "specs/625_formalize_open_future_open_past_modalities/handoffs/phase-8-handoff-20260921T205657Z.md",
-      "summary": "Exact four-step procedure to close phase 8."
+      "path": "specs/625_formalize_open_future_open_past_modalities/handoffs/phase-8-handoff-20260921T210314Z.md",
+      "summary": "Closing handoff: no residual work."
     }
   ],
-  "phases_completed": 7,
+  "phases_completed": 8,
   "phases_total": 8,
-  "blockers": [
-    {
-      "phase": 8,
-      "target": "README.md",
-      "verbatim_goal": "Commit the repository-root README.md with this task's OpenLanguage tree line, L^▷ table row, mapping bullet and regenerated totals.",
-      "what_was_tried": "Edited README.md in the working tree; re-checked three times across the run whether the other session's hunks had been committed (git log -1 -- README.md stayed at 86dd25c7e). Considered committing only this task's hunks through git plumbing with a temporary index and rejected it.",
-      "why_it_failed": "git-commit-scoped.sh commits whole paths, so staging README.md would sweep another session's unreviewed TM-star rewrite into a task-625 commit. Plumbing around it would bypass the sanctioned commit script, its lock and hooks on a branch with concurrent committers, and a HEAD-plus-these-hunks README would be internally inconsistent because this task's lines sit inside the structure the foreign hunks introduce."
-    }
-  ],
+  "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": "specs/625_formalize_open_future_open_past_modalities/handoffs/phase-8-handoff-20260921T205657Z.md",
-  "next_action_hint": "No Lean work, build or gate remains. When `git log -1 -- README.md` moves past 86dd25c7e, run `git diff README.md`, confirm only task-625 hunks remain, commit README.md alone as `task 625 phase 8: repository README`, flip the Phase 8 heading to [COMPLETED], and mark the task implemented.",
-  "git_checkpoint": "a5c676b1e"
+  "next_action_hint": "Run postflight to promote task 625. typst/chapters/ax-lean-appendix.typ was not touched.",
+  "git_checkpoint": "75a3baca8"
 }

@@ -11,11 +11,11 @@ next_project_number: 650
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625,647 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,568,616,617,628,648 | 298,464,502,563,625,647 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,570,618,646,649 | 231,465,497,564,565,568,616,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,534,543 | 428,498,499,500,646 | algebraic-representation, decidability, incompleteness, ... |
-| 5 | 410,501,645 | 125,429,534 | algebraic-representation, decidability, semantics |
+| 1 | 127,128,178,257,298,464,481,502,559,563,568,604,623,624,628,647 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,570,616,617,646,648 | 298,464,502,563,568,647 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,534,566,618,649 | 231,465,497,564,565,616,646,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,645 | 428,498,499,500,534 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
@@ -87,22 +87,21 @@ next_project_number: 650
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-543 [NOT STARTED] — Machine-check the principal new results from the MF...
 568 [RESEARCHED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
   └─ 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
+543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
 
-647 [NOT STARTED] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
+647 [RESEARCHING] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
   └─ 648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
     └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
 
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-625 [IMPLEMENTING] — Formalize the manuscript's open-future and open-past...
-  └─ 628 [RESEARCHED] — Investigate expressive extensions that make recurrence and...
+628 [RESEARCHED] — Investigate expressive extensions that make recurrence and...
 645 [NOT STARTED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
@@ -164,7 +163,7 @@ ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors, and z
 ---
 
 ### 647. Extend lean appendix semantics metalogic coverage
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: reference-book
 - **Dependencies**: None
@@ -342,7 +341,7 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 630 and 632-636 landed). Depen
 ---
 
 ### 625. Formalize open future open past modalities
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 638

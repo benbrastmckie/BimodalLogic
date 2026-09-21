@@ -1,35 +1,28 @@
 {
-  "status": "partial",
-  "started_at": "2026-09-21T20:23:57Z",
-  "completed_at": "2026-09-21T20:58:38Z",
-  "requires_user_review": true,
-  "review_reason": "Phase 8 is [PARTIAL] with one residual item that is a commit, not work: the repository-root README.md holds this task's edits together with another session's uncommitted rewrite of the same tree listing and language table. git-commit-scoped.sh commits whole paths, so it was left unstaged rather than sweep foreign hunks into a task-625 commit. All 31 challenge theorems are proved and every verification gate passed.",
+  "status": "implemented",
+  "started_at": "2026-09-21T21:03:14Z",
+  "completed_at": "2026-09-21T21:03:14Z",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 14,
-    "axiom_count_baseline": 14,
     "build_passed": true
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
-      "summary": "L^▷ (L⁺ plus the open-future and open-past modals) landed as FormalSystem/OpenLanguage/ with all 31 challenge theorems proved; phases 1-7 complete, phase 8 partial pending one README.md commit."
+      "summary": "Implementation summary: all eight phases complete; L^▷ landed in FormalSystem/OpenLanguage/ with the Ockhamist separating pair, the open-past mirror, S5 and the strength ordering, sorry-free."
     }
   ],
-  "partial_progress": {
-    "stage": "phase_8_partial",
-    "details": "Phases 1-7 completed and committed. Phase 8: every task done and gated green; the root README.md is edited but uncommitted because it also carries another session's hunks.",
-    "phases_completed": 7,
-    "phases_total": 8
-  },
-  "handoff_path": "specs/625_formalize_open_future_open_past_modalities/handoffs/phase-8-handoff-20260921T205657Z.md",
   "completion_data": {
-    "completion_summary": "Formalized the manuscript's open-future and open-past modalities as the semantic-only language L^▷ in FormalSystem/OpenLanguage/. The Ockhamist principle is proved valid for the open-future operator over every task frame and its stability transposition is refuted on a finite integer-time frame satisfying every frame axiom, with the time-reversal mirror, S5 for each operator, and the strict strength ordering. One README.md commit remains.",
+    "completion_summary": "A fifth, semantic-only object language L^▷ (L⁺ plus the open-future and open-past modals) is landed in FormalSystem/OpenLanguage/ with all 31 planned theorems proved sorry-free: the Ockhamist principle is valid for the open-future operator over every task frame, its stability transposition is refuted on a three-state integer-time frame satisfying every FrameOver field, the open-past mirror follows by frame reversal, and S5 plus the strict strength ordering box => stability => open-future are machine-checked. Four headline theorems are axiom-pinned and the documentation sweep, including the root README, is committed.",
     "roadmap_items": []
   },
+  "phases_completed": 8,
+  "phases_total": 8,
+  "notes": "Vacuous grep over all of FormalSystem/ matches one pre-existing 2025 line (int_domain_universal := trivial in Examples/TemporalStructures.lean), a genuine proof outside this task; count recorded for task files. Axiom count 14 = 12 under FormalSystem/ + 2 under Tests/, unchanged. Verification snippets were pointed at FormalSystem/ because Theories/ does not exist here.",
   "metadata": {
     "session_id": "sess_1790018097_6c1579",
     "agent_type": "lean-implementation-agent",
@@ -40,62 +33,7 @@
       "skill-lean-implementation"
     ],
     "compliance_check": "passed",
-    "challenge_theorems_proved": 31,
-    "challenge_theorems_total": 31,
-    "commits": [
-      "203619c1b",
-      "d50fd0fed",
-      "69087ab43",
-      "4d588a9d8",
-      "71fb8fd25",
-      "4d70aa21e",
-      "ba3034c09",
-      "a5c676b1e"
-    ],
-    "uncommitted_by_design": [
-      "README.md"
-    ]
-  },
-  "memory_candidates": [
-    {
-      "content": "lake-build-guard.sh build mode requires a lake SUBCOMMAND as the first lake argument: `-- build FormalSystem`, never `-- FormalSystem` (exit 77, nothing built). Piping the guard through `tail`/`grep` reports the pipeline's exit status, so a build that never ran reads as exit 0. Always capture the guard's own status: `set -o pipefail` with `${PIPESTATUS[0]}`, or redirect to a file and append `echo GUARD_EXIT=$?`.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
-      "confidence": 0.95,
-      "suggested_keywords": [
-        "lake-build-guard",
-        "exit 77",
-        "PIPESTATUS",
-        "pipefail",
-        "masked exit code"
-      ]
-    },
-    {
-      "content": "`lake env lean <file>` does NOT apply the lakefile's Mathlib linter options: a file can elaborate with exit 0 and no output yet raise linter warnings (e.g. the `show` tactic linter, which wants `change` when the goal is actually changed) in the real lake build. Single-file elaboration is a fast proof check only; only the guarded lake build is authoritative for a warning-free gate.",
-      "category": "PATTERN",
-      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
-      "confidence": 0.9,
-      "suggested_keywords": [
-        "lake env lean",
-        "linter",
-        "show tactic",
-        "change",
-        "warning budget",
-        "C28"
-      ]
-    },
-    {
-      "content": "When a shared file carries another session's uncommitted hunks, git-commit-scoped.sh cannot commit only your hunks (it commits whole paths from the working tree). Leave the file unstaged, say so in the commit message and handoff, and mark the phase [PARTIAL]: [COMPLETED WITH EXCLUSIONS] is inadmissible because its condition 5 (no residual work) fails. Before staging any shared doc, diff it and confirm every hunk is yours.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
-      "confidence": 0.85,
-      "suggested_keywords": [
-        "concurrent sessions",
-        "foreign hunks",
-        "under-stage",
-        "git-commit-scoped",
-        "PARTIAL"
-      ]
-    }
-  ]
+    "dispatch_seq": 11,
+    "handoff_path": "specs/625_formalize_open_future_open_past_modalities/handoffs/phase-8-handoff-20260921T210314Z.md"
+  }
 }
