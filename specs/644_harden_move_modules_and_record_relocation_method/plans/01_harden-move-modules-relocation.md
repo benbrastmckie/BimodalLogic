@@ -344,70 +344,70 @@ shared tree; scope the check to `scripts/`.)
 
 ---
 
-### Phase 2: docs/development/MODULE_RELOCATION.md [NOT STARTED]
+### Phase 2: docs/development/MODULE_RELOCATION.md [COMPLETED]
 
 **Goal**: The relocation playbook exists, synthesized from the six existing sources rather than
 drafted fresh, and is reachable from the development documentation index.
 
 **Tasks**:
 
-- [ ] Create `docs/development/MODULE_RELOCATION.md` with sections covering, in this order:
-  - [ ] **The seven rewrite classes** — summarize at playbook level and point to
+- [x] Create `docs/development/MODULE_RELOCATION.md` with sections covering, in this order: *(completed)*
+  - [x] **The seven rewrite classes** — summarize at playbook level and point to
         `scripts/move-modules.py`'s module docstring as the executable source of truth; do not
         let the class numbering drift from the code's. Include the ordering fact this revision
         measured: classes run 1, 2, 3, then 4 on each line, so a namespace that coincides with a
         moved module prefix is rewritten by class 2 — everywhere, including archived files — and
         class 4 then finds nothing. `--namespace-map` is needed only where namespace and module
-        prefix differ, and `--namespace-paths` cannot scope what class 2 does.
-  - [ ] **The bare-form trap** — why every rule is anchored on the full old prefix and why a
-        bare-form citation must survive byte-identical.
-  - [ ] **Resolve-map-recompute for relative links** — resolve against the old directory, apply
-        the path mapping, recompute from the new directory; never `../`-counting.
-  - [ ] **Assert the denominator** — a re-rooted counting gate can PASS on a shrunken scan set;
-        cite `MODULE_INVARIANTS.md`'s C11 row and the carried pre-move figure practice.
-  - [ ] **Widen every gate's scan root BEFORE the move** so each widening is a verifiable no-op,
+        prefix differ, and `--namespace-paths` cannot scope what class 2 does. *(completed)*
+  - [x] **The bare-form trap** — why every rule is anchored on the full old prefix and why a
+        bare-form citation must survive byte-identical. *(completed)*
+  - [x] **Resolve-map-recompute for relative links** — resolve against the old directory, apply
+        the path mapping, recompute from the new directory; never `../`-counting. *(completed)*
+  - [x] **Assert the denominator** — a re-rooted counting gate can PASS on a shrunken scan set;
+        cite `MODULE_INVARIANTS.md`'s C11 row and the carried pre-move figure practice. *(completed)*
+  - [x] **Widen every gate's scan root BEFORE the move** so each widening is a verifiable no-op,
         with the atomicity argument: widened first, pre-existing bare citations enter scope while
         the subtree is still at its old location where they do not resolve; moved first,
         citations silently leave scope with a green board. Neither ordering is green alone, so the
-        two steps are atomic.
-  - [ ] **Re-rooting a gate to a top-level directory narrows what a path-shaped pattern can
+        two steps are atomic. *(completed)*
+  - [x] **Re-rooting a gate to a top-level directory narrows what a path-shaped pattern can
         match** — neither a path-shaped nor a module-shaped pattern gates a bare top-level name;
         a directory outside the layer map makes every import into or out of it invisible to the
-        upward-edge measurement.
-  - [ ] **Exe roots sit outside every build closure** — only the build-inclusive harness (C25)
+        upward-edge measurement. *(completed)*
+  - [x] **Exe roots sit outside every build closure** — only the build-inclusive harness (C25)
         catches a broken one; a library build, `lake build` and `lake test` can all be green while
-        exe roots do not compile.
-  - [ ] **A namespace-audit simulation must precede any directory merge** — name
+        exe roots do not compile. *(completed)*
+  - [x] **A namespace-audit simulation must precede any directory merge** — name
         `scripts/measure-refactor-partitions.py namespace-audit` as the pre-merge step to run
         *before* committing to a directory-merge module map, not only as post-move verification;
         record the paths-only-merge hazard (a merge that would have moved unrelated files into the
-        wrong bucket).
-  - [ ] **The historical-statement blind spot** — the tool cannot tell a citation of a module's
+        wrong bucket). *(completed)*
+  - [x] **The historical-statement blind spot** — the tool cannot tell a citation of a module's
         current location from a historical statement about its old one; give the operative test
         ("does the sentence assert something about the past? a provenance column, an 'original
         location', a 'used to be', a dated audit stamp — historical, revert; a navigational link,
         a 'the live tree keeps' — present tense, update"); state the INVERSE error explicitly
         (stale present-tense citations the bare-form exclusion skips, found by hand review only);
         state that `--no-rewrite` addresses the false-positive half only and hand review of the
-        skipped list remains mandatory.
-  - [ ] **Moving a directory that has an aggregator file** — `Foo.lean` beside `Foo/` is the
+        skipped list remains mandatory. *(completed)*
+  - [x] **Moving a directory that has an aggregator file** — `Foo.lean` beside `Foo/` is the
         normal Lean layout and the tool refuses a row whose stem names both. Record the remedy:
         child rows first, remove the emptied directory, then the aggregator row in a second
-        invocation (R8).
-  - [ ] **Tooling** — name `--no-rewrite` (with its three built-in defaults and ADD semantics),
+        invocation (R8). *(completed)*
+  - [x] **Tooling** — name `--no-rewrite` (with its three built-in defaults and ADD semantics),
         `--strict`, `--namespace-paths`, the namespace-declaration refusal and what it does NOT
-        refuse (D6), and the zero-move non-zero exit, per Decisions D1-D10 above.
-  - [ ] **Pre-move checklist** — an ordered, runnable sequence ending in a dry run and a hand
-        review of the skipped list.
-- [ ] Cite only durable anchors — filenames, section headings, ADR names, gate IDs (C11, C25).
+        refuse (D6), and the zero-move non-zero exit, per Decisions D1-D10 above. *(completed)*
+  - [x] **Pre-move checklist** — an ordered, runnable sequence ending in a dry run and a hand
+        review of the skipped list. *(completed)*
+- [x] Cite only durable anchors — filenames, section headings, ADR names, gate IDs (C11, C25).
       **No task numbers anywhere in this file**, and no archived task-directory names (they
       embed a number): `check-module-invariants.sh`'s C9-DOCS check fails the harness on any
       task-number citation under `docs/`. Refer to past moves by what they moved ("the
       Expressiveness extraction", "the tooling-library split", "the language-directory merge",
-      "the archive relocation").
-- [ ] Add a `MODULE_RELOCATION.md` row to `docs/development/README.md`'s "Project Organization"
-      table, alongside `MODULE_ORGANIZATION.md` and `MODULE_INVARIANTS.md`.
-- [ ] Verify every relative link in the new file resolves from `docs/development/`.
+      "the archive relocation"). *(completed)*
+- [x] Add a `MODULE_RELOCATION.md` row to `docs/development/README.md`'s "Project Organization"
+      table, alongside `MODULE_ORGANIZATION.md` and `MODULE_INVARIANTS.md`. *(completed)*
+- [x] Verify every relative link in the new file resolves from `docs/development/`. *(completed)*
 
 **Timing**: 1.5 hours
 
