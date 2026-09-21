@@ -325,6 +325,34 @@ obstructions are recorded in `Conservativity/Star/README.md`: the four TM engine
 the registers do not collapse there; and the standard hybrid pure-axiom/PASTE completeness route
 needs nominals, which L⋆ has none of.
 
+### The convex-index consequence relations — `ConvexConsequence/`
+
+The paper's footnoted alternative to `def:logical-consequence` — evaluate at a convex history
+`τ` and a time in `dom τ`, box over the convex histories through that time, tenses restricted to
+`dom τ` — is defined beside the library's own truth relation in `Semantics/ConvexTruth.lean` as
+C3, with C4 its restriction to closed bounded interval indices. `ConvexConsequence/` determines
+what they validate. Nothing here touches C1, the library's own consequence relation.
+
+- **Separations**: `F⊤` is C1-valid and refuted under C3 and C4; `F⊤ → F G⊥` is C4-valid and
+  refuted under C3, so C3 ⊊ C4 (`validC3_imp_validC4`, `validC4_lastPoint`,
+  `refute_C3_lastPoint`).
+- **The survival table**, one theorem per row and once over all 29 constructors
+  (`c3_survival_table`, `c3_failure_table`): four constructors fail — `serial_future`,
+  `discrete_symm_fwd`, `discrete_propagate_fwd`, `discrete_box_necessity` — together with the two
+  derived mirrors `serial_past` and `discrete_symm_bwd`. Every failure is an existence assertion
+  about the temporal order. Everything else survives, including all six frame-class axioms on
+  their own classes and every other past mirror.
+- **The germ theorem**: under the primary box range every boxed `U`/`S`-formula is
+  unsatisfiable (`c3_box_untl_unsat`), since one-point histories are in the box's range. The
+  cut-back range is the named alternative `TruthAtConvexCut`.
+
+No completeness theorem for C3 is stated, and none of this identifies the C3 validities with a
+known axiomatic system.
+
+```lean
+import FormalSystem.Metalogic.ConvexConsequence   -- c3_survival_table, c3_failure_table
+```
+
 ### Decidability — `Decidability/`
 
 A tableau-based decision procedure with countermodel extraction, plus a separate

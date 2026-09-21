@@ -107,11 +107,11 @@ def totalNF : PartialHistory NF :=
   PartialHistory.ofTotal NF (fun _ => (0 : Nat))
     (fun _ _ => (FrameOver.natFrame_rel_iff _ _ _).mpr (Or.inr rfl))
 
-/-- Every time is in the domain of `totalNF`. -/
-theorem totalNF_mem (t : ℤ) : totalNF.domain t := trivial
-
 /-- `totalNF` is total. -/
 theorem totalNF_isTotal : totalNF.IsTotal := PartialHistory.ofTotal_isTotal _ _ _
+
+/-- Every time is in the domain of `totalNF`, by totality. -/
+theorem totalNF_mem (t : ℤ) : totalNF.domain t := totalNF_isTotal t
 
 /-- `totalNF` is convex, being total. -/
 theorem totalNF_isConvex : totalNF.IsConvex := totalNF_isTotal.isConvex

@@ -54,7 +54,10 @@ with total domain" pick out exactly the same histories. The Lean definition foll
 | `τ(x)` at a possible world | `τ.state x` |
 | `H_F` | `WorldHistory F` |
 
-There is deliberately no `ConvexHistory` structure: no proof consumes convexity as a hypothesis.
+There is deliberately no `ConvexHistory` structure. No proof about the library's own truth and
+validity consumes convexity as a hypothesis; the one consumer is `Semantics/ConvexTruth.lean`,
+whose convex-index relations C3 and C4 take `τ.IsConvex` as a hypothesis on the index and on the
+histories the box ranges over, which a predicate serves as well as a structure would.
 `WorldHistory` is a `def` (not an `abbrev`) subtype of `PartialHistory`, so `IsTotal` stays the one
 defining predicate. The layering decision is recorded in
 `docs/architecture/total-history-validity-decisions.md`, Decision B', and the bundling of truth
@@ -269,9 +272,11 @@ history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \i
 $x < y < z$."). The predicate reads `≤` on both sides where the paper has `<`; the two are
 equivalent, since the endpoints `x`, `z` are in the domain by hypothesis.
 
-Convexity is kept as a predicate, not as a structure: no proof in the library consumes it as a
-hypothesis, and every history that truth and validity range over is total, hence convex by
-`IsTotal.isConvex`.
+Convexity is kept as a predicate, not as a structure: every history that the library's own
+truth and validity range over is total, hence convex by `IsTotal.isConvex`. The proofs that do
+consume it as a hypothesis are those of the convex-index relations C3 and C4
+(`Semantics/ConvexTruth.lean` and `Metalogic/ConvexConsequence/`), where it is what returns an
+interpolated time to the index's domain.
 -/
 def IsConvex (τ : PartialHistory F) : Prop :=
   ∀ (x z : F.Duration), τ.domain x → τ.domain z → ∀ (y : F.Duration), x ≤ y → y ≤ z → τ.domain y

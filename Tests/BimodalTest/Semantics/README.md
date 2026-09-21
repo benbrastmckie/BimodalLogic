@@ -11,6 +11,7 @@ Tests for task frame semantics.
 | SemanticPropertyTest.lean | Property-based semantics tests |
 | SaturationFiniteAxiomTest.lean | Axiom-profile evidence for the finite-carrier *Saturation* discharge |
 | OpenLanguageAxiomTest.lean | Axiom-profile guards for the open-future and open-past language: the Ockhamist separating pair, its time-reversal mirror, and `propext`-only conservativity over L⁺ |
+| ConvexTruthTest.lean | Axiom-profile guards for the convex-index consequence relations C3 and C4: the five gap closures of the axiom-survival table, `truthC3_timeShift`, the germ theorem `c3_box_untl_unsat`, one refutation, and both table theorems |
 | DependentUltraproductProbe.lean | Axiom-profile regression check over the promoted ultraproduct modules |
 | ValidityLayerTest.lean | Definitional-coincidence regressions for the abstract validity layer: each language's validity `def`s and derived operators against the generic `PointTruth`/`TruthClauses` ones, plus a toy fifth-language conformance check |
 | QTimeTest.lean | ℚ-time frames: `isQTime_rat`, the ℤ non-example, `validQTime_iff_validDense`, and axiom-profile guards |

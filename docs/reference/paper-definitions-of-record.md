@@ -2149,6 +2149,51 @@ the passage has acquired a resolvable anchor upstream first.
   import-graph fact — and **not** as choice-freedom in Lean's sense, which is a claim about a
   different axiom. The measured accounting lives in `extend_periodic`'s own docstring.
 
+### The alternative-semantics footnote (convex-index evaluation)
+
+- **Location**: `JPL/possible_worlds.tex`, in the footnote attached to the discussion of
+  evaluating `◇P p_w` at a time after a finished game has ended, immediately before the paper
+  states logical consequence (at the time of recording, line 1106). No `\label`, no `\aitem`.
+  It is recorded here as prose anchored to `def:logical-consequence`, the definition it proposes
+  an alternative to.
+- **Relied on by**: `FormalSystem/Semantics/ConvexTruth.lean`, which quotes it in its module
+  docstring and transcribes it clause for clause as `TruthAtConvex`, `ValidC3` and
+  `ConsequenceC3`; and the `FormalSystem/Metalogic/ConvexConsequence/` cluster,
+  which determines what that alternative validates.
+- **Text**:
+
+  > Alternatively, one might evaluate sentences at any convex history $\tau$ together with a time
+  > $x \in \dom{\tau}$, taking $\Box$ to quantify over all convex histories $\sigma$ where
+  > $x \in \dom{\sigma}$, restricting $\Past$ and $\Future$ to the times in $\dom{\tau}$, and
+  > adapting logical consequence to replace $D$ with $\dom{\tau}$.
+  > Since evaluating sentences only at possible worlds excludes no course of events by
+  > \textbf{\ref{thm:extension}}, the present account retains the stronger tense logic.
+
+  Quoted 2026-09-21 from the live paper. Between the two sentences the source carries a
+  **commented-out** third sentence (a `%` line), which is not part of the paper's text and is not
+  quoted: it predicts that under this alternative the seriality axiom `TS` and its past dual
+  fail at the final move of a finished game. The repository does not rely on that sentence; it
+  proves the prediction instead (`refute_C3_serial_future`, `refute_C3_serial_past`).
+
+  This source is **untracked**, and cannot be otherwise: a footnote carries neither a `\label`
+  nor an `\aitem`, the two anchor kinds `resolve_text` supports, so a manifest row for it would be
+  a dangling anchor. It carries no `sha256:` line and is not read by
+  `scripts/check-paper-definitions.sh`. If the paper's wording moves, nothing here goes red; the
+  quotation in `ConvexTruth.lean`'s module docstring and this entry must be re-quoted together
+  by hand.
+
+- **What the formalisation preserves**: all four clauses of the first sentence. "Any convex
+  history `τ` together with a time `x ∈ dom τ`" is the pair of binders `τ.IsConvex` and
+  `τ.domain x` on `ValidC3`; "`□` over all convex histories `σ` where `x ∈ dom σ`" is the `box`
+  clause of `TruthAtConvex`, one-point histories included; "restricting `P` and `F` to the times
+  in `dom τ`" is the domain conjunct on the witness and on the guard times of the `untl` and
+  `snce` clauses, which is how the restriction reads for the paper's primitive `U` and `S`;
+  "replace `D` with `dom τ`" is the final binder of `ValidC3` and `ConsequenceC3`. The second
+  sentence is the paper's reason for *not* adopting the alternative, and the repository follows
+  it: `TruthAt` and `SemanticConsequence` are untouched, and C3 is a relation defined beside
+  them. C4 (`ValidC4`, interval indices only) and the cut-back box range `TruthAtConvexCut` are
+  repository-native refinements with no counterpart in the footnote.
+
 ## Invocation from CI, skills or hooks — decision (CI wired 2026-09-17)
 
 `scripts/check-paper-definitions.sh` now runs in `.github/workflows/ci.yml` as the step

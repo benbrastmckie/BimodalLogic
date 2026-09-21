@@ -345,6 +345,7 @@ release version lives in `Version.lean`.
 - **L⁻ truth**: `MinusLanguage/MinusTruth.lean` - Native truth evaluation for the base language L⁻
 - **Validity**: `Semantics/Validity.lean` - Semantic consequence
 - **L⁻ validity**: `MinusLanguage/MinusValidity.lean` - Base-language validity predicates
+- **Convex-index consequence (C3, C4)**: `Semantics/ConvexTruth.lean`, `Metalogic/ConvexConsequence.lean` - The paper's footnoted alternative semantics, defined beside `TruthAt`, and its axiom-survival table
 - **Soundness**: `Metalogic/Soundness.lean` - Soundness theorem
 - **L⁻ soundness**: `MinusLanguage/Soundness.lean` - Soundness for L⁻, by composition
 - **L⁺ truth and validity**: `PlusLanguage/PlusTruth.lean`, `PlusLanguage/PlusValidity.lean` - Native truth evaluation and validity for L⁺

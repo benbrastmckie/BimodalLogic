@@ -21,7 +21,7 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 |--------|-------|
 | Live `.lean` files | 524 |
 | Live lines of code | 157,353 |
-| Live comment lines | 95,510 |
+| Live comment lines | 95,515 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -123,6 +123,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   │   ├── Algebraic/            # Boolean/ultrafilter infrastructure (FlowFrame, Lindenbaum quotient)
 │   │   ├── Decidability/         # Tableau procedure with proof extraction
 │   │   ├── Independence/         # axiom-independence results
+│   │   ├── ConvexConsequence/    # the paper's footnoted convex-index semantics: what it validates
 │   │   └── SoundnessLemmas/      # per-axiom soundness lemmas
 │   ├── Theorems/                 # Derived theorems (perpetuity, combinators, propositional)
 │   ├── Automation/               # Proof search tactics & training data pipeline

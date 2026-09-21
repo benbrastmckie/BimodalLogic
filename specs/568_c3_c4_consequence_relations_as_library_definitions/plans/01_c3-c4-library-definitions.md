@@ -1,7 +1,7 @@
 # Implementation Plan: Task #568
 
 - **Task**: 568 - C3/C4 consequence relations as library definitions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 18.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md
@@ -541,32 +541,32 @@ planned survival half so that `Axiom.failsC3` is a verdict in both directions.
 
 ---
 
-### Phase 10: Tests, documentation, registration and the full gate [NOT STARTED]
+### Phase 10: Tests, documentation, registration and the full gate [COMPLETED]
 
 **Goal**: Pin the axiom profiles, bring the documentation into line, and run the complete gate
 set.
 
 **Tasks**:
-- [ ] Create `Tests/BimodalTest/Semantics/ConvexTruthTest.lean`, modelled on
+- [x] Create `Tests/BimodalTest/Semantics/ConvexTruthTest.lean`, modelled on
       `OpenLanguageAxiomTest.lean`: `#guard_msgs`-gated `#print axioms` blocks for the four gap
       closures, `truthC3_timeShift`, `c3_box_untl_unsat`, and one refutation. Expected strings are
       measured, not guessed. Import it from `Tests/BimodalTest.lean`.
-- [ ] Amend the module docstring of `FormalSystem/Semantics/PartialHistory.lean`: the sentence
+- [x] Amend the module docstring of `FormalSystem/Semantics/PartialHistory.lean`: the sentence
       saying no proof consumes convexity as a hypothesis is no longer true; name the C3 module as
       the consumer. Documentation only.
-- [ ] README rows: `FormalSystem/Semantics/README.md`, `FormalSystem/Metalogic/README.md`,
+- [x] README rows: `FormalSystem/Semantics/README.md`, `FormalSystem/Metalogic/README.md`,
       `FormalSystem/README.md`, `Tests/BimodalTest/Semantics/README.md`, and the root `README.md`
       if it lists module clusters.
-- [ ] `docs/reference/paper-definitions-of-record.md`: record the paper's alternative-semantics
+- [x] `docs/reference/paper-definitions-of-record.md`: record the paper's alternative-semantics
       footnote verbatim, checked against the paper source named in that file's provenance section,
       as prose anchored to `def:logical-consequence`. Add a manifest row only if the file's
       hashing method admits an unlabelled footnote; otherwise say in the entry that it is
       unpinned and why.
-- [ ] Full build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, then
+- [x] Full build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, then
       the test library.
-- [ ] Full gate: `bash scripts/check-module-invariants.sh`, plus the copyright-header, README-lint
+- [x] Full gate: `bash scripts/check-module-invariants.sh`, plus the copyright-header, README-lint
       and paper-definitions checks.
-- [ ] Repository-wide sorry count unchanged from the pre-task reading.
+- [x] Repository-wide sorry count unchanged from the pre-task reading.
 
 **Timing**: 2 hours
 
@@ -576,6 +576,19 @@ set.
 
 **Scope Hypothesis**: Five READMEs need a row. Confirm with `bash scripts/readme-lint.sh` and
 `bash scripts/readme-inventory.sh`; the lint output is the authority.
+
+**Phase notes**: The README-row work for `Semantics/README.md`, `Metalogic/README.md` and the
+generated inventory blocks was done phase by phase from Phase 3 on (see the deviation recorded
+there); this phase added the Metalogic README's results subsection, the root README tree line,
+the `FormalSystem/README.md` quick-reference line and the test README row. The footnote entry in
+`paper-definitions-of-record.md` is UNPINNED, and says why: the file's resolver supports only
+`\label` and `\aitem` anchors, and a footnote has neither. Two defects of this task's own making
+were caught by the gates and fixed at source: a `:= trivial` membership lemma that tripped the
+vacuous-definition grep (now proved from totality), and a fully-qualified declaration name in the
+docs entry that check C5 read as an unresolvable module path. The test build prints `FAIL:` lines
+from `Tests/BimodalTest/Automation/ProofSearchTest.lean`; they are that module's informational
+proof-search coverage report, the build exits 0, and no file it depends on was changed here
+beyond a docstring.
 
 **Files to modify**:
 - `Tests/BimodalTest/Semantics/ConvexTruthTest.lean` - new
@@ -813,18 +826,18 @@ theorem c3_sep (hR : F.IsRTime) (φ : Formula) :
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem` (through the guard) green at the end of every phase, with no new
+- [x] `lake build FormalSystem` (through the guard) green at the end of every phase, with no new
       sorry.
-- [ ] All 50 pinned statements are present with matching signatures; no hypothesis added, no
+- [x] All 50 pinned statements are present with matching signatures; no hypothesis added, no
       quantifier specialised.
-- [ ] `lean_verify` on the four gap closures, `c3_prior_S_gap` and `truthC3_timeShift`: no
+- [x] `lean_verify` on the four gap closures, `c3_prior_S_gap` and `truthC3_timeShift`: no
       `sorryAx`, no axiom beyond `propext`, `Classical.choice`, `Quot.sound`.
-- [ ] The axiom-profile test module compiles, so the measured profiles are build-breaking pins.
-- [ ] `git diff` across the task shows no semantic edit to the library's truth or validity
+- [x] The axiom-profile test module compiles, so the measured profiles are build-breaking pins.
+- [x] `git diff` across the task shows no semantic edit to the library's truth or validity
       modules.
-- [ ] `scripts/check-module-invariants.sh` and the README, copyright and paper-definition checks
+- [x] `scripts/check-module-invariants.sh` and the README, copyright and paper-definition checks
       pass, or each failure is shown to predate the task.
-- [ ] Warning budget unchanged at zero.
+- [x] Warning budget unchanged at zero.
 
 ## Artifacts & Outputs
 
