@@ -430,7 +430,7 @@ drafted fresh, and is reachable from the development documentation index.
 
 ---
 
-### Phase 3: Move-set integrity — resolve_move ambiguity and the zero-move exit [NOT STARTED]
+### Phase 3: Move-set integrity — resolve_move ambiguity and the zero-move exit [COMPLETED]
 
 **Goal**: Deliverables (3) and (5). A mapping stem that resolves to both a directory and a
 same-named `.lean` file fails loudly naming both, before anything is written; and the report
@@ -439,42 +439,42 @@ zero files moved.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/move-modules.py` in full before editing (a sibling task may have touched
-      the tree).
-- [ ] Write the fixture tests FIRST and observe them red against the unmodified tool; record the
-      red output in the progress file:
-  - [ ] Ambiguity: fixture containing both `FormalSystem/Syntax/Lang/` (a directory with one
+- [x] Re-read `scripts/move-modules.py` in full before editing (a sibling task may have touched
+      the tree). *(completed)*
+- [x] Write the fixture tests FIRST and observe them red against the unmodified tool; record the
+      red output in the progress file: *(completed)*
+  - [x] Ambiguity: fixture containing both `FormalSystem/Syntax/Lang/` (a directory with one
         child module) and `FormalSystem/Syntax/Lang.lean`, with a map row
         `FormalSystem.Syntax.Lang -> ...`. Run in APPLY mode. Assert `rc != 0`, both paths named
         in stderr, the remedy sentence present, and — critically — every file byte-unchanged and
-        nothing moved (nothing is rewritten for a move that will fail).
-  - [ ] Zero moves: fixture whose map row's stem does not exist on disk but whose citations do.
+        nothing moved (nothing is rewritten for a move that will fail). *(completed)*
+  - [x] Zero moves: fixture whose map row's stem does not exist on disk but whose citations do.
         Assert `rc != 0`, a non-zero class 2/3 count, `0 path(s)` for class 6, and the presence of
-        the new moved-vs-rewritten report line.
-- [ ] Change `resolve_move` to signal ambiguity rather than silently preferring the directory:
+        the new moved-vs-rewritten report line. *(completed)*
+- [x] Change `resolve_move` to signal ambiguity rather than silently preferring the directory:
       when `os.path.isdir(stem)` AND `os.path.isfile(stem + ".lean")` both hold, report the
       ambiguity naming both paths. Keep the existing directory-only and file-only branches
       unchanged. Do not use a bare `sys.exit` inside `resolve_move`; signal via a dedicated
       exception that `run`/`move_trees` translate into a non-zero return, so library-style
       callers get a return code. Update `resolve_move`'s docstring: its last sentence ("The
-      directory is preferred when both somehow exist") becomes false.
-- [ ] Per Decision D2, add an up-front ambiguity scan over every mapping at the top of `run()`,
+      directory is preferred when both somehow exist") becomes false. *(completed)*
+- [x] Per Decision D2, add an up-front ambiguity scan over every mapping at the top of `run()`,
       before the walk loop, returning non-zero immediately; and keep a per-mapping check at each
       mapping's own resolution point inside `move_trees` as the backstop, counted as a move
-      failure. Put D2's stated limits in a code comment at the backstop.
-- [ ] Make the refusal text actionable (R8): name both paths, state that `Foo.lean` beside `Foo/`
-      is the normal aggregator layout, and give the remedy in one sentence.
-- [ ] Add a moved-vs-rewritten line to `report()`: files actually moved stated next to the total
+      failure. Put D2's stated limits in a code comment at the backstop. *(completed)*
+- [x] Make the refusal text actionable (R8): name both paths, state that `Foo.lean` beside `Foo/`
+      is the normal aggregator layout, and give the remedy in one sentence. *(completed)*
+- [x] Add a moved-vs-rewritten line to `report()`: files actually moved stated next to the total
       citation-rewrite count (classes 1-5 summed), as one line, so the two figures cannot be read
-      apart.
-- [ ] Add the zero-move branch to `run()`'s exit logic: mappings are always non-empty
+      apart. *(completed)*
+- [x] Add the zero-move branch to `run()`'s exit logic: mappings are always non-empty
       (`parse_map` exits on an empty file), so the condition is simply "`moved` is empty" — and
       `moved` is populated in dry-run mode too, so the branch is dry-run-safe. Print a named
       failure line to stderr explaining that rows were requested and nothing moved. Place it
       alongside the existing `bare_before != bare_after` and `move_failures` branches, not folded
-      into them.
-- [ ] Re-run the fixture suite and observe green; confirm Phase 1's baseline smoke test still
-      passes.
+      into them. *(completed)*
+- [x] Re-run the fixture suite and observe green; confirm Phase 1's baseline smoke test still
+      passes. *(completed)*
 
 **Timing**: 1.5 hours
 

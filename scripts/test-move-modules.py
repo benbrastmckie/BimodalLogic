@@ -153,5 +153,53 @@ class BaselineTest(unittest.TestCase):
                     "See `FormalSystem.Baz.Bar` at `FormalSystem/Baz/Bar.lean`.\n")
 
 
+class MoveSetIntegrityTest(unittest.TestCase):
+    """An ambiguous stem is refused before any write; a run that moves nothing fails."""
+
+    def test_stem_naming_directory_and_file_is_refused(self) -> None:
+        files = {
+            "FormalSystem/Syntax/Lang/Child.lean": "namespace Lang\nend Lang\n",
+            "FormalSystem/Syntax/Lang.lean": "import FormalSystem.Syntax.Lang.Child\n",
+            "docs/x.md": "See `FormalSystem.Syntax.Lang` in `FormalSystem/Syntax/Lang`.\n",
+        }
+        with fixture_repo(files):
+            before = snapshot()
+            module_map = write_map(["FormalSystem.Syntax.Lang -> FormalSystem.Lang"])
+            rc, out, err = run_tool(module_map=module_map)
+            self.assertNotEqual(rc, 0)
+            self.assertIn("FormalSystem/Syntax/Lang/", err)
+            self.assertIn("FormalSystem/Syntax/Lang.lean", err)
+            self.assertIn("aggregator", err)
+            self.assertIn("second invocation", err)
+            # Nothing is rewritten for a move that will fail, and nothing moved.
+            self.assertEqual(snapshot(), before)
+            self.assertFalse(os.path.exists("FormalSystem/Lang"))
+            self.assertFalse(os.path.exists("FormalSystem/Lang.lean"))
+
+    def test_rows_requested_and_nothing_moved_is_a_failure(self) -> None:
+        files = {
+            "FormalSystem/Other.lean": "-- see FormalSystem.Gone.Mod\n",
+            "docs/x.md": "See `FormalSystem.Gone.Mod` at `FormalSystem/Gone/Mod.lean`.\n",
+        }
+        with fixture_repo(files):
+            module_map = write_map(["FormalSystem.Gone.Mod -> FormalSystem.Here.Mod"])
+            rc, out, err = run_tool(module_map=module_map, dry_run=True)
+            self.assertNotEqual(rc, 0)
+            self.assertGreater(class_count(out, "class 2  dotted citations"), 0)
+            self.assertGreater(class_count(out, "class 3  slash-path citations"), 0)
+            self.assertEqual(class_count(out, "class 6  tree moves"), 0)
+            self.assertRegex(
+                out, r"files moved\s+0 in 0 path\(s\), against 3 citation\(s\) rewritten")
+            self.assertIn("nothing moved", err)
+
+    def test_report_states_moved_next_to_rewritten(self) -> None:
+        with fixture_repo(BASELINE_FILES):
+            module_map = write_map(["FormalSystem.Foo.Bar -> FormalSystem.Baz.Bar"])
+            rc, out, err = run_tool(module_map=module_map)
+            self.assertEqual(rc, 0, err)
+            self.assertRegex(
+                out, r"files moved\s+1 in 1 path\(s\), against 3 citation\(s\) rewritten")
+
+
 if __name__ == "__main__":
     unittest.main()

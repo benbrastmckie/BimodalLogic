@@ -380,6 +380,20 @@ def rebase_links(path: str, text: str, mappings: list[Mapping],
     return LINK_RE.sub(replace, text)
 
 
+class AmbiguousStem(Exception):
+    """A mapping stem names BOTH a directory and a same-named `.lean` file."""
+
+    def __init__(self, stem: str) -> None:
+        self.directory = rel(stem) + "/"
+        self.file = rel(stem) + ".lean"
+        super().__init__(
+            f"{rel(stem)} is ambiguous: both {self.directory} and {self.file} "
+            f"exist. `Foo.lean` beside `Foo/` is the normal aggregator layout, and "
+            f"one row cannot move both. Move the directory's contents with child "
+            f"rows first, remove the emptied directory, then move the aggregator "
+            f"file with its own row in a second invocation.")
+
+
 def resolve_move(stem: str) -> tuple[str, str] | None:
     """The on-disk pair a mapping's extension-free stem names, or None.
 
@@ -393,10 +407,14 @@ def resolve_move(stem: str) -> tuple[str, str] | None:
 
     Only the directory case existed when this tool was written, and a
     file-granular row silently reported `skip ... (not present)` -- every
-    citation rewritten, nothing moved, and a report that looked orderly. The
-    directory is preferred when both somehow exist, matching the prefix
-    semantics of the module map itself.
+    citation rewritten, nothing moved, and a report that looked orderly.
+
+    When BOTH exist the row is ambiguous and `AmbiguousStem` is raised, naming
+    both. Preferring the directory, as this function once did, rewrote every
+    citation of the aggregator file and then left the file behind.
     """
+    if os.path.isdir(stem) and os.path.isfile(stem + ".lean"):
+        raise AmbiguousStem(stem)
     if os.path.isdir(stem):
         return stem, ""
     if os.path.isfile(stem + ".lean"):
@@ -404,16 +422,33 @@ def resolve_move(stem: str) -> tuple[str, str] | None:
     return None
 
 
-def move_trees(mappings: list[Mapping], dry_run: bool) -> tuple[list[str], int]:
+def count_files(path: str) -> int:
+    """Files at or under `path`: 1 for a module file, the whole subtree for a directory."""
+    if os.path.isfile(path):
+        return 1
+    return sum(len(names) for _, _, names in os.walk(path))
+
+
+def move_trees(mappings: list[Mapping],
+               dry_run: bool) -> tuple[list[str], int, int]:
     """Class 6 -- relocate each mapped subtree or module with a single `git mv`.
 
     One `git mv`, never a delete-and-add: the rename is what lets
     `git log --follow` cross the relocation, which is the whole reason the
     archive keeps its history rather than reappearing as 225 new files.
     """
-    moved, failures = [], 0
+    moved, failures, file_total = [], 0, 0
     for mapping in mappings:
-        resolved = resolve_move(mapping.old_path)
+        # Backstop for the up-front scan in `run`. It can only fire in apply
+        # mode -- a dry run moves nothing, so an ambiguity one row creates for a
+        # later row never materialises on disk -- and when it fires the citation
+        # writes have already happened. Loud, not a guarantee.
+        try:
+            resolved = resolve_move(mapping.old_path)
+        except AmbiguousStem as exc:
+            print(f"  FAIL {exc}", file=sys.stderr)
+            failures += 1
+            continue
         if resolved is None:
             print(f"  skip {mapping.old_path} (not present)")
             continue
@@ -427,8 +462,10 @@ def move_trees(mappings: list[Mapping], dry_run: bool) -> tuple[list[str], int]:
                   file=sys.stderr)
             failures += 1
             continue
+        file_count = count_files(src)
         if dry_run:
             moved.append(f"{rel(src)} -> {rel(dst)}")
+            file_total += file_count
             continue
         parent = os.path.dirname(dst)
         if parent and not os.path.isdir(parent):
@@ -441,7 +478,8 @@ def move_trees(mappings: list[Mapping], dry_run: bool) -> tuple[list[str], int]:
             failures += 1
             continue
         moved.append(f"{rel(src)} -> {rel(dst)}")
-    return moved, failures
+        file_total += file_count
+    return moved, failures, file_total
 
 
 def run_harness() -> int:
@@ -463,6 +501,18 @@ def run(args: argparse.Namespace) -> int:
     ns_mappings = ([NamespaceMapping(old, new)
                     for old, new in parse_map(args.namespace_map)]
                    if args.namespace_map else [])
+
+    # Every stem is checked against the pre-move tree before anything is read or
+    # written: no citation is rewritten for a move that is going to fail.
+    ambiguous = 0
+    for mapping in mappings:
+        try:
+            resolve_move(mapping.old_path)
+        except AmbiguousStem as exc:
+            print(f"FAIL  {exc}", file=sys.stderr)
+            ambiguous += 1
+    if ambiguous:
+        return 1
 
     counts: dict[str, int] = {"import": 0, "dotted": 0, "slash": 0,
                               "namespace": 0, "baseline": 0}
@@ -508,16 +558,20 @@ def run(args: argparse.Namespace) -> int:
             with open(path, "w", encoding="utf-8") as handle:
                 handle.write(new_text)
 
-    moved, move_failures = move_trees(mappings, args.dry_run)
+    moved, move_failures, moved_files = move_trees(mappings, args.dry_run)
 
     report(args, mappings, ns_mappings, counts, files, changed, moved,
-           link_stats, bare_before, bare_after, len(bare_files))
+           link_stats, bare_before, bare_after, len(bare_files), moved_files)
 
     if bare_before != bare_after:
         print("\nFAIL  bare-form citations were rewritten; every rule must be "
               "anchored on the full old prefix", file=sys.stderr)
         return 1
     if move_failures:
+        return 1
+    if not moved:
+        print("\nFAIL  rows were requested and nothing moved; every stem in the "
+              "module map is absent from this tree", file=sys.stderr)
         return 1
     if args.dry_run or args.no_verify:
         return 0
@@ -528,7 +582,7 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
            ns_mappings: list[NamespaceMapping], counts: dict[str, int],
            files: dict[str, set[str]], changed: list[tuple[str, str]],
            moved: list[str], link_stats: dict[str, int], bare_before: int,
-           bare_after: int, bare_file_count: int) -> None:
+           bare_after: int, bare_file_count: int, moved_files: int) -> None:
     mode = "DRY RUN" if args.dry_run else "APPLIED"
     print(f"=== move-modules ({mode}) ===")
     for mapping in mappings:
@@ -554,6 +608,11 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
           f"{link_stats['skipped']} skipped (not a path in this tree), "
           f"{scanned} scanned")
     print()
+    rewritten = sum(counts.values())
+    # One line, so the two figures cannot be read apart: a run that rewrites
+    # hundreds of citations and moves nothing looks orderly class by class.
+    print(f"  {'files moved':<34} {moved_files:>5} in {len(moved)} path(s), against "
+          f"{rewritten} citation(s) rewritten (classes 1-5)")
     print(f"  audit    bare-form occurrences        {bare_before:>5} before, "
           f"{bare_after:>5} after, in {bare_file_count} file(s)")
     print(f"  files changed                         {len(changed):>5}")
