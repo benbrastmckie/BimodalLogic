@@ -1,7 +1,7 @@
 # Implementation Plan: Task #640
 
 - **Task**: 640 - Readme cold reader restructure
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: Task 639 (completed — README factual corrections already landed)
 - **Research Inputs**: specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md
@@ -122,28 +122,28 @@ their edit regions overlap textually.
 
 ---
 
-### Phase 1: Baseline capture and Tags footer rename [NOT STARTED]
+### Phase 1: Baseline capture and Tags footer rename [COMPLETED]
 
 **Goal**: Record both acceptance gates green before any edit, then land item 4 — the smallest,
 lowest-risk change — to confirm the edit-then-verify loop works end to end.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and record the verdict verbatim.
-      Expected: `ALL CHECKS PASSED`.
-- [ ] Run `bash scripts/readme-lint.sh` and record the verdict verbatim. Expected: `RESULT: PASS`
-      with 0 missing READMEs and 0 broken references.
-- [ ] Record the pre-edit anchor census:
-      `grep -noE '\b(def|thm|lem|cor|app|rmk):[A-Za-z0-9][A-Za-z0-9_-]*' README.md`
-- [ ] Record the pre-edit position of the first section heading: `grep -n '^## ' README.md | head -3`
-- [ ] Locate the Tags footer: `grep -n 'TM-plus' README.md` (expected: exactly one hit, the final
-      line of the file).
-- [ ] Replace the token `TM-plus` with `TM⁺` in the `## Tags` footer line, matching the live
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and record the verdict verbatim.
+      Expected: `ALL CHECKS PASSED`. *(completed: verdict was `ALL CHECKS PASSED`)*
+- [x] Run `bash scripts/readme-lint.sh` and record the verdict verbatim. Expected: `RESULT: PASS`
+      with 0 missing READMEs and 0 broken references. *(completed: `RESULT: PASS`, 0 missing, 0 broken)*
+- [x] Record the pre-edit anchor census:
+      `grep -noE '\b(def|thm|lem|cor|app|rmk):[A-Za-z0-9][A-Za-z0-9_-]*' README.md` *(completed: matches plan's expected baseline exactly)*
+- [x] Record the pre-edit position of the first section heading: `grep -n '^## ' README.md | head -3` *(completed: 39:## Operators)*
+- [x] Locate the Tags footer: `grep -n 'TM-plus' README.md` (expected: exactly one hit, the final
+      line of the file). *(completed: exactly one hit, line 478)*
+- [x] Replace the token `TM-plus` with `TM⁺` in the `## Tags` footer line, matching the live
       naming used in `docs/README.md`, `docs/theorem-index.md`, `FormalSystem/README.md`, and
       README's own four-object-languages table. Rename rather than drop the footer: dropping it
       removes searchable metadata (`bimodal-logic`, `soundness`, `completeness`, `compactness`,
-      `decidability`, `lean4`) that has no other home in the README.
-- [ ] Re-run both gates; confirm both still green.
-- [ ] Commit.
+      `decidability`, `lean4`) that has no other home in the README. *(completed)*
+- [x] Re-run both gates; confirm both still green. *(completed: both green)*
+- [x] Commit. *(completed)*
 
 **Timing**: 0.5 hours
 

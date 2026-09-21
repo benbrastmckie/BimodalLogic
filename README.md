@@ -475,4 +475,4 @@ This project is licensed under Apache-2.0. See [LICENSE](LICENSE) for details.
 
 ## Tags
 
-bimodal-logic · TM-plus · soundness · completeness · compactness · decidability · lean4
+bimodal-logic · TM⁺ · soundness · completeness · compactness · decidability · lean4
