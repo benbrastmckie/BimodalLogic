@@ -21,8 +21,9 @@ by construction.
 
 ## References
 
-- Phase 2: foundational data structures (this file)
-- Phase 3-6: algorithmic content added later.
+* `FormalSystem/ProofSystem/Derivation.lean` — the `DerivationTree` the generator builds forward
+* `BimodalTools/FormulaEnumerator.lean` — the formula supply this draws on
+* `BimodalTools/DataExport.lean` — the JSON serialization the generated proofs are written through
 -/
 
 namespace BimodalTools

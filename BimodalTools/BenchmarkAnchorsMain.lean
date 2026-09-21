@@ -43,10 +43,11 @@ FrameClass.Base throughout.
 
 ## References
 
-- `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`
-- `DataExport.lean`: JSON serialization primitives
-- `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`, JSON serialization methods
-- `Axioms.lean`: The 29 primitive BX axiom constructors (`DerivedAxioms`: the 16 derived schemata)
+* `BimodalTools/DatasetGenerator.lean` — `labelFormula`, `LabeledFormula`
+* `BimodalTools/DataExport.lean` — JSON serialization primitives
+* `BimodalTools/DatasetGenerator.lean` — `labelFormula`, `LabeledFormula`, JSON serialization
+  methods
+* `Axioms.lean`: The 29 primitive BX axiom constructors (`DerivedAxioms`: the 16 derived schemata)
 -/
 
 set_option autoImplicit false

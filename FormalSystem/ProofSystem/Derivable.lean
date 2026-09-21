@@ -50,8 +50,8 @@ lemma `consistent_iff_not_derivable_bot` witnesses this as `Iff.rfl`.
 
 ## References
 
-* [Derivation.lean](./Derivation.lean) - Type-valued derivation trees
-* [MaximalConsistent.lean](../Metalogic/Core/MaximalConsistent.lean) - Consistency definition
+* `FormalSystem/ProofSystem/Derivation.lean` — Type-valued derivation trees
+* `FormalSystem/Metalogic/Core/MaximalConsistent.lean` — Consistency definition
 -/
 
 namespace FormalSystem.ProofSystem

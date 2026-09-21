@@ -117,9 +117,17 @@ python3 scripts/reanchor-lean-citations.py --files <the files you edited>
 ```
 
 Run it **once, at the end of a batch**, after every line-count-changing edit in that batch —
-never interleaved with the edits. It is a maintenance tool, not a gate; the gate is C20. It
-refuses rather than guesses, and `--exact` handles a file whose body docstrings also moved.
-`--selftest` asserts a Δ=0 run over the whole tree changes zero bytes.
+never interleaved with the edits — and **always name the batch's files explicitly**. The tool
+is not idempotent: it computes the shift from the base revision to the working tree, so a
+second run applies the same shift again and every citation ends up doubly shifted. C20 does not
+catch that, because a doubly shifted citation usually still lands on some non-blank line. The
+default file selection (everything changed since the base) makes a second run especially
+dangerous, since the citers the first run rewrote have themselves changed and join the target
+list. To recover, restore the citation-only-changed citer files from the base and run once.
+
+It is a maintenance tool, not a gate; the gate is C20. It refuses rather than guesses, and
+`--exact` handles a file whose body docstrings also moved. `--selftest` asserts a Δ=0 run over
+the whole tree changes zero bytes.
 
 ## 5. Recorded baselines
 

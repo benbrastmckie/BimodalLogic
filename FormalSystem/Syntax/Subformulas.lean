@@ -27,7 +27,8 @@ decidability procedures.
 
 ## References
 
-- Migrated from `FormalSystem.Metalogic.Decidability.SignedFormula` for better modularity
+* `FormalSystem/Metalogic/Decidability/SignedFormula.lean` — where these closure operations
+  lived before they were moved here for modularity
 -/
 
 namespace FormalSystem.Syntax

@@ -39,7 +39,7 @@ atom names) map to the same canonical representative.
 
 ## References
 
-- Measured deduplication ratio: 4.58x at complexity 7 and complexity 8
+* `FormalSystem/Syntax/Formula.lean` — the `Formula` and `Atom` types the permutation acts on
 -/
 
 set_option autoImplicit false

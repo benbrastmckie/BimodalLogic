@@ -114,9 +114,12 @@ own, (10) defines a first-order condition on intervals, his (10)*, not linearity
 
 ## References
 
-* [burgess1982], [burgess1984]: Until-Since temporal logic axiomatization
-* [xu1988]: Completeness for Until-Since on linear orders
-* [venema1993]: Temporal logic survey
+* [J. P. Burgess, *Axioms for Tense Logic. I. "Since" and "Until"*][burgess1982] — the
+  Until-Since temporal-logic axiomatization
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984] — the same axiomatization as the Handbook
+  presents it
+* [M. Xu, *On Some U, S-Tense Logics*][xu1988] — completeness for Until-Since on linear orders
+* [Y. Venema, *Since and Until*][venema1993] — the temporal-logic survey
 -/
 
 namespace FormalSystem.ProofSystem

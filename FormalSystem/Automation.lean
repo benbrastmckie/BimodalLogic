@@ -105,7 +105,7 @@ Search strategies (in order):
 
 ## References
 
-* [Tactics.lean](Automation/Tactics.lean) - Custom proof tactics
-* [ProofSearch.lean](Automation/ProofSearch.lean) - Native search functions
-* [SuccessPatterns.lean](Automation/SuccessPatterns.lean) - Pattern learning database
+* `FormalSystem/Automation/Tactics/` — Custom proof tactics
+* `FormalSystem/Automation/ProofSearch/` — Native search functions
+* `FormalSystem/Automation/SuccessPatterns.lean` — Pattern learning database
 -/

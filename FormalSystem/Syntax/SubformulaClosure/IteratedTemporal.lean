@@ -34,7 +34,8 @@ the `Core -> Bundle` directory import edge that relocation removed.
 
 ## References
 
-- `NestingDepth.lean`: `fNestingDepth`, `pNestingDepth`, `maxFNestingDepth`, `maxPNestingDepth`
+* `FormalSystem/Syntax/SubformulaClosure/NestingDepth.lean` — `fNestingDepth`, `pNestingDepth`,
+  `maxFNestingDepth`, `maxPNestingDepth`
 -/
 
 namespace FormalSystem.Syntax
@@ -54,7 +55,7 @@ n-fold application of the F (someFuture) operator.
 - `iterF 0 φ = φ`
 - `iterF (n+1) φ = F(iterF n φ)`
 
-This captures "F^n(φ)" notation from the research report.
+This is the `F^n(φ)` notation: `n` applications of the `someFuture` operator.
 -/
 def iterF : Nat → Formula → Formula
   | 0, phi => phi

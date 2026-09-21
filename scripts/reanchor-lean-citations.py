@@ -21,6 +21,16 @@ headings in the tree sit inside the leading module docstring. The tool VERIFIES 
 assumption instead of trusting it -- it compares the old and new content below the
 docstring and refuses the file if they differ (see `--exact` for the other case).
 
+RUN IT EXACTLY ONCE PER BATCH, WITH AN EXPLICIT `--files`. The tool is NOT
+idempotent. Δ is computed from `--base` (HEAD by default) to the working tree, so a
+second run applies the same Δ a second time and every citation ends up shifted by
+2Δ — and C20 will still PASS, because a double-shifted citation usually lands on
+some other non-blank line. The default `--files` (every `.lean` changed vs `--base`)
+makes this easy to trip: after the first run the rewritten CITERS are changed too,
+so they join the target list. Always pass the batch's own edited files explicitly,
+and run once. To recover from a double run, restore the citation-only-changed citer
+files from `--base` and run again.
+
 REFUSALS. The tool refuses rather than guesses, and reports what it refused:
   * a file whose leading `/-! … -/` block it cannot locate;
   * a file whose content below that block changed (the single-Δ model does not

@@ -63,8 +63,8 @@ This is handled automatically by `DerivationTree.time_reflection`.
 
 ## References
 
-- [goldblatt1992], *Logics of Time and Computation*
-- [blackburn2002], *Modal Logic*
+* [R. Goldblatt, *Logics of Time and Computation*][goldblatt1992]
+* [P. Blackburn, M. de Rijke and Y. Venema, *Modal Logic*][blackburn2002]
 -/
 
 namespace FormalSystem.ProofSystem

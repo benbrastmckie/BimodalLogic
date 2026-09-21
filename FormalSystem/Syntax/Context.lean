@@ -33,8 +33,8 @@ This module defines the Context type used to represent assumptions in derivation
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - Proof system specification
-* [Formula.lean](./Formula.lean) - Formula type definition
+* `docs/user-guide/architecture.md` — Proof system specification
+* `FormalSystem/Syntax/Formula.lean` — Formula type definition
 -/
 
 namespace FormalSystem.Syntax

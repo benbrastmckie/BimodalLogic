@@ -48,8 +48,8 @@ Use method syntax: `φ.allPast`, `φ.someFuture`, etc.
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - TM logic specification
-* [LEAN Style Guide](../../../docs/development/LEAN_STYLE_GUIDE.md) - Coding conventions
+* `docs/user-guide/architecture.md` — TM logic specification
+* `docs/development/LEAN_STYLE_GUIDE.md` — Coding conventions
 -/
 
 namespace FormalSystem.Syntax

@@ -66,10 +66,10 @@ Invoked by `scripts/typst-machine-appendix.sh`, which injects the git stamps
 
 ## References
 
-- `FormalSystem.ProofSystem.Axioms` — the 29 `Axiom` constructors and `FrameClass`
-- `FormalSystem.ProofSystem.Derivation` — the 7 `DerivationTree` constructors
-- `BimodalTools.DataExport` — `Formula.toJson`, `prettyPrint`, escaping
-- `BimodalTools.AxiomNames` — `allAxiomNames` (canonical 29-name list)
+* `FormalSystem.ProofSystem.Axioms` — the 29 `Axiom` constructors and `FrameClass`
+* `FormalSystem.ProofSystem.Derivation` — the 7 `DerivationTree` constructors
+* `BimodalTools.DataExport` — `Formula.toJson`, `prettyPrint`, escaping
+* `BimodalTools.AxiomNames` — `allAxiomNames` (canonical 29-name list)
 -/
 
 namespace BimodalTools.MachineAppendixMain

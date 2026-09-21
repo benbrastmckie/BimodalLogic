@@ -51,12 +51,12 @@ Then send JSON requests on stdin, one per line. Responses appear on stdout.
 
 ## References
 
-- `BenchmarkOracleMain.lean`: `pFormula` JSON parser
-- `DecisionProcedure.lean`: `decideAuto`
-- `ProofStepExtractor.lean`: `extractStepSequence`, `ProofStep.toJson`
-- `CountermodelExtraction.lean`: `SimpleCountermodel.toJson`
-- `EnrichedCountermodel.lean`: `EnrichedCountermodel.toJson`
-- `DatasetGenerator.lean`: `extractProofTrace`, `ProofTrace.toJson`
+* `BimodalTools/BenchmarkOracleMain.lean` — `pFormula` JSON parser
+* `DecisionProcedure.lean`: `decideAuto`
+* `BimodalTools/ProofStepExtractor.lean` — `extractStepSequence`, `ProofStep.toJson`
+* `CountermodelExtraction.lean`: `SimpleCountermodel.toJson`
+* `BimodalTools/EnrichedCountermodel.lean` — `EnrichedCountermodel.toJson`
+* `BimodalTools/DatasetGenerator.lean` — `extractProofTrace`, `ProofTrace.toJson`
 -/
 
 set_option autoImplicit false

@@ -50,10 +50,11 @@ recorded in emitted datasets, not a module path, so it keeps its historical spel
 
 ## References
 
-- `DatasetGenerator.lean`: `LabeledFormula`, `labelBatch`, `computeBatchStats`, `BatchStats`
-- `FormulaEnumerator.lean`: `EnumConfig`, `enumerateUpToDepth`
-- `DataExport.lean`: JSON serialization primitives
-- `EnrichedCountermodel.lean`: Enriched countermodel extraction
+* `BimodalTools/DatasetGenerator.lean` — `LabeledFormula`, `labelBatch`, `computeBatchStats`,
+  `BatchStats`
+* `BimodalTools/FormulaEnumerator.lean` — `EnumConfig`, `enumerateUpToDepth`
+* `BimodalTools/DataExport.lean` — JSON serialization primitives
+* `BimodalTools/EnrichedCountermodel.lean` — Enriched countermodel extraction
 -/
 
 set_option autoImplicit false

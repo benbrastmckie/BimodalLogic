@@ -74,8 +74,9 @@ this note rather than repeat the trial.
 
 ## References
 
-* [DeductionTheorem.lean](../../Theorems/DeductionTheorem.lean) — the theorem applied
-* [UserTactics.lean](./UserTactics.lean) — the tactic-elaborator infrastructure this follows
+* `FormalSystem/Theorems/DeductionTheorem.lean` — the theorem applied
+* `FormalSystem/Automation/Tactics/UserTactics.lean` — the tactic-elaborator infrastructure this
+  follows
 -/
 
 namespace FormalSystem.Automation

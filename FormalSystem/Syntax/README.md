@@ -12,7 +12,7 @@ Core syntactic definitions for TM bimodal logic formulas.
 | `Context.lean` | 210 | `Context`: Type alias for `List Formula` (proof contexts) |
 | `Formula.lean` | 795 | `Formula`: Inductive formula type with modal and temporal operators |
 | `SubformulaClosure.lean` | 38 | Sibling aggregator for `SubformulaClosure/` |
-| `Subformulas.lean` | 235 | `subformulas`: Subformula relation and listing function |
+| `Subformulas.lean` | 236 | `subformulas`: Subformula relation and listing function |
 | `SubformulaClosure/` | — | Subformula closure as `Finset` for BFMCS construction (4 files) |
 <!-- END GENERATED -->
 

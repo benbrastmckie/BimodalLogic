@@ -40,9 +40,9 @@ The serialization mirrors the style of `BimodalTools.DataExport`:
 
 ## References
 
-- `BimodalTools.DataExport` — String-based JSON helpers.
-- `FormalSystem.Metalogic.Decidability.TraceCertificate` — Data types.
-- `tableau_rule_firing_traces` — the rule-firing trace deliverable exported here.
+* `BimodalTools.DataExport` — String-based JSON helpers.
+* `FormalSystem.Metalogic.Decidability.TraceCertificate` — Data types.
+* `tableau_rule_firing_traces` — the rule-firing trace deliverable exported here.
 -/
 
 namespace BimodalTools.TraceExport

@@ -330,7 +330,7 @@ def controlRows : List Row :=
     , target := "CLOSED", note := "K axiom for G" }
   ]
 /-- The five seriality/dual probes carried over from the cslib tableau survey (03 §6).
-All five are valid here: `serial_future`/`serial_past` (`ProofSystem/Axioms.lean:176`,
+All five are valid here: `serial_future`/`serial_past` (`ProofSystem/Axioms.lean:179`,
 `ProofSystem/DerivedAxioms.lean:84`) are axioms of the system, so `F⊤` and `P⊤` are theorems and
 the rest follow.
 

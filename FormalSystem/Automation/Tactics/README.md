@@ -13,7 +13,7 @@ This subdirectory holds the tactic elaborators and the proof-search engine behin
 | File | Lines | Description |
 |------|-------|-------------|
 | `Commands.lean` | 160 | The `modal_search` tactic: its `SearchConfig`, its two syntax forms, and the elaborators that run the search |
-| `Deduction.lean` | 181 | `deduction`, `deduction n` and `undischarge`: frame-class-polymorphic applications of `Metalogic.Core.deductionTheorem` to derivability goals |
+| `Deduction.lean` | 182 | `deduction`, `deduction n` and `undischarge`: frame-class-polymorphic applications of `Metalogic.Core.deductionTheorem` to derivability goals |
 | `Search.lean` | 624 | The bounded proof-search engine: `searchProof` and its five strategies, working in `TacticM` because `Axiom` is `Prop`-valued and `DerivationTree` is not |
 | `UserTactics.lean` | 274 | The tactics a proof author writes by hand -- `apply_axiom`, `modal_t`, `assumption_search` -- and the `Formula` predicates and extractors that decide when they apply |
 <!-- END GENERATED -->

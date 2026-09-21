@@ -39,9 +39,9 @@ and what subgoals remain.
 
 ## References
 
-- `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and constructors
-- `FormalSystem.ProofSystem.Axioms` — `Axiom` inductive with 29 constructors
-- `BimodalTools.DataExport` — JSON serialization helpers
+* `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and constructors
+* `FormalSystem.ProofSystem.Axioms` — `Axiom` inductive with 29 constructors
+* `BimodalTools.DataExport` — JSON serialization helpers
 -/
 
 namespace BimodalTools.ProofStepExtractor

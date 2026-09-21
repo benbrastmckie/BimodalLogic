@@ -35,9 +35,10 @@ network training.
 
 ## References
 
-- `DatasetGenerator.lean`: `LabeledFormula`, `labelFormula`, `labelBatch`
-- `FormulaEnumerator.lean`: `EnumConfig`, `enumerateUpToDepth`, `smallConfig`, `mediumConfig`
-- `DataExport.lean`: JSON serialization primitives
+* `BimodalTools/DatasetGenerator.lean` — `LabeledFormula`, `labelFormula`, `labelBatch`
+* `BimodalTools/FormulaEnumerator.lean` — `EnumConfig`, `enumerateUpToDepth`, `smallConfig`,
+  `mediumConfig`
+* `BimodalTools/DataExport.lean` — JSON serialization primitives
 -/
 
 set_option autoImplicit false

@@ -45,8 +45,8 @@ encoding in terms of `imp`, `bot`, `untl`, `snce`.
 
 ## References
 
-- Formula AST: FormalSystem/Syntax/Formula.lean
-- Decision procedure: FormalSystem/Metalogic/Decidability/DecisionProcedure.lean
+* `FormalSystem/Syntax/Formula.lean` — Formula AST
+* `FormalSystem/Metalogic/Decidability/DecisionProcedure.lean` — Decision procedure
 -/
 
 set_option autoImplicit false

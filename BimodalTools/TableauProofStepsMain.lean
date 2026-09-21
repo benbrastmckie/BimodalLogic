@@ -52,9 +52,9 @@ DecisionProcedure.decideAuto(phi)
 
 ## References
 
-- `BimodalTools.FormulaEnumerator` — formula generation
-- `FormalSystem.Metalogic.Decidability.DecisionProcedure` — `decideAuto`
-- `BimodalTools.ProofStepExtractor` — `extractStepSequence`
+* `BimodalTools.FormulaEnumerator` — formula generation
+* `FormalSystem.Metalogic.Decidability.DecisionProcedure` — `decideAuto`
+* `BimodalTools.ProofStepExtractor` — `extractStepSequence`
 -/
 
 set_option autoImplicit false

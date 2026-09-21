@@ -27,10 +27,9 @@ interesting results. The multiplicative SNT gate ensures trivial formulas
 
 ## References
 
-- Report 01: 8-dimension taxonomy (SNT, OD, PDR, PRD, SN, IC, LU, CC)
-- Report 02: Three-tier architecture with domain-specific bonuses (36+ sources)
-- Schmidhuber compression progress theory
-- SPEED-RL difficulty-based curriculum
+* Design provenance, cited by name rather than by key because neither is transcribed here:
+  Schmidhuber's compression-progress theory of interestingness, and the SPEED-RL
+  difficulty-based curriculum
 -/
 
 set_option autoImplicit false

@@ -26,7 +26,7 @@ Where `formulas.txt` contains one JSON AST per line.
 
 ## References
 
-- `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`
+* `BimodalTools/DatasetGenerator.lean` — `labelFormula`, `LabeledFormula`
 -/
 
 set_option autoImplicit false

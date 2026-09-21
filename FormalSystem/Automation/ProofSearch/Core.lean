@@ -139,23 +139,21 @@ Where b = branching factor, d = depth of shallowest solution.
 BestFirst significantly outperforms IDDFS on context-based goals requiring
 modus ponens or assumption lookup in larger contexts.
 
-## Implementation Status
+## Capabilities
 
-**Implemented**:
-- ✓ Bounded DFS with heuristics and caching
-- ✓ Iterative deepening DFS (IDDFS) with completeness guarantees
-- ✓ Best-first search with priority queue
-- ✓ Success pattern learning with `PatternDatabase`
-- ✓ Pattern-aware heuristic scoring
-- ✓ SearchStrategy enum with unified interface
-- ✓ Visit limit enforcement
-- ✓ Search statistics tracking
-- ✓ Domain-specific heuristics (modal, temporal, structure)
-- ✓ Comprehensive benchmark suite
+- Bounded DFS with heuristics and caching
+- Iterative deepening DFS (IDDFS) with completeness guarantees
+- Best-first search with priority queue
+- Success pattern learning with `PatternDatabase`
+- Pattern-aware heuristic scoring
+- `SearchStrategy` enum with unified interface
+- Visit limit enforcement
+- Search statistics tracking
+- Domain-specific heuristics (modal, temporal, structure)
+- Comprehensive benchmark suite
 
-**Future Work**:
-- Proof term construction (blocked by Axiom Prop vs Type issue)
-- Adaptive strategy selection based on goal analysis
+Not provided here: proof-term construction, which the `Axiom` `Prop`-versus-`Type` distinction
+blocks, and adaptive strategy selection based on goal analysis.
 
 ## Example Usage
 
@@ -177,10 +175,13 @@ let finalResult := batchSearchWithLearning benchmarks
 
 ## References
 
-* [korf1985] — the IDDFS strategy below
-* [yang2019] — design provenance for the pattern-learning layer
-* Automated Theorem Proving: https://www.cs.cmu.edu/~fp/courses/atp/
-* LEAN Proof Search: Mathlib's `solve_by_elim` tactic
+* [R. E. Korf, *Depth-First Iterative-Deepening: An Optimal Admissible Tree Search*][korf1985],
+  the IDDFS strategy below
+* [K. Yang and J. Deng, *Learning to Prove Theorems via Interacting with Proof
+  Assistants*][yang2019], design provenance for the pattern-learning layer
+* [Automated Theorem Proving](https://www.cs.cmu.edu/~fp/courses/atp/) — Pfenning's course
+  notes, background for the search strategy
+* `Mathlib/Tactic/SolveByElim.lean` — Mathlib's `solve_by_elim`, the nearest upstream analogue
 -/
 
 namespace FormalSystem.Automation

@@ -74,7 +74,8 @@ valid = [r for r in records if r["label"] == "valid"]
 
 ## References
 
-- DataExport.lean: existing JSON serialization primitives (toJson for Formula, Atom, etc.)
+* `BimodalTools/DataExport.lean` — the JSON serialization primitives (`toJson` for `Formula`,
+  `Atom` and the rest)
 -/
 
 set_option autoImplicit false
@@ -132,8 +133,7 @@ def augmentationInfoToJson (ai : AugmentationInfo) : String :=
 -/
 
 /--
-A complete dataset record ready for JSONL export.
-Mirrors the JSON schema from the research report.
+A complete dataset record ready for JSONL export, in the JSON schema the exporter emits.
 -/
 structure DatasetRecord where
   /-- Unique identifier (e.g., "bmlogic-00001"). -/

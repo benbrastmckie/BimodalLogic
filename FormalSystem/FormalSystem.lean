@@ -115,13 +115,13 @@ import FormalSystem.Theorems
 
 ## References
 
-* [Syntax.lean](Syntax.lean) - Formula syntax
-* [ProofSystem.lean](ProofSystem.lean) - Axioms and derivation
-* [Semantics.lean](Semantics.lean) - Task frame semantics
-* [Metalogic.lean](Metalogic.lean) - Soundness, completeness, decidability
-* [Theorems.lean](Theorems.lean) - Derived theorems (6 modules)
-* [Automation.lean](Automation.lean) - Proof tactics
-* [Examples.lean](Examples.lean) - Pedagogical examples
+* `FormalSystem/Syntax.lean` — Formula syntax
+* `FormalSystem/ProofSystem.lean` — Axioms and derivation
+* `FormalSystem/Semantics.lean` — Task frame semantics
+* `FormalSystem/Metalogic.lean` — Soundness, completeness, decidability
+* `FormalSystem/Theorems.lean` — Derived theorems (6 modules)
+* `FormalSystem/Automation.lean` — Proof tactics
+* `FormalSystem/Examples.lean` — Pedagogical examples
 -/
 
 namespace FormalSystem

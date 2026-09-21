@@ -83,9 +83,9 @@ open FormalSystem.Theorems.Perpetuity
 
 ## References
 
-* [Combinators.lean](Theorems/Combinators.lean) - SKI combinator basis
-* [Propositional/](Theorems/Propositional/README.md) - Classical propositional theorems
-* [ModalS5.lean](Theorems/ModalS5.lean) - S5 modal logic theorems
-* [ModalS4.lean](Theorems/ModalS4.lean) - S4 nested modality theorems
-* [Perpetuity.lean](Theorems/Perpetuity.lean) - Modal-temporal perpetuity principles
+* `FormalSystem/Theorems/Combinators.lean` — SKI combinator basis
+* `FormalSystem/Theorems/Propositional/README.md` — Classical propositional theorems
+* `FormalSystem/Theorems/ModalS5.lean` — S5 modal logic theorems
+* `FormalSystem/Theorems/ModalS4.lean` — S4 nested modality theorems
+* `FormalSystem/Theorems/Perpetuity.lean` — Modal-temporal perpetuity principles
 -/

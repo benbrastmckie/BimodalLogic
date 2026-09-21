@@ -317,29 +317,29 @@ citer files.
 
 ---
 
-### Phase 4: FormalSystem root modules, Syntax, ProofSystem, Automation, BimodalTools [NOT STARTED]
+### Phase 4: FormalSystem root modules, Syntax, ProofSystem, Automation, BimodalTools [COMPLETED]
 
 - **Goal:** Convert the first bulk file set, the one with the densest tooling-note prose.
 - **Tasks:**
-  - [ ] Convert the `## References` blocks in: the 6 `FormalSystem/*.lean` root modules
+  - [x] Convert the `## References` blocks in: the 6 `FormalSystem/*.lean` root modules
         (`FormalSystem.lean`, `Syntax.lean`, `Semantics.lean`, `ProofSystem.lean`,
         `Theorems.lean`, `Automation.lean`), `FormalSystem/Syntax/` (5),
         `FormalSystem/ProofSystem/` (4), `FormalSystem/Automation/` (4), `BimodalTools/` (18).
-  - [ ] Strip `BimodalTools/`'s tooling-note prose: measured-benchmark lines
+  - [x] Strip `BimodalTools/`'s tooling-note prose: measured-benchmark lines
         (`Measured deduplication ratio: 4.58x at complexity 7`) and phase-history lines
         (`Phase 2: foundational data structures (this file)`). Keep any statement that tells a
         reader how to *use* the tool.
-  - [ ] Remove `## Implementation Status` at `FormalSystem/Automation/ProofSearch/Core.lean:142`.
+  - [x] Remove `## Implementation Status` at `FormalSystem/Automation/ProofSearch/Core.lean:142`.
         **Check the section first**: remove a *status* claim, never a *name list* that C14/C21
         read. If it carries pinned declaration names, move the names under a descriptive heading
         in the body and remove only the status prose.
-  - [ ] Repair the 2 broken directory-shaped links from `FormalSystem/Automation.lean`
+  - [x] Repair the 2 broken directory-shaped links from `FormalSystem/Automation.lean`
         (`Automation/{Tactics,ProofSearch}.lean` are both directories) via the backticked
         repo-relative conversion.
-  - [ ] `BimodalTools/TraceExporterMain.lean` has TWO `## References` headings and is the one
-        C20 target heading outside a leading docstring — hand-verify its re-anchor.
-  - [ ] Run the re-anchor tool over this file set at the END of the phase; then
-        `--emit-inventory` and `--emit-inventory --check`.
+  - [x] `BimodalTools/TraceExporterMain.lean` has TWO `## References` headings and is the one
+        C20 target heading outside a leading docstring — hand-verify its re-anchor. *(deviation: altered — the two headings turn out to sit in two VERBATIM-DUPLICATED leading `/-! … -/` blocks; the second is the first plus one extra bullet. Both were normalised; the duplication itself is left alone, being a structural defect no plan item or acceptance row covers. The file was re-anchored under `--exact`, which reports 0 rewrites.)*
+  - [x] Run the re-anchor tool over this file set at the END of the phase; then
+        `--emit-inventory` and `--emit-inventory --check`. *(deviation: altered — `FormalSystem/Theorems.lean` is named in BOTH this phase's root-module list and Phase 6's; it was converted here. The re-anchor was accidentally run twice, which double-shifted 17 citations across 8 citer files (C20 still PASSED, since a doubly shifted citation lands on some other non-blank line); the 8 citation-only-changed citers were restored from HEAD and the tool re-run once, and the resulting +3 shift into `ProofSystem/Axioms.lean` was verified content-identical against HEAD. The tool is NOT idempotent; a prominent warning was added to its docstring and to `docs/development/REFERENCE_NORMAL_FORM.md`.)*
 - **Timing:** 1.5 hours
 - **Depends on:** 3
 - **Verification Tier:** full

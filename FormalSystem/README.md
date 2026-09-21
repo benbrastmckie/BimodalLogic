@@ -258,7 +258,7 @@ invariant check allowlists it by name (check C8).
 | `MinusLanguage.lean` | 67 | <!-- TODO: add description --> |
 | `PlusLanguage.lean` | 80 | <!-- TODO: add description --> |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
-| `Semantics.lean` | 241 | Re-export for Semantics submodule |
+| `Semantics.lean` | 240 | Re-export for Semantics submodule |
 | `StarLanguage.lean` | 79 | <!-- TODO: add description --> |
 | `Syntax.lean` | 93 | Re-export for Syntax submodule |
 | `Tactic.lean` | 39 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |

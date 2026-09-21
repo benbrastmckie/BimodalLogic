@@ -86,8 +86,8 @@ example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box :=
 
 ## References
 
-* [Axioms.lean](ProofSystem/Axioms.lean) - Axiom schemata definitions
-* [Derivation.lean](ProofSystem/Derivation.lean) - Derivation tree and inference rules
-* [LinearityDerivedFacts.lean](ProofSystem/LinearityDerivedFacts.lean) - `temp_linearity`
+* `FormalSystem/ProofSystem/Axioms.lean` — Axiom schemata definitions
+* `FormalSystem/ProofSystem/Derivation.lean` — Derivation tree and inference rules
+* `FormalSystem/ProofSystem/LinearityDerivedFacts.lean` — `temp_linearity`
 consequences and non-derivability counterexample
 -/

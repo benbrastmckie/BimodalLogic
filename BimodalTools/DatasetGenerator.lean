@@ -83,7 +83,7 @@ Formal soundness proofs in `PrefilterSoundness.lean`.
 
 ## References
 
-- DecisionProcedure: FormalSystem/Metalogic/Decidability/DecisionProcedure.lean
+* `FormalSystem/Metalogic/Decidability/DecisionProcedure.lean` — DecisionProcedure
 -/
 
 set_option linter.style.longFile 1900

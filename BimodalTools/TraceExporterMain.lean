@@ -44,8 +44,8 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter -- --fuel 200 --frame-c
 
 ## References
 
-- `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
-- `BimodalTools.TraceExport.proofCertificateToJsonString` — JSON serializer.
+* `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
+* `BimodalTools.TraceExport.proofCertificateToJsonString` — JSON serializer.
 -/
 
 /-!
@@ -79,9 +79,9 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter -- --fuel 200 --frame-c
 
 ## References
 
-- `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
-- `BimodalTools.TraceExport.proofCertificateToJsonString` — JSON serializer.
-- `BimodalTools.DatasetGeneratorMain.parseFormulaSExpr` — S-expression formula parser.
+* `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry point.
+* `BimodalTools.TraceExport.proofCertificateToJsonString` — JSON serializer.
+* `BimodalTools.DatasetGeneratorMain.parseFormulaSExpr` — S-expression formula parser.
 -/
 
 set_option autoImplicit false

@@ -86,8 +86,8 @@ def assumptions : Context := [Formula.atomS "p", Formula.atomS "q"]
 
 ## References
 
-* [Formula.lean](Syntax/Formula.lean) - Formula type and operators
-* [Context.lean](Syntax/Context.lean) - Context type for proof assumptions
-* [README.md](Syntax/README.md) - the `Language family` section, mapping each operator delta
+* `FormalSystem/Syntax/Formula.lean` — Formula type and operators
+* `FormalSystem/Syntax/Context.lean` — Context type for proof assumptions
+* `FormalSystem/Syntax/README.md` — the `Language family` section, mapping each operator delta
   (including the stability modal `⊡`/`stab`, "boxdot") to its root-level directory
 -/

@@ -232,10 +232,9 @@ variable {F : TaskFrame} (M : TaskModel F) (τ : PartialHistory F) (t : F.Durati
 
 ## References
 
-* [TaskFrame.lean](Semantics/TaskFrame.lean) - Task frame structure
-* [PartialHistory.lean](Semantics/PartialHistory.lean) - Partial and world histories, and
-  `WorldHistory`
-* [TaskModel.lean](Semantics/TaskModel.lean) - Task model with valuation
-* [Truth.lean](Semantics/Truth.lean) - Truth evaluation
-* [Validity.lean](Semantics/Validity.lean) - Validity and semantic consequence
+* `FormalSystem/Semantics/TaskFrame.lean` — Task frame structure
+* `FormalSystem/Semantics/PartialHistory.lean` — Partial and world histories, and `WorldHistory`
+* `FormalSystem/Semantics/TaskModel.lean` — Task model with valuation
+* `FormalSystem/Semantics/Truth.lean` — Truth evaluation
+* `FormalSystem/Semantics/Validity.lean` — Validity and semantic consequence
 -/

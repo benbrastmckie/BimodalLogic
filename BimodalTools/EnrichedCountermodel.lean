@@ -38,9 +38,9 @@ subformulas are the obstruction.
 
 ## References
 
-- `FormalSystem.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
-- `FormalSystem.Metalogic.Decidability.SignedFormula` — `SignedFormula`, `Branch`
-- `FormalSystem.Metalogic.Decidability.Saturation` — `buildTableau`, `ExpandedTableau`
+* `FormalSystem.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
+* `FormalSystem.Metalogic.Decidability.SignedFormula` — `SignedFormula`, `Branch`
+* `FormalSystem.Metalogic.Decidability.Saturation` — `buildTableau`, `ExpandedTableau`
 -/
 
 set_option autoImplicit false

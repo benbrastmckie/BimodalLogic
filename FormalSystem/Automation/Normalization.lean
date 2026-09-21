@@ -41,7 +41,7 @@ The fold direction is non-deterministic for certain patterns. The key ambiguity:
 
 ## References
 
-- Research reports: 01_normalization-seed.md, 02_modal-norm-research.md
+* `FormalSystem/Syntax/Formula.lean` — the derived operators this unfolds and folds
 -/
 
 namespace FormalSystem.Automation.Normalization

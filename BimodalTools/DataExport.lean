@@ -35,10 +35,10 @@ is required. String values are escaped (double quotes replaced with `\"`).
 
 ## References
 
-- `FormalSystem.Syntax.Formula` — Formula inductive type
-- `FormalSystem.Automation.SuccessPatterns` — `PatternKey` and `GoalCategory`
-- `FormalSystem.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
-- `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and `height`
+* `FormalSystem.Syntax.Formula` — Formula inductive type
+* `FormalSystem.Automation.SuccessPatterns` — `PatternKey` and `GoalCategory`
+* `FormalSystem.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
+* `FormalSystem.ProofSystem.Derivation` — `DerivationTree` and `height`
 -/
 
 namespace BimodalTools.DataExport
