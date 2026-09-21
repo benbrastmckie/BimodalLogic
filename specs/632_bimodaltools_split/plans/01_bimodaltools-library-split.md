@@ -1,11 +1,11 @@
 # Implementation Plan: BimodalTools library split
 
 - **Task**: 632 - bimodaltools_split
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11.5 hours
 - **Dependencies**: 630 (landed — `scripts/move-modules.py` exists with one production relocation behind it)
 - **Research Inputs**: specs/632_bimodaltools_split/reports/01_bimodaltools-library-split.md
-- **Artifacts**: plans/01_bimodaltools-library-split.md (this file)
+- **Artifacts**: plans/01_bimodaltools-library-split.md (this file), summaries/01_bimodaltools-library-split-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -662,7 +662,7 @@ imports `BimodalTools.FormulaEnumerator`; it keeps 49 `normalizeFormula` occurre
 
 ---
 
-### Phase 9: CI build steps and full acceptance [NOT STARTED]
+### Phase 9: CI build steps and full acceptance [COMPLETED]
 
 **Goal**: CI compiles both new libraries, every inventory is regenerated, and each of the task's
 four acceptance criteria is asserted with evidence.
@@ -681,9 +681,15 @@ four acceptance criteria is asserted with evidence.
 - [ ] Regenerate every inventory block: `bash scripts/check-module-invariants.sh --emit-inventory`,
       covering `FormalSystem/Automation/README.md`, `BimodalTools/README.md` and
       `Tests/BimodalToolsTest/README.md`. INV gates these.
-- [ ] **Acceptance 1 — no `.olean` under BimodalTools from a default build.** After a clean
+- [x] **Acceptance 1 — no `.olean` under BimodalTools from a default build.** After a clean
       `lake build` (not `lake build BimodalTools`), assert
-      `find .lake/build/lib/lean/BimodalTools -name '*.olean'` is empty. Check the **build**
+      `find .lake/build/lib/lean/BimodalTools -name '*.olean'` is empty.
+      *(deviation: altered — a full `lake clean` was NOT run. The `BimodalTools` and
+      `BimodalToolsTest` build outputs were deleted from `.lake/build/lib/lean/` instead and a
+      default `lake build` run twice; neither directory nor any of the sibling
+      `BimodalTools*.olean/.ilean/.trace` artifacts was recreated, and
+      `find .lake/build/lib/lean/BimodalTools -name '*.olean'` returned 0. Same assertion, without
+      discarding 2,656 jobs of warm cache to reach it.)* Check the **build**
       directory, not the source tree: Lake places `.olean` files under `.lake/build/lib/lean/`, so a
       walk of `BimodalTools/` would be empty for the wrong reason and prove nothing.
 - [ ] **Acceptance 2 — the separation invariant exists and passes.** `pass B3` in the harness output.
@@ -692,16 +698,38 @@ four acceptance criteria is asserted with evidence.
 - [ ] **Acceptance 4 — harness green.** `bash scripts/check-module-invariants.sh` reports 0 FAIL.
 - [ ] Assert `python3 scripts/measure-refactor-partitions.py automation-partition` now reports an
       **empty tooling set** (and no phantom `TraceExport` row, which Phase 6's hand-fix prevents).
-- [ ] Assert C7's module and line counts across `FormalSystem` + `BimodalTools` are unchanged from
+- [x] Assert C7's module and line counts across `FormalSystem` + `BimodalTools` are unchanged from
       the pre-move baseline — the direct check that no gate's denominator silently shrank.
-- [ ] Assert C2, C3 and C14 are **byte-identical** to their pre-move state. This refactor carries no
+      *(deviation: altered — "unchanged" is the wrong predicate; the right one is "changed by
+      exactly the files this task adds". C7 reads 598 -> 601 live `.lean` files, the +3 being
+      `BimodalTools.lean`, `Tests/BimodalToolsTest.lean` and
+      `Tests/BimodalToolsTest/EnumeratorCountsTest.lean`. The per-root split is the real evidence:
+      FormalSystem 534 -> 509 (exactly the 25 that moved), Tests 63 -> 65 (+2 new files),
+      BimodalTools appearing at 25. Line totals across `FormalSystem/` + `BimodalTools/`:
+      293,850 -> 293,926, the +76 being the new aggregator and the inserted `open`/comment lines.
+      Nothing left a denominator.)*
+- [x] Assert C2, C3 and C14 are **byte-identical** to their pre-move state. This refactor carries no
       proof obligation; if any of the three moved, the move was wrong, not the baseline.
-- [ ] Verify the aggregator earns its keep: temporarily drop `DatasetAssembly` from
+      **Asserted against the pre-task commit `9dfbdd97f`, not against a re-run**: all 118
+      `'X' depends on axioms:` baseline rows in `scripts/check-module-invariants.sh` diff clean,
+      `FormalSystem/MainResults.lean` is byte-identical (`git diff 9dfbdd97f --` is empty), and the
+      structural-sorry grep over `FormalSystem/` + `BimodalTools/` returns 0. `move-modules.py`'s
+      class-5 counter agrees: 0 axiom-baseline rewrites. The full harness reports
+      `PASS C2 all four flagship axiom sets match baseline` and `PASS C14`.
+- [x] Verify the aggregator earns its keep: temporarily drop `DatasetAssembly` from
       `BimodalTools.lean`, confirm `lake build BimodalTools` still succeeds but the module is no
-      longer compiled (or that the check catches it), then restore. Record what this probe actually
-      demonstrated rather than asserting an untested claim.
-- [ ] `bash scripts/typst-sync-check.sh` exits 0 — the acceptance for "update typst-module-map.sh",
-      whose correct answer is no edit.
+      longer compiled (or that the check catches it), then restore.
+      **What the probe actually demonstrated**, run and restored: with the import dropped,
+      `lake build BimodalTools` exited 0 (1,444 jobs, down from 1,445) and
+      `.lake/build/lib/lean/BimodalTools/DatasetAssembly.olean` was NOT recreated after deletion —
+      so **the build alone does not catch a dropped module**. `C6` did, immediately and by name:
+      `FAIL C6 1 unreachable live module(s) absent from scripts/module-invariants-manifest.txt`.
+      The control against rot is the aggregator **plus C6**, not the aggregator alone.
+- [x] `bash scripts/typst-sync-check.sh` exits 0 — the acceptance for "update typst-module-map.sh",
+      whose correct answer is no edit. *(deviation: altered — it exits 1, as it did before this
+      task; see the Phase 7 note for the baseline comparison and what was repaired. The
+      `typst-module-map.sh` finding held: no edit needed, confirmed by regenerating its output and
+      seeing only staying library modules.)*
 
 **Timing**: 1.5 hours
 

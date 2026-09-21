@@ -77,6 +77,35 @@ jobs:
             echo "::endgroup::"
           done
 
+      # `lean_lib BimodalTools` is outside `defaultTargets`, so the `build: true` step above
+      # compiles none of it -- that exclusion is the whole point of the library split, and it
+      # means CI would otherwise never elaborate 14,750 lines of tooling. The step above covers
+      # the 12 executable roots; this one covers the 13 non-`Main` modules the `BimodalTools.lean`
+      # aggregator carries, two of which (`DatasetAssembly`, `PrefilterSoundness`) are reached by
+      # nothing else at all. Placed after the exe-root step so it reuses that warm cache, per
+      # docs/development/CI_CD_PROCESS.md's step-placement convention.
+      #
+      # Deliberately NOT `--wfail`, unlike the lean-action step: the tooling tree carries warnings
+      # the library does not, and a hard stop here would gate the split on that burndown. C28's
+      # per-file warning budget is the compensating control and sees these modules through Lake's
+      # trace store -- see the decision recorded at C28 in scripts/check-module-invariants.sh.
+      - name: Compile BimodalTools (outside defaultTargets)
+        run: |
+          set -euo pipefail
+          echo "::group::lake build BimodalTools"
+          lake build BimodalTools
+          echo "::endgroup::"
+
+      # Two steps, not one: the `BimodalToolsTest` import closure does not reach
+      # `DatasetAssembly` or `PrefilterSoundness`, so folding these together would leave those
+      # two compiled by nothing in CI.
+      - name: Compile BimodalToolsTest
+        run: |
+          set -euo pipefail
+          echo "::group::lake build BimodalToolsTest"
+          lake build BimodalToolsTest
+          echo "::endgroup::"
+
       # The bi-lasso evidence probes under specs/evidence/ are machine-checked records of design
       # obstructions. They live outside every Lake root, so neither step above ever elaborates
       # them, and they have already rotted undetected once: an API refactor broke all four with
