@@ -2,10 +2,10 @@
 -- Reason: Dead code — negation closure chain with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAFormula
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAFormula
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEATranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -46,7 +46,7 @@ The K+ disjunct from eq (5.2) is vacuous on Prior structures.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -1032,4 +1032,4 @@ theorem neg_interval_formula {sig : MonadicSignature}
                (fun y hy0 hy1 => (TemporalPred.eval_at_neg M atomMap
                  (bf.pointTypes ⟨0, by omega⟩) y).mpr (h_exists y hy0 hy1))⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

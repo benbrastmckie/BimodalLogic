@@ -17,11 +17,11 @@ formulation uses `nf_agreement_from_shared_nf` to transfer between structures.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -103,4 +103,4 @@ theorem generalExistPart_all {sig : MonadicSignature}
     GeneralExistPart atomMap k :=
   generalExistPart_from_classical atomMap k
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

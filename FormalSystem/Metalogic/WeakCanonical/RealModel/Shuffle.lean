@@ -86,12 +86,12 @@ themselves by `kEquiv_shuffle_of_classIso`.
 - [reynolds1992], §8, printed pp.186-187:
   `literature/sources/reynolds_1992/sec04_7-separability.md`
 - [doets1989], Lemma 1.4 (sums preserve `≡ₖ`): consumed via `doets_lemma_1_4`
-  (`OrderedSum.lean:41`)
+  (`OrderedSum.lean:47`)
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -243,7 +243,7 @@ theorem reynolds_lemma13 (k : Nat) (hk : 2 ≤ k) (M : OrderedMonadicStructure s
 
 /-! ## Reindexing a lexicographic sum along an order isomorphism
 
-`doets_lemma_1_4` (`OrderedSum.lean:41`) compares two sums **over the same index set**. Reynolds'
+`doets_lemma_1_4` (`OrderedSum.lean:47`) compares two sums **over the same index set**. Reynolds'
 shuffle step compares a sum over the set `I` of `∼`-classes with a sum over `ℚ`, along the order
 isomorphism `I ≃o ℚ` supplied by *"the classes in `I` … have order type `ℚ`"* (printed p.187).
 The bridge is purely order-theoretic: relabelling the index of a lexicographic sum by an order
@@ -423,7 +423,8 @@ hypothesis is convexity of the classes.
 The tree's existing cuts (`subinterval`, `openSubinterval`, `belowSubinterval`,
 `aboveSubinterval`) are all interval-shaped; the blocks of a partition are given as sets, so this
 general form is what the decomposition below needs. -/
-def OrderedMonadicStructure.restrictSet (sig : MonadicSignature)
+def _root_.FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure.restrictSet
+    (sig : MonadicSignature)
     (M : OrderedMonadicStructure sig) (s : Set M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // x ∈ s}
   interp p x := M.interp p x.val

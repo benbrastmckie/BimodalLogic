@@ -3,8 +3,8 @@
 --         no-nesting audit rule and Rabinovich 2014 Lemma 5.1 QF point-type requirement.
 -- Archived: 2026-07-08
 
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.PriorInterface
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.SubBracket2V
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -31,11 +31,11 @@ Contents part 2 (orig :8586-:8826): `kvE2_body` :8608, `bracketEndChar_kvE2` :87
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -483,7 +483,7 @@ private noncomputable def kvE_exclConj {sig : MonadicSignature} {k : Nat}
     (_charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig k 1 → Formula)
     (σ : NormalForm sig k 4) : Formula :=
-  Formula.neg (FormalSystem.Metalogic.WeakCanonical.Separation.formula_disjList
+  Formula.neg (FormalSystem.Metalogic.Expressiveness.Separation.formula_disjList
     ((kvE_pinArrangements σ).map (fun a => charK a.witnessType)))
 
 open Classical in
@@ -1033,4 +1033,4 @@ carrier route needs fundamental reconsideration: any viable path must carry the 
 joint content, which the ≤2-free-variable / constant-arity design forbids. Per DECISION-GATE
 (:1638) no partial carrier and no `sorry` is committed; this record is additive and inert. -/
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

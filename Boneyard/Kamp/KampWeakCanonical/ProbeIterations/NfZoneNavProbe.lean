@@ -1,5 +1,5 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfZoneDepthK
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEATranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfZoneDepthK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -90,7 +90,7 @@ divergence is exactly the non-theorem this file records.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -186,4 +186,4 @@ theorem no_x_independent_formula_captures_future_zone_k1 {sig : MonadicSignature
   have hpin := (future_zone_pins_x_pred M qnf x₂ t p hx₂real).mpr hp
   exact hx₂ hpin
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

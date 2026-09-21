@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (directory aggregator for the bit-rotted GHR separation cluster)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import Boneyard.Kamp.KampWeakCanonical.Separation.FormulaOps
 import Boneyard.Kamp.KampWeakCanonical.Separation.IntHelpers
 import Boneyard.Kamp.KampWeakCanonical.Separation.Duality

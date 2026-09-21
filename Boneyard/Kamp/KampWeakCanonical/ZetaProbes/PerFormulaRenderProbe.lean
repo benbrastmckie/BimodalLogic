@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PerFormulaRender
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Prop35Chain
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.PerFormulaRender
+import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Chain
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -80,7 +80,7 @@ consumer-migration phases.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 namespace RenderGate
 
@@ -569,4 +569,4 @@ theorem gate_translateProp35Fin
 
 end RenderGate
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

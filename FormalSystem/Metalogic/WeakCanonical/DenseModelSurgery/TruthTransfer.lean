@@ -160,7 +160,7 @@ Each entry reads *Printed step (pp.181-182)* — *Declaration*:
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
-open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature}
 

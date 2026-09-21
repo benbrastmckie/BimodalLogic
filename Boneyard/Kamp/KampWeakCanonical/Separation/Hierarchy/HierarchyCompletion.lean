@@ -28,7 +28,7 @@ oracle threading, and all_formulas_separable.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -997,4 +997,4 @@ theorem all_formulas_separable (φ : Formula) : is_separable φ :=
     (all_formulas_separable_aux (expand_temporal φ) (expand_has_no_allpast_allfuture φ))
 
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

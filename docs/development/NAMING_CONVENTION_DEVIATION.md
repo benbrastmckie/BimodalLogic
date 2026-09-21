@@ -93,7 +93,7 @@ The 178 declarations actually renamed are the 174 above plus four `def`s that ap
 a fenced `lean` example in `FormalSystem/Syntax.lean`'s module docstring — documentation, not
 declarations, but renamed so the textual scan comes back clean rather than needing a footnote.
 Distribution of the 174: 66 in `Theorems/ContextualProofs.lean`; 2 in
-`Theorems/Perpetuity/Principles.lean`; 1 in `Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean`;
+`Theorems/Perpetuity/Principles.lean`; 1 in `Metalogic/Expressiveness/EFGames/StaviCompleteness.lean`;
 2 in `Metalogic/Conservativity/DenseObstructionTransfer.lean`; and 103 `private def`s spread over
 20 files, the largest concentrations being `Chronicle/PointInsertion.lean` (20),
 `Decidability/Saturation.lean` (17), `EFGames/StaviCompleteness.lean` (11),
@@ -390,7 +390,7 @@ The words *Discrete* and *Dedekind* were doing two different jobs in this tree a
    `completeness_dedekind`, the tableau rule sets, the CLI string literals).
 2. Naming the paper's **bare order conditions** and the order-theoretic property — `IsDiscrete`
    and `IsComplete` from `def:frame-properties`, "Dedekind-complete", "Dedekind cut", and the
-   ~560-occurrence Dedekind-INF/SUP API under `Metalogic/WeakCanonical/Kamp/`.
+   ~560-occurrence Dedekind-INF/SUP API under `Metalogic/Expressiveness/Kamp/`.
 
 Sense 1 was renamed; sense 2 was not.
 

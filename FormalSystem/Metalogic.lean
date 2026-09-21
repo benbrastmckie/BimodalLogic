@@ -14,6 +14,7 @@ import FormalSystem.Metalogic.Decidability
 import FormalSystem.Metalogic.Independence
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.WeakCanonical
+import FormalSystem.Metalogic.Expressiveness
 import FormalSystem.Metalogic.Conservativity
 import FormalSystem.Metalogic.Algebraic
 import FormalSystem.Metalogic.Deterministic

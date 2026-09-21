@@ -154,7 +154,7 @@ below as `quotientDenselyOrdered_epsTop_vacuous` rather than left to be rediscov
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
-open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature}
 

@@ -51,7 +51,7 @@ sense of `GroupModel/GoodGroupable.lean`.
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open Order
+open Order FormalSystem.Metalogic.Expressiveness
 
 /-! ## Discrete-order toolkit: `succ` iterates -/
 

@@ -2,13 +2,13 @@
 -- Reason: Dead code — negation closure chain with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallNF
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampPrior
+import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallNF
+import FormalSystem.Metalogic.Expressiveness.Kamp.KampPrior
 import Boneyard.Kamp.KampBypassArchive.NfCharFormula
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Translation
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
+import FormalSystem.Metalogic.Expressiveness.Kamp.Translation
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -40,11 +40,11 @@ Prior axioms + composition theorem (the Rabinovich negation closure content).
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -1842,4 +1842,4 @@ noncomputable def nf_2var_exist_formula_prior_fill
          ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :=
   (master_induction atomMap h_surj k).2 parent_atoms sub_nf
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

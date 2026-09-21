@@ -18,7 +18,7 @@ subdirectories continue it: [`DedekindZ/`](DedekindZ/README.md) and
 Bit rot. The cluster was archived together with the `ExpressiveCompleteness/` subtree when it
 stopped typechecking against the live `Metalogic/WeakCanonical/Separation/` development, which had
 moved on. The live tree keeps a separation development at
-`FormalSystem/Metalogic/WeakCanonical/Separation/`; this is the earlier one it descends from.
+`FormalSystem/Metalogic/Expressiveness/Separation/`; this is the earlier one it descends from.
 
 ## What revival would require
 

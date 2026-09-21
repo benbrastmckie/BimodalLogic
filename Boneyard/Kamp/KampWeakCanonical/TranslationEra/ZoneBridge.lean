@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEADecomp
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEADecomp
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -27,7 +27,7 @@ self-contained lemmas with simple type signatures.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -514,4 +514,4 @@ theorem ssn_order_consistent_of_eval {sig : MonadicSignature}
               | (have := lt_trans ‹_ < _› ‹_ < _›; exact aux ‹_› ‹_›)))
   )
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

@@ -257,7 +257,7 @@ commit `220e94ea4`:
 | Measurement | Value |
 |---|---|
 | Expressiveness set | 141 files, 104,087 lines, 0 edges into the residual set or `BXCanonical` |
-| Residual `WeakCanonical` | 38 files, 28,472 lines |
+| Residual `WeakCanonical` | 38 files, 28,498 lines |
 | `BXCanonical`-free by closure | 150 of 179 modules |
 | Import lines from the lower layers into `Automation` | **0** since Phase 4 landed. Was 16, of which 11 into the attribute-only files; the 11 were deleted outright when the five declarations moved to `Tactic/Attr.lean`, the `PropDecide` line went with that module to `Metalogic/Decidability/Propositional/`, and the remaining 3 (`Decidability -> {ProofSearch, Normalization}`) became intra-layer under the corrected table |
 | `Theorems` files importing `Metalogic` | **0** since Phase 4 landed. Was 4, all `Metalogic.Core.DeductionTheorem`, which is now `Theorems/DeductionTheorem.lean` |

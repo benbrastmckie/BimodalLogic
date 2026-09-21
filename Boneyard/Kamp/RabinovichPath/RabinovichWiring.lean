@@ -4,8 +4,8 @@
 
 import Boneyard.Kamp.KampWeakCanonical.TranslationEra.RabinovichTranslation
 import Boneyard.Kamp.KampBypassArchive.NfCharFormula
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.PriorDefs
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.PriorDefs
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -49,11 +49,11 @@ closure argument. This case is marked sorry with documentation.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -370,4 +370,4 @@ theorem nf_2var_exist_via_rabinovich
     exact nf_exist_formula_forward' atomMap h_surj k char_k char_k_M
       parent_atoms sub_nf h_atoms h_ex
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

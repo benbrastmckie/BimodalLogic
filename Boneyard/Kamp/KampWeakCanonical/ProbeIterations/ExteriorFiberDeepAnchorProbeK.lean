@@ -10,9 +10,9 @@ Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
 
 Key declarations: kvE_probe367_tailDG_deep_rejected, kvE_probe367_real_slice_deep_anchored, kvE_probe367_depth2DG_deep_rejected
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorNegationK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorConverterK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -120,7 +120,7 @@ production file is touched by Phases 1-3. -/
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -371,4 +371,4 @@ theorem kvE_probe367_copyPlant_collapses (σs : NormalForm m3sig 2 4)
         (nf_characteristic_satisfies M3M 2 4 m3realEnv))
   exact Prod.ext (hfib.symm.trans hrow) hcopy
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

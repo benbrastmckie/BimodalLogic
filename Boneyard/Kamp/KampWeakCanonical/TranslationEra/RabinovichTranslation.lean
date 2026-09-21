@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Translation
+import FormalSystem.Metalogic.Expressiveness.Kamp.Translation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -37,7 +37,7 @@ exists-forall formula with one free variable, and provides `future_chain`,
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -303,4 +303,4 @@ theorem translateSpecs_correct {sig : MonadicSignature}
       List.mem_map_of_mem (f := fun s => s.translate) h_spec_mem
     exact ⟨spec.translate, hmem, spec.translate_forward M atomMap t h_sem⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.Base
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -83,11 +83,11 @@ to `n+1` distinct free anchors. The depth-0 instance (`k = 0`) is proved green b
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -550,4 +550,4 @@ theorem nfEval_le2_reduction {sig : MonadicSignature} [Fintype sig.preds] [Decid
       rw [nfEvalRHS_succ]
       exact nfEval_step_reduction M env qnf (P := nfEvalRHS M k) ih
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

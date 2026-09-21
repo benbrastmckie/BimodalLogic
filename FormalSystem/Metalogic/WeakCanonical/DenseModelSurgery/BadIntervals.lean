@@ -227,7 +227,7 @@ set_option linter.style.longFile 1700
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
-open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature}
 

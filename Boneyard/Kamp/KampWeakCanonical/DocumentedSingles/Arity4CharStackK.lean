@@ -49,10 +49,10 @@ circularity record refutes), `SeamPairRefutationProbe.lean`, and
 `ZoneSeamCrossContextProbe.lean`. Those three already name eight of this island's symbols, which
 is the coherence argument for archiving this stack rather than raw-deleting it.
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampPrior
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
+import FormalSystem.Metalogic.Expressiveness.Kamp.KampPrior
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.CarrierKv
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -90,21 +90,21 @@ back here. This file holds the full original text; those notes hold the pointer.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
 
 -- COPIED (not moved) from `InteriorGateGeneralK.lean:679` — the originals remain in the live file.
 open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extract_t_nf3
   k1v_extract_y_nf k1v_bracket_construct from
-  FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
+  FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.CarrierK1V
 
 -- COPIED (not moved) from `InteriorGateGeneralK.lean:1100` and `ExteriorGateAssembleK.lean:51`
 -- — the originals remain in the live files.
 open private k1v_bracket_extract k1v_reconstruct_nf3 from
-  FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
+  FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.CarrierK1V
 
 /-! ## Block 1 of 4 — origin `NfMultiAnchorBridge/CarrierKv.lean:503-616` (114 lines)
     `kvFib_body`, `bracketEndCharKvFib`. Heads with the M1 fold-information-loss record. -/
@@ -1859,4 +1859,4 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
     hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

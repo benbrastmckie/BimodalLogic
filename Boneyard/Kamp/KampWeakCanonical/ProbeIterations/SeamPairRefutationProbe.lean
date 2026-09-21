@@ -10,7 +10,7 @@ signature). Retained as machine-checked evidence only.
 
 Key declarations: seamPair_joint_refutation, seamPair_joint_refutation_int
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -53,7 +53,7 @@ Purely additive leaf probe (style precedent: `RefutationF2.lean`,
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -174,4 +174,4 @@ theorem seamPair_joint_refutation_int (k : Nat)
   seamPair_joint_refutation atomMap charFib spM 0 2 1 3 (by norm_num) (spQnf k)
     (spQnf_render k) hcharFib hcharFibSoundP
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

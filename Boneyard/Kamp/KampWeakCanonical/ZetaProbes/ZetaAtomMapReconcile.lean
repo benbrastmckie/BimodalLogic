@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ESigmaCapture
+import FormalSystem.Metalogic.Expressiveness.Kamp.ESigmaCapture
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -51,7 +51,7 @@ does not re-derive PROBE 1's `False`.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax (Formula Atom)
 open FormalSystem.Metalogic.WeakCanonical
@@ -183,4 +183,4 @@ theorem reconciled_no_surj_onto_inr
         ↔ temporal_truth (canonExpand sig F M (fun C x => temporal_truth M g x C)) atomMap y B := by
   exact ⟨A, canonExpand_atom_named M atomMap g hMap A y⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

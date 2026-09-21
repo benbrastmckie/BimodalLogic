@@ -71,7 +71,7 @@ FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 # `Kamp/NfMultiAnchorBridge.lean`, beside the `OuterGate` import already there -- every
 # other module in that directory is already reachable that way. That is a build-graph
 # change, deliberately deferred; when it lands, DELETE this line in the same commit.
-FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGateFaithful
+FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.OuterGateFaithful
 
 # The bi-lasso decision layer is now registered: `Decidability.lean` imports the re-export
 # `FormalSystem.Metalogic.Decidability.BiLasso`, so the layer is reachable from the Lake

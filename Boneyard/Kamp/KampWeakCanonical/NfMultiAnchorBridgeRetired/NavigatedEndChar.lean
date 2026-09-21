@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.Base
 import Boneyard.Kamp.KampWeakCanonical.NfMultiAnchorBridgeRetired.Lemma32Reduction
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.CarrierKv
 import Boneyard.Kamp.KampWeakCanonical.DocumentedSingles.NavigatedEndCharSinglePoint
 
 /-!
@@ -67,11 +67,11 @@ free-standing `NavResidual`. Cross-references:
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
 
 /-- **Arity-3 specialization of `nfEval_le2_reduction`** (Rabinovich Lemma 3.2(2), md:119).
 For every depth `k`, environment `env : Fin 3 → M.carrier`, and normal form
@@ -293,4 +293,4 @@ theorem endCharStep_quant_reduceA {sig : MonadicSignature} [Fintype sig.preds] [
           (qnf.2 sub = true)) :=
   forall_congr' (fun sub => iff_congr (endCharStep_reduceA M w x t sub) Iff.rfl)
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

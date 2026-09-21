@@ -1,7 +1,7 @@
 import Boneyard.Kamp.KampNegationClosure.NegationClosureProp42
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEATranslation
+import FormalSystem.Metalogic.Expressiveness.NormalForm
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -38,7 +38,7 @@ open-interval semantics. Not on critical path; bypassed by plan v23.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -331,4 +331,4 @@ theorem nf_exist_as_monadic
   exact ⟨fun ⟨x, hx⟩ => ⟨x, (nf_to_formula_correct M _ sub_nf).mpr hx⟩,
          fun ⟨x, hx⟩ => ⟨x, (nf_to_formula_correct M _ sub_nf).mp hx⟩⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

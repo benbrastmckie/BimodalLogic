@@ -26,7 +26,7 @@ for Dedekind-complete integer orders (GHR94 Lemma 10.3.11 items 5-8 on Z).
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -1784,4 +1784,4 @@ theorem case8_separable_Z (a q A B : Formula)
     exact case5_separable_Z (Formula.neg q) (Formula.neg a) A B hnq_uf hna_uf hA hB hnq_sf hna_sf hA' hB'
 
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

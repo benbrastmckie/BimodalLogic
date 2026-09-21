@@ -1,5 +1,5 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import FormalSystem.Metalogic.WeakCanonical.Table
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfToVecEA
+import FormalSystem.Metalogic.Expressiveness.Table
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -24,11 +24,11 @@ operator_depth analysis.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff nf_depth0_char_formula nf_depth0_char_formula_correct)
 
 /-! ## Temporal Truth Transfer -/
@@ -148,4 +148,4 @@ theorem nf_depth0_char_iff_eval {sig : MonadicSignature}
     simp only [atom_eval] at this
     exact this
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

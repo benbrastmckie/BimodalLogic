@@ -1,11 +1,11 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallNF
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Translation
+import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallNF
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfToVecEA
+import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
+import FormalSystem.Metalogic.Expressiveness.Kamp.Translation
 import Boneyard.Kamp.KampBypassArchive.KampBypass
 import Boneyard.Kamp.KampBypassArchive.KampForward
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -79,11 +79,11 @@ content of Phase 3 (NegationClosure.lean).
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -756,4 +756,4 @@ theorem nf_characterizable_temporal_prior_classical
         have h_ex := h_iff.mp h_ef
         exact h_q ((h_quant sub_nf).mp h_ex)
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

@@ -5,12 +5,12 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.Transfer
-import FormalSystem.Metalogic.WeakCanonical.Table
+import FormalSystem.Metalogic.Expressiveness.Table
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
-import FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
-import FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
+import FormalSystem.Metalogic.Expressiveness.PriorDefsDense
+import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithful
+import FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
 import FormalSystem.Metalogic.Algebraic.FlowFrame
 
@@ -116,7 +116,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
-open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 open FormalSystem.Semantics
 open FormalSystem.Metalogic.Algebraic
 

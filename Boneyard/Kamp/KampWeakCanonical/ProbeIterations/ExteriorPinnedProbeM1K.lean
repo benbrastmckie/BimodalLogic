@@ -10,7 +10,7 @@ signature). Retained as machine-checked evidence only.
 
 Key declarations: kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_sliceId_superseded, kvE_probeM1_interiorGuard_identical, kvE_probeM1_foldCollision_hcons_status
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -93,7 +93,7 @@ touched (Phase 6 makes zero production edits). -/
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -910,4 +910,4 @@ theorem kvE_probeM1_foldCollision_hcons_status :
    m1_qnf_sigma_false,
    m1_sigma_not_pinned4⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

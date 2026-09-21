@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.Base
 import Boneyard.Kamp.KampWeakCanonical.NfMultiAnchorBridgeRetired.Lemma32Reduction
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.CarrierKv
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -52,11 +52,11 @@ candidates: restore ONLY at first genuine code reference in Phases 3-4. Leave `E
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
 
 /-! ## Phase 3: arity-3 inner-realizability navigator `navPieceForm` / `_correct`
 (the load-bearing core)
@@ -309,4 +309,4 @@ distribution, or by asserting `navPieceForm_correct`/the unconditional world-loc
 (plan Postmortem Constraints). Escalated via `/spawn 349` for a dedicated residual-threading lemma.
 The `endCharStep` def (3a) and all Phase-1/2 assets remain green and sorry-free. -/
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

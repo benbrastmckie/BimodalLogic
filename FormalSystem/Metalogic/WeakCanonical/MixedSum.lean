@@ -60,6 +60,7 @@ real witness, leaving depth `d`.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature}
 

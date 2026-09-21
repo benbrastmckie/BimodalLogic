@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR separation support: FormulaOps)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -38,7 +38,7 @@ needed by the separation proof.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -251,4 +251,4 @@ theorem multi_subst_nil (phi : Formula) : multi_subst phi [] = phi := rfl
 theorem multi_subst_singleton (phi : Formula) (a : Atom) (f : Formula) :
     multi_subst phi [(a, f)] = subst_formula phi a f := rfl
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

@@ -1,0 +1,170 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.Expressiveness.Separation.SemanticBridge
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.StaviConnectives
+
+/-!
+# Kamp Translation Infrastructure
+
+Infrastructure for proving {U,S} expressive completeness on Z-structures
+(Kamp's theorem for integer time). This file provides formula list
+operations and atom literal construction used by the Kamp translation.
+
+## Status
+
+The full Kamp translation (Phases 2-3 of the separation bypass plan)
+is BLOCKED on the n-variable Fraisse game argument. See the plan file
+for details on the blocker and three identified approaches to resolve it.
+
+## Infrastructure Provided
+
+- `formulaConjList` / `formulaDisjList`: conjunction/disjunction of formula lists
+- `atomLiteral`: temporal formula for a predicate literal
+- `nfDepth0CharFormula`: temporal formula characterizing a depth-0 NF
+
+## References
+
+- [kamp1968], "Tense Logic and the Theory of Linear Order"
+- [gabbay1994] Chapter 10 (separation theorem)
+- [doets1989], Lemma 1.1 (normal form theory)
+-/
+
+namespace FormalSystem.Metalogic.Expressiveness.Separation
+
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Expressiveness
+
+/-! ## Helper: Conjunction and Disjunction of Lists -/
+
+/-- Conjunction of a list of formulas. Empty list gives ⊤. -/
+def formulaConjList : List Formula → Formula
+  | [] => Formula.top
+  | φ :: rest => Formula.and φ (formulaConjList rest)
+
+/-- Disjunction of a list of formulas. Empty list gives ⊥. -/
+def formulaDisjList : List Formula → Formula
+  | [] => Formula.bot
+  | φ :: rest => Formula.or φ (formulaDisjList rest)
+
+/-- formulaConjList truth: all formulas in the list are true. -/
+theorem formula_conjList_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) (fs : List Formula) :
+    TemporalTruth M atomMap t (formulaConjList fs) ↔
+    ∀ φ ∈ fs, TemporalTruth M atomMap t φ := by
+  induction fs with
+  | nil => simp [formulaConjList, Formula.top, TemporalTruth]
+  | cons φ rest ih =>
+    simp only [formulaConjList, Formula.and, Formula.neg, TemporalTruth]
+    constructor
+    · intro h ψ' hψ'
+      rcases List.mem_cons.mp hψ' with rfl | hmem
+      · by_contra hφ; exact h (fun hφ' => absurd hφ' hφ)
+      · by_contra hrest
+        apply h; intro hφ
+        exact absurd ((ih.mp (by by_contra h_neg; exact h (fun _ => h_neg))) ψ' hmem) hrest
+    · intro h hφ_imp
+      exact hφ_imp (h φ (by simp)) (ih.mpr (fun ψ' hψ' => h ψ' (by simp [hψ'])))
+
+/-- formulaDisjList truth: some formula in the list is true. -/
+theorem formula_disjList_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) (fs : List Formula) :
+    TemporalTruth M atomMap t (formulaDisjList fs) ↔
+    ∃ φ ∈ fs, TemporalTruth M atomMap t φ := by
+  induction fs with
+  | nil => simp [formulaDisjList, TemporalTruth]
+  | cons φ rest ih =>
+    simp only [formulaDisjList, Formula.or, Formula.neg, TemporalTruth]
+    constructor
+    · intro h
+      by_cases hφ : TemporalTruth M atomMap t φ
+      · exact ⟨φ, by simp, hφ⟩
+      · obtain ⟨ψ', hψ'_mem, hψ'⟩ := ih.mp (h hφ)
+        exact ⟨ψ', by simp [hψ'_mem], hψ'⟩
+    · intro ⟨ψ', hψ'_mem, hψ'⟩ hφ_neg
+      simp only [List.mem_cons] at hψ'_mem
+      rcases hψ'_mem with rfl | h
+      · exact absurd hψ' hφ_neg
+      · exact ih.mpr ⟨ψ', h, hψ'⟩
+
+/-! ## Atom Literals -/
+
+/-- Build the atom literal for a predicate: `.atom a` if true, `.atom a |>.neg` if false. -/
+noncomputable def atomLiteral
+    {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (p : sig.preds) (val : Bool) : Formula :=
+  let a := Classical.choose (h_surj p)
+  match val with
+  | true => Formula.atom a
+  | false => (Formula.atom a).neg
+
+/-- The atom literal has the correct truth value. -/
+theorem atom_literal_correct
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (p : sig.preds) (val : Bool) (t : M.carrier) :
+    TemporalTruth M atomMap t (atomLiteral atomMap h_surj p val) ↔
+    (M.interp p t ↔ val = true) := by
+  unfold atomLiteral
+  have ha := Classical.choose_spec (h_surj p)
+  cases val with
+  | true =>
+    simp only [TemporalTruth, ha]
+    tauto
+  | false =>
+    simp only [Formula.neg, TemporalTruth, ha, Bool.false_eq_true]
+    exact ⟨fun h => ⟨fun h_interp => absurd h_interp h, False.elim⟩,
+           fun ⟨h1, _⟩ => h1⟩
+
+/-! ## Depth-0 NF Characteristic Formula
+
+At depth 0, a NF is just a truth assignment to atoms (predicates applied to the
+single variable). The characteristic formula is the conjunction of atom literals. -/
+
+/-- Temporal formula characterizing a depth-0 NF with 1 variable.
+    This is the conjunction of atom literals for all predicates in the signature. -/
+noncomputable def nfDepth0CharFormula
+    {sig : MonadicSignature} [Fintype sig.preds]
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf : NormalForm sig 0 1) : Formula :=
+  formulaConjList
+    ((Fintype.elems (α := sig.preds)).val.toList.map fun p =>
+      atomLiteral atomMap h_surj p (nf (.pred p ⟨0, by omega⟩)))
+
+/-- The depth-0 characteristic formula is correct on any ordered monadic structure:
+    it holds at t iff t satisfies the NF's atom assignment for all predicates. -/
+theorem nf_depth0_char_formula_correct
+    {sig : MonadicSignature} [Fintype sig.preds]
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf : NormalForm sig 0 1) (t : M.carrier) :
+    TemporalTruth M atomMap t (nfDepth0CharFormula atomMap h_surj nf) ↔
+    (∀ p : sig.preds, M.interp p t ↔ nf (.pred p ⟨0, by omega⟩) = true) := by
+  simp only [nfDepth0CharFormula]
+  rw [formula_conjList_iff]
+  constructor
+  · intro h p
+    have h_mem : atomLiteral atomMap h_surj p (nf (.pred p ⟨0, by omega⟩)) ∈
+        List.map (fun p => atomLiteral atomMap h_surj p (nf (.pred p ⟨0, by omega⟩)))
+          (Fintype.elems (α := sig.preds)).val.toList := by
+      simp only [List.mem_map]
+      exact ⟨p, Multiset.mem_toList.mpr (Fintype.complete p), rfl⟩
+    exact (atom_literal_correct M atomMap h_surj p _ t).mp (h _ h_mem)
+  · intro h φ h_mem
+    simp only [List.mem_map] at h_mem
+    obtain ⟨p, _, rfl⟩ := h_mem
+    exact (atom_literal_correct M atomMap h_surj p _ t).mpr (h p)
+
+end FormalSystem.Metalogic.Expressiveness.Separation

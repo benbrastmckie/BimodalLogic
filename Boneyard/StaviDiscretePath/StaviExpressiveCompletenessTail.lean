@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Decomposition
+import FormalSystem.Metalogic.Expressiveness.EFGames.Decomposition
 
 /-!
 # ARCHIVED (Boneyard) — never compiled.
@@ -46,7 +46,7 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: FormalSystem/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean
+   Source: FormalSystem/Metalogic/Expressiveness/EFGames/StaviCompleteness.lean
    Original context: `namespace FormalSystem.Metalogic.WeakCanonical`,
    `open FormalSystem.Syntax`.
    ====================================================================== -/

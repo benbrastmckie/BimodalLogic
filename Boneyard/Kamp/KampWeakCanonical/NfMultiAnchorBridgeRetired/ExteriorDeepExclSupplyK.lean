@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 import Boneyard.Kamp.KampWeakCanonical.NfMultiAnchorBridgeRetired.ExteriorDeepSliceSupplyK
 
 /-!
@@ -49,11 +49,11 @@ Guard consumption ONLY via `kvE_deepOnFiber_zero` / `kvE_deepOnFiber_of_realized
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
 
 /-! ## m = 0 vacuity kernel (sorry-free) -/
 
@@ -133,4 +133,4 @@ theorem kvE_hexclDeepPast_supply {sig : MonadicSignature} [Fintype sig.preds] [D
       rw [hmk] at hbf
       exact Bool.noConfusion hbf
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

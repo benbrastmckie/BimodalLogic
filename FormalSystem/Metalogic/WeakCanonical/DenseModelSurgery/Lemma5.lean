@@ -119,7 +119,7 @@ at any non-trivial instance; the first live instance is due at the Lemma 9 / den
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
-open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature}
 

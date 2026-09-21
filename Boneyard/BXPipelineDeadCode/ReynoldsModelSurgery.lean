@@ -1,7 +1,7 @@
 -- ARCHIVED: dead BX pipeline code (#exit guard added)
 
-import FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Defs
+import FormalSystem.Metalogic.Expressiveness.PriorExpressiveness
+import FormalSystem.Metalogic.Expressiveness.EFGames.Defs
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.BXCanonical.TruthLemma
 

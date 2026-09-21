@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Prop43Translate
+import FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
+import FormalSystem.Metalogic.Expressiveness.Kamp.Prop43Translate
 
 /-!
 # Reynolds §6 vocabulary: contemporaneous equivalence, `ρ`, `λ`, and Lemma 2
@@ -158,7 +158,7 @@ introduced; `ContempEquivDense` is the §6 notion, parameterized by `ε`.
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
-open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 
 /-! ## The `SuccOrder` obstruction
 

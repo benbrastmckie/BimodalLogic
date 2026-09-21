@@ -17,7 +17,7 @@ import FormalSystem.Metalogic.Algebraic.ParametricHistory
 import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
 import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
-import FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.Theorem6
 import FormalSystem.Semantics.Validity
 import Mathlib.Data.Int.SuccPred
 
@@ -263,7 +263,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     -- Build a single-predicate OrderedMonadicStructure on LimitDomSubtype.
     -- sig has one predicate; interp maps that predicate to ψ-membership.
     -- The signature: a single predicate p₀
-    let sig : FormalSystem.Metalogic.WeakCanonical.MonadicSignature := {
+    let sig : FormalSystem.Metalogic.Expressiveness.MonadicSignature := {
       preds := Unit
       fintypePreds := inferInstance
       decEqPreds := inferInstance
@@ -274,7 +274,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
     rcases hψ with ⟨hψ_in, hψ_not⟩ | ⟨hψ_in, hψ_not⟩
     · -- ψ ∈ limit_f(a.val) but ψ ∉ limit_f(b.val)
       -- Build the OrderedMonadicStructure
-      let M : FormalSystem.Metalogic.WeakCanonical.OrderedMonadicStructure sig := {
+      let M : FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure sig := {
         carrier := LimitDomSubtype fc A h_mcs
         interp := fun () x => ψ ∈ limit_f fc A h_mcs x.val
         carrier_order := inferInstance
@@ -500,7 +500,7 @@ private theorem chronicle_gap_contradiction (fc : FrameClass) (A : Set Formula)
       -- Use gap_contradicts_prior_below or rearrange the argument.
       -- Actually, we can use the same argument: a's class contains points where ψ ∉ limit_f.
       -- b is NOT in a's class. Since b > a, a's class is bounded above.
-      let M : FormalSystem.Metalogic.WeakCanonical.OrderedMonadicStructure sig := {
+      let M : FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure sig := {
         carrier := LimitDomSubtype fc A h_mcs
         interp := fun () x => ψ ∈ limit_f fc A h_mcs x.val
         carrier_order := inferInstance

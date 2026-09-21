@@ -36,7 +36,7 @@ Boneyard archives were merged into `Boneyard/`.
 
 - [Separation README](../README.md)
 - [DedekindZ README](../DedekindZ/README.md)
-- [Expressiveness README](../../../../../FormalSystem/Metalogic/WeakCanonical/Expressiveness/README.md)
+- [Expressiveness README](../../../../../FormalSystem/Metalogic/Expressiveness/GameTransfer/README.md)
 
 ---
 

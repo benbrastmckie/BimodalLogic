@@ -62,7 +62,7 @@ Measured on the tree as it stands after the upward-edge relocation:
                             is now invisible here -- see ORGANISATION.md's
                             layer-table note.
   weakcanonical-partition   Expressiveness 141 files / 104,087 lines,
-                            residual 38 files / 28,472 lines, 0 leaking edges;
+                            residual 38 files / 28,498 lines, 0 leaking edges;
                             BXCanonical-free by closure: 150 of 179
   automation-partition      9 library-needed modules (3,419 lines), 4
                             user-facing tactic modules (1,238), 25 tooling
@@ -130,12 +130,15 @@ LAYERS = {
 }
 
 WEAK = f"{LIB}.Metalogic.WeakCanonical"
+EXPR = f"{LIB}.Metalogic.Expressiveness"
 BX = f"{LIB}.Metalogic.BXCanonical"
 
-# The proposed Metalogic/Expressiveness/ set, named relative to WeakCanonical/.
-# A name is a subtree (every module below it) or a single module.
+# The Metalogic/Expressiveness/ set, named relative to EXPR.  A name is a subtree
+# (every module below it) or a single module.  Before the extraction these names
+# were relative to WeakCanonical/ and the subtree now called `GameTransfer` was
+# called `Expressiveness`; both roots are read from their post-move locations.
 EXPRESSIVENESS_SET = (
-    "Kamp", "EFGames", "Expressiveness", "Separation",
+    "Kamp", "EFGames", "GameTransfer", "Separation",
     "NormalForm", "MonadicFO", "StaviConnectives",
     "PriorDefs", "PriorDefsDense", "PriorExpressiveness", "PriorExpressivenessDense",
     "Table", "EFGameTactics",
@@ -252,18 +255,24 @@ def print_upward_edges(r):
 # weakcanonical-partition
 # ---------------------------------------------------------------------------
 
-def in_expressiveness_set(module):
-    rel = module[len(WEAK) + 1:]
-    head = rel.split(".")[0]
-    return head in EXPRESSIVENESS_SET
+def subtree_head(module):
+    """The EXPRESSIVENESS_SET member a moved module belongs to."""
+    return module[len(EXPR) + 1:].split(".")[0]
 
 
 def measure_weakcanonical(g):
-    members = g.under(WEAK)
-    aggregator = WEAK if WEAK in members else None
-    modules = [m for m in members if m != WEAK]
-    expr = sorted(m for m in modules if in_expressiveness_set(m))
-    resid = sorted(m for m in modules if not in_expressiveness_set(m))
+    # The two sets live under two roots since the extraction: the moved set under
+    # EXPR, the residual set under WEAK.  Reading both from WEAK (as this script
+    # did before the move) would make the moved set silently empty and every
+    # assertion below vacuously true -- see the empty-set guard in the --check
+    # branch, which exists to make that failure mode loud.
+    expr_members = g.under(EXPR)
+    weak_members = g.under(WEAK)
+    expr_agg = EXPR if EXPR in expr_members else None
+    aggregator = WEAK if WEAK in weak_members else None
+    expr = sorted(m for m in expr_members if m != EXPR)
+    resid = sorted(m for m in weak_members if m != WEAK)
+    modules = expr + resid
     expr_set, resid_set = set(expr), set(resid)
 
     def bx_free(m):
@@ -288,11 +297,12 @@ def measure_weakcanonical(g):
 
     subtree_rows = []
     for name in EXPRESSIVENESS_SET:
-        ms = [m for m in expr if m[len(WEAK) + 1:].split(".")[0] == name]
+        ms = [m for m in expr if subtree_head(m) == name]
         subtree_rows.append((name, len(ms), lines(ms)))
 
     return {
         "aggregator": aggregator,
+        "expressiveness_aggregator": expr_agg,
         "module_count": len(modules),
         "expressiveness": {"files": len(expr), "lines": lines(expr), "modules": expr,
                            "subtrees": subtree_rows},
@@ -308,14 +318,14 @@ def measure_weakcanonical(g):
 def print_weakcanonical(r):
     e, s = r["expressiveness"], r["residual"]
     print("## WeakCanonical partition\n")
-    print(f"Modules under `Metalogic/WeakCanonical/`: {r['module_count']}"
+    print(f"Modules under `Metalogic/Expressiveness/` and `Metalogic/WeakCanonical/`: {r['module_count']}"
           + (f" (plus the sibling aggregator `{r['aggregator']}`, not counted)" if r["aggregator"] else "") + "\n")
     print(md_table(["Set", "Files", "Lines"],
-                   [("Expressiveness (proposed move)", e["files"], f"{e['lines']:,}"),
+                   [("Expressiveness", e["files"], f"{e['lines']:,}"),
                     ("Residual WeakCanonical", s["files"], f"{s['lines']:,}")]))
     print()
     print("### Expressiveness set by subtree\n")
-    print(md_table(["Name (relative to WeakCanonical/)", "Files", "Lines"],
+    print(md_table(["Name (relative to Expressiveness/)", "Files", "Lines"],
                    [(n, f, f"{l:,}") for n, f, l in e["subtrees"]]))
     print()
     p = r["bxcanonical_free_by_closure"]
@@ -515,6 +525,19 @@ def main(argv):
         r = results.get("weakcanonical-partition") or measure_weakcanonical(g)
         bad = r["leaking_edges"]
         not_free = r["expressiveness_not_bx_free"]
+        # An empty Expressiveness set makes every assertion below vacuously true.
+        # ADR-011 promises this check is "a standing pre-move gate"; without this
+        # branch it would degenerate to a permanent PASS the moment either root
+        # stopped resolving.  Fail loudly instead.
+        if not r["expressiveness"]["files"] or not r["residual"]["files"]:
+            print(f"FAIL  degenerate partition: Expressiveness set has "
+                  f"{r['expressiveness']['files']} file(s) and the residual WeakCanonical set has "
+                  f"{r['residual']['files']} file(s); neither may be empty.")
+            print(f"      Expressiveness root: {EXPR}")
+            print(f"      residual root:       {WEAK}")
+            print("      An empty set makes the leak assertion vacuous. Re-point the roots "
+                  "rather than accepting the PASS.")
+            return 1
         if bad or not_free:
             print(f"FAIL  Expressiveness set leaks: {len(bad)} edge(s) into residual/BXCanonical, "
                   f"{len(not_free)} module(s) reach BXCanonical by closure")

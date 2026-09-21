@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ESigmaCapture
+import FormalSystem.Metalogic.Expressiveness.Kamp.ESigmaCapture
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -53,7 +53,7 @@ or the completeness spine; it is a pure off-path probe. `KampPrior.lean:562` is 
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax (Formula)
 open FormalSystem.Metalogic.WeakCanonical
@@ -103,4 +103,4 @@ theorem capFn_forces_local
   rw [← hCap y1, ← hCap y2]
   exact intervalHolds_local N S y1 y2 hagree
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

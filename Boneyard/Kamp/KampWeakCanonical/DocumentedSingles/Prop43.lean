@@ -1,6 +1,6 @@
 import Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.VecEA_m
 import Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.EAVecNegationClosure
-import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -36,11 +36,11 @@ the Phase 4 plan: faithful assets land off-path before the Phase 5 `:391` rewire
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct)
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct)
 
 /-! ## Constant-true and constant-false VVecEA_m -/
 
@@ -193,4 +193,4 @@ Lemma 7.6 adjacency) is viable WITHOUT the blocked uniform machinery — the uni
 stay documented here as future work only.
 -/
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

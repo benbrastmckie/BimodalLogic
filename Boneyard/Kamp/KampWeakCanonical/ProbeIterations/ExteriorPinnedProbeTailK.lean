@@ -10,7 +10,7 @@ Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
 
 Key declarations: kvE_probe358_tailDG_gapItem_pinned_fails, kvE_probe358_tailDG_sigma_in_population
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -122,7 +122,7 @@ general-m G1/G2 supply against the refined interface remains open. -/
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -347,4 +347,4 @@ theorem kvE_probe358_tailDG_sigma_in_population :
         (@decide_eq_false _ (Classical.dec _) (by omega : ¬((30:ℤ) < 2))).symm
     | .order ⟨2, _⟩ ⟨2, _⟩ h => exact absurd rfl h
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

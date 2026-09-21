@@ -91,9 +91,10 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 169 | `Decidability/` |
 | `Deterministic.lean` | 27 | <!-- TODO: add description --> |
+| `Expressiveness.lean` | 70 | <!-- TODO: add description --> |
 | `Independence.lean` | 115 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
-| `WeakCanonical.lean` | 144 | `WeakCanonical/` |
+| `WeakCanonical.lean` | 130 | `WeakCanonical/` |
 <!-- END GENERATED -->
 
 The remaining loose files in `Metalogic/` are not aggregators — they have no same-named
@@ -151,9 +152,10 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 51,958 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
+| [`Expressiveness/`](Expressiveness/README.md) | 141 | 104,087 | <!-- TODO: add description --> |
 | [`Independence/`](Independence/README.md) | 22 | 5,975 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,585 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,509 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -196,14 +198,10 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Kamp/` | 116 | 77,714 |
-| `EFGames/` | 8 | 11,800 |
-| `Expressiveness/` | 5 | 9,507 |
 | `DenseModelSurgery/` | 9 | 7,914 |
-| `RealModel/` | 7 | 6,789 |
-| `IntegerModel/` | 6 | 5,615 |
+| `RealModel/` | 7 | 6,794 |
+| `IntegerModel/` | 6 | 5,617 |
 | `GroupModel/` | 6 | 3,373 |
-| `Separation/` | 3 | 926 |
 <!-- END GENERATED -->
 
 `GroupModel/` is where `theorem countermodel_discrete` — the Base-frame discrete branch of
@@ -214,7 +212,7 @@ dominates everything else in the repository:
 sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work is in
 [`Boneyard/Kamp/`](../Boneyard/Kamp/README.md).
 
-<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
+<!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
 | `NfMultiAnchorBridge/` | 47 | 41,436 |

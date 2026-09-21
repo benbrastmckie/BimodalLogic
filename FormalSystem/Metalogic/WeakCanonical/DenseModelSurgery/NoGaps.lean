@@ -5,8 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.TruthTransfer
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Translation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
+import FormalSystem.Metalogic.Expressiveness.Kamp.Translation
+import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithful
 
 /-!
 # Reynolds §6 Lemma 9 and Theorem 4: the classes do not end at gaps
@@ -107,7 +107,7 @@ as discharged — none of them is.
 
 namespace FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
-open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Syntax FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature}
 

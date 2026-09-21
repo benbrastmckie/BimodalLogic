@@ -13,7 +13,7 @@ Reference for custom tactics in the Bimodal TM logic library.
 | `apply_axiom` | Apply a specific axiom schema | 0 |
 | `assumption_search` | Find a matching assumption in context | 0 |
 
-The six EF-game tactics in `FormalSystem/Metalogic/WeakCanonical/EFGameTactics.lean` are the
+The six EF-game tactics in `FormalSystem/Metalogic/Expressiveness/EFGameTactics.lean` are the
 most-used custom tactics in the repository (68 call sites between them) and are documented at
 their declarations rather than here.
 

@@ -10,7 +10,7 @@ signature). Retained as machine-checked evidence only.
 
 Key declarations: zoneGuard_blocks_seamPair_counterexample, crossContext_wGate_blocks_attack, crossContext_attack_payload
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -58,11 +58,11 @@ file is touched. -/
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
 
 set_option maxHeartbeats 1600000
 
@@ -290,4 +290,4 @@ theorem crossContext_attack_payload (k : Nat)
   simp only [atom_eval, Fin.cons_one, Fin.cons_zero] at h31
   exact absurd h31 (show ¬ ((3 : ℤ) = 1) by norm_num)
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

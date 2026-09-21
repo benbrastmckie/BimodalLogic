@@ -976,7 +976,7 @@ at most $k$, and the refuted sentence has a fixed depth. The resulting countermo
   This is *not* an application of Kamp's theorem. Kamp's expressive-completeness result --- that
   over Dedekind-complete flows the strict Until/Since language captures every first-order condition
   on a linear order with monadic predicates in one free variable --- is a different statement, and
-  it is not machine-checked here.#footnote[Kamp's 1968 dissertation @kamp1968, with the modern proof due to Rabinovich @rabinovich2014; it is frequently attributed to Kamp's 1971 _Theoria_ paper @kamp1971formalproperties, which introduces the *now* operator and does not contain it. Both scope conditions do work: the operators must be strict, as they are here, and the flow must be Dedekind complete.] `Metalogic/WeakCanonical/Kamp/` develops toward the statement
+  it is not machine-checked here.#footnote[Kamp's 1968 dissertation @kamp1968, with the modern proof due to Rabinovich @rabinovich2014; it is frequently attributed to Kamp's 1971 _Theoria_ paper @kamp1971formalproperties, which introduces the *now* operator and does not contain it. Both scope conditions do work: the operators must be strict, as they are here, and the flow must be Dedekind complete.] `Metalogic/Expressiveness/Kamp/` develops toward the statement
   `kampPriorExpressiveCompleteness`, which remains open. The discrete branch depends on none of it:
   $k$-equivalence is a coarser tool, and coarser is enough when only one sentence must be refuted.
 ]

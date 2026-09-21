@@ -51,7 +51,7 @@ duality (`dualStructure`), transporting `BackForth` along the mirror involution 
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open Order
+open Order FormalSystem.Metalogic.Expressiveness
 
 /-! ## Toolkit extensions -/
 

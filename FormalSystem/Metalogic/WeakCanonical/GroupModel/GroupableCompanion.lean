@@ -61,7 +61,7 @@ The carrier is used in full — never as an interval type — per the design rul
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open Order
+open Order FormalSystem.Metalogic.Expressiveness
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core

@@ -8,25 +8,11 @@ import FormalSystem.Metalogic.WeakCanonical.ReflexiveCanonical
 import FormalSystem.Metalogic.WeakCanonical.TruthLemma
 import FormalSystem.Metalogic.WeakCanonical.FrameProperties
 import FormalSystem.Metalogic.WeakCanonical.ChronicleExtraction
-import FormalSystem.Metalogic.WeakCanonical.MonadicFO
 import FormalSystem.Metalogic.WeakCanonical.NEquivalence
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ESigmaExpansion
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallFormula
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VeeExistsForall
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum
-import FormalSystem.Metalogic.WeakCanonical.Table
-import FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
-import FormalSystem.Metalogic.WeakCanonical.Kamp.DedekindINFDense
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
-import FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
-import FormalSystem.Metalogic.WeakCanonical.StaviConnectives
-import FormalSystem.Metalogic.WeakCanonical.EFGames.StaviCompleteness
-import FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6
 import FormalSystem.Metalogic.WeakCanonical.Transfer
 -- CI edge only: `Chronicle/ChronicleMonadicBridge.lean` sits ABOVE `Transfer.lean` in the import
 -- graph despite living in the `BXCanonical/Chronicle/` directory, so no Chronicle aggregator can

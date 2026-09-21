@@ -1,7 +1,7 @@
 # Boneyard / Kamp / KampWeakCanonical
 
 Archived Lean files from the Kamp/Rabinovich expressive-completeness pipeline
-(`FormalSystem/Metalogic/WeakCanonical/Kamp/`). Files here are probes, retired escalation paths,
+(`FormalSystem/Metalogic/Expressiveness/Kamp/`). Files here are probes, retired escalation paths,
 and superseded infrastructure that are no longer on any live proof path.
 
 **This directory is the former `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/`**, moved here

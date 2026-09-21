@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAFormula
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAFormula
+import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
 
 /-! ARCHIVED (Boneyard) — never compiled. Retired backward-direction negation-closure
 material from EANegation.lean: the backward direction is unprovable at the
@@ -19,7 +19,7 @@ Moved verbatim from EANegation.lean: the warm-up trio
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -610,4 +610,4 @@ theorem neg_partialBracketExist_is_vbracket
         This sorry does NOT block the completeness proof. -/
       sorry
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

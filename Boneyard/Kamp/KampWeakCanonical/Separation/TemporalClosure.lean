@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR separation support: TemporalClosure)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import Boneyard.Kamp.KampWeakCanonical.Separation.Duality
 
 /-!
@@ -58,7 +58,7 @@ junction-depth induction machinery.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -690,4 +690,4 @@ theorem restricted_u_free_separated (phi : Formula)
     is_syntactically_separated phi = true :=
   expanded_jd_zero_imp_separated phi hrestr (u_free_junction_depth_zero phi huf)
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

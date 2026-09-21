@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness
+import FormalSystem.Metalogic.Expressiveness.PriorExpressiveness
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Defs
+import FormalSystem.Metalogic.Expressiveness.EFGames.Defs
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

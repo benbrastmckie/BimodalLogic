@@ -1,5 +1,5 @@
-import FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Defs
+import FormalSystem.Metalogic.Expressiveness.PriorExpressiveness
+import FormalSystem.Metalogic.Expressiveness.EFGames.Defs
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 
 /-!

@@ -1,5 +1,5 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationClosure
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -38,7 +38,7 @@ The disjunction covers all models because the three cases are exhaustive.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -385,4 +385,4 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 -- it). Nothing on the negation path is discharged. `neg_2var_vec_ea_indep` (:315) has the
 -- contentful shape structurally, and its forward direction (`_correct`, :319) is proved.
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

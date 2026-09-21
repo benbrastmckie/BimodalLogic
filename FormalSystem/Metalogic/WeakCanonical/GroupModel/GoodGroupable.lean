@@ -117,7 +117,7 @@ with `synthInstanceFailed` — which is the point of stating the gate.
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 open FormalSystem.Metalogic.Core
 
 /-! ## Carrier gate: `ℚ ×ₗ ℤ` satisfies the four `Valid`/`SemanticConsequence` binders. -/

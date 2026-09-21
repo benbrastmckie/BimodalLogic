@@ -56,7 +56,7 @@ sorry-free) is a different theorem from the archived, `sorryAx`-tainted
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.BXCanonical.Chronicle

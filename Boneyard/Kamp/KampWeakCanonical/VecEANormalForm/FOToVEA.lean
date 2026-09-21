@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.PriorDefs
-import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.PriorDefs
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -44,7 +44,7 @@ To resolve the remaining sorry, implement:
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -150,4 +150,4 @@ theorem nf_exist_to_temporal_correct {sig : MonadicSignature}
     ∃ x : M.carrier, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf :=
   (nf_exist_to_temporal_aux atomMap h_surj sub_nf).choose_spec M h_UZ h_SZ t
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

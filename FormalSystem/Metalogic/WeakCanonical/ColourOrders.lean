@@ -44,6 +44,7 @@ coloured-order hypothesis.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## The coloured index order as a structure -/
 

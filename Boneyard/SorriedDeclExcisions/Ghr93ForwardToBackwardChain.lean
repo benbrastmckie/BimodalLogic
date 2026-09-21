@@ -1,8 +1,8 @@
-import FormalSystem.Metalogic.WeakCanonical.Expressiveness.SplitPoint
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Composition
-import FormalSystem.Metalogic.WeakCanonical.EFGames.CharacteristicFormula
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint
+import FormalSystem.Metalogic.Expressiveness.EFGames.Composition
+import FormalSystem.Metalogic.Expressiveness.EFGames.CharacteristicFormula
 import Mathlib.Data.Fin.Tuple.Sort
-import FormalSystem.Metalogic.WeakCanonical.Expressiveness.CaseAnalysis
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
 
 /-!
 # ARCHIVED (Boneyard) — never compiled.
@@ -33,7 +33,7 @@ Do not import from live code.
 #exit
 
 /- ======================================================================
-   Source: FormalSystem/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean
+   Source: FormalSystem/Metalogic/Expressiveness/GameTransfer/CaseAnalysis.lean
    Original context: `namespace FormalSystem.Metalogic.WeakCanonical`,
    `open FormalSystem.Syntax`, `set_option maxHeartbeats 800000`.
    ====================================================================== -/
@@ -1660,7 +1660,7 @@ theorem ghr93_inductive_step {sig : MonadicSignature} [Fintype sig.preds] [Decid
       h_mono
 
 /- ======================================================================
-   Source: FormalSystem/Metalogic/WeakCanonical/Expressiveness/Theorem6.lean
+   Source: FormalSystem/Metalogic/Expressiveness/GameTransfer/Theorem6.lean
    Original context: `namespace FormalSystem.Metalogic.WeakCanonical`,
    `open FormalSystem.Syntax`.
    ====================================================================== -/

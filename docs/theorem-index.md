@@ -215,8 +215,8 @@ axiom set of the derivation machinery `StarAxiom` feeds.
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |
 |-------------|-----------|-----------|------|-------------|--------|
-| — | `{U, S}` is expressively complete for Prior structures relative to monadic FO | `FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness` | `FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean` | — | pcq pinned:C14 |
-| — | The load-bearing corollary consumed by the live completeness chain | `FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior` | `FormalSystem/Metalogic/WeakCanonical/PriorExpressiveness.lean` | — | pcq pinned:C14 |
+| — | `{U, S}` is expressively complete for Prior structures relative to monadic FO | `FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness` | `FormalSystem/Metalogic/Expressiveness/Kamp/KampPrior.lean` | — | pcq pinned:C14 |
+| — | The load-bearing corollary consumed by the live completeness chain | `FormalSystem.Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior` | `FormalSystem/Metalogic/Expressiveness/PriorExpressiveness.lean` | — | pcq pinned:C14 |
 
 ## Statuses that are refutations, not gaps, and one status that is a gap
 

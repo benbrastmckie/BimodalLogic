@@ -16,7 +16,7 @@ helpers, and chronicle-is-good theorem.
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 
@@ -218,7 +218,8 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
 Half-open subinterval [a, b) of an ordered monadic structure.
 The carrier is `{x : M.carrier // a ≤ x ∧ x < b}`.
 -/
-def OrderedMonadicStructure.hoSubinterval (sig : MonadicSignature) [Fintype sig.preds]
+def _root_.FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure.hoSubinterval
+    (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // a ≤ x ∧ x < b}

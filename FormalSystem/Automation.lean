@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.Decidability.Propositional.Tactic
 import FormalSystem.Automation.ProofSearch.Core
 import FormalSystem.Automation.ProofSearch.Strategies
 import FormalSystem.Automation.SuccessPatterns
-import FormalSystem.Metalogic.WeakCanonical.EFGameTactics
+import FormalSystem.Metalogic.Expressiveness.EFGameTactics
 import FormalSystem.Automation.Normalization
 -- This aggregator is LIBRARY-ONLY. It used to import eight tooling modules -- FormulaEnumerator,
 -- DatasetGenerator, DataExport, EnrichedCountermodel, DatasetAssembly, ProofStepExtractor,

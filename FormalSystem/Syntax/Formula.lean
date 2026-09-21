@@ -186,7 +186,7 @@ future point at which ¬A holds with ⊤ holding until then.
 Gabbay-Hodkinson-Reynolds 1994 §10.3.1, which defines `K⁺q = ¬U(⊤, ¬q)`.
 
 **NAME-COLLISION WARNING.** This is NOT the same operator as `kplusFormula` in
-`FormalSystem/Metalogic/WeakCanonical/Kamp/PriorINF.lean`. That one is
+`FormalSystem/Metalogic/Expressiveness/Kamp/PriorINF.lean`. That one is
 `P.neg ∧ ¬(⊤ U P.neg)` — it carries an extra `¬P` conjunct ("P holds arbitrarily soon after
 `t`, *but not at `t` itself*"). Reynolds' and GHR's `K⁺` has no such conjunct. Substituting one
 for the other silently transcribes a different axiom. `kplusFormula` also lives in `Metalogic/`,

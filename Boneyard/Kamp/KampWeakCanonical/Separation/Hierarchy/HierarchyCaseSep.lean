@@ -28,7 +28,7 @@ These theorems do NOT depend on HierarchyInduction.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -671,4 +671,4 @@ theorem case7_sep_with_U_type_Z_gen (a q A B : Formula)
         (u_free_separable_with_type hB)
     · exact untl_s_free_separable_with_type hA' hB'
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

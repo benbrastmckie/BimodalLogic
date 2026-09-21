@@ -30,7 +30,7 @@ FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 # Ambiguous, not missing. `FormalSystem/Metalogic/Completeness.lean` does not
 # exist, but four files named `Completeness.lean` do:
 #   FormalSystem/Metalogic/BXCanonical/Completeness.lean
-#   FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean
+#   FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean
 #   Boneyard/SupersededCompleteness/Completeness.lean
 #   Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean
 # The sole consumer is Boneyard/BundleSuccessorSeed/SuccExistence.lean:13, and

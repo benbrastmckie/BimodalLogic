@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR separation support: Duality)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -39,7 +39,7 @@ enabling automatic derivation of "S out of U" cases from "U out of S" cases.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -358,4 +358,4 @@ theorem u_free_s_free_no_future_imp_past_only {φ : Formula}
     (hpo : is_past_only φ = true) :
     is_past_only φ = true := hpo
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

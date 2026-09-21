@@ -107,7 +107,7 @@ Each entry reads *Reynolds' step (printed pp.185-186)* — *Declaration*:
 * *"Take `R_i ≡_k N | (a_i,a_{i+1})` with an open interval of `R` as a flow"* —
   `exists_iooUnit_witness`
 * *"Because `≡_k` is preserved under lexicographic sums"* — `doets_lemma_1_4`
-  (`OrderedSum.lean:41`), applied twice
+  (`OrderedSum.lean:47`), applied twice
 * *"`N ≡_k Σ_{i∈Z}(N | {a_i} + R_i)`"* — `kEquiv_blockSum`
 * *"and this latter has flow isomorphic to `R`"* — `blockSumWitness_iso_real`
 * *"its interior does not have end points"* — `belowSubinterval`, `aboveSubinterval`,
@@ -166,7 +166,7 @@ set_option linter.style.longFile 1800
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 open Set
@@ -234,7 +234,8 @@ The substructure `M | (a,b)` on the open interval between `a` and `b`.
 
 Distinct from `OrderedMonadicStructure.subinterval`, which is the closed `M | [a,b]`.
 -/
-def OrderedMonadicStructure.openSubinterval (sig : MonadicSignature)
+def _root_.FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure.openSubinterval
+    (sig : MonadicSignature)
     (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // a < x ∧ x < b}
   interp p x := M.interp p x.val
@@ -351,7 +352,8 @@ theorem kEquiv_pointSum (sig : MonadicSignature) [Finite sig.preds]
 
     This is the shape of the block `[a_i, a_{i+1})` that `N` decomposes into; it is
     `k`-equivalent to Reynolds' `M | {a} + M | (a,b)` by `kEquiv_halfOpen_pointSum`. -/
-def OrderedMonadicStructure.halfOpenSubinterval (sig : MonadicSignature)
+def _root_.FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure.halfOpenSubinterval
+    (sig : MonadicSignature)
     (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // a ≤ x ∧ x < b}
   interp p x := M.interp p x.val
@@ -1330,14 +1332,16 @@ the two-end-point case.
 -/
 
 /-- The substructure `M | (←, b)`, everything strictly below `b`. -/
-def OrderedMonadicStructure.belowSubinterval (sig : MonadicSignature)
+def _root_.FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure.belowSubinterval
+    (sig : MonadicSignature)
     (M : OrderedMonadicStructure sig) (b : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // x < b}
   interp p x := M.interp p x.val
   carrierOrder := inferInstance
 
 /-- The substructure `M | (a, →)`, everything strictly above `a`. -/
-def OrderedMonadicStructure.aboveSubinterval (sig : MonadicSignature)
+def _root_.FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure.aboveSubinterval
+    (sig : MonadicSignature)
     (M : OrderedMonadicStructure sig) (a : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // a < x}
   interp p x := M.interp p x.val

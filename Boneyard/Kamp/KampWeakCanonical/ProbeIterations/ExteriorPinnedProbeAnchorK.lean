@@ -97,7 +97,7 @@ is touched. -/
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -179,4 +179,4 @@ theorem kvE_probe358_eP_atomMate_present :
       mergeNF (m2eP.atom_assgn) ⟨1, by omega⟩ = s'.atom_assgn :=
   ⟨m2mate, m2_sigma_marks_mate, rfl⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

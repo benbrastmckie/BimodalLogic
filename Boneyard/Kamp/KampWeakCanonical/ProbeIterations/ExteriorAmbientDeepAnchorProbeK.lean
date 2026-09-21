@@ -10,11 +10,11 @@ Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
 
 Key declarations: kvE_ambientDeepAnchorV0, kvE_probe368_cmA_row13_refuted, kvE_probe368_cmB_row5_refuted, kvE_probe368_cmA_ambient_rejected
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorAmbientDeepAnchorK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorNegationK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorAmbientDeepAnchorK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfDepth0Generalized
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -158,7 +158,7 @@ lemmas (`kvE_deepOnFiber_iff`, `kvE_futRealizer_admissible`,
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -979,4 +979,4 @@ theorem kvE_probe368_ambient_copyPlant_collapses (qs : NormalForm mBsig 3 3)
     qs = nf_characteristic MB 3 3 mBreal3 :=
   Prod.ext (hrow.symm.trans subAnchor_on_row) hcopy
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

@@ -10,8 +10,8 @@ signature). Retained as machine-checked evidence only.
 
 Key declarations: kvE_probe_selfZone_coincide, kvE_probe_endpoint_totality, kvE_probe_gapItem_pinned, kvE_probe_interior_transfer (and siblings)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorNegationK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -75,7 +75,7 @@ touched (Phase 0 makes zero production edits). -/
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -435,7 +435,7 @@ Deviation note (recorded in the plan): consuming the Phase-2 supplier
 `kvE_futAtomPinned_zero` requires importing `ExteriorPinnedConverseK` (leaf-safe: that
 module does not import this probe file) — the ONE non-append edit of this phase. -/
 
-open FormalSystem.Metalogic.WeakCanonical.Separation (formula_conjList formula_conjList_iff)
+open FormalSystem.Metalogic.Expressiveness.Separation (formula_conjList formula_conjList_iff)
 
 /-! ### P3 (C9): depth-0 same-witness interior transfer -/
 
@@ -758,4 +758,4 @@ theorem kvE_probe_p2_sliceId (σ : NormalForm p3sig 1 4)
         rw [hss0, hbit0] at hσbit
         exact Bool.noConfusion hσbit
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

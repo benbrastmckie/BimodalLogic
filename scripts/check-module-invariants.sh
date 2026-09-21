@@ -1778,8 +1778,8 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Independence.sat_ztime_ssubset_mod_axiomSet' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Independence.plus_incomplete_base' depends on axioms: [propext, Classical.choice, Quot.sound]
-'FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness' depends on axioms: [propext, Classical.choice, Quot.sound]
-'FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.consequence_completeness_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.BXCanonical.completeness_rtime_engine' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.BXCanonical.countermodel_dedekind_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1898,8 +1898,8 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Independence.sat_ztime_ssubset_mod_axiomSet
 #print axioms FormalSystem.Metalogic.Independence.deterministic_not_plusDefinable
 #print axioms FormalSystem.Metalogic.Independence.plus_incomplete_base
-#print axioms FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness
-#print axioms FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior
+#print axioms FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness
+#print axioms FormalSystem.Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior
 #print axioms FormalSystem.Metalogic.consequence_completeness_rtime
 #print axioms FormalSystem.Metalogic.BXCanonical.completeness_rtime_engine
 #print axioms FormalSystem.Metalogic.BXCanonical.countermodel_dedekind_dense

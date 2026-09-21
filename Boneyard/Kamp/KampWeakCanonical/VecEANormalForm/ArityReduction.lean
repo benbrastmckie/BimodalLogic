@@ -1,10 +1,10 @@
 import Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.NegationIndep
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEATranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfToVecEA
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -59,7 +59,7 @@ a different property from VVecEA2 negation.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -111,4 +111,4 @@ theorem isVEA_ex {sig : MonadicSignature} {m : Nat}
     rintro ⟨env, h_ei, h_ej, x, h_eval⟩
     exact ⟨(Fin.cons x env : Fin (m + 1) → M.carrier), h_ei, h_ej, h_eval⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

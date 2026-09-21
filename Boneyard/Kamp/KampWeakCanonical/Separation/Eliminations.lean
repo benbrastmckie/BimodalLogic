@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR separation support: Eliminations)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import Boneyard.Kamp.KampWeakCanonical.Separation.NegationEquiv
 import Boneyard.Kamp.KampWeakCanonical.Separation.Distributivity
 import Boneyard.Kamp.KampWeakCanonical.Separation.IntHelpers
@@ -34,7 +34,7 @@ formula where U(A,B) appears only at top level (not under S).
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 open Classical
@@ -916,4 +916,4 @@ theorem since_guard_weaken {event guard₁ guard₂ : Formula}
 
 -- Note: Cases 6-8 theorems are now in NormalForm.lean (proved via all_formulas_separable).
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

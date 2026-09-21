@@ -2,9 +2,9 @@
 -- Reason: Dead code — discrete Stavi path with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Decomposition
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Composition
-import FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6
+import FormalSystem.Metalogic.Expressiveness.EFGames.Decomposition
+import FormalSystem.Metalogic.Expressiveness.EFGames.Composition
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.Theorem6
 import Mathlib.Tactic.FinCases
 
 /-!

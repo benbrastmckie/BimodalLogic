@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: all_separable, all_past_separable, all_future_separable, untl_separable, snce_separable
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import Boneyard.Kamp.KampWeakCanonical.Separation.Eliminations
 import Boneyard.Kamp.KampWeakCanonical.Separation.FormulaOps
 import Boneyard.Kamp.KampWeakCanonical.Separation.Distributivity
@@ -43,7 +43,7 @@ plus the proper separation theorem and atom-preserving separation.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -370,4 +370,4 @@ theorem proper_separation_preserves_atoms (φ : Formula) :
     int_equiv_restrict_atoms hψ₀_equiv (formula_atoms φ) Set.Subset.rfl,
     formula_atoms_restrict_subset ψ₀ (formula_atoms φ)⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

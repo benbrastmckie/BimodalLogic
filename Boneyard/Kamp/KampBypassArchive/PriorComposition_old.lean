@@ -1,6 +1,6 @@
 import Boneyard.Kamp.KampWeakCanonical.TranslationEra.KampComposition
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
-import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -52,11 +52,11 @@ to transfer all quantifier conditions.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula
+open FormalSystem.Metalogic.Expressiveness.Separation (nf_depth0_char_formula
   nf_depth0_char_formula_correct)
 
 /-! ## Atom Agreement for Non-Constant 2-var Environments -/
@@ -1261,4 +1261,4 @@ theorem prior_second_1var_from_2var_since {sig : MonadicSignature}
       nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 :=
   cross_2nd_1var_from_2var M x t M₀ x₀ t₀ h_2var
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

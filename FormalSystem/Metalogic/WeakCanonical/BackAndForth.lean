@@ -47,6 +47,7 @@ the other, so nothing can be phrased through a single `I`. `BackForth` is the re
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## The back-and-forth relation -/
 

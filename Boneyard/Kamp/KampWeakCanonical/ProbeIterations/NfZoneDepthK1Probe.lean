@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfZoneDepthK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfZoneDepthK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -75,7 +75,7 @@ which is *not* a flat `BracketFormula.holds … x t` disjunction.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -152,4 +152,4 @@ theorem interior_bracket_cannot_realize_exterior_sub_k1 {sig : MonadicSignature}
   rintro ⟨w, hInterior, hReal⟩
   exact (nf0_4_exterior_witness_is_exterior M w y x t sub hsub hReal).2 hInterior
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

@@ -101,7 +101,7 @@ Both are recorded as explicit hypotheses on the theorems that need them rather t
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
 
 variable {sig : MonadicSignature}

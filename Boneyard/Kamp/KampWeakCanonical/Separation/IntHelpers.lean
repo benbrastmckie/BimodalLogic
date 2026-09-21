@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR separation support: IntHelpers)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import Mathlib.Data.Int.Interval
 
 /-!
@@ -34,7 +34,7 @@ Provides integer-arithmetic lemmas needed by the separation proof:
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -147,4 +147,4 @@ theorem until_top_is_future (a : Formula) :
     int_equiv (.untl a (Formula.neg .bot)) (Formula.some_future a) :=
   int_equiv_refl _
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

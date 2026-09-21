@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationClosure
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.EANegation
+import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -24,7 +24,7 @@ witness.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -163,4 +163,4 @@ theorem neg_vecEA2_is_vvecEA2 :
        This sorry is NOT on the critical path to completeness. -/
     sorry
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

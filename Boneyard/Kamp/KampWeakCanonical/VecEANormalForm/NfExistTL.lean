@@ -1,8 +1,8 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfToVecEA
 import Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.FOToVEA
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.PriorDefs
-import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.PriorDefs
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -41,11 +41,11 @@ The proof proceeds by induction on k with two parts at each level:
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -322,4 +322,4 @@ noncomputable def nf_characterizable_temporal_prior_partA
         nf_eval_nf M k 1 (fun _ => t) nf } :=
   (nf_characterizable_temporal_prior_combined atomMap h_surj k).1 nf
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

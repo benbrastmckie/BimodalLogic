@@ -76,7 +76,7 @@ takes only the shuffle data `hγ` and `hσ` it was always a consequence of.
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 

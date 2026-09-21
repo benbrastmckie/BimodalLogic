@@ -6,8 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.WeakCanonical.ReflexiveCanonical
 import FormalSystem.Metalogic.WeakCanonical.ChronicleExtraction
-import FormalSystem.Metalogic.WeakCanonical.MonadicFO
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
+import FormalSystem.Metalogic.Expressiveness.MonadicFO
+import FormalSystem.Metalogic.Expressiveness.NormalForm
 import Mathlib.Data.Sigma.Order
 
 /-!
@@ -40,7 +40,7 @@ concrete recursive normal form type from NormalForm.lean. This makes
 -/
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 open FormalSystem.ProofSystem
 
 /-! ## k-Types and k-Equivalence -/

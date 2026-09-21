@@ -45,7 +45,7 @@ construction.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -143,4 +143,4 @@ theorem VecEA_m.arity_firewall {sig : MonadicSignature} {m : Nat}
     · intro i
       exact (vea.intervalComponent_holds M atomMap i _ _).mp (hbr_c i)
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

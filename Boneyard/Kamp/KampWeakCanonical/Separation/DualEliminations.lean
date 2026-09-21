@@ -37,7 +37,7 @@ Each theorem concludes `is_separable`, which follows directly from
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -117,4 +117,4 @@ theorem elim_case_8_dual (a q A B : Formula)
       (Formula.or q (Formula.neg (.snce A B)))) :=
   all_separable _
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

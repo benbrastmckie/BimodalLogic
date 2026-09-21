@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR DedekindZ Q-lemma)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import Boneyard.Kamp.KampWeakCanonical.Separation.Eliminations
 import Boneyard.Kamp.KampWeakCanonical.Separation.NegationEquiv
 
@@ -28,7 +28,7 @@ and Case 3 equivalence for Z.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -475,4 +475,4 @@ theorem case3_equiv_Z_general (a q A B : Formula) :
   fun M t => ⟨case3_equiv_Z_fwd a q A B M t, case3_equiv_Z_bwd a q A B M t⟩
 
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

@@ -2,9 +2,9 @@
 -- Reason: Dead code — discrete Stavi path with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.EFGames.CharacteristicFormula
-import FormalSystem.Metalogic.WeakCanonical.EFGames.GapDetection
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Decomposition
+import FormalSystem.Metalogic.Expressiveness.EFGames.CharacteristicFormula
+import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetection
+import FormalSystem.Metalogic.Expressiveness.EFGames.Decomposition
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

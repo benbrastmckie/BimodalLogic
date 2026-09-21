@@ -21,7 +21,7 @@ search never read — and it has **three call sites in the whole repository, all
 `Examples/`**. Nothing in `Metalogic/`, `Theorems/` or `Semantics/` is proved by it. Reach for
 it to demonstrate that a formula is derivable; do not build a proof on it. The one genuinely
 load-bearing tactic in this directory is `propDecide`, and the six EF-game tactics in
-`Metalogic/WeakCanonical/EFGameTactics.lean` — which are not here — carry 68 call sites
+`Metalogic/Expressiveness/EFGameTactics.lean` — which are not here — carry 68 call sites
 between them.
 
 There is no Aesop rule set. One existed and was retired for having zero consumers; see
@@ -98,8 +98,8 @@ planned, that bullet is a no-op — do not re-derive the cut from the bullet's w
 | `ProofSearch/` | Depth-limited proof search engine |
 
 `EFGameTactics.lean` is **not** in this directory, despite `Automation.lean` re-exporting it.
-It declares `namespace FormalSystem.Metalogic.WeakCanonical` and its only consumer is the EF-game
-development, so it lives at `Metalogic/WeakCanonical/EFGameTactics.lean`, where its path and its
+It declares `namespace FormalSystem.Metalogic.Expressiveness` and its only consumer is the EF-game
+development, so it lives at `Metalogic/Expressiveness/EFGameTactics.lean`, where its path and its
 namespace agree.
 
 ## ML Dataset Pipeline

@@ -36,6 +36,7 @@ open FormalSystem.Syntax
 open FormalSystem.Metalogic.Core
 
 namespace FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## No-Gaps Theorem (Discrete Case) -/
 

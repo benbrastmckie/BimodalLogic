@@ -145,7 +145,7 @@ structure ContrastivePair where
 Substitute a formula for an atom throughout a formula.
 
 This is a local reimplementation to avoid importing the heavy
-`FormalSystem.Metalogic.WeakCanonical.Separation.FormulaOps` dependency chain.
+`FormalSystem.Metalogic.Expressiveness.Separation.FormulaOps` dependency chain.
 -/
 def substAtom (φ : Formula) (target : Atom) (replacement : Formula) : Formula :=
   match φ with

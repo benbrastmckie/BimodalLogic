@@ -2,7 +2,7 @@ import Boneyard.Kamp.KampBypassArchive.KampBypassEqCase
 import Boneyard.Kamp.KampBypassArchive.KampBypassUntil
 import Boneyard.Kamp.KampBypassArchive.KampBypassSince
 import Boneyard.Kamp.KampWeakCanonical.TranslationEra.KampComposition
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEATranslation
 import Boneyard.Kamp.KampBypassArchive.PriorComposition
 
 /-!
@@ -25,11 +25,11 @@ Factored from a single 4488-line file for modularity.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff
+open FormalSystem.Metalogic.Expressiveness.Separation (formula_disjList formula_disjList_iff
   formula_conjList formula_conjList_iff)
 
 /-! ## Cross-Structure NF Transfer -/
@@ -890,4 +890,4 @@ theorem existPart_succ_n1_bypass
         · rintro ⟨x, hx⟩
           exact absurd ⟨M, ‹_›, ‹_›, t, x, hx, h_atoms⟩ h_unsat⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

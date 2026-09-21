@@ -34,7 +34,7 @@ negations, handled by induction on the disjunct list using conjunction closure.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -170,4 +170,4 @@ theorem neg_2var_vec_ea {sig : MonadicSignature}
   push_neg at h_neg
   exact neg_disjunct_list M atomMap h_UZ z0 z1 h_lt v.disjuncts h_neg
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

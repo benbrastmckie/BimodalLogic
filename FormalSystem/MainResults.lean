@@ -221,22 +221,22 @@ Proved in `FormalSystem.Semantics.Correspondence.Galois` and
 Kamp's theorem in the Prior-structure form: over structures satisfying the Prior conditions,
 every monadic first-order formula in one free variable has a temporal equivalent.
 
-* `FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness` — the
+* `FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness` — the
   constructive core, returning the temporal formula together with its correctness proof.
-* `FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior` — the
+* `FormalSystem.Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior` — the
   `{U, S}`-expressive-completeness statement built on it.
 
 Both are `noncomputable def`s returning a subtype, not `theorem`s: the temporal formula is
 extracted, not merely asserted to exist. Proved in
-`FormalSystem.Metalogic.WeakCanonical.Kamp.KampPrior` and
-`FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness`.
+`FormalSystem.Metalogic.Expressiveness.Kamp.KampPrior` and
+`FormalSystem.Metalogic.Expressiveness.PriorExpressiveness`.
 -/
 
-#check @FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness
-#check @FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior
+#check @FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness
+#check @FormalSystem.Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior
 
-#print axioms FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness
-#print axioms FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior
+#print axioms FormalSystem.Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness
+#print axioms FormalSystem.Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior
 
 /-! ## Decidability
 

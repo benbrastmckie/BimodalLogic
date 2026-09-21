@@ -32,6 +32,7 @@ building on definitions from NEquivalence.lean.
 `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 -/
 namespace FormalSystem.Metalogic.WeakCanonical
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## Doets Lemma 1.4 -/
 

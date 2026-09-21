@@ -1,5 +1,5 @@
 import Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.VecEAArityFirewall
-import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationClosure
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -61,7 +61,7 @@ relevant arity-≤2 condition.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -297,4 +297,4 @@ theorem neg_vec_ea_m {sig : MonadicSignature}
   push_neg at h_neg
   exact neg_vecEA_m_list h_INF env henv_mono v.disjuncts h_neg
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

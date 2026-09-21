@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Defs
+import FormalSystem.Metalogic.Expressiveness.EFGames.Defs
 
 /-!
 # Archimedean One-Class Theorem and Gap Existence
@@ -47,7 +47,7 @@ The following definitions were moved to
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 
 /-! ## Archimedean Very-Good Theorem
 

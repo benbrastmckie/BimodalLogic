@@ -23,12 +23,12 @@ and provides the basis for "shift-and-glue" constructions used in completeness p
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Semantics`, `FormalSystem.Metalogic.WeakCanonical.NEquivalence`
-- **Imported by**: `FormalSystem.Metalogic.WeakCanonical.Separation`
+- **Imported by**: `FormalSystem.Metalogic.Expressiveness.Separation`
 
 ## Related Documentation
 
 - [WeakCanonical README](../README.md)
-- [Separation README](../Separation/README.md)
+- [Separation README](../../Expressiveness/Separation/README.md)
 
 ---
 

@@ -1,8 +1,8 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEADecomp
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfToVecEA
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEADecomp
 import Boneyard.Kamp.KampWeakCanonical.TranslationEra.ZoneBridge
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.PriorDefs
+import FormalSystem.Metalogic.Expressiveness.NormalForm
+import FormalSystem.Metalogic.Expressiveness.PriorDefs
 import Mathlib.Data.Finset.Sort
 import Mathlib.GroupTheory.Perm.Fin
 
@@ -25,11 +25,11 @@ See also:
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
+open FormalSystem.Metalogic.Expressiveness.Separation (atom_literal atom_literal_correct
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
@@ -682,4 +682,4 @@ noncomputable def enriched_bypass_formula_zone {sig : MonadicSignature}
   | false, true => enriched_bypass_since atomMap h_surj char_1 sub_nf parent_atoms
   | false, false => enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

@@ -209,7 +209,7 @@ rather than the limit-domain structure, so the truth correspondence is
 eliminate; and the induction carries `subformulaClosure` membership rather than a
 `predFormulas` inclusion, which is what the chronicle correspondence is stated against. -/
 
-open FormalSystem.Metalogic.WeakCanonical in
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness in
 /--
 The point of an `ℝ`-flowed interval structure at a given real.
 
@@ -226,7 +226,7 @@ def realFlowPoint {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     have h' : R.carrierSet = Set.univ := h
     rw [h']; exact Set.mem_univ x⟩
 
-open FormalSystem.Metalogic.WeakCanonical in
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness in
 @[simp] theorem realFlowPoint_val {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {R : RIntervalStructure sig} (h : R.IsRealFlow) (x : ℝ) :
     (realFlowPoint h x).val = x := rfl
@@ -252,7 +252,7 @@ theorem chronicle_eval_family_zero_eq_root {fc : FrameClass} (A : Set Formula)
     (Chronicle.cantorBfmcsDense fc A h_mcs h_box_dense).evalFamily.mcs 0 = A :=
   Chronicle.rooted_cantor_fmcs_dense_at_s fc A h_mcs h_box_dense 0
 
-open FormalSystem.Metalogic.WeakCanonical in
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness in
 open FormalSystem.Metalogic.BXCanonical.Chronicle in
 /--
 **The box predicate on the chronicle bridge is the box content of the root MCS**, at every
@@ -296,7 +296,7 @@ theorem chronicle_mem_of_box_mem {fc : FrameClass} (N : Set Formula)
   exact SetMaximalConsistent.mp_of_theorem h_mcs_q
     (DerivationTree.axiom [] _ (Axiom.modal_t ψ) (FrameClass.base_le _)) h_box_q
 
-open FormalSystem.Metalogic.WeakCanonical in
+open FormalSystem.Metalogic.WeakCanonical FormalSystem.Metalogic.Expressiveness in
 open FormalSystem.Metalogic.BXCanonical.Chronicle in
 open FormalSystem.Metalogic.Algebraic in
 /--

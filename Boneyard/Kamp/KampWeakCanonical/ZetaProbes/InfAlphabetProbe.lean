@@ -1,5 +1,5 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Prop35Assembly
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PerFormulaType
+import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Assembly
+import FormalSystem.Metalogic.Expressiveness.Kamp.PerFormulaType
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -75,7 +75,7 @@ is therefore tractable. **GO** on Phases 2-5.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax (Formula Atom)
 open FormalSystem.Metalogic.WeakCanonical
@@ -136,4 +136,4 @@ theorem typeEqFiniteDisjunction (N : OrderedMonadicStructure (sigE sig F))
         exact decide_eq_true hiff
     rw [hEq]; exact hadm
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

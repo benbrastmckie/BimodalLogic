@@ -50,7 +50,7 @@ logic over (Z, <) is expressible by a temporal formula using Since and Until.
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
 
 /-! ### Core Expressiveness Lemma
 

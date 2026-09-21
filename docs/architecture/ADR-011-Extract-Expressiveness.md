@@ -2,13 +2,14 @@
 
 ## Status
 
-**Proposed** - 2026-09-19
+**Accepted** - 2026-09-21
 
 Supersedes [ADR-006](ADR-006-Metalogic-No-Physical-Regroup.md) for the *expressiveness* subset
 of `Metalogic/WeakCanonical/` only. ADR-006's declined regroup of the three completeness routes
 under a `Completeness/` parent stays declined, and its one directory-level cycle stays accepted.
-ADR-006 remains **Accepted** until this record is; the programme's Expressiveness phase
-(`docs/development/PUBLICATION_REFACTOR.md`) is what accepts it.
+ADR-006 remains **Accepted**, and now stands alongside this record rather than in place of it:
+the programme's Expressiveness phase (`docs/development/PUBLICATION_REFACTOR.md`) executed this
+extraction, which is what accepted it.
 
 ## Context
 
@@ -37,7 +38,7 @@ whether any `BXCanonical` module appears in its transitive imports. Measured on 
 | Set | Files | Lines | Edges into the other set or into `BXCanonical` |
 |---|---:|---:|---:|
 | Expressiveness (to move) | 141 | 104,087 | **0** |
-| Residual `WeakCanonical` | 38 | 28,472 | n/a (this is where the cycle lives) |
+| Residual `WeakCanonical` | 38 | 28,498 | n/a (this is where the cycle lives) |
 
 The Expressiveness set is `Kamp/` (116 files), `EFGames/` (8), `Expressiveness/` (5),
 `Separation/` (3), and the single modules `NormalForm`, `MonadicFO`, `StaviConnectives`,
@@ -99,15 +100,19 @@ python3 scripts/measure-refactor-partitions.py --check     # exit 1 if the set l
 
 ### The two names that change
 
-| Today | After |
+Both columns are written relative to the library root `FormalSystem`, so that the *Before*
+column — a historical record of names that no longer exist — is not mistaken for a live module
+path, by a reader or by check C5.
+
+| Before this record was executed | After |
 |---|---|
-| `FormalSystem.Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness` | `Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness` (under the library root) |
-| `FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior` | `Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior` (under the library root) |
+| `Metalogic.WeakCanonical.Kamp.kampPriorExpressiveCompleteness` | `Metalogic.Expressiveness.Kamp.kampPriorExpressiveCompleteness` |
+| `Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior` | `Metalogic.Expressiveness.uSExpressivelyCompleteOverPrior` |
 
 Both are on the main-results page, both are pinned by C14's axiom baseline, and both would be
-cited by an external reader. That is the pre-publication argument: a fully-qualified name is a
-citation, and a citation that says "weak canonical" about Kamp's theorem misleads. The move must
-land before the first release tag, together with every other **[CITE]** phase of the programme.
+cited by an external reader. That was the pre-publication argument: a fully-qualified name is a
+citation, and a citation that says "weak canonical" about Kamp's theorem misleads. The move
+landed before the first release tag, together with the other **[CITE]** phases of the programme.
 
 ## Consequences
 

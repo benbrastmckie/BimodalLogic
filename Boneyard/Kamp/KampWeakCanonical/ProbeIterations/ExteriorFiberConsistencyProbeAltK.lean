@@ -10,7 +10,7 @@ Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
 
 Key declarations: kvE_probe364_sstar_honest_unrealizable, kvE_probe364_plant_rejected, kvE_probe364_sigma2_sstar_inconsistent
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -100,7 +100,7 @@ Probe conventions: model `(ℤ, <)`, `P = {0,10,20}`, anchors `[25,15,2,18]`, do
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -497,4 +497,4 @@ theorem kvE_probe364_sigma2_inadmissible : kvE_futAdmissible m2sigma = false := 
     · rw [m2_sigma_marks_sstar] at h
       exact absurd h (by decide)
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

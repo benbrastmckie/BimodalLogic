@@ -4,9 +4,13 @@
 
 **Accepted** - 2026-09-07
 
-Supersession of the "no physical relocation" clause, for the expressiveness subset of
-`WeakCanonical/` only, is proposed by [ADR-011](ADR-011-Extract-Expressiveness.md) (Proposed);
-this record remains in force until that ADR is accepted.
+The "no physical relocation" clause is superseded, for the expressiveness subset of
+`WeakCanonical/` only, by [ADR-011](ADR-011-Extract-Expressiveness.md), which is **Accepted**
+and has been executed: those 141 modules now live in `Metalogic/Expressiveness/`. Everything
+else in this record stands. In particular the declined `Completeness/` regroup of the three
+completeness routes remains declined, and the single accepted directory-level cycle
+`BXCanonical` <-> `WeakCanonical` remains accepted — the extraction did not touch it, and the
+cycle block below is stated at its post-extraction count.
 
 ## Context
 
@@ -34,13 +38,9 @@ retired to [`Boneyard/BundleDeadHalf/`](../../Boneyard/BundleDeadHalf/README.md)
 ### The cycle: `BXCanonical` <-> `WeakCanonical`
 
 ```
-BXCanonical → WeakCanonical  (9 import lines)
+BXCanonical → WeakCanonical  (5 import lines)
   BXCanonical/Chronicle/ChronicleMonadicBridge.lean
       → FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
-      → FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
-      → FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
-      → FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
-      → FormalSystem.Metalogic.WeakCanonical.Table
       → FormalSystem.Metalogic.WeakCanonical.Transfer
   BXCanonical/Chronicle/ChronicleToCountermodel.lean
       → FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery

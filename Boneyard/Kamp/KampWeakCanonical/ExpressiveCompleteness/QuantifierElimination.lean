@@ -14,7 +14,7 @@ the k>=2 E[Sigma] re-architecture.
 Key declarations: q_exists, q_exists_correct, int_to_ordered, past_only_is_pure_past
 -/
 import Boneyard.Kamp.KampWeakCanonical.Separation.SeparationThm
-import FormalSystem.Metalogic.WeakCanonical.MonadicFO
+import FormalSystem.Metalogic.Expressiveness.MonadicFO
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -50,7 +50,7 @@ formulas over (Z, <) into temporal formulas using Since and Until.
 namespace FormalSystem.Metalogic.WeakCanonical
 
 open FormalSystem.Syntax
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
 
 /-! ## FO-to-Temporal Infrastructure -/
 

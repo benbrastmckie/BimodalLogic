@@ -10,7 +10,7 @@ signature). Retained as machine-checked evidence only.
 
 Key declarations: kvE_fiber_separates_pair, kvE_sepPos_separates_qnf_pair, kvE_fiberPos_separates_F2
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorFiberK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -57,7 +57,7 @@ Purely additive NEW leaf module; probe-local (`private`) machinery; no frozen fi
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -359,4 +359,4 @@ theorem kvE_fiberPos_separates_F2 :
     rw [p2_estar_not_in_sub2] at hbit
     exact Bool.noConfusion hbit
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

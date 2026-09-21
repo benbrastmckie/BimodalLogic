@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
+import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.Base
 
 /-! ARCHIVED (Boneyard) — never compiled. Superseded endInterval skeleton; live
 replacement is EndIntervalConsumerK.endIntervalStepPrior / the consumer-side reshape.
@@ -12,11 +12,11 @@ EndIntervalConsumerK.lean) and is NOT archived here. -/
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation
+open FormalSystem.Metalogic.Expressiveness.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
@@ -123,4 +123,4 @@ theorem endInterval_zero_correct {sig : MonadicSignature} [Fintype sig.preds] [D
   rw [VVecEA2.singleton_holds]
   exact bracketEndChar_k0_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

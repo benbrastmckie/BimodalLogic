@@ -1,5 +1,5 @@
 import Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.NfComposition
-import FormalSystem.Metalogic.WeakCanonical.PriorDefs
+import FormalSystem.Metalogic.Expressiveness.PriorDefs
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -26,7 +26,7 @@ elements into multi-var NF agreement.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Metalogic.WeakCanonical
 
@@ -214,4 +214,4 @@ theorem constenv_same_depth_nvar {sig : MonadicSignature}
   constenv_2var_determines M N (K + 1) n t t s s
     (constenv_same_depth_2var K M t N s h_t)
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAFormula
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
-import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAFormula
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
+import FormalSystem.Metalogic.Expressiveness.Kamp.VecEATranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -43,7 +43,7 @@ which gets folded into the endpoint predicate at z_{m-2}.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -660,4 +660,4 @@ theorem VecEA2.toVecEA_m_toVecEA2_correct {sig : MonadicSignature} {n : Nat}
     · have := hep ⟨1, by omega⟩; simp [env2_one] at this; exact this
     · have := hbr ⟨0, by omega⟩; simp [env2_zero, env2_one] at this; exact this
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

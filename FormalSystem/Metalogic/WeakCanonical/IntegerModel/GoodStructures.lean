@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum
-import FormalSystem.Metalogic.WeakCanonical.Table
+import FormalSystem.Metalogic.Expressiveness.Table
 import FormalSystem.Metalogic.WeakCanonical.ChronicleExtraction
 import Mathlib.Data.Fintype.Sort
 import Mathlib.Order.SuccPred.LinearLocallyFinite
@@ -20,7 +20,7 @@ and the one-class theorem.
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 

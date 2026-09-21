@@ -10,7 +10,7 @@ signature). Retained as machine-checked evidence only.
 
 Key declarations: kampPrior_hreal_supply
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampPrior
+import FormalSystem.Metalogic.Expressiveness.Kamp.KampPrior
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -45,11 +45,11 @@ the row-5 site is the Phase-7 binder retrofit, out of scope here.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula formula_conjList_iff)
+open FormalSystem.Metalogic.Expressiveness.Separation (nf_depth0_char_formula formula_conjList_iff)
 
 set_option maxHeartbeats 1600000 in
 /-- **Crux A — interior `hreal` supply** (Phase 5, the deep `⇐` witness selection).
@@ -209,4 +209,4 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
       M atomMap w x t hxw hwt hcharFibSound σ hb hepR
     exact ⟨x1, hx1⟩
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

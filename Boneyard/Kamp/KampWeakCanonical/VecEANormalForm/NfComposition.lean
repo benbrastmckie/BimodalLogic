@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.NormalForm
+import FormalSystem.Metalogic.Expressiveness.NormalForm
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
@@ -40,7 +40,7 @@ For the inter-structure case over ordered sums, see NEquivalence.lean.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Metalogic.WeakCanonical
 
@@ -647,4 +647,4 @@ theorem constenv_2var_determines {sig : MonadicSignature}
   | succ n' =>
     exact constenv_2var_determines_aux M N k x t x' t' h_2var n' nf
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp

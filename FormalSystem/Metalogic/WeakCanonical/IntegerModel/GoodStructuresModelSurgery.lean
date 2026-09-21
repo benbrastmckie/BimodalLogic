@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness
+import FormalSystem.Metalogic.Expressiveness.PriorExpressiveness
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsNoGaps
-import FormalSystem.Metalogic.WeakCanonical.EFGames.Defs
+import FormalSystem.Metalogic.Expressiveness.EFGames.Defs
 import FormalSystem.Metalogic.WeakCanonical.NEquivalence
 
 /-!
@@ -90,7 +90,7 @@ set_option linter.style.longFile 2300
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 
 /-! ## Temporal Truth Helpers -/
 

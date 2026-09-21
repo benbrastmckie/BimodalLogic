@@ -8,7 +8,7 @@ import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
-import FormalSystem.Metalogic.WeakCanonical.Expressiveness.Theorem6
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.Theorem6
 import FormalSystem.Semantics.Validity
 import Mathlib.Data.Int.SuccPred
 
@@ -45,7 +45,7 @@ The file also provides:
 -/
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Syntax
+open FormalSystem.Syntax FormalSystem.Metalogic.Expressiveness
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 open FormalSystem.Semantics

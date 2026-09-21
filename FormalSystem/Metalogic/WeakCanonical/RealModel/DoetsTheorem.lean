@@ -99,7 +99,7 @@ set_option linter.style.longFile 2400
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery
+open FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery FormalSystem.Metalogic.Expressiveness
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
@@ -115,7 +115,7 @@ exactly as `exists_ioo_witness` closes it for a prescribed bounded open interval
 A `RIntervalStructure` whose flow is **all** of `ℝ`: the shape Reynolds' *"flow of time the real
 numbers"* asks for.
 
-`realLine` (`GoodDense.lean:1037`) is the same carrier set assembled from `ℤ`-indexed blocks;
+`realLine` (`GoodDense.lean:1039`) is the same carrier set assembled from `ℤ`-indexed blocks;
 this is the free-standing predicate on an already-built `RIntervalStructure`.
 -/
 def RIntervalStructure.IsRealFlow (R : RIntervalStructure sig) : Prop :=
@@ -1377,7 +1377,7 @@ omit [DecidableEq sig.preds] in
 omit [Fintype sig.preds] in
 /--
 *"has a right hand end point"* transfers across `≡ₖ` for `k ≥ 2` — the positive counterpart of
-`noMaxOrder_of_kEquiv` (`GoodDense.lean:488`), read off the same depth-`2` sentence `hasMaxSent`.
+`noMaxOrder_of_kEquiv` (`GoodDense.lean:490`), read off the same depth-`2` sentence `hasMaxSent`.
 -/
 theorem exists_max_of_kEquiv [Finite sig.preds] (k : Nat) (hk : 2 ≤ k)
     {M N : OrderedMonadicStructure sig}

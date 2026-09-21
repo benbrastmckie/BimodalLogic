@@ -26,7 +26,7 @@ This is the bimodal analogue of Kamp's theorem for temporal logic.
 ## Related Documentation
 
 - [WeakCanonical README](../README.md)
-- [EFGames README](../../../../FormalSystem/Metalogic/WeakCanonical/EFGames/README.md)
+- [EFGames README](../../../../FormalSystem/Metalogic/Expressiveness/EFGames/README.md)
 
 ---
 

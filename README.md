@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 505 |
-| Live lines of code | 155,527 |
-| Live comment lines | 93,906 |
+| Live `.lean` files | 506 |
+| Live lines of code | 155,539 |
+| Live comment lines | 93,950 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -324,7 +324,7 @@ recorded in [ADR-007](docs/architecture/ADR-007-Decidability-One-Directional.md)
 ### Characterization and Definability
 
 `FormalSystem/Semantics/Correspondence/` (the `Th`/`Mod` Galois connection between sets of task
-frames and sets of formulas) and `FormalSystem/Metalogic/WeakCanonical/Kamp/` (expressive
+frames and sets of formulas) and `FormalSystem/Metalogic/Expressiveness/Kamp/` (expressive
 completeness) each contribute a **sorry-free** result family that does not fit the soundness/
 completeness table above.
 
@@ -347,7 +347,7 @@ respectively). Closed-form characterizations of `Mod (AxiomSet .ZTime)` and
 `Mod (AxiomSet .RTime)` remain open and are not promised.
 
 **Expressive completeness (Kamp, Prior structures).** `kampPriorExpressiveCompleteness`
-(`Metalogic/WeakCanonical/Kamp/KampPrior.lean`) is sorry-free (axioms: exactly `propext`,
+(`Metalogic/Expressiveness/Kamp/KampPrior.lean`) is sorry-free (axioms: exactly `propext`,
 `Classical.choice`, `Quot.sound`) and shows that `{U, S}` is expressively complete relative to
 monadic first-order logic **for Prior structures** — not for TM, and not for all task frames.
 It is load-bearing for the live completeness chain via `uSExpressivelyCompleteOverPrior`.

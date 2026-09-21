@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR separation support: NegationEquiv)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
+import FormalSystem.Metalogic.Expressiveness.Separation.Defs
 import Boneyard.Kamp.KampWeakCanonical.Separation.Duality
 import Boneyard.Kamp.KampWeakCanonical.Separation.IntHelpers
 
@@ -39,7 +39,7 @@ to find the "first failure" point.
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Separation
+namespace FormalSystem.Metalogic.Expressiveness.Separation
 
 open FormalSystem.Syntax
 
@@ -175,4 +175,4 @@ theorem neg_since_equiv (A B : Formula) :
     · -- m < u: u in (m, t), so ¬A(u) by hnotAguard. But A(u) holds.
       exact hnotAguard u hum hut hAu
 
-end FormalSystem.Metalogic.WeakCanonical.Separation
+end FormalSystem.Metalogic.Expressiveness.Separation

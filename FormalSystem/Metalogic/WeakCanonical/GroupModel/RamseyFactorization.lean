@@ -51,7 +51,7 @@ by the invariant.
 
 namespace FormalSystem.Metalogic.WeakCanonical
 
-open Order
+open Order FormalSystem.Metalogic.Expressiveness
 
 /-! ## Infinite Ramsey for pairs
 

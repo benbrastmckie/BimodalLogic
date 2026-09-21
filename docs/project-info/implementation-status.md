@@ -72,7 +72,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Metalogic/Conservativity/Backward.lean` | ✅ | TM/TM+ backward bridge |
 | `Metalogic/Conservativity/MinusLanguageSoundness.lean` | ✅ | BL soundness at Base/Dense/ZTime/RTime by composition; `truthAt_tr`, the validity forms, and `minus_not_derivable_nil_bot{,_discrete}` |
 | `Metalogic/Independence/` | ✅ | Three independence results, including `sat_rtime_ssubset_mod_axiomSet` (`Sat .RTime` not Galois-closed -- definability of the model class, distinct from the open RTime strong-completeness question above) and `sat_ztime_ssubset_mod_axiomSet` (`Sat .ZTime` not Galois-closed) |
-| `Metalogic/WeakCanonical/Kamp/` | ✅ | `kampPriorExpressiveCompleteness` -- `{U, S}` expressively complete relative to monadic first-order logic **for Prior structures**, sorry-free (`propext`, `Classical.choice`, `Quot.sound`); load-bearing via `uSExpressivelyCompleteOverPrior` |
+| `Metalogic/Expressiveness/Kamp/` | ✅ | `kampPriorExpressiveCompleteness` -- `{U, S}` expressively complete relative to monadic first-order logic **for Prior structures**, sorry-free (`propext`, `Classical.choice`, `Quot.sound`); load-bearing via `uSExpressivelyCompleteOverPrior` |
 
 **Soundness** (✅):
 - Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ`, over all 29 axiom

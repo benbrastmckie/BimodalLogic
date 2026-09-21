@@ -13,11 +13,11 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.ContHolds"
+    "FormalSystem.Metalogic.Expressiveness.ContHolds"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.ContHoldsCross"
+    "FormalSystem.Metalogic.Expressiveness.ContHoldsCross"
   ],
   [
     "unusedArguments",
@@ -29,7 +29,7 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.InfCarrierCut"
+    "FormalSystem.Metalogic.Expressiveness.InfCarrierCut"
   ],
   [
     "unusedArguments",
@@ -37,7 +37,7 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.KampFaithfulExpressiveCompleteness"
+    "FormalSystem.Metalogic.Expressiveness.KampFaithfulExpressiveCompleteness"
   ],
   [
     "unusedArguments",
@@ -49,15 +49,15 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.atomKindFintype"
+    "FormalSystem.Metalogic.Expressiveness.atomKindFintype"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.base_case_M_eq"
+    "FormalSystem.Metalogic.Expressiveness.base_case_M_eq"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.base_case_N_eq"
+    "FormalSystem.Metalogic.Expressiveness.base_case_N_eq"
   ],
   [
     "unusedArguments",
@@ -85,7 +85,7 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.discrete_no_gaps"
+    "FormalSystem.Metalogic.Expressiveness.discrete_no_gaps"
   ],
   [
     "unusedArguments",
@@ -101,15 +101,15 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.formula_transfer_rank_embed"
+    "FormalSystem.Metalogic.Expressiveness.formula_transfer_rank_embed"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.gap_complement_pred_closed"
+    "FormalSystem.Metalogic.Expressiveness.gap_complement_pred_closed"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.gap_cut_succ_closed"
+    "FormalSystem.Metalogic.Expressiveness.gap_cut_succ_closed"
   ],
   [
     "unusedArguments",
@@ -141,19 +141,19 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.nfProfile"
+    "FormalSystem.Metalogic.Expressiveness.nfProfile"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.nfTConsistent"
+    "FormalSystem.Metalogic.Expressiveness.nfTConsistent"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.nf_determines_stavi_truth"
+    "FormalSystem.Metalogic.Expressiveness.nf_determines_stavi_truth"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.nf_determines_stavi_truth_depth"
+    "FormalSystem.Metalogic.Expressiveness.nf_determines_stavi_truth_depth"
   ],
   [
     "unusedArguments",
@@ -169,19 +169,19 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.rank_type_separator"
+    "FormalSystem.Metalogic.Expressiveness.rank_type_separator"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.sf_disj_truth_mu"
+    "FormalSystem.Metalogic.Expressiveness.sf_disj_truth_mu"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.sf_snce_truth_mu"
+    "FormalSystem.Metalogic.Expressiveness.sf_snce_truth_mu"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.sf_untl_truth_mu"
+    "FormalSystem.Metalogic.Expressiveness.sf_untl_truth_mu"
   ],
   [
     "unusedArguments",
@@ -477,311 +477,311 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.A_future_correct"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.A_future_correct"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.A_past_correct"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.A_past_correct"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.BracketEndCharCarrier"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.BracketEndCharCarrier"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.BracketEndCharCarrierV"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.BracketEndCharCarrierV"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.EAtomDom"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.EAtomDom"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.EndCharCarrier"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.EndCharCarrier"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.EndCharMotive"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.EndCharMotive"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.KvE2SepWeakOrder"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.KvE2SepWeakOrder"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.NfZoneFlattenNavigable"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.aggBracket_construct"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.aggBracket_construct"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.aggBracket_extract"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.aggBracket_extract"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.atomKindCastLE"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.atomKindCastLE"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.atomKind_arity1_is_pred"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.atomKind_arity1_is_pred"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.endCharN0_correct_world_local_obstruction"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.endCharN0_correct_world_local_obstruction"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.exists_piFinset_forall_iff"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.exists_piFinset_forall_iff"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.exterior_future_zone_eval_shape"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.exterior_future_zone_eval_shape"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.igCharP"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.igCharP"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.igGate"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.igGate"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.k1v_bracket_extract_mono"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.k1v_bracket_extract_mono"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kampPrior_fChain_realize_cons"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kampPrior_fChain_realize_cons"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kampPrior_site_env_bridge"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kampPrior_site_env_bridge"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kampPrior_site_perQnf_seam"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kampPrior_site_perQnf_seam"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2FutSpikeEnd"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2FutSpikeEnd"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2SepAnchorVal"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2SepAnchorVal"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2SepProj3"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2SepProj3"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2SepProj4"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2SepProj4"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2_sepBracketN_construct"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2_sepBracketN_construct"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2_sepBracket_split_at"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2_sepBracket_split_at"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2_sepCastBracket_holds"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2_sepCastBracket_holds"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2_sepOrderTypes_mem_aux'"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2_sepOrderTypes_mem_aux'"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE2_sep_locate_witness"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE2_sep_locate_witness"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_futChainDestructG"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_futChainDestructG"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_minPick"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_minPick"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtT_complete"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zAtT_complete"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtT_sound"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zAtT_sound"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtW_complete"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zAtW_complete"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtW_sound"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zAtW_sound"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtX_complete"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zAtX_complete"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zAtX_sound"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zAtX_sound"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zFutT_complete"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zFutT_complete"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zFutT_sound"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zFutT_sound"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zPastX_complete"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zPastX_complete"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_nonInterior_zPastX_sound"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_nonInterior_zPastX_sound"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_pastChainDestructG"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_pastChainDestructG"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.kvE_pastMaxPick"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.kvE_pastMaxPick"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.mergeNF"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.mergeNF"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.navigated_bracket_reaches_exterior_future"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.navigated_bracket_reaches_exterior_future"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.navigated_bracket_reaches_exterior_past"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.navigated_bracket_reaches_exterior_past"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf0Assemble"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf0Assemble"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf0ProjFresh"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf0ProjFresh"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf0ZoneSpec"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf0ZoneSpec"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf2Locus"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf2Locus"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf2varExistDepth0TlFn"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf2varExistDepth0TlFn"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf3Locus0"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf3Locus0"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nfChar2AtomPart"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nfChar2AtomPart"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nfChar2DiagExistTl"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nfChar2DiagExistTl"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nfNLocus0"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nfNLocus0"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nfPredAtPos"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nfPredAtPos"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nfTProj3"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nfTProj3"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nfXProj3"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nfXProj3"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nfYProj"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nfYProj"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_3var_eq_yt"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_3var_eq_yt"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_3var_eq_yx"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_3var_eq_yx"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_char2_zone_split5"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_char2_zone_split5"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_char3_deeper_split"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_char3_deeper_split"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_depth0_pair_cycle_empty'"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_depth0_pair_cycle_empty'"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_eval_nf_atom_layer"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_eval_nf_atom_layer"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_eval_nf_step_unfold"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_eval_nf_step_unfold"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_quant_clause_tl_correct"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_quant_clause_tl_correct"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.nf_zone_exists_trichotomy_k1"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.nf_zone_exists_trichotomy_k1"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.sinceWitnessPred"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.sinceWitnessPred"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.untilWitnessPred"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.untilWitnessPred"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.zoneEnv3_arity_invariant"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.zoneEnv3_arity_invariant"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.zoneHolds"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.zoneHolds"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.OrderedMonadicStructure.hoSubinterval"
+    "FormalSystem.Metalogic.Expressiveness.OrderedMonadicStructure.hoSubinterval"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.ghr93_strategy_compose.compose_wc"
+    "FormalSystem.Metalogic.Expressiveness.ghr93_strategy_compose.compose_wc"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.ghr93_strategy_compose.compose_wc_right"
+    "FormalSystem.Metalogic.Expressiveness.ghr93_strategy_compose.compose_wc_right"
   ],
   [
     "unusedArguments",
@@ -857,14 +857,14 @@
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.VVecEA2.disjList_holds"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.VVecEA2.disjList_holds"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.VVecEA2.holds_flatMap_map"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.VVecEA2.holds_flatMap_map"
   ],
   [
     "unusedArguments",
-    "FormalSystem.Metalogic.WeakCanonical.Kamp.VVecEA2.singleton_holds"
+    "FormalSystem.Metalogic.Expressiveness.Kamp.VVecEA2.singleton_holds"
   ]
 ]

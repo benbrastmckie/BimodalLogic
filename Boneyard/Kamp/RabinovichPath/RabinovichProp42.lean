@@ -69,7 +69,7 @@ either:
 
 #exit
 
-namespace FormalSystem.Metalogic.WeakCanonical.Kamp
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
@@ -113,4 +113,4 @@ theorem existPart_succ_n1_via_master
            (Fin.cons x (fun _ => t)) sub_nf) :=
   nf_2var_exist_formula_prior_fill atomMap h_surj (k + 1) parent_atoms sub_nf
 
-end FormalSystem.Metalogic.WeakCanonical.Kamp
+end FormalSystem.Metalogic.Expressiveness.Kamp
