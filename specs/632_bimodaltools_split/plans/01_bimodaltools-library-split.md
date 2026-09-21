@@ -333,15 +333,22 @@ locally rather than on a CI round-trip.
 
 ---
 
-### Phase 5: Author the relocation maps and review the dry run [NOT STARTED]
+### Phase 5: Author the relocation maps and review the dry run [COMPLETED]
 
 **Goal**: The exact module map, namespace map, and hand-edit list for the move are written down and
 reviewed, with `move-modules.py --dry-run` output read in full. Nothing moves in this phase.
 
 **Tasks**:
-- [ ] Add `"BimodalToolsTest": "Tests"` to `MODULE_ROOT_DIRS` in `scripts/move-modules.py`.
+- [x] Add `"BimodalToolsTest": "Tests"` to `MODULE_ROOT_DIRS` in `scripts/move-modules.py`.
       Without it every moved test's derived path is wrong. `BimodalTools` itself is at the
       repository root and needs no entry.
+      *(deviation: altered — a SECOND, larger change to `move-modules.py` was required and made.
+      `move_trees` resolved each mapping's extension-free path stem and `git mv`'d it, which works
+      only for a DIRECTORY subtree; the Boneyard relocation it was built for was exactly that. All
+      33 file-granular rows here reported `skip ... (not present)` and the first dry run moved
+      **0 paths** while cheerfully rewriting all 236 citations — a silent no-op with an orderly
+      report. Added `resolve_move()`, which resolves a stem to a directory or to `stem + ".lean"`,
+      preferring the directory; the second dry run moves all 33.)*
 - [ ] Author the module map (a scratch file, not a committed artifact) with one row per moving
       module:
       - 24 rows `FormalSystem.Automation.<X> -> BimodalTools.<X>` for the modules under
@@ -351,16 +358,26 @@ reviewed, with `move-modules.py --dry-run` output read in full. Nothing moves in
       - 8 rows moving the tooling tests into `BimodalToolsTest.*` (the three root-level `Trace*`
         tests and five under `BimodalTest.Automation.*`; **not** `NormalizationTest`, which is
         split in Phase 8, not moved).
-- [ ] Author the namespace map with **19 dotted rows** and verify by inspection that it contains
-      **no bare `FormalSystem.Automation -> BimodalTools` row**. That prefix is shared with the
+- [x] Author the namespace map with **19 dotted rows** and verify by inspection that it contains
+      **no bare `FormalSystem.Automation -> BimodalTools` row**.
+      *(deviation: altered — the map carries **18** dotted rows, not 19. Counted from the tree:
+      17 moving modules declare a dotted `FormalSystem.Automation.X` namespace, 6 declare the
+      bare shared `FormalSystem.Automation` (hand-edited instead), `EnumBenchmarkMain` declares
+      none, and `TraceExport` is the 18th. 17 + 1 = 18. The bare-row prohibition was asserted
+      mechanically and holds.)* That prefix is shared with the
       library half and a bare row would rewrite the library's own namespace. Include the two rows
       whose namespace does not match their module:
       `FormalSystem.Automation.Enriched -> BimodalTools.Enriched` and
       `FormalSystem.Metalogic.Decidability.TraceExport -> BimodalTools.TraceExport`.
 - [ ] Run `python3 scripts/move-modules.py --module-map <map> --namespace-map <nsmap> --dry-run`
       and read the whole report, in particular the per-class counts and the bare-form audit line.
-- [ ] Re-grep the 11 bare-form citation sites the report enumerates and diff against its list;
-      record any drift. Unlike the Boneyard relocation, these are *stale after* the move and need
+- [x] Re-grep the 11 bare-form citation sites the report enumerates and diff against its list;
+      record any drift.
+      *(deviation: altered — **14** live line-sites, not 11 (`specs/**` excluded by policy). The
+      three the report omits: `docs/development/NAMING_CONVENTION_DEVIATION.md:453`, the second
+      citation on `typst/chapters/p4-dataset-pipeline.typ:30`, and
+      `FormalSystem/Automation/MachineAppendixMain.lean:40` — the last inside a file that itself
+      moves. Full list in the Phase 5 scratch checklist; Phase 7 closes all 14.)* Unlike the Boneyard relocation, these are *stale after* the move and need
       hand edits.
 - [ ] Write the resulting hand-edit checklist into the scratch directory for Phase 6 to execute.
 
@@ -381,6 +398,12 @@ forced.
 
 **Verification**:
 - `--dry-run` completes without error and its bare-form audit line reports a zero delta.
+  *(deviation: altered — the audit reports `1 before, 1 after` (zero delta, so it passes), but the
+  line is near-VACUOUS for a file-granular relocation and must not be read as coverage. Its
+  pattern is the mapping's final path component used as a path PREFIX (`AtomCanonicalization/`),
+  which is a directory shape; the bare forms that actually matter here are
+  `Automation/<Module>.lean`, whose bare token is the module's PARENT. The 14 real sites were
+  found by the independent re-grep below, not by this line.)*
 - The namespace map contains no bare-prefix row (assert by grepping the map file for a row whose
   left side is exactly `FormalSystem.Automation`).
 - `bash scripts/check-module-invariants.sh --no-build` still reports 0 FAIL (only

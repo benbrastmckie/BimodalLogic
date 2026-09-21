@@ -81,8 +81,10 @@ SCRIPT_EXT = {".sh", ".py", ".txt"}
 WORKFLOW_DIR = os.path.join(".github", "workflows")
 WORKFLOW_EXT = {".yml", ".yaml"}
 
-# Module roots whose on-disk location is not the repository root.
-MODULE_ROOT_DIRS = {"BimodalTest": "Tests"}
+# Module roots whose on-disk location is not the repository root. Both test libraries live
+# under Tests/ (`srcDir = "Tests"` in lakefile.toml); `FormalSystem` and `BimodalTools` are
+# rooted at the repository root and so need no entry.
+MODULE_ROOT_DIRS = {"BimodalTest": "Tests", "BimodalToolsTest": "Tests"}
 
 
 class Mapping:
@@ -378,16 +380,45 @@ def rebase_links(path: str, text: str, mappings: list[Mapping],
     return LINK_RE.sub(replace, text)
 
 
-def move_trees(mappings: list[Mapping], dry_run: bool) -> tuple[list[str], int]:
-    """Class 6 -- relocate each mapped subtree with a single `git mv`.
+def resolve_move(stem: str) -> tuple[str, str] | None:
+    """The on-disk pair a mapping's extension-free stem names, or None.
 
-    One `git mv` of the directory, never a delete-and-add: the rename is what
-    lets `git log --follow` cross the relocation, which is the whole reason the
+    A mapping names a MODULE, and `module_to_path` returns that module's path
+    stem without an extension. Two different things can sit at that stem, and
+    both are legitimate map rows:
+
+      - a DIRECTORY, when the row moves a whole subtree (`FormalSystem.Boneyard`);
+      - a single `.lean` FILE, when the row moves one module
+        (`FormalSystem.Automation.DataExport`).
+
+    Only the directory case existed when this tool was written, and a
+    file-granular row silently reported `skip ... (not present)` -- every
+    citation rewritten, nothing moved, and a report that looked orderly. The
+    directory is preferred when both somehow exist, matching the prefix
+    semantics of the module map itself.
+    """
+    if os.path.isdir(stem):
+        return stem, ""
+    if os.path.isfile(stem + ".lean"):
+        return stem, ".lean"
+    return None
+
+
+def move_trees(mappings: list[Mapping], dry_run: bool) -> tuple[list[str], int]:
+    """Class 6 -- relocate each mapped subtree or module with a single `git mv`.
+
+    One `git mv`, never a delete-and-add: the rename is what lets
+    `git log --follow` cross the relocation, which is the whole reason the
     archive keeps its history rather than reappearing as 225 new files.
     """
     moved, failures = [], 0
     for mapping in mappings:
-        src, dst = mapping.old_path, mapping.new_path
+        resolved = resolve_move(mapping.old_path)
+        if resolved is None:
+            print(f"  skip {mapping.old_path} (not present)")
+            continue
+        _, ext = resolved
+        src, dst = mapping.old_path + ext, mapping.new_path + ext
         if not os.path.exists(src):
             print(f"  skip {src} (not present)")
             continue
@@ -513,7 +544,7 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
     for key, label in labels:
         print(f"  {label:<34} {counts[key]:>5} occurrence(s) in "
               f"{len(files.get(key, ())):>4} file(s)")
-    print(f"  {'class 6  tree moves':<34} {len(moved):>5} subtree(s)")
+    print(f"  {'class 6  tree moves':<34} {len(moved):>5} path(s)")
     for line in moved:
         print(f"           {line}")
     scanned = sum(link_stats.values())
