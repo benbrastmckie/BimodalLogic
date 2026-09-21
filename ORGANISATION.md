@@ -33,28 +33,43 @@ This is the **measured** order, not an aspiration. Two entries in it are easy to
   is ordinary metaprogramming placed at layer 0 because its consumers are spread across
   `Automation/` and `Metalogic/`.
 
-Two classes of edge run *upward* through that stack, and both are recorded:
+One class of edge is called out against that stack:
 
 * **`Semantics → ProofSystem`.** Both are at layer 0, so this is not upward at all under the
   table above; it is called out because it is the only module under `Semantics/` that imports from
   `ProofSystem/`. `Semantics/FrameClassValidity.lean` defines `FrameClass.Sat`, the semantic
   reading of the proof-side frame-class tag, so that both sides can be indexed by the same tag
   instead of by a hand-maintained binder list that would drift.
-* **`Syntax/MinusLanguage/AxiomDischarge.lean → Theorems/*`, 7 lines.** The only genuinely upward
-  set left in the library. The L⁻ axiom-discharge proofs need the derived object-logic theorems.
-  The work that removes them is the `{Plus,Minus,Star}Language` directory merges in
-  [docs/development/PUBLICATION_REFACTOR.md](docs/development/PUBLICATION_REFACTOR.md), which move
-  that file out of `Syntax/` entirely.
 
-Neither closes a cycle, and the second set is asserted mechanically rather than trusted:
-`bash scripts/check-metalogic-cycles.sh` fails if the upward set is anything other than exactly
-those 7 lines — on a surplus and on a shortfall alike.
+**The measured upward set is now empty**, and that is asserted rather than trusted:
+`bash scripts/check-metalogic-cycles.sh` fails if it is anything other than the recorded
+allowlist — on a surplus and on a shortfall alike. It used to hold 7 lines, all from
+`Syntax/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`, the L⁻ axiom-discharge proofs
+reaching for the derived object-logic theorems.
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) draws the graph, explains the relocations that were
 considered and rejected, and gives the commands that re-derive it from the tree rather than
 trusting the picture.
 
-`Boneyard/` is outside the stack: it is the archive, it is not compiled, and no
-live module imports it. Read [its README](Boneyard/README.md) before resurrecting
+### The extension-language directories sit outside this table
+
+`MinusLanguage/`, `PlusLanguage/` and `StarLanguage/` are **not** layers and are **not** in the
+table above. Each is a self-contained object language at the library root, carrying its syntax,
+its proof system and its semantics in one directory, parallel to the core stack rather than
+stacked against it. Their absence is deliberate, not an oversight.
+
+**It has a measurement consequence worth stating plainly.** `layer_of` in
+`scripts/measure-refactor-partitions.py` returns `None` for any path outside `LAYERS`, so every
+import *into* and *out of* these three directories is invisible to the upward-edge measurement.
+`Metalogic → MinusLanguage` and
+`Semantics/StateLocalTransfer.lean → PlusLanguage.PlusStateLocal` are both real edges that the
+measurement does not see. This is also why the 7-line allowlist above emptied: the merge moved
+`AxiomDischarge.lean` from `Syntax/` to `MinusLanguage/`, which did not turn its edges downward
+— it stopped measuring them. Read the empty allowlist as *"nothing measured is upward"*, never as
+*"nothing is upward"*. **No harness check catches a regression here; this paragraph is the only
+record.**
+
+`Boneyard/` is outside the stack for a different reason: it is the archive, it is not compiled,
+and no live module imports it. Read [its README](Boneyard/README.md) before resurrecting
 anything from it — the argument order of two constructors changed after most of it was written.
 
 ## Everything else

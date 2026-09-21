@@ -262,7 +262,7 @@ commit `220e94ea4`:
 | Import lines from the lower layers into `Automation` | **0** since Phase 4 landed. Was 16, of which 11 into the attribute-only files; the 11 were deleted outright when the five declarations moved to `Tactic/Attr.lean`, the `PropDecide` line went with that module to `Metalogic/Decidability/Propositional/`, and the remaining 3 (`Decidability -> {ProofSearch, Normalization}`) became intra-layer under the corrected table |
 | `Theorems` files importing `Metalogic` | **0** since Phase 4 landed. Was 4, all `Metalogic.Core.DeductionTheorem`, which is now `Theorems/DeductionTheorem.lean` |
 | `Metalogic` files importing `Theorems` | 29 files, 50 lines (was 47; `DeductionTheorem.lean`'s move added 3, since its three `Metalogic/` consumers now cross the directory boundary) |
-| Total upward import lines, library-wide | 7, all `Syntax/MinusLanguage/AxiomDischarge.lean -> Theorems/*`; owned by Phase 5 below and asserted by equality in `check-metalogic-cycles.sh` |
+| Total upward import lines, library-wide | **0** since Phase 5 landed. Was 7, all `Syntax/MinusLanguage/AxiomDischarge.lean -> Theorems/*`. Asserted by equality against a now-empty allowlist in `check-metalogic-cycles.sh`. **Read with care**: the merge moved that file to `MinusLanguage/AxiomDischarge.lean`, outside `LAYERS`, so `layer_of` returns `None` and its edges stopped being *measured* rather than turning downward — see ORGANISATION.md's layer-table note |
 | Automation modules the library needs by closure | 9 (3,419 lines) |
 | User-facing tactic modules (library API, imported by no library file) | 4 (1,238 lines) |
 | Tooling modules, including `TraceExport` | 25 (14,747 lines); 12 are exe roots |
@@ -380,9 +380,10 @@ release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
 acceptance command reports 0 into `Automation` from all four source directories and an empty
 `theorems_files_importing_metalogic`; `check-metalogic-cycles.sh` asserts both its cycle count
 and the new layer order and exits 0. The 7 residual upward lines, all from
-`Syntax/MinusLanguage/AxiomDischarge.lean`, are **Phase 5's** — the `{Plus,Minus,Star}Language`
-merges move that file out of `Syntax/`. They are recorded in the script's allowlist, which fails
-on a shortfall as well as a surplus, so Phase 5 landing is a finding rather than a silent pass.
+`Syntax/MinusLanguage/AxiomDischarge.lean`, were **Phase 5's**, and Phase 5 has since landed: the
+`{Plus,Minus,Star}Language` merges moved that file out of `Syntax/` and the allowlist is now
+empty. Because the allowlist fails on a shortfall as well as a surplus, that landing was a
+finding rather than a silent pass — the emptying had to be made in the same commit as the move.
 
 ### Phase 5: Language-extension directories and namespace/path agreement — [CITE] (paths plus a bounded namespace rename of the semantics half)
 

@@ -44,25 +44,44 @@ set and none into BXCanonical.  Never weaken it; if it fails, the offending
 edges are the work, and the relocation has to be dependency-first.
 
 Measured on the tree as it stands after the upward-edge relocation:
-  upward-edges              7 import lines in total, all from
-                            Syntax/MinusLanguage/AxiomDischarge.lean into
-                            Theorems/*; 0 into Automation from any of the four
-                            acceptance source directories (Syntax, Semantics,
-                            ProofSystem, Theorems); 0 Theorems files import
-                            Metalogic; 29 Metalogic files import Theorems.
-                            scripts/check-metalogic-cycles.sh asserts that the
-                            upward set EQUALS those 7 lines.
+  upward-edges              0 import lines in total; 0 into Automation from any
+                            of the four acceptance source directories (Syntax,
+                            Semantics, ProofSystem, Theorems); 0 Theorems files
+                            import Metalogic; 29 Metalogic files import
+                            Theorems.  scripts/check-metalogic-cycles.sh
+                            asserts that the upward set EQUALS its recorded
+                            allowlist, now empty.
+                            CAVEAT: the 7 lines this figure used to report all
+                            came from Syntax/MinusLanguage/AxiomDischarge.lean.
+                            The language-extension merge moved that file to
+                            MinusLanguage/AxiomDischarge.lean, at the library
+                            root and outside LAYERS, so layer_of returns None
+                            for it.  The edges were not turned downward; they
+                            stopped being measured.  Every import into and out
+                            of MinusLanguage/, PlusLanguage/ and StarLanguage/
+                            is now invisible here -- see ORGANISATION.md's
+                            layer-table note.
   weakcanonical-partition   Expressiveness 141 files / 104,087 lines,
                             residual 38 files / 28,472 lines, 0 leaking edges;
                             BXCanonical-free by closure: 150 of 179
   automation-partition      9 library-needed modules (3,419 lines), 4
                             user-facing tactic modules (1,238), 25 tooling
                             modules including TraceExport (14,747)
-  namespace-audit           24 unrelated, two of them recorded exceptions whose
-                            own module docstrings explain them
-                            (Theorems.DeductionTheorem, namespace
-                            Metalogic.Core; Tactic.Meta, namespace Automation);
-                            15 of the 24 are the {Plus,Minus,Star}Language files
+  namespace-audit           8 unrelated, every one a recorded exception whose
+                            own module docstring explains it: ForMathlib PFilter
+                            (namespace Order.PFilter, Mathlib's own, kept for
+                            upstreaming); Theorems.DeductionTheorem (namespace
+                            Metalogic.Core); Tactic.Meta (namespace Automation);
+                            Semantics.FrameClassValidity (namespace
+                            ProofSystem, required by dot notation on
+                            FrameClass); Decidability.BiLasso.Periodic
+                            (namespace ...Decidability.Periodic, a deliberately
+                            directory-independent scheme); and the three
+                            Chronicle files.  The 15 {Plus,Minus,Star}Language
+                            files that used to sit here left the bucket when
+                            the merge gave each language one root-level
+                            directory and renamed the semantics namespaces to
+                            match.
 
 For the tree the programme was originally written against (commit 220e94ea4),
 upward-edges reported 16 lines from the then-five lower layers into Automation,
