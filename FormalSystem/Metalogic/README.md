@@ -150,7 +150,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,158 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,863 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 20 | 5,508 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
-| [`ConvexConsequence/`](ConvexConsequence/README.md) | 4 | 1,081 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
+| [`ConvexConsequence/`](ConvexConsequence/README.md) | 4 | 1,227 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 51,952 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,614 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |

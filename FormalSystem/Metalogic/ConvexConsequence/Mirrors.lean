@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.ConvexConsequence.AxiomSurvival
+import FormalSystem.Metalogic.ConvexConsequence.FrameClassSurvival
 
 /-!
 # Mirrors - The Past Mirrors of TM's Axioms under C3
@@ -32,6 +33,8 @@ beside the failures they mirror. Every mirror in this file survives.
 - Base mirrors: `c3_left_mono_since_H`, `c3_right_mono_since`, `c3_connect_past`,
   `c3_enrichment_since`, `c3_self_accum_since`, `c3_absorb_since`, `c3_since_P`,
   `c3_P_since_equiv`, `c3_linear_since`, `c3_temp_linearity_past`
+- Frame-class mirrors: `c3_prior_SZ` (ℤ-time), `c3_prior_S_gap` (complete, no density
+  needed), `c3_sep_mirror` (ℝ-time)
 
 ## References
 
@@ -180,5 +183,148 @@ theorem c3_temp_linearity_past (φ ψ : Formula) :
     exact (TruthAtConvex.somePast_iff M τ x _).mpr ⟨s₁, hs₁, hs₁x,
       (TruthAtConvex.and_iff M τ s₁ _ _).mpr
         ⟨hφ, (TruthAtConvex.somePast_iff M τ s₁ ψ).mpr ⟨s₂, hs₂, hgt, hψ⟩⟩⟩
+
+/-! ## Frame-class mirrors -/
+
+/-- The mirror of `prior_UZ` survives C3 on every ℤ-time frame: `Pφ → S(¬φ, φ)`, the formula
+`DerivedAxioms.priorSZ` derives. The greatest witness is found by iterating the successor from
+the given witness up toward `x`; every point visited lies in the domain by convexity. -/
+theorem c3_prior_SZ (hZ : F.IsZTime) (φ : Formula) :
+    ValidC3 F (φ.somePast.imp (Formula.snce φ.neg φ)) := by
+  obtain ⟨_, _, _, _⟩ := hZ
+  intro M τ hconv x hx hP
+  obtain ⟨s₀, hs₀d, hs₀x, hφs₀⟩ := (TruthAtConvex.somePast_iff M τ x φ).mp hP
+  have greatest : ∀ n : ℕ, ∀ s, Order.succ^[n] s = x → s₀ ≤ s →
+      (∃ w, w < x ∧ s ≤ w ∧ TruthAtConvex M τ w φ) →
+      ∃ u, u < x ∧ s₀ ≤ u ∧ TruthAtConvex M τ u φ ∧
+        ∀ r, u < r → r < x → ¬ TruthAtConvex M τ r φ := by
+    intro n
+    induction n with
+    | zero =>
+      rintro s hs - ⟨w, hwx, hsw, -⟩
+      exact absurd (lt_of_le_of_lt hsw hwx) (by rw [Function.iterate_zero, id] at hs; simp [hs])
+    | succ n ih =>
+      intro s hs hs₀s hw
+      rw [Function.iterate_succ_apply] at hs
+      by_cases hhigh : ∃ w, w < x ∧ Order.succ s ≤ w ∧ TruthAtConvex M τ w φ
+      · exact ih (Order.succ s) hs (le_trans hs₀s (Order.le_succ s)) hhigh
+      · obtain ⟨w, hwx, hsw, hφw⟩ := hw
+        have hweq : s = w := by
+          rcases eq_or_lt_of_le hsw with h | h
+          · exact h
+          · exact absurd ⟨w, hwx, Order.succ_le_of_lt h, hφw⟩ hhigh
+        subst hweq
+        exact ⟨s, hwx, hs₀s, hφw, fun r hsr hrx hφr =>
+          hhigh ⟨r, hrx, Order.succ_le_of_lt hsr, hφr⟩⟩
+  obtain ⟨n, hn⟩ := IsSuccArchimedean.exists_succ_iterate_of_le hs₀x.le
+  obtain ⟨u, hux, hs₀u, hφu, hmax⟩ :=
+    greatest n s₀ hn (le_refl s₀) ⟨s₀, hs₀x, le_refl s₀, hφs₀⟩
+  exact ⟨u, hconv s₀ x hs₀d hx u hs₀u hux.le, hux, hφu, fun r _ hur hrx => hmax r hur hrx⟩
+
+/--
+The mirror of `prior_U_gap` survives C3 on every complete frame — no density hypothesis — at
+the formula `DerivedAxioms.priorSGap` derives. This closes the last verdict the source survey
+left unresolved.
+
+The dual of `c3_prior_U_gap`: the greatest lower bound, supplied by
+`SoundnessLemmas.exists_isGLB_of_lub`, of the set of `u ∈ [v, t)` above which `φ` holds
+throughout, where `v` is the refuting witness of `P¬φ`. Capping the set below at `v` makes the
+infimum land between the two domain times `v` and `t`, hence in the domain by convexity.
+-/
+theorem c3_prior_S_gap (hc : F.IsComplete) (φ : Formula) :
+    ValidC3 F ((Formula.and (Formula.snce φ Formula.top) φ.neg.somePast).imp
+      (Formula.snce φ (Formula.or φ.neg (Formula.kMinus φ.neg)))) := by
+  intro M τ hconv t ht h_ant
+  obtain ⟨⟨s0, hs0d, hs0t, -, hp0⟩, ⟨v, hvd, hvt, hnpv, -⟩⟩ :=
+    (TruthAtConvex.and_iff M τ t _ _).mp h_ant
+  let A : Set F.Duration := {u | u < t ∧ v ≤ u ∧
+    ∀ r, u < r → r < t → TruthAtConvex M τ r φ}
+  have hmem : max s0 v ∈ A := by
+    refine ⟨max_lt hs0t hvt, le_max_right _ _, fun r hr hrt => ?_⟩
+    have hs0r : s0 < r := lt_of_le_of_lt (le_max_left _ _) hr
+    exact hp0 r (hconv s0 t hs0d ht r hs0r.le hrt.le) hs0r hrt
+  obtain ⟨s, hs⟩ := SoundnessLemmas.exists_isGLB_of_lub hc (B := A) ⟨_, hmem⟩
+    ⟨v, fun u hu => hu.2.1⟩
+  have hst : s < t := lt_of_le_of_lt (hs.1 hmem) hmem.1
+  have hvs : v ≤ s := hs.2 fun u hu => hu.2.1
+  have hsd : τ.domain s := hconv v t hvd ht s hvs hst.le
+  have hguard : ∀ r, s < r → r < t → TruthAtConvex M τ r φ := by
+    intro r hsr hrt
+    obtain ⟨u, huA, -, hur⟩ := hs.exists_between hsr
+    exact huA.2.2 r hur hrt
+  refine ⟨s, hsd, hst, ?_, fun r _ hsr hrt => hguard r hsr hrt⟩
+  intro hnn
+  have hps : TruthAtConvex M τ s φ := Classical.byContradiction hnn
+  rintro ⟨w, hwd, hws, -, hw⟩
+  have hvs' : v < s := by
+    rcases lt_or_eq_of_le hvs with h | h
+    · exact h
+    · exact absurd (h ▸ hps) hnpv
+  have hwA : max w v ∈ A := by
+    refine ⟨lt_trans (max_lt hws hvs') hst, le_max_right _ _, fun r hr hrt => ?_⟩
+    have hwr : w < r := lt_of_le_of_lt (le_max_left _ _) hr
+    rcases lt_trichotomy r s with h | h | h
+    · exact Classical.byContradiction
+        (hw r (hconv w s hwd hsd r hwr.le h.le) hwr h)
+    · exact h ▸ hps
+    · exact hguard r h hrt
+  exact absurd (hs.1 hwA) (not_le_of_gt (max_lt hws hvs'))
+
+/--
+The mirror of `sep` survives C3 on every ℝ-time frame:
+`K⁻φ ∧ ¬K⁻(φ ∧ S(¬φ, φ)) → K⁻(K⁻φ ∧ K⁺φ)`, the time reflection of `sep`.
+
+The order argument is `SoundnessLemmas.sep_order_mirror`, applied to the set of domain points
+satisfying `φ`, exactly as `c3_sep` applies `SoundnessLemmas.sep_order`.
+-/
+theorem c3_sep_mirror (hR : F.IsRTime) (φ : Formula) :
+    ValidC3 F ((Formula.and (Formula.kMinus φ)
+        (Formula.kMinus (Formula.and φ (Formula.snce φ.neg φ))).neg).imp
+      (Formula.kMinus (Formula.and (Formula.kMinus φ) (Formula.kPlus φ)))) := by
+  obtain ⟨hdense, h_lub⟩ := hR
+  have : DenselyOrdered F.Duration := hdense
+  intro M τ hconv t ht h_ant
+  obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
+  obtain ⟨h1, h2⟩ := (TruthAtConvex.and_iff M τ t _ _).mp h_ant
+  rw [TruthAtConvex.kMinus_iff] at h1
+  have h2' : ∃ s₁, τ.domain s₁ ∧ s₁ < t ∧ ∀ r, τ.domain r → s₁ < r → r < t →
+      ¬ (TruthAtConvex M τ r φ ∧ TruthAtConvex M τ r (Formula.snce φ.neg φ)) := by
+    by_contra hc
+    apply h2
+    rw [TruthAtConvex.kMinus_iff]
+    intro s hs hst
+    by_contra hc2
+    exact hc ⟨s, hs, hst, fun r hr h1 h2 hr' =>
+      hc2 ⟨r, hr, h1, h2, (TruthAtConvex.and_iff M τ r _ _).mpr hr'⟩⟩
+  obtain ⟨s₁, hs₁d, hs₁t, hstart⟩ := h2'
+  rw [TruthAtConvex.kMinus_iff]
+  intro s₂ hs₂d hs₂t
+  by_contra hno
+  have hno' : ∀ r, τ.domain r → s₂ < r → r < t →
+      ¬ (TruthAtConvex M τ r φ.kMinus ∧ TruthAtConvex M τ r φ.kPlus) :=
+    fun r hr a b hab => hno ⟨r, hr, a, b, (TruthAtConvex.and_iff M τ r _ _).mpr hab⟩
+  let P : Set F.Duration := {u | ∃ _ : τ.domain u, TruthAtConvex M τ u φ}
+  have hin : ∀ {u s}, τ.domain s → s ≤ u → u < t → τ.domain u :=
+    fun {u s} hs hsu hut => hconv s t hs ht u hsu hut.le
+  refine SoundnessLemmas.sep_order_mirror h_lub Q hQc hQd P t s₁ s₂ hs₁t hs₂t ?_ ?_ ?_
+  · intro v hvt
+    obtain ⟨r, hr, h1', h2', hφ⟩ :=
+      h1 (max v s₁) (hin hs₁d (le_max_right _ _) (max_lt hvt hs₁t)) (max_lt hvt hs₁t)
+    exact ⟨r, lt_of_le_of_lt (le_max_left _ _) h1', h2', hr, hφ⟩
+  · rintro u hut hs₁u ⟨hud, hφu⟩ ⟨v, hvu, ⟨hvd, hφv⟩, hfree⟩
+    exact hstart u hud hs₁u hut ⟨hφu, v, hvd, hvu, hφv,
+      fun r hr hvr hru hφr => hfree r hvr hru ⟨hr, hφr⟩⟩
+  · intro u hut hs₂u
+    have hud : τ.domain u := hin hs₂d hs₂u.le hut
+    by_cases hK : TruthAtConvex M τ u φ.kMinus
+    · have hKp : ¬ TruthAtConvex M τ u φ.kPlus := fun h => hno' u hud hs₂u hut ⟨hK, h⟩
+      rw [TruthAtConvex.kPlus_iff] at hKp
+      push Not at hKp
+      obtain ⟨v, hvd, huv, hv⟩ := hKp
+      exact Or.inr ⟨v, huv, fun w huw hwv ⟨hwd, hφw⟩ => hv w hwd huw hwv hφw⟩
+    · rw [TruthAtConvex.kMinus_iff] at hK
+      push Not at hK
+      obtain ⟨v, hvd, hvu, hv⟩ := hK
+      exact Or.inl ⟨v, hvu, fun w hvw hwu ⟨hwd, hφw⟩ => hv w hwd hvw hwu hφw⟩
 
 end FormalSystem.Metalogic.ConvexConsequence

@@ -456,17 +456,17 @@ their derivations' own disjunct order and association.
 
 ---
 
-### Phase 8: Frame-class past mirrors, including Prior-S [NOT STARTED]
+### Phase 8: Frame-class past mirrors, including Prior-S [COMPLETED]
 
 **Goal**: Close the last named gap, `prior_S_gap`, and the remaining frame-class mirrors.
 
 **Tasks**:
-- [ ] `c3_prior_S_gap`: dual of Phase 6's Prior-U proof. Greatest lower bound via
+- [x] `c3_prior_S_gap`: dual of Phase 6's Prior-U proof. Greatest lower bound via
       `SoundnessLemmas.exists_isGLB_of_lub`; the set is capped below at the refuting witness.
       This proof has never been checked anywhere.
-- [ ] The Prior-SZ mirror (dual of `c3_prior_UZ`, via successor iteration).
-- [ ] The Sep mirror, via `SoundnessLemmas.sep_order_mirror`.
-- [ ] Scoped build.
+- [x] The Prior-SZ mirror (dual of `c3_prior_UZ`, via successor iteration).
+- [x] The Sep mirror, via `SoundnessLemmas.sep_order_mirror`.
+- [x] Scoped build.
 
 **Timing**: 2 hours
 
@@ -476,6 +476,13 @@ their derivations' own disjunct order and association.
 
 **Scope Hypothesis**: `prior_S_gap` survives on every complete frame with no density hypothesis,
 by symmetry with Prior-U. Same escalation rule as Phase 5.
+
+**Phase notes**: The scope hypothesis held. `c3_prior_S_gap` — never checked anywhere before this
+phase — SURVIVES on every complete frame with no density hypothesis, by the dual of the Prior-U
+proof with the infimum from `SoundnessLemmas.exists_isGLB_of_lub`. Its axiom profile is
+`propext`, `Classical.choice`, `Quot.sound`. `c3_prior_SZ` and `c3_sep_mirror` also survive.
+Formula fidelity against `DerivedAxioms.priorSZ` / `priorSGap` was checked under
+`with_reducible`; the Sep mirror's formula was checked to be the `reflectTime` of `sep`'s.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/ConvexConsequence/Mirrors.lean` - three theorems appended
