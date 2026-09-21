@@ -402,34 +402,66 @@ row; if a row already exists, amend it rather than adding a duplicate.
 
 ---
 
-### Phase 6: Gates, residual sweep, and close-out [NOT STARTED]
+### Phase 6: Gates, residual sweep, and close-out [COMPLETED]
 
 **Goal**: Every gate the dispatch names is green and no drifted citation remains anywhere in the
 four target directories.
 
 **Tasks**:
-- [ ] Re-run the full sweep across all four directories and confirm zero hits:
-      `grep -rn "paper line\|paper lines\|line [0-9]\{3,\}\|footnote, line\|(line [0-9]\|lines [0-9]" FormalSystem/Syntax/PlusLanguage FormalSystem/Semantics/PlusLanguage FormalSystem/Syntax/StarLanguage FormalSystem/Semantics/StarLanguage`
-- [ ] Record the StarLanguage zero-hit result explicitly as evidence that the dispatch's "grep the
+- [x] Re-run the full sweep across all four directories and confirm zero hits:
+      `grep -rn "paper line\|paper lines\|line [0-9]\{3,\}\|footnote, line\|(line [0-9]\|lines [0-9]" FormalSystem/Syntax/PlusLanguage FormalSystem/Semantics/PlusLanguage FormalSystem/Syntax/StarLanguage FormalSystem/Semantics/StarLanguage` *(completed: zero hits, exit 1)*
+- [x] Record the StarLanguage zero-hit result explicitly as evidence that the dispatch's "grep the
       rest ... and fix what is found" instruction was discharged with nothing found there.
-- [ ] Re-read `scripts/check-module-invariants.sh` before running it (it sits in a concurrent
+      *(completed: `Syntax/StarLanguage/` and `Semantics/StarLanguage/` had zero hits both before
+      and after this task's edits — confirmed by the Phase 6 four-directory sweep above, which
+      covers all four directories in one command and returns zero total hits)*
+- [x] Re-read `scripts/check-module-invariants.sh` before running it (it sits in a concurrent
       sibling task's declared file scope) and confirm it is unmodified relative to `HEAD`; do not
-      edit it under any circumstance.
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm the C15 check passes. If C15
+      edit it under any circumstance. *(completed: `git diff`/`git log` confirm the script is
+      unmodified; not edited)*
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm the C15 check passes. If C15
       fails naming `def:TM-stability`, resolve it per Phase 3's last task (rephrase the sentence
-      or add the `DANGLING` row) rather than by weakening the gate.
-- [ ] Run `bash scripts/check-paper-definitions.sh` with no arguments, untruncated, and confirm
-      case (a) or (b).
-- [ ] Run the repository's task-reference lint (`bash scripts/check-task-references.sh` or its
+      or add the `DANGLING` row) rather than by weakening the gate. *(completed: C15 passes —
+      "all 59 paper-anchor citation(s) resolve" and "all 76 theorem-index row(s) carry their
+      anchor". The full run's own C1 (`lake build`, `lake build BimodalTest`) was interrupted by a
+      host-level low-memory reaper unrelated to this task's edits; the `lake-build-guard.sh` log
+      independently recorded that full `lake build` completing green (2667 jobs) around the same
+      time. A `--no-build` re-run (which still executes C15 and every other non-build-dependent
+      check) surfaced one unrelated finding — see next task — and after fixing it, reports
+      "ALL CHECKS PASSED")*
+- [x] Run `bash scripts/check-paper-definitions.sh` with no arguments, untruncated, and confirm
+      case (a) or (b). *(completed: case (b) — "all 43 recorded definitions are unchanged -- pass")*
+- [x] Run the repository's task-reference lint (`bash scripts/check-task-references.sh` or its
       equivalent as the repo provides it) and confirm no new violation outside `specs/`.
-- [ ] Run the guarded scoped build, detached, over both aggregators:
+      *(completed: `.claude/scripts/check-task-references.sh` passes — 0 occurrences across its
+      four scanned trees, none of which cover `FormalSystem/`/`docs/` in this repository; a
+      manual grep of every file this task touched for `task [0-9]`/task-number patterns also
+      returned zero hits, and `check-module-invariants.sh`'s own C9/C9D checks — zero
+      task-number citations under `FormalSystem/`, `lakefile.toml`, `README.md`, `scripts/`, and
+      `docs/` — passed)*
+- [x] Run the guarded scoped build, detached, over both aggregators:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- FormalSystem.Syntax.PlusLanguage FormalSystem.Semantics.PlusLanguage`
       (if the guard accepts only one module per invocation, run it once per aggregator). These
-      two aggregators transitively cover all five touched Lean modules.
-- [ ] Poll the detached build with bounded polling per `context/patterns/external-process-wait.md`
-      — no unbounded watch and no no-op filler calls.
-- [ ] Stage only this task's own files explicitly by path (never `git add -A`, never a directory
-      or glob pathspec) and commit.
+      two aggregators transitively cover all five touched Lean modules. *(completed: one guarded
+      invocation with both module names — `build FormalSystem.Syntax.PlusLanguage
+      FormalSystem.Semantics.PlusLanguage` — "Build completed successfully (1002 jobs)", exit 0,
+      no warnings)*
+- [x] Poll the detached build with bounded polling per `context/patterns/external-process-wait.md`
+      — no unbounded watch and no no-op filler calls. *(completed)*
+- [x] Stage only this task's own files explicitly by path (never `git add -A`, never a directory
+      or glob pathspec) and commit. *(completed)*
+
+**Deviation note (unforeseen at planning time)**: the `--no-build` re-run of
+`check-module-invariants.sh` surfaced one unrelated FAIL — `INV: 2 file(s) carry a stale
+generated inventory block` (`FormalSystem/Semantics/PlusLanguage/README.md`, root `README.md`) —
+caused by this task's own docstring line-count changes drifting the mechanically generated
+`<!-- BEGIN GENERATED: inventory -->` blocks the script itself owns. This is not a citation-drift
+issue and was not anticipated by any phase above. Resolved via the script's own documented
+remedy, `bash scripts/check-module-invariants.sh --emit-inventory`, which rewrote exactly the two
+stale blocks (a `Lines` count `409`→`410` and a repo-wide comment-line count `98354`→`98360`) —
+mechanical regeneration, not a hand-authored change, and squarely within "docstring and
+documentation edits only." Re-running `check-module-invariants.sh --no-build` afterward reports
+"ALL CHECKS PASSED".
 
 **Timing**: 50 minutes
 
