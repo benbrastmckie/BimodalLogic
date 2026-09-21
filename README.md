@@ -364,7 +364,7 @@ doc-gen4 reference for every declaration in `FormalSystem`, rebuilt on every pus
 
 - [Organisation](ORGANISATION.md) — where everything lives, in one page
 - [Notation](NOTATION.md) — every notation this library declares, and the one it deliberately does not
-- [Architecture](docs/ARCHITECTURE.md) — the layer graph and its two upward edges
+- [Architecture](docs/ARCHITECTURE.md) — the layer graph and the one set of edges that runs upward through it
 
 ### Reference
 

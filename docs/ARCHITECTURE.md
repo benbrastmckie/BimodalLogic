@@ -6,7 +6,8 @@ A reader who assumes the layering is a clean downward cascade will be wrong in o
 that exception is recorded rather than excused. It is drawn in the diagram below rather than
 mentioned in passing, because a diagram that hides it misdescribes the build.
 
-The table here and the `LAYERS` dictionary in `scripts/measure-refactor-partitions.py` state the
+The table here and the two tables in `scripts/measure-refactor-partitions.py` — `LAYERS` for the
+directories, `LANGUAGE_FILE_LAYERS` for the files of the three language directories — state the
 same order and must be changed together. [`ORGANISATION.md`](../ORGANISATION.md) carries the
 same table in signpost form.
 
@@ -14,7 +15,7 @@ same table in signpost form.
 
 ```
                          ┌──────────────────────────────────┐
-  Layer 4  Examples      │  Examples/                       │
+  Layer 4  Examples      │  Examples/    MainResults.lean   │
                          └───────────────┬──────────────────┘
                                          │ imports
                          ┌───────────────┴──────────────────┐
@@ -41,34 +42,52 @@ same table in signpost form.
                          ┌───────────────▼──────────────────┐             │
   Layer 0  Foundation    │  Syntax/      ProofSystem/       │             │
                          │  ForMathlib/  Init.lean          │             │
-                         │  Tactic/                         │             │
+                         │  Tactic/      Version.lean       │             │
                          └──────────────────────────────────┘             │
                                                                           │
-                         ┌──────────────────────────────────┐             │
-  Outside the stack      │  MinusLanguage/  PlusLanguage/   │  unmeasured ─┘
-                         │  StarLanguage/                   │   0 lines
+  Layered PER FILE       ┌──────────────────────────────────┐             │
+  across the stack       │  MinusLanguage/  PlusLanguage/   │             │
+                         │  StarLanguage/                   │             │
+    layer 3   1 file     │    MinusLanguage/Soundness       │             │
+    layer 1  16 files    │    <Lang>Truth, <Lang>Validity … │             │
+    layer 0  13 files    │    Formula, Axioms, Derivation … │   UPWARD    │
+                         │    MinusLanguage/AxiomDischarge ─┼── 7 lines ──┘
                          └──────────────────────────────────┘
 ```
 
-### The upward set is empty — and what that now hides
+### The upward set: seven lines, all from one file
 
-The library has **zero** measured upward import lines. Seven used to run from
-`Syntax/MinusLanguage/AxiomDischarge.lean` to `Theorems/*`: the L⁻ axiom-discharge proofs apply
-derived object-logic theorems (`Combinators`, `DedekindDerived`, `DeductionTheorem`,
+The library has **seven** measured upward import lines, and they are one class. All run from
+`MinusLanguage/AxiomDischarge.lean` to `Theorems/*`: the L⁻ axiom-discharge proofs apply derived
+object-logic theorems (`Combinators`, `DedekindDerived`, `DeductionTheorem`,
 `DiscreteUnfolding`, `GeneralizedNecessitation`, `Propositional.Core`, `TemporalDerived`), and
-the file sat under `Syntax/` at layer 0.
+the file is a syntax-side file at layer 0 while `Theorems/` is at layer 2. They are recorded,
+not excused; turning them downward means relocating the file, which is separate work.
 
-The `{Plus,Minus,Star}Language` directory merges moved that file to
-`FormalSystem/MinusLanguage/AxiomDischarge.lean`, at the library root. **That did not turn the
-edges downward; it made them invisible.** The three language-extension directories sit outside
-the layer table, so `layer_of` returns `None` for them and every import into and out of them
-goes unmeasured — `Metalogic → MinusLanguage` and
-`Semantics/StateLocalTransfer.lean → PlusLanguage.PlusStateLocal` included. Read the empty
-allowlist as "nothing measured is upward", not as "nothing is upward".
+These are the same seven lines the file carried as `Syntax/MinusLanguage/AxiomDischarge.lean`.
+The `{Plus,Minus,Star}Language` directory merges moved it to the library root, into a directory
+the layer table did not then cover, and for a while the measured set read zero. **That move did
+not turn the edges downward; it stopped them being measured.** The three language directories
+are now layered, and the seven lines are back under their new path.
 
-What remains is **asserted, not trusted**: `bash scripts/check-metalogic-cycles.sh` fails if the
+### The language directories are layered per file
+
+`MinusLanguage/`, `PlusLanguage/` and `StarLanguage/` each hold a language's syntax, proof
+system and semantics, so one layer number for the directory is wrong whichever number is
+chosen — measured, that leaves 23 upward lines at layer 0, 9 at layer 1, 5 at layer 2 and 3 at
+layer 3. Each **file** therefore carries the layer of the directory it occupied before the merge:
+13 files from `Syntax/<Lang>/` at layer 0, 16 from `Semantics/<Lang>/` at layer 1, and
+`MinusLanguage/Soundness.lean`, from `Metalogic/Conservativity/`, at layer 3. The full table and
+the reason origin rather than content is the rule are in
+[`ORGANISATION.md`](../ORGANISATION.md#the-extension-language-directories-are-layered-per-file).
+Under it `Metalogic → MinusLanguage` is downward and the three
+`Semantics/ → {PlusLanguage, StarLanguage}` bridge lines are intra-layer.
+
+All of it is **asserted, not trusted**. `bash scripts/check-metalogic-cycles.sh` fails if the
 measured upward set is anything other than the recorded allowlist, on a surplus and on a
-shortfall alike.
+shortfall alike; if any module under `FormalSystem/` matches no layer row, or a per-file row
+names a file that is gone; and if a layer-0 file of a language directory imports a semantics
+file — the syntax-before-semantics order that the directory boundary used to enforce.
 
 ### Not upward: `Semantics → ProofSystem`
 
@@ -102,15 +121,16 @@ dataset pipeline.
 
 ## Layer 0 in full
 
-Layer 0 is five entries, and three of them are easy to miss:
+Layer 0 is six entries, and four of them are easy to miss:
 
 | Module | Role | Constraint |
 |--------|------|------------|
-| `Syntax/` | `Formula` (six constructors), atoms, contexts, subformula closure. The L⁻/L⁺/L⋆ language family sits beside it at the library root (`PlusLanguage/` and its siblings), outside the layer table | — |
+| `Syntax/` | `Formula` (six constructors), atoms, contexts, subformula closure. The L⁻/L⁺/L⋆ language family sits beside it at the library root (`PlusLanguage/` and its siblings); its syntax and proof-system files are layer 0 too, by the per-file table | — |
 | `ProofSystem/` | 29 axiom constructors (the paper's primitive schemata; mirrors derived in `DerivedAxioms`), 7 inference rules, `DerivationTree`, `FrameClass` | imports only `Syntax` |
 | `ForMathlib/` | Mathlib-shaped proper/maximal/prime **filter** API | imports **nothing** from `FormalSystem.*` — it is intended for upstreaming |
 | `Init.lean` | The library-wide preamble, modelled on `Mathlib.Init`: the linters and common tactics every module inherits, plus `Tactic.Attr` | check C24 asserts every module reaches it transitively |
 | `Tactic/` | `Attr.lean`, every attribute and named simp set the library uses; `Meta.lean`, the shared `MetaM` plumbing for derivability goals | `Attr.lean` imports `Lean` **only** and carries attribute declarations and nothing else — `Init.lean` imports it, so anything heavier would be upstream of the whole library |
+| `Version.lean` | `FormalSystem.version`, the release version string, and nothing else | imports only `Init` |
 
 `Tactic/Attr.lean` is why no module imports an attribute module by name: `Init.lean` carries the
 declarations on every module's behalf. Before the relocation those five declarations were three
@@ -144,7 +164,8 @@ upward lines), which is asserted by equality rather than stated:
 
 ```bash
 bash scripts/check-metalogic-cycles.sh      # exactly one directory-level cycle, AND the
-                                            # upward set is exactly the 7 recorded lines
+                                            # upward set is exactly the 7 recorded lines, AND
+                                            # syntax before semantics in the language directories
 python3 scripts/measure-refactor-partitions.py upward-edges   # the same set, enumerated
 bash scripts/check-module-invariants.sh     # B0, C4 imports, C8 aggregators, and the rest
 ```

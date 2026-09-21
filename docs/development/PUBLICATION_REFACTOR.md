@@ -262,7 +262,7 @@ commit `220e94ea4`:
 | Import lines from the lower layers into `Automation` | **0** since Phase 4 landed. Was 16, of which 11 into the attribute-only files; the 11 were deleted outright when the five declarations moved to `Tactic/Attr.lean`, the `PropDecide` line went with that module to `Metalogic/Decidability/Propositional/`, and the remaining 3 (`Decidability -> {ProofSearch, Normalization}`) became intra-layer under the corrected table |
 | `Theorems` files importing `Metalogic` | **0** since Phase 4 landed. Was 4, all `Metalogic.Core.DeductionTheorem`, which is now `Theorems/DeductionTheorem.lean` |
 | `Metalogic` files importing `Theorems` | 29 files, 50 lines (was 47; `DeductionTheorem.lean`'s move added 3, since its three `Metalogic/` consumers now cross the directory boundary) |
-| Total upward import lines, library-wide | **0** since Phase 5 landed. Was 7, all `Syntax/MinusLanguage/AxiomDischarge.lean -> Theorems/*`. Asserted by equality against a now-empty allowlist in `check-metalogic-cycles.sh`. **Read with care**: the merge moved that file to `MinusLanguage/AxiomDischarge.lean`, outside `LAYERS`, so `layer_of` returns `None` and its edges stopped being *measured* rather than turning downward — see ORGANISATION.md's layer-table note |
+| Total upward import lines, library-wide | **7**, all `MinusLanguage/AxiomDischarge.lean -> Theorems/*`, asserted by equality against a 7-line allowlist in `check-metalogic-cycles.sh`. The same 7 lines as before Phase 5, under the file's new path. Between Phase 5 landing and the language directories being layered this row read **0**, and that figure was wrong: the merge moved the file to `MinusLanguage/`, which the layer table did not cover, so its edges stopped being *measured* rather than turning downward. The three directories are now layered per file (`LANGUAGE_FILE_LAYERS`) and `layer_of` raises for an unmatched module — see ORGANISATION.md's per-file layering section |
 | Automation modules the library needs by closure | 9 (3,419 lines) |
 | User-facing tactic modules (library API, imported by no library file) | 4 (1,238 lines) |
 | Tooling modules, including `TraceExport` | 25 (14,747 lines); 12 are exe roots |
@@ -380,10 +380,13 @@ release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
 acceptance command reports 0 into `Automation` from all four source directories and an empty
 `theorems_files_importing_metalogic`; `check-metalogic-cycles.sh` asserts both its cycle count
 and the new layer order and exits 0. The 7 residual upward lines, all from
-`Syntax/MinusLanguage/AxiomDischarge.lean`, were **Phase 5's**, and Phase 5 has since landed: the
-`{Plus,Minus,Star}Language` merges moved that file out of `Syntax/` and the allowlist is now
-empty. Because the allowlist fails on a shortfall as well as a surplus, that landing was a
-finding rather than a silent pass — the emptying had to be made in the same commit as the move.
+`Syntax/MinusLanguage/AxiomDischarge.lean`, were assigned to **Phase 5**, and Phase 5 did not
+remove them. The `{Plus,Minus,Star}Language` merges moved that file out of `Syntax/` into a
+directory the layer table did not cover, and the allowlist was emptied in the same commit because
+it fails on a shortfall as well as a surplus. The shortfall was real but its cause was misread:
+the 7 edges had stopped being measured, not turned downward. With the language directories
+layered per file the same 7 lines are measured again under `MinusLanguage/AxiomDischarge.lean`,
+and the allowlist holds them.
 
 ### Phase 5: Language-extension directories and namespace/path agreement — [CITE] (paths plus a bounded namespace rename of the semantics half)
 
@@ -394,8 +397,13 @@ finding rather than a silent pass — the emptying had to be made in the same co
   acceptable `ancestor` bucket into `unrelated`. The merge therefore carries a hand-edited
   `namespace`/`end` rename of those 16 modules (plus `Soundness.lean`) to the flat
   `FormalSystem.{Plus,Minus,Star}Language`, matching the syntax half.
-- `MinusLanguage/AxiomDischarge.lean`'s imports of Theorems and Metalogic become ordinary
-  downward edges from an extension language to the base logic.
+- ~~`MinusLanguage/AxiomDischarge.lean`'s imports of Theorems and Metalogic become ordinary
+  downward edges from an extension language to the base logic.~~ **Refuted by measurement.** No
+  single layer for the three directories makes them so: one layer *L* for all three leaves 23
+  upward lines at *L* = 0, 9 at 1, 5 at 2 and 3 at 3. The directories are layered per file by
+  pre-merge origin instead; `AxiomDischarge.lean` is a layer-0 file and its 7 imports of
+  `Theorems/*` are upward, recorded in the allowlist. Turning them downward means relocating the
+  file and is not part of this phase.
 - Move `Metalogic/Conservativity/MinusLanguageSoundness.lean` to `MinusLanguage/Soundness.lean`.
 - Settle the three foreign-namespace Chronicle files (Section 4's last namespace-map row).
 - Move the 8 loose Decidability probes and `TableauConformance.lean` into
@@ -420,8 +428,10 @@ finding rather than a silent pass — the emptying had to be made in the same co
   No loose `.lean` at the test root except the two aggregator-shaped files
   `Property.lean` and `WalkthroughAxioms.lean` — the latter is not a Decidability probe and has
   no natural home in the destination directory.
-  Additionally: moving `AxiomDischarge.lean` out of `Syntax/` empties the 7-line allowlist in
-  `check-metalogic-cycles.sh`, which fails on that shortfall until the entries are deleted.
+  Additionally: moving `AxiomDischarge.lean` out of `Syntax/` makes the 7-line allowlist in
+  `check-metalogic-cycles.sh` fail on a shortfall. The entries were deleted to clear it; they
+  should have been re-keyed to the new path, and have been since, once the language directories
+  had layers.
   **ADR**: none.
 
 ### Phase 6: Extract `Metalogic/Expressiveness/` — [CITE] (largest name change; two main-results entries)

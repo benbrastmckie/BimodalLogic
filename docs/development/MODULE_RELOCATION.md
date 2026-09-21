@@ -115,10 +115,13 @@ archive stayed gated; every citation of the archive root itself fell out of scop
 repository root that citation is one bare word.
 
 The same narrowing affects measurement. A directory that sits outside the layer map has no layer,
-so every import into or out of it is invisible to the upward-edge measurement in
-`scripts/measure-refactor-partitions.py`. No harness check catches a regression there. Before
-re-rooting anything to a top-level directory, decide which gate will cover the bare name and
-which layer the directory belongs to.
+and while the lookup answered `None` for it every import into or out of it was invisible to the
+upward-edge measurement in `scripts/measure-refactor-partitions.py`: the three language
+directories went unmeasured that way, and the upward allowlist read empty without one edge having
+turned downward. The lookup now raises instead, so `bash scripts/check-metalogic-cycles.sh` turns
+red on a top-level directory with no layer row. Before re-rooting anything to a top-level
+directory, decide which gate will cover the bare name and which layer the directory belongs to —
+or, if it mixes layers as the language directories do, which layer each file belongs to.
 
 ## Exe roots sit outside every build closure
 

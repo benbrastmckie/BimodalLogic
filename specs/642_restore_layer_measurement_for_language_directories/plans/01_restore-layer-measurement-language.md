@@ -295,36 +295,36 @@ the tree exactly as it was.
 
 ---
 
-### Phase 4: Core documents to the measured order [NOT STARTED]
+### Phase 4: Core documents to the measured order [COMPLETED]
 
 **Goal**: Replace every statement of the stale measurement in the repository-level documents with
 the measured one, and remove the blind-spot note.
 
 **Tasks**:
-- [ ] `ORGANISATION.md`: replace "The measured upward set is now empty" with the 7 measured lines
+- [x] `ORGANISATION.md`: replace "The measured upward set is now empty" with the 7 measured lines
       under their new path; replace the whole "extension-language directories sit outside this
       table" subsection with the per-file layering, the decision and its measured reason (the
       L=0/1/2/3 figures), the origin rule and the merge commit; add the per-file rows,
       `MainResults` and `Version` to the layer table; state the fail-loud and stale-row
       behaviour; delete "No harness check catches a regression here; this paragraph is the only
-      record."
-- [ ] `docs/ARCHITECTURE.md`: redraw the "Outside the stack / unmeasured" box in the diagram so
+      record." *(completed)*
+- [x] `docs/ARCHITECTURE.md`: redraw the "Outside the stack / unmeasured" box in the diagram so
       the three directories appear spanning layers 0, 1 and 3; rewrite "The upward set is empty —
       and what that now hides"; fix the `Syntax/` table row that says the family is "outside the
-      layer table". Leave "Verifying this page" (already says 7) and check it is now true.
-- [ ] `docs/development/MODULE_INVARIANTS.md`: "two independent assertions" becomes three;
-      describe assertion C, the fail-loud lookup and the stale-row failure.
-- [ ] `docs/development/PUBLICATION_REFACTOR.md`: correct the measurement-table row "0 since Phase
+      layer table". Leave "Verifying this page" (already says 7) and check it is now true. *(completed: also added MainResults.lean and Version.lean to the diagram and the layer-0 table, since both now carry a layer row)*
+- [x] `docs/development/MODULE_INVARIANTS.md`: "two independent assertions" becomes three;
+      describe assertion C, the fail-loud lookup and the stale-row failure. *(completed)*
+- [x] `docs/development/PUBLICATION_REFACTOR.md`: correct the measurement-table row "0 since Phase
       5 landed"; correct Phase 5's "become ordinary downward edges" bullet and the sentence that
       says moving `AxiomDischarge.lean` empties the allowlist. State what was measured; keep the
       historical record of what the document once claimed only where that document's own
-      convention does so.
-- [ ] `scripts/README.md`: the `check-metalogic-cycles.sh` row becomes three assertions; confirm
-      "7-line allowlist" is now accurate.
-- [ ] `README.md`: the Architecture link text "its two upward edges" matches neither 0 nor 7;
-      replace it with wording that does not embed a count, or with the measured one.
-- [ ] Grep all six files afterwards for `unmeasured`, `now empty`, `outside this table`,
-      `returns None`, `invisible` to confirm no stale statement survives.
+      convention does so. *(completed)*
+- [x] `scripts/README.md`: the `check-metalogic-cycles.sh` row becomes three assertions; confirm
+      "7-line allowlist" is now accurate. *(completed)*
+- [x] `README.md`: the Architecture link text "its two upward edges" matches neither 0 nor 7;
+      replace it with wording that does not embed a count, or with the measured one. *(completed: count-free wording)*
+- [x] Grep all six files afterwards for `unmeasured`, `now empty`, `outside this table`,
+      `returns None`, `invisible` to confirm no stale statement survives. *(completed: a seventh file surfaced, docs/development/MODULE_RELOCATION.md, and was corrected in this phase)*
 
 **Timing**: 1.25 hours
 

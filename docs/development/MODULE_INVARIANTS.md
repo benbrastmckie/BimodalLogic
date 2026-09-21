@@ -392,8 +392,9 @@ line.
 ## Sibling scripts, not part of this harness
 
 `scripts/check-metalogic-cycles.sh` is a standalone structural check with its own exit code,
-deliberately not wired into `check-module-invariants.sh`. It makes **two independent assertions
-behind one exit code**, and neither subsumes the other:
+deliberately not wired into `check-module-invariants.sh`. It makes **three assertions behind one
+exit code**. A and B are independent of each other; C is implied by B today and is asserted
+separately on purpose:
 
 **A — the cycle count.** It enumerates the directory-level import edges inside
 `FormalSystem/Metalogic/` — excluding sibling aggregators as edge *sources*, since an aggregator
@@ -401,19 +402,47 @@ importing its own directory is a convention artifact rather than a design cycle 
 cycle count is exactly **1**, the documented `BXCanonical` <-> `WeakCanonical` pair.
 
 **B — the layer order.** It computes the library-wide *upward* import set (an import whose target
-directory sits at a higher layer than its source) against the `LAYERS` table in
+sits at a higher layer than its source) through `layer_of` in
 `scripts/measure-refactor-partitions.py`, which it loads by path so there is exactly one copy of
-that table in the repository, and reads the graph through `scripts/lib/import_graph.py`'s
-leading-import parser rather than assertion A's own regex. It asserts that set **equals** a
+the layer tables in the repository, and reads the graph through `scripts/lib/import_graph.py`'s
+leading-import parser rather than assertion A's own regex. `layer_of` reads two tables: `LAYERS`,
+keyed by top-level directory, and `LANGUAGE_FILE_LAYERS`, which layers the three language
+directories (`MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`) **file by file**, because each
+holds syntax, proof system and semantics and no single layer fits it. It asserts that set **equals** a
 recorded allowlist of 7 lines, all from
 `FormalSystem/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`. Sibling aggregators are
 excluded as sources here too.
 
+B has two further failure branches, both about the tables rather than the imports. **The lookup
+fails loudly**: `layer_of` raises for any module under `FormalSystem/` that matches no row — a new
+top-level directory, or a new file in a language directory — and B prints that as a `FAIL` line
+naming the module and the table that needs the row. It returns `None` only for the bare root and
+for modules outside the library. **A stale row fails**: a `LANGUAGE_FILE_LAYERS` row whose file
+was renamed, moved or deleted is printed as a `STALE ROW`. Between them the per-file table cannot
+drift from the tree in either direction. A `None` layer used to be the answer for an unmatched
+path, and it cost a measurement: the three language directories went unmeasured, and the
+allowlist read empty, until they were given rows.
+
+**C — syntax before semantics.** Inside the three language directories, no layer-0 file (syntax
+and proof system) imports a layer-1 file of any of the three, nor anything under
+`FormalSystem/Semantics/`. Before the directories were merged the `Syntax/` – `Semantics/`
+directory boundary enforced this; nothing structural does now. Such an import is already a
+surplus line under B; C exists so the failure names the invariant, and so it survives a future
+allowlist entry that would otherwise absorb the line. It fails, rather than passing vacuously,
+if either set is empty.
+
 ```bash
-bash scripts/check-metalogic-cycles.sh   # prints both results; exit 1 if either fails
+bash scripts/check-metalogic-cycles.sh   # prints all three results; exit 1 if any fails
 ```
 
-Both assertions exist for the same reason: each claim used to be prose that nothing checked.
+All three were negative-tested by hand on the real tree when they were added: an import of
+`PlusLanguage/PlusTruth.lean` into `PlusLanguage/Formula.lean` (a surplus under B and a violation
+under C), a deleted `Theorems` import in `MinusLanguage/AxiomDischarge.lean` (a shortfall), an
+empty file in `PlusLanguage/` and one in a new top-level directory (both unlayered), and a bogus
+per-file row (stale). Each exited 1 with the expected line. Re-run them after any change to the
+tables or to `layer_of`.
+
+The assertions exist for the same reason: each claim used to be prose that nothing checked.
 The cycle count lived in [`FormalSystem/Metalogic/README.md`](../../FormalSystem/Metalogic/README.md)
 and the layer order in [`ORGANISATION.md`](../../ORGANISATION.md); both were re-derived by hand
 whenever someone needed to trust them, and both went stale.

@@ -114,7 +114,7 @@ LIB = "FormalSystem"
 
 # ORGANISATION.md's layer table, keyed by the first path component below `FormalSystem/`.
 # EVERY module under `FormalSystem/` has a layer: a directory through its row here, the two
-# root-level single files `Version` (0: it imports nothing from the library) and `MainResults`
+# root-level single files `Version` (0: it imports only `Init`) and `MainResults`
 # (4: it audits every headline theorem, so it sits with Examples at the top) through their own
 # rows, and a file in one of the three language directories through LANGUAGE_FILE_LAYERS below.
 # A module that matches no row is an ERROR, not a module "with no layer" -- see `layer_of`.

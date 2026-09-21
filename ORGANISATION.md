@@ -11,11 +11,18 @@ graph itself, with its exceptions drawn rather than described, is in
 
 | Layer | Directory | Holds |
 |---|---|---|
-| 4 | `Examples/` | Worked derivations and pedagogical material |
+| 4 | `Examples/`, `MainResults.lean` | Worked derivations and pedagogical material; the audit of every headline theorem |
 | 3 | `Metalogic/`, `Automation/` | Soundness, completeness, compactness, decidability; tactics and proof search |
 | 2 | `Theorems/` | Derived object-logic theorems |
 | 1 | `Semantics/` | `TaskFrame`, `ConvexHistory`, `TaskModel`, `TruthAt`, validity |
-| 0 | `Syntax/`, `ProofSystem/`, `ForMathlib/`, `Init.lean`, `Tactic/` | Formulas, axioms, derivations; the shared preamble and the library's attribute declarations |
+| 0 | `Syntax/`, `ProofSystem/`, `ForMathlib/`, `Init.lean`, `Tactic/`, `Version.lean` | Formulas, axioms, derivations; the shared preamble and the library's attribute declarations |
+| 0, 1, 3 — **per file** | `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` | One object language each, syntax through semantics; [layered file by file](#the-extension-language-directories-are-layered-per-file) |
+
+Every module under `FormalSystem/` has a layer. `layer_of` in
+`scripts/measure-refactor-partitions.py` **raises** for one that matches no row, so a new
+top-level directory, or a new file in a language directory, cannot go unmeasured without a
+gate turning red. Only the bare root `FormalSystem.lean`, which imports everything by
+construction, has none.
 
 This is the **measured** order, not an aspiration. Two entries in it are easy to misread:
 
@@ -41,32 +48,63 @@ One class of edge is called out against that stack:
   reading of the proof-side frame-class tag, so that both sides can be indexed by the same tag
   instead of by a hand-maintained binder list that would drift.
 
-**The measured upward set is now empty**, and that is asserted rather than trusted:
+**The measured upward set is 7 import lines**, and that is asserted rather than trusted:
 `bash scripts/check-metalogic-cycles.sh` fails if it is anything other than the recorded
-allowlist — on a surplus and on a shortfall alike. It used to hold 7 lines, all from
-`Syntax/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`, the L⁻ axiom-discharge proofs
-reaching for the derived object-logic theorems.
+allowlist — on a surplus and on a shortfall alike. All 7 run from
+`MinusLanguage/AxiomDischarge.lean` (layer 0) into `Theorems/*` (layer 2): the L⁻ axiom-discharge
+proofs reaching for the derived object-logic theorems. They are recorded, not excused.
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) draws the graph, explains the relocations that were
 considered and rejected, and gives the commands that re-derive it from the tree rather than
 trusting the picture.
 
-### The extension-language directories sit outside this table
+### The extension-language directories are layered per file
 
-`MinusLanguage/`, `PlusLanguage/` and `StarLanguage/` are **not** layers and are **not** in the
-table above. Each is a self-contained object language at the library root, carrying its syntax,
-its proof system and its semantics in one directory, parallel to the core stack rather than
-stacked against it. Their absence is deliberate, not an oversight.
+`MinusLanguage/`, `PlusLanguage/` and `StarLanguage/` are each a self-contained object language
+at the library root, carrying its syntax, its proof system and its semantics in one directory.
+**No single layer number fits such a directory, and that is measured rather than argued.** Give
+all three one layer *L* and the upward set is non-empty for every *L*, and it tracks the number
+chosen rather than the tree:
 
-**It has a measurement consequence worth stating plainly.** `layer_of` in
-`scripts/measure-refactor-partitions.py` returns `None` for any path outside `LAYERS`, so every
-import *into* and *out of* these three directories is invisible to the upward-edge measurement.
-`Metalogic → MinusLanguage` and
-`Semantics/StateLocalTransfer.lean → PlusLanguage.PlusStateLocal` are both real edges that the
-measurement does not see. This is also why the 7-line allowlist above emptied: the merge moved
-`AxiomDischarge.lean` from `Syntax/` to `MinusLanguage/`, which did not turn its edges downward
-— it stopped measuring them. Read the empty allowlist as *"nothing measured is upward"*, never as
-*"nothing is upward"*. **No harness check catches a regression here; this paragraph is the only
-record.**
+| One layer for all three directories | Upward lines | What they are |
+|---|---|---|
+| 0 | 23 | language → `Semantics` 14, `MinusLanguage` → `Theorems` 7, `MinusLanguage` → `Metalogic` 2 |
+| 1 | 9 | `MinusLanguage` → `Theorems` 7, `MinusLanguage` → `Metalogic` 2 |
+| 2 | 5 | `MinusLanguage` → `Metalogic` 2, `Semantics` → language 3 |
+| 3 | 3 | `Semantics` → language 3 |
+
+So each **file** carries its own layer, in the `LANGUAGE_FILE_LAYERS` table of
+`scripts/measure-refactor-partitions.py`. The rule is the file's **directory before the
+language-extension merge** (commit `e2b646c84`), read from the rename table of that commit, not a
+judgement about its content:
+
+| Layer | Came from | Files |
+|---|---|---|
+| 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding` |
+| 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal` |
+| 3 | `Metalogic/Conservativity/` | `MinusLanguage/Soundness.lean`, which imports two `Metalogic/` modules |
+
+13 files at layer 0, 16 at layer 1, 1 at layer 3. The three sibling aggregators
+(`MinusLanguage.lean` and its two siblings) import layer-0 and layer-1 files and take a declared
+layer of 1.
+
+Origin is the rule because a content judgement could file `AxiomDischarge.lean` at layer 2 and
+empty the allowlist by assertion. That allowlist read empty once already, after the merge moved
+the file into a directory the table did not cover: its edges had not turned downward, they had
+stopped being measured. Under the per-file table the three
+`Semantics/ → {PlusLanguage, StarLanguage}` bridge lines
+(`DeterministicBridge`, `StateLocalTransfer`) are intra-layer, 1 to 1, and `Metalogic →
+MinusLanguage` is downward.
+
+Three mechanisms keep the table honest, all behind `bash scripts/check-metalogic-cycles.sh`:
+
+* **A new file needs a row.** A file in a language directory with no row makes `layer_of` raise,
+  and the check prints a `FAIL` line naming the module and the table that lacks the row.
+* **A stale row fails.** A row whose file was renamed, moved or deleted is reported as a
+  `STALE ROW`, so the table cannot drift in either direction.
+* **Syntax before semantics is asserted.** Before the merge the directory boundary guaranteed
+  that nothing under a language's `Syntax/` directory imported anything from `Semantics/`. With
+  both halves in one directory the check asserts it instead: no layer-0 file of the three
+  directories imports a layer-1 file of any of them, nor anything under `Semantics/`.
 
 `Boneyard/` is outside the stack for a different reason: it is the archive, it is not compiled,
 and no live module imports it. Read [its README](Boneyard/README.md) before resurrecting
