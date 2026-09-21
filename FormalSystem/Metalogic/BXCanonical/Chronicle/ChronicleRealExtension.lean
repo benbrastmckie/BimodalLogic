@@ -294,6 +294,21 @@ guard-free signature is not to be re-attempted.
   `limitSetBelow_someFuture_of_cofinal`,
   `forward_until_unselected_eventuality_of_priorU`.
 - `cantor_bfmcs_dense_real_restricted_tc`, `cantor_bfmcs_dense_real_restricted_buc`.
+
+## Recorded namespace exception
+
+This file sits under `Metalogic/BXCanonical/Chronicle/` but its **first** `namespace` is
+`FormalSystem.Metalogic.Bundle`, so `measure-refactor-partitions.py namespace-audit` classifies it
+`unrelated`. That is recorded, not an oversight.
+
+The file interleaves three blocks — `Metalogic.Bundle`, then
+`Metalogic.BXCanonical.Chronicle`, then `Metalogic.Bundle` again. Hoisting the Chronicle block
+above the first Bundle block would make the first namespace match the directory at zero
+fully-qualified-name cost, and was measured for exactly that reason. It does **not** work: the
+Chronicle block's `cantor_bfmcs_dense_real_restricted_buc` applies
+`toRealBundle_forward_until_unselected_dichotomy` and `limitSetBelow_someFuture_of_cofinal`, both
+declared in the Bundle block above it. The dependency is real and term-level, so the interleaving
+is load-bearing and the file stays as it is.
 -/
 
 namespace FormalSystem.Metalogic.Bundle

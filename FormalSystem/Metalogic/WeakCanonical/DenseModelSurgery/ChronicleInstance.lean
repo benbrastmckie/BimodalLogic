@@ -53,6 +53,20 @@ structure with two distinct points (`quotientDenselyOrdered_epsTop_vacuous`, `Si
 Reynolds' actual `ε`, the one defining `∼_M`, is §8 Lemma 12 and is not yet in this tree.
 **No §6 or §7 result is discharged by this module.** See `NoGaps.lean`'s
 `## Conditionality after Theorem 4` for the full three-condition accounting.
+
+## Recorded namespace exception
+
+This file sits under `Metalogic/WeakCanonical/DenseModelSurgery/` but declares
+`namespace FormalSystem.Metalogic.BXCanonical.Chronicle`, so
+`measure-refactor-partitions.py namespace-audit` classifies it `unrelated`. That is recorded, not
+an oversight, and the file is deliberately **not** relocated to match its namespace.
+
+It is an edge source in the single sanctioned `WeakCanonical → BXCanonical` directory cycle that
+`scripts/check-metalogic-cycles.sh` asserts as *exactly one* cycle. Moving it would change the
+measured cycle set — the thing that assertion exists to pin — for no acceptance gain, since the
+namespace is correct for what the module proves: these are the chronicle bridge's own Theorem 4
+and Theorem 5 instances, which belong with the bridge rather than with the surgery that consumes
+them.
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle

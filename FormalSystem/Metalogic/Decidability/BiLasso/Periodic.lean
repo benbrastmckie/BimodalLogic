@@ -52,6 +52,19 @@ this one.
 
 - `Periodic.unrollOf_sub_back_length` — leftward periodicity, period `|back|`, threshold `t < 0`
 - `Periodic.unrollOf_add_fwd_length` — rightward periodicity, period `|fwd|`, threshold `|mid| ≤ t`
+
+## Recorded namespace exception
+
+This file sits under `Metalogic/Decidability/BiLasso/` but declares
+`namespace FormalSystem.Metalogic.Decidability.Periodic`, so
+`measure-refactor-partitions.py namespace-audit` classifies it `unrelated`. That is recorded, not
+an oversight.
+
+The namespace names the generic scheme rather than the directory, and does so on purpose: the
+decoding below is stated at an arbitrary `[Inhabited α]` precisely so that it is *not* BiLasso's
+own, and its two consumers instantiate it. Naming it `…Decidability.BiLasso.Periodic` would
+attach a directory to a definition whose point is to be directory-independent. See "Deliberate
+duplication against `Basic.lean`" above for the other half of the same arrangement.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.Periodic

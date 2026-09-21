@@ -70,6 +70,19 @@ four class-restricted predicates into this module. Both are recorded, with their
 ## Tags
 
 frame-class · validity · seam · base · dense · ztime · rtime
+
+## Recorded namespace exception
+
+This file sits under `Semantics/` but declares `namespace FormalSystem.ProofSystem`, so
+`measure-refactor-partitions.py namespace-audit` classifies it `unrelated`. That is recorded, not
+an oversight.
+
+The namespace is the correct one: every declaration here extends `ProofSystem.FrameClass`, and
+`FrameClass.Sat` is reached by dot notation on a `ProofSystem.FrameClass` value. Generalized field
+notation resolves against the *type's* namespace and ignores `open`, so declaring these in
+`FormalSystem.Semantics` would break `fc.Sat` at every call site. The module's placement under
+`Semantics/` is equally deliberate — see "Module placement" below — which is exactly why path and
+namespace cannot agree here.
 -/
 
 namespace FormalSystem.ProofSystem

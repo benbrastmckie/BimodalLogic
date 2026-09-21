@@ -404,8 +404,19 @@ on a shortfall as well as a surplus, so Phase 5 landing is a finding rather than
   module docstrings — `Theorems/DeductionTheorem.lean` and `Tactic/Meta.lean`;
   `Semantics/FrameClassValidity.lean`, which declares `FormalSystem.ProofSystem` because it
   duplicates a proof-system-side definition; `Metalogic/Decidability/BiLasso/Periodic.lean`,
-  which declares `…Decidability.Periodic` as one half of a split pair; and the decided Chronicle
-  files). No loose `.lean` at the test root except the two aggregator-shaped files
+  which declares `…Decidability.Periodic` because the scheme it holds is deliberately
+  directory-independent; and all **three** Chronicle files, each now carrying a
+  `## Recorded namespace exception` section in its own module docstring).
+  `BXCanonical/Chronicle/ChronicleRealExtension.lean` was measured for the zero-cost hoist that
+  would have removed it from the bucket, and the hoist is refuted: its `Chronicle` block applies
+  `toRealBundle_forward_until_unselected_dichotomy` and `limitSetBelow_someFuture_of_cofinal`
+  from the `Bundle` block above it, so the interleaving is load-bearing.
+  `WeakCanonical/{DenseModelSurgery/ChronicleInstance,RealModel/ChronicleRealFlow}.lean` are
+  deliberately **not** relocated: both are edge sources in the single sanctioned
+  `WeakCanonical → BXCanonical` cycle that `check-metalogic-cycles.sh` asserts as exactly one,
+  and their namespaces are correct for what they prove.
+  The acceptance figure is therefore an `unrelated` bucket of **8**, every member recorded.
+  No loose `.lean` at the test root except the two aggregator-shaped files
   `Property.lean` and `WalkthroughAxioms.lean` — the latter is not a Decidability probe and has
   no natural home in the destination directory.
   Additionally: moving `AxiomDischarge.lean` out of `Syntax/` empties the 7-line allowlist in

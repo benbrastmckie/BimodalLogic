@@ -145,15 +145,15 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,402 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,120 | Chronicle completeness route; the wired entry point |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,135 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,864 | Bundled families of MCSs and their coherence conditions |
 | [`Conservativity/`](Conservativity/README.md) | 20 | 5,515 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 79 | 51,945 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 79 | 51,958 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Independence/`](Independence/README.md) | 22 | 5,975 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,559 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,585 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -183,7 +183,7 @@ Subdirectories:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/BXCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Chronicle/` | 14 | 17,891 |
+| `Chronicle/` | 14 | 17,906 |
 | `Quasimodel/` | 5 | 1,676 |
 | `Filtration/` | 1 | 120 |
 <!-- END GENERATED -->
@@ -199,8 +199,8 @@ dominates everything else in the repository:
 | `Kamp/` | 116 | 77,714 |
 | `EFGames/` | 8 | 11,800 |
 | `Expressiveness/` | 5 | 9,507 |
-| `DenseModelSurgery/` | 9 | 7,900 |
-| `RealModel/` | 7 | 6,777 |
+| `DenseModelSurgery/` | 9 | 7,914 |
+| `RealModel/` | 7 | 6,789 |
 | `IntegerModel/` | 6 | 5,615 |
 | `GroupModel/` | 6 | 3,373 |
 | `Separation/` | 3 | 926 |

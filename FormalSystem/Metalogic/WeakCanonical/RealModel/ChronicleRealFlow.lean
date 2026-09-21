@@ -68,6 +68,18 @@ Each entry reads *Reynolds 1992* — *Here*:
   `chronicleMonadic_doetsD2`
 * §9, *"there is a structure with flow of time `ℝ` …"* — `chronicleRealFlow`,
   `chronicleRealFlow_kEquiv`
+
+## Recorded namespace exception
+
+This file sits under `Metalogic/WeakCanonical/RealModel/` but declares
+`namespace FormalSystem.Metalogic.BXCanonical.Chronicle`, so
+`measure-refactor-partitions.py namespace-audit` classifies it `unrelated`. That is recorded, not
+an oversight, and the file is deliberately **not** relocated to match its namespace.
+
+Same reason as its sibling `DenseModelSurgery/ChronicleInstance.lean`: it is an edge source in the
+single sanctioned `WeakCanonical → BXCanonical` directory cycle that
+`scripts/check-metalogic-cycles.sh` asserts as *exactly one* cycle, and the namespace is correct
+for what the module proves — Doets' theorem at the chronicle bridge belongs with the bridge.
 -/
 
 namespace FormalSystem.Metalogic.BXCanonical.Chronicle
