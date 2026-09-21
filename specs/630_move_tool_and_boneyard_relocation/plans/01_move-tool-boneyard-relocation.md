@@ -441,7 +441,36 @@ a seventh site found there is a real finding, not an overrun.
 
 ---
 
-### Phase 7: Post-move regeneration, denominator assertions, and acceptance criteria [NOT STARTED]
+### Phase 7: Post-move regeneration, denominator assertions, and acceptance criteria [COMPLETED]
+
+**Completion note — the acceptance set, all measured**: `lake build` exit 0; `lake build
+BimodalTest` exit 0; full harness `ALL CHECKS PASSED`, exit 0, zero gate failures. **C11's
+denominator is intact: 539 archived import lines across 169 files, 8 waived** — the carried
+Phase 4 figure exactly, which is the assertion that distinguishes a real pass from a PASS on a
+shrunken denominator. `INV` green; the archive README regenerates "Archive directories in the
+repository | 1" (non-zero, proving harness edit 5 took). Zero `.olean` under any `Boneyard` path;
+exactly one `Boneyard` directory repo-wide and it is `./Boneyard`. `git log --follow` on
+`Boneyard/UltrafilterFrame/UltrafilterFrame.lean` crosses the rename, reaching 10 commits back to
+the file's original archiving. All 5 non-trivial re-based links resolve on disk. The realized
+diff reproduced Phase 4's dry-run counts exactly.
+
+Twelve `FAIL: temp_4 / temp_l / temp_k / temp_future` lines appear in the build output. These are
+`Tests/BimodalTest/Automation/ProofSearchTest.lean`'s own axiom-completeness summary (14 axioms ×
+3 variants), reporting which variants proof search does not find. They are not harness gates, and
+the set is byte-identical to the pre-move green capture — pre-existing, and unrelated to this move.
+
+**Deviation — the C12/C5 scope re-count contradicts the plan's expectation, and the plan was
+wrong rather than the gate**: the plan asserted all 46 previously-gated citations would remain in
+scope. Measured against the pre-move tree in a throwaway worktree, the pre-move figure is exactly
+40 C12 + 6 C5 = 46, confirming the research. Post-move only **26** remain gated. Every one of the
+20 that left cited *the archive root itself* — `FormalSystem/Boneyard/` became `Boneyard/`, and
+all 6 dotted citations were the bare prefix `FormalSystem.Boneyard`, which became `Boneyard`.
+`slash_re` requires at least one path component after the root and `mod_re` requires at least one
+dotted suffix, so neither can gate a bare top-level name; C12 has never gated `docs/` or
+`scripts/` either. This is structural to the archive becoming top-level, not a consequence of the
+widening, and it is not a silent loss: B0 now asserts the archive root's existence *and* its
+location directly, which is a stronger assertion than a path-resolution check. Every citation
+naming a path *inside* the archive remains gated.
 
 **Goal**: Prove the move landed correctly rather than merely quietly — including the gate that
 prints PASS while having lost scope.
