@@ -158,4 +158,9 @@ The Lean 4 implementation is in the `FormalSystem/` directory:
 - `Semantics/` -- Task frames model possible worlds; histories model time (partial, then convex, then total -- @sec:convex-histories); strict (irreflexive) truth conditions define meaning; `Extension/` runs the existence machinery (Constraint Lemma through the Extension Theorem) as a machine-checked chain.
 - `Metalogic/` -- Soundness for all four frame classes (Base, Dense, ZTime, RTime), the deduction theorem and Lindenbaum lemma, the canonical-model machinery carrying the completeness theorems of @sec:metalogic, and the tableau-based decision procedure.
 - `Theorems/` -- Perpetuity principles (P1--P6), modal and propositional theorem libraries, and derived temporal axioms.
-- `Automation/`, `Examples/` -- Proof tactics, the training-data pipeline, and worked examples, covered in Part II.
+- `Automation/`, `Examples/` -- Proof tactics and worked examples, covered in Part II.
+- `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/`, `HybridLanguage/` -- self-contained mirrors for the neighboring object languages surveyed in @ch:vlach-blstar, the deferred tense-primitive subsystem of @sec:conservative-extension, and the hybrid state language extending *TM*#super[+] with state registers and a same-state binder.
+- `ForMathlib/`, `Tactic/` -- library infrastructure: Mathlib-shaped extensions intended for upstreaming, and the attributes and named `simp` sets the rest of the library registers.
+- `MainResults.lean` -- a single-file index of the headline metatheory, each result beside its own `#print axioms` audit.
+
+The dataset, ML and benchmark tooling of Part II's training-data pipeline (@sec:dataset-pipeline) is *not* under `FormalSystem/`: it lives in a separate library, `BimodalTools`, declared in the repository's `lakefile.toml` and built only on request.

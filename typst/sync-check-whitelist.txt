@@ -119,6 +119,15 @@ kind: "axiom"
 kind: "inference_rule"
 kind: "derived_operator"
 
+# --- Machine appendix untl/snce JSON-shape row: deliberately spelled with the
+# book's own guard-first (guard=φ, event=ψ) letter convention rather than
+# BimodalTools/DataExport.lean's local match-variable naming (which binds ψ to
+# the event and φ to the guard in its own `| .untl ψ φ =>` pattern, unrelated
+# to the constructor's actual guard-first argument order), so the span cannot
+# literal-grep-match that docstring's own `<φ>`/`<ψ>` spelling ---
+{"tag": "untl", "event": <ψ>, "guard": <φ>}
+{"tag": "snce", "event": <ψ>, "guard": <φ>}
+
 # --- Task-topology paper anchors, cited only in typst/FormalFoundations.typ's
 # system section. def:task-topology defines the cone-generated topology on
 # world states and app:topology-t1 states its T1 separation; neither has a

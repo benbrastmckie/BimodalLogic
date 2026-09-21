@@ -390,26 +390,31 @@ and by reading the live declarations.
 
 ---
 
-### Phase 6: Introduction structure list and machine-appendix metavariables [NOT STARTED]
+### Phase 6: Introduction structure list and machine-appendix metavariables [COMPLETED]
 
 **Goal**: Items 7 and 8. The introduction's project-structure list covers the real tree and
 attributes the tooling correctly; the machine appendix's illustrative table follows the book's own
 guard/event letter convention.
 
 **Tasks**:
-- [ ] Extend the project-structure list in `typst/chapters/00-introduction.typ` to cover the
+- [x] Extend the project-structure list in `typst/chapters/00-introduction.typ` to cover the
       directories and top-level module it omits, matching the Lean appendix's directory tour for
-      coverage and staying in the introduction's brief register.
-- [ ] Correct the tooling attribution: the dataset, ML and benchmark modules live in the separate
+      coverage and staying in the introduction's brief register. *(completed; live `ls` also
+      surfaced FormalSystem/HybridLanguage/, a real directory the dispatch predates -- fully
+      committed by a concurrent task before this phase started -- added; excluded the same
+      task's still-uncommitted FormalSystem/QuantLanguage/)*
+- [x] Correct the tooling attribution: the dataset, ML and benchmark modules live in the separate
       tools library declared in `lakefile.toml`, not under the automation or examples directories.
       Do **not** copy the appendix's directory-tour sentence, which makes the same mistake; use the
-      appendix's own correct statement elsewhere in that file as the model.
-- [ ] In `typst/chapters/ax-machine-appendix.typ`, swap the two placeholder letters in the
+      appendix's own correct statement elsewhere in that file as the model. *(completed)*
+- [x] In `typst/chapters/ax-machine-appendix.typ`, swap the two placeholder letters in the
       JSON-shape table so the guard is the book's guard letter and the event is the book's event
-      letter, matching the syntax chapter's stated convention.
-- [ ] Leave the explanatory paragraph below the table and the `CONFIRM(lean)` comment unchanged —
-      both are accurate as they stand.
-- [ ] Recompile and inspect the rendered introduction and machine-appendix pages.
+      letter, matching the syntax chapter's stated convention. *(completed; required a new
+      whitelist entry since the swapped span no longer literal-matches DataExport.lean's own
+      differently-named local match variables)*
+- [x] Leave the explanatory paragraph below the table and the `CONFIRM(lean)` comment unchanged —
+      both are accurate as they stand. *(confirmed unchanged)*
+- [x] Recompile and inspect the rendered introduction and machine-appendix pages. *(completed)*
 
 **Timing**: 0.75 hours
 
