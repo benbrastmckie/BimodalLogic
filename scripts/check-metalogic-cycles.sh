@@ -157,15 +157,23 @@ _spec = importlib.util.spec_from_file_location(
 )
 _measure = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_measure)
-LAYERS, LIB, layer_of = _measure.LAYERS, _measure.LIB, _measure.layer_of
+LIB, layer_of = _measure.LIB, _measure.layer_of
 
-# The recorded allowlist, now EMPTY.  It held 7 entries, all keyed on
-# `FormalSystem.Syntax.MinusLanguage.AxiomDischarge`; PUBLICATION_REFACTOR.md Phase 5
-# (the {Plus,Minus,Star}Language merges) moved that module to
-# `FormalSystem.MinusLanguage.AxiomDischarge`, at the library root and outside `LAYERS`,
-# so it no longer contributes a measured upward edge.  Any future entry is derived by
-# running `measure-refactor-partitions.py upward-edges`, never hand-copied from a plan.
-ALLOWLIST = frozenset()
+# The recorded allowlist: 7 lines, all from `FormalSystem.MinusLanguage.AxiomDischarge`
+# (layer 0 by its pre-merge origin, `Syntax/MinusLanguage/`) into `Theorems` (layer 2).
+# They are recorded, not excused: the file discharges the Minus axioms through derived
+# theorems of the base logic, and relocating it is separate work.  Every entry is derived
+# by running `measure-refactor-partitions.py upward-edges`, never hand-copied from a plan.
+_SRC = "FormalSystem.MinusLanguage.AxiomDischarge"
+ALLOWLIST = frozenset((_SRC, "FormalSystem.Theorems." + t) for t in (
+    "Combinators",
+    "DedekindDerived",
+    "DeductionTheorem",
+    "DiscreteUnfolding",
+    "GeneralizedNecessitation",
+    "Propositional.Core",
+    "TemporalDerived",
+))
 
 g = ImportGraph()
 
@@ -177,27 +185,44 @@ def is_sibling_aggregator(module):
     return bool(path) and os.path.isdir(path[: -len(".lean")])
 
 
+# `layer_of(src)` is evaluated BEFORE the aggregator exclusion, for every library module, so a
+# module with no row raises here even when it is an aggregator and would otherwise be skipped.
 measured = set()
-for src in g.modules:
-    if not src.startswith(LIB + "."):
-        continue
-    ls = layer_of(src)
-    if ls is None or is_sibling_aggregator(src):
-        continue
-    for tgt in g.edges[src]:
-        lt = layer_of(tgt)
-        if lt is not None and lt > ls:
-            measured.add((src, tgt))
+try:
+    for src in g.modules:
+        if not src.startswith(LIB + "."):
+            continue
+        ls = layer_of(src)
+        if ls is None or is_sibling_aggregator(src):
+            continue
+        for tgt in g.edges[src]:
+            lt = layer_of(tgt)
+            if lt is not None and lt > ls:
+                measured.add((src, tgt))
+except _measure.UnlayeredModuleError as e:
+    print(f"FAIL  unlayered module `{e.module}`: {e.table} has no row `{e.missing_row}`")
+    print("      A module with no layer contributes no edge in either direction, so the upward set")
+    print("      below it would be measured on a partial graph. Add the row in")
+    print("      scripts/measure-refactor-partitions.py and ORGANISATION.md together, then re-run.")
+    sys.exit(1)
 
+stale = _measure.stale_language_rows(g)
 surplus = sorted(measured - ALLOWLIST)
 shortfall = sorted(ALLOWLIST - measured)
+
+for m in stale:
+    print(f"STALE ROW  {m}")
+if stale:
+    print(f"FAIL  {len(stale)} per-file layer row(s) name a module that does not exist")
+    print("      The file was renamed, moved or deleted and its LANGUAGE_FILE_LAYERS row in")
+    print("      scripts/measure-refactor-partitions.py stayed behind. Delete or rename the row.")
 
 for s, t in surplus:
     print(f"SURPLUS    {s} -> {t}")
 for s, t in shortfall:
     print(f"SHORTFALL  {s} -> {t}")
 
-if not surplus and not shortfall:
+if not surplus and not shortfall and not stale:
     if ALLOWLIST:
         print(f"PASS  upward import set is exactly the recorded {len(ALLOWLIST)} line(s)")
         for s_, t_ in sorted(ALLOWLIST):
@@ -206,8 +231,9 @@ if not surplus and not shortfall:
         print("PASS  zero upward import lines; the recorded allowlist is empty")
     sys.exit(0)
 
-print(f"FAIL  upward import set is not the recorded allowlist "
-      f"({len(surplus)} surplus, {len(shortfall)} shortfall)")
+if surplus or shortfall:
+    print(f"FAIL  upward import set is not the recorded allowlist "
+          f"({len(surplus)} surplus, {len(shortfall)} shortfall)")
 if surplus:
     print("      A surplus is a new upward edge. Relocate the module, or -- if the edge is")
     print("      genuinely correct -- change the layer table in")

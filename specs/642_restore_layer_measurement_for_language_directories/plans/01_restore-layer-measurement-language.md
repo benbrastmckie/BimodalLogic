@@ -1,7 +1,7 @@
 # Implementation Plan: Task #642
 
 - **Task**: 642 - Restore layer measurement for the language directories
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md
@@ -129,41 +129,41 @@ No roadmap context was supplied with this dispatch.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Per-file layer table, fail-loud `layer_of`, restored allowlist [NOT STARTED]
+### Phase 1: Per-file layer table, fail-loud `layer_of`, restored allowlist [COMPLETED]
 
 **Goal**: Make the three language directories measurable, make an unmatched library module an
 error, and bring the allowlist back to the measured set, as one green change across both scripts.
 
 **Tasks**:
-- [ ] Re-derive the origin table from `git show -M --name-status --format='%h %s' e2b646c84` and
-      check it against the live directory listings (do not copy the table from the report).
-- [ ] In `scripts/measure-refactor-partitions.py`: add `"Version": 0` and `"MainResults": 4` to
+- [x] Re-derive the origin table from `git show -M --name-status --format='%h %s' e2b646c84` and
+      check it against the live directory listings (do not copy the table from the report). *(completed: 30 renames in e2b646c84 match the 30 live files; 13 at layer 0, 16 at layer 1, 1 at layer 3)*
+- [x] In `scripts/measure-refactor-partitions.py`: add `"Version": 0` and `"MainResults": 4` to
       `LAYERS`, and rewrite the comment above it (it currently says a top-level module "has no
-      layer and never contributes an edge").
-- [ ] Add the per-file table, keyed by language directory then by file leaf (30 rows), and a
+      layer and never contributes an edge"). *(completed)*
+- [x] Add the per-file table, keyed by language directory then by file leaf (30 rows), and a
       declared aggregator layer of 1 for the three sibling aggregators. Put the decision record in
       the comment above it: per-file over per-directory with the measured L=0/1/2/3 figures,
       origin directory as the rule with the merge commit named, `Soundness` at 3 and why a prefix
-      heuristic must not replace the table.
-- [ ] Add a dedicated exception class and rewrite `layer_of`: return `None` only when the first
+      heuristic must not replace the table. *(completed)*
+- [x] Add a dedicated exception class and rewrite `layer_of`: return `None` only when the first
       component is not `FormalSystem` or the module is the bare root; otherwise return the matched
       row or raise, with a message naming the module and which table lacks the row (top-level
       `LAYERS` vs. the per-file table for that language directory). A module nested deeper than
-      one level inside a language directory has no row and must raise too.
-- [ ] Add a stale-row function (table rows whose module is not in the graph) and surface its
-      result in `measure_upward_edges`' return value and in `print_upward_edges`.
-- [ ] Keep the `if ls is None: continue` guards; they now fire only for non-library modules.
-      Catch the new exception in `main` and exit non-zero with the message on stderr.
-- [ ] Run `python3 scripts/measure-refactor-partitions.py upward-edges` and restore `ALLOWLIST` in
+      one level inside a language directory has no row and must raise too. *(completed)*
+- [x] Add a stale-row function (table rows whose module is not in the graph) and surface its
+      result in `measure_upward_edges`' return value and in `print_upward_edges`. *(completed)*
+- [x] Keep the `if ls is None: continue` guards; they now fire only for non-library modules.
+      Catch the new exception in `main` and exit non-zero with the message on stderr. *(completed)*
+- [x] Run `python3 scripts/measure-refactor-partitions.py upward-edges` and restore `ALLOWLIST` in
       `scripts/check-metalogic-cycles.sh` from that output. Expect 7 lines, all
       `FormalSystem.MinusLanguage.AxiomDischarge -> FormalSystem.Theorems.*`. **Any other line is
-      a finding: stop, report it in the summary and the handoff, and do not allowlist it.**
-- [ ] In assertion B: fail on a non-empty stale-row set, and print an unlayered-module error as a
+      a finding: stop, report it in the summary and the handoff, and do not allowlist it.** *(completed: measured exactly 7 lines, all AxiomDischarge -> Theorems; no other line)*
+- [x] In assertion B: fail on a non-empty stale-row set, and print an unlayered-module error as a
       `FAIL` line naming the module and table instead of a traceback. Keep `layer_of(src)`
-      evaluated before the aggregator exclusion.
-- [ ] Rewrite the script docstring's "Measured on the tree" `upward-edges` block from fresh output
+      evaluated before the aggregator exclusion. *(completed)*
+- [x] Rewrite the script docstring's "Measured on the tree" `upward-edges` block from fresh output
       and delete its CAVEAT paragraph. Regenerate every figure in that block by running the
-      script; type none of them.
+      script; type none of them. *(completed: upward-edges block only; the other three blocks' figures were already stale before this task and are untouched (non-goal))*
 
 **Timing**: 1.5 hours
 

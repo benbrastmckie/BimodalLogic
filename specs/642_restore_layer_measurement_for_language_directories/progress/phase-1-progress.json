@@ -1,0 +1,21 @@
+{
+  "phase": 1,
+  "phase_name": "Per-file layer table, fail-loud layer_of, restored allowlist",
+  "started_at": "2026-09-21T00:05:00Z",
+  "last_updated": "2026-09-21T00:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-derive origin table from e2b646c84 and check against live listings", "status": "done", "files_touched": []},
+    {"id": 2, "description": "LAYERS rows for Version and MainResults; rewritten comment", "status": "done", "files_touched": ["scripts/measure-refactor-partitions.py"]},
+    {"id": 3, "description": "Per-file table LANGUAGE_FILE_LAYERS and declared aggregator layer with decision record", "status": "done", "files_touched": ["scripts/measure-refactor-partitions.py"]},
+    {"id": 4, "description": "UnlayeredModuleError and fail-loud layer_of", "status": "done", "files_touched": ["scripts/measure-refactor-partitions.py"]},
+    {"id": 5, "description": "stale_language_rows surfaced in measure/print", "status": "done", "files_touched": ["scripts/measure-refactor-partitions.py"]},
+    {"id": 6, "description": "Keep None guards; catch exception in main", "status": "done", "files_touched": ["scripts/measure-refactor-partitions.py"]},
+    {"id": 7, "description": "Restore ALLOWLIST from measured output (7 lines)", "status": "done", "files_touched": ["scripts/check-metalogic-cycles.sh"]},
+    {"id": 8, "description": "Assertion B stale-row and unlayered-module FAIL branches", "status": "done", "files_touched": ["scripts/check-metalogic-cycles.sh"]},
+    {"id": 9, "description": "Rewrite docstring upward-edges block; delete CAVEAT", "status": "done", "files_touched": ["scripts/measure-refactor-partitions.py"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

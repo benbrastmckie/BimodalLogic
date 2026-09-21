@@ -94,7 +94,7 @@ next_project_number: 645
 ### Publication Quality
 
 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
-642 [PLANNED] — Close the measurement blind spot the language-extension merge...
+642 [IMPLEMENTING] — Close the measurement blind spot the language-extension merge...
 
 ### Semantics
 
@@ -147,7 +147,7 @@ ACCEPTANCE. All checks green on the current tree; each seen to fail on an inject
 ---
 
 ### 642. Restore layer measurement for language directories
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: None

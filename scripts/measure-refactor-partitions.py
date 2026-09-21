@@ -19,10 +19,12 @@ The four measurements:
 
   upward-edges             Every import that runs *up* the layer stack recorded
                            in ORGANISATION.md (Syntax/ProofSystem/ForMathlib/
-                           Init/Tactic=0, Semantics=1, Theorems=2,
-                           Metalogic/Automation=3, Examples=4), grouped by source
-                           and target directory, with the Theorems <-> Metalogic
-                           pair called out.
+                           Init/Tactic/Version=0, Semantics=1, Theorems=2,
+                           Metalogic/Automation=3, Examples/MainResults=4, and
+                           the three language directories per file at 0, 1 or
+                           3), grouped by source and target directory, with the
+                           Theorems <-> Metalogic pair and any stale per-file
+                           row called out.
   weakcanonical-partition  Each module under Metalogic/WeakCanonical/ classified
                            by whether BXCanonical is in its transitive closure;
                            the proposed Expressiveness set (EXPRESSIVENESS_SET
@@ -43,24 +45,29 @@ only when the Expressiveness set has no edge into the residual WeakCanonical
 set and none into BXCanonical.  Never weaken it; if it fails, the offending
 edges are the work, and the relocation has to be dependency-first.
 
-Measured on the tree as it stands after the upward-edge relocation:
-  upward-edges              0 import lines in total; 0 into Automation from any
-                            of the four acceptance source directories (Syntax,
-                            Semantics, ProofSystem, Theorems); 0 Theorems files
-                            import Metalogic; 29 Metalogic files import
-                            Theorems.  scripts/check-metalogic-cycles.sh
-                            asserts that the upward set EQUALS its recorded
-                            allowlist, now empty.
-                            CAVEAT: the 7 lines this figure used to report all
-                            came from Syntax/MinusLanguage/AxiomDischarge.lean.
-                            The language-extension merge moved that file to
-                            MinusLanguage/AxiomDischarge.lean, at the library
-                            root and outside LAYERS, so layer_of returns None
-                            for it.  The edges were not turned downward; they
-                            stopped being measured.  Every import into and out
-                            of MinusLanguage/, PlusLanguage/ and StarLanguage/
-                            is now invisible here -- see ORGANISATION.md's
-                            layer-table note.
+Measured on the tree as it stands after the language directories were layered:
+  upward-edges              7 import lines in total, one class, MinusLanguage ->
+                            Theorems: MinusLanguage/AxiomDischarge.lean (layer 0)
+                            importing 7 Theorems modules (layer 2).  0 into
+                            Automation from any of the four acceptance source
+                            directories (Syntax, Semantics, ProofSystem,
+                            Theorems); 0 Theorems files import Metalogic; 29
+                            Metalogic files import Theorems; 0 stale per-file
+                            rows.  scripts/check-metalogic-cycles.sh asserts
+                            that the upward set EQUALS its recorded 7-line
+                            allowlist.
+                            The three language directories (MinusLanguage/,
+                            PlusLanguage/, StarLanguage/) are layered PER FILE
+                            by LANGUAGE_FILE_LAYERS below, keyed on each file's
+                            directory before the language-extension merge: 13
+                            files at layer 0, 16 at layer 1, 1 at layer 3.  One
+                            layer L for all three directories was measured and
+                            rejected -- it leaves 23 upward lines at L=0, 9 at
+                            L=1, 5 at L=2 and 3 at L=3, a set that tracks the
+                            number chosen rather than the tree.  layer_of
+                            raises UnlayeredModuleError for any module under
+                            FormalSystem/ that matches no row; it returns None
+                            only for the bare root and for non-library modules.
   weakcanonical-partition   Expressiveness 141 files / 104,087 lines,
                             residual 38 files / 28,498 lines, 0 leaking edges;
                             BXCanonical-free by closure: 150 of 179
@@ -105,8 +112,14 @@ from import_graph import ImportGraph, first_namespace  # noqa: E402
 
 LIB = "FormalSystem"
 
-# ORGANISATION.md's layer table.  A top-level module such as `FormalSystem.MainResults`
-# has no layer and never contributes an edge.
+# ORGANISATION.md's layer table, keyed by the first path component below `FormalSystem/`.
+# EVERY module under `FormalSystem/` has a layer: a directory through its row here, the two
+# root-level single files `Version` (0: it imports nothing from the library) and `MainResults`
+# (4: it audits every headline theorem, so it sits with Examples at the top) through their own
+# rows, and a file in one of the three language directories through LANGUAGE_FILE_LAYERS below.
+# A module that matches no row is an ERROR, not a module "with no layer" -- see `layer_of`.
+# Only the bare root `FormalSystem` (it imports everything by construction) and modules outside
+# the library have no layer.
 #
 # This is the MEASURED order, not an aspirational one.  Two entries are
 # load-bearing and are easy to get wrong:
@@ -121,13 +134,66 @@ LIB = "FormalSystem"
 #     called from the decision procedure, which is an intra-layer edge, not an
 #     upward one.  See ORGANISATION.md, which states the same table in prose.
 LAYERS = {
-    "Syntax": 0, "ProofSystem": 0, "ForMathlib": 0, "Init": 0, "Tactic": 0,
+    "Syntax": 0, "ProofSystem": 0, "ForMathlib": 0, "Init": 0, "Tactic": 0, "Version": 0,
     "Semantics": 1,
     "Theorems": 2,
     "Metalogic": 3,
     "Automation": 3,
-    "Examples": 4,
+    "Examples": 4, "MainResults": 4,
 }
+
+# The three language directories hold a language's syntax, proof system AND semantics in one
+# directory, so no single layer number describes them.  That is measured, not argued: giving all
+# three directories one layer L yields a non-empty upward set for every L (the figures are in
+# this script's module docstring and in ORGANISATION.md), and the set that survives reflects the
+# number chosen rather than the tree.  So each FILE carries its own layer.
+#
+# THE RULE IS THE FILE'S PRE-MERGE ORIGIN DIRECTORY, not a judgement about its content.  The
+# language-extension merge (commit e2b646c84) moved every one of these files out of a directory
+# that already had a layer; `git show -M --name-status e2b646c84` is the table's source:
+#
+#   from Syntax/<Lang>/                      -> 0
+#   from Semantics/<Lang>/                   -> 1
+#   from Metalogic/Conservativity/           -> 3   (`MinusLanguage/Soundness.lean` only; it
+#                                                    imports two Metalogic modules)
+#
+# A content judgement is deliberately NOT the rule.  It could file `AxiomDischarge` -- whose 7
+# imports of `Theorems` are the whole measured upward set -- at layer 2 and empty the allowlist
+# in scripts/check-metalogic-cycles.sh by assertion.  That allowlist once emptied because these
+# directories stopped being measured; reclassifying the file would reach the same blind spot by
+# another route.  The 7 lines are recorded, not excused.
+#
+# AN EXPLICIT TABLE, NOT A FILENAME HEURISTIC.  Every layer-1 file happens to carry its
+# language's name as a prefix (`PlusTruth`, `MinusFrame`) and every unprefixed file is layer 0 --
+# except `Soundness`, which is layer 3.  A prefix rule would be right for all files but that one
+# and would classify the NEXT new file silently, which is the failure this table exists to
+# prevent.  A new file in a language directory needs a row here; without one `layer_of` raises.
+# A row whose file has gone is reported as stale (`stale_language_rows`) and fails assertion B
+# of check-metalogic-cycles.sh, so the table cannot drift in either direction.
+LANGUAGE_FILE_LAYERS = {
+    "MinusLanguage": {
+        "AxiomDischarge": 0, "Axioms": 0, "Derivation": 0, "Formula": 0, "Translation": 0,
+        "MinusFrame": 1, "MinusSchemaValidity": 1, "MinusTruth": 1, "MinusValidity": 1,
+        "Soundness": 3,
+    },
+    "PlusLanguage": {
+        "Axioms": 0, "Derivation": 0, "Formula": 0, "Substitution": 0,
+        "PlusDeterminism": 1, "PlusLimitClosure": 1, "PlusNonValidities": 1, "PlusPasting": 1,
+        "PlusStateLocal": 1, "PlusTruth": 1, "PlusValidity": 1,
+    },
+    "StarLanguage": {
+        "Axioms": 0, "Derivation": 0, "Embedding": 0, "Formula": 0,
+        "StarDeterminism": 1, "StarNonValidities": 1, "StarStateLocal": 1, "StarTruth": 1,
+        "StarValidity": 1,
+    },
+}
+
+# The sibling aggregators `FormalSystem/<Lang>Language.lean` import their directory's layer-0 and
+# layer-1 files, so they take the higher of the two as a DECLARED layer.  (`MinusLanguage.lean`
+# does not import `Soundness` and cannot: `Soundness` reaches the aggregator through
+# `Metalogic.Conservativity.Backward`.)  This matters here and not in check-metalogic-cycles.sh:
+# that script excludes sibling aggregators as edge sources, `measure_upward_edges` does not.
+LANGUAGE_AGGREGATOR_LAYER = 1
 
 WEAK = f"{LIB}.Metalogic.WeakCanonical"
 EXPR = f"{LIB}.Metalogic.Expressiveness"
@@ -169,9 +235,55 @@ def top_dir(module):
     return parts[1] if len(parts) > 1 and parts[0] == LIB else None
 
 
+class UnlayeredModuleError(LookupError):
+    """A module under ``FormalSystem/`` that matches no row of any layer table.
+
+    Raised rather than answered with ``None``: a ``None`` layer drops every import into and out
+    of the module from the upward-edge measurement without a word, which is how the three
+    language directories went unmeasured.
+    """
+
+    def __init__(self, module, table, missing_row):
+        self.module, self.table, self.missing_row = module, table, missing_row
+        super().__init__(
+            f"no layer for `{module}`: {table} in scripts/measure-refactor-partitions.py has no "
+            f"row `{missing_row}`. Add the row (and the matching line of ORGANISATION.md's layer "
+            f"table); an unlayered module is invisible to the upward-edge measurement.")
+
+
 def layer_of(module):
-    d = top_dir(module)
-    return LAYERS.get(d) if d else None
+    """The layer of a library module, or ``None`` for a module that is not in the library.
+
+    ``None`` is returned ONLY when the first component is not ``FormalSystem`` (Mathlib, the
+    test library, ...) or the module is the bare root ``FormalSystem``.  Every other module
+    either matches a row or raises ``UnlayeredModuleError`` naming the table that lacks it.
+    """
+    parts = module.split(".")
+    if parts[0] != LIB or len(parts) == 1:
+        return None
+    d = parts[1]
+    if d in LANGUAGE_FILE_LAYERS:
+        if len(parts) == 2:
+            return LANGUAGE_AGGREGATOR_LAYER
+        # The key is the dotted path below the language directory, so a module nested deeper
+        # than one level has no row either until someone writes one for it explicitly.
+        leaf = ".".join(parts[2:])
+        if leaf not in LANGUAGE_FILE_LAYERS[d]:
+            raise UnlayeredModuleError(module, f'the per-file table LANGUAGE_FILE_LAYERS["{d}"]', leaf)
+        return LANGUAGE_FILE_LAYERS[d][leaf]
+    if d not in LAYERS:
+        raise UnlayeredModuleError(module, "the top-level table LAYERS", d)
+    return LAYERS[d]
+
+
+def stale_language_rows(g):
+    """Rows of LANGUAGE_FILE_LAYERS whose module is not in the import graph.
+
+    The other direction of drift from the one ``layer_of`` raises on: a file was renamed,
+    moved or deleted and its row stayed behind.
+    """
+    return sorted(f"{LIB}.{d}.{leaf}" for d, rows in LANGUAGE_FILE_LAYERS.items()
+                  for leaf in rows if f"{LIB}.{d}.{leaf}" not in g.modules)
 
 
 def md_table(headers, rows):
@@ -231,6 +343,7 @@ def measure_upward_edges(g):
         "classes": {f"{a} -> {b}": sorted(v) for (a, b), v in sorted(classes.items())},
         "theorems_files_importing_metalogic": theorems_to_metalogic,
         "metalogic_files_importing_theorems": metalogic_to_theorems,
+        "stale_language_rows": stale_language_rows(g),
     }
 
 
@@ -249,6 +362,12 @@ def print_upward_edges(r):
         print(f"  - `{m}`")
     print(f"- Metalogic files importing Theorems: {len(r['metalogic_files_importing_theorems'])}")
     print()
+    print(f"### Stale per-file rows (LANGUAGE_FILE_LAYERS rows with no file): "
+          f"{len(r['stale_language_rows'])}\n")
+    for m in r["stale_language_rows"]:
+        print(f"- `{m}`")
+    if r["stale_language_rows"]:
+        print()
 
 
 # ---------------------------------------------------------------------------
@@ -514,7 +633,11 @@ def main(argv):
     if args.check and args.mode is None:
         modes = []
 
-    results = {m: MODES[m][0](g) for m in modes}
+    try:
+        results = {m: MODES[m][0](g) for m in modes}
+    except UnlayeredModuleError as e:
+        print(f"measure-refactor-partitions.py: {e}", file=sys.stderr)
+        return 1
     if args.json:
         print(json.dumps(results, indent=2))
     else:
