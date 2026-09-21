@@ -1,5 +1,5 @@
 ---
-next_project_number: 650
+next_project_number: 651
 ---
 
 # TODO
@@ -14,7 +14,7 @@ next_project_number: 650
 | 1 | 127,128,178,257,298,464,481,502,559,563,568,604,623,624,628,647 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617,646,648 | 298,464,502,563,568,647 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,534,566,618,649 | 231,465,497,564,565,616,646,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,645 | 428,498,499,500,534 | algebraic-representation, decidability, metalogic, ... |
+| 4 | 125,429,543,645,650 | 428,498,499,500,534,649 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -97,6 +97,7 @@ next_project_number: 650
 647 [IMPLEMENTING] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
   └─ 648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
     └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
+      └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ### Semantics
 
@@ -105,6 +106,33 @@ next_project_number: 650
 645 [NOT STARTED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
+
+### 650. Define before use audit lean appendix
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: reference-book
+- **Dependencies**: Task 647, Task 648, Task 649
+
+**Description**: Define-before-use audit of typst/chapters/ax-lean-appendix.typ (the back-matter appendix "Reading the Lean Formalization" of typst/BimodalReference.typ): go through the appendix in reading order, as it stands AFTER tasks 647, 648 and 649 have landed, and make sure that EVERY convention, notation, identifier, and piece of Lean syntax is stated before it is first used. This is an improvement pass over the finished appendix to catch whatever was missed along the way; it depends on 647, 648 and 649 and must not start before they complete.
+
+METHOD (be as systematic as possible; no spot-checking).
+(1) Build a first-use ledger. Walk the file top to bottom and record every item a newcomer to Lean would need explained, with the line of its FIRST USE and the line of its INTRODUCTION (or "none"). Item classes:
+  (a) project notation: the four turnstile forms `Γ ⊢ φ`, `Γ ⊢[fc] φ`, `G |-! p`, `G |-![fc] p`, their context-free variants, and every formula/operator notation that appears in a snippet;
+  (b) project identifiers: `FrameClass` and its four tags, `Axiom.minFrameClass`, `FrameClass.Sat`, `Context`, `TaskFrame`, `TaskModel`, `WorldHistory`, `TruthAt`, `Valid`, and every other project name a snippet or sentence relies on;
+  (c) Lean surface syntax: `_` placeholders, anonymous-constructor brackets `⟨ ⟩`, leading-dot constructor shorthand such as `.Dense`, dot/field notation such as `p.box.imp p` and `d.height`, implicit `{x : T}` versus explicit `(x : T)` versus instance `[C α]` binders, `:=`, `|` match arms, `fun`/`=>`, `∀`/`→` in binder position, `Type`/`Prop`, the declaration keywords `def`/`theorem`/`example`/`inductive`/`structure`/`class`/`instance`/`abbrev`, `namespace`/`open`, attributes such as `@[reducible]`/`@[simp]`, `deriving`, `termination_by`, `noncomputable`, and every tactic name that appears;
+  (d) the appendix's own presentation conventions: the `>` source-label line, excerpt versus didactic example, docstring omission, line re-breaking, and whatever Lean code environment task 649 introduces.
+(2) Classify each ledger row: introduced-before-use (fine); used-before-introduced (a forward reference: move the introduction earlier, or add a one-clause gloss at first use plus a pointer to the full treatment); or never-introduced (add an introduction).
+(3) Fix every non-fine row, preferring ONE canonical introduction per item placed at or before first use, with later uses pointing back by section reference rather than re-explaining.
+Keep the full ledger in the task's report so the audit is checkable row by row.
+
+KNOWN GAPS to seed the ledger (re-verify each against the file as it then stands; a gap that no longer reproduces is closed with a one-line note, never "fixed" anyway).
+(i) The `[fc]` bracket in the turnstile table is never explained. State that the brackets are literal tokens of project-defined notation (declared in FormalSystem/ProofSystem/Derivation.lean and FormalSystem/ProofSystem/Derivable.lean, not built-in Lean syntax); that what goes between them is any term of type `FrameClass`, either a concrete tag such as `.Dense`, giving a derivation in that specific system, or a bound variable `fc`, giving a statement that holds in all four systems at once; that it is the Lean spelling of the subscripted turnstile of the paper's TM_d / TM_z / TM_r; that the bracket-free forms are exactly the `FrameClass.Base` instance, so `Γ ⊢ φ` and `Γ ⊢[.Base] φ` are the same type; and that the exclamation mark in `|-!` marks the `Prop`-valued `Derivable` twin. The sentence after the table currently covers only omission of the context.
+(ii) `FrameClass` is first used in the `Derivable` excerpt in the Types/Props section before the reader has been told what it is. A paragraph there now explains that `fc` is a purely syntactic four-element tag selecting the axiom set, declared in `FormalSystem.ProofSystem` with no reference to frames, models, or truth, and given semantic meaning only later by `FrameClass.Sat` in the module `FormalSystem.Semantics.FrameClassValidity`. KEEP that clarification: a reader who rightly holds that semantics has no place in a syntactic definition must not be alarmed by the parameter's name. Then check that the four tags, their partial order (`Base` bottom, `Dense ≤ RTime`, `ZTime` incomparable with both), `Axiom.minFrameClass`, and `DerivationTree.lift` are each introduced once, systematically, before the later sections rely on them.
+(iii) The leading-dot shorthand `.Dense` / `.Base`, and the variable-name switch between `Γ`/`φ` and `G`/`p` across the two notations, are used without comment.
+
+CONSTRAINTS. Re-verify every Lean fact against live (non-Boneyard) source under FormalSystem/ before writing it. Every `#leansrc` excerpt stays verbatim up to whitespace, and every didactic example must compile with `lake env lean` against the current toolchain, per the file's header contract. Respect the Lean code environment and formatting decisions made by task 649 rather than reintroducing appendix-local formatting. Do not change what the appendix claims and do not widen its scope: this task adds and reorders introductions, glosses, and back-references only. No task-number references in the deliverable. Done means: the reference manual builds cleanly using the build invocation documented in typst/README.md, the element-placement lint (.claude/scripts/typst-element-lint.sh) reports no blocking findings on the file, and typst/SYNC-MAP.md carries a dated entry.
+
+---
 
 ### 649. Systematic lean code environment reference manual
 - **Status**: [NOT STARTED]
