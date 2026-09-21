@@ -1,19 +1,26 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 14,
-  "summary": "Plan written: nine sequential phases, 15 hours, porting the sorry-free research probe into the library as Semantics/HistoryMorphism.lean, Truth.box_always_iff, and two root-level object-language components (HybridLanguage: L+ with [≡], state registers and the binder; QuantLanguage: L with propositional quantifiers over an admissible family). 24 Lean challenge statements, type-checked against the live source modules at plan time. The plan re-sites the port away from the research-era Semantics/Extension/ paths, which predate the language-directory merge; the probe itself now compiles only against stale oleans and is treated as a mirror record of proofs.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 15,
+  "summary": "All nine plan phases completed: Semantics/HistoryMorphism.lean, Truth.box_always_iff, and the two semantic-only object languages FormalSystem/HybridLanguage/ (L+ plus [≡], state registers, the binder) and FormalSystem/QuantLanguage/ (L plus propositional quantifiers over an admissible family). All 24 challenge theorems hold with their pinned signatures, sorry-free, no new axiom; every repository gate is green.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/628_expressive_extensions_recurrence_visibility/summaries/01_expressive-extensions-recurrence-summary.md",
+      "summary": "Implementation summary: nine phases, 24 challenge theorems, all gates green."
+    },
     {
       "type": "plan",
       "path": "specs/628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md",
-      "summary": "Nine-phase implementation plan with Lean Challenge Statements for 24 theorems."
+      "summary": "Plan with all nine phase headings at [COMPLETED]."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 9,
   "phases_total": 9,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Refresh task 628's file_scope in specs/state.json from the plan's 'Artifacts & Outputs' section before dispatching implementation (the declared scope still names Semantics/Extension/{HybridState,PropQuant}.lean, which the plan does not touch; the real footprint is FormalSystem/HybridLanguage/, FormalSystem/QuantLanguage/, Semantics/HistoryMorphism.lean, Semantics/Truth.lean plus scripts/, Tests/ and docs/ registration files shared with every module-adding task). Then dispatch implement, Phase 1 first; Phase 1's Truth.lean edit triggers a near-full rebuild, so avoid running it concurrently with another build-heavy task."
+  "sorry_inventory": [],
+  "next_action_hint": "Run implement postflight for task 628 (link the summary, set status). Optionally refresh the task's stale file_scope from the plan's 'Artifacts & Outputs' section. Guarded full lake build, check-module-invariants.sh (ALL CHECKS PASSED), check-metalogic-cycles.sh, mk_all --check and typst-sync-check.sh were all green at the phase-9 commit.",
+  "git_checkpoint": "7a5fe7f32"
 }

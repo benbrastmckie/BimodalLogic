@@ -1,30 +1,74 @@
 {
-  "status": "planned",
-  "dispatch_seq": 14,
+  "status": "implemented",
+  "dispatch_seq": 15,
+  "started_at": "2026-09-21T22:22:12Z",
+  "completed_at": "2026-09-21T23:12:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 12,
+    "axiom_count_baseline": 12,
+    "build_passed": true
+  },
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/628_expressive_extensions_recurrence_visibility/summaries/01_expressive-extensions-recurrence-summary.md",
+      "summary": "Nine-phase port of the research probe into the library: history-lifting morphisms and recurrence-freeness, the universal modality in L, and the HybridLanguage and QuantLanguage components; 24 challenge theorems proved sorry-free."
+    },
     {
       "type": "plan",
       "path": "specs/628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md",
-      "summary": "Nine-phase sequential plan (15 hours) porting the research probe into Semantics/HistoryMorphism.lean, Truth.box_always_iff, and two root-level language components HybridLanguage/ and QuantLanguage/, with 24 type-checked Lean challenge statements."
+      "summary": "Plan with all nine phase headings at [COMPLETED] and two non-Lean deviations annotated inline."
     }
   ],
-  "next_steps": "Run /implement 628 to execute the plan. Before dispatching implementation, refresh task 628's file_scope in specs/state.json from the plan's 'Artifacts & Outputs' section: the plan re-sites the port from Semantics/Extension/{HybridState,PropQuant}.lean (research-era paths, predating the language-directory merge) to FormalSystem/HybridLanguage/, FormalSystem/QuantLanguage/ and FormalSystem/Semantics/HistoryMorphism.lean, and also touches scripts/, Tests/ and docs/ registration files.",
+  "completion_data": {
+    "completion_summary": "All nine plan phases completed: Semantics/HistoryMorphism.lean, Truth.box_always_iff, and the two semantic-only object languages FormalSystem/HybridLanguage/ (L+ plus [≡], state registers, the binder) and FormalSystem/QuantLanguage/ (L plus propositional quantifiers over an admissible family). All 24 challenge theorems hold with their pinned signatures, sorry-free, no new axiom; every repository gate is green.",
+    "roadmap_items": []
+  },
+  "phases_completed": 9,
+  "phases_total": 9,
+  "next_steps": "Postflight: link the summary. The task's file_scope in specs/state.json still names Semantics/Extension/{HybridState,PropQuant}.lean, which were never created; the plan's 'Artifacts & Outputs' section is the accurate list.",
   "memory_candidates": [
     {
-      "content": "A research probe under specs/**/probes that was compiled with `lake env lean` can keep exiting 0 after the modules it imports are moved or renamed, because stale .olean files for the old module paths survive under .lake/build and `lake env lean` resolves imports from the olean search path, not from source. Before planning a port from a probe, check every `import` line against the source tree (ls the .lean path), re-type the statements against the live module paths, and type-check them afresh. Gate implementation phases on `lake build <target>` (which resolves imports from source), never on `lake env lean <file>` alone.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["stale olean", "lake env lean", "probe", "module move", "import path", "lean4"]
+      "content": "When several orchestrated sessions share one Lean working tree, a generated-inventory emitter (scripts/check-module-invariants.sh --emit-inventory) and count generators (scripts/typst-status-counts.sh) rewrite files that reflect OTHER sessions' uncommitted edits too (e.g. a sibling directory README's line counts, the root README totals). Stage only the generated files in your own territory, leave foreign-territory rewrites unstaged and name them in the phase handoff; expect that a concurrent session's commit may sweep a regenerated shared file in first, and verify the committed counts rather than re-committing.",
+      "category": "PATTERN",
+      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/summaries/01_expressive-extensions-recurrence-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": [
+        "concurrent sessions",
+        "generated inventory",
+        "staging scope",
+        "typst status",
+        "lean4"
+      ]
+    },
+    {
+      "content": "In this library a new object language inherits the derived-operator clause lemmas by instantiating TruthEnv with an INERT environment (register vector, admissible family) and the StabClauses/UntlClauses tier with every clause Iff.rfl; operators that change the environment (a binder) or the model (a propositional quantifier) simply get no abstract tier and a hand-written Iff.rfl clause lemma. Declaring derived operators as defs with the parent language's right-hand sides keeps simp-only lists matching the clause lemmas without unfolding.",
+      "category": "PATTERN",
+      "source_artifact": "specs/628_expressive_extensions_recurrence_visibility/summaries/01_expressive-extensions-recurrence-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "TruthClauses",
+        "TruthEnv",
+        "extension language",
+        "binder",
+        "propositional quantifier",
+        "lean4"
+      ]
     }
   ],
   "metadata": {
-    "session_id": "sess_1790018097_6c1579_628",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790018097_6c1579",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 15,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9]]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "phase_count": 9
   }
 }

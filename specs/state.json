@@ -360,12 +360,12 @@
     {
       "project_number": 628,
       "project_name": "expressive_extensions_recurrence_visibility",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Investigate expressive extensions that make recurrence and transposition visible: state nominals, state registers, propositional quantifiers, and a Prior-style proof-theoretic identification of world states. BACKGROUND: task 624's compiled probe (specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean; truth_invariance, plus_invariance, star_invariance, validIn/plusValidIn/starValidIn_iff_recurrenceFree) shows L, L+ and L-star cannot distinguish frames with recurrence (a history revisiting a state) or transposition (two histories through the same states in opposite orders): at every FrameClass tag, class validity equals validity over recurrence-free members, because the projection prodFrame F -> F is a history-lifting morphism and valuations are clock-independent. QUESTIONS: (Q1) NEGATIVE: verify by sorry-free probe that a pure same-state-at-any-time modality [≡]phi (all (sigma,s) with sigma(s) = tau(t)) is still invisible (projection is a bisimulation for ≡ via liftH_through), and that propositional quantifiers ranging only over clock-independent (lifted) propositions are invisible. (Q2) POSITIVE: extend L+ with state nominals (i true at (tau,t) iff tau(t) = V(i)) and/or a state register (down-arrow/@ binding world states); machine-check that recurrence-free frames validate not(i and (P i or F i)) while the full class does not, and give the analogous transposition formula; identify the minimal resource that breaks the invariance. (Q3) Check whether the universal modality A phi := box(H phi and phi and G phi) is definable in L (needs totality of world histories; check WorldHistory/ofTotal), and with it whether propositional quantifiers under standard (all state-sets) semantics define state atoms Atom(p) := E p and forall q (A(p -> q) or A(p -> not q)), hence recurrence and transposition. (Q4) Cost: axiomatizability/decidability of each extension (hybrid nominals + @ + naming rule vs second-order propositional tense logic over linear orders, MSO of Z/Q/R: Buchi, Shelah, Fine 1970, Kaminski-Tiomkin, Kremer), each claim tied to a held source or labelled recalled. (Q5) PRIOR: relate to Prior's construction of instants/worlds as maximal consistent propositions via propositional quantifiers (Past Present and Future; Papers on Time and Tense; Prior & Fine, Worlds, Times and Selves, incl. Fine's postscript) and to hybrid logic's naming rule (Blackburn, Arthur Prior and Hybrid Logic; Blackburn-de Rijke-Venema ch. 7); sketch whether a naming rule for state nominals lets a canonical model build world states directly as classes of named MCSs, and what that gives the completeness research (559), incl. the open question whether any naming rule is needed. Also assess fit with the manuscript's simulation metasemantics (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, lines 921-937, 1025-1030, 1764). HARD CONSTRAINTS: no theorem stated and discharged with sorry; every claimed invariance or visibility fact carries a sorry-free probe or the label UNVERIFIED; manuscript claims cite line numbers; literature claims tied to held sources or labelled recalled. DEPENDENCIES: none. Related, not blocking: 624 (visibility via translation product), 559 (completeness research), 625 (open-future/open-past modalities)",
       "topic": "semantics",
       "created": "2026-09-19T07:41:18Z",
-      "last_updated": "2026-09-21T22:21:24Z",
+      "last_updated": "2026-09-21T23:11:34Z",
       "session_id": "sess_1790018097_6c1579",
       "file_scope": [
         "FormalSystem.lean",
@@ -388,12 +388,18 @@
           "path": "specs/628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md",
           "type": "plan",
           "summary": "Nine-phase implementation plan with Lean Challenge Statements for 24 theorems."
+        },
+        {
+          "path": "specs/628_expressive_extensions_recurrence_visibility/summaries/01_expressive-extensions-recurrence-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: nine phases, 24 challenge theorems, all gates green."
         }
       ],
       "next_artifact_number": 2,
       "dependencies": [
         625
-      ]
+      ],
+      "completion_summary": "All nine plan phases completed: Semantics/HistoryMorphism.lean, Truth.box_always_iff, and the two semantic-only object languages FormalSystem/HybridLanguage/ (L+ plus [≡], state registers, the binder) and FormalSystem/QuantLanguage/ (L plus propositional quantifiers over an admissible family). All 24 challenge theorems hold with their pinned signatures, sorry-free, no new axiom; every repository gate is green."
     },
     {
       "project_number": 625,

@@ -11,10 +11,10 @@ next_project_number: 651
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,628,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,646,649 | 298,464,502,563,628,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,534,566,618,650 | 231,465,497,564,565,616,646,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,645 | 428,498,499,500,534 | algebraic-representation, decidability, metalogic, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,646,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,534,564,565,567,616,617,649 | 298,464,502,563,646,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,645,650 | 231,465,497,534,564,565,616,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -89,8 +89,8 @@ next_project_number: 651
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-543 [NOT STARTED] — Machine-check the principal new results from the MF...
 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
+543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
 
@@ -101,7 +101,6 @@ next_project_number: 651
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-628 [PLANNED] — Investigate expressive extensions that make recurrence and...
 645 [NOT STARTED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
@@ -362,12 +361,13 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 630 and 632-636 landed). Depen
 ---
 
 ### 628. Expressive extensions recurrence visibility
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 625
 - **Research**: [628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md]
 - **Plan**: [628_expressive_extensions_recurrence_visibility/plans/01_expressive-extensions-recurrence.md]
+- **Summary**: [628_expressive_extensions_recurrence_visibility/summaries/01_expressive-extensions-recurrence-summary.md]
 
 **Description**: Investigate expressive extensions that make recurrence and transposition visible: state nominals, state registers, propositional quantifiers, and a Prior-style proof-theoretic identification of world states. BACKGROUND: task 624's compiled probe (specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean; truth_invariance, plus_invariance, star_invariance, validIn/plusValidIn/starValidIn_iff_recurrenceFree) shows L, L+ and L-star cannot distinguish frames with recurrence (a history revisiting a state) or transposition (two histories through the same states in opposite orders): at every FrameClass tag, class validity equals validity over recurrence-free members, because the projection prodFrame F -> F is a history-lifting morphism and valuations are clock-independent. QUESTIONS: (Q1) NEGATIVE: verify by sorry-free probe that a pure same-state-at-any-time modality [≡]phi (all (sigma,s) with sigma(s) = tau(t)) is still invisible (projection is a bisimulation for ≡ via liftH_through), and that propositional quantifiers ranging only over clock-independent (lifted) propositions are invisible. (Q2) POSITIVE: extend L+ with state nominals (i true at (tau,t) iff tau(t) = V(i)) and/or a state register (down-arrow/@ binding world states); machine-check that recurrence-free frames validate not(i and (P i or F i)) while the full class does not, and give the analogous transposition formula; identify the minimal resource that breaks the invariance. (Q3) Check whether the universal modality A phi := box(H phi and phi and G phi) is definable in L (needs totality of world histories; check WorldHistory/ofTotal), and with it whether propositional quantifiers under standard (all state-sets) semantics define state atoms Atom(p) := E p and forall q (A(p -> q) or A(p -> not q)), hence recurrence and transposition. (Q4) Cost: axiomatizability/decidability of each extension (hybrid nominals + @ + naming rule vs second-order propositional tense logic over linear orders, MSO of Z/Q/R: Buchi, Shelah, Fine 1970, Kaminski-Tiomkin, Kremer), each claim tied to a held source or labelled recalled. (Q5) PRIOR: relate to Prior's construction of instants/worlds as maximal consistent propositions via propositional quantifiers (Past Present and Future; Papers on Time and Tense; Prior & Fine, Worlds, Times and Selves, incl. Fine's postscript) and to hybrid logic's naming rule (Blackburn, Arthur Prior and Hybrid Logic; Blackburn-de Rijke-Venema ch. 7); sketch whether a naming rule for state nominals lets a canonical model build world states directly as classes of named MCSs, and what that gives the completeness research (559), incl. the open question whether any naming rule is needed. Also assess fit with the manuscript's simulation metasemantics (/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, lines 921-937, 1025-1030, 1764). HARD CONSTRAINTS: no theorem stated and discharged with sorry; every claimed invariance or visibility fact carries a sorry-free probe or the label UNVERIFIED; manuscript claims cite line numbers; literature claims tied to held sources or labelled recalled. DEPENDENCIES: none. Related, not blocking: 624 (visibility via translation product), 559 (completeness research), 625 (open-future/open-past modalities)
 
