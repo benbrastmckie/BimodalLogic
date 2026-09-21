@@ -192,33 +192,39 @@ than writing the planned ones.
 
 ---
 
-### Phase 2: README.md axiom counts and derived-mirror labelling [NOT STARTED]
+### Phase 2: README.md axiom counts and derived-mirror labelling [COMPLETED]
 
 **Goal**: Make the README's Axiom Systems table, mermaid graph and surrounding prose state the
 primitive-constructor convention, with the derived-mirror totals retained but labelled — closing
 dispatch items (1) and (2).
 
 **Tasks**:
-- [ ] Rewrite the mermaid graph nodes (README.md ~lines 179-188): `Base` shows the primitive
+- [x] Rewrite the mermaid graph nodes (README.md ~lines 179-188): `Base` shows the primitive
       count 23 (not "37 axioms"); `Dense` shows "Base + 2 primitives"; `ZTime` shows
       "Base + 2 primitives"; `RTime` shows "Dense + 2 primitives". Keep node labels free of the
-      `<digit> [word] axiom` adjacency.
-- [ ] Rewrite the Axiom Systems table (~lines 191-197): rename the `Axioms` column to make the
+      `<digit> [word] axiom` adjacency. *(completed)*
+- [x] Rewrite the Axiom Systems table (~lines 191-197): rename the `Axioms` column to make the
       convention explicit (primitive constructors), set Base 23 / ZTime 25 / Dense 25 / RTime 27
       cumulative-primitive values *or* keep per-class deltas — whichever the implementer confirms
       reads unambiguously against `Axiom.minFrameClass`; add a second labelled column or a
       single footnote giving the with-derived-mirrors totals (37/40/39/42, 45 in all) pointing at
-      `docs/reference/axiom-reference.md`'s `Two axiom counts` section.
-- [ ] Fix the `Additional Axioms` column (item 2): ZTime lists only the two primitives
+      `docs/reference/axiom-reference.md`'s `Two axiom counts` section. *(completed: renamed
+      column header to "Primitive Constructors", set cumulative values 23/25/25/27, added a
+      footnote sentence linking `docs/reference/axiom-reference.md#two-axiom-counts`)*
+- [x] Fix the `Additional Axioms` column (item 2): ZTime lists only the two primitives
       (`prior_UZ`, `z1`) with `Pφ → S(φ,¬φ)` moved to a parenthetical naming it `prior_SZ`, the
       TR-derived past-mirror of `prior_UZ`; RTime lists only `prior_U_gap` and `sep` as primitives
       with `prior_S_gap` noted as `prior_U_gap`'s derived mirror. Rename the column header so it
-      no longer calls derived theorems axioms.
-- [ ] Verify the "**29 constructors in nine layers**" paragraph (~line 199) now agrees with the
+      no longer calls derived theorems axioms. *(completed: header renamed to
+      "Additional Primitives (derived mirrors noted)")*
+- [x] Verify the "**29 constructors in nine layers**" paragraph (~line 199) now agrees with the
       table above it rather than contradicting it; adjust its wording only if the table's new
-      column naming requires it.
-- [ ] Check the remaining count-bearing prose in the Metalogical Results section for any figure
-      the rewrite has orphaned.
+      column naming requires it. *(completed: paragraph already stated the primitive convention;
+      no change needed, confirmed consistent)*
+- [x] Check the remaining count-bearing prose in the Metalogical Results section for any figure
+      the rewrite has orphaned. *(completed: line ~266's "45 TM schemata" is a legitimate,
+      independent use of convention (b) about `PlusAxiom`'s own re-declared total — analogous to
+      `PlusLanguage/README.md`'s non-goal exemption — left unchanged; no orphaned figure found)*
 
 **Timing**: 1.25 hours
 

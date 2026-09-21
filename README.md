@@ -177,10 +177,10 @@ Soundness and completeness for the RTime class are both stated against `ValidRTi
 
 ```mermaid
 graph TD
-    B("<b>Base</b><br/>AddCommGroup<br/>LinearOrder · Nontrivial<br/>NoMaxOrder · NoMinOrder<br/>37 axioms<br/>Sound ✓ · Complete ✓")
-    D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 2 axioms = 39<br/>Sound ✓ · Complete ✓")
-    C("<b>RTime</b><br/>+ DedekindComplete<br/>Dense + 3 axioms = 42<br/>Sound ✓ · Complete ✓")
-    Z("<b>ZTime</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms = 40<br/>Sound ✓ · Complete ✓")
+    B("<b>Base</b><br/>AddCommGroup<br/>LinearOrder · Nontrivial<br/>NoMaxOrder · NoMinOrder<br/>23 primitives<br/>Sound ✓ · Complete ✓")
+    D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 2 primitives<br/>Sound ✓ · Complete ✓")
+    C("<b>RTime</b><br/>+ DedekindComplete<br/>Dense + 2 primitives<br/>Sound ✓ · Complete ✓")
+    Z("<b>ZTime</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 2 primitives<br/>Sound ✓ · Complete ✓")
 
     B --> D
     D --> C
@@ -189,12 +189,17 @@ graph TD
 
 ### Axiom Systems
 
-| System | Axioms | Additional Axioms | Standard Model | Soundness | Completeness |
+| System | Primitive Constructors | Additional Primitives (derived mirrors noted) | Standard Model | Soundness | Completeness |
 |--------|--------|-------------------|----------------|-----------|--------------|
-| **Base** | 37 | seriality built in (`⊤ → F⊤`, `⊤ → P⊤`) | — | `soundness` | `completeness` |
-| **ZTime** | 40 | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | ℤ | `soundness_ztime` | `completeness_ztime` |
-| **Dense** | 39 | `GGφ → Gφ` (`density`), `¬U(⊤,⊥)` (`dense_indicator`) | ℚ | `soundness_dense` | `completeness_dense` |
-| **RTime** | 42 | the two Dense axioms plus Reynolds' `prior_U_gap`, `prior_S_gap`, `sep` | ℝ | `soundness_rtime` | `completeness_rtime` |
+| **Base** | 23 | seriality built in (`⊤ → F⊤`, `⊤ → P⊤`) | — | `soundness` | `completeness` |
+| **ZTime** | 25 | `prior_UZ` (`Fφ → U(φ,¬φ)`), `z1` (`G(Gφ→φ) → (FGφ→Gφ)`) — plus the derived past-mirror `prior_SZ` (`Pφ → S(φ,¬φ)`) | ℤ | `soundness_ztime` | `completeness_ztime` |
+| **Dense** | 25 | `GGφ → Gφ` (`density`), `¬U(⊤,⊥)` (`dense_indicator`) | ℚ | `soundness_dense` | `completeness_dense` |
+| **RTime** | 27 | the two Dense axioms plus Reynolds' `prior_U_gap`, `sep` — plus the derived past-mirror `prior_S_gap` | ℝ | `soundness_rtime` | `completeness_rtime` |
+
+Primitive-constructor counts are cumulative down the frame-class order (Base ≤ {Dense, ZTime},
+Dense ≤ RTime); counting every named schema instead, including the derived past-mirrors, gives
+37 / 40 / 39 / 42 by class (45 names in all) — see
+[Two axiom counts](docs/reference/axiom-reference.md#two-axiom-counts) for the full derivation.
 
 `inductive Axiom` has **29 constructors in nine layers** (`FormalSystem/ProofSystem/Axioms.lean`): exactly the paper's primitive axiom schemata. The 23 Base constructors are propositional (4), S5 modal (3: MT, M5, MK), Burgess-Xu temporal (9), an additional Burgess-Xu temporal layer (2: TL, UT), modal-temporal interaction (1), and uniformity (4). The remaining six are the class-specific extensions: density (2), Prior-UZ (1) and Z1 (1) for the ZTime class, and Reynolds' Dedekind axioms (2: PU, SEP). The past mirrors, obtained by the time-reflection rule TR, and the S5 schemata 4 and B are derived theorems (`FormalSystem.ProofSystem.DerivedAxioms`).
 
