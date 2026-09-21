@@ -1,30 +1,29 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-21T07:02:02Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/634_language_extension_directories_and_probe_tests/plans/01_language-extension-directory-merge.md",
-      "summary": "6-phase linear plan for the Phase 5 language-extension directory merge, carrying a measured namespace rename as declared scope, an atomic-batch merge phase, and the test-root probe relocation."
+      "type": "summary",
+      "path": "specs/634_language_extension_directories_and_probe_tests/summaries/01_language-extension-directory-merge-summary.md",
+      "summary": "Merged the six language-extension directories into three at the library root, renamed the semantics namespaces to match, relocated the 9 test-root probes, and recorded the namespace exceptions."
     }
   ],
-  "phase_count": 6,
-  "estimated_hours": 9,
-  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
-  "next_steps": "Run /implement 634 to execute the plan",
-  "memory_candidates": [
-    {
-      "content": "When planning a Lean directory relocation in this repo, never accept a 'paths only; namespaces unchanged' premise without simulating it first. scripts/measure-refactor-partitions.py's classify_namespace sorts each module into equal-or-descendant / ancestor / unrelated, and 'ancestor' is an ACCEPTABLE bucket. A move can therefore look neutral in a diff while pushing files from ancestor into unrelated -- a regression that no gate script names as such. Concretely (Phase 5 of PUBLICATION_REFACTOR.md): merging Syntax/{X}Language/ + Semantics/{X}Language/ into {X}Language/ takes the unrelated bucket 24 -> 23, because 15 files leave it but 14 enter it from ancestor. Simulate the post-move classification by driving classify_namespace over the proposed destinations BEFORE writing phases; if the simulation regresses, the namespace rename is in scope and must be planned, measured (declaration collisions, short-name ambiguity, external FQN citations, direct importers, pinned axiom baselines) and declared -- not discovered at implement time. Related hazard: move-modules.py's resolve_move prefers a directory over a same-named .lean sibling, silently orphaning the aggregator with its citations already rewritten, so use file-granular map rows; and --namespace-map is an unscoped repo-wide string rewrite, unsafe for any namespace with many non-moving members.",
-      "category": "PATTERN",
-      "source_artifact": "specs/634_language_extension_directories_and_probe_tests/plans/01_language-extension-directory-merge.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["namespace-audit", "classify_namespace", "move-modules", "lean-refactor", "directory-merge", "ancestor-bucket"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1789955215_a3ad68_634",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Landed PUBLICATION_REFACTOR.md Phase 5: Syntax/{Plus,Minus,Star}Language/ and Semantics/{Plus,Minus,Star}Language/ merged into three self-contained root-level components, MinusLanguageSoundness.lean relocated to MinusLanguage/Soundness.lean, 241 declarations renamed out of FormalSystem.Semantics into flat FormalSystem.{X}Language, the 9 loose test-root files moved to Tests/BimodalTest/Metalogic/Decidability/, and all three Chronicle files settled as recorded exceptions. lake build and lake build BimodalTest green, check-module-invariants.sh ALL CHECKS PASSED, namespace-audit unrelated bucket down from 24 to 8 with every member carrying a docstring record.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 14
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped"
+  }
 }

@@ -1,11 +1,12 @@
 # Implementation Plan: Language-extension directories and probe tests
 
 - **Task**: 634 - Language-extension directories and probe tests
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: 626 (completed), 632 (completed), 633 (completed)
 - **Research Inputs**: specs/634_language_extension_directories_and_probe_tests/reports/01_language-extension-directories-probes.md
-- **Artifacts**: plans/01_language-extension-directory-merge.md (this file)
+- **Artifacts**: plans/01_language-extension-directory-merge.md (this file);
+  summaries/01_language-extension-directory-merge-summary.md
 - **Standards**: plan-format.md; status-markers.md; artifact-management.md; tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -160,7 +161,7 @@ for why: shared working tree, not logical coupling).
 
 ---
 
-### Phase 1: Widen file_scope and correct the programme record [IN PROGRESS]
+### Phase 1: Widen file_scope and correct the programme record [COMPLETED]
 
 **Goal**: Make the declared scope match the real work and fix the programme statements this task
 falsifies, before any file moves.
@@ -222,7 +223,7 @@ the discrepancy in the phase record.
 
 ---
 
-### Phase 2: Move the 9 test-root files [NOT STARTED]
+### Phase 2: Move the 9 test-root files [COMPLETED]
 
 **Goal**: Relocate the 8 `*Probe.lean` files and `TableauConformance.lean` into
 `Tests/BimodalTest/Metalogic/Decidability/`, leaving `Property.lean`, `WalkthroughAxioms.lean` and
@@ -246,7 +247,23 @@ the discrepancy in the phase record.
       `BoxNegPreservationProbe.lean:20,76`, `BoxNegReachabilityProbe.lean:12`,
       `CrossWorldPropagationProbe.lean:22,24`, `UntlSnceCopyProbe.lean:14`) for "from Y to Y"
       collapse.
-- [ ] Do not rename the `BimodalTest.{FileName}` namespaces (Non-Goal).
+- [x] Do not rename the `BimodalTest.{FileName}` namespaces (Non-Goal). *(deviation: altered —
+      `move-modules.py` renamed them anyway, as a side effect of its class-2 dotted-citation
+      rewrite: the namespace and the module name coincide, so `namespace BimodalTest.BoxSpreadProbe`
+      is indistinguishable from a citation of the module. The result is consistent (each namespace
+      matches its new module path), `lake build` is green, and `measure_namespaces` filters to
+      `FormalSystem.`-prefixed modules so the test library is outside the audit either way. Left
+      as the tool produced it rather than hand-reverting 18 `namespace`/`end` lines.)*
+- [x] Re-wrap the 36 prose lines the longer citation paths pushed past the 100-character limit.
+      *(deviation: added — not anticipated by the plan. The 30-character path growth produced new
+      `linter.style.longLine` warnings; one landed inside a `#guard_msgs` docstring in
+      `TemporalWitnessProbe.lean` and broke `lake build BimodalTest` outright (C1), and the rest
+      put C28 16 entries above the warning budget. Fixed by re-wrapping, verified word-sequence
+      identical to a mechanical path substitution of the pre-move content. The resulting line
+      shifts also required one C20 citation fix in
+      `Verified/Termination/MintBound/TimeReuse.lean` — `Tableau.lean:1597` replaced with the
+      declaration name `allRulesForFC`, per C20's own guidance — and an
+      `--emit-inventory` regeneration of two README line-count blocks.)*
 
 **Timing**: 1 hour
 
@@ -276,19 +293,26 @@ test root. Confirm with `ls Tests/BimodalTest/*.lean Tests/BimodalTest/*.md` bef
 
 ---
 
-### Phase 3: Scripted path merge of Plus, Minus and Star [NOT STARTED]
+### Phase 3: Scripted path merge of Plus, Minus and Star [COMPLETED]
 
 **Goal**: Land the six-directory-into-three merge, the `MinusLanguageSoundness.lean` relocation,
 the three aggregator merges and the three README merges — with the
 `check-metalogic-cycles.sh` allowlist edit in the **same commit**.
 
 **Tasks**:
-- [ ] Write a file-granular module map: one row per `.lean` under the six source directories (29
+- [x] Write a file-granular module map: one row per `.lean` under the six source directories (29
       rows), one for `FormalSystem.Metalogic.Conservativity.MinusLanguageSoundness ->
       FormalSystem.MinusLanguage.Soundness`, and three rows for the **syntax** aggregators
       (`FormalSystem.Syntax.PlusLanguage -> FormalSystem.PlusLanguage`, likewise Minus and Star).
       The syntax-aggregator rows work only because the file rows have already consumed the
-      directory, so `resolve_move` falls through to the `.lean` branch.
+      directory, so `resolve_move` falls through to the `.lean` branch. *(deviation: altered —
+      the plan's premise is false for a SINGLE tool run. `move-modules.py` resolves every map row
+      up front, before any move, so at resolution time the six source directories still exist and
+      `resolve_move` returns the DIRECTORY for all three aggregator rows — the exact silent-orphan
+      hazard the risk table names, caught in the dry run. Split into two runs instead: 30 file
+      rows first, then the READMEs hand-merged and the six now-`.lean`-free directories `rmdir`'d,
+      then the 3 aggregator rows as a second run, where they correctly resolved to
+      `FormalSystem/Syntax/{X}Language.lean`. Both orphan assertions came back empty.)*
 - [ ] **Do not** add a `--namespace-map`. **Do not** add rows for the three *semantics*
       aggregators — they collide with the syntax aggregators' destination and are hand-merged
       below.
@@ -320,7 +344,25 @@ the three aggregator merges and the three README merges — with the
       header comment at `:156-159` plus the script's docstring block — the allowlist's 7 lines all
       key on `FormalSystem.Syntax.MinusLanguage.AxiomDischarge`, whose new top-level directory sits
       outside `LAYERS`, so `layer_of` returns `None` and all 7 become a shortfall.
-- [ ] Hand-review every non-`.lean` diff hunk for "from Y to Y" collapse before staging.
+- [x] Hand-review every non-`.lean` diff hunk for "from Y to Y" collapse before staging.
+      *(One collapse found and fixed: the merge-provenance sentence I had written into all three
+      merged READMEs before the citation rewrite ran — "assembled from the former
+      `Syntax/XLanguage/` and `Semantics/XLanguage/`" — collapsed to "the former `XLanguage/` and
+      `XLanguage/`". Rewritten to name the old parents without repeating the directory name. This
+      is exactly the failure mode the plan predicted, and the reason it says to write narrative
+      prose about the move after the tool has run.)*
+- [x] Re-base the 152 stale PARTIAL-path citations (`Semantics/XLanguage/...`,
+      `Syntax/XLanguage/...`) the tool leaves untouched because it only rewrites full
+      `FormalSystem/`-rooted paths. *(deviation: added — not anticipated by the plan, and 192
+      occurrences across 76 files, so scripted with a markdown-link guard, then hand-reviewed. The
+      9 markdown relative links were re-based by depth individually, since a string substitution
+      would have broken their `../` prefixes. One broken link slipped through and was caught by
+      `readme-lint.sh` going 21 -> 22 broken references; fixed, back to the 21 baseline.)*
+- [x] Update the layout prose in `docs/ARCHITECTURE.md` and
+      `docs/development/MODULE_ORGANIZATION.md`. *(deviation: added — neither file is named in any
+      phase's file list, but both state the pre-merge layout as current fact, and
+      `ARCHITECTURE.md`'s layer diagram and upward-set section are falsified outright by the
+      allowlist emptying. Left false through a commit would be worse than the scope creep.)*
 
 **Timing**: 2 hours
 
@@ -362,7 +404,7 @@ one.
 
 ---
 
-### Phase 4: Rename the semantics namespaces to FormalSystem.{X}Language [NOT STARTED]
+### Phase 4: Rename the semantics namespaces to FormalSystem.{X}Language [COMPLETED]
 
 **Goal**: Move the 241 declarations in the 16 moved semantics modules plus `Soundness.lean` out of
 `FormalSystem.Semantics` and into flat `FormalSystem.{X}Language`, so the audit classifies them as
@@ -375,13 +417,28 @@ equal-or-descendant.
 - [ ] Include the *second* `namespace FormalSystem.Semantics` block inside
       `PlusStateLocal.lean` (≈lines 210-410) and the matching block in `StarStateLocal.lean` —
       otherwise those two files stay split across two namespaces for no reason.
-- [ ] Build; for each missing-identifier error, add `open FormalSystem.{X}Language` to the
-      importer. Measured short-name ambiguity is 0, so every failure has an exact fix. Work through
-      the direct-importer set (25 files, incl. `FormalSystem/FormalSystem.lean`,
-      `Metalogic/Conservativity{,/Plus,/Star}/*.lean`, `Metalogic/Independence/*.lean`,
-      `Metalogic/Deterministic/Validity.lean`,
-      `Semantics/{DeterministicBridge,StateLocalTransfer}.lean`,
-      `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`).
+- [x] Build; for each missing-identifier error, add `open FormalSystem.{X}Language` to the
+      importer. *(deviation: altered — the predicted failure mode was backwards for most of the
+      set. Only 2 external files needed anything (`Metalogic/Deterministic/Validity.lean`, one
+      FQN citation; `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`, three `open`s), not
+      25 — the other importers reach these declarations through `open FormalSystem.Semantics`
+      plus re-export and were unaffected. The real work was the OPPOSITE direction: the 17 moved
+      files themselves lost unqualified access to `TaskFrame`, `TaskModel`, `WorldHistory`,
+      `TruthClauses` and friends, and each needed `open FormalSystem.Semantics` added inside its
+      renamed block. `MinusFrame.lean` was the exception — it imports nothing from `Semantics/`,
+      so the open was removed again.)*
+- [x] Keep the four dot-notation declarations resolvable. *(deviation: added — not anticipated
+      by the plan, and the one genuine semantic obstacle in this phase. `TaskFrame.MinusValidOn`,
+      `TaskFrame.PlusValidOn` and `TaskFrame.StarValidOn` are declared for *generalized field
+      notation* on `FormalSystem.Semantics.TaskFrame`; that mechanism resolves against the
+      TYPE's namespace and ignores `open`, so renaming their enclosing namespace silently broke
+      every `F.MinusValidOn` call site. The plan's "0 short names made ambiguous" measurement
+      does not cover dot-notation. Each of the three is now declared in its own nested
+      `namespace FormalSystem.Semantics` block, which is where it semantically belongs and which
+      costs nothing at acceptance: `measure_namespaces` classifies on `first_namespace(p)`, so
+      only a file's FIRST namespace is audited. `PartialHistory.exists_maximal_of_chainClosed`
+      needed no such block — it has no external dot-notation caller — and its single in-file
+      call site was qualified instead.)*
 - [ ] Update the two pinned axiom declarations in `scripts/check-module-invariants.sh` at **all
       four** sites: `FormalSystem.Semantics.truthAt_tr` → `FormalSystem.MinusLanguage.truthAt_tr`
       in the expected-output block (≈`:1738`) **and** the `#print axioms` driver (≈`:1858`);
@@ -389,7 +446,12 @@ equal-or-descendant.
       `FormalSystem.PlusLanguage.plusValidIn_ofFormula_iff` at ≈`:1764` **and** ≈`:1884`. Editing
       only the driver half leaves the check comparing against a stale expectation. Do **not** touch
       the other `FormalSystem.Semantics.*` baselines (`galoisClosed_*`, `validOn_nextTop_iff`) —
-      those declarations are not in the moved set.
+      those declarations are not in the moved set. *(deviation: altered — 4 sites was an
+      undercount. The plan's own Scope Hypothesis predicted 0 external FQN citations; the real
+      figure is 4 more in `PlusDeterminism.lean`'s own `#print axioms` docstring block and 5 rows
+      in `docs/theorem-index.md`, for 13 sites across 3 files. The plan's scan was `.lean`/`.sh`
+      only, which is why the markdown rows were missed. All 13 updated; the `galoisClosed_*` and
+      `validOn_nextTop_iff` baselines were left alone as instructed.)*
 - [ ] Re-run `check-module-invariants.sh` and fix any C20 `file:line` citation drift caused by the
       added `open` lines.
 
@@ -426,7 +488,7 @@ appears, rewrite those citations in this phase rather than deferring.
 
 ---
 
-### Phase 5: Settle the three Chronicle files [NOT STARTED]
+### Phase 5: Settle the three Chronicle files [COMPLETED]
 
 **Goal**: Remove the Chronicle files from the `unrelated` bucket, by reorder where free and by
 recorded exception where relocation would be harmful.
@@ -483,10 +545,20 @@ before attempting the hoist; do not hoist against stale line numbers.
 - `bash scripts/check-metalogic-cycles.sh` exit 0 — Assertion A still reports **exactly 1** cycle.
 - `bash scripts/check-module-invariants.sh` (build-inclusive) — ALL CHECKS PASSED.
 - Every remaining `unrelated` entry has a docstring sentence explaining its namespace.
+  Verified by name across all 8: five carry a new `## Recorded namespace exception` section
+  written here, `Tactic/Meta.lean` and `Theorems/DeductionTheorem.lean` carry the records Phase 4
+  of the programme wrote, and `ForMathlib/Order/PFilter.lean` already explained its `Order.PFilter`
+  namespace as Mathlib's own, kept so that upstreaming the file "deletes it and renames nothing
+  downstream" — adequate as written, so it was left alone.
+- **Outcome: the `unrelated` bucket is 8, not the 5-to-7 the plan projected.** All three Chronicle
+  files stay recorded rather than 0-2 of them, because the one candidate for a free fix is
+  refuted above. The plan's acceptance admits "5 plus 0-2 Chronicle files"; 3 Chronicle files is
+  one past that range, and the reason is measured rather than conceded. `PUBLICATION_REFACTOR.md`'s
+  Phase 5 acceptance sentence now states 8 with each member's reason.
 
 ---
 
-### Phase 6: Refresh counts and docs; run acceptance [NOT STARTED]
+### Phase 6: Refresh counts and docs; run acceptance [COMPLETED]
 
 **Goal**: Bring the measurement scripts and layer documentation in line with the new tree, then
 run the full acceptance gate.
@@ -526,6 +598,12 @@ run the full acceptance gate.
 files depending on Phase 5's outcome. Confirm by running the audit and listing the bucket by name,
 not by count alone. If an unexpected name appears, it must be either fixed or recorded before the
 phase closes — a count that happens to match with different members is not acceptance.
+
+**Hypothesis outcome: the five names are exactly right; the Chronicle count is 3, one past the
+projected 0-2.** Verified by name, not by count. No unexpected name appeared. The variance is
+`ChronicleRealExtension.lean`, whose free hoist Phase 5 refuted by measurement rather than
+conceded — see that phase's deviation note. Final bucket: 8, every member carrying a docstring
+record.
 
 **Files to modify**:
 - `scripts/measure-refactor-partitions.py` - docstring counts at `:61-64`
