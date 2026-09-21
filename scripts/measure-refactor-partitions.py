@@ -201,6 +201,9 @@ LANGUAGE_FILE_LAYERS = {
         "OpenClasses": 1, "OpenOckhamist": 1, "OpenReversal": 1, "OpenTruth": 1,
         "OpenValidity": 1,
     },
+    "HybridLanguage": {
+        "Formula": 0,
+    },
 }
 
 # The sibling aggregators `FormalSystem/<Lang>Language.lean` import their directory's layer-0 and

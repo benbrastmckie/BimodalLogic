@@ -250,31 +250,31 @@ by `bash scripts/check-metalogic-cycles.sh` raising no `UnlayeredModuleError`.
 
 ---
 
-### Phase 2: HybridLanguage scaffold and syntax [NOT STARTED]
+### Phase 2: HybridLanguage scaffold and syntax [COMPLETED]
 
 **Goal**: The component exists, is layered, aggregated and in the root closure from its first
 commit, with `HybridFormula` as a layer-0 syntax file.
 
 **Tasks**:
-- [ ] Create `FormalSystem/HybridLanguage/Formula.lean` (`namespace FormalSystem.HybridLanguage`),
+- [x] Create `FormalSystem/HybridLanguage/Formula.lean` (`namespace FormalSystem.HybridLanguage`),
   importing `FormalSystem.PlusLanguage.Formula` only: the ten-constructor inductive
   `HybridFormula` (`deriving DecidableEq`, and `Countable` as the sibling languages do); derived
   operators with **`PlusFormula`'s right-hand sides** (`top`, `neg`, `someFuture`, `somePast`,
   `allFuture`, `allPast`, `and`, `or`, `iff`, `diamond`, `always`, `sometimes`, `dstab`); then
   `univ`, `exist`, `recF`, `transF`, `RegFree`, `ofPlus` with the bodies fixed in the challenge
   preamble; `ofPlus_injective`; `regFree_ofPlus : (ofPlus φ).RegFree`.
-- [ ] Create the aggregator `FormalSystem/HybridLanguage.lean` with the component docstring:
+- [x] Create the aggregator `FormalSystem/HybridLanguage.lean` with the component docstring:
   grammar; module list; design decisions in durable wording (a nominal is a **free register**, so
   nominals and registers are one language; an extension language, not semantic operators; a
   root-level component; semantic only); the caveat that a state nominal names a point of the
   quotient by same-state, not a point, so `A(i → ·)` and `E(i ∧ ·)` are not dual and hybrid-logic
   results for point nominals do not transfer; a "Not formalized" list.
-- [ ] Create `FormalSystem/HybridLanguage/README.md` modelled on
+- [x] Create `FormalSystem/HybridLanguage/README.md` modelled on
   `FormalSystem/OpenLanguage/README.md`, with a
   `<!-- BEGIN GENERATED: inventory dir=FormalSystem/HybridLanguage -->` block and a paper-label
   correspondence table started with the syntax rows (`sub:Extension` for the manuscript's
   registers, which store times and worlds, not states).
-- [ ] Add `"HybridLanguage": {"Formula": 0}` to `LANGUAGE_FILE_LAYERS` in
+- [x] Add `"HybridLanguage": {"Formula": 0}` to `LANGUAGE_FILE_LAYERS` in
   `scripts/measure-refactor-partitions.py`; regenerate the root; emit the inventory and fill the
   description cells.
 

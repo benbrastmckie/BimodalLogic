@@ -13,6 +13,8 @@ import FormalSystem.Examples.TemporalStructures
 import FormalSystem.Examples.Walkthrough
 import FormalSystem.ForMathlib
 import FormalSystem.ForMathlib.Order.PFilter
+import FormalSystem.HybridLanguage
+import FormalSystem.HybridLanguage.Formula
 import FormalSystem.Init
 import FormalSystem.MainResults
 import FormalSystem.Metalogic
