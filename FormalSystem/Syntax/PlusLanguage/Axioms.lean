@@ -36,19 +36,19 @@ arm: a TM derivation reaches them only through the primitive axioms and time ref
 * `stab_t` — Schema: `⊡φ → φ`; Validity: `Semantics/PlusLanguage/PlusTruth.lean`, `of_stab`
 * `stab_4` — Schema: `⊡φ → ⊡⊡φ`; Validity: `stab_four`
 * `stab_5` — Schema: `⟐φ → ⊡⟐φ` (as `¬⊡¬φ → ⊡¬⊡¬φ`); Validity: `stab_five`
-* `box_stab` — Schema: `□φ → ⊡φ`; Validity: `stab_of_box` (`⟨τ⟩_x ⊆ H_F`, paper line 1108)
+* `box_stab` — Schema: `□φ → ⊡φ`; Validity: `stab_of_box` (`⟨τ⟩_x ⊆ H_F`, `def:BLstar-semantics`)
 * `atom_stab` — Schema: `p → ⊡p` for atoms; Validity: `stab_of_stateLocal` at `stateLocal_atom`
-  (paper footnote, line 1119)
+  (the footnote to the Stability clause)
 * `paste` — Schema: `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))`, `φ⁺` pure-future, `ψ⁻` pure-past; Validity:
   `Semantics/PlusLanguage/PlusPasting.lean`, `paste_valid`
 * `untl_paste` — Schema: `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)`, `α⁻` pure-past, `φ⁺` pure-future; Validity:
   `untl_dstab_valid`
 
-The first four say that the monomodal logic of `⊡` is S5 (paper footnote, line 1118: `⟨τ⟩_x`
-is an equivalence class of `σ ∼_x τ := σ(x) = τ(x)`), and the next two are the bridge principles
-relating `⊡` to `□` and to atoms. **That set alone is provably incomplete**: it knows that `∼_x`
-is an equivalence contained in the universal relation and respected by atoms, and nothing
-else. The two pasting schemata `paste` and `untl_paste` add the one structural fact about
+The first four say that the monomodal logic of `⊡` is S5 (the footnote to the Stability clause:
+`⟨τ⟩_x` is an equivalence class of `σ ∼_x τ := σ(x) = τ(x)`), and the next two are the bridge
+principles relating `⊡` to `□` and to atoms. **That set alone is provably incomplete**: it knows
+that `∼_x` is an equivalence contained in the universal relation and respected by atoms, and
+nothing else. The two pasting schemata `paste` and `untl_paste` add the one structural fact about
 `⟨τ⟩_x` that the S5 axioms miss — the total histories through a world state are the product of
 its possible pasts and its possible futures — and they are exactly what makes, for instance,
 `⊡Gφ⁺ → G⊡φ⁺` derivable. Their purity side conditions are necessary
@@ -89,7 +89,8 @@ unchanged.
 
 * `FormalSystem/ProofSystem/Axioms.lean` — the 29 TM schemata, with their [burgess1982] / [xu1988] /
   [reynolds1992] provenance; the docstrings there are authoritative for each schema's reading
-* JPL paper `possible_worlds.tex` lines 1108, 1114, 1118-1119, 1121
+* JPL paper `possible_worlds.tex`: `def:BLstar-semantics` (the `⟨τ⟩_x` definition, the Stability
+  clause, and its footnote) and `sub:RestrictedModalities` (the dual `⟐` and the defined modals)
 -/
 
 namespace FormalSystem.PlusLanguage
@@ -283,20 +284,20 @@ inductive PlusAxiom : PlusFormula → Type where
   `stab` clause (`def:BLstar-semantics`). -/
   | stab_k (φ ψ : PlusFormula) :
       PlusAxiom ((PlusFormula.stab (φ.imp ψ)).imp ((PlusFormula.stab φ).imp (PlusFormula.stab ψ)))
-  /-- ST: `⊡φ → φ` — T for `⊡` (paper footnote, line 1118); `Semantics.of_stab`. -/
+  /-- ST: `⊡φ → φ` — T for `⊡` (the footnote to the Stability clause); `Semantics.of_stab`. -/
   | stab_t (φ : PlusFormula) : PlusAxiom ((PlusFormula.stab φ).imp φ)
-  /-- S4: `⊡φ → ⊡⊡φ` (paper footnote, line 1118); `Semantics.stab_four`. -/
+  /-- S4: `⊡φ → ⊡⊡φ` (the footnote to the Stability clause); `Semantics.stab_four`. -/
   | stab_4 (φ : PlusFormula) :
       PlusAxiom ((PlusFormula.stab φ).imp (PlusFormula.stab (PlusFormula.stab φ)))
-  /-- S5: `⟐φ → ⊡⟐φ`, stated as `¬⊡¬φ → ⊡¬⊡¬φ` through `dstab` (paper footnote, line 1118);
-  `Semantics.stab_five` at `¬φ`. -/
+  /-- S5: `⟐φ → ⊡⟐φ`, stated as `¬⊡¬φ → ⊡¬⊡¬φ` through `dstab` (the footnote to the Stability
+  clause); `Semantics.stab_five` at `¬φ`. -/
   | stab_5 (φ : PlusFormula) :
       PlusAxiom ((dstab φ).imp (PlusFormula.stab (dstab φ)))
-  /-- MS: `□φ → ⊡φ` — `⟨τ⟩_x ⊆ H_F` (paper line 1108); `Semantics.stab_of_box`. -/
+  /-- MS: `□φ → ⊡φ` — `⟨τ⟩_x ⊆ H_F` (`def:BLstar-semantics`); `Semantics.stab_of_box`. -/
   | box_stab (φ : PlusFormula) : PlusAxiom ((PlusFormula.box φ).imp (PlusFormula.stab φ))
-  /-- AS: `p → ⊡p` for atoms (paper footnote, line 1119); `Semantics.stab_of_stateLocal` at
-      `stateLocal_atom`. The axiom stays atom-restricted — widening it would change TM⁺ — but its
-      semantic witness is the whole state-locality fragment. -/
+  /-- AS: `p → ⊡p` for atoms (the footnote to the Stability clause); `Semantics.stab_of_stateLocal`
+      at `stateLocal_atom`. The axiom stays atom-restricted — widening it would change TM⁺ — but
+      its semantic witness is the whole state-locality fragment. -/
   | atom_stab (p : Atom) :
       PlusAxiom ((PlusFormula.atom p).imp (PlusFormula.stab (PlusFormula.atom p)))
   /-- PS (same-time pasting): `⟐φ⁺ → (⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻))` for pure-future `φ⁺` and pure-past

@@ -19,10 +19,10 @@ This module defines the language **L⁺** obtained from the until/since-primitiv
 ```
 
 The paper (`possible_worlds.tex`) introduces `⊡` in `def:BLstar-semantics`: `M,τ,x ⊨ ⊡φ` iff
-`M,σ,x ⊨ φ` for every possible world `σ ∈ ⟨τ⟩_x`, where `⟨τ⟩_x := {σ ∈ H_F | σ(x) = τ(x)}` (line
-1108) is the set of worlds that share `τ`'s world state at `x`. The dual `⟐φ := ¬⊡¬φ` is line 1121
-(`dstab`), and the defined modals `Will := ⊡G`, `will := ⊡F`, `Could := ⟐G`, `could := ⟐F` are lines
-1125-1129.
+`M,σ,x ⊨ φ` for every possible world `σ ∈ ⟨τ⟩_x`, where `⟨τ⟩_x := {σ ∈ H_F | σ(x) = τ(x)}` is the
+set of worlds that share `τ`'s world state at `x`. The dual `⟐φ := ¬⊡¬φ` (`dstab`) and the defined
+modals `Will := ⊡G`, `will := ⊡F`, `Could := ⟐G`, `could := ⟐F` are introduced alongside the
+Stability clause in subsection *Restricted Modalities* (`sub:RestrictedModalities`).
 
 **Scope.** L⁺ here is L plus `⊡` only, and it is therefore the **⊡-only fragment** of the
 manuscript's `\BL^\star` (`sub:Extension`), not a language the manuscript names. `\BL^\star`
@@ -71,8 +71,9 @@ define `PlusTruthAt` natively on the seven constructors.
 
 ## References
 
-* JPL paper `possible_worlds.tex` lines 1108-1129 — `⟨τ⟩_x`, the `⊡` clause, `⟐`, and the
-  defined modals; `sub:Extension` — the (out-of-scope) store/recall operators
+* JPL paper `possible_worlds.tex`: `def:BLstar-semantics` (`⟨τ⟩_x` and the `⊡` clause) and
+  `sub:RestrictedModalities` (`⟐` and the defined modals); `sub:Extension` — the (out-of-scope)
+  store/recall operators
 * `FormalSystem/Syntax/Formula.lean` — the L side whose derived operators are mirrored here
 * `FormalSystem/MinusLanguage/Formula.lean` — the pattern this component follows
 -/
@@ -177,24 +178,24 @@ def next (φ : PlusFormula) : PlusFormula := PlusFormula.untl PlusFormula.bot φ
 /-- Previous-step (`Yφ`): `⊥ S φ`. Mirrors `Formula.prev`. -/
 def prev (φ : PlusFormula) : PlusFormula := PlusFormula.snce PlusFormula.bot φ
 
-/-! ### The `⊡`-specific operators (paper lines 1121, 1125-1129) -/
+/-! ### The `⊡`-specific operators (`sub:RestrictedModalities`) -/
 
-/-- The dual stability modal `⟐φ := ¬⊡¬φ` (paper line 1121): `φ` holds in *some* world sharing
-the present world state. -/
+/-- The dual stability modal `⟐φ := ¬⊡¬φ` (`sub:RestrictedModalities`): `φ` holds in *some* world
+sharing the present world state. -/
 def dstab (φ : PlusFormula) : PlusFormula := neg (.stab (neg φ))
 
-/-- `Will φ := ⊡Gφ` (paper line 1125): settled to hold at every future time. -/
+/-- `Will φ := ⊡Gφ` (`sub:RestrictedModalities`): settled to hold at every future time. -/
 def Will (φ : PlusFormula) : PlusFormula := .stab (allFuture φ)
 
-/-- `will φ := ⊡Fφ` (paper line 1126): settled to hold at some future time. -/
+/-- `will φ := ⊡Fφ` (`sub:RestrictedModalities`): settled to hold at some future time. -/
 def will (φ : PlusFormula) : PlusFormula := .stab (someFuture φ)
 
-/-- `Could φ := ⟐Gφ` (paper line 1128): possibly, relative to the present state, always
+/-- `Could φ := ⟐Gφ` (`sub:RestrictedModalities`): possibly, relative to the present state, always
 future. -/
 def Could (φ : PlusFormula) : PlusFormula := dstab (allFuture φ)
 
-/-- `could φ := ⟐Fφ` (paper line 1129): possibly, relative to the present state, sometime
-future. -/
+/-- `could φ := ⟐Fφ` (`sub:RestrictedModalities`): possibly, relative to the present state,
+sometime future. -/
 def could (φ : PlusFormula) : PlusFormula := dstab (someFuture φ)
 
 /-! ### Time reflection -/
