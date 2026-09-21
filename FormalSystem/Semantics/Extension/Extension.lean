@@ -21,7 +21,7 @@ The chain, in order, is
 → `lem:step` (the sole
 *Saturation* application site) → `thm:extension` (Zorn) → `cor:occurrence`.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
 paper source — is the citation source of record.
@@ -114,6 +114,14 @@ plays no role here.
 - `PartialHistory.isTotal_of_isMax` — maximal implies total (the converse of `isMax_of_total`)
 - `PartialHistory.extension` — `thm:extension`
 - `PartialHistory.occurrence` — `cor:occurrence`, frame-intrinsic form
+
+## References
+
+* JPL paper `thm:extension` — the Extension Theorem
+* JPL paper `cor:occurrence` — the occurrence corollary
+* JPL paper `lem:nullity` — the zero loop `w ⇒₀ w`
+* JPL paper `cor:saturation-finite` — the finite-carrier Saturation discharge
+
 -/
 
 namespace FormalSystem.Semantics

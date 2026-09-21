@@ -64,7 +64,7 @@ module does not own — `BFMCS` in the bundle layer, `FrameConditionFor` and `Te
 the decidability bridge — the frame is written `FrameOver (TemporalOrder.of D)`. That is the
 same fibre, named through `TemporalOrder.of`, and it is why that constructor is permanent.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 **Task Frames (`def:frame`)**:
 The JPL paper "The Perpetuity Calculus of Agency" defines a frame (verbatim: "A \textit{frame}
@@ -94,7 +94,7 @@ segment, and directed-family apparatus" section. The temporal order is `def:temp
 (verbatim: "A \textit{temporal order} is a nontrivial totally ordered abelian group $\D = \tuple{D,
 +, 0, \leq}$ with \textit{positive cone} $D^+ \coloneq \set{x \in D : x \geq 0}$.").
 
-**ProofChecker Implementation**:
+**Implementation**:
 This implementation generalizes the time group to any type `D` with an
 ordered additive commutative group structure, which provides:
 - Additive abelian group structure (zero, addition, inverse)
@@ -221,11 +221,12 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - Task semantics specification
-* JPL Paper anchors `def:frame` (with sub-anchors `def:frame#Compositionality`,
+* `docs/user-guide/architecture.md` — Task semantics specification
+* JPL paper anchors `def:frame` (with sub-anchors `def:frame#Compositionality`,
   `def:frame#Seriality`, `def:frame#Limit`, `def:frame#Saturation`), `def:task-relation`,
-  `def:temporal-order`, and `lem:nullity` — cited by `\label` anchor with
-  verbatim quotes above, never by raw line number
+  `def:temporal-order`, and `lem:nullity` — cited by `\label` anchor with verbatim quotes above,
+  never by raw line number
+* JPL paper `def:directed` — the ⊇-directedness condition, folded inline into `def:frame`
 
 ## Tags
 

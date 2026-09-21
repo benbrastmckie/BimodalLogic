@@ -14,7 +14,7 @@ This module lands the order-theoretic machinery used *en route to* the Extension
 extension preorder, its interaction with time shift, the union of a chain of partial histories,
 and Zorn's lemma over that order.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 The order itself is the paper's, quoted verbatim from
 `docs/reference/paper-definitions-of-record.md`, anchor `def:world-history`:
@@ -62,6 +62,10 @@ is proved with it.
   `PartialHistory.nonempty_domain` is a **field**: the union of the empty chain has empty domain
   and is therefore not a partial history at all. Zorn's `zorn_le_nonempty_Ici₀` supplies exactly
   the needed witness (`∀ y ∈ c`), so this costs nothing at the only call site.
+
+## References
+
+* JPL paper `def:world-history` — partial, convex and world histories, and extension
 
 ## Tags
 

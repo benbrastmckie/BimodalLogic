@@ -28,7 +28,7 @@ open guard (t, s). Since uses strict witness (s < t) with open guard (s, t).
 This is the open guard convention: strict witness, open guard. The seriality
 axioms (⊤ → F(⊤), ⊤ → P(⊤)) replace the T-axioms (BX1/BX1').
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 **Bimodal Logic Semantics (`app:TaskSemantics`, `def:BL-semantics`)**:
 The JPL paper defines truth evaluation for TM formulas, and this module transcribes it. The
@@ -52,7 +52,7 @@ and quantifies the temporal clauses over all `y ∈ D`. This tree does the same:
 evaluated at `τ : WorldHistory F`, the bundled type of total histories, and reads the state
 through the non-dependent accessor `WorldHistory.state`. No clause carries a domain conjunct.
 
-**ProofChecker Implementation Alignment**:
+**Implementation alignment**:
 ✓ Atom: `M.valuation (τ.state t) p` is the paper's `τ(x) ∈ |p|`
 ✓ Bot: `False` matches paper's definition
 ✓ Imp: Standard material conditional matches paper
@@ -142,14 +142,13 @@ on no proof-system notion.
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - Truth evaluation
-  specification
-* [Formula.lean](../Syntax/Formula.lean) - Formula syntax
-* [TaskModel.lean](TaskModel.lean) - Task model structure
-* JPL Paper `app:TaskSemantics`, `def:BL-semantics` — formal truth definition, cited by
-  `\label` (pinned verbatim in `docs/reference/paper-definitions-of-record.md`)
-* `docs/architecture/total-history-validity-decisions.md` — Decision A', the bundled
-  world-history encoding of truth
+* `docs/user-guide/architecture.md` — Truth evaluation specification
+* `FormalSystem/Syntax/Formula.lean` — Formula syntax
+* `FormalSystem/Semantics/TaskModel.lean` — Task model structure
+* JPL paper `app:TaskSemantics`, `def:BL-semantics` — formal truth definition, cited by `\label`
+  (pinned verbatim in `docs/reference/paper-definitions-of-record.md`)
+* `docs/architecture/total-history-validity-decisions.md` — Decision A', the bundled world-history
+  encoding of truth
 
 ## Tags
 

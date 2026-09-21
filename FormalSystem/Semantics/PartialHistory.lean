@@ -16,7 +16,7 @@ paper's `H_F`. Truth, validity, consequence and satisfiability are evaluated at 
 `WorldHistory F`; non-total partial histories are objects of the extension machinery only.
 Convexity is a predicate (`PartialHistory.IsConvex`), not a separate structure.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 The paper's body (sec:Construction) defines the tiers this module follows: "A \textit{world
 history} is any partial history $\tau : X \to W$ whose domain is \textit{total}, so that $X = D$",
@@ -100,6 +100,10 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 - `PartialHistory.total_nonempty` — totality implies the nonemptiness field is derivable
 - `PartialHistory.IsTotal.isConvex` — a world history is convex
 - `PartialHistory.isTotal_timeShift` / `isConvex_timeShift` — both predicates survive time shift
+
+## References
+
+* JPL paper `def:world-history` — partial, convex and world histories, and extension
 
 ## Tags
 

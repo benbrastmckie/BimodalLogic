@@ -41,7 +41,7 @@ that is not (yet) packaged as a frame.
 *Saturation* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
 sole application site the paper names, never an inert structure field.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 Anchors below are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not
 the paper source — is the citation source of record.
@@ -105,6 +105,14 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
   two existing discharge helpers be passed directly.
 - Segments are written in the paper's bracket form `[w, v]_x^y` only; the retired `\Seg`
   function-application notation is gone from the paper preamble and must not be reintroduced.
+
+## References
+
+* JPL paper `def:frame` — the four frame axioms
+* JPL paper `def:directed` — the ⊇-directedness condition, folded inline into `def:frame`
+* JPL paper `lem:nullity` — the zero loop `w ⇒₀ w`
+* JPL paper `def:constraints` — the constraints imposed on a duration
+* JPL paper `def:task-relation` — the indexed task relation
 
 ## Tags
 

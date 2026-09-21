@@ -18,7 +18,7 @@ RETIRED paper anchor — `\label{lem:fibers}` was later removed and the citation
 against the record's DANGLING entry), and is
 deliberately **not** folded back in here.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
 paper source — is the citation source of record.
@@ -93,6 +93,14 @@ That is the `fib_zero_subset_of_mem_Constraints` branch below.
   `¬ IsPaired τ z t` hypothesis is what rules out the mixed fiber/segment configurations: if a
   segment `[τ(t₁), τ(s₁)]` exists then every domain time other than `z` itself is paired, so the
   only fiber that can coexist with a segment is `Fib(τ(z), 0)`.
+
+## References
+
+* JPL paper `lem:constraint` — the constraints form a directed family of nonempty sets
+* JPL paper `def:constraints` — the constraints imposed on a duration
+* JPL paper `def:frame` — the four frame axioms
+* JPL paper `def:directed` — the ⊇-directedness condition, folded inline into `def:frame`
+
 -/
 
 namespace FormalSystem.Semantics

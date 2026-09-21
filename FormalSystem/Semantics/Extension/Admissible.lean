@@ -18,7 +18,7 @@ partial history by one point", mirroring the paper's decomposition exactly:
 - `lem:admissible` then characterizes when the one-point extension `τ ∪ {⟨z, u⟩}` is itself a
   partial history on `X ∪ {z}`, and `PartialHistory.adjoin` builds that extension.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
 paper source — is the citation source of record.
@@ -108,6 +108,15 @@ here:
   proves it.
 - **Fibers and segments stay two separate classes** throughout, as in the previous module; the
   case analysis is driven by `Constraints`' own two clauses.
+
+## References
+
+* JPL paper `lem:fibers` — the fibre characterisation (a retired anchor; see the transcription above)
+* JPL paper `lem:admissible` — when adjoining a point yields a partial history
+* JPL paper `lem:nullity` — the zero loop `w ⇒₀ w`
+* JPL paper `def:constraints` — the constraints imposed on a duration
+* JPL paper `def:world-history` — partial, convex and world histories, and extension
+
 -/
 
 namespace FormalSystem.Semantics

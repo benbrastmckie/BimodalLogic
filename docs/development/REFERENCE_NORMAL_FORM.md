@@ -56,8 +56,14 @@ leave it alone and say so.
 ### Paper anchor
 
 ```
-* JPL paper `possible_worlds.tex`: `def:BLstar-semantics`
+* JPL paper `def:BLstar-semantics` — the `⊡` clause
 ```
+
+The anchor is **not** qualified with the paper's `.tex` filename. The citation source of
+record is `docs/reference/paper-definitions-of-record.md`, not the paper source — several
+module docstrings say so in terms, and the record retains the last resolved text of anchors the
+paper has since retired. Naming a `.tex` file would point a reader at something this repository
+does not hold and does not track.
 
 Anchors of the form `def:`, `thm:`, `lem:`, `cor:`, `app:` and `rmk:` are read by check C15 and
 must already have a row in `docs/reference/paper-definitions-of-record.md` (its MANIFEST or its

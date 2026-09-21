@@ -135,8 +135,8 @@ that, not to add an elimination API.
 
 ## References
 
-* `FormalSystem/Semantics/Validity.lean` — the L instantiation, and the source of every
-  statement below
+* `FormalSystem/Semantics/Validity.lean` — the L instantiation, and the source of every statement
+  below
 * `FormalSystem/Semantics/TruthClauses.lean` — the clause layer over the same idea
 * `docs/user-guide/architecture.md` — validity specification
 

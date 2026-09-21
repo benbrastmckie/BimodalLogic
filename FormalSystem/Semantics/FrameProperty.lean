@@ -97,9 +97,9 @@ theory that instance resolution now covers them.
 
 ## References
 
-* [TaskFrame.lean](TaskFrame.lean) — the bundled frame whose `Duration` field makes these
+* `FormalSystem/Semantics/TaskFrame.lean` — the bundled frame whose `Duration` field makes these
   ordinary predicates on a frame
-* [DurationClassification.lean](DurationClassification.lean) — the Hölder dichotomy that makes the
+* `FormalSystem/Semantics/DurationClassification.lean` — the Hölder dichotomy that makes the
   `IsComplete` / `IsRTime` split exactly the `ℤ` / `ℝ` split
 
 ## Tags

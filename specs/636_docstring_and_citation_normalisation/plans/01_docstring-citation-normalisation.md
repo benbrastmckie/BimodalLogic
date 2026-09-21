@@ -360,34 +360,34 @@ citer files.
 
 ---
 
-### Phase 5: FormalSystem/Semantics/ — 6 Paper Specification Reference folds [NOT STARTED]
+### Phase 5: FormalSystem/Semantics/ — 6 Paper Specification Reference folds [COMPLETED]
 
 - **Goal:** The hand-review-heavy Semantics set, where the historical-record preservation risk is
   concentrated.
 - **Tasks:**
-  - [ ] Convert the 11 `## References` blocks under `FormalSystem/Semantics/`.
-  - [ ] Fold the 6 `## Paper Specification Reference` headings here
+  - [x] Convert the 11 `## References` blocks under `FormalSystem/Semantics/`.
+  - [x] Fold the 9 (not 6) `## Paper Specification Reference` headings here *(deviation: altered — the hand-count the plan asked for gives 9 under `Semantics/`, not 6; it reconciles against the research's 12-file total, the other three being `Metalogic/Soundness.lean`, `Metalogic/Algebraic/FlowFrame.lean` and `MinusLanguage/MinusTruth.lean`. Each heading was RENAMED to `## Paper specification, transcribed` with its body untouched, and its anchors added to the module's `## References` block, which was created where absent.)*
         (`Truth.lean:31`, `FrameAxioms.lean:44`, `TaskFrame.lean:67`,
         `PartialHistoryOrder.lean:17`, `PartialHistory.lean:19`, and
         `Extension/{Admissible,Extension,Step,Constraint}.lean` — hand-count the actual set).
         **Only the heading disappears.** The paper *anchors* move into `## References`; the
         verbatim LaTeX transcription and the design-record prose stay in the module body under a
         descriptive heading or under `## Implementation notes`.
-  - [ ] `Semantics/TaskFrame.lean` is the highest-risk file in the task. Its ~50-line PSR section
+  - [x] `Semantics/TaskFrame.lean` is the highest-risk file in the task. Its ~50-line PSR section
         holds verbatim transcription of `def:frame`'s four axioms, the nullity derivation, and a
         "**Known gaps relative to the paper**" block that states in terms: *"The two that stood
         here are now closed, and are recorded as closed rather than deleted, since both were
         long-lived."* **Preserve that block verbatim.** Deleting it is exactly the failure mode
         this run kept hitting.
-  - [ ] Strip the `**ProofChecker Implementation**:` header wording at `TaskFrame.lean:97` and
+  - [x] Strip the `**ProofChecker Implementation**:` header wording at `TaskFrame.lean:97` and
         `**ProofChecker Implementation Alignment**:` at `Truth.lean:55`. The blocks *under* those
         headers are substantive — keep them, rename the header.
-  - [ ] Repair the 10 `../../../docs/user-guide/architecture.md` links (one `../` too many from
+  - [x] Repair the `../../../docs/user-guide/architecture.md` links (one `../` too many from
         `FormalSystem/{Semantics,Syntax,ProofSystem,Theorems}/`) that fall in this set, via the
         backticked repo-relative conversion.
-  - [ ] Leave every `sub:` anchor verbatim (`sub:Extension` and `sub:RestrictedModalities` are
+  - [x] Leave every `sub:` anchor verbatim (`sub:Extension` and `sub:RestrictedModalities` are
         both live in this set).
-  - [ ] Re-anchor, `--emit-inventory`, `--emit-inventory --check`.
+  - [x] Re-anchor, `--emit-inventory`, `--emit-inventory --check`. *(deviation: altered — the plan's normal form writes a paper anchor as ``JPL paper `possible_worlds.tex`: `def:x` ``, but several of these very modules record in terms that `docs/reference/paper-definitions-of-record.md`, NOT the paper source, is the citation source of record, and the tree's dominant existing form is ``JPL paper `def:x` ``. Qualifying anchors with a `.tex` filename would contradict the repository's own recorded convention, so the unqualified form is used and `docs/development/REFERENCE_NORMAL_FORM.md` records why.)*
 - **Timing:** 1.5 hours
 - **Depends on:** 4
 - **Verification Tier:** full

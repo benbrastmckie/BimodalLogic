@@ -48,7 +48,7 @@ inert decoration that could drift from the predicates, because this proof consum
 `F.saturation` at the sole application site the paper names. A field whose statement differed
 would make this file stop typechecking.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 Anchors are `\label` keys into `docs/reference/paper-definitions-of-record.md`, which — not the
 paper source — is the citation source of record.
@@ -79,6 +79,14 @@ That is not an oversight in the paper and it is not smoothed over here: the `z �
 handled separately and trivially, by taking `σ := τ` (which already has `z` in its domain and
 extends itself). Only the `z ∉ dom τ` branch reaches `lem:admissible`, whose `hz` proviso is
 genuinely load bearing.
+
+## References
+
+* JPL paper `lem:step` — the one-point extension step
+* JPL paper `lem:constraint` — the constraints form a directed family of nonempty sets
+* JPL paper `lem:admissible` — when adjoining a point yields a partial history
+* JPL paper `def:frame` — the four frame axioms
+
 -/
 
 namespace FormalSystem.Semantics

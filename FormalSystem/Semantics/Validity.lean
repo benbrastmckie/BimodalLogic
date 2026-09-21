@@ -51,9 +51,9 @@ renders "for all models M" and "times x in D".
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - Validity specification
-* [Truth.lean](Truth.lean) - Truth evaluation
-* [Context.lean](../Syntax/Context.lean) - Proof contexts
+* `docs/user-guide/architecture.md` — Validity specification
+* `FormalSystem/Semantics/Truth.lean` — Truth evaluation
+* `FormalSystem/Syntax/Context.lean` — Proof contexts
 
 ## Tags
 

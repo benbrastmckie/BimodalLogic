@@ -26,9 +26,9 @@ This module defines task models, which extend task frames with valuation functio
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - Task model specification
-* [TaskFrame.lean](TaskFrame.lean) - Task frame structure
-* [Formula.lean](../Syntax/Formula.lean) - Formula syntax
+* `docs/user-guide/architecture.md` — Task model specification
+* `FormalSystem/Semantics/TaskFrame.lean` — Task frame structure
+* `FormalSystem/Syntax/Formula.lean` — Formula syntax
 
 ## Tags
 

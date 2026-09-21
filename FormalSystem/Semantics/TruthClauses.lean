@@ -156,8 +156,7 @@ not need them.
 
 ## References
 
-* `FormalSystem/Semantics/Truth.lean` — the L clause shapes copied below, and the L
-  instantiation
+* `FormalSystem/Semantics/Truth.lean` — the L clause shapes copied below, and the L instantiation
 * `FormalSystem/Semantics/ValidityLayer.lean` — the validity layer over the same idea
 
 ## Tags

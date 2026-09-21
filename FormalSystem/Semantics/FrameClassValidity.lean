@@ -62,9 +62,10 @@ four class-restricted predicates into this module. Both are recorded, with their
 
 ## References
 
-* [FrameProperty.lean](FrameProperty.lean) — the frame predicates `Sat` interprets into
-* [Validity.lean](Validity.lean) — `ValidOnFrames`, `ValidIn`, and the class-restricted predicates
-* [Axioms.lean](../ProofSystem/Axioms.lean) — `FrameClass`, its `PartialOrder`, and
+* `FormalSystem/Semantics/FrameProperty.lean` — the frame predicates `Sat` interprets into
+* `FormalSystem/Semantics/Validity.lean` — `ValidOnFrames`, `ValidIn`, and the class-restricted
+  predicates
+* `FormalSystem/ProofSystem/Axioms.lean` — `FrameClass`, its `PartialOrder`, and
   `Axiom.minFrameClass`
 
 ## Tags
