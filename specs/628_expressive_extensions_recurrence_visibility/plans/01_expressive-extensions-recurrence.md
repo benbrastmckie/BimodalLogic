@@ -342,22 +342,22 @@ makes "extends L⁺" checkable.
 
 ---
 
-### Phase 4: Q1 - the same-state modality is invisible [NOT STARTED]
+### Phase 4: Q1 - the same-state modality is invisible [COMPLETED]
 
 **Goal**: `regFree_invariance`.
 
 **Tasks**:
-- [ ] `FormalSystem/HybridLanguage/HybridInvariance.lean`, importing `HybridTruth` and
+- [x] `FormalSystem/HybridLanguage/HybridInvariance.lean`, importing `HybridTruth` and
   `Semantics.HistoryMorphism`: `regFree_invariance` by induction on `φ`, transcribed from probe
   lines 258-309. The `box` case uses `g.onto` and `WorldHistory.ext_state`; `stab` uses `g.lift`
   at the present time; `same` uses `g.lift` at the freed time `s`; `reg` and `bind` are
   `False.elim`.
-- [ ] Corollary (one line, not a challenge identifier): invariance for `ofPlus φ` via
+- [x] Corollary (one line, not a challenge identifier): invariance for `ofPlus φ` via
   `regFree_ofPlus`.
-- [ ] Docstring: why `[≡]` tests state identity across times and still cannot see recurrence (it
+- [x] Docstring: why `[≡]` tests state identity across times and still cannot see recurrence (it
   cannot tell `(τ, s)` from `(σ, s)` for another history through the same state; report §1.1);
   the class-level corollary is "not formalized" pending the translation product.
-- [ ] Layer row, aggregator import, root, inventory, README correspondence row.
+- [x] Layer row, aggregator import, root, inventory, README correspondence row.
 
 **Timing**: 1 hour
 

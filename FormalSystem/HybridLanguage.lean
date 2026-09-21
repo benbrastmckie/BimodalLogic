@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.HybridLanguage.Formula
+import FormalSystem.HybridLanguage.HybridInvariance
 import FormalSystem.HybridLanguage.HybridTruth
 import FormalSystem.HybridLanguage.HybridValidity
 
@@ -48,6 +49,9 @@ language one step short of it and a language that has it.
 - `HybridLanguage.HybridValidity` — `TaskFrame.HybridValidOn`, `HybridValidOnFrames`,
   `HybridValidIn`, `HybridValid`, each quantifying over every register vector; semantic
   conservativity over L⁺ at every frame class (`hybridValidIn_ofPlus_iff`)
+- `HybridLanguage.HybridInvariance` — `regFree_invariance`: truth of every register-free formula,
+  so of every L⁺ formula and of every `[≡]φ`, is invariant along any history-lifting morphism. The
+  same-state modality tests state identity across times and still cannot see recurrence
 
 ## Design decisions
 

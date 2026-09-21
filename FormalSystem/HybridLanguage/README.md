@@ -36,6 +36,7 @@ hybrid logic that depend on a nominal being true at exactly one point do not tra
 | File | Lines | Description |
 |------|------:|-------------|
 | `Formula.lean` | 290 | `HybridFormula` (L⁺ plus `same`, `reg`, `bind`), the derived operators (with `PlusFormula`'s right-hand sides), the universal modality `univ` and its dual `exist`, the recurrence formula `recF`, the transposition formula `transF`, the register-free fragment `RegFree`, and the embedding `ofPlus` with `ofPlus_injective`, `regFree_ofPlus` and its `rfl` commutation pins |
+| `HybridInvariance.lean` | 138 | `regFree_invariance` — truth of every register-free formula (every L⁺ formula and every `[≡]φ`) is invariant along any history-lifting morphism, for arbitrary register vectors on both sides; `ofPlus_invariance`, the L⁺ instance. The class-level corollary is not formalized |
 | `HybridTruth.lean` | 262 | `HybridTruthAt` — the ten-clause truth recursion relative to a register vector `ℕ → WorldState`, the last three clauses those of `[≡]`, the registers and the binder; the `TruthEnv` and `StabClauses` instances (the register vector is the inert environment); the `HybridTruth.*` clause lemmas (`same_iff`, `reg_iff`, `bind_iff`, `univ_iff`, `exist_iff` and the inherited derived-operator clauses); `hybridTruthAt_ofPlus` |
 | `HybridValidity.lean` | 162 | `TaskFrame.HybridValidOn`, `HybridValidOnFrames`, `HybridValidIn`, `HybridValid`, each quantifying over every register vector, with `mono`, `of_forall`, `apply`; conservativity over L⁺ (`hybridValidOn_ofPlus_iff`, `hybridValidOnFrames_ofPlus_iff`, `hybridValidIn_ofPlus_iff`, `hybridValid_ofPlus_iff`) |
 <!-- END GENERATED -->
@@ -61,6 +62,7 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | `def:world-history` (world histories are total) | `A φ := □△φ` ranges over every history and every time | `HybridTruth.univ_iff`, `HybridTruth.exist_iff` (`HybridTruth.lean`) — the definability is **formalization-native**; totality is the manuscript's |
 | `def:frame-validity` | validity over a frame, here at every register vector | `TaskFrame.HybridValidOn`, `HybridValidOnFrames`, `HybridValidIn`, `HybridValid` (`HybridValidity.lean`) |
 | conservativity over L⁺ (no paper anchor) | an L⁺ formula is valid in the hybrid state language iff it is L⁺-valid, at every frame class | `hybridTruthAt_ofPlus` (`HybridTruth.lean`), `hybridValidIn_ofPlus_iff`, `hybridValid_ofPlus_iff` (`HybridValidity.lean`) — **formalization-native** |
+| invisibility of the same-state modality (no paper anchor) | truth of a register-free formula is invariant along any history-lifting morphism, so `[≡]` cannot see recurrence or transposition | `regFree_invariance`, `ofPlus_invariance` (`HybridInvariance.lean`), over `HistMorphism` of `Semantics/HistoryMorphism.lean` — **formalization-native** |
 
 ## Module Invariants
 
