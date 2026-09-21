@@ -13,9 +13,11 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import glob
 import importlib.util
 import io
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -515,6 +517,78 @@ class GlobTranslatorTest(unittest.TestCase):
         self.assertEqual(matched, [n for n in names if n.startswith("ADR-")])
         self.assertTrue(matched)
         self.assertNotIn("README.md", matched)
+
+
+# The commit immediately before the Expressiveness extraction was applied. It
+# carries that move's own module and namespace maps under its specs/ tree.
+REPLAY_COMMIT = "3419bdb8d"
+
+
+def replay_commit_present() -> bool:
+    probe = subprocess.run(
+        ["git", "-C", REPO_ROOT, "cat-file", "-e", REPLAY_COMMIT + "^{commit}"],
+        capture_output=True)
+    return probe.returncode == 0
+
+
+@unittest.skipUnless(replay_commit_present(),
+                     f"commit {REPLAY_COMMIT} is not in this clone's history")
+class ReplayTest(unittest.TestCase):
+    """A dry run of a real past move, against an export of its pre-move tree."""
+
+    def test_expressiveness_extraction_skips_its_provenance_readmes(self) -> None:
+        original = os.getcwd()
+        with tempfile.TemporaryDirectory() as root:
+            archive = subprocess.Popen(
+                ["git", "-C", REPO_ROOT, "archive", REPLAY_COMMIT],
+                stdout=subprocess.PIPE)
+            subprocess.run(["tar", "-x", "-C", root], stdin=archive.stdout, check=True)
+            archive.stdout.close()
+            self.assertEqual(archive.wait(), 0)
+            # `main` only tests that .git exists, and a dry run never calls git.
+            os.mkdir(os.path.join(root, ".git"))
+            try:
+                os.chdir(root)
+                (map_dir,) = glob.glob("specs/*_expressiveness_extraction/")
+                rc, out, err = run_tool(
+                    module_map=map_dir + "module-map.txt",
+                    namespace_map=map_dir + "namespace-map.txt", dry_run=True)
+                expected = self.cited_provenance_readmes(map_dir + "module-map.txt")
+            finally:
+                os.chdir(original)
+
+        self.assertEqual(rc, 0, err)
+        self.assertEqual(class_count(out, "class 6  tree moves"), 13)
+        self.assertEqual(class_count(out, "class 4  namespace/open/FQN"), 0)
+        self.assertEqual(class_count(out, "files changed"), 262)
+        self.assertRegex(out, r"bare-form occurrences\s+174 before,\s+174 after")
+
+        listed = re.findall(r"^ +(\S+)  \(\d+ occurrence\(s\)\)$", out, re.MULTILINE)
+        readme = move_modules.glob_to_regex("Boneyard/**/README.md")
+        provenance = sorted(p for p in listed if readme.match(p))
+        self.assertEqual(len(provenance), 17)
+        self.assertEqual(provenance, expected)
+        self.assertEqual(sorted(p for p in listed if not readme.match(p)), [
+            "docs/architecture/ADR-006-Metalogic-No-Physical-Regroup.md",
+            "docs/architecture/ADR-011-Extract-Expressiveness.md",
+            "typst/SYNC-MAP.md"])
+        self.assertNotIn("skipped AND moved", out)
+
+    @staticmethod
+    def cited_provenance_readmes(module_map: str) -> list[str]:
+        """The archive READMEs citing an old prefix, derived WITHOUT the tool."""
+        olds = [line.split("->")[0].strip() for line in read(module_map).splitlines()
+                if "->" in line and not line.lstrip().startswith("#")]
+        forms = [re.escape(old) for old in olds]
+        forms += [re.escape(old.replace(".", "/")) for old in olds]
+        cites = re.compile(r"(?<![A-Za-z0-9_])(?:" + "|".join(forms) + r")(?![A-Za-z0-9_])")
+        found = []
+        for base, _, names in os.walk("Boneyard"):
+            if "README.md" in names:
+                path = os.path.join(base, "README.md").replace(os.sep, "/")
+                if cites.search(read(path)):
+                    found.append(path)
+        return sorted(found)
 
 
 if __name__ == "__main__":

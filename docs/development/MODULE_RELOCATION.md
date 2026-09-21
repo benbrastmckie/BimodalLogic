@@ -181,6 +181,12 @@ What the tooling does about it, and what it does not:
   one table row, in the files that *are* written. It is a syntactic comparison, not a tense
   detector: a historical statement naming only the old location collapses nothing and is rewritten
   silently.
+- Measured on a dry-run replay of the Expressiveness extraction against its own pre-move tree:
+  twenty files on the default list carried would-be rewrites — seventeen provenance READMEs, two
+  architecture decision records and the typst sync map — and the identical-sides warning fired on
+  none of them, with the list enabled or disabled. Every one was single-sided: a provenance column
+  or an "original location", naming only the old path. The skip list is what protects those; the
+  warning protects the two-sided sentences that earlier moves collapsed.
 - **Hand review of the skipped list remains mandatory**, and so does a grep for the old names
   after the move.
 
@@ -208,12 +214,13 @@ All flags belong to `scripts/move-modules.py`; `--help` carries the same contrac
 | Identical-sides warning, `--strict` | A warning, naming file and line, whenever a rewrite makes the two sides of one sentence (two names joined by `to`, `into`, `->`, `→` or `=>`) or any two cells of one markdown table row identical when they differed before. `--strict` promotes any such warning to a non-zero exit. Skipped files are never checked: nothing is written to them. |
 | Ambiguous stem | A row whose stem is both a directory and a same-named `.lean` file is refused up front, naming both. See [the aggregator remedy](#moving-a-directory-that-has-an-aggregator-file). |
 | Namespace-declaration refusal | A `--namespace-map` row is refused when class 4 would rewrite a `namespace` *declaration* in a file outside the move set; every offending file and line is printed and nothing is written. Not refused: a file that merely cites the old prefix (`open`, a fully-qualified name), and a declaration class 2 has already renamed because namespace and module prefix coincide. |
-| `--namespace-paths PATH_OR_GLOB` | Repeatable. Scopes class 4 to matching files. The scope must include the external `open` and fully-qualified-name sites that should follow the rename, not only the moved files. Class 2 is not scoped, and class 5's axiom baselines are never scoped out. |
+| `--namespace-paths PATH_OR_GLOB` | Repeatable. Scopes class 4 to matching files, named by their **pre-move** paths. The scope must include the external `open` and fully-qualified-name sites that should follow the rename, not only the moved files. Class 2 is not scoped, and class 5's axiom baselines are never scoped out. |
 | Moved-versus-rewritten line | The report states files actually moved next to citations rewritten, on one line. |
 | Zero-move exit | When rows were requested and nothing moved, the run exits non-zero — in a dry run too. There is no override: a run that rewrites citations and moves nothing is always worth investigating. |
 
-Globs use one explicit dialect: `**/` matches zero or more directories, `*` and `?` never cross a
-`/`, and the pattern must match the whole repository-relative path.
+Globs use one explicit dialect: `**/` matches zero or more directories, a bare `**` matches
+anything, `*` and `?` never cross a `/`, and the pattern must match the whole repository-relative
+path. The tool and its fixture tests are never rewrite targets themselves.
 
 ## Pre-move checklist
 

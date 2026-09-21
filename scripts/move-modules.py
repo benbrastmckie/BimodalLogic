@@ -52,6 +52,17 @@ Rewrite classes
 6. The tree move itself, as a single `git mv` per mapping.
 7. Relative-link re-basing inside moved markdown.
 
+Refusals and exits
+------------------
+Nothing is written or moved when a run is refused. A mapping stem that names BOTH
+a directory and a same-named `.lean` file is refused, naming both. A namespace
+row that would rewrite a `namespace` declaration in a file outside the move set
+is refused, naming every such file and line. A run that was given rows and moved
+nothing exits non-zero, in a dry run too. The report states files moved next to
+citations rewritten, lists every --no-rewrite file that would have been
+rewritten, and counts the identical-sides warnings.
+docs/development/MODULE_RELOCATION.md records the method around all of this.
+
 The bare-token trap
 -------------------
 Every rewrite rule is anchored on the FULL old prefix -- `FormalSystem/Boneyard`,

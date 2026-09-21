@@ -707,28 +707,28 @@ rewrites to an explicit user-supplied path/glob list.
 
 ---
 
-### Phase 7: Acceptance — pre-move replay, harness, and doc reconciliation [NOT STARTED]
+### Phase 7: Acceptance — pre-move replay, harness, and doc reconciliation [COMPLETED]
 
 **Goal**: Every acceptance criterion in the task is demonstrated, and the playbook's Tooling
 section matches the flags as actually implemented.
 
 **Tasks**:
 
-- [ ] Run the full fixture suite: `python3 scripts/test-move-modules.py`. All tests from Phases
-      1 and 3-6 green in one invocation.
-- [ ] Build the replay tree OUTSIDE the repository (a `mktemp -d` directory — never under the
+- [x] Run the full fixture suite: `python3 scripts/test-move-modules.py`. All tests from Phases
+      1 and 3-6 green in one invocation. *(completed)*
+- [x] Build the replay tree OUTSIDE the repository (a `mktemp -d` directory — never under the
       working tree, which siblings share and which `walk_repo` would then walk):
       `git archive 3419bdb8d | tar -x -C "$SCRATCH"`, then `mkdir "$SCRATCH/.git"`. `3419bdb8d` is
       the commit immediately before the Expressiveness extraction was applied; it carries that
       move's real `module-map.txt` and `namespace-map.txt` under its `specs/` tree. An empty
       `.git` directory suffices: `main()` only tests that it exists, and a dry run never shells
-      out to git. No `git worktree` is used, so the shared repository's metadata is untouched.
-- [ ] Re-measure the baseline with the export's OWN, unmodified copy of the tool (identical to
+      out to git. No `git worktree` is used, so the shared repository's metadata is untouched. *(completed)*
+- [x] Re-measure the baseline with the export's OWN, unmodified copy of the tool (identical to
       today's pre-change tool — `git diff 3419bdb8d HEAD -- scripts/move-modules.py` was empty at
       planning time; re-confirm against this task's first commit):
       `--module-map` and `--namespace-map` set to the export's two map files, `--dry-run
-      --no-verify`, run from `$SCRATCH`. Record the figures in the progress file.
-- [ ] Copy the hardened `scripts/move-modules.py` over the export's copy and re-run the identical
+      --no-verify`, run from `$SCRATCH`. Record the figures in the progress file. *(completed)*
+- [x] Copy the hardened `scripts/move-modules.py` over the export's copy and re-run the identical
       command. Assert, against the figures in the Scope Hypothesis below: `rc == 0`; class 6 is 13
       paths; the skipped-with-would-be-rewrites listing is exactly 20 files, of which exactly 17
       match `Boneyard/**/README.md`, two are `docs/architecture/ADR-006-...md` and
@@ -736,29 +736,29 @@ section matches the flags as actually implemented.
       namespace refusal did not fire (class 4 is 0 on this replay); the bare-form audit's two
       figures are equal to each other. Derive the expected 17 independently of the tool with
       `git grep -lE` over the old dotted and slash prefixes at `3419bdb8d`, restricted to
-      `Boneyard/**/README.md`, and compare the two lists path by path.
-- [ ] Record, as information and not as an assertion, how many identical-sides warnings the
+      `Boneyard/**/README.md`, and compare the two lists path by path. *(completed)*
+- [x] Record, as information and not as an assertion, how many identical-sides warnings the
       replay emits with the defaults active. Two earlier moves collapsed "from X to Y" prose in
       files outside the default list, so a non-zero figure here is expected and useful context
-      for the playbook's blind-spot section.
-- [ ] Add the replay to `scripts/test-move-modules.py` as a permanent test gated by
+      for the playbook's blind-spot section. *(completed)*
+- [x] Add the replay to `scripts/test-move-modules.py` as a permanent test gated by
       `unittest.skipUnless(<git cat-file -e 3419bdb8d^{commit} succeeds in the repo root>)`,
       performing the archive/extract/`mkdir .git` steps in a temp directory, copying the working
       tree's `scripts/move-modules.py` in, and asserting the 17/2/1 split and `rc == 0`. Locate
       the two map files inside the export by globbing `specs/*_expressiveness_extraction/`, so
-      the test file names no archived task directory. Refer to the commit by hash only.
-- [ ] Reconcile `docs/development/MODULE_RELOCATION.md`'s Tooling section against the flags as
+      the test file names no archived task directory. Refer to the commit by hash only. *(completed)*
+- [x] Reconcile `docs/development/MODULE_RELOCATION.md`'s Tooling section against the flags as
       implemented (`--no-rewrite` and its three defaults, `--strict`, `--namespace-paths`, the
       declaration refusal, the zero-move exit), and its rewrite-class list against
       `move-modules.py`'s module docstring class numbering. Fix any drift in the doc, never in
-      the tool's numbering.
-- [ ] Confirm `move-modules.py`'s own module docstring `Inputs` section lists all three new flags
+      the tool's numbering. *(completed)*
+- [x] Confirm `move-modules.py`'s own module docstring `Inputs` section lists all three new flags
       (each phase added its own; verify none was missed). `SELF_PATH` excludes this file from
-      rewriting, so editing its docstring is safe.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm green, comparing
-      against Phase 1's recorded baseline and harness commit if anything is red (R5).
-- [ ] Confirm `scripts/README.md` and `docs/development/README.md` each carry their one new row.
-- [ ] Remove the scratch export.
+      rewriting, so editing its docstring is safe. *(completed)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm green, comparing
+      against Phase 1's recorded baseline and harness commit if anything is red (R5). *(deviation: altered — shared tree is RED on INV only, caused by a sibling's uncommitted FormalSystem/**/*.lean edits; an isolated export of HEAD plus this task's files passes INV; see progress file)*
+- [x] Confirm `scripts/README.md` and `docs/development/README.md` each carry their one new row. *(completed)*
+- [x] Remove the scratch export. *(completed)*
 
 **Timing**: 1.5 hours
 
