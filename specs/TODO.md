@@ -11,7 +11,7 @@ next_project_number: 645
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,623,624,625,628,638,642 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,623,624,625,628,638 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617 | 298,464,502,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -94,7 +94,6 @@ next_project_number: 645
 ### Publication Quality
 
 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
-642 [IMPLEMENTING] — Close the measurement blind spot the language-extension merge...
 
 ### Semantics
 
@@ -147,12 +146,13 @@ ACCEPTANCE. All checks green on the current tree; each seen to fail on an inject
 ---
 
 ### 642. Restore layer measurement for language directories
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md]
 - **Plan**: [642_restore_layer_measurement_for_language_directories/plans/01_restore-layer-measurement-language.md]
+- **Summary**: [642_restore_layer_measurement_for_language_directories/summaries/01_restore-layer-measurement-language-summary.md]
 
 **Description**: Close the measurement blind spot the language-extension merge (task 634) opened. FormalSystem/PlusLanguage/, FormalSystem/MinusLanguage/ and FormalSystem/StarLanguage/ are absent from the LAYERS table in scripts/measure-refactor-partitions.py, so layer_of returns None for them and every import into and out of those directories is invisible to the upward-edge measurement.
 

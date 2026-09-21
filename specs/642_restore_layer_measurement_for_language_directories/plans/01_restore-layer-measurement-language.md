@@ -1,7 +1,7 @@
 # Implementation Plan: Task #642
 
 - **Task**: 642 - Restore layer measurement for the language directories
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md
