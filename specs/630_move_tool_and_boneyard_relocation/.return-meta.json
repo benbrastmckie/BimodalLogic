@@ -1,30 +1,62 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-20T19:03:00-07:00",
+  "completed_at": "2026-09-20T20:45:00-07:00",
+  "dispatch_seq": 6,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "harness_passed": true,
+    "c11_denominator": "539 archived import lines across 169 files, 8 waived (carried pre-move figure, intact)"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/630_move_tool_and_boneyard_relocation/plans/01_move-tool-boneyard-relocation.md",
-      "summary": "8-phase plan: build scripts/move-modules.py (7 rewrite classes, dry-run), validate it against the measured census, add invariants B1/B2, then relocate FormalSystem/Boneyard to Boneyard in one atomic move+harness-rewiring commit, assert the C11 denominator, and accept ADR-010."
+      "type": "summary",
+      "path": "specs/630_move_tool_and_boneyard_relocation/summaries/01_move-tool-boneyard-relocation-summary.md",
+      "summary": "Built scripts/move-modules.py (seven rewrite classes, dry run, bare-form audit) and used it to relocate the 225-file archive from FormalSystem/Boneyard/ to a root-level Boneyard/, re-rooting and widening every gate in one commit, adding invariants B1/B2, and accepting ADR-010."
     }
   ],
-  "phase_count": 8,
-  "estimated_hours": 11,
-  "dependency_waves": [[1, 5], [2], [3], [4], [6], [7], [8]],
-  "next_steps": "Run /implement 630 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Built scripts/move-modules.py, a reusable module-relocation tool with seven separately-counted rewrite classes, a dry-run mode, a sentinel-based bare-form audit and a closing harness run; then used it for its first production relocation, moving the 225-file archive from FormalSystem/Boneyard/ to a root-level Boneyard/ as git renames with zero delete+add. Every gate moved with it in one atomic commit (B0 re-rooted and its load-bearing half inverted, C11 given its own import regex, C17 and archive_dir_count re-rooted, C12/C5 widened), invariants B1 and B2 were added, and ADR-010 moved to Accepted with ADR-009 repointed. lake build, lake build BimodalTest and the full invariant harness all exit 0, with C11's denominator intact at 539/169/8 and zero sorries, zero new axioms and no axiom-baseline change.",
+    "roadmap_items": [
+      "docs/development/PUBLICATION_REFACTOR.md Phase 0 (module-move tooling) - performed",
+      "docs/development/PUBLICATION_REFACTOR.md Phase 2 (archive to the repository root) - performed; unblocks Phase 8's mk_all --check adoption"
+    ]
+  },
+  "phases_completed": 8,
+  "phases_total": 8,
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "notes": "Plan compliance: the plan names no Lean identifiers (Lean Intent: false; the Lean Challenge Statements section is deliberately empty), so the goal-identifier spot-check is vacuously satisfied. Three plan expectations were measured wrong and are corrected in the plan and summary rather than suppressed: the post-move C12/C5 gate scope (26, not 46, for a structural reason), and three of the seven asserted ADR figures."
+  },
   "memory_candidates": [
     {
-      "content": "When relocating a module subtree in a gated repository, the gate-pattern widening and the move itself are atomically coupled and must land in one commit. A gate regex that matches citations by their old path prefix (e.g. 'FormalSystem/...') silently drops those citations from scope the moment the prefix is stripped; widening the regex to admit the new bare prefix pre-move instead pulls not-yet-valid bare paths into scope, turning the gate red. Neither ordering is green, so the widening, the re-rooting of every scan root, and the move form one atomic batch. Two companion rules: (1) anchor every rewrite rule on the FULL old prefix, never the bare final token, since bare-token citations that were relative to the old parent often become correct repo-root paths after the move and must stay byte-identical; (2) after re-rooting a counting gate, assert its DENOMINATOR, not just its PASS -- a gate whose scan root moved but whose match regex did not will happily print PASS on a shrunken denominator.",
+      "content": "A module-relocation tool cannot distinguish a citation of a CURRENT location (rewrite it) from a HISTORICAL statement about the old one (leave it byte-identical), and architectural decision records consist largely of the latter. Running one over a documented tree silently collapses 'the archive moves from OLD to NEW' into 'moves from NEW to NEW', and a gate-change table's before/after columns into two identical cells -- each individually plausible, so review misses them. It will also rewrite the tool's own worked examples into self-contradictions ('anchored on the full old prefix X, never the bare token X'). Mitigations that work: exclude the tool's own source; hand-audit the diff of every ADR and programme document; and treat a rewrite that makes both sides of a sentence identical as a warning condition rather than a success.",
+      "category": "PATTERN",
+      "source_artifact": "specs/630_move_tool_and_boneyard_relocation/summaries/01_move-tool-boneyard-relocation-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["module-relocation", "citation-rewrite", "adr-integrity", "historical-reference", "self-rewrite", "tautology-collapse"]
+    },
+    {
+      "content": "Re-rooting a subtree to a TOP-LEVEL directory silently narrows what path-shaped and module-shaped gates can cover, independently of whether their patterns were widened correctly. A pattern of the form `(A|B|C)/<more>` requires at least one component after the root, and `(A|B)(\\.[A-Z]\\w*)+` requires at least one dotted suffix; so a citation of the relocated tree's ROOT ITSELF ('OLD/Sub/' -> 'Sub/', 'Old.Sub' -> 'Sub') stops matching entirely, while every citation of a path INSIDE it keeps matching. Measured on one move: 46 gated citations pre-move, 26 post-move, with all 20 losses of exactly this shape. This is not a widening failure and is not repaired by widening; the invariant it leaves uncovered belongs to a directory-existence check instead, which asserts the root's presence and location directly and more strongly than a resolution check would.",
       "category": "PATTERN",
       "source_artifact": "specs/630_move_tool_and_boneyard_relocation/plans/01_move-tool-boneyard-relocation.md",
       "confidence": 0.85,
-      "suggested_keywords": ["module-relocation", "gate-widening", "atomic-commit", "invariant-harness", "path-prefix-rewrite", "denominator-assertion"]
+      "suggested_keywords": ["gate-scope", "path-regex", "top-level-relocation", "denominator-assertion", "silent-scope-loss"]
+    },
+    {
+      "content": "When auditing that a rewrite left a class of citations untouched, a before/after COUNT of those citations is confounded whenever the rewrite itself creates new instances of the same shape -- relocating 'FormalSystem/Boneyard' to 'Boneyard' turns every full-prefix citation into a new bare-form one, so the bare-form count rises and proves nothing. The fix is a sentinel pass: re-run the identical rewrite with every replacement swapped for an opaque marker containing none of the tokens being counted, then compare the counts. Preserved instances survive in both; created ones appear in neither. A rule keyed on the bare token would consume pre-existing instances and the two counts diverge, which is exactly the failure the audit exists to catch.",
+      "category": "PATTERN",
+      "source_artifact": "specs/630_move_tool_and_boneyard_relocation/summaries/01_move-tool-boneyard-relocation-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["rewrite-audit", "sentinel-pass", "confounded-metric", "bare-token-trap"]
     }
-  ],
-  "metadata": {
-    "session_id": "sess_1789955215_a3ad68_630",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 4
+  ]
 }
