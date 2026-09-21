@@ -290,45 +290,47 @@ for convenience — and says nothing stronger.
 
 ---
 
-### Phase 4: Pin `def:BLstar-semantics` in the record of paper definitions [IN PROGRESS]
+### Phase 4: Pin `def:BLstar-semantics` in the record of paper definitions [COMPLETED]
 
 **Goal**: `def:BLstar-semantics` is a pinned manifest anchor with a prose entry, its
 KNOWN-ANCHORS row is gone, its world-register exclusion is preserved, and the whole-file
 sentinels are untouched.
 
 **Tasks**:
-- [ ] Re-run `bash scripts/check-paper-definitions.sh --resolve "def:BLstar-semantics|env|-|-"`
+- [x] Re-run `bash scripts/check-paper-definitions.sh --resolve "def:BLstar-semantics|env|-|-"`
       and use the sha256 and verbatim text **it prints now** — not the values recorded in this
-      plan or the research report.
-- [ ] Re-read `docs/reference/paper-definitions-of-record.md` before editing.
-- [ ] Add the manifest row inside the `<!-- MANIFEST:BEGIN -->` fence, in paper order between the
+      plan or the research report. *(completed: sha256 b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95, matching the Scope Hypothesis)*
+- [x] Re-read `docs/reference/paper-definitions-of-record.md` before editing. *(completed)*
+- [x] Add the manifest row inside the `<!-- MANIFEST:BEGIN -->` fence, in paper order between the
       `def:deterministic` row and the `cor:saturation-finite` row:
-      `def:BLstar-semantics|env|-|-|<sha256 from the resolve run>`
-- [ ] Add a prose `### \`def:BLstar-semantics\`` entry immediately after the existing
+      `def:BLstar-semantics|env|-|-|<sha256 from the resolve run>` *(completed)*
+- [x] Add a prose `### \`def:BLstar-semantics\`` entry immediately after the existing
       `### \`def:deterministic\`` entry, following that entry's shape: a heading naming the
       anchor and what it is, a short paragraph, a ```latex fence quoting the resolved block
-      verbatim, and a `sha256:` line.
-- [ ] In that entry's prose, record (a) why it is now pinned — the Stability clause is quoted
+      verbatim, and a `sha256:` line. *(completed)*
+- [x] In that entry's prose, record (a) why it is now pinned — the Stability clause is quoted
       verbatim in this repository, not in paraphrase, retiring the ground the KNOWN-ANCHORS row
       gave for leaving it unpinned; and (b) carry forward, in substance, the removed row's
       content: the anchor's time-register half is implemented as `StarTruthAt` over points
       `(τ, x, v⃗)` in `FormalSystem/Semantics/StarLanguage/StarTruth.lean`, while the world
       registers `↑_M`/`↓_M` are deliberately still unimplemented, recorded as an explicit
-      exclusion in `FormalSystem/Syntax/StarLanguage/README.md`'s correspondence table.
-- [ ] Remove the `def:BLstar-semantics|LIVE-UNPINNED|...` row from the
+      exclusion in `FormalSystem/Syntax/StarLanguage/README.md`'s correspondence table. *(completed)*
+- [x] Remove the `def:BLstar-semantics|LIVE-UNPINNED|...` row from the
       `<!-- KNOWN-ANCHORS:BEGIN -->` fence. The manifest and KNOWN-ANCHORS sets are currently
       disjoint (verified: zero overlap) and the block's own charter directs promotion into the
       manifest once the text is quoted, so leaving the row would make the record
-      self-contradictory.
-- [ ] Add a short coverage-extension prose note dated 2026-09-20, following the shape of the
+      self-contradictory. *(completed)*
+- [x] Add a short coverage-extension prose note dated 2026-09-20, following the shape of the
       existing "Coverage extension" / "no re-pin" precedent sections, stating that this is a
-      coverage extension and that the whole-file sentinels are deliberately not re-pinned.
-- [ ] **Do not modify** the `<!-- PINNED_COMMIT: -->`, `<!-- FILE_CHECKSUM: -->`, or
-      `<!-- LINE_COUNT: -->` comment markers, nor the header table rows that record them.
-- [ ] If Phase 3 chose to cite the literal `def:TM-stability` anchor, add a `DANGLING`
+      coverage extension and that the whole-file sentinels are deliberately not re-pinned. *(completed)*
+- [x] **Do not modify** the `<!-- PINNED_COMMIT: -->`, `<!-- FILE_CHECKSUM: -->`, or
+      `<!-- LINE_COUNT: -->` comment markers, nor the header table rows that record them. *(completed: sentinels unchanged, confirmed by git diff)*
+- [x] If Phase 3 chose to cite the literal `def:TM-stability` anchor, add a `DANGLING`
       KNOWN-ANCHORS row for it here (it is commented out in the manuscript). Otherwise skip.
-- [ ] Re-run `bash scripts/check-paper-definitions.sh` with no arguments, without tail-truncating
-      the output, and confirm it reports case (a) or case (b) — never a failure.
+      *(skipped: Phase 3 phrased the stab_4 sentence without the literal anchor token —
+      "the manuscript's commented-out TM-stability axiomatization" — so no DANGLING row is needed)*
+- [x] Re-run `bash scripts/check-paper-definitions.sh` with no arguments, without tail-truncating
+      the output, and confirm it reports case (a) or case (b) — never a failure. *(completed: case (b) — "all 43 recorded definitions are unchanged -- pass")*
 
 **Timing**: 50 minutes
 

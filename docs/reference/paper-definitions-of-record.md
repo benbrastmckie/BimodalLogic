@@ -1701,6 +1701,46 @@ citing `def:frame-properties` for determinism is now wrong.
 ```
 sha256: `edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab721bdca88110`
 
+### `def:BLstar-semantics` — the truth definition for the manuscript's `\BL^\star` (pinned 2026-09-20, promoted from the KNOWN-ANCHORS `LIVE-UNPINNED` list)
+
+Promoted into the manifest by this task's coverage extension: the anchor's `($\Stability$)` clause
+is now confirmed **quoted verbatim** in this repository — not merely paraphrased — in two places:
+subsection *Restricted Modalities* (`sub:RestrictedModalities`) states it first, and this block
+restates it word-for-word except for the uniform `\vec{v}` register-vector parameter the block
+adds for the store/recall operators. `PlusTruthAt`'s `stab` clause
+(`FormalSystem/Semantics/PlusLanguage/PlusTruth.lean`) implements the clause on the nose, and
+`StarTruthAt` (`FormalSystem/Semantics/StarLanguage/StarTruth.lean`) implements it over points
+`(τ, x, v⃗)`, passing the register vector unchanged to `σ`. This retires the ground the
+KNOWN-ANCHORS row gave for leaving the anchor unpinned ("the clause is quoted in this repository
+only in paraphrase"), per this record's own charter: "If a docstring starts quoting one verbatim,
+promote it to the manifest at that point."
+
+Carried forward from the removed KNOWN-ANCHORS row: the anchor's block also covers the
+`\timeStore^i`/`\timeRecall^i` store/recall clauses. Its **time-register half is implemented** as
+`StarTruthAt` over points `(τ, x, v⃗)` (`FormalSystem/Semantics/StarLanguage/StarTruth.lean`),
+while the **world registers `↑_M`/`↓_M` are deliberately still unimplemented** — recorded as an
+explicit exclusion in `FormalSystem/Syntax/StarLanguage/README.md`'s correspondence table.
+
+```latex
+\begin{Ddef} \label{def:BLstar-semantics}
+	For a task frame $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$, let $\braket{\tau}_x \coloneq \set{\sigma \in H_{\F} \mid \sigma(x) = \tau(x)}$ be the set of possible worlds that intersect $\tau$ at $x$.
+	Adding a vector $\vec{v} = \tuple{v_1, v_2, \ldots}$ of stored times to the point of evaluation, the clauses of \textbf{\ref{def:BL-semantics}} are unchanged and $\vec{v}$ may be omitted when no store or recall operator occurs.
+	Since $\worldStore^i$ and $\worldRecall^i$ do not occur below, the vector $\vec{\mu}$ of stored worlds from \textbf{\S\ref{sub:Extension}} may likewise be suppressed throughout, where the remaining operators are interpreted by:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[($\Stability$)] $\M,\tau,x,\vec{v} \vDash \Stability\varphi$ \textit{iff} $\M,\sigma,x,\vec{v} \vDash \varphi$ for all $\sigma \in \braket{\tau}_x$.
+		\item[(\hspace{.6pt}$\timeStore$\hspace{.6pt})] $\M,\tau,x,\vec{v} \vDash \timeStore^i\varphi$ \textit{iff} $\M,\tau,x,\vec{v}_{[x/v_i]} \vDash \varphi$.
+		\item[(\hspace{.6pt}$\timeRecall$\hspace{.6pt})] $\M,\tau,x,\vec{v} \vDash \timeRecall^i\varphi$ \textit{iff} $\M,\tau,v_i,\vec{v} \vDash \varphi$.
+	\end{enumerate}
+  \vspace{-.1in}
+\end{Ddef}
+```
+sha256: `b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95`
+
+Note: **coverage extension, not a drift correction** — the whole-file `PINNED_COMMIT` /
+`FILE_CHECKSUM` / `LINE_COUNT` sentinels above are deliberately **not** re-pinned by this addition,
+following the 2026-08-13 22-anchor precedent recorded elsewhere in this file: a coverage extension
+adds a manifest row without asserting that the whole file was re-verified against a new commit.
+
 ### `cor:saturation-finite` — every task frame with finite W satisfies Saturation, choice-free (renamed from `cor:spherical-finite`; **environment changed `Cthm` → `Lthm`** in the 2026-09-07 wave)
 
 The manifest row was re-keyed from `cor:spherical-finite` to `cor:saturation-finite` at the
@@ -1986,6 +2026,7 @@ app:dense|env|-|-|2b12df669aeba06156557e0bddf36aaa2461a3e76fb01fe4b85dd0ad893a90
 app:complete|env|-|-|aee906f8218c159034fe60d26dfb309ebe55abd27c7257b4ce8b19a03fe0e8f2
 def:frame-properties|env|-|-|d47ebef79f2988c0573f44b944ac049ea85ac841e5edab1a6f551183885fb63b
 def:deterministic|env|-|-|edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab721bdca88110
+def:BLstar-semantics|env|-|-|b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95
 cor:saturation-finite|env|-|-|ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3
 cor:tm-completeness|env|-|-|da75cac2b1c97db4458549c405a279762ea3a68977bd2ea1c3954e3dc4c97664
 def:id|env|-|-|78b20a9942c9beaac45336954aee21d57b8c67a755692e17259c5e5a2bd00c3f
@@ -2030,7 +2071,6 @@ app:topology-t1|LIVE-UNPINNED|topology appendix; part of the block this file del
 cor:no-characterization|LIVE-UNPINNED|the no-characterization corollary (Cthm); cited as a pointer, text never quoted
 cor:perpetuity-valid|LIVE-UNPINNED|perpetuity principles valid; the live anchor that replaced the never-existent app:valid
 def:BL-language|LIVE-UNPINNED|the BL language; cited as a pointer alongside the pinned def:BLplus-language
-def:BLstar-semantics|LIVE-UNPINNED|the truth definition for the manuscript's \BL^\star, whose ($\Stability$) clause is the semantics of this repository's L⁺; cited as a pointer wherever a docstring names the ⊡ clause. Not pinned: the clause is quoted in this repository only in paraphrase. The anchor's block also covers the store/recall clauses; ITS TIME-REGISTER HALF IS NOW IMPLEMENTED as StarTruthAt over points (tau, x, v-vector) (Semantics/StarLanguage/StarTruth.lean), with the world registers up_M/down_M deliberately still unimplemented -- recorded as an explicit exclusion in FormalSystem/Syntax/StarLanguage/README.md's correspondence table
 def:task-topology|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
 lem:deterministic-singleton|LIVE-UNPINNED|deterministic-frame singleton fibers (Lthm); cited as a pointer (StateSetTruth.lean names its choice-free direction but quotes no text)
 lem:history-time-shift-preservation|LIVE-UNPINNED|time-shift preservation; cited as a pointer

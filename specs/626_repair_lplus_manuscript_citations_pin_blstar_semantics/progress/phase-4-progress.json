@@ -1,0 +1,15 @@
+{
+  "phase": 4,
+  "phase_name": "Pin def:BLstar-semantics in the record of paper definitions",
+  "started_at": "2026-09-21T02:35:00Z",
+  "last_updated": "2026-09-21T03:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Resolve def:BLstar-semantics live sha256 and text; add manifest row", "status": "done", "files_touched": ["docs/reference/paper-definitions-of-record.md"]},
+    {"id": 2, "description": "Add prose entry, remove KNOWN-ANCHORS row, add coverage-extension note", "status": "done", "files_touched": ["docs/reference/paper-definitions-of-record.md"]},
+    {"id": 3, "description": "Re-run check-paper-definitions.sh and confirm case (a) or (b)", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}
