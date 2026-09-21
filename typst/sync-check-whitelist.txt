@@ -214,3 +214,12 @@ training/PIPELINE.md:651-676
 # typst/ would also be suppressed, which is acceptable while the repository
 # has no such file ---
 lakefile.lean
+
+# --- Lean appendix: optional-parameter illustrations. The decision
+# procedure's default arguments are written in prose as the `name := value`
+# pairs a caller elides, but the source spells them as full binders
+# (`(searchDepth : Nat := 10)`), so the abbreviated spans have no literal
+# match. Generic syntax illustrations of Lean's optional-parameter binder,
+# not declaration citations ---
+searchDepth := 10
+tableauFuel := 1000

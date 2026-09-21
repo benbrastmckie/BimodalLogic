@@ -1,7 +1,7 @@
 # Implementation Plan: Extend the Lean appendix to semantics, a derived theorem, the metalogic map, and the decision procedure
 
 - **Task**: 647 - extend_lean_appendix_semantics_metalogic_coverage
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None upstream. Tasks 648 and 649 are ordered after this task and must not be pre-empted by it.
 - **Research Inputs**: specs/647_extend_lean_appendix_semantics_metalogic_coverage/reports/01_extend-lean-appendix-coverage.md
@@ -166,7 +166,7 @@ These apply to every authoring phase below and are not repeated per phase:
 
 ---
 
-### Phase 1: Verification harness, signature re-derivation, and whitelist [NOT STARTED]
+### Phase 1: Verification harness, signature re-derivation, and whitelist [COMPLETED]
 
 **Goal**: Produce one compiled scratch file carrying every didactic snippet the later phases
 need, one re-derived and re-broken excerpt set for every declaration those phases quote, and the
