@@ -1,18 +1,17 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 4,
-  "summary": "Mapped all five README-restructure acceptance items to exact line numbers and destination content; confirmed the item-1 40-line budget has zero slack today, confirmed the saturation-footnote aside is already recorded in docs/reference/paper-definitions-of-record.md (a deletion, not a migration), and confirmed both gate scripts are green at baseline.",
+  "status": "planned",
+  "task_number": 640,
+  "phase": "plan",
+  "session_id": "sess_1789947599_745d6f_640",
+  "dispatch_seq": 5,
+  "phases_completed": 0,
+  "phases_total": 5,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md",
-      "summary": "Line-by-line map of README.md restructure items, destination content for docs/reference/paper-definitions-of-record.md, and verified harness impact (C12-C15, C18, C21, readme-lint.sh)."
+      "type": "plan",
+      "path": "specs/640_readme_cold_reader_restructure/plans/01_readme-cold-reader-restructure.md",
+      "summary": "Five-phase prose-only plan restructuring root README.md for a cold reader plus one dated note in paper-definitions-of-record.md."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": [],
-  "continuation_path": null,
-  "next_action_hint": "Run /plan 640 to create the implementation plan from this research report."
+  "next_steps": "Run /implement 640 to execute the plan"
 }
