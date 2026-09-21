@@ -1,2 +1,0 @@
-FormalSystem.Metalogic.WeakCanonical.Kamp -> FormalSystem.Metalogic.Expressiveness.Kamp
-FormalSystem.Metalogic.WeakCanonical.Separation -> FormalSystem.Metalogic.Expressiveness.Separation

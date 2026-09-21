@@ -1923,6 +1923,595 @@
   ],
   "completed_projects": [
     {
+      "project_number": 630,
+      "project_name": "move_tool_and_boneyard_relocation",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [],
+      "file_scope": [
+        "scripts/move-modules.py",
+        "FormalSystem/Boneyard/",
+        "Boneyard/README.md",
+        "scripts/check-module-invariants.sh",
+        "scripts/boneyard-import-waivers.txt",
+        "docs/architecture/ADR-010-Boneyard-At-Repository-Root.md",
+        "docs/architecture/ADR-009-Boneyard-Retention.md"
+      ],
+      "description": "Write scripts/move-modules.py (old-to-new module mapping plus optional namespace mapping; rewrites imports in FormalSystem/, Tests/ and the archive, dotted and slash paths in docs/, typst/ and the scripts/ manifests, namespace/open/FQN occurrences, the C2/C14 baselines and MainResults.lean; dry-run mode; ends by running check-module-invariants.sh --no-build). Then use it to move FormalSystem/Boneyard/ to a root-level Boneyard/ (module names Boneyard.*), update B0's search root and C11's scan root, add the two invariants ADR-010 names, and change ADR-010's status to Accepted with a pointer from ADR-009. Acceptance: lake build and lake build BimodalTest exit 0; check-module-invariants.sh green; no .olean under Boneyard/; the archive README's counts regenerate from the new location.\n\nReconciliation notes: no dependency edge to task 631 (deliverable hygiene): ADR-010 disclaims dependence on the frozen-LaTeX retirement Phase 1 performs, and Phase 1's own actions touch no path under FormalSystem/Boneyard/ -- either task may land first. Tasks 632 and 633 depend on this task, not on task 631.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-21T03:32:48Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md",
+          "type": "report",
+          "summary": "Design for scripts/move-modules.py plus a measured census and risk register for the FormalSystem/Boneyard -> Boneyard relocation."
+        },
+        {
+          "path": "specs/630_move_tool_and_boneyard_relocation/plans/01_move-tool-boneyard-relocation.md",
+          "type": "plan",
+          "summary": "8-phase plan: build scripts/move-modules.py (7 rewrite classes, dry-run), validate it against the measured census, add invariants B1/B2, then relocate FormalSystem/Boneyard to Boneyard in one atomic move+harness-rewiring commit, assert the C11 denominator, and accept ADR-010."
+        },
+        {
+          "path": "specs/630_move_tool_and_boneyard_relocation/summaries/01_move-tool-boneyard-relocation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the move tool, the relocation, the gate re-rooting, and the measured verification results."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Built scripts/move-modules.py, a reusable module-relocation tool with seven separately-counted rewrite classes, a dry-run mode, a sentinel-based bare-form audit and a closing harness run; then used it for its first production relocation, moving the 225-file archive from FormalSystem/Boneyard/ to a root-level Boneyard/ as git renames with zero delete+add. Every gate moved with it in one atomic commit (B0 re-rooted and its load-bearing half inverted, C11 given its own import regex, C17 and archive_dir_count re-rooted, C12/C5 widened), invariants B1 and B2 were added, and ADR-010 moved to Accepted with ADR-009 repointed. lake build, lake build BimodalTest and the full invariant harness all exit 0, with C11's denominator intact at 539/169/8 and zero sorries, zero new axioms and no axiom-baseline change.",
+      "roadmap_items": [
+        "docs/development/PUBLICATION_REFACTOR.md Phase 0 (module-move tooling) - performed",
+        "docs/development/PUBLICATION_REFACTOR.md Phase 2 (archive to the repository root) - performed; unblocks Phase 8's mk_all --check adoption"
+      ],
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 631,
+      "project_name": "deliverable_hygiene_excluding_specs",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "publication-quality",
+      "dependencies": [],
+      "file_scope": [
+        "CLAUDE.md",
+        ".claude-extensions.json",
+        ".syncprotect",
+        ".gitattributes",
+        ".gitignore",
+        "CONTRIBUTING.md",
+        "docs/research/",
+        "docs/training/",
+        "latex/",
+        "README.md",
+        "CITATION.cff",
+        "docs/",
+        "typst/",
+        "scripts/README.md",
+        "scripts/migrate_schema_v2.py",
+        "scripts/swap_untl_snce.py",
+        "scripts/standardize_metadata.py",
+        "scripts/add-copyright-headers.sh"
+      ],
+      "description": "Untrack CLAUDE.md, .claude-extensions.json, .syncprotect and the empty .gitattributes; remove personal absolute paths from docs/ and typst/; delete the one-off scripts (migrate_schema_v2.py, swap_untl_snce.py, standardize_metadata.py, add-copyright-headers.sh) and add scripts/README.md naming every remaining script; move CONTRIBUTING.md to the root; move docs/research/ and docs/training/ out of the deliverable; retire latex/ and its PDF with the C10/C12 references to it; rewrite Logos and ProofChecker naming in README.md, docs/ and CITATION.cff. Do not untrack specs/. Acceptance: check-module-invariants.sh and readme-lint.sh green; grep -rn 'home/benjamin' docs typst empty.\n\nReconciliation notes: no dependency edge to task 630 (see task 630's notes). Absorbs the scope of task 610 (grep-and-fix of stale lakefile.lean mentions in docs/), which is merged into this task and abandoned separately with that reason recorded. Task 604 depends on this task and on task 632 (its Lean-executable inventory step must exclude the two scripts this task deletes -- migrate_schema_v2.py, standardize_metadata.py -- and target BimodalTools.* paths directly).\n\nAbsorbed task 610 description (verbatim, task 610 is abandoned as merged into this task): \"Update remaining documentation references to lakefile.lean now that the project uses lakefile.toml (package renamed to BimodalLogic): docs/user-guide/architecture.md:1131, docs/development/LEAN_STYLE_GUIDE.md:790, docs/user-guide/troubleshooting.md:55, docs/development/NAMING_CONVENTION_DEVIATION.md:333. Task 578 skipped these because concurrent tasks held uncommitted edits in them; re-grep the tree for any other lakefile.lean or Logos package-name mentions.\"",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-20T23:37:38Z",
+      "session_id": "sess_1789943606_166ae2",
+      "artifacts": [
+        {
+          "path": "specs/631_deliverable_hygiene_excluding_specs/reports/01_deliverable-hygiene-research.md",
+          "type": "report",
+          "summary": "Grounds task 631 in PUBLICATION_REFACTOR.md Phase 1/Follow-up B; identifies which files break check-module-invariants.sh (C13) and readme-lint.sh (Check 3) when latex/ is retired, flags the swap_untl_snce.py doc contradiction, scopes the real Logos/ProofChecker naming work after docs/research and docs/training removal, and flags the home/benjamin acceptance-grep self-reference in PUBLICATION_REFACTOR.md."
+        },
+        {
+          "path": "specs/631_deliverable_hygiene_excluding_specs/plans/01_deliverable-hygiene.md",
+          "type": "plan",
+          "summary": "8-phase deliverable-hygiene plan covering untracking, script cleanup, latex retirement, CONTRIBUTING relocation, path scrubbing and naming normalisation."
+        },
+        {
+          "path": "specs/631_deliverable_hygiene_excluding_specs/summaries/01_deliverable-hygiene-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for all 8 plan phases: untracked agent-system dotfiles and docs/research//docs/training/ (relocated to repo-root research//training/), deleted one-off scripts and documented survivors, retired latex/, moved CONTRIBUTING.md to root, stripped personal absolute paths, and normalised Logos/ProofChecker/lakefile.lean naming."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Completed all 8 phases of the deliverable-hygiene plan: untracked 4 agent-system dotfiles and docs/research//docs/training/ (relocated to repo-root research//training/ to keep check-module-invariants.sh's C13 link check green), deleted 4 one-off scripts and authored scripts/README.md, retired the frozen latex/ edition and its tracked PDF, moved CONTRIBUTING.md to the repository root, removed every personal absolute path from docs/ and typst/, and normalised stale Logos/ProofChecker/lakefile.lean naming across ~20 files. Both acceptance gates (check-module-invariants.sh, readme-lint.sh) are green on the final tree and grep -rn 'home/benjamin' docs typst returns nothing; specs/ was never untracked (grew only by this task's own 6 progress-tracking files, 218 to 224).",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 632,
+      "project_name": "bimodaltools_split",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        630
+      ],
+      "file_scope": [
+        "lakefile.toml",
+        "FormalSystem/Automation/",
+        "BimodalTools/",
+        "Tests/BimodalTest/Automation/",
+        "Tests/BimodalToolsTest/",
+        "FormalSystem/Examples/BimodalProofs.lean",
+        "scripts/"
+      ],
+      "description": "Create lean_lib BimodalTools (outside defaultTargets) and BimodalToolsTest; move the 25 tooling modules that python3 scripts/measure-refactor-partitions.py automation-partition lists (including Metalogic/Decidability/TraceExport.lean) and re-root the 12 lean_exe targets under BimodalTools.*; move the tooling tests it lists into BimodalToolsTest; make Examples/BimodalProofs.lean import specific Automation modules; decide SuccessPatterns' split; update the CI exe-root step, typst-module-map.sh and the automation-module-map generator. Acceptance: lake build writes no .olean under BimodalTools/; a new check asserts FormalSystem never imports BimodalTools; lake build BimodalToolsTest exits 0 in CI; harness green.\n\nReconciliation notes: depends on task 630 only. Dispatch after tasks 298, 296 and 282 land (all three currently edit FormalSystem/Automation/ in-flight) -- this is a scheduling recommendation, not a dependency edge, so this task's own dependency array does not block on their completion. Task 231's lake exe target names are unchanged by this split (no edge needed). Task 604 depends on this task (see task 631's notes).",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-21T04:43:48Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/632_bimodaltools_split/reports/01_bimodaltools-library-split.md",
+          "type": "report",
+          "summary": "Research report for the BimodalTools library split: confirmed move set, SuccessPatterns decision, reachability analysis, harness scan-root inventory, citation-rewrite volume, and a 5-phase sequencing recommendation."
+        },
+        {
+          "path": "specs/632_bimodaltools_split/plans/01_bimodaltools-library-split.md",
+          "type": "plan",
+          "summary": "Nine-phase plan splitting 25 tooling modules into lean_lib BimodalTools, sequenced so every gate's scan root is widened and the B3 separation invariant lands before anything moves."
+        },
+        {
+          "path": "specs/632_bimodaltools_split/summaries/01_bimodaltools-library-split-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: what moved, the decisions, every plan deviation, and the captured acceptance evidence."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Relocated the 25 tooling modules (14,527 lines) and 8 tooling tests out of the published FormalSystem library into lean_lib BimodalTools and lean_lib BimodalToolsTest, both outside defaultTargets, re-rooting the 12 lean_exe targets under BimodalTools.* with their names unchanged. Every harness and CI gate that hardcoded FormalSystem as a scan root was widened and negative-tested BEFORE the move, and a new B3 invariant asserts the split is one-way. A default lake build now emits no .olean under BimodalTools; the partition script reports an empty tooling set; the full invariant harness reports 0 FAIL.",
+      "roadmap_items": [
+        "docs/development/PUBLICATION_REFACTOR.md Phase 3 discharged",
+        "PUBLICATION_REFACTOR.md Phase 4's `cut ProofSearch.Core -> SuccessPatterns` bullet superseded and recorded as a no-op"
+      ],
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 633,
+      "project_name": "upward_edges_by_relocation",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        630
+      ],
+      "file_scope": [
+        "FormalSystem/Init.lean",
+        "FormalSystem/Tactic/Attr.lean",
+        "FormalSystem/Automation/Tactics/PropDecide.lean",
+        "FormalSystem/Metalogic/Core/DeductionTheorem.lean",
+        "FormalSystem/Metalogic/Decidability/FMP/Periodicity.lean",
+        "ORGANISATION.md",
+        "scripts/check-metalogic-cycles.sh"
+      ],
+      "description": "Create Tactic/Attr.lean under the library root from Automation/{TruthNormAttr, NormalizationAttr,LemmaDB} and import it from Init.lean; move Tactics/PropDecide.lean to Metalogic/Decidability/Propositional/Tactic.lean; move Metalogic/Core/DeductionTheorem.lean to Theorems/ keeping its namespace; move Metalogic/Decidability/FMP/Periodicity.lean to Semantics/; cut ProofSearch.Core -> SuccessPatterns; rewrite ORGANISATION.md's layer table to the measured order and extend check-metalogic-cycles.sh into a layer-order assertion. Acceptance: measure-refactor-partitions.py upward-edges reports zero lines into Automation from Syntax, Semantics, ProofSystem and Theorems and zero Theorems -> Metalogic; harness green.\n\nReconciliation notes: depends on task 630 only. Verified file-disjoint from the decidability chain (tasks 410-412, 428-430, 464, 465, 481, 482), which lives entirely under Metalogic/Decidability/Verified/ (plus Saturation.lean, Correctness.lean, ProofExtraction.lean); no edge needed.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-21T06:44:13Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md",
+          "type": "report",
+          "summary": "Research report: live re-measurement of the upward-edge set, a simulation of all four relocations, the corrected layer assignment, and the five-phase dependency-first sequence with every gate and generated artifact that observes the moved paths."
+        },
+        {
+          "path": "specs/633_upward_edges_by_relocation/plans/01_upward-edges-relocation.md",
+          "type": "plan",
+          "summary": "Six-phase dependency-first plan; waves [1,3,4] -> [2] -> [5] -> [6]; 9 hours estimated."
+        },
+        {
+          "path": "specs/633_upward_edges_by_relocation/summaries/01_upward-edges-relocation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 633: upward-edge removal by relocation."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Removed the upward import edges by relocation, not renumbering: a new layer-0 FormalSystem/Tactic/ absorbs the five attribute/simp-set declarations and Init.lean imports it, deleting 11 upward lines outright; PropDecide+Meta, DeductionTheorem and Periodicity moved to the directories their dependencies imply. measure-refactor-partitions.py upward-edges now reports 0 lines into Automation from Syntax/Semantics/ProofSystem/Theorems and an empty theorems_files_importing_metalogic, with 7 total upward lines all from AxiomDischarge.lean. check-metalogic-cycles.sh gained a second assertion that the upward set EQUALS that 7-line allowlist, failing on surplus and shortfall alike (both negative tests run by hand and reverted); ORGANISATION.md and docs/ARCHITECTURE.md rewritten to the measured order.",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 634,
+      "project_name": "language_extension_directories_and_probe_tests",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        626,
+        632,
+        633
+      ],
+      "file_scope": [
+        "FormalSystem/Syntax/PlusLanguage/",
+        "FormalSystem/Syntax/MinusLanguage/",
+        "FormalSystem/Syntax/StarLanguage/",
+        "FormalSystem/Semantics/PlusLanguage/",
+        "FormalSystem/Semantics/MinusLanguage/",
+        "FormalSystem/Semantics/StarLanguage/",
+        "FormalSystem/Metalogic/Conservativity/MinusLanguageSoundness.lean",
+        "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean",
+        "FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/ChronicleInstance.lean",
+        "FormalSystem/Metalogic/WeakCanonical/RealModel/ChronicleRealFlow.lean",
+        "Tests/BimodalTest/TemporalWitnessProbe.lean",
+        "Tests/BimodalTest/TableauConformance.lean",
+        "FormalSystem/Syntax/PlusLanguage.lean",
+        "FormalSystem/Syntax/MinusLanguage.lean",
+        "FormalSystem/Syntax/StarLanguage.lean",
+        "FormalSystem/Semantics/PlusLanguage.lean",
+        "FormalSystem/Semantics/MinusLanguage.lean",
+        "FormalSystem/Semantics/StarLanguage.lean",
+        "FormalSystem/PlusLanguage/",
+        "FormalSystem/MinusLanguage/",
+        "FormalSystem/StarLanguage/",
+        "FormalSystem/Syntax.lean",
+        "FormalSystem/Semantics.lean",
+        "FormalSystem/FormalSystem.lean",
+        "FormalSystem/README.md",
+        "FormalSystem/Syntax/README.md",
+        "FormalSystem/Semantics/README.md",
+        "FormalSystem/Semantics/FrameClassValidity.lean",
+        "FormalSystem/Metalogic/Decidability/BiLasso/Periodic.lean",
+        "Tests/BimodalTest.lean",
+        "Tests/BimodalTest/BoxNegPreservationProbe.lean",
+        "Tests/BimodalTest/BoxNegReachabilityProbe.lean",
+        "Tests/BimodalTest/BoxSpreadProbe.lean",
+        "Tests/BimodalTest/CrossWorldPropagationProbe.lean",
+        "Tests/BimodalTest/RayRegionProbe.lean",
+        "Tests/BimodalTest/RegionGateProbe.lean",
+        "Tests/BimodalTest/UntlSnceCopyProbe.lean",
+        "Tests/BimodalTest/Metalogic/Decidability/",
+        "scripts/check-metalogic-cycles.sh",
+        "scripts/check-module-invariants.sh",
+        "scripts/measure-refactor-partitions.py",
+        "scripts/module-invariants-allowlist.txt",
+        "docs/development/PUBLICATION_REFACTOR.md",
+        "ORGANISATION.md"
+      ],
+      "description": "Merge Syntax/XLanguage/ and Semantics/XLanguage/ into XLanguage/ under the library root for Plus, Minus and Star (namespaces already match); move Metalogic/Conservativity/MinusLanguageSoundness.lean to MinusLanguage/Soundness.lean; settle the three files declaring a foreign Chronicle/Bundle namespace; move the 8 *Probe.lean files and TableauConformance.lean from the Tests/BimodalTest/ root into Tests/BimodalTest/Metalogic/Decidability/. Acceptance: measure-refactor-partitions.py namespace-audit shows only the recorded exceptions as unrelated; harness green.\n\nReconciliation notes: depends on tasks 632, 633 and 626. Task 626 edits Syntax/PlusLanguage/Axioms.lean and Semantics/PlusLanguage/PlusTruth.lean (both moved by this task) to replace manuscript line-number citations with label citations; 626 must land first so its fix travels with the file under the move tool rather than racing it. Task 429's file_scope includes Tests/BimodalTest/TemporalWitnessProbe.lean, one of the 8 files this task relocates -- no dependency edge in either direction (429 is open-ended mathematics with no fixed timeline); check 429's status live immediately before the move, and if 429 is actively in flight (uncommitted work), exclude TemporalWitnessProbe.lean from this pass and relocate it in a small follow-up once 429 lands. Task 614 lists 47 stale README date stamps; 5 of them (Syntax/PlusLanguage/README.md, Syntax/MinusLanguage/README.md, Syntax/StarLanguage/README.md, Semantics/PlusLanguage/README.md, Semantics/MinusLanguage/README.md) sit in directories this task merges away -- refresh the date stamp of the merged README as part of this task's own commit; task 614 narrows to the other 42 files and depends on this task.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-21T09:15:16Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/634_language_extension_directories_and_probe_tests/reports/01_language-extension-directories-probes.md",
+          "type": "report",
+          "summary": "Research report for the Phase 5 language-extension directory merge and test-root probe relocation."
+        },
+        {
+          "path": "specs/634_language_extension_directories_and_probe_tests/plans/01_language-extension-directory-merge.md",
+          "type": "plan",
+          "summary": "6-phase linear plan for the Phase 5 language-extension directory merge, carrying a measured namespace rename as declared scope, an atomic-batch merge phase, and the test-root probe relocation."
+        },
+        {
+          "path": "specs/634_language_extension_directories_and_probe_tests/summaries/01_language-extension-directory-merge-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the language-extension directory merge."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Landed PUBLICATION_REFACTOR.md Phase 5: Syntax/{Plus,Minus,Star}Language/ and Semantics/{Plus,Minus,Star}Language/ merged into three self-contained root-level components, MinusLanguageSoundness.lean relocated to MinusLanguage/Soundness.lean, 241 declarations renamed out of FormalSystem.Semantics into flat FormalSystem.{X}Language, the 9 loose test-root files moved to Tests/BimodalTest/Metalogic/Decidability/, and all three Chronicle files settled as recorded exceptions. lake build and lake build BimodalTest green, check-module-invariants.sh ALL CHECKS PASSED, namespace-audit unrelated bucket down from 24 to 8 with every member carrying a docstring record.",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 635,
+      "project_name": "expressiveness_extraction",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        634
+      ],
+      "file_scope": [
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/",
+        "FormalSystem/Metalogic/WeakCanonical/EFGames/",
+        "FormalSystem/Metalogic/WeakCanonical/Expressiveness/",
+        "FormalSystem/Metalogic/WeakCanonical/Separation/",
+        "FormalSystem/Metalogic/WeakCanonical/NormalForm/",
+        "FormalSystem/Metalogic/WeakCanonical/MonadicFO/",
+        "FormalSystem/Metalogic/WeakCanonical/StaviConnectives/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorDefs/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorDefsDense/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorExpressiveness/",
+        "FormalSystem/Metalogic/WeakCanonical/PriorExpressivenessDense/",
+        "FormalSystem/Metalogic/WeakCanonical/Table/",
+        "FormalSystem/Metalogic/WeakCanonical/EFGameTactics/",
+        "typst/generated/",
+        "docs/theorem-index.md",
+        "FormalSystem/MainResults.lean",
+        "docs/architecture/ADR-011-Extract-Expressiveness.md",
+        "docs/architecture/ADR-006-Expressiveness-Ownership.md"
+      ],
+      "description": "Run python3 scripts/measure-refactor-partitions.py --check (must exit 0), then move the 141-file Expressiveness set out of Metalogic/WeakCanonical/ into Metalogic/Expressiveness/ with the namespace mapping WeakCanonical.X -> Expressiveness.X (WeakCanonical/Expressiveness/ becomes Expressiveness/GameTransfer/), in one scripted commit that also regenerates typst/generated, docs/theorem-index.md, the C2/C14 baselines and MainResults.lean; then in a second commit rename the 39 paper-numbered files to content names and delete declaration-free stubs. Change ADR-011's status to Accepted with a pointer from ADR-006. Acceptance: check-metalogic-cycles.sh reports exactly 1; residual WeakCanonical at 38 files; full harness (with build) green after each commit.\n\nReconciliation notes: depends on task 634. Task 412 cites Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean; this path is confirmed to stay in the residual 38-file set (it is not in the Expressiveness subtree moved here), so no citation drift results -- record this fact in this task's own docstring/PR notes so a reader of 412 does not have to re-derive it. Task 178 depends on this task (it cites Kamp-named results this task renames).",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-21T11:16:10Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/635_expressiveness_extraction/reports/01_expressiveness-extraction-move.md",
+          "type": "report",
+          "summary": "Expressiveness extraction research: gate passes 141/38 at HEAD; post-move cycle count simulated at exactly 1 with Expressiveness a directory-level sink; the bare FormalSystem.Metalogic.WeakCanonical namespace is shared by 29 moved and 28 residual files so no namespace-map prefix row is safe; typst/generated regeneration would zero a true archived sorry count (root cause and one-line fix identified); the '39 paper-numbered files' figure is not mechanically reproducible."
+        },
+        {
+          "path": "specs/635_expressiveness_extraction/plans/01_expressiveness-extraction-move.md",
+          "type": "plan",
+          "summary": "Seven-phase plan for the Expressiveness extraction, two mandated commits preserved, with enumerated rename list and evidenced exclusions."
+        },
+        {
+          "path": "specs/635_expressiveness_extraction/summaries/01_expressiveness-extraction-move-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary: what moved, the eight plan deviations, and the verification record."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Relocated the 141-module / 104,087-line expressiveness development from FormalSystem/Metalogic/WeakCanonical/ to FormalSystem/Metalogic/Expressiveness/ with the full WeakCanonical.X -> Expressiveness.X namespace rename, so Kamp.kampPriorExpressiveCompleteness and uSExpressivelyCompleteOverPrior no longer carry 'weak canonical' in their names (ADR-011, now Accepted). A second commit renamed 12 paper-numbered modules to content names and deleted 2 declaration-free stubs. Three commits, each green under the build-inclusive check-module-invariants.sh, with check-metalogic-cycles.sh at exactly 1 and the standing partition gate made non-degenerate.",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 636,
+      "project_name": "docstring_and_citation_normalisation",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        635
+      ],
+      "file_scope": [
+        "FormalSystem/",
+        "references.bib",
+        "typst/bibliography.bib",
+        "typst/",
+        "FormalSystem/Examples/",
+        "FormalSystem/Semantics/TaskFrame.lean",
+        "FormalSystem/Semantics/Truth.lean",
+        "Tests/"
+      ],
+      "description": "Convert every ## References entry in FormalSystem/**/*.lean to Mathlib's * [Author, *Title*][key] form resolving in the root references.bib; merge typst/bibliography.bib into it and point typst at the root file; fold ## Paper Specification Reference into ## References and remove ## Implementation Status; strip tooling notes, personal paths and Logos and ProofChecker wording from library docstrings, Examples/ and tests. Acceptance: C14, C15, C19 green; grep -rn 'home/benjamin' FormalSystem Tests empty; typst compiles.\n\nReconciliation notes: depends on task 635. Tasks 563, 564, 565, 566, 567, 616, 617 and 618 (the categorical-front new-file tasks) are unrelated mathematics with no dependency on this task's schedule; they should adopt this task's citation form (the * [Author, *Title*][key] form against the root references.bib) once it lands, or migrate to it if drafted first -- a convention note, not a blocking dependency. Task 177 stays a separate task (its residual scope is drift re-audit plus the Axiom Reference update, materially different from this task's citation-form normalisation) but depends on this task in addition to task 635.",
+      "created": "2026-09-19T08:40:54Z",
+      "last_updated": "2026-09-21T13:52:54Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/636_docstring_and_citation_normalisation/reports/01_docstring-citation-normalisation.md",
+          "type": "report",
+          "summary": "Baseline measurement and conversion plan for docstring/citation normalisation across FormalSystem/, BimodalTools/ and Tests/."
+        },
+        {
+          "path": "specs/636_docstring_and_citation_normalisation/plans/01_docstring-citation-normalisation.md",
+          "type": "plan",
+          "summary": "10-phase implementation plan for the docstring and citation normalisation sweep across FormalSystem/, BimodalTools/ and Tests/."
+        },
+        {
+          "path": "specs/636_docstring_and_citation_normalisation/summaries/01_docstring-citation-normalisation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with the full before/after acceptance table, every plan deviation, and six follow-ups."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Merged typst/bibliography.bib into the root references.bib (77 entries, no duplicate keys) and re-pointed both typst documents at it; normalised every ## References and ### References block across FormalSystem/, BimodalTools/ and Tests/ to the three-way normal form; folded all 12 Paper Specification Reference headings and removed all 4 Implementation Status headings with their substantive prose preserved; and drove personal paths, literature/ pointers, Logos/ProofChecker wording, markdown-link cross-references and bare-form bibkeys to zero. Added scripts/reanchor-lean-citations.py and docs/development/REFERENCE_NORMAL_FORM.md. The build-inclusive scripts/check-module-invariants.sh is ALL PASS, both typst documents compile with --root, and the two known-red adjacent baselines (readme-lint.sh 21, typst-sync-check.sh Check 1 = 9) are unchanged.",
+      "roadmap_items": [
+        "specs/ROADMAP.md Phase 5 \"Publication and Documentation\" — the citation-form normalisation half is complete; task 177 (drift re-audit plus the Axiom Reference update) remains and now depends on this."
+      ],
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 629,
+      "project_name": "reconcile_task_set_with_publication_refactor_programme",
+      "status": "completed",
+      "task_type": "meta",
+      "description": "Turn the committed publication refactor programme into a coherent task set: create, revise, merge and abandon tasks so the refactor runs systematically without colliding with open work. SOURCE OF TRUTH: docs/development/PUBLICATION_REFACTOR.md (Section 7 phased programme, Section 8 dependency order and publication gate, Section 9 paste-ready follow-up descriptions A-I), ADR-010 and ADR-011 (both Proposed), and scripts/measure-refactor-partitions.py (regenerate every count; never copy numbers from the document). Grounding: task 627's report, plan and summary. DELIVER: (1) Create tasks A-I from Section 9 (A = Phases 0+2 move tool and Boneyard relocation; B = Phase 1 hygiene excluding specs/; C = Phase 3 BimodalTools split; D = Phase 4 upward edges; E = Phase 5 language directories and probe tests; F = Phase 6 Expressiveness extraction; G = Phase 7 docstring and citation normalisation; H = Phase 8 CI parity, root collapse and publication gate; I = Phase 9 optional post-publication), with dependencies encoding 0->1->2->{3,4}->5->6->7->8->9, and set file_scope for each. Resolve the A/B ordering wrinkle (A bundles Phases 0 and 2 but Phase 1 sits between them): either order A after B or record why the 1->2 edge is not real. (2) Reconcile every open task against the programme. Collisions identified at 627 closeout, each to be verified fresh before acting: E vs 626 (626 edits Syntax/PlusLanguage/Axioms.lean and Semantics/PlusLanguage/PlusTruth.lean, which E moves; 626 should land first and its citation work overlaps G); E vs 429 (429 file_scope includes Tests/BimodalTest/TemporalWitnessProbe.lean, which E moves); E vs 614 (README date stamps in directories E merges; sequence after E or absorb); C vs 298, 296, 282, 604, 231 (Automation/ file_scope and lean_exe/lakefile changes that C relocates into BimodalTools; decide per task whether it precedes C or is rewritten against BimodalTools paths); B vs 604 (B deletes migrate_schema_v2.py and standardize_metadata.py, which 604 inventories as dataset readers); B vs 257 (257 file_scope includes .gitattributes, which B untracks as empty; confirm whether 257 needs it for LFS); B vs 610 (same doc-cleanup class; candidate to merge into B); H vs 625 (625 registers modules in FormalSystem/FormalSystem.lean, which H replaces with an mk_all-generated root; 625 first); G vs 177 (both are the final documentation pass; 177 is gated on the decidability chain and cites Kamp/WeakCanonical paths F moves; merge into G or sequence after F and G); 178 after F (examples cite names F renames; C also edits Examples/BimodalProofs.lean imports); new-file tasks 563-567 and 616-618 should adopt G's citation form or be sequenced after G. Mostly independent, verify only: the decidability chain 410-412, 428-430, 464, 465, 481, 482 (lives in Metalogic/Decidability/Verified/, which no phase moves; D touches FMP/Periodicity.lean and DeductionTheorem nearby); 412 cites WeakCanonical/GroupModel/CountermodelBase.lean, which stays residual under F; 534, 559 (Kamp) and 125, 497-502 (Boneyard) are read-only references whose path citations go stale after A and F. For each open task decide: keep with new dependency edges, revise description/file_scope to post-move paths, merge into a programme task, or abandon with a recorded reason. (3) Record the specs/ disposition at the publication gate: current default is keep tracked during the programme and untrack at the gate (recommended, non-blocking); alternatives are keep published or move to an unpublished branch; confirm with the user. (4) Write a reconciliation report listing every created/revised/merged/abandoned task with its rationale, plus the resulting dependency graph. CONSTRAINTS: this is task-management work only; do not modify FormalSystem/, Tests/, docs/ or scripts/. Ask the user before abandoning or merging any task that has existing research or plan artifacts. No task numbers in any file outside specs/",
+      "topic": "publication-quality",
+      "created": "2026-09-19T07:59:18Z",
+      "last_updated": "2026-09-19T08:49:06Z",
+      "session_id": "sess_1789805164_847aec",
+      "artifacts": [
+        {
+          "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/reports/01_task-set-reconciliation.md",
+          "type": "report",
+          "summary": "Full A-I follow-up task specification plus a per-task reconciliation table for every named collision, with the specs/ disposition flagged as a user decision."
+        },
+        {
+          "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/plans/01_task-set-reconciliation.md",
+          "type": "plan",
+          "summary": "4-phase task-set reconciliation plan, 3.5 hours."
+        },
+        {
+          "path": "specs/629_reconcile_task_set_with_publication_refactor_programme/summaries/01_task-set-reconciliation-summary.md",
+          "type": "summary",
+          "summary": "Full task-by-task disposition table, dependency graph, and specs/ disposition default."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Created nine follow-up tasks (630-638) for the publication refactor programme's phases A-I with full dependency graph and file_scope, revised five colliding open tasks (604, 614, 177, 178, 429), annotated eight categorical-front tasks with a citation-convention note, merged and abandoned task 610 into task 631, and verified the resulting 58-task dependency graph is acyclic with no dangling references.",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 627,
+      "project_name": "research_cslib_lean_engineering_refactor_plan",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Research https://github.com/benbrastmckie/cslib as a reference model for Lean engineering practice, and produce a systematic refactoring plan to bring this repository (BimodalLogic / FormalSystem) up to publication standard. Research first; the report should end in a phased, dependency-ordered refactor programme that can be split into follow-up tasks.\n\nSURVEY CSLIB FOR: (1) library/package layout and lakefile structure (lean_lib split, what is and is not in the default target, executables, test library); (2) namespace discipline and the file-path-to-namespace convention; (3) public API surface: what is exported, aggregator modules, private/protected usage, naming conventions; (4) module docstrings, declaration docstrings, and in-proof comment style; (5) citation and reference conventions (how papers are cited in docstrings, bibliography files, references section format); (6) license and copyright headers, CITATION/authors metadata; (7) linters, CI, style gates, and contribution/README conventions; (8) test organisation.\n\nCOMPARE AGAINST THIS REPO'S KNOWN STRUCTURAL ISSUES (from a file-tree review on 2026-09-19): (a) upward layering edges beyond the two documented in ORGANISATION.md -- Syntax/Formula.lean and Semantics/Truth.lean import Automation.TruthNormAttr; Metalogic/Algebraic/BooleanStructure.lean imports Automation.Tactics.PropDecide; Decidability imports ProofSearch.Core/Strategies, Normalization, DataExport; (b) 12 of 13 lean_exe targets are ML/dataset tooling rooted in FormalSystem.Automation, so `import FormalSystem` pulls training infrastructure -- candidate split into a separate lean_lib; (c) Metalogic/WeakCanonical/ is 132k lines (56% of Metalogic), 78k of it the Kamp expressive-completeness proof plus EFGames/Expressiveness, so the directory name misdescribes its content; ADR-006 declined a physical regroup because of the BXCanonical<->WeakCanonical directory cycle -- reassess in light of cslib practice; (d) ~25 live files over 1,700 lines with longFile exemptions (largest: EFGames/GapDetection.lean 5,092, Expressiveness/SplitPoint.lean 4,906); (e) Boneyard/ (169 files, 92k lines, all sorries) lives inside FormalSystem/ -- ADR-009 keeps it, but its rationale cites the LaTeX edition that latex/README.md marks frozen; (f) loose *Probe.lean and Trace* tests at the Tests/BimodalTest/ root instead of mirroring library directories; (g) non-deliverable content tracked or shipped: specs/, CLAUDE.md, .claude-extensions.json, personal absolute paths in docs, internal 'Logos'/'ProofChecker' naming in README/CITATION.cff/examples/tests, duplicate frozen LaTeX manual with tracked PDF, internal docs/research notes, one-off migration scripts in scripts/.\n\nDELIVER: a report mapping each cslib convention to its current state here (adopt / already matches / deliberately diverge, with reasons), a concrete target layout (directory tree + lakefile targets + namespace map), header/license/citation templates to adopt, and a phased refactor plan where every phase keeps `lake build` green and scripts/check-module-invariants.sh passing, with explicit handling of the existing ADRs (006, 009) -- either reaffirm or propose superseding ADRs. Identify which phases change paths or names that external readers would cite, so those land before publication. Do not modify FormalSystem/ or Tests/ in this task.",
+      "topic": "publication-quality",
+      "created": "2026-09-19T05:43:05Z",
+      "last_updated": "2026-09-19T07:03:24Z",
+      "session_id": "sess_1789799001_60286d",
+      "artifacts": [
+        {
+          "path": "specs/627_research_cslib_lean_engineering_refactor_plan/reports/01_cslib-refactor-plan.md",
+          "type": "report",
+          "summary": "cslib-referenced publication refactor plan with measured WeakCanonical/Automation partitions and ADR-010/011 proposals"
+        },
+        {
+          "path": "specs/627_research_cslib_lean_engineering_refactor_plan/plans/01_cslib-refactor-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: measurement tooling, programme document, ADR-010/011 drafts, full gate and summary"
+        },
+        {
+          "path": "specs/627_research_cslib_lean_engineering_refactor_plan/summaries/01_cslib-refactor-plan-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with reconciled measurements, discrepancies against the report, verification results and the follow-up task list."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Committed a leading-import graph library and a measurement script reproducing every structural count the refactor programme depends on (with a --check pre-move gate), landed the programme as docs/development/PUBLICATION_REFACTOR.md with nine paste-ready follow-ups, and wrote Proposed ADR-010 and ADR-011 cross-linked from ADR-009 and ADR-006. No FormalSystem/ or Tests/ file modified; both builds, the full invariant harness and the cycle check are green.",
+      "roadmap_items": [
+        "Phase 5: Publication and Documentation"
+      ],
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 626,
+      "project_name": "repair_lplus_manuscript_citations_pin_blstar_semantics",
+      "status": "completed",
+      "task_type": "general",
+      "description": "Repair drifted manuscript citations in the L+ files and pin def:BLstar-semantics.\n\nWHAT IS WRONG (verified 2026-09-18). (a) FormalSystem/Syntax/PlusLanguage/Axioms.lean cites the manuscript by LINE NUMBER in about eight docstrings (\"paper line 1108\", \"paper footnote, line 1118\", \"line 1119\"); the manuscript /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex has moved, and the stability clause is now near line 1155 with its footnote near 1158-1161. FormalSystem/Semantics/PlusLanguage/PlusTruth.lean carries the same kind of citation. Line numbers will drift again; labels and quotable phrases will not. (b) docs/reference/paper-definitions-of-record.md records def:BLstar-semantics as LIVE-UNPINNED on the ground that the stability clause is quoted in this repository only in paraphrase. It has since been checked verbatim against the source: the clause \"M,tau,x satisfies Stability phi iff M,sigma,x satisfies phi for all sigma in <tau>_x\" appears in the subsection Restricted Modalities and again inside def:BLstar-semantics in the appendix, and it is PlusTruthAt's stab arm word for word, with StarTruthAt passing the register vector unchanged to sigma (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md section 3.2, items 3 and 4).\n\nDELIVER. (1) Replace every manuscript line-number citation in the two files by a label citation or a quotable phrase (def:BLstar-semantics; \"the footnote to the Stability clause\"); grep the rest of FormalSystem/Syntax/PlusLanguage, Semantics/PlusLanguage, Syntax/StarLanguage and Semantics/StarLanguage for the same pattern and fix what is found. (2) Pin def:BLstar-semantics in docs/reference/paper-definitions-of-record.md from the appendix block, following that file's existing row conventions, and update its KNOWN-ANCHORS row; keep the recorded exclusion of the world registers. (3) Add one docstring sentence at the stab_4 constructor: it is surplus to the manuscript's commented-out def:TM-stability, being derivable from SK, ST and the S5 schema, and is kept for convenience; say nothing stronger and do not remove the constructor. (4) Record, where the StarLanguage correspondence table already records the world registers as excluded, that the open-future, open-past and nomic operators of the subsection Restricted Modalities are manuscript operators without a formalization here (a separate task, 625, formalizes the first two; do not reference its number in any file outside specs/).\n\nCONSTRAINTS. Docstring and documentation edits only: no declaration, statement or proof changes. Run the repository's anchor gate (the C15 check in scripts/check-module-invariants.sh) and a guarded scoped build of the touched modules (bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- <Module>), detached, before completing. No task numbers in any file outside specs/. DEPENDENCIES: none.",
+      "topic": "documentation",
+      "dependencies": [],
+      "created": "2026-09-19T00:49:20Z",
+      "last_updated": "2026-09-21T02:28:01Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "file_scope": [
+        "FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean",
+        "FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean",
+        "FormalSystem/Semantics/PlusLanguage/PlusTruth.lean",
+        "FormalSystem/Syntax/PlusLanguage/Axioms.lean",
+        "FormalSystem/Syntax/PlusLanguage/Formula.lean",
+        "FormalSystem/Syntax/StarLanguage/README.md",
+        "docs/reference/paper-definitions-of-record.md"
+      ],
+      "artifacts": [
+        {
+          "path": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md",
+          "type": "report",
+          "summary": "Full 15-site citation-drift inventory, def:BLstar-semantics verbatim text and sha256, stab_4/def:TM-stability derivation fact, and StarLanguage README row guidance for the implementation phase."
+        },
+        {
+          "path": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/plans/01_repair-lplus-citations-pin-blstar.md",
+          "type": "plan",
+          "summary": "Six-phase implementation plan, all phases marked [COMPLETED] with inline task annotations."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Replaced every bare manuscript line-number citation in FormalSystem/Syntax/PlusLanguage/ and FormalSystem/Semantics/PlusLanguage/ with label or quotable-phrase citations, pinned def:BLstar-semantics in docs/reference/paper-definitions-of-record.md, and recorded the stab_4/def:TM-stability relationship and the unformalized Restricted-Modalities operators.",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 639,
+      "project_name": "readme_accuracy_and_entry_point_fixes",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "publication-quality",
+      "dependencies": [],
+      "file_scope": [
+        "README.md",
+        "FormalSystem/README.md",
+        "docs/reference/API_REFERENCE.md",
+        "docs/user-guide/architecture.md",
+        "FormalSystem/Syntax/PlusLanguage/README.md",
+        "FormalSystem/Examples/BimodalProofs.lean",
+        "FormalSystem/Automation/BenchmarkAnchorsMain.lean",
+        "FormalSystem/Metalogic/Independence/RationalWitness.lean"
+      ],
+      "created": "2026-09-20T18:47:56Z",
+      "last_updated": "2026-09-21T00:18:14Z",
+      "description": "Correct the factual and navigational defects in the root README and its nearest siblings before the repository is shown to outside readers. (1) Axiom counts contradict each other: the Axiom Systems table and the mermaid graph give Base 37 / ZTime 40 / Dense 39 / RTime 42 and the L+ paragraph says \"the 45 TM schemata\", while the paragraph directly below says `inductive Axiom` has 29 constructors (23 Base + 2 Dense + 2 ZTime + 2 RTime), which is what Axioms.lean and harness check C22 confirm. Decide one counting convention (primitive constructors, with derived mirrors counted separately and labelled as derived), apply it to the table, the graph and the prose, and explain the 45 figure where PlusAxiom really does re-declare 45 schemata. The same stale counts appear in FormalSystem/README.md (\"TM Base (37 constructor axioms)\"), docs/reference/API_REFERENCE.md (\"The 45 axiom constructors\"), docs/user-guide/architecture.md, FormalSystem/Syntax/PlusLanguage/README.md, and the docstrings of Automation/BenchmarkAnchorsMain.lean and Metalogic/Independence/RationalWitness.lean. (2) The \"Additional Axioms\" column lists `P phi -> S(phi, not phi)` for ZTime and `prior_S_gap` for RTime as axioms although both are derived mirrors. (3) The Project Structure tree places MinusLanguage/ and PlusLanguage/ directly under FormalSystem/; they live under FormalSystem/Syntax/ (StarLanguage/ is omitted). (4) FormalSystem/MainResults.lean, the one-page kernel-audited list of headline theorems, is not linked from the README at all; the \"Demo\" link instead points at Examples/BimodalProofs.lean, whose header still cites `../ProofChecker/Theorems/Perpetuity.lean`. Link MainResults.lean at the top and fix that header. (5) The Reference list calls latex/BimodalReference.pdf the \"full formal specification\" while the top of the README says that edition is superseded and unsynced. (6) DONE before dispatch: the BimodalHarness links in README.md, docs/README.md and docs/training/PIPELINE.md were de-linked and marked as a private repository; restore the links if that repository is made public. (7) The BibTeX key is brastmckie2025construction with year 2026 and the Task Semantics section cites \"(Brast-McKie, 2025)\" while the header says forthcoming. (8) FormalSystem/README.md line 252 carries `<!-- TODO: add description -->` for MainResults.lean. Acceptance: check-module-invariants.sh --no-build and readme-lint.sh green; no count in any listed file disagrees with Axioms.lean; every README link resolves for an anonymous reader. Coordination: task 631 also edits README.md (Logos/ProofChecker naming, latex retirement); land this first, and item (5) becomes moot once 631 retires latex/.",
+      "session_id": "sess_1789947599_745d6f",
+      "artifacts": [
+        {
+          "path": "specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md",
+          "type": "report",
+          "summary": "Per-item verification and fix recommendations for all 8 README defects, plus two additional findings (FormalSystem/README.md Discrete/Dedekind staleness, API_REFERENCE.md's stale Axiom code block) and a C14 blind-spot risk note."
+        },
+        {
+          "path": "specs/639_readme_accuracy_and_entry_point_fixes/plans/01_readme-accuracy-entry-points.md",
+          "type": "plan",
+          "summary": "7-phase plan correcting axiom-count conventions, derived-mirror labelling, structure-tree nesting, entry-point links and citation consistency across README.md and seven sibling files."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Wrote a single canonical 'Two axiom counts' derivation in docs/reference/axiom-reference.md and swept README.md, FormalSystem/README.md, docs/reference/API_REFERENCE.md, docs/user-guide/architecture.md, two further docs/project-info files, and four Lean docstrings into agreement with it, while also fixing the Project Structure tree nesting, adding a MainResults.lean entry-point link, repairing five stale ../ProofChecker/ relative links, and aligning the paper citation year. check-module-invariants.sh --no-build and readme-lint.sh are both green.",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 640,
+      "project_name": "readme_cold_reader_restructure",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "publication-quality",
+      "dependencies": [
+        639
+      ],
+      "file_scope": [
+        "README.md",
+        "docs/reference/paper-definitions-of-record.md"
+      ],
+      "created": "2026-09-20T18:47:56Z",
+      "last_updated": "2026-09-21T00:57:24Z",
+      "description": "Restructure the root README for a reader who arrives cold and gives it two minutes. The content is accurate and thorough but the first screen is background prose; the verified results, which are the point, start at line 166. (1) Put a short results summary directly under the opening paragraph: soundness and weak completeness at all four frame classes, strong completeness proved at Base and Dense and machine-refuted at ZTime and RTime, zero sorry and zero custom axioms in the live tree, the pinned axiom-set harness, with links to MainResults.lean and docs/theorem-index.md. (2) Move revision-history narration out of the README and into docs/reference/paper-definitions-of-record.md: the \"Earlier revisions of this README described...\" and \"The axiom-basis question this README used to record as open...\" paragraphs, and the aside about what the saturation footnote said before the 2026-09 revision. The README should state what is true now. (3) Add a short \"How this repository is developed\" section that explains, for a reader who opens specs/ or CLAUDE.md, that development is agent-assisted under a task system and that correctness rests on the Lean kernel plus the invariant harness, not on review of agent output; point to docs/development/MODULE_INVARIANTS.md. (4) Rename the Tags footer entry \"TM-plus\" to match current naming or drop the footer. (5) Keep the generated inventory block and every harness-checked anchor intact. Acceptance: the first 40 lines state what is proved and how to verify it; harness and readme-lint green; no paragraph describes a previous state of the README.",
+      "session_id": "sess_1789947599_745d6f",
+      "artifacts": [
+        {
+          "path": "specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md",
+          "type": "report",
+          "summary": "Line-by-line map of README.md restructure items, destination content for docs/reference/paper-definitions-of-record.md, and verified harness impact (C12-C15, C18, C21, readme-lint.sh)."
+        },
+        {
+          "path": "specs/640_readme_cold_reader_restructure/plans/01_readme-cold-reader-restructure.md",
+          "type": "plan",
+          "summary": "Five-phase prose-only plan restructuring root README.md for a cold reader plus one dated note in paper-definitions-of-record.md."
+        },
+        {
+          "path": "specs/640_readme_cold_reader_restructure/summaries/01_readme-cold-reader-restructure-summary.md",
+          "type": "summary",
+          "summary": "Five-phase README restructure: results summary hoisted into the first 40 lines, revision-history narration retired to paper-definitions-of-record.md, new trust-model section added, Tags footer renamed, all acceptance criteria and both harness gates green."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Restructured README.md so a cold reader learns what is proved (soundness/weak completeness at all four frame classes, strong completeness proved at Base/Dense and machine-refuted at ZTime/RTime, zero sorry/zero custom axioms, the 105-declaration axiom-set harness) within the first 40 lines (now line 35), retired three revision-history passages (two to a dated note in docs/reference/paper-definitions-of-record.md), added a 'How this repository is developed' trust-model section, and renamed the stale 'TM-plus' footer token. Full build (check-module-invariants.sh) and readme-lint.sh both pass; check-paper-definitions.sh verdict unchanged.",
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
+      "project_number": 641,
+      "project_name": "worked_example_walkthrough_for_outside_readers",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "publication-quality",
+      "dependencies": [
+        639
+      ],
+      "file_scope": [
+        "FormalSystem/Examples/Walkthrough.lean",
+        "FormalSystem/Examples.lean",
+        "FormalSystem/Examples/README.md",
+        "README.md"
+      ],
+      "created": "2026-09-20T18:47:56Z",
+      "last_updated": "2026-09-21T01:28:07Z",
+      "description": "Provide one worked-example file that an outside reader can open and follow end to end, ahead of the larger Examples expansion. Examples/BimodalProofs.lean, which the README advertises as the demo, is a list of one-line `example := perpetuityN _` applications and shows none of the metatheory. Add FormalSystem/Examples/Walkthrough.lean (name open) that, on concrete formulas: builds a DerivationTree by hand and again with the automation; applies `soundness` to obtain validity; applies `completeness` in the other direction; runs the tableau `isValid` procedure and uses `sound_of_isValid`; exhibits one frame-class-sensitive formula (derivable at Dense, not at Base or ZTime) using the existing independence results; and states one refutation such as notStrongCompletenessZTime with a sentence on what it means. Prose docstrings should carry a reader who knows modal logic but not this codebase. Do not cite Kamp-named declarations, so that the file is unaffected by the later Expressiveness rename. Wire it into the library aggregator, link it from the README as the demo, and keep it sorry-free with the standard three axioms. Acceptance: lake build green; harness green; `#print axioms` on each example shows exactly propext, Classical.choice, Quot.sound or fewer. Task 178 then extends this file rather than starting from BimodalProofs.lean.",
+      "session_id": "sess_1789947599_745d6f",
+      "artifacts": [
+        {
+          "path": "specs/641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md",
+          "type": "report",
+          "summary": "Research report: verified Lean shapes for every walkthrough leg, harness/wiring obligations, and a five-phase decomposition."
+        },
+        {
+          "path": "specs/641_worked_example_walkthrough_for_outside_readers/plans/01_worked-example-walkthrough.md",
+          "type": "plan",
+          "summary": "Six-phase sequential plan for FormalSystem/Examples/Walkthrough.lean plus its axiom-assertion test file and seven wiring edits."
+        },
+        {
+          "path": "specs/641_worked_example_walkthrough_for_outside_readers/summaries/01_worked-example-walkthrough-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the worked-example walkthrough."
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Added FormalSystem/Examples/Walkthrough.lean: 25 named, docstringed declarations carrying two concrete formulas through a hand-built and an automation-found derivation, soundness, completeness, the tableau decision procedure, frame-class sensitivity by one concrete integer countermodel, and the proved strong-completeness refutation at ZTime. Every declaration's axiom set is asserted with #guard_msgs in Tests/BimodalTest/WalkthroughAxioms.lean, and the root README demo link now points here instead of BimodalProofs.lean.",
+      "roadmap_items": [
+        "publication_examples_and_demo"
+      ],
+      "archived_at": "2026-09-21T14:17:50Z"
+    },
+    {
       "project_number": 610,
       "project_name": "replace_remaining_lakefile_lean_mentions_in_docs",
       "status": "abandoned",
