@@ -10,6 +10,7 @@ import FormalSystem.Semantics.Frames
 import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.FrameClassValidity
 import FormalSystem.Semantics.IntNormalForm
+import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
@@ -71,6 +72,10 @@ through their sibling aggregators `Semantics/Extension.lean` and so on.
   one-step relation `step w u := TaskRel w 1 u`, with `iter`/`iter_add` as the arithmetic core and
   `taskRel_eq_iter` as the decomposition theorem; also records the binder-fit finding for the two
   Mathlib succ-Archimedean-to-ℤ transfer routes
+- `Periodicity`: the finite-carrier periodicity toolkit stated against `IntNormalForm`'s `iter`
+  and `IsStepPath` — pigeonhole, loop splicing, and the bounded-reachability witness the
+  decision procedure's lasso search enumerates to. Distinct from
+  `Correspondence/FwdRecPeriodicity`, which is the forward-recurrence half of the Galois layer
 - `PartialHistory`: The paper's partial-history layer (`def:world-history`) — task-respecting
   state assignments on a *nonempty* time set; carries the totality predicate `IsTotal`, the
   convexity predicate `IsConvex`, the extension relation `Extends`, time shift, and

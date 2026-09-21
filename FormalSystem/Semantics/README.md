@@ -33,6 +33,7 @@ live file and subdirectory here, and no row for anything else.
 | LexCarrier.lean | `LexInt`: `SuccOrder`/`PredOrder` instances, `isLeast_pos`, and the three non-Archimedean theorems for `α ×ₗ ℤ` at an arbitrary ordered abelian group `α` — instantiated at `ℚ` for the CEF countermodel and at `ℤ` for the `Sat .Discrete` separation |
 | FrameAxioms.lean | The frame axioms (nullity, compositionality, reflection) as standalone statements |
 | IntTransfer.lean | Transfer of ℤ-frame facts across the normal form |
+| Periodicity.lean | Pigeonhole, loop splicing and bounded reachability over a finite carrier, stated against `IntNormalForm.lean`'s `iter`/`IsStepPath`. **Not** `Correspondence/FwdRecPeriodicity.lean`: this module is the general finite-carrier toolkit the decision procedure's lasso search rests on, while that one is the forward-recurrence half of the frame-class Galois layer |
 | PartialHistory.lean | Partial histories on arbitrary nonempty subsets of the duration group, the `IsTotal`/`IsConvex` predicates, time shift, and `WorldHistory` — the world histories (the paper's possible worlds), with the `state` accessor |
 | PartialHistoryOrder.lean | The order structure on partial histories |
 | MinusLanguage.lean | Aggregator for `MinusLanguage/`; imported by the root aggregator `FormalSystem/FormalSystem.lean`, mirroring `Syntax/MinusLanguage.lean` |

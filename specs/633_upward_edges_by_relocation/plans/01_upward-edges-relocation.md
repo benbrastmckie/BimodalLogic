@@ -342,7 +342,7 @@ them in the listed order (1, 3, 4); true parallel execution requires separate wo
 
 ---
 
-### Phase 4: Move Periodicity.lean to Semantics/ [NOT STARTED]
+### Phase 4: Move Periodicity.lean to Semantics/ [COMPLETED]
 
 - **Goal:** Delete the `Semantics -> Metalogic` line by moving a module that already declares
   `namespace FormalSystem.Semantics` into the directory that namespace names.

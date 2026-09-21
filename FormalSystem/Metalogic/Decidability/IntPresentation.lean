@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.TaskModel
-import FormalSystem.Metalogic.Decidability.FMP.Periodicity
+import FormalSystem.Semantics.Periodicity
 
 /-!
 # `IntPresentation` — a Computational Presentation of a Finite ℤ-Time Frame

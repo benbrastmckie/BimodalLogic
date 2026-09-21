@@ -8,7 +8,7 @@ import Mathlib.Data.Finset.Max
 import Mathlib.Data.Fintype.Pigeonhole
 import Mathlib.SetTheory.Cardinal.Finite
 import FormalSystem.Semantics.IntNormalForm
-import FormalSystem.Metalogic.Decidability.FMP.Periodicity
+import FormalSystem.Semantics.Periodicity
 
 /-!
 # Periodic Extension over a Finite Carrier

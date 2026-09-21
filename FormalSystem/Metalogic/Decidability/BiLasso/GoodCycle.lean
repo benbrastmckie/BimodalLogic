@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.BiLasso.Realized
-import FormalSystem.Metalogic.Decidability.FMP.Periodicity
+import FormalSystem.Semantics.Periodicity
 import Mathlib.Data.Int.LeastGreatest
 
 /-!

@@ -18,14 +18,18 @@ a line count, which rots on every edit and which every row of this table previou
 | `Filtration.lean` | 29 | Filtration construction: quotienting a model by subformula closure equivalence |
 | `FiniteModel.lean` | 13 | Finite model extraction and cardinality bounds |
 | `FMP.lean` | 10 | Main FMP re-export and unified interface |
-| `Periodicity.lean` | 7 | Pigeonhole, loop splicing, and bounded reachability over a finite carrier |
 | `TruthPreservation.lean` | 16 | Truth preservation across the filtration quotient |
 
 ## Key Results
 
-Every symbol below is a declaration in this directory and is sorry-free — as is all of
-`FormalSystem/` outside `Boneyard/`, which check C3 of `scripts/check-module-invariants.sh`
-pins by content as a structural-`sorry` inventory of zero.
+Every symbol below is sorry-free — as is all of `FormalSystem/` outside `Boneyard/`, which check
+C3 of `scripts/check-module-invariants.sh` pins by content as a structural-`sorry` inventory of
+zero. All but the last two are declarations in this directory. The periodicity toolkit moved to
+[`Semantics/Periodicity.lean`](../../../Semantics/Periodicity.lean): it imports only
+`Semantics/IntNormalForm.lean` and two Mathlib modules, declares `namespace FormalSystem.Semantics`
+and always did, and keeping it here was the sole reason `Semantics/Extension/PeriodicExtension.lean`
+carried an upward import into `Metalogic/`. Its results are listed here because `FMP.lean` and
+`BiLasso/GoodCycle.lean` are among its consumers.
 
 - `fmp_contrapositive` (`FMP.lean`): `(∀ S : ClosureMCSBundle φ, φ ∈ S.carrier) → Derivable .Base [] φ`
   — the FMP-based completeness direction
@@ -43,10 +47,10 @@ pins by content as a structural-`sorry` inventory of zero.
   connective. **These are statements about MCS membership, not about `TruthAt`** — see the next
   section, which explains why no `TruthAt`-shaped version of them is available on this frame. Read
   as membership facts they are exactly the truth-preservation content this directory supplies
-- `exists_lt_iter_of_card_le` (`Periodicity.lean`): an iterate at least as long as the carrier
+- `exists_lt_iter_of_card_le` (`../../../Semantics/Periodicity.lean`): an iterate at least as long as the carrier
   passes through some state twice, and the loop can be excised — a strictly shorter iterate joins
   the same endpoints
-- `exists_bounded_iter` (`Periodicity.lean`): whatever is reachable is reachable in fewer than
+- `exists_bounded_iter` (`../../../Semantics/Periodicity.lean`): whatever is reachable is reachable in fewer than
   `Nat.card W` steps. This is the bound a bounded graph search enumerates to. Note the quantifier
   placement: it is a statement about *reachability*, not about a fixed path — the fixed-path
   phrasing is false, and the module carries the counterexample
