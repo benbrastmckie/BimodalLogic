@@ -30,8 +30,8 @@ constructors never appear in the proof step dataset. This file fills that gap.
 
 ## References
 
-* [Derivation.lean](../ProofSystem/Derivation.lean) - DerivationTree constructors
-* [Combinators.lean](./Combinators.lean) - Propositional combinators
+* `FormalSystem/ProofSystem/Derivation.lean` — DerivationTree constructors
+* `FormalSystem/Theorems/Combinators.lean` — Propositional combinators
 -/
 
 namespace FormalSystem.Theorems.ContextualProofs

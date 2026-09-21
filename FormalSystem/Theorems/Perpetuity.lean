@@ -29,13 +29,12 @@ between modal necessity (□) and temporal operators (always △, sometimes ▽)
 - `▽φ` = `sometimes φ` = `¬△¬φ` (φ at some time: past, present, or future)
 - `◇φ` = `diamond φ` = `¬□¬φ` (φ is possible)
 
-## Implementation Status
+## How each principle is derived
 
-**ALL 6 PRINCIPLES FULLY PROVEN** (100% completion):
-- P1-P4: Fully proven in initial implementation
-- P5: Fully proven via persistence lemma (uses `modal5`, temporal K distribution)
-- P6: Fully proven via P5(¬φ) + bridge lemmas + doubleContrapose
-- Persistence lemma: Fully proven using `reflect_time_diamond` and temporal K distribution
+- P1-P4: directly, from the axioms below
+- P5: via the persistence lemma, which uses `modal5` and temporal K distribution
+- P6: via P5(¬φ), the bridge lemmas, and `doubleContrapose`
+- the persistence lemma itself: from `reflect_time_diamond` and temporal K distribution
 
 Key P6 derivation components:
 - `bridge1`: `¬□△φ → ◇▽¬φ` (modal/temporal duality)
@@ -74,12 +73,12 @@ compatibility with existing code.
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - TM logic specification
-* [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata
-* [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
-* [Helpers.lean](Perpetuity/Helpers.lean) - Helper lemmas
-* [Principles.lean](Perpetuity/Principles.lean) - P1-P5 proofs
-* [MonotonicityDuality.lean](Perpetuity/MonotonicityDuality.lean) - duality/monotonicity lemmas and
+* `docs/user-guide/architecture.md` — TM logic specification
+* `FormalSystem/ProofSystem/Axioms.lean` — Axiom schemata
+* `FormalSystem/ProofSystem/Derivation.lean` — Derivability relation
+* `FormalSystem/Theorems/Perpetuity/Helpers.lean` — Helper lemmas
+* `FormalSystem/Theorems/Perpetuity/Principles.lean` — P1-P5 proofs
+* `FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean` — duality/monotonicity lemmas and
 P6
 -/
 

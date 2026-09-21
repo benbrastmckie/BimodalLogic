@@ -87,8 +87,8 @@ unchanged.
 
 ## References
 
-* `FormalSystem/ProofSystem/Axioms.lean` — the 29 TM schemata, with their [burgess1982] / [xu1988] /
-  [reynolds1992] provenance; the docstrings there are authoritative for each schema's reading
+* `FormalSystem/ProofSystem/Axioms.lean` — the 29 TM schemata, with their [burgess1982] / [xu1988]
+  / [reynolds1992] provenance; the docstrings there are authoritative for each schema's reading
 * JPL paper `possible_worlds.tex`: `def:BLstar-semantics` (the `⟨τ⟩_x` definition, the Stability
   clause, and its footnote) and `sub:RestrictedModalities` (the dual `⟐` and the defined modals)
 -/

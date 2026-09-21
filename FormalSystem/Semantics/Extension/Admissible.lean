@@ -111,7 +111,8 @@ here:
 
 ## References
 
-* JPL paper `lem:fibers` — the fibre characterisation (a retired anchor; see the transcription above)
+* JPL paper `lem:fibers` — the fibre characterisation (a retired anchor; see the
+  transcription above)
 * JPL paper `lem:admissible` — when adjoining a point yields a partial history
 * JPL paper `lem:nullity` — the zero loop `w ⇒₀ w`
 * JPL paper `def:constraints` — the constraints imposed on a duration

@@ -42,9 +42,9 @@ monotonicity lemmas, and the proof of perpetuity principle P6.
 
 ## References
 
-* [Perpetuity.lean](../Perpetuity.lean) - Parent module (re-exports)
-* [Helpers.lean](Helpers.lean) - Helper lemmas
-* [Principles.lean](Principles.lean) - P1-P5 proofs
+* `FormalSystem/Theorems/Perpetuity.lean` — Parent module (re-exports)
+* `FormalSystem/Theorems/Perpetuity/Helpers.lean` — Helper lemmas
+* `FormalSystem/Theorems/Perpetuity/Principles.lean` — P1-P5 proofs
 -/
 
 namespace FormalSystem.Theorems.Perpetuity

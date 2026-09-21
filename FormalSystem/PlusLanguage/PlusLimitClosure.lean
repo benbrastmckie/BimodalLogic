@@ -74,11 +74,11 @@ theorems of TM⁺ is therefore necessarily nondeterministic.
 
 ## References
 
-* Thomason, *Combinations of Tense and Modality* (1984), §4, formulas (19) (Burgess) and (20)
-  (Thomason): the Ockhamist-valid, Kamp-invalid formulas that "trade on the fact that any
-  linearly-ordered subset of a tree can be extended to a branch". `blc` is that pattern
-  transposed from the historical-necessity modal to the stability modal, with the Extension
-  Theorem playing the role of the branch-extension fact.
+* [R. H. Thomason, *Combinations of Tense and Modality*][thomason1984], §4, formulas (19)
+  (Burgess) and (20) (Thomason): the Ockhamist-valid, Kamp-invalid formulas that "trade on the
+  fact that any linearly-ordered subset of a tree can be extended to a branch". `blc` is that
+  pattern transposed from the historical-necessity modal to the stability modal, with the
+  Extension Theorem playing the role of the branch-extension fact.
 * `Semantics/Extension/Extension.lean` — `PartialHistory.extension`
 * `PlusLanguage/PlusPasting.lean` — `paste`
 

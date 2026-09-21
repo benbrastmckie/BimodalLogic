@@ -82,8 +82,12 @@ originals remain in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`
 
 ## References
 
-- [burgess1982], [burgess1984]: Until-Since temporal logic axiomatization
-- Archive of 27 sorry-tainted definitions
+* [J. P. Burgess, *Axioms for Tense Logic. I. "Since" and "Until"*][burgess1982] — the
+  Until-Since temporal-logic axiomatization
+* [J. P. Burgess, *Basic Tense Logic*][burgess1984] — the same axiomatization as the Handbook
+  presents it
+* `Boneyard/OpenGuardInvalid/` and `Boneyard/ClosedGuardLegacy/` — the archives the 27 removed
+  definitions were moved to; see "Removed", above
 -/
 
 namespace FormalSystem.Theorems.TemporalDerived

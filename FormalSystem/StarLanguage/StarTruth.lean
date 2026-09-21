@@ -80,8 +80,8 @@ congruence does not let a `⊡`-formula be treated as a fresh state-valued atom 
 ## References
 
 * JPL paper `def:BLstar-semantics` — the store/recall clauses and the point `(τ, x, v⃗)`
-* `FormalSystem/PlusLanguage/PlusTruth.lean` — the seven L⁺ clauses being mirrored, and
-  the two transport lemmas being restated
+* `FormalSystem/PlusLanguage/PlusTruth.lean` — the seven L⁺ clauses being mirrored, and the two
+  transport lemmas being restated
 * `FormalSystem/StarLanguage/Formula.lean` — `StarFormula`, `ofPlus`
 
 ## Tags

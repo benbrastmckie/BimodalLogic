@@ -23,25 +23,22 @@ than S5, particularly for nested modalities.
 
 ## Main Theorems
 
-### Modal S4 Nested Modalities (Phase 4)
+### Modal S4 nested modalities
 - `s4DiamondBoxConj`: `⊢ (◇A ∧ □B) → ◇(A ∧ □B)` (diamond box conjunction distribution)
 - `s4BoxDiamondBox`: `⊢ □A → □(◇□A)` (box diamond box nesting)
 - `s4DiamondBoxDiamond`: `⊢ ◇(□(◇A)) ↔ ◇A` (diamond box diamond equivalence)
 - `s5DiamondConjDiamond`: `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)` (S5 diamond conjunction distribution)
 
-## Implementation Status
-
-All 4 theorems above are fully proven; this module is sorry-free.
-
 ## References
 
-* [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure
-  (modal_t, modal_4, modal_b, boxMono, diamondMono)
-* [Propositional.lean](Propositional.lean) - Propositional infrastructure (botOfAndNeg, impNegImp,
-negImp, orInl, orInr)
-* [ModalS5.lean](ModalS5.lean) - S5 theorems (tBoxToDiamond, boxContrapose, tBoxConsistency)
-* [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata (modal_t, modal_4, modal_b, modal5)
-* [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
+* `FormalSystem/Theorems/Perpetuity.lean` — Modal infrastructure (modal_t, modal_4, modal_b,
+  boxMono, diamondMono)
+* `FormalSystem/Theorems/Propositional/` — Propositional infrastructure (botOfAndNeg, impNegImp,
+  negImp, orInl, orInr)
+* `FormalSystem/Theorems/ModalS5.lean` — S5 theorems (tBoxToDiamond, boxContrapose,
+  tBoxConsistency)
+* `FormalSystem/ProofSystem/Axioms.lean` — Axiom schemata (modal_t, modal_4, modal_b, modal5)
+* `FormalSystem/ProofSystem/Derivation.lean` — Derivability relation
 -/
 
 namespace FormalSystem.Theorems.ModalS4
@@ -54,7 +51,7 @@ open FormalSystem.Theorems.Propositional
 open FormalSystem.Theorems.ModalS5
 
 /-!
-## Phase 4: Modal S4 Theorems (Not Started)
+## Modal S4 theorems
 -/
 
 /--

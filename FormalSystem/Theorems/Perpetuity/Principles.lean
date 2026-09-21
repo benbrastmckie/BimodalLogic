@@ -32,9 +32,9 @@ establish fundamental connections between modal necessity (□) and temporal ope
 
 ## References
 
-* [Perpetuity.lean](../Perpetuity.lean) - Parent module (re-exports)
-* [Helpers.lean](Helpers.lean) - Helper lemmas
-* [architecture.md](../../../../docs/user-guide/architecture.md) - TM logic specification
+* `FormalSystem/Theorems/Perpetuity.lean` — Parent module (re-exports)
+* `FormalSystem/Theorems/Perpetuity/Helpers.lean` — Helper lemmas
+* `docs/user-guide/architecture.md` — TM logic specification
 -/
 
 namespace FormalSystem.Theorems.Perpetuity

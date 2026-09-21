@@ -75,8 +75,8 @@ All four report `[propext]` only — in particular **no `Classical.choice`**.
 
 * JPL paper `def:deterministic`, `lem:deterministic-singleton`, `app:deterministic`
 * `FormalSystem/Semantics/FrameProperty.lean` — `TaskFrame.Deterministic`
-* `FormalSystem/PlusLanguage/PlusNonValidities.lean` — `refute_determined`, the negative
-  half of `app:deterministic`
+* `FormalSystem/PlusLanguage/PlusNonValidities.lean` — `refute_determined`, the negative half of
+  `app:deterministic`
 
 ## Tags
 

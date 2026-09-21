@@ -79,11 +79,11 @@ See `FormalSystem/StarLanguage/README.md`.
 
 ## References
 
-* JPL paper `possible_worlds.tex` — `def:BLstar-semantics` (the store/recall clauses and the
-  point `(τ, x, v⃗)`), `sub:Extension`, `sent:det`, `app:deterministic-future`
+* JPL paper `possible_worlds.tex` — `def:BLstar-semantics` (the store/recall clauses and the point
+  `(τ, x, v⃗)`), `sub:Extension`, `sent:det`, `app:deterministic-future`
 * `FormalSystem/PlusLanguage/Formula.lean` — the L⁺ side whose operators are mirrored here
-* `FormalSystem/StarLanguage/StarTruth.lean` — `StarTruthAt`, the truth recursion over
-  `(τ, x, v⃗)`
+* `FormalSystem/StarLanguage/StarTruth.lean` — `StarTruthAt`, the truth recursion over `(τ, x,
+  v⃗)`
 
 ## Tags
 

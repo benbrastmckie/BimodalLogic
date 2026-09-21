@@ -32,8 +32,8 @@ They are collected here so the canonical-model modules can reach them without im
 
 ## References
 
-- `Theorems/Propositional/Connectives.lean`: `doubleNegation`, `contraposition`
-- `Theorems/Combinators.lean`: `impTrans`
+* `Theorems/Propositional/Connectives.lean`: `doubleNegation`, `contraposition`
+* `Theorems/Combinators.lean`: `impTrans`
 -/
 
 namespace FormalSystem.Theorems.ModalDerived

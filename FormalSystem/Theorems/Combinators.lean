@@ -59,9 +59,9 @@ This module depends only on:
 
 ## References
 
-* [Perpetuity/Helpers.lean](Perpetuity/Helpers.lean) - Original location (now imports this module)
-* [Propositional.lean](Propositional.lean) - Uses these combinators
-* [Axioms.lean](../ProofSystem/Axioms.lean) - Provides K and S axioms
+* `FormalSystem/Theorems/Perpetuity/Helpers.lean` — Original location (now imports this module)
+* `FormalSystem/Theorems/Propositional/` — Uses these combinators
+* `FormalSystem/ProofSystem/Axioms.lean` — Provides K and S axioms
 -/
 
 namespace FormalSystem.Theorems.Combinators

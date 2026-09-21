@@ -55,8 +55,8 @@ We handle each case of the Derivable relation:
 
 ## References
 
-* [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
-* [Combinators.lean](Combinators.lean) - Combinator infrastructure
+* `FormalSystem/ProofSystem/Derivation.lean` — Derivability relation
+* `FormalSystem/Theorems/Combinators.lean` — Combinator infrastructure
 -/
 
 namespace FormalSystem.Metalogic.Core

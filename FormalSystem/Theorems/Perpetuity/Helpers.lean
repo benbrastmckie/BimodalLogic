@@ -28,10 +28,10 @@ These helpers include temporal component lemmas and boilerplate reduction utilit
 
 ## References
 
-* [Combinators.lean](../Combinators.lean) - Propositional reasoning combinators
-* [Perpetuity.lean](../Perpetuity.lean) - Parent module (re-exports)
-* [Axioms.lean](../../ProofSystem/Axioms.lean) - Axiom schemata
-* [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
+* `FormalSystem/Theorems/Combinators.lean` — Propositional reasoning combinators
+* `FormalSystem/Theorems/Perpetuity.lean` — Parent module (re-exports)
+* `FormalSystem/ProofSystem/Axioms.lean` — Axiom schemata
+* `FormalSystem/ProofSystem/Derivation.lean` — Derivability relation
 -/
 
 namespace FormalSystem.Theorems.Perpetuity

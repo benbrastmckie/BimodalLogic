@@ -181,8 +181,8 @@ The semantic modules cited in this docstring are cited in prose only.
 * `FormalSystem/PlusLanguage/Axioms.lean` — `PlusAxiom`, the 53 schemata mirrored here
 * `FormalSystem/StarLanguage/StarNonValidities.lean` — `refute_modal_future`, the reason
   `modal_future` alone carries a side condition
-* `FormalSystem/StarLanguage/Embedding.lean` — `StarAxiom.ofPlusAxiom`, the embedding recovered
-  as a derived function over these constructors
+* `FormalSystem/StarLanguage/Embedding.lean` — `StarAxiom.ofPlusAxiom`, the embedding recovered as
+  a derived function over these constructors
 * JPL paper `possible_worlds.tex` — `def:BLstar-semantics` (the store/recall clauses)
 
 ## Tags

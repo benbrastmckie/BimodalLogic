@@ -119,13 +119,12 @@ here.
 
 ## References
 
-* JPL paper `def:BLstar-semantics` — the truth clauses being classified; the atom-level
-  `p → ⊡p` of its footnote (the footnote to the Stability clause) is the `stateLocal_atom`
-  instance of `stab_of_stateLocal`
+* JPL paper `def:BLstar-semantics` — the truth clauses being classified; the atom-level `p → ⊡p`
+  of its footnote (the footnote to the Stability clause) is the `stateLocal_atom` instance of
+  `stab_of_stateLocal`
 * `FormalSystem/PlusLanguage/PlusTruth.lean` — `PlusTruthAt`, `stab_congr_state`,
   `stab_state_only`
-* `FormalSystem/StarLanguage/StarStateLocal.lean` — the L⋆ twin this module mirrors arm
-  for arm
+* `FormalSystem/StarLanguage/StarStateLocal.lean` — the L⋆ twin this module mirrors arm for arm
 * `FormalSystem/Semantics/StateLocalTransfer.lean` — `stateLocal_ofPlus_iff`
 * `FormalSystem/PlusLanguage/PlusNonValidities.lean` — `NF`, `natHist`, `natModel`
 

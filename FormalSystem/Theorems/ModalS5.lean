@@ -18,26 +18,26 @@ for the TM bimodal logic system.
 
 ## Main Theorems
 
-### Modal S5 Properties (Phase 2)
+### Modal S5 properties
 - `tBoxToDiamond`: `⊢ □A → ◇A` (necessary implies possible)
 - `boxDisjIntro`: `⊢ (□A ∨ □B) → □(A ∨ B)` (box distributes over disjunction introduction)
 - `boxContrapose`: `⊢ □(A → B) → □(¬B → ¬A)` (box preserves contraposition)
 - `tBoxConsistency`: `⊢ ¬□(A ∧ ¬A)` (contradiction cannot be necessary)
 
-## Implementation Status
-
-All modal S5 theorems in this module are fully proven, including the biconditionals
-(`boxIffIntro`, `boxConjIff`, `diamondDisjIff`); this module is sorry-free.
+### Biconditionals
+- `boxIffIntro`: the introduction rule the other two are proved from
+- `boxConjIff`: `⊢ □(A ∧ B) ↔ (□A ∧ □B)`
+- `diamondDisjIff`: `⊢ ◇(A ∨ B) ↔ (◇A ∨ ◇B)`
 
 ## References
 
-* [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure
-  (modal_t, modal_4, modal_b, boxMono, diamondMono, boxConjIntro, contraposition, notNotIntro, dne)
-* [Propositional.lean](Propositional.lean) - Propositional infrastructure
-  (botOfAndNeg, impNegImp, negImp, orInl, orInr, impOfNegImpNeg, andLeft, andRight)
-* [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata
-  (prop_k, prop_s, doubleNegation, modal_t, modal_4, modal_b)
-* [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
+* `FormalSystem/Theorems/Perpetuity.lean` — Modal infrastructure (modal_t, modal_4, modal_b,
+  boxMono, diamondMono, boxConjIntro, contraposition, notNotIntro, dne)
+* `FormalSystem/Theorems/Propositional/` — Propositional infrastructure (botOfAndNeg, impNegImp,
+  negImp, orInl, orInr, impOfNegImpNeg, andLeft, andRight)
+* `FormalSystem/ProofSystem/Axioms.lean` — Axiom schemata (prop_k, prop_s, doubleNegation,
+  modal_t, modal_4, modal_b)
+* `FormalSystem/ProofSystem/Derivation.lean` — Derivability relation
 -/
 
 namespace FormalSystem.Theorems.ModalS5

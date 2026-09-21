@@ -97,8 +97,7 @@ time-reflected formula `φ.reflectTime`; the L⁻ analogue of the paper's `lem:t
 
 * JPL paper `\S sub:Logic` — `def:BL-language`, `def:BL-semantics` (which this deliberately
   departs from in its `□` clause; see above)
-* `FormalSystem/MinusLanguage/MinusTruth.lean` — the `TaskFrame`-bound recursion this sits
-  beside
+* `FormalSystem/MinusLanguage/MinusTruth.lean` — the `TaskFrame`-bound recursion this sits beside
 * `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` — the consumer: native L⁻ soundness
   and the two-fibre refutation of `(Sp)`
 

@@ -59,8 +59,7 @@ since L⁻ has no `untl`. Do not "simplify" the target.
 
 * JPL paper `\S sub:Logic` — `def:BL-semantics`, `def:logical-consequence`
 * `FormalSystem/Semantics/Validity.lean` — the L predicates these mirror
-* `FormalSystem/MinusLanguage/Soundness.lean` — the soundness theorems
-  targeting these
+* `FormalSystem/MinusLanguage/Soundness.lean` — the soundness theorems targeting these
 
 ## Tags
 

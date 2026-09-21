@@ -43,8 +43,7 @@ touching the semantics.
 
 * JPL paper `def:frame-validity`, `def:logical-consequence`, `cor:tm-completeness`
 * `FormalSystem/Semantics/Validity.lean` — the L predicates these mirror
-* `FormalSystem/MinusLanguage/MinusValidity.lean` — the base-language mirror, the same
-  shape
+* `FormalSystem/MinusLanguage/MinusValidity.lean` — the base-language mirror, the same shape
 
 ## Tags
 

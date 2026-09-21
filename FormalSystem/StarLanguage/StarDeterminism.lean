@@ -99,10 +99,8 @@ correspondence-record-and-store-recall-recommendation report, §II.4's choice-as
   `lem:deterministic-singleton`, `def:BLstar-semantics`
 * The PossibleWorlds `02_determinism-axiom-correspondence.md` report, §4 — Theorem C,
   `Det-pm`, and the §4.1 single-letter note
-* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic`, the L⁺
-  collapse
-* `FormalSystem/StarLanguage/StarNonValidities.lean` — `app:deterministic-future`'s
-  negative half
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic`, the L⁺ collapse
+* `FormalSystem/StarLanguage/StarNonValidities.lean` — `app:deterministic-future`'s negative half
 
 ## Tags
 

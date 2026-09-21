@@ -412,28 +412,28 @@ citer files.
 
 ---
 
-### Phase 6: Theorems/, PlusLanguage/, MinusLanguage/, StarLanguage/ [NOT STARTED]
+### Phase 6: Theorems/, PlusLanguage/, MinusLanguage/, StarLanguage/ [COMPLETED]
 
 - **Goal:** The L+/L⋆/L− normal-form gold standard preserved, the remaining `## Implementation
   Status` sections removed, `MinusTruth.lean`'s PSR folded.
 - **Tasks:**
-  - [ ] Convert the `## References` blocks under `FormalSystem/Theorems/` (12 + `Theorems.lean`),
+  - [x] Convert the `## References` blocks under `FormalSystem/Theorems/` (12; `Theorems.lean` was converted in Phase 4, where it is also listed),
         `PlusLanguage/` (11), `MinusLanguage/` (9), `StarLanguage/` (9).
-  - [ ] **The L+/L⋆/L− blocks are the normal-form gold standard, not conversion targets.** The
+  - [x] **The L+/L⋆/L− blocks are the normal-form gold standard, not conversion targets.** The
         label citations the first task of this run wrote into them must survive. Touch them only
         to wrap a bare bibkey in its `[Author, *Title*][key]` form; leave every `sub:` anchor and
         every backticked module path exactly as written.
-  - [ ] `PlusLanguage/PlusLimitClosure.lean` is the worked conversion:
+  - [x] `PlusLanguage/PlusLimitClosure.lean` is the worked conversion:
         `Thomason, *Combinations of Tense and Modality* (1984), §4` becomes
         `* [R. H. Thomason, *Combinations of Tense and Modality*][thomason1984], §4` — possible
         only because Phase 1 merged `thomason1984` into the root file.
-  - [ ] Remove the 3 `## Implementation Status` headings at `Theorems/ModalS5.lean:27`,
+  - [x] Remove the 3 `## Implementation Status` headings at `Theorems/ModalS5.lean:27`,
         `Theorems/Perpetuity.lean:32`, `Theorems/ModalS4.lean:32`. Same rule as Phase 4: a status
         claim goes, a pinned name list does not.
-  - [ ] Fold the `## Paper Specification Reference` at `MinusLanguage/MinusTruth.lean:34`.
-  - [ ] Repair the 3 broken `Propositional.lean` links from
+  - [x] Fold the `## Paper Specification Reference` at `MinusLanguage/MinusTruth.lean:34`.
+  - [x] Repair the 3 broken `Propositional.lean` links from
         `Theorems/{ModalS4,ModalS5,Combinators}.lean` (`Theorems/Propositional/` is a directory).
-  - [ ] Re-anchor, `--emit-inventory`, `--emit-inventory --check`.
+  - [x] Re-anchor, `--emit-inventory`, `--emit-inventory --check`. *(deviation: altered — `ModalS5.lean`'s status section was the ONLY place naming `boxIffIntro`, `boxConjIff` and `diamondDisjIff`, so those names were moved into a `### Biconditionals` subsection of `## Main Theorems` rather than dropped; `Perpetuity.lean`'s section became `## How each principle is derived` with every derivation component preserved; `ModalS4.lean`'s body heading `## Phase 4: Modal S4 Theorems (Not Started)` was renamed, the "(Not Started)" being false of the implemented theorems below it. The report citations in `MinusLanguage/{Translation,MinusSchemaValidity}.lean` and `StarLanguage/StarDeterminism.lean` were LEFT ALONE: `StarDeterminism.lean` records in terms that an external PossibleWorlds-repository report is the citation of record for a result that is not manuscript text, and the other two are load-bearing antecedents for body prose. They are named in Follow-ups instead.)*
 - **Timing:** 1.5 hours
 - **Depends on:** 5
 - **Verification Tier:** full

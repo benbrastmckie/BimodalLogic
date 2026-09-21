@@ -31,7 +31,7 @@ with content in its temporal cases, rather than a definitional unfolding — and
 L⁻ soundness theorem stated against `MinusTruthAt` a claim about L⁻ rather than a restatement of the
 L one.
 
-## Paper Specification Reference
+## Paper specification, transcribed
 
 `def:BL-semantics`, clause by clause:
 

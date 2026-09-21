@@ -86,9 +86,8 @@ consistency lemma in the tree yet"), and the L⁻ side inherits it exactly.
 * JPL paper `\S sub:Logic` — `thm:TM-soundness`, `def:BL-semantics`
 * `FormalSystem/Metalogic/Soundness.lean` — the four L soundness theorems composed with here
 * `FormalSystem/Metalogic/Conservativity/Backward.lean` — `translate`, the proof-theoretic half
-* `FormalSystem/MinusLanguage/MinusTruth.lean`,
-  `FormalSystem/MinusLanguage/MinusValidity.lean` — the L⁻ semantics this is stated
-  against
+* `FormalSystem/MinusLanguage/MinusTruth.lean`, `FormalSystem/MinusLanguage/MinusValidity.lean` —
+  the L⁻ semantics this is stated against
 
 ## Tags
 
