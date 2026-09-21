@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "completed_at": "2026-09-21T11:29:02Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/636_docstring_and_citation_normalisation/reports/01_docstring-citation-normalisation.md",
+      "summary": "Baseline measurement and conversion plan for docstring/citation normalisation: all acceptance gates already green at HEAD (incl. the literal home/benjamin grep), 713 References entries classified (181 bibliographic vs 532 cross-references), 4-key bib merge with per-key direction measured through typst, and C20 tier 1 (582/1028 citations in the edit set) identified as the dominant gated regression risk with an exact per-file-delta repair recipe."
+    }
+  ],
+  "user_decision": {
+    "blocking": false,
+    "question": "Two bibkeys cited in FormalSystem/Metalogic/Expressiveness.lean:67,69 resolve to nothing in either bibliography: 'stavi1979' (the Stavi connectives, Dedekind-incomplete case) and 'gabbay1980' (the separation property). Should each get a new references.bib entry, or be re-pointed to an existing key (StaviConnectives.lean already cites gabbay1994 Ch.9 s.3 for the same content, and gabbayhodkinsonreynolds1994 Ch.10 is the tree's usual separation citation)?",
+    "context": "Affects two lines in one file. Not currently gated -- C15 reads only def|thm|lem|cor|app|rmk anchors, not bracket bibkeys -- so both have dangled undetected. Every other part of the sweep can proceed without this answer."
+  },
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68_636",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
