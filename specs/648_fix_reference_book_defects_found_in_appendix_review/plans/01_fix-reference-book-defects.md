@@ -482,23 +482,25 @@ after.
 
 ---
 
-### Phase 8: Bring the sync records in line [NOT STARTED]
+### Phase 8: Bring the sync records in line [COMPLETED]
 
 **Goal**: Item 2's narrative half. `typst/SYNC-MAP.md` describes the appendix as it now stands and
 records this round's changes.
 
 **Tasks**:
-- [ ] Read the two most recent dated entries in `typst/SYNC-MAP.md` before writing, to confirm what
-      the existing supersession note already covers and avoid restating it.
-- [ ] Fold a short addition into the existing most-recent entry covering the appendix's section
+- [x] Read the two most recent dated entries in `typst/SYNC-MAP.md` before writing, to confirm what
+      the existing supersession note already covers and avoid restating it. *(completed)*
+- [x] Fold a short addition into the existing most-recent entry covering the appendix's section
       numbering mechanism, which is currently undocumented there; do not open a new dated entry for
-      already-landed work.
-- [ ] Add one new dated entry for this round's changes: the reference show-rule and appendix
+      already-landed work. *(completed)*
+- [x] Add one new dated entry for this round's changes: the reference show-rule and appendix
       lettering, the corrected axiom-count/`Type`-valued/tactic-behavior statements in the chapters
       and docstrings, the decision-result correction, the introduction's structure list, the
-      machine-appendix letter swap, and the template and whitelist changes.
-- [ ] Confirm no task number and no `specs/` path appears anywhere in the additions, and that every
-      backticked span in the new text resolves under Check 1.
+      machine-appendix letter swap, and the template and whitelist changes. *(completed; also
+      records the item-1 not-reproducing sub-claim)*
+- [x] Confirm no task number and no `specs/` path appears anywhere in the additions, and that every
+      backticked span in the new text resolves under Check 1. *(completed: 0 occurrences, Check 1
+      TOTAL_VIOLATIONS=0)*
 
 **Timing**: 0.5 hours
 

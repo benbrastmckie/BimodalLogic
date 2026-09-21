@@ -666,3 +666,117 @@ not fixed: a page that ends shortly before a large excerpt leaves visible traili
 because the file-local rule sets `breakable: false` on every code block so that no excerpt
 splits across a page. That is a deliberate trade-off of the existing formatting block and
 predates this addition.
+
+**Section-numbering mechanism, documented here for the first time.** The appendix's own
+`A.1`, `A.2`, ... section numbering (present since the 2026-09-17 entry above, never previously
+recorded in this file) is file-local: the appendix title heading resets the shared heading
+counter's level-2 component and overrides the level-1+ numbering function with one that
+hardcodes an `"A."` prefix ahead of the ordinary `"1.1"`-style suffix, so the sections beneath it
+number `A.1`, `A.2`, ... regardless of the chapter count the shared counter has accumulated by
+that point in the document. `@`-references to these sections (e.g. `@lean-appendix-structures`)
+render as "Section A.4" through this same mechanism.
+
+## 2026-09-21 Fixes — Reference Book Defects Found in Appendix Review
+
+A defect-fix round covering nine items found while reviewing the extended Lean appendix, all
+outside that appendix's own content.
+
+**Broken cross-references to the appendices, fixed.** `BimodalReference.typ`'s `#show ref` rule
+previously hardcoded `"Chapter"` and a single-placeholder numbering pattern for every level-1
+heading; applied to the two back-matter appendices (unnumbered level-1 headings), this
+concatenated the shared heading counter's leftover multi-component state with no separator,
+rendering references like "Chapter 1534" instead of a sensible appendix reference. The rule now
+reads the target heading's own `supplement` and `numbering` dynamically, rendering by title when
+`numbering` is `none` rather than replaying the raw counter. Both appendices were given a real
+letter identity to match: the Lean appendix's title heading resets the level-1 counter and
+carries letter numbering (`supplement: "Appendix"`, rendering "A"), and the machine appendix's
+title continues the same counter by auto-increment to "B", with its three previously-unnumbered
+level-2 headings now numbered `B.1`–`B.3` using the same file-local pattern the Lean appendix's
+`A.n` sections already use. References now read "Appendix A" / "Appendix B"; the table of
+contents shows both appendices with their letters; ordinary chapter references are unaffected by
+construction, since the rule is driven by the target heading's own fields, not by file or level.
+The one stale appendix-title link text (`p4-dataset-pipeline.typ`) was updated to match.
+
+**Axiom-count and `Type`-valuedness statements, corrected to machine-verified figures.**
+Re-counted from live source rather than trusting any prior figure: 29 `Axiom` constructors
+(`ProofSystem/Axioms.lean`), 27 entries in `tryAxiomMatch`'s `axiomCtors` list
+(`Automation/Tactics/Search.lean`), omitted set exactly the two Layer-9 Reynolds Dedekind axioms
+(`prior_U_gap`, `sep`) — a stale third name in circulation elsewhere does not exist as an
+`Axiom` constructor. Both `Axiom` and `DerivationTree` are `Type`-valued, not `Prop`-valued (a
+false claim previously repeated in three Lean docstrings, this file's own module inventory, and
+two chapter sites); Aesop's proof reconstruction targets `Prop`-valued goals and does not fire on
+`Type`-valued ones, which is the real reason the proof-search engine is hand-written at the meta
+level rather than delegated to Aesop, grounded in the retired `TMLogic` Aesop rule set's own
+account (`Boneyard/RetiredTactics/README.md`). Fixed in `Automation/Tactics/{Search,Commands}.lean`
+docstrings, `Automation/Tactics/README.md`'s module inventory, and
+`chapters/p4-proof-automation.typ` (prose and module-map table), which now also imports the
+generated `axiom-count` rather than a typed total.
+
+**`apply_axiom`/`modal_t` docstrings and worked examples, corrected to actual behavior.** Both
+macros expand identically to `apply DerivationTree.axiom; refine ?_`, applying the generic axiom
+constructor and leaving the axiom witness (`h : Axiom φ`) and frame-class side condition
+(`h_fc`) open for the caller — neither unifies with a schema or infers formula parameters, and
+neither detects a context hypothesis or performs modus ponens. Both docstrings' worked examples
+were broken (elaborated with unsolved goals, verified in a scratch file before and after);
+replacements using named `case h => ...` / `case h_fc => ...` tags (required because the
+`h_fc` goal's statement is not fully determined until `h` is assigned) now elaborate cleanly. The
+stale "Supported Axioms" list in `apply_axiom`'s docstring, naming several non-constructors, was
+deleted. `chapters/p4-proof-automation.typ`'s `apply_axiom` item was corrected to match; its
+`modal_t` item was already correct and left alone.
+
+**`DecisionResult`, corrected to its real four constructors.**
+`chapters/p2-decidability-practice.typ` described a three-way `valid`/`invalid`/`timeout` result;
+live source (`Metalogic/Decidability/DecisionProcedure.lean`) has four: `valid`, `invalid`,
+`fuelExhausted` (fuel ran out before any verdict; validity genuinely undetermined), and
+`extractionFailed` (the tableau closed on every branch — the formula *is* valid — but proof-term
+reconstruction did not succeed). The chapter's separate, correct citation of the
+certificate-outcome type (which does have its own `timeout` constructor) was left untouched. The
+chapter's other decision-procedure descriptions (`decide`'s algorithm summary, `isValid`,
+`isSatisfiable`, `getProof?`, `getCountermodel?`) were re-checked against source and found
+already correct.
+
+**Introduction's project-structure list, completed and re-attributed.** The list in
+`chapters/00-introduction.typ` omitted `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`,
+`OpenLanguage/`, `ForMathlib/`, `Tactic/`, and `MainResults.lean`, and mis-attributed the
+training-data pipeline to `Automation/`/`Examples/` — `lakefile.toml` declares that tooling as a
+separate library, `BimodalTools`, deliberately absent from the default build targets. Both are
+fixed; the directory set was cross-checked against a live listing of `FormalSystem/` rather than
+trusted from any prior report, which also surfaced `FormalSystem/HybridLanguage/` as a real,
+already-landed directory the original defect report predated and this list now also covers.
+
+**Machine appendix `untl`/`snce` table letters, swapped to the book's own convention.** The
+JSON-shape table's illustrative letters followed `BimodalTools/DataExport.lean`'s local
+match-variable naming (which happens to bind the event to `φ` and the guard to `ψ` in that one
+function, unrelated to the constructor's actual guard-first argument order) rather than the
+book's own stated convention (guard `φ`, event `ψ`). Swapped; the explanatory paragraph below the
+table and the `CONFIRM(lean)` comment, both already accurate, were left unchanged.
+
+**Template hygiene.** The `#item` environment in `template.typ` previously rendered a manual
+`block` with a literal leading dash and no hanging indent, so a wrapped line fell back to the
+margin; it now expands to Typst's native `list(body)`, inheriting the enclosing `#items[...]`
+block's marker/indent/spacing with no call-site changes across all nine real call sites. The
+build's two recurring font warnings ("unknown font family: new computer modern sans", from
+thmbox's default title/sans fonts) are gone: every thmbox-based environment style dictionary
+(`theorem-style`, `definition-style`, `axiom-style`, `remark-style`, and `example-style`) now
+sets `sans-fonts`/`title-fonts` to **DejaVu Sans**, a real static family with no companion
+warning (the plan's first-suggested "Noto Sans" is a variable font and trades one warning for
+another: "variable fonts are not currently supported"). The re-exported `proof` environment,
+which has no such parameters of its own and never raised the warning, received the same
+`.with(...)` treatment for consistency and as a guard against a future thmbox version adding
+them. `typst compile` now produces zero warnings.
+
+**New whitelist entries** (`typst/sync-check-whitelist.txt`, Check 1): a category for
+illustrative Lean-syntax fragments inside the appendix's own uncommitted editorial review
+comments (structure/binder/`Nonempty`-related placeholders, not declaration citations — the
+comments themselves are out of this task's scope to remove or resolve, since they belong to the
+appendix's own content); the swapped machine-appendix `untl`/`snce` JSON-shape spans, which no
+longer literal-match `DataExport.lean`'s differently-named local match variables. One stale entry
+(`leanprover/lean4`, zero occurrences in `typst/chapters/`) was pruned. The "appendix-local
+didactic identifiers" category's task-directory-path citation was replaced with the same
+"session scratch artifact, deliberately not named by path" phrasing this file's 2026-09-21 entry
+above already models.
+
+**Not reproduced.** A bare `@machine-appendix` reference rendering incorrectly, named among the
+defects found: no such bare reference exists anywhere in `typst/`; the Lean appendix's own link
+to the machine appendix names no title text at all, so nothing there needed fixing. The
+underlying `#show ref` rule bug this sub-claim pointed at is real regardless and is fixed above.
