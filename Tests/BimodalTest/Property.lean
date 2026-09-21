@@ -12,7 +12,7 @@ import BimodalTest.Semantics.SemanticPropertyTest
 /-!
 # Property-Based Tests
 
-This module aggregates all property-based tests for the Logos proof checker.
+This module aggregates all property-based tests for the formalization.
 
 ## Overview
 
@@ -49,7 +49,7 @@ Property tests are configured with:
 
 ## References
 
-* [Property Testing Guide](../../docs/Development/PROPERTY_TESTING_GUIDE.md)
+* `docs/development/PROPERTY_TESTING_GUIDE.md` — the property-testing patterns these follow
 * [Plausible Framework](https://github.com/leanprover-community/plausible)
 -/
 

@@ -28,8 +28,8 @@ Generators defined in BimodalTest.Property.Generators.
 
 ## References
 
-* [Formula.lean](../../../Logos/Core/Syntax/Formula.lean)
-* [Generators.lean](../Property/Generators.lean)
+* `FormalSystem/Syntax/Formula.lean`
+* `Tests/BimodalTest/Property/Generators.lean`
 -/
 
 

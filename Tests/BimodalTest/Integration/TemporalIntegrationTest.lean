@@ -38,9 +38,9 @@ Tests are organized by temporal axiom:
 
 ## References
 
-* [Axioms.lean](../../../Logos/Core/ProofSystem/Axioms.lean) - Temporal axioms
-* [Derivation.lean](../../../Logos/Core/ProofSystem/Derivation.lean) - Temporal rules
-* [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
+* `FormalSystem/ProofSystem/Axioms.lean` — Temporal axioms
+* `FormalSystem/ProofSystem/Derivation.lean` — Temporal rules
+* `FormalSystem/Metalogic/Soundness.lean` — Soundness theorem
 -/
 
 namespace BimodalTest.Integration

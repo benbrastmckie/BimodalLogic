@@ -15,7 +15,7 @@ import FormalSystem.Metalogic.Decidability.DecisionProcedure
 import BimodalTools.TraceExport
 
 /-!
-# Trace Certificate Unit Tests (Task 277)
+# Trace Certificate Unit Tests
 
 Unit tests for the trace certificate data types and decision procedure
 instrumentation. Verifies that:
@@ -28,9 +28,10 @@ instrumentation. Verifies that:
 
 ## References
 
-- `FormalSystem.Metalogic.Decidability.TraceCertificate` — type definitions.
-- `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry.
-- Task 277 — tableau_rule_firing_traces.
+* `FormalSystem.Metalogic.Decidability.TraceCertificate` — type definitions.
+* `FormalSystem.Metalogic.Decidability.DecisionProcedure.decideWithTrace` — main entry.
+* `BimodalTools/TraceExport.lean` — the tableau rule-firing trace format these certificates
+  feed
 -/
 
 namespace BimodalToolsTest.TraceCertificateTest

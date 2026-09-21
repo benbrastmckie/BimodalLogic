@@ -272,29 +272,29 @@ citer files.
 
 ---
 
-### Phase 3: Tests/ and FormalSystem/Examples/ [NOT STARTED]
+### Phase 3: Tests/ and FormalSystem/Examples/ [COMPLETED]
 
 - **Goal:** The smallest, most self-contained file set converted end to end, proving the toolchain
   and the normal form before the bulk batches commit to them.
 - **Tasks:**
-  - [ ] Convert the 16 `## References` blocks in `Tests/` to the normal form. All are
+  - [x] Convert the 16 `## References` blocks in `Tests/` to the normal form. All are
         cross-reference-only; all 16 of their `../../../Logos/Core/**` links are broken.
-  - [ ] Repath those 16 links to the live modules AND convert them to the backticked
+  - [x] Repath those 16 links to the live modules AND convert them to the backticked
         repo-relative form (both changes in one edit — the repath alone leaves the depth-fragile
         markdown-link shape in place).
-  - [ ] `Tests/BimodalTest/Automation/TacticsTest.lean:16,55` — the path
+  - [x] `Tests/BimodalTest/Automation/TacticsTest.lean:16,55` — the path
         `ProofChecker/Automation/Tactics.lean` and the namespace `ProofChecker.Automation.Tactics`
         are BOTH wrong; the live namespace is `FormalSystem.Automation.Tactics`.
-  - [ ] Strip the present-tense Logos prose at `Tests/BimodalTest/Property.lean:15` and
+  - [x] Strip the present-tense Logos prose at `Tests/BimodalTest/Property.lean:15` and
         `Tests/BimodalTest/Property/Generators.lean:18`.
-  - [ ] Strip the present-tense Logos/ProofChecker prose at
+  - [x] Strip the present-tense Logos/ProofChecker prose at
         `FormalSystem/Examples/TemporalStructures.lean:16,24,38` and convert the 3 `Examples/`
         `## References` blocks.
-  - [ ] Repair the `../../../docs/Development/PROPERTY_TESTING_GUIDE.md` case error (it is
+  - [x] Repair the `../../../docs/Development/PROPERTY_TESTING_GUIDE.md` case error (it is
         `docs/development/`) as part of the backticked-path conversion.
-  - [ ] Run `python scripts/reanchor-lean-citations.py` over this file set at the END of the
-        phase, after all edits — not interleaved.
-  - [ ] `bash scripts/check-module-invariants.sh --emit-inventory` then `--emit-inventory --check`.
+  - [x] Run `python scripts/reanchor-lean-citations.py` over this file set at the END of the
+        phase, after all edits — not interleaved. *(deviation: altered — two `Examples/` files also carry markdown-link cross-references in a BODY docstring, which the single-Δ model does not describe; the tool refused them and they were re-run under `--exact`. Both reported 0 rewrites: nothing in the tree cites `Tests/` or `Examples/` by line number.)*
+  - [x] `bash scripts/check-module-invariants.sh --emit-inventory` then `--emit-inventory --check`. *(deviation: altered — the phase also stripped the four `Task NNN` task-management citations from `Tests/BimodalToolsTest/**` `## References` blocks and the three `(Task 277)` module-docstring titles, under the plan's own "task-management metadata in a library docstring" rule and `.claude/rules/no-task-references-in-deliverables.md`, since those files were being rewritten anyway.)*
 - **Timing:** 1 hour
 - **Depends on:** 1, 2
 - **Verification Tier:** full

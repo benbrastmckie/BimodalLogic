@@ -14,7 +14,7 @@ import FormalSystem.Metalogic.Decidability.DecisionProcedure
 import BimodalTools.TraceExport
 
 /-!
-# Round-Trip Test for Trace Certificate JSON Serialization (Task 277)
+# Round-Trip Test for Trace Certificate JSON Serialization
 
 Verifies that the output of `ProofCertificate.toJsonString` and
 `TraceResult.toJsonString` is parseable JSON (syntactically valid).
@@ -25,8 +25,9 @@ the *semantic* content of the JSON, only that the structure is valid.
 
 ## References
 
-- `BimodalTools.TraceExport` — String-based JSON.
-- Task 277 — tableau_rule_firing_traces.
+* `BimodalTools.TraceExport` — String-based JSON.
+* `FormalSystem/Metalogic/Decidability/DecisionProcedure.lean` — the tableau whose rule-firing
+  traces are exported
 -/
 
 namespace BimodalToolsTest.TraceExportTest

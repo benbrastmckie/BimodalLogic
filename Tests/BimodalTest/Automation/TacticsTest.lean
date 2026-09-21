@@ -13,7 +13,7 @@ import FormalSystem.ProofSystem
 # Tests for Automation Tactics
 
 This module contains tests for the custom tactics defined in
-`ProofChecker.Automation.Tactics`.
+`FormalSystem.Automation.Tactics`.
 
 ## Test Coverage
 
@@ -52,7 +52,7 @@ Comprehensive test suite covering:
 
 ## References
 
-* Tactics Module: ProofChecker/Automation/Tactics.lean
+* `FormalSystem/Automation/Tactics/` — the tactic implementations under test
 -/
 
 namespace BimodalTest.Automation

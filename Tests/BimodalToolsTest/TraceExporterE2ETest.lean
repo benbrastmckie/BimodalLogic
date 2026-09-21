@@ -15,7 +15,7 @@ import FormalSystem.Metalogic.Decidability.DecisionProcedure
 import BimodalTools.TraceExport
 
 /-!
-# Trace Exporter E2E Smoke Test (Task 277)
+# Trace Exporter E2E Smoke Test
 
 End-to-end test that exercises the full `decideWithTrace` pipeline
 on a set of canonical formulas and verifies that:
@@ -33,7 +33,7 @@ on a set of canonical formulas and verifies that:
 
 ## References
 
-- Task 277 — tableau_rule_firing_traces.
+* `BimodalTools/TraceExport.lean` — the tableau rule-firing trace format exported end to end
 -/
 
 namespace BimodalToolsTest.TraceExporterE2ETest

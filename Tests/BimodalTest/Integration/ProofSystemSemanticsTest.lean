@@ -38,9 +38,9 @@ Tests are organized by category:
 
 ## References
 
-* [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
-* [Derivation.lean](../../../Logos/Core/ProofSystem/Derivation.lean) - Proof system
-* [Validity.lean](../../../Logos/Core/Semantics/Validity.lean) - Semantic validity
+* `FormalSystem/Metalogic/Soundness.lean` — Soundness theorem
+* `FormalSystem/ProofSystem/Derivation.lean` — Proof system
+* `FormalSystem/Semantics/Validity.lean` — Semantic validity
 -/
 
 namespace BimodalTest.Integration

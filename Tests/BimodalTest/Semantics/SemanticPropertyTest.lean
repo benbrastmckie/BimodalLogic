@@ -30,8 +30,8 @@ valid frames.
 
 ## References
 
-* [TaskFrame.lean](../../../Logos/Core/Semantics/TaskFrame.lean)
-* [Truth.lean](../../../Logos/Core/Semantics/Truth.lean)
+* `FormalSystem/Semantics/TaskFrame.lean`
+* `FormalSystem/Semantics/Truth.lean`
 -/
 
 

@@ -35,8 +35,8 @@ Tests are organized by complexity:
 
 ## References
 
-* [Derivation.lean](../../../Logos/Core/ProofSystem/Derivation.lean) - Proof system
-* [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
+* `FormalSystem/ProofSystem/Derivation.lean` — Proof system
+* `FormalSystem/Metalogic/Soundness.lean` — Soundness theorem
 -/
 
 namespace BimodalTest.Integration

@@ -51,8 +51,8 @@ silently acquire a new dependency.
 
 ## References
 
-* [MainResults.lean](../MainResults.lean) - the headline soundness/completeness metatheory
-* [BimodalProofs.lean](BimodalProofs.lean) - perpetuity-principle proof examples
+* `FormalSystem/MainResults.lean` — the headline soundness/completeness metatheory
+* `FormalSystem/Examples/BimodalProofs.lean` — perpetuity-principle proof examples
 -/
 
 namespace FormalSystem.Examples.Walkthrough
@@ -377,12 +377,12 @@ gap between finite and infinite assumption sets, which is what compactness measu
 
 ## Where to go next
 
-- [MainResults.lean](../MainResults.lean) collects the headline metatheory — soundness,
+- `FormalSystem/MainResults.lean` collects the headline metatheory — soundness,
   the weak completeness results at each frame class, and the strong-completeness results and
   refutations — each with its own axiom audit.
-- [BimodalProofs.lean](BimodalProofs.lean) works the proof system harder, deriving the
+- `FormalSystem/Examples/BimodalProofs.lean` works the proof system harder, deriving the
   perpetuity principles that link `□` to the tense operators.
-- [TemporalStructures.lean](TemporalStructures.lean) builds more of the concrete temporal
+- `FormalSystem/Examples/TemporalStructures.lean` builds more of the concrete temporal
   orders that the countermodel in leg 5 drew on.
 -/
 

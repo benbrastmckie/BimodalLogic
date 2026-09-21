@@ -23,8 +23,9 @@ Covers:
 
 ## References
 
-- Task 263: Smoke-test c5 dataset generation
-- Task 261: Fuel bounding, per-record flush, eventuality-aware blocking
+* `BimodalTools/DatasetGenerator.lean` — c5 dataset generation, with the fuel bound,
+  per-record flush and eventuality-aware blocking this test exercises
+* `BimodalTools/DatasetValidatorMain.lean` — the conformance suite run below
 -/
 
 namespace BimodalToolsTest.C5Smoke

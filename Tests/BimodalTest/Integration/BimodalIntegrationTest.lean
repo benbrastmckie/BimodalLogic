@@ -35,9 +35,9 @@ Tests are organized by bimodal axiom:
 
 ## References
 
-* [Axioms.lean](../../../Logos/Core/ProofSystem/Axioms.lean) - Bimodal axioms
-* [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
-* [Truth.lean](../../../Logos/Core/Semantics/Truth.lean) - Bimodal semantics
+* `FormalSystem/ProofSystem/Axioms.lean` — Bimodal axioms
+* `FormalSystem/Metalogic/Soundness.lean` — Soundness theorem
+* `FormalSystem/Semantics/Truth.lean` — Bimodal semantics
 -/
 
 namespace BimodalTest.Integration

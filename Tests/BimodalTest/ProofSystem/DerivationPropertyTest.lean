@@ -34,8 +34,8 @@ structural properties that can be tested with arbitrary inputs.
 
 ## References
 
-* [Derivation.lean](../../../Logos/Core/ProofSystem/Derivation.lean)
-* [Axioms.lean](../../../Logos/Core/ProofSystem/Axioms.lean)
+* `FormalSystem/ProofSystem/Derivation.lean`
+* `FormalSystem/ProofSystem/Axioms.lean`
 -/
 
 

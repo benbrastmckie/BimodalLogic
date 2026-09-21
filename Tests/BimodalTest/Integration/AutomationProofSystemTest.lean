@@ -46,10 +46,9 @@ Tests are organized by tactic:
 
 ## References
 
-* [Tactics.lean](../../../Logos/Core/Automation/Tactics.lean) - Tactic implementations
-* [Commands.lean](../../../FormalSystem/Automation/Tactics/Commands.lean) - the `modal_search`
-  tactic
-* [Soundness.lean](../../../Logos/Core/Metalogic/Soundness.lean) - Soundness theorem
+* `FormalSystem/Automation/Tactics/` — Tactic implementations
+* `FormalSystem/Automation/Tactics/Commands.lean` — the `modal_search` tactic
+* `FormalSystem/Metalogic/Soundness.lean` — Soundness theorem
 -/
 
 namespace BimodalTest.Integration

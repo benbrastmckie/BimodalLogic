@@ -15,7 +15,7 @@ import Plausible
 /-!
 # Property Test Generators
 
-This module provides generators for property-based testing of Logos types.
+This module provides generators for property-based testing of the formalization's types.
 
 ## Main Definitions
 
@@ -46,7 +46,7 @@ The Plausible API changed since this file was written:
 ## References
 
 * [Plausible Documentation](https://github.com/leanprover-community/plausible)
-* [Property Testing Guide](../../../docs/Development/PROPERTY_TESTING_GUIDE.md)
+* `docs/development/PROPERTY_TESTING_GUIDE.md` — the property-testing patterns these follow
 -/
 
 namespace BimodalTest.Property.Generators

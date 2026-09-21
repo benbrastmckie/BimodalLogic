@@ -13,7 +13,7 @@ import FormalSystem.Semantics.PartialHistory
 # Temporal Structures - Example Frame Instantiations
 
 This module provides examples demonstrating the use of different temporal types
-with ProofChecker's generalized semantics. The fibre `FrameOver D` and
+with this formalization's generalized semantics. The fibre `FrameOver D` and
 `PartialHistory F` structures can be instantiated with various temporal types.
 
 ## Paper Alignment
@@ -21,7 +21,7 @@ with ProofChecker's generalized semantics. The fibre `FrameOver D` and
 The JPL paper "The Perpetuity Calculus of Agency" specifies the temporal structure in
 `def:temporal-order` (verbatim): "A \textit{temporal order} is a nontrivial totally ordered
 abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone}
-$D^+ \coloneq \set{x \in D : x \geq 0}$." ProofChecker implements the ordered abelian group
+$D^+ \coloneq \set{x \in D : x \geq 0}$." This development implements the ordered abelian group
 via the unbundled typeclasses
 `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`; the paper's nontriviality
 requirement is supplied at the sites that need it rather than by the `FrameOver` structure (see
@@ -35,7 +35,7 @@ TaskFrame.lean's known-gaps list).
 - **Advantages**: Simple, decidable, standard temporal logic interpretation
 
 ### Polymorphic Examples
-The examples below demonstrate how ProofChecker's polymorphic types work with
+The examples below demonstrate how the polymorphic types below work with
 any type `D` that has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid` instances. This
 includes:
 - `Int`: Discrete integer time
@@ -57,11 +57,13 @@ includes:
 
 ## References
 
-* [TaskFrame.lean](../Semantics/TaskFrame.lean) - FrameOver definition
-* [PartialHistory.lean](../Semantics/PartialHistory.lean) - PartialHistory definition
-* JPL Paper anchors `def:temporal-order` (temporal structure, quoted verbatim above) and
-  `def:frame` (frame definition; see TaskFrame.lean's module docstring for the verbatim
-  four-axiom statement) — cited by `\label` anchor, never by raw line number
+* `FormalSystem/Semantics/TaskFrame.lean` — FrameOver definition
+* `FormalSystem/Semantics/PartialHistory.lean` — PartialHistory definition
+* JPL paper `possible_worlds.tex`: `def:temporal-order` — the temporal structure, quoted
+  verbatim above
+* JPL paper `possible_worlds.tex`: `def:frame` — the frame definition;
+  `FormalSystem/Semantics/TaskFrame.lean`'s module docstring carries the verbatim four-axiom
+  statement
 -/
 
 namespace FormalSystem.Examples.TemporalStructures
